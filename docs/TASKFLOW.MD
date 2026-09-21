@@ -1,0 +1,185 @@
+# Task flow
+
+[Milestones](MILESTONES.md) · [Open tasks](TODO/README.md) ·
+[Done tasks](TODO/DONE/README.md) · [Work record](WORK.md)
+
+## Scope and source of truth
+
+Apply Athena's [shared Task flow standard](../vendor/athena/docs/task-flow.md).
+This file records Pythian's adopted paths, scope, acceptance allocation and
+user-directed execution choices; the shared standard owns the general lifecycle.
+
+The north-star goals and completion totals live in [MILESTONES.md](MILESTONES.md).
+Individual task files in `docs/TODO/` own the remaining implementation and
+acceptance criteria. Accepted tasks move to `docs/TODO/DONE/`. The
+[task index](TODO/README.md) maps all tasks and credits to the north stars.
+Topic documents hold supporting contracts/evidence; they are not another active
+backlog. Historical “remaining” statements do not reopen a completed task without
+checking the current evidence.
+
+The initial catalog contained 49 open tasks and earned no completion credit.
+On 2026-09-20 the user authorized execution, starting with the least-complete
+north star (NS-5 at 25%). Follow actual prerequisite tasks when blocked, including
+prerequisites in another north star, then return to the originating task.
+
+NS-1's accepted extraction/independence baseline is already complete. Do not
+manufacture historical DONE files or repeat completed work to populate folders.
+Core independence, Pascal ownership, retained WFC boundaries, complete notices,
+deterministic behavior and one current format per artifact remain invariants of
+every applicable task. Review [PROJECT.md](../PROJECT.md) and Athena as required
+by [AGENTS.md](../AGENTS.md).
+
+## Naming and template
+
+Use `NS-<goal>_<feature>_<xx>.md`, for example
+`NS-3_notes_01.md`, `NS-3_notes_02.md`, `NS-3_notes_03.md`.
+`NS-<goal>` refers to the exact north-star ID in the scorecard. Feature names use
+lowercase words separated by hyphens. Use the same feature base for related
+tasks and increment the two-digit suffix; use more digits after 99. Do not
+reuse a number or renumber existing files after tasks move to DONE. The suffix
+identifies a task, not a format version or an implicit prerequisite.
+
+Every task uses this template. Additional evidence details belong within these
+sections or in linked topic records, not in a second competing task definition.
+
+```markdown
+# NS-N_feature_01 — Concrete outcome
+
+<Relative links to the task index, task flow and owning north-star anchor>
+
+**Description:**
+
+High-level outcome, present gap, and scope boundary.
+
+North star: NS-N. Outcome owner: existing milestone outcome or an explicit new owner.
+Completion credit: X goal percentage points (Y overall points).
+Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
+
+Starting evidence: links to current contracts, code or evidence.
+
+**Acceptance Criteria:**
+
+- Observable result, supported cases and independently checkable pass condition.
+- Relevant failure/unknown, ownership, replay and integration requirements.
+- Evidence needed to accept the result, including actual listening when applicable.
+
+**Blockers**
+
+- <Relative Markdown link to the prerequisite task file>
+```
+
+If no task prerequisite exists, use one bullet saying `None` and explain that
+external inputs/decisions in the acceptance criteria still apply. Link directly
+to task files, never just a milestone name. Keep filenames unchanged in DONE.
+When a task moves, update its navigation/evidence links for the new directory.
+
+## Select and execute
+
+1. Read the selected task, its current topic evidence and the work record. Check
+   that each file under **Blockers** is accepted in DONE. A draft implementation,
+   a passing isolated test or an active task does not satisfy a blocker.
+2. Select one current task under the prioritized outcome package. Being ready
+   is not by itself a reason to switch to a convenient infrastructure task.
+   Record external needs such as listening judgments, verified sources, a runner
+   or independently reproduced use explicitly; do not invent approval or results.
+3. Define the next observable result and reuse existing verified tools/evidence.
+   Keep one primary agent. Implement maintained behavior in Pascal and use
+   proportional validation of the changed boundary and consumer.
+4. For inference experiments, declare the hypothesis, fixed evaluation policy,
+   cost budget and stop/switch condition before scoring. After two unsuccessful
+   attempts on the same cause, reassess the approach/evidence rather than making
+   another blind variation. Protect untouched evaluation material.
+5. Keep accepted baseline behavior available. Compile/test/render passes do not
+   imply musical, listening, genre or independent-consumer acceptance. Avoid
+   repeated broad test/package refreshes until material changes require them.
+
+Blockers are true prerequisites to executing the task's deliverable, not merely
+related work. Put nonblocking coordination in the description or acceptance
+criteria. Splitting preparation from acceptance is preferable to creating cycles
+or requiring every downstream acceptance before useful upstream work can begin.
+The index's dependency order is a valid order, not a requirement to serialize
+every unrelated task or expand staffing.
+
+## Discover a gap without losing the current task
+
+When a gap requires another task, **stop the scope expansion immediately,
+create the new task file using this template, then return to finish the current
+task**. Do not silently add an indefinite investigation to the current task.
+
+- Give the gap a concrete outcome, acceptance criteria, north-star owner,
+  completion allocation and the next unused feature suffix.
+- Add it to the index and milestone mapping immediately. Update affected tasks
+  with their actual prerequisite links; do not create dependency cycles.
+- If the new gap is follow-up work, keep it out of the current task's blockers
+  and complete the current agreed scope.
+- If it is genuinely necessary for the current acceptance criteria, add the new
+  file to the current task's blockers and leave the current task open. Finish any
+  independent current work, then resolve the prerequisite in dependency order.
+  Do not mark a task DONE merely to follow the instruction to finish it.
+- If a task's criteria were missed after closure, either reopen that task or
+  create a clearly distinct follow-up and reassess the credited capability.
+
+The initial list is exhaustive for the presently declared end state, not a claim
+that development can reveal no new requirement. Unsupported browser/device APIs,
+arbitrary codecs, every synthesis technique and universal transcription are not
+automatically gaps. A new requirement needs a concrete connection to the goal.
+
+## Complete, move and update percentages
+
+A task is complete only when **all** its acceptance criteria pass and every
+blocker is accepted. Add a dated completion-evidence paragraph under Description
+with source/artifact identities, commands/targets, relevant results, real review
+verdicts and limitations. Link detailed evidence instead of copying logs into
+the task. Implementation/API tasks must be in maintained code and their intended
+consumer; an ignored study alone is not delivery. Planning/protocol tasks must
+meet their specified reference/executable checks, not just have prose written.
+
+In the same logical completion change:
+
+1. Move the task from `docs/TODO/` to `docs/TODO/DONE/` without changing its basename.
+2. Update incoming blocker/index/milestone links and the moved task's relative
+   navigation/evidence links. Keep completed prerequisite links as historical
+   evidence; do not erase why a task was blocked.
+3. Update the index's open/DONE state and the milestone outcome mapping, remove
+   completed work from the active queue, and update the north-star percentages.
+4. Record the accepted result, changed blocker and next outcome in WORK.md.
+5. Check local links, prerequisites and credit arithmetic. Do not run unrelated
+   algorithm suites for the documentation move.
+
+The accepted baseline at this catalog's creation is:
+
+| Goal | Baseline completion | Overall weight | Task points remaining within goal |
+| --- | ---: | ---: | ---: |
+| NS-1 | 100% | 10 | 0 |
+| NS-2 | 80% | 25 | 20 |
+| NS-3 | 30% | 25 | 70 |
+| NS-4 | 70% | 15 | 30 |
+| NS-5 | 25% | 20 | 75 |
+| NS-6 | 50% | 5 | 50 |
+
+`Goal completion = baseline + sum(accepted DONE task credits for that goal)`.
+`Overall completion = sum(goal completion * goal weight / 100)`.
+For example, accepting `NS-3_notes_01` adds 4 points within NS-3 and 1 overall
+point. Record the arithmetic on every completion; keep the overall ledger at
+55.5 until an actual task closes. These allocations are transparent planning
+judgments about scope, not measured engineering precision or effort estimates.
+
+Task credits, not file counts, drive completion. Partial implementation,
+experiments, more tests, hours collected and this initial task authoring earn no
+automatic credit. Do not retroactively apply the new credits to capability
+already included in the baseline. A completed parent outcome earns no extra
+points on top of its tasks.
+
+When splitting or adding work within the same scope, redistribute only unearned
+credit and record the old/new allocation so the goal still totals 100. Never
+create free percentage points by adding files. A genuine scope expansion or
+disproved accepted capability requires an explicit baseline/scope reassessment
+in MILESTONES.md, with rationale and unchanged historical evidence. Moving a
+reopened task back to TODO removes its accepted credit; recalculate all totals.
+No task may close with an unspecified allocation or unsupported completion claim.
+
+Group execution into meaningful outcome packages, normally at least ten overall
+points as requested; individual tasks may be smaller. This is a planning rule,
+not permission to inflate credit or postpone updates until a giant milestone
+finishes. No final 100% claim is valid while any required task or acceptance
+evidence remains unresolved.

@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "purpose": "Optional external WAV learning and reconstruction evidence; not bundled media",
+  "checked_on": "2026-09-14",
+  "sources": [
+    {
+      "id": "pixel-sprinter",
+      "title": "Pixel Sprinter (loop)",
+      "author": "Zane Little Music",
+      "page": "https://opengameart.org/content/pixel-sprinter",
+      "download": "https://opengameart.org/sites/default/files/pixel_sprinter_loop_0.wav",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "sha256": "d74ebdb11d7dd1602039a387444a7e90a0717f60249be12a202b398935bfddca",
+      "bytes": 12096846,
+      "sample_rate": 44100,
+      "channels": 2,
+      "frames": 1512000,
+      "transform": "None before WAV decoding",
+      "evidence": {
+        "seed": 731,
+        "generated_acoustic_frames": 512,
+        "model_states": 129,
+        "output_frames": 527360,
+        "output_sha256": "9a8d3f2f732225c81dfe0e1fde339863a79ff8651f7d57efd65c6fcb23adc9a6"
+      }
+    },
+    {
+      "id": "opening-theme",
+      "title": "Opening Theme [Action/Suspense]",
+      "author": "nene",
+      "page": "https://opengameart.org/content/opening-theme-actionsuspense",
+      "download": "https://opengameart.org/sites/default/files/opening_theme.wav",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "sha256": "77eafe5090c0ab2e3de3bbf7963737a3684fcec4aea1932ff75d595b392ce221",
+      "bytes": 15876148,
+      "sample_rate": 44100,
+      "channels": 2,
+      "frames": 3969000,
+      "transform": "None before WAV decoding",
+      "evidence": {
+        "seed": 731,
+        "generated_acoustic_frames": 512,
+        "model_states": 105,
+        "output_frames": 527360,
+        "output_sha256": "30fecbabeda92332d397e25cdec6aefa8d60fe48e744484797a4870dad9542ff"
+      }
+    }
+  ],
+  "shared_archive_evidence": {
+    "sources_in_order": ["pixel-sprinter", "opening-theme"],
+    "observations": 5353,
+    "palette_tokens": 16,
+    "model_order": 2,
+    "model_states": 133,
+    "archive_sha256": "5405acab822bbfdd1d5534987b70ebac066a77ba5da91b48b126a8e97a3072c4",
+    "seed": 731,
+    "generated_acoustic_frames": 512,
+    "selected_grains_per_source": [152, 360],
+    "output_frames": 527360,
+    "output_sha256": "bff6e8c2627369c4572c26b0036a30cf1ea333da9f0da4154c7dba0953abd07e",
+    "reversed_source_argument_replay": "identical output bytes",
+    "source_mismatch": "rejected, existing output preserved"
+  },
+  "continuity_evidence": {
+    "archive_sha256": "5405acab822bbfdd1d5534987b70ebac066a77ba5da91b48b126a8e97a3072c4",
+    "activity_version": 1,
+    "continuity_version": 1,
+    "source_onset_candidates": [189, 376],
+    "rhythm_model_states": 4,
+    "seed": 731,
+    "generated_acoustic_frames": 512,
+    "selected_grains_per_source": [149, 363],
+    "contiguous_links": 356,
+    "source_jumps": 155,
+    "baseline_mean_seam_error": 1.110782404858129,
+    "selected_mean_seam_error": 0.19108266450898839,
+    "baseline_total_cost": 691.5752482793604,
+    "selected_total_cost": 131.54150387280458,
+    "output_frames": 527360,
+    "output_sha256": "1bf753cb7507f0df486b7138a027f9f2c4602992a58f7562ad96cea15bce72f7",
+    "reversed_source_argument_replay": "identical output bytes"
+  },
+  "limitations": [
+    "Evidence was collected with FPC 3.3.1 on i386-win32",
+    "Generated audio reuses recorded source grains",
+    "These two recordings do not establish general musical quality or transcription accuracy",
+    "No operator listening approval is recorded"
+  ]
+}
