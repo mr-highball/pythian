@@ -41,7 +41,46 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current handoff — fixed profile rejected; availability diagnostic passes — 2026-09-21
+## Current handoff — exact trace and key-decision audit accepted — 2026-09-21
+
+The preceding six-document batch is published at `ff2e025`; its
+[native CI passes](https://github.com/mr-highball/pythian/actions/runs/35608515576).
+The next two-item diagnostic batch passes final source/runtime QA. The
+[exact availability replay](PHRASE-EVALUATION.md#exact-availability-trace-replay--2026-09-21)
+reproduces all five original outputs for all 96 flute and 87 violin events.
+Previously unresolved measurements exit at the first- or second-window
+phase-support checks. This identifies the executed branch without establishing
+a physical cause. All eleven flute octave-error events still fail the lower
+guard, so repairing only upper availability cannot rescue the proposal. Keep
+the predictive and contingent envelope corrections stopped.
+
+The [key-decision audit](TONAL.md#rejected-profile-decision-audit) exactly replays
+the rejected profile scores and reconciles every labelled-frame transition.
+Both recordings lose correct predictions in fully labelled constant contexts;
+the errors include fifth-related and more distant alternatives. Stop profile
+variations. A new key proposal needs temporal and frequency evidence that can
+distinguish tonic from sustained dominant activity; the audit does not establish
+which acoustic source caused the observed class contributions.
+
+Checked stable Win64 controls, original-source replays and the key audit finish
+with zero leaks and within declared resource bounds. Trace output identities,
+exact fit-work totals, sampled private memory and the key audit's separately
+bounded explanatory contribution residuals are recorded in the linked topic
+pages and `build/qa-batch-12/report.txt`. No runtime process remains live.
+Final documentation checks pass: native evidence, links, task accounting, privacy
+and the six-document scope are verified. This batch is ready for normal
+publication; its exact revision is reported separately.
+
+Return to NS-5 through its admitted-note/learning prerequisite. Note identity
+requires independent discriminating evidence; note presence is separately open.
+Before another presence experiment, reconcile the existing separate-head,
+event-context and short-note evidence and define the next observable result.
+Do not repeat the rejected direct decoder or mistake model execution for note
+admission. No new held-out material, maintained inference change, task closure or
+credit follows from these diagnostics: **62.65%, 38 open / 11 DONE**. Historical
+failed-submission counters remain unchanged.
+
+## Previous checkpoint — fixed profile rejected; availability diagnostic passes — 2026-09-21
 
 The preceding nine-document batch is published at `0785186`; its
 [native CI passes](https://github.com/mr-highball/pythian/actions/runs/35607192822).

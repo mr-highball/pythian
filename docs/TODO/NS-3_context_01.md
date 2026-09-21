@@ -77,6 +77,15 @@ a different observation/model; this failure does not isolate its physical cause.
 Unknown calibration and independent key/change acceptance remain open; no
 maintained admission or completion credit is claimed.
 
+The [decision/contribution audit](../TONAL.md#rejected-profile-decision-audit)
+now exactly replays every correlation score and reconciles lost/gained frames.
+Both sources lose previously correct predictions in fully labelled constant
+contexts; substantial losses are fifth-related or more distant, not only relative
+mode confusions. Stop profile variations. Define evidence distinguishing tonic
+from sustained dominant and actual note activity from folded spectral contributions
+before another inference proposal. Preserve frequency provenance and temporal
+order; this audit alone selects no physical explanation or replacement classifier.
+
 **Acceptance Criteria:**
 
 - Declare supported key/mode cases and source windows, including ambiguous, non-tonal and changing-key regions; fix key/change/coverage limits before evaluation.

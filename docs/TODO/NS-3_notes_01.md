@@ -38,6 +38,15 @@ the unchanged calculation. Exact replay of the five original outputs is required
 before interpreting causes. Keep the envelope experiment stopped; no new model,
 guard, source exposure or presence/register correction belongs to this diagnostic.
 
+The [exact trace replay](../PHRASE-EVALUATION.md#exact-availability-trace-replay--2026-09-21)
+passes on both recordings and attributes all previously unavailable triples to
+first/second-window phase-support exits. All original outputs and fit-work totals
+match exactly. The earlier lower-hypothesis guards still pass no octave-error
+event, so repairing only upper availability cannot rescue the proposal. Stop this
+correction family and reassess the independent identity information needed;
+preserve genuine-note controls and keep presence separately accounted. No task
+credit or failed-submission increment follows from this diagnostic.
+
 **Acceptance Criteria:**
 
 - Declare a discriminating identity observation or decision rule before scoring; explain how it distinguishes the remaining octave errors rather than merely changing global weights or thresholds.

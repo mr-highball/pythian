@@ -389,6 +389,55 @@ comparison SHA256 is
 `12f369f486a6fd4761bb1ff086de0b81f1d8f18421b5227a3d46d4a98bc1d74b`.
 No maintained admission behavior, task status or completion credit changes.
 
+## Rejected-profile decision audit
+
+A native audit now exactly reproduces every saved Pearson score before exposing
+its twelve signed pitch-class contributions. The original numerator accumulation
+and final division remain exact; separately normalized explanatory terms retain
+a predeclared residual bound of 1e-12. Every labelled-frame transition reconciles
+with the failed comparison, separately for each annotator, representation and
+context state. No ranking, observation or accuracy result changes.
+
+For the primary peak representation and unanimous references:
+
+| Source | Previously exact, now wrong | Previously wrong, now exact | Of the losses: relative / parallel / fifth-related / other |
+| --- | ---: | ---: | --- |
+| 02 | 500,535 frames | 88,200 frames | 0 / 58,212 / 442,323 / 0 |
+| 16 | 497,448 frames | 176,400 frames | 176,400 / 0 / 88,200 / 232,848 |
+
+Source 02 loses 176,400 exact frames and gains 88,200 within fully labelled
+constant contexts; source 16 loses 352,800 and gains 176,400 in that stratum.
+The regression therefore includes stable annotated passages as well as changes
+and incomplete contexts. Temporal smoothing alone is not established as a remedy.
+
+The contributions expose specific dominant-related confusions. Source 02 cell 12
+has a constant G-minor reference: the precursor peak ranker selects G minor,
+whereas correlation selects D minor. The D-class contribution to the new-versus-
+reference score difference is +0.313568; all remaining signed terms are retained,
+including opposing terms. Source 16 cell 17 has a constant D-minor reference:
+the precursor peak ranker selects relative F major, and correlation selects
+A minor. A and E contribute +0.236137 and +0.117153 to A-minor versus D-minor
+correlation, while F and D contribute -0.140387 and -0.057709. These are formula
+contributions, not evidence that a particular sounding part owns those classes.
+
+The fixed profile replacement trades existing mistakes for substantial new ones;
+it does not merely repair relative-mode ambiguity. Stop changing profile weights
+on these two recordings. A next inference proposal needs evidence that distinguishes
+a sustained dominant from the tonic and separates genuine note-class activity
+from spectral contributions. Folded, aggregated chroma cannot by itself identify
+whether a class is a fundamental, overtone or accompaniment. Retain temporal
+order and frequency provenance when defining that observation contract; do not
+infer a new physical cause or select another classifier from this audit alone.
+This remains within the existing local-key task's admission/evaluation criteria.
+
+Checked stable Win64 controls, full audit and existing-output rejection pass with
+zero leaks. The audit takes 3,497 ms, produces 3,463,508 bytes and reaches
+66,293,760 bytes sampled private memory. All fit vectors, intersections, context
+summaries and frame-weighted contributions are under
+`build/local-key-reference/swd/profile-audit/`; final QA is in `build/qa-batch-12/`.
+Report SHA256: `4189e48ad4c1047d7f2d534d6f789f4b411758ecdd7770fc6093a013d3a4a06d`.
+No maintained provider, task completion or credit changes.
+
 ## Native inspection
 
 The [native tool](../tools/pythian.tonal.inspect.lpr) prints JSON:

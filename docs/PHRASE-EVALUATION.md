@@ -124,6 +124,55 @@ stage summary SHA256:
 `d6a60004cae4778f192e07b73634764f89e81c17124d67f0cdda855b189777e0`.
 No task status, musical score, completion credit or failed-submission count changes.
 
+## Exact availability trace replay — 2026-09-21
+
+One instrumented replay per existing development recording now reproduces all
+five cached outputs exactly, including unavailable values. It keeps the original
+source hashes, event windows, four-harmonic fits, arithmetic order, constants and
+branch order. All 96 flute / 87 violin events and 192 / 174 hypothesis pairs
+pass. Reached intermediate values are retained; unvisited fields are null.
+No prediction, boundary, scoring reference or model changes.
+
+The previously unresolved measurements all stop at the first- or second-window
+phase-support check. Predictive and fixed conditions have identical counts:
+
+| Recording / hypothesis | First-window support exit | Second-window support exit | Available |
+| --- | ---: | ---: | ---: |
+| Flute / lower | 192 | 38 | 279 |
+| Flute / upper | 463 | 16 | 30 |
+| Violin / lower | 51 | 17 | 699 |
+| Violin / upper | 218 | 77 | 474 |
+
+There are no total-fit-power, corrected-frequency or target-energy exits. A
+phase-support exit checks positive AC RMS and the declared second-harmonic power
+floor; the retained fits and powers permit inspection of those operands. The exit
+does not establish silence, physical source ownership or the perceived register.
+In particular, upper-hypothesis second-harmonic support refers to a different
+physical frequency from the lower hypothesis's phase reference.
+
+This resolves the cache's missing branch information, not the pitch-identity
+problem. The earlier audit still has zero lower-hypothesis all-guard-passing
+events in the eleven flute octave-error events. Repairing only upper availability
+cannot make the existing proposal pass. Keep the predictive correction and
+contingent envelope correction stopped; do not lower the phase floor or weaken
+the odd-component guard to obtain corrections. A next observation must supply
+independent identity evidence while preserving genuine low, quiet, short,
+missing-fundamental and octave-changing notes. Presence remains separately open.
+
+Checked stable Win64 branch controls and exact replay controls pass before the
+recorded runs, with zero leaks. Flute takes 9,954 ms with 171,257,856 bytes sampled
+private memory; violin takes 14,890 ms with 246,722,560 bytes. Original fit work
+is exactly 87,955,200 / 132,759,000. Outputs are 6,332,510 / 9,714,635 bytes,
+within the predeclared bounds. This is one replay per source, not a model run or
+new independent evaluation. Evidence is under `build/phrase-availability-trace/`
+and `build/qa-batch-12/`. Trace SHA256 identities:
+
+- Flute: `8fdbab54b670d173dabef7f797396358ddcf5586be11967bc65b4f7c0d3388d4`.
+- Violin: `a774b1c066555d9f8d0b4116d5da1978c8d6b5c265d508c8ae05494ed5fcf5aa`.
+
+The diagnostic introduces no blocking implementation failure, task closure or
+completion credit. The note-identity task owns the ensuing design reassessment.
+
 <a id="predictive-phase"></a>
 ## Predictive harmonic phase comparison — 2026-09-21
 

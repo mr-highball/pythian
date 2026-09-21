@@ -145,14 +145,24 @@ gate. The [frozen error audit](TONAL.md#frozen-key-error-audit) locates source 1
 net exact-match loss in fully labelled constant contexts, with a net increase in
 relative-key errors. A subsequent [fixed profile comparison](TONAL.md#fixed-key-profile-comparison)
 also fails: exact key matching falls to 32.016% / 21.142% on the two recordings.
-Stop that candidate and inspect changed decisions/contributions before another
-model or temporal smoothing. The [note-cache reassessment](PHRASE-EVALUATION.md#identity-evidence-reassessment--2026-09-21)
+The [decision audit](TONAL.md#rejected-profile-decision-audit) now reproduces every
+score and shows new errors in fully labelled constant contexts on both sources,
+including fifth-related and more distant confusions. Stop profile variations;
+the next evidence must distinguish tonic from dominant activity and retain
+frequency provenance and temporal order. The [note-cache reassessment](PHRASE-EVALUATION.md#identity-evidence-reassessment--2026-09-21)
 stops the contingent envelope correction: no disputed event passes the fixed
 guards, and the cache lacks exact unavailability reasons. The subsequent
 [cache-only attribution](PHRASE-EVALUATION.md#cached-availability-attribution--2026-09-21)
-cannot resolve any unavailable triple. Next trace the unchanged observation path
-with exact original-output replay before interpreting causes. These diagnostics
-resolve next actions, not musical acceptance; **62.65% remains unchanged**.
+cannot resolve any unavailable triple. The subsequent
+[exact trace replay](PHRASE-EVALUATION.md#exact-availability-trace-replay--2026-09-21)
+matches all original outputs and attributes every unavailable triple to ordered
+phase-support exits. This supplies branch information, not physical identity;
+all eleven flute octave-error events still fail the lower-hypothesis guard.
+Stop that correction family and assess independent identity evidence. Note
+presence remains independently actionable under its existing task; reuse the
+retained head, event-context and short-note studies before another experiment.
+These diagnostics resolve next actions, not musical acceptance;
+**62.65% remains unchanged**.
 
 The tables below retain existing outcome anchors for topic links. They are
 navigation to the task files, not duplicate acceptance criteria. An outcome is
