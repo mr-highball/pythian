@@ -37,8 +37,8 @@ either precursor source directory. Phanes was removed after the
 [extraction and consumer audit](docs/REFERENCE-REMOVAL.md); its application assets
 are not library inputs. WFC and Athena remain pinned submodules.
 
-Current Athena pin: `909336d808f0c40b297426e23aa58426a75c6516`, updated from
-upstream `main` on 2026-09-20 after the task-flow governance merge. The initial
+Current Athena pin: `b8cdb5b3c36d0b3670a4b722d98d905a2cb78de3`, updated from
+upstream `main` on 2026-09-21 after the task-size/progress-checkpoint merge. The initial
 revision above remains historical provenance. Adopt the shared
 [Task flow standard](vendor/athena/docs/task-flow.md) through the local
 [workflow](docs/TASKFLOW.MD).

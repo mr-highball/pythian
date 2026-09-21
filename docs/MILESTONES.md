@@ -134,11 +134,15 @@ earns its redistributed one-point NS-3 credit. The external reference packet
 remains open. Its [assembled development cases](PART-EVALUATION.md#assembled-external-development-cases--2026-09-21)
 now reproduce native scoring after relocation and correctly retain unknowns and
 reference-derived prediction ancestry. This closes policy application for those
-cases; useful chordal/lead references, evaluation preparation and complete
+cases; useful chordal/lead references and complete
 source/scenario coverage still gate task completion. The [initial family split](PART-EVALUATION.md#qualified-initial-recording-families--2026-09-21)
 is also accepted through source-work identity and a fixed content screen, with
 the conflicting development metadata association conservatively excluded from
-evaluation. Neither criterion closure earns partial task credit. The
+evaluation. The [reserved mixture](PART-EVALUATION.md#reserved-evaluation-mixture-preparation--2026-09-21)
+now has all ten bound contributors, exact construction/replay and preserved
+reference-only exposure; development WAVs remain byte-identical. Local role and
+acoustic annotations, followed by complete packet assembly, are the next missing
+deliverables. No partial task credit is earned. The
 publisher's original mix still fails its fixed summation check (13-LSB peak; 433 frames above the 11-LSB
 candidate bound). Preparation does not accept recorded inference. The task stays
 open; accepted maintained measurement brings overall completion to **62.90%**.

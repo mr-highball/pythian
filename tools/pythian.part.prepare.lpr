@@ -34,6 +34,10 @@ const
   CByteLimit = 1073741824;
   CPolicyPath = 'docs/PART-PREPARATION.md';
   CSourcePath = 'tools/pythian.part.prepare.lpr';
+  CArchiveHash = '6490dc83d8b59ccbe7e9e0304023af8e585d2065f9a5f5921952a273fac4a9b0';
+  CFamilyDecisionHash = 'a8163978ed1cd303e79b39ed606e228676cde6a100908553e2f050214f155db5';
+  CEvaluationMetadataHash = 'd8ce65e81c0d09c6445e4ff2a497647290ef5d0b8270401c830c58a12807182e';
+  CEvaluationScoreHash = '0fedda3ebff9e0ffa5ba6462eec4f1f717e3602a34722327e975d24774aebd3d';
 
 type
   TInput = class
@@ -91,6 +95,73 @@ begin
     begin
       Exit(False);
     end;
+  end;
+end;
+
+function ValidateSourceIdentity(const ABinding: TJSONObject): Boolean;
+var
+  LEvaluation: Boolean;
+  LDecision: TJSONObject;
+  LRow: TJSONObject;
+  LDecisionCount: Integer;
+  LMetadataCount: Integer;
+  LScoreCount: Integer;
+  I: Integer;
+begin
+  Check(ABinding.Strings['archive_sha256'] = CArchiveHash,
+    'Unsupported source archive');
+  LEvaluation := ABinding.Strings['exposure'] = 'reference-only-evaluation';
+  if LEvaluation then
+  begin
+    Check((ABinding.Strings['group'] = 'BabySlakh-4603870-Track00002') and
+      (ABinding.Strings['source_uuid'] = '0c3b7bf33cd3d67970ecfc06339bfc49'),
+      'Unsupported evaluation family identity');
+  end
+  else
+  begin
+    Check((ABinding.Strings['exposure'] = 'development') and
+      (ABinding.Strings['group'] = 'BabySlakh-4603870-Track00001') and
+      (ABinding.Strings['source_uuid'] = '1a81ae092884234f3264e2f45927f00a'),
+      'Unsupported source exposure/identity');
+  end;
+  Result := ABinding.Find('family_decision') <> nil;
+  Check(not LEvaluation or Result, 'Evaluation requires the accepted family decision');
+  if not Result then
+  begin
+    Exit;
+  end;
+  Check(ABinding.Find('family_decision').JSONType = jtObject,
+    'Family decision must be a path/hash object');
+  LDecision := ABinding.Objects['family_decision'];
+  Check((LDecision.Strings['path'] = 'family-decision.md') and
+    (LDecision.Strings['sha256'] = CFamilyDecisionHash),
+    'Unsupported family decision');
+  LDecisionCount := 0;
+  LMetadataCount := 0;
+  LScoreCount := 0;
+  for I := 0 to ABinding.Arrays['auxiliary'].Count - 1 do
+  begin
+    LRow := ABinding.Arrays['auxiliary'].Objects[I];
+    if LRow.Strings['path'] = 'family-decision.md' then
+    begin
+      Check(LRow.Strings['sha256'] = CFamilyDecisionHash,
+        'Family decision auxiliary identity mismatch');
+      Inc(LDecisionCount);
+    end;
+    if LRow.Strings['sha256'] = CEvaluationMetadataHash then
+    begin
+      Inc(LMetadataCount);
+    end;
+    if LRow.Strings['sha256'] = CEvaluationScoreHash then
+    begin
+      Inc(LScoreCount);
+    end;
+  end;
+  Check(LDecisionCount = 1, 'Exactly one bound family decision auxiliary is required');
+  if LEvaluation then
+  begin
+    Check((LMetadataCount = 1) and (LScoreCount = 1),
+      'Evaluation requires its exact original metadata and score auxiliaries');
   end;
 end;
 
@@ -413,12 +484,158 @@ begin
   end;
 end;
 
+function IdentityFixture(const AEvaluation, ADecision: Boolean): TJSONObject;
+var
+  LDecision: TJSONObject;
+  LAuxiliary: TJSONArray;
+  LRow: TJSONObject;
+begin
+  Result := TJSONObject.Create;
+  Result.Add('archive_sha256', CArchiveHash);
+  if AEvaluation then
+  begin
+    Result.Add('exposure', 'reference-only-evaluation');
+    Result.Add('group', 'BabySlakh-4603870-Track00002');
+    Result.Add('source_uuid', '0c3b7bf33cd3d67970ecfc06339bfc49');
+  end
+  else
+  begin
+    Result.Add('exposure', 'development');
+    Result.Add('group', 'BabySlakh-4603870-Track00001');
+    Result.Add('source_uuid', '1a81ae092884234f3264e2f45927f00a');
+  end;
+  LAuxiliary := TJSONArray.Create;
+  Result.Add('auxiliary', LAuxiliary);
+  if ADecision then
+  begin
+    LDecision := TJSONObject.Create;
+    LDecision.Add('path', 'family-decision.md');
+    LDecision.Add('sha256', CFamilyDecisionHash);
+    Result.Add('family_decision', LDecision);
+    LAuxiliary.Add(LDecision.Clone);
+  end;
+  if AEvaluation then
+  begin
+    LRow := TJSONObject.Create;
+    LRow.Add('path', 'Track00002/metadata.yaml');
+    LRow.Add('sha256', CEvaluationMetadataHash);
+    LAuxiliary.Add(LRow);
+    LRow := TJSONObject.Create;
+    LRow.Add('path', 'Track00002/all_src.mid');
+    LRow.Add('sha256', CEvaluationScoreHash);
+    LAuxiliary.Add(LRow);
+  end;
+end;
+
+procedure ExpectIdentityRejected(const ABinding: TJSONObject);
+var
+  LRejected: Boolean;
+begin
+  LRejected := False;
+  try
+    ValidateSourceIdentity(ABinding);
+  except
+    on E: Exception do
+    begin
+      LRejected := True;
+    end;
+  end;
+  Check(LRejected, 'Invalid identity/exposure must reject');
+end;
+
+procedure IdentityControls;
+var
+  LBinding: TJSONObject;
+  I: Integer;
+begin
+  LBinding := IdentityFixture(False, False);
+  try
+    Check(not ValidateSourceIdentity(LBinding), 'Existing development binding remains supported');
+  finally
+    LBinding.Free;
+  end;
+  LBinding := IdentityFixture(False, True);
+  try
+    Check(ValidateSourceIdentity(LBinding), 'Optional development decision binding');
+  finally
+    LBinding.Free;
+  end;
+  LBinding := IdentityFixture(True, True);
+  try
+    Check(ValidateSourceIdentity(LBinding), 'Accepted reference-only evaluation tuple');
+  finally
+    LBinding.Free;
+  end;
+  LBinding := IdentityFixture(True, False);
+  try
+    ExpectIdentityRejected(LBinding);
+  finally
+    LBinding.Free;
+  end;
+  for I := 0 to 10 do
+  begin
+    LBinding := IdentityFixture(True, True);
+    try
+      case I of
+        0:
+          begin
+            LBinding.Strings['exposure'] := 'development';
+          end;
+        1:
+          begin
+            LBinding.Strings['exposure'] := 'evaluation';
+          end;
+        2:
+          begin
+            LBinding.Strings['group'] := 'BabySlakh-4603870-Track00003';
+          end;
+        3:
+          begin
+            LBinding.Strings['source_uuid'] := '1a81ae092884234f3264e2f45927f00a';
+          end;
+        4:
+          begin
+            LBinding.Strings['archive_sha256'] := StringOfChar('0', 64);
+          end;
+        5:
+          begin
+            LBinding.Objects['family_decision'].Strings['sha256'] := StringOfChar('0', 64);
+          end;
+        6:
+          begin
+            LBinding.Objects['family_decision'].Strings['path'] := '../family-decision.md';
+          end;
+        7:
+          begin
+            LBinding.Arrays['auxiliary'].Delete(0);
+          end;
+        8:
+          begin
+            LBinding.Arrays['auxiliary'].Objects[1].Strings['sha256'] := StringOfChar('0', 64);
+          end;
+        9:
+          begin
+            LBinding.Arrays['auxiliary'].Delete(2);
+          end;
+        10:
+          begin
+            LBinding.Arrays['auxiliary'].Objects[0].Strings['sha256'] := StringOfChar('0', 64);
+          end;
+      end;
+      ExpectIdentityRejected(LBinding);
+    finally
+      LBinding.Free;
+    end;
+  end;
+end;
+
 procedure Controls;
 var
   I: Integer;
   LBlocks: TBlocks;
   LRejected: Boolean;
 begin
+  IdentityControls;
   { Complete source-code domain; includes both signed extremes and every tie. }
   for I := -32768 to 32767 do
   begin
@@ -451,7 +668,7 @@ begin
   Check(not SafeName('../outside.wav', True) and not SafeName('C:/outside.wav', True)
     and not SafeName('/outside.wav', True) and SafeName('stems/S00.wav', True),
     'Member path controls');
-  WriteLn('Derived scaling, headroom and path controls passed');
+  WriteLn('Derived scaling, headroom, path and identity/exposure controls passed');
 end;
 
 procedure Run;
@@ -465,6 +682,8 @@ var
   LStems: TInputs;
   LDerived: TInputs;
   LLicense: TInput;
+  LFamilyDecision: TInput;
+  LHasDecision: Boolean;
   LInput: TInput;
   LRoot: String;
   LBase: String;
@@ -497,6 +716,7 @@ begin
   LData := nil;
   LManifest := nil;
   LLicense := nil;
+  LFamilyDecision := nil;
   LStems := nil;
   LDerived := nil;
   try
@@ -508,12 +728,7 @@ begin
     LData := GetJSON(LBindingFile);
     Check(LData.JSONType = jtObject, 'Source binding must be an object');
     LBinding := TJSONObject(LData);
-    Check((LBinding.Strings['exposure'] = 'development') and
-      (LBinding.Strings['group'] = 'BabySlakh-4603870-Track00001') and
-      (LBinding.Strings['source_uuid'] = '1a81ae092884234f3264e2f45927f00a') and
-      (LBinding.Strings['archive_sha256'] =
-        '6490dc83d8b59ccbe7e9e0304023af8e585d2065f9a5f5921952a273fac4a9b0'),
-      'Unsupported source exposure/identity');
+    LHasDecision := ValidateSourceIdentity(LBinding);
     Check((LBinding.Arrays['stems'].Count >= 1) and
       (LBinding.Arrays['stems'].Count <= 15), 'Supported stem count is 1 to 15');
     LRoot := IncludeTrailingPathDelimiter(ExtractFilePath(ExpandFileName(ParamStr(1))));
@@ -525,8 +740,13 @@ begin
       begin
         LLicense := LInput;
       end;
+      if LHasDecision and (LInput.Name = 'family-decision.md') then
+      begin
+        LFamilyDecision := LInput;
+      end;
     end;
     Check(LLicense <> nil, 'Full source license must be bound');
+    Check(not LHasDecision or (LFamilyDecision <> nil), 'Accepted family decision bytes must be bound');
     SetLength(LStems, LBinding.Arrays['stems'].Count);
     SetLength(LDerived, Length(LStems));
     for I := 0 to High(LStems) do
@@ -551,12 +771,16 @@ begin
     end;
     LExpectedBytes := (LStems[0].Reader.FrameCount * LStems[0].Reader.Channels * 2 + 44)
       * (Length(LStems) + 1) + LBindingFile.Size + LLicense.Stream.Size + 1048576;
+    if LHasDecision then
+    begin
+      Inc(LExpectedBytes, LFamilyDecision.Stream.Size);
+    end;
     Check(LExpectedBytes <= CByteLimit, 'Planned output exceeds 1 GiB');
     Check(ForceDirectories(GDirectory), 'Cannot create output directory');
     LManifest := TJSONObject.Create;
     GArtifacts := TJSONArray.Create;
     LManifest.Add('artifacts', GArtifacts);
-    LManifest.Add('kind', 'derived-development-stem-mixture');
+    LManifest.Add('kind', 'derived-stem-mixture');
     LManifest.Add('source_binding_sha256', LHash);
     LManifest.Add('policy_sha256', LPolicyHash);
     LManifest.Add('tool_sha256', LSourceHash);
@@ -568,7 +792,18 @@ begin
     LManifest.Add('group', LBinding.Strings['group']);
     LManifest.Add('source_uuid', LBinding.Strings['source_uuid']);
     LManifest.Add('archive_sha256', LBinding.Strings['archive_sha256']);
-    LManifest.Add('exposure', 'development');
+    LManifest.Add('exposure', LBinding.Strings['exposure']);
+    LManifest.Add('model_training_overlap', 'unknown');
+    LManifest.Add('independent_accuracy_verified', False);
+    if LHasDecision then
+    begin
+      LManifest.Add('family_decision', LBinding.Objects['family_decision'].Clone);
+      LManifest.Add('family_qualification', 'accepted-two-family-reference-scope');
+    end
+    else
+    begin
+      LManifest.Add('family_qualification', 'not-bound');
+    end;
     LManifest.Add('source_stem_gain_numerator', 1);
     LManifest.Add('source_stem_gain_denominator', 16);
     LManifest.Add('source_stem_offset_frames', 0);
@@ -581,6 +816,10 @@ begin
       + 'Jonathan Le Roux; BabySlakh, doi:10.5281/zenodo.4603870; CC BY 4.0');
     CopyBound(LBindingFile, 'source-binding.json');
     CopyBound(LLicense.Stream, 'CC-BY-4.0.txt');
+    if LHasDecision then
+    begin
+      CopyBound(LFamilyDecision.Stream, 'family-decision.md');
+    end;
     LRows := TJSONArray.Create;
     LManifest.Add('stems', LRows);
     for I := 0 to High(LStems) do

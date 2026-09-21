@@ -102,6 +102,10 @@ every unrelated task or expand staffing.
 
 ## Task size and investigation stop points
 
+Apply Athena's [task-size and progress checkpoints](../vendor/athena/docs/task-flow.md#task-size-and-progress-checkpoints),
+now included in the merged shared standard. The following records this project's
+adopted stop points and evidence expectations.
+
 Before starting a work batch, name the task acceptance criterion it advances,
 the concrete deliverable, the evidence that will close that criterion, and the
 stop/switch condition. Prefer a usable API, integrated consumer, reference packet

@@ -202,7 +202,8 @@ for this initial packet. Each family includes all original stems/scores, mixes,
 excerpts, re-encodings, annotations and descendants; do not divide a family by
 instrument or window. This qualifies AC3, not unseen archive material or future
 ambiguous relationships. Reference-only score review is recorded separately from
-tuning; evaluation audio and annotations remain unprepared. If reference inspection
+tuning; evaluation audio and annotations were still unprepared at this family-review
+checkpoint. If reference inspection
 influences implementation selection, demote that entire family to development and
 reserve fresh material for independent acceptance. Model-training overlap remains
 unknown. The screen's stated limitations and all incomplete musical references
@@ -222,8 +223,59 @@ retain their historically provisional fields; they are immutable snapshots.
 Future preparation must bind this accepted decision and preserve the split.
 
 Family investigation stops on this scoped disposition. AC3 and AC4 are closed;
-useful external role annotations and evaluation preparation remain under AC1/2/5.
-The task stays open with no additional percentage credit.
+useful external role annotations and packet coverage remain under AC1/2/5. The
+subsequent evaluation preparation is recorded below. The task stays open with no
+additional percentage credit.
+
+## Reserved evaluation mixture preparation — 2026-09-21
+
+The [maintained construction operator](PART-PREPARATION.md) now supports the
+qualified reserved family alongside development, using the same fixed 1/16 gain,
+PCM16 quantization and zero-offset exact stored-stem sum. The source binding
+retains all ten present WAV/MIDI pairs S00–S09, the original mix, metadata/score,
+complete notices and the accepted family decision. S10/S11 are declared in
+metadata but absent from the inspected archive inventory; they are explicitly
+recorded rather than inferred from stale rendering flags. Instrument descriptions
+are source metadata, not reviewed musical roles. No musical score events are
+decoded by this preparation step.
+
+The binding is 7614 bytes, SHA256
+`e41e0ce9a688f8cc2773f1dd6f67a06f73447eb3937a47346a66585249c6d2ce`.
+Checked Win64 replay and existing/outside-output rejections pass; binding takes
+2473/2024 ms, at most 2969600 sampled private bytes, with zero leaks. Sources are
+held against ordinary writes while hashed and the binding is written only after
+all required inputs pass. The prior family decision remains immutable.
+
+From the repository root, after compiling the documented operator:
+
+```powershell
+./build/part-prepare/pythian.part.prepare.exe build/role-evaluation-reference/qa-a.json e41e0ce9a688f8cc2773f1dd6f67a06f73447eb3937a47346a66585249c6d2ce build/role-prepared/evaluation-example
+```
+
+Use a fresh output directory. Reproduction requires the bound local source cache;
+generated sources/bindings stay under ignored output. Both accepted preparation
+runs retain 3046087 mono frames at 16000 Hz per WAV. Every derived sample matches
+the integer scaling oracle and the stored mix has zero residual against the
+integer sum of all ten derived stems; its peak is 1804 PCM16 LSB. This establishes
+construction, not a qualification of the original publisher mix.
+
+Final checked Win64 controls, two complete evaluation runs, preservation/rejection
+and development regression pass with zero leaks. Evaluation takes 11307/11388 ms,
+at most 3522560 sampled private bytes, within 180 seconds/256 MiB/1 GiB. All
+15 files replay byte-for-byte: 67047241 artifact bytes plus a 7495-byte manifest,
+SHA256 `d7c3f42fc42863bc239401f3cdab02ba913052a4c0fd7c58d6a8326d4a023654`.
+The development run takes 14451 ms and all eleven WAVs equal the historical
+accepted files; its new provenance manifest intentionally reflects the changed
+tool/policy identities and the single current `derived-stem-mixture` kind.
+
+The manifest preserves `reference-only-evaluation`, copies the bound family
+decision and distinguishes its scoped qualification from unknown training overlap
+and unverified broad independence. Musical roles, acoustic timing, original-mix
+qualification and independent accuracy remain false. Existing source identity,
+exposure and path guards reject unsupported or inconsistent inputs before
+publication. Full evidence is retained in `build/qa-batch-24/` and
+`build/role-prepared/evaluation-qa-a/`. This advances AC1/5 source preparation;
+role annotations and complete packet coverage still gate task completion.
 
 ## Core contract
 

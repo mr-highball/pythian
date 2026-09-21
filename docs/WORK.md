@@ -41,7 +41,68 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current handoff — assembled development cases and family review — 2026-09-21
+## Current handoff — evaluation-family preparation and Athena update — 2026-09-21
+
+The preceding goal turn made progress at `759b047`: the development packet is
+reproducible and AC3/4 of [parts_01](TODO/NS-3_parts_01.md) are accepted. Its exact
+revision CI run 35635811634 is now verified successful.
+
+Batch 24 advances AC1/5 with the reserved family's complete contributor binding
+and fixed-gain exact-sum mixture. It starts with zero consecutive batches without
+criterion closure. The source inventory and the maintained preparation operator
+are separate components for paired final QA. Frozen bounds and stop conditions
+are in `build/role-evaluation-reference/POLICY.md`; reference-only exposure is
+required. Reuse the existing waveform path and integer oracle, preserve all ten
+present contributors, and record absent metadata stems rather than trusting stale
+rendering flags. This preparation does not itself complete role annotations.
+
+The user also authorized adopting the merged Athena update. Upstream's default
+branch is `main`; the pin moves from `909336d` to
+`b8cdb5b3c36d0b3670a4b722d98d905a2cb78de3`, merge of taskflow-2. The fetched
+change contains shared progress checkpoints, scope-preserving task splits and
+adoption templates. PROJECT.md and the local task-flow link adopt that revision;
+dated build/checkpoint pins retain their historical identities. No dependency
+source is edited. Include the pin and affected-document review in final batch QA.
+
+The source binding passes final QA: all ten sorted WAV/MIDI pairs match the
+selected archive roster, S10/S11 absence is explicit, and both fresh 7614-byte
+bindings are identical. Existing/outside output rejection preserves prior files.
+Runs take 2473/2024 ms, at most 2969600 sampled private bytes, with zero leaks.
+SHA256 is `e41e0ce9a688f8cc2773f1dd6f67a06f73447eb3937a47346a66585249c6d2ce`;
+evidence remains under `build/role-evaluation-reference/` and `build/qa-batch-24/`.
+The Athena checkout is clean, matches upstream main and has both expected merge
+parents; all 284 shared-document links pass.
+
+Final checked stable Win64 preparation also passes: every scaled source sample
+matches the integer oracle and the stored mix equals the exact sum of all ten
+derived stems. The reserved source retains 3046087 mono frames at 16000 Hz and
+zero offset, with mix peak 1804 PCM16 LSB. Both 15-file packets replay exactly,
+including manifest SHA256
+`d7c3f42fc42863bc239401f3cdab02ba913052a4c0fd7c58d6a8326d4a023654`.
+Evaluation takes 11307/11388 ms, at most 3522560 sampled private bytes; all runs
+have zero leaks. The development regression takes 14451 ms and reproduces all
+eleven historical WAVs byte-for-byte. Identity/exposure controls and existing,
+wrong-binding-hash and outside-output rejections pass with preservation. No
+audio algorithm, gain, offset or scoring gate changes.
+
+The [maintained operator](PART-PREPARATION.md) preserves the exact exposure,
+binds the accepted family decision and uses one current `derived-stem-mixture`
+manifest kind. Scoped family qualification remains separate from unknown training
+overlap, unverified broad independence and missing roles/acoustic timing. Full
+commands, artifact identities and resource observations are in `build/qa-batch-24/`.
+Both component submission-failure counters remain zero; no runtime handles remain.
+Final documentation QA passes: source/policy identities, adopted dependency pin, local links, task accounting, privacy, whitespace and nine-path scope are checked. This batch is ready for publication.
+
+AC1/2/5 remain partial: the second family's source construction is ready, but
+reviewed local roles, useful chordal/lead acoustic reference intervals and the
+complete scoring packet still need delivery. This batch closes no additional
+whole criterion, so the consecutive no-criterion-closure count is **one**.
+Next use the existing reference worksheet/builder for those concrete annotations;
+stop preparation/identity investigation. If that next batch closes no criterion,
+apply the required reassessment before another batch. No task move or percentage
+change: **62.90%, 38 open / 12 DONE, 96 dependency edges**.
+
+## Previous checkpoint — assembled development cases and family review — 2026-09-21
 
 The previous goal turn made progress by publishing the generalized Athena
 task-flow checkpoint on its requested branch. Resume the existing first assembly
