@@ -181,11 +181,58 @@ full operator packet; this specification does not claim it has been executed.
 
 ## Remaining specification work
 
+### Reference screening and musical controls — 2026-09-21
+
+The reference screen distinguishes declared source traits from complete musical
+annotations. A [lo-fi piano-loop collection](https://github.com/patchbanks/Lo-Fi-Chords-Dataset)
+offers rendered progressions; the inspected JSON sample supplies instrument,
+tempo and meter, without note/chord timing. It does not supply the missing full
+reference packet, and no audio from that collection was admitted.
+
+Two original microphone WAV excerpts and their annotations from
+[GuitarSet 1.1.0](https://zenodo.org/records/3371780) are now retained privately.
+The publisher archives match their published checksums. Xi, Bittner, Pauwels, Ye
+and Bello provide the dataset under CC BY 4.0. Its
+[annotation methods](https://guitarset.weebly.com/) distinguish string-derived
+notes, supplied beat grids and instructed versus performed chords. The selected
+recordings exclude the publisher-linked timing and duplicate-note error cases.
+Both remain in one conservative development exposure group; acoustic-guitar
+examples labelled Rock do not establish any of our three target genre assignments.
+
+A small native study binds original WAV/JAMS bytes, retains annotation metadata
+and unspecified confidence, and constructs note-register/pitch-class controls.
+Reversing event order preserves register counts; an octave shift preserves
+pitch classes while changing register; a semitone shift changes
+pitch-class counts. These are transformations of external annotations, not
+Pythian predictions or measured audio transformations. The supplied-note
+denominator is distinct from time coverage and rest accuracy. Final checked stable
+FPC 3.2.2 Win32/Win64 execution passes: the two references retain 403/547 supplied
+notes, all with unspecified confidence, all six string arrays and the 17-block
+annotation inventory. Derived counts/frame rows match; one semitone distance
+differs by about 1.11e-16 across targets, within the declared 1e-12 tolerance.
+Original JAMS bytes remain authoritative. Evidence is in `build/qa-batch-07/`.
+No numerical genre threshold, listening verdict or completion credit is claimed.
+
+The retained descriptions for the original WAV families also contain declared
+track titles and boundary times. In particular, **B-early spans 120..150 seconds
+and crosses a declared boundary at 125 seconds**. It must not be admitted as a
+single-song reference without resolving that boundary. A second small native
+audit binds those declarations to all nine original master excerpts and reports
+every intersecting chapter. Final checked-target QA passes with byte-identical
+reports: eight sections intersect one declared chapter, and B-early intersects
+two. All four reference-audit runtime logs report zero unfreed blocks. Displayed
+times are not frame-accurate acoustic cuts, and publisher tags are candidate genre
+evidence rather than complete musical cards. Preserve existing broad family
+exposure and uncertainty; splitting a previously examined source cannot create
+untouched evaluation data. Existing corpus tasks own verified segmentation,
+duplicate relationships and genre admission, so this creates no duplicate ticket.
+
 Bind each of the three cards to verified WAV examples and independent annotations
 across all required dimensions. Establish per-provider numerical criteria and
 uncertainty from those references, exercise relevant preserving/breaking controls,
-then freeze the packet before evaluation. Existing evidence supports the envelope
-distribution control only. Genre labels, musical annotations, calibrated trait
+then freeze the packet before evaluation. Existing evidence supports acoustic
+level and external note-register/pitch-class distribution controls. Genre labels,
+complete musical annotations, calibrated trait
 thresholds and complete provider-specific controls remain unresolved in
 [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md); no new task or extra credit is
 created for work already covered by its acceptance criteria.

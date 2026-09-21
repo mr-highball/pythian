@@ -19,7 +19,10 @@ current PYS sound profiles and does not claim a learned phrase vocabulary.
 
 Core audio/synthesis fundamentals remain the priority. This document records
 the required architecture and its gaps. Automatic WAV key/tempo admission and
-recorded voice/joint admission and weighted semantic blends remain open.
+recorded voice/joint admission remains open. The
+[weighted semantic blend extension](SEMANTIC-BLENDS.md) is implemented with
+independent contributions and inherited joint evidence; final checked-target QA
+accepts selective blend/reblend and preservation of unrelated accepted states.
 
 [Saved WAV onset styles](WAVE-STYLE.md) now support measured onset-presence
 learning, weighted independent recording samples and repeated saved blends.

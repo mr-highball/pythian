@@ -83,6 +83,7 @@ type
     TimeGrids: TLayerTimeGrids;
     Tokens: array of TWfcModelTokens;
     Weights: array of Integer;
+    ProviderEvidence: array of String;
   end;
   TSemanticRuns = array of TSemanticRun;
   TSemanticSound = record
@@ -106,6 +107,26 @@ type
     VoicePairs: TWfcMusicVoicePairConstraints;
     Sounds: TSemanticSounds;
   end;
+  TSemanticRepeatPolicy = (srpMaximum, srpAddExplicit);
+  TSemanticSoundRepeatPolicy = (ssrpReject, ssrpAddExact);
+  TSemanticBlendProvider = record
+    LeftWeight: Integer;
+    RightWeight: Integer;
+    ControlParent: Integer;
+  end;
+  TSemanticBlendSound = record
+    RoleId: String;
+    LeftTimbreWeight: Integer;
+    RightTimbreWeight: Integer;
+    LeftEnvelopeWeight: Integer;
+    RightEnvelopeWeight: Integer;
+    RepeatPolicy: TSemanticSoundRepeatPolicy;
+  end;
+  TSemanticBlendRecipe = record
+    Providers: array of TSemanticBlendProvider;
+    Sounds: array of TSemanticBlendSound;
+    RepeatPolicy: TSemanticRepeatPolicy;
+  end;
 
   { Immutable, self-contained models/evidence. ExternalRequirement identifies
     source bytes required to repeat measurement, never an automatic file lookup.
@@ -116,6 +137,12 @@ type
     FBytes: TAudioBytes;
     FIdentity: String;
     FDepth: Integer;
+    FNodeCount: Integer;
+    FInheritedJoints: Boolean;
+    FKind: Integer;
+    FParent: TAudioBytes;
+    FOtherParent: TAudioBytes;
+    FRecipe: TSemanticBlendRecipe;
     procedure Finish(const ADefinition: TSemanticStyleDefinition; const AParent: TAudioBytes);
   public
     constructor CreateSource(const ADefinition: TSemanticStyleDefinition);
@@ -123,6 +150,10 @@ type
       contributions and observed relationships retain their frozen ancestry. }
     constructor CreateDerived(const AParent: TSemanticStyle;
       const ADefinition: TSemanticStyleDefinition);
+    constructor CreateBlend(const ALeft, ARight: TSemanticStyle;
+      const ARecipe: TSemanticBlendRecipe);
+    function CopyBlendRecipe: TSemanticBlendRecipe;
+    function CopyParent(const ASide: Integer): TSemanticStyle;
     function CopyDefinition: TSemanticStyleDefinition;
     function Encode: TAudioBytes;
     function CreateSession(const ASeed: Integer): TCompatibleProviderSession;
@@ -131,6 +162,7 @@ type
       const ASampleRate: Integer): TStyleInstrument;
     property Identity: String read FIdentity;
     property Depth: Integer read FDepth;
+    property NodeCount: Integer read FNodeCount;
   end;
 
 function SemanticVocabularyIdentity(const AModelText: String): String;
@@ -484,6 +516,13 @@ begin
     end;
     SetLength(ADefinition.Runs[LIndex].Tokens, AIO.Count(Length(ADefinition.Runs[LIndex].Tokens), 8));
     SetLength(ADefinition.Runs[LIndex].Weights, AIO.Count(Length(ADefinition.Runs[LIndex].Weights), 8));
+    SetLength(ADefinition.Runs[LIndex].ProviderEvidence,
+      AIO.Count(Length(ADefinition.Runs[LIndex].ProviderEvidence), 8));
+    for LItem := 0 to High(ADefinition.Runs[LIndex].ProviderEvidence) do
+    begin
+      ADefinition.Runs[LIndex].ProviderEvidence[LItem] :=
+        AIO.Text(ADefinition.Runs[LIndex].ProviderEvidence[LItem]);
+    end;
     for LItem := 0 to High(ADefinition.Runs[LIndex].Weights) do
     begin
       ADefinition.Runs[LIndex].Weights[LItem] := AIO.Count(ADefinition.Runs[LIndex].Weights[LItem], 64);
@@ -566,6 +605,55 @@ begin
     LIO.EndOfInput;
   finally
     LIO.Free;
+  end;
+end;
+
+procedure BlendRecipeIO(const AIO: TStyleIO; var ARecipe: TSemanticBlendRecipe);
+var
+  LIndex: Integer;
+begin
+  ARecipe.RepeatPolicy := TSemanticRepeatPolicy(AIO.Count(Ord(ARecipe.RepeatPolicy), 1));
+  SetLength(ARecipe.Providers, AIO.Count(Length(ARecipe.Providers), 8));
+  for LIndex := 0 to High(ARecipe.Providers) do
+  begin
+    ARecipe.Providers[LIndex].LeftWeight := AIO.Count(ARecipe.Providers[LIndex].LeftWeight, 64);
+    ARecipe.Providers[LIndex].RightWeight := AIO.Count(ARecipe.Providers[LIndex].RightWeight, 64);
+    ARecipe.Providers[LIndex].ControlParent := AIO.Count(ARecipe.Providers[LIndex].ControlParent, 1);
+  end;
+  SetLength(ARecipe.Sounds, AIO.Count(Length(ARecipe.Sounds), 6));
+  for LIndex := 0 to High(ARecipe.Sounds) do
+  begin
+    ARecipe.Sounds[LIndex].RoleId := AIO.Text(ARecipe.Sounds[LIndex].RoleId);
+    ARecipe.Sounds[LIndex].LeftTimbreWeight := AIO.Count(ARecipe.Sounds[LIndex].LeftTimbreWeight, 64);
+    ARecipe.Sounds[LIndex].RightTimbreWeight := AIO.Count(ARecipe.Sounds[LIndex].RightTimbreWeight, 64);
+    ARecipe.Sounds[LIndex].LeftEnvelopeWeight := AIO.Count(ARecipe.Sounds[LIndex].LeftEnvelopeWeight, 64);
+    ARecipe.Sounds[LIndex].RightEnvelopeWeight := AIO.Count(ARecipe.Sounds[LIndex].RightEnvelopeWeight, 64);
+    ARecipe.Sounds[LIndex].RepeatPolicy := TSemanticSoundRepeatPolicy(
+      AIO.Count(Ord(ARecipe.Sounds[LIndex].RepeatPolicy), 1));
+  end;
+end;
+
+function CloneRecipe(const ARecipe: TSemanticBlendRecipe): TSemanticBlendRecipe;
+var
+  LWrite: TStyleIO;
+  LRead: TStyleIO;
+  LInput: TSemanticBlendRecipe;
+begin
+  LInput := ARecipe;
+  LInput.Providers := Copy(ARecipe.Providers);
+  LInput.Sounds := Copy(ARecipe.Sounds);
+  LWrite := TStyleIO.Create(nil, False);
+  try
+    BlendRecipeIO(LWrite, LInput);
+    LRead := TStyleIO.Create(LWrite.Bytes, True);
+    try
+      Result := Default(TSemanticBlendRecipe);
+      BlendRecipeIO(LRead, Result);
+    finally
+      LRead.Free;
+    end;
+  finally
+    LWrite.Free;
   end;
 end;
 
@@ -1092,6 +1180,103 @@ begin
   end;
 end;
 
+function SemanticGcd(const ALeft, ARight: Integer): Integer;
+var
+  LLeft: Integer;
+  LRight: Integer;
+  LRemainder: Integer;
+begin
+  LLeft := ALeft;
+  LRight := ARight;
+  while LRight <> 0 do
+  begin
+    LRemainder := LLeft mod LRight;
+    LLeft := LRight;
+    LRight := LRemainder;
+  end;
+  Result := LLeft;
+end;
+
+procedure WriteOriginPosition(const AIO: TStyleIO; const APosition: TOriginPosition);
+var
+  LGcd: Integer;
+begin
+  LGcd := SemanticGcd(APosition.Fraction, APosition.Divisor);
+  AIO.Q(APosition.Frame);
+  AIO.N(APosition.Fraction div LGcd);
+  AIO.N(APosition.Divisor div LGcd);
+end;
+
+function RunEvidenceIdentity(const ADefinition: TSemanticStyleDefinition;
+  const ARunIndex, AProvider: Integer): String;
+var
+  LRun: TSemanticRun;
+  LSource: TSemanticSource;
+  LIO: TStyleIO;
+  LClock: TTempoMap;
+  LCell: Integer;
+  LMaximum: Integer;
+  LFrame: Int64;
+begin
+  LRun := ADefinition.Runs[ARunIndex];
+  if Length(LRun.Tokens[AProvider]) = 0 then
+  begin
+    Exit('');
+  end;
+  LSource := ADefinition.Sources[LRun.SourceIndex];
+  LIO := TStyleIO.Create(nil, False);
+  LClock := nil;
+  try
+    LIO.Text('semantic.original.provider.evidence.v1');
+    LIO.Text(LSource.OriginSha256);
+    LIO.Text(ADefinition.Providers[AProvider].ExtractionPolicy);
+    LIO.Text(ADefinition.Providers[AProvider].VocabularySha256);
+    LIO.N(LSource.SampleRate);
+    LIO.N(LRun.TicksPerQuarter);
+    LIO.N(Length(LRun.TempoChanges));
+    for LCell := 0 to High(LRun.TempoChanges) do
+    begin
+      LIO.N(LRun.TempoChanges[LCell].Tick);
+      LIO.N(LRun.TempoChanges[LCell].MicrosecondsPerQuarter);
+    end;
+    LIO.N(LRun.TimeGrids[AProvider].OriginTick);
+    LIO.N(LRun.TimeGrids[AProvider].TicksPerCell);
+    LIO.N(Length(LRun.TimeGrids[AProvider].Boundaries));
+    for LCell := 0 to High(LRun.TimeGrids[AProvider].Boundaries) do
+    begin
+      LIO.N(LRun.TimeGrids[AProvider].Boundaries[LCell]);
+    end;
+    WriteOriginPosition(LIO, MapOriginPosition(LSource, LRun.StartFrame));
+    WriteOriginPosition(LIO, MapOriginPosition(LSource, LRun.EndFrame));
+    LMaximum := 0;
+    for LCell := 0 to High(LRun.Tokens) do
+    begin
+      if (Length(LRun.Tokens[LCell]) > 0) and
+        (RunBoundary(LRun, LCell, Length(LRun.Tokens[LCell])) > LMaximum) then
+      begin
+        LMaximum := RunBoundary(LRun, LCell, Length(LRun.Tokens[LCell]));
+      end;
+    end;
+    LClock := TTempoMap.Create(LRun.TicksPerQuarter, LMaximum, LRun.TempoChanges);
+    for LCell := 0 to Length(LRun.Tokens[AProvider]) do
+    begin
+      LFrame := Int64(LRun.StartFrame) + LClock.FrameAtTick(
+        RunBoundary(LRun, AProvider, LCell), LSource.SampleRate);
+      Require((LFrame >= LRun.StartFrame) and (LFrame <= LRun.EndFrame),
+        'Provider evidence boundary exceeds original run');
+      WriteOriginPosition(LIO, MapOriginPosition(LSource, Integer(LFrame)));
+      if LCell < Length(LRun.Tokens[AProvider]) then
+      begin
+        LIO.Text(LRun.Tokens[AProvider][LCell]);
+      end;
+    end;
+    Result := Sha256Bytes(LIO.Bytes);
+  finally
+    LClock.Free;
+    LIO.Free;
+  end;
+end;
+
 procedure ValidateDefinition(const AStyle: TSemanticStyle);
 var
   LDefinition: TSemanticStyleDefinition;
@@ -1194,13 +1379,26 @@ begin
     begin
       Require(LDefinition.Runs[LRun].GapBeforeFrames = 0, 'First run cannot claim a preceding run gap');
     end
+    else if AStyle.FInheritedJoints then
+    begin
+      LCount := LDefinition.Runs[LRun].StartFrame - LPreviousEnds[LSource];
+      if LCount < 0 then
+      begin
+        LCount := 0;
+      end;
+      Require(LDefinition.Runs[LRun].GapBeforeFrames = LCount,
+        'Marginal run must retain its independent source-gap declaration');
+    end
     else
     begin
       Require((LDefinition.Runs[LRun].StartFrame >= LPreviousEnds[LSource]) and
         (LDefinition.Runs[LRun].GapBeforeFrames = LDefinition.Runs[LRun].StartFrame - LPreviousEnds[LSource]),
         'Run overlaps or loses its independent gap boundary');
     end;
-    LPreviousEnds[LSource] := LDefinition.Runs[LRun].EndFrame;
+    if LDefinition.Runs[LRun].EndFrame > LPreviousEnds[LSource] then
+    begin
+      LPreviousEnds[LSource] := LDefinition.Runs[LRun].EndFrame;
+    end;
     LOriginStarts[LRun] := MapOriginPosition(LDefinition.Sources[LSource],
       LDefinition.Runs[LRun].StartFrame);
     LOriginEnds[LRun] := MapOriginPosition(LDefinition.Sources[LSource],
@@ -1210,8 +1408,10 @@ begin
       'Observed run must explicitly include or omit every provider');
     for LProvider := 0 to High(LDefinition.Providers) do
     begin
-      Require((Length(LDefinition.Runs[LRun].Tokens[LProvider]) = 0) =
-        (LDefinition.Runs[LRun].Weights[LProvider] = 0), 'Absent run dimension needs zero contribution');
+      Require(((Length(LDefinition.Runs[LRun].Tokens[LProvider]) = 0) =
+        (LDefinition.Runs[LRun].Weights[LProvider] = 0)) or
+        (AStyle.FInheritedJoints and (LDefinition.Runs[LRun].Weights[LProvider] = 0)),
+        'Absent run dimension needs zero contribution');
       if LDefinition.Runs[LRun].Weights[LProvider] > 0 then
       begin
         Require((LDefinition.Sources[LSource].Split = ssTraining) and
@@ -1220,6 +1420,27 @@ begin
       end;
     end;
     ValidateRunClock(LDefinition.Runs[LRun], LDefinition.Sources[LSource]);
+    if not AStyle.FInheritedJoints and
+      (Length(LDefinition.Runs[LRun].ProviderEvidence) = 0) then
+    begin
+      SetLength(LDefinition.Runs[LRun].ProviderEvidence, Length(LDefinition.Providers));
+      for LProvider := 0 to High(LDefinition.Providers) do
+      begin
+        LDefinition.Runs[LRun].ProviderEvidence[LProvider] :=
+          RunEvidenceIdentity(LDefinition, LRun, LProvider);
+      end;
+    end;
+    Require(Length(LDefinition.Runs[LRun].ProviderEvidence) = Length(LDefinition.Providers),
+      'Run requires retained provider evidence identities');
+    for LProvider := 0 to High(LDefinition.Providers) do
+    begin
+      if not AStyle.FInheritedJoints then
+      begin
+        Require(LDefinition.Runs[LRun].ProviderEvidence[LProvider] =
+          RunEvidenceIdentity(LDefinition, LRun, LProvider),
+          'Run provider evidence identity changed');
+      end;
+    end;
   end;
   for LRun := 0 to High(LDefinition.Runs) do
   begin
@@ -1299,38 +1520,41 @@ begin
       begin
         LNames[LProvider] := LDefinition.Providers[LProvider + 2].Contract.RoleId;
       end;
-      for LRun := 0 to High(LDefinition.Runs) do
+      if not AStyle.FInheritedJoints then
       begin
-        LCount := Length(LDefinition.Runs[LRun].Tokens[0]);
-        Require(LCount > 0, 'Named voice observation requires joint harmony/rhythm/role rows');
-        LOptions := DefaultVoiceSessionOptions;
-        LOptions.CellCount := LCount;
-        LOptions.RequireObservedEnd := True;
-        LVoices := TNamedVoiceSession.Create(LConfig, LNames, LOptions);
-        try
-          for LProvider := 0 to High(LLayers) do
-          begin
-            Require(Length(LDefinition.Runs[LRun].Tokens[LProvider]) = LCount,
-              'Named observed joint rows cannot be reconstructed from marginal runs');
-            Require(LDefinition.Runs[LRun].Weights[LProvider] = LDefinition.Runs[LRun].Weights[0],
-              'Named observed joint rows require matching contribution weights');
-            SetLength(LMask, LCount);
-            for LCell := 0 to LCount - 1 do
+        for LRun := 0 to High(LDefinition.Runs) do
+        begin
+          LCount := Length(LDefinition.Runs[LRun].Tokens[0]);
+          Require(LCount > 0, 'Named voice observation requires joint harmony/rhythm/role rows');
+          LOptions := DefaultVoiceSessionOptions;
+          LOptions.CellCount := LCount;
+          LOptions.RequireObservedEnd := True;
+          LVoices := TNamedVoiceSession.Create(LConfig, LNames, LOptions);
+          try
+            for LProvider := 0 to High(LLayers) do
             begin
-              Require((RunBoundary(LDefinition.Runs[LRun], LProvider, LCell) =
-                RunBoundary(LDefinition.Runs[LRun], 0, LCell)) and
-                (RunBoundary(LDefinition.Runs[LRun], LProvider, LCell + 1) =
-                RunBoundary(LDefinition.Runs[LRun], 0, LCell + 1)),
-                'Named observed joint rows require aligned timing');
-              LMask[LCell] := MakeWfcSequenceTokenConstraint(LCell,
-                [LDefinition.Runs[LRun].Tokens[LProvider][LCell]]);
+              Require(Length(LDefinition.Runs[LRun].Tokens[LProvider]) = LCount,
+                'Named observed joint rows cannot be reconstructed from marginal runs');
+              Require(LDefinition.Runs[LRun].Weights[LProvider] = LDefinition.Runs[LRun].Weights[0],
+                'Named observed joint rows require matching contribution weights');
+              SetLength(LMask, LCount);
+              for LCell := 0 to LCount - 1 do
+              begin
+                Require((RunBoundary(LDefinition.Runs[LRun], LProvider, LCell) =
+                  RunBoundary(LDefinition.Runs[LRun], 0, LCell)) and
+                  (RunBoundary(LDefinition.Runs[LRun], LProvider, LCell + 1) =
+                  RunBoundary(LDefinition.Runs[LRun], 0, LCell + 1)),
+                  'Named observed joint rows require aligned timing');
+                LMask[LCell] := MakeWfcSequenceTokenConstraint(LCell,
+                  [LDefinition.Runs[LRun].Tokens[LProvider][LCell]]);
+              end;
+              LVoices.SetConstraints(LVoices.ProviderName(LProvider), LMask);
             end;
-            LVoices.SetConstraints(LVoices.ProviderName(LProvider), LMask);
+            Require(LVoices.TryGenerate(LGenerated, LReport, LProof),
+              'Observed joint run violates retained named harmony/rhythm/role relationships');
+          finally
+            LVoices.Free;
           end;
-          Require(LVoices.TryGenerate(LGenerated, LReport, LProof),
-            'Observed joint run violates retained named harmony/rhythm/role relationships');
-        finally
-          LVoices.Free;
         end;
       end;
     end
@@ -1340,30 +1564,33 @@ begin
         'Generic style cannot silently ignore named voice constraints');
       LGrid := AStyle.CreateSession(731);
       LGrid.Free;
-      for LRun := 0 to High(LDefinition.Runs) do
+      if not AStyle.FInheritedJoints then
       begin
-        ValidateMappedRun(LDefinition, LLayers, LDefinition.Runs[LRun]);
-      end;
-      LTotal := 0;
-      for LProjection in LDefinition.Projections do
-      begin
-        for LRule := 0 to High(LProjection.Rules) do
+        for LRun := 0 to High(LDefinition.Runs) do
         begin
-          for LAlternative := 0 to High(LProjection.Rules[LRule].SourceTokens) do
+          ValidateMappedRun(LDefinition, LLayers, LDefinition.Runs[LRun]);
+        end;
+        LTotal := 0;
+        for LProjection in LDefinition.Projections do
+        begin
+          for LRule := 0 to High(LProjection.Rules) do
           begin
-            LFound := False;
-            for LRun := 0 to High(LDefinition.Runs) do
+            for LAlternative := 0 to High(LProjection.Rules[LRule].SourceTokens) do
             begin
-              Inc(LTotal, Int64(Length(LDefinition.Runs[LRun].Tokens[LProjection.Provider])) *
-                Length(LDefinition.Runs[LRun].Tokens[LProjection.Consumer]));
-              Require(LTotal <= 16777216, 'Mapped co-observation audit exceeds work budget');
-              if ObservedPair(LDefinition.Runs[LRun], LProjection,
-                LProjection.Rules[LRule].SourceTokens[LAlternative], LProjection.Rules[LRule].TargetToken) then
+              LFound := False;
+              for LRun := 0 to High(LDefinition.Runs) do
               begin
-                LFound := True;
+                Inc(LTotal, Int64(Length(LDefinition.Runs[LRun].Tokens[LProjection.Provider])) *
+                  Length(LDefinition.Runs[LRun].Tokens[LProjection.Consumer]));
+                Require(LTotal <= 16777216, 'Mapped co-observation audit exceeds work budget');
+                if ObservedPair(LDefinition.Runs[LRun], LProjection,
+                  LProjection.Rules[LRule].SourceTokens[LAlternative], LProjection.Rules[LRule].TargetToken) then
+                begin
+                  LFound := True;
+                end;
               end;
+              Require(LFound, 'Projection alternative has no retained co-observed run row');
             end;
-            Require(LFound, 'Projection alternative has no retained co-observed run row');
           end;
         end;
       end;
@@ -1422,10 +1649,14 @@ var
 begin
   FDefinition := ReadDefinition(DefinitionBytes(ADefinition));
   ValidateDefinition(Self);
+  FParent := Copy(AParent);
   LIO := TStyleIO.Create(nil, False);
   try
     LIO.Text('pythian.semantic.style.v1');
+    LIO.N(FKind);
     LIO.Blob(AParent);
+    LIO.Blob(FOtherParent);
+    BlendRecipeIO(LIO, FRecipe);
     LIO.Blob(DefinitionBytes(FDefinition));
     LBody := LIO.Bytes;
     LIO.Text(Sha256Bytes(LBody));
@@ -1439,6 +1670,8 @@ end;
 constructor TSemanticStyle.CreateSource(const ADefinition: TSemanticStyleDefinition);
 var
   LProvider: Integer;
+  LRun: Integer;
+  LDefinition: TSemanticStyleDefinition;
 begin
   inherited Create;
   for LProvider := 0 to High(ADefinition.Providers) do
@@ -1447,7 +1680,15 @@ begin
       'Source style must establish its own frozen vocabulary ancestry');
   end;
   FDepth := 1;
-  Finish(ADefinition, nil);
+  FNodeCount := 1;
+  LDefinition := ReadDefinition(DefinitionBytes(ADefinition));
+  for LRun := 0 to High(LDefinition.Runs) do
+  begin
+    { A source establishes these identities from its evidence. Loading still
+      demands exact canonical re-encoding, so an altered archived ID rejects. }
+    LDefinition.Runs[LRun].ProviderEvidence := nil;
+  end;
+  Finish(LDefinition, nil);
 end;
 
 constructor TSemanticStyle.CreateDerived(const AParent: TSemanticStyle;
@@ -1458,7 +1699,7 @@ var
   LIndex: Integer;
 begin
   inherited Create;
-  Require((AParent <> nil) and (AParent.Depth < 8), 'Semantic derivation requires parent and depth below eight');
+  Require((AParent <> nil) and (AParent.NodeCount < 8), 'Semantic derivation requires parent and fewer than eight ancestry nodes');
   LBaseline := AParent.CopyDefinition;
   LCandidate := ReadDefinition(DefinitionBytes(ADefinition));
   Require(Length(LCandidate.Providers) = Length(LBaseline.Providers), 'Derived provider inventory differs');
@@ -1479,7 +1720,503 @@ begin
     LCandidate.Providers[LIndex].VocabularyAncestor := AParent.Identity;
   end;
   FDepth := AParent.Depth + 1;
+  FNodeCount := AParent.NodeCount + 1;
+  FInheritedJoints := AParent.FInheritedJoints;
+  FKind := 1;
   Finish(LCandidate, AParent.Encode);
+end;
+
+function ActivePolicyIdentity(const ADefinition: TSemanticStyleDefinition): String;
+var
+  LPolicy: TSemanticStyleDefinition;
+begin
+  LPolicy := ReadDefinition(DefinitionBytes(ADefinition));
+  LPolicy.Providers := nil;
+  LPolicy.Sources := nil;
+  LPolicy.Runs := nil;
+  LPolicy.Sounds := nil;
+  Result := Sha256Bytes(DefinitionBytes(LPolicy));
+end;
+
+function SourceIdentity(const ASource: TSemanticSource): String;
+var
+  LDefinition: TSemanticStyleDefinition;
+begin
+  LDefinition := Default(TSemanticStyleDefinition);
+  SetLength(LDefinition.Sources, 1);
+  LDefinition.Sources[0] := ASource;
+  Result := Sha256Bytes(DefinitionBytes(LDefinition));
+end;
+
+function SameOriginPosition(const ALeft, ARight: TOriginPosition): Boolean;
+begin
+  Result := not OriginBefore(ALeft, ARight) and not OriginBefore(ARight, ALeft);
+end;
+
+procedure CanonicalContributions(var ADefinition: TSemanticStyleDefinition;
+  const APolicy: TSemanticRepeatPolicy);
+var
+  LRun: Integer;
+  LOther: Integer;
+  LProvider: Integer;
+  LGcd: Integer;
+  LCount: Integer;
+  LTotal: Int64;
+  LActive: Boolean;
+  LStarts: array of TOriginPosition;
+  LEnds: array of TOriginPosition;
+  LPrevious: array of Integer;
+  LSource: Integer;
+  LOtherSource: Integer;
+begin
+  SetLength(LStarts, Length(ADefinition.Runs));
+  SetLength(LEnds, Length(ADefinition.Runs));
+  for LRun := 0 to High(ADefinition.Runs) do
+  begin
+    LSource := ADefinition.Runs[LRun].SourceIndex;
+    LStarts[LRun] := MapOriginPosition(ADefinition.Sources[LSource], ADefinition.Runs[LRun].StartFrame);
+    LEnds[LRun] := MapOriginPosition(ADefinition.Sources[LSource], ADefinition.Runs[LRun].EndFrame);
+  end;
+  for LProvider := 0 to High(ADefinition.Providers) do
+  begin
+    for LRun := 0 to High(ADefinition.Runs) do
+    begin
+      if ADefinition.Runs[LRun].Weights[LProvider] = 0 then
+      begin
+        Continue;
+      end;
+      LSource := ADefinition.Runs[LRun].SourceIndex;
+      for LOther := 0 to LRun - 1 do
+      begin
+        LOtherSource := ADefinition.Runs[LOther].SourceIndex;
+        if (ADefinition.Runs[LOther].Weights[LProvider] = 0) or
+          (ADefinition.Sources[LSource].OriginSha256 <> ADefinition.Sources[LOtherSource].OriginSha256) or
+          not OriginBefore(LStarts[LRun], LEnds[LOther]) or
+          not OriginBefore(LStarts[LOther], LEnds[LRun]) then
+        begin
+          Continue;
+        end;
+        Require(SameOriginPosition(LStarts[LRun], LStarts[LOther]) and
+          SameOriginPosition(LEnds[LRun], LEnds[LOther]) and
+          (ADefinition.Runs[LRun].ProviderEvidence[LProvider] =
+          ADefinition.Runs[LOther].ProviderEvidence[LProvider]),
+          'Overlapping provider evidence has partial intervals, different annotations or clocks');
+        if APolicy = srpAddExplicit then
+        begin
+          LTotal := Int64(ADefinition.Runs[LOther].Weights[LProvider]) +
+            ADefinition.Runs[LRun].Weights[LProvider];
+          Require(LTotal <= High(Integer), 'Explicit repeated contribution exceeds integer bound');
+          ADefinition.Runs[LOther].Weights[LProvider] := Integer(LTotal);
+        end
+        else if ADefinition.Runs[LRun].Weights[LProvider] > ADefinition.Runs[LOther].Weights[LProvider] then
+        begin
+          ADefinition.Runs[LOther].Weights[LProvider] := ADefinition.Runs[LRun].Weights[LProvider];
+        end;
+        ADefinition.Runs[LRun].Weights[LProvider] := 0;
+        Break;
+      end;
+    end;
+    LGcd := 0;
+    for LRun := 0 to High(ADefinition.Runs) do
+    begin
+      LGcd := SemanticGcd(LGcd, ADefinition.Runs[LRun].Weights[LProvider]);
+    end;
+    Require(LGcd > 0, 'Every active semantic provider needs a positive selected contribution');
+    for LRun := 0 to High(ADefinition.Runs) do
+    begin
+      ADefinition.Runs[LRun].Weights[LProvider] := ADefinition.Runs[LRun].Weights[LProvider] div LGcd;
+      Require(ADefinition.Runs[LRun].Weights[LProvider] <= 64,
+        'Normalized semantic contribution exceeds 64; choose a bounded ratio');
+    end;
+  end;
+  LCount := 0;
+  for LRun := 0 to High(ADefinition.Runs) do
+  begin
+    LActive := False;
+    for LProvider := 0 to High(ADefinition.Providers) do
+    begin
+      LActive := LActive or (ADefinition.Runs[LRun].Weights[LProvider] > 0);
+    end;
+    if LActive then
+    begin
+      ADefinition.Runs[LCount] := ADefinition.Runs[LRun];
+      Inc(LCount);
+    end;
+  end;
+  Require(LCount <= MaximumSemanticStyleRuns, 'Blend exceeds canonical independent run bound');
+  SetLength(ADefinition.Runs, LCount);
+  SetLength(LPrevious, Length(ADefinition.Sources));
+  for LSource := 0 to High(LPrevious) do
+  begin
+    LPrevious[LSource] := -1;
+  end;
+  for LRun := 0 to High(ADefinition.Runs) do
+  begin
+    LSource := ADefinition.Runs[LRun].SourceIndex;
+    ADefinition.Runs[LRun].Identity := 'blend.run.' + IntToStr(LRun);
+    ADefinition.Runs[LRun].GapBeforeFrames := 0;
+    if (LPrevious[LSource] >= 0) and (ADefinition.Runs[LRun].StartFrame > LPrevious[LSource]) then
+    begin
+      ADefinition.Runs[LRun].GapBeforeFrames := ADefinition.Runs[LRun].StartFrame - LPrevious[LSource];
+    end;
+    if ADefinition.Runs[LRun].EndFrame > LPrevious[LSource] then
+    begin
+      LPrevious[LSource] := ADefinition.Runs[LRun].EndFrame;
+    end;
+  end;
+end;
+
+procedure RelearnBlend(var ADefinition: TSemanticStyleDefinition);
+var
+  LProvider: Integer;
+  LRun: Integer;
+  LRepeat: Integer;
+  LCount: Integer;
+  LTotal: Int64;
+  LOriginal: TWfcSequenceModel;
+  LModel: TWfcSequenceModel;
+  LSamples: TWfcSequenceSamples;
+begin
+  for LProvider := 0 to High(ADefinition.Providers) do
+  begin
+    LOriginal := DecodeWfcSequenceText(ADefinition.Providers[LProvider].ModelText);
+    LModel := nil;
+    try
+      LSamples := nil;
+      LTotal := 0;
+      for LRun := 0 to High(ADefinition.Runs) do
+      begin
+        Inc(LTotal, Int64(Length(ADefinition.Runs[LRun].Tokens[LProvider])) *
+          ADefinition.Runs[LRun].Weights[LProvider]);
+        Require((LTotal <= 4096) and (LTotal * LTotal * (LOriginal.Order + 1) <= 16777216),
+          'Blend replay exceeds bounded actual learner work');
+        for LRepeat := 1 to ADefinition.Runs[LRun].Weights[LProvider] do
+        begin
+          LCount := Length(LSamples);
+          SetLength(LSamples, LCount + 1);
+          LSamples[LCount] := MakeWfcSequenceSample(ADefinition.Runs[LRun].Tokens[LProvider]);
+        end;
+      end;
+      LModel := LearnSequenceModelCorpus(LSamples, LOriginal.Order);
+      ADefinition.Providers[LProvider].ModelText := EncodeWfcSequenceText(LModel);
+      Require(SemanticVocabularyIdentity(ADefinition.Providers[LProvider].ModelText) =
+        ADefinition.Providers[LProvider].VocabularySha256,
+        'Blend changes frozen ordered vocabulary; rebuild vocabulary explicitly');
+    finally
+      LModel.Free;
+      LOriginal.Free;
+    end;
+  end;
+end;
+
+function SoundBytes(const ADefinition: TSemanticStyleDefinition;
+  const ARole: String; const AEnvelope: Boolean): TAudioBytes;
+var
+  LIndex: Integer;
+begin
+  Result := nil;
+  for LIndex := 0 to High(ADefinition.Sounds) do
+  begin
+    if ADefinition.Sounds[LIndex].RoleId = ARole then
+    begin
+      if AEnvelope then
+      begin
+        Result := Copy(ADefinition.Sounds[LIndex].Envelope);
+      end
+      else
+      begin
+        Result := Copy(ADefinition.Sounds[LIndex].Timbre);
+      end;
+      Exit;
+    end;
+  end;
+end;
+
+function FindSoundSource(const ASources: TSemanticSources; const AHash: String): Integer;
+begin
+  for Result := 0 to High(ASources) do
+  begin
+    if ASources[Result].Sha256 = AHash then
+    begin
+      Exit;
+    end;
+  end;
+  raise EAudio.Create('Sound contribution is absent from retained semantic ledger');
+end;
+
+function MixSound(const ALeftBytes, ARightBytes: TAudioBytes;
+  const ALeftWeight, ARightWeight: Integer; const AEnvelope: Boolean;
+  const APolicy: TSemanticSoundRepeatPolicy; const ASources: TSemanticSources): TAudioBytes;
+var
+  LLeft: TWaveStyleProfile;
+  LRight: TWaveStyleProfile;
+  LBlend: TWaveStyleProfile;
+  LFirst: Integer;
+  LSecond: Integer;
+  LSource: Integer;
+  LOther: Integer;
+  LFirstWeight: Integer;
+  LSecondWeight: Integer;
+  LTimbreLeft: Integer;
+  LTimbreRight: Integer;
+  LEnvelopeLeft: Integer;
+  LEnvelopeRight: Integer;
+begin
+  Result := nil;
+  if ALeftWeight + ARightWeight = 0 then
+  begin
+    Exit;
+  end;
+  Require((ALeftWeight = 0) or (Length(ALeftBytes) > 0), 'Selected left sound capability is absent');
+  Require((ARightWeight = 0) or (Length(ARightBytes) > 0), 'Selected right sound capability is absent');
+  if ARightWeight = 0 then
+  begin
+    Exit(Copy(ALeftBytes));
+  end;
+  if ALeftWeight = 0 then
+  begin
+    Exit(Copy(ARightBytes));
+  end;
+  LLeft := DecodeWaveStyle(ALeftBytes);
+  LRight := nil;
+  LBlend := nil;
+  try
+    LRight := DecodeWaveStyle(ARightBytes);
+    for LFirst := 0 to LLeft.SourceCount - 1 do
+    begin
+      if AEnvelope then
+      begin
+        LFirstWeight := LLeft.EnvelopeWeightAt(LFirst);
+      end
+      else
+      begin
+        LFirstWeight := LLeft.TimbreWeightAt(LFirst);
+      end;
+      if LFirstWeight = 0 then
+      begin
+        Continue;
+      end;
+      LSource := FindSoundSource(ASources, LLeft.EvidenceAt(LFirst).Source.Sha256);
+      for LSecond := 0 to LRight.SourceCount - 1 do
+      begin
+        if AEnvelope then
+        begin
+          LSecondWeight := LRight.EnvelopeWeightAt(LSecond);
+        end
+        else
+        begin
+          LSecondWeight := LRight.TimbreWeightAt(LSecond);
+        end;
+        if LSecondWeight = 0 then
+        begin
+          Continue;
+        end;
+        LOther := FindSoundSource(ASources, LRight.EvidenceAt(LSecond).Source.Sha256);
+        if (ASources[LSource].OriginSha256 = ASources[LOther].OriginSha256) and
+          (ASources[LSource].OriginStartFrame < ASources[LOther].OriginEndFrame) and
+          (ASources[LOther].OriginStartFrame < ASources[LSource].OriginEndFrame) then
+        begin
+          Require((APolicy = ssrpAddExact) and (ASources[LSource].Sha256 = ASources[LOther].Sha256),
+            'Repeated sound evidence needs explicit addition of exact source evidence; derivative overlap rejects');
+        end;
+      end;
+    end;
+    LTimbreLeft := 0;
+    LTimbreRight := 0;
+    LEnvelopeLeft := 0;
+    LEnvelopeRight := 0;
+    if AEnvelope then
+    begin
+      LEnvelopeLeft := ALeftWeight;
+      LEnvelopeRight := ARightWeight;
+    end
+    else
+    begin
+      LTimbreLeft := ALeftWeight;
+      LTimbreRight := ARightWeight;
+    end;
+    { The sound profile's required ancillary rhythm/context remains an explicit
+      left selection. It is not imported into the semantic musical providers. }
+    LBlend := TWaveStyleProfile.CreateBlendLayers(LLeft, LRight, 0, 0, 1, 0,
+      0, 0, LTimbreLeft, LTimbreRight, LEnvelopeLeft, LEnvelopeRight);
+    Result := LBlend.Encode;
+  finally
+    LBlend.Free;
+    LRight.Free;
+    LLeft.Free;
+  end;
+end;
+
+constructor TSemanticStyle.CreateBlend(const ALeft, ARight: TSemanticStyle;
+  const ARecipe: TSemanticBlendRecipe);
+var
+  LParents: array[0..1] of TSemanticStyle;
+  LDefinitions: array[0..1] of TSemanticStyleDefinition;
+  LDefinition: TSemanticStyleDefinition;
+  LModels: array[0..1] of TWfcSequenceModel;
+  LSourceMaps: array[0..1] of array of Integer;
+  LSide: Integer;
+  LSource: Integer;
+  LOther: Integer;
+  LFound: Integer;
+  LRun: Integer;
+  LProvider: Integer;
+  LCount: Integer;
+  LWeight: Integer;
+  LWide: Int64;
+  LSound: TSemanticSound;
+begin
+  inherited Create;
+  Require((ALeft <> nil) and (ARight <> nil), 'Semantic blend requires two complete parents');
+  FNodeCount := ALeft.NodeCount + ARight.NodeCount + 1;
+  Require(FNodeCount <= 8, 'Semantic blend exceeds eight retained ancestry nodes');
+  FDepth := ALeft.Depth;
+  if ARight.Depth > FDepth then
+  begin
+    FDepth := ARight.Depth;
+  end;
+  Inc(FDepth);
+  FRecipe := CloneRecipe(ARecipe);
+  FKind := 2;
+  FInheritedJoints := True;
+  LParents[0] := ALeft;
+  LParents[1] := ARight;
+  LDefinitions[0] := ALeft.CopyDefinition;
+  LDefinitions[1] := ARight.CopyDefinition;
+  Require((Length(LDefinitions[0].Providers) = Length(LDefinitions[1].Providers)) and
+    (Length(FRecipe.Providers) = Length(LDefinitions[0].Providers)),
+    'Blend needs compatible complete provider inventories and an explicit recipe per provider');
+  Require(ActivePolicyIdentity(LDefinitions[0]) = ActivePolicyIdentity(LDefinitions[1]),
+    'Active dependency policies differ; choose an explicitly rebuilt graph before blending');
+  LDefinition := ALeft.CopyDefinition;
+  LDefinition.Sources := nil;
+  LDefinition.Runs := nil;
+  LDefinition.Sounds := nil;
+  for LProvider := 0 to High(LDefinition.Providers) do
+  begin
+    RequireCompatibleProvider(LDefinitions[0].Providers[LProvider].Contract,
+      LDefinitions[1].Providers[LProvider].Contract);
+    Require(LDefinitions[0].Providers[LProvider].VocabularySha256 =
+      LDefinitions[1].Providers[LProvider].VocabularySha256,
+      'Blend requires identical frozen ordered provider vocabularies');
+    Require(FRecipe.Providers[LProvider].LeftWeight + FRecipe.Providers[LProvider].RightWeight > 0,
+      'Every semantic provider needs an explicit positive selected parent');
+    LModels[0] := DecodeWfcSequenceText(LDefinitions[0].Providers[LProvider].ModelText);
+    LModels[1] := nil;
+    try
+      LModels[1] := DecodeWfcSequenceText(LDefinitions[1].Providers[LProvider].ModelText);
+      Require(LModels[0].Order = LModels[1].Order, 'Blend model history orders differ');
+    finally
+      LModels[1].Free;
+      LModels[0].Free;
+    end;
+    LSide := 0;
+    if FRecipe.Providers[LProvider].LeftWeight = 0 then
+    begin
+      LSide := 1;
+    end;
+    LDefinition.Providers[LProvider] := LDefinitions[LSide].Providers[LProvider];
+    LDefinition.Providers[LProvider].VocabularyAncestor := LParents[LSide].Identity;
+    LSide := FRecipe.Providers[LProvider].ControlParent;
+    LDefinition.Providers[LProvider].Preferences := LDefinitions[LSide].Providers[LProvider].Preferences;
+    LDefinition.Providers[LProvider].Constraints := LDefinitions[LSide].Providers[LProvider].Constraints;
+    if (FRecipe.Providers[LProvider].LeftWeight > 0) and
+      (FRecipe.Providers[LProvider].RightWeight > 0) then
+    begin
+      LDefinition.Providers[LProvider].ExtractionPolicy :=
+        'Actual weighted replay; original extraction policies retained in parent provider evidence';
+    end;
+  end;
+  for LSide := 0 to 1 do
+  begin
+    SetLength(LSourceMaps[LSide], Length(LDefinitions[LSide].Sources));
+    for LSource := 0 to High(LDefinitions[LSide].Sources) do
+    begin
+      LFound := -1;
+      for LOther := 0 to High(LDefinition.Sources) do
+      begin
+        if LDefinition.Sources[LOther].Sha256 = LDefinitions[LSide].Sources[LSource].Sha256 then
+        begin
+          Require(SourceIdentity(LDefinition.Sources[LOther]) =
+            SourceIdentity(LDefinitions[LSide].Sources[LSource]), 'Shared source declarations conflict');
+          LFound := LOther;
+          Break;
+        end;
+      end;
+      if LFound < 0 then
+      begin
+        LFound := Length(LDefinition.Sources);
+        Require(LFound < 32, 'Blend exceeds retained exposure ledger bound');
+        SetLength(LDefinition.Sources, LFound + 1);
+        LDefinition.Sources[LFound] := LDefinitions[LSide].Sources[LSource];
+      end;
+      LSourceMaps[LSide][LSource] := LFound;
+    end;
+    for LRun := 0 to High(LDefinitions[LSide].Runs) do
+    begin
+      LCount := Length(LDefinition.Runs);
+      SetLength(LDefinition.Runs, LCount + 1);
+      LDefinition.Runs[LCount] := LDefinitions[LSide].Runs[LRun];
+      LDefinition.Runs[LCount].SourceIndex := LSourceMaps[LSide][LDefinition.Runs[LCount].SourceIndex];
+      LDefinition.Runs[LCount].Weights := Copy(LDefinitions[LSide].Runs[LRun].Weights);
+      for LProvider := 0 to High(LDefinition.Providers) do
+      begin
+        if LSide = 0 then
+        begin
+          LWeight := FRecipe.Providers[LProvider].LeftWeight;
+        end
+        else
+        begin
+          LWeight := FRecipe.Providers[LProvider].RightWeight;
+        end;
+        LWide := Int64(LDefinition.Runs[LCount].Weights[LProvider]) * LWeight;
+        Require(LWide <= High(Integer), 'Semantic blend multiplication exceeds integer bound');
+        LDefinition.Runs[LCount].Weights[LProvider] := Integer(LWide);
+      end;
+    end;
+  end;
+  CanonicalContributions(LDefinition, FRecipe.RepeatPolicy);
+  RelearnBlend(LDefinition);
+  for LSource := 0 to High(FRecipe.Sounds) do
+  begin
+    LSound := Default(TSemanticSound);
+    LSound.RoleId := FRecipe.Sounds[LSource].RoleId;
+    LSound.Timbre := MixSound(SoundBytes(LDefinitions[0], LSound.RoleId, False),
+      SoundBytes(LDefinitions[1], LSound.RoleId, False),
+      FRecipe.Sounds[LSource].LeftTimbreWeight, FRecipe.Sounds[LSource].RightTimbreWeight,
+      False, FRecipe.Sounds[LSource].RepeatPolicy, LDefinition.Sources);
+    LSound.Envelope := MixSound(SoundBytes(LDefinitions[0], LSound.RoleId, True),
+      SoundBytes(LDefinitions[1], LSound.RoleId, True),
+      FRecipe.Sounds[LSource].LeftEnvelopeWeight, FRecipe.Sounds[LSource].RightEnvelopeWeight,
+      True, FRecipe.Sounds[LSource].RepeatPolicy, LDefinition.Sources);
+    Require((Length(LSound.Timbre) > 0) or (Length(LSound.Envelope) > 0),
+      'Omitted sound role should have no recipe entry');
+    LCount := Length(LDefinition.Sounds);
+    SetLength(LDefinition.Sounds, LCount + 1);
+    LDefinition.Sounds[LCount] := LSound;
+  end;
+  FOtherParent := ARight.Encode;
+  Finish(LDefinition, ALeft.Encode);
+end;
+
+function TSemanticStyle.CopyBlendRecipe: TSemanticBlendRecipe;
+begin
+  Require(FKind = 2, 'Only a semantic blend has a blend recipe');
+  Result := CloneRecipe(FRecipe);
+end;
+
+function TSemanticStyle.CopyParent(const ASide: Integer): TSemanticStyle;
+begin
+  Require(ASide in [0, 1], 'Semantic parent side must be zero or one');
+  Result := nil;
+  if (ASide = 0) and (Length(FParent) > 0) then
+  begin
+    Result := DecodeSemanticStyle(FParent);
+  end;
+  if (ASide = 1) and (Length(FOtherParent) > 0) then
+  begin
+    Result := DecodeSemanticStyle(FOtherParent);
+  end;
 end;
 
 function TSemanticStyle.CopyDefinition: TSemanticStyleDefinition;
@@ -1501,29 +2238,50 @@ var
   LHash: String;
   LBodyLength: Integer;
   LParent: TSemanticStyle;
+  LOtherParent: TSemanticStyle;
+  LOtherBytes: TAudioBytes;
+  LKind: Integer;
+  LRecipe: TSemanticBlendRecipe;
   LResult: TSemanticStyle;
 begin
   Require(ADepth <= 8, 'Semantic ancestry exceeds eight nodes');
   LIO := TStyleIO.Create(ABytes, True);
   LParent := nil;
+  LOtherParent := nil;
+  LRecipe := Default(TSemanticBlendRecipe);
   LResult := nil;
   try
     Require(LIO.Text = 'pythian.semantic.style.v1', 'Unsupported semantic format; regenerate development artifact');
+    LKind := LIO.Count(0, 2);
     LParentBytes := LIO.Blob(nil);
+    LOtherBytes := LIO.Blob(nil);
+    BlendRecipeIO(LIO, LRecipe);
     LDefinitionBytes := LIO.Blob(nil);
     LBodyLength := LIO.FStream.Position;
     LHash := LIO.Text;
     LIO.EndOfInput;
     Require(LHash = Sha256Bytes(Copy(ABytes, 0, LBodyLength)), 'Semantic payload digest mismatch');
     LDefinition := ReadDefinition(LDefinitionBytes);
-    if Length(LParentBytes) = 0 then
+    if LKind = 0 then
     begin
+      Require((Length(LParentBytes) = 0) and (Length(LOtherBytes) = 0), 'Source cannot carry parent bytes');
       LResult := TSemanticStyle.CreateSource(LDefinition);
     end
     else
     begin
       LParent := DecodeAt(LParentBytes, ADepth + 1);
-      LResult := TSemanticStyle.CreateDerived(LParent, LDefinition);
+      if LKind = 1 then
+      begin
+        Require(Length(LOtherBytes) = 0, 'Control derivation has one parent');
+        LResult := TSemanticStyle.CreateDerived(LParent, LDefinition);
+      end
+      else
+      begin
+        LOtherParent := DecodeAt(LOtherBytes, ADepth + 1);
+        LResult := TSemanticStyle.CreateBlend(LParent, LOtherParent, LRecipe);
+        Require(Sha256Bytes(DefinitionBytes(LResult.FDefinition)) =
+          Sha256Bytes(LDefinitionBytes), 'Blend does not reconstruct exact retained recipe and contributions');
+      end;
     end;
     Require(Sha256Bytes(LResult.Encode) = Sha256Bytes(ABytes), 'Noncanonical semantic archive or ancestry');
     Result := LResult;
@@ -1531,6 +2289,7 @@ begin
   finally
     LResult.Free;
     LParent.Free;
+    LOtherParent.Free;
     LIO.Free;
   end;
 end;

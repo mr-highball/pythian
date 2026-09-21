@@ -22,6 +22,16 @@ evidence is retained in `build/qa-batch-03/`. Required genre reference assignmen
 and calibrated per-provider numerical criteria remain missing; this task stays
 open with no partial credit. Those gaps are already within the criteria below.
 
+Reference preparation 2026-09-21: two original acoustic-guitar WAV/JAMS pairs are
+hash-bound for musical distribution controls, retaining external annotation
+methods and uncertainties. Final checked Win32/Win64 QA accepts the private native
+audit: 403/547 supplied notes, identical derived counts/frame rows and controlled
+pitch/register distances within 1e-12 across targets. The nine-excerpt declared
+boundary audit also passes, retaining the B-early crossing warning. These generic
+development examples do not assign the requested
+genres or calibrate their acceptance thresholds. See the
+[reference screen](../STYLE-CARDS.md#reference-screening-and-musical-controls--2026-09-21).
+
 **Acceptance Criteria:**
 
 - Ground each style card in reference WAV observations across context, groove, harmony, bass/voice relationships, sound/envelope and phrase/section structure; mark required, optional and unsupported traits explicitly.

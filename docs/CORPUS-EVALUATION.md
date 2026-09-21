@@ -50,6 +50,16 @@ automatically. Different hashes cannot establish
 acoustic or musical independence. Assets, inventory, code and logs remain under ignored
 `build/corpus-partition-study/`.
 
+Subsequent [reference screening](STYLE-CARDS.md#reference-screening-and-musical-controls--2026-09-21)
+found declared track names/times in retained source descriptions. B-early's
+120..150-second extent crosses a declared boundary at 125 seconds. Keep that
+excerpt out of any claimed single-song reference until segmentation is reviewed.
+The source-bound native overlap audit passes checked Win32/Win64 QA with exact
+report replay across targets: eight single-chapter excerpts and one crossing.
+These declarations do not
+establish exact waveform cuts, independent groups or accepted genre annotations;
+the earlier inventory's development exposure and uncertainty remain intact.
+
 <a id="verified-identity-pilot"></a>
 ## Verified identity pilot — 2026-09-20
 

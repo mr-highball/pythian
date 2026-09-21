@@ -41,6 +41,55 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
+## Accepted selective semantic blends and reference controls — 2026-09-21
+
+The primary NS-5 chain returns to [style references](TODO/NS-5_evaluation_01.md)
+after the repaired validation prerequisite and clean second infrastructure review.
+The [reference screen](STYLE-CARDS.md#reference-screening-and-musical-controls--2026-09-21)
+has acquired two original WAV/annotation pairs with verified publisher archive
+checksums and exact file bindings. Final checked stable FPC 3.2.2 Win32/Win64 QA
+accepts the native musical distribution controls. The two references retain
+403/547 supplied notes, with identical derived counts/frame rows and distances
+within 1e-12 across targets. Supplied beat grids, instructed/performed chords,
+string-derived notes and unspecified confidence retain their different meanings.
+The examples remain development material with no target genre assignment or
+calibrated acceptance threshold. No recording inference or listening verdict ran.
+Retained source descriptions also expose a declared song boundary inside B-early
+(120..150 seconds, boundary at 125). A native nine-excerpt binding/overlap audit
+passes with byte-identical target reports: eight single-chapter excerpts and
+one crossing. This supplies a concrete
+segmentation warning while retaining unverified acoustic boundaries, broad family
+exposure and existing corpus-task ownership.
+
+The implementation helper's eighth assignment,
+[selective semantic blend/reblend](TODO/DONE/NS-4_styles_02.md), passes all five
+criteria on its first submission with zero failed submissions. The design keeps
+original joint observations bound to parent archives,
+while independently normalized marginal contributions control generation. Exact
+repeated material needs an explicit deduplication/addition policy; conflicting
+partial overlaps and incompatible active contracts reject. Actual WFC learner
+composition, sound selection, retained exposure and unchanged unrelated controls
+pass, including live named-session tokens/states and sound-only paired edits.
+Source/control regression and blend/further/diamond replay pass; all 28 target-local
+artifact comparisons match. The current encoding is extended directly without
+historical readers. No dependency source or portable-core behavior changed.
+
+All ten runtime logs in the combined batch report zero unfreed blocks. Commands,
+tested source hashes and criterion review remain under `build/qa-batch-07/`.
+Paired native sound differences are numerically verified; listening remains
+unassessed. Reference preparation earns no partial credit and leaves style cards
+open for grounded genre references and calibrated criteria.
+
+Styles02 is DONE with incoming links repaired. NS-4 **92% -> 96%**; overall
+**60.8% -> 61.4%**, with **39 open tasks and ten DONE** across 20 active outcomes.
+Baseline 55.5 + accepted 5.9 = 61.4, leaving 38.6 points. Outcome packages remain
+larger than ten points: 22.6 + 16.0. This is one post-review completion event;
+another accepted DONE event is required before the next infrastructure review.
+Final checks confirm unchanged tested source hashes, 2468 valid local links and
+the 49-task/94-edge acyclic graph with reconciled credits. This validated batch
+is prepared for normal publication to `origin/hello-pythian`; generated/private
+artifacts and dependencies remain excluded.
+
 ## Accepted semantic persistence, duration edits and admission repair — 2026-09-21
 
 Final QA accepts three tasks on checked stable FPC 3.2.2 Win32/Win64:
@@ -128,7 +177,8 @@ selective semantic blends, recorded workflow integration, many-hour scale and
 listening; no duplicate backlog items were added. The review earned no completion
 credit or additional failed-submission count. Its worker slot was released for
 restoring QA with the saved terminal evidence and counters. **Nine DONE tasks at
-`7c9aaa6` is the new review checkpoint; zero completion events have followed it.**
+`7c9aaa6` is the review checkpoint; one completion event has followed it
+(selective semantic blend/reblend, now ten DONE).**
 The next review triggers after at least two further QA-accepted DONE events.
 
 ## Retained inference experiments — 2026-09-21

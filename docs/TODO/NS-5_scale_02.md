@@ -24,7 +24,7 @@ Starting evidence: [CORPUS-EVALUATION](../CORPUS-EVALUATION.md) · [ANALYSIS-WAV
 
 - [NS-5_scale_01.md](NS-5_scale_01.md)
 - [NS-5_vocabulary_02.md](NS-5_vocabulary_02.md)
-- [NS-4_styles_02.md](NS-4_styles_02.md)
+- [NS-4_styles_02.md](DONE/NS-4_styles_02.md)
 - [NS-3_notes_03.md](NS-3_notes_03.md)
 - [NS-3_parts_03.md](NS-3_parts_03.md)
 - [NS-3_harmony_01.md](NS-3_harmony_01.md)

@@ -466,11 +466,15 @@ try {
     & $compilerPath @adapterArgs 'tests/pythian.tests.semantic.style.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Semantic style compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.semantic.style$executableSuffix") (Join-Path $buildRoot 'semantic-style')
-      if ($LASTEXITCODE -ne 0) { throw 'Semantic style checks failed' }
-      & $compilerPath @adapterArgs 'tests/pythian.tests.duration.stream.lpr'
-      if ($LASTEXITCODE -ne 0) { throw 'Duration stream compilation failed' }
-      & (Join-Path $buildRoot "pythian.tests.duration.stream$executableSuffix") (Join-Path $buildRoot 'duration-stream')
-      if ($LASTEXITCODE -ne 0) { throw 'Duration stream checks failed' }
+    if ($LASTEXITCODE -ne 0) { throw 'Semantic style checks failed' }
+    & $compilerPath @adapterArgs 'tests/pythian.tests.semantic.blend.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Semantic blend compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.semantic.blend$executableSuffix") (Join-Path $buildRoot 'semantic-blend')
+    if ($LASTEXITCODE -ne 0) { throw 'Semantic blend checks failed' }
+    & $compilerPath @adapterArgs 'tests/pythian.tests.duration.stream.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Duration stream compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.duration.stream$executableSuffix") (Join-Path $buildRoot 'duration-stream')
+    if ($LASTEXITCODE -ne 0) { throw 'Duration stream checks failed' }
     & $compilerPath @adapterArgs 'tools/pythian.voices.demo.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Independent voices demo compilation failed' }
     & $compilerPath @adapterArgs 'tools/pythian.instrument.style.lpr'

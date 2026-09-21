@@ -22,7 +22,7 @@ Starting evidence: [WAV-LEARNING](../WAV-LEARNING.md) · [INDEPENDENT-VOICES](..
 
 **Blockers**
 
-- [NS-4_styles_02.md](NS-4_styles_02.md)
+- [NS-4_styles_02.md](DONE/NS-4_styles_02.md)
 - [NS-4_layers_04.md](DONE/NS-4_layers_04.md)
 - [NS-3_context_02.md](NS-3_context_02.md)
 - [NS-3_notes_03.md](NS-3_notes_03.md)

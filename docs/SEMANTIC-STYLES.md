@@ -17,6 +17,13 @@ bindings embed current PYS bytes, including their existing ancestry and policies
 Neither reader accepts historical development variants. The current semantic
 encoding is `pythian.semantic.style.v1`, conventionally stored as `.pysg`.
 
+The [selective blend/reblend extension](SEMANTIC-BLENDS.md) adds independent
+provider contributions and retained multi-parent evidence to this same current
+encoding. Final checked Win32/Win64 QA accepts
+[the semantic blend task](TODO/DONE/NS-4_styles_02.md). The source-observation rules
+below continue to apply to source archives; inherited joint evidence is kept
+separate from independently weighted blend contributions.
+
 ## Definition and actual consumers
 
 `TSemanticStyleDefinition.Providers` retains each provider's canonical actual WFC
@@ -52,7 +59,7 @@ it. Format admission does not promise every requested output scope is solvable.
 
 ## Independent observations, joint relationships and timing
 
-Every `TSemanticRun` binds a source identity by ledger index, a unique run identity,
+In a source archive, every `TSemanticRun` binds a source identity by ledger index, a unique run identity,
 original half-open frame interval and the exact gap since that source's preceding
 run. Its provider token vectors and integer contribution weights explicitly retain
 present and absent dimensions: an absent vector has zero weight and an empty grid.
@@ -138,7 +145,8 @@ to generation preferences and hard constraints. Complete parent bytes are
 retained, each vocabulary points to the actual parent identity, and every model,
 source contribution, observed relationship, sound binding and extraction policy
 must remain unchanged. A second derivation may use the first as parent. This is
-reusable control derivation; weighted semantic merging is a separate task.
+reusable control derivation; `CreateBlend` and its independent contribution policy
+are described in the [blend extension](SEMANTIC-BLENDS.md), pending final QA.
 
 ## Sound and ownership
 
