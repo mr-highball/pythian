@@ -18,6 +18,84 @@ polyrhythm and deception timing without supplied rate/band hints. It still fails
 changing-tempo and authored controls, including confidently agreeing wrong pulse
 levels; it is not a replacement estimator or an admission policy.
 
+<a id="metrical-source-structure"></a>
+## Repeated source accents and competing beat levels — 2026-09-21
+
+The next fixed experiment compares each existing candidate period with half and
+double that period, using the cached low/mid/high onset weights. At each grid
+point it keeps the strongest nearby accent per band with the fixed 30-ms linear
+taper. Adjacent grid vectors retain their band identities; their weighted overlap
+is measured separately before and after the analysis midpoint. The smaller mean
+recurrence is retained. These are acoustic bands, not inferred instrument roles.
+
+The same-period score is compared with both alternative levels. Unavailable
+alternatives remain unresolved, and tied levels remain explicitly ambiguous.
+When all levels are available, support is the same-period recurrence divided by
+their maximum. Otherwise it retains the same-period recurrence without assuming
+that an unmeasured competitor is worse. This avoids excluding genuine slow beats
+merely because the analysis window cannot contain enough double-period context.
+
+The candidate combines this source support equally with model agreement when
+at least two model events exist in scope. Otherwise it uses affirmative repeated
+source support alone. It preserves all prior candidates, phase alternatives,
+restarts, default path costs and clock reconstruction. The ablation removes the
+new evidence and reproduces the previous method's nine complete selections and
+raw clocks. Neither a chosen path nor repeated accents establish metrical confidence.
+
+After the fixed observation controls passed QA, all predictions were saved before
+reference scoring. The existing independent event matcher produced these results:
+
+| Input | Prior method / ablation F1 | Source-structure F1 | Source-structure full-output F1 |
+| --- | ---: | ---: | ---: |
+| 01 calibration | .974359 | .974359 | .974359 |
+| 02 arpeggio | 1.000000 | .987952 | .987952 |
+| 03 deception | 1.000000 | 1.000000 | .988506 |
+| 04 polyrhythm | .986301 | .986301 | .972973 |
+| 05 doubling | .772727 | .800000 | .786885 |
+| 19 acceleration | .656250 | **.950000** | .950000 |
+| Authored regular | 0 | **1.000000** | 1.000000 |
+| Authored polyphonic | .033898 | .033898 | .029851 |
+| Authored tempo change | 0 | .863636 | .863636 |
+
+All primary scores use the unchanged 30-ms tolerance and reference-range policy;
+the last column retains endpoint extras. Acceleration has 38 matches, two extras
+and two misses. Doubling gains matches but still has eleven full-output extras.
+The polyphonic case retains 46 full-output extras. Recovering regular pulses when
+the model emits none is useful evidence, but the general nonregression gate fails.
+
+**Decision:** reject general adoption after this comparison, without a weight or
+threshold retry. Preserve the acceleration/regular gains as development controls;
+repeated band accents still do not resolve the shared wrong polyphonic beat level,
+and authored changing-clock coverage remains insufficient. No maintained provider,
+format, held-out evaluation, listening verdict or task credit changes.
+
+The original source/model/band reports and policies remain unchanged. The first
+candidate attempt stopped before emitting a report because the core requires a
+phase smaller than its period. Reducing phase modulo the compared period preserves
+the exact lattice; QA passed the added nonzero-phase control before resumption.
+The original code/failure logs and correction identity are retained separately.
+An earlier control-only exit cleanup leak was also fixed and retested by QA.
+
+Evidence is ignored under `build/beat-metrical-structure/`: frozen policy,
+geometry correction, native source, nine ablations, nine candidate reports,
+eighteen score reports and process records. Final checked Win64 QA independently
+recomputed selected recurrence across all nine comparisons, verified source/policy/
+code bindings and exact ablation parity, and passed with no unfreed blocks. All
+36 successful prediction/scoring logs are also leak-free. The first audit exposed
+rounding in its untyped clamp expression; an explicit Double calculation fixed
+the audit without changing predictions, policy or the 1e-9 comparison tolerance.
+Both failed audit logs are retained separately.
+
+The candidate leaves two of 145 owner windows unknown, retains 34 ambiguous
+selections and uses source evidence with missing model events in 26 selections.
+All 307 output frames have nearby band support, including the wrong polyphonic
+pulses: source support alone does not establish the correct metrical level.
+The 18 successful prediction processes took 32.14 seconds in total; the slowest
+input took 3.239 seconds and the largest sampled process peak was 48,644,096 bytes,
+within the declared budgets. These short cached-report workloads do not establish
+many-hour throughput. The experiment allowance is consumed; no additional fit
+or task credit follows from this audit.
+
 <a id="model-candidate-comparison"></a>
 ## Model observations and retained candidates — 2026-09-20
 

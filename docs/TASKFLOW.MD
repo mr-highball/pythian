@@ -203,6 +203,61 @@ agent may create task files for discovered gaps or deferred bugs; the primary
 agent integrates dependencies and accounting. A defect that violates current
 acceptance criteria still blocks acceptance.
 
+Track failed QA submissions separately for each delegated task. A submission
+fails when QA reports a blocking defect in its implementation or required
+acceptance evidence. Multiple findings or target failures in the same submission
+count as one failed submission; repeating an unchanged failure does not create
+another attempt. Runner outages and other failures unrelated to the submitted
+work do not count as implementation failures.
+
+After the **second failed QA submission for the same task**, remove that task
+from the implementation helper's queue and transfer it, its existing code and
+all failure evidence to the primary agent. The primary agent owns the fixes and
+subsequent QA handoffs. Preserve the implementation for repair; do not delete or
+reset it, mark the task DONE, or award completion credit. Stop helper and junior
+edits to that task before transferring file ownership.
+
+Give the implementation helper a different ready task whose scope and files do
+not conflict with the transferred work. Follow actual prerequisite links and
+respect available worker slots. Record the failed submissions, ownership change
+and replacement assignment in the work handoff. The task-count cap remains
+lifted; this rule changes ownership after repeated QA failure, not staffing or
+acceptance requirements. QA retains final validation and publication authority.
+
+## Periodic infrastructure review
+
+After at least **two task files reach DONE following QA acceptance** since the
+previous infrastructure review, hand the completed work to the user-authorized
+senior reviewer. Count accepted tasks, not individual tests, partial studies or
+unsuccessful submissions. The user requested an inaugural review on 2026-09-21
+using the seven already completed tasks; subsequent cycles start from that review.
+
+Before starting the reviewer, save the QA agent's current verdicts, failed-
+submission counters, evidence locations and any live process handles, then stop
+its active turn and release its worker slot. Do not restart a still-running
+command or infer completion from the handoff. Respect the environment's thread
+limit; the reviewer replaces QA during this interval.
+
+The reviewer examines the work in the context of the whole library and its
+infrastructure: core/companion boundaries, data and time contracts, ownership,
+source lineage, streaming, determinism, resource bounds and delivery. Trace
+relevant interactions and report concrete defects with file/line evidence,
+triggers, consequences and acceptance implications. Existing unresolved work
+does not become a new defect merely because it remains unfinished.
+
+The reviewer writes no implementation code. It may create actionable TODO files
+using this workflow's template, naming and dependency rules. Avoid duplicate
+tasks for defects already covered by an open task's acceptance criteria. Propose
+credit redistribution or reassessment where needed; the primary agent integrates
+the task graph and milestone accounting without creating free completion points.
+This review is not another implementation QA submission and does not increment
+the two-failure ownership-transfer counter.
+
+When the review finishes, retain its findings and task references, release the
+reviewer's slot, restore the QA agent and resume the saved work. Record the
+reviewed completion checkpoint so the next two-task trigger is unambiguous.
+Final feature testing and validated publication remain QA's responsibility.
+
 After the batch passes and its completion records are integrated, the QA agent
 commits the validated changes as needed and pushes to `origin/hello-pythian` for
 review. Verify the branch, remote, staged scope and published commit. Include the

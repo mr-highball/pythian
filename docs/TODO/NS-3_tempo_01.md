@@ -12,6 +12,16 @@ Credit is earned only when every acceptance criterion and the task-flow completi
 
 Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md) · [BEAT-GRIDS](../BEAT-GRIDS.md).
 
+Progress 2026-09-21: a fixed metrical source-structure comparison is declared
+under the [experiment budget](../MUSICAL-EVALUATION.md#fixed-next-experiment-budgets).
+The [source-accent comparison](../BEAT-TRACKING.md#metrical-source-structure)
+improves acceleration and restores missing regular pulses, preserving deception
+and polyrhythm. It still fails authored polyphonic/changing-clock acceptance;
+reject general adoption without tuning. Controls and final source/recurrence,
+ablation-parity and resource audits passed QA. An audit-only precision correction
+retained the original 1e-9 tolerance and all saved predictions. This task remains
+open with no credit.
+
 **Acceptance Criteria:**
 
 - Use automatic candidate observations through the maintained candidate-path and selected-clock contracts, retaining plausible half/double-time and phase alternatives.
@@ -22,5 +32,4 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md) · [BEAT-GRIDS](../BEAT-
 
 **Blockers**
 
-- [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
-
+- [NS-3_validation_01.md](NS-3_validation_01.md)

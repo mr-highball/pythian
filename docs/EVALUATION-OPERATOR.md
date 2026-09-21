@@ -1,7 +1,12 @@
 # File-bound musical evaluation
 
 [Home](../README.md) · [Scoring contracts](MUSICAL-EVALUATION.md) ·
-[Validation task](TODO/DONE/NS-3_validation_01.md) · [Work](WORK.md)
+[Validation task](TODO/NS-3_validation_01.md) · [Work](WORK.md)
+
+Current admission limitation (2026-09-21): prediction ancestry is not traversed,
+so a declared reference-derived prediction can incorrectly qualify as independent.
+Shared validation is reopened; its repair and regression criteria are in the
+linked task. Numerical scores alone do not resolve this admission defect.
 
 The native `pythian.evaluate` operator connects the shared scorer to actual WAV,
 annotation, prediction, policy and exposure files. It performs no inference or
@@ -290,7 +295,13 @@ also keep a passing 70-ms diagnostic separate from its failing 30-ms primary.
 These authored reference controls test scoring semantics, not inferred WAV truth.
 
 Evidence and the all-criteria review are retained under `build/qa-batch-02/`.
-No owned compiler warnings or unfreed blocks were found. The combined result
-accepts [shared validation](TODO/DONE/NS-3_validation_01.md), +2 NS-3 points
-(+0.50 overall). Provider accuracy remains separate. Its next experiment budgets
-are [declared](MUSICAL-EVALUATION.md#fixed-next-experiment-budgets), not executed.
+No owned compiler warnings or unfreed blocks were found. This evidence originally
+accepted [shared validation](TODO/NS-3_validation_01.md), +2 NS-3 points
+(+0.50 overall). Infrastructure review on 2026-09-21 reopened that task: the ledger
+never requires or traverses the scored prediction node, allowing declared direct
+or transitive reference ancestry to evade independent-admission checks. Existing
+passing fixtures omit this counterexample. The completion credit is withdrawn
+until the prediction boundary is repaired and validated. Historical scoring
+results remain evidence of those checks, not complete ancestry admission.
+Provider accuracy remains separate; current experiment outcomes are recorded in
+the [shared evaluation contract](MUSICAL-EVALUATION.md#fixed-next-experiment-budgets).

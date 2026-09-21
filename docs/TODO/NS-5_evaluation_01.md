@@ -32,4 +32,4 @@ open with no partial credit. Those gaps are already within the criteria below.
 
 **Blockers**
 
-- [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
+- [NS-3_validation_01.md](NS-3_validation_01.md)

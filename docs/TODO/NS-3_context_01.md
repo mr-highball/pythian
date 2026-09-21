@@ -22,5 +22,5 @@ Starting evidence: [WAVE-CONTEXT-ADMISSION](../WAVE-CONTEXT-ADMISSION.md) · [TO
 
 **Blockers**
 
-- [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
+- [NS-3_validation_01.md](NS-3_validation_01.md)
 

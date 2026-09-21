@@ -12,11 +12,25 @@ Credit is earned only when every acceptance criterion and the task-flow completi
 
 Starting evidence: [WAVE-STYLE](../WAVE-STYLE.md) · [LAYERED-STYLE](../LAYERED-STYLE.md) · [CONTEXT-PROFILES](../CONTEXT-PROFILES.md).
 
+Infrastructure review 2026-09-21 identified an unresolved part of derivative
+evidence acceptance: the draft source ledger records exact asset hashes/groups
+and source-relative runs, but no parent-coordinate/preparation mapping or required
+hash-bound audit. Two differently encoded overlapping excerpts can therefore be
+replayed as separate contributions without retaining evidence of that overlap.
+Passing current round-trip fixtures does not cover this case. This remains within
+the existing task allocation and acceptance criteria, with no duplicate task.
+
 **Acceptance Criteria:**
 
 - Persist supported per-layer models, choices, dependencies, vocabulary/time contracts, unknowns, evidence, extraction policies and source identities; absent dimensions remain explicit.
 - Retain observed cross-layer relationships and independent source/run/gap boundaries rather than rebuilding joint evidence from marginal selections.
 - Bind corpus split/exposure and derivative/source-contribution evidence sufficiently for later reuse audits, including frozen vocabulary ancestry and external source requirements.
+- For declared derivatives, retain parent identity/clock, mapped contribution
+  ranges and preparation/audit identity, or require an exact hash-bound external
+  audit with fail-closed verification at reuse. Verify overlapping versus disjoint
+  differently encoded excerpts, missing/mismatched audit evidence, retained
+  exposure and exact source/derived round trips. Intentional repeated contributions
+  must be explicit; automatic discovery of recording relationships is not required.
 - Round-trip a source style and a derived style with identical supported generation behavior; enforce ownership, bounds, corruption and incompatible-contract rejection.
 - Keep one current format per artifact, regenerate superseded development fixtures and remove transitory readers unless a concrete consumer value justifies retention. Controlled inputs may establish this contract; recorded accuracy is credited elsewhere.
 
