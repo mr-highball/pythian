@@ -22,5 +22,5 @@ Starting evidence: [LAYERS](../LAYERS.md) · [LAYERED-STYLE](../LAYERED-STYLE.md
 
 **Blockers**
 
-- [NS-4_layers_01.md](NS-4_layers_01.md)
+- [NS-4_layers_01.md](DONE/NS-4_layers_01.md)
 

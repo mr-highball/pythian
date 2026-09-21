@@ -62,6 +62,7 @@ type
     TimeMapping: TLayerTimeMapping;
   end;
   TStyleProviderDependencies = array of TStyleProviderDependency;
+  TStylePitchIdentity = (spiUnspecified, spiAbsoluteMidi);
   { A detached snapshot of the definition, not the session's pending edits or
     position-specific feasibility. Choice tokens can be used with existing
     session masks/preferences. Dependencies describe actual WFC projections.
@@ -78,6 +79,12 @@ type
     Dependencies: TStyleProviderDependencies;
     Choices: TStyleProviderChoices;
     Preferences: TLayerTokenPreferences;
+    { Present for caller-declared independent voice roles only. Pitch identity
+      is explicit; the name is never evidence of inferred instrument ownership. }
+    RoleId: String;
+    PitchIdentity: TStylePitchIdentity;
+    MinimumPitch: Integer;
+    MaximumPitch: Integer;
   end;
 
 { Uses existing canonical codecs. No inferred roles, relative-pitch conversion,

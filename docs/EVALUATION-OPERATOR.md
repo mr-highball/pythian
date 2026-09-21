@@ -1,7 +1,7 @@
 # File-bound musical evaluation
 
 [Home](../README.md) · [Scoring contracts](MUSICAL-EVALUATION.md) ·
-[Validation task](TODO/NS-3_validation_01.md) · [Work](WORK.md)
+[Validation task](TODO/DONE/NS-3_validation_01.md) · [Work](WORK.md)
 
 The native `pythian.evaluate` operator connects the shared scorer to actual WAV,
 annotation, prediction, policy and exposure files. It performs no inference or
@@ -26,8 +26,9 @@ Every JSON object has the exact fields listed below. Missing, extra, duplicate
 or incorrectly typed fields reject. Integer frame coordinates must use integer
 JSON tokens; numeric strings and fractional/exponent spellings are not coerced.
 Digests identify exact file bytes, including line endings, and use lowercase
-SHA256. Preparation, annotation policy and estimator files may be nonempty text
-or another opaque artifact; their content is hashed, not interpreted as truth.
+SHA256. Preparation and estimator files may be nonempty text or another opaque
+artifact; their content is hashed, not interpreted as truth. Annotation policy
+uses the structured musical comparison contract below.
 
 | Case field | Meaning |
 | --- | --- |
@@ -57,6 +58,58 @@ inference policy, including relevant dependencies. Hashing an incomplete manifes
 does not establish that omitted ancestry is absent. Source-family verification,
 complete exposure history and reference independence still require reviewed
 provenance under the [corpus protocol](CORPUS-EVALUATION.md).
+
+## Musical annotation contract
+
+Annotation policy is a JSON object with exactly `format` =
+`pythian-evaluation-annotation`, `output`, `input_class`, `scope_id`, `purpose`,
+`reference_method`, `label_convention`, `time_convention`, `uncertainty_convention`.
+All values are nonempty strings of at most 4096 bytes; `scope_id` is at most 256.
+The reference method is `authored`, `independently-annotated` or
+`independently-measured`. This records how references were obtained; it does not
+verify the annotator's truthfulness. The ancestry checks still apply.
+
+| Output | Input class | Metric | Unit |
+| --- | --- | --- | --- |
+| `notes` | `attributed-voice` | `notes` | `absolute-MIDI-semitone` |
+| `onsets`, `beats` | `annotated-recording` | `events` | `source-frame` |
+| `tempo` | `annotated-recording` | `scalar` | `microseconds-per-quarter` |
+| `key` | `tonal-region` | `label` | `key-root-mode` |
+| `part-ownership` | `attributed-part` | `label` | `part-note-identity` |
+| `harmony` | `harmonic-region` | `label` | `chord-identity` |
+| `harmony-changes` | `harmonic-region` | `events` | `source-frame` |
+| `groove-events` | `attributed-part` | `events` | `source-frame` |
+| `groove-accent` | `attributed-part` | `scalar` | `normalized-amplitude` |
+| `groove-offset` | `attributed-part` | `scalar` | `quarter-note-offset` |
+| `sound-spectrum` | `recorded-sound` | `scalar` | `normalized-band-energy` |
+| `sound-envelope` | `recorded-sound` | `scalar` | `normalized-amplitude` |
+
+The operator rejects mismatched input/metric/unit combinations. Normalized scalar
+values must lie in [0,1]; quarter durations must be positive. Signed groove offsets
+are relative to the independently annotated quarter-note clock, not a guessed
+clock produced by the evaluated provider. A spectrum comparison declares one
+band/normalization in its scope/conventions; an envelope comparison declares its
+source/event alignment and level convention. Changing those requires new policy
+bytes and matching bound observations.
+
+Use `scope_id` and the convention fields to identify the particular voice/part,
+metrical level, tonal/harmonic vocabulary, feature band or envelope. Define label
+spelling/equivalence, timing conversion/rounding, uncertain/excluded annotations
+and complete event coverage explicitly. Labels compare exact vocabulary indices;
+the operator does not silently fold octaves, modes, roles or chord qualities.
+Role comparisons need separate declared scopes and complete per-role reporting;
+pooling a dominant part cannot substitute for missing-role acceptance.
+
+`purpose` is `primary` or `diagnostic`. Beat comparisons preserve the existing
+30-ms primary and 70-ms diagnostic tolerances, converted using the shared nearest
+frame/half-up rule. A diagnostic can pass its numeric gates but is never eligible
+for `independent_case_pass`. All other declared numerical limits remain in the
+hash-bound scoring policy; phrase minima remain fixed below. These are executable
+comparison contracts, not calibrated production providers or corpus verdicts.
+
+The complete annotation contract is included in the report. Current development
+cases must regenerate their annotation/reference/ledger identities; no reader
+for the earlier opaque annotation-policy draft is retained.
 
 ## Reference and prediction documents
 
@@ -99,7 +152,7 @@ The scoring policy has `metric` (`events`, `label`, `scalar`, `notes`), `unit`, 
   denominator and `reference_complete=true`. Incomplete annotations still yield
   diagnostic counts. For events, complete annotation is an external declaration;
   an event list alone cannot prove absence of unannotated events.
-- `independent_eligible` applies shared partition, verified family, previous
+- `independent_eligible` requires a primary comparison and applies shared partition, verified family, previous
   exposure, reference completeness and external-training-overlap requirements.
 - `independent_case_pass` requires both preceding verdicts. It covers only this
   declared comparison. It does not establish provider accuracy over a corpus,
@@ -134,17 +187,46 @@ No onset or duration success is inferred from cell accuracy.
 
 ## Exposure ledger
 
-Ledger fields: `format` = `pythian-evaluation-ledger`, `groups`, `estimators`.
+Ledger fields: `format` = `pythian-evaluation-ledger`, `groups`, `estimators`, `artifacts`.
 Each group has `group_id`, `group_verified`, `previously_used_for_tuning`,
 `partition`, `sources` (an array of prepared-source digests). Each estimator has
 `estimator_sha256`, `training_overlap`.
 
-The selected source must belong to exactly one matching family entry; conflicting
-family assignments and duplicate selected identities reject. Case partition,
+Every source must belong to exactly one family entry; conflicting family
+assignments and duplicate identities reject throughout the supplied ledger.
+Every family's identity, partition and exposure declaration is validated, including
+entries outside the immediate case. Case partition,
 verification and tuning exposure must match that entry, and estimator overlap
 must match its unique entry. A case cannot relabel itself as untouched while the
 ledger records development use. Tuning exposure makes that family development
 thereafter, including related encodings, excerpts and inherited learning inputs.
+
+Each artifact has `sha256`, `group_id` and `parents` (artifact digests). Source
+artifacts name their registered family; non-source artifacts use an empty group.
+List parents before children and list each node's parents once in their ledger
+order. Missing ancestors, cycles, duplicates and unregistered/hidden families
+reject. Include the full declared dependency graph for preparation, reference
+annotations and estimator training, including frozen palettes, blended models and
+other parents outside the immediate case. Roots without known dependencies use
+an empty parent list; this is a provenance assertion, not discovered independence.
+
+The source and preparation closures may contain only the selected recording
+family. The preparation must include the prepared source in its closure; an
+identity preparation is a record depending on that source. The reference closure
+must include source, preparation and annotation policy, and must exclude the
+evaluated estimator and its prediction. The estimator closure must exclude every
+evaluation family, including unrelated evaluation recordings. A data-derived
+estimator cannot declare training overlap `not-applicable`. Known training and
+development ancestors may be used, but unknown external training overlap still
+prevents independent acceptance. These checks concern training ancestry, not the
+source passed to an estimator when obtaining the current prediction.
+
+The current ledger format now requires these fields; regenerate development
+cases rather than keeping a reader for the superseded draft. Artifact identities
+outside the case are declared ledger records. The operator checks their graph and
+family/exposure consistency; it does not reopen every original/model asset or
+verify the truth of a claimed parent edge. Review and retain their byte-bound
+provenance under the corpus protocol before making an independent claim.
 
 The caller must supply the current complete ledger, including prior uses and
 ancestry outside this case. These files are an audit boundary, not an authenticated
@@ -155,7 +237,9 @@ false declarations. Unknown model overlap remains ineligible.
 ## Bounds and verification
 
 JSON/opaque documents are at most 8 MiB each, JSON nesting at most 16, the WAV
-at most 1 GiB, ledger families/estimators at most 4096 each, and observation arrays
+at most 1 GiB, ledger families/estimators/artifacts at most 4096 each, total
+registered sources at most 4096 and parent edges at most 32768. Parent order
+allows bounded iterative closure checks without recursion. Observation arrays are
 within the shared scorer's item/frame limits. File-size limits may constrain
 arrays before their theoretical item limit. Use declared excerpts for these
 comparisons; aggregate many-hour workload acceptance remains a corpus task.
@@ -187,7 +271,26 @@ Win64, with zero unfreed blocks. The fixture's initial Win32 run exposed a decim
 threshold comparison against Extended constants; typed Double floors fixed the
 boundary while preserving the same 80%/98%/0.80/0.70 requirements.
 
-Per-provider annotation/admission integration and complete ancestor-ledger enforcement
-remain open in the validation task; its next experiment budgets are
-[declared separately](MUSICAL-EVALUATION.md#fixed-next-experiment-budgets). These
-checks advance that task without closing it or changing completion percentages.
+The declared ancestor graph checks pass final checked stable Win32/Win64 tests,
+including the maintained file fixture and both exposed recorded-case CLIs, with
+zero unfreed blocks. Recorded phrase counts remain unchanged and complete reports
+are byte-identical across targets. Retained evidence is under
+`build/qa-batch-01/`; no held-out material or new inference was used.
+Controls cover an outside-plan palette grandparent, valid disjoint training,
+unknown external overlap, evaluation leakage, missing/cyclic parents, hidden
+families, contradictory source lineage and estimator-derived references. Recorded
+development-case regeneration retains the original annotations and predictions;
+it does not rerun inference or open held-out material.
+
+The per-output annotation contract and reference-preserving/breaking controls
+pass final checked stable Win32/Win64 fixtures and recorded CLI comparisons. The
+controls distinguish wrong values from unknowns, missing/extra events, identical
+pitch with different part ownership, chord quality and incorrect units. They
+also keep a passing 70-ms diagnostic separate from its failing 30-ms primary.
+These authored reference controls test scoring semantics, not inferred WAV truth.
+
+Evidence and the all-criteria review are retained under `build/qa-batch-02/`.
+No owned compiler warnings or unfreed blocks were found. The combined result
+accepts [shared validation](TODO/DONE/NS-3_validation_01.md), +2 NS-3 points
+(+0.50 overall). Provider accuracy remains separate. Its next experiment budgets
+are [declared](MUSICAL-EVALUATION.md#fixed-next-experiment-budgets), not executed.

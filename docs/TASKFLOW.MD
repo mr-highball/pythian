@@ -183,3 +183,20 @@ points as requested; individual tasks may be smaller. This is a planning rule,
 not permission to inflate credit or postpone updates until a giant milestone
 finishes. No final 100% claim is valid while any required task or acceptance
 evidence remains unresolved.
+
+## Delegated validation and publication
+
+Under the user's current delegation, final validation belongs to the QA agent.
+Start a fresh QA batch when at least two tasks are ready and combine relevant
+checks. Completion-document follow-ups remain part of that same batch. The QA
+agent may create task files for discovered gaps or deferred bugs; the primary
+agent integrates dependencies and accounting. A defect that violates current
+acceptance criteria still blocks acceptance.
+
+After the batch passes and its completion records are integrated, the QA agent
+commits the validated changes as needed and pushes to `origin/hello-pythian` for
+review. Verify the branch, remote, staged scope and published commit. Include the
+accepted task moves and milestone updates; exclude generated/private artifacts
+and unrelated work. Use a normal push. Report failed validation or publication
+to the primary agent before treating the batch as published. Publication
+authority does not authorize implementation changes by the QA agent.

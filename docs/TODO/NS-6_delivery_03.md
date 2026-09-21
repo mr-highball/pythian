@@ -22,7 +22,6 @@ Starting evidence: [PACKAGING](../PACKAGING.md) · [packaging/README](../../pack
 
 **Blockers**
 
-- [NS-6_delivery_02.md](NS-6_delivery_02.md)
+- [NS-6_delivery_02.md](DONE/NS-6_delivery_02.md)
 - [NS-4_integration_01.md](NS-4_integration_01.md)
 - [NS-5_blends_01.md](NS-5_blends_01.md)
-

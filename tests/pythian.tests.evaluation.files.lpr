@@ -44,6 +44,58 @@ begin
   Result := HashText(AText);
 end;
 
+function Artifact(const ADigest, AGroup: String;
+  const AParents: array of String): TJSONObject;
+var
+  LParents: TJSONArray;
+  I: Integer;
+begin
+  Result := TJSONObject.Create;
+  Result.Add('sha256', ADigest);
+  Result.Add('group_id', AGroup);
+  LParents := TJSONArray.Create;
+  Result.Add('parents', LParents);
+  for I := 0 to High(AParents) do
+  begin
+    LParents.Add(AParents[I]);
+  end;
+end;
+
+function Ledger(const ABinding: TJSONObject): TJSONObject;
+var
+  LArtifacts: TJSONArray;
+begin
+  Result := TJSONObject(GetJSON('{"format":"pythian-evaluation-ledger",' +
+    '"groups":[{"group_id":"authored","group_verified":true,' +
+    '"previously_used_for_tuning":false,"partition":"evaluation","sources":["' +
+    ABinding.Strings['source_sha256'] + '"]}],"estimators":[{"estimator_sha256":"' +
+    ABinding.Strings['estimator_sha256'] + '","training_overlap":"not-applicable"}]}'));
+  LArtifacts := TJSONArray.Create;
+  Result.Add('artifacts', LArtifacts);
+  LArtifacts.Add(Artifact(ABinding.Strings['source_sha256'], 'authored', []));
+  LArtifacts.Add(Artifact(ABinding.Strings['preparation_sha256'], '',
+    [ABinding.Strings['source_sha256']]));
+  LArtifacts.Add(Artifact(ABinding.Strings['annotation_policy_sha256'], '', []));
+  LArtifacts.Add(Artifact(ABinding.Strings['estimator_sha256'], '', []));
+  LArtifacts.Add(Artifact(ABinding.Strings['reference_sha256'], '',
+    [ABinding.Strings['source_sha256'], ABinding.Strings['preparation_sha256'],
+    ABinding.Strings['annotation_policy_sha256']]));
+end;
+
+function Annotation(const AOutput, AInput: String): TJSONObject;
+begin
+  Result := TJSONObject.Create;
+  Result.Add('format', 'pythian-evaluation-annotation');
+  Result.Add('output', AOutput);
+  Result.Add('input_class', AInput);
+  Result.Add('scope_id', 'authored-reference-scope');
+  Result.Add('purpose', 'primary');
+  Result.Add('reference_method', 'authored');
+  Result.Add('label_convention', 'Exact policy vocabulary; no implicit category equivalences');
+  Result.Add('time_convention', 'Integer absolute source frames, half-open note intervals');
+  Result.Add('uncertainty_convention', 'Explicit cell states; events independently complete in scope');
+end;
+
 function Fixture(const ADirectory, AMetric: String): TJSONObject;
 var
   LBinding: TJSONObject;
@@ -74,8 +126,28 @@ begin
     Result.Add('binding', LBinding);
     LBinding.Add('source_sha256', HashAudioBytes(ReadFileBytes(ADirectory + 'source.wav', 65536)));
     LBinding.Add('preparation_sha256', Save(ADirectory, 'preparation.txt', 'Identity PCM16'));
-    LBinding.Add('annotation_policy_sha256', Save(ADirectory, 'annotation.txt',
-      'Authored complete reference on absolute source clock, explicit rest/unknown.'));
+    if AMetric = 'notes' then
+    begin
+      LDocument := Annotation('notes', 'attributed-voice');
+    end
+    else if AMetric = 'label' then
+    begin
+      LDocument := Annotation('key', 'tonal-region');
+    end
+    else if AMetric = 'scalar' then
+    begin
+      LDocument := Annotation('sound-envelope', 'recorded-sound');
+    end
+    else
+    begin
+      LDocument := Annotation('onsets', 'annotated-recording');
+    end;
+    try
+      LBinding.Add('annotation_policy_sha256', Save(ADirectory, 'annotation.txt',
+        LDocument.FormatJSON));
+    finally
+      LDocument.Free;
+    end;
     LBinding.Add('estimator_sha256', Save(ADirectory, 'estimator.txt',
       'Authored predictions; no learned model.'));
     LNotes := '';
@@ -101,7 +173,7 @@ begin
     end
     else if AMetric = 'label' then
     begin
-      LPolicy := '{"metric":"label","unit":"authored-category","vocabulary":["a","b"],' +
+      LPolicy := '{"metric":"label","unit":"key-root-mode","vocabulary":["C-major","G-major"],' +
         '"tolerance_frames":0,"scalar_tolerance":0,"minimum_coverage":0.8,' +
         '"minimum_precision":0.98,"minimum_f1":0,"minimum_reference_coverage":1}';
       LReference := '[{"frame":100,"state":"value","value":0},' +
@@ -114,13 +186,13 @@ begin
         '"tolerance_frames":0,"scalar_tolerance":0.25,"minimum_coverage":0.5,' +
         '"minimum_precision":0.5,"minimum_f1":0,"minimum_reference_coverage":1}';
       LReference := '[{"frame":100,"state":"value","value":0},' +
-        '{"frame":300,"state":"value","value":1}]';
+        '{"frame":300,"state":"value","value":0.5}]';
       LPrediction := '[{"frame":100,"state":"value","value":0.25},' +
-        '{"frame":300,"state":"value","value":1.5}]';
+        '{"frame":300,"state":"value","value":1}]';
     end
     else
     begin
-      LPolicy := '{"metric":"events","unit":"authored-onset","vocabulary":[],' +
+      LPolicy := '{"metric":"events","unit":"source-frame","vocabulary":[],' +
         '"tolerance_frames":10,"scalar_tolerance":0,"minimum_coverage":1,' +
         '"minimum_precision":1,"minimum_f1":1,"minimum_reference_coverage":1}';
       LReference := '[100,300,900]';
@@ -187,11 +259,12 @@ begin
     LFiles.Add('estimator', 'estimator.txt');
     LFiles.Add('prediction', 'prediction.json');
     LFiles.Add('ledger', 'ledger.json');
-    LHash := Save(ADirectory, 'ledger.json', '{"format":"pythian-evaluation-ledger",' +
-      '"groups":[{"group_id":"authored","group_verified":true,' +
-      '"previously_used_for_tuning":false,"partition":"evaluation","sources":["' +
-      LBinding.Strings['source_sha256'] + '"]}],"estimators":[{"estimator_sha256":"' +
-      LBinding.Strings['estimator_sha256'] + '","training_overlap":"not-applicable"}]}');
+    LDocument := Ledger(LBinding);
+    try
+      LHash := Save(ADirectory, 'ledger.json', LDocument.FormatJSON);
+    finally
+      LDocument.Free;
+    end;
     Result.Add('ledger_sha256', LHash);
     Save(ADirectory, 'case.json', Result.FormatJSON);
   except
@@ -290,6 +363,414 @@ begin
   end;
 end;
 
+procedure CheckAncestryCases(const ADirectory: String);
+var
+  LCase: TJSONObject;
+  LDocument: TJSONObject;
+  LReport: TJSONObject;
+  LArtifacts: TJSONArray;
+  LGroup: TJSONObject;
+  LParentHash: String;
+  LPaletteHash: String;
+  LRejected: Boolean;
+  LReason: String;
+  I: Integer;
+begin
+  LParentHash := Save(ADirectory, 'outside-plan-source.txt', 'Authored separate training input');
+  LPaletteHash := Save(ADirectory, 'outside-plan-palette.txt', 'Authored frozen palette parent');
+  for I := 0 to 11 do
+  begin
+    LCase := Fixture(ADirectory, 'label');
+    try
+      LDocument := ReadDocument(ADirectory + 'ledger.json');
+      try
+        LArtifacts := LDocument.Arrays['artifacts'];
+        { A palette grandparent is outside the immediate evaluation case but
+          must remain in the complete ledger. Default: independent training. }
+        LGroup := TJSONObject(GetJSON('{"group_id":"outside-plan","group_verified":true,' +
+          '"previously_used_for_tuning":false,"partition":"training","sources":["' +
+          LParentHash + '"]}'));
+        LDocument.Arrays['groups'].Add(LGroup);
+        LArtifacts.Insert(0, Artifact(LParentHash, 'outside-plan', []));
+        LArtifacts.Insert(1, Artifact(LPaletteHash, '', [LParentHash]));
+        LArtifacts.Objects[5].Arrays['parents'].Add(LPaletteHash);
+        LDocument.Arrays['estimators'].Objects[0].Strings['training_overlap'] := 'disjoint';
+        LCase.Objects['binding'].Strings['estimator_training_overlap'] := 'disjoint';
+        LReason := '';
+        case I of
+          0: ; { Positive: data-derived estimator with disjoint declared training. }
+          1:
+            begin
+              LGroup.Strings['partition'] := 'evaluation';
+              LReason := 'Estimator ancestry includes an evaluation';
+            end;
+          2:
+            begin
+              LArtifacts.Delete(1);
+              LReason := 'Missing evaluation ledger ancestor';
+            end;
+          3:
+            begin
+              LArtifacts.Objects[0].Arrays['parents'].Add(LPaletteHash);
+              LReason := 'Missing evaluation ledger ancestor';
+            end;
+          4:
+            begin
+              LArtifacts.Objects[0].Strings['group_id'] := '';
+              LReason := 'Recording artifact cannot hide its family';
+            end;
+          5:
+            begin
+              LArtifacts.Objects[6].Arrays['parents'].Add(
+                LCase.Objects['binding'].Strings['estimator_sha256']);
+              LReason := 'Reference ancestry includes the evaluated estimator';
+            end;
+          6:
+            begin
+              LArtifacts.Objects[6].Arrays['parents'].Delete(2);
+              LReason := 'Reference ancestry must bind source';
+            end;
+          7:
+            begin
+              LArtifacts.Objects[2].Arrays['parents'].Add(LParentHash);
+              LReason := 'Prepared source ancestry crosses';
+            end;
+          8:
+            begin
+              LArtifacts.Objects[1].Arrays['parents'].Add(LParentHash);
+              LReason := 'Artifact parents must be unique';
+            end;
+          9:
+            begin
+              LDocument.Arrays['estimators'].Objects[0].Strings['training_overlap'] :=
+                'not-applicable';
+              LCase.Objects['binding'].Strings['estimator_training_overlap'] := 'not-applicable';
+              LReason := 'Data-derived estimator cannot declare';
+            end;
+          10:
+            begin
+              LArtifacts.Objects[5].Arrays['parents'].Add(
+                LCase.Objects['binding'].Strings['source_sha256']);
+              LReason := 'Estimator ancestry includes an evaluation';
+            end;
+          11:
+            begin
+              LGroup.Strings['partition'] := 'development';
+              LGroup.Booleans['previously_used_for_tuning'] := True;
+              LCase.Objects['binding'].Strings['estimator_training_overlap'] := 'unknown';
+              LDocument.Arrays['estimators'].Objects[0].Strings['training_overlap'] := 'unknown';
+            end;
+        end;
+        LCase.Strings['ledger_sha256'] := Save(ADirectory, 'ledger.json', LDocument.FormatJSON);
+      finally
+        LDocument.Free;
+      end;
+      Save(ADirectory, 'case.json', LCase.FormatJSON);
+      if (I = 0) or (I = 11) then
+      begin
+        LReport := TJSONObject(GetJSON(EvaluateCaseFile(ADirectory + 'case.json')));
+        try
+          Check(LReport.Booleans['metrics_pass'] and
+            (LReport.Booleans['independent_case_pass'] = (I = 0)),
+            'Ancestry eligibility differs from declared overlap');
+        finally
+          LReport.Free;
+        end;
+      end
+      else
+      begin
+        LRejected := False;
+        try
+          EvaluateCaseFile(ADirectory + 'case.json');
+        except
+          on E: EAudio do
+          begin
+            Check(Pos(LReason, E.Message) > 0, 'Ancestry control rejected for wrong reason: ' +
+              E.Message);
+            LRejected := True;
+            WriteLn('Rejected ancestry control ', I, ': ', E.Message);
+          end;
+        end;
+        Check(LRejected, 'Incomplete, contradictory or exposed ancestry accepted');
+      end;
+    finally
+      LCase.Free;
+    end;
+  end;
+end;
+
+procedure PublishComparison(const ADirectory: String;
+  const ACase, AAnnotation, APolicy, AReference, APrediction: TJSONObject);
+var
+  LBinding: TJSONObject;
+  LLedger: TJSONObject;
+begin
+  LBinding := ACase.Objects['binding'];
+  LBinding.Strings['annotation_policy_sha256'] := Save(ADirectory, 'annotation.txt',
+    AAnnotation.FormatJSON);
+  LBinding.Strings['scoring_policy_sha256'] := Save(ADirectory, 'policy.json', APolicy.FormatJSON);
+  AReference.Strings['annotation_policy_sha256'] := LBinding.Strings['annotation_policy_sha256'];
+  AReference.Objects['clock'].Strings['scoring_policy_sha256'] :=
+    LBinding.Strings['scoring_policy_sha256'];
+  APrediction.Objects['clock'].Strings['scoring_policy_sha256'] :=
+    LBinding.Strings['scoring_policy_sha256'];
+  LBinding.Strings['reference_sha256'] := Save(ADirectory, 'reference.json', AReference.FormatJSON);
+  ACase.Strings['prediction_sha256'] := Save(ADirectory, 'prediction.json', APrediction.FormatJSON);
+  LLedger := Ledger(LBinding);
+  try
+    ACase.Strings['ledger_sha256'] := Save(ADirectory, 'ledger.json', LLedger.FormatJSON);
+  finally
+    LLedger.Free;
+  end;
+  Save(ADirectory, 'case.json', ACase.FormatJSON);
+end;
+
+procedure CheckProviderCases(const ADirectory: String);
+const
+  COutputs: array[0..11] of String = ('onsets', 'beats', 'tempo', 'key',
+    'part-ownership', 'harmony', 'harmony-changes', 'groove-events',
+    'groove-accent', 'groove-offset', 'sound-spectrum', 'sound-envelope');
+  CInputs: array[0..11] of String = ('annotated-recording', 'annotated-recording',
+    'annotated-recording', 'tonal-region', 'attributed-part', 'harmonic-region',
+    'harmonic-region', 'attributed-part', 'attributed-part', 'attributed-part',
+    'recorded-sound', 'recorded-sound');
+  CMetrics: array[0..11] of String = ('events', 'events', 'scalar', 'label',
+    'label', 'label', 'events', 'events', 'scalar', 'scalar', 'scalar', 'scalar');
+  CUnits: array[0..11] of String = ('source-frame', 'source-frame',
+    'microseconds-per-quarter', 'key-root-mode', 'part-note-identity', 'chord-identity',
+    'source-frame', 'source-frame', 'normalized-amplitude', 'quarter-note-offset',
+    'normalized-band-energy', 'normalized-amplitude');
+var
+  LCase: TJSONObject;
+  LAnnotation: TJSONObject;
+  LPolicy: TJSONObject;
+  LReference: TJSONObject;
+  LPrediction: TJSONObject;
+  LReport: TJSONObject;
+  LRow: TJSONObject;
+  LRejected: Boolean;
+  I: Integer;
+  J: Integer;
+begin
+  for I := Low(COutputs) to High(COutputs) do
+  begin
+    LCase := Fixture(ADirectory, CMetrics[I]);
+    LAnnotation := Annotation(COutputs[I], CInputs[I]);
+    LPolicy := nil;
+    LReference := nil;
+    LPrediction := nil;
+    try
+      LPolicy := ReadDocument(ADirectory + 'policy.json');
+      LReference := ReadDocument(ADirectory + 'reference.json');
+      LPolicy.Strings['unit'] := CUnits[I];
+      LPolicy.Floats['minimum_coverage'] := 0.8;
+      LPolicy.Floats['minimum_precision'] := 0.98;
+      if I = 1 then
+      begin
+        LAnnotation.Strings['scope_id'] := 'authored-quarter-note-beats';
+        LPolicy.Int64s['tolerance_frames'] := 240; { 30 ms at 8 kHz, independently fixed. }
+      end;
+      if I = 4 then
+      begin
+        LPolicy.Arrays['vocabulary'].Strings[0] := 'bass:midi-60';
+        LPolicy.Arrays['vocabulary'].Strings[1] := 'lead:midi-60';
+        LAnnotation.Strings['scope_id'] := 'independently-attributed-ownership';
+      end;
+      if I = 5 then
+      begin
+        LPolicy.Arrays['vocabulary'].Strings[0] := 'C-major';
+        LPolicy.Arrays['vocabulary'].Strings[1] := 'C-minor';
+      end;
+      if CMetrics[I] = 'events' then
+      begin
+        LReference.Arrays['observations'].Clear;
+        LReference.Arrays['observations'].Add(1000);
+        LReference.Arrays['observations'].Add(3000);
+        LReference.Arrays['observations'].Add(6000);
+      end
+      else if I = 2 then
+      begin
+        LReference.Arrays['observations'].Objects[0].Floats['value'] := 500000;
+        LReference.Arrays['observations'].Objects[1].Floats['value'] := 600000;
+        LPolicy.Floats['scalar_tolerance'] := 10000;
+      end;
+      for J := 0 to 2 do
+      begin
+        FreeAndNil(LPrediction);
+        LPrediction := ReadDocument(ADirectory + 'prediction.json');
+        LPrediction.Delete('observations');
+        LPrediction.Add('observations', LReference.Arrays['observations'].Clone);
+        if J > 0 then
+        begin
+          if CMetrics[I] = 'events' then
+          begin
+            if J = 1 then
+            begin
+              LPrediction.Arrays['observations'].Int64s[0] := 1500;
+            end
+            else
+            begin
+              LPrediction.Arrays['observations'].Delete(0);
+            end;
+          end
+          else
+          begin
+            LRow := LPrediction.Arrays['observations'].Objects[0];
+            if J = 2 then
+            begin
+              LRow.Delete('value');
+              LRow.Strings['state'] := 'unknown';
+            end
+            else if I = 2 then
+            begin
+              LRow.Floats['value'] := 700000;
+            end
+            else
+            begin
+              LRow.Integers['value'] := 1;
+            end;
+          end;
+        end;
+        PublishComparison(ADirectory, LCase, LAnnotation, LPolicy, LReference, LPrediction);
+        LReport := TJSONObject(GetJSON(EvaluateCaseFile(ADirectory + 'case.json')));
+        try
+          Check(LReport.Booleans['metrics_pass'] = (J = 0), 'Provider comparison gate differs');
+          Check(LReport.Booleans['independent_case_pass'] = (J = 0),
+            'Provider reference-breaking case accepted');
+          if (CMetrics[I] <> 'events') and (J > 0) then
+          begin
+            Check((LReport.Objects['scores'].Integers['wrong'] = Ord(J = 1)) and
+              (LReport.Objects['scores'].Integers['unknown_active'] = Ord(J = 2)),
+              'Wrong provider output and missing output were conflated');
+          end;
+          Save(ADirectory, COutputs[I] + '-' + IntToStr(J) + '-report.json', LReport.FormatJSON);
+        finally
+          LReport.Free;
+        end;
+        if (I = 1) and (J = 1) then
+        begin
+          LAnnotation.Strings['purpose'] := 'diagnostic';
+          LPolicy.Int64s['tolerance_frames'] := 560; { Diagnostic 70 ms includes the 500-frame error. }
+          PublishComparison(ADirectory, LCase, LAnnotation, LPolicy, LReference, LPrediction);
+          LReport := TJSONObject(GetJSON(EvaluateCaseFile(ADirectory + 'case.json')));
+          try
+            Check(LReport.Booleans['metrics_pass'] and
+              not LReport.Booleans['independent_case_pass'],
+              'Relaxed diagnostic timing became primary acceptance');
+          finally
+            LReport.Free;
+          end;
+          LAnnotation.Strings['purpose'] := 'primary';
+          LPolicy.Int64s['tolerance_frames'] := 240;
+        end;
+      end;
+      { Preserve a valid evidence graph: this must reject the semantic mismatch,
+        not merely an out-of-date document hash. }
+      LPolicy.Strings['unit'] := 'wrong-musical-unit';
+      PublishComparison(ADirectory, LCase, LAnnotation, LPolicy, LReference, LPrediction);
+      LRejected := False;
+      try
+        EvaluateCaseFile(ADirectory + 'case.json');
+      except
+        on E: EAudio do
+        begin
+          Check(Pos('does not match the scoring metric and unit', E.Message) > 0,
+            'Provider contract rejected for unrelated reason: ' + E.Message);
+          LRejected := True;
+        end;
+      end;
+      Check(LRejected, 'Incompatible provider unit accepted');
+    finally
+      LPrediction.Free;
+      LReference.Free;
+      LPolicy.Free;
+      LAnnotation.Free;
+      LCase.Free;
+    end;
+  end;
+end;
+
+procedure CheckAnnotationFailures(const ADirectory: String);
+var
+  LCase: TJSONObject;
+  LAnnotation: TJSONObject;
+  LPolicy: TJSONObject;
+  LReference: TJSONObject;
+  LPrediction: TJSONObject;
+  LReason: String;
+  LRejected: Boolean;
+  I: Integer;
+begin
+  for I := 0 to 4 do
+  begin
+    if I = 4 then
+    begin
+      LCase := Fixture(ADirectory, 'events');
+    end
+    else
+    begin
+      LCase := Fixture(ADirectory, 'scalar');
+    end;
+    LAnnotation := nil;
+    LPolicy := nil;
+    LReference := nil;
+    LPrediction := nil;
+    try
+      LAnnotation := ReadDocument(ADirectory + 'annotation.txt');
+      LPolicy := ReadDocument(ADirectory + 'policy.json');
+      LReference := ReadDocument(ADirectory + 'reference.json');
+      LPrediction := ReadDocument(ADirectory + 'prediction.json');
+      case I of
+        0:
+          begin
+            LAnnotation.Strings['input_class'] := 'unsupported-input';
+            LReason := 'does not match the scoring metric and unit';
+          end;
+        1:
+          begin
+            LAnnotation.Strings['reference_method'] := 'evaluated-estimator';
+            LReason := 'Unsupported reference method';
+          end;
+        2:
+          begin
+            LAnnotation.Strings['scope_id'] := ' ';
+            LReason := 'nonempty bounded text';
+          end;
+        3:
+          begin
+            LPrediction.Arrays['observations'].Objects[0].Floats['value'] := 1.1;
+            LReason := 'Normalized comparison value outside';
+          end;
+        else
+          begin
+            LAnnotation.Strings['output'] := 'beats';
+            LPolicy.Int64s['tolerance_frames'] := 560;
+            LReason := 'Primary beat comparison requires the fixed 30-ms tolerance';
+          end;
+      end;
+      PublishComparison(ADirectory, LCase, LAnnotation, LPolicy, LReference, LPrediction);
+      LRejected := False;
+      try
+        EvaluateCaseFile(ADirectory + 'case.json');
+      except
+        on E: EAudio do
+        begin
+          Check(Pos(LReason, E.Message) > 0, 'Annotation control rejected for unrelated reason: ' +
+            E.Message);
+          LRejected := True;
+        end;
+      end;
+      Check(LRejected, 'Invalid musical annotation contract accepted');
+    finally
+      LPrediction.Free;
+      LReference.Free;
+      LPolicy.Free;
+      LAnnotation.Free;
+      LCase.Free;
+    end;
+  end;
+end;
+
 procedure Run(const ADirectory: String);
 var
   LCase: TJSONObject;
@@ -302,6 +783,9 @@ var
 begin
   ForceDirectories(ADirectory);
   CheckPhraseCases(ADirectory);
+  CheckAncestryCases(ADirectory);
+  CheckProviderCases(ADirectory);
+  CheckAnnotationFailures(ADirectory);
   for I := 0 to 3 do
   begin
     case I of

@@ -290,69 +290,255 @@ begin
     'Evaluation evidence missing or changed: ' + ExtractFileName(APath));
 end;
 
-procedure CheckLedger(const ALedger: TJSONObject; const ABinding: TEvaluationBinding);
+procedure CheckDigest(const ADigest: String);
+var
+  I: Integer;
+begin
+  Require(Length(ADigest) = 64, 'Ledger identity requires lowercase SHA256');
+  for I := 1 to Length(ADigest) do
+  begin
+    Require(ADigest[I] in ['0'..'9', 'a'..'f'],
+      'Ledger identity requires lowercase SHA256');
+  end;
+end;
+
+procedure CheckLedger(const ALedger: TJSONObject; const ABinding: TEvaluationBinding;
+  const APredictionDigest: String);
+type
+  TAncestorNode = record
+    Digest: String;
+    GroupIndex: Integer;
+    Parents: array of Integer;
+  end;
 var
   LGroups: TJSONArray;
   LEstimators: TJSONArray;
   LSources: TJSONArray;
+  LArtifacts: TJSONArray;
+  LParents: TJSONArray;
   LRow: TJSONObject;
-  LGroupCount: Integer;
-  LEstimatorCount: Integer;
-  LFoundSource: Boolean;
+  LGroupIds: TStringList;
+  LSourceIds: TStringList;
+  LArtifactIds: TStringList;
+  LEstimatorIds: TStringList;
+  LNodes: array of TAncestorNode;
+  LSelected: array of Boolean;
+  LCandidate: TEvaluationBinding;
+  LDigest: String;
+  LGroupId: String;
+  LGroupIndex: Integer;
+  LIndex: Integer;
+  LParentIndex: Integer;
+  LEdgeCount: Integer;
   I: Integer;
   J: Integer;
+
+  function NewIndex: TStringList;
+  begin
+    Result := TStringList.Create;
+    Result.CaseSensitive := True;
+    Result.Sorted := True;
+  end;
+
+  procedure AddIndex(const AIndex: TStringList; const AKey: String;
+    const AValue: Integer);
+  begin
+    Require(AIndex.IndexOf(AKey) < 0, 'Duplicate evaluation ledger identity');
+    AIndex.AddObject(AKey, TObject(PtrInt(AValue)));
+  end;
+
+  function FindIndex(const AIndex: TStringList; const AKey: String): Integer;
+  var
+    LPosition: Integer;
+  begin
+    LPosition := AIndex.IndexOf(AKey);
+    Require(LPosition >= 0, 'Missing evaluation ledger ancestor or identity');
+    Result := PtrInt(AIndex.Objects[LPosition]);
+  end;
+
+  procedure SelectAncestors(const ARoot: String);
+  var
+    LNode: Integer;
+    LParent: Integer;
+  begin
+    for LNode := 0 to High(LSelected) do
+    begin
+      LSelected[LNode] := False;
+    end;
+    LSelected[FindIndex(LArtifactIds, ARoot)] := True;
+    { Parent-before-child order bounds traversal and excludes cycles without
+      recursion. Every selected ancestor is visited once per root. }
+    for LNode := High(LNodes) downto 0 do
+    begin
+      if LSelected[LNode] then
+      begin
+        for LParent := 0 to High(LNodes[LNode].Parents) do
+        begin
+          LSelected[LNodes[LNode].Parents[LParent]] := True;
+        end;
+      end;
+    end;
+  end;
+
+  procedure CheckSourceFamily(const ARoot: String);
+  var
+    LNode: Integer;
+  begin
+    SelectAncestors(ARoot);
+    Require(LSelected[FindIndex(LArtifactIds, ABinding.SourceSha256)],
+      'Preparation must bind the evaluated source');
+    for LNode := 0 to High(LNodes) do
+    begin
+      if LSelected[LNode] and (LNodes[LNode].GroupIndex >= 0) then
+      begin
+        Require(LNodes[LNode].GroupIndex = LGroupIndex,
+          'Prepared source ancestry crosses declared recording families');
+      end;
+    end;
+  end;
+
 begin
-  Fields(ALedger, 'format,groups,estimators');
+  CheckDigest(APredictionDigest);
+  Fields(ALedger, 'format,groups,estimators,artifacts');
   Require(TextField(ALedger, 'format') = 'pythian-evaluation-ledger',
     'Unexpected evaluation ledger format');
   LGroups := TJSONArray(Item(ALedger, 'groups', jtArray));
   LEstimators := TJSONArray(Item(ALedger, 'estimators', jtArray));
-  Require((LGroups.Count <= 4096) and (LEstimators.Count <= 4096),
+  LArtifacts := TJSONArray(Item(ALedger, 'artifacts', jtArray));
+  Require((LGroups.Count > 0) and (LGroups.Count <= 4096) and
+    (LEstimators.Count > 0) and (LEstimators.Count <= 4096) and
+    (LArtifacts.Count > 0) and (LArtifacts.Count <= 4096),
     'Evaluation ledger exceeds entry budget');
-  LGroupCount := 0;
-  LEstimatorCount := 0;
-  for I := 0 to LGroups.Count - 1 do
-  begin
-    LRow := ObjectAt(LGroups, I);
-    Fields(LRow, 'group_id,group_verified,previously_used_for_tuning,partition,sources');
-    LSources := TJSONArray(Item(LRow, 'sources', jtArray));
-    LFoundSource := False;
-    for J := 0 to LSources.Count - 1 do
+  LGroupIds := NewIndex;
+  LSourceIds := NewIndex;
+  LArtifactIds := NewIndex;
+  LEstimatorIds := NewIndex;
+  try
+    for I := 0 to LGroups.Count - 1 do
     begin
-      Require(LSources.Items[J].JSONType = jtString, 'Ledger source must be a hash');
-      if LSources.Strings[J] = ABinding.SourceSha256 then
+      LRow := ObjectAt(LGroups, I);
+      Fields(LRow, 'group_id,group_verified,previously_used_for_tuning,partition,sources');
+      LCandidate := ABinding;
+      LCandidate.GroupId := TextField(LRow, 'group_id');
+      LCandidate.GroupVerified := BoolField(LRow, 'group_verified');
+      LCandidate.PreviouslyUsedForTuning := BoolField(LRow, 'previously_used_for_tuning');
+      LCandidate.Partition := Partition(TextField(LRow, 'partition'));
+      ValidateEvaluationBinding(LCandidate);
+      AddIndex(LGroupIds, LCandidate.GroupId, I);
+      LSources := TJSONArray(Item(LRow, 'sources', jtArray));
+      Require((LSources.Count > 0) and
+        (LSourceIds.Count + LSources.Count <= 4096), 'Ledger source budget exceeded');
+      for J := 0 to LSources.Count - 1 do
       begin
-        Require(not LFoundSource, 'Duplicate source in evaluation ledger');
-        LFoundSource := True;
+        Require(LSources.Items[J].JSONType = jtString, 'Ledger source must be a hash');
+        CheckDigest(LSources.Strings[J]);
+        AddIndex(LSourceIds, LSources.Strings[J], I);
       end;
     end;
-    if TextField(LRow, 'group_id') = ABinding.GroupId then
+    LGroupIndex := FindIndex(LGroupIds, ABinding.GroupId);
+    Require(FindIndex(LSourceIds, ABinding.SourceSha256) = LGroupIndex,
+      'Evaluation source belongs to another family');
+    LRow := ObjectAt(LGroups, LGroupIndex);
+    Require((BoolField(LRow, 'group_verified') = ABinding.GroupVerified) and
+      (BoolField(LRow, 'previously_used_for_tuning') = ABinding.PreviouslyUsedForTuning) and
+      (Partition(TextField(LRow, 'partition')) = ABinding.Partition),
+      'Evaluation family exposure or partition differs from ledger');
+    for I := 0 to LEstimators.Count - 1 do
     begin
-      Inc(LGroupCount);
-      Require(LFoundSource, 'Source absent from declared evaluation family');
-      Require((BoolField(LRow, 'group_verified') = ABinding.GroupVerified) and
-        (BoolField(LRow, 'previously_used_for_tuning') = ABinding.PreviouslyUsedForTuning) and
-        (Partition(TextField(LRow, 'partition')) = ABinding.Partition),
-        'Evaluation family exposure or partition differs from ledger');
-    end
-    else
-    begin
-      Require(not LFoundSource, 'Evaluation source belongs to another family');
+      LRow := ObjectAt(LEstimators, I);
+      Fields(LRow, 'estimator_sha256,training_overlap');
+      LDigest := TextField(LRow, 'estimator_sha256');
+      CheckDigest(LDigest);
+      AddIndex(LEstimatorIds, LDigest, I);
+      Overlap(TextField(LRow, 'training_overlap'));
     end;
-  end;
-  for I := 0 to LEstimators.Count - 1 do
-  begin
-    LRow := ObjectAt(LEstimators, I);
-    Fields(LRow, 'estimator_sha256,training_overlap');
-    if TextField(LRow, 'estimator_sha256') = ABinding.EstimatorSha256 then
+    LRow := ObjectAt(LEstimators, FindIndex(LEstimatorIds, ABinding.EstimatorSha256));
+    Require(Overlap(TextField(LRow, 'training_overlap')) =
+      ABinding.EstimatorTrainingOverlap, 'Estimator exposure differs from ledger');
+    SetLength(LNodes, LArtifacts.Count);
+    SetLength(LSelected, LArtifacts.Count);
+    LEdgeCount := 0;
+    for I := 0 to LArtifacts.Count - 1 do
     begin
-      Inc(LEstimatorCount);
-      Require(Overlap(TextField(LRow, 'training_overlap')) =
-        ABinding.EstimatorTrainingOverlap, 'Estimator exposure differs from ledger');
+      LRow := ObjectAt(LArtifacts, I);
+      Fields(LRow, 'sha256,group_id,parents');
+      LDigest := TextField(LRow, 'sha256');
+      CheckDigest(LDigest);
+      LNodes[I].Digest := LDigest;
+      LGroupId := TextField(LRow, 'group_id');
+      LNodes[I].GroupIndex := -1;
+      if LGroupId <> '' then
+      begin
+        LNodes[I].GroupIndex := FindIndex(LGroupIds, LGroupId);
+        Require(FindIndex(LSourceIds, LDigest) = LNodes[I].GroupIndex,
+          'Artifact recording family differs from source registry');
+      end
+      else
+      begin
+        Require(LSourceIds.IndexOf(LDigest) < 0,
+          'Recording artifact cannot hide its family');
+      end;
+      LParents := TJSONArray(Item(LRow, 'parents', jtArray));
+      Inc(LEdgeCount, LParents.Count);
+      Require(LEdgeCount <= 32768, 'Evaluation ancestry edge budget exceeded');
+      SetLength(LNodes[I].Parents, LParents.Count);
+      for J := 0 to LParents.Count - 1 do
+      begin
+        Require(LParents.Items[J].JSONType = jtString, 'Ancestor must be a digest');
+        LParentIndex := FindIndex(LArtifactIds, LParents.Strings[J]);
+        { Canonical parent order also rejects duplicate dependencies. }
+        if J > 0 then
+        begin
+          Require(LParentIndex > LNodes[I].Parents[J - 1],
+            'Artifact parents must be unique in ledger order');
+        end;
+        LNodes[I].Parents[J] := LParentIndex;
+      end;
+      AddIndex(LArtifactIds, LDigest, I);
     end;
+    for I := 0 to LSourceIds.Count - 1 do
+    begin
+      FindIndex(LArtifactIds, LSourceIds[I]);
+    end;
+    for I := 0 to LEstimatorIds.Count - 1 do
+    begin
+      LIndex := FindIndex(LArtifactIds, LEstimatorIds[I]);
+      Require(LNodes[LIndex].GroupIndex < 0, 'Estimator cannot be a source recording');
+    end;
+    CheckSourceFamily(ABinding.SourceSha256);
+    CheckSourceFamily(ABinding.PreparationSha256);
+    SelectAncestors(ABinding.ReferenceSha256);
+    Require(LSelected[FindIndex(LArtifactIds, ABinding.SourceSha256)] and
+      LSelected[FindIndex(LArtifactIds, ABinding.PreparationSha256)] and
+      LSelected[FindIndex(LArtifactIds, ABinding.AnnotationPolicySha256)],
+      'Reference ancestry must bind source, preparation and annotation policy');
+    for I := 0 to High(LNodes) do
+    begin
+      if LSelected[I] then
+      begin
+        Require((LNodes[I].Digest <> ABinding.EstimatorSha256) and
+          (LNodes[I].Digest <> APredictionDigest),
+          'Reference ancestry includes the evaluated estimator or its prediction');
+      end;
+    end;
+    SelectAncestors(ABinding.EstimatorSha256);
+    for I := 0 to High(LNodes) do
+    begin
+      if LSelected[I] and (LNodes[I].GroupIndex >= 0) then
+      begin
+        LRow := ObjectAt(LGroups, LNodes[I].GroupIndex);
+        Require(Partition(TextField(LRow, 'partition')) <> epEvaluation,
+          'Estimator ancestry includes an evaluation recording family');
+        Require(ABinding.EstimatorTrainingOverlap <> etoNotApplicable,
+          'Data-derived estimator cannot declare training overlap not applicable');
+      end;
+    end;
+  finally
+    LEstimatorIds.Free;
+    LArtifactIds.Free;
+    LSourceIds.Free;
+    LGroupIds.Free;
   end;
-  Require((LGroupCount = 1) and (LEstimatorCount = 1),
-    'Evaluation requires unique ledger family and estimator entries');
 end;
 
 procedure CheckClock(const AObject: TJSONObject; const ABinding: TEvaluationBinding;
@@ -381,6 +567,136 @@ begin
     Require(TextField(AObject, 'estimator_sha256') = ABinding.EstimatorSha256,
       'Prediction estimator differs');
   end;
+end;
+
+function CheckAnnotation(const AAnnotation, APolicy: TJSONObject;
+  const ABinding: TEvaluationBinding): Boolean;
+var
+  LOutput: String;
+  LInput: String;
+  LMetric: String;
+  LUnit: String;
+  LMethod: String;
+  LPurpose: String;
+  LText: String;
+  I: Integer;
+begin
+  Fields(AAnnotation, 'format,output,input_class,scope_id,purpose,reference_method,' +
+    'label_convention,time_convention,uncertainty_convention');
+  Require(TextField(AAnnotation, 'format') = 'pythian-evaluation-annotation',
+    'Unexpected annotation contract format');
+  for I := 0 to AAnnotation.Count - 1 do
+  begin
+    Require(AAnnotation.Items[I].JSONType = jtString, 'Annotation fields must be strings');
+    LText := AAnnotation.Items[I].AsString;
+    Require((Length(LText) <= 4096) and (Trim(LText) <> '') and
+      (Pos(#0, LText) = 0), 'Annotation convention must be nonempty bounded text');
+  end;
+  Require(Length(TextField(AAnnotation, 'scope_id')) <= 256,
+    'Annotation scope identifier exceeds budget');
+  LMethod := TextField(AAnnotation, 'reference_method');
+  Require((LMethod = 'authored') or (LMethod = 'independently-annotated') or
+    (LMethod = 'independently-measured'), 'Unsupported reference method');
+  LPurpose := TextField(AAnnotation, 'purpose');
+  Require((LPurpose = 'primary') or (LPurpose = 'diagnostic'),
+    'Unsupported comparison purpose');
+  Result := LPurpose = 'primary';
+  LOutput := TextField(AAnnotation, 'output');
+  LInput := '';
+  LMetric := '';
+  LUnit := '';
+  if LOutput = 'notes' then
+  begin
+    LInput := 'attributed-voice';
+    LMetric := 'notes';
+    LUnit := 'absolute-MIDI-semitone';
+  end
+  else if (LOutput = 'onsets') or (LOutput = 'beats') then
+  begin
+    LInput := 'annotated-recording';
+    LMetric := 'events';
+    LUnit := 'source-frame';
+    if LOutput = 'beats' then
+    begin
+      if Result then
+      begin
+        Require(IntField(APolicy, 'tolerance_frames') =
+          EvaluationToleranceFrames(ABinding.SampleRate, 30),
+          'Primary beat comparison requires the fixed 30-ms tolerance');
+      end
+      else
+      begin
+        Require(IntField(APolicy, 'tolerance_frames') =
+          EvaluationToleranceFrames(ABinding.SampleRate, 70),
+          'Diagnostic beat comparison requires the separate 70-ms tolerance');
+      end;
+    end;
+  end
+  else if LOutput = 'tempo' then
+  begin
+    LInput := 'annotated-recording';
+    LMetric := 'scalar';
+    LUnit := 'microseconds-per-quarter';
+  end
+  else if LOutput = 'key' then
+  begin
+    LInput := 'tonal-region';
+    LMetric := 'label';
+    LUnit := 'key-root-mode';
+  end
+  else if LOutput = 'part-ownership' then
+  begin
+    LInput := 'attributed-part';
+    LMetric := 'label';
+    LUnit := 'part-note-identity';
+  end
+  else if (LOutput = 'harmony') or (LOutput = 'harmony-changes') then
+  begin
+    LInput := 'harmonic-region';
+    if LOutput = 'harmony' then
+    begin
+      LMetric := 'label';
+      LUnit := 'chord-identity';
+    end
+    else
+    begin
+      LMetric := 'events';
+      LUnit := 'source-frame';
+    end;
+  end
+  else if (LOutput = 'groove-events') or (LOutput = 'groove-accent') or
+    (LOutput = 'groove-offset') then
+  begin
+    LInput := 'attributed-part';
+    LMetric := 'scalar';
+    LUnit := 'normalized-amplitude';
+    if LOutput = 'groove-events' then
+    begin
+      LMetric := 'events';
+      LUnit := 'source-frame';
+    end
+    else if LOutput = 'groove-offset' then
+    begin
+      LUnit := 'quarter-note-offset';
+    end;
+  end
+  else if (LOutput = 'sound-spectrum') or (LOutput = 'sound-envelope') then
+  begin
+    LInput := 'recorded-sound';
+    LMetric := 'scalar';
+    LUnit := 'normalized-amplitude';
+    if LOutput = 'sound-spectrum' then
+    begin
+      LUnit := 'normalized-band-energy';
+    end;
+  end
+  else
+  begin
+    Require(False, 'Unsupported musical comparison output');
+  end;
+  Require((TextField(AAnnotation, 'input_class') = LInput) and
+    (TextField(APolicy, 'metric') = LMetric) and (TextField(APolicy, 'unit') = LUnit),
+    'Annotation input/output does not match the scoring metric and unit');
 end;
 
 function Cells(const AArray: TJSONArray; const AMetric: String;
@@ -435,6 +751,28 @@ begin
         Require(LState = 'unsupported', 'Unknown evaluation cell state');
         Result[I].State := esUnsupported;
       end;
+    end;
+  end;
+end;
+
+procedure CheckScalarUnits(const ACells: TEvaluationCells; const AUnit: String);
+var
+  I: Integer;
+begin
+  for I := 0 to High(ACells) do
+  begin
+    if ACells[I].State <> esValue then
+    begin
+      Continue;
+    end;
+    if (AUnit = 'normalized-amplitude') or (AUnit = 'normalized-band-energy') then
+    begin
+      Require((ACells[I].ScalarValue >= 0) and (ACells[I].ScalarValue <= 1),
+        'Normalized comparison value outside [0,1]');
+    end
+    else if AUnit = 'microseconds-per-quarter' then
+    begin
+      Require(ACells[I].ScalarValue > 0, 'Tempo comparison requires positive quarter duration');
     end;
   end;
 end;
@@ -654,6 +992,11 @@ begin
         LMetric, LVocabulary.Count);
       LPredictionCells := Cells(TJSONArray(Item(APrediction, 'observations', jtArray)),
         LMetric, LVocabulary.Count);
+      if LCellMetric = emScalar then
+      begin
+        CheckScalarUnits(LReferenceCells, TextField(APolicy, 'unit'));
+        CheckScalarUnits(LPredictionCells, TextField(APolicy, 'unit'));
+      end;
       LCells := EvaluateCells(LReferenceCells, LPredictionCells,
         ABinding.FirstFrame, ABinding.EndFrame, LCellMetric, LScalarTolerance);
       Result.Add('cell_count', LCells.CellCount);
@@ -727,6 +1070,7 @@ var
   LReference: TJSONObject;
   LPrediction: TJSONObject;
   LPolicy: TJSONObject;
+  LAnnotation: TJSONObject;
   LLedger: TJSONObject;
   LReport: TJSONObject;
   LBinding: TEvaluationBinding;
@@ -737,11 +1081,13 @@ var
   LBase: String;
   LPass: Boolean;
   LIndependent: Boolean;
+  LPrimary: Boolean;
 begin
   LCase := nil;
   LReference := nil;
   LPrediction := nil;
   LPolicy := nil;
+  LAnnotation := nil;
   LLedger := nil;
   LReport := nil;
   LSource := nil;
@@ -760,14 +1106,16 @@ begin
     { Metadata stays in byte snapshots. Source stays open denying writes where
       supported, and is hashed again after scoring; concurrent mutation is unsupported. }
     VerifyDocument(FilePath(LBase, LFiles, 'preparation'), LBinding.PreparationSha256);
-    VerifyDocument(FilePath(LBase, LFiles, 'annotation_policy'), LBinding.AnnotationPolicySha256);
+    LAnnotation := ReadObject(FilePath(LBase, LFiles, 'annotation_policy'),
+      LBinding.AnnotationPolicySha256);
     VerifyDocument(FilePath(LBase, LFiles, 'estimator'), LBinding.EstimatorSha256);
     LReference := ReadObject(FilePath(LBase, LFiles, 'reference'), LBinding.ReferenceSha256);
     LPrediction := ReadObject(FilePath(LBase, LFiles, 'prediction'),
       TextField(LCase, 'prediction_sha256'));
     LLedger := ReadObject(FilePath(LBase, LFiles, 'ledger'), TextField(LCase, 'ledger_sha256'));
     LPolicy := ReadObject(FilePath(LBase, LFiles, 'scoring_policy'), LBinding.ScoringPolicySha256);
-    CheckLedger(LLedger, LBinding);
+    LPrimary := CheckAnnotation(LAnnotation, LPolicy, LBinding);
+    CheckLedger(LLedger, LBinding, TextField(LCase, 'prediction_sha256'));
     LSource := TFileStream.Create(FilePath(LBase, LFiles, 'source'),
       fmOpenRead or fmShareDenyWrite);
     LSourceSize := LSource.Size;
@@ -781,7 +1129,7 @@ begin
       (LReader.FrameCount = LBinding.SourceFrames), 'Evaluation WAV clock differs from case');
     LReport := TJSONObject.Create;
     LReport.Add('scores', Score(LReference, LPrediction, LPolicy, LBinding, LPass));
-    LIndependent := IsIndependentEvaluation(LBinding);
+    LIndependent := LPrimary and IsIndependentEvaluation(LBinding);
     LSource.Position := 0;
     Require((LSource.Size = LSourceSize) and
       (Sha256Stream(LSource, LSourceSize) = LBinding.SourceSha256),
@@ -793,6 +1141,7 @@ begin
     LReport.Add('ledger_sha256', TextField(LCase, 'ledger_sha256'));
     LReport.Add('metric', TextField(LPolicy, 'metric'));
     LReport.Add('unit', TextField(LPolicy, 'unit'));
+    LReport.Add('annotation', LAnnotation.Clone);
     LReport.Add('metrics_pass', LPass);
     LReport.Add('independent_eligible', LIndependent);
     LReport.Add('independent_case_pass', LPass and LIndependent);
@@ -804,6 +1153,7 @@ begin
     LReport.Free;
     LLedger.Free;
     LPolicy.Free;
+    LAnnotation.Free;
     LPrediction.Free;
     LReference.Free;
     LCase.Free;

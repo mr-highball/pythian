@@ -455,6 +455,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Ensemble stream demo compilation failed' }
     & (Join-Path $buildRoot "pythian.ensemble.demo$executableSuffix") (Join-Path $buildRoot 'ensemble.wav') '--verify'
     if ($LASTEXITCODE -ne 0) { throw 'Ensemble stream demo verification failed' }
+    & $compilerPath @adapterArgs 'tests/pythian.tests.voices.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Named independent-voice fixture compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.voices$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Named independent-voice checks failed' }
     & $compilerPath @adapterArgs 'tools/pythian.voices.demo.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Independent voices demo compilation failed' }
     & $compilerPath @adapterArgs 'tools/pythian.instrument.style.lpr'

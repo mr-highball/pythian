@@ -41,94 +41,63 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current work — shared musical validation — 2026-09-20
+## Current work — accepted evaluation and named voices — 2026-09-21
 
-Accepted [NS-6_delivery_01](TODO/DONE/NS-6_delivery_01.md): the
-[consumer/distribution contract](CONSUMER-CONTRACT.md) now fixes supported native
-targets, source stability, ownership/time/error/replay obligations, required
-inputs and the independent-consumer protocol. Reviewed against the public style
-constructors, session ownership, current package manifest and project policy;
-local links and task accounting pass. Credit is +8 NS-6 / +0.40 overall: NS-6 is
-58%, overall **56.3%**, with 47 open tasks and two DONE. This closes the contract
-definition, not final package acceptance or an independent musical-use verdict.
+Accepted [shared musical validation](TODO/DONE/NS-3_validation_01.md) and
+[named voice passes](TODO/DONE/NS-4_layers_01.md) after final two-target checks
+and criterion review. NS-3 moves from 30% to **32%** (+0.50 overall); NS-4 moves
+from 70% to **76%** (+0.90 overall). Together they move overall completion from
+57.0% to **58.4%**, with **44 open tasks and five DONE**. This is accepted scoring
+and explicit-role mechanics; recorded provider accuracy and listening remain open.
 
-Remote CI [35557200115](https://github.com/mr-highball/pythian/actions/runs/35557200115)
-passed at pushed source `0ecfe34997bca5b16c9fb22282fc62b1df03a491`, including
-Ubuntu 24.04/FPC 3.2.2 full integration and both extracted package consumers.
-The [delivery record](PACKAGING.md#first-remote-checkpoint) binds the terminal
-step results and uploaded artifact IDs. Unauthenticated artifact download returned
-401; no local inspection of those bytes/warnings is claimed. The unblocked
-NS-6_delivery_02 is being evaluated separately on that fixed source checkpoint.
+The [file evaluator](EVALUATION-OPERATOR.md) binds thirteen musical outputs to
+source/preparation/reference/policy/estimator bytes, explicit conventions, clocks,
+uncertainty and complete declared ancestry. Bounded parent traversal rejects
+inherited evaluation recordings, missing/cyclic parents, hidden families and
+references derived from the evaluated estimator. Normalized units and annotation
+input/output contracts are checked. Primary 30-ms beats remain distinct from
+70-ms diagnostics. The current structured annotation/ledger contracts replace
+their development drafts; no historical reader was retained.
 
-The maintained evaluator's new `notes` comparison connects cell coverage and
-precision to the existing interval scorer, preserving all four phrase gates.
-It checks interval/cell consistency and rejects weakened policy minima. A
-controlled duration error fails even with perfect sampled pitches and onset F1.
-Original recorded annotations and retained intervals reproduce both full phrase
-scores: flute still fails precision, violin passes development only. A Win32
-comparison initially rejected exact decimal gate values because real literals
-had Extended precision; explicit Double gate constants corrected the boundary
-without lowering it. Final checked Win32/Win64 evidence is recorded with the
-[operator](EVALUATION-OPERATOR.md). Fixed next-experiment hypotheses, cost budgets
-and stop/switch conditions are [declared](MUSICAL-EVALUATION.md#fixed-next-experiment-budgets),
-not executed or credited as improved learning.
+Checked stable FPC 3.2.2 Win32/Win64 evaluation fixtures pass wrong/unknown/rest,
+missing evidence, incompatible units/clocks/policies and exposure controls.
+Original exposed flute/violin annotations and retained predictions reproduce
+all 2997 centers and previous phrase metrics; full reports match across targets.
+The four phrase gates are unchanged. Flute still fails precision; violin passes
+development only. Unknown external training overlap remains ineligible. No new
+inference or held-out input was used. Fixed next pitch/metrical hypotheses,
+baselines, budgets and stop conditions are [declared](MUSICAL-EVALUATION.md#fixed-next-experiment-budgets).
 
-Review checkpoint: the user authorized committing and pushing the current draft
-to `hello-pythian` for ongoing review. Include maintained source, adapters, native
-tools, tests, governance and pinned dependencies; generated artifacts and private
-recordings remain ignored under `build/`. The draft semantic-provider extension
-still belongs to NS-4_layers_01 and remains unvalidated. This checkpoint is not
-a release or additional completion credit.
+The [named companion session](INDEPENDENT-VOICES.md#named-independent-voice-api)
+owns cloned harmony/rhythm/voice models and typed choices, actual WFC constraints,
+selective descendant regeneration and bounded collective proof passes. It retains
+unrelated accepted states and pending edits, with recovery after expected failure.
+The eight musical-layer bound remains. The demo uses the public API; an independent
+caller exercises role edits, detached ownership, chords/holds/rests and failures.
+Both target fixtures pass. Three target-matched demo scenarios reproduce all 24
+WAV/preview/MIDI/JSON artifacts against frozen source `0ecfe34`, without unfreed
+blocks. Commands, hashes and final criterion reviews are retained under
+`build/qa-batch-02/` and `build/semantic-voices/`.
 
-Athena updated to merged upstream `main` commit
-`909336d808f0c40b297426e23aa58426a75c6516`; the root gitlink is committed and the
-dependency checkout is clean. The project profile and local task flow now link
-the shared task-flow standard. This documentation-only dependency update earns
-no product completion credit. The active validation task continues below.
+The earlier accepted [consumer contract](TODO/DONE/NS-6_delivery_01.md) and
+[native checkpoint](TODO/DONE/NS-6_delivery_02.md) put NS-6 at **72%**. Clean stable
+Win32/Win64 full builds, all four extracted packages and successful Linux CI bind
+to source `0ecfe34`; [delivery evidence](NATIVE-CHECKPOINT.md) records notices,
+closure, exact artifacts and the uninspected remote-download limitation. Final
+accepted musical-workflow packages and an actual independent-use verdict remain.
 
-The active dependency remains `NS-5_corpus_02 -> NS-5_evaluation_01 ->
-NS-3_validation_01`. Added the maintained `pythian.evaluation` core unit for
-source/reference/preparation/policy/estimator identity and clock checks,
-independent-evaluation eligibility, ordered event matching and aligned label/
-scalar scoring with explicit uncertainty/rest accounting. The beat lab uses the
-shared event scorer. Its regular/polyphonic/changing-tempo JSON and WAV bytes
-remain identical to the saved pre-change executable's outputs.
+Current dependency: `NS-5_corpus_02 -> NS-5_evaluation_01`. Shared validation and
+corpus identity are now DONE. Return to the measurable style-card/comparator
+specification, then genre corpus coverage. The independent semantic-layer path
+can next address [provider compatibility](TODO/NS-4_layers_02.md). No genre style
+is accepted; current note/context failures are unchanged by these infrastructure
+and composition results.
 
-Checked stable Win32/Win64 core fixtures pass, including independent timing
-matching and failure boundaries; no unfreed blocks. The native recorded-vector
-audit reproduces all existing flute/violin cell counts and ratios. Flute still
-fails precision; no held-out data or inference settings changed. The normal core
-build now includes the fixture. [Contract and evidence](MUSICAL-EVALUATION.md),
-with artifacts under `build/shared-evaluation/`.
-
-NS-3_validation_01 remains open: complete actual source/reference-bound operator
-integration, per-provider annotation/admission checks and fixed next-experiment
-budgets. The file-bound integration described below advances this requirement;
-the remaining provider checks and budgets still prevent closure. Overall remains
-**56.3%**, reflecting only the separate accepted consumer contract. Do not
-package this partial checkpoint or resume the unrelated draft
-semantic-provider extension. Return to NS-5 after this prerequisite is accepted.
-
-Added maintained `pythian.evaluate` and its native file-bound evaluator. It hashes
-actual WAV/reference/prediction/policy/estimator files, verifies geometry and
-scope, checks a separate exposure ledger and reports numerical pass separately
-from independent-case eligibility. Event, label and scalar policies share the
-existing core scorer. Checked stable Win32/Win64 file fixtures pass with no
-unfreed blocks; the normal core build now includes the fixture and operator.
-
-The ignored native recorded-case exporter independently projects original notes
-and retained inferred intervals at all 2997 centers per recording. It verifies
-the old source/reference/inference hashes and reproduces prior counts and
-ratios: flute cell gates fail, violin cell gates pass, neither is independent
-evidence. Artifacts and commands are under `build/evaluation-operator/`;
-[operator contract](EVALUATION-OPERATOR.md). The initial export attempt hit its
-study reader's 1-MiB budget before scoring; the bounded 4-MiB rerun passed without
-changing source, inference or evaluation gates. No held-out recording was opened.
-
-Next: finish provider annotation/admission checks, including the remaining
-reference adapters and evidence ancestry. The unresolved note/timing approaches
-now have fixed experiment budgets. This implementation does not yet
-justify moving NS-3_validation_01 to DONE or increasing completion.
+Development checkpoints are authorized on `hello-pythian` for ongoing review.
+Publish validated source with its task/milestone integration; generated outputs
+and private recordings remain ignored under `build/`. This is not a release.
+Athena remains pinned to merged main `909336d808f0c40b297426e23aa58426a75c6516`;
+WFC remains `47fa3d8cb8f0f72bf53943eb5eb79758c8f22ce4`. No dependency source changed.
 
 ## Verified corpus identity checkpoint — 2026-09-20
 
@@ -146,7 +115,7 @@ claimed. [Complete evidence](CORPUS-EVALUATION.md#verified-identity-pilot).
 Task moved to DONE; +2 NS-5 points and +0.4 overall: **NS-5 27%, overall 55.9%**.
 The next corpus task is blocked by style cards, themselves blocked by shared
 validation: `NS-5_corpus_02 -> NS-5_evaluation_01 -> NS-3_validation_01`.
-Current work follows [NS-3_validation_01](TODO/NS-3_validation_01.md); return to
+Current work follows [NS-3_validation_01](TODO/DONE/NS-3_validation_01.md); return to
 NS-5 after resolving it. The unfinished semantic-provider edit remains separate.
 
 ## Task catalog checkpoint — 2026-09-20
@@ -183,7 +152,7 @@ needed for this documentation-only change.
 The interrupted extension in `pythian.wfc.providers` adds draft harmony/rhythm/
 voice choice decoding but has not been validated or integrated into a reusable
 voice session. It remains outside the last verified package and is explicitly
-owned by [NS-4_layers_01](TODO/NS-4_layers_01.md). No product source, vendor, branch
+owned by [NS-4_layers_01](TODO/DONE/NS-4_layers_01.md). No product source, vendor, branch
 or index changes were made while authoring this task catalog. Stop here for the
 user's review; do not automatically resume implementation or count any task DONE.
 

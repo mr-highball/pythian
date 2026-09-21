@@ -55,6 +55,7 @@ uses
   pythian.wfc.style,
   pythian.wfc.performance,
   pythian.wfc.grid,
+  pythian.wfc.voices,
   pythian.pitch,
   pythian.wfc.pitch,
   pythian.wfc.layers,
@@ -1287,65 +1288,15 @@ begin
   end;
 end;
 
-function VoiceGuideTokens(const AModel: TWfcSequenceModel;
-  const AGuide: TWfcMusicVoiceCell; const ARequirePitch,
-  ARequirePitchClasses: Boolean): TWfcModelTokens;
-var
-  LTokens: TWfcModelTokens;
-  LFrame: TWfcMusicEnsembleFrame;
-  LIndex: Integer;
-  LTone: Integer;
-  LMatches: Boolean;
-  LGuideFrame: TWfcMusicEnsembleFrame;
-  LGuideClasses: UTF8String;
-begin
-  LTokens := nil;
-  LGuideFrame := Default(TWfcMusicEnsembleFrame);
-  SetLength(LGuideFrame.Voices, 1);
-  LGuideFrame.Voices[0] := AGuide;
-  LGuideClasses := EncodeWfcMusicPitchClassSet(
-    ProjectWfcMusicEnsembleFrameToPitchClassSet(LGuideFrame, 12));
-  for LIndex := 0 to AModel.PublicTokenCount - 1 do
-  begin
-    LFrame := DecodeWfcMusicEnsembleFrame(AModel.PublicTokenAt(LIndex));
-    Require(Length(LFrame.Voices) = 1, 'Intensity mask requires a singleton voice model');
-    LMatches := (LFrame.Voices[0].Action = AGuide.Action) and
-      (Length(LFrame.Voices[0].Tones) = Length(AGuide.Tones));
-    if LMatches and ARequirePitchClasses then
-    begin
-      LMatches := EncodeWfcMusicPitchClassSet(
-        ProjectWfcMusicEnsembleFrameToPitchClassSet(LFrame, 12)) = LGuideClasses;
-    end;
-    if LMatches then
-    begin
-      for LTone := 0 to High(AGuide.Tones) do
-      begin
-        if (LFrame.Voices[0].Tones[LTone].Velocity <> AGuide.Tones[LTone].Velocity) or
-          (ARequirePitch and (LFrame.Voices[0].Tones[LTone].Pitch <> AGuide.Tones[LTone].Pitch)) then
-        begin
-          LMatches := False;
-          Break;
-        end;
-      end;
-    end;
-    if LMatches then
-    begin
-      SetLength(LTokens, Length(LTokens) + 1);
-      LTokens[High(LTokens)] := AModel.PublicTokenAt(LIndex);
-    end;
-  end;
-  Result := LTokens;
-end;
-
 function PlanPhrase(const AModels: TWfcMusicVoicesGraphConfig; const ASeed: TGraphSeed;
   const ADocument: TJSONObject; const AKeys: TKeyContexts;
   const ARhythm, AIntensity: String; const APitches: TPitchNotes;
   const AExactGuidePitches: Boolean): TWfcMusicVoicesGenerated;
 var
-  LGraph: TGraph;
-  LBoundaries: TWfcMusicVoicesBoundaries;
+  LSession: TNamedVoiceSession;
+  LMasks: TVoiceMasks;
   LGuide: TWfcMusicEnsembleFrame;
-  LOptions: TGraphNegotiationOptions;
+  LOptions: TVoiceSessionOptions;
   LReport: TGraphNegotiationReport;
   LProof: TWfcMusicVoicesValidationReport;
   LGenerated: TWfcMusicVoicesGenerated;
@@ -1360,12 +1311,20 @@ begin
     LCellCount := Length(ARhythm);
   end;
   Require(Length(AKeys) = LCellCount, 'Voice key contexts must cover every planned cell');
-  SetLength(LBoundaries, WfcMusicVoicesModelCount(AModels));
-  for LIndex := 0 to High(LBoundaries) do
+  SetLength(LMasks, WfcMusicVoicesModelCount(AModels));
+  for LIndex := 0 to High(LMasks) do
   begin
-    LBoundaries[LIndex] := MakeWfcSequenceInitialSegmentBoundary(True);
+    if (LIndex < 2) or (AIntensity <> '') or (Length(APitches) > 0) then
+    begin
+      SetLength(LMasks[LIndex], LCellCount);
+    end;
   end;
-  LGraph := BuildWfcMusicVoicesSegmentGraph(AModels, LCellCount, ASeed, LBoundaries);
+  LOptions := DefaultVoiceSessionOptions;
+  LOptions.CellCount := LCellCount;
+  LOptions.TicksPerQuarter := CPpq;
+  LOptions.StepTicks := CQuantum;
+  LOptions.Seed := ASeed;
+  LSession := TNamedVoiceSession.Create(AModels, CVoiceNames, LOptions);
   try
     for LCell := 0 to LCellCount - 1 do
     begin
@@ -1381,31 +1340,29 @@ begin
       begin
         LGuide := TrainingFrame(0, LCell - 32, AKeys[LCell]);
       end;
-      IntersectSequenceAllowedTokens(AModels.HarmonyModel, LGraph.PassGraph[0], LCell,
+      LMasks[0][LCell] := MakeWfcSequenceTokenConstraint(LCell,
         [EncodeWfcMusicPitchClassSet(ProjectWfcMusicEnsembleFrameToPitchClassSet(LGuide, 12))]);
-      IntersectSequenceAllowedTokens(AModels.RhythmModel, LGraph.PassGraph[1], LCell,
+      LMasks[1][LCell] := MakeWfcSequenceTokenConstraint(LCell,
         [EncodeWfcMusicRhythmFrame(ProjectWfcMusicEnsembleFrameToRhythm(LGuide))]);
       if (AIntensity <> '') or (Length(APitches) > 0) then
       begin
         for LVoice := 0 to High(AModels.Voices) do
         begin
-          IntersectSequenceAllowedTokens(AModels.Voices[LVoice].Model,
-            LGraph.PassGraph[LVoice + 2], LCell,
-            VoiceGuideTokens(AModels.Voices[LVoice].Model, LGuide.Voices[LVoice],
+          LMasks[LVoice + 2][LCell] := MakeWfcSequenceTokenConstraint(LCell,
+            VoiceChoiceTokens(AModels.Voices[LVoice].Model, LGuide.Voices[LVoice],
               (Length(APitches) > 0) and ((LVoice = 2) or AExactGuidePitches), Length(APitches) > 0));
         end;
       end;
     end;
-    LOptions := DefaultGraphNegotiationOptions;
-    LOptions.SolveOptions.MaxBacktracks := 512;
-    LOptions.MaxPassBacktracks := 32;
-    if not LGraph.TrySolveNegotiated(LOptions, LReport) then
+    for LIndex := 0 to High(LMasks) do
+    begin
+      LSession.SetConstraints(LSession.ProviderName(LIndex), LMasks[LIndex]);
+    end;
+    if not LSession.TryGenerate(LGenerated, LReport, LProof) then
     begin
       raise EAudio.CreateFmt('Bounded independent-voice phrase planning failed: status %d, pass %d, pass backtracks %d',
         [Ord(LReport.Status), LReport.FinalReport.FailedPassIndex, LReport.PassBacktracks]);
     end;
-    Require(CaptureSolvedWfcMusicVoices(AModels, LGraph, LBoundaries, LGenerated, LProof),
-      'Independent voice plan failed its musical/path proof');
     ADocument.Add('planning', 'Bounded independent-voice graph with shared harmony/rhythm guide, then streamed realization');
     if Length(APitches) > 0 then
     begin
@@ -1418,13 +1375,13 @@ begin
         ADocument.Add('accompaniment_policy', 'Authored bass/chord pitch-class contributions fixed per cell; actual voice models retain compatible voicings; measured melody keeps absolute pitch');
       end;
     end;
-    ADocument.Add('plan_max_backtracks', LOptions.SolveOptions.MaxBacktracks);
+    ADocument.Add('plan_max_backtracks', LOptions.MaxBacktracks);
     ADocument.Add('plan_max_pass_backtracks', LOptions.MaxPassBacktracks);
     ADocument.Add('plan_checked_models', LProof.CheckedModels);
     ADocument.Add('plan_checked_cells', LProof.CheckedCells);
     Result := LGenerated;
   finally
-    LGraph.Free;
+    LSession.Free;
   end;
 end;
 

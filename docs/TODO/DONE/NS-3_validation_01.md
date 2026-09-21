@@ -1,0 +1,52 @@
+# NS-3_validation_01 — Establish executable musical admission and evaluation contracts
+
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-3)
+
+**Description:**
+
+Make the existing evaluation requirements executable and consistent across note, timing, context, role, harmony, groove and sound providers. This task owns shared scoring/admission semantics, not the provider accuracy credited in later tasks.
+
+North star: NS-3. Outcome owner: WAV-VALIDATION.
+Completion credit: 2 goal percentage points (0.50 overall points).
+Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
+
+Starting evidence: [PHRASE-EVALUATION](../../PHRASE-EVALUATION.md) · [BEAT-TRACKING](../../BEAT-TRACKING.md) · [CORPUS-EVALUATION](../../CORPUS-EVALUATION.md).
+
+Completed 2026-09-21: the [shared native scorer](../../MUSICAL-EVALUATION.md) and
+[file operator](../../EVALUATION-OPERATOR.md) bind thirteen declared musical outputs
+to source/preparation/reference/policy/estimator bytes, compatible clocks,
+annotation conventions, uncertainty and complete declared exposure ancestry.
+Bounded event/cell/note comparisons preserve wrong, unknown, rest and unsupported
+denominators. Phrase gates remain 80% coverage, 98% precision, onset F1 0.80 and
+full-note F1 0.70; 30-ms primary beats remain separate from 70-ms diagnostics.
+Passing diagnostics or development cases cannot become independent acceptance.
+
+Final checked stable FPC 3.2.2 Win32/Win64 fixtures pass preserving/breaking
+references, unit/policy/clock mismatch, missing evidence, exposure and inherited
+evaluation-data rejection. Existing unchanged core/pitch evidence covers rest,
+overlap and boundary rounding. Original exposed flute/violin annotations and
+retained predictions reproduce all 2997 centers and prior phrase metrics; reports
+are byte-identical across targets, with no unfreed blocks. No inference or held-out
+recording was run. The flute still fails precision; violin passes development only.
+Fixed pitch/metrical hypotheses, baselines, candidate/ablation budgets and stop
+conditions are declared in the shared contract. Final criterion review and commands
+are retained under `build/qa-batch-02/`, with earlier evidence linked from the topics.
+
+This accepts executable scoring/admission semantics. Annotation truth, unrecorded
+ancestry, provider calibration, independent recording accuracy and style/listening
+quality remain their declared owners. Accepted +2 NS-3 points (+0.50 overall),
+moving NS-3 from 30% to 32%. The same integration accepts NS-4_layers_01 (+0.90),
+moving overall completion from 57.0% to 58.4%. Return to the now-unblocked
+[style-card specification](../NS-5_evaluation_01.md) on the originating NS-5 chain.
+
+**Acceptance Criteria:**
+
+- Declare each supported input class, musical output, unknown/unsupported state, coverage denominator, timing tolerance and error measure; preserve existing phrase thresholds rather than weakening them.
+- Bind references, annotation uncertainty, source/preparation hashes, policy and estimator identities to development and untouched evaluation partitions; document any known external-model training overlap.
+- Provide or consolidate native scoring and independent reference checks for the claimed outputs, including wrong versus unknown results, rests, overlap and boundary rounding.
+- Demonstrate that evaluation exposure, incompatible clocks/policies and absent references cannot silently produce an accepted result; treat tuned-on evaluation groups as development thereafter.
+- Record fixed experiment budgets and stop/switch criteria for the current failed approaches, with a reproducible baseline and one discriminating next hypothesis per experiment; diagnostics alone do not close a provider.
+
+**Blockers**
+
+- None. This task has no prerequisite task files; external inputs or decisions in its acceptance criteria still apply.

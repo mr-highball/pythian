@@ -15,7 +15,9 @@ automation workload accounting, transactional layer edits, explicit/fixed timing
 maps, saved generation preferences and the reusable saved-grid API.
 The [first remote checkpoint](#first-remote-checkpoint) now adds Linux integration
 and extracted-consumer evidence. Earlier snapshots below retain their dated scope.
-The full declared-target refresh and independent downstream-use acceptance remain open under
+The [accepted native checkpoint](NATIVE-CHECKPOINT.md) completes the declared
+stable Windows target refresh and binds the Linux result to the same source.
+Final accepted-workflow revalidation and independent downstream-use acceptance remain open under
 [WAV-05-DELIVERY](MILESTONES.md#wav-05-delivery) and
 [DELIVERY-RELEASE](MILESTONES.md#delivery-release).
 
@@ -38,9 +40,10 @@ remote step results, not local inspection of uploaded contents or warnings.
 This supersedes earlier statements that no remote run exists. It does not
 retroactively extend their local package evidence or establish independent
 musical-use acceptance. The later note-phrase evaluator edits also require their
-own validation. [NS-6_delivery_02](TODO/NS-6_delivery_02.md) remains open for its
-prerequisite and remaining exact-revision native-target/closure checks; no task
-credit is earned solely by this first CI success.
+own validation. [NS-6_delivery_02 is accepted](TODO/DONE/NS-6_delivery_02.md) after
+the complete [native checkpoint](NATIVE-CHECKPOINT.md), including its prerequisite
+and exact-revision native-target/closure checks. Its credit covers that full
+result, not this first CI success alone.
 
 ## Build and package
 

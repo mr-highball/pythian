@@ -1,6 +1,6 @@
 # Shared musical evaluation
 
-[Home](../README.md) · [Validation task](TODO/NS-3_validation_01.md) ·
+[Home](../README.md) · [Validation task](TODO/DONE/NS-3_validation_01.md) ·
 [Corpus protocol](CORPUS-EVALUATION.md) · [Work](WORK.md)
 
 `pythian.evaluation` supplies portable evidence-binding checks, ordered event
@@ -109,11 +109,22 @@ accurate or that all annotations and admission thresholds already exist.
 | Groove / annotated rhythmic parts | Per-role events, accents and microtiming relative to the annotated clock | Per-role timing/missing/extra events and scalar accent/microtiming error in declared units. Preserve rests and uncertain metrical interpretation. Joint relationships remain with groove work. |
 | Evolving sound / supported recorded source classes | Source-bound normalized spectral/envelope features and reconstruction evidence | Scalar error with finite units, coverage and explicit unsupported observations. Learned pitch must not substitute for timbre fit; listening/reconstruction and calibrated limits remain with timbre tasks. |
 
-Do not derive annotation truth from the estimator under evaluation. Per-provider
-annotation/vocabulary adapters, full ancestry verification, calibrated admission
-criteria and complete provider integration are still required by
-[NS-3_validation_01](TODO/NS-3_validation_01.md). The APIs above do not close that
-task on their own. Native inference execution/cost remains separately owned by
+Do not derive annotation truth from the estimator under evaluation. Accepted
+shared work in [NS-3_validation_01](TODO/DONE/NS-3_validation_01.md) binds each
+comparison to its declared input class, output/role, annotation convention and
+frozen vocabulary/unit, and exercises reference-preserving versus reference-breaking
+controls across those outputs. The structured annotation/input/output contract
+and its controls pass final checked stable Win32/Win64 verification. The file
+operator's declared ancestry checks are
+verified on checked stable Win32/Win64. Hash-bound declarations cannot prove
+an omitted source relationship or annotation truth.
+
+Calibration, independent recorded accuracy, production admission and provider
+integration remain with the named tempo, context, notes, parts, harmony, groove
+and timbre tasks. Their criteria must freeze before their independent evaluation;
+the shared task does not need their final accuracy results to finish. This keeps
+its existing scope of shared scoring/admission semantics separate from the
+provider outcomes that depend on it. Native inference execution/cost is owned by
 [NS-3_validation_02](TODO/NS-3_validation_02.md).
 
 ## Fixed next-experiment budgets

@@ -34,6 +34,109 @@ symbolic arrangement, optionally guided by measured WAV performance. A saved con
 and tempo providers, including profiles produced by explicit WAV admission.
 This does not infer independent voice notes from mixed recordings.
 
+## Named independent-voice API
+
+`TNamedVoiceSession` in
+[`pythian.wfc.voices`](../adapters/wfc/pythian.wfc.voices.pas) owns clones of the
+actual harmony model, ordered joint rhythm-action model and one singleton-frame
+model per caller-declared voice role. Pass names are `harmony`, `rhythm` and the
+supplied unique, case-sensitive role names. A name such as `bass` describes the
+caller's arrangement; it does not establish source separation or inferred role
+ownership. Pitches are explicitly absolute MIDI 0..127 in 12-TET, with each
+role's declared range retained. Chords retain every tone and velocity; holds and
+rests use the actual companion codecs and temporal admission checks.
+
+Construct with a `TWfcMusicVoicesGraphConfig`, the role-name array and
+`DefaultVoiceSessionOptions`. The graph configuration retains harmonic mode,
+per-role ranges and directed voice-pair gap/rest policies. The session copies
+models, role vectors and pair constraints; source models may then be freed.
+`CopyModel(Name)` returns a caller-owned independent model. `CopyProvider(Name)`
+returns owned typed harmony/rhythm/voice choices and the real musical projection
+dependencies, with `RoleId`, `PitchIdentity` and range fields for voice providers.
+These describe the definition, not pending masks or proven position feasibility.
+Ordinary assignment of returned dynamic-array records still shares arrays; copy
+before mutating an additional alias.
+
+The native session wraps `BuildWfcMusicVoicesSegmentGraph`, negotiated solving and
+`CaptureSolvedWfcMusicVoices` directly. It adds no replacement solver or flattened
+all-voice vocabulary. Exact harmony uses the companion's collective coverage
+witnesses, so independently in-palette voices cannot silently omit a required
+pitch class. Full capture independently checks latent paths, temporal holds,
+joint rhythm, ranges, pairs, harmony and witnesses before publishing a result.
+
+`SetConstraints(Name, Mask)` stages a complete, detached positional mask using
+typed choice tokens. Unknown roles/tokens, duplicate positions and out-of-scope
+positions reject without changing the previous pending mask. An empty token list
+at a position is an explicit contradiction; a nil complete mask clears that
+provider's additional restrictions. `CopyConstraints` and `HasPending` expose
+detached pending state. `VoiceChoiceTokens` filters a model by a typed voice cell,
+action, complete chord cardinality and velocities, with optional exact pitches or
+pitch classes; an empty match is never silently relaxed.
+
+`TryGenerate` accepts the initial result. After acceptance,
+`TryRegenerate(RootNames, Seed, Generated, Report, Proof)` requests the actual WFC
+descendant closure of those musical roots, including affected proof passes.
+Only pending masks inside that closure participate. **Unrelated pending masks
+remain pending**, and unrelated accepted tokens/latent states remain exact.
+This deliberately differs from the general layer session's automatic inclusion
+of unrelated pending edits: callers explicitly name every root they want applied.
+Voice-pair dependencies can make a lower role's edit affect higher roles; a leaf
+edit cannot change its harmony/rhythm or lower-role ancestors to become feasible.
+The selective report retains actual internal pass indices: harmony 0, rhythm 1,
+roles 2 onward, followed by coverage witnesses. Public names map to these indices.
+
+Expected solve failures preserve the caller's generated result, the session's
+accepted result and all pending edits; active domains restore their committed
+masks. The actual search report distinguishes contradiction and exhausted budgets.
+Replace or clear a rejected mask and retry with an explicit seed. Invalid requests
+publish no replacement. An internal capture-proof exception is an invariant
+failure, not a successful solve or a reason to weaken admission. The API does not
+promise hardware deadlines, persistent solver checkpoints or preservation of
+internal random-stream positions across an explicit seed change.
+
+Time is a caller-declared uniform PPQ grid: positive `TicksPerQuarter` and
+`StepTicks`, 1..1024 cells and a total tick extent fitting Integer. Defaults are
+32 cells, 480 PPQ, 240 ticks per cell, seed 731, observed end required, 512 solver
+backtracks and 32 pass backtracks. Disable `RequireObservedEnd` only for an
+explicit prefix request; all requests start at an observed model start. This API
+does not infer a beat grid or support changing-duration cells inside this solve.
+
+There are at most **eight musical layers**: two shared providers and 1..6 roles.
+At most 12 additional exact-harmony proof passes correspond to observed 12-TET
+classes, each with at most seven supplier values including absence. Their bound
+is 12288 proof cells / 86016 cell-value alternatives, separately from the musical
+state/cell budget of 262144. Model vocabularies are at most 4096 tokens each and
+order at most 64. Conservative preparation admission requires
+`sum(states)^2 * (max(order) + 1) <= 16777216`; source capacity inspection retains
+the existing aggregate 200000-visit and 4096-tone limits. Search budgets must be
+nonnegative. These are bounded offline operations and may allocate.
+
+### Accepted native integration — 2026-09-21
+
+The interrupted harmony/rhythm/voice descriptor draft was compared with the last
+verified provider-description package. That package ended at performance choices;
+the extra variants now have a real named-session consumer and explicit role/pitch
+metadata. No archive format changed. The demo's authored training, arrangement,
+reporting and rendering remain tool policy; reusable graph planning, capture,
+ownership, masks and generic voice-choice filtering now use the companion API.
+
+The new independent [voice fixture](../tests/pythian.tests.voices.lpr) exercises
+one-role changes, exact unrelated state and pending-mask preservation, detached
+models/results, chords/holds/rests, collective coverage rejection, range/pair
+rejection, recovery and the eight-layer boundary. Final checked stable FPC 3.2.2
+Win32/Win64 fixtures pass, with no owned compiler warnings or unfreed blocks.
+The maintained build now includes this independent caller.
+
+Prior target-matched demo executables from source `0ecfe34` are retained under
+`build/semantic-voices/baseline/`. Final comparisons pass all 24 WAV, preview WAV,
+MIDI and JSON identities across the ordinary demo, saved cell-style path and
+changing-tempo duration path on both targets, with identical seeds/options and
+frozen input artifacts. Two-target builds, commands, input hashes and replay logs
+remain under `build/semantic-voices/`; the criterion audit is under
+`build/qa-batch-02/`. No broad suite was repeated. This accepts
+[named voice mechanics](TODO/DONE/NS-4_layers_01.md), +6 NS-4 points (+0.90 overall),
+without claiming inferred roles or listening quality.
+
 ## Reusable capacity admission
 
 `WfcIndependentVoiceCapacities(models)` in
