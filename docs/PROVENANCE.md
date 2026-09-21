@@ -41,7 +41,7 @@ pulse markers. No source media or external implementation is bundled in the libr
 
 ## Attributed mixture development source
 
-The [part-evaluation task](TODO/NS-3_parts_01.md) uses one synthetic development
+The [part-evaluation task](TODO/DONE/NS-3_parts_01.md) uses one synthetic development
 group from [BabySlakh, record 4603870](https://zenodo.org/records/4603870), by Ethan
 Manilow, Gordon Wichern, Prem Seetharaman and Jonathan Le Roux, associated with
 *Cutting Music Source Separation Some Slakh* (WASPAA 2019). The source is

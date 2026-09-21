@@ -17,6 +17,7 @@
 | [NS-4_styles_02](NS-4_styles_02.md) — Selective semantic blend and further blend | 2026-09-21 | +4 NS-4 | +0.60 |
 | [NS-3_validation_02](NS-3_validation_02.md) — Bounded native observations with repaired progress supervision | 2026-09-21 | +5 NS-3 | +1.25 restored |
 | [NS-3_parts_04](NS-3_parts_04.md) — Maintained simultaneous-role scoring and reproducible controls | 2026-09-21 | +1 NS-3 | +0.25 |
+| [NS-3_parts_01](NS-3_parts_01.md) — Qualified external reference packet and curator acoustic intervals | 2026-09-21 | +1 NS-3 | +0.25 |
 
 Native execution's original allocation is restored after focused QA of the
 progress snapshot repair; reopening and repair do not create additional credit.

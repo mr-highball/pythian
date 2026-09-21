@@ -1,6 +1,6 @@
 # Derived stem/mix preparation
 
-[Part evaluation](PART-EVALUATION.md) · [Task](TODO/NS-3_parts_01.md)
+[Part evaluation](PART-EVALUATION.md) · [Task](TODO/DONE/NS-3_parts_01.md)
 
 This native operator prepares a separately identified mixture from
 hash-bound PCM16 stems. It does not reconstruct the publisher's original mix or

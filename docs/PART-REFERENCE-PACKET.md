@@ -1,7 +1,7 @@
 # Using the external part-reference packet
 
 [Evaluation](PART-EVALUATION.md) · [Preparation](PART-PREPARATION.md) ·
-[File operator](EVALUATION-OPERATOR.md) · [Task](TODO/NS-3_parts_01.md)
+[File operator](EVALUATION-OPERATOR.md) · [Task](TODO/DONE/NS-3_parts_01.md)
 
 The two-family packet combines bounded WAV sources, source-local annotations,
 explicit unknowns and reproducible native scoring cases. It supplies reference
@@ -11,8 +11,8 @@ assets and generated manifests remain under ignored `build/`.
 The accepted batch-26 container has 217 files / 29,908,178 bytes, manifest SHA256
 `1f0fd839398b144d2796c8ad6abd47216c60e5bebb44b1ab20bff94e7d4ae546`.
 Exact replay, preservation and all sixteen relocated CLI cases pass on checked
-stable Win64. This accepts packet assembly; missing acoustic annotations keep
-the full reference task open.
+stable Win64. The subsequently accepted curator supplement below supplies the
+remaining useful acoustic intervals and completes reference preparation.
 
 ## Contents and supported meaning
 
@@ -96,6 +96,59 @@ utilities; maintained library APIs and the scoring consumer are the reusable
 interface. Full raw spectra remain in their separately bound private caches;
 their manifests and annotation decisions accompany the packet. Reconstruction
 uses those caches; relocated scoring requires only the complete case packet.
+
+## Curator acoustic-reference supplement
+
+The additional recorded ensemble uses raw curator acoustic Notes paired with
+mono 16000-Hz WAVs. Its [prepared distribution](https://zenodo.org/records/10009959)
+matches the producer's published archive checksum. Original data attribution and
+CC0 notice, derivative attribution and full CC-BY-4.0 notice accompany the sources.
+The [curator documentation](https://labsites.rochester.edu/air/projects/URMP/URMP_doc.pdf)
+defines onset seconds, frequency in Hz and duration; the supplied score informs
+musical function but does not supply recorded note boundaries.
+
+All five source parts remain in the fixed-gain, exact stored-stem mixture.
+Primary review assigns one lead, one complementary chordal voice, one melodic
+doubling/fill voice as pitched other, and two foundational voices to bass.
+Reviewed function scope covers the first 20 seconds of a 30-second reference;
+the last 10 seconds remain unknown. This provides simultaneous role intervals,
+not a newly annotated three-note chordal source or an independent learner verdict.
+
+The importer retains raw event IDs, decimal times, frequency and cents residual,
+overlaps and unclipped endpoints. It maps onset by floor and offset by ceiling
+on the paired corpus's seconds clock. Curator gaps are acoustic annotation gaps,
+not asserted digital silence. Any event without stored activity is explicitly
+unsupported. Positive activity does not prove exact physical timing: historical
+resampler latency, normalization and original-sample equivalence remain unknown.
+The new family remains provisional, with reference-only exposure and unknown
+model-training overlap. The two previously qualified families remain unchanged.
+
+Reconstruction uses the bound source cache and three private Pascal programs,
+compiled with the same checked toolchain and `src/`/`tools/` paths described above:
+
+```text
+prepare build/role-urmp-prepared/NEW
+import PREPARED_MANIFEST PREPARED_SHA256 build/role-urmp-reference/NEW
+assemble IMPORT_MANIFEST IMPORT_SHA256 build/role-urmp-cases/NEW
+```
+
+Sources and fixed policies live in the corresponding parent directories. The
+prepared packet binds raw sources and exact construction; the import packet adds
+`mix-draft.json`, `mix-reference.json`, `event-support.json`, annotation/scoring
+policies and `ROLE-REVIEW.md`. The scoring supplement carries those bytes, source
+notices, its scenario ledger and two reference-derived copy/omit cases. Run:
+
+```text
+pythian.evaluate SUPPLEMENT/mix-copy-case.json
+pythian.evaluate SUPPLEMENT/mix-omit-case.json
+```
+
+Copy and omit exercise all four roles through the maintained consumer. Reference
+unknown/unsupported states remain unchanged; scripted prediction cells agree
+with their own events, including claims excluded by reference uncertainty.
+All accuracy and independence verdicts must
+remain false. Final source, replay, resource and annotation acceptance is recorded
+in the [evaluation evidence](PART-EVALUATION.md), separately from these commands.
 
 Use fresh output directories. A failure preserves inputs and accepted outputs;
 an incomplete directory without a completion manifest is not a packet. Replay

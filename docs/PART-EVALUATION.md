@@ -1,7 +1,7 @@
 # Simultaneous notes and role evaluation
 
 [Shared evaluation](MUSICAL-EVALUATION.md) · [File operator](EVALUATION-OPERATOR.md) ·
-[Task](TODO/NS-3_parts_01.md) · [Separation](SEPARATION.md)
+[Task](TODO/DONE/NS-3_parts_01.md) · [Separation](SEPARATION.md)
 
 `pythian.evaluation.parts` compares simultaneous MIDI pitch sets for explicitly
 named roles. Bass, chordal and lead parts can contain different numbers of notes
@@ -26,9 +26,90 @@ combines interval and center evidence; the center-only diagnostic below remains
 available for callers without complete event annotations.
 
 The [maintained measurement/control task](TODO/DONE/NS-3_parts_04.md) is accepted;
-the [external reference packet](TODO/NS-3_parts_01.md) remains open. Center agreement does
+the [external reference packet](TODO/DONE/NS-3_parts_01.md) is also accepted. Center agreement does
 not establish event timing, continuous identity through a crossing, acoustic
 source separation or an accepted mixture learner. Those criteria remain open.
+
+## Curator acoustic-reference supplement — 2026-09-21
+
+Batch 27 replaces the stopped source-ambiguity investigation with a bound
+recorded ensemble and its curator-reviewed acoustic notes. The
+[consumer guide](PART-REFERENCE-PACKET.md#curator-acoustic-reference-supplement)
+records construction, role meaning, scoring and reconstruction. This additional
+provisional family supplements the two qualified families; it does not change
+their identities, exposure decisions or frozen references.
+
+The acquired prepared archive is 521,421,107 bytes, SHA256
+`e6ac226c25a8cbc63f876a9314f87f16ada43b984da033474cf5754bb7e40819`,
+with the producer's matching MD5. Its pinned consumer pairs raw acoustic Notes
+with the supplied WAVs at zero declared offset. Historical resampler latency,
+normalization and original-sample equivalence remain unverified. Import uses the
+documented paired-corpus convention; neither source activity nor a copied
+prediction establishes exact physical onset/tail alignment.
+
+All five parts have 855254 frames at 16000 Hz. Native preparation applies fixed
+1/16 gain, checks each quantized sample and verifies the exact stored-stem sum
+with zero PCM16 residual. Raw Notes, frame-pitch annotations, scores, source
+metadata, full notices and source binding remain unchanged in the packet.
+Native import validates all 501 source note rows and retains 258 events in the
+first 30 seconds. Original decimal times, frequencies, cents, IDs, overlaps and
+unclipped endpoints remain in the evidence. The maintained reference builder
+produces 3000 center cells and four role timing entries. First-20-second role
+scope is reviewed; the final 10 seconds remain unknown.
+
+Primary score/annotation review identifies the recurring principal theme as
+lead, its complementary inner harmonic voice as chordal, melodic octave
+doubling/fills as pitched other, and both foundational octave voices as bass.
+The chordal reference is one harmonic voice, not a new three-note chord source.
+No voice is inferred from stereo channels, pitch rank or instrument name alone.
+Final QA finds these scoped functions and curator-convention preparation
+references defensible with their explicit limits; physical alignment and
+independent accuracy remain unverified.
+
+Preparation and import pass checked Win64 controls, exact all-file replay,
+resource and rejection-preservation checks with zero leaks. Their accepted
+manifests are respectively
+`4ee0a4ffb262fe86288c59bda49465ac0dfe3a07661bd7de4618c0ea73f2d156`
+and `8c8d8e90450412fb06dba415c414cbd6cb0f65e8d80b52899e7f500272b5a39a`.
+The first scoring assembly rejects an erroneous evaluation partition on a
+provisional family. Its repair assigns development partition in both case and
+ledger while retaining reference-only exposure and no prior tuning. It changes
+no reference, numerical gate or source. The failed output remains preserved.
+The second assembly exceeds the fixed memory bound with duplicate construction
+and evaluation JSON trees alive. Releasing construction trees before scoring
+resolves that excess; the next run exposes copied prediction events inconsistent
+with empty prediction centers in reference-unknown spans. The contract repair
+expands scripted centers from their own events and uses all-rest omission
+predictions. Reference bytes, uncertainty, raw endpoints and numerical gates
+remain unchanged. The earlier failures stay preserved, including the forced
+termination with no leak verdict. Final QA accepts the repaired supplement and
+AC2, completing the reference-preparation task. All reference bytes and 258 raw
+event identities/endpoints remain intact. Each role retains 1000 unknown centers.
+
+| Role | Known pitch-center pairs | Scorable timing events |
+| --- | ---: | ---: |
+| Bass | 2794 | 56 |
+| Chordal | 1453 | 32 |
+| Lead | 1189 | 29 |
+| Other | 1509 | 32 |
+
+Copy matches every scorable center/event; omission misses them. Unknown-reference
+claims remain unscorable, and all accuracy/independence verdicts remain false.
+The 53-file packet totals 13,145,367 bytes, manifest SHA256
+`a51914984c5e10d83056625d524f9b7eab1b943e610f3baed57983318881f960`.
+Runs take 17458/17312 ms with at most 122,494,976 sampled private bytes, within
+the unchanged 60-second/128-MiB/32-MiB limits. Every file replays exactly;
+rejection preserves accepted inputs/outputs; both relocated maintained CLI cases
+match their bundled reports. Successful and normal rejection runs have zero
+leaks. Three root assembly failures remain recorded; helper components have none.
+
+The scenario ledger retains external crossings, acoustic unison/multiplicity,
+bound quiet-part ownership and broader role/timing coverage as gaps. Existing
+authored controls and sparse external triad centers remain separately identified.
+Reference preparation can close with these explicit uncertainties under the
+frozen policy; actual attributed inference and independent accuracy still belong
+to parts_02/parts_03. Batch evidence is under `build/qa-batch-27/` and the three
+`build/role-urmp-*` preparation/reference/case directories.
 
 ## Two-family packet and reserved acoustic limits — 2026-09-21
 
@@ -92,7 +173,8 @@ No inference, listening, complete-reference or independent accuracy is claimed.
 ## Preparation coverage audit — 2026-09-21
 
 This inventory applies the [frozen policy](PART-MIXTURE-POLICY.md) to the current
-packet. The [external-packet task](TODO/NS-3_parts_01.md) owns the remaining work.
+packet. The [external-packet task](TODO/DONE/NS-3_parts_01.md) is accepted; remaining
+inference coverage belongs to [role learning](TODO/NS-3_parts_02.md).
 Authored controls establish measurement behavior, while external annotations
 must establish what sounds and which musical functions the source supplies.
 
@@ -789,7 +871,7 @@ cause. Preserve source-key identity separately from observed register, harmonic
 layers and uncertainty. The short S03 transition at marker 92768 straddles a
 256-ms window, so it does not supply a clean stationary reference. Overlapping
 tails and S00's bends likewise remain unresolved. These findings belong to the
-existing [reference preparation](TODO/NS-3_parts_01.md) criteria; they coordinate
+existing [reference preparation](TODO/DONE/NS-3_parts_01.md) criteria; they coordinate
 with [pitch identity](TODO/NS-3_notes_01.md) and
 [evolving sound](TODO/NS-3_timbre_01.md) without adding a dependency cycle.
 No learner correction or newly scored estimator follows from this review.

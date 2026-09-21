@@ -16,6 +16,15 @@ Use the [frozen mixture policy](../PART-MIXTURE-POLICY.md) for the initial packe
 scope and per-role development gates. Its reference preparation does not establish
 inference accuracy; retain all required scenarios and unresolved ownership.
 
+The [external packet](DONE/NS-3_parts_01.md) is accepted on 2026-09-21;
+[consumer instructions](../PART-REFERENCE-PACKET.md) include the qualified
+two-family baseline and curator acoustic supplement. Preparation uncertainty
+does not discharge this task's complete-reference development gates. Carry the
+scenario ledger's external crossing, unison, quiet-part ownership and broader
+role-coverage gaps into the applicable comparisons; retain provisional family
+status until qualified. The remaining prerequisite is accepted note inference
+through notes_03, not more source packaging.
+
 **Acceptance Criteria:**
 
 - Recover supported simultaneous events from mixes, with explicit pitch/time/ownership uncertainty and unknown roles where evidence is insufficient.
@@ -26,5 +35,5 @@ inference accuracy; retain all required scenarios and unresolved ownership.
 
 **Blockers**
 
-- [NS-3_parts_01.md](NS-3_parts_01.md)
+- [NS-3_parts_01.md](DONE/NS-3_parts_01.md)
 - [NS-3_notes_03.md](NS-3_notes_03.md)

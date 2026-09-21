@@ -41,10 +41,63 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current handoff — combined references and annotation limits — 2026-09-21
+## Current handoff — external reference task accepted — 2026-09-21
+
+Batch 27 closes the remaining AC2 of
+[parts_01, now DONE](TODO/DONE/NS-3_parts_01.md). Earlier batches accepted
+source/local-role binding, qualified development/evaluation families, frozen
+policy application and the two-family native packet. The
+[curator supplement](PART-EVALUATION.md#curator-acoustic-reference-supplement--2026-09-21)
+adds useful bass/chordal/lead/other intervals and sets with explicit uncertainty.
+All five contributors remain; native import validates 501 complete-source rows
+and retains 258 events in the first 30 seconds. Primary role review covers the
+first 20 seconds, leaving 1000 unknown centers per role. The family remains
+provisional, with reference-only exposure and unknown model-training overlap.
+The producer's paired-corpus seconds convention is retained; historical converter
+latency and original-sample equivalence remain unverified.
+
+Final checked stable Win64 QA accepts source preparation, import and assembly:
+exact replay, resources, rejection preservation, unchanged raw annotations and
+both relocated maintained CLI reports. The 53-file supplement totals 13,145,367
+bytes, manifest `a51914984c5e10d83056625d524f9b7eab1b943e610f3baed57983318881f960`.
+Copy matches 56/32/29/32 scorable timing events for bass/chordal/lead/other;
+omission misses them. Unknown-reference claims remain excluded and every
+accuracy/independence verdict stays false. Evidence is retained in
+`build/qa-batch-27/report.txt`; [consumer instructions](PART-REFERENCE-PACKET.md)
+cover reconstruction and scoring.
+
+Three root assembly failures remain recorded: an invalid provisional-family
+partition, excess memory from duplicate live JSON trees, and scripted prediction
+event/center disagreement in unknown reference spans. Repairs use development
+partition with reference-only exposure, free construction trees before scoring,
+and expand each script's center cells from its own events. No reference byte,
+event endpoint, source, scoring threshold or resource bound changes. Final runs
+take 17458/17312 ms and at most 122,494,976 sampled private bytes, within the
+60-second/128-MiB/32-MiB limits, with zero leaks. Forced termination in the failed
+memory run has no leak verdict. Helper failures remain zero; no live handles.
+
+All five criteria are accepted; the consecutive no-criterion-closure count is
+**zero**. Move and credit: +1 NS-3 point / +0.25 overall, **39% NS-3, 63.15%
+overall, 37 open / 13 DONE, 50 tasks and 96 acyclic dependency edges**, confirmed
+by the completion-document graph check. No new task or duplicate credit was introduced.
+Final documentation QA passes: links, preserved criteria, accounting, evidence,
+privacy and whitespace checks are complete; documentation is ready for publication.
+Remaining external crossings, unison, quiet-part ownership and broader reference
+coverage stay with actual role-learning/independent acceptance requirements.
+
+The previous goal turn made progress by preparing this bounded source/reference
+path; the intervening Athena check confirmed the already-published merged pin.
+Continue the same NS-5 prerequisite path: parts_02 is still blocked by
+[notes_03](TODO/NS-3_notes_03.md), which requires recorded identity and
+presence/boundaries. Reference preparation no longer blocks it. Before another
+note experiment, reassess the failed observation families and declare a genuinely
+discriminating observation, fixed controls and stop decision. Preserve untouched
+phrase material. Do not return to the stopped source registration/tail studies.
+
+## Previous checkpoint — combined references and annotation limits — 2026-09-21
 
 The preceding goal turn made progress at `1faaa670`: batch 25 closed AC1 of
-[parts_01](TODO/NS-3_parts_01.md). Exact revision CI run 35639071198 is verified
+[parts_01](TODO/DONE/NS-3_parts_01.md). Exact revision CI run 35639071198 is verified
 successful. Continue the same NS-5 prerequisite path. Batch 26 starts with zero
 consecutive batches without a criterion closure; it targets AC2/5 with reserved
 acoustic references and one runnable two-family packet.
@@ -99,7 +152,7 @@ scope, evidence identities, privacy and whitespace checks pass; ready for public
 
 The preceding goal turn made progress at `918de567`, publishing evaluation-family
 preparation and the merged Athena pin. Its exact revision CI run 35637230017 is
-verified successful. Continue [parts_01](TODO/NS-3_parts_01.md) on the NS-5
+verified successful. Continue [parts_01](TODO/DONE/NS-3_parts_01.md) on the NS-5
 prerequisite path; no completed extraction or infrastructure work is reopened.
 
 Batch 25 [reference review](PART-EVALUATION.md#reviewed-development-centers-and-reserved-worksheet--2026-09-21)
@@ -144,7 +197,7 @@ The four-document scope is checked and ready for branch publication.
 ## Previous checkpoint — evaluation-family preparation and Athena update — 2026-09-21
 
 The preceding goal turn made progress at `759b047`: the development packet is
-reproducible and AC3/4 of [parts_01](TODO/NS-3_parts_01.md) are accepted. Its exact
+reproducible and AC3/4 of [parts_01](TODO/DONE/NS-3_parts_01.md) are accepted. Its exact
 revision CI run 35635811634 is now verified successful.
 
 Batch 24 advances AC1/5 with the reserved family's complete contributor binding
@@ -298,7 +351,7 @@ closing require a changed approach or deliverable split before more investigatio
 ## Previous checkpoint — verified bass source correspondence — 2026-09-21
 
 The preceding goal turn made progress by publishing fixed acoustic support and
-register findings at `41b1500`. Continue [NS-3_parts_01](TODO/NS-3_parts_01.md) on the
+register findings at `41b1500`. Continue [NS-3_parts_01](TODO/DONE/NS-3_parts_01.md) on the
 NS-5 prerequisite path. The [original-to-trigger comparison](PART-EVALUATION.md#original-to-trigger-bass-correspondence--2026-09-21)
 now passes checked stable Win64 controls, exact replay and rejection preservation
 without leaks. All seven scoped bass events match exact rational onset/end and
@@ -335,7 +388,7 @@ mapping finding changes the annotation decision, not accepted learner completion
 ## Previous checkpoint — fixed acoustic support and register findings — 2026-09-21
 
 The preceding goal turn made progress by publishing the mixture policy and fixed
-worksheet review at `b826576`. Continue [NS-3_parts_01](TODO/NS-3_parts_01.md) on the
+worksheet review at `b826576`. Continue [NS-3_parts_01](TODO/DONE/NS-3_parts_01.md) on the
 NS-5 prerequisite path. Its new [acoustic review](PART-EVALUATION.md#fixed-acoustic-support-review--2026-09-21)
 observes only the already fixed first eight seconds of four development stems.
 The owned WAV/FFT primitives produce complete window powers; a separate native
@@ -374,7 +427,7 @@ scope reduction, dependency, threshold or completion credit is introduced.
 
 The prior implementation goal turn made progress: the reviewed-reference builder
 and fixed worksheet were published at `60c419e`. The intervening configuration
-check changed no project capability. Continue [NS-3_parts_01](TODO/NS-3_parts_01.md)
+check changed no project capability. Continue [NS-3_parts_01](TODO/DONE/NS-3_parts_01.md)
 on the NS-5 prerequisite path.
 
 The [mixture policy](PART-MIXTURE-POLICY.md) now freezes initial scope, required
@@ -418,7 +471,7 @@ advances the open preparation task; no completed learner or genre style is claim
 The preceding goal turn made progress by publishing verified derived preparation
 at `f8e24d2`; its
 [native CI passes](https://github.com/mr-highball/pythian/actions/runs/35622573252).
-Continue [NS-3_parts_01](TODO/NS-3_parts_01.md) on the NS-5 prerequisite path.
+Continue [NS-3_parts_01](TODO/DONE/NS-3_parts_01.md) on the NS-5 prerequisite path.
 
 The [reviewed-reference builder](PART-REFERENCE.md) now converts explicitly declared
 intervals/uncertainty into a complete regular center grid through a portable API
@@ -458,7 +511,7 @@ accepted attributed-mixture learner or a completed genre style.
 The preceding goal turn made progress by publishing maintained role controls and
 file-bound interval timing at `eb2b221`; its
 [native CI passes](https://github.com/mr-highball/pythian/actions/runs/35620690813).
-Continue [NS-3_parts_01](TODO/NS-3_parts_01.md) on the NS-5 prerequisite path.
+Continue [NS-3_parts_01](TODO/DONE/NS-3_parts_01.md) on the NS-5 prerequisite path.
 
 The maintained [derived preparation operator](PART-PREPARATION.md) now constructs
 separately identified external development stems/mix. Fixed 1/16 scaling followed
@@ -496,7 +549,7 @@ new credit or independent inference/style verdict follows from preparation.
 The preceding goal turn made progress by publishing the interval scorer and
 authored mixture controls at `2a649c9`; its
 [native CI passes](https://github.com/mr-highball/pythian/actions/runs/35618895403).
-Continue [NS-3_parts_01](TODO/NS-3_parts_01.md) on the NS-5 prerequisite path.
+Continue [NS-3_parts_01](TODO/DONE/NS-3_parts_01.md) on the NS-5 prerequisite path.
 
 The [maintained packet operator](PART-EVALUATION.md#maintained-packet-operator)
 now reproduces the accepted construction from tracked Pascal source and two
@@ -533,7 +586,7 @@ acceptance or genre-style credit is claimed.
 The previous goal turn made progress: the role-set evaluator and source preflight
 are published at `f5d520b`, whose
 [native CI passes](https://github.com/mr-highball/pythian/actions/runs/35616527307).
-Continue the same [attributed-mixture task](TODO/NS-3_parts_01.md), a prerequisite
+Continue the same [attributed-mixture task](TODO/DONE/NS-3_parts_01.md), a prerequisite
 of NS-5's semantic style goal. The external bundle's fixed preparation failure
 remains unchanged; no offset/gain correction is fitted to pass it.
 
@@ -578,7 +631,7 @@ The preceding diagnostic batch is published at `980bd27`; its
 [native CI passes](https://github.com/mr-highball/pythian/actions/runs/35613255915).
 That goal turn made progress by rejecting two measured representations; neither
 became an admitted musical provider. The current increment follows the ready
-[attributed-mixture prerequisite](TODO/NS-3_parts_01.md) of NS-5 layered styles.
+[attributed-mixture prerequisite](TODO/DONE/NS-3_parts_01.md) of NS-5 layered styles.
 
 The new portable [role-set scorer](PART-EVALUATION.md) measures simultaneous
 notes, uncertainty, per-role coverage/precision, ownership leakage and explicitly

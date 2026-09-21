@@ -1,7 +1,7 @@
 # Mixture reference and admission policy
 
 [Part evaluation](PART-EVALUATION.md) · [Reference preparation](PART-REFERENCE.md) ·
-[Preparation task](TODO/NS-3_parts_01.md) · [Learning](TODO/NS-3_parts_02.md) ·
+[Preparation task](TODO/DONE/NS-3_parts_01.md) · [Learning](TODO/NS-3_parts_02.md) ·
 [Independent acceptance](TODO/NS-3_parts_03.md)
 
 Freeze this policy on 2026-09-21, before using this packet to select or score a

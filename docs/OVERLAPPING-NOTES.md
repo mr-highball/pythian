@@ -1,7 +1,7 @@
 # Overlapping-note timing evaluation
 
 [Role evaluation](PART-EVALUATION.md) · [Shared evaluation](MUSICAL-EVALUATION.md) ·
-[Task](TODO/NS-3_parts_01.md)
+[Task](TODO/DONE/NS-3_parts_01.md)
 
 `pythian.evaluation.notes` supplies native interval scoring for one declared role
 at a time. It accepts chords, arbitrary input order and overlapping repeated

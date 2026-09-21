@@ -7,7 +7,7 @@
 Deliver the maintained measurement and authored-control foundation for mixture
 learning: source-bound per-role scoring, overlapping intervals, reviewed-reference
 construction and an executable native control packet. External musical annotation
-and recording-family qualification remain in [parts_01](../NS-3_parts_01.md).
+and recording-family qualification remain in [parts_01](NS-3_parts_01.md).
 
 North star: NS-3. Outcome owner: WAV-03-PARTS.
 Completion credit: 1 goal percentage points (0.25 overall points).

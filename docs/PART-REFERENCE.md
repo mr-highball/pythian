@@ -1,7 +1,7 @@
 # Preparing reviewed role references
 
 [Role evaluation](PART-EVALUATION.md) · [Interval timing](OVERLAPPING-NOTES.md) ·
-[File operator](EVALUATION-OPERATOR.md) · [Task](TODO/NS-3_parts_01.md)
+[File operator](EVALUATION-OPERATOR.md) · [Task](TODO/DONE/NS-3_parts_01.md)
 
 `pythian.evaluation.reference.BuildPartReferenceCells` expands explicitly supplied
 note intervals and complete annotation regions into the center cells consumed by
