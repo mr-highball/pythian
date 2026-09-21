@@ -58,18 +58,47 @@ Final QA accepts that scope separately from scripted scoring. AC1/3/4 are closed
 AC2/5 remain partial. The consecutive no-criterion-closure count resets to **zero**.
 The corrected center-policy schema failure remains recorded, without task credit.
 
-Next bounded deliverable: complete useful reserved acoustic references and the
-two-family source-bound scoring packet using the existing spectral/worksheet/
-reference tools. Preserve unsupported intervals and scenario gaps explicitly;
-do not infer complete notes from source gates or sparse centers. Construction,
-family identity and local-function preparation are finished. Keep reference-only
-exposure separate from tuning. The closing evidence is both families' usable
-reference coverage, full case/scenario inventory and reproducible native scoring.
+Batch 26 [combined packet](../PART-EVALUATION.md#two-family-packet-and-reserved-acoustic-limits--2026-09-21)
+adds one reserved bass center and retains unknown chordal registration, broad
+stabs and overlapping lead tails. Seven development and nine reserved cases are
+assembled with all contributors and a current scenario ledger. The first assembly
+failed duplicate content identities for two identical silent WAVs and leaked on
+that failure path; the repair retains both files and deduplicates hash nodes.
+Final QA accepts exact replay, preservation and all sixteen relocated native
+case reports, closing **AC5**. AC1/3/4/5 are now closed; **AC2 remains partial**.
+The consecutive no-criterion-closure count stays zero because a criterion closes,
+not because another diagnostic ran. No task credit is earned.
+The [consumer guide](../PART-REFERENCE-PACKET.md) describes use and
+reconstruction without implying a trained mixture learner.
 
-Stop condition: the seven-event digital-support investigation is finished. Retain
-its unresolved events; do not vary silence thresholds or reconstruct the source
-synthesizer. Any further observation must resolve a named missing reference
-case within a fixed budget. Apply the two-batch reassessment checkpoint in
+Next bounded deliverable: supply the missing acoustic chordal/lead references
+through an evidence-backed source with curator-reviewed acoustic note annotations.
+Verify availability, provenance, original clock and local musical function before
+admitting labels. Preserve uncertainty and scenario gaps and integrate through
+the existing packet/scorer; do not build another diagnostic chain. Construction,
+family review, exporter and scoring mechanisms are already available. Keep any
+new family provisional until qualified and reference-only exposure separate from
+tuning. Acceptance requires usable complete known sets/intervals where supported,
+accurate missing-coverage accounting and native replay, not another source listing.
+
+Selected next reference path: one predeclared short URMP ensemble with
+curator-corrected acoustic note annotations. Its original
+[Dryad deposit](https://datadryad.org/dataset/doi:10.5061/dryad.ng3r749)
+declares CC0; selective access to the original 12.10-GB archive is unverified.
+The accessible [prepared distribution](https://zenodo.org/records/10009959)
+contains a 521,421,107-byte derivative. Verify its actual preparation, source
+clock, gain and annotation mapping before using it; a filename containing a
+sample rate is not provenance. Bound acquisition to that archive and inspect
+only the selected ensemble and distribution documentation. Preserve existing
+held-out phrase material. New registration/tail classifiers are outside this
+deliverable. The reference task remains responsible for this gap; no new task or
+dependency credit is created by identifying a candidate.
+
+Stop condition: the current digital-support, registration, spectral-tail and
+historical-renderer investigations are finished. Retain their unresolved events;
+do not vary thresholds or add more views of these same source ambiguities.
+Any new reference work must resolve a named missing case with a fixed budget.
+Apply the two-batch reassessment checkpoint in
 [task flow](../TASKFLOW.MD#task-size-and-investigation-stop-points).
 
 **Acceptance Criteria:**

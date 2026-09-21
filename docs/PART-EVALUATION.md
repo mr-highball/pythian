@@ -30,6 +30,65 @@ the [external reference packet](TODO/NS-3_parts_01.md) remains open. Center agre
 not establish event timing, continuous identity through a crossing, acoustic
 source separation or an accepted mixture learner. Those criteria remain open.
 
+## Two-family packet and reserved acoustic limits — 2026-09-21
+
+The [consumer guide](PART-REFERENCE-PACKET.md) describes the combined development
+and evaluation packet and maintained native scoring commands. Seven development
+cases retain the accepted bass interval, sparse chordal/lead centers and unknown
+mixture ownership. Nine reserved cases add a single supported bass center and
+explicit all-unknown chordal/lead/mix challenges. Every present contributor,
+source/preparation identity and complete notice remains included. All predictions
+are reference-derived diagnostics; accuracy and independence verdicts stay false.
+
+Primary reference-only review uses the existing fixed first-eight-second spectral
+method, full views, accepted local functions and raw performance context. At
+source frame 79968, the reserved bass has a 74.21875-Hz fundamental with
+148.4375/222.65625/296.875/371.09375-Hz harmonics, supporting note 38 despite
+nominal key 50. The strongest peak is its third harmonic. This establishes one
+source-local center set, not an octave correction rule or acoustic interval.
+
+Other labels remain unknown for concrete reasons. The sustained chordal source
+has unresolved low components and registration; short chordal stabs have broad
+transient spectra. The lead's clear current harmonic family coexists with earlier
+tone tails, preventing a complete singleton set. Later markers also fall outside
+its reviewed function extent. The predeclared marker 85968 was off the existing
+grid and has no observation; it is recorded as unavailable and not replaced.
+The other five markers and all 800 actual grid positions retain their decisions.
+No score key-off becomes a rest, acoustic endpoint or full-mixture role label.
+
+The current `SCENARIOS.md` overlay accounts for every source and distinguishes
+authored controls, external development, reserved reference evidence and missing
+coverage. Crossings, acoustic same-pitch multiplicity, quantitative quiet-part
+ownership and complete reserved chordal/lead intervals remain gaps. Native
+packaging cannot discharge this annotation criterion. Stop further spectral,
+registration, digital-support or historical-renderer variants on these sources;
+the next reference action requires stronger acoustic annotations.
+
+Private evidence is under `build/role-evaluation-support/`,
+`build/role-evaluation-support-view/`, `build/role-evaluation-packet/`,
+`build/role-two-family-packet/` and `build/qa-batch-26/`. Export/view controls,
+exact replay, preservation and zero-leak checks pass within the unchanged bounds.
+The first reserved assembly rejects duplicate hash nodes for two byte-identical
+silent excerpts and leaks during exception cleanup. The repair preserves both
+files, deduplicates content identities and frees partial ledger state. Failed
+output remains retained. Final QA accepts the corrected 108-file reserved packet
+and 217-file combined container, exact replay, preservation, seven malformed-input
+controls and all sixteen relocated maintained CLI reports. All successful and
+rejection runs have zero leaks. The single bass annotation is reviewed separately
+from scripted metrics. This closes AC5; AC2's acoustic coverage remains partial.
+No task completion credit is earned.
+
+Reserved assembly takes 9040/8876 ms, at most 58,585,088 sampled private bytes,
+within 60 seconds/128 MiB/32 MiB output. Container assembly takes 2279/2325 ms,
+at most 5,038,080 sampled private bytes, within 60 seconds/128 MiB/64 MiB output.
+The complete container is 29,908,178 bytes. Manifest SHA256 identities are:
+
+- Reserved: `a650dd92b4a56c8df2d69500f8f3089ed8c37f4f8b33a35b6e61019c3eef85f7`.
+- Combined: `1f0fd839398b144d2796c8ad6abd47216c60e5bebb44b1ab20bff94e7d4ae546`.
+
+The failed root submission count remains one; the helper container has zero.
+No inference, listening, complete-reference or independent accuracy is claimed.
+
 ## Preparation coverage audit — 2026-09-21
 
 This inventory applies the [frozen policy](PART-MIXTURE-POLICY.md) to the current
@@ -39,14 +98,18 @@ must establish what sounds and which musical functions the source supplies.
 
 | Required scenario | Authored evidence | External development evidence | Separate evaluation evidence |
 | --- | --- | --- | --- |
-| Bass with lead/counterline | Four-role packet with explicit construction | Bass interval and four reviewed lead centers; complete lead timing remains unknown | Local bass/lead functions reviewed; acoustic notes/timing missing |
+| Bass with lead/counterline | Four-role packet with explicit construction | Bass interval and four reviewed lead centers; complete lead timing remains unknown | Local functions and one bass center; complete lead sets and timing missing |
 | Chordal accompaniment and simultaneous parts | Three-note chords with other roles | Two complete source-local triad center sets; complete chordal intervals and mixture sets unresolved | Two chordal source functions reviewed; acoustic pitch sets/timing missing |
 | Pitch-order crossing | Annotated endpoint reversal and wrong-owner control | No qualified crossing annotation | Missing |
 | Same-pitch overlap/unison | Two distinct overlapping lead events; coincident lead/chordal pitch | Symbolic concurrency reviewed; acoustic multiplicity/ownership not qualified | Missing |
 | Quiet pitched part beneath other material | Bound isolated energy contrast and abstention control | No accepted external energy/ownership case | Missing |
 | Rests and boundaries | Constructed gates, silent regions and false-rest control | One isolated bass interval exported; three source-local rests; joined/edge intervals unknown | Missing |
-| Uncertain ownership or extent | Explicit uncertain regions and exclusion controls | Unresolved source roles, registration and overlapping tails retained | All contributors retained with unresolved acoustic labels; case scoring missing |
+| Uncertain ownership or extent | Explicit uncertain regions and exclusion controls | Unresolved source roles, registration and overlapping tails retained | All contributors retained; sparse bass truth and unknown chordal/lead/full-mix cases |
 | Articulation/performance | Constructed attacks/releases | Raw bends/controllers retained; source interpretation unresolved | Raw performance/gates exported; acoustic interpretation missing |
+
+The latest [combined packet review](#two-family-packet-and-reserved-acoustic-limits--2026-09-21)
+adds a reserved bass center and runnable uncertainty cases. Its current scenario
+ledger supersedes the earlier inventory snapshot without filling missing rows.
 
 The development stems and exact derived mix are bound and verified. The second
 recording was initially provisional; the qualified initial recording families
@@ -57,9 +120,10 @@ and duplicate/derivative evidence, not a particular publisher attestation.
 
 Existing operators are sufficient to represent reviewed intervals, uncertain
 regions and center references. Both families' constructions and local functions
-are reviewed. The next packet work is useful reserved acoustic references,
-remaining scenario coverage and combined assembly. The bounded assembly below retains
-the existing evidence and applies its scoring policy. Reconstructing the historical
+are reviewed. The combined assembly below retains the existing evidence and
+applies its scoring policy. Remaining annotation work needs a stronger acoustic
+reference source; further views of the same unresolved registrations and tails
+are stopped. Reconstructing the historical
 renderer or perfectly transcribing all external stems is outside this preparation
 requirement; useful
 external role/scenario coverage and honest uncertainty remain required. These

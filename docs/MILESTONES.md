@@ -103,52 +103,31 @@ possible synthesis technique. Ecosystem adoption remains separately unmeasured.
 
 ## Active backlog
 
-The current [attributed-mixture prerequisite](TODO/NS-3_parts_01.md) now has
-checked Win32/Win64 [center and interval scoring](OVERLAPPING-NOTES.md#file-bound-role-timing)
-through the source-bound operator and a [maintained control-packet tool](PART-EVALUATION.md#maintained-packet-operator).
-Authored stems/mix reconstruct exactly and replay byte-for-byte. A separately
-identified [derived external packet](PART-EVALUATION.md#derived-external-development-packet--2026-09-21)
-now also passes every-frame construction checks and exact replay. A prospective
-evaluation reservation passes identity checks but remains an unresolved family.
-The fixed development worksheet and [reviewed-reference builder](PART-REFERENCE.md)
-now pass native QA, preserving raw symbolic evidence and initially unknown acoustic
-labels. The [mixture policy](PART-MIXTURE-POLICY.md) now freezes supported scope,
-required scenarios and the existing per-role acceptance thresholds. Remaining work
-is representative frozen families, reviewed role/acoustic annotations and actual
-scenario coverage on these sources. The [fixed worksheet review](PART-EVALUATION.md#fixed-worksheet-review--2026-09-21)
-now records candidate score functions, silent material, simultaneous gate pitches,
-unclosed gates and retained bends. It exposes missing external repeated-note and
-acoustic-boundary evidence; candidate functions are not accepted waveform labels.
-The subsequent [acoustic review](PART-EVALUATION.md#fixed-acoustic-support-review--2026-09-21)
-now supports primary bass/chordal source-function annotations over a bounded passage,
-but reveals sub-octave components relative to nominal keys and spectral tails after
-key-off. Next resolve these reference register/timing distinctions and the remaining
-contributors; do not score copied MIDI labels as acoustic truth. The
-[bass-event correspondence](PART-EVALUATION.md#original-to-trigger-bass-correspondence--2026-09-21)
-now verifies all seven scoped events under a range-fold/shift rule, including two
-24-semitone shifts. This resolves source correspondence, not acoustic event timing
-or complete mixture annotation. The [first exported bass reference](PART-EVALUATION.md#first-external-bass-reference--2026-09-21)
-now supplies one supported interval and retained unknown regions; the bounded
-support investigation is finished. The [accepted measurement/control deliverable](TODO/DONE/NS-3_parts_04.md)
-earns its redistributed one-point NS-3 credit. The external reference packet
-remains open. Its [assembled development cases](PART-EVALUATION.md#assembled-external-development-cases--2026-09-21)
-now reproduce native scoring after relocation and correctly retain unknowns and
-reference-derived prediction ancestry. This closes policy application for those
-cases; useful chordal/lead references and complete
-source/scenario coverage still gate task completion. The [initial family split](PART-EVALUATION.md#qualified-initial-recording-families--2026-09-21)
-is also accepted through source-work identity and a fixed content screen, with
-the conflicting development metadata association conservatively excluded from
-evaluation. The [reserved mixture](PART-EVALUATION.md#reserved-evaluation-mixture-preparation--2026-09-21)
-now has all ten bound contributors, exact construction/replay and preserved
-reference-only exposure; development WAVs remain byte-identical. The subsequent
-[reference review](PART-EVALUATION.md#reviewed-development-centers-and-reserved-worksheet--2026-09-21)
-accepts local functions for both families and sparse development chordal/lead
-center sets. AC1/3/4 are closed; useful reserved acoustic references, remaining
-scenario coverage and complete packet assembly still gate AC2/5. No partial task
-credit is earned. The
-publisher's original mix still fails its fixed summation check (13-LSB peak; 433 frames above the 11-LSB
-candidate bound). Preparation does not accept recorded inference. The task stays
-open; accepted maintained measurement brings overall completion to **62.90%**.
+The current [attributed-mixture prerequisite](TODO/NS-3_parts_01.md) has
+accepted native center/event measurements and authored controls, verified exact
+source constructions, qualified development/evaluation families and reviewed
+local musical functions. These preparation mechanisms are complete. The
+[combined packet](PART-EVALUATION.md#two-family-packet-and-reserved-acoustic-limits--2026-09-21)
+now packages seven development and nine reserved diagnostic cases with a current
+scenario ledger and [maintained scoring instructions](PART-REFERENCE-PACKET.md).
+Final QA accepts exact replay, preservation and all sixteen relocated native
+scoring cases, closing packet assembly criterion AC5.
+
+Known development references comprise one bass interval, two triad centers and
+four lead centers. Reserved review adds one bass center. Its sustained chordal
+registration, broad chordal stabs and lingering lead-note tails remain unresolved;
+complete pitch sets and acoustic intervals are not inferred from symbolic keys.
+Both full mixtures retain unknown role truth. External crossings, same-pitch
+multiplicity and quiet-part ownership remain explicit gaps. Scripts demonstrate
+reference encoding and uncertainty accounting, never learner accuracy.
+
+AC1/3/4/5 are accepted; **AC2's acoustic annotation coverage remains partial**.
+No task credit is earned from partial criteria. The current source
+investigation stops: additional spectral/registration/tail or source-history
+variants are not the next deliverable. Complete the missing annotations through
+an evidence-backed acoustic-reference source with verified access, provenance,
+clocks and musical functions, then integrate it through the existing consumer.
+Current completion remains **62.90%**.
 
 **38 open task files own the remaining work across 19 active outcomes; 12 tasks are DONE.**
 The 22-outcome map below retains accepted WAV-VALIDATION, WFC-LAYERS and WFC-STYLE anchors for evidence.

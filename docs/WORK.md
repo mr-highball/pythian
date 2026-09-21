@@ -41,7 +41,61 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current handoff — local roles and sparse acoustic references — 2026-09-21
+## Current handoff — combined references and annotation limits — 2026-09-21
+
+The preceding goal turn made progress at `1faaa670`: batch 25 closed AC1 of
+[parts_01](TODO/NS-3_parts_01.md). Exact revision CI run 35639071198 is verified
+successful. Continue the same NS-5 prerequisite path. Batch 26 starts with zero
+consecutive batches without a criterion closure; it targets AC2/5 with reserved
+acoustic references and one runnable two-family packet.
+
+The reused spectral exporter/viewer pass checked Win64 controls, exact replay,
+resource limits and rejection preservation. Primary reference-only review supports
+one reserved source-local bass center. Chordal registration, broad stabs and
+earlier lead-note tails prevent complete acoustic labels at the frozen markers.
+Those states remain unknown. No model is run or selected; symbolic gates do not
+become acoustic truth. One predeclared marker was off-grid and remains unavailable
+without replacement. The [packet consumer guide](PART-REFERENCE-PACKET.md) and
+current scenario ledger keep all contributors and missing coverage visible.
+
+The first reserved assembly submission fails because two silent excerpts share
+the same encoded WAV digest. The ledger incorrectly treated the two retained
+files as distinct hash nodes; failure also exposed exception cleanup leaks.
+The repair deduplicates content identities while retaining every source file and
+frees rejected parents/partial ledgers. Labels, source policy and scoring are
+unchanged. The failed partial output and logs remain preserved. Root component
+failure count is one; the combined-container helper has zero failures.
+
+Final QA accepts **AC5**. The repaired reserved packet has 108 files; the combined
+container has 217 files / 29,908,178 bytes and reproduces every byte. All sixteen
+maintained CLI cases pass after relocation, with reports unchanged apart from
+the established terminal line ending. Preservation and seven malformed-input
+controls pass; successful and rejection runs have zero leaks. The evidence and
+full source/policy identities are in `build/qa-batch-26/report.txt`.
+
+AC1/3/4/5 are closed; **AC2 remains partial**. The consecutive no-criterion-closure
+count stays **zero** because AC5 closes. No task move or credit is claimed:
+**62.90%, 38 open / 12 DONE, 96 dependency edges**. This source investigation
+now stops. Further
+registration/tail/silence variants cannot provide trustworthy missing labels.
+The next annotation action must use a source with curator-reviewed acoustic
+notes, subject to verified access, provenance, clock and local function review.
+
+A bounded feasibility review selects one short recorded ensemble with
+curator-corrected acoustic notes. The original
+[URMP deposit](https://datadryad.org/dataset/doi:10.5061/dryad.ng3r749)
+resolves source terms through CC0, while original selective delivery remains
+unverified. A [521-MB prepared archive](https://zenodo.org/records/10009959)
+responds to an availability check; its conversion and annotation-clock provenance
+must be verified before labels are used. No payload was acquired and existing
+held-out phrase material was not inspected. This changes the next annotation
+action without changing the task's scope, credit or numerical gates.
+
+Final documentation QA passes: 2710 local links in 133 documents, the 50-task/
+96-edge acyclic graph and unchanged credit accounting reconcile. The five-document
+scope, evidence identities, privacy and whitespace checks pass; ready for publication.
+
+## Previous checkpoint — local roles and sparse acoustic references — 2026-09-21
 
 The preceding goal turn made progress at `918de567`, publishing evaluation-family
 preparation and the merged Athena pin. Its exact revision CI run 35637230017 is
