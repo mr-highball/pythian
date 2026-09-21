@@ -345,6 +345,70 @@ The private report `build/role-review/qa-a.json` has SHA256
 its source, policy, input bindings and complete QA remain in `build/qa-batch-19/`.
 This review closes no task and changes no milestone credit.
 
+### Fixed acoustic support review — 2026-09-21
+
+The next bounded pass observes the already selected first eight seconds of
+S03/S02/S05/S00, using the owned WAV reader and Fourier primitive. Each stem
+retains 775 fully contained symmetric-Hann windows of 4096 frames, hop 160,
+with all 2049 nonnegative-frequency powers. No resampling, fitted frequency band,
+pitch estimator or new recording is involved. Raw powers, complete spectral
+views and a local-maximum index remain hash-bound under ignored build output.
+The view uses one fixed power reference per stem; darkness across stems does
+not compare loudness. The 10-ms hop does not give 10-ms boundary resolution:
+each observation spans 256 ms. Integer review markers use `start + 2048`;
+the exact symmetric-window midpoint is `start + 2047.5`.
+
+Primary review inspected all four complete views and six numerical anchors fixed
+before observing results. Frequencies below are bin centers, not interpolated
+fundamental estimates. This is score/spectral review with no listening verdict.
+
+| Source and integer frame marker | Observed support | Reference consequence |
+| --- | --- | --- |
+| S03, 55968 and 76768 | Strongest peak 74.21875 Hz, with components near 148.4375, 218.75 and 292.96875 Hz | Harmonic spacing is consistent with roughly 73 Hz, an octave below nominal key 50; copying the key would misstate observed register |
+| S03, 103968 and 123168 | Strongest peak 97.65625 Hz with 195.3125/292.96875 Hz and higher components | The changing low line is supported; nominal key 55 likewise is not a directly verified acoustic fundamental |
+| S02, 55968 | Components at 218.75/292.96875/347.65625 Hz and harmonics | Supports the coordinated 57/62/65 chord candidate |
+| S02, 103968 | Components at 246.09375/292.96875/390.625 Hz | Supports changing accompaniment; a complete four-note set is not established by the strongest twelve peaks |
+| S05, 55968 and 76768 | Strong components at 292.96875/347.65625/441.40625 Hz plus octave/higher components | Sub-octave components relative to keys 74/77/81 prevent direct key-to-acoustic labels; registration/layer interpretation remains unresolved |
+| S00, 103968 | Strongest remaining local peak 582.03125 Hz, about -56.82 dB relative to that stem's maximum | Stored spectral support persists after symbolic key-off; this is neither exact sounding duration nor perceptual presence |
+
+The primary reviewer now assigns **source functions** over the explicit review
+scope `[52000,112000)` (3.25–7 seconds): **S03 bass; S02 and S05 chordal**.
+The low repeated/changing line coordinates with measured sustained multi-frequency
+accompaniment and the separately retained score relationships. These bounds identify the
+reviewed passage, not detected role changes or note endpoints. This is one primary
+review; other contributors remain unassigned and S00 remains a lead candidate.
+The later low S02 key 43 falls outside this role-review scope and requires its own
+functional assessment. Acoustic pitch sets, event timings and complete ensemble
+references are still unaccepted.
+
+Do not impose a blanket octave shift or multiply note events to explain the
+sub-octave components. The source metadata does not establish their rendering
+cause. Preserve source-key identity separately from observed register, harmonic
+layers and uncertainty. The short S03 transition at marker 92768 straddles a
+256-ms window, so it does not supply a clean stationary reference. Overlapping
+tails and S00's bends likewise remain unresolved. These findings belong to the
+existing [reference preparation](TODO/NS-3_parts_01.md) criteria; they coordinate
+with [pitch identity](TODO/NS-3_notes_01.md) and
+[evolving sound](TODO/NS-3_timbre_01.md) without adding a dependency cycle.
+No learner correction or newly scored estimator follows from this review.
+
+Final checked Win64 export and view controls, full packet replay and rejection/
+preservation checks pass with zero leaks. Export takes 6314/6337 ms, at most
+5992448 bytes sampled private memory, and writes 50820060 bytes. View generation
+takes 4312/4277 ms, at most 29396992 bytes sampled private memory, and writes
+7214319 bytes. Both stay within 30 seconds/128 MiB; output limits are respectively
+64/32 MiB. These are private preparation diagnostics, not new core dependencies.
+
+`build/role-support/qa-a/manifest.json` has SHA256
+`66517a2f14afdde28389b288ea6bdfea2786d41ed28c0e236d9c1c150eebbaca`;
+the view manifest is
+`747fde261b156c8008c6813b8fe6a964dd306b360219e462f458519124c396c4`.
+The primary interpretation is retained in `build/role-support-view/ANNOTATION.md`;
+complete commands and final QA remain in `build/qa-batch-20/`. Runtime verification
+accepts the diagnostic mechanics, not the musical labels or independent inference.
+Next resolve the demonstrated register/registration distinctions and acoustic
+boundaries before constructing reference events. No task closes or earns credit.
+
 <a id="authored-stem-mix-controls--2026-09-21"></a>
 ### Authored stem/mix controls — 2026-09-21
 

@@ -41,7 +41,45 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current handoff — mixture policy and fixed worksheet review — 2026-09-21
+## Current handoff — fixed acoustic support and register findings — 2026-09-21
+
+The preceding goal turn made progress by publishing the mixture policy and fixed
+worksheet review at `b826576`. Continue [NS-3_parts_01](TODO/NS-3_parts_01.md) on the
+NS-5 prerequisite path. Its new [acoustic review](PART-EVALUATION.md#fixed-acoustic-support-review--2026-09-21)
+observes only the already fixed first eight seconds of four development stems.
+The owned WAV/FFT primitives produce complete window powers; a separate native
+view preserves global per-stem scaling, window support and source identities.
+
+Final checked Win64 controls, full export/view replay and rejection preservation
+pass with zero leaks. Export maximum: 6337 ms, 5992448 sampled private bytes,
+50820060 output bytes. View maximum: 4312 ms, 29396992 sampled private bytes,
+7214319 output bytes. Both remain inside frozen 30-second/128-MiB limits and
+their respective output budgets. The new helper diagnostic has zero blocking
+submissions; the earlier worksheet summary retains one historical failure.
+Sources, hashes, commands and terminal results are in `build/qa-batch-20/`.
+
+Primary review of all four views and predeclared numerical anchors supports
+S03 bass and S02/S05 chordal source functions over `[52000,112000)`. It does not
+establish complete role pitch sets, independent annotation or exact event timing.
+S03's harmonic spacing is consistent with roughly 73/98 Hz beneath nominal keys
+50/55; S05 also retains sub-octave components relative to its keys. The actual
+rendering/register cause is unresolved. S00 retains spectral energy after key-off
+and performance uncertainty. These are concrete reasons to reject direct MIDI
+labels as acoustic truth, not permission for a blanket octave correction.
+
+Next resolve reference register/registration semantics and acoustic boundaries on
+this evidence, preserving key identity, observed components and uncertainty.
+Other contributors, external scenario coverage and evaluation-family qualification
+remain open under the existing task. Do not run another generic inventory, tune a
+learner against these unresolved labels or repeat stopped register experiments.
+Private review rationale is in `build/role-support-view/ANNOTATION.md`; the prior
+step design remains in `build/role-review/NEXT-ANNOTATION.md` for provenance.
+Final documentation QA passes: retained spectral claims, 2654 local links, task graph/accounting, privacy, whitespace and four-file scope are checked. This documentation checkpoint is ready for publication under the same QA batch.
+
+Completion stays **62.65%, 38 open / 11 DONE, 95 dependency edges**. No new task,
+scope reduction, dependency, threshold or completion credit is introduced.
+
+## Previous checkpoint — mixture policy and fixed worksheet review — 2026-09-21
 
 The prior implementation goal turn made progress: the reviewed-reference builder
 and fixed worksheet were published at `60c419e`. The intervening configuration

@@ -117,7 +117,11 @@ scenario coverage on these sources. The [fixed worksheet review](PART-EVALUATION
 now records candidate score functions, silent material, simultaneous gate pitches,
 unclosed gates and retained bends. It exposes missing external repeated-note and
 acoustic-boundary evidence; candidate functions are not accepted waveform labels.
-Next resolve annotations on that fixed passage, retaining uncertain contributors. The
+The subsequent [acoustic review](PART-EVALUATION.md#fixed-acoustic-support-review--2026-09-21)
+now supports primary bass/chordal source-function annotations over a bounded passage,
+but reveals sub-octave components relative to nominal keys and spectral tails after
+key-off. Next resolve these reference register/timing distinctions and the remaining
+contributors; do not score copied MIDI labels as acoustic truth. The
 publisher's original mix still fails its fixed summation check (13-LSB peak; 433 frames above the 11-LSB
 candidate bound). Preparation does not accept recorded inference. The task stays
 open at **62.65%** overall.

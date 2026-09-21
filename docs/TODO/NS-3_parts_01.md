@@ -50,6 +50,14 @@ unmodeled performance messages. Next resolve acoustic support on the fixed passa
 and document scenario gaps before binding annotations. MIDI gates and candidate
 functions remain symbolic aids; no partial credit is awarded.
 
+The subsequent [fixed acoustic review](../PART-EVALUATION.md#fixed-acoustic-support-review--2026-09-21)
+passes diagnostic QA and supports primary bass/chordal source-function annotations
+over 3.25–7 seconds. It also exposes sub-octave components relative to nominal keys
+in two sources and retained energy after key-off. Resolve acoustic register,
+registration/layer semantics and boundaries before binding note truth; do not
+copy MIDI pitches or apply an automatic octave correction. Complete ensemble
+annotations, external scenario coverage and frozen evaluation families remain open.
+
 **Acceptance Criteria:**
 
 - Acquire and bind usable WAV stems and corresponding mixes with verified recording identities, offsets, gains and role annotations; keep related stems/mixes in one split.
