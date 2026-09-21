@@ -41,9 +41,43 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current work — accepted native observations and key-reference evidence — 2026-09-21
+## Current work — infrastructure review and native supervision reopening — 2026-09-21
 
-[Practical native inference](TODO/DONE/NS-3_validation_02.md) now passes all five
+The explicitly requested early infrastructure review inspected published revision
+`bc9bac82fb30ea7bf5412cd6eb49587bbfed8517` and its interactions with the portable
+core, WFC, source/time contracts, acquisition, packaging and recorded evidence.
+It confirmed one P2 defect: the supervisor can combine a stale startup timestamp
+with the worker's new observing phase and terminate a healthy worker as stalled.
+The primary review agrees with the concrete source interleaving. The
+[native qualification record](NATIVE-INFERENCE.md#qualification--2026-09-21)
+and [reopened execution task](TODO/NS-3_validation_02.md) contain the trigger and
+required coherent snapshot/transition regression. No duplicate task is needed:
+the existing fourth criterion already requires correct bounded supervision.
+
+Reopening withdraws **5 NS-3 points (37% to 32%)** and **1.25 overall
+(62.65% to 61.4%)**. The catalog returns to **39 open / 10 DONE**, 49 total tasks,
+20 active outcomes, 5.9 accepted points and 38.6 remaining. Numerical/resource
+evidence, including the successful hour, is preserved; no budgets are relaxed.
+Dependent workload acceptance is blocked again. Review does not increment the
+task's historical one failed QA submission. No implementation changes were made
+during review. The next step is the scoped supervision repair and focused final
+QA, then return to the saved NS-5 workload and NS-3 local-key work.
+
+Review 04 is complete, with its detailed source report retained under
+`build/big-boss-04/REVIEW.md`. No second actionable defect or separate missing
+task was established; all six inspected maintained Pascal identities match the
+accepted QA submission. The reviewed checkpoint is the ten tasks still accepted
+in DONE after reopening. Count two subsequent accepted task closures from this
+checkpoint before the next routine review. QA resumes with the saved evidence,
+failure count and no live processes; final testing and publication remain its
+responsibility.
+
+## Historical acceptance — native observations and key-reference evidence — 2026-09-21
+
+The acceptance below preceded the supervision finding and is superseded by the
+reopening above. Its measurements and publication evidence remain historical.
+
+[Practical native inference](TODO/NS-3_validation_02.md) now passes all five
 criteria and moves to DONE. The optional Win64 consumer emits 360,000 raw
 observations from one continuous hour in 2,420,266 ms, with 20,313-ms setup and
 103,051,264 bytes peak worker private commitment. The complete 524,160,407-byte
@@ -63,9 +97,10 @@ It must include complete-source verification and any preparation cost/lineage.
 This is one completion after the infrastructure-review checkpoint at ten DONE;
 the next routine review requires another accepted task. Final owned-document links,
 task graph, credit arithmetic, unchanged implementation identities and staged-scope
-checks pass. This accepted checkpoint is committed for normal publication to
-`origin/hello-pythian`; the exact published revision and remote CI result are
-recorded separately after the push.
+checks pass. Published revision `bc9bac82fb30ea7bf5412cd6eb49587bbfed8517`
+matches `origin/hello-pythian`. Its [native CI run](https://github.com/mr-highball/pythian/actions/runs/35588031109)
+passes the Linux integration build and extracted core/WFC consumer packages.
+That run does not exercise the separately qualified Win64 inference runtime.
 
 The root-owned local-key work also has new bounded evidence, with no extra credit.
 The two selected timed references pass native original-byte/clock/partition
@@ -117,7 +152,7 @@ investigation, while preserving local-key and confidence uncertainty. The failed
 comparison remains recorded and does not increment the helper's failure counter.
 
 The implementation helper's ninth assignment is
-[practical native inference](TODO/DONE/NS-3_validation_02.md), an independent prerequisite
+[practical native inference](TODO/NS-3_validation_02.md), an independent prerequisite
 of many-hour resource work. The agreed [optional Win64 observation strategy](PROVENANCE.md#optional-native-observation-adapter)
 retains Pascal graph assembly, stream preparation and supervision around the
 pinned CPU runtime. It emits raw converted-model salience and AC RMS; the failed

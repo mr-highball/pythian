@@ -15,7 +15,10 @@
 | [NS-4_styles_01](NS-4_styles_01.md) — Reusable semantic graphs and derivative evidence | 2026-09-21 | +4 NS-4 | +0.60 |
 | [NS-4_layers_04](NS-4_layers_04.md) — Staged duration and committed-stream edits | 2026-09-21 | +4 NS-4 | +0.60 |
 | [NS-4_styles_02](NS-4_styles_02.md) — Selective semantic blend and further blend | 2026-09-21 | +4 NS-4 | +0.60 |
-| [NS-3_validation_02](NS-3_validation_02.md) — Practical bounded native raw observations | 2026-09-21 | +5 NS-3 | +1.25 |
+
+[Native observation execution](../NS-3_validation_02.md) was reopened after
+infrastructure review found a progress snapshot race. Its former +1.25 overall
+credit is withdrawn until the existing acceptance criteria pass again.
 
 Previously accepted capability stays in the milestone baseline; it is not
 backfilled as new DONE work.

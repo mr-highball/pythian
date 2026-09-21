@@ -62,12 +62,14 @@ consumer reuses the attributed reference bank and existing phrase study inputs;
 no additional source media or saved format is introduced.
 
 <a id="optional-native-observation-adapter"></a>
-## Qualified optional native observation adapter
+## Optional native observation adapter
 
-[NS-3_validation_02](TODO/DONE/NS-3_validation_02.md) selects a Win64 CPU observation
+[NS-3_validation_02](TODO/NS-3_validation_02.md) selects a Win64 CPU observation
 adapter as a bounded route from the private model study to a maintained native
-consumer. Final controlled/recorded fidelity, performance, memory and cancellation
-checks now accept the declared scope, including one continuous hour. The portable core and
+consumer. Controlled/recorded fidelity, performance, memory and representative
+cancellation checks passed, including one continuous hour. Qualification is reopened
+for a progress snapshot race that can falsely terminate a healthy worker; see
+[the current disposition](NATIVE-INFERENCE.md#qualification--2026-09-21). The portable core and
 default packages remain independent of the acquired binary runtime.
 
 The converted CREPE tiny topology and thirteen weight shards come from
@@ -103,7 +105,8 @@ The maintenance cost includes the roughly 254-MB archive/954-MB DLL footprint,
 pinned ABI and graph/weight validation, Windows process resource accounting and
 future runtime availability. The current scalar cost makes this optional edge
 worth qualifying before attempting another full kernel implementation. That
-qualification now passes within the frozen limits. Its
+measured execution met the frozen limits, but supervision qualification remains
+open pending repair and focused QA. Its
 supported output is raw 360-bin salience and AC RMS, not the rejected note
 admission rule. Preserve uncertain training/annotation exposure; arithmetic
 agreement does not establish musical accuracy or independent evaluation.

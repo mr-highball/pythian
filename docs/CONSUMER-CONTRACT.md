@@ -33,7 +33,7 @@ learning, named sessions and saved-style providers use this companion. WFC types
 belong at that boundary. Athena supplies repository standards, not a runtime
 dependency; Phanes is removed and contributes only retained extraction provenance.
 
-The optional [qualified native observation adapter](PROVENANCE.md#optional-native-observation-adapter)
+The optional [native observation adapter](PROVENANCE.md#optional-native-observation-adapter)
 is initially qualified separately for Win64 and is not included in either current
 package subset. This does not narrow the final stable target matrix above.
 [Final workflow delivery](TODO/NS-6_delivery_03.md) must supply and exercise any

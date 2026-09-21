@@ -231,6 +231,10 @@ previous infrastructure review, hand the completed work to the user-authorized
 senior reviewer. Count accepted tasks, not individual tests, partial studies or
 unsuccessful submissions. The user requested an inaugural review on 2026-09-21
 using the seven already completed tasks; subsequent cycles start from that review.
+An explicit user-requested review may run before the two-task threshold. Record
+that exception and, after the review completes, count the next two accepted task
+closures from its reviewed checkpoint. Review activity itself earns no task
+completion credit.
 
 Before starting the reviewer, save the QA agent's current verdicts, failed-
 submission counters, evidence locations and any live process handles, then stop

@@ -77,7 +77,7 @@ dependency-linked work items under [TASKFLOW.MD](docs/TASKFLOW.MD). Completed
 implementation is summarized there by goal; detailed evidence stays in the work
 record and topic pages. Reassess the full intended scope when evidence changes it.
 
-## Qualified optional inference adapter
+## Optional inference adapter
 
 The practical inference task delivers a separately selected Win64 CPU
 observation adapter under `adapters/inference/`, using stable FPC 3.2.2 and the
@@ -87,11 +87,15 @@ types, default builds and existing core/WFC source packages do not require or
 bundle that runtime. This is not a portable-core inference dependency.
 
 The reason is measured execution cost: the private scalar converted CREPE tiny
-study costs roughly 17 processing seconds per audio second. Final maintained
-qualification now passes controlled/recorded fidelity, bounded failure and
-cancellation, and the declared resource limits: a continuous hour completes
+study costs roughly 17 processing seconds per audio second. Maintained
+qualification records controlled/recorded fidelity and representative failure,
+cancellation and resource checks: a continuous hour completes
 in 2,420,266 ms with 20,313-ms setup and 103,051,264 bytes peak worker private
-memory. See [the accepted execution task](docs/TODO/DONE/NS-3_validation_02.md).
+memory. Infrastructure review subsequently found a setup-to-observing progress
+snapshot race that can falsely terminate a healthy worker. The
+[execution task is reopened](docs/TODO/NS-3_validation_02.md) for coherent
+supervision and focused requalification; retained numerical/resource results
+do not resolve this defect.
 Raw salience and AC RMS
 do not become admitted notes, calibrated confidence or learned musical roles.
 

@@ -1,7 +1,7 @@
 # Optional native pitch observations
 
 [Project](../PROJECT.md) · [Phrase evaluation](PHRASE-EVALUATION.md) ·
-[Provenance](PROVENANCE.md) · [Task](TODO/DONE/NS-3_validation_02.md)
+[Provenance](PROVENANCE.md) · [Task](TODO/NS-3_validation_02.md)
 
 ## Scope and admission boundary
 
@@ -32,8 +32,9 @@ five-minute preparation/resource case. The continuous-hour attempt failed near
 the thirty-second boundary without publishing an artifact. Its original generic
 timeout did not retain a phase, so setup remains a hypothesis rather than a
 proven cause. The repaired initialization path now passes focused requalification
-and the single second hour run. All execution-task criteria are accepted within
-the scope below; provider accuracy and corpus-scale acceptance remain separate.
+and the single second hour run. Subsequent review reopened supervision acceptance
+for the progress snapshot race described under [qualification](#qualification--2026-09-21).
+Provider accuracy and corpus-scale acceptance remain separate.
 
 ## Assets and build
 
@@ -84,7 +85,7 @@ reenter their active objects. Caller-provided backends are explicit test/custom
 measurement hooks and do not establish the pinned production estimator identity
 by themselves. Each backend declares its own estimator identity, which is stored
 and checked separately: a custom-backend artifact rejects when a reader expects
-the pinned estimator. Only the pinned worker is qualified by this task.
+the pinned estimator. Only the pinned worker is within this task's qualification scope.
 
 ## Preparation and exact source coordinates
 
@@ -199,8 +200,19 @@ remain distinct from the maintained-path qualification below.
 
 ## Qualification — 2026-09-21
 
-Final QA accepts the maintained consumer on checked FPC 3.2.2 Win64, using the
-declared pinned assets and unchanged budgets. The host is a Ryzen 5 1600 with
+Initial final QA passed the maintained consumer on checked FPC 3.2.2 Win64, using
+the declared pinned assets and unchanged budgets. Subsequent infrastructure
+review reopened its fourth acceptance criterion: the supervisor reads `Tick`
+then `Phase` at `adapters/inference/pythian.inference.process.pas:327–328`, while
+the worker publishes observing `Phase` before `Tick` at
+`tools/pythian.inference.wav.lpr:136–138`. An interleaving after more than five
+seconds of setup can pair the old timestamp with the new phase and trigger a
+false observing-stall failure. Stable-stall tests did not cover this transition.
+The [existing execution task](TODO/NS-3_validation_02.md) owns coherent progress
+publication/observation and a forced transition regression, retaining real
+timeout, cancellation and output-preservation checks. Its credit is withdrawn
+pending focused QA; the successful executions below remain evidence for their
+tested cases. The host is a Ryzen 5 1600 with
 six cores/twelve logical processors and approximately 16 GiB physical memory.
 Resource runs were sequential, without competing analysis or compilation.
 
@@ -224,5 +236,6 @@ Exact commands, source manifests, host inventory, terminal logs and reports are
 retained under `build/native-inference/` and `build/qa-batch-08/`. The accepted
 hour report is `submission2-hour-report.json`. It binds the original 131,770,456-
 frame input, selected channel and model/runtime identities; one hour was emitted.
-This proves the declared observation execution path, not note admission,
+This demonstrates the measured observation executions, without resolving the
+subsequently found supervision race or establishing note admission,
 arbitrary-length input performance, many-hour training or final portable delivery.
