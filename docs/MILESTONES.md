@@ -140,9 +140,12 @@ is also accepted through source-work identity and a fixed content screen, with
 the conflicting development metadata association conservatively excluded from
 evaluation. The [reserved mixture](PART-EVALUATION.md#reserved-evaluation-mixture-preparation--2026-09-21)
 now has all ten bound contributors, exact construction/replay and preserved
-reference-only exposure; development WAVs remain byte-identical. Local role and
-acoustic annotations, followed by complete packet assembly, are the next missing
-deliverables. No partial task credit is earned. The
+reference-only exposure; development WAVs remain byte-identical. The subsequent
+[reference review](PART-EVALUATION.md#reviewed-development-centers-and-reserved-worksheet--2026-09-21)
+accepts local functions for both families and sparse development chordal/lead
+center sets. AC1/3/4 are closed; useful reserved acoustic references, remaining
+scenario coverage and complete packet assembly still gate AC2/5. No partial task
+credit is earned. The
 publisher's original mix still fails its fixed summation check (13-LSB peak; 433 frames above the 11-LSB
 candidate bound). Preparation does not accept recorded inference. The task stays
 open; accepted maintained measurement brings overall completion to **62.90%**.

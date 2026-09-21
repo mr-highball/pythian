@@ -39,14 +39,14 @@ must establish what sounds and which musical functions the source supplies.
 
 | Required scenario | Authored evidence | External development evidence | Separate evaluation evidence |
 | --- | --- | --- | --- |
-| Bass with lead/counterline | Four-role packet with explicit construction | Bass function reviewed locally; lead candidate retains bend and tail uncertainty | Missing |
-| Chordal accompaniment and simultaneous parts | Three-note chords with other roles | Two chordal source functions reviewed; complete acoustic pitch sets/intervals unresolved | Missing |
+| Bass with lead/counterline | Four-role packet with explicit construction | Bass interval and four reviewed lead centers; complete lead timing remains unknown | Local bass/lead functions reviewed; acoustic notes/timing missing |
+| Chordal accompaniment and simultaneous parts | Three-note chords with other roles | Two complete source-local triad center sets; complete chordal intervals and mixture sets unresolved | Two chordal source functions reviewed; acoustic pitch sets/timing missing |
 | Pitch-order crossing | Annotated endpoint reversal and wrong-owner control | No qualified crossing annotation | Missing |
 | Same-pitch overlap/unison | Two distinct overlapping lead events; coincident lead/chordal pitch | Symbolic concurrency reviewed; acoustic multiplicity/ownership not qualified | Missing |
 | Quiet pitched part beneath other material | Bound isolated energy contrast and abstention control | No accepted external energy/ownership case | Missing |
 | Rests and boundaries | Constructed gates, silent regions and false-rest control | One isolated bass interval exported; three source-local rests; joined/edge intervals unknown | Missing |
-| Uncertain ownership or extent | Explicit uncertain regions and exclusion controls | Unresolved source roles, registration and overlapping tails retained | Missing |
-| Articulation/performance | Constructed attacks/releases | Raw bends/controllers retained; source interpretation unresolved | Missing |
+| Uncertain ownership or extent | Explicit uncertain regions and exclusion controls | Unresolved source roles, registration and overlapping tails retained | All contributors retained with unresolved acoustic labels; case scoring missing |
+| Articulation/performance | Constructed attacks/releases | Raw bends/controllers retained; source interpretation unresolved | Raw performance/gates exported; acoustic interpretation missing |
 
 The development stems and exact derived mix are bound and verified. The second
 recording was initially provisional; the qualified initial recording families
@@ -56,8 +56,9 @@ over the authored controls. Family qualification requires bounded source-work
 and duplicate/derivative evidence, not a particular publisher attestation.
 
 Existing operators are sufficient to represent reviewed intervals, uncertain
-regions and center references. The next packet work is annotation, evaluation-family
-preparation and broader packet coverage. The bounded assembly below now retains
+regions and center references. Both families' constructions and local functions
+are reviewed. The next packet work is useful reserved acoustic references,
+remaining scenario coverage and combined assembly. The bounded assembly below retains
 the existing evidence and applies its scoring policy. Reconstructing the historical
 renderer or perfectly transcribing all external stems is outside this preparation
 requirement; useful
@@ -276,6 +277,93 @@ exposure and path guards reject unsupported or inconsistent inputs before
 publication. Full evidence is retained in `build/qa-batch-24/` and
 `build/role-prepared/evaluation-qa-a/`. This advances AC1/5 source preparation;
 role annotations and complete packet coverage still gate task completion.
+
+## Reviewed development centers and reserved worksheet — 2026-09-21
+
+The existing full spectral views, score/performance context and fixed six anchors
+now support source-local center references for chordal and lead functions. These
+use the current `part-note-sets` contract, without invented acoustic event
+boundaries. On the full 800-center grid `128 + n*160` within `[0,128000)`, S02
+has reviewed sets `[57,62,65]` at frames 55968 and 76768. S00 has `[64]` at
+15968 and `[62]` at 55968, 76768 and 92768. Every other position stays unknown;
+labels are not interpolated from the anchors. The grid uses the existing spectral
+views' integer right-center markers, not a fitted waveform shift.
+
+The chordal interpretation combines coordinated triad attacks, harmonic support
+and its relationship to the independent melodic line. S00's changing thematic
+phrase before and across the accompaniment supports a primary lead-function
+review over `[14000,94000)`. At frame 92768 its second harmonic dominates, while
+the approximately 293-Hz fundamental remains visible; the peak is not promoted
+to another note. Complete views and separated-score context support these local
+sets, with modulation and tails retained as uncertainty elsewhere. No listening,
+reviewer consensus, complete mixture ownership or chordal/lead interval timing
+is claimed. The full six-anchor decision is retained in
+`build/role-center-reference/CENTER-REVIEW.md`.
+
+Four new copy/omit controls exercise these references while retaining the three
+earlier bass/unknown-mixture cases, all ten stems and the mix. The first assembly
+submission correctly rejected an inapplicable event-F1 threshold inherited from
+interval scoring. The corrected center-only policy uses the existing schema's
+required zero for that unused field; coverage, precision and reference-completeness
+gates remain unchanged, as do the original interval thresholds. Failed output is
+preserved. No library scoring change was needed.
+
+Corrected checked Win64 assembly and replay pass with zero leaks: all 101 files
+match exactly. Runs take 8986/8893 ms, at most 65482752 sampled private bytes,
+within 60 seconds/128 MiB/32 MiB. The artifact bytes total 14832154 plus a
+13572-byte manifest, SHA256
+`0fd45e663f81a977fa5a5aac90d36fbf60fe0b813a1322980a561e9edee941e1`.
+Existing/outside-output rejection preserves prior artifacts.
+Scoring scripts remain explicitly reference-derived; successful replay is not
+independent accuracy or proof of reference annotation quality.
+
+The native copy/omit checks count six correct/missed chordal pitch occurrences
+and four correct/missed lead occurrences. Chordal has 798 unknown centers, lead
+796. All seven cases retain false metric, ancestry-independence and independent
+accuracy verdicts. The maintained CLI also scores a relocated new center-only
+case from outside the repository with identical report content apart from its
+existing terminal CRLF; zero leaks. With the packet available:
+
+```powershell
+./build/part-evaluate/pythian.evaluate.exe build/role-center-reference/qa-repair-a/chordal-copy-case.json
+./build/part-evaluate/pythian.evaluate.exe build/role-center-reference/qa-repair-a/lead-copy-case.json
+```
+
+Separately, the reserved family's fixed first 30 seconds plus 250-ms context
+now have a source-bound worksheet: all ten stems/mix, exact 10-ms amplitude bins,
+9251 decoded MIDI events with raw performance messages and symbolic gates,
+complete notices and the accepted family decision. The manifest SHA256 is
+`05d24ba641ba82d65feb1670fe1fa090e2807b6f66007bb47de9a53ab56942d3`.
+Export replay and preservation pass; source exposure stays reference-only.
+The worksheet's acoustic labels remain unknown. Its reference review is separate
+from exporter mechanics and any later learner or model selection.
+
+Checked Win64 worksheet runs take 11282/11217 ms, at most 13983744 sampled private
+bytes, with zero leaks. All 37 files replay exactly, 13340322 bytes including the
+manifest, within the fixed 60 seconds/256 MiB/32 MiB. Existing/wrong-hash/outside
+rejections preserve prior artifacts. Every source has a 484000-frame excerpt and
+3000 amplitude rows; all raw scoped performance messages remain available.
+
+Primary function review of the reserved opening phrase supports S00 as lead
+over `[68000,88000)`, and S01 bass plus S02/S08 chordal over `[68000,124000)`.
+S00's descending phrase contrasts with S02's sustained simultaneous sets and
+S01's repeated attack/hold pattern; S08 supplies synchronized short harmonic
+stabs. Native amplitude rows confirm those actual source signals are present.
+The publisher's instrument category for S02 is a synth lead, demonstrating why
+instrument names do not determine these reviewed functions. Other contributors
+remain explicitly unclassified; role extents are review scopes, not detected
+note boundaries. Reserved acoustic pitches, timing and complete mixture sets
+remain unknown. The full method and limitations are bound in
+`build/role-evaluation-annotation/ROLE-REVIEW.md`, SHA256
+`458dd28313dbcd1193e9ed58d965497b9f0cfd59c4d890656e1ffaa5a6370456`.
+
+Final QA reviews annotation meaning separately from scripted metrics and accepts
+AC1: both source constructions, identities, notices, clocks/gains and reviewed
+local functions are supplied. AC3/4 remain accepted; AC2/5 still need useful
+reserved acoustic references, scenario coverage and the complete combined packet.
+The no-criterion-closure count resets to zero on AC1 evidence, not on repair or
+export success. Whole-task completion and percentage credit remain unchanged.
+Commands, hashes and the retained first failed submission are in `build/qa-batch-25/`.
 
 ## Core contract
 

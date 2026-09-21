@@ -41,7 +41,53 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current handoff — evaluation-family preparation and Athena update — 2026-09-21
+## Current handoff — local roles and sparse acoustic references — 2026-09-21
+
+The preceding goal turn made progress at `918de567`, publishing evaluation-family
+preparation and the merged Athena pin. Its exact revision CI run 35637230017 is
+verified successful. Continue [parts_01](TODO/NS-3_parts_01.md) on the NS-5
+prerequisite path; no completed extraction or infrastructure work is reopened.
+
+Batch 25 [reference review](PART-EVALUATION.md#reviewed-development-centers-and-reserved-worksheet--2026-09-21)
+supplies sparse source-local chordal/lead center sets from the existing full
+spectral views and fixed six anchors. The current center-only contract preserves
+800 positions, with two known triad centers and four known lead centers; every
+other position remains unknown. These are primary reference annotations, not
+invented note intervals, full-mixture ownership or learner predictions.
+
+Final QA accepts the corrected 101-file packet, exact replay, preservation and
+relocated native CLI scoring, all with zero leaks. The first root submission
+was rejected because its center policy inherited an inapplicable event threshold;
+the existing schema requires that field to be zero. The correction changes no
+center gate or old interval gate. Root blocking history remains one, helper zero;
+the failed output and logs remain preserved. Annotation meaning is reviewed
+separately from the scripted copy/omit results, whose accuracy/independence
+verdicts all stay false. Detailed identities and budgets are in topic evidence
+and `build/qa-batch-25/`; no runtime handles remain.
+
+The reserved worksheet also passes controls, exact 37-file replay and rejection
+preservation: all ten sources plus mix, raw MIDI/performance evidence and complete
+amplitude grids retain reference-only exposure. Primary review supports the
+local S00 thematic lead, S01 bass underpinning and S02/S08 harmonic accompaniment,
+using musical relationships and actual source presence. Instrument categories
+are not role labels; other contributors and all reserved acoustic notes/timing
+remain unknown. No listening or independent reviewer consensus is asserted.
+
+Final QA accepts **AC1** for both bound constructions, notices, clocks/gains and
+reviewed local functions. AC3/4 retain prior acceptance. AC2/5 still require useful
+reserved acoustic references, explicit scenario coverage and the combined native
+packet. The consecutive no-criterion-closure count resets from one to **zero**
+because AC1 closes, not because an exporter or repair passes. Next complete that
+remaining reference/packet deliverable with existing tools; no further source
+construction, family-identity, renderer-history or threshold investigation.
+
+The full task stays open: **62.90%, 38 open / 12 DONE, 96 dependency edges**.
+No partial task credit, model change or new format is claimed.
+Final documentation QA passes: 2710 local links, the 50-task/96-edge acyclic
+graph and credit accounting reconcile; source/policy identities are unchanged.
+The four-document scope is checked and ready for branch publication.
+
+## Previous checkpoint — evaluation-family preparation and Athena update — 2026-09-21
 
 The preceding goal turn made progress at `759b047`: the development packet is
 reproducible and AC3/4 of [parts_01](TODO/NS-3_parts_01.md) are accepted. Its exact

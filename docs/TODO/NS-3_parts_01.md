@@ -37,8 +37,8 @@ discharge missing source/annotation requirements.
 
 Batch-23 handoff: AC4's policy application is accepted for the
 [assembled development cases](../PART-EVALUATION.md#assembled-external-development-cases--2026-09-21).
-At that checkpoint, AC1/2/5 remained partial: useful chordal/lead reference intervals, evaluation sources
-and the complete two-family packet are still missing. AC3 is accepted through
+At that checkpoint, AC1/2/5 remained partial: useful chordal/lead reference intervals,
+evaluation sources and the complete two-family packet were still missing. AC3 is accepted through
 the [qualified initial split](../PART-EVALUATION.md#qualified-initial-recording-families--2026-09-21),
 including conservative treatment of a conflicting development metadata match.
 No task credit is earned.
@@ -46,16 +46,25 @@ The first assembly batch after reassessment closed criteria and reset the count.
 Batch 24 then accepts the [reserved-family construction](../PART-EVALUATION.md#reserved-evaluation-mixture-preparation--2026-09-21):
 all ten source pairs, exact fixed-gain sum, family decision and reference-only
 exposure. Replay and the unchanged development WAV regression pass. This does
-not supply musical annotations, so AC1/2/5 remain partial and the consecutive
-no-criterion-closure count is now **one**. Preserve this count across handoffs.
+not itself supply musical annotations, so the consecutive no-criterion-closure
+count reached one.
 
-Next bounded deliverable: complete reviewed local roles and useful external
-chordal/lead reference evidence, including the reserved family, using the existing
-worksheet/reference operators. Construction and family investigation are finished.
-Keep reference preparation separate from tuning; preserve acoustic uncertainty
-instead of copying symbolic gates. The closing evidence remains both families'
-source-bound annotations, explicit scenario coverage and reproducible scoring.
-If the next batch closes no criterion, reassess before authorizing a third batch.
+Batch 25 [reference review](../PART-EVALUATION.md#reviewed-development-centers-and-reserved-worksheet--2026-09-21)
+closes AC1: both full source constructions and reviewed local role annotations
+are supplied with all contributors, clocks/gains and notices. Development now
+has two source-local chordal sets and four lead centers, with every other center
+unknown; the reserved family has local function review but no acoustic note truth.
+Final QA accepts that scope separately from scripted scoring. AC1/3/4 are closed;
+AC2/5 remain partial. The consecutive no-criterion-closure count resets to **zero**.
+The corrected center-policy schema failure remains recorded, without task credit.
+
+Next bounded deliverable: complete useful reserved acoustic references and the
+two-family source-bound scoring packet using the existing spectral/worksheet/
+reference tools. Preserve unsupported intervals and scenario gaps explicitly;
+do not infer complete notes from source gates or sparse centers. Construction,
+family identity and local-function preparation are finished. Keep reference-only
+exposure separate from tuning. The closing evidence is both families' usable
+reference coverage, full case/scenario inventory and reproducible native scoring.
 
 Stop condition: the seven-event digital-support investigation is finished. Retain
 its unresolved events; do not vary silence thresholds or reconstruct the source
