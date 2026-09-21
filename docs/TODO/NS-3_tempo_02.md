@@ -25,3 +25,6 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md) · [MUSIC-CONTEXT](../MU
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
 - [NS-3_tempo_01.md](NS-3_tempo_01.md)
 
+**Dev Notes:**
+
+- Follow-up from [tempo development](NS-3_tempo_01.md): source-accent improvements did not resolve changing-pattern/doubling acceptance. Preserve the previously passing stable, deception and polyrhythm controls when addressing changing clocks; see [beat tracking](../BEAT-TRACKING.md).

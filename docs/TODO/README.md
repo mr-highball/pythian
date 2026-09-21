@@ -14,6 +14,12 @@ tasks, changing credits or accepting new capability. First resume the ready
 style-reference specification; note research requires a new evidence-backed
 decision and retains its stopped proposals and progress-checkpoint count.
 
+Every open and DONE task ends with **Dev Notes:** for failed approaches,
+repaired issues and possible follow-ups. Existing evidence is summarized there;
+tasks with no recorded notes say so explicitly. Follow-up links are informational
+unless also declared under Blockers; required gaps still follow
+[the task-flow process](../TASKFLOW.MD#discover-a-gap-without-losing-the-current-task).
+
 ## Goal ledger
 
 | Goal | Current completion | Open tasks | Remaining goal points allocated | Overall points allocated |

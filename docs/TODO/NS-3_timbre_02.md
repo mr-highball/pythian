@@ -25,3 +25,6 @@ Starting evidence: [WAVE-STYLE](../WAVE-STYLE.md) · [INSTRUMENTS](../INSTRUMENT
 - [NS-3_timbre_01.md](NS-3_timbre_01.md)
 - [NS-2_synthesis-quality_01.md](NS-2_synthesis-quality_01.md)
 
+**Dev Notes:**
+
+No failed approaches or follow-ups recorded yet.

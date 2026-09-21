@@ -77,3 +77,11 @@ separate presence gap and protected waveform/held-out requirements intact.
 **Blockers**
 
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
+
+**Dev Notes:**
+
+- Stopped approaches (2026-09-21): predictive-phase/envelope guards corrected none of the 105 flute octave-error centers. Availability tracing explained exits but could not rescue the failed guards; do not restart that correction family. See the [identity reassessment](../PHRASE-EVALUATION.md#identity-evidence-reassessment--2026-09-21).
+
+- Stopped batch 28: the fixed source-separated scorer ranked violin 546/548 and flute 482/514 correctly; flute failed the 98% gate even with oracle candidates. No Spring application or feature/epoch/threshold variants follow. See [candidate calibration](../PHRASE-EVALUATION.md#source-separated-candidate-calibration--2026-09-21).
+
+- Follow-up: justify genuinely discriminating identity evidence and prospective ambiguity/coverage handling before another experiment. Coordinate with [presence](NS-3_notes_02.md); preserve genuine low/quiet/short notes and untouched phrase material. The pause retains the one-batch no-criterion-closure count in the [work record](../WORK.md#pause-retrospective--2026-09-21).

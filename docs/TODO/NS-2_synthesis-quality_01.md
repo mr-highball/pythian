@@ -24,3 +24,6 @@ Starting evidence: [SYNTHESIS-QUALITY](../SYNTHESIS-QUALITY.md) · [FUNDAMENTALS
 
 - None. This task has no prerequisite task files; external inputs or decisions in its acceptance criteria still apply.
 
+**Dev Notes:**
+
+- Follow-up: reuse the existing source auditions and [paired preview](../SYNTHESIS-QUALITY.md#thirty-second-listener-preview--2026-09-20) to complete the finite listening matrix. Feedback remains pending; no audible defect or approval is inferred from numerical checks or an unanswered preview.

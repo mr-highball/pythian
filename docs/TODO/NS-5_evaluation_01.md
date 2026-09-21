@@ -58,3 +58,9 @@ retains its original credit; no new diagnostic task is created.
 **Blockers**
 
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
+
+**Dev Notes:**
+
+- Existing limitation: master-WAV level controls and generic guitar annotation comparisons validate measurements, not the requested genre traits. Candidate cards still lack verified recording/edition correspondence and complete musical annotations; B/C endpoint hits also require source-quality review. See [candidate cards](../STYLE-CARDS.md#candidate-reference-cards).
+
+- Follow-up on resumption: resolve the source/reference packet using curator or reviewed musical observations, then demonstrate preserving/breaking controls for every required provider dimension. Automatic transcription is not a prerequisite for reference annotation. Do not turn another level-only report into specification acceptance.

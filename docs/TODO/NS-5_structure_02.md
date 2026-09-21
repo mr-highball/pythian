@@ -26,3 +26,6 @@ Starting evidence: [LAYERED-STYLE](../LAYERED-STYLE.md) · [CORPUS-EVALUATION](.
 - [NS-4_styles_02.md](DONE/NS-4_styles_02.md)
 - [NS-4_layers_04.md](DONE/NS-4_layers_04.md)
 
+**Dev Notes:**
+
+No failed approaches or follow-ups recorded yet.

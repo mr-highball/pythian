@@ -34,3 +34,9 @@ cross-target workflow. This is existing delivery scope, not extra completion cre
 - [NS-6_delivery_02.md](DONE/NS-6_delivery_02.md)
 - [NS-4_integration_01.md](NS-4_integration_01.md)
 - [NS-5_blends_01.md](NS-5_blends_01.md)
+
+**Dev Notes:**
+
+- Integration follow-up: the accepted observation adapter is Win64-only and outside the existing source packages. Final packaging must exercise every required producer/adapter on the declared target matrix with reproducible assets; private cached observations cannot replace a supported producer. See [target contract](../CONSUMER-CONTRACT.md#compiler-target-and-dependency-scope).
+
+- The [earlier native checkpoint](DONE/NS-6_delivery_02.md) covers its frozen source revision. Its Linux artifact-content inspection was limited by an unauthenticated-download 401; retain that evidence boundary when qualifying final packages.

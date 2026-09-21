@@ -24,3 +24,7 @@ Starting evidence: [CORPUS-EVALUATION](../CORPUS-EVALUATION.md).
 
 - [NS-5_corpus_01.md](DONE/NS-5_corpus_01.md)
 - [NS-5_evaluation_01.md](NS-5_evaluation_01.md)
+
+**Dev Notes:**
+
+No failed approaches or follow-ups recorded yet.

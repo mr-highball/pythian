@@ -24,3 +24,6 @@ Starting evidence: [MILESTONES](../MILESTONES.md) · [PACKAGING](../PACKAGING.md
 
 - [NS-6_delivery_04.md](NS-6_delivery_04.md)
 
+**Dev Notes:**
+
+No failed approaches or follow-ups recorded yet.

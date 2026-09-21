@@ -25,3 +25,6 @@ Starting evidence: [CONTEXT-PROFILES](../CONTEXT-PROFILES.md) · [WAVE-CONTEXT-A
 - [NS-3_context_01.md](NS-3_context_01.md)
 - [NS-3_tempo_03.md](NS-3_tempo_03.md)
 
+**Dev Notes:**
+
+No failed approaches or follow-ups recorded yet.

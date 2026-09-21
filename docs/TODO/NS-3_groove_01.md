@@ -25,3 +25,6 @@ Starting evidence: [ONSET-DYNAMICS](../ONSET-DYNAMICS.md) · [BEAT-TRACKING](../
 - [NS-3_context_02.md](NS-3_context_02.md)
 - [NS-3_parts_03.md](NS-3_parts_03.md)
 
+**Dev Notes:**
+
+No failed approaches or follow-ups recorded yet.

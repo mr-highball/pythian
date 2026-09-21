@@ -24,3 +24,6 @@ Starting evidence: [SYNTHESIS-QUALITY](../SYNTHESIS-QUALITY.md) · [MODULATION](
 
 - None. This task has no prerequisite task files; external inputs or decisions in its acceptance criteria still apply.
 
+**Dev Notes:**
+
+- Follow-up: existing processing auditions can seed the finite review matrix described in [synthesis quality](../SYNTHESIS-QUALITY.md). Obtain actual effect/routing listening observations before deciding which fixes are necessary; additional renders alone do not close acceptance.

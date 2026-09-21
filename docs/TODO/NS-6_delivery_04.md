@@ -24,3 +24,6 @@ Starting evidence: [PACKAGING](../PACKAGING.md) · [PROJECT](../../PROJECT.md).
 
 - [NS-6_delivery_03.md](NS-6_delivery_03.md)
 
+**Dev Notes:**
+
+No failed approaches or follow-ups recorded yet.

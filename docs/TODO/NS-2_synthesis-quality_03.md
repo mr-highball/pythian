@@ -25,3 +25,6 @@ Starting evidence: [SYNTHESIS-QUALITY](../SYNTHESIS-QUALITY.md) · [FUNDAMENTALS
 - [NS-2_synthesis-quality_01.md](NS-2_synthesis-quality_01.md)
 - [NS-2_synthesis-quality_02.md](NS-2_synthesis-quality_02.md)
 
+**Dev Notes:**
+
+- Follow-up: the [30-second paired preview](../SYNTHESIS-QUALITY.md#thirty-second-listener-preview--2026-09-20) awaits feedback. It uses a shared listening gain and cut-edge fades; preserve that distinction from original synthesis when reviewing balance, joins and final tails.

@@ -44,3 +44,9 @@ do not turn a candidate pitch score into a note-presence probability.
 **Blockers**
 
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
+
+**Dev Notes:**
+
+- Stopped fallback (2026-09-21): contour support missed the 30-ms 55-Hz note while supporting 440 Hz inside the true repeated-note gap. Direct-head and waveform-anchor alternatives already failed false-rest admission; coherent-cycle support preserved controls without recorded improvement. See [contour evidence](../PHRASE-EVALUATION.md#cached-contour-support-does-not-recover-both-short-notes--2026-09-21).
+
+- Follow-up: obtain contrasting continuation, release-tail and rest evidence before changing admission. Many false-rest centers already favor note states locally; decoder costs alone do not supply discrimination. Keep pitch rank separate from presence and coordinate combined gates with [register work](NS-3_notes_01.md).

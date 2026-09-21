@@ -26,3 +26,6 @@ Starting evidence: [CORPUS-EVALUATION](../CORPUS-EVALUATION.md) · [WAVE-STYLE](
 - [NS-5_stoner-rock_01.md](NS-5_stoner-rock_01.md)
 - [NS-5_lofi_01.md](NS-5_lofi_01.md)
 
+**Dev Notes:**
+
+No failed approaches or follow-ups recorded yet.

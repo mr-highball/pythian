@@ -30,3 +30,7 @@ Starting evidence: [CORPUS-EVALUATION](../CORPUS-EVALUATION.md) · [ANALYSIS-WAV
 - [NS-3_harmony_01.md](NS-3_harmony_01.md)
 - [NS-3_groove_01.md](NS-3_groove_01.md)
 - [NS-3_timbre_02.md](NS-3_timbre_02.md)
+
+**Dev Notes:**
+
+No failed approaches or follow-ups recorded yet.

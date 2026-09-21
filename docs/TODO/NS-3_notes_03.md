@@ -26,3 +26,8 @@ Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [PITCH](../PI
 - [NS-3_notes_02.md](NS-3_notes_02.md)
 - [NS-3_validation_02.md](DONE/NS-3_validation_02.md)
 
+**Dev Notes:**
+
+- Follow-up: use the combined maintained identity/presence path only after both prerequisite tasks pass. The preferred development flute precision remains 91.57% against 98%; violin's passing development result is not independent acceptance. Keep reserved phrase material untouched until the final policy freeze; see [phrase evidence](../PHRASE-EVALUATION.md).
+
+- Integration follow-up: the [scale workload](NS-5_scale_01.md) still needs this task's admitted-note-to-saved-learner bridge. Raw salience and private diagnostic outputs cannot substitute for it.

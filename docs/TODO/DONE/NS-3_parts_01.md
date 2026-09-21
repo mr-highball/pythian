@@ -155,3 +155,11 @@ Apply the two-batch reassessment checkpoint in
 **Blockers**
 
 - [NS-3_parts_04.md](NS-3_parts_04.md)
+
+**Dev Notes:**
+
+- Repaired packet failures: identical silent WAVs originally created duplicate content identities and exposed an exception leak. The repair retained both files and deduplicated hash nodes; see [combined packet](../../PART-EVALUATION.md#two-family-packet-and-reserved-acoustic-limits--2026-09-21).
+
+- Repaired supplement assembly: an invalid evaluation partition, duplicate live JSON trees exceeding the memory budget, and event/center disagreement in reference-unknown spans each failed before final acceptance. The fixes preserved raw reference bytes and gates, released construction trees before scoring, and derived scripted prediction centers from their own events. See [curator supplement](../../PART-EVALUATION.md#curator-acoustic-reference-supplement--2026-09-21).
+
+- Follow-up belongs to [mixture inference](../NS-3_parts_02.md): external crossing/unison/quiet-ownership and broader coverage still require appropriate comparisons. The provisional supplement and unknown converter latency do not establish independent accuracy.

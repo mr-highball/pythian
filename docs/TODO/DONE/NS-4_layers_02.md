@@ -42,3 +42,7 @@ No musical inference, genre or listening acceptance is claimed.
 **Blockers**
 
 - [NS-4_layers_01.md](NS-4_layers_01.md)
+
+**Dev Notes:**
+
+No failed approaches or follow-ups recorded yet.

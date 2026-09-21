@@ -32,3 +32,6 @@ Starting evidence: [WAV-LEARNING](../WAV-LEARNING.md) · [INDEPENDENT-VOICES](..
 - [NS-3_timbre_02.md](NS-3_timbre_02.md)
 - [NS-2_synthesis-quality_03.md](NS-2_synthesis-quality_03.md)
 
+**Dev Notes:**
+
+No failed approaches or follow-ups recorded yet.

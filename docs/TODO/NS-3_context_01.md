@@ -106,3 +106,13 @@ Temporal tonic evidence and independent key/change evaluation remain required.
 **Blockers**
 
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
+
+**Dev Notes:**
+
+- Stopped representations (2026-09-21): spectral-peak chroma improved one timed source but regressed the other; the published profile pair then failed both. The contribution audit found fifth-related and distant losses as well as relative-mode errors. Stop profile variations; see [decision evidence](../TONAL.md#rejected-profile-decision-audit).
+
+- Stopped harmonic dictionary: 31/72 synthetic cases failed preservation, including pure-tone false class mass and a missing-fundamental octave error. It did not proceed to recorded execution. See [feasibility evidence](../TONAL.md#harmonic-dictionary-feasibility).
+
+- Repaired study issues: the comparison initially misread the second reference as major rather than D minor; a later audit repaired a truncated JSON field name and exception cleanup. Preserve original failed evidence separately from the final comparisons.
+
+- Follow-up: distinguish tonic from sustained dominant, and true note activity from spectral-envelope effects, before another inference proposal. Retain all annotators, disagreements and unlabelled spans; whole-excerpt key labels are not local-key truth.

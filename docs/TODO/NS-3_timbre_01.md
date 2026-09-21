@@ -25,3 +25,8 @@ Starting evidence: [SOURCES](../SOURCES.md) · [WAVE-STYLE](../WAVE-STYLE.md) ·
 - [NS-3_notes_03.md](NS-3_notes_03.md)
 - [NS-3_parts_03.md](NS-3_parts_03.md)
 
+**Dev Notes:**
+
+- Existing limitation: centered pitch support improved controlled glide fits but did not resolve recorded register ambiguity; the recorded A trajectory still missed the fixed fit-residual gate. A low harmonic residual can support the wrong octave. See [centered measurement](../PITCH.md#centered-timbre-measurement-checkpoint--2026-09-19).
+
+- Follow-up: use accepted event fundamentals and role ownership to distinguish pitch motion from changing sound. Do not admit an attractive reconstruction by loosening fit thresholds.

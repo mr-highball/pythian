@@ -26,3 +26,7 @@ Starting evidence: [LAYERED-STYLE](../LAYERED-STYLE.md) · [CORPUS-EVALUATION](.
 - [NS-5_evaluation_01.md](NS-5_evaluation_01.md)
 - [NS-3_harmony_01.md](NS-3_harmony_01.md)
 - [NS-3_groove_01.md](NS-3_groove_01.md)
+
+**Dev Notes:**
+
+No failed approaches or follow-ups recorded yet.

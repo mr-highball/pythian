@@ -40,3 +40,9 @@ points (+0.40 overall), moving NS-5 to 27% and overall to 55.9%.
 **Blockers**
 
 - None. This task has no prerequisite task files; external inputs or decisions in its acceptance criteria still apply.
+
+**Dev Notes:**
+
+- Follow-up: the identity pilot does not authenticate new recordings automatically. Repeat family/derivative/exposure checks for each new corpus input and reuse; previously exposed A/B/C sources remain development-only. See [identity pilot](../../CORPUS-EVALUATION.md#verified-identity-pilot).
+
+- The original harness failures and final audit remain under ignored `build/corpus-identity/`; do not promote an inherited frozen palette or relabelled excerpt to independent evaluation.

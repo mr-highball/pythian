@@ -25,3 +25,6 @@ Starting evidence: [LAYERED-STYLE](../LAYERED-STYLE.md) · [JOINT](../JOINT.md) 
 - [NS-3_context_02.md](NS-3_context_02.md)
 - [NS-3_parts_03.md](NS-3_parts_03.md)
 
+**Dev Notes:**
+
+No failed approaches or follow-ups recorded yet.

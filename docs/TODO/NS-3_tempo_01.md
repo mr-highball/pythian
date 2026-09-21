@@ -33,3 +33,9 @@ open with no credit.
 **Blockers**
 
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
+
+**Dev Notes:**
+
+- Stopped candidate (2026-09-21): source-accent structure improved acceleration and missing regular pulses but still failed authored polyphonic/changing-clock acceptance. Passing deception/polyrhythm cases did not justify adoption or tuning. See [comparison evidence](../BEAT-TRACKING.md#metrical-source-structure).
+
+- Follow-up: distinguish metrical evidence from instrument/band changes and candidate omission. Provider agreement alone can favor the wrong beat level; retain half/double-time and phase alternatives.

@@ -36,3 +36,9 @@ is retained. Commands, criterion review and tested hashes are ignored under
 **Blockers**
 
 - [NS-4_layers_02.md](NS-4_layers_02.md)
+
+**Dev Notes:**
+
+- Repaired validation case: the first paired sound edit used an equivalent waveform and therefore did not demonstrate an audible-input change. It was corrected to a distinct waveform before acceptance; retain that failure alongside the final [granular-control evidence](../../INDEPENDENT-VOICES.md#granular-musical-and-sound-controls).
+
+- Follow-up: these controls do not establish recorded-timbre inference; that remains with [evolving sound](../NS-3_timbre_01.md).

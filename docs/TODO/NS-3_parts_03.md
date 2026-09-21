@@ -29,3 +29,7 @@ before reporting a separate-recording acceptance verdict.
 
 - [NS-3_parts_02.md](NS-3_parts_02.md)
 - [NS-3_validation_02.md](DONE/NS-3_validation_02.md)
+
+**Dev Notes:**
+
+- Follow-up: the [accepted reference packet](DONE/NS-3_parts_01.md) includes qualified families plus a provisional acoustic supplement. Preserve those distinct statuses and reference-only exposure; diagnostic part scores cannot grant independent mixture acceptance. See [mixture policy](../PART-MIXTURE-POLICY.md).

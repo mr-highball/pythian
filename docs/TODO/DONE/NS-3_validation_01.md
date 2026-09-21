@@ -87,3 +87,9 @@ moving overall completion from 57.0% to 58.4%. Return to the now-unblocked
 **Blockers**
 
 - None. This task has no prerequisite task files; external inputs or decisions in its acceptance criteria still apply.
+
+**Dev Notes:**
+
+- Repaired defect (2026-09-21): checking only reference and estimator ancestry omitted the exact prediction node, allowing reference-derived predictions to reach independent eligibility. Final acceptance requires the prediction's complete declared source/preparation/estimator closure; see [file evaluation](../../EVALUATION-OPERATOR.md).
+
+- Follow-up belongs to provider tasks: this evaluator cannot authenticate undeclared ancestry or turn development scores into independent musical accuracy. Preserve the repaired admission boundary when adding new prediction producers.

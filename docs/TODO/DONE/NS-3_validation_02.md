@@ -92,3 +92,11 @@ The accepted repair above restores the same allocation once.
 **Blockers**
 
 - [NS-3_validation_01.md](NS-3_validation_01.md)
+
+**Dev Notes:**
+
+- Repaired setup issue: the first hour submission failed near setup with insufficient phase diagnostics. Overlapping verified source/runtime initialization and joining both before observation passed within unchanged limits; the original failure count remains one.
+
+- Repaired race: separate phase/timestamp reads could combine a stale setup timestamp with the observing phase and kill a healthy worker. An atomic combined snapshot and coordinated transition checks restored acceptance. See [native qualification](../../NATIVE-INFERENCE.md#qualification--2026-09-21).
+
+- Follow-ups remain [semantic scale](../NS-5_scale_01.md) and [final target delivery](../NS-6_delivery_03.md). Raw salience/AC RMS are not admitted notes or calibrated musical confidence.

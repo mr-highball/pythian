@@ -66,12 +66,32 @@ Starting evidence: links to current contracts, code or evidence.
 **Blockers**
 
 - <Relative Markdown link to the prerequisite task file>
+
+**Dev Notes:**
+
+- <Dated failed approach or possible follow-up, with evidence and current disposition>
 ```
 
 If no task prerequisite exists, use one bullet saying `None` and explain that
 external inputs/decisions in the acceptance criteria still apply. Link directly
 to task files, never just a milestone name. Keep filenames unchanged in DONE.
 When a task moves, update its navigation/evidence links for the new directory.
+
+Every task, including tasks in DONE, ends with **Dev Notes:**. Use this section
+for approaches that did not work, repaired implementation issues worth retaining,
+and possible follow-ups. State what was attempted, what the evidence showed and
+whether the approach is stopped, repaired or still a candidate. Link detailed
+evidence and any existing task that owns a follow-up; do not duplicate full logs.
+If nothing is recorded, write `No failed approaches or follow-ups recorded yet.`
+This means no notes have been recorded, not proof that every approach succeeded.
+
+Keep acceptance evidence in Description and actual prerequisites in Blockers.
+Dev Notes are not additional acceptance criteria or implicit dependencies, and
+a possible follow-up does not authorize restarting a stopped investigation.
+If a note reveals required work outside the current task, use the gap process
+below to create/link its task immediately. Keep unresolved acceptance failures
+open; notes cannot hide a blocker, reset investigation counters or grant credit.
+Retain and update Dev Notes when a task moves to DONE.
 
 ## Select and execute
 

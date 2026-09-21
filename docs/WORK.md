@@ -21,6 +21,25 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Task development notes — 2026-09-21
+
+At the user's request, all 50 task files, including the 13 in DONE, now end with
+**Dev Notes:**. Twenty-four tasks summarize existing failed approaches, repaired
+defects or concrete follow-ups with evidence/owner links; the remaining 26 state
+that no failed approaches or follow-ups are recorded yet. Existing descriptions,
+acceptance criteria, prerequisite lists and completion evidence are preserved.
+The local task-flow template now requires this section for future tasks and
+defines its relationship to blockers, discovered gaps and stopped experiments.
+
+This is an authorized documentation update while the broader goal remains
+paused. No sub-agent is resumed, experiment restarted, task moved or completion
+credit changed: **63.15%, 37 open / 13 DONE**. Documentation checks pass: all 50
+original task bodies are unchanged and have one final nonempty Dev Notes section;
+1071 local links across 53 files resolve. The existing native task checker, updated
+for the section boundary, confirms 96 acyclic prerequisite links, final-gate
+reachability and unchanged credit arithmetic with zero unfreed blocks.
+`git diff --check` passes. Publish this documentation on `hello-pythian`.
+
 ## Listener preview — 2026-09-20
 
 Supplied a native 30-second paired synthesis preview for listener feedback:

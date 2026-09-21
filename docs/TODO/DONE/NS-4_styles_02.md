@@ -39,3 +39,7 @@ core dependency or generated-as-recorded claim was added.
 **Blockers**
 
 - [NS-4_styles_01.md](NS-4_styles_01.md)
+
+**Dev Notes:**
+
+- Follow-up: accepted selective blend/reblend mechanics still need [recorded workflow integration](../NS-4_integration_01.md), [many-hour capacity](../NS-5_scale_02.md) and [cross-style listening acceptance](../NS-5_blends_01.md). Saved replay and lineage preservation do not by themselves establish those musical outcomes.

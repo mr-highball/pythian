@@ -24,3 +24,6 @@ Starting evidence: [CORPUS](../CORPUS.md) · [ANALYSIS-WAVE](../ANALYSIS-WAVE.md
 
 - [NS-5_vocabulary_01.md](NS-5_vocabulary_01.md)
 
+**Dev Notes:**
+
+No failed approaches or follow-ups recorded yet.

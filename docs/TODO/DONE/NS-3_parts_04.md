@@ -52,3 +52,7 @@ credit: NS-3 37% → 38%, overall 62.65% → 62.90%.
 **Blockers**
 
 - [NS-3_validation_01.md](NS-3_validation_01.md)
+
+**Dev Notes:**
+
+- Follow-up boundary: maintained scorers and authored controls measure declared predictions; they do not learn roles or establish recorded accuracy. External preparation is accepted in [parts_01](NS-3_parts_01.md); actual inference and independent admission remain [parts_02](../NS-3_parts_02.md) and [parts_03](../NS-3_parts_03.md).

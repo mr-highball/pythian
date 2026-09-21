@@ -54,3 +54,9 @@ as prerequisites for operational measurement.
 - [NS-5_corpus_01.md](DONE/NS-5_corpus_01.md)
 - [NS-3_validation_02.md](DONE/NS-3_validation_02.md)
 - [NS-3_notes_03.md](NS-3_notes_03.md)
+
+**Dev Notes:**
+
+- Planning correction (2026-09-21): successful observation jobs hash the whole input at initialization and again before sink completion, even for a shorter requested scope. Include both passes plus preparation/storage in whole-pipeline budgets; see [workload](../CORPUS-SCALE.md).
+
+- Follow-up: the prepared 2.3222053373-hour workload has not run as semantic training. [notes_03](NS-3_notes_03.md) owns the missing admitted-note-to-learner bridge. The accepted one-hour observation benchmark does not close this task.

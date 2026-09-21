@@ -37,3 +37,9 @@ through notes_03, not more source packaging.
 
 - [NS-3_parts_01.md](DONE/NS-3_parts_01.md)
 - [NS-3_notes_03.md](NS-3_notes_03.md)
+
+**Dev Notes:**
+
+- Follow-up from [reference preparation](DONE/NS-3_parts_01.md): external crossing, unison, quiet-part ownership and broader role/reference coverage remain gaps for actual inference comparisons. The curator supplement has provisional family status and unknown spans; it is not an accuracy result.
+
+- The remaining execution prerequisite is [independent phrases](NS-3_notes_03.md). More source packaging alone does not establish simultaneous-note recovery or stable role ownership.
