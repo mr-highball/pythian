@@ -30,6 +30,14 @@ do not justify register correction, and resolving their cause alone cannot prove
 identity. Preserve the separate presence task, independent evaluation material
 and current thresholds. The task remains open without additional credit.
 
+The [cache-only availability follow-up](../PHRASE-EVALUATION.md#cached-availability-attribution--2026-09-21)
+now passes final QA. All unavailable triples remain unresolved; the needed
+intermediates are absent. Next implement one bounded trace-only replay per
+existing recording, retaining first actual exit reasons and reached values under
+the unchanged calculation. Exact replay of the five original outputs is required
+before interpreting causes. Keep the envelope experiment stopped; no new model,
+guard, source exposure or presence/register correction belongs to this diagnostic.
+
 **Acceptance Criteria:**
 
 - Declare a discriminating identity observation or decision rule before scoring; explain how it distinguishes the remaining octave errors rather than merely changing global weights or thresholds.

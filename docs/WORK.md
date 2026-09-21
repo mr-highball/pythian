@@ -41,7 +41,45 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current handoff — frozen note/key diagnostics accepted — 2026-09-21
+## Current handoff — fixed profile rejected; availability diagnostic passes — 2026-09-21
+
+The preceding nine-document batch is published at `0785186`; its
+[native CI passes](https://github.com/mr-highball/pythian/actions/runs/35607192822).
+The next two-item batch passes final runtime/source QA without a blocking
+implementation defect. The [fixed key-profile comparison](TONAL.md#fixed-key-profile-comparison)
+uses one published Krumhansl–Kessler profile pair and Pearson correlation on saved
+chroma. Its primary exact-match result falls from 66.865% to 32.016% on source 02
+and 35.581% to 21.142% on source 16; all individual annotators also regress.
+Reject this candidate. Inspect changed cell decisions and class contributions
+before declaring a different observation/model; do not sweep profiles or smooth
+the rejected output. The maintained tonal ranker remains unchanged.
+
+The note cache inventory found no retained harmonic-fit intermediates matching
+these windows. A native availability classifier now validates all 96 flute and
+87 violin events, retaining provable branch exits and explicit unresolved
+alternatives. It reads cached observations only. Changed frequency can establish
+that phase-support checks were passed; unchanged frequency cannot distinguish
+an early exit from exactly zero correction. No physical-cause, pitch-identity or
+presence correction follows from branch attribution. The [native stage summary](PHRASE-EVALUATION.md#cached-availability-attribution--2026-09-21)
+also passes: all unavailable triples remain unresolved, with no uniquely
+attributable frequency/target-energy exit. The next note step is a predeclared
+trace-only replay per existing development recording, retaining first exits and
+reached intermediates. Exact original-output equality is required before any
+interpretation; no model run, new source or prediction change is authorized by
+this diagnostic. The envelope correction stays stopped.
+
+Controls and data paths pass with zero leaks; the key study also rejects wrong
+prediction identity and preserves existing output. Both sources' predictions
+freeze before reference comparison. Final commands, hashes, resource measurements
+and verdicts are under `build/qa-batch-11/`; no scientific aggregation is performed
+in shell. No task closes, failure counter resets or credits change:
+**62.65%, 38 open / 11 DONE**. The originating NS-5 style/corpus goal still depends
+on accepted note/context evidence and its learning bridge. Final documentation
+checks pass: native evidence, local links, task accounting, privacy and the six-file
+scope are verified. The batch is ready for normal publication; its exact revision
+is reported separately. No runtime process remains live.
+
+## Previous checkpoint — frozen note/key diagnostics accepted — 2026-09-21
 
 The final QA batch passes the corrected native note-cache and key-error audits,
 plus the native note-cohort summary. These diagnostics change the next experiments,

@@ -72,6 +72,58 @@ evidence. SHA256 identities:
 Both note tasks remain open without additional completion credit. The failed
 scientific correction gate is distinct from the repaired control cleanup defect.
 
+## Cached availability attribution — 2026-09-21
+
+The retained fit-cache inventory finds no first/second-window harmonic coefficients
+or energies for this predictive calculation. Earlier phase studies use different
+windows and models and cannot be joined by event index. A native cache-only
+classifier nevertheless tests what can be proved from retained frequencies and
+paired predictive/fixed observations, following the original branch ordering.
+Changed frequency proves that common phase-support checks were reached; unchanged
+frequency may reflect an early exit or exactly zero correction. Unresolved cases
+retain explicit alternatives rather than an invented failure cause.
+
+All 96 flute and 87 violin events, each with lower/upper hypotheses, pass source,
+baseline, original algorithm/policy and window-geometry checks. The native summary
+records the following **identical** predictive/fixed stage counts:
+
+| Recording / hypothesis | Retained triples | Available | Unresolved |
+| --- | ---: | ---: | ---: |
+| Flute / lower | 509 | 279 | 230 |
+| Flute / upper | 509 | 30 | 479 |
+| Violin / lower | 767 | 699 | 68 |
+| Violin / upper | 769 | 474 | 295 |
+
+No unavailable triple can be uniquely attributed to the corrected-frequency or
+target-energy exit. This does not prove those exits never occurred. Both flute
+hypotheses have four pairs too short for any triple and sixteen insufficient for
+the two-triple proposal; both violin hypotheses have one of each. These categories
+overlap and cannot be added. No pair is rejected by nominal Nyquist geometry.
+Triples/windows overlap too; these are accounting units, not independent trials.
+
+**Next: predeclare one trace-only replay of the unchanged predictive calculation**
+on each existing development recording. Record the first actual exit branch and
+only the intermediates reached before it; later values must be absent, not zero.
+Require exact equality of the five original output fields against the frozen
+cache on the same compiler/target before interpreting traces. Preserve all events,
+source windows, four-harmonic fits, constants and branch order, with the existing
+fit-work bound and 15-minute/512-MiB limit per recording. Check branch controls
+first; stop on replay mismatch. No model execution, new recording exposure,
+threshold tuning or register/presence correction is part of this diagnostic.
+The rejected envelope proposal stays stopped. Explaining availability remains a
+prerequisite to selecting a justified new identity observation, not its acceptance.
+
+Checked stable Win64 controls and classification pass with zero leaks; the
+classifier takes 2,906 ms with 40,058,880 bytes sampled private memory. Native
+summary checks stage conservation, complete event/hypothesis coverage and geometry;
+it takes 1,088 ms with 25,522,176 bytes sampled private memory and zero leaks.
+Evidence and frozen packets are under `build/phrase-availability/` and
+`build/qa-batch-11/`. Classifier report SHA256:
+`0dcfd9fdc31890b6ca199111d91940cfc34d7ec28fd739cafc03f682ae75fa8d`;
+stage summary SHA256:
+`d6a60004cae4778f192e07b73634764f89e81c17124d67f0cdda855b189777e0`.
+No task status, musical score, completion credit or failed-submission count changes.
+
 <a id="predictive-phase"></a>
 ## Predictive harmonic phase comparison — 2026-09-21
 

@@ -143,11 +143,15 @@ under the existing fourth criterion. The [timed key comparison](TONAL.md#timed-d
 improves one source and regresses on the other, failing its frozen scientific
 gate. The [frozen error audit](TONAL.md#frozen-key-error-audit) locates source 16's
 net exact-match loss in fully labelled constant contexts, with a net increase in
-relative-key errors; test one predeclared tonic/mode weighting hypothesis before
-temporal smoothing. The [note-cache reassessment](PHRASE-EVALUATION.md#identity-evidence-reassessment--2026-09-21)
+relative-key errors. A subsequent [fixed profile comparison](TONAL.md#fixed-key-profile-comparison)
+also fails: exact key matching falls to 32.016% / 21.142% on the two recordings.
+Stop that candidate and inspect changed decisions/contributions before another
+model or temporal smoothing. The [note-cache reassessment](PHRASE-EVALUATION.md#identity-evidence-reassessment--2026-09-21)
 stops the contingent envelope correction: no disputed event passes the fixed
-guards, and the cache lacks exact unavailability reasons. Inspect cached
-intermediates before any unchanged-algorithm measurement. These diagnostics
+guards, and the cache lacks exact unavailability reasons. The subsequent
+[cache-only attribution](PHRASE-EVALUATION.md#cached-availability-attribution--2026-09-21)
+cannot resolve any unavailable triple. Next trace the unchanged observation path
+with exact original-output replay before interpreting causes. These diagnostics
 resolve next actions, not musical acceptance; **62.65% remains unchanged**.
 
 The tables below retain existing outcome anchors for topic links. They are

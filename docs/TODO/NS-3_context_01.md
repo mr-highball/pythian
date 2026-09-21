@@ -68,10 +68,14 @@ after repairing a truncated JSON field name and exception cleanup. Every
 annotator's score reconciles with the prior comparison. Source 16's net exact
 loss is confined to fully labelled constant contexts, with a corresponding net
 increase in relative-key errors; reference ranks still reach fourteenth.
-Key-specific tonic/mode weighting is the next declared hypothesis to specify
-before temporal smoothing, without tuning this pair or changing the existing
-ranker. Unknown calibration and independent key/change acceptance remain open;
-no maintained admission or completion credit is claimed.
+The subsequent [fixed key-profile comparison](../TONAL.md#fixed-key-profile-comparison)
+tests one published major/minor profile pair on frozen chroma before temporal
+smoothing. Peak-chroma exact matching falls to 32.016% / 21.142%, failing the
+predeclared gate on both sources. Reject this candidate without a profile sweep.
+Next inspect changed cell decisions and pitch-class contributions before declaring
+a different observation/model; this failure does not isolate its physical cause.
+Unknown calibration and independent key/change acceptance remain open; no
+maintained admission or completion credit is claimed.
 
 **Acceptance Criteria:**
 

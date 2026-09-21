@@ -326,11 +326,10 @@ within fully labelled constant contexts. Both close alternatives and more distan
 errors therefore need attention. Inspecting all 24 fits does not establish that
 choosing an alternative would be correct without an independent decision rule.
 
-The next hypothesis should test key-specific tonic/mode weighting on the frozen
-profiles before adding temporal smoothing. Predeclare one weighting/formula,
-controls and the same no-source-regression gate before scoring; do not tune
-coefficients or admission thresholds against these two recordings. The existing
-precursor-compatible ranker and its callers remain unchanged. This diagnostic
+This audit motivated the fixed key-profile comparison below, testing tonic/mode
+weighting before temporal smoothing. Its formula and no-source-regression gate
+were declared before scoring. The existing precursor-compatible ranker and its
+callers remain unchanged. This diagnostic
 does not select a maintained classifier, calibrate uncertainty or close context
 admission; independent composition-grouped evaluation remains required.
 
@@ -343,6 +342,52 @@ The successful audit takes 1,568 ms, produces 768,557 bytes and reaches
 20,414,464 bytes sampled private memory; this is not an exact OS peak.
 Report SHA256: `5c2156f540c9186f55235b714c13a1711c003a6df71d1c4bba852c4673f7466e`.
 Original failed logs and source identities remain retained. No task credit changes.
+
+## Fixed key-profile comparison
+
+The next native study applies one published Krumhansl–Kessler major/minor profile
+pair using Pearson correlation, rotating through all 24 root/mode candidates.
+The [method maintainer's description](https://extras.humdrum.org/man/keycor/)
+and [Temperley's comparative paper, Table 1](https://davidtemperley.com/wp-content/uploads/2015/12/temperley-ms04.pdf)
+provide the formula and numerical weights. No external implementation is copied.
+The study holds the saved pitch-class weights, source clocks, cells, contexts and
+FFT support fixed; it reads no WAV, runs no new FFT and tunes no coefficient.
+All rankings for both recordings are saved before reference comparison. Raw
+correlation and score gaps are not calibrated confidence; zero/constant profiles
+produce unknowns. This tests interpretation of existing chroma, not a complete
+published audio key-estimation pipeline.
+
+The predeclared primary candidate is correlation on peak chroma; correlation on
+original bin chroma is a fixed secondary diagnostic. The retain gate requires
+an improved mean with neither recording worse than either original ranker result.
+Each annotator remains separate; the unanimous subset does not replace them.
+
+| Source | Unanimous labelled frames | Original peak exact | Correlation peak exact | Original bin exact | Correlation bin exact |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 02 | 1,183,203 | 791,154 (66.865%) | 378,819 (32.016%) | 553,455 (46.776%) | 176,400 (14.909%) |
+| 16 | 2,223,522 | 791,154 (35.581%) | 470,106 (21.142%) | 1,055,754 (47.481%) | 440,559 (19.814%) |
+
+The primary mean falls from 51.223% to 26.579%; unknown predictions remain zero.
+All three annotators on both recordings also regress under the primary candidate.
+The scientific gate fails. **Reject this fixed profile candidate and preserve the
+existing ranker.** Do not switch profiles, smooth the output or tune these two
+recordings until they pass. Next inspect changed cell decisions and their
+pitch-class contributions against the retained references and alternatives before
+declaring another observation/model hypothesis. This result alone cannot isolate
+spectral harmonic contamination, temporal aggregation or a profile mismatch.
+Independent key/change acceptance and unknown calibration remain open.
+
+Checked stable Win64 controls, both-source prediction, comparison, existing-output
+preservation and wrong-hash rejection pass with zero leaks. Prediction takes
+1,649 ms and comparison 975 ms, with sampled private memory of 23,101,440 and
+24,903,680 bytes respectively. These checks validate the failed experiment's
+mechanics, not key accuracy. Source, frozen policy, predictions and comparison are under
+`build/local-key-reference/swd/profile-study/`; final validation is recorded in
+`build/qa-batch-11/`. Prediction SHA256 is
+`d92c4efc4f9bfafb6e3559c33c49004836618dbc917742b5ff011534f92ee561`;
+comparison SHA256 is
+`12f369f486a6fd4761bb1ff086de0b81f1d8f18421b5227a3d46d4a98bc1d74b`.
+No maintained admission behavior, task status or completion credit changes.
 
 ## Native inspection
 
