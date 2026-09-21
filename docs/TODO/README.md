@@ -2,11 +2,11 @@
 
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Completed tasks](DONE/README.md) · [Work record](../WORK.md)
 
-**Execution resumed — 2026-09-20: 43 open tasks, 6 DONE. Starting with NS-5, then following prerequisite blockers.**
+**Execution resumed — 2026-09-20: 42 open tasks, 7 DONE. Starting with NS-5, then following prerequisite blockers.**
 This catalog covers the remaining declared end state. Task files own acceptance
 criteria and hard prerequisites; this page supplies navigation and accounting.
-No task earns credit merely by being written. Accepted task credit is **3.5**;
-**41.0 overall points remain**. Baseline 55.5 + accepted 3.5 = **59.0 current**.
+No task earns credit merely by being written. Accepted task credit is **4.1**;
+**40.4 overall points remain**. Baseline 55.5 + accepted 4.1 = **59.6 current**.
 
 ## Goal ledger
 
@@ -15,10 +15,10 @@ No task earns credit merely by being written. Accepted task credit is **3.5**;
 | [NS-1 — Independent Pascal foundation](../MILESTONES.md#ns-1) | 100% | 0 | 0 | 0.00 |
 | [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 80% | 3 | 20 | 5.00 |
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 32% | 16 | 68 | 17.00 |
-| [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 80% | 5 | 20 | 3.00 |
+| [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 84% | 4 | 16 | 2.40 |
 | [NS-5 — Many-hour styles that generate and blend usefully](../MILESTONES.md#ns-5) | 27% | 16 | 73 | 14.60 |
 | [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 72% | 3 | 28 | 1.40 |
-| **Total** | **59.0 weighted points** | **43** | Per-goal credits are not summed across goals | **41.00** |
+| **Total** | **59.6 weighted points** | **42** | Per-goal credits are not summed across goals | **40.40** |
 
 NS-1 is already complete under the accepted extraction scope. Preserve its
 invariants in every applicable task; do not recreate completed extraction work.
@@ -61,7 +61,6 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 
 | Task file and outcome | Goal credit | Overall credit | State |
 | --- | ---: | ---: | --- |
-| [NS-4_layers_03.md](NS-4_layers_03.md) — Connect granular musical and sound controls | +4 | +0.60 | TODO |
 | [NS-4_layers_04.md](NS-4_layers_04.md) — Handle changing duration and committed-stream edits | +4 | +0.60 | TODO |
 | [NS-4_styles_01.md](NS-4_styles_01.md) — Persist reusable semantic providers and joint evidence | +4 | +0.60 | TODO |
 | [NS-4_styles_02.md](NS-4_styles_02.md) — Support selective blend and further blend | +4 | +0.60 | TODO |
@@ -106,12 +105,13 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 | [NS-3_validation_01.md](DONE/NS-3_validation_01.md) | Executable musical comparison/annotation contracts, evidence ancestry and preserved phrase gates | +2 NS-3 | +0.50 |
 | [NS-4_layers_01.md](DONE/NS-4_layers_01.md) | Named owned voice passes, selective role edits and exact two-target demo replay | +6 NS-4 | +0.90 |
 | [NS-4_layers_02.md](DONE/NS-4_layers_02.md) | Explicit semantic/clock/role contracts, transactional replacement and exact two-target demo replay | +4 NS-4 | +0.60 |
+| [NS-4_layers_03.md](DONE/NS-4_layers_03.md) | Granular preferences/locks and note-relative sound edits; exact unrelated states, stems and two-target replay | +4 NS-4 | +0.60 |
 
 Current dependency chain: `NS-5_corpus_02` -> **`NS-5_evaluation_01`**.
 Shared validation and corpus identity are accepted prerequisites. Return to the
 style cards and comparator contracts, then the genre corpus. The independent
-semantic-layer path can now continue with integrated controls after accepted
-provider compatibility. The style specification remains open for grounded musical
+semantic-layer path can now continue with changing-duration edits and saved
+providers after accepted granular controls. The style specification remains open for grounded musical
 references and numerical criteria; its measured controls earn no partial credit.
 
 ## Dependency order
@@ -146,7 +146,7 @@ first accepted genre is predetermined.
 20. [NS-3_timbre_02.md](NS-3_timbre_02.md)
 21. [NS-4_layers_01.md — DONE](DONE/NS-4_layers_01.md)
 22. [NS-4_layers_02.md](DONE/NS-4_layers_02.md) — DONE
-23. [NS-4_layers_03.md](NS-4_layers_03.md)
+23. [NS-4_layers_03.md](DONE/NS-4_layers_03.md) — DONE
 24. [NS-4_layers_04.md](NS-4_layers_04.md)
 25. [NS-4_styles_01.md](NS-4_styles_01.md)
 26. [NS-4_styles_02.md](NS-4_styles_02.md)
@@ -185,8 +185,8 @@ recovery/ancestry bounds, phrase/section generation, stream commitment and
 independent delivery.
 
 The paused unvalidated provider edit belongs to
-[the first semantic-layer task](DONE/NS-4_layers_01.md). It is not part of the last
-verified package and is not marked complete. Existing completed mechanisms remain
+[the first semantic-layer task](DONE/NS-4_layers_01.md). It is now accepted with
+final evidence; its earlier paused status is historical. Existing completed mechanisms remain
 starting evidence, including partition selection, provider inspection, fixed
 layer timing, saved preferences, journals, source packages and Phanes removal.
 

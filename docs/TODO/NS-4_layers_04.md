@@ -22,5 +22,4 @@ Starting evidence: [LAYERS](../LAYERS.md) · [PERFORMANCE](../PERFORMANCE.md) ·
 
 **Blockers**
 
-- [NS-4_layers_03.md](NS-4_layers_03.md)
-
+- [NS-4_layers_03.md](DONE/NS-4_layers_03.md)

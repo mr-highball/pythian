@@ -50,6 +50,7 @@ type
     MaxPassBacktracks: Integer;
   end;
   TVoiceMasks = array of TWfcSequenceTokenConstraints;
+  TVoicePreferences = array of TLayerTokenPreferences;
   { Owns clones of all models and the actual independent-voice graph. Public
     names are harmony, rhythm and caller-declared role names. Masks are staged;
     selective regeneration applies only edits in the requested WFC descendant
@@ -66,6 +67,8 @@ type
     FHasBaseline: array of TLayerDomainFlags;
     FPending: TVoiceMasks;
     FCommitted: TVoiceMasks;
+    FPreferences: TVoicePreferences;
+    FCommittedPreferences: TVoicePreferences;
     FDirty: array of Boolean;
     FAccepted: TWfcMusicVoicesGenerated;
     FContracts: TProviderContracts;
@@ -98,6 +101,8 @@ type
       const AMask: TWfcSequenceTokenConstraints);
     function CopyConstraints(const AName: String): TWfcSequenceTokenConstraints;
     function HasPending(const AName: String): Boolean;
+    procedure SetPreferences(const AName: String; const APreferences: TLayerTokenPreferences);
+    function CopyPreferences(const AName: String): TLayerTokenPreferences;
     function CopyAccepted: TWfcMusicVoicesGenerated;
     function TryGenerate(var AGenerated: TWfcMusicVoicesGenerated;
       out AReport: TGraphNegotiationReport;
@@ -123,6 +128,92 @@ uses
   pythian.audio,
   pythian.wfc.music,
   wfc_sequence_text;
+
+type
+  TNamedPreferenceChange = record
+    Group: TGraphRuleGroup;
+    Original: Integer;
+    Preferred: Integer;
+  end;
+  TNamedPreferenceScope = class
+  private
+    FChanges: array of TNamedPreferenceChange;
+    FApplied: Boolean;
+  public
+    constructor Create(const ASession: TNamedVoiceSession; const AActive: TGraphPassIndices);
+    destructor Destroy; override;
+  end;
+
+constructor TNamedPreferenceScope.Create(const ASession: TNamedVoiceSession;
+  const AActive: TGraphPassIndices);
+var
+  LIndex: Integer;
+  LCount: Integer;
+  LPass: TGraph;
+  LModel: TWfcSequenceModel;
+  LPreference: TLayerTokenPreference;
+  LValue: TGraphValue;
+  LDomain: TGraphValues;
+  LHadDomain: Boolean;
+begin
+  inherited Create;
+  for LIndex in AActive do
+  begin
+    if LIndex >= ASession.ProviderCount then
+    begin
+      Continue;
+    end;
+    if Length(ASession.FPreferences[LIndex]) = 0 then
+    begin
+      Continue;
+    end;
+    LPass := ASession.FGraph.PassGraph[LIndex];
+    LModel := WfcMusicVoicesModelAt(ASession.FConfig, LIndex);
+    LHadDomain := LPass.HasAllowedValues(0, 0, 0);
+    LDomain := LPass.CopyAllowedValues(0, 0, 0);
+    try
+      for LPreference in ASession.FPreferences[LIndex] do
+      begin
+        LPass.ClearAllowedValues(0, 0, 0);
+        IntersectSequenceAllowedTokens(LModel, LPass, 0, LPreference.Token);
+        for LValue in LPass.CopyAllowedValues(0, 0, 0) do
+        begin
+          LCount := Length(FChanges);
+          SetLength(FChanges, LCount + 1);
+          FChanges[LCount].Group := LPass.Rules[LValue];
+          FChanges[LCount].Original := FChanges[LCount].Group.Weight;
+          FChanges[LCount].Preferred := Integer(Int64(FChanges[LCount].Original) *
+            LPreference.Multiplier);
+        end;
+      end;
+    finally
+      LPass.ClearAllowedValues(0, 0, 0);
+      if LHadDomain then
+      begin
+        LPass.SetAllowedValues(0, 0, 0, LDomain);
+      end;
+    end;
+  end;
+  FApplied := True;
+  for LIndex := 0 to High(FChanges) do
+  begin
+    FChanges[LIndex].Group.Weight := FChanges[LIndex].Preferred;
+  end;
+end;
+
+destructor TNamedPreferenceScope.Destroy;
+var
+  LIndex: Integer;
+begin
+  if FApplied then
+  begin
+    for LIndex := 0 to High(FChanges) do
+    begin
+      FChanges[LIndex].Group.Weight := FChanges[LIndex].Original;
+    end;
+  end;
+  inherited Destroy;
+end;
 
 function DefaultVoiceSessionOptions: TVoiceSessionOptions;
 begin
@@ -292,6 +383,8 @@ begin
   SetLength(FHasBaseline, Length(FNames));
   SetLength(FPending, Length(FNames));
   SetLength(FCommitted, Length(FNames));
+  SetLength(FPreferences, Length(FNames));
+  SetLength(FCommittedPreferences, Length(FNames));
   SetLength(FDirty, Length(FNames));
   for LIndex := 0 to High(FNames) do
   begin
@@ -401,6 +494,7 @@ var
   LContracts: TProviderContracts;
   LCandidate: TNamedVoiceSession;
   LPublished: TWfcMusicVoicesGenerated;
+  LPreferenceScope: TNamedPreferenceScope;
 begin
   AReport := Default(TLayerModelReplacementReport);
   AReport.ReplacedLayerIndex := -1;
@@ -442,10 +536,12 @@ begin
       if LActive[LIndex] then
       begin
         LCandidate.SetConstraints(FNames[LIndex], FPending[LIndex]);
+        LCandidate.SetPreferences(FNames[LIndex], FPreferences[LIndex]);
       end
       else
       begin
         LCandidate.SetConstraints(FNames[LIndex], FCommitted[LIndex]);
+        LCandidate.SetPreferences(FNames[LIndex], FCommittedPreferences[LIndex]);
       end;
       LCandidate.ApplyMask(LIndex, LCandidate.FPending[LIndex]);
       if not LActive[LIndex] then
@@ -459,7 +555,12 @@ begin
         end;
       end;
     end;
-    Result := LCandidate.FGraph.TrySolveNegotiated(LCandidate.NegotiationOptions, AReport.Search);
+    LPreferenceScope := TNamedPreferenceScope.Create(LCandidate, AReport.AffectedLayerIndices);
+    try
+      Result := LCandidate.FGraph.TrySolveNegotiated(LCandidate.NegotiationOptions, AReport.Search);
+    finally
+      LPreferenceScope.Free;
+    end;
     if not Result then
     begin
       Exit;
@@ -482,6 +583,8 @@ begin
       end;
       LCandidate.FCommitted[LIndex] := CopyMask(FCommitted[LIndex]);
       LCandidate.FPending[LIndex] := CopyMask(FPending[LIndex]);
+      LCandidate.FPreferences[LIndex] := Copy(FPreferences[LIndex]);
+      LCandidate.FCommittedPreferences[LIndex] := Copy(FCommittedPreferences[LIndex]);
       LCandidate.FDirty[LIndex] := FDirty[LIndex];
     end;
     { All potentially failing work is complete. Swap ownership, then let candidate
@@ -496,6 +599,8 @@ begin
     FHasBaseline := LCandidate.FHasBaseline;
     FCommitted := LCandidate.FCommitted;
     FPending := LCandidate.FPending;
+    FPreferences := LCandidate.FPreferences;
+    FCommittedPreferences := LCandidate.FCommittedPreferences;
     FDirty := LCandidate.FDirty;
     FAccepted := LCandidate.FAccepted;
     FContracts := LCandidate.FContracts;
@@ -515,6 +620,7 @@ begin
   LIndex := IndexOf(AName);
   Result := Default(TStyleProviderDescription);
   Result.Name := AName;
+  Result.Preferences := CopyPreferences(AName);
   Result.TicksPerQuarter := FOptions.TicksPerQuarter;
   Result.Timing := sptUniform;
   Result.StepTicks := FOptions.StepTicks;
@@ -598,6 +704,73 @@ begin
   Result := FDirty[IndexOf(AName)];
 end;
 
+procedure TNamedVoiceSession.SetPreferences(const AName: String;
+  const APreferences: TLayerTokenPreferences);
+var
+  LIndex: Integer;
+  LOther: Integer;
+  LState: Integer;
+  LRole: Integer;
+  LMultiplier: Integer;
+  LTotal: Int64;
+  LModel: TWfcSequenceModel;
+begin
+  LRole := IndexOf(AName);
+  LModel := WfcMusicVoicesModelAt(FConfig, LRole);
+  if Length(APreferences) = 0 then
+  begin
+    FPreferences[LRole] := nil;
+    FDirty[LRole] := True;
+    Exit;
+  end;
+  if (Length(APreferences) > MaximumLayerPreferences) or
+    (Int64(LModel.StateCount) * LModel.StateCount * (LModel.Order + 1) *
+      (Length(APreferences) + 1) > MaximumLayerPreferencePreparationWork) then
+  begin
+    raise EAudio.Create('Named preference count or preparation work exceeds budget');
+  end;
+  for LIndex := 0 to High(APreferences) do
+  begin
+    if (LModel.FindPublicToken(APreferences[LIndex].Token) < 0) or
+      (APreferences[LIndex].Multiplier < 1) or
+      (APreferences[LIndex].Multiplier > MaximumLayerPreferenceMultiplier) then
+    begin
+      raise EAudio.Create('Named preference requires a known token and multiplier in 1..1024');
+    end;
+    for LOther := 0 to LIndex - 1 do
+    begin
+      if APreferences[LOther].Token = APreferences[LIndex].Token then
+      begin
+        raise EAudio.Create('Duplicate named preference token');
+      end;
+    end;
+  end;
+  LTotal := 0;
+  for LState := 0 to LModel.StateCount - 1 do
+  begin
+    LMultiplier := 1;
+    for LIndex := 0 to High(APreferences) do
+    begin
+      if LModel.ProjectStateToken(LState) = APreferences[LIndex].Token then
+      begin
+        LMultiplier := APreferences[LIndex].Multiplier;
+      end;
+    end;
+    Inc(LTotal, Int64(LModel.StateObservationCountAt(LState)) * LMultiplier);
+    if LTotal > High(Integer) then
+    begin
+      raise EAudio.Create('Named preferred weight sum exceeds signed 32-bit budget');
+    end;
+  end;
+  FPreferences[LRole] := Copy(APreferences);
+  FDirty[LRole] := True;
+end;
+
+function TNamedVoiceSession.CopyPreferences(const AName: String): TLayerTokenPreferences;
+begin
+  Result := Copy(FPreferences[IndexOf(AName)]);
+end;
+
 function TNamedVoiceSession.CopyAccepted: TWfcMusicVoicesGenerated;
 begin
   Result := CopyGenerated(FAccepted);
@@ -647,6 +820,7 @@ begin
     if LIndex < Length(FNames) then
     begin
       FCommitted[LIndex] := CopyMask(FPending[LIndex]);
+      FCommittedPreferences[LIndex] := Copy(FPreferences[LIndex]);
       FDirty[LIndex] := False;
     end;
   end;
@@ -660,6 +834,7 @@ function TNamedVoiceSession.TryGenerate(var AGenerated: TWfcMusicVoicesGenerated
 var
   LActive: TGraphPassIndices;
   LIndex: Integer;
+  LPreferenceScope: TNamedPreferenceScope;
 begin
   AReport := Default(TGraphNegotiationReport);
   AProof := Default(TWfcMusicVoicesValidationReport);
@@ -675,7 +850,12 @@ begin
       LActive[LIndex] := LIndex;
       ApplyMask(LIndex, FPending[LIndex]);
     end;
-    Result := FGraph.TrySolveNegotiated(NegotiationOptions, AReport);
+    LPreferenceScope := TNamedPreferenceScope.Create(Self, LActive);
+    try
+      Result := FGraph.TrySolveNegotiated(NegotiationOptions, AReport);
+    finally
+      LPreferenceScope.Free;
+    end;
     if Result then
     begin
       Publish(LActive, AGenerated, AProof);
@@ -700,6 +880,7 @@ var
   LRoots: TGraphPassIndices;
   LActive: TGraphPassIndices;
   LIndex: Integer;
+  LPreferenceScope: TNamedPreferenceScope;
 begin
   AReport := Default(TGraphSelectiveNegotiationReport);
   AProof := Default(TWfcMusicVoicesValidationReport);
@@ -724,7 +905,12 @@ begin
       end;
     end;
     FGraph.Seed := ASeed;
-    Result := FGraph.TryRegenerateNegotiatedFrom(LLabels, NegotiationOptions, AReport);
+    LPreferenceScope := TNamedPreferenceScope.Create(Self, LActive);
+    try
+      Result := FGraph.TryRegenerateNegotiatedFrom(LLabels, NegotiationOptions, AReport);
+    finally
+      LPreferenceScope.Free;
+    end;
     if Result then
     begin
       Publish(LActive, AGenerated, AProof);

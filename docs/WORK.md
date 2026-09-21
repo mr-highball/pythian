@@ -41,7 +41,41 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current work — style references and provider compatibility — 2026-09-21
+## Current work — accepted granular controls and rejected phase rule — 2026-09-21
+
+Accepted [granular musical and sound controls](TODO/DONE/NS-4_layers_03.md)
+after final QA on checked stable Win32/Win64. NS-4 moves **80% -> 84%** and
+overall completion **59.0% -> 59.6%**, with **42 open tasks and seven DONE**.
+Named preferences preserve training weights, hard constraints and unrelated
+pending edits. Paired pitch/gain/pan/cutoff/timbre/envelope edits preserve unrelated
+states and stems, with declared note-relative timing and lifetimes. Both voice
+fixtures and six demos pass without leaks; all 24 target-specific artifacts match
+baseline `c130452`. QA caught a timbre fixture selecting its existing default;
+the corrected distinct-waveform edit passes, and the original failure is retained.
+Evidence and tested identities are in `build/qa-batch-04/`.
+
+The separate [predictive-phase study](PHRASE-EVALUATION.md#predictive-phase)
+passed the frozen physical controls but produced no corrections on either
+recording. Final audit confirms unchanged intervals, score centers and metrics:
+flute precision 91.57%, violin 98.55%. The register task remains open without
+credit. The experiment budget is consumed; reassess discriminating source
+evidence for identity/presence before any further hypothesis or tuning. No new
+held-out recordings were used. Genre labels, independent musical references and
+calibrated style criteria remain missing from the NS-5 specification.
+
+The user lifted the implementation helper's task cap and authorized one junior
+helper assigned only by that helper, for isolated routine work. The current runner
+rejected junior creation at its thread limit, so no junior assignment ran.
+[Task flow](TASKFLOW.MD#delegated-validation-and-publication) records the authority
+and ownership rules. Final validation and batch publication remain with QA.
+
+The [prior published batch CI](https://github.com/mr-highball/pythian/actions/runs/35562878914)
+passed at `c130452`; it does not validate this batch. After its final documentation
+check, publish these accepted controls and records to `hello-pythian`. The next
+independent semantic tasks are changing-duration edits and saved semantic providers;
+the primary musical-learning path still needs evidence that resolves its errors.
+
+## Accepted style comparators and provider compatibility — 2026-09-21
 
 Accepted [provider compatibility](TODO/DONE/NS-4_layers_02.md) after final
 two-target checks and all five criteria passed. NS-4 moves from **76% to 80%**;
@@ -92,8 +126,8 @@ and distances; two RMS values differ only by 1e-17 and 6e-17, with no leaks.
 Continue the NS-5 reference/specification task with actual grounded musical
 annotations and quantitative criteria, then genre corpus coverage. Source labels
 remain unverified; do not promote current detector output to truth. The separate
-semantic-layer path is ready for integrated controls. Publish this validated
-batch with its completion records after the final documentation check.
+semantic-layer path then became ready for integrated controls. This validated
+batch was published at `c130452` with its completion records.
 
 ## Accepted evaluation and named voices — 2026-09-21
 

@@ -29,6 +29,11 @@ program pythian_tests_voices;
 uses
   SysUtils,
   pythian.audio,
+  pythian.synth,
+  pythian.automation,
+  pythian.envelope,
+  pythian.oscillator,
+  pythian.wfc.instrument,
   pythian.wfc.voices,
   pythian.wfc.providers,
   pythian.wfc.layers,
@@ -788,6 +793,296 @@ begin
   end;
 end;
 
+function SameAudio(const ALeft, ARight: TAudioClip): Boolean;
+var
+  LFrame: Integer;
+  LChannel: Integer;
+begin
+  Result := False;
+  if ALeft.FrameCount <> ARight.FrameCount then
+  begin
+    Exit;
+  end;
+  for LFrame := 0 to ALeft.FrameCount - 1 do
+  begin
+    for LChannel := 0 to 1 do
+    begin
+      if ALeft.SampleAt(LFrame, LChannel) <> ARight.SampleAt(LFrame, LChannel) then
+      begin
+        Exit;
+      end;
+    end;
+  end;
+  Result := True;
+end;
+
+function RenderFixtureRole(const AGenerated: TWfcMusicVoicesGenerated;
+  const ARole: Integer): TAudioClip;
+var
+  LTones: TFrameTones;
+  LIndex: Integer;
+begin
+  { This fixture has an attack, one hold and one rest at 240 ticks/cell,
+    480 PPQ, 500000 microseconds/quarter and 8000 frames/second. }
+  SetLength(LTones, Length(AGenerated.Frames[0].Voices[ARole].Tones));
+  for LIndex := 0 to High(LTones) do
+  begin
+    LTones[LIndex].GateFrames := 4000;
+    LTones[LIndex].FrequencyHz := MidiFrequency(AGenerated.Frames[0].Voices[ARole].Tones[LIndex].Pitch);
+    LTones[LIndex].Velocity := AGenerated.Frames[0].Voices[ARole].Tones[LIndex].Velocity / 127;
+    LTones[LIndex].Voice := DefaultSynthVoice;
+    LTones[LIndex].Seed := Cardinal(ARole + 1);
+  end;
+  Result := RenderFrameTones(LTones, 8000, 6000);
+end;
+
+procedure SoundControls;
+var
+  LZones: TStyleInstrumentZones;
+  LInstrument: TStyleInstrument;
+  LCurve: TAutomationCurve;
+  LRelease: TAutomationCurve;
+  LEnvelope: TGateEnvelope;
+  LPoints: TAutomationPoints;
+  LBase: array[0..2] of TAudioClip;
+  LRendered: TAudioClip;
+  LPlan: TFrameTones;
+  LRole: Integer;
+  LEdit: Integer;
+begin
+  FillChar(LBase, SizeOf(LBase), 0);
+  LInstrument := nil;
+  LCurve := nil;
+  LRelease := nil;
+  LEnvelope := nil;
+  LRendered := nil;
+  try
+    SetLength(LZones, 1);
+    for LEdit := 0 to 6 do
+    begin
+      for LRole := 0 to 2 do
+      begin
+        LZones[0] := Default(TStyleInstrumentZone);
+        LZones[0].Zone.MinimumKey := 48;
+        LZones[0].Zone.MaximumKey := 72;
+        LZones[0].Zone.MinimumVelocity := 1;
+        LZones[0].Zone.MaximumVelocity := 127;
+        LZones[0].Zone.Voice := DefaultSynthVoice;
+        LZones[0].Zone.Voice.CutoffHz := 3000;
+        if (LRole = 2) and (LEdit > 0) then
+        begin
+          SetLength(LPoints, 2);
+          LPoints[0].Frame := 0;
+          LPoints[0].Transition := atLinear;
+          LPoints[1].Frame := 100;
+          LPoints[1].Transition := atHold;
+          case LEdit of
+            1:
+            begin
+              LPoints[0].Value := 0;
+              LPoints[1].Value := 1200;
+            end;
+            2:
+            begin
+              LPoints[0].Value := 1;
+              LPoints[1].Value := 0.2;
+            end;
+            3:
+            begin
+              LPoints[0].Value := -0.8;
+              LPoints[1].Value := 0.8;
+            end;
+            4:
+            begin
+              LPoints[0].Value := 3000;
+              LPoints[1].Value := 100;
+            end;
+          else
+            LPoints[0].Value := 0.3;
+            LPoints[1].Value := 0.8;
+          end;
+          LCurve := TAutomationCurve.Create(LPoints);
+          case LEdit of
+            1: LZones[0].Zone.Voice.Automation.PitchCents := LCurve;
+            2: LZones[0].Zone.Voice.Automation.GainMultiplier := LCurve;
+            3: LZones[0].Zone.Voice.Automation.Pan := LCurve;
+            4: LZones[0].Zone.Voice.Automation.CutoffHz := LCurve;
+            5: LZones[0].Zone.Voice.Shape := wsSine;
+            6:
+            begin
+              LPoints[0].Value := 1;
+              LPoints[1].Value := 0;
+              LRelease := TAutomationCurve.Create(LPoints);
+              LEnvelope := TGateEnvelope.Create(LCurve, LRelease, 100);
+              Check(Abs(LEnvelope.ValueAt(50, 50) - 0.55) < 1E-12,
+                'Early release starts at interrupted held level');
+              Check(LEnvelope.ValueAt(150, 50) = 0, 'Explicit release endpoint is silent');
+              LZones[0].Zone.Voice.GateEnvelope := LEnvelope;
+            end;
+          end;
+          LPoints[1].Value := -999;
+          Check(LCurve.ValueAt(100) = LCurve.ValueAt(999), 'Note-relative endpoint holds');
+        end;
+        LInstrument := TStyleInstrument.Create(LZones, 8000);
+        FreeAndNil(LCurve);
+        FreeAndNil(LRelease);
+        FreeAndNil(LEnvelope);
+        LZones[0] := Default(TStyleInstrumentZone);
+        LPlan := LInstrument.PlanNote(48 + LRole * 12, 90, 37, 400, Cardinal(LRole + 1));
+        LRendered := RenderFrameTones(LPlan, 8000, 1000);
+        if LEdit = 0 then
+        begin
+          LBase[LRole] := LRendered;
+          LRendered := nil;
+        end
+        else
+        begin
+          Check(SameAudio(LBase[LRole], LRendered) = (LRole <> 2),
+            'Independent pitch/gain/pan/cutoff/timbre/envelope edit preserves other role audio');
+        end;
+        FreeAndNil(LRendered);
+        FreeAndNil(LInstrument);
+      end;
+    end;
+  finally
+    LRendered.Free;
+    LInstrument.Free;
+    LCurve.Free;
+    LRelease.Free;
+    LEnvelope.Free;
+    for LRole := 0 to 2 do
+    begin
+      LBase[LRole].Free;
+    end;
+  end;
+end;
+
+procedure RolePreferences;
+var
+  LConfig: TWfcMusicVoicesGraphConfig;
+  LSession: TNamedVoiceSession;
+  LOptions: TVoiceSessionOptions;
+  LGenerated: TWfcMusicVoicesGenerated;
+  LBefore: TWfcMusicVoicesGenerated;
+  LReport: TGraphNegotiationReport;
+  LSelective: TGraphSelectiveNegotiationReport;
+  LProof: TWfcMusicVoicesValidationReport;
+  LPreferences: TLayerTokenPreferences;
+  LModel: TWfcSequenceModel;
+  LText: String;
+  LIndex: Integer;
+  LSeed: Integer;
+  LBaselineCount: Integer;
+  LPreferredCount: Integer;
+  LRejected: Boolean;
+  LBeforeAudio: TAudioClip;
+  LAfterAudio: TAudioClip;
+  LImpossible: TWfcSequenceTokenConstraints;
+begin
+  LConfig := Config;
+  LSession := nil;
+  LModel := nil;
+  try
+    LOptions := DefaultVoiceSessionOptions;
+    LOptions.CellCount := 3;
+    LSession := TNamedVoiceSession.Create(LConfig, ['bass', 'chords', 'lead'], LOptions);
+    LModel := LSession.CopyModel('lead');
+    LText := EncodeWfcSequenceText(LModel);
+    FreeAndNil(LModel);
+    Check(LSession.TryGenerate(LGenerated, LReport, LProof), 'Preference baseline');
+    LBefore := LSession.CopyAccepted;
+    LBaselineCount := 0;
+    LPreferredCount := 0;
+    for LSeed := 1 to 32 do
+    begin
+      LSession.SetPreferences('lead', nil);
+      Check(LSession.TryRegenerate(['lead'], LSeed, LGenerated, LSelective, LProof),
+        'Unpreferred role replay');
+      if LGenerated.Frames[0].Voices[2].Tones[0].Pitch = 79 then
+      begin
+        Inc(LBaselineCount);
+      end;
+      SetLength(LPreferences, 2);
+      LPreferences[0] := MakeLayerTokenPreference(VoiceToken(wmcaAttack, [79]), 1024);
+      LPreferences[1] := MakeLayerTokenPreference(VoiceToken(wmcaHold, [79]), 1024);
+      LSession.SetPreferences('lead', LPreferences);
+      Check(LSession.TryRegenerate(['lead'], LSeed, LGenerated, LSelective, LProof),
+        'Preferred role replay');
+      if LGenerated.Frames[0].Voices[2].Tones[0].Pitch = 79 then
+      begin
+        Inc(LPreferredCount);
+      end;
+      for LIndex := 0 to 3 do
+      begin
+        SameLayer(LBefore, LGenerated, LIndex);
+      end;
+    end;
+    Check(LPreferredCount > LBaselineCount, 'Preferences affect actual WFC choices');
+    LPreferences[0].Multiplier := 0;
+    Check(LSession.CopyPreferences('lead')[0].Multiplier = 1024, 'Preference array detached');
+    LRejected := False;
+    try
+      LSession.SetPreferences('lead', LPreferences);
+    except
+      on EAudio do
+      begin
+        LRejected := True;
+      end;
+    end;
+    Check(LRejected, 'Unsupported preference diagnoses instead of ignoring');
+    LSession.SetConstraints('lead', PitchMask(67));
+    SetLength(LPreferences, 1);
+    LPreferences[0] := MakeLayerTokenPreference(VoiceToken(wmcaAttack, [36]), 2);
+    LSession.SetPreferences('bass', LPreferences);
+    Check(LSession.TryRegenerate(['lead'], 731, LGenerated, LSelective, LProof),
+      'Hard lock remains feasible despite opposite preference');
+    Check(LGenerated.Frames[0].Voices[2].Tones[0].Pitch = 67,
+      'Preference cannot override hard role lock');
+    Check(LSession.HasPending('bass'), 'Unrelated preference remains staged');
+    if LBefore.Frames[0].Voices[2].Tones[0].Pitch = 67 then
+    begin
+      LSession.SetConstraints('lead', PitchMask(79));
+    end
+    else
+    begin
+      LSession.SetConstraints('lead', PitchMask(67));
+    end;
+    Check(LSession.TryRegenerate(['lead'], 731, LGenerated, LSelective, LProof),
+      'Paired sounding role edit');
+    for LIndex := 0 to 2 do
+    begin
+      LBeforeAudio := RenderFixtureRole(LBefore, LIndex);
+      LAfterAudio := nil;
+      try
+        LAfterAudio := RenderFixtureRole(LGenerated, LIndex);
+        Check(SameAudio(LBeforeAudio, LAfterAudio) = (LIndex <> 2),
+          'Changed lead audio and exact unrelated role audio');
+      finally
+        LBeforeAudio.Free;
+        LAfterAudio.Free;
+      end;
+    end;
+    LModel := LSession.CopyModel('lead');
+    Check(EncodeWfcSequenceText(LModel) = LText, 'Preference leaves training model unchanged');
+    LBefore := LSession.CopyAccepted;
+    SetLength(LImpossible, 1);
+    LImpossible[0] := MakeWfcSequenceTokenConstraint(0, [VoiceToken(wmcaRest, [])]);
+    LSession.SetConstraints('lead', LImpossible);
+    Check(not LSession.TryRegenerate(['lead'], 731, LGenerated, LSelective, LProof),
+      'Contradictory lock cannot be discarded in favor of preference');
+    for LIndex := 0 to 4 do
+    begin
+      SameLayer(LBefore, LGenerated, LIndex);
+    end;
+    Check(LSession.HasPending('lead') and LSession.HasPending('bass'),
+      'Failed preference/lock attempt keeps requested controls staged');
+  finally
+    LModel.Free;
+    LSession.Free;
+    FreeConfig(LConfig);
+  end;
+end;
+
 procedure JointRoleAdmission;
 var
   LLayers: TLearnedLayers;
@@ -851,5 +1146,7 @@ begin
   ProviderReplacement;
   MappedComposition;
   JointRoleAdmission;
+  RolePreferences;
+  SoundControls;
   WriteLn('Named voices: owned typed roles, collective proof, selective edits, pending preservation and recovery pass');
 end.

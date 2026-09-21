@@ -12,6 +12,12 @@ Credit is earned only when every acceptance criterion and the task-flow completi
 
 Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [PITCH](../PITCH.md).
 
+Progress 2026-09-21: the frozen [predictive-phase comparison](../PHRASE-EVALUATION.md#predictive-phase)
+passed physical controls but made no recorded corrections, retaining all 105
+flute octave-error centers. Reject this rule without a threshold sweep; the task
+remains open with no credit. Reassess identity/presence evidence before declaring
+another experiment; the existing independent evaluation material remains unused.
+
 **Acceptance Criteria:**
 
 - Declare a discriminating identity observation or decision rule before scoring; explain how it distinguishes the remaining octave errors rather than merely changing global weights or thresholds.
@@ -23,4 +29,3 @@ Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [PITCH](../PI
 **Blockers**
 
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
-

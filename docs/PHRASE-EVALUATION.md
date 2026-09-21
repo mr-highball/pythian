@@ -11,6 +11,57 @@ not infer a trustworthy phase path, select register or alter any recorded phrase
 score. Those admission steps remain [WAV-03-REGISTER](MILESTONES.md#wav-03-register)
 and [WAV-03-TIMBRE](MILESTONES.md#wav-03-timbre); held-out recordings remain unused.
 
+<a id="predictive-phase"></a>
+## Predictive harmonic phase comparison — 2026-09-21
+
+The [fixed experiment allowance](MUSICAL-EVALUATION.md#fixed-next-experiment-budgets)
+tested whether past harmonic phase predicts a future waveform window differently
+under adjacent-octave hypotheses. Each candidate fits four harmonics plus DC in
+the first two complete windows, estimates frequency correction from their second
+harmonic phase, and predicts the third window without fitting that target.
+The ablation removes frequency correction. At most sixteen event-local windows
+are used, with width `max(320, ceil(4*16000/f)+1)` at 16 kHz.
+
+The frozen proposal requires at least two triples per hypothesis. Every lower
+triple must have available phase, at least .01 odd training power share and
+normalized odd prediction gain <= -.01; every upper triple must have available
+phase, gain >= .01 and normalized full error <= .5. Phase support requires the
+declared second-harmonic power floor and correction within one semitone. Pure
+even-harmonic ambiguity remains unresolved. Only supported +12-semitone proposals
+are allowed; event boundaries, cents and all other baseline decisions stay fixed.
+These are experimental guards, not calibrated confidence.
+
+Final checked Win64 physical controls passed before recorded measurement:
+fourteen low/ordinary/quiet/short/gap/mixture/weak- and missing-fundamental/vibrato/
+octave-change cases, including the two new coherent/incoherent odd-component
+controls, plus pure-even ambiguity. The two new cases distinguish the constructed
+phenomenon. They do not establish its applicability to the recorded errors.
+
+One paired measurement ran on each existing 30-second development excerpt. Both
+conditions changed **zero** of 96 flute and 87 violin events. Independent final
+auditing reproduced exact baseline intervals, all 2997 scoring centers per
+recording, reference bindings and metrics in both conditions. Flute retains
+1706 correct centers, 112 wrong pitches including 105 octave errors, and 45
+false-rest admissions; violin retains 2178 correct, nine wrong pitches, zero
+octave errors and 23 false-rest admissions. Precision remains **91.5727% /
+98.5520%**. Flute fails the 98% development gate. All eleven flute events with
+downward octave-error centers fail the combined correction guards.
+
+Measured wall time was 2.962 / 3.705 seconds, sampled peak working memory
+32,919,552 / 37,253,120 bytes, and fit work 87,955,200 / 132,759,000 for flute /
+violin, within the preregistered bounds. Successful controls, scoring and audit
+report no leaks. Initial scoring requests used the wrong baseline policy and
+rejected before evaluation; those failure logs remain separate. Correcting the
+policy argument did not rerun inference or alter the rule.
+
+**Decision:** reject this predictive rule without tuning. Its constructed
+separation does not resolve the actual errors; no maintained provider, default,
+format, independent evaluation or completion credit changes. Reassess source
+evidence for identity and presence together before declaring another hypothesis.
+The private frozen policy, native study, measurements, process records and
+scoring remain under `build/phrase-predictive-phase/`; final controls, hashes and
+independent audit are retained under `build/qa-batch-04/`.
+
 <a id="rate-view-strength"></a>
 ## Pooled pitch ranking with original frame strength — 2026-09-20
 

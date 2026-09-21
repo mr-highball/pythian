@@ -34,6 +34,72 @@ symbolic arrangement, optionally guided by measured WAV performance. A saved con
 and tempo providers, including profiles produced by explicit WAV admission.
 This does not infer independent voice notes from mixed recordings.
 
+## Granular musical and sound controls
+
+`TNamedVoiceSession.SetPreferences(Name, Preferences)` stages positive relative
+choice multipliers independently of `SetConstraints` hard masks. Construct entries
+with `MakeLayerTokenPreference(Token, Multiplier)`; multipliers are integers
+1..1024, omitted choices retain one, and nil clears preferences. The caller's
+array is copied. `CopyPreferences` and the provider description return detached
+arrays. Unknown tokens, duplicates, invalid multipliers, weight overflow and
+excessive preparation work reject before modifying the staged control.
+
+The solver temporarily multiplies actual WFC latent-value weights for the selected
+public tokens and restores those weights after each attempt. Training observation
+counts and models remain unchanged. Preferences influence choices but cannot
+relax a lock, invent a missing choice or guarantee an outcome. Contradiction or
+bounded search failure preserves accepted results and keeps the requested edits
+staged. Selective regeneration commits preferences and masks only in its actual
+dependency closure; unrelated pending controls remain pending. Provider replacement
+revalidates retained preferences against the candidate model.
+
+The public consumers expose these different dependency boundaries:
+
+| Edit | Actual generation and sounding closure |
+| --- | --- |
+| Saved-grid key | Only the key pass in the grid; an authored voice consumer rebuilds its key-dependent pitch material explicitly. Unknown or unsupported changing keys reject there. |
+| Saved-grid tempo/BPM | Only the tempo pass in the grid; downstream conversion retimes every note using the changed clock. Unchanged token paths do not imply unchanged audio timing. |
+| Grid rhythm | Onsets and dependent intensity; in coupled mode edit the joint pitch-rhythm provider and its onsets/pitch/intensity consumers. |
+| Named harmony or joint rhythm | The actual voice graph descendants, including affected roles and collective coverage proof passes. |
+| Bass, chord or lead | The named role, directed pair-dependent later roles, and applicable collective proof passes. Independent role paths stay exact. Inspect the returned affected/preserved pass indices. |
+| Timbre, envelope, pitch/gain/pan/cutoff trajectory | Selected instrument zones and their sounding notes/stem, then the mix. Musical providers and other role instruments do not change. |
+
+The [grid API](GRID-STYLE.md) supplies typed key/tempo/rhythm locks and generation
+preferences. Saved source blend coefficients affect training evidence separately;
+neither those coefficients nor preferences are substitutes for hard locks. General
+grid sessions include all pending dirty roots when regenerating; the named voice
+session uses explicitly requested roots. Consumers must account for this difference.
+
+Use [`TStyleInstrument`](../adapters/wfc/pythian.wfc.instrument.pas) to bind a role's
+saved timbre and envelope independently, or preserve either authored dimension.
+Its existing `Zone.Voice.Automation` accepts pitch cents (relative to note pitch),
+absolute frequency Hz, gain multiplier, absolute pan and cutoff Hz. Curves use
+explicit output frames relative to note-on; they continue through release and
+hold their endpoint outside their defined range. They do not stretch with tempo
+or gate length. Gated envelopes use a separate note-off-relative release multiplier,
+starting from the held level at the actual gate. A zero-length release cuts
+immediately. [Modulation](MODULATION.md) specifies bounds, interpolation and early
+release, and [saved instrument controls](WAVE-STYLE.md) describes independent sound
+profiles and recorded stem comparisons.
+
+The instrument clones automation/envelopes and owns factories made from saved
+timbre. Caller-supplied factories remain borrowed: keep them alive through all
+plans/playback. Plans borrow the instrument's owned sound definitions, so the
+instrument must also outlive playback. Zone/control arrays and input profiles may
+be freed after construction. Unsupported source frequency ranges, missing profile
+capabilities, invalid curve ranges or missing note bindings raise useful diagnostics;
+there is no fallback timbre or silent trajectory clamp.
+
+The maintained independent caller fixture now includes paired preference/lock
+edits, unchanged training model text, exact unrelated latent states and rendered
+role samples, and independent pitch/gain/pan/cutoff/timbre/envelope sample comparisons
+after freeing input definitions. Final checked stable Win32/Win64 fixtures and
+six demo runs pass without leaks; all 24 baseline artifacts match. QA accepted
+all five criteria in [NS-4_layers_03](TODO/DONE/NS-4_layers_03.md). Commands,
+source identities and the corrected no-op timbre fixture failure are retained
+under `build/granular-controls/` and `build/qa-batch-04/`. Historical grid,
+recorded instrument and modulation evidence retains its documented scope.
+
 ## Provider compatibility and replacement
 
 [`pythian.wfc.provider.contracts`](../adapters/wfc/pythian.wfc.provider.contracts.pas)

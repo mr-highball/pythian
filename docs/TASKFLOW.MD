@@ -186,6 +186,16 @@ evidence remains unresolved.
 
 ## Delegated validation and publication
 
+The user-authorized implementation helper may delegate small, noncritical or
+routine subtasks to one junior helper. Only that implementation helper assigns
+the junior's work. Give each assignment concrete acceptance criteria and isolated
+file ownership; keep it independent of work underway elsewhere. The junior follows
+the same project standards and task flow, reports through its delegator, and may
+not delegate further. The user has lifted the implementation helper's task-count
+cap; keep assignment history without treating it as a stopping limit. Respect
+the execution environment's concurrency limits; authorization alone does not
+create an available worker slot.
+
 Under the user's current delegation, final validation belongs to the QA agent.
 Start a fresh QA batch when at least two tasks are ready and combine relevant
 checks. Completion-document follow-ups remain part of that same batch. The QA

@@ -173,6 +173,12 @@ Owner: [recorded identity](TODO/NS-3_notes_01.md), coordinated with
   F1 >=0.80 and full-note F1 >=0.70 per recording, then frozen independent
   evaluation. Passing an experimental discriminator is not that acceptance.
 
+The pitch experiment allowance above was consumed on 2026-09-21. The frozen
+[predictive-phase comparison](PHRASE-EVALUATION.md#predictive-phase) passed
+physical controls but changed no recorded notes in either condition. Its
+continuation criterion failed; retain the baseline and do not retry thresholds.
+Reassess discriminating identity/presence evidence before a new preregistration.
+
 ### Metrical selection and changing clocks
 
 Owners: [beat level](TODO/NS-3_tempo_01.md) and

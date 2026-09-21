@@ -22,5 +22,4 @@ Starting evidence: [WAVE-STYLE](../WAVE-STYLE.md) · [LAYERED-STYLE](../LAYERED-
 
 **Blockers**
 
-- [NS-4_layers_03.md](NS-4_layers_03.md)
-
+- [NS-4_layers_03.md](DONE/NS-4_layers_03.md)
