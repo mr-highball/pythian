@@ -28,11 +28,20 @@ publisher mix's 13-LSB residual/failed 11-LSB bound remains unqualified. A
 prospective second recording reservation passes identity checks but remains
 provisional; differing hashes do not prove unrelated families.
 
+The [fixed development worksheet](../PART-EVALUATION.md#development-annotation-worksheet--2026-09-21)
+now passes export, full byte replay and preservation QA. It supplies exact derived
+excerpts, complete descriptive amplitude grids and raw symbolic performance
+evidence, with acoustic/role labels still unknown. The
+[maintained reference builder](../PART-REFERENCE.md) also passes both checked native
+targets and a file-bound scoring roundtrip, allowing reviewed intervals and
+uncertainty to become consistent center references without duplicate manual entry.
+
 Remaining acceptance: representative frozen recording families; role and
 acoustic-timing annotations on the prepared sources; supported mixture/cohort
-coverage and its frozen acceptance thresholds. Next prepare the fixed 30-second
-development worksheet across all stems, preserving symbolic performance events
-separately from measured acoustic support. No partial credit is awarded.
+coverage and its frozen acceptance thresholds. Next review the fixed worksheet
+for defensible functional/temporal evidence and explicitly missing coverage, then
+bind reviewed annotations. MIDI gates are still symbolic aids. No partial credit
+is awarded.
 
 **Acceptance Criteria:**
 

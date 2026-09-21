@@ -17,6 +17,10 @@ learning. Event, categorical, scalar and attributed-note comparisons share one
 current case contract. The `notes` metric combines cell accounting with the
 existing `pythian.pitch.evaluate` interval scorer and all four phrase gates.
 
+The [reference builder](PART-REFERENCE.md#file-consumer) expands reviewed part
+intervals into the current reference document with a complete regular grid. It
+preserves uncertainty and does not infer annotations or change scoring acceptance.
+
 ```text
 pythian.evaluate CASE.json
 ```

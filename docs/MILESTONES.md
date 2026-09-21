@@ -108,10 +108,12 @@ Authored stems/mix reconstruct exactly and replay byte-for-byte. A separately
 identified [derived external packet](PART-EVALUATION.md#derived-external-development-packet--2026-09-21)
 now also passes every-frame construction checks and exact replay. A prospective
 evaluation reservation passes identity checks but remains an unresolved family.
-Remaining work is representative frozen families, role/acoustic-timing annotations
-on prepared sources and supported-mixture acceptance thresholds; the next bounded
-step is a fixed development annotation worksheet. The publisher's original mix
-still fails its fixed summation check (13-LSB peak; 433 frames above the 11-LSB
+The fixed development worksheet and [reviewed-reference builder](PART-REFERENCE.md)
+now pass native QA, preserving raw symbolic evidence and initially unknown acoustic
+labels. Remaining work is representative frozen families, reviewed role/acoustic
+annotations on these sources and supported-mixture acceptance thresholds; next
+inspect the fixed worksheet for defensible evidence and missing coverage. The
+publisher's original mix still fails its fixed summation check (13-LSB peak; 433 frames above the 11-LSB
 candidate bound). Preparation does not accept recorded inference. The task stays
 open at **62.65%** overall.
 

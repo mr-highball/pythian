@@ -9,6 +9,10 @@ at the same center. Role identity comes from the caller's annotation contract;
 frequency order, stereo channel, instrument program and stem filename do not
 establish musical role. The portable scorer does no inference or source I/O.
 
+The [reviewed-reference builder](PART-REFERENCE.md) now expands interval truth and
+complete uncertainty regions into consistent center cells. Its maintained file
+consumer preserves the current reference/scoring contract without inventing labels.
+
 The companion [overlapping-note interval API](OVERLAPPING-NOTES.md) now supplies
 separate onset/full-note assignments for chordal roles and repeated pitches;
 final checked Win32/Win64 validation passes. The [part-notes file metric](OVERLAPPING-NOTES.md#file-bound-role-timing)
@@ -219,6 +223,46 @@ labels as unknown. Review functions and acoustic boundaries from the source
 evidence before evaluating predictions; instrument names and key gates are not
 automatic role/acoustic truth. Broader family qualification, supported scenario
 coverage and frozen acceptance thresholds remain in the same open task.
+
+### Development annotation worksheet — 2026-09-21
+
+A bounded native diagnostic now exports the fixed first 30 seconds of all ten
+derived development stems and their mix, with a separately declared 250-ms right
+context. Each of eleven PCM excerpts has 484000 frames; each amplitude document
+retains all 3000 consecutive 10-ms blocks in the scored scope, with exact nonzero
+count, integer peak/squared sum and descriptive RMS. No amplitude threshold
+creates a note, rest or role annotation.
+
+The ten companion MIDI documents preserve raw scoped payloads, rational PPQ tempo
+positions, explicit floor-to-frame mapping and symbolic key gates. Controller,
+bend and SysEx evidence remains visible. Concurrent same-pitch starts retain
+pairing ambiguity; unclosed gates retain right censoring. Unsupported time/routing
+declarations reject instead of disappearing from a note-only projection. The
+owned decoder traverses 12139 events across the full bound MIDI inputs; that is
+not a count of sounding notes or events inside the 30-second scope. This fixed
+source encounters no unsupported mapping. Synthesizer latency, controller effects
+and acoustic tails remain unestablished; **all acoustic and role labels are unknown**.
+
+Final checked Win64 controls, two fixed exports, replay and wrong-hash/path/overwrite
+rejection pass with zero leaks. All **36 files / 13302611 bytes** replay exactly,
+including the manifest. Executions take 12042/12099 ms and at most 14241792 bytes
+sampled private memory, within 60 seconds/256 MiB/32 MiB. Inputs and accepted
+outputs remain unchanged on rejection. The diagnostic is currently a private
+Windows native study; no new portable-core platform dependency is introduced.
+
+`build/role-annotation/qa-a/manifest.json` has SHA256
+`27c443f782c47441fec8c203fc3673c58ecddd7e8e4d89bb161a45c012b65ce4`.
+It binds prepared/original ancestry, producer source and policy, excerpts, symbolic
+and amplitude evidence, and retained license. Complete validation records are in
+`build/qa-batch-18/`. Exact coordinates belong to the attenuated/requantized derived
+waveforms; their quiet tails may differ from the original stored stems.
+
+The [maintained reference builder](PART-REFERENCE.md) separately passes checked
+Win32/Win64 tests and a generated-reference roundtrip through the current
+`part-notes` scorer. The next step is to review this fixed worksheet for defensible
+musical functions and acoustic labels, retaining uncertainty and missing coverage,
+then bind reviewed regions through that builder. No prediction is available to
+influence those labels, and no separate recording is consumed by this diagnostic.
 
 <a id="authored-stem-mix-controls--2026-09-21"></a>
 ### Authored stem/mix controls — 2026-09-21

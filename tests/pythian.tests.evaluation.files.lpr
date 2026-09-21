@@ -1043,6 +1043,74 @@ begin
   WriteLn('PASS file-bound simultaneous role sets, crossing endpoints and uncertainty');
 end;
 
+function ExpandedPartReference(const ADirectory: String;
+  const AReference: TJSONObject): TJSONObject;
+var
+  LDraft: TJSONObject;
+  LDigest: String;
+  LText: String;
+  LSnapshot: String;
+  LRejected: Boolean;
+  I: Integer;
+begin
+  Result := nil;
+  LSnapshot := AReference.AsJSON;
+  LDraft := TJSONObject.Create;
+  try
+    LDraft.Add('format', 'pythian-part-reference-draft');
+    LDraft.Add('clock', AReference.Objects['clock'].Clone);
+    LDraft.Add('annotation_policy_sha256', AReference.Strings['annotation_policy_sha256']);
+    LDraft.Add('timing', AReference.Arrays['timing'].Clone);
+    LDraft.Add('crossings', AReference.Arrays['crossings'].Clone);
+    LDraft.Add('unassigned_events', TJSONArray.Create);
+    LDraft.Add('first_center', 400);
+    LDraft.Add('hop_frames', 800);
+    LDigest := Save(ADirectory, 'part-draft.json', LDraft.AsJSON);
+    LText := BuildPartReferenceFile(ADirectory + 'part-draft.json', LDigest,
+      ADirectory + 'source.wav');
+    Check(LText = BuildPartReferenceFile(ADirectory + 'part-draft.json', LDigest,
+      ADirectory + 'source.wav'), 'Reference expansion changed on replay');
+    for I := 0 to 2 do
+    begin
+      case I of
+        0: LDigest := StringOfChar('0', 64);
+        1:
+          begin
+            LDraft.Objects['clock'].Int64s['sample_rate'] := 8001;
+            LDigest := Save(ADirectory, 'part-draft.json', LDraft.AsJSON);
+          end;
+        2:
+          begin
+            LDraft.Objects['clock'].Int64s['sample_rate'] := 8000;
+            LDraft.Int64s['first_center'] := 1200;
+            LDigest := Save(ADirectory, 'part-draft.json', LDraft.AsJSON);
+          end;
+      end;
+      LRejected := False;
+      try
+        BuildPartReferenceFile(ADirectory + 'part-draft.json', LDigest,
+          ADirectory + 'source.wav');
+      except
+        on E: EAudio do
+        begin
+          LRejected := True;
+        end;
+      end;
+      Check(LRejected, 'Invalid draft identity, WAV clock or incomplete grid accepted');
+    end;
+    LDraft.Int64s['first_center'] := 400;
+    Save(ADirectory, 'part-draft.json', LDraft.AsJSON);
+    Check(AReference.AsJSON = LSnapshot, 'Reference builder changed caller evidence');
+    Result := TJSONObject(GetJSON(LText));
+    Check((Result.Arrays['observations'].Count = 10) and
+      (Result.Arrays['observations'].Objects[0].Arrays['parts'].Objects[0].Strings['state'] = 'rest') and
+      (Result.Arrays['observations'].Objects[1].Arrays['parts'].Objects[0].Arrays['notes'].Integers[0] = 60),
+      'Regular-grid interval expansion differs');
+  finally
+    LDraft.Free;
+  end;
+end;
+
 procedure CheckPartTimingCases(const ADirectory: String);
 const
   CCells = '[{"frame":1600,"parts":[{"state":"value","notes":[60]},' +
@@ -1070,6 +1138,7 @@ var
   LReport: TJSONObject;
   LScore: TJSONObject;
   LRole: TJSONObject;
+  LExpanded: TJSONObject;
   LBefore: String;
   LRejected: Boolean;
   I: Integer;
@@ -1101,6 +1170,14 @@ begin
       for J := 0 to 1 do
       begin
         LPrediction.Arrays['timing'].Objects[J].Delete('regions');
+      end;
+      if I = 0 then
+      begin
+        LExpanded := ExpandedPartReference(ADirectory, LReference);
+        LReference.Free;
+        LReference := LExpanded;
+        LPrediction.Delete('observations');
+        LPrediction.Add('observations', LReference.Arrays['observations'].Clone);
       end;
       case I of
         1:

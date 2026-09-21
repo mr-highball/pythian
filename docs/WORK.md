@@ -41,7 +41,47 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current handoff — derived reference preparation — 2026-09-21
+## Current handoff — worksheet and reviewed-reference construction — 2026-09-21
+
+The preceding goal turn made progress by publishing verified derived preparation
+at `f8e24d2`; its
+[native CI passes](https://github.com/mr-highball/pythian/actions/runs/35622573252).
+Continue [NS-3_parts_01](TODO/NS-3_parts_01.md) on the NS-5 prerequisite path.
+
+The [reviewed-reference builder](PART-REFERENCE.md) now converts explicitly declared
+intervals/uncertainty into a complete regular center grid through a portable API
+and the maintained evaluation CLI. Checked stable Win32/Win64 builder and complete
+file fixtures pass with zero leaks. A generated ten-center reference retains two
+lead and six chordal matches through the current timing scorer. Identity, clock,
+grid, region, ownership-ID and preservation boundaries pass; no role or acoustic
+labels are inferred by construction.
+
+The [fixed 30-second worksheet](PART-EVALUATION.md#development-annotation-worksheet--2026-09-21)
+also passes checked Win64 controls, two exports and rejection/preservation QA.
+All 36 files / 13302611 bytes replay, including the manifest. Eleven excerpts
+retain a separate 250-ms context; complete 10-ms amplitude grids and ten raw
+MIDI/gate documents retain original source coordinates. Full bound MIDI decoding
+visits 12139 events without encountering an unsupported mapping. All role and
+acoustic labels remain unknown. Maximum observed export cost is 12099 ms and
+14241792 bytes sampled private memory, inside frozen budgets. Sources, exact
+commands, identities and outcomes are retained in `build/qa-batch-18/`.
+
+Helper blocking failures remain zero; runtime handles are terminal. Final
+documentation, frozen identities, links, accounting, privacy and publication scope
+pass review. This increment is ready for normal publication; its exact revision
+is reported separately. Next inspect
+the fixed waveform/symbolic worksheet for defensible functions and acoustic
+support; do not use amplitude, instrument labels or key gates alone as note truth.
+An isolated native evidence-summary diagnostic is being prepared under ignored
+`build/role-review/`, compilation only until another ready QA item. Freeze any
+reviewed annotations before predictions; retain uncertainty and absent coverage.
+
+The original mix's failed summation and provisional evaluation-family status
+remain unchanged. Completion stays **62.65%, 38 open / 11 DONE, 95 dependency edges**.
+Reference construction/export is a delivered component of the open task, not an
+accepted attributed-mixture learner or a completed genre style.
+
+## Previous checkpoint — derived reference preparation — 2026-09-21
 
 The preceding goal turn made progress by publishing maintained role controls and
 file-bound interval timing at `eb2b221`; its

@@ -33,13 +33,19 @@ interface
   are relative to that case. Does not run inference or write/modify input files. }
 function EvaluateCaseFile(const APath: String): UTF8String;
 
+{ Expands a hash-bound reviewed interval draft into the current reference JSON.
+  Checks the declared WAV identity/clock, but does not infer truth or acceptance.
+  Output is returned only after complete validation; no files are written. }
+function BuildPartReferenceFile(const ADraftPath, ADraftSha256,
+  ASourcePath: String): UTF8String;
+
 implementation
 
 uses
   Classes, SysUtils, Math, fpjson, jsonparser, jsonscanner,
   pythian.audio, pythian.hash, pythian.wave.read, pythian.evaluation,
   pythian.pitch.evaluate, pythian.evaluation.parts, pythian.evaluation.notes,
-  pythian.tools.files;
+  pythian.tools.files, pythian.evaluation.reference;
 
 const
   MaximumDocumentBytes = 8 * 1024 * 1024;
@@ -1431,6 +1437,162 @@ begin
   finally
     LPredictionIds.Free;
     LReferenceIds.Free;
+  end;
+end;
+
+function BuildPartReferenceFile(const ADraftPath, ADraftSha256,
+  ASourcePath: String): UTF8String;
+const
+  CStateNames: array[TEvaluationState] of String =
+    ('value', 'rest', 'unknown', 'ambiguous', 'unsupported');
+var
+  LDraft: TJSONObject;
+  LClock: TJSONObject;
+  LOutput: TJSONObject;
+  LTiming: TJSONArray;
+  LRow: TJSONObject;
+  LCellsJson: TJSONArray;
+  LCellJson: TJSONObject;
+  LParts: TJSONArray;
+  LPart: TJSONObject;
+  LNotes: TJSONArray;
+  LIds: TStringList;
+  LRoles: TPartRoleIds;
+  LReferences: TPartNoteReferences;
+  LUnassigned: TEvaluationNotes;
+  LCells: TPartEvaluationCells;
+  LCrossings: TPartCrossings;
+  LValidation: TPartEvaluation;
+  LSource: TFileStream;
+  LReader: TWaveFrameReader;
+  LSourceFrames: Int64;
+  LFirst: Int64;
+  LEnd: Int64;
+  LFirstCenter: Int64;
+  LHop: Int64;
+  LCount: Int64;
+  LEntries: Int64;
+  LSourceHash: String;
+  I: Integer;
+  J: Integer;
+  K: Integer;
+begin
+  CheckDigest(ADraftSha256);
+  LDraft := nil;
+  LOutput := nil;
+  LIds := nil;
+  LSource := nil;
+  LReader := nil;
+  try
+    LDraft := ReadObject(ADraftPath, ADraftSha256);
+    Fields(LDraft, 'format,clock,annotation_policy_sha256,first_center,hop_frames,' +
+      'timing,unassigned_events,crossings');
+    Require(TextField(LDraft, 'format') = 'pythian-part-reference-draft',
+      'Expected current part reference draft');
+    CheckDigest(TextField(LDraft, 'annotation_policy_sha256'));
+    LClock := TJSONObject(Item(LDraft, 'clock', jtObject));
+    Fields(LClock, 'source_sha256,preparation_sha256,scoring_policy_sha256,' +
+      'sample_rate,source_frames,first_frame,end_frame');
+    LSourceHash := TextField(LClock, 'source_sha256');
+    CheckDigest(LSourceHash);
+    CheckDigest(TextField(LClock, 'preparation_sha256'));
+    CheckDigest(TextField(LClock, 'scoring_policy_sha256'));
+    LSourceFrames := IntField(LClock, 'source_frames');
+    LFirst := IntField(LClock, 'first_frame');
+    LEnd := IntField(LClock, 'end_frame');
+    LFirstCenter := IntField(LDraft, 'first_center');
+    LHop := IntField(LDraft, 'hop_frames');
+    Require((LSourceFrames > 0) and (LSourceFrames <= MaximumEvaluationFrame) and
+      (LFirst >= 0) and (LEnd > LFirst) and (LEnd <= LSourceFrames) and
+      (LHop > 0) and (LHop <= MaximumNoteScopeFrames) and
+      (LFirstCenter >= LFirst) and (LFirstCenter < LEnd) and
+      (LFirstCenter - LFirst < LHop), 'Invalid draft clock/grid');
+    LCount := 1 + (LEnd - 1 - LFirstCenter) div LHop;
+    LTiming := TJSONArray(Item(LDraft, 'timing', jtArray));
+    Require((LTiming.Count > 0) and (LTiming.Count <= MaximumPartRoles) and
+      (LCount * LTiming.Count <= 32768), 'Draft file role/center budget');
+    LSource := TFileStream.Create(ASourcePath, fmOpenRead or fmShareDenyWrite);
+    Require(LSource.Size <= MaximumSourceBytes, 'Draft WAV exceeds byte budget');
+    Require(Sha256Stream(LSource, LSource.Size) = LSourceHash, 'Draft WAV identity differs');
+    LSource.Position := 0;
+    LReader := TWaveFrameReader.Create(LSource);
+    Require((LReader.FrameCount = LSourceFrames) and
+      (LReader.SampleRate = IntField(LClock, 'sample_rate')), 'Draft WAV clock differs');
+    SetLength(LRoles, LTiming.Count);
+    SetLength(LReferences, LTiming.Count);
+    LIds := TStringList.Create;
+    LIds.CaseSensitive := True;
+    for I := 0 to LTiming.Count - 1 do
+    begin
+      LRow := ObjectAt(LTiming, I);
+      Fields(LRow, 'role_id,regions,events');
+      LRoles[I] := TextField(LRow, 'role_id');
+      LReferences[I].Regions := TimingRegions(TJSONArray(Item(LRow, 'regions', jtArray)));
+      LReferences[I].Events := TimingNotes(TJSONArray(Item(LRow, 'events', jtArray)),
+        LSourceFrames, LIds);
+    end;
+    LUnassigned := TimingNotes(TJSONArray(Item(LDraft, 'unassigned_events', jtArray)),
+      LSourceFrames, LIds);
+    LCells := BuildPartReferenceCells(LRoles, LReferences, LUnassigned,
+      LSourceFrames, LFirst, LEnd, LFirstCenter, LHop);
+    LEntries := 0;
+    for I := 0 to High(LCells) do
+    begin
+      Inc(LEntries, Length(LCells[I].UnassignedNotes));
+      for J := 0 to High(LRoles) do
+      begin
+        Inc(LEntries, Length(LCells[I].Parts[J].Notes));
+      end;
+    end;
+    Require(LEntries <= 262144, 'Draft file pitch-entry budget');
+    LCrossings := PartCrossings(TJSONArray(Item(LDraft, 'crossings', jtArray)), Length(LRoles));
+    LValidation := EvaluatePartCells(LRoles, LCells, LCells, LCrossings, LFirst, LEnd);
+    Require(LValidation.CellCount = Length(LCells), 'Reference grid validation failed');
+
+    LOutput := TJSONObject.Create;
+    LOutput.Add('format', 'pythian-evaluation-reference');
+    LOutput.Add('clock', LClock.Clone);
+    LOutput.Add('annotation_policy_sha256', TextField(LDraft, 'annotation_policy_sha256'));
+    LOutput.Add('timing', LTiming.Clone);
+    LOutput.Add('crossings', Item(LDraft, 'crossings', jtArray).Clone);
+    LCellsJson := TJSONArray.Create;
+    LOutput.Add('observations', LCellsJson);
+    for I := 0 to High(LCells) do
+    begin
+      LCellJson := TJSONObject.Create;
+      LCellsJson.Add(LCellJson);
+      LCellJson.Add('frame', LCells[I].Frame);
+      LParts := TJSONArray.Create;
+      LCellJson.Add('parts', LParts);
+      for J := 0 to High(LRoles) do
+      begin
+        LPart := TJSONObject.Create;
+        LParts.Add(LPart);
+        LPart.Add('state', CStateNames[LCells[I].Parts[J].State]);
+        LNotes := TJSONArray.Create;
+        LPart.Add('notes', LNotes);
+        for K := 0 to High(LCells[I].Parts[J].Notes) do
+        begin
+          LNotes.Add(LCells[I].Parts[J].Notes[K]);
+        end;
+      end;
+      LNotes := TJSONArray.Create;
+      LCellJson.Add('unassigned_notes', LNotes);
+      for K := 0 to High(LCells[I].UnassignedNotes) do
+      begin
+        LNotes.Add(LCells[I].UnassignedNotes[K]);
+      end;
+    end;
+    LSource.Position := 0;
+    Require(Sha256Stream(LSource, LSource.Size) = LSourceHash, 'Draft WAV changed');
+    Result := LOutput.AsJSON;
+    Require(Length(Result) <= MaximumDocumentBytes, 'Expanded reference exceeds byte budget');
+  finally
+    LReader.Free;
+    LSource.Free;
+    LIds.Free;
+    LOutput.Free;
+    LDraft.Free;
   end;
 end;
 

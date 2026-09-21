@@ -31,11 +31,19 @@ uses
 
 begin
   try
-    if ParamCount <> 1 then
+    if (ParamCount = 4) and (ParamStr(1) = '--build-part-reference') then
     begin
-      raise Exception.Create('Usage: pythian.evaluate CASE.json (JSON report on stdout)');
+      WriteLn(BuildPartReferenceFile(ParamStr(2), ParamStr(3), ParamStr(4)));
+    end
+    else if ParamCount = 1 then
+    begin
+      WriteLn(EvaluateCaseFile(ParamStr(1)));
+    end
+    else
+    begin
+      raise Exception.Create('Usage: pythian.evaluate CASE.json OR ' +
+        '--build-part-reference DRAFT.json SHA256 SOURCE.wav (JSON on stdout)');
     end;
-    WriteLn(EvaluateCaseFile(ParamStr(1)));
   except
     on E: Exception do
     begin

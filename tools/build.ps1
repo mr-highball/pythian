@@ -60,6 +60,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Overlapping-note evaluation compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.evaluation.notes$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Overlapping-note evaluation checks failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.evaluation.reference.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Part reference builder compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.evaluation.reference$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Part reference builder checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.evaluation.style.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Style distribution compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.evaluation.style$executableSuffix")
