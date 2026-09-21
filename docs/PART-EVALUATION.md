@@ -409,6 +409,56 @@ accepts the diagnostic mechanics, not the musical labels or independent inferenc
 Next resolve the demonstrated register/registration distinctions and acoustic
 boundaries before constructing reference events. No task closes or earns credit.
 
+### Original-to-trigger bass correspondence — 2026-09-21
+
+The fixed bass comparison now verifies the already bound original score against
+the separated S03 MIDI. It first selects a unique stable program-33 track/channel
+without using pitch similarity: original track 0/channel 1 and separated track
+1/channel 0, both PPQ 96. All **seven** gates starting in `[0,8 seconds)` pair
+uniquely by exact rational onset, key-release time and onset velocity. Every gate
+is closed and unambiguous; the separate context through 8.25 seconds retains
+endpoints without adding later starts to the cohort.
+
+| Original key | Separated key | Paired events | Difference |
+| ---: | ---: | ---: | ---: |
+| 38 | 50 | 3 | +12 semitones |
+| 40 | 52 | 1 | +12 semitones |
+| 43 | 55 | 1 | +12 semitones |
+| 31 | 55 | 2 | +24 semitones |
+
+Every pair matches the predeclared transformation: octave-fold the original key
+into 35..79, then add 12. Simple `original + 12` fails the final two events. In
+the pinned primary [rule configuration](https://github.com/ethman/slakh-generation/blob/e6454eb57a3683b99cdd16695fe652f83b75bb14/midi_rules/pitch.json),
+the bass shift is enabled. Its
+[rule dispatcher](https://github.com/ethman/slakh-generation/blob/e6454eb57a3683b99cdd16695fe652f83b75bb14/midi_inst_rules.py)
+applies both listed rules once any is enabled, including the range rule marked
+disabled. The [generation path](https://github.com/ethman/slakh-generation/blob/e6454eb57a3683b99cdd16695fe652f83b75bb14/render_by_instrument.py)
+applies those rules before saving the separated MIDI. This is verified event
+correspondence compatible with that implementation, not proof of the archive's
+exact producer revision or preset behavior. External code was read, never executed
+or adopted as a dependency.
+
+The acoustic review's roughly 73-Hz family at markers 55968/76768 now has original
+key 38 and trigger 50 linked to the same events. At marker 103968, the roughly
+98-Hz family has original 43 and trigger 55. At 123168, similar acoustic support
+instead accompanies original **31** and trigger **55**. Thus two different original
+registers collapse to the same trigger; blindly restoring the original key would
+also misdescribe this observed register. Keep original, transformed and acoustic
+evidence distinct under the [reference contract](PART-REFERENCE.md#pitch-identity-in-an-acoustic-reference).
+The existing waveform evidence supports local register interpretation; the MIDI
+comparison supplies no new acoustic measurement, endpoint or complete pitch set.
+It does not resolve the separate organ registration or guitar bend cases.
+
+Checked stable Win64 controls, exact report replay and rejection/preservation QA
+pass with zero leaks. Runs take 483/487 ms and at most 5566464 bytes sampled
+private memory; each report is 17490 bytes, inside 10 seconds/64 MiB/256 KiB.
+The 10781 decoded events are whole-file traversal, not sounding-note or scoped
+event counts. The private report `build/role-register-compare/qa-a/report.json`
+has SHA256 `febb9855cc4a10cc9a59a91bf8a93b2681c580fdeab5d6e6ed89801dd367a3fc`.
+It retains source identities, raw performance evidence, all pitch pairs and
+explicitly false acoustic-truth/producer-proof claims. Full QA is in
+`build/qa-batch-21/`; the owning preparation task remains open without credit.
+
 <a id="authored-stem-mix-controls--2026-09-21"></a>
 ### Authored stem/mix controls — 2026-09-21
 

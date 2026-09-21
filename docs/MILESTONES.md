@@ -122,6 +122,10 @@ now supports primary bass/chordal source-function annotations over a bounded pas
 but reveals sub-octave components relative to nominal keys and spectral tails after
 key-off. Next resolve these reference register/timing distinctions and the remaining
 contributors; do not score copied MIDI labels as acoustic truth. The
+[bass-event correspondence](PART-EVALUATION.md#original-to-trigger-bass-correspondence--2026-09-21)
+now verifies all seven scoped events under a range-fold/shift rule, including two
+24-semitone shifts. This resolves source correspondence, not acoustic event timing
+or complete mixture annotation. The
 publisher's original mix still fails its fixed summation check (13-LSB peak; 433 frames above the 11-LSB
 candidate bound). Preparation does not accept recorded inference. The task stays
 open at **62.65%** overall.

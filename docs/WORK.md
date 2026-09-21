@@ -41,7 +41,44 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current handoff — fixed acoustic support and register findings — 2026-09-21
+## Current handoff — verified bass source correspondence — 2026-09-21
+
+The preceding goal turn made progress by publishing fixed acoustic support and
+register findings at `41b1500`. Continue [NS-3_parts_01](TODO/NS-3_parts_01.md) on the
+NS-5 prerequisite path. The [original-to-trigger comparison](PART-EVALUATION.md#original-to-trigger-bass-correspondence--2026-09-21)
+now passes checked stable Win64 controls, exact replay and rejection preservation
+without leaks. All seven scoped bass events match exact rational onset/end and
+velocity before pitch comparison. Program-based track/channel selection is unique;
+no pitch fitness, fitted time tolerance or new waveform observation is involved.
+
+Original pitches 38/38/38/40/43/31/31 map to 50/50/50/52/55/55/55. All agree
+with range-fold 35..79 followed by +12, whereas a simple +12 fails the final two.
+The observed correspondence is compatible with pinned upstream source, not proof
+of its exact historical deployment or preset behavior. The roughly 98-Hz acoustic
+family occurs with both original 43 and original 31, so copying either source-key
+column wholesale would be unsound. The [reference contract](PART-REFERENCE.md#pitch-identity-in-an-acoustic-reference)
+now makes symbolic intent, renderer trigger and acoustic note meaning explicit
+without changing the current format, scoring gates or task requirements.
+
+Native report runs take 483/487 ms, at most 5566464 sampled private bytes, and
+emit identical 17490-byte reports under unchanged 10-second/64-MiB/256-KiB limits.
+The report binds both source files, retained performance data, exact pitch pairs
+and code/policy identities. New comparison failures remain zero; historical
+summary failure count remains one. Complete evidence is in `build/qa-batch-21/`;
+all runtime handles are terminal. No external code was executed or installed.
+
+Next use the source-specific correspondence with the existing waveform evidence
+to resolve supported acoustic reference notes and boundaries. Preserve source
+mapping in provenance; do not apply a blanket inverse or transfer the bass rule
+to organ registration. Other contributors, complete role pitch sets, external
+scenario coverage and evaluation-family qualification remain open under this
+task. The prospective interpretation in `build/role-register-source/REFERENCE-DECISION.md`
+was frozen before the comparison. Final documentation QA passes: correspondence claims, 2663 local links, task graph/accounting, privacy, whitespace and five-file scope are checked. This checkpoint is ready for publication under the same QA batch.
+
+Completion stays **62.65%, 38 open / 11 DONE, 95 dependency edges**. The source
+mapping finding changes the annotation decision, not accepted learner completion.
+
+## Previous checkpoint — fixed acoustic support and register findings — 2026-09-21
 
 The preceding goal turn made progress by publishing the mixture policy and fixed
 worksheet review at `b826576`. Continue [NS-3_parts_01](TODO/NS-3_parts_01.md) on the

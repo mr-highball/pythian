@@ -47,6 +47,53 @@ This is bounded offline allocation, not a device callback interface.
 
 ## File consumer
 
+### Pitch identity in an acoustic reference
+
+For the initial WAV packet, an event's integer `note` identifies its supported
+musical fundamental in the existing equal-tempered MIDI coordinate system
+(A4 = 440 Hz). It is not necessarily the key sent to the source renderer. The
+builder validates the supplied coordinate, not its acoustic interpretation.
+Retain the following distinctions in the hash-bound annotation evidence:
+
+| Evidence | What it establishes | What it does not establish |
+| --- | --- | --- |
+| Original score key/event | Declared symbolic intent and source identity | The actual sounding register or acoustic endpoints |
+| Separated MIDI key/event | The recorded renderer trigger and symbolic gate | Identity with the original key or waveform fundamental |
+| Verified event transformation | Correspondence under a declared source rule, clocks and velocity | A universal inverse mapping, renderer history or acoustic truth |
+| Isolated waveform support | Observed spectral/temporal evidence on the bound samples | A complete note set from its strongest peak alone |
+| Reviewed acoustic note/role | The annotation justified over its declared supported scope | Unreviewed notes, other contributors or independent acceptance |
+
+An octave-different component is not automatically an extra musical note or an
+estimator error. A source may use register mapping or layered timbre; conversely,
+a prominent harmonic need not be the fundamental. Preserve alternatives where
+the note interpretation is unresolved. Never select the reference register to
+agree with predictions, copy a renderer key by default, or apply a dataset-wide
+octave correction after observing a few cases.
+
+Source correspondence must be decided without using pitch agreement to choose
+the matching source: use declared track/channel/program identity and exact
+event-time/velocity evidence first, retaining ties, omissions and uncertainty.
+If clocks or endpoints fail a predeclared comparison, report that mismatch;
+do not fit an offset or widen a tolerance to certify correspondence. Any actual
+source transformation remains in provenance rather than modifying the source.
+
+The [fixed acoustic review](PART-EVALUATION.md#fixed-acoustic-support-review--2026-09-21)
+demonstrates why these distinctions matter. A bass source has components beneath
+its nominal keys; an organ source retains sub-octave components with an unresolved
+registration interpretation. The subsequent
+[verified bass correspondence](PART-EVALUATION.md#original-to-trigger-bass-correspondence--2026-09-21)
+finds both 43 and 31 mapping to trigger 55; neither a universal inverse nor the
+separate organ case is qualified. Keep uncertain event intervals/regions excluded under
+the existing scorer, and retain any supported source-function annotation without
+claiming complete role pitch sets.
+
+These rules clarify the existing reference meaning. They add no format version,
+automatic correction, acceptance threshold, dependency or completion criterion.
+The editing input below stays unchanged; richer original/trigger/acoustic evidence
+belongs in the bound annotation record, not competing meanings of `note`.
+
+### Command and editing input
+
 ```text
 pythian.evaluate --build-part-reference DRAFT.json DRAFT_SHA256 SOURCE.wav
 ```

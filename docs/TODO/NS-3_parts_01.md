@@ -58,6 +58,14 @@ registration/layer semantics and boundaries before binding note truth; do not
 copy MIDI pitches or apply an automatic octave correction. Complete ensemble
 annotations, external scenario coverage and frozen evaluation families remain open.
 
+The [original-to-trigger comparison](../PART-EVALUATION.md#original-to-trigger-bass-correspondence--2026-09-21)
+now binds seven exact bass-event correspondences. Five shift by 12 semitones and
+two by 24 under the declared range-fold/shift rule. This resolves a source mapping
+question while preserving original-key versus acoustic-register differences;
+acoustic boundaries and the other contributors remain unresolved. Use the
+[reference pitch contract](../PART-REFERENCE.md#pitch-identity-in-an-acoustic-reference)
+before entering note labels. No generic MIDI correction or new task is introduced.
+
 **Acceptance Criteria:**
 
 - Acquire and bind usable WAV stems and corresponding mixes with verified recording identities, offsets, gains and role annotations; keep related stems/mixes in one split.
