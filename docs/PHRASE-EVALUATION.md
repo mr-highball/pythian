@@ -11,6 +11,67 @@ not infer a trustworthy phase path, select register or alter any recorded phrase
 score. Those admission steps remain [WAV-03-REGISTER](MILESTONES.md#wav-03-register)
 and [WAV-03-TIMBRE](MILESTONES.md#wav-03-timbre); held-out recordings remain unused.
 
+## Identity evidence reassessment — 2026-09-21
+
+A native audit of the frozen predictive-phase cache reconciles all 5,994 scoring
+centers across 96 flute and 87 violin events. Flute retains 1,706 correct, 105
+octave-error, 7 other-wrong and 45 reference-rest admissions; violin retains
+2,178 correct, no octave errors, 9 other-wrong and 23 reference-rest admissions.
+Unknown coverage is accounted separately. Predictions and recorded scores do
+not change; this is a diagnostic of why the proposed correction admitted nothing.
+
+Among the 11 flute events containing octave-error centers, the lower-register
+hypothesis has 42 available measurements out of 43 triples. Of those, 32 fail
+the required odd-component prediction gain of at most -.01. Failure includes
+weakly negative and zero gains, not only positive values. The upper hypothesis
+has 18 available triples and 25 unavailable; available triples include 4 gain
+failures and 11 full-error failures, which may overlap. Three events also lack
+the required two triples. No event passes every guard. Fixed-frequency ablation
+has the same availability and no passing event; it does not resolve the gap.
+
+The native summary retains correct, octave-error, other-wrong and rest-admission
+event cohorts for both recordings and both hypotheses/conditions, including the
+empty violin octave cohort. Cohorts and windows overlap and cannot be summed as
+independent trials. Event-level support cannot be assigned specifically to rest
+centers within a mixed event. Correct-note cohorts also frequently fail these
+guards; guard failure itself is not a pitch-identity classifier.
+
+**Decision: stop the proposed amplitude-envelope coupling correction experiment
+under its declared evidence gate.** The cache does not establish the independently
+changing component that would justify that correction. It does not prove that
+envelopes are useless. Missing upper measurements are not evidence for an octave
+change, and a favorable upper measurement does not erase opposing lower evidence.
+Do not weaken the guards, force register changes or alter presence boundaries.
+
+The next bounded diagnostic belongs to [note identity](TODO/NS-3_notes_01.md):
+first inspect retained fit caches, then, if needed, predeclare an unchanged-algorithm
+measurement that records exact unavailability reasons, first/second-window AC
+energies, second-harmonic power ratios, proposed frequency correction, target
+energy and source coordinates for all events in both recordings. The current
+cache retains only an availability Boolean. Fixed-frequency ablation shares the
+same harmonic support floor, so it is not an independently available phase-free
+test. Explaining missing measurements will not itself resolve a coherent stack
+compatible with two registers; a new identity observation still needs independent
+discrimination controls. [Presence](TODO/NS-3_notes_02.md) remains separately open.
+
+Evidence is retained under `build/phrase-identity-reassessment/` and
+`build/qa-batch-10/`. Checked stable Win64 audit execution takes 2,959 ms with
+zero leaked blocks; the 32-row native summary takes 608 ms with zero leaks and
+8,409,088 bytes sampled private memory. The original controls leaked one
+35-byte argument temporary; normal termination repairs that path and its focused
+rerun passes. The successful data report remains bound to its original producer;
+no waveform/model rerun or changed score is inferred. A shell convenience
+aggregation was superseded by the validated Pascal summary and is not analytical
+evidence. SHA256 identities:
+
+- Original report: `8b40cbb5c54dcbd70de56900fb1305a62b60f853935f36271a4b4a36c3eec8d4`.
+- Native summary: `b7677d540b3c7e0b7f3a61c9529562b7a704eba29852ea65ebe9be972fc114e0`.
+- Summary source: `e518f82ff7ca13042d723684f853aba69686a3cf57b1f0030945098e227d866f`.
+- Summary policy: `11eb360aaec189220e6148996395b237e8612139f83f342dbf1a9bead69fd6f0`.
+
+Both note tasks remain open without additional completion credit. The failed
+scientific correction gate is distinct from the repaired control cleanup defect.
+
 <a id="predictive-phase"></a>
 ## Predictive harmonic phase comparison — 2026-09-21
 

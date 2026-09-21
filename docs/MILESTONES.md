@@ -141,8 +141,14 @@ baseline. The latest infrastructure review found one supervision race; atomic
 publication and coordinated transition/failure checks now restore acceptance
 under the existing fourth criterion. The [timed key comparison](TONAL.md#timed-development-comparison)
 improves one source and regresses on the other, failing its frozen scientific
-gate. Preserve the result and investigate interpretation/alternatives; reference
-preparation and this diagnostic remain uncredited.
+gate. The [frozen error audit](TONAL.md#frozen-key-error-audit) locates source 16's
+net exact-match loss in fully labelled constant contexts, with a net increase in
+relative-key errors; test one predeclared tonic/mode weighting hypothesis before
+temporal smoothing. The [note-cache reassessment](PHRASE-EVALUATION.md#identity-evidence-reassessment--2026-09-21)
+stops the contingent envelope correction: no disputed event passes the fixed
+guards, and the cache lacks exact unavailability reasons. Inspect cached
+intermediates before any unchanged-algorithm measurement. These diagnostics
+resolve next actions, not musical acceptance; **62.65% remains unchanged**.
 
 The tables below retain existing outcome anchors for topic links. They are
 navigation to the task files, not duplicate acceptance criteria. An outcome is

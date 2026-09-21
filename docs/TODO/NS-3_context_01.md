@@ -62,6 +62,17 @@ F major, motivating inspection of tonic/mode and temporal evidence before a new
 declared hypothesis. No independent key/change acceptance, confidence claim,
 maintained algorithm change or credit follows. Other compositions stay untouched.
 
+Diagnostic evidence 2026-09-21: the [native frozen-ranking audit](../TONAL.md#frozen-key-error-audit)
+passes controls, reference/category/rank conservation and output preservation
+after repairing a truncated JSON field name and exception cleanup. Every
+annotator's score reconciles with the prior comparison. Source 16's net exact
+loss is confined to fully labelled constant contexts, with a corresponding net
+increase in relative-key errors; reference ranks still reach fourteenth.
+Key-specific tonic/mode weighting is the next declared hypothesis to specify
+before temporal smoothing, without tuning this pair or changing the existing
+ranker. Unknown calibration and independent key/change acceptance remain open;
+no maintained admission or completion credit is claimed.
+
 **Acceptance Criteria:**
 
 - Declare supported key/mode cases and source windows, including ambiguous, non-tonal and changing-key regions; fix key/change/coverage limits before evaluation.

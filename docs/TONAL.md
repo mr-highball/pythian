@@ -289,6 +289,61 @@ inspect its errors/alternatives before declaring another hypothesis. Do not tune
 these two recordings until they pass, adopt the candidate, claim independent
 accuracy or earn task credit. Other compositions remain untouched.
 
+## Frozen key-error audit
+
+A separate native audit now classifies the saved baseline/peak rankings without
+reopening audio, recomputing FFTs or changing predictions. It retains each
+annotator and a separate unanimous subset. Every original-frame denominator,
+exact/wrong/unknown total, context/category partition and reference-rank histogram
+reconciles with the frozen comparison. Relative, parallel and fifth-related
+errors remain wrong exact-key predictions; they earn no partial accuracy credit.
+
+| Source / representation | Labelled unanimous frames | Exact | Relative | Parallel | Fifth-related | Other |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 02 / baseline | 1,183,203 | 553,455 | 352,800 | 58,212 | 218,736 | 0 |
+| 02 / peak | 1,183,203 | 791,154 | 352,800 | 0 | 39,249 | 0 |
+| 16 / baseline | 2,223,522 | 1,055,754 | 88,200 | 347,508 | 441,000 | 291,060 |
+| 16 / peak | 2,223,522 | 791,154 | 352,800 | 435,708 | 352,800 | 291,060 |
+
+Unknown prediction duration remains zero. All three individual annotators also
+show improvement for source 02 and regression for source 16; the unanimous
+subset is not substituted for those separate results. Missing reference duration
+and disagreement remain visible, and overlapping groups are not independent cases.
+
+The context split sharpens the diagnosis. In source 16's 1,675,800 unanimous
+frames whose entire aggregation context is independently labelled constant by
+all three annotators, exact frames fall from 705,600 to 441,000 while relative
+errors rise from 88,200 to 352,800. The other error categories in that stratum
+are unchanged. Exact totals in annotated-change and incomplete/discontinuous
+contexts are unchanged. Thus the net exact-match loss occurs within labelled
+constant contexts; it cannot be explained solely by crossing an annotated change.
+Incomplete contexts are not called stable, and FFT support remains separately
+recorded from the aggregation context used for this descriptive split.
+
+Source 02's unanimous reference is always among the peak ranking's first two
+entries. Source 16 instead retains reference ranks as low as fourteenth, including
+within fully labelled constant contexts. Both close alternatives and more distant
+errors therefore need attention. Inspecting all 24 fits does not establish that
+choosing an alternative would be correct without an independent decision rule.
+
+The next hypothesis should test key-specific tonic/mode weighting on the frozen
+profiles before adding temporal smoothing. Predeclare one weighting/formula,
+controls and the same no-source-regression gate before scoring; do not tune
+coefficients or admission thresholds against these two recordings. The existing
+precursor-compatible ranker and its callers remain unchanged. This diagnostic
+does not select a maintained classifier, calibrate uncertainty or close context
+admission; independent composition-grouped evaluation remains required.
+
+Evidence: `build/local-key-reference/swd/error-audit/` contains the frozen policy,
+native source and report; `build/qa-batch-10/report.txt` owns final QA. An initial
+inline-string collection truncated a coverage field name and rejected before
+output. Explicit String typing and normal exception finalization repair it.
+Controls, the full audit and existing-output rejection now pass with zero leaks.
+The successful audit takes 1,568 ms, produces 768,557 bytes and reaches
+20,414,464 bytes sampled private memory; this is not an exact OS peak.
+Report SHA256: `5c2156f540c9186f55235b714c13a1711c003a6df71d1c4bba852c4673f7466e`.
+Original failed logs and source identities remain retained. No task credit changes.
+
 ## Native inspection
 
 The [native tool](../tools/pythian.tonal.inspect.lpr) prints JSON:

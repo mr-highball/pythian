@@ -224,7 +224,17 @@ and replacement assignment in the work handoff. The task-count cap remains
 lifted; this rule changes ownership after repeated QA failure, not staffing or
 acceptance requirements. QA retains final validation and publication authority.
 
-## Periodic infrastructure review
+## Infrastructure review — dedicated cycle inactive
+
+On 2026-09-21 the user removed the dedicated senior reviewer from the active
+cycle. Do not trigger a review after two DONE tasks, replace QA with that role,
+or make a dedicated review a prerequisite to the next batch. The primary agent
+may perform the explicitly authorized current review and retain its findings.
+Final testing and validated publication remain assigned to QA under the rules
+above; removing the reviewer does not itself transfer those responsibilities.
+
+The following records the former rotation for historical context and applies
+again only if the user explicitly reinstates it.
 
 After at least **two task files reach DONE following QA acceptance** since the
 previous infrastructure review, hand the completed work to the user-authorized
@@ -241,6 +251,14 @@ submission counters, evidence locations and any live process handles, then stop
 its active turn and release its worker slot. Do not restart a still-running
 command or infer completion from the handoff. Respect the environment's thread
 limit; the reviewer replaces QA during this interval.
+
+Verify that the runner actually releases the retained session's slot: finishing
+or interrupting a turn is not proof of session removal. If creation or resumption
+is rejected by the thread limit and no session-removal operation is available,
+retain the review handoff and report the scheduling blocker. Do not relabel an
+implementation helper as the configured reviewer, claim the review occurred,
+or reset the accepted-closure checkpoint. Resume the requested role rotation
+when the runner permits it.
 
 The reviewer examines the work in the context of the whole library and its
 infrastructure: core/companion boundaries, data and time contracts, ownership,

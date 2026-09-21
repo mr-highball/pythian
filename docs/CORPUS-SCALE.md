@@ -28,8 +28,13 @@ inputs are 16000-Hz stereo; the original inputs are 48000-Hz stereo for WAV-C an
 
 WAV-C requires three adjacent processing scopes because each job permits at most
 one hour. Every scope retains the full source's waveform-support bounds. The two
-pilot recordings require one job each. Each job verifies the complete source,
-model, runtime and notices; the large WAV-C source is therefore hashed three times.
+pilot recordings require one job each. Each successful job hashes the complete
+source twice: during initialization and again after observations, before sink
+completion. The three WAV-C jobs therefore require six complete source hashes;
+the two pilot jobs require two each, for ten across the observation schedule.
+Model/runtime/notice checks and complete output-artifact checks are additional
+work. The second source hash belongs to verification and the total job budget,
+not the cold-setup measurement. The existing hour result includes both hashes.
 Neither job boundaries nor delivery batches are musical run boundaries.
 
 | Stage or resource | Predeclared ceiling |
@@ -80,3 +85,8 @@ The scale task remains open with no completion credit. Preparation identifies
 usable material and rejection boundaries; it does not yet provide executable
 whole-pipeline commands or measurements. The ignored qualification packet retains
 exact local identities, proposed raw-stage commands and the missing-stage ledger.
+
+Review correction 2026-09-21: the initial preparation counted one source hash per
+job. Source inspection confirmed the second full hash before sink completion;
+the counts above supersede that estimate. No benchmark, budget or acceptance
+result changes in this documentation correction.

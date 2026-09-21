@@ -21,6 +21,14 @@ include preparation/storage cost and retain original-source lineage and exact
 coordinate mappings. This is part of the existing whole-pipeline criteria below,
 not permission to skip identity checks or raise limits after measurement.
 
+Review clarification 2026-09-21: each successful observation job hashes the full
+input both at initialization and before sink completion. The proposed three-job
+long recording incurs six full source hashes; the two pilot jobs add four.
+Account separately for initial verification, final source verification, assets
+and output-artifact checks within the unchanged whole-job/pipeline budgets.
+The initial preparation's one-hash-per-job wording is corrected in its workload
+record. This remains existing acceptance scope, with no new task or credit.
+
 The native execution prerequisite is accepted again after coherent progress
 supervision and focused replay pass. Retain the successful one-hour measurements
 as scoped evidence; they do not alone satisfy this whole-pipeline workload task.

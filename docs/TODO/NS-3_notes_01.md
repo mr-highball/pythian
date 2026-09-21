@@ -18,6 +18,18 @@ flute octave-error centers. Reject this rule without a threshold sweep; the task
 remains open with no credit. Reassess identity/presence evidence before declaring
 another experiment; the existing independent evaluation material remains unused.
 
+Reassessment 2026-09-21: the [native cache audit and summary](../PHRASE-EVALUATION.md#identity-evidence-reassessment--2026-09-21)
+pass final QA and reconcile all 5,994 centers without changing predictions.
+The 11 flute octave-error events have 42/43 available lower-hypothesis triples,
+including 32 gain-guard failures, while 25/43 upper triples are unavailable.
+No event passes every guard. Stop the contingent amplitude-envelope correction
+experiment under its frozen gate. First inspect retained fit caches for exact
+unavailability reasons and intermediate energies; if absent, predeclare bounded
+all-event instrumentation of the unchanged observation path. Missing measurements
+do not justify register correction, and resolving their cause alone cannot prove
+identity. Preserve the separate presence task, independent evaluation material
+and current thresholds. The task remains open without additional credit.
+
 **Acceptance Criteria:**
 
 - Declare a discriminating identity observation or decision rule before scoring; explain how it distinguishes the remaining octave errors rather than merely changing global weights or thresholds.

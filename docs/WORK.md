@@ -41,7 +41,120 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current work — timed key evaluation and corpus workload prerequisites — 2026-09-21
+## Current handoff — frozen note/key diagnostics accepted — 2026-09-21
+
+The final QA batch passes the corrected native note-cache and key-error audits,
+plus the native note-cohort summary. These diagnostics change the next experiments,
+not the accepted musical scores. [Note reassessment](PHRASE-EVALUATION.md#identity-evidence-reassessment--2026-09-21)
+reconciles all 5,994 centers and stops the proposed envelope correction at its
+declared evidence gate. Available lower-register measurements still oppose the
+guard in 32 of 43 triples across the 11 flute error events; upper evidence is
+missing in 25 of 43. Next identify exact availability failures under unchanged
+observation rules, starting with the retained cache inventory. No new waveform or
+model experiment, forced octave correction or threshold sweep follows.
+
+The [key-error audit](TONAL.md#frozen-key-error-audit) shows source 16's net
+264,600-frame exact-match loss within fully labelled constant contexts, alongside
+the same net increase in relative-key errors. Reference ranks reach fourteenth.
+Next predeclare one key-specific tonic/mode weighting hypothesis on frozen chroma
+before investigating temporal smoothing. Preserve each annotator, gaps and the
+no-source-regression gate; the existing core ranker remains unchanged.
+
+QA repaired two diagnostic implementation defects: abnormal controls termination
+leaked an argument temporary, and an inferred fixed-width string collection
+truncated a coverage field name. The former is one blocking helper submission;
+the latter is primary-owned. Corrective checks pass with zero leaks; retain
+historical counters and distinguish scientific rejection from implementation
+failure. Original successful note data was not recomputed after cleanup. Its
+report retains the original producer identity, while the native summary binds
+that report explicitly. A shell convenience aggregation was replaced as evidence
+by Pascal output. Full commands, resource measurements, failure/repair identities
+and verdicts remain in `build/qa-batch-10/report.txt` and the linked topic records.
+
+Accounting stays **62.65%, 38 open / 11 DONE**, with no task moved or partial
+credit. The current return path remains NS-5 corpus/style acceptance through
+dependable recorded notes and context; raw inference execution already passes.
+Final documentation QA passes: native report identities, local links, task graph,
+credit arithmetic, privacy and staged scope are checked. The nine-document batch
+is ready for normal publication on `hello-pythian`; its published revision is
+reported separately. No runtime test process remains live.
+
+## Primary review completed; dedicated cycle inactive — 2026-09-21
+
+The user authorized the primary agent to perform the infrastructure review and
+then removed the dedicated senior reviewer from the active cycle. There is no
+two-DONE-task review trigger or reviewer prerequisite for future QA batches.
+[Task flow](TASKFLOW.MD#infrastructure-review--dedicated-cycle-inactive) records
+the current arrangement and retains the former rotation as historical guidance.
+
+Primary review of published `d16c758` and its changes since `bc9bac82` found one
+documentation defect: the workload plan counted one full-source hash per job,
+where the maintained worker hashes before and after observation. The corrected
+[workload record](CORPUS-SCALE.md) counts six hashes for the three long-source
+jobs and four for the two pilot jobs, with final source verification inside the
+total job budget. The existing [scale task](TODO/NS-5_scale_01.md) owns this cost;
+no new task, raised budget or repeated benchmark is needed. Retained hour timings
+already include both passes. The finding does not reopen native qualification.
+
+No new implementation defect was found in the bounded supervision, tonal-evidence,
+scale-dependency and delivery-boundary review. Six native implementation/fixture
+hashes and the seven-file timed study/reference manifest still match accepted
+evidence. Detailed scope, source lines, finding and limitations are retained in
+`build/big-boss-05/REVIEW.md`. This is a primary review, not an independent-agent
+verdict or new runtime QA. Accounting stays **62.65%, 38 open / 11 DONE**;
+review activity creates no credit or failed QA submission.
+
+After runner reload, the assigned QA role successfully resumes and completes
+the two-item diagnostic batch recorded above. No temporary primary-agent QA
+exception is needed. This supersedes the prior scheduling blocker below; the
+dedicated senior review cycle remains inactive.
+
+## Saved handoff — prior review scheduling blocker — 2026-09-21
+
+The user explicitly requested another infrastructure review before the routine
+two-closure threshold. The implementation helper saved its note-identity cache
+audit and ended its turn with no live processes. Its tracked study change is
+the pending-preparation paragraph in
+[note identity](TODO/NS-3_notes_01.md); its ignored source, frozen policy and
+QA commands are under `build/phrase-identity-reassessment/`. It compiled on
+checked stable Win64 but has no execution or acceptance result.
+
+While reviewer scheduling remains blocked, the primary agent has prepared the
+next independent [key-evidence diagnostic](TODO/NS-3_context_01.md) under ignored
+`build/local-key-reference/swd/error-audit/`. Its predeclared policy and native
+implementation classify frozen ranking errors and reference ranks by original
+frame intersections, annotator and context coverage. Fully labelled constant
+contexts remain distinct from missing/discontinuous labels. Checked stable
+Win64 compilation passes; controls and saved-data execution remain with QA.
+The two diagnostics now form a ready batch; their source/policy hashes and exact
+commands are in their QA packets. No new musical result or task acceptance is
+inferred, and no additional recording is exposed.
+
+The runner rejected both creating and resuming the authorized senior reviewer
+with `agent thread limit reached`, including after interruption of the completed
+helper. The available operations expose no session-removal action. No new review
+has run, no reviewer verdict exists, and QA has not been restored. The prepared
+review packet is `build/big-boss-05/HANDOFF.md`. Resume that review when a worker
+session can be released, then restore QA with the saved queue and counters.
+Review 04 remains the last completed checkpoint, followed by one accepted
+closure. Accounting stays **62.65%, 38 open / 11 DONE**; no task or credit changes.
+
+The same scheduling rejection is verified across three consecutive goal turns.
+The retained helper is terminal, no review/test process is live, and both next
+diagnostics are prepared for the authorized QA role. Further inference changes
+depend on those results; selecting another experiment before execution would
+bypass the declared evidence gate. Goal execution is blocked pending release
+of a retained worker session, additional runner capacity, or explicit revised
+staffing instructions. Preserve all local work and resume with review 05,
+then the two-item QA batch; do not restart or rescore accepted observations.
+
+Published revision `d16c7586e84dd3b528fb9b2ac4209bd46f24959b` now has successful
+[exact-head native CI](https://github.com/mr-highball/pythian/actions/runs/35592253078).
+That evidence covers the existing native workflow, not the pending review or
+unexecuted cache audit. The review scheduling and workflow clarifications remain
+local pending QA; no new publication is claimed.
+
+## Previous checkpoint — timed key evaluation and corpus workload prerequisites — 2026-09-21
 
 The fixed timed local-key diagnostic is implemented under ignored
 `build/local-key-reference/swd/timed-key.lpr` and compiles on checked stable
@@ -476,7 +589,7 @@ increment QA submission counters; no junior assignment ran in this batch.
 
 This integration recorded **three post-review DONE completion events**, including
 shared validation's repaired re-acceptance, triggering the second
-[infrastructure review](TASKFLOW.MD#periodic-infrastructure-review).
+[infrastructure review](TASKFLOW.MD#infrastructure-review--dedicated-cycle-inactive).
 The review completed against published `7c9aaa6` and found no new confirmed defect
 requiring a reopened task, new TODO or credit adjustment. Source inspection
 confirmed the repaired prediction/derivative boundaries and traced staged duration
