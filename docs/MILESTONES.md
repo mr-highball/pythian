@@ -161,6 +161,15 @@ all eleven flute octave-error events still fail the lower-hypothesis guard.
 Stop that correction family and assess independent identity evidence. Note
 presence remains independently actionable under its existing task; reuse the
 retained head, event-context and short-note studies before another experiment.
+The next two feasibility checks also stop before recorded comparison. The
+[retained contour head](PHRASE-EVALUATION.md#cached-contour-support-does-not-recover-both-short-notes--2026-09-21)
+does not recover the short 55-Hz note and supplies no reliable silence evidence
+in the repeated-note gap. A [fixed harmonic dictionary](TONAL.md#harmonic-dictionary-feasibility)
+passes corrected numerical QA but fails 31/72 synthetic preservation cases;
+spectral-shape mismatch creates false class weight and missing-fundamental error.
+These results rule out the proposed fallbacks. Next reassess the observation
+contract for changing harmonic sound, genuine simultaneous notes and presence;
+do not rerun rejected decoder/profile variations. No acceptance gate is relaxed.
 These diagnostics resolve next actions, not musical acceptance;
 **62.65% remains unchanged**.
 

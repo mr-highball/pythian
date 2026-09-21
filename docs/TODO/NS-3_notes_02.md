@@ -12,6 +12,17 @@ Credit is earned only when every acceptance criterion and the task-flow completi
 
 Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [PITCH](../PITCH.md) · [ONSETS](../ONSETS.md).
 
+Current evidence 2026-09-21: the [cached contour diagnostic](../PHRASE-EVALUATION.md#cached-contour-support-does-not-recover-both-short-notes--2026-09-21)
+does not recover the missing 30-ms 55-Hz note: its expected pitch wins none of
+three raw rows or three scoring centers. The 440-Hz short note wins, but its
+pitch also wins all four centers in the real repeated-note gap. Stop this common
+fallback; no recorded comparison or contour-threshold sweep follows. Prior direct
+head and waveform-anchor decoders already fail false-rest admission, while coherent
+cycle support preserves synthetic short notes without improving recorded results.
+The next presence observation must retain that low/quiet/gap capability and
+distinguish sustained harmonic sound from rest/ending evidence; rearranging
+existing head cuts alone is insufficient. All acceptance criteria remain open.
+
 **Acceptance Criteria:**
 
 - Separate note presence from pitch identity and distinguish attacks, continuations, rests and endings using supported source evidence.
@@ -23,4 +34,3 @@ Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [PITCH](../PI
 **Blockers**
 
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
-

@@ -41,7 +41,48 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current handoff — exact trace and key-decision audit accepted — 2026-09-21
+## Current handoff — contour and harmonic feasibility rejected — 2026-09-21
+
+The preceding six-document batch is published at `477196c`; its
+[native CI passes](https://github.com/mr-highball/pythian/actions/runs/35611388607).
+The next batch investigates two previously untested representations while reusing
+existing sources. An inventory first rejects a redundant admission ledger: prior
+head diagnostics and the contextual decoder already explain that partitioning
+changes segment survival without changing raw note/RMS admission.
+
+The [cached contour diagnostic](PHRASE-EVALUATION.md#cached-contour-support-does-not-recover-both-short-notes--2026-09-21)
+passes final QA and fails common-short-note feasibility. MIDI 33 wins none of
+three raw rows or three scoring centers inside the 30-ms 55-Hz note; the 440-Hz
+note wins, but its pitch also wins all centers in the true repeated-note gap.
+Stop the contour fallback without new model execution or a recorded comparison.
+The [harmonic-dictionary study](TONAL.md#harmonic-dictionary-feasibility) also
+stops at controls: 31/72 fail after numerical correction. Both simultaneous-note
+controls pass, but spectral-shape variation yields false class weight and a
+missing-fundamental octave error. Do not adopt a correct top coefficient as an
+accurate note distribution or sweep dictionary weights to pass these controls.
+
+QA exposed Single narrowing in the primary-owned solver's overloaded clamps.
+Explicit Double branches and a nonbinary exact-update regression correct it;
+compiler assembly confirms the repair. Preserve the original report and its
+53 mixed numerical/scientific failures; the corrected 31-failure result is the
+accepted interpretation. Only the affected suite was rerun. Both diagnostics,
+their controls and output-preservation checks now finish within budgets with
+zero leaks. Commands, hashes, source review and resource results are retained in
+`build/qa-batch-13/report.txt`. No process remains live. Final documentation
+checks pass: native evidence, links, task accounting, privacy and the six-document
+scope are verified. This batch is ready for normal publication; its exact revision
+is reported separately.
+
+The originating NS-5 corpus/style goal remains active through its note/context
+and learning prerequisites. Next define source observations that distinguish
+harmonic-envelope changes from genuinely different notes while retaining the
+short/quiet/gap controls. The current evidence selects no replacement provider;
+this is research work remaining, not an external scheduling blocker. Independent
+evaluation material remains untouched. No task closes or credit changes:
+**62.65%, 38 open / 11 DONE**. The primary-owned repair does not increment delegated
+failure counters, and historical counters remain intact.
+
+## Previous checkpoint — exact trace and key-decision audit accepted — 2026-09-21
 
 The preceding six-document batch is published at `ff2e025`; its
 [native CI passes](https://github.com/mr-highball/pythian/actions/runs/35608515576).

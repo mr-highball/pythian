@@ -124,6 +124,46 @@ stage summary SHA256:
 `d6a60004cae4778f192e07b73634764f89e81c17124d67f0cdda855b189777e0`.
 No task status, musical score, completion credit or failed-submission count changes.
 
+## Cached contour support does not recover both short notes — 2026-09-21
+
+The earlier separate-head and event-context experiments already tested note/onset
+support and boundary partitioning. A proposed further admission ledger was
+withdrawn before implementation: unchanged winning-label/RMS gates and changed
+segment survival already explain its main conclusion. The remaining unexamined
+contour head can instead be inspected from the retained synthetic cache without
+another model pass, waveform measurement or recorded-source exposure.
+
+This fixed diagnostic retains all 346 raw rows, 398 scoring centers and 264 contour
+bins. Each candidate uses the maximum of the three bins around
+`3 * (MIDI - 21)`; exact ties remain ambiguous. Each bin is interpolated before
+neighborhood maximization, preserving the nonuniform source coordinates. Original
+note/onset interpolation replays exactly. The existing six authored notes, seven
+complementary rests and six separately marked 100-ms margins classify evidence
+only; none changes activations or supplies an inferred note. No contour threshold
+or confidence interpretation is introduced.
+
+| Existing synthetic interval | Expected note | Expected unique winner: raw / scoring centers |
+| --- | ---: | ---: |
+| 30-ms 55-Hz note | MIDI 33 | **0/3 / 0/3** |
+| 30-ms 440-Hz note | MIDI 69 | **2/2 / 3/3** |
+| 40-ms gap between repeated 440-Hz notes | Rest; inspect MIDI 69 | **3/4 / 4/4** |
+
+The low note's best expected rank is sixth on raw rows and third after
+interpolation. Thus the missing low-short-note observation is not recovered by
+switching to this contour representation. The high note does have localized
+relative support, but MIDI 69 also wins every scoring center in the real gap.
+The raw gap has one different winning pitch; that is not evidence of silence.
+The declared common-fallback feasibility gate fails. Stop this contour fallback
+without a recorded comparison, new decoder or threshold/bin-radius sweep.
+
+Checked stable Win64 controls, bound-cache diagnosis and existing-output rejection
+pass with zero leaks. Diagnosis takes 10,316 ms and 185,024,512 bytes sampled private
+memory; the 9,720,456-byte output fits the fixed bounds. Evidence and all ordinary,
+quiet-note and rest regions remain under `build/note-contour-diagnosis/` and
+`build/qa-batch-13/`. Report SHA256:
+`03de2a17db27458848c726cc6905b8ee423bdcdfc298b537ebac3d78d434d71a`.
+No task closure, musical score, maintained provider or completion credit changes.
+
 ## Exact availability trace replay — 2026-09-21
 
 One instrumented replay per existing development recording now reproduces all

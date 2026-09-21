@@ -438,6 +438,57 @@ summaries and frame-weighted contributions are under
 Report SHA256: `4189e48ad4c1047d7f2d534d6f789f4b411758ecdd7770fc6093a013d3a4a06d`.
 No maintained provider, task completion or credit changes.
 
+## Harmonic dictionary feasibility
+
+A different representation was tested before another recorded key comparison:
+fit nonnegative note spectra jointly, then combine their coefficients into pitch
+classes. The [authors' NNLS Chroma description](https://github.com/c4dm/nnls-chroma/blob/master/README)
+provides the method context. This owned Pascal experiment uses linear FFT
+magnitudes and a fixed geometric harmonic dictionary, without their whitening,
+log-frequency conversion or tuning; it is not a plugin port or parity claim.
+No third-party implementation or new dependency is introduced.
+
+The frozen policy uses mono 22050-Hz, 8192-sample periodic-Hann windows and MIDI
+21..108 templates with up to sixteen harmonics, amplitude decay 0.7 and a 5-kHz
+limit. Nonnegative coordinate descent retains all coefficients, residual energy
+and convergence evidence. Availability means a converged observation, not note
+or key admission. Synthetic controls vary phase and harmonic shape independently,
+include gain/DC changes, simultaneous notes, missing fundamentals, silence and
+an explicitly descriptive off-grid case. No recording or annotation is read.
+
+Final numerical QA passes, but **31 of 72 feasibility cases fail**. Every failed
+case converges under the unchanged tolerance and work limit. Pure sines at all
+five tested pitches fail the declared 90% true-class concentration requirement;
+some mismatched harmonic shapes also fail it. These cases can have the correct
+largest note coefficient while assigning substantial weight to false classes.
+The missing-fundamental MIDI-45 case instead selects MIDI 57, with only 66.766%
+of coefficient mass on the true class. The two actual-note mixtures pass, retaining
+98.324% and 98.975% mass on their two classes. Neither isolated success compensates
+for the preservation failures.
+
+Stop this fixed-shape representation before recorded execution. The fit can
+explain spectral-shape mismatch by activating extra pitches; a small optimization
+residual or correct top note does not establish a trustworthy pitch-class profile.
+Do not sweep dictionary decay or relax the concentration gate. A later observation
+contract must distinguish spectral-envelope variation from simultaneous-note
+activity and preserve missing-fundamental ambiguity before another timed key run.
+Tonic/temporal inference remains separately required even if that distinction passes.
+
+The first implementation narrowed two `Max(0, Double-expression)` clamps to
+Single through overload resolution. Compiler assembly exposed the issue. Explicit
+Double branches and an exact nonbinary one-sweep regression fix it; the original
+53-failure report is retained but superseded for scientific interpretation.
+Only the affected harmonic suite was rerun, with unchanged policy and budgets.
+This was a primary-owned implementation defect, distinct from scientific rejection.
+
+Corrected checked stable Win64 QA takes 2,356 ms with 8,470,528 bytes sampled
+private memory and a 220,106-byte report; numerical/replay controls and existing-
+output preservation pass with zero leaks. Source, policy, original/corrected
+reports and assembly evidence remain under `build/tonal-harmonic-feasibility/`
+and `build/qa-batch-13/`. Corrected report SHA256:
+`0f0beb6b1ae517142118b3956f7b10e4b23fe9a5ebeed10036b2ba4460c08807`.
+No maintained ranker, source split, task completion or credit changes.
+
 ## Native inspection
 
 The [native tool](../tools/pythian.tonal.inspect.lpr) prints JSON:

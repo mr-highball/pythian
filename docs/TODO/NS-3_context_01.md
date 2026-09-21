@@ -86,6 +86,15 @@ from sustained dominant and actual note activity from folded spectral contributi
 before another inference proposal. Preserve frequency provenance and temporal
 order; this audit alone selects no physical explanation or replacement classifier.
 
+The subsequent [harmonic-dictionary feasibility study](../TONAL.md#harmonic-dictionary-feasibility)
+tests joint spectral decomposition before pitch-class folding. Corrected numerical
+QA passes, but 31/72 synthetic cases fail the frozen preservation gates, including
+false class mass from pure tones and an octave error with a missing fundamental.
+Stop this fixed-shape representation before recorded execution. The next observation
+contract must distinguish spectral-envelope variation from genuinely simultaneous
+notes; fitting extra pitches to explain timbre does not satisfy key admission.
+Temporal tonic evidence and independent key/change evaluation remain required.
+
 **Acceptance Criteria:**
 
 - Declare supported key/mode cases and source windows, including ambiguous, non-tonal and changing-key regions; fix key/change/coverage limits before evaluation.
