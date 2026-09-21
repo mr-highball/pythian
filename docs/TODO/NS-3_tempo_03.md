@@ -23,5 +23,5 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md) · [WAVE-CONTEXT-ADMISSI
 **Blockers**
 
 - [NS-3_tempo_02.md](NS-3_tempo_02.md)
-- [NS-3_validation_02.md](NS-3_validation_02.md)
+- [NS-3_validation_02.md](DONE/NS-3_validation_02.md)
 

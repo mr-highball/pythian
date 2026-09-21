@@ -77,6 +77,32 @@ dependency-linked work items under [TASKFLOW.MD](docs/TASKFLOW.MD). Completed
 implementation is summarized there by goal; detailed evidence stays in the work
 record and topic pages. Reassess the full intended scope when evidence changes it.
 
+## Qualified optional inference adapter
+
+The practical inference task delivers a separately selected Win64 CPU
+observation adapter under `adapters/inference/`, using stable FPC 3.2.2 and the
+pinned TensorFlow 2.18.1 C runtime. The owned graph, streaming preparation,
+validation, process supervision and command-line consumer remain Pascal. Core
+types, default builds and existing core/WFC source packages do not require or
+bundle that runtime. This is not a portable-core inference dependency.
+
+The reason is measured execution cost: the private scalar converted CREPE tiny
+study costs roughly 17 processing seconds per audio second. Final maintained
+qualification now passes controlled/recorded fidelity, bounded failure and
+cancellation, and the declared resource limits: a continuous hour completes
+in 2,420,266 ms with 20,313-ms setup and 103,051,264 bytes peak worker private
+memory. See [the accepted execution task](docs/TODO/DONE/NS-3_validation_02.md).
+Raw salience and AC RMS
+do not become admitted notes, calibrated confidence or learned musical roles.
+
+Acquisition is explicit through [the pinned asset script](tools/get-inference-assets.ps1),
+confined to ignored `build/`; full model/runtime notices accompany the assets.
+The [provenance decision](docs/PROVENANCE.md#optional-native-observation-adapter)
+records revisions, maintenance cost and the current Windows-only scope. No
+automatic version upgrade, additional package ecosystem or historic format reader
+is introduced. Review the choice if its measured budgets fail or the supported
+consumer needs another platform/runtime; do not silently widen these claims.
+
 ## Development format policy
 
 This is a fresh library. Keep one current native format for each distinct

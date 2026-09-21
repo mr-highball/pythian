@@ -88,6 +88,156 @@ to the finite Single audio range with the same small rounding allowance used
 for measured corpus admission. Existing note/analysis bounds keep constructed
 profiles well below the general weight bound.
 
+## Recorded key reference comparison
+
+The next [local-key task](TODO/NS-3_context_01.md) comparison separates the
+existing waveform representation from tonal interpretation. It uses the two
+already audited external WAV/note references in the
+[reference screen](STYLE-CARDS.md#reference-screening-and-musical-controls--2026-09-21),
+preserving their shared development exposure. Original microphone chroma and
+external note-duration profiles feed the same unchanged diatonic ranker.
+The latter is an annotation-derived diagnostic, never an audio prediction.
+
+The policy fixes the existing 4096-frame window, 1024-frame hop and 0.0001 silence
+threshold, with duration weighting. Inspect each whole excerpt and eight-second
+crops at four-second starts, retaining terminal crops of at least four seconds.
+Every crop has explicit source-frame bounds and only its own end padding.
+Retain all 24 candidates, weights, coverage and score gaps. External simultaneous
+notes contribute their intersected sounding-frame duration without amplitude or
+velocity weighting; summed note duration is not elapsed-time coverage.
+
+Both WAV-only observation files must precede reference comparison. Exact hashes
+bind original sources, accepted annotation packets, study source and fixed policy.
+The publisher's whole-excerpt key convention is a declared reference diagnostic;
+it does not independently annotate each crop or verify an absence of modulation.
+No local-key accuracy or confidence claim follows from matching that convention.
+
+Stop after this paired comparison. Failure even with the supplied notes points
+toward tonal/temporal interpretation; failure confined to WAV evidence points
+toward the waveform representation. Agreement calls for broader annotated
+development coverage before admission calibration. None justifies a threshold
+sweep on these two examples. The private native study under
+`build/local-key-reference/` has completed both WAV observations in checked Win64
+QA, within the work bound and with zero unfreed blocks. Comparison exposed a
+study bug: the second publisher label is D minor, while the comparer assumed
+D major. The repair retains the original observer source and both observation
+artifacts, binds their exact hashes and uses the declared mode. A separate
+comparison-source identity records that repair. QA accepts both repaired
+comparisons with unchanged original observation fields, exact retained A-case
+results and zero unfreed blocks. No waveform observation was repeated.
+
+| Declared whole-excerpt key | WAV rank of declared key | External-note rank | WAV best/runner-up score gap | External-note score gap |
+| --- | ---: | ---: | ---: | ---: |
+| A major | 2 | 1 | 0.0009294803 | 0.0351228676 |
+| D minor | 1 | 1 | 0.0072218663 | 0.0068233434 |
+
+The A-major WAV profile ranks D minor narrowly ahead, while its supplied-note
+profile ranks A major first. Under the fixed diagnostic policy, the next
+investigation concerns the waveform representation; these examples do not
+establish a general tonal-interpretation solution. Both representations rank
+the D-minor convention first. The six/seven retained regions are diagnostic
+windows, not independently labeled local-key cases. Score gaps remain uncalibrated.
+
+The two observation passes used 127,746,048 / 156,991,488 planned FFT work units
+and 4,500 / 5,484 ms, within the fixed budget. Exact source/observation/comparison
+identities and the original failed comparison remain in
+`build/local-key-reference/` and `build/qa-batch-08/`. No maintained algorithm,
+confidence threshold, automatic admission or completion credit changes.
+
+Source inspection identifies a concrete representation limit: the current
+extractor assigns power using each FFT bin's center frequency. At 44,100 Hz with
+4096 samples, bins are approximately 10.77 Hz apart, wider than low guitar
+semitones. This does not yet prove the cause of the recorded ranking difference.
+A single fixed private experiment now compares interpolated spectral peaks
+with the unchanged ranker, starting with twelve known low-register tones and
+then the same two exposed WAVs. It reuses the original baseline observations;
+there is no parameter sweep or change to the maintained extractor.
+
+The [published peak-profile method](https://essentia.upf.edu/reference/streaming_HPCP.html)
+provides context for this representation choice. The local experiment uses a
+simpler declared linear pitch-class split and claims no external implementation
+parity. Its source and policy are frozen under `build/local-key-reference/`.
+Checked Win64 QA passes all twelve known tones and silence, with no owned leaks.
+The default representation assigns the wrong dominant class to five of these
+low-register tones; the peak representation retains the intended class in all
+twelve. This establishes the controlled representation limitation, not a general
+transcription or key-detection result.
+
+Both candidate WAV observations completed before interpretation. The declared
+A-major whole-excerpt key improves from rank 2 to rank 1; D minor remains rank 1.
+All six/seven original crop boundaries, 24 candidates and raw scores are retained.
+The observation runs take 4,110 / 5,046 ms and 127,746,048 / 156,991,488 planned
+FFT-work units, within the fixed budgets. The result supports the next declared
+step: evaluate this representation on the two already selected timed development
+references before maintained adoption or calibration. It does not establish
+local-key accuracy, confidence, unknown rejection or independent acceptance.
+
+## Local-key reference candidate
+
+The [Schubert Winterreise Dataset 2.1](https://zenodo.org/records/10839767)
+was screened on 2026-09-21 as a candidate for recorded local-key/change evaluation.
+Its published inventory includes WAV recordings and three audio local-key
+annotation sets. The archive is 517.4 MB with publisher MD5
+`591c377c6d3db522fd159b8b70180978`. Acquisition into ignored build output now passes
+the exact 517,380,038-byte length and publisher checksum; local SHA256 is
+`774b9b874a82af042ee76f38260acab16bf6ef275c6d67363f96ce63167b99f5`.
+The bundled README still calls itself version 2.0; preserve that original text
+alongside the version 2.1 archive identity. No recording has been scored or admitted.
+
+Original notices were inspected. The README declares CC BY 3.0 for the dataset;
+the HU33 notice points to the Public Domain Mark, while the SC06 notice points
+to CC BY-NC-ND 3.0. The README's description of SC06 differs from that notice.
+The present development selection uses HU33 only and retains all notices;
+no recording is included in published source or artifacts.
+
+Only compositions D911-02 and D911-16 have been selected for development, with
+their HU33 WAVs and all three matching local-key CSVs extracted unchanged.
+Every performance of those compositions belongs to the development exposure
+group. Remaining annotation/audio contents have not been inspected or scored.
+The README declares the main audio as 22,050-Hz mono and annotation times in
+seconds; the native reference preflight now verifies decoded geometry and exact
+decimal time-to-frame conversion with nearest-frame, ties-upward rounding.
+It also documents an artificial repeat in HU33 D911-01, which is excluded from
+this selection. Do not interchange main-folder annotations with the separately
+provided original-short material.
+
+The supplied annotations already show an important boundary: annotator 2 leaves
+gaps, while the other annotations may supply a key across the same passage.
+In D911-16, the annotators disagree on the transition out of D major and one
+includes B minor. Retain each annotator, missing coverage and disagreement;
+absence is not an independently verified non-tonal label. No single annotation,
+majority vote or filled gap is silently substituted for uncertain ground truth.
+
+The checked Win64 preflight passes bounded original-byte identity, interval and
+coverage checks with no owned leaks. Each row below partitions the full decoded
+source, including unlabelled leading/trailing audio. Partial coverage means one
+or two annotators supplied a label; disagreements within that category remain
+explicit in the retained regions.
+
+| HU33 development composition | Original frames | Unlabelled | Partial coverage | Full coverage, disagreement | Unanimous |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| D911-02 | 2,230,272 | 122,292 | 772,632 | 152,145 | 1,183,203 |
+| D911-16 | 3,053,568 | 121,359 | 624,456 | 84,231 | 2,223,522 |
+
+Full-coverage disagreement does not require three distinct keys. Original annotator interval counts are
+12/5/9 and 3/3/4. Five/two partially covered regions also disagree. Preflight
+takes 329 / 438 ms, without waveform scoring. The exact packets and original
+notices remain under `build/local-key-reference/swd/`; no reference-packet pass
+earns task credit or changes the recorded material's development exposure.
+
+The related [cross-version study](https://www.audiolabs-erlangen.de/content/05_fau/professor/00_mueller/03_publications/2020_SchreiberWM_LocalKey_ICASSP_PrintedVersion.pdf)
+demonstrates why unseen performances of a familiar composition are insufficient
+evidence of generalization to new music. Its annotation policy also assigns a
+likely key to ambiguous passages. Therefore inspect each supplied annotation
+policy, preserve disagreement and unknown regions, and group all versions of a
+composition together before choosing development and untouched evaluation cases.
+
+The next admission step belongs to [local-key acceptance](TODO/NS-3_context_01.md):
+use the accepted reference preparation and freeze estimator support, change/
+coverage limits and uncertainty handling before timed development scoring.
+This reference preparation does not establish
+genre suitability, calibrated unknown rejection or independent acceptance.
+
 ## Native inspection
 
 The [native tool](../tools/pythian.tonal.inspect.lpr) prints JSON:

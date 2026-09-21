@@ -41,6 +41,193 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
+## Current work — accepted native observations and key-reference evidence — 2026-09-21
+
+[Practical native inference](TODO/DONE/NS-3_validation_02.md) now passes all five
+criteria and moves to DONE. The optional Win64 consumer emits 360,000 raw
+observations from one continuous hour in 2,420,266 ms, with 20,313-ms setup and
+103,051,264 bytes peak worker private commitment. The complete 524,160,407-byte
+artifact passes verification and publication. Final logs report no owned leaks.
+The fixed numerical/rate/channel/recorded/failure cases and five-minute workload
+remain accepted; focused startup requalification repaired the first hour failure
+without changing budgets. Its historical failed-submission count stays at one.
+Exact final evidence is in `build/qa-batch-08/report.txt` and
+`submission2-hour-report.json`; the [native contract](NATIVE-INFERENCE.md#qualification--2026-09-21)
+records the accepted scope and continuing accuracy/platform obligations.
+
+Acceptance adds **+5 NS-3 points (32% to 37%)**, **+1.25 overall (61.4% to 62.65%)**.
+The catalog has **38 open / 11 DONE**, 49 total tasks and 19 active outcomes;
+accepted task credit is 7.15, with 37.35 overall points remaining. WAV-VALIDATION
+closes, and the [many-hour workload task](TODO/NS-5_scale_01.md) is unblocked.
+It must include complete-source verification and any preparation cost/lineage.
+This is one completion after the infrastructure-review checkpoint at ten DONE;
+the next routine review requires another accepted task. Final owned-document links,
+task graph, credit arithmetic, unchanged implementation identities and staged-scope
+checks pass. This accepted checkpoint is committed for normal publication to
+`origin/hello-pythian`; the exact published revision and remote CI result are
+recorded separately after the push.
+
+The root-owned local-key work also has new bounded evidence, with no extra credit.
+The two selected timed references pass native original-byte/clock/partition
+preflight, retaining each annotator's labels, gaps and disagreement. The fixed
+peak experiment passes twelve known-tone controls and silence, correcting five
+default-bin dominant-class errors. Its two exposed WAV observations complete
+before interpretation: declared A major improves from rank 2 to 1; D minor stays
+at 1. All original six/seven crop boundaries and 24 candidates are preserved;
+both runs meet their declared work/time limits and report no owned leaks.
+[Tonal evidence](TONAL.md#recorded-key-reference-comparison) records source/policy
+identities, measurements and limits. No source annotation becomes a prediction,
+and no maintained key estimator, calibrated confidence or independent acceptance
+is claimed. Next test this representation on the prepared timed development
+references, while the independent workload task follows its newly accepted
+execution prerequisite. The style-card task remains open for complete genre
+references and grounded numerical criteria.
+
+## Historical batch preparation — reference cards and bounded native inference — 2026-09-21
+
+The preparation and intermediate pending/failure states below are superseded by
+the accepted checkpoint above; retain them as evidence of the actual sequence.
+
+The primary NS-5 chain remains [style reference specification](TODO/NS-5_evaluation_01.md).
+Three [candidate cards](STYLE-CARDS.md#candidate-reference-cards) now bind exact
+original WAV sections to declared work/catalogue associations, existing acoustic
+measurements and the missing annotations for each required musical dimension.
+Primary artist/label descriptions support candidate stoner-rock, lofi and
+chillwave associations; actual recording/edition correspondence remains unresolved.
+B-middle replaces the crossing B-early section for this candidate packet without
+creating new material or changing development exposure. These are not accepted
+genre cards, calibrated criteria or extra completion credit.
+
+While those musical annotations remain missing, the primary agent also follows
+`NS-5_vocabulary_01 -> NS-3_context_02 -> NS-3_context_01` to a bounded
+[key-reference comparison](TONAL.md#recorded-key-reference-comparison).
+The unchanged ranker will receive original WAV chroma and separately supplied
+note-duration profiles to distinguish measurement from interpretation limitations.
+The fixed policy precedes observations: whole excerpts plus eight-second local
+crops, existing analysis defaults, explicit source-frame intersections and no
+threshold sweep. Both WAV-only reports must precede reference comparison; whole-
+excerpt key conventions cannot become local ground truth. Both private Pascal
+WAV observations now pass QA. The second reference comparison exposed a root-owned
+mode assumption: its annotation says D minor, not D major. The repair preserves
+both observed reports and the original observer source, binds exact identities,
+and compares the declared mode; comparison-only requalification now passes.
+A major ranks second from WAV and first from supplied notes; D minor ranks first
+from both. The fixed policy selects waveform representation for the next
+investigation, while preserving local-key and confidence uncertainty. The failed
+comparison remains recorded and does not increment the helper's failure counter.
+
+The implementation helper's ninth assignment is
+[practical native inference](TODO/DONE/NS-3_validation_02.md), an independent prerequisite
+of many-hour resource work. The agreed [optional Win64 observation strategy](PROVENANCE.md#optional-native-observation-adapter)
+retains Pascal graph assembly, stream preparation and supervision around the
+pinned CPU runtime. It emits raw converted-model salience and AC RMS; the failed
+note-admission policy remains rejected. The adapter, consumer and fixture are now
+code-complete and compile cleanly with checked stable Win64 settings. Source
+review found no new confirmed defect. QA now passes the contract/failure controls,
+twelve scalar comparisons, the six rate/channel cases and both recorded
+2,997-row numerical comparisons. The five-minute 48-kHz stereo case also passes:
+30,000 observations in 259,797 ms, 20,687 ms setup and 101,515,264 bytes peak worker
+private commitment. The continuous-hour job fails at approximately 30 seconds
+with a generic time/progress budget error; the exact phase/cause is unproven.
+This is the first blocking submission for the helper's task. All handles are
+terminal and no retry occurred. The helper's startup repair now compiles: bounded
+source and runtime initialization overlap and must join before measurement;
+phase-specific diagnostics retain the original budgets. Focused QA now passes
+diagnostics, exact prior-artifact replay, source/model failure preservation and
+long-source startup cancellation, with zero owned leaks. The original hour
+command is running once under QA ownership; its result remains pending. The
+second blocking submission would transfer the existing
+task and implementation to the primary. No completion credit or publication
+follows from these partial passes.
+
+The private plan under `build/native-inference-plan/` declares setup <=30 seconds,
+complete-job time <=30 seconds plus audio duration, <=2 GiB worker private memory,
+<=100 observations/second and bounded batches before any benchmark. Short rate/
+channel controls, a five-minute resampling probe and one real continuous one-hour
+WAV-C development scope separate boundary coverage from long-source execution.
+These remain the frozen acceptance limits. Initial checks do not preaccept the
+continuous-hour case or establish musical inference accuracy.
+
+The primary agent owns candidate cards, dependency/provenance decisions, pinned
+asset acquisition and optional build integration; the helper owns isolated new
+adapter, consumer, fixture and topic files. The asset script acquired verified
+existing caches into `build/inference-assets/`, preserving all notices and hashes;
+acquisition session 13077 ended successfully with no new runtime execution.
+The separate `tools/build-inference.ps1` compiles only the optional Win64 consumer
+and fixture with checked optimized flags; its invocation awaits final QA.
+Ordinary builds and CI do not acquire inference assets.
+Final feature testing belongs to QA. The first combined batch has returned its
+partial passes and one blocking failure; assignment nine's repair is now back
+with QA, with one failed submission recorded.
+Completion remains **61.4%**, with **39 open tasks and ten DONE**.
+
+The user requested an immediate additional infrastructure review. The helper
+returned at a safe boundary with no live processes, frozen source hashes and the
+acceptance-mapped handoff under `build/native-inference/`. Review scope and saved
+QA state are in `build/big-boss-03/REQUEST.md`. The completed source review is
+retained in `build/big-boss-03/REVIEW.md`: no confirmed new defect or accepted
+blend regression, no new TODO, reopening or credit change. Twenty handoff source
+identities match. The review traced blend/reblend lineage, loader/acquisition,
+source support geometry, staging ownership and supervised publication; it ran
+no product or inference tests. Its checkpoint is now **ten DONE**, with zero
+subsequent completions; the next routine review follows two more QA-accepted
+tasks. The reviewer returned and QA resumed batch 08 on the frozen sources;
+QA subsequently returned the first failure handoff and has now resumed its
+focused second submission on the repaired startup boundary.
+
+Historical pre-submission repair: while reviewer activation remained unavailable,
+primary integration inspection
+identified a concrete staging-file ownership defect within the current inference
+task: construction checks an unused path, but a later sink start can truncate a
+file created in the interim. A failed open also marks the sink started before it
+owns a file, allowing cleanup to target another artifact. The implementation
+helper resumed a narrow repair for exclusive creation and ownership-aware
+cleanup, with focused preservation fixtures and compilation only. This work does
+not substitute for the requested senior review or final QA. Assignment nine
+still has zero failed QA submissions. The repair now compiles: atomic exclusive
+creation acquires ownership, and abort deletes through the owned handle before
+closing it. Three focused preservation cases are added but unexecuted. The
+helper returned with refreshed source hashes and no live processes. Final runtime
+QA remains pending. The additional root-owned handoff at
+`build/native-inference-plan/ROOT-QA.md` covers pinned acquisition/build behavior,
+candidate-card evidence and the fixed local-key diagnostic, with resource
+benchmarks separated from other CPU and hashing work.
+
+During the active QA batch, the primary agent screened a
+[published local-key reference candidate](TONAL.md#local-key-reference-candidate)
+for the missing timestamped change evaluation. Metadata identifies original WAV
+and annotation material; no new audio was acquired or scored. Admission must
+first bind exact recording/annotation identity, notices, clock alignment and
+ambiguity policy, keeping composition versions grouped across evaluation splits.
+The fixed two-source diagnostic and its policy remain unchanged. This is progress
+within the existing NS-3 context task, with no additional task or credit. With
+benchmarking stopped, the exact 517,380,038-byte archive was acquired under
+ignored `build/local-key-reference/swd/` and passes its publisher checksum and
+local SHA256 identity. Original README/notices and only two HU33 development
+compositions' three local-key annotations were inspected. Annotator disagreement
+and gaps are explicit, and all performances of those compositions remain in one
+development exposure group. The bundled README version and SC06 notice differ
+from the surrounding metadata; preserve the originals and select HU33 only.
+No new audio scoring, source admission or percentage credit follows. Preparation
+is terminal before the resumed native-inference resource measurements.
+
+While the resource run continues, a separate private Pascal reference preflight
+is prepared for the same local-key task. It retains each original annotation,
+converts exact decimal seconds to original frames and partitions unanimous,
+disagreeing, partially labelled and unlabelled coverage. The policy is frozen
+before execution; compilation and final QA are queued after the resource run.
+It performs no key prediction or calibration, and no reference-packet result
+is claimed until that QA completes. Preparation changes no maintained algorithm.
+
+Read-only analysis inspection also identified the default extractor's coarse
+low-frequency bin mapping as a concrete representation limitation. A single
+private spectral-peak experiment is prepared with frozen interpolation, pitch-
+class weighting and stop/switch policy. Twelve known-tone controls precede the
+two previously exposed WAVs; original baseline observations are reused. The
+ranker and maintained analysis remain unchanged. Source/policy identities and
+queued commands are in `build/local-key-reference/PEAK-QA.md`; compilation and
+execution wait until the hour resource run and reference preflight finish.
+
 ## Accepted selective semantic blends and reference controls — 2026-09-21
 
 The primary NS-5 chain returns to [style references](TODO/NS-5_evaluation_01.md)
@@ -87,8 +274,9 @@ larger than ten points: 22.6 + 16.0. This is one post-review completion event;
 another accepted DONE event is required before the next infrastructure review.
 Final checks confirm unchanged tested source hashes, 2468 valid local links and
 the 49-task/94-edge acyclic graph with reconciled credits. This validated batch
-is prepared for normal publication to `origin/hello-pythian`; generated/private
-artifacts and dependencies remain excluded.
+was published to `origin/hello-pythian` as `666dee7`. Its
+[native CI](https://github.com/mr-highball/pythian/actions/runs/35575456413) completed
+successfully. Generated/private artifacts and dependencies remained excluded.
 
 ## Accepted semantic persistence, duration edits and admission repair — 2026-09-21
 

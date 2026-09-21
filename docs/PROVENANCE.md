@@ -61,6 +61,53 @@ external implementation or adopting a pitch/solver dependency. Its recorded
 consumer reuses the attributed reference bank and existing phrase study inputs;
 no additional source media or saved format is introduced.
 
+<a id="optional-native-observation-adapter"></a>
+## Qualified optional native observation adapter
+
+[NS-3_validation_02](TODO/DONE/NS-3_validation_02.md) selects a Win64 CPU observation
+adapter as a bounded route from the private model study to a maintained native
+consumer. Final controlled/recorded fidelity, performance, memory and cancellation
+checks now accept the declared scope, including one continuous hour. The portable core and
+default packages remain independent of the acquired binary runtime.
+
+The converted CREPE tiny topology and thirteen weight shards come from
+[marl/crepe revision de4888e6](https://github.com/marl/crepe/tree/de4888e6d448357ceafea10fc6010061c6f19a55).
+Preprocessing references remain pinned to
+[c9b71ce6](https://github.com/marl/crepe/tree/c9b71ce61491454125a0693f584f7244f29d9884).
+Retain the full upstream MIT license, copyright 2018 Jong Wook Kim, alongside
+the model and applicable derived implementation. Weights remain unmodified;
+the exact topology/weight identity differs from a promise of parity with every
+other model export. Existing [numerical comparisons](PHRASE-EVALUATION.md#native-model-fidelity-checkpoint)
+are the starting evidence; maintained-path acceptance is recorded separately in
+[native inference](NATIVE-INFERENCE.md#qualification--2026-09-21).
+
+The TensorFlow 2.18.1 CPU archive is the Win64 C package linked by the
+[official C installation page](https://www.tensorflow.org/install/lang_c).
+Its SHA256 is `28acdcea6c6b34828cf0e95e67802b0f3577d51bc2e8915de811b7aa0b04452d`;
+the DLL SHA256 is `07687defc3f36ee93e372b692d37317b348369a80b3a36201a55d69d7d9edba8`.
+Preserve the archive's complete Apache-2.0 `LICENSE` and
+`THIRD_PARTY_TF_C_LICENSES`. The official page identifies 2.18 as the final
+Windows x86 C-package release: this is a frozen compatibility choice, not a
+claim of a continuing upstream binary upgrade stream.
+
+The [acquisition lock](../adapters/inference/assets.lock.json) binds every selected
+model file, runtime archive, loaded DLL and retained notice by byte count and
+SHA256. [Explicit acquisition](../tools/get-inference-assets.ps1) stages the complete
+verified assets under ignored `build/`, preserves an existing destination and
+supports verified local caches. It neither runs upstream Python/JavaScript nor
+installs the DLL globally. Current source packages do not bundle model/runtime
+assets or silently gain this optional adapter; accepted-workflow distribution
+remains owned by the existing delivery tasks.
+
+The maintenance cost includes the roughly 254-MB archive/954-MB DLL footprint,
+pinned ABI and graph/weight validation, Windows process resource accounting and
+future runtime availability. The current scalar cost makes this optional edge
+worth qualifying before attempting another full kernel implementation. That
+qualification now passes within the frozen limits. Its
+supported output is raw 360-bin salience and AC RMS, not the rejected note
+admission rule. Preserve uncertain training/annotation exposure; arithmetic
+agreement does not establish musical accuracy or independent evaluation.
+
 <a id="note-head-reference-model"></a>
 ## Optional note-head reference model
 

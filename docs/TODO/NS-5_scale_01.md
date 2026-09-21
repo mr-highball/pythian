@@ -12,6 +12,15 @@ Credit is earned only when every acceptance criterion and the task-flow completi
 
 Starting evidence: [WAV-STUDIES](../WAV-STUDIES.md) · [CORPUS-EVALUATION](../CORPUS-EVALUATION.md) · [ANALYSIS-WAVE](../ANALYSIS-WAVE.md).
 
+Execution planning must account for the selected observation adapter's complete
+source verification on every job, even when its processing scope is shorter
+than the input WAV. Include that cost across recordings and jobs; an accepted
+one-hour scope would not establish an arbitrary-length input or corpus budget.
+If conversion or segmentation is needed to meet the existing setup limits,
+include preparation/storage cost and retain original-source lineage and exact
+coordinate mappings. This is part of the existing whole-pipeline criteria below,
+not permission to skip identity checks or raise limits after measurement.
+
 **Acceptance Criteria:**
 
 - Declare representative source counts, unique hours, rates/channels, event/feature density and all stages from decoding through semantic learning before benchmark runs.
@@ -23,4 +32,4 @@ Starting evidence: [WAV-STUDIES](../WAV-STUDIES.md) · [CORPUS-EVALUATION](../CO
 **Blockers**
 
 - [NS-5_corpus_01.md](DONE/NS-5_corpus_01.md)
-- [NS-3_validation_02.md](NS-3_validation_02.md)
+- [NS-3_validation_02.md](DONE/NS-3_validation_02.md)

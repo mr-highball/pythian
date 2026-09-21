@@ -32,6 +32,12 @@ development examples do not assign the requested
 genres or calibrate their acceptance thresholds. See the
 [reference screen](../STYLE-CARDS.md#reference-screening-and-musical-controls--2026-09-21).
 
+The [candidate cards](../STYLE-CARDS.md#candidate-reference-cards) now bind one
+existing WAV excerpt per intended style to exact bytes, declared work/catalogue
+associations, acoustic observations and explicit missing musical fields. They
+preserve development exposure and unresolved edition/recording correspondence;
+no accepted genre label, independent group or calibrated threshold is inferred.
+
 **Acceptance Criteria:**
 
 - Ground each style card in reference WAV observations across context, groove, harmony, bass/voice relationships, sound/envelope and phrase/section structure; mark required, optional and unsupported traits explicitly.

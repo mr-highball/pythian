@@ -23,9 +23,9 @@ independent provider accuracy remain separate acceptance requirements.
 
 | Card | Reference assignment | Required dimensions | Present support |
 | --- | --- | --- | --- |
-| Chillwave | Pending verified recordings and documented traits | Context, groove, harmony, bass/voice relationships, evolving sound and structure | No grounded musical card yet |
-| Stoner rock | Pending verified recordings and documented traits | Context, groove, harmony, bass/voice relationships, evolving sound and structure | No grounded musical card yet |
-| Lofi | Pending verified recordings and documented traits | Context, groove, harmony, bass/voice relationships, evolving sound and structure | No grounded musical card yet |
+| Chillwave | C-early candidate; declared work has an artist chillwave tag | Context, groove, harmony, bass/voice relationships, evolving sound and structure | Bound acoustic observations; edition correspondence and musical annotations pending |
+| Stoner rock | A-early candidate; declared work has an artist stoner-rock tag | Context, groove, harmony, bass/voice relationships, evolving sound and structure | Bound acoustic observations; recording correspondence and musical annotations pending |
+| Lofi | B-middle candidate; declared work appears in a label-described lofi release | Context, groove, harmony, bass/voice relationships, evolving sound and structure | Bound acoustic observations; recording correspondence and musical annotations pending |
 
 For all three, vocals, a particular instrument and a particular key are optional
 unless their recordings establish a narrower declared support requirement.
@@ -33,6 +33,51 @@ Universal transcription, arbitrary instrument recognition and arbitrary voice
 counts are unsupported. Missing evidence for a required dimension is **pending**,
 not an excuse to relabel that dimension optional or unsupported. A source label
 is an operator selection, not evidence that a genre was learned.
+
+## Candidate reference cards
+
+These dated development selections connect the previously audited WAV bytes to
+specific evidence to review. They are **candidate assignments**, not accepted
+genre cards or changes to the frozen inventory's unassigned labels. The chapter
+audit binds a declaration to an excerpt; catalogue agreement supports the declared
+work association but does not authenticate the recording or its edition. All
+three candidates retain their original broad family and development exposure.
+
+| Candidate | Bound excerpt and local clock | Existing acoustic observations | Assignment evidence and remaining uncertainty |
+| --- | --- | --- | --- |
+| Stoner rock / A-early | WAV-A, source seconds [120,150); local frames [0,1440000) at 48000 Hz, stereo PCM16 | RMS 0.101975, peak 0.755249, zero endpoint samples | The declared work appears on an [artist page tagged stoner rock](https://liquify.bandcamp.com/track/forgotten-years). The declaration covers the excerpt without a chapter crossing; acoustic correspondence and musical traits still need review. |
+| Lofi / B-middle | WAV-B, source seconds [1937,1967); same local geometry | RMS 0.254321, peak 1.0, 99 endpoint samples | The declared work appears in the [label's track list](https://lofigirl.bandcamp.com/album/secret-lair-x-lofi-girl-beats-to-cast-to), and the [label describes the release as lofi](https://lofigirlshop.com/collections/pre-order/products/lofi-girl-x-secret-lair-special-vinyl-edition). This supports a candidate association, not an acoustic match. Endpoint hits prevent treating this as an unqualified clean sound reference. |
+| Chillwave / C-early | WAV-C, source seconds [120,150); same local geometry | RMS 0.358167, peak 1.0, 1709 endpoint samples | The declared work belongs to an [artist release tagged chillwave](https://submorphine.bandcamp.com/album/cyberdawn). Its catalogue duration differs from the declared chapter extent, so edition/cut correspondence remains unresolved. Endpoint hits also require sound-quality review. |
+
+Exact master SHA256 identities, already accepted by the original inventory and
+chapter audit, are:
+
+| Candidate | Master SHA256 |
+| --- | --- |
+| A-early | `3e2a00177cee2e37eb0ef7a964e0d1a6a06fbce6477ec78d8d1fb1c76d9504b6` |
+| B-middle | `0525e9612b9263604708d866233c19a1386a51b907339ce851c67dc1661db583` |
+| C-early | `0f947e15f6022d9512937a85174e6253dee58c18bd3763ce00552e2693306cdd` |
+
+For each candidate, the unfinished reference packet must contain the following
+observations on that exact local clock. Every annotation needs its method,
+annotator, uncertainty and source/preparation binding. Catalogue tags or scalar
+level measurements cannot fill any of these musical fields.
+
+| Required dimension | Reference observations to supply | Current state |
+| --- | --- | --- |
+| Context | Beat/downbeat positions, meter, tempo spans, tonal regions and ambiguous alternatives | Pending for all three |
+| Groove | Attributed attack/accent positions, bar grouping and signed timing offsets against the reference beat grid | Pending for all three |
+| Harmony | Timed chord or pitch-class sets, bass relationships and uncertain intervals | Pending for all three |
+| Bass/voice | Supported role notes, overlaps, register, rests and explicit unattributed material | Pending for all three |
+| Sound/envelope | Attributed stable/evolving note regions, gates/releases and source-quality exclusions | Aggregate levels measured; note-relative references pending |
+| Phrase/section structure | Phrase and section boundaries, repetitions and their relation to a longer recording | Pending; a 30-second cut cannot establish whole-song organization |
+
+B-early remains excluded from single-song candidate cards because it crosses a
+declared chapter boundary. B-middle avoids that declared crossing; it is not new
+or untouched evidence, and neither candidate creates a new independent group.
+Do not tune a comparator to make these candidates pass before the missing packet
+and numerical criteria are frozen. The existing evaluation/corpus tasks own this
+work; no additional task, completion credit or artifact format is introduced.
 
 ## Reference observations from the original master sections
 

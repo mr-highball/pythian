@@ -5,7 +5,7 @@
 
 ## North-star assessment
 
-**Updated 2026-09-21: approximately 61% engineering completion; no accepted
+**Updated 2026-09-21: approximately 63% engineering completion; no accepted
 genre style yet.** The destination is an independent Pascal synthesis library
 that learns useful musical behavior from many hours of WAV recordings, generates
 through independently controllable WFC passes, and saves styles that remain
@@ -17,8 +17,8 @@ weighted points**. The new [49-task catalog](TODO/README.md) allocates every
 remaining point to explicit acceptance criteria and prerequisites. Accepted
 corpus identity, consumer/native delivery, named
 voice passes/provider compatibility, granular controls, semantic persistence,
-duration/stream edits, repaired shared validation and selective semantic blends
-add **5.9 points**, bringing current completion to **61.4**.
+duration/stream edits, repaired shared validation, selective semantic blends and
+practical native observations add **7.15 points**, bringing current completion to **62.65**.
 Subsequent accepted tasks update their north-star and overall percentages individually.
 
 Infrastructure review on 2026-09-21 found that prediction ancestry was never
@@ -31,6 +31,10 @@ Selective semantic blend/reblend now passes all criteria on both checked native
 targets, adding **0.60 points: 60.8 + 0.6 = 61.4**. This accepts composition and
 reuse; listening and recorded-provider/genre acceptance remain separate.
 
+Practical native execution now passes its final continuous-hour qualification,
+adding **1.25 points: 61.4 + 1.25 = 62.65**. This accepts bounded raw observations;
+musical admission, genre quality and whole-corpus scale remain separate.
+
 ### Goal scorecard
 
 Completion is a coarse scope judgment, not measured test coverage, effort spent,
@@ -42,13 +46,13 @@ with detailed history in the linked evidence rather than active tasks.
 | --- | ---: | ---: | --- | --- | ---: |
 | <a id="ns-1"></a>**NS-1 — Independent Pascal foundation** | **100%** | 10 | Independent owned core; agreed WFC/Phanes extraction, Phanes removal and complete provenance. [Audit](REFERENCE-REMOVAL.md). | No open extraction work. Preserve independence and notices. Delivery is NS-6. | **0** |
 | <a id="fund-contracts"></a><a id="ns-2"></a>**NS-2 — Dependable synthesis fundamentals** | **80%** | 25 | Supported synthesis, samples, modulation, effects, buses, timing and streaming; reviewed contracts and numerical/replay evidence. [Capability map](FUNDAMENTALS.md#contract-review). | Accept the supported suite audibly and resolve demonstrated defects: **FUND-QUALITY**. | **5** |
-| <a id="wav-02"></a><a id="wav-03"></a><a id="ns-3"></a>**NS-3 — Trustworthy musical learning from WAV** | **32%** | 25 | Source-bound measurements, selected clocks, uncertainty/manual context, narrow pitch/duration learning and [shared scoring with repaired ancestry admission](EVALUATION-OPERATOR.md). [Phrase](PHRASE-EVALUATION.md) and [pulse](BEAT-TRACKING.md) evidence retain the accuracy gaps. | Independently validated context, notes, mixed parts, harmony, groove and evolving sound: **16 tasks across 10 WAV outcomes**. | **17.0** |
+| <a id="wav-02"></a><a id="wav-03"></a><a id="ns-3"></a>**NS-3 — Trustworthy musical learning from WAV** | **37%** | 25 | Source-bound measurements, selected clocks, uncertainty/manual context, narrow pitch/duration learning, [shared scoring with repaired ancestry admission](EVALUATION-OPERATOR.md) and [qualified native raw observations](NATIVE-INFERENCE.md). [Phrase](PHRASE-EVALUATION.md) and [pulse](BEAT-TRACKING.md) evidence retain the accuracy gaps. | Independently validated context, notes, mixed parts, harmony, groove and evolving sound: **15 tasks across 9 WAV outcomes**. | **15.75** |
 | <a id="wfc-preferences"></a><a id="ns-4"></a>**NS-4 — Granular WFC layers and reusable blends** | **96%** | 15 | Actual dependent passes, [granular musical/sound controls](INDEPENDENT-VOICES.md#granular-musical-and-sound-controls), typed replacement, [saved semantic graphs](SEMANTIC-STYLES.md), [selective blends/reblends with retained evidence](SEMANTIC-BLENDS.md) and [staged duration/committed-stream edits](DURATION-STREAMS.md). | Accepted recorded-provider audio integration: **WAV-04-INTEGRATION**. | **0.6** |
 | <a id="wav-04"></a><a id="ns-5"></a>**NS-5 — Many-hour styles that generate and blend usefully** | **27%** | 20 | Ingestion, journals, acoustic vocabulary and mechanical reuse; accepted two-recording identity pilot with derivative/exposure and inherited-palette audits. [Pilot](CORPUS-EVALUATION.md#verified-identity-pilot). | Representative genre corpora, practical scale, sustained structure and acceptance of all three styles and cross-style blends: **16 tasks / 6 corpus outcomes**. | **14.6** |
 | <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | **72%** | 5 | Accepted [consumer contract](CONSUMER-CONTRACT.md) and [clean native delivery checkpoint](NATIVE-CHECKPOINT.md): stable Win32/Win64 builds, four extracted consumers and successful Linux CI at frozen source. | Accepted-workflow delivery and independently reproduced use: **WAV-05-DELIVERY, DELIVERY-RELEASE**. | **1.4** |
-| **Total** | **≈61%** | **100** | **61.4 weighted points credited** | **39 open tasks / 20 active outcomes** | **38.6** |
+| **Total** | **≈63%** | **100** | **62.65 weighted points credited** | **38 open tasks / 19 active outcomes** | **37.35** |
 
-Arithmetic: `10×1.00 + 25×0.80 + 25×0.32 + 15×0.96 + 20×0.27 + 5×0.72 = 61.4`.
+Arithmetic: `10×1.00 + 25×0.80 + 25×0.37 + 15×0.96 + 20×0.27 + 5×0.72 = 62.65`.
 The decimal is bookkeeping, not measurement precision. NS-3 earns measurement
 accuracy; NS-4 earns composition/reuse; NS-5 earns corpus/style quality; NS-6
 earns delivery. Consuming an earlier result earns no duplicate provider credit.
@@ -64,8 +68,8 @@ earns delivery. Consuming an earlier result earns no duplicate provider credit.
 | Many hours produce a useful style | **Chillwave: unaccepted. Stoner rock: unaccepted. Lofi: unaccepted.** Duration, caller labels and source-fragment resemblance do not establish learning quality. | [NS-5](#ns-5) |
 | Another consumer can use the current result | The [accepted native checkpoint](NATIVE-CHECKPOINT.md) passes stable Win32/Win64 full builds, four extracted source packages and Linux CI at `0ecfe34`. Final accepted-workflow packages and an actual independent-use verdict remain open. | [NS-6](#ns-6) |
 
-**Musical learning and corpus quality account for 31.6 of the remaining 38.6
-points (about 82%).** Additional diagnostics and mechanical adapters have value
+**Musical learning and corpus quality account for 30.35 of the remaining 37.35
+points (about 81%).** Additional diagnostics and mechanical adapters have value
 only insofar as they resolve those outcomes; they do not close musical acceptance.
 
 ### Scope reconciliation
@@ -91,8 +95,8 @@ possible synthesis technique. Ecosystem adoption remains separately unmeasured.
 
 ## Active backlog
 
-**39 open task files own the remaining work across 20 active outcomes; 10 tasks are DONE.**
-The 22-outcome map below retains accepted WFC-LAYERS and WFC-STYLE anchors for evidence.
+**38 open task files own the remaining work across 19 active outcomes; 11 tasks are DONE.**
+The 22-outcome map below retains accepted WAV-VALIDATION, WFC-LAYERS and WFC-STYLE anchors for evidence.
 See the [task catalog](TODO/README.md) for credits and a prerequisite-first order,
 and [TASKFLOW.MD](TASKFLOW.MD) for the required template, gap handling, DONE moves
 and completion accounting. [Corpus identity](TODO/DONE/NS-5_corpus_01.md) is accepted.
@@ -113,6 +117,20 @@ controls. Complete genre reference annotations, assignments and calibrated
 numerical criteria are still missing. This
 supporting work does not close the style-card task or change completion.
 
+The [candidate reference cards](STYLE-CARDS.md#candidate-reference-cards) bind
+existing excerpts to declared work associations and missing musical fields;
+recording correspondence and complete genre annotations remain unresolved.
+The [practical inference task](TODO/DONE/NS-3_validation_02.md) is now accepted:
+controlled/recorded arithmetic, short rate/channel cases, five-minute resampling,
+bounded failure/cancellation and one continuous-hour workload pass. The hour
+produces 360,000 raw observations in 2,420,266 ms, with 20,313-ms setup and
+103,051,264 bytes peak worker private memory, under unchanged limits. This
+unblocks [whole-pipeline workload budgeting](TODO/NS-5_scale_01.md).
+This work does not adopt failed note policies or change the recorded accuracy
+baseline. The latest infrastructure review found no additional confirmed defect
+or missing task. Only this accepted task adds credit; reference preparation and
+the improving development key diagnostic remain uncredited.
+
 The tables below retain existing outcome anchors for topic links. They are
 navigation to the task files, not duplicate acceptance criteria. An outcome is
 closed only when all mapped tasks are accepted, including shared prerequisites.
@@ -121,7 +139,7 @@ A mapped task's credit is counted once even if it supports more than one outcome
 | Outcome | North star | Required task files |
 | --- | --- | --- |
 | <a id="fund-quality"></a>**FUND-QUALITY** | NS-2 | [NS-2_synthesis-quality_01](TODO/NS-2_synthesis-quality_01.md), [NS-2_synthesis-quality_02](TODO/NS-2_synthesis-quality_02.md), [NS-2_synthesis-quality_03](TODO/NS-2_synthesis-quality_03.md) |
-| <a id="wav-validation"></a>**WAV-VALIDATION** | NS-3 | [NS-3_validation_02](TODO/NS-3_validation_02.md); accepted prerequisite: [shared evaluation — DONE](TODO/DONE/NS-3_validation_01.md) |
+| <a id="wav-validation"></a>**WAV-VALIDATION — accepted** | NS-3 | No active task. [Practical native execution — DONE](TODO/DONE/NS-3_validation_02.md), [shared evaluation — DONE](TODO/DONE/NS-3_validation_01.md) |
 | <a id="wav-02-pulse"></a>**WAV-02-PULSE** | NS-3 | [NS-3_tempo_01](TODO/NS-3_tempo_01.md), [NS-3_tempo_02](TODO/NS-3_tempo_02.md), [NS-3_tempo_03](TODO/NS-3_tempo_03.md) |
 | <a id="wav-02-context"></a>**WAV-02-CONTEXT** | NS-3 | [NS-3_context_01](TODO/NS-3_context_01.md), [NS-3_context_02](TODO/NS-3_context_02.md) |
 | <a id="wav-03-register"></a>**WAV-03-REGISTER** | NS-3 | [NS-3_notes_01](TODO/NS-3_notes_01.md) |
@@ -152,7 +170,7 @@ the accepted baseline or claiming that planning itself advances completion.
 | --- | ---: | ---: | ---: | ---: | ---: |
 | NS-1 | 100% | 0 | 100% | 0 | 0 |
 | NS-2 | 80% | 0 | 80% | 20 | 3 |
-| NS-3 | 30% | 2 | 32% | 68 | 16 |
+| NS-3 | 30% | 7 | 37% | 63 | 15 |
 | NS-4 | 70% | 26 | 96% | 4 | 1 |
 | NS-5 | 25% | 2 | 27% | 73 | 16 |
 | NS-6 | 50% | 22 | 72% | 28 | 3 |
@@ -164,10 +182,10 @@ reopened tasks and new/split scope. Move an accepted task to DONE and update
 these totals, the scorecard and the task index in the same logical change.
 Evidence must support the actual task criteria; no partial or test-count credit.
 
-For example, accepted `NS-3_notes_01` moves NS-3 from 32% to 36% and overall
-completion from 61.4% to 62.4%, assuming no other changes. This makes bounded
+For example, accepted `NS-3_notes_01` moves NS-3 from 37% to 41% and overall
+completion from 62.65% to 63.65%, assuming no other changes. This makes bounded
 outcome progress visible without waiting for all WAV learning to finish.
-The remaining open task credits add **38.6 overall points**, reaching 100 only
+The remaining open task credits add **37.35 overall points**, reaching 100 only
 when the required work and final scope audit are accepted.
 
 ## Execution order and blocking links
@@ -198,16 +216,16 @@ the currently selected outcome to another convenient API task.
 
 The previous M1–M7 point split is superseded by the explicit task allocations.
 The north-star totals and original end state are unchanged. Use these larger
-outcome packages, each above the requested ten-point minimum. Following this
-batch, former package B has only 8.6 points left; combine it with A's 14.0 points
-into one 22.6-point outcome without changing task credits or total scope:
+outcome packages, each above the requested ten-point minimum. Keep former A and B
+combined: after native-execution acceptance, they have 21.35 points remaining.
+This grouping changes neither individual task credits nor the intended scope:
 
 | Package | Accepted result and included work | Conditional overall gain |
 | --- | --- | ---: |
-| **A+B — Dependable sound and recorded musical learning through reusable generation** | NS-2 audible quality (+5); remaining NS-3 validation, tempo, context and notes (+9), plus parts, harmony, groove and timbre (+8); remaining NS-4 recorded-provider audio integration (+0.6). | **+22.6 remaining** |
+| **A+B — Dependable sound and recorded musical learning through reusable generation** | NS-2 audible quality (+5); remaining NS-3 tempo, context and notes (+7.75), plus parts, harmony, groove and timbre (+8); remaining NS-4 recorded-provider audio integration (+0.6). | **+21.35 remaining** |
 | **C — Accepted many-hour styles and independent delivery** | Remaining NS-5 corpus, vocabulary, scale, continuity, structure and three-style/cross-style acceptance (+14.6); remaining NS-6 delivery and independent use (+1.4). Corpus identity, consumer contract and native checkpoint already earned +1.5. | **+16.0 remaining** |
 
-**61.4 current + 22.6 + 16.0 = 100.**
+**62.65 current + 21.35 + 16.0 = 100.**
 These are scope allocations, not time estimates or promises of success. Record
 task credit as each accepted task finishes; preparation from later packages can
 be useful sooner when the selected outcome requires it.

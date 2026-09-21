@@ -127,7 +127,7 @@ and timbre tasks. Their criteria must freeze before their independent evaluation
 the shared task does not need their final accuracy results to finish. This keeps
 its existing scope of shared scoring/admission semantics separate from the
 provider outcomes that depend on it. Native inference execution/cost is owned by
-[NS-3_validation_02](TODO/NS-3_validation_02.md).
+[NS-3_validation_02](TODO/DONE/NS-3_validation_02.md).
 
 ## Fixed next-experiment budgets
 
@@ -220,7 +220,7 @@ ablation-parity and resource audits passed QA; the independent audit's clamp
 precision correction changed no prediction or acceptance threshold.
 
 Production backend selection, native arithmetic fidelity and aggregate many-hour
-cost are owned by [native execution](TODO/NS-3_validation_02.md), not preaccepted
+cost are owned by [native execution](TODO/DONE/NS-3_validation_02.md), not preaccepted
 by these small studies. Experimental budgets are fixed stop conditions, not
 claims that existing or proposed code already meets them.
 

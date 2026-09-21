@@ -12,6 +12,15 @@ Credit is earned only when every acceptance criterion and the task-flow completi
 
 Starting evidence: [PACKAGING](../PACKAGING.md) · [packaging/README](../../packaging/README.md) · [PROVENANCE](../PROVENANCE.md).
 
+Integration constraint 2026-09-21: the optional observation path qualified
+in [native execution](DONE/NS-3_validation_02.md) initially targets Win64 and stays
+outside the existing source packages. Its eventual adoption into the accepted
+workflow must preserve the [full stable target contract](../CONSUMER-CONTRACT.md#compiler-target-and-dependency-scope).
+This task must include and exercise every required producer/adapter on each
+declared target, with explicit reproducible assets and notices. Win64-only
+qualification or private precomputed observations cannot stand in for the final
+cross-target workflow. This is existing delivery scope, not extra completion credit.
+
 **Acceptance Criteria:**
 
 - Package exact accepted core and companion source closures, full notices, supported examples and explicit external asset/model requirements; exclude ignored development recordings and stale formats.
