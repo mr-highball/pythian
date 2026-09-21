@@ -12,6 +12,16 @@ Credit is earned only when every acceptance criterion and the task-flow completi
 
 Starting evidence: [SEPARATION](../SEPARATION.md) · [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [CORPUS-EVALUATION](../CORPUS-EVALUATION.md).
 
+Current increment: [simultaneous role-set evaluation](../PART-EVALUATION.md)
+adds portable per-role pitch-set, leakage and crossing-endpoint measures plus
+the existing source-bound operator path. Final checked stable Win32/Win64 QA
+passes. The first external synthetic development preflight passes mechanical
+checks but fails fixed stored-stem summation qualification: peak 13 LSB with
+433 frames beyond the declared 11-LSB candidate bound. It remains diagnostic:
+verified stem/mix preparation, actual role
+annotations, interval timing, representative cases and frozen acceptance groups
+are still required before this task earns credit.
+
 **Acceptance Criteria:**
 
 - Acquire and bind usable WAV stems and corresponding mixes with verified recording identities, offsets, gains and role annotations; keep related stems/mixes in one split.
@@ -23,4 +33,3 @@ Starting evidence: [SEPARATION](../SEPARATION.md) · [PHRASE-EVALUATION](../PHRA
 **Blockers**
 
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
-

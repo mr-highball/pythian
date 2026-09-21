@@ -52,6 +52,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Shared evaluation compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.evaluation$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Shared evaluation checks failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.evaluation.parts.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Part-set evaluation compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.evaluation.parts$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Part-set evaluation checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.evaluation.style.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Style distribution compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.evaluation.style$executableSuffix")

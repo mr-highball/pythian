@@ -101,6 +101,16 @@ possible synthesis technique. Ecosystem adoption remains separately unmeasured.
 
 ## Active backlog
 
+The current [attributed-mixture prerequisite](TODO/NS-3_parts_01.md) is receiving
+a [simultaneous role-set scoring path](PART-EVALUATION.md) and one bound external
+synthetic development stem/mix bundle. Final checked Win32/Win64 scorer QA passes;
+the external bundle fails fixed summation qualification (13-LSB peak, 433 frames
+beyond the 11-LSB candidate bound). This supports
+the NS-5 layered-style prerequisite without adopting the rejected monophonic
+or key experiments. Role labels, acoustic timing, verified mixture preparation
+and representative frozen evaluation groups remain open; there is no task
+closure or change to the **62.65%** accounting from this increment.
+
 **38 open task files own the remaining work across 19 active outcomes; 11 tasks are DONE.**
 The 22-outcome map below retains accepted WAV-VALIDATION, WFC-LAYERS and WFC-STYLE anchors for evidence.
 See the [task catalog](TODO/README.md) for credits and a prerequisite-first order,

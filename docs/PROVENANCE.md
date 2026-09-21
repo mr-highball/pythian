@@ -39,6 +39,32 @@ The dataset is CC BY 4.0; its complete license and README are retained with the
 ignored acquisition. Source WAVs are unchanged; listening variants add Pythian
 pulse markers. No source media or external implementation is bundled in the library.
 
+## Attributed mixture development source
+
+The [part-evaluation task](TODO/NS-3_parts_01.md) uses one synthetic development
+group from [BabySlakh, record 4603870](https://zenodo.org/records/4603870), by Ethan
+Manilow, Gordon Wichern, Prem Seetharaman and Jonathan Le Roux, associated with
+*Cutting Music Source Separation Some Slakh* (WASPAA 2019). The source is
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); full legal text,
+publisher metadata and exact file identities are retained under ignored
+`build/role-reference/`. No source media, external utility code or new dependency
+is bundled in the library.
+
+The 882818115-byte publisher archive matches MD5
+`311096dc2bde7d61c97e930edbfc7f78` and SHA256
+`6490dc83d8b59ccbe7e9e0304023af8e585d2065f9a5f5921952a273fac4a9b0`.
+Only Track00001 is extracted: its mix, ten stored WAV/MIDI pairs and source
+metadata remain unchanged. The native preflight inspects their stored samples
+without gain fitting or time shifts. All derivatives belong to one development
+family; archive possession does not establish exposure to other track payloads.
+
+The retained [publisher utility description](https://github.com/ethman/slakh-utils)
+distinguishes rendered per-stem MIDI from original score MIDI and warns of
+duplicate source families. Its instrument descriptions do not establish musical
+roles. This selected metadata marks the present audio/MIDI pairs unsaved, a
+contradiction retained in the binding rather than silently corrected. Acoustic
+timing, preparation details and independently annotated roles still need evidence.
+
 <a id="mapped-register-reference-bank"></a>
 ## Mapped register reference bank
 

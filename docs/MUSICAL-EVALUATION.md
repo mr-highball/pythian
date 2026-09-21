@@ -17,6 +17,11 @@ metric now combines exact label coverage/precision with the existing interval
 scorer and the unchanged onset/full-note gates, checking that intervals and
 observation cells describe the same inferred notes.
 
+The [simultaneous role-set scorer](PART-EVALUATION.md) extends this path to
+chordal parts, uncertain ownership, per-role leakage and explicitly annotated
+crossing endpoints. Its file-bound metric remains diagnostic while attributed
+mixture preparation and event-timing acceptance are completed.
+
 ## Evidence and clocks
 
 `TEvaluationBinding` identifies source bytes, preparation, reference annotations,

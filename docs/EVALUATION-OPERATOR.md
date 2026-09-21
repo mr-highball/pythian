@@ -84,6 +84,7 @@ verify the annotator's truthfulness. The ancestry checks still apply.
 | `tempo` | `annotated-recording` | `scalar` | `microseconds-per-quarter` |
 | `key` | `tonal-region` | `label` | `key-root-mode` |
 | `part-ownership` | `attributed-part` | `label` | `part-note-identity` |
+| `part-note-sets` | `attributed-parts` | `part-note-sets` | `role-MIDI-sets` |
 | `harmony` | `harmonic-region` | `label` | `chord-identity` |
 | `harmony-changes` | `harmonic-region` | `events` | `source-frame` |
 | `groove-events` | `attributed-part` | `events` | `source-frame` |
@@ -107,6 +108,9 @@ and complete event coverage explicitly. Labels compare exact vocabulary indices;
 the operator does not silently fold octaves, modes, roles or chord qualities.
 Role comparisons need separate declared scopes and complete per-role reporting;
 pooling a dominant part cannot substitute for missing-role acceptance.
+The [part-note-sets comparison](PART-EVALUATION.md) represents all declared roles
+and simultaneous pitches in one common grid. It accepts diagnostic purpose only;
+endpoint agreement does not replace note timing or mixture-provider acceptance.
 
 `purpose` is `primary` or `diagnostic`. Beat comparisons preserve the existing
 30-ms primary and 70-ms diagnostic tolerances, converted using the shared nearest
@@ -143,13 +147,15 @@ it from coverage. Shared scoring preserves rest errors and uncertainty counts.
 
 ## Scoring policy and verdicts
 
-The scoring policy has `metric` (`events`, `label`, `scalar`, `notes`), `unit`, `vocabulary`,
+The scoring policy has `metric` (`events`, `label`, `scalar`, `notes`,
+`part-note-sets`), `unit`, `vocabulary`,
 `tolerance_frames`, `scalar_tolerance`, `minimum_coverage`, `minimum_precision`,
 `minimum_f1`, `minimum_reference_coverage`.
 
 - `unit` declares the comparison's physical unit or musical meaning. A label
-  vocabulary is a nonempty array of distinct nonblank strings; other metrics
-  use an empty array. Category identity is exact, with no implicit equivalences.
+  vocabulary is a nonempty array of distinct nonblank strings; notes use the
+  complete MIDI vocabulary and part sets use stable role IDs. Scalar/event
+  metrics use an empty array. Category identity is exact, with no implicit equivalences.
 - Events use integer frame tolerance and the shared one-to-one event matching.
   Coverage is recall. Label/scalar metrics set event tolerance and minimum F1 to zero.
   Scalar tolerance is nonnegative and must be zero for nonscalar metrics.

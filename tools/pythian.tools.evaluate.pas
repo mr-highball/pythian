@@ -38,7 +38,7 @@ implementation
 uses
   Classes, SysUtils, Math, fpjson, jsonparser, jsonscanner,
   pythian.audio, pythian.hash, pythian.wave.read, pythian.evaluation,
-  pythian.pitch.evaluate,
+  pythian.pitch.evaluate, pythian.evaluation.parts,
   pythian.tools.files;
 
 const
@@ -738,6 +738,13 @@ begin
     LMetric := 'label';
     LUnit := 'key-root-mode';
   end
+  else if LOutput = 'part-note-sets' then
+  begin
+    LInput := 'attributed-parts';
+    LMetric := 'part-note-sets';
+    LUnit := 'role-MIDI-sets';
+    Require(not Result, 'Part-set centers are diagnostic; note timing acceptance remains separate');
+  end
   else if LOutput = 'part-ownership' then
   begin
     LInput := 'attributed-part';
@@ -963,6 +970,194 @@ begin
   end;
 end;
 
+function PartPitches(const AArray: TJSONArray): TPartPitchSet;
+var
+  LNote: Int64;
+  I: Integer;
+begin
+  Require(AArray.Count <= 128, 'Part pitch set exceeds MIDI range');
+  Result := nil;
+  SetLength(Result, AArray.Count);
+  for I := 0 to AArray.Count - 1 do
+  begin
+    LNote := IntValue(AArray.Items[I]);
+    Require((LNote >= 0) and (LNote <= 127), 'Part pitch outside MIDI range');
+    Result[I] := LNote;
+  end;
+end;
+
+function PartCells(const AArray: TJSONArray; const ARoles: Integer): TPartEvaluationCells;
+var
+  LRow: TJSONObject;
+  LPart: TJSONObject;
+  LParts: TJSONArray;
+  LState: String;
+  I: Integer;
+  J: Integer;
+begin
+  Require((AArray.Count <= MaximumPartEvaluationCells) and
+    (Int64(AArray.Count) * ARoles <= MaximumEvaluationItems), 'Part center budget exceeded');
+  Result := nil;
+  SetLength(Result, AArray.Count);
+  for I := 0 to AArray.Count - 1 do
+  begin
+    LRow := ObjectAt(AArray, I);
+    Fields(LRow, 'frame,parts,unassigned_notes');
+    Result[I].Frame := IntField(LRow, 'frame');
+    Result[I].UnassignedNotes := PartPitches(TJSONArray(Item(LRow, 'unassigned_notes', jtArray)));
+    LParts := TJSONArray(Item(LRow, 'parts', jtArray));
+    Require(LParts.Count = ARoles, 'Every center requires every declared role');
+    SetLength(Result[I].Parts, ARoles);
+    for J := 0 to ARoles - 1 do
+    begin
+      LPart := ObjectAt(LParts, J);
+      Fields(LPart, 'state,notes');
+      LState := TextField(LPart, 'state');
+      if LState = 'value' then
+      begin
+        Result[I].Parts[J].State := esValue;
+      end
+      else if LState = 'rest' then
+      begin
+        Result[I].Parts[J].State := esRest;
+      end
+      else if LState = 'unknown' then
+      begin
+        Result[I].Parts[J].State := esUnknown;
+      end
+      else if LState = 'ambiguous' then
+      begin
+        Result[I].Parts[J].State := esAmbiguous;
+      end
+      else
+      begin
+        Require(LState = 'unsupported', 'Unknown part state');
+        Result[I].Parts[J].State := esUnsupported;
+      end;
+      Result[I].Parts[J].Notes := PartPitches(TJSONArray(Item(LPart, 'notes', jtArray)));
+    end;
+  end;
+end;
+
+function PartCrossings(const AArray: TJSONArray; const ARoles: Integer): TPartCrossings;
+var
+  LRow: TJSONObject;
+  LFirst: Int64;
+  LSecond: Int64;
+  I: Integer;
+begin
+  Require(AArray.Count <= MaximumPartCrossings, 'Part crossing budget exceeded');
+  Result := nil;
+  SetLength(Result, AArray.Count);
+  for I := 0 to AArray.Count - 1 do
+  begin
+    LRow := ObjectAt(AArray, I);
+    Fields(LRow, 'first_role,second_role,before_frame,after_frame');
+    LFirst := IntField(LRow, 'first_role');
+    LSecond := IntField(LRow, 'second_role');
+    Require((LFirst >= 0) and (LFirst < ARoles) and (LSecond >= 0) and
+      (LSecond < ARoles), 'Crossing role outside vocabulary');
+    Result[I].FirstRole := LFirst;
+    Result[I].SecondRole := LSecond;
+    Result[I].BeforeFrame := IntField(LRow, 'before_frame');
+    Result[I].AfterFrame := IntField(LRow, 'after_frame');
+  end;
+end;
+
+function PartStates(const ACounts: TPartStateCounts): TJSONObject;
+begin
+  Result := TJSONObject.Create;
+  Result.Add('value', ACounts[esValue]);
+  Result.Add('rest', ACounts[esRest]);
+  Result.Add('unknown', ACounts[esUnknown]);
+  Result.Add('ambiguous', ACounts[esAmbiguous]);
+  Result.Add('unsupported', ACounts[esUnsupported]);
+end;
+
+procedure ScoreParts(const AReference, APrediction: TJSONObject;
+  const AVocabulary: TJSONArray; const ABinding: TEvaluationBinding;
+  const AMinimumCoverage, AMinimumPrecision, AMinimumReference: Double;
+  const AReport: TJSONObject; out APass: Boolean);
+var
+  LIds: TPartRoleIds;
+  LScore: TPartEvaluation;
+  LRoles: TJSONArray;
+  LMatrix: TJSONArray;
+  LRow: TJSONArray;
+  LRole: TJSONObject;
+  LPass: Boolean;
+  I: Integer;
+  J: Integer;
+begin
+  Require((AVocabulary.Count > 0) and (AVocabulary.Count <= MaximumPartRoles),
+    'Part evaluation needs 1..32 stable role IDs');
+  SetLength(LIds, AVocabulary.Count);
+  for I := 0 to High(LIds) do
+  begin
+    LIds[I] := AVocabulary.Strings[I];
+  end;
+  LScore := EvaluatePartCells(LIds,
+    PartCells(TJSONArray(Item(AReference, 'observations', jtArray)), Length(LIds)),
+    PartCells(TJSONArray(Item(APrediction, 'observations', jtArray)), Length(LIds)),
+    PartCrossings(TJSONArray(Item(AReference, 'crossings', jtArray)), Length(LIds)),
+    ABinding.FirstFrame, ABinding.EndFrame);
+  AReport.Add('cell_count', LScore.CellCount);
+  AReport.Add('count_unit', 'pitch-center-pair');
+  AReport.Add('crossing_scope', 'declared-endpoints-only');
+  AReport.Add('reference_unassigned_notes', LScore.ReferenceUnassignedNotes);
+  AReport.Add('prediction_unassigned_notes', LScore.PredictionUnassignedNotes);
+  AReport.Add('unassigned_pitch_matches', LScore.UnassignedPitchMatches);
+  AReport.Add('unassigned_extra_pitches', LScore.UnassignedExtraPitches);
+  AReport.Add('unassigned_unscorable', LScore.UnassignedUnscorable);
+  AReport.Add('crossing_spans', LScore.CrossingSpans);
+  AReport.Add('crossing_endpoints_correct', LScore.CrossingEndpointsCorrect);
+  AReport.Add('crossing_endpoints_wrong', LScore.CrossingEndpointsWrong);
+  AReport.Add('crossing_endpoints_unavailable', LScore.CrossingEndpointsUnavailable);
+  APass := (LScore.ReferenceUnassignedNotes = 0) and
+    (LScore.UnassignedExtraPitches = 0) and (LScore.UnassignedUnscorable = 0) and
+    (LScore.CrossingEndpointsWrong = 0) and (LScore.CrossingEndpointsUnavailable = 0);
+  LRoles := TJSONArray.Create;
+  AReport.Add('roles', LRoles);
+  LMatrix := TJSONArray.Create;
+  AReport.Add('leakage_reference_to_prediction', LMatrix);
+  for I := 0 to High(LIds) do
+  begin
+    LRole := TJSONObject.Create;
+    LRoles.Add(LRole);
+    LRole.Add('role_id', LIds[I]);
+    LRole.Add('reference_states', PartStates(LScore.Roles[I].ReferenceStates));
+    LRole.Add('prediction_states', PartStates(LScore.Roles[I].PredictionStates));
+    LRole.Add('reference_notes', LScore.Roles[I].ReferenceNotes);
+    LRole.Add('predicted_scorable_notes', LScore.Roles[I].PredictedScorableNotes);
+    LRole.Add('correct_notes', LScore.Roles[I].CorrectNotes);
+    LRole.Add('missed_notes', LScore.Roles[I].MissedNotes);
+    LRole.Add('extra_notes', LScore.Roles[I].ExtraNotes);
+    LRole.Add('false_notes_in_rest', LScore.Roles[I].FalseNotesInRest);
+    LRole.Add('admitted_unscorable', LScore.Roles[I].AdmittedUnscorable);
+    LRole.Add('unique_owner_matches', LScore.Roles[I].UniqueOwnerMatches);
+    LRole.Add('uncertain_owner_matches', LScore.Roles[I].UncertainOwnerMatches);
+    LRole.Add('wrong_owner_notes', LScore.Roles[I].WrongOwnerNotes);
+    LRole.Add('ambiguous_wrong_owner_notes', LScore.Roles[I].AmbiguousWrongOwnerNotes);
+    LRole.Add('unresolved_extra_notes', LScore.Roles[I].UnresolvedExtraNotes);
+    LRole.Add('novel_pitch_notes', LScore.Roles[I].NovelPitchNotes);
+    LRole.Add('coverage', LScore.Roles[I].Coverage);
+    LRole.Add('precision', LScore.Roles[I].Precision);
+    LRole.Add('reference_coverage', LScore.Roles[I].ReferenceCoverage);
+    LPass := (LScore.Roles[I].ReferenceNotes > 0) and
+      (LScore.Roles[I].Coverage >= AMinimumCoverage) and
+      (LScore.Roles[I].Precision >= AMinimumPrecision) and
+      (LScore.Roles[I].ReferenceCoverage >= AMinimumReference);
+    LRole.Add('passes_declared_gates', LPass);
+    APass := APass and LPass;
+    LRow := TJSONArray.Create;
+    LMatrix.Add(LRow);
+    for J := 0 to High(LIds) do
+    begin
+      LRow.Add(LScore.Leakage[I][J]);
+    end;
+  end;
+end;
+
 function Score(const AReference, APrediction, APolicy: TJSONObject;
   const ABinding: TEvaluationBinding; out APass: Boolean): TJSONObject;
 var
@@ -992,7 +1187,7 @@ begin
     'minimum_coverage,minimum_precision,minimum_f1,minimum_reference_coverage');
   LMetric := TextField(APolicy, 'metric');
   Require((LMetric = 'label') or (LMetric = 'scalar') or (LMetric = 'events') or
-    (LMetric = 'notes'),
+    (LMetric = 'notes') or (LMetric = 'part-note-sets'),
     'Unsupported evaluation metric');
   Require(Trim(TextField(APolicy, 'unit')) <> '', 'Evaluation policy needs a unit/meaning');
   LMinimumCoverage := Ratio(APolicy, 'minimum_coverage');
@@ -1021,7 +1216,8 @@ begin
   finally
     LLabels.Free;
   end;
-  Require((((LMetric = 'label') or (LMetric = 'notes')) and (LVocabulary.Count > 0)) or
+  Require((((LMetric = 'label') or (LMetric = 'notes') or (LMetric = 'part-note-sets')) and
+    (LVocabulary.Count > 0)) or
     (((LMetric = 'scalar') or (LMetric = 'events')) and (LVocabulary.Count = 0)),
     'Metric/vocabulary mismatch');
   Require((LMetric = 'events') or (LMetric = 'notes') or
@@ -1029,7 +1225,15 @@ begin
     'Non-event policy has event thresholds');
   Require((LMetric = 'scalar') or (LScalarTolerance = 0),
     'Non-scalar policy has scalar tolerance');
-  if LMetric = 'notes' then
+  if LMetric = 'part-note-sets' then
+  begin
+    Require((LMinimumCoverage >= MinimumPhraseCoverage) and
+      (LMinimumPrecision >= MinimumPhrasePrecision) and (LMinimumReference = 1),
+      'Part-set diagnostic gates require positive per-role evidence and complete references');
+    Fields(AReference, 'format,clock,annotation_policy_sha256,observations,crossings');
+    Fields(APrediction, 'format,clock,estimator_sha256,observations');
+  end
+  else if LMetric = 'notes' then
   begin
     Require((LMinimumCoverage >= MinimumPhraseCoverage) and
       (LMinimumPrecision >= MinimumPhrasePrecision) and
@@ -1057,7 +1261,12 @@ begin
   CheckClock(APrediction, ABinding, False);
   Result := TJSONObject.Create;
   try
-    if LMetric = 'events' then
+    if LMetric = 'part-note-sets' then
+    begin
+      ScoreParts(AReference, APrediction, LVocabulary, ABinding,
+        LMinimumCoverage, LMinimumPrecision, LMinimumReference, Result, APass);
+    end
+    else if LMetric = 'events' then
     begin
       LEvents := EvaluateEvents(Events(TJSONArray(Item(AReference, 'observations', jtArray))),
         Events(TJSONArray(Item(APrediction, 'observations', jtArray))),

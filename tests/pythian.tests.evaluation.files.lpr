@@ -894,6 +894,155 @@ begin
   end;
 end;
 
+procedure CheckPartCases(const ADirectory: String);
+const
+  CCells = '[{"frame":100,"parts":[{"state":"value","notes":[60]},' +
+    '{"state":"value","notes":[67]},{"state":"value","notes":[48,52,55]}],' +
+    '"unassigned_notes":[]},{"frame":200,"parts":[{"state":"value","notes":[69]},' +
+    '{"state":"value","notes":[64]},{"state":"value","notes":[48,52,55]}],' +
+    '"unassigned_notes":[]}]';
+var
+  LCase: TJSONObject;
+  LAnnotation: TJSONObject;
+  LPolicy: TJSONObject;
+  LReference: TJSONObject;
+  LPrediction: TJSONObject;
+  LReport: TJSONObject;
+  LScore: TJSONObject;
+  LPart: TJSONObject;
+  LRejected: Boolean;
+  LBefore: String;
+  I: Integer;
+begin
+  for I := 0 to 9 do
+  begin
+    LCase := Fixture(ADirectory, 'label');
+    LAnnotation := ReadDocument(ADirectory + 'annotation.txt');
+    LPolicy := ReadDocument(ADirectory + 'policy.json');
+    LReference := ReadDocument(ADirectory + 'reference.json');
+    LPrediction := ReadDocument(ADirectory + 'prediction.json');
+    try
+      LAnnotation.Strings['output'] := 'part-note-sets';
+      LAnnotation.Strings['input_class'] := 'attributed-parts';
+      LAnnotation.Strings['purpose'] := 'diagnostic';
+      LPolicy.Strings['metric'] := 'part-note-sets';
+      LPolicy.Strings['unit'] := 'role-MIDI-sets';
+      LPolicy.Delete('vocabulary');
+      LPolicy.Add('vocabulary', GetJSON('["voice-a","voice-b","chordal"]'));
+      LReference.Delete('observations');
+      LReference.Add('observations', GetJSON(CCells));
+      LReference.Add('crossings', GetJSON('[{"first_role":0,"second_role":1,' +
+        '"before_frame":100,"after_frame":200}]'));
+      LPrediction.Delete('observations');
+      LPrediction.Add('observations', GetJSON(CCells));
+      case I of
+        1:
+          begin
+            LPrediction.Arrays['observations'].Objects[1].Arrays['parts'].Objects[0].Arrays['notes'].Integers[0] := 64;
+            LPrediction.Arrays['observations'].Objects[1].Arrays['parts'].Objects[1].Arrays['notes'].Integers[0] := 69;
+          end;
+        2:
+          begin
+            LPart := LPrediction.Arrays['observations'].Objects[1].Arrays['parts'].Objects[0];
+            LPart.Strings['state'] := 'unknown';
+            LPart.Arrays['notes'].Clear;
+            LPrediction.Arrays['observations'].Objects[1].Arrays['unassigned_notes'].Add(69);
+          end;
+        3:
+          begin
+            LPrediction.Arrays['observations'].Objects[0].Arrays['parts'].Objects[0].Arrays['notes'].Add(60);
+          end;
+        4:
+          begin
+            LAnnotation.Strings['purpose'] := 'primary';
+          end;
+        5:
+          begin
+            LPrediction.Arrays['observations'].Objects[1].Int64s['frame'] := 201;
+          end;
+        6:
+          begin
+            LPrediction.Arrays['observations'].Objects[1].Arrays['parts'].Delete(2);
+          end;
+        7:
+          begin
+            LReference.Arrays['crossings'].Add(LReference.Arrays['crossings'].Items[0].Clone);
+          end;
+        8:
+          begin
+            LPrediction.Arrays['observations'].Objects[0].Arrays['parts'].Objects[0].Arrays['notes'].Int64s[0] := High(Int64);
+          end;
+        9:
+          begin
+            LPart := LReference.Arrays['observations'].Objects[0].Arrays['parts'].Objects[2];
+            LPart.Strings['state'] := 'ambiguous';
+            LPart.Arrays['notes'].Clear;
+          end;
+      end;
+      PublishComparison(ADirectory, LCase, LAnnotation, LPolicy, LReference, LPrediction);
+      if I in [0, 1, 2, 9] then
+      begin
+        LBefore := EvaluateCaseFile(ADirectory + 'case.json');
+        Check(LBefore = EvaluateCaseFile(ADirectory + 'case.json'), 'Part report replay differs');
+        LReport := TJSONObject(GetJSON(LBefore));
+        try
+          LScore := LReport.Objects['scores'];
+          Check(not LReport.Booleans['independent_case_pass'],
+            'Diagnostic part centers promoted to independent role/timing acceptance');
+          Check(LReport.Booleans['metrics_pass'] = (I = 0), 'Part per-role verdict differs');
+          if I = 0 then
+          begin
+            Check((LScore.Arrays['roles'].Objects[2].Integers['correct_notes'] = 6) and
+              (LScore.Integers['crossing_endpoints_correct'] = 1), 'Chord/crossing count differs');
+          end
+          else if I = 1 then
+          begin
+            Check((LScore.Integers['crossing_endpoints_wrong'] = 1) and
+              (LScore.Arrays['roles'].Objects[0].Integers['wrong_owner_notes'] = 1),
+              'Crossing identity swap not detected');
+          end
+          else if I = 2 then
+          begin
+            Check((LScore.Integers['unassigned_pitch_matches'] = 1) and
+              (LScore.Arrays['roles'].Objects[0].Integers['missed_notes'] = 1) and
+              (LScore.Integers['crossing_endpoints_unavailable'] = 1),
+              'Unassigned pitch received role credit');
+          end
+          else
+          begin
+            Check((LScore.Arrays['roles'].Objects[2].Integers['admitted_unscorable'] = 3) and
+              (LScore.Arrays['roles'].Objects[2].Floats['reference_coverage'] = 0.5),
+              'Incomplete part reference hidden');
+          end;
+          Save(ADirectory, 'parts-report-' + IntToStr(I) + '.json', LReport.FormatJSON);
+        finally
+          LReport.Free;
+        end;
+      end
+      else
+      begin
+        LRejected := False;
+        try
+          EvaluateCaseFile(ADirectory + 'case.json');
+        except
+          on LException: EAudio do
+          begin
+            LRejected := True;
+          end;
+        end;
+        Check(LRejected, 'Invalid part reference/prediction accepted: ' + IntToStr(I));
+      end;
+    finally
+      LPrediction.Free;
+      LReference.Free;
+      LPolicy.Free;
+      LAnnotation.Free;
+      LCase.Free;
+    end;
+  end;
+  WriteLn('PASS file-bound simultaneous role sets, crossing endpoints and uncertainty');
+end;
+
 procedure CheckAnnotationFailures(const ADirectory: String);
 var
   LCase: TJSONObject;
@@ -990,6 +1139,7 @@ begin
   CheckPhraseCases(ADirectory);
   CheckAncestryCases(ADirectory);
   CheckProviderCases(ADirectory);
+  CheckPartCases(ADirectory);
   CheckAnnotationFailures(ADirectory);
   for I := 0 to 3 do
   begin

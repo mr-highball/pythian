@@ -41,7 +41,52 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current handoff — contour and harmonic feasibility rejected — 2026-09-21
+## Current handoff — simultaneous role-set evaluation — 2026-09-21
+
+The preceding diagnostic batch is published at `980bd27`; its
+[native CI passes](https://github.com/mr-highball/pythian/actions/runs/35613255915).
+That goal turn made progress by rejecting two measured representations; neither
+became an admitted musical provider. The current increment follows the ready
+[attributed-mixture prerequisite](TODO/NS-3_parts_01.md) of NS-5 layered styles.
+
+The new portable [role-set scorer](PART-EVALUATION.md) measures simultaneous
+notes, uncertainty, per-role coverage/precision, ownership leakage and explicitly
+annotated crossing endpoints. The existing file operator binds those diagnostics
+to actual source/document bytes and exposure ancestry. It rejects a primary
+acceptance claim; timing and physical ownership require further evidence. Final
+checked stable Win32/Win64 core and complete file fixtures pass with zero leaks;
+both operator builds pass. Existing phrase and prediction-ancestry controls
+remain covered. An initial QA command omitted the required output directory;
+its usage failure is preserved separately and the corrected invocation passes.
+This was orchestration error, not an implementation failure.
+
+The selected external synthetic development group has ten stored stem/MIDI
+pairs and a mix. Its publisher archive checksum is verified and only that group's
+payload was extracted. Metadata falsely marks all present pairs as unsaved;
+the binding retains this contradiction, absent source entry and unknown musical
+roles. Native preflight verifies mono 16-kHz PCM16 geometry over all 3864916
+frames and raw MIDI counters, but fixed unity-gain/zero-offset summation fails
+preparation qualification: peak 13 LSB, RMS 5.7881281944898015 LSB and 433 frames
+above the declared 11-LSB candidate bound. No gain/offset fit or acoustic timing
+claim follows. Controls, full traversal and wrong-hash/existing-output rejection
+pass with zero leaks, within 180 seconds/256 MiB. The valid pass takes 4257 ms
+with 3874816 bytes sampled private memory. Assets and complete notices stay in
+`build/role-reference/`; report SHA256 is
+`bd47eb1bc7c647939ab5e5410d310cfa62f08e79edd2caac41a22ab66fea0e90`.
+Commands, source review, hashes and per-target results remain in
+`build/qa-batch-14/report.txt`. No runtime handle remains live.
+
+No task closes or credit changes: **62.65%, 38 open / 11 DONE**. Note/context
+research remains open, with rejected families stopped. This implementation does
+not establish learned mixture roles or genre-level generation. Next complete
+per-role interval timing, representative controlled mixture coverage and external
+preparation/role evidence under the same task. Helper blocking failures remain
+zero for this assignment; historical counters are unchanged. Final documentation,
+source-identity, link, task-accounting, privacy and publication-scope checks pass.
+This validated increment is ready for normal publication; its exact revision is
+reported separately. The dedicated review cycle is inactive.
+
+## Previous checkpoint — contour and harmonic feasibility rejected — 2026-09-21
 
 The preceding six-document batch is published at `477196c`; its
 [native CI passes](https://github.com/mr-highball/pythian/actions/runs/35611388607).
