@@ -9,6 +9,11 @@ at the same center. Role identity comes from the caller's annotation contract;
 frequency order, stereo channel, instrument program and stem filename do not
 establish musical role. The portable scorer does no inference or source I/O.
 
+The companion [overlapping-note interval API](OVERLAPPING-NOTES.md) now supplies
+separate onset/full-note assignments for chordal roles and repeated pitches;
+final checked Win32/Win64 validation passes. It does not change the diagnostic-only file
+metric below.
+
 This is a component of the open attributed-mixture task. Center agreement does
 not establish event timing, continuous identity through a crossing, acoustic
 source separation or an accepted mixture learner. Those criteria remain open.
@@ -149,8 +154,55 @@ Binding SHA256 is
 `060e2bd37e99f62be5c71166d104eee63ed2507d71276ff71ab358aaff4ca222`;
 the complete source/commands and preservation checks remain in the QA directory.
 
-Next complete per-role interval timing and representative controlled stem/mix
-cases with declared roles, crossings, masking and uncertainty. For this external
-bundle, establish preparation from independent evidence before treating its
-stored mix as a verified reference. These are existing task criteria; the task
-remains open and this partial increment earns no completion credit.
+The subsequent controlled packet below supplies per-role interval timing and
+authored mixture cases. For this external bundle, establish preparation from
+independent evidence before treating its stored mix as a verified reference.
+A bounded inspection of the [pinned publisher utility](https://github.com/ethman/slakh-utils/blob/3f62d6a4b0e5952237dd5178ac3513e42161ec0a/resampling/resample.py)
+shows independent mix/stem resampling, but the inspected record does not bind
+that utility or its numerical environment to these archive bytes. This is not
+a demonstrated cause of the residual or permission to widen its bound. A future
+explicitly derived mix could have its own verified construction; it must retain
+separate identity and must not be called the original mixture. These are existing
+task criteria, not a new allocation. The task remains open without partial credit.
+
+<a id="authored-stem-mix-controls--2026-09-21"></a>
+### Authored stem/mix controls — 2026-09-21
+
+The native packet in `build/role-controls/` defines 21 events across bass, chordal,
+lead and other roles before rendering a twelve-second mono 16-kHz source. Each
+stem is quantized first; the mix sums those stored integer samples at unity gain
+and zero offset without clipping. Reopening all four stems and the mix verifies
+all 192000 frames exactly, with no samples outside declared note gates. Five-ms
+attack/release transitions lie inside those gates; quantization and waveform zeros
+mean nonzero sample support can be shorter than nominal note extent.
+
+Six frame-set controls pass their independently specified counts: exact known
+truth, a missing chord member, a role swap through the declared crossing, a
+hallucinated note in rest, abstention on a quiet lead and assignment within an
+uncertain reference region. The 1200-center grid includes 100 uncertain centers.
+The measured quiet-lead energy is 0.010634436272084713 and simultaneous chordal
+energy 79.570625537075102 in the frozen window. This establishes the intended
+energy contrast; it is not a listening judgment or inferred source attribution.
+
+Seven per-role [timing reports](OVERLAPPING-NOTES.md#validation-status) additionally
+exercise exact identities, reordered same-pitch overlaps, a damaged note offset
+and explicit reference uncertainty. Frame sets intentionally collapse same-pitch
+multiplicity; the interval reports preserve both authored events.
+
+Final checked Win64 controls, two complete fresh packet runs and overwrite
+rejection pass with zero leaks. All 34 nonmanifest artifacts replay byte-for-byte;
+manifest elapsed time is observational. Rejection preserves all 35 packet files.
+Each packet occupies 3744215 bytes; runs take 5401/5429 ms and at most 28762112
+bytes sampled private memory, below the frozen 30-second/256-MiB/8-MiB budgets.
+The first packet's manifest SHA256 is
+`636fb10978f57be2cd85ffe79de53a24b360de6da4e21c0e441b869a61c5413d`;
+its audio-verification SHA256 is
+`0504e9bf94ace2bbba678fcd0a7c57e0b8f0b49a82da24741c40420df6331fd7`.
+Full commands, source hashes and artifact comparisons remain in `build/qa-batch-15/`.
+
+The manifest explicitly records the shared authored score behind source,
+reference and scripted predictions. It is a control packet, not an independent
+estimator case, and it does not repair the external bundle's preparation failure.
+Next publish the complete reproducible operator packet and establish representative
+frozen reference groups, including external role and acoustic timing evidence.
+The owning task remains open with unchanged completion credit.

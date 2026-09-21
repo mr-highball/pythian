@@ -110,6 +110,12 @@ the NS-5 layered-style prerequisite without adopting the rejected monophonic
 or key experiments. Role labels, acoustic timing, verified mixture preparation
 and representative frozen evaluation groups remain open; there is no task
 closure or change to the **62.65%** accounting from this increment.
+The next increment adds [overlapping-note timing](OVERLAPPING-NOTES.md) and a
+small authored stem/mix packet with declared musical roles and exact stored-sample
+reconstruction. Final checked Win32/Win64 interval QA and the native packet pass,
+including exact reconstruction, event-identity controls and byte replay. These
+scorer controls do not replace
+external preparation/role evidence or qualify recorded inference.
 
 **38 open task files own the remaining work across 19 active outcomes; 11 tasks are DONE.**
 The 22-outcome map below retains accepted WAV-VALIDATION, WFC-LAYERS and WFC-STYLE anchors for evidence.

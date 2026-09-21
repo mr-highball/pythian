@@ -21,6 +21,8 @@ The [simultaneous role-set scorer](PART-EVALUATION.md) extends this path to
 chordal parts, uncertain ownership, per-role leakage and explicitly annotated
 crossing endpoints. Its file-bound metric remains diagnostic while attributed
 mixture preparation and event-timing acceptance are completed.
+The [overlapping-note API](OVERLAPPING-NOTES.md) provides unrestricted per-role
+interval assignment while preserving the existing ordered monophonic scorer.
 
 ## Evidence and clocks
 

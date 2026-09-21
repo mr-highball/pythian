@@ -41,7 +41,51 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current handoff — simultaneous role-set evaluation — 2026-09-21
+## Current handoff — overlapping-note timing and authored mixture controls — 2026-09-21
+
+The previous goal turn made progress: the role-set evaluator and source preflight
+are published at `f5d520b`, whose
+[native CI passes](https://github.com/mr-highball/pythian/actions/runs/35616527307).
+Continue the same [attributed-mixture task](TODO/NS-3_parts_01.md), a prerequisite
+of NS-5's semantic style goal. The external bundle's fixed preparation failure
+remains unchanged; no offset/gain correction is fitted to pass it.
+
+The maintained [overlapping-note API](OVERLAPPING-NOTES.md) now implements
+unrestricted one-to-one matching per declared role, with separate optimal
+onset/full-note assignments, exact rational timing thresholds and explicit
+uncertain/censored reference accounting. Existing ordered monophonic scoring is
+unchanged. Its tiny independent assignment oracle and boundary fixture pass final
+checked stable Win32/Win64 QA with zero leaks, including count/cost/pair consistency,
+permutation replay, repeated-note multiplicity and uncertainty/rest rejection.
+
+A separately authored twelve-second control packet declares four musical roles
+before rendering. It quantizes the stems first and builds the mix from their
+stored integer samples, allowing exact gain/offset reconstruction checks. Native
+controls include chords, crossings, repeated same-pitch overlap, rests, a quiet
+masked part and withheld ownership, plus per-role event timing. Score-derived
+predictions retain their shared authored ancestry and do not represent inference.
+Final checked Win64 controls, two fresh packet runs and overwrite rejection pass
+with zero leaks. All 192000 frames reconstruct exactly, and all 34 nonmanifest
+artifacts replay byte-for-byte; rejection preserves all 35 files. The packet is
+3744215 bytes. Runs take 5401/5429 ms with at most 28762112 bytes sampled private
+memory, within frozen budgets. Exact per-role event counts are 4/9/5/3; a reordered
+lead preserves all five identities, while a damaged endpoint separates onset and
+full-note matches as declared. Its code, frozen policies and instructions remain
+under `build/role-controls/`; detailed [controlled evidence](PART-EVALUATION.md#authored-stem-mix-controls--2026-09-21)
+links the native observations and limitations.
+
+Both implementation increments pass QA; source review, commands, artifact hashes
+and resource logs remain in `build/qa-batch-15/`. No runtime handle remains live;
+helper blocking failures stay zero. Final documentation, source identities, links,
+task accounting, privacy and publication scope pass review. This increment is ready
+for normal publication; its exact revision is reported separately.
+Completion remains **62.65%, 38 open /
+11 DONE** until all task criteria pass. External preparation/role evidence,
+representative frozen groups and public packet delivery remain open; this work
+does not accept mixture learning or genre style. No new task allocation is needed
+for these existing criteria. No task is moved to DONE.
+
+## Previous checkpoint — simultaneous role-set evaluation — 2026-09-21
 
 The preceding diagnostic batch is published at `980bd27`; its
 [native CI passes](https://github.com/mr-highball/pythian/actions/runs/35613255915).

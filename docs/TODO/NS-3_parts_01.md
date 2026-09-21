@@ -22,6 +22,16 @@ verified stem/mix preparation, actual role
 annotations, interval timing, representative cases and frozen acceptance groups
 are still required before this task earns credit.
 
+Next increment: [overlapping-note timing](../OVERLAPPING-NOTES.md) implements
+unrestricted per-role event assignment with separate onset/full-note errors and
+explicit reference uncertainty. A small authored stem/mix packet exercises exact
+stored-sample reconstruction, declared roles, masking, crossings and scripted
+frame/event predictions. Final checked Win32/Win64 interval QA and native packet
+verification/replay pass; see [controlled evidence](../PART-EVALUATION.md#authored-stem-mix-controls--2026-09-21).
+Publishing the complete reproducible
+packet and frozen representative evaluation groups remains part of this task;
+scripted controls do not provide independent inference evidence.
+
 **Acceptance Criteria:**
 
 - Acquire and bind usable WAV stems and corresponding mixes with verified recording identities, offsets, gains and role annotations; keep related stems/mixes in one split.
