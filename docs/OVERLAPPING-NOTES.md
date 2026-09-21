@@ -81,6 +81,11 @@ reference regions, 16777216 event/region checks, 262144 eligible onset edges and
 duration products and aggregate costs within signed 64-bit integers. The offset
 fraction denominator is 1..1000000 and numerator 0..denominator. Timing tolerances
 are 0..10^9 frames. Edge exclusion must leave a nonempty interior.
+An optional `AMatchingWorkLimit` argument can lower the 50000000 matching limit
+to any value from zero through that maximum. Its default preserves the ordinary
+per-call limit; a caller evaluating multiple roles can pass the remaining shared
+budget to each call. Zero allows results requiring no edge examinations and
+rejects as soon as matching work would begin.
 
 Malformed inputs, contradictory rests and exceeded work bounds raise `EAudio`.
 No partial result replaces the caller's previously assigned managed result.
@@ -107,3 +112,63 @@ event IDs. An explicit uncertain region excludes one reference/prediction pair
 and retains two known matches. These are authored nominal-gate controls, not
 learned acoustic boundaries. Commands, byte identities, source review and target
 resource logs remain under `build/qa-batch-15/`.
+
+## File-bound role timing
+
+The existing `pythian.evaluate CASE.json` operator now exposes the interval API
+through `output`/`metric: "part-notes"`, `input_class: "attributed-parts"`,
+`unit: "role-MIDI-sets"` and diagnostic purpose. It uses the same current case,
+source hashes, clocks and ancestry checks as other comparisons. The distinct
+`part-note-sets` metric remains useful for center-only diagnostics; neither is a
+historical format reader.
+
+Start with the complete [part-set reference/prediction](PART-EVALUATION.md#source-bound-operator)
+documents and add a `timing` array to both. Arrays contain every role in policy
+vocabulary order. Each reference role has exactly `role_id,regions,events`; each
+prediction role has exactly `role_id,events`. Event objects contain
+`id,start_frame,end_frame,note`; region objects contain
+`first_frame,end_frame,state`. Example reference entry:
+
+```json
+{"role_id":"lead","regions":[
+  {"first_frame":0,"end_frame":8000,"state":"value"}],
+ "events":[{"id":"lead-a","start_frame":1200,"end_frame":2400,"note":60}]}
+```
+
+Event IDs must be unique across all roles on their respective side. All event
+intervals must lie inside the prepared source clock, even when the selected
+comparison scope later censors them. Missing roles, reordered identities,
+contradictory regions and duplicate ownership of one event ID reject.
+
+The operator also checks that interval pitch unions equal the supplied center
+sets. Repeated same-pitch events collapse only for this set-consistency check;
+interval matching retains their multiplicity. Reference centers inside uncertain
+regions must carry that same uncertainty state. Known reference regions require
+known centers; predicted intervals cannot coexist with a contradictory empty or
+different center set. Unassigned pitch observations retain their existing frame
+accounting and gain no role-event credit; this schema does not invent unassigned
+event intervals from those observations.
+
+Scoring preserves the existing phrase timing policy: 50-ms onset/minimum offset
+tolerances, 1/5 reference-duration offset tolerance and 110-ms edge exclusion,
+using the existing native frame conversion. The policy's `tolerance_frames` and
+`scalar_tolerance` are zero; `minimum_f1` is at least 0.70. Every role must retain
+positive scorable reference events, complete timing reference coverage, onset
+F1 at least 0.80 and full-note F1 meeting the declared minimum. All existing
+per-role center/ownership/crossing gates must also pass. Timing errors and both
+assignments are reported separately, including excluded event IDs.
+
+Across roles, each side has at most 4096 input events, annotation work totals at
+most 16777216 event/region checks, matching at most 50000000 edge examinations,
+and center consistency at most 50000000 event/center checks. Role-local core
+limits still apply. No partial report is returned on a failed binding, invalid
+input or exhausted budget. Primary purpose remains rejected; a diagnostic pass
+does not grant independent-case or mixture-provider acceptance.
+
+Final checked stable Win32/Win64 file-bound and interval fixtures pass with zero
+leaks, including unchanged phrase/ancestry cases and the caller-budget boundary.
+Both operator builds pass. New controls retain the full-note failure when center
+and onset scores are perfect, reject contradictory event/center evidence and
+cross-role duplicate IDs, and preserve uncertainty, clocks and diagnostic scope.
+Commands, source review, report replay and resource evidence remain under
+`build/qa-batch-16/`.

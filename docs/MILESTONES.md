@@ -101,21 +101,15 @@ possible synthesis technique. Ecosystem adoption remains separately unmeasured.
 
 ## Active backlog
 
-The current [attributed-mixture prerequisite](TODO/NS-3_parts_01.md) is receiving
-a [simultaneous role-set scoring path](PART-EVALUATION.md) and one bound external
-synthetic development stem/mix bundle. Final checked Win32/Win64 scorer QA passes;
-the external bundle fails fixed summation qualification (13-LSB peak, 433 frames
-beyond the 11-LSB candidate bound). This supports
-the NS-5 layered-style prerequisite without adopting the rejected monophonic
-or key experiments. Role labels, acoustic timing, verified mixture preparation
-and representative frozen evaluation groups remain open; there is no task
-closure or change to the **62.65%** accounting from this increment.
-The next increment adds [overlapping-note timing](OVERLAPPING-NOTES.md) and a
-small authored stem/mix packet with declared musical roles and exact stored-sample
-reconstruction. Final checked Win32/Win64 interval QA and the native packet pass,
-including exact reconstruction, event-identity controls and byte replay. These
-scorer controls do not replace
-external preparation/role evidence or qualify recorded inference.
+The current [attributed-mixture prerequisite](TODO/NS-3_parts_01.md) now has
+checked Win32/Win64 [center and interval scoring](OVERLAPPING-NOTES.md#file-bound-role-timing)
+through the source-bound operator and a [maintained control-packet tool](PART-EVALUATION.md#maintained-packet-operator).
+Authored stems/mix reconstruct exactly and replay byte-for-byte. Remaining work
+is representative frozen families, external preparation/role/acoustic-timing
+evidence and supported-mixture acceptance thresholds. The initial external
+source still fails fixed summation qualification (13-LSB peak; 433 frames above
+the 11-LSB candidate bound). These controls support NS-5's prerequisite path;
+they do not accept recorded inference. The task stays open at **62.65%** overall.
 
 **38 open task files own the remaining work across 19 active outcomes; 11 tasks are DONE.**
 The 22-outcome map below retains accepted WAV-VALIDATION, WFC-LAYERS and WFC-STYLE anchors for evidence.

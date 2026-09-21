@@ -376,6 +376,21 @@ begin
   Check(LRejected, 'Duplicate event identity accepted');
   LRegions := Regions;
   LPolicy := Options;
+  LReference[0] := Note('r', 100, 200, 60);
+  LPrediction[0] := Note('p', 100, 200, 60);
+  SetLength(LReference, 1);
+  SetLength(LPrediction, 1);
+  LRejected := False;
+  try
+    LScore := EvaluateOverlappingNotes(LReference, LPrediction, LRegions, 0, 1000, LPolicy, 0);
+  except
+    on LException: EAudio do
+    begin
+      LRejected := True;
+    end;
+  end;
+  Check(LRejected and (PairText(LScore.FullNotes) = LPrevious),
+    'Caller work budget ignored or failure replaced existing result');
   SetLength(LReference, MaximumNotesPerPitch + 1);
   for I := 0 to High(LReference) do
   begin
@@ -391,7 +406,7 @@ begin
     end;
   end;
   Check(LRejected, 'Per-pitch work geometry accepted beyond limit');
-  Check((LReference[0].StartFrame = 100) and (LPrediction[3].Id = 'p-rest'),
+  Check((LReference[0].StartFrame = 100) and (LPrediction[0].Id = 'p'),
     'Borrowed inputs mutated');
 end;
 

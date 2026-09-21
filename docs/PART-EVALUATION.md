@@ -11,8 +11,9 @@ establish musical role. The portable scorer does no inference or source I/O.
 
 The companion [overlapping-note interval API](OVERLAPPING-NOTES.md) now supplies
 separate onset/full-note assignments for chordal roles and repeated pitches;
-final checked Win32/Win64 validation passes. It does not change the diagnostic-only file
-metric below.
+final checked Win32/Win64 validation passes. The [part-notes file metric](OVERLAPPING-NOTES.md#file-bound-role-timing)
+combines interval and center evidence; the center-only diagnostic below remains
+available for callers without complete event annotations.
 
 This is a component of the open attributed-mixture task. Center agreement does
 not establish event timing, continuous identity through a crossing, acoustic
@@ -203,6 +204,47 @@ Full commands, source hashes and artifact comparisons remain in `build/qa-batch-
 The manifest explicitly records the shared authored score behind source,
 reference and scripted predictions. It is a control packet, not an independent
 estimator case, and it does not repair the external bundle's preparation failure.
-Next publish the complete reproducible operator packet and establish representative
-frozen reference groups, including external role and acoustic timing evidence.
+The maintained operator below publishes the reproducible construction. Next
+establish representative frozen reference groups, including external role and
+acoustic timing evidence.
 The owning task remains open with unchanged completion credit.
+
+### Maintained packet operator
+
+The accepted authored construction is now available from maintained source as
+[`pythian.part.controls`](../tools/pythian.part.controls.lpr), with the
+[source policy](PART-CONTROL-POLICY.md) and
+[timing policy](PART-CONTROL-TIMING-POLICY.md). It needs the repository's native
+units and existing FPC toolchain, with no private reference assets or downloaded
+models. From the repository root on Windows:
+
+```powershell
+New-Item -ItemType Directory -Force build/part-controls/units | Out-Null
+fpc -B -Sa -Cr -Co -Ci -gl -gh -Fusrc -Futools -FUbuild/part-controls/units -FEbuild/part-controls tools/pythian.part.controls.lpr
+./build/part-controls/pythian.part.controls.exe --controls
+./build/part-controls/pythian.part.controls.exe build/role-controls/example
+```
+
+Use a fresh output directory for every packet. Existing directories reject before
+writes; failures do not overwrite an earlier result. The maintained build also
+compiles this operator and runs its small arithmetic controls; full packet
+generation is explicit. It emits native stem/mix WAVs, source score, reference
+and scripted predictions, reports and a manifest under ignored `build/`.
+
+The manifest identifies tracked policies and tool source rather than private
+prototype paths. It records the shared authored score behind source and
+predictions; the output is an authored-control packet, not a falsely independent
+`pythian.evaluate` case. These are complementary native consumers of the same
+library scorers. Final checked Win64 arithmetic controls, two fresh packet runs
+and overwrite rejection pass with zero leaks. Every generated WAV matches the
+accepted private construction byte-for-byte; all 34 nonmanifest artifacts replay
+between maintained runs, and rejection preserves all 35 files. The updated source
+and policy identities appropriately change provenance JSON.
+
+Runs take 5396/5442 ms with at most 28798976 bytes sampled private memory. Each
+packet remains 3744215 bytes, within the unchanged 30-second/256-MiB/8-MiB bounds.
+The maintained first manifest SHA256 is
+`06c0733427f22dd961fa92381125b5150120e7f9cb7ced2666f48f8f72edea1d`.
+Build commands, source identities and exact artifact comparisons are retained in
+`build/qa-batch-16/`. This accepts reproducible control-packet delivery; external
+mixture and role qualification still belong to the open task.

@@ -107,7 +107,8 @@ type
   Separate assignments retain their own pairs/errors. No acceptance is inferred. }
 function EvaluateOverlappingNotes(const AReference, APrediction: TEvaluationNotes;
   const ARegions: TEvaluationNoteRegions; const AFirstFrame, AEndFrame: Int64;
-  const AOptions: TOverlappingNoteOptions): TOverlappingNoteEvaluation;
+  const AOptions: TOverlappingNoteOptions;
+  const AMatchingWorkLimit: Int64 = MaximumNoteMatchingWork): TOverlappingNoteEvaluation;
 
 implementation
 
@@ -368,7 +369,8 @@ end;
 
 procedure MatchGroup(const AReference, APrediction: TEvaluationNotes;
   const AReferences, APredictions: TIndices; const AEdges: TEdges;
-  const AFull: Boolean; var AAssignment: TNoteAssignment; var AWork: Int64);
+  const AFull: Boolean; var AAssignment: TNoteAssignment; var AWork: Int64;
+  const AWorkLimit: Int64);
 var
   LMatchR: TIndices;
   LMatchP: TIndices;
@@ -424,7 +426,7 @@ begin
       for J := 0 to High(AEdges) do
       begin
         Inc(AWork);
-        Require(AWork <= MaximumNoteMatchingWork, 'Note matching work budget exceeded');
+        Require(AWork <= AWorkLimit, 'Note matching work budget exceeded');
         if AFull and not AEdges[J].Full then
         begin
           Continue;
@@ -575,7 +577,8 @@ end;
 
 function EvaluateOverlappingNotes(const AReference, APrediction: TEvaluationNotes;
   const ARegions: TEvaluationNoteRegions; const AFirstFrame, AEndFrame: Int64;
-  const AOptions: TOverlappingNoteOptions): TOverlappingNoteEvaluation;
+  const AOptions: TOverlappingNoteOptions;
+  const AMatchingWorkLimit: Int64): TOverlappingNoteEvaluation;
 var
   LReferences: TIndices;
   LPredictions: TIndices;
@@ -586,6 +589,8 @@ var
   LFirst: Int64;
   I: Integer;
 begin
+  Require((AMatchingWorkLimit >= 0) and (AMatchingWorkLimit <= MaximumNoteMatchingWork),
+    'Invalid caller matching work budget');
   Require((AFirstFrame >= 0) and (AEndFrame > AFirstFrame) and
     (AEndFrame <= MaximumEvaluationFrame) and
     (AEndFrame - AFirstFrame <= MaximumNoteScopeFrames), 'Invalid note evaluation scope');
@@ -641,9 +646,9 @@ begin
     LPredictionPitch := PitchIndices(APrediction, LPredictions, I);
     LEdges := Edges(AReference, APrediction, LReferencePitch, LPredictionPitch, AOptions, Result);
     MatchGroup(AReference, APrediction, LReferencePitch, LPredictionPitch, LEdges, False,
-      Result.Onsets, Result.MatchingWork);
+      Result.Onsets, Result.MatchingWork, AMatchingWorkLimit);
     MatchGroup(AReference, APrediction, LReferencePitch, LPredictionPitch, LEdges, True,
-      Result.FullNotes, Result.MatchingWork);
+      Result.FullNotes, Result.MatchingWork, AMatchingWorkLimit);
   end;
   FinishAssignment(Result.Onsets, Result.ReferenceNotes, Result.PredictionNotes);
   FinishAssignment(Result.FullNotes, Result.ReferenceNotes, Result.PredictionNotes);

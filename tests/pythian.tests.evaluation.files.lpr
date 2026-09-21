@@ -1043,6 +1043,173 @@ begin
   WriteLn('PASS file-bound simultaneous role sets, crossing endpoints and uncertainty');
 end;
 
+procedure CheckPartTimingCases(const ADirectory: String);
+const
+  CCells = '[{"frame":1600,"parts":[{"state":"value","notes":[60]},' +
+    '{"state":"value","notes":[48,52,55]}],"unassigned_notes":[]},' +
+    '{"frame":3200,"parts":[{"state":"rest","notes":[]},' +
+    '{"state":"rest","notes":[]}],"unassigned_notes":[]},' +
+    '{"frame":6400,"parts":[{"state":"value","notes":[64]},' +
+    '{"state":"value","notes":[50,53,57]}],"unassigned_notes":[]}]';
+  CTiming = '[{"role_id":"lead","regions":[{"first_frame":0,"end_frame":8000,' +
+    '"state":"value"}],"events":[{"id":"lead-a","start_frame":1200,"end_frame":2400,"note":60},' +
+    '{"id":"lead-b","start_frame":5600,"end_frame":6800,"note":64}]},' +
+    '{"role_id":"chordal","regions":[{"first_frame":0,"end_frame":8000,"state":"value"}],' +
+    '"events":[{"id":"chord-a","start_frame":1200,"end_frame":2400,"note":48},' +
+    '{"id":"chord-b","start_frame":1200,"end_frame":2400,"note":52},' +
+    '{"id":"chord-c","start_frame":1200,"end_frame":2400,"note":55},' +
+    '{"id":"chord-d","start_frame":5600,"end_frame":6800,"note":50},' +
+    '{"id":"chord-e","start_frame":5600,"end_frame":6800,"note":53},' +
+    '{"id":"chord-f","start_frame":5600,"end_frame":6800,"note":57}]}]';
+var
+  LCase: TJSONObject;
+  LAnnotation: TJSONObject;
+  LPolicy: TJSONObject;
+  LReference: TJSONObject;
+  LPrediction: TJSONObject;
+  LReport: TJSONObject;
+  LScore: TJSONObject;
+  LRole: TJSONObject;
+  LBefore: String;
+  LRejected: Boolean;
+  I: Integer;
+  J: Integer;
+begin
+  for I := 0 to 10 do
+  begin
+    LCase := Fixture(ADirectory, 'label');
+    LAnnotation := ReadDocument(ADirectory + 'annotation.txt');
+    LPolicy := ReadDocument(ADirectory + 'policy.json');
+    LReference := ReadDocument(ADirectory + 'reference.json');
+    LPrediction := ReadDocument(ADirectory + 'prediction.json');
+    try
+      LAnnotation.Strings['output'] := 'part-notes';
+      LAnnotation.Strings['input_class'] := 'attributed-parts';
+      LAnnotation.Strings['purpose'] := 'diagnostic';
+      LPolicy.Strings['metric'] := 'part-notes';
+      LPolicy.Strings['unit'] := 'role-MIDI-sets';
+      LPolicy.Floats['minimum_f1'] := 0.7;
+      LPolicy.Delete('vocabulary');
+      LPolicy.Add('vocabulary', GetJSON('["lead","chordal"]'));
+      LReference.Delete('observations');
+      LReference.Add('observations', GetJSON(CCells));
+      LReference.Add('crossings', TJSONArray.Create);
+      LReference.Add('timing', GetJSON(CTiming));
+      LPrediction.Delete('observations');
+      LPrediction.Add('observations', GetJSON(CCells));
+      LPrediction.Add('timing', GetJSON(CTiming));
+      for J := 0 to 1 do
+      begin
+        LPrediction.Arrays['timing'].Objects[J].Delete('regions');
+      end;
+      case I of
+        1:
+          begin
+            LPrediction.Arrays['timing'].Objects[0].Arrays['events'].Objects[0].Int64s['end_frame'] := 1800;
+          end;
+        2:
+          begin
+            LPrediction.Arrays['timing'].Objects[0].Arrays['events'].Objects[0].Integers['note'] := 61;
+          end;
+        3:
+          begin
+            LPrediction.Arrays['timing'].Objects[1].Arrays['events'].Objects[0].Strings['id'] := 'lead-a';
+          end;
+        4:
+          begin
+            LReference.Arrays['timing'].Objects[0].Arrays['regions'].Objects[0].Int64s['end_frame'] := 7999;
+          end;
+        5:
+          begin
+            LRole := LReference.Arrays['timing'].Objects[0];
+            LRole.Delete('regions');
+            LRole.Add('regions', GetJSON('[{"first_frame":0,"end_frame":1000,"state":"value"},' +
+              '{"first_frame":1000,"end_frame":2000,"state":"ambiguous"},' +
+              '{"first_frame":2000,"end_frame":8000,"state":"value"}]'));
+            LRole := LReference.Arrays['observations'].Objects[0].Arrays['parts'].Objects[0];
+            LRole.Strings['state'] := 'ambiguous';
+            LRole.Arrays['notes'].Clear;
+          end;
+        6:
+          begin
+            LPrediction.Arrays['timing'].Objects[0].Arrays['events'].Objects[0].Int64s['end_frame'] := 8001;
+          end;
+        7:
+          begin
+            LAnnotation.Strings['purpose'] := 'primary';
+          end;
+        8:
+          begin
+            LPolicy.Floats['minimum_f1'] := 0.69;
+          end;
+        9:
+          begin
+            LPrediction.Arrays['timing'].Objects[1].Strings['role_id'] := 'lead';
+          end;
+        10:
+          begin
+            LPrediction.Arrays['timing'].Delete(1);
+          end;
+      end;
+      PublishComparison(ADirectory, LCase, LAnnotation, LPolicy, LReference, LPrediction);
+      if I in [0, 1, 5] then
+      begin
+        LBefore := EvaluateCaseFile(ADirectory + 'case.json');
+        Check(LBefore = EvaluateCaseFile(ADirectory + 'case.json'), 'Part timing report replay differs');
+        LReport := TJSONObject(GetJSON(LBefore));
+        try
+          LScore := LReport.Objects['scores'];
+          Check((LReport.Booleans['metrics_pass'] = (I = 0)) and
+            not LReport.Booleans['independent_case_pass'], 'Part timing diagnostic verdict differs');
+          LRole := LScore.Arrays['timing_roles'].Objects[0];
+          if I = 0 then
+          begin
+            Check((LRole.Objects['full_notes'].Arrays['pairs'].Count = 2) and
+              (LScore.Arrays['timing_roles'].Objects[1].Objects['full_notes'].Arrays['pairs'].Count = 6),
+              'Per-role chord interval counts differ');
+          end
+          else if I = 1 then
+          begin
+            Check((LScore.Arrays['roles'].Objects[0].Floats['coverage'] = 1) and
+              (LRole.Objects['onsets'].Floats['f1'] = 1) and
+              (LRole.Objects['full_notes'].Floats['f1'] = 0.5),
+              'Perfect frame/onset score hid damaged role-note duration');
+          end
+          else
+          begin
+            Check((LRole.Arrays['reference_uncertain'].Count = 1) and
+              (LRole.Arrays['prediction_unscorable'].Count = 1) and
+              (LRole.Floats['reference_coverage'] = 0.875), 'Timing uncertainty was hidden');
+          end;
+          Save(ADirectory, 'part-timing-report-' + IntToStr(I) + '.json', LReport.FormatJSON);
+        finally
+          LReport.Free;
+        end;
+      end
+      else
+      begin
+        LRejected := False;
+        try
+          EvaluateCaseFile(ADirectory + 'case.json');
+        except
+          on LException: EAudio do
+          begin
+            LRejected := True;
+          end;
+        end;
+        Check(LRejected, 'Invalid part timing case accepted: ' + IntToStr(I));
+      end;
+    finally
+      LPrediction.Free;
+      LReference.Free;
+      LPolicy.Free;
+      LAnnotation.Free;
+      LCase.Free;
+    end;
+  end;
+  WriteLn('PASS source-bound per-role timing, center consistency and uncertainty');
+end;
+
 procedure CheckAnnotationFailures(const ADirectory: String);
 var
   LCase: TJSONObject;
@@ -1140,6 +1307,7 @@ begin
   CheckAncestryCases(ADirectory);
   CheckProviderCases(ADirectory);
   CheckPartCases(ADirectory);
+  CheckPartTimingCases(ADirectory);
   CheckAnnotationFailures(ADirectory);
   for I := 0 to 3 do
   begin

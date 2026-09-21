@@ -85,6 +85,7 @@ verify the annotator's truthfulness. The ancestry checks still apply.
 | `key` | `tonal-region` | `label` | `key-root-mode` |
 | `part-ownership` | `attributed-part` | `label` | `part-note-identity` |
 | `part-note-sets` | `attributed-parts` | `part-note-sets` | `role-MIDI-sets` |
+| `part-notes` | `attributed-parts` | `part-notes` | `role-MIDI-sets` |
 | `harmony` | `harmonic-region` | `label` | `chord-identity` |
 | `harmony-changes` | `harmonic-region` | `events` | `source-frame` |
 | `groove-events` | `attributed-part` | `events` | `source-frame` |
@@ -111,6 +112,9 @@ pooling a dominant part cannot substitute for missing-role acceptance.
 The [part-note-sets comparison](PART-EVALUATION.md) represents all declared roles
 and simultaneous pitches in one common grid. It accepts diagnostic purpose only;
 endpoint agreement does not replace note timing or mixture-provider acceptance.
+The [part-notes extension](OVERLAPPING-NOTES.md#file-bound-role-timing) additionally
+checks per-role interval timing and consistency with the common center grid.
+It remains diagnostic while the mixture reference packet is being qualified.
 
 `purpose` is `primary` or `diagnostic`. Beat comparisons preserve the existing
 30-ms primary and 70-ms diagnostic tolerances, converted using the shared nearest
@@ -148,7 +152,7 @@ it from coverage. Shared scoring preserves rest errors and uncertainty counts.
 ## Scoring policy and verdicts
 
 The scoring policy has `metric` (`events`, `label`, `scalar`, `notes`,
-`part-note-sets`), `unit`, `vocabulary`,
+`part-note-sets`, `part-notes`), `unit`, `vocabulary`,
 `tolerance_frames`, `scalar_tolerance`, `minimum_coverage`, `minimum_precision`,
 `minimum_f1`, `minimum_reference_coverage`.
 

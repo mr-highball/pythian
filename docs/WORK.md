@@ -41,7 +41,44 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current handoff — overlapping-note timing and authored mixture controls — 2026-09-21
+## Current handoff — maintained role packet and file-bound timing — 2026-09-21
+
+The preceding goal turn made progress by publishing the interval scorer and
+authored mixture controls at `2a649c9`; its
+[native CI passes](https://github.com/mr-highball/pythian/actions/runs/35618895403).
+Continue [NS-3_parts_01](TODO/NS-3_parts_01.md) on the NS-5 prerequisite path.
+
+The [maintained packet operator](PART-EVALUATION.md#maintained-packet-operator)
+now reproduces the accepted construction from tracked Pascal source and two
+tracked policies, without private assets. Final checked Win64 controls, two fresh
+generations and overwrite rejection pass with zero leaks. All five WAVs match
+the accepted originals; all 34 nonmanifest artifacts replay, and rejection
+preserves all 35 files. The packet stays within the frozen 30-second/256-MiB/8-MiB
+bounds at 5396/5442 ms, at most 28798976 bytes sampled private memory and
+3744215 output bytes. Source-derived predictions retain shared authored ancestry.
+
+The [part-notes file metric](OVERLAPPING-NOTES.md#file-bound-role-timing) combines
+per-role center/ownership and interval timing gates, checking that events and
+center pitch sets agree. Reference regions, unique event IDs across roles, clocks
+and complete role lists are enforced. A lowered caller matching budget lets the
+operator enforce one combined limit across roles while preserving the core's
+default. Final checked stable Win32/Win64 interval and complete file fixtures
+pass with zero leaks; both CLI builds pass. A damaged duration fails despite
+perfect center/onset scores, and contradictory/uncertain inputs retain their
+declared behavior. Existing phrase and prediction-ancestry checks remain covered.
+
+Commands, identities, source review, report replay and packet comparison evidence
+remain in `build/qa-batch-16/`. No runtime handle remains live; helper blocking
+failures stay zero. Final documentation, frozen source identities, links, task
+accounting, privacy and publication scope pass review. This increment is ready
+for normal publication; its exact revision is reported separately.
+Completion remains **62.65%, 38 open / 11 DONE**. Packet delivery and timing
+integration are delivered components; representative frozen families and external
+preparation/role/acoustic-timing qualification remain open. The initial external
+sum failure is preserved. No new allocation, task closure, independent mixture
+acceptance or genre-style credit is claimed.
+
+## Previous checkpoint — overlapping-note timing and authored mixture controls — 2026-09-21
 
 The previous goal turn made progress: the role-set evaluator and source preflight
 are published at `f5d520b`, whose

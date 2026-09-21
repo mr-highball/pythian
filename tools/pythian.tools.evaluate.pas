@@ -38,7 +38,7 @@ implementation
 uses
   Classes, SysUtils, Math, fpjson, jsonparser, jsonscanner,
   pythian.audio, pythian.hash, pythian.wave.read, pythian.evaluation,
-  pythian.pitch.evaluate, pythian.evaluation.parts,
+  pythian.pitch.evaluate, pythian.evaluation.parts, pythian.evaluation.notes,
   pythian.tools.files;
 
 const
@@ -738,12 +738,12 @@ begin
     LMetric := 'label';
     LUnit := 'key-root-mode';
   end
-  else if LOutput = 'part-note-sets' then
+  else if (LOutput = 'part-note-sets') or (LOutput = 'part-notes') then
   begin
     LInput := 'attributed-parts';
-    LMetric := 'part-note-sets';
+    LMetric := LOutput;
     LUnit := 'role-MIDI-sets';
-    Require(not Result, 'Part-set centers are diagnostic; note timing acceptance remains separate');
+    Require(not Result, 'Part comparisons remain diagnostic pending mixture-reference qualification');
   end
   else if LOutput = 'part-ownership' then
   begin
@@ -1158,6 +1158,282 @@ begin
   end;
 end;
 
+function TimingNotes(const AArray: TJSONArray; const ASourceFrames: Int64;
+  const AIds: TStringList): TEvaluationNotes;
+var
+  LRow: TJSONObject;
+  LPitch: Int64;
+  LId: String;
+  I: Integer;
+begin
+  Require(AArray.Count <= MaximumOverlappingNotes, 'Timing event count exceeds budget');
+  Require(AIds.Count + AArray.Count <= MaximumOverlappingNotes,
+    'Combined role event count exceeds budget');
+  Result := nil;
+  SetLength(Result, AArray.Count);
+  for I := 0 to AArray.Count - 1 do
+  begin
+    LRow := ObjectAt(AArray, I);
+    Fields(LRow, 'id,start_frame,end_frame,note');
+    LId := TextField(LRow, 'id');
+    Require((Length(LId) > 0) and (Length(LId) <= 256) and
+      (Trim(LId) = LId) and (Pos(#0, LId) = 0) and (AIds.IndexOf(LId) < 0),
+      'Timing event ID must be bounded and unique across roles');
+    AIds.Add(LId);
+    Result[I].Id := LId;
+    Result[I].StartFrame := IntField(LRow, 'start_frame');
+    Result[I].EndFrame := IntField(LRow, 'end_frame');
+    Require((Result[I].StartFrame >= 0) and (Result[I].EndFrame > Result[I].StartFrame) and
+      (Result[I].EndFrame <= ASourceFrames), 'Timing event outside source clock');
+    LPitch := IntField(LRow, 'note');
+    Require((LPitch >= 0) and (LPitch <= 127), 'Timing event pitch outside MIDI range');
+    Result[I].Pitch := LPitch;
+  end;
+end;
+
+function TimingRegions(const AArray: TJSONArray): TEvaluationNoteRegions;
+var
+  LRow: TJSONObject;
+  LState: String;
+  I: Integer;
+begin
+  Require(AArray.Count <= MaximumNoteRegions, 'Timing region count exceeds budget');
+  Result := nil;
+  SetLength(Result, AArray.Count);
+  for I := 0 to AArray.Count - 1 do
+  begin
+    LRow := ObjectAt(AArray, I);
+    Fields(LRow, 'first_frame,end_frame,state');
+    Result[I].FirstFrame := IntField(LRow, 'first_frame');
+    Result[I].EndFrame := IntField(LRow, 'end_frame');
+    LState := TextField(LRow, 'state');
+    if LState = 'value' then
+    begin
+      Result[I].State := esValue;
+    end
+    else if LState = 'rest' then
+    begin
+      Result[I].State := esRest;
+    end
+    else if LState = 'unknown' then
+    begin
+      Result[I].State := esUnknown;
+    end
+    else if LState = 'ambiguous' then
+    begin
+      Result[I].State := esAmbiguous;
+    end
+    else
+    begin
+      Require(LState = 'unsupported', 'Unknown timing region state');
+      Result[I].State := esUnsupported;
+    end;
+  end;
+end;
+
+function NoteIds(const AIds: TEvaluationNoteIds): TJSONArray;
+var
+  I: Integer;
+begin
+  Result := TJSONArray.Create;
+  for I := 0 to High(AIds) do
+  begin
+    Result.Add(AIds[I]);
+  end;
+end;
+
+function TimingAssignment(const AAssignment: TNoteAssignment): TJSONObject;
+var
+  LPairs: TJSONArray;
+  LPair: TJSONObject;
+  I: Integer;
+begin
+  Result := TJSONObject.Create;
+  Result.Add('onset_error_frames', AAssignment.OnsetErrorFrames);
+  Result.Add('offset_error_frames', AAssignment.OffsetErrorFrames);
+  Result.Add('recall', AAssignment.Recall);
+  Result.Add('precision', AAssignment.Precision);
+  Result.Add('f1', AAssignment.F1);
+  Result.Add('missed_ids', NoteIds(AAssignment.MissedIds));
+  Result.Add('extra_ids', NoteIds(AAssignment.ExtraIds));
+  LPairs := TJSONArray.Create;
+  Result.Add('pairs', LPairs);
+  for I := 0 to High(AAssignment.Pairs) do
+  begin
+    LPair := TJSONObject.Create;
+    LPairs.Add(LPair);
+    LPair.Add('reference_id', AAssignment.Pairs[I].ReferenceId);
+    LPair.Add('prediction_id', AAssignment.Pairs[I].PredictionId);
+    LPair.Add('onset_error_frames', AAssignment.Pairs[I].OnsetErrorFrames);
+    LPair.Add('offset_error_frames', AAssignment.Pairs[I].OffsetErrorFrames);
+  end;
+end;
+
+procedure CheckPartTimingCells(const ACells: TPartEvaluationCells; const ARole: Integer;
+  const ANotes: TEvaluationNotes; const ARegions: TEvaluationNoteRegions;
+  const AReference: Boolean; var AWork: Int64);
+var
+  LPitches: array[0..127] of Boolean;
+  LCount: Integer;
+  LRegion: Integer;
+  I: Integer;
+  J: Integer;
+begin
+  LRegion := 0;
+  for I := 0 to High(ACells) do
+  begin
+    if AReference then
+    begin
+      while ACells[I].Frame >= ARegions[LRegion].EndFrame do
+      begin
+        Inc(LRegion);
+      end;
+      if ARegions[LRegion].State in [esUnknown, esAmbiguous, esUnsupported] then
+      begin
+        Require(ACells[I].Parts[ARole].State = ARegions[LRegion].State,
+          'Reference center contradicts timing uncertainty region');
+        Continue;
+      end;
+      Require(ACells[I].Parts[ARole].State in [esValue, esRest],
+        'Uncertain reference center inside complete timing region');
+    end;
+    FillChar(LPitches, SizeOf(LPitches), 0);
+    LCount := 0;
+    for J := 0 to High(ANotes) do
+    begin
+      Inc(AWork);
+      Require(AWork <= MaximumNoteMatchingWork, 'Timing/center consistency work budget exceeded');
+      if (ACells[I].Frame >= ANotes[J].StartFrame) and
+        (ACells[I].Frame < ANotes[J].EndFrame) and not LPitches[ANotes[J].Pitch] then
+      begin
+        LPitches[ANotes[J].Pitch] := True;
+        Inc(LCount);
+      end;
+    end;
+    Require(LCount = Length(ACells[I].Parts[ARole].Notes),
+      'Timing events and center pitch sets disagree');
+    for J := 0 to High(ACells[I].Parts[ARole].Notes) do
+    begin
+      Require(LPitches[ACells[I].Parts[ARole].Notes[J]],
+        'Timing event pitch differs from center pitch');
+    end;
+  end;
+end;
+
+procedure ScorePartTiming(const AReference, APrediction: TJSONObject;
+  const AVocabulary: TJSONArray; const ABinding: TEvaluationBinding;
+  const AMinimumF1: Double; const AReport: TJSONObject; var APass: Boolean);
+var
+  LReferenceRows: TJSONArray;
+  LPredictionRows: TJSONArray;
+  LReferenceIds: TStringList;
+  LPredictionIds: TStringList;
+  LReferenceNotes: TEvaluationNotes;
+  LPredictionNotes: TEvaluationNotes;
+  LReferenceCells: TPartEvaluationCells;
+  LPredictionCells: TPartEvaluationCells;
+  LRegions: TEvaluationNoteRegions;
+  LOptions: TOverlappingNoteOptions;
+  LDefaults: TPitchEvaluationOptions;
+  LScore: TOverlappingNoteEvaluation;
+  LReports: TJSONArray;
+  LReport: TJSONObject;
+  LFrameStates: TJSONObject;
+  LRow: TJSONObject;
+  LPass: Boolean;
+  LWork: Int64;
+  LMatchingWork: Int64;
+  LRegionWork: Int64;
+  I: Integer;
+begin
+  LReferenceRows := TJSONArray(Item(AReference, 'timing', jtArray));
+  LPredictionRows := TJSONArray(Item(APrediction, 'timing', jtArray));
+  Require((LReferenceRows.Count = AVocabulary.Count) and
+    (LPredictionRows.Count = AVocabulary.Count), 'Timing requires every declared role');
+  LReferenceCells := PartCells(TJSONArray(Item(AReference, 'observations', jtArray)), AVocabulary.Count);
+  LPredictionCells := PartCells(TJSONArray(Item(APrediction, 'observations', jtArray)), AVocabulary.Count);
+  LDefaults := DefaultPitchEvaluationOptions(ABinding.SampleRate);
+  LOptions := Default(TOverlappingNoteOptions);
+  LOptions.OnsetToleranceFrames := LDefaults.OnsetToleranceFrames;
+  LOptions.MinimumOffsetToleranceFrames := LDefaults.MinimumOffsetToleranceFrames;
+  LOptions.OffsetFractionNumerator := 1;
+  LOptions.OffsetFractionDenominator := 5;
+  LOptions.EdgeFrames := LDefaults.NoteEdgeFrames;
+  AReport.Add('onset_tolerance_frames', LOptions.OnsetToleranceFrames);
+  AReport.Add('minimum_offset_tolerance_frames', LOptions.MinimumOffsetToleranceFrames);
+  AReport.Add('offset_fraction_numerator', 1);
+  AReport.Add('offset_fraction_denominator', 5);
+  AReport.Add('note_edge_frames', LOptions.EdgeFrames);
+  AReport.Add('minimum_onset_f1', MinimumPhraseOnsetF1);
+  LReports := TJSONArray.Create;
+  AReport.Add('timing_roles', LReports);
+  LWork := 0;
+  LMatchingWork := 0;
+  LRegionWork := 0;
+  LReferenceIds := TStringList.Create;
+  LPredictionIds := TStringList.Create;
+  try
+    LReferenceIds.CaseSensitive := True;
+    LReferenceIds.Sorted := True;
+    LPredictionIds.CaseSensitive := True;
+    LPredictionIds.Sorted := True;
+    for I := 0 to AVocabulary.Count - 1 do
+    begin
+      LRow := ObjectAt(LReferenceRows, I);
+      Fields(LRow, 'role_id,regions,events');
+      Require(TextField(LRow, 'role_id') = AVocabulary.Strings[I], 'Reference timing role differs');
+      LReferenceNotes := TimingNotes(TJSONArray(Item(LRow, 'events', jtArray)),
+        ABinding.SourceFrames, LReferenceIds);
+      LRegions := TimingRegions(TJSONArray(Item(LRow, 'regions', jtArray)));
+      LRow := ObjectAt(LPredictionRows, I);
+      Fields(LRow, 'role_id,events');
+      Require(TextField(LRow, 'role_id') = AVocabulary.Strings[I], 'Prediction timing role differs');
+      LPredictionNotes := TimingNotes(TJSONArray(Item(LRow, 'events', jtArray)),
+        ABinding.SourceFrames, LPredictionIds);
+      Inc(LRegionWork, Int64(Length(LReferenceNotes) + Length(LPredictionNotes)) * Length(LRegions));
+      Require(LRegionWork <= 16777216, 'Combined timing annotation work exceeds budget');
+      LScore := EvaluateOverlappingNotes(LReferenceNotes, LPredictionNotes, LRegions,
+        ABinding.FirstFrame, ABinding.EndFrame, LOptions, MaximumNoteMatchingWork - LMatchingWork);
+      Inc(LMatchingWork, LScore.MatchingWork);
+      Require(LMatchingWork <= MaximumNoteMatchingWork, 'Combined role timing work exceeds budget');
+      CheckPartTimingCells(LReferenceCells, I, LReferenceNotes, LRegions, True, LWork);
+      CheckPartTimingCells(LPredictionCells, I, LPredictionNotes, LRegions, False, LWork);
+      LReport := TJSONObject.Create;
+      LReports.Add(LReport);
+      LReport.Add('role_id', AVocabulary.Strings[I]);
+      LReport.Add('reference_notes', LScore.ReferenceNotes);
+      LReport.Add('prediction_notes', LScore.PredictionNotes);
+      LReport.Add('reference_censored', NoteIds(LScore.ReferenceCensored));
+      LReport.Add('prediction_censored', NoteIds(LScore.PredictionCensored));
+      LReport.Add('reference_uncertain', NoteIds(LScore.ReferenceUncertain));
+      LReport.Add('prediction_unscorable', NoteIds(LScore.PredictionUnscorable));
+      LReport.Add('reference_coverage', LScore.ReferenceCoverage);
+      LReport.Add('candidate_checks', LScore.CandidateChecks);
+      LReport.Add('candidate_edges', LScore.CandidateEdges);
+      LReport.Add('matching_work', LScore.MatchingWork);
+      LFrameStates := TJSONObject.Create;
+      LReport.Add('region_frames', LFrameStates);
+      LFrameStates.Add('value', LScore.RegionFrames[esValue]);
+      LFrameStates.Add('rest', LScore.RegionFrames[esRest]);
+      LFrameStates.Add('unknown', LScore.RegionFrames[esUnknown]);
+      LFrameStates.Add('ambiguous', LScore.RegionFrames[esAmbiguous]);
+      LFrameStates.Add('unsupported', LScore.RegionFrames[esUnsupported]);
+      LReport.Add('onsets', TimingAssignment(LScore.Onsets));
+      LReport.Add('full_notes', TimingAssignment(LScore.FullNotes));
+      LPass := (LScore.ReferenceNotes > 0) and (LScore.ReferenceCoverage = 1) and
+        (LScore.Onsets.F1 >= MinimumPhraseOnsetF1) and (LScore.FullNotes.F1 >= AMinimumF1);
+      LReport.Add('passes_declared_gates', LPass);
+      APass := APass and LPass;
+    end;
+    AReport.Add('timing_center_work', LWork);
+    AReport.Add('combined_matching_work', LMatchingWork);
+    AReport.Add('timing_region_work', LRegionWork);
+  finally
+    LPredictionIds.Free;
+    LReferenceIds.Free;
+  end;
+end;
+
 function Score(const AReference, APrediction, APolicy: TJSONObject;
   const ABinding: TEvaluationBinding; out APass: Boolean): TJSONObject;
 var
@@ -1187,7 +1463,7 @@ begin
     'minimum_coverage,minimum_precision,minimum_f1,minimum_reference_coverage');
   LMetric := TextField(APolicy, 'metric');
   Require((LMetric = 'label') or (LMetric = 'scalar') or (LMetric = 'events') or
-    (LMetric = 'notes') or (LMetric = 'part-note-sets'),
+    (LMetric = 'notes') or (LMetric = 'part-note-sets') or (LMetric = 'part-notes'),
     'Unsupported evaluation metric');
   Require(Trim(TextField(APolicy, 'unit')) <> '', 'Evaluation policy needs a unit/meaning');
   LMinimumCoverage := Ratio(APolicy, 'minimum_coverage');
@@ -1216,22 +1492,33 @@ begin
   finally
     LLabels.Free;
   end;
-  Require((((LMetric = 'label') or (LMetric = 'notes') or (LMetric = 'part-note-sets')) and
+  Require((((LMetric = 'label') or (LMetric = 'notes') or (LMetric = 'part-note-sets') or
+    (LMetric = 'part-notes')) and
     (LVocabulary.Count > 0)) or
     (((LMetric = 'scalar') or (LMetric = 'events')) and (LVocabulary.Count = 0)),
     'Metric/vocabulary mismatch');
-  Require((LMetric = 'events') or (LMetric = 'notes') or
+  Require((LMetric = 'events') or (LMetric = 'notes') or (LMetric = 'part-notes') or
     ((LTolerance = 0) and (LMinimumF1 = 0)),
     'Non-event policy has event thresholds');
   Require((LMetric = 'scalar') or (LScalarTolerance = 0),
     'Non-scalar policy has scalar tolerance');
-  if LMetric = 'part-note-sets' then
+  if (LMetric = 'part-note-sets') or (LMetric = 'part-notes') then
   begin
     Require((LMinimumCoverage >= MinimumPhraseCoverage) and
       (LMinimumPrecision >= MinimumPhrasePrecision) and (LMinimumReference = 1),
       'Part-set diagnostic gates require positive per-role evidence and complete references');
-    Fields(AReference, 'format,clock,annotation_policy_sha256,observations,crossings');
-    Fields(APrediction, 'format,clock,estimator_sha256,observations');
+    if LMetric = 'part-notes' then
+    begin
+      Require((LMinimumF1 >= MinimumPhraseNoteF1) and (LTolerance = 0),
+        'Part timing comparison must preserve phrase F1 and fixed timing gates');
+      Fields(AReference, 'format,clock,annotation_policy_sha256,observations,crossings,timing');
+      Fields(APrediction, 'format,clock,estimator_sha256,observations,timing');
+    end
+    else
+    begin
+      Fields(AReference, 'format,clock,annotation_policy_sha256,observations,crossings');
+      Fields(APrediction, 'format,clock,estimator_sha256,observations');
+    end;
   end
   else if LMetric = 'notes' then
   begin
@@ -1261,10 +1548,14 @@ begin
   CheckClock(APrediction, ABinding, False);
   Result := TJSONObject.Create;
   try
-    if LMetric = 'part-note-sets' then
+    if (LMetric = 'part-note-sets') or (LMetric = 'part-notes') then
     begin
       ScoreParts(AReference, APrediction, LVocabulary, ABinding,
         LMinimumCoverage, LMinimumPrecision, LMinimumReference, Result, APass);
+      if LMetric = 'part-notes' then
+      begin
+        ScorePartTiming(AReference, APrediction, LVocabulary, ABinding, LMinimumF1, Result, APass);
+      end;
     end
     else if LMetric = 'events' then
     begin

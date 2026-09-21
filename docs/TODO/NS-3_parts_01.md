@@ -12,25 +12,21 @@ Credit is earned only when every acceptance criterion and the task-flow completi
 
 Starting evidence: [SEPARATION](../SEPARATION.md) · [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [CORPUS-EVALUATION](../CORPUS-EVALUATION.md).
 
-Current increment: [simultaneous role-set evaluation](../PART-EVALUATION.md)
-adds portable per-role pitch-set, leakage and crossing-endpoint measures plus
-the existing source-bound operator path. Final checked stable Win32/Win64 QA
-passes. The first external synthetic development preflight passes mechanical
-checks but fails fixed stored-stem summation qualification: peak 13 LSB with
-433 frames beyond the declared 11-LSB candidate bound. It remains diagnostic:
-verified stem/mix preparation, actual role
-annotations, interval timing, representative cases and frozen acceptance groups
-are still required before this task earns credit.
+Delivered components: [simultaneous role-set measures](../PART-EVALUATION.md),
+[overlapping-note timing with source-bound file integration](../OVERLAPPING-NOTES.md#file-bound-role-timing)
+and a [maintained reproducible control packet](../PART-EVALUATION.md#maintained-packet-operator).
+Checked stable Win32/Win64 scoring QA passes; native packet reconstruction,
+scripted frame/event controls, byte replay and overwrite preservation pass.
+These implement diagnostic measurement and authored controls, not independent
+mixture inference.
 
-Next increment: [overlapping-note timing](../OVERLAPPING-NOTES.md) implements
-unrestricted per-role event assignment with separate onset/full-note errors and
-explicit reference uncertainty. A small authored stem/mix packet exercises exact
-stored-sample reconstruction, declared roles, masking, crossings and scripted
-frame/event predictions. Final checked Win32/Win64 interval QA and native packet
-verification/replay pass; see [controlled evidence](../PART-EVALUATION.md#authored-stem-mix-controls--2026-09-21).
-Publishing the complete reproducible
-packet and frozen representative evaluation groups remains part of this task;
-scripted controls do not provide independent inference evidence.
+Remaining acceptance: representative frozen recording families; qualified
+external stem/mix preparation and role/acoustic-timing annotations; supported
+mixture/cohort coverage and its frozen acceptance thresholds. The first external
+synthetic source fails fixed stored-stem summation qualification (13-LSB peak,
+433 frames beyond the 11-LSB candidate bound). Retain that result without fitting
+gain/offset or widening the bound. Authored role truth and exact reconstruction
+do not establish those external requirements. No partial credit is awarded.
 
 **Acceptance Criteria:**
 
