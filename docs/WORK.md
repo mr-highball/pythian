@@ -87,10 +87,13 @@ alongside C's **16.0**, retaining the user's larger-milestone direction without
 inflating credit. Return to NS-5 style cards and calibrated references; weighted
 semantic blend/reblend is independently ready after infrastructure review.
 
-The preceding review/reassessment documentation is published at `10937f3`; its
-[native CI](https://github.com/mr-highball/pythian/actions/runs/35568344857) passed.
-That historical run does not validate this batch. Publication and its exact
-revision/remote CI follow final integrated-document checks by QA.
+The batch is published at `7c9aaa6e53c7f2a4634e7a14d88d67c42e2ef0ae` on
+`origin/hello-pythian`, with the remote commit verified. Its
+[native CI](https://github.com/mr-highball/pythian/actions/runs/35571422985) passed.
+Final integrated-document checks passed 2450 links in 122 documents and the
+49-task/94-edge acyclic graph, confirming 5.3 accepted and 39.2 remaining points.
+The publication preserves all tested maintained-source hashes; generated/private
+artifacts and dependencies were excluded.
 
 ## Review and delegation checkpoint — 2026-09-21
 
@@ -109,13 +112,24 @@ its first submission passed with **zero failed submissions**. Persistence retain
 its historical two failures after primary-agent acceptance. Review findings do not
 increment QA submission counters; no junior assignment ran in this batch.
 
-This integration records **three post-review DONE completion events**, including
-shared validation's repaired re-acceptance. It triggers the next
-[infrastructure review](TASKFLOW.MD#periodic-infrastructure-review), counting
-completion events rather than net folder growth. Preserve QA's terminal evidence
-and counters, release its slot, run the read-only senior review, then restore QA.
-Source review may identify actionable gaps or reopen failed criteria; it earns no
-completion credit and does not replace final feature testing.
+This integration recorded **three post-review DONE completion events**, including
+shared validation's repaired re-acceptance, triggering the second
+[infrastructure review](TASKFLOW.MD#periodic-infrastructure-review).
+The review completed against published `7c9aaa6` and found no new confirmed defect
+requiring a reopened task, new TODO or credit adjustment. Source inspection
+confirmed the repaired prediction/derivative boundaries and traced staged duration
+edits through committed-note validation and atomic native scheduler replacement.
+All eight maintained QA source/build hashes matched. Core/companion ownership,
+sound/context ancestry and package/build inclusion remained coherent. The detailed
+source/line report is retained under `build/big-boss-02/REVIEW.md`.
+
+The reviewer wrote no code and ran no runtime tests. Existing tasks already own
+selective semantic blends, recorded workflow integration, many-hour scale and
+listening; no duplicate backlog items were added. The review earned no completion
+credit or additional failed-submission count. Its worker slot was released for
+restoring QA with the saved terminal evidence and counters. **Nine DONE tasks at
+`7c9aaa6` is the new review checkpoint; zero completion events have followed it.**
+The next review triggers after at least two further QA-accepted DONE events.
 
 ## Retained inference experiments — 2026-09-21
 
