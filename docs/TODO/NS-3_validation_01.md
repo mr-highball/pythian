@@ -41,6 +41,16 @@ Development verdicts cannot become independent case acceptance. Full ancestry
 verification, provider-specific annotation/admission integration and fixed
 experiment budgets remain open; no task credit yet.
 
+Further progress — 2026-09-20: the operator now combines cell and note-interval
+scores with all four preserved phrase gates. Consistency checks prevent a sampled
+pitch report contradicting its inferred intervals; a duration-failure control
+proves perfect cell scores cannot hide a failed full-note gate. Recorded note
+counts, matches and all four ratios reproduce the prior independently audited
+flute/violin results. [Fixed experiment budgets](../MUSICAL-EVALUATION.md#fixed-next-experiment-budgets)
+now declare one discriminating pitch and metrical hypothesis, bounded comparisons,
+baselines and stop/switch conditions. Provider-specific annotation/admission and
+complete ancestry integration remain open; this task is not yet DONE.
+
 **Acceptance Criteria:**
 
 - Declare each supported input class, musical output, unknown/unsupported state, coverage denominator, timing tolerance and error measure; preserve existing phrase thresholds rather than weakening them.

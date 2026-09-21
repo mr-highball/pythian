@@ -32,6 +32,7 @@ generation. The project is under active construction.
 [Corpus evaluation](docs/CORPUS-EVALUATION.md) ·
 [Shared musical evaluation](docs/MUSICAL-EVALUATION.md) ·
 [File-bound evaluation](docs/EVALUATION-OPERATOR.md) ·
+[Consumer contract](docs/CONSUMER-CONTRACT.md) ·
 [Selective context profiles](docs/CONTEXT-PROFILES.md) ·
 [Explicit WAV context admission](docs/WAVE-CONTEXT-ADMISSION.md) ·
 [Reusable weighted WAV onset styles](docs/WAVE-STYLE.md) ·

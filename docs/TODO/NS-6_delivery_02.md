@@ -12,6 +12,13 @@ Credit is earned only when every acceptance criterion and the task-flow completi
 
 Starting evidence: [PACKAGING](../PACKAGING.md) · [.github/workflows/native.yml](../../.github/workflows/native.yml) · [PROJECT](../../PROJECT.md).
 
+Progress — 2026-09-20: [first remote checkpoint](../PACKAGING.md#first-remote-checkpoint)
+passed at source `0ecfe34997bca5b16c9fb22282fc62b1df03a491`, including Ubuntu
+24.04/FPC 3.2.2 integration and both extracted consumers. Remote artifacts are
+bound to the run; their bytes/warnings have not been locally inspected because
+unauthenticated download returned 401. The prerequisite and remaining declared
+native-target/closure criteria still apply; this task remains TODO with no credit.
+
 **Acceptance Criteria:**
 
 - Obtain authorized source availability and a usable Linux runner; record any external availability blocker explicitly rather than treating a workflow file as a successful run.
@@ -22,5 +29,4 @@ Starting evidence: [PACKAGING](../PACKAGING.md) · [.github/workflows/native.yml
 
 **Blockers**
 
-- [NS-6_delivery_01.md](NS-6_delivery_01.md)
-
+- [NS-6_delivery_01.md](DONE/NS-6_delivery_01.md)

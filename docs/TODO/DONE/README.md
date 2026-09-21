@@ -6,6 +6,7 @@
 | Accepted task | Date | North-star credit | Overall credit |
 | --- | --- | ---: | ---: |
 | [NS-5_corpus_01](NS-5_corpus_01.md) — Verified corpus identity and contribution audit | 2026-09-20 | +2 NS-5 | +0.40 |
+| [NS-6_delivery_01](NS-6_delivery_01.md) — Supported consumer and distribution contract | 2026-09-20 | +8 NS-6 | +0.40 |
 
 Previously accepted capability stays in the milestone baseline; it is not
 backfilled as new DONE work.

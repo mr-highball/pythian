@@ -56,10 +56,13 @@ var
   LHash: String;
   LClip: TAudioClip;
   LSamples: TAudioSamples;
+  LNotes: String;
+  LVocabulary: String;
+  I: Integer;
 begin
   Result := TJSONObject.Create;
   try
-    SetLength(LSamples, 1200);
+    SetLength(LSamples, 8000);
     LClip := TAudioClip.Create(8000, 1, LSamples);
     try
       SaveWavePcm16(ADirectory + 'source.wav', LClip);
@@ -75,7 +78,28 @@ begin
       'Authored complete reference on absolute source clock, explicit rest/unknown.'));
     LBinding.Add('estimator_sha256', Save(ADirectory, 'estimator.txt',
       'Authored predictions; no learned model.'));
-    if AMetric = 'label' then
+    LNotes := '';
+    if AMetric = 'notes' then
+    begin
+      LVocabulary := '';
+      for I := 0 to 127 do
+      begin
+        if I > 0 then
+        begin
+          LVocabulary := LVocabulary + ',';
+        end;
+        LVocabulary := LVocabulary + '"midi-' + IntToStr(I) + '"';
+      end;
+      LPolicy := '{"metric":"notes","unit":"absolute-MIDI-semitone","vocabulary":[' +
+        LVocabulary + '],"tolerance_frames":0,"scalar_tolerance":0,"minimum_coverage":0.8,' +
+        '"minimum_precision":0.98,"minimum_f1":0.7,"minimum_reference_coverage":1}';
+      LReference := '[{"frame":1600,"state":"value","value":60},' +
+        '{"frame":3200,"state":"rest"},{"frame":6400,"state":"value","value":64}]';
+      LPrediction := LReference;
+      LNotes := '[{"start_frame":1200,"end_frame":2400,"note":60},' +
+        '{"start_frame":5600,"end_frame":6800,"note":64}]';
+    end
+    else if AMetric = 'label' then
     begin
       LPolicy := '{"metric":"label","unit":"authored-category","vocabulary":["a","b"],' +
         '"tolerance_frames":0,"scalar_tolerance":0,"minimum_coverage":0.8,' +
@@ -105,9 +129,9 @@ begin
     LBinding.Add('scoring_policy_sha256', Save(ADirectory, 'policy.json', LPolicy));
     LBinding.Add('group_id', 'authored');
     LBinding.Add('sample_rate', 8000);
-    LBinding.Add('source_frames', 1200);
+    LBinding.Add('source_frames', 8000);
     LBinding.Add('first_frame', 0);
-    LBinding.Add('end_frame', 1200);
+    LBinding.Add('end_frame', 8000);
     LBinding.Add('partition', 'evaluation');
     LBinding.Add('group_verified', True);
     LBinding.Add('previously_used_for_tuning', False);
@@ -119,15 +143,19 @@ begin
       LClock.Add('preparation_sha256', LBinding.Strings['preparation_sha256']);
       LClock.Add('scoring_policy_sha256', LBinding.Strings['scoring_policy_sha256']);
       LClock.Add('sample_rate', 8000);
-      LClock.Add('source_frames', 1200);
+      LClock.Add('source_frames', 8000);
       LClock.Add('first_frame', 0);
-      LClock.Add('end_frame', 1200);
+      LClock.Add('end_frame', 8000);
       LDocument := TJSONObject.Create;
       try
         LDocument.Add('format', 'pythian-evaluation-reference');
         LDocument.Add('clock', LClock.Clone);
         LDocument.Add('annotation_policy_sha256', LBinding.Strings['annotation_policy_sha256']);
         LDocument.Add('observations', GetJSON(LReference));
+        if LNotes <> '' then
+        begin
+          LDocument.Add('notes', GetJSON(LNotes));
+        end;
         LBinding.Add('reference_sha256', Save(ADirectory, 'reference.json', LDocument.FormatJSON));
       finally
         LDocument.Free;
@@ -138,6 +166,10 @@ begin
         LDocument.Add('clock', LClock.Clone);
         LDocument.Add('estimator_sha256', LBinding.Strings['estimator_sha256']);
         LDocument.Add('observations', GetJSON(LPrediction));
+        if LNotes <> '' then
+        begin
+          LDocument.Add('notes', GetJSON(LNotes));
+        end;
         Result.Add('prediction_sha256', Save(ADirectory, 'prediction.json', LDocument.FormatJSON));
       finally
         LDocument.Free;
@@ -182,6 +214,82 @@ begin
   Result := TJSONObject(GetJSON(LText));
 end;
 
+procedure CheckPhraseCases(const ADirectory: String);
+var
+  LCase: TJSONObject;
+  LDocument: TJSONObject;
+  LReport: TJSONObject;
+  LRejected: Boolean;
+  I: Integer;
+begin
+  for I := 0 to 2 do
+  begin
+    LCase := Fixture(ADirectory, 'notes');
+    try
+      if I < 2 then
+      begin
+        LDocument := ReadDocument(ADirectory + 'prediction.json');
+        try
+          if I = 0 then
+          begin
+            LDocument.Arrays['notes'].Objects[0].Int64s['end_frame'] := 1800;
+          end
+          else
+          begin
+            LDocument.Arrays['observations'].Objects[0].Integers['value'] := 61;
+          end;
+          LCase.Strings['prediction_sha256'] := Save(ADirectory, 'prediction.json',
+            LDocument.FormatJSON);
+        finally
+          LDocument.Free;
+        end;
+      end
+      else
+      begin
+        LDocument := ReadDocument(ADirectory + 'policy.json');
+        try
+          LDocument.Floats['minimum_precision'] := 0.97;
+          LCase.Objects['binding'].Strings['scoring_policy_sha256'] :=
+            Save(ADirectory, 'policy.json', LDocument.FormatJSON);
+        finally
+          LDocument.Free;
+        end;
+      end;
+      Save(ADirectory, 'case.json', LCase.FormatJSON);
+      if I = 0 then
+      begin
+        LReport := TJSONObject(GetJSON(EvaluateCaseFile(ADirectory + 'case.json')));
+        try
+          Check((LReport.Objects['scores'].Floats['coverage'] = 1) and
+            (LReport.Objects['scores'].Floats['precision'] = 1) and
+            (LReport.Objects['scores'].Floats['onset_f1'] = 1) and
+            (LReport.Objects['scores'].Floats['full_note_f1'] = 0.5) and
+            not LReport.Booleans['metrics_pass'], 'Cell passes hid note-duration failure');
+          Save(ADirectory, 'notes-duration-failure.json', LReport.FormatJSON);
+        finally
+          LReport.Free;
+        end;
+      end
+      else
+      begin
+        LRejected := False;
+        try
+          EvaluateCaseFile(ADirectory + 'case.json');
+        except
+          on E: EAudio do
+          begin
+            LRejected := True;
+            WriteLn('Rejected phrase control ', I, ': ', E.Message);
+          end;
+        end;
+        Check(LRejected, 'Contradictory note evidence or weakened gate accepted');
+      end;
+    finally
+      LCase.Free;
+    end;
+  end;
+end;
+
 procedure Run(const ADirectory: String);
 var
   LCase: TJSONObject;
@@ -193,12 +301,14 @@ var
   I: Integer;
 begin
   ForceDirectories(ADirectory);
-  for I := 0 to 2 do
+  CheckPhraseCases(ADirectory);
+  for I := 0 to 3 do
   begin
     case I of
       0: LMetric := 'label';
       1: LMetric := 'scalar';
-      else LMetric := 'events';
+      2: LMetric := 'events';
+      else LMetric := 'notes';
     end;
     LCase := Fixture(ADirectory, LMetric);
     try
@@ -220,11 +330,17 @@ begin
             (LReport.Objects['scores'].Floats['absolute_error_sum'] = 0.75),
             'Scalar wrong/tolerance boundary differs');
         end
-        else
+        else if I = 2 then
         begin
           Check((LReport.Objects['scores'].Integers['matches'] = 3) and
             (LReport.Objects['scores'].Int64s['absolute_error_frames'] = 20),
             'Event tolerance boundary differs');
+        end
+        else
+        begin
+          Check((LReport.Objects['scores'].Integers['matched_notes'] = 2) and
+            (LReport.Objects['scores'].Floats['onset_f1'] = 1) and
+            (LReport.Objects['scores'].Floats['full_note_f1'] = 1), 'Phrase gates differ');
         end;
       finally
         LReport.Free;
@@ -333,7 +449,7 @@ begin
   end;
   LCase := Fixture(ADirectory, 'label');
   LCase.Free;
-  WriteLn('PASS file-bound label/scalar/event scoring, replay, missing/changed evidence and exposure');
+  WriteLn('PASS file-bound label/scalar/event/note scoring, replay, evidence, phrase gates and exposure');
 end;
 
 begin

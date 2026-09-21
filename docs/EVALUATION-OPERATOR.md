@@ -5,9 +5,9 @@
 
 The native `pythian.evaluate` operator connects the shared scorer to actual WAV,
 annotation, prediction, policy and exposure files. It performs no inference or
-learning. Event, categorical and scalar comparisons share one current case
-contract. Phrase note-interval matching remains in `pythian.pitch.evaluate`;
-this operator's cell verdict does not replace the four phrase gates.
+learning. Event, categorical, scalar and attributed-note comparisons share one
+current case contract. The `notes` metric combines cell accounting with the
+existing `pythian.pitch.evaluate` interval scorer and all four phrase gates.
 
 ```text
 pythian.evaluate CASE.json
@@ -82,7 +82,7 @@ it from coverage. Shared scoring preserves rest errors and uncertainty counts.
 
 ## Scoring policy and verdicts
 
-The scoring policy has `metric` (`events`, `label`, `scalar`), `unit`, `vocabulary`,
+The scoring policy has `metric` (`events`, `label`, `scalar`, `notes`), `unit`, `vocabulary`,
 `tolerance_frames`, `scalar_tolerance`, `minimum_coverage`, `minimum_precision`,
 `minimum_f1`, `minimum_reference_coverage`.
 
@@ -90,7 +90,7 @@ The scoring policy has `metric` (`events`, `label`, `scalar`), `unit`, `vocabula
   vocabulary is a nonempty array of distinct nonblank strings; other metrics
   use an empty array. Category identity is exact, with no implicit equivalences.
 - Events use integer frame tolerance and the shared one-to-one event matching.
-  Coverage is recall. Cell metrics set event tolerance and minimum F1 to zero.
+  Coverage is recall. Label/scalar metrics set event tolerance and minimum F1 to zero.
   Scalar tolerance is nonnegative and must be zero for nonscalar metrics.
 - Ratio thresholds are within [0,1]; coverage, precision and reference coverage
   minima must be positive. Event minimum F1 must also be positive. Thresholds
@@ -105,9 +105,32 @@ The scoring policy has `metric` (`events`, `label`, `scalar`), `unit`, `vocabula
   declared comparison. It does not establish provider accuracy over a corpus,
   pass additional phrase gates, or accept a learned style.
 
-For the existing recorded note-cell comparison, retain coverage >=0.80 and
-precision >=0.98. Required onset F1 >=0.80 and full-note F1 >=0.70 remain separate
-phrase checks. The operator neither weakens them nor infers them from cell scores.
+### Attributed-note phrases
+
+The `notes` metric is for a separately attributed monophonic voice with complete
+note annotations. It adds a `notes` array to both observation documents; each
+entry has exactly `start_frame`, `end_frame`, `note`. Intervals share the source
+clock, use MIDI 0..127, and must fit the source. Predictions cannot overlap;
+overlapping reference intervals require ambiguous observation cells. Per-array
+note count is bounded to 4096; each cell/interval consistency comparison is
+bounded to 16777216 visits. Known note cells must agree with their intervals.
+No-reference intervals mean reference rest; missing predictions remain explicit
+non-value states. Incomplete/unknown annotations can use diagnostic label cases;
+they cannot claim complete note-phrase acceptance through this input class.
+
+The policy uses unit `absolute-MIDI-semitone`, ordered vocabulary `midi-0` through
+`midi-127`, zero generic event/scalar tolerance, and full reference coverage.
+Coverage must be at least 0.80, precision at least 0.98, and `minimum_f1` (full-note
+F1 here) at least 0.70. Onset F1 must additionally reach 0.80. Lower policies reject;
+a caller may make the configurable minima stricter. Ambiguous reference cells
+remain visible in the report and prevent complete-coverage acceptance.
+
+The existing note scorer supplies exact-pitch one-to-one onset/full-note matches,
+50-ms onset tolerance, offset tolerance max(50 ms, 20% reference duration) and
+110-ms common edge exclusion. Its existing nearest-frame rounding remains intact;
+the report records the actual frame tolerances and error sums. Parsed thresholds
+and the fixed gate floors use the same Double precision on Win32 and Win64.
+No onset or duration success is inferred from cell accuracy.
 
 ## Exposure ledger
 
@@ -138,10 +161,13 @@ arrays before their theoretical item limit. Use declared excerpts for these
 comparisons; aggregate many-hour workload acceptance remains a corpus task.
 
 The maintained [file fixture](../tests/pythian.tests.evaluation.files.lpr)
-generates complete authored label/scalar/event cases and verifies deterministic
+generates complete authored label/scalar/event/note cases and verifies deterministic
 reports, tolerance boundaries, changed/missing evidence, policy/clock mismatch,
 exposure mismatch, removed observation centers, positive admission thresholds,
 partial-reference rejection and passing development results remaining ineligible.
+Phrase controls additionally reject inconsistent cell/interval evidence and a
+relaxed precision gate; a deliberately wrong duration fails full-note F1 despite
+perfect cell coverage, precision and onset F1.
 It and the [operator](../tools/pythian.evaluate.lpr) are in the native core build.
 Checked stable Win32 and Win64 pass with no unfreed blocks.
 
@@ -150,9 +176,18 @@ references from original note annotations and predictions from retained inferred
 intervals. All 2997 centers per recording agree with the previous independent
 scores. The file-bound results retain flute coverage 82.4553%, precision 91.5727%
 (cell gate fails), and violin coverage 87.0852%, precision 98.5520% (cell gate
-passes). Both are development-only with unknown external-model training overlap;
+passes). Combined phrase reports preserve flute onset/full-note F1
+0.863157894737/0.852631578947 (overall phrase failure) and violin
+0.96/0.857142857143 (development phrase pass). Original note counts and one-to-one
+matches agree with the earlier scorer. Both are development-only with unknown external-model training overlap;
 neither is independent acceptance. No inference or held-out material was run.
 
-Per-provider annotation/admission integration, complete ancestor-ledger enforcement
-and fixed next-experiment budgets remain open in the validation task. These
+Final combined-phrase CLI reports are byte-identical between checked Win32 and
+Win64, with zero unfreed blocks. The fixture's initial Win32 run exposed a decimal
+threshold comparison against Extended constants; typed Double floors fixed the
+boundary while preserving the same 80%/98%/0.80/0.70 requirements.
+
+Per-provider annotation/admission integration and complete ancestor-ledger enforcement
+remain open in the validation task; its next experiment budgets are
+[declared separately](MUSICAL-EVALUATION.md#fixed-next-experiment-budgets). These
 checks advance that task without closing it or changing completion percentages.

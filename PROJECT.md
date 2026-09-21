@@ -14,7 +14,7 @@ Phanes, then expanded into a fundamental synthesis and audio learning toolkit.
 | Initial host | Windows; portable core with no Windows units |
 | Browser / CGE / WASM | No application target selected; no core dependency |
 | Build | `./tools/build.ps1` (checked native fixtures and command-line tools) |
-| CI | [Native workflow](.github/workflows/native.yml), Ubuntu 24.04 / FPC 3.2.2; first remote run pending |
+| CI | [Native workflow](.github/workflows/native.yml), Ubuntu 24.04 / FPC 3.2.2; [first remote run passed](https://github.com/mr-highball/pythian/actions/runs/35557200115) at `0ecfe34` |
 | Outputs | `build/<compiler>-<cpu>-<os>/` |
 | Work profile | Lean, one primary agent |
 | Publishing | Development snapshots on `hello-pythian` for ongoing review |
@@ -44,6 +44,11 @@ revision above remains historical provenance. Adopt the shared
 [workflow](docs/TASKFLOW.MD).
 
 ## Acceptance
+
+The [supported consumer contract](docs/CONSUMER-CONTRACT.md) declares the native
+target matrix, source/API stability, required inputs and independent-delivery
+checklist. Its definition is accepted; final workflow and independent-use results
+remain separate milestone tasks.
 
 Deliver reusable audio data, codecs, timing, synthesis primitives, composition
 of those primitives, and native operator tooling. Extend learning from symbolic

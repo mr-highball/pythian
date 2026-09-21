@@ -12,7 +12,10 @@ remain separate from a valid score calculation.
 The [file-bound operator](EVALUATION-OPERATOR.md) now verifies actual WAV and
 document bytes, exact observation clocks, vocabulary/scoring policy and a separate
 exposure ledger before returning event, categorical or scalar scores. Its
-single-case verdicts remain distinct from provider/style acceptance.
+single-case verdicts remain distinct from provider/style acceptance. Its `notes`
+metric now combines exact label coverage/precision with the existing interval
+scorer and the unchanged onset/full-note gates, checking that intervals and
+observation cells describe the same inferred notes.
 
 ## Evidence and clocks
 
@@ -112,6 +115,87 @@ criteria and complete provider integration are still required by
 [NS-3_validation_01](TODO/NS-3_validation_01.md). The APIs above do not close that
 task on their own. Native inference execution/cost remains separately owned by
 [NS-3_validation_02](TODO/NS-3_validation_02.md).
+
+## Fixed next-experiment budgets
+
+These are predeclared development investigations, not executed results or provider
+acceptance. Each affected task must preserve its final acceptance criteria. Run
+one hypothesis at a time, freeze its input/policy identities before prediction,
+save predictions before independent scoring, and retain failed outcomes. An
+implementation correction may rerun the same frozen comparison once; a changed
+hypothesis requires a new written decision, not an unbounded parameter sweep.
+Previously untouched evaluation stays closed until inference and admission freeze.
+
+### Pitch identity and presence
+
+Owner: [recorded identity](TODO/NS-3_notes_01.md), coordinated with
+[presence and boundaries](TODO/NS-3_notes_02.md).
+
+- Baseline: the preferred entry-activity inference in the
+  [recorded phrase evidence](PHRASE-EVALUATION.md#rate-view-strength), reproduced
+  by `pythian.evaluate` from original annotations and retained intervals. Flute
+  has 1706 correct centers, 105 octave errors and 45 rest admissions; violin has
+  2178 correct, no octave errors and 23 rest admissions. Preserve the recorded
+  source, inference and reference identities in each case. Reproduce all four
+  phrase metrics before attributing any change to a new hypothesis.
+- Next discriminating hypothesis: phase-consistent prediction of the next
+  waveform window, evaluated separately under adjacent-octave hypotheses, can
+  supply identity evidence missing from pooled activation strength. Phase must
+  be estimated without reference notes; fixed-phase oracle reconstruction alone
+  does not test the hypothesis. Pure even-harmonic ambiguity must remain unknown,
+  not become a fabricated confident fundamental.
+- Fixed experiment allowance: one new observation rule and one removal-of-that-
+  observation ablation. Reuse the existing low/short/quiet/gap/mixture waveform
+  controls; add at most two authored controls that directly distinguish the
+  hypothesis. Then at most one prediction/scoring pass per condition on each
+  existing 30-second development recording. No new network inference or capacity
+  comparison is part of this experiment. Limit each candidate run to 15 minutes,
+  512 MiB peak working memory and 256 MiB of new observations per excerpt; record
+  measured cost and stop on overrun rather than silently increasing the limit.
+- Continue only if the waveform controls pass, real octave changes remain
+  distinguishable, and paired accounting shows fewer wrong octave admissions
+  without losing previously correct coverage or passing violin behavior. A
+  precision gain obtained only by suppression fails this discriminator. Stop
+  this approach after the one candidate/ablation comparison if the observation
+  does not separate those cases; do not retry global strength or confidence sweeps.
+- Provider acceptance still requires coverage >=80%, precision >=98%, onset
+  F1 >=0.80 and full-note F1 >=0.70 per recording, then frozen independent
+  evaluation. Passing an experimental discriminator is not that acceptance.
+
+### Metrical selection and changing clocks
+
+Owners: [beat level](TODO/NS-3_tempo_01.md) and
+[changing clocks](TODO/NS-3_tempo_02.md).
+
+- Baselines: the native/default and model-plus-candidate results for the nine
+  existing cases in the [joint comparison](BEAT-TRACKING.md#model-candidate-comparison).
+  The four cached band pools, source scope, 30-ms primary matching and separate
+  70-ms diagnostic are fixed. Reproduce source identities, selected candidates
+  and both reference-range/full-output scores before a new comparison.
+- Next discriminating hypothesis: an explicit competition among half-, same-
+  and double-rate interpretations, scored by repeated accent/role structure over
+  adjacent windows, can distinguish mutually agreeing wrong levels from a
+  supported metrical choice. Agreement alone cannot admit a level; inconclusive
+  structure must retain alternatives/unknown, including changing-pattern spans.
+  No reference rate or per-recording band selection may enter inference.
+- Fixed experiment allowance: one selection rule and one ablation removing the
+  structural evidence, over the same nine development cases. Use cached model
+  and band observations; no new model or recording acquisition. Retain the
+  existing bounds of 32 owners, 32 candidates per owner, 128 model events,
+  64 local grid points and 524288 matching visits. Limit each excerpt to five
+  minutes and 512 MiB peak working memory; cap the whole comparison at 30 minutes.
+- Preserve automatic deception/polyrhythm gains and test doubling, acceleration
+  and all three authored controls explicitly. Report observed-source coverage,
+  unknown windows, wrong-level admissions and full-output errors alongside F1;
+  abstaining on difficult windows cannot masquerade as improved overall coverage.
+  Stop after the declared comparison if common wrong levels remain admitted or
+  the authored/changing-clock baseline regresses. Switch the evidence model,
+  not another agreement threshold. Independent matching must still agree.
+
+Production backend selection, native arithmetic fidelity and aggregate many-hour
+cost are owned by [native execution](TODO/NS-3_validation_02.md), not preaccepted
+by these small studies. Experimental budgets are fixed stop conditions, not
+claims that existing or proposed code already meets them.
 
 ## Verification — 2026-09-20
 

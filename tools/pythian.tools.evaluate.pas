@@ -38,11 +38,17 @@ implementation
 uses
   Classes, SysUtils, Math, fpjson, jsonparser, jsonscanner,
   pythian.audio, pythian.hash, pythian.wave.read, pythian.evaluation,
+  pythian.pitch.evaluate,
   pythian.tools.files;
 
 const
   MaximumDocumentBytes = 8 * 1024 * 1024;
   MaximumSourceBytes: Int64 = 1024 * 1024 * 1024;
+  { Match parsed Double thresholds on targets with Extended real constants. }
+  MinimumPhraseCoverage: Double = 0.80;
+  MinimumPhrasePrecision: Double = 0.98;
+  MinimumPhraseOnsetF1: Double = 0.80;
+  MinimumPhraseNoteF1: Double = 0.70;
 
 procedure Require(const ACondition: Boolean; const AMessage: String);
 begin
@@ -397,7 +403,7 @@ begin
     begin
       Fields(LRow, 'frame,state,value');
       Result[I].State := esValue;
-      if AMetric = 'label' then
+      if (AMetric = 'label') or (AMetric = 'notes') then
       begin
         LValue := IntField(LRow, 'value');
         Require((LValue >= 0) and (LValue < AVocabularyCount),
@@ -452,6 +458,79 @@ begin
   Require((Result >= 0) and (Result <= 1), 'Evaluation threshold outside [0,1]');
 end;
 
+function Notes(const AArray: TJSONArray; const AReference: Boolean;
+  const ASourceFrames: Int64): TPitchReferenceNotes;
+var
+  LRow: TJSONObject;
+  LNote: Int64;
+  I: Integer;
+begin
+  Require(AArray.Count <= MaximumPitchReferenceNotes, 'Evaluation note budget exceeded');
+  Result := nil;
+  SetLength(Result, AArray.Count);
+  for I := 0 to AArray.Count - 1 do
+  begin
+    LRow := ObjectAt(AArray, I);
+    Fields(LRow, 'start_frame,end_frame,note');
+    LNote := IntField(LRow, 'note');
+    Require((LNote >= 0) and (LNote <= 127), 'Evaluation note outside MIDI range');
+    Result[I].Note := LNote;
+    Result[I].StartFrame := IntField(LRow, 'start_frame');
+    Result[I].EndFrame := IntField(LRow, 'end_frame');
+    Require(Result[I].EndFrame <= ASourceFrames, 'Evaluation note exceeds source clock');
+    if (I > 0) and not AReference then
+    begin
+      Require(Result[I].StartFrame >= Result[I - 1].EndFrame,
+        'Note evaluation requires separately attributed nonoverlapping predictions');
+    end;
+  end;
+end;
+
+procedure CheckNoteCells(const ACells: TEvaluationCells; const ANotes: TPitchReferenceNotes;
+  const AReference: Boolean);
+var
+  LMatches: Integer;
+  LNote: Integer;
+  I: Integer;
+  J: Integer;
+begin
+  Require(Int64(Length(ACells)) * Length(ANotes) <= MaximumPitchEvaluationPairs,
+    'Note/cell consistency check exceeds work budget');
+  for I := 0 to High(ACells) do
+  begin
+    LMatches := 0;
+    LNote := -1;
+    for J := 0 to High(ANotes) do
+    begin
+      if (ACells[I].Frame >= ANotes[J].StartFrame) and
+        (ACells[I].Frame < ANotes[J].EndFrame) then
+      begin
+        Inc(LMatches);
+        LNote := ANotes[J].Note;
+      end;
+    end;
+    if LMatches = 1 then
+    begin
+      Require((ACells[I].State = esValue) and (ACells[I].LabelValue = LNote),
+        'Evaluation note intervals disagree with observed pitch cells');
+    end
+    else if LMatches > 1 then
+    begin
+      Require(AReference and (ACells[I].State = esAmbiguous),
+        'Overlapping reference notes must remain ambiguous');
+    end
+    else
+    begin
+      Require(ACells[I].State in [esRest, esUnknown, esUnsupported],
+        'Evaluation cell has no corresponding note interval');
+      if AReference then
+      begin
+        Require(ACells[I].State = esRest, 'Unannotated note cells cannot imply reference rests');
+      end;
+    end;
+  end;
+end;
+
 function Score(const AReference, APrediction, APolicy: TJSONObject;
   const ABinding: TEvaluationBinding; out APass: Boolean): TJSONObject;
 var
@@ -467,12 +546,21 @@ var
   LCells: TCellEvaluation;
   LEvents: TEventEvaluation;
   LCellMetric: TEvaluationMetric;
+  LReferenceCells: TEvaluationCells;
+  LPredictionCells: TEvaluationCells;
+  LReferenceNotes: TPitchReferenceNotes;
+  LPredictionNotes: TPitchReferenceNotes;
+  LNoteOptions: TPitchEvaluationOptions;
+  LNoteScore: TPitchNoteEvaluation;
+  LOnsetF1: Double;
+  LNoteF1: Double;
   I: Integer;
 begin
   Fields(APolicy, 'metric,unit,vocabulary,tolerance_frames,scalar_tolerance,' +
     'minimum_coverage,minimum_precision,minimum_f1,minimum_reference_coverage');
   LMetric := TextField(APolicy, 'metric');
-  Require((LMetric = 'label') or (LMetric = 'scalar') or (LMetric = 'events'),
+  Require((LMetric = 'label') or (LMetric = 'scalar') or (LMetric = 'events') or
+    (LMetric = 'notes'),
     'Unsupported evaluation metric');
   Require(Trim(TextField(APolicy, 'unit')) <> '', 'Evaluation policy needs a unit/meaning');
   LMinimumCoverage := Ratio(APolicy, 'minimum_coverage');
@@ -501,14 +589,34 @@ begin
   finally
     LLabels.Free;
   end;
-  Require(((LMetric = 'label') and (LVocabulary.Count > 0)) or
-    ((LMetric <> 'label') and (LVocabulary.Count = 0)), 'Metric/vocabulary mismatch');
-  Require((LMetric = 'events') or ((LTolerance = 0) and (LMinimumF1 = 0)),
+  Require((((LMetric = 'label') or (LMetric = 'notes')) and (LVocabulary.Count > 0)) or
+    (((LMetric = 'scalar') or (LMetric = 'events')) and (LVocabulary.Count = 0)),
+    'Metric/vocabulary mismatch');
+  Require((LMetric = 'events') or (LMetric = 'notes') or
+    ((LTolerance = 0) and (LMinimumF1 = 0)),
     'Non-event policy has event thresholds');
   Require((LMetric = 'scalar') or (LScalarTolerance = 0),
     'Non-scalar policy has scalar tolerance');
-  Fields(AReference, 'format,clock,annotation_policy_sha256,observations');
-  Fields(APrediction, 'format,clock,estimator_sha256,observations');
+  if LMetric = 'notes' then
+  begin
+    Require((LMinimumCoverage >= MinimumPhraseCoverage) and
+      (LMinimumPrecision >= MinimumPhrasePrecision) and
+      (LMinimumF1 >= MinimumPhraseNoteF1) and (LMinimumReference = 1) and (LTolerance = 0),
+      'Note evaluation must preserve phrase gates and complete reference coverage');
+    Require((TextField(APolicy, 'unit') = 'absolute-MIDI-semitone') and
+      (LVocabulary.Count = 128), 'Note evaluation needs the complete MIDI vocabulary');
+    for I := 0 to 127 do
+    begin
+      Require(LVocabulary.Strings[I] = 'midi-' + IntToStr(I), 'MIDI vocabulary order differs');
+    end;
+    Fields(AReference, 'format,clock,annotation_policy_sha256,observations,notes');
+    Fields(APrediction, 'format,clock,estimator_sha256,observations,notes');
+  end
+  else
+  begin
+    Fields(AReference, 'format,clock,annotation_policy_sha256,observations');
+    Fields(APrediction, 'format,clock,estimator_sha256,observations');
+  end;
   Require(TextField(AReference, 'format') = 'pythian-evaluation-reference',
     'Unexpected reference format');
   Require(TextField(APrediction, 'format') = 'pythian-evaluation-prediction',
@@ -542,9 +650,11 @@ begin
       begin
         LCellMetric := emScalar;
       end;
-      LCells := EvaluateCells(
-        Cells(TJSONArray(Item(AReference, 'observations', jtArray)), LMetric, LVocabulary.Count),
-        Cells(TJSONArray(Item(APrediction, 'observations', jtArray)), LMetric, LVocabulary.Count),
+      LReferenceCells := Cells(TJSONArray(Item(AReference, 'observations', jtArray)),
+        LMetric, LVocabulary.Count);
+      LPredictionCells := Cells(TJSONArray(Item(APrediction, 'observations', jtArray)),
+        LMetric, LVocabulary.Count);
+      LCells := EvaluateCells(LReferenceCells, LPredictionCells,
         ABinding.FirstFrame, ABinding.EndFrame, LCellMetric, LScalarTolerance);
       Result.Add('cell_count', LCells.CellCount);
       Result.Add('reference_active', LCells.ReferenceActive);
@@ -570,6 +680,38 @@ begin
       APass := (LCells.ReferenceActive > 0) and (LCells.Coverage >= LMinimumCoverage) and
         (LCells.Precision >= LMinimumPrecision) and
         (LCells.ReferenceCoverage >= LMinimumReference);
+      if LMetric = 'notes' then
+      begin
+        LReferenceNotes := Notes(TJSONArray(Item(AReference, 'notes', jtArray)),
+          True, ABinding.SourceFrames);
+        LPredictionNotes := Notes(TJSONArray(Item(APrediction, 'notes', jtArray)),
+          False, ABinding.SourceFrames);
+        LNoteOptions := DefaultPitchEvaluationOptions(ABinding.SampleRate);
+        LNoteScore := EvaluatePitchNoteIntervals(LPredictionNotes, LReferenceNotes,
+          ABinding.FirstFrame, ABinding.EndFrame, LNoteOptions);
+        CheckNoteCells(LReferenceCells, LReferenceNotes, True);
+        CheckNoteCells(LPredictionCells, LPredictionNotes, False);
+        LOnsetF1 := NoteF1(LNoteScore.MatchedOnsets, LNoteScore.ReferenceNotes,
+          LNoteScore.EstimatedNotes);
+        LNoteF1 := NoteF1(LNoteScore.MatchedNotes, LNoteScore.ReferenceNotes,
+          LNoteScore.EstimatedNotes);
+        Result.Add('reference_notes', LNoteScore.ReferenceNotes);
+        Result.Add('estimated_notes', LNoteScore.EstimatedNotes);
+        Result.Add('matched_onsets', LNoteScore.MatchedOnsets);
+        Result.Add('matched_notes', LNoteScore.MatchedNotes);
+        Result.Add('onset_f1', LOnsetF1);
+        Result.Add('full_note_f1', LNoteF1);
+        Result.Add('matched_onset_error_frames', LNoteScore.MatchedOnsetErrorFrames);
+        Result.Add('matched_offset_error_frames', LNoteScore.MatchedOffsetErrorFrames);
+        Result.Add('onset_tolerance_frames', LNoteOptions.OnsetToleranceFrames);
+        Result.Add('minimum_offset_tolerance_frames', LNoteOptions.MinimumOffsetToleranceFrames);
+        Result.Add('offset_duration_fraction', LNoteOptions.OffsetDurationFraction);
+        Result.Add('note_edge_frames', LNoteOptions.NoteEdgeFrames);
+        Result.Add('minimum_onset_f1', MinimumPhraseOnsetF1);
+        APass := APass and (LNoteScore.ReferenceNotes > 0) and
+          (LOnsetF1 >= MinimumPhraseOnsetF1) and
+          (LNoteF1 >= LMinimumF1);
+      end;
     end;
     APass := APass and ABinding.ReferenceComplete;
   except

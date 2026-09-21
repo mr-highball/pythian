@@ -13,10 +13,34 @@ The [current API delivery](#current-api-delivery) includes the later spectral
 partition and pitch boundary queries, phase-aware harmonic fitting, corrected
 automation workload accounting, transactional layer edits, explicit/fixed timing
 maps, saved generation preferences and the reusable saved-grid API.
-Earlier snapshots below retain their dated scope. Linux/remote CI and independent
-downstream-use acceptance remain open under
+The [first remote checkpoint](#first-remote-checkpoint) now adds Linux integration
+and extracted-consumer evidence. Earlier snapshots below retain their dated scope.
+The full declared-target refresh and independent downstream-use acceptance remain open under
 [WAV-05-DELIVERY](MILESTONES.md#wav-05-delivery) and
 [DELIVERY-RELEASE](MILESTONES.md#delivery-release).
+
+## First remote checkpoint
+
+The [native run 35557200115](https://github.com/mr-highball/pythian/actions/runs/35557200115)
+completed successfully for source `0ecfe34997bca5b16c9fb22282fc62b1df03a491`
+on `hello-pythian`. The workflow selects Ubuntu 24.04 and verifies FPC 3.2.2.
+Its checkout, maintained integration build, extracted core/WFC consumer checks
+and both artifact uploads all have terminal successful step results. Companion
+pins are WFC `47fa3d8cb8f0f72bf53943eb5eb79758c8f22ce4` and Athena
+`909336d808f0c40b297426e23aa58426a75c6516`.
+
+The service reports `pythian-source-packages` artifact 10621197298 (1401053 bytes)
+and `native-fpc-logs` artifact 10621275141 (67507 bytes). Run/job/artifact metadata
+is retained locally under ignored `build/evaluation-operator/`. Artifact download
+through the unauthenticated API returned 401, so this record claims the verified
+remote step results, not local inspection of uploaded contents or warnings.
+
+This supersedes earlier statements that no remote run exists. It does not
+retroactively extend their local package evidence or establish independent
+musical-use acceptance. The later note-phrase evaluator edits also require their
+own validation. [NS-6_delivery_02](TODO/NS-6_delivery_02.md) remains open for its
+prerequisite and remaining exact-revision native-target/closure checks; no task
+credit is earned solely by this first CI success.
 
 ## Build and package
 

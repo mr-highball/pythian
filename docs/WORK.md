@@ -43,6 +43,36 @@ full topic evidence. No listening verdict or additional completion is inferred.
 
 ## Current work — shared musical validation — 2026-09-20
 
+Accepted [NS-6_delivery_01](TODO/DONE/NS-6_delivery_01.md): the
+[consumer/distribution contract](CONSUMER-CONTRACT.md) now fixes supported native
+targets, source stability, ownership/time/error/replay obligations, required
+inputs and the independent-consumer protocol. Reviewed against the public style
+constructors, session ownership, current package manifest and project policy;
+local links and task accounting pass. Credit is +8 NS-6 / +0.40 overall: NS-6 is
+58%, overall **56.3%**, with 47 open tasks and two DONE. This closes the contract
+definition, not final package acceptance or an independent musical-use verdict.
+
+Remote CI [35557200115](https://github.com/mr-highball/pythian/actions/runs/35557200115)
+passed at pushed source `0ecfe34997bca5b16c9fb22282fc62b1df03a491`, including
+Ubuntu 24.04/FPC 3.2.2 full integration and both extracted package consumers.
+The [delivery record](PACKAGING.md#first-remote-checkpoint) binds the terminal
+step results and uploaded artifact IDs. Unauthenticated artifact download returned
+401; no local inspection of those bytes/warnings is claimed. The unblocked
+NS-6_delivery_02 is being evaluated separately on that fixed source checkpoint.
+
+The maintained evaluator's new `notes` comparison connects cell coverage and
+precision to the existing interval scorer, preserving all four phrase gates.
+It checks interval/cell consistency and rejects weakened policy minima. A
+controlled duration error fails even with perfect sampled pitches and onset F1.
+Original recorded annotations and retained intervals reproduce both full phrase
+scores: flute still fails precision, violin passes development only. A Win32
+comparison initially rejected exact decimal gate values because real literals
+had Extended precision; explicit Double gate constants corrected the boundary
+without lowering it. Final checked Win32/Win64 evidence is recorded with the
+[operator](EVALUATION-OPERATOR.md). Fixed next-experiment hypotheses, cost budgets
+and stop/switch conditions are [declared](MUSICAL-EVALUATION.md#fixed-next-experiment-budgets),
+not executed or credited as improved learning.
+
 Review checkpoint: the user authorized committing and pushing the current draft
 to `hello-pythian` for ongoing review. Include maintained source, adapters, native
 tools, tests, governance and pinned dependencies; generated artifacts and private
@@ -51,7 +81,7 @@ still belongs to NS-4_layers_01 and remains unvalidated. This checkpoint is not
 a release or additional completion credit.
 
 Athena updated to merged upstream `main` commit
-`909336d808f0c40b297426e23aa58426a75c6516`; the root gitlink is staged and the
+`909336d808f0c40b297426e23aa58426a75c6516`; the root gitlink is committed and the
 dependency checkout is clean. The project profile and local task flow now link
 the shared task-flow standard. This documentation-only dependency update earns
 no product completion credit. The active validation task continues below.
@@ -75,7 +105,8 @@ NS-3_validation_01 remains open: complete actual source/reference-bound operator
 integration, per-provider annotation/admission checks and fixed next-experiment
 budgets. The file-bound integration described below advances this requirement;
 the remaining provider checks and budgets still prevent closure. Overall remains
-**55.9%**. Do not package this partial checkpoint or resume the unrelated draft
+**56.3%**, reflecting only the separate accepted consumer contract. Do not
+package this partial checkpoint or resume the unrelated draft
 semantic-provider extension. Return to NS-5 after this prerequisite is accepted.
 
 Added maintained `pythian.evaluate` and its native file-bound evaluator. It hashes
@@ -95,8 +126,8 @@ study reader's 1-MiB budget before scoring; the bounded 4-MiB rerun passed witho
 changing source, inference or evaluation gates. No held-out recording was opened.
 
 Next: finish provider annotation/admission checks, including the remaining
-reference adapters and evidence ancestry, and record fixed experiment budgets
-for the unresolved note/timing approaches. This implementation does not yet
+reference adapters and evidence ancestry. The unresolved note/timing approaches
+now have fixed experiment budgets. This implementation does not yet
 justify moving NS-3_validation_01 to DONE or increasing completion.
 
 ## Verified corpus identity checkpoint — 2026-09-20

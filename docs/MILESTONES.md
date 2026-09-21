@@ -15,7 +15,8 @@ usable through selective blends and further blends. Required initial styles:
 The old **89.8% is retired**. The accepted planning baseline remains **55.5
 weighted points**. The new [49-task catalog](TODO/README.md) allocates every
 remaining point to explicit acceptance criteria and prerequisites. Accepted
-corpus identity adds **0.4 points**, bringing current completion to **55.9**.
+corpus identity and the consumer/distribution contract add **0.8 points**, bringing
+current completion to **56.3**.
 Subsequent accepted tasks update their north-star and overall percentages individually.
 
 ### Goal scorecard
@@ -32,10 +33,10 @@ with detailed history in the linked evidence rather than active tasks.
 | <a id="wav-02"></a><a id="wav-03"></a><a id="ns-3"></a>**NS-3 — Trustworthy musical learning from WAV** | **30%** | 25 | Source-bound measurements, selected-pulse clock reconstruction, explicit uncertainty/manual context, narrow pitch/duration learning and reusable event queries. [Phrase evidence](PHRASE-EVALUATION.md), [pulse evidence](BEAT-TRACKING.md). | Independently validated context, notes, mixed parts, harmony, groove and evolving sound: **17 tasks across 10 WAV outcomes**. | **17.5** |
 | <a id="wfc-preferences"></a><a id="ns-4"></a>**NS-4 — Granular WFC layers and reusable blends** | **70%** | 15 | Actual dependent passes, locks/preferences, selective regeneration, owned timing APIs, weighted saved blends and lineage. [Layers](LAYERS.md), [grid](GRID-STYLE.md), [performance](PERFORMANCE.md). | Semantic role controls, saved joint providers and integrated audible generation/reblend: **WFC-LAYERS, WFC-STYLE, WAV-04-INTEGRATION**. | **4.5** |
 | <a id="wav-04"></a><a id="ns-5"></a>**NS-5 — Many-hour styles that generate and blend usefully** | **27%** | 20 | Ingestion, journals, acoustic vocabulary and mechanical reuse; accepted two-recording identity pilot with derivative/exposure and inherited-palette audits. [Pilot](CORPUS-EVALUATION.md#verified-identity-pilot). | Representative genre corpora, practical scale, sustained structure and acceptance of all three styles and cross-style blends: **16 tasks / 6 corpus outcomes**. | **14.6** |
-| <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | **50%** | 5 | Current standalone packages/examples, fresh source snapshot and scoped native consumer/compiler checks. [Delivery](PACKAGING.md#current-api-delivery). | Remaining target/CI and accepted-workflow delivery, plus independently reproduced use: **WAV-05-DELIVERY, DELIVERY-RELEASE**. | **2.5** |
-| **Total** | **≈56%** | **100** | **55.9 weighted points credited** | **48 open tasks / 22 outcomes** | **44.1** |
+| <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | **58%** | 5 | Current standalone packages/examples, fresh source snapshot and scoped native consumer/compiler checks; accepted [consumer/distribution contract](CONSUMER-CONTRACT.md). [Delivery](PACKAGING.md#first-remote-checkpoint). | Remaining declared-target/closure checks and accepted-workflow delivery, plus independently reproduced use: **WAV-05-DELIVERY, DELIVERY-RELEASE**. | **2.1** |
+| **Total** | **≈56%** | **100** | **56.3 weighted points credited** | **47 open tasks / 22 outcomes** | **43.7** |
 
-Arithmetic: `10×1.00 + 25×0.80 + 25×0.30 + 15×0.70 + 20×0.27 + 5×0.50 = 55.9`.
+Arithmetic: `10×1.00 + 25×0.80 + 25×0.30 + 15×0.70 + 20×0.27 + 5×0.58 = 56.3`.
 The decimal is bookkeeping, not measurement precision. NS-3 earns measurement
 accuracy; NS-4 earns composition/reuse; NS-5 earns corpus/style quality; NS-6
 earns delivery. Consuming an earlier result earns no duplicate provider credit.
@@ -49,9 +50,9 @@ earns delivery. Consuming an earlier result earns no duplicate provider credit.
 | Recorded notes are reliable enough for learning | Preferred development precision **91.57% flute / 98.55% violin**, required **98%**. Violin passes all four development gates; flute fails precision. Larger-model and coherent-observation comparisons have not resolved the recorded gap. Address presence/rest and register together before freezing independent phrase evaluation. [Evidence and rejected approaches](PHRASE-EVALUATION.md). | [Register](#wav-03-register), [boundaries](#wav-03-boundaries), [phrases](#wav-03-phrases), [validation](#wav-validation) |
 | Musical layers and learned relationships survive generation/reblend | Mechanical WFC controls and saved reuse work. General recorded bass/voice/harmony providers and their integrated acceptance remain unfinished. | [NS-3](#ns-3), [NS-4](#ns-4) |
 | Many hours produce a useful style | **Chillwave: unaccepted. Stoner rock: unaccepted. Lofi: unaccepted.** Duration, caller labels and source-fragment resemblance do not establish learning quality. | [NS-5](#ns-5) |
-| Another consumer can use the current result | Current core/WFC ZIPs pass extracted consumer checks, including saved-grid edits and exact audio replay. Linux/remote CI and independent-use acceptance remain unverified. | [NS-6](#ns-6) |
+| Another consumer can use the current result | Current core/WFC ZIPs pass extracted consumer checks, including saved-grid edits and exact audio replay. The [first Linux CI checkpoint](PACKAGING.md#first-remote-checkpoint) passes integration and extracted consumers at `0ecfe34`; the remaining native-target refresh and independent-use acceptance stay open. | [NS-6](#ns-6) |
 
-**Musical learning and corpus quality account for 32.1 of the remaining 44.1
+**Musical learning and corpus quality account for 32.1 of the remaining 43.7
 points (about 73%).** Additional diagnostics and mechanical adapters have value
 only insofar as they resolve those outcomes; they do not close musical acceptance.
 
@@ -78,7 +79,7 @@ possible synthesis technique. Ecosystem adoption remains separately unmeasured.
 
 ## Active backlog
 
-**48 open task files own the remaining work across 22 outcomes; 1 task is DONE.**
+**47 open task files own the remaining work across 22 outcomes; 2 tasks are DONE.**
 See the [task catalog](TODO/README.md) for credits and a prerequisite-first order,
 and [TASKFLOW.MD](TASKFLOW.MD) for the required template, gap handling, DONE moves
 and completion accounting. [Corpus identity](TODO/DONE/NS-5_corpus_01.md) is accepted.
@@ -115,7 +116,7 @@ A mapped task's credit is counted once even if it supports more than one outcome
 | <a id="song-structure"></a>**SONG-STRUCTURE** | NS-5 | [NS-5_structure_01](TODO/NS-5_structure_01.md), [NS-5_structure_02](TODO/NS-5_structure_02.md) |
 | <a id="style-eval"></a>**STYLE-EVAL** | NS-5 | [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md), [NS-5_evaluation_02](TODO/NS-5_evaluation_02.md), [NS-5_chillwave_01](TODO/NS-5_chillwave_01.md), [NS-5_stoner-rock_01](TODO/NS-5_stoner-rock_01.md), [NS-5_lofi_01](TODO/NS-5_lofi_01.md), [NS-5_blends_01](TODO/NS-5_blends_01.md) |
 | <a id="wav-05-delivery"></a>**WAV-05-DELIVERY** | NS-6 | [NS-6_delivery_02](TODO/NS-6_delivery_02.md), [NS-6_delivery_03](TODO/NS-6_delivery_03.md) |
-| <a id="delivery-release"></a>**DELIVERY-RELEASE** | NS-6 | [NS-6_delivery_01](TODO/NS-6_delivery_01.md), [NS-6_delivery_04](TODO/NS-6_delivery_04.md), [NS-6_delivery_05](TODO/NS-6_delivery_05.md) |
+| <a id="delivery-release"></a>**DELIVERY-RELEASE** | NS-6 | [NS-6_delivery_04](TODO/NS-6_delivery_04.md), [NS-6_delivery_05](TODO/NS-6_delivery_05.md); [consumer contract accepted](TODO/DONE/NS-6_delivery_01.md) |
 
 ## Completion accounting
 
@@ -129,7 +130,7 @@ the accepted baseline or claiming that planning itself advances completion.
 | NS-3 | 30% | 0 | 30% | 70 | 17 |
 | NS-4 | 70% | 0 | 70% | 30 | 7 |
 | NS-5 | 25% | 2 | 27% | 73 | 16 |
-| NS-6 | 50% | 0 | 50% | 50 | 5 |
+| NS-6 | 50% | 8 | 58% | 42 | 4 |
 
 Each completed task adds its declared **goal percentage points** to that goal;
 multiply by the goal weight / 100 for overall movement. The
@@ -139,9 +140,9 @@ these totals, the scorecard and the task index in the same logical change.
 Evidence must support the actual task criteria; no partial or test-count credit.
 
 For example, accepted `NS-3_notes_01` moves NS-3 from 30% to 34% and overall
-completion from 55.9% to 56.9%, assuming no other changes. This makes bounded
+completion from 56.3% to 57.3%, assuming no other changes. This makes bounded
 outcome progress visible without waiting for all WAV learning to finish.
-The remaining open task credits add **44.1 overall points**, reaching 100 only
+The remaining open task credits add **43.7 overall points**, reaching 100 only
 when the required work and final scope audit are accepted.
 
 ## Execution order and blocking links
@@ -178,9 +179,9 @@ outcome packages, each above the requested ten-point minimum:
 | --- | --- | ---: |
 | **A — Dependable sound and trustworthy recorded musical inputs** | All NS-2 quality tasks (+5); NS-3 validation, tempo, context and notes tasks (+9.5). Actual listening and independent native note/context admission. | **+14.5** |
 | **B — Recorded parts through reusable semantic generation** | NS-3 parts, harmony, groove and timbre (+8); all NS-4 controls, persistence, blend/reblend and audible integration (+4.5). | **+12.5** |
-| **C — Accepted many-hour styles and independent delivery** | Remaining NS-5 corpus, vocabulary, scale, continuity, structure and three-style/cross-style acceptance (+14.6); all NS-6 delivery and independent use (+2.5). Corpus identity already earned +0.4. | **+17.1 remaining** |
+| **C — Accepted many-hour styles and independent delivery** | Remaining NS-5 corpus, vocabulary, scale, continuity, structure and three-style/cross-style acceptance (+14.6); remaining NS-6 delivery and independent use (+2.1). Corpus identity and the consumer contract already earned +0.8. | **+16.7 remaining** |
 
-**55.9 current + 14.5 + 12.5 + 17.1 = 100.**
+**56.3 current + 14.5 + 12.5 + 16.7 = 100.**
 These are scope allocations, not time estimates or promises of success. Record
 task credit as each accepted task finishes; preparation from later packages can
 be useful sooner when the selected outcome requires it.
