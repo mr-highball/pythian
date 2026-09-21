@@ -20,13 +20,19 @@ scripted frame/event controls, byte replay and overwrite preservation pass.
 These implement diagnostic measurement and authored controls, not independent
 mixture inference.
 
-Remaining acceptance: representative frozen recording families; qualified
-external stem/mix preparation and role/acoustic-timing annotations; supported
-mixture/cohort coverage and its frozen acceptance thresholds. The first external
-synthetic source fails fixed stored-stem summation qualification (13-LSB peak,
-433 frames beyond the 11-LSB candidate bound). Retain that result without fitting
-gain/offset or widening the bound. Authored role truth and exact reconstruction
-do not establish those external requirements. No partial credit is awarded.
+The [derived external development packet](../PART-EVALUATION.md#derived-external-development-packet--2026-09-21)
+also passes every-frame scaled-stem and exact mix verification, byte replay and
+preservation checks. It provides usable, separately identified reference audio
+with explicit gain/quantization and unchanged sample coordinates. The original
+publisher mix's 13-LSB residual/failed 11-LSB bound remains unqualified. A
+prospective second recording reservation passes identity checks but remains
+provisional; differing hashes do not prove unrelated families.
+
+Remaining acceptance: representative frozen recording families; role and
+acoustic-timing annotations on the prepared sources; supported mixture/cohort
+coverage and its frozen acceptance thresholds. Next prepare the fixed 30-second
+development worksheet across all stems, preserving symbolic performance events
+separately from measured acoustic support. No partial credit is awarded.
 
 **Acceptance Criteria:**
 

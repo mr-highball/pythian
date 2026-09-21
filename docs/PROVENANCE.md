@@ -53,10 +53,24 @@ is bundled in the library.
 The 882818115-byte publisher archive matches MD5
 `311096dc2bde7d61c97e930edbfc7f78` and SHA256
 `6490dc83d8b59ccbe7e9e0304023af8e585d2065f9a5f5921952a273fac4a9b0`.
-Only Track00001 is extracted: its mix, ten stored WAV/MIDI pairs and source
-metadata remain unchanged. The native preflight inspects their stored samples
+Track00001's mix, ten stored WAV/MIDI pairs and source metadata remain unchanged.
+The native preflight inspects their stored samples
 without gain fitting or time shifts. All derivatives belong to one development
 family; archive possession does not establish exposure to other track payloads.
+
+A subsequent prospective grouping packet reserves Track00002 as a provisional
+evaluation candidate before selectively extracting only its metadata and original
+score bytes. The identity audit reads the declared UUID/original-score path and
+hashes score bytes without parsing notes or accessing audio. Distinct identifiers
+and byte hashes can rule out those exact collisions, but do not prove unrelated
+compositions or exclude arrangement/transposition derivatives. Candidate membership
+and unresolved family/training overlap remain explicit under `build/role-groups/`.
+
+The [derived preparation](PART-PREPARATION.md) creates new PCM16 stems at fixed
+1/16 gain and a mix constructed from their stored integer samples. These are
+modified assets with separate identities, full source credit and the retained
+CC BY 4.0 notice. They inherit the original development family and do not replace
+or repair the failed original-mix preparation claim.
 
 The retained [publisher utility description](https://github.com/ethman/slakh-utils)
 distinguishes rendered per-stem MIDI from original score MIDI and warns of

@@ -74,6 +74,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Part control operator compilation failed' }
   & (Join-Path $buildRoot "pythian.part.controls$executableSuffix") '--controls'
   if ($LASTEXITCODE -ne 0) { throw 'Part control arithmetic checks failed' }
+  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.part.prepare.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Part preparation operator compilation failed' }
+  & (Join-Path $buildRoot "pythian.part.prepare$executableSuffix") '--controls'
+  if ($LASTEXITCODE -ne 0) { throw 'Part preparation arithmetic checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.separation.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Fourier/separation fixture compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.separation$executableSuffix") (Join-Path $buildRoot 'separation-control')

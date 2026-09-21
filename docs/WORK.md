@@ -41,7 +41,45 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current handoff — maintained role packet and file-bound timing — 2026-09-21
+## Current handoff — derived reference preparation — 2026-09-21
+
+The preceding goal turn made progress by publishing maintained role controls and
+file-bound interval timing at `eb2b221`; its
+[native CI passes](https://github.com/mr-highball/pythian/actions/runs/35620690813).
+Continue [NS-3_parts_01](TODO/NS-3_parts_01.md) on the NS-5 prerequisite path.
+
+The maintained [derived preparation operator](PART-PREPARATION.md) now constructs
+separately identified external development stems/mix. Fixed 1/16 scaling followed
+by explicit PCM16 quantization preserves sample coordinates and guarantees
+headroom; the mix is the exact sum of the stored derived stems. Checked stable
+Win32/Win64 arithmetic and complete Win64 preparation QA pass with zero leaks.
+Both 3864916-frame runs reproduce all 14 files and their manifest exactly;
+the 85060427-byte packet stays within 180 seconds/256 MiB/1 GiB at 14620/14549 ms
+and at most 3502080 bytes sampled private memory. Negative identity, overwrite,
+count and path controls preserve accepted output. Real-data evidence is mono;
+stereo/geometry branches were source-reviewed. Full results, identities and
+limits are in [part evaluation](PART-EVALUATION.md#derived-external-development-packet--2026-09-21)
+and `build/qa-batch-17/`. The original publisher mix's failed check is unchanged.
+
+The prospective family ledger also passes bounded native QA. Track00001 remains
+development and Track00002 remains reserved provisionally: different declared
+identities/score hashes exclude exact collisions without establishing unrelated
+arrangements or training disjointness. No new evaluation note/audio exposure
+occurs. Helper blocking submissions remain zero. Runtime handles are terminal;
+final documentation, frozen identities, links, accounting, privacy and publication
+scope pass review. This increment is ready for normal publication; its exact
+revision is reported separately.
+
+Next prepare one fixed 30-second development annotation worksheet across the
+derived stems/mix, preserving score gates/controllers separately from acoustic
+evidence and initially unknown musical functions. Its protocol and isolated
+implementation work are under ignored `build/role-annotation/`; final execution
+waits for another ready QA item. Source role/acoustic annotations, broader family
+qualification and scenario thresholds still govern task acceptance.
+Completion remains **62.65%, 38 open / 11 DONE, 95 dependency edges**. No task move,
+new credit or independent inference/style verdict follows from preparation.
+
+## Previous checkpoint — maintained role packet and file-bound timing — 2026-09-21
 
 The preceding goal turn made progress by publishing the interval scorer and
 authored mixture controls at `2a649c9`; its

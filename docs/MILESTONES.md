@@ -104,12 +104,16 @@ possible synthesis technique. Ecosystem adoption remains separately unmeasured.
 The current [attributed-mixture prerequisite](TODO/NS-3_parts_01.md) now has
 checked Win32/Win64 [center and interval scoring](OVERLAPPING-NOTES.md#file-bound-role-timing)
 through the source-bound operator and a [maintained control-packet tool](PART-EVALUATION.md#maintained-packet-operator).
-Authored stems/mix reconstruct exactly and replay byte-for-byte. Remaining work
-is representative frozen families, external preparation/role/acoustic-timing
-evidence and supported-mixture acceptance thresholds. The initial external
-source still fails fixed summation qualification (13-LSB peak; 433 frames above
-the 11-LSB candidate bound). These controls support NS-5's prerequisite path;
-they do not accept recorded inference. The task stays open at **62.65%** overall.
+Authored stems/mix reconstruct exactly and replay byte-for-byte. A separately
+identified [derived external packet](PART-EVALUATION.md#derived-external-development-packet--2026-09-21)
+now also passes every-frame construction checks and exact replay. A prospective
+evaluation reservation passes identity checks but remains an unresolved family.
+Remaining work is representative frozen families, role/acoustic-timing annotations
+on prepared sources and supported-mixture acceptance thresholds; the next bounded
+step is a fixed development annotation worksheet. The publisher's original mix
+still fails its fixed summation check (13-LSB peak; 433 frames above the 11-LSB
+candidate bound). Preparation does not accept recorded inference. The task stays
+open at **62.65%** overall.
 
 **38 open task files own the remaining work across 19 active outcomes; 11 tasks are DONE.**
 The 22-outcome map below retains accepted WAV-VALIDATION, WFC-LAYERS and WFC-STYLE anchors for evidence.

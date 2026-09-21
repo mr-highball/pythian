@@ -107,9 +107,10 @@ score that can hide a weak role; a role containing only rests provides no
 positive evidence and cannot pass.
 
 `purpose: "primary"` is rejected for this metric. Even a perfect diagnostic
-report cannot grant `independent_case_pass`: event timing and the attributed
-mixture acceptance packet are not yet implemented. Existing note/event metrics
-and their acceptance contracts remain separate.
+report cannot grant `independent_case_pass`. Event timing is available through
+the [part-notes metric](OVERLAPPING-NOTES.md#file-bound-role-timing); independently
+qualified mixture references and learned attribution remain open. Existing
+note/event metrics and their acceptance contracts remain separate.
 
 ## Validation and next evidence
 
@@ -161,10 +162,63 @@ independent evidence before treating its stored mix as a verified reference.
 A bounded inspection of the [pinned publisher utility](https://github.com/ethman/slakh-utils/blob/3f62d6a4b0e5952237dd5178ac3513e42161ec0a/resampling/resample.py)
 shows independent mix/stem resampling, but the inspected record does not bind
 that utility or its numerical environment to these archive bytes. This is not
-a demonstrated cause of the residual or permission to widen its bound. A future
-explicitly derived mix could have its own verified construction; it must retain
-separate identity and must not be called the original mixture. These are existing
-task criteria, not a new allocation. The task remains open without partial credit.
+a demonstrated cause of the residual or permission to widen its bound. The
+[derived preparation operator](PART-PREPARATION.md) supplies a separate construction
+from the stored stems, with its own identities and fixed quantization/gain policy.
+It does not qualify the original mixture. These are existing task criteria, not
+a new allocation. The task remains open without partial credit.
+
+### Derived external development packet — 2026-09-21
+
+The maintained [preparation operator](PART-PREPARATION.md) now constructs a
+qualified **derived** packet from the ten bound development stems. Each is scaled
+by the predeclared 1/16 gain, quantized once, stored and verified sample by sample
+against an independent integer rounding oracle. Reopened derived stems sum exactly
+to the reopened mix at all **3864916 mono frames, 16000 Hz**. Mix peak is 1819
+PCM16 LSB; reconstruction residual is zero. Every stem's largest quantization
+error relative to ideal scaling is half an output LSB. These attenuated,
+requantized stems are the new reference assets; original files remain unchanged.
+
+Checked stable Win32/Win64 arithmetic controls and complete Win64 preparation QA
+pass with zero leaks. Two fresh runs take 14620/14549 ms, at most 3502080 bytes
+sampled private memory, and produce **14 files / 85060427 bytes**. Every file,
+including the manifest, replays exactly. Wrong hashes, existing output directories,
+empty stem lists and unsafe paths reject without overwriting accepted output.
+Stereo roundtrip and malformed-WAV geometry branches were source-reviewed;
+the complete real-data run exercises mono. No broader runtime coverage is implied.
+
+The packet's `build/role-prepared/qa-a/manifest.json` SHA256 is
+`459b1156772d237a4eb41b74d6ada8880b5ddd81ac6b20895f39cc7bc008e3f1`.
+It binds original ancestry, policy, tool/core sources, output identities and the
+full source license. Commands and resource/preservation evidence remain under
+`build/qa-batch-17/`. This qualifies the declared construction and preserves
+source-frame positions; it does not establish score-to-acoustic latency, musical
+roles or the publisher mix's preparation. All derivatives retain development
+exposure and add no independent recording or unique source duration.
+
+### Prospective recording groups — 2026-09-21
+
+The native identity ledger freezes Track00001 as development and Track00002 as a
+provisional evaluation reservation before accessing the latter's metadata or raw
+score bytes. It checks only declared UUID/original-score path and exact score
+hash. The three identity comparisons differ. This excludes those exact collisions;
+related arrangements, transpositions and estimator training overlap remain unknown.
+The reservation remains provisional, with `independent_family_verified: false`.
+No new note-content parsing, audio inspection or prediction exposure occurs.
+
+Checked Win64 controls, bound ledger execution and wrong-hash/overwrite rejection
+pass with zero leaks. The audit takes 248 ms and 2699264 bytes sampled private
+memory. Its `build/role-groups/ledger.json` SHA256 is
+`75f84d9be9597fea3cbeac4629a56bee1e0dcbd9b77e525931bf1cb7f957750d`;
+the same QA directory retains its frozen source/binding and preservation checks.
+
+The next development evidence is one fixed 30-second worksheet across all ten
+derived stems and mix, retaining MIDI performance messages, original sample
+coordinates and descriptive acoustic measurements. Start role and sounding-note
+labels as unknown. Review functions and acoustic boundaries from the source
+evidence before evaluating predictions; instrument names and key gates are not
+automatic role/acoustic truth. Broader family qualification, supported scenario
+coverage and frozen acceptance thresholds remain in the same open task.
 
 <a id="authored-stem-mix-controls--2026-09-21"></a>
 ### Authored stem/mix controls — 2026-09-21
