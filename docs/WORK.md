@@ -41,7 +41,97 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current handoff — source-separated register calibration — 2026-09-21
+## Pause retrospective — 2026-09-21
+
+The user requested that all sub-agent work stop, that the north stars and task
+criteria be reviewed, and that the goal then pause to conserve the remaining
+weekly budget. The implementation helper's read-only reassessment was interrupted;
+QA was already idle. No new implementation, model run or held-out evaluation was
+started. The intervening Athena check confirmed the already-published pin and
+was status verification, not additional capability progress.
+
+| North star | Accepted completion | Retrospective and remaining task ownership |
+| --- | ---: | --- |
+| NS-1 foundation | 100% | Extraction, independence and Phanes removal are accepted; preserve their contracts rather than reopen them. |
+| NS-2 synthesis | 80% | Numerical and rendered evidence exists; source, processing and combined listening acceptance remain in the three synthesis-quality tasks. The preview has no recorded listener verdict. |
+| NS-3 WAV learning | 39% | Validation, bounded observations and reference preparation are accepted. Register/presence, automatic context and actual mixture inference remain accuracy bottlenecks in the existing 14 tasks. |
+| NS-4 WFC composition | 96% | Granular passes and semantic blend/reblend are accepted. The remaining integration task requires accepted recorded providers and listening; 96% is not end-to-end musical success. |
+| NS-5 styles | 27% | Corpus identity and mechanics are baseline capability. All three genre verdicts remain unaccepted; the 16 open tasks cover references/corpora, vocabulary, scale, continuity, structure and blends. |
+| NS-6 delivery | 72% | Native checkpoint and consumer contract are accepted. Final workflow packaging, independent use and the final audit remain open. |
+
+The catalog remains **50 tasks, 37 open / 13 DONE, 96 dependency edges**.
+Overall scope accounting remains **63.15%**, with **36.85 points** outstanding.
+Musical learning and corpus/style quality own **29.85** of those points. The
+20.85-point sound/learning/integration package and 16-point style/delivery package
+still map the full destination; neither is reduced to a diagnostic milestone.
+
+Recent progress has been uneven: the measurement/reference preparation split
+delivered two independently usable tasks (+0.50 overall), while the subsequent
+fixed register-candidate experiment failed its flute gate. Its verified rejection
+changes which approach is viable, but supplies no accepted inference capability.
+The remaining work is dominated by musical discrimination and grounded references,
+not missing generic APIs. More reports or renamed model variants would repeat
+the pattern without meeting the user's goal.
+
+### Criteria corrections and task coverage
+
+- [Note identity](TODO/NS-3_notes_01.md) now explicitly requires audio-derived
+  candidates for final scoring, separated fit/calibration groups when fitting,
+  and prospective abstention/coverage accounting. Oracle-ranked candidates do
+  not demonstrate blind inference.
+- [Presence and boundaries](TODO/NS-3_notes_02.md) now explicitly require labelled
+  continuation/release/rest contrasts and separate missed-note, false-rest,
+  boundary and unknown results. A pitch score cannot stand in for presence.
+- [Mixture learning](TODO/NS-3_parts_02.md) explicitly carries the external
+  crossing/unison/quiet-ownership/reference-coverage gaps into its acceptance
+  comparisons. Preparation acceptance does not settle them.
+- [Style specification](TODO/NS-5_evaluation_01.md) now binds reference identity,
+  intervals and annotation uncertainty explicitly, and requires preserving/breaking
+  controls for each required provider dimension. Its previous single-comparison
+  wording could let a level-only control appear to qualify musical comparators.
+
+These are clarifications of required end-state evidence, with the style-control
+check strengthened to cover its full declared scope. All identified gaps already
+have task owners; no new task, dependency, format or completion credit is needed.
+Accepted DONE criteria and evidence are unchanged. No completed capability was
+disproved by this retrospective. This is a backlog/evidence review, not a fresh
+runtime or listening acceptance audit.
+
+### Resume decision and stop state
+
+1. Resume the ready NS-5 style-reference specification first. Resolve candidate
+   recording/edition correspondence and supply the missing musical annotations
+   using curator or explicitly reviewed references; automatic transcription is
+   not a prerequisite. Close its full specification or identify the exact missing
+   reference/review input. Do not substitute another aggregate-level study.
+2. Keep the source and processing listening matrices finite under NS-2; reuse
+   existing audio, identify the required reviewer evidence, and retain pending
+   verdicts honestly. No listening result is inferred during this pause.
+3. Return to note identity/presence with an evidence-backed decision that explains
+   the unresolved ambiguity before implementing another experiment. Preserve
+   the true low/quiet/short/gap controls and untouched phrase material. Once
+   notes_01/02 pass, follow notes_03 into mixture learning and semantic scale;
+   context has its own tempo/local-key prerequisite chain.
+
+Batch 28 remains stopped. The consecutive no-criterion-closure count is **one**;
+the pause, this retrospective and agent handoffs do not reset it. No next
+experiment is authorized by this note. If the next work batch closes no criterion,
+apply the mandatory two-batch reassessment before a further batch. Do not split
+diagnostics into nominal DONE tasks or weaken gates to manufacture progress.
+
+The primary performs only proportional documentation checks for this requested
+retro; the user's stop on sub-agent work takes precedence over scheduling QA.
+No feature is accepted or moved to DONE. Final feature QA delegation remains the
+standing workflow when work is explicitly resumed. Publish the review on
+`hello-pythian`, then leave the goal and sub-agent work paused.
+
+Documentation verification passes: 742 local links across the seven changed
+files, all 50 task templates, 96 acyclic prerequisite links, reachability of the
+final completion gate and unchanged credit arithmetic. The existing native
+task checker reports zero unfreed blocks; `git diff --check` passes. No runtime
+suite or scientific experiment was repeated for this documentation change.
+
+## Previous handoff — source-separated register calibration — 2026-09-21
 
 The previous goal turn made progress: all criteria of parts_01 were accepted,
 the task moved to DONE and `7dac111` published the matching records. Continue

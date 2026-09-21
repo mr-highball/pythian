@@ -68,10 +68,10 @@ separate presence gap and protected waveform/held-out requirements intact.
 
 **Acceptance Criteria:**
 
-- Declare a discriminating identity observation or decision rule before scoring; explain how it distinguishes the remaining octave errors rather than merely changing global weights or thresholds.
+- Declare a discriminating identity observation or decision rule before scoring; explain how it distinguishes the remaining octave errors rather than merely changing global weights or thresholds. Final development scoring must construct candidates from audio without reference pitches; oracle candidate ranks are feasibility evidence only.
 - Preserve true octave changes, weak/missing fundamentals, vibrato, articulation changes and the recovered correct coverage, with explicit ambiguous alternatives.
 - Pass actual waveform low/short/quiet/gap/mixture controls for any changed observation path, including transformed-model controls if rate views are adopted.
-- Meet predeclared register-error and coverage criteria on recorded development inputs while retaining passing violin behavior; agreement, larger capacity and restored activation strength are not calibrated confidence.
+- Meet predeclared register-error and coverage criteria on recorded development inputs while retaining passing violin behavior; agreement, larger capacity and restored activation strength are not calibrated confidence. For a fitted rule, bind fit and calibration work groups separately, retain related arrangements together and protect final evaluation groups. Declare abstention and its coverage denominator before scoring; rejecting ambiguity cannot hide lost correct coverage.
 - Deliver the accepted identity path through maintained Pascal code with bound source/policy evidence. Coordinate with presence/boundaries; neither task alone closes full phrase admission.
 
 **Blockers**

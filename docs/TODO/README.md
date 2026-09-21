@@ -2,11 +2,17 @@
 
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Completed tasks](DONE/README.md) · [Work record](../WORK.md)
 
-**Execution resumed — 2026-09-20; updated 2026-09-21: 37 open tasks, 13 DONE. Starting with NS-5, then following prerequisite blockers.**
+**Execution paused at the user's request — 2026-09-21: 37 open tasks, 13 DONE. Resume only on user direction, starting with NS-5 and following actual prerequisite blockers.**
 This catalog covers the remaining declared end state. Task files own acceptance
 criteria and hard prerequisites; this page supplies navigation and accounting.
 No task earns credit merely by being written. Accepted task credit is **7.65**;
 **36.85 overall points remain**. Baseline 55.5 + accepted 7.65 = **63.15 current**.
+
+The [pause retrospective](../WORK.md#pause-retrospective--2026-09-21) tightens
+existing note, presence, mixture and style-reference criteria without adding
+tasks, changing credits or accepting new capability. First resume the ready
+style-reference specification; note research requires a new evidence-backed
+decision and retains its stopped proposals and progress-checkpoint count.
 
 ## Goal ledger
 

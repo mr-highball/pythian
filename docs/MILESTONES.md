@@ -12,6 +12,14 @@ through independently controllable WFC passes, and saves styles that remain
 usable through selective blends and further blends. Required initial styles:
 **chillwave, stoner rock and lofi**. Core fundamentals retain priority.
 
+**Execution is paused at the user's request.** The
+[retrospective and resume order](WORK.md#pause-retrospective--2026-09-21) reconcile
+the six goals with the current tasks. Completion remains **63.15%**: recent
+reference preparation earned credit; the rejected register scorer did not.
+Existing task criteria now explicitly cover blind candidate construction,
+presence tradeoffs, outstanding mixture scenarios and musical comparator controls.
+No task or credit is added by this review.
+
 The old **89.8% is retired**. The accepted planning baseline remains **55.5
 weighted points**. The [50-task catalog](TODO/README.md) allocates every
 remaining point to explicit acceptance criteria and prerequisites. Accepted
@@ -336,6 +344,16 @@ task credit as each accepted task finishes; preparation from later packages can
 be useful sooner when the selected outcome requires it.
 
 ### First work to schedule
+
+After the user resumes the goal, first complete the bounded reference-grounding
+work in [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md): verified WAV identities,
+musical annotations and trait-preserving/breaking comparator controls. Curator or
+reviewed references do not require automatic note inference. If suitable
+references or review are unavailable, record the exact missing input before
+choosing another prerequisite. Keep synthesis listening requests finite and
+reuse the existing auditions. Resume note development only with a discriminating
+observation and a fixed adoption/stop decision; do not restart rejected scorer
+variants. The pause does not reset investigation counters or authorize agents.
 
 The user's execution direction supersedes package A as the starting priority:
 start with NS-5 and follow its actual prerequisite links. Shared

@@ -35,9 +35,9 @@ do not turn a candidate pitch score into a note-presence probability.
 
 **Acceptance Criteria:**
 
-- Separate note presence from pitch identity and distinguish attacks, continuations, rests and endings using supported source evidence.
+- Separate note presence from pitch identity and distinguish attacks, continuations, rests and endings using supported source evidence. Include contrasting labelled continuation, release-tail and rest cases; a high pitch-candidate score alone is not note-presence evidence.
 - Handle repeated same-pitch notes, short/quiet notes, passing notes, glides, gaps and articulation transfer without blanket trimming, gap bridging or quiet-note fragmentation.
-- Pass the low/quiet/gap/mixture controls and recorded boundary/false-rest limits declared before scoring; retain the synthetic short low-note recovery where applicable.
+- Pass the low/quiet/gap/mixture controls and recorded boundary/false-rest limits declared before scoring; retain the synthetic short low-note recovery where applicable. Report false notes in rests separately from missed active notes and attack/end errors, including each case's unknown coverage, so a boundary improvement cannot conceal a presence regression.
 - Preserve original source timing, rounding conventions and unknown spans through the maintained event API; unsupported mixtures must not become confident monophonic notes.
 - Demonstrate the combined development path can reach the shared phrase gates with the register work; record tradeoffs and unchanged controls instead of counting rejected variants as completion.
 

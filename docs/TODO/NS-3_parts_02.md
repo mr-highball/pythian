@@ -28,7 +28,7 @@ through notes_03, not more source packaging.
 **Acceptance Criteria:**
 
 - Recover supported simultaneous events from mixes, with explicit pitch/time/ownership uncertainty and unknown roles where evidence is insufficient.
-- Compare attributed stem behavior with the corresponding mixes; meet declared development precision/coverage/leakage/crossing limits across supported role and masking cases.
+- Compare attributed stem behavior with the corresponding mixes; meet declared development precision/coverage/leakage/crossing limits across supported role and masking cases. Reconcile external crossing, unison, quiet-part ownership and reference-coverage gaps from the accepted preparation packet before claiming the corresponding cases pass; authored controls alone cannot establish recorded accuracy.
 - Preserve role identity through crossings and articulation changes, including multiple notes in a chordal role and ambiguous sources; role names require evidence rather than frequency rank alone.
 - Retain source-bound role ranges, density, register, contour and articulation plus joint cross-role observations suitable for later learning.
 - Provide maintained native APIs with explicit budgets, failure behavior and original-time evidence; choose justified observation/separation methods rather than requiring a particular external model.
