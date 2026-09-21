@@ -116,7 +116,11 @@ references and numerical criteria; its measured controls earn no partial credit.
 Practical native observation execution is accepted again after repairing the
 progress snapshot race. Coherent setup-to-observing supervision, focused failure/
 cancellation checks and exact real-worker replay pass; unchanged numerical and
-resource results remain valid. The many-hour workload task is unblocked again.
+resource results remain valid. Native execution no longer blocks the many-hour
+workload task. Its [prospective scale packet](../CORPUS-SCALE.md) now identifies
+the remaining admitted-note-to-learner prerequisite, [NS-3_notes_03](NS-3_notes_03.md),
+which follows note identity and presence development. The added dependency earns
+no credit and does not turn raw observations into learned musical semantics.
 Provider accuracy and style acceptance remain separate downstream requirements.
 
 ## Dependency order

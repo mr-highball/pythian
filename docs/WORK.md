@@ -41,7 +41,48 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current work — coherent native supervision accepted — 2026-09-21
+## Current work — timed key evaluation and corpus workload prerequisites — 2026-09-21
+
+The fixed timed local-key diagnostic is implemented under ignored
+`build/local-key-reference/swd/timed-key.lpr` and compiles on checked stable
+Win64. The predeclared `TIMED-POLICY.md` binds two previously exposed compositions,
+full-source baseline/peak feature lattices, identical four-second cells and
+eight-second contexts, and separate annotator/coverage scoring. Neither the
+source nor thresholds were tuned against these timed results. Final QA runs
+controls, observes both WAVs before comparison, and passes identity, duration,
+resource and heap checks. The scientific gate fails: unanimous-frame exact key
+matching changes from 46.776% to 66.865% on source 02 and 47.481% to 35.581% on
+source 16. The mean improves, but the predeclared no-source-regression condition
+does not. The [tonal record](TONAL.md#timed-development-comparison) preserves all
+rankings, annotators, gaps, unknown duration and the concrete D-minor/F-major
+ambiguity. Next inspect tonic/mode and temporal evidence before declaring a new
+hypothesis; no retuning, maintained key adoption or completion credit follows.
+
+The independent [scale preparation](CORPUS-SCALE.md) identifies three development
+recordings with 2.3222053373 unique original-clock hours and prospective raw-job,
+storage, preparation and capacity budgets. Complete semantic workload commands
+cannot yet be supplied: raw salience lacks the admitted-note-to-learner bridge.
+The [scale task](TODO/NS-5_scale_01.md) now links its actual existing prerequisite,
+[recorded phrase admission](TODO/NS-3_notes_03.md), which follows note identity and
+presence development. No extra task, inferred independent song, benchmark or
+credit is created. The graph gains one edge, without a cycle or changed task
+count. Final QA accepts the preparation's metadata, exact duration/count
+arithmetic, capacity statements and acyclic linkage, while all five full scale
+criteria remain unfulfilled. Its preparation failure count stays zero.
+
+Batch 09 evidence is in `build/qa-batch-09/report.txt` and the frozen timed/scale
+handoffs. Timed observations complete once each in 7,360 / 10,078 ms including
+serialization, with zero owned leaks and unchanged frozen identities. A failed
+scientific hypothesis is not a code defect or failed implementation submission.
+The graph now has 49 tasks and 95 edges. No task moves or credit changes follow.
+
+Published inference repair `5eb5bfe335e904b01087ca7a9df9860ff41b15c9` passes
+[exact-head native CI](https://github.com/mr-highball/pythian/actions/runs/35590706260),
+covering Linux core/WFC integration and extracted consumers. The optional Win64
+runtime has its separate focused evidence below. Accounting remains **62.65%,
+38 open / 11 DONE**; review 04 is followed by one accepted closure.
+
+## Accepted checkpoint — coherent native supervision — 2026-09-21
 
 The [native execution task](TODO/DONE/NS-3_validation_02.md) is accepted again
 after the review's progress race is repaired. Phase and full timestamp are one
@@ -68,9 +109,10 @@ and 37.35 remaining. It is not new credit for a second implementation.
 This is one accepted closure after review 04's ten-DONE checkpoint; another
 accepted task is needed for the next routine review. The historical failed QA
 submission count stays at one. The [whole-pipeline workload task](TODO/NS-5_scale_01.md)
-is unblocked again; return to that work and the prepared timed local-key
-development comparison. Its predeclared policy remains private and unexecuted;
-no musical admission, genre acceptance or new key accuracy is claimed.
+had its native-execution prerequisite restored. Subsequent workload preparation
+above identifies the separate admitted-note bridge that still blocks full scale
+qualification. Timed-key work remains development evidence, without musical
+admission, genre acceptance or independent key accuracy claimed.
 
 ## Historical review — native supervision reopening — 2026-09-21
 

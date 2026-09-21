@@ -131,13 +131,18 @@ controlled/recorded arithmetic, short rate/channel cases, five-minute resampling
 representative failure/cancellation and continuous-hour workload evidence. The hour
 produces 360,000 raw observations in 2,420,266 ms, with 20,313-ms setup and
 103,051,264 bytes peak worker private memory, under unchanged limits. This
-unblocks [whole-pipeline workload budgeting](TODO/NS-5_scale_01.md) again after
-the progress snapshot repair passes focused QA.
+removes its execution blocker from [whole-pipeline workload budgeting](TODO/NS-5_scale_01.md)
+after the progress snapshot repair passes focused QA. The prospective
+[2.32-hour development workload](CORPUS-SCALE.md) separately exposes its remaining
+[admitted-note/learning bridge](TODO/NS-3_notes_03.md) prerequisite; no whole-corpus
+training result or extra completion credit is claimed.
 This work does not adopt failed note policies or change the recorded accuracy
 baseline. The latest infrastructure review found one supervision race; atomic
 publication and coordinated transition/failure checks now restore acceptance
-under the existing fourth criterion. Reference preparation and the improving
-development key diagnostic remain uncredited.
+under the existing fourth criterion. The [timed key comparison](TONAL.md#timed-development-comparison)
+improves one source and regresses on the other, failing its frozen scientific
+gate. Preserve the result and investigate interpretation/alternatives; reference
+preparation and this diagnostic remain uncredited.
 
 The tables below retain existing outcome anchors for topic links. They are
 navigation to the task files, not duplicate acceptance criteria. An outcome is

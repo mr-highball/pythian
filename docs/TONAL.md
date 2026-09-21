@@ -167,9 +167,9 @@ Both candidate WAV observations completed before interpretation. The declared
 A-major whole-excerpt key improves from rank 2 to rank 1; D minor remains rank 1.
 All six/seven original crop boundaries, 24 candidates and raw scores are retained.
 The observation runs take 4,110 / 5,046 ms and 127,746,048 / 156,991,488 planned
-FFT-work units, within the fixed budgets. The result supports the next declared
-step: evaluate this representation on the two already selected timed development
-references before maintained adoption or calibration. It does not establish
+FFT-work units, within the fixed budgets. That result led to the
+[timed development comparison](#timed-development-comparison) below, before
+maintained adoption or calibration. The initial pair does not establish
 local-key accuracy, confidence, unknown rejection or independent acceptance.
 
 ## Local-key reference candidate
@@ -232,11 +232,62 @@ likely key to ambiguous passages. Therefore inspect each supplied annotation
 policy, preserve disagreement and unknown regions, and group all versions of a
 composition together before choosing development and untouched evaluation cases.
 
-The next admission step belongs to [local-key acceptance](TODO/NS-3_context_01.md):
-use the accepted reference preparation and freeze estimator support, change/
-coverage limits and uncertainty handling before timed development scoring.
-This reference preparation does not establish
-genre suitability, calibrated unknown rejection or independent acceptance.
+The next admission step belongs to [local-key acceptance](TODO/NS-3_context_01.md).
+The fixed development comparison below uses the accepted reference preparation;
+supported change/coverage limits and calibrated uncertainty remain prerequisites
+to maintained admission and independent evaluation. Reference preparation alone
+does not establish genre suitability or unknown rejection.
+
+## Timed development comparison
+
+The predeclared baseline/peak comparison now passes its native mechanics and
+resource checks but fails its scientific requirement of improvement without a
+source regression. Both full original 22,050-Hz mono recordings were observed
+before comparison read either reference packet. The fixed 4,096-sample Hann /
+1,024-hop lattice supplies identical four-second output cells and centered
+eight-second aggregation contexts. Actual FFT support is retained separately;
+local boundaries do not create artificial padding. All 24 fits and score gaps
+remain available. The existing diatonic ranker is unchanged.
+
+| Development source | Unanimous labelled frames | Baseline exact root/mode matches | Peak exact root/mode matches |
+| --- | ---: | ---: | ---: |
+| HU33 D911-02 | 1,183,203 | 553,455 (46.776%) | 791,154 (66.865%) |
+| HU33 D911-16 | 2,223,522 | 1,055,754 (47.481%) | 791,154 (35.581%) |
+
+The unweighted two-source mean changes from 47.129% to 51.223%, but source 16
+regresses, so the frozen no-source-regression condition fails. Each annotator's original labelled
+denominator, matches, mismatches and unknown duration is preserved separately,
+alongside gaps, partial coverage and disagreement. All source frames reconcile.
+Both representations return a candidate for every output cell: unknown duration
+is zero. That is a forced development ranking, not demonstrated uncertainty
+calibration or evidence that unlabelled audio has a known key.
+
+The twelve known fundamentals and silence pass at this sample rate, as do
+partial-hop, final-cell and gap/change/unknown-duration controls. Sources 02/16
+produce 26/35 cells, with planned paired FFT work 214,106,112 / 293,142,528 and
+elapsed time including serialization 7,360 / 10,078 ms. Conservative owned
+clip/feature storage bounds are 35,622,560 / 42,479,072 bytes, not measured OS
+process peaks. Both remain within the predeclared 400-million-work, 60-second,
+128-MiB and 4-MiB-output limits. Checked stable Win64 runs report zero owned leaks.
+
+One retained source-16 example identifies a concrete interpretation limitation.
+At original frames [1,499,400, 1,587,600), all three annotators say D minor and
+the eight-second context contains no annotated change. Baseline ranks D minor
+then F major; peaks reverse those two. Both share the same diatonic pitch-class
+set and equal coverage within each representation. The candidate score gap is
+only 0.00171714. The preserved ranker distinguishes relative keys using fixed
+root/fifth bonuses; this gap is not confidence. This example motivates checking
+tonic/mode and temporal evidence, without claiming it explains every error.
+
+Policy/source and full reports remain under `build/local-key-reference/swd/`:
+`TIMED-POLICY.md`, `timed-key.lpr`, `TIMED-QA.md` and `timed-qa/`. Observation
+SHA256 values are `2ad757d0a2d2e8f507d767d76fde6fa04d4124fd127c2be839360f5fb37eb9bc`
+and `c5b58f59ee79838b57a3f1744a6ebb07759d93f0f989e3589d94ec0231d511e4`;
+the comparison is `e878b267b6f0e653d117f19d72b3c0e27257aec8ace904468d7256f2dad9173c`.
+The final verdict is in `build/qa-batch-09/report.txt`. Preserve this result and
+inspect its errors/alternatives before declaring another hypothesis. Do not tune
+these two recordings until they pass, adopt the candidate, claim independent
+accuracy or earn task credit. Other compositions remain untouched.
 
 ## Native inspection
 

@@ -51,9 +51,16 @@ coarse low-frequency bin mapping. It preserves the ranker, analysis clock and
 original observations. All twelve known-tone controls and silence pass before
 the two recorded runs: A major improves from rank 2 to 1, and D minor stays at 1.
 Both runs retain all crop/ranking evidence within fixed budgets, with no leaks.
-Next evaluate the representation against the prepared timed development
-references before maintained adoption or calibration. No independent key/change
-acceptance, confidence claim, maintained algorithm change or credit follows yet.
+The [timed development comparison](../TONAL.md#timed-development-comparison)
+now passes native controls, source/clock/denominator checks and fixed resource
+budgets. Exact matching on unanimous labelled frames changes from 46.776% to
+66.865% for source 02, but from 47.481% to 35.581% for source 16. The frozen
+no-source-regression condition fails despite the improved mean; do not adopt or
+retune this candidate. All three annotators, unknown duration, gaps and close
+alternatives remain recorded. A stable D-minor example instead ranks its relative
+F major, motivating inspection of tonic/mode and temporal evidence before a new
+declared hypothesis. No independent key/change acceptance, confidence claim,
+maintained algorithm change or credit follows. Other compositions stay untouched.
 
 **Acceptance Criteria:**
 

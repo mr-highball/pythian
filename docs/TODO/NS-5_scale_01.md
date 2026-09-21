@@ -25,6 +25,14 @@ The native execution prerequisite is accepted again after coherent progress
 supervision and focused replay pass. Retain the successful one-hour measurements
 as scoped evidence; they do not alone satisfy this whole-pipeline workload task.
 
+Preparation 2026-09-21: [the prospective workload](../CORPUS-SCALE.md) binds
+three development inputs and 2.3222053373 unique source-clock hours, with explicit
+source verification, preparation, storage and capacity ceilings. No new benchmark
+has run. The selected raw-observation path has no admitted-note-to-learner bridge;
+that existing responsibility belongs to NS-3_notes_03. The task remains open with
+zero completion credit. Genre quality and independent song coverage are not added
+as prerequisites for operational measurement.
+
 **Acceptance Criteria:**
 
 - Declare representative source counts, unique hours, rates/channels, event/feature density and all stages from decoding through semantic learning before benchmark runs.
@@ -37,3 +45,4 @@ as scoped evidence; they do not alone satisfy this whole-pipeline workload task.
 
 - [NS-5_corpus_01.md](DONE/NS-5_corpus_01.md)
 - [NS-3_validation_02.md](DONE/NS-3_validation_02.md)
+- [NS-3_notes_03.md](NS-3_notes_03.md)
