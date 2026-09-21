@@ -110,9 +110,14 @@ now also passes every-frame construction checks and exact replay. A prospective
 evaluation reservation passes identity checks but remains an unresolved family.
 The fixed development worksheet and [reviewed-reference builder](PART-REFERENCE.md)
 now pass native QA, preserving raw symbolic evidence and initially unknown acoustic
-labels. Remaining work is representative frozen families, reviewed role/acoustic
-annotations on these sources and supported-mixture acceptance thresholds; next
-inspect the fixed worksheet for defensible evidence and missing coverage. The
+labels. The [mixture policy](PART-MIXTURE-POLICY.md) now freezes supported scope,
+required scenarios and the existing per-role acceptance thresholds. Remaining work
+is representative frozen families, reviewed role/acoustic annotations and actual
+scenario coverage on these sources. The [fixed worksheet review](PART-EVALUATION.md#fixed-worksheet-review--2026-09-21)
+now records candidate score functions, silent material, simultaneous gate pitches,
+unclosed gates and retained bends. It exposes missing external repeated-note and
+acoustic-boundary evidence; candidate functions are not accepted waveform labels.
+Next resolve annotations on that fixed passage, retaining uncertain contributors. The
 publisher's original mix still fails its fixed summation check (13-LSB peak; 433 frames above the 11-LSB
 candidate bound). Preparation does not accept recorded inference. The task stays
 open at **62.65%** overall.

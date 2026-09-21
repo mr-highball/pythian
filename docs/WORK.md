@@ -41,7 +41,50 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current handoff — worksheet and reviewed-reference construction — 2026-09-21
+## Current handoff — mixture policy and fixed worksheet review — 2026-09-21
+
+The prior implementation goal turn made progress: the reviewed-reference builder
+and fixed worksheet were published at `60c419e`. The intervening configuration
+check changed no project capability. Continue [NS-3_parts_01](TODO/NS-3_parts_01.md)
+on the NS-5 prerequisite path.
+
+The [mixture policy](PART-MIXTURE-POLICY.md) now freezes initial scope, required
+scenarios, role/acoustic annotation rules and existing per-role gates. QA accepts
+the policy; preparation, uncertain challenges and independent learner admission
+remain separate. Linked task descriptions identify the final independent-admission
+integration owner without changing prerequisites or credit.
+
+The [fixed worksheet review](PART-EVALUATION.md#fixed-worksheet-review--2026-09-21)
+now passes checked native controls, exact report replay and rejection/preservation
+QA. It consumes only the accepted ten symbolic and ten amplitude documents and
+preserves all first-eight-second gates. The 20149-byte report covers 343 retained
+gates and 1521 raw events; maximum measured cost is 3621 ms and 15028224 bytes
+sampled private memory under the unchanged 5-second/64-MiB/256-KiB limits.
+
+One blocking implementation submission found signed-32-bit narrowing in a `Min`
+call on rational time. The helper's first repair uses an explicit 64-bit comparison
+and exercises the actual summary above 2^31. The second submission passes with
+zero leaks; the historical failure count is one and ownership does not transfer.
+Commands, source/input/policy identities and preserved failure evidence remain
+under `build/qa-batch-19/`. Runtime handles are terminal.
+
+Primary score-context review identifies bass/chordal/thematic candidates through
+cross-stem relationships, while actual role/acoustic annotations remain unknown.
+One stem is digitally silent, known gates do not supply a same-pitch overlap
+scenario, and retained bends prevent assuming nominal keys are constant sounding
+pitches. No hearing, external role accuracy or family independence is inferred.
+Next examine acoustic support on the same fixed passage, resolve defensible
+annotations with explicit uncertainty and map external scenario gaps; do not
+start another generic inventory or use model predictions as reference truth.
+The original mix's failed construction and provisional evaluation family remain
+unchanged. Final documentation, evidence meaning, links, accounting, privacy and
+publication scope pass review. This batch is ready for normal publication; its
+exact revision is reported separately.
+
+Completion stays **62.65%, 38 open / 11 DONE, 95 dependency edges**. This evidence
+advances the open preparation task; no completed learner or genre style is claimed.
+
+## Previous checkpoint — worksheet and reviewed-reference construction — 2026-09-21
 
 The preceding goal turn made progress by publishing verified derived preparation
 at `f8e24d2`; its

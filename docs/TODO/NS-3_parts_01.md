@@ -36,12 +36,19 @@ evidence, with acoustic/role labels still unknown. The
 targets and a file-bound scoring roundtrip, allowing reviewed intervals and
 uncertainty to become consistent center references without duplicate manual entry.
 
+The [mixture reference and admission policy](../PART-MIXTURE-POLICY.md) now freezes
+the initial supported scope, required scenarios and existing per-role gates.
+QA accepts its separation of reference preparation, uncertain challenges and
+independent learner acceptance; the policy does not supply missing annotations.
+
 Remaining acceptance: representative frozen recording families; role and
-acoustic-timing annotations on the prepared sources; supported mixture/cohort
-coverage and its frozen acceptance thresholds. Next review the fixed worksheet
-for defensible functional/temporal evidence and explicitly missing coverage, then
-bind reviewed annotations. MIDI gates are still symbolic aids. No partial credit
-is awarded.
+acoustic-timing annotations on the prepared sources; demonstrated supported
+mixture/cohort coverage under the frozen policy. The
+[fixed worksheet review](../PART-EVALUATION.md#fixed-worksheet-review--2026-09-21)
+now identifies candidate score functions, silent material, gate overlap and
+unmodeled performance messages. Next resolve acoustic support on the fixed passage
+and document scenario gaps before binding annotations. MIDI gates and candidate
+functions remain symbolic aids; no partial credit is awarded.
 
 **Acceptance Criteria:**
 

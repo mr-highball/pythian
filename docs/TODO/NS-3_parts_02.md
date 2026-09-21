@@ -12,6 +12,10 @@ Credit is earned only when every acceptance criterion and the task-flow completi
 
 Starting evidence: [SEPARATION](../SEPARATION.md) · [LAYERED-STYLE](../LAYERED-STYLE.md) · [INDEPENDENT-VOICES](../INDEPENDENT-VOICES.md).
 
+Use the [frozen mixture policy](../PART-MIXTURE-POLICY.md) for the initial packet's
+scope and per-role development gates. Its reference preparation does not establish
+inference accuracy; retain all required scenarios and unresolved ownership.
+
 **Acceptance Criteria:**
 
 - Recover supported simultaneous events from mixes, with explicit pitch/time/ownership uncertainty and unknown roles where evidence is insufficient.
@@ -24,4 +28,3 @@ Starting evidence: [SEPARATION](../SEPARATION.md) · [LAYERED-STYLE](../LAYERED-
 
 - [NS-3_parts_01.md](NS-3_parts_01.md)
 - [NS-3_notes_03.md](NS-3_notes_03.md)
-

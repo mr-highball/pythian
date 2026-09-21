@@ -13,6 +13,12 @@ The [reviewed-reference builder](PART-REFERENCE.md) now expands interval truth a
 complete uncertainty regions into consistent center cells. Its maintained file
 consumer preserves the current reference/scoring contract without inventing labels.
 
+The [mixture reference and admission policy](PART-MIXTURE-POLICY.md) freezes the
+initial supported scope, required scenarios, role/acoustic annotation rules and
+existing per-role gates before this packet is used for estimator selection or
+scoring. It separates uncertainty controls from complete-reference accuracy
+cases and keeps provisional recording families out of independent acceptance.
+
 The companion [overlapping-note interval API](OVERLAPPING-NOTES.md) now supplies
 separate onset/full-note assignments for chordal roles and repeated pitches;
 final checked Win32/Win64 validation passes. The [part-notes file metric](OVERLAPPING-NOTES.md#file-bound-role-timing)
@@ -263,6 +269,81 @@ Win32/Win64 tests and a generated-reference roundtrip through the current
 musical functions and acoustic labels, retaining uncertainty and missing coverage,
 then bind reviewed regions through that builder. No prediction is available to
 influence those labels, and no separate recording is consumed by this diagnostic.
+
+### Fixed worksheet review — 2026-09-21
+
+A cache-only native review now verifies and summarizes the accepted worksheet's
+ten symbolic and ten amplitude documents, without reading new audio, evaluating
+a model or opening the reserved second recording. It retains every gate starting
+in the fixed first eight seconds, plus separate full-scope and 250-ms context
+counts. Rational gate occupancy distinguishes simultaneous voices, distinct pitches,
+same-pitch multiplicity and conservative uncertainty. The table concerns the
+existing 30-second development scope; retained raw-event totals also include
+the separately declared context.
+
+| Stem | Gates starting in scope | Maximum distinct known gate pitches | Digitally zero 10-ms blocks / 3000 |
+| --- | ---: | ---: | ---: |
+| S00 | 29 | 3 | 708 |
+| S01 | 126 | 3 | 300 |
+| S02 | 66 | 5 | 314 |
+| S03 | 37 | 2 | 678 |
+| S04 | 13 | 4 | 1308 |
+| S05 | 29 | 5 | 694 |
+| S07 | 19 | 2 | 1427 |
+| S08 | 13 | 4 | 2520 |
+| S09 | 7 | 1 | 2515 |
+| S10 | 0 | 0 | 3000 |
+
+The complete retained input contains **343 gates and 1521 raw events**; four gates
+start in context (one S01, three S05). S02 and S03 each have one unclosed gate;
+each contributes 360960/96 microseconds of conservative uncertain occupancy in
+scope. S05's three unclosed gates start in context and contribute none in scope.
+There are no ambiguous pairings; maximum known same-pitch gate multiplicity is
+one in every active stem. That is a missing external repeated-note scenario,
+not proof that acoustic
+same-pitch tails never overlap. S10 has no gates and no nonzero stored samples
+here; it cannot supply a positive role-accuracy case.
+
+S01's bound source metadata identifies percussion. Its symbolic keys remain raw
+events, not acoustic semitone references, and its audio stays in the mix. Pitch-bend
+messages are retained for S00/S07/S08/S09 (256/128/33/32 respectively); S00 also
+contains changing noncentral raw bend values during its opening key gate. The
+renderer's bend range and sounding trajectories have not been established. Nominal
+key numbers therefore cannot silently become exact constant-pitch acoustic truth.
+
+The first-eight-second score-context review supports **candidate functions**, not
+admitted waveform labels:
+
+- S03's repeated pitch 50 begins with S02's simultaneous 57/62/65, and its move
+  to 55 begins with S02's 55/59/62/67. Repeated root support coordinated with those
+  chords makes S03 a bass candidate; this reasoning uses their relationship,
+  not its instrument name or lowest frequency alone.
+- S02's coordinated groups and S05's sustained 74/77/81 group support chordal
+  candidates. They may share a function; one stem per role is not required.
+- S00's opening changing line and later return to 64/67/64/62 support a thematic
+  lead candidate. Foreground function and its bent acoustic pitches still need
+  evidence. S04 and S07 retain unresolved supporting functions; S08/S09 have no
+  starts in the fixed first eight seconds but do have later events in the scope.
+
+This is a primary score-context review using the hash-bound gate table and raw
+messages, with no listening verdict. Candidate functions are recorded separately
+from the still-unknown acoustic references. Do not relabel whole stems over all
+30 seconds from the opening passage or omit unresolved pitched contributors.
+The next annotation work must examine the actual fixed passage, distinguish
+per-note support from aggregate stem energy, and retain bends, acoustic tails
+and unresolved roles explicitly under the [frozen mixture policy](PART-MIXTURE-POLICY.md).
+It must also establish which required scenarios the external packet covers;
+crossings, relative-energy masking and same-pitch acoustic overlap remain unproven.
+
+Final checked Win64 controls, exact summary replay and output/path preservation
+pass with zero leaks. Runs take 3621/3432 ms, at most 15028224 bytes sampled private
+memory, and emit 20149 bytes, within 5 seconds/64 MiB/256 KiB. The first submission
+exposed a signed-32-bit `Min` overload on rational time; an explicit 64-bit clamp
+and regression above 2^31 pass the repaired submission without changing limits.
+The private report `build/role-review/qa-a.json` has SHA256
+`13703fce36ff2c5d54a8bf68ee0780d5e1adbf0c644045c039859281153b3e15`;
+its source, policy, input bindings and complete QA remain in `build/qa-batch-19/`.
+This review closes no task and changes no milestone credit.
 
 <a id="authored-stem-mix-controls--2026-09-21"></a>
 ### Authored stem/mix controls — 2026-09-21

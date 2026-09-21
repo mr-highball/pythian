@@ -12,6 +12,11 @@ Credit is earned only when every acceptance criterion and the task-flow completi
 
 Starting evidence: [LAYERED-STYLE](../LAYERED-STYLE.md) · [PHRASE-EVALUATION](../PHRASE-EVALUATION.md).
 
+The [frozen mixture policy](../PART-MIXTURE-POLICY.md) defines the initial scope,
+per-role gates and family/exposure rules. Current part metrics remain diagnostic;
+this task must integrate and verify independent case admission on the final path
+before reporting a separate-recording acceptance verdict.
+
 **Acceptance Criteria:**
 
 - Freeze final attribution, preprocessing and uncertainty policy before the held-out matched-stem/mix packet is used.
@@ -24,4 +29,3 @@ Starting evidence: [LAYERED-STYLE](../LAYERED-STYLE.md) · [PHRASE-EVALUATION](.
 
 - [NS-3_parts_02.md](NS-3_parts_02.md)
 - [NS-3_validation_02.md](DONE/NS-3_validation_02.md)
-
