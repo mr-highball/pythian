@@ -2,11 +2,11 @@
 
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Completed tasks](DONE/README.md) · [Work record](../WORK.md)
 
-**Execution resumed — 2026-09-20; updated 2026-09-21: 38 open tasks, 11 DONE. Starting with NS-5, then following prerequisite blockers.**
+**Execution resumed — 2026-09-20; updated 2026-09-21: 38 open tasks, 12 DONE. Starting with NS-5, then following prerequisite blockers.**
 This catalog covers the remaining declared end state. Task files own acceptance
 criteria and hard prerequisites; this page supplies navigation and accounting.
-No task earns credit merely by being written. Accepted task credit is **7.15**;
-**37.35 overall points remain**. Baseline 55.5 + accepted 7.15 = **62.65 current**.
+No task earns credit merely by being written. Accepted task credit is **7.40**;
+**37.10 overall points remain**. Baseline 55.5 + accepted 7.40 = **62.90 current**.
 
 ## Goal ledger
 
@@ -14,11 +14,11 @@ No task earns credit merely by being written. Accepted task credit is **7.15**;
 | --- | ---: | ---: | ---: | ---: |
 | [NS-1 — Independent Pascal foundation](../MILESTONES.md#ns-1) | 100% | 0 | 0 | 0.00 |
 | [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 80% | 3 | 20 | 5.00 |
-| [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 37% | 15 | 63 | 15.75 |
+| [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 38% | 15 | 62 | 15.50 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 96% | 1 | 4 | 0.60 |
 | [NS-5 — Many-hour styles that generate and blend usefully](../MILESTONES.md#ns-5) | 27% | 16 | 73 | 14.60 |
 | [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 72% | 3 | 28 | 1.40 |
-| **Total** | **62.65 weighted points** | **38** | Per-goal credits are not summed across goals | **37.35** |
+| **Total** | **62.90 weighted points** | **38** | Per-goal credits are not summed across goals | **37.10** |
 
 NS-1 is already complete under the accepted extraction scope. Preserve its
 invariants in every applicable task; do not recreate completed extraction work.
@@ -48,7 +48,7 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 | [NS-3_notes_01.md](NS-3_notes_01.md) — Resolve recorded pitch identity and register | +4 | +1.00 | TODO |
 | [NS-3_notes_02.md](NS-3_notes_02.md) — Resolve note presence, attacks and endings | +4 | +1.00 | TODO |
 | [NS-3_notes_03.md](NS-3_notes_03.md) — Accept independent phrases and feed saved learning | +5 | +1.25 | TODO |
-| [NS-3_parts_01.md](NS-3_parts_01.md) — Prepare attributed stems and mixture evaluation | +2 | +0.50 | TODO |
+| [NS-3_parts_01.md](NS-3_parts_01.md) — Qualify the external attributed-mixture reference packet | +1 | +0.25 | TODO |
 | [NS-3_parts_02.md](NS-3_parts_02.md) — Learn simultaneous notes and part ownership | +7 | +1.75 | TODO |
 | [NS-3_parts_03.md](NS-3_parts_03.md) — Accept role learning on independent mixtures | +4 | +1.00 | TODO |
 | [NS-3_harmony_01.md](NS-3_harmony_01.md) — Learn and accept harmonic relationships | +6 | +1.50 | TODO |
@@ -106,6 +106,12 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 | [NS-4_layers_04.md](DONE/NS-4_layers_04.md) | Staged durations and dependent context, protected native stream state and exact rejected-edit rollback | +4 NS-4 | +0.60 |
 | [NS-4_styles_02.md](DONE/NS-4_styles_02.md) | Independent semantic/sound blends, canonical repeated evidence, complete reblend lineage and preserved unrelated states | +4 NS-4 | +0.60 |
 | [NS-3_validation_02.md](DONE/NS-3_validation_02.md) | Bounded raw observations; numerical/resource evidence and repaired coherent progress supervision with focused replay | +5 NS-3 | +1.25 restored |
+| [NS-3_parts_04.md](DONE/NS-3_parts_04.md) | Maintained per-role and interval scorers, reference builder and reproducible authored controls; all five criteria and current tested identities verified | +1 NS-3 | +0.25 |
+
+The [preparation split](../MILESTONES.md#mixture-preparation-task-split) increases
+the catalog from 49 to 50 tasks while preserving its total credit. The accepted
+measurement deliverable accounts for one of the original two NS-3 points;
+the external reference packet retains the other point and remains open.
 
 Current dependency chain: `NS-5_corpus_02` -> `NS-5_evaluation_01`; shared
 `NS-3_validation_01` is accepted after repair. Return to style cards and comparator
@@ -146,7 +152,7 @@ first accepted genre is predetermined.
 11. [NS-3_notes_01.md](NS-3_notes_01.md)
 12. [NS-3_notes_02.md](NS-3_notes_02.md)
 13. [NS-3_notes_03.md](NS-3_notes_03.md)
-14. [NS-3_parts_01.md](NS-3_parts_01.md)
+14. [NS-3_parts_04.md — DONE](DONE/NS-3_parts_04.md), then [NS-3_parts_01.md](NS-3_parts_01.md)
 15. [NS-3_parts_02.md](NS-3_parts_02.md)
 16. [NS-3_parts_03.md](NS-3_parts_03.md)
 17. [NS-3_harmony_01.md](NS-3_harmony_01.md)

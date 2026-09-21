@@ -100,6 +100,56 @@ or requiring every downstream acceptance before useful upstream work can begin.
 The index's dependency order is a valid order, not a requirement to serialize
 every unrelated task or expand staffing.
 
+## Task size and investigation stop points
+
+Before starting a work batch, name the task acceptance criterion it advances,
+the concrete deliverable, the evidence that will close that criterion, and the
+stop/switch condition. Prefer a usable API, integrated consumer, reference packet
+or accepted result. A diagnostic is justified by the specific decision it must
+resolve; writing another tool or collecting another report is not the outcome.
+
+A batch is a bounded implementation/investigation deliverable and its handoff,
+not an individual tool call. Track the count in the work record across turns,
+agent handoffs and context changes; those transitions do not reset it.
+
+After **two consecutive work batches without closing an acceptance criterion**,
+stop the current investigation sequence and reassess before authorizing another
+batch. Record the two results, why acceptance did not advance, and one of these
+next actions in WORK.md and the owning task:
+
+- Finish a bounded deliverable using the existing evidence and tools, with its
+  remaining acceptance checks named explicitly.
+- Split an oversized task into independently useful, verifiable deliverables.
+  Map every original criterion to its new owner, preserve true dependencies,
+  redistribute only the original unearned credit, and update the catalog and
+  milestones in the same change. QA must assess any completed portion against
+  its complete criteria before it moves to DONE.
+- Follow a concrete prerequisite or record an external blocker and its unblock
+  condition. Preserve failures and uncertainty; do not silently replace the goal
+  with a smaller passing claim.
+
+The reassessment must change the next action. Rephrasing the same investigation,
+adding a diagnostic-only task, changing the tested window or renaming a failed
+hypothesis does not reset the checkpoint. A further experiment needs a genuinely
+different, evidence-backed decision path, a fixed budget and an explicit result
+that will end it. Apply the existing two-unsuccessful-attempt rule as well; neither
+rule authorizes indefinite variations on a failed approach.
+
+Split at deliverable boundaries, not by coding steps, agent assignments or number
+of reports. Do not weaken acceptance, hide missing cases, create baseline-history
+tasks or award points for analysis merely to make DONE activity visible. A scored
+measurement API and a qualified external reference packet can be separate
+deliverables; a new plot and its summary normally cannot. If research reveals a
+distinct required capability, use the gap process below and return to the current
+agreed scope.
+
+At each batch handoff record criteria closed, criteria still open, current stop
+point and next deliverable. Before starting another batch, check whether the
+task remains consumable. Milestone progress must reflect accepted capability;
+long-running research is reported honestly rather than becoming an endless
+sequence of nominal progress updates. This checkpoint applies immediately to
+active work, including investigations already underway.
+
 ## Discover a gap without losing the current task
 
 When a gap requires another task, **stop the scope expansion immediately,

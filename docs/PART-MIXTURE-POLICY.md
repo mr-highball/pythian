@@ -137,8 +137,12 @@ by this policy. Current part metrics remain diagnostic-only and cannot grant
 `independent_case_pass`; the final independent case/admission integration remains
 part of the subsequent role-learning acceptance work.
 
-`NS-3_parts_01` closes only when its source bindings, annotations, frozen families,
-scenario coverage, native measurements and reproducible packet satisfy all task
-criteria. `NS-3_parts_02` owns the actual attribution implementation and development
+After the [scope-preserving task split](MILESTONES.md#mixture-preparation-task-split),
+`NS-3_parts_04` owns maintained native measurements, reference construction and
+reproducible authored controls. `NS-3_parts_01` closes only when its external source
+bindings, annotations, frozen families, scenario coverage and reproducible packet
+satisfy all task criteria, with parts_04 accepted as its prerequisite.
+`NS-3_parts_02` owns the actual attribution implementation and development
 gates; `NS-3_parts_03` owns its untouched-recording verdict and saved-evidence path.
-This policy changes no prerequisite, credit allocation or current open status.
+The split preserves the combined preparation requirements and total credit;
+all numerical gates and scientific dispositions in this policy remain unchanged.

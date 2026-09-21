@@ -25,9 +25,75 @@ final checked Win32/Win64 validation passes. The [part-notes file metric](OVERLA
 combines interval and center evidence; the center-only diagnostic below remains
 available for callers without complete event annotations.
 
-This is a component of the open attributed-mixture task. Center agreement does
+The [maintained measurement/control task](TODO/DONE/NS-3_parts_04.md) is accepted;
+the [external reference packet](TODO/NS-3_parts_01.md) remains open. Center agreement does
 not establish event timing, continuous identity through a crossing, acoustic
 source separation or an accepted mixture learner. Those criteria remain open.
+
+## Preparation coverage audit — 2026-09-21
+
+This inventory applies the [frozen policy](PART-MIXTURE-POLICY.md) to the current
+packet. The [external-packet task](TODO/NS-3_parts_01.md) owns the remaining work.
+Authored controls establish measurement behavior, while external annotations
+must establish what sounds and which musical functions the source supplies.
+
+| Required scenario | Authored evidence | External development evidence | Separate evaluation evidence |
+| --- | --- | --- | --- |
+| Bass with lead/counterline | Four-role packet with explicit construction | Bass function reviewed locally; lead candidate retains bend and tail uncertainty | Missing |
+| Chordal accompaniment and simultaneous parts | Three-note chords with other roles | Two chordal source functions reviewed; complete acoustic pitch sets/intervals unresolved | Missing |
+| Pitch-order crossing | Annotated endpoint reversal and wrong-owner control | No qualified crossing annotation | Missing |
+| Same-pitch overlap/unison | Two distinct overlapping lead events; coincident lead/chordal pitch | Symbolic concurrency reviewed; acoustic multiplicity/ownership not qualified | Missing |
+| Quiet pitched part beneath other material | Bound isolated energy contrast and abstention control | No accepted external energy/ownership case | Missing |
+| Rests and boundaries | Constructed gates, silent regions and false-rest control | One isolated bass interval exported; three source-local rests; joined/edge intervals unknown | Missing |
+| Uncertain ownership or extent | Explicit uncertain regions and exclusion controls | Unresolved source roles, registration and overlapping tails retained | Missing |
+| Articulation/performance | Constructed attacks/releases | Raw bends/controllers retained; source interpretation unresolved | Missing |
+
+The development stems and exact derived mix are bound and verified. The second
+recording remains provisional: distinct source UUID/path/score hashes do not
+establish unrelated works. No missing row is converted to success by averaging
+over the authored controls. Family qualification requires bounded source-work
+and duplicate/derivative evidence, not a particular publisher attestation.
+
+Existing operators are sufficient to represent reviewed intervals, uncertain
+regions and center references. The next packet work is annotation, family
+qualification and assembly. Reconstructing the historical renderer or perfectly
+transcribing all external stems is outside this preparation requirement; useful
+external role/scenario coverage and honest uncertainty remain required. These
+distinctions preserve the downstream mixture learner and independent-acceptance
+criteria without expanding preparation into an indefinite investigation.
+
+## First external bass reference — 2026-09-21
+
+The bounded seven-event review now produces a usable source-local reference
+through the maintained builder. Original keys, renderer triggers and reviewed
+acoustic pitches remain distinct. At 16000 Hz, the first S03 event is annotated
+as bass, note 38, on `[48047,70950)`: its separately reviewed low harmonic family
+supports the pitch, and exact stored support supplies the declared endpoints.
+The component has 22573 nonzero and 330 internal zero samples; internal zeros
+do not split the event. Bordering zero runs are 48047 and 1080 samples.
+
+The same fixed pass retains all seven events. Events 1–4 share `[72030,117386)`;
+events 5–6 share `[120078,132000)` with a context trigger and a censored right
+edge. Their individual extents remain unknown. No silence threshold was fitted
+to isolate more notes. The convention groups across zero runs shorter than 1024
+samples, while retaining every raw run for review; it is not a perceptual limit.
+
+The draft keeps the entire first-eight-second scope: 800 centers, one known event,
+three source-local rest regions and two unknown regions. It does not certify the
+complete bass role in the mix, other contributors or reference-complete accuracy.
+This closes the bounded support investigation; retain the unknowns when assembling
+the external packet rather than continuing segmentation variants.
+
+Checked stable Win64 controls, support-report replay and rejection preservation
+pass with zero leaks. The 22028-byte report takes 463/481 ms, at most 5459968
+sampled private bytes, inside 10 seconds/64 MiB/4 MiB. The unchanged maintained
+builder then produces identical 77851-byte references in 725/695 ms, at most
+9158656 sampled private bytes, also with zero leaks. The final reference SHA256 is
+`3e480852c296838161787e551cf9416405c6d60c52b8d4d4690b9b30704ae124`.
+The complete seven-event decision and source/policy bindings are under
+`build/role-reference-draft/`; final evidence is in `build/qa-batch-22/`.
+This is primary reference annotation and representation acceptance, not listening
+or an independent mixture-learner verdict.
 
 ## Core contract
 

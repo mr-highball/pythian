@@ -41,7 +41,49 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current handoff — verified bass source correspondence — 2026-09-21
+## Current handoff — task-size reassessment and first external interval — 2026-09-21
+
+The previous goal checkpoint made progress with source correspondence at
+`711ab4c`; its exact-head CI run 35629646771 is now verified successful. However,
+the last two diagnostic batches established acoustic support and source mapping
+without closing an original parts_01 acceptance criterion. The user's task-flow
+review correctly identified the oversized task and risk of endless investigation.
+
+Apply the new [mandatory checkpoint](TASKFLOW.MD#task-size-and-investigation-stop-points)
+immediately. The [scope reconciliation](MILESTONES.md#mixture-preparation-task-split)
+splits the existing two-point preparation scope into maintained measurement/control
+delivery (parts_04, one NS-3 point) and qualified external references (parts_01,
+one point). Every original criterion retains an owner, and inference still depends
+on both through the prerequisite chain. The split alone earns no credit. Final
+QA verifies all five maintained-deliverable criteria and twelve current tested
+identities; [parts_04 is moved to DONE](TODO/DONE/NS-3_parts_04.md). Reuse of the
+applicable checked-target results avoids redundant suites. NS-3 moves 37% → 38%;
+overall **62.65 + 0.25 = 62.90%**. The catalog now has **50 tasks: 38 open,
+12 DONE**, with **96 dependency edges** and unchanged total scope allocation.
+
+The [bounded support investigation](PART-EVALUATION.md#first-external-bass-reference--2026-09-21)
+is finished. Its fixed native pass retains all seven bass events and finds one
+isolated component. Primary acoustic/function review admits note 38 on
+`[48047,70950)` in the isolated source. Other events retain joined/edge uncertainty.
+The unchanged native builder exports a complete 800-center reference with one
+known event, three source-local rest regions and two unknown regions. This is
+usable external annotation evidence, not complete ensemble or learner acceptance.
+
+Final QA passes support controls, exact report replay, rejection preservation
+and reference-builder replay with zero leaks. The report is 22028 bytes and the
+reference 77851 bytes. Full hashes, commands, scope and all-seven decisions are in
+`build/qa-batch-22/` and `build/role-reference-draft/`. No runtime handles remain.
+Boundary/checker helper submission failures are zero; historical summary remains
+one. No algorithm, model, musical gate or source window changed.
+
+Next deliverable: assemble the development external case/coverage inventory from
+existing annotations and explicit unknowns, then qualify the reserved family
+under a frozen reference-only identity/duplicate review and finish packet assembly.
+Do not continue digital-silence variants or historical-renderer reconstruction.
+Record criteria closed at every batch handoff; two batches without a criterion
+closing require a changed approach or deliverable split before more investigation.
+
+## Previous checkpoint — verified bass source correspondence — 2026-09-21
 
 The preceding goal turn made progress by publishing fixed acoustic support and
 register findings at `41b1500`. Continue [NS-3_parts_01](TODO/NS-3_parts_01.md) on the

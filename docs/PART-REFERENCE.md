@@ -92,6 +92,27 @@ automatic correction, acceptance threshold, dependency or completion criterion.
 The editing input below stays unchanged; richer original/trigger/acoustic evidence
 belongs in the bound annotation record, not competing meanings of `note`.
 
+### Stored-signal endpoints
+
+For an isolated reviewed event, a reference may explicitly use the first stored
+nonzero sample and one past the last stored nonzero sample as half-open endpoints.
+Record that convention and the source preparation: quantization can shorten
+support, and a release can extend beyond the symbolic key gate. This convention
+does not measure perceptual duration or recover the unquantized waveform.
+
+Retain maximal exact-zero runs and the rule used to group support across shorter
+gaps. A zero crossing is not an event boundary; even a sustained zero run does
+not by itself establish pitch, role or a new musical event. Use separate acoustic
+identity and source-correspondence evidence. Joined tails, multiple plausible
+contributors and observation edges leave individual endpoints unresolved.
+
+A reference for one isolated stem describes only that source's contribution.
+It cannot certify the full mixture's role pitch set, silence or ownership when
+other contributors are unreviewed. Keep the complete source-event ledger beside
+the editing input, including events that cannot be represented as known intervals.
+Their regions stay uncertain rather than becoming inferred rests. Exporting a
+valid incomplete reference does not establish complete-reference accuracy.
+
 ### Command and editing input
 
 ```text
