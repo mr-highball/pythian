@@ -124,8 +124,10 @@ explicitly. This is an initial reference-packet requirement, not enough evidence
 for genre/generalization claims. All stems, mixes, excerpts and re-encodings of a
 recording stay in its family and split. Register source-work identity and a bounded
 duplicate/derivative review; different file hashes alone do not verify independence.
-Unresolved membership stays provisional. The current second recording reservation
-does not yet pass this gate.
+Unresolved membership stays provisional. The initial second recording reservation
+was provisional at policy freeze; the later [source-work and bounded content review](PART-EVALUATION.md#qualified-initial-recording-families--2026-09-21)
+qualifies the two named families, retaining its explicit conflict restriction and
+reference-only exposure. It does not qualify other material or model-training overlap.
 
 Reference-only preparation exposure must be recorded separately from algorithm
 tuning. Keep evaluation audio/labels and predictions out of implementation tuning;

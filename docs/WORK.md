@@ -41,7 +41,58 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current handoff — task-size reassessment and first external interval — 2026-09-21
+## Current handoff — assembled development cases and family review — 2026-09-21
+
+The previous goal turn made progress by publishing the generalized Athena
+task-flow checkpoint on its requested branch. Resume the existing first assembly
+batch after the preparation-task reassessment; the side task did not reset that
+count. Pythian's preceding `77033ff` CI run 35632989540 is verified successful.
+
+Final batch-23 QA accepts the [assembled development cases](PART-EVALUATION.md#assembled-external-development-cases--2026-09-21):
+all ten stems and their mix, complete notices, contributor/scenario inventory,
+the reviewed bass interval and explicit uncertainty travel together. The native
+operator reproduces scoring after relocation outside the repository. The copied
+event scores 143 correct centers and one onset/full-note pair; omission scores
+143 misses; the same contribution in an unknown mixture remains unscorable.
+All independent/accuracy verdicts remain false because predictions are scripted
+from references and the references are incomplete. This closes AC4's application
+of the frozen policy to the assembled cases, without learner or task credit.
+
+Both fresh packets reproduce every byte; rejection preserves prior artifacts.
+Assembly takes 6147/5611 ms, at most 65728512 sampled private bytes, with zero
+leaks. Relocated CLI report content matches; its existing terminal CRLF is the
+only stdout difference. The separate fixed family screen also passes controls,
+replay and preservation: no complete or 32-onset matches across the two scores.
+Its negative finding alone is not a family qualification. Full terminal results,
+commands and source/policy identities remain in `build/qa-batch-23/`.
+
+The source-work review resolves the reserved score's missing title through its
+exact publisher filename key and corroborating matched-recording metadata.
+The development score's embedded title and original filename agree, but its
+matched-recording association conflicts. Preserve that conflict, keep both
+development associations ineligible for evaluation and base source identity on
+the actual original score. The separate decision, evidence hashes and frozen
+membership/exposure are in `build/role-family-identity/DECISION.md`. Final QA
+verifies the exact source hashes/keys, both lookup rows, full notice and conflict
+restriction and accepts AC3 for these two families. The [qualified split](PART-EVALUATION.md#qualified-initial-recording-families--2026-09-21)
+does not establish model-training independence or qualify other archive material.
+
+This first assembly batch closes AC3 and AC4, so consecutive batches without
+criterion closure return to zero. AC1/2/5 remain partial.
+Next deliverable: prepare the qualified evaluation family's full contributor
+binding and derived mixture under the existing fixed gain/clock rules, preserving
+reference-only exposure, then complete useful role annotations for both families.
+The maintained preparation operator currently admits only the development source;
+extend that explicit provenance contract before running evaluation preparation.
+Do not restart digital-support, renderer-history or duplicate-threshold studies.
+
+Final documentation QA passes: claims, local links, task graph/accounting, privacy, whitespace and six-file publication scope are checked. This checkpoint is ready for publication.
+
+No task moves in this batch: **62.90%, 38 open / 12 DONE, 96 dependency edges**.
+Both new implementation submission-failure counters remain zero; the historical
+worksheet-summary failure remains one. No model, musical gate or format changes.
+
+## Previous checkpoint — task-size reassessment and first external interval — 2026-09-21
 
 The previous goal checkpoint made progress with source correspondence at
 `711ab4c`; its exact-head CI run 35629646771 is now verified successful. However,

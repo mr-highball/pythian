@@ -147,6 +147,39 @@ on the generated grid. Crossing checks reuse the part scorer without publishing
 a self-score as evidence. Additional file limits are 32768 role/center cells,
 262144 pitch entries, 8 MiB documents and 1 GiB source WAV.
 
+## Assembled development reference cases
+
+The [accepted development packet](PART-EVALUATION.md#assembled-external-development-cases--2026-09-21)
+uses this builder and the maintained `pythian.evaluate CASE.json` operator without
+a new reference or case format. Its manifest SHA256 is
+`8a43ce9a433df6bddd00d98bea302601907a87d9cf5f4aa9a3d8ac03fa78c4c3`.
+The frozen source-local reference retains one reviewed bass event, all 800 centers,
+three source-local rests and explicit unknown regions. The complete contributor
+inventory prevents that isolated contribution from becoming a complete mixture
+reference; all four mixture-role references remain unknown.
+
+`bass-copy-case.json`, `bass-omit-case.json` and `mix-contribution-case.json` bundle
+all relative scoring inputs, including annotation/scoring policies and exposure
+ledgers. Their scripted predictions explicitly depend on the reference evidence.
+Copying the folder preserves scoring; the maintained CLI was verified from an
+outside-repository working directory. Exit zero establishes a valid report, not
+passing metrics or independent acceptance. All three metric/independence verdicts
+remain false, including the copied note's numerically exact match.
+
+The accompanying preparation, worksheet and spectral/view manifests preserve
+upstream identities. Their full-length source files and raw spectra are external
+provenance inputs, not implicitly bundled reconstruction assets. All ten excerpt
+stems, the exact derived mix and complete source notices are included unchanged.
+Repository units remain the compilation dependency for the copied implementation
+snapshots. The packet README gives the distinction and reproduction commands;
+[scoring commands and measured results](PART-EVALUATION.md#assembled-external-development-cases--2026-09-21)
+are documented alongside the current coverage audit.
+
+This accepts policy application to the assembled incomplete development cases
+(AC4). It neither fills the remaining external annotation/scenario gaps nor
+qualifies a reserved evaluation family. The external-packet task remains open
+without additional completion credit.
+
 ## Verification
 
 Final checked stable Win32/Win64 builder and complete file fixtures pass with

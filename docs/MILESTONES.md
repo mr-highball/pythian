@@ -131,7 +131,14 @@ or complete mixture annotation. The [first exported bass reference](PART-EVALUAT
 now supplies one supported interval and retained unknown regions; the bounded
 support investigation is finished. The [accepted measurement/control deliverable](TODO/DONE/NS-3_parts_04.md)
 earns its redistributed one-point NS-3 credit. The external reference packet
-remains open, including family qualification and source/scenario coverage. The
+remains open. Its [assembled development cases](PART-EVALUATION.md#assembled-external-development-cases--2026-09-21)
+now reproduce native scoring after relocation and correctly retain unknowns and
+reference-derived prediction ancestry. This closes policy application for those
+cases; useful chordal/lead references, evaluation preparation and complete
+source/scenario coverage still gate task completion. The [initial family split](PART-EVALUATION.md#qualified-initial-recording-families--2026-09-21)
+is also accepted through source-work identity and a fixed content screen, with
+the conflicting development metadata association conservatively excluded from
+evaluation. Neither criterion closure earns partial task credit. The
 publisher's original mix still fails its fixed summation check (13-LSB peak; 433 frames above the 11-LSB
 candidate bound). Preparation does not accept recorded inference. The task stays
 open; accepted maintained measurement brings overall completion to **62.90%**.

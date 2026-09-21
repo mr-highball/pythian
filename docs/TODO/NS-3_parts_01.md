@@ -30,16 +30,28 @@ bass/chordal functions and source mapping are reviewed. The first source-local
 bass [annotation](../PART-EVALUATION.md#first-external-bass-reference--2026-09-21)
 uses [48047,70950), note 38; other joined/edge events remain
 unknown. That partial stem reference does not complete the mixture packet.
-The second family remains provisional. Native scorer and exporter acceptance
-does not discharge these missing source/annotation requirements.
+The assembled development cases now retain all contributors, uncertainty and
+source/reference ancestry; native scoring survives relocation. Their scripted
+predictions remain diagnostic. Native scorer and exporter acceptance does not
+discharge missing source/annotation requirements.
 
-Next bounded deliverable: assemble the development case inventory using the
-existing reviewed intervals, functions and uncertainty, accounting for every
-contributor and required scenario. Its acceptance evidence is a reproducible
-source-bound packet and explicit coverage ledger, not another spectral study.
-Then qualify the reserved family's source-work/duplicate relationships under a
-frozen reference-only protocol, prepare its references, and verify both groups
-through the native operators. Record each criterion closed at the batch handoff.
+Batch-23 handoff: AC4's policy application is accepted for the
+[assembled development cases](../PART-EVALUATION.md#assembled-external-development-cases--2026-09-21).
+AC1/2/5 remain partial: useful chordal/lead reference intervals, evaluation sources
+and the complete two-family packet are still missing. AC3 is accepted through
+the [qualified initial split](../PART-EVALUATION.md#qualified-initial-recording-families--2026-09-21),
+including conservative treatment of a conflicting development metadata match.
+No task credit is earned.
+This first assembly batch after reassessment closes a criterion; the consecutive
+no-criterion-closure count is zero. Preserve this count across handoffs.
+
+Next bounded deliverable: bind every contributor of the qualified reserved
+family, extend the maintained preparation operator's explicit source/exposure
+contract, and prepare its fixed-gain exact-sum mixture. Reuse accepted operators;
+keep reference preparation separate from tuning. Then finish useful role
+annotations and verify the complete native packet. Its closing evidence remains
+both families' source-bound coverage and reproducible scoring, with all unknowns
+and missing scenarios visible.
 
 Stop condition: the seven-event digital-support investigation is finished. Retain
 its unresolved events; do not vary silence thresholds or reconstruct the source

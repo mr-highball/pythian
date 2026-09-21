@@ -49,15 +49,18 @@ must establish what sounds and which musical functions the source supplies.
 | Articulation/performance | Constructed attacks/releases | Raw bends/controllers retained; source interpretation unresolved | Missing |
 
 The development stems and exact derived mix are bound and verified. The second
-recording remains provisional: distinct source UUID/path/score hashes do not
-establish unrelated works. No missing row is converted to success by averaging
+recording was initially provisional; the qualified initial recording families
+section below records its later accepted split. Distinct source UUID/path/score
+hashes alone do not establish unrelated works. No missing row is converted to success by averaging
 over the authored controls. Family qualification requires bounded source-work
 and duplicate/derivative evidence, not a particular publisher attestation.
 
 Existing operators are sufficient to represent reviewed intervals, uncertain
-regions and center references. The next packet work is annotation, family
-qualification and assembly. Reconstructing the historical renderer or perfectly
-transcribing all external stems is outside this preparation requirement; useful
+regions and center references. The next packet work is annotation, evaluation-family
+preparation and broader packet coverage. The bounded assembly below now retains
+the existing evidence and applies its scoring policy. Reconstructing the historical
+renderer or perfectly transcribing all external stems is outside this preparation
+requirement; useful
 external role/scenario coverage and honest uncertainty remain required. These
 distinctions preserve the downstream mixture learner and independent-acceptance
 criteria without expanding preparation into an indefinite investigation.
@@ -94,6 +97,133 @@ The complete seven-event decision and source/policy bindings are under
 `build/role-reference-draft/`; final evidence is in `build/qa-batch-22/`.
 This is primary reference annotation and representation acceptance, not listening
 or an independent mixture-learner verdict.
+
+## Assembled external development cases — 2026-09-21
+
+The fixed packet now combines all ten derived stems and their exact mix, complete
+notices, the eight-second source-local bass reference, contributor/scenario
+inventory, uncertainty regions and exposure ancestry. The 30.25-second WAV
+excerpts remain unchanged; scoring uses `[0,128000)` at 16000 Hz. Only note 38
+on `[48047,70950)` has a complete reviewed acoustic interval. Other active
+regions and all full-mixture role pitch sets remain unknown.
+
+The [maintained evaluator](../tools/pythian.evaluate.lpr) scores the bundled
+relative cases. With the accepted packet available locally, from the repository
+root:
+
+```powershell
+New-Item -ItemType Directory -Force build/part-evaluate/units | Out-Null
+fpc -B -Sa -Cr -Co -Ci -gl -gh -Fusrc -Futools -FUbuild/part-evaluate/units -FEbuild/part-evaluate tools/pythian.evaluate.lpr
+./build/part-evaluate/pythian.evaluate.exe build/role-development-packet/qa-a/bass-copy-case.json
+./build/part-evaluate/pythian.evaluate.exe build/role-development-packet/qa-a/bass-omit-case.json
+./build/part-evaluate/pythian.evaluate.exe build/role-development-packet/qa-a/mix-contribution-case.json
+```
+
+Each case covers 800 centers and uses the current `part-notes` contract:
+
+| Scripted diagnostic | Center result | Interval result |
+| --- | --- | --- |
+| Copy the reviewed isolated bass event | 143 correct note cells | One onset and one full-note pair |
+| Omit that event | 143 missed note cells | No pairs |
+| Carry the isolated contribution into the unknown mix reference | 143 admitted-unscorable note cells; no known-note denominator | Predicted event remains unscorable |
+
+All three retain `metrics_pass: false`, `independent_case_pass: false` and
+`prediction_ancestry_independent: false`, with reason
+`prediction-depends-on-reference`. These controls exercise the frozen policy's
+application to incomplete references; they are not learner predictions or
+independent accuracy. Command exit zero means a valid report. This completes
+AC4 policy application for the assembled cases, not the open external-packet
+task or its remaining role/scenario and evaluation-family requirements; no task
+credit is awarded.
+
+Checked stable Win64 assembly, exact replay, overwrite/outside-root rejection
+and relocated CLI scoring pass with zero leaks. The packet has 74 files:
+14213152 artifact bytes plus its 9957-byte manifest, SHA256
+`8a43ce9a433df6bddd00d98bea302601907a87d9cf5f4aa9a3d8ac03fa78c4c3`.
+Assembly takes 6147/5611 ms, with at most 65728512 bytes sampled private memory,
+within 60 seconds/128 MiB/32 MiB. Relocated scoring takes 1299 ms; report content
+matches the bundled report, with only the CLI's terminal CRLF differing.
+
+The packet's README distinguishes bundled scoring inputs from provenance-only
+external caches. Cases resolve paths relative to their own files and run after
+copying the packet outside the repository. Reconstructing the assembly requires
+its frozen source cache and repository units; this checkpoint does not claim
+asset-free reconstruction. Full commands, hashes and preservation checks remain
+in `build/qa-batch-23/`. See the [reference packet contract](PART-REFERENCE.md#assembled-development-reference-cases).
+
+## Source-family score screen — 2026-09-21
+
+A separately authorized score-only review compares the complete original scores
+of development Track00001 and reserved Track00002. It retains declared identity
+text privately and compares pitched note-on content globally and per track/channel.
+The fixed normalization removes leading offset, uniform tick-time scale and global
+pitch transposition while retaining multiplicity. Every contiguous 32-onset window
+is compared; there is no fitted distance threshold or phrase-length sweep.
+
+The native report contains 2061/2365 pitched onsets from 9781/9348 decoded events
+and 3781/4394 phrase windows. It finds no complete global or lane correspondence
+and no shared 32-onset signature groups; no detail groups are omitted. These are
+negative findings under the declared screen, not an automatic independence
+verdict. Durations, velocity, instrumentation, performance messages and conventional
+drum-channel notes are excluded. Short quotations, inversions, local rhythm edits
+and changed accompaniment/interleaving can evade this comparison. Source-work
+identity review and model-training overlap remain separate; the reservation is
+not promoted by this report. Raw personal identity strings stay private.
+
+Checked Win64 authored controls, exact replay and rejection preservation pass
+with zero leaks. Runs take 1617/1543 ms with at most 8626176 bytes sampled private
+memory, within 10 seconds/64 MiB/1 MiB. The 13606-byte private report SHA256 is
+`f3284471acd321811b3cf2d607cfbd4e83b86e16a0690ba6b8f1477a64ca850e`.
+Its policy and evidence remain in `build/role-family-review/` and
+`build/qa-batch-23/`; no audio, role annotation, prediction or model selection
+was performed for the reserved source.
+
+## Qualified initial recording families — 2026-09-21
+
+The source-work review supplements the frozen content screen with the publisher's
+[original-filename index](https://colinraffel.com/projects/lmd/) and the
+[matched-recording identity index](https://github.com/craffel/midi-dataset#file-lists).
+Both original score MD5s exactly match their declared UUIDs and filename-index
+keys; SHA256 bindings continue to identify the actual inputs. The development
+score's original filenames agree with its embedded work title. The reserved
+score has no embedded title, but its indexed work/artist agrees with the matched
+recording's identity. These are coherent distinct work identities, used together
+with the bounded negative content comparison, rather than inferred from hashes.
+
+The development score's matched-recording association names a different work.
+Retain that conflict: the inferred match is not authoritative over the original
+score and must not become an acoustic label. Conservatively keep both development
+associations ineligible for evaluation. This is a leakage restriction, not a
+claim the differently named works are the same composition. Raw lookup rows,
+identities and complete attribution remain private with the source packet.
+
+Final QA accepts Track00001 as development and Track00002 as reserved evaluation
+for this initial packet. Each family includes all original stems/scores, mixes,
+excerpts, re-encodings, annotations and descendants; do not divide a family by
+instrument or window. This qualifies AC3, not unseen archive material or future
+ambiguous relationships. Reference-only score review is recorded separately from
+tuning; evaluation audio and annotations remain unprepared. If reference inspection
+influences implementation selection, demote that entire family to development and
+reserve fresh material for independent acceptance. Model-training overlap remains
+unknown. The screen's stated limitations and all incomplete musical references
+remain; no independent accuracy or genre verdict follows.
+
+The frozen decision SHA256 is
+`a8163978ed1cd303e79b39ed606e228676cde6a100908553e2f050214f155db5`,
+with final acceptance in `build/role-family-identity/ACCEPTANCE.md`. The publisher
+filename index is 24857245 bytes, SHA256
+`9002b7723f3edeca779e91688802fdd283b8df0c278162a4040f95bde5895805`;
+the recording index is 84046293 bytes, SHA256
+`f9bb19e7f5d39b22c958a3653f0fac60411fb0e4f0405f5a547d613d81adaa3a`.
+The latter was obtained through the publisher-linked HTTP endpoint when HTTPS
+was unavailable; it is corroborating/conflict evidence rather than sole identity
+authority. The earlier candidate ledger, native screen and development cases
+retain their historically provisional fields; they are immutable snapshots.
+Future preparation must bind this accepted decision and preserve the split.
+
+Family investigation stops on this scoped disposition. AC3 and AC4 are closed;
+useful external role annotations and evaluation preparation remain under AC1/2/5.
+The task stays open with no additional percentage credit.
 
 ## Core contract
 
@@ -280,7 +410,9 @@ score bytes. It checks only declared UUID/original-score path and exact score
 hash. The three identity comparisons differ. This excludes those exact collisions;
 related arrangements, transpositions and estimator training overlap remain unknown.
 The reservation remains provisional, with `independent_family_verified: false`.
-No new note-content parsing, audio inspection or prediction exposure occurs.
+That initial identity audit performed no note-content parsing, audio inspection
+or prediction exposure. The later [score-only screen](#source-family-score-screen--2026-09-21)
+adds a separately declared, bounded source-work review.
 
 Checked Win64 controls, bound ledger execution and wrong-hash/overwrite rejection
 pass with zero leaks. The audit takes 248 ms and 2699264 bytes sampled private
