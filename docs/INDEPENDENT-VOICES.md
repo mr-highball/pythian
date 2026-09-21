@@ -34,6 +34,65 @@ symbolic arrangement, optionally guided by measured WAV performance. A saved con
 and tempo providers, including profiles produced by explicit WAV admission.
 This does not infer independent voice notes from mixed recordings.
 
+## Provider compatibility and replacement
+
+[`pythian.wfc.provider.contracts`](../adapters/wfc/pythian.wfc.provider.contracts.pas)
+declares each output's typed vocabulary, musical clock domain, PPQ, extent,
+uniform grid or fixed partition, pitch basis and canonical unknown/rest policy.
+Voice outputs carry a caller-declared `RoleId`; joint rhythm outputs carry the
+complete ordered `RoleOrder`. The named session derives that vector from its
+actual voice names. Equal vector lengths or token indices cannot substitute for
+the same ordered identities. Required inputs remain explicit WFC projections;
+`CopyProvider` exposes them for named voices and `CopyInputs` for mapped sessions.
+
+`TNamedVoiceSession.CopyContract` returns detached metadata.
+`TryReplaceProvider(Name, Model, Contract, Seed, Generated, Replacement, Proof)`
+validates the candidate before rebuilding its actual dependent WFC graph. A
+successful replacement publishes only after full independent proof; unrelated
+musical latent states and unrelated pending masks remain exact. An incompatible
+contract raises a diagnostic; an expected unsatisfiable candidate returns false.
+Both preserve the previous accepted result and owned models. Constructors may
+optionally receive one explicit contract per musical provider.
+
+Compatibility requires the same vocabulary, named role or ordered role vector,
+clock domain, PPQ, effective output boundaries, scope, pitch basis and unknown
+semantics. Current pitch-bearing codecs use absolute MIDI pitches. Relative-key
+pitch, nonempty key-reference conversions and acoustic palette identities are
+explicitly rejected. A new token repertoire is allowed only when actual retained
+constraints and projections remain valid. The native independent-voice graph
+requires aligned equal cells; it rejects unequal provider layouts.
+
+For unequal timing, `TCompatibleProviderSession` wraps the existing
+[`TLearnedLayerSession`](LAYERS.md) with the same semantic admission and owned
+contracts. Its explicit projections reuse uniform-grid and fixed-partition
+broadcast, start-tick and whole-cell mappings, including existing gap, endpoint
+and full-coverage rejection. A rhythm-to-voice projection must use the action at
+that voice's declared joint-role slot. Contracts own the layout; duplicate scope
+or grid arrays in generation options are rejected. This general session retains
+the underlying layer API's automatic inclusion of pending dirty roots during
+regeneration; the named voice API instead keeps unrelated pending edits staged.
+
+Optional `Source` evidence retains source hash and measurement identity, original
+PPQ, tempo changes, sample rate, frame offset, original tick/frame boundaries and
+an explicit conversion identity. Admission checks every retained boundary through
+the existing native tempo/frame mapping. Different source/output PPQ or origins
+require an explicit exact rational conversion; fractional-tick or mismatched-frame
+conversions reject. The original coordinates remain available from `CopyContract`.
+These fields preserve a caller's measurement binding; they do not authenticate an
+external file or establish inference accuracy. Empty source evidence makes no
+measured-source claim.
+
+The maintained [independent caller fixture](../tests/pythian.tests.voices.lpr)
+includes successful role replacement, contradiction recovery, semantic rejection,
+ordered-role permutation rejection, source conversion ownership, mapped broadcast
+and replacement, and start-tick versus whole-span behavior. Final checked stable
+FPC 3.2.2 Win32/Win64 fixtures pass, with no unfreed blocks. Three demo scenarios
+per target retain all 24 baseline WAV/preview/MIDI/JSON artifacts exactly.
+Commands and logs are under `build/provider-compatibility/`; the five-criterion
+review and tested source identities are in `build/qa-batch-03/`.
+[NS-4_layers_02](TODO/DONE/NS-4_layers_02.md) is accepted. This verifies explicit
+provider semantics and replacement, not role inference or listening quality.
+
 ## Named independent-voice API
 
 `TNamedVoiceSession` in

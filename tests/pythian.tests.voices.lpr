@@ -32,11 +32,16 @@ uses
   pythian.wfc.voices,
   pythian.wfc.providers,
   pythian.wfc.layers,
+  pythian.wfc.provider.contracts,
+  pythian.wfc.context,
+  pythian.wfc.style,
+  pythian.time,
   wfc,
   wfc_model,
   wfc_sequence,
   wfc_sequence_learn,
   wfc_sequence_text,
+  wfc_sequence_graph,
   wfc_music,
   wfc_music_sequence,
   wfc_music_ensemble,
@@ -500,10 +505,351 @@ begin
   end;
 end;
 
+procedure ProviderReplacement;
+var
+  LConfig: TWfcMusicVoicesGraphConfig;
+  LSession: TNamedVoiceSession;
+  LOptions: TVoiceSessionOptions;
+  LContract: TProviderContract;
+  LBad: TProviderContract;
+  LGenerated: TWfcMusicVoicesGenerated;
+  LBefore: TWfcMusicVoicesGenerated;
+  LModel: TWfcSequenceModel;
+  LBadModel: TWfcSequenceModel;
+  LReport: TGraphNegotiationReport;
+  LReplacement: TLayerModelReplacementReport;
+  LProof: TWfcMusicVoicesValidationReport;
+  LIndex: Integer;
+  LCase: Integer;
+  LLead: Integer;
+  LRejected: Boolean;
+begin
+  LConfig := Config;
+  LSession := nil;
+  LModel := nil;
+  LBadModel := nil;
+  try
+    LOptions := DefaultVoiceSessionOptions;
+    LOptions.CellCount := 3;
+    LSession := TNamedVoiceSession.Create(LConfig, ['bass', 'chords', 'lead'], LOptions);
+    FreeConfig(LConfig);
+    Check(LSession.TryGenerate(LGenerated, LReport, LProof), 'Replacement baseline');
+    LBefore := LSession.CopyAccepted;
+    LLead := 67;
+    if LGenerated.Frames[0].Voices[2].Tones[0].Pitch = 67 then
+    begin
+      LLead := 79;
+    end;
+    LModel := SingleModel(VoiceToken(wmcaAttack, [LLead]), VoiceToken(wmcaHold, [LLead]),
+      VoiceToken(wmcaRest, []));
+    LBadModel := SingleModel(VoiceToken(wmcaAttack, [76]), VoiceToken(wmcaHold, [76]),
+      VoiceToken(wmcaRest, []));
+    LSession.SetConstraints('bass', PitchMask(36));
+    LContract := LSession.CopyContract('lead');
+    LContract.Source.SourceSha256 := StringOfChar('a', 64);
+    LContract.Source.MeasurementIdentity := 'authored-clock-fixture';
+    LContract.Source.ConversionIdentity := 'explicit-exact-ppq-960-to-480';
+    LContract.Source.SampleRate := 44100;
+    LContract.Source.SourceFrames := 33075;
+    LContract.Source.SourceTicksPerQuarter := 960;
+    LContract.Source.SourceLengthTicks := 1440;
+    SetLength(LContract.Source.TempoChanges, 1);
+    LContract.Source.TempoChanges[0].MicrosecondsPerQuarter := 500000;
+    SetLength(LContract.Source.OriginalTicks, 4);
+    SetLength(LContract.Source.OriginalFrames, 4);
+    for LIndex := 0 to 3 do
+    begin
+      LContract.Source.OriginalTicks[LIndex] := LIndex * 480;
+      LContract.Source.OriginalFrames[LIndex] := LIndex * 11025;
+    end;
+    Check(LSession.TryReplaceProvider('lead', LModel, LContract, 531,
+      LGenerated, LReplacement, LProof), 'Compatible declared role/model replacement');
+    Check(LGenerated.Frames[0].Voices[2].Tones[0].Pitch = LLead, 'Replacement changed the role');
+    Check(LReplacement.ReplacedLayerIndex = 4, 'Named replacement identity');
+    for LIndex := 0 to 3 do
+    begin
+      SameLayer(LBefore, LGenerated, LIndex);
+    end;
+    Check(LSession.HasPending('bass'), 'Replacement preserves unrelated pending edits');
+    LContract.Source.OriginalFrames[1] := 1;
+    LContract := LSession.CopyContract('lead');
+    Check(LContract.Source.OriginalFrames[1] = 11025, 'Original measurement mapping owned');
+    Check((LContract.Source.SourceTicksPerQuarter = 960) and
+      (LContract.TicksPerQuarter = 480), 'Original and converted PPQ both recoverable');
+    LBefore := LSession.CopyAccepted;
+    for LCase := 0 to 10 do
+    begin
+      LBad := CopyProviderContract(LContract);
+      case LCase of
+        0: LBad.RoleId := 'bass';
+        1: LBad.TicksPerQuarter := 240;
+        2: LBad.MusicalDomain := 'unrelated-clock';
+        3: LBad.Vocabulary := spvOnsets;
+        4: LBad.PitchBasis := ppbRelativeKey;
+        5: LBad.KeyReference := 'different-key';
+        6: LBad.PaletteIdentity := 'numeric-palette';
+        7: LBad.TimeGrid.TicksPerCell := 241;
+        8: LBad.UnknownPolicy := 'unknown-is-rest';
+        9: Inc(LBad.Source.OriginalFrames[1]);
+        10: LBad.Source.ConversionIdentity := '';
+      end;
+      LRejected := False;
+      try
+        LSession.TryReplaceProvider('lead', LModel, LBad, 99, LGenerated, LReplacement, LProof);
+      except
+        on LException: Exception do
+        begin
+          LRejected := LException.Message <> '';
+        end;
+      end;
+      Check(LRejected, 'Incompatible provider must reject with a diagnostic');
+      for LIndex := 0 to 4 do
+      begin
+        SameLayer(LBefore, LGenerated, LIndex);
+      end;
+      Check(LSession.HasPending('bass'), 'Incompatible replacement retains unrelated pending edits');
+    end;
+    Check(not LSession.TryReplaceProvider('lead', LBadModel, LContract, 77,
+      LGenerated, LReplacement, LProof), 'Collectively infeasible candidate preserves old model');
+    for LIndex := 0 to 4 do
+    begin
+      SameLayer(LBefore, LGenerated, LIndex);
+    end;
+    FreeAndNil(LModel);
+    LModel := LSession.CopyModel('lead');
+    Check(LModel.FindPublicToken(VoiceToken(wmcaAttack, [LLead])) >= 0,
+      'Failed replacement retains accepted model');
+    FreeAndNil(LModel);
+    LModel := LSession.CopyModel('rhythm');
+    LBad := LSession.CopyContract('rhythm');
+    Check((LBad.RoleOrder[0] = 'bass') and (LBad.RoleOrder[2] = 'lead'),
+      'Joint rhythm declares actual ordered role identities');
+    LBad.RoleOrder[0] := 'lead';
+    LBad.RoleOrder[2] := 'bass';
+    LRejected := False;
+    try
+      LSession.TryReplaceProvider('rhythm', LModel, LBad, 99, LGenerated, LReplacement, LProof);
+    except
+      on EAudio do LRejected := True;
+    end;
+    Check(LRejected, 'Equal-length joint role permutation rejects before mutation');
+    LBad := LSession.CopyContract('rhythm');
+    Check(LBad.RoleOrder[0] = 'bass', 'Joint role metadata owns its vector');
+    for LIndex := 0 to 4 do SameLayer(LBefore, LGenerated, LIndex);
+    Check(LSession.HasPending('bass'), 'Rejected role permutation retains pending edit');
+  finally
+    LBadModel.Free;
+    LModel.Free;
+    LSession.Free;
+    FreeConfig(LConfig);
+  end;
+end;
+
+function ContractFor(const AName: String; const AVocabulary: TStyleProviderVocabulary;
+  const ACount, AStep: Integer): TProviderContract;
+begin
+  Result := Default(TProviderContract);
+  Result.Name := AName;
+  Result.Vocabulary := AVocabulary;
+  Result.MusicalDomain := 'authored-composition';
+  Result.TicksPerQuarter := 480;
+  Result.Scope := MakeLayerScope(ACount, wseWhole);
+  Result.TimeGrid := MakeLayerTimeGrid(0, AStep);
+  Result.UnknownPolicy := ProviderUnknownPolicy(AVocabulary);
+end;
+
+function LearnOne(const AFirst, ASecond: TWfcModelTokens): TWfcSequenceModel;
+var
+  LSamples: TWfcSequenceSamples;
+begin
+  SetLength(LSamples, 2);
+  LSamples[0] := MakeWfcSequenceSample(AFirst);
+  LSamples[1] := MakeWfcSequenceSample(ASecond);
+  Result := LearnSequenceModelCorpus(LSamples, 1);
+end;
+
+procedure MappedComposition;
+var
+  LLayers: TLearnedLayers;
+  LProjections: TLayerProjections;
+  LContracts: TProviderContracts;
+  LSession: TCompatibleProviderSession;
+  LOptions: TLayerGenerationOptions;
+  LGenerated: TLayerSequences;
+  LBefore: TLayerSequences;
+  LReport: TGraphNegotiationReport;
+  LReplacement: TLayerModelReplacementReport;
+  LModel: TWfcSequenceModel;
+  LIndex: Integer;
+  LCase: Integer;
+  LRejected: Boolean;
+begin
+  LLayers := nil;
+  LSession := nil;
+  LModel := nil;
+  SetLength(LLayers, 3);
+  SetLength(LContracts, 3);
+  SetLength(LProjections, 1);
+  try
+    LLayers[0].Model := LearnOne([TempoContextToken(500000)], [TempoContextToken(600000)]);
+    LLayers[1].Model := LearnOne([RhythmOnsetToken, RhythmOnsetToken],
+      [RhythmEmptyToken, RhythmEmptyToken]);
+    LLayers[2].Model := SingleModel(TempoContextToken(700000), TempoContextToken(700000),
+      TempoContextToken(700000));
+    LContracts[0] := ContractFor('clock-choice', spvTempo, 1, 960);
+    LContracts[1] := ContractFor('onsets', spvOnsets, 2, 480);
+    LContracts[1].TimeGrid := MakeLayerTimePartition([0, 240, 960]);
+    LContracts[2] := ContractFor('independent', spvTempo, 3, 320);
+    LProjections[0].Provider := 0;
+    LProjections[0].Consumer := 1;
+    LProjections[0].TimeMapping := ltmWholeCell;
+    SetLength(LProjections[0].Rules, 2);
+    LProjections[0].Rules[0] := MakeWfcSequenceProjectionRule(RhythmOnsetToken,
+      [TempoContextToken(500000)]);
+    LProjections[0].Rules[1] := MakeWfcSequenceProjectionRule(RhythmEmptyToken,
+      [TempoContextToken(600000)]);
+    LOptions := DefaultLayerGenerationOptions;
+    LSession := TCompatibleProviderSession.Create(LLayers, LProjections, LContracts, LOptions);
+    Check(LSession.TryGenerate(LGenerated, LReport), 'Uniform broadcast to fixed unequal cells');
+    LBefore := LSession.CopyAccepted;
+    { The mapping rules intentionally include both provider alternatives. A model
+      replacement must retain all referenced tokens, even if its chosen path changes. }
+    LModel := LearnOne([TempoContextToken(600000)], [TempoContextToken(500000)]);
+    LLayers[0].Constraints := nil;
+    SetLength(LLayers[0].Constraints, 1);
+    LLayers[0].Constraints[0] := MakeWfcSequenceTokenConstraint(0, [TempoContextToken(600000)]);
+    LSession.SetConstraints('clock-choice', LLayers[0].Constraints);
+    Check(LSession.TryReplaceProvider('clock-choice', LModel, LContracts[0], 33,
+      LGenerated, LReplacement), 'Mapped compatible provider replacement');
+    Check((LGenerated[1].Tokens[0] = RhythmEmptyToken) and
+      (LGenerated[1].Tokens[1] = RhythmEmptyToken), 'Dependent mapped choices rebuilt');
+    for LIndex := 0 to High(LBefore[2].StateIndices) do
+    begin
+      Check(LBefore[2].StateIndices[LIndex] = LGenerated[2].StateIndices[LIndex],
+        'Mapped replacement retains unrelated latent states');
+    end;
+    FreeAndNil(LSession);
+    FreeAndNil(LModel);
+    FreeAndNil(LLayers[0].Model);
+    FreeAndNil(LLayers[1].Model);
+    LLayers[0].Constraints := nil;
+    LLayers[0].Model := LearnOne([TempoContextToken(500000), TempoContextToken(600000)],
+      [TempoContextToken(500000), TempoContextToken(600000)]);
+    LLayers[1].Model := LearnOne([RhythmOnsetToken], [RhythmOnsetToken]);
+    LContracts[0] := ContractFor('clock-choice', spvTempo, 2, 480);
+    LContracts[0].TimeGrid := MakeLayerTimePartition([0, 240, 960]);
+    LContracts[1] := ContractFor('onsets', spvOnsets, 1, 960);
+    SetLength(LProjections[0].Rules, 1);
+    for LCase := 0 to 1 do
+    begin
+      if LCase = 0 then
+      begin
+        LProjections[0].TimeMapping := ltmStartTick;
+      end
+      else
+      begin
+        LProjections[0].TimeMapping := ltmWholeCell;
+      end;
+      LSession := TCompatibleProviderSession.Create(LLayers, LProjections, LContracts, LOptions);
+      Check(LSession.TryGenerate(LGenerated, LReport) = (LCase = 0),
+        'Start-tick sample differs from whole-span conjunction');
+      FreeAndNil(LSession);
+    end;
+    LContracts[1].TimeGrid := MakeLayerTimeGrid(960, 240);
+    LRejected := False;
+    try
+      LSession := TCompatibleProviderSession.Create(LLayers, LProjections, LContracts, LOptions);
+    except
+      on EAudio do
+      begin
+        LRejected := True;
+      end;
+    end;
+    Check(LRejected, 'Exclusive endpoint cannot supply a consumer');
+    LContracts[1].TimeGrid := MakeLayerTimeGrid(0, 960);
+    LContracts[0].TicksPerQuarter := 960;
+    LRejected := False;
+    try
+      LSession := TCompatibleProviderSession.Create(LLayers, LProjections, LContracts, LOptions);
+    except
+      on EAudio do
+      begin
+        LRejected := True;
+      end;
+    end;
+    Check(LRejected, 'No implicit PPQ normalization across composed providers');
+  finally
+    LSession.Free;
+    LModel.Free;
+    for LIndex := 0 to High(LLayers) do
+    begin
+      LLayers[LIndex].Model.Free;
+    end;
+  end;
+end;
+
+procedure JointRoleAdmission;
+var
+  LLayers: TLearnedLayers;
+  LContracts: TProviderContracts;
+  LProjections: TLayerProjections;
+  LSession: TCompatibleProviderSession;
+  LRhythm: String;
+  LVoice: String;
+  LCase: Integer;
+  LRejected: Boolean;
+begin
+  SetLength(LLayers, 2);
+  SetLength(LContracts, 2);
+  SetLength(LProjections, 1);
+  LSession := nil;
+  try
+    LRhythm := EncodeWfcMusicRhythmFrame(MakeWfcMusicRhythmFrame([wmcaRest, wmcaAttack]));
+    LVoice := VoiceToken(wmcaAttack, [60]);
+    LLayers[0].Model := LearnOne([LRhythm], [LRhythm]);
+    LLayers[1].Model := LearnOne([LVoice], [LVoice]);
+    LContracts[0] := ContractFor('joint', spvRhythm, 1, 240);
+    SetLength(LContracts[0].RoleOrder, 2);
+    LContracts[0].RoleOrder[0] := 'bass';
+    LContracts[0].RoleOrder[1] := 'lead';
+    LContracts[1] := ContractFor('line', spvVoice, 1, 240);
+    LContracts[1].PitchBasis := ppbAbsoluteMidi;
+    LProjections[0].Provider := 0;
+    LProjections[0].Consumer := 1;
+    LProjections[0].TimeMapping := ltmStartTick;
+    SetLength(LProjections[0].Rules, 1);
+    LProjections[0].Rules[0] := MakeWfcSequenceProjectionRule(LVoice, [LRhythm]);
+    for LCase := 0 to 2 do
+    begin
+      case LCase of
+        0: LContracts[1].RoleId := 'lead';
+        1: LContracts[1].RoleId := 'bass';
+        2: LContracts[1].RoleId := 'missing';
+      end;
+      LRejected := False;
+      try
+        LSession := TCompatibleProviderSession.Create(LLayers, LProjections, LContracts,
+          DefaultLayerGenerationOptions);
+      except
+        on EAudio do LRejected := True;
+      end;
+      Check(LRejected = (LCase <> 0), 'Joint action projection binds named role slot');
+      FreeAndNil(LSession);
+    end;
+  finally
+    LSession.Free;
+    LLayers[0].Model.Free;
+    LLayers[1].Model.Free;
+  end;
+end;
+
 begin
   Exercise;
   Boundaries;
   PairAndRange;
   LayerCapacity;
+  ProviderReplacement;
+  MappedComposition;
+  JointRoleAdmission;
   WriteLn('Named voices: owned typed roles, collective proof, selective edits, pending preservation and recovery pass');
 end.

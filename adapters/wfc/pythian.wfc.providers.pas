@@ -82,6 +82,8 @@ type
     { Present for caller-declared independent voice roles only. Pitch identity
       is explicit; the name is never evidence of inferred instrument ownership. }
     RoleId: String;
+    { Joint rhythm actions use this exact caller-declared role order. }
+    RoleOrder: TLayerNames;
     PitchIdentity: TStylePitchIdentity;
     MinimumPitch: Integer;
     MaximumPitch: Integer;

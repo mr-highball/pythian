@@ -10,6 +10,7 @@
 | [NS-6_delivery_02](NS-6_delivery_02.md) — Clean native targets and successful remote CI | 2026-09-21 | +14 NS-6 | +0.70 |
 | [NS-3_validation_01](NS-3_validation_01.md) — Executable shared musical evaluation and admission | 2026-09-21 | +2 NS-3 | +0.50 |
 | [NS-4_layers_01](NS-4_layers_01.md) — Reusable named harmony and voice passes | 2026-09-21 | +6 NS-4 | +0.90 |
+| [NS-4_layers_02](NS-4_layers_02.md) — Semantic provider compatibility and transactional replacement | 2026-09-21 | +4 NS-4 | +0.60 |
 
 Previously accepted capability stays in the milestone baseline; it is not
 backfilled as new DONE work.

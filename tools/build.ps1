@@ -52,6 +52,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Shared evaluation compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.evaluation$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Shared evaluation checks failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.evaluation.style.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Style distribution compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.evaluation.style$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Style distribution checks failed' }
   & $compilerPath @compilerArgs '-Futools' 'tests/pythian.tests.evaluation.files.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'File-bound evaluation compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.evaluation.files$executableSuffix") (Join-Path $buildRoot 'evaluation-files')

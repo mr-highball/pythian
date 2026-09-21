@@ -235,6 +235,11 @@ failure and comparisons remain under `build/journal-partition-operator/`.
 
 ## First style coverage packet
 
+The working [style-card and comparator specification](STYLE-CARDS.md) separates
+same-recording provider accuracy from generated musical distributions and joint
+relationships. It records source-bound level observations, remaining annotation
+gaps and provider-specific shuffle semantics. Its genre cards are not yet frozen.
+
 The following are **planning floors for the first evaluation**, not measured
 genre sufficiency. Change them only before freezing/using evaluation material,
 with a recorded coverage rationale. Meeting hours or counts alone does not close

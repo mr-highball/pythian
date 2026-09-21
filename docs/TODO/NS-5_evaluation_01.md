@@ -12,6 +12,16 @@ Credit is earned only when every acceptance criterion and the task-flow completi
 
 Starting evidence: [CORPUS-EVALUATION](../CORPUS-EVALUATION.md) · [LAYERED-STYLE](../LAYERED-STYLE.md).
 
+In progress 2026-09-21: the [working specification](../STYLE-CARDS.md) defines
+provider-specific comparator semantics and preserves the fixed listening packet.
+A native distribution measure distinguishes generated-style fit from aligned
+transcription scoring, retaining recording balance and missing-data coverage.
+The original master-WAV level study supplies a controlled acoustic example.
+Final checked Win32/Win64 numeric controls and native master-WAV studies pass;
+evidence is retained in `build/qa-batch-03/`. Required genre reference assignments, musical annotations
+and calibrated per-provider numerical criteria remain missing; this task stays
+open with no partial credit. Those gaps are already within the criteria below.
+
 **Acceptance Criteria:**
 
 - Ground each style card in reference WAV observations across context, groove, harmony, bass/voice relationships, sound/envelope and phrase/section structure; mark required, optional and unsupported traits explicitly.
@@ -23,4 +33,3 @@ Starting evidence: [CORPUS-EVALUATION](../CORPUS-EVALUATION.md) · [LAYERED-STYL
 **Blockers**
 
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
-

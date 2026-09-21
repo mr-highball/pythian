@@ -36,7 +36,8 @@ uses
   wfc_music_ensemble,
   wfc_music_voices_graph,
   pythian.wfc.layers,
-  pythian.wfc.providers;
+  pythian.wfc.providers,
+  pythian.wfc.provider.contracts;
 
 type
   TVoiceSessionOptions = record
@@ -67,6 +68,7 @@ type
     FCommitted: TVoiceMasks;
     FDirty: array of Boolean;
     FAccepted: TWfcMusicVoicesGenerated;
+    FContracts: TProviderContracts;
     function IndexOf(const AName: String): Integer;
     function NegotiationOptions: TGraphNegotiationOptions;
     procedure ApplyMask(const AIndex: Integer;
@@ -76,13 +78,22 @@ type
       out AProof: TWfcMusicVoicesValidationReport);
   public
     constructor Create(const AConfig: TWfcMusicVoicesGraphConfig;
-      const ARoleNames: array of String; const AOptions: TVoiceSessionOptions);
+      const ARoleNames: array of String; const AOptions: TVoiceSessionOptions;
+      const AContracts: TProviderContracts = nil);
     destructor Destroy; override;
     function ProviderCount: Integer;
     function ProviderName(const AIndex: Integer): String;
     function ProofPassCount: Integer;
     function CopyProvider(const AName: String): TStyleProviderDescription;
     function CopyModel(const AName: String): TWfcSequenceModel;
+    function CopyContract(const AName: String): TProviderContract;
+    { Candidate graph/model replacement. Pending edits outside its actual
+      dependency closure remain pending; accepted unrelated state stays exact. }
+    function TryReplaceProvider(const AName: String; const AModel: TWfcSequenceModel;
+      const AContract: TProviderContract; const ASeed: TGraphSeed;
+      var AGenerated: TWfcMusicVoicesGenerated;
+      out AReport: TLayerModelReplacementReport;
+      out AProof: TWfcMusicVoicesValidationReport): Boolean;
     procedure SetConstraints(const AName: String;
       const AMask: TWfcSequenceTokenConstraints);
     function CopyConstraints(const AName: String): TWfcSequenceTokenConstraints;
@@ -166,7 +177,8 @@ begin
 end;
 
 constructor TNamedVoiceSession.Create(const AConfig: TWfcMusicVoicesGraphConfig;
-  const ARoleNames: array of String; const AOptions: TVoiceSessionOptions);
+  const ARoleNames: array of String; const AOptions: TVoiceSessionOptions;
+  const AContracts: TProviderContracts);
 var
   LIndex: Integer;
   LOther: Integer;
@@ -176,6 +188,8 @@ var
   LModel: TWfcSequenceModel;
   LModels: array of TWfcSequenceModel;
   LPass: TGraph;
+  LExpected: TProviderContract;
+  LDomain: String;
 begin
   inherited Create;
   if (Length(AConfig.Voices) < 1) or
@@ -290,6 +304,27 @@ begin
       FBaseline[LIndex][LCell] := LPass.CopyAllowedValues(LCell, 0, 0);
     end;
   end;
+  if (Length(AContracts) <> 0) and (Length(AContracts) <> Length(FNames)) then
+  begin
+    raise EAudio.Create('Named voices need one semantic contract per musical provider');
+  end;
+  LDomain := 'voice-session';
+  if Length(AContracts) <> 0 then
+  begin
+    LDomain := AContracts[0].MusicalDomain;
+  end;
+  SetLength(FContracts, Length(FNames));
+  for LIndex := 0 to High(FNames) do
+  begin
+    LExpected := ProviderContractFromDescription(CopyProvider(FNames[LIndex]), LDomain);
+    FContracts[LIndex] := LExpected;
+    if Length(AContracts) <> 0 then
+    begin
+      ValidateProviderContract(WfcMusicVoicesModelAt(FConfig, LIndex), AContracts[LIndex]);
+      RequireCompatibleProvider(LExpected, AContracts[LIndex]);
+      FContracts[LIndex] := CopyProviderContract(AContracts[LIndex]);
+    end;
+  end;
 end;
 
 destructor TNamedVoiceSession.Destroy;
@@ -343,6 +378,134 @@ begin
     WfcMusicVoicesModelAt(FConfig, IndexOf(AName))));
 end;
 
+function TNamedVoiceSession.CopyContract(const AName: String): TProviderContract;
+begin
+  Result := CopyProviderContract(FContracts[IndexOf(AName)]);
+end;
+
+function TNamedVoiceSession.TryReplaceProvider(const AName: String;
+  const AModel: TWfcSequenceModel; const AContract: TProviderContract;
+  const ASeed: TGraphSeed; var AGenerated: TWfcMusicVoicesGenerated;
+  out AReport: TLayerModelReplacementReport;
+  out AProof: TWfcMusicVoicesValidationReport): Boolean;
+var
+  LIndex: Integer;
+  LReplaced: Integer;
+  LCell: Integer;
+  LActive: array of Boolean;
+  LConfig: TWfcMusicVoicesGraphConfig;
+  LOldConfig: TWfcMusicVoicesGraphConfig;
+  LOldGraph: TGraph;
+  LOptions: TVoiceSessionOptions;
+  LNames: TLayerNames;
+  LContracts: TProviderContracts;
+  LCandidate: TNamedVoiceSession;
+  LPublished: TWfcMusicVoicesGenerated;
+begin
+  AReport := Default(TLayerModelReplacementReport);
+  AReport.ReplacedLayerIndex := -1;
+  AProof := Default(TWfcMusicVoicesValidationReport);
+  if Length(FAccepted.Layers) = 0 then
+  begin
+    raise EAudio.Create('Provider replacement requires an accepted named voice result');
+  end;
+  LReplaced := IndexOf(AName);
+  ValidateProviderContract(AModel, AContract);
+  RequireCompatibleProvider(FContracts[LReplaced], AContract);
+  AReport.ReplacedLayerIndex := LReplaced;
+  LConfig := CopyWfcMusicVoicesGraphConfig(FConfig);
+  case LReplaced of
+    0: LConfig.HarmonyModel := AModel;
+    1: LConfig.RhythmModel := AModel;
+  else
+    LConfig.Voices[LReplaced - 2].Model := AModel;
+  end;
+  LNames := Copy(FNames, 2, Length(FNames) - 2);
+  LContracts := Copy(FContracts);
+  LContracts[LReplaced] := CopyProviderContract(AContract);
+  LOptions := FOptions;
+  LOptions.Seed := ASeed;
+  LCandidate := TNamedVoiceSession.Create(LConfig, LNames, LOptions, LContracts);
+  try
+    LCandidate.FGraph.ResolveRegenerationScope([WfcMusicVoicesPassLabel(LReplaced)],
+      AReport.RootLayerIndices, AReport.AffectedLayerIndices);
+    SetLength(LActive, Length(FNames));
+    for LIndex in AReport.AffectedLayerIndices do
+    begin
+      if LIndex < Length(FNames) then
+      begin
+        LActive[LIndex] := True;
+      end;
+    end;
+    for LIndex := 0 to High(FNames) do
+    begin
+      if LActive[LIndex] then
+      begin
+        LCandidate.SetConstraints(FNames[LIndex], FPending[LIndex]);
+      end
+      else
+      begin
+        LCandidate.SetConstraints(FNames[LIndex], FCommitted[LIndex]);
+      end;
+      LCandidate.ApplyMask(LIndex, LCandidate.FPending[LIndex]);
+      if not LActive[LIndex] then
+      begin
+        SetLength(AReport.PreservedLayerIndices, Length(AReport.PreservedLayerIndices) + 1);
+        AReport.PreservedLayerIndices[High(AReport.PreservedLayerIndices)] := LIndex;
+        for LCell := 0 to FOptions.CellCount - 1 do
+        begin
+          LCandidate.FGraph.PassGraph[LIndex].SetAllowedValues(LCell, 0, 0,
+            [FGraph.PassGraph[LIndex][LCell, 0, 0].Value]);
+        end;
+      end;
+    end;
+    Result := LCandidate.FGraph.TrySolveNegotiated(LCandidate.NegotiationOptions, AReport.Search);
+    if not Result then
+    begin
+      Exit;
+    end;
+    for LIndex in AReport.PreservedLayerIndices do
+    begin
+      LCandidate.ApplyMask(LIndex, FCommitted[LIndex]);
+    end;
+    LCandidate.Publish(AReport.AffectedLayerIndices, LPublished, AProof);
+    for LIndex in AReport.PreservedLayerIndices do
+    begin
+      for LCell := 0 to FOptions.CellCount - 1 do
+      begin
+        if (LCandidate.FAccepted.Layers[LIndex].StateIndices[LCell] <>
+          FAccepted.Layers[LIndex].StateIndices[LCell]) or
+          (LCandidate.FAccepted.Layers[LIndex].Tokens[LCell] <> FAccepted.Layers[LIndex].Tokens[LCell]) then
+        begin
+          raise EAudio.Create('Candidate provider replacement changed an unrelated accepted state');
+        end;
+      end;
+      LCandidate.FCommitted[LIndex] := CopyMask(FCommitted[LIndex]);
+      LCandidate.FPending[LIndex] := CopyMask(FPending[LIndex]);
+      LCandidate.FDirty[LIndex] := FDirty[LIndex];
+    end;
+    { All potentially failing work is complete. Swap ownership, then let candidate
+      destruction release the old graph/models. Caller inputs always remain owned. }
+    LOldGraph := FGraph;
+    FGraph := LCandidate.FGraph;
+    LCandidate.FGraph := LOldGraph;
+    LOldConfig := FConfig;
+    FConfig := LCandidate.FConfig;
+    LCandidate.FConfig := LOldConfig;
+    FBaseline := LCandidate.FBaseline;
+    FHasBaseline := LCandidate.FHasBaseline;
+    FCommitted := LCandidate.FCommitted;
+    FPending := LCandidate.FPending;
+    FDirty := LCandidate.FDirty;
+    FAccepted := LCandidate.FAccepted;
+    FContracts := LCandidate.FContracts;
+    FOptions := LOptions;
+    AGenerated := LPublished;
+  finally
+    LCandidate.Free;
+  end;
+end;
+
 function TNamedVoiceSession.CopyProvider(const AName: String): TStyleProviderDescription;
 var
   LIndex: Integer;
@@ -363,7 +526,11 @@ begin
   end;
   case LIndex of
     0: Result.Vocabulary := spvHarmony;
-    1: Result.Vocabulary := spvRhythm;
+    1:
+    begin
+      Result.Vocabulary := spvRhythm;
+      Result.RoleOrder := Copy(FNames, 2, Length(FNames) - 2);
+    end;
   else
     Result.Vocabulary := spvVoice;
     Result.RoleId := AName;

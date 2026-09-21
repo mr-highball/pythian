@@ -41,7 +41,61 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current work — accepted evaluation and named voices — 2026-09-21
+## Current work — style references and provider compatibility — 2026-09-21
+
+Accepted [provider compatibility](TODO/DONE/NS-4_layers_02.md) after final
+two-target checks and all five criteria passed. NS-4 moves from **76% to 80%**;
+overall completion moves from **58.4% to 59.0%** (+0.60), with **43 open tasks
+and six DONE**. The style specification remains open and earns no partial credit.
+
+Returned to `NS-5_corpus_02 -> NS-5_evaluation_01` after publishing the prior
+accepted batch at `8316138`. The [working style specification](STYLE-CARDS.md)
+separates aligned provider accuracy from generated distributions and joint
+relationships. It defines each provider's single-recording, unlearned and
+within-song shuffle semantics, retaining the fixed seeds, 120-second listening
+packet and 15-second paired edits. The cards remain unfrozen: genre assignments,
+independent musical annotations and grounded numerical thresholds are missing.
+Those gaps remain within the existing task, with no partial credit.
+
+The [native CI run for that published batch](https://github.com/mr-highball/pythian/actions/runs/35561454286)
+completed successfully at `8316138`; this does not validate the current edits.
+
+Native `pythian.evaluation.style` compares exact-policy trait histograms with
+equal recording-group mass, separate uncertainty counts and pooled/mean/minimum
+coverage. A group with no known observations makes distance unavailable. The
+maintained fixture exercises preserved versus broken joint relationships, a
+99-to-1 duration imbalance and contract/count rejection. Final checked stable
+FPC 3.2.2 Win32/Win64 fixtures pass with no unfreed blocks. The numeric helper
+does not establish genre quality or reference authenticity.
+
+The companion now admits explicit vocabulary, ordered role, pitch-basis, PPQ,
+clock/scope and unknown contracts. Compatible replacement rebuilds actual WFC
+dependencies and proves the result before publication, preserving unrelated
+accepted states and named-session pending edits. The mapped wrapper reuses the
+existing unequal uniform/partitioned grid rules. Source evidence retains exact
+declared PPQ/origin conversions and original tick/frame coordinates. Unsupported
+relative-key and acoustic-palette inputs reject explicitly. Both native fixtures
+and six demo runs pass; all 24 target-matched audio/MIDI/JSON artifacts retain
+their accepted baseline bytes, with no leaks. QA evidence/source identities are
+in `build/qa-batch-03/`; replay commands/logs are in `build/provider-compatibility/`.
+
+A native development study remeasured all nine original master WAV sections on
+100-ms windows with hashes and geometry checked. Channel/polarity transforms
+preserve RMS distributions; silence produces distance 0.88 for B early and 1 for
+the other sections. Six masters touch PCM16 endpoints, a source-quality flag
+distinct from the five previously flagged prepared derivatives. This does not
+prove audible clipping or musical traits. Private observations and controlled
+measurement inputs remain under `build/style-protocol/`; no new evaluation
+recordings were opened. Final two-target studies agree on all counts, histograms
+and distances; two RMS values differ only by 1e-17 and 6e-17, with no leaks.
+
+Continue the NS-5 reference/specification task with actual grounded musical
+annotations and quantitative criteria, then genre corpus coverage. Source labels
+remain unverified; do not promote current detector output to truth. The separate
+semantic-layer path is ready for integrated controls. Publish this validated
+batch with its completion records after the final documentation check.
+
+## Accepted evaluation and named voices — 2026-09-21
 
 Accepted [shared musical validation](TODO/DONE/NS-3_validation_01.md) and
 [named voice passes](TODO/DONE/NS-4_layers_01.md) after final two-target checks
@@ -89,7 +143,7 @@ accepted musical-workflow packages and an actual independent-use verdict remain.
 Current dependency: `NS-5_corpus_02 -> NS-5_evaluation_01`. Shared validation and
 corpus identity are now DONE. Return to the measurable style-card/comparator
 specification, then genre corpus coverage. The independent semantic-layer path
-can next address [provider compatibility](TODO/NS-4_layers_02.md). No genre style
+can next address [provider compatibility](TODO/DONE/NS-4_layers_02.md). No genre style
 is accepted; current note/context failures are unchanged by these infrastructure
 and composition results.
 
