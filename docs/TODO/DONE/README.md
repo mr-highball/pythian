@@ -15,10 +15,10 @@
 | [NS-4_styles_01](NS-4_styles_01.md) — Reusable semantic graphs and derivative evidence | 2026-09-21 | +4 NS-4 | +0.60 |
 | [NS-4_layers_04](NS-4_layers_04.md) — Staged duration and committed-stream edits | 2026-09-21 | +4 NS-4 | +0.60 |
 | [NS-4_styles_02](NS-4_styles_02.md) — Selective semantic blend and further blend | 2026-09-21 | +4 NS-4 | +0.60 |
+| [NS-3_validation_02](NS-3_validation_02.md) — Bounded native observations with repaired progress supervision | 2026-09-21 | +5 NS-3 | +1.25 restored |
 
-[Native observation execution](../NS-3_validation_02.md) was reopened after
-infrastructure review found a progress snapshot race. Its former +1.25 overall
-credit is withdrawn until the existing acceptance criteria pass again.
+Native execution's original allocation is restored after focused QA of the
+progress snapshot repair; reopening and repair do not create additional credit.
 
 Previously accepted capability stays in the milestone baseline; it is not
 backfilled as new DONE work.

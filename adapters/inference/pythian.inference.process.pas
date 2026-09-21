@@ -40,9 +40,12 @@ const
 
 type
   { Dedicated worker protocol, not a general process/runtime abstraction.
-    Phase0 setup,1 observing,2 verifying,3 complete. Tick is written last. }
+    Phase0 setup,1 observing,2 verifying,3 complete. The aligned first word
+    publishes phase and clock together. Other live fields are diagnostics only;
+    their final values are consumed after the worker has exited. }
+  TInferenceProgressSnapshot = type Int64;
   TInferenceWorkerProgress = record
-    Phase: LongInt;
+    PhaseClock: Int64;
     Completed: Int64;
     ColdMs: QWord;
     SourceSetupMs: QWord;
@@ -51,7 +54,6 @@ type
     RuntimeReady: LongInt;
     FirstObservationMs: QWord;
     WarmObservationMs: QWord;
-    Tick: QWord;
   end;
   PInferenceWorkerProgress = ^TInferenceWorkerProgress;
   TInferenceRun = record
@@ -69,6 +71,14 @@ function OpenInferenceProgress(const AName: String; out AHandle: THandle):
   PInferenceWorkerProgress;
 procedure CloseInferenceProgress(var AProgress: PInferenceWorkerProgress;
   var AHandle: THandle);
+{ One atomic load owns both decoded values, even if publication happens between
+  decoding them. No retry loop or worker-held lock can delay cancellation. }
+procedure PublishInferenceProgress(const AProgress: PInferenceWorkerProgress;
+  const APhase: LongInt; const ATick: QWord);
+function ReadInferenceProgress(const AProgress: PInferenceWorkerProgress):
+  TInferenceProgressSnapshot;
+function InferenceProgressPhase(const ASnapshot: TInferenceProgressSnapshot): LongInt;
+function InferenceProgressTick(const ASnapshot: TInferenceProgressSnapshot): QWord;
 { Launches the exact worker executable suspended, assigns the memory/process
   job limit before resume, polls cancellation at50ms, validates staged output
   then atomically replaces AOutput. Existing accepted bytes survive any failure. }
@@ -130,6 +140,39 @@ begin
   else
     Result := 'unknown-' + IntToStr(APhase);
   end;
+end;
+
+procedure PublishInferenceProgress(const AProgress: PInferenceWorkerProgress;
+  const APhase: LongInt; const ATick: QWord);
+begin
+  { Keep the encoded word nonnegative under checked signed arithmetic. This
+    clock range exceeds 73 million years; it is not a wrapping low-bit clock. }
+  if (APhase < 0) or (APhase > 3) or (ATick > QWord(High(Int64)) shr 2) then
+  begin
+    raise EAudio.Create('Invalid inference progress phase or clock');
+  end;
+  InterlockedExchange64(AProgress^.PhaseClock, Int64((ATick shl 2) or QWord(APhase)));
+end;
+
+function ReadInferenceProgress(const AProgress: PInferenceWorkerProgress):
+  TInferenceProgressSnapshot;
+begin
+  Result := TInferenceProgressSnapshot(InterlockedCompareExchange64(
+    AProgress^.PhaseClock, 0, 0));
+  if Result < 0 then
+  begin
+    raise EAudio.Create('Invalid inference progress snapshot');
+  end;
+end;
+
+function InferenceProgressPhase(const ASnapshot: TInferenceProgressSnapshot): LongInt;
+begin
+  Result := LongInt(QWord(ASnapshot) and 3);
+end;
+
+function InferenceProgressTick(const ASnapshot: TInferenceProgressSnapshot): QWord;
+begin
+  Result := QWord(ASnapshot) shr 2;
 end;
 
 function QuoteArgument(const AText: String): String;
@@ -221,6 +264,7 @@ var
   LDiagnostic: String;
   LProgressTick: QWord;
   LPhase: LongInt;
+  LSnapshot: TInferenceProgressSnapshot;
 begin
   Result := Default(TInferenceRun);
   {$if SizeOf(Pointer) <> 8}
@@ -315,7 +359,7 @@ begin
       RaiseLastOSError;
     end;
     LWorkerStarted := GetTickCount64;
-    LProgress^.Tick := LWorkerStarted;
+    PublishInferenceProgress(LProgress, 0, LWorkerStarted);
     if ResumeThread(LProcess.hThread) = Cardinal(-1) then
     begin
       RaiseLastOSError;
@@ -324,8 +368,9 @@ begin
       QWord(ARequest.ScopeEnd16k - ARequest.ScopeStart16k) * 1000 div InferenceRate;
     repeat
       CheckInferenceCancel(ACancel);
-      LProgressTick := LProgress^.Tick;
-      LPhase := LProgress^.Phase;
+      LSnapshot := ReadInferenceProgress(LProgress);
+      LProgressTick := InferenceProgressTick(LSnapshot);
+      LPhase := InferenceProgressPhase(LSnapshot);
       LNow := GetTickCount64;
       LDiagnostic := ' phase=' + InferencePhaseName(LPhase) +
         ' total_ms=' + IntToStr(LNow - LStarted) +
@@ -364,7 +409,8 @@ begin
     begin
       RaiseLastOSError;
     end;
-    if (LCode <> 0) or (LProgress^.Phase <> 3) or
+    LSnapshot := ReadInferenceProgress(LProgress);
+    if (LCode <> 0) or (InferenceProgressPhase(LSnapshot) <> 3) or
       (LProgress^.Completed <> Result.Identity.ObservationCount) then
     begin
       LError := '';

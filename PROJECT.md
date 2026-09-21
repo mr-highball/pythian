@@ -91,11 +91,10 @@ study costs roughly 17 processing seconds per audio second. Maintained
 qualification records controlled/recorded fidelity and representative failure,
 cancellation and resource checks: a continuous hour completes
 in 2,420,266 ms with 20,313-ms setup and 103,051,264 bytes peak worker private
-memory. Infrastructure review subsequently found a setup-to-observing progress
-snapshot race that can falsely terminate a healthy worker. The
-[execution task is reopened](docs/TODO/NS-3_validation_02.md) for coherent
-supervision and focused requalification; retained numerical/resource results
-do not resolve this defect.
+memory. A subsequent setup-to-observing progress race is repaired by atomic
+phase/timestamp publication. Coordinated transition, bounded failure/cancellation
+and exact real-worker replay pass; the [execution task is accepted again](docs/TODO/DONE/NS-3_validation_02.md)
+with its retained numerical/resource evidence and unchanged budgets.
 Raw salience and AC RMS
 do not become admitted notes, calibrated confidence or learned musical roles.
 

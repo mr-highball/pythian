@@ -23,5 +23,5 @@ Starting evidence: [LAYERED-STYLE](../LAYERED-STYLE.md) · [PHRASE-EVALUATION](.
 **Blockers**
 
 - [NS-3_parts_02.md](NS-3_parts_02.md)
-- [NS-3_validation_02.md](NS-3_validation_02.md)
+- [NS-3_validation_02.md](DONE/NS-3_validation_02.md)
 

@@ -63,6 +63,17 @@ type
     Backend: TProbeBackend;
     function Cancelled: Boolean;
   end;
+  TProgressPublisher = class(TThread)
+  protected
+    procedure Execute; override;
+  public
+    MappingName: String;
+    Prepared: THandle;
+    ReleasePublish: THandle;
+    PublishedEvent: THandle;
+    Failure: String;
+    destructor Destroy; override;
+  end;
 
 procedure Check(const ACondition: Boolean; const AMessage: String);
 begin
@@ -70,6 +81,151 @@ begin
   begin
     raise Exception.Create(AMessage);
   end;
+end;
+
+procedure TProgressPublisher.Execute;
+var
+  LHandle: THandle;
+  LProgress: PInferenceWorkerProgress;
+begin
+  LHandle := 0;
+  LProgress := nil;
+  try
+    try
+      LProgress := OpenInferenceProgress(MappingName, LHandle);
+      Check(SetEvent(Prepared), 'Cannot announce prepared publication');
+      Check(WaitForSingleObject(ReleasePublish, 5000) = WAIT_OBJECT_0,
+        'Publication coordination timed out');
+      PublishInferenceProgress(LProgress, 1, 21000);
+    except
+      on LError: Exception do
+      begin
+        Failure := LError.ClassName + ': ' + LError.Message;
+      end;
+    end;
+  finally
+    CloseInferenceProgress(LProgress, LHandle);
+    SetEvent(PublishedEvent);
+  end;
+end;
+
+destructor TProgressPublisher.Destroy;
+begin
+  SetEvent(ReleasePublish);
+  if Suspended then
+  begin
+    Start;
+  end;
+  WaitFor;
+  if Prepared <> 0 then
+  begin
+    CloseHandle(Prepared);
+  end;
+  if ReleasePublish <> 0 then
+  begin
+    CloseHandle(ReleasePublish);
+  end;
+  if PublishedEvent <> 0 then
+  begin
+    CloseHandle(PublishedEvent);
+  end;
+  inherited Destroy;
+end;
+
+procedure ProgressTransition;
+var
+  LGuid: TGuid;
+  LName: String;
+  LHandle: THandle;
+  LProgress: PInferenceWorkerProgress;
+  LPublisher: TProgressPublisher;
+  LSnapshot: TInferenceProgressSnapshot;
+  LFresh: TInferenceProgressSnapshot;
+  LTick: QWord;
+  LFailed: Boolean;
+begin
+  Check(CreateGUID(LGuid) = 0, 'Cannot identify progress fixture');
+  LName := 'Local\PythianProgressFixture-' + GUIDToString(LGuid);
+  LHandle := CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE,
+    0, SizeOf(TInferenceWorkerProgress), PChar(LName));
+  Check(LHandle <> 0, 'Cannot create fixture progress mapping');
+  LProgress := nil;
+  LPublisher := nil;
+  try
+    LProgress := MapViewOfFile(LHandle, FILE_MAP_ALL_ACCESS, 0, 0,
+      SizeOf(TInferenceWorkerProgress));
+    Check(LProgress <> nil, 'Cannot map fixture progress');
+    Check((PtrUInt(@LProgress^.PhaseClock) mod 8) = 0, 'Progress word is not aligned');
+    FillChar(LProgress^, SizeOf(LProgress^), 0);
+    PublishInferenceProgress(LProgress, 0, 1000);
+    LPublisher := TProgressPublisher.Create(True);
+    LPublisher.FreeOnTerminate := False;
+    LPublisher.MappingName := LName;
+    LPublisher.Prepared := CreateEvent(nil, True, False, nil);
+    LPublisher.ReleasePublish := CreateEvent(nil, True, False, nil);
+    LPublisher.PublishedEvent := CreateEvent(nil, True, False, nil);
+    Check((LPublisher.Prepared <> 0) and (LPublisher.ReleasePublish <> 0) and
+      (LPublisher.PublishedEvent <> 0), 'Cannot create publication events');
+    LPublisher.Start;
+    Check(WaitForSingleObject(LPublisher.Prepared, 5000) = WAIT_OBJECT_0,
+      'Publisher did not prepare its separate mapping');
+    { Capture and decode the old clock, then force the writer to finish before
+      decoding phase. These logical timestamps represent twenty seconds of
+      setup, beyond the stall limit but within the setup budget. }
+    LSnapshot := ReadInferenceProgress(LProgress);
+    LTick := InferenceProgressTick(LSnapshot);
+    Check(SetEvent(LPublisher.ReleasePublish), 'Cannot release publisher');
+    Check(WaitForSingleObject(LPublisher.PublishedEvent, 5000) = WAIT_OBJECT_0,
+      'Publisher did not finish');
+    LPublisher.WaitFor;
+    Check(LPublisher.Failure = '', LPublisher.Failure);
+    Check((LTick = 1000) and (InferenceProgressPhase(LSnapshot) = 0),
+      'A transition changed the phase belonging to the captured setup clock');
+    LFresh := ReadInferenceProgress(LProgress);
+    Check((InferenceProgressPhase(LFresh) = 1) and
+      (InferenceProgressTick(LFresh) = 21000), 'Observing snapshot retained setup time');
+    { A split read of the old clock and current phase is the demonstrated bug.
+      Neither actual snapshot is that invalid combination. }
+    Check((InferenceProgressPhase(LFresh) = 1) and
+      (InferenceProgressTick(LFresh) - LTick > InferenceStallLimitMs),
+      'Regression schedule did not expose the former false-stall condition');
+    PublishInferenceProgress(LProgress, 3, QWord(High(Int64)) shr 2);
+    LSnapshot := ReadInferenceProgress(LProgress);
+    Check((InferenceProgressPhase(LSnapshot) = 3) and
+      (InferenceProgressTick(LSnapshot) = QWord(High(Int64)) shr 2),
+      'Maximum clock lost precision or phase bits');
+    LFailed := False;
+    try
+      PublishInferenceProgress(LProgress, 4, 21000);
+    except
+      on EAudio do
+      begin
+        LFailed := True;
+      end;
+    end;
+    Check(LFailed and (ReadInferenceProgress(LProgress) = LSnapshot),
+      'Invalid phase changed published progress');
+    LFailed := False;
+    try
+      PublishInferenceProgress(LProgress, 1, (QWord(High(Int64)) shr 2) + 1);
+    except
+      on EAudio do
+      begin
+        LFailed := True;
+      end;
+    end;
+    Check(LFailed and (ReadInferenceProgress(LProgress) = LSnapshot),
+      'Out-of-range clock changed published progress');
+  finally
+    if LPublisher <> nil then
+    begin
+      { Also release the publisher when a reader assertion fails. }
+      SetEvent(LPublisher.ReleasePublish);
+      LPublisher.Free;
+    end;
+    CloseInferenceProgress(LProgress, LHandle);
+  end;
+  WriteLn('PASS coordinated progress transition: retained setup pair, fresh observing pair, clock bounds');
 end;
 
 function TProbeBackend.Activate(const AWindow: TAudioSamples): TPitchSalience;
@@ -229,13 +385,26 @@ begin
   LHandle := 0;
   LProgress := OpenInferenceProgress(ParamStr(6), LHandle);
   try
-    LProgress^.Phase := 1;
-    LProgress^.Tick := GetTickCount64;
+    PublishInferenceProgress(LProgress, 1, GetTickCount64);
     if ExtractFileName(ParamStr(2)) = 'setup-stall' then
     begin
-      LProgress^.Phase := 0;
+      PublishInferenceProgress(LProgress, 0, GetTickCount64);
       Sleep(35000);
       ExitCode := 22;
+    end
+    else if ExtractFileName(ParamStr(2)) = 'setup-transition' then
+    begin
+      PublishInferenceProgress(LProgress, 0, GetTickCount64);
+      Sleep(6000);
+      PublishInferenceProgress(LProgress, 1, GetTickCount64);
+      Sleep(100);
+      ExitCode := 23;
+    end
+    else if ExtractFileName(ParamStr(2)) = 'verification-stall' then
+    begin
+      PublishInferenceProgress(LProgress, 2, GetTickCount64);
+      Sleep(35000);
+      ExitCode := 24;
     end
     else if ExtractFileName(ParamStr(2)) = 'memory-failure' then
     begin
@@ -276,7 +445,7 @@ begin
   LBefore := HashInferenceFile(AOutput);
   LCancel := TCancelAt.Create;
   try
-    for I := 0 to 3 do
+    for I := 0 to 6 do
     begin
       LFailed := False;
       LMessage := '';
@@ -296,9 +465,23 @@ begin
           RunInferenceProcess(ParamStr(0), 'stall', '.', ASource, AOutput,
             LRequest, LCancel.Cancelled);
         end
-        else
+        else if I = 3 then
         begin
           RunInferenceProcess(ParamStr(0), 'setup-stall', '.', ASource, AOutput, LRequest);
+        end
+        else if I = 4 then
+        begin
+          RunInferenceProcess(ParamStr(0), 'setup-transition', '.', ASource, AOutput, LRequest);
+        end
+        else if I = 5 then
+        begin
+          LCancel.Deadline := GetTickCount64 + 200;
+          RunInferenceProcess(ParamStr(0), 'setup-transition', '.', ASource, AOutput,
+            LRequest, LCancel.Cancelled);
+        end
+        else
+        begin
+          RunInferenceProcess(ParamStr(0), 'verification-stall', '.', ASource, AOutput, LRequest);
         end;
       except
         on LError: EAudio do
@@ -325,11 +508,25 @@ begin
           (Pos('source_ready=0', LMessage) > 0) and (Pos('runtime_ready=0', LMessage) > 0),
           'Setup timeout diagnostic omitted phase, limit or lane state');
       end;
-      if I = 2 then
+      if I = 4 then
+      begin
+        Check(Pos('exit 23', LMessage) > 0,
+          'Healthy setup-to-observing transition was killed as stalled');
+      end;
+      if I = 6 then
+      begin
+        Check((Pos('total budget', LMessage) > 0) and
+          (Pos('phase=verifying', LMessage) > 0) and (Pos('limit_ms=32000', LMessage) > 0),
+          'Verification exceeded total budget without the correct failure');
+      end;
+      if (I = 2) or (I = 5) then
       begin
         Check(GetTickCount64 - LStarted <= 2200, 'Hard cancellation exceeded bound');
+        Check(Pos('cancel', LowerCase(LMessage)) > 0, 'Cancellation was misclassified');
       end;
       Check(HashInferenceFile(AOutput) = LBefore, 'Failed supervisor replaced accepted output');
+      WriteLn('PASS supervisor case=', I, ' elapsed_ms=', GetTickCount64 - LStarted,
+        ' message=', LMessage);
     end;
   finally
     LCancel.Free;
@@ -930,6 +1127,7 @@ begin
     end
     else if (ParamStr(1) = 'diagnostics') and (ParamCount = 3) then
     begin
+      ProgressTransition;
       SupervisorControls(ParamStr(2), ParamStr(3));
       WriteLn('PASS exact setup/stall boundary diagnostics and process cancellation/memory');
     end

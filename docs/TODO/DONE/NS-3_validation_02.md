@@ -1,6 +1,6 @@
 # NS-3_validation_02 — Deliver a practical native inference execution path
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-3)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-3)
 
 **Description:**
 
@@ -10,25 +10,43 @@ North star: NS-3. Outcome owner: WAV-VALIDATION.
 Completion credit: 5 goal percentage points (1.25 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
-Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [BEAT-TRACKING](../BEAT-TRACKING.md) · [ANALYSIS-WAVE](../ANALYSIS-WAVE.md).
+Starting evidence: [PHRASE-EVALUATION](../../PHRASE-EVALUATION.md) · [BEAT-TRACKING](../../BEAT-TRACKING.md) · [ANALYSIS-WAVE](../../ANALYSIS-WAVE.md).
 
-Reopened 2026-09-21 after infrastructure review: the supervisor reads the shared
-progress timestamp before the phase, while the worker writes the observing phase
-before its timestamp. After setup exceeds the five-second stall limit, an
-ordinary interleaving can combine the old startup timestamp with the new phase
-and terminate a healthy worker as stalled. See the exact source paths in
-[native qualification](../NATIVE-INFERENCE.md#qualification--2026-09-21).
-This violates the existing fourth criterion; no additional task or credit is
-created. Restore coherent progress publication/observation and add a deterministic
-setup-to-observing interleaving check, retaining genuine stall, setup, total-time,
-cancellation and accepted-output preservation checks under unchanged budgets.
-Preserve the successful numerical/resource evidence below; repeat only checks
-whose validity the repair changes. The review is not a failed QA submission:
-the historical failure count remains one. The task's +5 NS-3 / +1.25 overall
-credit is withdrawn pending final QA, and dependent tasks remain blocked.
+Completed 2026-09-21 after progress-snapshot repair: final checked stable Win64
+QA restores all five criteria, combining unchanged retained numerical/resource
+evidence with the affected supervision checks. One aligned atomic word now owns
+phase and full timestamp; one captured load supplies both supervisor values and
+the terminal phase check. The coordinated second-mapping publisher regression
+passes, as do seven subprocess cases for real stall, setup/total timeout, healthy
+six-second transition, memory rejection and cancellation. Cancellation cases
+finish in 266/265 ms, including the 200-ms request delay; all failures preserve
+accepted output. The real-worker replay retains exact prior 48-kHz stereo
+artifact bytes, with 44,187 ms total, 19,968 ms setup and 103,153,664-byte peak
+private commitment. Both initialization failures and long-source setup
+cancellation pass. All final logs report zero owned leaks. No budgets, model
+arithmetic, waveform preparation, identity or artifact encoding changed, so the
+successful hour and numerical matrix below remain valid without repetition.
+Commands and frozen source identities: `build/native-inference/progress-repair-QA.md`
+and `progress-repair-hashes.json`; final verdict/logs: `build/qa-batch-08/report.txt`
+and `progress-repair-diagnostics.log` / `progress-repair-startup.log`.
+This restores the original +5 NS-3 / +1.25 overall credit, returning to 37% and
+62.65%; it creates no additional credit. Historical failed QA submissions remain
+one. Review 04 is followed by this one accepted closure.
 
-Historical completion, superseded by reopening: on 2026-09-21 the maintained
-[optional Win64 observation adapter](../NATIVE-INFERENCE.md)
+Historical reopening, now repaired: on 2026-09-21 the supervisor read the shared
+progress timestamp before the phase, while the worker wrote the observing phase
+before its timestamp. After setup exceeded the five-second stall limit, an
+ordinary interleaving could combine the old startup timestamp with the new phase
+and terminate a healthy worker as stalled. See the reviewed source paths in
+[native qualification](../../NATIVE-INFERENCE.md#qualification--2026-09-21).
+This violated the existing fourth criterion. Its repair and deterministic
+transition regression remained within that task, with unchanged budgets and
+retained numerical/resource evidence. Review was not a failed QA submission.
+The task's +5 NS-3 / +1.25 overall credit was withdrawn until the focused final
+QA above restored acceptance; dependent tasks remained blocked in that interval.
+
+Historical initial completion, before reopening: on 2026-09-21 the maintained
+[optional Win64 observation adapter](../../NATIVE-INFERENCE.md)
 and native consumer pass all five criteria on checked stable FPC 3.2.2. Pascal
 owns preparation, graph assembly, identity, bounded delivery and supervision;
 the pinned external CPU runtime remains outside the portable core/default builds.
@@ -60,7 +78,8 @@ model/runtime identities are pinned in the maintained asset manifest. The
 reference/key studies earn no additional credit. Provider accuracy, many-hour
 whole-pipeline workloads and final target-matrix delivery retain their own tasks.
 The initial acceptance added +5 NS-3 points (32% to 37%) and +1.25 overall
-(61.4% to 62.65%); reopening reverses this credit to 32% and 61.4% respectively.
+(61.4% to 62.65%); reopening temporarily reversed that credit to 32% and 61.4%.
+The accepted repair above restores the same allocation once.
 
 **Acceptance Criteria:**
 
@@ -72,4 +91,4 @@ The initial acceptance added +5 NS-3 points (32% to 37%) and +1.25 overall
 
 **Blockers**
 
-- [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
+- [NS-3_validation_01.md](NS-3_validation_01.md)

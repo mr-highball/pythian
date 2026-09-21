@@ -41,7 +41,41 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current work — infrastructure review and native supervision reopening — 2026-09-21
+## Current work — coherent native supervision accepted — 2026-09-21
+
+The [native execution task](TODO/DONE/NS-3_validation_02.md) is accepted again
+after the review's progress race is repaired. Phase and full timestamp are one
+aligned atomic word; the supervisor decodes one captured snapshot, including
+terminal validation. No worker-held lock or snapshot retry loop is introduced.
+Final checked stable Win64 QA passes the coordinated second-mapping publisher
+regression and seven subprocess cases. A healthy six-second setup transition
+survives; real stall/setup/total limits reject; cancellation completes in
+266/265 ms including the 200-ms request delay; every failure preserves output.
+The real-worker replay is byte-identical to its retained 48-kHz stereo artifact,
+with 44,187 ms total, 19,968 ms setup and 103,153,664-byte peak private memory.
+Both initialization failures and long-source setup cancellation pass. Terminal
+logs report zero owned leaks. The final source identities match the handoff.
+
+Evidence is retained in `build/native-inference/progress-repair-QA.md`,
+`progress-repair-hashes.json` and `build/qa-batch-08/report.txt`, with the two
+`progress-repair-*.log` files. Model arithmetic, waveform preparation, artifact
+encoding, source identity and budgets are unchanged; earlier numerical/rate/
+recorded/hour evidence remains valid without repetition. This restores all five
+criteria and the original **+5 NS-3 / +1.25 overall points**, giving **62.65%,
+38 open / 11 DONE**, 49 total tasks, 19 active outcomes, 7.15 accepted points
+and 37.35 remaining. It is not new credit for a second implementation.
+
+This is one accepted closure after review 04's ten-DONE checkpoint; another
+accepted task is needed for the next routine review. The historical failed QA
+submission count stays at one. The [whole-pipeline workload task](TODO/NS-5_scale_01.md)
+is unblocked again; return to that work and the prepared timed local-key
+development comparison. Its predeclared policy remains private and unexecuted;
+no musical admission, genre acceptance or new key accuracy is claimed.
+
+## Historical review — native supervision reopening — 2026-09-21
+
+The reopening and prepared-repair states below are superseded by the accepted
+repair above; retain their evidence and accounting history.
 
 The explicitly requested early infrastructure review inspected published revision
 `bc9bac82fb30ea7bf5412cd6eb49587bbfed8517` and its interactions with the portable
@@ -50,7 +84,7 @@ It confirmed one P2 defect: the supervisor can combine a stale startup timestamp
 with the worker's new observing phase and terminate a healthy worker as stalled.
 The primary review agrees with the concrete source interleaving. The
 [native qualification record](NATIVE-INFERENCE.md#qualification--2026-09-21)
-and [reopened execution task](TODO/NS-3_validation_02.md) contain the trigger and
+and [reopened execution task](TODO/DONE/NS-3_validation_02.md) contain the trigger and
 required coherent snapshot/transition regression. No duplicate task is needed:
 the existing fourth criterion already requires correct bounded supervision.
 
@@ -62,6 +96,20 @@ Dependent workload acceptance is blocked again. Review does not increment the
 task's historical one failed QA submission. No implementation changes were made
 during review. The next step is the scoped supervision repair and focused final
 QA, then return to the saved NS-5 workload and NS-3 local-key work.
+
+The repair is now prepared: phase and full timestamp share one aligned atomic
+word, and supervision decodes both from a single captured snapshot. Consumer
+and fixture compile together on checked stable Win64. Focused QA runs under
+`build/native-inference/progress-repair-QA.md`; no acceptance is restored until
+its coherent transition, timeout/cancellation and real-worker replay gates pass.
+Model arithmetic, waveform preparation, artifact encoding and budgets are
+unchanged, so the retained successful hour does not require repetition.
+
+Separately, the next local-key development comparison is declared before scoring
+in `build/local-key-reference/swd/TIMED-POLICY.md`: two already exposed timed
+references, identical source support and fixed baseline/peak representations,
+separate annotator denominators and preserved gaps/disagreement. It is not yet
+implemented or run and earns no credit. Other compositions remain untouched.
 
 Review 04 is complete, with its detailed source report retained under
 `build/big-boss-04/REVIEW.md`. No second actionable defect or separate missing
@@ -77,7 +125,7 @@ responsibility.
 The acceptance below preceded the supervision finding and is superseded by the
 reopening above. Its measurements and publication evidence remain historical.
 
-[Practical native inference](TODO/NS-3_validation_02.md) now passes all five
+[Practical native inference](TODO/DONE/NS-3_validation_02.md) now passes all five
 criteria and moves to DONE. The optional Win64 consumer emits 360,000 raw
 observations from one continuous hour in 2,420,266 ms, with 20,313-ms setup and
 103,051,264 bytes peak worker private commitment. The complete 524,160,407-byte
@@ -152,7 +200,7 @@ investigation, while preserving local-key and confidence uncertainty. The failed
 comparison remains recorded and does not increment the helper's failure counter.
 
 The implementation helper's ninth assignment is
-[practical native inference](TODO/NS-3_validation_02.md), an independent prerequisite
+[practical native inference](TODO/DONE/NS-3_validation_02.md), an independent prerequisite
 of many-hour resource work. The agreed [optional Win64 observation strategy](PROVENANCE.md#optional-native-observation-adapter)
 retains Pascal graph assembly, stream preparation and supervision around the
 pinned CPU runtime. It emits raw converted-model salience and AC RMS; the failed

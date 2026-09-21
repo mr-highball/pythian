@@ -21,9 +21,9 @@ include preparation/storage cost and retain original-source lineage and exact
 coordinate mappings. This is part of the existing whole-pipeline criteria below,
 not permission to skip identity checks or raise limits after measurement.
 
-The native execution prerequisite was reopened after infrastructure review found
-a progress snapshot race. Retain the successful one-hour measurements as scoped
-evidence, but restore that prerequisite's final acceptance before this task closes.
+The native execution prerequisite is accepted again after coherent progress
+supervision and focused replay pass. Retain the successful one-hour measurements
+as scoped evidence; they do not alone satisfy this whole-pipeline workload task.
 
 **Acceptance Criteria:**
 
@@ -36,4 +36,4 @@ evidence, but restore that prerequisite's final acceptance before this task clos
 **Blockers**
 
 - [NS-5_corpus_01.md](DONE/NS-5_corpus_01.md)
-- [NS-3_validation_02.md](NS-3_validation_02.md)
+- [NS-3_validation_02.md](DONE/NS-3_validation_02.md)

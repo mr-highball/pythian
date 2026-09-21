@@ -1,7 +1,7 @@
 # Optional native pitch observations
 
 [Project](../PROJECT.md) · [Phrase evaluation](PHRASE-EVALUATION.md) ·
-[Provenance](PROVENANCE.md) · [Task](TODO/NS-3_validation_02.md)
+[Provenance](PROVENANCE.md) · [Task](TODO/DONE/NS-3_validation_02.md)
 
 ## Scope and admission boundary
 
@@ -32,8 +32,9 @@ five-minute preparation/resource case. The continuous-hour attempt failed near
 the thirty-second boundary without publishing an artifact. Its original generic
 timeout did not retain a phase, so setup remains a hypothesis rather than a
 proven cause. The repaired initialization path now passes focused requalification
-and the single second hour run. Subsequent review reopened supervision acceptance
-for the progress snapshot race described under [qualification](#qualification--2026-09-21).
+and the single second hour run. Subsequent review reopened supervision for a
+progress snapshot race; atomic publication and focused QA now restore acceptance
+as recorded under [qualification](#qualification--2026-09-21).
 Provider accuracy and corpus-scale acceptance remain separate.
 
 ## Assets and build
@@ -202,17 +203,23 @@ remain distinct from the maintained-path qualification below.
 
 Initial final QA passed the maintained consumer on checked FPC 3.2.2 Win64, using
 the declared pinned assets and unchanged budgets. Subsequent infrastructure
-review reopened its fourth acceptance criterion: the supervisor reads `Tick`
+review reopened its fourth acceptance criterion: the supervisor read `Tick`
 then `Phase` at `adapters/inference/pythian.inference.process.pas:327–328`, while
-the worker publishes observing `Phase` before `Tick` at
+the worker published observing `Phase` before `Tick` at
 `tools/pythian.inference.wav.lpr:136–138`. An interleaving after more than five
-seconds of setup can pair the old timestamp with the new phase and trigger a
+seconds of setup could pair the old timestamp with the new phase and trigger a
 false observing-stall failure. Stable-stall tests did not cover this transition.
-The [existing execution task](TODO/NS-3_validation_02.md) owns coherent progress
-publication/observation and a forced transition regression, retaining real
-timeout, cancellation and output-preservation checks. Its credit is withdrawn
-pending focused QA; the successful executions below remain evidence for their
-tested cases. The host is a Ryzen 5 1600 with
+The [execution task is accepted again](TODO/DONE/NS-3_validation_02.md) after
+phase and timestamp were combined in one aligned atomic publication word. The
+supervisor decodes one captured snapshot without a retry loop or worker-held
+lock. A second-mapping publisher forces the formerly unsafe transition between
+clock and phase decoding; both old and new snapshots remain coherent. Seven
+subprocess cases retain real setup/stall/total limits, cancellation and output
+preservation. Short real-worker replay and initialization failure checks pass.
+Its original credit is restored, with unchanged numerical/resource evidence
+retained. The source locations above identify the reviewed revision before the
+repair, not current field accesses.
+The host is a Ryzen 5 1600 with
 six cores/twelve logical processors and approximately 16 GiB physical memory.
 Resource runs were sequential, without competing analysis or compilation.
 
@@ -224,6 +231,8 @@ Resource runs were sequential, without competing analysis or compilation.
 | Five-minute 48-kHz stereo case | 30,000 observations; 259,797 ms total; 20,687-ms setup; 101,515,264-byte worker peak |
 | Continuous-hour 16-kHz stereo source, channel 0 | 360,000 observations; 2,420,266 ms total; 20,313-ms setup; 103,051,264-byte worker peak |
 | Ownership, failure and replay | Sink collision/cleanup, source/policy identity, batch replay, halo, corruption, memory/stall limits and bounded cancellation pass |
+| Progress repair regression | Coordinated old/new snapshots; healthy six-second transition; genuine setup/stall/total rejection; cancellation in 266/265 ms including 200-ms request delay; preserved output |
+| Real-worker replay after progress repair | Byte-identical prior 48-kHz stereo artifact; 44,187 ms total, 19,968-ms setup, 103,153,664-byte worker peak; both initialization failures and long-source setup cancellation pass |
 
 The hour joins source verification in 11,125 ms and runtime setup in 20,313 ms;
 first observation takes 94 ms, and the remaining observation phase 2,364,265 ms.
@@ -231,11 +240,15 @@ Its complete 524,160,407-byte artifact passes final verification and publication
 Successful qualification runs report zero owned leaks. Original failure logs
 remain alongside the accepted second submission; passed unchanged arithmetic
 cases were retained instead of rerunning the entire matrix.
+The atomic progress repair's focused checks also report zero owned leaks. Its
+frozen sources and commands are in `progress-repair-hashes.json` and
+`progress-repair-QA.md` under `build/native-inference/`; terminal logs and final
+verdict are under `build/qa-batch-08/`. The unchanged hour was not rerun.
 
 Exact commands, source manifests, host inventory, terminal logs and reports are
 retained under `build/native-inference/` and `build/qa-batch-08/`. The accepted
 hour report is `submission2-hour-report.json`. It binds the original 131,770,456-
 frame input, selected channel and model/runtime identities; one hour was emitted.
-This demonstrates the measured observation executions, without resolving the
-subsequently found supervision race or establishing note admission,
-arbitrary-length input performance, many-hour training or final portable delivery.
+Together with focused supervision requalification, this establishes the declared
+observation execution scope, not note admission, arbitrary-length input
+performance, many-hour training or final portable delivery.

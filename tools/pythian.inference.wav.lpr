@@ -120,7 +120,7 @@ begin
   if APhase = 'verifying' then
   begin
     Progress^.WarmObservationMs := GetTickCount64 - FFirstDone;
-    Progress^.Phase := 2;
+    PublishInferenceProgress(Progress, 2, GetTickCount64);
   end
   else
   begin
@@ -133,9 +133,8 @@ begin
       FFirstDone := GetTickCount64;
       Progress^.FirstObservationMs := FFirstDone - FObservationStart;
     end;
-    Progress^.Phase := 1;
+    PublishInferenceProgress(Progress, 1, GetTickCount64);
   end;
-  Progress^.Tick := GetTickCount64;
 end;
 
 function ReadRequest(const AWorker: Boolean): TInferenceRequest;
@@ -217,8 +216,7 @@ begin
     FreeAndNil(LSink);
     FreeAndNil(LBackend);
     FreeAndNil(LWave);
-    LMonitor.Progress^.Phase := 3;
-    LMonitor.Progress^.Tick := GetTickCount64;
+    PublishInferenceProgress(LMonitor.Progress, 3, GetTickCount64);
   finally
     if LSource <> nil then
     begin

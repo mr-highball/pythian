@@ -64,11 +64,11 @@ no additional source media or saved format is introduced.
 <a id="optional-native-observation-adapter"></a>
 ## Optional native observation adapter
 
-[NS-3_validation_02](TODO/NS-3_validation_02.md) selects a Win64 CPU observation
+[NS-3_validation_02](TODO/DONE/NS-3_validation_02.md) selects a Win64 CPU observation
 adapter as a bounded route from the private model study to a maintained native
 consumer. Controlled/recorded fidelity, performance, memory and representative
-cancellation checks passed, including one continuous hour. Qualification is reopened
-for a progress snapshot race that can falsely terminate a healthy worker; see
+cancellation checks passed, including one continuous hour. A subsequently found
+progress snapshot race is repaired; focused QA restores qualification. See
 [the current disposition](NATIVE-INFERENCE.md#qualification--2026-09-21). The portable core and
 default packages remain independent of the acquired binary runtime.
 
