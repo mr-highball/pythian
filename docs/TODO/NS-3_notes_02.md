@@ -23,6 +23,16 @@ The next presence observation must retain that low/quiet/gap capability and
 distinguish sustained harmonic sound from rest/ending evidence; rearranging
 existing head cuts alone is insufficient. All acceptance criteria remain open.
 
+Reassessment before batch 28: existing event-context and coherent-cycle evidence
+does not distinguish continuing notes from all annotated rests or residual tails.
+Many false-rest centers already locally favor note states, so changing decoder
+costs alone does not supply missing acoustic discrimination. A prospective
+presence observation needs contrasting labelled continuation/release/unvoiced
+examples with source-separated calibration and unchanged waveform protections.
+The current [register-candidate experiment](../PHRASE-EVALUATION.md#source-separated-candidate-calibration--2026-09-21)
+does not train on rests or claim to resolve this task. Keep this gap separate;
+do not turn a candidate pitch score into a note-presence probability.
+
 **Acceptance Criteria:**
 
 - Separate note presence from pitch identity and distinguish attacks, continuations, rests and endings using supported source evidence.

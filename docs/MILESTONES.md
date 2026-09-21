@@ -121,6 +121,14 @@ acceptance decision, preserving existing controls and held-out recordings.
 External crossings, unison, quiet-part ownership and broader complete-reference
 coverage remain explicit requirements of actual role-learning acceptance.
 
+Batch 28's [source-separated candidate scorer](PHRASE-EVALUATION.md#source-separated-candidate-calibration--2026-09-21)
+passes implementation QA but fails its fixed flute calibration challenge even
+with oracle pitch candidates. Stop that proposal without applying it to the
+existing development baseline or changing thresholds. Note identity and
+presence tasks remain open; no completion credit changes. The next design needs
+justified treatment of candidate ambiguity and presence, with prospective
+confidence/coverage and source separation rather than post-hoc error cutoffs.
+
 **37 open task files own the remaining work across 19 active outcomes; 13 tasks are DONE.**
 The 22-outcome map below retains accepted WAV-VALIDATION, WFC-LAYERS and WFC-STYLE anchors for evidence.
 See the [task catalog](TODO/README.md) for credits and a prerequisite-first order,

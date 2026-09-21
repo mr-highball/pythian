@@ -47,6 +47,25 @@ correction family and reassess the independent identity information needed;
 preserve genuine-note controls and keep presence separately accounted. No task
 credit or failed-submission increment follows from this diagnostic.
 
+Batch 28 starts a distinct
+[source-separated candidate calibration](../PHRASE-EVALUATION.md#source-separated-candidate-calibration--2026-09-21)
+after that reassessment. Two labelled recorded works provide fit examples;
+a separate work challenges fixed temporal harmonic features and a native fitted
+candidate scorer before any application to existing development material.
+The model, features, source split and stop gate are declared before measurement.
+Oracle candidates make the first challenge a necessary feasibility check only,
+not achieved blind inference or task acceptance. Failure stops the proposal
+without a threshold/feature sweep; success still needs the existing low/quiet/
+short/articulation protections and recorded gates before maintained adoption.
+Final paired QA passes controls, replay, resources, source isolation and
+preservation, but the fixed challenge fails: violin 546/548 correct ranks,
+flute 482/514 against 98%, both 100% eligible. Stop this scorer without Spring
+application or threshold/feature/epoch variants. No maintained provider,
+criterion closure or credit follows. The next design must explicitly handle
+unresolved candidate ambiguity under a prospective confidence/coverage contract;
+post-hoc cutoffs on these errors are not a justified new observation. Keep the
+separate presence gap and protected waveform/held-out requirements intact.
+
 **Acceptance Criteria:**
 
 - Declare a discriminating identity observation or decision rule before scoring; explain how it distinguishes the remaining octave errors rather than merely changing global weights or thresholds.

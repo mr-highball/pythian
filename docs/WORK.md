@@ -41,7 +41,66 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current handoff — external reference task accepted — 2026-09-21
+## Current handoff — source-separated register calibration — 2026-09-21
+
+The previous goal turn made progress: all criteria of parts_01 were accepted,
+the task moved to DONE and `7dac111` published the matching records. Continue
+the same NS-5 prerequisite path through recorded note identity/presence, then
+independent phrases. Overall completion is **63.15%**; no musical provider or
+genre verdict was added by reference preparation.
+Exact-revision CI run 35645881135 is verified successful.
+
+Before batch 28, the primary and implementation helper reassessed the stopped
+register and presence approaches. Periodic/phase measurements preserve coherent
+lower-register explanations of the flute errors; separate learned heads and
+contour support fail low-short-note or true-gap controls. The preceding event
+decoder already locally favors notes at many false-rest centers. Another global
+cutoff, donor ordering or decoder weight does not supply missing discrimination.
+
+The new bounded hypothesis belongs to notes_01: fit candidate-conditioned
+temporal harmonic features from separate labelled recorded works, then test a
+separate work before using the scorer on existing development material. The
+fixed experiment is described in [phrase evidence](PHRASE-EVALUATION.md#source-separated-candidate-calibration--2026-09-21).
+It targets register evidence; presence/boundaries remain separately required.
+No signal-strength score is promoted to a calibrated note-presence probability.
+
+The source contract, reviewed work identities, fit/challenge split, forty
+features, fixed logistic fitting and stop gate were frozen before measurement.
+Native feature/control and fit/driver components pass checked stable Win64 QA.
+Only the selected source works were extracted
+from the already bound archive. Related arrangements stay grouped/excluded,
+existing Spring stays development, reserved phrase material remains untouched,
+and the accepted role-reference supplement is not training data.
+
+The fixed fit/challenge is complete. Violin ranks 546/548 centers correctly;
+flute 482/514 fails 98%, with 100% eligible coverage and no ties for either part.
+These are oracle candidate ranks, not blind inference accuracy. The model uses
+4148 fit rows only and is frozen before challenge observation. The proposal is
+**stopped**: no Spring application, feature/epoch/threshold variants or production
+adoption follow. Aggregate failure does not identify its cause or establish
+impossibility of every supervised/selective observation approach.
+
+Physical/numerical controls, exact 13-file replay, resource bounds and rejection
+preservation pass with zero leaks. Runs take 18290/18349 ms and 28,684,288 sampled
+private bytes, under 120 seconds/256 MiB/64 MiB. Manifest
+`928e6a1a23b7ddaeeb14a3e73e14b9c1017f6b7ec241a459bcfae0c2c7cd300f`
+binds the 1,805,303-byte packet; full report is `build/qa-batch-28/report.txt`.
+Both implementation failure counters are zero; no live handles remain.
+
+No task criterion closes; the consecutive no-criterion-closure count is **one**
+for the completed batch 28. Keep **63.15%, 37 open / 13 DONE** and all prerequisites
+unchanged. Source/policy identities and the scientific stop are recorded in the
+owning task. Before another note proposal, define how candidate ambiguity and
+presence will be distinguished or explicitly left unknown, with prospective
+source-separated confidence/coverage and unchanged waveform protections. This
+cannot be a post-hoc threshold on the failed calibration ranks. The task-flow
+checkpoint requires reassessment before a third batch without criterion closure.
+
+Final documentation QA passes: 2731 local links, the 50-task/96-edge graph,
+unchanged accounting, evidence meaning, privacy and whitespace checks reconcile.
+The five-document update is ready for branch publication.
+
+## Previous checkpoint — external reference task accepted — 2026-09-21
 
 Batch 27 closes the remaining AC2 of
 [parts_01, now DONE](TODO/DONE/NS-3_parts_01.md). Earlier batches accepted

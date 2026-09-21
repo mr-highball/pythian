@@ -11,6 +11,85 @@ not infer a trustworthy phase path, select register or alter any recorded phrase
 score. Those admission steps remain [WAV-03-REGISTER](MILESTONES.md#wav-03-register)
 and [WAV-03-TIMBRE](MILESTONES.md#wav-03-timbre); held-out recordings remain unused.
 
+## Source-separated candidate calibration — 2026-09-21
+
+The next bounded register experiment tests a supervised acoustic observation
+against the earlier sustain-template and physical-period ambiguity. It fits
+candidate-conditioned temporal harmonic patterns from different recorded works;
+no calibration/development label enters optimization. This is a new hypothesis,
+not evidence that the proposed features identify musical register. Presence and
+event boundaries remain a separate requirement.
+
+The source choice was fixed before payload inspection. Two violin parts from
+Sonata K.331 and two flute parts from Allegro for Musical Clock supply fit
+examples. Violin/flute parts of Nocturne supply the separate calibration challenge.
+The [dataset's work table](https://labsites.rochester.edu/air/projects/URMP/URMP_doc.pdf)
+and rendered score openings support these distinct work identities. Related
+arrangements remain grouped/excluded. Shared performer/site conditions are not
+claimed independent. Existing Spring development material and reserved phrase
+material are not fit/challenge inputs; the role-reference ensemble is not training.
+The selected stems, raw Notes/F0s, scores, metadata and full notices stay bound to
+the previously verified prepared archive and its nominal paired seconds clock.
+
+All selected parts use their first 30 seconds on a fixed 50-ms grid. A single
+curator note supplies the positive candidate and octave alternatives supply
+negatives within MIDI 33..86. Rests, overlapping labels and out-of-range notes
+retain separate counts. Three 2048-sample Hann spectra, 20 ms apart, provide
+twelve harmonic-band amplitudes each, retaining normalization by total spectral
+power; candidate pitch, center RMS and neighboring RMS ratios complete forty
+features. There is no reference-frequency refinement of measured features.
+
+Fit-only means/scales standardize the data. The fixed binary logistic model uses
+200 full-batch epochs, learning rate 0.1, L2 weight penalty 0.01, balanced class
+loss and zero initialization. Save the model before reading challenge examples.
+The necessary gate is at least 98% unique correct candidate ranks and 80%
+eligible coverage on each challenge part. This deliberately supplies oracle
+candidates: even success cannot establish blind pitch accuracy, presence,
+independent admission or production readiness. A failed gate stops the proposal
+without applying it to Spring or changing the features/optimizer/thresholds.
+
+**Result: reject this fixed candidate scorer under its declared feasibility
+gate.** The 4148 fit rows come only from the four fit sources. One overlapping
+fit center is excluded; all other active fit centers are eligible. The model
+is saved before challenge measurements/labels enter the driver.
+
+| Challenge part | Active / eligible centers | Correct unique rank | Ties | Fixed gate |
+| --- | ---: | ---: | ---: | --- |
+| Violin | 548 / 548 | 546 | 0 | Pass |
+| Flute | 514 / 514 | 482 | 0 | **Fail** |
+
+Both parts have 100% eligibility; missing coverage does not explain the flute
+failure. The combined descriptive total is 1028 correct among 1062 eligible
+centers. Oracle candidates already give this comparison the annotated pitch
+and its octaves: the result does not establish blind inference, note presence,
+or a correction to the existing Spring baseline. It also does not establish
+which feature, training distribution or model assumption caused the wrong ranks.
+Do not invent a causal diagnosis from aggregate failure or treat fitted scores
+as calibrated probabilities. Stop this proposal: no Spring application,
+threshold/feature/epoch variants or production adoption follow.
+
+Final checked stable Win64 QA accepts physical feature and numerical fit controls,
+source/split isolation, exact 13-file replay, existing/outside/changed-binding
+rejection and preservation, with zero leaks. The output is 1,805,303 bytes.
+Runs take 18290/18349 ms with at most 28,684,288 sampled private bytes, within
+120 seconds/256 MiB/64 MiB. Private evidence remains under
+`build/note-calibration/` and `build/qa-batch-28/`. Identities:
+
+- Manifest: `928e6a1a23b7ddaeeb14a3e73e14b9c1017f6b7ec241a459bcfae0c2c7cd300f`.
+- Model: `8c6f4009048f98d7248ba481eaabcfa4496344cbeddc6d0d01b9a6caf6dfcbe5`.
+- Report: `408cf3391901895c9262c93d530efa398cfd7034234759ddf7b11f5e902f647e`.
+
+This scientific rejection is distinct from an implementation QA defect; both
+component failure counters remain zero. No existing reference, provider or
+musical gate changes, and no task criterion or completion credit closes.
+The next observation/admission design must address unresolved candidate ambiguity
+and presence using separately justified evidence. An always-ranked candidate
+challenge is stricter than a system that can abstain; this failure is not a proof
+that every calibrated selective approach is impossible. Such an approach needs
+its own prospective source-separated confidence/coverage contract, not a cutoff
+picked after seeing these wrong ranks. Preserve genuine octave changes and
+low/quiet/short notes, and keep the reserved phrase inputs unused.
+
 ## Identity evidence reassessment — 2026-09-21
 
 A native audit of the frozen predictive-phase cache reconciles all 5,994 scoring
