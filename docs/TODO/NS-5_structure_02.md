@@ -24,5 +24,5 @@ Starting evidence: [LAYERED-STYLE](../LAYERED-STYLE.md) · [CORPUS-EVALUATION](.
 
 - [NS-5_structure_01.md](NS-5_structure_01.md)
 - [NS-4_styles_02.md](NS-4_styles_02.md)
-- [NS-4_layers_04.md](NS-4_layers_04.md)
+- [NS-4_layers_04.md](DONE/NS-4_layers_04.md)
 

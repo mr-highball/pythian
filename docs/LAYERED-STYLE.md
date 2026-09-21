@@ -11,9 +11,15 @@ using that style to start generation, and using a derived style as input to
 further merges or blends. Control must remain granular: small, reusable layers
 compose the whole. WFC's real pass system is the coordination mechanism.
 
+The [semantic graph archive](SEMANTIC-STYLES.md) defines reusable mapped and
+named-voice provider configurations with observed runs, source exposure and frozen
+vocabulary ancestry, including bound preparation and original-coordinate overlap
+audits. Final checked-target QA accepts source/derived replay. It embeds optional
+current PYS sound profiles and does not claim a learned phrase vocabulary.
+
 Core audio/synthesis fundamentals remain the priority. This document records
 the required architecture and its gaps. Automatic WAV key/tempo admission and
-general voice/joint style profiles remain open.
+recorded voice/joint admission and weighted semantic blends remain open.
 
 [Saved WAV onset styles](WAVE-STYLE.md) now support measured onset-presence
 learning, weighted independent recording samples and repeated saved blends.
@@ -352,7 +358,7 @@ defined policy and evidence prove it.
 
 | Requirement | Current evidence | Still needed |
 | --- | --- | --- |
-| Real dependent WFC passes | `pythian.wfc.layers`: models, per-layer locks, complete projections, negotiated solve and independent capture; explicit start-tick/whole-cell mappings across uniform grids and owned fixed unequal partitions | General semantic layer descriptors, timing for durations chosen during a solve and semantic-provider integration |
+| Real dependent WFC passes | `pythian.wfc.layers`: models, per-layer locks, complete projections, negotiated solve and independent capture; typed provider contracts, owned uniform/unequal mappings and staged generated-duration context through `pythian.wfc.duration.stream` | Admitted recorded providers and their integrated musical acceptance |
 | Selective finite musical edits | Actual WFC music/ensemble pipelines reuse clean providers, include dirty dependencies, negotiate repair and support ensemble voice-slot locks; native named sessions also replace compatible models transactionally | Integrate through semantic Pythian layer controls; cross-schema/time mapping and streaming edit policies |
 | Context feeding independent voices | Saved key/tempo passes feed the five-pass voice operator; finite changes map to cumulative performance ticks, preserve sounding notes and drive exact audio/MIDI clocks | WAV-derived voice behavior and general joint/dependency controls |
 | Tonal and timing evidence | Regional tonal fits with explicit key/unknown selection; selected local pulse tracks, exact PPQ clocks and saved changing providers | Calibrated automatic local key and tempo/downbeat admission, meter/other modes, unknown-tempo handling and broader annotated accuracy |
@@ -396,8 +402,9 @@ Both APIs are reusable companion contracts; general semantic role registration
 and admitted mixed-source providers remain separate work.
 The generic layer adapter separately maps declared uniform tick grids and
 [fixed unequal partitions](LAYERS.md#fixed-time-partitions), with owned timing and
-bounded position compilation. It does not yet derive projection timing from
-durations selected during the same solve. Do not silently
+bounded position compilation. The accepted [duration/stream adapter](DURATION-STREAMS.md)
+stages generated durations and cumulative timing before dependent context/voice
+solving and native scheduling; it does not change timing during a single graph solve. Do not silently
 repeat observations, erase changes or describe a hold as measured source duration.
 
 ## Implementation sequence and acceptance

@@ -106,7 +106,7 @@ identity declarations; it does not discover recording relationships or carry thi
 external ledger automatically. Every new source or reuse requires the complete
 audit; unknown ancestry is not acceptable evidence. Persisted semantic lineage
 and many-hour invalidation/recovery remain owned by
-[saved providers](TODO/NS-4_styles_01.md) and
+[saved providers](TODO/DONE/NS-4_styles_01.md) and
 [semantic corpus training](TODO/NS-5_scale_02.md).
 
 Checked stable Win64 compilation, source/cache/profile binding, replay and the

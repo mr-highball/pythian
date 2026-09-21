@@ -1,6 +1,6 @@
 # NS-3_validation_01 — Establish executable musical admission and evaluation contracts
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-3)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-3)
 
 **Description:**
 
@@ -10,7 +10,7 @@ North star: NS-3. Outcome owner: WAV-VALIDATION.
 Completion credit: 2 goal percentage points (0.50 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
-Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [BEAT-TRACKING](../BEAT-TRACKING.md) · [CORPUS-EVALUATION](../CORPUS-EVALUATION.md).
+Starting evidence: [PHRASE-EVALUATION](../../PHRASE-EVALUATION.md) · [BEAT-TRACKING](../../BEAT-TRACKING.md) · [CORPUS-EVALUATION](../../CORPUS-EVALUATION.md).
 
 Reopened 2026-09-21 after infrastructure review: the file evaluator checks
 reference and estimator ancestry but never requires or traverses the exact
@@ -21,9 +21,23 @@ points (+0.50 overall) until repair and final validation; preserve the historica
 scoring evidence without retaining the complete-ancestry claim. No new credit or
 separate duplicate task is allocated for this repair.
 
+Completed 2026-09-21 after repair: the maintained file evaluator now requires the exact
+prediction and its source/preparation/estimator closure, excludes declared
+reference/shared-annotation ancestry and secondary estimator exposure from
+independent eligibility, and preserves oracle/development scores with explicit
+reasons. Final QA passed all criteria on checked stable FPC 3.2.2 Win32/Win64:
+18 focused ancestry controls plus the existing thirteen-output/phrase controls,
+with unchanged thresholds and denominators. Retained flute/violin predictions
+reproduce all 2997 centers and previous metrics; flute still fails precision and
+violin passes development only. No inference or untouched evaluation was run.
+Commands, source hashes, reports and zero-leak logs are retained under
+`build/qa-batch-06/` and `build/prediction-ancestry/`.
+Restore the original +2 NS-3 points (+0.50 overall), returning NS-3 to 32%.
+This repairs the prior acceptance; it adds no new scope or duplicate credit.
+
 Historical acceptance, superseded by reopening above: on 2026-09-21 the
-[shared native scorer](../MUSICAL-EVALUATION.md) and
-[file operator](../EVALUATION-OPERATOR.md) were accepted as binding thirteen declared musical outputs
+[shared native scorer](../../MUSICAL-EVALUATION.md) and
+[file operator](../../EVALUATION-OPERATOR.md) were accepted as binding thirteen declared musical outputs
 to source/preparation/reference/policy/estimator bytes, compatible clocks,
 annotation conventions, uncertainty and complete declared exposure ancestry.
 Bounded event/cell/note comparisons preserve wrong, unknown, rest and unsupported
@@ -47,7 +61,7 @@ ancestry, provider calibration, independent recording accuracy and style/listeni
 quality remain their declared owners. Accepted +2 NS-3 points (+0.50 overall),
 moving NS-3 from 30% to 32%. The same integration accepts NS-4_layers_01 (+0.90),
 moving overall completion from 57.0% to 58.4%. Return to the now-unblocked
-[style-card specification](NS-5_evaluation_01.md) on the originating NS-5 chain.
+[style-card specification](../NS-5_evaluation_01.md) on the originating NS-5 chain.
 
 **Acceptance Criteria:**
 

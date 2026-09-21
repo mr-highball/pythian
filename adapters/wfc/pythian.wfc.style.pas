@@ -221,6 +221,9 @@ type
       independently on the union of retimed frame knots. No time stretching. }
     function CopyGateEnvelope(const AOutputRate: Integer): TGateEnvelope;
     function ParentIdentity(const ASide: Integer): String;
+    { Caller-owned current-format parent. A missing source/preference side
+      returns nil; out-of-range sides reject. No source-file access. }
+    function CopyParent(const ASide: Integer): TWaveStyleProfile;
     function Encode: TAudioBytes;
     property Identity: String read FIdentity;
     property SourceCount: Integer read GetSourceCount;
@@ -1831,6 +1834,46 @@ begin
     raise EAudio.Create('Style parent is unavailable');
   end;
   Result := FParentIds[ASide];
+end;
+
+function TWaveStyleProfile.CopyParent(const ASide: Integer): TWaveStyleProfile;
+var
+  LCursor: TStyleCursor;
+  LKind: Integer;
+  LIndex: Integer;
+  LBytes: TAudioBytes;
+begin
+  if not (ASide in [0, 1]) then
+  begin
+    raise EAudio.Create('Style parent side requires zero or one');
+  end;
+  Result := nil;
+  if (FDepth = 1) or (FParentIds[ASide] = '') then
+  begin
+    Exit;
+  end;
+  LCursor.Bytes := FBytes;
+  LCursor.Offset := 8;
+  LCursor.Limit := Length(FBytes) - 64;
+  LKind := LCursor.Number;
+  LCursor.Number; { Model order precedes the current derivation payload. }
+  if LKind = 1 then
+  begin
+    for LIndex := 1 to 10 do
+    begin
+      LCursor.Number; { Context selections and independent blend weights. }
+    end;
+  end
+  else if LKind <> 2 then
+  begin
+    raise EAudio.Create('Current style has no parent payload');
+  end;
+  LBytes := LCursor.Blob(MaximumStyleBytes);
+  if ASide = 1 then
+  begin
+    LBytes := LCursor.Blob(MaximumStyleBytes);
+  end;
+  Result := DecodeWaveStyle(LBytes);
 end;
 
 function TWaveStyleProfile.TimbreWeightAt(const AIndex: Integer): Integer;

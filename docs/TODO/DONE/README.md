@@ -11,6 +11,9 @@
 | [NS-4_layers_01](NS-4_layers_01.md) — Reusable named harmony and voice passes | 2026-09-21 | +6 NS-4 | +0.90 |
 | [NS-4_layers_02](NS-4_layers_02.md) — Semantic provider compatibility and transactional replacement | 2026-09-21 | +4 NS-4 | +0.60 |
 | [NS-4_layers_03](NS-4_layers_03.md) — Granular musical preferences and sound controls | 2026-09-21 | +4 NS-4 | +0.60 |
+| [NS-3_validation_01](NS-3_validation_01.md) — Repaired prediction ancestry and shared musical admission | 2026-09-21 | +2 NS-3 | +0.50 restored |
+| [NS-4_styles_01](NS-4_styles_01.md) — Reusable semantic graphs and derivative evidence | 2026-09-21 | +4 NS-4 | +0.60 |
+| [NS-4_layers_04](NS-4_layers_04.md) — Staged duration and committed-stream edits | 2026-09-21 | +4 NS-4 | +0.60 |
 
 Previously accepted capability stays in the milestone baseline; it is not
 backfilled as new DONE work.

@@ -8,6 +8,14 @@ saves it together with selected key/tempo context, combines rhythm evidence from
 other recordings with explicit weights, and reuses the saved derived style in
 another blend and audible generation. Actual WFC passes coordinate the result.
 
+The distinct [semantic graph archive](SEMANTIC-STYLES.md) can embed current PYS
+sound profiles alongside reusable role models, mapped dependencies and source
+exposure records. PYS remains the current WAV measurement/relearning artifact.
+`TWaveStyleProfile.CopyParent(Side)` returns a caller-owned current-format parent
+for ancestry audits; missing sides return nil and indices outside 0/1 reject.
+The copied parent can outlive its child. Encoding and existing generation behavior
+are unchanged.
+
 Use the shared [provider descriptions](GRID-STYLE.md#provider-descriptions) or
 `pythian.style providers` to inspect supported choices, dependencies and timing
 before selecting locks/preferences.

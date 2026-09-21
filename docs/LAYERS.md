@@ -15,6 +15,12 @@ key/tempo context, higher voice parts and reusable per-layer style composition.
 The adapter below remains token-level; saved context and style semantics live in
 their companion adapters.
 
+The [duration/stream adapter](DURATION-STREAMS.md) adds staged learned durations,
+finite key/tempo coverage and transactional future musical edits through the
+native scheduler. Its checked-target validation is accepted under the
+[changing-duration task](TODO/DONE/NS-4_layers_04.md); the contracts below retain their
+existing fixed-plan and selective-layer scope.
+
 ## Contract
 
 `TryGenerateLayers` accepts caller-owned, immutable actual WFC sequence models,
@@ -353,7 +359,10 @@ and complete-span semantics, declared gap/overlap/wrapping behavior, owned mappi
 data, failure preservation and selective-edit evidence. A fixed accepted duration
 plan is the first consumer; durations chosen during the same solve additionally
 need a declared cumulative-time or staged-planning policy. A larger retry budget
-does not supply these contracts.
+does not supply these contracts. This historical study's fixed mapping gap is
+resolved by the maintained partition adapter below; the later
+[duration/stream adapter](DURATION-STREAMS.md) supplies the accepted staged policy
+for generated durations and dependent context.
 
 This was a scoped prerequisite under [WFC-LAYERS](MILESTONES.md#wfc-layers), not a
 blocker for uniform-grid providers, corpus work or inference. This study left

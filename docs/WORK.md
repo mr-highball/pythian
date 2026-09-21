@@ -41,85 +41,105 @@ it for playback. The milestone acceptance dashboard now condenses timing and
 note experiments into current capabilities and remaining blockers, linking the
 full topic evidence. No listening verdict or additional completion is inferred.
 
-## Current work — metrical evidence and reusable semantic styles — 2026-09-21
+## Accepted semantic persistence, duration edits and admission repair — 2026-09-21
 
-The preceding accepted batch is published at `a01bbfb`; its
-[native CI](https://github.com/mr-highball/pythian/actions/runs/35564421911)
-passed. That checkpoint credited **59.6%**, with 42 open tasks and seven DONE.
-Infrastructure review has since reopened [shared validation](TODO/NS-3_validation_01.md):
-its ledger never requires or traverses the scored prediction's ancestry, so a
-declared reference-derived prediction can evade independent-admission checks.
-The original task now owns focused repair and native counterexamples; its prior
-+0.50 overall credit is withdrawn. Current completion is **59.1%**, NS-3 **30%**,
-with **43 open tasks and six DONE**. Historical scoring evidence is retained.
+Final QA accepts three tasks on checked stable FPC 3.2.2 Win32/Win64:
 
-The pitch experiment allowance is consumed. Existing periodicity, spectral,
-companion-annotation and phase evidence demonstrates that the wrong octave can
-have real acoustic support; blanket corrections also reject genuine low notes.
-Keep register unresolved while reassessing the representation. Do not extend
-the rejected phase rule with another cutoff or silently use evaluation material.
+- [Shared musical validation](TODO/DONE/NS-3_validation_01.md) now requires the exact
+  prediction's bounded source/preparation/estimator ancestry. Eighteen controls
+  reject missing bindings and distinguish reference-derived/shared annotation or
+  secondary-estimator exposure from legitimate source access. Existing thirteen-
+  output and phrase scoring retains its thresholds and denominators. Retained
+  flute/violin predictions reproduce all 2997 centers and prior metrics; neither
+  becomes independent evidence. The ignored exporter now binds the original
+  inferred JSON bytes rather than target-specific numeric reserialization.
+  Corrected estimator/prediction/ledger/case/report files are byte-identical across
+  targets; actual CLI output differs from the producer only by terminal CRLF.
+- [Semantic persistence](TODO/DONE/NS-4_styles_01.md) saves actual mapped/named WFC
+  models, joint observed runs, contracts, exposure, frozen vocabulary and current
+  optional sound profiles. Direct original clocks/ranges and hash-bound preparation
+  bytes support exact rational contribution auditing across re-encoded excerpts.
+  Fractional adjacency, explicit repetition, contradictory/missing lineage,
+  source/derived replay, ownership/bounds/corruption and paired sound pass.
+- [Duration/stream edits](TODO/DONE/NS-4_layers_04.md) stage actual duration/context
+  continuations, recalculate cumulative timing and solve dependent named voices
+  before atomic scheduling. Unequal grids, holds, unknown spans and finite
+  endpoints pass. Exact native sample comparisons preserve committed notes and
+  live effect history through rejected edits; changed future renders replay
+  exactly. Whole-future musical regeneration is explicit; tempo-only edits retain
+  musical states. Terminal processing failure requires a fresh bus/epoch.
 
-Continue the already declared [metrical experiment](MUSICAL-EVALUATION.md#fixed-next-experiment-budgets)
-under [beat-level selection](TODO/NS-3_tempo_01.md), another prerequisite for
-reliable base context and style learning. The fixed candidate compares repeated
-low/mid/high onset accents at half/same/double periods, retaining metrical ties,
-missing model evidence and source support separately. Its ablation must reproduce
-the previous method exactly. QA passed the fixed controls; all nine ablations
-reproduce the earlier choices/clock. The [recorded comparison](BEAT-TRACKING.md#metrical-source-structure)
-improves acceleration F1 .656250 -> .950000 and authored regular 0 -> 1, preserving
-deception/polyrhythm. Authored polyphonic and changing-clock acceptance still fails;
-reject general adoption without tuning. Eighteen predictions and score reports
-are saved; final source/recurrence/resource audit passed QA. The first
-independent recurrence audit failed because its untyped clamp expression rounded
-before Double multiplication. Correcting only the audit preserved all predictions
-and the 1e-9 tolerance. All nine comparisons pass, with source/code/policy bindings
-and ablation parity confirmed; failed audit logs remain separate. All 36
-successful prediction/scoring process logs have zero unfreed blocks. A canonical
-phase representation error stopped the first candidate before output, then was
-corrected and gated by QA without changing the musical rule or prior ablations.
-Policy, sources and the QA handoff are ignored under `build/beat-metrical-structure/`.
+All criteria and task prerequisites pass. The original fourteen runtime logs and
+six exporter/CLI follow-up logs show zero leaks. Commands, tested source hashes,
+all-criterion review and audio identities are retained under `build/qa-batch-06/`,
+with focused evidence under `build/prediction-ancestry/`,
+`build/semantic-provenance/` and `build/duration-stream/`. Actual listening remains
+unassessed. These results accept infrastructure, not recorded provider accuracy or
+useful genre styles. Maintained build orchestration includes both new adapters'
+public consumer fixtures. No dependency source or historical format branch changed.
 
-The primary agent now owns
-[semantic provider persistence](TODO/NS-4_styles_01.md), using the accepted granular
-controls and actual WFC contracts. Source/run boundaries, joint evidence, exposure
-and vocabulary ancestry must survive source/derived style reuse. This is not
-recorded provider accuracy or a genre verdict. Its first QA submission failed a
-named-voice fixture using insufficient predecessor context. The fixture now uses
-order two for named voices, with production validation unchanged. Both target
-fixtures and paired sound hashes pass after repair. QA nevertheless blocked the
-second submission on missing derivative provenance evidence. Both work items
-remain open, and persistence earns no credit.
+Move all three task files to DONE and repair incoming links. NS-3 **30% -> 32%**
+restores its original +0.50 overall credit; NS-4 **84% -> 92%** adds +1.20.
+Overall **59.1% -> 60.8%**, with **40 open tasks and nine DONE**. This is 1.7 points
+above the reassessed checkpoint, of which 0.5 restores the prior failed admission
+claim. Combine former outcome packages A and B into **23.2 remaining points**,
+alongside C's **16.0**, retaining the user's larger-milestone direction without
+inflating credit. Return to NS-5 style cards and calibrated references; weighted
+semantic blend/reblend is independently ready after infrastructure review.
 
-The user added a [QA ownership-transfer rule](TASKFLOW.MD#delegated-validation-and-publication):
-after two failed submissions for the same delegated task, the primary agent takes
-over its existing implementation and fixes. The implementation helper receives
-a different independent task. Keep failure evidence and completion requirements;
-the persistence task reached two failed submissions and transferred with its
-existing implementation and evidence to the primary agent. Changing-duration/
-committed-stream edits are the replacement helper assignment, queued until the
-QA worker releases the available runtime slot; no concurrent edits are authorized.
+The preceding review/reassessment documentation is published at `10937f3`; its
+[native CI](https://github.com/mr-highball/pythian/actions/runs/35568344857) passed.
+That historical run does not validate this batch. Publication and its exact
+revision/remote CI follow final integrated-document checks by QA.
 
-The inaugural [infrastructure review](TASKFLOW.MD#periodic-infrastructure-review)
-completed against `a01bbfb` plus pending semantic persistence, using the seven
-previously accepted tasks as its entry checkpoint. It confirmed the prediction
-admission defect above and an unresolved derivative-evidence criterion in
-[semantic persistence](TODO/NS-4_styles_01.md): exact source-relative runs cannot
-distinguish overlapping from disjoint differently encoded parent excerpts without
-retained preparation/range mappings or an exact external-audit binding. Both
-findings belong to existing task criteria; no duplicate task or new credit is
-created. The reviewer inspected core/companion boundaries, WFC state replacement,
-sound ownership, scheduler/streaming bounds and delivery without establishing an
-additional concrete defect. This was source review, with no code edits or tests.
+## Review and delegation checkpoint — 2026-09-21
 
-The reviewer returned and its worker slot was released; QA was restored with the
-saved batch, completed native fixture logs and review findings. Formal persistence
-acceptance and the metrical audit remain QA's responsibility. QA completed the
-metrical audit, confirmed the style blocker and validated the reopening's 2437 links, 49 tasks and 94 dependency
-edges; no unaccepted feature was published. Detailed review
-evidence and source hashes are retained under `build/big-boss-01/`. No task has
-reached DONE since this review; the next review requires two subsequent task
-completions accepted by QA, counted as completion events rather than a net folder
-count after the reopening.
+The inaugural infrastructure review examined `a01bbfb` and pending semantic
+persistence using seven previously completed tasks. It found missing prediction
+ancestry admission and missing derivative contribution evidence. The first finding
+reopened shared validation and withdrew 0.50 points; the second belonged to the
+existing persistence criteria. Neither needed a duplicate task or new credit.
+Its read-only findings and source hashes remain under `build/big-boss-01/`.
+
+Persistence failed two delegated QA submissions: an insufficient-context fixture,
+then incomplete derivative evidence. The primary agent took the existing code and
+repair under the [ownership-transfer rule](TASKFLOW.MD#delegated-validation-and-publication).
+The implementation helper's replacement assignment was duration/stream editing;
+its first submission passed with **zero failed submissions**. Persistence retains
+its historical two failures after primary-agent acceptance. Review findings do not
+increment QA submission counters; no junior assignment ran in this batch.
+
+This integration records **three post-review DONE completion events**, including
+shared validation's repaired re-acceptance. It triggers the next
+[infrastructure review](TASKFLOW.MD#periodic-infrastructure-review), counting
+completion events rather than net folder growth. Preserve QA's terminal evidence
+and counters, release its slot, run the read-only senior review, then restore QA.
+Source review may identify actionable gaps or reopen failed criteria; it earns no
+completion credit and does not replace final feature testing.
+
+## Retained inference experiments — 2026-09-21
+
+Pitch and metrical studies remain evidence without provider completion. The pitch
+experiment allowance is consumed: periodicity, spectral, companion-annotation and
+phase comparisons show that a wrong octave can have real acoustic support while
+blanket corrections reject genuine low notes. Preferred flute precision remains
+91.57% against 98%; violin's 98.55% passes development only. Keep register and
+presence unresolved rather than extend the rejected phase rule with another cutoff.
+
+The fixed [metrical source-structure comparison](BEAT-TRACKING.md#metrical-source-structure)
+compares repeated low/mid/high accents at half/same/double periods, retaining ties,
+missing model evidence and source support. All nine ablations reproduce the prior
+method. The candidate improves acceleration F1 .656250 -> .950000 and authored
+regular 0 -> 1 while preserving deception/polyrhythm, but authored polyphonic and
+changing-clock acceptance still fails: reject general adoption without tuning.
+A canonical phase representation correction preserved the musical policy; the
+independent recurrence audit's untyped clamp was corrected to Double without
+changing predictions or the 1e-9 tolerance. All nine comparisons passed final QA,
+with source/code/policy bindings and budget evidence. Eighteen predictions and
+scores, all 36 successful zero-leak runtime logs, and earlier failures remain under
+`build/beat-metrical-structure/`. No untouched evaluation or genre acceptance is
+inferred. The [style specification](STYLE-CARDS.md) still needs grounded musical
+references, verified genre assignments and calibrated numerical criteria.
 
 ## Accepted granular controls and rejected phase rule — 2026-09-21
 
@@ -211,7 +231,7 @@ batch was published at `c130452` with its completion records.
 
 ## Accepted evaluation and named voices — 2026-09-21
 
-Accepted [shared musical validation](TODO/NS-3_validation_01.md) and
+Accepted [shared musical validation](TODO/DONE/NS-3_validation_01.md) and
 [named voice passes](TODO/DONE/NS-4_layers_01.md) after final two-target checks
 and criterion review. NS-3 moves from 30% to **32%** (+0.50 overall); NS-4 moves
 from 70% to **76%** (+0.90 overall). Together they move overall completion from
@@ -283,7 +303,7 @@ claimed. [Complete evidence](CORPUS-EVALUATION.md#verified-identity-pilot).
 Task moved to DONE; +2 NS-5 points and +0.4 overall: **NS-5 27%, overall 55.9%**.
 The next corpus task is blocked by style cards, themselves blocked by shared
 validation: `NS-5_corpus_02 -> NS-5_evaluation_01 -> NS-3_validation_01`.
-Current work follows [NS-3_validation_01](TODO/NS-3_validation_01.md); return to
+Current work follows [NS-3_validation_01](TODO/DONE/NS-3_validation_01.md); return to
 NS-5 after resolving it. The unfinished semantic-provider edit remains separate.
 
 ## Task catalog checkpoint — 2026-09-20

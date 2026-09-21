@@ -61,7 +61,7 @@ begin
   end;
 end;
 
-function Ledger(const ABinding: TJSONObject): TJSONObject;
+function Ledger(const ABinding: TJSONObject; const APredictionDigest: String): TJSONObject;
 var
   LArtifacts: TJSONArray;
 begin
@@ -80,6 +80,9 @@ begin
   LArtifacts.Add(Artifact(ABinding.Strings['reference_sha256'], '',
     [ABinding.Strings['source_sha256'], ABinding.Strings['preparation_sha256'],
     ABinding.Strings['annotation_policy_sha256']]));
+  LArtifacts.Add(Artifact(APredictionDigest, '',
+    [ABinding.Strings['source_sha256'], ABinding.Strings['preparation_sha256'],
+    ABinding.Strings['estimator_sha256']]));
 end;
 
 function Annotation(const AOutput, AInput: String): TJSONObject;
@@ -259,7 +262,7 @@ begin
     LFiles.Add('estimator', 'estimator.txt');
     LFiles.Add('prediction', 'prediction.json');
     LFiles.Add('ledger', 'ledger.json');
-    LDocument := Ledger(LBinding);
+    LDocument := Ledger(LBinding, Result.Strings['prediction_sha256']);
     try
       LHash := Save(ADirectory, 'ledger.json', LDocument.FormatJSON);
     finally
@@ -313,6 +316,12 @@ begin
           end;
           LCase.Strings['prediction_sha256'] := Save(ADirectory, 'prediction.json',
             LDocument.FormatJSON);
+        finally
+          LDocument.Free;
+        end;
+        LDocument := Ledger(LCase.Objects['binding'], LCase.Strings['prediction_sha256']);
+        try
+          LCase.Strings['ledger_sha256'] := Save(ADirectory, 'ledger.json', LDocument.FormatJSON);
         finally
           LDocument.Free;
         end;
@@ -499,6 +508,201 @@ begin
   end;
 end;
 
+procedure CheckPredictionAncestry(const ADirectory: String);
+var
+  LCase: TJSONObject;
+  LBinding: TJSONObject;
+  LLedger: TJSONObject;
+  LArtifacts: TJSONArray;
+  LParents: TJSONArray;
+  LReport: TJSONObject;
+  LBaselineScores: String;
+  LHelper: String;
+  LOtherSource: String;
+  LReason: String;
+  LIndependent: Boolean;
+  LRejected: Boolean;
+  I: Integer;
+begin
+  LHelper := Save(ADirectory, 'prediction-helper.txt', 'Declared helper or annotation model');
+  LOtherSource := Save(ADirectory, 'prediction-other-source.txt', 'Separate evaluation recording');
+  LCase := Fixture(ADirectory, 'label');
+  try
+    LReport := TJSONObject(GetJSON(EvaluateCaseFile(ADirectory + 'case.json')));
+    try
+      LBaselineScores := LReport.Objects['scores'].AsJSON;
+    finally
+      LReport.Free;
+    end;
+  finally
+    LCase.Free;
+  end;
+  for I := 0 to 17 do
+  begin
+    LCase := Fixture(ADirectory, 'label');
+    try
+      LBinding := LCase.Objects['binding'];
+      LLedger := ReadDocument(ADirectory + 'ledger.json');
+      try
+        LArtifacts := LLedger.Arrays['artifacts'];
+        LParents := LArtifacts.Objects[5].Arrays['parents'];
+        LReason := '';
+        LIndependent := I in [0, 8, 15, 17];
+        case I of
+          0: ; { Exact source/preparation/estimator-only prediction. }
+          1:
+            begin
+              LArtifacts.Delete(5);
+              LReason := 'Missing evaluation ledger ancestor';
+            end;
+          2:
+            begin
+              LArtifacts.Objects[5].Strings['sha256'] := LHelper;
+              LReason := 'Missing evaluation ledger ancestor';
+            end;
+          3:
+            begin
+              LParents.Delete(1);
+              LReason := 'Prediction ancestry must bind';
+            end;
+          4:
+            begin
+              LParents.Delete(2);
+              LReason := 'Prediction ancestry must bind';
+            end;
+          5, 9:
+            begin
+              LParents.Add(LBinding.Strings['reference_sha256']);
+              LReason := 'prediction-depends-on-reference';
+              if I = 9 then
+              begin
+                LBinding.Strings['partition'] := 'development';
+                LBinding.Booleans['previously_used_for_tuning'] := True;
+                LLedger.Arrays['groups'].Objects[0].Strings['partition'] := 'development';
+                LLedger.Arrays['groups'].Objects[0].Booleans['previously_used_for_tuning'] := True;
+              end;
+            end;
+          6:
+            begin
+              LArtifacts.Insert(5, Artifact(LHelper, '', [LBinding.Strings['reference_sha256']]));
+              LParents.Add(LHelper);
+              LReason := 'prediction-depends-on-reference';
+            end;
+          7:
+            begin
+              { Shared model ancestor, neither artifact consumes the other. }
+              LArtifacts.Insert(4, Artifact(LHelper, '', []));
+              LArtifacts.Objects[5].Arrays['parents'].Add(LHelper);
+              LParents.Add(LHelper);
+              LReason := 'prediction-shares-reference-ancestry';
+            end;
+          8: LParents.Insert(2, TJSONString.Create(LBinding.Strings['annotation_policy_sha256']));
+          10, 12, 13:
+            begin
+              if I = 10 then
+              begin
+                LArtifacts.Insert(5, Artifact(LHelper, '', []));
+              end
+              else
+              begin
+                LArtifacts.Insert(5, Artifact(LHelper, '', [LBinding.Strings['source_sha256']]));
+              end;
+              LParents.Add(LHelper);
+              LLedger.Arrays['estimators'].Add(TJSONObject.Create([
+                'estimator_sha256', LHelper, 'training_overlap', 'disjoint']));
+              if I = 10 then
+              begin
+                LLedger.Arrays['estimators'].Objects[1].Strings['training_overlap'] := 'unknown';
+                LReason := 'prediction-estimator-training-overlap';
+              end
+              else if I = 12 then
+              begin
+                LReason := 'prediction-estimator-uses-evaluation-source';
+              end
+              else
+              begin
+                LLedger.Arrays['estimators'].Objects[1].Strings['training_overlap'] := 'not-applicable';
+                LReason := 'Data-derived estimator cannot declare';
+              end;
+            end;
+          11:
+            begin
+              LLedger.Arrays['groups'].Add(TJSONObject(GetJSON(
+                '{"group_id":"other","group_verified":true,"previously_used_for_tuning":false,' +
+                '"partition":"evaluation","sources":["' + LOtherSource + '"]}')));
+              LArtifacts.Insert(0, Artifact(LOtherSource, 'other', []));
+              LParents.Insert(0, TJSONString.Create(LOtherSource));
+              LReason := 'prediction-uses-additional-evaluation-source';
+            end;
+          14:
+            begin
+              LParents.Add(LCase.Strings['prediction_sha256']);
+              LReason := 'Missing evaluation ledger ancestor';
+            end;
+          15:
+            begin
+              LArtifacts.Insert(5, Artifact(LHelper, '',
+                [LBinding.Strings['source_sha256'], LBinding.Strings['preparation_sha256'],
+                LBinding.Strings['estimator_sha256']]));
+              LParents.Clear;
+              LParents.Add(LHelper);
+            end;
+          16:
+            begin
+              LArtifacts.Insert(1, Artifact(LHelper, '', []));
+              LArtifacts.Objects[2].Arrays['parents'].Add(LHelper);
+              LReason := 'prediction-shares-reference-ancestry';
+            end;
+          17:
+            begin
+              LLedger.Arrays['groups'].Objects[0].Arrays['sources'].Add(LOtherSource);
+              LArtifacts.Insert(0, Artifact(LOtherSource, 'authored', []));
+              LArtifacts.Objects[1].Arrays['parents'].Add(LOtherSource);
+            end;
+        end;
+        LCase.Strings['ledger_sha256'] := Save(ADirectory, 'ledger.json', LLedger.FormatJSON);
+      finally
+        LLedger.Free;
+      end;
+      Save(ADirectory, 'case.json', LCase.FormatJSON);
+      if I in [1..4, 13, 14] then
+      begin
+        LRejected := False;
+        try
+          EvaluateCaseFile(ADirectory + 'case.json');
+        except
+          on E: EAudio do
+          begin
+            Check(Pos(LReason, E.Message) > 0, 'Prediction control rejected for unrelated reason: ' + E.Message);
+            LRejected := True;
+          end;
+        end;
+        Check(LRejected, 'Missing or invalid prediction dependencies accepted');
+      end
+      else
+      begin
+        LReport := TJSONObject(GetJSON(EvaluateCaseFile(ADirectory + 'case.json')));
+        try
+          Check(LReport.Objects['scores'].AsJSON = LBaselineScores,
+            'Prediction ancestry changed numeric score denominators');
+          Check(LReport.Booleans['metrics_pass'] and
+            (LReport.Booleans['prediction_ancestry_independent'] = LIndependent) and
+            (LReport.Booleans['independent_eligible'] = LIndependent) and
+            (LReport.Booleans['independent_case_pass'] = LIndependent) and
+            (LReport.Strings['prediction_ancestry_reason'] = LReason),
+            'Prediction ancestry eligibility or reason differs');
+          Save(ADirectory, 'prediction-ancestry-' + IntToStr(I) + '.json', LReport.FormatJSON);
+        finally
+          LReport.Free;
+        end;
+      end;
+    finally
+      LCase.Free;
+    end;
+  end;
+  WriteLn('PASS prediction dependency binding, direct/transitive oracle exclusion and unchanged scores');
+end;
+
 procedure PublishComparison(const ADirectory: String;
   const ACase, AAnnotation, APolicy, AReference, APrediction: TJSONObject);
 var
@@ -516,7 +720,7 @@ begin
     LBinding.Strings['scoring_policy_sha256'];
   LBinding.Strings['reference_sha256'] := Save(ADirectory, 'reference.json', AReference.FormatJSON);
   ACase.Strings['prediction_sha256'] := Save(ADirectory, 'prediction.json', APrediction.FormatJSON);
-  LLedger := Ledger(LBinding);
+  LLedger := Ledger(LBinding, ACase.Strings['prediction_sha256']);
   try
     ACase.Strings['ledger_sha256'] := Save(ADirectory, 'ledger.json', LLedger.FormatJSON);
   finally
@@ -782,6 +986,7 @@ var
   I: Integer;
 begin
   ForceDirectories(ADirectory);
+  CheckPredictionAncestry(ADirectory);
   CheckPhraseCases(ADirectory);
   CheckAncestryCases(ADirectory);
   CheckProviderCases(ADirectory);
@@ -881,6 +1086,15 @@ begin
               LDocument.Free;
             end;
           end;
+      end;
+      if I in [8, 9] then
+      begin
+        LDocument := Ledger(LCase.Objects['binding'], LCase.Strings['prediction_sha256']);
+        try
+          LCase.Strings['ledger_sha256'] := Save(ADirectory, 'ledger.json', LDocument.FormatJSON);
+        finally
+          LDocument.Free;
+        end;
       end;
       Save(ADirectory, 'case.json', LCase.FormatJSON);
       LRejected := False;

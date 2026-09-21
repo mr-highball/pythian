@@ -1,6 +1,6 @@
 # Shared musical evaluation
 
-[Home](../README.md) · [Validation task](TODO/NS-3_validation_01.md) ·
+[Home](../README.md) · [Validation task](TODO/DONE/NS-3_validation_01.md) ·
 [Corpus protocol](CORPUS-EVALUATION.md) · [Work](WORK.md)
 
 `pythian.evaluation` supplies portable evidence-binding checks, ordered event
@@ -110,7 +110,7 @@ accurate or that all annotations and admission thresholds already exist.
 | Evolving sound / supported recorded source classes | Source-bound normalized spectral/envelope features and reconstruction evidence | Scalar error with finite units, coverage and explicit unsupported observations. Learned pitch must not substitute for timbre fit; listening/reconstruction and calibrated limits remain with timbre tasks. |
 
 Do not derive annotation truth from the estimator under evaluation. Shared
-work in [NS-3_validation_01](TODO/NS-3_validation_01.md) binds each
+work in [NS-3_validation_01](TODO/DONE/NS-3_validation_01.md) binds each
 comparison to its declared input class, output/role, annotation convention and
 frozen vocabulary/unit, and exercises reference-preserving versus reference-breaking
 controls across those outputs. The structured annotation/input/output contract

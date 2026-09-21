@@ -1,12 +1,15 @@
 # File-bound musical evaluation
 
 [Home](../README.md) · [Scoring contracts](MUSICAL-EVALUATION.md) ·
-[Validation task](TODO/NS-3_validation_01.md) · [Work](WORK.md)
+[Validation task](TODO/DONE/NS-3_validation_01.md) · [Work](WORK.md)
 
-Current admission limitation (2026-09-21): prediction ancestry is not traversed,
-so a declared reference-derived prediction can incorrectly qualify as independent.
-Shared validation is reopened; its repair and regression criteria are in the
-linked task. Numerical scores alone do not resolve this admission defect.
+Prediction-ancestry repair (2026-09-21) passed final checked stable Win32/Win64 QA
+and all shared-validation criteria. Eighteen new controls exercise the repaired
+boundary alongside existing scoring cases. Retained recorded metrics are unchanged;
+the exporter binds original inference bytes directly for identical target bindings.
+Commands, source hashes and zero-leak logs remain under `build/qa-batch-06/`.
+The prior evaluator omitted prediction traversal and could admit a declared
+reference-derived prediction; the current contract below closes that omission.
 
 The native `pythian.evaluate` operator connects the shared scorer to actual WAV,
 annotation, prediction, policy and exposure files. It performs no inference or
@@ -158,7 +161,13 @@ The scoring policy has `metric` (`events`, `label`, `scalar`, `notes`), `unit`, 
   diagnostic counts. For events, complete annotation is an external declaration;
   an event list alone cannot prove absence of unannotated events.
 - `independent_eligible` requires a primary comparison and applies shared partition, verified family, previous
-  exposure, reference completeness and external-training-overlap requirements.
+  exposure, reference completeness and external-training-overlap requirements,
+  together with independent prediction ancestry.
+- `prediction_ancestry_independent` and `prediction_ancestry_reason` expose the
+  declared prediction-graph result. An empty reason means this check passes,
+  not that the other independent-evaluation conditions pass. Declared reference
+  dependence still yields unchanged diagnostic scores and a nonempty reason;
+  missing or malformed required dependencies reject the case before scoring.
 - `independent_case_pass` requires both preceding verdicts. It covers only this
   declared comparison. It does not establish provider accuracy over a corpus,
   pass additional phrase gates, or accept a learned style.
@@ -210,8 +219,8 @@ Each artifact has `sha256`, `group_id` and `parents` (artifact digests). Source
 artifacts name their registered family; non-source artifacts use an empty group.
 List parents before children and list each node's parents once in their ledger
 order. Missing ancestors, cycles, duplicates and unregistered/hidden families
-reject. Include the full declared dependency graph for preparation, reference
-annotations and estimator training, including frozen palettes, blended models and
+reject. Include the exact scored prediction and its full declared dependency
+graph, plus preparation, reference annotations and estimator training, including frozen palettes, blended models and
 other parents outside the immediate case. Roots without known dependencies use
 an empty parent list; this is a provenance assertion, not discovered independence.
 
@@ -225,6 +234,37 @@ estimator cannot declare training overlap `not-applicable`. Known training and
 development ancestors may be used, but unknown external training overlap still
 prevents independent acceptance. These checks concern training ancestry, not the
 source passed to an estimator when obtaining the current prediction.
+
+The prediction closure must include the exact bound source, preparation and
+estimator. These may be reached through intermediate inference or transformation
+artifacts; metadata matching alone is insufficient. A missing prediction root,
+wrong required identity or incomplete/cyclic graph rejects.
+
+The reference root anywhere in prediction ancestry gives
+`prediction-depends-on-reference`. Other shared reference ancestors give
+`prediction-shares-reference-ancestry`, including an annotation model consumed
+through differently named helpers. Registered recording material in the shared
+source/preparation closures, the exact preparation record and the annotation-policy
+artifact itself are exempt: both sides need the same raw input and conventions.
+Unclassified models/helpers beneath preparation or policy are not exempt merely
+because those inputs are shared. A generic shared helper whose independence is not
+represented by these input contracts remains ineligible; the evaluator does not
+guess which portion of a declared dependency was used.
+
+Additional evaluation-family sources reached by the prediction give
+`prediction-uses-additional-evaluation-source`. Every registered estimator in that
+closure is checked, including secondary variants: evaluation training ancestry
+gives `prediction-estimator-uses-evaluation-source`, and unknown/overlapping
+training gives `prediction-estimator-training-overlap`. Data-derived estimators
+still cannot declare training overlap `not-applicable`. Parent source summaries
+are calculated once in ledger order, avoiding one graph traversal per model.
+
+The report retains the first applicable reason in the fixed order above. These
+exclusions preserve numerical scoring for declared oracle/development controls;
+even a perfect oracle score is never an independent case pass. Register all
+consumed estimator identities and retain their actual ancestry. Renaming a node
+does not remove its supplied parent edges, but undeclared model use remains
+outside what a declared graph can prove.
 
 The current ledger format now requires these fields; regenerate development
 cases rather than keeping a reader for the superseded draft. Artifact identities
@@ -254,6 +294,12 @@ generates complete authored label/scalar/event/note cases and verifies determini
 reports, tolerance boundaries, changed/missing evidence, policy/clock mismatch,
 exposure mismatch, removed observation centers, positive admission thresholds,
 partial-reference rejection and passing development results remaining ineligible.
+Prediction controls additionally cover missing/wrong roots, missing required
+inputs, self-dependency, direct/transitive oracle inputs, shared annotation models,
+additional evaluation sources and secondary estimator exposure. Valid direct and
+transitive predictions and shared conventions retain independent eligibility;
+oracle/development cases preserve the exact score object. These new controls
+are compiled and await final QA.
 Phrase controls additionally reject inconsistent cell/interval evidence and a
 relaxed precision gate; a deliberately wrong duration fails full-note F1 despite
 perfect cell coverage, precision and onset F1.
@@ -296,7 +342,7 @@ These authored reference controls test scoring semantics, not inferred WAV truth
 
 Evidence and the all-criteria review are retained under `build/qa-batch-02/`.
 No owned compiler warnings or unfreed blocks were found. This evidence originally
-accepted [shared validation](TODO/NS-3_validation_01.md), +2 NS-3 points
+accepted [shared validation](TODO/DONE/NS-3_validation_01.md), +2 NS-3 points
 (+0.50 overall). Infrastructure review on 2026-09-21 reopened that task: the ledger
 never requires or traverses the scored prediction node, allowing declared direct
 or transitive reference ancestry to evade independent-admission checks. Existing

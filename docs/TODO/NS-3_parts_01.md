@@ -22,5 +22,5 @@ Starting evidence: [SEPARATION](../SEPARATION.md) · [PHRASE-EVALUATION](../PHRA
 
 **Blockers**
 
-- [NS-3_validation_01.md](NS-3_validation_01.md)
+- [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
 

@@ -303,12 +303,14 @@ begin
 end;
 
 procedure CheckLedger(const ALedger: TJSONObject; const ABinding: TEvaluationBinding;
-  const APredictionDigest: String);
+  const APredictionDigest: String; out APredictionAncestryReason: String);
 type
   TAncestorNode = record
     Digest: String;
     GroupIndex: Integer;
     Parents: array of Integer;
+    HasSource: Boolean;
+    HasEvaluationSource: Boolean;
   end;
 var
   LGroups: TJSONArray;
@@ -323,6 +325,8 @@ var
   LEstimatorIds: TStringList;
   LNodes: array of TAncestorNode;
   LSelected: array of Boolean;
+  LReferenceAncestors: array of Boolean;
+  LSharedInputs: array of Boolean;
   LCandidate: TEvaluationBinding;
   LDigest: String;
   LGroupId: String;
@@ -397,7 +401,29 @@ var
     end;
   end;
 
+  procedure AllowInputAncestors;
+  var
+    LNode: Integer;
+  begin
+    for LNode := 0 to High(LSelected) do
+    begin
+      { Exempt declared recording material, not arbitrary models/helpers hidden
+        beneath preparation. Both reference and prediction see that closure. }
+      LSharedInputs[LNode] := LSharedInputs[LNode] or
+        (LSelected[LNode] and (LNodes[LNode].GroupIndex >= 0));
+    end;
+  end;
+
+  procedure ExcludeIndependent(const AReason: String);
+  begin
+    if APredictionAncestryReason = '' then
+    begin
+      APredictionAncestryReason := AReason;
+    end;
+  end;
+
 begin
+  APredictionAncestryReason := '';
   CheckDigest(APredictionDigest);
   Fields(ALedger, 'format,groups,estimators,artifacts');
   Require(TextField(ALedger, 'format') = 'pythian-evaluation-ledger',
@@ -457,6 +483,7 @@ begin
       ABinding.EstimatorTrainingOverlap, 'Estimator exposure differs from ledger');
     SetLength(LNodes, LArtifacts.Count);
     SetLength(LSelected, LArtifacts.Count);
+    SetLength(LSharedInputs, LArtifacts.Count);
     LEdgeCount := 0;
     for I := 0 to LArtifacts.Count - 1 do
     begin
@@ -478,6 +505,12 @@ begin
         Require(LSourceIds.IndexOf(LDigest) < 0,
           'Recording artifact cannot hide its family');
       end;
+      LNodes[I].HasSource := LNodes[I].GroupIndex >= 0;
+      if LNodes[I].HasSource then
+      begin
+        LNodes[I].HasEvaluationSource := Partition(TextField(
+          ObjectAt(LGroups, LNodes[I].GroupIndex), 'partition')) = epEvaluation;
+      end;
       LParents := TJSONArray(Item(LRow, 'parents', jtArray));
       Inc(LEdgeCount, LParents.Count);
       Require(LEdgeCount <= 32768, 'Evaluation ancestry edge budget exceeded');
@@ -493,6 +526,9 @@ begin
             'Artifact parents must be unique in ledger order');
         end;
         LNodes[I].Parents[J] := LParentIndex;
+        LNodes[I].HasSource := LNodes[I].HasSource or LNodes[LParentIndex].HasSource;
+        LNodes[I].HasEvaluationSource := LNodes[I].HasEvaluationSource or
+          LNodes[LParentIndex].HasEvaluationSource;
       end;
       AddIndex(LArtifactIds, LDigest, I);
     end;
@@ -506,8 +542,15 @@ begin
       Require(LNodes[LIndex].GroupIndex < 0, 'Estimator cannot be a source recording');
     end;
     CheckSourceFamily(ABinding.SourceSha256);
+    AllowInputAncestors;
     CheckSourceFamily(ABinding.PreparationSha256);
+    AllowInputAncestors;
+    LSharedInputs[FindIndex(LArtifactIds, ABinding.PreparationSha256)] := True;
+    { Shared annotation conventions are not answer observations. Do not exempt
+      their ancestors: a shared annotation model must remain detectable. }
+    LSharedInputs[FindIndex(LArtifactIds, ABinding.AnnotationPolicySha256)] := True;
     SelectAncestors(ABinding.ReferenceSha256);
+    LReferenceAncestors := Copy(LSelected);
     Require(LSelected[FindIndex(LArtifactIds, ABinding.SourceSha256)] and
       LSelected[FindIndex(LArtifactIds, ABinding.PreparationSha256)] and
       LSelected[FindIndex(LArtifactIds, ABinding.AnnotationPolicySha256)],
@@ -532,6 +575,57 @@ begin
         Require(ABinding.EstimatorTrainingOverlap <> etoNotApplicable,
           'Data-derived estimator cannot declare training overlap not applicable');
       end;
+    end;
+    SelectAncestors(APredictionDigest);
+    Require(LSelected[FindIndex(LArtifactIds, ABinding.SourceSha256)] and
+      LSelected[FindIndex(LArtifactIds, ABinding.PreparationSha256)] and
+      LSelected[FindIndex(LArtifactIds, ABinding.EstimatorSha256)],
+      'Prediction ancestry must bind source, preparation and estimator');
+    if LSelected[FindIndex(LArtifactIds, ABinding.ReferenceSha256)] then
+    begin
+      ExcludeIndependent('prediction-depends-on-reference');
+    end;
+    for I := 0 to High(LNodes) do
+    begin
+      if not LSelected[I] then
+      begin
+        Continue;
+      end;
+      if LReferenceAncestors[I] and not LSharedInputs[I] then
+      begin
+        ExcludeIndependent('prediction-shares-reference-ancestry');
+      end;
+      if (LNodes[I].GroupIndex >= 0) and not LSharedInputs[I] then
+      begin
+        LRow := ObjectAt(LGroups, LNodes[I].GroupIndex);
+        if Partition(TextField(LRow, 'partition')) = epEvaluation then
+        begin
+          ExcludeIndependent('prediction-uses-additional-evaluation-source');
+        end;
+      end;
+    end;
+    { Include every declared estimator consumed by the prediction, even when
+      reached through a helper or a renamed model variant. Parent summaries
+      keep this linear in the bounded graph instead of retraversing each model. }
+    for I := 0 to LEstimators.Count - 1 do
+    begin
+      LRow := ObjectAt(LEstimators, I);
+      LIndex := FindIndex(LArtifactIds, TextField(LRow, 'estimator_sha256'));
+      if not LSelected[LIndex] then
+      begin
+        Continue;
+      end;
+      if LNodes[LIndex].HasEvaluationSource then
+      begin
+        ExcludeIndependent('prediction-estimator-uses-evaluation-source');
+      end;
+      if Overlap(TextField(LRow, 'training_overlap')) in [etoUnknown, etoOverlap] then
+      begin
+        ExcludeIndependent('prediction-estimator-training-overlap');
+      end;
+      Require(not LNodes[LIndex].HasSource or
+        (Overlap(TextField(LRow, 'training_overlap')) <> etoNotApplicable),
+        'Data-derived estimator cannot declare training overlap not applicable');
     end;
   finally
     LEstimatorIds.Free;
@@ -1082,6 +1176,7 @@ var
   LPass: Boolean;
   LIndependent: Boolean;
   LPrimary: Boolean;
+  LPredictionAncestryReason: String;
 begin
   LCase := nil;
   LReference := nil;
@@ -1115,7 +1210,8 @@ begin
     LLedger := ReadObject(FilePath(LBase, LFiles, 'ledger'), TextField(LCase, 'ledger_sha256'));
     LPolicy := ReadObject(FilePath(LBase, LFiles, 'scoring_policy'), LBinding.ScoringPolicySha256);
     LPrimary := CheckAnnotation(LAnnotation, LPolicy, LBinding);
-    CheckLedger(LLedger, LBinding, TextField(LCase, 'prediction_sha256'));
+    CheckLedger(LLedger, LBinding, TextField(LCase, 'prediction_sha256'),
+      LPredictionAncestryReason);
     LSource := TFileStream.Create(FilePath(LBase, LFiles, 'source'),
       fmOpenRead or fmShareDenyWrite);
     LSourceSize := LSource.Size;
@@ -1129,7 +1225,8 @@ begin
       (LReader.FrameCount = LBinding.SourceFrames), 'Evaluation WAV clock differs from case');
     LReport := TJSONObject.Create;
     LReport.Add('scores', Score(LReference, LPrediction, LPolicy, LBinding, LPass));
-    LIndependent := LPrimary and IsIndependentEvaluation(LBinding);
+    LIndependent := LPrimary and IsIndependentEvaluation(LBinding) and
+      (LPredictionAncestryReason = '');
     LSource.Position := 0;
     Require((LSource.Size = LSourceSize) and
       (Sha256Stream(LSource, LSourceSize) = LBinding.SourceSha256),
@@ -1143,6 +1240,8 @@ begin
     LReport.Add('unit', TextField(LPolicy, 'unit'));
     LReport.Add('annotation', LAnnotation.Clone);
     LReport.Add('metrics_pass', LPass);
+    LReport.Add('prediction_ancestry_independent', LPredictionAncestryReason = '');
+    LReport.Add('prediction_ancestry_reason', LPredictionAncestryReason);
     LReport.Add('independent_eligible', LIndependent);
     LReport.Add('independent_case_pass', LPass and LIndependent);
     LReport.Add('scope', 'One declared comparison; no provider or style acceptance inferred');

@@ -3,6 +3,11 @@
 [Home](../README.md) · [Joint models](JOINT-ARCHIVE.md) ·
 [Activity and continuity](ACTIVITY.md) · [Provenance](PROVENANCE.md) · [Work](WORK.md)
 
+For generated duration plans and edits that preserve committed native audio,
+see the accepted [duration/stream adapter](DURATION-STREAMS.md).
+Its finite playback epoch is separate from the sequence-continuation contract
+below; neither a saved style nor a caller cursor restores scheduler/effect state.
+
 ## Contract
 
 [pythian.wfc.stream](../adapters/wfc/pythian.wfc.stream.pas) continues an actual
