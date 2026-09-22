@@ -24,8 +24,22 @@ from planned semantic providers, profile persistence, weighting and blend APIs.
 ## Periodic-support recorded stop point — 2026-09-22
 
 This section records successive decisions in reverse order. The active
-direction is the fourth bounded decision immediately below; the third
-reassessment created the task split, and older forward plans are historical.
+direction is the fourth-attempt stop immediately below; the third reassessment
+created the task split, and older forward plans are historical.
+
+Fourth hypothesis result: both checked FPC 3.2.2 target builds passed, and
+Win64 synthetic controls passed, including support 0.999916732 / 0.666605532
+for the 55+110-Hz mixture. The 3000-window backend screen then exceeded its
+fixed 30-second deadline; the process had consumed more than 85 CPU seconds
+when stopped. There is no completed throughput checksum or final heap report.
+No Spring recording or reference was read. The prototype is trimmed from the
+unmerged branch, leaving ignored build/partial-run logs at
+`build/native-inference-peakmap/`. This is rejected attempt **4/4** for the
+Pascal producer cause. The synthetic result does not select a backend because
+its real-time cost failed before recorded scoring. Stop this estimator search;
+reassess the observation contract and complexity together, rather than
+making a fifth window, normalization or threshold variation. The split tasks
+remain open with zero new credit; accounting stays **61.90%, 39 open / 12 DONE**.
 
 Fourth bounded producer decision: the first two spectral probes gave the
 weaker 110-Hz mixture tone support near 0.2 because their candidate power was

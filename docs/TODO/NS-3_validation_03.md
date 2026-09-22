@@ -101,3 +101,19 @@ Starting evidence: [three stopped Pascal hypotheses](NS-3_validation_02.md) ·
   stop before an hour run. No parameter may be
   retuned using Spring labels; failure exhausts the four-attempt cap on this
   producer cause and requires a new strategy reassessment.
+
+- Fourth hypothesis stop 2026-09-22: checked FPC 3.2.2 Win64 and Win32 builds
+  passed, and the exact synthetic controls passed on Win64. The 55+110-Hz
+  mixture produced support 0.999916732 / 0.666605532. The subsequent
+  3000-window backend probe remained running beyond the 30-second deadline;
+  its process had exceeded 85 CPU seconds at the later observation and was
+  stopped. It produced no completed throughput checksum or final heap report.
+  No Spring source or reference was read, and no recorded or sustained cost
+  claim follows. The prototype is removed from maintained paths on this
+  unmerged branch; ignored checked build and partial run logs remain under
+  `build/native-inference-peakmap/`. This is unsuccessful attempt **4/4**.
+  The current inference representation search is stopped. Reassess the
+  observation contract and algorithmic cost together before proposing a
+  genuinely new decision path; do not relabel an optimization or threshold
+  change as a fresh attempt under this cause. This task remains open with
+  zero credit.
