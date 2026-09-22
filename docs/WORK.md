@@ -21,6 +21,31 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Selective Pascal observation accepted — 2026-09-22
+
+The fifth frozen producer hypothesis now passes every criterion of
+[NS-3_validation_03](TODO/DONE/NS-3_validation_03.md), following focused QA of
+its backend and separate Pascal recorded scorer. Checked stable FPC 3.2.2
+Win64/Win32 synthetic controls pass; the Win64 3000-window screen took
+9,563 ms with checksum `54.0764845667` and zero unfreed blocks. Hash-bound
+Spring flute/violin saved outputs pass the predeclared top-12 and <=36-bin
+density gates: 905/905 and 1355/1355 ranked hits; active/rest mean bins >=0.5
+are 4.832/0.924 and 7.027/0.152. Reference support >=0.5 occurs at 889/905
+and 1320/1355 active centers. The source-bound flute output replays to the
+same SHA256. One scored window per part touches an adjacent note annotation
+by less than 1 ms but satisfies the predeclared fully contained target-note
+center rule. Exact identities and ignored logs are in the accepted task.
+
+The backend is owned Pascal, returns raw support rather than admitted notes,
+and earns **+2 NS-3 goal points / +0.50 overall points**. Current completion is
+**NS-3 36%; overall 62.40%**. The remaining [supervised execution task](TODO/NS-3_validation_02.md)
+owns the retained +3 NS-3 points and has no current credit. Its next bounded
+deliverable is a maintained 2048-sample WAV consumer that preserves source,
+policy and output identity and passes short rate/channel and failure/replay
+checks before the continuous-hour qualification. The 20-attempt limit remains
+the project stop rule; attempt five succeeded and does not increment an
+unsuccessful-attempt count.
+
 ## Retry-limit revision — 2026-09-22
 
 The user raised Pythian's same-cause unsuccessful-attempt limit from four to
@@ -33,7 +58,7 @@ two-nonclosing-batch checkpoint still requires reassessment and a changed
 action; the larger retry allowance does not turn blind variations into an
 accepted strategy. No acceptance credit or task count changes.
 
-The next producer decision is frozen in [NS-3_validation_03](TODO/NS-3_validation_03.md):
+The next producer decision is frozen in [NS-3_validation_03](TODO/DONE/NS-3_validation_03.md):
 attempt five keeps the Pascal 2048/8192 peak evidence but bounds each
 35-cent Gaussian projection at eight sigma, calculating a continuous pitch
 coordinate once per peak and visiting only nearby grid bins. The discarded
@@ -122,7 +147,7 @@ detected, frequency-interpolated local maxima with direct magnitude-relative
 support and a separate peak-concentration gate. The exact 2048/8192 geometry,
 0.03 concentration threshold, 35-cent Gaussian sigma, 64-peak selection,
 ambiguity formulas and synthetic/cost checks are frozen in
-[NS-3_validation_03](TODO/NS-3_validation_03.md) before implementation.
+[NS-3_validation_03](TODO/DONE/NS-3_validation_03.md) before implementation.
 The Spring recall/density thresholds remain unchanged; its center exclusion
 is widened from the rejected 1024-window scorer's 50 ms to 1024 samples
 (64 ms) per side, before any fourth-hypothesis scoring, so scored windows
@@ -144,7 +169,7 @@ consecutive nonclosing batches after the prior review. Reassessment chooses a
 task split at the independently useful selective-observation boundary, leaving
 long-source execution with its current task. Do not start a fourth estimator
 variation without a distinct evidence-backed decision and frozen stop gate.
-The new [observation task](TODO/NS-3_validation_03.md) owns controlled and
+The new [observation task](TODO/DONE/NS-3_validation_03.md) owns controlled and
 recorded selectivity and 2 of the original 5 unearned NS-3 points; the
 [execution task](TODO/NS-3_validation_02.md) retains source/policy binding,
 long-source cost, supervision and 3 points. The existing downstream blocker

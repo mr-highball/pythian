@@ -1,13 +1,13 @@
 # NS-3_validation_03 — Accept selective Pascal pitch observations
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-3)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-3)
 
 **Description:**
 
 Deliver an independently usable, Pascal-owned observation backend for the
 supported WAV pitch range. This task owns selection, measurement semantics,
 controlled discrimination and source-bound recorded development evidence.
-The [supervised execution task](NS-3_validation_02.md) owns WAV preparation,
+The [supervised execution task](../NS-3_validation_02.md) owns WAV preparation,
 long-source budgets, process supervision and artifact publication after this
 backend is accepted. This split moves 2 of the original 5 unearned NS-3 goal
 points here; the two tasks retain the original 5 points together.
@@ -17,9 +17,59 @@ Completion credit: 2 goal percentage points (0.50 overall points).
 Credit is earned only when every acceptance criterion and the task-flow
 completion requirements pass.
 
-Starting evidence: [three stopped Pascal hypotheses](NS-3_validation_02.md) ·
-[phrase evaluation](../PHRASE-EVALUATION.md) ·
-[work record](../WORK.md#periodic-support-recorded-stop-point--2026-09-22).
+Starting evidence: [three stopped Pascal hypotheses](../NS-3_validation_02.md) ·
+[phrase evaluation](../../PHRASE-EVALUATION.md) ·
+[work record](../../WORK.md#periodic-support-recorded-stop-point--2026-09-22).
+
+Accepted 2026-09-22 after focused QA: the owned
+`TSparsePeakInferenceBackend` in `adapters/inference/pythian.inference.sparsepeak.pas`
+uses estimator `pythian-interpolated-peakmap-sparse35cents-midi24-20cent-v1`
+and policy `raw-f32-16k2048-hann8192-peak64-q003-h23-octave-35cent-8sigma-v1`.
+It accepts exactly 2048 finite 16-kHz samples and returns 360 bounded raw
+support values on MIDI 24..95.8 at 20-cent spacing. It removes DC, applies a
+Hann window and 8192-point interpolation FFT, retains the 64 strongest local
+peaks, and projects direct and declared harmonic-ambiguity evidence by maximum
+within eight 35-cent Gaussian widths. The concentration factor is
+`min(1,(strongest peak power / positive-bin power)/0.03)`. Silence and DC return
+zero support. A lower-octave or harmonic-pair path is capped at `0.4*q` before
+projection. These values are acoustic evidence, not independent-source,
+note-presence or calibrated-probability claims.
+
+Checked stable FPC 3.2.2 Win64 and Win32 builds and synthetic controls pass,
+including exact repeat calls, 55/110-Hz mixture support 0.999916732/0.666605532,
+missing-55 and lower-octave ambiguity, silence/DC, finite bounds and malformed
+input rejection. The single Win64 3000-window backend screen took **9,563 ms**
+(313.71 windows/s; checksum `54.0764845667`), within the fixed 30,000-ms gate,
+and reported zero unfreed blocks. Linear backend-only extrapolation to 360,000
+windows is about 1,148 seconds; this is not a whole-hour WAV-job guarantee.
+The maintained fixture is `tests/pythian.tests.inference.sparsepeak.lpr`; the
+checked build entry point compiles it. Exact checked logs are ignored under
+`build/native-inference-sparsepeak/`.
+
+Only after those gates passed, the separate Pascal scorer saved 3000 observations
+per part from hash-verified original Spring WAVs, then read the independently
+hash-verified Notes files. It used source-clock centers 0..479840 at hop 160,
+2048-sample centered windows, the predeclared 1024-sample edge rule, ±2-bin
+reference hits and ±5-bin rank separation. The flute output SHA256 is
+`e84fe81b91b3df9c0e9a457dc1111f19281793026810578227eae9e89340d89c`;
+the violin output is
+`13eb9b3dbe7538d61714f1d6f43a8bd897b8c494a51771e0f9428a7ecaad0c85`.
+The independent flute replay reproduced the same output hash. Exact source and
+reference hashes remain in the [execution task](../NS-3_validation_02.md); the
+Pascal scorer and produce/score logs remain ignored in
+`build/native-inference-recorded/`.
+
+| Spring part | Scored active / rest | Top-12 recall | Reference support >=0.5 | Mean bins >=0.5 active / rest | Rest max >=0.5 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Flute | 905 / 329 | 905/905 (100%) | 889/905 | 4.832 / 0.924 | 89/329 |
+| Violin | 1355 / 191 | 1355/1355 (100%) | 1320/1355 | 7.027 / 0.152 | 14/191 |
+
+Both parts pass the frozen >=80% recall and <=36 active/rest density limits.
+One scored window per part overlaps a neighboring reference note by 15-16 samples
+at an edge; the frozen rule admits them because the target note contains the
+whole window and only one note covers the center. Focused QA checked this
+boundary and the source/label separation. Whole-source supervision, artifact
+publication and sustained cost remain with the [execution task](../NS-3_validation_02.md).
 
 **Acceptance Criteria:**
 
@@ -55,7 +105,7 @@ Starting evidence: [three stopped Pascal hypotheses](NS-3_validation_02.md) ·
   task's acceptance condition.
 **Blockers**
 
-- [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
+- [NS-3_validation_01.md](NS-3_validation_01.md)
 
 **Dev Notes:**
 
@@ -63,7 +113,7 @@ Starting evidence: [three stopped Pascal hypotheses](NS-3_validation_02.md) ·
   Pascal producer hypotheses. Absolute autocorrelation failed recorded
   specificity; 1024-point harmonic energy and 2048-point local-peak probes
   failed the fixed 55+110-Hz mixture control before recorded scoring. Exact
-  counts and ignored build-log locations remain in the [parent task](NS-3_validation_02.md).
+  counts and ignored build-log locations remain in the [parent task](../NS-3_validation_02.md).
   The user raised the unsuccessful-attempt cap to four; this task inherits
   the current 3/4 ledger, not a new counter.
 

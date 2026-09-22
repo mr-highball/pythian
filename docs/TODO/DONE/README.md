@@ -17,6 +17,7 @@
 | [NS-4_styles_02](NS-4_styles_02.md) — Selective semantic blend and further blend | 2026-09-21 | +4 NS-4 | +0.60 |
 | [NS-3_parts_04](NS-3_parts_04.md) — Maintained simultaneous-role scoring and reproducible controls | 2026-09-21 | +1 NS-3 | +0.25 |
 | [NS-3_parts_01](NS-3_parts_01.md) — Qualified external reference packet and curator acoustic intervals | 2026-09-21 | +1 NS-3 | +0.25 |
+| [NS-3_validation_03](NS-3_validation_03.md) — Selective Pascal pitch observations | 2026-09-22 | +2 NS-3 | +0.50 |
 
 The former native execution task was reopened on 2026-09-22 under the user's
 Pascal-only inference requirement. Its earlier external-runtime result remains

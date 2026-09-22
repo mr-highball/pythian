@@ -12,14 +12,18 @@ North star: NS-3. Outcome owner: WAV-VALIDATION.
 Completion credit: 3 goal percentage points (0.75 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
-The [selective observation producer](NS-3_validation_03.md) owns the first
+The [selective observation producer](DONE/NS-3_validation_03.md) owns the first
 2 of the original 5 unearned points. This task retains the remaining 3 for
 the supported WAV consumer, source/policy binding, long-source cost,
 supervision and publication. The two tasks together retain the original
-5 NS-3 points (1.25 overall); this split changes no current credit.
-The user's later retry-limit revision makes the current Pascal producer
-ledger 4/20; historical `/4` entries below retain the limit that applied
-when those attempts were recorded.
+5 NS-3 points (1.25 overall); this split changed no credit when created.
+The later 20-attempt revision applied when the producer ledger was 4/20;
+historical `/4` entries below retain the limit at those earlier stops.
+The fifth Pascal producer passed its frozen synthetic, cost and source-bound
+Spring gates and is [accepted](DONE/NS-3_validation_03.md) for its separate
++2 NS-3 points. This execution task remains open for the maintained
+2048-sample WAV consumer, artifact identity, process supervision, source and
+failure replay, and continuous-hour qualification.
 
 Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [BEAT-TRACKING](../BEAT-TRACKING.md) · [ANALYSIS-WAVE](../ANALYSIS-WAVE.md).
 
@@ -231,7 +235,7 @@ The accepted repair above restores the same allocation once.
 
 **Acceptance Criteria:**
 
-- Consume the accepted [Pascal-only observation backend](NS-3_validation_03.md) and its documented supported scope in the maintained WAV path. No external inference runtime or foreign-language model implementation is an optional path.
+- Consume the accepted [Pascal-only observation backend](DONE/NS-3_validation_03.md) and its documented supported scope in the maintained WAV path. No external inference runtime or foreign-language model implementation is an optional path.
 - Preserve model and precursor provenance/notices where derived work is retained. Bind the selected Pascal estimator, preparation and reference evidence to exact policy/source identities; no former external-runtime result is inherited as its numerical or cost qualification.
 - Set and meet explicit processing-time, peak-memory and observation-density budgets on representative supported durations/rates/channels, including long-source implications; address the roughly 17 processing-seconds/audio-second scalar baseline.
 - Enforce bounded batching, cancellation/failure behavior, changed-source/policy rejection and reproducible results through maintained native interfaces. A raised private-study cap is insufficient.
@@ -240,7 +244,7 @@ The accepted repair above restores the same allocation once.
 **Blockers**
 
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
-- [NS-3_validation_03.md](NS-3_validation_03.md)
+- [NS-3_validation_03.md](DONE/NS-3_validation_03.md)
 
 **Dev Notes:**
 

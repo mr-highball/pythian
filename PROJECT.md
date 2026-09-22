@@ -89,13 +89,14 @@ The portable core remains independent of WFC, hosts and playback devices.
 The former Win64 TensorFlow C adapter and its measured execution evidence are
 retained as historical provenance in [native inference](docs/NATIVE-INFERENCE.md)
 and [provenance](docs/PROVENANCE.md#optional-native-observation-adapter). They do
-not qualify a Pascal-only producer. The [practical inference task](docs/TODO/NS-3_validation_02.md)
-is reopened; its five NS-3 points are unearned until a Pascal producer meets the
-recorded-input, long-source, bounded-work and failure/replay criteria. Preserve
-notices and exact source lineage while replacing the former path. Raw pitch or
-salience observations are not admitted notes or learned musical roles. The first
-Pascal periodic-support probe compiles and runs but failed recorded specificity;
-it is an experiment, not an accepted production estimator.
+not qualify a Pascal-only producer. The [selective Pascal backend](docs/TODO/DONE/NS-3_validation_03.md)
+passes controlled and source-bound recorded gates for its two NS-3 points.
+The [practical inference task](docs/TODO/NS-3_validation_02.md) remains open for
+the three points assigned to maintained WAV execution, long-source cost,
+supervision and replay. Preserve notices and exact source lineage while
+replacing the former path. Raw pitch or salience observations are not admitted
+notes or learned musical roles. The first Pascal periodic-support probe failed
+recorded specificity and remains rejected.
 
 ## Development format policy
 
