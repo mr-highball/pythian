@@ -130,3 +130,18 @@ Starting evidence: [three stopped Pascal hypotheses](NS-3_validation_02.md) ·
   rerun the exact 3000-window <=30-second checked cost gate, and stop if it
   still fails; only a passing repair may reach the frozen Spring gate. This
   is repair of the fourth implementation, not a fifth estimator hypothesis.
+
+- Focused repair stop 2026-09-22: checked FPC 3.2.2 Win64 and Win32 builds
+  passed. The old compiled Win64 unit returned 0.999916732 / 0.666605532
+  on the controlled mixture; the refactored unit returned those same values
+  and passed the complete Win64 synthetic controls. The single checked
+  3000-window screen took **31,782 ms**, or 94.39 windows/s, with checksum
+  `54.0764845667`; it failed the unchanged 30,000-ms gate by 1,782 ms.
+  Heap tracing reported zero unfreed blocks. The old-unit comparison covered
+  the mixture values, not every output bin. A backend-only extrapolation is
+  3,813,840 ms for 360,000 windows, already above the 3,630,000-ms
+  continuous-hour whole-job limit before WAV work, so it cannot qualify by
+  extrapolation either. No Spring input was read. Exact checked logs and the
+  Pascal old-unit comparator remain ignored under
+  `build/native-inference-peakmap/`. Stop this candidate, trim its source
+  from the unmerged branch, and keep the attempt ledger at **4/4**.

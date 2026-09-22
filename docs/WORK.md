@@ -27,6 +27,19 @@ This section records successive decisions in reverse order. The active
 direction is the fourth-attempt stop immediately below; the third reassessment
 created the task split, and older forward plans are historical.
 
+The bounded repair of the fourth implementation kept the same controlled
+mixture values against the old compiled Pascal unit and passed all Win64
+synthetic controls. Checked Win64/Win32 builds passed; the Win64 3000-window
+screen took **31,782 ms**, 1,782 ms beyond the fixed 30-second limit, with
+zero owned leaks. Its backend-only hour extrapolation is 3,813,840 ms for
+360,000 windows, above the 3,630,000-ms whole-job limit before decoding,
+source checks or publication. No Spring input was read. The repaired source
+is rejected and trimmed; ignored comparator/build/run logs remain under
+`build/native-inference-peakmap/`. This is a failed repair of attempt four,
+not a fifth estimator hypothesis. The 4/4 cap and the two-nonclosing-batch
+checkpoint now require a different observation architecture/cost decision,
+while the larger goal can continue on other ready work. No points change.
+
 Fourth hypothesis result: both checked FPC 3.2.2 target builds passed, and
 Win64 synthetic controls passed, including support 0.999916732 / 0.666605532
 for the 55+110-Hz mixture. The 3000-window backend screen then exceeded its
