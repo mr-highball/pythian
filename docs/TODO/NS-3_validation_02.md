@@ -22,6 +22,55 @@ No TensorFlow, ONNX, HDF5 or other third-party execution runtime is part of the
 replacement. Existing core Pascal measurements are starting evidence, not
 automatic proof of the required long-source cost or recorded fidelity.
 
+Recorded stop point 2026-09-22: the first Pascal periodic-support candidate
+passed its synthetic and short consumer checks but failed the recorded
+**specificity** question. Against hash-bound first-30-second Spring flute and
+violin sources/references, a predeclared top-12 separated-candidate recall gate
+passed at 1107/1125 (98.40%) and 1594/1594 (100%). A same-artifact density audit
+shows why that gate was insufficient: on flute, an average 201.15/360 bins have
+support >=0.5 at scored note centers and 203.38 at labeled rests; on violin the
+averages are 87.45 and 198.73. Maximum support >=0.5 occurs at 925/926 flute
+and 492/500 violin rest centers. Edges within 50 ms of reference notes are
+excluded from both note and rest scoring. Reference labels entered only the
+Pascal scorer after observations were saved. This broad absolute-correlation
+response is not a selective recorded pitch or presence measurement. **Withdraw
+the provisional first-criterion closure below**; the strategy is not selected
+for production, and criterion 5 remains open despite high candidate recall.
+
+The 30-second Win64 jobs completed in 2282/2313 ms with 3000 observations each;
+a five-minute 48-kHz stereo channel-one case completed 30000 observations in
+57797 ms, 1172 ms setup and 6578176 bytes peak private memory. These are
+bounded cost observations for the rejected candidate, not transferred
+qualification. The pending one-hour run was stopped when the specificity failure
+was confirmed; it published no artifact or accepted hour result. No cancellation
+gate is claimed from that stop. The next hypothesis is spectral harmonic support
+using owned Pascal Fourier primitives. Before implementation, require both
+>=80% top-12 reference-candidate recall and <=36 mean bins with support >=0.5
+on each part's scored active and rest centers, while retaining the existing
+duration/memory limits. If it fails, stop and reassess the observation geometry
+instead of tuning thresholds on these same recordings. The existing five task
+criteria own this replacement; no new task or credit is added at this point.
+Attempt ledger under the user's four-attempt cap: 1/4 absolute autocorrelation
+rejected for recorded specificity; the spectral hypothesis is attempt 2 only
+when its fixed evidence is scored. The two nonclosing work batches triggered
+the separate Athena progress reassessment recorded in [WORK](../WORK.md#periodic-support-recorded-stop-point--2026-09-22).
+
+Exact recorded inputs and saved observations for this stopped candidate:
+
+| Case | Source SHA256 | Reference Notes SHA256 | PINF SHA256 |
+| --- | --- | --- | --- |
+| Spring flute, 30 s, 16-kHz mono | `595d9a858fcecb0478692a806b961c967f6309de01e58821a4ce69de10fa5d30` | `70cbb79326ac89f10cdb4424d24aca0098d173dda632fdc30bfbc8eacc1f1c05` | `27196468886c66541a5fc2b38c9cd9e76448c140f8473b1d76b1324eb81a2b8d` |
+| Spring violin, 30 s, 16-kHz mono | `bfa0c3038f58126730fa3e2ec4a6cd5740cfa18a12173f4bef6de54b01ca5e1a` | `711934ba728f02bff3906b590589efe7b0f621677f262ca1cb0ebdfc1ab15c09` | `ffba4d9431d0e9106b0d71a2849afc3351b5295a9a636f9ab9e5b768cb5f78da` |
+| Five-minute 48-kHz stereo fixture, channel 1 | `7e305f5c7a195e3c0e8a1c8999a0d4bff4e57e281ec7b35cd0b562af623daafe` | none | `225c9fbe71335f56cf0b8f26ce02fb15273bcacff59e9f5af0f6c45b8f22a7b4` |
+
+The Spring jobs used scope `0..480000`, waveform support `0..480512`, center 0,
+hop 160 and batch 32; the five-minute fixture used scope/support `0..4800000`
+with the same center/hop/batch. All source hashes are of the original WAVs, not
+prepared excerpts. The Spring Notes files are scoring references only. The
+ignored `build/native-inference-pascal/recorded-support.lpr` records the Pascal
+scoring policy; the retained PINF files and exact command arguments permit a
+fresh cost replay without accepting the old cost as a future backend guarantee.
+
 Pascal producer checkpoint 2026-09-22: the maintained Win64 WAV consumer now
 uses an owned, bounded 360-bin periodic-support estimator and no model/DLL asset
 path. The request policy is
@@ -31,8 +80,9 @@ and values are raw normalized periodic support, not note probabilities. The
 existing source-bound preparation, staged artifact and supervised worker are
 retained. The former adapter, acquisition procedure, lock and runtime fixture
 were removed from maintained paths; their source/notices remain in Git history.
-This closes the first strategy/scope criterion for the current Win64 producer;
-it does not close the task or credit.
+This initially appeared to close the first strategy/scope criterion for the
+Win64 candidate. The recorded stop point above withdraws that provisional
+conclusion; no task credit was earned.
 
 Stable FPC 3.2.2 checked Win64 and Win32 backend fixtures pass tone, silence,
 DC, missing-fundamental, octave ambiguity, invalid-input and replay controls,
@@ -146,3 +196,5 @@ The accepted repair above restores the same allocation once.
 - 2026-09-22 architecture change: the user requires Pascal only, without the previously accepted TensorFlow C runtime exception. The historical execution and race repairs remain valid for their old scope but are stopped as a supported backend. Requalify a Pascal-only producer against the unchanged processing, resource, ownership and recorded-input criteria before restoring credit or unblocking downstream work.
 
 - 2026-09-22 native checkpoint: the Pascal periodic-support backend and WAV consumer pass the bounded controls above. Keep the task open for recorded fidelity and full duration/failure qualification; do not extrapolate the 3,000-window probe into an accepted hour cost. The Win32 backend compiles and runs, while the supervised consumer is currently Win64.
+
+- 2026-09-22 recorded reassessment: two batches did not establish the producer acceptance: the first built the Pascal candidate and the second exposed broad support on recorded notes and rests. Stop the absolute-correlation strategy and use a different, explicitly sparse spectral hypothesis under the fixed gate above. The earlier top-12 recall gate alone was non-discriminating. Keep all five criteria and zero task credit open until a replacement qualifies; do not run an hour for this rejected candidate.

@@ -21,7 +21,46 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Periodic-support recorded stop point — 2026-09-22
+
+The user raised the project limit for unsuccessful attempts on the same cause
+from two to four in [task flow](TASKFLOW.MD#select-and-execute). The separate
+Athena two-nonclosing-batch checkpoint still requires a change of action after
+review. This is the first rejected estimator hypothesis under the four-attempt
+cap; the prior short component checks were part of that same hypothesis.
+
+The first Pascal backend is executable and fast, but recorded evidence retracts
+its provisional strategy acceptance. Its absolute normalized autocorrelation
+gives high true-pitch candidate recall on the first 30 seconds of the bound
+Spring flute/violin parts (98.40%/100% among the top 12 separated candidates),
+yet support >=0.5 covers an average 201/360 flute bins at labeled notes and 203
+at rests; violin covers 87/360 at notes and 199 at rests. Nearly every labeled
+rest has maximum support >=0.5. The predeclared recall-only gate therefore did
+not establish useful discrimination. The Pascal scorer excluded 50-ms note
+edges and used reference labels only after the source-bound observations were
+saved. Exact counts, policy and source/reference identities are in the
+[reopened task](TODO/NS-3_validation_02.md).
+
+Both 30-second jobs completed in about 2.3 seconds; the separate five-minute
+48-kHz stereo job completed in 57.797 seconds with 6,578,176-byte peak worker
+private memory. The hour cost run was stopped after the failure became clear;
+no hour artifact or qualification was accepted. Preserve the earlier short
+build/replay/source-rejection evidence as component evidence, while withdrawing
+the claim that criterion 1 selected a viable production strategy. Two batches
+have now failed to establish that acceptance. The next action changes the
+estimator hypothesis to sparse harmonic spectral support using the existing
+Pascal Fourier primitive. Freeze a dual gate before implementation: at least
+80% reference candidate recall among 12 separated candidates on each part,
+and at most 36/360 bins with support >=0.5 on average for both scored notes and
+rests, with unchanged job cost/memory limits. If this fails, reassess window or
+representation geometry instead of tuning the same recordings. The existing
+inference task owns these criteria; no task split or extra credit is justified
+yet. Current accounting remains **61.90%, 38 open / 12 DONE**.
+
 ## Pascal-only inference requirement — 2026-09-22
+
+The later recorded stop point above supersedes this section's provisional
+strategy-criterion conclusion; the Pascal-only architecture requirement remains.
 
 The user explicitly requires Pascal only, with no exception for an optional
 TensorFlow or other third-party execution runtime. This overrides the former

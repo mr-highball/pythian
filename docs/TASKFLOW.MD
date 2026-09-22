@@ -106,9 +106,11 @@ Retain and update Dev Notes when a task moves to DONE.
    Keep one primary agent. Implement maintained behavior in Pascal and use
    proportional validation of the changed boundary and consumer.
 4. For inference experiments, declare the hypothesis, fixed evaluation policy,
-   cost budget and stop/switch condition before scoring. After two unsuccessful
+   cost budget and stop/switch condition before scoring. After four unsuccessful
    attempts on the same cause, reassess the approach/evidence rather than making
-   another blind variation. Protect untouched evaluation material.
+   another blind variation. Protect untouched evaluation material. The four-attempt
+   cap is the user's 2026-09-22 project instruction; record each attempt and its
+   discriminating result so this cannot become a cyclic search.
 5. Keep accepted baseline behavior available. Compile/test/render passes do not
    imply musical, listening, genre or independent-consumer acceptance. Avoid
    repeated broad test/package refreshes until material changes require them.
@@ -156,7 +158,7 @@ The reassessment must change the next action. Rephrasing the same investigation,
 adding a diagnostic-only task, changing the tested window or renaming a failed
 hypothesis does not reset the checkpoint. A further experiment needs a genuinely
 different, evidence-backed decision path, a fixed budget and an explicit result
-that will end it. Apply the existing two-unsuccessful-attempt rule as well; neither
+that will end it. Apply the four-unsuccessful-attempt rule as well; neither
 rule authorizes indefinite variations on a failed approach.
 
 Split at deliverable boundaries, not by coding steps, agent assignments or number

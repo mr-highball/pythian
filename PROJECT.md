@@ -93,7 +93,9 @@ not qualify a Pascal-only producer. The [practical inference task](docs/TODO/NS-
 is reopened; its five NS-3 points are unearned until a Pascal producer meets the
 recorded-input, long-source, bounded-work and failure/replay criteria. Preserve
 notices and exact source lineage while replacing the former path. Raw pitch or
-salience observations are not admitted notes or learned musical roles.
+salience observations are not admitted notes or learned musical roles. The first
+Pascal periodic-support probe compiles and runs but failed recorded specificity;
+it is an experiment, not an accepted production estimator.
 
 ## Development format policy
 
