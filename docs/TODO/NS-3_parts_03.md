@@ -28,7 +28,7 @@ before reporting a separate-recording acceptance verdict.
 **Blockers**
 
 - [NS-3_parts_02.md](NS-3_parts_02.md)
-- [NS-3_validation_02.md](NS-3_validation_02.md)
+- [NS-3_validation_02.md](DONE/NS-3_validation_02.md)
 
 **Dev Notes:**
 

@@ -37,9 +37,9 @@ const
   InferenceMaximumBatch = 32;
   InferenceMaximumSeconds = 3600;
   InferenceRate = 16000;
-  InferenceWindowFrames = 1024;
-  InferencePolicy = 'periodic-support-raw-f32-16k1024-sinc-channel-v1';
-  InferenceEstimator = 'pythian-periodic-support-midi24-20cent-v1';
+  InferenceWindowFrames = 2048;
+  InferencePolicy = 'raw-f32-16k2048-hann8192-peak64-q003-h23-octave-35cent-8sigma-v1';
+  InferenceEstimator = 'pythian-interpolated-peakmap-sparse35cents-midi24-20cent-v1';
 
 type
   EInferenceCancelled = class(EAudio);
@@ -244,7 +244,7 @@ begin
     RequireFinite(LValue, 'Inference salience');
     if (LValue < 0) or (LValue > 1) then
     begin
-      raise EAudio.Create('Inference salience outside sigmoid range');
+      raise EAudio.Create('Inference raw support outside 0..1');
     end;
   end;
 end;

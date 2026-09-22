@@ -1,14 +1,15 @@
 # Historical Win64 pitch-observation qualification
 
 [Project](../PROJECT.md) · [Phrase evaluation](PHRASE-EVALUATION.md) ·
-[Provenance](PROVENANCE.md) · [Reopened task](TODO/NS-3_validation_02.md)
+[Provenance](PROVENANCE.md) · [Pascal replacement](TODO/DONE/NS-3_validation_02.md)
 
 **Historical evidence only as of 2026-09-22.** The user requires a Pascal-only
 inference workflow with no third-party execution runtime. This page preserves
 the exact earlier TensorFlow C adapter, its notices, identities and qualification
 results for provenance; none is an accepted Pascal-only producer or a current
-build/deployment instruction. The reopened task owns replacement and fresh
-qualification. Do not acquire or run the former runtime for new acceptance work.
+build/deployment instruction. The [accepted Pascal task](TODO/DONE/NS-3_validation_02.md)
+records replacement and fresh qualification. Do not acquire or run the former
+runtime for new acceptance work.
 
 ## Scope and admission boundary
 
@@ -218,7 +219,7 @@ the worker published observing `Phase` before `Tick` at
 `tools/pythian.inference.wav.lpr:136–138`. An interleaving after more than five
 seconds of setup could pair the old timestamp with the new phase and trigger a
 false observing-stall failure. Stable-stall tests did not cover this transition.
-The [execution task was accepted at that time](TODO/NS-3_validation_02.md) after
+The [execution task was accepted at that time](TODO/DONE/NS-3_validation_02.md) after
 phase and timestamp were combined in one aligned atomic publication word. The
 supervisor decodes one captured snapshot without a retry loop or worker-held
 lock. A second-mapping publisher forces the formerly unsafe transition between

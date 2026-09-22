@@ -21,6 +21,80 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Supervised Pascal WAV inference accepted — 2026-09-22
+
+Focused QA accepted all five criteria of [NS-3_validation_02](TODO/DONE/NS-3_validation_02.md)
+after the selected 2048-sample Pascal backend was connected to the maintained
+supervised WAV path. Both original Spring parts match the earlier label-blind
+producer salience at every one of 1,080,000 bins, six rate/channel cases pass,
+batch-size replay is exact, and wrong-source rejection and timed cancellation
+preserve the accepted artifact. The 48-kHz stereo five-minute case publishes
+30,000 observations in 137,719 ms. The 16-kHz stereo continuous-hour case
+publishes 360,000 verified observations in **1,247,313 ms**, with 6,582,272-byte
+peak worker private memory against 3,630,000-ms/2-GiB limits. Exact middle
+and final 30-second scoped replays match every observation byte in the hour
+artifact. The published hour PINF SHA256 is
+`bf63ebc3c7d989eed90ddf2f928e366c414bbd9286e741c2de7aa0609420f822`.
+The supervisor reports zero unfreed heap blocks; this is not a worker heap
+trace. Exact identities, bounded budgets and ignored logs are in the DONE task.
+
+The rejected periodic-support unit and fixture are trimmed from the unmerged
+branch; their failure evidence stays in the dated record and Git history.
+The execution task earns its assigned **+3 NS-3 goal points / +0.75 overall**,
+bringing **NS-3 to 39% and overall to 63.15%**, with **37 open / 14 DONE**
+tasks across 19 active outcomes. The historical TensorFlow C path remains
+retired. Raw support is not note admission, independent provider accuracy or
+genre style learning. The next NS-5 style-card deliverable still needs verified
+recording/edition correspondence and curator-reviewed musical observations;
+the admitted-note-to-saved-learner bridge also remains open before the broader
+multi-recording workload can earn acceptance.
+
+## Supervised sparse-peak integration batch — 2026-09-22
+
+The [execution-task](TODO/DONE/NS-3_validation_02.md) short batch replaces the rejected
+1024-sample WAV worker with the accepted 2048-sample policy. Checked stable
+FPC Win64/Win32 geometry/replay/policy fixtures pass. The supervised Spring
+flute/violin jobs each publish 3000 source-bound observations in 10,234/10,203
+ms, with 6,569,984/6,590,464-byte peak worker private memory; all 1,080,000
+salience bins per part equal the saved label-blind producer outputs. Flute
+batch-size 1 and 32 PINF hashes match exactly. Six two-second rate/channel
+fixtures (16/44.1/48 kHz × mono/stereo) pass; exact identities and hashes
+are in the task. Wrong-source rejection and timed mid-run cancellation leave
+the earlier accepted PINF unchanged. Focused QA finds no short-path defect.
+
+Criterion 1 and short-source portions of criteria 4-5 are satisfied; criterion
+3's sustained cost and the hour failure/replay qualification remain open, so
+the task earns zero credit. The next bounded batch measures the 48-kHz stereo
+five-minute case against 330 seconds/2 GiB; only a plausible pass proceeds to
+a verified 360,000-observation hour against 3,630 seconds/2 GiB. Stop at the
+first failed gate and do not retune estimator or recorded scores. The
+short-batch handoff closes an acceptance criterion, resetting the separate
+two-nonclosing-batch checkpoint; the user's 20-attempt cap remains available
+for genuine later failure cases, not this successful integration.
+
+The five-minute 48-kHz stereo channel-1 case now passes in **137,719 ms**
+with 30,000 verified observations and 6,574,080-byte peak worker memory;
+the supervisor reported zero unfreed heap blocks. The source/PINF hashes are
+in the execution task.
+The twelvefold 1,652,628-ms extrapolation leaves margin under the fixed
+3,630,000-ms hour cap; it is only a decision to run the hour. The hour uses
+the previously verified 16-kHz stereo `C-native16k.wav`, first 3,600 seconds
+and a full 2048-sample last-window input halo; any budget or artifact failure
+stops the case without claiming task credit.
+
+The conditional continuous-hour case passed: the checked stable Win64 worker
+published 360,000 verified observations from the bound 16-kHz stereo source
+in **1,247,313 ms**, with 6,582,272-byte peak private memory and no remaining
+staging artifact. The supervisor reported zero unfreed heap blocks. Published
+PINF SHA256 is
+`bf63ebc3c7d989eed90ddf2f928e366c414bbd9286e741c2de7aa0609420f822`.
+Separate supervised middle and final 30-second scopes match the hour artifact
+exactly at every observation byte, using the same full source-clock support.
+The exact child identities/hashes and scope limits are recorded in the
+[execution task](TODO/DONE/NS-3_validation_02.md). This complements the six
+rate/channel cases and short Spring source-bound fidelity. Focused final QA
+still decides whether the execution task can close; no credit is recorded yet.
+
 ## Selective Pascal observation accepted — 2026-09-22
 
 The fifth frozen producer hypothesis now passes every criterion of
@@ -38,7 +112,7 @@ center rule. Exact identities and ignored logs are in the accepted task.
 
 The backend is owned Pascal, returns raw support rather than admitted notes,
 and earns **+2 NS-3 goal points / +0.50 overall points**. Current completion is
-**NS-3 36%; overall 62.40%**. The remaining [supervised execution task](TODO/NS-3_validation_02.md)
+**NS-3 36%; overall 62.40%**. The remaining [supervised execution task](TODO/DONE/NS-3_validation_02.md)
 owns the retained +3 NS-3 points and has no current credit. Its next bounded
 deliverable is a maintained 2048-sample WAV consumer that preserves source,
 policy and output identity and passes short rate/channel and failure/replay
@@ -171,7 +245,7 @@ long-source execution with its current task. Do not start a fourth estimator
 variation without a distinct evidence-backed decision and frozen stop gate.
 The new [observation task](TODO/DONE/NS-3_validation_03.md) owns controlled and
 recorded selectivity and 2 of the original 5 unearned NS-3 points; the
-[execution task](TODO/NS-3_validation_02.md) retains source/policy binding,
+[execution task](TODO/DONE/NS-3_validation_02.md) retains source/policy binding,
 long-source cost, supervision and 3 points. The existing downstream blocker
 on execution remains. This adds one open file and one dependency edge, with
 **39 open / 12 DONE, 51 tasks, NS-3 34% and overall 61.90%**. No points are
@@ -215,7 +289,7 @@ rest has maximum support >=0.5. The predeclared recall-only gate therefore did
 not establish useful discrimination. The Pascal scorer excluded 50-ms note
 edges and used reference labels only after the source-bound observations were
 saved. Exact counts, policy and source/reference identities are in the
-[reopened task](TODO/NS-3_validation_02.md).
+[reopened task](TODO/DONE/NS-3_validation_02.md).
 
 Both 30-second jobs completed in about 2.3 seconds; the separate five-minute
 48-kHz stereo job completed in 57.797 seconds with 6,578,176-byte peak worker
@@ -248,7 +322,7 @@ change. Core, maintained analysis/tools and all new inference experiments must
 be Pascal-owned with FPC/RTL. Existing model/runtime research remains
 historical evidence with its notices and source lineage, not a supported path.
 
-[NS-3_validation_02](TODO/NS-3_validation_02.md) is reopened; its +5 NS-3 points
+[NS-3_validation_02](TODO/DONE/NS-3_validation_02.md) is reopened; its +5 NS-3 points
 (+1.25 overall) are withdrawn. Current accounting becomes **NS-3 34%, overall
 61.90%, 38 open / 12 DONE**. The frozen earlier external-runtime hour, numerical
 and cancellation results still describe that old implementation; they cannot
@@ -266,7 +340,7 @@ byte-identical, wrong-source rejection preserves output, and the Win32 backend
 fixture also passes. The 3,000-window probe is a bounded cost screen only;
 recorded fidelity, full duration/cancellation/failure QA and final target
 delivery remain unaccepted. Exact results and artifact SHA256 are in the
-[reopened task](TODO/NS-3_validation_02.md). No task credit changes. Its
+[reopened task](TODO/DONE/NS-3_validation_02.md). No task credit changes. Its
 existing five criteria own the replacement work, so no additional task is
 needed at this checkpoint. Next, check recorded-input fidelity and a
 representative sustained-source
@@ -1402,7 +1476,7 @@ runtime has its separate focused evidence below. Accounting remains **62.65%,
 
 ## Accepted checkpoint — coherent native supervision — 2026-09-21
 
-The [native execution task](TODO/NS-3_validation_02.md) is accepted again
+The [native execution task](TODO/DONE/NS-3_validation_02.md) is accepted again
 after the review's progress race is repaired. Phase and full timestamp are one
 aligned atomic word; the supervisor decodes one captured snapshot, including
 terminal validation. No worker-held lock or snapshot retry loop is introduced.
@@ -1444,7 +1518,7 @@ It confirmed one P2 defect: the supervisor can combine a stale startup timestamp
 with the worker's new observing phase and terminate a healthy worker as stalled.
 The primary review agrees with the concrete source interleaving. The
 [native qualification record](NATIVE-INFERENCE.md#qualification--2026-09-21)
-and [reopened execution task](TODO/NS-3_validation_02.md) contain the trigger and
+and [reopened execution task](TODO/DONE/NS-3_validation_02.md) contain the trigger and
 required coherent snapshot/transition regression. No duplicate task is needed:
 the existing fourth criterion already requires correct bounded supervision.
 
@@ -1485,7 +1559,7 @@ responsibility.
 The acceptance below preceded the supervision finding and is superseded by the
 reopening above. Its measurements and publication evidence remain historical.
 
-[Practical native inference](TODO/NS-3_validation_02.md) now passes all five
+[Practical native inference](TODO/DONE/NS-3_validation_02.md) now passes all five
 criteria and moves to DONE. The optional Win64 consumer emits 360,000 raw
 observations from one continuous hour in 2,420,266 ms, with 20,313-ms setup and
 103,051,264 bytes peak worker private commitment. The complete 524,160,407-byte
@@ -1560,7 +1634,7 @@ investigation, while preserving local-key and confidence uncertainty. The failed
 comparison remains recorded and does not increment the helper's failure counter.
 
 The implementation helper's ninth assignment is
-[practical native inference](TODO/NS-3_validation_02.md), an independent prerequisite
+[practical native inference](TODO/DONE/NS-3_validation_02.md), an independent prerequisite
 of many-hour resource work. The agreed [optional Win64 observation strategy](PROVENANCE.md#optional-native-observation-adapter)
 retains Pascal graph assembly, stream preparation and supervision around the
 pinned CPU runtime. It emits raw converted-model salience and AC RMS; the failed

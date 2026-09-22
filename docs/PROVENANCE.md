@@ -104,13 +104,14 @@ no additional source media or saved format is introduced.
 <a id="optional-native-observation-adapter"></a>
 ## Historical external-runtime observation adapter
 
-[NS-3_validation_02](TODO/NS-3_validation_02.md) previously selected a Win64 CPU
+[NS-3_validation_02](TODO/DONE/NS-3_validation_02.md) previously selected a Win64 CPU
 observation adapter as a bounded route from the private model study to a
 maintained native consumer. Controlled/recorded fidelity, performance, memory
 and representative cancellation checks passed, including one continuous hour.
 A subsequent progress snapshot race was repaired. The user has since required
-Pascal-only inference without this runtime; the task is reopened and its credit
-withdrawn. These identities, notices and results are historical provenance, not
+Pascal-only inference without this runtime; the task was reopened, then
+accepted through the owned Pascal replacement. These former identities,
+notices and results are historical provenance, not
 the current backend strategy or a Pascal-only qualification. See the
 [historical qualification](NATIVE-INFERENCE.md#qualification--2026-09-21).
 

@@ -35,8 +35,8 @@ dependency; Phanes is removed and contributes only retained extraction provenanc
 
 The former [external-runtime observation adapter](PROVENANCE.md#optional-native-observation-adapter)
 is historical evidence and is outside the supported Pascal-only workflow. The
-[reopened producer task](TODO/NS-3_validation_02.md) must qualify a Pascal-owned
-replacement. [Final workflow delivery](TODO/NS-6_delivery_03.md) must supply and
+[accepted Pascal execution task](TODO/DONE/NS-3_validation_02.md) qualifies the
+owned replacement. [Final workflow delivery](TODO/NS-6_delivery_03.md) must supply and
 exercise that producer on each declared stable target before claiming the
 workflow is delivered; compiled core consumers alone cannot prove that step.
 

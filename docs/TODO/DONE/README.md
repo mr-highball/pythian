@@ -18,11 +18,12 @@
 | [NS-3_parts_04](NS-3_parts_04.md) — Maintained simultaneous-role scoring and reproducible controls | 2026-09-21 | +1 NS-3 | +0.25 |
 | [NS-3_parts_01](NS-3_parts_01.md) — Qualified external reference packet and curator acoustic intervals | 2026-09-21 | +1 NS-3 | +0.25 |
 | [NS-3_validation_03](NS-3_validation_03.md) — Selective Pascal pitch observations | 2026-09-22 | +2 NS-3 | +0.50 |
+| [NS-3_validation_02](NS-3_validation_02.md) — Supervised Pascal WAV inference | 2026-09-22 | +3 NS-3 | +0.75 |
 
-The former native execution task was reopened on 2026-09-22 under the user's
-Pascal-only inference requirement. Its earlier external-runtime result remains
-historical evidence in [the task](../NS-3_validation_02.md), without current
-completion credit.
+The former external-runtime result was withdrawn on 2026-09-22 under the user's
+Pascal-only inference requirement. It remains historical evidence in
+[the accepted Pascal execution task](NS-3_validation_02.md); the current +3
+NS-3 credit is supported by fresh Pascal qualification.
 
 Previously accepted capability stays in the milestone baseline; it is not
 backfilled as new DONE work.

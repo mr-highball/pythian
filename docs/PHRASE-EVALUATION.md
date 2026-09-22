@@ -5,8 +5,9 @@
 
 The TensorFlow C observations documented in the dated studies below are
 historical experiments. The user now requires a Pascal-only execution path;
-[NS-3_validation_02](TODO/NS-3_validation_02.md) is reopened. Those observations
-do not qualify the replacement producer or its recorded accuracy and cost.
+[NS-3_validation_02](TODO/DONE/NS-3_validation_02.md) now qualifies the selected
+Pascal execution path. The former observations do not qualify its recorded
+accuracy or cost; its separate Pascal evidence does.
 
 The core now supports [harmonic fitting along a declared changing phase](SOURCES.md#phase-harmonic-fitting).
 Known glide/vibrato controls recover constant harmonic coefficients and render

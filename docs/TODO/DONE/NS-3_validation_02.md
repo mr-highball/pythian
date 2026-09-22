@@ -1,6 +1,6 @@
 # NS-3_validation_02 — Deliver a practical native inference execution path
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-3)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-3)
 
 **Description:**
 
@@ -12,7 +12,7 @@ North star: NS-3. Outcome owner: WAV-VALIDATION.
 Completion credit: 3 goal percentage points (0.75 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
-The [selective observation producer](DONE/NS-3_validation_03.md) owns the first
+The [selective observation producer](NS-3_validation_03.md) owns the first
 2 of the original 5 unearned points. This task retains the remaining 3 for
 the supported WAV consumer, source/policy binding, long-source cost,
 supervision and publication. The two tasks together retain the original
@@ -20,12 +20,107 @@ supervision and publication. The two tasks together retain the original
 The later 20-attempt revision applied when the producer ledger was 4/20;
 historical `/4` entries below retain the limit at those earlier stops.
 The fifth Pascal producer passed its frozen synthetic, cost and source-bound
-Spring gates and is [accepted](DONE/NS-3_validation_03.md) for its separate
-+2 NS-3 points. This execution task remains open for the maintained
-2048-sample WAV consumer, artifact identity, process supervision, source and
-failure replay, and continuous-hour qualification.
+Spring gates and is [accepted](NS-3_validation_03.md) for its separate
++2 NS-3 points. This execution task was accepted on 2026-09-22 after focused
+QA of the maintained 2048-sample WAV consumer, artifact identity, process
+supervision, source and failure replay, and continuous-hour qualification.
+It earns its assigned **+3 NS-3 goal points / +0.75 overall points**. The two
+validation tasks together restore only their original +5 NS-3 points.
 
-Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [BEAT-TRACKING](../BEAT-TRACKING.md) · [ANALYSIS-WAVE](../ANALYSIS-WAVE.md).
+Completed short consumer batch 2026-09-22: replaced the rejected 1024-sample producer in
+the current WAV request/worker with the accepted 2048-sample sparse peak
+policy. Focused checked FPC 3.2.2 Win64/Win32 WAV geometry fixtures pass with
+zero unfreed blocks, including exact 2048-sample windows, first-edge padding,
+replay and changed-policy rejection. The checked Win64 supervised worker saves
+both original Spring 30-second parts with the accepted estimator and policy,
+scope `0..480000`, input support `0..481024`, first center 0, hop 160 and
+channel 0. Each has 3000 centers; a separate label-blind Pascal PINF reader
+matches **all 1,080,000 salience values** to the saved producer observation.
+Flute takes 10,234 ms total, peak private 6,569,984 bytes, PINF SHA256
+`903be589d250c39c0e834c88d50a39ef98ee976607d25e53398690253de63579`;
+violin takes 10,203 ms, peak private 6,590,464 bytes, PINF SHA256
+`bdb3fb708dcec66ad4d61a84a6cd446131950d40d8a64956ac377fbbfffb4dc0`.
+Batch size 1 replays the flute artifact hash exactly from batch size 32.
+Wrong-source SHA256 rejection and cancellation after at least 500 ms both
+preserve the previously accepted flute artifact hash. The request fixture
+rejects a changed policy. Source/reference identities and recorded scores
+remain bound in the accepted producer task; this worker reads no Notes labels.
+
+Six two-second 16/44.1/48-kHz × mono/stereo contract WAVs also pass a checked
+supervised 1-second scope (`0..16000`, support `0..32000`, 100 centers); stereo
+selects channel 1. The exact source and published PINF hashes are:
+
+| Rate / channels | Source SHA256 | PINF SHA256 | Total ms / peak private bytes |
+| --- | --- | --- | ---: |
+| 16000 / 1 | `fe9222315d07010bbeb1ad1665eb30f21d93e62d8127e8c6e0894068f5407be6` | `075ce9a12ac479a0bccf4173c274a7e0ab34904454bac194eed72f7f17c2f7ef` | 375 / 6,578,176 |
+| 16000 / 2 | `422f71598886b0edc34da21511708cd38b238e7b0dd65dd4593dfa7ba472cc0b` | `752b1aa79297199af7df40fa3cb778d88606231772402a8329ced8922c78cdc1` | 391 / 6,578,176 |
+| 44100 / 1 | `f1479e301ea23fb06c02bf81d11c9dfc133cc5c4fc6f6067e9002ad33cecd274` | `6498d7be0e9de04d74268a80695585d896f37fb8ef25d3c2ccbd1dde6bcaf756` | 515 / 6,586,368 |
+| 44100 / 2 | `dd4eb2de7d1f7dabd22e56995a42d7fc38728dafa41843276ff3a94aa981c25d` | `9176283c0f66522ba8d886f748285f1314039f88a1b3359ad1951c21b11c4cd4` | 547 / 6,586,368 |
+| 48000 / 1 | `51b7cd7eb4f997ae0cc7b65b27a36c4ae3ebb0de98ce62b8986ba62f0ed8a824` | `77e2b2502aca4b296d551e57d3681c636099fabf48889c650be9580a8b4bff74` | 547 / 6,574,080 |
+| 48000 / 2 | `567936b60319c77ed73d0f21921457bba8501f32c5179f7b63eeacd4dc400506` | `7ae1ec7769d1f6218b59e868c337b3debe7d2ea868a77543ce6afc8b04c4f382` | 547 / 6,582,272 |
+
+Focused QA found no short-path defect. At this short-batch checkpoint,
+criterion 1 and the short-source portion of criteria 4-5 passed while sustained
+cost, hour replay and publication remained open. Exact ignored logs,
+fixtures and artifacts are under `build/native-inference-wave/` and
+`build/native-inference-next/`. The existing 30-second setup,
+scope-plus-30-second total and 2-GiB worker-private budgets remain fixed.
+Next bounded long-source batch: run the 48-kHz stereo five-minute fixture under
+the 330-second/2-GiB limits and report observed cost, then run a source-bound
+continuous-hour case only if the measured five-minute rate plausibly fits the
+3,630-second/2-GiB limits. Stop at the first failed gate; no estimator or
+recorded-score retuning. The hour must publish a verified, reproducible
+360,000-observation artifact before remaining credit can be considered.
+
+Long-source gate update 2026-09-22: the checked 48-kHz stereo five-minute
+source SHA256 `7e305f5c7a195e3c0e8a1c8999a0d4bff4e57e281ec7b35cd0b562af623daafe`
+publishes 30,000 observations in **137,719 ms**, with 1,218-ms cold/source
+setup and 6,574,080-byte peak worker private memory; the supervisor process
+reported zero unfreed heap blocks. Verified PINF SHA256 is
+`7afabf5a08a8ccc2612c21f54409ca36cc57dcdc3a70dbe355d7ecdd8492d83b`.
+The fixed 330-second and 2-GiB gate passes. A straight twelvefold time
+extrapolation is 1,652,628 ms, below the 3,630,000-ms hour limit by
+1,977,372 ms; this is a decision to attempt the hour, not hour qualification.
+The next case uses the already verified 16-kHz stereo
+`build/native-rate-scale/C-native16k.wav` source SHA256
+`1efecef983467b81e87c9f1a92954ee0f3c9d001a801db06a7aa2fa2c8da5afc`,
+scope `0..57600000`, input support `0..57601024`, center 0, hop 160 and
+channel 1. Its source duration exceeds an hour, so the final window does not
+gain artificial right-edge padding. Stop at the fixed 3,630-second/2-GiB gate
+or any verification failure.
+
+Continuous-hour result 2026-09-22: the checked stable Win64 supervised worker
+published and fully verified **360,000** source-bound observations in
+**1,247,313 ms** (20.79 minutes), including 11,062-ms cold/source setup,
+worker completion, artifact validation and atomic publication. Peak worker
+private memory was **6,582,272 bytes**; the supervisor process heap trace
+reported zero unfreed blocks. The published 524,160,319-byte PINF SHA256 is
+`bf63ebc3c7d989eed90ddf2f928e366c414bbd9286e741c2de7aa0609420f822`;
+no `.pending` artifact remained. Both fixed limits pass with large margin.
+The artifact reader validates complete extent/checksum and the exact source,
+estimator, policy, channel, scope, support and observation-count identity.
+
+Two independent checked supervised replays of the same source at
+`28800000..29280000` and `57120000..57600000` each published 3000
+observations under the same enclosing input support. A separate Pascal
+`TInferenceFileReader` comparison verified every byte of each center, AC RMS
+and 360-bin support record against the corresponding part of the hour artifact;
+both pass, with zero unfreed blocks reported by their supervisors. The middle
+PINF SHA256 is
+`7e5c378a2bdcdb8825704fffa0d3b6425b4ebf6412c805834fa81d343f8e990d`
+and the final PINF SHA256 is
+`115d96344c5707736bb2db324983d51b8ff96196b752563d438eb590dfbbb609`.
+These exact scoped replays establish deterministic nonzero seeking and final
+window support; they are not a second full-hour execution. The 48-kHz
+five-minute case and six short rate/channel cases provide the complementary
+rate/channel cost evidence. All probes use owned Pascal and FPC/RTL, with no
+external inference runtime. The rejected periodic-support backend and its
+fixture are trimmed from the unmerged branch; their failure evidence remains
+in Git history and the dated task record. Final focused QA found no criterion
+gap, including the explicit raw-observation/admission boundary and the
+unchanged-output failure and cancellation paths.
+
+Starting evidence: [PHRASE-EVALUATION](../../PHRASE-EVALUATION.md) · [BEAT-TRACKING](../../BEAT-TRACKING.md) · [ANALYSIS-WAVE](../../ANALYSIS-WAVE.md).
 
 Reopened 2026-09-22 by the user's Pascal-only requirement. The previously
 accepted implementation invokes a TensorFlow C runtime, so its backend strategy,
@@ -69,7 +164,7 @@ Attempt ledger under the user's four-attempt cap: 1/4 absolute autocorrelation
 rejected for recorded specificity; the spectral hypothesis reached its fixed
 synthetic stop gate and is recorded as attempt 2/4 below. The two nonclosing
 work batches triggered
-the separate Athena progress reassessment recorded in [WORK](../WORK.md#periodic-support-recorded-stop-point--2026-09-22).
+the separate Athena progress reassessment recorded in [WORK](../../WORK.md#periodic-support-recorded-stop-point--2026-09-22).
 
 Exact recorded inputs and saved observations for this stopped candidate:
 
@@ -190,7 +285,7 @@ progress timestamp before the phase, while the worker wrote the observing phase
 before its timestamp. After setup exceeded the five-second stall limit, an
 ordinary interleaving could combine the old startup timestamp with the new phase
 and terminate a healthy worker as stalled. See the reviewed source paths in
-[historical native qualification](../NATIVE-INFERENCE.md#qualification--2026-09-21).
+[historical native qualification](../../NATIVE-INFERENCE.md#qualification--2026-09-21).
 This violated the existing fourth criterion. Its repair and deterministic
 transition regression remained within that task, with unchanged budgets and
 retained numerical/resource evidence. Review was not a failed QA submission.
@@ -198,7 +293,7 @@ The task's +5 NS-3 / +1.25 overall credit was withdrawn until the focused final
 QA above restored acceptance; dependent tasks remained blocked in that interval.
 
 Historical initial completion, before reopening: on 2026-09-21 the maintained
-[former optional Win64 observation adapter](../NATIVE-INFERENCE.md)
+[former optional Win64 observation adapter](../../NATIVE-INFERENCE.md)
 and native consumer pass all five criteria on checked stable FPC 3.2.2. Pascal
 owns preparation, graph assembly, identity, bounded delivery and supervision;
 the pinned external CPU runtime remains outside the portable core/default builds.
@@ -235,7 +330,7 @@ The accepted repair above restores the same allocation once.
 
 **Acceptance Criteria:**
 
-- Consume the accepted [Pascal-only observation backend](DONE/NS-3_validation_03.md) and its documented supported scope in the maintained WAV path. No external inference runtime or foreign-language model implementation is an optional path.
+- Consume the accepted [Pascal-only observation backend](NS-3_validation_03.md) and its documented supported scope in the maintained WAV path. No external inference runtime or foreign-language model implementation is an optional path.
 - Preserve model and precursor provenance/notices where derived work is retained. Bind the selected Pascal estimator, preparation and reference evidence to exact policy/source identities; no former external-runtime result is inherited as its numerical or cost qualification.
 - Set and meet explicit processing-time, peak-memory and observation-density budgets on representative supported durations/rates/channels, including long-source implications; address the roughly 17 processing-seconds/audio-second scalar baseline.
 - Enforce bounded batching, cancellation/failure behavior, changed-source/policy rejection and reproducible results through maintained native interfaces. A raised private-study cap is insufficient.
@@ -243,16 +338,16 @@ The accepted repair above restores the same allocation once.
 
 **Blockers**
 
-- [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
-- [NS-3_validation_03.md](DONE/NS-3_validation_03.md)
+- [NS-3_validation_01.md](NS-3_validation_01.md)
+- [NS-3_validation_03.md](NS-3_validation_03.md)
 
 **Dev Notes:**
 
 - Repaired setup issue: the first hour submission failed near setup with insufficient phase diagnostics. Overlapping verified source/runtime initialization and joining both before observation passed within unchanged limits; the original failure count remains one.
 
-- Repaired race: separate phase/timestamp reads could combine a stale setup timestamp with the observing phase and kill a healthy worker. An atomic combined snapshot and coordinated transition checks restored acceptance in the former runtime path. See [historical qualification](../NATIVE-INFERENCE.md#qualification--2026-09-21).
+- Repaired race: separate phase/timestamp reads could combine a stale setup timestamp with the observing phase and kill a healthy worker. An atomic combined snapshot and coordinated transition checks restored acceptance in the former runtime path. See [historical qualification](../../NATIVE-INFERENCE.md#qualification--2026-09-21).
 
-- Follow-ups remain [semantic scale](NS-5_scale_01.md) and [final target delivery](NS-6_delivery_03.md). Raw salience/AC RMS are not admitted notes or calibrated musical confidence.
+- Follow-ups remain [semantic scale](../NS-5_scale_01.md) and [final target delivery](../NS-6_delivery_03.md). Raw salience/AC RMS are not admitted notes or calibrated musical confidence.
 
 - 2026-09-22 architecture change: the user requires Pascal only, without the previously accepted TensorFlow C runtime exception. The historical execution and race repairs remain valid for their old scope but are stopped as a supported backend. Requalify a Pascal-only producer against the unchanged processing, resource, ownership and recorded-input criteria before restoring credit or unblocking downstream work.
 

@@ -47,10 +47,10 @@ try {
     '-Fusrc', '-Futools', '-Fuadapters/inference', "-FU$unitRoot", "-FE$buildRoot")
   & $compilerPath '-B' @compilerArgs 'tools/pythian.inference.wav.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Pascal inference consumer compilation failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.inference.native.lpr'
-  if ($LASTEXITCODE -ne 0) { throw 'Pascal inference backend fixture compilation failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.inference.sparsepeak.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Sparse peak backend fixture compilation failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.inference.wave.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Sparse peak WAV geometry fixture compilation failed' }
   Write-Output "Pascal inference consumer and backend fixtures compiled: $buildRoot"
   Write-Output 'Compilation only; recorded fidelity and long-source qualification remain separate.'
 } finally {

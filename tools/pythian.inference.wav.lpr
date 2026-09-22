@@ -32,7 +32,7 @@ uses
   SysUtils,
   fpjson,
   pythian.inference.observation,
-  pythian.inference.native,
+  pythian.inference.sparsepeak,
   pythian.inference.wave,
   pythian.inference.process,
   pythian.tools.files;
@@ -169,7 +169,7 @@ procedure Worker;
 var
   LMapping: THandle;
   LMonitor: TWorkerMonitor;
-  LBackend: TNativeInferenceBackend;
+  LBackend: TSparsePeakInferenceBackend;
   LWave: TInferenceWaveJob;
   LSink: TInferenceFileSink;
   LStarted: QWord;
@@ -197,7 +197,7 @@ begin
     LSource := TSourceInitialization.Create(ParamStr(4), ReadRequest(True), LMonitor.Progress);
     LBackendStarted := GetTickCount64;
     try
-      LBackend := TNativeInferenceBackend.Create;
+      LBackend := TSparsePeakInferenceBackend.Create;
       if LBackend.EstimatorIdentity <> InferenceEstimator then
       begin
         raise Exception.Create('Pascal backend estimator identity differs');

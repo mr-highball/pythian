@@ -7,7 +7,7 @@
 Deliver an independently usable, Pascal-owned observation backend for the
 supported WAV pitch range. This task owns selection, measurement semantics,
 controlled discrimination and source-bound recorded development evidence.
-The [supervised execution task](../NS-3_validation_02.md) owns WAV preparation,
+The [supervised execution task](NS-3_validation_02.md) owns WAV preparation,
 long-source budgets, process supervision and artifact publication after this
 backend is accepted. This split moves 2 of the original 5 unearned NS-3 goal
 points here; the two tasks retain the original 5 points together.
@@ -17,7 +17,7 @@ Completion credit: 2 goal percentage points (0.50 overall points).
 Credit is earned only when every acceptance criterion and the task-flow
 completion requirements pass.
 
-Starting evidence: [three stopped Pascal hypotheses](../NS-3_validation_02.md) ·
+Starting evidence: [three stopped Pascal hypotheses](NS-3_validation_02.md) ·
 [phrase evaluation](../../PHRASE-EVALUATION.md) ·
 [work record](../../WORK.md#periodic-support-recorded-stop-point--2026-09-22).
 
@@ -55,7 +55,7 @@ reference hits and ±5-bin rank separation. The flute output SHA256 is
 the violin output is
 `13eb9b3dbe7538d61714f1d6f43a8bd897b8c494a51771e0f9428a7ecaad0c85`.
 The independent flute replay reproduced the same output hash. Exact source and
-reference hashes remain in the [execution task](../NS-3_validation_02.md); the
+reference hashes remain in the [execution task](NS-3_validation_02.md); the
 Pascal scorer and produce/score logs remain ignored in
 `build/native-inference-recorded/`.
 
@@ -69,7 +69,7 @@ One scored window per part overlaps a neighboring reference note by 15-16 sample
 at an edge; the frozen rule admits them because the target note contains the
 whole window and only one note covers the center. Focused QA checked this
 boundary and the source/label separation. Whole-source supervision, artifact
-publication and sustained cost remain with the [execution task](../NS-3_validation_02.md).
+publication and sustained cost remain with the [execution task](NS-3_validation_02.md).
 
 **Acceptance Criteria:**
 
@@ -113,7 +113,7 @@ publication and sustained cost remain with the [execution task](../NS-3_validati
   Pascal producer hypotheses. Absolute autocorrelation failed recorded
   specificity; 1024-point harmonic energy and 2048-point local-peak probes
   failed the fixed 55+110-Hz mixture control before recorded scoring. Exact
-  counts and ignored build-log locations remain in the [parent task](../NS-3_validation_02.md).
+  counts and ignored build-log locations remain in the [parent task](NS-3_validation_02.md).
   The user raised the unsuccessful-attempt cap to four; this task inherits
   the current 3/4 ledger, not a new counter.
 

@@ -103,7 +103,7 @@ procedure TInferenceWaveJob.Execute(const ABackend: TInferenceBackend;
 var
   LPcm: TWavePcmReader;
   LResampler: TSincResampleStream;
-  LRing: array[0..1023] of Single;
+  LRing: array[0..InferenceWindowFrames - 1] of Single;
   LWindow: TAudioSamples;
   LBatch: TInferenceBatch;
   LObservation: TInferenceObservation;
@@ -151,7 +151,8 @@ begin
     end;
     LPhasePeriod := FReader.SampleRate div LDivisor;
     LRadius := SincTapBudget(FReader.SampleRate / InferenceRate) div 2;
-    LPosition := Max(LRequest.InputStart16k, LRequest.FirstCenter16k - 512);
+    LPosition := Max(LRequest.InputStart16k,
+      LRequest.FirstCenter16k - InferenceWindowFrames div 2);
     LInputOrigin := Max(Int64(0), (LPosition div InferenceRate) * FReader.SampleRate +
       (LPosition mod InferenceRate) * FReader.SampleRate div InferenceRate - LRadius - 2);
     LInputOrigin := (LInputOrigin div LPhasePeriod) * LPhasePeriod;
@@ -169,7 +170,8 @@ begin
     begin
       CheckInferenceCancel(ACancel);
       LCenter := LRequest.FirstCenter16k + LIndex * LRequest.Hop16k;
-      LThrough := Min(LRequest.InputEnd16k - 1, LCenter + 511);
+      LThrough := Min(LRequest.InputEnd16k - 1,
+        LCenter + InferenceWindowFrames div 2 - 1);
       while LOutputPosition <= LThrough do
       begin
         if not LResampler.ReadFrame(LLeft, LRight) then
@@ -191,7 +193,7 @@ begin
       LMean := 0;
       for I := 0 to High(LWindow) do
       begin
-        LPosition := LCenter - 512 + I;
+        LPosition := LCenter - InferenceWindowFrames div 2 + I;
         if (LPosition < LRequest.InputStart16k) or (LPosition >= LRequest.InputEnd16k) then
         begin
           LWindow[I] := 0;

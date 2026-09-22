@@ -13,8 +13,8 @@ Credit is earned only when every acceptance criterion and the task-flow completi
 Starting evidence: [PACKAGING](../PACKAGING.md) · [packaging/README](../../packaging/README.md) · [PROVENANCE](../PROVENANCE.md).
 
 Integration constraint updated 2026-09-22: the former Win64 external-runtime
-path is historical; [practical inference](NS-3_validation_02.md) is reopened for
-a Pascal-only producer. The accepted workflow must preserve the
+path is historical; [practical Pascal inference](DONE/NS-3_validation_02.md)
+is accepted. The final workflow must preserve the
 [full stable target contract](../CONSUMER-CONTRACT.md#compiler-target-and-dependency-scope)
 and exercise every required Pascal producer on each declared target. Private
 precomputed observations cannot stand in for reproducible final delivery. This
@@ -31,12 +31,12 @@ remains existing delivery scope, not extra completion credit.
 **Blockers**
 
 - [NS-6_delivery_02.md](DONE/NS-6_delivery_02.md)
-- [NS-3_validation_02.md](NS-3_validation_02.md)
+- [NS-3_validation_02.md](DONE/NS-3_validation_02.md)
 - [NS-4_integration_01.md](NS-4_integration_01.md)
 - [NS-5_blends_01.md](NS-5_blends_01.md)
 
 **Dev Notes:**
 
-- Integration follow-up: the former external-runtime adapter was Win64-only and is no longer supported. Final packaging must exercise the reopened Pascal-only producer on the declared target matrix; private cached observations cannot replace it. See [target contract](../CONSUMER-CONTRACT.md#compiler-target-and-dependency-scope).
+- Integration follow-up: the former external-runtime adapter was Win64-only and is no longer supported. Final packaging must exercise the accepted Pascal-only producer on the declared target matrix; private cached observations cannot replace it. See [target contract](../CONSUMER-CONTRACT.md#compiler-target-and-dependency-scope).
 
 - The [earlier native checkpoint](DONE/NS-6_delivery_02.md) covers its frozen source revision. Its Linux artifact-content inspection was limited by an unauthenticated-download 401; retain that evidence boundary when qualifying final packages.

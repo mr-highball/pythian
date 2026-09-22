@@ -53,7 +53,7 @@ as prerequisites for operational measurement.
 **Blockers**
 
 - [NS-5_corpus_01.md](DONE/NS-5_corpus_01.md)
-- [NS-3_validation_02.md](NS-3_validation_02.md)
+- [NS-3_validation_02.md](DONE/NS-3_validation_02.md)
 - [NS-3_notes_03.md](NS-3_notes_03.md)
 
 **Dev Notes:**
@@ -62,4 +62,4 @@ as prerequisites for operational measurement.
 
 - Follow-up: the prepared 2.3222053373-hour workload has not run as semantic training. [notes_03](NS-3_notes_03.md) owns the missing admitted-note-to-learner bridge. The formerly accepted external-runtime one-hour observation benchmark does not close this task.
 
-- 2026-09-22: [native execution](NS-3_validation_02.md) is reopened for a Pascal-only producer. Re-measure that producer before this workload can use its density, setup, memory or hour-cost evidence; the old TensorFlow C run is historical only.
+- 2026-09-22: [native execution](DONE/NS-3_validation_02.md) was reopened for a Pascal-only producer and then accepted with fresh density, setup, memory and hour-cost evidence. This task must still measure the whole multi-recording semantic workload; the old TensorFlow C run is historical only.

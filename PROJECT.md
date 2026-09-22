@@ -91,10 +91,10 @@ retained as historical provenance in [native inference](docs/NATIVE-INFERENCE.md
 and [provenance](docs/PROVENANCE.md#optional-native-observation-adapter). They do
 not qualify a Pascal-only producer. The [selective Pascal backend](docs/TODO/DONE/NS-3_validation_03.md)
 passes controlled and source-bound recorded gates for its two NS-3 points.
-The [practical inference task](docs/TODO/NS-3_validation_02.md) remains open for
-the three points assigned to maintained WAV execution, long-source cost,
-supervision and replay. Preserve notices and exact source lineage while
-replacing the former path. Raw pitch or salience observations are not admitted
+The [practical Pascal inference task](docs/TODO/DONE/NS-3_validation_02.md)
+passes maintained WAV execution, long-source cost, supervision and replay for
+its remaining three NS-3 points. Preserve notices and exact source lineage.
+Raw pitch or salience observations are not admitted
 notes or learned musical roles. The first Pascal periodic-support probe failed
 recorded specificity and remains rejected.
 
