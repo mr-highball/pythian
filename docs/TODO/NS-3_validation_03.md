@@ -65,3 +65,23 @@ Starting evidence: [three stopped Pascal hypotheses](NS-3_validation_02.md) ·
   evidence-backed decision, fixed evaluation policy and stop/switch condition.
   After a fourth unsuccessful attempt, reassess rather than run another
   estimator variation under this task.
+
+- Fourth hypothesis frozen 2026-09-22 before implementation or Spring scoring:
+  detect actual spectral local maxima from a Hann-windowed 2048-sample frame,
+  using a zero-padded 8192-point Pascal Fourier transform only to interpolate
+  peak frequency. Normalize direct peak support by the strongest detected
+  peak's **magnitude**, gate it by maximum-peak power divided by total
+  positive-frequency power (full support at ratio >=0.03), and project each
+  detected peak narrowly onto the 20-cent grid (35-cent Gaussian width).
+  Carry missing-fundamental support only from a matched harmonic pair and
+  single-harmonic octave ambiguity below 0.5; do not treat a harmonic
+  collision as proof of two sound sources. This changes the evidence
+  representation: the failed probes divided candidate **power** by total
+  spectral power and spread a neighborhood maximum over every pitch bin.
+  First run the exact controlled checks in acceptance criterion 2, with
+  checked stable FPC Win64/Win32 and the 3000-window <=30-second backend
+  screen. If any control or cost gate fails, stop before Spring. If they
+  pass, apply the unchanged source-bound Spring recall/density gate in
+  criterion 3. If that fails, stop before an hour run. No parameter may be
+  retuned using Spring labels; failure exhausts the four-attempt cap on this
+  producer cause and requires a new strategy reassessment.

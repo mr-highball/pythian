@@ -24,8 +24,23 @@ from planned semantic providers, profile persistence, weighting and blend APIs.
 ## Periodic-support recorded stop point — 2026-09-22
 
 This section records successive decisions in reverse order. The active
-direction is the third-hypothesis reassessment and task split immediately
-below; the first stop's forward plan farther down is historical.
+direction is the fourth bounded decision immediately below; the third
+reassessment created the task split, and older forward plans are historical.
+
+Fourth bounded producer decision: the first two spectral probes gave the
+weaker 110-Hz mixture tone support near 0.2 because their candidate power was
+normalized by total spectral power. The nominal peak probe also used a
+neighborhood maximum at every candidate pitch, without detecting physical
+peak locations. The final attempt therefore changes representation to
+detected, frequency-interpolated local maxima with direct magnitude-relative
+support and a separate peak-concentration gate. The exact 2048/8192 geometry,
+0.03 concentration threshold, 35-cent projection width, ambiguity treatment,
+synthetic checks, cost screen and unchanged Spring stop gates are frozen in
+[NS-3_validation_03](TODO/NS-3_validation_03.md) before implementation.
+Zero padding interpolates the spectrum; it does not identify overlapping
+sources or establish a new information limit. Failure at the controlled,
+cost or recorded gate will exhaust this cause's four-attempt cap and trigger
+reassessment, not a fifth threshold or window variation. No credit changes.
 
 Third hypothesis update: a 2048-sample direct-peak/harmonic-ambiguity Pascal
 probe compiled on checked Win64/Win32, passed the 440-Hz tone and replay, then
