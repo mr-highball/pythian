@@ -41,6 +41,17 @@ reassess the observation contract and complexity together, rather than
 making a fifth window, normalization or threshold variation. The split tasks
 remain open with zero new credit; accounting stays **61.90%, 39 open / 12 DONE**.
 
+Focused cost reassessment found a concrete avoidable loop in that stopped
+implementation: up to 64×64 harmonic peak-pair agreement checks, including
+`Log2`, were repeated for each of 360 output bins although pair agreement is
+independent of the bin. A single mechanical repair may hoist that calculation
+and project qualifying pairs once, retaining every frozen measurement equation
+and the 4/4 ledger. Compare controlled output to the stopped binary where
+available, then rerun only the exact 3000-window <=30-second cost gate before
+any Spring input. If the same cost gate fails, stop this candidate. This
+reassessment changes execution order, not the estimator or its acceptance
+thresholds; no credit is awarded.
+
 Fourth bounded producer decision: the first two spectral probes gave the
 weaker 110-Hz mixture tone support near 0.2 because their candidate power was
 normalized by total spectral power. The nominal peak probe also used a

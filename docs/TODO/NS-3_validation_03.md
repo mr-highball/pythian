@@ -117,3 +117,16 @@ Starting evidence: [three stopped Pascal hypotheses](NS-3_validation_02.md) ·
   genuinely new decision path; do not relabel an optimization or threshold
   change as a fresh attempt under this cause. This task remains open with
   zero credit.
+
+- Reassessment of the fourth failure 2026-09-22: source-level review found a
+  specific implementation defect in its cost path. Harmonic agreement for up
+  to 64×64 ordered peak pairs was recalculated inside every one of 360 grid
+  bins, including repeated `Log2` calls, for up to 1,474,560 pair checks per
+  window. Agreement depends on the peak pair, not the grid bin. A single
+  bounded repair may move this identical calculation outside the grid loop
+  and project each qualifying pair once, without changing the frozen
+  measurement equations, parameters, output policy or 4/4 attempt ledger.
+  Verify controlled output equality to the stopped binary where available,
+  rerun the exact 3000-window <=30-second checked cost gate, and stop if it
+  still fails; only a passing repair may reach the frozen Spring gate. This
+  is repair of the fourth implementation, not a fifth estimator hypothesis.
