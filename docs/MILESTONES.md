@@ -21,7 +21,7 @@ preserve the earlier evidence and the new boundary. Existing note, presence,
 mixture and style-reference criteria remain unchanged.
 
 The old **89.8% is retired**. The accepted planning baseline remains **55.5
-weighted points**. The [50-task catalog](TODO/README.md) allocates every
+weighted points**. The [51-task catalog](TODO/README.md) allocates every
 remaining point to explicit acceptance criteria and prerequisites. Accepted
 corpus identity, consumer/native delivery, named
 voice passes/provider compatibility, granular controls, semantic persistence,
@@ -65,11 +65,11 @@ with detailed history in the linked evidence rather than active tasks.
 | --- | ---: | ---: | --- | --- | ---: |
 | <a id="ns-1"></a>**NS-1 — Independent Pascal foundation** | **100%** | 10 | Independent owned core; agreed WFC/Phanes extraction, Phanes removal and complete provenance. [Audit](REFERENCE-REMOVAL.md). | No open extraction work. Preserve independence and notices. Delivery is NS-6. | **0** |
 | <a id="fund-contracts"></a><a id="ns-2"></a>**NS-2 — Dependable synthesis fundamentals** | **80%** | 25 | Supported synthesis, samples, modulation, effects, buses, timing and streaming; reviewed contracts and numerical/replay evidence. [Capability map](FUNDAMENTALS.md#contract-review). | Accept the supported suite audibly and resolve demonstrated defects: **FUND-QUALITY**. | **5** |
-| <a id="wav-02"></a><a id="wav-03"></a><a id="ns-3"></a>**NS-3 — Trustworthy musical learning from WAV** | **34%** | 25 | Source-bound measurements, selected clocks, uncertainty/manual context, narrow pitch/duration learning, [shared scoring with repaired ancestry admission](EVALUATION-OPERATOR.md), [maintained mixture measures/control packet](TODO/DONE/NS-3_parts_04.md) and [qualified external references](TODO/DONE/NS-3_parts_01.md). [Phrase](PHRASE-EVALUATION.md) and [pulse](BEAT-TRACKING.md) evidence retain the accuracy gaps. | Pascal-only practical inference plus independently validated context, notes, mixed parts, harmony, groove and evolving sound: **15 tasks across 9 WAV outcomes**. | **16.50** |
+| <a id="wav-02"></a><a id="wav-03"></a><a id="ns-3"></a>**NS-3 — Trustworthy musical learning from WAV** | **34%** | 25 | Source-bound measurements, selected clocks, uncertainty/manual context, narrow pitch/duration learning, [shared scoring with repaired ancestry admission](EVALUATION-OPERATOR.md), [maintained mixture measures/control packet](TODO/DONE/NS-3_parts_04.md) and [qualified external references](TODO/DONE/NS-3_parts_01.md). [Phrase](PHRASE-EVALUATION.md) and [pulse](BEAT-TRACKING.md) evidence retain the accuracy gaps. | Pascal-only selective observations and practical inference plus independently validated context, notes, mixed parts, harmony, groove and evolving sound: **16 tasks across 9 WAV outcomes**. | **16.50** |
 | <a id="wfc-preferences"></a><a id="ns-4"></a>**NS-4 — Granular WFC layers and reusable blends** | **96%** | 15 | Actual dependent passes, [granular musical/sound controls](INDEPENDENT-VOICES.md#granular-musical-and-sound-controls), typed replacement, [saved semantic graphs](SEMANTIC-STYLES.md), [selective blends/reblends with retained evidence](SEMANTIC-BLENDS.md) and [staged duration/committed-stream edits](DURATION-STREAMS.md). | Accepted recorded-provider audio integration: **WAV-04-INTEGRATION**. | **0.6** |
 | <a id="wav-04"></a><a id="ns-5"></a>**NS-5 — Many-hour styles that generate and blend usefully** | **27%** | 20 | Ingestion, journals, acoustic vocabulary and mechanical reuse; accepted two-recording identity pilot with derivative/exposure and inherited-palette audits. [Pilot](CORPUS-EVALUATION.md#verified-identity-pilot). | Representative genre corpora, practical scale, sustained structure and acceptance of all three styles and cross-style blends: **16 tasks / 6 corpus outcomes**. | **14.6** |
 | <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | **72%** | 5 | Accepted [consumer contract](CONSUMER-CONTRACT.md) and [clean native delivery checkpoint](NATIVE-CHECKPOINT.md): stable Win32/Win64 builds, four extracted consumers and successful Linux CI at frozen source. | Accepted-workflow delivery and independently reproduced use: **WAV-05-DELIVERY, DELIVERY-RELEASE**. | **1.4** |
-| **Total** | **≈62%** | **100** | **61.90 weighted points credited** | **38 open tasks / 20 active outcomes** | **38.10** |
+| **Total** | **≈62%** | **100** | **61.90 weighted points credited** | **39 open tasks / 20 active outcomes** | **38.10** |
 
 Arithmetic: `10×1.00 + 25×0.80 + 25×0.34 + 15×0.96 + 20×0.27 + 5×0.72 = 61.90`.
 The decimal is bookkeeping, not measurement precision. NS-3 earns measurement
@@ -141,7 +141,7 @@ presence tasks remain open; no completion credit changes. The next design needs
 justified treatment of candidate ambiguity and presence, with prospective
 confidence/coverage and source separation rather than post-hoc error cutoffs.
 
-**38 open task files own the remaining work across 20 active outcomes; 12 tasks are DONE.**
+**39 open task files own the remaining work across 20 active outcomes; 12 tasks are DONE.**
 The 22-outcome map below retains accepted WFC-LAYERS and WFC-STYLE anchors for evidence;
 WAV-VALIDATION is reopened for Pascal-only inference.
 See the [task catalog](TODO/README.md) for credits and a prerequisite-first order,
@@ -218,7 +218,7 @@ A mapped task's credit is counted once even if it supports more than one outcome
 | Outcome | North star | Required task files |
 | --- | --- | --- |
 | <a id="fund-quality"></a>**FUND-QUALITY** | NS-2 | [NS-2_synthesis-quality_01](TODO/NS-2_synthesis-quality_01.md), [NS-2_synthesis-quality_02](TODO/NS-2_synthesis-quality_02.md), [NS-2_synthesis-quality_03](TODO/NS-2_synthesis-quality_03.md) |
-| <a id="wav-validation"></a>**WAV-VALIDATION** | NS-3 | [Pascal-only practical inference](TODO/NS-3_validation_02.md); [shared evaluation — DONE](TODO/DONE/NS-3_validation_01.md) |
+| <a id="wav-validation"></a>**WAV-VALIDATION** | NS-3 | [Selective Pascal observations](TODO/NS-3_validation_03.md), then [Pascal-only practical inference](TODO/NS-3_validation_02.md); [shared evaluation — DONE](TODO/DONE/NS-3_validation_01.md) |
 | <a id="wav-02-pulse"></a>**WAV-02-PULSE** | NS-3 | [NS-3_tempo_01](TODO/NS-3_tempo_01.md), [NS-3_tempo_02](TODO/NS-3_tempo_02.md), [NS-3_tempo_03](TODO/NS-3_tempo_03.md) |
 | <a id="wav-02-context"></a>**WAV-02-CONTEXT** | NS-3 | [NS-3_context_01](TODO/NS-3_context_01.md), [NS-3_context_02](TODO/NS-3_context_02.md) |
 | <a id="wav-03-register"></a>**WAV-03-REGISTER** | NS-3 | [NS-3_notes_01](TODO/NS-3_notes_01.md) |
@@ -283,7 +283,7 @@ the accepted baseline or claiming that planning itself advances completion.
 | --- | ---: | ---: | ---: | ---: | ---: |
 | NS-1 | 100% | 0 | 100% | 0 | 0 |
 | NS-2 | 80% | 0 | 80% | 20 | 3 |
-| NS-3 | 30% | 4 | 34% | 66 | 15 |
+| NS-3 | 30% | 4 | 34% | 66 | 16 |
 | NS-4 | 70% | 26 | 96% | 4 | 1 |
 | NS-5 | 25% | 2 | 27% | 73 | 16 |
 | NS-6 | 50% | 22 | 72% | 28 | 3 |
@@ -349,8 +349,9 @@ The resumed [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md) reference screen
 recorded the exact missing input: verified editions/cuts and curator-reviewed
 musical annotations for all three genre cards. Automatic transcription is not
 required for those references. While that external review is pending, restore
-the [Pascal-only observation producer](TODO/NS-3_validation_02.md), a true
-prerequisite for later many-hour scale and accepted recorded workflow. Keep
+the [Pascal-only observation producer](TODO/NS-3_validation_03.md), then the
+[supervised WAV consumer](TODO/NS-3_validation_02.md), true prerequisites for
+later many-hour scale and accepted recorded workflow. Keep
 synthesis listening requests finite and reuse existing auditions. Resume note
 development only with a discriminating observation and a fixed adoption/stop
 decision; do not restart rejected scorer variants.

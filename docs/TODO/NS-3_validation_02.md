@@ -4,11 +4,19 @@
 
 **Description:**
 
-Remove the production execution barrier between promising WAV studies and the maintained Pascal library. Select a viable estimator strategy rather than mandating the current learned models or porting every experiment.
+Remove the production execution barrier between promising WAV studies and the
+maintained Pascal library. Integrate the selected Pascal observation backend
+through a bounded, source-bound native WAV consumer.
 
 North star: NS-3. Outcome owner: WAV-VALIDATION.
-Completion credit: 5 goal percentage points (1.25 overall points).
+Completion credit: 3 goal percentage points (0.75 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
+
+The [selective observation producer](NS-3_validation_03.md) owns the first
+2 of the original 5 unearned points. This task retains the remaining 3 for
+the supported WAV consumer, source/policy binding, long-source cost,
+supervision and publication. The two tasks together retain the original
+5 NS-3 points (1.25 overall); this split changes no current credit.
 
 Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [BEAT-TRACKING](../BEAT-TRACKING.md) · [ANALYSIS-WAVE](../ANALYSIS-WAVE.md).
 
@@ -100,6 +108,21 @@ Spring top-12 >=80% and mean >=0.5 density <=36/360 gates on both active and
 rest centers remain unchanged, as do time/memory budgets. If synthetic
 controls fail, stop before Spring; if the Spring gate fails, stop before an
 hour run. This is not permission to tune on the same reference labels.
+
+Third hypothesis stop point 2026-09-22: the 2048-sample peak-evidence prototype
+compiled with checked FPC 3.2.2 for Win64 and Win32. It passed the 440-Hz tone
+and exact replay controls, then failed the frozen 55+110-Hz mixture check:
+support was 0.460238546 at 55 Hz and 0.203423500 at 110 Hz, below the required
+0.3 at the latter. The failed Win64 run reported zero unfreed blocks. Later
+synthetic controls, 3000-window throughput, Spring recordings and sustained
+cost were not run. The rejected prototype is trimmed from maintained paths;
+ignored `build/native-inference-peaks/` retains its checked logs. Attempt
+ledger: 3/4 rejected Pascal producer hypotheses, no task credit. The spectral
+and peak probes are two nonclosing batches since the previous reassessment;
+stop estimator variations and split the independently useful observation
+producer from the supervised long-source execution deliverable below. A
+fourth attempt requires a new decision based on the failed controls, with its
+evaluation policy and stop condition fixed before implementation.
 
 Pascal producer checkpoint 2026-09-22: the maintained Win64 WAV consumer now
 uses an owned, bounded 360-bin periodic-support estimator and no model/DLL asset
@@ -205,15 +228,16 @@ The accepted repair above restores the same allocation once.
 
 **Acceptance Criteria:**
 
-- Choose and record a Pascal-only production observation/backend strategy and its supported scope. All new executable inference, including experimental probes, and maintained analysis/tools must use Pascal-owned code with FPC/RTL; no external inference runtime or foreign-language model implementation is an optional path.
-- Preserve model and precursor provenance/notices where derived work is retained. Bind any selected Pascal estimator, preparation and reference evidence to exact policy/source identities; no former external-runtime result is inherited as its numerical or cost qualification.
+- Consume the accepted [Pascal-only observation backend](NS-3_validation_03.md) and its documented supported scope in the maintained WAV path. No external inference runtime or foreign-language model implementation is an optional path.
+- Preserve model and precursor provenance/notices where derived work is retained. Bind the selected Pascal estimator, preparation and reference evidence to exact policy/source identities; no former external-runtime result is inherited as its numerical or cost qualification.
 - Set and meet explicit processing-time, peak-memory and observation-density budgets on representative supported durations/rates/channels, including long-source implications; address the roughly 17 processing-seconds/audio-second scalar baseline.
 - Enforce bounded batching, cancellation/failure behavior, changed-source/policy rejection and reproducible results through maintained native interfaces. A raised private-study cap is insufficient.
-- Expose the selected measurement/admission boundary to native callers and show fidelity and cost on controlled and recorded development inputs. Subsequent provider tasks must recheck their own final accuracy and cost; this task does not preaccept them.
+- Expose the selected measurement/admission boundary through the supervised native WAV consumer and reproduce its controlled and recorded development fidelity with source-bound artifacts and cost. Subsequent provider tasks must recheck their own final accuracy and cost; this task does not preaccept them.
 
 **Blockers**
 
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
+- [NS-3_validation_03.md](NS-3_validation_03.md)
 
 **Dev Notes:**
 

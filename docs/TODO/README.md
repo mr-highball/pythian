@@ -3,7 +3,9 @@
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Completed tasks](DONE/README.md) · [Work record](../WORK.md)
 
 **Execution resumed 2026-09-22.** The user requires a Pascal-only workflow;
-[practical inference](NS-3_validation_02.md) is reopened. Follow the NS-5
+[practical inference](NS-3_validation_02.md) is reopened and its
+[selective observation prerequisite](NS-3_validation_03.md) is split out.
+Follow the NS-5
 priority and actual prerequisite blockers.
 This catalog covers the remaining declared end state. Task files own acceptance
 criteria and hard prerequisites; this page supplies navigation and accounting.
@@ -28,11 +30,11 @@ unless also declared under Blockers; required gaps still follow
 | --- | ---: | ---: | ---: | ---: |
 | [NS-1 — Independent Pascal foundation](../MILESTONES.md#ns-1) | 100% | 0 | 0 | 0.00 |
 | [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 80% | 3 | 20 | 5.00 |
-| [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 34% | 15 | 66 | 16.50 |
+| [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 34% | 16 | 66 | 16.50 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 96% | 1 | 4 | 0.60 |
 | [NS-5 — Many-hour styles that generate and blend usefully](../MILESTONES.md#ns-5) | 27% | 16 | 73 | 14.60 |
 | [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 72% | 3 | 28 | 1.40 |
-| **Total** | **61.90 weighted points** | **38** | Per-goal credits are not summed across goals | **38.10** |
+| **Total** | **61.90 weighted points** | **39** | Per-goal credits are not summed across goals | **38.10** |
 
 NS-1 is already complete under the accepted extraction scope. Preserve its
 invariants in every applicable task; do not recreate completed extraction work.
@@ -54,7 +56,8 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 
 | Task file and outcome | Goal credit | Overall credit | State |
 | --- | ---: | ---: | --- |
-| [NS-3_validation_02.md](NS-3_validation_02.md) — Deliver a Pascal-only practical inference path | +5 | +1.25 | TODO; reopened 2026-09-22 |
+| [NS-3_validation_03.md](NS-3_validation_03.md) — Accept selective Pascal pitch observations | +2 | +0.50 | TODO; split prerequisite |
+| [NS-3_validation_02.md](NS-3_validation_02.md) — Deliver a Pascal-only practical inference path | +3 | +0.75 | TODO; reopened 2026-09-22 |
 | [NS-3_tempo_01.md](NS-3_tempo_01.md) — Resolve beat level and phase from WAV observations | +5 | +1.25 | TODO |
 | [NS-3_tempo_02.md](NS-3_tempo_02.md) — Reconstruct changing clocks and metrical structure | +4 | +1.00 | TODO |
 | [NS-3_tempo_03.md](NS-3_tempo_03.md) — Accept automatic timing on independent recordings | +3 | +0.75 | TODO |
@@ -157,7 +160,7 @@ first accepted genre is predetermined.
 2. [NS-2_synthesis-quality_02.md](NS-2_synthesis-quality_02.md)
 3. [NS-2_synthesis-quality_03.md](NS-2_synthesis-quality_03.md)
 4. [NS-3_validation_01.md — DONE](DONE/NS-3_validation_01.md)
-5. [NS-3_validation_02.md](NS-3_validation_02.md)
+5. [NS-3_validation_03.md](NS-3_validation_03.md), then [NS-3_validation_02.md](NS-3_validation_02.md)
 6. [NS-3_tempo_01.md](NS-3_tempo_01.md)
 7. [NS-3_tempo_02.md](NS-3_tempo_02.md)
 8. [NS-3_tempo_03.md](NS-3_tempo_03.md)

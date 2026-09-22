@@ -23,6 +23,30 @@ from planned semantic providers, profile persistence, weighting and blend APIs.
 
 ## Periodic-support recorded stop point — 2026-09-22
 
+This section records successive decisions in reverse order. The active
+direction is the third-hypothesis reassessment and task split immediately
+below; the first stop's forward plan farther down is historical.
+
+Third hypothesis update: a 2048-sample direct-peak/harmonic-ambiguity Pascal
+probe compiled on checked Win64/Win32, passed the 440-Hz tone and replay, then
+stopped on the fixed 55+110-Hz mixture. Its 55/110 supports were 0.460238546 /
+0.203423500; the latter failed the >0.3 gate. No later synthetic, throughput,
+Spring or hour evidence was collected. The rejected source is trimmed from the
+branch; its ignored compiler and zero-leak run logs remain under
+`build/native-inference-peaks/`. This is attempt three of four for a viable
+Pascal producer. The sparse-spectrum and peak-evidence batches are two
+consecutive nonclosing batches after the prior review. Reassessment chooses a
+task split at the independently useful selective-observation boundary, leaving
+long-source execution with its current task. Do not start a fourth estimator
+variation without a distinct evidence-backed decision and frozen stop gate.
+The new [observation task](TODO/NS-3_validation_03.md) owns controlled and
+recorded selectivity and 2 of the original 5 unearned NS-3 points; the
+[execution task](TODO/NS-3_validation_02.md) retains source/policy binding,
+long-source cost, supervision and 3 points. The existing downstream blocker
+on execution remains. This adds one open file and one dependency edge, with
+**39 open / 12 DONE, 51 tasks, NS-3 34% and overall 61.90%**. No points are
+awarded for the split.
+
 Second hypothesis update: a sparse harmonic spectrum probe using the Pascal
 1024-point Fourier primitive passed checked Win64/Win32 builds but stopped at
 its controlled 55+110-Hz mixture gate. Support was 0.464351296 at 55 Hz and
@@ -42,10 +66,11 @@ unchanged Spring recall/density and cost gates. Stop at the first failed gate;
 the third hypothesis earns no provisional credit from a compile or synthetic
 pass alone.
 
-The user raised the project limit for unsuccessful attempts on the same cause
+At the original periodic-support stop, the user raised the project limit for
+unsuccessful attempts on the same cause
 from two to four in [task flow](TASKFLOW.MD#select-and-execute). The separate
 Athena two-nonclosing-batch checkpoint still requires a change of action after
-review. This is the first rejected estimator hypothesis under the four-attempt
+review. That was the first rejected estimator hypothesis under the four-attempt
 cap; the prior short component checks were part of that same hypothesis.
 The second hypothesis and its synthetic stop are recorded immediately above;
 the Spring gate below describes the predeclared plan, not an executed score.
@@ -68,15 +93,17 @@ private memory. The hour cost run was stopped after the failure became clear;
 no hour artifact or qualification was accepted. Preserve the earlier short
 build/replay/source-rejection evidence as component evidence, while withdrawing
 the claim that criterion 1 selected a viable production strategy. Two batches
-have now failed to establish that acceptance. The next action changes the
-estimator hypothesis to sparse harmonic spectral support using the existing
-Pascal Fourier primitive. Freeze a dual gate before implementation: at least
+had failed to establish that acceptance. The next action at that checkpoint
+changed the estimator hypothesis to sparse harmonic spectral support using
+the existing Pascal Fourier primitive. A dual gate was frozen before
+implementation: at least
 80% reference candidate recall among 12 separated candidates on each part,
 and at most 36/360 bins with support >=0.5 on average for both scored notes and
-rests, with unchanged job cost/memory limits. If this fails, reassess window or
-representation geometry instead of tuning the same recordings. The existing
-inference task owns these criteria; no task split or extra credit is justified
-yet. Current accounting remains **61.90%, 38 open / 12 DONE**.
+rests, with unchanged job cost/memory limits. If that failed, the plan was to
+reassess window or representation geometry instead of tuning the same
+recordings. At that checkpoint, the existing inference task owned these
+criteria and no split was justified. The later split is recorded above.
+Accounting then was **61.90%, 38 open / 12 DONE**.
 
 ## Pascal-only inference requirement — 2026-09-22
 
