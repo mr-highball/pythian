@@ -145,3 +145,12 @@ Starting evidence: [three stopped Pascal hypotheses](NS-3_validation_02.md) ·
   Pascal old-unit comparator remain ignored under
   `build/native-inference-peakmap/`. Stop this candidate, trim its source
   from the unmerged branch, and keep the attempt ledger at **4/4**.
+
+- Current retry policy 2026-09-22: the user raised the same-cause limit to
+  **20 unsuccessful attempts** after the four attempts and their focused
+  repair were recorded. The current ledger is **4/20**; earlier `4/4` text
+  records the limit in force at that stop, not an active prohibition on more
+  work. The two-nonclosing-batch checkpoint still requires a changed action
+  and evidence-backed decision. The failed cost repair remains rejected; a
+  future attempt needs a new frozen hypothesis, cost bound and stop condition,
+  not a rerun of the same source with an unrecorded threshold change.

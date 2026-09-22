@@ -58,6 +58,26 @@ genre reference values, per-provider gates and controlled preserving/breaking
 demonstrations remain with criteria 1, 2 and 5; this is not a frozen complete
 genre specification or partial completion credit.
 
+Permutation specification 2026-09-22: [RNG-free replay](../STYLE-CARDS.md#replayable-within-recording-permutation--specification-v1)
+now fixes canonical unit order, SHA-256 seed-record bytes, digest ordering,
+identity handling and within-song compatibility scopes for all six shuffled
+comparators. It records every output-position-to-original-unit permutation;
+one-unit scopes are unsupported. This advances criterion 3's reproducibility
+contract without implementing the later evaluator or supplying missing genre
+references. Focused protocol review is still required before claiming this
+criterion closed; task credit remains zero.
+
+Focused protocol QA 2026-09-22 closed the remaining specification ambiguities:
+cross-bar held events merge touched same-scope bars transitively, while
+cross-scope holds make the scope unsupported; a non-identity permutation that
+changes no declared relationship is a reported no-effect/unsupported comparator,
+never a passing shuffle. The source/seed byte record, seven distinct dimension
+tags covering six rows and the separate bass/voice ablation, identity handling
+and complete-unit scopes are now specified. **Criterion 3 is specified and
+reviewed**; implementing the packet belongs to evaluation_02. Criteria 1, 2
+and 5 still lack genre reference evidence and controls, so this task remains
+open with zero credit.
+
 **Acceptance Criteria:**
 
 - Ground each style card in reference WAV observations across context, groove, harmony, bass/voice relationships, sound/envelope and phrase/section structure; mark required, optional and unsupported traits explicitly. Bind observations to verified recording/edition correspondence, exact intervals, annotation method and uncertainty. Missing required observations remain pending; catalogue tags and aggregate level statistics do not supply them.

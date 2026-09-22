@@ -17,6 +17,9 @@ The [selective observation producer](NS-3_validation_03.md) owns the first
 the supported WAV consumer, source/policy binding, long-source cost,
 supervision and publication. The two tasks together retain the original
 5 NS-3 points (1.25 overall); this split changes no current credit.
+The user's later retry-limit revision makes the current Pascal producer
+ledger 4/20; historical `/4` entries below retain the limit that applied
+when those attempts were recorded.
 
 Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [BEAT-TRACKING](../BEAT-TRACKING.md) · [ANALYSIS-WAVE](../ANALYSIS-WAVE.md).
 

@@ -21,6 +21,42 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Retry-limit revision — 2026-09-22
+
+The user raised Pythian's same-cause unsuccessful-attempt limit from four to
+**20**, and the delegated-task QA ownership-transfer threshold from two to
+**20 failed submissions** in [task flow](TASKFLOW.MD#select-and-execute).
+The Pascal observation ledger is now **4/20**; earlier `4/4` statements record
+the limit then in force. The fourth attempt's 31,782-ms cost failure and its
+rejected repair remain evidence, not a passing producer. Athena's separate
+two-nonclosing-batch checkpoint still requires reassessment and a changed
+action; the larger retry allowance does not turn blind variations into an
+accepted strategy. No acceptance credit or task count changes.
+
+## NS-5 comparator replay specification — 2026-09-22
+
+While source/edition and curator musical review for the three style cards is
+pending, the independent comparator-specification batch fixes the exact
+[within-recording permutation](STYLE-CARDS.md#replayable-within-recording-permutation--specification-v1).
+Complete units are canonically ordered and permuted by SHA-256 digests of
+source/policy identities, recording and scope IDs, dimension and frozen global
+seed; no platform RNG is used. The output ordinal list and identity-avoidance
+flag are recorded, and immovable scopes are unsupported. This directly
+advances criterion 3 of [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md),
+with no claim that the genre cards, numerical gates or controlled trait
+comparisons are complete. Next evidence is focused protocol QA; stop this
+batch if the rule leaves ambiguous scope membership or replay bytes. No
+task credit changes.
+
+Focused QA found two interpretation gaps and both are now frozen in the
+same specification: transitive compound bars retain held events within one
+song/meter scope; a hold crossing scopes makes that scope unsupported; and
+a permutation that changes no target relationship is reported as no-effect,
+without redrawing. Exact dimension tags are fixed. This completes the
+**specification-only third criterion** of NS-5_evaluation_01, while the
+reference-grounded cards, numerical gates and controlled trait comparisons
+remain open. No task credit changes.
+
 ## Periodic-support recorded stop point — 2026-09-22
 
 This section records successive decisions in reverse order. The active
@@ -36,8 +72,9 @@ zero owned leaks. Its backend-only hour extrapolation is 3,813,840 ms for
 source checks or publication. No Spring input was read. The repaired source
 is rejected and trimmed; ignored comparator/build/run logs remain under
 `build/native-inference-peakmap/`. This is a failed repair of attempt four,
-not a fifth estimator hypothesis. The 4/4 cap and the two-nonclosing-batch
-checkpoint now require a different observation architecture/cost decision,
+not a fifth estimator hypothesis. Under the then-current 4/4 cap and the
+two-nonclosing-batch checkpoint, it required a different observation
+architecture/cost decision; the later 20-attempt revision is recorded above,
 while the larger goal can continue on other ready work. No points change.
 
 Fourth hypothesis result: both checked FPC 3.2.2 target builds passed, and

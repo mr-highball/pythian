@@ -209,6 +209,71 @@ It need not worsen marginal histograms. The native controlled fixture therefore
 compares both marginals and joint tuples: two distributions can have identical
 low/high marginals while their bass/voice pairings are completely disjoint.
 
+### Replayable within-recording permutation — specification v1
+
+Use this permutation for the six within-recording comparator rows above. It
+specifies **which complete units move**, not how a provider learns or renders
+them. All hashes below are computed by Pythian's Pascal SHA-256 over exact
+bytes; no platform RNG, locale-specific number format or hash-map iteration
+order participates.
+
+For each recording and each compatible scope, form the movable-unit list in
+ascending original source-frame onset, then source-frame end, then a frozen
+unique UTF-8 unit ID compared bytewise. Reject duplicate IDs, invalid
+boundaries and a scope that mixes recording identities. The source WAV SHA-256,
+recording ID, annotation-policy SHA-256, dimension tag and compatibility-scope
+ID come from the frozen reference manifest. A scope with fewer than two
+movable units is explicitly **unsupported**, with its count and reason; it
+does not yield a passing or unchanged shuffled baseline.
+The exact ASCII dimension tags are `context`, `groove`, `harmony`,
+`bass_voice_order`, `bass_voice_relation`, `sound_envelope` and `structure`;
+the last two bass/voice tags distinguish the joint-preserving order shuffle
+from its separately reported relationship ablation.
+
+For each unit's zero-based canonical ordinal, serialize this seed record in
+the stated order:
+
+1. The ASCII bytes `pythian-style-shuffle-v1` followed by a zero byte.
+2. The 32 raw source-SHA-256 bytes decoded from lowercase hex, then the 32 raw
+   annotation-policy-SHA-256 bytes in the same form.
+3. The global evaluation seed as an unsigned 32-bit little-endian integer.
+4. Recording ID, dimension tag and scope ID as three length-prefixed fields:
+   unsigned 32-bit little-endian UTF-8 byte length followed by those bytes.
+5. The canonical ordinal as an unsigned 32-bit little-endian integer.
+
+Hash that record with SHA-256. Sort units by the resulting 32 digest bytes in
+ascending byte order, breaking a digest tie by canonical ordinal. The sorted
+ordinal sequence is the output-position-to-original-unit permutation. If it
+is the identity and the scope has at least two units, rotate it left by one
+position. Record every permutation, including the identity-avoidance flag,
+alongside the exact input hashes, IDs, scope, seed and unit count. Never
+substitute a new random draw or choose the most disruptive of several draws.
+The permitted global seeds are the fixed packet's 731, 1731 and 2731; the
+separately named seed-731 paired edits keep their own non-shuffle identity.
+
+Apply each permutation **only within its declared scope**. Context spans move
+with duration, units and uncertainty before descendants are reprojected onto
+the resulting clock. Groove bars move within one song and meter, carrying
+complete role/event/velocity/offset tuples. If a held event crosses adjacent
+bars of the same song/meter scope, merge the touched bars transitively into
+one compound movable unit before canonical ordering; retain every held
+event's original offset within that unit. If a held event crosses a scope
+boundary, mark the affected scope unsupported rather than cutting or moving
+only part of the event. Harmonic spans move within one song and compatible key
+scope. The main bass/voice shuffle moves complete multi-role phrase bundles;
+the relationship ablation has a separate dimension tag and permutes one
+role's complete phrases against fixed compatible roles. Sound/envelope
+trajectories move only among same-song compatible role/gate regions, retaining
+all knots and units. Structure moves complete sections with their internal
+phrases. Recompute destination positions from the ordered complete units and
+their durations, and report the actual transitions or pairings broken; a
+preserved marginal alone does not prove the intended relationship was broken.
+If the non-identity ordinal permutation changes none of the dimension's
+declared target transitions or pairings, report **no effect / unsupported
+comparator** with the full permutation and unchanged relationship counts.
+Do not redraw, call it a successful ablation, or treat it as an unchanged-
+baseline pass.
+
 The **single-recording** comparator selects its training recording before scoring,
 uses only that family's admitted events and inherited assets, and cannot import
 another recording's learned palette as an undeclared starter. Fix vocabulary from
