@@ -51,8 +51,9 @@ duration/memory limits. If it fails, stop and reassess the observation geometry
 instead of tuning thresholds on these same recordings. The existing five task
 criteria own this replacement; no new task or credit is added at this point.
 Attempt ledger under the user's four-attempt cap: 1/4 absolute autocorrelation
-rejected for recorded specificity; the spectral hypothesis is attempt 2 only
-when its fixed evidence is scored. The two nonclosing work batches triggered
+rejected for recorded specificity; the spectral hypothesis reached its fixed
+synthetic stop gate and is recorded as attempt 2/4 below. The two nonclosing
+work batches triggered
 the separate Athena progress reassessment recorded in [WORK](../WORK.md#periodic-support-recorded-stop-point--2026-09-22).
 
 Exact recorded inputs and saved observations for this stopped candidate:
@@ -70,6 +71,35 @@ prepared excerpts. The Spring Notes files are scoring references only. The
 ignored `build/native-inference-pascal/recorded-support.lpr` records the Pascal
 scoring policy; the retained PINF files and exact command arguments permit a
 fresh cost replay without accepting the old cost as a future backend guarantee.
+
+Second hypothesis stop point 2026-09-22: a Pascal sparse harmonic spectrum
+candidate using the owned 1024-point Fourier primitive compiled with checked
+FPC 3.2.2 for Win64 and Win32, but failed its fixed controlled low-register
+mixture check before recorded scoring. With 55-Hz amplitude 0.3 and 110-Hz
+amplitude 0.2, support was 0.464351296 and 0.195154965 respectively; both
+were required above 0.3. The Win64 run reported zero unfreed blocks. The
+30-second throughput probe, Spring dual gate and hour implication were not
+reached. This is a rejected hypothesis, not a selected backend or a completed
+criterion. The prototype was removed from maintained paths to keep this
+unmerged branch lean; its checked compiler and run logs remain under ignored
+`build/native-inference-spectral/`. At 16 kHz, a 1024-point transform has
+15.625-Hz spacing; overlap of a 55-Hz tone's harmonic and a separate 110-Hz
+tone is an identifiability concern, so the next decision must test explicit
+resolved peak evidence and harmonic ambiguity, rather than merely
+retune the failed normalized harmonic sum. Attempt ledger: 2/4 hypotheses
+rejected for a viable Pascal observation producer. No task credit changes.
+
+Attempt 3 is a distinct, bounded longer-window peak-evidence hypothesis:
+use a 2048-sample (128-ms) Pascal analysis window at 16 kHz, score resolved
+local spectral peaks directly, and carry missing-fundamental support only from
+explicit harmonic evidence. Before recorded scoring, require controlled 55-Hz
+and 110-Hz tones, their 0.3/0.2-amplitude mixture (both supports >0.3),
+110/165-Hz missing-55 ambiguity (>0.3), 220-Hz lower-octave ambiguity (>0.3),
+silence/DC zero, finite 0..1 output and exact replay. The previously declared
+Spring top-12 >=80% and mean >=0.5 density <=36/360 gates on both active and
+rest centers remain unchanged, as do time/memory budgets. If synthetic
+controls fail, stop before Spring; if the Spring gate fails, stop before an
+hour run. This is not permission to tune on the same reference labels.
 
 Pascal producer checkpoint 2026-09-22: the maintained Win64 WAV consumer now
 uses an owned, bounded 360-bin periodic-support estimator and no model/DLL asset

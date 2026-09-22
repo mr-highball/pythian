@@ -23,11 +23,32 @@ from planned semantic providers, profile persistence, weighting and blend APIs.
 
 ## Periodic-support recorded stop point — 2026-09-22
 
+Second hypothesis update: a sparse harmonic spectrum probe using the Pascal
+1024-point Fourier primitive passed checked Win64/Win32 builds but stopped at
+its controlled 55+110-Hz mixture gate. Support was 0.464351296 at 55 Hz and
+0.195154965 at 110 Hz; the frozen gate required both above 0.3. No Spring
+recording or throughput cost was scored, and no strategy criterion was closed.
+The rejected prototype is trimmed from the unmerged branch; ignored compiler
+and zero-leak run logs remain at `build/native-inference-spectral/`. This is
+attempt two of the user's four-attempt cap for a viable Pascal producer. The
+next bounded decision must address frequency resolution and harmonic overlap
+with explicit peak evidence; simply increasing the FFT size or changing a
+threshold would repeat the same unresolved inference question.
+
+The next batch therefore tests a 2048-sample Pascal window with direct local
+spectral peaks and separately evidenced harmonic ambiguity. Its fixed low-tone,
+mixture, silence and replay controls are in the reopened task, followed by the
+unchanged Spring recall/density and cost gates. Stop at the first failed gate;
+the third hypothesis earns no provisional credit from a compile or synthetic
+pass alone.
+
 The user raised the project limit for unsuccessful attempts on the same cause
 from two to four in [task flow](TASKFLOW.MD#select-and-execute). The separate
 Athena two-nonclosing-batch checkpoint still requires a change of action after
 review. This is the first rejected estimator hypothesis under the four-attempt
 cap; the prior short component checks were part of that same hypothesis.
+The second hypothesis and its synthetic stop are recorded immediately above;
+the Spring gate below describes the predeclared plan, not an executed score.
 
 The first Pascal backend is executable and fast, but recorded evidence retracts
 its provisional strategy acceptance. Its absolute normalized autocorrelation
