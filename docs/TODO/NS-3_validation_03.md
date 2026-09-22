@@ -154,3 +154,28 @@ Starting evidence: [three stopped Pascal hypotheses](NS-3_validation_02.md) ·
   and evidence-backed decision. The failed cost repair remains rejected; a
   future attempt needs a new frozen hypothesis, cost bound and stop condition,
   not a rerun of the same source with an unrecorded threshold change.
+
+- Fifth hypothesis frozen 2026-09-22 before implementation or Spring scoring:
+  retain the fourth candidate's Pascal Hann-2048/FFT-8192 local maxima,
+  strongest-64 selection, peak-concentration gate `q`, relative-magnitude
+  support, and harmonic-2/3 and octave ambiguity amplitudes. Change the
+  **grid projection** to an explicitly bounded Gaussian: for a peak at
+  frequency `f`, calculate continuous pitch-bin coordinate
+  `b = 5*(69 + 12*log2(f/440) - 24)` once. At integer bin `i`, let
+  `cents = 20*(b-i)`; contribute `amplitude*exp(-0.5*(cents/35)^2)` only
+  when `abs(cents) <= 280`, and zero outside that eight-sigma support.
+  Aggregate direct and ambiguity paths by maximum. The omitted mathematical
+  tail is at most `exp(-32)`, about 1.27e-14 of path amplitude; this is a
+  declared new raw-support policy/estimator identity, not a bitwise replay
+  claim for attempt four. Evaluate at most the bins in that range per path;
+  do not scan all 360 bins for every peak. This directly tests whether
+  the observed 31,782-ms backend cost came from dense transcendental grid
+  projection while retaining its controlled selective behavior. First pass
+  the same controlled tones, ambiguity, silence, replay and invalid-input
+  cases on checked stable Win64/Win32, then the unchanged 3000-window
+  <=30,000-ms backend screen. Stop before Spring if either fails. Only if
+  both pass, score the unchanged >=80% top-12 and <=36/360 density thresholds
+  on the hash-bound Spring parts using the already frozen 1024-sample
+  fully-contained center rule. Stop before an hour run on recorded failure;
+  do not tune using Spring labels. This is attempt 5 of the user's 20 limit
+  only when its fixed checks run; no credit is earned by compiling it.

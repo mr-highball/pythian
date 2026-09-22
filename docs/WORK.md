@@ -33,6 +33,17 @@ two-nonclosing-batch checkpoint still requires reassessment and a changed
 action; the larger retry allowance does not turn blind variations into an
 accepted strategy. No acceptance credit or task count changes.
 
+The next producer decision is frozen in [NS-3_validation_03](TODO/NS-3_validation_03.md):
+attempt five keeps the Pascal 2048/8192 peak evidence but bounds each
+35-cent Gaussian projection at eight sigma, calculating a continuous pitch
+coordinate once per peak and visiting only nearby grid bins. The discarded
+tail is <=1.27e-14 of path amplitude, with a new estimator/policy identity.
+This targets the observed 31,782-ms dense projection cost rather than changing
+the failed gate. Controlled checks and the same <=30-second 3000-window
+screen precede the untouched Spring recall/density thresholds and 64-ms
+fully-contained scoring rule. Stop at the first failure, with no label tuning.
+The ledger remains **4/20** until this fifth candidate is actually tested.
+
 ## NS-5 comparator replay specification — 2026-09-22
 
 While source/edition and curator musical review for the three style cards is
