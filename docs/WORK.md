@@ -21,6 +21,43 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Pascal-only inference requirement — 2026-09-22
+
+The user explicitly requires Pascal only, with no exception for an optional
+TensorFlow or other third-party execution runtime. This overrides the former
+Win64 inference-adapter decision. Athena's principles, coding, dependency,
+validation, stewardship and shared task-flow rules were reread before this
+change. Core, maintained analysis/tools and all new inference experiments must
+be Pascal-owned with FPC/RTL. Existing model/runtime research remains
+historical evidence with its notices and source lineage, not a supported path.
+
+[NS-3_validation_02](TODO/NS-3_validation_02.md) is reopened; its +5 NS-3 points
+(+1.25 overall) are withdrawn. Current accounting becomes **NS-3 34%, overall
+61.90%, 38 open / 12 DONE**. The frozen earlier external-runtime hour, numerical
+and cancellation results still describe that old implementation; they cannot
+qualify the replacement. Downstream note, timing, mixture, scale and final
+delivery tasks retain or gain a real blocker on the reopened producer. The
+former adapter, asset acquisition and runtime fixture were removed from the
+maintained paths. Git history and [provenance](PROVENANCE.md#optional-native-observation-adapter)
+retain their exact source and notices; no copy is kept in the new library.
+
+The first replacement criterion now has a concrete Win64 producer: the owned
+periodic-support backend runs through the source-bound supervised Pascal WAV
+consumer with a new exact policy/estimator identity. Checked FPC 3.2.2 Win64
+build and short 16-kHz mono/48-kHz stereo jobs pass. Batch-size replay is
+byte-identical, wrong-source rejection preserves output, and the Win32 backend
+fixture also passes. The 3,000-window probe is a bounded cost screen only;
+recorded fidelity, full duration/cancellation/failure QA and final target
+delivery remain unaccepted. Exact results and artifact SHA256 are in the
+[reopened task](TODO/NS-3_validation_02.md). No task credit changes. Its
+existing five criteria own the replacement work, so no additional task is
+needed at this checkpoint. Next, check recorded-input fidelity and a
+representative sustained-source
+cost under the new policy, with a stop/switch decision if either fails. The
+separate NS-5 reference-review input remains pending. Paired QA confirms the
+NS-2 processing matrix and NS-5 protocol notes match their stated artifacts and
+scope; no listening or style completion is claimed.
+
 ## Resume and reference stop point — 2026-09-22
 
 The user explicitly resumed the broader goal and its authorized helper/QA cycle.
@@ -1148,7 +1185,7 @@ runtime has its separate focused evidence below. Accounting remains **62.65%,
 
 ## Accepted checkpoint — coherent native supervision — 2026-09-21
 
-The [native execution task](TODO/DONE/NS-3_validation_02.md) is accepted again
+The [native execution task](TODO/NS-3_validation_02.md) is accepted again
 after the review's progress race is repaired. Phase and full timestamp are one
 aligned atomic word; the supervisor decodes one captured snapshot, including
 terminal validation. No worker-held lock or snapshot retry loop is introduced.
@@ -1190,7 +1227,7 @@ It confirmed one P2 defect: the supervisor can combine a stale startup timestamp
 with the worker's new observing phase and terminate a healthy worker as stalled.
 The primary review agrees with the concrete source interleaving. The
 [native qualification record](NATIVE-INFERENCE.md#qualification--2026-09-21)
-and [reopened execution task](TODO/DONE/NS-3_validation_02.md) contain the trigger and
+and [reopened execution task](TODO/NS-3_validation_02.md) contain the trigger and
 required coherent snapshot/transition regression. No duplicate task is needed:
 the existing fourth criterion already requires correct bounded supervision.
 
@@ -1231,7 +1268,7 @@ responsibility.
 The acceptance below preceded the supervision finding and is superseded by the
 reopening above. Its measurements and publication evidence remain historical.
 
-[Practical native inference](TODO/DONE/NS-3_validation_02.md) now passes all five
+[Practical native inference](TODO/NS-3_validation_02.md) now passes all five
 criteria and moves to DONE. The optional Win64 consumer emits 360,000 raw
 observations from one continuous hour in 2,420,266 ms, with 20,313-ms setup and
 103,051,264 bytes peak worker private commitment. The complete 524,160,407-byte
@@ -1306,7 +1343,7 @@ investigation, while preserving local-key and confidence uncertainty. The failed
 comparison remains recorded and does not increment the helper's failure counter.
 
 The implementation helper's ninth assignment is
-[practical native inference](TODO/DONE/NS-3_validation_02.md), an independent prerequisite
+[practical native inference](TODO/NS-3_validation_02.md), an independent prerequisite
 of many-hour resource work. The agreed [optional Win64 observation strategy](PROVENANCE.md#optional-native-observation-adapter)
 retains Pascal graph assembly, stream preparation and supervision around the
 pinned CPU runtime. It emits raw converted-model salience and AC RMS; the failed

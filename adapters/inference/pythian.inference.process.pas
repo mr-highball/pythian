@@ -39,7 +39,7 @@ const
   InferenceStallLimitMs = 5000;
 
 type
-  { Dedicated worker protocol, not a general process/runtime abstraction.
+  { Dedicated worker protocol, not a general process abstraction.
     Phase0 setup,1 observing,2 verifying,3 complete. The aligned first word
     publishes phase and clock together. Other live fields are diagnostics only;
     their final values are consumed after the worker has exited. }
@@ -49,9 +49,9 @@ type
     Completed: Int64;
     ColdMs: QWord;
     SourceSetupMs: QWord;
-    RuntimeSetupMs: QWord;
+    BackendSetupMs: QWord;
     SourceReady: LongInt;
-    RuntimeReady: LongInt;
+    BackendReady: LongInt;
     FirstObservationMs: QWord;
     WarmObservationMs: QWord;
   end;
@@ -60,7 +60,7 @@ type
     ElapsedMs: QWord;
     ColdMs: QWord;
     SourceSetupMs: QWord;
-    RuntimeSetupMs: QWord;
+    BackendSetupMs: QWord;
     FirstObservationMs: QWord;
     WarmObservationMs: QWord;
     PeakPrivateBytes: QWord;
@@ -82,7 +82,7 @@ function InferenceProgressTick(const ASnapshot: TInferenceProgressSnapshot): QWo
 { Launches the exact worker executable suspended, assigns the memory/process
   job limit before resume, polls cancellation at50ms, validates staged output
   then atomically replaces AOutput. Existing accepted bytes survive any failure. }
-function RunInferenceProcess(const AWorker, AModelDirectory, ARuntimeDirectory,
+function RunInferenceProcess(const AWorker, AEstimatorIdentity, APolicyIdentity,
   ASource, AOutput: String; const ARequest: TInferenceRequest;
   const ACancel: TInferenceCancel = nil): TInferenceRun;
 
@@ -236,7 +236,7 @@ begin
   end;
 end;
 
-function RunInferenceProcess(const AWorker, AModelDirectory, ARuntimeDirectory,
+function RunInferenceProcess(const AWorker, AEstimatorIdentity, APolicyIdentity,
   ASource, AOutput: String; const ARequest: TInferenceRequest;
   const ACancel: TInferenceCancel): TInferenceRun;
 var
@@ -274,6 +274,11 @@ begin
     {$fatal Inference supervisor job ABI layout differs}
   {$endif}
   ValidateInferenceRequest(ARequest);
+  if (AEstimatorIdentity <> InferenceEstimator) or
+    (APolicyIdentity <> InferencePolicy) then
+  begin
+    raise EAudio.Create('Inference producer identity differs');
+  end;
   LStarted := GetTickCount64;
   LSource := nil;
   LWave := nil;
@@ -327,7 +332,7 @@ begin
     end;
     LLimits := Default(TInferenceJobLimits);
     { Active-process1, process-memory, kill-on-close. Windows tracks the peak
-      commitment even between polls, including external runtime allocations. }
+      commitment even between polls. }
     LLimits.Basic.Flags := $8 or $100 or $2000;
     LLimits.Basic.ActiveProcesses := 1;
     LLimits.ProcessMemory := InferencePrivateByteLimit;
@@ -336,8 +341,8 @@ begin
       RaiseLastOSError;
     end;
     LCommand := QuoteArgument(ExpandFileName(AWorker)) + ' --worker ' +
-      QuoteArgument(ExpandFileName(AModelDirectory)) + ' ' +
-      QuoteArgument(ExpandFileName(ARuntimeDirectory)) + ' ' +
+      QuoteArgument(AEstimatorIdentity) + ' ' +
+      QuoteArgument(APolicyIdentity) + ' ' +
       QuoteArgument(ExpandFileName(ASource)) + ' ' + QuoteArgument(LTemporary) + ' ' +
       QuoteArgument(LMappingName) + ' ' + ARequest.SourceHash + ' ' +
       QuoteArgument(ARequest.Policy) + ' ' + IntToStr(ARequest.Channel) + ' ' +
@@ -379,8 +384,8 @@ begin
         ' completed=' + IntToStr(LProgress^.Completed) +
         ' source_ready=' + IntToStr(LProgress^.SourceReady) +
         ' source_setup_ms=' + IntToStr(LProgress^.SourceSetupMs) +
-        ' runtime_ready=' + IntToStr(LProgress^.RuntimeReady) +
-        ' runtime_setup_ms=' + IntToStr(LProgress^.RuntimeSetupMs);
+        ' backend_ready=' + IntToStr(LProgress^.BackendReady) +
+        ' backend_setup_ms=' + IntToStr(LProgress^.BackendSetupMs);
       if (LPhase = 0) and
         (LNow - LWorkerStarted > InferenceSetupLimitMs) then
       begin
@@ -432,7 +437,7 @@ begin
     Result.PeakPrivateBytes := LLimits.PeakProcessMemory;
     Result.ColdMs := LProgress^.ColdMs;
     Result.SourceSetupMs := LProgress^.SourceSetupMs;
-    Result.RuntimeSetupMs := LProgress^.RuntimeSetupMs;
+    Result.BackendSetupMs := LProgress^.BackendSetupMs;
     Result.FirstObservationMs := LProgress^.FirstObservationMs;
     Result.WarmObservationMs := LProgress^.WarmObservationMs;
     if Result.PeakPrivateBytes > InferencePrivateByteLimit then
@@ -445,7 +450,7 @@ begin
       raise EAudio.Create('Inference completed setup budget exceeded: cold_ms=' +
         IntToStr(Result.ColdMs) + ' limit_ms=' + IntToStr(InferenceSetupLimitMs) +
         ' source_setup_ms=' + IntToStr(Result.SourceSetupMs) +
-        ' runtime_setup_ms=' + IntToStr(Result.RuntimeSetupMs));
+        ' backend_setup_ms=' + IntToStr(Result.BackendSetupMs));
     end;
     CheckInferenceCancel(ACancel);
     LRead := TInferenceFileReader.Create(LTemporary, Result.Identity, ACancel);

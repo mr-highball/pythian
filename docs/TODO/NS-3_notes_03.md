@@ -24,7 +24,7 @@ Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [PITCH](../PI
 
 - [NS-3_notes_01.md](NS-3_notes_01.md)
 - [NS-3_notes_02.md](NS-3_notes_02.md)
-- [NS-3_validation_02.md](DONE/NS-3_validation_02.md)
+- [NS-3_validation_02.md](NS-3_validation_02.md)
 
 **Dev Notes:**
 

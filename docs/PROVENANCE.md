@@ -102,15 +102,17 @@ consumer reuses the attributed reference bank and existing phrase study inputs;
 no additional source media or saved format is introduced.
 
 <a id="optional-native-observation-adapter"></a>
-## Optional native observation adapter
+## Historical external-runtime observation adapter
 
-[NS-3_validation_02](TODO/DONE/NS-3_validation_02.md) selects a Win64 CPU observation
-adapter as a bounded route from the private model study to a maintained native
-consumer. Controlled/recorded fidelity, performance, memory and representative
-cancellation checks passed, including one continuous hour. A subsequently found
-progress snapshot race is repaired; focused QA restores qualification. See
-[the current disposition](NATIVE-INFERENCE.md#qualification--2026-09-21). The portable core and
-default packages remain independent of the acquired binary runtime.
+[NS-3_validation_02](TODO/NS-3_validation_02.md) previously selected a Win64 CPU
+observation adapter as a bounded route from the private model study to a
+maintained native consumer. Controlled/recorded fidelity, performance, memory
+and representative cancellation checks passed, including one continuous hour.
+A subsequent progress snapshot race was repaired. The user has since required
+Pascal-only inference without this runtime; the task is reopened and its credit
+withdrawn. These identities, notices and results are historical provenance, not
+the current backend strategy or a Pascal-only qualification. See the
+[historical qualification](NATIVE-INFERENCE.md#qualification--2026-09-21).
 
 The converted CREPE tiny topology and thirteen weight shards come from
 [marl/crepe revision de4888e6](https://github.com/marl/crepe/tree/de4888e6d448357ceafea10fc6010061c6f19a55).
@@ -132,27 +134,25 @@ Preserve the archive's complete Apache-2.0 `LICENSE` and
 Windows x86 C-package release: this is a frozen compatibility choice, not a
 claim of a continuing upstream binary upgrade stream.
 
-The [acquisition lock](../adapters/inference/assets.lock.json) binds every selected
-model file, runtime archive, loaded DLL and retained notice by byte count and
-SHA256. [Explicit acquisition](../tools/get-inference-assets.ps1) stages the complete
-verified assets under ignored `build/`, preserves an existing destination and
-supports verified local caches. It neither runs upstream Python/JavaScript nor
-installs the DLL globally. Current source packages do not bundle model/runtime
-assets or silently gain this optional adapter; accepted-workflow distribution
-remains owned by the existing delivery tasks.
+The historical acquisition lock at `adapters/inference/assets.lock.json` in Git
+revision `9d505aa` binds every selected model file, runtime archive, loaded DLL
+and retained notice by byte count and SHA256. The former acquisition procedure staged verified assets
+under ignored `build/`; it did not run upstream Python/JavaScript or install the
+DLL globally. Current source packages do not bundle these assets. The Git history
+and this provenance record retain their identities and notices without a current
+acquisition or execution path.
 
-The maintenance cost includes the roughly 254-MB archive/954-MB DLL footprint,
+The former strategy's maintenance cost included the roughly 254-MB archive/954-MB DLL footprint,
 pinned ABI and graph/weight validation, Windows process resource accounting and
-future runtime availability. The current scalar cost makes this optional edge
-worth qualifying before attempting another full kernel implementation. That
-measured execution met the frozen limits, but supervision qualification remains
-open pending repair and focused QA. Its
+future runtime availability. Its measured execution met the then-frozen limits
+after the historical supervision repair, but does not qualify the required
+Pascal-only producer. Its
 supported output is raw 360-bin salience and AC RMS, not the rejected note
 admission rule. Preserve uncertain training/annotation exposure; arithmetic
 agreement does not establish musical accuracy or independent evaluation.
 
 <a id="note-head-reference-model"></a>
-## Optional note-head reference model
+## Historical note-head reference model
 
 The [separate-head feasibility probe](PHRASE-EVALUATION.md#note-head-feasibility-checkpoint)
 uses Spotify's official
@@ -163,25 +163,25 @@ under ignored `build/note-head-feasibility/`, with unmodified upstream Apache-2.
 LICENSE and NOTICE, including Spotify's 2022 attribution and third-party notices.
 Their identities are recorded in the probe report and acquisition/checkpoint ledger.
 
-The owned Pascal probe loads that model through the previously acquired
+The historical owned Pascal probe loaded that model through the previously acquired
 TensorFlow 2.18.1 CPU C API, whose complete license/notices remain with the
 reference runtime. Downloaded upstream Python files are read as reference material;
-none is executed and no Python/JavaScript toolchain is introduced. This is optional
-reference execution under ignored build output, not a native Pascal model port,
-production dependency, submodule change or distributable library asset. Adoption
-or distribution would need its own dependency/provenance review and declared scope.
+none was executed and no Python/JavaScript toolchain was introduced. The reference
+execution under ignored build output was not a native Pascal model port,
+production dependency, submodule change or distributable library asset. It is
+not a permitted execution path under the current Pascal-only requirement.
 
-The subsequent [recorded comparison](PHRASE-EVALUATION.md#note-head-recorded-checkpoint)
-reuses the same pinned model/runtime and the existing attributed development
+The subsequent historical [recorded comparison](PHRASE-EVALUATION.md#note-head-recorded-checkpoint)
+reused the same pinned model/runtime and the existing attributed development
 recordings. Owned native resampling, explicit source-coordinate interpolation and
 a declared monophonic decoder are comparison policy, not upstream postprocessing
-parity. Study code and outputs stay under ignored `build/note-head-recordings/`;
+parity. Study code and outputs stayed under ignored `build/note-head-recordings/`;
 the unsuccessful comparison adds no production dependency or distributed asset.
 
 <a id="beat-model-reference"></a>
-## Optional beat-model reference
+## Historical beat-model reference
 
-The [learned beat comparison](BEAT-TRACKING.md#learned-model-reference) uses
+The historical [learned beat comparison](BEAT-TRACKING.md#learned-model-reference) used
 Beat This!'s small1 model as a published ONNX export from
 [beat-this-rs](https://github.com/danigb/beat-this-rs/tree/089b509247e6fdcec666511c0dcf0d5f39c21e73),
 revision `089b509247e6fdcec666511c0dcf0d5f39c21e73`, inspected 2026-09-20.
@@ -203,9 +203,10 @@ No Rust or Python implementation is executed.
 The runtime comes from Microsoft's
 [official 1.30.0 release](https://github.com/microsoft/onnxruntime/releases/tag/v1.30.0).
 Its ZIP digest matches the release API's SHA256; full LICENSE and
-ThirdPartyNotices remain with the acquisition. The Pascal probe uses the C API
-17 prefix on Win64, with one CPU thread. This is private reference execution,
-not a production runtime dependency or a bundled library asset.
+ThirdPartyNotices remain with the acquisition. The historical Pascal probe used the C API
+17 prefix on Win64, with one CPU thread. This was private reference execution,
+not a production runtime dependency or a bundled library asset. It is not a
+permitted current inference path under the Pascal-only requirement.
 
 Preprocessing controls use the owned Fourier primitive and the mathematical
 parameters of upstream `LogMelSpect`, with

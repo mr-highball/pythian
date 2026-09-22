@@ -15,12 +15,13 @@
 | [NS-4_styles_01](NS-4_styles_01.md) — Reusable semantic graphs and derivative evidence | 2026-09-21 | +4 NS-4 | +0.60 |
 | [NS-4_layers_04](NS-4_layers_04.md) — Staged duration and committed-stream edits | 2026-09-21 | +4 NS-4 | +0.60 |
 | [NS-4_styles_02](NS-4_styles_02.md) — Selective semantic blend and further blend | 2026-09-21 | +4 NS-4 | +0.60 |
-| [NS-3_validation_02](NS-3_validation_02.md) — Bounded native observations with repaired progress supervision | 2026-09-21 | +5 NS-3 | +1.25 restored |
 | [NS-3_parts_04](NS-3_parts_04.md) — Maintained simultaneous-role scoring and reproducible controls | 2026-09-21 | +1 NS-3 | +0.25 |
 | [NS-3_parts_01](NS-3_parts_01.md) — Qualified external reference packet and curator acoustic intervals | 2026-09-21 | +1 NS-3 | +0.25 |
 
-Native execution's original allocation is restored after focused QA of the
-progress snapshot repair; reopening and repair do not create additional credit.
+The former native execution task was reopened on 2026-09-22 under the user's
+Pascal-only inference requirement. Its earlier external-runtime result remains
+historical evidence in [the task](../NS-3_validation_02.md), without current
+completion credit.
 
 Previously accepted capability stays in the milestone baseline; it is not
 backfilled as new DONE work.

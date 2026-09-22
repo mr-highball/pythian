@@ -164,7 +164,8 @@ begin
     LBatchCount := 0;
     FillChar(LRing, SizeOf(LRing), 0);
     ASink.Start(FIdentity);
-    for LIndex := 0 to FIdentity.ObservationCount - 1 do
+    LIndex := 0;
+    while LIndex < FIdentity.ObservationCount do
     begin
       CheckInferenceCancel(ACancel);
       LCenter := LRequest.FirstCenter16k + LIndex * LRequest.Hop16k;
@@ -225,6 +226,7 @@ begin
         LBatchCount := 0;
         SetLength(LBatch, LRequest.BatchSize);
       end;
+      Inc(LIndex);
     end;
     CheckInferenceCancel(ACancel);
     if Assigned(AProgress) then

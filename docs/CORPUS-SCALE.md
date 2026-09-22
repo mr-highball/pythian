@@ -20,9 +20,11 @@ native WAV-C conversion is not one of the quarantined clipped legacy excerpts.
 
 ## Prospective execution limits
 
-The selected pinned observation adapter emits raw pitch salience and AC RMS.
-It does not admit notes. At 100 observations/second, the five proposed jobs produce
-835995 observations, 1217208720 payload bytes plus headers/checksums. All prepared
+The former pinned observation adapter emitted raw pitch salience and AC RMS;
+it did not admit notes. Its 100-observation/second schedule projected five jobs,
+835995 observations and 1217208720 payload bytes plus headers/checksums. This
+schedule and payload are provisional for the required Pascal-only producer and
+must be requalified with that producer before execution. All prepared
 inputs are 16000-Hz stereo; the original inputs are 48000-Hz stereo for WAV-C and
 44100-Hz stereo for the pilot. Channel zero is selected explicitly.
 
@@ -32,9 +34,10 @@ pilot recordings require one job each. Each successful job hashes the complete
 source twice: during initialization and again after observations, before sink
 completion. The three WAV-C jobs therefore require six complete source hashes;
 the two pilot jobs require two each, for ten across the observation schedule.
-Model/runtime/notice checks and complete output-artifact checks are additional
+Producer identity, notice and complete output-artifact checks are additional
 work. The second source hash belongs to verification and the total job budget,
-not the cold-setup measurement. The existing hour result includes both hashes.
+not the cold-setup measurement. The former runtime's hour result included both
+hashes; it is historical evidence only.
 Neither job boundaries nor delivery batches are musical run boundaries.
 
 | Stage or resource | Predeclared ceiling |
@@ -56,16 +59,18 @@ learning cannot be qualified until their admission, event-density and dependency
 contracts are fixed. If those contracts do not fit, reject the workload and revise
 the declared design before measurement; do not raise a limit after failure.
 
-The existing one-hour observation result remains useful scoped evidence:
+The former TensorFlow C runtime's one-hour observation result remains historical
+scoped evidence for that retired strategy:
 360000 observations, 524160407 artifact bytes, 2420266 milliseconds total,
-20313 milliseconds cold setup and 103051264 peak private bytes. It establishes
-neither the other recordings/scopes nor semantic training. Existing conversion
+20313 milliseconds cold setup and 103051264 peak private bytes. It does not
+qualify the required Pascal-only producer or establish the other recordings/scopes
+or semantic training. Existing conversion
 measurements are separately scoped and do not establish a fresh whole-pipeline run.
 
 ## Missing admission and capacity boundaries
 
 [Recorded phrase admission](TODO/NS-3_notes_03.md) owns the missing bridge from
-the selected observations to admitted pitch/kind/duration, unknown intervals and
+the requalified Pascal-only observations to admitted pitch/kind/duration, unknown intervals and
 saved actual WFC learning. The semantic container validates supplied typed evidence;
 it does not execute an extraction policy. Rejected frame admission, reference
 annotations supplied as predictions, arbitrary manual clocks or authored tokens

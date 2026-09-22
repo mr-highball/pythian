@@ -32,14 +32,14 @@ uses
   SysUtils,
   fpjson,
   pythian.inference.observation,
-  pythian.inference.tensorflow,
+  pythian.inference.native,
   pythian.inference.wave,
   pythian.inference.process,
   pythian.tools.files;
 
 type
-  { The source and runtime are independent immutable inputs. Exactly one extra
-    initialization thread overlaps their full verification; it never infers. }
+  { The source is an immutable input. An initialization thread verifies and
+    prepares it while the Pascal backend is constructed; it never infers. }
   TSourceInitialization = class(TThread)
   private
     FName: String;
@@ -151,8 +151,8 @@ begin
   end
   else
   begin
-    Result.SourceHash := ParamStr(6);
-    LFirst := 7;
+    Result.SourceHash := ParamStr(4);
+    LFirst := 5;
   end;
   Result.Channel := StrToInt(ParamStr(LFirst));
   Result.ScopeStart16k := StrToInt64(ParamStr(LFirst + 1));
@@ -169,16 +169,21 @@ procedure Worker;
 var
   LMapping: THandle;
   LMonitor: TWorkerMonitor;
-  LBackend: TTinyPitchRuntime;
+  LBackend: TNativeInferenceBackend;
   LWave: TInferenceWaveJob;
   LSink: TInferenceFileSink;
   LStarted: QWord;
-  LRuntimeStarted: QWord;
+  LBackendStarted: QWord;
   LSource: TSourceInitialization;
 begin
   if ParamCount <> 16 then
   begin
     raise Exception.Create('Invalid dedicated worker argument count');
+  end;
+  if (ParamStr(2) <> InferenceEstimator) or
+    (ParamStr(3) <> InferencePolicy) then
+  begin
+    raise Exception.Create('Dedicated worker producer identity differs');
   end;
   LMapping := 0;
   LBackend := nil;
@@ -190,14 +195,18 @@ begin
     LStarted := GetTickCount64;
     LMonitor.Progress := OpenInferenceProgress(ParamStr(6), LMapping);
     LSource := TSourceInitialization.Create(ParamStr(4), ReadRequest(True), LMonitor.Progress);
-    LRuntimeStarted := GetTickCount64;
+    LBackendStarted := GetTickCount64;
     try
-      LBackend := TTinyPitchRuntime.Create(ParamStr(3), ParamStr(2));
-      LMonitor.Progress^.RuntimeSetupMs := GetTickCount64 - LRuntimeStarted;
-      InterlockedExchange(LMonitor.Progress^.RuntimeReady, 1);
+      LBackend := TNativeInferenceBackend.Create;
+      if LBackend.EstimatorIdentity <> InferenceEstimator then
+      begin
+        raise Exception.Create('Pascal backend estimator identity differs');
+      end;
+      LMonitor.Progress^.BackendSetupMs := GetTickCount64 - LBackendStarted;
+      InterlockedExchange(LMonitor.Progress^.BackendReady, 1);
     except
-      LMonitor.Progress^.RuntimeSetupMs := GetTickCount64 - LRuntimeStarted;
-      InterlockedExchange(LMonitor.Progress^.RuntimeReady, -1);
+      LMonitor.Progress^.BackendSetupMs := GetTickCount64 - LBackendStarted;
+      InterlockedExchange(LMonitor.Progress^.BackendReady, -1);
       raise;
     end;
     LSource.WaitFor;
@@ -238,9 +247,9 @@ var
   LRun: TInferenceRun;
   LReport: TJSONObject;
 begin
-  if ParamCount <> 14 then
+  if ParamCount <> 12 then
   begin
-    raise Exception.Create('Usage: inference.wav measure MODEL_DIR RUNTIME_LIB_DIR ' +
+    raise Exception.Create('Usage: inference.wav measure ' +
       'SOURCE.wav OUTPUT.pinf SOURCE_SHA256 CHANNEL SCOPE_START16K SCOPE_END16K ' +
       'INPUT_START16K INPUT_END16K FIRST_CENTER16K HOP16K BATCH_SIZE');
   end;
@@ -248,20 +257,19 @@ begin
   LReport := TJSONObject.Create;
   try
     SetConsoleCtrlHandler(@ConsoleHandler, True);
-    LRun := RunInferenceProcess(ParamStr(0), ParamStr(2), ParamStr(3), ParamStr(4),
-      ParamStr(5), ReadRequest(False), LCancel.Cancelled);
+    LRun := RunInferenceProcess(ParamStr(0), InferenceEstimator, InferencePolicy,
+      ParamStr(2), ParamStr(3), ReadRequest(False), LCancel.Cancelled);
     LReport.Add('status', 'complete');
     LReport.Add('policy', InferencePolicy);
     LReport.Add('source_sha256', LRun.Identity.Request.SourceHash);
-    LReport.Add('model_sha256', InferenceModelHash);
-    LReport.Add('runtime_sha256', InferenceRuntimeHash);
+    LReport.Add('estimator', LRun.Identity.Estimator);
     LReport.Add('source_rate', LRun.Identity.SourceRate);
     LReport.Add('source_channels', LRun.Identity.SourceChannels);
     LReport.Add('source_frames', LRun.Identity.SourceFrames);
     LReport.Add('observations', LRun.Identity.ObservationCount);
     LReport.Add('cold_setup_ms', Int64(LRun.ColdMs));
     LReport.Add('source_setup_ms', Int64(LRun.SourceSetupMs));
-    LReport.Add('runtime_setup_ms', Int64(LRun.RuntimeSetupMs));
+    LReport.Add('backend_setup_ms', Int64(LRun.BackendSetupMs));
     LReport.Add('first_observation_ms', Int64(LRun.FirstObservationMs));
     LReport.Add('warm_observation_ms', Int64(LRun.WarmObservationMs));
     LReport.Add('total_ms', Int64(LRun.ElapsedMs));

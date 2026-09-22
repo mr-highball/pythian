@@ -28,12 +28,13 @@ $projectRoot = Split-Path -Parent $PSScriptRoot
 $compilerPath = (Get-Command $Compiler -ErrorAction Stop).Source
 $compilerVersion = (& $compilerPath '-iV' | Out-String).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Compiler version probe failed' }
-$compilerCpu = (& $compilerPath '-iTP' | Out-String).Trim()
+$targetFlags = @('-Twin64', '-Px86_64')
+$compilerCpu = (& $compilerPath @targetFlags '-iTP' | Out-String).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Compiler CPU probe failed' }
-$compilerOs = (& $compilerPath '-iTO' | Out-String).Trim()
+$compilerOs = (& $compilerPath @targetFlags '-iTO' | Out-String).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Compiler OS probe failed' }
-if ($compilerCpu -ne 'x86_64' -or $compilerOs -ne 'win64') {
-  throw 'The optional inference adapter currently requires an x86_64-win64 compiler'
+if ($compilerVersion -ne '3.2.2' -or $compilerCpu -ne 'x86_64' -or $compilerOs -ne 'win64') {
+  throw 'The supervised Pascal inference consumer currently requires an x86_64-win64 compiler'
 }
 
 $buildRoot = Join-Path $projectRoot "build/inference-$compilerVersion-$compilerCpu-$compilerOs"
@@ -42,14 +43,14 @@ New-Item -ItemType Directory -Force $unitRoot | Out-Null
 Write-Output "Compiler: $compilerPath ($compilerVersion $compilerCpu-$compilerOs)"
 Push-Location $projectRoot
 try {
-  $compilerArgs = @('-O2', '-Sa', '-Cr', '-Co', '-Ci', '-gh', '-gl',
+  $compilerArgs = @('-Twin64', '-Px86_64', '-O2', '-Sa', '-Cr', '-Co', '-Ci', '-gh', '-gl',
     '-Fusrc', '-Futools', '-Fuadapters/inference', "-FU$unitRoot", "-FE$buildRoot")
   & $compilerPath '-B' @compilerArgs 'tools/pythian.inference.wav.lpr'
-  if ($LASTEXITCODE -ne 0) { throw 'Inference consumer compilation failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.inference.lpr'
-  if ($LASTEXITCODE -ne 0) { throw 'Inference fixture compilation failed' }
-  Write-Output "Optional inference consumer and fixture compiled: $buildRoot"
-  Write-Output 'Compilation only; asset acquisition and runtime qualification are separate explicit steps.'
+  if ($LASTEXITCODE -ne 0) { throw 'Pascal inference consumer compilation failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.inference.native.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Pascal inference backend fixture compilation failed' }
+  Write-Output "Pascal inference consumer and backend fixture compiled: $buildRoot"
+  Write-Output 'Compilation only; recorded fidelity and long-source qualification remain separate.'
 } finally {
   Pop-Location
 }

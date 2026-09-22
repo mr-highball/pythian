@@ -47,6 +47,17 @@ reviewer blocker if those observations cannot be supplied. More aggregate level
 reports alone cannot close the specification. This remains existing scope and
 retains its original credit; no new diagnostic task is created.
 
+Protocol criterion review 2026-09-22: the [comparator contracts](../STYLE-CARDS.md#required-measures-and-comparator-transformations)
+specify single-recording and unlearned baselines and within-recording shuffle
+semantics for each of the six required provider dimensions, retaining song and
+compatible-context boundaries. The [fixed execution and listening packet](../STYLE-CARDS.md#fixed-execution-and-listening-packet)
+retains seeds 731/1731/2731, full 120-second outputs, fixed listening positions,
+the 0..3 rubric and seed-731 paired 15-second edits. Acceptance criteria 3 and 4
+are ready for focused QA review. The exact shuffle permutation/seed derivation,
+genre reference values, per-provider gates and controlled preserving/breaking
+demonstrations remain with criteria 1, 2 and 5; this is not a frozen complete
+genre specification or partial completion credit.
+
 **Acceptance Criteria:**
 
 - Ground each style card in reference WAV observations across context, groove, harmony, bass/voice relationships, sound/envelope and phrase/section structure; mark required, optional and unsupported traits explicitly. Bind observations to verified recording/edition correspondence, exact intervals, annotation method and uncertainty. Missing required observations remain pending; catalogue tags and aggregate level statistics do not supply them.

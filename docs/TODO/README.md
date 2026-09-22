@@ -2,11 +2,13 @@
 
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Completed tasks](DONE/README.md) · [Work record](../WORK.md)
 
-**Execution paused at the user's request — 2026-09-21: 37 open tasks, 13 DONE. Resume only on user direction, starting with NS-5 and following actual prerequisite blockers.**
+**Execution resumed 2026-09-22.** The user requires a Pascal-only workflow;
+[practical inference](NS-3_validation_02.md) is reopened. Follow the NS-5
+priority and actual prerequisite blockers.
 This catalog covers the remaining declared end state. Task files own acceptance
 criteria and hard prerequisites; this page supplies navigation and accounting.
-No task earns credit merely by being written. Accepted task credit is **7.65**;
-**36.85 overall points remain**. Baseline 55.5 + accepted 7.65 = **63.15 current**.
+No task earns credit merely by being written. Accepted task credit is **6.40**;
+**38.10 overall points remain**. Baseline 55.5 + accepted 6.40 = **61.90 current**.
 
 The [pause retrospective](../WORK.md#pause-retrospective--2026-09-21) tightens
 existing note, presence, mixture and style-reference criteria without adding
@@ -26,11 +28,11 @@ unless also declared under Blockers; required gaps still follow
 | --- | ---: | ---: | ---: | ---: |
 | [NS-1 — Independent Pascal foundation](../MILESTONES.md#ns-1) | 100% | 0 | 0 | 0.00 |
 | [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 80% | 3 | 20 | 5.00 |
-| [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 39% | 14 | 61 | 15.25 |
+| [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 34% | 15 | 66 | 16.50 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 96% | 1 | 4 | 0.60 |
 | [NS-5 — Many-hour styles that generate and blend usefully](../MILESTONES.md#ns-5) | 27% | 16 | 73 | 14.60 |
 | [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 72% | 3 | 28 | 1.40 |
-| **Total** | **63.15 weighted points** | **37** | Per-goal credits are not summed across goals | **36.85** |
+| **Total** | **61.90 weighted points** | **38** | Per-goal credits are not summed across goals | **38.10** |
 
 NS-1 is already complete under the accepted extraction scope. Preserve its
 invariants in every applicable task; do not recreate completed extraction work.
@@ -52,6 +54,7 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 
 | Task file and outcome | Goal credit | Overall credit | State |
 | --- | ---: | ---: | --- |
+| [NS-3_validation_02.md](NS-3_validation_02.md) — Deliver a Pascal-only practical inference path | +5 | +1.25 | TODO; reopened 2026-09-22 |
 | [NS-3_tempo_01.md](NS-3_tempo_01.md) — Resolve beat level and phase from WAV observations | +5 | +1.25 | TODO |
 | [NS-3_tempo_02.md](NS-3_tempo_02.md) — Reconstruct changing clocks and metrical structure | +4 | +1.00 | TODO |
 | [NS-3_tempo_03.md](NS-3_tempo_03.md) — Accept automatic timing on independent recordings | +3 | +0.75 | TODO |
@@ -116,7 +119,6 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 | [NS-4_styles_01.md](DONE/NS-4_styles_01.md) | Saved semantic graphs, joint evidence and original-coordinate derivative audits; source/derived replay | +4 NS-4 | +0.60 |
 | [NS-4_layers_04.md](DONE/NS-4_layers_04.md) | Staged durations and dependent context, protected native stream state and exact rejected-edit rollback | +4 NS-4 | +0.60 |
 | [NS-4_styles_02.md](DONE/NS-4_styles_02.md) | Independent semantic/sound blends, canonical repeated evidence, complete reblend lineage and preserved unrelated states | +4 NS-4 | +0.60 |
-| [NS-3_validation_02.md](DONE/NS-3_validation_02.md) | Bounded raw observations; numerical/resource evidence and repaired coherent progress supervision with focused replay | +5 NS-3 | +1.25 restored |
 | [NS-3_parts_04.md](DONE/NS-3_parts_04.md) | Maintained per-role and interval scorers, reference builder and reproducible authored controls; all five criteria and current tested identities verified | +1 NS-3 | +0.25 |
 | [NS-3_parts_01.md](DONE/NS-3_parts_01.md) | Qualified initial families plus curator acoustic references; complete source/uncertainty ledger and reproducible relocated scoring | +1 NS-3 | +0.25 |
 
@@ -133,15 +135,13 @@ contracts, then the genre corpus. Selective semantic blend/reblend is accepted
 alongside persistence and duration edits; recorded workflow integration still
 requires its provider and listening prerequisites. The style specification remains open for grounded musical
 references and numerical criteria; its measured controls earn no partial credit.
-Practical native observation execution is accepted again after repairing the
-progress snapshot race. Coherent setup-to-observing supervision, focused failure/
-cancellation checks and exact real-worker replay pass; unchanged numerical and
-resource results remain valid. Native execution no longer blocks the many-hour
-workload task. Its [prospective scale packet](../CORPUS-SCALE.md) now identifies
-the remaining admitted-note-to-learner prerequisite, [NS-3_notes_03](NS-3_notes_03.md),
-which follows note identity and presence development. The added dependency earns
-no credit and does not turn raw observations into learned musical semantics.
-Provider accuracy and style acceptance remain separate downstream requirements.
+The former external-runtime observation implementation passed its historical
+failure and resource checks, including progress-snapshot repair. The user's
+Pascal-only requirement reopens [native execution](NS-3_validation_02.md), so
+those results do not remove its blocker from the [many-hour workload task](NS-5_scale_01.md).
+That task also requires the admitted-note-to-learner path in
+[NS-3_notes_03](NS-3_notes_03.md). Neither old raw observations nor a new
+unqualified producer establishes musical accuracy or style acceptance.
 
 ## Dependency order
 
@@ -157,7 +157,7 @@ first accepted genre is predetermined.
 2. [NS-2_synthesis-quality_02.md](NS-2_synthesis-quality_02.md)
 3. [NS-2_synthesis-quality_03.md](NS-2_synthesis-quality_03.md)
 4. [NS-3_validation_01.md — DONE](DONE/NS-3_validation_01.md)
-5. [NS-3_validation_02.md — DONE](DONE/NS-3_validation_02.md)
+5. [NS-3_validation_02.md](NS-3_validation_02.md)
 6. [NS-3_tempo_01.md](NS-3_tempo_01.md)
 7. [NS-3_tempo_02.md](NS-3_tempo_02.md)
 8. [NS-3_tempo_03.md](NS-3_tempo_03.md)

@@ -1,7 +1,14 @@
-# Optional native pitch observations
+# Historical Win64 pitch-observation qualification
 
 [Project](../PROJECT.md) · [Phrase evaluation](PHRASE-EVALUATION.md) ·
-[Provenance](PROVENANCE.md) · [Task](TODO/DONE/NS-3_validation_02.md)
+[Provenance](PROVENANCE.md) · [Reopened task](TODO/NS-3_validation_02.md)
+
+**Historical evidence only as of 2026-09-22.** The user requires a Pascal-only
+inference workflow with no third-party execution runtime. This page preserves
+the exact earlier TensorFlow C adapter, its notices, identities and qualification
+results for provenance; none is an accepted Pascal-only producer or a current
+build/deployment instruction. The reopened task owns replacement and fresh
+qualification. Do not acquire or run the former runtime for new acceptance work.
 
 ## Scope and admission boundary
 
@@ -39,26 +46,28 @@ Provider accuracy and corpus-scale acceptance remain separate.
 
 ## Assets and build
 
-Use the opt-in [asset acquisition script](../tools/get-inference-assets.ps1) and
-[exact manifest](../adapters/inference/assets.lock.json). The default asset tree
+The retired asset script, exact manifest, model loader, consumer and fixture are
+preserved in Git revision `9d505aa` at their original paths. They are absent from
+the current supported build. The former asset tree
 contains `model/model.json`, thirteen named weight shards, the complete model MIT
 license, `runtime/lib/tensorflow.dll`, and the runtime's original `LICENSE` and
 `THIRD_PARTY_TF_C_LICENSES`. The loader verifies the exact model, every shard,
 runtime DLL and all three notice files; another DLL or model export rejects.
-No automatic upgrade or acquisition occurs during inference or ordinary builds.
+No automatic upgrade or acquisition occurred in the former inference path or
+ordinary builds.
 
 The converted demo topology is pinned at
 `de4888e6d448357ceafea10fc6010061c6f19a55`; preprocessing references were inspected
-at `c9b71ce61491454125a0693f584f7244f29d9884`. Full upstream MIT notices remain in
-derived graph code. The runtime ZIP, DLL, licenses and acquisition URLs are pinned
+at `c9b71ce61491454125a0693f584f7244f29d9884`. Full upstream MIT notices remain
+with the former derived graph code in that Git revision.
+The runtime ZIP, DLL, licenses and acquisition URLs are pinned
 in the manifest. TensorFlow's [C installation documentation](https://www.tensorflow.org/install/lang_c)
 identifies 2.18 as the final supported Windows C package release; this adapter
 therefore carries an explicit maintenance limitation and does not imply a current
 cross-platform runtime support promise.
 
-`tools/build-inference.ps1` compiles the dedicated Win64 consumer and fixture with
-checked FPC settings. It does not run inference. Use existing verified native
-toolchains; no training-language environment is required.
+The former build compiled a dedicated Win64 consumer and fixture with checked FPC
+settings. The current `tools/build-inference.ps1` builds the Pascal-only replacement.
 
 ## Native interfaces
 
@@ -209,7 +218,7 @@ the worker published observing `Phase` before `Tick` at
 `tools/pythian.inference.wav.lpr:136–138`. An interleaving after more than five
 seconds of setup could pair the old timestamp with the new phase and trigger a
 false observing-stall failure. Stable-stall tests did not cover this transition.
-The [execution task is accepted again](TODO/DONE/NS-3_validation_02.md) after
+The [execution task was accepted at that time](TODO/NS-3_validation_02.md) after
 phase and timestamp were combined in one aligned atomic publication word. The
 supervisor decodes one captured snapshot without a retry loop or worker-held
 lock. A second-mapping publisher forces the formerly unsafe transition between

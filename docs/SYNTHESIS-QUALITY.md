@@ -191,6 +191,41 @@ behavior remain unassessed; this matrix closes only the task's first acceptance
 criterion. The verdict and any before/after evidence remain open under
 [NS-2_synthesis-quality_01](TODO/NS-2_synthesis-quality_01.md).
 
+<a id="ns-2-synthesis-quality-02-matrix"></a>
+### Finite processing and routing matrix — NS-2_synthesis-quality_02
+
+This matrix reuses existing rendered files; it creates no new comparison
+renders. Keep the encoded level and order as supplied: do not peak-normalize or
+turn up a quieter segment between comparisons. “Fixed level” here means the
+documented source, voice, dry/wet, bus and master gains stay fixed within each
+comparison. Several dry/processed examples are deliberately not loudness matched;
+judge artifacts, spectral/control changes, stereo behavior and tails, not which
+segment is louder. Exact sizes and SHA-256 values below identify the current
+local WAVs.
+
+| Review area | Existing WAV and identity | Fixed comparison and listening window |
+| --- | --- | --- |
+| FM/PM native and fourfold conversion | `build/fm-stream-study/measured-comparison.wav`, 393260 bytes, SHA-256 `fe16863a11afd1ef7cfad87d2d13dd8451aa72790e983c3dc15231f2f2e2e68d`. | 32768-Hz stereo output; each signal is 20480 frames (0.625 s) with 0.125-s separators. Listen 0–0.625 s FM native vs 0.75–1.375 s FM rendered at 131072 Hz then sinc converted; 1.5–2.125 s PM native vs 2.25–2.875 s PM fourfold/converted. Both use 4-kHz carrier, modulator ratio 1.5, FM deviation 10000 Hz or PM index 3, gain 0.35, centered pan, 5-ms attack, 0.5-s gate, 0.125-s release and one-pole cutoff 0.4 × render rate. Compare modulation texture/folded roughness; this is one declared setting, not broadband alias qualification. |
+| LFO and gain/pan/cutoff automation | `build/3.2.2-i386-win32/control-curves.wav`, 1152044 bytes, SHA-256 `801b0a6af642307c3b71bb6423f7cb9323a8c9f4302582d155552d5d3d651ee9`. | Same 220-Hz saw voice in four 3-s segments at 24 kHz: 0–3 s plain reference, 3–6 s 5-Hz vibrato, 6–9 s 5-Hz tremolo/gain, 9–12 s 0.5-Hz triangle cutoff and pan motion. Keep the file level unchanged; hear pitch, gain and stereo/filter movement against the plain segment. |
+| Measured spectral motion and shape/level controls | `build/timbre-trajectory-win64/recorded-midi.wav`, SHA-256 `25b95af36a8c3b76f2d59b773542bbcd4d645f064a56c118bb51175915bbd869`; paired same-note/window `build/timbre-shape-win64/recorded-midi.wav`, SHA-256 `6d32b124a21c7aeb07d8d6e9a621654c0137d3c3d24854b71ee1472cee3878c4`. Each is 1008044 bytes. | Whole 5.25-s, 45-note passage at 48 kHz. Compare raw signed spectra retaining source dynamics with the same-window magnitude-shape trajectory using modeled cycle RMS. Do not normalize between them: the amplitude policy is the changed variable, and modeled cycle RMS is not perceived-loudness matching. Review pitch joins and tonal motion across the passage. |
+| Saved timbre edit control | `build/saved-trajectory-win64/measured.wav`, SHA-256 `cba63b4fd6678d7406994e83efe16e8acf7e819726bb8cce0746fad2b7555ab6`; paired `timbre-edit.wav`, SHA-256 `37eba7675e627c4ee25154a6acfaa3687f7cf3c57f9418447c0f6888f4c32de1`. Both files are 2917168 bytes. | Same 88-note, 729281-frame stereo performance and complete MIDI; compare the full baseline/edit or the paired 0–15-s excerpts in `build/listener-preview-20260920/synthesis-30s.wav`. Timbre edit changes the melody provider while bass/chord stems and other bindings stay fixed. The preview applies the same 12× gain and 10-ms edge fades to both halves; no limiting. |
+| Coupled gain, pan, cutoff and pitch movement on a looping sample | `build/loop-modulation-study/measured-q0-8000-g40.wav` (6604 bytes, SHA-256 `9722ed0d4f70c4d5f11f1b63feb4c99911650c7e3fb1fcf02f5cb446439bad2d`) and `measured-q1-8000-g40.wav` (6604 bytes, SHA-256 `4438129639eca51fc52a39c0840cb7ef3d37de5910f00deeb87a0c1eb769a4c3`); compare to the matching 16/48-kHz and `g3200`/`g3201`, `g9600`/`g9601` counterparts under the same directory. | Compare q0 linear with q1 sinc at the same output rate and gate: authored 12-kHz stereo sample with 300-frame loop, 200→400-Hz pitch ramp, 0.1→0.3×rate cutoff, -0.5→+0.5 pan, 0.5→1.0 gain multiplier, voice gain 0.5, velocity 0.75, 5-ms attack and 200-ms release. The fixed matrix spans 8/16/48 kHz, 5-ms, 200-ms and 200-ms-plus-one-frame gates. Review loop transitions and both early/late release exits; it is a smooth authored loop, not arbitrary recorded loop points. |
+| Biquad filtering and dynamics | `build/3.2.2-i386-win32/effects.wav`, 1152044 bytes, SHA-256 `b70a06ffa11df7fc4d146c19d6b5296fd4e45d5832d880c9073ee35c02d77db1`. | Compare 0–3 s phrase with 3–6 s processed repeat at 48 kHz. The first phrase has per-note resonant biquads; the repeat adds smoothed gain, high-pass/high-shelf filtering, linked compression and a -1-dB sample limiter. Native fixed gains are retained; this pair is explicitly not loudness matched. Listen for filter/ringing character, compressor pumping, limiter roughness and stereo change without changing levels. |
+| Stereo modulated delay | `build/3.2.2-i386-win32/modulated-delay.wav`, 1296044 bytes, SHA-256 `6e744c81c940ce9b36345eca464f778e0df8550568208c15f0d6ae14c622e69b`. | Same authored six-note phrase in 0–4.5 s dry, 4.5–9 s 0.5-Hz chorus (14–26-ms taps, quarter-cycle stereo offset), and 9–13.5 s 0.25-Hz flanger (1–5-ms opposing taps, feedback 0.55), with half-second tail allowance per section. Peak 0.1629921645. The comparison is not loudness matched; retain dry/wet gains and check movement, pitch wobble, stereo width and tail. |
+| Reverb decay and stereo image | `build/3.2.2-i386-win32/reverb.wav`, 2016044 bytes, SHA-256 `681599cddf829429028db36b2e536f8c57a6dc4c0c51580524219903fda955a8`. | Same six-note triangle phrase at 24 kHz: 0–7 s dry, 7–14 s short 0.7-s nominal decay/damping 0.15, 14–21 s long 2.8-s nominal decay/damping 0.65. Processed cases retain dry gain 0.85/wet gain 0.5 and default delay/diffusion/width; compare decay, stereo width and the four-second tails. Not loudness matched (peak 0.1616458446). |
+| Bus/routing mute, return and continuing tail | `build/3.2.2-i386-win32/buses.wav`, 1152044 bytes, SHA-256 `a9ff4f72f18cfb45c7a7af5190368a802a55638a2b1d1dffb12702873fbcc198`. | At 48 kHz: 0–2 s music plus 375-ms filtered echo; 2–3 s music return fades while effects remain audible at 2.5 s; 3–4 s music and continuing echo return with another effects burst at 3.5 s; 4–6 s zero-fed echo tail. Fixed music/effects gains 0.7/0.4, 35/15-ms smoothing, linked master compressor and -1-dB sample limiter; no normalization. Compare the audible pre-mute, mute and return passages. The separate unmuted fixture is a numerical history reference, not an audition WAV. Listen for preserved echo history, dry/effect separation and tail continuity. |
+| Integrated automated sources, filters, effects and routing | `build/combined-fundamentals/win64/reference.wav` and `block-257.wav`, each 1056044 bytes and SHA-256 `7c0c5a40979a39301ce4dc842d0caabd193dd120c6a474857404dd3505472022`. | Whole 11-s, 24-kHz stereo 40-note passage; audition the scheduled block-257 mix and use `reference.wav` as the same-sample direct-placement replay reference. It combines saw, looping sample, spectral trajectory, FM, gain/pitch/pan/cutoff automation, four buses and shared reverb. The exact sample identity checks placement/block composition only; it is not an independent DSP or perceptual-quality oracle. |
+
+This is the finite coverage packet for the first criterion of
+[NS-2_synthesis-quality_02](TODO/NS-2_synthesis-quality_02.md). Relevant limits
+are attached to each comparison: single-setting FM/PM bandwidth, authored smooth
+sample loop, preset native levels, documented filter/dynamics settings, explicit
+tail lengths, and one declared bus topology. No level correction is allowed to
+hide an audible fault. No actual timestamped listening observations or verdicts
+have been recorded; listening remains unavailable in this handoff. The matrix
+criterion is documented, while the task's verdict, defect-resolution and final
+acceptance criteria remain open.
+
 Review audible attacks, releases, joins, roughness and level balance on these
 declared paths. Record the exact artifact and transition if a defect is heard,
 then link it to [FUND-QUALITY](MILESTONES.md#fund-quality) and its affected consumer.

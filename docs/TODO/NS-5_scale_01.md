@@ -29,9 +29,10 @@ and output-artifact checks within the unchanged whole-job/pipeline budgets.
 The initial preparation's one-hash-per-job wording is corrected in its workload
 record. This remains existing acceptance scope, with no new task or credit.
 
-The native execution prerequisite is accepted again after coherent progress
-supervision and focused replay pass. Retain the successful one-hour measurements
-as scoped evidence; they do not alone satisfy this whole-pipeline workload task.
+The former external-runtime execution passed its historical hour and supervision
+checks, but the user's Pascal-only requirement reopens the producer prerequisite.
+Retain those measurements for provenance; do not apply their costs to the new
+producer or treat this scale task as unblocked.
 
 Preparation 2026-09-21: [the prospective workload](../CORPUS-SCALE.md) binds
 three development inputs and 2.3222053373 unique source-clock hours, with explicit
@@ -52,11 +53,13 @@ as prerequisites for operational measurement.
 **Blockers**
 
 - [NS-5_corpus_01.md](DONE/NS-5_corpus_01.md)
-- [NS-3_validation_02.md](DONE/NS-3_validation_02.md)
+- [NS-3_validation_02.md](NS-3_validation_02.md)
 - [NS-3_notes_03.md](NS-3_notes_03.md)
 
 **Dev Notes:**
 
 - Planning correction (2026-09-21): successful observation jobs hash the whole input at initialization and again before sink completion, even for a shorter requested scope. Include both passes plus preparation/storage in whole-pipeline budgets; see [workload](../CORPUS-SCALE.md).
 
-- Follow-up: the prepared 2.3222053373-hour workload has not run as semantic training. [notes_03](NS-3_notes_03.md) owns the missing admitted-note-to-learner bridge. The accepted one-hour observation benchmark does not close this task.
+- Follow-up: the prepared 2.3222053373-hour workload has not run as semantic training. [notes_03](NS-3_notes_03.md) owns the missing admitted-note-to-learner bridge. The formerly accepted external-runtime one-hour observation benchmark does not close this task.
+
+- 2026-09-22: [native execution](NS-3_validation_02.md) is reopened for a Pascal-only producer. Re-measure that producer before this workload can use its density, setup, memory or hour-cost evidence; the old TensorFlow C run is historical only.

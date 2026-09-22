@@ -10,6 +10,8 @@ Read [the project profile](PROJECT.md) and the relevant standards in
   of WFC, Phanes, browser APIs, engines, and playback devices.
 - Use Pascal for implementation, analysis, codecs, and maintained tools.
   Scripts orchestrate builds only. Use existing verified toolchains.
+- Keep all inference execution, including experimental probes, Pascal-owned.
+  Do not execute TensorFlow, ONNX, HDF5, or other third-party inference runtimes.
 - WFC is a retained companion submodule. Put its contracts in `adapters/wfc/`.
   Phanes was removed after its extraction audit; preserve its recorded provenance
   and derived notices. Do not edit dependency source in this checkout.

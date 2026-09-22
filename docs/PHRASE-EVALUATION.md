@@ -3,6 +3,11 @@
 [Home](../README.md) · [Pitch contracts](PITCH.md) · [Milestones](MILESTONES.md) ·
 [Work](WORK.md)
 
+The TensorFlow C observations documented in the dated studies below are
+historical experiments. The user now requires a Pascal-only execution path;
+[NS-3_validation_02](TODO/NS-3_validation_02.md) is reopened. Those observations
+do not qualify the replacement producer or its recorded accuracy and cost.
+
 The core now supports [harmonic fitting along a declared changing phase](SOURCES.md#phase-harmonic-fitting).
 Known glide/vibrato controls recover constant harmonic coefficients and render
 through the native source; stationary-fit consumers retain their evidence.

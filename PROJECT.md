@@ -77,34 +77,23 @@ dependency-linked work items under [TASKFLOW.MD](docs/TASKFLOW.MD). Completed
 implementation is summarized there by goal; detailed evidence stays in the work
 record and topic pages. Reassess the full intended scope when evidence changes it.
 
-## Optional inference adapter
+## Pascal-only inference boundary
 
-The practical inference task delivers a separately selected Win64 CPU
-observation adapter under `adapters/inference/`, using stable FPC 3.2.2 and the
-pinned TensorFlow 2.18.1 C runtime. The owned graph, streaming preparation,
-validation, process supervision and command-line consumer remain Pascal. Core
-types, default builds and existing core/WFC source packages do not require or
-bundle that runtime. This is not a portable-core inference dependency.
+All new learning and inference execution, including experimental probes, uses
+Pascal-owned implementation with FPC/RTL. This applies to observations, analysis,
+model execution, codecs, validation and maintained tools. Do not execute through
+a TensorFlow, ONNX, HDF5 or other third-party inference runtime. OS/compiler services
+under FPC are platform facilities, not alternative inference implementations.
+The portable core remains independent of WFC, hosts and playback devices.
 
-The reason is measured execution cost: the private scalar converted CREPE tiny
-study costs roughly 17 processing seconds per audio second. Maintained
-qualification records controlled/recorded fidelity and representative failure,
-cancellation and resource checks: a continuous hour completes
-in 2,420,266 ms with 20,313-ms setup and 103,051,264 bytes peak worker private
-memory. A subsequent setup-to-observing progress race is repaired by atomic
-phase/timestamp publication. Coordinated transition, bounded failure/cancellation
-and exact real-worker replay pass; the [execution task is accepted again](docs/TODO/DONE/NS-3_validation_02.md)
-with its retained numerical/resource evidence and unchanged budgets.
-Raw salience and AC RMS
-do not become admitted notes, calibrated confidence or learned musical roles.
-
-Acquisition is explicit through [the pinned asset script](tools/get-inference-assets.ps1),
-confined to ignored `build/`; full model/runtime notices accompany the assets.
-The [provenance decision](docs/PROVENANCE.md#optional-native-observation-adapter)
-records revisions, maintenance cost and the current Windows-only scope. No
-automatic version upgrade, additional package ecosystem or historic format reader
-is introduced. Review the choice if its measured budgets fail or the supported
-consumer needs another platform/runtime; do not silently widen these claims.
+The former Win64 TensorFlow C adapter and its measured execution evidence are
+retained as historical provenance in [native inference](docs/NATIVE-INFERENCE.md)
+and [provenance](docs/PROVENANCE.md#optional-native-observation-adapter). They do
+not qualify a Pascal-only producer. The [practical inference task](docs/TODO/NS-3_validation_02.md)
+is reopened; its five NS-3 points are unearned until a Pascal producer meets the
+recorded-input, long-source, bounded-work and failure/replay criteria. Preserve
+notices and exact source lineage while replacing the former path. Raw pitch or
+salience observations are not admitted notes or learned musical roles.
 
 ## Development format policy
 
