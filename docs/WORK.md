@@ -34,9 +34,13 @@ neighborhood maximum at every candidate pitch, without detecting physical
 peak locations. The final attempt therefore changes representation to
 detected, frequency-interpolated local maxima with direct magnitude-relative
 support and a separate peak-concentration gate. The exact 2048/8192 geometry,
-0.03 concentration threshold, 35-cent projection width, ambiguity treatment,
-synthetic checks, cost screen and unchanged Spring stop gates are frozen in
+0.03 concentration threshold, 35-cent Gaussian sigma, 64-peak selection,
+ambiguity formulas and synthetic/cost checks are frozen in
 [NS-3_validation_03](TODO/NS-3_validation_03.md) before implementation.
+The Spring recall/density thresholds remain unchanged; its center exclusion
+is widened from the rejected 1024-window scorer's 50 ms to 1024 samples
+(64 ms) per side, before any fourth-hypothesis scoring, so scored windows
+are fully inside a reference note or rest.
 Zero padding interpolates the spectrum; it does not identify overlapping
 sources or establish a new information limit. Failure at the controlled,
 cost or recorded gate will exhaust this cause's four-attempt cap and trigger

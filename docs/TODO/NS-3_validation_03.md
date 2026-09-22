@@ -37,7 +37,13 @@ Starting evidence: [three stopped Pascal hypotheses](NS-3_validation_02.md) ·
 - On the hash-bound first 30 seconds of both Spring development parts, attain
   at least 80% reference pitch recall among the top 12 separated candidates
   at scored note centers, and mean count of support >=0.5 no greater than
-  36/360 bins at both scored note and rest centers. Exclude 50-ms note edges,
+  36/360 bins at both scored note and rest centers. For this 2048-sample
+  centered window, score notes only when the center is at least 1024
+  source-clock samples inside both boundaries; score rests only when the
+  center is at least 1024 samples outside every note interval. Convert each
+  reference onset to `ceil(seconds*16000)` and offset to
+  `floor(seconds*16000)` before applying this rule. The earlier 50-ms rule
+  belongs to the 1024-sample rejected observation and is not carried over.
   keep reference labels out of the producer and preserve exact source,
   reference, policy and output identities. Report reference support and rest
   activation diagnostics; do not silently equate a ranked hit with calibrated
@@ -69,19 +75,29 @@ Starting evidence: [three stopped Pascal hypotheses](NS-3_validation_02.md) ·
 - Fourth hypothesis frozen 2026-09-22 before implementation or Spring scoring:
   detect actual spectral local maxima from a Hann-windowed 2048-sample frame,
   using a zero-padded 8192-point Pascal Fourier transform only to interpolate
-  peak frequency. Normalize direct peak support by the strongest detected
-  peak's **magnitude**, gate it by maximum-peak power divided by total
-  positive-frequency power (full support at ratio >=0.03), and project each
-  detected peak narrowly onto the 20-cent grid (35-cent Gaussian width).
-  Carry missing-fundamental support only from a matched harmonic pair and
-  single-harmonic octave ambiguity below 0.5; do not treat a harmonic
+  peak frequency. Use positive FFT bins 1..4095 for power totals; a local
+  maximum satisfies `P[k] >= P[k-1]` and `P[k] > P[k+1]`, with edge bins
+  handled by their one available neighbor. Retain the strongest 64 maxima,
+  breaking power ties by lower bin index. Interpolate each retained peak by
+  a three-bin log-power parabola with offset clamped to [-0.5, 0.5] bins.
+  Let `q = min(1, (maximum peak power / total positive-bin power) / 0.03)`;
+  if the denominator is zero, return all zero. For each retained peak, direct
+  support at a candidate grid pitch is `q * (peak magnitude / strongest peak
+  magnitude) * exp(-0.5*(cents/35)^2)`, where 35 cents is Gaussian sigma.
+  Aggregate paths with `max` and clamp to 0..1. A harmonic-2/3 pair qualifies
+  when its two derived fundamentals differ by at most 35 cents; project their
+  geometric-mean fundamental with support `0.4*q*min(relative magnitudes)`
+  and the same Gaussian. A single harmonic-2 peak may support its lower
+  octave with `0.4*q*relative magnitude` and the same Gaussian. No other
+  subharmonic path is used; these ambiguity paths stay below 0.5. Do not treat a harmonic
   collision as proof of two sound sources. This changes the evidence
   representation: the failed probes divided candidate **power** by total
   spectral power and spread a neighborhood maximum over every pitch bin.
   First run the exact controlled checks in acceptance criterion 2, with
   checked stable FPC Win64/Win32 and the 3000-window <=30-second backend
   screen. If any control or cost gate fails, stop before Spring. If they
-  pass, apply the unchanged source-bound Spring recall/density gate in
-  criterion 3. If that fails, stop before an hour run. No parameter may be
+  pass, apply the same source-bound Spring recall/density thresholds with
+  the fully contained-window center rule in criterion 3. If that fails,
+  stop before an hour run. No parameter may be
   retuned using Spring labels; failure exhausts the four-attempt cap on this
   producer cause and requires a new strategy reassessment.
