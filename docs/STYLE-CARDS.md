@@ -79,6 +79,29 @@ Do not tune a comparator to make these candidates pass before the missing packet
 and numerical criteria are frozen. The existing evaluation/corpus tasks own this
 work; no additional task, completion credit or artifact format is introduced.
 
+### Recording correspondence screen — 2026-09-22
+
+The retained, hash-bound source descriptions identify the declared chapters
+containing these three excerpts. Published track listings support the work
+associations, but do not authenticate the compilation's audio edition or its
+exact cut points. The lengths below compare declared chapter spans with published
+track lengths; they are not a waveform alignment.
+
+| Candidate | Declared containing chapter | Published catalogue length | Disposition |
+| --- | ---: | ---: | --- |
+| A-early | 508 s | [8:29 (509 s)](https://musicbrainz.org/release/63eaefa1-c94b-4411-a31e-45720ccd9be0) | One-second difference; recording and cut correspondence still unverified. |
+| B-middle | 166 s | [2:45 (165 s)](https://lofigirl.bandcamp.com/album/secret-lair-x-lofi-girl-beats-to-cast-to) | One-second difference; recording correspondence and endpoint quality still unverified. |
+| C-early | 228 s | [3:55 (235 s)](https://submorphine.bandcamp.com/album/cyberdawn) | Seven-second difference; the declared compilation is labelled a later remaster, so the album track is not an authenticated edition match. |
+
+The current local packet has no independently checked isolated recording to
+compare against these WAV bytes and no curator-reviewed musical annotations for
+them. A reviewer must verify each recording and cut, then bind beat/meter,
+harmony, roles, sound/envelope and structure observations to exact source clocks,
+including unknown regions. An independently reviewed replacement can serve the
+same role if a candidate fails correspondence or quality review. Until then the
+three cards and their numerical trait thresholds remain pending; the existing
+acoustic and generic-guitar controls cannot close their musical dimensions.
+
 ## Reference observations from the original master sections
 
 A native development study reopens the nine original 48-kHz stereo PCM16 masters,

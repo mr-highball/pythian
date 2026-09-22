@@ -159,6 +159,38 @@ adds `build/saved-trajectory-win64/measured.wav`, `timbre-edit.wav` and
 Review spectral motion, attacks and level balance in the paired outputs. Numeric
 stem/MIDI isolation is verified; no listening verdict is inferred from it.
 
+### Finite listening matrix — NS-2_synthesis-quality_01
+
+The following existing artifacts form the finite listening packet. They are
+generated artifacts under ignored `build/`; paths and hashes identify the local
+files used to define this matrix. No new render is needed to begin review. For
+the large measured-instrument set, each profile/rate WAV contains the fixed
+seven-key and three-velocity workload described in
+[the measured-instrument checkpoint](INSTRUMENTS.md#measured-instrument-quality-checkpoint--2026-09-19).
+That bounds this measured-timbre case to 12 stationary and 12 matched glide
+files while covering all 3 profiles, MIDI keys
+36/48/60/69/72/84/96, velocities 32/80/127 and rates 8000/16000/44100/48000 Hz.
+
+| Listening case | Existing artifact(s) and identity | Matrix dimensions to review |
+| --- | --- | --- |
+| Measured stationary timbre, sampled pitch/velocity/rate | `build/instrument-quality-study/measured-profile{1,2,3}-{8000,16000,44100,48000}.wav` and matching `measured-profile{1,2,3}-{8000,16000,44100,48000}-glide.wav`; source recipe and individual outputs in `build/instrument-quality-study/measured.json`. Example `measured-profile1-8000.wav`, 215084 bytes, SHA-256 `ad5eccb0cc2cb12b610e41a2ccb0226fbe784af0ebc4c13821e82e6640ab7c5a`. | All 3 saved timbres × 7 sampled keys × 3 velocities × 4 output rates; quarter-second gates, 5-ms attack, 30-ms release; inspect pitch continuity and roughness in the 12 matched glide files. |
+| Measured envelope, short/long gates, attacks, releases and overlap | `build/instrument-envelope-study/measured-profile{1,2,3}-{8000,22050,48000}.wav`; source profiles, cases and hashes in the study outputs. Example profile 1 at 8 kHz, 153612 bytes, SHA-256 `27c387e4964e9722ab251d0b5db72c98442909333b682ce4033ee233459e4bee`; profile 1 at 48 kHz, 921372 bytes, SHA-256 `4fc450fc79ee76aea3d014a27483df2161a653f9ba250d2d54e59e6c2b903728`. | Three profiles × 3 rates × gates of 1 frame, floor(rate/40) and 2 seconds × 1/2/16 overlapping zones. Review initial attack, held portion, note-off/release, and the two-note release overlap. |
+| Sample-loop exits and interpolation | `build/loop-modulation-study/measured-q{0,1}-{8000,16000,48000}-g*.wav`; `q0`/`q1` are the linear/sinc pair. Example short-gate linear 8-kHz output, `measured-q0-8000-g40.wav`, 6604 bytes, SHA-256 `9722ed0d4f70c4d5f11f1b63feb4c99911650c7e3fb1fcf02f5cb446439bad2d`; long-tail sinc 48-kHz output, `measured-q1-48000-g9601.wav`, 76848 bytes, SHA-256 `624faa7765b4402fe8c4258831c6b5ed3a8f4712baa281a4215eb1faeb075372`. | Both interpolation modes at 8/16/48 kHz; short and long gates, loop sustain, early and late release exits, pitch motion and cutoff/pan/gain automation. Compare matched q0/q1 cases for clicks, pitch continuity and tail character. |
+| Oscillator, wavetable trajectory, sample sustain and FM in context | `build/combined-fundamentals/win64/block-257.wav`, 1056044 bytes, SHA-256 `7c0c5a40979a39301ce4dc842d0caabd193dd120c6a474857404dd3505472022`; parameter/source policy and deterministic replay are recorded above in [Combined source, timing and effects workload](#combined-workload-checkpoint). | One 40-note passage containing polynomial saw, authored stereo sample sustain loops, normalized three-knot spectral trajectory and FM; review note attacks/releases, timbre joins and the final effect tail. |
+| FM/PM native versus oversampled | `build/fm-stream-study/measured-comparison.wav`, 393260 bytes, SHA-256 `fe16863a11afd1ef7cfad87d2d13dd8451aa72790e983c3dc15231f2f2e2e68d`. | Three seconds in order: FM native/fourfold, then PM native/fourfold, with 125-ms separators. Review roughness and level/timbre change; this is one declared modulation setting, not general alias immunity. |
+| Recorded spectral motion and saved instrument edits | `build/timbre-trajectory-win64/recorded-midi.wav` (SHA-256 `25b95af36a8c3b76f2d59b773542bbcd4d645f064a56c118bb51175915bbd869`); `build/timbre-shape-win64/recorded-midi.wav` (SHA-256 `6d32b124a21c7aeb07d8d6e9a621654c0137d3c3d24854b71ee1472cee3878c4`); and paired `build/saved-trajectory-win64/{measured,timbre-edit,envelope-edit}.wav`. | Review changing-pitch spectral joins, separate modeled level motion, and the saved 88-note performance's melody timbre/envelope edits while bass/chords/MIDI remain fixed. The saved `timbre-edit.wav` hash is `37eba7675e627c4ee25154a6acfaa3687f7cf3c57f9418447c0f6888f4c32de1`; `envelope-edit.wav` is `34ca2f3c667f12d955ee00723f810eb88abda77124bd9550c2a99fed1ebbac4f`. |
+| Supplied paired listener preview | `build/listener-preview-20260920/synthesis-30s.wav`, 5292044 bytes, SHA-256 `9952e5fd009689dd766473796a273bfb096cbc85fd7887b2d9f625560155a6ec`. | First 15 seconds of measured performance then 15 seconds of its timbre edit; compare attacks, melody/bass/chord balance and transition. |
+
+The matrix is finite: listen to the listed whole artifacts and record timestamped
+observations against the dimensions in the last column. The measured sets cover
+only their sampled key, velocity, rate, gate, profile and zone combinations;
+they do not qualify intermediate or arbitrary settings. No timestamped listening
+observations or family verdicts have been recorded yet. Listening is not available
+in this handoff, so clicks, unwanted aliasing, pitch continuity and release
+behavior remain unassessed; this matrix closes only the task's first acceptance
+criterion. The verdict and any before/after evidence remain open under
+[NS-2_synthesis-quality_01](TODO/NS-2_synthesis-quality_01.md).
+
 Review audible attacks, releases, joins, roughness and level balance on these
 declared paths. Record the exact artifact and transition if a defect is heard,
 then link it to [FUND-QUALITY](MILESTONES.md#fund-quality) and its affected consumer.

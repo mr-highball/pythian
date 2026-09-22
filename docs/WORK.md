@@ -21,6 +21,42 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Resume and reference stop point — 2026-09-22
+
+The user explicitly resumed the broader goal and its authorized helper/QA cycle.
+The checkout began clean on `hello-pythian` at `9ec95a1`; the least-complete
+north star is NS-5. The first work batch on resumption advanced the first
+criterion of [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md): a source-bound
+screen of its three existing candidate cards. Its deliverable is the
+[recording correspondence table](STYLE-CARDS.md#recording-correspondence-screen--2026-09-22);
+closing evidence would be verified source/edition/cut correspondence and reviewed
+musical annotations for every required dimension on all three cards. The stop
+condition is reached: retained declarations and published catalogue lengths
+cannot authenticate the WAV editions or supply musical annotations. The declared
+chapters differ from published lengths by one, one and seven seconds. No card or
+quantitative genre criterion is accepted, and no new genre threshold is frozen.
+
+Batch 28 and this correspondence screen each closed no acceptance criterion.
+The independently delegated [NS-2 source audition matrix](SYNTHESIS-QUALITY.md#finite-listening-matrix--ns-2_synthesis-quality_01)
+was completed in parallel and closes the first criterion of
+[NS-2_synthesis-quality_01](TODO/NS-2_synthesis-quality_01.md), subject to
+final QA. It maps existing source-family artifacts and sampled ranges without
+new renders. Actual timestamped listening, family verdicts, possible repairs and
+accepted operating ranges remain open. Because that parallel batch advances a
+criterion, this record does **not** assert two consecutive nonclosing project
+batches or reset a task-specific failed-approach history.
+
+The source screen still gives a concrete NS-5 stop point. Stop catalogue/level-only
+investigation and obtain independently reviewed source/annotation input or
+replacements before another style-reference batch. A request for that input is
+pending. The exact unblock is a checked recording and cut for each candidate plus
+beat/meter, groove, harmony, role, sound/envelope and phrase/section observations
+with method and uncertainty. Automatic transcription is not required. The
+existing task and 4-point NS-5 credit remain open and unchanged. Independent
+sound-quality work may proceed while this external input is pending; it cannot
+stand in for the style reference packet. QA and publication follow the delegated
+workflow with these two components ready.
+
 ## Task development notes — 2026-09-21
 
 At the user's request, all 50 task files, including the 13 in DONE, now end with
