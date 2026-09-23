@@ -58,6 +58,22 @@ by changing its failed pair or window in place.
 
 **Dev Notes:**
 
+- 2026-09-23 focused API/consumer acceptance without listening: criteria 2
+  and 4 are met at their stated observation and native-consumer scope.
+  Fresh checked stable FPC 3.2.2 Win32/Win64 builds passed the focused
+  source-free controls with zero unfreed blocks. The original 264,000-frame,
+  24-kHz stereo WAV emitted byte-identical hash-bound inspector rows on both
+  targets (TSV SHA-256
+  `22639cfffd9a372c9aed7bbdfaa5cd0a10196b18ac2e9ca4aa0ddc803c08b327`):
+  the 100,000-frame candidate crosses the WAV read chunk, retains original
+  coordinates and reports `unknown` for an unreviewed rest. A wrong source
+  hash rejected before a TSV row; the unit controls also cover partial reads,
+  bounds, work cap and prior-result preservation. The inspector now rehashes
+  the full source after observation and before output; fresh checked
+  Win32/Win64 builds preserve the exact TSV replay and zero-leak result.
+  This closes no recorded acoustic or event-decision gate. Criteria 1 and 3,
+  including the pending
+  user-reviewed development/evaluation packet, remain open; no task credit.
 - 2026-09-23 score-runner preparation: the private ignored packet's Pascal
   scorer binds the binder output SHA-256, verifies original WAV identities,
   uses the frozen lowest-numbered same-source rest rule, and separates

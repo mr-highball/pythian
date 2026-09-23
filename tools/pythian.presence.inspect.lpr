@@ -131,6 +131,9 @@ begin
     finally
       LReader.Free;
     end;
+    LStream.Position := 0;
+    if Sha256Stream(LStream, LStream.Size) <> LExpectedHash then
+      raise EAudio.Create('WAVE SHA256 changed during presence observation');
   finally
     LStream.Free;
   end;

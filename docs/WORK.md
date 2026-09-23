@@ -23,6 +23,23 @@ from planned semantic providers, profile persistence, weighting and blend APIs.
 
 ## Maintained presence observation boundary — 2026-09-23
 
+Fresh focused stable FPC 3.2.2 Win32/Win64 checks accept the maintained
+observation API and native consumer criteria of
+[NS-3_notes_05](TODO/NS-3_notes_05.md). Both targets pass the exact-window,
+unknown, work-cap, long-coordinate, failure-preservation and source-free
+signal controls with zero unfreed blocks. The hash-bound 264,000-frame,
+24-kHz stereo consumer WAV yields identical TSV bytes on both targets
+(SHA-256 `22639cfffd9a372c9aed7bbdfaa5cd0a10196b18ac2e9ca4aa0ddc803c08b327`):
+its 100,000-frame candidate crosses the reader chunk and retains `unknown`
+for an unreviewed rest. The inspector now rehashes the full source after
+observation and before emitting TSV, detecting any source change that persists
+through that check; this adds a second full-file hash per call.
+Fresh checked Win32/Win64 consumer builds retain the exact TSV replay and
+zero unfreed blocks. The wrong-hash invocation exits before TSV output.
+This closes criteria 2 and 4 at their declared scope, without assigning
+acoustic audibility, event accuracy or task credit. Criteria 1 and 3 still
+need source-grounded labels and recorded development/independent results.
+
 The ignored recorded packet now also has a Pascal score runner with separate
 development and reserved-evaluation modes. It requires the binder's reviewed
 packet SHA-256, verifies each original mic WAV SHA-256 before and after scoring,
@@ -47,9 +64,8 @@ and all nine aid SHA256 values, with zero unfreed blocks. Bind mode requires
 exactly nine ordered labels in the fixed vocabulary and preserves input and
 manifest hashes, but no user labels have arrived and it has not run. The fixed
 scoring policy was written before labels: only a listener-confirmed no-guitar
-window from the
-same recording can become its rest reference; player 05 is not used for
-tuning. Packet preparation stops here rather than generating more clip
+window from the same recording can become its rest reference; player 05 is not
+used for tuning. Packet preparation stops here rather than generating more clip
 variants. The next dependency is the user's one-pass labels; until then no
 recorded score or task credit follows. This is an external listening need for
 the current NS-3_notes_05 packet, not a completion claim for the overall goal.

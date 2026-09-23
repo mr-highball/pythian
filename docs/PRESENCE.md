@@ -67,3 +67,16 @@ instrument detection, source-independent calibration, or event accuracy.
 The criterion's recorded development/independent cases and calibrated
 false-active/missed-active/unknown coverage remain open. GuitarSet's stopped
 packet and previously exposed NSynth test/train groups remain protected.
+
+Fresh focused acceptance on 2026-09-23 rebuilt the maintained observation
+unit, tests and WAV inspector with checked stable FPC 3.2.2 Win32/Win64.
+Both tests passed with zero unfreed blocks. The hash-bound 100,000-frame
+consumer observation above produced identical TSV bytes across targets
+(SHA-256 `22639cfffd9a372c9aed7bbdfaa5cd0a10196b18ac2e9ca4aa0ddc803c08b327`)
+and preserved `unknown` and original source coordinates. A wrong SHA-256
+exited before output. The inspector now hashes the complete input again after
+observation and before output; fresh checked Win32/Win64 builds preserve the
+same TSV bytes and zero-leak result. This second full-file pass is part of its
+cost. This meets the API and consumer acceptance criteria of
+[NS-3_notes_05](TODO/NS-3_notes_05.md) at their source-free scope; it does not
+meet the remaining source-grounded acoustic and recorded-calibration criteria.
