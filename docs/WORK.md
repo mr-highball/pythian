@@ -21,6 +21,27 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Isolated source review and task-flow reassessment — 2026-09-23
+
+The user heard the [hash-bound measured-profile-1 48-kHz listening copy](SYNTHESIS-QUALITY.md#first-isolated-source-listening-copy--2026-09-23)
+and described its complete 6.72-second, seven-key/three-velocity sequence as
+smooth. This is a favorable first source-family impression, without individual
+timestamps or explicit judgments for aliasing, glides, other profiles/rates,
+long/short envelopes or sample-loop exits. No defect is demonstrated by this
+comment, and no source-quality criterion or credit closes.
+
+The earlier combined-passage listening/copy batch and this isolated-family
+verdict are two consecutive nonclosing NS-2 listening batches. They established
+an intentional tempo change and one smooth measured profile, but did not supply
+the per-family judgments, defect disposition or operating ranges required by
+[NS-2 source/articulation quality](TODO/NS-2_synthesis-quality_01.md).
+Reassessment changes the next action from making preview copies to finishing a
+bounded review of the existing finite matrix. Start with its already rendered
+12-second oscillator/automation comparison, SHA-256
+`801b0a6af642307c3b71bb6423f7cb9323a8c9f4302582d155552d5d3d651ee9`,
+then gather the remaining source-specific cases without inventing approvals or
+re-rendering unchanged material. Repairs follow only demonstrated defects.
+
 ## Combined-source listener observation — 2026-09-23
 
 The user heard the exact 11-second mixed-source listening copy and reported

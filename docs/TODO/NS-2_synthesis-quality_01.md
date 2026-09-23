@@ -26,19 +26,32 @@ Starting evidence: [SYNTHESIS-QUALITY](../SYNTHESIS-QUALITY.md) · [FUNDAMENTALS
 
 **Dev Notes:**
 
+- 2026-09-23 first isolated-family verdict and reassessment: the user heard
+  the exact [profile-1 48-kHz copy](../SYNTHESIS-QUALITY.md#first-isolated-source-listening-copy--2026-09-23)
+  and called it smooth. This supports that one complete seven-key,
+  three-velocity stationary sequence; it does not label individual attacks,
+  releases, aliasing, glide continuity, other profiles/rates or sample-loop
+  exits. The earlier combined-passage review/copy and this first isolated
+  verdict are two nonclosing listening batches: neither supplies the matrix's
+  per-family timestamped verdicts, defect disposition or accepted ranges.
+  Reassess by finishing the bounded existing matrix rather than generating
+  more gain variants, starting with the already rendered 12-second
+  oscillator/control comparison and retaining other family cases for their
+  source-specific verdicts. No criterion or credit closes here.
+
 - 2026-09-23 first isolated-source review aid: the existing profile-1 48-kHz
   stationary sample has a [hash-bound 6.72-second listening copy](../SYNTHESIS-QUALITY.md#first-isolated-source-listening-copy--2026-09-23)
   at one uniform 12-times playback gain and 0.409424 peak. It sequences seven
   keys and three velocities; the unchanged family matrix retains other rates,
-  profiles, glides, envelopes and sample loops. Await an actual listener verdict
-  on this representative family case before calling it accepted. Preparing the
-  copy closes no further criterion or credit.
+  profiles, glides, envelopes and sample loops. The later smooth impression
+  above does not approve those remaining cases. Preparing the copy closed no
+  further criterion or credit.
 
 - 2026-09-23 combined-source review support: the [11-second listening copy](../SYNTHESIS-QUALITY.md#combined-source-listener-copy--2026-09-23)
   is the existing native mix converted by maintained Pascal to 44.1-kHz WAV
   with uniform 3-times playback gain. Source/output hashes, duration, peak and
   note-entry times are recorded so a listener can localize a defect. The source
-  families overlap in this mix; its pending verdict cannot replace the separate
+  families overlap in this mix; its later broad verdict cannot replace the separate
   matrix cases. No source/articulation criterion or credit closes from conversion.
 - Follow-up: reuse the existing source auditions and [paired preview](../SYNTHESIS-QUALITY.md#thirty-second-listener-preview--2026-09-20) to complete the finite listening matrix. Family-specific feedback remains pending; no audible defect or broad approval is inferred from numerical checks or the whole-preview verdict.
 - 2026-09-22 batch: completed the first acceptance criterion by mapping a finite matrix to existing generated WAVs and recording local SHA-256 identities where available in [SYNTHESIS-QUALITY](../SYNTHESIS-QUALITY.md#finite-listening-matrix--ns-2_synthesis-quality_01). No additional renders were created. Closing evidence for this criterion is the documented mapping of oscillator/wavetable/sample/measured paths and sampled pitch, velocity, rate, gate, attack, release and loop-exit cases. Stop here: actual listening and timestamped family verdicts remain open because listening was unavailable during this handoff; no quality result is inferred.

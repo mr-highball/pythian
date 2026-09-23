@@ -301,8 +301,11 @@ The source file sequences profile 1's seven sampled keys and three velocities
 with quarter-second gates, 5-ms attack and 30-ms release. It can support a
 first judgment on tone, pitch transitions, attack and release at this one
 profile/rate. Other profiles, rates, glides, envelopes and sample loops remain
-in the finite matrix above. Listener feedback on this copy is pending; no
-family verdict or task credit follows from its preparation.
+in the finite matrix above. The user subsequently described this complete
+6.72-second copy as **smooth**. That is a positive, source-bound impression for
+profile 1 at 48 kHz; no individual note time, pitch accuracy, aliasing,
+short/long gate or sample-loop judgment was supplied. The remaining family
+matrix and any final operating-range acceptance stay open, with no task credit.
 
 <a id="ns-2-synthesis-quality-02-matrix"></a>
 ### Finite processing and routing matrix — NS-2_synthesis-quality_02
