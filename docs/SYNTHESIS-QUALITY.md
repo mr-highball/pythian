@@ -127,10 +127,14 @@ The saved duration/format check passes; checked stable Win64 reports no unfreed
 blocks. SHA256: `9952e5fd009689dd766473796a273bfb096cbc85fd7887b2d9f625560155a6ec`.
 Source, build and render logs remain beside the preview under ignored `build/`.
 
-The preview was supplied for listener feedback. Observations remain pending;
-its preparation earns no completion credit. Link any heard defect and timestamp
-to FUND-QUALITY and the corresponding source/control contract. The wider audition
-suite below remains necessary for coverage beyond these two excerpts.
+The user heard the full 30-second preview and described it as coherent overall
+on 2026-09-23. This is a favorable whole-preview observation covering the
+measured performance at 0–15 seconds and its timbre edit at 15–30 seconds;
+it does not distinguish individual attacks, releases or source families, or
+establish that no defect is audible. The wider audition suite below remains
+necessary for those verdicts. Link any later heard defect and timestamp to
+FUND-QUALITY and the corresponding source/control contract. No task credit
+follows from this single observation.
 
 ## Listening review and next work
 
@@ -184,11 +188,12 @@ files while covering all 3 profiles, MIDI keys
 The matrix is finite: listen to the listed whole artifacts and record timestamped
 observations against the dimensions in the last column. The measured sets cover
 only their sampled key, velocity, rate, gate, profile and zone combinations;
-they do not qualify intermediate or arbitrary settings. No timestamped listening
-observations or family verdicts have been recorded yet. Listening is not available
-in this handoff, so clicks, unwanted aliasing, pitch continuity and release
-behavior remain unassessed; this matrix closes only the task's first acceptance
-criterion. The verdict and any before/after evidence remain open under
+they do not qualify intermediate or arbitrary settings. No family-specific,
+timestamped listening observations or verdicts have been recorded yet. The
+user's whole-preview coherence comment above does not judge clicks, unwanted
+aliasing, pitch continuity or release behavior across the matrix; this matrix
+closes only the task's first acceptance criterion. The verdict and any before/after
+evidence remain open under
 [NS-2_synthesis-quality_01](TODO/NS-2_synthesis-quality_01.md).
 
 <a id="ns-2-synthesis-quality-02-matrix"></a>

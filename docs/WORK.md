@@ -38,10 +38,12 @@ using its existing finite listening packet. The next deliverable is a bounded
 artifact-identified, timestamped source-family review, followed by repairs only
 for demonstrated defects and their changed-path evidence. Its matrix criterion
 is already documented; the listening, defect-disposition and operating-range
-criteria remain open. The user reports that a Pythian sample WAV sounds coherent;
-the exact file is being confirmed before that verdict is attached to an artifact.
-At the next substantial playable checkpoint, seek the user's qualitative review
-without treating one favorable excerpt as approval of every source family.
+criteria remain open. The user heard the full, hash-identified 30-second
+synthesis preview and reported it coherent overall.
+The [quality record](SYNTHESIS-QUALITY.md#thirty-second-listener-preview--2026-09-20)
+now attaches the favorable whole-piece verdict to that artifact while retaining
+the separate source-family listening gates. An 11-second combined-source
+audition was supplied for the next broad review; its result is pending.
 
 ## Journal publication checkpoint — 2026-09-23
 
