@@ -254,6 +254,23 @@ which sound supplied a pulse at any failed source-clock window. The dataset page
 labels its archive CC BY 4.0; this inventory did not inspect the archive contents,
 so it cannot establish that unlisted data are absent.
 
+### Publisher archive contents checked — 2026-09-23
+
+The already acquired official `build/beat-context-study/ARTBeaT_Dataset.zip`
+is 57,496,054 bytes, SHA-256
+`55d29f0ea5c42c5babfaad6eb30e8b41d5deda9efe8b92694d8bba86a6b7edc3`.
+Its archive entry inventory has 25 mixed WAVs under `Audio/`, 25 beat-time
+CSVs under `Annotations/gt_csv/`, 25 matching beat-annotation MIDIs under
+`Annotations/gt_midi/`, plus the dataset README and license. The README calls
+both annotation forms *ground truth* beat times. There are no listed stems,
+instrument performances, composition MIDI or per-source event files. Thus the
+archive does not supply source-specific pulse status for failed 02/04 windows;
+its beat MIDIs must not be mistaken for the arpeggio or drum source events.
+No source audio was extracted or rescored in this inventory check. Stop this
+publisher-archive route and retain the existing frozen candidate failures until
+independently aligned source-pulse evidence is available. The archive inspection
+closes the previous inventory uncertainty, not a tempo_04 acceptance criterion.
+
 The needed evidence is a separately attributable pulse/event reference tied to
 the exact original WAV clock. A stem would need verified offset, rate and any
 resampling latency; score or MIDI events would need a tempo map and render offset.

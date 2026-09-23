@@ -49,6 +49,14 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
 
 **Dev Notes:**
 
+- 2026-09-23 publisher archive audit: the already acquired official zip has
+  [25 mixed WAVs and paired beat CSV/MIDI annotations](../BEAT-TRACKING.md#publisher-archive-contents-checked--2026-09-23),
+  but no listed stems or source-event MIDI. Its beat MIDI cannot identify which
+  arpeggio or drum event supplied a pulse in a failed 02/04 window. This
+  resolves the earlier uninspected-archive uncertainty without source-pulse
+  truth, a candidate-policy change or completion credit. Stop this archive
+  route; the task still awaits independently aligned source evidence.
+
 - 2026-09-23 publisher source-pulse inventory: an independent read-only
   [official-page check](../BEAT-TRACKING.md#publisher-source-pulse-inventory--2026-09-23)
   lists whole-mix beats for ARTBeaT 02/04 but finds no listed stems, score/events

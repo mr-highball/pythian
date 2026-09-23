@@ -21,6 +21,16 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## ARTBeaT source-pulse archive audit — 2026-09-23
+
+The [official archive inventory](BEAT-TRACKING.md#publisher-archive-contents-checked--2026-09-23)
+resolves the uninspected-archive question left by the beat-candidate task:
+25 mixed WAVs have beat-time CSV/MIDI annotations, with no listed stems or
+source-event files. The MIDI is beat ground truth, not the separate arpeggio or
+drum performance. This cannot adjudicate missing 02/04 source pulses, so the
+frozen [candidate task](TODO/NS-3_tempo_04.md) remains open and its archive
+route is stopped. No new fit, rescore, task credit or percentage change follows.
+
 ## Accepted combined synthesis quality — 2026-09-23
 
 The user heard both complete hash-bound combined review clips and answered
