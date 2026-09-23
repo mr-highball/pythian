@@ -20,6 +20,83 @@ polyrhythm and deception timing without supplied rate/band hints. Later
 levels and changing-clock regressions. None is an adopted estimator or admission
 policy.
 
+## Bounded candidate qualification protocol — 2026-09-23
+
+This freezes the candidate-only development challenge for
+[NS-3_tempo_04](TODO/NS-3_tempo_04.md) before running a new retention policy.
+Use only the ARTBeaT (Rico Rosenbusch, 2024, CC BY 4.0) original WAV and supplied
+beat CSV pairs below. IDs 02/05/19 are development probes; IDs 01/03/04 form a
+recording-disjoint challenge already exposed to earlier timing investigations.
+These are separate recordings within one authored dataset, so success cannot
+establish independent natural-music or genre generalization. The other 19 IDs
+remain closed for the later whole-track timing evaluation.
+
+| Role | ID | WAV SHA-256 | Beat CSV SHA-256 |
+| --- | --- | --- | --- |
+| Development | 02 | `65c4daf2d97aa6e4550b15b352e5b876644e399dedd2341a9f09e9f352139c5c` | `15252eadcd3fea9de7d1cc62b3382c1086b59a193ff17aed9188971b8649d0e4` |
+| Development | 05 | `223826b7c5713bda7d6cfb59e417b5db5ff738154e29c18c9d79c83d52598472` | `222009f01110cd1da40393d0f7c0869b4e9e3261f9fbffceb2f3a03692533595` |
+| Development | 19 | `dd9f1bbe228be2ab575d578735462fd4899c00bcf9159121a8e57d554ebe65f2` | `89e13f0d39b2a6111f3435484144131df5ac6276a09922fa387838fbcda8cc8e` |
+| Challenge | 01 | `5d14e4a31bc8cfeae19d1883dc6297dc3044cf64095cafe8702a41c1bcb20da2` | `93e21e04c90c103f4c714d601ebd3f92832ca4c30024998e90df43044d1bee13` |
+| Challenge | 03 | `2e6abea29bb96a4c695da20de89f27c7b38cd6d91ad72149fa7dbaf3dbe977f1` | `88b6844917e4fa64e75c016154ebfd468a274106fcad058b9d5e25ef065d2dae` |
+| Challenge | 04 | `0b59bd9b48188b973275128703e608cc1c5508bd788dcff814e46ec2ba434c17` | `0014e5083d612b5a39a21d4eda7ffd00a4bae1ff695d4d940e27c214b909fed0` |
+
+Require full SHA-256 equality to these source and annotation identities in the
+native reports. Run `MeasureWaveBeats` and
+`TrackBeatGrids` without a supplied BPM range, band, reference phase or metrical
+hint. Use the maintained 40–240 BPM, 0.25-BPM trial grid, 6-second tapered
+windows, 1-second hop, original onset policy and 1.5 maximum transition ratio.
+For every source, score all zero-based tracker windows whose owned interval
+contains at least two supplied reference beats. Retain the one-beat windows as
+diagnostic rows. In addition, report development windows 02:14–17 and 05:1–8
+even when a row has only one reference beat; 19 is a changing-rate regression.
+Owners and analysis spans are exactly those emitted by the native tracker at
+the source sample rate; never move an owner to improve a match.
+
+A candidate identity is the full source hash, grid measurement policy and
+options, sample rate, zero-based window and pool indices, owner/source spans,
+BPM, period and canonical phase. Preserve scalar support fields and selection
+order. A retained candidate is eligible only if the native fitter admits it
+without any reference lookup. For each candidate, render raw grid points only
+inside its owned interval and native observed-span margin. Convert each CSV
+timestamp to nearest source frame, half ties later; match points one-to-one
+within 30 ms. A window has a *reference-compatible candidate* when one single
+candidate reaches both precision and recall at least 0.75 against its owned
+references. Choose the evaluation witness by highest F1, then recall, then
+precision, then lowest pool index. Report that one candidate's precision,
+recall, F1, matches, extras and misses per window, its exact pool index, and
+separately the selected path's result. Annotation-selected candidates are
+evaluation witnesses, never a stitched inference path or musical-confidence
+claim.
+
+The finite retained pool may hold at most 16 candidates per window, with no
+more than 512 windows, 64 million fit visits per track or 524288 path-transition
+visits. The chosen policy must retain reference-compatible candidates in at
+least 90% of eligible 02 windows and 80% of eligible windows in each 01/03/04
+recording. Require both beats in 02 window 16, and a retained rate within
+0.5 BPM of 75 in 05 windows 1, 2 and 5; record 05/19 all-window candidate
+coverage and selected-path full-output accuracy without optimizing selection
+here. The authored seven subdivision/phase/mixture controls must retain their
+exact existing alternatives.
+The added authored control uses 48000 Hz, 432000 source frames and 32 observed
+events at frame `4800 + 12000*i`, `i=0..31`. Its intended fast beat is every
+event at 240 BPM. Weight is 1 when `i mod 4 = 0`, 0.75 when `i mod 4 = 2`,
+and 0.5 otherwise. Require retained candidates within 0.5 BPM of 60, 120 and
+240, with both 120-BPM phases represented at 4800 and 16800 frames modulo
+period. These are supported alternatives, not equally true beat labels.
+A second control uses the same rate and span with no events, then three events
+at frames 4800, 16800 and 28800; neither may invent a candidate. These gates
+cannot be weakened after reading the new candidate scores.
+
+For every miss, classify source-reference absence/ambiguity, no admitted onset,
+no fitted proposal, failed native eligibility, suppression by a named retained
+candidate, loss at the 16-slot limit, or retained candidate with wrong path
+selection. The current isolated 32-rank trace may explain an omission, but it
+does not count as the maintained pool. Save all pre-reference candidate windows
+first, then run the independent Pascal matcher; record the source/report hashes,
+policy identity, work counts, complete pass/fail rows and unchanged regressions.
+Stop if identities, bounds or provenance cannot be replayed; do not tune the
+metrical selector or open the reserved evaluation recordings in this batch.
+
 <a id="accent-parity-stopped"></a>
 ## Alternating accent strength does not resolve beat level — 2026-09-23
 

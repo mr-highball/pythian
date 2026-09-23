@@ -49,6 +49,17 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
 
 **Dev Notes:**
 
+- 2026-09-23 criterion 1 closed by specification review: the [candidate qualification packet](../BEAT-TRACKING.md#bounded-candidate-qualification-protocol--2026-09-23)
+  fixes exact six WAV/annotation identities, recording-disjoint development
+  roles, native window geometry, candidate identity/eligibility, 30-ms
+  per-window matching, authored event controls and finite coverage/work gates
+  before any new candidate-policy score. Local SHA-256 identities and maintained
+  default geometry/work constants were checked against the frozen text; no
+  inference or reference scoring was run. The remaining criteria still require
+  a qualified retained pool, omission accounting, replay and changed-path
+  checks, so no task credit is earned. The challenge shares one
+  authored dataset and was previously timing-exposed; independent natural
+  music acceptance remains with tempo_03.
 - 2026-09-23 deliverable split: the original tempo_01 combined candidate
   availability with choosing musical beat level and phase. In the recorded
   arpeggio diagnosis, a reference-compatible phase survived fitting but was

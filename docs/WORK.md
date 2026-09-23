@@ -55,6 +55,16 @@ replay, with capacity/fitting losses distinguished. Stop if the challenge lacks
 independent annotations or candidate identity cannot be preserved within the
 bounded pool; revise the evidence design instead of tuning a selection penalty.
 
+The [candidate-only protocol](BEAT-TRACKING.md#bounded-candidate-qualification-protocol--2026-09-23)
+now freezes six exact WAV/annotation identities, recording-disjoint roles,
+windows, candidate support/matching and work/coverage limits before a new pool
+run. Local file hashes and maintained default geometry/work constants match
+the specification, closing tempo_04 criterion 1 by focused specification QA.
+No candidate policy has been scored or accepted, and no credit changes. The next
+implementation step is a maintained Pascal report/checker path that saves pools
+before reading references, separates omission stages and verifies replay under
+the fixed gate.
+
 ## Core-quality reassessment — 2026-09-23
 
 Two consecutive bounded batches closed no acceptance criterion. First, the
