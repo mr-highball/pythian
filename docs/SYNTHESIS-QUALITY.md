@@ -111,8 +111,22 @@ changes at 3.2 seconds from 0.5 to 0.625 seconds. The last note starts at 6.325
 seconds and the remaining duration contains releases and the effect tail. This
 source-code map helps localize a reported problem, but the overlapping families
 cannot establish individual-family approval from the mix. The finite matrix
-below retains their separate listening cases. The user's verdict on this
-11-second audition remains pending.
+below retains their separate listening cases. The user's subsequent broad
+listening observation is recorded below.
+
+### Eleven-second combined listener checkpoint — 2026-09-23
+
+The user heard the complete, hash-identified
+`build/listener-preview-20260923/combined-11s-gain3.wav` and reported that its
+timing seemed to slow down in the middle, while the passage resembled music.
+The perceived slowdown matches the authored switch at 3.2 seconds from 120 to
+96 BPM (0.5 to 0.625 seconds between beats). The checked native plan and
+sample-identical streamed renders already bind those frame placements; the
+3-times-gain/44.1-kHz listening copy changes no beat timing. This observation
+does not demonstrate an unexpected timing defect. It is a broad whole-passage
+impression, not a timestamped verdict on attacks, releases, joins, balance,
+spectral motion or the final tail. Separate source-family and processing
+listening remains open, with no quality-task credit.
 
 ### Combined interaction coverage review — 2026-09-23
 
@@ -128,9 +142,10 @@ Their local WAV hashes were rechecked against the identities below.
 | Listener-copy relation to original synthesis | `build/listener-preview-20260923/combined-11s-gain3.wav`, SHA-256 `02f158afa8ee2af3418237c37daf2d4be97ef5b96a676aadef6dcbfc3f47b913`, is a 44.1-kHz conversion of the native 11-second mix with uniform 3× gain. The [30-second paired preview](#thirty-second-listener-preview--2026-09-20), SHA-256 `9952e5fd009689dd766473796a273bfb096cbc85fd7887b2d9f625560155a6ec`, joins two 15-second excerpts with common 12× gain and 10-ms cut-edge fades. Neither gain nor fade is an original synthesis change or an independently approved source family. |
 
 This artifact and scope review meets the first criterion of
-[NS-2_synthesis-quality_03](TODO/NS-2_synthesis-quality_03.md). It does not
-record a listener verdict for attacks, holds, joins, balance, spectral motion,
-tempo changes or tails. The separate source-family and processing matrices,
+[NS-2_synthesis-quality_03](TODO/NS-2_synthesis-quality_03.md). The later
+listener observation identifies the intended tempo change and a music-like
+whole-passage impression; it does not judge attacks, holds, joins, balance,
+spectral motion or tails. The separate source-family and processing matrices,
 their verdicts, any demonstrated repairs and combined acceptance remain open.
 
 <a id="automation-work-checkpoint"></a>
@@ -268,6 +283,27 @@ closes only the task's first acceptance criterion. The verdict and any before/af
 evidence remain open under
 [NS-2_synthesis-quality_01](TODO/NS-2_synthesis-quality_01.md).
 
+### First isolated-source listening copy — 2026-09-23
+
+For a bounded first family review, the existing measured-profile-1 stationary
+case at 48 kHz has a 6.72-second listening copy under ignored
+`build/listener-preview-20260923/measured-profile1-48k-gain12.wav`. The input
+`build/instrument-quality-study/measured-profile1-48000.wav` has SHA-256
+`5fe9c03db351e9fd30e99d9919a97cc67279920b7539d687038e3df47fbf37e7`.
+The maintained Pascal converter used the same 48-kHz stereo rate and one uniform
+12-times gain, retaining 322560 frames. Its PCM16 output SHA-256 is
+`1dad450937cf046399fdb12448f1948750744c3adb1436711b447c6558be549a`;
+measured pre-encoding peak is 0.409424, below clipping. The converter's report
+is beside the copy. This is a louder review aid, not a changed instrument
+render or an accepted operating range.
+
+The source file sequences profile 1's seven sampled keys and three velocities
+with quarter-second gates, 5-ms attack and 30-ms release. It can support a
+first judgment on tone, pitch transitions, attack and release at this one
+profile/rate. Other profiles, rates, glides, envelopes and sample loops remain
+in the finite matrix above. Listener feedback on this copy is pending; no
+family verdict or task credit follows from its preparation.
+
 <a id="ns-2-synthesis-quality-02-matrix"></a>
 ### Finite processing and routing matrix — NS-2_synthesis-quality_02
 
@@ -298,17 +334,17 @@ This is the finite coverage packet for the first criterion of
 are attached to each comparison: single-setting FM/PM bandwidth, authored smooth
 sample loop, preset native levels, documented filter/dynamics settings, explicit
 tail lengths, and one declared bus topology. No level correction is allowed to
-hide an audible fault. No actual timestamped listening observations or verdicts
-have been recorded; listening remains unavailable in this handoff. The matrix
-criterion is documented, while the task's verdict, defect-resolution and final
-acceptance criteria remain open.
+hide an audible fault. The later 11-second mixed-passage comment identifies the
+planned slowdown and music-like impression, but no timestamped processing or
+routing verdict has been recorded for these comparisons. The matrix criterion
+is documented; defect resolution and final acceptance remain open.
 
 Review audible attacks, releases, joins, roughness and level balance on these
 declared paths. Record the exact artifact and transition if a defect is heard,
 then link it to [FUND-QUALITY](MILESTONES.md#fund-quality) and its affected consumer.
 Numerical agreement does not replace this observation, and subjective preference
-alone should not silently expand the engineering contract. No listening verdict
-has been recorded for this combined set.
+alone should not silently expand the engineering contract. The broad 11-second
+review does not approve the individual processing cases in this set.
 
 The next fundamentals result completes this listening review and fixes any
 concrete audible defects it reveals within the [accepted capability/failure and

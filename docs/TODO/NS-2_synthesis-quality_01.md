@@ -26,6 +26,14 @@ Starting evidence: [SYNTHESIS-QUALITY](../SYNTHESIS-QUALITY.md) · [FUNDAMENTALS
 
 **Dev Notes:**
 
+- 2026-09-23 first isolated-source review aid: the existing profile-1 48-kHz
+  stationary sample has a [hash-bound 6.72-second listening copy](../SYNTHESIS-QUALITY.md#first-isolated-source-listening-copy--2026-09-23)
+  at one uniform 12-times playback gain and 0.409424 peak. It sequences seven
+  keys and three velocities; the unchanged family matrix retains other rates,
+  profiles, glides, envelopes and sample loops. Await an actual listener verdict
+  on this representative family case before calling it accepted. Preparing the
+  copy closes no further criterion or credit.
+
 - 2026-09-23 combined-source review support: the [11-second listening copy](../SYNTHESIS-QUALITY.md#combined-source-listener-copy--2026-09-23)
   is the existing native mix converted by maintained Pascal to 44.1-kHz WAV
   with uniform 3-times playback gain. Source/output hashes, duration, peak and

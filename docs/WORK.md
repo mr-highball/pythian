@@ -21,6 +21,28 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Combined-source listener observation — 2026-09-23
+
+The user heard the exact 11-second mixed-source listening copy and reported
+that its timing seemed to slow in the middle, while the passage resembled
+music. The [source-bound listening record](SYNTHESIS-QUALITY.md#eleven-second-combined-listener-checkpoint--2026-09-23)
+maps the perceived change to the authored 120-to-96-BPM switch at 3.2 seconds;
+the checked native placement and unchanged copy identity support that reading.
+No unexpected timing defect is demonstrated. The comment is a broad positive
+impression, not family-specific or attack/release/tail approval. NS-2 listening,
+defect disposition and union acceptance remain open; no task or milestone credit
+changes. Next use the existing finite isolated-source matrix for a bounded
+family review, preserving the user's 30-second coherent-preview verdict as a
+separate observation. Its first review aid is the existing profile-1 stationary
+case at 48 kHz, copied at uniform 12-times gain with unchanged 322560-frame
+duration and a checked 0.409424 peak. Exact source/output identities and open
+coverage are in the [source-family record](SYNTHESIS-QUALITY.md#first-isolated-source-listening-copy--2026-09-23).
+This is one nonclosing NS-2 listening batch after the combined coverage and
+numerical-plan criteria closed: it resolves the apparent tempo-change question
+and prepares an isolated family review, but supplies no attack/release or
+per-family verdict. Stop making listening-gain copies unless a concrete
+review need appears; obtain the source-family judgment on this existing copy.
+
 ## Combined listening coverage checkpoint — 2026-09-23
 
 The [finite interaction review](SYNTHESIS-QUALITY.md#combined-interaction-coverage-review--2026-09-23)

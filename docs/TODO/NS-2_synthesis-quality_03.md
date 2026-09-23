@@ -27,12 +27,22 @@ Starting evidence: [SYNTHESIS-QUALITY](../SYNTHESIS-QUALITY.md) · [FUNDAMENTALS
 
 **Dev Notes:**
 
+- 2026-09-23 combined-source listener checkpoint: the user heard the exact
+  [11-second listening copy](../SYNTHESIS-QUALITY.md#eleven-second-combined-listener-checkpoint--2026-09-23)
+  and said the timing seemed to slow in the middle, while the passage resembled
+  music. The planned beat interval changes at 3.2 seconds from 0.5 to 0.625
+  seconds (120 to 96 BPM); checked native frame placement and the unchanged
+  listening-copy identity support that interpretation. No unexpected timing
+  defect is demonstrated. This is a broad review, not a verdict on attacks,
+  releases, joins, balance, spectral motion or final tail. Criterion 2, the
+  blocked family/processing reviews and task credit remain open.
+
 - 2026-09-23 listener scope correction: the user heard the complete
   [30-second paired preview](../SYNTHESIS-QUALITY.md#thirty-second-listener-preview--2026-09-20)
   and called it coherent overall. Its shared listening gain and cut-edge
   fades remain distinct from original synthesis. The separate
   [11-second combined-source audition](../SYNTHESIS-QUALITY.md#combined-source-listener-copy--2026-09-23)
-  is awaiting feedback on source interaction and tails. Neither whole-clip
+  has the later broad feedback recorded above. Neither whole-clip
   observation discharges the blocked family-specific listening or this task's
   attack/release, join and streamed-state verdicts; no criterion or credit
   changes. Do not ask for the already supplied 30-second whole-clip verdict
