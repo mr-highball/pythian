@@ -79,10 +79,11 @@ The rejected periodic-support unit and fixture are trimmed from the unmerged
 branch; their failure evidence stays in the dated record and Git history.
 The execution task earns its assigned **+3 NS-3 goal points / +0.75 overall**,
 bringing **NS-3 to 39% and overall to 63.15%**, with **37 open / 14 DONE**
-tasks across 19 active outcomes. The historical TensorFlow C path remains
-retired. Raw support is not note admission, independent provider accuracy or
-genre style learning. The next NS-5 style-card deliverable still needs verified
-recording/edition correspondence and curator-reviewed musical observations;
+tasks across 19 active outcomes. The historical TensorFlow C and Beat This!
+ONNX Runtime paths remain retired. Raw support is not note admission,
+independent provider accuracy or genre style learning. The next NS-5 style-card
+deliverable still needs verified recording/edition correspondence and
+curator-reviewed musical observations;
 the admitted-note-to-saved-learner bridge also remains open before the broader
 multi-recording workload can earn acceptance.
 
@@ -2389,7 +2390,9 @@ synthesis listening feedback is pending.
 ## Previous checkpoint — learned beat-model reference — 2026-09-20
 
 The [learned beat-model reference](BEAT-TRACKING.md#learned-model-reference)
-now runs through an owned Pascal consumer and a pinned native ONNX CPU runtime.
+ran through an owned Pascal caller and a pinned native ONNX CPU runtime in this
+historical checkpoint; the foreign runtime is retired under the Pascal-only
+requirement.
 On the existing polyrhythm, automatic beat F1 improves from **.373626 to .918919**
 without reference-supplied rate or band; full-output F1 is .906667. However,
 deception falls to .705882, doubling to .790698 and acceleration to .622951;

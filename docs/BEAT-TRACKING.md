@@ -181,11 +181,14 @@ points.
 <a id="learned-model-reference"></a>
 ## Learned beat-model reference comparison — 2026-09-20
 
-An owned Pascal consumer now runs the published small1 ONNX export of
-[Beat This!](https://github.com/CPJKU/beat_this) through the native ONNX Runtime
-CPU C API. The [pinned acquisition and notices](PROVENANCE.md#beat-model-reference)
-remain under ignored build output. This is optional reference execution, not a
-Pascal network port, public dependency or admitted musical provider.
+This is a historical comparison. An owned Pascal caller ran the published small1
+ONNX export of [Beat This!](https://github.com/CPJKU/beat_this) through the native
+ONNX Runtime CPU C API on 2026-09-20. The
+[pinned acquisition and notices](PROVENANCE.md#beat-model-reference) remain under
+ignored build output for provenance. The user's later Pascal-only instruction
+prohibits running this foreign inference runtime again. It supplied neither a
+Pascal network port nor an admitted musical provider, and there is no maintained
+ONNX caller or build hook in this branch.
 
 The comparison uses only the six existing ARTBeaT development recordings and
 three authored controls. No reference timestamp, rate range or selected band

@@ -89,7 +89,10 @@ The portable core remains independent of WFC, hosts and playback devices.
 The former Win64 TensorFlow C adapter and its measured execution evidence are
 retained as historical provenance in [native inference](docs/NATIVE-INFERENCE.md)
 and [provenance](docs/PROVENANCE.md#optional-native-observation-adapter). They do
-not qualify a Pascal-only producer. The [selective Pascal backend](docs/TODO/DONE/NS-3_validation_03.md)
+not qualify a Pascal-only producer. The historical Beat This! ONNX Runtime
+reference in [beat tracking](docs/BEAT-TRACKING.md#learned-model-reference) is
+also retired; its scores are development history, not a current inference path.
+The [selective Pascal backend](docs/TODO/DONE/NS-3_validation_03.md)
 passes controlled and source-bound recorded gates for its two NS-3 points.
 The [practical Pascal inference task](docs/TODO/DONE/NS-3_validation_02.md)
 passes maintained WAV execution, long-source cost, supervision and replay for

@@ -190,9 +190,10 @@ The export repository identifies small1 as its checkpoint and records
 [upstream Beat This!](https://github.com/CPJKU/beat_this/tree/b95c8ab0c58c2d9fcfd40508ae8dffbc05ac4f5c)
 revision `b95c8ab0c58c2d9fcfd40508ae8dffbc05ac4f5c` for its reference fixtures.
 Our acquisition retains both full MIT notices: the Institute of Computational
-Perception, JKU Linz (2024), and danigb's port (2025). The owned Pascal consumer
-adapts chunk/peak processing with those notices alongside the owned 2026 notice.
-No Rust or Python implementation is executed.
+Perception, JKU Linz (2024), and danigb's port (2025). The historical Pascal
+consumer adapted chunk/peak processing with those notices alongside the owned
+2026 notice.
+No Rust or Python implementation was executed in that study.
 
 | Acquired artifact | SHA256 |
 | --- | --- |
