@@ -1246,6 +1246,42 @@ frames**; the combined frozen development gate returned failure on both
 targets because of the tonal rows. This successful negative case cannot
 offset the tonal failures.
 
+## Score-aligned note timing development reference — 2026-09-23
+
+While listener review is pending, a separate reference-side batch selected only
+the published `ann_audio_note` and `ann_audio_measure` entries for the already
+exposed D911-02 and D911-16 HU33 development WAVs. The ignored Pascal selector
+verified the complete archive identity and exact unique entry names before
+extracting four small CSVs. The two reserved evaluation compositions and their
+annotations stayed unopened. A fixed parser policy was written before reading
+all rows. Its Pascal binder then checked each extracted CSV SHA-256 and each
+original WAV SHA-256, 22,050-Hz mono PCM16 geometry and frame count before
+emitting any reference rows. It retained original seconds and converted times
+to nearest original frame by integer arithmetic, with half ties upward.
+
+| Development WAV | Score-aligned notes | Measure anchors | Piano / voice rows | Rows overlapping a prior active note | Exact duplicate rows |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| D911-02 HU33 | 943 | 53 | 750 / 193 | 770 | 0 |
+| D911-16 HU33 | 697 | 49 | 587 / 110 | 518 | 0 |
+
+Checked stable FPC 3.2.2 Win32 and Win64 controls and full binding agree byte
+for byte, with zero unfreed blocks. Bound note TSV SHA-256 is
+`ba764aef1c76bb9407e3661e7b034d39746bc39214d69f7dffdc699ac6232520`;
+measure TSV is `4f005081f5745d7a8cf10d137e40b42bb695ec56a825c3c91dc0380562f7ab91`.
+A changed annotation hash rejects before any row output, with zero leaks. The
+original CSV and WAV hashes, source clocks, row limits and parser rules are
+recorded in the ignored local policy and binding output.
+
+These events are score-derived, publisher-aligned notation. They retain
+polyphony and score-to-performance timing uncertainty and are **not** labels
+of acoustically audible notes. They may support a development-only comparison
+of recorded evidence with score events; they cannot feed inference, replace
+the independent local-key annotations, or establish key accuracy. No new
+ranker, threshold, classifier or held-out run follows from this reference
+binding. [NS-3_context_01](TODO/NS-3_context_01.md) criterion 2 remains open;
+a prospective observation hypothesis and fixed stop gate must precede another
+acoustic experiment.
+
 ## Native inspection
 
 The [native tool](../tools/pythian.tonal.inspect.lpr) prints JSON:

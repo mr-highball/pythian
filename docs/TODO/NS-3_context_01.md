@@ -136,6 +136,19 @@ is claimed.
 
 **Dev Notes:**
 
+- 2026-09-23 development note-reference batch: the
+  [score-aligned timing packet](../TONAL.md#score-aligned-note-timing-development-reference--2026-09-23)
+  binds published score-derived note and measure CSVs for the two exposed HU33
+  development WAVs to exact original WAV hashes and source frames. Checked
+  stable Pascal Win32/Win64 agree on 1,640 note rows and 102 measure anchors;
+  wrong annotation identity rejects before output. This is aligned notation,
+  not an acoustic audibility label or a key estimate. It supplies a genuinely
+  distinct development reference for a future source-grounded observation
+  hypothesis; no candidate scoring or held-out opening occurred. Criterion 2
+  remains open because ranked acoustic evidence has not yet been evaluated
+  against this packet under a prospective gate. The next batch must first
+  declare one observation hypothesis, a fixed resource/stop budget and how
+  score-to-performance timing uncertainty is handled; stop if that gate fails.
 - 2026-09-23 frozen note-aware candidate stopped: the ignored Pascal probe
   preserved note-specific peak support and onset evidence through a two-second
   context before folding to pitch classes. After one formula-preserving numeric

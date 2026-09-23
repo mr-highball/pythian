@@ -21,6 +21,41 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Score-aligned development note reference — 2026-09-23
+
+With listening temporarily unavailable, the next non-listening batch advanced
+[NS-3_context_01](TODO/NS-3_context_01.md) criterion 2 preparation. The
+deliverable was an exact source-bound development note/measure packet from the
+published archive already qualified for local-key work. The stop condition was
+any missing or changed archive entry, CSV/WAV identity, source geometry, schema,
+time/order, pitch or row cap; no key scoring was authorized in this batch.
+
+The ignored Pascal selector extracted only four exact D911-02/16 HU33 entries
+after verifying the complete archive. A predeclared parser policy then bound
+each CSV and original WAV by SHA-256, decoded both original 22,050-Hz mono
+PCM16 clocks, and emitted 1,640 original-score note rows plus 102 measure
+anchors in original source-frame coordinates. Development groups have 943/697
+notes, 53/49 measure anchors, 750/587 piano and 193/110 voice rows. Overlap
+rows are retained, with no exact duplicate rows. Checked stable FPC 3.2.2
+Win32/Win64 controls and bound TSVs agree byte for byte; note and measure TSV
+SHA-256 values are `ba764aef1c76bb9407e3661e7b034d39746bc39214d69f7dffdc699ac6232520`
+and `4f005081f5745d7a8cf10d137e40b42bb695ec56a825c3c91dc0380562f7ab91`.
+Both runs report zero unfreed blocks. A tampered CSV rejects before output and
+also reports zero leaks. The D911-05/19 evaluation sources stayed unopened.
+
+This closes only the packet preparation, not an acceptance criterion: aligned
+score events are not verified acoustic note presence or key truth. The previous
+source-rate and stopped note-aware candidate batches were nonclosing; the
+task-flow reassessment had already stopped variants. This distinct
+reference-side path can support one prospectively gated development
+observation comparison, but no inference variant or threshold is yet selected.
+Criterion 2, independent evaluation and native delivery remain open; no task
+credit changes. The GuitarSet listener packet also remains pending. Next
+deliverable: declare a single source-grounded acoustic observation hypothesis
+with fixed work and failure gates before any new development score. If it
+cannot distinguish activity/timbre and tonic evidence, stop that path; retain
+the listener review for when the user is available.
+
 ## Maintained presence observation boundary — 2026-09-23
 
 The ignored Pascal score runner's binding guard was tightened before any
