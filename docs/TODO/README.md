@@ -12,14 +12,16 @@ keeps the three user-selected styles as development tests, while reusable core
 behavior takes priority when detailed style review is waiting on evidence.
 This catalog covers the remaining declared end state. Task files own acceptance
 criteria and hard prerequisites; this page supplies navigation and accounting.
-No task earns credit merely by being written. Accepted task credit is **12.65**;
-**31.85 overall points remain**. Baseline 55.5 + accepted 12.65 = **68.15 current**.
+No task earns credit merely by being written. Accepted task credit is **12.90**;
+**31.60 overall points remain**. Baseline 55.5 + accepted 12.90 = **68.40 current**.
 
 The [pause retrospective](../WORK.md#pause-retrospective--2026-09-21) tightens
 existing note, presence, mixture and style-reference criteria without adding
-tasks, changing credits or accepting new capability. First resume the ready
-style-reference specification; note research requires a new evidence-backed
-decision and retains its stopped proposals and progress-checkpoint count.
+tasks, changing credits or accepting new capability. The current core-first
+selection follows the accepted local-key/no-key reference packet into
+[NS-3_context_01](NS-3_context_01.md); style-reference specification waits for
+grounded musical annotations. Note research retains its stopped proposals and
+progress-checkpoint count.
 
 Every open and DONE task ends with **Dev Notes:** for failed approaches,
 repaired issues and possible follow-ups. Existing evidence is summarized there;
@@ -33,11 +35,11 @@ unless also declared under Blockers; required gaps still follow
 | --- | ---: | ---: | ---: | ---: |
 | [NS-1 — Independent Pascal foundation](../MILESTONES.md#ns-1) | 100% | 0 | 0 | 0.00 |
 | [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 100% | 0 | 0 | 0.00 |
-| [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 39% | 17 | 61 | 15.25 |
+| [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 40% | 16 | 60 | 15.00 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 96% | 1 | 4 | 0.60 |
 | [NS-5 — Many-hour styles that generate and blend usefully](../MILESTONES.md#ns-5) | 27% | 16 | 73 | 14.60 |
 | [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 72% | 3 | 28 | 1.40 |
-| **Total** | **68.15 weighted points** | **37** | Per-goal credits are not summed across goals | **31.85** |
+| **Total** | **68.40 weighted points** | **36** | Per-goal credits are not summed across goals | **31.60** |
 
 NS-1 is already complete under the accepted extraction scope. Preserve its
 invariants in every applicable task; do not recreate completed extraction work.
@@ -55,7 +57,6 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 | [NS-3_tempo_01.md](NS-3_tempo_01.md) — Resolve beat level and phase from WAV observations | +3 | +0.75 | TODO |
 | [NS-3_tempo_02.md](NS-3_tempo_02.md) — Reconstruct changing clocks and metrical structure | +4 | +1.00 | TODO |
 | [NS-3_tempo_03.md](NS-3_tempo_03.md) — Accept automatic timing on independent recordings | +3 | +0.75 | TODO |
-| [NS-3_context_03.md](NS-3_context_03.md) — Qualify local-key and unknown reference intervals | +1 | +0.25 | TODO |
 | [NS-3_context_01.md](NS-3_context_01.md) — Admit local key and tonal uncertainty | +3 | +0.75 | TODO |
 | [NS-3_context_02.md](NS-3_context_02.md) — Persist automatic key and tempo context with overrides | +2 | +0.50 | TODO |
 | [NS-3_notes_01.md](NS-3_notes_01.md) — Resolve recorded pitch identity and register | +4 | +1.00 | TODO |
@@ -122,6 +123,7 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 | [NS-3_parts_01.md](DONE/NS-3_parts_01.md) | Qualified initial families plus curator acoustic references; complete source/uncertainty ledger and reproducible relocated scoring | +1 NS-3 | +0.25 |
 | [NS-3_validation_03.md](DONE/NS-3_validation_03.md) | Checked Pascal sparse peak backend, replay and source-bound Spring recall/density gates | +2 NS-3 | +0.50 |
 | [NS-3_validation_02.md](DONE/NS-3_validation_02.md) | Supervised Pascal WAV path; Spring exact salience, six rate/channel cases, five-minute and hour cost, scoped replay and failure preservation | +3 NS-3 | +0.75 |
+| [NS-3_context_03.md](DONE/NS-3_context_03.md) | Four source-bound tonal/ambiguous groups plus two independently reviewed acoustic no-key windows; exact Pascal reader and separate denominator replay | +1 NS-3 | +0.25 |
 
 The [preparation split](../MILESTONES.md#mixture-preparation-task-split) increases
 the catalog from 49 to 50 tasks while preserving its total credit. The accepted
@@ -130,9 +132,10 @@ the accepted external reference packet earns the other point. Actual role
 learning still depends on accepted note primitives through
 [NS-3_notes_03](NS-3_notes_03.md), following register and presence/boundary work.
 
-Current dependency chain: `NS-5_corpus_02` -> `NS-5_evaluation_01`; shared
-`NS-3_validation_01` is accepted after repair. Return to style cards and comparator
-contracts, then the genre corpus. Selective semantic blend/reblend is accepted
+Current core dependency chain: accepted `NS-3_context_03` ->
+`NS-3_context_01` -> `NS-3_context_02`, with independent timing acceptance
+also required for the last task. The style-card path remains open for grounded
+musical references and personal genre tests. Selective semantic blend/reblend is accepted
 alongside persistence and duration edits; recorded workflow integration still
 requires its provider and listening prerequisites. The style specification remains open for grounded musical
 references and numerical criteria; its measured controls earn no partial credit.
@@ -163,7 +166,7 @@ first accepted genre is predetermined.
 6. [NS-3_tempo_04.md](NS-3_tempo_04.md), then [NS-3_tempo_01.md](NS-3_tempo_01.md)
 7. [NS-3_tempo_02.md](NS-3_tempo_02.md)
 8. [NS-3_tempo_03.md](NS-3_tempo_03.md)
-9. [NS-3_context_03.md](NS-3_context_03.md), then [NS-3_context_01.md](NS-3_context_01.md)
+9. [NS-3_context_03.md — DONE](DONE/NS-3_context_03.md), then [NS-3_context_01.md](NS-3_context_01.md)
 10. [NS-3_context_02.md](NS-3_context_02.md)
 11. [NS-3_notes_01.md](NS-3_notes_01.md)
 12. [NS-3_notes_04.md](NS-3_notes_04.md), then [NS-3_notes_02.md](NS-3_notes_02.md)

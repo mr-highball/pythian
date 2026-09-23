@@ -48,6 +48,19 @@ const
     'a3e314904d5c694826d85ddf4723b1988d4ef4571df47760c698a22cc094d253',
     '8bf3910a59742e39349fbd9d6002cfea9f94f738ce674de0e0a35e29af83433f',
     '2e4cb9fd8c22254d25dc9fddb543d063709f326f92ab7691e6013ca652164937');
+  CNoKeyReferenceHashes: array[0..1] of String = (
+    '1a42695f1064303311094a51d8d064d52fc554b2cde3bf420f90d6604cc4b0bd',
+    'c347444a076e7e9df50c6db3acda0b867ac45f4c72b1f9b2cecb19d9bb5826d5');
+  CNoKeyWaveHashes: array[0..1] of String = (
+    '21f958d0842eee1dfa938dc62758eaca3415fe3f54caa15af16288d88d26e59d',
+    '4d30dcedccb960d838c23103202717909867d6a544a1af41207586f6b1bc7dfb');
+  CNoKeyWindowHashes: array[0..1] of String = (
+    '606061791a90bf8d9b00c89bff53bc26b963dcdbea984d0cddc4a7f006d2702b',
+    '1f5a2ba792abc78a74cc1609ad0589d5392c660ba843aba54a67c9deb83c0732');
+  CNoKeySourceFrames: array[0..1] of Int64 = (1512630, 2592389);
+  CNoKeyStartFrames: array[0..1] of Int64 = (352800, 793800);
+  CNoKeyWindowFrames = 441000;
+  CNoKeyRate = 44100;
 
 type
   TReferenceClass = (rcUnlabelled, rcPartial, rcConflict, rcSupported);
@@ -73,6 +86,11 @@ type
     ExcludedPartialFrames: Int64;
     ChangeEvents: Int64;
     CorrectChangeEvents: Int64;
+  end;
+  TNoKeyScore = record
+    NoKeyFrames: Int64;
+    CorrectUnknownFrames: Int64;
+    FalseKeyFrames: Int64;
   end;
 
 procedure Require(const ACondition: Boolean; const AMessage: String);
@@ -373,11 +391,54 @@ begin
   end;
 end;
 
+function ScoreNoKey(const APredictions: TSegments; const AStart,
+  ALimit: Int64): TNoKeyScore;
+var
+  LSpan: Int64;
+  I: Integer;
+begin
+  Result := Default(TNoKeyScore);
+  Require((AStart >= 0) and (ALimit - AStart = CNoKeyWindowFrames),
+    'Reviewed no-key window geometry differs');
+  Require((Length(APredictions) > 0) and
+    (Length(APredictions) <= CMaximumSegments),
+    'No-key prediction segment count outside bound');
+  for I := 0 to High(APredictions) do
+  begin
+    if I = 0 then
+      Require(APredictions[I].First = AStart,
+        'No-key prediction does not start at reviewed window')
+    else
+    begin
+      Require(APredictions[I].First = APredictions[I - 1].Limit,
+        'No-key prediction has a gap or overlap');
+      Require(APredictions[I].Key <> APredictions[I - 1].Key,
+        'Redundant no-key prediction boundary');
+    end;
+    Require((APredictions[I].First < APredictions[I].Limit) and
+      (APredictions[I].Limit <= ALimit) and
+      (APredictions[I].Key >= -1) and (APredictions[I].Key <= 23),
+      'No-key prediction segment outside reviewed contract');
+    LSpan := APredictions[I].Limit - APredictions[I].First;
+    if APredictions[I].Key = -1 then
+      Inc(Result.CorrectUnknownFrames, LSpan)
+    else
+      Inc(Result.FalseKeyFrames, LSpan);
+  end;
+  Require(APredictions[High(APredictions)].Limit = ALimit,
+    'No-key prediction does not end at reviewed window');
+  Result.NoKeyFrames := ALimit - AStart;
+  Require(Result.CorrectUnknownFrames + Result.FalseKeyFrames =
+    Result.NoKeyFrames, 'No-key denominator is not conserved');
+end;
+
 procedure Controls;
 var
   LReference: TRegions;
   LPredictions: TSegments;
   LScore: TScore;
+  LNoKey: TNoKeyScore;
+  LRejected: Boolean;
 begin
   Require((KeyValue('A#:maj') = KeyValue('Bb:maj')) and
     (KeyValue('D:min') <> KeyValue('D:maj')),
@@ -450,7 +511,36 @@ begin
   Require((LScore.SupportedCorrectFrames = 0) and
     (LScore.ConflictUnknownFrames = LScore.ConflictFrames) and
     (LScore.CorrectChangeEvents = 0), 'All-unknown behavior');
-  WriteLn('PASS: key, conflict and change denominators');
+  SetLength(LPredictions, 1);
+  LPredictions[0].First := CNoKeyStartFrames[0];
+  LPredictions[0].Limit := CNoKeyStartFrames[0] + CNoKeyWindowFrames;
+  LPredictions[0].Key := -1;
+  LNoKey := ScoreNoKey(LPredictions, CNoKeyStartFrames[0],
+    CNoKeyStartFrames[0] + CNoKeyWindowFrames);
+  Require((LNoKey.NoKeyFrames = CNoKeyWindowFrames) and
+    (LNoKey.CorrectUnknownFrames = CNoKeyWindowFrames) and
+    (LNoKey.FalseKeyFrames = 0), 'All-unknown no-key control');
+  SetLength(LPredictions, 2);
+  LPredictions[0].Limit := CNoKeyStartFrames[0] + CNoKeyWindowFrames div 2;
+  LPredictions[1].First := LPredictions[0].Limit;
+  LPredictions[1].Limit := CNoKeyStartFrames[0] + CNoKeyWindowFrames;
+  LPredictions[1].Key := KeyValue('C:maj');
+  LNoKey := ScoreNoKey(LPredictions, CNoKeyStartFrames[0],
+    CNoKeyStartFrames[0] + CNoKeyWindowFrames);
+  Require((LNoKey.CorrectUnknownFrames = CNoKeyWindowFrames div 2) and
+    (LNoKey.FalseKeyFrames = CNoKeyWindowFrames div 2),
+    'Half-window false-key denominator');
+  LPredictions[1].First := LPredictions[1].First + 1;
+  LRejected := False;
+  try
+    ScoreNoKey(LPredictions, CNoKeyStartFrames[0],
+      CNoKeyStartFrames[0] + CNoKeyWindowFrames);
+  except
+    on E: EAudio do
+      LRejected := True;
+  end;
+  Require(LRejected, 'No-key prediction gap must reject');
+  WriteLn('PASS: key, conflict, change and acoustic no-key denominators');
 end;
 
 procedure RunScore(const AReferencePath, APredictionPath: String);
@@ -508,15 +598,134 @@ begin
   finally LReferenceJSON.Free; end;
 end;
 
+procedure RunNoKeyScore(const AReferencePath, APredictionPath: String);
+var
+  LReferenceJSON: TJSONData;
+  LPredictionJSON: TJSONData;
+  LReferenceHash: String;
+  LPredictionHash: String;
+  LReference: TJSONObject;
+  LPrediction: TJSONObject;
+  LRows: TJSONArray;
+  LRow: TJSONObject;
+  LSegments: TSegments;
+  LScore: TNoKeyScore;
+  LOutput: TJSONObject;
+  LKind: String;
+  LGroupIndex: Integer;
+  I: Integer;
+begin
+  LReferenceJSON := BoundJSON(AReferencePath, 131072, LReferenceHash);
+  try
+    LGroupIndex := -1;
+    for I := 0 to 1 do
+    begin
+      if LReferenceHash = CNoKeyReferenceHashes[I] then
+        LGroupIndex := I;
+    end;
+    Require(LGroupIndex >= 0, 'Unreviewed no-key reference report');
+    LReference := TJSONObject(LReferenceJSON);
+    Require((LReference.Get('policy', '') = 'acoustic-nokey-reference-1') and
+      (LReference.Get('source_rate', 0) = CNoKeyRate) and
+      (LReference.Get('wave_sha256', '') = CNoKeyWaveHashes[LGroupIndex]) and
+      (LReference.Get('window_sha256', '') = CNoKeyWindowHashes[LGroupIndex]) and
+      (JSONInt64(LReference, 'source_frames') =
+        CNoKeySourceFrames[LGroupIndex]) and
+      (JSONInt64(LReference, 'start_frame') =
+        CNoKeyStartFrames[LGroupIndex]) and
+      (JSONInt64(LReference, 'end_frame') =
+        CNoKeyStartFrames[LGroupIndex] + CNoKeyWindowFrames) and
+      (LReference.Get('label_status', '') = 'reviewed_acoustic_no_key') and
+      (LReference.Get('review_method', '') = 'human_full_10_second_window') and
+      (LReference.Get('reviewed_label', '') = 'no_key'),
+      'No-key reference identity, geometry or review differs');
+    if LGroupIndex = 0 then
+      Require(LReference.Get('role', '') = 'development',
+        'No-key development role differs')
+    else
+      Require(LReference.Get('role', '') = 'independent_evaluation',
+        'No-key evaluation role differs');
+    LPredictionJSON := BoundJSON(APredictionPath, 1048576, LPredictionHash);
+    try
+      LPrediction := TJSONObject(LPredictionJSON);
+      LKind := LPrediction.Get('prediction_kind', '');
+      Require((LKind = 'control') or (LKind = 'candidate'),
+        'No-key prediction kind differs');
+      Require((LPrediction.Get('policy', '') = 'acoustic-nokey-prediction-1') and
+        (LPrediction.Get('source_sha256', '') =
+          CNoKeyWaveHashes[LGroupIndex]) and
+        (LPrediction.Get('window_sha256', '') =
+          CNoKeyWindowHashes[LGroupIndex]) and
+        (LPrediction.Get('source_rate', 0) = CNoKeyRate) and
+        (JSONInt64(LPrediction, 'source_frames') =
+          CNoKeySourceFrames[LGroupIndex]) and
+        (JSONInt64(LPrediction, 'start_frame') =
+          CNoKeyStartFrames[LGroupIndex]) and
+        (JSONInt64(LPrediction, 'end_frame') =
+          CNoKeyStartFrames[LGroupIndex] + CNoKeyWindowFrames),
+        'No-key prediction source/window binding differs');
+      Require((LPrediction.FindPath('segments') <> nil) and
+        (LPrediction.FindPath('segments').JSONType = jtArray),
+        'Expected no-key prediction segments');
+      LRows := TJSONArray(LPrediction.FindPath('segments'));
+      Require((LRows.Count > 0) and (LRows.Count <= CMaximumSegments),
+        'No-key prediction segment count outside bound');
+      LSegments := nil;
+      SetLength(LSegments, LRows.Count);
+      for I := 0 to LRows.Count - 1 do
+      begin
+        Require(LRows.Items[I].JSONType = jtObject,
+          'Expected no-key prediction segment object');
+        LRow := TJSONObject(LRows.Items[I]);
+        LSegments[I].First := JSONInt64(LRow, 'start_frame');
+        LSegments[I].Limit := JSONInt64(LRow, 'end_frame');
+        LSegments[I].Key := ReadKey(LRow.FindPath('key'));
+      end;
+      LScore := ScoreNoKey(LSegments, CNoKeyStartFrames[LGroupIndex],
+        CNoKeyStartFrames[LGroupIndex] + CNoKeyWindowFrames);
+      LOutput := TJSONObject.Create;
+      try
+        LOutput.Add('reference_report_sha256', LReferenceHash);
+        LOutput.Add('prediction_sha256', LPredictionHash);
+        LOutput.Add('prediction_kind', LKind);
+        LOutput.Add('source_sha256', CNoKeyWaveHashes[LGroupIndex]);
+        LOutput.Add('window_sha256', CNoKeyWindowHashes[LGroupIndex]);
+        LOutput.Add('role', LReference.Get('role', ''));
+        LOutput.Add('scoring_policy', 'acoustic-nokey-score-1');
+        LOutput.Add('start_frame', CNoKeyStartFrames[LGroupIndex]);
+        LOutput.Add('end_frame', CNoKeyStartFrames[LGroupIndex] +
+          CNoKeyWindowFrames);
+        LOutput.Add('reviewed_no_key_frames', LScore.NoKeyFrames);
+        LOutput.Add('correct_unknown_frames', LScore.CorrectUnknownFrames);
+        LOutput.Add('false_key_admission_frames', LScore.FalseKeyFrames);
+        LOutput.Add('false_key_admission_rate',
+          LScore.FalseKeyFrames / LScore.NoKeyFrames);
+        LOutput.Add('acoustic_no_key_evaluated', True);
+        WriteLn(LOutput.AsJSON);
+      finally
+        LOutput.Free;
+      end;
+    finally
+      LPredictionJSON.Free;
+    end;
+  finally
+    LReferenceJSON.Free;
+  end;
+end;
+
 begin
   try
     if (ParamCount = 1) and (ParamStr(1) = 'controls') then
       Controls
     else if (ParamCount = 3) and (ParamStr(1) = 'score') then
       RunScore(ParamStr(2), ParamStr(3))
+    else if (ParamCount = 3) and (ParamStr(1) = 'score-nokey') then
+      RunNoKeyScore(ParamStr(2), ParamStr(3))
     else
       raise EAudio.Create(
-        'Usage: pythian.localkey.score controls | score <bound-reference.json> <predictions.json>');
+        'Usage: pythian.localkey.score controls | score <bound-reference.json> ' +
+        '<predictions.json> | score-nokey <reviewed-reference.json> ' +
+        '<window-predictions.json>');
   except
     on E: Exception do
     begin

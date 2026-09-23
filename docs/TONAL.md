@@ -622,7 +622,7 @@ The prior performed-percussion screen and this stopped qualification are two
 nonclosing batches. Reassess at the task-flow checkpoint: independently
 qualifying exact positive, no-key and ambiguous *intervals* is a reusable
 reference deliverable separate from key inference. The new
-[reference task](TODO/NS-3_context_03.md) owns that source/label packet before
+[reference task](TODO/DONE/NS-3_context_03.md) owns that source/label packet before
 another local-key scoring policy is frozen. Keep uploader descriptions,
 researcher disagreements, automatic pre-analysis exposure, source licenses and
 whole-loop versus timed-label scope explicit.
@@ -668,7 +668,7 @@ unfreed blocks. The ignored policy, Pascal source and result SHA-256 values
 are `ce227456c3f1e7a02a4964afc8424585aa86cfc29e745a0bc17babb8b1ca931c`,
 `22fbf0cb378975714e460e0a3d8bb794ee1fa56812718b2027fd79cf44065991`
 and `db20b9c74842ae8eccf0512133fc853ccdb3257ca05e49ad11c582c2d93d31b`.
-This advances the [reference task](TODO/NS-3_context_03.md) but closes no
+This advances the [reference task](TODO/DONE/NS-3_context_03.md) but closes no
 complete criterion or credit: source-group-independent evaluation material,
 reviewed acoustic no-key contrasts, a packet checker and frozen coverage
 denominators are still required.
@@ -728,7 +728,7 @@ two sets are different compositions but share the HU33 performer and transfer
 chain, so future scoring measures unseen compositions within that chain;
 it cannot establish new-performer generalization. Every performance,
 derivative and adjacent excerpt inherits its composition's frozen role.
-This closes the [reference task's](TODO/NS-3_context_03.md) group-role
+This closes the [reference task's](TODO/DONE/NS-3_context_03.md) group-role
 criterion before admission scoring. Evaluation interval qualification,
 coordinate reproduction and separate coverage denominators remain open.
 
@@ -813,7 +813,7 @@ admission rate. This completes source/edition and reviewed interval
 qualification for these two development groups. The later Pascal checker and
 reserved-group replay close group isolation and coordinate reproduction;
 separate scoring denominators remain open in
-[NS-3_context_03](TODO/NS-3_context_03.md).
+[NS-3_context_03](TODO/DONE/NS-3_context_03.md).
 
 ### Audio-annotator conflict intervals — 2026-09-23
 
@@ -840,7 +840,7 @@ two fresh development reports byte for byte to the previously accepted reports
 (`e3c3f71cc6d56023498dffdf60f0349e2a786d92db049b680e809f73b78b4936`
 and `e92896a0ea0d762d7bc8d0d290a9992de47c3b5a7d9004f80eb502e21d44dae0`).
 Together with the published stable-key and D911-16 change intervals, these
-direct audio-annotation conflicts satisfy the [reference task's](TODO/NS-3_context_03.md)
+direct audio-annotation conflicts satisfy the [reference task's](TODO/DONE/NS-3_context_03.md)
 two tonal-group and two *ambiguous*-group alternatives in criteria 1 and 2.
 They supply no expert acoustic no-key denominator; one must be acquired
 separately before making a no-key performance claim.
@@ -926,7 +926,7 @@ transposition, and group-role checks with zero unfreed blocks. Their evaluation
 JSON files are byte identical. A fresh development replay remained byte
 identical to both previously accepted reports. An occupied evaluation report
 directory rejects before writing. This closes
-[NS-3_context_03](TODO/NS-3_context_03.md) criterion 4's Pascal reader and
+[NS-3_context_03](TODO/DONE/NS-3_context_03.md) criterion 4's Pascal reader and
 coordinate reproduction. Separate key/unknown/change scoring denominators and
 any acoustic no-key qualification remain open.
 
@@ -1000,7 +1000,7 @@ both architectures with zero unfreed blocks. On current bound reports,
 wrong-source predictions, an initial prediction gap and a non-bound reference
 hash reject before scoring with zero unfreed blocks. No actual estimator was
 run; no acoustic no-key rate or key-inference accuracy is asserted. This
-closes [NS-3_context_03](TODO/NS-3_context_03.md) criterion 5.
+closes [NS-3_context_03](TODO/DONE/NS-3_context_03.md) criterion 5.
 
 The task remains open for its separately stated acoustic no-key requirement.
 The [MTG-Jamendo derived annotation release](https://github.com/MTG/mtg-jamendo-dataset/blob/master/derived/music-classification-annotations/README.md)
@@ -1052,14 +1052,15 @@ Pascal checker under ignored `build/context-reference-nokey/` verified the
 SHA-256 of each WAV source and equality of every decoded sample in each crop
 against its original-WAV span using Pythian's reader. It passed on stable FPC
 3.2.2 i386-win32. The evaluation Ogg-to-WAV conversion itself is an external
-media conversion, not an inference/analysis path. The candidate labels and
-false-admission denominator remain **unavailable** pending time-local review.
+media conversion, not an inference/analysis path. At this preparation
+checkpoint, the candidate labels and false-admission denominator remained
+**unavailable** pending time-local review.
 
 The [maintained Pascal checker](../tools/pythian.localkey.nokey.reference.lpr)
-now binds the two original media hashes, the converted WAV and window hashes,
-source clocks, roles and exact sample equality. It emits a report with
-`label_status=pending_time_local_review` and accepts no review label or
-prediction. The two reports are byte-identical on checked FPC 3.2.2 Win32 and
+binds the two original media hashes, the converted WAV and window hashes,
+source clocks, roles and exact sample equality. At this preparation checkpoint
+it emitted `label_status=pending_time_local_review` and accepted no prediction.
+The two pending reports were byte-identical on checked FPC 3.2.2 Win32 and
 Win64: development SHA-256
 `d4f1d92a6043e0edf9c4353d1bf4c219b95666c8ae5a6affba3d1aea66cd899a`,
 evaluation SHA-256
@@ -1079,9 +1080,55 @@ development window:  -map 0:a:0 -af atrim=start_sample=352800:end_sample=793800,
 evaluation window:   -map 0:a:0 -af atrim=start_sample=793800:end_sample=1234800,asetpts=PTS-STARTPTS -c:a pcm_s16le -bitexact OUTPUT.wav
 ```
 
-Only after a time-local review qualifies a window may a reference label and
-separate non-tonal false-admission denominator be added. Until then, these
-reports prove source coordinates and isolation, not acoustic no-key truth.
+Only a time-local review can qualify a window for a reference label and
+separate non-tonal false-admission denominator. The subsequent review and
+scorer qualification are recorded below.
+
+### Reviewed acoustic no-key intervals and denominator — 2026-09-23
+
+The user heard both complete fixed ten-second clips above and reported no
+pitched music in either. This is a time-local human verdict for the two exact
+source-clock windows, not a whole-recording genre or model label. The source,
+role and window identities were frozen before review. The maintained Pascal
+checker now emits `reviewed_acoustic_no_key`, method
+`human_full_10_second_window`, date and `no_key` for those exact clips after
+rechecking original bytes, WAV/crop hashes and every crop sample. Reviewed
+report SHA-256 values are
+`1a42695f1064303311094a51d8d064d52fc554b2cde3bf420f90d6604cc4b0bd`
+(development) and
+`c347444a076e7e9df50c6db3acda0b867ac45f4c72b1f9b2cecb19d9bb5826d5`
+(independent evaluation). Both stable FPC 3.2.2 Win32/Win64 runs reproduce
+them byte for byte with zero unfreed blocks. The previously pending reports
+remain historical preparation evidence and cannot be scored as reviewed.
+Capture each checker's single JSON stdout line as UTF-8 without BOM or a
+trailing newline before hashing or passing it to the scorer.
+
+The same maintained [Pascal packet scorer](../tools/pythian.localkey.score.lpr)
+now accepts `score-nokey <reviewed-reference.json>
+<window-predictions.json>` separately from its original tonal mode. Predictions
+must bind the same exact WAV and window hashes, rate, source extent and
+source-frame bounds, and partition the complete 441,000-frame window with
+`key=null` for unknown or a supported root/mode. For this reviewed no-key
+reference, every keyed frame is a false admission; unknown frames are correct
+abstentions. The output keeps the no-key denominator separate from supported
+key, annotator-conflict and change denominators. Wrong-source predictions,
+unreviewed reports, gaps and malformed keys reject.
+
+| Reviewed role and window | No-key frames | Authored control prediction | False-key frames |
+| --- | ---: | --- | ---: |
+| Rain/wind development [8,18) s | 441,000 | Unknown for first half, C major for second half | 220,500 |
+| Applause independent [18,28) s | 441,000 | Unknown throughout | 0 |
+
+These authored controls verify denominator wiring and source binding, **not**
+estimator accuracy. The frozen private policy and exact reports are under
+`build/context-reference-nokey/reviewed/`. Win32 replay hashes are
+`2d43197eedb579195a7582e35375ab2415bac29dd8bf667818b8cd38c6f19fdb`
+and `e8d46af589bf63cab17cbbb9aec2dacaf0abdd31d194181502214331cd49ef01`;
+Win64 results match byte for byte, with zero unfreed blocks. Existing tonal
+scorer controls pass unchanged. The complete packet now has separate reviewed
+acoustic no-key intervals in development and independent recording groups and
+a reproducible false-admission denominator. It does not select a key model,
+calibrate an unknown threshold or prove independent key-inference accuracy.
 
 ## Native inspection
 

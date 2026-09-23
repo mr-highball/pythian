@@ -9,7 +9,7 @@ Turn tonal measurements into supported local-key decisions with calibrated admis
 North star: NS-3. Outcome owner: WAV-02-CONTEXT.
 Completion credit: 3 goal percentage points (0.75 overall points), after
 assigning 1 of its original 4 unearned points to the independent
-[reference packet](NS-3_context_03.md).
+[reference packet](DONE/NS-3_context_03.md).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [WAVE-CONTEXT-ADMISSION](../WAVE-CONTEXT-ADMISSION.md) · [TONAL](../TONAL.md) · [MUSIC-CONTEXT](../MUSIC-CONTEXT.md).
@@ -117,12 +117,12 @@ independent recorded accuracy. This partial criterion earns no task credit.
 **Blockers**
 
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
-- [NS-3_context_03.md](NS-3_context_03.md)
+- [NS-3_context_03.md](DONE/NS-3_context_03.md)
 
 **Dev Notes:**
 
 - 2026-09-23 reference split: after two nonclosing batches, source/interval
-  qualification moved to [NS-3_context_03](NS-3_context_03.md) with 1 of this
+  qualification moved to [NS-3_context_03](DONE/NS-3_context_03.md) with 1 of this
   task's original 4 unearned NS-3 points. This task retains the prospective
   admission policy, ranked evidence, calibration, independent key/change
   accuracy and native delivery. The [stopped four-loop screen](../TONAL.md#loop-level-reference-qualification-stop--2026-09-23)

@@ -21,6 +21,26 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Accepted local-key/no-key reference packet — 2026-09-23
+
+The user heard both frozen ten-second recordings in full and reported no
+pitched music in either. The [reference record](TONAL.md#reviewed-acoustic-no-key-intervals-and-denominator--2026-09-23)
+binds that time-local verdict to exact source bytes, notices, independent
+development/evaluation roles and source-frame windows. The maintained Pascal
+checker reproduces the reviewed labels and crop samples; the separate Pascal
+scorer partitions each 441,000-frame no-key window and counts false key
+admission apart from tonal, conflict and change coverage. Authored controls
+exercise the denominator, not an estimator. Fresh focused QA on stable checked
+FPC 3.2.2 Win32/Win64 reproduced exact checker/scorer hashes, retained tonal
+controls, rejected unreviewed and wrong-source inputs and reported zero
+unfreed blocks. All six criteria of [NS-3_context_03](TODO/DONE/NS-3_context_03.md)
+pass. It moved to DONE: +1 NS-3 / +0.25 overall, giving **40% NS-3,
+68.40% overall, 36 open / 18 DONE**. The accepted packet unblocks
+[NS-3_context_01](TODO/NS-3_context_01.md), which still owns key-decision
+thresholds, unknown coverage and independent inference-accuracy acceptance.
+Return to that bounded core task under the task-flow selection rule; keep the
+three personal style tests separate from core admission.
+
 ## Cross-part register attribution stop — 2026-09-23
 
 The [frozen Pascal cross-part screen](PHRASE-EVALUATION.md#cross-part-register-peak-attribution-screen--2026-09-23)
@@ -44,10 +64,10 @@ no remaining criterion. The former could not authenticate a recording
 edition; the latter proves only onset occupancy. Reference-grounded provider
 values, annotations and complete six-dimension controls remain missing. Stop
 the generic-control sequence and follow the reusable-core dependency path
-through [NS-3_context_03](TODO/NS-3_context_03.md): two exact ten-second no-key
+through [NS-3_context_03](TODO/DONE/NS-3_context_03.md): two exact ten-second no-key
 candidate windows are source-bound and ready for time-local human review.
-The review request is pending; no label, context admission, style acceptance or
-credit is inferred before it arrives. Return to the personal style cards when
+At this checkpoint the review request was pending; no label, context admission,
+style acceptance or credit was inferred. Return to the personal style cards when
 source-bound musical annotations can ground their remaining criteria.
 
 ## Native groove-control slice — 2026-09-23
@@ -570,7 +590,7 @@ false-admission rate, local-key criterion or credit follows.
 The performed-percussion screen and this stopped qualification are two
 consecutive nonclosing local-key batches. The task-flow reassessment splits
 an independently useful recorded interval reference packet into
-[NS-3_context_03](TODO/NS-3_context_03.md), ahead of the retained
+[NS-3_context_03](TODO/DONE/NS-3_context_03.md), ahead of the retained
 [NS-3_context_01](TODO/NS-3_context_01.md) inference decision. The original
 four unearned NS-3 goal points are redistributed **1+3**; the overall
 completion remains 63.15%, with 40 open and 14 DONE tasks. The next deliverable
@@ -581,7 +601,7 @@ packet is qualified. NS-2's 11-second listening verdict remains pending.
 
 ## Score-transferred ambiguity intervals — 2026-09-23
 
-The first bounded [context reference](TODO/NS-3_context_03.md) batch used only
+The first bounded [context reference](TODO/DONE/NS-3_context_03.md) batch used only
 the two existing Winterreise HU33 development compositions. The
 [publisher's annotation policy](TONAL.md#score-transferred-ambiguity-check--2026-09-23)
 explicitly treats ann2's ambiguous score passages as no-key, with the

@@ -182,7 +182,10 @@ begin
     LReport.Add('source_frames', CSourceFrames[AIndex]);
     LReport.Add('start_frame', CWindowStarts[AIndex]);
     LReport.Add('end_frame', CWindowStarts[AIndex] + CWindowFrames);
-    LReport.Add('label_status', 'pending_time_local_review');
+    LReport.Add('label_status', 'reviewed_acoustic_no_key');
+    LReport.Add('review_method', 'human_full_10_second_window');
+    LReport.Add('review_date', '2026-09-23');
+    LReport.Add('reviewed_label', 'no_key');
     WriteLn(LReport.AsJSON);
   finally
     LReport.Free;

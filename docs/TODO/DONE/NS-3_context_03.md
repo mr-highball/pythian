@@ -1,6 +1,6 @@
 # NS-3_context_03 — Qualify local-key and unknown reference intervals
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-3)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-3)
 
 **Description:**
 
@@ -9,17 +9,35 @@ changes, no-key and ambiguous intervals before evaluating automatic admission.
 Researcher whole-loop labels and score-level gaps alone cannot supply all of
 these acoustic interval labels. This task owns reference qualification; the
 key decision and its measured accuracy remain in
-[NS-3_context_01](NS-3_context_01.md).
+[NS-3_context_01](../NS-3_context_01.md).
 
 North star: NS-3. Outcome owner: WAV-02-CONTEXT.
 Completion credit: 1 goal percentage point (0.25 overall points), split from
 the original 4 points of NS-3_context_01. Credit is earned only when every
 acceptance criterion and the task-flow completion requirements pass.
 
-Starting evidence: [local-key reference study](../TONAL.md#local-key-reference-candidate) ·
-[authored negative screen](../TONAL.md#authored-tonal-negative-screen--2026-09-23) ·
-[recorded percussion screen](../TONAL.md#percussion-only-recording-screen--2026-09-23) ·
-[stopped loop qualification](../TONAL.md#loop-level-reference-qualification-stop--2026-09-23).
+Accepted 2026-09-23 after focused QA. Four distinct HU33 recording/composition
+groups provide source-bound tonal, three-annotator ambiguous and agreed-change
+intervals: D911-02/16 for development, D911-05/19 for independent evaluation.
+The exact-source packet, annotation alternatives, uncertainty and source-frame/
+score mappings are reproduced by the maintained Pascal reader. Two separately
+authored acoustic recordings add reviewed no-key intervals in the frozen
+rain/wind development [8,18) second window and applause independent [18,28)
+second window. The user heard each full ten seconds and reported no pitched
+music in either. The Pascal checker binds original media, WAVs, crop samples,
+notices, roles and review to exact source bytes. The separate Pascal scorer
+conserves a 441,000-frame no-key denominator per window and counts false key
+admission apart from supported keys, annotator conflict and change. Checked
+stable FPC 3.2.2 Win32/Win64 fresh QA reproduced exact reports and scorer
+outputs, passed tonal/no-key controls and rejected unreviewed and wrong-source
+inputs, with zero unfreed blocks. The [complete reference record](../../TONAL.md#reviewed-acoustic-no-key-intervals-and-denominator--2026-09-23)
+gives source identities, commands, hashes and limits. Authored score controls
+verify the denominator contract; they do not establish key-inference accuracy.
+
+Starting evidence: [local-key reference study](../../TONAL.md#local-key-reference-candidate) ·
+[authored negative screen](../../TONAL.md#authored-tonal-negative-screen--2026-09-23) ·
+[recorded percussion screen](../../TONAL.md#percussion-only-recording-screen--2026-09-23) ·
+[stopped loop qualification](../../TONAL.md#loop-level-reference-qualification-stop--2026-09-23).
 
 **Acceptance Criteria:**
 
@@ -54,11 +72,17 @@ Starting evidence: [local-key reference study](../TONAL.md#local-key-reference-c
 
 **Blockers**
 
-- [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
+- [NS-3_validation_01.md](NS-3_validation_01.md)
 
 **Dev Notes:**
 
-- 2026-09-23 no-key packet checkpoint: the [maintained Pascal checker](../TONAL.md#prospective-acoustic-no-key-screen--2026-09-23)
+- 2026-09-23 acceptance: the two frozen windows received a full-window human
+  no-pitched-music verdict. The [maintained checker and separate scorer](../../TONAL.md#reviewed-acoustic-no-key-intervals-and-denominator--2026-09-23)
+  reproduce exact source identities, reviewed labels, roles and independent
+  acoustic no-key false-admission denominators on both stable targets. All six
+  criteria now pass. The downstream [key-decision task](../NS-3_context_01.md)
+  still owns threshold, coverage and independent inference-accuracy acceptance.
+- 2026-09-23 no-key packet checkpoint: the [maintained Pascal checker](../../TONAL.md#prospective-acoustic-no-key-screen--2026-09-23)
   now binds both original media, the external conversion, frozen windows,
   roles, clocks and every decoded crop sample. Checked stable Win32/Win64
   reports are byte-identical; swapped crop/source inputs reject with zero
@@ -72,7 +96,7 @@ Starting evidence: [local-key reference study](../TONAL.md#local-key-reference-c
   Pascal. If either review is uncertain or hears pitched music, exclude it
   and reassess the source path before another search.
 - 2026-09-23 prospective acoustic no-key screen: [two independently authored
-  recordings](../TONAL.md#prospective-acoustic-no-key-screen--2026-09-23)
+  recordings](../../TONAL.md#prospective-acoustic-no-key-screen--2026-09-23)
   have frozen development/evaluation roles and 10-second review windows before
   audio inspection. Original Commons identities and notices match exact bytes;
   an external Ogg-to-WAV conversion and one-off Pascal source-window checker
@@ -81,7 +105,7 @@ Starting evidence: [local-key reference study](../TONAL.md#local-key-reference-c
   label; the non-tonal denominator remains unavailable. This is one
   nonclosing batch after criterion 5; wait for review or switch after the
   required reassessment rather than retune the chosen windows.
-- 2026-09-23 separate packet scorer: the [frozen policy and Pascal tool](../TONAL.md#separate-packet-denominators--2026-09-23)
+- 2026-09-23 separate packet scorer: the [frozen policy and Pascal tool](../../TONAL.md#separate-packet-denominators--2026-09-23)
   score supported-key frames, abstention on three-annotator conflict frames,
   and agreed changes with independent integer denominators. Four exact report
   hashes gate inputs. Stable checked Win32/Win64 source-free controls and
@@ -91,11 +115,11 @@ Starting evidence: [local-key reference study](../TONAL.md#local-key-reference-c
   blocks. **Criterion 5 is met for the packet's annotated ambiguity target.**
   This closes a criterion after the previous qualification batch; no task
   credit moves because criterion 6, explicit from the task description and
-  [downstream non-tonal requirement](NS-3_context_01.md), remains open.
+  [downstream non-tonal requirement](../NS-3_context_01.md), remains open.
   MTG-Jamendo's three-annotator tonal/atonal labels are whole-track labels,
   so they are a possible source screen, not accepted local no-key intervals.
 - 2026-09-23 direct ambiguity qualification: the [exact audio-annotator
-  conflict intervals](../TONAL.md#audio-annotator-conflict-intervals--2026-09-23)
+  conflict intervals](../../TONAL.md#audio-annotator-conflict-intervals--2026-09-23)
   in D911-02 and D911-16 provide two distinct composition groups with all
   three source-matched audio labels present and discordant. Five half-open
   spans total 152,145 and 84,231 frames; a checked Pascal audit verified
@@ -104,7 +128,7 @@ Starting evidence: [local-key reference study](../TONAL.md#local-key-reference-c
   alongside the already published stable supported keys and D911-16 change.
   It does not establish acoustic no-key truth. Criterion 5 alone remains open;
   no task or milestone credit changes.
-- 2026-09-23 reserved interval replay: the [Pascal packet checker](../TONAL.md#reserved-interval-coordinate-replay--2026-09-23)
+- 2026-09-23 reserved interval replay: the [Pascal packet checker](../../TONAL.md#reserved-interval-coordinate-replay--2026-09-23)
   now reads the two hash-bound evaluation WAV/annotation groups under the
   frozen roles and reproduces all source-frame label boundaries, coverage
   classes and score-ann2 mappings. D911-05 required an explicit 360-second
@@ -117,7 +141,7 @@ Starting evidence: [local-key reference study](../TONAL.md#local-key-reference-c
   interpretation. Criterion 5's separate scoring denominators and the full
   task's no-key/ambiguous reference qualification remain open; no credit moves.
 - 2026-09-23 reserved identity and role batch: [D911-05/19 original HU33
-  entries](../TONAL.md#reserved-evaluation-identities--2026-09-23) were selected
+  entries](../../TONAL.md#reserved-evaluation-identities--2026-09-23) were selected
   under a frozen ignored policy and extracted by checked Pascal code from the
   exact publisher archive. All 13 entry lengths and SHA-256 values were bound
   without parsing labels, decoding audio or running inference. The maintained
@@ -127,7 +151,7 @@ Starting evidence: [local-key reference study](../TONAL.md#local-key-reference-c
   This closes a criterion after the prior nonclosing batch. Criteria 4's
   evaluation interval/coordinate reproduction and 5's separate coverage
   denominators remain open; no task or milestone credit changes.
-- 2026-09-23 maintained reader batch: the [tracked Pascal checker](../TONAL.md#reproducible-pascal-reference-checker)
+- 2026-09-23 maintained reader batch: the [tracked Pascal checker](../../TONAL.md#reproducible-pascal-reference-checker)
   now rebuilds the two development sources' complete annotation partitions
   and score-ann2 ambiguity transfer from exact original assets. Checked stable
   Win32/Win64 outputs and replay match byte for byte; the previous hash-bound
@@ -138,7 +162,7 @@ Starting evidence: [local-key reference study](../TONAL.md#local-key-reference-c
   1/2 closure; criterion 4 and task credit remain open. Its Pascal selective
   extractor also verified the full publisher archive identity, all 13 chosen
   entry hashes and byte-identical reports from a fresh extraction.
-- 2026-09-23 development interval packet: [two exact HU33 composition groups](../TONAL.md#bound-development-local-key-intervals--2026-09-23)
+- 2026-09-23 development interval packet: [two exact HU33 composition groups](../../TONAL.md#bound-development-local-key-intervals--2026-09-23)
   now bind singer/pianist, composition, archive edition, notices, original WAV
   and all annotator/score CSV hashes and the publisher's transfer method.
   Both groups have tonal and ann2 score-transferred ambiguous intervals;
@@ -151,7 +175,7 @@ Starting evidence: [local-key reference study](../TONAL.md#local-key-reference-c
   remain open: enforce roles in a maintained Pascal packet checker, reacquire
   and bind independent groups, then show separate coverage denominators. No
   task credit is earned before the whole task passes.
-- 2026-09-23 group-role freeze: [D911-05 and D911-19](../TONAL.md#local-key-reference-group-roles--2026-09-23)
+- 2026-09-23 group-role freeze: [D911-05 and D911-19](../../TONAL.md#local-key-reference-group-roles--2026-09-23)
   are reserved by entire composition for independent evaluation before their
   audio or local-key contents are opened. D911-02/16 remain development-exposed;
   all FSLD annotations were screened, so no FSLD loop is held out. Metadata
@@ -160,7 +184,7 @@ Starting evidence: [local-key reference study](../TONAL.md#local-key-reference-c
   reviewed interval packet and enforcing Pascal checker remain open. Stop
   further source screens at the task-flow reassessment checkpoint.
 - 2026-09-23 development ambiguity qualification: a [frozen Pascal
-  score/audio check](../TONAL.md#score-transferred-ambiguity-check--2026-09-23)
+  score/audio check](../../TONAL.md#score-transferred-ambiguity-check--2026-09-23)
   matched the selected Winterreise ann2 score rows to their already bound HU33
   audio rows at one fixed transposition per composition. Three D911-02 and one
   D911-16 interior gaps map to exact source frames. By the publisher's ann2
@@ -176,7 +200,7 @@ Starting evidence: [local-key reference study](../TONAL.md#local-key-reference-c
   researcher labels and selectively extracted exact WAVs, but one intended
   positive's uploader filename claims a conflicting root; all loop labels are
   whole-clip, with automatic pre-analysis suggestions. The packet stopped
-  before key scoring. See the [source record](../TONAL.md#loop-level-reference-qualification-stop--2026-09-23).
+  before key scoring. See the [source record](../../TONAL.md#loop-level-reference-qualification-stop--2026-09-23).
   This task owns the independently useful source/interval packet; context_01
   retains all decision, calibration, unknown-coverage and independent-accuracy
   obligations. Original unearned credit is redistributed 1+3, with no points

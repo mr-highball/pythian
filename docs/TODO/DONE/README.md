@@ -22,6 +22,7 @@
 | [NS-2_synthesis-quality_02](NS-2_synthesis-quality_02.md) — Accepted modulation, processing and routing quality | 2026-09-23 | +6 NS-2 | +1.50 |
 | [NS-2_synthesis-quality_01](NS-2_synthesis-quality_01.md) — Accepted source and articulation quality | 2026-09-23 | +8 NS-2 | +2.00 |
 | [NS-2_synthesis-quality_03](NS-2_synthesis-quality_03.md) — Accepted combined synthesis and streamed listening | 2026-09-23 | +6 NS-2 | +1.50 |
+| [NS-3_context_03](NS-3_context_03.md) — Qualified tonal, ambiguous and reviewed acoustic no-key reference intervals | 2026-09-23 | +1 NS-3 | +0.25 |
 
 The former external-runtime result was withdrawn on 2026-09-22 under the user's
 Pascal-only inference requirement. It remains historical evidence in

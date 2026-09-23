@@ -119,7 +119,7 @@ remain open here, with no task credit.
   gates or complete the six-dimension criterion while verified musical
   observations are missing. Stop this style-card investigation sequence. The
   next action follows the ready reusable-core reference prerequisite
-  [NS-3_context_03](NS-3_context_03.md), whose reviewed no-key intervals feed
+  [NS-3_context_03](DONE/NS-3_context_03.md), whose reviewed no-key intervals feed
   automatic context admission and later style vocabulary. Return to the three
   personal style cards when independently bound source intervals and curator
   musical annotations can support criteria 1 and 2; then finish complete
