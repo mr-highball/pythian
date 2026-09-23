@@ -49,6 +49,16 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
 
 **Dev Notes:**
 
+- 2026-09-23 post-reassessment shared-arpeggio screen: the publisher calls
+  ARTBeaT 02/03/04 openings the same arpeggio, so a frozen Pascal check tested
+  whether their exact original WAVs share a subtractable intro waveform.
+  [Both fixed comparisons](../BEAT-TRACKING.md#shared-arpeggio-source-isolation-screen-stopped--2026-09-23)
+  failed the predeclared gain and -60-dB residual gates; normalized residuals
+  were .983200 and .990077. Stop waveform subtraction without another slice
+  or threshold. This is one nonclosing batch after the omission reassessment;
+  no source-pulse truth, retained-candidate change or credit follows. Seek
+  independently reviewable source-pulse evidence before a new fit/retention
+  policy attempt.
 - 2026-09-23 second post-freeze batch: the optional [native omission trace](../BEAT-TRACKING.md#current-policy-omission-stage-trace)
   reproduces every saved candidate pool and fit-work count without reference
   input to inference. The 02 failures split into one no-compatible-fit, three

@@ -108,6 +108,17 @@ source-pulse distinction and a predeclared fit/retention decision capable of
 meeting the unchanged gates within their work limit; another candidate-count
 walk is not that decision.
 
+One later source-evidence batch tested whether the ARTBeaT publisher's
+"same arpeggio" description meant a subtractable shared audio stem in 02/03/04.
+The [frozen Pascal screen](BEAT-TRACKING.md#shared-arpeggio-source-isolation-screen-stopped--2026-09-23)
+bound the original WAVs and fixed intro, lag, gain and residual limits before
+comparison. Both 02-to-03 and 02-to-04 fits failed widely (normalized
+residuals .983200/.990077 against <=.001). Stop that subtraction path;
+semantic similarity does not supply an isolated source waveform or pulse
+label. This is one nonclosing batch after the tempo_04 reassessment. The
+unchanged candidate gates, source-pulse review and fit/retention decision
+remain open; no task credit changes.
+
 ## Core-quality reassessment — 2026-09-23
 
 Two consecutive bounded batches closed no acceptance criterion. First, the

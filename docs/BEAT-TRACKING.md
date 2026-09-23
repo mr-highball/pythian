@@ -214,6 +214,34 @@ policy attempt needs a predeclared way to address fit and retention separately
 within the frozen work and coverage bounds; another pool-size walk would not
 answer the source-pulse ambiguity.
 
+### Shared-arpeggio source-isolation screen stopped — 2026-09-23
+
+The [ARTBeaT publisher](https://audiolabs-erlangen.de/resources/MIR/2024-ARTBeaT)
+describes 02, 03 and 04 as opening with the same arpeggio. A fixed Pascal
+screen asked whether this means a directly reusable *audio waveform* that
+could be subtracted to isolate other source pulses. Its ignored policy in
+`build/beat-shared-stem/PROTOCOL.md` froze all three original WAV hashes, the
+[0.5, 2.5)-second source interval, stereo comparison, at most 100-ms lag, one
+gain in [0.5, 2.0] and normalized residual RMS at most .001 (-60 dB). A
+passing intro would only justify a later full-overlap source audit; it would
+not itself label a pulse or qualify a beat candidate.
+
+Checked stable FPC 3.2.2 Win32 bound all three original WAVs and compared 02
+to 03 and 04. The source RMS was .032481 in both pairs. The best unconstrained
+02-to-03 fit was lag -403 frames, gain -.187409, residual .983200; 02-to-04
+was lag -120 frames, gain .126095, residual .990077. Both fail the frozen gain
+and residual gates by a wide margin. The first run reported no eligible
+gain/lag; one diagnostic rerun retained the same acceptance gate while
+reporting the best unconstrained fits. Both checked runs reported zero
+unfreed blocks. Exact ignored policy, Pascal source and JSON lines are under
+`build/beat-shared-stem/`.
+
+The publisher's musical description does not imply a bit-identical shared
+stem. Stop this subtraction path without moving the interval or retuning its
+limits. No source-pulse labels, candidate-policy change, task criterion or
+credit follow. Tempo_04 still needs independently reviewable acoustic pulse
+status and a predeclared fit/retention decision within its frozen gates.
+
 <a id="accent-parity-stopped"></a>
 ## Alternating accent strength does not resolve beat level — 2026-09-23
 
