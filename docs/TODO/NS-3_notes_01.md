@@ -66,6 +66,33 @@ unresolved candidate ambiguity under a prospective confidence/coverage contract;
 post-hoc cutoffs on these errors are not a justified new observation. Keep the
 separate presence gap and protected waveform/held-out requirements intact.
 
+One-shot selective sparse-peak check 2026-09-22: the newly accepted Pascal
+observation backend provides source-bound support, but its highest pitch bin is
+not a reliable identity decision. A frozen, non-fitted rule chose the strongest
+bin only when support was at least 0.5 and neither octave alternative was within
+0.15 support. It scored the same fully contained, single-note Spring development
+centers as the accepted observation study. Flute admitted 892/905, with 814
+correct, 44 octave errors and 34 other errors (91.256% precision). Violin
+admitted 1083/1355, with 961 correct, 82 octave errors and 40 other errors
+(79.926% coverage, 88.735% precision). Flute fails the >=98% precision
+requirement; violin fails both the >=80% coverage and >=98% precision
+requirements. The ignored Pascal policy, scorer and bound logs are in
+`build/note-sparse-identity/`; the saved observation hashes are
+`e84fe81b91b3df9c0e9a457dc1111f19281793026810578227eae9e89340d89c`
+and `13eb9b3dbe7538d61714f1d6f43a8bd897b8c494a51771e0f9428a7ecaad0c85`.
+Stop this direct-support rule without a threshold/rank sweep. It changes no
+maintained path, task credit or protected evaluation material. A later identity
+proposal needs genuinely discriminating evidence and a prospective ambiguity
+contract; the accepted sparse support remains an observation, not a note label.
+The scorer met its time limit and reported zero unfreed heap blocks; its declared
+private-memory limit was not measured and is not qualified by this failed gate.
+The stopped source-separated register scorer and this direct-support rule are
+two nonclosing batches for this note-identity investigation. Reassess and stop
+this sequence here: resume only with an independently contrasting, frozen
+source of register evidence and explicit ambiguity/coverage behavior that
+protects low, quiet and short notes. No further best-bin, rank or threshold
+variation is authorized by the existing evidence.
+
 **Acceptance Criteria:**
 
 - Declare a discriminating identity observation or decision rule before scoring; explain how it distinguishes the remaining octave errors rather than merely changing global weights or thresholds. Final development scoring must construct candidates from audio without reference pitches; oracle candidate ranks are feasibility evidence only.
@@ -83,5 +110,9 @@ separate presence gap and protected waveform/held-out requirements intact.
 - Stopped approaches (2026-09-21): predictive-phase/envelope guards corrected none of the 105 flute octave-error centers. Availability tracing explained exits but could not rescue the failed guards; do not restart that correction family. See the [identity reassessment](../PHRASE-EVALUATION.md#identity-evidence-reassessment--2026-09-21).
 
 - Stopped batch 28: the fixed source-separated scorer ranked violin 546/548 and flute 482/514 correctly; flute failed the 98% gate even with oracle candidates. No Spring application or feature/epoch/threshold variants follow. See [candidate calibration](../PHRASE-EVALUATION.md#source-separated-candidate-calibration--2026-09-21).
+
+- Stopped 2026-09-22 direct-support rule: the accepted Pascal sparse-peak observation has top-12 reference recall, but a frozen best-bin/octave-margin decision fails both Spring identity gates. Do not retune the margin or promote raw support to pitch admission; the exact counts and ignored policy are in the description above.
+
+- Investigation reassessment 2026-09-22: this is the second task-specific nonclosing batch after the stopped source-separated scorer. Suspend note-identity experiments until a genuinely new, independently contrasting observation with prospective abstention and source-bound low/quiet/short controls is declared. Accepted Pascal observation/execution work in between did not settle this note-identity cause.
 
 - Follow-up: justify genuinely discriminating identity evidence and prospective ambiguity/coverage handling before another experiment. Coordinate with [presence](NS-3_notes_02.md); preserve genuine low/quiet/short notes and untouched phrase material. The pause retains the one-batch no-criterion-closure count in the [work record](../WORK.md#pause-retrospective--2026-09-21).

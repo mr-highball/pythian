@@ -21,6 +21,43 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Sparse-peak pitch decision rejected — 2026-09-22
+
+The accepted Pascal sparse-peak observations give high reference-pitch top-12
+recall but do not themselves decide register. A one-shot, non-fitted development
+gate for [note identity](TODO/NS-3_notes_01.md) froze a best-bin decision with
+support >=0.5 and an octave-alternative margin of 0.15 before scoring the
+Spring references with this rule. The source-bound Pascal scorer evaluated only
+the original fully contained single-note centers. Flute admitted 892/905, with
+814 correct, 44 octave-wrong and 34 other-wrong (91.256% precision). Violin
+admitted 1083/1355, with 961 correct, 82 octave-wrong and 40 other-wrong
+(79.926% coverage, 88.735% precision). Flute fails the fixed >=98% precision
+gate; violin fails both >=80% coverage and >=98% precision. The Win64 FPC 3.3.1
+analysis took 125 ms per saved 3000-center file and reported zero unfreed heap
+blocks. The declared private-memory cap was not measured after the accuracy
+failure, so no memory qualification is claimed. The policy,
+Pascal source and exact source/reference/observation hashes are in ignored
+`build/note-sparse-identity/`.
+
+This is a scientific rejection, not a maintained implementation defect. Stop
+the direct-support identity rule without a threshold/rank sweep. The independent
+phrase material stays untouched, and no task criterion or credit closes.
+Accepted sparse-peak support remains useful as an observation; separate
+[presence and boundaries](TODO/NS-3_notes_02.md) still need contrasting
+continuation/release/rest evidence. The existing NS-5 style cards still need
+verified recording editions and curator-reviewed musical references. Current
+completion remains NS-3 39%, NS-5 27% and overall 63.15%.
+
+The stopped source-separated register scorer (batch 28) and this stopped
+direct-support rule are two nonclosing batches in the note-identity investigation.
+The successful inference work between them did not resolve the note-identity
+cause. Athena's checkpoint changes the next action: suspend best-bin, rank and
+threshold variants. Resume `NS-3_notes_01` only with independently contrasting,
+frozen register evidence and prospective ambiguity/coverage behavior, including
+low/quiet/short protections. For the primary NS-5 chain, the recorded source
+edition and curator review input remains the exact external unblock condition;
+the user has been asked to supply sources/review or choose replacement references.
+
 ## Supervised Pascal WAV inference accepted — 2026-09-22
 
 Focused QA accepted all five criteria of [NS-3_validation_02](TODO/DONE/NS-3_validation_02.md)
