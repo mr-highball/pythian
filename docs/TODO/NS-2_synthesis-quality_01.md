@@ -26,6 +26,18 @@ Starting evidence: [SYNTHESIS-QUALITY](../SYNTHESIS-QUALITY.md) · [FUNDAMENTALS
 
 **Dev Notes:**
 
+- 2026-09-23 source-family review packet: before requesting another review,
+  checked the user's earlier brass/guitar/mallet descriptions against their
+  files. Those are recorded NSynth notes in the [note-presence reference packet](../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22),
+  not Pythian synthesis output; they remain evidence for that separate task.
+  Added two existing hash-bound native examples to the [source matrix](../SYNTHESIS-QUALITY.md#finite-listening-matrix--ns-2_synthesis-quality_01):
+  the five-second oscillator/additive/PM/wavetable/percussion sequence and the
+  6.3-second one-shot/sustain/pitched-loop comparison. The earlier broad good
+  spectral-pair verdict, improved control demo and smooth measured-profile-1
+  response are retained at their actual scope. This bounded packet seeks
+  family-specific observations and fault times; no criterion or credit closes
+  until the remaining families and operating ranges are reviewed.
+
 - 2026-09-23 first isolated-family verdict and reassessment: the user heard
   the exact [profile-1 48-kHz copy](../SYNTHESIS-QUALITY.md#first-isolated-source-listening-copy--2026-09-23)
   and called it smooth. This supports that one complete seven-key,

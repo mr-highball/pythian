@@ -43,6 +43,20 @@ core action: return to the open [source/articulation quality task](TODO/NS-2_syn
 using its existing finite audition matrix; combined-path task 03 remains blocked
 until that source task is accepted.
 
+## Source-family listening packet — 2026-09-23
+
+For [NS-2 source/articulation quality](TODO/NS-2_synthesis-quality_01.md),
+the first matrix criterion was already closed. The next criterion needs actual
+family-specific observations and fault times. The user's earlier brass/guitar/
+mallet descriptions belong to the recorded NSynth note-presence reference,
+not Pythian synthesis output. The existing five-second `sources.wav` and
+6.3-second stable sample-loop demo are now hash-bound in the [source matrix](SYNTHESIS-QUALITY.md#finite-listening-matrix--ns-2_synthesis-quality_01)
+and supplied for one concise family/loop review. This advances the reassessed
+review path without a new render or quality credit. The packet is one
+nonclosing source batch after that reassessment; stop source renders and wait
+for its listening response before deciding on repairs or the remaining measured
+profile/rate/gate cases. Criterion 2 and source-task credit remain open.
+
 ## Lower-pitched modulation verdict — 2026-09-23
 
 The user heard the complete existing 7.5-second
