@@ -22,6 +22,13 @@ ablation-parity and resource audits passed QA. An audit-only precision correctio
 retained the original 1e-9 tolerance and all saved predictions. This task remains
 open with no credit.
 
+The subsequent [accent-parity experiment](../BEAT-TRACKING.md#accent-parity-stopped)
+also failed its frozen gate: the authored polyphonic source reached zero matches,
+polyrhythm fell from .986301 to .395604 F1, and doubling regressed. Its uniform
+fast/alternating controls passed and every prior ablation path replayed. This is
+the second nonclosing metrical batch; stop parity/recurrence variants and
+reassess the evidence model before another experiment.
+
 **Acceptance Criteria:**
 
 - Use automatic candidate observations through the maintained candidate-path and selected-clock contracts, retaining plausible half/double-time and phase alternatives.
@@ -39,3 +46,11 @@ open with no credit.
 - Stopped candidate (2026-09-21): source-accent structure improved acceleration and missing regular pulses but still failed authored polyphonic/changing-clock acceptance. Passing deception/polyrhythm cases did not justify adoption or tuning. See [comparison evidence](../BEAT-TRACKING.md#metrical-source-structure).
 
 - Follow-up: distinguish metrical evidence from instrument/band changes and candidate omission. Provider agreement alone can favor the wrong beat level; retain half/double-time and phase alternatives.
+
+- Stopped candidate (2026-09-23): even/odd per-band accent consistency did not
+  expose the wrong fast polyphonic pulse; selected wrong candidates remained
+  strongly parity-consistent, while the same factor damaged polyrhythm and
+  doubling. The fixed nine-case comparison and source-bound reports are in
+  [beat tracking](../BEAT-TRACKING.md#accent-parity-stopped). No tuning follows.
+  At the two-batch checkpoint, require genuinely different evidence for metrical
+  identity and explicit uncertainty before another task experiment.

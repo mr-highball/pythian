@@ -21,6 +21,20 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Metrical source-evidence checkpoint — 2026-09-23
+
+The ready beat-level prerequisite tested one frozen, Pascal-only alternation
+hypothesis after the stopped source-recurrence comparison. All nine cached
+development cases and unchanged-method ablations ran with saved predictions
+before the independent 30-ms scorer. The authored polyphonic case fell to zero
+matches; polyrhythm and doubling regressed materially. Controls and exact
+ablation replay passed, so this is a scientific rejection, not an implementation
+fix to retune. [Beat tracking](BEAT-TRACKING.md#accent-parity-stopped) records the
+full result and ignored evidence. This is the second nonclosing metrical batch;
+stop recurrence/parity variants and reassess the observation model. No beat
+provider or task credit changed. The next safe goal work can follow another
+ready core prerequisite while independent metrical evidence is developed.
+
 ## Full-length private style inputs — 2026-09-22
 
 The user supplied one full multi-hour mix for each initial target style and

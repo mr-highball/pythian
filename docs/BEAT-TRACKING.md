@@ -13,10 +13,67 @@ alignment to measured onsets. It retains both the raw grid and adjusted source
 positions. This is offline timing analysis, not meter/downbeat inference or a
 replacement for the WFC learner and solver.
 
-The latest [joint candidate comparison](#model-candidate-comparison) recovers
-polyrhythm and deception timing without supplied rate/band hints. It still fails
-changing-tempo and authored controls, including confidently agreeing wrong pulse
-levels; it is not a replacement estimator or an admission policy.
+The [joint candidate comparison](#model-candidate-comparison) recovers
+polyrhythm and deception timing without supplied rate/band hints. Later
+[source recurrence](#metrical-source-structure) and
+[accent parity](#accent-parity-stopped) experiments retain unresolved wrong beat
+levels and changing-clock regressions. None is an adopted estimator or admission
+policy.
+
+<a id="accent-parity-stopped"></a>
+## Alternating accent strength does not resolve beat level — 2026-09-23
+
+The prior polyphonic failure retained a wrong fast pulse with strong source
+recurrence and model agreement while a slower 96-BPM candidate had strong source
+recurrence but no model agreement. A distinct fixed Pascal experiment tested
+whether alternating low/mid/high accent mass exposes weak subdivisions. For each
+existing half/same/double-period grid it compared per-band even/odd mean weights
+in both analysis halves, multiplied the smaller parity consistency by the old
+recurrence, and bounded the model-agreement contribution by that source score.
+The frozen hypothesis, exact formula, controls, input scope, nine-case budget and
+stop gate are retained in ignored `build/beat-accent-parity/POLICY.md`. No BPM,
+band or threshold was selected per recording.
+
+Checked FPC 3.2.2 Win32 controls passed for uniform fast pulses, 1/.25 alternating
+accents, alternating band roles, common timing offset, gain scaling, absent/short
+evidence and taper boundaries. The ablation reproduced each prior selected path
+and raw clock exactly. All nine candidate and ablation reports were saved before
+the unchanged independent Pascal 30-ms matcher scored them. The candidate's
+reference-range F1 and full-output extra counts are:
+
+| Input | Prior source recurrence F1 | Accent parity F1 | Full extras |
+| --- | ---: | ---: | ---: |
+| 01 calibration | .974359 | .974359 | 0 |
+| 02 arpeggio | .987952 | .987952 | 0 |
+| 03 deception | 1.000000 | 1.000000 | 1 |
+| 04 polyrhythm | .986301 | .395604 | 38 |
+| 05 doubling | .800000 | .608696 | 23 |
+| 19 acceleration | .950000 | .886076 | 4 |
+| Authored regular | 1.000000 | 1.000000 | 0 |
+| Authored polyphonic | .033898 | .000000 | 45 |
+| Authored tempo change | .863636 | .956522 | 0 |
+
+The fixed nonregression and polyphonic gates fail. All 239 selected polyphonic
+grid points have nearby band support, yet none of its 20 reference beats match.
+The wrong selected fast candidates have parity consistency about .83–.95, so
+the expected alternating contrast is not present in these observations; nearby
+slower candidates also look parity-consistent. Full support and low unknown
+counts therefore cannot certify metrical identity. The polyrhythm regression
+shows that this parity factor also suppresses useful alternatives elsewhere.
+
+**Decision:** stop this candidate without changing weights, windows, band
+definitions or thresholds. Keep the maintained selector and the prior passing
+development baseline. This is the second nonclosing metrical investigation
+batch; reassess the observation model before another experiment. The next
+candidate must distinguish musical pulse level from correlated band activity
+and shared wrong model events, while preserving true fast beats and independent
+unknown/coverage accounting. No maintained code, independent evaluation,
+listening verdict or task credit changes. Exact private report/source bindings,
+the deterministic summary (SHA-256
+`7146dc24a0e122e73ee66606c65a505f5af0a984e61f188fe9cb98ec62540a9e`)
+and failure evidence remain under ignored `build/beat-accent-parity/`. These
+short runs do not qualify many-hour throughput; a sampled peak memory result was
+not retained for this failed candidate.
 
 <a id="metrical-source-structure"></a>
 ## Repeated source accents and competing beat levels — 2026-09-21
