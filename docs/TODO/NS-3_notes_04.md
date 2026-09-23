@@ -47,6 +47,17 @@ and [rejected gate-slope rule](../PHRASE-EVALUATION.md#fixed-gate-slope-diagnost
 
 **Dev Notes:**
 
+- 2026-09-23 exact-window listener update: the user marked the fading
+  `guitar_acoustic_030-061-100` pitched sound audible in all three frozen
+  windows, including [3.75,4.00) seconds after the 3.0-second renderer
+  note-off. Their brass description, "audible, but sounds like loud static",
+  does not map pitched-note presence to its three exact windows. Both
+  fast-decay late windows also lack exact labels. Preserve the three reviewed
+  guitar labels and five pending labels in the
+  [listening packet](../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22).
+  This is partial human evidence, not an endpoint, completed source-separated
+  packet, presence scorer or task credit. Ask only for the unresolved frozen
+  windows; do not expand the source screen or infer them from whole-clip words.
 - 2026-09-22 split rationale: two consecutive nonclosing batches after the
   NSynth source change showed that a known gate and long-release tags do not
   provide reviewed acoustic tail/rest labels. The measured gate-slope rule

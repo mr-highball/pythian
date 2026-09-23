@@ -133,15 +133,20 @@ strummed sound fading away, and the fast-decay guitar as a tiny bell-like hit
 rather than a recognizable guitar. They reported the mallet clip as not
 audible. On follow-up, they reported that the brass sound fades **after** the
 3.0-second note-off. This supports a perceived post-control decay somewhere
-after that mark; it does not identify an audible end time. These whole-clip
-listening observations support perceptual contrast and a quiet-source warning,
-but do not state whether the
-named pitch is audible inside any fixed 250-ms window above. In particular,
-the fade description does not locate the end of the guitar tail, and the
-metadata's `guitar` family does not override the listener's bell-like timbre
-observation. The playback level/device were not reported. Keep all eight
-window labels pending until timestamped review; do not promote an RMS value,
-quality tag or whole-clip comment into a frame-level acoustic label.
+after that mark; it does not identify an audible end time. The metadata's
+`guitar` family does not override the listener's bell-like timbre observation.
+The playback level/device were not reported.
+
+The user's later exact-window response labels all three
+`guitar_acoustic_030-061-100` windows **audible**: [2.50,2.75), [3.00,3.25)
+and [3.75,4.00) seconds. This supports an audible fading guitar after the
+documented control note-off, including the final quarter-second; the file end
+still does not establish its acoustic silence endpoint. The brass follow-up
+said it was audible but sounded like loud static; it did not give three
+window-specific pitched-note labels. The fast-decay guitar and mallet late
+windows also remain unlabelled. Keep those five window labels pending; do not
+promote an RMS value, quality tag or whole-clip comment into a frame-level
+acoustic label.
 
 The exact question for review is whether a pitched note from the named source
 is **clearly audible**, **not audible**, or **uncertain** in each listed

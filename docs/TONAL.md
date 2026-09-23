@@ -1199,6 +1199,53 @@ after a changed inference policy; do not tune on the held-out errors and then
 call the same groups independent again. This policy grants no task credit or
 automatic key claim by itself.
 
+### Frozen note-aware local-key candidate stopped — 2026-09-23
+
+One development-only Pascal probe under ignored `build/localkey-candidate-1/`
+tested whether sparse note-specific peak support, onset increments and a
+two-second context could retain enough temporal evidence before folding to
+pitch classes. Its `POLICY.md` fixed the sources, 0.1-second cells, support
+formula, ranker, unknown gates, short-run suppression and 60-second/128-MiB
+budget before any recorded scoring. The probe used the maintained native WAV
+inference job and sparse-peak backend; no annotation or key label entered its
+inference path. Its full ranked alternatives and source-frame segments remain
+in ignored JSON for diagnostic replay. These heuristic scores are not
+calibrated probabilities.
+
+The first source run stopped before prediction or scoring on a tiny negative
+residue in a subtractive rolling context. A formula-preserving direct bounded
+sum repair passed the same source-free controls before the recorded runs; the
+pre-repair source hash and reconstructed failure are retained privately. The
+repaired source SHA-256 is
+`52e6f83bd95f8679341787e14500ffe31d51996816453f1292aa4c062da8634a`.
+Checked stable Win32 and Win64 processed both development HU33 WAVs and the
+rain/wind source inside the declared budgets, with zero reported leaks. The
+two targets emitted different full ranked-evidence JSON hashes, but the
+source-bound tonal scorer returned identical integer counts on both.
+
+| Development group | Supported exact | Admitted supported | Exact among admitted | Conflict unknown | Agreed changes correct | False known-key transitions / eligible stable frames |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| D911-02 HU33 | 183,015 / 1,183,203 | 734,706 / 1,183,203 | 183,015 / 734,706 | 29,988 / 152,145 | unavailable (0 eligible) | 5 / 1,006,803 |
+| D911-16 HU33 | 260,190 / 2,223,522 | 1,098,531 / 2,223,522 | 260,190 / 1,098,531 | 39,690 / 84,231 | 0 / 1 | 4 / 2,091,222 |
+
+Both groups fail exact, admitted-coverage, admitted-precision, conflict-unknown
+and false-transition gates; D911-16 also misses the agreed change. This is a
+stopped candidate under the prospective policy, not a reason to adjust its
+thresholds or inspect the untouched D911-05/D911-19/applause evaluation
+groups. The counts diagnose insufficient key admission and excessive confident
+switching; they do not isolate whether pitch identity, simultaneous-note
+ownership, tonic evidence or the chosen context rule caused the errors. No
+maintained key estimator, independent accuracy or task credit follows.
+
+The Pascal projection checked the original rain WAV and exact reviewed window
+hashes, source geometry and PCM equality, then clipped the existing decision
+without changing it. Win32/Win64 projections are byte-identical (SHA-256
+`7281305b39df78f3225e63da08700166fcdb9cccce94b99c30958f0aad7d77af`).
+The native no-key scorer counted **0 false-key frames / 441,000 reviewed
+frames**; the combined frozen development gate returned failure on both
+targets because of the tonal rows. This successful negative case cannot
+offset the tonal failures.
+
 ## Native inspection
 
 The [native tool](../tools/pythian.tonal.inspect.lpr) prints JSON:

@@ -136,6 +136,29 @@ is claimed.
 
 **Dev Notes:**
 
+- 2026-09-23 frozen note-aware candidate stopped: the ignored Pascal probe
+  preserved note-specific peak support and onset evidence through a two-second
+  context before folding to pitch classes. After one formula-preserving numeric
+  repair made before any score, checked Win32/Win64 source-free controls and
+  three development WAV runs passed their resource and leak bounds. The
+  [frozen development result](../TONAL.md#frozen-note-aware-local-key-candidate-stopped--2026-09-23)
+  reports identical integer tonal scores across targets. D911-02 and D911-16
+  fail exact, admitted coverage/precision, conflict abstention and stable
+  transition gates; D911-16 misses its one agreed change. The reviewed rain
+  window has zero false-key frames, but cannot offset these failures. Stop this
+  candidate without threshold/context tuning; D911-05, D911-19 and applause
+  stay untouched. This does not close criterion 2, 3 or 5 or earn credit.
+- 2026-09-23 task-flow checkpoint: the 22,050-Hz source-rate preparation and
+  this frozen candidate are two consecutive batches since criterion 1 closed,
+  neither closing another criterion. The first removed a real input barrier;
+  the second showed sparse note support plus local ranking is still far below
+  the key/unknown/change limits. Do not resume a ranker, support threshold,
+  context-window or profile variation from these results. The next action is
+  the existing [reviewed note-presence reference](NS-3_notes_04.md) at its
+  exact frozen listening windows; key inference resumes only after a genuinely
+  distinct, source-grounded observation of note activity and tonic/change
+  evidence with a new prospective gate. This changes the work from key
+  candidate tuning to a separately accepted core reference deliverable.
 - 2026-09-23 native source-rate prerequisite: the qualified HU33 WAVs are
   22,050 Hz, which the accepted inference identity allowlist previously
   rejected despite a capable Pascal resampler. The focused adapter change

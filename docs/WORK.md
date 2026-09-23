@@ -844,6 +844,65 @@ milestone percentage changes. Closing this criterion resets the consecutive
 nonclosing-batch checkpoint; the stopped tonal representation experiments do
 not restart.
 
+## Frozen local-key candidate stop and reassessment — 2026-09-23
+
+For [NS-3_context_01](TODO/NS-3_context_01.md) criterion 2, one ignored
+development-only Pascal probe froze note-specific sparse-peak support, onset
+increments, a two-second context, ranked diatonic fits and explicit unknown
+gates before scoring. Its exact policy, source and report hashes, outputs,
+ranked evidence, checked Win32/Win64 run logs and gate JSON remain under
+`build/localkey-candidate-1/`. The initial source run failed before prediction
+or scoring on a tiny negative rolling-sum residue. A direct bounded-sum repair
+preserved the formula and passed source-free controls before the only recorded
+development runs. Checked runs stayed within 60 seconds and 128 MiB per source
+and reported zero leaks. Full output JSON hashes differ across targets; both
+produce the same integer tonal scorer counts. This does not establish byte
+parity of ranked floating evidence.
+
+The frozen gate reports D911-02 exact 183,015/1,183,203 and admitted
+734,706/1,183,203; D911-16 exact 260,190/2,223,522 and admitted
+1,098,531/2,223,522. Exact precision is 183,015/734,706 and
+260,190/1,098,531 respectively. Conflict unknown is 29,988/152,145 and
+39,690/84,231; D911-16 finds 0/1 agreed changes. Both groups exceed the
+stable-interior false-transition limit (5/1,006,803 and 4/2,091,222). The
+Pascal rain-window projection checked source/window PCM identity and yielded
+one unknown segment for the exact reviewed [8,18) seconds; the separate
+no-key scorer counts 0/441,000 false-key frames. The combined development
+gate exits 2 on both target score sets. [Detailed denominators and limits](TONAL.md#frozen-note-aware-local-key-candidate-stopped--2026-09-23)
+remain in the tonal record. D911-05, D911-19 and the independent applause
+window were neither inferred nor scored. No inference code was promoted, no
+independent accuracy claimed and no credit changed.
+
+The native 22,050-Hz source preparation and this candidate are two consecutive
+nonclosing batches after criterion 1's accepted policy. The first removed a
+source identity barrier; the second tested and rejected a concrete note-aware
+heuristic. The measurements do not distinguish actual notes from harmonic
+partials, simultaneous roles or tonic evidence well enough to justify another
+ranker/threshold/context variation. Stop this investigation sequence. The
+next core result will follow the already frozen
+[note-presence reference task](TODO/NS-3_notes_04.md): obtain exact listener
+labels for its existing continuation, post-control and rest windows, then
+qualify its source-bound packet or keep it open with the precise remaining
+blocker. Local-key inference stays open until a distinct source-grounded
+observation and prospective unknown/change gate can be justified. This is a
+change of deliverable, not a reset of unsuccessful-attempt evidence.
+
+## Exact-window note-presence listener update — 2026-09-23
+
+After the local-key stop redirected core work to
+[NS-3_notes_04](TODO/NS-3_notes_04.md), the user reviewed the existing
+4-second fading guitar clip and marked its pitched sound audible in all three
+frozen 250-ms windows: [2.50,2.75), [3.00,3.25) and [3.75,4.00) seconds.
+The final label supports an audible post-control tail but does not locate a
+silence endpoint beyond the file. Their brass reply said "audible, but sounds
+like loud static" without locating a clearly pitched note in its three
+windows; both fast-decay late windows are also still pending. The
+[packet](PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22)
+retains the exact scope. This partial human response closes no acceptance
+criterion and earns no credit; complete the five missing window judgments
+before publishing a reviewed label TSV or scoring presence. No additional
+source-screen or threshold variant is authorized by this response.
+
 ## Journal publication checkpoint — 2026-09-23
 
 For NS-5_scale_02 criterion 2, the acoustic journal commands now stage model,

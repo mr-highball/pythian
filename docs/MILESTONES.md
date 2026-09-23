@@ -387,11 +387,12 @@ governs selection. Bounded NS-2 listening is complete. Select a ready NS-3
 musical-evidence prerequisite that advances recorded learning without changing
 accepted synthesis. The [beat candidate task](TODO/NS-3_tempo_04.md) is paused
 after two failed source-evidence screens; the
-[local-key reference packet](TODO/DONE/NS-3_context_03.md) is accepted and
-unblocks the [key-decision task](TODO/NS-3_context_01.md); the
-[note-presence reference task](TODO/NS-3_notes_04.md) awaits
-exact judgments on its already frozen listening windows. Do not expand their
-stopped packets or restart rejected scorer variants. The
+[local-key reference packet](TODO/DONE/NS-3_context_03.md) is accepted. The
+[key-decision task](TODO/NS-3_context_01.md) has a stopped frozen development
+candidate and remains open. The next core deliverable is the
+[note-presence reference task](TODO/NS-3_notes_04.md): three exact guitar-window
+labels are recorded, and the five remaining frozen judgments are pending. Do
+not expand their stopped packets or restart rejected scorer variants. The
 [register task](TODO/NS-3_notes_01.md) requires independently discriminating
 evidence and a prospective ambiguity/coverage rule before another scored
 proposal. Keep existing independent evaluation material protected.

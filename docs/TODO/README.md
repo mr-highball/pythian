@@ -17,11 +17,13 @@ No task earns credit merely by being written. Accepted task credit is **12.90**;
 
 The [pause retrospective](../WORK.md#pause-retrospective--2026-09-21) tightens
 existing note, presence, mixture and style-reference criteria without adding
-tasks, changing credits or accepting new capability. The current core-first
-selection follows the accepted local-key/no-key reference packet into
-[NS-3_context_01](NS-3_context_01.md); style-reference specification waits for
-grounded musical annotations. Note research retains its stopped proposals and
-progress-checkpoint count.
+tasks, changing credits or accepting new capability. The accepted local-key
+reference packet exposed a failed frozen development candidate in
+[NS-3_context_01](NS-3_context_01.md). The next core deliverable follows the
+existing [note-presence reference](NS-3_notes_04.md): three exact guitar-window
+labels are recorded, with five frozen judgments still pending. Style-reference
+specification waits for grounded musical annotations. Note research retains
+its stopped proposals and progress-checkpoint count.
 
 Every open and DONE task ends with **Dev Notes:** for failed approaches,
 repaired issues and possible follow-ups. Existing evidence is summarized there;
