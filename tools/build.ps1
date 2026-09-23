@@ -180,6 +180,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Activity compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.activity$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Activity and continuity checks failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.presence.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Presence evidence compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.presence$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Presence evidence checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.onset.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Onset localization compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.onset$executableSuffix")
@@ -312,6 +316,8 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Note-presence reference checker compilation failed' }
   & $compilerPath @compilerArgs 'tools/pythian.presence.decision.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Note-presence decision compilation failed' }
+  & $compilerPath @compilerArgs 'tools/pythian.presence.inspect.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Presence inspection compilation failed' }
   & (Join-Path $buildRoot "pythian.presence.decision$executableSuffix") 'controls'
   if ($LASTEXITCODE -ne 0) { throw 'Note-presence decision controls failed' }
   & $compilerPath @compilerArgs '-Futools' 'tools/pythian.localkey.reference.lpr'

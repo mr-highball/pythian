@@ -21,7 +21,29 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
-## Recorded presence observation path — 2026-09-23
+## Maintained presence observation boundary — 2026-09-23
+
+The reassessed batch implemented a maintained Pascal observation boundary,
+[PRESENCE](PRESENCE.md), instead of running another source selector. The new
+clip/streaming API measures exact candidate and disjoint same-recording
+reference windows in source frames; it retains 64-bit source geometry,
+policy identity, RMS/peak/envelope evidence, reviewed-reference identity and
+explicit unknown. The `reviewed` flag is a caller assertion, not an acoustic
+label inferred from annotations. The native WAV inspector verifies SHA256
+before emitting TSV. Checked stable FPC 3.2.2 Win32/Win64 focused controls
+passed with zero unfreed blocks, including source-frame coordinates beyond
+32-bit range and partial-read failure preservation. Both targets produced
+the same row on a hash-bound 100,000-frame stereo synthetic WAV window,
+crossing the reader's 65,536-frame chunks and retaining `unknown` for an
+unreviewed reference. A wrong SHA256 rejected before output. No recorded
+instrument audibility or note/event accuracy is inferred. A 30-ms 55-Hz sine
+at peak 0.005 reports `unknown` against the 0.001-RMS reference; the unit
+retains its nonzero RMS, and the fixed fourfold ratio was not retuned.
+Calibration,
+independent cases, source-grounded labels and QA acceptance remain open, with
+no task credit yet.
+
+## Recorded presence source path — 2026-09-23
 
 The subsequent NS-3_notes_05 GuitarSet source-wide packet froze a
 player/material-separated role policy before scanning the retained annotation

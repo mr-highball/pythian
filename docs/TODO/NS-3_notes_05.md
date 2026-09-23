@@ -58,6 +58,22 @@ by changing its failed pair or window in place.
 
 **Dev Notes:**
 
+- 2026-09-23 maintained observation boundary after source reassessment:
+  [PRESENCE](../PRESENCE.md) defines control, signal, audible instrument and
+  event separately. `src/pythian.presence.pas` now measures exact candidate and
+  disjoint same-source rest windows through clip and 64-bit streaming APIs,
+  with fixed policy identity, work caps, contrast evidence and explicit unknown.
+  The native WAV inspector retains source hash/geometry and rejects a wrong
+  hash before output. Checked stable Win32/Win64 source-free controls and a
+  100,000-frame stereo consumer path passed with zero unfreed blocks. This
+  advances the observation/API and consumer criteria; it makes no audible-note
+  or recorded score claim. A 30-ms 55-Hz low sine at peak 0.005 remains
+  `unknown` against a 0.001-RMS rest, with its measured RMS retained; this is
+  visible missed-active coverage, not permission to retune the frozen ratio.
+  The rest reference's `reviewed` flag remains a
+  caller assertion needing source-bound acoustic evidence. Recorded
+  development/independent cases, broader controls and QA acceptance remain
+  open; no task credit is earned.
 - 2026-09-23 second nonclosing source batch and reassessment: a frozen
   annotation-only GuitarSet screen audited all 360 JAMS members in checked
   stable Win64 Pascal, excluding three publisher-named timing/duplicate-note
