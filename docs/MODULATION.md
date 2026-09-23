@@ -305,7 +305,7 @@ then 5 Hz vibrato, 5 Hz tremolo, and 0.5 Hz triangle cutoff/pan motion. The outp
 uses native tone rendering and contains no recorded source music. The earlier
 modulation demo below retains its recorded WAV hash. Listening quality beyond
 these signal checks remains an operator judgement.
-The original +/-30-cent vibrato rendering has SHA256
+The original +/-30-cent vibrato rendering, now preserved for comparison, has SHA256
 `801b0a6af642307c3b71bb6423f7cb9323a8c9f4302582d155552d5d3d651ee9`.
 
 ### Listener-directed vibrato narrowing — 2026-09-23
@@ -319,11 +319,14 @@ sections and all render settings are unchanged. The old +/-30-cent copy is
 Checked FPC 3.2.2 and 3.3.1 Win32 renders of the revised demo are byte-identical
 at SHA256 `d8986a0ef3c66b3d11930fd8f0cd866415d55c37cc36f1d9242f0d9684c83ebb`,
 under `build/control-curves-vibrato-review/{stable,trunk}/control-curves-after-15c.wav`.
-Both retain 288000 stereo frames at 24 kHz. A private Pascal PCM comparison
-reported 136610 changed samples within the vibrato section and zero elsewhere;
-the revised peak is 0.124268. This is a proposed audible repair with a bound
-before/after pair. Listener review of the narrower wobble is pending, so no
-processing-quality criterion or task credit closes.
+Both retain 288000 stereo frames at 24 kHz. The standard stable demo output at
+`build/3.2.2-i386-win32/control-curves.wav` was regenerated with the same
+revised WAV hash. A private Pascal PCM comparison reported 136610 changed
+samples within the vibrato section and zero elsewhere;
+the revised peak is 0.124268. After hearing the bound before/after pair, the
+user said the revised vibrato "seems better on the after." This selects the
+narrower demo setting for this audition; it does not judge the remaining
+processing and routing cases. No processing-quality criterion or task credit closes.
 
 ### Earlier additive/FM checkpoint
 

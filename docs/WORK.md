@@ -21,7 +21,7 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
-## Control-curve vibrato repair candidate — 2026-09-23
+## Control-curve vibrato listener preference — 2026-09-23
 
 The user reviewed the existing 12-second control comparison as good overall,
 but judged the vibrato pitch wobble in seconds 3–6 too wide. The existing demo
@@ -30,9 +30,25 @@ uses +/-15 cents with the same period; the native automation implementation
 is unchanged. The [before/after evidence](MODULATION.md#listener-directed-vibrato-narrowing--2026-09-23)
 binds the two WAV identities, checked stable/development Win32 renders and a
 Pascal PCM comparison: 136610 samples changed only in the target section,
-none elsewhere, with 0.124268 revised peak. Await listener comparison before
-calling this audible repair accepted. This is one nonclosing processing-quality
-batch after the source-family reassessment; no task or milestone credit moves.
+none elsewhere, with 0.124268 revised peak. The user heard the bound pair and
+said the revised version "seems better on the after." The standard stable demo
+WAV was regenerated to the revised hash, and the original is preserved. This
+selects the preferred authored setting for one audition; effect and routing
+verdicts remain open. This batch closes no quality criterion or task credit.
+
+## Beat source-pulse evidence stop — 2026-09-23
+
+An independent [publisher inventory](BEAT-TRACKING.md#publisher-source-pulse-inventory--2026-09-23)
+for ARTBeaT 02/04 found whole-mix beat annotations and musical descriptions,
+but no listed source-separated pulse labels, stems or score/events. The archive
+contents were not inspected, so the record does not claim the data are absent.
+Together with the failed shared-waveform subtraction, this is two consecutive
+nonclosing source-evidence batches after the tempo_04 omission reassessment.
+Stop 02/04 fit/retention experiments until an independently attributable pulse
+reference can be aligned to the exact original WAV clock. Preserve the frozen
+candidate gates, prior reports and task credit. Continue the ready NS-2 quality
+review; its control-demo vibrato preference is recorded above, while the other
+source and processing cases remain open.
 
 ## Isolated source review and task-flow reassessment — 2026-09-23
 

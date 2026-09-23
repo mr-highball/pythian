@@ -49,6 +49,16 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
 
 **Dev Notes:**
 
+- 2026-09-23 publisher source-pulse inventory: an independent read-only
+  [official-page check](../BEAT-TRACKING.md#publisher-source-pulse-inventory--2026-09-23)
+  lists whole-mix beats for ARTBeaT 02/04 but finds no listed stems, score/events
+  or source-separated pulse labels. The archive contents were not inspected, so
+  absence is not proven. Its arpeggio/drum description cannot classify failed
+  windows. This and the shared-waveform subtraction stop are two consecutive
+  nonclosing source-evidence batches. Suspend 02/04 policy fitting until an
+  independently attributable pulse reference is aligned to the exact WAV clock;
+  preserve the frozen gates and reports. No criterion or credit closes.
+
 - 2026-09-23 post-reassessment shared-arpeggio screen: the publisher calls
   ARTBeaT 02/03/04 openings the same arpeggio, so a frozen Pascal check tested
   whether their exact original WAVs share a subtractable intro waveform.

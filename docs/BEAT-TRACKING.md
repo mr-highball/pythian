@@ -242,6 +242,26 @@ limits. No source-pulse labels, candidate-policy change, task criterion or
 credit follow. Tempo_04 still needs independently reviewable acoustic pulse
 status and a predeclared fit/retention decision within its frozen gates.
 
+### Publisher source-pulse inventory — 2026-09-23
+
+An independent read-only check of the same [ARTBeaT publisher page](https://audiolabs-erlangen.de/resources/MIR/2024-ARTBeaT)
+found the downloadable dataset and sonified whole-mix beat-tapping annotations,
+but no published source-separated pulse labels, stems or score/event data for
+the hash-bound 02 and 04 WAVs above. The page calls 02 a synthesizer arpeggio
+with later added instruments and 04 the same arpeggio with a simultaneous drumbeat
+at two-thirds its tempo. Those descriptions identify a possible ambiguity, not
+which sound supplied a pulse at any failed source-clock window. The dataset page
+labels its archive CC BY 4.0; this inventory did not inspect the archive contents,
+so it cannot establish that unlisted data are absent.
+
+The needed evidence is a separately attributable pulse/event reference tied to
+the exact original WAV clock. A stem would need verified offset, rate and any
+resampling latency; score or MIDI events would need a tempo map and render offset.
+Do not score another 02/04 fit or retention policy from the whole-mix annotations
+alone. This is the second nonclosing source-evidence batch after the omission
+reassessment. Suspend this recorded challenge until aligned source-pulse evidence
+exists; keep the frozen gates, authored controls and saved reports intact.
+
 <a id="accent-parity-stopped"></a>
 ## Alternating accent strength does not resolve beat level — 2026-09-23
 
