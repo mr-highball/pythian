@@ -854,13 +854,50 @@ and its source-free controls run by `tools/build.ps1`.
 `extract-evaluation <archive> <fresh-asset-root>` selects the 13 frozen
 reserved entries with the same Pascal ZIP and hash checks;
 `verify-evaluation <asset-root>` verifies their identities without parsing
-labels or decoding audio. The reserved annotation intervals and coordinates
-have not yet been reproduced, so reference-task criterion 4 remains open.
-Criterion 5's separate scoring denominators also remain open.
+labels or decoding audio. The `evaluation <asset-root> <fresh-output-root>`
+command now reproduces their annotation intervals and exact source-frame
+coordinates, with score-ann2 mode and transposition checks. Criterion 5's
+separate scoring denominators remain open.
 
 The fresh selective extraction and subsequent reference reports also passed,
 with byte-identical JSON to the original acquired-input run and zero unfreed
 blocks. Only ignored local artifacts were written.
+
+### Reserved interval coordinate replay — 2026-09-23
+
+The [same Pascal reader](../tools/pythian.localkey.reference.lpr) processed
+the hash-bound D911-05/19 HU33 assets after the whole-composition roles were
+fixed. The longer D911-05 source required an explicit 360-second source and
+decimal-time bound; its 22,050-Hz mono WAV has 6,050,816 frames. D911-19 has
+1,563,648 frames on the same clock. The ignored reports retain every original
+decimal boundary, half-open source-frame interval, annotator key, whole-source
+coverage category, source hash, score-ann2 row mapping, and evaluation role.
+No key estimator, confidence rule or waveform prediction was run. These
+references have the same HU33 performance and score-transfer limitations
+described above.
+
+| Reserved group | Annotator rows 1/2/3 | Score-ann2 rows | Partition rows | Unlabelled frames | Full disagreement frames | Unanimous frames | Report SHA-256 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| D911-05 HU33 | 5/6/5 | 6 | 8 | 116,279 | 0 | 5,934,537 | `8a3de2a494cb89cd49e1851b2f19943e6b33c1258c6f1bbe88d624f2a85f2daa` |
+| D911-19 HU33 | 4/4/1 | 4 | 6 | 86,739 | 298,557 | 1,178,352 | `3c6f2dfde15de4319821f9276e578c8a21233470822c7b1bb84672172a2de4db` |
+
+All listed coverage classes sum exactly to each WAV's frame count; partial
+coverage is zero in both. Both score-ann2 files have zero transfer gaps, which
+is a property of these annotation files, not proof of continuous acoustic
+tonality. Unlabelled frames are outside the available local-key labels and
+must not be counted as expert no-key truth. D911-19's full disagreement is
+annotator conflict, not a settled alternate key or verified no-key event.
+The complete labelled JSON remains ignored under `build/context-reference-evaluation/`.
+
+Stable checked FPC 3.2.2 Win32 and Win64 runs passed source identity, WAV
+geometry, decimal boundary, complete partition, score/audio mode and
+transposition, and group-role checks with zero unfreed blocks. Their evaluation
+JSON files are byte identical. A fresh development replay remained byte
+identical to both previously accepted reports. An occupied evaluation report
+directory rejects before writing. This closes
+[NS-3_context_03](TODO/NS-3_context_03.md) criterion 4's Pascal reader and
+coordinate reproduction. Separate key/unknown/change scoring denominators and
+any acoustic no-key qualification remain open.
 
 ## Native inspection
 

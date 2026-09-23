@@ -297,6 +297,20 @@ and coordinate reproduction for criterion 4, and separate coverage denominators
 for criterion 5, remain open. No task credit or milestone percentage changes;
 the nonclosing-batch count resets after this criterion closure.
 
+The following packet batch closed NS-3_context_03 criterion 4 with a
+[tracked Pascal evaluation reader](TONAL.md#reserved-interval-coordinate-replay--2026-09-23).
+It reconstructs D911-05/19 HU33 original annotation boundaries and full
+22,050-Hz source-frame partitions, verifies score-ann2 mode/transposition
+and fixed roles, and writes labelled JSON only under ignored `build/`. The
+274-second D911-05 WAV required widening the source/time budget from 180 to
+360 seconds. Stable checked Win32/Win64 evaluation reports match byte for
+byte and report zero unfreed blocks. Replayed development reports remain
+identical to the prior accepted bytes. Neither zero score gaps nor uncovered
+frames establish expert no-key truth; D911-19's annotator disagreement remains
+unresolved. Criterion 5 and the remaining no-key/ambiguous source qualification
+need a separate scoring policy and acoustic evidence. No task or milestone
+credit changes.
+
 ## NS-5 listening-protocol criterion — 2026-09-23
 
 Focused specification QA for [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md)

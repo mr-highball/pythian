@@ -51,6 +51,18 @@ Starting evidence: [local-key reference study](../TONAL.md#local-key-reference-c
 
 **Dev Notes:**
 
+- 2026-09-23 reserved interval replay: the [Pascal packet checker](../TONAL.md#reserved-interval-coordinate-replay--2026-09-23)
+  now reads the two hash-bound evaluation WAV/annotation groups under the
+  frozen roles and reproduces all source-frame label boundaries, coverage
+  classes and score-ann2 mappings. D911-05 required an explicit 360-second
+  bound; its 6,050,816-frame source and D911-19's 1,563,648-frame source pass.
+  Evaluation reports are byte identical on stable checked Win32/Win64; the
+  development refactor reproduces both prior reports byte for byte. All runs
+  report zero unfreed blocks; occupied evaluation output rejects before writing.
+  **Criterion 4 is met.** Unlabelled intervals
+  remain unverified as no-key; the D911-19 disagreement is unresolved acoustic
+  interpretation. Criterion 5's separate scoring denominators and the full
+  task's no-key/ambiguous reference qualification remain open; no credit moves.
 - 2026-09-23 reserved identity and role batch: [D911-05/19 original HU33
   entries](../TONAL.md#reserved-evaluation-identities--2026-09-23) were selected
   under a frozen ignored policy and extracted by checked Pascal code from the

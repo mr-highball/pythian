@@ -338,7 +338,7 @@ begin
       end;
     end;
   end;
-  Require(LNumerator <= 180 * LDenominator, 'Time exceeds bounded source');
+  Require(LNumerator <= 360 * LDenominator, 'Time exceeds bounded source');
   Result := (LNumerator * ARate * 2 + LDenominator) div (2 * LDenominator);
 end;
 
@@ -399,6 +399,7 @@ var
   LLines: TStringList;
   LFirst: Integer;
   LSecond: Integer;
+  LCount: Integer;
   I: Integer;
 begin
   Result := nil;
@@ -411,9 +412,11 @@ begin
     LLines.Text := LText;
     Require((LLines.Count >= 2) and (LLines.Count <= 65), 'Reference row bound');
     Require(LLines[0] = 'start;end;key', 'Unexpected reference header');
-    Require(LLines.Count = ACount + 1, 'Unexpected bound reference count');
-    SetLength(Result, ACount);
-    for I := 0 to ACount - 1 do
+    LCount := LLines.Count - 1;
+    Require((ACount < 0) or (LCount = ACount),
+      'Unexpected bound reference count');
+    SetLength(Result, LCount);
+    for I := 0 to LCount - 1 do
     begin
       LLine := LLines[I + 1];
       LFirst := Pos(';', LLine);
@@ -571,7 +574,8 @@ begin
 end;
 
 procedure AttachScoreTransfer(const AReport: TJSONObject; const AScore,
-  AAudio: TRegions; const ASourceFrames: Int64);
+  AAudio: TRegions; const ASourceFrames: Int64;
+  const ARequireGap: Boolean);
 var
   LRows: TJSONArray;
   LGaps: TJSONArray;
@@ -664,7 +668,8 @@ begin
     LRow.Add('label', 'ann2_score_transferred_ambiguous');
     Inc(LGapCount);
   end;
-  Require(LGapCount > 0, 'No transferred ambiguity intervals');
+  Require((not ARequireGap) or (LGapCount > 0),
+    'No transferred ambiguity intervals');
   if LTranspose > 6 then
   begin
     Dec(LTranspose, 12);
@@ -683,6 +688,8 @@ begin
   Require(TimeFrame('0.005', 100) = 1, 'Tie must round upward');
   Require(TimeFrame('0.004', 100) = 0, 'Sub-tie boundary');
   Require(TimeFrame('0.3', 22050) = 6615, 'Original clock conversion');
+  Require(TimeFrame('360', 22050) = 7938000,
+    'Long reference source bound');
   LRejected := False;
   try
     TimeFrame('0,3', 22050);
@@ -727,7 +734,7 @@ begin
   WriteLn('PASS: exact clocks and separate reference uncertainty');
 end;
 
-procedure Preflight(const AIndex: Integer);
+procedure Preflight(const AIndex: Integer; const AEvaluation: Boolean);
 var
   LClip: TAudioClip;
   LHash: String;
@@ -741,11 +748,45 @@ var
   LAnnotation: TJSONObject;
   LRow: TJSONObject;
   LStarted: QWord;
+  LSong: String;
+  LWaveHash: String;
+  LScoreHash: String;
+  LAnnotationHashes: array[0..2] of String;
+  LExpectedRows: array[0..2] of Integer;
+  LRole: String;
+  LExposure: String;
   I: Integer;
   J: Integer;
 begin
-  Require((AIndex >= 0) and (AIndex <= 1), 'Unknown development selection');
-  LOutput := GOutputRoot + 'localkey-' + CSongs[AIndex] + '.json';
+  Require((AIndex >= 0) and (AIndex <= 1), 'Unknown reference selection');
+  if AEvaluation then
+  begin
+    CheckRoleIsolation;
+    LSong := CEvaluationSongs[AIndex];
+    LWaveHash := CEvaluationWaveHashes[AIndex];
+    LScoreHash := CEvaluationScoreHashes[AIndex];
+    LRole := 'independent_evaluation';
+    LExposure := 'all performances and excerpts of D911-05 and D911-19';
+    for I := 0 to 2 do
+    begin
+      LAnnotationHashes[I] := CEvaluationAnnotationHashes[AIndex, I];
+      LExpectedRows[I] := -1;
+    end;
+  end
+  else
+  begin
+    LSong := CSongs[AIndex];
+    LWaveHash := CWaveHashes[AIndex];
+    LScoreHash := CScoreHashes[AIndex];
+    LRole := 'development';
+    LExposure := 'all performances and excerpts of D911-02 and D911-16';
+    for I := 0 to 2 do
+    begin
+      LAnnotationHashes[I] := CAnnotationHashes[AIndex, I];
+      LExpectedRows[I] := CRowCounts[AIndex, I];
+    end;
+  end;
+  LOutput := GOutputRoot + 'localkey-' + LSong + '.json';
   Require(not FileExists(LOutput), 'Preserve existing reference output');
   LStarted := GetTickCount64;
   LClip := nil;
@@ -757,37 +798,41 @@ begin
       CHU33NoticeHash, 'HU33 notice identity');
     Require(FileHash(GAssetRoot + '03_ExtraMaterial/license_SC06.txt', 1024) =
       CSC06NoticeHash, 'SC06 notice identity');
-    LName := 'Schubert_D911-' + CSongs[AIndex] + '_HU33';
+    LName := 'Schubert_D911-' + LSong + '_HU33';
     LHash := FileHash(GAssetRoot + '01_RawData/audio_wav/' + LName + '.wav', 16000000);
-    Require(LHash = CWaveHashes[AIndex], 'WAV identity mismatch');
+    Require(LHash = LWaveHash, 'WAV identity mismatch');
     LClip := LoadWaveSource(GAssetRoot + '01_RawData/audio_wav/' + LName + '.wav', LHash);
-    Require(LHash = CWaveHashes[AIndex], 'WAV changed during load');
+    Require(LHash = LWaveHash, 'WAV changed during load');
     Require((LClip.SampleRate = 22050) and (LClip.Channels = 1) and
-      (LClip.FrameCount <= 180 * 22050), 'Unexpected source geometry');
+      (LClip.FrameCount <= 360 * 22050),
+      'Unexpected source geometry: rate=' + IntToStr(LClip.SampleRate) +
+      ' channels=' + IntToStr(LClip.Channels) +
+      ' frames=' + IntToStr(LClip.FrameCount));
     for I := 0 to 2 do
     begin
       LTracks[I] := ReadAnnotation(GAssetRoot + '02_Annotations/ann_audio_localkey-ann' +
-        IntToStr(I + 1) + '/' + LName + '.csv', CAnnotationHashes[AIndex, I],
-        LClip.SampleRate, LClip.FrameCount, CRowCounts[AIndex, I]);
+        IntToStr(I + 1) + '/' + LName + '.csv', LAnnotationHashes[I],
+        LClip.SampleRate, LClip.FrameCount, LExpectedRows[I]);
     end;
     LScore := ReadAnnotation(GAssetRoot +
       '02_Annotations/ann_score_localkey-ann2/Schubert_D911-' +
-      CSongs[AIndex] + '.csv', CScoreHashes[AIndex], 1000, 180000,
-      CRowCounts[AIndex, 1]);
+      LSong + '.csv', LScoreHash, 1000, 180000,
+      LExpectedRows[1]);
     LReport := Partition(LTracks, LClip.FrameCount);
-    AttachScoreTransfer(LReport, LScore, LTracks[1], LClip.FrameCount);
+    AttachScoreTransfer(LReport, LScore, LTracks[1], LClip.FrameCount,
+      not AEvaluation);
     LReport.Add('source', LName);
     LReport.Add('source_sha256', LHash);
     LReport.Add('source_rate', LClip.SampleRate);
     LReport.Add('source_channels', LClip.Channels);
     LReport.Add('source_frames', LClip.FrameCount);
-    LReport.Add('score_ann2_sha256', CScoreHashes[AIndex]);
+    LReport.Add('score_ann2_sha256', LScoreHash);
     LReport.Add('policy', CPolicyVersion);
     LReport.Add('producer', 'pythian.localkey.reference');
-    LReport.Add('composition_group', 'Schubert_D911-' + CSongs[AIndex]);
-    LReport.Add('role', 'development');
-    LReport.Add('exposure', 'all performances and excerpts of D911-02 and D911-16');
-    LReport.Add('independent_case_pass', False);
+    LReport.Add('composition_group', 'Schubert_D911-' + LSong);
+    LReport.Add('role', LRole);
+    LReport.Add('exposure', LExposure);
+    LReport.Add('independent_case_pass', AEvaluation);
     LReport.Add('waveform_predictions', False);
     LReport.Add('verified_nontonal_reference', False);
     LAnnotations := TJSONArray.Create;
@@ -797,7 +842,7 @@ begin
       LAnnotation := TJSONObject.Create;
       LAnnotations.Add(LAnnotation);
       LAnnotation.Add('annotator', I + 1);
-      LAnnotation.Add('sha256', CAnnotationHashes[AIndex, I]);
+      LAnnotation.Add('sha256', LAnnotationHashes[I]);
       LIntervals := TJSONArray.Create;
       LAnnotation.Add('intervals', LIntervals);
       for J := 0 to High(LTracks[I]) do
@@ -824,7 +869,7 @@ end;
 begin
   try
     Require(ParamCount >= 1,
-      'Usage: pythian.localkey.reference controls | extract <archive> <fresh-asset-root> | extract-evaluation <archive> <fresh-asset-root> | development <asset-root> <fresh-output-root> | verify-evaluation <asset-root>');
+      'Usage: pythian.localkey.reference controls | extract <archive> <fresh-asset-root> | extract-evaluation <archive> <fresh-asset-root> | development <asset-root> <fresh-output-root> | verify-evaluation <asset-root> | evaluation <asset-root> <fresh-output-root>');
     if (ParamStr(1) = 'controls') and (ParamCount = 1) then
     begin
       Controls;
@@ -850,8 +895,20 @@ begin
       Require(not FileExists(GOutputRoot + 'localkey-02.json') and
         not FileExists(GOutputRoot + 'localkey-16.json'),
         'Preserve existing reference outputs');
-      Preflight(0);
-      Preflight(1);
+      Preflight(0, False);
+      Preflight(1, False);
+    end
+    else if (ParamStr(1) = 'evaluation') and (ParamCount = 3) then
+    begin
+      GAssetRoot := IncludeTrailingPathDelimiter(ParamStr(2));
+      GOutputRoot := IncludeTrailingPathDelimiter(ParamStr(3));
+      Require(DirectoryExists(GAssetRoot), 'Missing evaluation source directory');
+      Require(DirectoryExists(GOutputRoot), 'Missing evaluation output directory');
+      Require(not FileExists(GOutputRoot + 'localkey-05.json') and
+        not FileExists(GOutputRoot + 'localkey-19.json'),
+        'Preserve existing evaluation reference outputs');
+      Preflight(0, True);
+      Preflight(1, True);
     end
     else
     begin
