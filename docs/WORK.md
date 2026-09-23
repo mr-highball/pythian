@@ -23,6 +23,18 @@ from planned semantic providers, profile persistence, weighting and blend APIs.
 
 ## PianoVAM source stop and reference reassessment — 2026-09-22
 
+The reassessed NSynth listening packet now has a tracked Pascal checker. It
+binds four exact WAV hashes and eight continuation/tail/rest candidate windows,
+and rejects a review file with a changed source, window or frame boundary.
+Stable FPC 3.2.2 and trunk FPC 3.3.1 emit the same pending-packet SHA256
+`b3521259961ca03353cd10472ef0b884eb21ea1f2e825c36f27cd92726beb2a7`;
+the original fixed RMS values match. A synthetic all-uncertain review parses,
+and a one-frame alteration fails before packet output. See the
+[listening packet and replay](PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--awaiting-review--2026-09-22).
+The four clips are development-exposed. Listening labels have been requested
+and remain pending; no acoustic tail endpoint, scorer or task credit is claimed.
+This is one nonclosing deliverable batch after the reassessment below.
+
 The second bounded `NS-3_notes_04` source check stopped before audio acquisition.
 The current [PianoVAM v1.1 card](https://huggingface.co/datasets/PianoVAM/PianoVAM_v1/blob/main/README.md)
 publishes per-file WAV, MIDI and TSV access, but states that the TSV is derived

@@ -97,3 +97,11 @@ and [rejected gate-slope rule](../PHRASE-EVALUATION.md#fixed-gate-slope-diagnost
   distant-rest listening windows and ask for judgments with `uncertain` allowed.
   Only then decide whether this synthetic instrument-group packet can close
   the reference criterion; recorded phrase transfer remains separate.
+- 2026-09-22 review-packet batch: the tracked
+  [Pascal checker](../../tools/pythian.presence.reference.lpr) now verifies all
+  four fixed WAV identities and eight windows, and validates an exact-boundary
+  review TSV without deriving listening labels from energy. Stable/trunk
+  pending-packet replay and the malformed-boundary rejection are recorded in
+  the [packet](../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--awaiting-review--2026-09-22).
+  This is one nonclosing batch after reassessment: listener judgments, coverage
+  assessment and any required source-separated role decision remain open.

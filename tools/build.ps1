@@ -306,6 +306,8 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Pitch estimator checks failed' }
   & $compilerPath @compilerArgs '-Futools' 'tools/pythian.phrase.wav.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Recorded phrase evaluator compilation failed' }
+  & $compilerPath @compilerArgs 'tools/pythian.presence.reference.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Note-presence reference checker compilation failed' }
   & $compilerPath @compilerArgs '-Futools' 'tools/pythian.tonal.inspect.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Tonal inspection compilation failed' }
   & (Join-Path $buildRoot "pythian.tonal.inspect$executableSuffix") 'midi' (Join-Path $buildRoot 'timing.mid') > (Join-Path $buildRoot 'tonal-midi.json')

@@ -49,6 +49,29 @@ and source-independent transfer remain uncovered. No score, decoder or task
 credit follows until the review, checker and source-separated roles satisfy
 `NS-3_notes_04`.
 
+The tracked Pascal [reference checker](../tools/pythian.presence.reference.lpr)
+binds the four WAV SHA256 identities, mono 16-kHz PCM16/64,000-frame geometry,
+3.0-second note-off and eight named windows. It emits one TSV row per window;
+`pending` is a request for review, not an acoustic label. The optional review
+TSV must contain exactly those rows, in order, with header
+`note_id<TAB>window<TAB>start_frame<TAB>end_frame<TAB>label` and labels
+`audible`, `not_audible` or `uncertain`. A source or boundary mismatch fails
+before writing a packet. All four source groups are development-exposed;
+no source from this packet is an independent scorer or held-out phrase test.
+
+From the repo root, compile with the stable FPC 3.2.2 Win32 compiler using
+`-B -Sa -Cr -Co -Ci -gl -Fusrc -FEbuild/presence-reference/stable
+-FUbuild/presence-reference/stable tools/pythian.presence.reference.lpr`.
+Then run `build/presence-reference/stable/pythian.presence.reference.exe
+build/presence-contrast/nsynth-test/audio build/presence-reference/packet.tsv -`.
+The `-` means no reviewed labels. Stable FPC 3.2.2 and trunk FPC 3.3.1
+produce the same pending-packet SHA256
+`b3521259961ca03353cd10472ef0b884eb21ea1f2e825c36f27cd92726beb2a7`;
+two trunk runs are byte-identical. The RMS values match the earlier frozen
+NSynth audit at nine decimal places. A synthetic all-`uncertain` review file
+passes parser validation, while a one-frame boundary change fails with no
+output. No human label has yet been entered or inferred.
+
 ## Guitar-TECHS P1 reference screen stopped — 2026-09-22
 
 After the known-gate slope stop, [NS-3_notes_04](TODO/NS-3_notes_04.md) now
