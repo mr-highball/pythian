@@ -58,6 +58,16 @@ Starting evidence: [local-key reference study](../TONAL.md#local-key-reference-c
 
 **Dev Notes:**
 
+- 2026-09-23 prospective acoustic no-key screen: [two independently authored
+  recordings](../TONAL.md#prospective-acoustic-no-key-screen--2026-09-23)
+  have frozen development/evaluation roles and 10-second review windows before
+  audio inspection. Original Commons identities and notices match exact bytes;
+  an external Ogg-to-WAV conversion and one-off Pascal source-window checker
+  confirm the fixed audio coordinates and every crop sample. Time-local
+  listening review is requested. Neither uploader description is a no-key
+  label; the non-tonal denominator remains unavailable. This is one
+  nonclosing batch after criterion 5; wait for review or switch after the
+  required reassessment rather than retune the chosen windows.
 - 2026-09-23 separate packet scorer: the [frozen policy and Pascal tool](../TONAL.md#separate-packet-denominators--2026-09-23)
   score supported-key frames, abstention on three-annotator conflict frames,
   and agreed changes with independent integer denominators. Four exact report

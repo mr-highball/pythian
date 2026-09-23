@@ -1012,6 +1012,48 @@ false-admission denominator. A new source must receive development or
 composition-independent evaluation role before its labels/predictions are
 used, with the same exact recording, license and timing checks as this packet.
 
+### Prospective acoustic no-key screen — 2026-09-23
+
+Before opening or analyzing either candidate recording, freeze these whole-file
+roles and 10-second source-clock review windows:
+
+| Role | Recording family | Fixed review window | Source and notice |
+| --- | --- | --- | --- |
+| Development | Acabashi's London rain/wind capture of 2026-08-28; all allied consecutive files by this uploader stay in development | [8.000, 18.000) s | [Original file page](https://commons.wikimedia.org/wiki/File:Rain_and_wind_in_London_2026_08_28.wav), Acabashi, own work, CC BY-SA 4.0 |
+| Independent evaluation | Amada44's 2014 applause capture; all copies, derivatives and adjacent excerpts of this recording stay in evaluation | [18.000, 28.000) s | [Original file page](https://commons.wikimedia.org/wiki/File:Sound_Effects_-_Applause_after_a_concert.ogg), Amada44, own work, CC0 1.0 |
+
+The families are separate creators, dates, locations and events. The selected
+windows are interior fixed positions based only on published durations (about
+34 and 59 seconds), not on heard or measured content. The descriptions are
+screens, **not interval labels**. Before either window enters a no-key
+denominator, preserve original bytes and license metadata, convert the Ogg
+only for WAV input, verify source clocks and exact conversion coordinates, and
+obtain independent time-local listening review of the entire fixed window.
+If a window contains pitched music or cannot be judged, exclude it and record
+the failure; do not move its boundary to rescue a label. No threshold or
+estimator selection may inspect the evaluation window.
+
+Both originals were acquired from the linked Commons original-file endpoints
+after the role freeze. The Commons image-info API's byte lengths and SHA-1
+digests match the local downloads. Exact identities and window preparation:
+
+| Role | Original bytes / SHA-1 | Original SHA-256 | WAV used for window / SHA-256 | Window SHA-256 |
+| --- | --- | --- | --- | --- |
+| Development | 6,050,714 / `3d83ac8d05fc41ca67a76d407f101f71951e5fd1` | `21f958d0842eee1dfa938dc62758eaca3415fe3f54caa15af16288d88d26e59d` | Original WAV; same hash | `606061791a90bf8d9b00c89bff53bc26b963dcdbea984d0cddc4a7f006d2702b` |
+| Evaluation | 1,793,175 / `4e9a9f7235b36cc46702f40934d8949449cbeca4` | `a9bed3afd89d66c3ce13edb9f2be2a548ab87a2cc70827624905be90044f8e72` | FFmpeg PCM16 mono, 44,100 Hz / `4d30dcedccb960d838c23103202717909867d6a544a1af41207586f6b1bc7dfb` | `1f5a2ba792abc78a74cc1609ad0589d5392c660ba843aba54a67c9deb83c0732` |
+
+The development WAV is PCM16 stereo, 44,100 Hz and 1,512,630 frames. The
+evaluation Ogg was converted outside the repository with `ffmpeg -map 0:a:0
+-c:a pcm_s16le -bitexact`; the resulting WAV is PCM16 mono, 44,100 Hz and
+2,592,389 frames. `atrim` at fixed sample bounds made each 441,000-frame WAV:
+development [352,800, 793,800), evaluation [793,800, 1,234,800). A one-off
+Pascal checker under ignored `build/context-reference-nokey/` verified the
+SHA-256 of each WAV source and equality of every decoded sample in each crop
+against its original-WAV span using Pythian's reader. It passed on stable FPC
+3.2.2 i386-win32. The evaluation Ogg-to-WAV conversion itself is an external
+media conversion, not an inference/analysis path. The candidate labels and
+false-admission denominator remain **unavailable** pending time-local review.
+
 ## Native inspection
 
 The [native tool](../tools/pythian.tonal.inspect.lpr) prints JSON:
