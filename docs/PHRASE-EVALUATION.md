@@ -9,6 +9,42 @@ historical experiments. The user now requires a Pascal-only execution path;
 Pascal execution path. The former observations do not qualify its recorded
 accuracy or cost; its separate Pascal evidence does.
 
+## Cross-part register-peak attribution screen — 2026-09-23
+
+The previous gap screen left open whether the half-frequency peaks in the
+flute's source-separated track came from the simultaneously recorded violin.
+A separate frozen Pascal screen used the unchanged 96 flute event/window
+spectra, the raw violin Notes annotation and the simultaneous violin WAV from
+the same work. It compared each saved flute half-integer gap peak with a fully
+window-covering annotated violin fundamental or one of its first six harmonics,
+and measured the violin WAV's same-window power at that bin. Original notes,
+stem WAV, spectrum, diagnosis and parent identities were hash-bound; source
+coordinates use the supplied nominal 16-kHz clock. No new pitch inference or
+reference-selected candidate construction occurred. The private policy, code
+and full 96-row report are under `build/register-part-ownership/`. Two checked
+FPC 3.2.2 Win32 runs produced byte-identical SHA-256
+`1f9bbd1e8757fdf183660c1169d125b53317dcff942642a0fe971bd0c8e87335`
+with zero unfreed blocks.
+
+| Existing development cohort | Half peaks | Compatible with a fully covering violin note | Compatible flute peak-share / all flute half-peak share |
+| --- | ---: | ---: | ---: |
+| 85 baseline-correct events | 904 | 141 | 0.011897506 / 0.119820873 |
+| 11 upper-correct events | 222 | 19 | 0.075093044 / 1.340174762 |
+
+Event 8 has 0/25 annotation-compatible half peaks; event 81 has 1/20, carrying
+0.000387800 of its 0.265800034 summed flute peak share. Thus a currently
+annotated, fully sustained violin pitch does not account for most of the
+half-related peaks in these octave-error events. The measured violin-bin power
+is preserved per event, but simultaneous energy and a compatible note do not
+prove leakage or causal ownership. The raw annotation may miss releases or
+recording bleed; nominal derived-stem timing also has unresolved converter
+detail. This evidence rejects a broad active-violin-note explanation in the
+tested windows, not every cross-part contribution or an actual lower flute
+fundamental. It supplies no blind octave decision, calibrated confidence,
+low/quiet/short protection, held-out accuracy or task credit. Stop this
+source-attribution screen after the fixed report; a register rule still needs
+independent source ownership and prospective ambiguity/coverage evidence.
+
 ## Saved gap-peak attribution screen — 2026-09-23
 
 A frozen, ignored Pascal screen classified only the positive peak bin of each

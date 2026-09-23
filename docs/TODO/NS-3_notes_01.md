@@ -107,6 +107,19 @@ variation is authorized by the existing evidence.
 
 **Dev Notes:**
 
+- 2026-09-23 cross-part attribution stop: the [frozen source-bound Pascal
+  screen](../PHRASE-EVALUATION.md#cross-part-register-peak-attribution-screen--2026-09-23)
+  checked simultaneous raw violin annotations and WAV at all 96 saved flute
+  events. Only 19/222 upper-correct cohort half peaks matched a violin note
+  covering their full 1024-or-shorter analysis window; the matched flute
+  single-bin share was 0.075093044 of 1.340174762 summed. Event 8 had 0/25
+  matches and event 81 had 1/20. The baseline-correct controls had 141/904.
+  Two checked native runs replay exactly with zero leaks. This weakens an
+  active-violin-note explanation for most wrong-register peaks, but neither
+  proves a flute undertone nor supplies a safe blind correction. Stop this
+  source-attribution route; independent source ownership and prospective
+  ambiguity/coverage remain required. No criterion or credit closes.
+
 - 2026-09-23 saved gap-peak attribution: a [frozen Pascal screen](../PHRASE-EVALUATION.md#saved-gap-peak-attribution-screen--2026-09-23)
   separated below-55-Hz content from half-integer candidate harmonics in the
   existing 96-flute-event spectra. The 11 reference-upper-correct events have

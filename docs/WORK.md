@@ -21,6 +21,35 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Cross-part register attribution stop — 2026-09-23
+
+The [frozen Pascal cross-part screen](PHRASE-EVALUATION.md#cross-part-register-peak-attribution-screen--2026-09-23)
+compared all saved flute half-frequency gap peaks with the simultaneously
+recorded violin's raw note annotations and same-window WAV bins. Among the 11
+reference-upper-correct flute events, only 19/222 peaks matched a violin note
+covering the full window; two previously highlighted events had 0/25 and
+1/20 matches. Baseline-correct controls had 141/904. Hash-bound checked Win32
+replay passed twice, byte-identically, with zero leaks. The annotation does
+not explain most half-related peaks, while causal source ownership remains
+unknown. Stop this route without a blind octave rule or task credit. Further
+register admission requires independent source ownership and prospective
+ambiguity/coverage evidence; the protected phrase split stays untouched.
+
+## Style-card progress checkpoint and core prerequisite — 2026-09-23
+
+Since focused packet QA closed criterion 4, the private 2026-09-23 three-anchor
+source-correspondence screen and the native groove control are two consecutive
+[NS-5_evaluation_01](TODO/NS-5_evaluation_01.md) style-card batches that close
+no remaining criterion. The former could not authenticate a recording
+edition; the latter proves only onset occupancy. Reference-grounded provider
+values, annotations and complete six-dimension controls remain missing. Stop
+the generic-control sequence and follow the reusable-core dependency path
+through [NS-3_context_03](TODO/NS-3_context_03.md): two exact ten-second no-key
+candidate windows are source-bound and ready for time-local human review.
+The review request is pending; no label, context admission, style acceptance or
+credit is inferred before it arrives. Return to the personal style cards when
+source-bound musical annotations can ground their remaining criteria.
+
 ## Native groove-control slice — 2026-09-23
 
 The [source-independent rhythm fixture](STYLE-CARDS.md#native-rhythm-admission-control-slice--2026-09-23)

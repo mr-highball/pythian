@@ -111,6 +111,20 @@ remain open here, with no task credit.
 
 **Dev Notes:**
 
+- 2026-09-23 progress checkpoint: since focused packet QA closed criterion 4,
+  the private three-anchor recording-correspondence screen (the Dev Note below)
+  and the source-independent groove control are two consecutive style-card
+  batches without closing criteria 1, 2 or 5. The groove fixture is valid within its stated
+  onset-occupancy scope, but more ungrounded controls cannot freeze provider
+  gates or complete the six-dimension criterion while verified musical
+  observations are missing. Stop this style-card investigation sequence. The
+  next action follows the ready reusable-core reference prerequisite
+  [NS-3_context_03](NS-3_context_03.md), whose reviewed no-key intervals feed
+  automatic context admission and later style vocabulary. Return to the three
+  personal style cards when independently bound source intervals and curator
+  musical annotations can support criteria 1 and 2; then finish complete
+  preserving/breaking controls under the grounded contract. No credit changes.
+
 - 2026-09-23 source-independent groove control slice: the [native rhythm-admission
   fixture](../STYLE-CARDS.md#native-rhythm-admission-control-slice--2026-09-23)
   proves that existing onset-grid occupancy survives bounded timing jitter and
