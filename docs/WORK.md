@@ -21,6 +21,28 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Presence contrast reference packet — 2026-09-22
+
+The NS-5 scale chain requires `NS-3_notes_03`, which in turn requires recorded
+note presence and boundary acceptance. For `NS-3_notes_02`, a frozen Pascal
+selector used the already bound six URMP part WAV/Notes pairs from three distinct
+work groups. The first 30 seconds of each produced 1,441 internal continuation,
+137 immediate post-end candidate and 439 distant-rest windows at fixed 50-ms
+centers; 1,577 were excluded. Exact group, source/annotation hashes, frame and
+RMS rows are in ignored `build/presence-contrast/cohorts.csv`, SHA256
+`aa0590043ee433d40047024c07d915ef5f5e40f497157b0dc292127666f3791b`.
+Checked stable FPC 3.2.2 Win32 compilation and two byte-identical complete runs
+passed. The binding manifest SHA256 is
+`f87c398357641b2bc6893e98263f8981f9669787a7802f9d69b919222f47786c`.
+
+The post-end cohort is **not** an acoustic release-tail truth set. The next
+bounded action is adjudication of release versus rest on those fixed windows,
+keeping uncertain endpoints explicit, followed by a source-separated observation
+and frozen scoring gate. No predictor, saved learner bridge, NS-3 criterion or
+credit is accepted from the packet. This is one nonclosing presence batch after
+the prior reassessment; a second without criterion closure triggers the task-flow
+checkpoint. Spring development and reserved phrase material were not read.
+
 ## Isolated NS-5 reference candidate screen — 2026-09-22
 
 The directly published full `Chill.wav` from Pro Sensory was acquired into ignored
