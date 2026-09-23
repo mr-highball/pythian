@@ -181,6 +181,40 @@ remain open, with no task credit or milestone percentage change. The separate
 11-second NS-2 mixed-source listener verdict remains pending; the favorable
 coherence verdict applies to the 30-second synthesis preview.
 
+## Local-key reference split — 2026-09-23
+
+The next bounded source qualification used the published
+[Freesound Loop Dataset](TONAL.md#loop-level-reference-qualification-stop--2026-09-23).
+Its annotation ZIP matched the publisher's checksum; a checked Pascal audit
+found 1,472 multiply annotated IDs, including 309 strict unanimous
+percussion-only/no-key candidates and 193 strict unanimous non-percussion
+major/minor candidates. Four IDs were frozen before audio access. A Pascal
+ZIP64 index and raw-deflate extractor fetched their exact WAV entries and
+publisher metadata through byte ranges, without downloading the 8.84-GB
+archive. All selected entries passed name, size and CRC checks; the tools
+reported zero unfreed blocks. The media and exact policy remain ignored under
+`build/tonal-loop-reference/`.
+
+The fourth selected loop's uploader filename declares C while its two
+researcher annotations agree on D-sharp major. Its license is CC BY-NC 3.0;
+the other selected sources are CC BY 3.0 or CC0. The source-quality conflict
+stopped the frozen packet before key analysis. Whole-loop researcher labels
+also cannot establish local change or ambiguous interval truth, and the
+annotators had seen automatic pre-analysis suggestions. No threshold, measured
+false-admission rate, local-key criterion or credit follows.
+
+The performed-percussion screen and this stopped qualification are two
+consecutive nonclosing local-key batches. The task-flow reassessment splits
+an independently useful recorded interval reference packet into
+[NS-3_context_03](TODO/NS-3_context_03.md), ahead of the retained
+[NS-3_context_01](TODO/NS-3_context_01.md) inference decision. The original
+four unearned NS-3 goal points are redistributed **1+3**; the overall
+completion remains 63.15%, with 40 open and 14 DONE tasks. The next deliverable
+is exact source/edition and timed-label qualification across positive,
+no-key/ambiguous and changing-key recordings, with a Pascal checker and
+independent recording-group split. Stop source-specific gap screens until that
+packet is qualified. NS-2's 11-second listening verdict remains pending.
+
 ## NS-5 listening-protocol criterion — 2026-09-23
 
 Focused specification QA for [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md)

@@ -570,6 +570,59 @@ Stop source-specific gap testing here; the next admission decision needs
 multiple independently verified tonal and no-key/ambiguous intervals with a
 prospective temporal and coverage rule.
 
+## Loop-level reference qualification stop — 2026-09-23
+
+The [Freesound Loop Dataset](https://zenodo.org/records/3967852) publishes
+individual researcher annotations and source-specific licenses. Its
+[annotation paper](https://jbls.fun/documents/ramires2020-ismir-freesound_loop_dataset.pdf)
+distinguishes prominent tonal content, root and major/minor mode, and reports
+multiple annotators for part of the set. These are *whole-loop judgments*, not
+local-key/change labels. Annotators saw automatic pre-analysis suggestions;
+the labels are reviewed human evidence but not algorithm-blind ground truth.
+
+The 1,564,890-byte `annotations.zip` matches the publisher's MD5
+`3920ee437802cf047a990b2968fa066c`; SHA-256 is
+`e062f1f8e298730df92a879c302ce2c4f718039a3979442abc8aaca1258ac38e`.
+A checked Pascal audit parsed 4,420 individual JSON files and found 1,472 IDs
+with at least two annotations, matching the published multiple-annotation
+count. Of these, 309 meet a strict unanimous `key=none`, `mode=none`,
+percussion-only screen; 193 meet a strict unanimous named major/minor key with
+a non-percussion role. These are *candidate counts*, before source-quality,
+license or audio checks. The private audit output SHA-256 is
+`ac05b461f1c5295b96a8a34d0d794be1ef1254b36353abbefb6b7caa11d9fd95`.
+
+Before opening audio, a four-ID packet was frozen under ignored
+`build/tonal-loop-reference/POLICY.md`: first two strict negative candidates
+`101264` and `101895`, then first two strict tonal candidates `100902` (C
+minor) and `111247` (D-sharp major). A Pascal ZIP64 index read only the
+publisher's 128-KiB archive tail and 3,366,501-byte central directory;
+four WAV entries and `metadata.json` were fetched by byte range rather than
+downloading the 8.84-GB archive. A checked Pascal raw-deflate extractor
+verified local names, central sizes and CRC-32. All five selected entries
+passed; the four extracted WAVs total 3,062,490 bytes. Media, individual
+annotations, policy, Pascal tools and exact hashes remain ignored under
+`build/tonal-loop-reference/`.
+
+The publisher metadata creates a source-quality conflict before any tonal
+scoring: `111247` is unanimously labelled D-sharp major by the selected
+researchers, but its uploader's filename declares `Key_C`. Its CC BY-NC 3.0
+license also limits it to evaluation-only use, whereas `100902` is CC BY 3.0
+and both negative candidates are CC0. Do not silently treat this selected
+loop as a verified D-sharp-major positive or swap in another ID after seeing
+the metadata. The frozen four-source screen **stopped before WAV analysis**;
+there is no gap comparison, admission threshold, false-admission result or
+local-key task credit. No held-out Schubert composition or user style mix was
+opened.
+
+The prior performed-percussion screen and this stopped qualification are two
+nonclosing batches. Reassess at the task-flow checkpoint: independently
+qualifying exact positive, no-key and ambiguous *intervals* is a reusable
+reference deliverable separate from key inference. The new
+[reference task](TODO/NS-3_context_03.md) owns that source/label packet before
+another local-key scoring policy is frozen. Keep uploader descriptions,
+researcher disagreements, automatic pre-analysis exposure, source licenses and
+whole-loop versus timed-label scope explicit.
+
 ## Native inspection
 
 The [native tool](../tools/pythian.tonal.inspect.lpr) prints JSON:
