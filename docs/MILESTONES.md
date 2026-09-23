@@ -381,12 +381,14 @@ The user's [core-first direction](TASKFLOW.MD#scope-and-source-of-truth) now
 governs selection. Bounded NS-2 listening is complete. Select a ready NS-3
 musical-evidence prerequisite that advances recorded learning without changing
 accepted synthesis. The [beat candidate task](TODO/NS-3_tempo_04.md) is paused
-after two failed source-evidence screens, and the
+after two failed source-evidence screens; the
 [local-key reference task](TODO/NS-3_context_03.md) awaits time-local no-key
-review. The [note-presence reference task](TODO/NS-3_notes_04.md) has a bounded
-next source check. Reassess its available independent control/tail evidence
-before another decoder experiment, keeping its existing stopped sources and
-frozen gates. Do not restart rejected scorer variants.
+review; and the [note-presence reference task](TODO/NS-3_notes_04.md) awaits
+exact judgments on its already frozen listening windows. Do not expand their
+stopped packets or restart rejected scorer variants. The
+[register task](TODO/NS-3_notes_01.md) requires independently discriminating
+evidence and a prospective ambiguity/coverage rule before another scored
+proposal. Keep existing independent evaluation material protected.
 
 The earlier [NS-5 style-card screen](TODO/NS-5_evaluation_01.md) recorded
 missing verified editions/cuts and curator-reviewed musical annotations for
