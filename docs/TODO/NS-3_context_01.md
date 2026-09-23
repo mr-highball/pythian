@@ -136,6 +136,19 @@ is claimed.
 
 **Dev Notes:**
 
+- 2026-09-23 frozen score-note interior screen stopped: the
+  [development observation check](../TONAL.md#score-note-interior-observation-screen-stopped)
+  ran the unchanged Pascal sparse-peak backend on D911-02 after saving
+  source-bound observation evidence before reading aligned score notes. Piano
+  had 135 eligible long-note interiors; voice had only 36 notes and 35 absent
+  adjacent-pitch pairs, below the fixed 50/40 sample minima. Stop this screen
+  before D911-16; do not shorten the declared interior or infer voice
+  discrimination from the small cohort. The bound reference packet and this
+  screen are two consecutive nonclosing batches. Reassessment changes the next
+  action back to independently reviewed acoustic activity evidence in
+  [NS-3_notes_05](NS-3_notes_05.md), then a new prospective key-observation
+  contract only if that evidence can distinguish sound from score timing.
+  Criterion 2 and task credit remain open.
 - 2026-09-23 development note-reference batch: the
   [score-aligned timing packet](../TONAL.md#score-aligned-note-timing-development-reference--2026-09-23)
   binds published score-derived note and measure CSVs for the two exposed HU33

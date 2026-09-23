@@ -1282,6 +1282,36 @@ binding. [NS-3_context_01](TODO/NS-3_context_01.md) criterion 2 remains open;
 a prospective observation hypothesis and fixed stop gate must precede another
 acoustic experiment.
 
+### Score-note interior observation screen stopped
+
+One prospective development-only Pascal screen tested whether the unchanged
+sparse-peak observation contains pitch-specific evidence at interiors of the
+aligned score notes. It saved source-bound raw observations and exact 72-pitch
+summaries before reading the score rows, then compared a score pitch with its
+absent semitone-above neighbor. The fixed eligibility required pitches 48..84,
+score duration at least 0.4 seconds, an observation within about 50 ms of the
+midpoint, 0.1-second edge clearance, and at least 50 eligible notes and 40
+adjacent pairs for **each** source/instrument cohort. Passing support and
+separation ratios would only identify a promising observation, not prove
+audible-note or local-key accuracy.
+
+Checked stable Win32/Win64 source-free controls pass with zero leaks. The first
+development source, D911-02 HU33, completed native inference at 1,012 centers
+within its 60-second and 128-MiB limits; its checked Win64 run reported zero
+leaks. Piano yielded 135 eligible notes, 123 nonzero top-12 pitches, and
+131/135 separated adjacent pairs. Voice yielded only **36 eligible notes and
+35 pairs**, below both fixed sample minima, despite 34 top-12 notes and 32
+separated pairs. The declared screen is therefore **inconclusive**. It stopped
+before D911-16 or any reserved source. The private policy, observation hashes
+and exact counts remain under ignored `build/`.
+
+The long interior eligibility rule excluded many shorter score notes. Do not
+relax it after this result or infer a voice observation verdict from the small
+cohort. The reference binding and this screen are two nonclosing batches;
+return to independently reviewed acoustic activity evidence before another
+key-observation candidate. Criterion 2, independent evaluation and task credit
+remain open.
+
 ## Native inspection
 
 The [native tool](../tools/pythian.tonal.inspect.lpr) prints JSON:

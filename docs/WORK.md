@@ -56,6 +56,41 @@ with fixed work and failure gates before any new development score. If it
 cannot distinguish activity/timbre and tonic evidence, stop that path; retain
 the listener review for when the user is available.
 
+## Local-key note-interior screen and stop — 2026-09-23
+
+The next bounded [NS-3_context_01](TODO/NS-3_context_01.md) criterion 2
+screen tested one decision: whether the unchanged Pascal sparse-peak
+observation separates score-aligned notes from an absent neighboring pitch
+at safe note interiors. Its private prospective policy fixed source roles,
+duration/edge/distance eligibility, top-12 and paired-separation measures,
+50-note/40-pair cohort minima, 80%/75% support limits and 60-second/128-MiB
+work bounds before any source score. It saved native observations and all
+72 pitch summaries before reading the bound score TSV. No score label entered
+inference, and no stopped key rule was retuned.
+
+Checked stable Win32/Win64 source-free controls passed with zero leaks. The
+first development WAV, D911-02 HU33, completed 1,012 native observations in
+8,937 ms at 10,170,368 peak working-set and 3,973,120 private bytes on
+checked Win64; the run reported zero leaks. Piano had 135 eligible notes,
+123 nonzero top-12 pitches, and 131/135 separated adjacent pairs. Voice had
+36 eligible notes and 35 pairs, below both fixed 50/40 minima; its 34/36
+top-12 and 32/35 separation ratios cannot qualify the cohort. The screen
+is inconclusive and stopped before D911-16 or held-out sources. The raw
+observation SHA-256 is
+`8d523f4b167e07c60f9c3b4e8c739b0c8d22185b882ea48c9cfb11861fae33a6`;
+the pre-reference pitch-summary hash is
+`df957ffa76f4f78d3039d9319d4b8496a39cdc9dd5446292d30e323c0f10fae3`.
+
+The score-reference binding and this inconclusive screen are two consecutive
+batches without closing another acceptance criterion. Under the task-flow
+checkpoint, stop this local-key investigation sequence. Do not relax the
+short-note eligibility after observing the count or resume ranker/profile
+variants. The next action is the existing independently reviewed acoustic
+activity reference in [NS-3_notes_05](TODO/NS-3_notes_05.md); only then
+declare a genuinely different key-observation hypothesis with a fixed gate.
+The user cannot listen at this checkpoint, so the nine-clip GuitarSet review
+remains pending. No key accuracy, task credit or held-out claim follows.
+
 ## Maintained presence observation boundary — 2026-09-23
 
 The ignored Pascal score runner's binding guard was tightened before any
