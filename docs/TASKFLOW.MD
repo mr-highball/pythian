@@ -106,11 +106,13 @@ Retain and update Dev Notes when a task moves to DONE.
    Keep one primary agent. Implement maintained behavior in Pascal and use
    proportional validation of the changed boundary and consumer.
 4. For inference experiments, declare the hypothesis, fixed evaluation policy,
-   cost budget and stop/switch condition before scoring. After 20 unsuccessful
-   attempts on the same cause, reassess the approach/evidence rather than making
-   another blind variation. Protect untouched evaluation material. The 20-attempt
-   cap is the user's later 2026-09-22 project instruction; record each attempt and its
-   discriminating result so this cannot become a cyclic search.
+   cost budget and stop/switch condition before scoring. Stop the same-cause
+   experiment after 20 unsuccessful attempts. Diagnose why the approach has
+   failed before authorizing any new hypothesis; a renamed or retuned variant
+   does not reset the count. Protect untouched evaluation material. The
+   20-attempt cap is the user's later 2026-09-22 project instruction; record
+   each attempt and its discriminating result so this cannot become a cyclic
+   search.
 5. Keep accepted baseline behavior available. Compile/test/render passes do not
    imply musical, listening, genre or independent-consumer acceptance. Avoid
    repeated broad test/package refreshes until material changes require them.
@@ -286,12 +288,13 @@ count as one failed submission; repeating an unchanged failure does not create
 another attempt. Runner outages and other failures unrelated to the submitted
 work do not count as implementation failures.
 
-After the **twentieth failed QA submission for the same task**, remove that task
-from the implementation helper's queue and transfer it, its existing code and
-all failure evidence to the primary agent. The primary agent owns the fixes and
-subsequent QA handoffs. Preserve the implementation for repair; do not delete or
-reset it, mark the task DONE, or award completion credit. Stop helper and junior
-edits to that task before transferring file ownership.
+After the **twentieth failed QA submission for the same task**, stop helper
+resubmissions and diagnose the repeated failure. Remove that task from the
+implementation helper's queue and transfer it, its existing code and all failure
+evidence to the primary agent. The primary agent owns the fixes and subsequent
+QA handoffs. Preserve the implementation for repair; do not delete or reset it,
+mark the task DONE, or award completion credit. Stop helper and junior edits to
+that task before transferring file ownership.
 
 Give the implementation helper a different ready task whose scope and files do
 not conflict with the transferred work. Follow actual prerequisite links and

@@ -255,6 +255,11 @@ two-nonclosing-batch checkpoint still requires reassessment and a changed
 action; the larger retry allowance does not turn blind variations into an
 accepted strategy. No acceptance credit or task count changes.
 
+The twentieth same-cause failure is a hard stop for that experiment and starts
+a diagnostic review; renaming or retuning it cannot reset the ledger. The
+twentieth failed QA submission likewise stops helper resubmissions and transfers
+the task and its evidence to the primary agent for diagnosis and repair.
+
 The next producer decision is frozen in [NS-3_validation_03](TODO/DONE/NS-3_validation_03.md):
 attempt five keeps the Pascal 2048/8192 peak evidence but bounds each
 35-cent Gaussian projection at eight sigma, calculating a continuous pitch
