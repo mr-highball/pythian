@@ -167,10 +167,16 @@ procedure BeatLevelAvailabilityChecks;
 var
   LObservations: TBeatObservations;
   LAnalysis: TBeatGridAnalysis;
+  LInspected: TBeatGridAnalysis;
+  LTrace: TBeatCandidateTrace;
   LOptions: TBeatGridOptions;
   LIndex: Integer;
   LChoice: Integer;
   LLimit: Integer;
+  LTrial: Integer;
+  LRankMatches: Integer;
+  LSuppressed: Boolean;
+  LCapacity: Boolean;
   LFast: Boolean;
   LHalf: Boolean;
   LDouble: Boolean;
@@ -199,6 +205,49 @@ begin
     LOptions := DefaultBeatGridOptions;
     LOptions.MaximumCandidates := LLimit;
     LAnalysis := EstimateBeatGrids(LObservations, 48000, 432000, LOptions);
+    LInspected := InspectBeatGridCandidates(LObservations, 48000, 432000,
+      LOptions, LTrace);
+    Check((Length(LInspected.Candidates) = Length(LAnalysis.Candidates)) and
+      (Length(LTrace.Trials) = LAnalysis.TrialCount * 2),
+      'Optional candidate trace retains the fitted pool and bounded trial count');
+    LSuppressed := False;
+    LCapacity := False;
+    for LTrial := 0 to High(LTrace.Trials) do
+    begin
+      if LTrace.SuppressedBy[LTrial] >= 0 then
+      begin
+        Check(LTrace.PeakEligible[LTrial] and
+          (LTrace.SelectedRank[LTrial] < 0) and
+          (LTrace.SuppressedBy[LTrial] < Length(LTrace.Trials)),
+          'Suppression names a selected trial after peak eligibility');
+        LSuppressed := True;
+      end;
+      if LTrace.PeakEligible[LTrial] and
+        (LTrace.SelectedRank[LTrial] < 0) and
+        (LTrace.SuppressedBy[LTrial] < 0) then
+      begin
+        LCapacity := True;
+      end;
+    end;
+    Check(LSuppressed and LCapacity,
+      'Authored phase hierarchy exposes suppression and capacity separately');
+    for LChoice := 0 to High(LAnalysis.Candidates) do
+    begin
+      LRankMatches := 0;
+      for LTrial := 0 to High(LTrace.Trials) do
+      begin
+        if LTrace.SelectedRank[LTrial] = LChoice then
+        begin
+          Inc(LRankMatches);
+          Check((LTrace.Trials[LTrial].Bpm = LAnalysis.Candidates[LChoice].Bpm) and
+            (LTrace.Trials[LTrial].PhaseFrame =
+             LAnalysis.Candidates[LChoice].PhaseFrame) and
+            (LTrace.Trials[LTrial].Score = LAnalysis.Candidates[LChoice].Score),
+            'Trace rank identifies the exact production candidate');
+        end;
+      end;
+      Check(LRankMatches = 1, 'Every retained candidate has one trial identity');
+    end;
     LFast := False;
     LHalf := False;
     LDouble := False;
@@ -224,6 +273,11 @@ begin
   LAnalysis := EstimateBeatGrids(LObservations, 48000, 432000,
     DefaultBeatGridOptions);
   Check(Length(LAnalysis.Candidates) = 0, 'Empty beat source remains unknown');
+  LInspected := InspectBeatGridCandidates(LObservations, 48000, 432000,
+    DefaultBeatGridOptions, LTrace);
+  Check((Length(LInspected.Candidates) = 0) and
+    (Length(LTrace.Trials) = 0),
+    'Trace of an empty source cannot invent fitted pulses');
   SetLength(LObservations, 3);
   for LIndex := 0 to High(LObservations) do
   begin
@@ -233,6 +287,11 @@ begin
   LAnalysis := EstimateBeatGrids(LObservations, 48000, 432000,
     DefaultBeatGridOptions);
   Check(Length(LAnalysis.Candidates) = 0, 'Three beat onsets remain insufficient');
+  LInspected := InspectBeatGridCandidates(LObservations, 48000, 432000,
+    DefaultBeatGridOptions, LTrace);
+  Check((Length(LInspected.Candidates) = 0) and
+    (Length(LTrace.Trials) = 0),
+    'Trace preserves the insufficient-observation boundary');
   WriteLn('Beat levels: fast, half/double, phase and insufficient evidence pass');
 end;
 

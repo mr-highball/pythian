@@ -49,6 +49,17 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
 
 **Dev Notes:**
 
+- 2026-09-23 second post-freeze batch: the optional [native omission trace](../BEAT-TRACKING.md#current-policy-omission-stage-trace)
+  reproduces every saved candidate pool and fit-work count without reference
+  input to inference. The 02 failures split into one no-compatible-fit, three
+  local-peak-filtered and one suppressed proposal; 04 splits into three
+  no-compatible-fit, one peak-filtered and two capacity losses. Admitted onsets
+  near annotated beats and other onsets in the owned intervals are reported
+  separately. Their acoustic meaning remains unadjudicated: absence of an
+  admitted onset does not prove absence of a source pulse. The frozen 02/04
+  candidate gates still fail and criterion 3's source-pulse distinction remains
+  open. This is the second consecutive nonclosing batch since criterion 1;
+  stop pool experiments and follow the [work reassessment](../WORK.md#beat-candidate-omission-reassessment--2026-09-23).
 - 2026-09-23 first post-freeze batch: a [maintained Pascal checker and
   baseline](../BEAT-TRACKING.md#first-current-policy-candidate-baseline)
   now bind saved pre-reference reports to exact WAV/CSV hashes, default
@@ -82,8 +93,9 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
   receives 2 of the original 5 goal points and tempo_01 retains 3. The total
   unearned credit and the original acceptance scope do not change. See the
   [work reassessment](../WORK.md#beat-candidate-deliverable-split--2026-09-23).
-- Next bounded deliverable: classify the current failed windows with a native
-  fit/eligibility/suppression/capacity trace before changing a retained-pool
-  policy. The old 32-candidate walk is historical evidence, not an accepted
-  provider or a diagnosis of the current failures. Simply enlarging the
-  default pool or retuning transition penalties does not pass the criteria.
+- Next bounded deliverable after the reassessment: obtain independently
+  reviewable source-pulse status for ambiguous windows and declare one finite
+  fit/retention decision before changing policy. The old 32-candidate walk is
+  historical evidence, not an accepted provider or a diagnosis of current
+  failures. Simply enlarging the default pool or retuning transition penalties
+  does not pass the criteria.

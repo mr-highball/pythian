@@ -152,6 +152,68 @@ the 02 score JSON is byte-identical across targets and to a same-target replay.
 Wrong reference identity and stale measurement-policy inputs fail cleanly.
 No task credit or milestone percentage changes.
 
+### Current-policy omission-stage trace
+
+The optional `--trace` flag on the same Pascal checker replays the saved
+observations through the maintained fitter and verifies every resulting pool
+entry and the aggregate fit-work count against the pre-reference report. It
+then scores positive trial proposals against the frozen reference to identify
+the latest stage reached by a *compatible* proposal. This is post-inference
+diagnosis; annotations neither enter fitting nor choose the output path.
+
+| Recording | Missing window | Latest compatible stage | Admitted onset near reference beats | Other admitted onsets in owner | Witness extra grids supported by those other onsets |
+| --- | ---: | --- | ---: | ---: | ---: |
+| 02 | 0 | No compatible fit | 2/3 | 2 | 0 |
+| 02 | 9 | Local peak filtered | 2/2 | 17 | 1 |
+| 02 | 10 | Suppressed by selected trial 832 | 3/3 | 9 | 0 |
+| 02 | 14 | Local peak filtered | 2/2 | 15 | 1 |
+| 02 | 15 | Local peak filtered | 2/3 | 15 | 0 |
+| 04 | 0 | No compatible fit | 1/2 | 4 | 0 |
+| 04 | 5 | Capacity | 1/2 | 10 | 0 |
+| 04 | 10 | No compatible fit | 1/2 | 20 | 0 |
+| 04 | 15 | Local peak filtered | 1/2 | 10 | 0 |
+| 04 | 20 | No compatible fit | 2/2 | 25 | 2 |
+| 04 | 21 | Capacity | 2/2 | 12 | 1 |
+
+The `no_compatible_fit` label means positive fits exist, but none meets *both*
+0.75 precision and recall on that owned interval. It does not mean the fitter
+returned no proposals. In 02 window 10, one compatible proposal reaches local
+peak eligibility but is removed by trial 832. In 04 windows 5 and 21, compatible
+peak-eligible proposals remain after the eight slots fill. Windows 9/14/15 in
+02 and 15 in 04 lose compatible proposals before that selection stage. A larger
+pool alone therefore cannot clear the frozen coverage gates.
+
+The onset columns compare admitted native observations with the supplied beat
+annotations at 30 ms. An onset away from an annotated beat may be a musical
+subdivision or another valid sound; the count does not prove an acoustic false
+onset. Likewise, an annotated beat with no admitted onset may still be audible
+in the source. The 04 window-20 witness has two grid points supported by such
+other onsets and is precision-incompatible despite both references having nearby
+observations. Source-pulse presence or absence still needs independent review;
+it cannot be inferred from this trace. Authored empty and three-observation
+controls preserve unknown output without inventing pulses.
+
+The other failed rows are 01 window 0 and 05/19 window 0, all with no
+reference-compatible positive fit; 05 window 4 is a capacity loss. Recording
+03 has no missing compatible window. All six saved reports replay with exact
+pool and aggregate work parity. Stable FPC 3.2.2 Win32 and Win64 checked beat
+and tracker tests pass, and both targets agree on the 02/04 failure stages.
+Fresh normal Win32 inference for 02/04 is byte-identical to the original
+reports (SHA-256 `359263bc20f689aba90e282457a479cdfc759d4512b44854f1d887da5314a3ad`
+and `f96c0b541f7843b3f927a69ac157bb3fc0c999a392c004c9b76ccef447705d53`).
+Trace artifacts are ignored under `build/beat-candidate-trace/`.
+The checked Win32 trace JSON SHA-256 values are
+`18c514cfdde19ac50c46a5cdaab61176a9fb4ae92b8a6fd24b307ebf9706eae1`
+for 02 and `5e19c37cd7cbbaa9f87abe0637c3e1eb34de5b413171beb8ae707a176f15e83d`
+for 04.
+
+This is the second nonclosing batch after the protocol criterion. The source
+pulse question, no-compatible-fit windows and recorded candidate gates remain
+open, so no further tempo_04 criterion or task credit is claimed. The next
+policy attempt needs a predeclared way to address fit and retention separately
+within the frozen work and coverage bounds; another pool-size walk would not
+answer the source-pulse ambiguity.
+
 <a id="accent-parity-stopped"></a>
 ## Alternating accent strength does not resolve beat level — 2026-09-23
 

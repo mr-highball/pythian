@@ -231,8 +231,9 @@ begin
   SetLength(Result, LCount);
 end;
 
-function CandidateFrames(const AWindow: TBeatTrackWindow;
-  const AIndex, AToleranceFrames: Integer): TBeatFrames;
+function GridFramesInWindow(const AWindow: TBeatTrackWindow;
+  const ACandidate: TBeatGridCandidate;
+  const AToleranceFrames: Integer): TBeatFrames;
 var
   LStart: Integer;
   LEnd: Integer;
@@ -242,14 +243,299 @@ begin
   LEnd := Min(AWindow.OwnerEndFrame,
     AWindow.Analysis.LastObservationFrame + AToleranceFrames + 1);
   Result := nil;
-  if (LStart < LEnd) and (AIndex >= 0) then
+  if LStart < LEnd then
   begin
-    Result := BeatGridFrames(AWindow.Analysis.Candidates[AIndex], LStart, LEnd);
+    Result := BeatGridFrames(ACandidate, LStart, LEnd);
+  end;
+end;
+
+function CandidateFrames(const AWindow: TBeatTrackWindow;
+  const AIndex, AToleranceFrames: Integer): TBeatFrames;
+begin
+  Result := nil;
+  if AIndex >= 0 then
+  begin
+    Result := GridFramesInWindow(AWindow,
+      AWindow.Analysis.Candidates[AIndex], AToleranceFrames);
+  end;
+end;
+
+function InspectSavedWindow(const AWindow: TBeatTrackWindow;
+  const AObservations: TBeatObservations; const ASampleRate,
+  ASourceFrames: Integer; const AGridOptions: TBeatGridOptions;
+  const ATrackOptions: TBeatTrackOptions;
+  out ATrace: TBeatCandidateTrace): TBeatGridAnalysis;
+var
+  LSubset: TBeatObservations;
+  LPeak: Double;
+  LTaper: Double;
+  LCenter: Integer;
+  LIndex: Integer;
+  LCount: Integer;
+begin
+  LSubset := nil;
+  SetLength(LSubset, Length(AObservations));
+  LCount := 0;
+  for LIndex := 0 to High(AObservations) do
+  begin
+    if (AObservations[LIndex].Frame >= AWindow.StartFrame) and
+      (AObservations[LIndex].Frame < AWindow.EndFrame) then
+    begin
+      LSubset[LCount] := AObservations[LIndex];
+      Inc(LCount);
+    end;
+  end;
+  SetLength(LSubset, LCount);
+  if ATrackOptions.TaperWindows then
+  begin
+    LCenter := AWindow.OwnerStartFrame +
+      (AWindow.OwnerEndFrame - AWindow.OwnerStartFrame) div 2;
+    LPeak := 0;
+    for LIndex := 0 to High(LSubset) do
+    begin
+      LPeak := Max(LPeak, LSubset[LIndex].Weight);
+    end;
+    LCount := 0;
+    for LIndex := 0 to High(LSubset) do
+    begin
+      LTaper := (1 + Cos(2 * Pi * (LSubset[LIndex].Frame - LCenter) /
+        ATrackOptions.WindowFrames)) / 2;
+      if LTaper > 0 then
+      begin
+        LSubset[LCount] := LSubset[LIndex];
+        LSubset[LCount].Weight := (LSubset[LCount].Weight / LPeak) * LTaper;
+        if LSubset[LCount].Weight > 0 then
+        begin
+          Inc(LCount);
+        end;
+      end;
+    end;
+    SetLength(LSubset, LCount);
+  end;
+  Result := InspectBeatGridCandidates(LSubset, ASampleRate, ASourceFrames,
+    AGridOptions, ATrace);
+  Require((Result.ObservationCount = AWindow.Analysis.ObservationCount) and
+    (Result.FirstObservationFrame = AWindow.Analysis.FirstObservationFrame) and
+    (Result.LastObservationFrame = AWindow.Analysis.LastObservationFrame) and
+    (Length(Result.Candidates) = Length(AWindow.Analysis.Candidates)),
+    'Traced candidate window differs from saved report');
+  for LIndex := 0 to High(Result.Candidates) do
+  begin
+    Require(Near(Result.Candidates[LIndex].Bpm,
+        AWindow.Analysis.Candidates[LIndex].Bpm) and
+      Near(Result.Candidates[LIndex].PhaseFrame,
+        AWindow.Analysis.Candidates[LIndex].PhaseFrame) and
+      Near(Result.Candidates[LIndex].Score,
+        AWindow.Analysis.Candidates[LIndex].Score),
+      'Traced candidate differs from saved pool');
+  end;
+end;
+
+function NearbyObservationCount(const AReference: TBeatFrames;
+  const AObservations: TBeatObservations;
+  const AStartFrame, AEndFrame, AToleranceFrames: Integer): Integer;
+var
+  LReference: Integer;
+  LObservation: Integer;
+begin
+  Result := 0;
+  LObservation := 0;
+  for LReference := 0 to High(AReference) do
+  begin
+    while (LObservation < Length(AObservations)) and
+      ((AObservations[LObservation].Frame < AStartFrame) or
+       (AObservations[LObservation].Frame <
+        AReference[LReference] - AToleranceFrames)) do
+    begin
+      Inc(LObservation);
+    end;
+    if (LObservation < Length(AObservations)) and
+      (AObservations[LObservation].Frame < AEndFrame) and
+      (Abs(AObservations[LObservation].Frame -
+       AReference[LReference]) <= AToleranceFrames) then
+    begin
+      Inc(Result);
+    end;
+  end;
+end;
+
+function NearReference(const AReference: TBeatFrames; const AFrame,
+  AToleranceFrames: Integer): Boolean;
+var
+  LIndex: Integer;
+begin
+  Result := False;
+  for LIndex := 0 to High(AReference) do
+  begin
+    if AReference[LIndex] > AFrame + AToleranceFrames then
+    begin
+      Exit;
+    end;
+    if Abs(AReference[LIndex] - AFrame) <= AToleranceFrames then
+    begin
+      Exit(True);
+    end;
+  end;
+end;
+
+function NonreferenceOnsets(const AWindow: TBeatTrackWindow;
+  const AReference: TBeatFrames; const AObservations: TBeatObservations;
+  const AToleranceFrames: Integer): Integer;
+var
+  LIndex: Integer;
+begin
+  Result := 0;
+  for LIndex := 0 to High(AObservations) do
+  begin
+    if (AObservations[LIndex].Frame >= AWindow.OwnerStartFrame) and
+      (AObservations[LIndex].Frame < AWindow.OwnerEndFrame) and
+      not NearReference(AReference, AObservations[LIndex].Frame,
+        AToleranceFrames) then
+    begin
+      Inc(Result);
+    end;
+  end;
+end;
+
+function NonreferenceGridOnsetSupport(const AWindow: TBeatTrackWindow;
+  const AReference, AGridFrames: TBeatFrames;
+  const AObservations: TBeatObservations;
+  const AToleranceFrames: Integer): Integer;
+var
+  LFrame: Integer;
+  LObservation: Integer;
+begin
+  Result := 0;
+  for LFrame := 0 to High(AGridFrames) do
+  begin
+    if NearReference(AReference, AGridFrames[LFrame], AToleranceFrames) then
+    begin
+      Continue;
+    end;
+    for LObservation := 0 to High(AObservations) do
+    begin
+      if (AObservations[LObservation].Frame >= AWindow.OwnerStartFrame) and
+        (AObservations[LObservation].Frame < AWindow.OwnerEndFrame) and
+        (Abs(AObservations[LObservation].Frame - AGridFrames[LFrame]) <=
+         AToleranceFrames) then
+      begin
+        Inc(Result);
+        Break;
+      end;
+    end;
+  end;
+end;
+
+function TraceJson(const AWindow: TBeatTrackWindow;
+  const ATrace: TBeatCandidateTrace; const AOwned: TBeatFrames;
+  const AObservations: TBeatObservations; const AToleranceFrames: Integer;
+  var AMatchWork: Int64): TJSONObject;
+var
+  LTrial: Integer;
+  LStage: Integer;
+  LBestStage: Integer;
+  LBestTrial: Integer;
+  LCompatible: array[0..3] of Integer;
+  LScore: TMatchScore;
+  LBestScore: TMatchScore;
+  LFrames: TBeatFrames;
+  LPositive: Integer;
+  LPeak: Integer;
+  LSuppressed: Integer;
+  LCapacity: Integer;
+  LNames: array[0..4] of String =
+    ('no_compatible_fit', 'peak_filtered', 'suppressed', 'capacity', 'retained');
+begin
+  Result := nil;
+  LPositive := 0;
+  LPeak := 0;
+  LSuppressed := 0;
+  LCapacity := 0;
+  LBestStage := 0;
+  LBestTrial := -1;
+  LBestScore := Default(TMatchScore);
+  FillChar(LCompatible, SizeOf(LCompatible), 0);
+  for LTrial := 0 to High(ATrace.Trials) do
+  begin
+    if ATrace.Trials[LTrial].Score <= 0 then
+    begin
+      Continue;
+    end;
+    Inc(LPositive);
+    if ATrace.PeakEligible[LTrial] then
+    begin
+      Inc(LPeak);
+    end;
+    if ATrace.SelectedRank[LTrial] >= 0 then
+    begin
+      LStage := 4;
+    end
+    else if ATrace.SuppressedBy[LTrial] >= 0 then
+    begin
+      LStage := 2;
+      Inc(LSuppressed);
+    end
+    else if ATrace.PeakEligible[LTrial] then
+    begin
+      LStage := 3;
+      Inc(LCapacity);
+    end
+    else
+    begin
+      LStage := 1;
+    end;
+    LFrames := GridFramesInWindow(AWindow, ATrace.Trials[LTrial],
+      AToleranceFrames);
+    AMatchWork := AMatchWork + Length(AOwned) + Length(LFrames);
+    Require(AMatchWork <= MaximumBeatTrackWork,
+      'Candidate trace matching exceeds bounded work');
+    LScore := MatchScore(AOwned, LFrames, AWindow.OwnerStartFrame,
+      AWindow.OwnerEndFrame, AToleranceFrames);
+    if (LScore.Precision >= 0.75) and (LScore.Recall >= 0.75) then
+    begin
+      Inc(LCompatible[LStage - 1]);
+      if (LStage > LBestStage) or
+        ((LStage = LBestStage) and
+         ((LBestTrial < 0) or Better(LScore, LBestScore))) then
+      begin
+        LBestStage := LStage;
+        LBestTrial := LTrial;
+        LBestScore := LScore;
+      end;
+    end;
+  end;
+  Result := TJSONObject.Create;
+  Result.Add('positive_fit_count', LPositive);
+  Result.Add('peak_eligible_count', LPeak);
+  Result.Add('suppressed_count', LSuppressed);
+  Result.Add('capacity_count', LCapacity);
+  Result.Add('reference_onset_near_count', NearbyObservationCount(AOwned,
+    AObservations, AWindow.OwnerStartFrame, AWindow.OwnerEndFrame,
+    AToleranceFrames));
+  Result.Add('owner_nonreference_onset_count', NonreferenceOnsets(AWindow,
+    AOwned, AObservations, AToleranceFrames));
+  Result.Add('compatible_peak_filtered', LCompatible[0]);
+  Result.Add('compatible_suppressed', LCompatible[1]);
+  Result.Add('compatible_capacity', LCompatible[2]);
+  Result.Add('compatible_retained', LCompatible[3]);
+  Result.Add('latest_compatible_stage', LNames[LBestStage]);
+  Result.Add('latest_compatible_trial', LBestTrial);
+  if LBestTrial >= 0 then
+  begin
+    Result.Add('latest_compatible_bpm', ATrace.Trials[LBestTrial].Bpm);
+    Result.Add('latest_compatible_phase_frame',
+      ATrace.Trials[LBestTrial].PhaseFrame);
+    Result.Add('latest_compatible_score', ScoreJson(LBestScore));
+    if LBestStage = 2 then
+    begin
+      Result.Add('suppressed_by_trial', ATrace.SuppressedBy[LBestTrial]);
+    end;
   end;
 end;
 
 procedure Evaluate(const AReportPath, AReferencePath, ASourcePath,
-  AExpectedSourceHash, AExpectedReferenceHash: String);
+  AExpectedSourceHash, AExpectedReferenceHash: String;
+  const ATraceEnabled: Boolean);
 var
   LReport: TJSONObject;
   LOutput: TJSONObject;
@@ -264,6 +550,8 @@ var
   LWindowsJson: TJSONArray;
   LCandidatesJson: TJSONArray;
   LPointsJson: TJSONArray;
+  LObservationsJson: TJSONArray;
+  LObservationJson: TJSONObject;
   LClip: TAudioClip;
   LWindows: TBeatTrackWindows;
   LReplayed: TBeatTrackWindows;
@@ -273,6 +561,9 @@ var
   LFrames: TBeatFrames;
   LFullRaw: TBeatFrames;
   LFullAligned: TBeatFrames;
+  LObservations: TBeatObservations;
+  LTrace: TBeatCandidateTrace;
+  LTraced: TBeatGridAnalysis;
   LSourceHash: String;
   LReferenceHash: String;
   LScore: TMatchScore;
@@ -280,6 +571,7 @@ var
   LSelected: TMatchScore;
   LOptions: TBeatTrackOptions;
   LDefaultGrid: TBeatGridOptions;
+  LTraceGrid: TBeatGridOptions;
   LDefaultAnalysis: TAnalysisOptions;
   LDefaultActivity: TActivityOptions;
   LDefaultLocation: TOnsetLocationOptions;
@@ -292,6 +584,8 @@ var
   LAvailable: Integer;
   LToleranceFrames: Integer;
   LCenter: Integer;
+  LTraceFitWork: Int64;
+  LTraceMatchWork: Int64;
 begin
   LReport := nil;
   LOutput := nil;
@@ -389,6 +683,35 @@ begin
     Require((LWindowsJson.Count >= 1) and
       (LWindowsJson.Count <= MaximumBeatTrackWindows),
       'Candidate window count exceeds bound');
+    if ATraceEnabled then
+    begin
+      LObservationsJson := ArrayField(LReport, 'observations');
+      Require((LObservationsJson.Count =
+        IntegerField(LReport, 'observation_count')) and
+        (LObservationsJson.Count <= MaximumBeatObservations),
+        'Candidate trace observation count differs from saved report');
+      SetLength(LObservations, LObservationsJson.Count);
+      for LIndex := 0 to LObservationsJson.Count - 1 do
+      begin
+        LObservationJson := TJSONObject(LObservationsJson.Items[LIndex]);
+        LObservations[LIndex].Frame := IntegerField(LObservationJson, 'frame');
+        LObservations[LIndex].Weight := NumberField(LObservationJson, 'weight');
+        Require((LObservations[LIndex].Frame >= 0) and
+          (LObservations[LIndex].Frame < LClip.FrameCount) and
+          (LObservations[LIndex].Weight > 0) and
+          (LObservations[LIndex].Weight <= 1),
+          'Candidate trace observation is invalid');
+        if LIndex > 0 then
+        begin
+          Require(LObservations[LIndex].Frame >
+            LObservations[LIndex - 1].Frame,
+            'Candidate trace observations are unordered');
+        end;
+      end;
+      LTraceGrid := LDefaultGrid;
+      LTraceGrid.MaximumCandidates := IntegerField(LGridOptions,
+        'maximum_candidates');
+    end;
     SetLength(LWindows, LWindowsJson.Count);
     SetLength(LSavedStarts, LWindowsJson.Count);
     for LIndex := 0 to LWindowsJson.Count - 1 do
@@ -485,6 +808,8 @@ begin
     LOutput.Add('windows', LRows);
     LEligible := 0;
     LAvailable := 0;
+    LTraceFitWork := 0;
+    LTraceMatchWork := 0;
     for LIndex := 0 to High(LWindows) do
     begin
       LOwned := OwnedReference(LReference, LWindows[LIndex].OwnerStartFrame,
@@ -531,6 +856,27 @@ begin
       LRow.Add('witness', ScoreJson(LBest));
       LRow.Add('selected_index', LSelectedIndex);
       LRow.Add('selected_raw', ScoreJson(LSelected));
+      if ATraceEnabled then
+      begin
+        LTraced := InspectSavedWindow(LWindows[LIndex], LObservations,
+          LClip.SampleRate, LClip.FrameCount, LTraceGrid, LOptions, LTrace);
+        LTraceFitWork := LTraceFitWork + BeatGridFitWork(
+          LTraced.ObservationCount, LTraced.TrialCount);
+        Require(LTraceFitWork <= MaximumBeatTrackWork,
+          'Candidate trace fit work exceeds aggregate budget');
+        if (Length(LOwned) >= 2) and
+          ((LBestIndex < 0) or (LBest.Precision < 0.75) or
+           (LBest.Recall < 0.75)) then
+        begin
+          LRow.Add('trace', TraceJson(LWindows[LIndex], LTrace, LOwned,
+            LObservations, LToleranceFrames, LTraceMatchWork));
+          LFrames := CandidateFrames(LWindows[LIndex], LBestIndex,
+            LToleranceFrames);
+          LRow.Add('witness_nonreference_onset_grids',
+            NonreferenceGridOnsetSupport(LWindows[LIndex], LOwned, LFrames,
+              LObservations, LToleranceFrames));
+        end;
+      end;
       if (Length(LOwned) >= 2) and
         ((LBestIndex < 0) or (LBest.Precision < 0.75) or
          (LBest.Recall < 0.75)) then
@@ -556,6 +902,13 @@ begin
     if LEligible > 0 then
     begin
       LOutput.Add('candidate_coverage', LAvailable / LEligible);
+    end;
+    if ATraceEnabled then
+    begin
+      Require(LTraceFitWork = IntegerField(LTrack, 'fit_work'),
+        'Candidate trace work differs from saved inference');
+      LOutput.Add('trace_fit_work', LTraceFitWork);
+      LOutput.Add('trace_match_work', LTraceMatchWork);
     end;
     LPointsJson := ArrayField(LTrack, 'points');
     SetLength(LFullRaw, LPointsJson.Count);
@@ -596,12 +949,17 @@ end;
 
 begin
   try
-    if ParamCount <> 5 then
+    if (ParamCount <> 5) and (ParamCount <> 6) then
     begin
       raise EAudio.Create('Usage: pythian.beat.candidates REPORT.json ' +
-        'REFERENCE.csv SOURCE.wav SOURCE_SHA256 REFERENCE_SHA256');
+        'REFERENCE.csv SOURCE.wav SOURCE_SHA256 REFERENCE_SHA256 [--trace]');
     end;
-    Evaluate(ParamStr(1), ParamStr(2), ParamStr(3), ParamStr(4), ParamStr(5));
+    if (ParamCount = 6) and (ParamStr(6) <> '--trace') then
+    begin
+      raise EAudio.Create('Unknown candidate evaluation option');
+    end;
+    Evaluate(ParamStr(1), ParamStr(2), ParamStr(3), ParamStr(4),
+      ParamStr(5), ParamCount = 6);
   except
     on LError: Exception do
     begin

@@ -77,6 +77,14 @@ type
     Candidates: TBeatGridCandidates;
   end;
   TBeatFrames = array of Integer;
+  TBeatCandidateFlags = array of Boolean;
+  TBeatCandidateTrace = record
+    { Trial index is tempo-trial index * 2 + phase index. }
+    Trials: TBeatGridCandidates;
+    PeakEligible: TBeatCandidateFlags;
+    SelectedRank: TBeatFrames;
+    SuppressedBy: TBeatFrames;
+  end;
 
 function DefaultBeatGridOptions: TBeatGridOptions;
 
@@ -95,6 +103,18 @@ function BeatGridFitWork(const AObservationCount, ATrialCount: Integer): Int64;
 function EstimateBeatGrids(const AObservations: TBeatObservations;
   const ASampleRate, ASourceFrames: Integer;
   const AOptions: TBeatGridOptions): TBeatGridAnalysis;
+
+{ Optional bounded diagnostic from the same native fitter. Positive trial
+  scores are fitted proposals; PeakEligible records the local tempo-peak gate
+  before selection. SelectedRank is the retained zero-based candidate index;
+  SuppressedBy is the selected trial that removed an otherwise eligible trial.
+  Negative values mean not selected/suppressed. An eligible trial left with both
+  negative after the pool fills is a capacity loss. No reference enters fitting;
+  these stages do not certify a musical beat or confidence. }
+function InspectBeatGridCandidates(const AObservations: TBeatObservations;
+  const ASampleRate, ASourceFrames: Integer;
+  const AOptions: TBeatGridOptions;
+  out ATrace: TBeatCandidateTrace): TBeatGridAnalysis;
 
 { Rounded grid points in [AStartFrame,AEndFrame), with half-frame ties later.
   Phase is canonical in [0,period). Explicit caller-selected hypothesis; this
@@ -357,9 +377,10 @@ begin
   LCycle := (LPulse - ARight.PhaseFrame) / ARight.PeriodFrames;
   Result := Abs(LCycle - Floor(LCycle + 0.5)) < 0.25;
 end;
-function EstimateBeatGrids(const AObservations: TBeatObservations;
+function EstimateBeatGridsCore(const AObservations: TBeatObservations;
   const ASampleRate, ASourceFrames: Integer;
-  const AOptions: TBeatGridOptions): TBeatGridAnalysis;
+  const AOptions: TBeatGridOptions; const ACollectTrace: Boolean;
+  out ATrace: TBeatCandidateTrace): TBeatGridAnalysis;
 var
   LResult: TBeatGridAnalysis;
   LTrials: TBeatGridCandidates;
@@ -375,6 +396,7 @@ var
   LBestScore: Double;
   LMaximumWeight: Double;
 begin
+  ATrace := Default(TBeatCandidateTrace);
   LResult := Default(TBeatGridAnalysis);
   LResult.FirstObservationFrame := -1;
   LResult.LastObservationFrame := -1;
@@ -434,6 +456,18 @@ begin
           (LTrials[LIndex].Score >= LTrials[LIndex + CPhaseCount].Score - 1E-12);
       end;
     end;
+    if ACollectTrace then
+    begin
+      ATrace.Trials := Copy(LTrials);
+      ATrace.PeakEligible := Copy(LEligible);
+      SetLength(ATrace.SelectedRank, Length(LTrials));
+      SetLength(ATrace.SuppressedBy, Length(LTrials));
+      for LIndex := 0 to High(LTrials) do
+      begin
+        ATrace.SelectedRank[LIndex] := -1;
+        ATrace.SuppressedBy[LIndex] := -1;
+      end;
+    end;
     SetLength(LResult.Candidates, AOptions.MaximumCandidates);
     LCount := 0;
     LCenter := LResult.FirstObservationFrame +
@@ -455,6 +489,10 @@ begin
         Break;
       end;
       LResult.Candidates[LCount] := LTrials[LBest];
+      if ACollectTrace then
+      begin
+        ATrace.SelectedRank[LBest] := LCount;
+      end;
       Inc(LCount);
       if LCount < AOptions.MaximumCandidates then
       begin
@@ -473,6 +511,10 @@ begin
         if LPartner >= 0 then
         begin
           LResult.Candidates[LCount] := LTrials[LPartner];
+          if ACollectTrace then
+          begin
+            ATrace.SelectedRank[LPartner] := LCount;
+          end;
           Inc(LCount);
         end;
       end;
@@ -480,6 +522,11 @@ begin
       begin
         if Abs(LTrials[LIndex].Bpm - LTrials[LBest].Bpm) < AOptions.MinimumSeparationBpm then
         begin
+          if ACollectTrace and LEligible[LIndex] and
+            (ATrace.SelectedRank[LIndex] < 0) then
+          begin
+            ATrace.SuppressedBy[LIndex] := LBest;
+          end;
           LEligible[LIndex] := False;
         end;
       end;
@@ -487,6 +534,25 @@ begin
     SetLength(LResult.Candidates, LCount);
   end;
   Result := LResult;
+end;
+
+function EstimateBeatGrids(const AObservations: TBeatObservations;
+  const ASampleRate, ASourceFrames: Integer;
+  const AOptions: TBeatGridOptions): TBeatGridAnalysis;
+var
+  LTrace: TBeatCandidateTrace;
+begin
+  Result := EstimateBeatGridsCore(AObservations, ASampleRate, ASourceFrames,
+    AOptions, False, LTrace);
+end;
+
+function InspectBeatGridCandidates(const AObservations: TBeatObservations;
+  const ASampleRate, ASourceFrames: Integer;
+  const AOptions: TBeatGridOptions;
+  out ATrace: TBeatCandidateTrace): TBeatGridAnalysis;
+begin
+  Result := EstimateBeatGridsCore(AObservations, ASampleRate, ASourceFrames,
+    AOptions, True, ATrace);
 end;
 
 function BeatGridFrames(const ACandidate: TBeatGridCandidate;

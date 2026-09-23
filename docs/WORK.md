@@ -71,15 +71,40 @@ eligible windows against a 90% gate; 04 polyrhythm has 8/14 against an 80%
 gate. The recorded challenge therefore fails. Other rows are challenge
 01 9/10 and 03 18/18, and development 05 7/9 and 19 13/14. Crucially,
 current 02 window 16 retains and selects a 2/2 matching candidate at index 2;
-the historical
-rank-13 loss belongs to an older isolated policy. The [full evidence and
+the historical rank-13 loss belongs to an older isolated policy. The [full evidence and
 limits](BEAT-TRACKING.md#first-current-policy-candidate-baseline) name every
 failed window. Native Win32/Win64 authored controls, checker compilation,
 source/path replay, same-target and cross-target score identity, and negative
 identity/policy checks passed. No pool policy changed, no additional criterion
 closed and no task credit was earned; this is the first nonclosing batch since the
-protocol criterion. The next action is a current-policy omission trace on the
-failed rows, followed by a retention change only if its cause supports one.
+protocol criterion. The subsequent trace and reassessment are recorded below.
+
+## Beat-candidate omission reassessment — 2026-09-23
+
+The second bounded [tempo_04](TODO/NS-3_tempo_04.md) batch replayed all six
+saved candidate reports through an optional Pascal trial-stage trace. Every
+saved pool and aggregate fit-work count matched. The 11 failed eligible 02/04
+windows split into four with no compatible positive fit, four where compatible
+proposals fail the local-peak gate, one suppressed by a selected proposal and
+two lost at pool capacity. Admitted observations near annotated beats and
+other owner-interval onsets are reported separately. The latter may be valid
+musical subdivisions; missing admitted observations do not prove an acoustic
+source pulse is absent. The [full per-window record and limitations](BEAT-TRACKING.md#current-policy-omission-stage-trace)
+retain that distinction. Normal Win32 inference reports for 02/04 are
+byte-identical to their pre-trace versions; checked Win32/Win64 beat and
+tracker tests and trace-stage comparisons pass.
+
+Both post-freeze batches closed no additional acceptance criterion: first the
+frozen coverage gates failed (02 12/17, 04 8/14); now the trace explains why
+pool enlargement alone cannot clear them, but it does not resolve source-pulse
+status or the no-compatible-fit cases. Stop this investigation sequence at the
+two-batch checkpoint. No task credit or percentage changes. The next active
+core action follows the ready [NS-2 source/articulation quality](TODO/NS-2_synthesis-quality_01.md)
+review using its existing finite listening packet and the user's observed
+instrument defects. Tempo_04 resumes only with an independently reviewable
+source-pulse distinction and a predeclared fit/retention decision capable of
+meeting the unchanged gates within their work limit; another candidate-count
+walk is not that decision.
 
 ## Core-quality reassessment — 2026-09-23
 
@@ -98,8 +123,8 @@ using its existing finite listening packet. The next deliverable is a bounded
 artifact-identified, timestamped source-family review, followed by repairs only
 for demonstrated defects and their changed-path evidence. Its matrix criterion
 is already documented; the listening, defect-disposition and operating-range
-criteria remain open. The user heard the full, hash-identified 30-second
-synthesis preview and reported it coherent overall.
+criteria remain open. The user confirmed that the coherent verdict refers to
+the full, hash-identified 30-second synthesis preview.
 The [quality record](SYNTHESIS-QUALITY.md#thirty-second-listener-preview--2026-09-20)
 now attaches the favorable whole-piece verdict to that artifact while retaining
 the separate source-family listening gates. An 11-second combined-source
