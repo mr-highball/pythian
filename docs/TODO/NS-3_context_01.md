@@ -103,8 +103,23 @@ regions, musical-time mapping and manual-selection provenance. The
 passes stable FPC 3.2.2 Win32 core and saved-profile checks. A deliberately
 selected rank-18 key remains explicitly caller-selected in the JSON and
 report-bound profile after reload; it is not presented as automatic inference.
-Criteria 1, 2, 3 and 5 remain open, including calibrated uncertainty and
-independent recorded accuracy. This partial criterion earns no task credit.
+At that checkpoint, criteria 1, 2, 3 and 5 remained open, including calibrated
+uncertainty and independent recorded accuracy. This partial criterion earns no
+task credit.
+
+Prospective policy batch 2026-09-23: the [source-window and admission-gate
+policy](../TONAL.md#prospective-local-key-admission-gates--2026-09-23) fixes
+whole-recording development/evaluation groups, both reviewed acoustic no-key
+windows, supported major/minor and excluded modes, groupwise key coverage,
+precision, conflict/no-key abstention, agreed-change and false-transition
+limits before independent candidate inference. The maintained Pascal scorer
+now reports admitted supported frames and spurious known-key transitions from
+continuous same-key reference interiors under `swd-localkey-score-2`. This is
+policy and denominator plumbing, not a trained estimator or accuracy result.
+Focused QA passed the frozen policy, checked Win32/Win64 controls, and byte
+replay of the all-unknown D911-02 development control. Criterion 1 is met;
+criteria 2, 3 and 5 remain open. No inference accuracy or completion credit
+is claimed.
 
 **Acceptance Criteria:**
 
@@ -121,6 +136,33 @@ independent recorded accuracy. This partial criterion earns no task credit.
 
 **Dev Notes:**
 
+- 2026-09-23 focused QA accepted criterion 1: source/group roles, complete
+  windows, key support, ambiguous/no-key/change cases and all coverage,
+  precision, abstention and transition limits are frozen in TONAL.md before
+  candidate inference. Checked stable FPC 3.2.2 Win32/Win64 scorer controls
+  pass, including both exact one-second edges of a merged same-key span; the
+  all-unknown D911-02 development replay is byte-identical on both targets
+  (SHA-256 `d2effc9e3c5ba983344be1953841bbfb6dd55853d0535ad57dcf706f5a248b57`).
+  It admits zero supported frames and counts zero false transitions. This
+  closes only the prospective-policy criterion; no candidate inference,
+  accuracy result or task credit follows.
+- 2026-09-23 scorer boundary repair: focused QA found that the first scorer
+  draft omitted a known-key transition exactly one second from the right edge
+  of a stable reference span, despite the inclusive written policy. The
+  comparison is now inclusive on both edges; a symmetric source-free control
+  and checked Win32/Win64 replay pass. The original error is repaired before
+  any candidate inference or independent scoring.
+- 2026-09-23 changed path after the accepted reference packet: stop further
+  ranker/profile/dictionary variants. Freeze explicit outcome limits and
+  separately observable coverage/flicker counts before proposing a Pascal
+  source-aware inference path. Checked stable Win32/Win64 scorer controls and
+  all-unknown D911-02 development replay match byte for byte (SHA-256
+  `d2effc9e3c5ba983344be1953841bbfb6dd55853d0535ad57dcf706f5a248b57`);
+  that authored control has zero admitted supported frames and zero false
+  transitions, so it cannot masquerade as accepted key inference. Stop this
+  batch after focused policy/scorer QA. The next candidate must preserve
+  frequency provenance, temporal order and explicit unknowns, then face the
+  frozen development gates before any independent candidate run.
 - 2026-09-23 reference split: after two nonclosing batches, source/interval
   qualification moved to [NS-3_context_03](DONE/NS-3_context_03.md) with 1 of this
   task's original 4 unearned NS-3 points. This task retains the prospective

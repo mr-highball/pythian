@@ -1130,6 +1130,75 @@ acoustic no-key intervals in development and independent recording groups and
 a reproducible false-admission denominator. It does not select a key model,
 calibrate an unknown threshold or prove independent key-inference accuracy.
 
+### Prospective local-key admission gates — 2026-09-23
+
+For [NS-3_context_01](TODO/NS-3_context_01.md), freeze this source and decision
+policy **before candidate inference on the independent groups**. The existing
+packet defines the scoring windows. Score all original frames in each HU33 WAV,
+while using only its fully covered, unanimous major/minor frames as supported
+key truth; preserve every conflict, partial and unlabelled partition separately.
+The named highlights below are audit points within those complete source
+windows, not hand-selected scoring crops. The 24 major/minor root/mode values
+are the output alphabet; empirical acceptance is limited to keys present in
+these four recordings. Other modes must remain unsupported/unknown.
+
+| Role | Exact source-clock window | Required reference cases |
+| --- | --- | --- |
+| Development | D911-02 HU33 [0, 2,230,272) frames at 22,050 Hz | Stable G minor [6,615,415,863); direct audio-label conflicts [415,863,564,921); preserve ann2 transfer gaps and other alternatives |
+| Development | D911-16 HU33 [0, 3,053,568) frames at 22,050 Hz | Stable D major and D minor, direct conflict [1,180,116,1,264,347), agreed D minor to D major change at 1,761,795 |
+| Independent evaluation | D911-05 HU33 [0, 6,050,816) frames at 22,050 Hz | Full original partition, four eligible agreed changes; zero conflict denominator remains unavailable |
+| Independent evaluation | D911-19 HU33 [0, 1,563,648) frames at 22,050 Hz | Full original partition and annotator conflict; zero eligible-change denominator remains unavailable |
+| Development acoustic no-key | Rain/wind [352,800,793,800) original frames at 44,100 Hz | The user's reviewed [8,18) second window; no key throughout |
+| Independent acoustic no-key | Applause [793,800,1,234,800) original frames at 44,100 Hz | The user's reviewed [18,28) second window; no key throughout |
+
+One Pascal-owned inference policy and its parameters must be fixed from the
+development recordings and authored controls, with no per-recording key,
+threshold or timing adjustment. An independent WAV prediction must be made
+without reading its annotation report into the inference path. Preserve ranked
+alternatives and an explicit unknown decision for each source-frame segment;
+do not interpret a raw top-two score gap as calibrated probability. Any
+confidence claim needs its own development calibration and independent check.
+Use the packet scorer's exact root/mode comparison and quarter-second,
+one-second-flank change rule. Report every numerator and denominator by group
+and role, with zero denominators unavailable rather than favorable.
+
+The following are **acceptance limits**, not measured results. For each of the
+four tonal recordings, at least 75% of supported frames must have the exact
+root and mode; at least 80% must receive an admitted key; and at least 90% of
+admitted supported frames must be exact. The unweighted mean of the four
+per-recording exact rates must also reach 80%, so the long D911-05 source
+cannot hide another group's failure. On each group with a nonzero conflict
+denominator (D911-02, D911-16 and D911-19), at least 80% of those frames must
+receive unknown. On **each** reviewed acoustic no-key window, false-key
+admission may occupy no more than 5% of its 441,000 frames. The single
+development agreed change must pass, and at least three of four independent
+agreed changes must pass the existing exact old/new and timing rule.
+
+Count a spurious known-key transition when two adjacent prediction segments
+assert different known keys at a boundary strictly inside one continuous
+unanimous same-key reference span longer than 44,100 frames, at least 22,050
+frames from either end of that span, including either exact one-second edge.
+For each recording with any eligible stable interior, allow no more
+than one such transition per 60 seconds of eligible interior, using its
+22,050-Hz source-frame denominator. Compare integer counts as
+`spurious_known_key_transitions * 1,323,000 <= eligible_stable_interior_frames`;
+zero eligible frames make this rate unavailable. The maintained scorer now
+reports both counts; a change hit alone cannot hide repeated false
+transitions. Existing `supported_key_correct_frames`
+divided by `supported_key_frames` measures exact coverage. The scorer now also
+emits `supported_key_admitted_frames` under `swd-localkey-score-2`, allowing
+admitted coverage and exact precision to be checked without treating unknown
+as a correct supported-key decision.
+
+Selection stops on development evidence if any limit fails. Keep all four
+original groups and both no-key windows in the report, including unavailable
+denominators and failed cases. The independent sources may be scored once
+under the frozen candidate for acceptance. If evaluation fails, retain that
+failure and use newly isolated recordings for any later independent acceptance
+after a changed inference policy; do not tune on the held-out errors and then
+call the same groups independent again. This policy grants no task credit or
+automatic key claim by itself.
+
 ## Native inspection
 
 The [native tool](../tools/pythian.tonal.inspect.lpr) prints JSON:

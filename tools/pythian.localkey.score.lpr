@@ -79,6 +79,7 @@ type
   TSegments = array of TSegment;
   TScore = record
     SupportedFrames: Int64;
+    SupportedAdmittedFrames: Int64;
     SupportedCorrectFrames: Int64;
     ConflictFrames: Int64;
     ConflictUnknownFrames: Int64;
@@ -86,6 +87,8 @@ type
     ExcludedPartialFrames: Int64;
     ChangeEvents: Int64;
     CorrectChangeEvents: Int64;
+    EligibleStableInteriorFrames: Int64;
+    SpuriousKnownKeyTransitions: Int64;
   end;
   TNoKeyScore = record
     NoKeyFrames: Int64;
@@ -352,6 +355,8 @@ begin
       rcSupported:
       begin
         Inc(Result.SupportedFrames, LSpan);
+        if APredictions[J].Key >= 0 then
+          Inc(Result.SupportedAdmittedFrames, LSpan);
         if AReference[I].Key = APredictions[J].Key then
           Inc(Result.SupportedCorrectFrames, LSpan);
       end;
@@ -363,6 +368,9 @@ begin
     (Result.SupportedFrames + Result.ConflictFrames +
      Result.ExcludedUnlabelledFrames + Result.ExcludedPartialFrames = AFrames),
     'Scored frame conservation');
+  Require((Result.SupportedCorrectFrames <= Result.SupportedAdmittedFrames) and
+    (Result.SupportedAdmittedFrames <= Result.SupportedFrames),
+    'Supported admission counts are not conserved');
   for I := 1 to High(AReference) do
   begin
     if (AReference[I - 1].Kind <> rcSupported) or
@@ -388,6 +396,36 @@ begin
     end;
     if (LTransitions = 1) and LMatched then
       Inc(Result.CorrectChangeEvents);
+  end;
+  I := 0;
+  while I < Length(AReference) do
+  begin
+    if AReference[I].Kind <> rcSupported then
+    begin
+      Inc(I);
+      Continue;
+    end;
+    J := I + 1;
+    while (J < Length(AReference)) and
+      (AReference[J].Kind = rcSupported) and
+      (AReference[J].Key = AReference[I].Key) and
+      (AReference[J].First = AReference[J - 1].Limit) do
+      Inc(J);
+    LFirst := AReference[I].First;
+    LLimit := AReference[J - 1].Limit;
+    if LLimit - LFirst > 2 * CChangeFlank then
+    begin
+      Inc(Result.EligibleStableInteriorFrames,
+        LLimit - LFirst - 2 * CChangeFlank);
+      for K := 1 to High(APredictions) do
+        if (APredictions[K - 1].Key >= 0) and
+          (APredictions[K].Key >= 0) and
+          (APredictions[K - 1].Key <> APredictions[K].Key) and
+          (APredictions[K].First >= LFirst + CChangeFlank) and
+          (APredictions[K].First <= LLimit - CChangeFlank) then
+          Inc(Result.SpuriousKnownKeyTransitions);
+    end;
+    I := J;
   end;
 end;
 
@@ -468,6 +506,7 @@ begin
   LPredictions[2].Key := -1;
   LScore := Score(LReference, LPredictions, 55125);
   Require((LScore.SupportedFrames = 44100) and
+    (LScore.SupportedAdmittedFrames = 44100) and
     (LScore.SupportedCorrectFrames = 44100) and
     (LScore.ConflictFrames = 11025) and
     (LScore.ConflictUnknownFrames = 11025) and
@@ -509,8 +548,41 @@ begin
   LPredictions[0].Key := -1;
   LScore := Score(LReference, LPredictions, 55125);
   Require((LScore.SupportedCorrectFrames = 0) and
+    (LScore.SupportedAdmittedFrames = 0) and
     (LScore.ConflictUnknownFrames = LScore.ConflictFrames) and
     (LScore.CorrectChangeEvents = 0), 'All-unknown behavior');
+  SetLength(LReference, 2);
+  LReference[0].First := 0;
+  LReference[0].Limit := 2 * CSourceRate;
+  LReference[0].Kind := rcSupported;
+  LReference[0].Key := KeyValue('C:maj');
+  LReference[1].First := LReference[0].Limit;
+  LReference[1].Limit := 5 * CSourceRate;
+  LReference[1].Kind := rcSupported;
+  LReference[1].Key := LReference[0].Key;
+  SetLength(LPredictions, 3);
+  LPredictions[0].First := 0;
+  LPredictions[0].Limit := 2 * CSourceRate;
+  LPredictions[0].Key := LReference[0].Key;
+  LPredictions[1].First := LPredictions[0].Limit;
+  LPredictions[1].Limit := 3 * CSourceRate;
+  LPredictions[1].Key := KeyValue('D:maj');
+  LPredictions[2].First := LPredictions[1].Limit;
+  LPredictions[2].Limit := LReference[1].Limit;
+  LPredictions[2].Key := LReference[0].Key;
+  LScore := Score(LReference, LPredictions, LReference[1].Limit);
+  Require((LScore.EligibleStableInteriorFrames = 3 * CSourceRate) and
+    (LScore.SpuriousKnownKeyTransitions = 2) and
+    (LScore.SupportedAdmittedFrames = LReference[1].Limit),
+    'Continuous same-key interior and false-transition control');
+  LPredictions[0].Limit := CSourceRate;
+  LPredictions[1].First := LPredictions[0].Limit;
+  LPredictions[1].Limit := 4 * CSourceRate;
+  LPredictions[2].First := LPredictions[1].Limit;
+  LScore := Score(LReference, LPredictions, LReference[1].Limit);
+  Require((LScore.EligibleStableInteriorFrames = 3 * CSourceRate) and
+    (LScore.SpuriousKnownKeyTransitions = 2),
+    'Both exact one-second stable-span edges count');
   SetLength(LPredictions, 1);
   LPredictions[0].First := CNoKeyStartFrames[0];
   LPredictions[0].Limit := CNoKeyStartFrames[0] + CNoKeyWindowFrames;
@@ -577,14 +649,20 @@ begin
         LOutput.Add('reference_report_sha256', LReferenceHash);
         LOutput.Add('prediction_sha256', LPredictionHash);
         LOutput.Add('prediction_kind', LPredictionKind);
-        LOutput.Add('scoring_policy', 'swd-localkey-score-1');
+        LOutput.Add('scoring_policy', 'swd-localkey-score-2');
         LOutput.Add('source_frames', LFrames);
         LOutput.Add('supported_key_frames', LScore.SupportedFrames);
+        LOutput.Add('supported_key_admitted_frames',
+          LScore.SupportedAdmittedFrames);
         LOutput.Add('supported_key_correct_frames', LScore.SupportedCorrectFrames);
         LOutput.Add('conflict_frames', LScore.ConflictFrames);
         LOutput.Add('conflict_unknown_frames', LScore.ConflictUnknownFrames);
         LOutput.Add('agreed_change_events', LScore.ChangeEvents);
         LOutput.Add('correct_change_events', LScore.CorrectChangeEvents);
+        LOutput.Add('eligible_stable_interior_frames',
+          LScore.EligibleStableInteriorFrames);
+        LOutput.Add('spurious_known_key_transitions',
+          LScore.SpuriousKnownKeyTransitions);
         LOutput.Add('supported_key_available', LScore.SupportedFrames > 0);
         LOutput.Add('conflict_available', LScore.ConflictFrames > 0);
         LOutput.Add('agreed_change_available', LScore.ChangeEvents > 0);

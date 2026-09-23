@@ -41,6 +41,33 @@ thresholds, unknown coverage and independent inference-accuracy acceptance.
 Return to that bounded core task under the task-flow selection rule; keep the
 three personal style tests separate from core admission.
 
+## Prospective local-key gate and scorer coverage — 2026-09-23
+
+With the reference packet accepted, [NS-3_context_01](TODO/NS-3_context_01.md)
+now has a fixed development/evaluation policy for criterion 1. The
+[admission gates](TONAL.md#prospective-local-key-admission-gates--2026-09-23)
+name all four original recording windows, both reviewed acoustic no-key clips,
+supported major/minor cases, excluded coverage and groupwise key, unknown,
+change and false-transition limits before independent candidate inference.
+The maintained Pascal scorer reports admitted supported frames and false
+known-key transitions inside continuous stable reference interiors under a
+new scoring-policy identity. Checked stable FPC 3.2.2 Win32/Win64 controls pass;
+the all-unknown D911-02 development control gives zero admitted supported
+frames and identical score bytes on both targets. Focused QA passed criterion
+1's policy and scorer checks, including the symmetric exact one-second edge
+control.
+Its first pass caught an exact right-edge transition exclusion; the scorer
+was repaired before any candidate inference. Fresh checked runs on both targets
+pass with zero leaks, and the all-unknown D911-02 replay reproduces the recorded
+score hash. Criterion 1 is met; criteria 2, 3 and 5 remain open. No candidate
+inference, accuracy result or task credit is claimed.
+This batch changes the former stopped variant search into a frozen decision
+gate; it has not run a key estimator, closed inference criteria or earned task
+credit. Stop policy edits after QA. Next, develop one source-aware Pascal
+candidate against the development groups, with retained alternatives and
+unknowns; open independent candidate scoring only after the development
+gates pass. Do not use the three personal style mixes as key truth.
+
 ## Cross-part register attribution stop — 2026-09-23
 
 The [frozen Pascal cross-part screen](PHRASE-EVALUATION.md#cross-part-register-peak-attribution-screen--2026-09-23)
