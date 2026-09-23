@@ -93,14 +93,45 @@ track lengths; they are not a waveform alignment.
 | B-middle | 166 s | [2:45 (165 s)](https://lofigirl.bandcamp.com/album/secret-lair-x-lofi-girl-beats-to-cast-to) | One-second difference; recording correspondence and endpoint quality still unverified. |
 | C-early | 228 s | [3:55 (235 s)](https://submorphine.bandcamp.com/album/cyberdawn) | Seven-second difference; the declared compilation is labelled a later remaster, so the album track is not an authenticated edition match. |
 
-The current local packet has no independently checked isolated recording to
-compare against these WAV bytes and no curator-reviewed musical annotations for
-them. A reviewer must verify each recording and cut, then bind beat/meter,
+The chapter-correspondence screen had no independently checked isolated
+recording to compare against these compilation bytes, and still has no
+curator-reviewed musical annotations for them. A reviewer must verify each
+recording and cut, then bind beat/meter,
 harmony, roles, sound/envelope and structure observations to exact source clocks,
 including unknown regions. An independently reviewed replacement can serve the
 same role if a candidate fails correspondence or quality review. Until then the
 three cards and their numerical trait thresholds remain pending; the existing
 acoustic and generic-guitar controls cannot close their musical dimensions.
+
+### Provisional isolated chillwave source — 2026-09-22
+
+The artist-posted [Chill (Pro Sensory)](https://opengameart.org/content/chill-pro-sensory)
+page identifies Pro Sensory, tags the work chillwave among synthwave and chiptune,
+lists CC0, and asks users to include the name Alex McCulloch. Its directly linked
+`Chill.wav` is a standalone published WAV. Preserve that name and page notice if
+the recording is used. This is a **new candidate source family**, not a match to
+the existing C-early compilation excerpt or a new untouched evaluation song.
+
+The exact public [WAV download](https://opengameart.org/sites/default/files/Chill.wav)
+was acquired without conversion into ignored
+`build/style-reference-source/Chill-Pro-Sensory.wav`. A temporary Pascal audit
+using Pythian's `TWaveFrameReader` and `Sha256Stream`, compiled with checked FPC
+3.2.2 i386-win32, decoded all **10,159,104 frames**: 44,100 Hz, stereo PCM16,
+230.365170 seconds and 40,636,460 bytes. SHA256 is
+`db725f3a6fbbc57dd40ad9ff659177824e2473e5684479d2fdf9e41860e6771f`.
+Across both channels the decoded peak is 0.979950, RMS is 0.251012 and zero
+samples reach an encoding endpoint. The ignored audit source, binary and local
+WAV are retained under that build directory; the recording is not committed.
+
+This resolves **download-byte identity and complete file geometry for this
+candidate only**. The artist's tags are not an independent genre judgment. A
+reviewer still needs to listen to this exact WAV, decide whether its hybrid
+chiptune/synthwave traits qualify as a chillwave reference, and supply timed
+context, groove, harmony, bass/voice, sound/envelope and phrase observations
+with methods and uncertainty. Until that review, C-early is not replaced and no
+reference criterion, numerical gate or genre acceptance is closed. Stop source
+screening here; another catalogue result or level measurement would not resolve
+the missing musical evidence.
 
 ## Reference observations from the original master sections
 

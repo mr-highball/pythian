@@ -21,6 +21,25 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Isolated NS-5 reference candidate screen — 2026-09-22
+
+The directly published full `Chill.wav` from Pro Sensory was acquired into ignored
+`build/style-reference-source/` and decoded with Pythian's Pascal WAV reader on
+checked stable FPC 3.2.2 Win32. Exact SHA256, page/license/attribution, 230.365170-s
+clock and signal checks are recorded in the [provisional source packet](STYLE-CARDS.md#provisional-isolated-chillwave-source--2026-09-22).
+This is a new candidate family with unreviewed hybrid genre suitability, not an
+authenticated correspondence to C-early. No required musical annotations or
+quantitative reference thresholds are available, so `NS-5_evaluation_01` remains
+open with zero added credit; NS-5 stays 27%, overall 63.15%.
+
+The earlier chapter-correspondence batch and this isolated-source batch did not
+close a criterion. At the two-nonclosing-batch checkpoint, stop source browsing
+and change the next action to review of this exact WAV or another independently
+identified full recording, with timed observations for all six required style
+dimensions. Do not infer them from tags or signal levels. The user's 20-attempt
+same-cause limit and 20-failed-QA-submission transfer threshold remain in force;
+this source screening is not an inference attempt or failed QA submission.
+
 ## Sparse-peak pitch decision rejected — 2026-09-22
 
 The accepted Pascal sparse-peak observations give high reference-pitch top-12
