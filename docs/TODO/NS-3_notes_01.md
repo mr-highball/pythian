@@ -116,3 +116,22 @@ variation is authorized by the existing evidence.
 - Investigation reassessment 2026-09-22: this is the second task-specific nonclosing batch after the stopped source-separated scorer. Suspend note-identity experiments until a genuinely new, independently contrasting observation with prospective abstention and source-bound low/quiet/short controls is declared. Accepted Pascal observation/execution work in between did not settle this note-identity cause.
 
 - Follow-up: justify genuinely discriminating identity evidence and prospective ambiguity/coverage handling before another experiment. Coordinate with [presence](NS-3_notes_02.md); preserve genuine low/quiet/short notes and untouched phrase material. The pause retains the one-batch no-criterion-closure count in the [work record](../WORK.md#pause-retrospective--2026-09-21).
+
+- 2026-09-23 native-model feasibility screen: porting CREPE tiny/full would
+  reproduce the already failed [recorded capacity comparison](../PHRASE-EVALUATION.md#full-capacity-comparison),
+  so it supplies no new register evidence. The distinct
+  [SwiftF0 v0.2 source](https://github.com/lars76/swift-f0) is MIT licensed and
+  provides compact harmonic-comb weights. A bounded Pascal protobuf inspector
+  decoded its exact local model as one 355-node, 107-tensor graph without
+  executing ONNX or another runtime. The v0.2 repository does not provide a
+  source-group training manifest for those weights; the linked
+  [paper](https://arxiv.org/abs/2508.18440) describes the earlier v0.1 model.
+  Without that exposure identity, a source-disjoint accuracy claim on the
+  existing recordings would be unsupported. Stop this model port before
+  inference implementation, retain the private screen under ignored `build/`,
+  and require verified model-training groups or Pascal-owned training with a
+  frozen control/coverage gate before another model experiment. No criterion,
+  provider or credit changes. This is the second consecutive nonclosing batch
+  after journal publication. The [work reassessment](../WORK.md#core-quality-reassessment--2026-09-23)
+  changes the next action to the ready NS-2 source/articulation quality review;
+  register investigation resumes only with the independent evidence above.

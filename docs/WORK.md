@@ -21,6 +21,28 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Core-quality reassessment — 2026-09-23
+
+Two consecutive bounded batches closed no acceptance criterion. First, the
+NS-5_scale_02 journal-publication batch protected accepted output prefixes and
+checked exact replay, but left semantic providers, process recovery and the
+many-hour workload open. Second, the NS-3_notes_01 native-model feasibility
+screen rejected a redundant CREPE port and stopped a SwiftF0 v0.2 port before
+execution: its available release does not identify model-training source groups,
+so it cannot support the required source-disjoint recorded-note claim. Neither
+batch earned task credit. Stop journal variants and model-port investigation at
+these evidence boundaries.
+
+Follow the ready core prerequisite [NS-2 source/articulation quality](TODO/NS-2_synthesis-quality_01.md)
+using its existing finite listening packet. The next deliverable is a bounded
+artifact-identified, timestamped source-family review, followed by repairs only
+for demonstrated defects and their changed-path evidence. Its matrix criterion
+is already documented; the listening, defect-disposition and operating-range
+criteria remain open. The user reports that a Pythian sample WAV sounds coherent;
+the exact file is being confirmed before that verdict is attached to an artifact.
+At the next substantial playable checkpoint, seek the user's qualitative review
+without treating one favorable excerpt as approval of every source family.
+
 ## Journal publication checkpoint — 2026-09-23
 
 For NS-5_scale_02 criterion 2, the acoustic journal commands now stage model,
