@@ -21,6 +21,29 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## PianoVAM source stop and reference reassessment — 2026-09-22
+
+The second bounded `NS-3_notes_04` source check stopped before audio acquisition.
+The current [PianoVAM v1.1 card](https://huggingface.co/datasets/PianoVAM/PianoVAM_v1/blob/main/README.md)
+publishes per-file WAV, MIDI and TSV access, but states that the TSV is derived
+from MIDI. Its `key_offset` denotes physical key release; its `frame_offset`
+considers sustain pedal. The [authors' paper](https://github.com/alexanderlerch/2025-ISMIR-PianoVAM/blob/main/ISMIR2025_template.tex)
+describes adjusting transcription offsets to pedal release. Therefore neither
+field independently labels when a recorded tail becomes inaudible. The current
+dataset license is CC BY-NC-SA 4.0, limiting reuse in a general library.
+No files were acquired or scored, and no credit closes.
+
+Guitar-TECHS and PianoVAM are two consecutive source screens without an
+accepted acoustic tail/rest reference. Following the task-flow checkpoint,
+stop source shopping and finish the smaller reviewable reference packet from
+the four already verified CC BY 4.0 NSynth notes. Freeze the existing 3.0-s
+gate, exact listening windows and unknown option before requesting listening
+judgments. A listener may confirm continuation, post-gate tail and distant
+rest or mark any window uncertain. If those judgments support the packet's
+instrument-group scope, finish its Pascal checker and source-separated roles;
+recorded phrase transfer and all NS-3_notes_02 scoring remain open. This
+reassessment authorizes a concrete review deliverable, not a new estimator.
+
 ## Note-presence reference split and P1 source stop — 2026-09-22
 
 At the two-nonclosing-batch checkpoint, the qualified external reference was

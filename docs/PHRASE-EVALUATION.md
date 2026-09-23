@@ -17,6 +17,38 @@ not infer a trustworthy phase path, select register or alter any recorded phrase
 score. Those admission steps remain [WAV-03-REGISTER](MILESTONES.md#wav-03-register)
 and [WAV-03-TIMBRE](MILESTONES.md#wav-03-timbre); held-out recordings remain unused.
 
+## NSynth note-presence listening packet — awaiting review — 2026-09-22
+
+This packet uses the four fixed, verified 4.0-second WAVs and exact source
+identities in [fixed-gate release controls](#fixed-gate-release-controls--2026-09-22).
+The official source documents note-off at **3.000 seconds**. The WAVs are in
+ignored `build/presence-contrast/nsynth-test/audio/`; the cited source archive,
+selection policy, SHA256 values, formats and Pascal audit permit reacquisition.
+Listen to each full clip in its natural context. The windows below were frozen
+from the earlier audit before requesting judgments; no scorer or threshold is
+being fitted to them.
+
+| Source note | Instrument group | Continuation candidate | Post-gate tail candidate | Distant-rest candidate |
+| --- | --- | --- | --- | --- |
+| `brass_acoustic_046-084-075` | brass | [2.50, 2.75) s | [3.00, 3.25) s; [3.75, 4.00) s late check | unknown |
+| `guitar_acoustic_030-061-100` | guitar | [2.50, 2.75) s | [3.00, 3.25) s; [3.75, 4.00) s late check | unknown |
+| `guitar_acoustic_014-080-100` | guitar | unknown: near silence before note-off | unknown: near silence after note-off | [3.75, 4.00) s |
+| `mallet_acoustic_056-050-075` | mallet | unknown: silent well before note-off | unknown: no observed post-gate sound | [3.75, 4.00) s |
+
+The exact question for review is whether a pitched note from the named source
+is **clearly audible**, **not audible**, or **uncertain** in each listed
+candidate window. The 3.0-second renderer note-off is a documented control,
+not a listening label.
+Near-zero PCM or a quality tag does not substitute for the requested judgment.
+Do not assign an acoustic silence endpoint from the end of a file: both long
+release notes still have measured late-window energy, and the final encoded
+sample is zero. Unknown windows remain unknown; absence of an example is not
+evidence of rest. The four clips are all development reference material.
+Attack, short, quiet continuation, repeated notes, gaps in recorded phrases
+and source-independent transfer remain uncovered. No score, decoder or task
+credit follows until the review, checker and source-separated roles satisfy
+`NS-3_notes_04`.
+
 ## Guitar-TECHS P1 reference screen stopped — 2026-09-22
 
 After the known-gate slope stop, [NS-3_notes_04](TODO/NS-3_notes_04.md) now

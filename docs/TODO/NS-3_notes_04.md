@@ -84,3 +84,16 @@ and [rejected gate-slope rule](../PHRASE-EVALUATION.md#fixed-gate-slope-diagnost
   before treating it as acoustic tail truth. Its CC BY-NC-SA 4.0 license limits
   reuse, so keep any probe evaluation-only and do not incorporate its data into
   a distributable or commercially reusable learned style.
+- 2026-09-22 PianoVAM source-screen stop: the current v1.1 card says its TSV
+  labels are derived from captured MIDI. `key_offset` is key release, while
+  `frame_offset` considers sustain pedal; the authors' [paper source](https://github.com/alexanderlerch/2025-ISMIR-PianoVAM/blob/main/ISMIR2025_template.tex)
+  explicitly adjusts transcription offsets to pedal release. Neither is an
+  independently reviewed acoustic silence boundary. The card provides
+  per-file Audio/MIDI/TSV access, but its current CC BY-NC-SA 4.0 license
+  restricts reuse. Do not acquire audio or use the symbolic `frame_offset` as
+  tail truth. This is the second nonclosing reference batch after Guitar-TECHS.
+  At the task-flow checkpoint, finish a bounded review packet from the already
+  verified CC BY 4.0 NSynth controls: freeze exact continuation, post-gate and
+  distant-rest listening windows and ask for judgments with `uncertain` allowed.
+  Only then decide whether this synthetic instrument-group packet can close
+  the reference criterion; recorded phrase transfer remains separate.
