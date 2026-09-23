@@ -21,6 +21,27 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Presence F0 comparison and stop point — 2026-09-22
+
+The fixed Pascal companion audit matched all 137 source-bound immediate post-end
+candidate windows against the same URMP parts' 46-ms frame-pitch annotations.
+All 137 frame windows start after the preceding note end and are annotated
+unvoiced; none retains that note's pitch or another pitch. Controls find the
+preceding pitch at 1,440/1,441 internal-note centers and unvoiced annotations
+at 439/439 distant rests. Every F0s and Notes file matched the existing bound
+manifest. Checked stable FPC 3.2.2 Win32 compilation had no warnings; two
+final runs produced identical `build/presence-contrast/f0-audit.csv`, SHA256
+`5504aff291af64df025a1b152947ed8ae2b05fb6d64b9fc2501d53e1edeb6d72`.
+
+The frame and note annotations are related products. Unvoiced F0 does not prove
+there is no acoustic decay; it means this packet cannot independently label a
+voiced release tail. This is the second consecutive nonclosing presence batch.
+Stop the URMP annotation-only route and obtain separately anchored gate/release
+evidence plus physical controls before a new scorer. Keep these 137 rows
+unresolved, preserve Spring and held-out material, and do not change the native
+event path or award NS-3/NS-5 credit. The source-bound packet itself remains
+available for later comparison.
+
 ## Presence contrast reference packet — 2026-09-22
 
 The NS-5 scale chain requires `NS-3_notes_03`, which in turn requires recorded
@@ -29,10 +50,11 @@ selector used the already bound six URMP part WAV/Notes pairs from three distinc
 work groups. The first 30 seconds of each produced 1,441 internal continuation,
 137 immediate post-end candidate and 439 distant-rest windows at fixed 50-ms
 centers; 1,577 were excluded. Exact group, source/annotation hashes, frame and
-RMS rows are in ignored `build/presence-contrast/cohorts.csv`, SHA256
-`aa0590043ee433d40047024c07d915ef5f5e40f497157b0dc292127666f3791b`.
+RMS rows, including the nearest preceding note index for post-end candidates,
+are in ignored `build/presence-contrast/cohorts.csv`, SHA256
+`393e175f3237b4ff1b5f241645d929eb3c3974e3820606d0f6bbdf15fc0e7d85`.
 Checked stable FPC 3.2.2 Win32 compilation and two byte-identical complete runs
-passed. The binding manifest SHA256 is
+passed after repairing the post-end note-index binding. The binding manifest SHA256 is
 `f87c398357641b2bc6893e98263f8981f9669787a7802f9d69b919222f47786c`.
 
 The post-end cohort is **not** an acoustic release-tail truth set. The next
