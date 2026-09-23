@@ -23,6 +23,24 @@ from planned semantic providers, profile persistence, weighting and blend APIs.
 
 ## Recorded presence observation path — 2026-09-23
 
+The subsequent NS-3_notes_05 GuitarSet source-wide packet froze a
+player/material-separated role policy before scanning the retained annotation
+ZIP. Checked stable Win64 Pascal audited all 360 JAMS members, excluding three
+publisher-named errors, and reported 73 recordings with at least two fully
+isolated three-window note-end candidates. Counts by player 00–05 were
+0/6/9/16/16/26. Reserved player 00 could not supply the independent role.
+The packet stopped before microphone extraction, listening, or scoring; no
+selection file was written. Source archive SHA256 was
+`8daa02e6417ccca1685feb44b135e95928ad7037e5032ecb326b5791856fda99`;
+the ignored eligibility TSV SHA256 was
+`9b5737189f1dc8796b19d77957163231d202162371345a44e86e9a38ab0a3055`.
+The checked selector reported zero unfreed blocks. This is the second
+consecutive nonclosing NS-3_notes_05 source batch after the two-recording
+inventory. Reassess per task flow: the next deliverable is the maintained
+pitch-independent evidence/unknown contract with source-free controls, rather
+than another recording selector. Recorded calibration and independent cases
+remain open and cannot borrow an acoustic label from annotation geometry.
+
 The first NS-3_notes_02 batch after its accepted reference prerequisite tried
 to prepare an extra source-separated development packet without touching its
 independent NSynth train evaluation rows. An ignored pre-audio policy fixed the

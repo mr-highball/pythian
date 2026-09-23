@@ -58,6 +58,19 @@ by changing its failed pair or window in place.
 
 **Dev Notes:**
 
+- 2026-09-23 second nonclosing source batch and reassessment: a frozen
+  annotation-only GuitarSet screen audited all 360 JAMS members in checked
+  stable Win64 Pascal, excluding three publisher-named timing/duplicate-note
+  cases. Seventy-three recordings have at least two fully isolated candidate
+  ends, but reserved player 00 has zero, so no player/material-disjoint
+  three-recording packet exists under the predeclared gate. It stopped before
+  microphone audio, listening or scoring; no threshold or split was changed.
+  Together with the stopped two-recording inventory, this reaches the task-flow
+  checkpoint. Change the next action from repeated source selectors to the
+  maintained pitch-independent evidence/unknown contract and source-free
+  controls. Recorded calibration and independent cases remain open; the
+  player-00 result cannot be treated as an acoustic label or a reason to tune
+  a presence threshold.
 - 2026-09-23 full-overlap result: checked Win64 Pascal verified the two
   GuitarSet JAMS hashes and 105/57 note events, rounded annotation times to
   exact 44.1-kHz source frames, and required no other note throughout three
