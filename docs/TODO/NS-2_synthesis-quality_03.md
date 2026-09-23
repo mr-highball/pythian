@@ -27,4 +27,13 @@ Starting evidence: [SYNTHESIS-QUALITY](../SYNTHESIS-QUALITY.md) · [FUNDAMENTALS
 
 **Dev Notes:**
 
-- Follow-up: the [30-second paired preview](../SYNTHESIS-QUALITY.md#thirty-second-listener-preview--2026-09-20) awaits feedback. It uses a shared listening gain and cut-edge fades; preserve that distinction from original synthesis when reviewing balance, joins and final tails.
+- 2026-09-23 listener scope correction: the user heard the complete
+  [30-second paired preview](../SYNTHESIS-QUALITY.md#thirty-second-listener-preview--2026-09-20)
+  and called it coherent overall. Its shared listening gain and cut-edge
+  fades remain distinct from original synthesis. The separate
+  [11-second combined-source audition](../SYNTHESIS-QUALITY.md#combined-source-listener-copy--2026-09-23)
+  is awaiting feedback on source interaction and tails. Neither whole-clip
+  observation discharges the blocked family-specific listening or this task's
+  attack/release, join and streamed-state verdicts; no criterion or credit
+  changes. Do not ask for the already supplied 30-second whole-clip verdict
+  again.
