@@ -52,13 +52,22 @@ synthetic development scopes; criterion 3 and task credit remain open. The
 entries below are reverse-chronological checkpoints. Earlier `uncertain`
 labels, stop instructions and open-criterion counts record their former state
 and are superseded by the numbered review and fixed consumer entries.
-Next deliverable: bind the pending numbered human review of the prepared
-independent NSynth train packet to a Pascal checker, then run the fixed
-pitch-independent activity consumer once without tuning. Report unsupported
+Next deliverable: run the fixed pitch-independent activity consumer once on the
+now-reviewed independent NSynth train packet without tuning. Report unsupported
 coverage and every miss. The failed NSynth valid gate stays stopped; do not
 relax it, open its audio or rescore development data. Any future distinct
 selection policy needs separate evidence-backed review and a pre-audio freeze.
 
+- 2026-09-23 the user's numbered review supplied five audible and three
+  not-audible labels for the train packet before scoring. The flute late tail
+  (#7) was not audible despite nonzero PCM; the guitar late tail (#10) was
+  audible but quiet. Checked Pascal Win32/Win64 bound exact identities,
+  coordinates, roles and labels to the same reviewed packet SHA256
+  `abbf3b4b3d4243498e99f2b677406292008893961cbc17649744aa6c2f675b19`
+  with zero unfreed blocks. The input review TSV SHA256 is
+  `46a722f3817d21ff680ae54dbe2debeff056b4e078f41740047b700c11866ba7`.
+  The [source record](../PHRASE-EVALUATION.md#nsynth-train-source-separated-packet)
+  preserves every label and limit. No train activity score has run yet.
 - 2026-09-23 independent NSynth train source packet passed the same frozen
   metadata gate before its WAVs were extracted: nine eligible long-release
   instruments, 54 fast-decay instruments, and selected flute/guitar positive
@@ -71,9 +80,8 @@ selection policy needs separate evidence-backed review and a pre-audio freeze.
   development packet hash. The
   [source record](../PHRASE-EVALUATION.md#nsynth-train-source-separated-packet)
   has identities, coordinates and limits. All four groups are reserved as
-  independent evaluation material; their acoustic labels are still pending
-  human review, and no independent scorer has run. Criterion 3 and task credit
-  remain open.
+  independent evaluation material. Its then-pending human review was supplied
+  in the later checkpoint above; criterion 3 and task credit remain open.
 - 2026-09-23 independent NSynth valid source screen stopped at the frozen
   metadata selection gate. The official JSON/WAV archive was verified at
   1,068,767,009 bytes, published MD5

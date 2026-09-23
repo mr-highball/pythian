@@ -21,7 +21,7 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
-## Independent NSynth train packet prepared — 2026-09-23
+## Independent NSynth train packet reviewed — 2026-09-23
 
 The [source-separated packet](PHRASE-EVALUATION.md#nsynth-train-source-separated-packet)
 has passed its frozen metadata gate on a distinct NSynth instrument partition.
@@ -32,13 +32,18 @@ two `long_release` instruments (flute and guitar) and two `fast_decay`
 instruments (bass and brass), with no overlap with the exposed test groups.
 All four train groups have the reserved `independent_evaluation` role. Eight
 exact-window, unchanged-gain repeated listening aids are ready under ignored
-`build/presence-independent-train/listening-aids/`; their numbered human review
-is pending. The maintained Pascal checker has reproduced a pending-role packet
+`build/presence-independent-train/listening-aids/`; the user's numbered review
+labels five windows audible and three not audible. The flute late tail (#7) was
+not audible despite nonzero PCM; the guitar late tail (#10) was audible but
+quiet. The maintained Pascal checker has reproduced a pending-role packet
 on stable checked Win32/Win64 without changing its prior reviewed development
-output; both targets agree on the new and old packet hashes. No train presence
-score has run. Next, bind the review including
-uncertainty to the Pascal packet checker, then apply the existing fixed
-activity consumer once without tuning and report unsupported cases. Criterion 3
+output; both targets agree on the new and old packet hashes. It then bound the
+eight labels on both targets to the same reviewed packet SHA256
+`abbf3b4b3d4243498e99f2b677406292008893961cbc17649744aa6c2f675b19`
+with zero unfreed blocks. The input review TSV SHA256 is
+`46a722f3817d21ff680ae54dbe2debeff056b4e078f41740047b700c11866ba7`.
+No train presence score has run. Next, apply the existing fixed activity
+consumer once without tuning and report unsupported cases and every miss. Criterion 3
 of [NS-3_notes_04](TODO/NS-3_notes_04.md) and task credit remain open.
 
 ## Note-presence exact-window review — 2026-09-23

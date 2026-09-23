@@ -267,7 +267,7 @@ or independent accuracy. The private selection policy and failed selector are
 under ignored `build/presence-independent/` for diagnosis.
 
 <a id="nsynth-train-source-separated-packet"></a>
-## NSynth train source-separated packet prepared — 2026-09-23
+## NSynth train source-separated packet reviewed — 2026-09-23
 
 The [NSynth publisher](https://magenta.tensorflow.org/datasets/nsynth) provides
 separate train, valid and test JSON/WAV partitions with disjoint instruments
@@ -315,13 +315,36 @@ eight-row `pending` packet with SHA256
 on checked stable Win32/Win64. Its prior reviewed development output remains
 byte-identical on both targets (SHA256
 `ab2ee369964d23d88c26f3c4a6cf0f8cefb2908f513efb9d800fdb8c4d337a6b`);
-all four runs reported zero unfreed blocks. A numbered user review is pending;
-no independent presence
-decision or score has been run. Source control note-off remains a separate
-three-second renderer fact, not an acoustic endpoint. Criterion 3 of
-[NS-3_notes_04](TODO/NS-3_notes_04.md) and task credit remain open pending
-reviewed labels, a frozen native packet checker and one held-out fixed consumer
-pass with unsupported coverage stated.
+all four runs reported zero unfreed blocks. The user's numbered source-sound
+review was then frozen in ignored `build/presence-independent-train/` before
+independent activity scoring. Its eight labels in window order are:
+
+| ID | Source and window | Frames | Review |
+| ---: | --- | --- | --- |
+| 5 | flute continuation | [40000,44000) | audible |
+| 6 | flute early tail | [48000,52000) | audible |
+| 7 | flute late tail | [60000,64000) | not audible |
+| 8 | guitar continuation | [40000,44000) | audible |
+| 9 | guitar early tail | [48000,52000) | audible |
+| 10 | guitar late tail | [60000,64000) | audible, but quiet |
+| 11 | bass late rest | [60000,64000) | not audible |
+| 12 | brass late rest | [60000,64000) | not audible |
+
+The checked Win32/Win64 Pascal checker binds the categorical labels to exact
+source hashes, roles, coordinates and measured RMS. Both targets emitted the
+same reviewed packet SHA256
+`abbf3b4b3d4243498e99f2b677406292008893961cbc17649744aa6c2f675b19`
+with zero unfreed blocks. The input review TSV SHA256 is
+`46a722f3817d21ff680ae54dbe2debeff056b4e078f41740047b700c11866ba7`.
+The flute late tail has nonzero PCM and measured RMS 0.000999 but was not
+audible to the listener; the guitar late tail has RMS 0.002285 and was audible
+but quiet. The label convention is any audible source sound, whether pitched
+or static-like. These are user observations, not thresholds inferred from PCM.
+No independent presence decision or score has yet been run. Source control
+note-off remains a separate three-second renderer fact, not an acoustic
+endpoint. Criterion 3 of [NS-3_notes_04](TODO/NS-3_notes_04.md) and task credit
+remain open pending one held-out fixed consumer pass with unsupported coverage
+stated.
 
 ## Guitar-TECHS P1 reference screen stopped — 2026-09-22
 
