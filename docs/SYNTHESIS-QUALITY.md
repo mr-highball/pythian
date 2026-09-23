@@ -264,8 +264,8 @@ files while covering all 3 profiles, MIDI keys
 
 | Listening case | Existing artifact(s) and identity | Matrix dimensions to review |
 | --- | --- | --- |
-| Short isolated source-family comparison | `build/3.2.2-i386-win32/sources.wav`, 960044 bytes, SHA-256 `1178a3df8b5f01b4f817c535a11e01f1a06b56a97a4855232bd62f01d9ee4760`. | Five one-second sections at 48 kHz: polynomial saw, additive, phase modulation, wavetable and authored stereo sampled percussion. Each section has two notes through the same renderer. This is a concise family check; the sampled-percussion source is authored and does not establish recorded-instrument realism. |
-| Isolated sample-loop note-off | `build/sample-loop-stable/sample-loop.wav`, 302448 bytes, SHA-256 `ad37c35ac0c8a85d30273381b20e2409eca8ab455ffe9a2b7f41865aa714bd00`. | At 12 kHz, compare 0–2 s one-shot, 2–4 s interior sustain and 4–6.3 s pitched sustain. Each gate is 1.5 s; inspect loop joins and releases against the preceding one-shot. This authored smooth-loop example does not qualify arbitrary sample loop points. |
+| Short isolated source-family comparison | `build/3.2.2-i386-win32/sources.wav`, 960044 bytes, SHA-256 `1178a3df8b5f01b4f817c535a11e01f1a06b56a97a4855232bd62f01d9ee4760`. | Five one-second sections at 48 kHz: polynomial saw, additive, phase modulation, wavetable and authored stereo sampled percussion. Each section has two notes through the same renderer. This is a concise family check; the sampled-percussion source is authored and does not establish recorded-instrument realism. The user heard the full 0–5 s and said it sounded okay; no fault time was reported. |
+| Isolated sample-loop note-off | `build/sample-loop-stable/sample-loop.wav`, 302448 bytes, SHA-256 `ad37c35ac0c8a85d30273381b20e2409eca8ab455ffe9a2b7f41865aa714bd00`. | At 12 kHz, compare 0–2 s one-shot, 2–4 s interior sustain and 4–6.3 s pitched sustain. Each gate is 1.5 s; inspect loop joins and releases against the preceding one-shot. This authored smooth-loop example does not qualify arbitrary sample loop points. The user heard the full 0–6.3 s and said it sounded okay; no fault time was reported. |
 | Measured stationary timbre, sampled pitch/velocity/rate | `build/instrument-quality-study/measured-profile{1,2,3}-{8000,16000,44100,48000}.wav` and matching `measured-profile{1,2,3}-{8000,16000,44100,48000}-glide.wav`; source recipe and individual outputs in `build/instrument-quality-study/measured.json`. Example `measured-profile1-8000.wav`, 215084 bytes, SHA-256 `ad5eccb0cc2cb12b610e41a2ccb0226fbe784af0ebc4c13821e82e6640ab7c5a`. | All 3 saved timbres × 7 sampled keys × 3 velocities × 4 output rates; quarter-second gates, 5-ms attack, 30-ms release; inspect pitch continuity and roughness in the 12 matched glide files. |
 | Measured envelope, short/long gates, attacks, releases and overlap | `build/instrument-envelope-study/measured-profile{1,2,3}-{8000,22050,48000}.wav`; source profiles, cases and hashes in the study outputs. Example profile 1 at 8 kHz, 153612 bytes, SHA-256 `27c387e4964e9722ab251d0b5db72c98442909333b682ce4033ee233459e4bee`; profile 1 at 48 kHz, 921372 bytes, SHA-256 `4fc450fc79ee76aea3d014a27483df2161a653f9ba250d2d54e59e6c2b903728`. | Three profiles × 3 rates × gates of 1 frame, floor(rate/40) and 2 seconds × 1/2/16 overlapping zones. Review initial attack, held portion, note-off/release, and the two-note release overlap. |
 | Sample-loop exits and interpolation | `build/loop-modulation-study/measured-q{0,1}-{8000,16000,48000}-g*.wav`; `q0`/`q1` are the linear/sinc pair. Example short-gate linear 8-kHz output, `measured-q0-8000-g40.wav`, 6604 bytes, SHA-256 `9722ed0d4f70c4d5f11f1b63feb4c99911650c7e3fb1fcf02f5cb446439bad2d`; long-tail sinc 48-kHz output, `measured-q1-48000-g9601.wav`, 76848 bytes, SHA-256 `624faa7765b4402fe8c4258831c6b5ed3a8f4712baa281a4215eb1faeb075372`. | Both interpolation modes at 8/16/48 kHz; short and long gates, loop sustain, early and late release exits, pitch motion and cutoff/pan/gain automation. Compare matched q0/q1 cases for clicks, pitch continuity and tail character. |
@@ -277,11 +277,13 @@ files while covering all 3 profiles, MIDI keys
 The matrix is finite: listen to the listed whole artifacts and record timestamped
 observations against the dimensions in the last column. The measured sets cover
 only their sampled key, velocity, rate, gate, profile and zone combinations;
-they do not qualify intermediate or arbitrary settings. No family-specific,
-timestamped listening observations or verdicts have been recorded yet. The
-user's whole-preview coherence comment above does not judge clicks, unwanted
-aliasing, pitch continuity or release behavior across the matrix; this matrix
-closes only the task's first acceptance criterion. The verdict and any before/after
+they do not qualify intermediate or arbitrary settings. The user has now given
+broad favorable full-window verdicts for the 0–5-second source-family demo and
+0–6.3-second sample-loop demo, with no fault time reported. These do not state
+separate click, alias, pitch-continuity or release judgments for the measured
+profile/rate/gate matrix. The whole-preview coherence comment likewise does not
+close those cases. This matrix closes only the task's first acceptance criterion;
+the remaining family verdicts and any before/after
 evidence remain open under
 [NS-2_synthesis-quality_01](TODO/NS-2_synthesis-quality_01.md).
 
@@ -308,6 +310,33 @@ in the finite matrix above. The user subsequently described this complete
 profile 1 at 48 kHz; no individual note time, pitch accuracy, aliasing,
 short/long gate or sample-loop judgment was supplied. The remaining family
 matrix and any final operating-range acceptance stay open, with no task credit.
+
+### Measured-profile range listening packet — 2026-09-23
+
+Four ignored review WAVs under `build/source-review-pack/` concatenate existing
+native outputs at their original rates, with 0.2-second silent separators and
+one uniform 12-times listening gain. There is no resampling, peak normalization
+between sections, source rerender or limiter. The ignored Pascal `pack.lpr`
+reads and hashes each input, requires matching rate/channel layout, rejects a
+PCM-clipping result and saves the segment map beside each output. Stable FPC
+3.2.2 Win32 compiled it with `-B -Sa -Cr -Co -Ci -gl -Fusrc -Futools`.
+
+| Review WAV | Size / SHA-256 | Content and measured peak |
+| --- | --- | --- |
+| `measured-8k.wav` | 704044 bytes; `4e405cd81395e0c9433fdee65d98844640e65a59a3cbd261f5859636b4ed0a89` | 22.0 s at 8 kHz. Profiles 1/2/3 each have a 6.72-s stationary sequence followed by a 0.28-s pitch glide. Float peak 0.408691. |
+| `measured-48k.wav` | 4224044 bytes; `7e829b66a0a6f06a92ea1417e9be828b0eb463ef555fe23b407df5f7b958d61c` | Same 22.0-s order at 48 kHz; float peak 0.409424. |
+| `envelope-8k.wav` | 465436 bytes; `3e3ce94af102e7765b8d2728cf028332be54693c6a25a8d7a88475970ef52166` | 14.544 s at 8 kHz; profile 1 spans 0–4.799 s, profile 2 spans 4.999–9.545 s, profile 3 spans 9.745–14.544 s. Float peak 0.628418. |
+| `envelope-48k.wav` | 2792156 bytes; `452cd15c7cea06155b9ecef5c266a9db602c800d24e0e873f12b04fdbf088577` | 14.542 s at 48 kHz; the same profile order and 0.2-s gaps; float peak 0.713013. |
+
+Within either measured WAV, profile 1 is 0–7.2 s, profile 2 is 7.4–14.6 s
+and profile 3 is 14.8–22.0 s; the glide occupies the last 0.28 s of each
+profile's span. The profile outputs cover the seven sampled keys and three
+velocities; the envelope outputs exercise the authored short/long gates and
+release overlap. Exact input hashes and frame starts are in `measured-{8k,48k}-map.txt`
+and `envelope-{8k,48k}-map.txt`. This is a concise listening aid at the low and
+high rate endpoints. The 16/44.1-kHz static/glide and 22.05-kHz envelope files
+retain numerical and native artifact evidence but have no separate listener
+verdict. No quality verdict is inferred until the user hears this packet.
 
 <a id="ns-2-synthesis-quality-02-matrix"></a>
 ### Finite processing and routing matrix — NS-2_synthesis-quality_02

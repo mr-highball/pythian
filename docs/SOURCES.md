@@ -197,6 +197,9 @@ sustain at 4 seconds. Gates last 1.5 seconds; source attack/loop/tail durations 
 75601 stereo frames at 12000 Hz (6.300083 seconds), with peaks 0.337097 / 0.334259.
 Both compiler WAVs match SHA256
 `ad37c35ac0c8a85d30273381b20e2409eca8ab455ffe9a2b7f41865aa714bd00`.
+The user later heard the complete 0–6.3-second demo and said it sounded okay
+at these authored one-shot and loop settings, without a fault time. This does
+not qualify arbitrary loop points.
 Logs/artifacts: `build/sample-loop-{stable,trunk}/`, `build/sample-loop-replay.log`.
 The normal build includes the fixture and demo; full-suite/package refresh is
 not claimed for this 60-core / 17-adapter checkpoint.
@@ -841,4 +844,6 @@ Both PCM channel peaks are 0.3173522949; left/right RMS is
 0.1013670086 / 0.1013633260. Measurements: `build/source-metrics.json`.
 Legacy synthesis retains SHA256
 `07094fc2d977c43a0d96242b93bdb6ee4c806da7d9bfe1da6a40fa2351fcb3f9`.
-Operator listening quality and other compiler/platform targets remain unverified.
+The user later heard the complete 0–5-second family demo and said it sounded
+okay, without a fault time. This is bounded to the five authored sections;
+other compiler/platform targets remain unverified for this demo.

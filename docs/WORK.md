@@ -51,11 +51,20 @@ family-specific observations and fault times. The user's earlier brass/guitar/
 mallet descriptions belong to the recorded NSynth note-presence reference,
 not Pythian synthesis output. The existing five-second `sources.wav` and
 6.3-second stable sample-loop demo are now hash-bound in the [source matrix](SYNTHESIS-QUALITY.md#finite-listening-matrix--ns-2_synthesis-quality_01)
-and supplied for one concise family/loop review. This advances the reassessed
-review path without a new render or quality credit. The packet is one
-nonclosing source batch after that reassessment; stop source renders and wait
-for its listening response before deciding on repairs or the remaining measured
-profile/rate/gate cases. Criterion 2 and source-task credit remain open.
+and supplied for one concise family/loop review. The user heard both full clips
+and said they sounded okay, with no fault time reported. This advances the
+reassessed review path without a core rerender or quality credit. This is one
+nonclosing source batch after that reassessment.
+
+The next bounded source deliverable is a [four-file measured range packet](SYNTHESIS-QUALITY.md#measured-profile-range-listening-packet--2026-09-23)
+at native 8/48-kHz rates: three stationary/glide profiles and three
+short/long-gate envelope examples at each endpoint. An ignored Pascal packer
+uses one uniform 12-times listening gain, preserves source segment identities
+and rejects clipping. Stable FPC 3.2.2 Win32 compilation and peak/hash checks
+pass. It is a review aid, not a change to the native renderer or its acceptance
+range. Criterion 2 and source-task credit remain open until an actual verdict;
+stop new copies and resolve only demonstrated faults. This packet is the next
+action from the reassessment, not a new diagnostic branch.
 
 ## Lower-pitched modulation verdict — 2026-09-23
 

@@ -26,6 +26,26 @@ Starting evidence: [SYNTHESIS-QUALITY](../SYNTHESIS-QUALITY.md) · [FUNDAMENTALS
 
 **Dev Notes:**
 
+- 2026-09-23 measured-range packet: four [hash-bound review WAVs](../SYNTHESIS-QUALITY.md#measured-profile-range-listening-packet--2026-09-23)
+  now concatenate existing 8/48-kHz stationary/glide and envelope outputs for
+  all three profiles at native rates. An ignored Pascal packer uses uniform
+  12-times listening gain and 0.2-second separators, rejects clipping and
+  records input hashes/times. This supplies a bounded low/high-rate review
+  instead of more separate mobile prompts. The 16/44.1-kHz static/glide and
+  22.05-kHz envelope cases retain numerical evidence but no distinct audible
+  verdict. Criterion 2 and task credit stay open pending this listener review;
+  stop creating copies and resolve only reported defects.
+
+- 2026-09-23 short source and loop verdict: the user heard the complete
+  five-second `sources.wav` and 6.3-second `sample-loop.wav` identified in the
+  [finite matrix](../SYNTHESIS-QUALITY.md#finite-listening-matrix--ns-2_synthesis-quality_01)
+  and said both sounded okay. The observations cover 0–5 and 0–6.3 seconds,
+  with no fault times reported. They support the shown oscillator/additive/PM/
+  wavetable/percussion and authored one-shot/loop examples at those settings,
+  but do not approve arbitrary loop joins, measured profile/rate/gate extremes
+  or a specific absence of aliasing or release artifacts. Criterion 2 and task
+  credit remain open for the bounded measured and range review.
+
 - 2026-09-23 source-family review packet: before requesting another review,
   checked the user's earlier brass/guitar/mallet descriptions against their
   files. Those are recorded NSynth notes in the [note-presence reference packet](../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22),
