@@ -21,6 +21,21 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## NSynth listener comments received — 2026-09-22
+
+The user described the four fixed clips: harsh/noisy brass, a strummed fading
+long-release guitar, a bell-like fast-decay guitar and an inaudible mallet.
+These are valuable perceptual observations but specify no 250-ms window around
+the documented 3.0-second note-off. The [reference packet](PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22)
+now records them as whole-clip comments and preserves all exact-window labels
+as pending. A targeted window question is open. The low-level mallet result is
+not converted into a universal silence claim; playback level was not reported.
+This is the second nonclosing batch on the reassessed reference route. Stop
+expanding this packet or screening sources; follow the external blocker until
+the fixed windows receive `audible`, `not_audible` or `uncertain` labels. No
+NS-3 note-presence criterion, scorer or credit changes. NS-5's separate
+chillwave reference listening remains pending.
+
 ## PianoVAM source stop and reference reassessment — 2026-09-22
 
 The reassessed NSynth listening packet now has a tracked Pascal checker. It
@@ -30,7 +45,7 @@ Stable FPC 3.2.2 and trunk FPC 3.3.1 emit the same pending-packet SHA256
 `b3521259961ca03353cd10472ef0b884eb21ea1f2e825c36f27cd92726beb2a7`;
 the original fixed RMS values match. A synthetic all-uncertain review parses,
 and a one-frame alteration fails before packet output. See the
-[listening packet and replay](PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--awaiting-review--2026-09-22).
+[listening packet and replay](PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22).
 The four clips are development-exposed. Listening labels have been requested
 and remain pending; no acoustic tail endpoint, scorer or task credit is claimed.
 This is one nonclosing deliverable batch after the reassessment below.

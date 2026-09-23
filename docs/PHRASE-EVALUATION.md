@@ -17,7 +17,7 @@ not infer a trustworthy phase path, select register or alter any recorded phrase
 score. Those admission steps remain [WAV-03-REGISTER](MILESTONES.md#wav-03-register)
 and [WAV-03-TIMBRE](MILESTONES.md#wav-03-timbre); held-out recordings remain unused.
 
-## NSynth note-presence listening packet — awaiting review — 2026-09-22
+## NSynth note-presence listening packet — partial review — 2026-09-22
 
 This packet uses the four fixed, verified 4.0-second WAVs and exact source
 identities in [fixed-gate release controls](#fixed-gate-release-controls--2026-09-22).
@@ -34,6 +34,19 @@ being fitted to them.
 | `guitar_acoustic_030-061-100` | guitar | [2.50, 2.75) s | [3.00, 3.25) s; [3.75, 4.00) s late check | unknown |
 | `guitar_acoustic_014-080-100` | guitar | unknown: near silence before note-off | unknown: near silence after note-off | [3.75, 4.00) s |
 | `mallet_acoustic_056-050-075` | mallet | unknown: silent well before note-off | unknown: no observed post-gate sound | [3.75, 4.00) s |
+
+The user reviewed the four named clips in the 2026-09-22 handoff chat. They
+described the brass as extremely harsh/noisy, the long-release guitar as a
+strummed sound fading away, and the fast-decay guitar as a tiny bell-like hit
+rather than a recognizable guitar. They reported the mallet clip as not
+audible. These are **whole-clip listening observations**: they support
+perceptual contrast and a quiet-source warning, but do not state whether the
+named pitch is audible inside any fixed 250-ms window above. In particular,
+the fade description does not locate the end of the guitar tail, and the
+metadata's `guitar` family does not override the listener's bell-like timbre
+observation. The playback level/device were not reported. Keep all eight
+window labels pending until timestamped review; do not promote an RMS value,
+quality tag or whole-clip comment into a frame-level acoustic label.
 
 The exact question for review is whether a pitched note from the named source
 is **clearly audible**, **not audible**, or **uncertain** in each listed
@@ -70,7 +83,7 @@ produce the same pending-packet SHA256
 two trunk runs are byte-identical. The RMS values match the earlier frozen
 NSynth audit at nine decimal places. A synthetic all-`uncertain` review file
 passes parser validation, while a one-frame boundary change fails with no
-output. No human label has yet been entered or inferred.
+output. No exact-window human label has yet been entered or inferred.
 
 ## Guitar-TECHS P1 reference screen stopped — 2026-09-22
 

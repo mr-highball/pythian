@@ -102,6 +102,16 @@ and [rejected gate-slope rule](../PHRASE-EVALUATION.md#fixed-gate-slope-diagnost
   four fixed WAV identities and eight windows, and validates an exact-boundary
   review TSV without deriving listening labels from energy. Stable/trunk
   pending-packet replay and the malformed-boundary rejection are recorded in
-  the [packet](../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--awaiting-review--2026-09-22).
+  the [packet](../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22).
   This is one nonclosing batch after reassessment: listener judgments, coverage
   assessment and any required source-separated role decision remain open.
+- 2026-09-22 partial human review: the user described all four named clips,
+  including an audible-seeming fade on the long-release guitar, harsh brass,
+  bell-like fast-decay guitar and an inaudible mallet. The comments are not
+  tied to the frozen 250-ms windows. Retain their
+  [exact scope and uncertainty](../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22);
+  request window-specific labels before running a presence scorer or claiming
+  a reviewed acoustic tail/rest endpoint. This is the second consecutive
+  nonclosing batch after reassessment. Stop packet expansion and further source
+  screens; the external unblock is exact labels for the frozen windows, with
+  `uncertain` allowed. No criterion or credit closes.
