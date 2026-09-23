@@ -7,7 +7,10 @@
 Resolve false notes in rests and incorrect event boundaries together with reliable pitch identity, preserving quiet/repeated notes and genuine transitions.
 
 North star: NS-3. Outcome owner: WAV-03-BOUNDARIES.
-Completion credit: 4 goal percentage points (1.00 overall points).
+Completion credit: 3 goal percentage points (0.75 overall points), after the
+1-point external-reference deliverable was split into
+[NS-3_notes_04](NS-3_notes_04.md). The original combined allocation was
+4 goal points (1.00 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [PITCH](../PITCH.md) · [ONSETS](../ONSETS.md).
@@ -35,7 +38,7 @@ do not turn a candidate pitch score into a note-presence probability.
 
 **Acceptance Criteria:**
 
-- Separate note presence from pitch identity and distinguish attacks, continuations, rests and endings using supported source evidence. Include contrasting labelled continuation, release-tail and rest cases; a high pitch-candidate score alone is not note-presence evidence.
+- Separate note presence from pitch identity and distinguish attacks, continuations, rests and endings using the qualified [reference packet](NS-3_notes_04.md). A high pitch-candidate score alone is not note-presence evidence.
 - Handle repeated same-pitch notes, short/quiet notes, passing notes, glides, gaps and articulation transfer without blanket trimming, gap bridging or quiet-note fragmentation.
 - Pass the low/quiet/gap/mixture controls and recorded boundary/false-rest limits declared before scoring; retain the synthetic short low-note recovery where applicable. Report false notes in rests separately from missed active notes and attack/end errors, including each case's unknown coverage, so a boundary improvement cannot conceal a presence regression.
 - Preserve original source timing, rounding conventions and unknown spans through the maintained event API; unsupported mixtures must not become confident monophonic notes.
@@ -44,6 +47,7 @@ do not turn a candidate pitch score into a note-presence probability.
 **Blockers**
 
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
+- [NS-3_notes_04.md](NS-3_notes_04.md)
 
 **Dev Notes:**
 
@@ -60,3 +64,5 @@ do not turn a candidate pitch score into a note-presence probability.
 - 2026-09-22 post-reassessment control source: the official CC BY 4.0 NSynth JSON/WAV packet has a documented three-second note-off. A predeclared Pascal selector chose two `long_release` and two `fast_decay` notes from four distinct acoustic-labelled instruments. All four source WAVs hash-bind and decode at the expected mono 16-kHz/64,000-frame geometry. The two long-release sources retain substantial post-gate RMS while the fast-decay controls are near silence; exact identities and measurements are in [fixed-gate release controls](../PHRASE-EVALUATION.md#fixed-gate-release-controls--2026-09-22). This is a controlled reference for the next presence observation, not recorded phrase admission or genre learning. The test partition is development-exposed; protect existing independent phrase material. No task criterion or credit closes. Next declare a source-separated observation and adoption/stop gate before scoring; preserve low/quiet/short/gap controls and keep the note-off clock separate from audible-tail endpoints.
 
 - 2026-09-22 gate-slope stop: a frozen Pascal-only diagnostic tested acceleration of 200-ms RMS envelope decay on the four source-bound NSynth notes. Both `long_release` notes fail the fixed gate-localization and `ln(2)` threshold; both `fast_decay` controls abstain at the known gate. The mallet is exactly silent for more than 1.76 s before note-off, so this audio does not identify its control-gate instant. Two deterministic report runs match SHA256 `e5b063990560a2074403d73637703f0c7ca6797d61fcdf03d990673de68dac9a`; [full scores and limitations](../PHRASE-EVALUATION.md#fixed-gate-slope-diagnostic-rejected--2026-09-22). Stop the slope rule without retuning. This is the second consecutive nonclosing batch under the changed source approach. Reassess audible activity, latent gate status and musical boundaries; obtain separately supported tail/rest labels before another presence scorer. No criterion or credit closes, and existing low/quiet/short/gap and independent recorded gates remain required.
+
+- 2026-09-22 split after reassessment: the qualified external reference is now the explicit [NS-3_notes_04](NS-3_notes_04.md) prerequisite. It owns source identity and reviewed continuation/tail/rest labels; this task still owns the Pascal observation, integrated event decision, low/quiet/short/gap/mixture controls, recorded boundary/false-rest gates and unknown preservation. The original 4 NS-3 goal points are 1+3 with no new or accepted credit. Follow the new prerequisite before another scorer.

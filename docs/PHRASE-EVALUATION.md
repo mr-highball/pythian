@@ -17,6 +17,61 @@ not infer a trustworthy phase path, select register or alter any recorded phrase
 score. Those admission steps remain [WAV-03-REGISTER](MILESTONES.md#wav-03-register)
 and [WAV-03-TIMBRE](MILESTONES.md#wav-03-timbre); held-out recordings remain unused.
 
+## Guitar-TECHS P1 reference screen stopped — 2026-09-22
+
+After the known-gate slope stop, [NS-3_notes_04](TODO/NS-3_notes_04.md) now
+owns the qualified note-presence reference prerequisite. The official
+[Guitar-TECHS v1 record](https://zenodo.org/records/14963133) offers CC BY 4.0
+electric-guitar audio captured by direct input and microphone, with per-string
+MIDI from a separate pickup. Attribute the dataset to Hegel Emmanuel Pedroza
+Villalobos, Termeh Taheri, Wallace Abreu, Ryan Corey and Iran R. Roman, and cite
+[Pedroza et al., ICASSP 2025](https://arxiv.org/abs/2501.03720). Its publisher
+warns of up to 100-ms intersignal misalignment. Pickup MIDI is a note
+annotation, not verified physical string damping or an audible tail endpoint.
+
+Before reading audio, the ignored source policy fixed performer P1 for source
+screening and reserved P2. P1's official `P1_singlenotes.zip` is 108,626,613
+bytes, MD5 `ca0c4674dde3805574685a313f7c39eb`; a Pascal verifier measured
+SHA256 `130592ae5555476ea8e4070c0f3421794ef8b5e252dfa780745d07eedd0eb4a4`.
+Only its MIDI, 48-kHz mono 24-bit direct input and 48-kHz mono 16-bit amp mic
+were extracted. Their SHA256 values are respectively
+`da63c696926c5b28fe42f69ffa83cbdd84635ad37562203c953b273382b69671`,
+`610d68404f3938ff84a80dbbd97245837ddf73e8c5b6b5baab0f8b8386142587`
+and `520ef333dc1f2f6f820556d26e0d66cafc4b0b17bb8253cbc9ef964591048459`.
+Both WAVs have about 552 seconds; their frame counts differ by 17. The file's
+actual MIDI PPQ is 960 with one 1,000,000-us tempo event, 142 paired notes on
+six string tracks. The general importer needs explicit FIFO pairing for four
+overlaps; this screen instead binds note-ons/offs by track, channel and pitch.
+
+From MIDI alone, a frozen rule selected the first two qualifying notes on each
+of tracks 1 and 6, with at least 0.5 s duration and 1 s gap to the next global
+note. It fixed a 200-ms internal continuation, [end+0.10,end+0.30) tail
+candidate and distant-rest window before the next onset. The selection CSV
+SHA256 is `2d7c8e420d0e31ceeae3c1eeb122bbd0b110685f078a098862c06eb1b7b88f00`.
+The predeclared source gate required a tail/rest RMS ratio **>4 in direct input
+and >2 in amp mic** for at least one selected note on each string track.
+
+| Track / MIDI pitch | Direct tail/rest | Amp tail/rest | Both pass? |
+| --- | ---: | ---: | --- |
+| 6 / 52 | 0.284 | 2.533 | No |
+| 6 / 53 | 0.411 | 0.475 | No |
+| 1 / 69 | 3.883 | 1.063 | No |
+| 1 / 70 | 3.701 | 1.154 | No |
+
+This fixed screen fails; only one amp-mic comparison passes in isolation.
+The selected windows do not supply the required cross-capture residual-tail
+contrast. That does not establish whether the notes are perceptually silent:
+the rest windows have nonzero noise and the pickup offset is not a reviewed
+release boundary. Checked FPC 3.2.2 Win32 compiled the Pascal inventory,
+track-pairing selector and audio audit; two audit runs reproduce CSV SHA256
+`fee855ce8496a64ac0dff0358a41aa537f3d55be75320c89c15db754be76f3e3`.
+All source files, policy, Pascal code and rows remain ignored under
+`build/guitar-techs-presence/`. Stop this P1/P2 route without changing the
+windows, thresholds or notes; P2 was neither downloaded nor read. Spring and
+reserved phrase material remain untouched. No reference criterion or credit
+closes. The next source must explicitly distinguish control release from
+pedal/decay or have reviewed acoustic tail/rest labels before another scorer.
+
 ## Fixed-gate slope diagnostic rejected — 2026-09-22
 
 The [fixed-gate controls](#fixed-gate-release-controls--2026-09-22) supplied an

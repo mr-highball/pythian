@@ -21,6 +21,29 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Note-presence reference split and P1 source stop — 2026-09-22
+
+At the two-nonclosing-batch checkpoint, the qualified external reference was
+split from `NS-3_notes_02` into its true
+[NS-3_notes_04 prerequisite](TODO/NS-3_notes_04.md). The original four NS-3
+goal points are redistributed **1 reference + 3 observation/decoder**, with
+no new or accepted credit. The catalog has **38 open / 14 DONE** tasks,
+52 total; NS-3 stays 39%, NS-5 27%, overall 63.15%.
+
+The first bounded reference screen used the official CC BY 4.0 Guitar-TECHS P1
+single-note archive. Pascal verified its length/MD5/SHA256, decoded 142
+per-string MIDI notes and both separate WAV captures, then measured four
+MIDI-selected post-end/distant-rest contrasts under a rule frozen before
+reading audio. None meets the required direct-input **>4** and amp-mic **>2**
+tail/rest RMS ratio together; exact per-note results and replay hash are in
+[phrase evaluation](PHRASE-EVALUATION.md#guitar-techs-p1-reference-screen-stopped--2026-09-22).
+Stop this source route without retuning or opening P2. This is one nonclosing
+batch on the split task. The next source check must verify that a published
+control-release and a distinct frame/acoustic offset have clear derivation,
+compatible licensing and individually accessible raw recordings before
+acquisition. Preserve unknown release endpoints and the independent phrase
+holdout. No inference or style acceptance changes.
+
 ## Known-gate slope rule stopped — 2026-09-22
 
 For `NS-3_notes_02`, a frozen Pascal-only envelope-slope diagnostic measured

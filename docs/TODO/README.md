@@ -30,11 +30,11 @@ unless also declared under Blockers; required gaps still follow
 | --- | ---: | ---: | ---: | ---: |
 | [NS-1 — Independent Pascal foundation](../MILESTONES.md#ns-1) | 100% | 0 | 0 | 0.00 |
 | [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 80% | 3 | 20 | 5.00 |
-| [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 39% | 14 | 61 | 15.25 |
+| [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 39% | 15 | 61 | 15.25 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 96% | 1 | 4 | 0.60 |
 | [NS-5 — Many-hour styles that generate and blend usefully](../MILESTONES.md#ns-5) | 27% | 16 | 73 | 14.60 |
 | [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 72% | 3 | 28 | 1.40 |
-| **Total** | **63.15 weighted points** | **37** | Per-goal credits are not summed across goals | **36.85** |
+| **Total** | **63.15 weighted points** | **38** | Per-goal credits are not summed across goals | **36.85** |
 
 NS-1 is already complete under the accepted extraction scope. Preserve its
 invariants in every applicable task; do not recreate completed extraction work.
@@ -62,7 +62,8 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 | [NS-3_context_01.md](NS-3_context_01.md) — Admit local key and tonal uncertainty | +4 | +1.00 | TODO |
 | [NS-3_context_02.md](NS-3_context_02.md) — Persist automatic key and tempo context with overrides | +2 | +0.50 | TODO |
 | [NS-3_notes_01.md](NS-3_notes_01.md) — Resolve recorded pitch identity and register | +4 | +1.00 | TODO |
-| [NS-3_notes_02.md](NS-3_notes_02.md) — Resolve note presence, attacks and endings | +4 | +1.00 | TODO |
+| [NS-3_notes_04.md](NS-3_notes_04.md) — Qualify independent note-presence references | +1 | +0.25 | TODO |
+| [NS-3_notes_02.md](NS-3_notes_02.md) — Resolve note presence, attacks and endings | +3 | +0.75 | TODO |
 | [NS-3_notes_03.md](NS-3_notes_03.md) — Accept independent phrases and feed saved learning | +5 | +1.25 | TODO |
 | [NS-3_parts_02.md](NS-3_parts_02.md) — Learn simultaneous notes and part ownership | +7 | +1.75 | TODO |
 | [NS-3_parts_03.md](NS-3_parts_03.md) — Accept role learning on independent mixtures | +4 | +1.00 | TODO |
@@ -168,7 +169,7 @@ first accepted genre is predetermined.
 9. [NS-3_context_01.md](NS-3_context_01.md)
 10. [NS-3_context_02.md](NS-3_context_02.md)
 11. [NS-3_notes_01.md](NS-3_notes_01.md)
-12. [NS-3_notes_02.md](NS-3_notes_02.md)
+12. [NS-3_notes_04.md](NS-3_notes_04.md), then [NS-3_notes_02.md](NS-3_notes_02.md)
 13. [NS-3_notes_03.md](NS-3_notes_03.md)
 14. [NS-3_parts_04.md — DONE](DONE/NS-3_parts_04.md), then [NS-3_parts_01.md — DONE](DONE/NS-3_parts_01.md)
 15. [NS-3_parts_02.md](NS-3_parts_02.md)
