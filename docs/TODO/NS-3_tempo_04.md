@@ -49,6 +49,18 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
 
 **Dev Notes:**
 
+- 2026-09-23 first post-freeze batch: a [maintained Pascal checker and
+  baseline](../BEAT-TRACKING.md#first-current-policy-candidate-baseline)
+  now bind saved pre-reference reports to exact WAV/CSV hashes, default
+  policies, source windows and path replay. Authored fast/half/double and
+  absent-observation controls pass on stable Win32/Win64. The frozen recorded
+  candidate gates fail: 02 has 12/17 eligible windows (target at least 90%),
+  04 has 8/14 (target at least 80%); 01 and 03 pass their challenge gates.
+  Current 02 window 16 retains its reference-compatible phase at index 2, so
+  the old isolated rank-13 loss is historical, not the present missing row.
+  This batch closes no further criterion and earns no credit. Trace the current
+  failed rows through onset, fit, eligibility, suppression and capacity stages
+  before changing retention; do not enlarge the pool solely from the old trace.
 - 2026-09-23 criterion 1 closed by specification review: the [candidate qualification packet](../BEAT-TRACKING.md#bounded-candidate-qualification-protocol--2026-09-23)
   fixes exact six WAV/annotation identities, recording-disjoint development
   roles, native window geometry, candidate identity/eligibility, 30-ms
@@ -70,8 +82,8 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
   receives 2 of the original 5 goal points and tempo_01 retains 3. The total
   unearned credit and the original acceptance scope do not change. See the
   [work reassessment](../WORK.md#beat-candidate-deliverable-split--2026-09-23).
-- Next bounded deliverable: freeze and verify the candidate-only challenge and
-  explicit omission accounting before changing a retained-pool policy. The
-  existing 32-candidate diagnostic walk is evidence, not an accepted provider;
-  simply enlarging the default pool or retuning transition penalties does not
-  pass the criteria above.
+- Next bounded deliverable: classify the current failed windows with a native
+  fit/eligibility/suppression/capacity trace before changing a retained-pool
+  policy. The old 32-candidate walk is historical evidence, not an accepted
+  provider or a diagnosis of the current failures. Simply enlarging the
+  default pool or retuning transition penalties does not pass the criteria.

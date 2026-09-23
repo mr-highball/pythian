@@ -163,6 +163,79 @@ begin
   WriteLn('Pulse phases: seven subdivision/mixture controls, measurement semantics and capacity pass');
 end;
 
+procedure BeatLevelAvailabilityChecks;
+var
+  LObservations: TBeatObservations;
+  LAnalysis: TBeatGridAnalysis;
+  LOptions: TBeatGridOptions;
+  LIndex: Integer;
+  LChoice: Integer;
+  LLimit: Integer;
+  LFast: Boolean;
+  LHalf: Boolean;
+  LDouble: Boolean;
+  LPhaseZero: Boolean;
+  LPhaseHalf: Boolean;
+begin
+  SetLength(LObservations, 32);
+  for LIndex := 0 to High(LObservations) do
+  begin
+    LObservations[LIndex].Frame := 4800 + 12000 * LIndex;
+    if LIndex mod 4 = 0 then
+    begin
+      LObservations[LIndex].Weight := 1;
+    end
+    else if LIndex mod 4 = 2 then
+    begin
+      LObservations[LIndex].Weight := 0.75;
+    end
+    else
+    begin
+      LObservations[LIndex].Weight := 0.5;
+    end;
+  end;
+  for LLimit in [8, 16] do
+  begin
+    LOptions := DefaultBeatGridOptions;
+    LOptions.MaximumCandidates := LLimit;
+    LAnalysis := EstimateBeatGrids(LObservations, 48000, 432000, LOptions);
+    LFast := False;
+    LHalf := False;
+    LDouble := False;
+    LPhaseZero := False;
+    LPhaseHalf := False;
+    for LChoice := 0 to High(LAnalysis.Candidates) do
+    begin
+      LFast := LFast or (Abs(LAnalysis.Candidates[LChoice].Bpm - 240) <= 0.5);
+      LHalf := LHalf or (Abs(LAnalysis.Candidates[LChoice].Bpm - 120) <= 0.5);
+      LDouble := LDouble or (Abs(LAnalysis.Candidates[LChoice].Bpm - 60) <= 0.5);
+      if Abs(LAnalysis.Candidates[LChoice].Bpm - 120) <= 0.5 then
+      begin
+        LPhaseZero := LPhaseZero or
+          (Abs(LAnalysis.Candidates[LChoice].PhaseFrame - 4800) < 1E-6);
+        LPhaseHalf := LPhaseHalf or
+          (Abs(LAnalysis.Candidates[LChoice].PhaseFrame - 16800) < 1E-6);
+      end;
+    end;
+    Check(LFast and LHalf and LDouble and LPhaseZero and LPhaseHalf,
+      'True fast, half/double and competing phases remain available');
+  end;
+  LObservations := nil;
+  LAnalysis := EstimateBeatGrids(LObservations, 48000, 432000,
+    DefaultBeatGridOptions);
+  Check(Length(LAnalysis.Candidates) = 0, 'Empty beat source remains unknown');
+  SetLength(LObservations, 3);
+  for LIndex := 0 to High(LObservations) do
+  begin
+    LObservations[LIndex].Frame := 4800 + 12000 * LIndex;
+    LObservations[LIndex].Weight := 1;
+  end;
+  LAnalysis := EstimateBeatGrids(LObservations, 48000, 432000,
+    DefaultBeatGridOptions);
+  Check(Length(LAnalysis.Candidates) = 0, 'Three beat onsets remain insufficient');
+  WriteLn('Beat levels: fast, half/double, phase and insufficient evidence pass');
+end;
+
 procedure Run;
 var
   LObservations: TBeatObservations;
@@ -176,6 +249,7 @@ var
   LPhaseError: Double;
 begin
   SubdivisionChecks;
+  BeatLevelAvailabilityChecks;
   LOptions := DefaultBeatGridOptions;
   SetLength(LObservations, 16);
   for LIndex := 0 to High(LObservations) do

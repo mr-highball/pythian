@@ -210,6 +210,8 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Beat laboratory failed' }
   & $compilerPath @compilerArgs '-Futools' 'tools/pythian.beats.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Beat inspection compilation failed' }
+  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.beat.candidates.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Beat candidate evaluation compilation failed' }
   & (Join-Path $buildRoot "pythian.beats$executableSuffix") (Join-Path $buildRoot 'beat-lab-polyphonic.wav') (Join-Path $buildRoot 'beat-polyphonic.json') '--audition' (Join-Path $buildRoot 'beat-polyphonic-listen.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Beat inspection smoke failed' }
   & (Join-Path $buildRoot "pythian.beats$executableSuffix") (Join-Path $buildRoot 'beat-lab-tempo-change.wav') (Join-Path $buildRoot 'beat-track-change.json') '--track' '--audition' (Join-Path $buildRoot 'beat-track-change-listen.wav')

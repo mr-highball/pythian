@@ -45,10 +45,10 @@ Neither task gets credit from the split. The catalog now has 39 open tasks and
 14 DONE; NS-3 still has 15.25 overall points open, and total credited progress
 remains 63.15%.
 
-The next bounded batch advances tempo_04's challenge and omission-accounting
-criteria. Freeze annotated development windows, source groups, candidate
+The first bounded batch advanced tempo_04's challenge and omission-accounting
+criteria. It froze annotated development windows, source groups, candidate
 identity, eligibility, 30-ms recall and finite work/coverage gates before
-scoring. The deliverable is a source-bound candidate-only packet and a
+scoring. The intended deliverable is a source-bound candidate-only packet and a
 maintained Pascal pool path; it closes only when the declared authored and
 source-separated recorded controls show retained alternatives through save and
 replay, with capacity/fitting losses distinguished. Stop if the challenge lacks
@@ -60,10 +60,26 @@ now freezes six exact WAV/annotation identities, recording-disjoint roles,
 windows, candidate support/matching and work/coverage limits before a new pool
 run. Local file hashes and maintained default geometry/work constants match
 the specification, closing tempo_04 criterion 1 by focused specification QA.
-No candidate policy has been scored or accepted, and no credit changes. The next
-implementation step is a maintained Pascal report/checker path that saves pools
-before reading references, separates omission stages and verifies replay under
-the fixed gate.
+No new retention policy had been scored at this freeze, and no credit changed.
+
+That checker and the first current-policy baseline now exist. Six reports were
+saved from original WAVs before the reference scorer ran; all use Pascal-owned
+onset/grid/path inference. The checker binds source and annotation hashes,
+validates policy/geometry and replays selected paths before comparing candidate
+availability at 30 ms. The 02 arpeggio has compatible candidates in 12/17
+eligible windows against a 90% gate; 04 polyrhythm has 8/14 against an 80%
+gate. The recorded challenge therefore fails. Other rows are challenge
+01 9/10 and 03 18/18, and development 05 7/9 and 19 13/14. Crucially,
+current 02 window 16 retains and selects a 2/2 matching candidate at index 2;
+the historical
+rank-13 loss belongs to an older isolated policy. The [full evidence and
+limits](BEAT-TRACKING.md#first-current-policy-candidate-baseline) name every
+failed window. Native Win32/Win64 authored controls, checker compilation,
+source/path replay, same-target and cross-target score identity, and negative
+identity/policy checks passed. No pool policy changed, no additional criterion
+closed and no task credit was earned; this is the first nonclosing batch since the
+protocol criterion. The next action is a current-policy omission trace on the
+failed rows, followed by a retention change only if its cause supports one.
 
 ## Core-quality reassessment — 2026-09-23
 

@@ -97,6 +97,61 @@ policy identity, work counts, complete pass/fail rows and unchanged regressions.
 Stop if identities, bounds or provenance cannot be replayed; do not tune the
 metrical selector or open the reserved evaluation recordings in this batch.
 
+### First current-policy candidate baseline
+
+The maintained [Pascal candidate checker](../tools/pythian.beat.candidates.lpr)
+was added after the six current-policy `pythian.beats` reports were saved under
+ignored `build/beat-candidate-qualification/reports/`. Stable FPC 3.2.2 Win32
+generated every report from the original WAV with the default eight-candidate
+pool and no annotation input. The checker then verified full WAV/CSV identities,
+all default onset/grid/path settings, exact window geometry, the reported
+fit-work and native path-transition bounds, and deterministic path reselection
+before using shared `EvaluateEvents` at
+30 ms. Run it as
+`pythian.beat.candidates REPORT.json REFERENCE.csv SOURCE.wav SOURCE_SHA256 REFERENCE_SHA256`.
+JSON goes to stdout and a concise failure summary to stderr. Its per-window
+witness and selected path are reported separately.
+
+| Recording | Compatible / eligible windows | Selected raw full-output F1 | Frozen gate |
+| --- | ---: | ---: | --- |
+| 02 arpeggio | 12 / 17 | .9762 | Fails 90% candidate coverage |
+| 05 doubling | 7 / 9 | .8475 | Diagnostic; 75 BPM retained in windows 1, 2, 5 |
+| 19 acceleration | 13 / 14 | .8974 | Diagnostic changing-rate regression |
+| 01 calibration | 9 / 10 | .9744 | Passes 80% candidate coverage |
+| 03 deception | 18 / 18 | .9885 | Passes 80% candidate coverage |
+| 04 polyrhythm | 8 / 14 | .3913 | Fails 80% candidate coverage |
+
+The five missing-compatible 02 windows are 0, 9, 10, 14 and 15. Six such 04
+windows are 0, 5, 10, 15, 20 and 21. Some have missing reference matches;
+others match all references but emit too many extra grid points for the frozen
+precision gate. Their loss stages are not yet classified. Current 02 window 16
+has a retained and selected index-2 candidate matching both owned references
+without extras. The older diagnostic rank-13 loss was real for its isolated
+prototype, but is not a current-policy defect. A pool-capacity change based on
+that old row would chase the wrong cause.
+
+These full-output F1 figures count all selected raw points and use the shared
+30-ms scorer; earlier historical figures sometimes excluded predictions
+outside the annotation span and are not direct numerical comparisons. This
+checker does not establish a new candidate policy or qualified pool. The next
+bounded investigation must trace the current failed windows through admitted
+onsets, positive fits, local-peak eligibility, suppression and capacity, then
+choose a retention change only if that trace shows one can satisfy the frozen
+gates. No untouched timing recordings, source-selected bands, style sources or
+third-party inference runtimes were used.
+
+The two representative inference report SHA-256 values are
+`359263bc20f689aba90e282457a479cdfc759d4512b44854f1d887da5314a3ad`
+(02) and `f96c0b541f7843b3f927a69ac157bb3fc0c999a392c004c9b76ccef447705d53`
+(04); checked score JSON hashes are
+`3225bab487de72b19af9159aef6630ba1cdf1086d323d30e1f6d176d8feef2fd`
+and `f88784b7fd50abe008a6cbd83fee73db37ae43f9f57697a39cdf4d25f12d81f4`.
+The current eight-slot authored fast/half/double/phase and absent-observation
+checks pass under stable Win32/Win64. Stable Win32/Win64 checker builds pass;
+the 02 score JSON is byte-identical across targets and to a same-target replay.
+Wrong reference identity and stale measurement-policy inputs fail cleanly.
+No task credit or milestone percentage changes.
+
 <a id="accent-parity-stopped"></a>
 ## Alternating accent strength does not resolve beat level — 2026-09-23
 
