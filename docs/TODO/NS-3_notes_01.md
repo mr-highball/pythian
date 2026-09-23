@@ -107,6 +107,15 @@ variation is authorized by the existing evidence.
 
 **Dev Notes:**
 
+- 2026-09-23 HarmoF0 source screen: the [author paper and repository](../PHRASE-EVALUATION.md#harmof0-source-feasibility-screen--2026-09-23)
+  report strong in-domain frame pitch accuracy and publish compact weights, but
+  provide no source-disjoint flute result, calibrated abstention or note-presence
+  behavior for this task's gates. After the failed Pascal PESTO prescreen, an
+  aggregate published score alone does not justify another model port. No
+  weights or third-party runtime were used; criterion 1 and credit stay open.
+  Resume only with independently supported register evidence and a prospective
+  ambiguity/coverage policy that protects genuine low, quiet and short notes.
+
 - Stopped approaches (2026-09-21): predictive-phase/envelope guards corrected none of the 105 flute octave-error centers. Availability tracing explained exits but could not rescue the failed guards; do not restart that correction family. See the [identity reassessment](../PHRASE-EVALUATION.md#identity-evidence-reassessment--2026-09-21).
 
 - Stopped batch 28: the fixed source-separated scorer ranked violin 546/548 and flute 482/514 correctly; flute failed the 98% gate even with oracle candidates. No Spring application or feature/epoch/threshold variants follow. See [candidate calibration](../PHRASE-EVALUATION.md#source-separated-candidate-calibration--2026-09-21).

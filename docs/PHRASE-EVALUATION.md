@@ -9,6 +9,30 @@ historical experiments. The user now requires a Pascal-only execution path;
 Pascal execution path. The former observations do not qualify its recorded
 accuracy or cost; its separate Pascal evidence does.
 
+## HarmoF0 source feasibility screen — 2026-09-23
+
+The [HarmoF0 paper](https://arxiv.org/html/2205.01019v2) proposes harmonic
+dilated convolutions over a 16-kHz logarithmic spectrogram and reports 98.40%
+raw pitch accuracy on its MDB-stem-synth evaluation. The
+[author repository](https://github.com/WX-Wei/HarmoF0) is MIT licensed and
+publishes two small PyTorch checkpoints, including one trained for that stem
+dataset. These are useful external research facts, not a Pythian score. The
+paper's framewise 50-cent raw pitch accuracy is a different denominator from
+Pythian's admitted-note precision, active coverage, false-rest count and event
+gates; the published result does not establish flute-specific performance on
+the source-separated URMP challenge. The described estimator selects the
+maximum activation frequency bin and supplies no calibrated abstention or
+note-presence decision. The earlier [Pascal PESTO prescreen](TODO/NS-3_notes_01.md)
+already demonstrated high-confidence lower-octave flute errors for another
+published pitch model on that challenge.
+
+Do not port HarmoF0 merely from its aggregate paper score or run its PyTorch
+inference. A future Pascal-owned probe would need a frozen, source-disjoint
+flute/violin gate and prospective ambiguity/coverage policy before any score,
+with low, quiet and short-note protections. No checkpoint was acquired or
+executed in this screen; no existing inference, reference, task credit or
+development score changes.
+
 The core now supports [harmonic fitting along a declared changing phase](SOURCES.md#phase-harmonic-fitting).
 Known glide/vibrato controls recover constant harmonic coefficients and render
 through the native source; stationary-fit consumers retain their evidence.

@@ -21,6 +21,19 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Register model source screen — 2026-09-23
+
+The [HarmoF0 source screen](PHRASE-EVALUATION.md#harmof0-source-feasibility-screen--2026-09-23)
+found an author-published compact harmonic model and reported in-domain
+frame-pitch accuracy. Its score is not Pythian's admitted-note precision, and
+the published evidence does not establish flute register, safe unknowns or
+false-rest behavior on the source-separated challenge. The earlier Pascal PESTO
+prescreen failed its frozen flute gate with high-confidence octave errors.
+Stop another model-swap port based only on an aggregate paper score. No model
+was acquired or executed here; [register](TODO/NS-3_notes_01.md) retains its
+prospective independent-evidence and ambiguity requirement. This closes no
+task criterion or credit.
+
 ## ARTBeaT source-pulse archive audit — 2026-09-23
 
 The [official archive inventory](BEAT-TRACKING.md#publisher-archive-contents-checked--2026-09-23)
