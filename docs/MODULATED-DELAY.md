@@ -109,7 +109,10 @@ three times, with no recorded source music:
 Each section includes an explicit half-second tail/silence allowance.
 The result is 324000 stereo frames at 24000 Hz (13.5 seconds), with measured
 pre-encoding peak 0.1629921645. The comparison is not loudness matched and
-operator listening quality is not established by the numerical fixture.
+operator listening quality is not established by the numerical fixture. The later
+[bounded stereo-speaker review](SYNTHESIS-QUALITY.md#ns-2-synthesis-quality-02-matrix)
+judged the complete declared chorus/flanger example good overall, without a
+separate spatial-motion description.
 Both compiler WAVs match byte-for-byte, SHA256:
 `6e744c81c940ce9b36345eca464f778e0df8550568208c15f0d6ae14c622e69b`.
 Direct comparison and hash: `build/delay-modulated-replay.log`.

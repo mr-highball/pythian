@@ -21,6 +21,39 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Accepted processing and routing quality — 2026-09-23
+
+The user confirmed the finite processing packet was heard through stereo
+speakers. Their broad "sounds good" review therefore covers the declared
+spectral, modulated-delay, reverb and bus WAVs as stereo playback, including
+their presented tails and routing transitions. It does not supply a separate
+spatial-motion description or fault timestamps. The lower-pitched FM/PM demo
+also sounded good; the high-carrier alias stress file remains a numerical gate.
+The only reported fault, excessive 3–6-second demo vibrato, was repaired by the
+authored +/-15-cent setting and preferred in the bound before/after review.
+
+The [matrix and scope](SYNTHESIS-QUALITY.md#ns-2-synthesis-quality-02-matrix),
+current WAV hashes and existing focused bandwidth, headroom and exact
+partition/replay checks satisfy all five criteria of
+[NS-2_synthesis-quality_02](TODO/DONE/NS-2_synthesis-quality_02.md) without a
+new core algorithm change or redundant suite. Move it to DONE: +6 NS-2 points,
++1.50 overall; NS-2 is **86%**, overall **64.65%**, with **39 open / 15 DONE**.
+The processing task's nonclosing-batch count ends at acceptance. Next bounded
+core action: return to the open [source/articulation quality task](TODO/NS-2_synthesis-quality_01.md)
+using its existing finite audition matrix; combined-path task 03 remains blocked
+until that source task is accepted.
+
+## Lower-pitched modulation verdict — 2026-09-23
+
+The user heard the complete existing 7.5-second
+[modulation demo](MODULATION.md#earlier-additivefm-checkpoint) and said it was
+much better than the high-pitch stress file and believed it sounded good. Its
+last two 1.5-second sections are FM and PM at lower carriers. This is a positive
+broad sound-quality verdict without a claim about the high-carrier folded band's
+audibility. The original numerical alias gate remains valid. No new render or
+core change was needed for this clarified listening question; the later stereo
+playback answer and evidence audit completed the processing task above.
+
 ## Finite processing-packet listener response — 2026-09-23
 
 The user described the presented spectral, delay, reverb and bus examples as

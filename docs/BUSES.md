@@ -178,6 +178,8 @@ RMS 0.0402339613/0.0330484801. Full metrics:
 
 `a9ff4f72f18cfb45c7a7af5190368a802a55638a2b1d1dffb12702873fbcc198`
 
-No operator listening approval, cross-platform parity or real-time deadline
+The later [bounded stereo-speaker review](SYNTHESIS-QUALITY.md#ns-2-synthesis-quality-02-matrix)
+judged the complete declared bus example good overall, including its presented
+mute/return and tail. No cross-platform parity or real-time deadline
 measurement is claimed. Subsequent stable compiler/package evidence and the
 completed [Phanes removal audit](REFERENCE-REMOVAL.md) retain their separate scope.

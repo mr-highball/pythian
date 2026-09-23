@@ -449,5 +449,7 @@ difference or approval is inferred. The existing lower-pitched
 `build/3.2.2-i386-win32/modulation.wav` (SHA256
 `11899cde941b4b02981c57fa065b8023a2c2a5ce53004168169a47a26feb7338`)
 has 4.5–6-second FM and 6–7.5-second PM sections for a more relevant sound-quality
-impression; listener review of those sections is pending. See the [quality summary](SYNTHESIS-QUALITY.md)
-for the combined acceptance scope.
+impression. After listening, the user said this sample was much better and believed
+it sounded good. This is a favorable broad verdict on the existing lower-pitched
+demo, without a separate alias-band verdict for the high-carrier stress file.
+See the [quality summary](SYNTHESIS-QUALITY.md) for the combined acceptance scope.

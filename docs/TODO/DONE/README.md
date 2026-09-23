@@ -19,6 +19,7 @@
 | [NS-3_parts_01](NS-3_parts_01.md) — Qualified external reference packet and curator acoustic intervals | 2026-09-21 | +1 NS-3 | +0.25 |
 | [NS-3_validation_03](NS-3_validation_03.md) — Selective Pascal pitch observations | 2026-09-22 | +2 NS-3 | +0.50 |
 | [NS-3_validation_02](NS-3_validation_02.md) — Supervised Pascal WAV inference | 2026-09-22 | +3 NS-3 | +0.75 |
+| [NS-2_synthesis-quality_02](NS-2_synthesis-quality_02.md) — Accepted modulation, processing and routing quality | 2026-09-23 | +6 NS-2 | +1.50 |
 
 The former external-runtime result was withdrawn on 2026-09-22 under the user's
 Pascal-only inference requirement. It remains historical evidence in

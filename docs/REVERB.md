@@ -110,4 +110,7 @@ SHA256: `681599cddf829429028db36b2e536f8c57a6dc4c0c51580524219903fda955a8`.
 Logs/artifacts: `build/reverb-{stable,trunk}/` and `build/reverb-replay.log`.
 The focused builds have no warnings. The normal build includes the fixture
 and demo; this checkpoint does not claim a full-suite run or package refresh.
-Signal tests and deterministic PCM do not establish subjective listening approval.
+Signal tests and deterministic PCM alone do not establish subjective quality.
+The later [bounded stereo-speaker review](SYNTHESIS-QUALITY.md#ns-2-synthesis-quality-02-matrix)
+judged the complete declared reverb example good overall, without a separate
+spatial-motion or decay-time description.

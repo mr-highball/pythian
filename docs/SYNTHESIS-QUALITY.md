@@ -350,22 +350,31 @@ After the finite processing packet, the user said the presented listening
 examples sounded good, except that the high-pitched `measured-comparison.wav`
 gave no clear listening target. This is a favorable broad impression for the
 presented spectral pair, modulated delay, reverb and bus examples, without
-individual fault times or a specific stereo-channel judgment. The FM/PM
+individual fault times or a distinct spatial-motion description. The user
+confirmed listening through stereo speakers, so that broad verdict includes
+the presented stereo output, effect tails and bus transitions as heard in the
+complete clips. It does not establish a separate localization or channel-balance
+measurement. The FM/PM
 high-carrier comparison remains perceptually uncertain; its numerical
 [bandwidth gate](MODULATION.md#streamed-fmpm-bandwidth-checkpoint--2026-09-19)
-is separate. An existing lower-pitched modulation demo is under review for
-the FM/PM sound-quality impression.
+is separate. The existing lower-pitched modulation demo was then heard as much
+better and good overall, including its 4.5–7.5-second FM/PM portion. This gives
+the supported FM/PM sound an audible positive example without turning the
+high-carrier stress file into a pleasant musical audition.
 
-This is the finite coverage packet for the first criterion of
-[NS-2_synthesis-quality_02](TODO/NS-2_synthesis-quality_02.md). Relevant limits
+This is the accepted finite processing/routing coverage packet for
+[NS-2_synthesis-quality_02](TODO/DONE/NS-2_synthesis-quality_02.md). Relevant limits
 are attached to each comparison: single-setting FM/PM bandwidth, authored smooth
 sample loop, preset native levels, documented filter/dynamics settings, explicit
 tail lengths, and one declared bus topology. No level correction is allowed to
 hide an audible fault. The later 11-second mixed-passage comment identifies the
 planned slowdown and music-like impression. The broad packet verdict above has
-no fault times; it does not yet establish stereo behavior or complete processing
-acceptance. The matrix criterion is documented; defect resolution and final
-acceptance remain open.
+no fault times or detailed spatial description; acceptance is limited to the
+declared rendered settings, native levels and stereo-speaker review. The only
+reported processing objection was the too-wide authored vibrato in seconds 3–6;
+its +/-15-cent revision was preferred, with no other PCM changes. Numerical
+bandwidth, headroom and exact partition/replay checks remain linked from the
+component documents. The high-carrier folded band is not perceptually approved.
 
 Review audible attacks, releases, joins, roughness and level balance on these
 declared paths. Record the exact artifact and transition if a defect is heard,
@@ -374,9 +383,9 @@ Numerical agreement does not replace this observation, and subjective preference
 alone should not silently expand the engineering contract. The broad 11-second
 review does not approve the individual processing cases in this set.
 
-The next fundamentals result completes this listening review and fixes any
-concrete audible defects it reveals within the [accepted capability/failure and
-workload contract](FUNDAMENTALS.md#contract-review). Independent context, phrase and corpus
+The remaining fundamentals work accepts source/articulation and combined
+listening under the [capability/failure and workload contract](FUNDAMENTALS.md#contract-review).
+Independent context, phrase and corpus
 work remains ready in the [execution order](MILESTONES.md#execution-order-and-blocking-links).
 If the declared coverage proves insufficient, revise that outcome's scope
 explicitly rather than adding isolated feature counts or compatibility formats.

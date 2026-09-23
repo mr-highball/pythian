@@ -209,6 +209,8 @@ Final `effects.wav` has 288000 frames and SHA256
 `b70a06ffa11df7fc4d146c19d6b5296fd4e45d5832d880c9073ee35c02d77db1`.
 PCM peak in each channel is 0.8912658691 after quantization.
 Combined-file metrics are in `build/effects-metrics.json`.
+The later [bounded stereo-speaker review](SYNTHESIS-QUALITY.md#ns-2-synthesis-quality-02-matrix)
+judged this complete dry/processed example good at its declared settings.
 Legacy synthesis retains SHA256
 `07094fc2d977c43a0d96242b93bdb6ee4c806da7d9bfe1da6a40fa2351fcb3f9`.
 
