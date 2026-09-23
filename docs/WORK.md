@@ -79,6 +79,25 @@ criteria 1, 2 and 5 remain open, with no credit. This is one nonclosing batch
 since the accepted protocol criterion; follow the ready synthesis-quality
 review while a distinct source-grounding path is developed.
 
+## Local-key provenance criterion — 2026-09-23
+
+While synthesis listening remains pending, focused current-source QA closed
+[NS-3_context_01](TODO/NS-3_context_01.md) criterion 4. Stable FPC 3.2.2
+Win32 core tests confirm exact source-frame regional boundaries, unknown on
+silence, safe rejection and musical-time mapping across source offsets and
+changing tempo. A saved-profile checker remeasures and binds the exact WAV,
+report, candidate ranks and every key/tempo cell. A deliberate caller-selected
+rank-18 key survives native save/reload with `explicit_local_region_selection`
+provenance; it is not mislabeled as inferred truth. The focused runs exit 0
+with zero unfreed blocks. [Detailed identities and limits](WAVE-CONTEXT-ADMISSION.md#source-bound-manual-region-replay--2026-09-23)
+are linked from the task; generated evidence is ignored under `build/`.
+
+Automatic key/change admission, confidence, unknown coverage and independent
+recorded accuracy remain open under criteria 1, 2, 3 and 5. No task credit or
+milestone percentage changes. Closing this criterion resets the consecutive
+nonclosing-batch checkpoint; the stopped tonal representation experiments do
+not restart.
+
 ## Journal publication checkpoint — 2026-09-23
 
 For NS-5_scale_02 criterion 2, the acoustic journal commands now stage model,

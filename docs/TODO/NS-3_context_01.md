@@ -95,6 +95,15 @@ contract must distinguish spectral-envelope variation from genuinely simultaneou
 notes; fitting extra pitches to explain timbre does not satisfy key admission.
 Temporal tonic evidence and independent key/change evaluation remain required.
 
+Focused current-checkout QA 2026-09-23 closes **criterion 4** for source-frame
+regions, musical-time mapping and manual-selection provenance. The
+[source-bound replay](../WAVE-CONTEXT-ADMISSION.md#source-bound-manual-region-replay--2026-09-23)
+passes stable FPC 3.2.2 Win32 core and saved-profile checks. A deliberately
+selected rank-18 key remains explicitly caller-selected in the JSON and
+report-bound profile after reload; it is not presented as automatic inference.
+Criteria 1, 2, 3 and 5 remain open, including calibrated uncertainty and
+independent recorded accuracy. This partial criterion earns no task credit.
+
 **Acceptance Criteria:**
 
 - Declare supported key/mode cases and source windows, including ambiguous, non-tonal and changing-key regions; fix key/change/coverage limits before evaluation.

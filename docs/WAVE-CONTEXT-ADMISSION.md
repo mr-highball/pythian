@@ -451,3 +451,30 @@ Evidence: `build/local-key-{stable,trunk,win64}/`, including `maintained-run.log
 Malformed regions and incorrect source hashes preserve existing profile/report
 bytes. No new fixture program was added. Broader annotated key accuracy,
 automatic region/key admission, meter and learned mixed-song roles remain open.
+
+### Source-bound manual-region replay — 2026-09-23
+
+Current stable FPC 3.2.2 Win32 builds of the core admission test, saved-profile
+checker and native operator pass the focused local-key source/provenance gate.
+The core test covers exact nonoverlapping source frames, independent regional
+measurements, unknown on silence, rejection without replacing prior results,
+and musical-time mapping with a source offset, nonzero start tick and changing
+tempo. The saved-profile checker remeasures the accepted controlled WAV and
+matches its source hash, report hash, regional frame bounds, ranked candidates
+and every saved key/tempo cell with zero relative weight error.
+
+A separate caller-selected C-sharp major region deliberately ranks **18th**
+against the measured tonal candidates. The operator retains that selected key
+and exact rank, labels the decision `explicit_local_region_selection`, and
+saves a report-bound profile. Rechecking the new profile against the same WAV
+passes with zero relative weight error. Its JSON and PCP SHA256 identities are
+`c369fcdc53f7bedc34b7c75b1e5918e119b7db85677857aaf7c7d73a3674bdbc`
+and `45aa800cc312e3e1914cf21f2c141b0fded4e7c90109950a58fefcd23bb21499`;
+all focused runs report zero unfreed blocks. Commands and exact outputs remain
+under ignored `build/context-key-criterion4/`.
+
+This verifies the source-frame, musical-time and manual-selection provenance
+contract of [NS-3_context_01 criterion 4](TODO/NS-3_context_01.md). Rank 18
+is intentionally a poor musical choice: successful admission does not make it
+an inferred key. Automatic choice, calibrated unknowns and independent local-key
+accuracy remain open.
