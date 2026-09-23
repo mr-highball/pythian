@@ -930,6 +930,88 @@ directory rejects before writing. This closes
 coordinate reproduction. Separate key/unknown/change scoring denominators and
 any acoustic no-key qualification remain open.
 
+### Frozen local-key packet scoring policy — 2026-09-23
+
+Score only a report whose exact SHA-256 is one of the four bound Pascal
+reference reports above. Predictions must name the same composition, source
+WAV SHA-256 and source-frame extent, then provide contiguous, nonoverlapping
+half-open source-frame segments covering that extent. A segment carries a
+major/minor key or explicit unknown. Enharmonic roots compare by pitch class;
+mode must match. The packet makes no inference or confidence decision.
+
+Keep three separate denominators and numerators per composition and role:
+
+- **Supported key:** source frames with all three annotators present and
+  agreeing. Count exact root/mode prediction frames; predicted unknown counts
+  as incorrect. Divide by those unanimous frames.
+- **Ambiguity abstention:** source frames with all three annotators present
+  but at least one root/mode disagreement. Count frames predicted unknown;
+  any asserted key is a false admission against this *annotation-conflict*
+  target. Divide by those conflict frames. This does not measure acoustic
+  no-key rejection.
+- **Agreed change:** a boundary between contiguous unanimous regions with
+  different keys, where each side supports at least one second of stable
+  reference. Count an event only when the prediction makes exactly one
+  old-to-new key transition within 0.25 seconds of that boundary and has no
+  other prediction transition within one second on either side. Divide by
+  eligible reference boundaries. This is a strict packet timing check;
+  transferred reference boundaries are not sample-accurate acoustic onsets.
+
+Unlabelled and partially covered frames belong to separate excluded coverage
+counts, never to a presumed key or unknown denominator. Report a zero
+denominator as unavailable, not a 0% or 100% result. Never pool development
+and independent evaluation into one score. Freeze these rules before running
+any inference output or selecting a threshold against reserved compositions.
+
+The maintained [Pascal packet scorer](../tools/pythian.localkey.score.lpr)
+implements this rule as `score <bound-reference.json> <predictions.json>`.
+Prediction JSON names `composition_group`, `source_sha256`, integer
+`source_frames`, `prediction_kind` (`synthetic_control` or
+`candidate_inference`) and a complete `segments` array of integer
+`start_frame`, `end_frame` and `key` (`null` for unknown). The kind is a
+caller declaration, not proof of runtime provenance. The scorer rejects a
+reference report outside the four exact hashes, a mismatched WAV/group,
+invalid key, missing source frame, overlapping or redundant prediction
+segments. Its output includes bound input hashes, integer numerators and
+denominators, separate excluded coverage, and an availability flag for each
+denominator. `tools/build.ps1` compiles it and runs source-free controls.
+
+### Separate packet denominators — 2026-09-23
+
+Checked stable FPC 3.2.2 Win32 and Win64 applied the frozen scorer to all
+four bound reports with explicitly **synthetic all-unknown** predictions.
+These probes validate source binding and denominator wiring, not inference
+quality. The eligible agreed changes occur at exact reference boundaries;
+the scorer's one-second flank and quarter-second tolerance remain fixed.
+
+| Group and role | Supported-key frames | Conflict-abstention frames | Eligible agreed changes | Excluded unlabelled frames | Excluded partial frames |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| D911-02 development | 1,183,203 | 152,145 | 0 | 122,292 | 772,632 |
+| D911-16 development | 2,223,522 | 84,231 | 1 | 121,359 | 624,456 |
+| D911-05 independent evaluation | 5,934,537 | 0 | 4 | 116,279 | 0 |
+| D911-19 independent evaluation | 1,178,352 | 298,557 | 0 | 86,739 | 0 |
+
+Each row's four frame categories sum to its exact source-frame extent. Zero
+conflict or change denominators are marked unavailable, not converted into
+rates. Source-free controls exercise an exact supported-key match, conflict
+abstention and on-time change, then all-unknown, flickering and a change
+just inside/outside the 5,513-frame timing tolerance. Checked runs pass on
+both architectures with zero unfreed blocks. On current bound reports,
+wrong-source predictions, an initial prediction gap and a non-bound reference
+hash reject before scoring with zero unfreed blocks. No actual estimator was
+run; no acoustic no-key rate or key-inference accuracy is asserted. This
+closes [NS-3_context_03](TODO/NS-3_context_03.md) criterion 5.
+
+The task remains open for its separately stated acoustic no-key requirement.
+The [MTG-Jamendo derived annotation release](https://github.com/MTG/mtg-jamendo-dataset/blob/master/derived/music-classification-annotations/README.md)
+offers three-annotator tonal/atonal labels for tracks, but its single-label
+taxonomy and forced track-level choice do not provide reviewed source-clock
+non-tonal intervals. It is only a candidate screen. The existing SWD score
+gaps and audio-annotator conflicts likewise cannot supply an acoustic no-key
+false-admission denominator. A new source must receive development or
+composition-independent evaluation role before its labels/predictions are
+used, with the same exact recording, license and timing checks as this packet.
+
 ## Native inspection
 
 The [native tool](../tools/pythian.tonal.inspect.lpr) prints JSON:

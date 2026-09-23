@@ -324,6 +324,20 @@ still needs separate supported-key, abstention-on-conflict and change
 denominators before the task can earn credit. The current packet cannot
 support a measured acoustic no-key rate.
 
+The next maintained batch froze separate supported-key, full-coverage
+annotator-conflict and agreed-change scoring denominators and implemented a
+[Pascal packet scorer](TONAL.md#separate-packet-denominators--2026-09-23).
+Checked stable Win32/Win64 controls pass exact, unknown, mistimed and
+flickering cases; synthetic all-unknown predictions reconcile all four
+source-bound reports, while wrong-source, missing-coverage and unbound-report
+inputs reject. No inference ran and no accuracy credit is implied. This
+closes NS-3_context_03 criterion 5. A completion audit found that the task
+description and downstream NS-3_context_01 still require actual acoustic
+non-tonal intervals, absent from the current packet. That requirement is now
+explicit as criterion 6, with no new credit or task move. The
+[MTG-Jamendo tonal/atonal release](https://github.com/MTG/mtg-jamendo-dataset/blob/master/derived/music-classification-annotations/README.md)
+is track-level and cannot by itself close the time-local reference gap.
+
 ## NS-5 listening-protocol criterion — 2026-09-23
 
 Focused specification QA for [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md)

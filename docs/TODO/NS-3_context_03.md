@@ -44,6 +44,13 @@ Starting evidence: [local-key reference study](../TONAL.md#local-key-reference-c
 - Show that the packet can score supported key, unknown and change behavior
   separately with coverage denominators. The packet itself selects no key
   algorithm or confidence threshold and earns no inference-accuracy credit.
+- Complete the description's **acoustic no-key** coverage with reviewed,
+  source-clock non-tonal intervals in at least one development and one
+  independent recording/composition group. Bind each interval to the exact
+  recorded audio and a time-local annotation/review method, preserve the same
+  role isolation, and add a separate non-tonal false-admission denominator.
+  A whole-track tag, percussion description, local-key annotation gap or
+  classifier output alone cannot establish this reference truth.
 
 **Blockers**
 
@@ -51,6 +58,19 @@ Starting evidence: [local-key reference study](../TONAL.md#local-key-reference-c
 
 **Dev Notes:**
 
+- 2026-09-23 separate packet scorer: the [frozen policy and Pascal tool](../TONAL.md#separate-packet-denominators--2026-09-23)
+  score supported-key frames, abstention on three-annotator conflict frames,
+  and agreed changes with independent integer denominators. Four exact report
+  hashes gate inputs. Stable checked Win32/Win64 source-free controls and
+  synthetic all-unknown runs on all four original groups pass, including
+  zero-denominator availability and source-frame conservation. Wrong-source,
+  gap and unbound-report inputs reject; all checked runs have zero unfreed
+  blocks. **Criterion 5 is met for the packet's annotated ambiguity target.**
+  This closes a criterion after the previous qualification batch; no task
+  credit moves because criterion 6, explicit from the task description and
+  [downstream non-tonal requirement](NS-3_context_01.md), remains open.
+  MTG-Jamendo's three-annotator tonal/atonal labels are whole-track labels,
+  so they are a possible source screen, not accepted local no-key intervals.
 - 2026-09-23 direct ambiguity qualification: the [exact audio-annotator
   conflict intervals](../TONAL.md#audio-annotator-conflict-intervals--2026-09-23)
   in D911-02 and D911-16 provide two distinct composition groups with all

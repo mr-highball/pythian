@@ -314,6 +314,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Local-key reference checker compilation failed' }
   & (Join-Path $buildRoot "pythian.localkey.reference$executableSuffix") 'controls'
   if ($LASTEXITCODE -ne 0) { throw 'Local-key reference controls failed' }
+  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.localkey.score.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Local-key packet scorer compilation failed' }
+  & (Join-Path $buildRoot "pythian.localkey.score$executableSuffix") 'controls'
+  if ($LASTEXITCODE -ne 0) { throw 'Local-key packet scorer controls failed' }
   & $compilerPath @compilerArgs '-Futools' 'tools/pythian.tonal.inspect.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Tonal inspection compilation failed' }
   & (Join-Path $buildRoot "pythian.tonal.inspect$executableSuffix") 'midi' (Join-Path $buildRoot 'timing.mid') > (Join-Path $buildRoot 'tonal-midi.json')
