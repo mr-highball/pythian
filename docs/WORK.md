@@ -21,6 +21,40 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Beat-candidate deliverable split — 2026-09-23
+
+Two consecutive metrical experiments for [NS-3_tempo_01](TODO/NS-3_tempo_01.md)
+closed no criterion. Source-accent evidence improved some cases but failed the
+frozen authored polyphonic/changing-clock gate. Accent parity then damaged
+polyrhythm, doubling and the polyphonic case. Both stopped verdicts remain in
+[beat tracking](BEAT-TRACKING.md); another selection-factor variant is not the
+next action. The earlier candidate-survival audit found a distinct blocker:
+the reference-compatible arpeggio phase reached diagnostic rank 13 after
+fitting, outside the retained eight-slot pool. Other wrong selections already
+had a correct-rate candidate in the pool. Candidate availability and musical
+selection therefore have separate, measurable failure modes.
+
+[NS-3_tempo_04](TODO/NS-3_tempo_04.md) now owns the original first criterion's
+automatic WAV candidate observations, retained half/double-time and competing
+phase alternatives, source-bound candidate-path/clock delivery, and explicit
+fitting/suppression/capacity omission accounting. It gets 2 of tempo_01's
+original 5 unearned NS-3 points. Tempo_01 keeps 3 points and the first
+criterion's *selection* obligation; its original development accuracy,
+uncertainty, fast-beat/regression and shared-validation criteria remain there.
+Neither task gets credit from the split. The catalog now has 39 open tasks and
+14 DONE; NS-3 still has 15.25 overall points open, and total credited progress
+remains 63.15%.
+
+The next bounded batch advances tempo_04's challenge and omission-accounting
+criteria. Freeze annotated development windows, source groups, candidate
+identity, eligibility, 30-ms recall and finite work/coverage gates before
+scoring. The deliverable is a source-bound candidate-only packet and a
+maintained Pascal pool path; it closes only when the declared authored and
+source-separated recorded controls show retained alternatives through save and
+replay, with capacity/fitting losses distinguished. Stop if the challenge lacks
+independent annotations or candidate identity cannot be preserved within the
+bounded pool; revise the evidence design instead of tuning a selection penalty.
+
 ## Core-quality reassessment — 2026-09-23
 
 Two consecutive bounded batches closed no acceptance criterion. First, the

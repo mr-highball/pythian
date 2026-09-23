@@ -33,11 +33,11 @@ unless also declared under Blockers; required gaps still follow
 | --- | ---: | ---: | ---: | ---: |
 | [NS-1 — Independent Pascal foundation](../MILESTONES.md#ns-1) | 100% | 0 | 0 | 0.00 |
 | [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 80% | 3 | 20 | 5.00 |
-| [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 39% | 15 | 61 | 15.25 |
+| [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 39% | 16 | 61 | 15.25 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 96% | 1 | 4 | 0.60 |
 | [NS-5 — Many-hour styles that generate and blend usefully](../MILESTONES.md#ns-5) | 27% | 16 | 73 | 14.60 |
 | [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 72% | 3 | 28 | 1.40 |
-| **Total** | **63.15 weighted points** | **38** | Per-goal credits are not summed across goals | **36.85** |
+| **Total** | **63.15 weighted points** | **39** | Per-goal credits are not summed across goals | **36.85** |
 
 NS-1 is already complete under the accepted extraction scope. Preserve its
 invariants in every applicable task; do not recreate completed extraction work.
@@ -59,7 +59,8 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 
 | Task file and outcome | Goal credit | Overall credit | State |
 | --- | ---: | ---: | --- |
-| [NS-3_tempo_01.md](NS-3_tempo_01.md) — Resolve beat level and phase from WAV observations | +5 | +1.25 | TODO |
+| [NS-3_tempo_04.md](NS-3_tempo_04.md) — Qualify bounded beat candidates from WAV | +2 | +0.50 | TODO |
+| [NS-3_tempo_01.md](NS-3_tempo_01.md) — Resolve beat level and phase from WAV observations | +3 | +0.75 | TODO |
 | [NS-3_tempo_02.md](NS-3_tempo_02.md) — Reconstruct changing clocks and metrical structure | +4 | +1.00 | TODO |
 | [NS-3_tempo_03.md](NS-3_tempo_03.md) — Accept automatic timing on independent recordings | +3 | +0.75 | TODO |
 | [NS-3_context_01.md](NS-3_context_01.md) — Admit local key and tonal uncertainty | +4 | +1.00 | TODO |
@@ -166,7 +167,7 @@ first accepted genre is predetermined.
 3. [NS-2_synthesis-quality_03.md](NS-2_synthesis-quality_03.md)
 4. [NS-3_validation_01.md — DONE](DONE/NS-3_validation_01.md)
 5. [NS-3_validation_03.md — DONE](DONE/NS-3_validation_03.md), then [NS-3_validation_02.md — DONE](DONE/NS-3_validation_02.md)
-6. [NS-3_tempo_01.md](NS-3_tempo_01.md)
+6. [NS-3_tempo_04.md](NS-3_tempo_04.md), then [NS-3_tempo_01.md](NS-3_tempo_01.md)
 7. [NS-3_tempo_02.md](NS-3_tempo_02.md)
 8. [NS-3_tempo_03.md](NS-3_tempo_03.md)
 9. [NS-3_context_01.md](NS-3_context_01.md)
@@ -212,6 +213,11 @@ first accepted genre is predetermined.
 49. [NS-6_delivery_05.md](NS-6_delivery_05.md)
 
 ## Scope audit
+
+The 2026-09-23 [beat-candidate split](../WORK.md#beat-candidate-deliverable-split--2026-09-23)
+increases the catalog by one open task without changing NS-3's 61 unearned
+goal points. Candidate evidence receives 2 of the original tempo_01's 5
+points; metrical selection retains 3. Neither task earns credit from the split.
 
 The [22-outcome reconciliation](../MILESTONES.md#active-backlog) maps every prior
 active outcome to task files. The split makes previously implicit work explicit:

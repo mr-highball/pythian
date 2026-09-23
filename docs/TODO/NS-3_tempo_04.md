@@ -1,0 +1,66 @@
+# NS-3_tempo_04 — Qualify bounded beat candidates from WAV
+
+[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-3)
+
+**Description:**
+
+Deliver reusable, source-bound candidate evidence for beat period and phase
+before deciding which candidate is the musical pulse. A retained pool must
+expose plausible half/double-time and competing-phase explanations, plus
+missing or unsupported evidence, through the maintained native tracker and
+clock boundary. Its successful result is candidate availability and bounded
+provenance, not automatic beat-level selection.
+
+North star: NS-3. Outcome owner: WAV-02-PULSE.
+Completion credit: 2 goal percentage points (0.50 overall points), split from
+the original 5 points of [NS-3_tempo_01](NS-3_tempo_01.md).
+Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
+
+Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-path-diagnosis--2026-09-19) · [BEAT-GRIDS](../BEAT-GRIDS.md).
+
+**Acceptance Criteria:**
+
+- Freeze source windows, annotated development groups, candidate identity,
+  eligibility, per-window support and a candidate-only challenge group before
+  scoring. Fix availability/coverage and work limits prospectively; do not use
+  the later untouched whole-track timing evaluation group for tuning.
+- Preserve true fast, half/double-time and same-tempo competing-phase
+  alternatives on the declared authored controls and source-separated recorded
+  challenge, within a bounded candidate pool. Report reference-compatible
+  candidate recall at the declared 30-ms timing tolerance separately from the
+  path's selected beat accuracy; a reference may identify a missing candidate
+  only after inference has saved the pool.
+- Distinguish absent source pulses, distractor observations, fitting omission,
+  candidate suppression and capacity loss. Missing or ambiguous evidence stays
+  explicit rather than becoming an invented pulse or a reference-selected band.
+- Expose the qualified pool through maintained Pascal WAV observation,
+  `TBeatTrackWindow`, path reselection and selected-clock contracts with exact
+  candidate indices, source coordinates, policy identity and deterministic
+  replay. A selection must not erase its unused alternatives; no downstream
+  caller may treat availability or a top score as musical confidence.
+- Pass checked native boundary, failure and work tests on the changed path and
+  its consumer. Retain the original stable/deceptive/polyrhythm/changing-rate
+  controls as regression evidence; this task does not claim their beat-level
+  acceptance or change the stopped metrical experiments' verdicts.
+
+**Blockers**
+
+- [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
+
+**Dev Notes:**
+
+- 2026-09-23 deliverable split: the original tempo_01 combined candidate
+  availability with choosing musical beat level and phase. In the recorded
+  arpeggio diagnosis, a reference-compatible phase survived fitting but was
+  lost beyond the eight retained slots; in the doubling case, a correct-rate
+  candidate was already retained while the path chose another. The later
+  source-accent and parity selection experiments failed their frozen gates.
+  Candidate evidence is an independently consumable native result, so this task
+  receives 2 of the original 5 goal points and tempo_01 retains 3. The total
+  unearned credit and the original acceptance scope do not change. See the
+  [work reassessment](../WORK.md#beat-candidate-deliverable-split--2026-09-23).
+- Next bounded deliverable: freeze and verify the candidate-only challenge and
+  explicit omission accounting before changing a retained-pool policy. The
+  existing 32-candidate diagnostic walk is evidence, not an accepted provider;
+  simply enlarging the default pool or retuning transition penalties does not
+  pass the criteria above.

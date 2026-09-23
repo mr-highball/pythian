@@ -4,10 +4,14 @@
 
 **Description:**
 
-Resolve stable and ambiguous beat-level/phase choices using source evidence rather than reference-selected bands, supplied BPM hints or agreement alone.
+Resolve stable and ambiguous beat-level/phase choices from qualified candidate
+evidence, using source support rather than reference-selected bands, supplied
+BPM hints or agreement alone. [NS-3_tempo_04](NS-3_tempo_04.md) owns bounded
+candidate availability before this task selects the musical pulse.
 
 North star: NS-3. Outcome owner: WAV-02-PULSE.
-Completion credit: 5 goal percentage points (1.25 overall points).
+Completion credit: 3 goal percentage points (0.75 overall points), after
+splitting 2 of the original 5 points to [NS-3_tempo_04](NS-3_tempo_04.md).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md) · [BEAT-GRIDS](../BEAT-GRIDS.md).
@@ -31,7 +35,10 @@ reassess the evidence model before another experiment.
 
 **Acceptance Criteria:**
 
-- Use automatic candidate observations through the maintained candidate-path and selected-clock contracts, retaining plausible half/double-time and phase alternatives.
+- Consume the accepted, source-bound [candidate pool](NS-3_tempo_04.md)
+  through the maintained candidate-path and selected-clock contracts; select
+  a musical beat level and phase without dropping the other plausible
+  half/double-time or competing-phase explanations from the saved evidence.
 - Meet predeclared development accuracy and useful coverage limits on stable, deceptive, syncopated and polyrhythmic recordings, including current passing and failing cases.
 - Distinguish absent pulses, distractor onsets and model omission; keep explicit uncertainty when evidence cannot resolve meter/beat level.
 - Preserve true fast beats, stable instrumentation and the existing role-change control; a wrong candidate with perfect provider agreement must not be admitted merely for agreeing.
@@ -40,6 +47,7 @@ reassess the evidence model before another experiment.
 **Blockers**
 
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
+- [NS-3_tempo_04.md](NS-3_tempo_04.md)
 
 **Dev Notes:**
 
@@ -56,3 +64,11 @@ reassess the evidence model before another experiment.
   provider; future adopted evidence must be Pascal-owned end to end. No tuning follows.
   At the two-batch checkpoint, require genuinely different evidence for metrical
   identity and explicit uncertainty before another task experiment.
+
+- 2026-09-23 split: candidate availability, omission accounting and bounded
+  native pool delivery now belong to [tempo_04](NS-3_tempo_04.md), an actual
+  prerequisite to choosing beat level/phase here. The source-accent and parity
+  failures remain stopped. This task retains the selection, uncertainty,
+  development accuracy and shared-validation criteria and 3 of its original
+  5 goal points. The two tasks together retain the original 5 points; no
+  criterion, capability or milestone credit closes from the split.
