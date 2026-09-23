@@ -21,6 +21,20 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Finite processing-packet listener response — 2026-09-23
+
+The user described the presented spectral, delay, reverb and bus examples as
+good overall, but found the high-pitched `measured-comparison.wav` unclear as
+a listening task. The [source-bound record](SYNTHESIS-QUALITY.md#ns-2-synthesis-quality-02-matrix)
+retains the packet identities and limits. This supports broad acceptability of
+those examples, without per-case fault times or an explicit stereo-channel
+verdict. The FM/PM clip is a deliberate 4-kHz-carrier folded-band stress test,
+not a musical demo. Its numerical gate passes, while its perceptual comparison
+remains uncertain. The already rendered lower-pitched modulation demo is the
+next bounded sound-quality check; its 4.5–6-second FM and 6–7.5-second PM
+sections have been supplied for listening. No new render, inference path or
+quality-task credit follows from the broad response alone.
+
 ## Processing listening checkpoint and reassessment — 2026-09-23
 
 The user heard the entire six-second, hash-bound filtering/dynamics comparison

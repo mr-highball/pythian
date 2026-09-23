@@ -346,15 +346,26 @@ After hearing the complete six-second `effects.wav` row above, the user said
 It includes no fault time or separate judgment on stereo motion, reverb/echo
 tails or routing transitions. Those cases remain open.
 
+After the finite processing packet, the user said the presented listening
+examples sounded good, except that the high-pitched `measured-comparison.wav`
+gave no clear listening target. This is a favorable broad impression for the
+presented spectral pair, modulated delay, reverb and bus examples, without
+individual fault times or a specific stereo-channel judgment. The FM/PM
+high-carrier comparison remains perceptually uncertain; its numerical
+[bandwidth gate](MODULATION.md#streamed-fmpm-bandwidth-checkpoint--2026-09-19)
+is separate. An existing lower-pitched modulation demo is under review for
+the FM/PM sound-quality impression.
+
 This is the finite coverage packet for the first criterion of
 [NS-2_synthesis-quality_02](TODO/NS-2_synthesis-quality_02.md). Relevant limits
 are attached to each comparison: single-setting FM/PM bandwidth, authored smooth
 sample loop, preset native levels, documented filter/dynamics settings, explicit
 tail lengths, and one declared bus topology. No level correction is allowed to
 hide an audible fault. The later 11-second mixed-passage comment identifies the
-planned slowdown and music-like impression, but no timestamped processing or
-routing verdict has been recorded for these comparisons. The matrix criterion
-is documented; defect resolution and final acceptance remain open.
+planned slowdown and music-like impression. The broad packet verdict above has
+no fault times; it does not yet establish stereo behavior or complete processing
+acceptance. The matrix criterion is documented; defect resolution and final
+acceptance remain open.
 
 Review audible attacks, releases, joins, roughness and level balance on these
 declared paths. Record the exact artifact and transition if a defect is heard,

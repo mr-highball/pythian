@@ -26,6 +26,17 @@ Starting evidence: [SYNTHESIS-QUALITY](../SYNTHESIS-QUALITY.md) · [MODULATION](
 
 **Dev Notes:**
 
+- 2026-09-23 finite-packet listener response: the user said the presented
+  spectral, delay, reverb and bus examples sounded good overall, but found
+  `measured-comparison.wav` a high-pitched sound with no clear listening target.
+  Record the broad positive verdict without inventing per-case fault times or
+  stereo-channel approval. The [high-carrier FM/PM clip](../MODULATION.md#streamed-fmpm-bandwidth-checkpoint--2026-09-19)
+  is a numerical bandwidth stress case; its audible comparison remains uncertain.
+  The existing lower-pitched modulation demo's FM/PM sections are now offered
+  for a meaningful sound-quality verdict. This follows the bounded packet
+  reassessment without another comparison render; criterion 2 and credit remain
+  open pending that review and explicit stereo/tail scope.
+
 - 2026-09-23 effects listener checkpoint: the user heard the entire hash-bound
   six-second [dry/processed effects comparison](../SYNTHESIS-QUALITY.md#ns-2-synthesis-quality-02-matrix)
   and said "effects sounds good." This supports that fixed filtering/dynamics

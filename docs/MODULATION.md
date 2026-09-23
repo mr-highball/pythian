@@ -440,5 +440,14 @@ The maintained scheduler fixture covers the reusable reader's boundaries.
 FM native, FM fourfold, PM native, PM fourfold, each followed by 0.125 seconds of
 silence. SHA256 is
 `fe16863a11afd1ef7cfad87d2d13dd8451aa72790e983c3dc15231f2f2e2e68d`.
-No listening approval is inferred. See the [quality summary](SYNTHESIS-QUALITY.md)
-for the combined acceptance scope and remaining review.
+After the broader processing packet, the user described this file as a high-pitch
+sound and was unsure what to assess. Its 4-kHz carrier is an intentional bandwidth
+stress setting; the comparison asks whether the second sound in each FM/PM pair
+has less audible folded roughness than the first, not whether the tone is musically
+pleasant. The numerical folded-component gate above passes, but no perceptual
+difference or approval is inferred. The existing lower-pitched
+`build/3.2.2-i386-win32/modulation.wav` (SHA256
+`11899cde941b4b02981c57fa065b8023a2c2a5ce53004168169a47a26feb7338`)
+has 4.5–6-second FM and 6–7.5-second PM sections for a more relevant sound-quality
+impression; listener review of those sections is pending. See the [quality summary](SYNTHESIS-QUALITY.md)
+for the combined acceptance scope.
