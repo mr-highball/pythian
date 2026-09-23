@@ -58,6 +58,19 @@ Starting evidence: [local-key reference study](../TONAL.md#local-key-reference-c
 
 **Dev Notes:**
 
+- 2026-09-23 no-key packet checkpoint: the [maintained Pascal checker](../TONAL.md#prospective-acoustic-no-key-screen--2026-09-23)
+  now binds both original media, the external conversion, frozen windows,
+  roles, clocks and every decoded crop sample. Checked stable Win32/Win64
+  reports are byte-identical; swapped crop/source inputs reject with zero
+  leaks. It deliberately reports `pending_time_local_review`, never a
+  fabricated label. This is the second consecutive nonclosing batch after
+  criterion 5: source identity and coordinates are ready, but criterion 6
+  cannot close without reviewed no-key intervals and a separate
+  false-admission denominator. Stop further candidate preparation here.
+  When review arrives, retain each fixed window only if its whole 10 seconds
+  supports no-key; then bind the reviewer verdict and score denominator in
+  Pascal. If either review is uncertain or hears pitched music, exclude it
+  and reassess the source path before another search.
 - 2026-09-23 prospective acoustic no-key screen: [two independently authored
   recordings](../TONAL.md#prospective-acoustic-no-key-screen--2026-09-23)
   have frozen development/evaluation roles and 10-second review windows before

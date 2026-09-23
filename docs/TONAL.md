@@ -1022,7 +1022,8 @@ roles and 10-second source-clock review windows:
 | Development | Acabashi's London rain/wind capture of 2026-08-28; all allied consecutive files by this uploader stay in development | [8.000, 18.000) s | [Original file page](https://commons.wikimedia.org/wiki/File:Rain_and_wind_in_London_2026_08_28.wav), Acabashi, own work, CC BY-SA 4.0 |
 | Independent evaluation | Amada44's 2014 applause capture; all copies, derivatives and adjacent excerpts of this recording stay in evaluation | [18.000, 28.000) s | [Original file page](https://commons.wikimedia.org/wiki/File:Sound_Effects_-_Applause_after_a_concert.ogg), Amada44, own work, CC0 1.0 |
 
-The families are separate creators, dates, locations and events. The selected
+The families have separate creators, dates and described events; the applause
+location is not published. The selected
 windows are interior fixed positions based only on published durations (about
 34 and 59 seconds), not on heard or measured content. The descriptions are
 screens, **not interval labels**. Before either window enters a no-key
@@ -1053,6 +1054,34 @@ against its original-WAV span using Pythian's reader. It passed on stable FPC
 3.2.2 i386-win32. The evaluation Ogg-to-WAV conversion itself is an external
 media conversion, not an inference/analysis path. The candidate labels and
 false-admission denominator remain **unavailable** pending time-local review.
+
+The [maintained Pascal checker](../tools/pythian.localkey.nokey.reference.lpr)
+now binds the two original media hashes, the converted WAV and window hashes,
+source clocks, roles and exact sample equality. It emits a report with
+`label_status=pending_time_local_review` and accepts no review label or
+prediction. The two reports are byte-identical on checked FPC 3.2.2 Win32 and
+Win64: development SHA-256
+`d4f1d92a6043e0edf9c4353d1bf4c219b95666c8ae5a6affba3d1aea66cd899a`,
+evaluation SHA-256
+`f62bbfa193be3f4a2c4ec1d73e32d83d367d40cf61b865a02f1b9527ec3085af`.
+Both runs report zero unfreed blocks. Swapping the frozen crop or WAV source
+rejects before a report, also with zero unfreed blocks. The source-specific
+reports and media remain ignored under `build/context-reference-nokey/`.
+
+For reacquisition, use the original-file links on the two Commons pages above
+and verify their byte counts and digests before preparing these WAVs. The
+evaluation decode used FFmpeg `2022-01-30-git-1530b3f566-full_build` and the
+following conversion/filter arguments after `-i INPUT`:
+
+```text
+evaluation whole WAV: -map 0:a:0 -c:a pcm_s16le -bitexact OUTPUT.wav
+development window:  -map 0:a:0 -af atrim=start_sample=352800:end_sample=793800,asetpts=PTS-STARTPTS -c:a pcm_s16le -bitexact OUTPUT.wav
+evaluation window:   -map 0:a:0 -af atrim=start_sample=793800:end_sample=1234800,asetpts=PTS-STARTPTS -c:a pcm_s16le -bitexact OUTPUT.wav
+```
+
+Only after a time-local review qualifies a window may a reference label and
+separate non-tonal false-admission denominator be added. Until then, these
+reports prove source coordinates and isolation, not acoustic no-key truth.
 
 ## Native inspection
 

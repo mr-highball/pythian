@@ -350,6 +350,19 @@ If review finds music or is uncertain, exclude that fixed window and reassess
 the source path before another candidate search. Preserve the accepted
 key/conflict/change packet.
 
+The next [maintained no-key checker](TONAL.md#prospective-acoustic-no-key-screen--2026-09-23)
+batch bound both original media, conversion and exact review windows through
+Pascal. Checked stable Win32/Win64 reports are byte-identical; wrong source or
+window rejects with zero leaks. Reports explicitly mark listening labels
+pending. Together with the acquisition batch, this is **two consecutive
+nonclosing batches** after context_03 criterion 5. Reassessment: the source
+and coordinate evidence is sufficient for review, while code or another
+unreviewed recording cannot supply the missing acoustic truth. Stop this
+source path until the fixed-window verdicts arrive. If both qualify, bind the
+verdicts and add a separate non-tonal false-admission denominator in Pascal;
+if either does not, exclude that window and redesign the source selection
+before reacquisition. Work on other ready core prerequisites in the meantime.
+
 ## NS-5 listening-protocol criterion — 2026-09-23
 
 Focused specification QA for [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md)
