@@ -58,6 +58,15 @@ by changing its failed pair or window in place.
 
 **Dev Notes:**
 
+- 2026-09-23 full-overlap result: checked Win64 Pascal verified the two
+  GuitarSet JAMS hashes and 105/57 note events, rounded annotation times to
+  exact 44.1-kHz source frames, and required no other note throughout three
+  consecutive 250-ms windows surrounding each annotated end. The comp
+  excerpt has zero eligible events; the solo excerpt has two. Both share BN1
+  musical material and are development players. This two-recording route
+  stopped before a listening selector, labels or scorer. These annotation
+  windows have no acoustic audibility ground truth; a future recorded packet
+  needs prospectively distinct player/material roles and direct listening.
 - 2026-09-23 read-only source inventory: the official
   [GuitarSet](https://guitarset.weebly.com/) microphone and hexaphonic-pickup
   annotation routes are separately recorded. Existing verified archives and
@@ -66,11 +75,8 @@ by changing its failed pair or window in place.
   PCM16 with 984,506 frames; two JAMS members parse with 17 annotations each.
   The prior native feasibility audit lists six/two preliminary note-onset-gap
   events; it did not exclude other notes sustaining into a candidate rest.
-  No source window, acoustic label or scorer was chosen
-  in this inventory. The next batch must check full annotation overlap before
-  freezing player/lead-sheet roles and exact windows, verify annotation
-  identities, and obtain direct listening
-  labels; the two guitar examples alone do not prove cross-instrument transfer.
+  No source window, acoustic label or scorer was chosen in this inventory.
+  The two guitar examples alone do not prove cross-instrument transfer.
 - 2026-09-23 split after two consecutive nonclosing NS-3_notes_02 batches:
   the extra NSynth train filter lacked a positive two-family pair after
   exposure exclusions; the first-bound URMP violin stem lacked a post-end

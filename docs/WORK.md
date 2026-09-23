@@ -56,10 +56,15 @@ feasibility audit has six/two preliminary note-onset-gap candidates, without
 excluding another note that sustains into a proposed rest. This is a
 genuinely different recorded source route with actual acoustic listening
 potential; annotation ends and null confidence fields are not acoustic truth.
-Full annotation overlap must be checked before fixing windows. The exact
-source/section roles, labels and independent material must be frozen before
-a new scorer. No inference candidate or task credit follows
-from the inventory.
+Checked Win64 Pascal then verified both JAMS SHA256 identities and audited all
+105/57 notes in exact source frames. For each annotated end, it required the
+last 250 ms of that note and the next two 250-ms windows to contain no other
+annotated note. The comp excerpt has zero qualifying events; the solo excerpt
+has two. The two-recording route stopped before window selection, listening
+or scoring because both excerpts also share BN1 musical material. Annotation
+geometry does not establish acoustic audibility. No inference candidate or
+task credit follows from this inventory. A later recorded packet needs a
+prospectively chosen player/material split and direct listening labels.
 
 ## Independent NSynth train reference accepted — 2026-09-23
 
