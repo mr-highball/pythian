@@ -21,6 +21,28 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Known-gate release reference — 2026-09-22
+
+The NS-3 note-presence prerequisite changed source after the URMP F0 stop.
+The official CC BY 4.0 NSynth JSON/WAV test archive provides a documented
+three-second note-off followed by one second of audio. A frozen Pascal selector
+chose two `long_release` and two `fast_decay` notes from four distinct
+acoustic-labelled instruments; this test partition is development-exposed.
+The complete archive matched its published length/MD5, and Pythian's Pascal
+reader verified each selected source and measured fixed pre/post-gate spans.
+Both long-release notes retain post-gate sound and decay; the fast-decay controls
+are near silence by the gate. The contrast shows why energy alone cannot be a
+held-note label. [Exact source, WAV and report hashes and levels](PHRASE-EVALUATION.md#fixed-gate-release-controls--2026-09-22)
+are bound. Selection and audit replay hashes matched; only four WAVs were
+extracted under ignored `build/presence-contrast/`.
+
+This supplies controlled gate/release contrast after the two-batch reassessment.
+It does not label every audible tail frame, qualify recorded phrases, or close
+`NS-3_notes_02`. The next bounded batch must freeze a source-separated presence
+observation and its stop/adoption gate before scoring; low, quiet, short and gap
+controls plus independent recorded gates remain required. No NS-3 or NS-5 credit
+changes. This is one nonclosing batch under the changed source approach.
+
 ## Presence F0 comparison and stop point — 2026-09-22
 
 The fixed Pascal companion audit matched all 137 source-bound immediate post-end

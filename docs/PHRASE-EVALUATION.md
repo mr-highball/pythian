@@ -17,6 +17,61 @@ not infer a trustworthy phase path, select register or alter any recorded phrase
 score. Those admission steps remain [WAV-03-REGISTER](MILESTONES.md#wav-03-register)
 and [WAV-03-TIMBRE](MILESTONES.md#wav-03-timbre); held-out recordings remain unused.
 
+## Fixed-gate release controls — 2026-09-22
+
+The [NSynth dataset](https://magenta.withgoogle.com/datasets/nsynth) provides
+four-second mono 16-kHz notes generated from sample libraries. Its publisher
+specifies a held note for three seconds and a final second after note-off, and
+tags `long_release` and `fast_decay` qualities. The JSON/WAV test partition is
+**development-exposed** here; it is not a held-out result. Google Inc. publishes
+the dataset under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/);
+attribution names Jesse Engel, Cinjon Resnick, Adam Roberts, Sander Dieleman,
+Douglas Eck, Karen Simonyan and Mohammad Norouzi. No TensorFlow or other
+external inference runtime was used.
+
+The official archive's 349,501,546 bytes and MD5
+`5e6f8719bf7e16ad0a00d518b78af77d` match the published storage object;
+Pascal also measured SHA256
+`0f9ba5d62beba9ec4612f918d19f5e87a681822f1c566124f05fe8b27a51934c`.
+The JSON metadata SHA256 is
+`74df2dd960c156cd5e8757d8afb1fe30e6a233aa99043a29037e7b54cde6908f`.
+Before audio extraction, a fixed Pascal selector required acoustic source,
+pitch 48..84, velocity 75/100, no reverb, and mutually exclusive long-release
+or fast-decay tags. It took the lexical first eligible note from each of four
+distinct instruments, in two families per cohort. The selection SHA256 is
+`b4eea41b4aeb386302855aa4e6777b5293e12c1d1c31b09192822e687432622c`.
+Only those four WAVs were extracted. Pythian's Pascal reader verified every
+one as mono 16-kHz PCM16 with exactly 64,000 frames and zero encoding-endpoint
+samples. Measurements use fixed [2.50,2.75), [3.00,3.25) and [3.75,4.00)
+second RMS spans; the documented note-off is at frame 48,000.
+
+| Quality tag / selected note | WAV SHA256 | Pre-off RMS | Early post-off RMS | Late post-off RMS |
+| --- | --- | ---: | ---: | ---: |
+| `long_release` / `brass_acoustic_046-084-075` | `ff8300e7388f16b1476f23da0c93683d445bf764c85961ef99f5293f74ba2180` | 0.225067 | 0.194724 | 0.032012 |
+| `long_release` / `guitar_acoustic_030-061-100` | `cfa08ed3659269a7d661276df25f6b8b7c8fe14b9fcccda214fccfa777c4014c` | 0.032043 | 0.024927 | 0.002858 |
+| `fast_decay` / `guitar_acoustic_014-080-100` | `579a4bc3fc2098e89b17094e6c9d7a0d8a8853908f31c9e2016db1531170c0ee` | 0.000054 | 0.000100 | 0.000000 |
+| `fast_decay` / `mallet_acoustic_056-050-075` | `2e72192db98fba6464cfed3977174d01c62649ef29d510e6d40a61c54c5d82bf` | 0.000000 | 0.000000 | 0.000000 |
+
+The two long-release sources retain measurable sound after the known gate and
+decay over the final second. The fast-decay controls are already near silence
+at the gate; their final quarter-second windows decode to zero. This supplies
+controlled post-gate and quiet contrasts with exact source and instrument
+lineage. These values make an energy-only presence rule inadequate: the held
+fast-decay notes can be nearly silent before note-off, while released notes can
+remain loud afterward. This is an inference from the fixed measurements and the
+documented gate, not a tested replacement decision rule. The quality tags
+combine human and heuristic annotation, and the
+commercial-library source/rendering chain is not a separate live performance.
+Neither metadata nor aggregate RMS resolves every audible tail frame or proves
+recorded phrase presence, attacks, endings, short notes or transfer. A presence
+observation needs a separate frozen test on these controls and then qualified
+recorded-music validation. No maintained inference path, task criterion or
+completion credit changes. Two Pascal selection/audit replays produced identical
+hashes; the audit CSV SHA256 is
+`7538077674cb73be552bfb68746fd6a9e81fd596c25160b86d7b1e4592d32ecf`.
+The archive, chosen WAVs, Pascal sources and reports stay ignored under
+`build/presence-contrast/`.
+
 ## Source-separated candidate calibration — 2026-09-21
 
 The next bounded register experiment tests a supervised acoustic observation
