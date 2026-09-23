@@ -332,6 +332,13 @@ local WAVs.
 | Bus/routing mute, return and continuing tail | `build/3.2.2-i386-win32/buses.wav`, 1152044 bytes, SHA-256 `a9ff4f72f18cfb45c7a7af5190368a802a55638a2b1d1dffb12702873fbcc198`. | At 48 kHz: 0–2 s music plus 375-ms filtered echo; 2–3 s music return fades while effects remain audible at 2.5 s; 3–4 s music and continuing echo return with another effects burst at 3.5 s; 4–6 s zero-fed echo tail. Fixed music/effects gains 0.7/0.4, 35/15-ms smoothing, linked master compressor and -1-dB sample limiter; no normalization. Compare the audible pre-mute, mute and return passages. The separate unmuted fixture is a numerical history reference, not an audition WAV. Listen for preserved echo history, dry/effect separation and tail continuity. |
 | Integrated automated sources, filters, effects and routing | `build/combined-fundamentals/win64/reference.wav` and `block-257.wav`, each 1056044 bytes and SHA-256 `7c0c5a40979a39301ce4dc842d0caabd193dd120c6a474857404dd3505472022`. | Whole 11-s, 24-kHz stereo 40-note passage; audition the scheduled block-257 mix and use `reference.wav` as the same-sample direct-placement replay reference. It combines saw, looping sample, spectral trajectory, FM, gain/pitch/pan/cutoff automation, four buses and shared reverb. The exact sample identity checks placement/block composition only; it is not an independent DSP or perceptual-quality oracle. |
 
+The user judged the 12-second control comparison good overall but described its
+3–6-second vibrato as too wide. The [narrower before/after audition](MODULATION.md#listener-directed-vibrato-narrowing--2026-09-23)
+changes only that authored pitch range from +/-30 to +/-15 cents; the 5-Hz rate
+and other nine seconds are unchanged. The revised candidate awaits listening,
+and the original row above remains the reviewed baseline. No core automation
+defect or final processing verdict is inferred from this preference.
+
 This is the finite coverage packet for the first criterion of
 [NS-2_synthesis-quality_02](TODO/NS-2_synthesis-quality_02.md). Relevant limits
 are attached to each comparison: single-setting FM/PM bandwidth, authored smooth

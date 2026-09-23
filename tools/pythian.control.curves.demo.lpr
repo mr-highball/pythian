@@ -37,6 +37,7 @@ uses
 const
   CRate = 24000;
   CSectionFrames = 72000;
+  CVibratoDepthCents = 15;
 
 procedure RenderDemo(const AFileName: string);
 var
@@ -60,7 +61,7 @@ begin
   try
     LFast := TAutomationCurve.CreateLfo(CRate div 5, alsSine);
     LSlow := TAutomationCurve.CreateLfo(CRate * 2, alsTriangle);
-    LPitch := TAutomationCurve.CreateAffine(LFast, 30, 0);
+    LPitch := TAutomationCurve.CreateAffine(LFast, CVibratoDepthCents, 0);
     LGain := TAutomationCurve.CreateAffine(LFast, 0.35, 0.65);
     LPan := TAutomationCurve.CreateAffine(LSlow, 0.8, 0);
     LCutoff := TAutomationCurve.CreateAffine(LSlow, 1200, 1600);
@@ -109,7 +110,8 @@ begin
       Halt(2);
     end;
     RenderDemo(ParamStr(1));
-    WriteLn('Four 3-second sections: plain; 5 Hz vibrato; 5 Hz tremolo; cutoff and pan motion.');
+    WriteLn('Four 3-second sections: plain; 5 Hz +/-15-cent vibrato; ',
+      '5 Hz tremolo; cutoff and pan motion.');
   except
     on LException: Exception do
     begin
@@ -118,4 +120,3 @@ begin
     end;
   end;
 end.
-

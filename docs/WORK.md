@@ -21,6 +21,19 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Control-curve vibrato repair candidate — 2026-09-23
+
+The user reviewed the existing 12-second control comparison as good overall,
+but judged the vibrato pitch wobble in seconds 3–6 too wide. The existing demo
+used a 5-Hz sine at +/-30 cents. Its maintained Pascal authored setting now
+uses +/-15 cents with the same period; the native automation implementation
+is unchanged. The [before/after evidence](MODULATION.md#listener-directed-vibrato-narrowing--2026-09-23)
+binds the two WAV identities, checked stable/development Win32 renders and a
+Pascal PCM comparison: 136610 samples changed only in the target section,
+none elsewhere, with 0.124268 revised peak. Await listener comparison before
+calling this audible repair accepted. This is one nonclosing processing-quality
+batch after the source-family reassessment; no task or milestone credit moves.
+
 ## Isolated source review and task-flow reassessment — 2026-09-23
 
 The user heard the [hash-bound measured-profile-1 48-kHz listening copy](SYNTHESIS-QUALITY.md#first-isolated-source-listening-copy--2026-09-23)

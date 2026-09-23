@@ -26,5 +26,15 @@ Starting evidence: [SYNTHESIS-QUALITY](../SYNTHESIS-QUALITY.md) · [MODULATION](
 
 **Dev Notes:**
 
+- 2026-09-23 control-curve listener follow-up: the user heard the original
+  12-second oscillator/control comparison as good overall but found its
+  3–6-second pitch wobble too wide. The [bound before/after render](../MODULATION.md#listener-directed-vibrato-narrowing--2026-09-23)
+  narrows only the demo's authored vibrato range from +/-30 to +/-15 cents.
+  Checked stable/development Win32 outputs match exactly; a Pascal PCM check
+  finds zero changes outside that three-second section and retains headroom.
+  The core LFO and voice automation contracts are unchanged. The revised
+  audition still needs the user's verdict; no processing-quality criterion or
+  task credit closes from numerical agreement alone.
+
 - Follow-up: existing processing auditions can seed the finite review matrix described in [synthesis quality](../SYNTHESIS-QUALITY.md). Obtain actual effect/routing listening observations before deciding which fixes are necessary; additional renders alone do not close acceptance.
 - 2026-09-22 batch: completed acceptance criterion 1 by mapping existing FM/PM, spectral-motion, automation, filter/dynamics, modulated-delay, reverb, bus and integrated WAVs to fixed comparison levels, exact listening windows/settings and available SHA-256 identities in [the finite processing/routing matrix](../SYNTHESIS-QUALITY.md#ns-2-synthesis-quality-02-matrix). The closing evidence is this matrix and the checked local artifact identities; no new render was necessary. Stop after this criterion: actual listening/verdicts and any defect repairs remain open because listening is unavailable in this handoff.
