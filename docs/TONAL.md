@@ -694,9 +694,43 @@ RytmenPinnen, but neither whole-loop description supplies timed acoustic
 no-key truth. No FSLD loop is an untouched independent evaluation case. The
 user's three full style mixes are preference examples, outside this local-key
 reference packet. New sources need their own prospective group role before
-labels or predictions are opened. This role map alone does not qualify the
-reserved recordings or close the packet's group-isolation criterion; the Pascal
-checker must enforce it against acquired source identities.
+labels or predictions are opened. The acquired reserved identities and Pascal
+role check below now enforce this group boundary; their label contents remain
+unopened for method or threshold selection.
+
+### Reserved evaluation identities — 2026-09-23
+
+The same checksum-bound SWD 2.1 archive supplies the two reserved HU33
+compositions, D911-05 and D911-19. Before inspecting their musical contents,
+an ignored Pascal extraction policy fixed these whole-composition
+roles and the exact archive paths to acquire. Checked FPC 3.2.2 Win64 Pascal
+code verified the archive's 517,380,038 bytes and SHA-256
+`774b9b874a82af042ee76f38260acab16bf6ef275c6d67363f96ce63167b99f5`
+before and after selectively extracting the 13 fixed entries. It recorded
+only entry lengths and SHA-256 values. No local-key labels were parsed, audio
+was decoded, or inference was run. The common README and HU33/SC06 notices
+are the same exact entries bound in the development packet below.
+
+| Entry under the SWD 2.1 archive | D911-05 SHA-256 | D911-19 SHA-256 |
+| --- | --- | --- |
+| `01_RawData/audio_wav/Schubert_D911-NN_HU33.wav` | `8bf3910a59742e39349fbd9d6002cfea9f94f738ce674de0e0a35e29af83433f` | `2e4cb9fd8c22254d25dc9fddb543d063709f326f92ab7691e6013ca652164937` |
+| `02_Annotations/ann_audio_localkey-ann1/Schubert_D911-NN_HU33.csv` | `973b18ae3845654720e85db8f37e7021a739feda6fbb7714c0bbe347586fd15a` | `1d87ec699437ab607f291920e06831c9641e606c6a574d4a56268ce283d6a3f8` |
+| `02_Annotations/ann_audio_localkey-ann2/Schubert_D911-NN_HU33.csv` | `fbc793493c27aba632ef038c18cb0d218f868bd0d061cbc9d5f1b345f1d4333e` | `1d87ec699437ab607f291920e06831c9641e606c6a574d4a56268ce283d6a3f8` |
+| `02_Annotations/ann_audio_localkey-ann3/Schubert_D911-NN_HU33.csv` | `973b18ae3845654720e85db8f37e7021a739feda6fbb7714c0bbe347586fd15a` | `2ffae95e1f2a4f3cd964ca6a8bf647b4bfc5623dc875112115abc80d455af33e` |
+| `02_Annotations/ann_score_localkey-ann2/Schubert_D911-NN.csv` | `66cc556d624a645b451d3f40aea63586a8bfb95690c16465c2ca7493099f8708` | `ff0566b89d17ad746673e04cea678147e22acf53e4009559271cd744920979e9` |
+
+The [tracked Pascal checker](../tools/pythian.localkey.reference.lpr)
+rejects a composition ID or identical WAV digest shared by development and
+evaluation. Its `verify-evaluation` command checks every reserved entry's
+exact hash and reports only group identity and WAV digest. Stable Win32 and
+Win64 checked runs passed the current assets with zero unfreed blocks. The
+two sets are different compositions but share the HU33 performer and transfer
+chain, so future scoring measures unseen compositions within that chain;
+it cannot establish new-performer generalization. Every performance,
+derivative and adjacent excerpt inherits its composition's frozen role.
+This closes the [reference task's](TODO/NS-3_context_03.md) group-role
+criterion before admission scoring. Evaluation interval qualification,
+coordinate reproduction and separate coverage denominators remain open.
 
 ## Bound development local-key intervals — 2026-09-23
 
@@ -816,10 +850,14 @@ same-target replay. Full annotation rows and partitions match the earlier
 hash-bound private preflight; the four derived ambiguity frame spans match the
 frozen score/audio audit. A one-byte change to a copied README was rejected
 before output, as was reuse of an occupied output path. The command is compiled
-and its source-free controls run by `tools/build.ps1`. It currently accepts only
-the two fixed development compositions. It does not read, label or score
-D911-05/19, so reference-task criterion 4's independent-group isolation and
-criterion 5's scoring denominators remain open.
+and its source-free controls run by `tools/build.ps1`.
+`extract-evaluation <archive> <fresh-asset-root>` selects the 13 frozen
+reserved entries with the same Pascal ZIP and hash checks;
+`verify-evaluation <asset-root>` verifies their identities without parsing
+labels or decoding audio. The reserved annotation intervals and coordinates
+have not yet been reproduced, so reference-task criterion 4 remains open.
+Criterion 5's separate scoring denominators also remain open.
+
 The fresh selective extraction and subsequent reference reports also passed,
 with byte-identical JSON to the original acquired-input run and zero unfreed
 blocks. Only ignored local artifacts were written.

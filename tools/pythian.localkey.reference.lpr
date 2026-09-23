@@ -55,6 +55,20 @@ const
   CScoreHashes: array[0..1] of String = (
     'ed0469d2b430cc5799612f769d6aec1cf5cdc2b8b0413e7d41980864f1741ac2',
     'c74c022e105a221b0fd25f2410dd2372649589002c55dcc4b3427587a8644587');
+  CEvaluationSongs: array[0..1] of String = ('05', '19');
+  CEvaluationWaveHashes: array[0..1] of String = (
+    '8bf3910a59742e39349fbd9d6002cfea9f94f738ce674de0e0a35e29af83433f',
+    '2e4cb9fd8c22254d25dc9fddb543d063709f326f92ab7691e6013ca652164937');
+  CEvaluationAnnotationHashes: array[0..1, 0..2] of String = (
+    ('973b18ae3845654720e85db8f37e7021a739feda6fbb7714c0bbe347586fd15a',
+     'fbc793493c27aba632ef038c18cb0d218f868bd0d061cbc9d5f1b345f1d4333e',
+     '973b18ae3845654720e85db8f37e7021a739feda6fbb7714c0bbe347586fd15a'),
+    ('1d87ec699437ab607f291920e06831c9641e606c6a574d4a56268ce283d6a3f8',
+     '1d87ec699437ab607f291920e06831c9641e606c6a574d4a56268ce283d6a3f8',
+     '2ffae95e1f2a4f3cd964ca6a8bf647b4bfc5623dc875112115abc80d455af33e'));
+  CEvaluationScoreHashes: array[0..1] of String = (
+    '66cc556d624a645b451d3f40aea63586a8bfb95690c16465c2ca7493099f8708',
+    'ff0566b89d17ad746673e04cea678147e22acf53e4009559271cd744920979e9');
   CRowCounts: array[0..1, 0..2] of Integer = ((12, 5, 9), (3, 3, 4));
   CClasses: array[0..3] of String =
     ('unlabelled', 'partial_coverage', 'full_disagreement', 'unanimous');
@@ -148,9 +162,84 @@ begin
   Require(Length(Result) = 13, 'Expected source entry count');
 end;
 
-procedure ExtractDevelopment(const AArchivePath, AOutputRoot: String);
+function EvaluationEntries: TExpectedEntries;
+var
+  LName: String;
+  I: Integer;
+  J: Integer;
+begin
+  Result := nil;
+  AddExpected(Result, 'README.txt', CReadmeHash, 16384);
+  AddExpected(Result, '03_ExtraMaterial/license_HU33.txt',
+    CHU33NoticeHash, 1024);
+  AddExpected(Result, '03_ExtraMaterial/license_SC06.txt',
+    CSC06NoticeHash, 1024);
+  for I := Low(CEvaluationSongs) to High(CEvaluationSongs) do
+  begin
+    LName := 'Schubert_D911-' + CEvaluationSongs[I];
+    AddExpected(Result, '01_RawData/audio_wav/' + LName + '_HU33.wav',
+      CEvaluationWaveHashes[I], 16000000);
+    for J := 0 to 2 do
+    begin
+      AddExpected(Result, '02_Annotations/ann_audio_localkey-ann' +
+        IntToStr(J + 1) + '/' + LName + '_HU33.csv',
+        CEvaluationAnnotationHashes[I, J], 16384);
+    end;
+    AddExpected(Result, '02_Annotations/ann_score_localkey-ann2/' +
+      LName + '.csv', CEvaluationScoreHashes[I], 16384);
+  end;
+  Require(Length(Result) = 13, 'Expected evaluation entry count');
+end;
+
+procedure CheckRoleIsolation;
+var
+  I: Integer;
+  J: Integer;
+begin
+  for I := Low(CSongs) to High(CSongs) do
+  begin
+    for J := Low(CEvaluationSongs) to High(CEvaluationSongs) do
+    begin
+      Require(CSongs[I] <> CEvaluationSongs[J],
+        'Composition crosses development and evaluation');
+      Require(CWaveHashes[I] <> CEvaluationWaveHashes[J],
+        'Identical WAV crosses development and evaluation');
+    end;
+  end;
+  Require((CSongs[0] <> CSongs[1]) and
+    (CEvaluationSongs[0] <> CEvaluationSongs[1]) and
+    (CEvaluationWaveHashes[0] <> CEvaluationWaveHashes[1]),
+    'Duplicate composition group or evaluation WAV');
+end;
+
+procedure VerifyEvaluation(const AAssetRoot: String);
 var
   LExpected: TExpectedEntries;
+  LRoot: String;
+  I: Integer;
+begin
+  CheckRoleIsolation;
+  LRoot := IncludeTrailingPathDelimiter(AAssetRoot);
+  Require(DirectoryExists(LRoot), 'Missing evaluation asset directory');
+  LExpected := EvaluationEntries;
+  for I := 0 to High(LExpected) do
+  begin
+    Require(FileHash(LRoot + LExpected[I].Name,
+      LExpected[I].MaximumBytes) = LExpected[I].Sha256,
+      'Evaluation entry identity mismatch: ' + LExpected[I].Name);
+  end;
+  for I := Low(CEvaluationSongs) to High(CEvaluationSongs) do
+  begin
+    WriteLn('role=independent_evaluation composition=Schubert_D911-',
+      CEvaluationSongs[I], ' performance=HU33 source_sha256=',
+      CEvaluationWaveHashes[I]);
+  end;
+  WriteLn('PASS: 13 exact evaluation entries; labels not parsed');
+end;
+
+procedure ExtractSelected(const AArchivePath, AOutputRoot: String;
+  const AExpected: TExpectedEntries; const ARole: String);
+var
   LUnzipper: TUnZipper;
   LNames: TStringList;
   LRoot: String;
@@ -161,37 +250,36 @@ begin
   Require(not DirectoryExists(AOutputRoot), 'Extract only into a fresh directory');
   Require(ArchiveHash(AArchivePath) = CArchiveSha256,
     'SWD archive SHA256 mismatch');
-  LExpected := DevelopmentEntries;
   LUnzipper := TUnZipper.Create;
   LNames := TStringList.Create;
   try
     LUnzipper.FileName := AArchivePath;
     LUnzipper.Examine;
-    for I := 0 to High(LExpected) do
+    for I := 0 to High(AExpected) do
     begin
       LFound := 0;
       for J := 0 to LUnzipper.Entries.Count - 1 do
       begin
-        if LUnzipper.Entries[J].ArchiveFileName = LExpected[I].Name then
+        if LUnzipper.Entries[J].ArchiveFileName = AExpected[I].Name then
         begin
           Inc(LFound);
-          Require(LUnzipper.Entries[J].Size <= LExpected[I].MaximumBytes,
-            'Source entry exceeds byte budget: ' + LExpected[I].Name);
+          Require(LUnzipper.Entries[J].Size <= AExpected[I].MaximumBytes,
+            'Source entry exceeds byte budget: ' + AExpected[I].Name);
         end;
       end;
       Require(LFound = 1, 'Missing or duplicated ZIP entry: ' +
-        LExpected[I].Name);
-      LNames.Add(LExpected[I].Name);
+        AExpected[I].Name);
+      LNames.Add(AExpected[I].Name);
     end;
     Require(ForceDirectories(AOutputRoot), 'Cannot create output directory');
     LRoot := IncludeTrailingPathDelimiter(AOutputRoot);
     LUnzipper.OutputPath := LRoot;
     LUnzipper.UnZipFiles(AArchivePath, LNames);
-    for I := 0 to High(LExpected) do
+    for I := 0 to High(AExpected) do
     begin
-      Require(FileHash(LRoot + LExpected[I].Name,
-        LExpected[I].MaximumBytes) = LExpected[I].Sha256,
-        'Extracted entry identity mismatch: ' + LExpected[I].Name);
+      Require(FileHash(LRoot + AExpected[I].Name,
+        AExpected[I].MaximumBytes) = AExpected[I].Sha256,
+        'Extracted entry identity mismatch: ' + AExpected[I].Name);
     end;
   finally
     LNames.Free;
@@ -199,7 +287,22 @@ begin
   end;
   Require(ArchiveHash(AArchivePath) = CArchiveSha256,
     'SWD archive changed during extraction');
-  WriteLn('PASS: 13 exact development ZIP entries and notices extracted');
+  WriteLn('PASS: ', Length(AExpected), ' exact ', ARole,
+    ' ZIP entries and notices extracted');
+end;
+
+procedure ExtractDevelopment(const AArchivePath, AOutputRoot: String);
+begin
+  CheckRoleIsolation;
+  ExtractSelected(AArchivePath, AOutputRoot, DevelopmentEntries,
+    'development');
+end;
+
+procedure ExtractEvaluation(const AArchivePath, AOutputRoot: String);
+begin
+  CheckRoleIsolation;
+  ExtractSelected(AArchivePath, AOutputRoot, EvaluationEntries,
+    'evaluation');
 end;
 
 function TimeFrame(const AText: String; const ARate: Integer): Int64;
@@ -576,6 +679,7 @@ var
   LRejected: Boolean;
   I: Integer;
 begin
+  CheckRoleIsolation;
   Require(TimeFrame('0.005', 100) = 1, 'Tie must round upward');
   Require(TimeFrame('0.004', 100) = 0, 'Sub-tie boundary');
   Require(TimeFrame('0.3', 22050) = 6615, 'Original clock conversion');
@@ -720,7 +824,7 @@ end;
 begin
   try
     Require(ParamCount >= 1,
-      'Usage: pythian.localkey.reference controls | extract <archive> <fresh-asset-root> | development <asset-root> <fresh-output-root>');
+      'Usage: pythian.localkey.reference controls | extract <archive> <fresh-asset-root> | extract-evaluation <archive> <fresh-asset-root> | development <asset-root> <fresh-output-root> | verify-evaluation <asset-root>');
     if (ParamStr(1) = 'controls') and (ParamCount = 1) then
     begin
       Controls;
@@ -728,6 +832,14 @@ begin
     else if (ParamStr(1) = 'extract') and (ParamCount = 3) then
     begin
       ExtractDevelopment(ParamStr(2), ParamStr(3));
+    end
+    else if (ParamStr(1) = 'extract-evaluation') and (ParamCount = 3) then
+    begin
+      ExtractEvaluation(ParamStr(2), ParamStr(3));
+    end
+    else if (ParamStr(1) = 'verify-evaluation') and (ParamCount = 2) then
+    begin
+      VerifyEvaluation(ParamStr(2));
     end
     else if (ParamStr(1) = 'development') and (ParamCount = 3) then
     begin

@@ -51,6 +51,17 @@ Starting evidence: [local-key reference study](../TONAL.md#local-key-reference-c
 
 **Dev Notes:**
 
+- 2026-09-23 reserved identity and role batch: [D911-05/19 original HU33
+  entries](../TONAL.md#reserved-evaluation-identities--2026-09-23) were selected
+  under a frozen ignored policy and extracted by checked Pascal code from the
+  exact publisher archive. All 13 entry lengths and SHA-256 values were bound
+  without parsing labels, decoding audio or running inference. The maintained
+  Pascal checker enforces nonoverlapping whole-composition roles and distinct
+  WAV identities; stable Win32/Win64 controls and evaluation verification pass
+  with zero unfreed blocks. **Criterion 3 is met before admission scoring.**
+  This closes a criterion after the prior nonclosing batch. Criteria 4's
+  evaluation interval/coordinate reproduction and 5's separate coverage
+  denominators remain open; no task or milestone credit changes.
 - 2026-09-23 maintained reader batch: the [tracked Pascal checker](../TONAL.md#reproducible-pascal-reference-checker)
   now rebuilds the two development sources' complete annotation partitions
   and score-ann2 ambiguity transfer from exact original assets. Checked stable

@@ -283,6 +283,20 @@ same two reports from a fresh asset directory. The independent group and scoring
 denominator portions of context_03 remain open, so this is one nonclosing
 batch after criteria 1 and 2; no task credit changes.
 
+The next bounded batch acquired exact D911-05/19 HU33 evaluation entries
+under a frozen whole-composition policy. A checked Pascal selector verified
+the publisher archive and recorded hashes and lengths for the two WAVs,
+six audio local-key CSVs, two score-ann2 CSVs, the README and two notices
+without reading labels, decoding audio or running inference. The maintained
+[Pascal checker](TONAL.md#reserved-evaluation-identities--2026-09-23) now
+enforces disjoint composition roles and WAV identities. Stable Win32/Win64
+source-free controls and hash verification pass with zero unfreed blocks.
+NS-3_context_03 criterion 3 closes. The same HU33 performer chain limits
+future scores to unseen compositions within that chain. Evaluation interval
+and coordinate reproduction for criterion 4, and separate coverage denominators
+for criterion 5, remain open. No task credit or milestone percentage changes;
+the nonclosing-batch count resets after this criterion closure.
+
 ## NS-5 listening-protocol criterion — 2026-09-23
 
 Focused specification QA for [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md)
