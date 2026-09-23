@@ -100,8 +100,10 @@ pool enlargement alone cannot clear them, but it does not resolve source-pulse
 status or the no-compatible-fit cases. Stop this investigation sequence at the
 two-batch checkpoint. No task credit or percentage changes. The next active
 core action follows the ready [NS-2 source/articulation quality](TODO/NS-2_synthesis-quality_01.md)
-review using its existing finite listening packet and the user's observed
-instrument defects. Tempo_04 resumes only with an independently reviewable
+review using its existing finite listening packet and confirmed 30-second
+preview verdict. The user's separate NSynth comments describe reference
+recordings and are not defects in Pythian's synthesis. Tempo_04 resumes only
+with an independently reviewable
 source-pulse distinction and a predeclared fit/retention decision capable of
 meeting the unchanged gates within their work limit; another candidate-count
 walk is not that decision.
