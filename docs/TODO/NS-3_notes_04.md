@@ -47,6 +47,22 @@ and [rejected gate-slope rule](../PHRASE-EVALUATION.md#fixed-gate-slope-diagnost
 
 **Dev Notes:**
 
+- 2026-09-23 reviewed-window checkpoint: the user labeled all three frozen
+  brass windows and all three fading-guitar windows `audible` under the
+  source-sound convention. They explicitly identified the repeated brass
+  [3.75,4.00)-second aid when clarifying the late sound. They answered
+  `uncertain` for the bell-like guitar and mallet late windows. The ignored
+  review TSV replays through the tracked Pascal checker with byte-identical
+  checked FPC 3.2.2 Win32/Win64 packets (SHA256
+  `9407073b8277938c91a358688e94806e2a504943f576825743cda9aa47dc081c`)
+  and zero leaks. Six-decimal RMS output repairs two nine-decimal cross-target
+  rounding differences; no source coordinate or review label changed. The
+  [packet](../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22)
+  retains the exact scope. Neither `uncertain` rest window is a human-reviewed
+  `not_audible` example despite exact-zero PCM, so criterion 2 and task credit
+  remain open. Stop this reviewed packet here; obtain independently reviewed
+  distant-rest evidence before presence scoring. Do not infer a silence
+  endpoint from file end or MIDI note-off.
 - 2026-09-23 listener wording correction: the earlier question asked for an
   audible *pitched note*, conflating source audibility with pitch identity.
   The user clarified that the brass is audible source sound but resembles
@@ -55,8 +71,8 @@ and [rejected gate-slope rule](../PHRASE-EVALUATION.md#fixed-gate-slope-diagnost
   clear pitch and quality remain separate observations. The
   [packet convention](../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22)
   is corrected before any scorer run without changing frozen windows, TSV
-  labels or the three exact guitar labels. The brass statement is not a
-  three-window answer, so five exact judgments still await review. This
+  labels or the three exact guitar labels. At that point, the brass statement
+  was not a three-window answer, so five exact judgments awaited review. This
   repair earns no criterion or credit by itself.
 - 2026-09-23 frozen-window playback aid: an ignored Pascal tool repeated the
   five still-pending 250-ms windows with equal digital-silence gaps for mobile
@@ -66,20 +82,20 @@ and [rejected gate-slope rule](../PHRASE-EVALUATION.md#fixed-gate-slope-diagnost
   nonzero samples without proving an identifiable pitch. See the
   [packet evidence](../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22).
   This aid adds no source/window, listener label, accepted criterion or credit.
-  Stop playback-aid variations here and await exact review of the frozen
-  windows; do not treat digital silence or loud static as a human verdict.
+  Stop playback-aid variations here; do not treat digital silence or loud
+  static as a human verdict.
 - 2026-09-23 exact-window listener update: the user marked the fading
   `guitar_acoustic_030-061-100` pitched sound audible in all three frozen
   windows, including [3.75,4.00) seconds after the 3.0-second renderer
   note-off. Their brass description, "audible, but sounds like loud static",
   does not say whether source sound is heard in each of its three exact
-  windows. Both
-  fast-decay late windows also lack exact labels. Preserve the three reviewed
-  guitar labels and five pending labels in the
+  windows. At that checkpoint both fast-decay late windows also lacked exact
+  labels. The three reviewed guitar labels and five then-pending labels are in the
   [listening packet](../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22).
-  This is partial human evidence, not an endpoint, completed source-separated
-  packet, presence scorer or task credit. Ask only for the unresolved frozen
-  windows; do not expand the source screen or infer them from whole-clip words.
+  That was partial human evidence, not an endpoint, completed source-separated
+  packet, presence scorer or task credit. The five labels were subsequently
+  reviewed under the corrected question. Do not expand the source screen or
+  infer window labels from whole-clip words.
 - 2026-09-22 split rationale: two consecutive nonclosing batches after the
   NSynth source change showed that a known gate and long-release tags do not
   provide reviewed acoustic tail/rest labels. The measured gate-slope rule

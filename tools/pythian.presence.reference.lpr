@@ -261,7 +261,7 @@ begin
             CNotes[LNoteIndex].Id + #9 + CNotes[LNoteIndex].Sha256 + #9 +
             LWindow.Name + #9 + IntToStr(LWindow.StartFrame) + #9 +
             IntToStr(LWindow.EndFrame) + #9 +
-            FormatFloat('0.000000000', WindowRms(LSamples, LWindow), LFormat) +
+            FormatFloat('0.000000', WindowRms(LSamples, LWindow), LFormat) +
             #9 + LReviews[LWindowIndex]);
         end;
       end;

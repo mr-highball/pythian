@@ -137,21 +137,19 @@ after that mark; it does not identify an audible end time. The metadata's
 `guitar` family does not override the listener's bell-like timbre observation.
 The playback level/device were not reported.
 
-The user's later exact-window response labels all three
-`guitar_acoustic_030-061-100` windows **audible**: [2.50,2.75), [3.00,3.25)
-and [3.75,4.00) seconds. This supports an audible fading guitar after the
-documented control note-off, including the final quarter-second; the file end
-still does not establish its acoustic silence endpoint. The brass follow-up
-said it was audible but sounded like loud static. The user clarified that
-its attacks and holds sound like an old TV or radio, and that "audible" means
-they hear the source even though the sound is unpleasant. This is a timbre
-and whole-clip activity observation, not three time-local labels. The
-fast-decay guitar and mallet late windows also remain unlabelled. Keep those
-five window labels pending; do not promote an RMS value, quality tag or
-whole-clip comment into a frame-level acoustic label.
+The user's exact-window responses label all three windows of both
+`guitar_acoustic_030-061-100` and `brass_acoustic_046-084-075` **audible**:
+[2.50,2.75), [3.00,3.25) and [3.75,4.00) seconds. The user heard the brass
+in all three repeated windows despite describing it as unpleasant old-TV/radio
+static. Their subsequent 3.75-second clarification explicitly named
+`brass_acoustic_046-084-075--late-tail-3p75-4x.wav`; it did not label either
+fast-decay clip audible. Both fast-decay late windows were answered
+**uncertain**. The six audible judgments support source activity after the
+documented control note-off for the long-release notes, including the final
+quarter-second. They do not establish an acoustic silence endpoint.
 
 A 2026-09-23 mobile listening aid under ignored `build/presence-review-aid/`
-copies each of the five pending 4,000-frame PCM16 windows four times, separated
+copies each of the five then-pending 4,000-frame PCM16 windows four times, separated
 by 4,000 frames of digital silence. It changes no source window, gain or
 label. Checked stable Win32/Win64 Pascal runs verified the three relevant WAV
 hashes, native WAV geometry, every repeated source byte and zero gap; the five
@@ -159,7 +157,7 @@ output WAV hashes match across targets with zero reported leaks. Direct PCM
 counts find 3,998 / 3,997 / 3,981 nonzero frames in the three brass windows,
 but **zero nonzero frames** in each late fast-decay guitar and mallet window.
 Those two source intervals are exact digital silence, a physical PCM fact;
-their requested listener labels are still pending. The brass counts say
+their listener labels are uncertain. The brass counts say
 nothing about an identifiable pitch. The aid is for reviewing the already
 frozen windows, not a replacement reference or an inference result.
 
@@ -171,7 +169,7 @@ noisy or inharmonic sound; `not_audible` means they hear no source sound, and
 separate observations. This correction preserves the eight frozen windows,
 the three exact guitar responses (a heard pitch also establishes heard source
 sound) and the existing TSV label strings. It precedes any presence scoring;
-the remaining five windows need review under this corrected question. The
+the remaining five windows were reviewed under this corrected question. The
 3.0-second renderer note-off is a documented control, not a listening label.
 Near-zero PCM or a quality tag does not substitute for the requested judgment.
 Do not assign an acoustic silence endpoint from the end of a file: both long
@@ -198,13 +196,20 @@ From the repo root, compile with the stable FPC 3.2.2 Win32 compiler using
 -FUbuild/presence-reference/stable tools/pythian.presence.reference.lpr`.
 Then run `build/presence-reference/stable/pythian.presence.reference.exe
 build/presence-contrast/nsynth-test/audio build/presence-reference/packet.tsv -`.
-The `-` means no reviewed labels. Stable FPC 3.2.2 and trunk FPC 3.3.1
-produce the same pending-packet SHA256
-`b3521259961ca03353cd10472ef0b884eb21ea1f2e825c36f27cd92726beb2a7`;
-two trunk runs are byte-identical. The RMS values match the earlier frozen
-NSynth audit at nine decimal places. A synthetic all-`uncertain` review file
-passes parser validation, while a one-frame boundary change fails with no
-output. No exact-window human label has yet been entered or inferred.
+The `-` means no reviewed labels. A previous nine-decimal packet reproduced
+the frozen NSynth RMS audit but exposed two last-digit Win32/Win64 differences
+in the brass rows. The current checker prints RMS to six decimal places to
+avoid that false cross-target precision. Checked stable FPC 3.2.2 Win32 and
+Win64 produce byte-identical pending packets (SHA256
+`bcd567978bb3f05f254c80c78b1062973b9e846fce3f45f7c03ff07b9b85205f`)
+and reviewed packets (SHA256
+`9407073b8277938c91a358688e94806e2a504943f576825743cda9aa47dc081c`),
+with zero unfreed blocks. The ignored review TSV under
+`build/presence-reference/reviewed-2026-09-23.tsv` contains the six `audible`
+and two `uncertain` judgments, not an inferred `not_audible` label. Earlier
+parser validation passed an all-`uncertain` review and rejected a one-frame
+boundary change before packet output. No reviewed distant-rest negative or
+acoustic silence endpoint is available, so the reference task remains open.
 
 ## Guitar-TECHS P1 reference screen stopped — 2026-09-22
 

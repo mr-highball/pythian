@@ -21,6 +21,26 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Note-presence exact-window review — 2026-09-23
+
+The user labeled the three frozen brass windows and three fading-guitar windows
+`audible` under the source-sound convention. Their late-sound clarification
+named the repeated brass [3.75,4.00)-second playback aid. The late bell-like
+guitar and mallet windows remain `uncertain`; their exact-zero PCM does not
+replace a human `not_audible` judgment. The ignored review TSV at
+`build/presence-reference/reviewed-2026-09-23.tsv` binds all eight labels to
+the frozen coordinates. The maintained Pascal checker now prints six-decimal
+RMS, avoiding two last-digit Win32/Win64 differences in its earlier
+nine-decimal output. Checked stable FPC 3.2.2 Win32/Win64 produce identical
+reviewed-packet SHA256
+`9407073b8277938c91a358688e94806e2a504943f576825743cda9aa47dc081c`
+and pending-packet SHA256
+`bcd567978bb3f05f254c80c78b1062973b9e846fce3f45f7c03ff07b9b85205f`,
+with zero unfreed blocks. The [packet evidence](PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22)
+records source scope and limitations. `NS-3_notes_04` remains open: there is
+no reviewed distant-rest negative or audible silence endpoint, no scorer has
+been run and no completion credit is earned.
+
 ## Accepted local-key/no-key reference packet — 2026-09-23
 
 The user heard both frozen ten-second recordings in full and reported no
@@ -1108,9 +1128,10 @@ chillwave reference listening remains pending.
 The reassessed NSynth listening packet now has a tracked Pascal checker. It
 binds four exact WAV hashes and eight continuation/tail/rest candidate windows,
 and rejects a review file with a changed source, window or frame boundary.
-Stable FPC 3.2.2 and trunk FPC 3.3.1 emit the same pending-packet SHA256
+At that checkpoint, stable FPC 3.2.2 and trunk FPC 3.3.1 emitted the same
+nine-decimal pending-packet SHA256
 `b3521259961ca03353cd10472ef0b884eb21ea1f2e825c36f27cd92726beb2a7`;
-the original fixed RMS values match. A synthetic all-uncertain review parses,
+the original fixed RMS values matched. A synthetic all-uncertain review parses,
 and a one-frame alteration fails before packet output. See the
 [listening packet and replay](PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22).
 The four clips are development-exposed. Listening labels have been requested
