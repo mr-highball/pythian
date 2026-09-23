@@ -23,6 +23,25 @@ from planned semantic providers, profile persistence, weighting and blend APIs.
 
 ## Maintained presence observation boundary — 2026-09-23
 
+After delivering the observation API, a new source-bound GuitarSet listening
+packet froze three recording IDs, note-event coordinates, roles and nine exact
+windows before microphone extraction. The stopped player-00 packet was not
+relaxed. Player 05 is now reserved for acoustic evaluation from a different
+player and broad musical family; its annotation eligibility was previously
+exposed, but its microphone audio, listening labels and inference scores were
+not. Checked Pascal reverified both archive hashes, all three selected JAMS
+hashes, mic WAV hashes and 44.1-kHz mono PCM16 geometry. A Pascal aid generator
+made nine unchanged-gain 250-ms slices, repeated four times with silent gaps;
+it checked every repeated PCM segment against its source. Checked stable
+Win32/Win64 manifests match SHA256
+`7151d48e59515633f0e2ac02a9f932581a254de7370de2a68a2d5c5b1d04c91c`
+with zero unfreed blocks. The ignored packet lives under
+`build/presence-recorded-packet/`. Direct acoustic labels are pending; no
+presence scorer or independent result has run on the packet. The next gate is
+one mobile listening review for guitar, other noise, nothing or uncertain in
+each exact window. If the third recording is later scored, its metadata
+exposure must be disclosed and it must not be used for tuning.
+
 The reassessed batch implemented a maintained Pascal observation boundary,
 [PRESENCE](PRESENCE.md), instead of running another source selector. The new
 clip/streaming API measures exact candidate and disjoint same-recording

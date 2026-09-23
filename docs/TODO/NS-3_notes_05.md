@@ -58,6 +58,20 @@ by changing its failed pair or window in place.
 
 **Dev Notes:**
 
+- 2026-09-23 recorded listening packet prepared after the observation API
+  batch: a new frozen GuitarSet policy selected three distinct player and
+  broad musical-family recordings before microphone extraction. The stopped
+  player-00 packet was not relaxed; player 05 is prospectively reserved for
+  acoustic evaluation after its annotation eligibility had been exposed but
+  before its microphone audio, human labels or inference score were used.
+  Checked Pascal reverified archive/JAMS/WAV hashes and PCM geometry, then
+  made nine unchanged-gain 250-ms windows repeated for mobile listening.
+  Win32/Win64 aid manifests match SHA256
+  `7151d48e59515633f0e2ac02a9f932581a254de7370de2a68a2d5c5b1d04c91c`;
+  every repeated PCM segment matches its source and both targets reported
+  zero unfreed blocks. Human guitar/noise/silence/uncertain labels are pending.
+  No scored recorded result, calibrated presence claim or task credit follows
+  from aid preparation.
 - 2026-09-23 maintained observation boundary after source reassessment:
   [PRESENCE](../PRESENCE.md) defines control, signal, audible instrument and
   event separately. `src/pythian.presence.pas` now measures exact candidate and
