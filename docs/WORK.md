@@ -131,6 +131,11 @@ The [quality record](SYNTHESIS-QUALITY.md#thirty-second-listener-preview--2026-0
 now attaches the favorable whole-piece verdict to that artifact while retaining
 the separate source-family listening gates. An 11-second combined-source
 audition was supplied for the next broad review; its result is pending.
+The [louder listening copy](SYNTHESIS-QUALITY.md#combined-source-listener-copy--2026-09-23)
+uses maintained Pascal conversion of that same mix at 3-times gain and 44.1 kHz.
+Source/output hashes, output headroom and the four-family entry-time map are
+recorded. This prepares the pending user review but closes no further source
+quality criterion; separate family cases remain in the finite matrix.
 
 ## NS-5 listening-protocol criterion — 2026-09-23
 

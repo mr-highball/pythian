@@ -26,6 +26,12 @@ Starting evidence: [SYNTHESIS-QUALITY](../SYNTHESIS-QUALITY.md) · [FUNDAMENTALS
 
 **Dev Notes:**
 
+- 2026-09-23 combined-source review support: the [11-second listening copy](../SYNTHESIS-QUALITY.md#combined-source-listener-copy--2026-09-23)
+  is the existing native mix converted by maintained Pascal to 44.1-kHz WAV
+  with uniform 3-times playback gain. Source/output hashes, duration, peak and
+  note-entry times are recorded so a listener can localize a defect. The source
+  families overlap in this mix; its pending verdict cannot replace the separate
+  matrix cases. No source/articulation criterion or credit closes from conversion.
 - Follow-up: reuse the existing source auditions and [paired preview](../SYNTHESIS-QUALITY.md#thirty-second-listener-preview--2026-09-20) to complete the finite listening matrix. Family-specific feedback remains pending; no audible defect or broad approval is inferred from numerical checks or the whole-preview verdict.
 - 2026-09-22 batch: completed the first acceptance criterion by mapping a finite matrix to existing generated WAVs and recording local SHA-256 identities where available in [SYNTHESIS-QUALITY](../SYNTHESIS-QUALITY.md#finite-listening-matrix--ns-2_synthesis-quality_01). No additional renders were created. Closing evidence for this criterion is the documented mapping of oscillator/wavetable/sample/measured paths and sampled pitch, velocity, rate, gate, attack, release and loop-exit cases. Stop here: actual listening and timestamped family verdicts remain open because listening was unavailable during this handoff; no quality result is inferred.
 - 2026-09-23 listener checkpoint: the user confirmed hearing the complete, hash-identified [30-second paired preview](../SYNTHESIS-QUALITY.md#thirty-second-listener-preview--2026-09-20) and called it coherent overall. This is a whole-piece observation for the two measured-performance excerpts, not the required family-specific timestamped verdict on clicks, aliasing, pitch continuity and release. Those checks, defect disposition and operating-range acceptance remain open; no credit changes.

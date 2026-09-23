@@ -90,6 +90,30 @@ spectral motion, layer balance and the final tail. This closes this combined
 workload check, not the wider FUND-QUALITY listening/coverage outcome or automatic
 WAV/style admission.
 
+### Combined-source listener copy — 2026-09-23
+
+For the pending 11-second review, the maintained Pascal converter made
+`build/listener-preview-20260923/combined-11s-gain3.wav` from the exact
+`win64/block-257.wav` above. This is a listening-gain copy of the same native
+synthesis, not a changed source or effect render. It is stereo PCM16 at 44,100
+Hz, 485,100 frames, with one uniform 3-times gain; the measured peak before
+encoding is 0.638884. The converter bound input SHA-256
+`7c0c5a40979a39301ce4dc842d0caabd193dd120c6a474857404dd3505472022`
+and output SHA-256
+`02f158afa8ee2af3418237c37daf2d4be97ef5b96a676aadef6dcbfc3f47b913`.
+The output file hash was checked independently. The copy and converter build
+remain ignored under `build/`.
+
+The authored passage starts after 0.2 seconds of silence. Saw, sample-loop and
+FM notes begin together on each of twelve beats; the spectral-trajectory part
+also enters at approximately 0.2, 1.7, 3.2 and 5.075 seconds. The beat spacing
+changes at 3.2 seconds from 0.5 to 0.625 seconds. The last note starts at 6.325
+seconds and the remaining duration contains releases and the effect tail. This
+source-code map helps localize a reported problem, but the overlapping families
+cannot establish individual-family approval from the mix. The finite matrix
+below retains their separate listening cases. The user's verdict on this
+11-second audition remains pending.
+
 <a id="automation-work-checkpoint"></a>
 ## Automation work accounting follow-up — 2026-09-20
 
