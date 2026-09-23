@@ -274,18 +274,26 @@ files while covering all 3 profiles, MIDI keys
 | Recorded spectral motion and saved instrument edits | `build/timbre-trajectory-win64/recorded-midi.wav` (SHA-256 `25b95af36a8c3b76f2d59b773542bbcd4d645f064a56c118bb51175915bbd869`); `build/timbre-shape-win64/recorded-midi.wav` (SHA-256 `6d32b124a21c7aeb07d8d6e9a621654c0137d3c3d24854b71ee1472cee3878c4`); and paired `build/saved-trajectory-win64/{measured,timbre-edit,envelope-edit}.wav`. | Review changing-pitch spectral joins, separate modeled level motion, and the saved 88-note performance's melody timbre/envelope edits while bass/chords/MIDI remain fixed. The saved `timbre-edit.wav` hash is `37eba7675e627c4ee25154a6acfaa3687f7cf3c57f9418447c0f6888f4c32de1`; `envelope-edit.wav` is `34ca2f3c667f12d955ee00723f810eb88abda77124bd9550c2a99fed1ebbac4f`. |
 | Supplied paired listener preview | `build/listener-preview-20260920/synthesis-30s.wav`, 5292044 bytes, SHA-256 `9952e5fd009689dd766473796a273bfb096cbc85fd7887b2d9f625560155a6ec`. | First 15 seconds of measured performance then 15 seconds of its timbre edit; compare attacks, melody/bass/chord balance and transition. |
 
-The matrix is finite: listen to the listed whole artifacts and record timestamped
-observations against the dimensions in the last column. The measured sets cover
-only their sampled key, velocity, rate, gate, profile and zone combinations;
-they do not qualify intermediate or arbitrary settings. The user has now given
-broad favorable full-window verdicts for the 0–5-second source-family demo and
-0–6.3-second sample-loop demo, with no fault time reported. These do not state
-separate click, alias, pitch-continuity or release judgments for the measured
-profile/rate/gate matrix. The whole-preview coherence comment likewise does not
-close those cases. This matrix closes only the task's first acceptance criterion;
-the remaining family verdicts and any before/after
-evidence remain open under
-[NS-2_synthesis-quality_01](TODO/NS-2_synthesis-quality_01.md).
+The matrix is finite. The user gave favorable full-window verdicts for the
+0–5-second source-family demo, 0–6.3-second authored sample-loop demo, the
+paired 0–30-second measured-performance preview, both 0–22-second measured
+profile/glide packets and both 0–14.5-second envelope packets. The processing
+review also found the recorded spectral pair good overall. The prompt for the
+four measured packets named clicks, rough pitch changes, unwanted noise and
+cut-off endings; the user said all four sounded good, with no fault time.
+These are broad verdicts for the whole listed intervals, not separate
+measurements of each note or proof that every artifact in the matrix was heard.
+The accepted audible settings are the explicit examples at 8/48-kHz measured
+rates, the 12-kHz authored loop, 48-kHz short source demo and the paired
+performance preview. The 16/44.1-kHz static/glide, 22.05-kHz envelope and
+8/16/48-kHz linear/sinc loop-motion cases retain numerical/replay evidence,
+without separate listening approval. These sampled cases do not qualify
+intermediate or arbitrary keys, velocities, rates, loop points or edits.
+No source/articulation defect was demonstrated in the reviewed examples, so
+there is no before/after source repair. The favorable verdict does not certify
+realistic instruments, absence of every click or alias, or universal release
+quality. The [bounded source acceptance](TODO/DONE/NS-2_synthesis-quality_01.md)
+keeps those limits explicit.
 
 ### First isolated-source listening copy — 2026-09-23
 
@@ -334,9 +342,11 @@ profile's span. The profile outputs cover the seven sampled keys and three
 velocities; the envelope outputs exercise the authored short/long gates and
 release overlap. Exact input hashes and frame starts are in `measured-{8k,48k}-map.txt`
 and `envelope-{8k,48k}-map.txt`. This is a concise listening aid at the low and
-high rate endpoints. The 16/44.1-kHz static/glide and 22.05-kHz envelope files
+high rate endpoints. The user heard all four complete files and said they all
+sounded good. No fault time was reported in response to the named click, pitch,
+noise and ending checks. The 16/44.1-kHz static/glide and 22.05-kHz envelope files
 retain numerical and native artifact evidence but have no separate listener
-verdict. No quality verdict is inferred until the user hears this packet.
+verdict.
 
 <a id="ns-2-synthesis-quality-02-matrix"></a>
 ### Finite processing and routing matrix — NS-2_synthesis-quality_02

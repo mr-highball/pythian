@@ -21,6 +21,28 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Accepted source and articulation quality — 2026-09-23
+
+The user heard all four complete hash-bound measured-profile packets at native
+8/48-kHz rates and said they all sounded good. The packet prompt named clicks,
+rough pitch changes, unwanted noise and cut-off endings; no fault time was
+reported. Together with the earlier full-window "both sound okay" verdict for
+the five-second source-family demo and 6.3-second authored sample loop, the
+smooth isolated profile and coherent 30-second paired preview, this covers the
+declared source families at explicit listening settings. No source defect was
+demonstrated; no core fix or new synthesis render follows.
+
+The [acceptance record](TODO/DONE/NS-2_synthesis-quality_01.md) links the
+finite matrix, checked input/output identities, numerical source references,
+sample-loop boundaries, exact replay and supported limits. Audible approval is
+limited to the reviewed clips and 8/48-kHz measured endpoints; intermediate
+rates and interpolation variants retain numerical evidence without distinct
+listener approval. All five task criteria pass at that scope. Move the task to
+DONE: +8 NS-2 points / +2.00 overall; NS-2 is **94%**, overall **66.65%**,
+with **38 open / 16 DONE**. The source task's nonclosing-batch count ends at
+acceptance. Its completion unblocks [combined synthesis and streamed listening](TODO/NS-2_synthesis-quality_03.md);
+that task's own interaction and tail verdicts remain open.
+
 ## Accepted processing and routing quality — 2026-09-23
 
 The user confirmed the finite processing packet was heard through stereo
@@ -39,13 +61,13 @@ partition/replay checks satisfy all five criteria of
 new core algorithm change or redundant suite. Move it to DONE: +6 NS-2 points,
 +1.50 overall; NS-2 is **86%**, overall **64.65%**, with **39 open / 15 DONE**.
 The processing task's nonclosing-batch count ends at acceptance. Next bounded
-core action: return to the open [source/articulation quality task](TODO/NS-2_synthesis-quality_01.md)
+core action at that checkpoint: return to the open [source/articulation quality task](TODO/DONE/NS-2_synthesis-quality_01.md)
 using its existing finite audition matrix; combined-path task 03 remains blocked
 until that source task is accepted.
 
 ## Source-family listening packet — 2026-09-23
 
-For [NS-2 source/articulation quality](TODO/NS-2_synthesis-quality_01.md),
+For [NS-2 source/articulation quality](TODO/DONE/NS-2_synthesis-quality_01.md),
 the first matrix criterion was already closed. The next criterion needs actual
 family-specific observations and fault times. The user's earlier brass/guitar/
 mallet descriptions belong to the recorded NSynth note-presence reference,
@@ -147,7 +169,7 @@ The earlier combined-passage listening/copy batch and this isolated-family
 verdict are two consecutive nonclosing NS-2 listening batches. They established
 an intentional tempo change and one smooth measured profile, but did not supply
 the per-family judgments, defect disposition or operating ranges required by
-[NS-2 source/articulation quality](TODO/NS-2_synthesis-quality_01.md).
+[NS-2 source/articulation quality](TODO/DONE/NS-2_synthesis-quality_01.md).
 Reassessment changes the next action from making preview copies to finishing a
 bounded review of the existing finite matrix. Start with its already rendered
 12-second oscillator/automation comparison, SHA-256
@@ -295,7 +317,7 @@ frozen coverage gates failed (02 12/17, 04 8/14); now the trace explains why
 pool enlargement alone cannot clear them, but it does not resolve source-pulse
 status or the no-compatible-fit cases. Stop this investigation sequence at the
 two-batch checkpoint. No task credit or percentage changes. The next active
-core action follows the ready [NS-2 source/articulation quality](TODO/NS-2_synthesis-quality_01.md)
+core action follows the ready [NS-2 source/articulation quality](TODO/DONE/NS-2_synthesis-quality_01.md)
 review using its existing finite listening packet and confirmed 30-second
 preview verdict. The user's separate NSynth comments describe reference
 recordings and are not defects in Pythian's synthesis. Tempo_04 resumes only
@@ -327,7 +349,7 @@ so it cannot support the required source-disjoint recorded-note claim. Neither
 batch earned task credit. Stop journal variants and model-port investigation at
 these evidence boundaries.
 
-Follow the ready core prerequisite [NS-2 source/articulation quality](TODO/NS-2_synthesis-quality_01.md)
+Follow the ready core prerequisite [NS-2 source/articulation quality](TODO/DONE/NS-2_synthesis-quality_01.md)
 using its existing finite listening packet. The next deliverable is a bounded
 artifact-identified, timestamped source-family review, followed by repairs only
 for demonstrated defects and their changed-path evidence. Its matrix criterion
@@ -368,7 +390,7 @@ Physical feasibility does not close recorded precision or the remaining
 low/quiet/short and delivery criteria. This failure and the preceding PESTO
 source qualification are two consecutive nonclosing note-identity batches;
 neither earns credit. Reassessment changes the next action to the ready
-[NS-2 source/articulation listening task](TODO/NS-2_synthesis-quality_01.md):
+[NS-2 source/articulation listening task](TODO/DONE/NS-2_synthesis-quality_01.md):
 use its existing finite matrix and artifact identities for timestamped family
 verdicts, then repair only demonstrated defects. The user has confirmed the
 30-second synthesis preview is coherent; the distinct 11-second mixed-source
@@ -1383,7 +1405,7 @@ quantitative genre criterion is accepted, and no new genre threshold is frozen.
 Batch 28 and this correspondence screen each closed no acceptance criterion.
 The independently delegated [NS-2 source audition matrix](SYNTHESIS-QUALITY.md#finite-listening-matrix--ns-2_synthesis-quality_01)
 was completed in parallel and closes the first criterion of
-[NS-2_synthesis-quality_01](TODO/NS-2_synthesis-quality_01.md), subject to
+[NS-2_synthesis-quality_01](TODO/DONE/NS-2_synthesis-quality_01.md), subject to
 final QA. It maps existing source-family artifacts and sampled ranges without
 new renders. Actual timestamped listening, family verdicts, possible repairs and
 accepted operating ranges remain open. Because that parallel batch advances a

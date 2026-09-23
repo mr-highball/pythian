@@ -256,3 +256,16 @@ arbitrary modulation bandwidth, general instrument realism or listening acceptan
 Next exercise loop and modulation transitions through the same integrated path,
 with explicit input/range limits and audible evidence. No separate percentage
 credit, Linux result, refreshed package or general style-quality claim follows.
+
+## Later bounded listener acceptance — 2026-09-23
+
+The user heard the complete [8/48-kHz measured-profile and envelope packet](SYNTHESIS-QUALITY.md#measured-profile-range-listening-packet--2026-09-23)
+and said all four clips sounded good. Its three profile windows at each rate
+cover the sampled seven-key/three-velocity sequences, short pitch glides and
+the authored short/long-gate envelope examples. No fault time was reported in
+response to a prompt naming clicks, rough pitch changes, unwanted noise and
+cut-off endings. The [source-quality acceptance](TODO/DONE/NS-2_synthesis-quality_01.md)
+is bounded to those audible examples and the separate numerical/replay ranges
+above; the 16/44.1-kHz static/glide and 22.05-kHz envelope files have no
+distinct listener verdict. Instrument realism and arbitrary settings remain
+unsupported.

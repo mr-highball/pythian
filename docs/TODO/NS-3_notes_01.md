@@ -183,6 +183,6 @@ variation is authorized by the existing evidence.
   consecutive nonclosing note-identity batches. The result does not satisfy
   the recorded precision, low/quiet/short, or maintained-delivery criteria and
   earns no credit. Reassess by following the ready
-  [NS-2 source/articulation listening task](NS-2_synthesis-quality_01.md);
+  [NS-2 source/articulation listening task — DONE](DONE/NS-2_synthesis-quality_01.md);
   resume note identity only with independently supported register evidence and
   a prospective ambiguity/coverage contract.

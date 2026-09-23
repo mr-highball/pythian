@@ -22,7 +22,7 @@ Starting evidence: [SYNTHESIS-QUALITY](../SYNTHESIS-QUALITY.md) · [FUNDAMENTALS
 
 **Blockers**
 
-- [NS-2_synthesis-quality_01.md](NS-2_synthesis-quality_01.md)
+- [NS-2_synthesis-quality_01.md — DONE](DONE/NS-2_synthesis-quality_01.md)
 - [NS-2_synthesis-quality_02.md — DONE](DONE/NS-2_synthesis-quality_02.md)
 
 **Dev Notes:**
