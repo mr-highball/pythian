@@ -56,3 +56,16 @@ Starting evidence: [CORPUS-EVALUATION](../CORPUS-EVALUATION.md) · [ANALYSIS-WAV
   This is acoustic mechanism evidence only. The semantic providers, independently
   verified song/unknown boundaries, recovery, selective invalidation and final
   workload budgets remain open; no criterion or credit is closed here.
+
+- 2026-09-23 preparatory publication repair: journal training, saved replay,
+  blend and context attachment now require a fresh prefix, stage output in a
+  reserved sibling directory and publish the report last. A caught publication
+  failure attempts to remove only files moved by that invocation; a process interruption
+  can leave visibly incomplete model/WAV or staging files for explicit recovery.
+  A checked small WAV/cache fixture rejected existing and reserved prefixes
+  without altering accepted bytes; fresh training from the same completed cache
+  produced identical JSON/model/WAV on FPC 3.3.1 and 3.2.2 Win32, and replay
+  matched the audition bytes. See [the publication contract](../ANALYSIS-WAVE.md#training-from-journals).
+  Crash/restart equivalence, filesystem durability and the semantic workload
+  remain unverified, so criterion 2 and task credit remain open. Continue via
+  the semantic prerequisites, not more acoustic-only publication variants.

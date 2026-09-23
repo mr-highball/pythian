@@ -109,6 +109,77 @@ type
 
 function ReadProfileText(const APath: String): UTF8String; forward;
 
+{ A fresh prefix and the report published last make an interrupted result
+  visibly incomplete. The sibling staging directory also excludes another
+  learner using the same prefix. This is not a multi-file atomic transaction. }
+procedure PublishJournalResult(const APrefix, AModel, AReport: String;
+  const AHasWave: Boolean; const AWave: TAudioBytes);
+var
+  LStage: String;
+  LModelMoved: Boolean;
+  LWaveMoved: Boolean;
+  LSuffix: String;
+begin
+  for LSuffix in ['.json', '.wfcs', '.wav'] do
+  begin
+    if FileExists(APrefix + LSuffix) then
+    begin
+      raise EAudio.Create('Journal publication requires a fresh output prefix');
+    end;
+  end;
+  LStage := APrefix + '.publishing';
+  if not CreateDir(LStage) then
+  begin
+    raise EAudio.Create('Cannot reserve journal publication prefix; inspect its .publishing directory');
+  end;
+  LModelMoved := False;
+  LWaveMoved := False;
+  try
+    try
+      WriteTextFile(LStage + PathDelim + 'model.wfcs', AModel);
+      if AHasWave then
+      begin
+        WriteFileBytes(LStage + PathDelim + 'audition.wav', AWave);
+      end;
+      WriteTextFile(LStage + PathDelim + 'report.json', AReport);
+      { Reject a late competing output before moving any staged artifact. }
+      for LSuffix in ['.json', '.wfcs', '.wav'] do
+      begin
+        if FileExists(APrefix + LSuffix) then
+        begin
+          raise EAudio.Create('Journal output appeared during publication');
+        end;
+      end;
+      if not RenameFile(LStage + PathDelim + 'model.wfcs', APrefix + '.wfcs') then
+      begin
+        raise EAudio.Create('Cannot publish journal model');
+      end;
+      LModelMoved := True;
+      if AHasWave then
+      begin
+        if not RenameFile(LStage + PathDelim + 'audition.wav', APrefix + '.wav') then
+        begin
+          raise EAudio.Create('Cannot publish journal audition');
+        end;
+        LWaveMoved := True;
+      end;
+      if not RenameFile(LStage + PathDelim + 'report.json', APrefix + '.json') then
+      begin
+        raise EAudio.Create('Cannot publish journal report');
+      end;
+    except
+      if LWaveMoved then DeleteFile(APrefix + '.wav');
+      if LModelMoved then DeleteFile(APrefix + '.wfcs');
+      raise;
+    end;
+  finally
+    DeleteFile(LStage + PathDelim + 'model.wfcs');
+    DeleteFile(LStage + PathDelim + 'audition.wav');
+    DeleteFile(LStage + PathDelim + 'report.json');
+    RemoveDir(LStage);
+  end;
+end;
+
 function ReadPartition(const AValue: String): TJournalPartition;
 begin
   if AValue = 'training' then
@@ -1069,9 +1140,7 @@ begin
     begin
       LEvents.Add(LIndices[LIndex]);
     end;
-    WriteTextFile(LPrefix + '.wfcs', LModelText);
-    WriteFileBytes(LPrefix + '.wav', LWaveBytes);
-    WriteTextFile(LPrefix + '.json', LDocument.FormatJSON);
+    PublishJournalResult(LPrefix, LModelText, LDocument.FormatJSON, True, LWaveBytes);
     WriteLn('Learned ', LModel.ObservationCount, ' weighted observations, ',
       LModel.StateCount, ' WFC states; rendered ', LRendered.FrameCount, ' frames');
   finally
@@ -1198,8 +1267,7 @@ begin
     LDocument.Delete('audition_sha256');
     LDocument.Delete('audition_frames');
     LDocument.Elements['contexts_attached_without_rendering'] := TJSONBoolean.Create(True);
-    WriteTextFile(LPrefix + '.wfcs', LAttached.EncodeModel);
-    WriteTextFile(LPrefix + '.json', LDocument.FormatJSON);
+    PublishJournalResult(LPrefix, LAttached.EncodeModel, LDocument.FormatJSON, False, nil);
     WriteLn('Attached ', LContexts.Count, ' source contexts / ', LContexts.WindowCount,
       ' windows without changing the model; use replay --context-grains to audition');
   finally
@@ -1267,8 +1335,7 @@ begin
     LRight := TJournalModelProfile.Create(ReadProfileText(ParamStr(3) + '.json'),
       ReadProfileText(ParamStr(3) + '.wfcs'));
     LBlend := BlendJournalProfiles(LLeft, LRight, StrToInt(ParamStr(5)), StrToInt(ParamStr(6)));
-    WriteTextFile(LPrefix + '.wfcs', LBlend.EncodeModel);
-    WriteTextFile(LPrefix + '.json', LBlend.EncodeReport);
+    PublishJournalResult(LPrefix, LBlend.EncodeModel, LBlend.EncodeReport, False, nil);
     WriteLn('Blended ', LBlend.Model.ObservationCount, ' observations, ',
       LBlend.Model.SampleCount, ' weighted samples, ', LBlend.SourceCount,
       ' distinct source ranges; use replay with explicit WAVs to audition');
@@ -1777,9 +1844,7 @@ begin
       LJoinJson.Add('before_repeated_windows', LBefore.RepeatedWindows);
       LJoinJson.Add('after_repeated_windows', LAfter.RepeatedWindows);
     end;
-    WriteTextFile(LOutputPrefix + '.wfcs', LModelText);
-    WriteFileBytes(LOutputPrefix + '.wav', LBytes);
-    WriteTextFile(LOutputPrefix + '.json', LDocument.FormatJSON);
+    PublishJournalResult(LOutputPrefix, LModelText, LDocument.FormatJSON, True, LBytes);
     WriteLn('Replayed saved vocabulary/model without caches or learning; rendered ',
       LRendered.FrameCount, ' frames');
   finally

@@ -414,8 +414,16 @@ source weights and join policy. Overrides are `--seed`, `--selection-seed`,
 `--frames` (1..1024), `--join-passes` (0..8), `--join-swap-radius` (0..4095),
 and sticky `--source-weight` (0..4096)
 for subsequent source files. Zero disables a source; unavailable tokens reject.
-Replay writes a reloadable report, unchanged model and new WAV under a distinct
-output prefix. The three writes are not an atomic multi-file transaction.
+Replay writes a reloadable report, unchanged model and new WAV under a fresh
+output prefix. Journal training, replay, blend and context attachment stage
+their files in a sibling `.publishing` directory and publish the JSON report
+last. They reject an existing `.json`, `.wfcs` or `.wav` at the output prefix;
+an existing staging directory also rejects a concurrent or interrupted run.
+An interrupted process may leave staging files or final model/WAV files without
+a report. Inspect that no writer is active, remove only that incomplete output
+prefix and its staging directory, then repeat with the completed source-bound
+caches. These separate renames are not an atomic multi-file transaction or a
+durable-write guarantee.
 
 `journals --palette-from PREFIX` freezes the saved ordered centers and requires
 the same analysis options, sample rate and channels. New journals train a new
@@ -546,7 +554,8 @@ cross between the parents' state sets, but this supplies no new joint recording
 evidence. Sample lengths follow retained source order.
 
 Blending preflights the companion's 4096 weighted samples and signed-Integer
-observation count. The union retains at most 1024 states and 32 source ranges.
+observation count. The union retains at most 1024 states, 4096 disjoint ranges
+and 32 distinct physical WAV identities.
 `blend_parents` identifies immediate active parent report/model hashes and weights;
 `training_lineage` retains up to 64 original profile/model identities with cumulative
 integer contributions. Repeated identical report identities coalesce. Both fields
@@ -558,9 +567,8 @@ The flat lineage avoids embedding historical profiles or adding format versions.
 Blend output has generation weights of one and no inherited audition, selected
 slots or join measurements. `replay` chooses new tokens from the blended model;
 its explicit source weights remain independent of training contributions. The
-CLI writes `.json` and `.wfcs`, requires an output prefix distinct from its parents
-and rejects a prefix already containing a WAV audition. The two writes are not
-an atomic transaction. Replay generates the WAV under its own output prefix.
+CLI writes `.json` and `.wfcs` at a fresh output prefix distinct from its
+parents. Replay generates the WAV under its own fresh output prefix.
 
 The [blend checkpoint](WAV-STUDIES.md#journal-blend-checkpoint) verifies a saved
 blend used in a further blend and source-bound audio reconstruction. Broader
@@ -717,7 +725,8 @@ pythian.learn replay INPUT_PREFIX OUTPUT_PREFIX --context-grains 8 SOURCE.wav [.
 `contexts` requires a fresh output prefix and one exact cache per saved source
 range, in profile order. Cache digests and journal bindings are checked before
 reading. It writes the enriched current JSON and unchanged model, without
-retraining or rendering an audition. Output writes are not an atomic transaction.
+retraining or rendering an audition. It uses the journal publication procedure
+described above.
 Replay later requires explicit hash-matched WAVs and no training journals.
 
 `replay --context-grains 0..32` caps each selected context chunk; zero disables

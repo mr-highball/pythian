@@ -21,6 +21,26 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Journal publication checkpoint — 2026-09-23
+
+For NS-5_scale_02 criterion 2, the acoustic journal commands now stage model,
+audition and report files under a reserved sibling directory, require a fresh
+prefix and publish the report last. This protects an accepted profile from a
+rerun and leaves interruption before report publication visibly incomplete.
+The contract and manual cleanup condition are in [ANALYSIS-WAVE](ANALYSIS-WAVE.md#training-from-journals).
+A small saved WAV/cache run rejected reuse of an accepted prefix and an occupied
+staging directory without changing output bytes. Fresh training from the same
+completed cache produced identical JSON/model/WAV with FPC 3.3.1 and 3.2.2
+Win32; saved replay reproduced the WAV and a saved blend loaded. The checked
+fixture is ignored under `build/`.
+
+This was one bounded nonclosing acoustic preparation batch. It does not test
+process kill/restart, durable writes, semantic providers, long-workload budgets
+or song-boundary admission. No NS-5_scale_02 criterion or credit closes. Stop
+publication variations here and follow the ready semantic/core prerequisites;
+the user's three selected full mixes remain preference tests, with user review
+at substantial listening or design checkpoints.
+
 ## Metrical source-evidence checkpoint — 2026-09-23
 
 The ready beat-level prerequisite tested one frozen, Pascal-only alternation
