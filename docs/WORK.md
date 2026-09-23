@@ -159,6 +159,28 @@ requires independent recorded negative/ambiguous references and a prospective
 temporal, threshold and coverage policy; the current five controls cannot set
 one. No task credit or milestone percentage changes.
 
+## Recorded percussion key screen — 2026-09-23
+
+Following the tonal reassessment, one [frozen source-bound Pascal screen](TONAL.md#percussion-only-recording-screen--2026-09-23)
+used a separately described Navy Band drum cadence. The published Ogg identity
+matched; external FFmpeg only prepared a WAV. All 24 four-second cells returned
+24 ranked keys. The largest top-two gap (.009387836) stayed below the authored
+triad gap (.015870574), yielding the predeclared
+`broader_recorded_references_required` decision. A percussion-only source
+description is not expert no-key annotation for each interval, so this does
+not validate an automatic key threshold or false-admission rate. The bounded
+Win64 Pascal run reported zero unfreed blocks. The source, policy, probe and
+outputs remain ignored under `build/`; no held-out Schubert composition was
+opened.
+
+This is one nonclosing batch on the changed recorded-reference path. Stop
+source-specific gap testing. The next local-key decision needs multiple
+independently verified tonal and no-key/ambiguous intervals plus a prospective
+temporal, threshold and coverage rule. NS-3_context_01 criteria 1, 2, 3 and 5
+remain open, with no task credit or milestone percentage change. The separate
+11-second NS-2 mixed-source listener verdict remains pending; the favorable
+coherence verdict applies to the 30-second synthesis preview.
+
 ## NS-5 listening-protocol criterion — 2026-09-23
 
 Focused specification QA for [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md)

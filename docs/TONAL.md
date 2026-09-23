@@ -528,6 +528,48 @@ Stop authored gap variants here. A later admission proposal needs independent
 recorded positive and non-tonal/ambiguous references, temporal context and a
 prospective threshold and coverage rule before any scored acceptance run.
 
+## Percussion-only recording screen — 2026-09-23
+
+After the authored screen, one separately described performed percussion
+recording was selected before its bytes were opened: the [United States Navy
+Band drum cadence on Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Drum_-_Cadence_A.ogg).
+The page describes a drum cadence, identifies the U.S. public-domain basis and
+lists the original 1,574,547-byte Ogg with SHA-1
+`19d4fbf201e4990d9b2be9c454b209f36af86700`. The downloaded original
+matches both; local SHA-256 is
+`5083f07730c6ffb1cd2c3b5cc1a43714a0cfda04fe913935e83d1048466562e6`.
+The description makes this a source-grounded percussion-only *candidate*;
+it is not an expert no-key annotation for each local interval.
+
+The verified external FFmpeg converter (2022-01-30 build) was used only to
+prepare mono 22,050-Hz PCM16 WAV. Its 2,036,160 frames and SHA-256
+`4f6a7dfb145719971aec28cc05c8fc1f53fac42e4bb6c48c38c235feac5d4a65`
+were bound before scoring. The frozen Pascal screen reused the current
+4,096-frame FFT/1,024-hop observation, 4-second owned cells and centered
+8-second contexts. It preserved each cell's original source-frame interval,
+24 ranked alternatives, coverage and score gap. The original Ogg, prepared
+WAV, code, policy and full output remain ignored under
+`build/tonal-recorded-negative/`.
+
+All 24 cells returned 24 ranked alternatives. Their first ranks vary among
+D minor, A minor and G-sharp major. The maximum top-two gap is **.009387836**
+in cell 13, below the fixed authored C-major triad gap **.015870574**. The
+predeclared decision is `broader_recorded_references_required`; no threshold
+was selected. A percussion performance may contain pitched resonances, and
+neither this description nor a single recording establishes universal
+non-tonality. The result does not verify unknown admission or false-admission
+rates in ambiguous music. No reserved Schubert composition was opened.
+
+Stable FPC 3.2.2 Win64 reported 97,763,328 analysis-work units against the
+150-million limit, 3,203 ms analysis against 30 seconds, a 20,648,094-byte
+source/feature storage bound against 64 MiB and zero unfreed blocks. Full
+local output SHA-256 is
+`da26fcc7a3ed29545804952763df5fd16b35a314ec03c6694957a931b7f09f33`.
+This closes no [local-key task](TODO/NS-3_context_01.md) criterion or credit.
+Stop source-specific gap testing here; the next admission decision needs
+multiple independently verified tonal and no-key/ambiguous intervals with a
+prospective temporal and coverage rule.
+
 ## Native inspection
 
 The [native tool](../tools/pythian.tonal.inspect.lpr) prints JSON:

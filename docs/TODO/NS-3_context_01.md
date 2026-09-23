@@ -118,6 +118,15 @@ independent recorded accuracy. This partial criterion earns no task credit.
 
 **Dev Notes:**
 
+- 2026-09-23 recorded percussion candidate: the [frozen source-bound
+  screen](../TONAL.md#percussion-only-recording-screen--2026-09-23) ran a
+  separately described Navy Band drum cadence through the same Pascal
+  WAV/chroma/ranker path. All 24 cells returned ranked keys; the largest
+  top-two gap (.009387836) stayed below the authored triad's .015870574.
+  This description supplies no expert no-key labels for local intervals.
+  The declared decision requires broader independently verified tonal and
+  no-key/ambiguous recordings with a prospective temporal, threshold and
+  coverage rule. Stop testing this source's gap; no criterion or credit closes.
 - 2026-09-23 authored negative-control screen: a [frozen Pascal WAV-analysis
   probe](../TONAL.md#authored-tonal-negative-screen--2026-09-23) ran silence,
   white noise, click train, an equal 12-note cluster and a C-major triad through
