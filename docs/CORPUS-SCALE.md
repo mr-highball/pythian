@@ -77,8 +77,16 @@ annotations supplied as predictions, arbitrary manual clocks or authored tokens
 cannot fill this stage. The measured onset/intensity path is a distinct supported
 representation, not an implicit conversion from raw salience.
 
-The current whole-array clip/source path permits 64000000 scalar samples: at
-16000-Hz stereo, 2000 seconds. Full WAV-C must reject that path. Analysis permits
+The current whole-array learner first rejects a WAV file above 256000044 bytes,
+before reading frames or allocating its complete clip. It also permits at most
+64000000 scalar samples: at 16000-Hz stereo, 2000 seconds. The checked FPC 3.2.2
+Win32 `pythian.learn INPUT.wav OUTPUT_PREFIX` command rejected the full prepared
+WAV-C (527081868 bytes, 131770456 stereo frames; output SHA-256
+`1efecef983467b81e87c9f1a92954ee0f3c9d001a801db06a7aa2fa2c8da5afc`)
+with exit 1 and `WAVE source file exceeds learner size envelope`. The fresh
+output prefix received no files. This demonstrates the byte preflight for this
+source, not whole-array training, journal-to-semantic learning or a measured
+multi-recording workload. Analysis permits
 65536 frames and 2000000000 work units; saved styles permit 65536 cells and 32 MiB.
 The corpus source count is 32; journal training has 4096 segments; semantic styles
 have 256 runs; actual WFC sequence learning permits 4096 samples and 1024 states.

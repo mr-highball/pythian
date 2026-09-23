@@ -21,6 +21,21 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Whole-array capacity boundary — 2026-09-23
+
+The checked FPC 3.2.2 Win32 `pythian.learn` rejected the existing full prepared
+WAV-C (527081868 bytes, 131770456 stereo frames) with exit 1 and `WAVE source
+file exceeds learner size envelope`. Its 256000044-byte file preflight ran
+before frame decoding or complete-clip allocation; the fresh output prefix
+received no artifacts. The source also exceeds the later 64000000-scalar sample
+limit, which this run did not exercise. [CORPUS-SCALE](CORPUS-SCALE.md#missing-admission-and-capacity-boundaries)
+records the exact boundary. This is one nonclosing scale batch: it confirms
+explicit rejection, while training/model capacity and the multi-recording
+semantic workload remain open. Stop repeating whole-array rejection probes;
+follow the [admitted-note learner prerequisite](TODO/NS-3_notes_03.md).
+The user's coherent listening verdict is for the 30-second synthesis preview;
+the separate 11-second mixed-source verdict remains pending.
+
 ## Beat-candidate deliverable split — 2026-09-23
 
 Two consecutive metrical experiments for [NS-3_tempo_01](TODO/NS-3_tempo_01.md)
