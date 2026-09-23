@@ -47,6 +47,17 @@ and [rejected gate-slope rule](../PHRASE-EVALUATION.md#fixed-gate-slope-diagnost
 
 **Dev Notes:**
 
+- 2026-09-23 listener wording correction: the earlier question asked for an
+  audible *pitched note*, conflating source audibility with pitch identity.
+  The user clarified that the brass is audible source sound but resembles
+  unpleasant old-TV/radio static across attacks and holds. For this presence
+  packet, `audible` means heard source sound regardless of pitch or timbre;
+  clear pitch and quality remain separate observations. The
+  [packet convention](../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22)
+  is corrected before any scorer run without changing frozen windows, TSV
+  labels or the three exact guitar labels. The brass statement is not a
+  three-window answer, so five exact judgments still await review. This
+  repair earns no criterion or credit by itself.
 - 2026-09-23 frozen-window playback aid: an ignored Pascal tool repeated the
   five still-pending 250-ms windows with equal digital-silence gaps for mobile
   review. Checked stable Win32/Win64 runs bind original WAV hashes, verify
@@ -61,7 +72,8 @@ and [rejected gate-slope rule](../PHRASE-EVALUATION.md#fixed-gate-slope-diagnost
   `guitar_acoustic_030-061-100` pitched sound audible in all three frozen
   windows, including [3.75,4.00) seconds after the 3.0-second renderer
   note-off. Their brass description, "audible, but sounds like loud static",
-  does not map pitched-note presence to its three exact windows. Both
+  does not say whether source sound is heard in each of its three exact
+  windows. Both
   fast-decay late windows also lack exact labels. Preserve the three reviewed
   guitar labels and five pending labels in the
   [listening packet](../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22).

@@ -142,11 +142,13 @@ The user's later exact-window response labels all three
 and [3.75,4.00) seconds. This supports an audible fading guitar after the
 documented control note-off, including the final quarter-second; the file end
 still does not establish its acoustic silence endpoint. The brass follow-up
-said it was audible but sounded like loud static; it did not give three
-window-specific pitched-note labels. The fast-decay guitar and mallet late
-windows also remain unlabelled. Keep those five window labels pending; do not
-promote an RMS value, quality tag or whole-clip comment into a frame-level
-acoustic label.
+said it was audible but sounded like loud static. The user clarified that
+its attacks and holds sound like an old TV or radio, and that "audible" means
+they hear the source even though the sound is unpleasant. This is a timbre
+and whole-clip activity observation, not three time-local labels. The
+fast-decay guitar and mallet late windows also remain unlabelled. Keep those
+five window labels pending; do not promote an RMS value, quality tag or
+whole-clip comment into a frame-level acoustic label.
 
 A 2026-09-23 mobile listening aid under ignored `build/presence-review-aid/`
 copies each of the five pending 4,000-frame PCM16 windows four times, separated
@@ -161,10 +163,16 @@ their requested listener labels are still pending. The brass counts say
 nothing about an identifiable pitch. The aid is for reviewing the already
 frozen windows, not a replacement reference or an inference result.
 
-The exact question for review is whether a pitched note from the named source
-is **clearly audible**, **not audible**, or **uncertain** in each listed
-candidate window. The 3.0-second renderer note-off is a documented control,
-not a listening label.
+The earlier review prompt mistakenly asked whether a *pitched note* was
+audible. For this note-presence reference, `audible` instead means the
+listener hears sound from the isolated source in the exact window, including
+noisy or inharmonic sound; `not_audible` means they hear no source sound, and
+`uncertain` means they cannot decide. Pitch identity and pleasantness are
+separate observations. This correction preserves the eight frozen windows,
+the three exact guitar responses (a heard pitch also establishes heard source
+sound) and the existing TSV label strings. It precedes any presence scoring;
+the remaining five windows need review under this corrected question. The
+3.0-second renderer note-off is a documented control, not a listening label.
 Near-zero PCM or a quality tag does not substitute for the requested judgment.
 Do not assign an acoustic silence endpoint from the end of a file: both long
 release notes still have measured late-window energy, and the final encoded

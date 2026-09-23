@@ -914,6 +914,17 @@ verdict. This is a bounded presentation aid, not changed reference selection
 or a substitute human label. It closes no criterion; stop aid variants and
 await the five unresolved judgments.
 
+The user's next brass clarification exposed a wording defect in the review
+question: asking for a "pitched note" mixes presence with pitch identity.
+They hear brass source sound, but describe each attack/hold as unpleasant
+old-TV/radio static. The [packet convention](PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22)
+now defines `audible` as source sound heard regardless of its pitch or
+timbre; `not_audible` and `uncertain` stay distinct. The previously reviewed
+guitar pitch also establishes source audibility. No brass window is inferred
+from the broad timbre statement, and the eight frozen windows and TSV format
+are unchanged. This is a pre-scoring question repair, not a new estimator,
+listener label, criterion or credit.
+
 ## Journal publication checkpoint — 2026-09-23
 
 For NS-5_scale_02 criterion 2, the acoustic journal commands now stage model,
