@@ -12,8 +12,8 @@ keeps the three user-selected styles as development tests, while reusable core
 behavior takes priority when detailed style review is waiting on evidence.
 This catalog covers the remaining declared end state. Task files own acceptance
 criteria and hard prerequisites; this page supplies navigation and accounting.
-No task earns credit merely by being written. Accepted task credit is **11.15**;
-**33.35 overall points remain**. Baseline 55.5 + accepted 11.15 = **66.65 current**.
+No task earns credit merely by being written. Accepted task credit is **12.65**;
+**31.85 overall points remain**. Baseline 55.5 + accepted 12.65 = **68.15 current**.
 
 The [pause retrospective](../WORK.md#pause-retrospective--2026-09-21) tightens
 existing note, presence, mixture and style-reference criteria without adding
@@ -32,12 +32,12 @@ unless also declared under Blockers; required gaps still follow
 | Goal | Current completion | Open tasks | Remaining goal points allocated | Overall points allocated |
 | --- | ---: | ---: | ---: | ---: |
 | [NS-1 — Independent Pascal foundation](../MILESTONES.md#ns-1) | 100% | 0 | 0 | 0.00 |
-| [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 94% | 1 | 6 | 1.50 |
+| [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 100% | 0 | 0 | 0.00 |
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 39% | 17 | 61 | 15.25 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 96% | 1 | 4 | 0.60 |
 | [NS-5 — Many-hour styles that generate and blend usefully](../MILESTONES.md#ns-5) | 27% | 16 | 73 | 14.60 |
 | [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 72% | 3 | 28 | 1.40 |
-| **Total** | **66.65 weighted points** | **38** | Per-goal credits are not summed across goals | **33.35** |
+| **Total** | **68.15 weighted points** | **37** | Per-goal credits are not summed across goals | **31.85** |
 
 NS-1 is already complete under the accepted extraction scope. Preserve its
 invariants in every applicable task; do not recreate completed extraction work.
@@ -46,12 +46,6 @@ rollups do not earn additional credit. File credits are the accounting source;
 keep this navigation ledger and MILESTONES.md synchronized on each completion.
 
 ## Open tasks by north star
-
-### NS-2 — Dependable synthesis fundamentals
-
-| Task file and outcome | Goal credit | Overall credit | State |
-| --- | ---: | ---: | --- |
-| [NS-2_synthesis-quality_03.md](NS-2_synthesis-quality_03.md) — Accept combined synthesis and streamed listening | +6 | +1.50 | TODO |
 
 ### NS-3 — Trustworthy musical learning from WAV
 
@@ -163,7 +157,7 @@ first accepted genre is predetermined.
 
 1. [NS-2_synthesis-quality_01.md — DONE](DONE/NS-2_synthesis-quality_01.md)
 2. [NS-2_synthesis-quality_02.md — DONE](DONE/NS-2_synthesis-quality_02.md)
-3. [NS-2_synthesis-quality_03.md](NS-2_synthesis-quality_03.md)
+3. [NS-2_synthesis-quality_03.md — DONE](DONE/NS-2_synthesis-quality_03.md)
 4. [NS-3_validation_01.md — DONE](DONE/NS-3_validation_01.md)
 5. [NS-3_validation_03.md — DONE](DONE/NS-3_validation_03.md), then [NS-3_validation_02.md — DONE](DONE/NS-3_validation_02.md)
 6. [NS-3_tempo_04.md](NS-3_tempo_04.md), then [NS-3_tempo_01.md](NS-3_tempo_01.md)

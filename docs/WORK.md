@@ -21,6 +21,25 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Accepted combined synthesis quality — 2026-09-23
+
+The user heard both complete hash-bound combined review clips and answered
+“They sound okay” to the targeted 11-second attack/layer/ending and 30-second
+held-note/melody-continuity/balance questions. Their earlier coherent-preview
+and planned-slowdown observations remain scoped to those clips. No combined
+defect or fault time was reported. The [FUND-QUALITY union record](SYNTHESIS-QUALITY.md#fund-quality-bounded-acceptance--2026-09-23)
+binds the native and listening-copy identities, disclosed 3.2-second tempo
+change and 15-second edit, unchanged replay and protected-prefix evidence,
+headroom, MIDI/timing, duration, work bounds and final tail. No repair or new
+render is needed for this declared scope. Move
+[NS-2_synthesis-quality_03](TODO/DONE/NS-2_synthesis-quality_03.md) to DONE:
++6 NS-2 / +1.50 overall. NS-2 is **100%**, overall **68.15%**, with **37 open /
+17 DONE** and **18 active outcomes**. This is bounded synthesis acceptance;
+recorded musical learning and the three personal style tests retain their own
+gates. Continue with a ready core learning prerequisite under
+[task flow](TASKFLOW.MD), especially the unresolved WAV timing/context/note
+evidence, rather than reopening accepted listening examples.
+
 ## Accepted source and articulation quality — 2026-09-23
 
 The user heard all four complete hash-bound measured-profile packets at native
@@ -40,7 +59,7 @@ rates and interpolation variants retain numerical evidence without distinct
 listener approval. All five task criteria pass at that scope. Move the task to
 DONE: +8 NS-2 points / +2.00 overall; NS-2 is **94%**, overall **66.65%**,
 with **38 open / 16 DONE**. The source task's nonclosing-batch count ends at
-acceptance. Its completion unblocks [combined synthesis and streamed listening](TODO/NS-2_synthesis-quality_03.md);
+acceptance. Its completion unblocks [combined synthesis and streamed listening](TODO/DONE/NS-2_synthesis-quality_03.md);
 that task's own interaction and tail verdicts remain open. The next bounded
 batch reuses the hash-bound 11-second mix and 30-second paired preview for a
 targeted review of attacks, overlapping layers, uninterrupted holds, melody
@@ -212,7 +231,7 @@ binds the native 11-second simultaneous-source/tempo/bus passage, complete
 88-note sustained layered performance and fixed processing cases to the combined
 supported scope. It distinguishes the 3×/44.1-kHz 11-second listening copy and
 the 12×/cut-faded 30-second preview from their native synthesis; all cited local
-WAV hashes match. This closes [NS-2_synthesis-quality_03](TODO/NS-2_synthesis-quality_03.md)
+WAV hashes match. This closes [NS-2_synthesis-quality_03](TODO/DONE/NS-2_synthesis-quality_03.md)
 criterion 1 without another render, resetting the nonclosing-batch count.
 Actual timestamped listening, any demonstrated repair and union acceptance
 remain open, with no task or milestone credit.
@@ -224,7 +243,7 @@ reconfirms exact 40-note WAV timing and 1/257/4096-frame replay, 11-second
 duration, headroom, final tail and corrected 11656 reserved work. The separate
 saved 88-note plan retains its exact MIDI gates and bytes through stream replay
 and a timbre edit, with 729281 WAV frames, 12 peak voices and 795 peak frame-work
-units. This closes [NS-2_synthesis-quality_03](TODO/NS-2_synthesis-quality_03.md)
+units. This closes [NS-2_synthesis-quality_03](TODO/DONE/NS-2_synthesis-quality_03.md)
 criterion 4 and resets the nonclosing-batch count. It earns no task credit:
 family-specific and combined audible verdicts, defect disposition and union
 acceptance remain open. The user's coherent verdict belongs to the 30-second

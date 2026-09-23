@@ -6,11 +6,11 @@
 
 The current evidence verifies numerical behavior, scoped bandwidth and bounded
 rendering on stable/development Win32 and stable Win64. The declared
-[source/articulation](TODO/DONE/NS-2_synthesis-quality_01.md) and
-[processing/routing](TODO/DONE/NS-2_synthesis-quality_02.md) examples also have
-bounded listener acceptance. Combined layered/streamed interactions remain under
-review; these results do not establish instrument realism, general genre
-learning or device deadlines.
+[source/articulation](TODO/DONE/NS-2_synthesis-quality_01.md),
+[processing/routing](TODO/DONE/NS-2_synthesis-quality_02.md) and
+[combined interaction](TODO/DONE/NS-2_synthesis-quality_03.md) examples have
+bounded listener acceptance. These results do not establish instrument realism,
+general genre learning or device deadlines.
 This page consolidates the existing fundamentals outcome; it adds no percentage
 allocation and does not replace the separate recorded-style acceptance gates.
 
@@ -145,12 +145,13 @@ Their local WAV hashes were rechecked against the identities below.
 | Processing/routing transitions and release history | The [finite processing matrix](#ns-2-synthesis-quality-02-matrix) includes dry/processed repeats, modulated delay, reverb, bus mute/return and a zero-fed effect tail, with fixed native levels. These cases can isolate an audible defect found in the combined mix. |
 | Listener-copy relation to original synthesis | `build/listener-preview-20260923/combined-11s-gain3.wav`, SHA-256 `02f158afa8ee2af3418237c37daf2d4be97ef5b96a676aadef6dcbfc3f47b913`, is a 44.1-kHz conversion of the native 11-second mix with uniform 3× gain. The [30-second paired preview](#thirty-second-listener-preview--2026-09-20), SHA-256 `9952e5fd009689dd766473796a273bfb096cbc85fd7887b2d9f625560155a6ec`, joins two 15-second excerpts with common 12× gain and 10-ms cut-edge fades. Neither gain nor fade is an original synthesis change or an independently approved source family. |
 
-This artifact and scope review meets the first criterion of
-[NS-2_synthesis-quality_03](TODO/NS-2_synthesis-quality_03.md). The later
+At this checkpoint, the artifact and scope review met the first criterion of
+[NS-2_synthesis-quality_03](TODO/DONE/NS-2_synthesis-quality_03.md). The later
 listener observation identifies the intended tempo change and a music-like
 whole-passage impression; it does not judge attacks, holds, joins, balance,
 spectral motion or tails. The separate source-family and processing matrices,
-their verdicts, any demonstrated repairs and combined acceptance remain open.
+their verdicts, any demonstrated repairs and combined acceptance remained open
+then. The final union verdict is recorded below.
 
 <a id="automation-work-checkpoint"></a>
 ## Automation work accounting follow-up — 2026-09-20
@@ -198,7 +199,7 @@ MIDI check belongs to that 88-note plan; the separate 40-note workload has no
 MIDI artifact. Fresh checked logs and outputs are ignored under
 `build/quality-plan-20260923/`. This closes the numerical timing, duration,
 headroom and work-bound criterion of
-[NS-2_synthesis-quality_03](TODO/NS-2_synthesis-quality_03.md); it does not
+[NS-2_synthesis-quality_03](TODO/DONE/NS-2_synthesis-quality_03.md); it does not
 establish audible quality, family verdicts or a device deadline.
 
 ## Thirty-second listener preview — 2026-09-20
@@ -218,16 +219,68 @@ The saved duration/format check passes; checked stable Win64 reports no unfreed
 blocks. SHA256: `9952e5fd009689dd766473796a273bfb096cbc85fd7887b2d9f625560155a6ec`.
 Source, build and render logs remain beside the preview under ignored `build/`.
 
-The user heard the full 30-second preview and described it as coherent overall
+At that checkpoint, the user heard the full 30-second preview and described it as coherent overall
 on 2026-09-23. This is a favorable whole-preview observation covering the
 measured performance at 0–15 seconds and its timbre edit at 15–30 seconds;
 it does not distinguish individual attacks, releases or source families, or
 establish that no defect is audible. The wider audition suite below remains
 necessary for those verdicts. Link any later heard defect and timestamp to
 FUND-QUALITY and the corresponding source/control contract. No task credit
-follows from this single observation.
+follows from this single observation. The later targeted review and union
+acceptance are recorded below.
 
-## Listening review and next work
+## FUND-QUALITY bounded acceptance — 2026-09-23
+
+The [source/articulation](TODO/DONE/NS-2_synthesis-quality_01.md),
+[processing/routing](TODO/DONE/NS-2_synthesis-quality_02.md) and
+[combined interaction](TODO/DONE/NS-2_synthesis-quality_03.md) tasks form one
+accepted fundamentals quality scope. The user reviewed the entire 11-second
+`build/listener-preview-20260923/combined-11s-gain3.wav` (SHA-256
+`02f158afa8ee2af3418237c37daf2d4be97ef5b96a676aadef6dcbfc3f47b913`)
+and 30-second `build/listener-preview-20260920/synthesis-30s.wav` (SHA-256
+`9952e5fd009689dd766473796a273bfb096cbc85fd7887b2d9f625560155a6ec`).
+Asked specifically about attacks, overlapping layers and ending after the
+6.325-second last onset in the first clip, and sustained bass/chord notes and
+changing-melody continuity and balance in the second, they answered “They
+sound okay” to each. They had earlier called the paired preview coherent and
+perceived the intentional slowdown in the combined passage. The deliberate
+3.2-second 120-to-96-BPM switch and edited 15-second excerpt boundary were
+disclosed; no unwanted join, cutoff, balance or tail defect or fault time was
+reported. These are whole-clip verdicts on the named aspects, not independent
+per-note, spectral-localization or spatial measurements. The separate spectral,
+control, effect and bus auditions and their limits remain in the processing
+matrix above.
+
+The first listener copy derives from the native 24-kHz 40-note mix (SHA-256
+`7c0c5a40979a39301ce4dc842d0caabd193dd120c6a474857404dd3505472022`)
+through 44.1-kHz conversion and uniform 3× gain. The second uses two native
+15-second excerpts of the 88-note saved performance and melody edit, uniform
+12× gain and 10-ms cut-edge fades. These are presentation changes, not changes
+to the accepted synthesis. The native 40-note plan has exact 1/257/4096-frame
+direct/scheduled replay, 264000 frames (11 seconds), 4800 initial silent frames,
+0.212615907 peak below the declared 0.95 bound, final 0.2-second RMS below
+0.0001, 11656 initial reserved voice-work units, 145 graph-work units and an
+empty ending schedule. The 88-note plan has exact MIDI bytes and note gates,
+729281 frames at 44.1 kHz, 12 peak overlapping voices, 795 peak frame-work
+units and exact 127/2048-frame stream replay. The retained
+[scheduler checks](SCHEDULING.md) cover failed/successful future replacement
+with committed voices and effect history; the
+[duration-stream checks](DURATION-STREAMS.md#focused-consumer-and-verification)
+compare the emitted stream through failed edits and preserve the protected
+prefix of a successful future edit. The combined performance itself did not
+exercise a future edit, and no combined code path changed during this review.
+No combined defect was demonstrated, so no repair or before/after render was
+needed. These checks support deterministic replay and committed-prefix
+preservation at their stated scopes; they do not imply a real-time device
+deadline.
+
+The reviewed source ranges, modulation settings, native levels, interpolation
+cases and remaining perceptual uncertainties are listed in the three task
+records. There is no unresolved defect in this accepted set that invalidates
+its use for later learned-style comparisons. Arbitrary settings, instrument
+realism and chillwave/stoner-rock/lofi style learning remain separately gated.
+
+## Earlier listening review map
 
 Use the existing 88-note measured performance under
 `build/instrument-headroom-study/measured-long.wav` for sustained instrument
@@ -428,8 +481,8 @@ Numerical agreement does not replace this observation, and subjective preference
 alone should not silently expand the engineering contract. The broad 11-second
 review does not approve the individual processing cases in this set.
 
-The remaining fundamentals work accepts source/articulation and combined
-listening under the [capability/failure and workload contract](FUNDAMENTALS.md#contract-review).
+The bounded fundamentals quality union is accepted under the
+[capability/failure and workload contract](FUNDAMENTALS.md#contract-review).
 Independent context, phrase and corpus
 work remains ready in the [execution order](MILESTONES.md#execution-order-and-blocking-links).
 If the declared coverage proves insufficient, revise that outcome's scope

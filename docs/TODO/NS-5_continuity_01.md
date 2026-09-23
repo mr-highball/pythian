@@ -24,7 +24,7 @@ Starting evidence: [WAV-STUDIES](../WAV-STUDIES.md) · [ACTIVITY](../ACTIVITY.md
 
 - [NS-5_corpus_01.md](DONE/NS-5_corpus_01.md)
 - [NS-5_vocabulary_01.md](NS-5_vocabulary_01.md)
-- [NS-2_synthesis-quality_03.md](NS-2_synthesis-quality_03.md)
+- [NS-2_synthesis-quality_03.md — DONE](DONE/NS-2_synthesis-quality_03.md)
 
 **Dev Notes:**
 
