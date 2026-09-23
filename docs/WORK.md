@@ -23,12 +23,31 @@ from planned semantic providers, profile persistence, weighting and blend APIs.
 
 ## Maintained presence observation boundary — 2026-09-23
 
+The ignored recorded packet now also has a Pascal score runner with separate
+development and reserved-evaluation modes. It requires the binder's reviewed
+packet SHA-256, verifies each original mic WAV SHA-256 before and after scoring,
+chooses only the lowest-numbered same-source listener-confirmed no-guitar rest,
+and preserves unknown-label, no-reference and excluded-reference counts apart
+from correct and error counts. A distinct synthetic three-source fixture
+exercised no-reference, correct-candidate, false-active, unknown-label and
+missed-active routing. A second synthetic fixture exercised exact-zero
+correct-rest and contrast abstention. Checked stable Win32/Win64 reports were
+byte-identical for both fixtures. The first fixture's development SHA-256 was
+`d5c181cddb64b0c76a6bc75461a906802daa108e3ab96d62108dc63aecd6ee17`;
+its evaluation SHA-256 was
+`c2f5675f06c966157bc3eb682d732b802226f73f046b1dea42586f86f0f880e2`.
+Both targets reported zero unfreed blocks. A wrong reviewed-packet hash
+rejected before output.
+This verifies scoring mechanics on synthetic data only. The real binder has
+not run; no GuitarSet label, rest reference, score or task credit exists yet.
+
 The recorded listening packet's private Pascal review binder now passes
 checked stable Win32/Win64 read-only preflight against the frozen manifest
 and all nine aid SHA256 values, with zero unfreed blocks. Bind mode requires
 exactly nine ordered labels in the fixed vocabulary and preserves input and
-manifest hashes, but no user labels have arrived and it has not run. The fixed scoring policy was
-written before labels: only a listener-confirmed no-guitar window from the
+manifest hashes, but no user labels have arrived and it has not run. The fixed
+scoring policy was written before labels: only a listener-confirmed no-guitar
+window from the
 same recording can become its rest reference; player 05 is not used for
 tuning. Packet preparation stops here rather than generating more clip
 variants. The next dependency is the user's one-pass labels; until then no

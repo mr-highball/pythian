@@ -58,6 +58,17 @@ by changing its failed pair or window in place.
 
 **Dev Notes:**
 
+- 2026-09-23 score-runner preparation: the private ignored packet's Pascal
+  scorer binds the binder output SHA-256, verifies original WAV identities,
+  uses the frozen lowest-numbered same-source rest rule, and separates
+  development from reserved evaluation. A synthetic three-source fixture
+  exercised no-reference, correct-candidate, false-active, unknown-label,
+  missed-active, exact-zero correct-rest and abstention routing. Checked stable
+  Win32/Win64 score TSVs were byte-identical with zero unfreed blocks; a wrong
+  reviewed hash rejected
+  without output. No real listener labels have arrived, so neither the real
+  binder nor the scorer has run on GuitarSet. Recorded calibration, independent
+  cases and task credit remain open.
 - 2026-09-23 listener handoff preflight: a private Pascal binder under the
   ignored recorded packet verifies the frozen manifest and all nine aid hashes
   before it will accept exactly nine ordered guitar/other-noise/nothing/uncertain
