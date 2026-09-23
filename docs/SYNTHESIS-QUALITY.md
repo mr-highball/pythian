@@ -114,6 +114,25 @@ cannot establish individual-family approval from the mix. The finite matrix
 below retains their separate listening cases. The user's verdict on this
 11-second audition remains pending.
 
+### Combined interaction coverage review — 2026-09-23
+
+The existing artifacts cover the supported combined interactions selected for
+the finite review; no additional render is needed for this declared scope.
+Their local WAV hashes were rechecked against the identities below.
+
+| Interaction to judge | Native evidence and listening scope |
+| --- | --- |
+| Simultaneous source families, automation, tempo change, bus return and final tail | Full 11-second `build/automation-work/win64/block-257.wav`, SHA-256 `7c0c5a40979a39301ce4dc842d0caabd193dd120c6a474857404dd3505472022`; four families and four buses, with beat spacing changing at 3.2 s and release/effect tail after the last onset at 6.325 s. The 1/257/4096-frame scheduled and direct renders are sample-identical under the checked plan. |
+| Sustained layered voices, overlap, saved sound edits and intact musical timing | Full `build/saved-trajectory-win64/measured.wav`, SHA-256 `cba63b4fd6678d7406994e83efe16e8acf7e819726bb8cce0746fad2b7555ab6`, plus `timbre-edit.wav`, SHA-256 `37eba7675e627c4ee25154a6acfaa3687f7cf3c57f9418447c0f6888f4c32de1`, and `envelope-edit.wav`, SHA-256 `34ca2f3c667f12d955ee00723f810eb88abda77124bd9550c2a99fed1ebbac4f`. The 88-note plan includes 1920-tick chord holds, reaches 12 overlapping voices and replays exactly across 127/2048-frame reads; its melody edits retain bass/chord stems and MIDI. |
+| Processing/routing transitions and release history | The [finite processing matrix](#ns-2-synthesis-quality-02-matrix) includes dry/processed repeats, modulated delay, reverb, bus mute/return and a zero-fed effect tail, with fixed native levels. These cases can isolate an audible defect found in the combined mix. |
+| Listener-copy relation to original synthesis | `build/listener-preview-20260923/combined-11s-gain3.wav`, SHA-256 `02f158afa8ee2af3418237c37daf2d4be97ef5b96a676aadef6dcbfc3f47b913`, is a 44.1-kHz conversion of the native 11-second mix with uniform 3× gain. The [30-second paired preview](#thirty-second-listener-preview--2026-09-20), SHA-256 `9952e5fd009689dd766473796a273bfb096cbc85fd7887b2d9f625560155a6ec`, joins two 15-second excerpts with common 12× gain and 10-ms cut-edge fades. Neither gain nor fade is an original synthesis change or an independently approved source family. |
+
+This artifact and scope review meets the first criterion of
+[NS-2_synthesis-quality_03](TODO/NS-2_synthesis-quality_03.md). It does not
+record a listener verdict for attacks, holds, joins, balance, spectral motion,
+tempo changes or tails. The separate source-family and processing matrices,
+their verdicts, any demonstrated repairs and combined acceptance remain open.
+
 <a id="automation-work-checkpoint"></a>
 ## Automation work accounting follow-up — 2026-09-20
 

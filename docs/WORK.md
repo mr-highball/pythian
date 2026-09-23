@@ -21,6 +21,18 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Combined listening coverage checkpoint — 2026-09-23
+
+The [finite interaction review](SYNTHESIS-QUALITY.md#combined-interaction-coverage-review--2026-09-23)
+binds the native 11-second simultaneous-source/tempo/bus passage, complete
+88-note sustained layered performance and fixed processing cases to the combined
+supported scope. It distinguishes the 3×/44.1-kHz 11-second listening copy and
+the 12×/cut-faded 30-second preview from their native synthesis; all cited local
+WAV hashes match. This closes [NS-2_synthesis-quality_03](TODO/NS-2_synthesis-quality_03.md)
+criterion 1 without another render, resetting the nonclosing-batch count.
+Actual timestamped listening, any demonstrated repair and union acceptance
+remain open, with no task or milestone credit.
+
 ## Synthesis numerical plan checkpoint — 2026-09-23
 
 The current checked Win32 Pascal [combined plan review](SYNTHESIS-QUALITY.md#combined-numerical-plan-review--2026-09-23)
