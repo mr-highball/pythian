@@ -71,6 +71,15 @@ reusable for generation and later blends. Short WAV excerpts are development
 probes; they do not establish genre-level learning. See the
 [long-source requirements](docs/LAYERED-STYLE.md#learning-a-style-from-many-hours).
 
+The initial three names are user preference labels for development tests, not
+claims to define their genres for everyone. They exercise the reusable core;
+none is required for its basic function. Judge a resulting style against the
+user-selected source evidence and declared listening and musical criteria;
+do not infer universal genre traits from a label or compilation description.
+Independent material is still required for an accepted reusable result. Seek
+the user's judgment at substantial listening or design checkpoints, while
+routine timed annotations and engineering checks use other supported evidence.
+
 The [north-star milestones](docs/MILESTONES.md#north-star-assessment) own the
 current completion assessment. The [task catalog](docs/TODO/README.md) owns the
 dependency-linked work items under [TASKFLOW.MD](docs/TASKFLOW.MD). Completed

@@ -6,10 +6,17 @@
 
 This is the initial development protocol for chillwave, stoner rock and lofi.
 It defines the evidence to prepare before an independent style verdict. It does
-not certify the current recordings, assign their style labels or establish a
-production corpus file format. Freeze a source-bound evaluation packet before
+not certify the original inventory recordings, assign their style labels or
+establish a production corpus file format. Freeze a source-bound evaluation packet before
 using its evaluation recordings; changes after inspecting results create a new
 development comparison and require fresh independent material.
+
+For the current user tests, those names mean the user's selected preferences,
+not universal genre membership. A user-approved full mix can anchor development
+of that preference while its song identities, musical traits and held-out
+comparison remain separately unverified. A later acceptance verdict is scoped to
+the declared source family, supported traits and listener, not every work that
+shares the label.
 
 ## Earlier provisional source inventory — 2026-09-20
 

@@ -5,8 +5,11 @@
 **Execution resumed 2026-09-22.** The user requires a Pascal-only workflow;
 [practical Pascal inference](DONE/NS-3_validation_02.md) and its
 [selective observation prerequisite](DONE/NS-3_validation_03.md) are accepted.
-Follow the NS-5
-priority and actual prerequisite blockers.
+Follow the active priority in [task flow](../TASKFLOW.MD) and actual prerequisite
+blockers.
+The 2026-09-23 [core-first clarification](../WORK.md#core-first-re-alignment--2026-09-23)
+keeps the three user-selected styles as development tests, while reusable core
+behavior takes priority when detailed style review is waiting on evidence.
 This catalog covers the remaining declared end state. Task files own acceptance
 criteria and hard prerequisites; this page supplies navigation and accounting.
 No task earns credit merely by being written. Accepted task credit is **7.65**;

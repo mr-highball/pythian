@@ -6,6 +6,14 @@
 
 Complete the executable acceptance specification for chillwave, stoner rock and lofi before their final training/evaluation runs.
 
+For this user-directed test, the three names designate personal style
+preferences anchored by user-selected full mixes. The user confirmed holistic
+fit on 2026-09-23. This is a positive development-source judgment, not a claim
+about universal genre membership, verified song cuts, timed provider traits or
+held-out evaluation recordings. Source-specific details remain in ignored local
+records; the [working specification](../STYLE-CARDS.md) retains the common
+measurement contract.
+
 North star: NS-5. Outcome owner: CORPUS-SETUP / STYLE-EVAL.
 Completion credit: 4 goal percentage points (0.80 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
@@ -113,3 +121,14 @@ open with zero credit.
   acquisitions. The prior 30-second probes never established holistic genre
   suitability. Retain exact unknowns; do not lower the six required trait
   dimensions or award credit.
+
+- 2026-09-23 preference scope: the user personally selected three complete
+  private mixes and confirmed each meets their intended test style. These
+  labels are personal preferences, not universal genre definitions. Pascal
+  verified full-WAV identities and prepared private chapter review maps, but
+  metadata cuts, timed musical traits and independent evaluation groups remain
+  unverified. The acquisition/cache and review-packet batches close no criterion.
+  Stop further source-metadata preparation at the task-flow checkpoint. The
+  user's [core-first direction](../WORK.md#core-first-re-alignment--2026-09-23)
+  defers detailed style-card review while general core work proceeds; seek their
+  input for substantial playable or design checkpoints, not routine labels.

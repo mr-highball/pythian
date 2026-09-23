@@ -6,12 +6,23 @@
 ## Status and reference requirements
 
 This is the working specification for chillwave, stoner rock and lofi, dated
-2026-09-21. It is **not frozen for genre evaluation**. The three initial source
-families remain development material with unverified genre assignments, song
-boundaries and musical annotations. Their independently measured signal features
+2026-09-21. It is **not frozen for preference-scoped style evaluation**. The
+three original source families remain development material with unverified genre
+assignments, song boundaries and musical annotations. Their measured signal features
 below support a controlled measurement example, not complete musical style cards.
 The specification task stays open with no completion credit until its reference
 grounding and quantitative criteria are complete.
+
+User clarification 2026-09-23: these names identify the user's test preferences,
+not authoritative genre definitions. The user personally selected three new
+full-length mixes and confirmed that each fits its intended label. They are
+development-exposed training candidates, held privately under ignored `build/`;
+their source-specific identities and review packet are not part of this tracked
+corpus record. That holistic preference judgment does not verify metadata song
+cuts, timed musical traits or an independent evaluation group. The earlier A/B/C
+candidates below remain historical development screens and do not automatically
+represent the user's chosen preferences. Compare later outputs to supported,
+source-bound preference traits rather than to a supposed universal genre norm.
 
 Each style requires its own source-bound card. Every observation identifies the
 WAV/preparation hashes, recording family, exact source interval and clock, method,

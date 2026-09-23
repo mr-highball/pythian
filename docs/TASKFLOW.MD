@@ -22,6 +22,13 @@ On 2026-09-20 the user authorized execution, starting with the least-complete
 north star (NS-5 at 25%). Follow actual prerequisite tasks when blocked, including
 prerequisites in another north star, then return to the originating task.
 
+The 2026-09-23 user clarification puts reusable core behavior ahead of the three
+personal style tests. Continue to use their full mixes as development inputs,
+but do not make a genre label or those recordings a prerequisite for the core's
+basic function. Where a style-reference task needs detailed listening, defer it
+after an honest checkpoint and work a ready core prerequisite. Invite the user
+at substantial playable or design checkpoints, not for routine annotation.
+
 NS-1's accepted extraction/independence baseline is already complete. Do not
 manufacture historical DONE files or repeat completed work to populate folders.
 Core independence, Pascal ownership, retained WFC boundaries, complete notices,

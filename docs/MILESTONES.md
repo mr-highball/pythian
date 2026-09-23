@@ -9,8 +9,12 @@
 genre style yet.** The destination is an independent Pascal synthesis library
 that learns useful musical behavior from many hours of WAV recordings, generates
 through independently controllable WFC passes, and saves styles that remain
-usable through selective blends and further blends. Required initial styles:
+usable through selective blends and further blends. Initial test styles:
 **chillwave, stoner rock and lofi**. Core fundamentals retain priority.
+These are the user's initial test preference labels. Their eventual acceptance
+will be scoped to declared source evidence and evaluation listeners, not a
+universal definition of each named genre. The portable core must remain useful
+without these particular preferences.
 
 **Execution resumed at the user's request.** The user additionally requires a
 Pascal-only inference workflow. The former external-runtime execution credit

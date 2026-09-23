@@ -44,6 +44,47 @@ lifting the cap would violate its saved-profile contract. A boundary-safe
 training plan is the next concrete scale step. Keep NS-5_evaluation_01 open
 pending whole-work review and musical annotations.
 
+## Core-first re-alignment — 2026-09-23
+
+The user wants the generally reusable synthesis and WAV-learning core built out
+first, with their personally selected styles used to test and steer it. Those
+preferences are not dependencies of basic core function and do not define the
+genres globally. Preserve the existing general correctness, provenance, native
+execution and independent-consumer requirements. Seek the user's input when a
+substantial playable result or design choice can change direction; routine
+timed annotation and engineering checks should not demand frequent listening
+responses. The current goal assessment and task credits are unchanged by this
+priority clarification. Resume a ready core task while the detailed NS-5 style
+card remains open for later source-bound musical evidence.
+The next finite core listening checkpoint reuses the already rendered 30-second
+[paired synthesis preview](SYNTHESIS-QUALITY.md#thirty-second-listener-preview--2026-09-20),
+whose current 44.1-kHz WAV identity and geometry were rechecked with the stable
+Pascal inspector. It invites a high-level audible verdict before choosing sound
+repairs; it does not stand for the remaining source/effect listening matrix.
+
+## User preference scope and full-mix review — 2026-09-23
+
+The user confirmed that they personally selected all three complete mixes and
+that each meets the style they intend. These are preference-scoped test labels,
+not a claim to define chillwave, stoner rock or lofi universally. All three are
+development-exposed training candidates; none is a held-out evaluation group.
+The private review packet and Pascal audit bind the full 48-kHz WAV bytes and
+declared chapter maps under ignored `build/`, without publishing source-specific
+identities in tracked corpus documents. First/middle/last frames spot-decode and
+the full WAV byte hashes are recorded privately. The 16-kHz journals had already
+fully decoded their separate analysis derivatives.
+
+The holistic preference judgment resolves source suitability for development,
+but no timed context, groove, harmony, role, sound or structure annotation has
+been reviewed. Metadata chapter cuts and independent source groups are likewise
+unverified. The acquisition/cache batch and this review-packet batch close no
+NS-5_evaluation_01 criterion. At the task-flow checkpoint, stop further
+metadata-only or level-only source preparation. The next reference deliverable
+when that task resumes must bind reviewed musical observations and uncertainty
+to exact intervals, then
+freeze preference-scoped comparator thresholds before evaluation. No task credit
+or milestone percentage changes.
+
 ## Pro Sensory chillwave candidate rejected — 2026-09-22
 
 The user listened to the entire 230.365-second, hash-bound
