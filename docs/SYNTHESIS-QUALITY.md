@@ -340,6 +340,12 @@ revised version seems better. The row above is now the preferred demo rendering;
 the prior hash remains bound to the preserved before copy. No core automation
 defect or final processing verdict is inferred from this preference.
 
+After hearing the complete six-second `effects.wav` row above, the user said
+"effects sounds good." This is a favorable whole-clip verdict for the original
+0–3-second phrase and processed 3–6-second repeat at the bound file identity.
+It includes no fault time or separate judgment on stereo motion, reverb/echo
+tails or routing transitions. Those cases remain open.
+
 This is the finite coverage packet for the first criterion of
 [NS-2_synthesis-quality_02](TODO/NS-2_synthesis-quality_02.md). Relevant limits
 are attached to each comparison: single-setting FM/PM bandwidth, authored smooth

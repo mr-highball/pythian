@@ -26,6 +26,16 @@ Starting evidence: [SYNTHESIS-QUALITY](../SYNTHESIS-QUALITY.md) · [MODULATION](
 
 **Dev Notes:**
 
+- 2026-09-23 effects listener checkpoint: the user heard the entire hash-bound
+  six-second [dry/processed effects comparison](../SYNTHESIS-QUALITY.md#ns-2-synthesis-quality-02-matrix)
+  and said "effects sounds good." This supports that fixed filtering/dynamics
+  setting but gives no separate tail, stereo or routing verdict. With the
+  narrower-vibrato preference, two bounded processing-listening batches have
+  closed no additional criterion. Reassess by finishing one finite review of
+  the already rendered FM/PM, spectral, delay, reverb and bus cases, asking for
+  broad verdicts and fault times only where something sounds wrong. Stop new
+  comparison renders or isolated prompt variants; criterion 2 and credit stay open.
+
 - 2026-09-23 control-curve listener follow-up: the user heard the original
   12-second oscillator/control comparison as good overall but found its
   3–6-second pitch wobble too wide. The [bound before/after render](../MODULATION.md#listener-directed-vibrato-narrowing--2026-09-23)

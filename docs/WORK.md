@@ -21,6 +21,20 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Processing listening checkpoint and reassessment — 2026-09-23
+
+The user heard the entire six-second, hash-bound filtering/dynamics comparison
+and said "effects sounds good." The [matrix record](SYNTHESIS-QUALITY.md#ns-2-synthesis-quality-02-matrix)
+binds the original and processed three-second phrases. This is favorable for
+that fixed setting, without a distinct tail, stereo or routing verdict. The
+vibrato A/B preference and this effects check are two consecutive nonclosing
+processing-listening batches after the source-family reassessment. Change the
+next action from serial single-case prompts to one bounded review of the
+existing FM/PM, spectral-motion, delay, reverb and bus WAVs. Seek broad verdicts
+and rough times only for faults; do not make new comparison copies or infer
+approval from silence. Criterion 2 and task credit remain open until the
+remaining supported cases and any demonstrated defects are resolved.
+
 ## Control-curve vibrato listener preference — 2026-09-23
 
 The user reviewed the existing 12-second control comparison as good overall,
