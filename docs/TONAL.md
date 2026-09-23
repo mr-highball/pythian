@@ -698,6 +698,97 @@ labels or predictions are opened. This role map alone does not qualify the
 reserved recordings or close the packet's group-isolation criterion; the Pascal
 checker must enforce it against acquired source identities.
 
+## Bound development local-key intervals — 2026-09-23
+
+The two selected groups are separate Winterreise compositions, D911-02 and
+D911-16, in the **same** HU33 performance. The [publisher's dataset paper](https://research-portal.uu.nl/ws/files/98000909/3429743.pdf)
+identifies singer Gerhard Hüsch and pianist Hanns-Udo Müller on the 1933
+recording. Franz Schubert composed the songs; the dataset authors are Christof
+Weiß, Frank Zalkow, Vlora Arifi-Müller, Meinard Müller, Hendrik Vincent Koops,
+Anja Volk and Harald G. Grohganz. The SWD 2.1 archive contains songwise mono
+22,050-Hz PCM16 transfers of HU33 and separate local-key CSVs named for that
+same composition and performance. Its bundled README says version 2.0; keep
+that discrepancy. The publisher's score analysis follows a Peters edition,
+with manually checked HU33 measure positions used for score-to-audio transfer.
+The dataset README declares CC BY 3.0; its retained HU33 notice points to the
+Public Domain Mark 1.0. Neither audio nor annotations are redistributed here.
+
+The exact archive MD5/SHA-256 and publisher location are above. The following
+SHA-256 values bind the selected original ZIP entries after extraction; each
+audio CSV is the publisher's *HU33* song-specific transfer, not a similarly
+titled score annotation or a different performance. Checked Pascal preflight
+verified byte identity, PCM geometry, ordered intervals and exact decimal
+seconds-to-frame mapping for all three annotators. A separate checked Pascal
+audit verified ann2's score/audio row modes and fixed transposition for each
+song. The annotators saw earlier analyses, so agreement is useful reference
+evidence but not three independent votes.
+
+| Entry under the SWD 2.1 archive | D911-02 SHA-256 | D911-16 SHA-256 |
+| --- | --- | --- |
+| `01_RawData/audio_wav/Schubert_D911-NN_HU33.wav` | `82df858661d662f162ab3bd3066925dc0faefeb3429584c152bc7b5e91c4e0d2` | `a3e314904d5c694826d85ddf4723b1988d4ef4571df47760c698a22cc094d253` |
+| `02_Annotations/ann_audio_localkey-ann1/Schubert_D911-NN_HU33.csv` | `ad4c542840d8a589b37cdc4975ec18d0e845ca27f850fccc9d3063f268d6f67b` | `d5eb38b6919202fd8bcbebc4e366a260bb88f0b2346164fbc68d48c3d2365935` |
+| `02_Annotations/ann_audio_localkey-ann2/Schubert_D911-NN_HU33.csv` | `c9b0a2f602e6093826aaf16608ef8890a558feb966d78b74ac0c5bb5bec55320` | `f2cc33fa7a9b048be396b68c879e64b6c7e9457f35f3a4e78b5fef1651d8f319` |
+| `02_Annotations/ann_audio_localkey-ann3/Schubert_D911-NN_HU33.csv` | `82985de070baf8d73aedffc7e42fbeeb9300cb87f2252949cfc8ab7adbcf5e5f` | `0f6dc5e14ba66e9f98da860a0b6f3fdeda06e0822f385dba54f901b04c3dcec0` |
+| `02_Annotations/ann_score_localkey-ann2/Schubert_D911-NN.csv` | `ed0469d2b430cc5799612f769d6aec1cf5cdc2b8b0413e7d41980864f1741ac2` | `c74c022e105a221b0fd25f2410dd2372649589002c55dcc4b3427587a8644587` |
+
+Use half-open intervals on each original WAV clock. A supported *stable* label
+below means all three publisher annotators agree on root and major/minor mode
+throughout that exact span; it does not prove every transient is tonally clear.
+The D911-16 change at 79.9 seconds is a shared annotation boundary, from
+unanimous D minor to unanimous D major. A few source frames near a transferred
+boundary remain timing-uncertain because measure alignment is not a sample-level
+acoustic onset annotation.
+
+| Group | Seconds [start, end) | Frames [start, end) | Reference interpretation |
+| --- | --- | --- | --- |
+| D911-02 HU33 | 0.3–18.86 | 6,615–415,863 | unanimous G minor stable region |
+| D911-02 HU33 | 25.62–42.22 | 564,921–930,951 | ann2 score-transferred ambiguity; ann1/3 alternatives below |
+| D911-02 HU33 | 54.46–61.22 | 1,200,843–1,349,901 | ann2 score-transferred ambiguity; alternatives below |
+| D911-02 HU33 | 75.04–86.72 | 1,654,632–1,912,176 | ann2 score-transferred ambiguity; alternatives below |
+| D911-16 HU33 | 0.34–25.2 | 7,497–555,660 | unanimous D major stable region |
+| D911-16 HU33 | 25.2–53.52 | 555,660–1,180,116 | ann2 score-transferred ambiguity; alternatives below |
+| D911-16 HU33 | 53.52–57.34 | 1,180,116–1,264,347 | transitional disagreement: ann1 D major, ann2/3 D minor |
+| D911-16 HU33 | 57.34–79.9 | 1,264,347–1,761,795 | unanimous D minor stable region |
+| D911-16 HU33 | 79.9–133.32 | 1,761,795–2,939,706 | unanimous D major stable region; unanimous D minor→D major change at start |
+
+Within the ann2 ambiguity spans, the other annotators supply these alternatives
+on the same source-frame clock. The original three CSVs and complete preflight
+partitions retain every additional label and gap outside this selected packet.
+
+| Group | Frames [start, end) | Ann1 | Ann3 |
+| --- | ---: | --- | --- |
+| D911-02 | 564,921–718,830 | D minor | D minor |
+| D911-02 | 718,830–857,304 | C minor | C minor |
+| D911-02 | 857,304–930,951 | C minor | G minor |
+| D911-02 | 1,200,843–1,287,720 | D-sharp major | G minor |
+| D911-02 | 1,287,720–1,349,901 | G major | G major |
+| D911-02 | 1,654,632–1,722,546 | D-sharp major | G minor |
+| D911-02 | 1,722,546–1,743,714 | D-sharp major | F minor |
+| D911-02 | 1,743,714–1,826,622 | F minor | F minor |
+| D911-02 | 1,826,622–1,908,648 | G major | G major |
+| D911-02 | 1,908,648–1,912,176 | G major | G minor |
+| D911-16 | 555,660–614,754 | D major | D major |
+| D911-16 | 614,754–945,504 | D major | B minor |
+| D911-16 | 945,504–1,180,116 | D major | D minor |
+
+The ambiguity label is ann2's transferred *judgment*, not verified acoustic
+silence or consensus no-key. Leading/trailing gaps and unsupported modes remain
+unlabelled; this packet supports major/minor keys only. The selected regions
+are development evidence and cannot set an independent accuracy or false-
+admission rate. This completes source/edition and reviewed interval
+qualification for these two development groups; the maintained Pascal packet
+checker, held-out recording qualification and separate scoring denominators
+remain open in [NS-3_context_03](TODO/NS-3_context_03.md).
+
+Focused checked FPC 3.2.2 Win64 QA replayed the current WAV, three audio CSVs
+per song, README, and both notices against their exact SHA-256 values, then
+checked all 18 table spans and complete partition coverage against the bound
+preflight reports in 281 ms with zero unfreed blocks. The score/audio gap audit
+reran on current bytes in 297 ms and retained the same four mapped gaps and
+alternatives. The Pascal audit source and output are ignored under
+`build/context-reference-score/`; neither run executed key inference or opened
+the reserved evaluation compositions.
+
 ## Native inspection
 
 The [native tool](../tools/pythian.tonal.inspect.lpr) prints JSON:

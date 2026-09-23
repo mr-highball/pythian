@@ -51,6 +51,19 @@ Starting evidence: [local-key reference study](../TONAL.md#local-key-reference-c
 
 **Dev Notes:**
 
+- 2026-09-23 development interval packet: [two exact HU33 composition groups](../TONAL.md#bound-development-local-key-intervals--2026-09-23)
+  now bind singer/pianist, composition, archive edition, notices, original WAV
+  and all annotator/score CSV hashes and the publisher's transfer method.
+  Both groups have tonal and ann2 score-transferred ambiguous intervals;
+  D911-16 also has a unanimous D-minor to D-major change at frame 1,761,795.
+  All selected stable, transitional, ambiguous and alternate-label spans are
+  published. Checked Pascal QA verified current source bytes, 18 spans and
+  source-clock partition coverage; the score/audio mapping replayed unchanged.
+  **Criteria 1 and 2 are met for this development packet.** The reserved
+  independent recordings have not been qualified or scored. Criteria 3–5
+  remain open: enforce roles in a maintained Pascal packet checker, reacquire
+  and bind independent groups, then show separate coverage denominators. No
+  task credit is earned before the whole task passes.
 - 2026-09-23 group-role freeze: [D911-05 and D911-19](../TONAL.md#local-key-reference-group-roles--2026-09-23)
   are reserved by entire composition for independent evaluation before their
   audio or local-key contents are opened. D911-02/16 remain development-exposed;

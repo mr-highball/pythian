@@ -254,6 +254,22 @@ verify edition and timing, and implement the source/role checker before any
 independent scoring. The ready NS-2 source-quality listening task remains the
 current core prerequisite while the 11-second review is pending.
 
+The next bounded reference batch closed its source/edition and reviewed-interval
+criteria using only the already development-exposed D911-02/16 HU33 groups. The
+[published packet](TONAL.md#bound-development-local-key-intervals--2026-09-23)
+binds the 1933 singer/pianist, archive/notices, all six audio CSV hashes and
+both score-ann2 hashes. It retains four transferred ann2 ambiguity spans with
+every alternative ann1/3 label, stable major/minor regions and the unanimous
+D-minor to D-major D911-16 change at frame 1,761,795. Checked FPC 3.2.2
+Win64 Pascal QA verified current source bytes and all 18 table spans against
+the prior complete partitions; the score/audio gap audit replayed on current
+bytes. Both runs reported zero unfreed blocks. No evaluation composition or
+key estimator was opened. NS-3_context_03 criteria 1 and 2 are met; criteria
+3–5 and all completion credit remain open. Next build the maintained source/role
+checker, qualify the reserved compositions and freeze separate coverage
+denominators before any held-out inference score. NS-2's 11-second listener
+verdict is still pending.
+
 ## NS-5 listening-protocol criterion — 2026-09-23
 
 Focused specification QA for [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md)
