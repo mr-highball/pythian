@@ -21,6 +21,24 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Known-gate slope rule stopped — 2026-09-22
+
+For `NS-3_notes_02`, a frozen Pascal-only envelope-slope diagnostic measured
+the four source-bound NSynth notes without retuning or opening Spring/reserved
+phrase material. Both long-release notes fail the required gate-localized score;
+both fast-decay notes abstain at the documented 3.0-second note-off. The mallet
+has no nonzero PCM sample after frame 19755, long before that gate. Exact scores,
+source identities, policy and deterministic CSV hash are in
+[phrase evaluation](PHRASE-EVALUATION.md#fixed-gate-slope-diagnostic-rejected--2026-09-22).
+
+Stop the slope rule. This is the second consecutive nonclosing batch under the
+changed source approach, so the next batch must follow the task-flow
+reassessment. Keep audible activity, latent key/gate status and musical note
+boundaries distinct; first obtain separately supported acoustic tail/rest labels
+or an equivalent discriminating source before another presence scorer. The
+existing low/quiet/short/gap, recorded phrase and independent gates remain.
+No NS-3 or NS-5 criterion or credit closes.
+
 ## Known-gate release reference — 2026-09-22
 
 The NS-3 note-presence prerequisite changed source after the URMP F0 stop.

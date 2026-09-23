@@ -17,6 +17,41 @@ not infer a trustworthy phase path, select register or alter any recorded phrase
 score. Those admission steps remain [WAV-03-REGISTER](MILESTONES.md#wav-03-register)
 and [WAV-03-TIMBRE](MILESTONES.md#wav-03-timbre); held-out recordings remain unused.
 
+## Fixed-gate slope diagnostic rejected — 2026-09-22
+
+The [fixed-gate controls](#fixed-gate-release-controls--2026-09-22) supplied an
+independently timed note-off, but a note-off need not be an abrupt acoustic
+change. Before measuring their fine envelope, a Pascal-only policy fixed four
+adjacent 200-ms RMS windows around candidate centers on a 100-ms grid from
+2.4 to 3.6 seconds. The score `ln(B/A) - ln(D/C)` tests whether decay becomes
+faster after a candidate center. A window at or below two PCM16 steps makes
+that candidate unknown. Both `long_release` notes had to peak within 100 ms of
+the documented 3.0-second gate with score at least `ln(2)`; both `fast_decay`
+notes had to abstain at the gate. This was a diagnostic, not a proposed change
+to maintained event inference.
+
+The two long-release notes fail: brass scores **0.217052094 at the gate** and
+peaks at **3.6 s / 0.636345722**; guitar scores **0.585577146 at the gate** and
+peaks at **3.2 s / 0.693042523**, just below the fixed `ln(2)` floor and outside
+the localization tolerance. Both fast-decay notes correctly return unknown at
+3.0 s under the declared amplitude floor. The mallet's last nonzero PCM sample
+is frame **19755** (about 1.235 s), with no nonzero sample after the 3.0-s
+gate; its later control-gate instant has no acoustic signature to localize.
+This does not establish how a listener would label a quiet or released note.
+
+Stable FPC 3.2.2 Win32 compiled the source-bound Pascal diagnostic. Two runs
+returned the same rejected decision and byte-identical CSV, SHA256
+`e5b063990560a2074403d73637703f0c7ca6797d61fcdf03d990673de68dac9a`.
+The fixed policy, source and candidate rows remain ignored under
+`build/presence-contrast/`; all four WAV identities match the prior packet.
+No new instruments, Spring development audio or reserved phrase material were
+scored. Stop this slope rule without changing its floor, grid or source list.
+This is the second nonclosing batch after the source change: reassess the
+distinction between audible activity, latent key/gate status and annotated
+musical note boundaries before another presence observation. Obtain separately
+supported acoustic tail/rest labels and preserve unknown status where source
+evidence cannot determine the gate. No task criterion or completion credit closes.
+
 ## Fixed-gate release controls — 2026-09-22
 
 The [NSynth dataset](https://magenta.withgoogle.com/datasets/nsynth) provides
