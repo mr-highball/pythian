@@ -29,7 +29,9 @@ development cases and unchanged-method ablations ran with saved predictions
 before the independent 30-ms scorer. The authored polyphonic case fell to zero
 matches; polyrhythm and doubling regressed materially. Controls and exact
 ablation replay passed, so this is a scientific rejection, not an implementation
-fix to retune. [Beat tracking](BEAT-TRACKING.md#accent-parity-stopped) records the
+fix to retune. The selector and scorer ran in Pascal against frozen historical
+model outputs; no external runtime was executed, and this does not qualify a
+Pascal-native beat provider. [Beat tracking](BEAT-TRACKING.md#accent-parity-stopped) records the
 full result and ignored evidence. This is the second nonclosing metrical batch;
 stop recurrence/parity variants and reassess the observation model. No beat
 provider or task credit changed. The next safe goal work can follow another

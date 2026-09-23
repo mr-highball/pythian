@@ -51,6 +51,8 @@ reassess the evidence model before another experiment.
   expose the wrong fast polyphonic pulse; selected wrong candidates remained
   strongly parity-consistent, while the same factor damaged polyrhythm and
   doubling. The fixed nine-case comparison and source-bound reports are in
-  [beat tracking](../BEAT-TRACKING.md#accent-parity-stopped). No tuning follows.
+  [beat tracking](../BEAT-TRACKING.md#accent-parity-stopped). Frozen historical
+  model outputs were diagnostic inputs to Pascal code, not a native model
+  provider; future adopted evidence must be Pascal-owned end to end. No tuning follows.
   At the two-batch checkpoint, require genuinely different evidence for metrical
   identity and explicit uncertainty before another task experiment.

@@ -33,6 +33,10 @@ recurrence, and bounded the model-agreement contribution by that source score.
 The frozen hypothesis, exact formula, controls, input scope, nine-case budget and
 stop gate are retained in ignored `build/beat-accent-parity/POLICY.md`. No BPM,
 band or threshold was selected per recording.
+The model-event inputs were frozen historical outputs from the retired external
+runtime comparison; this batch executed only Pascal code. They remain diagnostic
+data and cannot establish a Pascal-native provider. Any future adopted beat
+experiment must generate every inference observation through Pascal-owned code.
 
 Checked FPC 3.2.2 Win32 controls passed for uniform fast pulses, 1/.25 alternating
 accents, alternating band roles, common timing offset, gain scaling, absent/short
@@ -66,7 +70,8 @@ definitions or thresholds. Keep the maintained selector and the prior passing
 development baseline. This is the second nonclosing metrical investigation
 batch; reassess the observation model before another experiment. The next
 candidate must distinguish musical pulse level from correlated band activity
-and shared wrong model events, while preserving true fast beats and independent
+and shared wrong model events using Pascal-owned inputs throughout, while
+preserving true fast beats and independent
 unknown/coverage accounting. No maintained code, independent evaluation,
 listening verdict or task credit changes. Exact private report/source bindings,
 the deterministic summary (SHA-256
