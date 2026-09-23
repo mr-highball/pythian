@@ -23,37 +23,61 @@ from planned semantic providers, profile persistence, weighting and blend APIs.
 
 ## Note-presence exact-window review — 2026-09-23
 
-The user labeled the three frozen brass windows and three fading-guitar windows
-`audible` under the source-sound convention. Their late-sound clarification
-named the repeated brass [3.75,4.00)-second playback aid. The late bell-like
-guitar and mallet windows remain `uncertain`. The listener later clarified
-that only clips named `brass` sounded like static and reported instrument-like
-sound for the two fast-decay late aids. A separate Pascal byte audit found
-the exported Win32/Win64 late aids byte-identical, each with zero nonzero PCM
-bytes (SHA256 `20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa`).
-The reported sound cannot be bound to those exported bytes, and exact-zero
-source PCM does not replace a human `not_audible` judgment. The ignored review TSV at
-`build/presence-reference/reviewed-2026-09-23.tsv` binds all eight labels to
-the frozen coordinates. The maintained Pascal checker now prints six-decimal
-RMS, avoiding two last-digit Win32/Win64 differences in its earlier
-nine-decimal output. Checked stable FPC 3.2.2 Win32/Win64 produce identical
-reviewed-packet SHA256 with explicit `role=development`
-`45666b565f71390c50ed0029e93d8992c96335f6c77c89934b38bfc957381c00`
-and pending-packet SHA256
-`eae5a147af9d1f583b0162c0020dee1b8261770ba759af224042c4b091c941c1`,
-with zero unfreed blocks. The [packet evidence](PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22)
-records source scope and limitations. `NS-3_notes_04` remains open: there is
-no reviewed distant-rest negative or audible silence endpoint, no scorer has
-been run and no completion credit is earned.
+The user's numbered mobile review resolved the original-versus-late-aid
+ambiguity. The original fast-decay guitar sounded like a strum (#1), and the
+original mallet had one initial strike (#3); neither whole-clip comment labels
+an unreviewed window. The exact repeated late aids for those notes had no
+audible sound (#2 and #4). The frozen packet now has six `audible` continuation
+or post-control tail windows and two human-reviewed `not_audible` distant
+rests. Checked stable FPC 3.2.2 Win32/Win64 Pascal replay agrees byte for byte
+(reviewed-packet SHA256
+`ab2ee369964d23d88c26f3c4a6cf0f8cefb2908f513efb9d800fdb8c4d337a6b`),
+with zero unfreed blocks. Criterion 2 of
+[NS-3_notes_04](TODO/NS-3_notes_04.md) closes at the declared synthetic
+single-note scope; unsupported attack, short, quiet, repeated, phrase-gap and
+overlap cases remain recorded. The acoustic end of the long-release notes
+remains unknown. At that review-only checkpoint, criteria 3 and 4 still needed
+a source-role consumer and a presence decision separate from pitch identity.
+No task credit was earned.
 
-The checker now carries the frozen source role in each TSV row and rejects
-unsupported roles or a source group crossing roles. All four notes are
-development-exposed; no independent evaluation source is present. This
-source-role preparation advances criterion 3 without closing its independent
-consumer check. Do not use the uncertain late aids to score presence.
-This is one nonclosing batch since criterion 1 closed. Next compare the exact
-source clips and hash-bound late aids with the user; keep labels uncertain
-until the playback identity is resolved.
+The fixed Pascal [activity consumer](../tools/pythian.presence.decision.lpr)
+then passed digital-zero, subfloor and above-floor source-free controls and
+made one eight-window development pass with existing analysis/activity
+defaults. Its six activity-present and two no-activity decisions matched the
+reviewed labels without using pitch or reading labels before decision. Checked
+FPC 3.2.2 Win32/Win64 results matched byte for byte (SHA256
+`3a707b395fdd354cf8a9c9fada3a407d27866661551ea2a740f772bc31b2c97c`),
+with zero unfreed blocks. This closes criterion 4 only as a packet-consumer
+demonstration, with exact-zero negatives and no independent accuracy claim.
+
+The first independent-source attempt stopped before audio. An official NSynth
+valid archive was verified (1,068,767,009 bytes, MD5
+`87e94a00a19b6dbc99cf6d4c0c0cae87`, SHA256
+`00dea2645fbe0069258567da30807a90825e0bab54c077d6481f253096c4e2a0`);
+the checked Pascal metadata selector found only one eligible long-release
+instrument against six fast-decay instruments under the frozen two-per-cohort
+rule. No valid WAV was extracted, reviewed or scored. Criterion 3 and the task
+remain open. The ignored `build/presence-independent/` policy and JSON hash,
+plus the [source record](PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22),
+retain the failed gate. The 1.07 GB ignored archive is still present because
+automatic approval review rejected its deletion; remove that single file when
+local cleanup is available.
+The next bounded attempt will qualify a different accessible source against
+the same frozen two-positive/two-negative metadata gate before reading audio.
+If no such source is practical, record the external source blocker and select
+another ready core task. The failed NSynth valid gate stays stopped; do not
+relax it, inspect its audio or rescore development data. A genuinely different
+selection policy would need separate evidence-backed review and a fresh
+pre-audio freeze.
+
+The ignored review TSV at `build/presence-reference/reviewed-2026-09-23.tsv`
+binds all eight labels to the frozen coordinates. The exact late aids are
+byte-identical and all-zero in PCM (SHA256
+`20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa`).
+The [packet evidence](PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22)
+records the source scope, review sequence and limitations. The checker fixes
+`role=development` for every source group and rejects conflicting roles; no
+independent note-presence evaluation source is in this packet.
 
 The official [NSynth source](https://magenta.withgoogle.com/datasets/nsynth),
 archive and metadata hashes, selection hash, four WAV identities, instrument
@@ -61,11 +85,10 @@ groups, geometry and control timing support criterion 1 of the reference task
 at its bounded synthetic-note scope. Pitch/velocity are renderer metadata
 paired with separate WAVs; the official three-second hold is a dataset-wide
 render control, not a per-note MIDI or physical release trace. Partly heuristic
-quality tags remain distinct from acoustic labels. This closes criterion 1
-and resets the task's nonclosing-batch count. Criteria 2 through 4 remain open:
-reviewed tail/rest coverage, the final source-role and consumer decision, and a
-presence decision distinct from pitch identity. No independent inference
-accuracy or task credit follows.
+quality tags remain distinct from acoustic labels. This closes criterion 1;
+the numbered listening review closes criterion 2, and the fixed activity
+consumer closes criterion 4 at its development scope. Criterion 3 remains open.
+No independent inference accuracy or task credit follows.
 
 ## Accepted local-key/no-key reference packet — 2026-09-23
 

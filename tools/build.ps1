@@ -310,6 +310,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Recorded phrase evaluator compilation failed' }
   & $compilerPath @compilerArgs 'tools/pythian.presence.reference.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Note-presence reference checker compilation failed' }
+  & $compilerPath @compilerArgs 'tools/pythian.presence.decision.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Note-presence decision compilation failed' }
+  & (Join-Path $buildRoot "pythian.presence.decision$executableSuffix") 'controls'
+  if ($LASTEXITCODE -ne 0) { throw 'Note-presence decision controls failed' }
   & $compilerPath @compilerArgs '-Futools' 'tools/pythian.localkey.reference.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Local-key reference checker compilation failed' }
   & (Join-Path $buildRoot "pythian.localkey.reference$executableSuffix") 'controls'

@@ -47,6 +47,80 @@ and [rejected gate-slope rule](../PHRASE-EVALUATION.md#fixed-gate-slope-diagnost
 
 **Dev Notes:**
 
+Current status: criteria 1, 2 and 4 are accepted only at their declared
+synthetic development scopes; criterion 3 and task credit remain open. The
+entries below are reverse-chronological checkpoints. Earlier `uncertain`
+labels, stop instructions and open-criterion counts record their former state
+and are superseded by the numbered review and fixed consumer entries.
+Next deliverable: qualify a different accessible, source-separated archive
+against the same frozen two-positive/two-negative metadata gate before reading
+audio. Stop if no such source is practical and record the external source
+blocker, then select another ready core task. The NSynth valid failure stays
+stopped; do not relax its gate, open its audio or rescore development data.
+Any future distinct selection policy needs a separate evidence-backed review
+and freeze before inspecting or scoring new audio.
+
+- 2026-09-23 independent NSynth valid source screen stopped at the frozen
+  metadata selection gate. The official JSON/WAV archive was verified at
+  1,068,767,009 bytes, published MD5
+  `87e94a00a19b6dbc99cf6d4c0c0cae87` and SHA256
+  `00dea2645fbe0069258567da30807a90825e0bab54c077d6481f253096c4e2a0`;
+  `examples.json` SHA256 was
+  `050e0bf55d1a87eee2abbbc3d273c7f525404c0a51ac378561b905f2da31a7286`.
+  A checked Pascal selector reused the exact prior acoustic, pitch, velocity,
+  quality and distinct-family rules and found only one eligible long-release
+  instrument against six fast-decay instruments. It required two long-release
+  instruments, so selection stopped before extracting, hearing or scoring
+  valid audio. No independent role is admitted by this failed attempt.
+  The private policy and selector remain under ignored
+  `build/presence-independent/`; the large source archive can be reacquired
+  from the [official NSynth page](https://magenta.withgoogle.com/datasets/nsynth).
+  The downloaded 1.07 GB archive still occupies ignored `build/` because
+  automatic approval review rejected its deletion.
+- 2026-09-23 fixed development consumer result: the new maintained Pascal
+  [activity decision tool](../../tools/pythian.presence.decision.lpr) completed
+  its source-free zero, subfloor and above-floor PCM16 controls before one
+  frozen eight-window pass. It used existing analysis/activity defaults and
+  decided activity without pitch identity before opening the review packet.
+  Six `activity_present` and two `no_activity` decisions matched the six
+  audible and two not-audible reviews. Checked FPC 3.2.2 Win32/Win64 output
+  hashes were identical
+  (`3a707b395fdd354cf8a9c9fada3a407d27866661551ea2a740f772bc31b2c97c`)
+  with zero unfreed blocks. Criterion 4 is satisfied as a bounded demonstration
+  that this packet tests a pitch-independent activity decision. Both negatives
+  are exact PCM zero, so no noise rejection, recorded transfer, independent
+  accuracy or acoustic ending follows. Criterion 3 remains open; no task
+  credit is earned.
+- 2026-09-23 prospective consumer batch (before any new activity result): test
+  the fixed default Pascal `AnalyzeAudio` and `AnalyzeAcousticActivity` path as
+  a pitch-independent binary activity observation on the eight already exposed
+  development windows. Analyze each exact 4,000-frame crop independently;
+  decide present iff any activity action is not silence. Keep the existing
+  analysis and activity defaults, including `SilenceRms=0.0001`, unchanged.
+  First require source-free zero, subfloor and above-floor controls and checked
+  deterministic native replay. Then make one eight-window pass, with no tuning:
+  the hypothesis predicts six present and two silent decisions. A miss stops
+  this candidate for diagnosis. Read human labels only for comparison after
+  decisions; report source and role identities and unsupported cases. The
+  cost is one frozen pass, not a search over thresholds. This is development
+  diagnostic evidence, never independent or recorded-phrase accuracy.
+- 2026-09-23 numbered mobile review supersedes the uncertain late-rest labels.
+  The user heard the original fast-decay guitar as a strum (#1) and a single
+  initial strike in the original mallet (#3), while hearing nothing in their
+  exact repeated [3.75,4.00)-second aids (#2 and #4). This distinguishes
+  whole-clip timbre from the frozen late windows. The review TSV now binds six
+  `audible` long-release windows and two human-reviewed `not_audible` distant
+  rests. Checked stable FPC 3.2.2 Win32/Win64 Pascal checkers replayed the
+  reviewed packet byte-identically (SHA256
+  `ab2ee369964d23d88c26f3c4a6cf0f8cefb2908f513efb9d800fdb8c4d337a6b`),
+  with zero unfreed blocks. Criterion 2 is satisfied at the declared synthetic
+  single-note scope: continuation, post-control audible tails and distant
+  rests are explicitly reviewed with source, pitch and time coordinates;
+  attack, short, quiet, repeated, phrase-gap and overlap coverage remain
+  explicitly unsupported. No acoustic ending is inferred from note-off or
+  file end. At this review-only checkpoint, criteria 3 and 4 remained open:
+  no independent source or presence-decision consumer had been demonstrated.
+  No task credit followed.
 - 2026-09-23 role packet and playback discrepancy: the tracked Pascal checker
   now emits `role=development` for all eight frozen rows, rejects unsupported
   roles and conflicting roles within a source group, and reproduces identical
@@ -59,12 +133,11 @@ and [rejected gate-slope rule](../PHRASE-EVALUATION.md#fixed-gate-slope-diagnost
   aids. A separate Pascal audit found both exported late aids byte-identical
   and all-zero in their PCM data (SHA256
   `20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa`).
-  The reported sound cannot be bound to those exported bytes. Keep both
-  `uncertain` labels until playback identity is resolved; no acoustic rest
-  verdict, presence score, criterion 2 closure or task credit follows. This is
-  one nonclosing batch since criterion 1 closed. Next compare the exact source
-  clips and hash-bound late aids with the user; do not relabel or score until
-  the playback identity is clear.
+  The reported sound could not then be bound to those exported bytes. At that
+  checkpoint both labels stayed `uncertain`, with no rest verdict, presence
+  score, criterion 2 closure or task credit. This was one nonclosing batch
+  since criterion 1 closed. The numbered original-versus-aid review above
+  later resolved playback identity and superseded this stop.
 - 2026-09-23 source-bound criterion review: criterion 1 is satisfied at the
   declared synthetic single-note scope. The official CC BY 4.0 NSynth JSON/WAV
   test archive, attribution, archive/metadata hashes, fixed Pascal selection
@@ -76,15 +149,16 @@ and [rejected gate-slope rule](../PHRASE-EVALUATION.md#fixed-gate-slope-diagnost
   3-second hold is a dataset-wide render control, not a per-note MIDI or
   physical release trace. Quality tags are partly heuristic, and the audible
   ending remains unknown. This closes criterion 1 only at the synthetic
-  single-note scope and resets the task's nonclosing-batch count. Criteria 2,
-  3 and 4 remain open: reviewed tail/rest coverage, the final source-role and
+  single-note scope and resets the task's nonclosing-batch count. At that
+  checkpoint, criteria 2, 3 and 4 remained open: reviewed tail/rest coverage,
+  the final source-role and
   consumer decision, and a presence decision distinct from pitch identity. No
   independent inference accuracy or task credit follows.
 - 2026-09-23 uncertain-rest clarification: the listener corrected the earlier
-  interpretation and said only clips named `brass` sounded like static. Do not
-  attribute that timbre to either fast-decay late playback aid. Preserve both
-  `uncertain` judgments; their exact-zero source PCM is separate from the
-  listener's reported playback.
+  interpretation and said only clips named `brass` sounded like static. That
+  timbre did not apply to either fast-decay late playback aid. Both judgments
+  stayed `uncertain` at this checkpoint; the later numbered review resolved
+  them without inferring a verdict from their exact-zero source PCM.
 - 2026-09-23 reviewed-window checkpoint: the user labeled all three frozen
   brass windows and all three fading-guitar windows `audible` under the
   source-sound convention. They explicitly identified the repeated brass
@@ -98,9 +172,9 @@ and [rejected gate-slope rule](../PHRASE-EVALUATION.md#fixed-gate-slope-diagnost
   [packet](../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22)
   retains the exact scope. Neither `uncertain` rest window is a human-reviewed
   `not_audible` example despite exact-zero PCM, so criterion 2 and task credit
-  remain open. Stop this reviewed packet here; obtain independently reviewed
-  distant-rest evidence before presence scoring. Do not infer a silence
-  endpoint from file end or MIDI note-off.
+  remained open then. The later numbered review supplied the human rest labels
+  before the fixed activity comparison. No silence endpoint was inferred from
+  file end or MIDI note-off.
 - 2026-09-23 listener wording correction: the earlier question asked for an
   audible *pitched note*, conflating source audibility with pitch identity.
   The user clarified that the brass is audible source sound but resembles

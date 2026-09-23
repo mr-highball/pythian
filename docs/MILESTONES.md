@@ -391,8 +391,9 @@ after two failed source-evidence screens; the
 [key-decision task](TODO/NS-3_context_01.md) has a stopped frozen development
 candidate and remains open. The next core deliverable is the
 [note-presence reference task](TODO/NS-3_notes_04.md): six long-release windows
-are reviewed audible and two fast-decay late windows remain uncertain. A
-reviewed distant-rest negative is still needed. Do
+are reviewed audible and two fast-decay late windows are reviewed
+`not_audible`. A fixed Pascal activity consumer matched all eight development
+windows; independent source-role evidence remains open. Do
 not expand their stopped packets or restart rejected scorer variants. The
 [register task](TODO/NS-3_notes_01.md) requires independently discriminating
 evidence and a prospective ambiguity/coverage rule before another scored

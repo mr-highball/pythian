@@ -113,6 +113,8 @@ and [WAV-03-TIMBRE](MILESTONES.md#wav-03-timbre); held-out recordings remain unu
 
 This packet uses the four fixed, verified 4.0-second WAVs and exact source
 identities in [fixed-gate release controls](#fixed-gate-release-controls--2026-09-22).
+The heading records its initial partial-review checkpoint; the subsequent
+numbered review resolved the last two time-local labels.
 The official source documents note-off at **3.000 seconds**. The WAVs are in
 ignored `build/presence-contrast/nsynth-test/audio/`; the cited source archive,
 selection policy, SHA256 values, formats and Pascal audit permit reacquisition.
@@ -129,12 +131,15 @@ being fitted to them.
 
 The user reviewed the four named clips in the 2026-09-22 handoff chat. They
 described the brass as extremely harsh/noisy, the long-release guitar as a
-strummed sound fading away, and the fast-decay guitar as a tiny bell-like hit
-rather than a recognizable guitar. They reported the mallet clip as not
-audible. On follow-up, they reported that the brass sound fades **after** the
+strummed sound fading away, and initially described the fast-decay guitar as a
+tiny bell-like hit and the mallet as inaudible. In a later numbered review of
+the original clips and exact late-window aids, they described the original
+fast-decay guitar as a guitar strum and heard a single initial mallet strike.
+These whole-clip impressions do not label other frozen windows. On follow-up,
+they reported that the brass sound fades **after** the
 3.0-second note-off. This supports a perceived post-control decay somewhere
 after that mark; it does not identify an audible end time. The metadata's
-`guitar` family does not override the listener's bell-like timbre observation.
+`guitar` family does not override either listener timbre observation.
 The playback level/device were not reported.
 
 The user's exact-window responses label all three windows of both
@@ -143,18 +148,22 @@ The user's exact-window responses label all three windows of both
 in all three repeated windows despite describing it as unpleasant old-TV/radio
 static. Their subsequent 3.75-second clarification explicitly named
 `brass_acoustic_046-084-075--late-tail-3p75-4x.wav`; it did not label either
-fast-decay clip audible. Both fast-decay late windows were answered
+fast-decay clip audible. Both fast-decay late windows were initially answered
 **uncertain**. The user later clarified that only clips with `brass` in their
-names sounded like static, and reported hearing instrument-like sound when
-asked about the two late fast-decay aids. An independent Pascal byte audit
-found the Win32 and Win64 guitar/mallet late aids identical to one another:
+names sounded like static. A subsequent numbered mobile review distinguished
+each original four-second clip from its repeated [3.75,4.00)-second aid:
+the guitar original sounded like a strum (#1), its late aid had no audible
+sound (#2), the mallet original had one initial strike (#3), and its late aid
+had no audible sound (#4). The two frozen late-rest labels are therefore
+`not_audible`, based on that exact playback review. An independent Pascal byte
+audit found the Win32 and Win64 guitar/mallet late aids identical to one another:
 SHA256 `20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa`,
-with zero nonzero PCM bytes in each 64,044-byte WAV. The audible report and
-the exported bytes cannot yet be matched to the same playback. Keep both
-time-local labels `uncertain`; do not attribute the report to either frozen
-zero-sample source interval. The six audible judgments support source activity
-after the documented control note-off for the long-release notes, including the final
-quarter-second. They do not establish an acoustic silence endpoint.
+with zero nonzero PCM bytes in each 64,044-byte WAV. The earlier ambiguous
+instrument-like report did not distinguish the originals from the aids; the
+numbered review resolves that playback identity. The six audible judgments
+support source activity after the documented control note-off for the
+long-release notes, including the final quarter-second. They do not establish
+an acoustic silence endpoint.
 
 A 2026-09-23 mobile listening aid under ignored `build/presence-review-aid/`
 copies each of the five then-pending 4,000-frame PCM16 windows four times, separated
@@ -165,7 +174,7 @@ output WAV hashes match across targets with zero reported leaks. Direct PCM
 counts find 3,998 / 3,997 / 3,981 nonzero frames in the three brass windows,
 but **zero nonzero frames** in each late fast-decay guitar and mallet window.
 Those two source intervals are exact digital silence, a physical PCM fact;
-their listener labels are uncertain. The brass counts say
+their listener labels are now `not_audible`. The brass counts say
 nothing about an identifiable pitch. The aid is for reviewing the already
 frozen windows, not a replacement reference or an inference result.
 
@@ -185,9 +194,10 @@ release notes still have measured late-window energy, and the final encoded
 sample is zero. Unknown windows remain unknown; absence of an example is not
 evidence of rest. The four clips are all development reference material.
 Attack, short, quiet continuation, repeated notes, gaps in recorded phrases
-and source-independent transfer remain uncovered. No score, decoder or task
-credit follows until the review, checker and source-separated roles satisfy
-`NS-3_notes_04`.
+and source-independent transfer remain uncovered. The fixed activity
+comparison below is a development diagnostic; no independent score, decoder
+or task credit follows until the source-separated role requirement in
+`NS-3_notes_04` is satisfied.
 
 The tracked Pascal [reference checker](../tools/pythian.presence.reference.lpr)
 binds the four WAV SHA256 identities, mono 16-kHz PCM16/64,000-frame geometry,
@@ -217,13 +227,44 @@ Win64 produce byte-identical current packets with the explicit `role` column:
 pending SHA256
 `eae5a147af9d1f583b0162c0020dee1b8261770ba759af224042c4b091c941c1`,
 reviewed SHA256
-`45666b565f71390c50ed0029e93d8992c96335f6c77c89934b38bfc957381c00`,
+`ab2ee369964d23d88c26f3c4a6cf0f8cefb2908f513efb9d800fdb8c4d337a6b`,
 with zero unfreed blocks. The ignored review TSV under
 `build/presence-reference/reviewed-2026-09-23.tsv` contains the six `audible`
-and two `uncertain` judgments, not an inferred `not_audible` label. Earlier
+and two human-reviewed `not_audible` judgments. Earlier
 parser validation passed an all-`uncertain` review and rejected a one-frame
-boundary change before packet output. No reviewed distant-rest negative or
-acoustic silence endpoint is available, so the reference task remains open.
+boundary change before packet output. These are reviewed distant-rest negatives
+for the two fast-decay sources. No acoustic silence endpoint for the two
+long-release notes is available; the reference task still needs an independent
+source role and admitted consumer check.
+
+The fixed Pascal [activity consumer](../tools/pythian.presence.decision.lpr)
+uses the existing default 4,096-frame analysis window, 1,024-frame hop,
+`SilenceRms=0.0001` and activity options on each exact 4,000-frame crop.
+It decides activity from the silence/action flags without pitch identity and
+computes all eight decisions before opening the reviewed reference TSV.
+Source-free digital-zero, below-floor and above-floor PCM16 controls passed.
+One frozen development pass yielded six `activity_present` and two
+`no_activity` decisions, matching the six audible and two not-audible reviews.
+Checked stable FPC 3.2.2 Win32/Win64 outputs were byte-identical (SHA256
+`3a707b395fdd354cf8a9c9fada3a407d27866661551ea2a740f772bc31b2c97c`),
+with zero unfreed blocks. Both negative windows are exact digital silence;
+this is a bounded packet-consumer demonstration, not a noise-robust or
+independent note-presence score. It establishes neither an acoustic ending
+nor recorded-phrase performance.
+
+An independent-source screen was stopped before audio. The official NSynth
+valid JSON/WAV archive (1,068,767,009 bytes, SHA256
+`00dea2645fbe0069258567da30807a90825e0bab54c077d6481f253096c4e2a0`)
+matched its published MD5 `87e94a00a19b6dbc99cf6d4c0c0cae87`.
+Its `examples.json` (8,838,509 bytes, SHA256
+`050e0bf55d1a87eee2abbbc3d273c7f525404c0a51ac378561b905f2da31a7286`)
+was read by a checked Pascal copy of the previously frozen test selector.
+With the exact acoustic, pitch, velocity, quality and distinct-family filters,
+only one positive instrument and six negative instruments qualified. The
+predeclared two-positive-instrument requirement therefore failed. No valid
+WAV was extracted, heard or scored; this attempt supplies no evaluation role
+or independent accuracy. The private selection policy and failed selector are
+under ignored `build/presence-independent/` for diagnosis.
 
 ## Guitar-TECHS P1 reference screen stopped — 2026-09-22
 

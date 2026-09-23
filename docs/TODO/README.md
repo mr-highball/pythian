@@ -21,8 +21,9 @@ tasks, changing credits or accepting new capability. The accepted local-key
 reference packet exposed a failed frozen development candidate in
 [NS-3_context_01](NS-3_context_01.md). The next core deliverable follows the
 existing [note-presence reference](NS-3_notes_04.md): six exact long-release
-windows are reviewed audible, while two late fast-decay windows are uncertain.
-An independently reviewed distant-rest negative is still needed. Style-reference
+windows are reviewed audible, and two late fast-decay windows are reviewed
+`not_audible`. A fixed Pascal activity consumer matched all eight development
+windows; independent source-role evidence remains open. Style-reference
 specification waits for grounded musical annotations. Note research retains
 its stopped proposals and progress-checkpoint count.
 
