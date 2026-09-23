@@ -21,6 +21,26 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Independent NSynth train packet prepared — 2026-09-23
+
+The [source-separated packet](PHRASE-EVALUATION.md#nsynth-train-source-separated-packet)
+has passed its frozen metadata gate on a distinct NSynth instrument partition.
+Pascal verified the 23.8 GB JSON/WAV archive against its source-object MD5,
+recorded SHA256, extracted only the 201 MB JSON and four selected WAVs, and
+checked all four WAV hashes and full PCM geometry. The locked selection has
+two `long_release` instruments (flute and guitar) and two `fast_decay`
+instruments (bass and brass), with no overlap with the exposed test groups.
+All four train groups have the reserved `independent_evaluation` role. Eight
+exact-window, unchanged-gain repeated listening aids are ready under ignored
+`build/presence-independent-train/listening-aids/`; their numbered human review
+is pending. The maintained Pascal checker has reproduced a pending-role packet
+on stable checked Win32/Win64 without changing its prior reviewed development
+output; both targets agree on the new and old packet hashes. No train presence
+score has run. Next, bind the review including
+uncertainty to the Pascal packet checker, then apply the existing fixed
+activity consumer once without tuning and report unsupported cases. Criterion 3
+of [NS-3_notes_04](TODO/NS-3_notes_04.md) and task credit remain open.
+
 ## Note-presence exact-window review — 2026-09-23
 
 The user's numbered mobile review resolved the original-versus-late-aid
@@ -59,13 +79,11 @@ instrument against six fast-decay instruments under the frozen two-per-cohort
 rule. No valid WAV was extracted, reviewed or scored. Criterion 3 and the task
 remain open. The ignored `build/presence-independent/` policy and JSON hash,
 plus the [source record](PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22),
-retain the failed gate. The 1.07 GB ignored archive is still present because
-automatic approval review rejected its deletion; remove that single file when
-local cleanup is available.
-The next bounded attempt will qualify a different accessible source against
-the same frozen two-positive/two-negative metadata gate before reading audio.
-If no such source is practical, record the external source blocker and select
-another ready core task. The failed NSynth valid gate stays stopped; do not
+retain the failed gate. The 1.07 GB ignored archive was later removed during
+local cleanup; the policy, JSON hash and reacquisition path remain recorded.
+The next bounded attempt was the distinct NSynth train packet above, using
+the same frozen two-positive/two-negative gate. The failed NSynth valid gate
+stays stopped; do not
 relax it, inspect its audio or rescore development data. A genuinely different
 selection policy would need separate evidence-backed review and a fresh
 pre-audio freeze.

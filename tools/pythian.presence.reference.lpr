@@ -49,7 +49,7 @@ const
   CRate = 16000;
   CFrames = 64000;
   CNoteOff = 48000;
-  CNotes: array[0..3] of TNoteSpec = (
+  CDevelopmentNotes: array[0..3] of TNoteSpec = (
     (Id: 'brass_acoustic_046-084-075'; SourceGroup: 'brass_acoustic_046';
       Role: 'development';
       Sha256: 'ff8300e7388f16b1476f23da0c93683d445bf764c85961ef99f5293f74ba2180'),
@@ -63,6 +63,20 @@ const
       Role: 'development';
       Sha256: '2e72192db98fba6464cfed3977174d01c62649ef29d510e6d40a61c54c5d82bf')
   );
+  CTrainNotes: array[0..3] of TNoteSpec = (
+    (Id: 'flute_acoustic_028-049-075'; SourceGroup: 'flute_acoustic_028';
+      Role: 'independent_evaluation';
+      Sha256: 'ee8308494d159996eb74ab878ffcb6b4f4f736cf2ae09e427a45f66ee271ef8d'),
+    (Id: 'guitar_acoustic_008-048-075'; SourceGroup: 'guitar_acoustic_008';
+      Role: 'independent_evaluation';
+      Sha256: '39d8f9db0976b5b784c84817bb97e73299c05324935b4ac162b8518deba350ef'),
+    (Id: 'bass_acoustic_000-059-075'; SourceGroup: 'bass_acoustic_000';
+      Role: 'independent_evaluation';
+      Sha256: 'b6b93a65946943eb0d445f1d4e9d5d80843090a607e8d531d94a65c7deebef3b'),
+    (Id: 'brass_acoustic_040-052-075'; SourceGroup: 'brass_acoustic_040';
+      Role: 'independent_evaluation';
+      Sha256: '9403cd938c72c6dffd803d5636acd678dba5a61000987260019e0b9e878501b1')
+  );
   CWindows: array[0..7] of TWindowSpec = (
     (NoteIndex: 0; Name: 'continuation'; StartFrame: 40000; EndFrame: 44000),
     (NoteIndex: 0; Name: 'early_tail'; StartFrame: 48000; EndFrame: 52000),
@@ -73,6 +87,9 @@ const
     (NoteIndex: 2; Name: 'late_rest'; StartFrame: 60000; EndFrame: 64000),
     (NoteIndex: 3; Name: 'late_rest'; StartFrame: 60000; EndFrame: 64000)
   );
+
+var
+  GNotes: array[0..3] of TNoteSpec;
 
 function FileHash(const APath: String): String;
 var
@@ -91,28 +108,43 @@ var
   LIndex: Integer;
   LOther: Integer;
 begin
-  for LIndex := Low(CNotes) to High(CNotes) do
+  for LIndex := Low(GNotes) to High(GNotes) do
   begin
-    if (CNotes[LIndex].Role <> 'development') and
-      (CNotes[LIndex].Role <> 'independent_evaluation') then
+    if (GNotes[LIndex].Role <> 'development') and
+      (GNotes[LIndex].Role <> 'independent_evaluation') then
     begin
       raise Exception.Create('Unsupported frozen note role: ' +
-        CNotes[LIndex].Id);
+        GNotes[LIndex].Id);
     end;
-    for LOther := LIndex + 1 to High(CNotes) do
+    if (GNotes[LIndex].Role <> GNotes[0].Role) or
+      (Pos(GNotes[LIndex].SourceGroup + '-', GNotes[LIndex].Id) <> 1) then
     begin
-      if (CNotes[LIndex].SourceGroup = CNotes[LOther].SourceGroup) and
-        (CNotes[LIndex].Role <> CNotes[LOther].Role) then
+      raise Exception.Create('Inconsistent frozen source group or role');
+    end;
+    for LOther := LIndex + 1 to High(GNotes) do
+    begin
+      if (GNotes[LIndex].SourceGroup = GNotes[LOther].SourceGroup) then
       begin
-        raise Exception.Create('Frozen source group crosses note roles: ' +
-          CNotes[LIndex].SourceGroup);
+        raise Exception.Create('Frozen source group repeated: ' +
+          GNotes[LIndex].SourceGroup);
+      end;
+    end;
+    for LOther := Low(CDevelopmentNotes) to High(CDevelopmentNotes) do
+    begin
+      if GNotes[LIndex].Role = 'independent_evaluation' then
+      begin
+        if GNotes[LIndex].SourceGroup =
+          CDevelopmentNotes[LOther].SourceGroup then
+        begin
+          raise Exception.Create('Independent group overlaps development');
+        end;
       end;
     end;
   end;
   for LIndex := Low(CWindows) to High(CWindows) do
   begin
-    if (CWindows[LIndex].NoteIndex < Low(CNotes)) or
-      (CWindows[LIndex].NoteIndex > High(CNotes)) or
+    if (CWindows[LIndex].NoteIndex < Low(GNotes)) or
+      (CWindows[LIndex].NoteIndex > High(GNotes)) or
       (CWindows[LIndex].StartFrame < 0) or
       (CWindows[LIndex].StartFrame >= CWindows[LIndex].EndFrame) or
       (CWindows[LIndex].EndFrame > CFrames) then
@@ -230,7 +262,7 @@ begin
       ExtractStrings([#9], [], PChar(LLines[LIndex + 1]), LFields);
       LWindow := CWindows[LIndex];
       if (LFields.Count <> 5) or
-        (LFields[0] <> CNotes[LWindow.NoteIndex].Id) or
+        (LFields[0] <> GNotes[LWindow.NoteIndex].Id) or
         (LFields[1] <> LWindow.Name) or
         (LFields[2] <> IntToStr(LWindow.StartFrame)) or
         (LFields[3] <> IntToStr(LWindow.EndFrame)) then
@@ -259,10 +291,23 @@ var
   LFormat: TFormatSettings;
   LNoteIndex, LWindowIndex: Integer;
   LWindow: TWindowSpec;
+  LTrain: Boolean;
 begin
-  if ParamCount <> 3 then
+  LTrain := (ParamCount = 4) and (ParamStr(4) = 'train');
+  if (ParamCount <> 3) and not LTrain then
   begin
-    raise Exception.Create('Usage: pythian.presence.reference AUDIO_DIR OUTPUT.tsv REVIEW.tsv|-');
+    raise Exception.Create('Usage: pythian.presence.reference AUDIO_DIR OUTPUT.tsv REVIEW.tsv|- [train]');
+  end;
+  for LNoteIndex := Low(GNotes) to High(GNotes) do
+  begin
+    if LTrain then
+    begin
+      GNotes[LNoteIndex] := CTrainNotes[LNoteIndex];
+    end
+    else
+    begin
+      GNotes[LNoteIndex] := CDevelopmentNotes[LNoteIndex];
+    end;
   end;
   CheckWindows;
   LReviews := TStringList.Create;
@@ -273,17 +318,17 @@ begin
     LFormat.DecimalSeparator := '.';
     LOutput.Add('source_group'#9'role'#9'note_id'#9'wave_sha256'#9'window'#9 +
       'start_frame'#9'end_frame'#9'rms'#9'review');
-    for LNoteIndex := Low(CNotes) to High(CNotes) do
+    for LNoteIndex := Low(GNotes) to High(GNotes) do
     begin
-      LSamples := ReadNote(ParamStr(1), CNotes[LNoteIndex]);
+      LSamples := ReadNote(ParamStr(1), GNotes[LNoteIndex]);
       for LWindowIndex := Low(CWindows) to High(CWindows) do
       begin
         LWindow := CWindows[LWindowIndex];
         if LWindow.NoteIndex = LNoteIndex then
         begin
-          LOutput.Add(CNotes[LNoteIndex].SourceGroup + #9 +
-            CNotes[LNoteIndex].Role + #9 + CNotes[LNoteIndex].Id + #9 +
-            CNotes[LNoteIndex].Sha256 + #9 +
+          LOutput.Add(GNotes[LNoteIndex].SourceGroup + #9 +
+            GNotes[LNoteIndex].Role + #9 + GNotes[LNoteIndex].Id + #9 +
+            GNotes[LNoteIndex].Sha256 + #9 +
             LWindow.Name + #9 + IntToStr(LWindow.StartFrame) + #9 +
             IntToStr(LWindow.EndFrame) + #9 +
             FormatFloat('0.000000', WindowRms(LSamples, LWindow), LFormat) +

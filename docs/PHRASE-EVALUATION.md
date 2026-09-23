@@ -266,6 +266,63 @@ WAV was extracted, heard or scored; this attempt supplies no evaluation role
 or independent accuracy. The private selection policy and failed selector are
 under ignored `build/presence-independent/` for diagnosis.
 
+<a id="nsynth-train-source-separated-packet"></a>
+## NSynth train source-separated packet prepared — 2026-09-23
+
+The [NSynth publisher](https://magenta.tensorflow.org/datasets/nsynth) provides
+separate train, valid and test JSON/WAV partitions with disjoint instruments
+under CC BY 4.0. The full train JSON/WAV archive was acquired only as data;
+TensorFlow, TFRecord and third-party inference runtimes were not executed.
+The ignored `build/presence-independent-train/SELECTION-POLICY.md` froze the
+same two-positive/two-negative metadata gate used on the exposed test packet
+before train metadata or audio was read. Its train archive has 23,815,298,079
+bytes, Pascal MD5 `fde6665a93865503ba598b9fac388660` matching the source
+object ETag, and Pascal SHA256
+`15c5100fc40c3a262f9b42707c15ffed30b8fec58c0d9b88d4136f6cb1fddefe`.
+Only `examples.json` and four selected WAVs were extracted by a checked Pascal
+TAR/GZIP reader; the full dataset was not expanded. The metadata has
+201,420,766 bytes and SHA256
+`a8182e084aa338d764f64f6a283bd1778d358e913a7074294110e9ec601e0087`.
+
+The frozen Pascal selector found nine eligible `long_release` instruments and
+54 eligible `fast_decay` instruments. Its selection file SHA256 is
+`aa25c9cc1fe6a2ab4b3ad7df67165be5602b9b8b4e268ef99ee400866a35412e`.
+All four selected groups are reserved for `independent_evaluation`; none is an
+exposed test-development instrument. The note identities and WAV SHA256s are:
+
+| Metadata cohort | Source group and note | WAV SHA256 |
+| --- | --- | --- |
+| long release | flute `flute_acoustic_028-049-075` | `ee8308494d159996eb74ab878ffcb6b4f4f736cf2ae09e427a45f66ee271ef8d` |
+| long release | guitar `guitar_acoustic_008-048-075` | `39d8f9db0976b5b784c84817bb97e73299c05324935b4ac162b8518deba350ef` |
+| fast decay | bass `bass_acoustic_000-059-075` | `b6b93a65946943eb0d445f1d4e9d5d80843090a607e8d531d94a65c7deebef3b` |
+| fast decay | brass `brass_acoustic_040-052-075` | `9403cd938c72c6dffd803d5636acd678dba5a61000987260019e0b9e878501b1` |
+
+The Pascal WAV reader confirmed each 128,044-byte source is mono PCM16 at
+16 kHz with 64,000 frames and fully decodes. The same eight coordinates as the
+development packet were frozen before audio: continuation [40000,44000),
+early post-control tail [48000,52000), late tail [60000,64000) for each
+long-release note, and a [60000,64000) rest candidate for each fast-decay note.
+The checked stable FPC 3.2.2 Win32/Win64 Pascal listening aids repeat exact
+source bytes four times at unchanged gain with digital-silence gaps; all eight
+output hashes match across targets and both runs report zero unfreed blocks.
+The bass and brass candidate windows
+are exact PCM zero; the six long-release windows have nonzero PCM, including
+their late quarter-second. These are physical sample facts, not acoustic
+listening labels. The maintained Pascal packet checker now accepts an explicit
+`train` mode, verifies these four source identities and roles, and produces an
+eight-row `pending` packet with SHA256
+`943c97eb7d2d15b59d2e8fcba37fc1fde761e8fd021c05cdcfd111db2e14f786`
+on checked stable Win32/Win64. Its prior reviewed development output remains
+byte-identical on both targets (SHA256
+`ab2ee369964d23d88c26f3c4a6cf0f8cefb2908f513efb9d800fdb8c4d337a6b`);
+all four runs reported zero unfreed blocks. A numbered user review is pending;
+no independent presence
+decision or score has been run. Source control note-off remains a separate
+three-second renderer fact, not an acoustic endpoint. Criterion 3 of
+[NS-3_notes_04](TODO/NS-3_notes_04.md) and task credit remain open pending
+reviewed labels, a frozen native packet checker and one held-out fixed consumer
+pass with unsupported coverage stated.
+
 ## Guitar-TECHS P1 reference screen stopped — 2026-09-22
 
 After the known-gate slope stop, [NS-3_notes_04](TODO/NS-3_notes_04.md) now

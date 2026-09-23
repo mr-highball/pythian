@@ -52,14 +52,28 @@ synthetic development scopes; criterion 3 and task credit remain open. The
 entries below are reverse-chronological checkpoints. Earlier `uncertain`
 labels, stop instructions and open-criterion counts record their former state
 and are superseded by the numbered review and fixed consumer entries.
-Next deliverable: qualify a different accessible, source-separated archive
-against the same frozen two-positive/two-negative metadata gate before reading
-audio. Stop if no such source is practical and record the external source
-blocker, then select another ready core task. The NSynth valid failure stays
-stopped; do not relax its gate, open its audio or rescore development data.
-Any future distinct selection policy needs a separate evidence-backed review
-and freeze before inspecting or scoring new audio.
+Next deliverable: bind the pending numbered human review of the prepared
+independent NSynth train packet to a Pascal checker, then run the fixed
+pitch-independent activity consumer once without tuning. Report unsupported
+coverage and every miss. The failed NSynth valid gate stays stopped; do not
+relax it, open its audio or rescore development data. Any future distinct
+selection policy needs separate evidence-backed review and a pre-audio freeze.
 
+- 2026-09-23 independent NSynth train source packet passed the same frozen
+  metadata gate before its WAVs were extracted: nine eligible long-release
+  instruments, 54 fast-decay instruments, and selected flute/guitar positive
+  versus bass/brass negative source groups disjoint from exposed test groups.
+  Pascal verified the complete 23.8 GB archive, extracted only metadata and
+  four selected WAVs, checked their hashes and full PCM geometry, and prepared
+  eight exact, unchanged-gain repeated listening aids. The maintained packet
+  checker now binds the independent roles and eight pending windows on checked
+  stable Win32/Win64 with matching hashes, while preserving the previous
+  development packet hash. The
+  [source record](../PHRASE-EVALUATION.md#nsynth-train-source-separated-packet)
+  has identities, coordinates and limits. All four groups are reserved as
+  independent evaluation material; their acoustic labels are still pending
+  human review, and no independent scorer has run. Criterion 3 and task credit
+  remain open.
 - 2026-09-23 independent NSynth valid source screen stopped at the frozen
   metadata selection gate. The official JSON/WAV archive was verified at
   1,068,767,009 bytes, published MD5
@@ -75,8 +89,8 @@ and freeze before inspecting or scoring new audio.
   The private policy and selector remain under ignored
   `build/presence-independent/`; the large source archive can be reacquired
   from the [official NSynth page](https://magenta.withgoogle.com/datasets/nsynth).
-  The downloaded 1.07 GB archive still occupies ignored `build/` because
-  automatic approval review rejected its deletion.
+  The downloaded 1.07 GB archive was later removed during local cleanup;
+  the policy, metadata hash and official reacquisition path remain recorded.
 - 2026-09-23 fixed development consumer result: the new maintained Pascal
   [activity decision tool](../../tools/pythian.presence.decision.lpr) completed
   its source-free zero, subfloor and above-floor PCM16 controls before one
