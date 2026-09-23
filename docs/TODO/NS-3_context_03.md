@@ -51,6 +51,16 @@ Starting evidence: [local-key reference study](../TONAL.md#local-key-reference-c
 
 **Dev Notes:**
 
+- 2026-09-23 direct ambiguity qualification: the [exact audio-annotator
+  conflict intervals](../TONAL.md#audio-annotator-conflict-intervals--2026-09-23)
+  in D911-02 and D911-16 provide two distinct composition groups with all
+  three source-matched audio labels present and discordant. Five half-open
+  spans total 152,145 and 84,231 frames; a checked Pascal audit verified
+  their labels/coordinates in byte-identical fresh development reports.
+  This completes criteria 1 and 2 for the task's **ambiguous** alternative,
+  alongside the already published stable supported keys and D911-16 change.
+  It does not establish acoustic no-key truth. Criterion 5 alone remains open;
+  no task or milestone credit changes.
 - 2026-09-23 reserved interval replay: the [Pascal packet checker](../TONAL.md#reserved-interval-coordinate-replay--2026-09-23)
   now reads the two hash-bound evaluation WAV/annotation groups under the
   frozen roles and reproduces all source-frame label boundaries, coverage

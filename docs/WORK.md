@@ -311,6 +311,19 @@ unresolved. Criterion 5 and the remaining no-key/ambiguous source qualification
 need a separate scoring policy and acoustic evidence. No task or milestone
 credit changes.
 
+The next reference-qualification batch identified five **fully covered**
+audio-local-key annotator conflicts in the exact D911-02 and D911-16 HU33
+recordings. The [source-clock table](TONAL.md#audio-annotator-conflict-intervals--2026-09-23)
+retains all three labels and half-open frames: 152,145 conflict frames in 02
+and 84,231 in 16. A checked Pascal audit matched fresh development reports
+byte for byte to the accepted artifacts. These are two distinct
+composition-group *ambiguous* references under NS-3_context_03 criteria 1/2;
+they are not expert acoustic no-key intervals. With the already published
+stable keys and D911-16 unanimous change, criteria 1–4 are met. Criterion 5
+still needs separate supported-key, abstention-on-conflict and change
+denominators before the task can earn credit. The current packet cannot
+support a measured acoustic no-key rate.
+
 ## NS-5 listening-protocol criterion — 2026-09-23
 
 Focused specification QA for [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md)

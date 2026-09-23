@@ -810,9 +810,40 @@ silence or consensus no-key. Leading/trailing gaps and unsupported modes remain
 unlabelled; this packet supports major/minor keys only. The selected regions
 are development evidence and cannot set an independent accuracy or false-
 admission rate. This completes source/edition and reviewed interval
-qualification for these two development groups; the maintained Pascal packet
-checker, held-out recording qualification and separate scoring denominators
-remain open in [NS-3_context_03](TODO/NS-3_context_03.md).
+qualification for these two development groups. The later Pascal checker and
+reserved-group replay close group isolation and coordinate reproduction;
+separate scoring denominators remain open in
+[NS-3_context_03](TODO/NS-3_context_03.md).
+
+### Audio-annotator conflict intervals — 2026-09-23
+
+For an operational *ambiguous reference* require all three original HU33
+audio-local-key annotations to cover an interval and at least one root or mode
+to differ. This is a direct conflict between labels assigned to the acquired
+recording, distinct from an ann2 score-transfer gap. It justifies testing an
+estimator's ability to abstain; it does not prove the sound has no tonal center.
+The annotators saw earlier analyses, so their labels are not independent votes.
+Preserve the original spelling and all alternatives.
+
+| Development group | Original seconds [start, end) | Original frames [start, end) | Ann1 | Ann2 | Ann3 |
+| --- | --- | ---: | --- | --- | --- |
+| D911-02 HU33 | 18.86–21.84 | 415,863–481,572 | `A#:maj` | `A#:maj` | `G:min` |
+| D911-02 HU33 | 21.84–22.66 | 481,572–499,653 | `A#:maj` | `A#:maj` | `D:min` |
+| D911-02 HU33 | 22.66–25.62 | 499,653–564,921 | `D:min` | `A#:maj` | `D:min` |
+| D911-02 HU33 | 61.22–61.36 | 1,349,901–1,352,988 | `G:min` | `G:min` | `G:maj` |
+| D911-16 HU33 | 53.52–57.34 | 1,180,116–1,264,347 | `D:maj` | `D:min` | `D:min` |
+
+The two composition groups contribute 152,145 and 84,231 source frames of
+fully covered label conflict. The maintained Pascal partition reproduces these
+spans from the exact source hashes above; an ignored Pascal audit compared its
+two fresh development reports byte for byte to the previously accepted reports
+(`e3c3f71cc6d56023498dffdf60f0349e2a786d92db049b680e809f73b78b4936`
+and `e92896a0ea0d762d7bc8d0d290a9992de47c3b5a7d9004f80eb502e21d44dae0`).
+Together with the published stable-key and D911-16 change intervals, these
+direct audio-annotation conflicts satisfy the [reference task's](TODO/NS-3_context_03.md)
+two tonal-group and two *ambiguous*-group alternatives in criteria 1 and 2.
+They supply no expert acoustic no-key denominator; one must be acquired
+separately before making a no-key performance claim.
 
 Focused checked FPC 3.2.2 Win64 QA replayed the current WAV, three audio CSVs
 per song, README, and both notices against their exact SHA-256 values, then
