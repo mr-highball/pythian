@@ -107,6 +107,18 @@ variation is authorized by the existing evidence.
 
 **Dev Notes:**
 
+- 2026-09-23 NSynth octave-source gate stopped: a
+  [metadata-only Pascal inventory](../PHRASE-EVALUATION.md#nsynth-acoustic-flute-octave-inventory-stopped--2026-09-23)
+  checked exact same-instrument acoustic-flute octave pairs in the approved
+  train and development-exposed test partitions before any WAV extraction.
+  The fixed source-group gate required three train instruments and one
+  instrument-disjoint test instrument at pitches 48..84 and velocity 75/100,
+  excluding a flute instrument reserved for presence evaluation. Train had
+  33 qualifying instruments and 783 pairs; test had none. Stop this source
+  route without relaxing selection or treating the train pairs as independent
+  validation. No register observation, criterion or task credit follows;
+  the existing requirement for contrasting source-grounded evidence and a
+  prospective ambiguity/coverage contract remains.
 - 2026-09-23 cross-part attribution stop: the [frozen source-bound Pascal
   screen](../PHRASE-EVALUATION.md#cross-part-register-peak-attribution-screen--2026-09-23)
   checked simultaneous raw violin annotations and WAV at all 96 saved flute

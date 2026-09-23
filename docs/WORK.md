@@ -21,6 +21,33 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Acoustic-flute octave source gate — 2026-09-23
+
+With the reviewed GuitarSet packet still pending, a separate non-listening
+source feasibility check asked whether approved NSynth metadata could provide
+instrument-disjoint acoustic-flute octave contrasts for
+[NS-3_notes_01](TODO/NS-3_notes_01.md) criterion 1. Its fixed deliverable was
+an exact metadata inventory, not a register inference result. The gate
+required three train instruments and one test instrument, same-instrument
+pitch pairs an octave apart in 48..84 at velocity 75 or 100, excluding the
+flute group already reserved for presence evaluation. Failure would stop
+before audio extraction or a new model experiment.
+
+The ignored Pascal inventory verified each metadata JSON's full SHA-256
+before and after scanning. Checked stable Win32/Win64 source-free parser
+controls pass with zero leaks. The checked Win64 full scan found 6,362 train
+flute IDs and 783 eligible pairs from 33 train instruments, but the 55 test
+flute IDs supplied **no eligible pair**. The fixed split gate fails; stop this
+NSynth register-source route without lowering its selection bounds or
+substituting train material as independent test. The exact private pair TSV
+SHA-256 is `1e1d582dcfcc1bf2badd467a89a3f534995be6a091cff1bd08b2518605794de7`.
+No source audio, inference runtime or protected Spring evaluation was opened.
+No criterion or task credit closes. The next core input remains the existing
+independently reviewed acoustic note-presence packet; register work still
+needs a distinct contrasting observation with fixed ambiguity and low/quiet/
+short-note protections. This metadata failure cannot justify another octave
+threshold or ranker variation.
+
 ## Score-aligned development note reference — 2026-09-23
 
 With listening temporarily unavailable, the next non-listening batch advanced

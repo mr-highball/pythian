@@ -9,6 +9,27 @@ historical experiments. The user now requires a Pascal-only execution path;
 Pascal execution path. The former observations do not qualify its recorded
 accuracy or cost; its separate Pascal evidence does.
 
+## NSynth acoustic-flute octave inventory stopped — 2026-09-23
+
+A fixed metadata-only Pascal screen checked whether the already acquired
+NSynth train and development-exposed test JSONs could supply same-instrument,
+same-velocity acoustic-flute notes exactly one octave apart. It excluded the
+flute instrument already reserved for the note-presence evaluation and fixed
+pitch 48..84, velocity 75/100, three train instruments and one test instrument
+as the minimum source-group gate before reading any audio. Both full JSON
+identities were verified before and after scanning. Checked stable Win32/Win64
+parser controls pass; the checked Win64 inventory reported zero leaks.
+
+The train metadata contains 6,362 acoustic-flute note IDs and 783 qualifying
+octave pairs from 33 instruments. Test contains 55 acoustic-flute IDs but
+**zero qualifying pairs**, so the fixed independent-instrument gate fails.
+Stop this NSynth route without changing its pitch, velocity or split rules.
+The exact policy, pair rows and identity hashes remain under ignored `build/`.
+No WAV extraction, TensorFlow execution, register inference or independent
+pitch-accuracy claim followed. [NS-3_notes_01](TODO/NS-3_notes_01.md)
+criterion 1 and task credit remain open; the recorded flute ambiguity still
+needs genuinely contrasting evidence and a prospective abstention contract.
+
 ## Cross-part register-peak attribution screen — 2026-09-23
 
 The previous gap screen left open whether the half-frequency peaks in the
