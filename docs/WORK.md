@@ -337,6 +337,13 @@ non-tonal intervals, absent from the current packet. That requirement is now
 explicit as criterion 6, with no new credit or task move. The
 [MTG-Jamendo tonal/atonal release](https://github.com/MTG/mtg-jamendo-dataset/blob/master/derived/music-classification-annotations/README.md)
 is track-level and cannot by itself close the time-local reference gap.
+Next pursue a bounded recorded no-key packet: identify accessible excerpt-level
+human atonality evidence, freeze development/evaluation by artist or recording
+family before opening candidate audio, verify exact audio and notice identities,
+then obtain time-local review of fixed windows. Stop that source path if its
+audio or interval correspondence cannot be verified; retain the accepted
+key/conflict/change packet and switch source rather than treating a global tag
+as local truth.
 
 ## NS-5 listening-protocol criterion — 2026-09-23
 
