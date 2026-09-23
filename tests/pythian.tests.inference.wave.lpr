@@ -78,7 +78,7 @@ begin
   SetLength(Windows, LCount + 1);
   Windows[LCount] := Copy(AWindow);
   Result := Default(TPitchSalience);
-  Result[0] := AWindow[1200];
+  Result[0] := Abs(AWindow[1200]);
 end;
 
 procedure TCaptureSink.Start(const AIdentity: TInferenceIdentity);
@@ -152,6 +152,91 @@ begin
   end;
 end;
 
+procedure WriteToneWave(const AFileName: String; const ASampleRate,
+  AFrameCount: Integer);
+var
+  LFile: TFileStream;
+  LByteSink: TStreamAudioSink;
+  LWriter: TWavePcm16Writer;
+  LSamples: TAudioSamples;
+  LIndex: Integer;
+begin
+  SetLength(LSamples, AFrameCount);
+  for LIndex := 0 to High(LSamples) do
+    LSamples[LIndex] := 0.4 * Sin(2 * Pi * 440 * LIndex / ASampleRate);
+  LFile := TFileStream.Create(AFileName, fmCreate);
+  LByteSink := TStreamAudioSink.Create(LFile);
+  LWriter := TWavePcm16Writer.Create(LByteSink, ASampleRate, 1, AFrameCount);
+  try
+    LWriter.AppendSamples(LSamples);
+    LWriter.Finish;
+  finally
+    LWriter.Free;
+    LByteSink.Free;
+    LFile.Free;
+  end;
+end;
+
+procedure CompareReplay(const ALeftBackend: TGeometryBackend;
+  const ALeftSink: TCaptureSink; const ARightBackend: TGeometryBackend;
+  const ARightSink: TCaptureSink);
+var
+  LIndex: Integer;
+begin
+  Check(ALeftSink.Completed and ARightSink.Completed and
+    not ALeftSink.Aborted and not ARightSink.Aborted,
+    'Resampling jobs complete');
+  Check(Length(ALeftBackend.Windows) = Length(ARightBackend.Windows),
+    'Resampling replay window counts match');
+  Check(Length(ALeftSink.Observations) = Length(ARightSink.Observations),
+    'Resampling replay observation counts match');
+  for LIndex := 0 to High(ALeftBackend.Windows) do
+  begin
+    Check((Length(ALeftBackend.Windows[LIndex]) = InferenceWindowFrames) and
+      (Length(ARightBackend.Windows[LIndex]) = InferenceWindowFrames),
+      'Resampling window size remains fixed');
+    Check(CompareMem(@ALeftBackend.Windows[LIndex][0],
+      @ARightBackend.Windows[LIndex][0],
+      InferenceWindowFrames * SizeOf(Single)), 'Resampled windows are byte-identical');
+  end;
+  for LIndex := 0 to High(ALeftSink.Observations) do
+  begin
+    Check(CompareMem(@ALeftSink.Observations[LIndex],
+      @ARightSink.Observations[LIndex], SizeOf(TInferenceObservation)),
+      'Resampled observations are byte-identical');
+  end;
+end;
+
+procedure CheckSupportedSourceRate(const AIdentity: TInferenceIdentity;
+  const ASampleRate: Integer);
+var
+  LIdentity: TInferenceIdentity;
+begin
+  LIdentity := AIdentity;
+  LIdentity.SourceRate := ASampleRate;
+  LIdentity.SourceFrames := ASampleRate;
+  Check(Length(InferenceIdentityText(LIdentity)) > 0,
+    'Supported original source rate retains identity');
+end;
+
+procedure CheckUnsupportedSourceRate(const AIdentity: TInferenceIdentity);
+var
+  LIdentity: TInferenceIdentity;
+  LRejected: Boolean;
+begin
+  LIdentity := AIdentity;
+  LIdentity.SourceRate := 22051;
+  LIdentity.SourceFrames := 22051;
+  LRejected := False;
+  try
+    InferenceIdentityText(LIdentity);
+  except
+    on EAudio do
+      LRejected := True;
+  end;
+  Check(LRejected, 'Unsupported original source rate remains rejected');
+end;
+
 procedure CompareRuns(const ALeftBackend: TGeometryBackend;
   const ALeftSink: TCaptureSink; const ARightBackend: TGeometryBackend;
   const ARightSink: TCaptureSink);
@@ -199,6 +284,149 @@ begin
       Check(ALeftSink.Observations[LIndex].Salience[LSample] =
         ARightSink.Observations[LIndex].Salience[LSample],
         'Replay support matches');
+  end;
+end;
+
+procedure CompareScope(const AScopeBackend: TGeometryBackend;
+  const AScopeSink: TCaptureSink; const AWholeBackend: TGeometryBackend;
+  const AWholeSink: TCaptureSink; const AWholeOffset: Integer);
+var
+  LIndex: Integer;
+begin
+  Check(AScopeSink.Completed and not AScopeSink.Aborted,
+    'Adjacent source scope completed without abort');
+  Check((Length(AScopeBackend.Windows) = 50) and
+    (Length(AScopeSink.Observations) = 50),
+    'Eight-thousand-frame scope has exactly fifty observations');
+  Check(Length(AScopeBackend.Windows) = Length(AScopeSink.Observations),
+    'Scoped backend and sink retain matching window counts');
+  Check(Length(AScopeBackend.Windows) + AWholeOffset <=
+    Length(AWholeBackend.Windows), 'Scoped outputs fit whole-source outputs');
+  for LIndex := 0 to High(AScopeBackend.Windows) do
+  begin
+    Check(CompareMem(@AScopeBackend.Windows[LIndex][0],
+      @AWholeBackend.Windows[AWholeOffset + LIndex][0],
+      InferenceWindowFrames * SizeOf(Single)),
+      'Adjacent source scope window equals whole-source window');
+    Check(CompareMem(@AScopeSink.Observations[LIndex],
+      @AWholeSink.Observations[AWholeOffset + LIndex],
+      SizeOf(TInferenceObservation)),
+      'Adjacent source scope observation equals whole-source observation');
+  end;
+end;
+
+procedure Run22050;
+var
+  LDirectory: String;
+  LFileName: String;
+  LHash: String;
+  LWholeRequest: TInferenceRequest;
+  LFirstRequest: TInferenceRequest;
+  LSecondRequest: TInferenceRequest;
+  LWholeJob: TInferenceWaveJob;
+  LFirstJob: TInferenceWaveJob;
+  LSecondJob: TInferenceWaveJob;
+  LReplayJob: TInferenceWaveJob;
+  LWholeBackend: TGeometryBackend;
+  LReplayBackend: TGeometryBackend;
+  LFirstBackend: TGeometryBackend;
+  LSecondBackend: TGeometryBackend;
+  LWholeSink: TCaptureSink;
+  LReplaySink: TCaptureSink;
+  LFirstSink: TCaptureSink;
+  LSecondSink: TCaptureSink;
+begin
+  LDirectory := IncludeTrailingPathDelimiter(GetCurrentDir) + 'build' +
+    DirectorySeparator + 'native-inference-wave';
+  ForceDirectories(LDirectory);
+  LFileName := IncludeTrailingPathDelimiter(LDirectory) + '22050-tone.wav';
+  WriteToneWave(LFileName, 22050, 22050);
+  try
+    LHash := HashInferenceFile(LFileName);
+    LWholeRequest := DefaultInferenceRequest(LHash, 16000);
+    LWholeRequest.InputEnd16k := 16000;
+    LWholeRequest.Hop16k := 160;
+    LWholeRequest.BatchSize := 17;
+    LFirstRequest := DefaultInferenceRequest(LHash, 8000);
+    LFirstRequest.InputEnd16k := 16000;
+    LFirstRequest.Hop16k := 160;
+    LFirstRequest.BatchSize := 11;
+    LSecondRequest := LFirstRequest;
+    LSecondRequest.ScopeStart16k := 8000;
+    LSecondRequest.ScopeEnd16k := 16000;
+    LSecondRequest.FirstCenter16k := 8000;
+    ValidateInferenceRequest(LWholeRequest);
+    ValidateInferenceRequest(LFirstRequest);
+    ValidateInferenceRequest(LSecondRequest);
+
+    LWholeBackend := TGeometryBackend.Create;
+    LReplayBackend := TGeometryBackend.Create;
+    LFirstBackend := TGeometryBackend.Create;
+    LSecondBackend := TGeometryBackend.Create;
+    LWholeSink := TCaptureSink.Create;
+    LReplaySink := TCaptureSink.Create;
+    LFirstSink := TCaptureSink.Create;
+    LSecondSink := TCaptureSink.Create;
+    try
+      LWholeJob := TInferenceWaveJob.Create(LFileName, LWholeRequest);
+      try
+        LWholeJob.Execute(LWholeBackend, LWholeSink);
+      finally
+        LWholeJob.Free;
+      end;
+      LReplayJob := TInferenceWaveJob.Create(LFileName, LWholeRequest);
+      try
+        LReplayJob.Execute(LReplayBackend, LReplaySink);
+      finally
+        LReplayJob.Free;
+      end;
+      LFirstJob := TInferenceWaveJob.Create(LFileName, LFirstRequest);
+      try
+        LFirstJob.Execute(LFirstBackend, LFirstSink);
+      finally
+        LFirstJob.Free;
+      end;
+      LSecondJob := TInferenceWaveJob.Create(LFileName, LSecondRequest);
+      try
+        LSecondJob.Execute(LSecondBackend, LSecondSink);
+      finally
+        LSecondJob.Free;
+      end;
+
+      Check(LWholeSink.Identity.SourceRate = 22050,
+        'Original 22050-Hz source rate retained in identity');
+      Check(LWholeSink.Identity.SourceChannels = 1,
+        'Original mono channel count retained in identity');
+      Check(LWholeSink.Identity.SourceFrames = 22050,
+        'Original source frame count retained in identity');
+      Check(LWholeSink.Identity.Request.SourceHash = LHash,
+        'Exact original WAV SHA retained in identity');
+      Check((Length(LWholeSink.Observations) = 100) and
+        (Length(LWholeBackend.Windows) = 100),
+        'One-second source yields 100 observations at 100 windows per second');
+      Check((LWholeSink.Observations[0].Center16k = 0) and
+        (LWholeSink.Observations[99].Center16k = 15840),
+        'Centers remain on the rational 16-kHz source clock');
+      CompareReplay(LWholeBackend, LWholeSink, LReplayBackend, LReplaySink);
+      CompareScope(LFirstBackend, LFirstSink, LWholeBackend, LWholeSink, 0);
+      CompareScope(LSecondBackend, LSecondSink, LWholeBackend, LWholeSink, 50);
+      CheckSupportedSourceRate(LWholeSink.Identity, 16000);
+      CheckSupportedSourceRate(LWholeSink.Identity, 22050);
+      CheckSupportedSourceRate(LWholeSink.Identity, 44100);
+      CheckSupportedSourceRate(LWholeSink.Identity, 48000);
+      CheckUnsupportedSourceRate(LWholeSink.Identity);
+    finally
+      LSecondSink.Free;
+      LFirstSink.Free;
+      LReplaySink.Free;
+      LWholeSink.Free;
+      LSecondBackend.Free;
+      LFirstBackend.Free;
+      LReplayBackend.Free;
+      LWholeBackend.Free;
+    end;
+  finally
+    DeleteFile(LFileName);
   end;
 end;
 
@@ -264,7 +492,8 @@ end;
 begin
   try
     Run;
-    WriteLn('PASS inference wave geometry, policy rejection and replay');
+    Run22050;
+    WriteLn('PASS inference wave geometry, source-rate identities, adjacent-scope resampling and replay');
   except
     on E: Exception do
     begin

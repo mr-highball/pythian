@@ -136,6 +136,23 @@ is claimed.
 
 **Dev Notes:**
 
+- 2026-09-23 native source-rate prerequisite: the qualified HU33 WAVs are
+  22,050 Hz, which the accepted inference identity allowlist previously
+  rejected despite a capable Pascal resampler. The focused adapter change
+  admits that exact rate and retains source hash/clock in the identity.
+  Authored PCM16 whole/adjacent-scope replay passes checked stable Win32 and
+  Win64 with zero unfreed blocks; see the [work record](../WORK.md#original-22050-hz-wav-inference-preparation--2026-09-23).
+  Focused integrated QA passed with exact 50-observation halves, completed
+  scopes, byte-identical adjacent replay and unsupported-rate rejection. This
+  enables a future inference candidate but proves no key accuracy, closes no
+  other criterion and earns no separate credit.
+- 2026-09-23 source-rate fixture repair: focused QA found the initial
+  adjacent-scope comparison could pass an early-truncated half because it
+  compared only produced observations. The fixture now requires completed,
+  non-aborted sinks and exactly 50 windows/observations in each half; checked
+  Win32 and Win64 runs pass sequentially with zero leaks. A concurrent test
+  invocation briefly collided on its shared ignored output path and passed
+  when rerun after the first process ended; no source-path fallback was used.
 - 2026-09-23 focused QA accepted criterion 1: source/group roles, complete
   windows, key support, ambiguous/no-key/change cases and all coverage,
   precision, abstention and transition limits are frozen in TONAL.md before

@@ -255,8 +255,8 @@ var
 begin
   ValidateInferenceRequest(AIdentity.Request);
   if (AIdentity.ObservationCount <> InferenceCount(AIdentity.Request)) or
-    ((AIdentity.SourceRate <> 16000) and (AIdentity.SourceRate <> 44100) and
-      (AIdentity.SourceRate <> 48000)) or
+    ((AIdentity.SourceRate <> 16000) and (AIdentity.SourceRate <> 22050) and
+      (AIdentity.SourceRate <> 44100) and (AIdentity.SourceRate <> 48000)) or
     (AIdentity.SourceChannels < 1) or (AIdentity.SourceChannels > 2) or
     (AIdentity.Request.Channel >= AIdentity.SourceChannels) or
     (AIdentity.SourceFrames < 1) then

@@ -68,6 +68,23 @@ candidate against the development groups, with retained alternatives and
 unknowns; open independent candidate scoring only after the development
 gates pass. Do not use the three personal style mixes as key truth.
 
+## Original 22,050-Hz WAV inference preparation — 2026-09-23
+
+The accepted Pascal inference job's source-identity allowlist omitted the
+22,050-Hz rate of the exact HU33 reference WAVs. Ticket Guy extended that
+identity gate without changing the native resampler or accepting a new codec.
+His focused Pascal test generates a one-second mono PCM16 WAV, verifies its
+original hash/rate/frame identity and compares whole-run, repeat-run and two
+adjacent scope windows and observations byte for byte on the 16-kHz analysis
+clock. Checked stable FPC 3.2.2 Win32 passed. The primary agent located the
+stable Win64 cross compiler at `fpc/bin/i386-win32/ppcrossx64.exe`; the same
+test passed there with zero unfreed blocks. Independent focused QA reran both
+targets sequentially and confirmed exact 50-observation halves, completed
+scopes, byte-identical adjacent windows/observations, and rejection of
+22,051 Hz. This enables exact-source native observation for the selected
+recordings but does not establish a key or note decision; criteria 2, 3 and 5
+remain open and no task credit moves.
+
 ## Cross-part register attribution stop — 2026-09-23
 
 The [frozen Pascal cross-part screen](PHRASE-EVALUATION.md#cross-part-register-peak-attribution-screen--2026-09-23)
