@@ -37,3 +37,5 @@ Starting evidence: [SYNTHESIS-QUALITY](../SYNTHESIS-QUALITY.md) · [FUNDAMENTALS
   attack/release, join and streamed-state verdicts; no criterion or credit
   changes. Do not ask for the already supplied 30-second whole-clip verdict
   again.
+
+- 2026-09-23 numerical plan review: [current checked Pascal runs](../SYNTHESIS-QUALITY.md#combined-numerical-plan-review--2026-09-23) reconfirm the combined 40-note, 11-second WAV's exact tempo/frame placements, bounded 11656 voice work, 145 graph work, headroom, tail and identical 1/257/4096-frame output. A separate saved 88-note plan retains exact MIDI bytes/gates, 729281 WAV frames, 12 peak voices and 795 peak frame-work units through stream replay and a melody timbre edit. **Criterion 4 is met** for these declared plans. The 11-second and family-specific audible verdicts, any demonstrated-defect disposition and union acceptance remain open; the task is blocked by quality_01/02 and earns no completion credit. This criterion closure resets the consecutive nonclosing-batch count.

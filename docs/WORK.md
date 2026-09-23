@@ -21,6 +21,19 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Synthesis numerical plan checkpoint — 2026-09-23
+
+The current checked Win32 Pascal [combined plan review](SYNTHESIS-QUALITY.md#combined-numerical-plan-review--2026-09-23)
+reconfirms exact 40-note WAV timing and 1/257/4096-frame replay, 11-second
+duration, headroom, final tail and corrected 11656 reserved work. The separate
+saved 88-note plan retains its exact MIDI gates and bytes through stream replay
+and a timbre edit, with 729281 WAV frames, 12 peak voices and 795 peak frame-work
+units. This closes [NS-2_synthesis-quality_03](TODO/NS-2_synthesis-quality_03.md)
+criterion 4 and resets the nonclosing-batch count. It earns no task credit:
+family-specific and combined audible verdicts, defect disposition and union
+acceptance remain open. The user's coherent verdict belongs to the 30-second
+preview; the 11-second mixed-source review is still pending.
+
 ## Whole-array capacity boundary — 2026-09-23
 
 The checked FPC 3.2.2 Win32 `pythian.learn` rejected the existing full prepared

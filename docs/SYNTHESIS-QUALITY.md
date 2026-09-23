@@ -63,7 +63,7 @@ Every target reports zero unfreed memory blocks and no compiler warnings.
 | Largest adjacent-sample difference | 0.070990345; diagnostic only, not a click/listening verdict |
 | Final 0.2-second RMS | Below the predeclared 0.0001 bound; prints 0.000000000000 |
 | End state | No scheduled voices or reserved voice work; cursor at frame 264000 |
-| Declared work | Initial reserved voice work 10632; graph frame cost 145; scheduler capacity 40 |
+| Declared work | Initial reserved voice work 11656 after automation accounting; graph frame cost 145; scheduler capacity 40 |
 
 The diagnostic retains the complete reference for comparison. The scheduled
 output is written in bounded blocks; the largest request is 4096 stereo frames.
@@ -133,6 +133,35 @@ failed before the correction. Evidence is under `build/automation-work/`.
 This resolves a concrete FUND-CONTRACTS accounting gap without changing rendered
 sound. The subsequent [contract review](FUNDAMENTALS.md#contract-review) closes
 the supported-workload review; listening remains open.
+
+### Combined numerical plan review — 2026-09-23
+
+The current checked FPC 3.2.2 Win32 build reran the existing Pascal 40-note
+combined workload. Direct placement and scheduled 1/257/4096-frame reads
+produced the same 264000-frame stereo WAV, SHA-256
+`7c0c5a40979a39301ce4dc842d0caabd193dd120c6a474857404dd3505472022`.
+The declared 120-to-96-BPM frame placements, 4800-frame initial silence,
+11-second duration, 0.212615907 peak against the 0.95 limit, final-tail limit,
+11656 reserved voice work, 145 graph work and empty final schedule all passed.
+The three fixed read sizes emitted identical bytes; the checked run reported
+zero unfreed blocks. The original 10632 in the earlier table was a pre-correction
+work reservation; the table now shows the current accepted value.
+
+For the separate saved 88-note performance, the current Pascal stream-replay
+check compared complete mix/stems and musical report fields against the
+127/2048-frame replay with zero PCM error. A current timbre-edit control checked
+actual MIDI bytes against the reported SHA-256
+`939e81a74b97fedc64e012acccfd531160c2d5f77366854b48e3515d67dc3b3b`,
+preserving bass/chord stems and MIDI while changing melody and mix. The
+hash-bound baseline is 729281 stereo frames at 44100 Hz, 88 notes, 12 peak
+voices, 795 peak frame-work units and 0.046263911 peak. Its maintained fixture
+also checks each exported MIDI gate against its planned span endpoints. This
+MIDI check belongs to that 88-note plan; the separate 40-note workload has no
+MIDI artifact. Fresh checked logs and outputs are ignored under
+`build/quality-plan-20260923/`. This closes the numerical timing, duration,
+headroom and work-bound criterion of
+[NS-2_synthesis-quality_03](TODO/NS-2_synthesis-quality_03.md); it does not
+establish audible quality, family verdicts or a device deadline.
 
 ## Thirty-second listener preview — 2026-09-20
 
