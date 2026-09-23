@@ -47,6 +47,24 @@ and [rejected gate-slope rule](../PHRASE-EVALUATION.md#fixed-gate-slope-diagnost
 
 **Dev Notes:**
 
+- 2026-09-23 role packet and playback discrepancy: the tracked Pascal checker
+  now emits `role=development` for all eight frozen rows, rejects unsupported
+  roles and conflicting roles within a source group, and reproduces identical
+  checked FPC 3.2.2 Win32/Win64 reviewed packets (SHA256
+  `45666b565f71390c50ed0029e93d8992c96335f6c77c89934b38bfc957381c00`).
+  This prevents the exposed examples from silently becoming independent test
+  material, but no independent source or downstream scorer is admitted yet;
+  criterion 3 remains open. The listener clarified that only brass clips sound
+  like static and reported instrument-like sound for the two late fast-decay
+  aids. A separate Pascal audit found both exported late aids byte-identical
+  and all-zero in their PCM data (SHA256
+  `20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa`).
+  The reported sound cannot be bound to those exported bytes. Keep both
+  `uncertain` labels until playback identity is resolved; no acoustic rest
+  verdict, presence score, criterion 2 closure or task credit follows. This is
+  one nonclosing batch since criterion 1 closed. Next compare the exact source
+  clips and hash-bound late aids with the user; do not relabel or score until
+  the playback identity is clear.
 - 2026-09-23 source-bound criterion review: criterion 1 is satisfied at the
   declared synthetic single-note scope. The official CC BY 4.0 NSynth JSON/WAV
   test archive, attribution, archive/metadata hashes, fixed Pascal selection
@@ -62,19 +80,18 @@ and [rejected gate-slope rule](../PHRASE-EVALUATION.md#fixed-gate-slope-diagnost
   3 and 4 remain open: reviewed tail/rest coverage, the final source-role and
   consumer decision, and a presence decision distinct from pitch identity. No
   independent inference accuracy or task credit follows.
-- 2026-09-23 uncertain-rest clarification: the listener said the two late
-  fast-decay playback aids sounded like static rather than a bell or mallet.
-  Their exact source windows contain only zero PCM samples, so the static is
-  not encoded in those windows, but its playback cause is unverified. Preserve
-  both `uncertain` judgments and seek a reviewable rest contrast; do not
-  relabel them from the PCM fact or instrument identity.
+- 2026-09-23 uncertain-rest clarification: the listener corrected the earlier
+  interpretation and said only clips named `brass` sounded like static. Do not
+  attribute that timbre to either fast-decay late playback aid. Preserve both
+  `uncertain` judgments; their exact-zero source PCM is separate from the
+  listener's reported playback.
 - 2026-09-23 reviewed-window checkpoint: the user labeled all three frozen
   brass windows and all three fading-guitar windows `audible` under the
   source-sound convention. They explicitly identified the repeated brass
   [3.75,4.00)-second aid when clarifying the late sound. They answered
   `uncertain` for the bell-like guitar and mallet late windows. The ignored
-  review TSV replays through the tracked Pascal checker with byte-identical
-  checked FPC 3.2.2 Win32/Win64 packets (SHA256
+  review TSV replayed at that checkpoint through the prior no-role Pascal
+  packet format with byte-identical checked FPC 3.2.2 Win32/Win64 packets (SHA256
   `9407073b8277938c91a358688e94806e2a504943f576825743cda9aa47dc081c`)
   and zero leaks. Six-decimal RMS output repairs two nine-decimal cross-target
   rounding differences; no source coordinate or review label changed. The

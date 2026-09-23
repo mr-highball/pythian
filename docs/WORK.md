@@ -26,23 +26,34 @@ from planned semantic providers, profile persistence, weighting and blend APIs.
 The user labeled the three frozen brass windows and three fading-guitar windows
 `audible` under the source-sound convention. Their late-sound clarification
 named the repeated brass [3.75,4.00)-second playback aid. The late bell-like
-guitar and mallet windows remain `uncertain`. The listener subsequently said
-those two aids sounded like static rather than a bell or mallet. Their
-exact-zero source PCM means this static is not encoded in the frozen windows;
-its playback cause is unverified. The zero PCM does not replace a human
-`not_audible` judgment. The ignored review TSV at
+guitar and mallet windows remain `uncertain`. The listener later clarified
+that only clips named `brass` sounded like static and reported instrument-like
+sound for the two fast-decay late aids. A separate Pascal byte audit found
+the exported Win32/Win64 late aids byte-identical, each with zero nonzero PCM
+bytes (SHA256 `20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa`).
+The reported sound cannot be bound to those exported bytes, and exact-zero
+source PCM does not replace a human `not_audible` judgment. The ignored review TSV at
 `build/presence-reference/reviewed-2026-09-23.tsv` binds all eight labels to
 the frozen coordinates. The maintained Pascal checker now prints six-decimal
 RMS, avoiding two last-digit Win32/Win64 differences in its earlier
 nine-decimal output. Checked stable FPC 3.2.2 Win32/Win64 produce identical
-reviewed-packet SHA256
-`9407073b8277938c91a358688e94806e2a504943f576825743cda9aa47dc081c`
+reviewed-packet SHA256 with explicit `role=development`
+`45666b565f71390c50ed0029e93d8992c96335f6c77c89934b38bfc957381c00`
 and pending-packet SHA256
-`bcd567978bb3f05f254c80c78b1062973b9e846fce3f45f7c03ff07b9b85205f`,
+`eae5a147af9d1f583b0162c0020dee1b8261770ba759af224042c4b091c941c1`,
 with zero unfreed blocks. The [packet evidence](PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22)
 records source scope and limitations. `NS-3_notes_04` remains open: there is
 no reviewed distant-rest negative or audible silence endpoint, no scorer has
 been run and no completion credit is earned.
+
+The checker now carries the frozen source role in each TSV row and rejects
+unsupported roles or a source group crossing roles. All four notes are
+development-exposed; no independent evaluation source is present. This
+source-role preparation advances criterion 3 without closing its independent
+consumer check. Do not use the uncertain late aids to score presence.
+This is one nonclosing batch since criterion 1 closed. Next compare the exact
+source clips and hash-bound late aids with the user; keep labels uncertain
+until the playback identity is resolved.
 
 The official [NSynth source](https://magenta.withgoogle.com/datasets/nsynth),
 archive and metadata hashes, selection hash, four WAV identities, instrument

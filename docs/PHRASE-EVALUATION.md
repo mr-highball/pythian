@@ -144,12 +144,16 @@ in all three repeated windows despite describing it as unpleasant old-TV/radio
 static. Their subsequent 3.75-second clarification explicitly named
 `brass_acoustic_046-084-075--late-tail-3p75-4x.wav`; it did not label either
 fast-decay clip audible. Both fast-decay late windows were answered
-**uncertain**. The user later explained that those clips sounded like static
-rather than a bell or mallet. All 4,000 source frames in each exact late
-window are zero, so the heard static cannot be encoded sound in those frozen
-source intervals; its playback-path cause is unverified. Keep the listener's
-labels uncertain. The six audible judgments support source activity after the
-documented control note-off for the long-release notes, including the final
+**uncertain**. The user later clarified that only clips with `brass` in their
+names sounded like static, and reported hearing instrument-like sound when
+asked about the two late fast-decay aids. An independent Pascal byte audit
+found the Win32 and Win64 guitar/mallet late aids identical to one another:
+SHA256 `20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa`,
+with zero nonzero PCM bytes in each 64,044-byte WAV. The audible report and
+the exported bytes cannot yet be matched to the same playback. Keep both
+time-local labels `uncertain`; do not attribute the report to either frozen
+zero-sample source interval. The six audible judgments support source activity
+after the documented control note-off for the long-release notes, including the final
 quarter-second. They do not establish an acoustic silence endpoint.
 
 A 2026-09-23 mobile listening aid under ignored `build/presence-review-aid/`
@@ -192,8 +196,13 @@ binds the four WAV SHA256 identities, mono 16-kHz PCM16/64,000-frame geometry,
 TSV must contain exactly those rows, in order, with header
 `note_id<TAB>window<TAB>start_frame<TAB>end_frame<TAB>label` and labels
 `audible`, `not_audible` or `uncertain`. A source or boundary mismatch fails
-before writing a packet. All four source groups are development-exposed;
-no source from this packet is an independent scorer or held-out phrase test.
+before writing a packet. The emitted `role` field is `development` for all
+eight rows, fixed with each source group in Pascal. The checker rejects an
+unsupported role or a frozen source group assigned conflicting roles. A future
+presence scorer must not count these exposed rows as independent evaluation;
+no independent note-presence source is in this packet. The role field makes
+this boundary machine-readable but does not by itself close the source-role
+and consumer criterion.
 
 From the repo root, compile with the stable FPC 3.2.2 Win32 compiler using
 `-B -Sa -Cr -Co -Ci -gl -Fusrc -FEbuild/presence-reference/stable
@@ -204,10 +213,11 @@ The `-` means no reviewed labels. A previous nine-decimal packet reproduced
 the frozen NSynth RMS audit but exposed two last-digit Win32/Win64 differences
 in the brass rows. The current checker prints RMS to six decimal places to
 avoid that false cross-target precision. Checked stable FPC 3.2.2 Win32 and
-Win64 produce byte-identical pending packets (SHA256
-`bcd567978bb3f05f254c80c78b1062973b9e846fce3f45f7c03ff07b9b85205f`)
-and reviewed packets (SHA256
-`9407073b8277938c91a358688e94806e2a504943f576825743cda9aa47dc081c`),
+Win64 produce byte-identical current packets with the explicit `role` column:
+pending SHA256
+`eae5a147af9d1f583b0162c0020dee1b8261770ba759af224042c4b091c941c1`,
+reviewed SHA256
+`45666b565f71390c50ed0029e93d8992c96335f6c77c89934b38bfc957381c00`,
 with zero unfreed blocks. The ignored review TSV under
 `build/presence-reference/reviewed-2026-09-23.tsv` contains the six `audible`
 and two `uncertain` judgments, not an inferred `not_audible` label. Earlier

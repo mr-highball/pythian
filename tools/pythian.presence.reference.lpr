@@ -34,6 +34,7 @@ type
   TNoteSpec = record
     Id: String;
     SourceGroup: String;
+    Role: String;
     Sha256: String;
   end;
 
@@ -50,12 +51,16 @@ const
   CNoteOff = 48000;
   CNotes: array[0..3] of TNoteSpec = (
     (Id: 'brass_acoustic_046-084-075'; SourceGroup: 'brass_acoustic_046';
+      Role: 'development';
       Sha256: 'ff8300e7388f16b1476f23da0c93683d445bf764c85961ef99f5293f74ba2180'),
     (Id: 'guitar_acoustic_030-061-100'; SourceGroup: 'guitar_acoustic_030';
+      Role: 'development';
       Sha256: 'cfa08ed3659269a7d661276df25f6b8b7c8fe14b9fcccda214fccfa777c4014c'),
     (Id: 'guitar_acoustic_014-080-100'; SourceGroup: 'guitar_acoustic_014';
+      Role: 'development';
       Sha256: '579a4bc3fc2098e89b17094e6c9d7a0d8a8853908f31c9e2016db1531170c0ee'),
     (Id: 'mallet_acoustic_056-050-075'; SourceGroup: 'mallet_acoustic_056';
+      Role: 'development';
       Sha256: '2e72192db98fba6464cfed3977174d01c62649ef29d510e6d40a61c54c5d82bf')
   );
   CWindows: array[0..7] of TWindowSpec = (
@@ -84,7 +89,26 @@ end;
 procedure CheckWindows;
 var
   LIndex: Integer;
+  LOther: Integer;
 begin
+  for LIndex := Low(CNotes) to High(CNotes) do
+  begin
+    if (CNotes[LIndex].Role <> 'development') and
+      (CNotes[LIndex].Role <> 'independent_evaluation') then
+    begin
+      raise Exception.Create('Unsupported frozen note role: ' +
+        CNotes[LIndex].Id);
+    end;
+    for LOther := LIndex + 1 to High(CNotes) do
+    begin
+      if (CNotes[LIndex].SourceGroup = CNotes[LOther].SourceGroup) and
+        (CNotes[LIndex].Role <> CNotes[LOther].Role) then
+      begin
+        raise Exception.Create('Frozen source group crosses note roles: ' +
+          CNotes[LIndex].SourceGroup);
+      end;
+    end;
+  end;
   for LIndex := Low(CWindows) to High(CWindows) do
   begin
     if (CWindows[LIndex].NoteIndex < Low(CNotes)) or
@@ -247,7 +271,7 @@ begin
     ReadReviews(ParamStr(3), LReviews);
     LFormat := DefaultFormatSettings;
     LFormat.DecimalSeparator := '.';
-    LOutput.Add('source_group'#9'note_id'#9'wave_sha256'#9'window'#9 +
+    LOutput.Add('source_group'#9'role'#9'note_id'#9'wave_sha256'#9'window'#9 +
       'start_frame'#9'end_frame'#9'rms'#9'review');
     for LNoteIndex := Low(CNotes) to High(CNotes) do
     begin
@@ -258,7 +282,8 @@ begin
         if LWindow.NoteIndex = LNoteIndex then
         begin
           LOutput.Add(CNotes[LNoteIndex].SourceGroup + #9 +
-            CNotes[LNoteIndex].Id + #9 + CNotes[LNoteIndex].Sha256 + #9 +
+            CNotes[LNoteIndex].Role + #9 + CNotes[LNoteIndex].Id + #9 +
+            CNotes[LNoteIndex].Sha256 + #9 +
             LWindow.Name + #9 + IntToStr(LWindow.StartFrame) + #9 +
             IntToStr(LWindow.EndFrame) + #9 +
             FormatFloat('0.000000', WindowRms(LSamples, LWindow), LFormat) +
