@@ -107,6 +107,19 @@ variation is authorized by the existing evidence.
 
 **Dev Notes:**
 
+- 2026-09-23 saved gap-peak attribution: a [frozen Pascal screen](../PHRASE-EVALUATION.md#saved-gap-peak-attribution-screen--2026-09-23)
+  separated below-55-Hz content from half-integer candidate harmonics in the
+  existing 96-flute-event spectra. The 11 reference-upper-correct events have
+  mean half-peak share 0.026575377 (event range 0.008621028..0.068254048);
+  85 baseline-correct events have 0.000326272 (range 0..0.002847752).
+  Four violin spiccato controls average 0.000391648. Source hashes,
+  physical controls, replay and bounds pass; no audio was reopened or policy
+  changed. These reference-defined development cohorts do not establish a
+  safe blind register rule, source ownership or low/quiet/short-note coverage.
+  Stop at this descriptive result under the existing task-flow reassessment;
+  criterion 1 and credit remain open pending independent evidence and a
+  prospective ambiguity/coverage gate.
+
 - 2026-09-23 HarmoF0 source screen: the [author paper and repository](../PHRASE-EVALUATION.md#harmof0-source-feasibility-screen--2026-09-23)
   report strong in-domain frame pitch accuracy and publish compact weights, but
   provide no source-disjoint flute result, calibrated abstention or note-presence

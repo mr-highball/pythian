@@ -21,6 +21,32 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Native groove-control slice — 2026-09-23
+
+The [source-independent rhythm fixture](STYLE-CARDS.md#native-rhythm-admission-control-slice--2026-09-23)
+exercises the maintained Pascal onset-grid admission contract. Sixteen
+authored events on a frozen 64-cell scope all admit; alternating 5-ms jitter
+preserves occupancy, while moving one event by one cell changes it without
+changing admission count. The exact result replays under checked stable Win32.
+This is a narrow reusable comparator control, not a verified style reference
+or the full groove trait: role, accent, microtiming and inter-bar relationships
+remain unsupported. [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md) remains
+open with no credit. Private user-selected mixes were not used.
+
+## Saved register-spectrum gap screen — 2026-09-23
+
+The [Pascal-only gap-peak screen](PHRASE-EVALUATION.md#saved-gap-peak-attribution-screen--2026-09-23)
+reused unchanged source-bound flute/violin spectra and separated very-low
+recording peaks from octave-related half-integer peaks. In reference-defined
+development cohorts, the latter's event-mean single-bin share is 0.026575377
+for 11 upper-correct flute events versus 0.000326272 for 85 baseline-correct
+events. Four violin spiccato rows average 0.000391648. Checked native controls,
+hash bindings, two byte-identical runs and zero-leak reports pass. This is a
+descriptive physical contrast only; source ownership, blind register accuracy,
+safe ambiguity and low/quiet/short protection remain unproven. The note task
+stays open with no credit. Stop this diagnostic sequence until independent
+register evidence can support a prospective source-separated decision gate.
+
 ## Register model source screen — 2026-09-23
 
 The [HarmoF0 source screen](PHRASE-EVALUATION.md#harmof0-source-feasibility-screen--2026-09-23)

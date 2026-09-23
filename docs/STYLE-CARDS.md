@@ -265,6 +265,32 @@ be measured; they do not assert that all providers currently supply it.
 | Sound/envelope | Independently measured normalized spectra and note-relative envelope shapes on attributed regions, plus their dependence on role/articulation | Permute complete spectral/envelope trajectories among compatible same-song role/gate regions; retain trajectory knots and associated units. Do not shuffle individual FFT bins or samples. Keep recording gain and synthesis rendering policy fixed |
 | Phrase/section structure | Annotated section-duration, return/repetition and transition relationships across a song; full generated duration and declared truncation | Permute complete sections within a song, retaining internal phrases and exact boundaries. Report immovable one-section cases as unsupported for this comparator; processing chunks do not become sections |
 
+### Native rhythm-admission control slice — 2026-09-23
+
+The controlled fixture `tests/pythian.tests.style.groove_control.lpr` exercises
+the existing `AdmitWaveRhythm` contract without source media or learner output.
+Its frozen inputs are a 48-kHz, 384000-frame scope at 500000 microseconds per
+quarter, 960 PPQ, 240-tick cells, and a 500-frame maximum admission error. Sixteen
+authored onsets occupy cells `0,4,8,12,16,21,24,29,32,36,40,44,48,53,56,61`.
+Alternating ±240-frame jitter preserves the exact 64-cell occupancy pattern and
+16 admissions. Moving the event in cell 21 to cell 22 preserves the event count
+but changes occupancy. Repeated measurement must reproduce the complete pattern,
+cell, frame-error and decision arrays.
+
+This control covers only onset occupancy on a declared constant clock. It does
+not measure attributed roles, accents/velocity, signed microtiming beyond the
+admission tolerance, held events, rests as source truth, or bar-to-bar transitions.
+It is a partial reusable control for the groove row, not evidence that the
+full groove measurement or comparator contract is implemented or accepted.
+Checked stable FPC 3.2.2 Win32 evidence is retained under
+`build/ticket-guy-style-control/win32/`.
+From the repository root with stable Win32 FPC on the path, reproduce it with:
+
+```powershell
+fpc -B -Sa -Cr -Co -Ci -gl -Fusrc -FUbuild/ticket-guy-style-control/win32 -FEbuild/ticket-guy-style-control/win32 tests/pythian.tests.style.groove_control.lpr
+& build/ticket-guy-style-control/win32/pythian.tests.style.groove_control.exe
+```
+
 Freeze the permutation algorithm and per-recording seed derivation before running
 the comparator; record the complete permutation so replay does not depend on a
 platform RNG. A shuffle is an ablation of the relationships it actually removes.

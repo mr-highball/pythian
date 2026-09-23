@@ -9,6 +9,38 @@ historical experiments. The user now requires a Pascal-only execution path;
 Pascal execution path. The former observations do not qualify its recorded
 accuracy or cost; its separate Pascal evidence does.
 
+## Saved gap-peak attribution screen — 2026-09-23
+
+A frozen, ignored Pascal screen classified only the positive peak bin of each
+saved inter-band gap from the existing 16-kHz/4096-bin register spectra. It
+separated peaks below 55 Hz from peaks near the upper candidate's half-integer
+harmonics, then retained other peaks. Inputs were the unchanged 96-flute-event
+spectrum and diagnosis reports, with their ranking/source identities checked;
+no audio, new FFT, model or note decision was used. Physical frequency controls,
+malformed-bin rejection and two byte-identical checked FPC 3.2.2 Win32 runs
+passed with zero unfreed blocks. The private policy, source and full rows are
+under `build/register-gap-peaks/`; the replay report SHA-256 is
+`0512cca5652cca15d8c7f634991dba940bf03b62ff6c81d496f4b41326fdb109`.
+
+| Development cohort | Events / available windows | Low / half / other gap peaks | Mean per-event half-peak share | Event range |
+| --- | ---: | ---: | ---: | ---: |
+| Baseline correct only | 85 / 401 | 324 / 904 / 1579 | 0.000326272 | 0..0.002847752 |
+| Upper octave correct only | 11 / 51 | 26 / 222 / 109 | 0.026575377 | 0.008621028..0.068254048 |
+| Violin spiccato bank challenge | 4 / 20 | 3 / 18 / 119 | 0.000391648 | 0.000015417..0.001389754 |
+
+The reported fraction sums each gap's *single peak bin* power relative to its
+window's total positive-frequency power, then averages over available windows
+and events. It is not a total spectral-energy fraction. One upper-correct event
+has only one available window; it remains in the event range and mean. The
+half-frequency peak share separates these already labelled development cohorts,
+while low-frequency peak counts occur in both. This is descriptive association:
+cohorts use reference outcomes and different candidate frequencies, so this
+does not prove source ownership, a safe register classifier, calibrated
+abstention, independent accuracy or protection of true low/quiet/short notes.
+No acceptance criterion or credit closes. Further register decisions remain
+paused until independent identity evidence and a prospective ambiguity/coverage
+policy support a source-separated waveform gate.
+
 ## HarmoF0 source feasibility screen — 2026-09-23
 
 The [HarmoF0 paper](https://arxiv.org/html/2205.01019v2) proposes harmonic

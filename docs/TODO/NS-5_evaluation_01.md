@@ -111,6 +111,15 @@ remain open here, with no task credit.
 
 **Dev Notes:**
 
+- 2026-09-23 source-independent groove control slice: the [native rhythm-admission
+  fixture](../STYLE-CARDS.md#native-rhythm-admission-control-slice--2026-09-23)
+  proves that existing onset-grid occupancy survives bounded timing jitter and
+  changes when one event moves by a cell, with exact replay. This is one
+  controlled subtrait only. Attributed roles, accents, microtiming, held events
+  and inter-bar relationships are not measured by this fixture; criterion 5
+  still requires complete preserving/breaking controls for each provider.
+  No private genre source, task credit or acceptance changes.
+
 - Existing limitation: master-WAV level controls and generic guitar annotation comparisons validate measurements, not the requested genre traits. Candidate cards still lack verified recording/edition correspondence and complete musical annotations; B/C endpoint hits also require source-quality review. See [candidate cards](../STYLE-CARDS.md#candidate-reference-cards).
 
 - Follow-up on resumption: resolve the source/reference packet using curator or reviewed musical observations, then demonstrate preserving/breaking controls for every required provider dimension. Automatic transcription is not a prerequisite for reference annotation. Do not turn another level-only report into specification acceptance.
