@@ -58,6 +58,16 @@ by changing its failed pair or window in place.
 
 **Dev Notes:**
 
+- 2026-09-23 private score binding repair: the first scorer accepted a
+  self-hashed synthetic review without independently checking its manifest or
+  listener input. The production Pascal runner now requires the frozen
+  manifest, all aid hashes, exact reviewed source rows and normalized label
+  rows before source scoring. Two synthetic packets still replay byte-for-byte
+  on checked stable Win32/Win64 with zero unfreed blocks; wrong input, manifest,
+  reviewed label and source WAV reject before output. A separately compiled
+  synthetic fixture mode cannot be used by the production binary, which
+  rejects the fixture manifest. This repairs review integrity only; no real
+  GuitarSet labels, recorded result or task credit exist yet.
 - 2026-09-23 focused API/consumer acceptance without listening: criteria 2
   and 4 are met at their stated observation and native-consumer scope.
   Fresh checked stable FPC 3.2.2 Win32/Win64 builds passed the focused
@@ -72,8 +82,8 @@ by changing its failed pair or window in place.
   the full source after observation and before output; fresh checked
   Win32/Win64 builds preserve the exact TSV replay and zero-leak result.
   This closes no recorded acoustic or event-decision gate. Criteria 1 and 3,
-  including the pending
-  user-reviewed development/evaluation packet, remain open; no task credit.
+  including the pending user-reviewed development/evaluation packet, remain
+  open; no task credit.
 - 2026-09-23 score-runner preparation: the private ignored packet's Pascal
   scorer binds the binder output SHA-256, verifies original WAV identities,
   uses the frozen lowest-numbered same-source rest rule, and separates
@@ -81,8 +91,8 @@ by changing its failed pair or window in place.
   exercised no-reference, correct-candidate, false-active, unknown-label,
   missed-active, exact-zero correct-rest and abstention routing. Checked stable
   Win32/Win64 score TSVs were byte-identical with zero unfreed blocks; a wrong
-  reviewed hash rejected
-  without output. No real listener labels have arrived, so neither the real
+  reviewed hash rejected without output. No real listener labels have arrived,
+  so neither the real
   binder nor the scorer has run on GuitarSet. Recorded calibration, independent
   cases and task credit remain open.
 - 2026-09-23 listener handoff preflight: a private Pascal binder under the

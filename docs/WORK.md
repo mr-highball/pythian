@@ -23,6 +23,22 @@ from planned semantic providers, profile persistence, weighting and blend APIs.
 
 ## Maintained presence observation boundary — 2026-09-23
 
+The ignored Pascal score runner's binding guard was tightened before any
+recorded labels arrived. Its production build now requires the frozen
+manifest, every original aid hash and the normalized listener-label TSV, and
+checks every reviewed row against both inputs before opening a source WAV.
+Two distinct synthetic packets still replay byte-identically on checked
+stable Win32/Win64, including correct, error, abstention and no-reference
+routes, with zero unfreed blocks. Current fixture-1 development/evaluation
+TSV SHA-256 values are
+`8d09e3cca59c2bffae3a3723e6e72df305396448880f3df8b8e0e72b39ed39ae`
+and `69f8de349f582bfa2046de5628d4c560984d184106cc67af5e1efe69bdfec5c2`.
+Wrong listener input, manifest, reviewed label and source WAV each reject
+before output; the production build rejects the synthetic manifest. This
+repairs a path where a self-hashed synthetic review could previously reach the
+private scorer without independent binding. No real listener packet or
+GuitarSet score exists yet.
+
 Fresh focused stable FPC 3.2.2 Win32/Win64 checks accept the maintained
 observation API and native consumer criteria of
 [NS-3_notes_05](TODO/NS-3_notes_05.md). Both targets pass the exact-window,
@@ -36,27 +52,20 @@ observation and before emitting TSV, detecting any source change that persists
 through that check; this adds a second full-file hash per call.
 Fresh checked Win32/Win64 consumer builds retain the exact TSV replay and
 zero unfreed blocks. The wrong-hash invocation exits before TSV output.
+The [Ubuntu 24.04 push CI at `5651fef`](https://github.com/mr-highball/pythian/actions/runs/35923540295)
+passed its FPC 3.2.2 native build and extracted core/WFC package checks.
+That run compiles the inspector; its exact-window runtime check above remains
+Win32/Win64 evidence.
 This closes criteria 2 and 4 at their declared scope, without assigning
 acoustic audibility, event accuracy or task credit. Criteria 1 and 3 still
 need source-grounded labels and recorded development/independent results.
 
-The ignored recorded packet now also has a Pascal score runner with separate
-development and reserved-evaluation modes. It requires the binder's reviewed
-packet SHA-256, verifies each original mic WAV SHA-256 before and after scoring,
-chooses only the lowest-numbered same-source listener-confirmed no-guitar rest,
-and preserves unknown-label, no-reference and excluded-reference counts apart
-from correct and error counts. A distinct synthetic three-source fixture
-exercised no-reference, correct-candidate, false-active, unknown-label and
-missed-active routing. A second synthetic fixture exercised exact-zero
-correct-rest and contrast abstention. Checked stable Win32/Win64 reports were
-byte-identical for both fixtures. The first fixture's development SHA-256 was
-`d5c181cddb64b0c76a6bc75461a906802daa108e3ab96d62108dc63aecd6ee17`;
-its evaluation SHA-256 was
-`c2f5675f06c966157bc3eb682d732b802226f73f046b1dea42586f86f0f880e2`.
-Both targets reported zero unfreed blocks. A wrong reviewed-packet hash
-rejected before output.
-This verifies scoring mechanics on synthetic data only. The real binder has
-not run; no GuitarSet label, rest reference, score or task credit exists yet.
+The scorer uses separate development and reserved-evaluation modes, verifies
+each original mic WAV SHA-256 before and after scoring, chooses only the
+lowest-numbered same-source listener-confirmed no-guitar rest, and counts
+unknown-label, no-reference and excluded-reference windows apart from errors.
+These mechanics are synthetic-tested only. The real binder has not run; no
+GuitarSet label, rest reference, score or task credit exists yet.
 
 The recorded listening packet's private Pascal review binder now passes
 checked stable Win32/Win64 read-only preflight against the frozen manifest
