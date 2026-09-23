@@ -60,6 +60,25 @@ changes. This accepted criterion resets the two-nonclosing-batch checkpoint;
 the next work must still address the remaining reference-grounding evidence
 or a ready core prerequisite, not repeat protocol wording.
 
+## Private style-source correspondence stop — 2026-09-23
+
+One frozen audio-match batch tested a declared chapter from a user-selected
+full mix against a separately artist-published recording. Pascal decoded the
+prepared WAVs and scored three interior 20-second envelopes plus a different-
+chapter control. Interior scores were 0.825857, 0.887276 and 0.826554, with
+inconsistent and nonunique placements; the control was 0.118660. The declared
+gate failed before the separately planned waveform confirmation. The repaired
+failure exit has zero unfreed blocks on stable FPC 3.2.2 Win32. Exact source
+identities, policy, media and results stay under ignored `build/`, consistent
+with the user's private-style-input direction.
+
+The chapter is not an independently verified recording/edition or song group;
+the failed match does not prove its metadata title false. Stop this candidate
+without a threshold or upload sweep. [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md)
+criteria 1, 2 and 5 remain open, with no credit. This is one nonclosing batch
+since the accepted protocol criterion; follow the ready synthesis-quality
+review while a distinct source-grounding path is developed.
+
 ## Journal publication checkpoint — 2026-09-23
 
 For NS-5_scale_02 criterion 2, the acoustic journal commands now stage model,

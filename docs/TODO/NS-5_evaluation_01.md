@@ -148,3 +148,14 @@ remain open here, with no task credit.
   under [evaluation_02](NS-5_evaluation_02.md) only after this style-card task's
   reference-grounded criteria 1, 2 and 5 close. Specification QA is not a
   listener verdict or style acceptance.
+
+- 2026-09-23 private recording-correspondence screen: one declared chapter of a
+  user-selected full mix was tested against a separately artist-published audio
+  recording under a frozen three-anchor plus negative-control policy. Native
+  Pascal envelope matching gave 0.825857, 0.887276 and 0.826554 at the three
+  interior anchors, with inconsistent placements and nonunique matches; the
+  second-chapter control scored 0.118660. The predeclared gate failed before
+  waveform confirmation. Exact media, source identities, code and policy remain
+  in ignored `build/`. Stop this source/edition match without retuning or
+  counting a verified song group. This is one nonclosing batch after criterion
+  4; reference-grounding criteria 1 and 2 and controlled criterion 5 stay open.
