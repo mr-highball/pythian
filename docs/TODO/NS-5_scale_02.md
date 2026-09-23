@@ -69,3 +69,11 @@ Starting evidence: [CORPUS-EVALUATION](../CORPUS-EVALUATION.md) · [ANALYSIS-WAV
   Crash/restart equivalence, filesystem durability and the semantic workload
   remain unverified, so criterion 2 and task credit remain open. Continue via
   the semantic prerequisites, not more acoustic-only publication variants.
+
+- 2026-09-23 same-batch repair: the fresh-prefix check initially ran only after
+  training. It now runs before input loading in all four journal profile commands
+  and again at publication. Stable FPC 3.2.2 compiled the change; existing
+  outputs and occupied staging directories reject before an intentionally missing
+  input is opened, while the accepted profile hashes remain unchanged. This
+  prevents wasting a long run on an already occupied prefix; it does not change
+  the open crash/restart or semantic acceptance boundaries above.

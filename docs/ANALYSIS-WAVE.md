@@ -419,6 +419,8 @@ output prefix. Journal training, replay, blend and context attachment stage
 their files in a sibling `.publishing` directory and publish the JSON report
 last. They reject an existing `.json`, `.wfcs` or `.wav` at the output prefix;
 an existing staging directory also rejects a concurrent or interrupted run.
+The fresh-prefix check runs before source or profile loading and is repeated
+at publication, so an occupied prefix does not consume a long training run.
 An interrupted process may leave staging files or final model/WAV files without
 a report. Inspect that no writer is active, remove only that incomplete output
 prefix and its staging directory, then repeat with the completed source-bound

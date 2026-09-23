@@ -33,6 +33,10 @@ staging directory without changing output bytes. Fresh training from the same
 completed cache produced identical JSON/model/WAV with FPC 3.3.1 and 3.2.2
 Win32; saved replay reproduced the WAV and a saved blend loaded. The checked
 fixture is ignored under `build/`.
+The same batch repaired late freshness rejection: all four commands now check
+the output prefix before loading inputs, then check again when publishing.
+An intentionally missing input confirmed that occupied prefixes and staging
+directories reject first, preserving the accepted output hashes.
 
 This was one bounded nonclosing acoustic preparation batch. It does not test
 process kill/restart, durable writes, semantic providers, long-workload budgets

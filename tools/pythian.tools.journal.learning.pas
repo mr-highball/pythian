@@ -109,6 +109,23 @@ type
 
 function ReadProfileText(const APath: String): UTF8String; forward;
 
+procedure RequireFreshJournalPrefix(const APrefix: String);
+var
+  LSuffix: String;
+begin
+  for LSuffix in ['.json', '.wfcs', '.wav'] do
+  begin
+    if FileExists(APrefix + LSuffix) then
+    begin
+      raise EAudio.Create('Journal publication requires a fresh output prefix');
+    end;
+  end;
+  if DirectoryExists(APrefix + '.publishing') then
+  begin
+    raise EAudio.Create('Cannot reserve journal publication prefix; inspect its .publishing directory');
+  end;
+end;
+
 { A fresh prefix and the report published last make an interrupted result
   visibly incomplete. The sibling staging directory also excludes another
   learner using the same prefix. This is not a multi-file atomic transaction. }
@@ -120,13 +137,7 @@ var
   LWaveMoved: Boolean;
   LSuffix: String;
 begin
-  for LSuffix in ['.json', '.wfcs', '.wav'] do
-  begin
-    if FileExists(APrefix + LSuffix) then
-    begin
-      raise EAudio.Create('Journal publication requires a fresh output prefix');
-    end;
-  end;
+  RequireFreshJournalPrefix(APrefix);
   LStage := APrefix + '.publishing';
   if not CreateDir(LStage) then
   begin
@@ -580,6 +591,7 @@ begin
     raise EAudio.Create('Usage: pythian.learn journals OUTPUT_PREFIX [--multiplicity N] INPUT.wav CACHE.pyaf [...]');
   end;
   LPrefix := ParamStr(2);
+  RequireFreshJournalPrefix(LPrefix);
   LArgument := 3;
   LPartitioned := ParamStr(LArgument) = '--partition';
   LPartition := jpDevelopment;
@@ -1198,13 +1210,14 @@ begin
     raise EAudio.Create('Usage: pythian.learn contexts INPUT_PREFIX OUTPUT_PREFIX MAX_GRAINS CACHE.pyaf [...]');
   end;
   LPrefix := ParamStr(3);
+  RequireFreshJournalPrefix(LPrefix);
   LMaximum := StrToInt(ParamStr(4));
   for LSuffix in ['.json', '.wfcs', '.wav'] do
   begin
-    if FileExists(LPrefix + LSuffix) or
-      SameFileName(ExpandFileName(LPrefix + LSuffix), ExpandFileName(ParamStr(2) + LSuffix)) then
+    if SameFileName(ExpandFileName(LPrefix + LSuffix),
+      ExpandFileName(ParamStr(2) + LSuffix)) then
     begin
-      raise EAudio.Create('Context attachment requires a fresh output prefix');
+      raise EAudio.Create('Context output must differ from its input profile');
     end;
     for LIndex := 5 to ParamCount do
     begin
@@ -1311,6 +1324,7 @@ begin
     raise EAudio.Create('Usage: pythian.learn blend LEFT_PREFIX RIGHT_PREFIX OUTPUT_PREFIX LEFT_WEIGHT RIGHT_WEIGHT');
   end;
   LPrefix := ParamStr(4);
+  RequireFreshJournalPrefix(LPrefix);
   for LIndex := 2 to 3 do
   begin
     for LSuffix in ['.json', '.wfcs', '.wav'] do
@@ -1321,10 +1335,6 @@ begin
         raise EAudio.Create('Blend output must differ from each parent');
       end;
     end;
-  end;
-  if FileExists(LPrefix + '.wav') then
-  begin
-    raise EAudio.Create('Blend output prefix contains an audition; choose a fresh prefix');
   end;
   LLeft := nil;
   LRight := nil;
@@ -1420,6 +1430,7 @@ begin
   end;
   LInputPrefix := ParamStr(2);
   LOutputPrefix := ParamStr(3);
+  RequireFreshJournalPrefix(LOutputPrefix);
   for LSuffix in ['.json', '.wfcs', '.wav'] do
   begin
     if SameFileName(ExpandFileName(LOutputPrefix + LSuffix),
