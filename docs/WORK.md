@@ -903,6 +903,17 @@ criterion and earns no credit; complete the five missing window judgments
 before publishing a reviewed label TSV or scoring presence. No additional
 source-screen or threshold variant is authorized by this response.
 
+For easier exact-window review on mobile, one ignored Pascal playback aid
+repeated only the five pending quarter-second source intervals, each four
+times with equal digital-silence gaps. Checked stable Win32/Win64 compiles
+and runs verified original source hashes, WAV geometry, exact repeated PCM
+bytes and cross-target output hashes with zero reported leaks. The two
+fast-decay late windows are each 4,000 frames of exact PCM zero; three brass
+windows contain nonzero samples but still need a pitch-specific listener
+verdict. This is a bounded presentation aid, not changed reference selection
+or a substitute human label. It closes no criterion; stop aid variants and
+await the five unresolved judgments.
+
 ## Journal publication checkpoint — 2026-09-23
 
 For NS-5_scale_02 criterion 2, the acoustic journal commands now stage model,

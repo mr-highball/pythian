@@ -47,6 +47,16 @@ and [rejected gate-slope rule](../PHRASE-EVALUATION.md#fixed-gate-slope-diagnost
 
 **Dev Notes:**
 
+- 2026-09-23 frozen-window playback aid: an ignored Pascal tool repeated the
+  five still-pending 250-ms windows with equal digital-silence gaps for mobile
+  review. Checked stable Win32/Win64 runs bind original WAV hashes, verify
+  exact repeated PCM and emit matching WAV hashes. Both fast-decay late source
+  windows have 0/4,000 nonzero PCM frames; all three brass windows contain
+  nonzero samples without proving an identifiable pitch. See the
+  [packet evidence](../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22).
+  This aid adds no source/window, listener label, accepted criterion or credit.
+  Stop playback-aid variations here and await exact review of the frozen
+  windows; do not treat digital silence or loud static as a human verdict.
 - 2026-09-23 exact-window listener update: the user marked the fading
   `guitar_acoustic_030-061-100` pitched sound audible in all three frozen
   windows, including [3.75,4.00) seconds after the 3.0-second renderer

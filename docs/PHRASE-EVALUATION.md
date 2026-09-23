@@ -148,6 +148,19 @@ windows also remain unlabelled. Keep those five window labels pending; do not
 promote an RMS value, quality tag or whole-clip comment into a frame-level
 acoustic label.
 
+A 2026-09-23 mobile listening aid under ignored `build/presence-review-aid/`
+copies each of the five pending 4,000-frame PCM16 windows four times, separated
+by 4,000 frames of digital silence. It changes no source window, gain or
+label. Checked stable Win32/Win64 Pascal runs verified the three relevant WAV
+hashes, native WAV geometry, every repeated source byte and zero gap; the five
+output WAV hashes match across targets with zero reported leaks. Direct PCM
+counts find 3,998 / 3,997 / 3,981 nonzero frames in the three brass windows,
+but **zero nonzero frames** in each late fast-decay guitar and mallet window.
+Those two source intervals are exact digital silence, a physical PCM fact;
+their requested listener labels are still pending. The brass counts say
+nothing about an identifiable pitch. The aid is for reviewing the already
+frozen windows, not a replacement reference or an inference result.
+
 The exact question for review is whether a pitched note from the named source
 is **clearly audible**, **not audible**, or **uncertain** in each listed
 candidate window. The 3.0-second renderer note-off is a documented control,
