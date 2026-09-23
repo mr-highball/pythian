@@ -137,6 +137,28 @@ Source/output hashes, output headroom and the four-family entry-time map are
 recorded. This prepares the pending user review but closes no further source
 quality criterion; separate family cases remain in the finite matrix.
 
+## Tonal negative-screen reassessment — 2026-09-23
+
+While the combined-source listening verdict remains pending, one frozen native
+[local-key control screen](TONAL.md#authored-tonal-negative-screen--2026-09-23)
+ran silence, white noise, a click train, an equal chromatic cluster and a
+C-major triad through the unchanged Pascal WAV/chroma/ranker path. Silence
+remained unknown; all three non-tonal signals received 24 ranked keys. The
+triad ranked C major with gap .015870574, above the largest authored negative
+gap .000403354. The declared decision is recorded evaluation required, not an
+automatic key threshold. Original Schubert annotation gaps remain unverified
+as non-tonal audio, and no held-out composition was opened.
+
+The louder NS-2 listening copy and this key screen are two consecutive batches
+since the beat-candidate reassessment without closing an acceptance criterion.
+At this task-flow checkpoint, stop additional playback-gain variants and
+authored score-gap probes. The next concrete source-quality action is to assess
+the already supplied 11-second clip when the listener responds, then route any
+specific audible defect to its family. A future local-key admission experiment
+requires independent recorded negative/ambiguous references and a prospective
+temporal, threshold and coverage policy; the current five controls cannot set
+one. No task credit or milestone percentage changes.
+
 ## NS-5 listening-protocol criterion — 2026-09-23
 
 Focused specification QA for [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md)

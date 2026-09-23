@@ -489,6 +489,45 @@ and `build/qa-batch-13/`. Corrected report SHA256:
 `0f0beb6b1ae517142118b3956f7b10e4b23fe9a5ebeed10036b2ba4460c08807`.
 No maintained ranker, source split, task completion or credit changes.
 
+## Authored tonal-negative screen — 2026-09-23
+
+One frozen [NS-3_context_01](TODO/NS-3_context_01.md) control screen asked whether
+the existing positive top-two diatonic score gap also occurs after native
+FFT/chroma analysis of signals with no single supported major/minor key. The
+ignored `build/tonal-negative-screen/POLICY.md` fixed five 8-second, 22,050-Hz
+mono recipes and the decision before execution: silence, deterministic white
+noise, a click train, an equal 12-note chromatic cluster and a C-major triad.
+The same default 4,096-frame window/1,024-frame hop, duration-weighted chroma
+and unchanged `RankDiatonicFits` processed each complete signal. No reference
+recording, style input, inference runtime or threshold sweep was used.
+
+| Authored signal | Ranked candidates | First root/mode | First coverage | Top-two score gap |
+| --- | ---: | --- | ---: | ---: |
+| Silence | 0 | unknown | 0 | 0 |
+| White noise | 24 | A#/major | .605843 | .000034384 |
+| Click train | 24 | G/minor | .604785 | .000403354 |
+| Chromatic cluster | 24 | G/major | .587352 | .000160963 |
+| C-major triad | 24 | C/major | .997374 | .015870574 |
+
+The triad passes the predeclared positive control, and the largest authored
+negative gap (.000403354) is below its gap. The fixed decision is therefore
+`recorded_evaluation_required`, not a chosen cutoff or automatic key admission.
+All three non-tonal signals still produce 24 ranked alternatives: a top rank
+cannot itself be interpreted as musical certainty. These constructed signals
+do not verify false-admission behavior on independent recorded non-tonal or
+ambiguous music. The Schubert annotation gaps are not such labels, and its
+remaining compositions stay unopened for inference evaluation.
+
+Each case declares 8,503,296 analysis-work units, below the frozen 20-million
+limit; the checked stable FPC 3.2.2 Win64 run reports a 3,211,264-byte heap
+size and zero unfreed blocks. The combined local output hash is
+`a5361300c02a99f571534ce49903d7965abb7a8abb2a448b7bdc91191aa725f0`;
+the source, frozen policy and output remain ignored under `build/`. No
+maintained inference behavior, acceptance criterion or task credit changes.
+Stop authored gap variants here. A later admission proposal needs independent
+recorded positive and non-tonal/ambiguous references, temporal context and a
+prospective threshold and coverage rule before any scored acceptance run.
+
 ## Native inspection
 
 The [native tool](../tools/pythian.tonal.inspect.lpr) prints JSON:

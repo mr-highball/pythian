@@ -118,6 +118,16 @@ independent recorded accuracy. This partial criterion earns no task credit.
 
 **Dev Notes:**
 
+- 2026-09-23 authored negative-control screen: a [frozen Pascal WAV-analysis
+  probe](../TONAL.md#authored-tonal-negative-screen--2026-09-23) ran silence,
+  white noise, click train, an equal 12-note cluster and a C-major triad through
+  the unchanged chroma/ranker path. The triad ranks C major and its gap exceeds
+  all three authored negative gaps, so the fixed decision is to require
+  independent recorded evaluation before any threshold. Every non-tonal
+  signal still has 24 ranked candidates; rank zero is not admission. Stop
+  authored gap variants here. No criterion or credit closes because recorded
+  non-tonal/ambiguous labels, temporal evidence and prospective admission
+  limits remain missing.
 - Stopped representations (2026-09-21): spectral-peak chroma improved one timed source but regressed the other; the published profile pair then failed both. The contribution audit found fifth-related and distant losses as well as relative-mode errors. Stop profile variations; see [decision evidence](../TONAL.md#rejected-profile-decision-audit).
 
 - Stopped harmonic dictionary: 31/72 synthetic cases failed preservation, including pure-tone false class mass and a missing-fundamental octave error. It did not proceed to recorded execution. See [feasibility evidence](../TONAL.md#harmonic-dictionary-feasibility).
