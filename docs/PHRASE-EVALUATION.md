@@ -144,7 +144,11 @@ in all three repeated windows despite describing it as unpleasant old-TV/radio
 static. Their subsequent 3.75-second clarification explicitly named
 `brass_acoustic_046-084-075--late-tail-3p75-4x.wav`; it did not label either
 fast-decay clip audible. Both fast-decay late windows were answered
-**uncertain**. The six audible judgments support source activity after the
+**uncertain**. The user later explained that those clips sounded like static
+rather than a bell or mallet. All 4,000 source frames in each exact late
+window are zero, so the heard static cannot be encoded sound in those frozen
+source intervals; its playback-path cause is unverified. Keep the listener's
+labels uncertain. The six audible judgments support source activity after the
 documented control note-off for the long-release notes, including the final
 quarter-second. They do not establish an acoustic silence endpoint.
 

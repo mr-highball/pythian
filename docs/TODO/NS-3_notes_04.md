@@ -47,6 +47,27 @@ and [rejected gate-slope rule](../PHRASE-EVALUATION.md#fixed-gate-slope-diagnost
 
 **Dev Notes:**
 
+- 2026-09-23 source-bound criterion review: criterion 1 is satisfied at the
+  declared synthetic single-note scope. The official CC BY 4.0 NSynth JSON/WAV
+  test archive, attribution, archive/metadata hashes, fixed Pascal selection
+  hash, four WAV hashes, distinct brass/guitar/mallet instrument groups,
+  16-kHz PCM16/64,000-frame geometry, pitch/velocity IDs and documented
+  3.0-second renderer gate are recorded in the
+  [fixed-gate source audit](../PHRASE-EVALUATION.md#fixed-gate-release-controls--2026-09-22).
+  Pitch/velocity are renderer metadata paired with separate WAVs; the official
+  3-second hold is a dataset-wide render control, not a per-note MIDI or
+  physical release trace. Quality tags are partly heuristic, and the audible
+  ending remains unknown. This closes criterion 1 only at the synthetic
+  single-note scope and resets the task's nonclosing-batch count. Criteria 2,
+  3 and 4 remain open: reviewed tail/rest coverage, the final source-role and
+  consumer decision, and a presence decision distinct from pitch identity. No
+  independent inference accuracy or task credit follows.
+- 2026-09-23 uncertain-rest clarification: the listener said the two late
+  fast-decay playback aids sounded like static rather than a bell or mallet.
+  Their exact source windows contain only zero PCM samples, so the static is
+  not encoded in those windows, but its playback cause is unverified. Preserve
+  both `uncertain` judgments and seek a reviewable rest contrast; do not
+  relabel them from the PCM fact or instrument identity.
 - 2026-09-23 reviewed-window checkpoint: the user labeled all three frozen
   brass windows and all three fading-guitar windows `audible` under the
   source-sound convention. They explicitly identified the repeated brass

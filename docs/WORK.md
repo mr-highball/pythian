@@ -26,8 +26,11 @@ from planned semantic providers, profile persistence, weighting and blend APIs.
 The user labeled the three frozen brass windows and three fading-guitar windows
 `audible` under the source-sound convention. Their late-sound clarification
 named the repeated brass [3.75,4.00)-second playback aid. The late bell-like
-guitar and mallet windows remain `uncertain`; their exact-zero PCM does not
-replace a human `not_audible` judgment. The ignored review TSV at
+guitar and mallet windows remain `uncertain`. The listener subsequently said
+those two aids sounded like static rather than a bell or mallet. Their
+exact-zero source PCM means this static is not encoded in the frozen windows;
+its playback cause is unverified. The zero PCM does not replace a human
+`not_audible` judgment. The ignored review TSV at
 `build/presence-reference/reviewed-2026-09-23.tsv` binds all eight labels to
 the frozen coordinates. The maintained Pascal checker now prints six-decimal
 RMS, avoiding two last-digit Win32/Win64 differences in its earlier
@@ -40,6 +43,18 @@ with zero unfreed blocks. The [packet evidence](PHRASE-EVALUATION.md#nsynth-note
 records source scope and limitations. `NS-3_notes_04` remains open: there is
 no reviewed distant-rest negative or audible silence endpoint, no scorer has
 been run and no completion credit is earned.
+
+The official [NSynth source](https://magenta.withgoogle.com/datasets/nsynth),
+archive and metadata hashes, selection hash, four WAV identities, instrument
+groups, geometry and control timing support criterion 1 of the reference task
+at its bounded synthetic-note scope. Pitch/velocity are renderer metadata
+paired with separate WAVs; the official three-second hold is a dataset-wide
+render control, not a per-note MIDI or physical release trace. Partly heuristic
+quality tags remain distinct from acoustic labels. This closes criterion 1
+and resets the task's nonclosing-batch count. Criteria 2 through 4 remain open:
+reviewed tail/rest coverage, the final source-role and consumer decision, and a
+presence decision distinct from pitch identity. No independent inference
+accuracy or task credit follows.
 
 ## Accepted local-key/no-key reference packet — 2026-09-23
 
