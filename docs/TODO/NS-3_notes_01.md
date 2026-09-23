@@ -135,3 +135,26 @@ variation is authorized by the existing evidence.
   after journal publication. The [work reassessment](../WORK.md#core-quality-reassessment--2026-09-23)
   changes the next action to the ready NS-2 source/articulation quality review;
   register investigation resumes only with the independent evidence above.
+
+- 2026-09-23 distinct model-source check: the [PESTO release at
+  `62bc0c9`](https://github.com/SonyCSLParis/pesto/tree/62bc0c9702558f19af4593752947fb9db1eadac9)
+  names MIR-1K as the training collection for its supplied model and includes
+  `mir-1k_g7.ckpt`. Treat **all MIR-1K recordings as development exposure**;
+  no song-level training split was established. This is a materially different
+  source qualification from the stopped SwiftF0 screen, and URMP Spring is a
+  separate collection. A checked FPC 3.2.2 Win32 Pascal-only container screen
+  bound the ignored 534664-byte checkpoint (SHA256
+  `16c32e06ddd950e3e4866dfa3c7f8a87c4988f8adf43e57977b189f031f26f3e`):
+  26 ZIP entries, 7915 stored pickle metadata bytes and 22 raw storage members.
+  The metadata names spectral encoder, confidence and calibration tensors; it
+  was inspected as bytes, never executed. FPC's generic ZIP extractor listed
+  the metadata member but emitted zero bytes; a bounded Pascal central-directory
+  reader recovered the stored member for this screen. The publisher's repository
+  carries an LGPL-3.0 license; weight redistribution has not been qualified.
+  This qualifies one **private Pascal-port candidate**,
+  not a register observation, source-disjoint accuracy result, accepted model
+  or distributable dependency. Next bound an independent Pascal tensor/CQT
+  decode and forward control before any recorded scoring; stop this candidate
+  if exact model bytes/geometry cannot be reproduced within the declared
+  budget. The existing 98% precision, coverage and low/quiet/short gates remain
+  unchanged. This is one nonclosing note-identity batch after reassessment.

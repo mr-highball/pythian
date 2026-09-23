@@ -188,6 +188,17 @@ Source/output hashes, output headroom and the four-family entry-time map are
 recorded. This prepares the pending user review but closes no further source
 quality criterion; separate family cases remain in the finite matrix.
 
+After the source-quality artifact and numerical criteria closed, a distinct
+[PESTO checkpoint source screen](TODO/NS-3_notes_01.md)
+found a publisher-identified MIR-1K training collection and an exact small
+checkpoint, unlike the earlier SwiftF0 candidate. A checked Pascal-only
+container reader bound its ZIP/storage layout without model execution or a
+third-party runtime. No per-song training manifest was established, so all
+MIR-1K material is treated as exposed. The checkpoint is a private candidate
+for a bounded Pascal decode/forward control, not a qualified register result or
+packaged model. This is one nonclosing note-identity batch after reassessment;
+the 11-second synthesis listening and source-family verdicts remain pending.
+
 ## Tonal negative-screen reassessment — 2026-09-23
 
 While the combined-source listening verdict remains pending, one frozen native
