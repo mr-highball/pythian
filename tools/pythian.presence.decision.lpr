@@ -58,7 +58,7 @@ const
   CFrames = 64000;
   CWindowFrames = 4000;
   CNoteOff = 48000;
-  CNotes: array[0..3] of TNoteSpec = (
+  CDevelopmentNotes: array[0..3] of TNoteSpec = (
     (Id: 'brass_acoustic_046-084-075'; SourceGroup: 'brass_acoustic_046';
       Role: 'development';
       Sha256: 'ff8300e7388f16b1476f23da0c93683d445bf764c85961ef99f5293f74ba2180'),
@@ -72,6 +72,22 @@ const
       Role: 'development';
       Sha256: '2e72192db98fba6464cfed3977174d01c62649ef29d510e6d40a61c54c5d82bf')
   );
+  CTrainNotes: array[0..3] of TNoteSpec = (
+    (Id: 'flute_acoustic_028-049-075'; SourceGroup: 'flute_acoustic_028';
+      Role: 'independent_evaluation';
+      Sha256: 'ee8308494d159996eb74ab878ffcb6b4f4f736cf2ae09e427a45f66ee271ef8d'),
+    (Id: 'guitar_acoustic_008-048-075'; SourceGroup: 'guitar_acoustic_008';
+      Role: 'independent_evaluation';
+      Sha256: '39d8f9db0976b5b784c84817bb97e73299c05324935b4ac162b8518deba350ef'),
+    (Id: 'bass_acoustic_000-059-075'; SourceGroup: 'bass_acoustic_000';
+      Role: 'independent_evaluation';
+      Sha256: 'b6b93a65946943eb0d445f1d4e9d5d80843090a607e8d531d94a65c7deebef3b'),
+    (Id: 'brass_acoustic_040-052-075'; SourceGroup: 'brass_acoustic_040';
+      Role: 'independent_evaluation';
+      Sha256: '9403cd938c72c6dffd803d5636acd678dba5a61000987260019e0b9e878501b1')
+  );
+  CTrainPacketHash =
+    'abbf3b4b3d4243498e99f2b677406292008893961cbc17649744aa6c2f675b19';
   CWindows: array[0..7] of TWindowSpec = (
     (NoteIndex: 0; Name: 'continuation'; StartFrame: 40000; EndFrame: 44000),
     (NoteIndex: 0; Name: 'early_tail'; StartFrame: 48000; EndFrame: 52000),
@@ -84,6 +100,10 @@ const
   );
   CReferenceHeader = 'source_group'#9'role'#9'note_id'#9'wave_sha256'#9 +
     'window'#9'start_frame'#9'end_frame'#9'rms'#9'review';
+
+var
+  GNotes: array[0..3] of TNoteSpec;
+  GTrainMode: Boolean;
 
 procedure Require(const AValue: Boolean; const AMessage: String);
 begin
@@ -109,8 +129,8 @@ var
 begin
   for I := Low(CWindows) to High(CWindows) do
   begin
-    Require((CWindows[I].NoteIndex >= Low(CNotes)) and
-      (CWindows[I].NoteIndex <= High(CNotes)) and
+    Require((CWindows[I].NoteIndex >= Low(GNotes)) and
+      (CWindows[I].NoteIndex <= High(GNotes)) and
       (CWindows[I].StartFrame >= 0) and
       (CWindows[I].EndFrame - CWindows[I].StartFrame = CWindowFrames) and
       (CWindows[I].EndFrame <= CFrames), 'Invalid frozen window geometry');
@@ -273,6 +293,7 @@ var
   LMatch: String;
   LAudibleCount: Integer;
   LNotAudibleCount: Integer;
+  LUncertainCount: Integer;
   LMatchCount: Integer;
   I: Integer;
 begin
@@ -285,10 +306,14 @@ begin
       (LLines[0] = CReferenceHeader),
       'Reference packet header or row count differs');
     LPacketHash := FileHash(APath);
+    if GTrainMode then
+      Require(LPacketHash = CTrainPacketHash,
+        'Independent reference packet SHA256 differs from frozen review');
     LFormat := DefaultFormatSettings;
     LFormat.DecimalSeparator := '.';
     LAudibleCount := 0;
     LNotAudibleCount := 0;
+    LUncertainCount := 0;
     LMatchCount := 0;
     LOutput.Add('source_group'#9'role'#9'note_id'#9'wave_sha256'#9 +
       'reference_packet_sha256'#9'window'#9'start_frame'#9'end_frame'#9 +
@@ -300,9 +325,9 @@ begin
       ExtractStrings([#9], [], PChar(LLines[I + 1]), LFields);
       Require(LFields.Count = 9, 'Reference packet row field count differs');
       LWindow := CWindows[I];
-      LNote := CNotes[LWindow.NoteIndex];
+      LNote := GNotes[LWindow.NoteIndex];
       Require((LFields[0] = LNote.SourceGroup) and
-        (LFields[1] = LNote.Role) and (LFields[1] = 'development') and
+        (LFields[1] = LNote.Role) and
         (LFields[2] = LNote.Id) and (LFields[3] = LNote.Sha256) and
         (LFields[4] = LWindow.Name) and
         (LFields[5] = IntToStr(LWindow.StartFrame)) and
@@ -312,17 +337,24 @@ begin
         (Abs(LExpectedRms - ADecisions[I].Rms) <= 0.00000051),
         'Reference packet RMS differs from independently measured window');
       LReview := LFields[8];
-      Require((LReview = 'audible') or (LReview = 'not_audible'),
-        'Frozen development review must contain only audible/not_audible labels');
+      Require((LReview = 'audible') or (LReview = 'not_audible') or
+        (GTrainMode and (LReview = 'uncertain')),
+        'Frozen review label is invalid');
       if LReview = 'audible' then
         Inc(LAudibleCount)
-      else
+      else if LReview = 'not_audible' then
+      begin
         Inc(LNotAudibleCount);
+      end
+      else
+        Inc(LUncertainCount);
       if ADecisions[I].Present then
         LDecision := 'activity_present'
       else
         LDecision := 'no_activity';
-      if ((LReview = 'audible') = ADecisions[I].Present) then
+      if LReview = 'uncertain' then
+        LMatch := 'unknown'
+      else if ((LReview = 'audible') = ADecisions[I].Present) then
       begin
         LMatch := 'match';
         Inc(LMatchCount);
@@ -341,12 +373,16 @@ begin
     WriteLn('reference_packet_sha256=', LPacketHash,
       ' rows=', Length(CWindows), ' audible_labels=', LAudibleCount,
       ' not_audible_labels=', LNotAudibleCount,
+      ' uncertain_labels=', LUncertainCount,
       ' matched=', LMatchCount,
       ' output_sha256=', FileHash(AOutputPath));
-    Require((LAudibleCount = 6) and (LNotAudibleCount = 2),
-      'Frozen label distribution differs from the declared 6/2 set');
-    Require(LMatchCount = Length(CWindows),
-      'Frozen activity observation missed one or more reviewed windows');
+    if not GTrainMode then
+    begin
+      Require((LAudibleCount = 6) and (LNotAudibleCount = 2),
+        'Frozen label distribution differs from the declared 6/2 set');
+      Require(LMatchCount = Length(CWindows),
+        'Frozen activity observation missed one or more reviewed windows');
+    end;
   finally
     LOutput.Free;
     LFields.Free;
@@ -357,7 +393,7 @@ end;
 procedure RunPacket(const AAudioDirectory, AReferencePath,
   AOutputPath: String);
 var
-  LNotes: array[0..High(CNotes)] of TAudioSamples;
+  LNotes: array[0..High(GNotes)] of TAudioSamples;
   LDecisions: array[0..High(CWindows)] of TWindowDecision;
   LAnalysis: TAnalysisOptions;
   LActivityOptions: TActivityOptions;
@@ -368,8 +404,8 @@ begin
   LAnalysis := DefaultAnalysisOptions;
   LActivityOptions := DefaultActivityOptions;
   { Complete every decision from WAV samples before opening the reference TSV. }
-  for I := Low(CNotes) to High(CNotes) do
-    LNotes[I] := ReadNote(AAudioDirectory, CNotes[I]);
+  for I := Low(GNotes) to High(GNotes) do
+    LNotes[I] := ReadNote(AAudioDirectory, GNotes[I]);
   for I := Low(CWindows) to High(CWindows) do
   begin
     LWindow := CWindows[I];
@@ -379,15 +415,24 @@ begin
   ReadReference(AReferencePath, LDecisions, AOutputPath);
 end;
 
+var
+  I: Integer;
 begin
   try
+    GTrainMode := (ParamCount = 5) and (ParamStr(5) = 'train');
+    for I := Low(GNotes) to High(GNotes) do
+      if GTrainMode then
+        GNotes[I] := CTrainNotes[I]
+      else
+        GNotes[I] := CDevelopmentNotes[I];
     if (ParamCount = 1) and (ParamStr(1) = 'controls') then
       RunControls
-    else if (ParamCount = 4) and (ParamStr(1) = 'run') then
+    else if (((ParamCount = 4) or GTrainMode) and
+      (ParamStr(1) = 'run')) then
       RunPacket(ParamStr(2), ParamStr(3), ParamStr(4))
     else
       raise EAudio.Create('Usage: pythian.presence.decision controls | ' +
-        'run <audio-directory> <bound-reference.tsv> <output.tsv>');
+        'run <audio-directory> <bound-reference.tsv> <output.tsv> [train]');
   except
     on E: Exception do
     begin
