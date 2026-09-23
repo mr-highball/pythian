@@ -41,7 +41,13 @@ listener approval. All five task criteria pass at that scope. Move the task to
 DONE: +8 NS-2 points / +2.00 overall; NS-2 is **94%**, overall **66.65%**,
 with **38 open / 16 DONE**. The source task's nonclosing-batch count ends at
 acceptance. Its completion unblocks [combined synthesis and streamed listening](TODO/NS-2_synthesis-quality_03.md);
-that task's own interaction and tail verdicts remain open.
+that task's own interaction and tail verdicts remain open. The next bounded
+batch reuses the hash-bound 11-second mix and 30-second paired preview for a
+targeted review of attacks, overlapping layers, uninterrupted holds, melody
+continuity and final tail. The planned 3.2-second slowdown and 15-second preview
+edit are stated in the prompt. Stop new combined renders; if no defect is
+reported, audit existing replay and committed-prefix evidence and publish the
+union acceptance record. If a defect is reported, repair that exact path.
 
 ## Accepted processing and routing quality — 2026-09-23
 

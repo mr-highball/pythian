@@ -27,6 +27,16 @@ Starting evidence: [SYNTHESIS-QUALITY](../SYNTHESIS-QUALITY.md) · [FUNDAMENTALS
 
 **Dev Notes:**
 
+- 2026-09-23 combined listening follow-up: both source and processing
+  prerequisites are now DONE at their declared audition scopes. The user was
+  shown the same hash-bound 11-second combined copy and 30-second paired preview
+  for a targeted review of attacks, overlapping layers, releases/final tail,
+  sustained bass/chord holds, melody continuity and balance. The planned
+  3.2-second slowdown and 15-second preview edit were identified so they are
+  not mistaken for new defects. No new render, scope change or task credit
+  follows while that specific verdict is pending. Criterion 2 is the next
+  closing evidence; then audit any reported defect and publish the union record.
+
 - 2026-09-23 combined-source listener checkpoint: the user heard the exact
   [11-second listening copy](../SYNTHESIS-QUALITY.md#eleven-second-combined-listener-checkpoint--2026-09-23)
   and said the timing seemed to slow in the middle, while the passage resembled

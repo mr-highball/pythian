@@ -5,8 +5,12 @@
 [Sources](SOURCES.md) · [Modulation](MODULATION.md)
 
 The current evidence verifies numerical behavior, scoped bandwidth and bounded
-rendering on stable/development Win32 and stable Win64. It does not establish
-listener approval, instrument realism, general genre learning or device deadlines.
+rendering on stable/development Win32 and stable Win64. The declared
+[source/articulation](TODO/DONE/NS-2_synthesis-quality_01.md) and
+[processing/routing](TODO/DONE/NS-2_synthesis-quality_02.md) examples also have
+bounded listener acceptance. Combined layered/streamed interactions remain under
+review; these results do not establish instrument realism, general genre
+learning or device deadlines.
 This page consolidates the existing fundamentals outcome; it adds no percentage
 allocation and does not replace the separate recorded-style acceptance gates.
 
