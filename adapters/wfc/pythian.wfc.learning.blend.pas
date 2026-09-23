@@ -47,6 +47,7 @@ uses
   fpjson,
   pythian.audio,
   pythian.analysis,
+  pythian.corpus,
   pythian.hash,
   pythian.learning,
   pythian.learning.binding,
@@ -413,6 +414,8 @@ var
   LIndex: Integer;
   LOther: Integer;
   LFound: Integer;
+  LPhysicalSources: Integer;
+  LKnownSource: Boolean;
   LSlot: Integer;
   LTarget: Integer;
   LToken: Integer;
@@ -449,6 +452,7 @@ begin
   LWeights[0] := ALeftWeight;
   LWeights[1] := ARightWeight;
   LSources := nil;
+  LPhysicalSources := 0;
   LLineage := nil;
   LDirect := nil;
   for LSide := 0 to 1 do
@@ -473,23 +477,22 @@ begin
     begin
       LSource := LParents[LSide].SourceAt(LIndex);
       LFound := -1;
+      LKnownSource := False;
       for LOther := 0 to High(LSources) do
       begin
         if LSource.Binding.SourceSha256 <> LSources[LOther].Binding.SourceSha256 then
         begin
           Continue;
         end;
-        if LSource.Binding.FrameCount <> LSources[LOther].Binding.FrameCount then
+        LKnownSource := True;
+        if (LSource.Binding.FrameCount <> LSources[LOther].Binding.FrameCount) or
+          (LSource.CacheSha256 <> LSources[LOther].CacheSha256) then
         begin
-          raise EAudio.Create('Blend repeated source has conflicting geometry');
+          raise EAudio.Create('Blend repeated source has conflicting cache or geometry');
         end;
         if (LSource.FirstFeature = LSources[LOther].FirstFeature) and
           (LSource.FeatureCount = LSources[LOther].FeatureCount) then
         begin
-          if LSource.CacheSha256 <> LSources[LOther].CacheSha256 then
-          begin
-            raise EAudio.Create('Blend repeated source range has conflicting cache identity');
-          end;
           LFound := LOther;
           Break;
         end;
@@ -501,9 +504,17 @@ begin
       end;
       if LFound < 0 then
       begin
-        if Length(LSources) = 32 then
+        if not LKnownSource then
         begin
-          raise EAudio.Create('Blend exceeds 32 distinct source ranges');
+          Inc(LPhysicalSources);
+          if LPhysicalSources > MaximumCorpusSources then
+          begin
+            raise EAudio.Create('Blend exceeds 32 physical sources');
+          end;
+        end;
+        if Length(LSources) = MaximumJournalTrainingSegments then
+        begin
+          raise EAudio.Create('Blend exceeds 4096 distinct source ranges');
         end;
         LFound := Length(LSources);
         SetLength(LSources, LFound + 1);
@@ -513,6 +524,10 @@ begin
       Inc(LSources[LFound].Multiplicity, LSource.Multiplicity * LWeights[LSide]);
       LMaps[LSide][LIndex] := LFound;
     end;
+  end;
+  if Int64(ALeft.Palette.Count) * Length(LSources) * LBins > MaximumJournalCandidateSlots then
+  begin
+    raise EAudio.Create('Blend candidate geometry exceeds slot budget');
   end;
   SetLength(LCandidates, ALeft.Palette.Count * Length(LSources) * LBins);
   for LSide := 0 to 1 do

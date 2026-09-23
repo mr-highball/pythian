@@ -829,6 +829,139 @@ begin
   end;
 end;
 
+procedure CheckManyRangesOneSource;
+var
+  LOptions: TAnalysisOptions;
+  LCenters: TAcousticVectors;
+  LPalette: TAcousticPalette;
+  LCorpus: TAcousticCorpus;
+  LModel: TWfcSequenceModel;
+  LProfile: TJournalModelProfile;
+  LBlend: TJournalModelProfile;
+  LDocument: TJSONObject;
+  LSources: TJSONArray;
+  LCandidates: TJSONArray;
+  LPaletteRows: TJSONArray;
+  LRow: TJSONObject;
+  LVector: TJSONArray;
+  LText: String;
+  LVocabulary: String;
+  LIndex: Integer;
+  LComponent: Integer;
+begin
+  LOptions := DefaultAnalysisOptions;
+  LOptions.WindowFrames := 64;
+  LOptions.HopFrames := 32;
+  SetLength(LCenters, 1);
+  LPalette := TAcousticPalette.CreateFromCenters(LCenters);
+  LModel := nil;
+  LProfile := nil;
+  LBlend := nil;
+  LDocument := nil;
+  try
+    SetLength(LCorpus, 33);
+    for LIndex := 0 to High(LCorpus) do
+    begin
+      LCorpus[LIndex] := TAcousticIndices.Create(0);
+    end;
+    LModel := LearnAcousticModel(LCorpus, LPalette, 2);
+    LText := EncodeWfcSequenceText(LModel);
+    LVocabulary := AcousticVocabularySha256(LPalette, LOptions, 8000, 1);
+    LDocument := TJSONObject.Create;
+    LDocument.Add('contract', 'pythian.acoustic.journal-learning');
+    LDocument.Add('analysis_version', AnalysisVersion);
+    LDocument.Add('learning_version', AcousticLearningVersion);
+    LDocument.Add('sample_rate', 8000);
+    LDocument.Add('channels', 1);
+    LDocument.Add('window_frames', 64);
+    LDocument.Add('hop_frames', 32);
+    LDocument.Add('silence_rms', LOptions.SilenceRms);
+    LDocument.Add('raw_observations', 33);
+    LDocument.Add('weighted_observations', 33);
+    LDocument.Add('wfc_observations', 33);
+    LDocument.Add('wfc_samples', 33);
+    LDocument.Add('wfc_states', LModel.StateCount);
+    LDocument.Add('order', 2);
+    LDocument.Add('candidate_bins_per_segment', 1);
+    LDocument.Add('model_sha256', TextHash(LText));
+    LDocument.Add('vocabulary_sha256', LVocabulary);
+    LDocument.Add('model_binding_sha256', AcousticModelBindingSha256(LVocabulary, TextHash(LText)));
+    LPaletteRows := TJSONArray.Create;
+    LDocument.Add('palette', LPaletteRows);
+    LVector := TJSONArray.Create;
+    LPaletteRows.Add(LVector);
+    for LComponent := 0 to High(TAcousticVector) do
+    begin
+      LVector.Add(LCenters[0][LComponent]);
+    end;
+    LSources := TJSONArray.Create;
+    LDocument.Add('sources', LSources);
+    LCandidates := TJSONArray.Create;
+    LDocument.Add('candidates', LCandidates);
+    for LIndex := 0 to 32 do
+    begin
+      LRow := TJSONObject.Create;
+      LSources.Add(LRow);
+      LRow.Add('source', 'one.wav');
+      LRow.Add('source_sha256', StringOfChar('a', 64));
+      LRow.Add('cache_sha256', StringOfChar('c', 64));
+      LRow.Add('source_frames', 1056);
+      LRow.Add('first_feature', LIndex);
+      LRow.Add('observations', 1);
+      LRow.Add('multiplicity', 1);
+      LRow := TJSONObject.Create;
+      LCandidates.Add(LRow);
+      LRow.Add('slot', LIndex);
+      LRow.Add('token', 0);
+      LRow.Add('source_index', LIndex);
+      LRow.Add('source_frame', LIndex * 32);
+      LRow.Add('feature_index', LIndex);
+      if LIndex = 32 then
+      begin
+        LRow.Add('valid_frames', 32);
+      end
+      else
+      begin
+        LRow.Add('valid_frames', 64);
+      end;
+      LRow.Add('center_distance', Double(0));
+    end;
+    LProfile := TJournalModelProfile.Create(LDocument.AsJSON, LText);
+    Check((LProfile.SourceCount = 33) and (LProfile.Model.SampleCount = 33),
+      'More than 32 disjoint ranges retain one sample boundary each');
+    LBlend := BlendJournalProfiles(LProfile, LProfile, 1, 1);
+    Check((LBlend.SourceCount = 33) and (LBlend.Model.SampleCount = 66) and
+      (LBlend.SourceAt(32).Multiplicity = 2),
+      'Repeated blend coalesces matching ranges without losing contributions');
+    TJSONObject(LSources.Items[32]).Elements['cache_sha256'] :=
+      TJSONString.Create(StringOfChar('d', 64));
+    ExpectRejected(LDocument.AsJSON, LText,
+      'One physical source cannot claim different cache bytes across ranges');
+    TJSONObject(LSources.Items[32]).Elements['cache_sha256'] :=
+      TJSONString.Create(StringOfChar('c', 64));
+    TJSONObject(LSources.Items[32]).Elements['first_feature'] :=
+      TJSONIntegerNumber.Create(31);
+    ExpectRejected(LDocument.AsJSON, LText,
+      'Overlapping ranges cannot contribute duplicate observations');
+    TJSONObject(LSources.Items[32]).Elements['first_feature'] :=
+      TJSONIntegerNumber.Create(32);
+    for LIndex := 0 to 32 do
+    begin
+      TJSONObject(LSources.Items[LIndex]).Elements['source_sha256'] :=
+        TJSONString.Create(StringOfChar('0', 62) + IntToHex(LIndex, 2));
+    end;
+    ExpectRejected(LDocument.AsJSON, LText,
+      'Thirty-three physical sources exceed the independent source budget');
+    WriteLn('Thirty-three ranges, one physical source, blend and source cap PASS');
+  finally
+    LDocument.Free;
+    LBlend.Free;
+    LProfile.Free;
+    LModel.Free;
+    LPalette.Free;
+  end;
+end;
+
 begin
   try
     if ParamStr(1) = 'partition' then
@@ -840,6 +973,7 @@ begin
       Run(1);
       Run(2);
       Run(4);
+      CheckManyRangesOneSource;
     end
     else
     begin

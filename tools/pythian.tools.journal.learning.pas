@@ -46,6 +46,7 @@ uses
   pythian.audio,
   pythian.analysis,
   pythian.analysis.journal,
+  pythian.corpus,
   pythian.learning,
   pythian.learning.journal,
   pythian.learning.selection,
@@ -264,6 +265,7 @@ var
   LInputs: TJournalInputs;
   LProfile: TJournalModelProfile;
   LBound: array of TBoundJournal;
+  LOwnedBound: array of TBoundJournal;
   LSegments: TJournalTrainingSegments;
   LReader: TJournalTrainingReader;
   LFits: TJournalPaletteFits;
@@ -298,9 +300,9 @@ begin
   LArgument := 5;
   while LArgument <= ParamCount do
   begin
-    if LCount = 32 then
+    if LCount = MaximumJournalTrainingSegments then
     begin
-      raise EAudio.Create('Fit requires 1..32 WAV/cache ranges');
+      raise EAudio.Create('Fit requires 1..4096 WAV/cache ranges');
     end;
     SetLength(LInputs, LCount + 1);
     LInputs[LCount] := ReadJournalInput(LArgument);
@@ -320,6 +322,7 @@ begin
     raise EAudio.Create('Fit squared-distance limit must be in 0..15');
   end;
   SetLength(LBound, LCount);
+  SetLength(LOwnedBound, LCount);
   SetLength(LSegments, LCount);
   LProfile := nil;
   LReader := nil;
@@ -329,8 +332,23 @@ begin
     LProfile := TJournalModelProfile.Create(LReportText, ReadProfileText(ParamStr(2) + '.wfcs'));
     for LIndex := 0 to LCount - 1 do
     begin
-      LBound[LIndex] := TBoundJournal.Create(LInputs[LIndex].SourcePath,
-        LInputs[LIndex].CachePath, LProfile.Options);
+      for LOther := 0 to LIndex - 1 do
+      begin
+        if SameFileName(ExpandFileName(LInputs[LIndex].SourcePath),
+          ExpandFileName(LInputs[LOther].SourcePath)) and
+          SameFileName(ExpandFileName(LInputs[LIndex].CachePath),
+          ExpandFileName(LInputs[LOther].CachePath)) then
+        begin
+          LBound[LIndex] := LBound[LOther];
+          Break;
+        end;
+      end;
+      if LBound[LIndex] = nil then
+      begin
+        LOwnedBound[LIndex] := TBoundJournal.Create(LInputs[LIndex].SourcePath,
+          LInputs[LIndex].CachePath, LProfile.Options);
+        LBound[LIndex] := LOwnedBound[LIndex];
+      end;
       if (LBound[LIndex].Binding.SampleRate <> LProfile.SampleRate) or
         (LBound[LIndex].Binding.Channels <> LProfile.Channels) then
       begin
@@ -387,7 +405,10 @@ begin
       begin
         LCounts.Add(LFits[LIndex].TokenCounts[LToken]);
       end;
-      LBound[LIndex].VerifySource;
+      if LOwnedBound[LIndex] <> nil then
+      begin
+        LOwnedBound[LIndex].VerifySource;
+      end;
     end;
     WriteTextFile(ParamStr(3), LDocument.FormatJSON);
     WriteLn('Measured ', LReader.ObservationCount, ' distinct observations across ',
@@ -395,9 +416,9 @@ begin
   finally
     LDocument.Free;
     LReader.Free;
-    for LIndex := 0 to High(LBound) do
+    for LIndex := 0 to High(LOwnedBound) do
     begin
-      LBound[LIndex].Free;
+      LOwnedBound[LIndex].Free;
     end;
     LProfile.Free;
   end;
@@ -479,6 +500,8 @@ var
   LComponent: Integer;
   LToken: Integer;
   LSource: Integer;
+  LPhysicalSources: Integer;
+  LKnownSource: Boolean;
   LBinding: TFeatureJournalBinding;
 begin
   if ParamCount < 4 then
@@ -651,9 +674,9 @@ begin
       end;
       Continue;
     end;
-    if (LArgument = ParamCount) or (LCount = 32) then
+    if (LArgument = ParamCount) or (LCount = MaximumJournalTrainingSegments) then
     begin
-      raise EAudio.Create('Journal training requires 1..32 WAV/cache pairs');
+      raise EAudio.Create('Journal training requires 1..4096 WAV/cache ranges');
     end;
     SetLength(LPaths, LCount + 1);
     SetLength(LCaches, LCount + 1);
@@ -703,10 +726,46 @@ begin
   SetLength(LOwnedBound, LCount);
   SetLength(LSegments, LCount);
   try
+    LPhysicalSources := 0;
     for LIndex := 0 to LCount - 1 do
     begin
-      LOwnedBound[LIndex] := TBoundJournal.Create(LPaths[LIndex], LCaches[LIndex], DefaultAnalysisOptions);
-      LBound[LIndex] := LOwnedBound[LIndex];
+      LBound[LIndex] := nil;
+      for LPlanIndex := 0 to LIndex - 1 do
+      begin
+        if SameFileName(ExpandFileName(LPaths[LIndex]), ExpandFileName(LPaths[LPlanIndex])) and
+          SameFileName(ExpandFileName(LCaches[LIndex]), ExpandFileName(LCaches[LPlanIndex])) then
+        begin
+          LBound[LIndex] := LBound[LPlanIndex];
+          Break;
+        end;
+      end;
+      if LBound[LIndex] = nil then
+      begin
+        LOwnedBound[LIndex] := TBoundJournal.Create(LPaths[LIndex], LCaches[LIndex], DefaultAnalysisOptions);
+        LBound[LIndex] := LOwnedBound[LIndex];
+        LKnownSource := False;
+        for LPlanIndex := 0 to LIndex - 1 do
+        begin
+          if LBound[LIndex].Binding.SourceSha256 = LBound[LPlanIndex].Binding.SourceSha256 then
+          begin
+            if (LBound[LIndex].Binding.FrameCount <> LBound[LPlanIndex].Binding.FrameCount) or
+              (LBound[LIndex].CacheHash <> LBound[LPlanIndex].CacheHash) then
+            begin
+              raise EAudio.Create('Repeated physical source has conflicting cache or geometry');
+            end;
+            LKnownSource := True;
+            Break;
+          end;
+        end;
+        if not LKnownSource then
+        begin
+          Inc(LPhysicalSources);
+          if LPhysicalSources > MaximumCorpusSources then
+          begin
+            raise EAudio.Create('Journal training exceeds 32 physical sources');
+          end;
+        end;
+      end;
       LSegments[LIndex] := InputSegment(LInputs[LIndex], LBound[LIndex].Journal, LWeights[LIndex]);
     end;
     if LPartitioned then
@@ -735,9 +794,9 @@ begin
         LRow.Add('partition', PartitionName(LInputs[LIndex].Partition));
         LRow.Add('group_verified', LInputs[LIndex].GroupVerified);
         LRow.Add('previously_used', LInputs[LIndex].PreviouslyUsed);
-        LRow.Add('source_sha256', LOwnedBound[LIndex].Binding.SourceSha256);
-        LRow.Add('cache_sha256', LOwnedBound[LIndex].CacheHash);
-        LRow.Add('source_frames', LOwnedBound[LIndex].Binding.FrameCount);
+        LRow.Add('source_sha256', LBound[LIndex].Binding.SourceSha256);
+        LRow.Add('cache_sha256', LBound[LIndex].CacheHash);
+        LRow.Add('source_frames', LBound[LIndex].Binding.FrameCount);
         LRow.Add('first_feature', LPlan[LIndex].Segment.FirstFeature);
         LRow.Add('observations', LPlan[LIndex].Segment.FeatureCount);
         LRow.Add('multiplicity', LWeights[LIndex]);
@@ -745,7 +804,7 @@ begin
         LRow.Add('selected', LInputs[LIndex].Partition = LPartition);
         if LInputs[LIndex].Partition = LPartition then
         begin
-          LBound[LSelectedCount] := LOwnedBound[LIndex];
+          LBound[LSelectedCount] := LBound[LIndex];
           LPaths[LSelectedCount] := LPaths[LIndex];
           LCaches[LSelectedCount] := LCaches[LIndex];
           LWeights[LSelectedCount] := LWeights[LIndex];
@@ -880,7 +939,10 @@ begin
     LWaveBytes := EncodeWavePcm16(LRendered);
     for LIndex := 0 to High(LOwnedBound) do
     begin
-      LOwnedBound[LIndex].VerifySource;
+      if LOwnedBound[LIndex] <> nil then
+      begin
+        LOwnedBound[LIndex].VerifySource;
+      end;
     end;
     LDocument := TJSONObject.Create;
     if LPartitionAudit <> nil then
@@ -1058,7 +1120,9 @@ var
   LPrefix: String;
   LSuffix: String;
   LIndex: Integer;
+  LOther: Integer;
   LMaximum: Integer;
+  LFirstReference: Boolean;
 begin
   if ParamCount < 5 then
   begin
@@ -1100,13 +1164,28 @@ begin
     for LIndex := 0 to LProfile.SourceCount - 1 do
     begin
       LSource := LProfile.SourceAt(LIndex);
-      LStreams[LIndex] := TFileStream.Create(ParamStr(5 + LIndex), fmOpenRead or fmShareDenyWrite);
-      if Sha256Stream(LStreams[LIndex], LStreams[LIndex].Size) <> LSource.CacheSha256 then
+      for LOther := 0 to LIndex - 1 do
       begin
-        raise EAudio.Create('Context cache bytes differ from saved identity');
+        if SameFileName(ExpandFileName(ParamStr(5 + LIndex)),
+          ExpandFileName(ParamStr(5 + LOther))) and
+          (LSource.Binding.SourceSha256 =
+            LProfile.SourceAt(LOther).Binding.SourceSha256) then
+        begin
+          LStreams[LIndex] := LStreams[LOther];
+          LJournals[LIndex] := LJournals[LOther];
+          Break;
+        end;
       end;
-      LJournals[LIndex] := TFeatureJournal.Create(LStreams[LIndex], LSource.Binding,
-        LGuard.RejectWrite, False);
+      if LJournals[LIndex] = nil then
+      begin
+        LStreams[LIndex] := TFileStream.Create(ParamStr(5 + LIndex), fmOpenRead or fmShareDenyWrite);
+        if Sha256Stream(LStreams[LIndex], LStreams[LIndex].Size) <> LSource.CacheSha256 then
+        begin
+          raise EAudio.Create('Context cache bytes differ from saved identity');
+        end;
+        LJournals[LIndex] := TFeatureJournal.Create(LStreams[LIndex], LSource.Binding,
+          LGuard.RejectWrite, False);
+      end;
       LSegments[LIndex].Journal := LJournals[LIndex];
       LSegments[LIndex].FirstFeature := LSource.FirstFeature;
       LSegments[LIndex].FeatureCount := LSource.FeatureCount;
@@ -1130,8 +1209,20 @@ begin
     LReader.Free;
     for LIndex := 0 to High(LJournals) do
     begin
-      LJournals[LIndex].Free;
-      LStreams[LIndex].Free;
+      LFirstReference := True;
+      for LOther := 0 to LIndex - 1 do
+      begin
+        if LJournals[LIndex] = LJournals[LOther] then
+        begin
+          LFirstReference := False;
+          Break;
+        end;
+      end;
+      if LFirstReference then
+      begin
+        LJournals[LIndex].Free;
+        LStreams[LIndex].Free;
+      end;
     end;
     LGuard.Free;
     LProfile.Free;

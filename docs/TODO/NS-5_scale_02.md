@@ -41,3 +41,18 @@ Starting evidence: [CORPUS-EVALUATION](../CORPUS-EVALUATION.md) · [ANALYSIS-WAV
   not an accepted fix. Exact source identities stay in ignored local records.
   This is already covered by the song-boundary and bounded-aggregation criteria
   above; no new task or completion credit is added.
+
+- 2026-09-23 preparatory acoustic capacity: the journal profile now retains
+  up to 4096 disjoint range rows while enforcing 32 unique physical WAV digests
+  and the existing 65536 candidate-slot budget. Repeated WAV/cache pairs reuse
+  verified handles; saved blend/reblend coalesces exact rows and preserves their
+  multiplicities. A checked 33-range fixture and private 44/42/68-range full-mix
+  development runs, each with a shared frozen vocabulary for multi-recording
+  blends, passed. The three-profile blend has 154 distinct range rows; a further
+  blend increases weighted samples without duplicating those rows. Saved
+  three-source replay verified its explicit source bytes and rendered without
+  caches or relearning. See the
+  [work record](../WORK.md#bounded-full-mix-acoustic-learning--2026-09-23).
+  This is acoustic mechanism evidence only. The semantic providers, independently
+  verified song/unknown boundaries, recovery, selective invalidation and final
+  workload budgets remain open; no criterion or credit is closed here.

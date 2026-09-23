@@ -37,12 +37,46 @@ but do not yet establish accepted genre cards or independent evaluation groups.
 Checked Pascal jobs completed full source-bound feature caches for all three
 recordings. A private Pascal mapper conservatively excluded feature windows
 crossing declared chapter cuts; those metadata cuts still need audio review.
-Declared chapter counts exceed the journal learner's 32-range/profile-source
+Declared chapter counts exceeded the journal learner's former 32-range/profile-source
 limit for every mix. The existing [NS-5 scale task](TODO/NS-5_scale_02.md)
-already owns bounded contribution accounting and song-boundary handling; simply
-lifting the cap would violate its saved-profile contract. A boundary-safe
-training plan is the next concrete scale step. Keep NS-5_evaluation_01 open
-pending whole-work review and musical annotations.
+owns bounded contribution accounting and song-boundary handling. The later
+[range/source checkpoint](#bounded-full-mix-acoustic-learning--2026-09-23)
+advances that path. Keep NS-5_evaluation_01 open pending whole-work review and
+musical annotations.
+
+## Bounded full-mix acoustic learning — 2026-09-23
+
+The saved acoustic journal path now treats each declared training range as one
+WFC sample boundary while bounding physical WAV identities separately. It permits
+at most 4096 disjoint ranges, 32 distinct WAV digests and 65536 candidate slots.
+The profile loader rejects repeated WAV identity with conflicting cache bytes or
+geometry, and the blend path coalesces exact ranges while rejecting partial
+overlap. Training, frozen-palette fit and context attachment reuse one verified
+WAV/cache handle for repeated references to the same pair. All maintained code
+and inference remain Pascal.
+
+Checked FPC 3.2.2 Win32 passed the profile fixture, including 33 ranges from
+one physical source, exact-range blend accounting, overlapping/conflicting-cache
+rejection and the 33-physical-source cap. A private 33-range CLI run trained,
+reloaded, replayed to identical audition bytes, blended, measured palette fit and
+attached contexts. Full user-selected development mixes contributed 44, 42 and
+68 conservatively mapped chapter ranges, with 126753, 286271 and 159740
+observations respectively. The first learned the shared acoustic vocabulary;
+the other two used that frozen vocabulary. Saved blends retained 154 distinct
+ranges and three physical source identities. A further blend added only the
+repeated recording's weight, retaining 154 distinct ranges and 196 weighted
+samples. Saved three-source replay verified the explicit WAV bytes and rendered
+from the persisted profile without caches or relearning. The first full-mix
+training audition and its replay have identical SHA-256 bytes. Exact paths,
+identities, commands and audio remain under ignored
+`build/`.
+
+This proves bounded acoustic training and mechanical reuse over the selected
+full-length inputs. It does not establish verified song cuts, musical traits,
+accepted styles, semantic provider learning, interrupted recovery or the full
+NS-5 workload budgets. No task completion credit changes. The next scale result
+must satisfy the remaining [NS-5_scale_02](TODO/NS-5_scale_02.md) criteria after
+its semantic prerequisites; do not use acoustic token counts as musical evidence.
 
 ## Core-first re-alignment — 2026-09-23
 

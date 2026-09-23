@@ -49,6 +49,8 @@ type
   end;
   TJournalProfileContributions = array of TJournalProfileContribution;
 
+  { A saved row is one disjoint training range. Multiple rows can bind the
+    same physical WAV and cache; source identity is the WAV digest. }
   TJournalProfileSource = record
     Name: UTF8String;
     Binding: TFeatureJournalBinding;
@@ -316,6 +318,8 @@ var
   LRaw: Int64;
   LWeighted: Int64;
   LSamples: Integer;
+  LPhysicalSources: Integer;
+  LKnownSource: Boolean;
   LFoundTokens: array[0..MaximumAcousticVocabulary - 1] of Boolean;
   LParents: TJournalProfileContributions;
 begin
@@ -381,14 +385,15 @@ begin
       raise EAudio.Create('Journal profile companion model shape differs');
     end;
     LArray := TJSONArray(Member(LRoot, 'sources', jtArray));
-    if (LArray.Count < 1) or (LArray.Count > MaximumCorpusSources) then
+    if (LArray.Count < 1) or (LArray.Count > MaximumJournalTrainingSegments) then
     begin
-      raise EAudio.Create('Journal profile requires 1..32 declared sources');
+      raise EAudio.Create('Journal profile requires 1..4096 declared ranges');
     end;
     SetLength(FSources, LArray.Count);
     LRaw := 0;
     LWeighted := 0;
     LSamples := 0;
+    LPhysicalSources := 0;
     for LIndex := 0 to High(FSources) do
     begin
       LRow := ObjectValue(LArray.Items[LIndex]);
@@ -417,17 +422,28 @@ begin
       Inc(LRaw, LSource.FeatureCount);
       Inc(LWeighted, LSource.FeatureCount * LSource.Multiplicity);
       Inc(LSamples, LSource.Multiplicity);
+      LKnownSource := False;
       for LOther := 0 to LIndex - 1 do
       begin
         LOtherSource := FSources[LOther];
         if LSource.Binding.SourceSha256 = LOtherSource.Binding.SourceSha256 then
         begin
+          LKnownSource := True;
           if (LSource.Binding.FrameCount <> LOtherSource.Binding.FrameCount) or
+            (LSource.CacheSha256 <> LOtherSource.CacheSha256) or
             ((LSource.FirstFeature < LOtherSource.FirstFeature + LOtherSource.FeatureCount) and
             (LOtherSource.FirstFeature < LSource.FirstFeature + LSource.FeatureCount)) then
           begin
             raise EAudio.Create('Journal profile source geometry conflicts or ranges overlap');
           end;
+        end;
+      end;
+      if not LKnownSource then
+      begin
+        Inc(LPhysicalSources);
+        if LPhysicalSources > MaximumCorpusSources then
+        begin
+          raise EAudio.Create('Journal profile exceeds 32 physical sources');
         end;
       end;
       FSources[LIndex] := LSource;
@@ -453,6 +469,10 @@ begin
       end;
     end;
     LBins := IntegerValue(LRoot, 'candidate_bins_per_segment', 1, 32);
+    if Int64(FPalette.Count) * SourceCount * LBins > MaximumJournalCandidateSlots then
+    begin
+      raise EAudio.Create('Journal profile candidate geometry exceeds slot budget');
+    end;
     SetLength(LCandidates, FPalette.Count * SourceCount * LBins);
     FillChar(LFoundTokens, SizeOf(LFoundTokens), 0);
     LArray := TJSONArray(Member(LRoot, 'candidates', jtArray));
