@@ -98,4 +98,18 @@ open with zero credit.
 
 - 2026-09-22 source correspondence batch: checked the retained, hash-bound chapter declarations against published track listings. The containing chapters are 508, 166 and 228 seconds; published tracks are 509, 165 and 235 seconds respectively. The last candidate comes from a compilation labelled a later remaster. This bounds the review question but does not verify acoustic edition correspondence, cut points or musical traits. See [the correspondence screen](../STYLE-CARDS.md#recording-correspondence-screen--2026-09-22). No acceptance criterion closed. The exact unblock is an independently checked source/edition match (or replacement) and curator-reviewed annotations for the required dimensions. Stop further catalogue-only or level-only studies under this approach while that input is absent.
 
-- 2026-09-22 isolated-source screen: the directly published standalone [Pro Sensory WAV](../STYLE-CARDS.md#provisional-isolated-chillwave-source--2026-09-22) was acquired and completely decoded with native Pascal. Its exact bytes, geometry, CC0 page, requested attribution and signal levels are bound. This is a provisional new chillwave candidate, not an authenticated match to C-early; hybrid genre suitability and all six musical annotation dimensions remain unreviewed. No criterion or credit closes. Stop screening more sources and seek review of the exact candidate before another reference batch.
+- 2026-09-22 isolated-source screen: the directly published standalone [Pro Sensory WAV](../STYLE-CARDS.md#pro-sensory-isolated-source-rejected--2026-09-22) was acquired and completely decoded with native Pascal. Its exact bytes, geometry, CC0 page, requested attribution and signal levels are bound. This was a new source family, never an authenticated match to C-early. Stop catalogue-only screening and seek listener review before assigning a genre.
+
+- 2026-09-22 full-recording listener verdict: the user heard the entire
+  standalone [Pro Sensory file](../STYLE-CARDS.md#pro-sensory-isolated-source-rejected--2026-09-22)
+  and rejected it as a holistic chillwave reference, citing an off-style tempo
+  feel and spooky/ominous sound. No clear beat, bass, lead or section-change
+  times were identified. The first review batch established mood only; this
+  second one decides the candidate is unsuitable. Neither closes a style-card
+  criterion, so at the task-flow checkpoint stop the Pro Sensory route. Next
+  finish the existing C-early candidate's recording/cut correspondence and
+  seek a full-work style verdict on the [original three-video source set](../STYLE-CARDS.md#candidate-reference-cards),
+  using any user-named exemplars to calibrate suitability before new
+  acquisitions. The prior 30-second probes never established holistic genre
+  suitability. Retain exact unknowns; do not lower the six required trait
+  dimensions or award credit.

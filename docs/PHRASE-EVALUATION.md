@@ -39,8 +39,11 @@ The user reviewed the four named clips in the 2026-09-22 handoff chat. They
 described the brass as extremely harsh/noisy, the long-release guitar as a
 strummed sound fading away, and the fast-decay guitar as a tiny bell-like hit
 rather than a recognizable guitar. They reported the mallet clip as not
-audible. These are **whole-clip listening observations**: they support
-perceptual contrast and a quiet-source warning, but do not state whether the
+audible. On follow-up, they reported that the brass sound fades **after** the
+3.0-second note-off. This supports a perceived post-control decay somewhere
+after that mark; it does not identify an audible end time. These whole-clip
+listening observations support perceptual contrast and a quiet-source warning,
+but do not state whether the
 named pitch is audible inside any fixed 250-ms window above. In particular,
 the fade description does not locate the end of the guitar tail, and the
 metadata's `guitar` family does not override the listener's bell-like timbre

@@ -115,3 +115,7 @@ and [rejected gate-slope rule](../PHRASE-EVALUATION.md#fixed-gate-slope-diagnost
   nonclosing batch after reassessment. Stop packet expansion and further source
   screens; the external unblock is exact labels for the frozen windows, with
   `uncertain` allowed. No criterion or credit closes.
+- 2026-09-22 follow-up: the user heard the brass fade after the 3.0-second
+  renderer note-off. This is direct evidence of perceived post-control decay,
+  but still leaves the frozen early/late 250-ms windows and audible endpoint
+  unlabelled. Do not equate the fade with a measured note-off decision.

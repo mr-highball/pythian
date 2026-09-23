@@ -42,6 +42,23 @@ genre cards or changes to the frozen inventory's unassigned labels. The chapter
 audit binds a declaration to an excerpt; catalogue agreement supports the declared
 work association but does not authenticate the recording or its edition. All
 three candidates retain their original broad family and development exposure.
+The 30-second excerpts served native signal and learning probes. **None has had
+a whole-work listening verdict**, so none can establish holistic chillwave,
+stoner-rock or lofi suitability, groove or section structure. Review the complete
+declared work in its containing source before assigning a genre or preparing
+musical reference annotations. The chapter boundaries below are description
+claims, not verified audio cut points.
+
+| Retained source | Original video and declared candidate chapter | Local excerpt used so far |
+| --- | --- | --- |
+| WAV-A / `source-A.opus` | [Liquify compilation](https://www.youtube.com/watch?v=aWfgFaABhEY), "Forgotten Years" [0,508) s | A-early [120,150) s |
+| WAV-B / `source-B.opus` | [Lofi Girl x Secret Lair compilation](https://www.youtube.com/watch?v=P12XxVMbYXg&t=1897s), "Beach Pomodoros - Lost Alara" [1897,2063) s | B-middle [1937,1967) s |
+| WAV-C / `source-C.opus` | [EXODUS compilation](https://www.youtube.com/watch?v=E8CaKFh52CU), "Sub Morphine - DownShift" [0,228) s | C-early [120,150) s |
+
+The original compressed recordings are retained privately under ignored
+`build/wav-source-study/sources/`; the excerpts are under `masters/` there.
+The original video, not an artist catalogue page or the rejected Pro Sensory
+file, is the listening source for each of these three candidate declarations.
 
 | Candidate | Bound excerpt and local clock | Existing acoustic observations | Assignment evidence and remaining uncertainty |
 | --- | --- | --- | --- |
@@ -103,7 +120,7 @@ same role if a candidate fails correspondence or quality review. Until then the
 three cards and their numerical trait thresholds remain pending; the existing
 acoustic and generic-guitar controls cannot close their musical dimensions.
 
-### Provisional isolated chillwave source — 2026-09-22
+### Pro Sensory isolated source rejected — 2026-09-22
 
 The artist-posted [Chill (Pro Sensory)](https://opengameart.org/content/chill-pro-sensory)
 page identifies Pro Sensory, tags the work chillwave among synthwave and chiptune,
@@ -123,15 +140,19 @@ Across both channels the decoded peak is 0.979950, RMS is 0.251012 and zero
 samples reach an encoding endpoint. The ignored audit source, binary and local
 WAV are retained under that build directory; the recording is not committed.
 
-This resolves **download-byte identity and complete file geometry for this
-candidate only**. The artist's tags are not an independent genre judgment. A
-reviewer still needs to listen to this exact WAV, decide whether its hybrid
-chiptune/synthwave traits qualify as a chillwave reference, and supply timed
-context, groove, harmony, bass/voice, sound/envelope and phrase observations
-with methods and uncertainty. Until that review, C-early is not replaced and no
-reference criterion, numerical gate or genre acceptance is closed. Stop source
-screening here; another catalogue result or level measurement would not resolve
-the missing musical evidence.
+The user listened to the **full 230-second file** in the 2026-09-22 handoff chat.
+They described a dreary or ominous, spooky sound and an unsuitable tempo feel,
+and explicitly rejected it as a **holistic chillwave reference**. They could not
+identify clear beat, bass, lead or section-change times. Playback device and
+level were not reported. These are source-bound listening judgments, not a
+measured BPM, section annotation or 0..3 generation score.
+
+**Disposition: stop this source for chillwave reference selection.** The
+artist's multi-genre tags and exact WAV geometry cannot override the listener's
+genre rejection. Keep its byte identity and attribution here only to explain
+the rejected screen; do not include this file in chillwave training, calibration
+or evaluation roles. C-early remains the unaccepted existing candidate. No
+style-reference criterion, numerical gate or genre acceptance closes.
 
 ## Reference observations from the original master sections
 

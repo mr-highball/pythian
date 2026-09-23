@@ -21,10 +21,35 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Pro Sensory chillwave candidate rejected — 2026-09-22
+
+The user listened to the entire 230.365-second, hash-bound
+`Chill-Pro-Sensory.wav` and rejected it as a holistic chillwave reference:
+the tempo felt off-style and the sound spooky/dreary/ominous. They could not
+identify clear beat, bass, lead or section-change times. The
+[stopped source record](STYLE-CARDS.md#pro-sensory-isolated-source-rejected--2026-09-22)
+retains attribution and exact identity, but it has no chillwave training,
+calibration or evaluation role. No BPM, structure or other traits are inferred.
+
+The mood-only first review and this rejection are two consecutive nonclosing
+review batches after the source-screen reassessment. Stop the Pro Sensory route.
+Finish the existing C-early candidate's recording/cut correspondence and seek
+a full-work style verdict, incorporating any user-named exemplars before new
+acquisitions. This is a changed deliverable using existing evidence, with
+holistic suitability, source identity/quality and six timed trait dimensions
+still required. NS-5_evaluation_01 remains open with no completion credit.
+The [three original YouTube compilation sources and declared candidate chapters](STYLE-CARDS.md#candidate-reference-cards)
+are now explicit. Only 30-second excerpts of those chapters were analyzed;
+none supplied a whole-work genre judgment. The user identified this as a likely
+weakness in judging genre from the original source candidates. Review each
+complete chapter before promoting its tag or short probe into style evidence.
+
 ## NSynth listener comments received — 2026-09-22
 
 The user described the four fixed clips: harsh/noisy brass, a strummed fading
 long-release guitar, a bell-like fast-decay guitar and an inaudible mallet.
+They later confirmed that the brass fades after the documented 3.0-second
+note-off, supporting a perceived post-control decay without fixing its endpoint.
 These are valuable perceptual observations but specify no 250-ms window around
 the documented 3.0-second note-off. The [reference packet](PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22)
 now records them as whole-clip comments and preserves all exact-window labels
@@ -183,10 +208,10 @@ checkpoint. Spring development and reserved phrase material were not read.
 The directly published full `Chill.wav` from Pro Sensory was acquired into ignored
 `build/style-reference-source/` and decoded with Pythian's Pascal WAV reader on
 checked stable FPC 3.2.2 Win32. Exact SHA256, page/license/attribution, 230.365170-s
-clock and signal checks are recorded in the [provisional source packet](STYLE-CARDS.md#provisional-isolated-chillwave-source--2026-09-22).
-This is a new candidate family with unreviewed hybrid genre suitability, not an
-authenticated correspondence to C-early. No required musical annotations or
-quantitative reference thresholds are available, so `NS-5_evaluation_01` remains
+clock and signal checks are recorded in the [stopped source packet](STYLE-CARDS.md#pro-sensory-isolated-source-rejected--2026-09-22).
+This was a separate candidate family, not an authenticated correspondence to
+C-early; its later whole-track listener verdict rejected it. No required musical
+annotations or quantitative reference thresholds are available, so `NS-5_evaluation_01` remains
 open with zero added credit; NS-5 stays 27%, overall 63.15%.
 
 The earlier chapter-correspondence batch and this isolated-source batch did not
