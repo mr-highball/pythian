@@ -158,3 +158,31 @@ variation is authorized by the existing evidence.
   if exact model bytes/geometry cannot be reproduced within the declared
   budget. The existing 98% precision, coverage and low/quiet/short gates remain
   unchanged. This is one nonclosing note-identity batch after reassessment.
+
+- 2026-09-23 PESTO private forward/prescreen: a bounded FPC 3.2.2 Win32 Pascal
+  decoder and forward probe read the exact checkpoint as raw weights; no pickle
+  or third-party inference runtime executed. Frozen physical controls returned
+  440 Hz at MIDI 69.322, 55 Hz at 33.253, weak-fundamental 110 Hz at 45.000,
+  and quiet 440 Hz at 69.321, all within the declared 50-cent gate. The 55-Hz
+  and quiet-440 confidence values were 0 and 0.108, so the model's confidence
+  is not qualified as a note-presence threshold. The independently frozen
+  recorded policy in ignored `build/pesto-source-screen/recorded-policy.txt`
+  then scored every twelfth eligible, fully contained center in the first 30
+  seconds of two distinct URMP works. Sonata violin passed with 147/148
+  correct (99.324%; one octave error). Allegro flute failed with 26/36 correct
+  (72.222%; ten lower-octave errors), against the >=98% per-group necessary
+  gate; selected coverage was 100% in both. Several flute octave errors carried
+  high confidence. The 57.234-second Pascal run stayed within the 120-second
+  time budget; private memory and exact parity with the publisher's runtime
+  were not established. Bound WAV/Notes hashes and the exact model identity are
+  in the policy; the ignored `recorded.log` SHA256 is
+  `8d8d77cd04948e1fa534ea29ead8d105ffe5717892f8d554519f218d1982fd97`.
+  Stop this checkpoint candidate under the frozen policy: no shift, threshold,
+  feature or checkpoint retuning, no Spring/held-out score, and no maintained
+  model provider. This and the preceding source-qualification screen are two
+  consecutive nonclosing note-identity batches. The result does not satisfy
+  the recorded precision, low/quiet/short, or maintained-delivery criteria and
+  earns no credit. Reassess by following the ready
+  [NS-2 source/articulation listening task](NS-2_synthesis-quality_01.md);
+  resume note identity only with independently supported register evidence and
+  a prospective ambiguity/coverage contract.

@@ -199,6 +199,27 @@ for a bounded Pascal decode/forward control, not a qualified register result or
 packaged model. This is one nonclosing note-identity batch after reassessment;
 the 11-second synthesis listening and source-family verdicts remain pending.
 
+The next private PESTO batch completed a Pascal-only raw-weight/CQT/forward
+probe under a frozen physical-control policy. Four synthetic pitches, including
+low, quiet and weak-fundamental cases, met its 50-cent gate, but low/quiet
+confidence was not calibrated for admission. Before recorded scoring, the
+prescreen fixed two exact URMP work groups, every-twelfth-center selection,
+100% selected coverage and a >=98% per-group pitch-precision gate. Its bound
+[note-identity record](TODO/NS-3_notes_01.md#dev-notes) reports violin 147/148
+correct and flute only 26/36, with ten lower-octave errors. Stop this checkpoint
+without model tuning, Spring/held-out evaluation, or a maintained provider.
+Physical feasibility does not close recorded precision or the remaining
+low/quiet/short and delivery criteria. This failure and the preceding PESTO
+source qualification are two consecutive nonclosing note-identity batches;
+neither earns credit. Reassessment changes the next action to the ready
+[NS-2 source/articulation listening task](TODO/NS-2_synthesis-quality_01.md):
+use its existing finite matrix and artifact identities for timestamped family
+verdicts, then repair only demonstrated defects. The user has confirmed the
+30-second synthesis preview is coherent; the distinct 11-second mixed-source
+verdict remains pending. Note-identity work resumes only with new,
+independently justified register evidence and a prospective ambiguity/coverage
+contract, not a variant of this failed model screen.
+
 ## Tonal negative-screen reassessment — 2026-09-23
 
 While the combined-source listening verdict remains pending, one frozen native
