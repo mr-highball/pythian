@@ -58,6 +58,15 @@ by changing its failed pair or window in place.
 
 **Dev Notes:**
 
+- 2026-09-23 listener handoff preflight: a private Pascal binder under the
+  ignored recorded packet verifies the frozen manifest and all nine aid hashes
+  before it will accept exactly nine ordered guitar/other-noise/nothing/uncertain
+  labels. Checked stable Win32/Win64 preflight passed with zero unfreed blocks.
+  It has not run its bind mode, created reviewed labels or scored inference;
+  the user's one-pass review is pending. The frozen score policy chooses only
+  same-recording listener-confirmed no-guitar windows as rest references and
+  reserves player 05 from tuning. Stop packet preparation here; no extra clip
+  or reference selection is justified without the review. No task credit.
 - 2026-09-23 recorded listening packet prepared after the observation API
   batch: a new frozen GuitarSet policy selected three distinct player and
   broad musical-family recordings before microphone extraction. The stopped

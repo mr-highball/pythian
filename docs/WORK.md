@@ -23,6 +23,18 @@ from planned semantic providers, profile persistence, weighting and blend APIs.
 
 ## Maintained presence observation boundary — 2026-09-23
 
+The recorded listening packet's private Pascal review binder now passes
+checked stable Win32/Win64 read-only preflight against the frozen manifest
+and all nine aid SHA256 values, with zero unfreed blocks. Bind mode requires
+exactly nine ordered labels in the fixed vocabulary and preserves input and
+manifest hashes, but no user labels have arrived and it has not run. The fixed scoring policy was
+written before labels: only a listener-confirmed no-guitar window from the
+same recording can become its rest reference; player 05 is not used for
+tuning. Packet preparation stops here rather than generating more clip
+variants. The next dependency is the user's one-pass labels; until then no
+recorded score or task credit follows. This is an external listening need for
+the current NS-3_notes_05 packet, not a completion claim for the overall goal.
+
 After delivering the observation API, a new source-bound GuitarSet listening
 packet froze three recording IDs, note-event coordinates, roles and nine exact
 windows before microphone extraction. The stopped player-00 packet was not
