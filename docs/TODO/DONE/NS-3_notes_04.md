@@ -1,6 +1,6 @@
 # NS-3_notes_04 — Qualify independent note-presence references
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-3)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-3)
 
 **Description:**
 
@@ -8,16 +8,41 @@ Deliver a source-bound reference packet for the note-presence and boundary
 problem. Separate a measured note control or annotation from audible activity:
 pickup/MIDI note ends, a residual acoustic tail and an actual rest are different
 facts. This packet is a prerequisite for the acoustic decision in
-[NS-3_notes_02](NS-3_notes_02.md), not a new decoder or a genre verdict.
+[NS-3_notes_02](../NS-3_notes_02.md), not a new decoder or a genre verdict.
 
 North star: NS-3. Outcome owner: WAV-03-BOUNDARIES.
 Completion credit: 1 goal percentage point (0.25 overall points), split from
 the original 4 points of NS-3_notes_02. Credit is earned only when every
 acceptance criterion and the task-flow completion requirements pass.
 
-Starting evidence: the [URMP annotation stop](../PHRASE-EVALUATION.md),
-[known-gate controls](../PHRASE-EVALUATION.md#fixed-gate-release-controls--2026-09-22)
-and [rejected gate-slope rule](../PHRASE-EVALUATION.md#fixed-gate-slope-diagnostic-rejected--2026-09-22).
+Starting evidence: the [URMP annotation stop](../../PHRASE-EVALUATION.md),
+[known-gate controls](../../PHRASE-EVALUATION.md#fixed-gate-release-controls--2026-09-22)
+and [rejected gate-slope rule](../../PHRASE-EVALUATION.md#fixed-gate-slope-diagnostic-rejected--2026-09-22).
+
+Completion evidence, 2026-09-23: the attributed CC BY 4.0 NSynth JSON/WAV
+source provides four hash-bound notes from distinct instrument groups with
+separate documented three-second note controls and recorded audio. The frozen
+selection, source-separated roles and exact 250-ms coordinates were fixed
+before audio extraction or scoring. The user reviewed five windows audible
+and three not audible, including a quiet audible guitar tail and an inaudible
+flute tail with nonzero PCM. The maintained Pascal checker bound all eight
+reviews to verified WAV identities and geometry on checked stable Win32/Win64;
+both emitted packet SHA256
+`abbf3b4b3d4243498e99f2b677406292008893961cbc17649744aa6c2f675b19`.
+The unchanged-default Pascal activity consumer passed source-free controls,
+preserved its earlier development output, and produced byte-identical held-out
+decision TSV SHA256
+`0062fedae4de606fd0073c49ac372106eddce271cfeb2e948a8ccf1eecf984dd`
+on both targets with zero unfreed blocks. Seven of eight windows matched; the
+flute late tail was `activity_present` despite the listener's `not_audible`
+label. The [source evidence](../../PHRASE-EVALUATION.md#nsynth-train-source-separated-packet)
+records reacquisition identities, every label, the miss and unsupported cases.
+Train mode rejected the exposed development packet without writing a report.
+This qualifies a bounded synthetic reference and exposes an independent
+consumer failure; recorded phrase accuracy, noise rejection, attacks,
+short/repeated notes, overlaps, gaps and audible ending times remain open under
+[NS-3_notes_02](../NS-3_notes_02.md). No threshold was tuned to the independent
+packet. This task earns its 1 NS-3 goal point (0.25 overall point).
 
 **Acceptance Criteria:**
 
@@ -43,21 +68,28 @@ and [rejected gate-slope rule](../PHRASE-EVALUATION.md#fixed-gate-slope-diagnost
 
 **Blockers**
 
-- [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
+- [NS-3_validation_01.md](NS-3_validation_01.md)
 
 **Dev Notes:**
 
-Current status: criteria 1, 2 and 4 are accepted only at their declared
-synthetic development scopes; criterion 3 and task credit remain open. The
+Current status: all criteria pass at the bounded synthetic reference scope
+declared above; the one held-out consumer miss transfers to the open decision
+task. The
 entries below are reverse-chronological checkpoints. Earlier `uncertain`
 labels, stop instructions and open-criterion counts record their former state
 and are superseded by the numbered review and fixed consumer entries.
-Next deliverable: run the fixed pitch-independent activity consumer once on the
-now-reviewed independent NSynth train packet without tuning. Report unsupported
-coverage and every miss. The failed NSynth valid gate stays stopped; do not
+The failed NSynth valid gate stays stopped; do not
 relax it, open its audio or rescore development data. Any future distinct
 selection policy needs separate evidence-backed review and a pre-audio freeze.
 
+- 2026-09-23 the fixed independent activity pass matched seven of eight
+  reviewed windows. It overcalled the user-inaudible flute late tail as present
+  with four active features; guitar's quiet audible late tail and both exact-zero
+  rests matched. Both checked Pascal targets produced the same result SHA256
+  `0062fedae4de606fd0073c49ac372106eddce271cfeb2e948a8ccf1eecf984dd`
+  and zero unfreed blocks. The default floor remains unchanged. This completes
+  the source-separated packet and consumer-test criterion, while the observed
+  failure and missing recorded scenarios remain for NS-3_notes_02.
 - 2026-09-23 the user's numbered review supplied five audible and three
   not-audible labels for the train packet before scoring. The flute late tail
   (#7) was not audible despite nonzero PCM; the guitar late tail (#10) was
@@ -66,7 +98,7 @@ selection policy needs separate evidence-backed review and a pre-audio freeze.
   `abbf3b4b3d4243498e99f2b677406292008893961cbc17649744aa6c2f675b19`
   with zero unfreed blocks. The input review TSV SHA256 is
   `46a722f3817d21ff680ae54dbe2debeff056b4e078f41740047b700c11866ba7`.
-  The [source record](../PHRASE-EVALUATION.md#nsynth-train-source-separated-packet)
+  The [source record](../../PHRASE-EVALUATION.md#nsynth-train-source-separated-packet)
   preserves every label and limit. No train activity score has run yet.
 - 2026-09-23 independent NSynth train source packet passed the same frozen
   metadata gate before its WAVs were extracted: nine eligible long-release
@@ -78,10 +110,11 @@ selection policy needs separate evidence-backed review and a pre-audio freeze.
   checker now binds the independent roles and eight pending windows on checked
   stable Win32/Win64 with matching hashes, while preserving the previous
   development packet hash. The
-  [source record](../PHRASE-EVALUATION.md#nsynth-train-source-separated-packet)
+  [source record](../../PHRASE-EVALUATION.md#nsynth-train-source-separated-packet)
   has identities, coordinates and limits. All four groups are reserved as
   independent evaluation material. Its then-pending human review was supplied
-  in the later checkpoint above; criterion 3 and task credit remain open.
+  in the later checkpoint above; criterion 3 and task credit remained open at
+  that earlier checkpoint.
 - 2026-09-23 independent NSynth valid source screen stopped at the frozen
   metadata selection gate. The official JSON/WAV archive was verified at
   1,068,767,009 bytes, published MD5
@@ -100,7 +133,7 @@ selection policy needs separate evidence-backed review and a pre-audio freeze.
   The downloaded 1.07 GB archive was later removed during local cleanup;
   the policy, metadata hash and official reacquisition path remain recorded.
 - 2026-09-23 fixed development consumer result: the new maintained Pascal
-  [activity decision tool](../../tools/pythian.presence.decision.lpr) completed
+  [activity decision tool](../../../tools/pythian.presence.decision.lpr) completed
   its source-free zero, subfloor and above-floor PCM16 controls before one
   frozen eight-window pass. It used existing analysis/activity defaults and
   decided activity without pitch identity before opening the review packet.
@@ -166,7 +199,7 @@ selection policy needs separate evidence-backed review and a pre-audio freeze.
   hash, four WAV hashes, distinct brass/guitar/mallet instrument groups,
   16-kHz PCM16/64,000-frame geometry, pitch/velocity IDs and documented
   3.0-second renderer gate are recorded in the
-  [fixed-gate source audit](../PHRASE-EVALUATION.md#fixed-gate-release-controls--2026-09-22).
+  [fixed-gate source audit](../../PHRASE-EVALUATION.md#fixed-gate-release-controls--2026-09-22).
   Pitch/velocity are renderer metadata paired with separate WAVs; the official
   3-second hold is a dataset-wide render control, not a per-note MIDI or
   physical release trace. Quality tags are partly heuristic, and the audible
@@ -191,7 +224,7 @@ selection policy needs separate evidence-backed review and a pre-audio freeze.
   `9407073b8277938c91a358688e94806e2a504943f576825743cda9aa47dc081c`)
   and zero leaks. Six-decimal RMS output repairs two nine-decimal cross-target
   rounding differences; no source coordinate or review label changed. The
-  [packet](../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22)
+  [packet](../../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22)
   retains the exact scope. Neither `uncertain` rest window is a human-reviewed
   `not_audible` example despite exact-zero PCM, so criterion 2 and task credit
   remained open then. The later numbered review supplied the human rest labels
@@ -203,7 +236,7 @@ selection policy needs separate evidence-backed review and a pre-audio freeze.
   unpleasant old-TV/radio static across attacks and holds. For this presence
   packet, `audible` means heard source sound regardless of pitch or timbre;
   clear pitch and quality remain separate observations. The
-  [packet convention](../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22)
+  [packet convention](../../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22)
   is corrected before any scorer run without changing frozen windows, TSV
   labels or the three exact guitar labels. At that point, the brass statement
   was not a three-window answer, so five exact judgments awaited review. This
@@ -214,7 +247,7 @@ selection policy needs separate evidence-backed review and a pre-audio freeze.
   exact repeated PCM and emit matching WAV hashes. Both fast-decay late source
   windows have 0/4,000 nonzero PCM frames; all three brass windows contain
   nonzero samples without proving an identifiable pitch. See the
-  [packet evidence](../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22).
+  [packet evidence](../../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22).
   This aid adds no source/window, listener label, accepted criterion or credit.
   Stop playback-aid variations here; do not treat digital silence or loud
   static as a human verdict.
@@ -225,7 +258,7 @@ selection policy needs separate evidence-backed review and a pre-audio freeze.
   does not say whether source sound is heard in each of its three exact
   windows. At that checkpoint both fast-decay late windows also lacked exact
   labels. The three reviewed guitar labels and five then-pending labels are in the
-  [listening packet](../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22).
+  [listening packet](../../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22).
   That was partial human evidence, not an endpoint, completed source-separated
   packet, presence scorer or task credit. The five labels were subsequently
   reviewed under the corrected question. Do not expand the source screen or
@@ -235,7 +268,7 @@ selection policy needs separate evidence-backed review and a pre-audio freeze.
   provide reviewed acoustic tail/rest labels. The measured gate-slope rule
   failed both long-release controls; a fast-decay mallet is silent well before
   note-off. This task owns the independently useful reference deliverable,
-  while [NS-3_notes_02](NS-3_notes_02.md) retains the observation, decoder,
+  while [NS-3_notes_02](../NS-3_notes_02.md) retains the observation, decoder,
   controls and recorded accuracy requirements. Original 4-point credit is
   redistributed 1+3; no progress or credit is earned by the split itself.
 - Candidate source: [Guitar-TECHS](https://zenodo.org/records/14963133)
@@ -252,7 +285,7 @@ selection policy needs separate evidence-backed review and a pre-audio freeze.
   the predeclared tail/rest residual-signal contrast in both direct input and
   amp mic. Two Pascal audits reproduce CSV SHA256
   `fee855ce8496a64ac0dff0358a41aa537f3d55be75320c89c15db754be76f3e3`;
-  [source, scores and limitations](../PHRASE-EVALUATION.md#guitar-techs-p1-reference-screen-stopped--2026-09-22).
+  [source, scores and limitations](../../PHRASE-EVALUATION.md#guitar-techs-p1-reference-screen-stopped--2026-09-22).
   Stop this P1/P2 route without lowering its gate or moving windows; P2 was not
   acquired. This is the first nonclosing batch on the split reference task.
   Next verify a source that publishes distinct control-release and acoustic or
@@ -281,18 +314,18 @@ selection policy needs separate evidence-backed review and a pre-audio freeze.
   Only then decide whether this synthetic instrument-group packet can close
   the reference criterion; recorded phrase transfer remains separate.
 - 2026-09-22 review-packet batch: the tracked
-  [Pascal checker](../../tools/pythian.presence.reference.lpr) now verifies all
+  [Pascal checker](../../../tools/pythian.presence.reference.lpr) now verifies all
   four fixed WAV identities and eight windows, and validates an exact-boundary
   review TSV without deriving listening labels from energy. Stable/trunk
   pending-packet replay and the malformed-boundary rejection are recorded in
-  the [packet](../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22).
+  the [packet](../../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22).
   This is one nonclosing batch after reassessment: listener judgments, coverage
   assessment and any required source-separated role decision remain open.
 - 2026-09-22 partial human review: the user described all four named clips,
   including an audible-seeming fade on the long-release guitar, harsh brass,
   bell-like fast-decay guitar and an inaudible mallet. The comments are not
   tied to the frozen 250-ms windows. Retain their
-  [exact scope and uncertainty](../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22);
+  [exact scope and uncertainty](../../PHRASE-EVALUATION.md#nsynth-note-presence-listening-packet--partial-review--2026-09-22);
   request window-specific labels before running a presence scorer or claiming
   a reviewed acoustic tail/rest endpoint. This is the second consecutive
   nonclosing batch after reassessment. Stop packet expansion and further source

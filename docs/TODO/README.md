@@ -12,19 +12,20 @@ keeps the three user-selected styles as development tests, while reusable core
 behavior takes priority when detailed style review is waiting on evidence.
 This catalog covers the remaining declared end state. Task files own acceptance
 criteria and hard prerequisites; this page supplies navigation and accounting.
-No task earns credit merely by being written. Accepted task credit is **12.90**;
-**31.60 overall points remain**. Baseline 55.5 + accepted 12.90 = **68.40 current**.
+No task earns credit merely by being written. Accepted task credit is **13.15**;
+**31.35 overall points remain**. Baseline 55.5 + accepted 13.15 = **68.65 current**.
 
 The [pause retrospective](../WORK.md#pause-retrospective--2026-09-21) tightens
 existing note, presence, mixture and style-reference criteria without adding
 tasks, changing credits or accepting new capability. The accepted local-key
 reference packet exposed a failed frozen development candidate in
-[NS-3_context_01](NS-3_context_01.md). The next core deliverable follows the
-existing [note-presence reference](NS-3_notes_04.md): six exact long-release
-windows are reviewed audible, and two late fast-decay windows are reviewed
-`not_audible`. A fixed Pascal activity consumer matched all eight development
-windows; independent source-role evidence remains open. Style-reference
-specification waits for grounded musical annotations. Note research retains
+[NS-3_context_01](NS-3_context_01.md). The
+[note-presence reference](DONE/NS-3_notes_04.md) is now accepted at its bounded
+synthetic scope. Its fixed Pascal consumer matched seven of eight independent
+windows; the listener-inaudible flute late tail was overcalled. The open
+[note-decision task](NS-3_notes_02.md) owns that failure and recorded boundary
+gates. Style-reference specification waits for grounded musical annotations.
+Note research retains
 its stopped proposals and progress-checkpoint count.
 
 Every open and DONE task ends with **Dev Notes:** for failed approaches,
@@ -39,11 +40,11 @@ unless also declared under Blockers; required gaps still follow
 | --- | ---: | ---: | ---: | ---: |
 | [NS-1 — Independent Pascal foundation](../MILESTONES.md#ns-1) | 100% | 0 | 0 | 0.00 |
 | [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 100% | 0 | 0 | 0.00 |
-| [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 40% | 16 | 60 | 15.00 |
+| [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 41% | 15 | 59 | 14.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 96% | 1 | 4 | 0.60 |
 | [NS-5 — Many-hour styles that generate and blend usefully](../MILESTONES.md#ns-5) | 27% | 16 | 73 | 14.60 |
 | [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 72% | 3 | 28 | 1.40 |
-| **Total** | **68.40 weighted points** | **36** | Per-goal credits are not summed across goals | **31.60** |
+| **Total** | **68.65 weighted points** | **35** | Per-goal credits are not summed across goals | **31.35** |
 
 NS-1 is already complete under the accepted extraction scope. Preserve its
 invariants in every applicable task; do not recreate completed extraction work.
@@ -64,7 +65,6 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 | [NS-3_context_01.md](NS-3_context_01.md) — Admit local key and tonal uncertainty | +3 | +0.75 | TODO |
 | [NS-3_context_02.md](NS-3_context_02.md) — Persist automatic key and tempo context with overrides | +2 | +0.50 | TODO |
 | [NS-3_notes_01.md](NS-3_notes_01.md) — Resolve recorded pitch identity and register | +4 | +1.00 | TODO |
-| [NS-3_notes_04.md](NS-3_notes_04.md) — Qualify independent note-presence references | +1 | +0.25 | TODO |
 | [NS-3_notes_02.md](NS-3_notes_02.md) — Resolve note presence, attacks and endings | +3 | +0.75 | TODO |
 | [NS-3_notes_03.md](NS-3_notes_03.md) — Accept independent phrases and feed saved learning | +5 | +1.25 | TODO |
 | [NS-3_parts_02.md](NS-3_parts_02.md) — Learn simultaneous notes and part ownership | +7 | +1.75 | TODO |
@@ -128,6 +128,7 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 | [NS-3_validation_03.md](DONE/NS-3_validation_03.md) | Checked Pascal sparse peak backend, replay and source-bound Spring recall/density gates | +2 NS-3 | +0.50 |
 | [NS-3_validation_02.md](DONE/NS-3_validation_02.md) | Supervised Pascal WAV path; Spring exact salience, six rate/channel cases, five-minute and hour cost, scoped replay and failure preservation | +3 NS-3 | +0.75 |
 | [NS-3_context_03.md](DONE/NS-3_context_03.md) | Four source-bound tonal/ambiguous groups plus two independently reviewed acoustic no-key windows; exact Pascal reader and separate denominator replay | +1 NS-3 | +0.25 |
+| [NS-3_notes_04.md](DONE/NS-3_notes_04.md) | Source-separated NSynth reference, eight listener-reviewed windows, deterministic Pascal packet and a reported held-out activity miss | +1 NS-3 | +0.25 |
 
 The [preparation split](../MILESTONES.md#mixture-preparation-task-split) increases
 the catalog from 49 to 50 tasks while preserving its total credit. The accepted
@@ -173,7 +174,7 @@ first accepted genre is predetermined.
 9. [NS-3_context_03.md — DONE](DONE/NS-3_context_03.md), then [NS-3_context_01.md](NS-3_context_01.md)
 10. [NS-3_context_02.md](NS-3_context_02.md)
 11. [NS-3_notes_01.md](NS-3_notes_01.md)
-12. [NS-3_notes_04.md](NS-3_notes_04.md), then [NS-3_notes_02.md](NS-3_notes_02.md)
+12. [NS-3_notes_04.md — DONE](DONE/NS-3_notes_04.md), then [NS-3_notes_02.md](NS-3_notes_02.md)
 13. [NS-3_notes_03.md](NS-3_notes_03.md)
 14. [NS-3_parts_04.md — DONE](DONE/NS-3_parts_04.md), then [NS-3_parts_01.md — DONE](DONE/NS-3_parts_01.md)
 15. [NS-3_parts_02.md](NS-3_parts_02.md)

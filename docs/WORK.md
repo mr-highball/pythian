@@ -21,7 +21,7 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
-## Independent NSynth train packet reviewed — 2026-09-23
+## Independent NSynth train reference accepted — 2026-09-23
 
 The [source-separated packet](PHRASE-EVALUATION.md#nsynth-train-source-separated-packet)
 has passed its frozen metadata gate on a distinct NSynth instrument partition.
@@ -42,9 +42,20 @@ eight labels on both targets to the same reviewed packet SHA256
 `abbf3b4b3d4243498e99f2b677406292008893961cbc17649744aa6c2f675b19`
 with zero unfreed blocks. The input review TSV SHA256 is
 `46a722f3817d21ff680ae54dbe2debeff056b4e078f41740047b700c11866ba7`.
-No train presence score has run. Next, apply the existing fixed activity
-consumer once without tuning and report unsupported cases and every miss. Criterion 3
-of [NS-3_notes_04](TODO/NS-3_notes_04.md) and task credit remain open.
+The fixed Pascal activity consumer then passed source-free controls and made
+one independent eight-window pass without tuning. Checked Win32/Win64 outputs
+were byte-identical, SHA256
+`0062fedae4de606fd0073c49ac372106eddce271cfeb2e948a8ccf1eecf984dd`,
+with zero unfreed blocks. Seven decisions matched. The flute late tail (#7)
+was `activity_present` despite the listener's `not_audible` label; its RMS
+was 0.000999 and all four activity features fired. Quiet audible guitar #10
+remained present; both exact-zero rest windows were silent. The 0.0001 RMS floor
+was not retuned. The bounded reference task
+[NS-3_notes_04](TODO/DONE/NS-3_notes_04.md) now passes all criteria and earns
+1 NS-3 goal point / 0.25 overall point, taking NS-3 to 41% and total completion
+to 68.65%. [NS-3_notes_02](TODO/NS-3_notes_02.md) is unblocked and owns the
+false-active case, retained quiet-note protections and recorded boundary gates.
+No recorded-phrase or noise-robust accuracy follows from this synthetic packet.
 
 ## Note-presence exact-window review — 2026-09-23
 
@@ -58,7 +69,7 @@ rests. Checked stable FPC 3.2.2 Win32/Win64 Pascal replay agrees byte for byte
 (reviewed-packet SHA256
 `ab2ee369964d23d88c26f3c4a6cf0f8cefb2908f513efb9d800fdb8c4d337a6b`),
 with zero unfreed blocks. Criterion 2 of
-[NS-3_notes_04](TODO/NS-3_notes_04.md) closes at the declared synthetic
+[NS-3_notes_04](TODO/DONE/NS-3_notes_04.md) closes at the declared synthetic
 single-note scope; unsupported attack, short, quiet, repeated, phrase-gap and
 overlap cases remain recorded. The acoustic end of the long-release notes
 remains unknown. At that review-only checkpoint, criteria 3 and 4 still needed
@@ -972,7 +983,7 @@ heuristic. The measurements do not distinguish actual notes from harmonic
 partials, simultaneous roles or tonic evidence well enough to justify another
 ranker/threshold/context variation. Stop this investigation sequence. The
 next core result will follow the already frozen
-[note-presence reference task](TODO/NS-3_notes_04.md): obtain exact listener
+[note-presence reference task](TODO/DONE/NS-3_notes_04.md): obtain exact listener
 labels for its existing continuation, post-control and rest windows, then
 qualify its source-bound packet or keep it open with the precise remaining
 blocker. Local-key inference stays open until a distinct source-grounded
@@ -982,7 +993,7 @@ change of deliverable, not a reset of unsuccessful-attempt evidence.
 ## Exact-window note-presence listener update — 2026-09-23
 
 After the local-key stop redirected core work to
-[NS-3_notes_04](TODO/NS-3_notes_04.md), the user reviewed the existing
+[NS-3_notes_04](TODO/DONE/NS-3_notes_04.md), the user reviewed the existing
 4-second fading guitar clip and marked its pitched sound audible in all three
 frozen 250-ms windows: [2.50,2.75), [3.00,3.25) and [3.75,4.00) seconds.
 The final label supports an audible post-control tail but does not locate a
@@ -1235,7 +1246,7 @@ reassessment authorizes a concrete review deliverable, not a new estimator.
 
 At the two-nonclosing-batch checkpoint, the qualified external reference was
 split from `NS-3_notes_02` into its true
-[NS-3_notes_04 prerequisite](TODO/NS-3_notes_04.md). The original four NS-3
+[NS-3_notes_04 prerequisite](TODO/DONE/NS-3_notes_04.md). The original four NS-3
 goal points are redistributed **1 reference + 3 observation/decoder**, with
 no new or accepted credit. The catalog has **38 open / 14 DONE** tasks,
 52 total; NS-3 stays 39%, NS-5 27%, overall 63.15%.

@@ -154,7 +154,7 @@ is claimed.
   the second showed sparse note support plus local ranking is still far below
   the key/unknown/change limits. Do not resume a ranker, support threshold,
   context-window or profile variation from these results. The next action is
-  the existing [reviewed note-presence reference](NS-3_notes_04.md) at its
+  the existing [reviewed note-presence reference](DONE/NS-3_notes_04.md) at its
   exact frozen listening windows; key inference resumes only after a genuinely
   distinct, source-grounded observation of note activity and tonic/change
   evidence with a new prospective gate. This changes the work from key

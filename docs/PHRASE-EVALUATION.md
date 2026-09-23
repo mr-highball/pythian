@@ -340,15 +340,47 @@ The flute late tail has nonzero PCM and measured RMS 0.000999 but was not
 audible to the listener; the guitar late tail has RMS 0.002285 and was audible
 but quiet. The label convention is any audible source sound, whether pitched
 or static-like. These are user observations, not thresholds inferred from PCM.
-No independent presence decision or score has yet been run. Source control
-note-off remains a separate three-second renderer fact, not an acoustic
-endpoint. Criterion 3 of [NS-3_notes_04](TODO/NS-3_notes_04.md) and task credit
-remain open pending one held-out fixed consumer pass with unsupported coverage
-stated.
+The frozen [Pascal activity consumer](../tools/pythian.presence.decision.lpr)
+then ran one eight-window independent pass with unchanged analysis and activity
+defaults. It computed every decision from the WAVs before opening the reviewed
+packet. Checked stable FPC 3.2.2 Win32/Win64 passed source-free zero, below-floor
+and above-floor PCM16 controls, preserved the original development result hash
+`3a707b395fdd354cf8a9c9fada3a407d27866661551ea2a740f772bc31b2c97c`,
+and produced identical independent TSV SHA256
+`0062fedae4de606fd0073c49ac372106eddce271cfeb2e948a8ccf1eecf984dd`.
+Both targets reported zero unfreed blocks. Seven of eight decisions matched the
+user's labels. The sole mismatch is flute `flute_acoustic_028-049-075` late
+tail [60000,64000): `activity_present` with four active features and RMS
+0.000999, versus `not_audible` from the listener. The guitar late tail, audible
+but quiet, remained `activity_present` at RMS 0.002285. Both exact-zero bass
+and brass rest windows returned `no_activity`. This is a fixed observation
+failure on one faint synthetic tail, not a reason to change its label or tune
+the existing 0.0001 RMS floor to this packet.
+Train mode also rejected the exposed development review packet by frozen
+SHA256, exited with code 1, wrote no result file and freed all allocations.
+
+The checker and decision tool can be rebuilt with the project's checked FPC
+toolchain. Reacquire the official NSynth JSON/WAV train archive from the source
+linked above and verify its size and hashes; select the four listed note IDs
+and confirm their WAV hashes, mono PCM16/16-kHz/64,000-frame geometry. Recreate
+the eight-row review TSV using the IDs, frame bounds and categorical labels
+above, then run `pythian.presence.reference` in `train` mode to bind the packet
+before `pythian.presence.decision run <audio-dir> <reviewed-packet.tsv>
+<output.tsv> train`. The decision tool requires the frozen packet SHA256, so a
+changed label, source or coordinate cannot silently become this evaluation.
+
+Source control note-off remains a separate three-second renderer fact, not an
+acoustic endpoint. The packet covers isolated synthetic 250-ms continuation,
+tail and exact-zero rest windows from four instruments. It lacks attacks,
+short/repeated notes, gaps, overlap, background noise, recorded-phrase transfer
+and a proven audible ending. The qualifying reference task
+[NS-3_notes_04](TODO/DONE/NS-3_notes_04.md) accepts this bounded source packet;
+the mismatch and broader presence decision belong to
+[NS-3_notes_02](TODO/NS-3_notes_02.md).
 
 ## Guitar-TECHS P1 reference screen stopped — 2026-09-22
 
-After the known-gate slope stop, [NS-3_notes_04](TODO/NS-3_notes_04.md) now
+After the known-gate slope stop, [NS-3_notes_04](TODO/DONE/NS-3_notes_04.md) now
 owns the qualified note-presence reference prerequisite. The official
 [Guitar-TECHS v1 record](https://zenodo.org/records/14963133) offers CC BY 4.0
 electric-guitar audio captured by direct input and microphone, with per-string
