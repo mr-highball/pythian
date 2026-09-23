@@ -207,6 +207,10 @@ In D911-16, the annotators disagree on the transition out of D major and one
 includes B minor. Retain each annotator, missing coverage and disagreement;
 absence is not an independently verified non-tonal label. No single annotation,
 majority vote or filled gap is silently substituted for uncertain ground truth.
+The later [score-to-audio ambiguity check](#score-transferred-ambiguity-check--2026-09-23)
+qualifies four *interior ann2* gaps as that annotator's ambiguous/no-key policy,
+while preserving this non-tonality limit and leaving leading/trailing gaps
+unlabelled.
 
 The checked Win64 preflight passes bounded original-byte identity, interval and
 coverage checks with no owned leaks. Each row below partitions the full decoded
@@ -622,6 +626,77 @@ reference deliverable separate from key inference. The new
 another local-key scoring policy is frozen. Keep uploader descriptions,
 researcher disagreements, automatic pre-analysis exposure, source licenses and
 whole-loop versus timed-label scope explicit.
+
+## Score-transferred ambiguity check — 2026-09-23
+
+The [Winterreise dataset paper](https://research-portal.uu.nl/ws/files/98000909/3429743.pdf)
+says annotator 2 (ann2) marked ambiguous score passages with a no-key label;
+the publisher transferred score-level key regions to each performance's audio
+clock using measure alignment and transposition. The annotators were aware of
+earlier annotations, so their labels are distinct opinions but not independent
+votes. The audio CSVs omit these no-key spans. A missing label at the start or
+end of the recording has no equivalent interpretation.
+
+A policy was frozen under ignored `build/context-reference-score/` before
+running one Pascal-only mapping check on the already development-exposed HU33
+D911-02 and D911-16. Original score ann2 CSVs were selectively extracted from
+the checksum-bound dataset ZIP; current WAV, audio ann2 and prior preflight
+JSON hashes were reverified. Every score row paired in order with its audio
+row: five rows at a fixed **-2 semitone** transposition for D911-02, and three
+at **-1 semitone** for D911-16, with identical modes. All substantial internal
+score gaps have corresponding audio gaps, and no extra internal audio gap was
+found. The existing exact decimal-to-frame policy binds the following original
+22,050-Hz source intervals:
+
+| Development source | Ann2 score gap | Audio gap (seconds) | Audio frames |
+| --- | --- | --- | ---: |
+| D911-02 HU33 | 14.832–24.833 | 25.62–42.22 | 564921–930951 |
+| D911-02 HU33 | 29.832–33.666 | 54.46–61.22 | 1200843–1349901 |
+| D911-02 HU33 | 39.832–46.333 | 75.04–86.72 | 1654632–1912176 |
+| D911-16 HU33 | 10.999–24 | 25.2–53.52 | 555660–1180116 |
+
+The bound preflight partition retains annotator 1 and 3's different keys
+inside every ann2 gap. They sometimes agree with each other and sometimes
+disagree. These four regions may be labelled
+`ann2_score_transferred_ambiguous` for a development reference only, with
+alignment uncertainty; they are **not** verified acoustic non-tonality,
+consensus unknown or independent evaluation cases. Leading and trailing
+uncovered audio remains unlabelled. No key estimator was executed.
+
+Checked FPC 3.2.2 Win64 completed the two-source audit in 594 ms with zero
+unfreed blocks. The ignored policy, Pascal source and result SHA-256 values
+are `ce227456c3f1e7a02a4964afc8424585aa86cfc29e745a0bc17babb8b1ca931c`,
+`22fbf0cb378975714e460e0a3d8bb794ee1fa56812718b2027fd79cf44065991`
+and `db20b9c74842ae8eccf0512133fc853ccdb3257ca05e49ad11c582c2d93d31b`.
+This advances the [reference task](TODO/NS-3_context_03.md) but closes no
+complete criterion or credit: source-group-independent evaluation material,
+reviewed acoustic no-key contrasts, a packet checker and frozen coverage
+denominators are still required.
+
+## Local-key reference group roles — 2026-09-23
+
+Freeze the recording/composition boundary before opening more reference contents
+or scoring another admission rule. Within the checksum-bound Winterreise archive,
+all performances and derivative excerpts of D911-02 and D911-16 are
+**development-exposed**. Reserve D911-05 and D911-19, including every
+performance, score transfer and adjacent excerpt of either composition, for
+**independent evaluation**. Do not inspect their audio or local-key annotation
+contents while choosing a method or threshold. D911-01 is excluded because the
+publisher added a repeat to its HU33 audio. Every other Winterreise composition
+is quarantined pending a recorded role decision before its contents are used.
+Different performances of one composition never cross roles.
+
+The Freesound Loop Dataset annotation index was screened across the collection,
+and the initial four WAVs were opened. Treat that collection as
+**development-screened**, including candidate `102338`: its metadata describes
+an original percussion capture by Brady Leduc, distinct from `101895` by
+RytmenPinnen, but neither whole-loop description supplies timed acoustic
+no-key truth. No FSLD loop is an untouched independent evaluation case. The
+user's three full style mixes are preference examples, outside this local-key
+reference packet. New sources need their own prospective group role before
+labels or predictions are opened. This role map alone does not qualify the
+reserved recordings or close the packet's group-isolation criterion; the Pascal
+checker must enforce it against acquired source identities.
 
 ## Native inspection
 

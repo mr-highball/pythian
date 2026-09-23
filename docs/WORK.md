@@ -215,6 +215,45 @@ no-key/ambiguous and changing-key recordings, with a Pascal checker and
 independent recording-group split. Stop source-specific gap screens until that
 packet is qualified. NS-2's 11-second listening verdict remains pending.
 
+## Score-transferred ambiguity intervals — 2026-09-23
+
+The first bounded [context reference](TODO/NS-3_context_03.md) batch used only
+the two existing Winterreise HU33 development compositions. The
+[publisher's annotation policy](TONAL.md#score-transferred-ambiguity-check--2026-09-23)
+explicitly treats ann2's ambiguous score passages as no-key, with the
+score-to-audio regions transferred by alignment and transposition. A frozen
+checked Pascal audit bound the two original score CSVs, current WAV/audio CSVs
+and preflight JSONs; all five/three ann2 rows paired with one fixed
+transposition per composition. It mapped three D911-02 and one D911-16
+internal ambiguity gaps to exact source frames and retained every overlapping
+ann1/ann3 key. The 594-ms Win64 run reported zero unfreed blocks. No audio
+prediction, threshold or other composition was opened.
+
+These are one annotator's *score-transferred ambiguity* intervals, not
+independently verified non-tonality or consensus unknown. Leading/trailing
+annotation gaps remain unlabelled. This is one nonclosing reference-packet
+batch since the split, with no criterion, credit or percentage change. The
+next deliverable freezes composition-disjoint development and independent
+reference roles, then qualifies exact source/edition and timed labels for
+stable keys, changes and no-key/ambiguous behavior. A later checker must
+reproduce those identities and coverage denominators before inference scoring.
+
+The second bounded reference batch froze [composition-level roles](TONAL.md#local-key-reference-group-roles--2026-09-23):
+Winterreise D911-02/16 are development-exposed; D911-05/19 and all their
+performances are reserved independent cases; D911-01 is excluded; remaining
+compositions are quarantined. The FSLD annotation index was screened, so none
+of its loops is an untouched independent case. Publisher metadata identifies
+one additional, separately recorded percussion loop but supplies no timed
+acoustic no-key label. No new audio or annotation contents were opened, and no
+inference ran. The selected independent recordings, interval packet and Pascal
+isolation checker remain unqualified, so this is a second nonclosing batch.
+At Athena's two-batch checkpoint, stop source-specific screens. Resume this
+task only with a bounded plan that can close a complete packet criterion:
+reacquire the reserved composition entries without label-driven selection,
+verify edition and timing, and implement the source/role checker before any
+independent scoring. The ready NS-2 source-quality listening task remains the
+current core prerequisite while the 11-second review is pending.
+
 ## NS-5 listening-protocol criterion — 2026-09-23
 
 Focused specification QA for [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md)

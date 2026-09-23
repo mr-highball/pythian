@@ -51,6 +51,25 @@ Starting evidence: [local-key reference study](../TONAL.md#local-key-reference-c
 
 **Dev Notes:**
 
+- 2026-09-23 group-role freeze: [D911-05 and D911-19](../TONAL.md#local-key-reference-group-roles--2026-09-23)
+  are reserved by entire composition for independent evaluation before their
+  audio or local-key contents are opened. D911-02/16 remain development-exposed;
+  all FSLD annotations were screened, so no FSLD loop is held out. Metadata
+  supports a second distinct percussion capture but no timed no-key label.
+  This is a second nonclosing packet batch: exact reserved source identities,
+  reviewed interval packet and enforcing Pascal checker remain open. Stop
+  further source screens at the task-flow reassessment checkpoint.
+- 2026-09-23 development ambiguity qualification: a [frozen Pascal
+  score/audio check](../TONAL.md#score-transferred-ambiguity-check--2026-09-23)
+  matched the selected Winterreise ann2 score rows to their already bound HU33
+  audio rows at one fixed transposition per composition. Three D911-02 and one
+  D911-16 interior gaps map to exact source frames. By the publisher's ann2
+  policy these are score-transferred ambiguous/no-key judgments, not verified
+  acoustic non-tonality or consensus unknown. Ann1/ann3 labels and disagreements
+  remain explicit. The selected sources are development-exposed; no held-out
+  composition, key estimator or acceptance threshold was opened. This is one
+  nonclosing batch after the reference split: the full positive/no-key/change
+  source packet, independent groups and checker criteria remain open.
 - 2026-09-23 split rationale: two nonclosing local-key batches exposed a
   distinct reference gap. One performed drum cadence has only source-level
   percussion description. A later frozen four-loop screen found multiple
