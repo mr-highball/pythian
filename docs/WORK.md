@@ -21,6 +21,29 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Full-length private style inputs — 2026-09-22
+
+The user supplied one full multi-hour mix for each initial target style and
+identified 30-second excerpts as inadequate for a holistic style judgment.
+The three complete audio streams (10.19 hours total) were acquired under ignored
+`build/` and converted outside the repository to full-length PCM WAVs. The
+one-off converter is preparation only; maintained analysis and inference remain
+Pascal-owned. Source-specific identities, links and media remain in the ignored
+local manifest, not in the tracked corpus records. The user confirmed the
+separate build cleanup succeeded.
+
+These inputs supersede the old excerpt-first direction for current development,
+but do not yet establish accepted genre cards or independent evaluation groups.
+Checked Pascal jobs completed full source-bound feature caches for all three
+recordings. A private Pascal mapper conservatively excluded feature windows
+crossing declared chapter cuts; those metadata cuts still need audio review.
+Declared chapter counts exceed the journal learner's 32-range/profile-source
+limit for every mix. The existing [NS-5 scale task](TODO/NS-5_scale_02.md)
+already owns bounded contribution accounting and song-boundary handling; simply
+lifting the cap would violate its saved-profile contract. A boundary-safe
+training plan is the next concrete scale step. Keep NS-5_evaluation_01 open
+pending whole-work review and musical annotations.
+
 ## Pro Sensory chillwave candidate rejected — 2026-09-22
 
 The user listened to the entire 230.365-second, hash-bound

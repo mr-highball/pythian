@@ -86,6 +86,14 @@ a TensorFlow, ONNX, HDF5 or other third-party inference runtime. OS/compiler ser
 under FPC are platform facilities, not alternative inference implementations.
 The portable core remains independent of WFC, hosts and playback devices.
 
+The user permits one-off, external media acquisition and conversion to WAV for
+private development inputs. Such converters stay outside the repository and do
+not become maintained codecs, product dependencies, analysis or inference paths.
+Pythian consumes the resulting WAV through its Pascal-owned readers and learners.
+Keep source-specific private media and conversion artifacts under ignored `build/`.
+Revisit this boundary if a compressed-media importer becomes a supported library
+feature; it would then need Pascal-owned implementation and validation.
+
 The former Win64 TensorFlow C adapter and its measured execution evidence are
 retained as historical provenance in [native inference](docs/NATIVE-INFERENCE.md)
 and [provenance](docs/PROVENANCE.md#optional-native-observation-adapter). They do

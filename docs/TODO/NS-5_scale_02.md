@@ -33,4 +33,11 @@ Starting evidence: [CORPUS-EVALUATION](../CORPUS-EVALUATION.md) · [ANALYSIS-WAV
 
 **Dev Notes:**
 
-No failed approaches or follow-ups recorded yet.
+- 2026-09-22 development input: three user-selected full mixes have more than
+  32 declared chapters each. Current `pythian.learn journals` and the saved
+  acoustic profile treat each range as a source, with a 32-source cap. A full
+  boundary-safe learning run therefore needs bounded segment-to-source
+  accounting and a replayable contribution map; increasing the limit alone is
+  not an accepted fix. Exact source identities stay in ignored local records.
+  This is already covered by the song-boundary and bounded-aggregation criteria
+  above; no new task or completion credit is added.
