@@ -270,6 +270,19 @@ checker, qualify the reserved compositions and freeze separate coverage
 denominators before any held-out inference score. NS-2's 11-second listener
 verdict is still pending.
 
+The first post-qualification batch added a maintained
+[Pascal reference checker](TONAL.md#reproducible-pascal-reference-checker).
+It binds current development WAV, audio/score CSV and notice bytes, rebuilds
+the full source-frame annotation partition and derives ann2's four
+score-transferred ambiguity spans. Checked stable Win32/Win64 reports match
+each other, the earlier accepted partitions and same-target replay. A damaged
+copied notice and an occupied output prefix reject before output. The command
+is included in the normal native build. Its Pascal ZIP path verified the
+publisher archive, selectively extracted 13 exact entries and reproduced the
+same two reports from a fresh asset directory. The independent group and scoring
+denominator portions of context_03 remain open, so this is one nonclosing
+batch after criteria 1 and 2; no task credit changes.
+
 ## NS-5 listening-protocol criterion — 2026-09-23
 
 Focused specification QA for [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md)

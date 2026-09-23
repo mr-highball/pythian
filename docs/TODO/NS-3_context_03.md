@@ -51,6 +51,17 @@ Starting evidence: [local-key reference study](../TONAL.md#local-key-reference-c
 
 **Dev Notes:**
 
+- 2026-09-23 maintained reader batch: the [tracked Pascal checker](../TONAL.md#reproducible-pascal-reference-checker)
+  now rebuilds the two development sources' complete annotation partitions
+  and score-ann2 ambiguity transfer from exact original assets. Checked stable
+  Win32/Win64 outputs and replay match byte for byte; the previous hash-bound
+  partitions match, and one-byte source-notice corruption and occupied report
+  names reject before output. The checker presently accepts only the two
+  development compositions, so held-out group isolation and packet scoring
+  denominators remain unverified. This is one nonclosing batch after criteria
+  1/2 closure; criterion 4 and task credit remain open. Its Pascal selective
+  extractor also verified the full publisher archive identity, all 13 chosen
+  entry hashes and byte-identical reports from a fresh extraction.
 - 2026-09-23 development interval packet: [two exact HU33 composition groups](../TONAL.md#bound-development-local-key-intervals--2026-09-23)
   now bind singer/pianist, composition, archive edition, notices, original WAV
   and all annotator/score CSV hashes and the publisher's transfer method.

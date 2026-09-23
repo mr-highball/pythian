@@ -789,6 +789,41 @@ alternatives. The Pascal audit source and output are ignored under
 `build/context-reference-score/`; neither run executed key inference or opened
 the reserved evaluation compositions.
 
+### Reproducible Pascal reference checker
+
+The tracked [local-key reference command](../tools/pythian.localkey.reference.lpr)
+rebuilds the full per-annotator source-frame partition from the acquired WAV
+and audio CSVs. It also reads the original score-ann2 CSVs, verifies each
+score/audio row's mode and fixed semitone transposition, and derives substantial
+interior ann2 ambiguity gaps from paired score and audio gaps. Its output
+retains the original decimal text, exact frame boundaries, all three label
+vectors, disagreement/coverage classes, source hashes, composition group and
+development role. `controls` runs source-free boundary checks. The
+`development <asset-root> <fresh-output-root>` command expects the two original
+WAVs, six audio CSVs, two score-ann2 CSVs, README and original notices at the
+archive-relative paths in the table above; it refuses occupied report names.
+The selected archive is [SWD 2.1](https://zenodo.org/records/10839767), bound
+by the publisher MD5 and local SHA-256 above. Reacquire and selectively extract
+the named entries under ignored `build/`. The tool's
+`extract <archive> <fresh-asset-root>` command uses FPC's Pascal ZIP reader,
+checks the archive's exact 517,380,038 bytes and SHA-256 before and after,
+selects only the 13 named entries, and checks every extracted SHA-256. It
+requires a fresh output directory and does not fetch media.
+
+Checked FPC 3.2.2 Win32 and Win64 runs passed the current development inputs,
+with zero unfreed blocks and byte-identical JSON across both targets and a
+same-target replay. Full annotation rows and partitions match the earlier
+hash-bound private preflight; the four derived ambiguity frame spans match the
+frozen score/audio audit. A one-byte change to a copied README was rejected
+before output, as was reuse of an occupied output path. The command is compiled
+and its source-free controls run by `tools/build.ps1`. It currently accepts only
+the two fixed development compositions. It does not read, label or score
+D911-05/19, so reference-task criterion 4's independent-group isolation and
+criterion 5's scoring denominators remain open.
+The fresh selective extraction and subsequent reference reports also passed,
+with byte-identical JSON to the original acquired-input run and zero unfreed
+blocks. Only ignored local artifacts were written.
+
 ## Native inspection
 
 The [native tool](../tools/pythian.tonal.inspect.lpr) prints JSON:
