@@ -22,9 +22,12 @@ reference packet exposed a failed frozen development candidate in
 [NS-3_context_01](NS-3_context_01.md). The
 [note-presence reference](DONE/NS-3_notes_04.md) is now accepted at its bounded
 synthetic scope. Its fixed Pascal consumer matched seven of eight independent
-windows; the listener-inaudible flute late tail was overcalled. The open
-[note-decision task](NS-3_notes_02.md) owns that failure and recorded boundary
-gates. Style-reference specification waits for grounded musical annotations.
+windows; the listener-inaudible flute late tail was overcalled. Two frozen
+development-packet screens then stopped before acoustic labels or scores.
+The [presence-observation task](NS-3_notes_05.md) now owns a source-grounded
+Pascal activity/unknown observation; the [note-decision task](NS-3_notes_02.md)
+retains event integration and recorded boundary gates. Style-reference
+specification waits for grounded musical annotations.
 Note research retains
 its stopped proposals and progress-checkpoint count.
 
@@ -40,11 +43,11 @@ unless also declared under Blockers; required gaps still follow
 | --- | ---: | ---: | ---: | ---: |
 | [NS-1 — Independent Pascal foundation](../MILESTONES.md#ns-1) | 100% | 0 | 0 | 0.00 |
 | [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 100% | 0 | 0 | 0.00 |
-| [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 41% | 15 | 59 | 14.75 |
+| [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 41% | 16 | 59 | 14.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 96% | 1 | 4 | 0.60 |
 | [NS-5 — Many-hour styles that generate and blend usefully](../MILESTONES.md#ns-5) | 27% | 16 | 73 | 14.60 |
 | [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 72% | 3 | 28 | 1.40 |
-| **Total** | **68.65 weighted points** | **35** | Per-goal credits are not summed across goals | **31.35** |
+| **Total** | **68.65 weighted points** | **36** | Per-goal credits are not summed across goals | **31.35** |
 
 NS-1 is already complete under the accepted extraction scope. Preserve its
 invariants in every applicable task; do not recreate completed extraction work.
@@ -65,7 +68,8 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 | [NS-3_context_01.md](NS-3_context_01.md) — Admit local key and tonal uncertainty | +3 | +0.75 | TODO |
 | [NS-3_context_02.md](NS-3_context_02.md) — Persist automatic key and tempo context with overrides | +2 | +0.50 | TODO |
 | [NS-3_notes_01.md](NS-3_notes_01.md) — Resolve recorded pitch identity and register | +4 | +1.00 | TODO |
-| [NS-3_notes_02.md](NS-3_notes_02.md) — Resolve note presence, attacks and endings | +3 | +0.75 | TODO |
+| [NS-3_notes_05.md](NS-3_notes_05.md) — Admit source-grounded note-presence evidence | +1 | +0.25 | TODO |
+| [NS-3_notes_02.md](NS-3_notes_02.md) — Integrate note presence, attacks and endings | +2 | +0.50 | TODO |
 | [NS-3_notes_03.md](NS-3_notes_03.md) — Accept independent phrases and feed saved learning | +5 | +1.25 | TODO |
 | [NS-3_parts_02.md](NS-3_parts_02.md) — Learn simultaneous notes and part ownership | +7 | +1.75 | TODO |
 | [NS-3_parts_03.md](NS-3_parts_03.md) — Accept role learning on independent mixtures | +4 | +1.00 | TODO |
@@ -174,7 +178,7 @@ first accepted genre is predetermined.
 9. [NS-3_context_03.md — DONE](DONE/NS-3_context_03.md), then [NS-3_context_01.md](NS-3_context_01.md)
 10. [NS-3_context_02.md](NS-3_context_02.md)
 11. [NS-3_notes_01.md](NS-3_notes_01.md)
-12. [NS-3_notes_04.md — DONE](DONE/NS-3_notes_04.md), then [NS-3_notes_02.md](NS-3_notes_02.md)
+12. [NS-3_notes_04.md — DONE](DONE/NS-3_notes_04.md), then [NS-3_notes_05.md](NS-3_notes_05.md), then [NS-3_notes_02.md](NS-3_notes_02.md)
 13. [NS-3_notes_03.md](NS-3_notes_03.md)
 14. [NS-3_parts_04.md — DONE](DONE/NS-3_parts_04.md), then [NS-3_parts_01.md — DONE](DONE/NS-3_parts_01.md)
 15. [NS-3_parts_02.md](NS-3_parts_02.md)

@@ -21,6 +21,46 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Recorded presence observation path — 2026-09-23
+
+The first NS-3_notes_02 batch after its accepted reference prerequisite tried
+to prepare an extra source-separated development packet without touching its
+independent NSynth train evaluation rows. An ignored pre-audio policy fixed the
+original acoustic/quality filter, lexical note selection, two distinct
+long-release families, exposure exclusions and exact windows. A checked stable
+Win64 Pascal metadata selector found nine positive and 54 negative eligible
+instruments overall, but no positive pair after the exclusions. It stopped
+before a selection file, WAV extraction, listening or scoring. The failed
+selector's unhandled exception reported 192 private bytes unfreed; it is not
+a maintained tool. Do not widen that stopped selection or retune the default
+activity floor against the independent flute miss. A second frozen path tried
+the already source-bound URMP development cohorts: the checked Win64 Pascal
+selector verified both stem WAV and note identities but found no post-end
+candidate for the first required violin stem. It wrote no selection file,
+decoded no audio and requested no review. Annotation ends remain separate from
+acoustic audibility. Both attempts are nonclosing batches. At the task-flow
+checkpoint, the oversized original three-point event task is split into the
+independently useful [source-grounded presence observation](TODO/NS-3_notes_05.md)
+(1 NS-3 goal point) and [event integration](TODO/NS-3_notes_02.md)
+(2 points). The accepted one-point reference is unchanged. NS-3 remains 41%,
+overall 68.65%, with 16 open NS-3 tasks and 36 total open tasks. The next
+bounded action was a read-only source inventory for independently supported
+recorded activity/unknown labels, not another variant of either stopped
+selector. The [GuitarSet publisher](https://guitarset.weebly.com/) records
+separate hexaphonic pickup and microphone paths, 360 excerpts from six
+players, and JAMS note annotations. Existing local source archives and two
+development-player mic WAVs were inspected with checked stable Win64 Pascal:
+both are 44.1-kHz mono PCM16, 984,506 frames; the retained annotation ZIP
+yielded two JAMS members with 17 parsed annotations each. The prior native
+feasibility audit has six/two preliminary note-onset-gap candidates, without
+excluding another note that sustains into a proposed rest. This is a
+genuinely different recorded source route with actual acoustic listening
+potential; annotation ends and null confidence fields are not acoustic truth.
+Full annotation overlap must be checked before fixing windows. The exact
+source/section roles, labels and independent material must be frozen before
+a new scorer. No inference candidate or task credit follows
+from the inventory.
+
 ## Independent NSynth train reference accepted — 2026-09-23
 
 The [source-separated packet](PHRASE-EVALUATION.md#nsynth-train-source-separated-packet)

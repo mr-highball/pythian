@@ -4,13 +4,17 @@
 
 **Description:**
 
-Resolve false notes in rests and incorrect event boundaries together with reliable pitch identity, preserving quiet/repeated notes and genuine transitions.
+Integrate qualified note-presence evidence with pitch identity to resolve false
+notes in rests and incorrect event boundaries while preserving quiet/repeated
+notes and genuine transitions.
 
 North star: NS-3. Outcome owner: WAV-03-BOUNDARIES.
-Completion credit: 3 goal percentage points (0.75 overall points), after the
-1-point external-reference deliverable was split into
-[NS-3_notes_04](DONE/NS-3_notes_04.md). The original combined allocation was
-4 goal points (1.00 overall points).
+Completion credit: 2 goal percentage points (0.50 overall points), after the
+1-point external-reference deliverable moved to
+[NS-3_notes_04](DONE/NS-3_notes_04.md) and the 1-point reusable observation
+deliverable moved to [NS-3_notes_05](NS-3_notes_05.md). The original combined
+allocation remains 4 goal points (1.00 overall points): 1 accepted reference,
+1 open observation and 2 open event integration.
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [PITCH](../PITCH.md) · [ONSETS](../ONSETS.md).
@@ -38,7 +42,10 @@ do not turn a candidate pitch score into a note-presence probability.
 
 **Acceptance Criteria:**
 
-- Separate note presence from pitch identity and distinguish attacks, continuations, rests and endings using the qualified [reference packet](DONE/NS-3_notes_04.md). A high pitch-candidate score alone is not note-presence evidence.
+- Integrate the qualified [presence observation](NS-3_notes_05.md) separately
+  from pitch identity and distinguish attacks, continuations, rests and endings
+  using the qualified [reference packet](DONE/NS-3_notes_04.md). A high
+  pitch-candidate score alone is not note-presence evidence.
 - Handle repeated same-pitch notes, short/quiet notes, passing notes, glides, gaps and articulation transfer without blanket trimming, gap bridging or quiet-note fragmentation.
 - Pass the low/quiet/gap/mixture controls and recorded boundary/false-rest limits declared before scoring; retain the synthetic short low-note recovery where applicable. Report false notes in rests separately from missed active notes and attack/end errors, including each case's unknown coverage, so a boundary improvement cannot conceal a presence regression.
 - Preserve original source timing, rounding conventions and unknown spans through the maintained event API; unsupported mixtures must not become confident monophonic notes.
@@ -48,9 +55,44 @@ do not turn a candidate pitch score into a note-presence probability.
 
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
 - [NS-3_notes_04.md](DONE/NS-3_notes_04.md)
+- [NS-3_notes_05.md](NS-3_notes_05.md)
 
 **Dev Notes:**
 
+- 2026-09-23 split after reassessment: this task retains the integrated event
+  decision, low/quiet/short/gap/mixture and recorded gates, original timing,
+  unknown preservation and combined phrase path. The separately usable,
+  pitch-independent [presence observation](NS-3_notes_05.md) owns acoustic
+  calibration and its native consumer. The original three unearned goal points
+  become 1 observation + 2 integration, with no new credit. The prior accepted
+  one-point reference remains unchanged. This changes the next action from
+  repeated packet selection to building a source-grounded observation contract
+  with explicit unknowns before combined decoding.
+- 2026-09-23 second nonclosing batch and reassessment: a separate pre-frozen
+  recorded URMP listening selector required continuation, post-end and rest
+  rows for each of two first-bound fit stems. It verified the existing cohort
+  CSV and both source/annotation hashes, then stopped because the first violin
+  stem had no `post_end_candidate`. No selection TSV, decoded audio, listening
+  aid, label or score followed. Combined with the prior stopped extra NSynth
+  screen, this meets the two-batch task-flow checkpoint. Do not try another
+  lexical stem or window variation under the same packet plan. The task's
+  source-grounded presence observation and integrated event decoder are
+  independently useful deliverables; split the original three unearned points
+  between them, retain the recorded gate and quiet-note obligations, and
+  pursue a genuinely distinct source/evidence path for the observation. The
+  split and ownership are recorded above; neither task earns credit yet.
+- 2026-09-23 stopped extra NSynth train calibration screen: a frozen
+  metadata-only Pascal selector sought two new long-release instruments of
+  different families after excluding the four exposed test and four reserved
+  train evaluation groups. It found nine eligible positive and 54 negative
+  instruments overall, but no qualifying positive pair after exclusions; the
+  selector exited before writing a selection file or opening new audio. Keep
+  this gate stopped. The user-inaudible flute tail cannot justify relaxing
+  family separation or tuning the fixed RMS floor. This is one nonclosing
+  presence batch after the accepted reference prerequisite. Next use the
+  already source-bound URMP development cohorts to obtain direct audible-sound
+  labels for recorded continuation, post-annotation and rest windows; their
+  symbolic note ends remain candidate boundaries, not acoustic truth.
 - Stopped fallback (2026-09-21): contour support missed the 30-ms 55-Hz note while supporting 440 Hz inside the true repeated-note gap. Direct-head and waveform-anchor alternatives already failed false-rest admission; coherent-cycle support preserved controls without recorded improvement. See [contour evidence](../PHRASE-EVALUATION.md#cached-contour-support-does-not-recover-both-short-notes--2026-09-21).
 
 - Follow-up: obtain contrasting continuation, release-tail and rest evidence before changing admission. Many false-rest centers already favor note states locally; decoder costs alone do not supply discrimination. Keep pitch rank separate from presence and coordinate combined gates with [register work](NS-3_notes_01.md).
