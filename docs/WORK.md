@@ -45,6 +45,21 @@ now attaches the favorable whole-piece verdict to that artifact while retaining
 the separate source-family listening gates. An 11-second combined-source
 audition was supplied for the next broad review; its result is pending.
 
+## NS-5 listening-protocol criterion — 2026-09-23
+
+Focused specification QA for [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md)
+compared the current [style packet](STYLE-CARDS.md#fixed-execution-and-listening-packet)
+with the original [corpus protocol](CORPUS-EVALUATION.md#generation-controls-and-listening-packet).
+The three seeds, retained 120-second cases and full-duration scoring, fixed
+listening positions, 0..3 rubric, reviewer timestamps and six seed-731 paired
+15-second edits agree. Criterion 4 is specified and reviewed; criterion 3 was
+already closed. No generation or listening was executed by this doc-only QA.
+Style-specific reference traits, quantitative gates and preserving/breaking
+controls keep criteria 1, 2 and 5 open. No task credit or milestone percentage
+changes. This accepted criterion resets the two-nonclosing-batch checkpoint;
+the next work must still address the remaining reference-grounding evidence
+or a ready core prerequisite, not repeat protocol wording.
+
 ## Journal publication checkpoint — 2026-09-23
 
 For NS-5_scale_02 criterion 2, the acoustic journal commands now stage model,

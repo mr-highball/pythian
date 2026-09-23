@@ -86,6 +86,17 @@ reviewed**; implementing the packet belongs to evaluation_02. Criteria 1, 2
 and 5 still lack genre reference evidence and controls, so this task remains
 open with zero credit.
 
+Focused packet QA 2026-09-23: the [fixed execution and listening
+packet](../STYLE-CARDS.md#fixed-execution-and-listening-packet) matches the
+original [corpus protocol](../CORPUS-EVALUATION.md#generation-controls-and-listening-packet)
+on seeds 731/1731/2731, retained 120-second outputs and full-duration scores,
+complete seed-731 multi-recording listening, first-30-second positions for the
+other seeds and matched baselines, the 0..3 rubric with reviewer timestamps,
+and six seed-731 paired 15-second edits. No policy change was needed.
+**Criterion 4's specification is met.** The generated packet and reviewer
+verdicts belong to [evaluation_02](NS-5_evaluation_02.md); criteria 1, 2 and 5
+remain open here, with no task credit.
+
 **Acceptance Criteria:**
 
 - Ground each style card in reference WAV observations across context, groove, harmony, bass/voice relationships, sound/envelope and phrase/section structure; mark required, optional and unsupported traits explicitly. Bind observations to verified recording/edition correspondence, exact intervals, annotation method and uncertainty. Missing required observations remain pending; catalogue tags and aggregate level statistics do not supply them.
@@ -132,3 +143,8 @@ open with zero credit.
   user's [core-first direction](../WORK.md#core-first-re-alignment--2026-09-23)
   defers detailed style-card review while general core work proceeds; seek their
   input for substantial playable or design checkpoints, not routine labels.
+
+- Follow-up after focused packet QA: implement and review the generated packet
+  under [evaluation_02](NS-5_evaluation_02.md) only after this style-card task's
+  reference-grounded criteria 1, 2 and 5 close. Specification QA is not a
+  listener verdict or style acceptance.
