@@ -28,6 +28,23 @@ event decisions and saved phrase learning toward a substantial native generated
 listening checkpoint. Preserve each task's complete criteria and the current
 68.65% acceptance total; the roadmap change earns no credit.
 
+The first source-level gate screened the publisher's
+[Good-sounds 1.1](https://zenodo.org/records/4588740) metadata before its
+13.9-GB audio archive. Official `sounds.json`, `takes.json` and `packs.json`
+MD5 values matched the downloaded files. A private Pascal scan found 8,750
+sound rows, but only 279 complete attack/release/offset triplets: 79 flute
+from one player, 100 clarinet from one player and 100 trumpet from one player.
+No violin row had all three marks. This cannot supply the planned independent
+player combined register/presence packet. The archive transfer then measured
+about 0.26 MB/s, so it was stopped after about 3 MB; no audio was extracted
+or scored. The incomplete ignored archive remains after a single-file
+deletion command was rejected by automatic review. Good-sounds may still be
+useful for register-only development because its broader metadata has three
+flute and two violin players, but its phase marks cannot support the proposed
+combined packet. This is one nonclosing source gate; do not promote metadata
+to audible-rest truth or spend further time on this archive route without a
+new access/evidence plan.
+
 Accepted musical architecture: use WFC passes for small, granular layers, with
 base key/tempo context informing harmony/rhythm and higher voice parts. Style
 learned from one or several songs must be reusable for generation and subsequent

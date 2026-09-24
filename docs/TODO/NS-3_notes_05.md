@@ -75,6 +75,14 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-23 recording-level source gate: publisher Good-sounds 1.1 metadata
+  has manual phase fields, but a private Pascal scan of checksum-matched
+  metadata found complete attack/release/offset triplets for only 279 of
+  8,750 sounds. They belong to one flute, one clarinet and one trumpet player;
+  no violin triplet exists. It cannot supply independent-player phase evidence
+  for the planned combined note packet. The 13.9-GB audio archive was not
+  acquired: transfer speed made the attempt impractical, and no audio or
+  presence scorer ran. Stop this source route for criterion 3; no credit.
 - 2026-09-23 reference-scope audit: the maintained `ReferenceReviewed` flag
   asserts a no-instrument rest, while GuitarSet clips 1 and 4 were audible
   `other_noise` and establish only no identified guitar. Their frozen scorer
