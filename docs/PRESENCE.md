@@ -229,3 +229,29 @@ derived from each stem's smoothed envelope and were not manually corrected;
 some stems also contain bleed. Those labels can support a source-contribution
 study but are not independent exact-window judgments of audible instrument
 rest. No MedleyDB audio was acquired or promoted into this task's reference.
+
+## Full-recording isolated-stem source gate stopped — 2026-09-23
+
+One prospective Pascal source screen used the entire 92.79-second isolated
+flute track of URMP `14_Waltz_fl_fl_cl`, not a short excerpt. The ignored
+`build/presence-full-recording/POLICY.md` froze work identity, 250-ms grid,
+50-ms note interiors, 500-ms rest halos, companion F0 requirements, PCM
+RMS/peak gates, score rule and stop condition before PCM scoring. Archive and
+extracted Notes/F0/WAV hashes were bound. The distinct `40_Miserere` work was
+reserved for independent use only after a development pass and remains unopened.
+
+The 351 full-recording windows yielded 70 strong positive labels. Only five
+windows had a note-free rest halo; three also had curator-zero F0 throughout
+that halo. All three failed the fixed acoustic rest gate: their RMS values were
+0.011170712, 0.009277533 and 0.010878819, versus the predeclared maximum
+0.0001; peaks were 0.018951416, 0.022125244 and 0.018920898 versus 0.001.
+The result is **zero qualified rest windows**, no nonzero rest reference, and
+no presence score. A zero F0 annotation in this source is not evidence that
+the PCM contains no audible instrument. No threshold, stem, gain or window was
+changed after this result. The exact source, policy and 351-row report remain
+ignored under `build/presence-full-recording/`. Salty Boi's checked stable
+Win64 QA reproduced the report twice byte-identically (SHA-256
+`ae07a08fa40fd68176ac31a2dde5cb45af7b69e35a998d1a71891d2a4b0cca4f`),
+with zero unfreed blocks and no source-gate/scorer mismatch. No task criterion
+or credit closes. The original-to-derived timing transformation remains
+nominal, so the screen supports no exact release-end claim.

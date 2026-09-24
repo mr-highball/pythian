@@ -75,6 +75,19 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-23 full-recording source gate stopped: a fixed Pascal screen of the
+  complete URMP `14_Waltz` isolated flute stem found 70 source-supported
+  positive windows but no qualified generic-instrument rest in 351 grid
+  windows. Five windows were note-free through the fixed rest halo; three
+  also had zero companion F0, but their PCM RMS was 0.0093–0.0112, at least
+  92 times the frozen 0.0001 rest ceiling. The development source gate failed
+  before presence scoring; reserved `40_Miserere` and held-out `03_Dance`
+  remain unopened. See [full-recording gate](../PRESENCE.md#full-recording-isolated-stem-source-gate-stopped--2026-09-23).
+  Together with the Good-sounds metadata stop, this is two nonclosing
+  source-level batches. Reassess the source strategy: require actual
+  no-instrument acoustic support, not note/F0 absence or another same-data
+  window search. Do not retune this source, and leave criterion 3 open with
+  no credit.
 - 2026-09-23 recording-level source gate: publisher Good-sounds 1.1 metadata
   has manual phase fields, but a private Pascal scan of checksum-matched
   metadata found complete attack/release/offset triplets for only 279 of

@@ -409,6 +409,11 @@ source identity, known errors, acoustic positive/rest evidence and untouched
 evaluation groups at the recording level. Do not request routine 250-ms source
 labels from the user. If a source cannot support the needed claims, stop it
 before another scorer variant; preserve the failed evidence.
+The Good-sounds metadata and full-recording URMP Waltz gates have now both
+stopped before a usable no-instrument reference. The next source strategy must
+bind actual no-instrument acoustics independently of note/F0 gaps; no further
+window search in either stopped source is scheduled. The reserved URMP
+Miserere work and independent phrase recordings remain untouched.
 
 Then complete [register identity](TODO/NS-3_notes_01.md) and
 [presence](TODO/NS-3_notes_05.md), followed by

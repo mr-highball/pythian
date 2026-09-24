@@ -13,6 +13,30 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Full-recording presence source stop — 2026-09-23
+
+The next bounded source-level gate used the complete isolated URMP Waltz flute
+track under a policy fixed before scoring. Checked Pascal inspected 351
+nonoverlapping 250-ms windows across the 92.79-second source. Seventy met
+the positive annotation and PCM gates; no window met the independent
+no-instrument rest gate. Of five note-free halo windows, three also had zero
+F0 throughout, but their PCM RMS was 0.0093–0.0112 against a frozen 0.0001
+rest maximum. No `pythian.presence` score ran. The independent Miserere work
+was not opened. Exact identities, clock limits and the untracked result are
+in [PRESENCE](PRESENCE.md#full-recording-isolated-stem-source-gate-stopped--2026-09-23).
+Salty Boi's focused checked Win64 QA matched two complete report replays to
+SHA-256 `ae07a08fa40fd68176ac31a2dde5cb45af7b69e35a998d1a71891d2a4b0cca4f`
+with zero unfreed blocks and confirmed the source gate prevented scoring.
+
+This and the Good-sounds metadata stop are two consecutive source-level batches
+without a qualified combined reference. Stop both source routes. The changed
+prerequisite is a recording or controlled capture with independently supported
+**actual no-instrument acoustics** and work-disjoint positives; note/F0 gaps
+alone cannot supply the generic rest contract. Keep any unavailable exact
+window `unknown`, do not ask the user for more routine source labels, and
+continue a different ready core task while this source gate remains open.
+NS-3_notes_05 criterion 3 and the 68.65% total do not change.
+
 ## Substantial generated development preview — 2026-09-23
 
 The previous source packet gate did not close recorded note admission, so the
