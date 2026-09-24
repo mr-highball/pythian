@@ -12304,3 +12304,27 @@ bounded source qualification should either supply independently attributable
 pulse evidence for a prospective candidate-pool decision or stop without
 retuning. This is a change of core prerequisite after the composition stop,
 not a claim that beat-level selection or corpus style learning has passed.
+
+The selected GMD paired-audio qualification froze two exact performer/session
+disjoint MIDI/WAV pairs and objective clock/onset gates under ignored
+`build/gmd-pulse-audio/POLICY.md`, SHA-256
+`a5a743b3226713356dfdffa92c4d9d6d6dc74f484e99803ef6291003dd84ac2b`.
+The official full archive's HEAD and GET returned the expected
+5,111,599,714-byte length and matching ETag, but its one permitted sequential
+transfer ended with curl exit 56, connection reset, after 3,949,543,424 bytes
+and 371.359 seconds. The incomplete archive has not been opened; no WAV,
+acoustic estimate or beat score was produced. The Pascal qualifier compiled
+checked FPC 3.2.2 Win32/Win64 but was not run. Salty Boi independently
+verified the stop and target outputs. This transport failure closes no
+criterion and leaves overall completion 68.80%.
+
+GMD source-evidence task-flow reassessment: its metadata-only source screen
+and this full-transfer attempt are two consecutive nonclosing batches. The
+next action changes the acquisition method to one byte-range resume from the
+exact preserved 3,949,543,424-byte prefix, conditional on the same object
+generation/ETag and expected Content-Range, followed by the publisher's full
+SHA-256 before any ZIP member opens. Freeze that transport recovery first;
+stop if its identity or final hash fails, with no whole-archive restart loop.
+The original selected pairs, protected splits, Pascal analysis policy and
+ARTBeaT candidate failures stay fixed. A passing transport would only enable
+the previously frozen acoustic source qualification, not earn task credit.

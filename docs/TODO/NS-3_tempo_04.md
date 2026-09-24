@@ -49,6 +49,20 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
 
 **Dev Notes:**
 
+- 2026-09-24 the first full GMD paired-audio acquisition stopped at the
+  frozen one-transfer gate. The official 5,111,599,714-byte object returned
+  the expected length and a stable ETag, but the sole sequential HTTP 200
+  download reset after 3,949,543,424 bytes (curl exit 56, 371.359 seconds).
+  No archive member, WAV, beat model or scorer was opened. A Pascal paired
+  qualification tool compiled on checked FPC 3.2.2 Win32/Win64 but was not
+  run; Salty Boi verified the freeze, transfer, target outputs and stop.
+  This is a transport failure, not failed acoustic evidence or task credit.
+  Together with the earlier metadata-only GMD source screen, it is two
+  nonclosing source batches. Reassess to one byte-range resume of the exact
+  preserved prefix under the same object generation/ETag, followed by the
+  publisher's full SHA-256 gate; stop if range identity or final hash fails.
+  This changes the acquisition method, not source selection, acoustic gates
+  or beat-candidate policy. No further whole-archive restart loop follows.
 - 2026-09-23 independent-source screen: a frozen Pascal metadata/MIDI-only
   check of the [official Groove MIDI Dataset](https://magenta.withgoogle.com/datasets/groove)
   found two different-drummer/session
