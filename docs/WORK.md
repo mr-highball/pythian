@@ -12261,3 +12261,16 @@ budget, or claim composition credit. The task remains open at NS-4 97% and
 68.80 overall. The next batch must follow a genuinely different core path,
 with source qualification requiring exact hold-pitch and event/frame
 agreement if source-free WFC is attempted in the future.
+
+Composition task-flow reassessment, 2026-09-24: the continuous-frontier
+source screen and phrase-reset audit closed no criterion; the one frozen
+authored phrase-WFC source failed exact pitch continuity before generation.
+The next bounded batch changes the representation to WFC-selected short
+relative motif/transform choices, with a separately fixed 16-bar form,
+beat and chord grammar projecting exact two-part events. This aims at the
+user's reported note/beat conflicts while retaining the improved pop-free
+native synthesis path. Freeze a prospective policy before any candidate
+scoring, allow one source qualification and one candidate, and stop at the
+first failed gate rather than iterating a source/seed/budget. The deliverable
+is a substantial novel native render and whole-passage listener review if
+all structural gates pass. No criterion is yet closed and no credit changes.

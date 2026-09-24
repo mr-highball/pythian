@@ -137,3 +137,13 @@ accepted composition result.
   Composition acceptance and its full credit remain open. A future source
   qualification must check exact hold-pitch continuity and event-ledger
   agreement with frame tokens before any model preparation.
+- 2026-09-24 reassessment after the invalid-source stop: the earlier
+  continuous-frontier screen and phrase-reset audit closed no composition
+  criterion; the one subsequent frozen authored phrase-WFC source also failed
+  before a candidate. The next bounded batch uses a different representation:
+  learn short relative motif/transform choices with WFC, then project them
+  through a separately fixed form, beat and chord grammar to exact two-part
+  events. Freeze its policy before scoring, run one candidate, and stop on its
+  first source, structural or musical gate failure without retuning. The
+  original positive listener verdict remains required; this reassessment
+  earns no credit.
