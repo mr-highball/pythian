@@ -42,7 +42,12 @@ was opened. A source-local acoustic guitar/no-guitar reference is still needed;
 criterion 3 and task credit remain open. The user's [listening allocation](../WORK.md#listening-effort-and-dataset-quality-direction--2026-09-23)
 puts recorded-label quality on source evidence and reserves their ears mainly
 for Pythian-synthesized outputs. No further routine GuitarSet microclip packet
-is queued for them.
+is queued for them. A subsequent URMP stem control physically added a flute
+source to an otherwise identical violin+clarinet background. Its background
+is not a generic-instrument rest; the first review assertion was rejected,
+and corrected Pascal replay returns `unknown`. This development-only
+source-contribution check supplies no audible or independent accuracy;
+presence criterion 3 stays open.
 
 Note research retains its stopped proposals and progress-checkpoint count.
 

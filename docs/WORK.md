@@ -47,6 +47,46 @@ does not establish an exact-window rest, report the limitation and advance a
 different ready core prerequisite rather than recruit the user as a routine
 dataset annotator. Reserve their next listening review for generated output.
 
+## Stem-supported presence source stop — 2026-09-23
+
+The new dataset-quality path tested physical source contribution without
+asking the user to label more recordings. The fixed, previously exposed URMP
+Nocturne flute source had a valid 250-ms annotated flute-note interior, but a
+checked Pascal annotation screen found no 250-ms flute rest with a half-second
+halo while violin or clarinet covered it in the first 30 seconds. Two exact
+metadata replays stopped before PCM, with zero leaks. No natural source-local
+rest label followed.
+
+A separate prospective control used the same `[35264,39264)` 16-kHz source
+frames from three hash-bound recorded stems. The reference was a fixed
+violin+clarinet background; the candidate added the flute stem to those exact
+background frames. Checked stable Pascal Win32/Win64 verified hashes, geometry,
+nonzero levels, no clipping and sample-wise difference. Background RMS was
+0.008132706; adding flute RMS 0.003010764 raised total RMS only to
+0.008577905 (ratio 1.054741761). The first frozen runner incorrectly marked
+the violin+clarinet comparison window as a reviewed generic-instrument rest.
+That `compatible_with_reviewed_rest` report is invalid: the comparison already
+contains instruments. The corrected Pascal Win32/Win64 replay marks the
+reference unreviewed and produces byte-identical `unknown` reports (SHA-256
+`deb3edfb626e981e113dde70ce053ffeee788ab23d34b6f8f0e89e0972dfdaa7`),
+with zero leaks. This pair verifies a physical source addition and a modest
+mix-RMS change; it is neither a valid generic presence rest comparison nor a
+human-audible or natural-recording accuracy result.
+
+These are two nonclosing batches. Stop this composition without a new window,
+gain or threshold. Reassessment: the next presence reference must be a
+genuine no-instrument rest with independent acoustic support; an omitted part
+under active accompaniment belongs to later part ownership, not this generic
+presence reference. Neither the URMP metadata gap nor the controlled pair
+supplies that rest. Meanwhile follow a different ready core prerequisite
+rather than ask for routine user microclip labels. Criterion 3 and task credit
+remain open.
+
+The published MedleyDB stem-activation route was screened but not acquired:
+its publisher says the activity labels are envelope-derived without manual
+correction, and some stems contain bleed. It does not independently settle
+exact-window audible rest for this task. See [presence evidence](PRESENCE.md#stem-supported-source-contribution-control--2026-09-23).
+
 ## Presence onset stop and fresh player-03 result — 2026-09-23
 
 NS-3_notes_05 criterion 3 lacked a guitar-positive development window and a

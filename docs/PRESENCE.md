@@ -176,3 +176,42 @@ labels, verified source identity and disjoint evaluation groups. Where that
 evidence is absent, retain `unknown` and leave recorded decision acceptance
 open. No synthetic-output listening judgment is inferred from these source
 checks.
+
+## Stem-supported source-contribution control — 2026-09-23
+
+The user-directed source-quality path screened a development-exposed URMP
+Nocturne flute stem. The fixed annotation-only natural-rest screen found a
+250-ms flute-note interior but no 250-ms flute rest with a half-second margin
+and another active instrument in the first 30 seconds. Checked stable Pascal
+stopped before PCM; two exact replays reported zero leaks. This does not
+provide a microphone-style natural rest label.
+
+A distinct controlled pair used the same original 16-kHz frames
+`[35264,39264)` from three hash-bound recorded stems. One window contained
+0.25 times violin and clarinet; the other contained the *identical* background
+plus 0.25 times flute. Native Win32/Win64 verified source identity, no clipping
+and the exact physical addition. The background RMS 0.008132706 and candidate
+RMS 0.008577905 give a 1.054741761 contrast despite scaled flute RMS
+0.003010764. The first runner incorrectly supplied `ReferenceReviewed=True`:
+violin and clarinet in the comparison window make it **invalid as a generic
+instrument rest**. Its rest-compatible report is rejected. Corrected Win32/
+Win64 replay sets `ReferenceReviewed=False` and emits byte-identical `unknown`
+reports (SHA-256
+`deb3edfb626e981e113dde70ce053ffeee788ab23d34b6f8f0e89e0972dfdaa7`),
+with zero leaks. This is a physical contribution check under active background,
+not a valid generic presence score or human-audible miss. The source is exposed
+development material; no independent recorded or phrase result is claimed.
+
+The measured total-RMS change demonstrates that source contribution and
+overall level differ under accompaniment. It does not justify lowering the
+fourfold ratio or treating an omitted part as instrument-free rest. Generic
+presence still needs a separately grounded no-instrument acoustic reference;
+source-specific attribution belongs to later part ownership. Criterion 3
+remains open.
+
+The [MedleyDB publisher's annotation description](https://medleydb.weebly.com/description.html)
+was screened as another possible reference route. Its stem activations are
+derived from each stem's smoothed envelope and were not manually corrected;
+some stems also contain bleed. Those labels can support a source-contribution
+study but are not independent exact-window judgments of audible instrument
+rest. No MedleyDB audio was acquired or promoted into this task's reference.

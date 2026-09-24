@@ -73,6 +73,24 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-23 stem-supported source stop and two-batch reassessment: the fixed
+  URMP Nocturne flute screen found no natural 250-ms rest with a half-second
+  margin and another annotated active instrument in its first 30 seconds.
+  Checked Pascal stopped before PCM, twice with zero leaks. A distinct
+  controlled pair then omitted or added the bound recorded flute stem to the
+  same violin+clarinet background frames. Checked stable Win32/Win64 verified
+  source hashes, geometry, exact difference and levels, emitting identical
+  reports with zero leaks. The added flute raised mix RMS by only 5.47%.
+  The first scorer incorrectly asserted that the violin+clarinet-only window
+  was a reviewed generic-instrument rest; its rest-compatible report is
+  rejected. Corrected Win32/Win64 runs set `ReferenceReviewed=False` and
+  produce identical `unknown` reports with zero leaks. This authored pair is
+  a physical source-contribution check, not valid generic rest or an audible
+  missed-active verdict. Stop this source/window/gain; no ratio sweep. A
+  genuine no-instrument acoustic rest is still needed; source-specific
+  contribution under active accompaniment belongs to later part ownership.
+  Work another ready core prerequisite while this evidence is absent. No
+  task credit.
 - 2026-09-23 user-directed listening reallocation and source-quality gate:
   stop preparing routine third-party source microclips for the user's ears;
   prioritize their review of substantial Pythian-synthesized output. Existing
