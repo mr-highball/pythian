@@ -18,8 +18,9 @@ retains its codec, replay and bounded joint-generation criteria.
 North star: NS-4. Outcome owner: WAV-04-INTEGRATION, core composition prerequisite.
 Completion credit: 1 NS-4 goal percentage point (0.15 overall points),
 reallocated from the original unearned 2-point note-event allocation. Together
-with the note-event task's 1 point and recorded integration's 2 points, the
-open NS-4 allocation remains 4 goal points / 0.60 overall points.
+with the now accepted note-event task's 1 point and recorded integration's
+2 points, the three allocations preserve the original 4 goal points / 0.60
+overall points. Composition and integration retain 3 open NS-4 points.
 Credit is earned only when every acceptance criterion and the task-flow
 completion requirements pass.
 
