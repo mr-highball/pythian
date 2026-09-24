@@ -12486,3 +12486,32 @@ task-flow reassessment allows one candidate under the already prospectively
 fixed form/chord/novelty policy because the source barrier is now removed;
 freeze candidate code and learned model identities first, and stop on any
 candidate gate miss. NS-4 stays 97%; overall completion stays 68.80%.
+
+The one form-conditioned composition candidate then stopped before audio.
+Ticket Guy implemented an ignored Pascal-only candidate and Salty Boi reviewed
+the changed gates. Exact source identities were bound before execution;
+checked Win32/Win64 compiles passed. Prepare-only runs on both targets returned
+zero leaks and identical order-2/open 24-sample model text (209 states,
+104 public tokens; SHA-256
+`f1e4906037e873048057ce24e0f92f026dae3e5ab30c8800498eafd7a89fd2be`),
+prepare report and freeze template. Salty Boi independently checked the
+artifacts and identities. The final candidate Pascal source SHA-256 is
+`0b6a73fb162a3dc7d8725a0b060c3db8ac0751a9ef2372f8b6506a613bcd85b3`;
+the frozen run record and stop evidence are under ignored
+`build/composition-form-provider/`.
+
+One checked Win32 candidate run exited 1 at the A WFC solve:
+`gssContradiction`, one pass, zero backtracks, zero unfreed blocks. No B solve,
+candidate token/event ledger, WAV, Win64 candidate or listener review followed.
+Independent read-only review of the frozen token/model/endpoint contract found
+that every position-0 `beat=00` token exists only at an open-sample BOS start,
+while the frozen `wseFragment` first domain excludes BOS states. This logically
+predicts an empty first domain, though the stop artifact carries no position
+trace. The same-position masks themselves match the plan. This is a failed
+representation/extent policy, not a musical-quality verdict. Respect the
+prospective one-candidate stop: no extent switch, source retune, seed change or
+repeat solve on this route. The batch closes no composition criterion, so
+NS-4 remains 97% and overall completion 68.80%. A future composition attempt
+would need a different token/endpoint representation and a bounded reachability
+preflight; reselect the next core prerequisite through task flow rather than
+cycling another authored composition variant immediately.

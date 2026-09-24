@@ -221,3 +221,27 @@ accepted composition result.
   task-flow checkpoint, the source barrier is removed; the next bounded
   action is one separately frozen A/B WFC composition candidate under the
   existing form/chord/novelty policy, with no source or gate retune.
+- 2026-09-24 the separately frozen form-conditioned candidate under ignored
+  `build/composition-form-provider/` compiled on checked Win32/Win64. Salty Boi
+  reviewed the Pascal gates, including a repaired result-level positional check,
+  serialized event-ledger inversion and final report ordering. The qualified
+  source hashes were bound before execution. Both targets' prepare-only runs
+  produced byte-identical order-2/open model text (24 samples, 209 states,
+  104 public tokens; SHA-256
+  `f1e4906037e873048057ce24e0f92f026dae3e5ab30c8800498eafd7a89fd2be`),
+  prepare report and candidate freeze template, with zero reported heap leaks.
+  The one checked Win32 candidate stopped at its A solve with WFC
+  `gssContradiction`, one pass and zero backtracks. It produced no candidate
+  tokens, events or WAV; B and Win64 candidate were not run. Read-only review
+  identifies an endpoint incompatibility: position-0 tokens are tagged
+  `beat=00` and occur only with open-sample BOS history, while the frozen
+  `wseFragment` extent requires an interior BOS-free starting state. This
+  explains the immediate contradiction from the frozen semantics, although
+  the stop file has no position trace. The masks correctly enforce same-beat
+  source tokens; this is a representation/extent policy defect, not a solver
+  result showing musical insufficiency. Freeze and stop this route without
+  changing extent, tags, source, seed or budget. The source-only and candidate
+  batches close no composition criterion; core task acceptance, whole-passage
+  listening and credit remain open. A future candidate needs a genuinely
+  different representation and an endpoint/path reachability preflight before
+  its one solve; this note does not authorize an in-place retry.
