@@ -182,3 +182,11 @@ checkpoint remains open. No task credit is earned yet.
   source-bound context or grouping contract and prospective musical gates;
   changing sequence order alone would not enforce a one-chord-per-bar rule.
   This review changed no model, candidate or listening status.
+- 2026-09-24 listener update: in a numbered review of the served feedback,
+  the user reports no more popping and a more music-like result, but does not
+  consider it a coherent song. They also hear better harmonization with some
+  conflicting notes and beats. The precise mapping of their items 1 and 2 to
+  the two served filenames is being confirmed; do not attribute a new harmony
+  algorithm to the 5-ms release edit, which changed no pitch or event timing.
+  Treat the pop concern as improved and the musical-coherence gate as open.
+  No task credit or new candidate follows from this verdict alone.

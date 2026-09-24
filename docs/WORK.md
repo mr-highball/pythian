@@ -12046,3 +12046,17 @@ coherence is pursued after the clip-2 listener checkpoint, use an explicit
 source-bound context or grouping contract with frozen gates. Merely increasing
 sequence order does not enforce the authored one-chord-per-bar condition. This
 review changed no code, candidate, audio, task credit or listening status.
+
+The user then reviewed the numbered mobile feedback and reported no more
+popping and a more music-like result, while still judging it short of a coherent
+song. A second numbered observation described better perceived harmonization
+with some conflicting notes and beats. The mapping of items 1 and 2 to the two
+served filenames is under clarification, so this is a paired-review report,
+not a file-specific comparison yet. The revised 5-ms release changed neither
+the generated pitches nor authored event timing; it cannot be credited with a
+new harmonic decision. The audible-pop concern has improved, but musical
+coherence remains an open listener gate in NS-4_note-events_01. The stopped
+unconditioned full-event candidate stays private, and overall credit remains
+68.65. The next bounded generation hypothesis must use explicit harmony
+context and score both novelty and within-context relationships before a user
+handoff.
