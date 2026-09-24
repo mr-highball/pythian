@@ -1,6 +1,6 @@
 # NS-4_note-events_01 — Generate coordinated note events across parts
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-4)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-4)
 
 **Description:**
 
@@ -10,19 +10,26 @@ simultaneous starts, individual note durations and inter-onset gaps. A
 score-conditioned development source may demonstrate the adapter, but this
 task does not claim WAV note extraction, a genre style or original composition
 from recorded audio. The recorded workflow remains with
-[NS-4_integration_01](NS-4_integration_01.md).
+[NS-4_integration_01](../NS-4_integration_01.md). The original substantial
+full-event render, its deterministic artifact evidence and listener verdict
+are transferred in full to [NS-4_composition_01](../NS-4_composition_01.md),
+which also requires a positive coherence verdict. This task owns the bounded
+exact event adapter and generation contract.
 
 North star: NS-4. Outcome owner: WAV-04-INTEGRATION.
-Completion credit: 2 NS-4 goal percentage points (0.30 overall points),
-reallocated from the original unearned 4-point NS-4_integration_01. The two
-open tasks retain the same 4 NS-4 points / 0.60 overall points.
+Completion credit: 1 NS-4 goal percentage point (0.15 overall points),
+reallocated from the original unearned 4-point NS-4_integration_01. The
+separate [composition checkpoint](../NS-4_composition_01.md) owns the other
+1 point from this task's former 2-point allocation; recorded integration
+retains 2 points. These three allocations retain the same original 4 NS-4
+points / 0.60 overall points; only this accepted 1 point has been earned.
 Credit is earned only when every acceptance criterion and the task-flow
 completion requirements pass.
 
-Starting evidence: [exact-score two-part control](../WORK.md#substantial-generated-development-preview--2026-09-23),
-[layer contracts](../INDEPENDENT-VOICES.md),
-[native note sequence](../../src/pythian.music.pas),
-[existing acoustic-event adapter](../../adapters/wfc/pythian.wfc.events.pas).
+Starting evidence: [exact-score two-part control](../../WORK.md#substantial-generated-development-preview--2026-09-23),
+[layer contracts](../../INDEPENDENT-VOICES.md),
+[native note sequence](../../../src/pythian.music.pas),
+[existing acoustic-event adapter](../../../adapters/wfc/pythian.wfc.events.pas).
 The first private 1,024-cell pitch-set WFC diagnostic stopped at a 40,424-frame
   training-grid displacement before its solve. Its ignored
   `build/score-wfc-two-part/PLAN.md` and `RESULT.md` retain the fixed attempt.
@@ -32,16 +39,39 @@ Acoustic event symbols currently carry palette index, duration class and onset
 flag, but no part identity or inter-onset delta; acoustic indices must not be
 reinterpreted as MIDI pitches.
 
-Phase-one progress 2026-09-24: maintained
+Completion evidence 2026-09-24: maintained
 `adapters/wfc/pythian.wfc.note.events.pas` now encodes/decodes exact one-tick
 joint onset bundles and sidecar clock/extent metadata. The focused Pascal
 consumer covers two-part overlap, same-pitch retriggers, gaps, empty phrases,
 all note fields, canonical token replay and failure preservation. Salty Boi's
 independent checked FPC 3.2.2 Win32/Win64 QA passed with zero leaks, and the
-test is wired into the WFC build path. This closes the source-free codec
-substep, not the task. A later maintained full-event WFC path and a private
-30-second score-timed pitch render now pass engineering QA below; the listener
-checkpoint remains open. No task credit is earned yet.
+test is wired into the WFC build path. The companion maintained
+`pythian.wfc.note.events.generation` learns separated source sequences,
+retains exact clock and part metadata, generates and decodes full joint event
+paths transactionally, and rejects incompatible tempo or output extent.
+Its frozen two-source order-2/seed-731 fixture produced six bundles and seven
+gates with both parts active, one cross-part overlap, retrigger, rest and
+unequal durations. The ordered `(onset,pitch,duration)` comparison differs
+from source 0 by one tuple in each part and from source 1 by one bass tuple;
+source 1's melody projection is an exact replay. Both complete source paths
+therefore differ from the output, without claiming every part is new against
+every source. The comparison also records canonical per-part SHA-256 hashes.
+Focused checked FPC 3.2.2 Win32/Win64 compile/run output matched with zero
+unfreed blocks; the Win32/Win64 run-log hashes are
+`878f313e760048e7b450de30285c5e0920b70ee251d2f576f9d718eff4f0da06`
+and `a4680442635d070faf3edef666d73d7dd36b055ab9fb89078d989fb784a41cb6`.
+The focused command compiled `tests/pythian.tests.note.events.generation.lpr`
+with checked `-B -gh -Sa -Cr -Co -Ci -gl` and the core/WFC source paths using
+the verified Win32 `fpc.exe` and Win64 `ppcrossx64.exe`, then ran each target
+executable. The consumer SHA-256 is
+`3a5e81d65230267820b67ddc155d3afb60dd6532666dca11d824eae1b3cdfa44`.
+Salty Boi independently passed this per-part comparison and the source
+bindings. Exact per-part generated hashes are
+`8119c16b2188e7f544e3faa713a8e67e289e7a4c4b5690299dee2400d5aa12bb`
+and `ad8fec2773ea4fd64c6f64b7a3d6bbc187c5ff2916eb8e7346508c9fb0953d0f`.
+The accepted result is an adapter and bounded source-free generation control,
+not a substantial rendered passage, a coherent original composition or
+recorded-WAV note learning.
 
 **Acceptance Criteria:**
 
@@ -65,17 +95,9 @@ checkpoint remains open. No task credit is earned yet.
   each part. Require nontrivial activity and simultaneous overlap so silence
   cannot satisfy novelty. One fixed candidate may use the already exposed
   first 30 seconds of Spring publisher Notes; protect untouched source groups.
-- Render a substantial two-part native WAV through the accepted voice path
-  when the fixed structural gates pass. Record source/model/token/WAV hashes,
-  exact learned-versus-authored contributions, deterministic checked-target
-  replay, focused failure preservation and Salty Boi QA. Obtain a listener
-  verdict on pitch/timing coherence and preserve any failure honestly; this
-  task establishes the adapter and bounded generated checkpoint, not the
-  broader recorded-WAV or genre-quality acceptance.
-
 **Blockers**
 
-- [NS-4_layers_04.md](DONE/NS-4_layers_04.md)
+- [NS-4_layers_04.md](NS-4_layers_04.md)
 
 **Dev Notes:**
 
@@ -214,3 +236,33 @@ checkpoint remains open. No task credit is earned yet.
   representation before a maintained API change or listening candidate.
   Next pursue separate harmony/rhythm/part choices with exact note-event
   ownership and a prospective substantial-novelty gate. No credit changes.
+- 2026-09-24 independent QA narrowed that preflight's novelty claim further.
+  Its frozen comparison was against authored bars **with the same chord
+  context**. The sole Am-context novel path exactly repeats an authored C bar;
+  one of the three F-context novel paths exactly repeats an authored Am bar.
+  Against the union of all authored complete bars, only two F-context paths
+  remain new, and both repeat the authored F melody while changing one bass
+  note. The written same-context gate still passes, but it cannot support a
+  claim of globally novel bars in two contexts or of new two-part melody.
+  Keep the local-bar representation stopped with no listening or credit.
+- 2026-09-24 one separately frozen source-free modular named-voice candidate
+  under ignored `build/joint-voice-graph/` tried independent harmony, rhythm
+  and part passes over 128 cells, with the exact two-part event codec as its
+  output contract. Checked Win32/Win64 model and graph construction passed
+  with zero leaks. The single fixed seed-1731 Win32 solve returned false before
+  note-event gates or WAV rendering. Its first diagnostic printed invalid
+  status/pass integers because a Pascal `Require` call formatted an output
+  report in the same argument list as `TryGenerate`; argument evaluation order
+  is unspecified. One frozen, audit-only same-seed replay separated those
+  statements without changing model, seed or budget. It captured a pass-2
+  adjacency contradiction and the configured 32 per-pass backtrack limit;
+  it does not prove the graph unsatisfiable. No generated tokens, listening
+  clip or task credit resulted. Stop this 128-cell modular candidate under
+  its fixed budget rather than retuning it in place.
+- 2026-09-24 the task-flow split transferred the original substantial
+  full-event render/listener criterion in full to
+  [NS-4_composition_01](../NS-4_composition_01.md). This adapter task retains
+  its three source-free codec, exact replay and bounded joint-generation
+  criteria. The prior 30-second score-timed pitch clip and stopped private
+  full-event candidates remain useful failure evidence, not acceptance of
+  the distinct composition task.

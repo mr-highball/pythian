@@ -28,9 +28,12 @@ program pythian_tests_note_events_generation;
 {$apptype console}
 
 uses
+  Math,
   SysUtils,
+  pythian.audio,
   pythian.music,
   pythian.time,
+  pythian.hash,
   pythian.wfc.generation,
   pythian.wfc.note.events,
   pythian.wfc.note.events.generation,
@@ -43,6 +46,128 @@ const
   COutputBundles = 6;
   COutputExtent = 90;
   CStateBudget = 1048576;
+
+type
+  TPartEvent = record
+    Onset: Integer;
+    Pitch: Integer;
+    Duration: Integer;
+  end;
+  TPartEvents = array of TPartEvent;
+
+function SamePartEvent(const ALeft, ARight: TPartEvent): Boolean;
+begin
+  Result := (ALeft.Onset = ARight.Onset) and
+    (ALeft.Pitch = ARight.Pitch) and
+    (ALeft.Duration = ARight.Duration);
+end;
+
+function PartEvents(const ASequence: TNoteSequence;
+  const AVoice: Integer): TPartEvents;
+var
+  LCount: Integer;
+  LIndex: Integer;
+  LGate: TNoteGate;
+  LInsert: Integer;
+  LValue: TPartEvent;
+begin
+  Result := nil;
+  LCount := 0;
+  for LIndex := 0 to ASequence.NoteCount - 1 do
+    if ASequence.GateAt(LIndex).Voice = AVoice then
+      Inc(LCount);
+  SetLength(Result, LCount);
+  LCount := 0;
+  for LIndex := 0 to ASequence.NoteCount - 1 do
+  begin
+    LGate := ASequence.GateAt(LIndex);
+    if LGate.Voice = AVoice then
+    begin
+      Result[LCount].Onset := LGate.StartTick;
+      Result[LCount].Pitch := LGate.Pitch;
+      Result[LCount].Duration := LGate.EndTick - LGate.StartTick;
+      Inc(LCount);
+    end;
+  end;
+  for LIndex := 1 to High(Result) do
+  begin
+    LValue := Result[LIndex];
+    LInsert := LIndex;
+    while (LInsert > 0) and
+      ((Result[LInsert - 1].Onset > LValue.Onset) or
+       ((Result[LInsert - 1].Onset = LValue.Onset) and
+        (Result[LInsert - 1].Pitch > LValue.Pitch)) or
+       ((Result[LInsert - 1].Onset = LValue.Onset) and
+        (Result[LInsert - 1].Pitch = LValue.Pitch) and
+        (Result[LInsert - 1].Duration > LValue.Duration))) do
+    begin
+      Result[LInsert] := Result[LInsert - 1];
+      Dec(LInsert);
+    end;
+    Result[LInsert] := LValue;
+  end;
+end;
+
+function OrderedEventEditDistance(const AGenerated,
+  ASource: TPartEvents): Integer;
+var
+  LDistance: array of array of Integer;
+  LRow: Integer;
+  LColumn: Integer;
+  LSubstitution: Integer;
+begin
+  SetLength(LDistance, Length(AGenerated) + 1);
+  for LRow := 0 to High(LDistance) do
+    SetLength(LDistance[LRow], Length(ASource) + 1);
+  for LRow := 0 to Length(AGenerated) do
+    LDistance[LRow][0] := LRow;
+  for LColumn := 0 to Length(ASource) do
+    LDistance[0][LColumn] := LColumn;
+  for LRow := 1 to Length(AGenerated) do
+    for LColumn := 1 to Length(ASource) do
+    begin
+      LSubstitution := 0;
+      if not SamePartEvent(AGenerated[LRow - 1], ASource[LColumn - 1]) then
+        LSubstitution := 1;
+      LDistance[LRow][LColumn] := Min(
+        LDistance[LRow - 1][LColumn] + 1,
+        Min(LDistance[LRow][LColumn - 1] + 1,
+          LDistance[LRow - 1][LColumn - 1] + LSubstitution));
+    end;
+  Result := LDistance[Length(AGenerated)][Length(ASource)];
+end;
+
+function CanonicalPartBytes(const AEvents: TPartEvents): TAudioBytes;
+var
+  LText: String;
+  LIndex: Integer;
+begin
+  Result := nil;
+  LText := '';
+  for LIndex := 0 to High(AEvents) do
+    LText := LText + IntToStr(AEvents[LIndex].Onset) + ',' +
+      IntToStr(AEvents[LIndex].Pitch) + ',' +
+      IntToStr(AEvents[LIndex].Duration) + #10;
+  SetLength(Result, Length(LText));
+  for LIndex := 1 to Length(LText) do
+    Result[LIndex - 1] := Byte(Ord(LText[LIndex]));
+end;
+
+procedure ReportPartComparison(const AGenerated, ASource: TNoteSequence;
+  const ASourceIndex, AVoice: Integer; out AChangeCount: Integer);
+var
+  LGeneratedEvents: TPartEvents;
+  LSourceEvents: TPartEvents;
+begin
+  LGeneratedEvents := PartEvents(AGenerated, AVoice);
+  LSourceEvents := PartEvents(ASource, AVoice);
+  AChangeCount := OrderedEventEditDistance(LGeneratedEvents, LSourceEvents);
+  WriteLn(Format(
+    'source_%d_part_%d generated_count=%d source_count=%d ordered_tuple_edit_distance=%d generated_sha256=%s source_sha256=%s',
+    [ASourceIndex, AVoice, Length(LGeneratedEvents), Length(LSourceEvents),
+     AChangeCount, Sha256Bytes(CanonicalPartBytes(LGeneratedEvents)),
+     Sha256Bytes(CanonicalPartBytes(LSourceEvents))]));
+end;
 
 procedure Check(const ACondition: Boolean; const AMessage: String);
 begin
@@ -327,6 +452,9 @@ var
   LPreviousReplay: TNoteSequence;
   LPreviousFailure: TNoteSequence;
   LFailureMessage: String;
+  LPartAChanges: Integer;
+  LPartBChanges: Integer;
+  LChangedSourceCount: Integer;
 begin
   LModel := nil;
   LFirst := nil;
@@ -367,6 +495,9 @@ begin
       Check((Length(LReport.GeneratedTokens) = COutputBundles) and
         (LFirst.NoteCount >= 7) and (LFirst.NoteCount <= 9),
         'Generated event activity lies outside fixture bounds');
+      Check((Length(PartEvents(LFirst, 0)) > 0) and
+        (Length(PartEvents(LFirst, 1)) > 0),
+        'Generated sequence lacks activity in one of the two parts');
       Check(BundleDelta(LReport.GeneratedTokens[0]) = 0,
         'Whole-passage source-free fixture should begin with the zero-delta token');
       for LIndex := 1 to High(LReport.GeneratedTokens) do
@@ -392,11 +523,23 @@ begin
         'Canonical replay changed explicit clock or part metadata');
       LReplay := DecodeJointNoteEvents(LPath);
       Check(SameSequence(LFirst, LReplay), 'Canonical decoded replay differs from generated events');
-      LIsNew := not SameAsInput(LReport.GeneratedTokens, LSamples);
-      if LIsNew then
-        WriteLn('generated_path=new joint-event branch combination')
-      else
-        WriteLn('generated_path=exact source fragment');
+      LChangedSourceCount := 0;
+      for LIndex := 0 to High(LSamples) do
+      begin
+        ReportPartComparison(LFirst, LSamples[LIndex], LIndex, 0,
+          LPartAChanges);
+        ReportPartComparison(LFirst, LSamples[LIndex], LIndex, 1,
+          LPartBChanges);
+        if (LPartAChanges > 0) or (LPartBChanges > 0) then
+          Inc(LChangedSourceCount);
+      end;
+      LIsNew := LChangedSourceCount = Length(LSamples);
+      Check(LIsNew,
+        'Generated ordered part streams replay at least one complete source sample');
+      WriteLn('generated_path=new joint-event branch combination; changed_sources=',
+        LChangedSourceCount,
+        '; compared_parts=onset,pitch,duration; change_metric=ordered Levenshtein distance; activity=both_parts; overlap=',
+        CountSimultaneousCrossPartOnsets(LFirst));
 
       LPreviousReplay := LReplay;
       Check(TryGenerateJointNoteEventSequence(LModel, LOptions,

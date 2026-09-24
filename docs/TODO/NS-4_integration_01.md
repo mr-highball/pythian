@@ -8,9 +8,10 @@ Connect accepted WAV musical providers to saved semantic styles, actual modular 
 
 North star: NS-4. Outcome owner: WAV-04-INTEGRATION.
 Completion credit: 2 goal percentage points (0.30 overall points), after
-reallocating 2 of the original unearned 4 NS-4 points to
-[NS-4_note-events_01](NS-4_note-events_01.md). Both tasks retain the original
-4 NS-4 points / 0.60 overall points; no new completion credit was created.
+reallocating the other 2 original unearned NS-4 points between
+[NS-4_note-events_01](DONE/NS-4_note-events_01.md) and
+[NS-4_composition_01](NS-4_composition_01.md). The three tasks retain the
+original 4 NS-4 points / 0.60 overall points; no new credit was created.
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [WAV-LEARNING](../WAV-LEARNING.md) · [INDEPENDENT-VOICES](../INDEPENDENT-VOICES.md) · [LAYERED-STYLE](../LAYERED-STYLE.md).
@@ -25,7 +26,7 @@ Starting evidence: [WAV-LEARNING](../WAV-LEARNING.md) · [INDEPENDENT-VOICES](..
 
 **Blockers**
 
-- [NS-4_note-events_01.md](NS-4_note-events_01.md)
+- [NS-4_note-events_01.md — DONE](DONE/NS-4_note-events_01.md)
 - [NS-4_styles_02.md](DONE/NS-4_styles_02.md)
 - [NS-4_layers_04.md](DONE/NS-4_layers_04.md)
 - [NS-3_context_02.md](NS-3_context_02.md)
@@ -43,6 +44,6 @@ Starting evidence: [WAV-LEARNING](../WAV-LEARNING.md) · [INDEPENDENT-VOICES](..
   sampled active-pitch representation loses retrigger ownership, and the
   existing acoustic-event token lacks part and onset-delta semantics. The
   distinct maintained note-event adapter is split into
-  [NS-4_note-events_01](NS-4_note-events_01.md) as a prerequisite. Recorded
+  [NS-4_note-events_01](DONE/NS-4_note-events_01.md) as a prerequisite. Recorded
   providers, selective styles and broad audio workflow acceptance remain
   here; neither task earned credit from the split.

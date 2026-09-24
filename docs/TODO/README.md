@@ -12,8 +12,8 @@ keeps the three user-selected styles as development tests, while reusable core
 behavior takes priority when detailed style review is waiting on evidence.
 This catalog covers the remaining declared end state. Task files own acceptance
 criteria and hard prerequisites; this page supplies navigation and accounting.
-No task earns credit merely by being written. Accepted task credit is **13.15**;
-**31.35 overall points remain**. Baseline 55.5 + accepted 13.15 = **68.65 current**.
+No task earns credit merely by being written. Accepted task credit is **13.30**;
+**31.20 overall points remain**. Baseline 55.5 + accepted 13.30 = **68.80 current**.
 
 The [pause retrospective](../WORK.md#pause-retrospective--2026-09-21) tightens
 existing note, presence, mixture and style-reference criteria without adding
@@ -66,10 +66,10 @@ unless also declared under Blockers; required gaps still follow
 | [NS-1 — Independent Pascal foundation](../MILESTONES.md#ns-1) | 100% | 0 | 0 | 0.00 |
 | [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 100% | 0 | 0 | 0.00 |
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 41% | 16 | 59 | 14.75 |
-| [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 96% | 2 | 4 | 0.60 |
+| [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 97% | 2 | 3 | 0.45 |
 | [NS-5 — Many-hour styles that generate and blend usefully](../MILESTONES.md#ns-5) | 27% | 16 | 73 | 14.60 |
 | [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 72% | 3 | 28 | 1.40 |
-| **Total** | **68.65 weighted points** | **37** | Per-goal credits are not summed across goals | **31.35** |
+| **Total** | **68.80 weighted points** | **37** | Per-goal credits are not summed across goals | **31.20** |
 
 NS-1 is already complete under the accepted extraction scope. Preserve its
 invariants in every applicable task; do not recreate completed extraction work.
@@ -104,7 +104,7 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 
 | Task file and outcome | Goal credit | Overall credit | State |
 | --- | ---: | ---: | --- |
-| [NS-4_note-events_01.md](NS-4_note-events_01.md) — Generate coordinated note events across parts | +2 | +0.30 | TODO |
+| [NS-4_composition_01.md](NS-4_composition_01.md) — Generate a coherent original passage | +1 | +0.15 | TODO |
 | [NS-4_integration_01.md](NS-4_integration_01.md) — Deliver the recorded WAV-to-style-to-audio workflow | +2 | +0.30 | TODO |
 
 ### NS-5 — Many-hour styles that generate and blend usefully
@@ -150,6 +150,7 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 | [NS-4_styles_01.md](DONE/NS-4_styles_01.md) | Saved semantic graphs, joint evidence and original-coordinate derivative audits; source/derived replay | +4 NS-4 | +0.60 |
 | [NS-4_layers_04.md](DONE/NS-4_layers_04.md) | Staged durations and dependent context, protected native stream state and exact rejected-edit rollback | +4 NS-4 | +0.60 |
 | [NS-4_styles_02.md](DONE/NS-4_styles_02.md) | Independent semantic/sound blends, canonical repeated evidence, complete reblend lineage and preserved unrelated states | +4 NS-4 | +0.60 |
+| [NS-4_note-events_01.md](DONE/NS-4_note-events_01.md) | Exact owned joint-event codec and bounded WFC generation; per-part replay/novelty and two-target checked QA | +1 NS-4 | +0.15 |
 | [NS-3_parts_04.md](DONE/NS-3_parts_04.md) | Maintained per-role and interval scorers, reference builder and reproducible authored controls; all five criteria and current tested identities verified | +1 NS-3 | +0.25 |
 | [NS-3_parts_01.md](DONE/NS-3_parts_01.md) | Qualified initial families plus curator acoustic references; complete source/uncertainty ledger and reproducible relocated scoring | +1 NS-3 | +0.25 |
 | [NS-3_validation_03.md](DONE/NS-3_validation_03.md) | Checked Pascal sparse peak backend, replay and source-bound Spring recall/density gates | +2 NS-3 | +0.50 |
@@ -164,14 +165,13 @@ the accepted external reference packet earns the other point. Actual role
 learning still depends on accepted note primitives through
 [NS-3_notes_03](NS-3_notes_03.md), following register and presence/boundary work.
 
-Current selected core path is the recording-grouped note evidence packet for
-`NS-3_notes_01` and `NS-3_notes_05`, then `NS-3_notes_02` and
-`NS-3_notes_03` in prerequisite order, toward a substantial generated-audio
-checkpoint. The 30-second development render failed the user's musical
-listening checkpoint, and three distinct source screens then failed to qualify
-the needed acoustic rest before scoring. Stop those source/window routes;
-keep the reference criterion open and choose a different ready core work batch
-without changing blockers or credit. The separate context chain remains
+Current selected core path follows the accepted exact joint-event adapter into
+[NS-4_composition_01](NS-4_composition_01.md), whose substantial native
+passage and positive coherence verdict are still open. Recorded note learning
+remains in `NS-3_notes_01`/`NS-3_notes_05`, then `NS-3_notes_02` and
+`NS-3_notes_03` in prerequisite order. Three prior source screens failed to
+qualify the needed acoustic rest; those source/window routes remain stopped.
+The separate context chain remains
 accepted `NS-3_context_03` ->
 `NS-3_context_01` -> `NS-3_context_02`, with independent timing acceptance
 also required for the last task. The style-card path remains open for grounded
@@ -224,7 +224,7 @@ first accepted genre is predetermined.
 24. [NS-4_layers_04.md — DONE](DONE/NS-4_layers_04.md)
 25. [NS-4_styles_01.md — DONE](DONE/NS-4_styles_01.md)
 26. [NS-4_styles_02.md — DONE](DONE/NS-4_styles_02.md)
-27. [NS-4_note-events_01.md](NS-4_note-events_01.md), then [NS-4_integration_01.md](NS-4_integration_01.md)
+27. [NS-4_note-events_01.md — DONE](DONE/NS-4_note-events_01.md), then [NS-4_composition_01.md](NS-4_composition_01.md) and [NS-4_integration_01.md](NS-4_integration_01.md)
 28. [NS-5_corpus_01.md — DONE](DONE/NS-5_corpus_01.md)
 29. [NS-5_evaluation_01.md](NS-5_evaluation_01.md)
 30. [NS-5_corpus_02.md](NS-5_corpus_02.md)

@@ -11878,7 +11878,7 @@ class and onset flag but no explicit part ID or inter-onset delta. It cannot
 directly represent two-part note gates without conflating acoustic clusters
 with pitches. The task-flow gap process therefore split the original 4 unearned
 NS-4_integration_01 goal points into 2 for a new maintained
-[NS-4_note-events_01](TODO/NS-4_note-events_01.md) adapter and 2 retained for
+[NS-4_note-events_01](TODO/DONE/NS-4_note-events_01.md) adapter and 2 retained for
 [NS-4_integration_01](TODO/NS-4_integration_01.md). The new task owns joint
 onset bundles, per-note duration and part, onset deltas, retriggers, exact
 round-trip and bounded WFC generation. This is a changed core deliverable,
@@ -12097,3 +12097,78 @@ publishing audio. The next implementation path must coordinate independently
 generated harmony, rhythm and part choices while retaining exact event gates,
 source timing and a prospectively fixed novelty/coherence gate. This is a
 bounded decision, not acceptance of NS-4_note-events_01 or new task credit.
+
+Independent QA found a narrower limit in that preflight. Its frozen novelty
+comparison was only against authored bars carrying the **same chord label**.
+The Am-context new path repeats an authored C bar exactly, and one F-context
+new path repeats an authored Am bar. Across all authored complete bars, only
+two F-context paths are new; each keeps the F-authored melody and changes one
+bass note. The preflight's written same-context PASS remains valid, but the
+earlier two-context wording does not establish globally new material in two
+contexts. This strengthens the stop decision and earns no credit.
+
+One separately frozen modular named-voice candidate then tested a different
+32-second source-free route under ignored `build/joint-voice-graph/`. It used
+the maintained harmony, joint rhythm and named part graph, with exact
+two-part event codec output and prospectively fixed novelty/coherence gates.
+Checked Win32/Win64 source/model/128-cell graph construction passed with zero
+leaks. The one seed-1731 Win32 solve returned false before any output gate or
+WAV. Its initial `status=190` and pass number were invalid: a Pascal call
+formatted the output report in the same argument list that invoked
+`TryGenerate`, so evaluation order could read uninitialized fields. A frozen
+audit-only same-seed replay changed only report sequencing and recovered the
+actual stop: an adjacency contradiction in pass 2 reached the configured
+32 per-pass backtrack limit. This is a budgeted solve failure, not proof that
+the graph has no solution. No token sequence or listening clip was produced.
+Stop this candidate without budget, seed or source retuning. NS-4_note-events_01
+and overall credit remain open at 68.65 pending the task-flow checkpoint.
+
+Task-flow checkpoint after the bar-local and modular source-free batches:
+neither closed the substantial full-event checkpoint in NS-4_note-events_01.
+The bar-local representation offers only two globally new complete bars in
+one context, both with the authored melody. The modular 128-cell graph stopped
+under its fixed per-pass budget before producing event choices. Do not repeat
+either plan with a changed seed, order, budget or source and count it as
+progress. Salty Boi independently verified the source bindings, checked runs,
+bar novelty correction, invalid initial diagnostic and audit-only stop.
+
+At the pre-acceptance checkpoint, the original note-event task asked for a
+bounded generated/rendered example
+and an honestly recorded listener verdict; it does not require a positive
+coherence verdict. Its engineering fixture is too short to satisfy the
+substantial render, while the score-timed 30-second clip does not demonstrate
+new onsets or durations from the maintained full-event adapter. The task
+remained open pending its bounded adapter deliverable or a criterion split.
+The user's distinct demand
+for a genuinely coherent original passage now has its own positive gate in
+`NS-4_composition_01`, with 1 NS-4 point transferred from the note-event
+task's former 2-point allocation. The note-event task retains 1 and recorded
+integration retains 2; at that split NS-4 remained 96% and overall credit
+remained 68.65.
+The new composition task follows the adapter; it does not make personal style
+tests or recorded-source inference a core prerequisite.
+
+Accepted bounded adapter checkpoint, 2026-09-24: the task-flow split moved
+NS-4_note-events_01's entire substantial full-event WAV, deterministic
+artifact/QA and listener criterion to NS-4_composition_01, which also requires
+a positive coherence verdict. The retained adapter criteria are exact
+two-part event ownership, loss-aware source replay and bounded actual joint
+WFC generation. Ticket Guy extended the maintained Pascal focused consumer
+without changing its fixed two-sample model, order-2 seed 731 or generator.
+Its generated seven-gate/six-bundle output differs from source 0 by one ordered
+`(onset,pitch,duration)` tuple in each part; against source 1 the bass differs
+by one tuple while the melody exactly replays that source's projection. Both
+parts are active, one cross-part simultaneous onset survives, and the prior
+retrigger/rest/unequal-duration, clock, deterministic replay and failure
+preservation checks still pass. Canonical generated part hashes are
+`8119c16b2188e7f544e3faa713a8e67e289e7a4c4b5690299dee2400d5aa12bb`
+and `ad8fec2773ea4fd64c6f64b7a3d6bbc187c5ff2916eb8e7346508c9fb0953d0f`.
+Checked FPC 3.2.2 Win32/Win64 focused runs match with zero leaks; the run-log
+hashes are `878f313e760048e7b450de30285c5e0920b70ee251d2f576f9d718eff4f0da06`
+and `a4680442635d070faf3edef666d73d7dd36b055ab9fb89078d989fb784a41cb6`.
+Salty Boi independently accepted the per-part projection evidence and scope.
+[NS-4_note-events_01](TODO/DONE/NS-4_note-events_01.md) moved to DONE and earned
+1 NS-4 point / 0.15 overall: NS-4 is 97%, overall completion 68.80%, and
+37 tasks remain open. This acceptance claims a bounded Pascal event adapter,
+not a rendered original song, positive listening, or recorded-WAV inference.
+The next selected deliverable is [NS-4_composition_01](TODO/NS-4_composition_01.md).
