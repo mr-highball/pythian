@@ -439,10 +439,21 @@ and stumbling over notes throughout, in both pitch and timing. It is a failed
 musical checkpoint, so
 another longer render or timbre change is not the next remedy; recorded-note
 admission remains the governing prerequisite.
-A checked Pascal comparison has now prepared direct and WFC-generated native
-renders from the published note annotations of the same exposed development
-excerpt. The user's paired listening verdict is pending; this reference-fed
-diagnostic does not close automatic admission or phrase gates.
+A checked Pascal comparison prepared direct and WFC-generated native renders
+from the published note annotations of the same exposed development excerpt.
+The user reports stumbling in both. Since the exact-timing direct solo render
+also fails, this packet does not isolate WFC sequencing or WAV extraction as
+the sole cause. Treat it as a failed musical control; source performance,
+solo-part context and rendering remain distinct possibilities. The next core
+work needed a musically usable reference-to-audio control before another
+generated quality claim. A fixed 30-second, two-part published-note control
+from the same development work passed engineering QA; the user heard no
+stumbling. It replays the pre-authored song exactly, so it is a positive
+**rendering/context control**, not unique composition or WAV inference. The
+next musical checkpoint needs genuinely new generated note choices with
+multi-part relationships, while the recorded-note admission prerequisites
+remain open. This reference-fed diagnostic closes no automatic admission or
+phrase gate.
 
 After that first musical provider, extend admitted key/clock, parts, harmony,
 groove and timbre into the full

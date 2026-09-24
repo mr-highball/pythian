@@ -39,9 +39,21 @@ Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [PITCH](../PI
   WAV hashes with zero leaks; the generated 256-span WAV/sidecar replay
   byte-identically. The paired listening packet and exact boundaries are in
   [WORK](../WORK.md#substantial-generated-development-preview--2026-09-23).
-  These reference-conditioned outputs await a listener verdict and cannot
-  satisfy automatic recorded-note or independent phrase acceptance. No task
-  credit changes.
+  The user reports stumbling in both the exact-timing direct solo render and
+  the reference-trained WFC render. The direct result is not a positive
+  musical control, so the packet cannot attribute the shared problem solely
+  to WAV extraction or WFC sequencing. Source performance, missing ensemble
+  context and the current render policy remain possible contributors. Establish
+  a musically usable reference-to-audio control before another generated
+  quality claim; do not change the recorded-note gates or open reserved phrase
+  material on this verdict. No task criterion or credit closes.
+- 2026-09-23 changed control: a frozen private Pascal render combined the
+  two exposed Spring publisher parts at exact times without WFC. Checked
+  Win32/Win64 QA passed after repairing a private error-path leak; the user
+  heard no stumbling and correctly recognized a pre-authored song. The
+  [WORK record](../WORK.md#substantial-generated-development-preview--2026-09-23)
+  retains hashes and scope. The next musical checkpoint needs new multi-part
+  choices; this replay earns no WAV inference or phrase credit.
 - Follow-up: use the combined maintained identity/presence path only after both prerequisite tasks pass. The preferred development flute precision remains 91.57% against 98%; violin's passing development result is not independent acceptance. Keep reserved phrase material untouched until the final policy freeze; see [phrase evidence](../PHRASE-EVALUATION.md).
 
 - Integration follow-up: the [scale workload](NS-5_scale_01.md) still needs this task's admitted-note-to-saved-learner bridge. Raw salience and private diagnostic outputs cannot substitute for it.

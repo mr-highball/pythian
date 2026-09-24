@@ -84,8 +84,10 @@ held-out evidence after a policy change.
   and ignored `build/maps-presence-source/RESULT.md` retain exact evidence.
   These are two further nonclosing source batches. Stop source searches here;
   MAPS acoustic suitability is unknown, and no presence score or criterion
-  closed. Resume the core note path after the already published direct-vs-WFC
-  Pythian listening comparison selects the relevant defect.
+  closed. The later direct-vs-WFC Pythian listening comparison found both
+  outputs stumbling, including the exact-timing published-note solo render.
+  It did not isolate a presence defect or justify another source search; the
+  phrase task owns the musical-control follow-up.
 
 - 2026-09-23 physical pickup source gate stopped: publisher GuitarSet's
   simultaneous original six-string pickup and microphone were checked on

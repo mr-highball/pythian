@@ -147,8 +147,34 @@ replay claim. The existing extraction-trained input had 135 pitch spans and
 9.28 seconds of annotation gaps, with no unknown. These are descriptive
 training facts, not a musical verdict. Three hash-verified WAV copies are
 temporarily available in the existing local HFS feedback folder as numbered
-clips 1–3; the user's listening verdict remains pending. Neither
-annotation-conditioned output is automatic WAV transcription.
+clips 1–3. The user judged both new clips as stumbling. The direct render's
+failure means the reference annotations plus the current solo voice and
+articulation are not a positive musical control; WFC sequencing alone cannot
+explain the shared result. The separate contribution of source performance,
+solo-part context and rendering is still unknown. Both clips fail this musical
+checkpoint, with no recorded-note admission or independent-phrase credit.
+Neither annotation-conditioned output is automatic WAV transcription. The
+answered HFS copies could not be removed: automatic command review rejected
+the exact three-file deletion. The original ignored outputs remain available.
+
+The failed original preview and solo published-note comparison were two
+nonclosing musical-control batches. A changed, one-variant control under
+ignored `build/reference-two-part/` combines the exposed Spring flute and
+violin publisher notes at their exact first-30-second times, with two authored
+voices and no WFC or source audio. Its frozen plan binds both Notes hashes,
+articulation, gain/pan and a no-clipping gate. Checked FPC 3.2.2 Win32/Win64
+QA confirmed 96 flute plus 91 violin gates, 30-second stereo 44.1-kHz PCM16,
+peak 0.08048195, WAV SHA-256
+`531da1df81ef9c2dfc8ad958f27bc5350c6735cb4cc2c59135c61deb2df465b5`,
+byte-identical replay and zero leaks. A copied-input hash-failure check found
+an uncaught-exception leak; the private probe now exits 1, preserves existing
+outputs and reports zero leaks. The hash-verified HFS copy is
+`build/feedback/4.wav`. The user heard **no stumbling** and identified the
+song as pre-authored, correctly: this exact-note replay is neither unique
+generation nor WAV inference. Added part context or changed voice balance may
+explain the solo contrast. Stop this control without task credit. The next
+musical checkpoint needs new generated note choices across parts, with learned
+and authored contributions explicit.
 
 ## Recalibrated execution focus — 2026-09-23
 

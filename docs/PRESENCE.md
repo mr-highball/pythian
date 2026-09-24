@@ -244,8 +244,11 @@ integrity stop, not evidence that MAPS lacks a usable rest. The partial file
 remains in ignored build because automatic policy review rejected its removal.
 Together with MedleyDB's dependent annotations, this is two nonclosing source
 batches; stop the source-search sequence. Criterion 3 and task credit remain
-open. The current paired Pythian listening comparison remains the next core
-decision before selecting another source or algorithm batch.
+open. The paired Pythian listening comparison is resolved: both the direct
+published-note solo render and the reference-trained WFC render stumbled to
+the user. The direct render is not a positive musical control, so this does
+not justify another presence-source or scorer variant. Its quality follow-up
+is owned by the phrase task; presence criterion 3 remains open.
 
 ## Full-recording isolated-stem source gate stopped — 2026-09-23
 
