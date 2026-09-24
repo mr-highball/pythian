@@ -78,6 +78,24 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
   freeze the exact one-to-one `groove/` mapping and duplicate guard, then
   continue only the prior two-pair acoustic policy; no selection or threshold
   changes. Task criteria and credit remain open.
+- 2026-09-24 exact `groove/` mapping and both MIDI-member identity hashes
+  passed; only the two selected WAVs were extracted (24,434,020 and
+  14,551,374 bytes), each matching its member hash. The first checked Win32
+  development qualifier stopped before WAV decode at the frozen
+  `DefaultMidiNoteOptions` call: GMD performance MIDI requires an explicit
+  ignore-and-report policy for non-note events. The structure/metadata parser
+  had already succeeded, so this is a decoder-options contract mismatch, not
+  evidence of malformed MIDI or failed onset alignment. No challenge or
+  Win64 qualifier ran; the exceptional exit reported six unfreed blocks
+  totaling 275 bytes. Salty Boi independently verified the four members,
+  two-target compilation, stop location and lack of acoustic analysis.
+  Together with the prior prefix-lookup stop, these are two nonclosing
+  post-reassessment batches. Reassess to one explicit percussion-event
+  admission policy using the already exercised native GMD metadata parser's
+  documented ignore/report semantics, preserving every source, clock and
+  acoustic threshold. Require counts and ownership of ignored event kinds
+  before any onset comparison. Stop if the event contract or fixed acoustic
+  gates fail; do not loop through option variants. No task credit yet.
 - 2026-09-23 independent-source screen: a frozen Pascal metadata/MIDI-only
   check of the [official Groove MIDI Dataset](https://magenta.withgoogle.com/datasets/groove)
   found two different-drummer/session

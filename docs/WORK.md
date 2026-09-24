@@ -12345,3 +12345,32 @@ archive is available. The next bounded action freezes an explicit one-to-one
 root-prefix mapping and duplicate check, keeping the original selected
 pairs, acoustic gates and protected splits fixed. A mapping failure stops;
 otherwise run the previously compiled Pascal qualifier on the two pairs.
+
+The exact `groove/` mapping then passed. Both selected MIDI members matched
+their previously verified SHA-256 values, and only the two selected WAVs
+were extracted: 24,434,020 and 14,551,374 bytes, each matching its ZIP
+member hash. The original qualifier compiled under checked FPC 3.2.2 Win32
+and Win64. Its one Win32 development run stopped before WAV decode at
+`DecodeMidiNotes(..., DefaultMidiNoteOptions, ...)`: the native decoder
+requires an explicit ignore-and-report policy for performance MIDI events.
+The MIDI structure/metadata parser passed first, so this is an intentional
+source/options contract mismatch, not malformed-source or acoustic evidence.
+No Win64 or challenge run followed; no onset score exists. The exceptional
+exit reported six unfreed blocks (275 bytes). Salty Boi independently checked
+all four member hashes, source/policy identities, compile targets and stop.
+The selected-member ledger omitted computed MIDI hashes even though the
+extractor checked them; QA recomputed them independently. The earlier
+`RECOVERY-RESULT.md` describes the prior pre-extraction checkpoint, while
+`QUALIFICATION-STOP.md` and selected-member artifacts describe the current
+state. Completion remains 68.80%.
+
+Task-flow reassessment after the prefix-lookup and default-decoder stops:
+neither closed a tempo criterion, but the archive and exact pair identities
+are now qualified. The next bounded deliverable is **one explicit native
+percussion MIDI admission contract** for these same pairs, using the existing
+GMD metadata parser's documented ignore-and-report semantics while retaining
+all original acoustic clocks, thresholds, splits and source hashes. Freeze
+ignored event kinds/count expectations before scoring and stop if the event
+contract or first acoustic gate fails. This is a source-admission change,
+not beat-candidate fitting or a retry of acoustic thresholds. No further
+decoder-option sweep follows.
