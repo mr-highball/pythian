@@ -13,6 +13,23 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Independent drum-source screen — 2026-09-23
+
+Ticket Guy completed one frozen, metadata-only Pascal screen of the
+[official Groove MIDI Dataset](https://magenta.withgoogle.com/datasets/groove)'s
+MIDI-only archive. The exact archive and two selected
+performances, from different drummers and sessions, pass the declared symbolic
+gate: each has an explicit tempo and 4/4 clock, over 30 seconds of note events,
+and paired audio named in publisher metadata. The publisher claims MIDI/audio
+alignment within 2 ms, but no audio was opened or independently checked. MIDI
+drum hits could provide a future source-event reference; the source has no
+isolated audio stems or composition IDs in the inspected metadata. The policy,
+Pascal analyzer, exact identities, report and zero-leak Win64 log remain under
+ignored `build/gmd-pulse-source/`. This screen does not resolve the frozen
+ARTBeaT 02/04 windows or close `NS-3_tempo_04`; no beat scoring, TensorFlow or
+other inference runtime ran. Do not expand this into another source sweep while
+the current note-render listening decision is pending.
+
 ## Physical pickup presence source stop — 2026-09-23
 
 One distinct, prospectively frozen source strategy used GuitarSet's original

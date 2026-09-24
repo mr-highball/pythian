@@ -49,6 +49,17 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
 
 **Dev Notes:**
 
+- 2026-09-23 independent-source screen: a frozen Pascal metadata/MIDI-only
+  check of the [official Groove MIDI Dataset](https://magenta.withgoogle.com/datasets/groove)
+  found two different-drummer/session
+  performances with explicit tempo, meter and over 30 seconds of drum-hit
+  events. The publisher lists paired synthesized audio and claims alignment
+  within 2 ms; no WAV or test split was opened, and composition identity and
+  acoustic hit alignment were not verified. Exact policy, hashes and report are
+  under ignored `build/gmd-pulse-source/`. This is possible future source
+  material, not source-pulse truth for the frozen ARTBeaT 02/04 windows. No
+  candidate policy, criterion or credit changes; stop at this source gate.
+
 - 2026-09-23 publisher archive audit: the already acquired official zip has
   [25 mixed WAVs and paired beat CSV/MIDI annotations](../BEAT-TRACKING.md#publisher-archive-contents-checked--2026-09-23),
   but no listed stems or source-event MIDI. Its beat MIDI cannot identify which
