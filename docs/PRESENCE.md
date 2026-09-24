@@ -308,3 +308,28 @@ byte (SHA-256
 `3fdc579f97da1e8a5e04f681f2b739272acdf2292926c6abdd25929814e75418`),
 verified the hashes, CRC, geometry, listener bindings and RMS formula, and
 reported zero unfreed blocks. No measurement defect was found.
+
+## MAPS whole-archive integrity route stopped — 2026-09-24
+
+One frozen whole-file continuation policy in ignored
+`build/maps-presence-source/POLICY-v3.md`
+kept the original MAPS Disklavier source, first-two-work selector, MIDI timing,
+250-ms windows and PCM gates unchanged. It allowed one continuation from the
+unverified 209,244,160-byte prefix, followed by exact length and publisher MD5
+before any ZIP member access. The 206 transfer completed with the expected
+2,661,240,101 bytes, but Pascal's full-file MD5 was
+`47054c03b6e52db826902340d7aa5ea6`, different from the published
+`a1c8c9945a2c605f62484b80cfa20cf4`. A second Pascal pass with a different
+buffer size agreed; local-file SHA-256 is
+`fc995549d9de6ae6d6ec89918a9cb4bdad94d1333542c153a5ce108ea5941d6c`.
+The private `build/maps-presence-source/RESULT.md` and transfer log
+retain the exact HTTP range and stop evidence. No ZIP directory was parsed and
+no MIDI/WAV member was extracted. The archive length alone cannot authenticate the concatenated bytes,
+so this is an **integrity failure**, not a MAPS acoustic result. No presence
+score, criterion or task credit follows. The one-attempt route is stopped.
+
+Salty Boi passed source-free synthetic QA of the prepared Pascal MIDI tempo/
+pedal gate and sparse WAV-window gate after one pre-execution hash-length fix.
+That QA does not qualify this source. Continue the core note/admission work
+through a changed, independently grounded strategy; do not retune the fixed
+MAPS window policy or retry this transfer under the same hypothesis.

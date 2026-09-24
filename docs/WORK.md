@@ -11834,3 +11834,20 @@ and atomic artifact replacement remain delivery work. Source snapshots and
 local checked builds do not establish those outcomes. Preserve the explicit
 scope of each validation checkpoint; broader musical admission and weighted
 voice/joint style composition remain open beyond the delivered onset profiles.
+
+## MAPS whole-archive integrity stop — 2026-09-24
+
+For NS-3_notes_05 criterion 3, the frozen MAPS v3 continuation completed one
+HTTP 206 transfer from an unverified 209,244,160-byte prefix to the declared
+2,661,240,101-byte length. Pascal's whole-file MD5 was
+`47054c03b6e52db826902340d7aa5ea6`, not the publisher's
+`a1c8c9945a2c605f62484b80cfa20cf4`; a second Pascal buffer size agreed.
+The exact [source result](PRESENCE.md#maps-whole-archive-integrity-route-stopped--2026-09-24)
+records SHA-256, transfer and QA. No ZIP directory was parsed and no MIDI/WAV
+member or scorer was opened.
+The integrity route is stopped without acoustic evidence or task credit. The
+prepared Pascal MIDI and sparse WAV tools passed Salty Boi's source-free
+synthetic checks after one pre-execution extraction-hash fix. Current overall
+credit stays 68.65. The next useful development checkpoint is a genuinely
+new two-part WFC render, explicitly scoped as diagnostic rather than accepted
+recorded-note learning.

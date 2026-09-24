@@ -455,6 +455,17 @@ multi-part relationships, while the recorded-note admission prerequisites
 remain open. This reference-fed diagnostic closes no automatic admission or
 phrase gate.
 
+The frozen MAPS whole-archive continuation then reached the published byte
+length but failed the publisher MD5 before ZIP member access; see the
+[integrity stop](PRESENCE.md#maps-whole-archive-integrity-route-stopped--2026-09-24).
+The source's acoustic suitability remains unknown. Do not count the prepared
+Pascal source-gate QA as recorded evidence or repeat this one-attempt transfer.
+The next development listening checkpoint should use genuinely new two-part
+note choices and clearly state which relationships came from the exposed
+published notes. It remains a diagnostic until source-grounded note admission
+can pass; choose a changed, independently supported source strategy before
+another recorded-note acceptance claim.
+
 After that first musical provider, extend admitted key/clock, parts, harmony,
 groove and timbre into the full
 [recorded WFC workflow](TODO/NS-4_integration_01.md). The

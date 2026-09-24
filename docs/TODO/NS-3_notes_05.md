@@ -75,6 +75,18 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-24 MAPS whole-archive continuation stopped at publisher integrity.
+  One frozen repair resumed the unverified prefix and obtained the exact
+  2,661,240,101-byte length, but two Pascal full-file MD5 passes gave
+  `47054c03b6e52db826902340d7aa5ea6` instead of publisher value
+  `a1c8c9945a2c605f62484b80cfa20cf4`. No ZIP directory was parsed and
+  no MIDI/WAV member or scorer was opened. The [integrity result](../PRESENCE.md#maps-whole-archive-integrity-route-stopped--2026-09-24)
+  and ignored `build/maps-presence-source/RESULT.md` retain details. Stop this
+  one-attempt route; no acoustic inference, criterion or credit follows.
+  Source-free QA of the prepared Pascal gates passed, but does not authenticate
+  the archive. The repeated source stops require a changed core strategy, not
+  another MAPS transfer or window variant.
+
 - 2026-09-23 source-search reassessment: MedleyDB's publisher activations are
   derived from the same stem audio and cannot independently label audible rest.
   A different solo-piano route used MAPS's synchronized physical MIDI, but its
