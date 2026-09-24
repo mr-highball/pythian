@@ -13,6 +13,21 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Recalibrated execution focus — 2026-09-23
+
+The user wants progress measured by a substantial Pythian result, with their
+listening time spent on generated audio. The bounded synthesis and WFC layer
+contracts are accepted; recorded note admission is the next critical path.
+Stop routine source microclip requests and repeated single-window or threshold
+investigations. The next deliverable is one qualified recording-grouped
+reference packet suitable for the existing register and presence tasks, with
+publisher method, known errors, acoustic labels and untouched groups explicit.
+If no source passes the declared evidence gate, stop before another scorer
+attempt and reassess the source strategy. Then move through presence/register,
+event decisions and saved phrase learning toward a substantial native generated
+listening checkpoint. Preserve each task's complete criteria and the current
+68.65% acceptance total; the roadmap change earns no credit.
+
 Accepted musical architecture: use WFC passes for small, granular layers, with
 base key/tempo context informing harmony/rhythm and higher voice parts. Style
 learned from one or several songs must be reusable for generation and subsequent

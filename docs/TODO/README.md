@@ -163,7 +163,11 @@ the accepted external reference packet earns the other point. Actual role
 learning still depends on accepted note primitives through
 [NS-3_notes_03](NS-3_notes_03.md), following register and presence/boundary work.
 
-Current core dependency chain: accepted `NS-3_context_03` ->
+Current selected core path is the recording-grouped note evidence packet for
+`NS-3_notes_01` and `NS-3_notes_05`, then `NS-3_notes_02` and
+`NS-3_notes_03` in prerequisite order, toward a substantial generated-audio
+checkpoint. This changes execution priority without changing blockers or
+credit. The separate context chain remains accepted `NS-3_context_03` ->
 `NS-3_context_01` -> `NS-3_context_02`, with independent timing acceptance
 also required for the last task. The style-card path remains open for grounded
 musical references and personal genre tests. Selective semantic blend/reblend is accepted

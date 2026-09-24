@@ -399,39 +399,43 @@ be useful sooner when the selected outcome requires it.
 
 ### First work to schedule
 
-The user's [core-first direction](TASKFLOW.MD#scope-and-source-of-truth) now
-governs selection. Bounded NS-2 listening is complete. Select a ready NS-3
-musical-evidence prerequisite that advances recorded learning without changing
-accepted synthesis. The [beat candidate task](TODO/NS-3_tempo_04.md) is paused
-after two failed source-evidence screens; the
-[local-key reference packet](TODO/DONE/NS-3_context_03.md) is accepted. The
-[key-decision task](TODO/NS-3_context_01.md) has a stopped frozen development
-candidate and remains open. The
-[note-presence reference task](TODO/DONE/NS-3_notes_04.md) is accepted at a
-bounded synthetic scope: six development long-release windows are reviewed
-audible, two fast-decay late windows are reviewed `not_audible`, and the fixed
-Pascal consumer matched seven of eight independent train windows. The
-listener-inaudible flute late tail was overcalled; the open
-[note-decision task](TODO/NS-3_notes_02.md) owns that failure and recorded
-boundary gates. Do not expand stopped packets or restart rejected scorer
-variants. The
-[register task](TODO/NS-3_notes_01.md) requires independently discriminating
-evidence and a prospective ambiguity/coverage rule before another scored
-proposal. Keep existing independent evaluation material protected.
+The next outcome is a **recorded-note-to-generated-audio vertical slice**,
+using the existing Pascal observation and synthesis paths. First deliver a
+source-grounded, recording-grouped reference packet that can support both
+[register identity](TODO/NS-3_notes_01.md) and
+[presence](TODO/NS-3_notes_05.md). Qualify the publisher's annotation method,
+source identity, known errors, acoustic positive/rest evidence and untouched
+evaluation groups at the recording level. Do not request routine 250-ms source
+labels from the user. If a source cannot support the needed claims, stop it
+before another scorer variant; preserve the failed evidence.
 
-The earlier [NS-5 style-card screen](TODO/NS-5_evaluation_01.md) recorded
-missing verified editions/cuts and curator-reviewed musical annotations for
-the three personal style tests. Continue that review when evidence is ready;
-the labels do not gate core synthesis. Accepted Pascal
-[observation](TODO/DONE/NS-3_validation_03.md) and
-[execution](TODO/DONE/NS-3_validation_02.md) provide the native inference
-prerequisite. The remaining [recorded workflow](TODO/NS-4_integration_01.md)
-requires accepted musical providers and listening evidence.
+Then complete [register identity](TODO/NS-3_notes_01.md) and
+[presence](TODO/NS-3_notes_05.md), followed by
+[event decisions](TODO/NS-3_notes_02.md) and
+[saved phrase learning](TODO/NS-3_notes_03.md) in prerequisite order.
+The checkpoint is a maintained native producer that turns recorded WAV
+evidence into saved musical events and a substantial Pythian-generated audio
+example for the user's listening review. A development preview can be made
+earlier with explicit authored or unsupported dimensions; it earns no recorded
+learning credit. Keep independent phrase material untouched until policy freeze.
 
-The main measured bottleneck remains recorded note/context admission: preferred
-flute/violin precision is 91.57% / 98.55% against 98%, and automatic metrical
-selection still has changing-pattern failures. Zero genre styles are accepted.
-The acceptance dashboard above and linked topic evidence remain the baseline.
+After that first musical provider, extend admitted key/clock, parts, harmony,
+groove and timbre into the full
+[recorded WFC workflow](TODO/NS-4_integration_01.md). The
+[beat candidate](TODO/NS-3_tempo_04.md) and
+[local-key decision](TODO/NS-3_context_01.md) investigations remain stopped
+at their recorded evidence gates; do not restart a variant to fill time.
+The three personal style tests and their missing musical reference annotations
+remain later acceptance work under [NS-5](#ns-5), not a core prerequisite.
+The accepted Pascal [observation](TODO/DONE/NS-3_validation_03.md),
+[execution](TODO/DONE/NS-3_validation_02.md), bounded synthesis and WFC
+layer controls remain the reusable baseline.
+
+This order changes execution focus, not task acceptance or credit. The current
+recorded bottleneck is still real: preferred flute/violin precision is
+91.57% / 98.55% against 98%, changing-pattern metrical selection still fails,
+and zero genre styles are accepted. The dashboard and linked task evidence
+remain the acceptance baseline.
 
 ### Checkpoint accounting
 
