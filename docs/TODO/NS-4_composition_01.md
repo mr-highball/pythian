@@ -75,3 +75,19 @@ accepted composition result.
   adding that gate to the narrower note-event adapter task. The recorded
   harmony/groove tasks and later style-structure task remain separate because
   they require evidence from recordings or sustained genre organization.
+- 2026-09-24 one context-tagged continuous-stream source preflight under
+  ignored `build/composition-segmented/` authored eight first-party four-bar
+  controls, two for each A/A-prime/B/cadence role, at a 240-tick half-beat
+  grid. Checked Win32/Win64 Pascal runs reproduced identical source, schedule,
+  event and token ledgers with zero leaks. Each planned two-bar span has two
+  raw authored choices in rhythm, bass and melody, but **actual WFC path
+  reachability was not tested**. The 16-bar schedule introduces three
+  unrepresented role-bound phrase joins: A G to A-prime C, A-prime G to B F,
+  and B Am to cadence Am. G-to-F has no authored chord transition anywhere;
+  G-to-C appears within B and Am persistence appears within bars, neither
+  proving the required role-bound joins. One A-prime control also exactly
+  duplicates an A control's 32-cell token path. Salty Boi independently
+  confirmed these limits. Stop this continuous-frontier source set before
+  model learning, solving or rendering; no candidate, listening or credit.
+  A future phrase-boundary policy would need its own frozen source/novelty
+  contract rather than filling this frozen set ad hoc.

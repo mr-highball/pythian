@@ -12172,3 +12172,26 @@ Salty Boi independently accepted the per-part projection evidence and scope.
 37 tasks remain open. This acceptance claims a bounded Pascal event adapter,
 not a rendered original song, positive listening, or recorded-WAV inference.
 The next selected deliverable is [NS-4_composition_01](TODO/NS-4_composition_01.md).
+
+First composition source preflight, 2026-09-24: the accepted adapter enables
+the new source-free composition task, but does not establish an original song.
+One ignored Pascal builder under `build/composition-segmented/` authored eight
+four-bar C/Am/F/G controls (two per A/A-prime/B/cadence role) and a frozen
+16-bar, 32-second schedule. Checked FPC 3.2.2 Win32/Win64 output matched
+byte-for-byte with zero leaks; the source builder SHA-256 is
+`80cb27be79feb9ad35ca4ec75b783e252a6864e751b92d36df0f0b62aaea6be9`
+and schedule SHA-256 is
+`ba2645cb5ab3daee558a64c52792a6b28d600701b123d5dfa9ed5525172b695d`.
+Each two-bar span has two raw rhythm/bass/melody source paths, but no model
+was learned and WFC reachability was not tested. The authored controls cover
+within-phrase chord changes but do not demonstrate A G-to-A-prime C,
+A-prime G-to-B F or B Am-to-cadence Am role-bound joins. G-to-F has no
+authored chord transition at all; G-to-C occurs only within B, and Am
+persistence within bars does not cover a phrase boundary. `A_v1` and
+`A_prime_v0` also share an identical complete token path. Salty Boi
+independently verified the ledgers, zero-leak runs and these limits. Stop
+this continuous-frontier source set before inference or audio; do not add
+missing examples to this frozen set and call it the same attempt. The next
+architecture decision is an explicit phrase-boundary policy with independently
+checked musical joins and real WFC variation within phrases. Composition
+acceptance remains open; NS-4 stays 97% and overall completion 68.80%.
