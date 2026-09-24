@@ -11851,3 +11851,36 @@ synthetic checks after one pre-execution extraction-hash fix. Current overall
 credit stays 68.65. The next useful development checkpoint is a genuinely
 new two-part WFC render, explicitly scoped as diagnostic rather than accepted
 recorded-note learning.
+
+## Two-part note-event gap — 2026-09-24
+
+The published-note two-part control was coherent to the user but an exact
+replay. One frozen private Pascal diagnostic tried 1,024 joint flute/violin
+active-pitch cells as a WFC training path, with fixed score hashes, seed,
+quantization, novelty and activity gates. Stable FPC 3.2.2 Win32 compilation
+passed; the sole run stopped in 1,349 ms before model generation because the
+decoded training grid displaced a source gate by 40,424 frames versus the
+predeclared 15-ms limit. No generated WAV exists and no listener judgment was
+requested. The ignored `build/score-wfc-two-part/PLAN.md`, `RESULT.md`, source
+and log preserve the attempt. Dense sampled pitch sets cannot reliably retain
+the ownership of repeated attacks; retuning this grid is stopped.
+Salty Boi confirmed the structural cause from bound flute rows 7–8: both map
+to MIDI 79, with the first ending exactly when the second begins at 4.110 s.
+The grid sees a continuous `{79}` state and merges the two gates, placing the
+second onset 40,424 frames after the decoded gate start. Rows 15–16 repeat
+the pattern. The private survival comparator can count a merged gate for more
+than one source row, but the displacement gate rejects this case first. The
+frozen plan, source and Notes hashes and sole exit were checked; no WFC path
+or WAV was created.
+
+The existing WFC acoustic-event token has an acoustic palette index, duration
+class and onset flag but no explicit part ID or inter-onset delta. It cannot
+directly represent two-part note gates without conflating acoustic clusters
+with pitches. The task-flow gap process therefore split the original 4 unearned
+NS-4_integration_01 goal points into 2 for a new maintained
+[NS-4_note-events_01](TODO/NS-4_note-events_01.md) adapter and 2 retained for
+[NS-4_integration_01](TODO/NS-4_integration_01.md). The new task owns joint
+onset bundles, per-note duration and part, onset deltas, retriggers, exact
+round-trip and bounded WFC generation. This is a changed core deliverable,
+not another threshold/seed variant. The catalog now has 37 open tasks; overall
+credit remains 68.65.

@@ -66,10 +66,10 @@ unless also declared under Blockers; required gaps still follow
 | [NS-1 — Independent Pascal foundation](../MILESTONES.md#ns-1) | 100% | 0 | 0 | 0.00 |
 | [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 100% | 0 | 0 | 0.00 |
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 41% | 16 | 59 | 14.75 |
-| [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 96% | 1 | 4 | 0.60 |
+| [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 96% | 2 | 4 | 0.60 |
 | [NS-5 — Many-hour styles that generate and blend usefully](../MILESTONES.md#ns-5) | 27% | 16 | 73 | 14.60 |
 | [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 72% | 3 | 28 | 1.40 |
-| **Total** | **68.65 weighted points** | **36** | Per-goal credits are not summed across goals | **31.35** |
+| **Total** | **68.65 weighted points** | **37** | Per-goal credits are not summed across goals | **31.35** |
 
 NS-1 is already complete under the accepted extraction scope. Preserve its
 invariants in every applicable task; do not recreate completed extraction work.
@@ -104,7 +104,8 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 
 | Task file and outcome | Goal credit | Overall credit | State |
 | --- | ---: | ---: | --- |
-| [NS-4_integration_01.md](NS-4_integration_01.md) — Deliver the recorded WAV-to-style-to-audio workflow | +4 | +0.60 | TODO |
+| [NS-4_note-events_01.md](NS-4_note-events_01.md) — Generate coordinated note events across parts | +2 | +0.30 | TODO |
+| [NS-4_integration_01.md](NS-4_integration_01.md) — Deliver the recorded WAV-to-style-to-audio workflow | +2 | +0.30 | TODO |
 
 ### NS-5 — Many-hour styles that generate and blend usefully
 
@@ -223,7 +224,7 @@ first accepted genre is predetermined.
 24. [NS-4_layers_04.md — DONE](DONE/NS-4_layers_04.md)
 25. [NS-4_styles_01.md — DONE](DONE/NS-4_styles_01.md)
 26. [NS-4_styles_02.md — DONE](DONE/NS-4_styles_02.md)
-27. [NS-4_integration_01.md](NS-4_integration_01.md)
+27. [NS-4_note-events_01.md](NS-4_note-events_01.md), then [NS-4_integration_01.md](NS-4_integration_01.md)
 28. [NS-5_corpus_01.md — DONE](DONE/NS-5_corpus_01.md)
 29. [NS-5_evaluation_01.md](NS-5_evaluation_01.md)
 30. [NS-5_corpus_02.md](NS-5_corpus_02.md)

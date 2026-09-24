@@ -29,7 +29,7 @@ preserve the earlier evidence and the new boundary. Existing note, presence,
 mixture and style-reference criteria remain unchanged.
 
 The old **89.8% is retired**. The accepted planning baseline remains **55.5
-weighted points**. The [55-task catalog](TODO/README.md) allocates every
+weighted points**. The [56-task catalog](TODO/README.md) allocates every
 remaining point to explicit acceptance criteria and prerequisites. Accepted
 corpus identity, consumer/native delivery, named
 voice passes/provider compatibility, granular controls, semantic persistence,
@@ -82,10 +82,10 @@ with detailed history in the linked evidence rather than active tasks.
 | <a id="ns-1"></a>**NS-1 — Independent Pascal foundation** | **100%** | 10 | Independent owned core; agreed WFC/Phanes extraction, Phanes removal and complete provenance. [Audit](REFERENCE-REMOVAL.md). | No open extraction work. Preserve independence and notices. Delivery is NS-6. | **0** |
 | <a id="fund-contracts"></a><a id="ns-2"></a>**NS-2 — Dependable synthesis fundamentals** | **100%** | 25 | Supported synthesis, samples, modulation, effects, buses, timing and streaming; reviewed contracts and numerical/replay evidence. Declared [source/articulation](TODO/DONE/NS-2_synthesis-quality_01.md), [processing/routing](TODO/DONE/NS-2_synthesis-quality_02.md) and [combined quality](TODO/DONE/NS-2_synthesis-quality_03.md) examples are accepted at their bounded scopes. [Capability map](FUNDAMENTALS.md#contract-review). | No open NS-2 task; preserve the accepted scope in downstream work. | **0** |
 | <a id="wav-02"></a><a id="wav-03"></a><a id="ns-3"></a>**NS-3 — Trustworthy musical learning from WAV** | **41%** | 25 | Source-bound measurements, selected clocks, uncertainty/manual context, narrow pitch/duration learning, [selective Pascal observations](TODO/DONE/NS-3_validation_03.md), [supervised Pascal WAV inference](TODO/DONE/NS-3_validation_02.md), [shared scoring with repaired ancestry admission](EVALUATION-OPERATOR.md), [maintained mixture measures/control packet](TODO/DONE/NS-3_parts_04.md), [qualified external references](TODO/DONE/NS-3_parts_01.md), [reviewed local-key/no-key intervals](TODO/DONE/NS-3_context_03.md) and [source-separated note-presence reference](TODO/DONE/NS-3_notes_04.md). [Phrase](PHRASE-EVALUATION.md) and [pulse](BEAT-TRACKING.md) evidence retain the accuracy gaps. | Independently validated context, notes, mixed parts, harmony, groove and evolving sound: **16 open NS-3 tasks**. | **14.75** |
-| <a id="wfc-preferences"></a><a id="ns-4"></a>**NS-4 — Granular WFC layers and reusable blends** | **96%** | 15 | Actual dependent passes, [granular musical/sound controls](INDEPENDENT-VOICES.md#granular-musical-and-sound-controls), typed replacement, [saved semantic graphs](SEMANTIC-STYLES.md), [selective blends/reblends with retained evidence](SEMANTIC-BLENDS.md) and [staged duration/committed-stream edits](DURATION-STREAMS.md). | Accepted recorded-provider audio integration: **WAV-04-INTEGRATION**. | **0.6** |
+| <a id="wfc-preferences"></a><a id="ns-4"></a>**NS-4 — Granular WFC layers and reusable blends** | **96%** | 15 | Actual dependent passes, [granular musical/sound controls](INDEPENDENT-VOICES.md#granular-musical-and-sound-controls), typed replacement, [saved semantic graphs](SEMANTIC-STYLES.md), [selective blends/reblends with retained evidence](SEMANTIC-BLENDS.md) and [staged duration/committed-stream edits](DURATION-STREAMS.md). | Coordinated note-event generation, then accepted recorded-provider audio integration: **WAV-04-INTEGRATION**. | **0.6** |
 | <a id="wav-04"></a><a id="ns-5"></a>**NS-5 — Many-hour styles that generate and blend usefully** | **27%** | 20 | Ingestion, journals, acoustic vocabulary and mechanical reuse; accepted two-recording identity pilot with derivative/exposure and inherited-palette audits. [Pilot](CORPUS-EVALUATION.md#verified-identity-pilot). | Representative genre corpora, practical scale, sustained structure and acceptance of all three styles and cross-style blends: **16 tasks / 6 corpus outcomes**. | **14.6** |
 | <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | **72%** | 5 | Accepted [consumer contract](CONSUMER-CONTRACT.md) and [clean native delivery checkpoint](NATIVE-CHECKPOINT.md): stable Win32/Win64 builds, four extracted consumers and successful Linux CI at frozen source. | Accepted-workflow delivery and independently reproduced use: **WAV-05-DELIVERY, DELIVERY-RELEASE**. | **1.4** |
-| **Total** | **≈69%** | **100** | **68.65 weighted points credited** | **36 open tasks / 18 active outcomes** | **31.35** |
+| **Total** | **≈69%** | **100** | **68.65 weighted points credited** | **37 open tasks / 18 active outcomes** | **31.35** |
 
 Arithmetic: `10×1.00 + 25×1.00 + 25×0.41 + 15×0.96 + 20×0.27 + 5×0.72 = 68.65`.
 The decimal is bookkeeping, not measurement precision. NS-3 earns measurement
@@ -157,7 +157,7 @@ presence tasks remain open; no completion credit changes. The next design needs
 justified treatment of candidate ambiguity and presence, with prospective
 confidence/coverage and source separation rather than post-hoc error cutoffs.
 
-**36 open task files own the remaining work across 18 active outcomes; 18 tasks are DONE.**
+**37 open task files own the remaining work across 18 active outcomes; 19 tasks are DONE.**
 The 22-outcome map below retains accepted FUND-QUALITY, WFC-LAYERS,
 WFC-STYLE and WAV-VALIDATION anchors for evidence.
 See the [task catalog](TODO/README.md) for credits and a prerequisite-first order,
@@ -249,7 +249,7 @@ A mapped task's credit is counted once even if it supports more than one outcome
 | <a id="wav-03-timbre"></a>**WAV-03-TIMBRE** | NS-3 | [NS-3_timbre_01](TODO/NS-3_timbre_01.md), [NS-3_timbre_02](TODO/NS-3_timbre_02.md) |
 | <a id="wfc-layers"></a>**WFC-LAYERS — accepted** | NS-4 | No active task. [Duration/stream edits — DONE](TODO/DONE/NS-4_layers_04.md), [named voices — DONE](TODO/DONE/NS-4_layers_01.md), [provider compatibility — DONE](TODO/DONE/NS-4_layers_02.md), [granular controls — DONE](TODO/DONE/NS-4_layers_03.md) |
 | <a id="wfc-style"></a>**WFC-STYLE — accepted** | NS-4 | No active task. [Selective blend/reblend — DONE](TODO/DONE/NS-4_styles_02.md), [semantic persistence — DONE](TODO/DONE/NS-4_styles_01.md) |
-| <a id="wav-04-integration"></a>**WAV-04-INTEGRATION** | NS-4 | [NS-4_integration_01](TODO/NS-4_integration_01.md) |
+| <a id="wav-04-integration"></a>**WAV-04-INTEGRATION** | NS-4 | [NS-4_note-events_01](TODO/NS-4_note-events_01.md), then [NS-4_integration_01](TODO/NS-4_integration_01.md) |
 | <a id="corpus-setup"></a>**CORPUS-SETUP** | NS-5 | [NS-5_corpus_02](TODO/NS-5_corpus_02.md), [NS-5_corpus_03](TODO/NS-5_corpus_03.md), [NS-5_corpus_04](TODO/NS-5_corpus_04.md), [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md); accepted prerequisite: [NS-5_corpus_01 — DONE](TODO/DONE/NS-5_corpus_01.md) |
 | <a id="wav-04-vocabulary"></a>**WAV-04-VOCABULARY** | NS-5 | [NS-5_vocabulary_01](TODO/NS-5_vocabulary_01.md), [NS-5_vocabulary_02](TODO/NS-5_vocabulary_02.md) |
 | <a id="corpus-scale"></a>**CORPUS-SCALE** | NS-5 | [NS-5_scale_01](TODO/NS-5_scale_01.md), [NS-5_scale_02](TODO/NS-5_scale_02.md) |
@@ -314,7 +314,7 @@ presence/unknown observation for **1 NS-3 point / 0.25 overall**;
 recorded phrase gates for **2 NS-3 points / 0.50 overall**. The original
 four-point reference + observation + integration allocation is still **1+1+2**.
 The accepted reference remains 1 point; neither new open deliverable earns
-credit from the split. The 55-task catalog has one extra open task, while
+credit from the split. The then-55-task catalog had one extra open task, while
 NS-3's 41% completion and 59 remaining goal points are unchanged.
 
 | Original notes_02 requirement | Owner after split |
@@ -465,6 +465,17 @@ note choices and clearly state which relationships came from the exposed
 published notes. It remains a diagnostic until source-grounded note admission
 can pass; choose a changed, independently supported source strategy before
 another recorded-note acceptance claim.
+
+A fixed score-conditioned, two-part WFC pilot then stopped **before** model
+generation: its 1,024-cell active-pitch grid displaced a bound source gate by
+40,424 frames against the frozen 15-ms limit. There is no new audio or listener
+verdict from that attempt. The result exposes a distinct missing contract for
+event-aware joint note generation that retains same-pitch retriggers and
+inter-onset timing. [NS-4_note-events_01](TODO/NS-4_note-events_01.md) now owns
+that reusable Pascal adapter for **2 of the 4 previously unearned NS-4 points**;
+[NS-4_integration_01](TODO/NS-4_integration_01.md) retains the other 2 for the
+recorded workflow. This adds one open task without new credit: NS-4 stays 96%,
+overall completion stays 68.65%, and recorded-note admission remains open.
 
 After that first musical provider, extend admitted key/clock, parts, harmony,
 groove and timbre into the full
