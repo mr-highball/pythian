@@ -400,8 +400,9 @@ be useful sooner when the selected outcome requires it.
 ### First work to schedule
 
 The next outcome is a **recorded-note-to-generated-audio vertical slice**,
-using the existing Pascal observation and synthesis paths. First deliver a
-source-grounded, recording-grouped reference packet that can support both
+using the existing Pascal observation and synthesis paths. The immediate
+development preview makes that path listenable at a substantial length. Then
+deliver a source-grounded, recording-grouped reference packet that can support both
 [register identity](TODO/NS-3_notes_01.md) and
 [presence](TODO/NS-3_notes_05.md). Qualify the publisher's annotation method,
 source identity, known errors, acoustic positive/rest evidence and untouched
@@ -418,6 +419,11 @@ evidence into saved musical events and a substantial Pythian-generated audio
 example for the user's listening review. A development preview can be made
 earlier with explicit authored or unsupported dimensions; it earns no recorded
 learning credit. Keep independent phrase material untouched until policy freeze.
+The current development preview exercises the existing saved WAV-derived
+pitch/duration model at a bounded 256-span extent, yielding about 30 seconds
+of new native synthesis for the user's musical review. It exposes the end-to-end
+consumer while register and presence admission remain open; it does not replace
+the source-grounded reference packet or the independent phrase gate.
 
 After that first musical provider, extend admitted key/clock, parts, harmony,
 groove and timbre into the full

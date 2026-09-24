@@ -340,11 +340,13 @@ encoding; no historical file-format reader was added.
 ```text
 pythian.pitch.wav inspect-runs INPUT.wav REPORT.json CHANNEL --monophonic
 pythian.pitch.wav learn-runs INPUT.wav PREFIX CHANNEL --monophonic
-pythian.pitch.wav generate-runs MODEL.txt OUTPUT.wav QUANTUM_MS [SEED]
+pythian.pitch.wav generate-runs MODEL.txt OUTPUT.wav QUANTUM_MS [SEED] [--spans COUNT]
 ```
 
 Learning saves complete window/span evidence, source identity, settings and the
-canonical model. Generation uses only that model and emits eight solved spans.
+canonical model. Generation uses only that model and defaults to eight solved
+spans. `--spans` requests 1..1024 solved spans for a longer development preview;
+the resulting audio remains bounded to 120 seconds.
 The caller supplies its hop duration in milliseconds (10 for the checked 8000-Hz
 source); deliberately changing it scales durations without transposing pitch.
 The current operator accepts integer milliseconds only. Notes sound for their
@@ -353,6 +355,10 @@ produce silence under an explicit output policy; their distinct kinds remain in
 the report. In monophonic span auditions each synthesized voice now ends at its
 span boundary; native articulation adds 44-frame interior fades. This prevents
 previous-pitch release tails from entering the next pitched span as well as gaps.
+The optional recorded-phrase workflow requests 256 spans for its development
+preview by default; `-PreviewSpans` sets a bounded count without changing the
+learned model or the recorded-note evaluation. Its preview output has a separate
+name from the earlier eight-span diagnostic.
 General polyphonic voice release behavior is unchanged. Output is capped at
 120 seconds. See the [32-span diagnosis and rendering fix](WAV-STUDIES.md#duration-scope-checkpoint).
 

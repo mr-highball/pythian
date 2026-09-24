@@ -64,6 +64,33 @@ begin
   end;
 end;
 
+function RunPreviewSpanCount: Integer;
+var
+  LArgument: Integer;
+begin
+  Result := 8;
+  if ParamCount = 4 then
+  begin
+    Exit;
+  end;
+  if (ParamCount = 5) and (ParamStr(5) <> '--spans') then
+  begin
+    Exit;
+  end;
+  LArgument := 5;
+  if ParamStr(LArgument) <> '--spans' then
+  begin
+    Inc(LArgument);
+  end;
+  if (ParamStr(LArgument) <> '--spans') or
+    (LArgument + 1 <> ParamCount) or
+    not TryStrToInt(ParamStr(LArgument + 1), Result) or
+    (Result < 1) or (Result > MaximumLayerCells) then
+  begin
+    raise EAudio.Create('Pitch duration span count is invalid');
+  end;
+end;
+
 procedure Measure(const ALearn: Boolean);
 var
   LClip: TAudioClip;
@@ -372,9 +399,15 @@ var
   LContextMode: String;
   LHoldContext: Boolean;
   LTempoPosition: Integer;
+  LPreviewSpanCount: Integer;
 begin
   ProtectOutput(ParamStr(3), ParamStr(2));
   ProtectOutput(ParamStr(3) + '.json', ParamStr(2));
+  LPreviewSpanCount := 8;
+  if ARunMode and not AStyleMode then
+  begin
+    LPreviewSpanCount := RunPreviewSpanCount;
+  end;
   LStyle := nil;
   LContext := nil;
   LSession := nil;
@@ -454,7 +487,8 @@ begin
       LPpq := LContext.TicksPerQuarter;
     end;
     LSeed := 731;
-    if (ParamCount = 5) and not AStyleMode then
+    if not AStyleMode and (ParamCount >= 5) and
+      (not ARunMode or (ParamStr(5) <> '--spans')) then
     begin
       if not TryStrToQWord(ParamStr(5), LSeed) or (LSeed > High(TGraphSeed)) then
       begin
@@ -465,7 +499,7 @@ begin
     LOptions.Seed := LSeed;
     if ARunMode then
     begin
-      LOptions.CellCount := 8;
+      LOptions.CellCount := LPreviewSpanCount;
     end;
     if AStyleMode then
     begin
@@ -760,6 +794,7 @@ begin
     if ARunMode and not AStyleMode then
     begin
       LDocument.Add('duration_quantum_ms', LQuantum);
+      LDocument.Add('span_count', LOptions.CellCount);
     end;
     LDocument.Add('model_sha256', HashText(LText));
     LDocument.Add('seed', Int64(LSeed));
@@ -823,7 +858,9 @@ begin
     begin
       Generate(True, True);
     end
-    else if (ParamStr(1) = 'generate-runs') and (ParamCount in [4, 5]) then
+    else if (ParamStr(1) = 'generate-runs') and
+      (ParamCount in [4, 5, 6, 7]) and
+      ((ParamCount <= 5) or (ParamStr(ParamCount - 1) = '--spans')) then
     begin
       Generate(True);
     end
@@ -836,7 +873,7 @@ begin
       raise EAudio.Create('Usage: pythian.pitch.wav inspect INPUT.wav REPORT.json TEMPO_US CHANNEL; ' +
         'learn INPUT.wav PREFIX TEMPO_US CHANNEL --monophonic; generate MODEL.txt OUTPUT.wav TEMPO_US [SEED]; ' +
         'inspect-runs INPUT.wav REPORT.json CHANNEL --monophonic [--window-frames N]; ' +
-        'learn-runs INPUT.wav PREFIX CHANNEL --monophonic [--window-frames N]; generate-runs MODEL.txt OUTPUT.wav QUANTUM_MS [SEED]; ' +
+        'learn-runs INPUT.wav PREFIX CHANNEL --monophonic [--window-frames N]; generate-runs MODEL.txt OUTPUT.wav QUANTUM_MS [SEED] [--spans COUNT]; ' +
         'generate-style-runs PROFILE.pys OUTPUT.wav [--spans COUNT] ' +
         '[--extent prefix|fragment] [--context hold|sequence] [--duration-lock CELL:TICKS]');
     end;
@@ -844,7 +881,7 @@ begin
     on LException: Exception do
     begin
       WriteLn(StdErr, LException.ClassName, ': ', LException.Message);
-      Halt(1);
+      ExitCode := 1;
     end;
   end;
 end.

@@ -13,18 +13,53 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Substantial generated development preview — 2026-09-23
+
+The previous source packet gate did not close recorded note admission, so the
+next user-facing checkpoint exercises the already existing Pascal
+recorded-WAV → saved WFC pitch/duration model → Pythian synthesis path. The
+`generate-runs` operator now accepts a bounded `--spans` count and records it
+in its report; the optional recorded-phrase workflow requests 256 spans and
+uses a distinct preview filename, leaving historical eight-span diagnostics
+intact. The existing Spring flute development model, learned from the first
+30 seconds of its source, yielded a 256-span, 140-note, 1,339,758-frame stereo
+44.1-kHz WAV (30.38 seconds) with SHA-256
+`5039ed361649d1fb9f76eb810dcfb4ff39ba0cc0ac1ccabc5d5bc610bce96b95`
+under ignored `build/recorded-preview-3.2.2-win32/`. The model SHA-256 is
+`2c6efca0f2a77c817fd83a1f793521955d6a5bfe15a43c3b1419de6e4a8998e6`;
+seed 731 and a 10-ms duration quantum are fixed. Focused CLI QA passed; musical
+listening review remains pending. This is an automatic, development-exposed
+note-model preview with authored voice/velocity; it is not accepted
+transcription, flute timbre, recorded-note accuracy, genre learning, or
+milestone credit. The reserved recording groups remain untouched.
+
+The old command form defaults to eight spans and matches explicit `--spans 8`
+on current source with WAV SHA-256
+`1005e073771ff29fd5b2b45cf5707ff4137113f08fa8fd4c6db24c2741810002`. An older
+precompiled Win32 operator reproduces the saved historical eight-span WAV hash
+`bd277c1d6b6130af1f9fec9b1dbc889e9fa14549a3acf1644e2c8aafdf0ba62d`; fresh
+current-source output differs while retaining the same model hash, seed,
+eight states/notes and 26,901 frames. This validates current CLI/default
+compatibility, not byte identity with that older executable. Checked stable FPC
+3.2.2 Win32/Win64 reject malformed `--spans zero` with exit 1, no output and
+zero unfreed blocks. Repeated 256-span runs match across targets (SHA-256
+`5039ed361649d1fb9f76eb810dcfb4ff39ba0cc0ac1ccabc5d5bc610bce96b95`); all 116
+unknown spans are exact PCM silence, alongside 140 pitch spans. No musical
+listening verdict has been made.
+
 ## Recalibrated execution focus — 2026-09-23
 
 The user wants progress measured by a substantial Pythian result, with their
 listening time spent on generated audio. The bounded synthesis and WFC layer
 contracts are accepted; recorded note admission is the next critical path.
 Stop routine source microclip requests and repeated single-window or threshold
-investigations. The next deliverable is one qualified recording-grouped
-reference packet suitable for the existing register and presence tasks, with
+investigations. After the development listening preview above, the next
+evidence deliverable is one qualified recording-grouped reference packet
+suitable for the existing register and presence tasks, with
 publisher method, known errors, acoustic labels and untouched groups explicit.
 If no source passes the declared evidence gate, stop before another scorer
 attempt and reassess the source strategy. Then move through presence/register,
-event decisions and saved phrase learning toward a substantial native generated
+event decisions and saved phrase learning toward an accepted native generated
 listening checkpoint. Preserve each task's complete criteria and the current
 68.65% acceptance total; the roadmap change earns no credit.
 

@@ -25,6 +25,8 @@ param(
   [string]$Compiler = 'fpc',
   [ValidateSet('Development', 'HeldOut')]
   [string]$EvaluationSet = 'Development',
+  [ValidateRange(1, 1024)]
+  [int]$PreviewSpans = 256,
   [switch]$RegionStudy
 )
 
@@ -113,8 +115,9 @@ try {
       $prefix = Join-Path $buildRoot $name
       Invoke-Native 'pythian.pitch.wav' @('learn-runs', "$prefix.source.wav",
         "$prefix-learned", '0', '--monophonic') "$name-learned.log"
-      Invoke-Native 'pythian.pitch.wav' @('generate-runs', "$prefix-learned.model.txt",
-        "$prefix-generated.wav", '10') "$name-generated.log"
+      $previewArgs = @('generate-runs', "$prefix-learned.model.txt",
+        "$prefix-preview-$PreviewSpans.wav", '10', '731', '--spans', "$PreviewSpans")
+      Invoke-Native 'pythian.pitch.wav' $previewArgs "$name-preview-$PreviewSpans.log"
     }
   }
   Write-Output "Completed $EvaluationSet evaluation. Native reports determine quality admission; command success alone does not."
