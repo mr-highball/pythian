@@ -28,6 +28,20 @@ Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [PITCH](../PI
 
 **Dev Notes:**
 
+- 2026-09-23 development preview failure localization: the user's 30-second
+  Pythian preview stumbled in both pitch and timing. A private, source-bound
+  Pascal comparison uses published performed-note annotations for the same
+  development Spring flute excerpt, rather than claiming WAV inference. Its
+  first frozen monophonic packet stopped on a 1-ms annotation overlap before
+  output. One revised policy preserved all published intervals in direct
+  native synthesis and clipped four 1-ms overlaps only in the monophonic WFC
+  training view. Checked Win32/Win64 produced identical direct and generated
+  WAV hashes with zero leaks; the generated 256-span WAV/sidecar replay
+  byte-identically. The paired listening packet and exact boundaries are in
+  [WORK](../WORK.md#substantial-generated-development-preview--2026-09-23).
+  These reference-conditioned outputs await a listener verdict and cannot
+  satisfy automatic recorded-note or independent phrase acceptance. No task
+  credit changes.
 - Follow-up: use the combined maintained identity/presence path only after both prerequisite tasks pass. The preferred development flute precision remains 91.57% against 98%; violin's passing development result is not independent acceptance. Keep reserved phrase material untouched until the final policy freeze; see [phrase evidence](../PHRASE-EVALUATION.md).
 
 - Integration follow-up: the [scale workload](NS-5_scale_01.md) still needs this task's admitted-note-to-saved-learner bridge. Raw salience and private diagnostic outputs cannot substitute for it.

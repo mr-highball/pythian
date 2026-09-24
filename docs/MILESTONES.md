@@ -435,9 +435,14 @@ of new native synthesis for the user's musical review. It exposes the end-to-end
 consumer while register and presence admission remain open; it does not replace
 the source-grounded reference packet or the independent phrase gate.
 The user's full-clip review found the preview only beginning to sound musical
-and stumbling over notes throughout. It is a failed musical checkpoint, so
+and stumbling over notes throughout, in both pitch and timing. It is a failed
+musical checkpoint, so
 another longer render or timbre change is not the next remedy; recorded-note
 admission remains the governing prerequisite.
+A checked Pascal comparison has now prepared direct and WFC-generated native
+renders from the published note annotations of the same exposed development
+excerpt. The user's paired listening verdict is pending; this reference-fed
+diagnostic does not close automatic admission or phrase gates.
 
 After that first musical provider, extend admitted key/clock, parts, harmony,
 groove and timbre into the full

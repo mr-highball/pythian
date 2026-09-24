@@ -88,11 +88,50 @@ zero unfreed blocks. Repeated 256-span runs match across targets (SHA-256
 unknown spans are exact PCM silence, alongside 140 pitch spans. The user's
 full-clip review said it has "the very early beginnings of something musical"
 but "trips over notes almost throughout the entirety of the track." This
-fails the substantial musical-quality checkpoint. Preserve this exact
-source/model/seed/WAV as a development failure; prioritize note identity,
+fails the substantial musical-quality checkpoint. The user later clarified
+that both pitch jumps and uneven timing contribute to the stumbling. Preserve
+this exact source/model/seed/WAV as a development failure; prioritize note identity,
 presence and event decisions before another length or timbre variation. The
 numbered HFS copy was removed after the reply; the original ignored WAV and
 report remain.
+
+The first private annotation-versus-extraction comparison packet stopped before
+rendering: published Spring flute note rows 6 and 7 overlap by 1 ms
+(`3.048+0.159 > 3.206`), violating its frozen monophonic-input gate. Checked
+Pascal compilation passed; no new audio, saved model or listening verdict
+followed. Its policy and exact error remain under ignored
+`build/annotation-pair/`. One revised, predeclared packet permits the later
+onset to own a bounded overlap **only in the monophonic training model** while
+preserving original intervals in a direct native render. It stops if any overlap
+exceeds 10 ms, total clipping exceeds 100 ms, or quantization collapses a note.
+This diagnostic can distinguish a renderer/timing failure from failures in
+WAV note extraction or generated sequence modeling; it is not task acceptance.
+The revised checked Win64 Pascal packet passed its fixed bounds on the
+development-exposed first 30 seconds: 96 published note rows, four 1-ms
+overlaps clipped **only for monophonic WFC training** (4 ms total), and 164
+contiguous 10-ms model spans. The direct Pythian render retains the published
+intervals and is exactly 30 seconds, stereo 44.1 kHz, SHA-256
+`c168dac24cb94b0dd45b4d72af4b02c2ad388bc6f94166565ede537d55913fda`.
+The saved annotation-conditioned model SHA-256 is
+`e11c2feb6163feef68fcc629b8cdf740b771ae945a21994ae956585473804bbb`;
+the unchanged native `generate-runs` consumer used seed 731, 10-ms quantum
+and 256 spans to make a 42.9-second WAV, SHA-256
+`5e840a97945496cdaf91cd69d9d8549f7a3144b9ae81f957f63daf797c96e871`.
+One heap-traced replay matched the direct/model hashes with zero unfreed
+blocks. The private policy, Pascal tool, full ledger and WAVs are ignored under
+`build/annotation-pair/`. Salty Boi's checked stable FPC 3.2.2 Win32/Win64 QA
+verified both source identities, the four exact 1-ms model-only clips, direct
+original intervals, output geometry, failure preservation and zero leaks.
+The 256-span generated WAV and JSON sidecar replay byte-identically across
+targets. The private diagnostic report includes elapsed time and tiny
+target-dependent cents residual formatting, so its bytes are not a cross-target
+replay claim. The existing extraction-trained input had 135 pitch spans and
+12.56 seconds of unknown; the published-note model has 96 pitch spans and
+9.28 seconds of annotation gaps, with no unknown. These are descriptive
+training facts, not a musical verdict. Three hash-verified WAV copies are
+temporarily available in the existing local HFS feedback folder as numbered
+clips 1–3; the user's listening verdict remains pending. Neither
+annotation-conditioned output is automatic WAV transcription.
 
 ## Recalibrated execution focus — 2026-09-23
 
