@@ -12220,3 +12220,22 @@ substantial native audio/listening path or stops authored phrase-WFC entirely;
 no source, seed or budget repair loop follows a failure. This is a distinct
 boundary and source-qualification policy, not a retry of the 128-cell graph.
 NS-4_composition_01 remains open at NS-4 97% / overall 68.80%.
+
+The single new first-party phrase-reset source set passed its pre-solve
+qualification under ignored `build/composition-phrase-reset/qualified-source/`.
+The first Win32 run falsely applied the phrase-final-rest requirement to all
+four bar endings and stopped before emitting ledgers; its abrupt exit left
+three heap blocks. Ticket Guy corrected that checker, source-ledger
+serialization and cleanup without changing `BuildControl` or the source
+construction constants. Salty Boi independently compared the before/after
+construction and confirmed the corrected Win32/Win64 ledgers match with zero
+leaks. All 16 full H/R/bass/melody token paths are distinct, with four rhythm
+outlines and four actual melody contours per role. Melody ranges, leap <=12
+(observed max 11), bass range/root-fifth, chord-tone strong beats, phrase gate
+ends, two-voice final rest and tonic C cadence all pass. The builder SHA-256 is
+`6d1e99e62c941bb0325219d7885411f007623c7dc0fa1a2ed8bc6c14b6a1bad9`;
+qualification SHA-256 is
+`c58f3edbf4c0cc726c64f53ccd8e3b36c62dbd2c74d2e4057ad2543275b20980`.
+This qualifies source data only. No model was learned, WFC solve was run, audio
+was rendered or listener verdict obtained. Freeze actual model/config/mask
+identities before the one authorized candidate solve. Task credit stays open.

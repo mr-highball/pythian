@@ -107,3 +107,16 @@ accepted composition result.
   `build/composition-phrase-reset/QUALIFIED-SOURCE-PLAN.md`. If its source
   qualification or one candidate fails, stop authored phrase-WFC rather than
   revising sources or budgets in place. No task credit yet.
+- 2026-09-24 the one new first-party phrase-reset source set qualified after
+  repairing a checker that had counted every bar ending instead of only each
+  phrase-final cell. The source-construction procedure and constants were
+  unchanged; the first failed run wrote no source ledger, so direct byte
+  identity to its in-memory controls is not claimed. Checked Win32/Win64
+  Pascal ledgers match with zero leaks on the corrected run. All 16 complete
+  H/R/bass/melody token paths are distinct; each role has four rhythm outlines
+  and four melody contours. Ranges, at-most-12-semitone melody leaps (max 11),
+  bass root/fifth, strong-beat chord tones, no crossing gate, final two-voice
+  rest and C cadence pass. Salty Boi independently verified the source and
+  repair diff. No WFC model, solve, audio or listener verdict exists yet;
+  source qualification authorizes only frozen model preparation and the one
+  planned candidate, not task credit.
