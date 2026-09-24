@@ -255,3 +255,36 @@ Win64 QA reproduced the report twice byte-identically (SHA-256
 with zero unfreed blocks and no source-gate/scorer mismatch. No task criterion
 or credit closes. The original-to-derived timing transformation remains
 nominal, so the screen supports no exact release-end claim.
+
+## GuitarSet physical pickup source gate stopped — 2026-09-23
+
+The next source strategy used the [publisher's simultaneous original six-string
+pickup and acoustic microphone recordings](https://guitarset.weebly.com/uploads/1/2/1/6/121620128/xi_ismir_2018.pdf)
+rather than inferring silence from
+note or F0 gaps. An ignored policy under `build/guitarset-hex-source/POLICY.md`
+fixed the already user-reviewed player-05 clips 7, 8 and 9, their exact
+11,025-frame windows, a 10% pooled pickup-RMS rest-to-positive gate, source
+identities and a reserved player-00 follow-up before pickup PCM was opened.
+The user heard guitar in 7 and 8 and nothing in 9. The 11,720,384-byte pickup
+member was extracted from exact HTTPS byte ranges of the publisher ZIP;
+its WAV SHA-256 is
+`eb48ccb65285f741253f5690cc301bdf8acd78009d664eeff5cb11d6d3dc8ae0`,
+and its ZIP CRC32 is 2,817,787,952. The full 3.2-GB archive was not downloaded,
+so its published whole-archive MD5 was not verified. The microphone, review
+and aid-manifest hashes were rechecked by the Pascal screen.
+
+The six-channel pickup and mono microphone both contain 976,692 frames at
+44.1 kHz. Pickup pooled RMS was 0.004066296 for clip 7, 0.000643569 for
+clip 8, and 0.000150761 for clip 9. Thus clip 9 is about 23.4% of the quieter
+positive clip 8 and fails the predeclared <=10% gate, although its microphone
+RMS is only 0.003615834 versus 0.049499761 and 0.013056256 for 7 and 8.
+The pickup residual is not itself an audible guitar verdict. The result is no
+qualified physical no-guitar reference under this policy, and no presence
+score. Do not shift these windows or relax the gate. Reserved player 00 and
+other untouched groups remain unopened. The exact Pascal screen and TSV are
+ignored under `build/guitarset-hex-source/`; criterion 3 stays open.
+Salty Boi independently reproduced the checked stable Win64 report byte for
+byte (SHA-256
+`3fdc579f97da1e8a5e04f681f2b739272acdf2292926c6abdd25929814e75418`),
+verified the hashes, CRC, geometry, listener bindings and RMS formula, and
+reported zero unfreed blocks. No measurement defect was found.

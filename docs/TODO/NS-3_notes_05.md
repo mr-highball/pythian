@@ -75,6 +75,18 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-23 physical pickup source gate stopped: publisher GuitarSet's
+  simultaneous original six-string pickup and microphone were checked on
+  already listener-reviewed player-05 clips 7/8/9 under a policy frozen before
+  pickup PCM. Pascal verified the exact WAV, CRC, geometry, aid manifest and
+  review hashes. The putative no-guitar clip 9 pickup pooled RMS was
+  0.000150761, 23.4% of the quieter guitar-positive clip 8, failing the
+  predeclared <=10% acoustic contrast gate. Clip 7 was 0.004066296. No
+  presence scorer ran; no ratio or window changed. Reserved player 00 is
+  unopened. This is a third distinct source-level failure to qualify a
+  generic no-instrument rest; stop source searches of this form and select a
+  different core prerequisite under task flow. See [source evidence](../PRESENCE.md#guitarset-physical-pickup-source-gate-stopped--2026-09-23).
+  Criterion 3 and task credit remain open.
 - 2026-09-23 full-recording source gate stopped: a fixed Pascal screen of the
   complete URMP `14_Waltz` isolated flute stem found 70 source-supported
   positive windows but no qualified generic-instrument rest in 351 grid

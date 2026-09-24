@@ -414,6 +414,11 @@ stopped before a usable no-instrument reference. The next source strategy must
 bind actual no-instrument acoustics independently of note/F0 gaps; no further
 window search in either stopped source is scheduled. The reserved URMP
 Miserere work and independent phrase recordings remain untouched.
+The subsequent original six-string GuitarSet pickup comparison also failed its
+frozen acoustic rest gate before scoring, with the reserved player unopened.
+Stop this source/window route too. The preview's failed listening result and
+three nonclosing source strategies call for a changed core work batch, not
+another threshold or source-window variation.
 
 Then complete [register identity](TODO/NS-3_notes_01.md) and
 [presence](TODO/NS-3_notes_05.md), followed by
@@ -429,6 +434,10 @@ pitch/duration model at a bounded 256-span extent, yielding about 30 seconds
 of new native synthesis for the user's musical review. It exposes the end-to-end
 consumer while register and presence admission remain open; it does not replace
 the source-grounded reference packet or the independent phrase gate.
+The user's full-clip review found the preview only beginning to sound musical
+and stumbling over notes throughout. It is a failed musical checkpoint, so
+another longer render or timbre change is not the next remedy; recorded-note
+admission remains the governing prerequisite.
 
 After that first musical provider, extend admitted key/clock, parts, harmony,
 groove and timbre into the full

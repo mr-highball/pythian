@@ -13,6 +13,23 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Physical pickup presence source stop — 2026-09-23
+
+One distinct, prospectively frozen source strategy used GuitarSet's original
+six-string pickup alongside the already reviewed player-05 microphone clips.
+Pascal bound the reviewed clip windows, source hashes, six-channel PCM geometry
+and publisher ZIP-member CRC. The supposed rest clip 9 had pickup pooled RMS
+0.000150761, 23.4% of the quieter positive clip 8 rather than the frozen
+maximum 10%; clip 7 was stronger. No presence score ran, and reserved player
+00 was not opened. The full archive MD5 was not checked because only exact
+member byte ranges were acquired. See
+[physical source gate](PRESENCE.md#guitarset-physical-pickup-source-gate-stopped--2026-09-23)
+and its ignored policy/report. This source/window/ratio is stopped; NS-3_notes_05
+criterion 3 and milestone credit remain open. The failed 30-second generated
+preview makes note identity, presence and event admission urgent, but repeated
+unqualified rest searches cannot close them. Continue a different ready core
+prerequisite while a genuinely qualified acoustic reference is absent.
+
 ## Full-recording presence source stop — 2026-09-23
 
 The next bounded source-level gate used the complete isolated URMP Waltz flute
@@ -51,8 +68,8 @@ intact. The existing Spring flute development model, learned from the first
 `5039ed361649d1fb9f76eb810dcfb4ff39ba0cc0ac1ccabc5d5bc610bce96b95`
 under ignored `build/recorded-preview-3.2.2-win32/`. The model SHA-256 is
 `2c6efca0f2a77c817fd83a1f793521955d6a5bfe15a43c3b1419de6e4a8998e6`;
-seed 731 and a 10-ms duration quantum are fixed. Focused CLI QA passed; musical
-listening review remains pending. This is an automatic, development-exposed
+seed 731 and a 10-ms duration quantum are fixed. Focused CLI QA passed. This
+is an automatic, development-exposed
 note-model preview with authored voice/velocity; it is not accepted
 transcription, flute timbre, recorded-note accuracy, genre learning, or
 milestone credit. The reserved recording groups remain untouched.
@@ -68,8 +85,14 @@ compatibility, not byte identity with that older executable. Checked stable FPC
 3.2.2 Win32/Win64 reject malformed `--spans zero` with exit 1, no output and
 zero unfreed blocks. Repeated 256-span runs match across targets (SHA-256
 `5039ed361649d1fb9f76eb810dcfb4ff39ba0cc0ac1ccabc5d5bc610bce96b95`); all 116
-unknown spans are exact PCM silence, alongside 140 pitch spans. No musical
-listening verdict has been made.
+unknown spans are exact PCM silence, alongside 140 pitch spans. The user's
+full-clip review said it has "the very early beginnings of something musical"
+but "trips over notes almost throughout the entirety of the track." This
+fails the substantial musical-quality checkpoint. Preserve this exact
+source/model/seed/WAV as a development failure; prioritize note identity,
+presence and event decisions before another length or timbre variation. The
+numbered HFS copy was removed after the reply; the original ignored WAV and
+report remain.
 
 ## Recalibrated execution focus — 2026-09-23
 
