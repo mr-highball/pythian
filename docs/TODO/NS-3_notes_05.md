@@ -73,6 +73,18 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-23 user-directed listening reallocation and source-quality gate:
+  stop preparing routine third-party source microclips for the user's ears;
+  prioritize their review of substantial Pythian-synthesized output. Existing
+  twelve GuitarSet labels remain packet evidence. The publisher's annotation
+  method manually validates individual-string onsets but estimates offsets
+  automatically; a separate microphone capture does not inherit an audible
+  rest label from an offset. The next recorded-evidence batch must qualify
+  independently supported acoustic positive/rest intervals and known dataset
+  errors before any score. If no exact-window rest is supportable, retain
+  `unknown` and keep criterion 3 open while following another ready core
+  prerequisite. Do not substitute metadata for a listener or request the
+  earlier proposed eight extra routine labels. No task credit.
 - 2026-09-23 distant-gap metadata stop: after the two-batch reassessment, a
   single frozen player-04 BN2-166-Ab source was screened for a 250-ms
   final-note window and a 1.0–1.25-second post-end window without any other

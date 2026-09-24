@@ -21,6 +21,32 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Listening effort and dataset-quality direction — 2026-09-23
+
+The user clarified that dataset-label quality should come primarily from the
+source and our evidence audit, while their ears should be spent on Pythian's
+**synthesized results**. The twelve GuitarSet microclip labels already supplied
+remain valid packet evidence; do not request the previously proposed next
+eight routine source-clip labels. The mobile feedback folder stays empty until
+a substantial generated listening checkpoint is ready. This changes the
+evidence path, not the NS-3_notes_05 acceptance threshold: unknown source
+windows stay unknown rather than receiving inferred human labels.
+
+GuitarSet's [authors' paper](https://guitarset.weebly.com/uploads/1/2/1/6/121620128/xi_ismir_2018.pdf)
+describes manually validated onsets from individual-string pickup recordings,
+but automatically estimated note offsets. Its separately recorded microphone
+is the audio Pythian tested. The [publisher release](https://zenodo.org/records/3371780)
+also records known timing and duplicate-note errors. Thus the dataset is useful
+for performed-note timing and source provenance, but the annotation end alone
+cannot label a microphone window inaudible; the user confirmed guitar sound
+after one such end. For the open recorded-presence criterion, first qualify
+publisher-supported or otherwise independently grounded acoustic positive and
+negative intervals, with source identity, capture relationship, annotation
+method, known errors and held-out groups checked in Pascal. If that evidence
+does not establish an exact-window rest, report the limitation and advance a
+different ready core prerequisite rather than recruit the user as a routine
+dataset annotator. Reserve their next listening review for generated output.
+
 ## Presence onset stop and fresh player-03 result — 2026-09-23
 
 NS-3_notes_05 criterion 3 lacked a guitar-positive development window and a

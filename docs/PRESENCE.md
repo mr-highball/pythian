@@ -153,3 +153,26 @@ no other note across the union. Checked stable Pascal verified its JAMS hash
 and 48 note extents but found no eligible event, with zero leaks. It stopped
 before microphone extraction, listening aids or presence scoring. No further
 acoustic claim follows from that screen.
+
+## Dataset evidence allocation — 2026-09-23
+
+The user wants recorded-dataset quality to bear the labeling burden and their
+listening time reserved mainly for Pythian's generated music. The already
+reviewed GuitarSet windows retain their exact acoustic labels, but no further
+routine GuitarSet microclip review is planned. The earlier suggested budget of
+eight additional user labels is withdrawn.
+
+The [GuitarSet authors' annotation method](https://guitarset.weebly.com/uploads/1/2/1/6/121620128/xi_ismir_2018.pdf)
+supports carefully checked performed-note onsets: the six-string pickup gave
+per-string recordings, and annotators corrected onsets and omitted masked
+muted-string events. Offsets were estimated automatically. The microphone WAV
+used by Pythian was a separate capture. Therefore these annotations can
+support a source-bound played-note hypothesis, but cannot by themselves
+establish that an exact microphone window contains audible guitar or audible
+rest. The [publisher release](https://zenodo.org/records/3371780) lists two
+timing errors and a duplicate-note error; source qualification must account
+for them. Future reference candidates need independently supported acoustic
+labels, verified source identity and disjoint evaluation groups. Where that
+evidence is absent, retain `unknown` and leave recorded decision acceptance
+open. No synthetic-output listening judgment is inferred from these source
+checks.

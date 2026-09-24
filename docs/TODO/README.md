@@ -39,7 +39,10 @@ windows sounded guitar-like, leaving no same-source reviewed rest. Its frozen
 scorer made no presence decisions. A fixed distant-gap screen on player 04
 then stopped at metadata: no eligible annotation-free interval, and no audio
 was opened. A source-local acoustic guitar/no-guitar reference is still needed;
-criterion 3 and task credit remain open.
+criterion 3 and task credit remain open. The user's [listening allocation](../WORK.md#listening-effort-and-dataset-quality-direction--2026-09-23)
+puts recorded-label quality on source evidence and reserves their ears mainly
+for Pythian-synthesized outputs. No further routine GuitarSet microclip packet
+is queued for them.
 
 Note research retains its stopped proposals and progress-checkpoint count.
 

@@ -79,6 +79,10 @@ do not infer universal genre traits from a label or compilation description.
 Independent material is still required for an accepted reusable result. Seek
 the user's judgment at substantial listening or design checkpoints, while
 routine timed annotations and engineering checks use other supported evidence.
+The user's listening priority is Pythian-synthesized output. Qualify recorded
+dataset labels from publisher methods, source integrity and independent
+acoustic evidence; do not make routine microclip labeling by the user the
+default path to recorded acceptance.
 
 The [north-star milestones](docs/MILESTONES.md#north-star-assessment) own the
 current completion assessment. The [task catalog](docs/TODO/README.md) owns the

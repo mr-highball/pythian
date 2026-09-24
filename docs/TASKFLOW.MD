@@ -29,6 +29,14 @@ basic function. Where a style-reference task needs detailed listening, defer it
 after an honest checkpoint and work a ready core prerequisite. Invite the user
 at substantial playable or design checkpoints, not for routine annotation.
 
+The user's later listening allocation is more specific: put routine recorded
+dataset labeling on source quality, publisher documentation, and independently
+supported evidence. Do not queue more source-audio microclips for the user as
+the default route to a benchmark. Keep unsupported exact-window claims
+`unknown` and the corresponding acceptance criterion open. Ask the user to
+judge substantial **Pythian-synthesized outputs**, where their musical hearing
+can shape the library, rather than repeatedly judging third-party recordings.
+
 NS-1's accepted extraction/independence baseline is already complete. Do not
 manufacture historical DONE files or repeat completed work to populate folders.
 Core independence, Pascal ownership, retained WFC boundaries, complete notices,
