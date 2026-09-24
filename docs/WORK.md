@@ -12328,3 +12328,20 @@ stop if its identity or final hash fails, with no whole-archive restart loop.
 The original selected pairs, protected splits, Pascal analysis policy and
 ARTBeaT candidate failures stay fixed. A passing transport would only enable
 the previously frozen acoustic source qualification, not earn task credit.
+
+GMD transport recovery completed under ignored `build/gmd-pulse-audio/`:
+one conditional 206 Range response supplied the exact 1,162,056,290-byte
+tail. The publisher full-archive SHA-256
+`21559feb2f1c96ca53988fd4d7060b1f2afe1d854fb2a8dcea5ff95cf3cce7e9`
+and unchanged prefix SHA-256 passed independent read-only verification.
+A PowerShell Int32 overload error in the first post-transfer verifier was
+limited to a read-only hash pass; it did not change the archive or cause
+another request. The frozen member lookup then stopped at a packaging-path
+discrepancy: the official ZIP uses `groove/` before each of the four selected
+relative MIDI/WAV paths. Salty Boi independently found exactly one prefixed
+entry for each frozen path, with no member stream opened, WAV extracted or
+qualifier run. This batch closes no tempo criterion, but the verified source
+archive is available. The next bounded action freezes an explicit one-to-one
+root-prefix mapping and duplicate check, keeping the original selected
+pairs, acoustic gates and protected splits fixed. A mapping failure stops;
+otherwise run the previously compiled Pascal qualifier on the two pairs.

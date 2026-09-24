@@ -63,6 +63,21 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
   publisher's full SHA-256 gate; stop if range identity or final hash fails.
   This changes the acquisition method, not source selection, acoustic gates
   or beat-candidate policy. No further whole-archive restart loop follows.
+- 2026-09-24 one conditional Range recovery completed the exact missing
+  1,162,056,290 bytes. The verified full archive is 5,111,599,714 bytes and
+  matches the publisher SHA-256
+  `21559feb2f1c96ca53988fd4d7060b1f2afe1d854fb2a8dcea5ff95cf3cce7e9`;
+  the original prefix hash is unchanged. A PowerShell integer-overload error
+  interrupted read-only post-transfer verification; a corrected read-only
+  check passed without another request. The frozen extractor then stopped
+  before opening a member because all four selected relative member names
+  have a literal `groove/` container prefix. Salty Boi independently verified
+  exactly one matching prefixed entry for each selected path, no member access,
+  and no WAV or qualifier run. This is a packaging-path discrepancy, not a
+  changed source identity or acoustic failure. The next bounded action is to
+  freeze the exact one-to-one `groove/` mapping and duplicate guard, then
+  continue only the prior two-pair acoustic policy; no selection or threshold
+  changes. Task criteria and credit remain open.
 - 2026-09-23 independent-source screen: a frozen Pascal metadata/MIDI-only
   check of the [official Groove MIDI Dataset](https://magenta.withgoogle.com/datasets/groove)
   found two different-drummer/session
