@@ -75,6 +75,21 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-24 OpenMIC-2018 was screened as a new human-label source after
+  the stopped MAPS/URMP/GuitarSet routes. Its [publisher record](https://zenodo.org/records/1432913)
+  contains individual instrument votes, but the [publisher paper](https://archives.ismir.net/ismir2018/paper/000248.pdf)
+  defines a named instrument's presence/absence over a whole 10-second clip.
+  The maintained [presence contract](../PRESENCE.md#first-maintained-observation-boundary)
+  requires an exact-window reviewed rest with **no audible instrument**;
+  no-guitar is insufficient, and clip-level positives cannot locate attacks
+  or tails. Stop this source route before archive verification, extraction or
+  scoring. The sole transfer was terminated at 769,896,448 unverified bytes;
+  its ignored partial file and `STOP.md` preserve the outcome. A checked
+  Pascal archive verifier compiled but never ran; no archive metadata CSV,
+  audio or member was opened, and no task criterion or credit closes. The next
+  source needs independently supported exact-window no-instrument acoustics,
+  not another target-instrument negative treated as generic rest.
+
 - 2026-09-24 MAPS whole-archive continuation stopped at publisher integrity.
   One frozen repair resumed the unverified prefix and obtained the exact
   2,661,240,101-byte length, but two Pascal full-file MD5 passes gave

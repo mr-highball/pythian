@@ -12537,3 +12537,22 @@ melody, harmony and originality. Listening is pending. This numeric pass
 does not establish a coherent song, recorded learning, WFC composition or
 NS-4 task acceptance. Keep NS-4 at 97% and overall completion at 68.80%; do
 not retune these seeds after the listener checkpoint.
+
+While that listener verdict is pending, a metadata-first source strategy for
+recorded presence stopped on a semantic gate before dataset contents were
+opened. The [OpenMIC-2018 publisher](https://zenodo.org/records/1432913)
+supplies crowd-reviewed instrument labels and source metadata, but its
+[paper](https://archives.ismir.net/ismir2018/paper/000248.pdf) assigns each
+yes/no answer to a named instrument anywhere in a 10-second clip. Pythian's
+maintained `pythian.presence` reviewed rest requires no audible instrument
+in an exact window; a no-guitar clip cannot supply it, and a clip-positive
+cannot time attacks or tails. The ignored `build/openmic-presence-source/`
+policy, publisher-schema addendum and `STOP.md` preserve the pre-content
+decision. One official archive transfer was stopped at 769,896,448 bytes,
+renamed `.tgz.partial` and never verified or opened. The checked Pascal
+archive verifier compiled but was not run; a partial metadata-gate draft was
+not compiled or run. No inference runtime, score or task credit follows.
+Automatic approval review rejected deletion of the unverified prefix as
+`blocked by policy`; it remains ignored under build. This source route does
+not unblock NS-3_notes_05 criterion 3. The composition listening checkpoint
+remains independently pending; overall completion stays 68.80%.
