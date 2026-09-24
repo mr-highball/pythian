@@ -327,6 +327,8 @@ retain the exact HTTP range and stop evidence. No ZIP directory was parsed and
 no MIDI/WAV member was extracted. The archive length alone cannot authenticate the concatenated bytes,
 so this is an **integrity failure**, not a MAPS acoustic result. No presence
 score, criterion or task credit follows. The one-attempt route is stopped.
+The corrupt 2.66-GB ignored archive remains on disk because automatic command
+review rejected its exact-path deletion; it is not used as source evidence.
 
 Salty Boi passed source-free synthetic QA of the prepared Pascal MIDI tempo/
 pedal gate and sparse WAV-window gate after one pre-execution hash-length fix.
