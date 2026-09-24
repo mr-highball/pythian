@@ -21,8 +21,12 @@ Pythian keeps four different facts separate:
 
 `pythian.presence` measures an exact source-frame window and a disjoint
 same-recording reference window. The caller must supply a source-bound reviewed
-rest identity to use contrast evidence. An unreviewed reference yields `unknown`
-for nonzero candidates; exact digital zero remains directly observable. A WAV
+rest identity to use contrast evidence. Here a reviewed rest means no audible
+instrument in the reference window; room or electronic noise may remain.
+A window known only to lack one target instrument is a different comparison
+and cannot be asserted as this API's reviewed rest. An unreviewed reference
+yields `unknown` for nonzero candidates; exact digital zero remains directly
+observable. A WAV
 annotation alone cannot promote a reference to reviewed rest. Both windows have
 a fixed 262,144-frame work cap. Clip and streaming-source entry points share
 the same calculation; streaming coordinates use 64-bit frames. The observation
@@ -103,11 +107,20 @@ normalized input, every aid hash and original WAV identity before output.
 The development scorers agree byte for byte across Win32/Win64 (SHA-256
 `05bd16a0e0986c8918325ea85148d72c4f0d58cce10ee24dadbaf99af11e288a`).
 
-| Source role | Reviewed same-source rest | Scored windows | Correct contrast | Correct rest-compatible | False active | Missed active | Abstained known labels |
+| Source role | Historical comparison window | Scored windows | Contrast output | Compatible output | False active | Missed active | Abstained known labels |
 | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: |
 | Development player 01 | 1 | 2, 3 | 0 | 2 | 0 | 0 | 0 |
 | Development player 02 | 4 | 5, 6 | 0 | 2 | 0 | 0 | 0 |
 | Reserved player 05 | 9 | 7, 8 | 1 | 0 | 0 | 0 | 1 |
+
+Clips 1 and 4 were audible `other_noise`, so they are reviewed **no-guitar**
+comparisons, not reviewed generic rests for `pythian.presence`. The four
+development `compatible_with_reviewed_rest` rows above are reproducible
+historical scorer outputs but cannot be accepted as generic presence decisions.
+Clip 9, heard as nothing, is the only reviewed no-instrument reference in
+this packet. The table preserves what the frozen scorer emitted; its
+false/missed columns are historical scoring counts, not calibrated generic
+instrument accuracy for the development rows.
 
 The reserved source was scored once on checked Win64 (TSV SHA-256
 `9f8dbd121eb3379f8f43e435d4b3ffee3ddecd22ccd974ce326b49cb47724779`),
@@ -116,8 +129,9 @@ clip 8 is `unknown`, an explicit coverage loss. Reference windows are excluded
 from scoring. No source lacked a reference; all nine listener labels are known.
 The fixed fourfold/1.5-fold observation ratios were not retuned.
 
-This closes the source-bound listener-reference convention in
-[NS-3_notes_05](TODO/NS-3_notes_05.md) criterion 1 at this packet scope.
+This closes the source-bound acoustic-label and source-group convention in
+[NS-3_notes_05](TODO/NS-3_notes_05.md) criterion 1 at this packet scope;
+it does not validate clips 1 and 4 as generic rests.
 Its original development sources have **no scored guitar-positive windows**,
 so they cannot establish positive detection or calibration. The two originally
 reserved positive windows yield one candidate and one abstention, not

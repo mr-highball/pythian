@@ -30,10 +30,12 @@ by changing its failed pair or window in place.
 
 The first frozen GuitarSet listener packet is now bound and scored. The
 [source-bound review](../PRESENCE.md#first-listener-bound-guitarset-comparison--2026-09-23)
-meets criterion 1's reference-convention and source-group separation at this
+meets criterion 1's acoustic-label and source-group convention at this
 packet scope; criteria 2 and 4 were already met at the maintained observation
-and consumer scope. Development yielded four correct rest-compatible decisions
-but no scored guitar-positive window. The reserved recording yielded one
+and consumer scope. Development yielded four historical rest-compatible scorer
+outputs against audible no-guitar comparisons, but no scored guitar-positive
+window. Those outputs do not qualify as generic presence decisions under the
+maintained API. The reserved recording yielded one
 correct contrast candidate and one guitar-positive abstention. Criterion 3
 and all task credit remain open; this evaluation recording is now exposed and
 cannot become a fresh held-out test after a policy change. It is now usable
@@ -73,6 +75,14 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-23 reference-scope audit: the maintained `ReferenceReviewed` flag
+  asserts a no-instrument rest, while GuitarSet clips 1 and 4 were audible
+  `other_noise` and establish only no identified guitar. Their frozen scorer
+  outputs remain reproducible target-relative diagnostics, not valid generic
+  presence decisions. Clip 9 is the packet's reviewed no-instrument rest.
+  The URMP no-flute accompaniment control remains physical source-contribution
+  evidence, not an audibility verdict. No source was rescored, criterion 3
+  remains open, and no task credit changes.
 - 2026-09-23 stem-supported source stop and two-batch reassessment: the fixed
   URMP Nocturne flute screen found no natural 250-ms rest with a half-second
   margin and another annotated active instrument in its first 30 seconds.
@@ -146,9 +156,12 @@ held-out evidence after a policy change.
   inaudible; 7 and 8 sounded like acoustic guitar. A checked Pascal binder
   verified all nine aids and produced identical Win32/Win64 reviewed packets.
   The frozen production scorer chose source-local reference clips 1, 4 and 9.
-  Win32/Win64 development results match exactly: four correct rest-compatible
-  windows, zero positives. The reserved source produced one correct contrast
-  candidate and one guitar-positive abstention, with zero false-active or
+  Win32/Win64 development results match exactly: four rest-compatible outputs
+  against audible no-guitar comparisons, zero positives. These outputs are
+  historical target-relative diagnostics, not valid generic-rest observations.
+  Only clip 9 was listener-reviewed as no instrument. The reserved source
+  produced one correct contrast candidate and one guitar-positive abstention,
+  with zero false-active or
   missed-active decisions; all runs report zero leaks. This closes criterion 1
   at the declared packet scope, while criterion 3 remains open because there
   is no positive development sensitivity and the independent positive has

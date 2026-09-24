@@ -29,9 +29,11 @@ Pascal activity/unknown observation; the [note-decision task](NS-3_notes_02.md)
 retains event integration and recorded boundary gates. Style-reference
 specification waits for grounded musical annotations.
 The later frozen GuitarSet listener packet now binds nine human labels and
-closes the presence task's source-bound reference-convention criterion at
-its declared scope. Its two development recordings supply only reviewed
-no-guitar scored windows; the reserved recording supplies one correct
+closes the presence task's source-bound acoustic-label/group convention at
+its declared scope. Its two development recordings supply only audible
+no-guitar comparisons, not generic reviewed rests; their historical scorer
+outputs do not qualify as generic presence decisions. The reserved recording
+has the packet's sole listener-reviewed no-instrument rest and supplies one correct
 contrast candidate and one guitar-positive abstention. Recorded decision
 acceptance and task credit remain open. That exposed recording can now support
 development only. The disjoint player-03 packet was reviewed, but all three

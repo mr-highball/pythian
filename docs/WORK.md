@@ -171,12 +171,15 @@ emitted identical reviewed packet SHA-256
 with zero leaks.
 
 The frozen production scorer used the lowest-numbered reviewed same-source
-no-guitar references 1, 4 and 9; it rechecked the listener inputs, aid
+no-guitar comparisons 1, 4 and 9; it rechecked the listener inputs, aid
 manifest and original WAV identities before writing output. Checked stable
 Win32/Win64 development reports are byte-identical (SHA-256
 `05bd16a0e0986c8918325ea85148d72c4f0d58cce10ee24dadbaf99af11e288a`):
-four scored windows were correct rest-compatible, with no false active,
-missed active or abstention; two reference windows were excluded. The reserved
+four scored windows were compatible with those no-guitar comparisons, with no
+false active, missed active or abstention under that historical target-relative
+scoring; two reference windows were excluded. Clips 1 and 4 were audible
+`other_noise`, so their `compatible_with_reviewed_rest` outputs do not qualify
+as generic-instrument presence decisions under the maintained API. The reserved
 player-05 source ran once on checked Win64 (SHA-256
 `9f8dbd121eb3379f8f43e435d4b3ffee3ddecd22ccd974ce326b49cb47724779`):
 guitar-positive clip 7 was a correct contrast candidate and guitar-positive
@@ -184,8 +187,9 @@ clip 8 was `unknown`, an explicit abstention. Clip 9 was the reference and
 excluded. All scorers reported zero leaks. No ratios were retuned.
 
 This closes [NS-3_notes_05](TODO/NS-3_notes_05.md) criterion 1's
-source-bound listener-reference convention at the declared packet scope;
-criteria 2 and 4 had already passed their maintained observation/consumer
+source-bound listener-label and group convention at the declared packet scope;
+only clip 9 is a reviewed no-instrument rest in this packet. Criteria 2 and 4
+had already passed their maintained observation/consumer
 scope. Criterion 3 and task credit remain open. There are no scored
 guitar-positive development windows, so this packet cannot calibrate
 positive sensitivity. The independent positive has one candidate and one
