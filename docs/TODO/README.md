@@ -169,8 +169,11 @@ The accepted exact joint-event adapter feeds the still-open
 [NS-4_composition_01](NS-4_composition_01.md). After its frozen relative-motif
 candidate stopped on a private projection defect, the current selected core
 path switches to [NS-3_tempo_04](NS-3_tempo_04.md) for independently grounded
-beat-candidate evidence; composition remains open for a genuinely different
-future policy and positive whole-passage verdict. Recorded note learning
+beat-candidate evidence. The paired GMD source route has now stopped at its
+frozen onset-coverage gate; this task still needs a different independently
+attributable pulse source before another candidate-pool decision. Composition
+remains open for a genuinely different future policy and positive whole-passage
+verdict. Recorded note learning
 remains in `NS-3_notes_01`/`NS-3_notes_05`, then `NS-3_notes_02` and
 `NS-3_notes_03` in prerequisite order. Three prior source screens failed to
 qualify the needed acoustic rest; those source/window routes remain stopped.

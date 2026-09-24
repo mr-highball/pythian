@@ -96,6 +96,21 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
   acoustic threshold. Require counts and ownership of ignored event kinds
   before any onset comparison. Stop if the event contract or fixed acoustic
   gates fail; do not loop through option variants. No task credit yet.
+- 2026-09-24 the one explicit GMD event-admission policy passed MIDI-only
+  preservation on checked FPC 3.2.2 Win32/Win64 for both selected pairs;
+  exact event ledgers matched across targets with zero reported leaks. The
+  sole acoustic run, development Win32, decoded the bound 44.1-kHz stereo
+  WAV and localized 794 onset frames. Only 770 of 1,807 distinct MIDI
+  attack ticks matched within 30 ms (42.6121%), below the frozen 80% gate.
+  Matched-event median/p95 errors were 4.172336/24.172336 ms. Salty Boi
+  independently confirmed source/policy hashes, the counts, exact run order
+  and the stop; no Win64 or challenge acoustic run occurred. The exceptional
+  exit reported six unfreed blocks totaling 274 bytes. The report mixes a
+  maximum raw MIDI event tick with seconds at the last note-gate end tick;
+  matching uses gate start ticks and is unaffected. Preserve that frozen
+  failed report and stop this GMD source route without localizer/threshold
+  tuning. The generic candidate-pool task remains open, with no credit or
+  source-pulse claim for ARTBeaT 02/04.
 - 2026-09-23 independent-source screen: a frozen Pascal metadata/MIDI-only
   check of the [official Groove MIDI Dataset](https://magenta.withgoogle.com/datasets/groove)
   found two different-drummer/session

@@ -12374,3 +12374,40 @@ ignored event kinds/count expectations before scoring and stop if the event
 contract or first acoustic gate fails. This is a source-admission change,
 not beat-candidate fitting or a retry of acoustic thresholds. No further
 decoder-option sweep follows.
+
+The one explicit GMD event-admission batch closed its symbolic preflight but
+failed the first acoustic source gate. Checked FPC 3.2.2 Win32/Win64 runs for
+both selected MIDI pairs preserved their exact note-on/tempo event ledgers,
+with matching per-source report bytes and zero reported leaks. The sole
+acoustic run was development Win32 on the bound 44.1-kHz stereo WAV
+(`87f1e9768630542fead48500212fd85a700b48f4fca25c5556e63d52dca70b4c`):
+794 unique localized onset frames, 1,807 distinct MIDI attack ticks, and
+770 one-to-one matches within 30 ms, or 42.6121%, below the frozen 80%
+coverage gate. Matched-hit median/p95 errors were 4.172336/24.172336 ms.
+The report SHA-256 is
+`82b446965724eb3de0b826bcb579da7aa2ccfeee22b9432539d61a387998da10`.
+The failed exception path reported six unfreed blocks (274 bytes); no
+challenge or Win64 acoustic run, retune or retry followed. Salty Boi
+independently verified the result. The report labels max raw event tick
+214548 beside seconds computed from last gate end tick 137380; that mixed
+provenance is a reporting defect, not a matching-clock bug. The current
+ignored `ACOUSTIC-STOP.md` records this as the terminal GMD source result;
+the earlier `QUALIFICATION-STOP.md` is marked historical.
+
+Stop GMD source qualification here. The result is a failed onset-coverage
+gate for this dense mixed-drum pair, not a source-independent beat-candidate
+result or proof that the publisher MIDI/WAV are misaligned. Do not tune the
+localizer, tolerance, source selector or model on this exposed pair. The
+open [NS-3_tempo_04](TODO/NS-3_tempo_04.md) next needs independently
+attributable source-pulse evidence from a different qualified setting before
+another candidate-pool decision. The protected ARTBeaT evaluation and all
+task credit remain unchanged at 68.80% overall.
+
+Disk follow-up: the stopped route left the verified 5,111,599,714-byte GMD
+ZIP and two extracted WAVs totaling 38,985,394 bytes under ignored
+`build/gmd-pulse-audio/`. The small reports and hashes suffice to retain the
+failed result, so these three large files are cleanup candidates. Two
+exact-path PowerShell `Remove-Item` attempts were rejected by the automatic
+execution approval policy before running; no deletion occurred. Do not
+claim reclaimed space. A user-run exact-path cleanup line is needed if the
+policy remains in force.
