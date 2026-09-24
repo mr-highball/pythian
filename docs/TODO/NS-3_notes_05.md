@@ -36,7 +36,10 @@ and consumer scope. Development yielded four correct rest-compatible decisions
 but no scored guitar-positive window. The reserved recording yielded one
 correct contrast candidate and one guitar-positive abstention. Criterion 3
 and all task credit remain open; this evaluation recording is now exposed and
-cannot become a fresh held-out test after a policy change.
+cannot become a fresh held-out test after a policy change. It is now usable
+as exposed development evidence. A player/material-disjoint player-03 packet
+has been frozen and prepared for a fresh independent check, but awaits its
+listener labels and has no inference result.
 
 **Acceptance Criteria:**
 

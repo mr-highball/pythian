@@ -33,9 +33,11 @@ closes the presence task's source-bound reference-convention criterion at
 its declared scope. Its two development recordings supply only reviewed
 no-guitar scored windows; the reserved recording supplies one correct
 contrast candidate and one guitar-positive abstention. Recorded decision
-acceptance and task credit remain open.
-Note research retains
-its stopped proposals and progress-checkpoint count.
+acceptance and task credit remain open. That exposed recording can now support
+development only; a disjoint player-03 packet is frozen and awaiting listener
+labels before its first independent score.
+
+Note research retains its stopped proposals and progress-checkpoint count.
 
 Every open and DONE task ends with **Dev Notes:** for failed approaches,
 repaired issues and possible follow-ups. Existing evidence is summarized there;

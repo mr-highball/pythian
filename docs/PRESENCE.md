@@ -118,10 +118,11 @@ The fixed fourfold/1.5-fold observation ratios were not retuned.
 
 This closes the source-bound listener-reference convention in
 [NS-3_notes_05](TODO/NS-3_notes_05.md) criterion 1 at this packet scope.
-Its development sources have **no scored guitar-positive windows**, so they
-cannot establish positive detection or calibration. The two reserved positive
-windows yield one candidate and one abstention, not independent phrase
-accuracy. Criterion 3 and task credit remain open. Any replacement rule must
-use a newly frozen development-positive reference and a fresh independent
-source; player 05 is now exposed and cannot be recycled as held-out evidence
-after tuning.
+Its original development sources have **no scored guitar-positive windows**,
+so they cannot establish positive detection or calibration. The two originally
+reserved positive windows yield one candidate and one abstention, not
+independent phrase accuracy. Criterion 3 and task credit remain open. The
+exposed player-05 source can now serve as development evidence, while a
+replacement rule requires fresh independent validation. A frozen player-03
+packet supplies that prospective source and awaits listener labels; it has not
+been scored. Player 05 cannot be recycled as held-out evidence after tuning.
