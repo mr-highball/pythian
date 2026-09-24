@@ -123,6 +123,26 @@ so they cannot establish positive detection or calibration. The two originally
 reserved positive windows yield one candidate and one abstention, not
 independent phrase accuracy. Criterion 3 and task credit remain open. The
 exposed player-05 source can now serve as development evidence, while a
-replacement rule requires fresh independent validation. A frozen player-03
-packet supplies that prospective source and awaits listener labels; it has not
-been scored. Player 05 cannot be recycled as held-out evidence after tuning.
+replacement rule requires fresh independent validation. Player 05 cannot be
+recycled as held-out evidence after tuning.
+
+## Fresh player-03 listener result — 2026-09-23
+
+The prospectively frozen player-03 Rock2-85-F solo packet exposed three 250-ms
+windows: the last 250 ms of one annotated note and the first two successive
+250-ms windows after its end. The user heard guitar-like sound in 12, guitar
+with slackened strings in 13, and sliding guitar strings in 14. All three are
+listener-labelled `guitar`; the descriptions do not establish an actual change
+in string tension. In particular, an annotation end did not establish audible
+rest in either adjacent window.
+
+Checked Pascal Win32/Win64 binders verified the aid manifest and produced an
+identical reviewed packet (SHA-256
+`f15b461752b4e0192a7a6a983fe7ef856ad0fe86cc0c34ded7b4ae77cff45c7b`).
+The frozen source-local reference rule found no listener-confirmed no-guitar
+window. Checked Win32/Win64 scorer reports agreed byte-for-byte (SHA-256
+`123d517bdecc7eb4a0836cc92e032b2e69e5b7faa4b55419be10c23a2fb06deb`)
+and marked all three `not_observed`/`no_reference`. There was no presence
+inference result to accept or reject. Both binder and scorer targets reported
+zero leaks. Player 03 is acoustically exposed and cannot serve as a fresh
+held-out source after a changed rule. Criterion 3 remains open.

@@ -21,7 +21,7 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
-## Presence onset stop and fresh player-03 handoff — 2026-09-23
+## Presence onset stop and fresh player-03 result — 2026-09-23
 
 NS-3_notes_05 criterion 3 lacked a guitar-positive development window and a
 fresh independent source. A frozen, two-aid follow-up selected
@@ -51,9 +51,33 @@ and zero leaks. Private ignored policy files freeze the lowest-numbered
 listener-confirmed same-source no-guitar reference, the unchanged
 `pythian.presence.rest-contrast.v1` ratios, stop gates and one independent
 score before review. Checked Win32/Win64 Pascal binders preflighted all three
-aid hashes, and the source-bound scorer compiled on both targets. The user was
-asked for acoustic labels in one numbered mobile table. **No player-03 label
-or inference score exists yet; criterion 3 and task credit remain open.**
+aid hashes, and the source-bound scorer compiled on both targets. The user
+reviewed all three numbered aids: 12 sounded guitar-like, 13 like guitar with
+slackened strings, and 14 like sliding on guitar strings. The three labels are
+`guitar`; none is a listener-confirmed same-source no-guitar reference.
+
+Both checked Pascal binders produced byte-identical reviewed packets (SHA-256
+`f15b461752b4e0192a7a6a983fe7ef856ad0fe86cc0c34ded7b4ae77cff45c7b`)
+with zero leaks. The frozen Win32/Win64 scorer reports are also identical
+(SHA-256 `123d517bdecc7eb4a0836cc92e032b2e69e5b7faa4b55419be10c23a2fb06deb`):
+all three windows are `not_observed`/`no_reference`; there were no presence
+inference decisions, misses, or independent acoustic result. Player 03 is now
+exposed. The public mobile feedback copies were removed after binding; original
+evidence remains in ignored `build/`.
+
+This and the failed development-onset gate are two consecutive nonclosing
+batches. The onset attempt could not supply a guitar-positive development
+window because another annotated note overlapped the frozen interval. The
+player-03 attempt supplied guitar-positive sound, but its adjacent post-end
+windows remained guitar-like and could not supply a reviewed rest. Reassessment:
+finish a **bounded source-local reference deliverable** using a materially
+different annotation-gap selection, not another immediate post-end tail.
+Freeze one new player/material-disjoint source and a distant candidate rest
+window before opening its PCM; require an annotation-free interval and a
+listener-confirmed no-guitar label before any presence score. Stop after one
+source if the metadata gate fails or the listener again hears guitar in every
+window. No ratio or window adjustment on that source. Criterion 3 and task
+credit remain open.
 
 ## First real GuitarSet presence review and score — 2026-09-23
 

@@ -34,8 +34,11 @@ its declared scope. Its two development recordings supply only reviewed
 no-guitar scored windows; the reserved recording supplies one correct
 contrast candidate and one guitar-positive abstention. Recorded decision
 acceptance and task credit remain open. That exposed recording can now support
-development only; a disjoint player-03 packet is frozen and awaiting listener
-labels before its first independent score.
+development only. The disjoint player-03 packet was reviewed, but all three
+windows sounded guitar-like, leaving no same-source reviewed rest. Its frozen
+scorer made no presence decisions. A new, distant annotation-gap reference
+selection is the next bounded evidence step; criterion 3 and task credit remain
+open.
 
 Note research retains its stopped proposals and progress-checkpoint count.
 

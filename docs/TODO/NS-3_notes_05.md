@@ -38,8 +38,10 @@ correct contrast candidate and one guitar-positive abstention. Criterion 3
 and all task credit remain open; this evaluation recording is now exposed and
 cannot become a fresh held-out test after a policy change. It is now usable
 as exposed development evidence. A player/material-disjoint player-03 packet
-has been frozen and prepared for a fresh independent check, but awaits its
-listener labels and has no inference result.
+was reviewed, but all three windows sounded guitar-like to the listener. It
+had no reviewed same-source no-guitar reference, so the frozen scorer made no
+presence observation. Player 03 is now exposed and cannot be used as fresh
+held-out evidence after a policy change.
 
 **Acceptance Criteria:**
 
@@ -71,6 +73,20 @@ listener labels and has no inference result.
 
 **Dev Notes:**
 
+- 2026-09-23 second consecutive nonclosing batch and reassessment: player-03
+  aids 12, 13 and 14 were all listener-labelled guitar, including both windows
+  after the annotated note end. Checked Win32/Win64 Pascal binders agreed on
+  the reviewed packet; checked frozen scorers agreed on three `no_reference`
+  rows and made zero presence decisions, with zero leaks. The earlier frozen
+  onset batch stopped at an annotation overlap before PCM. These two batches
+  did not close criterion 3: one lacked an eligible positive development
+  window, the other lacked any reviewed rest. The changed next action is one
+  prospectively frozen, player/material-disjoint source with a distant
+  annotation-free candidate rest and a separate guitar-positive window.
+  Listener confirmation of a same-source no-guitar reference is the gate
+  before scoring. Stop after this one source if metadata or listening fails;
+  do not shift the window or retune the fourfold/1.5-fold policy. Player 03 is
+  exposed, not reusable as fresh held-out evidence. No task credit.
 - 2026-09-23 development-onset stop and independent handoff: a two-aid
   follow-up froze the first 250 ms after each existing player-01/02 selected
   event onset, but its no-other-note annotation gate failed before onset PCM
@@ -82,8 +98,8 @@ listener labels and has no inference result.
   have matching checked stable Win32/Win64 manifest SHA-256
   `879a1e81180c3690d9e945805468fe9b7dafb09f51783f9868b7c6d713b0c934`,
   zero leaks, and preflighted binders. The unchanged observation and
-  same-source reference/score rule were frozen before review. User labels
-  for player 03 are pending; no new inference or criterion 3/task credit.
+  same-source reference/score rule were frozen before review. The later
+  listener result and no-reference stop are recorded above.
 - 2026-09-23 first real listener-bound score: the user clarified that 1, 4,
   5 and 6 sounded piano/keyboard-like rather than guitar; 2, 3 and 9 were
   inaudible; 7 and 8 sounded like acoustic guitar. A checked Pascal binder
