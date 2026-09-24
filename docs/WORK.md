@@ -12221,8 +12221,9 @@ no source, seed or budget repair loop follows a failure. This is a distinct
 boundary and source-qualification policy, not a retry of the 128-cell graph.
 NS-4_composition_01 remains open at NS-4 97% / overall 68.80%.
 
-The single new first-party phrase-reset source set passed its pre-solve
-qualification under ignored `build/composition-phrase-reset/qualified-source/`.
+The single new first-party phrase-reset source set initially reported a
+pre-solve qualification PASS under ignored
+`build/composition-phrase-reset/qualified-source/`.
 The first Win32 run falsely applied the phrase-final-rest requirement to all
 four bar endings and stopped before emitting ledgers; its abrupt exit left
 three heap blocks. Ticket Guy corrected that checker, source-ledger
@@ -12232,10 +12233,31 @@ construction and confirmed the corrected Win32/Win64 ledgers match with zero
 leaks. All 16 full H/R/bass/melody token paths are distinct, with four rhythm
 outlines and four actual melody contours per role. Melody ranges, leap <=12
 (observed max 11), bass range/root-fifth, chord-tone strong beats, phrase gate
-ends, two-voice final rest and tonic C cadence all pass. The builder SHA-256 is
+ends, two-voice final rest and tonic C cadence passed the implemented checks.
+The builder SHA-256 is
 `6d1e99e62c941bb0325219d7885411f007623c7dc0fa1a2ed8bc6c14b6a1bad9`;
 qualification SHA-256 is
 `c58f3edbf4c0cc726c64f53ccd8e3b36c62dbd2c74d2e4057ad2543275b20980`.
-This qualifies source data only. No model was learned, WFC solve was run, audio
-was rendered or listener verdict obtained. Freeze actual model/config/mask
-identities before the one authorized candidate solve. Task credit stays open.
+This was an incomplete check, **not an accepted source qualification**.
+Subsequent frozen model preparation exposed attack pitch 36 followed by hold
+pitch 43 in `cadence_v0` cells 27-28 and `cadence_v3` cells 28-29. The source
+event ledger retains the attack pitch, concealing the mismatch with the frame
+tokens. Salty Boi independently traced the bug to the builder's cadence-root
+attack override, which changed the emitted cell without updating the retained
+previous pitch. The qualifier only checked that a hold followed an active
+gate; it did not check exact pitch continuity or agreement between event and
+frame ledgers. Its PASS is retracted, and this frozen source set is invalid.
+
+Model preparation trained the A, A-prime and B role models before cadence bass
+graph validation rejected seven compatible edges, each emitting the same
+attack-36 to hold-43 pair. Cadence melody passed. No candidate solve,
+generation, audio or listener verdict occurred. Saved preparation model files
+have an extra trailing line feed; the failed exception/Halt path reported
+three heap blocks with vendor validation in the stack. These reporting and
+cleanup defects do not establish a separate model transition flaw. Under the
+frozen `QUALIFIED-SOURCE-PLAN.md` stop condition, **stop the authored
+phrase-WFC route**. Do not repair/requalify this source, retune a seed or
+budget, or claim composition credit. The task remains open at NS-4 97% and
+68.80 overall. The next batch must follow a genuinely different core path,
+with source qualification requiring exact hold-pitch and event/frame
+agreement if source-free WFC is attempted in the future.

@@ -107,7 +107,8 @@ accepted composition result.
   `build/composition-phrase-reset/QUALIFIED-SOURCE-PLAN.md`. If its source
   qualification or one candidate fails, stop authored phrase-WFC rather than
   revising sources or budgets in place. No task credit yet.
-- 2026-09-24 the one new first-party phrase-reset source set qualified after
+- 2026-09-24 the one new first-party phrase-reset source set initially reported
+  qualification after
   repairing a checker that had counted every bar ending instead of only each
   phrase-final cell. The source-construction procedure and constants were
   unchanged; the first failed run wrote no source ledger, so direct byte
@@ -116,7 +117,23 @@ accepted composition result.
   H/R/bass/melody token paths are distinct; each role has four rhythm outlines
   and four melody contours. Ranges, at-most-12-semitone melody leaps (max 11),
   bass root/fifth, strong-beat chord tones, no crossing gate, final two-voice
-  rest and C cadence pass. Salty Boi independently verified the source and
-  repair diff. No WFC model, solve, audio or listener verdict exists yet;
-  source qualification authorizes only frozen model preparation and the one
-  planned candidate, not task credit.
+  rest and C cadence passed the checks then implemented. Salty Boi verified the
+  repair diff, but later model preparation exposed a missing source invariant:
+  `cadence_v0` cells 27-28 and `cadence_v3` cells 28-29 contain an attack at
+  pitch 36 followed by a hold at pitch 43. The event ledger retains pitch 36
+  and therefore does not expose the frame-token inconsistency. The checker
+  required an active gate before a hold but did not require the hold to retain
+  its pitch. Retract the source-qualification PASS: this frozen source set is
+  invalid and cannot authorize a candidate.
+- 2026-09-24 frozen model preparation learned A, A-prime and B role models,
+  then cadence bass graph validation correctly rejected seven compatible
+  edges, all emitting that same attack-36 to hold-43 transition. Cadence
+  melody passed. No candidate solve, generation, audio or listener verdict
+  occurred. Saved preparation model files have an extra trailing line feed;
+  failed preparation reported three heap blocks on an exception/Halt path,
+  with vendor validation in the trace. Neither issue explains away the source
+  defect. Under the frozen one-source/one-candidate stop condition, stop this
+  authored phrase-WFC route without repairing or retuning the source set.
+  Composition acceptance and its full credit remain open. A future source
+  qualification must check exact hold-pitch continuity and event-ledger
+  agreement with frame tokens before any model preparation.
