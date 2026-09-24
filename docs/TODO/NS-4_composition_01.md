@@ -187,3 +187,19 @@ accepted composition result.
   seed/order on the same four-control corpus. The task remains open without
   musical acceptance or credit. A subsequent composition path needs a
   substantively richer source/structure contract and a newly frozen policy.
+- 2026-09-24 read-only source audit after the copied-phrase stop: the maintained
+  joint-event sequence learner retains exact two-part events but has no chord,
+  bar or form context. The first-party voice and ensemble demos each contain
+  only two four-bar controls with essentially fixed onset/rest skeletons;
+  they are useful comparison controls, not a varied composition corpus. The
+  stopped four-control motif corpus is likewise unavailable as a new training
+  source. No existing checked-in symbolic source qualifies for this task's
+  original 30-second result. Treat this audit as reassessment, not a new
+  generation attempt or criterion pass. The next bounded implementation batch
+  must first freeze a genuinely new first-party, multi-context two-part source
+  and an explicit form/chord projection that can preserve a recurring theme,
+  vary both parts and validate phrase-union novelty before rendering. Keep
+  full published-score replay and variants of the stopped tiny corpus out of
+  this batch. The user's paired listening feedback requires whole-passage
+  coherence and fewer conflicting notes/beats; the improved pop behavior does
+  not satisfy that musical gate.

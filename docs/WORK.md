@@ -12446,3 +12446,20 @@ passing composition. Stop this saved path and four-control motif corpus;
 no new listening clip or task credit follows. NS-4 stays 97% and overall
 completion stays 68.80%. The next composition hypothesis needs a
 substantively richer source/structure contract rather than seed/order tuning.
+
+Composition source audit after the copied-phrase stop: Ticket Guy checked the
+maintained event learner and existing first-party symbolic demos without running
+inference or changing files. The exact joint-event learner has no chord, bar or
+form context. Both the voice and ensemble demos contain only two four-bar
+controls with nearly fixed onset/rest skeletons, so they can serve as comparison
+controls but not as the training corpus for an original 30-second passage. The
+stopped motif corpus cannot be reused as a fresh source, and a published-score
+replay would not answer the listener's originality concern. This read-only
+reassessment closes no task criterion or credit. Next composition work requires
+one newly frozen first-party multi-context source and explicit form/chord
+projection, with both-part onset, pitch and duration variety, long-range motif
+relationships, phrase-union novelty and musical joins checked before audio.
+The user's paired review reports one numbered playback as pop-free and more
+musical, and the other as better harmonized, while still hearing note/beat
+conflicts and judging the result short of a coherent song. Do not assign those numbered
+observations to specific filenames until their mapping is confirmed.
