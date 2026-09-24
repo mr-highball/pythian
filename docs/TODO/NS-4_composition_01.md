@@ -91,3 +91,19 @@ accepted composition result.
   model learning, solving or rendering; no candidate, listening or credit.
   A future phrase-boundary policy would need its own frozen source/novelty
   contract rather than filling this frozen set ad hoc.
+- 2026-09-24 a separate read-only phrase-reset audit found that every one of
+  the 12 outgoing/incoming authored control pairings at the three planned
+  joins preserves half-open note gates: final notes end by the boundary and
+  no boundary cell is a hold. Checked Win32/Win64 reports matched with zero
+  leaks, and all seven frozen input hashes are verified after an audit-only
+  binding repair. This establishes gate feasibility, not a learned transition
+  or musical join. The same controls fail their declared role ranges at
+  A-prime_v1 pitch 65 and B_v0/v1 pitches 65/67; the complete A_v1/A-prime_v0
+  token-path duplicate also remains. No model, candidate or audio was run.
+  Stop this source set. The task-flow checkpoint after two nonclosing source
+  batches changes the next action to **one** independently qualified source
+  set for explicit four-bar phrase resets, with frozen union-novelty and
+  musical-join gates under ignored
+  `build/composition-phrase-reset/QUALIFIED-SOURCE-PLAN.md`. If its source
+  qualification or one candidate fails, stop authored phrase-WFC rather than
+  revising sources or budgets in place. No task credit yet.

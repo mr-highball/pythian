@@ -12195,3 +12195,28 @@ missing examples to this frozen set and call it the same attempt. The next
 architecture decision is an explicit phrase-boundary policy with independently
 checked musical joins and real WFC variation within phrases. Composition
 acceptance remains open; NS-4 stays 97% and overall completion 68.80%.
+
+Composition task-flow reassessment after the continuous-frontier source screen
+and a separate phrase-reset audit: the first batch stopped at missing
+role-bound joins. The second showed an explicit reset can preserve exact
+half-open note gates across all 12 source-control pairings, but the existing
+controls fail three frozen role-register checks and include a duplicate whole
+token path. Checked FPC 3.2.2 Win32/Win64 reset-audit reports match SHA-256
+`c46ca4ab0dda774edfdafa4a82744b2ec20b42523e4fb2a936d33cbe5702f2889`,
+with zero leaks. Salty Boi's QA found the first audit checked only four of its
+seven declared input hashes; Ticket Guy repaired that private binding and
+reran the same metadata checks with all seven verified. No model learning,
+solve, audio or listener result occurred. The two batches close no composition
+criterion, so do not recycle either source set or alter its registers to claim
+a pass.
+
+The changed deliverable is one source-free phrase-reset route under ignored
+`build/composition-phrase-reset/QUALIFIED-SOURCE-PLAN.md`: independently
+generate four four-bar phrases with separate H/R/bass/melody WFC streams and
+explicit gate-safe, harmonic and melodic join checks. A new first-party source
+set must first qualify against fixed ranges, rhythm, harmony, source-union
+novelty and unique-path checks. One frozen candidate then either meets the
+substantial native audio/listening path or stops authored phrase-WFC entirely;
+no source, seed or budget repair loop follows a failure. This is a distinct
+boundary and source-qualification policy, not a retry of the 128-cell graph.
+NS-4_composition_01 remains open at NS-4 97% / overall 68.80%.
