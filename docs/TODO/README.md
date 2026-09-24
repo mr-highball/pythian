@@ -36,9 +36,10 @@ contrast candidate and one guitar-positive abstention. Recorded decision
 acceptance and task credit remain open. That exposed recording can now support
 development only. The disjoint player-03 packet was reviewed, but all three
 windows sounded guitar-like, leaving no same-source reviewed rest. Its frozen
-scorer made no presence decisions. A new, distant annotation-gap reference
-selection is the next bounded evidence step; criterion 3 and task credit remain
-open.
+scorer made no presence decisions. A fixed distant-gap screen on player 04
+then stopped at metadata: no eligible annotation-free interval, and no audio
+was opened. A source-local acoustic guitar/no-guitar reference is still needed;
+criterion 3 and task credit remain open.
 
 Note research retains its stopped proposals and progress-checkpoint count.
 

@@ -146,3 +146,10 @@ and marked all three `not_observed`/`no_reference`. There was no presence
 inference result to accept or reject. Both binder and scorer targets reported
 zero leaks. Player 03 is acoustically exposed and cannot serve as a fresh
 held-out source after a changed rule. Criterion 3 remains open.
+
+A subsequent fixed player-04 BN2-166-Ab annotation-only screen sought a
+250-ms final-note window and a distant 1.0–1.25-second post-end window with
+no other note across the union. Checked stable Pascal verified its JAMS hash
+and 48 note extents but found no eligible event, with zero leaks. It stopped
+before microphone extraction, listening aids or presence scoring. No further
+acoustic claim follows from that screen.

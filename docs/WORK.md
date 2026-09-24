@@ -79,6 +79,17 @@ source if the metadata gate fails or the listener again hears guitar in every
 window. No ratio or window adjustment on that source. Criterion 3 and task
 credit remain open.
 
+The fixed player-04 BN2-166-Ab distant-gap screen then stopped at its
+annotation-only gate. Checked stable FPC 3.2.2 Win32 Pascal verified the JAMS
+SHA-256 and 48 note extents but found no event with a 250-ms final-note
+window and a 1.0–1.25-second post-end window free of other annotated notes.
+It reported zero leaks. No microphone PCM, listening aid, label or presence
+score was produced. That source/window policy is closed; numbers 15 and 16
+were not issued. The next source-grounded decision must qualify a recording
+with both a recognizable guitar interval and a genuinely quiet/no-guitar
+interval before reserving another independent evaluation packet. Annotation
+silence alone remains insufficient. Criterion 3 and task credit remain open.
+
 ## First real GuitarSet presence review and score — 2026-09-23
 
 The user reviewed the nine frozen repeated microphone aids and clarified

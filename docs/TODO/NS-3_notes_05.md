@@ -73,6 +73,16 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-23 distant-gap metadata stop: after the two-batch reassessment, a
+  single frozen player-04 BN2-166-Ab source was screened for a 250-ms
+  final-note window and a 1.0–1.25-second post-end window without any other
+  annotated note across their union. Checked stable Pascal verified the JAMS
+  hash and 48 note extents, found no eligible event, and reported zero leaks.
+  It stopped before microphone extraction, listening or scoring; no aids 15/16
+  exist. Do not adjust this source/window selection. The remaining concrete
+  prerequisite is a qualified source-local acoustic no-guitar reference plus
+  guitar-positive interval, followed by a still-fresh independent group.
+  Annotation-only quiet cannot stand in for the listener. No task credit.
 - 2026-09-23 second consecutive nonclosing batch and reassessment: player-03
   aids 12, 13 and 14 were all listener-labelled guitar, including both windows
   after the annotated note end. Checked Win32/Win64 Pascal binders agreed on
@@ -85,8 +95,9 @@ held-out evidence after a policy change.
   annotation-free candidate rest and a separate guitar-positive window.
   Listener confirmation of a same-source no-guitar reference is the gate
   before scoring. Stop after this one source if metadata or listening fails;
-  do not shift the window or retune the fourfold/1.5-fold policy. Player 03 is
-  exposed, not reusable as fresh held-out evidence. No task credit.
+  do not shift the window or retune the fourfold/1.5-fold policy. The later
+  player-04 metadata stop is recorded above. Player 03 is exposed, not
+  reusable as fresh held-out evidence. No task credit.
 - 2026-09-23 development-onset stop and independent handoff: a two-aid
   follow-up froze the first 250 ms after each existing player-01/02 selected
   event onset, but its no-other-note annotation gate failed before onset PCM
