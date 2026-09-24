@@ -12034,3 +12034,15 @@ not a WAV-learning or style result, has no listener verdict, and earns no credit
 Await the separate QA-passed clip-2 listener verdict before another musical
 generation batch; if needed, define a context-aware hypothesis with prospective
 gates. NS-4_note-events_01 remains open and total credit stays 68.65.
+
+A read-only review of the maintained joint-event adapter explains the private
+full-event result's contract limit. `LearnJointNoteEventWfcModel` learns an open
+sequence from individual onset bundles; `BuildPositionConstraints` only removes
+zero-delta tokens after the first generated position. Neither the learned model
+nor the generation call carries a bar, chord or key identity. The six bars that
+violate their own inferred triad are compatible with that unconditioned model;
+the exact event codec has no evidence of changing notes. If full-event harmonic
+coherence is pursued after the clip-2 listener checkpoint, use an explicit
+source-bound context or grouping contract with frozen gates. Merely increasing
+sequence order does not enforce the authored one-chord-per-bar condition. This
+review changed no code, candidate, audio, task credit or listening status.

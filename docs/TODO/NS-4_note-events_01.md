@@ -172,3 +172,13 @@ checkpoint remains open. No task credit is earned yet.
   route. Wait for the separate Spring clip-2 listener verdict before another
   musical generation batch; if it fails, declare a context-aware hypothesis
   and fixed gates rather than retuning this scored candidate.
+- 2026-09-24 read-only adapter review: maintained
+  `LearnJointNoteEventWfcModel` trains an open sequence over individual onset
+  bundle tokens. `BuildPositionConstraints` only excludes a zero onset delta
+  after the first position; the generation API carries no bar, chord or key
+  context. The six internally mixed bars in the private authored control are
+  therefore compatible with this contract, not evidence that the exact event
+  codec changed notes. A future full-event coherence attempt needs an explicit
+  source-bound context or grouping contract and prospective musical gates;
+  changing sequence order alone would not enforce a one-chord-per-bar rule.
+  This review changed no model, candidate or listening status.
