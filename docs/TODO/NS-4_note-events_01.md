@@ -200,3 +200,17 @@ checkpoint remains open. No task credit is earned yet.
   `build/joint-event-context/` decides whether the existing authored corpus can
   support novel same-chord bars before changing a maintained API or rendering.
   A failed preflight stops that representation without order/source/gate retries.
+- 2026-09-24 the frozen bar-local preflight passed its **minimal viability**
+  gate, not a generated-song gate. Ticket Guy's checked Pascal Win32/Win64
+  runs reproduced all three source token hashes, exactly replayed 48 local
+  bars, and reported zero leaks. The order-2 open model had distinct/authored/
+  novel complete paths C 3/3/0, Am 4/3/1, F 6/3/3, G 3/3/0. Both parts and
+  overlap survive in the four novel paths, so two contexts meet the frozen
+  gate. The available novelty is too narrow for the intended 16-bar passage:
+  C and G can only replay authored bars; F's three new paths change bass but
+  retain the authored melody; every source uses the same beat-onset grid.
+  Chord-tone filtering also permits inversions without proving the chord root
+  is sounded. Keep the preflight's PASS truthful, but stop this local exact-bar
+  representation before a maintained API change or listening candidate.
+  Next pursue separate harmony/rhythm/part choices with exact note-event
+  ownership and a prospective substantial-novelty gate. No credit changes.

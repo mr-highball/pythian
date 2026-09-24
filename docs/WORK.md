@@ -12074,3 +12074,26 @@ source controls permit novel complete bars under same-chord constraints. If it
 fails its bound, stop the local-bar representation before an API change or WAV.
 This is an explicit feasibility decision for criteria 3/4, not a task closure or
 new credit.
+
+Ticket Guy completed that one frozen source-free preflight under ignored
+`build/joint-event-context/`. Checked FPC 3.2.2 Win32/Win64 reproduced the
+three authored source token hashes, exactly replayed 48 four-bundle local bars
+through the maintained codec, and leaked no owned blocks. The actual order-2
+open model's distinct/authored/novel complete paths by chord context were C
+3/3/0, Am 4/3/1, F 6/3/3 and G 3/3/0. Two contexts have a novel path with
+both parts and overlap, so `PREFLIGHT.md`'s minimum viability gate passes.
+The report SHA-256 is
+`ecc0be143b3967647f2e02e8a17dcb2f408744529284920a2fc0b26f00ecf638`.
+No recorded audio, inference candidate or WAV was opened or generated.
+
+The integration decision is narrower than that PASS: C and G offer no novel
+complete bar, all F novelty leaves the melody projection unchanged, and the
+authored controls share one beat-onset grid. Some novel paths use chord-tone
+bass inversions; a pitch-class subset alone does not prove a context-defining
+root sounds. This vocabulary cannot substantiate the substantial new
+two-part composition or improved beat behavior the user is asking for.
+Stop the local exact-bar representation before adding a maintained API or
+publishing audio. The next implementation path must coordinate independently
+generated harmony, rhythm and part choices while retaining exact event gates,
+source timing and a prospectively fixed novelty/coherence gate. This is a
+bounded decision, not acceptance of NS-4_note-events_01 or new task credit.
