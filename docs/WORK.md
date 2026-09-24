@@ -12424,3 +12424,25 @@ one native development WAV for independent QA and whole-passage listening;
 otherwise stop before audio. This changes the next action from source
 search to a concrete Pythian-generated listening possibility while retaining
 the task's maintained-delivery and positive listener criteria. No credit yet.
+
+The fixed-token replay stopped before audio. Its final policy SHA-256 is
+`1d17c09f0f8030bd8ba06b40b0524a786c11bd3a87cd195f8e873c06dc6858bc`.
+It bound the saved 64-token path SHA-256
+`8d660b724104ef4e8afbd4d99202297b4e55130cf631441b7e2867ab5df12ff3`,
+all four original control hashes and the original candidate source. With
+no WFC solve, the repaired M11 both-rest descriptor projected 105 gates;
+the token/event round-trip passed (ledger SHA-256
+`f9a67125ebe4a0b621200e69565ae5bf1076219b1527153279a26fecaf513a24`).
+The first source-union novelty check then failed: candidate phrase 0 equals
+control 1 phrase 0; candidate phrase 2 equals control 3 phrases 0, 1 and 2
+after chord labels are stripped. Salty Boi independently verified the exact
+motif comparisons and that no WAV or Win64 replay exists. The failed Win32
+run exited 1 and reported two unfreed blocks (76 bytes), violating the
+zero-leak resource gate too. The private `REPLAY-STOP.md` now binds the exact
+compile/run commands, exit code, source and binary hashes (SHA-256
+`a99ee0b6d7dab499bb4ba3d72e25756aeb088dcf164bfc6a9ba52fba55f8804d`);
+do not mistake the passing round-trip for a
+passing composition. Stop this saved path and four-control motif corpus;
+no new listening clip or task credit follows. NS-4 stays 97% and overall
+completion stays 68.80%. The next composition hypothesis needs a
+substantively richer source/structure contract rather than seed/order tuning.

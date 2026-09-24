@@ -175,3 +175,15 @@ accepted composition result.
   its failed record intact. A structural failure still stops before audio.
   Any passing private WAV requires maintained integration, two-target QA
   and the user's whole-passage verdict before credit.
+- 2026-09-24 the fixed-token replay verified the immutable 64-token output,
+  repaired M11 as both-part rest and round-tripped 105 projected gates with
+  no new WFC solve. The first source-union novelty gate then correctly failed:
+  candidate phrase 0 exactly matches control 1 phrase 0, and candidate
+  phrase 2 matches control 3 phrases 0, 1 and 2 after chord labels are
+  stripped. Salty Boi independently verified these comparisons and the
+  no-WAV/no-Win64 stop. The exceptional exit reported two unfreed blocks
+  (76 bytes), so the frozen zero-leak resource gate also fails. This saved
+  output is derivative at phrase level; do not render it or retry another
+  seed/order on the same four-control corpus. The task remains open without
+  musical acceptance or credit. A subsequent composition path needs a
+  substantively richer source/structure contract and a newly frozen policy.
