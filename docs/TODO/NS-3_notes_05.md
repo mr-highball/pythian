@@ -75,6 +75,18 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-23 source-search reassessment: MedleyDB's publisher activations are
+  derived from the same stem audio and cannot independently label audible rest.
+  A different solo-piano route used MAPS's synchronized physical MIDI, but its
+  frozen byte-range validator failed before MIDI/WAV access: the Zenodo HEAD
+  lacked ETag and the 206 response lacked both ETag and Last-Modified. The
+  [source stop](../PRESENCE.md#stem-supported-source-contribution-control--2026-09-23)
+  and ignored `build/maps-presence-source/RESULT.md` retain exact evidence.
+  These are two further nonclosing source batches. Stop source searches here;
+  MAPS acoustic suitability is unknown, and no presence score or criterion
+  closed. Resume the core note path after the already published direct-vs-WFC
+  Pythian listening comparison selects the relevant defect.
+
 - 2026-09-23 physical pickup source gate stopped: publisher GuitarSet's
   simultaneous original six-string pickup and microphone were checked on
   already listener-reviewed player-05 clips 7/8/9 under a policy frozen before

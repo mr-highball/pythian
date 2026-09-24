@@ -230,6 +230,23 @@ some stems also contain bleed. Those labels can support a source-contribution
 study but are not independent exact-window judgments of audible instrument
 rest. No MedleyDB audio was acquired or promoted into this task's reference.
 
+The distinct [MAPS Disklavier source](https://adasp.telecom-paris.fr/resources/2010-07-08-maps-database/)
+offers audio-synchronized returned MIDI from a solo recorded piano, so a
+key-up/pedal-up interval could support a physical rest candidate. A private
+policy under ignored `build/maps-presence-source/` froze two full-piece works,
+MIDI and PCM gates before source access. The 2,661,240,101-byte Zenodo object
+was too slow for a proportional full transfer. A revised byte-range policy
+stopped at its first 32-byte validator probe: HEAD had no ETag, and the valid
+206 range response supplied neither ETag nor Last-Modified. No archive index,
+MIDI, WAV or presence score was opened. The 209,244,160-byte interrupted
+download is unverified; the publisher MD5 was not checked. This is an access
+integrity stop, not evidence that MAPS lacks a usable rest. The partial file
+remains in ignored build because automatic policy review rejected its removal.
+Together with MedleyDB's dependent annotations, this is two nonclosing source
+batches; stop the source-search sequence. Criterion 3 and task credit remain
+open. The current paired Pythian listening comparison remains the next core
+decision before selecting another source or algorithm batch.
+
 ## Full-recording isolated-stem source gate stopped — 2026-09-23
 
 One prospective Pascal source screen used the entire 92.79-second isolated
