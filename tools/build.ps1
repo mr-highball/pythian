@@ -433,6 +433,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'WFC music compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.music$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'WFC music checks failed' }
+    & $compilerPath @adapterArgs 'tests/pythian.tests.note.events.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Joint note-event codec compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.note.events$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Joint note-event codec checks failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.stream.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC streaming compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.stream$executableSuffix")

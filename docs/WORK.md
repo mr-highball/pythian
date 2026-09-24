@@ -11884,3 +11884,20 @@ onset bundles, per-note duration and part, onset deltas, retriggers, exact
 round-trip and bounded WFC generation. This is a changed core deliverable,
 not another threshold/seed variant. The catalog now has 37 open tasks; overall
 credit remains 68.65.
+
+## Joint note-event codec first batch — 2026-09-24
+
+The new maintained `pythian.wfc.note.events` adapter encodes exact one-tick
+joint onset bundles with two part identities, every note-gate field, explicit
+inter-onset deltas, PPQ/tempo and phrase extent. It round-trips retriggers,
+simultaneous starts, unequal ends, overlap, rest and an all-silence phrase;
+malformed tokens do not replace an existing result. A focused Pascal test is
+now in the normal WFC build path. Ticket Guy's checked FPC 3.2.2 Win32/Win64
+runs and Salty Boi's independent checked runs both pass with zero unfreed
+blocks. Salty Boi also confirmed canonical token replay and the build-hook
+placement. The frozen first-batch plan and logs are ignored under
+`build/note-event-adapter/`. This establishes the exact event representation
+that the dense pitch-set grid lacked. It has not run a WFC solve or made new
+music, so NS-4_note-events_01 and the 68.65% total remain open. Next freeze
+and execute one bounded joint WFC generation consumer with a substantial
+native two-part listening checkpoint.

@@ -476,6 +476,10 @@ that reusable Pascal adapter for **2 of the 4 previously unearned NS-4 points**;
 [NS-4_integration_01](TODO/NS-4_integration_01.md) retains the other 2 for the
 recorded workflow. This adds one open task without new credit: NS-4 stays 96%,
 overall completion stays 68.65%, and recorded-note admission remains open.
+The first maintained note-event codec now round-trips two-part retriggers,
+overlap and gaps exactly on checked Win32/Win64, with independent QA and a
+focused WFC build hook. Joint WFC generation, substantial audio and listening
+are still required before the new task can earn its allocated credit.
 
 After that first musical provider, extend admitted key/clock, parts, harmony,
 groove and timbre into the full

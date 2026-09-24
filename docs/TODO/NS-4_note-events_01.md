@@ -32,6 +32,16 @@ Acoustic event symbols currently carry palette index, duration class and onset
 flag, but no part identity or inter-onset delta; acoustic indices must not be
 reinterpreted as MIDI pitches.
 
+Phase-one progress 2026-09-24: maintained
+`adapters/wfc/pythian.wfc.note.events.pas` now encodes/decodes exact one-tick
+joint onset bundles and sidecar clock/extent metadata. The focused Pascal
+consumer covers two-part overlap, same-pitch retriggers, gaps, empty phrases,
+all note fields, canonical token replay and failure preservation. Salty Boi's
+independent checked FPC 3.2.2 Win32/Win64 QA passed with zero leaks, and the
+test is wired into the WFC build path. This closes the source-free codec
+substep, not the task: actual bounded WFC generation, a substantial two-part
+render and listening checkpoint remain open. No task credit is earned yet.
+
 **Acceptance Criteria:**
 
 - Expose a maintained Pascal adapter under `adapters/wfc/` that accepts a
