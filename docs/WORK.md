@@ -12515,3 +12515,25 @@ NS-4 remains 97% and overall completion 68.80%. A future composition attempt
 would need a different token/endpoint representation and a bounded reachability
 preflight; reselect the next core prerequisite through task flow rather than
 cycling another authored composition variant immediately.
+
+The next bounded core-composition batch is an owned, source-free Pascal
+form/harmony/event scaffold, not a repair of the stopped beat-tagged WFC
+representation. Its prospective ignored `build/composition-grammar-baseline/`
+policy fixes two seeds, a 16-bar chord/form schedule, theme/contrast/return
+relations, cadence and structural/PCM gates before any run. Ticket Guy built
+the checked Win32/Win64 generator and native renderer. Salty Boi's static QA
+found and repaired a report-flow defect before execution: the final report
+would have overwritten PCM/WAV evidence. The final policy and source SHA-256s
+are `1a6be0048cc9d4bb37ce9fb93ef56000b92e372bd78ec7743286ec421b0893d7`
+and `2c0857cb29110eb70b0e323954f9ff54073a40545cea140938755d820758abfe`;
+the ignored `FREEZE.md` and `RESULT.md` preserve executable identities and
+full validation evidence. One fixed Win32 run, one fixed Win64 run and fresh
+sibling-directory replays all exited zero with zero reported heap leaks. Both
+passages passed structural and PCM gates and reproduced exact event/PCM/WAV
+hashes across targets and replays. They are 35.556-second, 44.1-kHz stereo
+Pythian renders. Byte-identical copies are numbered `3.wav` and `4.wav` in
+the HFS feedback folder for the user's whole-passage judgment of timing,
+melody, harmony and originality. Listening is pending. This numeric pass
+does not establish a coherent song, recorded learning, WFC composition or
+NS-4 task acceptance. Keep NS-4 at 97% and overall completion at 68.80%; do
+not retune these seeds after the listener checkpoint.

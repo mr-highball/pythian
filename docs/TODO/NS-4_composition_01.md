@@ -245,3 +245,19 @@ accepted composition result.
   listening and credit remain open. A future candidate needs a genuinely
   different representation and an endpoint/path reachability preflight before
   its one solve; this note does not authorize an in-place retry.
+
+- 2026-09-24 a genuinely different, source-free Pascal composition scaffold
+  was frozen prospectively under ignored `build/composition-grammar-baseline/`
+  with fixed seeds 1731/2731, form/chord/theme/contrast/cadence rules and
+  structural/PCM/listening gates. It is a core-composition prerequisite and
+  possible future WFC choice-provider scaffold, not learned WFC or recorded
+  style learning. Salty Boi caught a final-report overwrite before execution;
+  Ticket Guy repaired it and the action-slot lineage labels, then both checked
+  targets compiled. The frozen Win32/Win64 runs and fresh replay directories
+  exited zero with zero reported leaks. Both 35.556-second Pythian WAVs passed
+  structural/PCM checks and exactly reproduced event, PCM and WAV bytes across
+  targets and replays; the ignored `FREEZE.md`/`RESULT.md` retain identities,
+  hashes and metrics. HFS feedback clips `3.wav` and `4.wav` now await the
+  user's whole-passage verdict on timing, melody, harmony and originality.
+  Numeric passes alone do not close this task or earn credit. No seed retune
+  follows this fixed listener checkpoint.
