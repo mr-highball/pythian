@@ -113,8 +113,28 @@ checkpoint remains open. No task credit is earned yet.
   passes. The generated WAV SHA-256 is
   `f6c3fc7ad9fc24822e4dc75f038fe74247e60f4e968f3ed88083eb2d6f89c4ee`.
   It uses published-score timing and authored synth controls; only part-specific
-  pitches were WFC-selected. Listener judgment is pending, so no task credit
-  is earned. Private evidence remains under ignored `build/note-event-adapter/`.
+  pitches were WFC-selected. The listener heard an improvement over the earlier
+  stumbling preview but reported popping during playback and notes that seemed
+  to overlap. This is not a passing musical verdict, so no task credit is
+  earned. A hash-bound read-only Pascal diagnostic found that both this WAV
+  and the exact-score control have their ten largest adjacent-sample jumps
+  exactly at overlapping note ends, while neither reaches PCM full scale.
+  Salty Boi independently verified the measurement; this suggests a shared
+  post-mix envelope issue but does not prove the heard pops' cause. One
+  privately frozen 5-ms per-voice release trial followed. Private evidence
+  remains under ignored `build/note-event-adapter/`.
+- 2026-09-24 the single 5-ms release trial passed its fixed engineering gates
+  without changing WFC pitches or event timing. The source-free overlap
+  control showed per-voice decay and an unchanged continuing part; checked
+  Win32/Win64 30-second PCM hashes matched with zero leaks. Mean maximum
+  sample jump near 135 overlapping note ends fell 78.319% in the generated
+  clip and 80.248% in the exact-score control, with no new top-ten jump at an
+  overlapping end. Salty Boi independently passed QA. A pre-render hash
+  transcription error and an interrupted slow diagnostic scan were repaired
+  without changing the release policy or fixed gates. The new generated WAV
+  SHA-256 is `82e2e1ad275fbb4517c37fa0b44dc8ff9b6926ae80b4aa29b506f87bd5a62c0a`;
+  it is served as numbered mobile clip 2 for a whole-clip verdict on pops and
+  musical overlap. No listener verdict or task credit is claimed yet.
 - 2026-09-24 maintained `pythian.wfc.note.events.generation` now learns a
   bounded open-boundary corpus of exact joint event tokens, keeping each source
   separate and requiring identical part IDs, PPQ and tempo changes. It carries

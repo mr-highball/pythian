@@ -11946,3 +11946,44 @@ recorded in ignored `build/note-event-adapter/maintained-generation-notes.txt`;
 they did not change the generator seed or use source audio. This is an accepted
 engineering substep within the still-open task; the substantial private WAV
 still needs the user's verdict. Overall credit remains 68.65.
+
+The listener then reviewed the 30-second pitch-generated clip and heard an
+improvement over the earlier stumbling preview, but also heard popping during
+playback and notes that seemed to overlap. "Clipping" in this feedback means
+audible pops, not a claim that the PCM reached full scale. The generated clip
+therefore has not passed the listening checkpoint; NS-4_note-events_01 remains
+open and overall credit remains 68.65. A bound read-only Pascal comparison in
+ignored `build/note-event-adapter/` verified the four source/generated event
+and WAV hashes and found no PCM samples near full scale. The ten largest
+adjacent-sample jumps in each WAV land exactly at authored note ends while
+another note continues. Mean local maxima at 135 overlapping note ends were
+521.541 PCM counts in the generated clip and 575.919 in the exact-score
+control, versus 65.365 and 63.904 at 52 isolated ends. Salty Boi independently
+verified the hash bindings, boundary mapping and report wording. This supports
+a shared render-policy hypothesis; it does not prove which pops the user heard.
+A single 5-ms per-voice release trial is frozen privately, with no WFC or
+event changes and no new listening claim yet.
+
+That one render-policy trial then passed. Keeping the 187 source/generated
+event slots, 78 flute and 65 violin pitch changes, 44-frame post-mix
+articulation and all other controls fixed, the private Pascal renderer changed
+only each synth voice's release from zero to 5 ms. Its two-note source-free
+control showed the ending voice decaying under a continuing voice while the
+continuing voice matched alone exactly. In both checked FPC 3.2.2 Win32 and
+Win64, the 30-second stereo PCM16 generated WAV had SHA-256
+`82e2e1ad275fbb4517c37fa0b44dc8ff9b6926ae80b4aa29b506f87bd5a62c0a`
+and the corresponding score control had SHA-256
+`7f52b1fa5ec09840ad713e7184098b3f724d74b94832fd7aa95e75567aafa26f`.
+Mean local maximum adjacent-sample change around the 135 overlapping note
+ends fell 78.319% in the candidate and 80.248% in the control, above the
+frozen 50% gate; neither new top-ten jump set contains an overlapping-end
+step. No full-scale PCM samples or heap leaks were found. Salty Boi
+independently verified the plan, hashes, events, source-free control, policy
+delta, checked runs and cross-target replay. An initial input check stopped
+before rendering because a hash had been transcribed incorrectly in the plan;
+the exact file hash was corrected. A later diagnostic pass was stopped after
+writing interim WAVs because its overlap lookup was needlessly quadratic;
+only the analysis loop changed before the successful rerun. Neither stop
+changed the frozen audio policy or gates. The QA-passed candidate is served
+as numbered mobile feedback `2.wav`; the listening verdict remains pending,
+so NS-4_note-events_01 stays open at 68.65 overall credit.
