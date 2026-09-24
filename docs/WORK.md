@@ -12274,3 +12274,33 @@ scoring, allow one source qualification and one candidate, and stop at the
 first failed gate rather than iterating a source/seed/budget. The deliverable
 is a substantial novel native render and whole-passage listener review if
 all structural gates pass. No criterion is yet closed and no credit changes.
+
+The frozen relative-motif batch stopped before a generated WAV. Its plan SHA-256
+is `b1ae5aa1a2276ee41ea4a8e9cf88f135fa1901ef8fd82527f151ed4a5615b2ba`.
+Checked Win32/Win64 Pascal preflights reproduced four exact 64-token controls,
+all 16 motif IDs, 55 branching order-2 contexts and zero leaks. One Win32
+candidate solve returned success and persisted a complete 64-token ledger,
+SHA-256 `8d660b724104ef4e8afbd4d99202297b4e55130cf631441b7e2867ab5df12ff3`.
+The frozen final `K:C:M11` both-rest token then reached a missing case in the
+private `MotifDescriptor` projection and raised `Unknown motif ID`. This is an
+implementation defect after solve, not a musical-gate failure. No event ledger
+or WAV was produced, and no Win64 candidate or listener review ran. The
+exceptional exit reported two unfreed blocks. The first private STOP note
+incorrectly said no token file persisted; Ticket Guy corrected it without
+another solve, and Salty Boi independently verified the frozen source,
+hashes, token file, single solve and failure. The corrected ignored STOP note
+has SHA-256 `fafe2732385fdd1818384c2ef1dd35b25e252d861d4704b7f44866d565d7e489`.
+Honor the prospective no-rerun stop condition: no projection repair or
+candidate tuning in this batch. Composition closes no criterion and earns no
+credit; NS-4 remains 97%, overall completion 68.80%.
+
+The next selected core path is [NS-3_tempo_04](TODO/NS-3_tempo_04.md), not
+another authored composition variant. Its ready source-evidence gate can use
+the already inventoried official paired Groove MIDI/audio material only after
+exact audio/MIDI correspondence and acoustic hit alignment are verified;
+publisher metadata alone is insufficient. Keep the frozen ARTBeaT 02/04
+candidate-policy failures and protected evaluation material unchanged. A
+bounded source qualification should either supply independently attributable
+pulse evidence for a prospective candidate-pool decision or stop without
+retuning. This is a change of core prerequisite after the composition stop,
+not a claim that beat-level selection or corpus style learning has passed.

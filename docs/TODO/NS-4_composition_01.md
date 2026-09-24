@@ -147,3 +147,20 @@ accepted composition result.
   first source, structural or musical gate failure without retuning. The
   original positive listener verdict remains required; this reassessment
   earns no credit.
+- 2026-09-24 the frozen relative-motif attempt under ignored
+  `build/composition-motif-grammar/` passed source preflight on checked
+  Win32/Win64: four exact 64-token controls, all 16 motif IDs and 55
+  order-2 branching contexts. Its one Win32 WFC solve returned a complete
+  64-token path (SHA-256
+  `8d660b724104ef4e8afbd4d99202297b4e55130cf631441b7e2867ab5df12ff3`).
+  Projection then raised `Unknown motif ID` on the frozen final M11 rest
+  token because the private descriptor omitted that case. No event ledger,
+  WAV, Win64 candidate run or listener result exists. The exceptional exit
+  reported two unfreed heap blocks. Salty Boi independently verified the
+  source formula, frozen hashes, one solve and failure path. The ignored
+  stop record initially misstated that no token artifact existed; it was
+  corrected to preserve the complete token ledger. Stop this candidate
+  under its predeclared no-rerun rule; do not count the implementation defect
+  as musical rejection or award composition credit. The next work batch
+  moves to an independent recorded core prerequisite while this task stays
+  open for a future genuinely different composition policy.

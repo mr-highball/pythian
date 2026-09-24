@@ -165,9 +165,12 @@ the accepted external reference packet earns the other point. Actual role
 learning still depends on accepted note primitives through
 [NS-3_notes_03](NS-3_notes_03.md), following register and presence/boundary work.
 
-Current selected core path follows the accepted exact joint-event adapter into
-[NS-4_composition_01](NS-4_composition_01.md), whose substantial native
-passage and positive coherence verdict are still open. Recorded note learning
+The accepted exact joint-event adapter feeds the still-open
+[NS-4_composition_01](NS-4_composition_01.md). After its frozen relative-motif
+candidate stopped on a private projection defect, the current selected core
+path switches to [NS-3_tempo_04](NS-3_tempo_04.md) for independently grounded
+beat-candidate evidence; composition remains open for a genuinely different
+future policy and positive whole-passage verdict. Recorded note learning
 remains in `NS-3_notes_01`/`NS-3_notes_05`, then `NS-3_notes_02` and
 `NS-3_notes_03` in prerequisite order. Three prior source screens failed to
 qualify the needed acoustic rest; those source/window routes remain stopped.
