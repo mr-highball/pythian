@@ -21,6 +21,40 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## Presence onset stop and fresh player-03 handoff — 2026-09-23
+
+NS-3_notes_05 criterion 3 lacked a guitar-positive development window and a
+fresh independent source. A frozen, two-aid follow-up selected
+the first 250 ms after each already selected player-01/02 note onset, with a
+no-other-annotated-note gate. Checked stable Pascal rejected an overlapping
+note before either onset PCM window was read or any aid or score was made;
+it reported zero leaks. The selection is stopped without moving a window.
+
+Reassessment uses the already exposed player-05 packet as **development**
+evidence: it has a user-identified guitar-positive contrast candidate and an
+abstained guitar-positive window against an inaudible same-source reference.
+Player 05 is not fresh evaluation evidence after a changed rule. The original
+player-01/02 reviewed no-guitar windows remain development controls. For a
+fresh independent check, the frozen metadata-only selection chose player 03,
+`03_Rock2-85-F_solo`, disjoint in player and material from those three groups.
+Its first eligible isolated end fixes windows [156605,167630),
+[167630,178655) and [178655,189680). The checked Pascal JAMS hash/geometry/
+overlap gate passed before mic extraction. The extracted mono PCM16 44.1-kHz
+WAV has 1,992,138 frames and SHA-256
+`6cef0f0edd3f3edfe0096280e68834024b5f35a754a6f075982daaf774f14b2a`.
+
+Three unchanged-gain repeated aids numbered 12–14 passed exact source-PCM
+and zero-gap verification on checked stable Win32/Win64, with byte-identical
+manifest SHA-256
+`879a1e81180c3690d9e945805468fe9b7dafb09f51783f9868b7c6d713b0c934`
+and zero leaks. Private ignored policy files freeze the lowest-numbered
+listener-confirmed same-source no-guitar reference, the unchanged
+`pythian.presence.rest-contrast.v1` ratios, stop gates and one independent
+score before review. Checked Win32/Win64 Pascal binders preflighted all three
+aid hashes, and the source-bound scorer compiled on both targets. The user was
+asked for acoustic labels in one numbered mobile table. **No player-03 label
+or inference score exists yet; criterion 3 and task credit remain open.**
+
 ## First real GuitarSet presence review and score — 2026-09-23
 
 The user reviewed the nine frozen repeated microphone aids and clarified

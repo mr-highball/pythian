@@ -68,6 +68,19 @@ cannot become a fresh held-out test after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-23 development-onset stop and independent handoff: a two-aid
+  follow-up froze the first 250 ms after each existing player-01/02 selected
+  event onset, but its no-other-note annotation gate failed before onset PCM
+  read, playback or scoring. No window was replaced. Reassessment treats the
+  already exposed, user-reviewed player-05 positives and same-source rest as
+  development evidence only. The newly frozen player-03 Rock2-85-F solo source
+  is player/material-disjoint; checked Pascal verified its JAMS geometry and
+  archive identities before mic extraction. Three exact repeated aids 12–14
+  have matching checked stable Win32/Win64 manifest SHA-256
+  `879a1e81180c3690d9e945805468fe9b7dafb09f51783f9868b7c6d713b0c934`,
+  zero leaks, and preflighted binders. The unchanged observation and
+  same-source reference/score rule were frozen before review. User labels
+  for player 03 are pending; no new inference or criterion 3/task credit.
 - 2026-09-23 first real listener-bound score: the user clarified that 1, 4,
   5 and 6 sounded piano/keyboard-like rather than guitar; 2, 3 and 9 were
   inaudible; 7 and 8 sounded like acoustic guitar. A checked Pascal binder
