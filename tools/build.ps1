@@ -437,6 +437,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Joint note-event codec compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.note.events$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Joint note-event codec checks failed' }
+    & $compilerPath @adapterArgs 'tests/pythian.tests.note.events.generation.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Joint note-event generation compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.note.events.generation$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Joint note-event generation checks failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.stream.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC streaming compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.stream$executableSuffix")

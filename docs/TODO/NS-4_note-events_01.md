@@ -39,8 +39,9 @@ consumer covers two-part overlap, same-pitch retriggers, gaps, empty phrases,
 all note fields, canonical token replay and failure preservation. Salty Boi's
 independent checked FPC 3.2.2 Win32/Win64 QA passed with zero leaks, and the
 test is wired into the WFC build path. This closes the source-free codec
-substep, not the task: actual bounded WFC generation, a substantial two-part
-render and listening checkpoint remain open. No task credit is earned yet.
+substep, not the task. A later maintained full-event WFC path and a private
+30-second score-timed pitch render now pass engineering QA below; the listener
+checkpoint remains open. No task credit is earned yet.
 
 **Acceptance Criteria:**
 
@@ -88,3 +89,46 @@ render and listening checkpoint remain open. No task credit is earned yet.
   adapter is a different contract with onset/duration/delta ownership, not a renamed
   dense-grid experiment. See `build/score-wfc-two-part/RESULT.md` in ignored
   build artifacts.
+- 2026-09-24 source-bound feasibility inventory: the exposed first 30 seconds
+  of Spring contain 187 joint onset bundles and 187 distinct exact event tokens.
+  Their order-1 and order-2 exact-token contexts have no branching, so learning
+  those full tokens would only reproduce source fragments. A separate, frozen
+  private diagnostic tests WFC over part-and-pitch tokens while holding the
+  score event slots fixed. This can establish new pitch choices and exact
+  event preservation, but cannot establish new rhythm or composition from WAV.
+  No solve, render or listening verdict exists from the inventory alone; see
+  ignored `build/note-event-adapter/generation-analysis.log` and
+  `GENERATION-PLAN.md`.
+- 2026-09-24 one frozen part-constrained pitch WFC candidate passed its
+  engineering gates: 187 retained score-timed slots, 78/96 flute and 65/91
+  violin pitches changed, 135 cross-part overlaps, deterministic token replay,
+  a 30-second stereo PCM16 WAV and zero heap leaks on checked Win64. The
+  original result omitted the ordered generated token vector/event digests
+  required by its plan, so Salty Boi withheld QA acceptance. One separately
+  frozen **audit-only** same-seed reproduction matched the original token
+  SHA-256 `270c29dd555bf8de450e1cf7a765d4c23d517fb42cd09b752270cac7099e0bfd`,
+  persisted source/generated event ledgers, and left the original WAV unchanged.
+  Salty Boi independently checked the ledgers, all non-pitch fields,
+  PPQ/tempo/extent, token hashes and no-render replay path; engineering QA now
+  passes. The generated WAV SHA-256 is
+  `f6c3fc7ad9fc24822e4dc75f038fe74247e60f4e968f3ed88083eb2d6f89c4ee`.
+  It uses published-score timing and authored synth controls; only part-specific
+  pitches were WFC-selected. Listener judgment is pending, so no task credit
+  is earned. Private evidence remains under ignored `build/note-event-adapter/`.
+- 2026-09-24 maintained `pythian.wfc.note.events.generation` now learns a
+  bounded open-boundary corpus of exact joint event tokens, keeping each source
+  separate and requiring identical part IDs, PPQ and tempo changes. It carries
+  that source clock into generation, excludes zero-delta tokens after the first
+  bundle, decodes all generated events through the exact codec, and preserves
+  caller output on solve/decode failure. One source-free two-part order-2,
+  seed-731 fixture generated a new six-bundle/seven-gate branch combination
+  with simultaneous starts, retrigger, rest and unequal durations; same-seed
+  replay matched, an incompatible tempo map was rejected, and an undersized
+  output extent preserved the prior owned result. Salty Boi independently
+  rebuilt and passed checked FPC 3.2.2 Win32/Win64 with zero leaks. The focused
+  test is in the non-CoreOnly WFC build. The first two fixture designs were
+  stopped because output length did not prove sample isolation; their outcomes
+  and the repaired ownership leak are retained under ignored
+  `build/note-event-adapter/maintained-generation-notes.txt`. This closes a
+  maintained engineering substep, not listening or recorded-WAV acceptance;
+  no task credit yet.

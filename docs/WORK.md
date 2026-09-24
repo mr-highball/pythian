@@ -11897,7 +11897,52 @@ runs and Salty Boi's independent checked runs both pass with zero unfreed
 blocks. Salty Boi also confirmed canonical token replay and the build-hook
 placement. The frozen first-batch plan and logs are ignored under
 `build/note-event-adapter/`. This establishes the exact event representation
-that the dense pitch-set grid lacked. It has not run a WFC solve or made new
-music, so NS-4_note-events_01 and the 68.65% total remain open. Next freeze
-and execute one bounded joint WFC generation consumer with a substantial
-native two-part listening checkpoint.
+that the dense pitch-set grid lacked. At this checkpoint it had not run a WFC
+solve or made new music, so NS-4_note-events_01 and the 68.65% total remained
+open. The next action was a bounded joint WFC generation consumer with a
+substantial native two-part listening checkpoint; the following entries record
+that work and its still-pending listener verdict.
+
+The source-bound feasibility inventory then found that all 187 exact Spring
+joint-event tokens are distinct, with zero order-1 or order-2 exact-token
+branching. Direct WFC learning over those full tokens would be an exact-fragment
+replay, so one private bounded diagnostic is frozen under
+`build/note-event-adapter/GENERATION-PLAN.md`: WFC may choose part-constrained
+pitches while the source's 187 event slots, durations, onset times and tempo
+stay fixed. This will test the note-event path and audible pitch coherence,
+not new rhythmic composition or recorded-WAV inference. The inventory itself
+earned no task or goal credit.
+
+One frozen part-constrained order-2 WFC candidate then passed on checked
+FPC 3.2.2 Win64: 187 score-timed note slots survived, 78 flute and 65 violin
+pitches changed, 135 cross-part overlaps remained, and the deterministic
+pitch-token replay matched. The 30-second stereo PCM16 native WAV has SHA-256
+`f6c3fc7ad9fc24822e4dc75f038fe74247e60f4e968f3ed88083eb2d6f89c4ee`.
+Source-free controls and hash-bound preparation passed checked Win32/Win64;
+the candidate and later audit run reported zero heap leaks. Initial final QA
+was correctly withheld because the report omitted required ordered event
+evidence. A separately frozen audit-only reproduction matched the exact
+original token digest, saved both event ledgers and all 187 pitch tokens,
+and did not modify or rerender the WAV. Salty Boi independently verified
+the tokens, event fields, clock/extent and unchanged audio hash, then passed
+the engineering QA. The numbered mobile listening clip is now available
+for the user's musical verdict. Until that verdict, NS-4_note-events_01 is
+open and overall credit remains 68.65. This remains score-timed pitch
+generation, not learned recording inference or new rhythmic composition.
+
+The companion maintained `pythian.wfc.note.events.generation` path now trains
+open-boundary WFC on exact joint onset bundles from multiple two-part sequences.
+It rejects mixed source clocks and part identities, retains the training
+PPQ/tempo with the model, constrains zero-delta tokens to the first output
+position and decodes full generated paths transactionally. A source-free
+order-2/seed-731 two-sample control generated a new six-bundle/seven-gate
+joint event path with a retrigger, rest, overlap and unequal durations; same
+seed replay matched. An incompatible tempo map failed before model publication,
+and a fixed solve against an undersized extent left the caller's prior output
+unchanged. Salty Boi independently passed checked stable FPC 3.2.2 Win32 and
+Win64 focused runs with zero leaks and verified the non-CoreOnly build hook.
+Earlier fixture assumptions about overlength contradiction were stopped and
+recorded in ignored `build/note-event-adapter/maintained-generation-notes.txt`;
+they did not change the generator seed or use source audio. This is an accepted
+engineering substep within the still-open task; the substantial private WAV
+still needs the user's verdict. Overall credit remains 68.65.
