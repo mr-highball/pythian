@@ -158,12 +158,17 @@ checkpoint remains open. No task credit is earned yet.
   bars different from each source, all three source variants used, exact
   token/WAV cross-target replay, 59/37 melody/bass gates, overlap and zero
   leaks. A focused PCM scan found its largest adjacent-frame change at the
-  opening attack, not a listening verdict. Salty Boi's independent musical
-  audit found 30/59 melody and 20/37 bass notes outside the intended bar
-  triad: unconditioned exact-token WFC can recombine events but does not retain
-  this authored harmonic schedule. Do not present the clip as coherent music
-  or as recorded learning; it remains private under ignored
-  `build/joint-event-control/` and earns no credit. Stop this unconditioned
+  opening attack, not a listening verdict. The first index-relative musical
+  audit found 30/59 melody and 20/37 bass notes outside the chord authored at
+  that position; this alone could reflect coherent chord reordering. An
+  audit-only exact-hash replay then compared each four-token bar against every
+  source bar: 6/16 matched one exactly. Four of the ten unmatched bars retain
+  their own beat-0 bass root and melody triad, while six mix melody and/or bass
+  pitch classes outside that bar's inferred source triad. Salty Boi independently
+  reproduced these counts on checked Win64 with zero leaks. The candidate
+  passes structural rendering but fails this authored one-chord-per-bar control,
+  so it remains private under ignored `build/joint-event-control/` with no
+  listener verdict, recorded-learning claim or credit. Stop the unconditioned
   route. Wait for the separate Spring clip-2 listener verdict before another
-  musical generation batch; if it fails, declare a new context-aware hypothesis
+  musical generation batch; if it fails, declare a context-aware hypothesis
   and fixed gates rather than retuning this scored candidate.

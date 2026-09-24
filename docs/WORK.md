@@ -12017,13 +12017,20 @@ WAV SHA-256
 `92c32cd7c2f2c7110f5639d0c2d6d0c84a3df1e0aa18ed2b9345ca6e5f569622`,
 15 complete bars differing from each complete source, all three source
 variants, 59 melody/37 bass gates, 1,411,200 stereo frames and zero leaks.
-The first audit counted only the two variable tokens per bar; a four-token
-audit repair preserved both hashes. A focused Pascal scan found maximum
-adjacent-frame delta 0.00439453 near the opening attack; it cannot establish
-audible quality. The independent musical audit found 30/59 melody and 20/37
-bass notes outside their authored onset-bar triad. The unconditioned model
-changed harmony along with events, so this candidate is stopped before user
-listening. It is not a WAV-learning or style result and earns no credit.
+The first novelty audit counted only the two variable tokens per bar; a
+four-token audit repair preserved both hashes. A focused Pascal scan found
+maximum adjacent-frame delta 0.00439453 near the opening attack; it cannot
+establish audible quality. An initial index-relative musical check found
+30/59 melody and 20/37 bass notes outside the chord authored for that bar
+position. That count alone could reflect a coherent new chord order. A frozen
+audit-only replay therefore compared complete generated bars to every source
+bar: 6/16 match one exactly; four of the ten unmatched bars retain their own
+beat-0 bass root and melody triad; six combine pitch classes outside their own
+inferred source triad. Salty Boi independently reproduced the event audit on
+checked Win64 with identical hashes and zero leaks. The report distinguishes
+the passing structural/render gate from `harmony_audit=STOP_PRIVATE`. This
+candidate stays private under the authored one-chord-per-bar control. It is
+not a WAV-learning or style result, has no listener verdict, and earns no credit.
 Await the separate QA-passed clip-2 listener verdict before another musical
 generation batch; if needed, define a context-aware hypothesis with prospective
 gates. NS-4_note-events_01 remains open and total credit stays 68.65.
