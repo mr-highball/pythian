@@ -164,3 +164,14 @@ accepted composition result.
   as musical rejection or award composition credit. The next work batch
   moves to an independent recorded core prerequisite while this task stays
   open for a future genuinely different composition policy.
+- 2026-09-24 post-stop reassessment: the prior motif solve's complete,
+  SHA-bound 64-token path remains available even though its private
+  projector omitted M11. After an independent recorded-source path stopped,
+  the next composition batch may replay **only those exact tokens** through
+  a repaired Pascal projector, with no WFC solve, seed/source/model change
+  or weakened musical gate. Freeze a fixed-token policy and code identity
+  before projection. This is a bounded implementation repair and audible
+  development check, not a rerun of the stopped stochastic candidate; keep
+  its failed record intact. A structural failure still stops before audio.
+  Any passing private WAV requires maintained integration, two-target QA
+  and the user's whole-passage verdict before credit.

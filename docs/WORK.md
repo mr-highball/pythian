@@ -12411,3 +12411,16 @@ exact-path PowerShell `Remove-Item` attempts were rejected by the automatic
 execution approval policy before running; no deletion occurred. Do not
 claim reclaimed space. A user-run exact-path cleanup line is needed if the
 policy remains in force.
+
+Composition return decision, 2026-09-24: the stopped relative-motif WFC
+solve did persist a complete SHA-bound 64-token path. Its missing M11
+projector branch is an implementation error after solve. After the separate
+GMD source route failed its fixed acoustic gate, a bounded new batch will
+replay only that immutable token file through a repaired Pascal projector
+and the **unchanged** structural/musical gates, with no WFC call, source,
+seed, model or threshold change. Freeze this fixed-token replay separately
+and preserve the original candidate-stop evidence. If gates pass, render
+one native development WAV for independent QA and whole-passage listening;
+otherwise stop before audio. This changes the next action from source
+search to a concrete Pythian-generated listening possibility while retaining
+the task's maintained-delivery and positive listener criteria. No credit yet.
