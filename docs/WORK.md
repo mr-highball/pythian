@@ -12004,3 +12004,26 @@ Salty Boi independently reproduced the checked runs, hashes and boundary
 measurements. This fixes the delivered example's render setting; it does not
 substitute for the user's verdict on the separate 30-second generated clip or
 close NS-4_note-events_01. Overall credit remains 68.65.
+
+A bounded authored-control full-event check under ignored
+`build/joint-event-control/` tested whether maintained joint-event WFC could
+make a substantial new two-part sequence without replaying Spring's published
+timing. Three source-free 16-bar C/Am/F/G variants supplied exact 64-bundle
+training samples; one frozen order-2 seed-731 solve generated 64 bundles and a
+32-second native WAV. Salty Boi independently passed checked FPC 3.2.2
+Win32/Win64: generated token SHA-256
+`60be651569ee5604c48329609868416b7cfefa38cffed8fb8bf63182f9eea5ff`,
+WAV SHA-256
+`92c32cd7c2f2c7110f5639d0c2d6d0c84a3df1e0aa18ed2b9345ca6e5f569622`,
+15 complete bars differing from each complete source, all three source
+variants, 59 melody/37 bass gates, 1,411,200 stereo frames and zero leaks.
+The first audit counted only the two variable tokens per bar; a four-token
+audit repair preserved both hashes. A focused Pascal scan found maximum
+adjacent-frame delta 0.00439453 near the opening attack; it cannot establish
+audible quality. The independent musical audit found 30/59 melody and 20/37
+bass notes outside their authored onset-bar triad. The unconditioned model
+changed harmony along with events, so this candidate is stopped before user
+listening. It is not a WAV-learning or style result and earns no credit.
+Await the separate QA-passed clip-2 listener verdict before another musical
+generation batch; if needed, define a context-aware hypothesis with prospective
+gates. NS-4_note-events_01 remains open and total credit stays 68.65.

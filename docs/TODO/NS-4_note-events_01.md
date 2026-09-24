@@ -152,3 +152,18 @@ checkpoint remains open. No task credit is earned yet.
   `build/note-event-adapter/maintained-generation-notes.txt`. This closes a
   maintained engineering substep, not listening or recorded-WAV acceptance;
   no task credit yet.
+- 2026-09-24 one frozen source-free 32-second **full-event** candidate trained
+  the maintained adapter on three authored two-part C/Am/F/G controls. It
+  passed checked Win32/Win64 engineering QA: 64 decoded bundles, 15 complete
+  bars different from each source, all three source variants used, exact
+  token/WAV cross-target replay, 59/37 melody/bass gates, overlap and zero
+  leaks. A focused PCM scan found its largest adjacent-frame change at the
+  opening attack, not a listening verdict. Salty Boi's independent musical
+  audit found 30/59 melody and 20/37 bass notes outside the intended bar
+  triad: unconditioned exact-token WFC can recombine events but does not retain
+  this authored harmonic schedule. Do not present the clip as coherent music
+  or as recorded learning; it remains private under ignored
+  `build/joint-event-control/` and earns no credit. Stop this unconditioned
+  route. Wait for the separate Spring clip-2 listener verdict before another
+  musical generation batch; if it fails, declare a new context-aware hypothesis
+  and fixed gates rather than retuning this scored candidate.
