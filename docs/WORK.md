@@ -21,6 +21,46 @@ contracts, joint relationships and derived source lineage. Core fundamentals
 remain the priority. [Layered style](LAYERED-STYLE.md) separates present mechanisms
 from planned semantic providers, profile persistence, weighting and blend APIs.
 
+## First real GuitarSet presence review and score — 2026-09-23
+
+The user reviewed the nine frozen repeated microphone aids and clarified
+that clips 1, 4, 5 and 6 sounded piano/keyboard-like rather than guitar.
+They heard nothing in 2, 3 and 9, and acoustic guitar in 7 and 8. The raw
+reply and clarification are separate from a normalized, ignored label TSV;
+`other_noise` means audible sound without user-identified guitar, not a
+physical piano-source claim. Its SHA-256 is
+`e9297a00220e433b794d9783767a561bcf23b66e67396e35e73cef2a15957131`.
+Checked stable Pascal Win32/Win64 binders reverified all nine aid hashes and
+emitted identical reviewed packet SHA-256
+`22e8589b58fe2ed54afeeb839fae076eebd154648461503fe35c5d2cb913aa7c`,
+with zero leaks.
+
+The frozen production scorer used the lowest-numbered reviewed same-source
+no-guitar references 1, 4 and 9; it rechecked the listener inputs, aid
+manifest and original WAV identities before writing output. Checked stable
+Win32/Win64 development reports are byte-identical (SHA-256
+`05bd16a0e0986c8918325ea85148d72c4f0d58cce10ee24dadbaf99af11e288a`):
+four scored windows were correct rest-compatible, with no false active,
+missed active or abstention; two reference windows were excluded. The reserved
+player-05 source ran once on checked Win64 (SHA-256
+`9f8dbd121eb3379f8f43e435d4b3ffee3ddecd22ccd974ce326b49cb47724779`):
+guitar-positive clip 7 was a correct contrast candidate and guitar-positive
+clip 8 was `unknown`, an explicit abstention. Clip 9 was the reference and
+excluded. All scorers reported zero leaks. No ratios were retuned.
+
+This closes [NS-3_notes_05](TODO/NS-3_notes_05.md) criterion 1's
+source-bound listener-reference convention at the declared packet scope;
+criteria 2 and 4 had already passed their maintained observation/consumer
+scope. Criterion 3 and task credit remain open. There are no scored
+guitar-positive development windows, so this packet cannot calibrate
+positive sensitivity. The independent positive has one candidate and one
+abstention, and player 05 is now exposed for any future policy change.
+The next bounded deliverable must supply prospectively selected, user-reviewed
+guitar-positive **development** and same-source no-guitar reference cases;
+reserve a fresh independent source before adopting any changed decision.
+Selection should target attack/continuation sounds that are recognizable to
+the listener and leave the frozen fourfold/1.5-fold ratios unchanged.
+
 ## Acoustic-flute octave source gate — 2026-09-23
 
 With the reviewed GuitarSet packet still pending, a separate non-listening

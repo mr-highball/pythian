@@ -64,9 +64,10 @@ the fixed fourfold contrast does not admit it. A wrong source hash exits nonzero
 before any TSV row. These checks validate the boundary and failure behavior, not audible
 instrument detection, source-independent calibration, or event accuracy.
 
-The criterion's recorded development/independent cases and calibrated
-false-active/missed-active/unknown coverage remain open. GuitarSet's stopped
-packet and previously exposed NSynth test/train groups remain protected.
+At this validation point, recorded development/independent cases and calibrated
+false-active/missed-active/unknown coverage remained open. Earlier stopped
+GuitarSet packets and previously exposed NSynth test/train groups remained
+protected.
 
 Fresh focused acceptance on 2026-09-23 rebuilt the maintained observation
 unit, tests and WAV inspector with checked stable FPC 3.2.2 Win32/Win64.
@@ -80,3 +81,47 @@ same TSV bytes and zero-leak result. This second full-file pass is part of its
 cost. This meets the API and consumer acceptance criteria of
 [NS-3_notes_05](TODO/NS-3_notes_05.md) at their source-free scope; it does not
 meet the remaining source-grounded acoustic and recorded-calibration criteria.
+
+## First listener-bound GuitarSet comparison — 2026-09-23
+
+A later frozen packet selected three player and musical-family groups from
+GuitarSet before opening their microphone audio. The user reviewed nine
+unchanged-gain, repeated 250-ms source windows, then clarified that clips
+1, 4, 5 and 6 sounded piano/keyboard-like rather than like guitar. Those
+four are listener-labelled `other_noise`: audible sound without identified
+guitar, **not** a claim that a piano was physically recorded. Clips 2, 3 and
+9 were inaudible (`nothing`); 7 and 8 sounded like acoustic guitar (`guitar`).
+The note-control phases and original microphone identities did not override
+these acoustic labels. The original replies and normalized labels are kept
+separately under ignored `build/`.
+
+Checked stable Pascal Win32/Win64 binders verified the frozen aid manifest and
+all nine WAV hashes, then emitted byte-identical source-bound reviewed TSVs
+(SHA-256 `22e8589b58fe2ed54afeeb839fae076eebd154648461503fe35c5d2cb913aa7c`),
+with zero leaks. The unchanged production scorer rechecked the reviewed and
+normalized input, every aid hash and original WAV identity before output.
+The development scorers agree byte for byte across Win32/Win64 (SHA-256
+`05bd16a0e0986c8918325ea85148d72c4f0d58cce10ee24dadbaf99af11e288a`).
+
+| Source role | Reviewed same-source rest | Scored windows | Correct contrast | Correct rest-compatible | False active | Missed active | Abstained known labels |
+| --- | ---: | --- | ---: | ---: | ---: | ---: | ---: |
+| Development player 01 | 1 | 2, 3 | 0 | 2 | 0 | 0 | 0 |
+| Development player 02 | 4 | 5, 6 | 0 | 2 | 0 | 0 | 0 |
+| Reserved player 05 | 9 | 7, 8 | 1 | 0 | 0 | 0 | 1 |
+
+The reserved source was scored once on checked Win64 (TSV SHA-256
+`9f8dbd121eb3379f8f43e435d4b3ffee3ddecd22ccd974ce326b49cb47724779`),
+with zero leaks. Clip 7 is a correct contrast candidate; guitar-positive
+clip 8 is `unknown`, an explicit coverage loss. Reference windows are excluded
+from scoring. No source lacked a reference; all nine listener labels are known.
+The fixed fourfold/1.5-fold observation ratios were not retuned.
+
+This closes the source-bound listener-reference convention in
+[NS-3_notes_05](TODO/NS-3_notes_05.md) criterion 1 at this packet scope.
+Its development sources have **no scored guitar-positive windows**, so they
+cannot establish positive detection or calibration. The two reserved positive
+windows yield one candidate and one abstention, not independent phrase
+accuracy. Criterion 3 and task credit remain open. Any replacement rule must
+use a newly frozen development-positive reference and a fresh independent
+source; player 05 is now exposed and cannot be recycled as held-out evidence
+after tuning.

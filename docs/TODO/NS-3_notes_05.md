@@ -28,6 +28,16 @@ extra NSynth train and first-stem URMP development selectors were stopped at
 their frozen metadata gates before listening/scoring; neither can be repaired
 by changing its failed pair or window in place.
 
+The first frozen GuitarSet listener packet is now bound and scored. The
+[source-bound review](../PRESENCE.md#first-listener-bound-guitarset-comparison--2026-09-23)
+meets criterion 1's reference-convention and source-group separation at this
+packet scope; criteria 2 and 4 were already met at the maintained observation
+and consumer scope. Development yielded four correct rest-compatible decisions
+but no scored guitar-positive window. The reserved recording yielded one
+correct contrast candidate and one guitar-positive abstention. Criterion 3
+and all task credit remain open; this evaluation recording is now exposed and
+cannot become a fresh held-out test after a policy change.
+
 **Acceptance Criteria:**
 
 - Establish a source-bound development/reference convention for audible
@@ -58,6 +68,21 @@ by changing its failed pair or window in place.
 
 **Dev Notes:**
 
+- 2026-09-23 first real listener-bound score: the user clarified that 1, 4,
+  5 and 6 sounded piano/keyboard-like rather than guitar; 2, 3 and 9 were
+  inaudible; 7 and 8 sounded like acoustic guitar. A checked Pascal binder
+  verified all nine aids and produced identical Win32/Win64 reviewed packets.
+  The frozen production scorer chose source-local reference clips 1, 4 and 9.
+  Win32/Win64 development results match exactly: four correct rest-compatible
+  windows, zero positives. The reserved source produced one correct contrast
+  candidate and one guitar-positive abstention, with zero false-active or
+  missed-active decisions; all runs report zero leaks. This closes criterion 1
+  at the declared packet scope, while criterion 3 remains open because there
+  is no positive development sensitivity and the independent positive has
+  only one of two candidates covered. Do not retune the fourfold/1.5-fold
+  ratios to clip 8 or treat the exposed player as held-out again. A new
+  prospective development-positive reference and fresh independent source
+  are needed before changed-decision acceptance. No task credit.
 - 2026-09-23 private score binding repair: the first scorer accepted a
   self-hashed synthetic review without independently checking its manifest or
   listener input. The production Pascal runner now requires the frozen
