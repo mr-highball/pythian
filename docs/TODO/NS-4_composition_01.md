@@ -203,3 +203,21 @@ accepted composition result.
   this batch. The user's paired listening feedback requires whole-passage
   coherence and fewer conflicting notes/beats; the improved pop behavior does
   not satisfy that musical gate.
+- 2026-09-24 the newly authored form-conditioned source under ignored
+  `build/composition-form-provider/` now passes its source-only gate after a
+  separate, frozen formatting repair. The first checked Win32/Win64 run
+  falsely reported internal PASS while FPC space-padded `%02d` token beats,
+  ledger IDs and filenames; those bytes were disqualified before any model
+  learning. A six-site explicit ASCII-digit repair changed no action tables,
+  pairing or gates. Repaired checked runs and an independent Pascal byte
+  verifier pass with zero leaks: 24 distinct canonical four-bar controls,
+  37 branching order-2 contexts, and exact parity of all 26 source artifacts
+  across targets. Salty Boi independently checked the hashes, source identity
+  and old-to-new transformation. Source report SHA-256 is
+  `6187d42ba66a116b0bc661528377d622612bb98eb6704227cf2c6f43213de68a`;
+  ledger SHA-256 is
+  `cf63db38d0aefb553697e396b0be6b9982e8aef3a4ded070758564abf7139a8a`.
+  This closes no full acceptance criterion or credit. At the two-batch
+  task-flow checkpoint, the source barrier is removed; the next bounded
+  action is one separately frozen A/B WFC composition candidate under the
+  existing form/chord/novelty policy, with no source or gate retune.

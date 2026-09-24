@@ -12463,3 +12463,26 @@ The user's paired review reports one numbered playback as pop-free and more
 musical, and the other as better harmonized, while still hearing note/beat
 conflicts and judging the result short of a coherent song. Do not assign those numbered
 observations to specific filenames until their mapping is confirmed.
+
+The new first-party, form-conditioned composition source under ignored
+`build/composition-form-provider/` passed its source-only qualification after
+one bounded serialization repair. The first frozen Win32/Win64 builder runs
+exited zero but emitted space-padded `beat= 0`, `P 0` and
+`control- 0.tokens.txt` despite an internal PASS. Those outputs were
+disqualified before model learning. The separately frozen six-site
+two-ASCII-digit repair kept all action tables, pairings and gates fixed.
+Repaired checked-target source and independent Pascal verifier runs pass with
+zero leaks: 24 distinct canonical four-bar controls, 37 branching order-2
+contexts and exact parity of 24 token files plus ledger/report. Source report
+SHA-256 is `6187d42ba66a116b0bc661528377d622612bb98eb6704227cf2c6f43213de68a`;
+ledger SHA-256 is `cf63db38d0aefb553697e396b0be6b9982e8aef3a4ded070758564abf7139a8a`.
+Salty Boi independently confirmed the old-to-new formatting-only change and
+all source hashes. The independent verifier prints, but does not internally
+compare, the report's ledger-hash field; QA checked the field against the
+actual ledger. The ignored `SOURCE-RESULT.md` retains the exact freeze and
+stop sequence. No WFC model, candidate, WAV or musical verdict exists.
+These two source-only batches close no complete composition criterion. The
+task-flow reassessment allows one candidate under the already prospectively
+fixed form/chord/novelty policy because the source barrier is now removed;
+freeze candidate code and learned model identities first, and stop on any
+candidate gate miss. NS-4 stays 97%; overall completion stays 68.80%.
