@@ -12060,3 +12060,17 @@ unconditioned full-event candidate stays private, and overall credit remains
 68.65. The next bounded generation hypothesis must use explicit harmony
 context and score both novelty and within-context relationships before a user
 handoff.
+
+Task-flow checkpoint for NS-4_note-events_01: the published-score-timed WFC
+pitch passage and the distinct authored full-event passage are two nonclosing
+musical batches. The first is more music-like after its pop repair but still
+has reported note/beat conflicts; the second fails the source-free within-bar
+harmony control before listening. Both routes stop. The next action changes the
+representation by admitting an independent chord context for exact joint
+events, rather than changing sequence order, seed or the scored candidates.
+The single frozen bar-local branching preflight in ignored
+`build/joint-event-context/PREFLIGHT.md` asks whether the existing authored
+source controls permit novel complete bars under same-chord constraints. If it
+fails its bound, stop the local-bar representation before an API change or WAV.
+This is an explicit feasibility decision for criteria 3/4, not a task closure or
+new credit.

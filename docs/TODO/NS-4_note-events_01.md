@@ -190,3 +190,13 @@ checkpoint remains open. No task credit is earned yet.
   algorithm to the 5-ms release edit, which changed no pitch or event timing.
   Treat the pop concern as improved and the musical-coherence gate as open.
   No task credit or new candidate follows from this verdict alone.
+- 2026-09-24 task-flow reassessment: the score-timed pitch candidate's listener
+  checkpoint and the separate unconditioned full-event authored control are
+  two nonclosing musical batches. The first improved after a release repair but
+  still has reported note/beat conflicts; the second failed its independent
+  within-bar harmony gate before listening. Stop both generation routes.
+  The changed path is an explicit chord-context contract over exact event
+  bundles. One frozen, source-free bar-local branching preflight under ignored
+  `build/joint-event-context/` decides whether the existing authored corpus can
+  support novel same-chord bars before changing a maintained API or rendering.
+  A failed preflight stops that representation without order/source/gate retries.
