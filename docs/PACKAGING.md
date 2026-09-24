@@ -89,6 +89,15 @@ MIDI and WAV outputs. The [MIDI stream example](../examples/pythian.example.midi
 counts and replays an authored event source directly to a host-owned file sink.
 Both examples now ship in either package and run during package verification.
 
+The notes example uses a 5 ms release on each voice so one note can end while
+the other continues without a hard sample step. In the checked FPC 3.2.2
+Win32/Win64 replay, its authored MIDI is unchanged (SHA-256
+`55b9895e53d73f4134cffbdb1f207da89063af6b332de2ad623a759716287ecb`),
+and both targets produce the same 97,241-frame stereo WAV (SHA-256
+`b32c0ee15ef705fcaa364c0ba4fbb3ac82c94636715aa6902c400a08b275a76c`).
+The earlier package checkpoint below records its historical output before this
+release adjustment.
+
 The [instrument example](../examples/pythian.example.instrument.lpr) renders
 keyboard/velocity zones through the note-sequence API. The WFC package also ships
 a [saved-event example](../examples/pythian.example.events.lpr): it learns explicit

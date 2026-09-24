@@ -11987,3 +11987,20 @@ only the analysis loop changed before the successful rerun. Neither stop
 changed the frozen audio policy or gates. The QA-passed candidate is served
 as numbered mobile feedback `2.wav`; the listening verdict remains pending,
 so NS-4_note-events_01 stays open at 68.65 overall credit.
+
+The packaged two-voice notes example had the same avoidable hard note-end cut:
+both authored voices used zero release while the other voice could continue.
+An ignored frozen plan under `build/notes-example-release/` bound one maintenance
+change to 5 ms per-voice release, leaving MIDI, gate times, pitches, velocity,
+gain and pan fixed. Checked stable FPC 3.2.2 Win32/Win64 example replay passed
+exact MIDI/audio roundtrip with zero heap leaks and identical output hashes.
+The MIDI SHA-256 remains
+`55b9895e53d73f4134cffbdb1f207da89063af6b332de2ad623a759716287ecb`;
+the new 97,241-frame stereo WAV SHA-256 is
+`b32c0ee15ef705fcaa364c0ba4fbb3ac82c94636715aa6902c400a08b275a76c`.
+At three authored note ends, the mean maximum adjacent-sample delta fell from
+0.07197062 to 0.00151571 (97.9%), passing the frozen quarter-baseline gate.
+Salty Boi independently reproduced the checked runs, hashes and boundary
+measurements. This fixes the delivered example's render setting; it does not
+substitute for the user's verdict on the separate 30-second generated clip or
+close NS-4_note-events_01. Overall credit remains 68.65.

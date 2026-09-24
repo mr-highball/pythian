@@ -90,7 +90,8 @@ begin
       LVoices[LVoice] := DefaultSynthVoice;
       LVoices[LVoice].Gain := 0.2;
       LVoices[LVoice].Pan := -0.4 + 0.8 * LVoice;
-      LVoices[LVoice].Envelope.ReleaseSeconds := 0;
+      { Fade each note independently when the other part remains active. }
+      LVoices[LVoice].Envelope.ReleaseSeconds := 0.005;
       for LIndex := 0 to 3 do
       begin
         LGates[LVoice * 4 + LIndex] := Default(TNoteGate);
