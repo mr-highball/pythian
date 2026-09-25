@@ -13,7 +13,7 @@ behavior takes priority when detailed style review is waiting on evidence.
 This catalog covers the remaining declared end state. Task files own acceptance
 criteria and hard prerequisites; this page supplies navigation and accounting.
 No task earns credit merely by being written. Accepted task credit is **13.65**;
-**30.85 overall points remain**. Baseline 55.5 + accepted 13.65 = **69.15 current**.
+**30.60 overall points remain**. Baseline 55.5 + accepted 13.90 = **69.40 current**.
 
 The [pause retrospective](../WORK.md#pause-retrospective--2026-09-21) tightens
 existing note, presence, mixture and style-reference criteria without adding
@@ -65,11 +65,11 @@ unless also declared under Blockers; required gaps still follow
 | --- | ---: | ---: | ---: | ---: |
 | [NS-1 — Independent Pascal foundation](../MILESTONES.md#ns-1) | 100% | 0 | 0 | 0.00 |
 | [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 100% | 0 | 0 | 0.00 |
-| [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 41% | 16 | 59 | 14.75 |
+| [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 42% | 16 | 58 | 14.50 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 98% | 2 | 2 | 0.30 |
 | [NS-5 — Many-hour styles that generate and blend usefully](../MILESTONES.md#ns-5) | 28% | 16 | 72 | 14.40 |
 | [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 72% | 3 | 28 | 1.40 |
-| **Total** | **69.15 weighted points** | **37** | Per-goal credits are not summed across goals | **30.85** |
+| **Total** | **69.40 weighted points** | **37** | Per-goal credits are not summed across goals | **30.60** |
 
 NS-1 is already complete under the accepted extraction scope. Preserve its
 invariants in every applicable task; do not recreate completed extraction work.
@@ -92,7 +92,7 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 | [NS-3_notes_01.md](NS-3_notes_01.md) — Resolve recorded pitch identity and register | +4 | +1.00 | TODO |
 | [NS-3_notes_05.md](NS-3_notes_05.md) — Admit source-grounded note-presence evidence | +1 | +0.25 | TODO |
 | [NS-3_notes_02.md](NS-3_notes_02.md) — Integrate note presence, attacks and endings | +2 | +0.50 | TODO |
-| [NS-3_notes_03.md](NS-3_notes_03.md) — Accept independent phrases and feed saved learning | +5 | +1.25 | TODO |
+| [NS-3_notes_03.md](NS-3_notes_03.md) — Accept independent phrases and feed saved learning | +4 | +1.00 | TODO |
 | [NS-3_parts_02.md](NS-3_parts_02.md) — Learn simultaneous notes and part ownership | +7 | +1.75 | TODO |
 | [NS-3_parts_03.md](NS-3_parts_03.md) — Accept role learning on independent mixtures | +4 | +1.00 | TODO |
 | [NS-3_harmony_01.md](NS-3_harmony_01.md) — Learn and accept harmonic relationships | +6 | +1.50 | TODO |
@@ -142,6 +142,7 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 | --- | --- | ---: | ---: |
 | [NS-5_corpus_01.md](DONE/NS-5_corpus_01.md) | Two verified development groups; 24 asset bindings; overlap/exposure and inherited-palette audit | +2 NS-5 | +0.40 |
 | [NS-5_scale_03.md](DONE/NS-5_scale_03.md) | Checked Pascal bounded reader and 2.322-hour, 835,995-row five-scope raw workload; exact three-source/identity audit and resource gates | +1 NS-5 | +0.20 |
+| [NS-3_notes_06.md](DONE/NS-3_notes_06.md) | Source-bound admitted note spans, hard unknown/group training boundaries, saved WFC model/evidence and exact two-target Spring/Dance reference integration | +1 NS-3 | +0.25 |
 | [NS-6_delivery_01.md](DONE/NS-6_delivery_01.md) | Native support/stability contract and independent-consumer protocol matched to current APIs and distribution policy | +8 NS-6 | +0.40 |
 | [NS-6_delivery_02.md](DONE/NS-6_delivery_02.md) | Clean stable Win32/Win64 builds, four extracted consumers and successful Linux CI at frozen source | +14 NS-6 | +0.70 |
 | [NS-4_layers_01.md](DONE/NS-4_layers_01.md) | Named owned voice passes, selective role edits and exact two-target demo replay | +6 NS-4 | +0.90 |
@@ -219,7 +220,7 @@ first accepted genre is predetermined.
 10. [NS-3_context_02.md](NS-3_context_02.md)
 11. [NS-3_notes_01.md](NS-3_notes_01.md)
 12. [NS-3_notes_04.md — DONE](DONE/NS-3_notes_04.md), then [NS-3_notes_05.md](NS-3_notes_05.md), then [NS-3_notes_02.md](NS-3_notes_02.md)
-13. [NS-3_notes_03.md](NS-3_notes_03.md)
+13. [NS-3_notes_06.md — DONE](DONE/NS-3_notes_06.md), then [NS-3_notes_03.md](NS-3_notes_03.md)
 14. [NS-3_parts_04.md — DONE](DONE/NS-3_parts_04.md), then [NS-3_parts_01.md — DONE](DONE/NS-3_parts_01.md)
 15. [NS-3_parts_02.md](NS-3_parts_02.md)
 16. [NS-3_parts_03.md](NS-3_parts_03.md)

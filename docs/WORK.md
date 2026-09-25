@@ -12972,3 +12972,73 @@ and **+0.20 overall**. NS-5 is **28%**, overall completion **69.15%**, with
 presence admission; [semantic scale](TODO/NS-5_scale_01.md) stays open until
 that bridge and actual learning qualify. The cross-task listening queue remains
 **1/20**, with no source label or raw observation added.
+
+## Note-register stop and semantic-bridge split — 2026-09-25
+
+After raw corpus acceptance, one genuinely independent flute-tone source
+qualified eight exact publisher WAVs, including same-published-player C4/C5
+and vibrato pairs. The prospectively frozen Pascal source gate passed 40/40
+fixed activity windows. Its necessary one-versus-two-C5-period contrast then
+passed 5/5 on each first-player nonvibrato C4/C5 and vibrato C4 member, but
+only **2/5** on the first-player vibrato C5 member against a required 4/5.
+Stop this cycle-ratio proposal there, before scoring the second published
+player ID. No blind note estimate, Spring score, accepted register observation
+or task credit follows. Checked FPC 3.2.2 Win32 reported zero leaks; exact
+private source hashes and residuals remain in ignored
+`build/register-yorita-cycle/`. The collection is described by the
+[publisher](https://www.brinckerhoff.org/flute-tones/index.html) and its
+[Cal Poly thesis](https://digitalcommons.calpoly.edu/theses/1308/); the
+publisher's numeric player IDs are not treated as proven independent people.
+
+The task retro leaves the note-register and generic-presence source routes
+stopped. To advance the critical path without another speculative source
+screen, split an independently useful admitted-note-to-WFC bridge from
+[NS-3_notes_03](TODO/NS-3_notes_03.md) into
+[NS-3_notes_06](TODO/DONE/NS-3_notes_06.md). The new task will use source-bound
+published reference events to prove original-frame ownership, hard unknown/
+recording training boundaries, saved WFC learning/reload and deterministic
+solve. The phrase task retains actual **inferred** events, independent
+precision/coverage/onset/full-note gates and the final audible learned result.
+Original unearned **+5 NS-3** credit is redistributed **+1 bridge / +4 phrase**;
+no credit is earned by splitting. The ledger remains **69.15 overall / 38 open
+tasks**, with the cross-task Pythian listening queue **1/20**. Ticket Guy owns
+the bounded Pascal bridge; Salty Boi owns its QA. No reviewed source clip or
+diagnostic render is added to the listening queue.
+
+## Source-bound admitted-note WFC bridge accepted — 2026-09-25
+
+[NS-3_notes_06](TODO/DONE/NS-3_notes_06.md) now has a maintained Pascal
+adapter, a focused checked fixture in the build hook and a separately frozen
+two-work reference integration. The adapter retains original-frame WAV/group/
+recording and published annotation identities, projects endpoints to a shared
+integer-millisecond WFC duration clock, and splits independent training runs
+at unknown, unannotated and recording boundaries. Unknown is excluded from
+the learned vocabulary/output; explicit silence remains trainable. It rejects
+malformed ownership/intervals and the 33rd run. A linear evidence builder
+records exact source coordinates, excluded gaps and run ownership.
+
+Checked FPC 3.2.2 Win32/Win64 fixtures pass the changed boundaries, 16-kHz/
+44.1-kHz equal-duration mapping, exact 100-ms token with 99/101-ms exclusions,
+source-leading/trailing gaps, canonical reload, deterministic three-token
+solve and failure preservation, with zero leaks. The private Pascal integration
+verified exact WAV and published Notes bytes from different development-exposed
+URMP Spring/Dance works, trained **22 runs / 23 pitch spans** across **2
+sources/groups**, saved/reloaded the on-disk model and evidence, and solved two
+seed-731 pitch-duration tokens. Win32, Win64 and repeated runs agree byte for
+byte: model SHA-256 `c7602485034a094001d905887ab17cb914758861a86da31955ec18ccbf1cb2f2`,
+evidence `22eea1992a95107a2d965474d5b4c9fdcfde5b58511125560b79fc80cb2319ca`,
+tokens `162344203556a49ed158aaf2a17bc093af12daf6da1797a71e95942f77648c32`.
+Salty Boi's final QA cleared the scale and exact-token issues; private policy,
+source hashes, commands and logs are under ignored `build/admitted-wfc-bridge/`
+and `build/admitted-note-bridge/`.
+
+The task earns **+1 NS-3 / +0.25 overall**, raising NS-3 to **42%** and total
+completion to **69.40%**. The catalog now has **37 open / 23 DONE** tasks.
+This accepts a generic learner bridge using externally supplied reference
+events; it does not accept WAV note inference, acoustically measured rests,
+phrase accuracy, musical quality or a listening verdict. The next critical
+core decision remains recorded note identity and generic presence with truly
+independent physical evidence; [NS-3_notes_03](TODO/NS-3_notes_03.md) must
+feed **actual inferred** events to this bridge and pass its held-out phrase
+and audible gates before semantic scale can claim admitted music. The cross-task
+Pythian listening queue remains **1/20**.

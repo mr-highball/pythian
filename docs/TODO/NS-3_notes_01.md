@@ -107,6 +107,19 @@ variation is authorized by the existing evidence.
 
 **Dev Notes:**
 
+- 2026-09-25 a fresh, publisher-hosted [Yorita flute-tone collection](https://www.brinckerhoff.org/flute-tones/index.html)
+  supplied two published player IDs with C4/C5 long tones, with and without
+  vibrato. A frozen Pascal eight-WAV source/physical gate passed all 40 fixed
+  source activity windows at 44.1-kHz PCM16 stereo. The first three scored
+  members passed 5/5 each, but the first vibrato C5 member passed only 2/5
+  against the declared 4/5 minimum. Stop the fixed one-versus-two-period
+  ratio before scoring player ID 1; do not change its windows, lag width or
+  threshold. The exact files, hashes, checked Win32 source, per-window
+  residuals and zero-leak log remain under ignored `build/register-yorita-cycle/`.
+  This is a source-qualified negative *physical* result, not a blind register
+  result, note admission or credit. The next batch switches to the independent
+  [admitted-event WFC bridge](DONE/NS-3_notes_06.md) while register evidence is
+  reassessed; no source-only octave screen follows this one.
 - 2026-09-25 an independently published
   [Iowa flute C4/C5 single-note](https://theremin.music.uiowa.edu/MIS-Pitches-2012/MISFlute2012.html)
   contrast stopped before any pitch scoring. Four `ff` vibrato/nonvibrato

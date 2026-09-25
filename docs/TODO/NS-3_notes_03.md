@@ -7,7 +7,9 @@
 Freeze combined pitch/presence/boundary inference, accept supported independent recordings and use their admitted events in the saved learner and actual WFC generation.
 
 North star: NS-3. Outcome owner: WAV-03-PHRASES.
-Completion credit: 5 goal percentage points (1.25 overall points).
+Completion credit: 4 goal percentage points (1.00 overall points), after
+assigning 1 of its original 5 unearned points to the generic admitted-event
+[WFC bridge](DONE/NS-3_notes_06.md).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [PITCH](../PITCH.md) · [WAVE-STYLE](../WAVE-STYLE.md).
@@ -17,17 +19,30 @@ Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [PITCH](../PI
 - Freeze the combined maintained inference and admission policy after both note-development tasks pass; protect held-out phrase material until then.
 - Meet per-supported-recording coverage >=80%, precision >=98%, onset F1 >=0.80 and full-note F1 >=0.70 under the existing timing/edge protocol; report wrong, false-rest and unknown results separately.
 - Run actual waveform controls and verify final native fidelity/cost; a score from an ignored diagnostic cannot substitute for the maintained path.
-- Retain admitted pitch/kind/duration, source timing and excluded tracking gaps in saved evidence; unknowns split or explicitly mark learning rather than invent transitions.
-- Reload the resulting style, solve actual WFC passes and reconstruct an audible native passage with traceable learned versus authored behavior. Polyphonic ownership remains a separate task.
+- Feed the accepted source-bound admitted-event bridge with the task's **actual
+  inferred events**, retaining pitch/kind/duration, source timing and excluded
+  tracking gaps in saved evidence. Unknowns must split learning rather than
+  invent transitions.
+- Reload the resulting style, solve actual WFC passes and reconstruct an
+  audible native passage from inferred events with traceable learned versus
+  authored behavior. A bridge exercised on reference events alone cannot
+  satisfy this criterion. Polyphonic ownership remains a separate task.
 
 **Blockers**
 
 - [NS-3_notes_01.md](NS-3_notes_01.md)
 - [NS-3_notes_02.md](NS-3_notes_02.md)
 - [NS-3_validation_02.md](DONE/NS-3_validation_02.md)
+- [NS-3_notes_06.md — DONE](DONE/NS-3_notes_06.md)
 
 **Dev Notes:**
 
+- 2026-09-25 the reusable admitted-event-to-WFC bridge was split into
+  [NS-3_notes_06](DONE/NS-3_notes_06.md) for an independently checkable,
+  reference-exercised result. This task retains the recorded precision,
+  coverage, onset and full-note gates and the actual inferred-event learning,
+  saved-style generation and listening result. Original +5 NS-3 credit is
+  divided +1 bridge and +4 phrase acceptance; no credit is earned by the split.
 - 2026-09-23 development preview failure localization: the user's 30-second
   Pythian preview stumbled in both pitch and timing. A private, source-bound
   Pascal comparison uses published performed-note annotations for the same
