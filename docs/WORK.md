@@ -13383,3 +13383,39 @@ from another task. The existing tasks own those outcomes; no new task or
 credit is justified by this audit. Preserve the user's cumulative listening
 request at **1/20**, and do not ask for a one-item verdict. The milestone
 ledger remains **69.85%**, **37 open / 25 DONE**.
+
+## Fixed-gain source gate and stop — 2026-09-25
+
+A genuinely different `NS-3_notes_05` source design paired the original Aalto
+Mozart isolated flute track with PHENICX's manually aligned note TXT. Aalto
+states that all original instrument tracks share gain settings and retain
+background noise in no-signal passages; PHENICX's score-informed denoised
+WAV was excluded. Exact selected ZIP members were acquired from official
+HTTP ranges, parsed and CRC-verified by private Pascal tooling on checked
+Win32/Win64. Complete archive hashes were not obtained, so the source claim
+is member-bound rather than full-archive-MD5-bound. The original MP3 member
+was externally decoded to a private 48-kHz mono PCM16 WAV with no gain or
+filter change. `build/phenicx-presence/` retains the pre-run acquisition and
+acoustic policies, Pascal source, extracted member identities and hashes,
+headers, logs and exact stop result. No media enters the tracked repository.
+
+The frozen Pascal physical gate selected [5.0,5.5) s, 22.7 seconds before
+the first manually aligned flute onset, and two annotated playing windows
+at [43.0,43.5) / [46.0,46.5) s. The rest was nonzero at RMS 0.000051397;
+playing RMS was 0.001572773 / 0.001166065, 30.6x / 22.7x that rest.
+Both playing windows nevertheless failed the prospectively required RMS
+>=0.005. The first checked Win32 run stopped, with zero clipped samples,
+bounded work and zero leaked blocks. Win64 compiled but was not scored
+after the frozen stop. Salty Boi reviewed the source limitation, arithmetic,
+run order and stop without an actionable issue. No maintained presence
+observation, independent-piece source or listener packet was scored.
+
+The selected-member qualification and failed physical gate are two
+nonclosing batches for this new source route. Stop its window, threshold,
+instrument and source variants; the ratio pass is retained as evidence, not
+a retrospective waiver of the absolute gate. `NS-3_notes_05` remains open
+for a genuinely supported source-separated positive/rest development and
+independent packet. No new task is needed: the requirement is already owned
+by that file. Continue only another criterion-closing prerequisite when its
+evidence becomes available. Completion: **69.85%, 37 open / 25 DONE**;
+the cross-task Pythian listening queue remains **1/20**.

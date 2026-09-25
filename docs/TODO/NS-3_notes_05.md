@@ -75,6 +75,32 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-25 fixed-gain/manual-annotation source route stopped: the official
+  [Aalto isolated orchestral tracks](https://research.cs.aalto.fi/acoustics/virtual-acoustics/research/acoustic-measurement-and-analysis/85-anechoic-recordings.html)
+  share gain settings, and [PHENICX](https://zenodo.org/records/840025)
+  publishes manually aligned per-instrument note times. The publicly
+  downloadable original tracks are MP3; PHENICX's distributed WAVs are
+  score-informed denoised and were excluded. A bounded Pascal ZIP-range
+  inventory verified the selected original Mozart flute MP3 and matching
+  annotation member names, DEFLATE output, CRC and local SHA-256 on checked
+  Win32/Win64. Full archive hashes remain unverified. External ffmpeg decoded
+  the selected original MP3 only to private PCM16 mono at 48 kHz; all
+  analysis was Pascal. The frozen Win32 physical gate found a nonzero
+  candidate no-playing window at 5.0–5.5 s (RMS 0.000051397) and two
+  continuously annotated playing windows at 43.0–43.5 / 46.0–46.5 s
+  (RMS 0.001572773 / 0.001166065). Both playing windows exceeded the rest
+  by 30.6x / 22.7x but failed the prospectively fixed absolute RMS floor
+  of 0.005. Stop the route without changing the window or threshold; no
+  maintained presence score or independent-piece PCM was opened. Win64
+  checker compilation passed, but no Win64 source score followed the stop.
+  Salty Boi checked the bounded claims and zero-leak Win32 result. The
+  private policies, Pascal tooling, source/member hashes and log are under
+  ignored `build/phenicx-presence/`. This source qualification and physical
+  gate are two nonclosing batches. The fixed-gain/manually timed design was
+  distinct, but its recorded positives failed the frozen support gate; stop
+  further variations of this route. Criterion 3 and all task credit remain
+  open until a genuinely independent positive/rest packet qualifies.
+
 - 2026-09-25 checked native nonzero-rest control: a frozen private Pascal
   extractor copied raw channel-13 samples from the authenticated anechoic
   noise-floor WAV to mono PCM24 without resampling, retaining 319,620 source
