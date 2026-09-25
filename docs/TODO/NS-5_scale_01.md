@@ -11,7 +11,7 @@ Completion credit: 3 goal percentage points (0.60 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 The bounded multi-recording raw observation stream and its measured workload
-now belong to [NS-5_scale_03](NS-5_scale_03.md), with 1 of this task's original
+now belong to [NS-5_scale_03](DONE/NS-5_scale_03.md), with 1 of this task's original
 4 unearned NS-5 points. This task retains the semantic aggregation, capacity,
 whole-pipeline budgets and reload outcome. All five original criteria remain
 represented across the two tasks; accepting raw salience does not satisfy an
@@ -62,13 +62,13 @@ as prerequisites for operational measurement.
 
 - [NS-5_corpus_01.md](DONE/NS-5_corpus_01.md)
 - [NS-3_validation_02.md](DONE/NS-3_validation_02.md)
-- [NS-5_scale_03.md](NS-5_scale_03.md)
+- [NS-5_scale_03.md — DONE](DONE/NS-5_scale_03.md)
 - [NS-3_notes_03.md](NS-3_notes_03.md)
 
 **Dev Notes:**
 
 - 2026-09-25 task-flow split after two nonclosing preparation/capacity batches:
-  [NS-5_scale_03](NS-5_scale_03.md) now owns the independently usable
+  [NS-5_scale_03](DONE/NS-5_scale_03.md) now owns the independently usable
   source-bound raw corpus reader and actual five-job observation workload.
   This task still requires accepted note admission and actual semantic learning
   under the complete original pipeline budgets. Its remaining credit is
@@ -82,3 +82,5 @@ as prerequisites for operational measurement.
 - 2026-09-22: [native execution](DONE/NS-3_validation_02.md) was reopened for a Pascal-only producer and then accepted with fresh density, setup, memory and hour-cost evidence. This task must still measure the whole multi-recording semantic workload; the old TensorFlow C run is historical only.
 
 - 2026-09-23: The checked Win32 whole-array `pythian.learn` rejected the full prepared WAV-C (527081868 bytes) at its 256000044-byte preflight, before frame decoding or output creation; see [capacity record](../CORPUS-SCALE.md#missing-admission-and-capacity-boundaries). The source also exceeds the 64000000-scalar sample limit, but that later guard was not exercised. This closes no scale criterion: training/model capacities and multi-recording semantic learning still require the [recorded-note bridge](NS-3_notes_03.md). Stop repeating whole-array rejection probes; follow that prerequisite.
+
+- 2026-09-25: [The bounded raw corpus](DONE/NS-5_scale_03.md) is accepted at 2.3222053373 original-clock hours and 835,995 verified Pascal-produced observations across three recording groups. Its 2,683,156-ms successful raw schedule and bounded reader remove this task's raw prerequisite. No raw observation is an admitted event; the [recorded-note bridge](NS-3_notes_03.md), semantic aggregation/learning, capacity and complete pipeline measurements still block this task's +3 NS-5 credit.

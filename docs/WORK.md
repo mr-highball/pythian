@@ -12886,7 +12886,7 @@ earlier `NS-5_scale_01` preparation and whole-array rejection batches closed
 no criterion; its missing admitted-note-to-learner bridge remains owned by
 `NS-3_notes_03`. The raw work can produce an independently useful bounded
 multi-recording reader and exact source-bound packet before that bridge exists.
-The [new raw task](TODO/NS-5_scale_03.md) therefore owns maintained corpus
+The [new raw task](TODO/DONE/NS-5_scale_03.md) therefore owns maintained corpus
 reading plus actual five-job observation/cost qualification; the
 [original scale task](TODO/NS-5_scale_01.md) retains admission, semantic
 aggregation, model-capacity and full-pipeline budgets. Its original four
@@ -12898,3 +12898,77 @@ reader's failure tests fail. Ticket Guy owns only the new Pascal reader,
 fixture and inference build hook; the primary owns source identity, workload
 execution and accounting. Salty Boi reviews the combined components when both
 are ready. The cross-task listening queue remains **1/20**.
+
+## Raw-corpus code and frozen long-run stop — 2026-09-25
+
+The new [raw scale task](TODO/DONE/NS-5_scale_03.md) now has a maintained Pascal
+multi-recording reader, auditor, checked-target fixture and inference build
+hook. They preserve recording group/source/scope identity and reject bad
+adjacency, wrong estimator/policy/binding, corrupted checksums or centers.
+The auditor also verifies actual source WAV hash and geometry. Its two-source
+pilot reads exactly 12,429 rows from the full Pixel Sprinter and Opening Theme
+prepared recordings. Salty Boi's checked Win32/Win64 QA caught and then
+cleared fractional manifest integers, clean exception finalization and a
+wrong exact-integer source frame count, with zero leaks. The code boundary is
+ready for the declared workload; the pilot is not many-hour acceptance.
+
+The first frozen long WAV-C scope then stopped on the predeclared 5-second
+observing-stall gate at 1,120,750 ms, with 327,744/360,000 rows completed and
+5,032 ms since the last progress publication. The supervisor published no C1
+artifact and reported zero unfreed blocks. The five-job schedule stopped at
+that first failure; no full-corpus read, cost qualification or task credit is
+claimed. Current shared progress cannot distinguish a backend stall from source
+or output I/O, so the next useful raw-scale action is a bounded phase-specific
+diagnosis before another frozen attempt. Exact private identities, commands,
+pilot checks and failure are in ignored `build/scale-raw-corpus/`.
+
+One predeclared 128-row Pascal probe at the first unreported center completed
+in 22,797 ms under the same source/model/policy and five-second gate. It did
+not reproduce a local audio-window stall. Ticket Guy's read-only path review
+found the worker reports each completed row before a synchronous 32-row append;
+the failed count is exactly on that boundary. An output write is plausible but
+unproven. One telemetry-only attempt will mark append start/completion without
+publishing a heartbeat inside the write or changing limits; Salty Boi will
+check the changed boundary before its long run.
+
+This retro keeps the critical-path priority intact: `NS-3_notes_03` remains the
+semantic admission bottleneck, while the separately implemented raw reader can
+serve it once the long workload passes. The user-selected style mixes are
+preference test material, not core prerequisites or accepted genres. The WFC
+composition listening item stays queued under the cross-task **1/20** rule;
+no source clip or unfinished raw run is added to that queue. The milestone
+score remains **68.95**, with **38 open tasks**.
+
+## Bounded Pascal raw corpus accepted — 2026-09-25
+
+The instrumented, separately frozen follow-up completed C1, C2 and C3 with
+360,000, 360,000 and 103,566 raw rows. The earlier full Pixel Sprinter and
+Opening Theme jobs contribute 3,429 and 9,000. The maintained Win64 Pascal
+auditor then verified all three WAV hashes and actual geometry, the five PINF
+identities/checksums/center sequences, contiguous scope coverage and exactly
+**835,995** rows. Unique original-clock coverage is **2.3222053373 hours**,
+with C still one conservative group and unresolved internal song cuts. The
+successful five jobs took **2,683,156 ms**, below the frozen 8,510,000-ms
+ceiling, and their PINFs use **1,217,210,335 bytes**, below the 2-GiB raw-cache
+limit. Largest worker-private peak was **6,586,368 bytes**; all per-job setup,
+scope-time and private limits passed. Producer source verification ran ten
+complete source passes across the five jobs. Exact per-artifact hashes, source
+and command identities are in ignored `build/scale-raw-corpus/RESULT.md`.
+
+The first C1 stall cost **1,120,750 ms** separately and published no artifact;
+the short local-window probe passed, but the original intermittent stall's
+exact cause remains unknown. Checked telemetry retains the original five-second
+stall gate, and Salty Boi verified a byte-identical real Pixel replay plus the
+final arithmetic/scope evidence. Exact cold-setup values for Pixel/Opening were
+not retained, though their published artifacts passed the producer's enforced
+30-second setup limit. This is accepted raw observation infrastructure only:
+no admitted notes, semantic learning, style quality or complete pipeline result
+is inferred.
+
+[NS-5_scale_03](TODO/DONE/NS-5_scale_03.md) moves to DONE, earning **+1 NS-5**
+and **+0.20 overall**. NS-5 is **28%**, overall completion **69.15%**, with
+**37 open / 22 DONE** tasks. The next critical dependency remains
+[NS-3_notes_03](TODO/NS-3_notes_03.md) through source-grounded register and
+presence admission; [semantic scale](TODO/NS-5_scale_01.md) stays open until
+that bridge and actual learning qualify. The cross-task listening queue remains
+**1/20**, with no source label or raw observation added.

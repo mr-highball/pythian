@@ -1,16 +1,71 @@
-# Corpus workload preparation
+# Corpus workload and bounded raw qualification
 
 [Corpus identity](CORPUS-EVALUATION.md) · [Native observations](NATIVE-INFERENCE.md) ·
-[Raw scale task](TODO/NS-5_scale_03.md) ·
+[Accepted raw scale task](TODO/DONE/NS-5_scale_03.md) ·
 [Semantic scale task](TODO/NS-5_scale_01.md)
 
 The 2026-09-25 task-flow split assigns source-bound multi-recording Pascal raw
 observation assembly and its actual measured workload to `NS-5_scale_03`.
 `NS-5_scale_01` retains admitted events, semantic learning and complete
-pipeline qualification. The credit total and all original scope are unchanged;
-neither task is accepted by this split. The schedule and source packet below
-predate the split and are prospective until executed with the accepted
-Pascal-only producer.
+pipeline qualification. The credit total and all original scope are unchanged.
+The raw task is now accepted; semantic learning and full-pipeline qualification
+remain open in `NS-5_scale_01`. The schedule and source packet below originated
+as prospective preparation and retain that history.
+
+## Accepted Pascal raw corpus — 2026-09-25
+
+After the first stopped attempt below, one predeclared telemetry-only attempt
+with unchanged source, policy, scopes and budgets completed all five jobs.
+The maintained Win64 Pascal reader verified three distinct WAV hashes and actual
+geometry, five complete PINF identities/checksums/center sequences and adjacent
+full-source scope coverage. It streamed exactly **835,995** observations across
+the three conservative recording groups and **2.3222053373** unique
+original-clock hours. The five successful jobs took **2,683,156 ms**, below the
+8,510,000-ms ceiling; each passed its enforced 30-second setup,
+scope-duration-plus-30-second total and 2-GiB private-memory gates. The largest
+worker-private peak was **6,586,368 bytes**. The five PINFs occupy
+**1,217,210,335 bytes**, below 2 GiB; together with all three prepared WAVs
+they occupy 1,752,246,579 bytes, below the 8-GiB working limit. The five
+successful jobs performed ten full-source producer verification passes. Checked
+Win32/Win64 boundary/replay/failure fixtures and the full Win64 read passed with
+zero unfreed blocks; Salty Boi independently reviewed the code and final
+accounting. Exact hashes, commands, the failed-first-run cost and the pilot
+setup-report limitation are in ignored `build/scale-raw-corpus/RESULT.md`.
+
+This accepts source-bound raw salience only. C's internal song boundaries,
+admitted notes, semantic learning, genre style quality and a complete pipeline
+are not established by the raw packet.
+
+## First frozen raw-corpus qualification stop — 2026-09-25
+
+The maintained Pascal corpus reader and auditor passed checked Win32/Win64
+source/scope, corruption, replay and exact-manifest failure tests. The accepted
+Pascal producer published the complete Pixel Sprinter and Opening Theme pilot
+PINFs; the auditor verified their actual WAV hashes/geometry and **12,429**
+source-bound raw observations. This qualifies the bounded reader on two real
+recordings, not the declared many-hour workload.
+
+The first long WAV-C scope stopped at the existing **5-second observing-stall
+limit** after 327,744 of 360,000 expected observations, at 1,120,750 ms total.
+The last progress age was 5,032 ms. The supervisor terminated the worker,
+published no C1 artifact, preserved the two pilot PINFs and reported zero
+unfreed blocks. No later C scope ran in that first attempt. At that point the
+frozen five-job schedule, combined 8,510-second ceiling, ten successful
+full-source verification passes and actual five-scope reader result were
+unqualified. The progress record did not isolate
+backend work from source or output I/O during the stalled interval. Stop this
+attempt under its declared first-failure rule; a phase-specific diagnosis must
+precede any new frozen qualification. Exact private commands and observations
+are under ignored `build/scale-raw-corpus/`. No semantic learning or task credit
+follows from the pilot.
+
+One fixed 128-observation diagnostic beginning at the first unreported center
+passed in 22,797 ms, including both complete source hashes. It did not
+reproduce a local audio/estimator stall. A single separately frozen attempt
+with append-start/complete telemetry then passed as reported above; telemetry
+left artifact bytes and all limits unchanged. This diagnostic contributed no
+corpus coverage. The exact cause of the first intermittent stall remains
+unproven.
 
 The prospective development workload contains the full native WAV-C conversion
 and the complete Pixel Sprinter and Opening Theme identity-pilot recordings.
@@ -32,8 +87,8 @@ native WAV-C conversion is not one of the quarantined clipped legacy excerpts.
 The former pinned observation adapter emitted raw pitch salience and AC RMS;
 it did not admit notes. Its 100-observation/second schedule projected five jobs,
 835995 observations and 1217208720 payload bytes plus headers/checksums. This
-schedule and payload are provisional for the required Pascal-only producer and
-must be requalified with that producer before execution. All prepared
+was prospective when declared; the accepted Pascal-only producer's actual
+result is above. All prepared
 inputs are 16000-Hz stereo; the original inputs are 48000-Hz stereo for WAV-C and
 44100-Hz stereo for the pilot. Channel zero is selected explicitly.
 
@@ -94,8 +149,8 @@ WAV-C (527081868 bytes, 131770456 stereo frames; output SHA-256
 `1efecef983467b81e87c9f1a92954ee0f3c9d001a801db06a7aa2fa2c8da5afc`)
 with exit 1 and `WAVE source file exceeds learner size envelope`. The fresh
 output prefix received no files. This demonstrates the byte preflight for this
-source, not whole-array training, journal-to-semantic learning or a measured
-multi-recording workload. Analysis permits
+source, not whole-array training, journal-to-semantic learning or the measured
+multi-recording **semantic** workload. Analysis permits
 65536 frames and 2000000000 work units; saved styles permit 65536 cells and 32 MiB.
 The corpus source count is 32; journal training has 4096 segments; semantic styles
 have 256 runs; actual WFC sequence learning permits 4096 samples and 1024 states.
@@ -103,10 +158,11 @@ All applicable limits must hold without increasing private caps. Bounded journal
 reading exists, but its acoustic palette does not supply missing musical admission.
 Future segmentation must retain exact original ranges and unknown/run semantics.
 
-The scale task remains open with no completion credit. Preparation identifies
-usable material and rejection boundaries; it does not yet provide executable
-whole-pipeline commands or measurements. The ignored qualification packet retains
-exact local identities, proposed raw-stage commands and the missing-stage ledger.
+The [semantic scale task](TODO/NS-5_scale_01.md) remains open with no credit of
+its own. The accepted raw packet supplies executable Pascal observation commands
+and measurements; it does not provide admitted-event aggregation, semantic
+learning or whole-pipeline measurements. The ignored qualification packet
+retains exact local identities and the missing-stage ledger.
 
 Review correction 2026-09-21: the initial preparation counted one source hash per
 job. Source inspection confirmed the second full hash before sink completion;
