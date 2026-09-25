@@ -75,6 +75,27 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-25 controlled recorded-source mix: a prospective private policy
+  combined publisher-authenticated channel-13 violin performance with
+  publisher-designated musician-present noise floor in one four-second
+  derived WAV. The Pascal extractor, maintained sinc converter, private mixer
+  and unchanged maintained presence consumer passed checked Win32/Win64 with
+  identical source/derived hashes and score rows, zero leaks and no clipping.
+  A 0.060191300-RMS violin component over 0.000932933-RMS local background
+  was `above_reviewed_rest`; a separate 0.000491156-RMS noise-only interval
+  was `compatible_with_reviewed_rest` against a nonzero noise reference.
+  Salty Boi's focused QA passed the bounded controls and limitation review.
+  The exact frozen policy, extractor-container repair, frame maps and logs are
+  in ignored `build/anechoic-presence-mix/RESULT.md`. This is a constructed
+  development control, not a natural same-take rest or source-disjoint
+  independent case. Do not infer equal original recording gain or general
+  accuracy. The prior RWC source screen and this control are two consecutive
+  nonclosing batches. Stop this presence-source investigation sequence;
+  criterion 3 and credit remain open until an independent exact-window
+  acoustic positive/rest source group is supplied under a new frozen policy.
+  Shift effort to another declared core prerequisite when its evidence is
+  available; do not create further noise-bed, window or instrument variants.
+
 - 2026-09-25 RWC 2.0 read-only source screen stopped before WAV acquisition or
   scoring. The [audio release](https://zenodo.org/records/18656623) pairs with
   [curated metadata](https://github.com/rwc-music/rwc-annotations) that manually

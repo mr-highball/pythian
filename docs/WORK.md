@@ -13487,3 +13487,43 @@ The open source/decision criterion, **70.05%** milestone ledger and **37 open /
 26 DONE** count are unchanged. Next useful work needs a genuinely qualified
 exact-window positive/rest source or the user's eventual accumulated listening
 batch; the 20-item review threshold remains in force.
+
+## Controlled presence development result and milestone retro — 2026-09-25
+
+The already frozen `NS-3_notes_05` controlled-source policy has now run to its
+two-candidate stop. Publisher-authenticated anechoic violin channel 13 was
+extracted in Pascal and resampled with the maintained Pascal sinc converter.
+The private Pascal mixer overlaid two fixed half-second playing excerpts onto
+the publisher-designated nonzero noise floor. The four-second 48-kHz mono
+PCM16 mix is SHA-256
+`a07bca181115dc4515ed7b2b9b15950cbadf46ebe1f83a7416cf8cd70fb0e952`
+on checked FPC 3.2.2 Win32 and Win64. The frozen physical gate passed:
+violin component RMS 0.060191300 versus background RMS 0.000932933,
+nonzero reference RMS 0.000681882, and maximum sample magnitude 0.243335366.
+The unchanged maintained presence reader returned `above_reviewed_rest` for
+the violin-added window and `compatible_with_reviewed_rest` for the noise-only
+window; exact TSV rows agree across targets. All final runs reported zero
+unfreed blocks. Salty Boi passed focused source, mapping, gate, replay and
+claim-scope QA. The frozen policy, one repaired private odd-size RIFF pad,
+source maps and result are under ignored `build/anechoic-presence-mix/`.
+
+This closes a **development control**, not an acceptance criterion. Both
+decisions use one constructed mix and the same noise recording. No natural
+same-take rest, calibrated cross-recording gain, independent group or held-out
+accuracy follows. The prior RWC metadata screen and this controlled mix are
+two consecutive nonclosing batches. Stop `NS-3_notes_05` source experiments
+here; a fresh independently supported exact acoustic positive/rest group is
+the explicit unblock for its recorded criterion. Do not turn this pass into
+new variants or milestone credit.
+
+The task-graph retro remains: NS-3 and NS-5 contain 28.25 of the 29.95
+remaining overall points, and automatic recorded musical evidence is their
+critical path. The nearest complete musical checkpoint is the existing
+35.56-second WFC-composed `build/feedback/5.wav`, whose engineering gates and
+QA passed; its `NS-4_composition_02` listener criterion remains pending in the
+cross-task queue at **1/20**. `NS-5_vocabulary_01` can use the accepted
+work-group balance later but still depends on open style evaluation and
+automatic context. No other open implementation task is currently closable
+from the available evidence without repeating a stopped source route or
+inventing a listener verdict. Preserve the **70.05%** engineering ledger,
+**37 open / 26 DONE** tasks and the user's cumulative listening threshold.
