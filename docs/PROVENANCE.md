@@ -699,6 +699,15 @@ count admission follows the existing bounded archive-validation approach; actual
 WFC model parsing and generation remain in the retained companion. No additional
 external recordings or precursor implementations are introduced.
 
+## Annotation HTTP host
+
+The Pythian-owned annotation HTTP host adapts the bounded socket/header
+serving pattern from retained companion WFC's `tools/wfc_serve_http.pas`
+(Copyright (c) 2021 mr-highball, MIT). Its full applicable notice is retained
+in `tools/pythian.tools.annotations.http.pas`. Catalog routes, review access
+control and configured-root handling are new Pythian code. No Phanes source
+or external inference implementation is copied.
+
 ## Measured pulse tempo
 
 [pythian.tempo](../src/pythian.tempo.pas) is new native code over the existing

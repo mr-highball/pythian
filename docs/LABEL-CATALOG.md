@@ -41,6 +41,7 @@ the entire manifest with one command:
 & 'build/<target>/pythian.label.catalog.exe' history 'D:\path\to\catalog' SOURCE_SHA256 FIRST_REVISION COUNT
 & 'build/<target>/pythian.label.catalog.exe' current 'D:\path\to\catalog' SOURCE_SHA256 START_FRAME END_FRAME COUNT
 & 'build/<target>/pythian.label.catalog.exe' propose-beats 'D:\path\to\catalog' SOURCE_SHA256 START_FRAME END_FRAME
+& 'build/<target>/pythian.label.catalog.exe' serve 'D:\path\to\inbox' 'D:\path\to\catalog' 18085
 ```
 
 The import report gives each track an `imported`, `duplicate`, or `failed`
@@ -115,6 +116,27 @@ These commands exercise storage and schema, not an operator-approved corpus.
 No review event is produced automatically during import. The CLI does not yet
 export reviewed labels or provide blind evaluation and browser controls.
 
-The native HTTP service and its waveform, region-audio, proposal and review
-endpoints, reviewed export, and pas2js interface remain work in the linked
-tasks. Do not train from source records, proposals or test review events alone.
+The first native HTTP host has fixed routes for session, catalog, waveform,
+current labels, history, region audio, import, review and beat proposals. It
+binds only the specified loopback or private LAN IPv4 address, never all
+interfaces. The inbox and catalog roots are process arguments, not URL paths.
+`GET /api/session` provides a local loopback token. LAN mode requires a secret
+of at least 16 characters in `PYTHIAN_CATALOG_ACCESS_KEY`; clients submit it
+as JSON to `POST /api/session` and send the returned `X-Pythian-Token` header
+on every subsequent request. The access key and token must stay out of URLs.
+LAN HTTP is not encrypted, so use only a trusted local network; the later UI
+must provide a same-origin login form. The current host does not yet serve that
+UI or implement inbox/proposal reads, blind review and reviewed export. Do not
+train from source records, proposals or test review events alone.
+
+For explicit LAN binding, set the secret in the server process before startup:
+
+```powershell
+$env:PYTHIAN_CATALOG_ACCESS_KEY = Read-Host 'Catalog access key (16+ characters)'
+& 'build/<target>/pythian.label.catalog.exe' serve 'D:\path\to\inbox' 'D:\path\to\catalog' '<LAN_IPV4>' 18085
+```
+
+The bind address must be an address on the host, such as the current Wi-Fi
+address. A local firewall may also need to allow the selected port before a
+phone can connect. Until the pas2js UI is served, this starts an API, not the
+operator workbench.

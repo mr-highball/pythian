@@ -61,8 +61,9 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
   audio in an export by default; carry usage/provenance restrictions explicitly.
 - Expose a bounded local HTTP API for the workbench's inbox, catalog,
   waveform/audio regions, proposals, reviews and exports. Bind to loopback by
-  default; any LAN access needs an explicit opt-in and access control. Restrict
-  paths to the configured roots. Use the pinned WFC/Phanes Pascal static-server
+  default; let the operator explicitly bind a private LAN IPv4 address and
+  require an access key before LAN clients can read audio or edit labels.
+  Restrict paths to the configured roots. Use the pinned WFC/Phanes Pascal static-server
   pattern only as a reference where useful; preserve copied notices and
   provenance, and do not edit dependency source in this checkout.
 - Pass focused checked stable Win32/Win64 service, round-trip and failure
@@ -165,5 +166,17 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
 - Next batch: bind the existing native catalog APIs to a loopback-only HTTP
   service with bounded request/response work, configured roots and source path
   containment. Validate real GET/POST requests, a rejected stale revision and
-  no path escape before advancing the browser. Keep LAN unavailable until
-  authentication exists.
+  no path escape before advancing the browser. The user then required mobile
+  access on the local LAN. The first native host now accepts an explicit private
+  IPv4 bind address; LAN mode requires a 16-character-or-longer environment
+  access key and an authenticated session for all data endpoints. Checked stable
+  Win32/Win64 builds passed. Real loopback requests returned catalog, bounded
+  waveform/audio and current labels; wrong token returned 403 and stale review
+  revision returned 409. A real request to 192.168.12.109 returned 403 without
+  a token, 403 with a wrong access key, and 200 for login, catalog and audio
+  with the issued token. LAN startup without a key failed. The attempted
+  encoded traversal target returned 400 and a foreign Host header returned 403;
+  neither addressed a configured root. A checked Win32 loopback host returned
+  its session and two catalog tracks.
+  Browser static serving, inbox/proposal reads, reviewed export, blind mode,
+  mobile playback and independent QA remain open. No criterion or task credit.

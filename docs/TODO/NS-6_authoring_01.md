@@ -50,7 +50,10 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
   Show the training/development/evaluation group assignment and export status
   without letting a review action silently move material across groups.
 - Serve locally by default with an explicit opt-in for authenticated LAN/mobile
-  use. Exercise the actual desktop and narrow mobile browser paths, including
+  use. The browser must obtain its LAN session through an access-key form and
+  send the session token on catalog and region-audio requests; it must not put
+  the key or token in audio URLs. Exercise the actual desktop and narrow mobile
+  browser paths, including
   playback, zoom, edit handles and long-source navigation. Make the UI usable
   for the user's larger cross-task listening batches without repeatedly
   requesting routine third-party microclip judgments.

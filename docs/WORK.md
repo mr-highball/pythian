@@ -13876,3 +13876,34 @@ DONE**; the cross-task pending listening queue stays **0/20**. The next
 criterion-closing reference work requires musical observations across all
 three preference styles as well as verified source intervals, so this narrow
 content result does not authorize a genre or corpus claim.
+
+## Pascal authoring service and LAN checkpoint — 2026-09-25
+
+The user chose a Pascal/pas2js recorded-label workbench and then specified
+that mobile review must be reachable on the local LAN. The two linked tasks
+already cover its native catalog and operator UI: [NS-3_labeling_01](TODO/NS-3_labeling_01.md)
+and [NS-6_authoring_01](TODO/NS-6_authoring_01.md). The retained WFC server
+served as a bounded socket pattern; the new Pythian HTTP owner preserves its
+MIT notice and is independent of the portable core. No external inference
+runtime is used.
+
+The first host builds with stable checked FPC 3.2.2 Win32 and Win64. It binds
+an explicit loopback or private LAN IPv4 address, with a mandatory 16-character
+environment access key and per-session token on all LAN data routes. On Win64,
+real HTTP requests returned the catalog, ten waveform bins, current labels
+and a 1,000-frame WAV region. A missing token and wrong access key returned
+403; a stale edit returned 409; an encoded traversal target returned 400; a
+foreign Host header returned 403. Actual requests to `192.168.12.109` gave
+authenticated catalog and audio responses. Win32 served a session and catalog.
+The server refused LAN startup without a key. These local-host probes do not
+prove phone connectivity, browser behavior or firewall admission.
+
+Checkpoint: the proposal and HTTP batches did not close a complete authoring
+criterion. Do not count implementation fragments as accepted task progress.
+Before another broad service batch, finish the required native contract
+through reviewed export, blind review, inbox/proposal reads and source-safe
+pagination, then exercise one full proposal-to-reviewed packet. The pas2js
+application follows that contract. No task credit changes; overall remains
+**70.20%**, with **38 open / 27 DONE** tasks and **0/20** pending listening
+reviews. The temporary 1.56-GB long-source catalog copy remains under ignored
+build output after the earlier automatic cleanup rejection.

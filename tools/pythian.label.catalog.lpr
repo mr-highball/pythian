@@ -32,6 +32,7 @@ uses
   fpjson,
   jsonparser,
   pythian.tools.annotations.catalog,
+  pythian.tools.annotations.http,
   pythian.tools.annotations.media,
   pythian.tools.annotations.proposal,
   pythian.tools.annotations.review;
@@ -50,9 +51,44 @@ var
   LData: TJSONData;
   LFirstRevision: Integer;
   LMaximumCount: Integer;
+  LPort: Integer;
+  LMaximumRequests: Integer;
+  LBindAddress: String;
 begin
   try
-    if (ParamCount = 3) and (ParamStr(1) = 'import') then
+    if (ParamCount in [4, 5, 6]) and
+      (ParamStr(1) = 'serve') then
+    begin
+      LBindAddress := '127.0.0.1';
+      LMaximumRequests := 0;
+      if TryStrToInt(ParamStr(4), LPort) then
+      begin
+        if (ParamCount = 6) or
+          ((ParamCount = 5) and
+          not TryStrToInt(ParamStr(5), LMaximumRequests)) then
+        begin
+          raise Exception.Create('Invalid loopback HTTP request limit');
+        end;
+      end
+      else
+      begin
+        LBindAddress := ParamStr(4);
+        if (ParamCount < 5) or
+          not TryStrToInt(ParamStr(5), LPort) then
+        begin
+          raise Exception.Create('Invalid HTTP port');
+        end;
+        if (ParamCount = 6) and
+          not TryStrToInt(ParamStr(6), LMaximumRequests) then
+        begin
+          raise Exception.Create('Invalid HTTP request limit');
+        end;
+      end;
+      RunCatalogHttp(ParamStr(2), ParamStr(3), LBindAddress, LPort,
+        LMaximumRequests);
+      Exit;
+    end
+    else if (ParamCount = 3) and (ParamStr(1) = 'import') then
     begin
       LReport := ImportLabelInbox(ParamStr(2), ParamStr(3));
     end
@@ -176,6 +212,8 @@ begin
       WriteLn(StdErr, '       pythian.label.catalog history CATALOG_DIR HASH FIRST COUNT');
       WriteLn(StdErr, '       pythian.label.catalog current CATALOG_DIR HASH START END COUNT');
       WriteLn(StdErr, '       pythian.label.catalog propose-beats CATALOG_DIR HASH START END');
+      WriteLn(StdErr, '       pythian.label.catalog serve INBOX_DIR CATALOG_DIR PORT [MAX_REQUESTS]');
+      WriteLn(StdErr, '       pythian.label.catalog serve INBOX_DIR CATALOG_DIR BIND_IP PORT [MAX_REQUESTS]');
       ExitCode := 2;
       Exit;
     end;
