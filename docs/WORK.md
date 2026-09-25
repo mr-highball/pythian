@@ -12855,3 +12855,25 @@ metadata was acquired, and no presence score ran. This repeats the evidence
 gap of the stopped MAPS route, so stop further paired-MIDI source searching for
 [NS-3_notes_05](TODO/NS-3_notes_05.md) and follow a different ready core task.
 The task, milestone score and listening queue remain unchanged.
+
+## Milestone critical-path retrospective — 2026-09-25
+
+The current ledger is **68.95 overall / 37 open tasks**. NS-3 and NS-5 hold
+29.35 of the 31.05 remaining weighted points. The immediately ready tasks
+were reviewed against their *remaining* acceptance gates, rather than their
+amount of completed preparation:
+
+| Ready task | Next evidence that could close it | Current decision |
+| --- | --- | --- |
+| `NS-4_composition_02` | Whole-passage verdict on the already QA-checked WFC passage | Keep `5.wav` as one pending cross-task item; do not prompt below 20 useful pending reviews. |
+| `NS-3_notes_05` | A source-separated recorded case with independently supported exact audible positive and no-instrument rest, plus a fresh disjoint evaluation case | Stop paired-MIDI source searches. The existing rain/applause review says **no pitched music**; it does not by itself assert an exact generic no-instrument rest for `ReferenceReviewed=True`. |
+| `NS-3_tempo_04` | Qualified source-separated recorded pulse challenge for criteria 1–3 | Retain the accepted boundary and consumer for criteria 4–5; do not recycle failed source gates or infer physical pulses from beat labels alone. |
+| `NS-3_context_01` and `NS-3_notes_01` | Distinct source-grounded key/register observations that pass their frozen recorded gates | Keep stopped rank/threshold and source-geometry variants stopped. |
+| `NS-5_evaluation_01` | Verified group/song intervals and curator-supported timed musical traits for the three complete preference mixes | Retain the corrected full-mix assignment; defer musical gates while those observations are missing. |
+
+This checkpoint finds no currently justified scorer retune or source-only rerun
+that would close an additional criterion. The next work batch must name a
+qualified independent evidence route or a newly observed implementation defect
+before opening one of these stopped investigations. The listening queue stays
+**1/20**; HFS currently returns HTTP 200 for the queued file on the LAN.
+No task moved to DONE and no credit changed in this retrospective.
