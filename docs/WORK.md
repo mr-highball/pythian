@@ -12835,3 +12835,23 @@ ignored `build/beat-pool-link/RESULT.md`.
 Criteria 1–3 and the full task remain open for attributable source-separated
 recorded pulse evidence. No beat-level admission, task credit or scorecard
 change follows. The cross-task listening queue remains **1/20**.
+
+## Style assignment correction and presence source stop — 2026-09-25
+
+The [style specification](STYLE-CARDS.md#status-and-reference-requirements)
+now assigns its three current preference references to the complete mixes the
+user personally selected. The older 30-second A/B/C excerpt cards remain
+explicitly historical screens and cannot set preference gates. Exact private
+mix identities stay under ignored `build/`; song cuts, timed traits and
+independent evaluation remain unverified. This corrects the active assignment
+without closing an `NS-5_evaluation_01` criterion or changing credit.
+
+A read-only check of the publisher's
+[MAESTRO v3.0](https://magenta.tensorflow.org/datasets/maestro) documentation
+found aligned piano audio/MIDI and pedal control but no independently reviewed
+exact-window audible no-instrument rest. MIDI release plus low PCM energy does
+not authorize the maintained `ReferenceReviewed` assertion. No package or
+metadata was acquired, and no presence score ran. This repeats the evidence
+gap of the stopped MAPS route, so stop further paired-MIDI source searching for
+[NS-3_notes_05](TODO/NS-3_notes_05.md) and follow a different ready core task.
+The task, milestone score and listening queue remain unchanged.

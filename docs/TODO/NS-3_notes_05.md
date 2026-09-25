@@ -75,6 +75,16 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-25 a read-only [MAESTRO v3.0](https://magenta.tensorflow.org/datasets/maestro)
+  source check stopped before metadata or audio acquisition. Its publisher
+  documents paired piano audio/MIDI, pedal controls and about 3-ms alignment,
+  but provides no independently reviewed exact-window **audible no-instrument**
+  labels. Key/pedal release plus quiet PCM would still be a candidate rest,
+  not `ReferenceReviewed=True` under the maintained presence contract. The
+  official audio package is also a whole 101-GB archive, not a selected
+  per-performance WAV delivery. This is the same evidence gap exposed by the
+  stopped MAPS route, so do not resume paired-MIDI source searching or call
+  control note-off an acoustic rest. No bytes, scorer run, criterion or credit.
 - 2026-09-24 OpenMIC-2018 was screened as a new human-label source after
   the stopped MAPS/URMP/GuitarSet routes. Its [publisher record](https://zenodo.org/records/1432913)
   contains individual instrument votes, but the [publisher paper](https://archives.ismir.net/ismir2018/paper/000248.pdf)
