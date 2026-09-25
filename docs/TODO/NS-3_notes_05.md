@@ -75,6 +75,17 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-25 independent-source preflight stopped before instrument audio.
+  The [pOD-set publisher](https://zenodo.org/records/15389653) separates a
+  processed instrumental recording and a pedal noise-floor recording, but a
+  selected, Pascal CRC-verified noise member is only 14,400 frames / 0.30 s
+  at 48 kHz. It cannot supply the two disjoint 0.5-s rest windows of the
+  existing frozen control. Only ZIP directory and the small noise member were
+  fetched; no full archive hash, instrument PCM or presence score followed.
+  Ignored `build/pod-presence/STOP.md` binds the source and stop. Do not shorten
+  windows after this finding or concatenate noise files to rescue this route.
+  No independent case, criterion or credit closes.
+
 - 2026-09-25 controlled recorded-source mix: a prospective private policy
   combined publisher-authenticated channel-13 violin performance with
   publisher-designated musician-present noise floor in one four-second

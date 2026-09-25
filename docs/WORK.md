@@ -13527,3 +13527,17 @@ automatic context. No other open implementation task is currently closable
 from the available evidence without repeating a stopped source route or
 inventing a listener verdict. Preserve the **70.05%** engineering ledger,
 **37 open / 26 DONE** tasks and the user's cumulative listening threshold.
+
+## Independent presence-source length stop — 2026-09-25
+
+A publisher-distinct independent challenge was screened only through official
+source metadata, a ZIP suffix and one small noise-floor member. The pOD-set
+publisher separates processed instrumental and pedal noise recordings. Checked
+Pascal ZIP and WAV readers verified the selected noise member's local/central
+CRC and 48-kHz mono PCM24 geometry; it has only **0.30 seconds**. This cannot
+provide two disjoint 0.5-second no-instrument windows under the existing
+controlled comparison. Stop before instrument audio or model scoring rather
+than tailor the windows or concatenate noise captures. The ignored
+`build/pod-presence/STOP.md` retains exact bytes and source limits. No new
+presence case or criterion closes. The listening queue remains **1/20**;
+completion stays **70.05%**, **37 open / 26 DONE**.
