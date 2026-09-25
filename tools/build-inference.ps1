@@ -51,6 +51,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Sparse peak backend fixture compilation failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.inference.wave.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Sparse peak WAV geometry fixture compilation failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.inference.corpus.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Inference corpus reader fixture compilation failed' }
+  & $compilerPath @compilerArgs 'tools/pythian.inference.corpus.audit.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Inference corpus auditor compilation failed' }
   Write-Output "Pascal inference consumer and backend fixtures compiled: $buildRoot"
   Write-Output 'Compilation only; recorded fidelity and long-source qualification remain separate.'
 } finally {
