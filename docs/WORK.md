@@ -12588,3 +12588,89 @@ smoke output is not acceptance evidence. The task earns +1 NS-4 goal point
 **68.95%**, with 36 open and 21 DONE tasks. Recorded musical admission and
 [WFC audio integration](TODO/NS-4_integration_01.md) remain open; this result
 does not claim either or a personal genre style.
+
+Beat-candidate source reassessment, 2026-09-24: after the stopped GMD
+acoustic-coverage route, a metadata-only RWC 2.0 screen identified official
+full-mix WAVs, beat annotations and aligned MIDI drum events. The
+[audio release](https://zenodo.org/records/18656623) and
+[annotation repository](https://github.com/rwc-music/rwc-annotations) list no
+isolated drum stem. MIDI transcription is not physical source-pulse truth, so
+this source does not close `NS-3_tempo_04` criterion 3 or adjudicate the frozen
+ARTBeaT 02/04 misses. No RWC WAV, annotation payload or tracker score was
+opened; the 4.1-GB archive was not downloaded. This is one nonclosing source
+batch after the GMD stop. Reassess to one bounded, physically separated
+recorded challenge using [GuitarSet](https://guitarset.weebly.com/), whose
+microphone and six-string pickup recordings have beat and per-string note
+annotations. Prospectively bind development player 01
+`BN1-129-Eb_comp` and distinct-player/material challenge player 05
+`Jazz1-130-D_solo`, exact bytes, clock and source-event eligibility before any
+candidate run. Stop at an ambiguous source clock or unavailable attributable
+guitar events; preserve the original ARTBeaT gates and protected evaluation.
+Criteria 2–5 and all tempo task credit remain open; overall stays 68.95%.
+
+GuitarSet first source gate and identity reassessment, 2026-09-24: the frozen
+Pascal preflight compiled on checked FPC 3.2.2 Win32 and stopped at the first
+01 microphone SHA check before JAMS event parsing, PCM measurement, tracker
+inference or challenge execution. It expected
+`76330537c6a88df56c7e338da9dd81d84cbf7f3a5ae7cd1b32a663bded6b76b4`
+but found `4f7f2359cc26d32307c8cc6793579d9d5ce602f483194ca079efd719a870b671`.
+The expected SHA belongs to the distinct 01 solo microphone file; both
+recordings happen to be 1,969,056 bytes. Exact-member re-extraction of the
+selected 01 comp WAV from the cached mic archive matches the found SHA, and
+the complete archive MD5 matches the [publisher's identity](https://zenodo.org/records/3371780)
+`275966d6610ac34999b58426beb119c3`. The original failed report remains
+ignored under `build/beat-guitarset-source/`; its exceptional exit reported
+zero unfreed blocks. This is an input-ledger transcription error, not acoustic
+evidence against the source. Together with the RWC metadata stop, it is two
+nonclosing source batches. Reassess to exactly one identity-only correction of
+the same selected 01 comp recording, keeping the already frozen source groups,
+clock, pickup rule and ≥8/≥3-per-half support gate. Stop at the next source
+gate failure; do not substitute a recording or tune thresholds. Criteria 2–5
+and task credit stay open, with overall completion 68.95%.
+
+GuitarSet identity repair and decoder stop, 2026-09-24: the one corrected
+Win32 run passed the publisher-verified 01 comp mic identity, exact 01 JAMS
+identity, original six-channel pickup identity and ZIP member CRC. It then
+stopped before PCM or JAMS-event analysis: `TWaveFrameReader` rejects six
+channels because its maintained contract admits mono/stereo. The original
+identity STOP and corrected decoder STOP are preserved under ignored
+`build/beat-guitarset-source/`; no 05, Win64, acoustic support count or beat
+candidate score ran, and the exceptional exit reported zero unfreed blocks.
+This is a preflight reader mismatch with the declared six-channel source, not
+an observed source-acoustic failure. The bounded repair is to adapt the
+existing Pascal six-channel PCM16 pickup reader in the ignored qualifier,
+with a source-free boundary check before one fixed Win32 source run. Preserve
+the same source identities, clock, physical attack rule and ≥8/≥3-per-half
+gate. Stop at the next source or acoustic failure; no repeated decoder or
+source variants. Tempo criteria and credit remain open at 68.95% overall.
+
+GuitarSet source gate stopped, 2026-09-24: the bounded Pascal six-channel
+decoder repair passed a two-frame, six-channel source-free fixture with known
+channel RMS and out-of-range rejection. The single fixed checked Win32 source
+run then passed 01 mic/JAMS/hex identities, ZIP CRC, equal 984,506-frame
+mic/pickup geometry and JAMS parsing. Of 48 annotated beats and 105 guitar
+note onsets, 12 onsets met the frozen per-string physical pickup rule. Six
+beat positions had such an onset, split 2 in the first half and 4 in the
+second. The prospective source gate required ≥8 beats total and ≥3 in each
+half, so it failed. The other 93 annotated note onsets remain acoustically
+unconfirmed by this rule; no unsupported beat is labeled physically absent.
+The ignored `build/beat-guitarset-source/report.tsv` SHA-256 is
+`2ca860b55b2fb3f25778cc043aa7a77477d17189951b888cd02a0f7ff9d8dd9c`.
+The original identity and decoder STOP reports remain preserved. Both the
+self-test and source run reported zero unfreed blocks; no 05 challenge,
+Win64 acoustic run, beat tracker, candidate-policy retune or source replacement
+followed. This frozen source route is stopped. Together with the preceding
+decoder stop, it is two nonclosing batches after identity reassessment; change
+course to another ready core task until independently attributable recorded
+pulse evidence can qualify `NS-3_tempo_04`. Its criteria 2–5 and all credit
+remain open; overall completion stays 68.95%.
+
+Final source QA limitation, 2026-09-24: Salty Boi independently reconciled
+the saved GuitarSet TSV ledgers and reran only the source-free six-channel
+decoder fixture. The 01-only frozen support failure and zero-leak result hold.
+For 21 beat rows with no guitar event inside ±30 ms, the private reporter's
+`nearest_signed_error_frames` contains the `High(Int64)` sentinel rather than
+an exact nearest signed distance. This is a failed report-field contract, not
+source-pulse evidence or a change to the 6/2/4 support count. The stopped
+report remains unchanged; do not use that field as an exact error measure or
+rerun this source route. The tempo task remains open without credit.

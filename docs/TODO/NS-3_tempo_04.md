@@ -49,6 +49,63 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
 
 **Dev Notes:**
 
+- 2026-09-24 QA found a report-only limitation in the stopped GuitarSet
+  qualifier: 21 beat rows without an event inside the 30-ms match radius store
+  `High(Int64)` in `nearest_signed_error_frames` instead of the exact nearest
+  signed distance promised by its private policy. The saved event ledger still
+  reconciles 105 notes, 48 beats, 12 supported onsets and 6 supported beats;
+  the frozen 6/2/4 source-gate failure is unaffected. Retain the report and
+  this limitation rather than rerunning or presenting the field as valid.
+- 2026-09-24 one source-free six-channel decoder fixture passed, then the sole
+  repaired GuitarSet Win32 preflight reached and failed its frozen acoustic
+  source gate on development recording `01_BN1-129-Eb_comp`: 48 beats and 105
+  annotated note onsets produced 12 pickup-supported onsets and 6 supported
+  beat positions, split 2/4 across the recording halves. The declared gate
+  required at least 8 total and 3 per half. The other 93 annotated onsets and
+  beats without supported guitar attacks remain unknown, not declared absent;
+  this does not prove a physical source error or justify a threshold change.
+  The 05 challenge, Win64 and beat tracker were not run. The fixed source route
+  stops here without substitution or retuning; no additional criterion or credit
+  closes. This and the preceding decoder stop are two nonclosing batches after
+  the identity reassessment. Return to task selection and require a genuinely
+  qualified, independent source-pulse reference before another candidate-pool
+  decision. Ignored report SHA-256:
+  `2ca860b55b2fb3f25778cc043aa7a77477d17189951b888cd02a0f7ff9d8dd9c`.
+- 2026-09-24 the one identity-only GuitarSet repair passed the corrected 01
+  comp mic, JAMS, original-hex SHA and ZIP CRC gates, then stopped before PCM
+  at a tool contract mismatch: the preflight used the portable mono/stereo
+  `TWaveFrameReader` on the declared six-channel original pickup. No beat/event
+  counts, challenge run or candidate score exists. Preserve both STOP reports.
+  Reassess to one Pascal six-channel PCM16 reader adaptation in the ignored
+  source qualifier, reusing the prior pickup screen's pattern; leave the
+  maintained reader and every source/acoustic threshold fixed. Stop on the
+  next source or acoustic failure rather than trying another setting.
+- 2026-09-24 first fixed GuitarSet source preflight stopped before annotation
+  parsing or pickup PCM measurement because the frozen expected hash for
+  `01_BN1-129-Eb_comp_mic.wav` was copied from the different
+  `01_BN1-129-Eb_solo_mic.wav` despite their equal byte lengths. The exact
+  comp member re-extracted from the publisher-MD5-verified mic archive matches
+  the selected existing comp file at SHA-256
+  `4f7f2359cc26d32307c8cc6793579d9d5ce602f483194ca079efd719a870b671`;
+  the erroneously expected SHA is the solo file's exact hash. This and the RWC
+  screen are two nonclosing source batches. Reassess to one identity-only
+  repair of the same selected comp source under its official archive proof,
+  preserving every source, clock, acoustic and support gate; retain the failed
+  report and stop at the next gate failure. No candidate score or credit yet.
+- 2026-09-24 metadata-only RWC 2.0 source screen stopped before audio or
+  candidate scoring. The [publisher release](https://zenodo.org/records/18656623)
+  and [curated annotations](https://github.com/rwc-music/rwc-annotations)
+  offer full-mix WAVs, beat times and aligned MIDI drum events, but no listed
+  isolated drum stem. An event transcription can support a new beat challenge;
+  it cannot establish whether a pulse in a failed mixed-audio window was
+  physically sounded. The annotation repository was inspected at commit
+  `0a1a6c31dbe73a7f5d44f7caef8cd0999402a4c2`; no annotation payload or
+  RWC WAV was opened, and its 4.1-GB popular-music archive was not acquired.
+  Stop this source route for criterion 3. The next bounded source candidate is
+  the already acquired [GuitarSet](https://guitarset.weebly.com/) microphone,
+  six-string pickup and beat/note annotations on two distinct player/material
+  groups. Freeze its identities, clock and source-event gate before scoring;
+  keep the original ARTBeaT 02/04 failures and thresholds unchanged.
 - 2026-09-24 the first full GMD paired-audio acquisition stopped at the
   frozen one-transfer gate. The official 5,111,599,714-byte object returned
   the expected length and a stable ETag, but the sole sequential HTTP 200
