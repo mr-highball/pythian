@@ -120,8 +120,8 @@ The accepted baseline and total scope are unchanged.
 | Many hours produce a useful style | **Chillwave: unaccepted. Stoner rock: unaccepted. Lofi: unaccepted.** Duration, caller labels and source-fragment resemblance do not establish learning quality. | [NS-5](#ns-5) |
 | Another consumer can use the current result | The [accepted native checkpoint](NATIVE-CHECKPOINT.md) passes stable Win32/Win64 full builds, four extracted source packages and Linux CI at `0ecfe34`. Final accepted-workflow packages and an actual independent-use verdict remain open. | [NS-6](#ns-6) |
 
-**Musical learning and corpus quality account for 29.15 of the remaining 30.85
-points (about 95%).** Additional diagnostics and mechanical adapters have value
+**Musical learning and corpus quality account for 28.65 of the remaining 30.35
+points (about 94%).** Additional diagnostics and mechanical adapters have value
 only insofar as they resolve those outcomes; they do not close musical acceptance.
 
 ### Scope reconciliation

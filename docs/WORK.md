@@ -13144,3 +13144,35 @@ accepted task credit is **14.15** above the 55.5 baseline. The recorded-source
 route stays stopped, while `5.wav` remains the sole pending item in the
 cross-task Pythian listening queue (**1/20**). This closure does not advance
 recorded learning, genre quality or the pending listener verdict.
+
+## Core milestone retrospective — 2026-09-25
+
+After the authored beat-candidate closure, the task graph still has **37 open /
+24 DONE** and **69.65%** credited. NS-3 recorded learning and NS-5 style/corpus
+quality hold **28.65 of the 30.35** remaining overall points. The numerical
+summary in MILESTONES.md was corrected to match the current scorecard; this is
+bookkeeping, not new acceptance.
+
+The shortest core dependency route is source-grounded note activity and pitch
+register (`NS-3_notes_05` and `NS-3_notes_01`), then event decisions and
+independent phrases (`NS-3_notes_02` and `NS-3_notes_03`). Those phrases unlock
+recorded part learning and the semantic workload; harmony and groove also need
+accepted context and timing. Existing
+development failures and source-screen stop decisions still apply: no new
+blind pitch cue, generic recorded rest, or independent physical beat reference
+was established in this retrospective. Do not turn authored controls, metadata
+silence, missing annotations or a source preference label into acoustic truth.
+Resume the presence decision only with a prospectively separated recording
+that independently supports both audible activity and a generic rest; resume
+register inference only with a new, blind discriminating cue that can face the
+frozen flute gates. Neither condition is satisfied by the present files.
+The separate `NS-3_tempo_04` recorded challenge resumes only with attributable
+pulse evidence; personal style cards remain downstream of grounded musical
+observations. No extra task or percentage was created to represent preparation.
+
+The core WFC composition path is engineered and queued as `5.wav` for the
+user's whole-passage verdict. It is one genuine cross-task listening item out
+of the requested **20**, not 20 variants of one task. Other ready tasks have no
+substantial new Pythian output yet. Continue independent work when new
+evidence can close an actual acceptance boundary; preserve the current
+listening queue and do not claim NS-4 closure without the verdict.
