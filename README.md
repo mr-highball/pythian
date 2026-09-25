@@ -83,6 +83,7 @@ The executables accept explicit output paths:
 
 ```text
 pythian.render OUTPUT.wav
+pythian.compose OUTPUT.wav [SEED]
 pythian.dsp.demo OUTPUT.wav
 pythian.modulation.demo OUTPUT.wav
 pythian.control.curves.demo OUTPUT.wav
@@ -165,6 +166,11 @@ pythian.tonal.inspect wav INPUT.wav [duration|energy]
 pythian.tonal.inspect corpus INPUT.pyac [duration|energy]
 pythian.midi.render INPUT.mid OUTPUT.wav [--ignore-performance] [--fifo] [--close-dangling] [--exclude-percussion]
 ```
+
+`pythian.compose` renders a 16-bar bass-and-melody passage from the given seed
+(default `1731`) and writes `OUTPUT.wav.report.txt` with structural and audio
+evidence. It uses a source-free Pascal form and harmony scaffold; recorded
+learning and WFC style generation are separate capabilities.
 
 Open the rendered WAV in a local audio player. The demo plays a short original
 phrase through sine, triangle, saw, and square voices with stereo placement.
@@ -282,6 +288,7 @@ General MIDI instruments, controllers or pedal performance.
 | [pythian.midi.notes](src/pythian.midi.notes.pas) | Explicit MIDI note projection and loss report |
 | [pythian.midi.export](src/pythian.midi.export.pas) | Native note/tempo export with explicit voice channels, ordered attacks/releases and stream replay; [contract](docs/MIDI-EXPORT.md) |
 | [pythian.music.render](src/pythian.music.render.pas) | Exact-frame note synthesis with voice or layered instrument bindings and separate note/tone counts |
+| [pythian.music.compose](src/pythian.music.compose.pas) | Deterministic 16-bar source-free two-part form and harmony scaffold; returns an owned exact note sequence with seed and provenance report, without claiming learned WFC or recorded style |
 | [pythian.analysis](src/pythian.analysis.pas) | Windowed spectral analysis, RMS, peak, centroid, flux, chroma and optional frequency bands |
 | [pythian.fourier](src/pythian.fourier.pas) | Shared forward/inverse complex FFT with detached results and explicit scaling |
 | [pythian.separation](src/pythian.separation.pas) | Bounded stereo harmonic/percussive decomposition, native component clips and reconstruction |

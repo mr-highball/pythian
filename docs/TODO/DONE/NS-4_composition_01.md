@@ -1,6 +1,6 @@
 # NS-4_composition_01 — Generate a coherent original passage
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-4)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-4)
 
 **Description:**
 
@@ -8,7 +8,7 @@ Generate a substantial, source-free two-part native passage whose harmony,
 melody and rhythm work together as music. This is a core composition checkpoint,
 independent of the user's three personal style tests and of recorded-WAV note
 learning. It is distinct from the bounded note-event adapter demonstration in
-[NS-4_note-events_01](DONE/NS-4_note-events_01.md): the adapter proves exact
+[NS-4_note-events_01](NS-4_note-events_01.md): the adapter proves exact
 joint-event ownership and generation, while this task requires a substantial
 musically accepted render.
 This task owns the original note-event task's substantial full-event render,
@@ -20,19 +20,55 @@ Completion credit: 1 NS-4 goal percentage point (0.15 overall points),
 reallocated from the original unearned 2-point note-event allocation. Together
 with the now accepted note-event task's 1 point and recorded integration's
 2 points, the three allocations preserve the original 4 goal points / 0.60
-overall points. Composition and integration retain 3 open NS-4 points.
+overall points. Recorded integration retains 2 open NS-4 points.
 Credit is earned only when every acceptance criterion and the task-flow
 completion requirements pass.
 
-Starting evidence: [note-event adapter](DONE/NS-4_note-events_01.md),
-[named voice contracts](../INDEPENDENT-VOICES.md),
-[work record](../WORK.md). The score-timed pitch clip was judged more musical
+Starting evidence: [note-event adapter](NS-4_note-events_01.md),
+[named voice contracts](../../INDEPENDENT-VOICES.md),
+[work record](../../WORK.md). The score-timed pitch clip was judged more musical
 and free of audible pops after its release repair, but still not a coherent
 song. The private unconditioned full-event clip failed its authored harmony
 gate. The local bar representation produced only two globally novel F-context
 bars that retained the authored melody; a separate 128-cell modular candidate
 stopped at its fixed per-pass backtrack limit before rendering. None is an
 accepted composition result.
+
+**Completion evidence — 2026-09-24:** The maintained portable
+[`pythian.music.compose`](../../../src/pythian.music.compose.pas) unit and
+[`pythian.compose`](../../../tools/pythian.compose.lpr) consumer generate exact
+owned 16-bar, 35.556-second two-part sequences and native stereo WAVs. The
+frozen policy SHA-256 is
+`1a6be0048cc9d4bb37ce9fb93ef56000b92e372bd78ec7743286ec421b0893d7`;
+the accepted unit/CLI SHA-256s are
+`c0c7cc134f16c892621df5d3ac97dae29c07deff110d6fa1db466ed51ead7b36`
+and `a4289cfc78e6fa8bae00ddaf433a9586db35054f3308395bf90439ae0a6b6abb`.
+No authored note/bar/phrase input exists: the source-phrase union is empty,
+comparisons and copied-run results are N/A, and model/token hashes are N/A
+because this is not a WFC solve. The report separates seeded choices from
+authored form, chord and cadence rules.
+
+Salty Boi compiled with checked FPC 3.2.2 `-B -Sa -Cr -Co -Ci -gh -gl` on
+Win32/Win64, ran seeds 1731 and 2731 and fresh sibling replays, and verified
+all 97/88 note gates in order against the frozen sequences. Event-ledger hashes
+are `8e9d560b302fe7b4edff44400c6ff46ed020136340509fe1f2dd72bc4267baed`
+and `33b39cd854446a18cbc019dd950362e58403233ad5e45af2201684a7ae3b479d`;
+WAV hashes are `9d42725e7ad45e54a6377e380871bbd58efd90f4ef302d0bcefec027604fecc9`
+and `2d69b38ae1653193cfa3d451db6812b0466c220278aac33a8afd8c2075f128b5`.
+The WAVs match the exact clips reviewed by the user. Both targets and replays
+returned zero leaks and identical event/WAV/report bytes; full-scale sample
+count was zero. Every note end passed the focused 44-frame check, with maximum
+adjacent jumps 0.001318542/0.001524473 below the declared 0.005 limit.
+The 0.005 limit was added during focused QA, after the original freeze; no seed
+or musical gate was retuned. Forced report-write failure preserved existing
+output bytes and returned exit code 1 with zero leaks on both targets. The
+consumer's build-hook invocation was exercised on both targets; the unrelated
+full build suite was not rerun. Ignored details are in
+`build/composition-maintained/QA-MANIFEST.md`. The user heard clip 3 as
+coherent without stumbling, preferred clip 4, and judged clip 4 newly composed
+rather than recognizable preauthored music. This accepts core source-free
+composition only; recorded learning, WFC-composed passages and style fidelity
+remain separate work.
 
 **Acceptance Criteria:**
 
@@ -45,8 +81,13 @@ accepted composition result.
 - Freeze the source identities, seed, model, budget, novelty comparison and
   musical gates before scoring. Compare complete generated phrases against the
   **union** of authored source phrases, across chord labels, and report copied
-  runs as well as independently changed melody and bass material. Constrain
-  notes to their declared harmonic context while preserving intentional
+  runs as well as independently changed melody and bass material. For a truly
+  source-free generator, audit its maintained implementation for the absence of
+  authored note, bar and phrase inputs; report an empty source-phrase union and
+  mark phrase comparison and copied-run results **not applicable**, not observed
+  zero copies. Report its authored rules and independently seeded choices in
+  both parts. Constrain notes to their declared harmonic context while
+  preserving intentional
   non-chord tones with an explicit rule; validate attack/rest timing and
   section joins. A structure label alone does not pass these checks.
 - Render with the accepted native two-part synthesis path and an exact owned
@@ -65,7 +106,7 @@ accepted composition result.
 
 **Blockers**
 
-- [NS-4_note-events_01.md — DONE](DONE/NS-4_note-events_01.md)
+- [NS-4_note-events_01.md — DONE](NS-4_note-events_01.md)
 
 **Dev Notes:**
 
@@ -261,3 +302,27 @@ accepted composition result.
   user's whole-passage verdict on timing, melody, harmony and originality.
   Numeric passes alone do not close this task or earn credit. No seed retune
   follows this fixed listener checkpoint.
+- 2026-09-24 the user listened to both whole 35.556-second passages. They judged
+  clip `3.wav` coherent with no stumbling, preferred clip `4.wav` overall, and
+  judged clip 4 newly composed rather than a recognizable preauthored song.
+  This closes the frozen pair's core musical listening gate at the stated scope.
+  The ignored scaffold still needs a maintained Pascal library/consumer path,
+  exact owned sequence and audio replay, and independent QA before task credit.
+  It is not evidence of learned WFC composition or recorded style learning.
+- 2026-09-24 the source-free route exposed a wording gap in criterion 2. An
+  authored-source phrase comparison has no denominator when the maintained
+  generator accepts no authored note/bar/phrase material. The criterion now
+  states the empty-union audit and N/A result explicitly while retaining the
+  prohibition on replaying complete authored music. The fixed two-seed result
+  and the user's originality verdict remain bound; this clarification does
+  not turn unperformed comparisons into a measured no-copy pass. Salty Boi's
+  first maintained-CLI QA submission also found that a late report-write error
+  overwrote an existing WAV and leaked blocks, and that global top jumps did
+  not inspect note ends. Both defects require a focused repair and QA rerun;
+  no credit is awarded yet.
+- 2026-09-24 the maintained CLI repair stages and restores the WAV/report pair,
+  returns normally on failure and checks all gate ends. Salty Boi's second
+  focused QA submission passed checked Win32/Win64 replay, preserved sentinel
+  output on report failure and accepted the empty-source N/A semantics. The
+  first failed QA submission and unreviewed seed-1 smoke output remain
+  development history, not acceptance evidence.

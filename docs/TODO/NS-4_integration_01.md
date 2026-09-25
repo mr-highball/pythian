@@ -10,7 +10,7 @@ North star: NS-4. Outcome owner: WAV-04-INTEGRATION.
 Completion credit: 2 goal percentage points (0.30 overall points), after
 reallocating the other 2 original unearned NS-4 points between
 [NS-4_note-events_01](DONE/NS-4_note-events_01.md) and
-[NS-4_composition_01](NS-4_composition_01.md). The three tasks retain the
+[NS-4_composition_01](DONE/NS-4_composition_01.md). The three tasks retain the
 original 4 NS-4 points / 0.60 overall points; no new credit was created.
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 

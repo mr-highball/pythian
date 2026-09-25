@@ -12,14 +12,14 @@ task does not claim WAV note extraction, a genre style or original composition
 from recorded audio. The recorded workflow remains with
 [NS-4_integration_01](../NS-4_integration_01.md). The original substantial
 full-event render, its deterministic artifact evidence and listener verdict
-are transferred in full to [NS-4_composition_01](../NS-4_composition_01.md),
+are transferred in full to [NS-4_composition_01](NS-4_composition_01.md),
 which also requires a positive coherence verdict. This task owns the bounded
 exact event adapter and generation contract.
 
 North star: NS-4. Outcome owner: WAV-04-INTEGRATION.
 Completion credit: 1 NS-4 goal percentage point (0.15 overall points),
 reallocated from the original unearned 4-point NS-4_integration_01. The
-separate [composition checkpoint](../NS-4_composition_01.md) owns the other
+separate [composition checkpoint](NS-4_composition_01.md) owns the other
 1 point from this task's former 2-point allocation; recorded integration
 retains 2 points. These three allocations retain the same original 4 NS-4
 points / 0.60 overall points; only this accepted 1 point has been earned.
@@ -261,7 +261,7 @@ recorded-WAV note learning.
   its fixed budget rather than retuning it in place.
 - 2026-09-24 the task-flow split transferred the original substantial
   full-event render/listener criterion in full to
-  [NS-4_composition_01](../NS-4_composition_01.md). This adapter task retains
+  [NS-4_composition_01](NS-4_composition_01.md). This adapter task retains
   its three source-free codec, exact replay and bounded joint-generation
   criteria. The prior 30-second score-timed pitch clip and stopped private
   full-event candidates remain useful failure evidence, not acceptance of

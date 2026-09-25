@@ -24,6 +24,7 @@
 | [NS-2_synthesis-quality_03](NS-2_synthesis-quality_03.md) — Accepted combined synthesis and streamed listening | 2026-09-23 | +6 NS-2 | +1.50 |
 | [NS-3_context_03](NS-3_context_03.md) — Qualified tonal, ambiguous and reviewed acoustic no-key reference intervals | 2026-09-23 | +1 NS-3 | +0.25 |
 | [NS-3_notes_04](NS-3_notes_04.md) — Qualified source-separated note-presence reference with a held-out miss reported | 2026-09-23 | +1 NS-3 | +0.25 |
+| [NS-4_composition_01](NS-4_composition_01.md) — Coherent original source-free passage | 2026-09-24 | +1 NS-4 | +0.15 |
 
 The former external-runtime result was withdrawn on 2026-09-22 under the user's
 Pascal-only inference requirement. It remains historical evidence in

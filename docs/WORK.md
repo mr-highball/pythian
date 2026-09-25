@@ -12171,7 +12171,7 @@ Salty Boi independently accepted the per-part projection evidence and scope.
 1 NS-4 point / 0.15 overall: NS-4 is 97%, overall completion 68.80%, and
 37 tasks remain open. This acceptance claims a bounded Pascal event adapter,
 not a rendered original song, positive listening, or recorded-WAV inference.
-The next selected deliverable is [NS-4_composition_01](TODO/NS-4_composition_01.md).
+The next selected deliverable is [NS-4_composition_01](TODO/DONE/NS-4_composition_01.md).
 
 First composition source preflight, 2026-09-24: the accepted adapter enables
 the new source-free composition task, but does not establish an original song.
@@ -12556,3 +12556,35 @@ Automatic approval review rejected deletion of the unverified prefix as
 `blocked by policy`; it remains ignored under build. This source route does
 not unblock NS-3_notes_05 criterion 3. The composition listening checkpoint
 remains independently pending; overall completion stays 68.80%.
+
+Composition listener checkpoint, 2026-09-24: after hearing both full frozen
+35.556-second Pythian passages, the user judged `build/feedback/3.wav`
+coherent with no stumbling and preferred `4.wav` overall. They judged clip 4
+newly composed rather than a recognizable preauthored song. This is a positive
+whole-passage verdict for the source-free form/harmony scaffold at its frozen
+seeds. It does not establish learned WFC composition or style fidelity. The
+scaffold remains ignored/private; maintained Pascal integration, exact native
+replay and independent QA remain before `NS-4_composition_01` can earn credit.
+NS-4 remains 97% and overall completion remains 68.80% at this checkpoint.
+
+Accepted core composition, 2026-09-24: Ticket Guy moved the frozen first-party
+form/harmony generator into portable `src/pythian.music.compose.pas` with an
+owned exact note-sequence API, and added the native `pythian.compose` consumer.
+The normal core build now compiles and exercises its contrast seed. After one
+blocking QA submission exposed output replacement and leaked blocks on report
+failure plus incomplete note-end coverage, the CLI was repaired to stage and
+restore its WAV/report pair, exit normally on failure and inspect every gate
+end. Salty Boi independently accepted checked FPC 3.2.2 Win32/Win64 runs and
+fresh replays for both frozen seeds, exact ordered 97/88 gate parity and WAV
+identity to the user-reviewed clips, zero heap leaks, preserved sentinel
+outputs on forced failure, and all-end jump checks below the declared limit.
+The post-freeze 0.005 full-scale note-end limit is a focused QA bound, not a
+retuned musical-selection gate. The source phrase union is genuinely empty;
+phrase comparisons/copies and WFC model/tokens are explicitly N/A. Full
+identities and exact hashes are in [the accepted task](TODO/DONE/NS-4_composition_01.md)
+and ignored `build/composition-maintained/QA-MANIFEST.md`. The unreviewed seed-1
+smoke output is not acceptance evidence. The task earns +1 NS-4 goal point
+(+0.15 overall): NS-4 rises from 97% to **98%**, overall from 68.80% to
+**68.95%**, with 36 open and 21 DONE tasks. Recorded musical admission and
+[WFC audio integration](TODO/NS-4_integration_01.md) remain open; this result
+does not claim either or a personal genre style.

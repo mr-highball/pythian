@@ -344,6 +344,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Renderer compilation failed' }
   & (Join-Path $buildRoot "pythian.render$executableSuffix") (Join-Path $buildRoot 'synthesis.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Renderer smoke failed' }
+  & $compilerPath @compilerArgs 'tools/pythian.compose.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Composition tool compilation failed' }
+  & (Join-Path $buildRoot "pythian.compose$executableSuffix") (Join-Path $buildRoot 'composition.wav') '2731'
+  if ($LASTEXITCODE -ne 0) { throw 'Composition smoke failed' }
   & (Join-Path $buildRoot "pythian.wave.transcode$executableSuffix") (Join-Path $buildRoot 'synthesis.wav') (Join-Path $buildRoot 'synthesis-copy.wav') '137'
   if ($LASTEXITCODE -ne 0) { throw 'WAVE transcode smoke failed' }
   if ((Get-FileHash (Join-Path $buildRoot 'synthesis.wav')).Hash -ne
