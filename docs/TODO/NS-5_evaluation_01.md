@@ -116,6 +116,20 @@ remain open here, with no task credit.
 
 **Dev Notes:**
 
+- 2026-09-25 distinct global-offset correspondence check resolved the first
+  lofi candidate's repeated-passage ambiguity at three previously unused
+  four-second interior positions. Checked Pascal signed-waveform correlation
+  was 0.997953, 0.997374 and 0.997929 with the same -44-ms offset; self and
+  one-second-shift controls, source hashes, byte limits and zero-leak checks
+  passed Salty Boi's focused QA. The earlier local-best envelope check remains
+  a failed method under its own frozen policy. Exact source identity, policy,
+  controls and logs remain only in ignored
+  `build/style-untracked-source/lofi-global-alignment/`. The new evidence
+  supports interior audio-content correspondence for one development-exposed
+  chapter, not its exact cut, whole-edition identity, an independent group or
+  timed musical traits. Criteria 1, 2 and 5 and all task credit remain open;
+  further source matching alone will not supply the missing musical traits.
+
 - 2026-09-25 first lofi chapter correspondence attempt stopped under a
   pre-scored private policy. The separately published candidate has the same
   declared title and minute-rounded duration as the mix's first chapter.

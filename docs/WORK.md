@@ -13656,3 +13656,26 @@ stays **70.20%**,
 with **36 open / 27 DONE**. Further metadata-only or retuned source variants
 would repeat a stopped route; the musical-trait and independent-source gaps
 remain explicit in TODO.
+
+## One source-content correspondence resolved — 2026-09-25
+
+The earlier first-chapter lofi RMS-envelope matcher chose a repeated-passage
+alias for its middle anchor and correctly stopped. A separately frozen,
+global zero-offset signed-waveform hypothesis checked three new interior
+positions against a publisher stream. Checked Pascal correlations were
+0.997953, 0.997374 and 0.997929; all placed at the same -44-ms offset.
+Identity and one-second-shift controls passed. A pre-hash byte-length guard
+repaired a QA-found oversized-input work-bound risk; Salty Boi then reran the
+same frozen comparison and oversized-input rejection with zero leaks. The
+exact source and policy records stay under ignored
+`build/style-untracked-source/lofi-global-alignment/`.
+
+This independently supports *audio-content correspondence at three interior
+intervals* of one development-exposed style source. It does not verify the
+exact chapter cut, the complete edition, a separate source group or any timed
+musical trait. The source-label task remains open, with no new listening item
+and no task credit. Overall completion stays **70.20%**, with **36 open / 27
+DONE**; the cross-task pending listening queue stays **0/20**. The next
+criterion-closing reference work requires musical observations across all
+three preference styles as well as verified source intervals, so this narrow
+content result does not authorize a genre or corpus claim.
