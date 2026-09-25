@@ -67,6 +67,15 @@ reachability before a solve; it must not retune that stopped candidate.
 
 **Dev Notes:**
 
+- 2026-09-25 listener follow-up: the user heard `build/feedback/5.wav` and
+  described the full passage as coherent in a simplistic way. They asked what
+  it was trained on before judging whether it felt newly composed. The source
+  is eight first-party 16-chord outlines, not a recorded song, multi-hour mix
+  or NSynth. All eight outlines were rendered with the same Pascal composer
+  and seed for direct comparison under ignored `build/feedback/source-01.wav`
+  through `source-08.wav`; `source-chords.txt` contains the exact source text.
+  These comparison renders are not eight additional review items. A listener
+  novelty verdict is still pending, so criterion 5 and task credit remain open.
 - 2026-09-25 a superseded single-task listening packet attempted source-free
   seed 731 before producing any new WAV and exposed a real A/return melody
   projection failure. The portable composer now retains the accepted greedy

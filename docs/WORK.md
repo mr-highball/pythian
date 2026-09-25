@@ -13541,3 +13541,25 @@ than tailor the windows or concatenate noise captures. The ignored
 `build/pod-presence/STOP.md` retains exact bytes and source limits. No new
 presence case or criterion closes. The listening queue remains **1/20**;
 completion stays **70.05%**, **37 open / 26 DONE**.
+
+## WFC composition listener provenance comparison — 2026-09-25
+
+The user heard the existing 35.56-second `build/feedback/5.wav` and called it
+coherent in a simplistic way, then asked what had trained it. Its only training
+inputs were the eight first-party 16-chord outlines in
+`examples/wfc-chord-sources.txt`; no song recording, multi-hour style mix or
+NSynth audio was used. The checked Pascal composer rendered each source outline
+with the same seed as the generated passage into ignored
+`build/feedback/source-01.wav` through `source-08.wav`. `source-01` is closest
+to the generated 16-chord path at three differing positions. The original
+source text is also available as `source-chords.txt` in the HFS feedback folder.
+All eight direct renders reported 97 owned note events, PASS, and zero unfreed
+blocks. The current Wi-Fi HFS address served `5.wav`, all eight source WAVs and
+the text with HTTP 200 and exact expected byte lengths from this PC. Phone-side
+reachability has not been retested.
+
+These are reference comparisons, not eight new listening tasks. The user's
+coherence observation is recorded; their newly-composed-versus-replay verdict
+is pending after comparing sources. `NS-4_composition_02` remains open, the
+cross-task review queue remains one partially reviewed item, and milestone
+credit stays **70.05%**, **37 open / 26 DONE**.
