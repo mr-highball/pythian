@@ -75,6 +75,25 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-25 checked native nonzero-rest control: a frozen private Pascal
+  extractor copied raw channel-13 samples from the authenticated anechoic
+  noise-floor WAV to mono PCM24 without resampling, retaining 319,620 source
+  frames. Win32/Win64 output SHA-256 is
+  `42fc947dbaf71684d0e2760a136a4d51d028878c6fc04f60d14b82ce53783f2d`.
+  The unchanged maintained `pythian.presence.inspect` compared two distinct
+  24,000-frame no-playing windows to a publisher-supported no-playing window
+  in that same file. Both nonzero-signal candidates returned
+  `compatible_with_reviewed_rest` with no false-active or unknown output;
+  checked-target rows and leak evidence are under ignored
+  `build/anechoic-presence-source/`. Salty Boi independently checked all
+  extracted samples and both target-row pairs. This advances recorded-rest
+  and native consumer evidence without positive instrument detection or an independent
+  case. Source qualification and this rest check are two nonclosing batches;
+  stop further rest-only variants. Criterion 3 and task credit remain open
+  until independently grounded playing/rest cases and disjoint evaluation
+  meet the frozen decision gates. Do not compare the separate performance file
+  against this room-tone file without independent gain support.
+
 - 2026-09-25 source-contract reassessment: the previous anechoic v1/v2 stops
   were authenticated sample-rate metadata failures before PCM, not acoustic
   failures. After recording one final per-file geometry policy in ignored

@@ -13312,3 +13312,42 @@ limits; a new reference design must not silently concatenate files. Source-
 disjoint recorded evaluation, criterion 3 and task credit remain open.
 Completion stays **69.85%**, **37 open / 25 DONE**, with the cross-task
 Pythian listening queue at **1/20**.
+
+## Maintained nonzero-rest development control — 2026-09-25
+
+The publisher-grounded anechoic no-playing file is a separate 16-channel
+recording, so the prior source contrast could not enter the maintained
+same-clip presence API. A frozen private policy instead selected two
+channel-13 no-playing candidate windows and a third disjoint no-playing
+reference window **within that one file**. Its pre-run SHA-256 was recorded as
+`2e0c752e739b6ab43f0a6e85315041ea9ca379e112eb7b4941b2fcbd44b286ce`.
+Ticket Guy's bounded Pascal extractor verified the original source SHA-256,
+copied the raw spot-mic sample bytes to mono PCM24 and independently produced
+the same 319,620-frame, 48-kHz, 958,904-byte output on checked FPC 3.2.2
+Win32/Win64 (SHA-256
+`42fc947dbaf71684d0e2760a136a4d51d028878c6fc04f60d14b82ce53783f2d`).
+An existing-output refusal preserved the first output.
+
+Fresh checked Win32/Win64 builds of the unchanged
+`pythian.presence.inspect` then used reference frames [36,000,60,000) and
+candidate frames [132,000,156,000) / [228,000,252,000). Both nonzero
+candidates returned `compatible_with_reviewed_rest`, with RMS
+0.0005121119 / 0.0004206582 against reference RMS 0.0006818820. The
+publisher's no-playing designation supports that exact same-file reference;
+it does not authorize a playing claim. The private
+`build/anechoic-presence-source/MONO-REST-RESULT.md` records identities,
+coordinates, logs and scope. Checked-target TSV row identity and the full
+failure/resource audit passed Salty Boi's focused QA: all 319,620 extracted
+samples match the original channel, both target-row pairs match byte for
+byte, the existing-output refusal preserved its output, and all runs
+reported zero unfreed blocks. No broad suite or new listener packet was
+needed.
+
+The source qualification and this maintained rest control are two nonclosing
+batches. Stop this rest-only route. `NS-3_notes_05` still needs positive
+instrument/rest discrimination and source-disjoint independent cases with
+false-active, missed-active and unknown accounting. The separate performance
+file has no independently established matching gain to the room tone, and
+the maintained API does not compare separate recordings. No task or
+completion credit changes: **69.85%**, **37 open / 25 DONE**, and the
+Pythian synthesis listening queue remains **1/20**.

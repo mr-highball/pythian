@@ -86,6 +86,41 @@ cost. This meets the API and consumer acceptance criteria of
 [NS-3_notes_05](TODO/NS-3_notes_05.md) at their source-free scope; it does not
 meet the remaining source-grounded acoustic and recorded-calibration criteria.
 
+## Publisher-grounded nonzero room-tone check — 2026-09-25
+
+The [anechoic quartet publisher](https://zenodo.org/records/4955282) supplies
+a separately recorded noise-floor file described as silence with a musician
+present. The exact publisher-MD5-matched 16-channel file declares 48 kHz even
+though the accompanying performance file declares 44.1 kHz. A bounded
+source-gate reassessment qualified the original channel-13 spot-mic no-playing
+windows and fixed violin contrasts on checked Win32/Win64 without resampling;
+the source, policy and logs remain under ignored
+`build/anechoic-presence-source/`. The performance file was **not** compared
+to the separate noise-floor file through the maintained same-clip observation.
+
+A prospectively frozen Pascal extraction copied every channel-13 sample byte
+from the noise-floor file to a mono PCM24 WAV, preserving its 319,620 frames
+and 48-kHz source coordinates. Checked Win32/Win64 outputs have the same
+SHA-256 `42fc947dbaf71684d0e2760a136a4d51d028878c6fc04f60d14b82ce53783f2d`.
+The unchanged `pythian.presence.inspect` then compared two 0.5-second
+no-playing windows, [132,000,156,000) and [228,000,252,000), with the
+publisher-supported no-playing reference [36,000,60,000) in the **same file**.
+Both candidates contained nonzero signal; the fixed policy reported
+`compatible_with_reviewed_rest` with candidate RMS 0.0005121119 and
+0.0004206582 versus reference RMS 0.0006818820. The two checked-target rows
+and leak/failure evidence are in the private result packet; Salty Boi's
+focused QA independently checked every extracted sample and both target
+row pairs. This is a recorded room-noise negative control, not an audible-note
+or note-off decision.
+
+Together, source qualification and this maintained rest check are two
+nonclosing batches for the source route. Stop rest-only variants. A future
+criterion-3 result needs a prospectively supported playing/rest comparison
+and source-disjoint independent cases with false-active, missed-active and
+unknown coverage. Separate-file gain comparability is still unproved; do not
+infer it from the shared publisher or from these same-file rest results. No
+task credit or listening item follows.
+
 ## First listener-bound GuitarSet comparison — 2026-09-23
 
 A later frozen packet selected three player and musical-family groups from
