@@ -41,6 +41,12 @@ before the first key strike. The MAESTRO publisher describes padding around
 MIDI-silence cuts, but does not independently label those exact acoustic
 windows free of audible instrument. Salty Boi rejected promoting a MIDI gap
 to `reviewed` rest. `NS-3_notes_05` and its recorded criterion remain open.
+Ticket Guy's bounded publisher check found no immediately qualifying
+same-recording, exact-window, reviewed rest paired with positive instrument
+audio. HamNava labels five-second clips per named instrument; ChoraleBricks
+provides wind notes/F0 without reviewed rests. These are narrower source
+contracts, not generic rest evidence. Stop this source sweep and return to a
+ready core prerequisite while the acoustic label remains unavailable.
 The cross-task pending Pythian listening queue stays **0/20**. Overall
 completion remains **70.20%**, with **36 open / 27 DONE** tasks.
 

@@ -85,6 +85,17 @@ held-out evidence after a policy change.
   promote the interval to `reviewed` under `PRESENCE.md`. Salty Boi confirmed
   this boundary. No presence scorer ran and criterion 3 remains open; a fresh
   source-bound acoustic rest label is still required.
+- 2026-09-25 Ticket Guy's bounded primary-source check found no immediately
+  usable replacement with a publisher-reviewed exact no-instrument interval,
+  instrument-positive intervals in the same original recording and a source
+  group for independent evaluation. MAESTRO's captured keys/pedals lack an
+  acoustic rest label; HamNava's two-annotator labels are five-second,
+  per-instrument clips rather than generic exact within-recording rests;
+  ChoraleBricks supplies isolated wind audio and note/F0 labels but no reviewed
+  rests. This is a search result, not proof no such dataset exists. Stop another
+  speculative source sweep. A fresh same-source exact-window acoustic review
+  would be needed before presence scoring, with the user's routine labeling
+  burden kept low.
 - 2026-09-25 one bounded [Fraunhofer isolated-bass source](https://www.idmt.fraunhofer.de/en/publications/datasets/bass.html)
   screen stopped at publisher metadata. The dataset documents recorded
   single notes, instruments and pickups, but no exact instrument-free
