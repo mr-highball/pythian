@@ -13248,3 +13248,25 @@ not online WFC updating, process-crash durability, many-hour semantic
 training, recorded note inference or a listening result. The complete
 [NS-5_scale_02](TODO/NS-5_scale_02.md) and recorded core prerequisites remain
 open. The cross-task substantial Pythian listening queue remains **1/20**.
+
+## Anechoic presence-source geometry stop — 2026-09-25
+
+After the accepted semantic journal, the recorded presence route tested a
+different physical reference design: a publisher-provided anechoic recording
+of silence with a musician present and an isolated string performance from
+the same setup. A frozen private Pascal source gate checked publisher bytes
+before any PCM or presence scoring. The noise-floor WAV matched its published
+size and MD5 but declared **48 kHz** against the publisher-stated and frozen
+**44.1 kHz** geometry. Checked Win32 replay confirmed the exact mismatch and
+zero leaks after a failure-path cleanup fix. The performance WAV was not
+scored. Policy, checker, log and stop record remain under ignored
+`build/anechoic-presence-source/`. The two unneeded WAVs (69,728,592 bytes)
+also remain there because automatic approval review rejected their deletion;
+they are candidates for the next authorized artifact cleanup.
+
+This source route closes no criterion in [NS-3_notes_05](TODO/NS-3_notes_05.md).
+Do not retune its frozen format/window gate. The task still needs an
+independently supported exact no-instrument interval and source-disjoint
+recorded cases; absence of a score or a publisher label alone remains
+`unknown`. No credit changes: **69.85%**, **37 open / 25 DONE**. The Pythian
+listening queue remains **1/20**.

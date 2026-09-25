@@ -75,6 +75,28 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-25 two-route checkpoint after the journal task: the quartet source
+  gate below failed before PCM, and an independent read-only
+  [AudioLabs instrument-activity reference](https://www.audiolabs-erlangen.de/resources/MIR/2023-TASLP-HierarchicalInstrumentClass)
+  screen found frame labels derived by score-to-audio synchronization, with
+  most listed audio from commercial recordings. `INST=0` is therefore a
+  score-derived inactive frame, not an independently reviewed acoustic
+  no-instrument interval. No archive or scorer ran. Stop these source routes
+  and further metadata-only rest searches; criterion 3 remains open until
+  exact acoustic labels and source-disjoint audio can be qualified. Move to
+  another task rather than repeating source searches here.
+- 2026-09-25 changed physical-source route stopped at its first frozen
+  container gate. The publisher's [anechoic quartet dataset](https://zenodo.org/records/4955282)
+  supplies a dedicated musician-present `NoiseFloor.wav` and isolated string
+  performances, a stronger source design than scene names or MIDI silence.
+  Its exact-size, publisher-MD5-matched noise-floor WAV declares 48 kHz, while
+  the prospectively frozen source policy required the publisher-stated
+  44.1 kHz/24-bit/16-channel geometry. A checked Pascal Win32 rerun confirmed
+  the mismatch with zero leaks. The gate stopped before PCM, contrast or
+  presence scoring. Private policy and log are
+  under ignored `build/anechoic-presence-source/`. This source supplies no
+  reviewed exact rest, independent group, criterion 3 result or task credit.
+  Stop this source route rather than revising its windows or format gate.
 - 2026-09-25 source-quality checkpoint: the DEMAND screen below and a second
   read-only [BUT ReverbDB](https://speech.fit.vut.cz/software/but-speech-fit-reverb-database)
   screen both closed no criterion. BUT's [publisher read-me](https://merlin.fit.vutbr.cz/ReverbDB/read_me.txt)
