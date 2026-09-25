@@ -88,3 +88,17 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
 - The checked local pas2js and FPC development commands report 3.3.1. This
   establishes tool availability, not a passing application build; stable native
   server targets and actual browser behavior remain acceptance work.
+- 2026-09-25 first import boundary: `tools/pythian.label.catalog.lpr` and
+  `pythian.tools.annotations.catalog` accept one prepared multi-WAV manifest,
+  stream SHA-256 and WAV geometry, copy verified originals into a separate
+  catalog root, reject group/partition leakage, and replay records in sorted
+  source-hash order. Import never creates a proposal or reviewed label. Checked
+  stable FPC 3.2.2 Win32 and Win64 builds both imported two development-exposed
+  30-second WAVs; repeat import returned two duplicates. A mixed failure packet
+  returned one duplicate and three isolated failures (wrong hash, split
+  partition, unsafe basename) while retaining the two valid records. Copied
+  asset hashes matched the declared source hashes. Fixtures are ignored under
+  `build/label-catalog/`; a real operator catalog must be placed outside build.
+  [The importer contract](../LABEL-CATALOG.md) describes the prepared packet.
+  Waveform and audio regions, proposals, review history, export, HTTP API,
+  browser interactions and actual long-source check remain open; no task credit.

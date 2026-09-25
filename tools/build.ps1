@@ -74,6 +74,8 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'File-bound evaluation checks failed' }
   & $compilerPath @compilerArgs '-Futools' 'tools/pythian.evaluate.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Evaluation operator compilation failed' }
+  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.label.catalog.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Label catalog operator compilation failed' }
   & $compilerPath @compilerArgs '-Futools' 'tools/pythian.part.controls.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Part control operator compilation failed' }
   & (Join-Path $buildRoot "pythian.part.controls$executableSuffix") '--controls'

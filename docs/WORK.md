@@ -40,6 +40,28 @@ itself supply the missing rest or accept Pythian predictions as truth. The
 existing cross-task notification threshold remains 20 pending listening
 items; the user can initiate catalog review whenever the workbench is usable.
 
+## Native prepared-WAV import boundary — 2026-09-25
+
+The first part of [NS-3_labeling_01](TODO/NS-3_labeling_01.md) is an owned
+Pascal `pythian.label.catalog` importer, included in `tools/build.ps1`. Its
+versioned manifest admits multiple prepared WAVs into a user-specified durable
+root, checks each original SHA-256 and WAV geometry, verifies the staged copy,
+deduplicates by source hash, enforces source-group partition consistency, and
+lists records in stable hash order. No import status denotes a reviewed label.
+The [import guide](LABEL-CATALOG.md) records the current contract.
+
+Checked stable FPC 3.2.2 Win32 and Win64 builds imported two
+development-exposed 30-second WAVs (`2 imported, 0 failed`). Repeat import
+reported two duplicates. A mixed packet on Win64 reported one duplicate and
+three per-track failures: changed hash, group crossing partitions and an unsafe
+basename. The two catalog WAVs matched the manifest hashes after copying.
+The temporary checks and copied sources are under ignored
+`build/label-catalog/`; they are not a durable operator catalog. Large-source
+bounded waveform/audio serving, proposal identity, reversible review history,
+blind mode, export, and actual desktop/mobile browser validation remain open.
+Task credit and overall completion stay unchanged at **70.20%**; the cross-task
+pending listening queue stays **0/20**.
+
 ## Independent physical-beat search and tracker capacity — 2026-09-25
 
 Following the user's request to find the missing source evidence, ASAP v1.1
