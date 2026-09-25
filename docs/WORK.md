@@ -67,6 +67,36 @@ blind mode, export, and actual desktop/mobile browser validation remain open.
 Task credit and overall completion stay unchanged at **70.20%**; the cross-task
 pending listening queue stays **0/20**.
 
+The native catalog's import and region batches did not yet close its full
+multi-track import criterion. Per the task-flow two-batch checkpoint, the next
+batch will finish that specific boundary with an actual multi-hour WAV import,
+bounded page reads, per-track unsupported-WAV isolation and stale-source
+rejection. Review and browser work resumes after the import criterion is
+evidenced.
+
+The long-source check used one previously untracked local mix WAV of
+1,559,617,614 bytes, 389,904,384 frames, 48 kHz stereo and 8,123 seconds.
+A three-row import accepted it and a valid 30-second WAV while isolating an
+invalid RIFF row. A separate zero-channel RIFF failed beside a valid duplicate.
+A same-length byte change to a prepared short WAV failed its declared SHA-256
+before any catalog change; listing still showed the original two records and
+the long copied asset matched its source hash. Three source-frame pages
+(beginning, middle and end) each returned 300 waveform bins in about 0.5 s
+on stable Win64. An ignored Pascal verifier checked contiguous, exact bin
+coordinates, finite extrema and the last 48,000-frame PCM16 region. Stable
+Win32 and Win64 final-page and region SHA-256 values matched. An over-bound
+page rejected. This supports the native import/paging boundary, while HTTP,
+operator review and actual durable-root deployment remain open; no task credit.
+
+Cleanup was attempted after measurement. Automatic approval review rejected
+recursive removal of `build/label-catalog/long-catalog/` and deletion of its
+exact 1.56-GB WAV with the stated reason "blocked by policy". The ignored test
+copy remains at
+`build/label-catalog/long-catalog/sources/d924c22b8e7bb5a221645ed56dd4ee9a49941a9e749860a164a74c7b65392d02.wav`.
+The original untracked source was not touched. Retain this cleanup item for the
+user's approved route; do not run alternate deletion methods to bypass the
+review. The cross-task listening queue remains **0/20**.
+
 ## Independent physical-beat search and tracker capacity — 2026-09-25
 
 Following the user's request to find the missing source evidence, ASAP v1.1

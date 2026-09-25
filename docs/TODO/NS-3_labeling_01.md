@@ -107,3 +107,23 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
   44,100 stereo frames in 176,444 bytes. Invalid bounds rejected and removed
   the staged output. HTTP delivery, actual long-source performance, proposals,
   review history, export and browser interactions remain open; no task credit.
+- Checkpoint after the import and region batches: neither closed the whole
+  multi-track import criterion. Finish that bounded criterion before adding
+  review features. The next evidence is a real multi-hour source imported and
+  paged, an unsupported WAV that fails beside valid tracks, and a stale source
+  that cannot change an existing record.
+- The bounded long-source check used a 1,559,617,614-byte, 389,904,384-frame
+  stereo WAV at 48 kHz, alongside a valid short WAV and invalid RIFF. The
+  two valid tracks imported while the invalid one failed in its own row. A
+  zero-channel RIFF also failed beside a duplicate valid row; a changed copy
+  failed hash validation without changing the two listed catalog records.
+  Three 2,880,000-frame waveform pages at the start, middle and end each
+  produced 300 contiguous, finite bins; an ignored Pascal verifier checked
+  exact outer coordinates and a final one-second, 48,000-frame PCM16 region.
+  Stable Win32 and Win64 hashes matched for the final page and region. A
+  page beyond 8,388,608 frames rejected without reading it. The temporary
+  large catalog copy remains in ignored `build/label-catalog/long-catalog/`:
+  automatic approval review rejected both recursive cleanup and deletion of
+  its exact WAV as "blocked by policy". Keep this visible for approved manual
+  cleanup. Source import and paging are evidenced; actual durable-root
+  configuration, HTTP consumption and every other criterion remain open.

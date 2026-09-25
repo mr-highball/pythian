@@ -122,6 +122,7 @@ var
   LSamples: TAudioSamples;
   LLow: Single;
   LHigh: Single;
+  LHasSample: Boolean;
 begin
   Need((ABins > 0) and (ABins <= CMaximumWaveformBins),
     'Waveform bin count exceeds bound');
@@ -147,8 +148,7 @@ begin
         LBinStart := AStartFrame + (LSpan * LIndex) div ABins;
         LBinEnd := AStartFrame + (LSpan * (LIndex + 1)) div ABins;
         LRemaining := LBinEnd - LBinStart;
-        LLow := 1.0;
-        LHigh := -1.0;
+        LHasSample := False;
         while LRemaining > 0 do
         begin
           LCount := CReadFrames;
@@ -161,17 +161,27 @@ begin
             'Short catalog WAV read');
           for LSample := 0 to High(LSamples) do
           begin
-            if LSamples[LSample] < LLow then
+            if not LHasSample then
             begin
               LLow := LSamples[LSample];
-            end;
-            if LSamples[LSample] > LHigh then
-            begin
               LHigh := LSamples[LSample];
+              LHasSample := True;
+            end
+            else
+            begin
+              if LSamples[LSample] < LLow then
+              begin
+                LLow := LSamples[LSample];
+              end;
+              if LSamples[LSample] > LHigh then
+              begin
+                LHigh := LSamples[LSample];
+              end;
             end;
           end;
           Dec(LRemaining, LCount);
         end;
+        Need(LHasSample, 'Empty catalog waveform bin');
         LRow := TJSONObject.Create;
         LRows.Add(LRow);
         LRow.Add('start_frame', LBinStart);
