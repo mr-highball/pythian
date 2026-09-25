@@ -57,7 +57,12 @@ three per-track failures: changed hash, group crossing partitions and an unsafe
 basename. The two catalog WAVs matched the manifest hashes after copying.
 The temporary checks and copied sources are under ignored
 `build/label-catalog/`; they are not a durable operator catalog. Large-source
-bounded waveform/audio serving, proposal identity, reversible review history,
+region access now has a native bounded path: up to 2,048 exact min/max bins
+over 8,388,608 source frames, and up to 30 seconds/16 MiB of staged PCM16
+listening audio. Stable Win32 and Win64 one-second waveform JSON hashes matched;
+one stereo region was 44,100 frames / 176,444 bytes. Invalid coordinates
+failed without leaving a staged output. Actual long-source behavior, HTTP
+delivery, proposal identity, reversible review history,
 blind mode, export, and actual desktop/mobile browser validation remain open.
 Task credit and overall completion stay unchanged at **70.20%**; the cross-task
 pending listening queue stays **0/20**.

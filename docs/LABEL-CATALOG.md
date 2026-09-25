@@ -35,6 +35,8 @@ the entire manifest with one command:
 ```powershell
 & 'build/<target>/pythian.label.catalog.exe' import 'D:\path\to\inbox' 'D:\path\to\catalog'
 & 'build/<target>/pythian.label.catalog.exe' list 'D:\path\to\catalog'
+& 'build/<target>/pythian.label.catalog.exe' waveform 'D:\path\to\catalog' SOURCE_SHA256 START_FRAME END_FRAME BINS
+& 'build/<target>/pythian.label.catalog.exe' audio 'D:\path\to\catalog' SOURCE_SHA256 START_FRAME END_FRAME 'D:\path\to\region.wav'
 ```
 
 The import report gives each track an `imported`, `duplicate`, or `failed`
@@ -49,6 +51,13 @@ only for stems that truly share a source frame clock; unrelated recordings
 leave it out and must never be aligned merely because their durations match.
 Source group and partition are import metadata, not acoustic labels.
 
-The native service, bounded waveform and region-audio endpoints, proposals,
+`waveform` returns per-bin minimum and maximum sample values across the
+source's channels, with exact half-open source-frame bounds. Each call covers
+at most 8,388,608 frames and 2,048 bins. The client can navigate a long source
+in pages. `audio` emits an original-region PCM16 listening WAV for at most
+30 seconds and 16 MiB; it stages the output before publication and refuses to
+replace an existing file. Both read the source sequentially in bounded blocks.
+
+The native HTTP service and its waveform and region-audio endpoints, proposals,
 review history, reviewed export, and pas2js interface remain work in the linked
 tasks. Do not train from the source records alone.

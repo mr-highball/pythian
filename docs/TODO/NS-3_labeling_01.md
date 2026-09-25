@@ -100,5 +100,10 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
   asset hashes matched the declared source hashes. Fixtures are ignored under
   `build/label-catalog/`; a real operator catalog must be placed outside build.
   [The importer contract](../LABEL-CATALOG.md) describes the prepared packet.
-  Waveform and audio regions, proposals, review history, export, HTTP API,
-  browser interactions and actual long-source check remain open; no task credit.
+  The follow-on native region reader returns exact source-frame waveform bins
+  (at most 2,048 bins across 8,388,608 frames) and writes a bounded 30-second,
+  16-MiB PCM16 listening region without loading the whole source. Checked
+  Win32/Win64 one-second waveform JSON hashes matched; a Win64 region encoded
+  44,100 stereo frames in 176,444 bytes. Invalid bounds rejected and removed
+  the staged output. HTTP delivery, actual long-source performance, proposals,
+  review history, export and browser interactions remain open; no task credit.

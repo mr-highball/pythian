@@ -27,12 +27,21 @@ program pythian_label_catalog;
 {$H+}
 
 uses
+  Classes,
   SysUtils,
   fpjson,
-  pythian.tools.annotations.catalog;
+  pythian.tools.annotations.catalog,
+  pythian.tools.annotations.media;
 
 var
   LReport: TJSONObject;
+  LStartFrame: Int64;
+  LEndFrame: Int64;
+  LBins: Integer;
+  LOutput: TFileStream;
+  LOutputPath: String;
+  LStagePath: String;
+  LGuid: TGUID;
 begin
   try
     if (ParamCount = 3) and (ParamStr(1) = 'import') then
@@ -43,10 +52,62 @@ begin
     begin
       LReport := ListLabelCatalog(ParamStr(2));
     end
+    else if (ParamCount = 6) and (ParamStr(1) = 'waveform') then
+    begin
+      if not TryStrToInt64(ParamStr(4), LStartFrame) or
+        not TryStrToInt64(ParamStr(5), LEndFrame) or
+        not TryStrToInt(ParamStr(6), LBins) then
+      begin
+        raise Exception.Create('Invalid waveform frame or bin argument');
+      end;
+      LReport := CatalogWaveformRegion(ParamStr(2), ParamStr(3),
+        LStartFrame, LEndFrame, LBins);
+    end
+    else if (ParamCount = 6) and (ParamStr(1) = 'audio') then
+    begin
+      if not TryStrToInt64(ParamStr(4), LStartFrame) or
+        not TryStrToInt64(ParamStr(5), LEndFrame) then
+      begin
+        raise Exception.Create('Invalid audio frame argument');
+      end;
+      LOutputPath := ParamStr(6);
+      if FileExists(LOutputPath) then
+      begin
+        raise Exception.Create('Audio output already exists');
+      end;
+      if CreateGUID(LGuid) <> 0 then
+      begin
+        raise Exception.Create('Could not create audio stage identity');
+      end;
+      LStagePath := LOutputPath + '.' + GUIDToString(LGuid) + '.partial';
+      try
+        LOutput := TFileStream.Create(LStagePath,
+          fmCreate or fmShareExclusive);
+        try
+          WriteCatalogAudioRegion(ParamStr(2), ParamStr(3),
+            LStartFrame, LEndFrame, LOutput);
+        finally
+          LOutput.Free;
+        end;
+        if FileExists(LOutputPath) or
+          not RenameFile(LStagePath, LOutputPath) then
+        begin
+          raise Exception.Create('Could not publish audio region');
+        end;
+      finally
+        if FileExists(LStagePath) then
+        begin
+          DeleteFile(LStagePath);
+        end;
+      end;
+      Exit;
+    end
     else
     begin
       WriteLn(StdErr, 'Usage: pythian.label.catalog import INBOX_DIR CATALOG_DIR');
       WriteLn(StdErr, '       pythian.label.catalog list CATALOG_DIR');
+      WriteLn(StdErr, '       pythian.label.catalog waveform CATALOG_DIR HASH START END BINS');
+      WriteLn(StdErr, '       pythian.label.catalog audio CATALOG_DIR HASH START END OUTPUT.wav');
       ExitCode := 2;
       Exit;
     end;

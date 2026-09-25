@@ -35,6 +35,7 @@ uses
   stores; importing a source never creates a reviewed label. }
 function ImportLabelInbox(const AInboxRoot, ACatalogRoot: String): TJSONObject;
 function ListLabelCatalog(const ACatalogRoot: String): TJSONObject;
+function ReadCatalogTrack(const ACatalogRoot, AHash: String): TJSONObject;
 
 implementation
 
@@ -567,6 +568,25 @@ begin
     end;
   finally
     LNames.Free;
+  end;
+end;
+
+function ReadCatalogTrack(const ACatalogRoot, AHash: String): TJSONObject;
+var
+  LRecordPath: String;
+begin
+  Need(ValidHash(AHash), 'Invalid catalog source SHA256');
+  LRecordPath := IncludeTrailingPathDelimiter(ExpandFileName(ACatalogRoot)) +
+    'tracks' + PathDelim + AHash + '.json';
+  Result := ReadObject(LRecordPath, CRecordBytes);
+  try
+    Need((Result.Integers['version'] = 1) and
+      (Result.Strings['source_sha256'] = AHash) and
+      (Result.Strings['asset'] = 'sources/' + AHash + '.wav'),
+      'Catalog record identity or version differs');
+  except
+    Result.Free;
+    raise;
   end;
 end;
 
