@@ -5,6 +5,7 @@
 
 | Accepted task | Date | North-star credit | Overall credit |
 | --- | --- | ---: | ---: |
+| [NS-3_tempo_05](NS-3_tempo_05.md) — Bounded authored beat candidates and clock link | 2026-09-25 | +1 NS-3 | +0.25 |
 | [NS-5_corpus_01](NS-5_corpus_01.md) — Verified corpus identity and contribution audit | 2026-09-20 | +2 NS-5 | +0.40 |
 | [NS-5_scale_03](NS-5_scale_03.md) — Bounded multi-recording Pascal raw corpus and measured workload | 2026-09-25 | +1 NS-5 | +0.20 |
 | [NS-3_notes_06](NS-3_notes_06.md) — Source-bound admitted notes to saved WFC learning | 2026-09-25 | +1 NS-3 | +0.25 |
@@ -17,6 +18,7 @@
 | [NS-4_styles_01](NS-4_styles_01.md) — Reusable semantic graphs and derivative evidence | 2026-09-21 | +4 NS-4 | +0.60 |
 | [NS-4_layers_04](NS-4_layers_04.md) — Staged duration and committed-stream edits | 2026-09-21 | +4 NS-4 | +0.60 |
 | [NS-4_styles_02](NS-4_styles_02.md) — Selective semantic blend and further blend | 2026-09-21 | +4 NS-4 | +0.60 |
+| [NS-4_note-events_01](NS-4_note-events_01.md) — Bounded joint note-event generation | 2026-09-24 | +1 NS-4 | +0.15 |
 | [NS-3_parts_04](NS-3_parts_04.md) — Maintained simultaneous-role scoring and reproducible controls | 2026-09-21 | +1 NS-3 | +0.25 |
 | [NS-3_parts_01](NS-3_parts_01.md) — Qualified external reference packet and curator acoustic intervals | 2026-09-21 | +1 NS-3 | +0.25 |
 | [NS-3_validation_03](NS-3_validation_03.md) — Selective Pascal pitch observations | 2026-09-22 | +2 NS-3 | +0.50 |

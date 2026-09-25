@@ -4,51 +4,92 @@
 
 **Description:**
 
-Deliver reusable, source-bound candidate evidence for beat period and phase
-before deciding which candidate is the musical pulse. A retained pool must
-expose plausible half/double-time and competing-phase explanations, plus
-missing or unsupported evidence, through the maintained native tracker and
-clock boundary. Its successful result is candidate availability and bounded
-provenance, not automatic beat-level selection.
+Accept the maintained beat-candidate pool on a source-separated recorded
+challenge with independently attributable physical pulse evidence. The
+source-independent Pascal pool, clock contract and authored controls are owned
+by [NS-3_tempo_05](DONE/NS-3_tempo_05.md). This task retains the original recorded
+challenge, including missing/unsupported evidence and candidate recall rather
+than beat-level selection.
 
 North star: NS-3. Outcome owner: WAV-02-PULSE.
-Completion credit: 2 goal percentage points (0.50 overall points), split from
-the original 5 points of [NS-3_tempo_01](NS-3_tempo_01.md).
+Completion credit: 1 goal percentage point (0.25 overall points). The original
+unearned +2 NS-3 / +0.50 overall allocation, split from the original 5 points
+of [NS-3_tempo_01](NS-3_tempo_01.md), is now shared equally with
+[NS-3_tempo_05](DONE/NS-3_tempo_05.md); total credit is unchanged.
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-path-diagnosis--2026-09-19) · [BEAT-GRIDS](../BEAT-GRIDS.md).
 
 **Acceptance Criteria:**
 
-- Freeze source windows, annotated development groups, candidate identity,
-  eligibility, per-window support and a candidate-only challenge group before
-  scoring. Fix availability/coverage and work limits prospectively; do not use
-  the later untouched whole-track timing evaluation group for tuning.
-- Preserve true fast, half/double-time and same-tempo competing-phase
-  alternatives on the declared authored controls and source-separated recorded
-  challenge, within a bounded candidate pool. Report reference-compatible
-  candidate recall at the declared 30-ms timing tolerance separately from the
-  path's selected beat accuracy; a reference may identify a missing candidate
-  only after inference has saved the pool.
-- Distinguish absent source pulses, distractor observations, fitting omission,
-  candidate suppression and capacity loss. Missing or ambiguous evidence stays
-  explicit rather than becoming an invented pulse or a reference-selected band.
-- Expose the qualified pool through maintained Pascal WAV observation,
-  `TBeatTrackWindow`, path reselection and selected-clock contracts with exact
-  candidate indices, source coordinates, policy identity and deterministic
-  replay. A selection must not erase its unused alternatives; no downstream
-  caller may treat availability or a top score as musical confidence.
-- Pass checked native boundary, failure and work tests on the changed path and
-  its consumer. Retain the original stable/deceptive/polyrhythm/changing-rate
-  controls as regression evidence; this task does not claim their beat-level
-  acceptance or change the stopped metrical experiments' verdicts.
+- Freeze exact recorded source windows, annotated development groups, candidate
+  identity, eligibility, per-window support and a candidate-only challenge
+  group before scoring. Fix availability/coverage and work limits prospectively;
+  keep the later untouched whole-track timing evaluation group unused.
+- On the source-separated recorded challenge, report 30-ms
+  reference-compatible recall of the saved fast, half/double-time and
+  competing-phase pool separately from selected beat accuracy. References may
+  identify a missing candidate only after inference saves the pool; they may
+  not supply a rate/band to the tracker.
+- Bind physical source pulse, distractor, fitting omission, local eligibility,
+  suppression and capacity explanations to independent source evidence.
+  Missing or ambiguous evidence stays `unknown`; do not infer acoustic absence
+  from a beat annotation, missing candidate or no MIDI event alone.
+- Verify that the challenge uses the accepted
+  [authored-control candidate contract](DONE/NS-3_tempo_05.md) without erasing its
+  alternatives, indices, source coordinates, policy identity or replay link
+  through `TBeatTrackWindow`, path reselection and selected clock.
+- Pass focused checked native recorded-source, boundary, failure and work
+  checks on the challenge and its consumer. Retain the authored regressions
+  from `NS-3_tempo_05` without crediting them again. This task does not claim
+  beat-level acceptance or revise the stopped metrical experiments.
 
 **Blockers**
 
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
+- [NS-3_tempo_05.md — DONE](DONE/NS-3_tempo_05.md)
 
 **Dev Notes:**
 
+- 2026-09-25 task-flow split: prior notes saying original criteria 4–5 closed
+  describe the maintained authored-control pool, link and consumer now owned
+  by [NS-3_tempo_05](DONE/NS-3_tempo_05.md). They do not close this task's recorded
+  challenge criteria. Original C1–C5 map as follows: 05 owns authored policy,
+  alternatives, controlled loss classification, maintained API and native
+  consumer; 04 owns recorded source split, recall, physical/unknown attribution,
+  recorded link and challenge checks. Original unearned +2 NS-3 points became
+  +1/+1, preserving +0.50 overall. The split itself earns nothing.
+- 2026-09-25 KRAISLER source route stopped at its second fixed development
+  recording. The publisher's [piano/violin duet
+  dataset](https://zenodo.org/records/21082251) supplied directly captured
+  piano MIDI, dry live stems and manually refined beats. The complete
+  1,558,287,213-byte archive matched the publisher's MD5
+  `22f6f51e9c356c1ea8f591d85603fd73`; Pascal checked 389 unique ZIP entries,
+  all 20 paired groups and the selected files' hashes. The ignored
+  `build/kraisler-reference/POLICY.md` froze distinct-piece IDs 01/02 for
+  development and 03/04 for candidate-only challenge, first-30-second windows,
+  a 30-ms beat/MIDI radius and 10-ms physical dry-piano contrast. Before PCM
+  scoring, two source-container repairs were recorded: publisher Table 2 rather
+  than archive CSV supplies composer/title, and exact tick-zero channel-prefix
+  and one-hour SMPTE metadata were replaced only in a private Pascal MIDI
+  projection, preserving note/tempo events and delta ticks. The first fixed
+  recording passed with 43 supported beats (18/25 across halves); the second
+  failed with 3 (3/0), against the frozen 8-total/3-per-half minimum. Other
+  beats stay `unknown`, not absent; 03/04 were never acoustically scored, and
+  no candidate tracker or reference-selected band was run. Both runs reported
+  zero leaks. The private policy's v2/v3 amendments have no retained pre-score
+  file hash, so their timing is supported by the work sequence rather than an
+  immutable policy snapshot. This does not prove the publisher's beat
+  annotations wrong or reclassify ARTBeaT 02/04; this source route ends without
+  criteria 1–3 or
+  task credit. The earlier BeatNet+ inventory and this full source gate are two
+  consecutive nonclosing batches. Reassess away from another speculative
+  pulse-source search; retained candidate contracts (criteria 4–5) remain
+  available while a qualified physical pulse reference is an external blocker.
+  Keep the publisher's conflicting CC BY/commercial-use statements unresolved;
+  no source-trained result is accepted. Source WAV/archive and duplicate
+  transfer fragments were removed after logging identities, freeing
+  3,218,220,770 bytes under ignored `build/`.
 - 2026-09-25 criterion 5 closes for the changed boundary and consumer. Checked
   FPC 3.2.2 Win32/Win64 beat-track and clock fixtures pass candidate ties,
   alternatives, gaps, source owners, work limits, replay and failed-result

@@ -13042,3 +13042,105 @@ independent physical evidence; [NS-3_notes_03](TODO/NS-3_notes_03.md) must
 feed **actual inferred** events to this bridge and pass its held-out phrase
 and audible gates before semantic scale can claim admitted music. The cross-task
 Pythian listening queue remains **1/20**.
+
+## Milestone retro and independent pulse-reference gate — 2026-09-25
+
+The prior admitted-note WFC bridge closed a useful core prerequisite, but it
+did not remove the recorded-evidence bottleneck. Current completion remains
+**69.40 overall**, NS-3 **42%**, NS-4 **98%**, NS-5 **28%**, and **37 open / 23
+DONE** tasks. The cross-task substantial Pythian listening queue is still
+**1/20**: the WFC harmony `5.wav` has completed engineering QA but awaits the
+user's whole-passage verdict for `NS-4_composition_02`. Do not count old
+answered files or seed variants toward that queue.
+
+The active core chains are (a) recorded pitch and generic presence, then event
+decisions and actual inferred-note WFC phrases; (b) source-attributable beat
+candidates, then beat level, changing clocks and context; and (c) the separate
+WFC composition listening gate. Raw multi-hour acoustic observations are
+accepted, but semantic scale remains downstream of inferred phrases. The
+three personal style corpora and their cards do not block core function. The
+failed octave, acoustic-rest and pulse source routes retain their stop decisions;
+repeating a threshold or another source-only window search would not close an
+acceptance criterion.
+
+The selected next batch was `NS-3_tempo_04` criteria 1–3: qualify one
+independent live-source pulse reference before candidate scoring. The
+publisher's [KRAISLER dataset](https://zenodo.org/records/21082251) supplies
+isolated dry piano/violin stems, directly captured piano performance MIDI and
+manually refined beat timestamps. The ignored pre-acquisition policy at
+`build/kraisler-reference/POLICY.md` fixed archive integrity, IDs 01/02 for
+development and 03/04 for candidate challenge, the first 30 seconds, and a
+30-ms MIDI/beat plus 10-ms dry-piano physical-attack gate. Pascal verified the
+full 1,558,287,213-byte publisher MD5, 389 unique ZIP entries and 20 complete
+source groups. Before acoustic scoring, the policy recorded two source-schema
+repairs: publisher Table 2 supplies artistic identity while the archive CSV
+binds files, and exact tick-zero channel-prefix/one-hour SMPTE metadata is
+neutralized only in private memory so the maintained MIDI importer can read
+relative note/tempo timing. The first frozen group passed at 43 supported
+beats, 18/25 across halves. The second failed at 3, split 3/0, below the
+frozen 8/3/3 minimum. Unsupported beats remain `unknown`; 03/04 were not
+acoustically scored, and the candidate tracker was never run. Both scored runs
+reported zero leaks. No criterion or credit closes, and ARTBeaT 02/04 remain
+unresolved. The archive, extracted WAVs and transfer fragments were removed
+after retaining identity logs, freeing 3,218,220,770 bytes. The publisher page
+lists CC BY 4.0 while also stating a commercial-use restriction; the private
+qualification produced no accepted learned result.
+
+This and the earlier BeatNet+ source inventory are two nonclosing pulse-source
+batches. The next action changes from speculative source hunting to preserving
+the accepted candidate/clock contract and waiting for genuinely attributable
+physical pulse evidence before criterion 1–3 scoring. Ticket Guy's read-only
+task-graph retro found no other ready core task that can earn acceptance without
+an external source or the pending substantial composition listen. Do not fill
+the cross-task 20-item listening queue with variants; `5.wav` remains its one
+pending item. The catalog's accepted-credit figure was corrected from 13.65 to
+13.90 so it now matches 55.5 + 13.90 = 69.40; actual completion did not change.
+
+## Beat-candidate deliverable split — 2026-09-25
+
+The two nonclosing pulse-source batches triggered a task-size reassessment.
+The maintained authored-control candidate pool/clock link is an independently
+usable Pascal result; the source-separated recorded challenge is a different
+acceptance boundary. [NS-3_tempo_05](TODO/DONE/NS-3_tempo_05.md) was assigned authored
+fast/half/double and phase alternatives, controlled loss categories, retained
+pool/clock identity and checked consumer replay. [NS-3_tempo_04](TODO/NS-3_tempo_04.md)
+retains source-qualified recorded candidate recall, physical/unknown
+attribution and challenge QA, and depends on 05. Every original criterion maps
+across those two scopes. The original unearned **+2 NS-3 / +0.50 overall** is
+redistributed **+1/+1 NS-3 / +0.25/+0.25 overall**; no credit is earned by
+splitting. The catalog temporarily has **38 open / 23 DONE** tasks and remains
+**69.40 overall**.
+
+A static artifact audit found the maintained Win32/Win64 pool and clock
+boundary plus authored 24/24, 20/20 and 24/24 lab results, but its retained
+report does not yet establish the exact 60/120/240 alternatives or complete
+source-free loss taxonomy on the maintained path. Ticket Guy owns one bounded
+Pascal authored-control validation and its checked two-target evidence; Salty
+Boi will review the complete scoped result. If those cases need model retuning,
+stop and leave 05 open. Recorded source qualification remains stopped; the
+cross-task Pythian listening queue remains **1/20**.
+
+## Authored beat-candidate contract accepted — 2026-09-25
+
+[NS-3_tempo_05](TODO/DONE/NS-3_tempo_05.md) now closes the bounded
+source-independent candidate deliverable. The existing maintained Pascal pool,
+track and clock path retains alternative candidates and exact source/policy
+links; focused checked Win32/Win64 consumers and authored-WAV replay remain
+accepted. A pre-run SHA-bound authored Pascal control added the exact
+60/120/240-BPM and competing-phase checks plus separate no-admitted-input,
+insufficient-event, no-positive-fit, local eligibility rejection, named
+suppression and capacity cases. Both checked FPC 3.2.2 targets passed with
+zero leaks and identical discrete counts; the private policy, commands, hashes
+and logs are in ignored `build/beat-candidate-authored-acceptance/`.
+Salty Boi accepted the complete scoped result after checking the test/policy
+hashes and existing consumer evidence. Empty input means no admitted onset,
+not acoustic source absence; recorded challenge recall and musical beat-level
+selection remain open in [NS-3_tempo_04](TODO/NS-3_tempo_04.md) and its
+successors.
+
+The task earns **+1 NS-3 / +0.25 overall**, raising NS-3 to **43%** and total
+completion to **69.65%**. The 61-task catalog now has **37 open / 24 DONE**;
+accepted task credit is **14.15** above the 55.5 baseline. The recorded-source
+route stays stopped, while `5.wav` remains the sole pending item in the
+cross-task Pythian listening queue (**1/20**). This closure does not advance
+recorded learning, genre quality or the pending listener verdict.

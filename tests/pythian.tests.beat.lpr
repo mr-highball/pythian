@@ -177,11 +177,16 @@ var
   LRankMatches: Integer;
   LSuppressed: Boolean;
   LCapacity: Boolean;
+  LPositiveFitCount: Integer;
+  LEligibilityRejectCount: Integer;
   LFast: Boolean;
   LHalf: Boolean;
   LDouble: Boolean;
   LPhaseZero: Boolean;
   LPhaseHalf: Boolean;
+  LHasEligibilityRejection: Boolean;
+  LSuppressionCount: Integer;
+  LCapacityCount: Integer;
 begin
   SetLength(LObservations, 32);
   for LIndex := 0 to High(LObservations) do
@@ -212,25 +217,45 @@ begin
       'Optional candidate trace retains the fitted pool and bounded trial count');
     LSuppressed := False;
     LCapacity := False;
+    LSuppressionCount := 0;
+    LCapacityCount := 0;
+    LPositiveFitCount := 0;
+    LEligibilityRejectCount := 0;
     for LTrial := 0 to High(LTrace.Trials) do
     begin
+      if LTrace.Trials[LTrial].Score > 0 then
+      begin
+        Inc(LPositiveFitCount);
+        if not LTrace.PeakEligible[LTrial] then
+        begin
+          Inc(LEligibilityRejectCount);
+        end;
+      end;
       if LTrace.SuppressedBy[LTrial] >= 0 then
       begin
         Check(LTrace.PeakEligible[LTrial] and
           (LTrace.SelectedRank[LTrial] < 0) and
-          (LTrace.SuppressedBy[LTrial] < Length(LTrace.Trials)),
-          'Suppression names a selected trial after peak eligibility');
+          (LTrace.SuppressedBy[LTrial] < Length(LTrace.Trials)) and
+          (LTrace.SelectedRank[LTrace.SuppressedBy[LTrial]] >= 0),
+          'Suppression names a retained trial after peak eligibility');
         LSuppressed := True;
+        Inc(LSuppressionCount);
       end;
       if LTrace.PeakEligible[LTrial] and
         (LTrace.SelectedRank[LTrial] < 0) and
         (LTrace.SuppressedBy[LTrial] < 0) then
       begin
         LCapacity := True;
+        Inc(LCapacityCount);
       end;
     end;
-    Check(LSuppressed and LCapacity,
-      'Authored phase hierarchy exposes suppression and capacity separately');
+    Check(LSuppressed and LCapacity and
+      (Length(LAnalysis.Candidates) = LLimit) and
+      (LSuppressionCount > 0) and (LCapacityCount > 0),
+      'Authored phase hierarchy exposes named suppression and pool capacity separately');
+    WriteLn(Format('Trace taxonomy max_candidates=%d fitted_positive=%d local_peak_reject=%d suppressed=%d capacity=%d retained=%d',
+      [LLimit, LPositiveFitCount, LEligibilityRejectCount,
+       LSuppressionCount, LCapacityCount, Length(LAnalysis.Candidates)]));
     for LChoice := 0 to High(LAnalysis.Candidates) do
     begin
       LRankMatches := 0;
@@ -269,6 +294,24 @@ begin
     Check(LFast and LHalf and LDouble and LPhaseZero and LPhaseHalf,
       'True fast, half/double and competing phases remain available');
   end;
+  LOptions := DefaultBeatGridOptions;
+  LInspected := InspectBeatGridCandidates(LObservations, 48000, 432000,
+    LOptions, LTrace);
+  LHasEligibilityRejection := False;
+  for LTrial := 0 to High(LTrace.Trials) do
+  begin
+    if (LTrace.Trials[LTrial].Score > 0) and
+      not LTrace.PeakEligible[LTrial] and
+      (LTrace.SelectedRank[LTrial] < 0) and
+      (LTrace.SuppressedBy[LTrial] < 0) then
+    begin
+      LHasEligibilityRejection := True;
+      Break;
+    end;
+  end;
+  Check(LHasEligibilityRejection,
+    'Positive fitted proposal rejected by the native local-peak eligibility gate');
+
   LObservations := nil;
   LAnalysis := EstimateBeatGrids(LObservations, 48000, 432000,
     DefaultBeatGridOptions);
@@ -277,7 +320,7 @@ begin
     DefaultBeatGridOptions, LTrace);
   Check((Length(LInspected.Candidates) = 0) and
     (Length(LTrace.Trials) = 0),
-    'Trace of an empty source cannot invent fitted pulses');
+    'Empty admitted-observation input creates no trial; source absence is not inferred');
   SetLength(LObservations, 3);
   for LIndex := 0 to High(LObservations) do
   begin
@@ -291,8 +334,30 @@ begin
     DefaultBeatGridOptions, LTrace);
   Check((Length(LInspected.Candidates) = 0) and
     (Length(LTrace.Trials) = 0),
-    'Trace preserves the insufficient-observation boundary');
-  WriteLn('Beat levels: fast, half/double, phase and insufficient evidence pass');
+    'Three admitted onsets stop before fitting as insufficient evidence');
+
+  SetLength(LObservations, 4);
+  for LIndex := 0 to High(LObservations) do
+  begin
+    LObservations[LIndex].Frame := 4800 + 100 * LIndex;
+    LObservations[LIndex].Weight := 1;
+  end;
+  LInspected := InspectBeatGridCandidates(LObservations, 48000, 432000,
+    DefaultBeatGridOptions, LTrace);
+  Check((Length(LInspected.Candidates) = 0) and
+    (Length(LTrace.Trials) = 1602),
+    'Four clustered admitted onsets evaluate trials without a fitted proposal');
+  for LTrial := 0 to High(LTrace.Trials) do
+  begin
+    Check((LTrace.Trials[LTrial].Score = 0) and
+      not LTrace.PeakEligible[LTrial] and
+      (LTrace.SelectedRank[LTrial] < 0) and
+      (LTrace.SuppressedBy[LTrial] < 0),
+      'No-proposal trace remains distinct from post-fit eligibility, suppression and capacity');
+  end;
+  WriteLn(Format('Trace taxonomy empty_admitted=0 three_event_trials=0 clustered_four_trials=%d fitted_positive=0 candidates=0',
+    [Length(LTrace.Trials)]));
+  WriteLn('Beat levels: alternatives, no-admission, insufficient, no-fit, eligibility, suppression and capacity pass');
 end;
 
 procedure Run;
