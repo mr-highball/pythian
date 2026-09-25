@@ -1,0 +1,90 @@
+# NS-3_labeling_01 — Build a durable Pascal audio-label catalog
+
+[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-3)
+
+**Description:**
+
+Deliver the native Pascal source, proposal, review and export service for an
+operator-authored WAV training/reference catalog. The agent prepares source
+WAVs and an inbox manifest; the operator can import all available tracks into
+a durable catalog. Pythian's inferred events are **unreviewed suggestions**,
+never acoustic truth or training labels merely because they were generated.
+The [pas2js workbench](NS-6_authoring_01.md) owns the operator interface.
+
+North star: NS-3. Outcome owner: WAV-03-LABELING.
+Completion credit: 2 goal percentage points (0.50 overall points), assigned
+from the 4 unearned points of [NS-3_notes_03](NS-3_notes_03.md). That task retains
+2 points and all of its original phrase and inferred-event criteria. The
+accepted [WFC bridge](DONE/NS-3_notes_06.md) retains its earlier 1 point;
+the original 5-point allocation is now 1 + 2 + 2, with no new credit.
+Credit is earned only when every acceptance criterion and the task-flow
+completion requirements pass.
+
+Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../BEAT-GRIDS.md) ·
+[shared evaluation](../EVALUATION-OPERATOR.md) · [recorded source audit](NS-3_tempo_04.md).
+
+**Acceptance Criteria:**
+
+- Define a versioned, extensible label contract with original WAV SHA-256,
+  sample rate, integer source-frame half-open spans, source/group identity,
+  provenance/license, label type/value, reviewer, status and revision. Cover
+  at least beats/downbeats, note spans/pitch, audible instrument/rest/unknown,
+  part or source roles, phrase/section spans and user-defined style preferences;
+  later label types may use versioned extensions. Keep
+  Pythian proposals, operator-approved labels, rejected proposals and unknown
+  intervals distinct. No inferred label is silently promoted to reviewed.
+- Provide a native FPC inbox/import path for multiple agent-prepared WAVs and
+  manifests. Hash and validate each original, deduplicate by identity, preserve
+  durable source assets outside disposable `build/`, and expose bounded
+  waveform summaries and region audio without loading a multi-hour recording
+  into memory. The operator can import all prepared tracks in one action;
+  unsupported WAV geometry fails per track without losing successful imports.
+  A manifest may declare synchronized stems on one source clock, but unrelated
+  recordings must never be silently aligned.
+- Run only maintained Pascal analysis/inference to create optional proposals
+  for supported label types, retaining analyzer/model/policy identity and
+  source-frame evidence. Unsupported dimensions stay unproposed or `unknown`;
+  do not execute TensorFlow, ONNX, HDF5 or other inference runtimes. Keep the
+  portable `pythian` core independent of the service and browser.
+- Persist review edits as an auditable, reversible history with bounded writes,
+  revision/conflict checks, source-hash checks and failure-safe publication.
+  Support approval, rejection, new labels, boundary/value edits and explicit
+  uncertainty. The native API must allow a blind evaluation review that hides
+  Pythian's proposals until the operator commits a label.
+- Export a deterministic, versioned catalog packet consumable by Pascal
+  training and evaluation tools: only reviewed labels enter the selected
+  training/reference split, unknowns remain unknown, and source-group
+  train/development/evaluation separation rejects leakage. Retain original
+  source hashes, coordinates, review history and policy identity; replay and
+  re-import the packet without changing its meaning. Do not write personal
+  style-source labels into tracked corpus Markdown files. Do not bundle source
+  audio in an export by default; carry usage/provenance restrictions explicitly.
+- Expose a bounded local HTTP API for the workbench's inbox, catalog,
+  waveform/audio regions, proposals, reviews and exports. Bind to loopback by
+  default; any LAN access needs an explicit opt-in and access control. Restrict
+  paths to the configured roots. Use the pinned WFC/Phanes Pascal static-server
+  pattern only as a reference where useful; preserve copied notices and
+  provenance, and do not edit dependency source in this checkout.
+- Pass focused checked stable Win32/Win64 service, round-trip and failure
+  checks, including multi-track import, duplicate/stale source, large-WAV
+  bounded work, conflicting edit, rejected write and group-leak prevention.
+  Exercise at least one real source-bound proposal-to-reviewed packet without
+  claiming Pythian's suggestion is an acoustic label.
+
+**Blockers**
+
+- [NS-3_validation_01.md — DONE](DONE/NS-3_validation_01.md)
+- [NS-3_validation_02.md — DONE](DONE/NS-3_validation_02.md)
+
+**Dev Notes:**
+
+- 2026-09-25 user-directed gap: publisher labels have not supplied a defensible
+  generic same-recording instrument rest at the required exact windows. This
+  catalog creates a controlled path for human-authored evidence and reusable
+  training data. It does not itself supply a reviewed rest, a successful beat
+  challenge, a corpus or task credit. Source files imported for authoring must
+  be durable and separately accounted for so routine build cleanup cannot
+  remove the catalog.
+- The checked local pas2js and FPC development commands report 3.3.1. This
+  establishes tool availability, not a passing application build; stable native
+  server targets and actual browser behavior remain acceptance work.

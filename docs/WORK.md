@@ -13,6 +13,33 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## User-authored recorded-label workbench — 2026-09-25
+
+The bounded publisher search did not find same-recording, exact-window
+no-instrument labels suitable for the current presence gate. The user chose
+to author reviewed training/reference data in a Pascal/pas2js web workbench:
+the agent prepares WAVs; a native Pascal service imports all prepared tracks,
+runs current Pythian analysis and stores **unreviewed** proposals; the operator
+listens, changes/approves/rejects labels, and builds a durable catalog. A
+blind held-out mode must hide model suggestions until a label is committed.
+The browser renders waveform and review controls; inference and durable writes
+remain native Pascal. A local server is appropriate for multi-hour WAV region
+streaming and persistent edits; the pinned WFC server used by Phanes is a
+reference, not a new dependency of the portable core. The catalog must live
+outside disposable `build/` and export only reviewed, source-group-separated
+labels to training/evaluation consumers.
+
+New open [NS-3_labeling_01](TODO/NS-3_labeling_01.md) and
+[NS-6_authoring_01](TODO/NS-6_authoring_01.md) own those two deliverables.
+Their **+2 NS-3 / +4 NS-6** goal-point allocations come from the still-open
+[phrase](TODO/NS-3_notes_03.md) and [final delivery](TODO/NS-6_delivery_03.md)
+tasks, which retain all original acceptance criteria and **+2 NS-3 / +8
+NS-6** points. This planning change earns no credit: overall completion stays
+**70.20%**, now **38 open / 27 DONE**. The operator authoring path does not
+itself supply the missing rest or accept Pythian predictions as truth. The
+existing cross-task notification threshold remains 20 pending listening
+items; the user can initiate catalog review whenever the workbench is usable.
+
 ## Independent physical-beat search and tracker capacity — 2026-09-25
 
 Following the user's request to find the missing source evidence, ASAP v1.1

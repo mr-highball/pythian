@@ -7,7 +7,10 @@
 Deliver current source packages and reproducible examples for the accepted synthesis, WAV learning, semantic generation and three-style blend workflow.
 
 North star: NS-6. Outcome owner: WAV-05-DELIVERY.
-Completion credit: 12 goal percentage points (0.60 overall points).
+Completion credit: 8 goal percentage points (0.40 overall points), after
+assigning 4 of its original 12 unearned points to the
+[pas2js annotation workbench](NS-6_authoring_01.md). Final workflow packaging
+retains every acceptance criterion below; the 12-point total is unchanged.
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [PACKAGING](../PACKAGING.md) · [packaging/README](../../packaging/README.md) · [PROVENANCE](../PROVENANCE.md).
@@ -31,12 +34,19 @@ remains existing delivery scope, not extra completion credit.
 **Blockers**
 
 - [NS-6_delivery_02.md](DONE/NS-6_delivery_02.md)
+- [NS-6_authoring_01.md](NS-6_authoring_01.md)
 - [NS-3_validation_02.md](DONE/NS-3_validation_02.md)
 - [NS-4_integration_01.md](NS-4_integration_01.md)
 - [NS-5_blends_01.md](NS-5_blends_01.md)
 
 **Dev Notes:**
 
+- 2026-09-25 the user-required Pascal/pas2js annotation workbench is split as
+  an independently usable tool before final package verification. This task
+  retains accepted-workflow packaging and remote-consumer checks, including
+  the workbench's native service and compiled browser assets. The original
+  +12 NS-6 points are now +4 authoring and +8 final delivery; no credit is
+  earned by task creation.
 - Integration follow-up: the former external-runtime adapter was Win64-only and is no longer supported. Final packaging must exercise the accepted Pascal-only producer on the declared target matrix; private cached observations cannot replace it. See [target contract](../CONSUMER-CONTRACT.md#compiler-target-and-dependency-scope).
 
 - The [earlier native checkpoint](DONE/NS-6_delivery_02.md) covers its frozen source revision. Its Linux artifact-content inspection was limited by an unauthenticated-download 401; retain that evidence boundary when qualifying final packages.

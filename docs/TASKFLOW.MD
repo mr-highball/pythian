@@ -47,6 +47,15 @@ after recording the verdict. Continue independent engineering and task selection
 while the user's listening time is unavailable. A queued clip is evidence to
 review, not acceptance or earned task credit.
 
+The user may initiate catalog authoring at any time; the 20-item threshold
+governs our notifications, not access to the new operator workbench. Keep
+Pythian's unreviewed proposals separate from operator-approved labels and
+hide proposals during blind evaluation review. Store the reviewed catalog in
+a durable user-configured root outside disposable `build/`; explicit exports
+must preserve source identity and group isolation. See the
+[Pascal catalog](TODO/NS-3_labeling_01.md) and
+[pas2js workbench](TODO/NS-6_authoring_01.md) tasks.
+
 NS-1's accepted extraction/independence baseline is already complete. Do not
 manufacture historical DONE files or repeat completed work to populate folders.
 Core independence, Pascal ownership, retained WFC boundaries, complete notices,

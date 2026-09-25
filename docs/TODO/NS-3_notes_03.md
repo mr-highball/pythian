@@ -7,9 +7,11 @@
 Freeze combined pitch/presence/boundary inference, accept supported independent recordings and use their admitted events in the saved learner and actual WFC generation.
 
 North star: NS-3. Outcome owner: WAV-03-PHRASES.
-Completion credit: 4 goal percentage points (1.00 overall points), after
+Completion credit: 2 goal percentage points (0.50 overall points), after
 assigning 1 of its original 5 unearned points to the generic admitted-event
-[WFC bridge](DONE/NS-3_notes_06.md).
+[WFC bridge](DONE/NS-3_notes_06.md) and 2 to the recorded
+[annotation catalog](NS-3_labeling_01.md). All phrase and inferred-event
+criteria below remain with this task.
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [PITCH](../PITCH.md) · [WAVE-STYLE](../WAVE-STYLE.md).
@@ -37,6 +39,11 @@ Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [PITCH](../PI
 
 **Dev Notes:**
 
+- 2026-09-25 user-directed annotation gap allocation: original +5 NS-3
+  points now map to +1 accepted WFC bridge, +2 annotation catalog and +2
+  independent phrase acceptance. No recorded threshold, held-out protection,
+  inferred-event or listening criterion was removed; task authoring earns no
+  credit.
 - 2026-09-25 the reusable admitted-event-to-WFC bridge was split into
   [NS-3_notes_06](DONE/NS-3_notes_06.md) for an independently checkable,
   reference-exercised result. This task retains the recorded precision,

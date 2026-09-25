@@ -12,7 +12,7 @@ Phanes, then expanded into a fundamental synthesis and audio learning toolkit.
 | Language | Delphi mode Pascal, standard RTL/FCL, two spaces, UTF-8, LF |
 | Compiler | FPC 3.2.2 stable baseline and 3.3.1 development compiler; i386-win32 and x86_64-win64 evidence scoped in [delivery](docs/PACKAGING.md) |
 | Initial host | Windows; portable core with no Windows units |
-| Browser / CGE / WASM | No application target selected; no core dependency |
+| Browser / CGE / WASM | Optional audio-label operator application selected: pas2js browser UI with native Pascal service; portable core has no browser or server dependency. CGE/WASM remain unselected |
 | Build | `./tools/build.ps1` (checked native fixtures and command-line tools) |
 | CI | [Native workflow](.github/workflows/native.yml), Ubuntu 24.04 / FPC 3.2.2; [first remote run passed](https://github.com/mr-highball/pythian/actions/runs/35557200115) at `0ecfe34` |
 | Outputs | `build/<compiler>-<cpu>-<os>/` |
