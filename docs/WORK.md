@@ -13463,3 +13463,27 @@ The stopped `NS-3_notes_05` source route stays stopped. The remaining
 listener item was created. The cross-task Pythian listening queue remains
 **1/20**, and the next work should follow the task-flow prerequisite order
 using a genuinely criterion-closing source or core task.
+
+## RWC presence source screen — 2026-09-25
+
+A task-graph review found no currently ready, fully closable Pascal coding
+criterion without new source evidence or the queued WFC composition listening
+verdict. The closest musical checkpoint remains `NS-4_composition_02`'s
+existing `5.wav`; retain it in the cumulative **1/20** queue rather than
+generating seed variants.
+
+One changed source design was screened for `NS-3_notes_05`: RWC 2.0's
+[audio release](https://zenodo.org/records/18656623) and
+[curated annotation repository](https://github.com/rwc-music/rwc-annotations)
+bind recorded classical pieces to manually marked music starts. A 1-byte
+HTTP range probe established that the 2,966,354,301-byte classical ZIP allows
+selected-member acquisition; no source WAV was acquired.
+The published `audio_start` field means start of music, not independently
+reviewed absence of any audible instrument in a fixed earlier window.
+`pythian.presence` requires that exact same-clip no-instrument reference and
+cannot set `ReferenceReviewed=True` from a timing annotation. Stop before
+download or scoring; do not turn this into another metadata-only rest search.
+The open source/decision criterion, **70.05%** milestone ledger and **37 open /
+26 DONE** count are unchanged. Next useful work needs a genuinely qualified
+exact-window positive/rest source or the user's eventual accumulated listening
+batch; the 20-item review threshold remains in force.

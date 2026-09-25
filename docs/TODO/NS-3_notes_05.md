@@ -75,6 +75,22 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-25 RWC 2.0 read-only source screen stopped before WAV acquisition or
+  scoring. The [audio release](https://zenodo.org/records/18656623) pairs with
+  [curated metadata](https://github.com/rwc-music/rwc-annotations) that manually
+  marks the start of music. Two different-ensemble classical recordings have
+  pre-music intervals long enough for proposed 250-ms windows. The annotation
+  declares *music onset*, not an exact reviewed absence of audible instruments
+  in either window; publisher metadata alone cannot set this task's
+  `ReferenceReviewed=True`. Full-mix music after the boundary also does not
+  independently label an exact audible instrument-positive window.
+  A bounded HTTP range probe confirmed the 2,966,354,301-byte archive supports
+  member selection, but acquired only one probe byte and opened no audio.
+  Stop this packet at the semantic label gate. Revisit
+  only with an independent exact-window acoustic review that meets the
+  maintained same-clip reference contract; do not download the multi-gigabyte
+  archive to infer a rest from `audio_start`. No criterion or credit changes.
+
 - 2026-09-25 fixed-gain/manual-annotation source route stopped: the official
   [Aalto isolated orchestral tracks](https://research.cs.aalto.fi/acoustics/virtual-acoustics/research/acoustic-measurement-and-analysis/85-anechoic-recordings.html)
   share gain settings, and [PHENICX](https://zenodo.org/records/840025)
