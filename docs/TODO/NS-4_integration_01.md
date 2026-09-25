@@ -11,7 +11,7 @@ Completion credit: 1 goal percentage point (0.15 overall points), after
 reallocating 2 original unearned NS-4 points between
 [NS-4_note-events_01](DONE/NS-4_note-events_01.md) and
 [NS-4_composition_01](DONE/NS-4_composition_01.md), and one further unearned
-point to the distinct [core WFC composition task](NS-4_composition_02.md).
+point to the distinct [core WFC composition task](DONE/NS-4_composition_02.md).
 The four tasks retain the original 4 NS-4 points / 0.60 overall points; no new
 credit was created. This recorded workflow retains every criterion below.
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.

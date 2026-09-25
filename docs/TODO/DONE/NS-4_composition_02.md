@@ -1,13 +1,13 @@
 # NS-4_composition_02 — Compose with a WFC-selected harmony path
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-4)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-4)
 
 **Description:**
 
 Generate a substantial original two-part passage in which an actual Pascal-owned
 WFC pass chooses the harmony path and the portable composer projects that path
 into fresh note events. This closes the core WFC composition gap exposed by the
-accepted [source-free composer](DONE/NS-4_composition_01.md), whose coherent
+accepted [source-free composer](NS-4_composition_01.md), whose coherent
 passages use seeded choices and authored rules but no WFC model. It does not
 claim that the harmony was learned from a recording or that a personal genre
 style has been learned.
@@ -15,20 +15,57 @@ style has been learned.
 North star: NS-4. Outcome owner: WAV-04-INTEGRATION, core WFC composition.
 Completion credit: 1 NS-4 goal percentage point (0.15 overall points),
 transferred from the unearned allocation of
-[NS-4_integration_01](NS-4_integration_01.md). The recorded integration task
-retains its full acceptance criteria and 1 NS-4 point. Total outstanding NS-4
-credit remains 2 points (0.30 overall).
+[NS-4_integration_01](../NS-4_integration_01.md). The recorded integration task
+retains its full acceptance criteria and 1 NS-4 point. At allocation, the two
+tasks held 2 open NS-4 points (0.30 overall); accepting this task leaves one.
 Credit is earned only when every acceptance criterion and the task-flow
 completion requirements pass.
 
-Starting evidence: [source-free composition](DONE/NS-4_composition_01.md),
-[bounded WFC composition contract](../WFC-COMPOSITION.md),
-[bounded WFC token generation](../../adapters/wfc/pythian.wfc.generation.pas),
+Starting evidence: [source-free composition](NS-4_composition_01.md),
+[bounded WFC composition contract](../../WFC-COMPOSITION.md),
+[bounded WFC token generation](../../../adapters/wfc/pythian.wfc.generation.pas),
 and the stopped form-conditioned candidate recorded in the composition task's
 Dev Notes. The earlier beat-tagged token path failed at its first WFC solve
 because its initial tokens required a BOS state excluded by fragment extent.
 This task uses untagged chord-function tokens and checks endpoint/path
 reachability before a solve; it must not retune that stopped candidate.
+
+**Completion evidence — 2026-09-25:** The maintained Pascal
+[`pythian.wfc.longform`](../../../tools/pythian.wfc.longform.lpr) consumer
+hash-binds the eight first-party chord-only outlines (source SHA-256
+`ddb0bb188d350e7dd0e15ef00d07296e66e921f72d864a1ce5e39a213e5ab139`),
+checks exact 144-position reachability in 21,606 work units, then solves one
+order-2 open whole path at the frozen seed 1731. Model and token SHA-256s are
+`37790abbc7c7fec4685f4c8b23b30e4f7b8c2b4ba4d0698555288f15cce05343`
+and `c41ced8a1727d3f050be7d83b7664a2040d85b79c2571fb421f199ba21fa1299`.
+All nine aligned 16-bar blocks differ from each other and every complete
+source; each has at least two source-union-novel aligned four-bar phrases.
+The earlier frozen 16-bar caller path also differs from the fixed source-free
+schedule, changes both parts, and has checked bounded reachability and replay.
+
+The portable [`pythian.music.compose.longform`](../../../src/pythian.music.compose.longform.pas)
+unit owns 541 notes across nine authored form spans and one exact 5:20 clock.
+It accepts a caller chord path without importing WFC; the chord sources do not
+contain melody, rhythm, arrangement or style. Checked FPC 3.2.2 Win32/Win64
+replays yielded the same 56,448,088-byte stereo PCM16 WAV SHA-256
+`fa43350c05e4948d5b2bbcfffa481a738fb2d8196d03a3b0936abc69a0818757`,
+with peak 0.072342089 and maximum adjacent note-end jump 0.001617442 below
+the declared 0.005 limit. Salty Boi's checked Win64 QA found zero leaks on
+success and on wrong-source/existing-output rejection; neither leaves a
+temporary WAV, and existing-output rejection preserves that file. The
+unchanged source-free composer retains its previously pinned seed-1731/2731
+bytes. Run from the root with
+`pythian.wfc.longform.exe examples/wfc-chord-sources.txt OUTPUT.wav` after the
+WFC build hook in `tools/build.ps1`.
+
+The user listened to the **full** `build/feedback/6.wav` and, knowing the
+training chords, judged it a unique composed piece, promising and coherent in
+melody, harmony, timing and ending. The simple sound palette is from the
+current authored synth voices, while the small chord set limits learned
+harmony; no recorded-WAV learning,
+five-minute form learning or genre-style acceptance is claimed. All five
+criteria pass at this bounded core scope. This earns +1 NS-4 goal point / +0.15
+overall: NS-4 rises from 98% to 99%, and overall from 70.05% to 70.20%.
 
 **Acceptance Criteria:**
 
@@ -67,11 +104,17 @@ reachability before a solve; it must not retune that stopped candidate.
 
 **Blockers**
 
-- [NS-4_composition_01.md — DONE](DONE/NS-4_composition_01.md)
-- [NS-4_note-events_01.md — DONE](DONE/NS-4_note-events_01.md)
+- [NS-4_composition_01.md — DONE](NS-4_composition_01.md)
+- [NS-4_note-events_01.md — DONE](NS-4_note-events_01.md)
 
 **Dev Notes:**
 
+- 2026-09-25 listener verdict on `6.wav`: after hearing the long-form candidate
+  with knowledge of the chord training examples, the user called it a unique
+  composed piece and very promising. The sounds remain simplistic. They
+  confirmed the full 5:20 and coherence of melody, harmony, timing and ending.
+  This accepts the bounded WFC core
+  composition scope; no recorded-style or genre claim follows.
 - 2026-09-25 continuous long-form development candidate: a fresh frozen
   source-hash, seed and 144-bar whole-path policy passed prospective Pascal
   reachability, source/section-copy and 36 aligned four-bar phrase checks.

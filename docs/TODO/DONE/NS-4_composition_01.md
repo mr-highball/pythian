@@ -327,7 +327,7 @@ remain separate work.
   first failed QA submission and unreviewed seed-1 smoke output remain
   development history, not acceptance evidence.
 - 2026-09-25 the accepted source-free result and its original 1-point credit
-  are unchanged. A distinct [WFC-selected harmony passage](../NS-4_composition_02.md)
+  are unchanged. A distinct [WFC-selected harmony passage](NS-4_composition_02.md)
   now owns one of recorded integration's two unearned points; the historical
   statement above that integration retained two points describes this task's
   2026-09-24 completion state. The recorded workflow remains open with its

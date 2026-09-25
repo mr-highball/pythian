@@ -12680,7 +12680,7 @@ accepted `4.wav` remains **newly composed**. That result belongs to the
 source-free Pascal composer and its report explicitly records no WFC model.
 After the stopped beat-source investigation, the next ready core deliverable is
 an actual WFC-selected harmony path projected into a fresh two-part passage.
-The new [composition task](TODO/NS-4_composition_02.md) owns a bounded,
+The new [composition task](TODO/DONE/NS-4_composition_02.md) owns a bounded,
 untagged 16-bar chord-function model, pre-solve reachability and source-union
 novelty gate, checked native replay and a whole-passage listening verdict.
 This changes the representation and endpoint policy from the stopped
@@ -13616,3 +13616,17 @@ A successful checked Win32/Win64 maintained run gives the same exact SHA-256.
 The hash-checked copy is queued as ignored `build/feedback/6.wav`; its
 full-track coherence/novelty verdict is pending, with no task credit yet.
 The authored long form is explicitly separate from what chord-only WFC learned.
+
+The user then heard `build/feedback/6.wav` in light of its training chords and
+called it a **unique composed piece** and **very promising**, while noting that
+its sounds remain simplistic. The simple synth palette is authored; the small
+chord set limits learned harmony. This is the positive
+perceptual novelty evidence missing from the rejected 35.56-second candidate.
+The user confirmed hearing the **full 5:20** and that melody, harmony, timing
+and ending held together despite the simple sounds. This closes the bounded
+core WFC composition acceptance gate; it does not establish learned arrangement
+or genre style. [NS-4_composition_02](TODO/DONE/NS-4_composition_02.md) earns
++1 NS-4 goal point / +0.15 overall. NS-4 is now **99%**, overall **70.20%**,
+with **36 open / 27 DONE** tasks. Recorded-provider integration remains the
+last NS-4 point. The reviewed `6.wav` no longer counts toward the user's
+cross-task pending listening threshold.

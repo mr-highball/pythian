@@ -1,7 +1,7 @@
 # Bounded WFC harmony composition
 
 [Home](../README.md) · [Architecture](ARCHITECTURE.md) ·
-[Task](TODO/NS-4_composition_02.md) · [Work](WORK.md)
+[Task](TODO/DONE/NS-4_composition_02.md) · [Work](WORK.md)
 
 The portable [`pythian.music.compose`](../src/pythian.music.compose.pas)
 accepts a caller-owned 16-bar chord schedule and generates an owned two-part
@@ -59,8 +59,8 @@ the task remains open.
 
 The user heard that short passage as coherent but almost identical to the
 closest rendered source outline, so it **failed the novelty listening gate**.
-The open [composition task](TODO/NS-4_composition_02.md) now tests sustained
-development. The portable [`pythian.music.compose.longform`](../src/pythian.music.compose.longform.pas)
+The accepted [composition task](TODO/DONE/NS-4_composition_02.md) demonstrates
+sustained development. The portable [`pythian.music.compose.longform`](../src/pythian.music.compose.longform.pas)
 accepts a caller-owned 144-bar chord path and projects it into one owned
 two-part, exact-clock sequence. Its nine-span macroform, motifs, rhythm,
 voice leading and dynamics are first-party authored. It never imports WFC.
@@ -85,5 +85,7 @@ The first candidate is 144 bars / 5:20 at the accepted 108-BPM clock. Its
 chord path and arrangement are new under exact comparisons with this small
 source set; the chord sources contain no notes, sections, instrumentation or
 recorded style. The authored macroform is not evidence of a learned five-minute
-form. The user's full-track musical verdict remains necessary before the open
-task earns any credit.
+form. The user heard the full 5:20 and called it a unique, coherent and
+promising composition despite its simple sounds. This accepts the bounded
+chord-informed core composition task; learned arrangement, recorded style and
+genre quality remain separate work.
