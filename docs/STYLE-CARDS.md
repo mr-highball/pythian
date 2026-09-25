@@ -32,11 +32,11 @@ the current learner's output as truth. Freeze trait definitions and bins using
 development references before evaluating untouched material. Corpus coverage and
 independent provider accuracy remain separate acceptance requirements.
 
-| Card | Reference assignment | Required dimensions | Present support |
+| Card | Current preference reference | Required dimensions | Present support |
 | --- | --- | --- | --- |
-| Chillwave | C-early candidate; declared work has an artist chillwave tag | Context, groove, harmony, bass/voice relationships, evolving sound and structure | Bound acoustic observations; edition correspondence and musical annotations pending |
-| Stoner rock | A-early candidate; declared work has an artist stoner-rock tag | Context, groove, harmony, bass/voice relationships, evolving sound and structure | Bound acoustic observations; recording correspondence and musical annotations pending |
-| Lofi | B-middle candidate; declared work appears in a label-described lofi release | Context, groove, harmony, bass/voice relationships, evolving sound and structure | Bound acoustic observations; recording correspondence and musical annotations pending |
+| Chillwave | User-selected complete private mix | Context, groove, harmony, bass/voice relationships, evolving sound and structure | Holistic preference fit and exact WAV identity bound privately; song cuts and timed musical traits pending |
+| Stoner rock | User-selected complete private mix | Context, groove, harmony, bass/voice relationships, evolving sound and structure | Holistic preference fit and exact WAV identity bound privately; song cuts and timed musical traits pending |
+| Lofi | User-selected complete private mix | Context, groove, harmony, bass/voice relationships, evolving sound and structure | Holistic preference fit and exact WAV identity bound privately; song cuts and timed musical traits pending |
 
 For all three, vocals, a particular instrument and a particular key are optional
 unless their recordings establish a narrower declared support requirement.
@@ -47,10 +47,12 @@ is an operator selection, not evidence that a genre was learned.
 
 ## Candidate reference cards
 
-These dated development selections connect the previously audited WAV bytes to
-specific evidence to review. They are **candidate assignments**, not accepted
-genre cards or changes to the frozen inventory's unassigned labels. The chapter
-audit binds a declaration to an excerpt; catalogue agreement supports the declared
+The cards in this section are historical 30-second screens. They are not the
+current preference references in the table above and must not set the three
+style gates. These dated development selections connect previously audited
+WAV bytes to specific evidence to review. They are **candidate assignments**,
+not accepted genre cards or changes to the frozen inventory's unassigned labels.
+The chapter audit binds a declaration to an excerpt; catalogue agreement supports the declared
 work association but does not authenticate the recording or its edition. All
 three candidates retain their original broad family and development exposure.
 The 30-second excerpts served native signal and learning probes. **None has had

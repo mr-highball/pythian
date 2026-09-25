@@ -45,6 +45,11 @@ existing WAV excerpt per intended style to exact bytes, declared work/catalogue
 associations, acoustic observations and explicit missing musical fields. They
 preserve development exposure and unresolved edition/recording correspondence;
 no accepted genre label, independent group or calibrated threshold is inferred.
+Those excerpt cards are historical screens. The current reference assignments
+are the three user-selected complete mixes kept under ignored `build/`, with
+holistic preference fit and exact WAV identities established but no verified
+song cuts or timed musical annotations. Do not treat the old excerpts as the
+user's preference references or publish the private mix identities here.
 
 Retro 2026-09-21: this is the first ready NS-5 deliverable on resumption.
 Reference annotations can be curator supplied or explicitly reviewed; they do
