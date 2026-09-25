@@ -26,6 +26,7 @@ generation. The project is under active construction.
 [Recorded musical passages](docs/PASSAGES.md) ·
 [Coupled learned layers](docs/LAYERS.md) ·
 [Independent learned voices](docs/INDEPENDENT-VOICES.md) ·
+[Bounded WFC harmony composition](docs/WFC-COMPOSITION.md) ·
 [Reusable style performance API](docs/PERFORMANCE.md) ·
 [Reusable style grid API](docs/GRID-STYLE.md) ·
 [Layered style direction](docs/LAYERED-STYLE.md) ·
@@ -84,6 +85,8 @@ The executables accept explicit output paths:
 ```text
 pythian.render OUTPUT.wav
 pythian.compose OUTPUT.wav [SEED]
+pythian.compose OUTPUT.wav SEED "16 CHORD LABELS"
+pythian.wfc.composition OUTPUT.wav SOURCES.txt [SEED]
 pythian.dsp.demo OUTPUT.wav
 pythian.modulation.demo OUTPUT.wav
 pythian.control.curves.demo OUTPUT.wav

@@ -12674,3 +12674,41 @@ an exact nearest signed distance. This is a failed report-field contract, not
 source-pulse evidence or a change to the 6/2/4 support count. The stopped
 report remains unchanged; do not use that field as an exact error measure or
 rerun this source route. The tempo task remains open without credit.
+
+Core WFC composition gap, 2026-09-25: the user's whole-passage verdict on the
+accepted `4.wav` remains **newly composed**. That result belongs to the
+source-free Pascal composer and its report explicitly records no WFC model.
+After the stopped beat-source investigation, the next ready core deliverable is
+an actual WFC-selected harmony path projected into a fresh two-part passage.
+The new [composition task](TODO/NS-4_composition_02.md) owns a bounded,
+untagged 16-bar chord-function model, pre-solve reachability and source-union
+novelty gate, checked native replay and a whole-passage listening verdict.
+This changes the representation and endpoint policy from the stopped
+beat-tagged, motif and full-event composition routes; it does not rerun them.
+One of the two unearned NS-4 points moves from
+[recorded integration](TODO/NS-4_integration_01.md), which retains every
+recorded-provider criterion and one point. NS-4 stays 98%, overall stays
+68.95%, with 37 open / 21 DONE tasks. This planning checkpoint selected an
+independent portable chord-schedule API; it accepted no WFC model, candidate
+or WAV at that time.
+
+First WFC harmony candidate, 2026-09-25: the frozen eight-source order-2
+Pascal graph passed exact whole-path and outside-source reachability with 13
+states. Its one WFC solve selected `C Am F G | C Am Em G | F G F G | F G C C`,
+novel as a complete 16-bar progression and three bars different from the
+accepted composer schedule. Of the four aligned chord phrases, 1, 2 and 4
+match source-union phrases exactly; only phrase 3 is novel. The caller-schedule
+Pascal composer generated 97 events, with unchanged timing and ownership and
+8 bass / 9 melody pitch changes. The 35.56-second PCM16 candidate has zero
+full-scale samples and a passing note-end jump check. Salty Boi's checked
+Win32/Win64 QA reproduced both accepted legacy hashes and the candidate,
+checked invalid-chord failure preservation and found zero leaks. The exact
+source/policy/model/token/WAV hashes and qualification limits are in ignored
+`build/wfc-chord-composition/RESULT.md`. The candidate was first frozen with a
+private Pascal WFC probe; the maintained `pythian.wfc.compose` adapter and
+`pythian.wfc.composition` consumer now bind the same source, model, token,
+event and WAV identities in a one-step checked path. The portable composer
+intentionally cannot attest its caller's model identity. Whole-passage
+listening remains open; `NS-4_composition_02` earns no credit yet. The
+candidate is available as `build/feedback/5.wav` and via the isolated HFS
+folder on LAN port 8085.

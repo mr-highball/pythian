@@ -66,10 +66,10 @@ unless also declared under Blockers; required gaps still follow
 | [NS-1 — Independent Pascal foundation](../MILESTONES.md#ns-1) | 100% | 0 | 0 | 0.00 |
 | [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 100% | 0 | 0 | 0.00 |
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 41% | 16 | 59 | 14.75 |
-| [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 98% | 1 | 2 | 0.30 |
+| [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 98% | 2 | 2 | 0.30 |
 | [NS-5 — Many-hour styles that generate and blend usefully](../MILESTONES.md#ns-5) | 27% | 16 | 73 | 14.60 |
 | [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 72% | 3 | 28 | 1.40 |
-| **Total** | **68.95 weighted points** | **36** | Per-goal credits are not summed across goals | **31.05** |
+| **Total** | **68.95 weighted points** | **37** | Per-goal credits are not summed across goals | **31.05** |
 
 NS-1 is already complete under the accepted extraction scope. Preserve its
 invariants in every applicable task; do not recreate completed extraction work.
@@ -104,7 +104,8 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 
 | Task file and outcome | Goal credit | Overall credit | State |
 | --- | ---: | ---: | --- |
-| [NS-4_integration_01.md](NS-4_integration_01.md) — Deliver the recorded WAV-to-style-to-audio workflow | +2 | +0.30 | TODO |
+| [NS-4_composition_02.md](NS-4_composition_02.md) — Compose with a WFC-selected harmony path | +1 | +0.15 | TODO |
+| [NS-4_integration_01.md](NS-4_integration_01.md) — Deliver the recorded WAV-to-style-to-audio workflow | +1 | +0.15 | TODO |
 
 ### NS-5 — Many-hour styles that generate and blend usefully
 
@@ -168,8 +169,9 @@ learning still depends on accepted note primitives through
 The accepted [source-free composition](DONE/NS-4_composition_01.md) now joins
 the exact joint-event adapter as core evidence. The two frozen passages have
 checked maintained replay and a positive whole-passage verdict; they do not
-establish recorded learning or WFC-composed music. The
-[recorded integration](NS-4_integration_01.md) task still requires its accepted
+establish recorded learning or WFC-composed music. The distinct
+[core WFC composition](NS-4_composition_02.md) task owns that missing musical
+path; [recorded integration](NS-4_integration_01.md) still requires its accepted
 musical providers. The paired GMD source route for
 [beat candidates](NS-3_tempo_04.md) stopped at its frozen onset-coverage gate;
 a different independently attributable pulse source is needed. Recorded note learning
@@ -229,7 +231,7 @@ first accepted genre is predetermined.
 24. [NS-4_layers_04.md — DONE](DONE/NS-4_layers_04.md)
 25. [NS-4_styles_01.md — DONE](DONE/NS-4_styles_01.md)
 26. [NS-4_styles_02.md — DONE](DONE/NS-4_styles_02.md)
-27. [NS-4_note-events_01.md — DONE](DONE/NS-4_note-events_01.md), then [NS-4_composition_01.md — DONE](DONE/NS-4_composition_01.md) and [NS-4_integration_01.md](NS-4_integration_01.md)
+27. [NS-4_note-events_01.md — DONE](DONE/NS-4_note-events_01.md), then [NS-4_composition_01.md — DONE](DONE/NS-4_composition_01.md), [NS-4_composition_02.md](NS-4_composition_02.md) and [NS-4_integration_01.md](NS-4_integration_01.md)
 28. [NS-5_corpus_01.md — DONE](DONE/NS-5_corpus_01.md)
 29. [NS-5_evaluation_01.md](NS-5_evaluation_01.md)
 30. [NS-5_corpus_02.md](NS-5_corpus_02.md)

@@ -73,6 +73,37 @@ begin
   Result := Cardinal(LValue);
 end;
 
+function ParseChordSchedule(const AText: String): TCompositionChordSchedule;
+var
+  LWords: TStringList;
+  I: Integer;
+begin
+  LWords := TStringList.Create;
+  try
+    ExtractStrings([' '], [], PChar(AText), LWords);
+    Require(LWords.Count = SourceFreeCompositionBars,
+      'Chord schedule must contain exactly sixteen labels');
+    for I := 0 to SourceFreeCompositionBars - 1 do
+    begin
+      if LWords[I] = 'C' then
+        Result[I] := ccC
+      else if LWords[I] = 'Am' then
+        Result[I] := ccAm
+      else if LWords[I] = 'F' then
+        Result[I] := ccF
+      else if LWords[I] = 'G' then
+        Result[I] := ccG
+      else if LWords[I] = 'Em' then
+        Result[I] := ccEm
+      else
+        raise EConvertError.CreateFmt('Unknown chord at bar %d: %s',
+          [I, LWords[I]]);
+    end;
+  finally
+    LWords.Free;
+  end;
+end;
+
 procedure InsertJump(var AJumps: TJumpArray; const AJump: TJump);
 var
   LIndex: Integer;
@@ -408,6 +439,7 @@ var
   LOutputPath, LReportPath: String;
   LSeed: Cardinal;
   LComposition: TCompositionScaffoldReport;
+  LSchedule: TCompositionChordSchedule;
   LSequence: TNoteSequence;
   LVoices: TNoteVoices;
   LRender: TNoteRenderReport;
@@ -421,19 +453,26 @@ var
   LPcm, LWav: TAudioBytes;
   LReport: UTF8String;
 begin
-  if (ParamCount < 1) or (ParamCount > 2) then
-    raise EConvertError.Create('Usage: pythian.compose OUTPUT.wav [SEED]');
+  if (ParamCount < 1) or (ParamCount > 3) then
+    raise EConvertError.Create(
+      'Usage: pythian.compose OUTPUT.wav [SEED] ["16 chord labels"]');
   LOutputPath := ExpandFileName(ParamStr(1));
   LReportPath := LOutputPath + '.report.txt';
   LSeed := 1731;
-  if ParamCount = 2 then
+  if ParamCount >= 2 then
     LSeed := ParseSeed(ParamStr(2));
+  if ParamCount = 3 then
+    LSchedule := ParseChordSchedule(ParamStr(3));
   LSequence := nil;
   LRaw := nil;
   LClip := nil;
   LPlan := nil;
   try
-    LSequence := GenerateSourceFreeComposition(LSeed, LComposition);
+    if ParamCount = 3 then
+      LSequence := GenerateCompositionWithChordSchedule(
+        LSchedule, LSeed, LComposition)
+    else
+      LSequence := GenerateSourceFreeComposition(LSeed, LComposition);
     SetLength(LVoices, 2);
     LVoices[0] := DefaultSynthVoice;
     LVoices[0].Gain := 0.12;

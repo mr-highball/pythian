@@ -40,6 +40,9 @@ const
   SourceFreeCompositionTicks = 30720;
 
 type
+  TCompositionChord = (ccC, ccAm, ccF, ccG, ccEm);
+  TCompositionChordSchedule = array[0..15] of TCompositionChord;
+
   TCompositionScaffoldReport = record
     PolicyId: String;
     Seed: Cardinal;
@@ -75,6 +78,15 @@ type
   caller-owned. Report includes explicit lineage, provenance and event rows. }
 function GenerateSourceFreeComposition(const ASeed: Cardinal;
   out AReport: TCompositionScaffoldReport): TNoteSequence;
+{ Build the same bounded two-part passage from a caller-supplied 16-bar chord
+  schedule. Every chord label selects the bass and melody pitch classes for
+  that bar; the last bar must be C for the fixed cadence. Structural failure
+  raises EAudio and returns no sequence. The composer does not inspect how the
+  schedule was produced. }
+function GenerateCompositionWithChordSchedule(
+  const ASchedule: TCompositionChordSchedule; const ASeed: Cardinal;
+  out AReport: TCompositionScaffoldReport): TNoteSequence;
+function DefaultSourceFreeCompositionChordSchedule: TCompositionChordSchedule;
 
 implementation
 
@@ -91,7 +103,7 @@ const
   CMaximumNotes = 128;
 
 type
-  TChord = (chC, chAm, chF, chG, chEm);
+  TChord = TCompositionChord;
 
   TAction = record
     Present: Boolean;
@@ -105,11 +117,11 @@ type
   TPassageActions = array[0..1] of TPartActions;
 
 const
-  CChordSchedule: array[0..15] of TChord = (
-    chC, chAm, chF, chG,
-    chC, chAm, chF, chG,
-    chF, chG, chEm, chAm,
-    chF, chG, chC, chC);
+  CDefaultChordSchedule: TCompositionChordSchedule = (
+    ccC, ccAm, ccF, ccG,
+    ccC, ccAm, ccF, ccG,
+    ccF, ccG, ccEm, ccAm,
+    ccF, ccG, ccC, ccC);
 
   CChordName: array[TChord] of String = ('C', 'Am', 'F', 'G', 'Em');
   CChordRootPc: array[TChord] of Integer = (0, 9, 5, 7, 4);
@@ -131,9 +143,10 @@ begin
   AText := AText + UTF8String(ALine) + #10;
 end;
 
-function ChordAtBeat(const ABeat: Integer): TChord;
+function ChordAtBeat(const ABeat: Integer;
+  const ASchedule: TCompositionChordSchedule): TChord;
 begin
-  Result := CChordSchedule[(ABeat div CBeatsPerBar) mod Length(CChordSchedule)];
+  Result := ASchedule[(ABeat div CBeatsPerBar) mod Length(ASchedule)];
 end;
 
 function ChordPitchClass(const AChord: TChord; const ADegree: Integer): Integer;
@@ -384,6 +397,7 @@ begin
 end;
 
 procedure ProjectPitches(var AActions: TPassageActions;
+  const ASchedule: TCompositionChordSchedule;
   out AConstraintDegreeAdjustments: Integer);
 var
   LBeat: Integer;
@@ -399,7 +413,7 @@ begin
   LPreviousMelody := 67;
   for LBeat := 0 to CBeatsPerPassage - 1 do
   begin
-    LChord := ChordAtBeat(LBeat);
+    LChord := ChordAtBeat(LBeat, ASchedule);
     LAction := AActions[0][LBeat];
     if LAction.Present then
     begin
@@ -521,6 +535,7 @@ begin
 end;
 
 procedure ValidateActions(const AActions: TPassageActions;
+  const ASchedule: TCompositionChordSchedule;
   var AReport: TCompositionScaffoldReport);
 var
   LBeat: Integer;
@@ -546,7 +561,7 @@ begin
   LPreviousMelody := 67;
   for LBeat := 0 to CBeatsPerPassage - 1 do
   begin
-    LChord := ChordAtBeat(LBeat);
+    LChord := ChordAtBeat(LBeat, ASchedule);
     for LPart := 0 to 1 do
     begin
       LAction := AActions[LPart][LBeat];
@@ -674,7 +689,9 @@ begin
   end;
 end;
 
-function BuildLedger(const AActions: TPassageActions; const ASeed: Cardinal): UTF8String;
+function BuildLedger(const AActions: TPassageActions;
+  const ASchedule: TCompositionChordSchedule; const ASeed: Cardinal;
+  const ACallerSchedule: Boolean): UTF8String;
 var
   LBeat: Integer;
   LPart: Integer;
@@ -685,7 +702,15 @@ begin
   Result := '';
   AppendLine(Result, '# contract=' + SourceFreeCompositionPolicyId);
   AppendLine(Result, '# seed=' + IntToStr(ASeed));
-  AppendLine(Result, '# source=first-party-seeded; wfc=none; recordings=none');
+  if ACallerSchedule then
+  begin
+    AppendLine(Result,
+      '# source=first-party-seeded-actions; chord_schedule=caller-supplied; wfc=not-run-in-composer; recordings=none');
+  end
+  else
+  begin
+    AppendLine(Result, '# source=first-party-seeded; wfc=none; recordings=none');
+  end;
   AppendLine(Result, '# ppq=480; tempo_us_per_quarter=555556; half_beat_ticks=240');
   AppendLine(Result, 'beat'#9'bar'#9'chord'#9'part'#9'presence'#9'onset_half'#9+
     'duration_half'#9'degree'#9'pitch'#9'velocity'#9'track'#9'voice'#9'channel'#9+
@@ -703,7 +728,7 @@ begin
           (SourceFreeCompositionPPQ div 2);
         AppendLine(Result, TwoDigits(LBeat) + #9 +
           IntToStr((LBeat div CBeatsPerBar) + 1) + #9 +
-          CChordName[ChordAtBeat(LBeat)] + #9 + PartName(LPart) + #9 +
+          CChordName[ChordAtBeat(LBeat, ASchedule)] + #9 + PartName(LPart) + #9 +
           'attack'#9 + IntToStr(LAction.OffsetHalfBeats) + #9 +
           IntToStr(LAction.DurationHalfBeats) + #9 + IntToStr(LAction.Degree) + #9 +
           IntToStr(LAction.Pitch) + #9 + IntToStr(PartVelocity(LPart)) + #9 +
@@ -714,7 +739,7 @@ begin
       begin
         AppendLine(Result, TwoDigits(LBeat) + #9 +
           IntToStr((LBeat div CBeatsPerBar) + 1) + #9 +
-          CChordName[ChordAtBeat(LBeat)] + #9 + PartName(LPart) + #9 +
+          CChordName[ChordAtBeat(LBeat, ASchedule)] + #9 + PartName(LPart) + #9 +
           'rest'#9'-'#9'-'#9'-'#9'-'#9'-'#9'-'#9'-'#9'-'#9'-'#9'-');
       end;
     end;
@@ -765,7 +790,30 @@ begin
     SourceFreeCompositionTicks, LTempo, LGates);
 end;
 
-procedure BuildReportText(var AReport: TCompositionScaffoldReport);
+function ChordScheduleText(const ASchedule: TCompositionChordSchedule): String;
+var
+  LIndex: Integer;
+begin
+  Result := 'chords=';
+  for LIndex := 0 to High(ASchedule) do
+  begin
+    if LIndex = 0 then
+    begin
+      Result := Result + CChordName[ASchedule[LIndex]];
+    end
+    else if (LIndex mod 4) = 0 then
+    begin
+      Result := Result + ' | ' + CChordName[ASchedule[LIndex]];
+    end
+    else
+    begin
+      Result := Result + ' ' + CChordName[ASchedule[LIndex]];
+    end;
+  end;
+end;
+
+procedure BuildReportText(var AReport: TCompositionScaffoldReport;
+  const ASchedule: TCompositionChordSchedule; const ACallerSchedule: Boolean);
 begin
   AReport.Text := '';
   AppendLine(AReport.Text, 'contract=' + AReport.PolicyId);
@@ -774,7 +822,14 @@ begin
   AppendLine(AReport.Text, 'seed=' + IntToStr(AReport.Seed));
   AppendLine(AReport.Text, 'generator=' + AReport.Generator);
   AppendLine(AReport.Text, 'form=A,A-prime,B,return-cadence');
-  AppendLine(AReport.Text, 'chords=C Am F G | C Am F G | F G Em Am | F G C C');
+  AppendLine(AReport.Text, ChordScheduleText(ASchedule));
+  if ACallerSchedule then
+  begin
+    AppendLine(AReport.Text,
+      'chord_schedule_source=caller-supplied; producer_not_known_to_composer');
+    AppendLine(AReport.Text,
+      'wfc_execution_scope=not_run_by_composer; caller_schedule_origin_unknown');
+  end;
   AppendLine(AReport.Text, 'ppq=' + IntToStr(AReport.PPQ));
   AppendLine(AReport.Text, 'tempo_us_per_quarter=' + IntToStr(AReport.TempoUsPerQuarter));
   AppendLine(AReport.Text, 'bars=' + IntToStr(AReport.BarCount));
@@ -808,7 +863,27 @@ begin
   AppendLine(AReport.Text, 'structural_status=PASS');
 end;
 
-function GenerateSourceFreeComposition(const ASeed: Cardinal;
+procedure ValidateChordSchedule(const ASchedule: TCompositionChordSchedule);
+var
+  LIndex: Integer;
+begin
+  for LIndex := 0 to High(ASchedule) do
+  begin
+    Require((Ord(ASchedule[LIndex]) >= Ord(Low(TCompositionChord))) and
+      (Ord(ASchedule[LIndex]) <= Ord(High(TCompositionChord))),
+      'Chord schedule contains an unsupported chord value');
+  end;
+  Require(ASchedule[15] = ccC,
+    'The final bar of the chord schedule must be C for the fixed cadence');
+end;
+
+function DefaultSourceFreeCompositionChordSchedule: TCompositionChordSchedule;
+begin
+  Result := CDefaultChordSchedule;
+end;
+
+function GenerateWithChordSchedule(const ASchedule: TCompositionChordSchedule;
+  const ASeed: Cardinal; const ACallerSchedule: Boolean;
   out AReport: TCompositionScaffoldReport): TNoteSequence;
 var
   LActions: TPassageActions;
@@ -818,6 +893,7 @@ var
 begin
   Result := nil;
   AReport := Default(TCompositionScaffoldReport);
+  ValidateChordSchedule(ASchedule);
   AReport.PolicyId := SourceFreeCompositionPolicyId;
   AReport.Seed := ASeed;
   AReport.Generator := 'xorshift32(base=A511E9B3,form=C2B2AE35);v1';
@@ -837,10 +913,17 @@ begin
   AReport.CopiedPhraseRunCount := 0;
   AReport.ModelHash := 'not_applicable_no_WFC_model';
   AReport.TokenHash := 'not_applicable_no_WFC_tokens';
+  if ACallerSchedule then
+  begin
+    AReport.Generator := AReport.Generator + ';caller-supplied-chord-schedule';
+    AReport.SourceKind := 'first-party-seeded-actions;caller-supplied-chords';
+    AReport.ModelHash := 'not_reported_by_composer';
+    AReport.TokenHash := 'not_reported_by_composer';
+  end;
   try
     GeneratePassageActions(ASeed, LActions);
-    ProjectPitches(LActions, AReport.MelodyDegreeAdjustments);
-    ValidateActions(LActions, AReport);
+    ProjectPitches(LActions, ASchedule, AReport.MelodyDegreeAdjustments);
+    ValidateActions(LActions, ASchedule, AReport);
     LCount := 0;
     for LPart := 0 to 1 do
     begin
@@ -855,8 +938,9 @@ begin
     Require((LCount > 0) and (LCount <= CMaximumNotes),
       'Seed event count exceeds the bounded note budget');
     AReport.EventCount := LCount;
-    AReport.EventLedger := BuildLedger(LActions, ASeed);
-    BuildReportText(AReport);
+    AReport.EventLedger := BuildLedger(LActions, ASchedule, ASeed,
+      ACallerSchedule);
+    BuildReportText(AReport, ASchedule, ACallerSchedule);
     BuildSequence(LActions, Result);
     Require(Result.NoteCount = LCount,
       'Constructed note sequence differs from the validated event count');
@@ -870,6 +954,20 @@ begin
         ' stopped: ' + E.Message);
     end;
   end;
+end;
+
+function GenerateSourceFreeComposition(const ASeed: Cardinal;
+  out AReport: TCompositionScaffoldReport): TNoteSequence;
+begin
+  Result := GenerateWithChordSchedule(CDefaultChordSchedule, ASeed, False,
+    AReport);
+end;
+
+function GenerateCompositionWithChordSchedule(
+  const ASchedule: TCompositionChordSchedule; const ASeed: Cardinal;
+  out AReport: TCompositionScaffoldReport): TNoteSequence;
+begin
+  Result := GenerateWithChordSchedule(ASchedule, ASeed, True, AReport);
 end;
 
 end.
