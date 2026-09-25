@@ -38,6 +38,8 @@ function CommitCatalogReview(const ACatalogRoot: String;
   const ATransaction: TJSONObject): TJSONObject;
 function ReadCatalogReviewHistory(const ACatalogRoot, AHash: String;
   const AFirstRevision, AMaximumCount: Integer): TJSONObject;
+function ReadCatalogCurrentLabels(const ACatalogRoot, AHash: String;
+  const AStartFrame, AEndFrame: Int64; const AMaximumCount: Integer): TJSONObject;
 
 implementation
 
@@ -47,7 +49,8 @@ uses
   jsonparser,
   pythian.audio,
   pythian.hash,
-  pythian.tools.annotations.catalog;
+  pythian.tools.annotations.catalog,
+  pythian.tools.annotations.proposal;
 
 const
   CMaximumTransactionBytes = 16384;
@@ -375,6 +378,12 @@ begin
   try
     LChange := NormalizeChange(ATransaction.Objects['change'], LTrack);
     try
+      if LChange.Strings['proposal_id'] <> '' then
+      begin
+        Need(CatalogProposalExists(ACatalogRoot, LHash,
+          LChange.Strings['proposal_id']),
+          'Review refers to an unknown proposal');
+      end;
       LReviews := IncludeTrailingPathDelimiter(ExpandFileName(ACatalogRoot)) +
         'reviews';
       LDirectory := ReviewDirectory(ACatalogRoot, LHash);
@@ -461,6 +470,101 @@ begin
     except
       Result.Free;
       raise;
+    end;
+  finally
+    LTrack.Free;
+  end;
+end;
+
+function ReadCatalogCurrentLabels(const ACatalogRoot, AHash: String;
+  const AStartFrame, AEndFrame: Int64; const AMaximumCount: Integer): TJSONObject;
+var
+  LTrack: TJSONObject;
+  LDirectory: String;
+  LRevision: Integer;
+  LIndex: Integer;
+  LPosition: Integer;
+  LStates: TStringList;
+  LEvent: TJSONObject;
+  LChange: TJSONObject;
+  LRow: TJSONObject;
+  LRows: TJSONArray;
+  LId: String;
+begin
+  Need((AMaximumCount > 0) and (AMaximumCount <= 2048),
+    'Current-label page exceeds count bound');
+  LTrack := ReadCatalogTrack(ACatalogRoot, AHash);
+  try
+    Need((AStartFrame >= 0) and (AEndFrame > AStartFrame) and
+      (AEndFrame <= LTrack.Int64s['frame_count']),
+      'Current-label page lies outside source frames');
+    LDirectory := ReviewDirectory(ACatalogRoot, AHash);
+    LRevision := LatestRevision(LDirectory);
+    LStates := TStringList.Create;
+    try
+      LStates.Sorted := True;
+      for LIndex := 1 to LRevision do
+      begin
+        LEvent := ReadEvent(LDirectory, LIndex);
+        try
+          Need(LEvent.Strings['source_sha256'] = AHash,
+            'Review event source differs from current labels');
+          LChange := LEvent.Objects['change'];
+          LId := RequiredText(LChange, 'label_id', 128);
+          LRow := TJSONObject(GetJSON(LChange.AsJSON));
+          try
+            LRow.Add('reviewer', LEvent.Strings['reviewer']);
+            LRow.Add('revision', LIndex);
+            LPosition := LStates.IndexOf(LId);
+            if LPosition >= 0 then
+            begin
+              LStates.Objects[LPosition].Free;
+              LStates.Objects[LPosition] := LRow;
+            end
+            else
+            begin
+              LStates.AddObject(LId, LRow);
+            end;
+            LRow := nil;
+          finally
+            LRow.Free;
+          end;
+        finally
+          LEvent.Free;
+        end;
+      end;
+      Result := TJSONObject.Create;
+      try
+        Result.Add('version', 1);
+        Result.Add('source_sha256', AHash);
+        Result.Add('review_revision', LRevision);
+        Result.Add('start_frame', AStartFrame);
+        Result.Add('end_frame', AEndFrame);
+        LRows := TJSONArray.Create;
+        Result.Add('labels', LRows);
+        for LIndex := 0 to LStates.Count - 1 do
+        begin
+          LRow := TJSONObject(LStates.Objects[LIndex]);
+          if (LRow.Int64s['end_frame'] > AStartFrame) and
+            (LRow.Int64s['start_frame'] < AEndFrame) then
+          begin
+            Need(LRows.Count < AMaximumCount,
+              'Current-label page has too many labels; narrow region');
+            LRows.Add(LRow);
+            LStates.Objects[LIndex] := nil;
+          end;
+        end;
+        Result.Add('count', LRows.Count);
+      except
+        Result.Free;
+        raise;
+      end;
+    finally
+      for LIndex := 0 to LStates.Count - 1 do
+      begin
+        LStates.Objects[LIndex].Free;
+      end;
+      LStates.Free;
     end;
   finally
     LTrack.Free;

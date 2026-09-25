@@ -123,6 +123,41 @@ projection, reviewed export, blind held-out mode or browser review path exists.
 The [catalog task](TODO/NS-3_labeling_01.md) stays open with no credit; overall
 completion remains **70.20%** and the listening queue stays **0/20**.
 
+The long-source and review-history batches still did not close a complete
+catalog criterion. At this two-batch checkpoint, switch from import/ledger
+plumbing to an operator-consumable current-label projection and a separately
+stored, source-bound beat proposal from existing Pascal analysis. Link proposal
+identity during review. The result must remain unreviewed until an explicit
+operator edit; an unsupported or unconvincing analyzer output stays empty or
+unknown. If this bounded proposal path fails, stop it and reassess rather than
+generating plausible-looking labels from the source hash or metadata.
+
+The next batch delivered `current` review projection and `propose-beats` in
+the native catalog CLI. Projection retains the latest event per label identity
+with exact source-frame intersection and visible approved/rejected/uncertain/
+withdrawn status. The separate beat packet runs the maintained Pascal
+`MeasureWaveBeats` path on at most 30 seconds / 2,000,000 source frames, stores
+source-bound onset observations and pulse-frame hypotheses with analyzer,
+model and policy identities, and marks every candidate `unreviewed`. It never
+creates a review event. The review write path now checks a supplied proposal
+ID against an actual stored packet.
+
+On a 15-second development-exposed piano WAV window, stable FPC 3.2.2 Win32
+and Win64 produced 68 observations and eight candidate grids. A Pascal
+comparison checked the same IDs, observation count and candidate frame lists;
+BPM and score differed by less than eight printed decimal places. Source-frame
+coordinates were monotonic and within the packet window. A repeated Win64
+publication was idempotent. A one-second digital-zero control yielded no
+observations or candidates. A fake proposal ID failed before write; an
+artificial `operator-test` rejection of one stored candidate became revision
+five and appeared in `current` alongside a withdrawn note. This demonstrates
+separation and linkage, not beat correctness or a human acoustic review.
+
+The full label-contract and proposal criteria remain open: musical review,
+blind held-out behavior, efficient long-source editing, reviewed packet export,
+HTTP delivery and the pas2js UI still need implementation and validation.
+Overall completion remains **70.20%**, with **0/20** pending listening items.
+
 ## Independent physical-beat search and tracker capacity — 2026-09-25
 
 Following the user's request to find the missing source evidence, ASAP v1.1

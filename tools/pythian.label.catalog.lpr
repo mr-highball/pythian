@@ -33,6 +33,7 @@ uses
   jsonparser,
   pythian.tools.annotations.catalog,
   pythian.tools.annotations.media,
+  pythian.tools.annotations.proposal,
   pythian.tools.annotations.review;
 
 var
@@ -144,6 +145,27 @@ begin
       LReport := ReadCatalogReviewHistory(ParamStr(2), ParamStr(3),
         LFirstRevision, LMaximumCount);
     end
+    else if (ParamCount = 5) and (ParamStr(1) = 'propose-beats') then
+    begin
+      if not TryStrToInt64(ParamStr(4), LStartFrame) or
+        not TryStrToInt64(ParamStr(5), LEndFrame) then
+      begin
+        raise Exception.Create('Invalid beat-proposal frame argument');
+      end;
+      LReport := PublishCatalogBeatProposals(ParamStr(2), ParamStr(3),
+        LStartFrame, LEndFrame);
+    end
+    else if (ParamCount = 6) and (ParamStr(1) = 'current') then
+    begin
+      if not TryStrToInt64(ParamStr(4), LStartFrame) or
+        not TryStrToInt64(ParamStr(5), LEndFrame) or
+        not TryStrToInt(ParamStr(6), LMaximumCount) then
+      begin
+        raise Exception.Create('Invalid current-label page argument');
+      end;
+      LReport := ReadCatalogCurrentLabels(ParamStr(2), ParamStr(3),
+        LStartFrame, LEndFrame, LMaximumCount);
+    end
     else
     begin
       WriteLn(StdErr, 'Usage: pythian.label.catalog import INBOX_DIR CATALOG_DIR');
@@ -152,6 +174,8 @@ begin
       WriteLn(StdErr, '       pythian.label.catalog audio CATALOG_DIR HASH START END OUTPUT.wav');
       WriteLn(StdErr, '       pythian.label.catalog review CATALOG_DIR TRANSACTION.json');
       WriteLn(StdErr, '       pythian.label.catalog history CATALOG_DIR HASH FIRST COUNT');
+      WriteLn(StdErr, '       pythian.label.catalog current CATALOG_DIR HASH START END COUNT');
+      WriteLn(StdErr, '       pythian.label.catalog propose-beats CATALOG_DIR HASH START END');
       ExitCode := 2;
       Exit;
     end;

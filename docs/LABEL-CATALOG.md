@@ -39,6 +39,8 @@ the entire manifest with one command:
 & 'build/<target>/pythian.label.catalog.exe' audio 'D:\path\to\catalog' SOURCE_SHA256 START_FRAME END_FRAME 'D:\path\to\region.wav'
 & 'build/<target>/pythian.label.catalog.exe' review 'D:\path\to\catalog' 'D:\path\to\transaction.json'
 & 'build/<target>/pythian.label.catalog.exe' history 'D:\path\to\catalog' SOURCE_SHA256 FIRST_REVISION COUNT
+& 'build/<target>/pythian.label.catalog.exe' current 'D:\path\to\catalog' SOURCE_SHA256 START_FRAME END_FRAME COUNT
+& 'build/<target>/pythian.label.catalog.exe' propose-beats 'D:\path\to\catalog' SOURCE_SHA256 START_FRAME END_FRAME
 ```
 
 The import report gives each track an `imported`, `duplicate`, or `failed`
@@ -95,11 +97,24 @@ review is an immutable `reviews/<source hash>/<revision>.json` file. The
 before every current CLI edit, which is costly for multi-hour recordings; the
 future persistent service needs a safely retained verification cache.
 
+`current` projects the latest event for each label identity overlapping a
+source-frame window, retaining `rejected`, `uncertain` and `withdrawn` states
+visibly apart from `approved`. It is bounded to 2,048 returned labels per page;
+it currently replays the whole source history for each request.
+
+`propose-beats` analyzes a bounded source window with Pythian's native onset
+and beat-grid path. It stores a separate packet under `proposals/<source hash>/`
+with source-frame observations, candidate pulse frames, analyzer/model/policy
+identity and an explicit `unreviewed` status. The window is at most 30 seconds
+and 2,000,000 frames. These are pulse hypotheses; they do not identify
+downbeats or establish a correct musical beat. A review that names a
+`proposal_id` must now reference a candidate in the stored packet. Import and
+proposal generation never write review events.
+
 These commands exercise storage and schema, not an operator-approved corpus.
 No review event is produced automatically during import. The CLI does not yet
-verify that a supplied `proposal_id` exists, project current label state,
-export reviewed labels, or provide blind evaluation and browser controls.
+export reviewed labels or provide blind evaluation and browser controls.
 
-The native HTTP service and its waveform and region-audio endpoints, proposals,
-review projections, reviewed export, and pas2js interface remain work in the
-linked tasks. Do not train from source records or test review events alone.
+The native HTTP service and its waveform, region-audio, proposal and review
+endpoints, reviewed export, and pas2js interface remain work in the linked
+tasks. Do not train from source records, proposals or test review events alone.

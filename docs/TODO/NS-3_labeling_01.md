@@ -139,3 +139,26 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
   acoustic judgments. Proposal existence, current-label projection, efficient
   multi-hour edit verification, blind mode, reviewed export, service and UI
   remain open. No criterion or task credit is claimed from this batch.
+- Checkpoint after the long-source and review-history batches: neither closes a
+  whole criterion. The next bounded deliverable changes from import/ledger
+  plumbing to an operator-consumable current-label projection plus a separate
+  native beat-proposal packet linked to source-frame evidence and analyzer
+  policy. Validate proposal identity during review. If the existing bounded
+  Pascal beat analyzer cannot produce a defensible packet, stop this proposal
+  path rather than fabricating acoustic labels. Contract and proposal criteria
+  remain open until the two paths are exercised together.
+- A native source-bound packet now uses `MeasureWaveBeats` over at most
+  30 seconds / 2,000,000 frames of an imported WAV. It stores onset observations,
+  candidate pulse frames, analyzer/model/policy IDs and `unreviewed` state apart
+  from reviews. A 15-second development-exposed piano crop produced 68
+  observations and eight candidates. Checked stable Win32/Win64 candidate IDs,
+  observation counts and candidate frame lists agreed; score/BPM differences
+  were below eight printed decimals. Repeating publication on Win64 was
+  idempotent. A one-second digital-zero control emitted zero observations and
+  zero candidates. A nonexistent proposal ID was rejected before review publication;
+  an artificial `operator-test` rejection linked a stored proposal and appeared
+  next to a separately withdrawn note in the bounded current-label projection.
+  These are mechanics, not evidence that any suggested beat or note is correct.
+  Exact musical review, blind mode, efficient multi-hour review verification,
+  deterministic reviewed export, HTTP service and pas2js UI remain open; no
+  criterion or task credit is claimed.
