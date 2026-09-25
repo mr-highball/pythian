@@ -439,6 +439,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'WFC music checks failed' }
     & $compilerPath @adapterArgs 'tools/pythian.wfc.composition.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC composition consumer compilation failed' }
+    & $compilerPath @adapterArgs 'tools/pythian.wfc.longform.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'WFC long-form composition consumer compilation failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.composition.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC composition checks compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.composition$executableSuffix")

@@ -57,8 +57,13 @@ reachability before a solve; it must not retune that stopped candidate.
   work, failure preservation and native audio checks; have Salty Boi review
   the completed implementation with the next eligible QA batch.
 - Obtain the user's whole-passage verdict on melodic, harmonic and rhythmic
-  coherence and whether the result sounds newly composed. Numeric and solver
-  passes alone cannot close this musical criterion.
+  coherence and whether the result sounds newly composed when compared with
+  the rendered source outlines. A coherent passage that sounds like a source
+  replay fails novelty. After the 35.56-second candidate failed this gate,
+  evaluate a sustained roughly five-minute candidate from the same declared
+  chord sources with arrangement changes beyond continuous repetition;
+  report source/section copies and have the user review the whole track.
+  Numeric and solver passes alone cannot close this musical criterion.
 
 **Blockers**
 
@@ -67,6 +72,48 @@ reachability before a solve; it must not retune that stopped candidate.
 
 **Dev Notes:**
 
+- 2026-09-25 continuous long-form development candidate: a fresh frozen
+  source-hash, seed and 144-bar whole-path policy passed prospective Pascal
+  reachability, source/section-copy and 36 aligned four-bar phrase checks.
+  The separate portable 144-bar composer uses an authored nine-span macroform
+  and chord-tone voice leading, preserving the accepted 16-bar API. It made
+  541 owned notes (232 bass, 309 melody) with a five-semitone maximum melody
+  leap; every aligned section has distinct notes, and onset/duration/pitch
+  overlap with all eight direct source renders is reported separately. The
+  streaming native candidate has 14,112,011 frames (5:20), peak 0.072342089,
+  maximum note-end jump 0.001617442 and SHA-256
+  `fa43350c05e4948d5b2bbcfffa481a738fb2d8196d03a3b0936abc69a0818757`.
+  Checked Win32 and Salty Boi's independent Win64 replay matched exactly;
+  Win64 heap tracing reported zero unfreed blocks. The maintained Pascal
+  consumer and build hook now reproduce the same candidate. Focused QA fixed
+  top-level failure cleanup: checked Win64 source-hash and existing-output
+  rejections exit 1 with zero leaks, no temporary WAV and preserved output.
+  The exact WAV is queued as `build/feedback/6.wav`; the user's whole-track
+  novelty/coherence verdict remains open. This is chord-only learning plus
+  authored form, not learned arrangement or style; no task credit yet.
+- 2026-09-25 whole-clip articulation boundary: the first attempt to apply
+  offline stereo articulation to the 5:20 clip stopped at its existing
+  16-million-sample budget before writing a WAV. The repaired path uses
+  native frame-tone streaming, applies the same immutable articulation-plan
+  weights in bounded blocks and writes exact PCM16 frames sequentially. It
+  does not raise the offline buffer limit or change the chord/notes.
+- 2026-09-25 frozen nine-section long-form preflight stopped before audio.
+  Sections 1–8 solved distinct source-novel chord paths and generated 90–101
+  note events, but section 9's fixed seed exhausted the composer's 100,000-node
+  return-recall projection. A diagnostic-only repair exposed the existing
+  failure reason without changing a seed or gate. Do not skip section 9,
+  shorten the track or concatenate the first eight. The private policy and
+  results are in ignored `build/wfc-longform/`. Change the hypothesis to one
+  continuous 144-bar WFC path with a track-spanning form. This remains the
+  existing task's novelty criterion, not a new credit-bearing task.
+- 2026-09-25 source-comparison verdict: after comparing `5.wav` with the
+  closest rendered outline `source-01.wav`, the user confirmed coherence but
+  rejected novelty because the two sound almost identical. The candidate is
+  stopped and earns no NS-4 credit. The user proposed testing the same small
+  chord-source set in a roughly five-minute output: a continuous repeat would
+  fail, while new arrangement across the track could pass both listening
+  questions. This motivates a long-form composition hypothesis; it does not
+  make chord-only training evidence for learned melody, rhythm or style.
 - 2026-09-25 listener follow-up: the user heard `build/feedback/5.wav` and
   described the full passage as coherent in a simplistic way. They asked what
   it was trained on before judging whether it felt newly composed. The source
@@ -74,8 +121,8 @@ reachability before a solve; it must not retune that stopped candidate.
   or NSynth. All eight outlines were rendered with the same Pascal composer
   and seed for direct comparison under ignored `build/feedback/source-01.wav`
   through `source-08.wav`; `source-chords.txt` contains the exact source text.
-  These comparison renders are not eight additional review items. A listener
-  novelty verdict is still pending, so criterion 5 and task credit remain open.
+  These comparison renders are not eight additional review items. The later
+  source-comparison verdict above rejects novelty, so task credit remains open.
 - 2026-09-25 a superseded single-task listening packet attempted source-free
   seed 731 before producing any new WAV and exposed a real A/return melody
   projection failure. The portable composer now retains the accepted greedy

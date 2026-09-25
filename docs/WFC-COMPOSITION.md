@@ -51,5 +51,39 @@ WAV changes 8 bass and 9 melody pitches against the accepted seed-1731
 composition while keeping the same note timing. The producer, consumer and
 WAV identities are in ignored `build/wfc-chord-composition/RESULT.md` and the
 [work record](WORK.md). This is a core recording-free WFC composition exercise,
-not recorded-WAV learning or genre style acceptance. Its musical listening
-verdict and task credit remain pending.
+not recorded-WAV learning or genre style acceptance. The listener accepted its
+simple coherence but rejected novelty against the closest rendered source;
+the task remains open.
+
+## Sustained chord-informed candidate
+
+The user heard that short passage as coherent but almost identical to the
+closest rendered source outline, so it **failed the novelty listening gate**.
+The open [composition task](TODO/NS-4_composition_02.md) now tests sustained
+development. The portable [`pythian.music.compose.longform`](../src/pythian.music.compose.longform.pas)
+accepts a caller-owned 144-bar chord path and projects it into one owned
+two-part, exact-clock sequence. Its nine-span macroform, motifs, rhythm,
+voice leading and dynamics are first-party authored. It never imports WFC.
+
+The maintained [`pythian.wfc.longform`](../tools/pythian.wfc.longform.lpr)
+consumer uses the exact eight first-party chord outlines in
+[`examples/wfc-chord-sources.txt`](../examples/wfc-chord-sources.txt). It learns
+one order-2 open WFC model, checks 144-position reachability, makes one
+seed-1731 whole-path solve and rejects complete source or repeated aligned
+16-bar blocks before projecting notes. It reports every aligned four-bar
+source-phrase mask and direct note-onset/duration/pitch overlap with each
+source outline rendered by the earlier composer. It streams native stereo
+audio through the accepted note renderer, articulation plan and PCM16 writer;
+the whole clip does not need to fit the offline stereo articulation buffer.
+The example source SHA-256 is bound in this consumer. From the repository root:
+
+```text
+build/3.2.2-i386-win32/pythian.wfc.longform.exe examples/wfc-chord-sources.txt OUTPUT.wav
+```
+
+The first candidate is 144 bars / 5:20 at the accepted 108-BPM clock. Its
+chord path and arrangement are new under exact comparisons with this small
+source set; the chord sources contain no notes, sections, instrumentation or
+recorded style. The authored macroform is not evidence of a learned five-minute
+form. The user's full-track musical verdict remains necessary before the open
+task earns any credit.

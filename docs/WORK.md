@@ -13563,3 +13563,56 @@ coherence observation is recorded; their newly-composed-versus-replay verdict
 is pending after comparing sources. `NS-4_composition_02` remains open, the
 cross-task review queue remains one partially reviewed item, and milestone
 credit stays **70.05%**, **37 open / 26 DONE**.
+
+## WFC source-comparison verdict and long-form direction — 2026-09-25
+
+After comparing `5.wav` with `source-01.wav`, the user accepted its simple
+coherence but said the two sound almost identical. This fails the actual
+new-composition listening gate for `NS-4_composition_02`; the earlier numeric
+whole-path novelty did not predict perceptual novelty. No NS-4 credit is earned.
+The user proposed a roughly five-minute generation from the same chord outlines
+to test whether arrangement develops beyond continuous repetition. The task's
+listening criterion now states that longer comparison explicitly, while
+preserving source/section-copy reporting and the user's final verdict. This
+requires a genuinely varied long-form composition, not concatenating the
+35.56-second candidate or calling chord-only examples learned arrangement.
+Milestone credit remains **70.05%**, **37 open / 26 DONE**. The reviewed short
+candidate is no longer a pending listening request; source comparisons remain
+available temporarily for the long-form review.
+
+The first frozen long-form design used nine predetermined 16-bar WFC/composer
+sections. Its checked Pascal preflight produced eight source-novel sections,
+then stopped at fixed section 9 when the portable melody projection exhausted
+its 100,000-node limit. No five-minute WAV was rendered, and no alternate seed
+or truncated track substitutes for the declared run. The private freeze and
+exact section result are under ignored `build/wfc-longform/`. A read-only
+architecture audit identified a stronger next design: one continuous 144-bar
+WFC chord path and portable form across the track. This stays in open
+`NS-4_composition_02`; no new task or credit split is warranted at this point.
+
+The continuous-path replacement has a frozen source hash, one 144-position
+order-2 open WFC solve at seed 1731, and nine authored macroform spans. Its
+checked chord preflight found nine distinct aligned 16-bar blocks, none a
+complete source copy, with at least two source-union-novel aligned four-bar
+phrases per block. The portable `pythian.music.compose.longform` projected
+541 owned notes over one 320.000249-second clock, keeping the accepted 16-bar
+composition bytes intact. Direct Pascal comparisons report onset, duration
+and pitch overlap with all eight source renders; this is limited source-set
+non-reuse evidence, not proof of broad musical novelty.
+
+An offline whole-clip articulation attempt hit its declared stereo sample
+budget before WAV. Native tone streaming plus bounded-block application of
+the same articulation plan then rendered 14,112,011 stereo PCM16 frames.
+Peak is 0.072342089 and maximum adjacent note-end jump is 0.001617442,
+under the frozen 0.005 limit. The WAV SHA-256 is
+`fa43350c05e4948d5b2bbcfffa481a738fb2d8196d03a3b0936abc69a0818757`.
+Checked Win32 private and maintained consumer outputs are byte-identical;
+Salty Boi independently replayed checked Win64 with that exact WAV identity
+and zero unfreed blocks. Focused maintained-consumer QA found that a top-level
+`Halt(1)` bypassed cleanup on failed runs. The handler now returns with
+`ExitCode := 1`; checked Win64 existing-output and wrong-source failures both
+exit 1 with zero leaks, preserve existing output and leave no temporary WAV.
+A successful checked Win32/Win64 maintained run gives the same exact SHA-256.
+The hash-checked copy is queued as ignored `build/feedback/6.wav`; its
+full-track coherence/novelty verdict is pending, with no task credit yet.
+The authored long form is explicitly separate from what chord-only WFC learned.
