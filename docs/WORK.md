@@ -12712,3 +12712,13 @@ intentionally cannot attest its caller's model identity. Whole-passage
 listening remains open; `NS-4_composition_02` earns no credit yet. The
 candidate is available as `build/feedback/5.wav` and via the isolated HFS
 folder on LAN port 8085.
+
+Maintained WFC composition replay gate, 2026-09-25: the checked Win32/Win64
+build now runs `pythian.tests.wfc.composition` in its WFC section. It pins the
+eight-source/model/token/event identities, legal and outside-source
+reachability, the 2,171-work-unit preflight, exact 9/2/0/8 aligned phrase
+source-match counts and all 97 output events. Its invalid-source case preserves
+the previous sequence pointer, every owned gate field and every tempo change.
+Salty Boi's focused checked FPC 3.2.2 Win32/Win64 runs pass with zero unfreed
+blocks. This hardens the maintained boundary but does not replace the pending
+whole-passage verdict or earn task credit.

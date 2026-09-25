@@ -91,3 +91,8 @@ reachability before a solve; it must not retune that stopped candidate.
   adapter and CLI now reproduce the same frozen identities from one Pascal
   command. No listener verdict exists. Do not accept the task or credit from
   this result alone.
+- 2026-09-25 a maintained `pythian.tests.wfc.composition` regression now runs
+  under the WFC build hook and pins the frozen source/model/token/event,
+  reachability and 9/2/0/8 phrase-source identities. Its invalid-source case
+  preserves every note gate and tempo change. Salty Boi's checked Win32/Win64
+  replay passes with zero leaks. The listener criterion is still open.
