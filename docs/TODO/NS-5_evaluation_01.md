@@ -116,6 +116,20 @@ remain open here, with no task credit.
 
 **Dev Notes:**
 
+- 2026-09-25 first lofi chapter correspondence attempt stopped under a
+  pre-scored private policy. The separately published candidate has the same
+  declared title and minute-rounded duration as the mix's first chapter.
+  An independently acquired publisher stream and the mix were compared by
+  checked Pascal at three fixed interior anchors plus a second-chapter
+  control. Coarse RMS-envelope scores were 0.930659, 0.935263 and 0.920374,
+  but the middle anchor's best isolated placement was 24.9 s later than its
+  mix position; the other two had zero offset. This fails the frozen 0.5-s
+  consistency gate. Waveform confirmation did not run. Exact media hashes,
+  policy and zero-leak log are in ignored
+  `build/style-untracked-source/lofi-first-match/`. Stop this candidate without
+  retuning or asserting exact edition/cut identity. The style card's timed
+  musical traits and criteria 1, 2 and 5 remain open; no credit is earned.
+
 - 2026-09-23 progress checkpoint: since focused packet QA closed criterion 4,
   the private three-anchor recording-correspondence screen (the Dev Note below)
   and the source-independent groove control are two consecutive style-card

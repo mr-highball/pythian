@@ -75,6 +75,16 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-25 read-only DEMAND publisher screen stopped before audio. Its
+  [recording notes](https://zenodo.org/records/1227121/files/DEMAND.pdf?download=1)
+  describe 300-second trimmed environmental captures and scene categories,
+  including an office and natural spaces. They do not establish actual
+  no-instrument acoustics at this task's two exact independent rest windows.
+  Only the small publisher PDF was acquired under ignored
+  `build/presence-demand/`; no ZIP, source PCM or presence score followed.
+  The previously declared stop on further speculative rest-source variants
+  remains in force. Criterion 3 and credit stay open.
+
 - 2026-09-25 independent-source preflight stopped before instrument audio.
   The [pOD-set publisher](https://zenodo.org/records/15389653) separates a
   processed instrumental recording and a pedal noise-floor recording, but a

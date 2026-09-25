@@ -13630,3 +13630,29 @@ or genre style. [NS-4_composition_02](TODO/DONE/NS-4_composition_02.md) earns
 with **36 open / 27 DONE** tasks. Recorded-provider integration remains the
 last NS-4 point. The reviewed `6.wav` no longer counts toward the user's
 cross-task pending listening threshold.
+
+## Style-source correspondence and presence-source stops — 2026-09-25
+
+The full 5:20 WFC composition received the user's explicit coherent and
+newly-composed verdict, already credited above. The pending listening queue
+remains **0/20**.
+
+The official DEMAND recording notes supplied only scene-level environmental
+descriptions, not exact instrument-free rest windows. Its small PDF was read
+and the `NS-3_notes_05` route stopped before audio download or scoring.
+
+For `NS-5_evaluation_01`, a first-chapter lofi candidate had the same
+declared title and minute-rounded duration as a publisher posting. A frozen
+Pascal comparison of the user-selected mix with the separately acquired
+publisher stream passed
+strong envelope scores at three anchors, but the middle best placement had
+a +24.9-s offset versus 0 s at the other two. This failed the fixed offset
+gate, so waveform confirmation did not run. The ignored
+`build/style-untracked-source/lofi-first-match/` retains exact identities,
+policy and score. Do not treat the chapter cut or edition as independently
+verified. Salty Boi's focused QA confirmed the stopped gate, zero leaks,
+source identities and scope. This task earns no credit; overall completion
+stays **70.20%**,
+with **36 open / 27 DONE**. Further metadata-only or retuned source variants
+would repeat a stopped route; the musical-trait and independent-source gaps
+remain explicit in TODO.
