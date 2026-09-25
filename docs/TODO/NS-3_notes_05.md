@@ -75,6 +75,15 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-25 DEMAND nature-noise source screen stopped before acquisition.
+  The [publisher record](https://zenodo.org/records/1227121) and its
+  [source description](https://zenodo.org/records/1227121/files/DEMAND.pdf?download=1)
+  identify NFIELD and NRIVER as environmental recordings, but do not certify
+  exact-window generic absence of audible instruments. Mixing a reviewed
+  instrument stem over an unreviewed scene would inherit that unknown rest
+  label; a publisher scene name is not an acoustic review. No archive, PCM,
+  scorer, acceptance criterion or credit was produced. Resume this route only
+  if an independent exact-window no-instrument review exists before scoring.
 - 2026-09-25 a read-only [MAESTRO v3.0](https://magenta.tensorflow.org/datasets/maestro)
   source check stopped before metadata or audio acquisition. Its publisher
   documents paired piano audio/MIDI, pedal controls and about 3-ms alignment,
