@@ -157,6 +157,13 @@ The full label-contract and proposal criteria remain open: musical review,
 blind held-out behavior, efficient long-source editing, reviewed packet export,
 HTTP delivery and the pas2js UI still need implementation and validation.
 Overall completion remains **70.20%**, with **0/20** pending listening items.
+The next deliverable is the loopback native HTTP consumer of the existing
+catalog, waveform/audio, proposal and review APIs. Its evidence is bounded
+GET/POST behavior on a real imported source, revision-conflict preservation
+and no path escape; LAN access remains disabled until authentication is
+implemented. Stop that service batch if the chosen FPC server cannot enforce
+those bounds, then revise the host implementation rather than exposing the
+catalog through an unauthenticated LAN binding.
 
 ## Independent physical-beat search and tracker capacity — 2026-09-25
 

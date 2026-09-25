@@ -162,3 +162,8 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
   Exact musical review, blind mode, efficient multi-hour review verification,
   deterministic reviewed export, HTTP service and pas2js UI remain open; no
   criterion or task credit is claimed.
+- Next batch: bind the existing native catalog APIs to a loopback-only HTTP
+  service with bounded request/response work, configured roots and source path
+  containment. Validate real GET/POST requests, a rejected stale revision and
+  no path escape before advancing the browser. Keep LAN unavailable until
+  authentication exists.
