@@ -13264,9 +13264,10 @@ correction expected 48 kHz in both fixed files with all windows and thresholds
 unchanged. The authenticated performance WAV instead declares **44.1 kHz**;
 this second geometry gate also stopped before PCM or presence scoring, with
 zero leaks. Both policies, checker, logs and stop record remain under ignored
-`build/anechoic-presence-source/`. The two unneeded WAVs (69,728,592 bytes)
-also remain there because automatic approval review rejected their deletion;
-they are candidates for the next authorized artifact cleanup.
+`build/anechoic-presence-source/`. At this stopped checkpoint, the two WAVs
+(69,728,592 bytes) remained because automatic approval review rejected their
+deletion; they were then considered cleanup candidates. The later
+reassessment below supersedes that disposition.
 
 This source route closes no criterion in [NS-3_notes_05](TODO/NS-3_notes_05.md).
 Do not resample or retune its frozen format/window gate again. The task still needs an
@@ -13274,3 +13275,40 @@ independently supported exact no-instrument interval and source-disjoint
 recorded cases; absence of a score or a publisher label alone remains
 `unknown`. No credit changes: **69.85%**, **37 open / 25 DONE**. The Pythian
 listening queue remains **1/20**.
+
+## Presence source-contract reassessment — 2026-09-25
+
+The two prior anechoic gates stopped solely at an assumed shared sample rate,
+before any PCM. The exact publisher-MD5-matched files declare 48 kHz for
+`NoiseFloor.wav` and 44.1 kHz for the fixed Minuet violin performance. A
+task-flow reassessment recognized that identical file rates are not required
+to check the publisher's no-playing designation or the original second-based
+acoustic windows. One final private policy, recorded before PCM, preserved the
+same files, channel 13, six windows, RMS/peak limits, tenfold contrast and
+stop rule while checking each authenticated file's own rate. The earlier
+v1/v2 failures and their stop decision remain historical; this is the one
+explicitly recorded exception, not a source or threshold sweep.
+
+Checked FPC 3.2.2 Win32 and Win64 source-gate runs now pass exact publisher
+bytes/MD5, 24-bit 16-channel geometry, all three no-playing windows (RMS
+0.000681882 / 0.000512112 / 0.000420658, each peak below 0.02) and all three
+playing contrasts (RMS 0.041966906 / 0.025882562 / 0.024727914). The
+six nine-decimal RMS/peak values match across targets; both report zero leaks.
+The policy, Pascal checker, source hashes and full logs remain under ignored
+`build/anechoic-presence-source/`. The 69.7-MB authenticated files are now
+retained as potential development evidence rather than stale cleanup targets.
+Salty Boi's focused read-only QA confirmed the rate/window math and bounded
+claim after an editorial correction to the v1/v2 rationale. The pre-run policy
+text was preserved; no cryptographic pre-run policy-to-binary binding exists,
+so the ordering claim rests on the recorded work sequence and file times.
+
+This qualifies an exposed physical no-playing/playing source pair, not
+maintained presence-model calibration or an independent evaluation case.
+`pythian.presence` currently accepts a disjoint rest within the same clip;
+the room tone is a separate file at another rate, and common publisher
+methods alone do not prove identical gain. Before a maintained comparison,
+define a bounded two-source reference with both identities and unknown/gain
+limits; a new reference design must not silently concatenate files. Source-
+disjoint recorded evaluation, criterion 3 and task credit remain open.
+Completion stays **69.85%**, **37 open / 25 DONE**, with the cross-task
+Pythian listening queue at **1/20**.

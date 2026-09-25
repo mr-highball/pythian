@@ -75,6 +75,26 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-25 source-contract reassessment: the previous anechoic v1/v2 stops
+  were authenticated sample-rate metadata failures before PCM, not acoustic
+  failures. After recording one final per-file geometry policy in ignored
+  `build/anechoic-presence-source/REASSESSMENT.md`, the same fixed
+  publisher-MD5-matched noise-floor/performance pair passed its original six
+  channel-13 windows and acoustic gates on checked FPC 3.2.2 Win32/Win64,
+  with identical nine-decimal RMS/peak values and zero leaks. Noise floor is
+  48 kHz; the violin performance is 44.1 kHz, so no resampling or common-rate
+  assumption was used. `PASS-v3.md` and both logs retain the exact evidence;
+  Salty Boi's focused read-only QA confirmed the gate and bounded claim after
+  a disclosed post-run editorial correction. The pre-run policy text is
+  preserved, but lacks a cryptographic policy-to-binary binding.
+  This is exposed development source qualification only. The maintained
+  `pythian.presence` contract compares disjoint windows in one clip; it cannot
+  consume a separately recorded noise-floor reference. A future bounded
+  reference/consumer design must bind both original source identities and
+  avoid claiming equal gain merely from common publisher methods. Independent
+  source groups, calibrated decision and criterion 3 remain open. The old
+  failed policies stay historical; no task credit changes.
+
 - 2026-09-25 two-route checkpoint after the journal task: the quartet source
   gate below failed before PCM, and an independent read-only
   [AudioLabs instrument-activity reference](https://www.audiolabs-erlangen.de/resources/MIR/2023-TASLP-HierarchicalInstrumentClass)
