@@ -13419,3 +13419,47 @@ independent packet. No new task is needed: the requirement is already owned
 by that file. Continue only another criterion-closing prerequisite when its
 evidence becomes available. Completion: **69.85%, 37 open / 25 DONE**;
 the cross-task Pythian listening queue remains **1/20**.
+
+## Admitted-pitch work-group balance — 2026-09-25
+
+The retrospective found a separable core requirement in
+[NS-5_vocabulary_01](TODO/NS-5_vocabulary_01.md): admitted-pitch learning
+weighted each run once, so one work group could dominate by contributing more
+tokens. A one-point task split put a bounded contribution-control comparison
+in [NS-5_vocabulary_03](TODO/DONE/NS-5_vocabulary_03.md), leaving full
+representative vocabulary, coverage, diversity, normalization and style
+evaluation in the original task. Task creation itself earned no credit.
+
+The private policy in `build/admitted-balance/POLICY.md` froze the accepted
+three-recording, two-work-group journal identity
+`fc5441d6115710b5b2f16606b1b7e9f84c95f971166a1fb0e5ab6cbebd56e7c3`,
+integer weights 1..64, a maximum/minimum admitted-token ratio of 110%, and
+65,536 weighted-token / 4,096 weighted-run caps. Unknown and uncovered spans
+remain excluded; repeated-section identity is unknown. The initial private
+preflight stopped on a truncated copied expected SHA-256 literal before
+decoding or model scoring. Correcting only that literal restored the exact
+accepted journal identity without changing source, thresholds or weights.
+
+The maintained Pascal planner and weighted admitted-pitch learner rebuilt
+actual WFC models from that journal. Dance contributed 12 raw tokens in 12
+runs; Spring contributed 16 in 13. Weights 4 and 3 balance admitted-token
+mass at 48/48; weighted run starts remain 48/39. The all-ones model and
+evidence retain their prior hashes. The balanced model is distinct, carries
+source/policy/weight evidence, and generates two fixed-seed tokens after
+reload. Private `build/admitted-balance/RESULT.md` holds exact artifact
+hashes, commands and reports. Focused fixtures and exact-journal integration
+passed checked FPC 3.2.2 Win32/Win64 with matching plan, model, evidence and
+token hashes and zero unfreed blocks in final runs. Salty Boi's focused QA
+passed source/group/total accounting, capacity and identity failure controls,
+canonical re-plan and replay, and scope review.
+
+Accept [NS-5_vocabulary_03](TODO/DONE/NS-5_vocabulary_03.md) for **+1 NS-5
+point / +0.20 overall**: NS-5 is **30%**, total engineering completion
+**70.05%**, with **37 open / 26 DONE**. This is contribution balance on two
+development work groups, not genre representativeness, repeated-section
+balance, improved listening quality or automatic recorded note inference.
+The stopped `NS-3_notes_05` source route stays stopped. The remaining
+`NS-5_vocabulary_01` work requires its declared broader evidence; no new
+listener item was created. The cross-task Pythian listening queue remains
+**1/20**, and the next work should follow the task-flow prerequisite order
+using a genuinely criterion-closing source or core task.

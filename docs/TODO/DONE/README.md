@@ -8,6 +8,8 @@
 | [NS-3_tempo_05](NS-3_tempo_05.md) — Bounded authored beat candidates and clock link | 2026-09-25 | +1 NS-3 | +0.25 |
 | [NS-5_corpus_01](NS-5_corpus_01.md) — Verified corpus identity and contribution audit | 2026-09-20 | +2 NS-5 | +0.40 |
 | [NS-5_scale_03](NS-5_scale_03.md) — Bounded multi-recording Pascal raw corpus and measured workload | 2026-09-25 | +1 NS-5 | +0.20 |
+| [NS-5_scale_04](NS-5_scale_04.md) — Canonical admitted-event contribution journal and checked replay | 2026-09-25 | +1 NS-5 | +0.20 |
+| [NS-5_vocabulary_03](NS-5_vocabulary_03.md) — Bounded admitted-pitch work-group balance and actual WFC rebuild | 2026-09-25 | +1 NS-5 | +0.20 |
 | [NS-3_notes_06](NS-3_notes_06.md) — Source-bound admitted notes to saved WFC learning | 2026-09-25 | +1 NS-3 | +0.25 |
 | [NS-6_delivery_01](NS-6_delivery_01.md) — Supported consumer and distribution contract | 2026-09-20 | +8 NS-6 | +0.40 |
 | [NS-6_delivery_02](NS-6_delivery_02.md) — Clean native targets and successful remote CI | 2026-09-21 | +14 NS-6 | +0.70 |

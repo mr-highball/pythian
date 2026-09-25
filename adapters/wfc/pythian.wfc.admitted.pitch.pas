@@ -101,6 +101,9 @@ function RoundAdmittedFrameToMilliseconds(const AFrame: Int64;
   const ASampleRate: Integer): Integer;
 function LearnAdmittedPitchDurationModel(const ASources: TAdmittedNoteSources;
   const AOrder: Integer): TAdmittedPitchDurationModel;
+function LearnWeightedAdmittedPitchDurationModel(const ASources: TAdmittedNoteSources;
+  const ASourceWeights: array of Integer; const AOrder: Integer;
+  const AWeightPolicyId: String): TAdmittedPitchDurationModel;
 
 implementation
 
@@ -114,6 +117,7 @@ uses
 
 type
   TAdmittedTrackArray = array of TTimedPitchSpans;
+  TAdmittedRunSourceIndices = array of Integer;
 
 function HashText(const AValue: String): String;
 var
@@ -261,8 +265,9 @@ begin
   end;
 end;
 
-procedure AppendRun(var ATracks: TAdmittedTrackArray; const ASource: TAdmittedNoteSource;
-  const AFirstIndex, AEndIndex: Integer);
+procedure AppendRun(var ATracks: TAdmittedTrackArray;
+  var ARunSources: TAdmittedRunSourceIndices; const ASource: TAdmittedNoteSource;
+  const ASourceIndex, AFirstIndex, AEndIndex: Integer);
 var
   LTrackIndex: Integer;
   LSpanIndex: Integer;
@@ -297,9 +302,12 @@ begin
   end;
   SetLength(ATracks, LTrackIndex + 1);
   ATracks[LTrackIndex] := LTimed;
+  SetLength(ARunSources, LTrackIndex + 1);
+  ARunSources[LTrackIndex] := ASourceIndex;
 end;
 
-procedure BuildTracks(const ASources: TAdmittedNoteSources; var ATracks: TAdmittedTrackArray);
+procedure BuildTracks(const ASources: TAdmittedNoteSources;
+  var ATracks: TAdmittedTrackArray; var ARunSources: TAdmittedRunSourceIndices);
 var
   LSourceIndex: Integer;
   LSpanIndex: Integer;
@@ -307,6 +315,7 @@ var
   LSource: TAdmittedNoteSource;
 begin
   ATracks := nil;
+  ARunSources := nil;
   for LSourceIndex := 0 to High(ASources) do
   begin
     LSource := ASources[LSourceIndex];
@@ -326,7 +335,7 @@ begin
       begin
         Inc(LSpanIndex);
       end;
-      AppendRun(ATracks, LSource, LRunStart, LSpanIndex);
+      AppendRun(ATracks, ARunSources, LSource, LSourceIndex, LRunStart, LSpanIndex);
     end;
   end;
 end;
@@ -488,8 +497,9 @@ begin
   end;
 end;
 
-function LearnAdmittedPitchDurationModel(const ASources: TAdmittedNoteSources;
-  const AOrder: Integer): TAdmittedPitchDurationModel;
+function LearnWeightedAdmittedPitchDurationModel(const ASources: TAdmittedNoteSources;
+  const ASourceWeights: array of Integer; const AOrder: Integer;
+  const AWeightPolicyId: String): TAdmittedPitchDurationModel;
 var
   LHasRuns: array of Boolean;
   LInputSpanCount: Integer;
@@ -498,6 +508,7 @@ var
   LSourceIndex: Integer;
   LIndex: Integer;
   LTracks: TAdmittedTrackArray;
+  LRunSources: TAdmittedRunSourceIndices;
   LTimedTracks: TTimedPitchTracks;
   LWeights: array of Integer;
   LModel: TWfcSequenceModel;
@@ -510,15 +521,29 @@ var
 begin
   Result := nil;
   if (Length(ASources) < 2) or (Length(ASources) > MaximumAdmittedSources) or
-    (AOrder < 1) or (AOrder > 4) then
+    (AOrder < 1) or (AOrder > 4) or
+    (Length(ASourceWeights) <> Length(ASources)) then
   begin
-    raise EAudio.Create('Admitted pitch learning requires 2..32 sources and order 1..4');
+    raise EAudio.Create('Admitted pitch learning requires 2..32 weighted sources and order 1..4');
+  end;
+  if (AWeightPolicyId <> '') and not ValidIdentity(AWeightPolicyId) then
+  begin
+    raise EAudio.Create('Admitted pitch weight policy identity is invalid');
   end;
   LInputSpanCount := 0;
   SetLength(LHasRuns, Length(ASources));
   for LSourceIndex := 0 to High(ASources) do
   begin
     ValidateSource(ASources[LSourceIndex], LInputSpanCount, LHasRuns[LSourceIndex]);
+    if (ASourceWeights[LSourceIndex] < 0) or (ASourceWeights[LSourceIndex] > 64) or
+      (LHasRuns[LSourceIndex] and (ASourceWeights[LSourceIndex] = 0)) then
+    begin
+      raise EAudio.Create('Admitted source weight must be 1..64 when it has training evidence');
+    end;
+    if (AWeightPolicyId = '') and (ASourceWeights[LSourceIndex] <> 1) then
+    begin
+      raise EAudio.Create('Non-default admitted source weights need a policy identity');
+    end;
     for LIndex := 0 to LSourceIndex - 1 do
     begin
       if ASources[LIndex].RecordingId = ASources[LSourceIndex].RecordingId then
@@ -541,7 +566,7 @@ begin
   begin
     raise EAudio.Create('Admitted pitch learning requires two training groups');
   end;
-  BuildTracks(ASources, LTracks);
+  BuildTracks(ASources, LTracks, LRunSources);
   LTrackCount := Length(LTracks);
   if (LTrackCount < 1) or (LTrackCount > MaximumAdmittedTrainingRuns) then
   begin
@@ -553,7 +578,7 @@ begin
   for LIndex := 0 to LTrackCount - 1 do
   begin
     LTimedTracks[LIndex] := LTracks[LIndex];
-    LWeights[LIndex] := 1;
+    LWeights[LIndex] := ASourceWeights[LRunSources[LIndex]];
     Inc(LTrainingSpanCount, Length(LTracks[LIndex]));
   end;
   LModel := nil;
@@ -577,6 +602,16 @@ begin
     end;
     LEvidence := EvidenceText(ASources, LTracks, HashText(LModelText), AOrder,
       LGroupCount, LTrainingSpanCount);
+    if AWeightPolicyId <> '' then
+    begin
+      LEvidence := LEvidence + 'weight_policy=' + AWeightPolicyId + #10 +
+        'source_weight<TAB>group_id<TAB>recording_id<TAB>integer_run_weight' + #10;
+      for LIndex := 0 to High(ASources) do
+      begin
+        LEvidence := LEvidence + 'source_weight' + #9 + ASources[LIndex].GroupId + #9 +
+          ASources[LIndex].RecordingId + #9 + IntToStr(ASourceWeights[LIndex]) + #10;
+      end;
+    end;
     LResult := TAdmittedPitchDurationModel.Create;
     LResult.FModelText := LModelText;
     LResult.FEvidenceText := LEvidence;
@@ -594,6 +629,20 @@ begin
     LReloaded.Free;
     LModel.Free;
   end;
+end;
+
+function LearnAdmittedPitchDurationModel(const ASources: TAdmittedNoteSources;
+  const AOrder: Integer): TAdmittedPitchDurationModel;
+var
+  LWeights: array of Integer;
+  LIndex: Integer;
+begin
+  SetLength(LWeights, Length(ASources));
+  for LIndex := 0 to High(LWeights) do
+  begin
+    LWeights[LIndex] := 1;
+  end;
+  Result := LearnWeightedAdmittedPitchDurationModel(ASources, LWeights, AOrder, '');
 end;
 
 function TAdmittedPitchDurationModel.Load: TWfcSequenceModel;

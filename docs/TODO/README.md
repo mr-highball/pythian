@@ -12,8 +12,8 @@ keeps the three user-selected styles as development tests, while reusable core
 behavior takes priority when detailed style review is waiting on evidence.
 This catalog covers the remaining declared end state. Task files own acceptance
 criteria and hard prerequisites; this page supplies navigation and accounting.
-No task earns credit merely by being written. Accepted task credit is **14.35**;
-**30.15 overall points remain**. Baseline 55.5 + accepted 14.35 = **69.85 current**.
+No task earns credit merely by being written. Accepted task credit is **14.55**;
+**29.95 overall points remain**. Baseline 55.5 + accepted 14.55 = **70.05 current**.
 
 The [pause retrospective](../WORK.md#pause-retrospective--2026-09-21) tightens
 existing note, presence, mixture and style-reference criteria without adding
@@ -67,9 +67,9 @@ unless also declared under Blockers; required gaps still follow
 | [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 100% | 0 | 0 | 0.00 |
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 43% | 16 | 57 | 14.25 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 98% | 2 | 2 | 0.30 |
-| [NS-5 — Many-hour styles that generate and blend usefully](../MILESTONES.md#ns-5) | 29% | 16 | 71 | 14.20 |
+| [NS-5 — Many-hour styles that generate and blend usefully](../MILESTONES.md#ns-5) | 30% | 16 | 70 | 14.00 |
 | [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 72% | 3 | 28 | 1.40 |
-| **Total** | **69.85 weighted points** | **37** | Per-goal credits are not summed across goals | **30.15** |
+| **Total** | **70.05 weighted points** | **37** | Per-goal credits are not summed across goals | **29.95** |
 
 NS-1 is already complete under the accepted extraction scope. Preserve its
 invariants in every applicable task; do not recreate completed extraction work.
@@ -115,7 +115,7 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 | [NS-5_corpus_03.md](NS-5_corpus_03.md) — Populate the stoner rock training and evaluation corpus | +2 | +0.40 | TODO |
 | [NS-5_corpus_04.md](NS-5_corpus_04.md) — Populate the lofi training and evaluation corpus | +2 | +0.40 | TODO |
 | [NS-5_evaluation_01.md](NS-5_evaluation_01.md) — Define measurable style cards and comparator contracts | +4 | +0.80 | TODO |
-| [NS-5_vocabulary_01.md](NS-5_vocabulary_01.md) — Learn balanced, representative reusable vocabularies | +6 | +1.20 | TODO |
+| [NS-5_vocabulary_01.md](NS-5_vocabulary_01.md) — Learn balanced, representative reusable vocabularies | +5 | +1.00 | TODO |
 | [NS-5_vocabulary_02.md](NS-5_vocabulary_02.md) — Support frozen vocabulary growth and explicit rebuilds | +4 | +0.80 | TODO |
 | [NS-5_scale_01.md](NS-5_scale_01.md) — Establish executable many-hour semantic workload budgets | +3 | +0.60 | TODO |
 | [NS-5_scale_02.md](NS-5_scale_02.md) — Deliver recoverable incremental semantic corpus training | +5 | +1.00 | TODO |
@@ -142,6 +142,7 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 | --- | --- | ---: | ---: |
 | [NS-3_tempo_05.md](DONE/NS-3_tempo_05.md) | Hash-bound authored fast/half/double/phase and loss controls, maintained candidate/clock API, checked two-target replay and QA | +1 NS-3 | +0.25 |
 | [NS-5_scale_04.md](DONE/NS-5_scale_04.md) | Canonical admitted-event contribution journal, idempotent append and exact checked two-target reference-event rebuild after reload | +1 NS-5 | +0.20 |
+| [NS-5_vocabulary_03.md](DONE/NS-5_vocabulary_03.md) | Frozen two-work-group admitted-token balance, actual weighted WFC model and deterministic checked two-target replay | +1 NS-5 | +0.20 |
 | [NS-5_corpus_01.md](DONE/NS-5_corpus_01.md) | Two verified development groups; 24 asset bindings; overlap/exposure and inherited-palette audit | +2 NS-5 | +0.40 |
 | [NS-5_scale_03.md](DONE/NS-5_scale_03.md) | Checked Pascal bounded reader and 2.322-hour, 835,995-row five-scope raw workload; exact three-source/identity audit and resource gates | +1 NS-5 | +0.20 |
 | [NS-3_notes_06.md](DONE/NS-3_notes_06.md) | Source-bound admitted note spans, hard unknown/group training boundaries, saved WFC model/evidence and exact two-target Spring/Dance reference integration | +1 NS-3 | +0.25 |
@@ -245,26 +246,35 @@ first accepted genre is predetermined.
 30. [NS-5_corpus_02.md](NS-5_corpus_02.md)
 31. [NS-5_corpus_03.md](NS-5_corpus_03.md)
 32. [NS-5_corpus_04.md](NS-5_corpus_04.md)
-33. [NS-5_vocabulary_01.md](NS-5_vocabulary_01.md)
-34. [NS-5_vocabulary_02.md](NS-5_vocabulary_02.md)
-35. [NS-5_scale_03.md — DONE](DONE/NS-5_scale_03.md)
-36. [NS-5_scale_01.md](NS-5_scale_01.md)
-37. [NS-5_scale_04.md — DONE](DONE/NS-5_scale_04.md), then [NS-5_scale_02.md](NS-5_scale_02.md)
-38. [NS-5_continuity_01.md](NS-5_continuity_01.md)
-39. [NS-5_structure_01.md](NS-5_structure_01.md)
-40. [NS-5_structure_02.md](NS-5_structure_02.md)
-41. [NS-5_evaluation_02.md](NS-5_evaluation_02.md)
-42. [NS-5_chillwave_01.md](NS-5_chillwave_01.md)
-43. [NS-5_stoner-rock_01.md](NS-5_stoner-rock_01.md)
-44. [NS-5_lofi_01.md](NS-5_lofi_01.md)
-45. [NS-5_blends_01.md](NS-5_blends_01.md)
-46. [NS-6_delivery_01.md — DONE](DONE/NS-6_delivery_01.md)
-47. [NS-6_delivery_02.md — DONE](DONE/NS-6_delivery_02.md)
-48. [NS-6_delivery_03.md](NS-6_delivery_03.md)
-49. [NS-6_delivery_04.md](NS-6_delivery_04.md)
-50. [NS-6_delivery_05.md](NS-6_delivery_05.md)
+33. [NS-5_vocabulary_03.md — DONE](DONE/NS-5_vocabulary_03.md)
+34. [NS-5_vocabulary_01.md](NS-5_vocabulary_01.md)
+35. [NS-5_vocabulary_02.md](NS-5_vocabulary_02.md)
+36. [NS-5_scale_03.md — DONE](DONE/NS-5_scale_03.md)
+37. [NS-5_scale_01.md](NS-5_scale_01.md)
+38. [NS-5_scale_04.md — DONE](DONE/NS-5_scale_04.md), then [NS-5_scale_02.md](NS-5_scale_02.md)
+39. [NS-5_continuity_01.md](NS-5_continuity_01.md)
+40. [NS-5_structure_01.md](NS-5_structure_01.md)
+41. [NS-5_structure_02.md](NS-5_structure_02.md)
+42. [NS-5_evaluation_02.md](NS-5_evaluation_02.md)
+43. [NS-5_chillwave_01.md](NS-5_chillwave_01.md)
+44. [NS-5_stoner-rock_01.md](NS-5_stoner-rock_01.md)
+45. [NS-5_lofi_01.md](NS-5_lofi_01.md)
+46. [NS-5_blends_01.md](NS-5_blends_01.md)
+47. [NS-6_delivery_01.md — DONE](DONE/NS-6_delivery_01.md)
+48. [NS-6_delivery_02.md — DONE](DONE/NS-6_delivery_02.md)
+49. [NS-6_delivery_03.md](NS-6_delivery_03.md)
+50. [NS-6_delivery_04.md](NS-6_delivery_04.md)
+51. [NS-6_delivery_05.md](NS-6_delivery_05.md)
 
 ## Scope audit
+
+The 2026-09-25 vocabulary split assigns one of the original six NS-5 vocabulary
+points to [NS-5_vocabulary_03](DONE/NS-5_vocabulary_03.md) for a bounded admitted-
+pitch work-group token-mass comparison. [NS-5_vocabulary_01](NS-5_vocabulary_01.md)
+retains five points and the complete representative-vocabulary, coverage,
+diversity, normalization and broader comparison criteria. Total NS-5 and
+overall allocated credit are unchanged. The accepted bounded comparison earns
+one NS-5 point (+0.20 overall); the remaining five NS-5 points stay open.
 
 The 2026-09-23 [beat-candidate split](../WORK.md#beat-candidate-deliverable-split--2026-09-23)
 increases the catalog by one open task without changing NS-3's 61 unearned
