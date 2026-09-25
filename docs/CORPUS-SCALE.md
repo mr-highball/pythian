@@ -12,6 +12,27 @@ The raw task is now accepted; semantic learning and full-pipeline qualification
 remain open in `NS-5_scale_01`. The schedule and source packet below originated
 as prospective preparation and retain that history.
 
+## Bounded admitted-event contribution recovery — 2026-09-25
+
+The accepted [contribution journal](TODO/DONE/NS-5_scale_04.md) stores complete
+source-bound admitted pitch-duration inputs in canonical versioned text before
+rebuilding through the existing WFC learner. Append accepts an exact duplicate
+without a second contribution; a conflicting source or admission policy leaves
+the prior journal intact. Reload requires canonical source order and rejects
+malformed, noncanonical or over-8-MiB input. The current contract permits at
+most 32 sources, 65,536 typed spans and 32 independent training runs. Unknown
+and uncovered intervals remain training boundaries.
+
+The checked reference-event integration used three distinct published
+recordings in two work groups. A fresh three-source build and a persisted
+two-source reload plus third append produce the same journal, WFC model,
+evidence and fixed-seed tokens on Win32 and Win64. The full result and
+limitations are in the [task record](TODO/DONE/NS-5_scale_04.md). This is a
+deterministic full rebuild from completed contributions. Process-interruption
+publication, many-hour multi-provider learning, inferred WAV notes and
+selective policy/vocabulary invalidation remain in
+[NS-5_scale_02](TODO/NS-5_scale_02.md) and its recorded prerequisites.
+
 ## Accepted Pascal raw corpus — 2026-09-25
 
 After the first stopped attempt below, one predeclared telemetry-only attempt

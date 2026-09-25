@@ -858,6 +858,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Admitted pitch/WFC bridge fixture compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.admitted.pitch$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Admitted pitch/WFC bridge checks failed' }
+    & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.admitted.pitch.journal.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Admitted pitch contribution journal compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.wfc.admitted.pitch.journal$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Admitted pitch contribution journal checks failed' }
     & $compilerPath @adapterArgs 'tools/pythian.pitch.wav.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Pitch WAV operator compilation failed' }
     & (Join-Path $buildRoot "pythian.pitch.wav$executableSuffix") 'learn' (Join-Path $buildRoot 'pitch-source.wav') (Join-Path $buildRoot 'pitch-learned') '500000' '0' '--monophonic'

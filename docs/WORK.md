@@ -13190,3 +13190,61 @@ source-separated recording; absent that, preserve `unknown` and the existing
 decision rule. Recorded note presence, downstream phrases and style work stay
 open. No task credit changes: **69.65%**, **37 open / 24 DONE**; the genuine
 cross-task Pythian listening queue remains **1/20**.
+
+## Semantic contribution recovery split — 2026-09-25
+
+The milestone retro found one reusable semantic training boundary that can
+advance while recorded-note inference remains evidence-blocked. The accepted
+admitted-event WFC bridge trains from complete externally supplied source-bound
+events, but has no persisted contribution set for adding a recording and
+rebuilding after reload. [NS-5_scale_04](TODO/DONE/NS-5_scale_04.md) now owns a
+canonical Pascal contribution journal, duplicate/conflict rules, source/run
+boundaries and deterministic full rebuild. This is not online WFC model
+updating, process-crash durability, many-hour capacity or inferred notes.
+
+The original [NS-5_scale_02](TODO/NS-5_scale_02.md) criteria map across the
+split: 04 owns the pitch-duration journal portion of restart equivalence and
+incremental source addition (original criteria 2–3); 02 retains complete
+multi-provider crash/cache recovery and additions (remaining 2–3), full
+semantic workload (1), bounded ancestry (4) and selective invalidation (5).
+The original unearned **+6 NS-5 / +1.20 overall** becomes **+1/+5 NS-5** and
+**+0.20/+1.00 overall**. The split alone earns nothing. The catalog has
+**38 open / 24 DONE of 62 tasks**, completion remains **69.65%**, and the
+cross-task Pythian listening queue remains **1/20**. The next bounded result
+is the checked journal/consumer replay using two authenticated reference
+groups and a third source addition; a failure or unsuitable real source
+leaves 04 open rather than substituting authored identities for source proof.
+
+## Source-bound contribution journal accepted — 2026-09-25
+
+[NS-5_scale_04](TODO/DONE/NS-5_scale_04.md) closes its bounded semantic
+recovery deliverable. Ticket Guy's Pascal journal retains canonical full
+source/annotation contributions and explicit unknowns, checks fixed policy
+and capacity, rejects noncanonical or oversized reloads, and rebuilds through
+the accepted WFC learner. The maintained focused fixture passes checked
+stable FPC 3.2.2 Win32/Win64 with zero leaks, covering exact duplicate
+idempotence, failed append/reload/rebuild preservation, source/run limits and
+clean versus staged model/evidence replay. The fixture is in the native WFC
+build hook.
+
+The frozen private [integration result](TODO/DONE/NS-5_scale_04.md) uses three
+publisher-supplied URMP source/Notes pairs from two work groups. Its clean
+three-source and disk-reloaded two-plus-one Pascal paths agree exactly on
+**25 training runs / 28 spans**, journal/model/evidence bytes and two
+seed-731 generated tokens on both checked targets, with zero leaks. The
+complete journal SHA-256 is
+`fc5441d6115710b5b2f16606b1b7e9f84c95f971166a1fb0e5ab6cbebd56e7c3`;
+the model is
+`b1783f16b1615f20e21099a8aeefbd28381f7838f7361715444faca1b466843f`.
+The third WAV hash literal was corrected after an initial pre-score source
+gate failed; source content, selected rows and model policy did not change.
+Full private policy, commands and logs are under ignored
+`build/admitted-journal-integration/`. Salty Boi independently rebuilt the
+maintained fixture on both targets and found no actionable blocker.
+
+This earns **+1 NS-5 / +0.20 overall**, making NS-5 **29%**, total
+completion **69.85%**, and the 62-task catalog **37 open / 25 DONE**. It is
+not online WFC updating, process-crash durability, many-hour semantic
+training, recorded note inference or a listening result. The complete
+[NS-5_scale_02](TODO/NS-5_scale_02.md) and recorded core prerequisites remain
+open. The cross-task substantial Pythian listening queue remains **1/20**.
