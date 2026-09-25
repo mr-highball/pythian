@@ -12877,3 +12877,24 @@ qualified independent evidence route or a newly observed implementation defect
 before opening one of these stopped investigations. The listening queue stays
 **1/20**; HFS currently returns HTTP 200 for the queued file on the LAN.
 No task moved to DONE and no credit changed in this retrospective.
+
+## Multi-recording scale deliverable split — 2026-09-25
+
+The prepared 2.3222053373-hour, three-source development workload can be
+observed by the accepted Pascal WAV producer in five adjacent scopes. The
+earlier `NS-5_scale_01` preparation and whole-array rejection batches closed
+no criterion; its missing admitted-note-to-learner bridge remains owned by
+`NS-3_notes_03`. The raw work can produce an independently useful bounded
+multi-recording reader and exact source-bound packet before that bridge exists.
+The [new raw task](TODO/NS-5_scale_03.md) therefore owns maintained corpus
+reading plus actual five-job observation/cost qualification; the
+[original scale task](TODO/NS-5_scale_01.md) retains admission, semantic
+aggregation, model-capacity and full-pipeline budgets. Its original four
+unearned NS-5 points are now raw **1** and semantic **3**, totaling the same
+0.80 overall points. No task or criterion closed, so the score stays **68.95**;
+open task files rise from 37 to **38**. The first raw batch stops before a long
+run if source/scope geometry, existing single-job limits or the maintained
+reader's failure tests fail. Ticket Guy owns only the new Pascal reader,
+fixture and inference build hook; the primary owns source identity, workload
+execution and accounting. Salty Boi reviews the combined components when both
+are ready. The cross-task listening queue remains **1/20**.

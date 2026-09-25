@@ -1,4 +1,4 @@
-# NS-5_scale_01 — Establish executable many-hour workload budgets
+# NS-5_scale_01 — Establish executable many-hour semantic workload budgets
 
 [Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-5)
 
@@ -7,8 +7,16 @@
 Turn the current long-file ingestion evidence into a measured multi-recording training workload with explicit operational limits.
 
 North star: NS-5. Outcome owner: CORPUS-SCALE.
-Completion credit: 4 goal percentage points (0.80 overall points).
+Completion credit: 3 goal percentage points (0.60 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
+
+The bounded multi-recording raw observation stream and its measured workload
+now belong to [NS-5_scale_03](NS-5_scale_03.md), with 1 of this task's original
+4 unearned NS-5 points. This task retains the semantic aggregation, capacity,
+whole-pipeline budgets and reload outcome. All five original criteria remain
+represented across the two tasks; accepting raw salience does not satisfy an
+admitted-note or trained-style gate. The full scale outcome remains a blocker
+for [NS-5_scale_02](NS-5_scale_02.md).
 
 Starting evidence: [WAV-STUDIES](../WAV-STUDIES.md) · [CORPUS-EVALUATION](../CORPUS-EVALUATION.md) · [ANALYSIS-WAVE](../ANALYSIS-WAVE.md).
 
@@ -44,19 +52,28 @@ as prerequisites for operational measurement.
 
 **Acceptance Criteria:**
 
-- Declare representative source counts, unique hours, rates/channels, event/feature density and all stages from decoding through semantic learning before benchmark runs.
-- Set practical wall-time, peak-memory, cache/storage, model-state and dependency-work budgets for the selected native inference path; separate one-file conversion from whole-pipeline cost.
-- Exercise real multi-recording data with verified identity/exposure and bound the feature/event aggregation path; do not claim many-hour training from a short excerpt or duplicated observations.
-- Identify and resolve or explicitly reject inputs exceeding whole-array, training or model capacities without simply raising private caps.
-- Publish a reproducible native workload and measurements that the recovery/scale task can use; provider accuracy remains governed by NS-3.
+- Use the accepted raw corpus packet, then declare admitted-event density and all remaining stages through semantic learning before the full benchmark.
+- Freeze whole-pipeline wall-time, peak-memory, cache/storage, model-state and dependency-work budgets for the selected admission and training contracts; keep one-file conversion and raw observation costs separately visible.
+- Exercise real multi-recording admitted-event aggregation and actual WFC semantic learning with verified identity/exposure, without counting a short excerpt or duplicate observation as many-hour training.
+- Resolve or explicitly reject inputs exceeding whole-array, training or model capacities while retaining original-coordinate song, recording and unknown boundaries; do not simply raise private caps.
+- Publish a reproducible complete native workload and measurements for recovery/scale work; raw observation qualification alone and current provider accuracy do not establish semantic acceptance.
 
 **Blockers**
 
 - [NS-5_corpus_01.md](DONE/NS-5_corpus_01.md)
 - [NS-3_validation_02.md](DONE/NS-3_validation_02.md)
+- [NS-5_scale_03.md](NS-5_scale_03.md)
 - [NS-3_notes_03.md](NS-3_notes_03.md)
 
 **Dev Notes:**
+
+- 2026-09-25 task-flow split after two nonclosing preparation/capacity batches:
+  [NS-5_scale_03](NS-5_scale_03.md) now owns the independently usable
+  source-bound raw corpus reader and actual five-job observation workload.
+  This task still requires accepted note admission and actual semantic learning
+  under the complete original pipeline budgets. Its remaining credit is
+  +3 NS-5 / +0.60 overall; the raw task owns +1 / +0.20. No completion or
+  scorecard change follows from splitting the task.
 
 - Planning correction (2026-09-21): successful observation jobs hash the whole input at initialization and again before sink completion, even for a shorter requested scope. Include both passes plus preparation/storage in whole-pipeline budgets; see [workload](../CORPUS-SCALE.md).
 

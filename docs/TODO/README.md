@@ -67,9 +67,9 @@ unless also declared under Blockers; required gaps still follow
 | [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 100% | 0 | 0 | 0.00 |
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 41% | 16 | 59 | 14.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 98% | 2 | 2 | 0.30 |
-| [NS-5 — Many-hour styles that generate and blend usefully](../MILESTONES.md#ns-5) | 27% | 16 | 73 | 14.60 |
+| [NS-5 — Many-hour styles that generate and blend usefully](../MILESTONES.md#ns-5) | 27% | 17 | 73 | 14.60 |
 | [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 72% | 3 | 28 | 1.40 |
-| **Total** | **68.95 weighted points** | **37** | Per-goal credits are not summed across goals | **31.05** |
+| **Total** | **68.95 weighted points** | **38** | Per-goal credits are not summed across goals | **31.05** |
 
 NS-1 is already complete under the accepted extraction scope. Preserve its
 invariants in every applicable task; do not recreate completed extraction work.
@@ -117,7 +117,8 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 | [NS-5_evaluation_01.md](NS-5_evaluation_01.md) — Define measurable style cards and comparator contracts | +4 | +0.80 | TODO |
 | [NS-5_vocabulary_01.md](NS-5_vocabulary_01.md) — Learn balanced, representative reusable vocabularies | +6 | +1.20 | TODO |
 | [NS-5_vocabulary_02.md](NS-5_vocabulary_02.md) — Support frozen vocabulary growth and explicit rebuilds | +4 | +0.80 | TODO |
-| [NS-5_scale_01.md](NS-5_scale_01.md) — Establish executable many-hour workload budgets | +4 | +0.80 | TODO |
+| [NS-5_scale_03.md](NS-5_scale_03.md) — Assemble a bounded multi-recording Pascal observation corpus | +1 | +0.20 | TODO |
+| [NS-5_scale_01.md](NS-5_scale_01.md) — Establish executable many-hour semantic workload budgets | +3 | +0.60 | TODO |
 | [NS-5_scale_02.md](NS-5_scale_02.md) — Deliver recoverable incremental semantic corpus training | +6 | +1.20 | TODO |
 | [NS-5_continuity_01.md](NS-5_continuity_01.md) — Accept sustained continuity and useful variation | +5 | +1.00 | TODO |
 | [NS-5_structure_01.md](NS-5_structure_01.md) — Learn supported phrase and section organization | +5 | +1.00 | TODO |
@@ -239,21 +240,22 @@ first accepted genre is predetermined.
 32. [NS-5_corpus_04.md](NS-5_corpus_04.md)
 33. [NS-5_vocabulary_01.md](NS-5_vocabulary_01.md)
 34. [NS-5_vocabulary_02.md](NS-5_vocabulary_02.md)
-35. [NS-5_scale_01.md](NS-5_scale_01.md)
-36. [NS-5_scale_02.md](NS-5_scale_02.md)
-37. [NS-5_continuity_01.md](NS-5_continuity_01.md)
-38. [NS-5_structure_01.md](NS-5_structure_01.md)
-39. [NS-5_structure_02.md](NS-5_structure_02.md)
-40. [NS-5_evaluation_02.md](NS-5_evaluation_02.md)
-41. [NS-5_chillwave_01.md](NS-5_chillwave_01.md)
-42. [NS-5_stoner-rock_01.md](NS-5_stoner-rock_01.md)
-43. [NS-5_lofi_01.md](NS-5_lofi_01.md)
-44. [NS-5_blends_01.md](NS-5_blends_01.md)
-45. [NS-6_delivery_01.md — DONE](DONE/NS-6_delivery_01.md)
-46. [NS-6_delivery_02.md — DONE](DONE/NS-6_delivery_02.md)
-47. [NS-6_delivery_03.md](NS-6_delivery_03.md)
-48. [NS-6_delivery_04.md](NS-6_delivery_04.md)
-49. [NS-6_delivery_05.md](NS-6_delivery_05.md)
+35. [NS-5_scale_03.md](NS-5_scale_03.md)
+36. [NS-5_scale_01.md](NS-5_scale_01.md)
+37. [NS-5_scale_02.md](NS-5_scale_02.md)
+38. [NS-5_continuity_01.md](NS-5_continuity_01.md)
+39. [NS-5_structure_01.md](NS-5_structure_01.md)
+40. [NS-5_structure_02.md](NS-5_structure_02.md)
+41. [NS-5_evaluation_02.md](NS-5_evaluation_02.md)
+42. [NS-5_chillwave_01.md](NS-5_chillwave_01.md)
+43. [NS-5_stoner-rock_01.md](NS-5_stoner-rock_01.md)
+44. [NS-5_lofi_01.md](NS-5_lofi_01.md)
+45. [NS-5_blends_01.md](NS-5_blends_01.md)
+46. [NS-6_delivery_01.md — DONE](DONE/NS-6_delivery_01.md)
+47. [NS-6_delivery_02.md — DONE](DONE/NS-6_delivery_02.md)
+48. [NS-6_delivery_03.md](NS-6_delivery_03.md)
+49. [NS-6_delivery_04.md](NS-6_delivery_04.md)
+50. [NS-6_delivery_05.md](NS-6_delivery_05.md)
 
 ## Scope audit
 

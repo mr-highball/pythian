@@ -1,7 +1,16 @@
 # Corpus workload preparation
 
 [Corpus identity](CORPUS-EVALUATION.md) · [Native observations](NATIVE-INFERENCE.md) ·
-[Scale task](TODO/NS-5_scale_01.md)
+[Raw scale task](TODO/NS-5_scale_03.md) ·
+[Semantic scale task](TODO/NS-5_scale_01.md)
+
+The 2026-09-25 task-flow split assigns source-bound multi-recording Pascal raw
+observation assembly and its actual measured workload to `NS-5_scale_03`.
+`NS-5_scale_01` retains admitted events, semantic learning and complete
+pipeline qualification. The credit total and all original scope are unchanged;
+neither task is accepted by this split. The schedule and source packet below
+predate the split and are prospective until executed with the accepted
+Pascal-only producer.
 
 The prospective development workload contains the full native WAV-C conversion
 and the complete Pixel Sprinter and Opening Theme identity-pilot recordings.
