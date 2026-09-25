@@ -47,6 +47,12 @@ type
   TInferenceWorkerProgress = record
     PhaseClock: Int64;
     Completed: Int64;
+    AppendStartedCount: Int64;
+    AppendCompletedCount: Int64;
+    AppendStartRows: Int64;
+    AppendCompletedRows: Int64;
+    AppendStartTick: QWord;
+    AppendCompletedTick: QWord;
     ColdMs: QWord;
     SourceSetupMs: QWord;
     BackendSetupMs: QWord;
@@ -56,6 +62,21 @@ type
     WarmObservationMs: QWord;
   end;
   PInferenceWorkerProgress = ^TInferenceWorkerProgress;
+  { Borrows Target and Progress. Marks the blocking append boundary without
+    publishing a heartbeat from inside the delegated write. }
+  TInferenceAppendTelemetrySink = class(TInferenceSink)
+  strict private
+    FTarget: TInferenceSink;
+    FProgress: PInferenceWorkerProgress;
+    FAppendCount: Int64;
+  public
+    constructor Create(const ATarget: TInferenceSink;
+      const AProgress: PInferenceWorkerProgress);
+    procedure Start(const AIdentity: TInferenceIdentity); override;
+    procedure Append(const ABatch: TInferenceBatch); override;
+    procedure Complete; override;
+    procedure Abort; override;
+  end;
   TInferenceRun = record
     ElapsedMs: QWord;
     ColdMs: QWord;
@@ -173,6 +194,46 @@ end;
 function InferenceProgressTick(const ASnapshot: TInferenceProgressSnapshot): QWord;
 begin
   Result := QWord(ASnapshot) shr 2;
+end;
+
+constructor TInferenceAppendTelemetrySink.Create(const ATarget: TInferenceSink;
+  const AProgress: PInferenceWorkerProgress);
+begin
+  inherited Create;
+  if (ATarget = nil) or (AProgress = nil) then
+    raise EAudio.Create('Append telemetry requires a target and progress record');
+  FTarget := ATarget;
+  FProgress := AProgress;
+end;
+
+procedure TInferenceAppendTelemetrySink.Start(const AIdentity: TInferenceIdentity);
+begin
+  FTarget.Start(AIdentity);
+end;
+
+procedure TInferenceAppendTelemetrySink.Append(const ABatch: TInferenceBatch);
+begin
+  FAppendCount := InterlockedCompareExchange64(
+    FProgress^.AppendStartedCount, 0, 0) + 1;
+  FProgress^.AppendStartRows := FProgress^.Completed;
+  FProgress^.AppendStartTick := GetTickCount64;
+  { Publish the marker only after its detail fields. No phase-clock/heartbeat
+    update occurs here; a blocked sink write must still trip the stall gate. }
+  InterlockedExchange64(FProgress^.AppendStartedCount, FAppendCount);
+  FTarget.Append(ABatch);
+  FProgress^.AppendCompletedRows := FProgress^.Completed;
+  FProgress^.AppendCompletedTick := GetTickCount64;
+  InterlockedExchange64(FProgress^.AppendCompletedCount, FAppendCount);
+end;
+
+procedure TInferenceAppendTelemetrySink.Complete;
+begin
+  FTarget.Complete;
+end;
+
+procedure TInferenceAppendTelemetrySink.Abort;
+begin
+  FTarget.Abort;
 end;
 
 function QuoteArgument(const AText: String): String;
@@ -382,6 +443,14 @@ begin
         ' worker_ms=' + IntToStr(LNow - LWorkerStarted) +
         ' progress_age_ms=' + IntToStr(LNow - LProgressTick) +
         ' completed=' + IntToStr(LProgress^.Completed) +
+        ' append_started=' + IntToStr(InterlockedCompareExchange64(
+          LProgress^.AppendStartedCount, 0, 0)) +
+        ' append_completed=' + IntToStr(InterlockedCompareExchange64(
+          LProgress^.AppendCompletedCount, 0, 0)) +
+        ' append_start_rows=' + IntToStr(LProgress^.AppendStartRows) +
+        ' append_completed_rows=' + IntToStr(LProgress^.AppendCompletedRows) +
+        ' append_start_tick=' + IntToStr(Int64(LProgress^.AppendStartTick)) +
+        ' append_completed_tick=' + IntToStr(Int64(LProgress^.AppendCompletedTick)) +
         ' source_ready=' + IntToStr(LProgress^.SourceReady) +
         ' source_setup_ms=' + IntToStr(LProgress^.SourceSetupMs) +
         ' backend_ready=' + IntToStr(LProgress^.BackendReady) +

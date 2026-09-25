@@ -53,6 +53,8 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Sparse peak WAV geometry fixture compilation failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.inference.corpus.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Inference corpus reader fixture compilation failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.inference.append.telemetry.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Inference append telemetry fixture compilation failed' }
   & $compilerPath @compilerArgs 'tools/pythian.inference.corpus.audit.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Inference corpus auditor compilation failed' }
   Write-Output "Pascal inference consumer and backend fixtures compiled: $buildRoot"

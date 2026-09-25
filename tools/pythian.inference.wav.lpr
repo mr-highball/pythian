@@ -171,7 +171,8 @@ var
   LMonitor: TWorkerMonitor;
   LBackend: TSparsePeakInferenceBackend;
   LWave: TInferenceWaveJob;
-  LSink: TInferenceFileSink;
+  LFileSink: TInferenceFileSink;
+  LSink: TInferenceAppendTelemetrySink;
   LStarted: QWord;
   LBackendStarted: QWord;
   LSource: TSourceInitialization;
@@ -188,6 +189,7 @@ begin
   LMapping := 0;
   LBackend := nil;
   LWave := nil;
+  LFileSink := nil;
   LSink := nil;
   LSource := nil;
   LMonitor := TWorkerMonitor.Create;
@@ -217,12 +219,15 @@ begin
     LWave := LSource.Job;
     LSource.Job := nil;
     FreeAndNil(LSource);
-    LSink := TInferenceFileSink.Create(ParamStr(5));
+    LFileSink := TInferenceFileSink.Create(ParamStr(5));
+    LSink := TInferenceAppendTelemetrySink.Create(LFileSink,
+      LMonitor.Progress);
     LMonitor.Progress^.ColdMs := GetTickCount64 - LStarted;
     LMonitor.Update('observing', 0);
     LWave.Execute(LBackend, LSink, nil, LMonitor.Update);
     { Destruction is part of successful worker completion and its time budget. }
     FreeAndNil(LSink);
+    FreeAndNil(LFileSink);
     FreeAndNil(LBackend);
     FreeAndNil(LWave);
     PublishInferenceProgress(LMonitor.Progress, 3, GetTickCount64);
@@ -234,6 +239,7 @@ begin
       LSource.Free;
     end;
     LSink.Free;
+    LFileSink.Free;
     LBackend.Free;
     LWave.Free;
     CloseInferenceProgress(LMonitor.Progress, LMapping);
