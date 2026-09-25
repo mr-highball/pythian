@@ -75,6 +75,18 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-25 one bounded [Fraunhofer isolated-bass source](https://www.idmt.fraunhofer.de/en/publications/datasets/bass.html)
+  screen stopped at publisher metadata. The dataset documents recorded
+  single notes, instruments and pickups, but no exact instrument-free
+  microphone windows or independent no-playing capture. Note filenames do
+  not certify acoustic rest. Its 1.6-GB archive was not downloaded and no
+  audio or presence score ran; the ignored
+  `build/idmt-bass-presence/STOP.md` records the source and limit. This is
+  another nonclosing source check, not a new independent reference strategy.
+  Do not repeat isolated-note archive searches on this evidence. Criterion 3
+  and credit remain open pending a controlled source with documented
+  no-playing windows.
+
 - 2026-09-25 read-only DEMAND publisher screen stopped before audio. Its
   [recording notes](https://zenodo.org/records/1227121/files/DEMAND.pdf?download=1)
   describe 300-second trimmed environmental captures and scene categories,
