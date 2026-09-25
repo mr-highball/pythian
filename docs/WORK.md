@@ -13351,3 +13351,35 @@ file has no independently established matching gain to the room tone, and
 the maintained API does not compare separate recordings. No task or
 completion credit changes: **69.85%**, **37 open / 25 DONE**, and the
 Pythian synthesis listening queue remains **1/20**.
+
+## Milestone dependency reassessment — 2026-09-25
+
+The latest physical-source qualification and maintained rest replay improve
+the evidence for `NS-3_notes_05`, but close none of its remaining recorded
+positive/independent criterion. Together with the earlier task-flow retro,
+they leave the same core route: accepted activity and register decisions,
+then event boundaries and independent phrases, then semantic scale and
+recorded style learning. NS-3 and NS-5 account for **28.45 of 30.15**
+remaining overall points. A rest-only variation, another level report or a
+new cache would not advance that route.
+
+The current task audit found no criterion-closing implementation batch that
+can run on the available evidence without repeating a stopped source route.
+`NS-4_composition_02` has completed its checked WFC/render path and awaits
+the whole-passage verdict on queued `5.wav`. `NS-5_scale_01` still requires
+accepted recorded note phrases for its full semantic workload.
+`NS-5_evaluation_01` still requires verified mix/song intervals and
+independently grounded musical traits before its remaining style gates can
+be frozen. The publisher's anechoic release identifies a separate no-playing
+recording and isolated performances, but its available record and read-me give
+no exact timed no-playing interval inside the performance file; a same-file
+positive/rest comparison therefore has no qualified label yet. Do not infer
+no-playing from low RMS and score the current model against that label.
+
+Next work must enter through a genuinely qualified source-bound positive/rest
+packet with disjoint evaluation groups, a distinct justified register cue,
+grounded full-mix musical references, or a substantial new Pythian output
+from another task. The existing tasks own those outcomes; no new task or
+credit is justified by this audit. Preserve the user's cumulative listening
+request at **1/20**, and do not ask for a one-item verdict. The milestone
+ledger remains **69.85%**, **37 open / 25 DONE**.
