@@ -13258,14 +13258,18 @@ the same setup. A frozen private Pascal source gate checked publisher bytes
 before any PCM or presence scoring. The noise-floor WAV matched its published
 size and MD5 but declared **48 kHz** against the publisher-stated and frozen
 **44.1 kHz** geometry. Checked Win32 replay confirmed the exact mismatch and
-zero leaks after a failure-path cleanup fix. The performance WAV was not
-scored. Policy, checker, log and stop record remain under ignored
+zero leaks after a failure-path cleanup fix. Since the exact MD5 authenticated
+the source and no PCM had been opened, one prospectively recorded metadata
+correction expected 48 kHz in both fixed files with all windows and thresholds
+unchanged. The authenticated performance WAV instead declares **44.1 kHz**;
+this second geometry gate also stopped before PCM or presence scoring, with
+zero leaks. Both policies, checker, logs and stop record remain under ignored
 `build/anechoic-presence-source/`. The two unneeded WAVs (69,728,592 bytes)
 also remain there because automatic approval review rejected their deletion;
 they are candidates for the next authorized artifact cleanup.
 
 This source route closes no criterion in [NS-3_notes_05](TODO/NS-3_notes_05.md).
-Do not retune its frozen format/window gate. The task still needs an
+Do not resample or retune its frozen format/window gate again. The task still needs an
 independently supported exact no-instrument interval and source-disjoint
 recorded cases; absence of a score or a publisher label alone remains
 `unknown`. No credit changes: **69.85%**, **37 open / 25 DONE**. The Pythian

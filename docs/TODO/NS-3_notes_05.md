@@ -92,11 +92,15 @@ held-out evidence after a policy change.
   Its exact-size, publisher-MD5-matched noise-floor WAV declares 48 kHz, while
   the prospectively frozen source policy required the publisher-stated
   44.1 kHz/24-bit/16-channel geometry. A checked Pascal Win32 rerun confirmed
-  the mismatch with zero leaks. The gate stopped before PCM, contrast or
-  presence scoring. Private policy and log are
-  under ignored `build/anechoic-presence-source/`. This source supplies no
-  reviewed exact rest, independent group, criterion 3 result or task credit.
-  Stop this source route rather than revising its windows or format gate.
+  the mismatch with zero leaks. Because exact MD5 authenticated the file and
+  no PCM had been opened, one recorded pre-acoustic metadata correction
+  expected 48 kHz in both fixed files while retaining every time window and
+  threshold. The authenticated performance WAV instead declares 44.1 kHz;
+  the corrected same-geometry gate stopped, also before PCM or presence
+  scoring and with zero leaks. Both failed policies and logs are under ignored
+  `build/anechoic-presence-source/`. This source supplies no reviewed exact
+  rest, independent group, criterion 3 result or task credit. Stop here
+  without resampling or another format/window variant.
 - 2026-09-25 source-quality checkpoint: the DEMAND screen below and a second
   read-only [BUT ReverbDB](https://speech.fit.vut.cz/software/but-speech-fit-reverb-database)
   screen both closed no criterion. BUT's [publisher read-me](https://merlin.fit.vutbr.cz/ReverbDB/read_me.txt)
