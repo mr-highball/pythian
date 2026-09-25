@@ -30,6 +30,7 @@ uses
   Classes,
   SysUtils,
   pythian.audio,
+  pythian.hash,
   pythian.music,
   pythian.music.compose,
   pythian.time,
@@ -47,11 +48,179 @@ const
     'C F Am G F Am F G C F Am G F G C C');
   CCandidateTokensHash = 'bb56f52d7a2ca2cb2bd6f0f2d5f3094ecab38810b6b5076587b080de3c438c86';
   CCandidateEventHash = 'bb69726e127085102952321e173e543f4e131de227c3d904394547b463fe3008';
+  CSeed1731EventHash = '8e9d560b302fe7b4edff44400c6ff46ed020136340509fe1f2dd72bc4267baed';
+  CSeed2731EventHash = '33b39cd854446a18cbc019dd950362e58403233ad5e45af2201684a7ae3b479d';
 
 procedure Check(const ACondition: Boolean; const AMessage: String);
 begin
   if not ACondition then
     raise Exception.Create(AMessage);
+end;
+
+function HashUtf8(const AText: UTF8String): String;
+var
+  LBytes: TAudioBytes;
+  LIndex: Integer;
+begin
+  SetLength(LBytes, Length(AText));
+  for LIndex := 1 to Length(AText) do
+    LBytes[LIndex - 1] := Byte(AText[LIndex]);
+  Result := Sha256Bytes(LBytes);
+end;
+
+function SameGate(const ALeft, ARight: TNoteGate): Boolean; forward;
+
+function FindTrackGateInBeat(const ASequence: TNoteSequence;
+  const ATrack, ABeat: Integer; out AGate: TNoteGate): Boolean;
+var
+  LIndex: Integer;
+  LGate: TNoteGate;
+begin
+  Result := False;
+  AGate := Default(TNoteGate);
+  for LIndex := 0 to ASequence.NoteCount - 1 do
+  begin
+    LGate := ASequence.GateAt(LIndex);
+    if (LGate.Track = ATrack) and (LGate.StartTick div 480 = ABeat) then
+    begin
+      AGate := LGate;
+      Exit(True);
+    end;
+  end;
+end;
+
+function ChordDegree(const AChord: TCompositionChord;
+  const APitch: Integer): Integer;
+var
+  LPC: Integer;
+  LRoot: Integer;
+  LThird: Integer;
+  LFifth: Integer;
+begin
+  case AChord of
+    ccC: begin LRoot := 0; LThird := 4; LFifth := 7; end;
+    ccAm: begin LRoot := 9; LThird := 0; LFifth := 4; end;
+    ccF: begin LRoot := 5; LThird := 9; LFifth := 0; end;
+    ccG: begin LRoot := 7; LThird := 11; LFifth := 2; end;
+    ccEm: begin LRoot := 4; LThird := 7; LFifth := 11; end;
+  else
+    raise Exception.Create('Unknown composition chord');
+  end;
+  LPC := APitch mod 12;
+  if LPC = LRoot then
+    Result := 0
+  else if LPC = LThird then
+    Result := 1
+  else if LPC = LFifth then
+    Result := 2
+  else
+    Result := -1;
+end;
+
+procedure CheckSourceFreeSeed(const ASeed: Cardinal;
+  const AExpectedEventHash: String);
+var
+  LSequence: TNoteSequence;
+  LReplay: TNoteSequence;
+  LReport: TCompositionScaffoldReport;
+  LReplayReport: TCompositionScaffoldReport;
+  LIndex: Integer;
+  LGate: TNoteGate;
+  LCadenceParts: array[0..1] of Boolean;
+  LOpeningGate: TNoteGate;
+  LReturnGate: TNoteGate;
+  LSchedule: TCompositionChordSchedule;
+  LBeat: Integer;
+  LOpeningPresent: Boolean;
+  LReturnPresent: Boolean;
+begin
+  LSequence := nil;
+  LReplay := nil;
+  try
+    LSequence := GenerateSourceFreeComposition(ASeed, LReport);
+    Check(LSequence.NoteCount = LReport.EventCount,
+      'Source-free seed event count does not match report');
+    Check((LReport.BarCount = 16) and (LReport.PPQ = 480),
+      'Source-free seed changed fixed geometry');
+    Check((LReport.BassSilentBeats >= 8) and
+      (LReport.MelodySilentBeats >= 8) and
+      (LReport.SimultaneousOverlapBeats >= 16),
+      'Source-free seed missed rest or overlap gates');
+    Check((LReport.ReturnRecallSlots = 28) and
+      (LReport.AuthoredCadenceSlots = 4),
+      'Source-free seed changed return/cadence accounting');
+    if AExpectedEventHash <> '' then
+      Check(HashUtf8(LReport.EventLedger) = AExpectedEventHash,
+        'Accepted source-free event hash changed for seed ' + IntToStr(ASeed));
+    if ASeed = 731 then
+    begin
+      Check(LReport.MelodyProjectionSearchWork > 0,
+        'Seed 731 did not exercise the bounded recall projection path');
+      Check(LReport.MelodyProjectionSearchWork <= 100000,
+        'Seed 731 exceeded the bounded recall projection work limit');
+      LSchedule := DefaultSourceFreeCompositionChordSchedule;
+      for LBeat := 0 to 13 do
+      begin
+        LOpeningPresent := FindTrackGateInBeat(LSequence, 1, LBeat,
+          LOpeningGate);
+        LReturnPresent := FindTrackGateInBeat(LSequence, 1, 48 + LBeat,
+          LReturnGate);
+        Check(LOpeningPresent = LReturnPresent,
+          'Seed 731 return changed A melody attack presence');
+        if LOpeningPresent then
+        begin
+          Check(((LOpeningGate.StartTick mod 480) =
+            (LReturnGate.StartTick mod 480)) and
+            ((LOpeningGate.EndTick - LOpeningGate.StartTick) =
+            (LReturnGate.EndTick - LReturnGate.StartTick)),
+            'Seed 731 return changed A melody onset or duration');
+          Check(ChordDegree(LSchedule[LBeat div 4], LOpeningGate.Pitch) =
+            ChordDegree(LSchedule[(48 + LBeat) div 4], LReturnGate.Pitch),
+            'Seed 731 return changed A projected melody degree');
+        end;
+      end;
+      LCadenceParts[0] := False;
+      LCadenceParts[1] := False;
+      for LIndex := 0 to LSequence.NoteCount - 1 do
+      begin
+        LGate := LSequence.GateAt(LIndex);
+        Check((LGate.StartTick <> 63 * 480),
+          'Seed 731 has a gate on the final silent beat');
+        if (LGate.StartTick = 62 * 480) and (LGate.EndTick = 63 * 480) then
+        begin
+          Check((LGate.Track >= 0) and (LGate.Track <= 1) and
+            ((LGate.Pitch mod 12) = 0),
+            'Seed 731 cadence gate is not on its part root');
+          LCadenceParts[LGate.Track] := True;
+        end;
+      end;
+      Check(LCadenceParts[0] and LCadenceParts[1],
+        'Seed 731 is missing a two-part final C cadence');
+      LReplay := GenerateSourceFreeComposition(ASeed, LReplayReport);
+      Check(LReplayReport.EventLedger = LReport.EventLedger,
+        'Seed 731 event ledger is not deterministic on replay');
+      Check(LReplay.NoteCount = LSequence.NoteCount,
+        'Seed 731 replay changed event count');
+      for LIndex := 0 to LSequence.NoteCount - 1 do
+        Check(SameGate(LSequence.GateAt(LIndex), LReplay.GateAt(LIndex)),
+          'Seed 731 replay changed a note gate');
+      WriteLn('source_free_seed=PASS seed=731 events=', LSequence.NoteCount,
+        ' melody_adjustments=', LReport.MelodyDegreeAdjustments,
+        ' projection_search_work=', LReport.MelodyProjectionSearchWork,
+        ' rests=', LReport.BassSilentBeats, '/', LReport.MelodySilentBeats,
+        ' overlap=', LReport.SimultaneousOverlapBeats);
+    end
+    else
+    begin
+      Check(LReport.MelodyProjectionSearchWork = 0,
+        'Accepted seed unexpectedly used fallback melody projection');
+      WriteLn('source_free_seed_replay=PASS seed=', ASeed,
+        ' event_sha256=', HashUtf8(LReport.EventLedger));
+    end;
+  finally
+    LReplay.Free;
+    LSequence.Free;
+  end;
 end;
 
 function SameGate(const ALeft, ARight: TNoteGate): Boolean;
@@ -121,6 +290,9 @@ var
   LSuccess: Boolean;
 begin
   LSources := BuildSources;
+  CheckSourceFreeSeed(1731, CSeed1731EventHash);
+  CheckSourceFreeSeed(2731, CSeed2731EventHash);
+  CheckSourceFreeSeed(731, '');
   LOutput := GenerateSourceFreeComposition(1731, LCoreReport);
   LBefore := LOutput;
   try

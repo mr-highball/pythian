@@ -12722,3 +12722,43 @@ the previous sequence pointer, every owned gate field and every tempo change.
 Salty Boi's focused checked FPC 3.2.2 Win32/Win64 runs pass with zero unfreed
 blocks. This hardens the maintained boundary but does not replace the pending
 whole-passage verdict or earn task credit.
+
+## Cross-task listening and milestone retrospective — 2026-09-25
+
+The user clarified that the next notification threshold is **20 pending
+listening reviews accumulated across tasks**, rather than 20 distinct tracks
+from the current composition task. Their review time is a parallel resource for
+substantial Pythian output. An ignored 20-track, ten-seed-pair composition plan
+was superseded before producing any new WAV; its first seed, 731, exposed a
+real A/return projection failure. Keep the existing `5.wav` WFC passage as one
+pending cross-task item. The queue ledger belongs under ignored `build/` and
+must identify the task, exact file and what to hear. No new listening prompt is
+due until 20 useful items across task work are ready. Clip 5 is not accepted
+until the user judges the whole passage.
+
+The scorecard remains NS-1 100%, NS-2 100%, NS-3 41%, NS-4 98%, NS-5 27%,
+NS-6 72%; overall 68.95%. NS-3 and NS-5 account for 29.35 of 31.05 remaining
+weighted points. The immediate engineering priority is to protect the accepted
+core, then advance a recorded musical-learning prerequisite whose evidence can
+close an existing criterion. The bounded seed-731 projection repair is now
+complete: source-free melody projection preserves the realized A/return degrees
+by a capped search only when the accepted greedy path fails. Checked FPC 3.2.2
+Win32/Win64 tests pass with 97 events, two adjustments and 67/100,000 search
+nodes; accepted seeds 1731/2731 retain exact event/PCM/WAV hashes on both
+targets, WFC caller replay passes, and Salty Boi found zero leaks. No new WAV
+was added to the listening queue and no task credit changes.
+The note-identity/register and presence paths unlock note events, parts and
+many-hour semantic learning, but their documented source screens are stopped;
+repeating those selectors or adding acoustic statistics alone is not progress.
+The beat-source route likewise needs genuinely attributable pulse evidence.
+The WFC composition task has implementation and QA evidence but waits for one
+listener verdict. The three user-chosen mixes remain later personal style
+tests, not prerequisites to the portable core.
+
+At the next task-selection checkpoint, prefer a genuinely independent,
+prospectively frozen recorded-note or context evidence route with a criterion-
+closing decision. If no such source is qualified, record the external blocker
+and select another ready core task. Each new listening item must come from a
+different substantive task result or a distinct musical question that advances
+an actual criterion. Do not manufacture tracks solely to reach the batch size,
+do not count prior reviewed clips, and do not award credit for a queued item.

@@ -67,6 +67,17 @@ reachability before a solve; it must not retune that stopped candidate.
 
 **Dev Notes:**
 
+- 2026-09-25 a superseded single-task listening packet attempted source-free
+  seed 731 before producing any new WAV and exposed a real A/return melody
+  projection failure. The portable composer now retains the accepted greedy
+  output for seeds 1731/2731 and uses bounded chord-degree projection search
+  when that path would lose the projected A/return recall. Checked Win32/Win64
+  seed-731 tests pass with 97 events, two degree adjustments and 67 of 100,000
+  allowed search nodes; they check realized degrees, timing, cadence and replay.
+  Salty Boi verified the two accepted seeds' exact event/PCM/WAV hashes and the
+  maintained WFC caller path, with zero leaks. This repairs core reliability,
+  produces no new listening item and grants no task credit. The user's next
+  listening batch is cumulative across tasks, with `5.wav` still pending.
 - 2026-09-25 task-flow gap: the accepted passage is source-free and musically
   reviewed, but its report explicitly has `LearnedWfc=False`; the remaining
   recorded integration cannot substitute for a core WFC-composed passage while

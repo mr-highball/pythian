@@ -37,6 +37,16 @@ the default route to a benchmark. Keep unsupported exact-window claims
 judge substantial **Pythian-synthesized outputs**, where their musical hearing
 can shape the library, rather than repeatedly judging third-party recordings.
 
+Accumulate the next listening request across tasks. Queue substantial,
+individually useful Pythian outputs as the related task reaches a real musical
+checkpoint, and notify the user only after at least 20 pending review items
+have accumulated in total. Do not fill the quota with seed variants or paired
+edits of one task. Keep numbered WAVs and their exact task, identity, and
+listening question in an ignored build ledger; remove reviewed feedback files
+after recording the verdict. Continue independent engineering and task selection
+while the user's listening time is unavailable. A queued clip is evidence to
+review, not acceptance or earned task credit.
+
 NS-1's accepted extraction/independence baseline is already complete. Do not
 manufacture historical DONE files or repeat completed work to populate folders.
 Core independence, Pascal ownership, retained WFC boundaries, complete notices,

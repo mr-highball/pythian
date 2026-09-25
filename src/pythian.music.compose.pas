@@ -57,6 +57,7 @@ type
     MelodySilentBeats: Integer;
     SimultaneousOverlapBeats: Integer;
     MelodyDegreeAdjustments: Integer;
+    MelodyProjectionSearchWork: Integer;
     SeedGeneratedBaseASlots: Integer;
     FormDerivedAprimeSlots: Integer;
     FormDerivedBForcedSlots: Integer;
@@ -101,6 +102,7 @@ const
   CPhraseBeats = 16;
   CSampleRate = 44100;
   CMaximumNotes = 128;
+  CMaximumReturnProjectionNodes = 100000;
 
 type
   TChord = TCompositionChord;
@@ -458,6 +460,136 @@ begin
   end;
 end;
 
+function HasReturnDegreeRecall(const AActions: TPassageActions): Boolean;
+var
+  LBeat: Integer;
+begin
+  Result := True;
+  for LBeat := 0 to 13 do
+  begin
+    if (AActions[1][LBeat].Present <>
+      AActions[1][3 * CPhraseBeats + LBeat].Present) or
+      (AActions[1][LBeat].Present and
+      (AActions[1][LBeat].Degree <>
+       AActions[1][3 * CPhraseBeats + LBeat].Degree)) then
+    begin
+      Exit(False);
+    end;
+  end;
+end;
+
+function TryProjectWithReturnRecall(var AActions: TPassageActions;
+  const APlannedActions: TPassageActions;
+  const ASchedule: TCompositionChordSchedule;
+  out AConstraintDegreeAdjustments, AVisitedNodes: Integer): Boolean;
+var
+  LWork: TPassageActions;
+  LOpeningDegrees: array[0..13] of Integer;
+  LNodes: Integer;
+  LFound: Boolean;
+
+  function Search(const ABeat, APreviousPitch: Integer): Boolean;
+  var
+    LAction: TAction;
+    LChord: TChord;
+    LBaseDegree: Integer;
+    LChoice: Integer;
+    LChoiceCount: Integer;
+    LDegree: Integer;
+    LPitch: Integer;
+    LOffset: Integer;
+    LIndex: Integer;
+    LAprimeChanges: Integer;
+    LBChanges: Integer;
+  begin
+    if LNodes >= CMaximumReturnProjectionNodes then
+      Exit(False);
+    Inc(LNodes);
+    if ABeat >= CBeatsPerPassage then
+    begin
+      LAprimeChanges := 0;
+      LBChanges := 0;
+      for LIndex := 0 to CPhraseBeats - 1 do
+      begin
+        if LWork[1][LIndex].Present and
+          LWork[1][CPhraseBeats + LIndex].Present and
+          (LWork[1][LIndex].Degree <>
+           LWork[1][CPhraseBeats + LIndex].Degree) then
+          Inc(LAprimeChanges);
+        if LWork[1][LIndex].Present and
+          LWork[1][2 * CPhraseBeats + LIndex].Present and
+          (LWork[1][LIndex].Degree <>
+           LWork[1][2 * CPhraseBeats + LIndex].Degree) then
+          Inc(LBChanges);
+      end;
+      Exit((LAprimeChanges >= 2) and (LBChanges > 0));
+    end;
+    LAction := APlannedActions[1][ABeat];
+    if not LAction.Present then
+      Exit(Search(ABeat + 1, APreviousPitch));
+
+    LChord := ChordAtBeat(ABeat, ASchedule);
+    LBaseDegree := LAction.Degree;
+    LChoiceCount := 3;
+    if (ABeat >= 3 * CPhraseBeats) and (ABeat < 4 * CPhraseBeats) then
+    begin
+      LOffset := ABeat - 3 * CPhraseBeats;
+      if LOffset < 14 then
+      begin
+        LChoiceCount := 1;
+        LBaseDegree := LOpeningDegrees[LOffset];
+      end;
+    end;
+    if ABeat = 62 then
+    begin
+      LChoiceCount := 1;
+      LBaseDegree := 0;
+    end;
+
+    for LChoice := 0 to LChoiceCount - 1 do
+    begin
+      if LChoiceCount = 1 then
+        LDegree := LBaseDegree
+      else
+        LDegree := (LBaseDegree + LChoice) mod 3;
+      if not TryMelodyPitch(LChord, LDegree, APreviousPitch, LPitch) then
+        Continue;
+      LWork[1][ABeat].Degree := LDegree;
+      LWork[1][ABeat].Pitch := LPitch;
+      if ABeat < 14 then
+        LOpeningDegrees[ABeat] := LDegree;
+      if Search(ABeat + 1, LPitch) then
+        Exit(True);
+    end;
+    Result := False;
+  end;
+
+var
+  LBeat: Integer;
+begin
+  Result := False;
+  AConstraintDegreeAdjustments := 0;
+  AVisitedNodes := 0;
+  LWork := AActions;
+  for LBeat := 0 to CBeatsPerPassage - 1 do
+  begin
+    LWork[1][LBeat].Degree := APlannedActions[1][LBeat].Degree;
+    LWork[1][LBeat].Pitch := -1;
+  end;
+  FillChar(LOpeningDegrees, SizeOf(LOpeningDegrees), $FF);
+  LNodes := 0;
+  LFound := Search(0, 67);
+  AVisitedNodes := LNodes;
+  if not LFound then
+    Exit;
+  AActions := LWork;
+  for LBeat := 0 to CBeatsPerPassage - 1 do
+    if AActions[1][LBeat].Present and
+      (AActions[1][LBeat].Degree <> APlannedActions[1][LBeat].Degree) then
+      Inc(AConstraintDegreeAdjustments);
+  Result := True;
+end;
+
 function CountSilentBeats(const AActions: TPartActions): Integer;
 var
   LBeat: Integer;
@@ -644,7 +776,7 @@ begin
       'B must vary contour in each part');
     for LBeat := 0 to 13 do
     begin
-      LExpected := LA[LBeat];
+      LExpected := AActions[LPart][LBeat];
       LActual := AActions[LPart][3 * CPhraseBeats + LBeat];
       Require((LExpected.Present = LActual.Present) and
         (not LExpected.Present or
@@ -839,6 +971,9 @@ begin
   AppendLine(AReport.Text, 'overlap_beat_slots=' + IntToStr(AReport.SimultaneousOverlapBeats));
   AppendLine(AReport.Text, 'melody_degree_constraint_adjustments=' +
     IntToStr(AReport.MelodyDegreeAdjustments));
+  AppendLine(AReport.Text, 'melody_projection_search_work=' +
+    IntToStr(AReport.MelodyProjectionSearchWork) +
+    ';max_nodes=' + IntToStr(CMaximumReturnProjectionNodes));
   AppendLine(AReport.Text, 'seed_generated_base_A_slots=' +
     IntToStr(AReport.SeedGeneratedBaseASlots) + '/128');
   AppendLine(AReport.Text, 'form_derived_Aprime_slots=' +
@@ -887,6 +1022,7 @@ function GenerateWithChordSchedule(const ASchedule: TCompositionChordSchedule;
   out AReport: TCompositionScaffoldReport): TNoteSequence;
 var
   LActions: TPassageActions;
+  LPlannedActions: TPassageActions;
   LCount: Integer;
   LPart: Integer;
   LBeat: Integer;
@@ -922,7 +1058,22 @@ begin
   end;
   try
     GeneratePassageActions(ASeed, LActions);
+    LPlannedActions := LActions;
     ProjectPitches(LActions, ASchedule, AReport.MelodyDegreeAdjustments);
+    if not HasReturnDegreeRecall(LActions) then
+    begin
+      if not TryProjectWithReturnRecall(LActions, LPlannedActions,
+        ASchedule, AReport.MelodyDegreeAdjustments,
+        AReport.MelodyProjectionSearchWork) then
+      begin
+        if AReport.MelodyProjectionSearchWork >=
+          CMaximumReturnProjectionNodes then
+          raise EAudio.Create('Bounded return-recall projection exhausted ' +
+            IntToStr(CMaximumReturnProjectionNodes) + ' search nodes');
+        raise EAudio.Create('No chord-tone path preserves return recall and ' +
+          'the seven-semitone melody bound');
+      end;
+    end;
     ValidateActions(LActions, ASchedule, AReport);
     LCount := 0;
     for LPart := 0 to 1 do
