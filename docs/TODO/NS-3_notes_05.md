@@ -75,6 +75,16 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-25 MAESTRO's aligned acoustic Disklavier recordings provide a
+  possible same-recording opening rest in a fresh source packet: the publisher
+  describes one second of padding around MIDI-silence segmentation, and four
+  development-exposed originals have their first key strike near 1.0 s with
+  nonzero low-level PCM in [0.0, 0.5) s. This does **not** establish an exact
+  no-audible-instrument label. The publisher notes non-musical sounds and
+  instrument testing around cuts; absence of key events plus low RMS cannot
+  promote the interval to `reviewed` under `PRESENCE.md`. Salty Boi confirmed
+  this boundary. No presence scorer ran and criterion 3 remains open; a fresh
+  source-bound acoustic rest label is still required.
 - 2026-09-25 one bounded [Fraunhofer isolated-bass source](https://www.idmt.fraunhofer.de/en/publications/datasets/bass.html)
   screen stopped at publisher metadata. The dataset documents recorded
   single notes, instruments and pickups, but no exact instrument-free

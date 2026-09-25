@@ -13,6 +13,37 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Independent physical-beat search and tracker capacity — 2026-09-25
+
+Following the user's request to find the missing source evidence, ASAP v1.1
+and MAESTRO v2.0.0 supplied four linked acoustic-piano performances with
+independent beat labels and directly captured key strikes. Pascal verified the
+selected source members and original-MIDI identity. Original PCM contrast at
+matched strikes supported 11, 12, 13 and 9 annotated beats in the four
+first-30-second pieces, with at least three per half. These source-positive
+counts are concrete progress toward `NS-3_tempo_04`, and all unmatched beats
+remain unknown. The same fixed tracker produced a report for the first nominal
+challenge but hit its 64-million-unit aggregate fit cap on the second. No
+candidate recall was scored.
+
+Salty Boi's QA verified the retained support logs and found a prospective
+evidence limit: the final ignored policy write followed extraction of the
+nominal challenge audio, and no earlier policy snapshot survives. The cohort
+is development-exposed; neither challenge acceptance nor task credit can be
+claimed. The ignored `build/asap-beat-reference/RESULT.md` retains the
+counts, report identity, failure log and exact limitation. The next bounded
+beat deliverable is a source-independent capacity correction with a preserved
+work bound, then a newly frozen, source-separated recorded evaluation. The
+existing `NS-3_tempo_04` owns this work; no new task or credit is needed.
+
+For generic note presence, the same original WAVs begin with low-level PCM
+before the first key strike. The MAESTRO publisher describes padding around
+MIDI-silence cuts, but does not independently label those exact acoustic
+windows free of audible instrument. Salty Boi rejected promoting a MIDI gap
+to `reviewed` rest. `NS-3_notes_05` and its recorded criterion remain open.
+The cross-task pending Pythian listening queue stays **0/20**. Overall
+completion remains **70.20%**, with **36 open / 27 DONE** tasks.
+
 ## Independent drum-source screen — 2026-09-23
 
 Ticket Guy completed one frozen, metadata-only Pascal screen of the

@@ -51,6 +51,27 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
 
 **Dev Notes:**
 
+- 2026-09-25 user-directed ASAP/MAESTRO source search found a more usable
+  physical-beat source: ASAP v1.1 beat labels link to original MAESTRO v2.0.0
+  acoustic Disklavier WAV and directly captured MIDI. Pascal ZIP/member checks
+  and original-MIDI byte matches passed on four distinct works. In the exact
+  first 30 seconds, source MIDI plus original-PCM attack contrast supports
+  11/15 and 12/42 annotated beats in development, and 13/21 and 9/14 in the
+  two nominal challenge works; all four clear the intended 8-total/3-per-half
+  source floor. Unsupported beats remain `unknown`. Salty Boi verified the
+  retained logs but found that the final ignored policy file was written after
+  the challenge WAVs and crops were extracted, with no earlier policy hash or
+  snapshot. Therefore this packet cannot prove prospective challenge source
+  qualification; all four works are development-exposed. The fixed current
+  checked Win32 tracker saved a report for the first nominal challenge, then
+  reported `Beat tracking exceeds aggregate fit budget` for the second,
+  leaving no report. No reference-selected rate, candidate recall, recorded
+  criterion or task credit follows. The ignored
+  `build/asap-beat-reference/RESULT.md` records identities, counts, logs, QA
+  limitation and the preserved failure. Next: correct candidate capacity
+  under an explicit bounded-work contract using source-independent controls,
+  then use a new prospectively snapshotted source-separated pair. Do not
+  retune this exposed pair to claim acceptance.
 - 2026-09-25 task-flow split: prior notes saying original criteria 4–5 closed
   describe the maintained authored-control pool, link and consumer now owned
   by [NS-3_tempo_05](DONE/NS-3_tempo_05.md). They do not close this task's recorded
