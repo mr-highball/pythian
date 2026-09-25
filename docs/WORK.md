@@ -13176,3 +13176,17 @@ of the requested **20**, not 20 variants of one task. Other ready tasks have no
 substantial new Pythian output yet. Continue independent work when new
 evidence can close an actual acceptance boundary; preserve the current
 listening queue and do not claim NS-4 closure without the verdict.
+
+## Presence-source quality checkpoint — 2026-09-25
+
+Two read-only source screens since the core retrospective closed no acceptance
+criterion in [NS-3_notes_05](TODO/NS-3_notes_05.md). DEMAND names outdoor noise
+scenes; BUT ReverbDB separately records room background `silence`, but its
+publisher does not certify exact-window absence of audible instruments and
+notes a radio in one office setup. Neither archive was acquired or scored.
+Stop publisher-label-only noise/room source hunting. The external unblock is
+an independently reviewed exact generic no-instrument interval in a
+source-separated recording; absent that, preserve `unknown` and the existing
+decision rule. Recorded note presence, downstream phrases and style work stay
+open. No task credit changes: **69.65%**, **37 open / 24 DONE**; the genuine
+cross-task Pythian listening queue remains **1/20**.

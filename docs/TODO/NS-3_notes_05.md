@@ -75,6 +75,18 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-25 source-quality checkpoint: the DEMAND screen below and a second
+  read-only [BUT ReverbDB](https://speech.fit.vut.cz/software/but-speech-fit-reverb-database)
+  screen both closed no criterion. BUT's [publisher read-me](https://merlin.fit.vutbr.cz/ReverbDB/read_me.txt)
+  labels separate `silence` WAVs as recorded room background noise, which is
+  stronger playback provenance than a named outdoor scene. It does not certify
+  generic no-audible-instrument status for any exact window; the publisher also
+  warns of a radio in one office setup. The official archive is 9,308,593,693
+  bytes by HTTP HEAD and was not acquired. Stop publisher-label-only noise or
+  room-source screens. The next action requires an independently reviewed exact
+  no-instrument interval from a source-separated group before a recorded
+  decision/calibration run; retain `unknown` until that evidence exists. No
+  task credit or listening request follows from either screen.
 - 2026-09-25 DEMAND nature-noise source screen stopped before acquisition.
   The [publisher record](https://zenodo.org/records/1227121) and its
   [source description](https://zenodo.org/records/1227121/files/DEMAND.pdf?download=1)
