@@ -73,8 +73,9 @@ type
 
 function DefaultBeatTrackOptions(const ASampleRate: Integer): TBeatTrackOptions;
 
-{ Detached scalar windows for optional continuous-clock reconstruction. Copies
-  only the explicit selection, preserving missing candidates and path restarts.
+{ Detached scalar windows for optional continuous-clock reconstruction. Each
+  window links its selection to the caller's retained track candidate pool,
+  including -1 for a missing selection; alternatives remain with that pool.
   Source bounds and pulse geometry are validated by ReconstructBeatClock. }
 function SelectedBeatClockWindows(const AWindows: TBeatTrackWindows): TBeatClockWindows;
 
@@ -153,6 +154,9 @@ begin
     end;
     LResult[LIndex].OwnerStartFrame := AWindows[LIndex].OwnerStartFrame;
     LResult[LIndex].OwnerEndFrame := AWindows[LIndex].OwnerEndFrame;
+    LResult[LIndex].HasTrackSelection := True;
+    LResult[LIndex].TrackWindowIndex := LIndex;
+    LResult[LIndex].SelectedCandidateIndex := LChoice;
     LResult[LIndex].HasPulse := LChoice >= 0;
     LResult[LIndex].StartsNewRun := AWindows[LIndex].StartsNewPath;
     if LChoice >= 0 then

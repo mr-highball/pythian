@@ -12762,3 +12762,50 @@ and select another ready core task. Each new listening item must come from a
 different substantive task result or a distinct musical question that advances
 an actual criterion. Do not manufacture tracks solely to reach the batch size,
 do not count prior reviewed clips, and do not award credit for a queued item.
+
+## Source-screen stop and candidate-boundary switch — 2026-09-25
+
+Two bounded source checks after the retrospective failed before scoring and
+close no acceptance criterion. For `NS-3_tempo_04`, the BeatNet+ paper describes
+manually corrected beat/downbeat annotations for MUSDB18 and URSing, which
+have isolated stems, but the current public repository's root and recursive
+tree contain no `annotations/` directory or `.beats` file. MUSDB18 also
+requires academic-use access. No audio or annotation was downloaded, and no
+predicted beat was treated as independent reference. For `NS-3_notes_01`, a
+frozen four-file University of Iowa flute C4/C5 contrast acquired exact
+publisher-linked AIFF and converted WAV bytes under ignored
+`build/register-iowa-cycle/`. The first checked Pascal source gate stopped at
+44.1-kHz PCM24 stereo against the prospective 96-kHz requirement, before
+activity or cycle scoring. The private error-path cleanup was repaired and
+the unchanged gate reran with zero leaks. The other files were not scored.
+
+These are two nonclosing source-only batches, so stop this investigation
+sequence under task flow. The changed next action is a focused audit of the
+already maintained Pascal beat-candidate pool and its caller-visible source,
+policy and replay boundary against `NS-3_tempo_04` criterion 4. Implement the
+smallest missing usable boundary if the audit finds one; do not reopen a new
+recorded-source hunt from these failed screens. The task and overall completion
+remain unchanged, and the cross-task listening queue stays at 1/20.
+
+## Beat candidate provenance boundary — 2026-09-25
+
+The focused post-screen batch closed [NS-3_tempo_04](TODO/NS-3_tempo_04.md)
+criterion 4. `SelectedBeatClockWindows` now keeps an explicit 0-based source
+track-window index and selected candidate index (`-1` for a gap) with the
+detached clock input. The track retains all unused candidate alternatives.
+The maintained WAV report already binds source SHA-256, frame geometry,
+measurement and selection policies, full candidates and selection; clock
+segments refer to the same ordered windows. The new native fields make that
+link visible to direct Pascal callers, with no confidence or musical-pulse
+admission. Checked FPC 3.2.2 Win32/Win64 clock tests pass selection identity,
+source owners, gap, replay, detachment and invalid-index preservation. Both
+`pythian.beats` and the WFC context-track consumer rebuild on both targets.
+Salty Boi's read-only QA found no criterion-4 blocker. Clock JSON relies on
+the adjacent track window list for its pool link rather than duplicating it.
+
+This criterion closure resets the consecutive nonclosing-batch count. The
+recorded candidate challenge and complete task acceptance remain open, so
+the scorecard stays at **68.95%**, with **37 open tasks**. The next useful
+step needs attributable source-pulse evidence or another ready recorded
+learning prerequisite; do not resume the two stopped source screens. The
+cross-task listening queue remains **1/20**.

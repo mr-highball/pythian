@@ -49,6 +49,31 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
 
 **Dev Notes:**
 
+- 2026-09-25 criterion 4 closes at the composed maintained Pascal boundary.
+  `SelectedBeatClockWindows` now carries the exact track-window and selected
+  candidate indices, including `-1` for a gap, without discarding the caller's
+  retained alternatives. The source-bound WAV report already records source
+  SHA-256, geometry, grid/track/clock policies, the full candidate pool and
+  selected indices, with clock segments referring to the same window order.
+  Checked FPC 3.2.2 Win32/Win64 clock fixtures verify selected index 1 of two
+  distinct candidates, source owners, gap, replay, detachment and invalid-index
+  failure preservation; both affected CLI consumers rebuild on both targets.
+  Salty Boi's focused read-only QA found no criterion-4 blocker. The clock JSON
+  resolves through adjacent track windows rather than repeating the link.
+  Candidate availability on a qualified recorded challenge (criteria 1–3) and
+  final changed-path acceptance (criterion 5) remain open; no task credit.
+- 2026-09-25 a read-only alternative-source check found that the
+  [BeatNet+ authors](https://reference-global.com/article/10.5334/tismir.198?tab=article)
+  describe manually corrected beat/downbeat annotations for MUSDB18 and
+  URSing, which have isolated audio stems. The current public
+  [BeatNet+ repository](https://github.com/mjhydri/BeatNet-Plus)
+  tree contains no `annotations/` directory or `.beats` files,
+  despite the paper's release link; MUSDB18 audio also requires a separate
+  academic-use access request. Stop this route before downloading, source
+  scoring or using predicted beats as independent truth. No recorded pulse
+  challenge or criterion closes. Reassess the existing maintained candidate
+  pool boundary with current authored evidence instead of another speculative
+  source screen.
 - 2026-09-24 QA found a report-only limitation in the stopped GuitarSet
   qualifier: 21 beat rows without an event inside the 30-ms match radius store
   `High(Int64)` in `nearest_signed_error_frames` instead of the exact nearest

@@ -450,17 +450,42 @@ begin
   Check((Length(LOther.Frames) = 0) and (Length(LOther.Segments) = 0), 'All missing remains empty');
 
   SetLength(LTrack, 2);
+  LTrack[0].OwnerStartFrame := 0;
+  LTrack[0].OwnerEndFrame := 1000;
   LTrack[0].SelectedCandidate := -1;
-  LTrack[1].SelectedCandidate := 0;
+  LTrack[1].OwnerStartFrame := 1000;
+  LTrack[1].OwnerEndFrame := 2000;
   LTrack[1].StartsNewPath := True;
-  SetLength(LTrack[1].Analysis.Candidates, 1);
-  LTrack[1].Analysis.Candidates[0].PeriodFrames := 500;
+  SetLength(LTrack[1].Analysis.Candidates, 2);
+  LTrack[1].SelectedCandidate := 1;
+  LTrack[1].Analysis.Candidates[0].PeriodFrames := 250;
+  LTrack[1].Analysis.Candidates[1].PeriodFrames := 500;
+  LTrack[1].Analysis.Candidates[1].PhaseFrame := 1100;
   LConverted := SelectedBeatClockWindows(LTrack);
   Check(not LConverted[0].HasPulse and LConverted[1].StartsNewRun and
-    (LConverted[1].PeriodFrames = 500), 'Track adapter preserves missing selection and restart');
+    (LConverted[1].PeriodFrames = 500) and
+    LConverted[0].HasTrackSelection and (LConverted[0].TrackWindowIndex = 0) and
+    (LConverted[0].SelectedCandidateIndex = -1) and
+    LConverted[1].HasTrackSelection and (LConverted[1].TrackWindowIndex = 1) and
+    (LConverted[1].SelectedCandidateIndex = 1) and
+    (LConverted[1].OwnerStartFrame = LTrack[1].OwnerStartFrame) and
+    (LConverted[1].OwnerEndFrame = LTrack[1].OwnerEndFrame) and
+    (LConverted[1].PeriodFrames =
+      LTrack[LConverted[1].TrackWindowIndex].Analysis.Candidates[
+        LConverted[1].SelectedCandidateIndex].PeriodFrames) and
+    (LConverted[1].PhaseFrame =
+      LTrack[LConverted[1].TrackWindowIndex].Analysis.Candidates[
+        LConverted[1].SelectedCandidateIndex].PhaseFrame),
+    'Track adapter preserves exact pool selection, missing selection and restart');
+  LWindows := SelectedBeatClockWindows(LTrack);
+  Check((LWindows[1].SelectedCandidateIndex = LConverted[1].SelectedCandidateIndex) and
+    (LWindows[1].PeriodFrames = LConverted[1].PeriodFrames),
+    'Track selection projection replays');
   LConverted[1].PeriodFrames := 999;
-  Check(LTrack[1].Analysis.Candidates[0].PeriodFrames = 500, 'Track conversion detached');
-  LTrack[1].SelectedCandidate := 1;
+  Check((LTrack[1].Analysis.Candidates[1].PeriodFrames = 500) and
+    (LTrack[1].Analysis.Candidates[0].PeriodFrames = 250),
+    'Track conversion detached and unused alternative retained');
+  LTrack[1].SelectedCandidate := 2;
   LRejected := False;
   try
     LConverted := SelectedBeatClockWindows(LTrack);
@@ -470,7 +495,9 @@ begin
       LRejected := True;
     end;
   end;
-  Check(LRejected and (LConverted[1].PeriodFrames = 999), 'Invalid selection preserves conversion');
+  Check(LRejected and (LConverted[1].PeriodFrames = 999) and
+    (LConverted[1].SelectedCandidateIndex = 1),
+    'Invalid selection preserves conversion and provenance');
   WriteLn('PASS public clock bounds, failure preservation, ownership, alignment gaps/restarts and selection adapter');
 end;
 var

@@ -107,6 +107,19 @@ variation is authorized by the existing evidence.
 
 **Dev Notes:**
 
+- 2026-09-25 an independently published
+  [Iowa flute C4/C5 single-note](https://theremin.music.uiowa.edu/MIS-Pitches-2012/MISFlute2012.html)
+  contrast stopped before any pitch scoring. Four `ff` vibrato/nonvibrato
+  AIFF files were downloaded and converted to WAV by an external converter,
+  with all bytes hash-bound under ignored `build/register-iowa-cycle/`. The
+  prospectively frozen Pascal cycle-observation gate required 96-kHz PCM24;
+  the first publisher-linked file decoded as 44.1-kHz PCM24 stereo, so the
+  fixed source gate failed before any activity or register feature ran. A
+  private exceptional-exit leak was repaired; the unchanged geometry gate
+  reran checked FPC 3.2.2 Win32 with zero leaks. Do not reinterpret the site's
+  general post-2012 24/96 description as this member's actual geometry,
+  retune the gate, or credit this attempt as independent register evidence.
+  The cycle rule remains untested, not rejected on physical separation.
 - 2026-09-23 NSynth octave-source gate stopped: a
   [metadata-only Pascal inventory](../PHRASE-EVALUATION.md#nsynth-acoustic-flute-octave-inventory-stopped--2026-09-23)
   checked exact same-instrument acoustic-flute octave pairs in the approved

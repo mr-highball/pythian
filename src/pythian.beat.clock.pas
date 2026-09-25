@@ -49,6 +49,11 @@ type
   TBeatClockWindow = record
     OwnerStartFrame: Integer;
     OwnerEndFrame: Integer;
+    { Set by SelectedBeatClockWindows only. Indices address the caller's retained
+      track window and its candidate pool; -1 is an explicit missing selection. }
+    HasTrackSelection: Boolean;
+    TrackWindowIndex: Integer;
+    SelectedCandidateIndex: Integer;
     HasPulse: Boolean;
     StartsNewRun: Boolean;
     FirstObservationFrame: Integer;
