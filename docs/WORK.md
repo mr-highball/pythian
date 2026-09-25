@@ -30,6 +30,14 @@ ARTBeaT 02/04 windows or close `NS-3_tempo_04`; no beat scoring, TensorFlow or
 other inference runtime ran. Do not expand this into another source sweep while
 the current note-render listening decision is pending.
 
+**Later disposition (2026-09-24):** that listening dependency was resolved,
+and the selected paired audio was acquired and tested under a separate frozen
+gate. The development recording reached only 770/1,807 matched MIDI attacks
+within 30 ms (42.6121%), below its 80% source-coverage minimum. The GMD
+acoustic route is stopped; its full result and exact source identities are in
+[NS-3_tempo_04](TODO/NS-3_tempo_04.md) and ignored
+`build/gmd-pulse-audio/`. Do not reopen it from this older metadata screen.
+
 ## Physical pickup presence source stop — 2026-09-23
 
 One distinct, prospectively frozen source strategy used GuitarSet's original
