@@ -37,6 +37,8 @@ the entire manifest with one command:
 & 'build/<target>/pythian.label.catalog.exe' list 'D:\path\to\catalog'
 & 'build/<target>/pythian.label.catalog.exe' waveform 'D:\path\to\catalog' SOURCE_SHA256 START_FRAME END_FRAME BINS
 & 'build/<target>/pythian.label.catalog.exe' audio 'D:\path\to\catalog' SOURCE_SHA256 START_FRAME END_FRAME 'D:\path\to\region.wav'
+& 'build/<target>/pythian.label.catalog.exe' review 'D:\path\to\catalog' 'D:\path\to\transaction.json'
+& 'build/<target>/pythian.label.catalog.exe' history 'D:\path\to\catalog' SOURCE_SHA256 FIRST_REVISION COUNT
 ```
 
 The import report gives each track an `imported`, `duplicate`, or `failed`
@@ -58,6 +60,46 @@ in pages. `audio` emits an original-region PCM16 listening WAV for at most
 30 seconds and 16 MiB; it stages the output before publication and refuses to
 replace an existing file. Both read the source sequentially in bounded blocks.
 
+`review` currently accepts one explicit label edit per transaction. The
+transaction must name the original source hash, expected revision and reviewer.
+Its `change` names a stable `label_id`, a half-open source-frame span, label
+`type`, `value` and `status`:
+
+```json
+{
+  "version": 1,
+  "source_sha256": "lowercase-64-character-sha256-of-the-prepared-wav",
+  "expected_revision": 0,
+  "reviewer": "operator-id",
+  "change": {
+    "label_id": "note-1",
+    "type": "note",
+    "value": "C4",
+    "status": "approved",
+    "start_frame": 1000,
+    "end_frame": 2000,
+    "pitch_midi": 60,
+    "part": "lead"
+  }
+}
+```
+
+Supported types are `beat`, `downbeat`, `note`, `presence`, `part_role`,
+`source_role`, `phrase`, `section`, `style_preference`, and versioned `ext.*`
+types. `presence` values are `audible`, `rest`, or `unknown`. Status is
+`approved`, `uncertain`, `rejected`, or `withdrawn`. Rejection requires a
+`proposal_id`. Reusing a `label_id` with the next expected revision edits its
+state; restoring an earlier state is another auditable edit. Each successful
+review is an immutable `reviews/<source hash>/<revision>.json` file. The
+`history` command pages through those events. Source bytes are SHA-256 checked
+before every current CLI edit, which is costly for multi-hour recordings; the
+future persistent service needs a safely retained verification cache.
+
+These commands exercise storage and schema, not an operator-approved corpus.
+No review event is produced automatically during import. The CLI does not yet
+verify that a supplied `proposal_id` exists, project current label state,
+export reviewed labels, or provide blind evaluation and browser controls.
+
 The native HTTP service and its waveform and region-audio endpoints, proposals,
-review history, reviewed export, and pas2js interface remain work in the linked
-tasks. Do not train from the source records alone.
+review projections, reviewed export, and pas2js interface remain work in the
+linked tasks. Do not train from source records or test review events alone.

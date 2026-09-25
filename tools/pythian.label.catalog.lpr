@@ -30,8 +30,10 @@ uses
   Classes,
   SysUtils,
   fpjson,
+  jsonparser,
   pythian.tools.annotations.catalog,
-  pythian.tools.annotations.media;
+  pythian.tools.annotations.media,
+  pythian.tools.annotations.review;
 
 var
   LReport: TJSONObject;
@@ -42,6 +44,11 @@ var
   LOutputPath: String;
   LStagePath: String;
   LGuid: TGUID;
+  LInput: TFileStream;
+  LText: String;
+  LData: TJSONData;
+  LFirstRevision: Integer;
+  LMaximumCount: Integer;
 begin
   try
     if (ParamCount = 3) and (ParamStr(1) = 'import') then
@@ -102,12 +109,49 @@ begin
       end;
       Exit;
     end
+    else if (ParamCount = 3) and (ParamStr(1) = 'review') then
+    begin
+      LInput := TFileStream.Create(ParamStr(3),
+        fmOpenRead or fmShareDenyWrite);
+      try
+        if (LInput.Size <= 0) or (LInput.Size > 16384) then
+        begin
+          raise Exception.Create('Review transaction file exceeds size bound');
+        end;
+        SetLength(LText, Integer(LInput.Size));
+        LInput.ReadBuffer(LText[1], Length(LText));
+      finally
+        LInput.Free;
+      end;
+      LData := GetJSON(LText);
+      try
+        if LData.JSONType <> jtObject then
+        begin
+          raise Exception.Create('Review transaction must be an object');
+        end;
+        LReport := CommitCatalogReview(ParamStr(2), TJSONObject(LData));
+      finally
+        LData.Free;
+      end;
+    end
+    else if (ParamCount = 5) and (ParamStr(1) = 'history') then
+    begin
+      if not TryStrToInt(ParamStr(4), LFirstRevision) or
+        not TryStrToInt(ParamStr(5), LMaximumCount) then
+      begin
+        raise Exception.Create('Invalid review history page argument');
+      end;
+      LReport := ReadCatalogReviewHistory(ParamStr(2), ParamStr(3),
+        LFirstRevision, LMaximumCount);
+    end
     else
     begin
       WriteLn(StdErr, 'Usage: pythian.label.catalog import INBOX_DIR CATALOG_DIR');
       WriteLn(StdErr, '       pythian.label.catalog list CATALOG_DIR');
       WriteLn(StdErr, '       pythian.label.catalog waveform CATALOG_DIR HASH START END BINS');
       WriteLn(StdErr, '       pythian.label.catalog audio CATALOG_DIR HASH START END OUTPUT.wav');
+      WriteLn(StdErr, '       pythian.label.catalog review CATALOG_DIR TRANSACTION.json');
+      WriteLn(StdErr, '       pythian.label.catalog history CATALOG_DIR HASH FIRST COUNT');
       ExitCode := 2;
       Exit;
     end;

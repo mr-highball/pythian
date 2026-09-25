@@ -97,6 +97,32 @@ The original untracked source was not touched. Retain this cleanup item for the
 user's approved route; do not run alternate deletion methods to bypass the
 review. The cross-task listening queue remains **0/20**.
 
+## Review history boundary — 2026-09-25
+
+The native catalog now accepts one explicit human-review edit per transaction
+and stores each revision as a new immutable JSON event. The event includes
+source identity/group/rate, provenance/license, exact half-open source-frame
+coordinates, label type/value, reviewer, status and revision. Supported schema
+forms include beat/downbeat, note with MIDI pitch, audible/rest/unknown
+presence, part/source roles, phrase/section spans, user style preferences and
+versioned extensions. Imported WAVs still create no review events.
+
+Checked stable FPC 3.2.2 Win32 and Win64 runs on the small ignored catalog
+created an artificial note, moved it into `uncertain`, then restored its first
+state as a third event; Win64 also exercised `withdrawn`. A stale expected
+revision and an out-of-source span made no new event. A same-size tampered
+source failed its SHA-256 check and left revision zero. Win32 and Win64 history
+JSON was byte-identical after the first two revisions. These are storage and
+validation checks with `operator-test`, not real reviewed acoustic labels.
+
+The review API currently rehashes the source for each CLI edit, which is too
+slow for the multi-hour operator path. A persistent native service must retain
+a verified read handle or equivalent guarded cache. Proposal identity is not
+yet checked against an actual Pascal-generated proposal, and no current-label
+projection, reviewed export, blind held-out mode or browser review path exists.
+The [catalog task](TODO/NS-3_labeling_01.md) stays open with no credit; overall
+completion remains **70.20%** and the listening queue stays **0/20**.
+
 ## Independent physical-beat search and tracker capacity — 2026-09-25
 
 Following the user's request to find the missing source evidence, ASAP v1.1

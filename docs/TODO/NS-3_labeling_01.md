@@ -127,3 +127,15 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
   its exact WAV as "blocked by policy". Keep this visible for approved manual
   cleanup. Source import and paging are evidenced; actual durable-root
   configuration, HTTP consumption and every other criterion remain open.
+- The next review-contract batch added immutable numbered review events with
+  source hash, sample rate/group, provenance/license, label type/value, exact
+  source-frame span, reviewer, status and revision. The Pascal validator covers
+  beat/downbeat, note/pitch, presence, part/source role, phrase/section, user
+  style preference and versioned extension forms. Checked stable Win32/Win64
+  runs agreed on a create, moved uncertain edit and restored earlier label;
+  a stale revision and out-of-range span published no event. A same-size
+  tampered source failed its SHA-256 check with revision still zero. All reviews
+  were artificial `operator-test` fixtures in ignored build catalogs, not
+  acoustic judgments. Proposal existence, current-label projection, efficient
+  multi-hour edit verification, blind mode, reviewed export, service and UI
+  remain open. No criterion or task credit is claimed from this batch.
