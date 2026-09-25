@@ -12809,3 +12809,29 @@ the scorecard stays at **68.95%**, with **37 open tasks**. The next useful
 step needs attributable source-pulse evidence or another ready recorded
 learning prerequisite; do not resume the two stopped source screens. The
 cross-task listening queue remains **1/20**.
+
+## Beat candidate changed-path validation — 2026-09-25
+
+[NS-3_tempo_04](TODO/NS-3_tempo_04.md) criterion 5 now closes after focused
+checked FPC 3.2.2 Win32/Win64 beat-track and clock fixtures, affected CLI
+builds and an actual authored-WAV consumer run. The unchanged source is
+44,100-Hz stereo, 617,400 frames, SHA-256
+`2b6ff5b2abb62117022a59bc2c6173fd63846b9c62982acd57d907238a3ae2cc`.
+`pythian.beats --track --clock step` emits 14 local windows, 24 tracked pulse
+positions and 24 reconstructed clock positions. Repeating the run on each
+target reproduces its exact JSON bytes; Win32 SHA-256 is
+`3160b08840fd363403fb43df56ffbc62a72c6f25ae2249b86734b409cf6ba478`,
+Win64 is `f0bd0284ee1f2e80f6f99b61159a8892da709da0256f614bfc0afb449715850`.
+Small cross-target floating values differ; source identity, candidate indices
+and discrete track/clock frames agree. The earlier Win32 build's track JSON
+predates the current phase-family policy and was not used as a byte baseline.
+The present authored lab retains regular 24/24, polyphonic tracked 20/20 and
+changing-rate tracked 24/24, while exposing the wrong 192-BPM polyphonic
+fixed-grid top candidate with 19 extras. Previously recorded deceptive and
+polyrhythm controls remain as regression evidence for the unchanged model.
+Salty Boi found no criterion-5 blocker. Exact commands and hashes are in
+ignored `build/beat-pool-link/RESULT.md`.
+
+Criteria 1–3 and the full task remain open for attributable source-separated
+recorded pulse evidence. No beat-level admission, task credit or scorecard
+change follows. The cross-task listening queue remains **1/20**.

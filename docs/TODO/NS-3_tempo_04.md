@@ -49,6 +49,21 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
 
 **Dev Notes:**
 
+- 2026-09-25 criterion 5 closes for the changed boundary and consumer. Checked
+  FPC 3.2.2 Win32/Win64 beat-track and clock fixtures pass candidate ties,
+  alternatives, gaps, source owners, work limits, replay and failed-result
+  preservation. Both affected CLIs build. The maintained WAV reporter on the
+  existing authored changing-tempo source produces 14 local windows and 24
+  tracked/clock pulse points on both targets; each target's JSON replays byte
+  for byte. The source SHA-256, policy, pool and clock-window links remain in
+  the report. Current authored regular/polyphonic/changing-rate controls pass
+  24/24, 20/20 and 24/24 through the tracked path; the wrong 192-BPM
+  polyphonic fixed-grid top result remains visible. Existing deceptive and
+  polyrhythm regression evidence is retained. Tiny cross-target floating-point
+  text differences do not affect discrete frames or indices. Salty Boi's
+  focused QA found no criterion-5 blocker. Exact commands and report hashes
+  are in ignored `build/beat-pool-link/RESULT.md`. Criteria 1–3 still need a
+  qualified source-separated recorded challenge; no task credit is earned.
 - 2026-09-25 criterion 4 closes at the composed maintained Pascal boundary.
   `SelectedBeatClockWindows` now carries the exact track-window and selected
   candidate indices, including `-1` for a gap, without discarding the caller's
