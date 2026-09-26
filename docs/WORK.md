@@ -69,8 +69,15 @@ frozen 75% source and window gates. The maintained evaluator's stricter
 precision-plus-recall count was 0/10 and 0/7. Exact source identities, hashes,
 the downbeat-label format repair and logs remain under ignored
 `build/asap-beat-prospective-20260926/RESULT.md`. The source route stops without
-retuning or task credit. `NS-3_tempo_04` remains open; source-independent
-candidate improvement and explicit max-recall reporting are next.
+retuning or task credit. The maintained Pascal evaluator now reports separate
+best-F1, best-recall and precision-plus-recall-compatible witnesses, plus
+aggregate recall. Checked Win32/Win64 runs agree with the frozen diagnostic;
+Salty Boi checked every witness and source binding. C1 and C4 have bounded
+evidence; the failed C2 recall gate, C3 attribution and C5 challenge checks
+remain open. The task-flow stop point is this failed source route. Continue the
+active operator authoring path that can supply needed recorded labels, then
+return to beat candidates only with a distinct source-independent hypothesis
+and fixed stop gate.
 
 ## Bounded half-overlap beat tracking — 2026-09-26
 

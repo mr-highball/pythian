@@ -51,6 +51,20 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
 
 **Dev Notes:**
 
+- 2026-09-26 the maintained Pascal candidate evaluator now reports the
+  best-F1 witness, maximum-recall witness and any candidate meeting both 75%
+  precision and recall independently. It also reports best-pool source recall
+  and recall-eligible-window coverage, leaving selected-path accuracy separate.
+  Checked FPC 3.2.2 Win32/Win64 builds and bound saved-pool A/B runs reproduce
+  32/47, 17/25, 4/10 and 2/7 from the frozen recall-first diagnostic. Salty Boi
+  checked every window against the old F1-first and private recall-first outputs,
+  with score agreement within 1e-12 and unchanged source/report bindings. C1's
+  prospective freeze and C4's preserved candidate/index contract are evidenced.
+  C2 fails the frozen recall gate; C3's full candidate-specific attribution and
+  C5's challenge-specific boundary/failure checks remain open. No task credit.
+  Stop this failed source route and continue with the already active operator
+  authoring prerequisite for recorded learning; a later beat-candidate proposal
+  needs a distinct source-independent hypothesis and fixed stop gate.
 - 2026-09-26 the prospectively frozen two-work challenge completed its first
   and only source route; ignored `build/asap-beat-prospective-20260926/RESULT.md`
   holds exact source identities and checks. Pascal source correspondence,
@@ -66,7 +80,7 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
   best-pool recall, with 4/10 and 2/7 eligible windows reaching 75% recall.
   Both miss the frozen 75% source and window gates. This result does not close
   the task or earn credit. Keep this cohort fixed; improve the source-independent
-  candidate contract and report max recall explicitly before any new challenge.
+  candidate contract before any new challenge.
 - 2026-09-26 a new source-separated ASAP/MAESTRO two-work challenge is
   prospectively frozen under ignored
   `build/asap-beat-prospective-20260926/POLICY.md`, SHA-256

@@ -211,6 +211,13 @@ begin
          (ALeft.Precision > ARight.Precision + 1E-12))));
 end;
 
+function BetterRecall(const ALeft, ARight: TMatchScore): Boolean;
+begin
+  Result := (ALeft.Recall > ARight.Recall + 1E-12) or
+    ((Abs(ALeft.Recall - ARight.Recall) <= 1E-12) and
+      (ALeft.Precision > ARight.Precision + 1E-12));
+end;
+
 function OwnedReference(const AAll: TBeatFrames;
   const AStartFrame, AEndFrame: Integer): TBeatFrames;
 var
@@ -568,6 +575,8 @@ var
   LReferenceHash: String;
   LScore: TMatchScore;
   LBest: TMatchScore;
+  LBestRecall: TMatchScore;
+  LBestCompatible: TMatchScore;
   LSelected: TMatchScore;
   LOptions: TBeatTrackOptions;
   LDefaultGrid: TBeatGridOptions;
@@ -579,9 +588,14 @@ var
   LIndex: Integer;
   LChoice: Integer;
   LBestIndex: Integer;
+  LRecallIndex: Integer;
+  LCompatibleIndex: Integer;
   LSelectedIndex: Integer;
   LEligible: Integer;
   LAvailable: Integer;
+  LRecallAvailable: Integer;
+  LReferenceTotal: Integer;
+  LBestPoolMatches: Integer;
   LToleranceFrames: Integer;
   LCenter: Integer;
   LTraceFitWork: Int64;
@@ -808,6 +822,9 @@ begin
     LOutput.Add('windows', LRows);
     LEligible := 0;
     LAvailable := 0;
+    LRecallAvailable := 0;
+    LReferenceTotal := 0;
+    LBestPoolMatches := 0;
     LTraceFitWork := 0;
     LTraceMatchWork := 0;
     for LIndex := 0 to High(LWindows) do
@@ -815,7 +832,11 @@ begin
       LOwned := OwnedReference(LReference, LWindows[LIndex].OwnerStartFrame,
         LWindows[LIndex].OwnerEndFrame);
       LBest := Default(TMatchScore);
+      LBestRecall := Default(TMatchScore);
+      LBestCompatible := Default(TMatchScore);
       LBestIndex := -1;
+      LRecallIndex := -1;
+      LCompatibleIndex := -1;
       for LChoice := 0 to High(LWindows[LIndex].Analysis.Candidates) do
       begin
         LFrames := CandidateFrames(LWindows[LIndex], LChoice,
@@ -827,6 +848,17 @@ begin
         begin
           LBest := LScore;
           LBestIndex := LChoice;
+        end;
+        if (LRecallIndex < 0) or BetterRecall(LScore, LBestRecall) then
+        begin
+          LBestRecall := LScore;
+          LRecallIndex := LChoice;
+        end;
+        if (LScore.Precision >= 0.75) and (LScore.Recall >= 0.75) and
+          ((LCompatibleIndex < 0) or Better(LScore, LBestCompatible)) then
+        begin
+          LBestCompatible := LScore;
+          LCompatibleIndex := LChoice;
         end;
       end;
       LSelectedIndex := LWindows[LIndex].SelectedCandidate;
@@ -850,12 +882,22 @@ begin
         LRates.Add(LWindows[LIndex].Analysis.Candidates[LChoice].Bpm);
       end;
       LRow.Add('eligible', Length(LOwned) >= 2);
-      LRow.Add('reference_compatible', (LBestIndex >= 0) and
-        (LBest.Precision >= 0.75) and (LBest.Recall >= 0.75));
+      LRow.Add('reference_compatible', LCompatibleIndex >= 0);
       LRow.Add('witness_index', LBestIndex);
       LRow.Add('witness', ScoreJson(LBest));
+      LRow.Add('best_recall_index', LRecallIndex);
+      LRow.Add('best_recall', ScoreJson(LBestRecall));
+      LRow.Add('recall_compatible', (LRecallIndex >= 0) and
+        (LBestRecall.Recall >= 0.75));
+      LRow.Add('compatible_index', LCompatibleIndex);
+      if LCompatibleIndex >= 0 then
+      begin
+        LRow.Add('compatible', ScoreJson(LBestCompatible));
+      end;
       LRow.Add('selected_index', LSelectedIndex);
       LRow.Add('selected_raw', ScoreJson(LSelected));
+      Inc(LReferenceTotal, Length(LOwned));
+      Inc(LBestPoolMatches, LBestRecall.Matches);
       if ATraceEnabled then
       begin
         LTraced := InspectSavedWindow(LWindows[LIndex], LObservations,
@@ -864,9 +906,7 @@ begin
           LTraced.ObservationCount, LTraced.TrialCount);
         Require(LTraceFitWork <= MaximumBeatTrackWork,
           'Candidate trace fit work exceeds aggregate budget');
-        if (Length(LOwned) >= 2) and
-          ((LBestIndex < 0) or (LBest.Precision < 0.75) or
-           (LBest.Recall < 0.75)) then
+        if (Length(LOwned) >= 2) and (LCompatibleIndex < 0) then
         begin
           LRow.Add('trace', TraceJson(LWindows[LIndex], LTrace, LOwned,
             LObservations, LToleranceFrames, LTraceMatchWork));
@@ -877,9 +917,7 @@ begin
               LObservations, LToleranceFrames));
         end;
       end;
-      if (Length(LOwned) >= 2) and
-        ((LBestIndex < 0) or (LBest.Precision < 0.75) or
-         (LBest.Recall < 0.75)) then
+      if (Length(LOwned) >= 2) and (LCompatibleIndex < 0) then
       begin
         WriteLn(StdErr, ExtractFileName(ASourcePath), ' window ',
           LIndex, ': missing compatible candidate; witness ',
@@ -890,8 +928,11 @@ begin
       if Length(LOwned) >= 2 then
       begin
         Inc(LEligible);
-        if (LBestIndex >= 0) and (LBest.Precision >= 0.75) and
-          (LBest.Recall >= 0.75) then
+        if (LRecallIndex >= 0) and (LBestRecall.Recall >= 0.75) then
+        begin
+          Inc(LRecallAvailable);
+        end;
+        if LCompatibleIndex >= 0 then
         begin
           Inc(LAvailable);
         end;
@@ -899,9 +940,17 @@ begin
     end;
     LOutput.Add('eligible_windows', LEligible);
     LOutput.Add('available_windows', LAvailable);
+    LOutput.Add('recall_available_windows', LRecallAvailable);
+    LOutput.Add('reference_total', LReferenceTotal);
+    LOutput.Add('best_pool_matches', LBestPoolMatches);
+    if LReferenceTotal > 0 then
+    begin
+      LOutput.Add('best_pool_recall', LBestPoolMatches / LReferenceTotal);
+    end;
     if LEligible > 0 then
     begin
       LOutput.Add('candidate_coverage', LAvailable / LEligible);
+      LOutput.Add('recall_coverage', LRecallAvailable / LEligible);
     end;
     if ATraceEnabled then
     begin
