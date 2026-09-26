@@ -1,6 +1,6 @@
 # Prepared WAV catalog import
 
-[Work record](WORK.md) · [Native catalog task](TODO/NS-3_labeling_01.md) ·
+[Work record](WORK.md) · [Native catalog task](TODO/DONE/NS-3_labeling_01.md) ·
 [Browser workbench task](TODO/NS-6_authoring_01.md)
 
 The catalog stores original WAVs, source metadata, separate Pascal proposals,

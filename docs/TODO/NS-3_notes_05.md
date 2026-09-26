@@ -76,7 +76,7 @@ held-out evidence after a policy change.
 **Dev Notes:**
 
 - 2026-09-25 the user selected a Pascal/pas2js operator-authoring route for
-  missing acoustic labels. [NS-3_labeling_01](NS-3_labeling_01.md) and
+  missing acoustic labels. [NS-3_labeling_01](DONE/NS-3_labeling_01.md) and
   [NS-6_authoring_01](NS-6_authoring_01.md) build the catalog and interface;
   this task still requires actual source-bound reviewed rests, positives and
   independent scored cases. The tool or an inferred proposal alone earns no

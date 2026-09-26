@@ -12,8 +12,8 @@ keeps the three user-selected styles as development tests, while reusable core
 behavior takes priority when detailed style review is waiting on evidence.
 This catalog covers the remaining declared end state. Task files own acceptance
 criteria and hard prerequisites; this page supplies navigation and accounting.
-No task earns credit merely by being written. Accepted task credit is **14.55**;
-**29.80 overall points remain**. Baseline 55.5 + accepted 14.70 = **70.20 current**.
+No task earns credit merely by being written. Accepted task credit is **15.20**;
+**29.30 overall points remain**. Baseline 55.5 + accepted 15.20 = **70.70 current**.
 
 The [pause retrospective](../WORK.md#pause-retrospective--2026-09-21) tightens
 existing note, presence, mixture and style-reference criteria without adding
@@ -65,11 +65,11 @@ unless also declared under Blockers; required gaps still follow
 | --- | ---: | ---: | ---: | ---: |
 | [NS-1 — Independent Pascal foundation](../MILESTONES.md#ns-1) | 100% | 0 | 0 | 0.00 |
 | [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 100% | 0 | 0 | 0.00 |
-| [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 43% | 17 | 57 | 14.25 |
+| [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 45% | 16 | 55 | 13.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 99% | 1 | 1 | 0.15 |
 | [NS-5 — Many-hour styles that generate and blend usefully](../MILESTONES.md#ns-5) | 30% | 16 | 70 | 14.00 |
 | [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 72% | 4 | 28 | 1.40 |
-| **Total** | **70.20 weighted points** | **38** | Per-goal credits are not summed across goals | **29.80** |
+| **Total** | **70.70 weighted points** | **37** | Per-goal credits are not summed across goals | **29.30** |
 
 NS-1 is already complete under the accepted extraction scope. Preserve its
 invariants in every applicable task; do not recreate completed extraction work.
@@ -90,7 +90,6 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 | [NS-3_context_01.md](NS-3_context_01.md) — Admit local key and tonal uncertainty | +3 | +0.75 | TODO |
 | [NS-3_context_02.md](NS-3_context_02.md) — Persist automatic key and tempo context with overrides | +2 | +0.50 | TODO |
 | [NS-3_notes_01.md](NS-3_notes_01.md) — Resolve recorded pitch identity and register | +4 | +1.00 | TODO |
-| [NS-3_labeling_01.md](NS-3_labeling_01.md) — Persist reviewed WAV labels and Pascal proposals | +2 | +0.50 | TODO |
 | [NS-3_notes_05.md](NS-3_notes_05.md) — Admit source-grounded note-presence evidence | +1 | +0.25 | TODO |
 | [NS-3_notes_02.md](NS-3_notes_02.md) — Integrate note presence, attacks and endings | +2 | +0.50 | TODO |
 | [NS-3_notes_03.md](NS-3_notes_03.md) — Accept independent phrases and feed saved learning | +2 | +0.50 | TODO |
@@ -141,6 +140,7 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 
 | Task | Accepted evidence | Goal credit | Overall credit |
 | --- | --- | ---: | ---: |
+| [NS-3_labeling_01.md](DONE/NS-3_labeling_01.md) | Durable native Pascal catalog, real source-bound proposal/review packet, deterministic checked two-target replay and publisher-linked two-group WFC consumer | +2 NS-3 | +0.50 |
 | [NS-4_composition_02.md](DONE/NS-4_composition_02.md) | Bounded 144-bar WFC-selected harmony, authored portable form, exact checked Win32/Win64 WAV replay, Salty Boi QA and full-track coherent/new-composition user verdict | +1 NS-4 | +0.15 |
 | [NS-3_tempo_05.md](DONE/NS-3_tempo_05.md) | Hash-bound authored fast/half/double/phase and loss controls, maintained candidate/clock API, checked two-target replay and QA | +1 NS-3 | +0.25 |
 | [NS-5_scale_04.md](DONE/NS-5_scale_04.md) | Canonical admitted-event contribution journal, idempotent append and exact checked two-target reference-event rebuild after reload | +1 NS-5 | +0.20 |

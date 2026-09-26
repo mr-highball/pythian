@@ -13,6 +13,49 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Native catalog task accepted — 2026-09-26
+
+Salty Boi's final criterion audit accepts all seven native catalog criteria in
+[NS-3_labeling_01](TODO/DONE/NS-3_labeling_01.md). The durable full-mix root,
+source-bound Pascal proposals and reviews, blind review, bounded LAN API,
+deterministic export/replay, cross-target failure checks and two-group
+publisher-linked training consumer form the task's evidence. The new real
+examples remain development-exposed key-control and beat evidence; no audible
+note-ending, independent-evaluation, genre or operator-listening claim follows.
+The separate browser authoring task remains open. The task earns +2 NS-3 goal
+points / +0.50 overall: **NS-3 43→45%**, **overall 70.20→70.70%**,
+**37 open / 28 DONE**, **19 active outcomes**, listening queue **0/20**.
+The originating NS-5 goal returns to its actual musical-learning prerequisites:
+timed source/reference quality and accepted recorded note/context/role evidence.
+
+## Publisher-linked note packet through Pascal training — 2026-09-26
+
+The earlier real development catalog now also has one approved, publisher
+performance-MIDI key gate (pitch 62, original frames 344301–381568) on the
+same Bach source as its supported downbeat and rejected Pythian beat proposal.
+Its `development` packet is deliberately refused by the Pascal training
+adapter. A separate, development-exposed **training-path demonstration**
+imports that recording and a distinct Beethoven performance under two
+training groups. The second publisher key gate is pitch 72 at frames
+182716–191214, with the previously retained source-PCM attack support. The
+MIDI off frames describe key control, not independently reviewed audible
+decay. This reclassification does not create a held-out evaluation source.
+
+The two-source packet has 3 selected labels, 4 review events and one linked
+unreviewed proposal; SHA-256
+`5c13fb7b21f5bdad73ba7f245c337d01f183f30f7b2d538021f53815998e5e5e`.
+Fresh-catalog replay and re-export matched those bytes. The existing Pascal
+`ReadReviewedNoteSource` adapter admitted exactly the two note gates and kept
+the unrelated downbeat and rejected proposal out of training. Checked stable
+Win32 and Win64 journal replay and actual WFC model rebuild matched at journal
+SHA-256 `8bc07b69e70db5d7e42629043ef5bca074a212a70e8420c80f10cdbd90648ba3`,
+model SHA-256 `36ae33499c220337d00aa29727fd2e3a04543adf5b6db6c60f2fe045e908ea66`,
+and evidence SHA-256 `9a32e8929136fb5470c578111fabed7bd31a9572c26d0ac32c507ee52c86d0b0`.
+All exact private identities, one-off Pascal probes and outputs stay under
+ignored `build/label-catalog/real-publisher-review-20260925/`. Salty Boi is
+auditing all native catalog task criteria before any task credit is assigned;
+overall remains **70.20%**, **38 open / 27 DONE** and listening **0/20**.
+
 ## Real development review packet and replay path — 2026-09-25
 
 Two publisher-linked piano excerpts were imported into an ignored, disposable
@@ -148,7 +191,7 @@ reference, not a new dependency of the portable core. The catalog must live
 outside disposable `build/` and export only reviewed, source-group-separated
 labels to training/evaluation consumers.
 
-New open [NS-3_labeling_01](TODO/NS-3_labeling_01.md) and
+New open [NS-3_labeling_01](TODO/DONE/NS-3_labeling_01.md) and
 [NS-6_authoring_01](TODO/NS-6_authoring_01.md) own those two deliverables.
 Their **+2 NS-3 / +4 NS-6** goal-point allocations come from the still-open
 [phrase](TODO/NS-3_notes_03.md) and [final delivery](TODO/NS-6_delivery_03.md)
@@ -161,7 +204,7 @@ items; the user can initiate catalog review whenever the workbench is usable.
 
 ## Native prepared-WAV import boundary — 2026-09-25
 
-The first part of [NS-3_labeling_01](TODO/NS-3_labeling_01.md) is an owned
+The first part of [NS-3_labeling_01](TODO/DONE/NS-3_labeling_01.md) is an owned
 Pascal `pythian.label.catalog` importer, included in `tools/build.ps1`. Its
 versioned manifest admits multiple prepared WAVs into a user-specified durable
 root, checks each original SHA-256 and WAV geometry, verifies the staged copy,
@@ -239,7 +282,7 @@ slow for the multi-hour operator path. A persistent native service must retain
 a verified read handle or equivalent guarded cache. Proposal identity is not
 yet checked against an actual Pascal-generated proposal, and no current-label
 projection, reviewed export, blind held-out mode or browser review path exists.
-The [catalog task](TODO/NS-3_labeling_01.md) stays open with no credit; overall
+The [catalog task](TODO/DONE/NS-3_labeling_01.md) stays open with no credit; overall
 completion remains **70.20%** and the listening queue stays **0/20**.
 
 The long-source and review-history batches still did not close a complete
@@ -14000,7 +14043,7 @@ content result does not authorize a genre or corpus claim.
 
 The user chose a Pascal/pas2js recorded-label workbench and then specified
 that mobile review must be reachable on the local LAN. The two linked tasks
-already cover its native catalog and operator UI: [NS-3_labeling_01](TODO/NS-3_labeling_01.md)
+already cover its native catalog and operator UI: [NS-3_labeling_01](TODO/DONE/NS-3_labeling_01.md)
 and [NS-6_authoring_01](TODO/NS-6_authoring_01.md). The retained WFC server
 served as a bounded socket pattern; the new Pythian HTTP owner preserves its
 MIT notice and is independent of the portable core. No external inference
@@ -14070,7 +14113,7 @@ were absent from the selected set. Packet SHA-256:
 `0fdcfd3ce1009f6402ae6bcbb0b44f2716056049b5fef7551648ae4203217722`.
 
 This is evidence for the first **label-contract criterion** of
-[NS-3_labeling_01](TODO/NS-3_labeling_01.md), not a validated musical label.
+[NS-3_labeling_01](TODO/DONE/NS-3_labeling_01.md), not a validated musical label.
 The native catalog task remains open and earns no credit. Next, expose prepared
 inbox and stored proposal reads through the authenticated service, then add
 blind review and a browser path that can use the reviewed export. Overall

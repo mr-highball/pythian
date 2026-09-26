@@ -1,6 +1,6 @@
 # NS-3_labeling_01 — Build a durable Pascal audio-label catalog
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-3)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-3)
 
 **Description:**
 
@@ -9,19 +9,36 @@ operator-authored WAV training/reference catalog. The agent prepares source
 WAVs and an inbox manifest; the operator can import all available tracks into
 a durable catalog. Pythian's inferred events are **unreviewed suggestions**,
 never acoustic truth or training labels merely because they were generated.
-The [pas2js workbench](NS-6_authoring_01.md) owns the operator interface.
+The [pas2js workbench](../NS-6_authoring_01.md) owns the operator interface.
+
+Accepted 2026-09-26: all seven native catalog criteria passed. The maintained
+FPC service imports verified multi-WAV manifests into a separately configured
+durable root, streams bounded waveform/audio pages, stores source-bound Pascal
+proposals apart from reversible reviewed events, gates blind evaluation, and
+exports an audio-free source/group-bound packet that replays unchanged. Checked
+stable Win32/Win64 import, service, conflict, failure, large-WAV and packet
+checks are recorded in [WORK](../../WORK.md#publisher-linked-note-packet-through-pascal-training--2026-09-26)
+and the [catalog guide](../../LABEL-CATALOG.md). A real development-exposed
+publisher-linked packet explicitly approved a physically supported downbeat
+and rejected a Pythian beat-grid miss. A separate two-group training-path
+packet carried two publisher key gates through fresh-catalog replay, the
+Pascal reviewed-note adapter and saved WFC journal/model rebuild with identical
+Win32/Win64 hashes. Salty Boi's final criterion audit found no native task
+blocker. These examples do not establish independent evaluation, audible
+note endings, a genre style or the separate browser workbench acceptance.
+The task earns +2 NS-3 / +0.50 overall: NS-3 **43→45%**, total **70.20→70.70%**.
 
 North star: NS-3. Outcome owner: WAV-03-LABELING.
 Completion credit: 2 goal percentage points (0.50 overall points), assigned
-from the 4 unearned points of [NS-3_notes_03](NS-3_notes_03.md). That task retains
+from the 4 unearned points of [NS-3_notes_03](../NS-3_notes_03.md). That task retains
 2 points and all of its original phrase and inferred-event criteria. The
-accepted [WFC bridge](DONE/NS-3_notes_06.md) retains its earlier 1 point;
+accepted [WFC bridge](NS-3_notes_06.md) retains its earlier 1 point;
 the original 5-point allocation is now 1 + 2 + 2, with no new credit.
 Credit is earned only when every acceptance criterion and the task-flow
 completion requirements pass.
 
-Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../BEAT-GRIDS.md) ·
-[shared evaluation](../EVALUATION-OPERATOR.md) · [recorded source audit](NS-3_tempo_04.md).
+Starting evidence: [source-bound presence](../../PRESENCE.md) · [beat reports](../../BEAT-GRIDS.md) ·
+[shared evaluation](../../EVALUATION-OPERATOR.md) · [recorded source audit](../NS-3_tempo_04.md).
 
 **Acceptance Criteria:**
 
@@ -74,11 +91,20 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
 
 **Blockers**
 
-- [NS-3_validation_01.md — DONE](DONE/NS-3_validation_01.md)
-- [NS-3_validation_02.md — DONE](DONE/NS-3_validation_02.md)
+- [NS-3_validation_01.md — DONE](NS-3_validation_01.md)
+- [NS-3_validation_02.md — DONE](NS-3_validation_02.md)
 
 **Dev Notes:**
 
+- 2026-09-26 a separate development-exposed training-path packet now contains
+  two approved publisher performance key gates from distinct original source
+  groups, alongside the earlier explicit beat proposal rejection/downbeat.
+  Fresh-catalog replay preserves the packet SHA-256; the Pascal WFC adapter
+  admits only the approved pitch gates, and checked Win32/Win64 journal/model
+  hashes match. The original development-partition packet is correctly refused
+  for training. Key-off frames are not independently reviewed audible endings,
+  and this is no held-out or genre acceptance. Salty Boi is auditing the whole
+  native task against every criterion before completion accounting.
 - 2026-09-25 a real, development-exposed publisher downbeat now passes through
   source-bound Pascal proposal, explicit curator approval/rejection and
   deterministic reviewed export. The first saved beat-grid candidate missed
@@ -156,7 +182,7 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
   partition, unsafe basename) while retaining the two valid records. Copied
   asset hashes matched the declared source hashes. Fixtures are ignored under
   `build/label-catalog/`; a real operator catalog must be placed outside build.
-  [The importer contract](../LABEL-CATALOG.md) describes the prepared packet.
+  [The importer contract](../../LABEL-CATALOG.md) describes the prepared packet.
   The follow-on native region reader returns exact source-frame waveform bins
   (at most 2,048 bins across 8,388,608 frames) and writes a bounded 30-second,
   16-MiB PCM16 listening region without loading the whole source. Checked

@@ -5,7 +5,7 @@
 **Description:**
 
 Build the operator-facing web application for the
-[native annotation catalog](NS-3_labeling_01.md). The browser application is
+[native annotation catalog](DONE/NS-3_labeling_01.md). The browser application is
 authored in Pascal and compiled with pas2js; the native Pascal service owns
 inference, WAV streaming, durable files and review commits. HTML/CSS may
 provide structure and presentation, but no maintained JavaScript implementation
@@ -65,7 +65,7 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Blockers**
 
-- [NS-3_labeling_01.md](NS-3_labeling_01.md)
+- [NS-3_labeling_01.md — DONE](DONE/NS-3_labeling_01.md)
 
 **Dev Notes:**
 

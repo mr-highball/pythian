@@ -5,6 +5,7 @@
 
 | Accepted task | Date | North-star credit | Overall credit |
 | --- | --- | ---: | ---: |
+| [NS-3_labeling_01](NS-3_labeling_01.md) — Durable reviewed WAV catalog and Pascal proposal/training path | 2026-09-26 | +2 NS-3 | +0.50 |
 | [NS-4_composition_02](NS-4_composition_02.md) — Coherent original WFC-selected long-form passage | 2026-09-25 | +1 NS-4 | +0.15 |
 | [NS-3_tempo_05](NS-3_tempo_05.md) — Bounded authored beat candidates and clock link | 2026-09-25 | +1 NS-3 | +0.25 |
 | [NS-5_corpus_01](NS-5_corpus_01.md) — Verified corpus identity and contribution audit | 2026-09-20 | +2 NS-5 | +0.40 |

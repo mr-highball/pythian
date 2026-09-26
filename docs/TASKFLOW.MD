@@ -53,7 +53,7 @@ Pythian's unreviewed proposals separate from operator-approved labels and
 hide proposals during blind evaluation review. Store the reviewed catalog in
 a durable user-configured root outside disposable `build/`; explicit exports
 must preserve source identity and group isolation. See the
-[Pascal catalog](TODO/NS-3_labeling_01.md) and
+[Pascal catalog](TODO/DONE/NS-3_labeling_01.md) and
 [pas2js workbench](TODO/NS-6_authoring_01.md) tasks.
 
 NS-1's accepted extraction/independence baseline is already complete. Do not
