@@ -69,6 +69,24 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Dev Notes:**
 
+- 2026-09-26 a fresh two-track Edge workflow under ignored
+  `build/label-workbench/end-to-end-20260926-attempt5/` imported verified
+  development WAVs, advanced both original and Pythian cue playback clocks
+  after trusted clicks, rejected a Pascal beat proposal with its identity,
+  saved an approved C4 note with piano part, moved and resized it by pointer,
+  and reloaded its exact 66150–176400 source frames. A second track saved an
+  approved presence `unknown`. Browser export/re-import produced two tracks,
+  one selected label, one unknown and five review events; native re-export
+  was byte-identical to the downloaded packet. A separate isolated run saved
+  and replayed an `uncertain` decision. During this workflow, a stale Save
+  control surfaced while a new source loaded. The Pascal/pas2js page now
+  locks Save through every asynchronous current-label refresh and guards
+  direct Save calls; a deliberately delayed same-source navigation passed.
+  Salty Boi accepted the focused code and browser workflow QA for criteria
+  3 and 6, together with the earlier split/merge, undo/redo, keyboard,
+  touch and conflict evidence. Example review values are workflow fixtures,
+  not acoustic ground truth or proof of beat quality. The larger task still
+  has remaining criteria; no completion credit is claimed.
 - 2026-09-26 the pas2js workbench now stages per-source undo and redo as
   explicit append-only restoring review events, with bounded browser-local
   pointers that survive reload. Keyboard left/right navigates source windows,

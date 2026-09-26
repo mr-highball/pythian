@@ -484,7 +484,8 @@ begin
   TJSHTMLButtonElement(Element('cancel-staged-button')).disabled :=
     (LCount = 0) or FSaveInProgress;
   TJSHTMLButtonElement(Element('save-label-button')).disabled :=
-    (FSourceHash = '') or FPendingConflict or FSaveInProgress;
+    (FSourceHash = '') or FPendingConflict or FSaveInProgress or
+    FHistoryLoading or FHistoryLoadFailed;
   if FSaveInProgress then
   begin
     if LCount > 0 then
@@ -512,7 +513,8 @@ begin
     UpdateHistoryUi;
     Exit;
   end;
-  TJSHTMLButtonElement(Element('save-label-button')).disabled := False;
+  TJSHTMLButtonElement(Element('save-label-button')).disabled :=
+    FHistoryLoading or FHistoryLoadFailed;
   if FPendingConflict then
   begin
     TJSHTMLButtonElement(Element('save-label-button')).disabled := True;
@@ -629,7 +631,7 @@ begin
       Status('Local undo history could not be read: ' + LError.Message, True);
     end;
   end;
-  UpdateHistoryUi;
+  UpdatePendingUi;
 end;
 
 procedure TWorkbench.SaveLocalHistory(const ARevision: Integer);
@@ -1468,7 +1470,7 @@ begin
   FHistoryLoading := True;
   FHistoryLoadFailed := False;
   FHistoryStale := False;
-  UpdateHistoryUi;
+  UpdatePendingUi;
   FDragMode := dmNone;
   Input('jump-seconds').value := '0';
   Input('jump-seconds').setAttribute('max',
@@ -1502,6 +1504,10 @@ begin
   begin
     Exit;
   end;
+  FHistoryLoading := True;
+  FHistoryLoadFailed := False;
+  UpdatePendingUi;
+  Status('Loading source frames and saved labels…');
   try
     Inc(FWindowEpoch);
     Inc(FAudioEpoch);
@@ -1620,7 +1626,7 @@ begin
       begin
         FHistoryLoading := False;
         FHistoryLoadFailed := True;
-        UpdateHistoryUi;
+        UpdatePendingUi;
       end;
       Status('Timeline failed: ' + LError.Message, True);
     end;
@@ -1787,6 +1793,11 @@ var
 begin
   if FSourceHash = '' then
   begin
+    Exit;
+  end;
+  if FHistoryLoading or FHistoryLoadFailed then
+  begin
+    Status('Wait for the selected source labels to load before saving.', True);
     Exit;
   end;
   LQueued := (FPendingChanges <> nil) and

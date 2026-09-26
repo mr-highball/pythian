@@ -13,6 +13,35 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Two-track browser review workflow — 2026-09-26
+
+A fresh isolated Edge run imported two verified development WAVs into a native
+Pascal catalog. Trusted browser clicks started both original-region playback
+and a Pythian cue; each player clock advanced. A deliberately delayed
+same-source label read kept Save disabled until the new window's current
+revision loaded. The operator path selected a Pascal beat proposal, saved an
+explicit rejected review with its proposal identity, saved a pitched note with
+part, moved and resized that note by pointer at exact source frames, and
+reloaded each saved edit. A second track received an approved presence
+`unknown`. The browser downloaded a reviewed packet and imported it into a
+fresh catalog. Native inspection found two tracks, one selected label, one
+unknown and five history events; export after replay was byte-identical to
+the browser download. An earlier isolated run also saved and replayed an
+`uncertain` review state. These example decisions exercise the operator path;
+they do not establish acoustic ground truth or the accuracy of the rejected
+beat hypothesis. Evidence is in ignored
+`build/label-workbench/end-to-end-20260926-attempt5/`. Salty Boi accepted
+the focused source-loading guard and browser workflow evidence for criteria 3
+and 6. The workbench task remains open while its other criteria finish, so
+there is no completion credit yet.
+
+The source-switch run exposed stale Save availability while the next source
+was loading. The Pascal/pas2js page now locks Save through every asynchronous
+window refresh, re-enables it only after current labels and revision arrive,
+and guards direct Save calls during load or load failure. The checked pas2js
+build and delayed-browser navigation path passed. The live LAN host serves the
+rebuilt page from its existing static directory.
+
 ## Browser keyboard and review history — 2026-09-26
 
 The Pascal/pas2js workbench now stages undo and redo as explicit append-only
