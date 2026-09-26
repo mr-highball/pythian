@@ -94,6 +94,14 @@ canvas { display: block; width: 100%; height: auto; touch-action: none; }
 .form-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .8rem; }
 .edit-actions { margin-top: 1rem; }
 .edit-actions span { color: #9db0b9; font-size: .8rem; }
+.span-tools { margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid #344852; }
+.span-tools h3 { margin: 0 0 .55rem; font-size: 1rem; }
+.span-tool-grid { display: grid; grid-template-columns: minmax(10rem, 1fr) auto minmax(12rem, 1fr) auto; gap: .65rem; align-items: end; }
+.span-tool-grid button { min-height: 2.55rem; }
+.pending-review { margin-top: .85rem; padding: .8rem; border: 1px solid #5c5471; border-left: 3px solid #c5a8fa; border-radius: 8px; background: #252638; }
+.pending-review .panel-note { margin-bottom: .35rem; }
+.pending-review-list { margin: 0 0 .6rem; color: #e0d6f4; font-size: .8rem; line-height: 1.5; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.legend-staged { background: #c5a8fa; }
 .packet-import { margin-top: 1rem; align-items: end; }
 .packet-import label { flex: 1 1 15rem; }
 [hidden] { display: none !important; }
@@ -112,6 +120,9 @@ canvas { display: block; width: 100%; height: auto; touch-action: none; }
   .panel { padding: .85rem; }
   .panel-head { align-items: flex-start; }
   .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
+  .span-tool-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .span-tool-grid label:nth-of-type(2) { grid-column: 1 / -1; }
+  .span-tool-grid button { width: 100%; }
   canvas { height: 220px; }
   .window-label { width: 100%; margin-left: 0; }
 }

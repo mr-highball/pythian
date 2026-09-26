@@ -218,6 +218,9 @@ var
   LAdmitted: TBeatTrackAdmission;
 begin
   LOptions := DefaultBeatTrackOptions(CRate);
+  { Preserve the previously checked one-second-hop path as an explicit caller
+    option while the default uses bounded half-overlap for long sources. }
+  LOptions.HopFrames := CRate;
   LGridOptions := DefaultBeatGridOptions;
   SetLength(LObservations, 24);
   for LIndex := 0 to High(LObservations) do
@@ -303,6 +306,7 @@ begin
   Check(LRejected and (LTrack.Frames[0] = LBefore),
     'Window budget rejection preserves the prior complete result');
   LOptions := DefaultBeatTrackOptions(CRate);
+  LOptions.HopFrames := CRate;
   SetLength(LObservations, MaximumBeatObservations);
   for LIndex := 0 to High(LObservations) do
   begin
@@ -377,10 +381,80 @@ begin
   WriteLn('Beat tracking: changing tempo, half-open ownership, gaps, detached results and work limits pass');
 end;
 
+procedure CheckDefaultHalfOverlap;
+const
+  CRate = 8000;
+  CFrames = CRate * 30;
+var
+  LObservations: TBeatObservations;
+  LTrack: TBeatTrack;
+  LOptions: TBeatTrackOptions;
+  LGridOptions: TBeatGridOptions;
+  LFitWork: Int64;
+  LRejected: Boolean;
+  LIndex: Integer;
+begin
+  LOptions := DefaultBeatTrackOptions(CRate);
+  LGridOptions := DefaultBeatGridOptions;
+  Check((LOptions.WindowFrames = CRate * 6) and
+    (LOptions.HopFrames = CRate * 3),
+    'Default tracked windows have half overlap');
+  SetLength(LObservations, 750);
+  for LIndex := 0 to High(LObservations) do
+  begin
+    LObservations[LIndex].Frame := LIndex * 320;
+    LObservations[LIndex].Weight := 1;
+  end;
+  LTrack := TrackBeatGrids(LObservations, CRate, CFrames,
+    LGridOptions, LOptions);
+  Check((Length(LTrack.Windows) = 10) and
+    (LTrack.FitWork > 0) and
+    (LTrack.FitWork <= MaximumBeatTrackWork),
+    'Authored dense thirty-second source fits unchanged aggregate budget');
+  SetLength(LObservations, 60);
+  for LIndex := 0 to High(LObservations) do
+  begin
+    LObservations[LIndex].Frame := 973 + LIndex * 4000;
+    LObservations[LIndex].Weight := 1;
+  end;
+  LTrack := TrackBeatGrids(LObservations, CRate, CFrames,
+    LGridOptions, LOptions);
+  Check((Length(LTrack.Windows) = 10) and
+    (Length(LTrack.Frames) = Length(LObservations)) and
+    (LTrack.SeamIssues = 0),
+    'Default half-overlap retains an authored 120 BPM pulse through seams');
+  for LIndex := 0 to High(LTrack.Frames) do
+  begin
+    Check(Abs(LTrack.Frames[LIndex] - LObservations[LIndex].Frame) <= 240,
+      'Default half-overlap pulse remains source aligned');
+  end;
+  LFitWork := LTrack.FitWork;
+  SetLength(LObservations, 6000);
+  for LIndex := 0 to High(LObservations) do
+  begin
+    LObservations[LIndex].Frame := LIndex * 40;
+    LObservations[LIndex].Weight := 1;
+  end;
+  LRejected := False;
+  try
+    LTrack := TrackBeatGrids(LObservations, CRate, CFrames,
+      LGridOptions, LOptions);
+  except
+    on EAudio do
+    begin
+      LRejected := True;
+    end;
+  end;
+  Check(LRejected and (LTrack.FitWork = LFitWork),
+    'Extreme authored density rejects without replacing prior result');
+  WriteLn('Default half-overlap: dense capacity, 120 BPM seams and extreme rejection pass');
+end;
+
 begin
   try
     CheckCandidatePaths;
     Run;
+    CheckDefaultHalfOverlap;
   except
     on LError: Exception do
     begin

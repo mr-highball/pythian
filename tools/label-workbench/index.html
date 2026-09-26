@@ -98,6 +98,7 @@ SOFTWARE.
           <span><i class="legend-wave"></i> Source waveform</span>
           <span><i class="legend-reviewed"></i> Reviewed labels</span>
           <span><i class="legend-proposed"></i> Unreviewed proposals</span>
+          <span><i class="legend-staged"></i> Unsaved staged edits</span>
         </div>
         <div class="toolbar playback-controls">
           <button id="load-audio-button" type="button" class="primary">Load this region</button>
@@ -148,6 +149,21 @@ SOFTWARE.
           <button id="save-label-button" type="button" class="primary">Save review event</button>
           <span>Saved edits create a new revision. Source groups and splits stay fixed.</span>
         </div>
+        <section class="span-tools" aria-labelledby="span-tools-title">
+          <h3 id="span-tools-title">Split or merge spans</h3>
+          <p class="panel-note">Operations use exact half-open source frames. They are staged locally and never save automatically. A split withdraws the selected saved label and adds two labels. A merge accepts only adjacent or overlapping labels with matching identity on this source.</p>
+          <div class="span-tool-grid">
+            <label for="split-frame">Split at source frame<input id="split-frame" type="number" min="0" step="1" inputmode="numeric"></label>
+            <button id="split-label-button" type="button">Stage split</button>
+            <label for="merge-label-target">Merge with current label<select id="merge-label-target"><option value="">Choose an adjacent label</option></select></label>
+            <button id="merge-label-button" type="button">Stage merge</button>
+          </div>
+          <div class="pending-review" aria-live="polite">
+            <p id="pending-review-note" class="panel-note">Split and merge edits stay in this browser until you explicitly save a review event.</p>
+            <p id="pending-review-list" class="pending-review-list"></p>
+            <button id="cancel-staged-button" type="button" disabled>Cancel remaining staged events</button>
+          </div>
+        </section>
       </section>
 
       <section class="panel">

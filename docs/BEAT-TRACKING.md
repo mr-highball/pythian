@@ -604,8 +604,9 @@ configuration, geometry or work rejects without replacing an assigned result.
 
 Each half-open hop interval owns raw output grid points. Analysis is centered
 on its midpoint and clipped to the source. Defaults are six-second windows and
-one-second hops. Optional Hann tapering, enabled by default, emphasizes nearby
-onsets. Weights are normalized before tapering; zero or underflowed tapered
+three-second, half-overlap hops. Callers requiring the older one-second analysis
+grid set `HopFrames` explicitly. Optional Hann tapering, enabled by default,
+emphasizes nearby onsets. Weights are normalized before tapering; zero or underflowed tapered
 weights are omitted. The original observations are unchanged. Each window uses
 the existing candidate estimator with the same grid options.
 The current estimator retains phase families using explicit concentration and
@@ -717,8 +718,10 @@ aggregate budget.
 Maximum tempo ratio is configurable from 1 to 4, transition penalties from 0 to
 10 and alignment tolerance from 0 to 200 ms. All real options must be finite.
 Native sample/source bounds and minimum period are inherited from the grid API.
-The tool's default one-second hop therefore limits it to 512 seconds; library
-callers can choose other bounded windows/hops or analyze explicit excerpts.
+The tool's default three-second hop therefore reaches at most 1,536 seconds by
+the window-count bound; the unchanged 64-million-fit aggregate cap can stop it
+earlier. Library callers can choose other bounded windows/hops or analyze
+explicit excerpts.
 
 ## Native inspection
 

@@ -51,11 +51,20 @@ type
   private
     FToken: String;
     FSourceHash: String;
+    FSourceGroup: String;
     FPartition: String;
     FAudioUrl: String;
     FTracks: TJSArray;
     FWaveBins: TJSArray;
     FCurrentLabels: TJSArray;
+    FPendingChanges: TJSArray;
+    FPendingSourceHash: String;
+    FPendingSourceGroup: String;
+    FPendingPartition: String;
+    FPendingOperation: String;
+    FPendingCommitted: Integer;
+    FPendingConflict: Boolean;
+    FSaveInProgress: Boolean;
     FProposals: TJSObject;
     FSampleRate: Integer;
     FReviewRevision: Integer;
@@ -87,6 +96,17 @@ type
     procedure RenderInbox(const AData: TJSObject);
     procedure RenderCatalog(const AData: TJSObject);
     procedure RenderLabels;
+    procedure RenderMergeTargets;
+    procedure UpdatePendingUi;
+    procedure ClearPending;
+    procedure AppendPending(const AChange: TJSObject);
+    function RowMatchesSource(const ARow: TJSObject): Boolean;
+    function EditorChange(const AStartFrame, AEndFrame: Int64;
+      const ALabelId: String): TJSObject;
+    function RowChange(const ARow: TJSObject;
+      const AStatus: String = ''): TJSObject;
+    function NextOperationLabelId(const APrefix: String): String;
+    function SameLabelIdentity(const ALeft, ARight: TJSObject): Boolean;
     procedure RenderProposals;
     procedure DrawWaveform;
     procedure SelectLabel(const AIndex: Integer);
@@ -124,6 +144,9 @@ type
     function HandleLoadCue(AEvent: TJSMouseEvent): Boolean;
     function HandleSuggest(AEvent: TJSMouseEvent): Boolean;
     function HandleSave(AEvent: TJSMouseEvent): Boolean;
+    function HandleSplit(AEvent: TJSMouseEvent): Boolean;
+    function HandleMerge(AEvent: TJSMouseEvent): Boolean;
+    function HandleCancelPending(AEvent: TJSMouseEvent): Boolean;
     function HandleExport(AEvent: TJSMouseEvent): Boolean;
     function HandleUploadReviewed(AEvent: TJSMouseEvent): Boolean;
     function HandleCanvasDown(AEvent: TJSPointerEvent): Boolean;
@@ -351,6 +374,8 @@ begin
   ClearItems('review-list');
   if FCurrentLabels = nil then
   begin
+    RenderMergeTargets;
+    UpdatePendingUi;
     Exit;
   end;
   for LIndex := 0 to FCurrentLabels.length - 1 do
@@ -363,6 +388,286 @@ begin
       IntToStr(Trunc(NumberField(LRow, 'end_frame'))) + ' · ' +
       TextField(LRow, 'status'),
       'reviewed', LIndex, @HandleLabel);
+  end;
+  RenderMergeTargets;
+  UpdatePendingUi;
+end;
+
+procedure TWorkbench.RenderMergeTargets;
+var
+  LSelect: TJSHTMLSelectElement;
+  LOption: TJSHTMLOptionElement;
+  LRow: TJSObject;
+  LIndex: Integer;
+begin
+  LSelect := TJSHTMLSelectElement(Element('merge-label-target'));
+  LSelect.innerHTML := '';
+  LOption := TJSHTMLOptionElement(TJSHTMLOptionElement.New(
+    'Choose an adjacent label', ''));
+  LOption.disabled := True;
+  LOption.selected := True;
+  LSelect.add(LOption);
+  if FCurrentLabels = nil then
+  begin
+    Exit;
+  end;
+  for LIndex := 0 to FCurrentLabels.length - 1 do
+  begin
+    if LIndex = FSelectedLabel then
+    begin
+      Continue;
+    end;
+    LRow := TJSObject(FCurrentLabels[LIndex]);
+    if not RowMatchesSource(LRow) or
+      (TextField(LRow, 'status') = 'withdrawn') then
+    begin
+      Continue;
+    end;
+    LOption := TJSHTMLOptionElement(TJSHTMLOptionElement.New(
+      TextField(LRow, 'label_id') + ' · ' +
+      IntToStr(Trunc(NumberField(LRow, 'start_frame'))) + '–' +
+      IntToStr(Trunc(NumberField(LRow, 'end_frame'))),
+      IntToStr(LIndex)));
+    LSelect.add(LOption);
+  end;
+end;
+
+procedure TWorkbench.UpdatePendingUi;
+var
+  LCount: Integer;
+  LChange: TJSObject;
+  LRows: String;
+  LIndex: Integer;
+begin
+  LCount := 0;
+  if FPendingChanges <> nil then
+  begin
+    LCount := FPendingChanges.length;
+  end;
+  TJSHTMLButtonElement(Element('split-label-button')).disabled :=
+    (FSourceHash = '') or (LCount > 0) or FPendingConflict;
+  TJSHTMLButtonElement(Element('merge-label-button')).disabled :=
+    (FSourceHash = '') or (LCount > 0) or FPendingConflict;
+  TJSHTMLButtonElement(Element('cancel-staged-button')).disabled :=
+    (LCount = 0) or FSaveInProgress;
+  TJSHTMLButtonElement(Element('save-label-button')).disabled :=
+    (FSourceHash = '') or FPendingConflict or FSaveInProgress;
+  if FSaveInProgress then
+  begin
+    if LCount > 0 then
+    begin
+      Element('pending-review-note').textContent :=
+        IntToStr(FPendingCommitted) + ' event(s) saved; ' +
+        IntToStr(LCount) +
+        ' remain staged while the current source revision and labels reload. Further edits are locked.';
+    end
+    else
+    begin
+      Element('pending-review-note').textContent :=
+        'The final staged event was saved. Waiting for the current source revision and labels to reload; further edits are locked.';
+    end;
+    Exit;
+  end;
+  if LCount = 0 then
+  begin
+    Element('pending-review-note').textContent :=
+      'Split and merge edits stay in this browser until you explicitly save a review event.';
+    Element('pending-review-list').textContent := '';
+    TJSHTMLButtonElement(Element('save-label-button')).textContent :=
+      'Save review event';
+    Exit;
+  end;
+  TJSHTMLButtonElement(Element('save-label-button')).disabled := False;
+  if FPendingConflict then
+  begin
+    TJSHTMLButtonElement(Element('save-label-button')).disabled := True;
+    Element('pending-review-note').textContent :=
+      'The source revision changed while this operation was staged. Cancel the remaining unsaved events, reload the current labels, and stage the operation again.';
+    Element('pending-review-list').textContent :=
+      IntToStr(FPendingCommitted) + ' staged event(s) already saved; ' +
+      IntToStr(LCount) + ' remain unsaved.';
+    Exit;
+  end;
+  TJSHTMLButtonElement(Element('save-label-button')).textContent :=
+    'Commit next staged event (' + IntToStr(FPendingCommitted + 1) +
+    ' of ' + IntToStr(FPendingCommitted + LCount) + ')';
+  Element('pending-review-note').textContent :=
+    FPendingOperation + ' is staged for this source only. ' +
+    IntToStr(FPendingCommitted) + ' event(s) saved; ' + IntToStr(LCount) +
+    ' remain unsaved. Each click on “Commit next staged event” saves one event; navigation is locked until the queue is completed or cancelled.';
+  LRows := '';
+  for LIndex := 0 to LCount - 1 do
+  begin
+    LChange := TJSObject(FPendingChanges[LIndex]);
+    if LRows <> '' then
+    begin
+      LRows := LRows + ' · ';
+    end;
+    LRows := LRows + TextField(LChange, 'label_id') + ' ' +
+      IntToStr(Trunc(NumberField(LChange, 'start_frame'))) + '–' +
+      IntToStr(Trunc(NumberField(LChange, 'end_frame'))) + ' ' +
+      TextField(LChange, 'status');
+  end;
+  Element('pending-review-list').textContent := LRows;
+end;
+
+procedure TWorkbench.ClearPending;
+begin
+  FPendingChanges := nil;
+  FPendingSourceHash := '';
+  FPendingSourceGroup := '';
+  FPendingPartition := '';
+  FPendingOperation := '';
+  FPendingCommitted := 0;
+  FPendingConflict := False;
+  UpdatePendingUi;
+end;
+
+procedure TWorkbench.AppendPending(const AChange: TJSObject);
+var
+  LIndex: Integer;
+begin
+  if FPendingChanges = nil then
+  begin
+    FPendingChanges := TJSArray.new;
+    FPendingSourceHash := FSourceHash;
+    FPendingSourceGroup := FSourceGroup;
+    FPendingPartition := FPartition;
+    FPendingCommitted := 0;
+    FPendingConflict := False;
+  end;
+  LIndex := FPendingChanges.length;
+  FPendingChanges[LIndex] := AChange;
+end;
+
+function TWorkbench.RowMatchesSource(const ARow: TJSObject): Boolean;
+var
+  LValue: String;
+begin
+  Result := False;
+  if (ARow = nil) or (FSourceHash = '') then
+  begin
+    Exit;
+  end;
+  LValue := TextField(ARow, 'source_sha256');
+  if (LValue <> '') and (LValue <> FSourceHash) then
+  begin
+    Exit;
+  end;
+  LValue := TextField(ARow, 'source_group');
+  if (LValue <> '') and (LValue <> FSourceGroup) then
+  begin
+    Exit;
+  end;
+  LValue := TextField(ARow, 'partition');
+  if (LValue <> '') and (LValue <> FPartition) then
+  begin
+    Exit;
+  end;
+  Result := True;
+end;
+
+function TWorkbench.EditorChange(const AStartFrame, AEndFrame: Int64;
+  const ALabelId: String): TJSObject;
+begin
+  Result := TJSObject.new;
+  Result['label_id'] := ALabelId;
+  Result['type'] := Input('label-type').value;
+  Result['value'] := Input('label-value').value;
+  Result['status'] := Input('label-status').value;
+  Result['start_frame'] := AStartFrame;
+  Result['end_frame'] := AEndFrame;
+  Result['part'] := Input('label-part').value;
+  Result['proposal_id'] := Input('label-proposal').value;
+  if Input('label-type').value = 'note' then
+  begin
+    Result['pitch_midi'] := StrToIntDef(Input('label-pitch').value, -1);
+  end;
+end;
+
+function TWorkbench.RowChange(const ARow: TJSObject;
+  const AStatus: String): TJSObject;
+var
+  LStatus: String;
+begin
+  Result := TJSObject.new;
+  Result['label_id'] := TextField(ARow, 'label_id');
+  Result['type'] := TextField(ARow, 'type');
+  Result['value'] := TextField(ARow, 'value');
+  LStatus := AStatus;
+  if LStatus = '' then
+  begin
+    LStatus := TextField(ARow, 'status');
+  end;
+  Result['status'] := LStatus;
+  Result['start_frame'] := Trunc(NumberField(ARow, 'start_frame'));
+  Result['end_frame'] := Trunc(NumberField(ARow, 'end_frame'));
+  Result['part'] := TextField(ARow, 'part');
+  Result['proposal_id'] := TextField(ARow, 'proposal_id');
+  if TextField(ARow, 'type') = 'note' then
+  begin
+    Result['pitch_midi'] := Trunc(NumberField(ARow, 'pitch_midi'));
+  end;
+end;
+
+function TWorkbench.NextOperationLabelId(const APrefix: String): String;
+var
+  LCandidate: String;
+  LIndex: Integer;
+  LUsed: Boolean;
+  LRow: TJSObject;
+  LChange: TJSObject;
+  LAttempt: Integer;
+begin
+  for LAttempt := 1 to 2048 do
+  begin
+    LCandidate := 'workbench-' + APrefix + '-r' +
+      IntToStr(FReviewRevision + 1) + '-' + IntToStr(LAttempt);
+    LUsed := False;
+    if FCurrentLabels <> nil then
+    begin
+      for LIndex := 0 to FCurrentLabels.length - 1 do
+      begin
+        LRow := TJSObject(FCurrentLabels[LIndex]);
+        if TextField(LRow, 'label_id') = LCandidate then
+        begin
+          LUsed := True;
+          Break;
+        end;
+      end;
+    end;
+    if (not LUsed) and (FPendingChanges <> nil) then
+    begin
+      for LIndex := 0 to FPendingChanges.length - 1 do
+      begin
+        LChange := TJSObject(FPendingChanges[LIndex]);
+        if TextField(LChange, 'label_id') = LCandidate then
+        begin
+          LUsed := True;
+          Break;
+        end;
+      end;
+    end;
+    if not LUsed then
+    begin
+      Exit(LCandidate);
+    end;
+  end;
+  raise Exception.Create('Could not create a unique staged label ID.');
+end;
+
+function TWorkbench.SameLabelIdentity(const ALeft,
+  ARight: TJSObject): Boolean;
+begin
+  Result := (TextField(ALeft, 'type') = TextField(ARight, 'type')) and
+    (TextField(ALeft, 'value') = TextField(ARight, 'value')) and
+    (TextField(ALeft, 'status') = TextField(ARight, 'status')) and
+    (TextField(ALeft, 'part') = TextField(ARight, 'part')) and
+    (TextField(ALeft, 'proposal_id') = TextField(ARight, 'proposal_id'));
+  if Result and (TextField(ALeft, 'type') = 'note') then
+  begin
+    Result := NumberField(ALeft, 'pitch_midi') =
+      NumberField(ARight, 'pitch_midi');
   end;
 end;
 
@@ -473,6 +778,24 @@ begin
       LContext.fillRect(LStart, 211, LEnd - LStart + 2, 18);
     end;
   end;
+  if (FPendingChanges <> nil) and
+    (FPendingSourceHash = FSourceHash) then
+  begin
+    LContext.fillStyleAsColor := '#d3a8ff';
+    for LIndex := 0 to FPendingChanges.length - 1 do
+    begin
+      LRow := TJSObject(FPendingChanges[LIndex]);
+      if TextField(LRow, 'status') = 'withdrawn' then
+      begin
+        Continue;
+      end;
+      LStart := (NumberField(LRow, 'start_frame') - FWindowStart) /
+        FWindowSpan * FCanvas.width;
+      LEnd := (NumberField(LRow, 'end_frame') - FWindowStart) /
+        FWindowSpan * FCanvas.width;
+      LContext.fillRect(LStart, 232, LEnd - LStart + 2, 12);
+    end;
+  end;
   if (FDragMode <> dmNone) or
     ((FCurrentLabels <> nil) and (FSelectedLabel >= 0) and
     (FSelectedLabel < FCurrentLabels.length)) then
@@ -527,6 +850,13 @@ procedure TWorkbench.SelectLabel(const AIndex: Integer);
 var
   LRow: TJSObject;
 begin
+  if FSaveInProgress or ((FPendingChanges <> nil) and
+    (FPendingChanges.length > 0)) then
+  begin
+    Status('Finish or cancel the staged operation before selecting another label.',
+      True);
+    Exit;
+  end;
   if (FCurrentLabels = nil) or (AIndex < 0) or
     (AIndex >= FCurrentLabels.length) then
   begin
@@ -550,6 +880,7 @@ begin
     Input('label-pitch').value :=
       IntToStr(Trunc(NumberField(LRow, 'pitch_midi')));
   end;
+  RenderMergeTargets;
   DrawWaveform;
 end;
 
@@ -870,6 +1201,13 @@ procedure TWorkbench.SelectTrack(const AIndex: Integer); async;
 var
   LTrack: TJSObject;
 begin
+  if FSaveInProgress or ((FPendingChanges <> nil) and
+    (FPendingChanges.length > 0)) then
+  begin
+    Status('Finish or cancel the staged review operation before changing source.',
+      True);
+    Exit;
+  end;
   if (FTracks = nil) or (AIndex < 0) or
     (AIndex >= FTracks.length) then
   begin
@@ -877,6 +1215,7 @@ begin
   end;
   LTrack := TJSObject(FTracks[AIndex]);
   FSourceHash := TextField(LTrack, 'source_sha256');
+  FSourceGroup := TextField(LTrack, 'source_group');
   FPartition := TextField(LTrack, 'partition');
   FSampleRate := Trunc(NumberField(LTrack, 'sample_rate'));
   FFrameCount := Trunc(NumberField(LTrack, 'frame_count'));
@@ -1031,9 +1370,24 @@ begin
     DrawWaveform;
     Status('Loaded source frames ' + IntToStr(LStart) +
       '–' + IntToStr(LEnd) + '.');
+    if FSaveInProgress then
+    begin
+      FSaveInProgress := False;
+      UpdatePendingUi;
+    end;
   except
     on LError: Exception do
     begin
+      if FSaveInProgress then
+      begin
+        FSaveInProgress := False;
+        if (FPendingChanges <> nil) and
+          (FPendingChanges.length > 0) and (FPendingCommitted > 0) then
+        begin
+          FPendingConflict := True;
+        end;
+        UpdatePendingUi;
+      end;
       Status('Timeline failed: ' + LError.Message, True);
     end;
   end;
@@ -1051,6 +1405,10 @@ var
   LResponse: TJSResponse;
   LBlob: TJSBlob;
 begin
+  if FSaveInProgress then
+  begin
+    Exit;
+  end;
   if FSourceHash = '' then
   begin
     Exit;
@@ -1184,33 +1542,51 @@ var
   LStart: Int64;
   LEnd: Int64;
   LResponse: TJSResponse;
+  LQueued: Boolean;
+  LRemaining: TJSArray;
+  LIndex: Integer;
 begin
   if FSourceHash = '' then
   begin
     Exit;
   end;
-  LStart := StrToInt64Def(Input('label-start').value, -1);
-  LEnd := StrToInt64Def(Input('label-end').value, -1);
+  LQueued := (FPendingChanges <> nil) and
+    (FPendingChanges.length > 0);
+  if LQueued then
+  begin
+    if FPendingConflict or (FPendingSourceHash <> FSourceHash) or
+      (FPendingSourceGroup <> FSourceGroup) or
+      (FPendingPartition <> FPartition) then
+    begin
+      FPendingConflict := True;
+      UpdatePendingUi;
+      Status('The staged operation no longer matches this source. Cancel remaining events.',
+        True);
+      Exit;
+    end;
+    LChange := TJSObject(FPendingChanges[0]);
+    LStart := Trunc(NumberField(LChange, 'start_frame'));
+    LEnd := Trunc(NumberField(LChange, 'end_frame'));
+  end
+  else
+  begin
+    LStart := StrToInt64Def(Input('label-start').value, -1);
+    LEnd := StrToInt64Def(Input('label-end').value, -1);
+    if (Trim(Input('label-id').value) = '') then
+    begin
+      Status('Enter a label ID before saving.', True);
+      Exit;
+    end;
+    LChange := EditorChange(LStart, LEnd, Input('label-id').value);
+  end;
   if (LStart < 0) or (LEnd <= LStart) or (LEnd > FFrameCount) then
   begin
-    Status('Enter a valid half-open source-frame interval.', True);
+    Status('Enter a valid nonzero half-open source-frame interval.', True);
     Exit;
   end;
+  FSaveInProgress := True;
+  UpdatePendingUi;
   try
-    LChange := TJSObject.new;
-    LChange['label_id'] := Input('label-id').value;
-    LChange['type'] := Input('label-type').value;
-    LChange['value'] := Input('label-value').value;
-    LChange['status'] := Input('label-status').value;
-    LChange['start_frame'] := LStart;
-    LChange['end_frame'] := LEnd;
-    LChange['part'] := Input('label-part').value;
-    LChange['proposal_id'] := Input('label-proposal').value;
-    if Input('label-type').value = 'note' then
-    begin
-      LChange['pitch_midi'] :=
-        StrToIntDef(Input('label-pitch').value, -1);
-    end;
     LTransaction := TJSObject.new;
     LTransaction['version'] := 1;
     LTransaction['source_sha256'] := FSourceHash;
@@ -1222,8 +1598,20 @@ begin
     if LResponse.status = 409 then
     begin
       FDragMode := dmNone;
-      Status('Another review changed this source. Reloading current labels.',
-        True);
+      if LQueued then
+      begin
+        FPendingConflict := True;
+        FSaveInProgress := False;
+        UpdatePendingUi;
+        Status('Another review changed this source. The remaining staged events were not saved; cancel them after reviewing the reloaded labels.',
+          True);
+      end
+      else
+      begin
+        FSaveInProgress := False;
+        UpdatePendingUi;
+        Status('Another review changed this source. Reloading current labels.');
+      end;
       RefreshWindow;
       Exit;
     end;
@@ -1232,11 +1620,36 @@ begin
       raise Exception.Create('Review HTTP ' + IntToStr(LResponse.status));
     end;
     FDragMode := dmNone;
-    Status('Review event saved. Reloading exact source labels.');
+    if LQueued then
+    begin
+      LRemaining := TJSArray.new;
+      for LIndex := 1 to FPendingChanges.length - 1 do
+      begin
+        LRemaining[LRemaining.length] := FPendingChanges[LIndex];
+      end;
+      FPendingChanges := LRemaining;
+      Inc(FPendingCommitted);
+      if FPendingChanges.length = 0 then
+      begin
+        ClearPending;
+        Status('One staged review event saved. Operation complete; reloaded exact source labels.');
+      end
+      else
+      begin
+        UpdatePendingUi;
+        Status('One staged review event saved. The next event remains unsaved until you click again.');
+      end;
+    end
+    else
+    begin
+      Status('Review event saved. Reloading exact source labels.');
+    end;
     RefreshWindow;
   except
     on LError: Exception do
     begin
+      FSaveInProgress := False;
+      UpdatePendingUi;
       Status('Review failed: ' + LError.Message, True);
     end;
   end;
@@ -1409,6 +1822,13 @@ begin
   begin
     Exit;
   end;
+  if FSaveInProgress or ((FPendingChanges <> nil) and
+    (FPendingChanges.length > 0)) then
+  begin
+    Status('Finish or cancel the staged review operation before editing another span.',
+      True);
+    Exit;
+  end;
   FDragMode := dmNone;
   LHit := -1;
   if FCurrentLabels <> nil then
@@ -1538,6 +1958,13 @@ var
   LRow: TJSObject;
   LFrame: Int64;
 begin
+  if FSaveInProgress or ((FPendingChanges <> nil) and
+    (FPendingChanges.length > 0)) then
+  begin
+    Status('Finish or cancel the staged operation before selecting a proposal.',
+      True);
+    Exit(False);
+  end;
   LIndex := StrToIntDef(
     TJSElement(AEvent.currentTarget).getAttribute('data-index'), -1);
   if FProposals = nil then
@@ -1582,6 +2009,13 @@ end;
 
 function TWorkbench.HandlePrevious(AEvent: TJSMouseEvent): Boolean;
 begin
+  if FSaveInProgress or ((FPendingChanges <> nil) and
+    (FPendingChanges.length > 0)) then
+  begin
+    Status('Finish or cancel the staged operation before changing the source window.',
+      True);
+    Exit(False);
+  end;
   if FSourceHash <> '' then
   begin
     if FWindowStart > FWindowSpan then
@@ -1595,6 +2029,13 @@ end;
 
 function TWorkbench.HandleNext(AEvent: TJSMouseEvent): Boolean;
 begin
+  if FSaveInProgress or ((FPendingChanges <> nil) and
+    (FPendingChanges.length > 0)) then
+  begin
+    Status('Finish or cancel the staged operation before changing the source window.',
+      True);
+    Exit(False);
+  end;
   if FSourceHash <> '' then
   begin
     FWindowStart := Smaller(FFrameCount - 1,
@@ -1613,6 +2054,13 @@ begin
   if FSourceHash = '' then
   begin
     Status('Choose a catalog track before jumping to a time.', True);
+    Exit;
+  end;
+  if FSaveInProgress or ((FPendingChanges <> nil) and
+    (FPendingChanges.length > 0)) then
+  begin
+    Status('Finish or cancel the staged operation before changing the source window.',
+      True);
     Exit;
   end;
   if not TryStrToInt64(Trim(Input('jump-seconds').value), LSeconds) or
@@ -1644,6 +2092,13 @@ end;
 
 function TWorkbench.HandleZoomIn(AEvent: TJSMouseEvent): Boolean;
 begin
+  if FSaveInProgress or ((FPendingChanges <> nil) and
+    (FPendingChanges.length > 0)) then
+  begin
+    Status('Finish or cancel the staged operation before changing the source window.',
+      True);
+    Exit(False);
+  end;
   if FSourceHash <> '' then
   begin
     FWindowSpan := Smaller(FFrameCount,
@@ -1659,6 +2114,13 @@ end;
 
 function TWorkbench.HandleZoomOut(AEvent: TJSMouseEvent): Boolean;
 begin
+  if FSaveInProgress or ((FPendingChanges <> nil) and
+    (FPendingChanges.length > 0)) then
+  begin
+    Status('Finish or cancel the staged operation before changing the source window.',
+      True);
+    Exit(False);
+  end;
   if FSourceHash <> '' then
   begin
     FWindowSpan := Smaller(FFrameCount,
@@ -1692,6 +2154,243 @@ begin
   Result := False;
 end;
 
+function TWorkbench.HandleSplit(AEvent: TJSMouseEvent): Boolean;
+var
+  LStart: Int64;
+  LEnd: Int64;
+  LSplit: Int64;
+  LRow: TJSObject;
+  LChange: TJSObject;
+  LLeftId: String;
+  LRightId: String;
+begin
+  Result := False;
+  LStart := StrToInt64Def(Input('label-start').value, -1);
+  LEnd := StrToInt64Def(Input('label-end').value, -1);
+  LSplit := StrToInt64Def(Input('split-frame').value, -1);
+  if (FSourceHash = '') or (FFrameCount <= 0) then
+  begin
+    Status('Select a valid source before splitting a label.', True);
+    Exit;
+  end;
+  if FSaveInProgress or ((FPendingChanges <> nil) and
+    (FPendingChanges.length > 0)) then
+  begin
+    Status('Complete or cancel the current staged operation first.', True);
+    Exit;
+  end;
+  if (LStart < 0) or (LEnd <= LStart) or (LEnd > FFrameCount) then
+  begin
+    Status('The label must have a nonzero interval within this source.', True);
+    Exit;
+  end;
+  if (LSplit <= LStart) or (LSplit >= LEnd) then
+  begin
+    Status('Choose a split frame strictly inside the selected half-open interval.',
+      True);
+    Exit;
+  end;
+  if Input('label-status').value = 'withdrawn' then
+  begin
+    Status('A withdrawn label cannot be split.', True);
+    Exit;
+  end;
+  if FSelectedLabel >= 0 then
+  begin
+    if (FCurrentLabels = nil) or
+      (FSelectedLabel >= FCurrentLabels.length) then
+    begin
+      Status('The selected saved label is no longer available.', True);
+      Exit;
+    end;
+    LRow := TJSObject(FCurrentLabels[FSelectedLabel]);
+    if not RowMatchesSource(LRow) or
+      (TextField(LRow, 'status') = 'withdrawn') or
+      (TextField(LRow, 'label_id') <> Input('label-id').value) or
+      (Trunc(NumberField(LRow, 'start_frame')) <> LStart) or
+      (Trunc(NumberField(LRow, 'end_frame')) <> LEnd) or
+      not SameLabelIdentity(LRow, EditorChange(LStart, LEnd,
+        Input('label-id').value)) then
+    begin
+      Status('The saved selection or its label identity changed. Reload/select it again before splitting.',
+        True);
+      Exit;
+    end;
+    AppendPending(RowChange(LRow, 'withdrawn'));
+  end;
+  LLeftId := NextOperationLabelId('split-left');
+  LChange := EditorChange(LStart, LSplit, LLeftId);
+  AppendPending(LChange);
+  LRightId := NextOperationLabelId('split-right');
+  LChange := EditorChange(LSplit, LEnd, LRightId);
+  AppendPending(LChange);
+  FPendingOperation := 'Split';
+  FPendingConflict := False;
+  FDragMode := dmNone;
+  UpdatePendingUi;
+  DrawWaveform;
+  Status('Split staged at exact source frame ' + IntToStr(LSplit) +
+    '. No review event has been saved.');
+end;
+
+function TWorkbench.HandleMerge(AEvent: TJSMouseEvent): Boolean;
+var
+  LStart: Int64;
+  LEnd: Int64;
+  LTargetIndex: Integer;
+  LTarget: TJSObject;
+  LSelected: TJSObject;
+  LChange: TJSObject;
+  LLabelId: String;
+  LNewStart: Int64;
+  LNewEnd: Int64;
+begin
+  Result := False;
+  if (FSourceHash = '') or (FFrameCount <= 0) then
+  begin
+    Status('Select a valid source before merging labels.', True);
+    Exit;
+  end;
+  if FSaveInProgress or ((FPendingChanges <> nil) and
+    (FPendingChanges.length > 0)) then
+  begin
+    Status('Complete or cancel the current staged operation first.', True);
+    Exit;
+  end;
+  if (FCurrentLabels = nil) then
+  begin
+    Status('Load saved labels before merging.', True);
+    Exit;
+  end;
+  LTargetIndex := StrToIntDef(
+    TJSHTMLSelectElement(Element('merge-label-target')).value, -1);
+  if (LTargetIndex < 0) or (LTargetIndex >= FCurrentLabels.length) or
+    (LTargetIndex = FSelectedLabel) then
+  begin
+    Status('Choose another current-source label as the merge target.', True);
+    Exit;
+  end;
+  LTarget := TJSObject(FCurrentLabels[LTargetIndex]);
+  if not RowMatchesSource(LTarget) or
+    (TextField(LTarget, 'status') = 'withdrawn') then
+  begin
+    Status('The merge target is not an active label on this source.', True);
+    Exit;
+  end;
+  LStart := StrToInt64Def(Input('label-start').value, -1);
+  LEnd := StrToInt64Def(Input('label-end').value, -1);
+  if (LStart < 0) or (LEnd <= LStart) or (LEnd > FFrameCount) or
+    (Trunc(NumberField(LTarget, 'end_frame')) <=
+      Trunc(NumberField(LTarget, 'start_frame'))) then
+  begin
+    Status('Both labels must have nonzero intervals within their source.', True);
+    Exit;
+  end;
+  if FSelectedLabel >= 0 then
+  begin
+    if FSelectedLabel >= FCurrentLabels.length then
+    begin
+      Status('The selected saved label is no longer available.', True);
+      Exit;
+    end;
+    LSelected := TJSObject(FCurrentLabels[FSelectedLabel]);
+    if not RowMatchesSource(LSelected) or
+      (TextField(LSelected, 'status') = 'withdrawn') or
+      (TextField(LSelected, 'label_id') <> Input('label-id').value) or
+      (Trunc(NumberField(LSelected, 'start_frame')) <> LStart) or
+      (Trunc(NumberField(LSelected, 'end_frame')) <> LEnd) or
+      not SameLabelIdentity(LSelected, EditorChange(LStart, LEnd,
+        Input('label-id').value)) then
+    begin
+      Status('The selected saved label was edited or changed identity. Select it again before merging.',
+        True);
+      Exit;
+    end;
+  end
+  else
+  begin
+    LSelected := EditorChange(LStart, LEnd, Input('label-id').value);
+    if Trim(Input('label-value').value) = '' then
+    begin
+      Status('Enter a label value before merging a draft with a saved label.',
+        True);
+      Exit;
+    end;
+  end;
+  if not SameLabelIdentity(LSelected, LTarget) then
+  begin
+    Status('Labels with different type, value, status, part, proposal, or pitch cannot be merged.',
+      True);
+    Exit;
+  end;
+  if (LStart > Trunc(NumberField(LTarget, 'end_frame'))) or
+    (Trunc(NumberField(LTarget, 'start_frame')) > LEnd) then
+  begin
+    Status('Merge requires adjacent or overlapping intervals; gaps are not filled.',
+      True);
+    Exit;
+  end;
+  LNewStart := LStart;
+  if Trunc(NumberField(LTarget, 'start_frame')) < LNewStart then
+  begin
+    LNewStart := Trunc(NumberField(LTarget, 'start_frame'));
+  end;
+  LNewEnd := LEnd;
+  if Trunc(NumberField(LTarget, 'end_frame')) > LNewEnd then
+  begin
+    LNewEnd := Trunc(NumberField(LTarget, 'end_frame'));
+  end;
+  if FSelectedLabel >= 0 then
+  begin
+    LLabelId := TextField(LSelected, 'label_id');
+  end
+  else
+  begin
+    LLabelId := NextOperationLabelId('merge');
+  end;
+  AppendPending(EditorChange(LNewStart, LNewEnd, LLabelId));
+  AppendPending(RowChange(LTarget, 'withdrawn'));
+  FPendingOperation := 'Merge';
+  FPendingConflict := False;
+  FDragMode := dmNone;
+  UpdatePendingUi;
+  DrawWaveform;
+  Status('Merge staged for frames ' + IntToStr(LNewStart) + '–' +
+    IntToStr(LNewEnd) + '. No review event has been saved.');
+end;
+
+function TWorkbench.HandleCancelPending(AEvent: TJSMouseEvent): Boolean;
+var
+  LRemaining: Integer;
+  LSaved: Integer;
+begin
+  Result := False;
+  if FSaveInProgress then
+  begin
+    Status('Wait for the current review save and label reload before cancelling staged events.',
+      True);
+    Exit;
+  end;
+  LRemaining := 0;
+  if FPendingChanges <> nil then
+  begin
+    LRemaining := FPendingChanges.length;
+  end;
+  LSaved := FPendingCommitted;
+  ClearPending;
+  DrawWaveform;
+  if LSaved > 0 then
+  begin
+    Status(IntToStr(LSaved) + ' event(s) remain saved. Cancelled ' +
+      IntToStr(LRemaining) + ' unsaved event(s); saved history was not rolled back.');
+  end
+  else
+  begin
+    Status('Cancelled ' + IntToStr(LRemaining) +
+      ' staged event(s). Nothing was saved.');
+  end;
+end;
+
 function TWorkbench.HandleExport(AEvent: TJSMouseEvent): Boolean;
 begin
   DownloadExport;
@@ -1723,6 +2422,10 @@ begin
   TJSHTMLButtonElement(Element('load-cue-button')).onclick := @HandleLoadCue;
   TJSHTMLButtonElement(Element('suggest-button')).onclick := @HandleSuggest;
   TJSHTMLButtonElement(Element('save-label-button')).onclick := @HandleSave;
+  TJSHTMLButtonElement(Element('split-label-button')).onclick := @HandleSplit;
+  TJSHTMLButtonElement(Element('merge-label-button')).onclick := @HandleMerge;
+  TJSHTMLButtonElement(Element('cancel-staged-button')).onclick :=
+    @HandleCancelPending;
   TJSHTMLButtonElement(Element('export-button')).onclick := @HandleExport;
   TJSHTMLButtonElement(Element('import-reviewed-button')).onclick :=
     @HandleUploadReviewed;

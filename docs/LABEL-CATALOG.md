@@ -194,10 +194,14 @@ catalog, stored proposals, waveform, current labels, history, region audio,
 import, review, beat proposals and the reviewed packet download. It
 binds only the specified loopback or private LAN IPv4 address, never all
 interfaces. The inbox and catalog roots are process arguments, not URL paths.
-`GET /api/session` provides a local loopback token. LAN mode requires a secret
-of at least 16 characters in `PYTHIAN_CATALOG_ACCESS_KEY`; clients submit it
-as JSON to `POST /api/session` and send the returned `X-Pythian-Token` header
-on every subsequent request. The access key and token must stay out of URLs.
+`GET /api/session` provides a local loopback token. LAN mode uses an access key
+of at least 16 characters stored in the catalog root's private `.access-key`
+file. On its first LAN start, the Pascal host saves
+`PYTHIAN_CATALOG_ACCESS_KEY` if supplied, or generates a key. Later starts
+reuse the file. Clients submit the key as JSON to `POST /api/session` and send
+the returned `X-Pythian-Token` header on every subsequent request. The host
+restricts the key file to its owner and Windows SYSTEM (or owner-only Unix
+mode) before writing or reading it. The access key and token stay out of URLs.
 LAN HTTP is not encrypted, so use only a trusted local network. `serve-app`
 serves the Pascal/pas2js page on the same origin with an access-key form.
 `GET /api/export` sends the same bounded, deterministic, audio-free packet as
@@ -210,22 +214,22 @@ same session-token check. It validates and replays into the configured catalog
 using the CLI's source-hash and conflict rules. The browser's file picker sends
 the packet; the original WAVs must already be imported into that catalog.
 
-For explicit LAN binding, set the secret in the server process before startup:
+For explicit LAN binding, start the server on the host's private IPv4 address:
 
 ```powershell
-$env:PYTHIAN_CATALOG_ACCESS_KEY = Read-Host 'Catalog access key (16+ characters)'
 & 'build/<target>/pythian.label.catalog.exe' serve 'D:\path\to\inbox' 'D:\path\to\catalog' '<LAN_IPV4>' 18085
 ```
 
 The browser workbench is built with
 `powershell -NoProfile -ExecutionPolicy Bypass -File tools\build-label-workbench.ps1`.
-Start it on the chosen interface with the same secret:
+Start it on the chosen interface and catalog root:
 
 ```powershell
 & 'build/<target>/pythian.label.catalog.exe' serve-app 'D:\path\to\inbox' 'D:\path\to\catalog' 'build\label-workbench\www' '<LAN_IPV4>' 18095
 ```
 
-Open `http://<LAN_IPV4>:18095/` and enter the secret in the page. The server
+Open `http://<LAN_IPV4>:18095/` and enter the key from the catalog root's
+`.access-key` file once on each trusted browser origin. The server
 accepts only three named static assets and keeps catalog routes behind its
 session token. After a successful LAN login, the Pascal browser app saves the
 access key in this browser's local storage for that origin and automatically

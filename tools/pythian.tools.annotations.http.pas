@@ -53,6 +53,16 @@ uses
   pythian.tools.annotations.review
   {$IFDEF MSWINDOWS}, Windows{$ELSE}, BaseUnix{$ENDIF};
 
+{$IFDEF MSWINDOWS}
+function DecodeKeyFileDacl(ASddl: PWideChar; ARevision: DWORD;
+  out ADescriptor: Pointer; ASize: PDWORD): BOOL; stdcall;
+  external 'advapi32.dll' name 'ConvertStringSecurityDescriptorToSecurityDescriptorW';
+
+function ApplyKeyFileDacl(APath: PWideChar; AInformation: DWORD;
+  ADescriptor: Pointer): BOOL; stdcall;
+  external 'advapi32.dll' name 'SetFileSecurityW';
+{$ENDIF}
+
 const
   CMaximumHeaderBytes = 16384;
   CMaximumBodyBytes = 16384;
@@ -902,6 +912,91 @@ begin
   end;
 end;
 
+procedure RestrictLanKeyFile(const APath: String);
+{$IFDEF MSWINDOWS}
+var
+  LDescriptor: Pointer;
+  LPath: WideString;
+  LSddl: WideString;
+begin
+  LDescriptor := nil;
+  LSddl := 'D:P(A;;FA;;;SY)(A;;FA;;;OW)';
+  Need(DecodeKeyFileDacl(PWideChar(LSddl), 1, LDescriptor, nil),
+    'Could not build LAN key file permissions');
+  try
+    LPath := UTF8Decode(APath);
+    Need(ApplyKeyFileDacl(PWideChar(LPath), DACL_SECURITY_INFORMATION,
+      LDescriptor), 'Could not restrict LAN key file permissions');
+  finally
+    LocalFree(HLOCAL(LDescriptor));
+  end;
+end;
+{$ELSE}
+begin
+  Need(fpChmod(PChar(APath), &600) = 0,
+    'Could not restrict LAN key file permissions');
+end;
+{$ENDIF}
+
+function PersistentLanAccessKey(const ACatalogRoot: String): String;
+var
+  LPath: String;
+  LStream: TFileStream;
+  LGuid: TGUID;
+begin
+  LPath := IncludeTrailingPathDelimiter(ACatalogRoot) + '.access-key';
+  if FileExists(LPath) then
+  begin
+    RestrictLanKeyFile(LPath);
+    LStream := TFileStream.Create(LPath, fmOpenRead or fmShareDenyWrite);
+    try
+      Need((LStream.Size >= 16) and (LStream.Size <= 256),
+        'Invalid saved LAN access key length');
+      SetLength(Result, Integer(LStream.Size));
+      LStream.ReadBuffer(Result[1], Length(Result));
+    finally
+      LStream.Free;
+    end;
+    while (Result <> '') and (Result[Length(Result)] in [#10, #13]) do
+    begin
+      SetLength(Result, Length(Result) - 1);
+    end;
+    Need(Length(Result) >= 16, 'Invalid saved LAN access key length');
+    Exit;
+  end;
+
+  Result := SysUtils.GetEnvironmentVariable('PYTHIAN_CATALOG_ACCESS_KEY');
+  if Result = '' then
+  begin
+    Need(CreateGUID(LGuid) = 0, 'Could not create LAN access key');
+    Result := GUIDToString(LGuid);
+    Need(CreateGUID(LGuid) = 0, 'Could not create LAN access key');
+    Result := Result + GUIDToString(LGuid);
+  end;
+  Need((Length(Result) >= 16) and (Length(Result) <= 256),
+    'LAN access key must have 16..256 characters');
+  LStream := TFileStream.Create(LPath, fmCreate or fmShareExclusive);
+  try
+    // Restrict the empty file before any secret bytes reach disk.
+  finally
+    LStream.Free;
+  end;
+  try
+    RestrictLanKeyFile(LPath);
+  except
+    SysUtils.DeleteFile(LPath);
+    raise;
+  end;
+  LStream := TFileStream.Create(LPath, fmOpenWrite or fmShareExclusive);
+  try
+    LStream.WriteBuffer(Result[1], Length(Result));
+  finally
+    LStream.Free;
+  end;
+  WriteLn('LAN access key saved in ', LPath,
+    '; enter it once per trusted browser origin.');
+end;
+
 procedure RunCatalogHttp(const AInboxRoot, ACatalogRoot,
   ABindAddress: String; const APort, AMaximumRequests: Integer;
   const AStaticRoot: String);
@@ -931,14 +1026,6 @@ begin
       FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'style.css'),
       'Configured browser assets are incomplete');
   end;
-  LAccessKey := '';
-  if ABindAddress <> '127.0.0.1' then
-  begin
-    LAccessKey := SysUtils.GetEnvironmentVariable(
-      'PYTHIAN_CATALOG_ACCESS_KEY');
-    Need(Length(LAccessKey) >= 16,
-      'LAN mode requires PYTHIAN_CATALOG_ACCESS_KEY of at least 16 characters');
-  end;
   Need(CreateGUID(LGuid) = 0, 'Could not create HTTP session token');
   LToken := GUIDToString(LGuid);
   LListener := fpSocket(AF_INET, SOCK_STREAM, 0);
@@ -950,6 +1037,11 @@ begin
     LAddress.sin_addr := StrToNetAddr(ABindAddress);
     Need(fpBind(LListener, @LAddress, SizeOf(LAddress)) = 0,
       'Could not bind catalog HTTP listener');
+    LAccessKey := '';
+    if ABindAddress <> '127.0.0.1' then
+    begin
+      LAccessKey := PersistentLanAccessKey(ACatalogRoot);
+    end;
     Need(fpListen(LListener, 8) = 0, 'Could not listen on catalog address');
     WriteLn('Pythian catalog API: http://', ABindAddress, ':',
       APort, '/api/session');

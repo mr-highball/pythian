@@ -51,6 +51,22 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
 
 **Dev Notes:**
 
+- 2026-09-26 source-independent capacity attempt 1: the default six-second
+  tracker windows now advance by three seconds (half overlap) rather than one,
+  while explicit caller hops and the 64-million aggregate fit cap remain
+  unchanged. Checked stable Win32/Win64 authored track, beat-grid, clock and
+  context-profile controls pass; a new 30-second 25-onsets/second authored
+  input completes in ten windows, a separate authored 120-BPM source retains
+  60 aligned pulses without seam issues, and an extreme density rejects before
+  replacing the previous result. The one-second path remains explicitly tested.
+  After this frozen authored gate, the already exposed second ASAP/MAESTRO
+  source completed once at 22,676,310 fit visits, ten windows, 494 admitted
+  onsets and 84 output pulse positions; the old fixed binary had stopped at
+  the aggregate cap. This repairs a development execution boundary, not
+  recorded candidate recall, physical attribution or a prospective challenge.
+  Exact private policy/report stay in ignored
+  `build/beat-capacity-half-overlap-20260926/`. A new prospectively
+  snapshotted source-separated pair remains necessary; no task credit.
 - 2026-09-25 user-directed ASAP/MAESTRO source search found a more usable
   physical-beat source: ASAP v1.1 beat labels link to original MAESTRO v2.0.0
   acoustic Disklavier WAV and directly captured MIDI. Pascal ZIP/member checks

@@ -13,6 +13,65 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Browser split and merge controls — 2026-09-26
+
+The Pascal/pas2js workbench now stages exact-frame split and compatible
+adjacent/overlapping merge events. Each append-only catalog event requires an
+explicit Save. The page shows remaining staged actions, blocks navigation
+while they are pending and reports any partial commit on failure or cancel.
+Ticket Guy's desktop and 390px browser checks covered boundaries, conflicting
+label semantics, three split commits, two merge commits and no implicit save.
+Salty Boi found a stale-revision rapid-click race; the fix keeps Save locked
+through the asynchronous label refresh. A delayed-refresh browser run blocked
+49 repeat attempts, made no extra Save calls and advanced revision once.
+Salty Boi accepted the final behavior and inspected desktop/narrow screenshots
+of the controls without clipping. The larger authoring task remains open;
+compound changes are still non-atomic because the catalog commits one review
+event per request. No task credit follows.
+
+## Persistent LAN access key — 2026-09-26
+
+The native Pascal catalog host now saves its LAN access key once in the
+catalog root's private `.access-key` file and reuses it across restarts. On
+first startup it accepts the existing environment key or generates one. The
+pas2js page already saves an accepted key per browser origin and silently
+reconnects. Checked stable Win32/Win64 host builds passed. An isolated Win64
+LAN host returned 403/200/403 for wrong/correct/absent key on first start and
+restart; only first start wrote the key file. QA found inherited local-user
+access on the first draft, so the host now restricts the empty key file before
+writing and restricts existing files before reading. Checked Win32/Win64 LAN
+starts produced protected ACLs with only OWNER RIGHTS and SYSTEM full control;
+an older broad test file was restricted on restart. This keeps the login key
+stable across server restarts. The current live
+18097 process was left running; moving to the new binary may require one
+final key entry because its old environment key is not recorded in a file.
+New browser origins still require one initial entry. Salty Boi is auditing
+this with the browser editor and beat-capacity changes; no task credit yet.
+
+## Bounded half-overlap beat tracking — 2026-09-26
+
+The maintained default beat tracker now advances each six-second analysis
+window by three seconds, keeping half overlap and the existing 64-million
+aggregate fit cap. An explicit one-second hop still works and remains in the
+authored changing-tempo regression. The old default refit nearly the same
+evidence on every one-second owner interval, causing a dense 30-second
+development source to fail before reporting. A frozen source-independent
+policy under ignored `build/beat-capacity-half-overlap-20260926/` required
+checked authored controls before revisiting that exposed source.
+
+Stable FPC 3.2.2 Win32/Win64 beat-track, candidate, clock and context-profile
+checks pass. A new uniform 25-onsets/second 30-second authored control fits
+ten default windows under the unchanged cap; a 200-onsets/second case still
+rejects before fitting with the previous result intact. A separate authored
+120-BPM thirty-second control retains 60 source-aligned pulses with zero seam
+issues under the new default. After those checks,
+the formerly failing exposed ASAP/MAESTRO source produced a report once:
+10 windows, 22,676,310 fit visits, 494 admitted onsets, 84 pulse positions and
+zero uncertain joins. It is development evidence only; it does not rescue the
+earlier source pair's prospective challenge status or establish beat recall.
+The recorded challenge task remains open. Ticket Guy's separate browser
+split/merge work is still under integration; no further task credit follows.
+
 ## Native catalog task accepted — 2026-09-26
 
 Salty Boi's final criterion audit accepts all seven native catalog criteria in

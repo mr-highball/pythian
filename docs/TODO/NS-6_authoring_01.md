@@ -69,6 +69,34 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Dev Notes:**
 
+- 2026-09-26 the pas2js editor now stages exact-frame split and compatible
+  adjacent/overlapping merge review events. Each event requires a separate
+  explicit Save; the visible queue blocks navigation while pending, and
+  cancellation preserves already saved events. A post-save lock remains set
+  through the asynchronous label refresh so rapid repeat clicks cannot reuse
+  a stale revision. Checked pas2js build and actual desktop/narrow browser
+  logs cover boundary rejection, exact halves, semantic mismatch, staged
+  cancellation and 49 blocked clicks during a delayed refresh with exactly
+  one revision advance. Salty Boi accepted the code and browser behavior;
+  ignored 1280px and 390px screenshots show the new controls without clipping.
+  The compound operation remains non-atomic because the catalog commits one
+  review event per request. The
+  larger authoring task remains open; no task credit.
+- 2026-09-26 the native Pascal LAN host now persists its access key in the
+  catalog root's private `.access-key` file. First LAN startup uses the
+  configured environment key or generates one; later startups reuse the same
+  file. The existing pas2js page saves an accepted key per browser origin and
+  reconnects without a new prompt. Checked stable Win32/Win64 host builds
+  pass; an isolated Win64 LAN host returned 403/200/403 for wrong/correct/no
+  key both before and after restart, writing the file only on first start.
+  Follow-up ACL review found inherited local-user access on the first draft.
+  The Pascal host now restricts the empty file before writing and restricts
+  existing files before reading. Checked Win32/Win64 LAN starts produced
+  protected ACLs with only OWNER RIGHTS and SYSTEM full control; a legacy
+  broad test file was restricted on restart before serving requests.
+  The live 18097 process has not been restarted, and a browser using a new
+  origin still requires one initial entry. Final mobile operator QA remains
+  open; no task credit.
 - 2026-09-25 the workbench can select a saved beat-grid hypothesis and load a
   short native Pascal cue overlay in the same bounded player as the original
   WAV. It draws the selected grid on the waveform, keeps cue access behind the

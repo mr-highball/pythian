@@ -125,7 +125,7 @@ function DefaultBeatTrackOptions(const ASampleRate: Integer): TBeatTrackOptions;
 begin
   ValidateAudioFormat(ASampleRate, 1);
   Result.WindowFrames := ASampleRate * 6;
-  Result.HopFrames := ASampleRate;
+  Result.HopFrames := Result.WindowFrames div 2;
   Result.MaximumTempoRatio := 1.5;
   Result.TempoPenalty := 0.5;
   Result.PhasePenalty := 0.5;
