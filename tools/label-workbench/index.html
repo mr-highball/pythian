@@ -1,0 +1,147 @@
+<!--
+MIT License
+
+Copyright (c) 2026 mr-highball
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pythian · Label Workbench</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">PYTHIAN / SOURCE EVIDENCE</p>
+      <h1>Label Workbench</h1>
+      <p class="subtitle">Listen to original WAV regions, compare Pascal suggestions, and record your own decisions.</p>
+    </div>
+    <span class="build-tag">LOCAL CATALOG · VERSION 1</span>
+  </header>
+
+  <section id="login-panel" class="login-panel" aria-labelledby="login-heading">
+    <div>
+      <p class="step">CONNECT</p>
+      <h2 id="login-heading">Open your catalog</h2>
+      <p>For LAN access, enter the key configured when the Pascal service started. It stays in this page session.</p>
+    </div>
+    <div class="login-controls">
+      <label for="access-key">Access key</label>
+      <input id="access-key" type="password" autocomplete="off" spellcheck="false">
+      <button id="connect-button" type="button" class="primary">Connect</button>
+    </div>
+  </section>
+
+  <p id="status" class="status" role="status" aria-live="polite">Connecting to local service…</p>
+
+  <main id="workspace" hidden>
+    <aside class="source-column">
+      <section class="panel">
+        <div class="panel-head">
+          <div><p class="step">01 / PREPARE</p><h2>Inbox</h2></div>
+          <button id="import-button" type="button">Import all</button>
+        </div>
+        <p class="panel-note">Files shown here are unverified until import checks their SHA-256 and WAV format.</p>
+        <div id="inbox-list" class="item-list"></div>
+      </section>
+      <section class="panel">
+        <div class="panel-head"><div><p class="step">02 / SELECT</p><h2>Catalog</h2></div></div>
+        <div id="catalog-list" class="item-list"></div>
+      </section>
+    </aside>
+
+    <section class="work-column">
+      <section class="panel track-panel">
+        <div class="panel-head">
+          <div><p class="step">03 / LISTEN</p><h2 id="track-title">Choose a catalog track</h2></div>
+          <span id="track-partition" class="partition">—</span>
+        </div>
+        <p id="track-meta" class="panel-note">Each unrelated recording has its own source-frame timeline.</p>
+        <div class="toolbar timeline-controls">
+          <button id="previous-button" type="button">← Previous</button>
+          <button id="zoom-in-button" type="button">Zoom in</button>
+          <button id="zoom-out-button" type="button">Zoom out</button>
+          <button id="next-button" type="button">Next →</button>
+          <span id="window-label" class="window-label">Select a track</span>
+        </div>
+        <div class="canvas-wrap">
+          <canvas id="waveform" width="960" height="250" aria-label="Original WAV waveform with review and proposal lanes"></canvas>
+        </div>
+        <div class="legend">
+          <span><i class="legend-wave"></i> Source waveform</span>
+          <span><i class="legend-reviewed"></i> Reviewed labels</span>
+          <span><i class="legend-proposed"></i> Unreviewed proposals</span>
+        </div>
+        <div class="toolbar playback-controls">
+          <button id="load-audio-button" type="button" class="primary">Load this region</button>
+          <audio id="preview" controls preload="none"></audio>
+        </div>
+        <p class="panel-note">Audio is fetched as a bounded region. Press play after it loads.</p>
+      </section>
+
+      <div class="review-grid">
+        <section class="panel">
+          <div class="panel-head">
+            <div><p class="step">04 / SUGGEST</p><h2>Pythian proposals</h2></div>
+            <button id="suggest-button" type="button">Suggest beats</button>
+          </div>
+          <p id="proposal-note" class="panel-note">Suggestions are unreviewed and never become training labels on their own.</p>
+          <div id="proposal-list" class="item-list"></div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><div><p class="step">05 / REVIEW</p><h2>Your labels</h2></div></div>
+          <p class="panel-note">Select a label to edit its exact frames, value or status.</p>
+          <div id="review-list" class="item-list"></div>
+        </section>
+      </div>
+
+      <section class="panel edit-panel">
+        <div class="panel-head"><div><p class="step">06 / COMMIT</p><h2>Label editor</h2></div><span id="revision-label" class="revision">Revision 0</span></div>
+        <div class="form-grid">
+          <label>Reviewer<input id="reviewer" value="operator" maxlength="128"></label>
+          <label>Label ID<input id="label-id" placeholder="e.g. bass-note-001" maxlength="128"></label>
+          <label>Type<select id="label-type">
+            <option value="note">Note</option><option value="beat">Beat</option><option value="downbeat">Downbeat</option>
+            <option value="presence">Presence</option><option value="part_role">Part role</option>
+            <option value="source_role">Source role</option><option value="phrase">Phrase</option>
+            <option value="section">Section</option><option value="style_preference">Style preference</option>
+          </select></label>
+          <label>Value<input id="label-value" placeholder="C4, audible, rest, unknown…" maxlength="256"></label>
+          <label>Status<select id="label-status"><option value="approved">Approved</option><option value="uncertain">Uncertain</option><option value="rejected">Rejected proposal</option><option value="withdrawn">Withdrawn</option></select></label>
+          <label>Part<input id="label-part" placeholder="optional" maxlength="128"></label>
+          <label>Start frame<input id="label-start" type="number" min="0" step="1"></label>
+          <label>End frame (exclusive)<input id="label-end" type="number" min="1" step="1"></label>
+          <label>MIDI pitch for note<input id="label-pitch" type="number" min="0" max="127" value="60"></label>
+          <label>Proposal ID if rejecting<input id="label-proposal" maxlength="128"></label>
+        </div>
+        <div class="toolbar edit-actions">
+          <button id="save-label-button" type="button" class="primary">Save review event</button>
+          <span>Saved edits create a new revision. Source groups and splits stay fixed.</span>
+        </div>
+      </section>
+    </section>
+  </main>
+  <script src="app.js"></script>
+  <script>rtl.run();</script>
+</body>
+</html>

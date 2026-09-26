@@ -30,9 +30,10 @@ unit pythian.tools.annotations.http;
 interface
 
 { Fixed-route catalog host. The bounded socket/header pattern derives from the
-  pinned WFC wfc_serve_http reference; this owner serves catalog APIs only. }
+  pinned WFC wfc_serve_http reference. Optional static assets use exact names. }
 procedure RunCatalogHttp(const AInboxRoot, ACatalogRoot,
-  ABindAddress: String; const APort, AMaximumRequests: Integer);
+  ABindAddress: String; const APort, AMaximumRequests: Integer;
+  const AStaticRoot: String = '');
 
 implementation
 
@@ -55,6 +56,7 @@ const
   CMaximumBodyBytes = 16384;
   CMaximumTargetBytes = 2048;
   CMaximumJsonResponseBytes = 8388608;
+  CMaximumStaticBytes = 8388608;
   CReceiveDeadlineMs = 5000;
   CSendDeadlineMs = 15000;
   CSocketBlockBytes = 65536;
@@ -546,16 +548,75 @@ begin
   Result := TJSONObject(LData);
 end;
 
+function StaticAssetName(const APath: String): String;
+begin
+  if (APath = '/') or (APath = '/index.html') then
+  begin
+    Exit('index.html');
+  end;
+  if APath = '/app.js' then
+  begin
+    Exit('app.js');
+  end;
+  if APath = '/style.css' then
+  begin
+    Exit('style.css');
+  end;
+  Result := '';
+end;
+
+procedure SendStaticAsset(const ASocket: Integer;
+  const AStaticRoot, AName: String);
+var
+  LPath: String;
+  LContentType: String;
+  LInput: TFileStream;
+begin
+  LPath := IncludeTrailingPathDelimiter(ExpandFileName(AStaticRoot)) + AName;
+  LInput := TFileStream.Create(LPath, fmOpenRead or fmShareDenyWrite);
+  try
+    Need((LInput.Size > 0) and (LInput.Size <= CMaximumStaticBytes),
+      'Static asset exceeds size bound');
+    if AName = 'app.js' then
+    begin
+      LContentType := 'text/javascript; charset=utf-8';
+    end
+    else if AName = 'style.css' then
+    begin
+      LContentType := 'text/css; charset=utf-8';
+    end
+    else
+    begin
+      LContentType := 'text/html; charset=utf-8';
+    end;
+    SendStreamResponse(ASocket, LInput, LContentType);
+  finally
+    LInput.Free;
+  end;
+end;
+
 procedure HandleRoute(const ASocket: Integer;
   const ARequest: TCatalogHttpRequest;
-  const AInboxRoot, ACatalogRoot, AToken, AAccessKey: String);
+  const AInboxRoot, ACatalogRoot, AStaticRoot, AToken,
+    AAccessKey: String);
 var
   LReport: TJSONObject;
   LBody: TJSONObject;
   LAudio: TMemoryStream;
   LTrack: TJSONObject;
   LHash: String;
+  LStaticName: String;
 begin
+  LStaticName := '';
+  if (AStaticRoot <> '') and (ARequest.Method = 'GET') then
+  begin
+    LStaticName := StaticAssetName(ARequest.Path);
+  end;
+  if LStaticName <> '' then
+  begin
+    SendStaticAsset(ASocket, AStaticRoot, LStaticName);
+    Exit;
+  end;
   if not ((ARequest.Path = '/api/session') and
     (ARequest.Method = 'POST')) and (AAccessKey <> '') then
   begin
@@ -695,7 +756,7 @@ begin
 end;
 
 procedure HandleClient(const ASocket, APort: Integer;
-  const AInboxRoot, ACatalogRoot, ABindAddress, AToken,
+  const AInboxRoot, ACatalogRoot, AStaticRoot, ABindAddress, AToken,
     AAccessKey: String);
 var
   LRequest: TCatalogHttpRequest;
@@ -711,7 +772,7 @@ begin
   end;
   try
     HandleRoute(ASocket, LRequest, AInboxRoot, ACatalogRoot,
-      AToken, AAccessKey);
+      AStaticRoot, AToken, AAccessKey);
   except
     on LError: Exception do
     begin
@@ -788,7 +849,8 @@ begin
 end;
 
 procedure RunCatalogHttp(const AInboxRoot, ACatalogRoot,
-  ABindAddress: String; const APort, AMaximumRequests: Integer);
+  ABindAddress: String; const APort, AMaximumRequests: Integer;
+  const AStaticRoot: String);
 var
   LListener: Integer;
   LClient: Integer;
@@ -807,6 +869,14 @@ begin
     'Configured inbox manifest does not exist');
   Need(DirectoryExists(IncludeTrailingPathDelimiter(ACatalogRoot) + 'tracks'),
     'Configured catalog does not exist');
+  if AStaticRoot <> '' then
+  begin
+    Need(DirectoryExists(AStaticRoot) and
+      FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'index.html') and
+      FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'app.js') and
+      FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'style.css'),
+      'Configured browser assets are incomplete');
+  end;
   LAccessKey := '';
   if ABindAddress <> '127.0.0.1' then
   begin
@@ -838,7 +908,7 @@ begin
       try
         try
           HandleClient(LClient, APort, AInboxRoot, ACatalogRoot,
-            ABindAddress, LToken, LAccessKey);
+            AStaticRoot, ABindAddress, LToken, LAccessKey);
         except
           on LError: Exception do
           begin

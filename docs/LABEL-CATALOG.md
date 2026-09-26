@@ -3,9 +3,9 @@
 [Work record](WORK.md) · [Native catalog task](TODO/NS-3_labeling_01.md) ·
 [Browser workbench task](TODO/NS-6_authoring_01.md)
 
-This is the first native boundary of the label workbench. It stores source WAVs
-and metadata only. It does not infer labels, mark audio as reviewed, or export
-training data yet.
+The catalog stores original WAVs, source metadata, separate Pascal proposals,
+explicit operator review events, and a reviewed export packet. A prepared
+inbox or a proposal alone never becomes a reviewed training label.
 
 The agent prepares an inbox directory with WAV files and `manifest.json`:
 
@@ -151,9 +151,9 @@ interfaces. The inbox and catalog roots are process arguments, not URL paths.
 of at least 16 characters in `PYTHIAN_CATALOG_ACCESS_KEY`; clients submit it
 as JSON to `POST /api/session` and send the returned `X-Pythian-Token` header
 on every subsequent request. The access key and token must stay out of URLs.
-LAN HTTP is not encrypted, so use only a trusted local network; the later UI
-must provide a same-origin login form. The current host does not yet serve that
-UI or implement blind review and reviewed export over HTTP. It withholds
+LAN HTTP is not encrypted, so use only a trusted local network. `serve-app`
+serves the Pascal/pas2js page on the same origin with an access-key form;
+the API does not yet implement reviewed export over HTTP. It withholds
 proposal reads and generation on evaluation tracks until the independent blind
 review path is available. Do not
 train from source records, proposals or test review events alone.
@@ -165,7 +165,19 @@ $env:PYTHIAN_CATALOG_ACCESS_KEY = Read-Host 'Catalog access key (16+ characters)
 & 'build/<target>/pythian.label.catalog.exe' serve 'D:\path\to\inbox' 'D:\path\to\catalog' '<LAN_IPV4>' 18085
 ```
 
-The bind address must be an address on the host, such as the current Wi-Fi
-address. A local firewall may also need to allow the selected port before a
-phone can connect. Until the pas2js UI is served, this starts an API, not the
-operator workbench.
+The browser workbench is built with
+`powershell -NoProfile -ExecutionPolicy Bypass -File tools\build-label-workbench.ps1`.
+Start it on the chosen interface with the same secret:
+
+```powershell
+& 'build/<target>/pythian.label.catalog.exe' serve-app 'D:\path\to\inbox' 'D:\path\to\catalog' 'build\label-workbench\www' '<LAN_IPV4>' 18095
+```
+
+Open `http://<LAN_IPV4>:18095/` and enter the secret in the page. The server
+accepts only three named static assets and keeps catalog routes behind its
+session token. The bind address must belong to the host, such as its Wi-Fi
+address. A local firewall may need to allow the chosen port before a phone can
+connect. The current browser slice supports bounded source listening and basic
+review; the full authoring controls and blind reveal remain open in
+[NS-6_authoring_01](TODO/NS-6_authoring_01.md). Store a real operator catalog
+outside `build/`; the catalog under `build/label-catalog/` is a test fixture.

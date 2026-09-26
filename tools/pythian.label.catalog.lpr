@@ -55,38 +55,51 @@ var
   LPort: Integer;
   LMaximumRequests: Integer;
   LBindAddress: String;
+  LStaticRoot: String;
+  LFirstServerArgument: Integer;
 begin
   try
-    if (ParamCount in [4, 5, 6]) and
-      (ParamStr(1) = 'serve') then
+    if ((ParamCount in [4, 5, 6]) and
+      (ParamStr(1) = 'serve')) or
+      ((ParamCount in [5, 6, 7]) and
+      (ParamStr(1) = 'serve-app')) then
     begin
       LBindAddress := '127.0.0.1';
       LMaximumRequests := 0;
-      if TryStrToInt(ParamStr(4), LPort) then
+      LStaticRoot := '';
+      LFirstServerArgument := 4;
+      if ParamStr(1) = 'serve-app' then
       begin
-        if (ParamCount = 6) or
-          ((ParamCount = 5) and
-          not TryStrToInt(ParamStr(5), LMaximumRequests)) then
+        LStaticRoot := ParamStr(4);
+        LFirstServerArgument := 5;
+      end;
+      if TryStrToInt(ParamStr(LFirstServerArgument), LPort) then
+      begin
+        if (ParamCount > LFirstServerArgument + 1) or
+          ((ParamCount = LFirstServerArgument + 1) and
+          not TryStrToInt(ParamStr(LFirstServerArgument + 1),
+            LMaximumRequests)) then
         begin
           raise Exception.Create('Invalid loopback HTTP request limit');
         end;
       end
       else
       begin
-        LBindAddress := ParamStr(4);
-        if (ParamCount < 5) or
-          not TryStrToInt(ParamStr(5), LPort) then
+        LBindAddress := ParamStr(LFirstServerArgument);
+        if (ParamCount < LFirstServerArgument + 1) or
+          not TryStrToInt(ParamStr(LFirstServerArgument + 1), LPort) then
         begin
           raise Exception.Create('Invalid HTTP port');
         end;
-        if (ParamCount = 6) and
-          not TryStrToInt(ParamStr(6), LMaximumRequests) then
+        if (ParamCount = LFirstServerArgument + 2) and
+          not TryStrToInt(ParamStr(LFirstServerArgument + 2),
+            LMaximumRequests) then
         begin
           raise Exception.Create('Invalid HTTP request limit');
         end;
       end;
       RunCatalogHttp(ParamStr(2), ParamStr(3), LBindAddress, LPort,
-        LMaximumRequests);
+        LMaximumRequests, LStaticRoot);
       Exit;
     end
     else if (ParamCount = 3) and (ParamStr(1) = 'import') then
@@ -241,6 +254,8 @@ begin
       WriteLn(StdErr, '       pythian.label.catalog proposals CATALOG_DIR HASH START END');
       WriteLn(StdErr, '       pythian.label.catalog serve INBOX_DIR CATALOG_DIR PORT [MAX_REQUESTS]');
       WriteLn(StdErr, '       pythian.label.catalog serve INBOX_DIR CATALOG_DIR BIND_IP PORT [MAX_REQUESTS]');
+      WriteLn(StdErr, '       pythian.label.catalog serve-app INBOX_DIR CATALOG_DIR WEBROOT PORT [MAX_REQUESTS]');
+      WriteLn(StdErr, '       pythian.label.catalog serve-app INBOX_DIR CATALOG_DIR WEBROOT BIND_IP PORT [MAX_REQUESTS]');
       ExitCode := 2;
       Exit;
     end;

@@ -75,3 +75,20 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
   Pythian-owned native service above. This task does not imply browser-side
   execution of the maintained inference engine or completion of any recorded
   learning accuracy gate.
+- 2026-09-25 first browser slice: `tools/label-workbench/app.lpr` compiles
+  with the checked pas2js 3.3.1 toolchain; its generated JavaScript and staged
+  HTML/CSS stay under ignored `build/label-workbench/www/`. The page lists the
+  inbox and catalog, imports in one action, navigates bounded source-frame
+  waveform pages, fetches authenticated 10-second original WAV regions into
+  temporary blob URLs, and shows unreviewed beat proposals apart from reviewed
+  labels. An operator can commit a review with visible revision/conflict status.
+  Evaluation proposal controls and reads are hidden. A fresh Edge browser
+  smoke path selected an imported track, loaded audio, displayed eight Pascal
+  candidates, and saved/reloaded a presence review at revision 1 in a copied
+  ignored catalog. Desktop 1280px and narrow 500px browser screenshots were
+  inspected. A separate browser path logged into the explicitly bound LAN
+  service through the access-key form and loaded the catalog; a physical phone
+  and firewall traversal remain unverified. This slice does not yet provide
+  seek/loop cue audition, edit handles, split/merge, undo/redo, blind reveal,
+  browser export/re-import, or the complete multi-hour/mobile workflow. No
+  completion credit is claimed.

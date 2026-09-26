@@ -222,3 +222,14 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
   leaving review revision 15. The fixture bytes were restored. Browser
   serving, blind review, HTTP export, durable deployment and mobile usability
   remain open; no additional criterion or task credit is claimed.
+- The native host now serves only the three explicitly configured workbench
+  assets (`index.html`, `app.js`, `style.css`) from a fixed build root on the
+  same origin as its authenticated API. The `serve-app` command retains
+  loopback by default and accepts an explicit private IPv4 address. A real
+  browser loaded the assets and exercised catalog, waveform, original WAV,
+  proposal and review routes against a copied two-track catalog. A separate
+  `192.168.12.109:18095` listener returned 403 without a token and allowed
+  browser access-key login and catalog load. The Windows firewall path from a
+  separate physical device is not yet verified. Browser export/re-import,
+  blind evaluation reveal, and durable operator-root deployment remain open;
+  no new task criterion or credit is claimed.

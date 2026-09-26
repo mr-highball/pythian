@@ -13982,3 +13982,36 @@ login, inbox/catalog list, bounded waveform/audio and visibly separate
 proposals/reviews. Blind evaluation and reviewed export must be integrated
 before the authoring workflow is accepted. Overall **70.20%**, **38 open /
 27 DONE**, listening queue **0/20**.
+
+## First pas2js label workbench slice — 2026-09-25
+
+`tools/build-label-workbench.ps1` orchestrates the checked pas2js 3.3.1
+compiler and matched RTL into ignored `build/label-workbench/www/`. The native
+`serve-app` command serves only the fixed HTML, CSS and generated JavaScript
+files from that directory. All catalog operations remain on the native Pascal
+service. The page can authenticate on the local LAN without putting its key or
+token in media URLs, list and import prepared tracks, navigate bounded waveform
+pages, load original WAV regions, see separate unreviewed beat proposals, and
+save/reload a reviewed label. Track/window changes invalidate pending requests
+and old playback blob URLs.
+
+Checked stable FPC 3.2.2 Win32/Win64 native hosts and the pas2js browser
+build passed. A fresh Edge CDP smoke run against a copied two-track catalog
+loaded a 480,000-frame window, fetched playable audio as a blob, displayed
+eight native Pascal beat candidates, and saved/reloaded a presence review at
+revision 1. Desktop 1280px and narrow 500px Edge screenshots were inspected
+under ignored `build/label-workbench/`. Another fresh browser path logged into
+the explicitly bound `192.168.12.109:18095` service with its access-key form
+and loaded the catalog. Direct LAN-address requests returned 200 for the page,
+403 for unauthenticated catalog access, and 200 for authenticated catalog
+access. A separate physical phone and Windows firewall traversal were not
+verified; the process is bound to the Wi-Fi address only.
+
+The first slice does not satisfy the full authoring task: seek/loop cue
+audition, touch edit handles, split/merge, undo/redo, blind evaluation reveal,
+reviewed export/re-import and multi-hour browser navigation still need work.
+The temporary browser profiles and copied smoke catalog occupy about 138 MiB
+in ignored build output. Automatic approval review rejected their recursive
+removal despite an absolute target check, so they remain for an operator-run
+cleanup. No task moved to DONE and no milestone credit changed: overall
+**70.20%**, **38 open / 27 DONE**, listening queue **0/20**.
