@@ -1,0 +1,6 @@
+[submodule "vendor/wfc"]
+	path = vendor/wfc
+	url = https://github.com/mr-highball/wfc
+[submodule "vendor/athena"]
+	path = vendor/athena
+	url = https://github.com/mr-highball/athena

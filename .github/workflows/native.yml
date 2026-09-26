@@ -1,0 +1,92 @@
+# MIT License
+#
+# Copyright (c) 2026 mr-highball
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
+name: Native FPC
+
+'on':
+  push:
+    branches: [hello-pythian]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-fpc-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  native:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out pinned companion sources
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          submodules: recursive
+          persist-credentials: false
+
+      - name: Install the native compiler and standard units
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends fp-compiler-3.2.2 fp-units-base-3.2.2 fp-units-fcl-3.2.2
+          test "$(fpc -iV)" = "3.2.2"
+          fpc -iTP
+          fpc -iTO
+
+      - name: Run the maintained integration build
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory -Force build | Out-Null
+          ./tools/build.ps1 -Compiler fpc *> build/ci-build.log
+
+      - name: Package and verify extracted consumers
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          ./tools/package.ps1 -Compiler fpc -OutputDirectory build/ci-package-core *> build/ci-package-core.log
+          ./tools/package.ps1 -Compiler fpc -WithWfc -OutputDirectory build/ci-package-wfc *> build/ci-package-wfc.log
+
+      - name: Retain verified development packages
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: pythian-source-packages
+          path: |
+            build/ci-package-core/pythian-source.zip
+            build/ci-package-wfc/pythian-source.zip
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Retain build and consumer logs
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: native-fpc-logs
+          path: build/**/*.log
+          if-no-files-found: ignore
+          retention-days: 14
+
