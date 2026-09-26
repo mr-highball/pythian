@@ -26,6 +26,20 @@ inspected under ignored `build/label-workbench/`. This improves operator access
 but does not complete the workbench or claim task credit; physical-phone
 connectivity and final QA remain open.
 
+## Reviewed catalog into Pascal WFC training — 2026-09-25
+
+The WFC companion adapter reads a verified reviewed packet and original WAV,
+selects one part in the training split and produces an admitted note source.
+It maps only approved note and explicit rest labels into training spans while
+retaining approved unknown intervals as run barriers. It hashes the original
+WAV, binds its source and annotation identity, sorts exact source-frame spans
+and refuses overlap or held-out sources. An artificial Pascal fixture imported
+three WAVs, committed reviews, exported the packet and rebuilt the existing
+Pascal WFC journal/model from two separate training groups. Journal replay
+matched exactly; a held-out and an unlisted WAV were rejected. Checked stable
+Win32 and development Win64 passed. The fixture's `operator-test` reviews do
+not establish acoustic truth or close the catalog task's real review criterion.
+
 ## User-authored recorded-label workbench — 2026-09-25
 
 The bounded publisher search did not find same-recording, exact-window

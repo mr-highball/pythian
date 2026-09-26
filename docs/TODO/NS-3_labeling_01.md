@@ -79,6 +79,14 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
 
 **Dev Notes:**
 
+- 2026-09-25 the reviewed packet now has a Pascal WFC training consumer:
+  `ReadReviewedNoteSource` binds an original WAV hash and exact part to its
+  training-split packet track, maps approved note/rest/unknown spans, and
+  rejects overlap, absent audio and held-out partitions. An artificial
+  three-track import/review/export fixture reached a two-group Pascal journal
+  rebuild on checked Win32 and Win64; journal replay was exact. These
+  artificial labels establish the consumer path, not acoustic truth or the
+  remaining real proposal-to-reviewed evidence criterion. No task credit yet.
 - 2026-09-25 focused criterion audit: the native HTTP criterion is met at
   its declared local-service scope. The maintained host exposes the specified
   bounded inbox/catalog, waveform/audio, proposal, review and export routes;

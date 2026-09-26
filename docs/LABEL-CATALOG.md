@@ -176,6 +176,19 @@ These commands exercise storage and schema, not an operator-approved corpus.
 No review event is produced automatically during source import. Full browser
 editing remains open.
 
+The WFC companion adapter
+`adapters/wfc/pythian.wfc.reviewed.catalog.pas` reads one reviewed packet,
+original WAV and exact part into a `TAdmittedNoteSource`. It hashes the WAV,
+checks the packet's source identity and training split, and maps only approved
+notes, explicit rests and approved unknown spans. Unknown intervals split
+training runs; unreviewed proposals and other label types contribute no pitch
+examples. The adapter rejects overlapping spans and a source with no approved
+note in the selected part. A caller can append its result to the existing
+Pascal WFC contribution journal. This schema and source check does not make
+an artificial or weakly reviewed label acoustically true. The packet's
+provenance and usage license remain the operator's responsibility when
+selecting sources for training.
+
 The first native HTTP host has fixed routes for session, prepared inbox,
 catalog, stored proposals, waveform, current labels, history, region audio,
 import, review, beat proposals and the reviewed packet download. It

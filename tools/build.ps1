@@ -866,6 +866,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Admitted pitch contribution journal compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.admitted.pitch.journal$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Admitted pitch contribution journal checks failed' }
+    & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.reviewed.catalog.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Reviewed catalog/WFC adapter compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.wfc.reviewed.catalog$executableSuffix") (Join-Path $buildRoot 'reviewed-catalog-check')
+    if ($LASTEXITCODE -ne 0) { throw 'Reviewed catalog/WFC adapter checks failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.admitted.pitch.balance.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Admitted pitch group balance compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.admitted.pitch.balance$executableSuffix")
