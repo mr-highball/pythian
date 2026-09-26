@@ -13907,3 +13907,31 @@ application follows that contract. No task credit changes; overall remains
 **70.20%**, with **38 open / 27 DONE** tasks and **0/20** pending listening
 reviews. The temporary 1.56-GB long-source catalog copy remains under ignored
 build output after the earlier automatic cleanup rejection.
+
+## First reviewed catalog packet — 2026-09-25
+
+The native catalog now writes an audio-free version-1 reviewed packet and has
+a Pascal reader that reconstructs selected decisions from immutable review
+events. It carries source hashes, source group, partition, provenance/license,
+reviewer, revision and policy identity. Only current approved labels in an
+assigned split enter `selected_labels`; explicit approved presence `unknown`
+stays separate. Uncertain/rejected/withdrawn events remain in history. Export
+checks each original WAV SHA-256 and rejects split-group leakage before staged
+publication. The current packet is bounded to 64 MiB and refuses overwrite.
+
+Checked stable FPC 3.2.2 Win32 and Win64 exported the same two-track ignored
+fixture to identical SHA-256
+`2842396cb78c6d7e6b337ab1211e6c013e4582559029e55628570b59f663498b`.
+It has three selected artificial `operator-test` labels, one explicit unknown
+and five history events. Win32 read the Win64 packet and recovered those exact
+counts. A changed selected value and conflicting packet group were rejected;
+existing output, changed source metadata and conflicting live group also
+failed without an output or partial file. Case-distinct label identities were
+preserved in current projection and export. These fixture labels are not
+acoustic truth and must not be used to train a musical model.
+
+This batch advances the export contract but does not close the catalog task:
+the single-file bound needs a scale check, destination-catalog replay and real
+training/evaluation consumption remain, and the HTTP/browser export path and
+blind review are absent. No completion credit changes; overall **70.20%**,
+**38 open / 27 DONE**, listening queue **0/20**.

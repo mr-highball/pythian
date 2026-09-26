@@ -503,6 +503,7 @@ begin
     LStates := TStringList.Create;
     try
       LStates.Sorted := True;
+      LStates.CaseSensitive := True;
       for LIndex := 1 to LRevision do
       begin
         LEvent := ReadEvent(LDirectory, LIndex);

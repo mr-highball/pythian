@@ -180,3 +180,18 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
   its session and two catalog tracks.
   Browser static serving, inbox/proposal reads, reviewed export, blind mode,
   mobile playback and independent QA remain open. No criterion or task credit.
+- The first reviewed export packet is deterministic and audio-free, with source
+  identity, group/partition, provenance/license, full numbered review events,
+  selected current approvals and separate explicit unknowns. The Pascal reader
+  replays history and rejects a changed selected label or split source group.
+  A two-track ignored fixture with artificial `operator-test` edits yielded
+  identical checked Win32/Win64 SHA-256
+  `2842396cb78c6d7e6b337ab1211e6c013e4582559029e55628570b59f663498b`:
+  three selected labels, one unknown, five review events. Case-distinct label
+  IDs now survive both current projection and export. Existing output,
+  conflicting group metadata and changed source byte count each rejected
+  without new output or partial files. Win32 re-read the Win64 packet with the
+  same hash and counts. This is schema/replay evidence, not musical review.
+  The current 64-MiB single-file bound, destination-catalog replay, actual
+  Pascal training/evaluation consumption and HTTP/browser export remain open.
+  No criterion or task credit is claimed yet.

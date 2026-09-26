@@ -32,6 +32,7 @@ uses
   fpjson,
   jsonparser,
   pythian.tools.annotations.catalog,
+  pythian.tools.annotations.export,
   pythian.tools.annotations.http,
   pythian.tools.annotations.media,
   pythian.tools.annotations.proposal,
@@ -95,6 +96,14 @@ begin
     else if (ParamCount = 2) and (ParamStr(1) = 'list') then
     begin
       LReport := ListLabelCatalog(ParamStr(2));
+    end
+    else if (ParamCount = 3) and (ParamStr(1) = 'export') then
+    begin
+      LReport := ExportReviewedCatalog(ParamStr(2), ParamStr(3));
+    end
+    else if (ParamCount = 2) and (ParamStr(1) = 'inspect-export') then
+    begin
+      LReport := InspectReviewedCatalogPacket(ParamStr(2));
     end
     else if (ParamCount = 6) and (ParamStr(1) = 'waveform') then
     begin
@@ -206,6 +215,8 @@ begin
     begin
       WriteLn(StdErr, 'Usage: pythian.label.catalog import INBOX_DIR CATALOG_DIR');
       WriteLn(StdErr, '       pythian.label.catalog list CATALOG_DIR');
+      WriteLn(StdErr, '       pythian.label.catalog export CATALOG_DIR OUTPUT.json');
+      WriteLn(StdErr, '       pythian.label.catalog inspect-export PACKET.json');
       WriteLn(StdErr, '       pythian.label.catalog waveform CATALOG_DIR HASH START END BINS');
       WriteLn(StdErr, '       pythian.label.catalog audio CATALOG_DIR HASH START END OUTPUT.wav');
       WriteLn(StdErr, '       pythian.label.catalog review CATALOG_DIR TRANSACTION.json');

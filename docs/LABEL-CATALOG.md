@@ -41,6 +41,8 @@ the entire manifest with one command:
 & 'build/<target>/pythian.label.catalog.exe' history 'D:\path\to\catalog' SOURCE_SHA256 FIRST_REVISION COUNT
 & 'build/<target>/pythian.label.catalog.exe' current 'D:\path\to\catalog' SOURCE_SHA256 START_FRAME END_FRAME COUNT
 & 'build/<target>/pythian.label.catalog.exe' propose-beats 'D:\path\to\catalog' SOURCE_SHA256 START_FRAME END_FRAME
+& 'build/<target>/pythian.label.catalog.exe' export 'D:\path\to\catalog' 'D:\path\to\reviewed.json'
+& 'build/<target>/pythian.label.catalog.exe' inspect-export 'D:\path\to\reviewed.json'
 & 'build/<target>/pythian.label.catalog.exe' serve 'D:\path\to\inbox' 'D:\path\to\catalog' 18085
 ```
 
@@ -112,9 +114,24 @@ downbeats or establish a correct musical beat. A review that names a
 `proposal_id` must now reference a candidate in the stored packet. Import and
 proposal generation never write review events.
 
+`export` writes one version-1, `pythian.reviewed-catalog.v1` packet without
+source audio. Each source carries its original SHA-256, geometry, group,
+partition, provenance, license and full numbered review history. Its
+`selected_labels` array contains only current approved labels for an assigned
+training, development or evaluation group. Approved `presence=unknown` labels
+go into `unknown_labels` instead. Uncertain, rejected and withdrawn decisions
+remain in history, outside the selected set. The writer verifies every source
+WAV hash and rejects a group crossing partitions before publishing. It refuses
+to overwrite an existing packet and stages the bounded, at-most-64-MiB output.
+The report gives the packet SHA-256. `inspect-export` uses the Pascal packet
+reader to replay history, check group separation and selected-label meaning,
+and report counts. A consumer can call `ReadReviewedCatalogPacket` directly.
+This current single-file limit may require sharding for larger catalogs; a
+destination-catalog replay and actual training-tool integration remain open.
+
 These commands exercise storage and schema, not an operator-approved corpus.
-No review event is produced automatically during import. The CLI does not yet
-export reviewed labels or provide blind evaluation and browser controls.
+No review event is produced automatically during import. Blind evaluation and
+browser controls remain open.
 
 The first native HTTP host has fixed routes for session, catalog, waveform,
 current labels, history, region audio, import, review and beat proposals. It
