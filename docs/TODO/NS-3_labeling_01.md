@@ -79,6 +79,14 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
 
 **Dev Notes:**
 
+- 2026-09-25 the native service now has a bounded beat-cue audition route for
+  one stored unreviewed candidate. It checks the source-bound packet and blind
+  evaluation gate before rendering markers over the original audio; cue output
+  is never a reviewed label. Stable Win32/Win64 builds and Salty Boi's focused
+  route/browser QA pass; two candidate cues retained source geometry, rejected
+  invalid/blind requests and left proposal/review files unchanged. This is
+  operator support, not a real acoustic
+  proposal-to-reviewed example or completion credit.
 - 2026-09-25 the three user-selected complete mixes now reside in a durable
   catalog outside `build/`, with distinct development-exposed training groups.
   Native Win64 import verified three original and copied WAVs; reviewed packet

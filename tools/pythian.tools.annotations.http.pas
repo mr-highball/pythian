@@ -747,6 +747,22 @@ begin
       end;
       Exit;
     end
+    else if (ARequest.Method = 'GET') and
+      (ARequest.Path = '/api/cue') then
+    begin
+      LAudio := TMemoryStream.Create;
+      try
+        WriteCatalogBeatCueRegion(ACatalogRoot,
+          QueryValue(ARequest.Query, 'hash'),
+          QueryInt64(ARequest.Query, 'start'),
+          QueryInt64(ARequest.Query, 'end'),
+          QueryInteger(ARequest.Query, 'candidate'), LAudio);
+        SendStreamResponse(ASocket, LAudio, 'audio/wav');
+      finally
+        LAudio.Free;
+      end;
+      Exit;
+    end
     else if (ARequest.Method = 'POST') and
       (ARequest.Path = '/api/import') then
     begin

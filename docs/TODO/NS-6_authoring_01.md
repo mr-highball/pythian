@@ -69,6 +69,16 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Dev Notes:**
 
+- 2026-09-25 the workbench can select a saved beat-grid hypothesis and load a
+  short native Pascal cue overlay in the same bounded player as the original
+  WAV. It draws the selected grid on the waveform, keeps cue access behind the
+  blind-review gate, and does not commit a label during playback. Checked
+  stable Win32/Win64 and pas2js builds pass. Salty Boi's isolated native and
+  real Edge QA verified candidate switching, original geometry, mobile seek,
+  loop, blind and empty-candidate guards, and unchanged review files. The
+  active LAN process is still the prior native build, so its page
+  hides the cue button while the tested preview is staged separately. The
+  larger authoring task and physical-phone review remain open; no credit.
 - 2026-09-25 the workbench now jumps to an absolute source second, pages its
   bounded waveform, loads at most 30 seconds of original WAV, seeks within
   that audio from the waveform, and loops the loaded region. Its inbox marks

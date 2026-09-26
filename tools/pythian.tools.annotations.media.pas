@@ -38,15 +38,22 @@ function CatalogWaveformRegion(const ACatalogRoot, AHash: String;
   const AStartFrame, AEndFrame: Int64; const ABins: Integer): TJSONObject;
 procedure WriteCatalogAudioRegion(const ACatalogRoot, AHash: String;
   const AStartFrame, AEndFrame: Int64; const AOutput: TStream);
+procedure WriteCatalogBeatCueRegion(const ACatalogRoot, AHash: String;
+  const AStartFrame, AEndFrame: Int64; const ACandidate: Integer;
+  const AOutput: TStream);
 
 implementation
 
 uses
   SysUtils,
+  Math,
   pythian.audio,
+  pythian.oscillator,
   pythian.wave.read,
   pythian.wave.stream,
-  pythian.tools.annotations.catalog;
+  pythian.tools.annotations.catalog,
+  pythian.tools.annotations.proposal,
+  pythian.tools.annotations.review;
 
 const
   CMaximumWaveformBins = 2048;
@@ -247,6 +254,124 @@ begin
   finally
     LReader.Free;
     LStream.Free;
+  end;
+end;
+
+procedure WriteCatalogBeatCueRegion(const ACatalogRoot, AHash: String;
+  const AStartFrame, AEndFrame: Int64; const ACandidate: Integer;
+  const AOutput: TStream);
+var
+  LStream: TFileStream;
+  LReader: TWaveFrameReader;
+  LSink: TStreamAudioSink;
+  LWriter: TWavePcm16Writer;
+  LTrack: TJSONObject;
+  LPacket: TJSONObject;
+  LCandidates: TJSONArray;
+  LFrames: TJSONArray;
+  LCues: TAudioSamples;
+  LSignal: TOscillator;
+  LRemaining: Int64;
+  LPosition: Int64;
+  LCueFrame: Int64;
+  LCount: Integer;
+  LIndex: Integer;
+  LOffset: Integer;
+  LChannel: Integer;
+  LLength: Integer;
+  LCuePeak: Single;
+  LSamples: TAudioSamples;
+begin
+  Need(AOutput <> nil, 'Cue audition requires an output stream');
+  LTrack := ReadCatalogTrack(ACatalogRoot, AHash);
+  try
+    Need(CatalogProposalsUnlocked(ACatalogRoot, LTrack),
+      'Evaluation proposals require blind review');
+    LPacket := ReadCatalogBeatProposals(ACatalogRoot, AHash,
+      AStartFrame, AEndFrame);
+    try
+      LCandidates := LPacket.Arrays['candidates'];
+      Need((ACandidate >= 0) and (ACandidate < LCandidates.Count),
+        'Cue candidate lies outside saved proposals');
+      LFrames := LCandidates.Objects[ACandidate].Arrays['frames'];
+      Need(LFrames.Count > 0, 'Selected beat proposal has no cue frames');
+      LReader := OpenCatalogWave(ACatalogRoot, AHash, LStream);
+      try
+        CheckRegion(LReader, AStartFrame, AEndFrame);
+        LRemaining := AEndFrame - AStartFrame;
+        Need((LRemaining <= Int64(LReader.SampleRate) * CMaximumAudioSeconds) and
+          (LRemaining * LReader.Channels * 2 <= CMaximumAudioBytes),
+          'Cue region exceeds duration or byte bound');
+        SetLength(LCues, Integer(LRemaining));
+        LLength := Max(1, LReader.SampleRate div 125);
+        LSignal := TOscillator.Create(LReader.SampleRate, 731);
+        try
+          for LIndex := 0 to LFrames.Count - 1 do
+          begin
+            LCueFrame := LFrames.Int64s[LIndex] - AStartFrame;
+            LSignal.Reset(731);
+            for LOffset := 0 to Min(LLength, Length(LCues) - LCueFrame) - 1 do
+            begin
+              LCues[LCueFrame + LOffset] := LCues[LCueFrame + LOffset] +
+                LSignal.Next(wsSine, Min(2000, LReader.SampleRate / 8)) *
+                (1 - LOffset / LLength);
+            end;
+          end;
+        finally
+          LSignal.Free;
+        end;
+        LCuePeak := 0;
+        for LIndex := 0 to High(LCues) do
+        begin
+          LCuePeak := Max(LCuePeak, Abs(LCues[LIndex]));
+        end;
+        Need(LCuePeak > 0, 'Selected beat proposal has no audible cue');
+        LReader.SeekFrame(AStartFrame);
+        LSink := TStreamAudioSink.Create(AOutput);
+        try
+          LWriter := TWavePcm16Writer.Create(LSink, LReader.SampleRate,
+            LReader.Channels, LRemaining);
+          try
+            LPosition := 0;
+            while LRemaining > 0 do
+            begin
+              LCount := CReadFrames;
+              if LRemaining < LCount then
+              begin
+                LCount := Integer(LRemaining);
+              end;
+              LSamples := LReader.ReadFrames(LCount);
+              Need(Length(LSamples) = LCount * LReader.Channels,
+                'Short catalog WAV read during cue audition');
+              for LIndex := 0 to LCount - 1 do
+              begin
+                for LChannel := 0 to LReader.Channels - 1 do
+                begin
+                  LSamples[LIndex * LReader.Channels + LChannel] :=
+                    LSamples[LIndex * LReader.Channels + LChannel] * 0.7 +
+                    LCues[LPosition + LIndex] * (0.25 / LCuePeak);
+                end;
+              end;
+              LWriter.AppendSamples(LSamples);
+              Inc(LPosition, LCount);
+              Dec(LRemaining, LCount);
+            end;
+            LWriter.Finish;
+          finally
+            LWriter.Free;
+          end;
+        finally
+          LSink.Free;
+        end;
+      finally
+        LReader.Free;
+        LStream.Free;
+      end;
+    finally
+      LPacket.Free;
+    end;
+  finally
+    LTrack.Free;
   end;
 end;
 

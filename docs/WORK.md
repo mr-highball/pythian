@@ -13,6 +13,38 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Native beat-cue audition for catalog review — 2026-09-25
+
+The operator workbench now offers a selected saved beat-grid cue in the same
+bounded region player as the original WAV. The native Pascal service reads the
+source-bound unreviewed proposal, verifies the blind-evaluation gate, and mixes
+short synthesized markers at its exact source frames. The operator chooses a
+candidate explicitly; cue playback does not approve or publish any label.
+The output retains the source rate, channel count and region duration under the
+existing 30-second / 16-MiB audio bound. A missing, empty or out-of-range
+candidate fails rather than silently playing the original as a cue.
+
+Checked stable Win32 and Win64 catalog builds and a pas2js build pass. Salty Boi's
+isolated native route checks passed: two candidates produced distinct 15-second
+stereo WAVs of the original geometry; blind evaluation, invalid/empty candidates
+and missing packets failed at their declared boundaries, with review and proposal
+files unchanged. A real Edge run on the isolated service selected two saved
+candidates and loaded their distinct cue modes, sought in the player from the
+waveform, and retained loop behavior. Emulated 390px mobile had no horizontal
+overflow; blind evaluation and empty-candidate controls disabled cue access.
+Desktop and narrow screenshots of the loaded cue player were inspected under
+ignored `build/label-workbench/`. Review history stayed byte-identical. The
+active LAN process still runs the
+previous native binary, so its page hides the new cue control; the candidate
+page and binary are staged in ignored `build/`. This closes no authoring
+or catalog task and adds no listening item to the user's substantial-output
+queue. After the long-source and cue batches, the workbench still lacks a
+complete end-to-end acceptance case. Per the task-flow checkpoint, the next
+implementation batch moves to the ready native catalog task: a real
+source-bound proposal, explicit reviewed decision, export/re-import and
+training-consumer replay with provenance. Resume the remaining UI gestures
+after that evidence is in place.
+
 ## Remembered LAN workbench access — 2026-09-25
 
 The Pascal/pas2js label workbench now saves an accepted LAN access key in

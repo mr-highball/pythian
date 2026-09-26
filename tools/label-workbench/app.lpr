@@ -63,9 +63,11 @@ type
     FWindowStart: Int64;
     FWindowSpan: Int64;
     FWindowEpoch: Integer;
+    FAudioEpoch: Integer;
     FCanvas: TJSHTMLCanvasElement;
     FAudio: TJSHTMLAudioElement;
     FSelectedLabel: Integer;
+    FSelectedProposal: Integer;
     FDragMode: TLabelDragMode;
     FDragPointer: NativeInt;
     FDragAnchor: Int64;
@@ -101,7 +103,7 @@ type
     procedure ImportAll; async;
     procedure SelectTrack(const AIndex: Integer); async;
     procedure RefreshWindow; async;
-    procedure LoadAudio; async;
+    procedure LoadAudio(const ACue: Boolean); async;
     procedure SuggestBeats; async;
     procedure SaveReview; async;
     procedure DownloadExport; async;
@@ -119,6 +121,7 @@ type
     function HandleZoomIn(AEvent: TJSMouseEvent): Boolean;
     function HandleZoomOut(AEvent: TJSMouseEvent): Boolean;
     function HandleLoadAudio(AEvent: TJSMouseEvent): Boolean;
+    function HandleLoadCue(AEvent: TJSMouseEvent): Boolean;
     function HandleSuggest(AEvent: TJSMouseEvent): Boolean;
     function HandleSave(AEvent: TJSMouseEvent): Boolean;
     function HandleExport(AEvent: TJSMouseEvent): Boolean;
@@ -370,6 +373,12 @@ var
   LIndex: Integer;
 begin
   ClearItems('proposal-list');
+  if FSelectedProposal < 0 then
+  begin
+    Element('load-cue-button').textContent := 'Load selected Pythian cue';
+  end;
+  TJSHTMLButtonElement(Element('load-cue-button')).disabled :=
+    (FProposals = nil) or (FSelectedProposal < 0);
   if (FPartition = 'evaluation') and (FReviewRevision = 0) then
   begin
     Element('proposal-note').textContent :=
@@ -493,7 +502,16 @@ begin
     LCandidates := TJSArray(FProposals['candidates']);
     if LCandidates.length > 0 then
     begin
-      LFrames := TJSArray(TJSObject(LCandidates[0])['frames']);
+      if (FSelectedProposal >= 0) and
+        (FSelectedProposal < LCandidates.length) then
+      begin
+        LFrames := TJSArray(
+          TJSObject(LCandidates[FSelectedProposal])['frames']);
+      end
+      else
+      begin
+        LFrames := TJSArray(TJSObject(LCandidates[0])['frames']);
+      end;
       LContext.fillStyleAsColor := '#f5c27c';
       for LIndex := 0 to LFrames.length - 1 do
       begin
@@ -776,9 +794,12 @@ begin
       Exit;
     end;
   end;
+  Inc(FWindowEpoch);
+  Inc(FAudioEpoch);
   FToken := '';
   FAudio.pause;
   FAudio.removeAttribute('src');
+  Element('audio-mode').textContent := 'No region loaded';
   if FAudioUrl <> '' then
   begin
     TJSURL.revokeObjectURL(FAudioUrl);
@@ -868,6 +889,7 @@ begin
   Inc(FWindowEpoch);
   FAudio.pause;
   FAudio.removeAttribute('src');
+  Element('audio-mode').textContent := 'No region loaded';
   if FAudioUrl <> '' then
   begin
     TJSURL.revokeObjectURL(FAudioUrl);
@@ -879,6 +901,7 @@ begin
   FWaveBins := nil;
   FCurrentLabels := nil;
   FProposals := nil;
+  FSelectedProposal := -1;
   FSelectedLabel := -1;
   FDragMode := dmNone;
   Input('jump-seconds').value := '0';
@@ -915,6 +938,10 @@ begin
   end;
   try
     Inc(FWindowEpoch);
+    Inc(FAudioEpoch);
+    FSelectedProposal := -1;
+    FProposals := nil;
+    TJSHTMLButtonElement(Element('load-cue-button')).disabled := True;
     LEpoch := FWindowEpoch;
     LHash := FSourceHash;
     LPartition := FPartition;
@@ -924,6 +951,7 @@ begin
     FDragMode := dmNone;
     FAudio.pause;
     FAudio.removeAttribute('src');
+    Element('audio-mode').textContent := 'No region loaded';
     if FAudioUrl <> '' then
     begin
       TJSURL.revokeObjectURL(FAudioUrl);
@@ -973,6 +1001,7 @@ begin
     TJSHTMLButtonElement(Element('suggest-button')).disabled :=
       (LPartition = 'evaluation') and (FReviewRevision = 0);
     FProposals := nil;
+    FSelectedProposal := -1;
     if (LPartition <> 'evaluation') or (FReviewRevision > 0) then
     begin
       LPath := '/api/proposals?hash=' + LHash +
@@ -1010,10 +1039,12 @@ begin
   end;
 end;
 
-procedure TWorkbench.LoadAudio; async;
+procedure TWorkbench.LoadAudio(const ACue: Boolean); async;
 var
   LEnd: Int64;
   LEpoch: Integer;
+  LAudioEpoch: Integer;
+  LCandidate: Integer;
   LStart: Int64;
   LHash: String;
   LPath: String;
@@ -1024,17 +1055,35 @@ begin
   begin
     Exit;
   end;
+  if ACue and ((FProposals = nil) or (FSelectedProposal < 0)) then
+  begin
+    Status('Select a saved beat proposal before loading its cue.', True);
+    Exit;
+  end;
   try
     LEpoch := FWindowEpoch;
+    Inc(FAudioEpoch);
+    LAudioEpoch := FAudioEpoch;
+    LCandidate := FSelectedProposal;
     LStart := FWindowStart;
     LHash := FSourceHash;
     LEnd := Smaller(FFrameCount, Smaller(LStart + FWindowSpan,
       LStart + Int64(FSampleRate) * 30));
-    LPath := '/api/audio?hash=' + LHash +
-      '&start=' + IntToStr(LStart) + '&end=' + IntToStr(LEnd);
-    Status('Loading original WAV region…');
+    if ACue then
+    begin
+      LPath := '/api/cue?hash=' + LHash +
+        '&start=' + IntToStr(LStart) + '&end=' + IntToStr(LEnd) +
+        '&candidate=' + IntToStr(LCandidate);
+      Status('Loading Pythian beat cue over the original WAV…');
+    end
+    else
+    begin
+      LPath := '/api/audio?hash=' + LHash +
+        '&start=' + IntToStr(LStart) + '&end=' + IntToStr(LEnd);
+      Status('Loading original WAV region…');
+    end;
     LResponse := await(TJSResponse, FetchApi(LPath, 'GET', ''));
-    if LEpoch <> FWindowEpoch then
+    if (LEpoch <> FWindowEpoch) or (LAudioEpoch <> FAudioEpoch) then
     begin
       Exit;
     end;
@@ -1043,7 +1092,7 @@ begin
       raise Exception.Create('Audio HTTP ' + IntToStr(LResponse.status));
     end;
     LBlob := await(TJSBlob, TWorkbenchResponse(LResponse).blobRequest());
-    if LEpoch <> FWindowEpoch then
+    if (LEpoch <> FWindowEpoch) or (LAudioEpoch <> FAudioEpoch) then
     begin
       Exit;
     end;
@@ -1055,7 +1104,17 @@ begin
     FAudio.src := FAudioUrl;
     FAudio.loop := Input('loop-region').checked;
     FAudio.load;
-    Status('Audio region loaded. Press play in the player.');
+    if ACue then
+    begin
+      Element('audio-mode').textContent :=
+        'Pythian cue · grid ' + IntToStr(LCandidate + 1);
+      Status('Pythian cue loaded over original audio. Press play.');
+    end
+    else
+    begin
+      Element('audio-mode').textContent := 'Original WAV';
+      Status('Audio region loaded. Press play in the player.');
+    end;
   except
     on LError: Exception do
     begin
@@ -1106,6 +1165,7 @@ begin
     begin
       Exit;
     end;
+    FSelectedProposal := -1;
     RenderProposals;
     DrawWaveform;
     Status('Suggestions loaded as unreviewed hypotheses.');
@@ -1491,6 +1551,12 @@ begin
   end;
   LRow := TJSObject(LRows[LIndex]);
   LFrames := TJSArray(LRow['frames']);
+  FSelectedProposal := LIndex;
+  TJSHTMLButtonElement(Element('load-cue-button')).disabled :=
+    LFrames.length = 0;
+  Element('load-cue-button').textContent :=
+    'Load cue for grid ' + IntToStr(LIndex + 1);
+  DrawWaveform;
   LFrame := FWindowStart;
   if LFrames.length > 0 then
   begin
@@ -1503,7 +1569,14 @@ begin
   Input('label-start').value := IntToStr(LFrame);
   Input('label-end').value := IntToStr(LFrame + 1);
   Input('label-proposal').value := TextField(LRow, 'proposal_id');
-  Status('Proposal copied to editor. Choose your own verdict before saving.');
+  if LFrames.length = 0 then
+  begin
+    Status('This proposal has no cue points. Choose your own review verdict.');
+  end
+  else
+  begin
+    Status('Proposal copied to editor. Choose your own verdict before saving.');
+  end;
   Result := False;
 end;
 
@@ -1597,7 +1670,13 @@ end;
 
 function TWorkbench.HandleLoadAudio(AEvent: TJSMouseEvent): Boolean;
 begin
-  LoadAudio;
+  LoadAudio(False);
+  Result := False;
+end;
+
+function TWorkbench.HandleLoadCue(AEvent: TJSMouseEvent): Boolean;
+begin
+  LoadAudio(True);
   Result := False;
 end;
 
@@ -1641,6 +1720,7 @@ begin
   TJSHTMLButtonElement(Element('zoom-in-button')).onclick := @HandleZoomIn;
   TJSHTMLButtonElement(Element('zoom-out-button')).onclick := @HandleZoomOut;
   TJSHTMLButtonElement(Element('load-audio-button')).onclick := @HandleLoadAudio;
+  TJSHTMLButtonElement(Element('load-cue-button')).onclick := @HandleLoadCue;
   TJSHTMLButtonElement(Element('suggest-button')).onclick := @HandleSuggest;
   TJSHTMLButtonElement(Element('save-label-button')).onclick := @HandleSave;
   TJSHTMLButtonElement(Element('export-button')).onclick := @HandleExport;

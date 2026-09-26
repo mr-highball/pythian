@@ -101,10 +101,12 @@ SOFTWARE.
         </div>
         <div class="toolbar playback-controls">
           <button id="load-audio-button" type="button" class="primary">Load this region</button>
+          <button id="load-cue-button" type="button" disabled>Load selected Pythian cue</button>
           <audio id="preview" controls preload="none"></audio>
+          <span id="audio-mode" class="window-label">No region loaded</span>
           <label class="loop-control" for="loop-region"><input id="loop-region" type="checkbox"> Loop loaded region</label>
         </div>
-        <p class="panel-note">Audio loads at most 30 seconds. Tap the waveform to seek within the loaded region, or jump to another source time and load again.</p>
+        <p class="panel-note">Audio loads at most 30 seconds. Select a saved beat grid to hear its short Pythian markers over the original. Tap the waveform to seek within the loaded region, or jump to another source time and load again.</p>
       </section>
 
       <div class="review-grid">
