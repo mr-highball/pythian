@@ -73,6 +73,13 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Dev Notes:**
 
+- 2026-09-26 live LAN readiness check: the current host serves the saved-key
+  reconnect assets on `192.168.12.109:18097` and its Wi-Fi profile is Private.
+  No explicit port-18097 inbound rule exists; a Private/local-subnet TCP rule
+  request was denied by the unelevated Windows shell, so no rule was added.
+  This does not prove the phone cannot connect. Physical-phone reconnect,
+  playback, zoom, edit and long-source navigation still require an actual
+  operator check before criterion 5 or task credit can close.
 - 2026-09-26 criteria 1 and 2 now have focused browser evidence. The selected
   track shows its short/full source SHA-256, import and review state, and the
   proposal analyzer name and numeric version when available; an evaluation

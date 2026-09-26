@@ -13,6 +13,26 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## LAN phone check and core route review — 2026-09-26
+
+The live workbench still serves its saved-key reconnect page and app asset at
+`192.168.12.109:18097`. The host Wi-Fi profile is Private and the native
+process listens on that address. No explicit inbound firewall rule for port
+18097 exists. A narrowly scoped Private/local-subnet TCP rule request returned
+`Access is denied` in this unelevated shell; no firewall setting changed.
+Physical-phone reachability, playback and saved-key persistence therefore
+remain the workbench's open criterion-5 checks. The operator has been asked
+for one same-address normal-browser reconnect result; no answer or phone
+verdict has been inferred.
+
+A read-only audit of the recorded pitch-identity task found that the local
+harmonic, phase, timbre and sparse-peak register cues have already been tested
+and stopped, while its available phrase groups are development-exposed or
+otherwise unqualified for a fresh independent verdict. No new register rule
+or recorded score was run. Continue the ready operator path and seek a new
+independently qualified phrase cohort and genuinely distinct evidence before
+another octave proposal; do not rename a stopped feature variation as progress.
+
 ## Source-free beat candidate gate — 2026-09-26
 
 The additive equal-weight onset hypothesis failed its prospectively frozen
