@@ -69,6 +69,20 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Dev Notes:**
 
+- 2026-09-26 the pas2js workbench now stages per-source undo and redo as
+  explicit append-only restoring review events, with bounded browser-local
+  pointers that survive reload. Keyboard left/right navigates source windows,
+  up/down selects labels, and Ctrl/Cmd+Z and redo shortcuts stage the matching
+  action. A stale server revision pauses local history; the operator must
+  cancel the unsaved event and explicitly clear stale pointers. Ticket Guy's
+  checked pas2js build and real Edge desktop/390px run saved revision 1,
+  reloaded, saved undo at 2, reloaded, saved redo at 3, then observed an
+  external revision 4 and a rejected stale undo at 409 with no revision 5.
+  Salty Boi accepted the exact browser behavior and inspected both layouts.
+  The live `192.168.12.109:18097` host serves the updated page and app asset.
+  This closes the keyboard and staged undo/redo portion of criterion 3; its
+  complete criterion and the larger workbench task remain under audit, with
+  no credit yet.
 - 2026-09-26 the pas2js editor now stages exact-frame split and compatible
   adjacent/overlapping merge review events. Each event requires a separate
   explicit Save; the visible queue blocks navigation while pending, and

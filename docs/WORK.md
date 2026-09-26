@@ -13,6 +13,19 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Browser keyboard and review history — 2026-09-26
+
+The Pascal/pas2js workbench now stages undo and redo as explicit append-only
+review events, retains bounded per-source history pointers across reloads and
+provides keyboard window/label navigation. Ticket Guy's checked pas2js build
+and real Edge desktop/390px run exercised rev1 save, rev2 undo, rev3 redo,
+an external rev4 and a stale 409 undo that stayed unsaved with no rev5.
+Salty Boi accepted this changed behavior and both visual layouts. The live
+LAN host serves the updated page and app asset with HTTP 200. Clearing browser
+storage removes local undo pointers but preserves server review history.
+Criterion 3's remaining actions are under focused audit; the full workbench
+task stays open without credit.
+
 ## Browser split and merge controls — 2026-09-26
 
 The Pascal/pas2js workbench now stages exact-frame split and compatible

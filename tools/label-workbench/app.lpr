@@ -34,6 +34,8 @@ uses
 
 const
   RememberedAccessKey = 'pythian.catalog.access-key.v1';
+  ReviewHistoryPrefix = 'pythian.catalog.review-history.v1.';
+  MaximumLocalUndoEntries = 128;
 
 type
   TLabelDragMode = (dmNone, dmCreate, dmMove, dmStart, dmEnd, dmDraft);
@@ -64,7 +66,14 @@ type
     FPendingOperation: String;
     FPendingCommitted: Integer;
     FPendingConflict: Boolean;
+    FPendingHistoryMode: String;
+    FPendingHistoryEntry: TJSObject;
     FSaveInProgress: Boolean;
+    FUndoStack: TJSArray;
+    FRedoStack: TJSArray;
+    FHistoryStale: Boolean;
+    FHistoryLoading: Boolean;
+    FHistoryLoadFailed: Boolean;
     FProposals: TJSObject;
     FSampleRate: Integer;
     FReviewRevision: Integer;
@@ -98,6 +107,12 @@ type
     procedure RenderLabels;
     procedure RenderMergeTargets;
     procedure UpdatePendingUi;
+    procedure UpdateHistoryUi;
+    procedure LoadLocalHistory;
+    procedure SaveLocalHistory(const ARevision: Integer);
+    procedure StageHistoryAction(const ARedo: Boolean);
+    procedure StageHistoryTarget(const AEntry: TJSObject;
+      const ARedo: Boolean);
     procedure ClearPending;
     procedure AppendPending(const AChange: TJSObject);
     function RowMatchesSource(const ARow: TJSObject): Boolean;
@@ -144,6 +159,10 @@ type
     function HandleLoadCue(AEvent: TJSMouseEvent): Boolean;
     function HandleSuggest(AEvent: TJSMouseEvent): Boolean;
     function HandleSave(AEvent: TJSMouseEvent): Boolean;
+    function HandleUndo(AEvent: TJSMouseEvent): Boolean;
+    function HandleRedo(AEvent: TJSMouseEvent): Boolean;
+    function HandleClearHistory(AEvent: TJSMouseEvent): Boolean;
+    function HandleKeyboard(AEvent: TJSKeyboardEvent): Boolean;
     function HandleSplit(AEvent: TJSMouseEvent): Boolean;
     function HandleMerge(AEvent: TJSMouseEvent): Boolean;
     function HandleCancelPending(AEvent: TJSMouseEvent): Boolean;
@@ -164,6 +183,20 @@ begin
   begin
     Result := String(AObject[AName]);
   end;
+end;
+
+function CloneObject(const AObject: TJSObject): TJSObject;
+begin
+  if AObject = nil then
+    Exit(nil);
+  Result := TJSObject(TJSJSON.parse(TJSJSON.stringify(AObject)));
+end;
+
+function CloneArray(const AArray: TJSArray): TJSArray;
+begin
+  if AArray = nil then
+    Exit(TJSArray.new);
+  Result := TJSArray(TJSJSON.parse(TJSJSON.stringify(AArray)));
 end;
 
 function NumberField(const AObject: TJSObject; const AName: String): Double;
@@ -466,6 +499,7 @@ begin
       Element('pending-review-note').textContent :=
         'The final staged event was saved. Waiting for the current source revision and labels to reload; further edits are locked.';
     end;
+    UpdateHistoryUi;
     Exit;
   end;
   if LCount = 0 then
@@ -475,6 +509,7 @@ begin
     Element('pending-review-list').textContent := '';
     TJSHTMLButtonElement(Element('save-label-button')).textContent :=
       'Save review event';
+    UpdateHistoryUi;
     Exit;
   end;
   TJSHTMLButtonElement(Element('save-label-button')).disabled := False;
@@ -486,6 +521,7 @@ begin
     Element('pending-review-list').textContent :=
       IntToStr(FPendingCommitted) + ' staged event(s) already saved; ' +
       IntToStr(LCount) + ' remain unsaved.';
+    UpdateHistoryUi;
     Exit;
   end;
   TJSHTMLButtonElement(Element('save-label-button')).textContent :=
@@ -509,6 +545,188 @@ begin
       TextField(LChange, 'status');
   end;
   Element('pending-review-list').textContent := LRows;
+  UpdateHistoryUi;
+end;
+
+procedure TWorkbench.UpdateHistoryUi;
+var
+  LUndoCount: Integer;
+  LRedoCount: Integer;
+  LLocked: Boolean;
+begin
+  LUndoCount := 0;
+  LRedoCount := 0;
+  if FUndoStack <> nil then
+    LUndoCount := FUndoStack.length;
+  if FRedoStack <> nil then
+    LRedoCount := FRedoStack.length;
+  LLocked := (FSourceHash = '') or FHistoryStale or FHistoryLoading or
+    FHistoryLoadFailed or FSaveInProgress or
+    ((FPendingChanges <> nil) and (FPendingChanges.length > 0));
+  TJSHTMLButtonElement(Element('undo-review-button')).disabled :=
+    LLocked or (LUndoCount = 0);
+  TJSHTMLButtonElement(Element('redo-review-button')).disabled :=
+    LLocked or (LRedoCount = 0);
+  TJSHTMLButtonElement(Element('clear-history-button')).disabled :=
+    (FSourceHash = '') or FHistoryLoading or FHistoryLoadFailed or FSaveInProgress or
+    ((FPendingChanges <> nil) and (FPendingChanges.length > 0));
+  if FHistoryLoading then
+    Element('history-note').textContent :=
+      'Loading this source’s saved review history…'
+  else if FHistoryLoadFailed then
+    Element('history-note').textContent :=
+      'Source history did not finish loading. Reload this source window before using undo or redo.'
+  else if FHistoryStale then
+    Element('history-note').textContent :=
+      'Review history changed outside this browser. Undo and redo are paused; clear local history to continue safely.'
+  else if FSourceHash = '' then
+    Element('history-note').textContent :=
+      'Undo and redo apply to saved review events for the selected source.'
+  else
+    Element('history-note').textContent :=
+      'Saved local history: ' + IntToStr(LUndoCount) + ' undo, ' +
+      IntToStr(LRedoCount) + ' redo. Ctrl/Cmd+Z stages undo; Ctrl/Cmd+Shift+Z stages redo. Save explicitly to append the restoring event.';
+end;
+
+procedure TWorkbench.LoadLocalHistory;
+var
+  LText: String;
+  LData: TJSObject;
+  LRevision: Integer;
+begin
+  FUndoStack := TJSArray.new;
+  FRedoStack := TJSArray.new;
+  FHistoryStale := False;
+  FHistoryLoading := False;
+  FHistoryLoadFailed := False;
+  if FSourceHash = '' then
+  begin
+    UpdateHistoryUi;
+    Exit;
+  end;
+  try
+    LText := window.localStorage.getItem(ReviewHistoryPrefix + FSourceHash);
+    if LText <> '' then
+    begin
+      LData := TJSObject(TJSJSON.parse(LText));
+      LRevision := Trunc(NumberField(LData, 'revision'));
+      if TextField(LData, 'source_sha256') <> FSourceHash then
+        FHistoryStale := True
+      else if LRevision <> FReviewRevision then
+        FHistoryStale := True
+      else
+      begin
+        if isObject(LData['undo']) then
+          FUndoStack := CloneArray(TJSArray(LData['undo']));
+        if isObject(LData['redo']) then
+          FRedoStack := CloneArray(TJSArray(LData['redo']));
+      end;
+    end;
+  except
+    on LError: Exception do
+    begin
+      FHistoryStale := True;
+      Status('Local undo history could not be read: ' + LError.Message, True);
+    end;
+  end;
+  UpdateHistoryUi;
+end;
+
+procedure TWorkbench.SaveLocalHistory(const ARevision: Integer);
+var
+  LData: TJSObject;
+begin
+  if FSourceHash = '' then
+    Exit;
+  LData := TJSObject.new;
+  LData['version'] := 1;
+  LData['source_sha256'] := FSourceHash;
+  LData['revision'] := ARevision;
+  LData['undo'] := FUndoStack;
+  LData['redo'] := FRedoStack;
+  try
+    window.localStorage.setItem(ReviewHistoryPrefix + FSourceHash,
+      TJSJSON.stringify(LData));
+    FHistoryStale := False;
+  except
+    on LError: Exception do
+    begin
+      FHistoryStale := True;
+      Status('Review event saved, but browser undo history could not be stored: ' +
+        LError.Message, True);
+    end;
+  end;
+  UpdateHistoryUi;
+end;
+
+procedure TWorkbench.StageHistoryTarget(const AEntry: TJSObject;
+  const ARedo: Boolean);
+var
+  LTarget: TJSObject;
+  LAfter: TJSObject;
+begin
+  if (AEntry = nil) or FHistoryStale or FSaveInProgress or
+    ((FPendingChanges <> nil) and (FPendingChanges.length > 0)) then
+    Exit;
+  LAfter := TJSObject(AEntry['after']);
+  if TextField(AEntry, 'source_sha256') <> FSourceHash then
+  begin
+    FHistoryStale := True;
+    UpdateHistoryUi;
+    Status('This undo entry belongs to another source. No review event was staged.',
+      True);
+    Exit;
+  end;
+  if ARedo then
+    LTarget := CloneObject(LAfter)
+  else if isObject(AEntry['before']) then
+    LTarget := CloneObject(TJSObject(AEntry['before']))
+  else
+  begin
+    LTarget := CloneObject(LAfter);
+    LTarget['status'] := 'withdrawn';
+  end;
+  if LTarget = nil then
+  begin
+    Status('This history entry has no restorable label state.', True);
+    Exit;
+  end;
+  FPendingHistoryMode := 'undo';
+  if ARedo then
+    FPendingHistoryMode := 'redo';
+  FPendingHistoryEntry := CloneObject(AEntry);
+  AppendPending(LTarget);
+  FPendingOperation := 'Undo' ;
+  if ARedo then
+    FPendingOperation := 'Redo';
+  UpdatePendingUi;
+  UpdateHistoryUi;
+  Status(FPendingOperation + ' is staged for source frames ' +
+    IntToStr(Trunc(NumberField(LTarget, 'start_frame'))) + '–' +
+    IntToStr(Trunc(NumberField(LTarget, 'end_frame'))) +
+    '. Click Save review event to append it to the audit history.');
+end;
+
+procedure TWorkbench.StageHistoryAction(const ARedo: Boolean);
+var
+  LStack: TJSArray;
+begin
+  if FHistoryStale then
+  begin
+    Status('Local review history is stale. Clear it before staging undo or redo.',
+      True);
+    Exit;
+  end;
+  if ARedo then
+    LStack := FRedoStack
+  else
+    LStack := FUndoStack;
+  if (LStack = nil) or (LStack.length = 0) then
+  begin
+    Status('No saved review event is available for this action.', True);
+    Exit;
+  end;
+  StageHistoryTarget(TJSObject(LStack[LStack.length - 1]), ARedo);
 end;
 
 procedure TWorkbench.ClearPending;
@@ -520,7 +738,10 @@ begin
   FPendingOperation := '';
   FPendingCommitted := 0;
   FPendingConflict := False;
+  FPendingHistoryMode := '';
+  FPendingHistoryEntry := nil;
   UpdatePendingUi;
+  UpdateHistoryUi;
 end;
 
 procedure TWorkbench.AppendPending(const AChange: TJSObject);
@@ -1242,6 +1463,12 @@ begin
   FProposals := nil;
   FSelectedProposal := -1;
   FSelectedLabel := -1;
+  FUndoStack := TJSArray.new;
+  FRedoStack := TJSArray.new;
+  FHistoryLoading := True;
+  FHistoryLoadFailed := False;
+  FHistoryStale := False;
+  UpdateHistoryUi;
   FDragMode := dmNone;
   Input('jump-seconds').value := '0';
   Input('jump-seconds').setAttribute('max',
@@ -1335,6 +1562,7 @@ begin
     end;
     FCurrentLabels := TJSArray(LData['labels']);
     FReviewRevision := Trunc(NumberField(LData, 'review_revision'));
+    LoadLocalHistory;
     Element('revision-label').textContent :=
       'Revision ' + IntToStr(FReviewRevision);
     TJSHTMLButtonElement(Element('suggest-button')).disabled :=
@@ -1387,6 +1615,12 @@ begin
           FPendingConflict := True;
         end;
         UpdatePendingUi;
+      end;
+      if FHistoryLoading then
+      begin
+        FHistoryLoading := False;
+        FHistoryLoadFailed := True;
+        UpdateHistoryUi;
       end;
       Status('Timeline failed: ' + LError.Message, True);
     end;
@@ -1545,6 +1779,11 @@ var
   LQueued: Boolean;
   LRemaining: TJSArray;
   LIndex: Integer;
+  LData: TJSObject;
+  LEntry: TJSObject;
+  LBefore: TJSObject;
+  LLabelId: String;
+  LRevision: Integer;
 begin
   if FSourceHash = '' then
   begin
@@ -1593,6 +1832,25 @@ begin
     LTransaction['expected_revision'] := FReviewRevision;
     LTransaction['reviewer'] := Input('reviewer').value;
     LTransaction['change'] := LChange;
+    LEntry := FPendingHistoryEntry;
+    if FPendingHistoryMode = '' then
+    begin
+      LLabelId := TextField(LChange, 'label_id');
+      LBefore := nil;
+      if FCurrentLabels <> nil then
+      begin
+        for LIndex := 0 to FCurrentLabels.length - 1 do
+          if TextField(TJSObject(FCurrentLabels[LIndex]), 'label_id') = LLabelId then
+          begin
+            LBefore := RowChange(TJSObject(FCurrentLabels[LIndex]));
+            Break;
+          end;
+      end;
+      LEntry := TJSObject.new;
+      LEntry['before'] := LBefore;
+      LEntry['after'] := CloneObject(LChange);
+      LEntry['source_sha256'] := FSourceHash;
+    end;
     LResponse := await(TJSResponse, FetchApi('/api/review', 'POST',
       TJSJSON.stringify(LTransaction)));
     if LResponse.status = 409 then
@@ -1619,6 +1877,41 @@ begin
     begin
       raise Exception.Create('Review HTTP ' + IntToStr(LResponse.status));
     end;
+    LData := await(TJSObject, LResponse.json());
+    LRevision := Trunc(NumberField(LData, 'revision'));
+    if LRevision <= FReviewRevision then
+      raise Exception.Create('Review response did not advance its revision');
+    if FPendingHistoryMode = 'undo' then
+    begin
+      if (FUndoStack <> nil) and (FUndoStack.length > 0) then
+        FUndoStack.length := FUndoStack.length - 1;
+      if FRedoStack = nil then
+        FRedoStack := TJSArray.new;
+      FRedoStack[FRedoStack.length] := FPendingHistoryEntry;
+    end
+    else if FPendingHistoryMode = 'redo' then
+    begin
+      if (FRedoStack <> nil) and (FRedoStack.length > 0) then
+        FRedoStack.length := FRedoStack.length - 1;
+      if FUndoStack = nil then
+        FUndoStack := TJSArray.new;
+      FUndoStack[FUndoStack.length] := FPendingHistoryEntry;
+    end
+    else
+    begin
+      if FUndoStack = nil then
+        FUndoStack := TJSArray.new;
+      FUndoStack[FUndoStack.length] := LEntry;
+      if FUndoStack.length > MaximumLocalUndoEntries then
+      begin
+        for LIndex := 1 to FUndoStack.length - 1 do
+          FUndoStack[LIndex - 1] := FUndoStack[LIndex];
+        FUndoStack.length := MaximumLocalUndoEntries;
+      end;
+      FRedoStack := TJSArray.new;
+    end;
+    FReviewRevision := LRevision;
+    SaveLocalHistory(LRevision);
     FDragMode := dmNone;
     if LQueued then
     begin
@@ -2154,6 +2447,92 @@ begin
   Result := False;
 end;
 
+function TWorkbench.HandleUndo(AEvent: TJSMouseEvent): Boolean;
+begin
+  StageHistoryAction(False);
+  Result := False;
+end;
+
+function TWorkbench.HandleRedo(AEvent: TJSMouseEvent): Boolean;
+begin
+  StageHistoryAction(True);
+  Result := False;
+end;
+
+function TWorkbench.HandleClearHistory(AEvent: TJSMouseEvent): Boolean;
+begin
+  Result := False;
+  FUndoStack := TJSArray.new;
+  FRedoStack := TJSArray.new;
+  FHistoryStale := False;
+  SaveLocalHistory(FReviewRevision);
+  Status('Local undo history cleared. The append-only server review history was not changed.');
+end;
+
+function TWorkbench.HandleKeyboard(AEvent: TJSKeyboardEvent): Boolean;
+var
+  LTarget: TJSObject;
+  LTag: String;
+  LKey: String;
+begin
+  Result := False;
+  LTarget := TJSObject(AEvent.target);
+  LTag := UpperCase(TextField(LTarget, 'tagName'));
+  if (LTag = 'INPUT') or (LTag = 'TEXTAREA') or (LTag = 'SELECT') or
+    (LTarget['isContentEditable'] = True) then
+    Exit;
+  LKey := LowerCase(AEvent.key);
+  if (AEvent.ctrlKey or AEvent.metaKey) and (LKey = 'z') then
+  begin
+    AEvent.preventDefault;
+    StageHistoryAction(AEvent.shiftKey);
+    Exit;
+  end;
+  if (AEvent.ctrlKey or AEvent.metaKey) and (LKey = 'y') then
+  begin
+    AEvent.preventDefault;
+    StageHistoryAction(True);
+    Exit;
+  end;
+  if FSaveInProgress or ((FPendingChanges <> nil) and
+    (FPendingChanges.length > 0)) then
+    Exit;
+  if LKey = 'arrowleft' then
+  begin
+    AEvent.preventDefault;
+    if FSourceHash <> '' then
+    begin
+      if FWindowStart > FWindowSpan then
+        Dec(FWindowStart, FWindowSpan)
+      else
+        FWindowStart := 0;
+      RefreshWindow;
+    end;
+  end
+  else if LKey = 'arrowright' then
+  begin
+    AEvent.preventDefault;
+    if FSourceHash <> '' then
+    begin
+      FWindowStart := Smaller(FFrameCount - 1,
+        FWindowStart + FWindowSpan);
+      RefreshWindow;
+    end;
+  end
+  else if (LKey = 'arrowup') or (LKey = 'arrowdown') then
+  begin
+    if (FCurrentLabels <> nil) and (FCurrentLabels.length > 0) then
+    begin
+      AEvent.preventDefault;
+      if LKey = 'arrowup' then
+        SelectLabel((FSelectedLabel + FCurrentLabels.length - 1) mod
+          FCurrentLabels.length)
+      else
+        SelectLabel((FSelectedLabel + 1) mod FCurrentLabels.length);
+    end;
+  end;
+end;
+
 function TWorkbench.HandleSplit(AEvent: TJSMouseEvent): Boolean;
 var
   LStart: Int64;
@@ -2422,6 +2801,10 @@ begin
   TJSHTMLButtonElement(Element('load-cue-button')).onclick := @HandleLoadCue;
   TJSHTMLButtonElement(Element('suggest-button')).onclick := @HandleSuggest;
   TJSHTMLButtonElement(Element('save-label-button')).onclick := @HandleSave;
+  TJSHTMLButtonElement(Element('undo-review-button')).onclick := @HandleUndo;
+  TJSHTMLButtonElement(Element('redo-review-button')).onclick := @HandleRedo;
+  TJSHTMLButtonElement(Element('clear-history-button')).onclick :=
+    @HandleClearHistory;
   TJSHTMLButtonElement(Element('split-label-button')).onclick := @HandleSplit;
   TJSHTMLButtonElement(Element('merge-label-button')).onclick := @HandleMerge;
   TJSHTMLButtonElement(Element('cancel-staged-button')).onclick :=
@@ -2433,6 +2816,7 @@ begin
   FCanvas.onpointermove := @HandleCanvasMove;
   FCanvas.onpointerup := @HandleCanvasUp;
   FCanvas.onpointercancel := @HandleCanvasCancel;
+  document.onkeydown := @HandleKeyboard;
   DrawWaveform;
   Start;
 end;

@@ -149,6 +149,11 @@ SOFTWARE.
           <button id="save-label-button" type="button" class="primary">Save review event</button>
           <span>Saved edits create a new revision. Source groups and splits stay fixed.</span>
         </div>
+        <section class="history-tools" aria-labelledby="history-tools-title">
+          <div class="history-head"><h3 id="history-tools-title">Review history</h3><div class="history-actions"><button id="undo-review-button" type="button" disabled>Stage undo</button><button id="redo-review-button" type="button" disabled>Stage redo</button><button id="clear-history-button" type="button" disabled>Clear local history</button></div></div>
+          <p id="history-note" class="panel-note" aria-live="polite">Undo and redo apply to saved review events for the selected source. They never save automatically.</p>
+          <p class="panel-note">Keyboard: Ctrl/Cmd+Z stages undo, Ctrl/Cmd+Shift+Z or Ctrl/Cmd+Y stages redo. Left/right moves between source windows; up/down selects a label. Use Save review event to append every change.</p>
+        </section>
         <section class="span-tools" aria-labelledby="span-tools-title">
           <h3 id="span-tools-title">Split or merge spans</h3>
           <p class="panel-note">Operations use exact half-open source frames. They are staged locally and never save automatically. A split withdraws the selected saved label and adds two labels. A merge accepts only adjacent or overlapping labels with matching identity on this source.</p>
