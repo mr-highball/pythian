@@ -34,6 +34,7 @@ uses
 { Native import boundary. Reviews and Pythian proposals have distinct future
   stores; importing a source never creates a reviewed label. }
 function ImportLabelInbox(const AInboxRoot, ACatalogRoot: String): TJSONObject;
+function ReadPreparedLabelInbox(const AInboxRoot: String): TJSONObject;
 function ListLabelCatalog(const ACatalogRoot: String): TJSONObject;
 function ReadCatalogTrack(const ACatalogRoot, AHash: String): TJSONObject;
 
@@ -496,6 +497,99 @@ begin
       Result.Add('imported', LImported);
       Result.Add('duplicate', LDuplicates);
       Result.Add('failed', LFailed);
+    except
+      Result.Free;
+      raise;
+    end;
+  finally
+    LManifest.Free;
+  end;
+end;
+
+function ReadPreparedLabelInbox(const AInboxRoot: String): TJSONObject;
+var
+  LInbox: String;
+  LManifest: TJSONObject;
+  LEntries: TJSONArray;
+  LRows: TJSONArray;
+  LRow: TJSONObject;
+  LEntry: TJSONObject;
+  LName: String;
+  LHash: String;
+  LGroup: String;
+  LClock: String;
+  LPartition: String;
+  LIndex: Integer;
+begin
+  LInbox := IncludeTrailingPathDelimiter(ExpandFileName(AInboxRoot));
+  LManifest := ReadObject(LInbox + 'manifest.json', CManifestBytes);
+  try
+    Need(LManifest.Integers['version'] = 1,
+      'Unsupported inbox manifest version');
+    Need((LManifest.Find('tracks') <> nil) and
+      (LManifest.Find('tracks').JSONType = jtArray),
+      'Manifest requires tracks array');
+    LEntries := LManifest.Arrays['tracks'];
+    Need((LEntries.Count > 0) and
+      (LEntries.Count <= CMaximumInboxTracks),
+      'Manifest track count exceeds bounds');
+    Result := TJSONObject.Create;
+    try
+      Result.Add('version', 1);
+      LRows := TJSONArray.Create;
+      Result.Add('tracks', LRows);
+      for LIndex := 0 to LEntries.Count - 1 do
+      begin
+        LRow := TJSONObject.Create;
+        LRows.Add(LRow);
+        LRow.Add('index', LIndex);
+        try
+          Need(LEntries[LIndex].JSONType = jtObject,
+            'Manifest track must be an object');
+          LEntry := LEntries.Objects[LIndex];
+          LName := RequiredText(LEntry, 'file', 128);
+          Need(SafeName(LName) and
+            (LowerCase(ExtractFileExt(LName)) = '.wav'),
+            'Unsafe prepared WAV name');
+          LHash := RequiredText(LEntry, 'sha256', 64);
+          Need(ValidHash(LHash), 'Invalid prepared WAV SHA256');
+          LGroup := RequiredText(LEntry, 'source_group', 128);
+          Need(SafeName(LGroup), 'Unsafe source group');
+          LClock := OptionalText(LEntry, 'clock_id', 128);
+          Need((LClock = '') or SafeName(LClock),
+            'Unsafe shared clock identity');
+          LPartition := RequiredText(LEntry, 'partition', 16);
+          Need((LPartition = 'training') or
+            (LPartition = 'development') or
+            (LPartition = 'evaluation') or
+            (LPartition = 'unassigned'),
+            'Invalid catalog partition');
+          LRow.Add('file', LName);
+          LRow.Add('sha256', LHash);
+          LRow.Add('title', RequiredText(LEntry, 'title', 256));
+          LRow.Add('source_group', LGroup);
+          LRow.Add('clock_id', LClock);
+          LRow.Add('partition', LPartition);
+          LRow.Add('provenance',
+            RequiredText(LEntry, 'provenance', 512));
+          LRow.Add('license', RequiredText(LEntry, 'license', 256));
+          if FileExists(LInbox + LName) then
+          begin
+            LRow.Add('status', 'prepared_unverified');
+          end
+          else
+          begin
+            LRow.Add('status', 'missing');
+          end;
+        except
+          on LError: Exception do
+          begin
+            LRow.Add('status', 'invalid');
+            LRow.Add('error', LError.Message);
+          end;
+        end;
+      end;
+      Result.Add('count', LRows.Count);
     except
       Result.Free;
       raise;

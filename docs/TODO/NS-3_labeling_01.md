@@ -209,3 +209,16 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
   `0fdcfd3ce1009f6402ae6bcbb0b44f2716056049b5fef7551648ae4203217722`.
   This closes the contract criterion only. All other acceptance criteria and
   task credit remain open; these synthetic judgments are not training truth.
+- The authenticated native API now exposes `GET /api/inbox` with per-row
+  unverified/missing/invalid preparation state and `GET /api/proposals` for one
+  stored source/window packet. It never reruns inference on a read. It withholds
+  proposal reads and generation for evaluation tracks until blind review is
+  implemented. Checked stable Win32/Win64 builds passed. Real requests to
+  `192.168.12.109` returned 403 without a token, 403 for a wrong access key,
+  then two inbox tracks and eight `unreviewed` beat candidates with a valid
+  session; a missing window returned 404. A checked Win32 host returned 403
+  for both proposal operations with a temporarily evaluation-partitioned
+  fixture. A changed stored candidate identity failed both read and review,
+  leaving review revision 15. The fixture bytes were restored. Browser
+  serving, blind review, HTTP export, durable deployment and mobile usability
+  remain open; no additional criterion or task credit is claimed.

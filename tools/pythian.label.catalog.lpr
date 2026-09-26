@@ -97,6 +97,10 @@ begin
     begin
       LReport := ListLabelCatalog(ParamStr(2));
     end
+    else if (ParamCount = 2) and (ParamStr(1) = 'inbox') then
+    begin
+      LReport := ReadPreparedLabelInbox(ParamStr(2));
+    end
     else if (ParamCount = 3) and (ParamStr(1) = 'export') then
     begin
       LReport := ExportReviewedCatalog(ParamStr(2), ParamStr(3));
@@ -200,6 +204,16 @@ begin
       LReport := PublishCatalogBeatProposals(ParamStr(2), ParamStr(3),
         LStartFrame, LEndFrame);
     end
+    else if (ParamCount = 5) and (ParamStr(1) = 'proposals') then
+    begin
+      if not TryStrToInt64(ParamStr(4), LStartFrame) or
+        not TryStrToInt64(ParamStr(5), LEndFrame) then
+      begin
+        raise Exception.Create('Invalid proposal read frame argument');
+      end;
+      LReport := ReadCatalogBeatProposals(ParamStr(2), ParamStr(3),
+        LStartFrame, LEndFrame);
+    end
     else if (ParamCount = 6) and (ParamStr(1) = 'current') then
     begin
       if not TryStrToInt64(ParamStr(4), LStartFrame) or
@@ -215,6 +229,7 @@ begin
     begin
       WriteLn(StdErr, 'Usage: pythian.label.catalog import INBOX_DIR CATALOG_DIR');
       WriteLn(StdErr, '       pythian.label.catalog list CATALOG_DIR');
+      WriteLn(StdErr, '       pythian.label.catalog inbox INBOX_DIR');
       WriteLn(StdErr, '       pythian.label.catalog export CATALOG_DIR OUTPUT.json');
       WriteLn(StdErr, '       pythian.label.catalog inspect-export PACKET.json');
       WriteLn(StdErr, '       pythian.label.catalog waveform CATALOG_DIR HASH START END BINS');
@@ -223,6 +238,7 @@ begin
       WriteLn(StdErr, '       pythian.label.catalog history CATALOG_DIR HASH FIRST COUNT');
       WriteLn(StdErr, '       pythian.label.catalog current CATALOG_DIR HASH START END COUNT');
       WriteLn(StdErr, '       pythian.label.catalog propose-beats CATALOG_DIR HASH START END');
+      WriteLn(StdErr, '       pythian.label.catalog proposals CATALOG_DIR HASH START END');
       WriteLn(StdErr, '       pythian.label.catalog serve INBOX_DIR CATALOG_DIR PORT [MAX_REQUESTS]');
       WriteLn(StdErr, '       pythian.label.catalog serve INBOX_DIR CATALOG_DIR BIND_IP PORT [MAX_REQUESTS]');
       ExitCode := 2;

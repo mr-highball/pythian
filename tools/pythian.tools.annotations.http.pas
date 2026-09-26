@@ -553,6 +553,7 @@ var
   LReport: TJSONObject;
   LBody: TJSONObject;
   LAudio: TMemoryStream;
+  LTrack: TJSONObject;
   LHash: String;
 begin
   if not ((ARequest.Path = '/api/session') and
@@ -590,6 +591,26 @@ begin
       (ARequest.Path = '/api/catalog') then
     begin
       LReport := ListLabelCatalog(ACatalogRoot);
+    end
+    else if (ARequest.Method = 'GET') and
+      (ARequest.Path = '/api/inbox') then
+    begin
+      LReport := ReadPreparedLabelInbox(AInboxRoot);
+    end
+    else if (ARequest.Method = 'GET') and
+      (ARequest.Path = '/api/proposals') then
+    begin
+      LHash := QueryValue(ARequest.Query, 'hash');
+      LTrack := ReadCatalogTrack(ACatalogRoot, LHash);
+      try
+        Need(LTrack.Strings['partition'] <> 'evaluation',
+          'Evaluation proposals require blind review');
+      finally
+        LTrack.Free;
+      end;
+      LReport := ReadCatalogBeatProposals(ACatalogRoot, LHash,
+        QueryInt64(ARequest.Query, 'start'),
+        QueryInt64(ARequest.Query, 'end'));
     end
     else if (ARequest.Method = 'GET') and
       (ARequest.Path = '/api/waveform') then
@@ -650,6 +671,13 @@ begin
     begin
       LBody := ParseBodyObject(ARequest.Body);
       LHash := LBody.Strings['source_sha256'];
+      LTrack := ReadCatalogTrack(ACatalogRoot, LHash);
+      try
+        Need(LTrack.Strings['partition'] <> 'evaluation',
+          'Evaluation proposals require blind review');
+      finally
+        LTrack.Free;
+      end;
       LReport := PublishCatalogBeatProposals(ACatalogRoot, LHash,
         LBody.Int64s['start_frame'], LBody.Int64s['end_frame']);
     end
@@ -695,6 +723,16 @@ begin
         (Pos('access key', LowerCase(LError.Message)) > 0) then
       begin
         LStatus := 403;
+      end
+      else if Pos('evaluation proposals',
+        LowerCase(LError.Message)) > 0 then
+      begin
+        LStatus := 403;
+      end
+      else if Pos('stored proposal packet does not exist',
+        LowerCase(LError.Message)) > 0 then
+      begin
+        LStatus := 404;
       end
       else if LError is EAudio then
       begin

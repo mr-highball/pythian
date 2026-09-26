@@ -13956,3 +13956,29 @@ The native catalog task remains open and earns no credit. Next, expose prepared
 inbox and stored proposal reads through the authenticated service, then add
 blind review and a browser path that can use the reviewed export. Overall
 **70.20%**, **38 open / 27 DONE**, pending listening **0/20**.
+
+## Prepared inbox and stored proposal API — 2026-09-25
+
+The checked native service now returns a bounded prepared-inbox preview and
+one saved beat-proposal packet through fixed authenticated routes. Preview
+distinguishes a present but unverified WAV from a missing or invalid row;
+import still owns the full hash, geometry and group checks. Proposal reads
+validate source/window identity, analyzer policy, observation frames and exact
+candidate IDs. An evaluation-partitioned track cannot expose or generate
+proposals through HTTP until a blind review flow exists.
+
+Stable checked Win32 and Win64 builds passed. Actual requests to
+`192.168.12.109` returned 403 without a session token, 403 for a wrong access
+key, then two inbox rows and eight `unreviewed` candidates after login. A
+nonexistent proposal window returned 404. A checked Win32 host returned 403
+for both evaluation proposal reads and generation. Changing a stored candidate
+ID made both the native read and a linked review fail, with revision still 15;
+the original ignored fixture packet was restored. These are service and data
+integrity checks, not acoustic judgments or a phone/browser test.
+
+The native task remains open and earns no additional credit. The next useful
+boundary is a Pascal/pas2js browser served from the same origin, starting with
+login, inbox/catalog list, bounded waveform/audio and visibly separate
+proposals/reviews. Blind evaluation and reviewed export must be integrated
+before the authoring workflow is accepted. Overall **70.20%**, **38 open /
+27 DONE**, listening queue **0/20**.

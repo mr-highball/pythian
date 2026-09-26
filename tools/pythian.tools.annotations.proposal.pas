@@ -35,6 +35,8 @@ uses
   unreviewed, even when its analysis has a strong periodic score. }
 function PublishCatalogBeatProposals(const ACatalogRoot, AHash: String;
   const AStartFrame, AEndFrame: Int64): TJSONObject;
+function ReadCatalogBeatProposals(const ACatalogRoot, AHash: String;
+  const AStartFrame, AEndFrame: Int64): TJSONObject;
 function CatalogProposalExists(const ACatalogRoot, AHash,
   AProposalId: String): Boolean;
 
@@ -267,6 +269,69 @@ begin
   Result := TJSONObject(LData);
 end;
 
+procedure ValidateStoredPacket(const APacket, ATrack: TJSONObject;
+  const AHash: String; const AStartFrame, AEndFrame: Int64);
+var
+  LObservations: TJSONArray;
+  LCandidates: TJSONArray;
+  LFrames: TJSONArray;
+  LRow: TJSONObject;
+  LIndex: Integer;
+  LFrameIndex: Integer;
+  LFrame: Int64;
+begin
+  Need((APacket.Integers['version'] = 1) and
+    (APacket.Strings['source_sha256'] = AHash) and
+    (APacket.Integers['sample_rate'] = ATrack.Integers['sample_rate']) and
+    (APacket.Strings['source_group'] = ATrack.Strings['source_group']) and
+    (APacket.Int64s['region_start_frame'] = AStartFrame) and
+    (APacket.Int64s['region_end_frame'] = AEndFrame) and
+    (APacket.Strings['status'] = 'unreviewed') and
+    (APacket.Strings['analyzer'] = 'pythian.beat.wave') and
+    (APacket.Integers['analyzer_version'] = BeatGridVersion) and
+    (APacket.Strings['model'] = 'none-native-heuristic') and
+    (APacket.Strings['policy'] = BeatGridMeasurementPolicy),
+    'Stored proposal packet differs from source or policy');
+  Need((APacket.Find('observations') <> nil) and
+    (APacket.Find('observations').JSONType = jtArray) and
+    (APacket.Find('candidates') <> nil) and
+    (APacket.Find('candidates').JSONType = jtArray),
+    'Stored proposal packet requires evidence arrays');
+  LObservations := APacket.Arrays['observations'];
+  LCandidates := APacket.Arrays['candidates'];
+  Need((LObservations.Count <= 10000) and (LCandidates.Count <= 32),
+    'Stored proposal evidence exceeds bounds');
+  for LIndex := 0 to LObservations.Count - 1 do
+  begin
+    Need(LObservations[LIndex].JSONType = jtObject,
+      'Stored proposal observation must be an object');
+    LFrame := LObservations.Objects[LIndex].Int64s['frame'];
+    Need((LFrame >= AStartFrame) and (LFrame < AEndFrame),
+      'Stored proposal observation lies outside source window');
+  end;
+  for LIndex := 0 to LCandidates.Count - 1 do
+  begin
+    Need(LCandidates[LIndex].JSONType = jtObject,
+      'Stored proposal candidate must be an object');
+    LRow := LCandidates.Objects[LIndex];
+    Need((LRow.Strings['proposal_id'] =
+      ProposalBase(AStartFrame, AEndFrame) + '-' + IntToStr(LIndex)) and
+      (LRow.Strings['type'] = 'beat_grid') and
+      (LRow.Find('frames') <> nil) and
+      (LRow.Find('frames').JSONType = jtArray),
+      'Stored proposal candidate identity differs');
+    LFrames := LRow.Arrays['frames'];
+    Need(LFrames.Count <= 10000,
+      'Stored proposal frame count exceeds bound');
+    for LFrameIndex := 0 to LFrames.Count - 1 do
+    begin
+      LFrame := LFrames.Int64s[LFrameIndex];
+      Need((LFrame >= AStartFrame) and (LFrame < AEndFrame),
+        'Stored proposal beat lies outside source window');
+    end;
+  end;
+end;
+
 function PublishCatalogBeatProposals(const ACatalogRoot, AHash: String;
   const AStartFrame, AEndFrame: Int64): TJSONObject;
 var
@@ -321,6 +386,37 @@ begin
   end;
 end;
 
+function ReadCatalogBeatProposals(const ACatalogRoot, AHash: String;
+  const AStartFrame, AEndFrame: Int64): TJSONObject;
+var
+  LTrack: TJSONObject;
+  LPath: String;
+begin
+  LTrack := ReadCatalogTrack(ACatalogRoot, AHash);
+  try
+    Need((AStartFrame >= 0) and (AEndFrame > AStartFrame) and
+      (AEndFrame <= LTrack.Int64s['frame_count']) and
+      (AEndFrame - AStartFrame <= CMaximumProposalFrames) and
+      (AEndFrame - AStartFrame <=
+        Int64(LTrack.Integers['sample_rate']) * CMaximumProposalSeconds),
+      'Proposal read window exceeds source or analysis bound');
+    LPath := IncludeTrailingPathDelimiter(
+      ProposalDirectory(ACatalogRoot, AHash)) +
+      ProposalBase(AStartFrame, AEndFrame) + '.json';
+    Need(FileExists(LPath), 'Stored proposal packet does not exist');
+    Result := ReadPacket(LPath);
+    try
+      ValidateStoredPacket(Result, LTrack, AHash,
+        AStartFrame, AEndFrame);
+    except
+      Result.Free;
+      raise;
+    end;
+  finally
+    LTrack.Free;
+  end;
+end;
+
 function CatalogProposalExists(const ACatalogRoot, AHash,
   AProposalId: String): Boolean;
 var
@@ -329,6 +425,7 @@ var
   LPacket: TJSONObject;
   LRows: TJSONArray;
   LIndex: Integer;
+  LTrack: TJSONObject;
 begin
   Result := False;
   if not SafeIdentifier(AProposalId) or
@@ -349,11 +446,18 @@ begin
   end;
   LPacket := ReadPacket(LPath);
   try
-    Need((LPacket.Integers['version'] = 1) and
-      (LPacket.Strings['source_sha256'] = AHash) and
-      (LPacket.Strings['status'] = 'unreviewed') and
-      (LPacket.Strings['analyzer'] = 'pythian.beat.wave'),
-      'Stored proposal identity differs from source');
+    LTrack := ReadCatalogTrack(ACatalogRoot, AHash);
+    try
+      Need(Copy(AProposalId, 1, LDash - 1) =
+        ProposalBase(LPacket.Int64s['region_start_frame'],
+          LPacket.Int64s['region_end_frame']),
+        'Stored proposal filename differs from window');
+      ValidateStoredPacket(LPacket, LTrack, AHash,
+        LPacket.Int64s['region_start_frame'],
+        LPacket.Int64s['region_end_frame']);
+    finally
+      LTrack.Free;
+    end;
     LRows := LPacket.Arrays['candidates'];
     for LIndex := 0 to LRows.Count - 1 do
     begin

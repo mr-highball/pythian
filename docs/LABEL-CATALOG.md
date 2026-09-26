@@ -35,12 +35,14 @@ the entire manifest with one command:
 ```powershell
 & 'build/<target>/pythian.label.catalog.exe' import 'D:\path\to\inbox' 'D:\path\to\catalog'
 & 'build/<target>/pythian.label.catalog.exe' list 'D:\path\to\catalog'
+& 'build/<target>/pythian.label.catalog.exe' inbox 'D:\path\to\inbox'
 & 'build/<target>/pythian.label.catalog.exe' waveform 'D:\path\to\catalog' SOURCE_SHA256 START_FRAME END_FRAME BINS
 & 'build/<target>/pythian.label.catalog.exe' audio 'D:\path\to\catalog' SOURCE_SHA256 START_FRAME END_FRAME 'D:\path\to\region.wav'
 & 'build/<target>/pythian.label.catalog.exe' review 'D:\path\to\catalog' 'D:\path\to\transaction.json'
 & 'build/<target>/pythian.label.catalog.exe' history 'D:\path\to\catalog' SOURCE_SHA256 FIRST_REVISION COUNT
 & 'build/<target>/pythian.label.catalog.exe' current 'D:\path\to\catalog' SOURCE_SHA256 START_FRAME END_FRAME COUNT
 & 'build/<target>/pythian.label.catalog.exe' propose-beats 'D:\path\to\catalog' SOURCE_SHA256 START_FRAME END_FRAME
+& 'build/<target>/pythian.label.catalog.exe' proposals 'D:\path\to\catalog' SOURCE_SHA256 START_FRAME END_FRAME
 & 'build/<target>/pythian.label.catalog.exe' export 'D:\path\to\catalog' 'D:\path\to\reviewed.json'
 & 'build/<target>/pythian.label.catalog.exe' inspect-export 'D:\path\to\reviewed.json'
 & 'build/<target>/pythian.label.catalog.exe' serve 'D:\path\to\inbox' 'D:\path\to\catalog' 18085
@@ -114,6 +116,13 @@ downbeats or establish a correct musical beat. A review that names a
 `proposal_id` must now reference a candidate in the stored packet. Import and
 proposal generation never write review events.
 
+`inbox` previews the bounded prepared manifest with per-row
+`prepared_unverified`, `missing` or `invalid` status. It does not hash the WAV,
+resolve a catalog partition conflict or import a track; `import` performs those
+checks. `proposals` reads a previously published source/window packet without
+rerunning inference. It checks the packet's source, policy, evidence frames and
+candidate identities before returning them or accepting a linked review.
+
 `export` writes one version-1, `pythian.reviewed-catalog.v1` packet without
 source audio. Each source carries its original SHA-256, geometry, group,
 partition, provenance, license and full numbered review history. Its
@@ -133,8 +142,9 @@ These commands exercise storage and schema, not an operator-approved corpus.
 No review event is produced automatically during import. Blind evaluation and
 browser controls remain open.
 
-The first native HTTP host has fixed routes for session, catalog, waveform,
-current labels, history, region audio, import, review and beat proposals. It
+The first native HTTP host has fixed routes for session, prepared inbox,
+catalog, stored proposals, waveform, current labels, history, region audio,
+import, review and beat proposals. It
 binds only the specified loopback or private LAN IPv4 address, never all
 interfaces. The inbox and catalog roots are process arguments, not URL paths.
 `GET /api/session` provides a local loopback token. LAN mode requires a secret
@@ -143,7 +153,9 @@ as JSON to `POST /api/session` and send the returned `X-Pythian-Token` header
 on every subsequent request. The access key and token must stay out of URLs.
 LAN HTTP is not encrypted, so use only a trusted local network; the later UI
 must provide a same-origin login form. The current host does not yet serve that
-UI or implement inbox/proposal reads, blind review and reviewed export. Do not
+UI or implement blind review and reviewed export over HTTP. It withholds
+proposal reads and generation on evaluation tracks until the independent blind
+review path is available. Do not
 train from source records, proposals or test review events alone.
 
 For explicit LAN binding, set the secret in the server process before startup:
