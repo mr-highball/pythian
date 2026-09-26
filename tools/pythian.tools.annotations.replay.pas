@@ -88,6 +88,10 @@ begin
   LText := AData.AsJSON + LineEnding;
   Need((Length(LText) > 0) and (Length(LText) <= AMaximumBytes),
     'Replay evidence exceeds file size bound');
+  {$IFDEF MSWINDOWS}
+  Need(Length(APath) < 260,
+    'Replay evidence path exceeds Windows file path limit');
+  {$ENDIF}
   Need(not FileExists(APath), 'Replay stage file already exists');
   LOutput := TFileStream.Create(APath, fmCreate or fmShareExclusive);
   try
@@ -302,6 +306,7 @@ var
   LReviewStage: String;
   LProposalStage: String;
   LGuid: TGUID;
+  LStageId: String;
   LNeedProposals: Boolean;
   LPublishedProposals: Boolean;
   LStatus: String;
@@ -332,12 +337,13 @@ begin
     end;
     Need(CreateGUID(LGuid) = 0,
       'Could not create replay stage identity');
-    LReviewStage := LCatalog + 'reviews.' +
-      GUIDToString(LGuid) + '.partial';
-    LProposalStage := LCatalog + 'proposals.' +
-      GUIDToString(LGuid) + '.partial';
+    LStageId := StringReplace(GUIDToString(LGuid), '-', '', [rfReplaceAll]);
+    LStageId := Copy(LStageId, 2, 32);
+    LReviewStage := LCatalog + 'r' + LStageId;
+    LProposalStage := LCatalog + 'p' + LStageId;
     Need(not DirectoryExists(LReviewStage) and
-      not DirectoryExists(LProposalStage),
+      not DirectoryExists(LProposalStage) and
+      not FileExists(LReviewStage) and not FileExists(LProposalStage),
       'Replay stage path already exists');
     LPublishedProposals := False;
     try

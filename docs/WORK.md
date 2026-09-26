@@ -13,6 +13,34 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Real development review packet and replay path — 2026-09-25
+
+Two publisher-linked piano excerpts were imported into an ignored, disposable
+development catalog. The maintained Pascal beat analyzer saved source-bound
+candidate grids on one excerpt. A curator transaction approved a downbeat at
+original frame 344302 from the publisher annotation and existing physical
+attack support; another explicitly rejected a linked first-grid beat at frame
+349382, 5080 frames (115.193 ms) away. This is development-exposed publisher
+evidence, not independent evaluation or a user listening verdict. The full
+source identities, publisher support and review inputs stay in ignored
+`build/label-catalog/real-publisher-review-20260925/`.
+
+The native export has 2 tracks, 1 selected label and 2 history events. A fresh
+catalog with the same original WAVs initially failed to replay its linked
+proposal: the temporary Windows path was 262 characters. The Pascal replay
+stage now uses a shorter unique name and checks the file-path limit before a
+write. Checked stable Win32 and Win64 catalog builds passed; the repaired
+Win64 import and export produced byte-identical packets (SHA-256
+`96873c98757d4aabaac11e72ec861d4c281db3f8adef21fb42e47510b72e12f1`).
+Importing the same packet again returned `duplicate`. Focused QA of the
+publication failure boundary passed on checked stable Win32 and Win64: both
+targets replayed at a catalog root whose former stage path was exactly 262
+characters, matched the export bytes, and left no temporary stage directories
+or unfreed blocks. Wrong-source packets failed without publishing reviews or
+proposals. This example closes no full catalog
+task and adds no listening item; **70.20%**, **38 open / 27 DONE**, listening
+queue **0/20**.
+
 ## Native beat-cue audition for catalog review — 2026-09-25
 
 The operator workbench now offers a selected saved beat-grid cue in the same

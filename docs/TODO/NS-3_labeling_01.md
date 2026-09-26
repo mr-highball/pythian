@@ -79,6 +79,17 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
 
 **Dev Notes:**
 
+- 2026-09-25 a real, development-exposed publisher downbeat now passes through
+  source-bound Pascal proposal, explicit curator approval/rejection and
+  deterministic reviewed export. The first saved beat-grid candidate missed
+  the physically supported publisher downbeat by 115.193 ms; the publisher
+  event was approved without linking the proposal, and that candidate was
+  explicitly rejected. A fresh source-matched catalog re-imported the packet
+  and re-exported identical bytes after shortening a replay stage path that
+  had exceeded the Windows file limit. Salty Boi's checked Win32/Win64 replay
+  and wrong-source failure checks passed without stage residue or leaks. This
+  is neither independent evaluation nor an operator listening verdict. The
+  remaining catalog acceptance gates stay open; no credit claimed.
 - 2026-09-25 the native service now has a bounded beat-cue audition route for
   one stored unreviewed candidate. It checks the source-bound packet and blind
   evaluation gate before rendering markers over the original audio; cue output
