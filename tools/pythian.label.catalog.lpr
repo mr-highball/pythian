@@ -38,6 +38,21 @@ uses
   pythian.tools.annotations.proposal,
   pythian.tools.annotations.review;
 
+procedure RequireProposalAccess(const ACatalogRoot, AHash: String);
+var
+  LTrack: TJSONObject;
+begin
+  LTrack := ReadCatalogTrack(ACatalogRoot, AHash);
+  try
+    if not CatalogProposalsUnlocked(ACatalogRoot, LTrack) then
+    begin
+      raise Exception.Create('Evaluation proposals require blind review');
+    end;
+  finally
+    LTrack.Free;
+  end;
+end;
+
 var
   LReport: TJSONObject;
   LStartFrame: Int64;
@@ -214,6 +229,7 @@ begin
       begin
         raise Exception.Create('Invalid beat-proposal frame argument');
       end;
+      RequireProposalAccess(ParamStr(2), ParamStr(3));
       LReport := PublishCatalogBeatProposals(ParamStr(2), ParamStr(3),
         LStartFrame, LEndFrame);
     end
@@ -224,6 +240,7 @@ begin
       begin
         raise Exception.Create('Invalid proposal read frame argument');
       end;
+      RequireProposalAccess(ParamStr(2), ParamStr(3));
       LReport := ReadCatalogBeatProposals(ParamStr(2), ParamStr(3),
         LStartFrame, LEndFrame);
     end

@@ -92,3 +92,17 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
   seek/loop cue audition, edit handles, split/merge, undo/redo, blind reveal,
   browser export/re-import, or the complete multi-hour/mobile workflow. No
   completion credit is claimed.
+- 2026-09-25 follow-on browser slice: evaluation suggestions remain hidden
+  while source review revision is zero, then become available after a native
+  independent review; the server enforces the same gate for direct requests.
+  The page now downloads the authenticated reviewed JSON packet as a blob
+  without putting its session token in the URL. A real Edge CDP run loaded an
+  evaluation source, original audio and eight unreviewed candidates, saved a
+  later review, and downloaded a 4,341-byte packet. The Pascal packet reader
+  verified that browser download at SHA-256
+  `3977eadca0c47b9925aef11948411cd50d00f52d9d6367b40addbe936c6d73fd`:
+  two tracks, two selected labels, one unknown, four history events. The new
+  export section was inspected at desktop 1280px and emulated mobile 390px.
+  This is a source-level blind gate; per-reviewer blind sessions, direct
+  timeline editing, cue audition, undo/redo, replay import and physical phone
+  checks remain open. No completion credit.

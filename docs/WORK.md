@@ -14015,3 +14015,38 @@ in ignored build output. Automatic approval review rejected their recursive
 removal despite an absolute target check, so they remain for an operator-run
 cleanup. No task moved to DONE and no milestone credit changed: overall
 **70.20%**, **38 open / 27 DONE**, listening queue **0/20**.
+
+## Blind review and browser packet download — 2026-09-25
+
+The native catalog now requires an independent first review before an
+evaluation source can expose or generate proposals through HTTP or CLI. The
+first event must have no proposal ID and must be approved or uncertain; later
+proposal-linked edits retain normal identity checks. In an ignored evaluation
+fixture with a stored eight-candidate packet, pre-review proposal GET/POST
+returned 403, a guessed proposal-linked first edit returned 422 with revision
+still zero, and an explicit approved `presence=unknown` review reached revision
+one. Win64 wrote that review; checked Win32 read all eight candidates afterward.
+Stable FPC 3.2.2 Win32/Win64 builds and the pas2js 3.3.1 build passed.
+
+`GET /api/export` now returns the native reviewed packet without source audio.
+It keeps the normal LAN token gate. One two-track fixture gave two selected
+labels, one separate unknown and three history events; HTTP and CLI bytes had
+the same SHA-256
+`a1a13279d03af78bb00d35de7097d9dae41a1ee2fb02f9845fec9cf937d7bb30`.
+Direct LAN-address export returned 403 without a token and 200 after login.
+A fresh Edge CDP path selected the evaluation source, fetched original audio,
+displayed unreviewed proposals after the independent review, committed another
+label and downloaded a 4,341-byte reviewed JSON packet. The native Pascal
+reader accepted the browser file with hash
+`3977eadca0c47b9925aef11948411cd50d00f52d9d6367b40addbe936c6d73fd`:
+two selected labels, one unknown and four history events. Desktop 1280px and
+emulated 390px screenshots of the new export control were inspected under
+ignored `build/label-workbench/`. No physical phone verdict is implied.
+
+The previous LAN preview on port 18095 still uses the older native binary.
+The matching current preview is bound to `192.168.12.109:18096`; both use the
+two-track ignored development fixture, not a durable operator catalog.
+Destination-catalog replay, source-linked proposal evidence in that replay,
+per-reviewer blind sessions, richer timeline editing and cue audition remain
+open. No task moved to DONE; overall **70.20%**, **38 open / 27 DONE**,
+listening queue **0/20**.

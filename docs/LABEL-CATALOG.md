@@ -139,12 +139,12 @@ This current single-file limit may require sharding for larger catalogs; a
 destination-catalog replay and actual training-tool integration remain open.
 
 These commands exercise storage and schema, not an operator-approved corpus.
-No review event is produced automatically during import. Blind evaluation and
-browser controls remain open.
+No review event is produced automatically during import. Full browser editing
+and destination-catalog replay remain open.
 
 The first native HTTP host has fixed routes for session, prepared inbox,
 catalog, stored proposals, waveform, current labels, history, region audio,
-import, review and beat proposals. It
+import, review, beat proposals and the reviewed packet download. It
 binds only the specified loopback or private LAN IPv4 address, never all
 interfaces. The inbox and catalog roots are process arguments, not URL paths.
 `GET /api/session` provides a local loopback token. LAN mode requires a secret
@@ -152,10 +152,11 @@ of at least 16 characters in `PYTHIAN_CATALOG_ACCESS_KEY`; clients submit it
 as JSON to `POST /api/session` and send the returned `X-Pythian-Token` header
 on every subsequent request. The access key and token must stay out of URLs.
 LAN HTTP is not encrypted, so use only a trusted local network. `serve-app`
-serves the Pascal/pas2js page on the same origin with an access-key form;
-the API does not yet implement reviewed export over HTTP. It withholds
-proposal reads and generation on evaluation tracks until the independent blind
-review path is available. Do not
+serves the Pascal/pas2js page on the same origin with an access-key form.
+`GET /api/export` sends the same bounded, deterministic, audio-free packet as
+the native CLI. Evaluation proposal reads and generation return 403 until the
+first approved or uncertain, proposal-free review commits for that source;
+the CLI follows the same rule. Proposal-linked first reviews are rejected. Do not
 train from source records, proposals or test review events alone.
 
 For explicit LAN binding, set the secret in the server process before startup:
@@ -177,7 +178,8 @@ Open `http://<LAN_IPV4>:18095/` and enter the secret in the page. The server
 accepts only three named static assets and keeps catalog routes behind its
 session token. The bind address must belong to the host, such as its Wi-Fi
 address. A local firewall may need to allow the chosen port before a phone can
-connect. The current browser slice supports bounded source listening and basic
-review; the full authoring controls and blind reveal remain open in
+connect. The current browser slice supports bounded source listening, basic
+review, source-level blind reveal and reviewed packet download. Full authoring
+controls and destination-catalog replay remain open in
 [NS-6_authoring_01](TODO/NS-6_authoring_01.md). Store a real operator catalog
 outside `build/`; the catalog under `build/label-catalog/` is a test fixture.

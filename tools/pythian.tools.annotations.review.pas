@@ -40,6 +40,8 @@ function ReadCatalogReviewHistory(const ACatalogRoot, AHash: String;
   const AFirstRevision, AMaximumCount: Integer): TJSONObject;
 function ReadCatalogCurrentLabels(const ACatalogRoot, AHash: String;
   const AStartFrame, AEndFrame: Int64; const AMaximumCount: Integer): TJSONObject;
+function CatalogProposalsUnlocked(const ACatalogRoot: String;
+  const ATrack: TJSONObject): Boolean;
 
 implementation
 
@@ -220,6 +222,43 @@ begin
   end;
 end;
 
+function CatalogProposalsUnlocked(const ACatalogRoot: String;
+  const ATrack: TJSONObject): Boolean;
+var
+  LHash: String;
+  LDirectory: String;
+  LFirst: TJSONObject;
+  LChange: TJSONObject;
+begin
+  if ATrack.Strings['partition'] <> 'evaluation' then
+  begin
+    Exit(True);
+  end;
+  LHash := ATrack.Strings['source_sha256'];
+  LDirectory := ReviewDirectory(ACatalogRoot, LHash);
+  if LatestRevision(LDirectory) = 0 then
+  begin
+    Exit(False);
+  end;
+  LFirst := ReadEvent(LDirectory, 1);
+  try
+    Need((LFirst.Find('change') <> nil) and
+      (LFirst.Find('change').JSONType = jtObject),
+      'Evaluation first review has no change');
+    LChange := LFirst.Objects['change'];
+    Result := (LFirst.Strings['source_sha256'] = LHash) and
+      (LFirst.Strings['source_group'] =
+        ATrack.Strings['source_group']) and
+      (LFirst.Strings['partition'] = 'evaluation') and
+      (LFirst.Strings['reviewer'] <> '') and
+      (LChange.Strings['proposal_id'] = '') and
+      ((LChange.Strings['status'] = 'approved') or
+      (LChange.Strings['status'] = 'uncertain'));
+  finally
+    LFirst.Free;
+  end;
+end;
+
 function NormalizeChange(const AInput, ATrack: TJSONObject): TJSONObject;
 var
   LId: String;
@@ -378,12 +417,6 @@ begin
   try
     LChange := NormalizeChange(ATransaction.Objects['change'], LTrack);
     try
-      if LChange.Strings['proposal_id'] <> '' then
-      begin
-        Need(CatalogProposalExists(ACatalogRoot, LHash,
-          LChange.Strings['proposal_id']),
-          'Review refers to an unknown proposal');
-      end;
       LReviews := IncludeTrailingPathDelimiter(ExpandFileName(ACatalogRoot)) +
         'reviews';
       LDirectory := ReviewDirectory(ACatalogRoot, LHash);
@@ -393,6 +426,18 @@ begin
       try
         LRevision := LatestRevision(LDirectory);
         Need(LExpected = LRevision, 'Review revision conflict');
+        Need((LTrack.Strings['partition'] <> 'evaluation') or
+          (LRevision > 0) or
+          ((LChange.Strings['proposal_id'] = '') and
+          ((LChange.Strings['status'] = 'approved') or
+          (LChange.Strings['status'] = 'uncertain'))),
+          'Evaluation review must begin with an independent label');
+        if LChange.Strings['proposal_id'] <> '' then
+        begin
+          Need(CatalogProposalExists(ACatalogRoot, LHash,
+            LChange.Strings['proposal_id']),
+            'Review refers to an unknown proposal');
+        end;
         VerifySourceAsset(ACatalogRoot, LHash, LTrack);
         Result := TJSONObject.Create;
         try

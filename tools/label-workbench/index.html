@@ -139,6 +139,15 @@ SOFTWARE.
           <span>Saved edits create a new revision. Source groups and splits stay fixed.</span>
         </div>
       </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div><p class="step">07 / EXPORT</p><h2>Reviewed packet</h2></div>
+          <button id="export-button" type="button">Download JSON</button>
+        </div>
+        <p class="panel-note">The packet includes reviewed decisions and source rights, not source audio or unreviewed suggestions. Keep the original WAVs available for replay.</p>
+        <p id="export-state" class="panel-note" role="status">No export requested in this page session.</p>
+      </section>
     </section>
   </main>
   <script src="app.js"></script>

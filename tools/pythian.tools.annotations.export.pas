@@ -33,6 +33,7 @@ uses
 
 { Writes one deterministic, bounded, audio-free packet. The packet retains
   history, while selected labels contain only current approved decisions. }
+function BuildReviewedCatalogPacket(const ACatalogRoot: String): TJSONObject;
 function ExportReviewedCatalog(const ACatalogRoot, AOutputPath: String): TJSONObject;
 function ReadReviewedCatalogPacket(const APath: String): TJSONObject;
 function InspectReviewedCatalogPacket(const APath: String): TJSONObject;
@@ -271,7 +272,7 @@ begin
   end;
 end;
 
-function BuildPacket(const ACatalogRoot: String): TJSONObject;
+function BuildReviewedCatalogPacket(const ACatalogRoot: String): TJSONObject;
 var
   LCatalog: TJSONObject;
   LTracks: TJSONArray;
@@ -319,7 +320,7 @@ var
   LPacketHash: String;
 begin
   Need(not FileExists(AOutputPath), 'Reviewed export output already exists');
-  LPacket := BuildPacket(ACatalogRoot);
+  LPacket := BuildReviewedCatalogPacket(ACatalogRoot);
   try
     LText := LPacket.AsJSON + LineEnding;
     Need(Length(LText) <= CMaximumPacketBytes,

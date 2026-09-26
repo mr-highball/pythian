@@ -233,3 +233,23 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
   separate physical device is not yet verified. Browser export/re-import,
   blind evaluation reveal, and durable operator-root deployment remain open;
   no new task criterion or credit is claimed.
+- Blind evaluation is now source-gated in both HTTP and CLI proposal reads and
+  generation. An evaluation source with zero reviews returns 403; a first
+  review linked to a proposal or marked withdrawn/rejected cannot unlock it.
+  A first independent approved `presence=unknown` review advanced an ignored
+  fixture to revision 1; the same stored eight-candidate packet then remained
+  `unreviewed` but became readable. A browser path loaded that evaluation
+  source, played original audio, showed proposals only after the independent
+  review and saved a later label. Checked stable Win32/Win64 builds passed.
+  The gate is source-level; multiple independent reviewers on one source still
+  need separate blind sessions if that becomes an evaluation requirement.
+- `GET /api/export` now emits the full deterministic reviewed packet behind
+  the normal LAN token check. A two-track ignored fixture returned two selected
+  labels, one separate unknown and three history events. Its HTTP bytes and
+  native CLI export had the identical SHA-256
+  `a1a13279d03af78bb00d35de7097d9dae41a1ee2fb02f9845fec9cf937d7bb30`.
+  On LAN, an unauthenticated export returned 403 and an authenticated export
+  returned 200. A destination-catalog replay remains absent. The audio-free
+  packet also does not carry definitions for proposal IDs referenced in review
+  history, so replay must preserve that evidence or explicitly constrain the
+  replay contract before the task can be accepted. No new completion credit.

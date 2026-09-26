@@ -46,6 +46,7 @@ uses
   jsonparser,
   pythian.audio,
   pythian.tools.annotations.catalog,
+  pythian.tools.annotations.export,
   pythian.tools.annotations.media,
   pythian.tools.annotations.proposal,
   pythian.tools.annotations.review
@@ -56,6 +57,7 @@ const
   CMaximumBodyBytes = 16384;
   CMaximumTargetBytes = 2048;
   CMaximumJsonResponseBytes = 8388608;
+  CMaximumReviewedExportBytes = 67108864;
   CMaximumStaticBytes = 8388608;
   CReceiveDeadlineMs = 5000;
   CSendDeadlineMs = 15000;
@@ -606,6 +608,7 @@ var
   LTrack: TJSONObject;
   LHash: String;
   LStaticName: String;
+  LText: String;
 begin
   LStaticName := '';
   if (AStaticRoot <> '') and (ARequest.Method = 'GET') then
@@ -664,7 +667,7 @@ begin
       LHash := QueryValue(ARequest.Query, 'hash');
       LTrack := ReadCatalogTrack(ACatalogRoot, LHash);
       try
-        Need(LTrack.Strings['partition'] <> 'evaluation',
+        Need(CatalogProposalsUnlocked(ACatalogRoot, LTrack),
           'Evaluation proposals require blind review');
       finally
         LTrack.Free;
@@ -698,6 +701,16 @@ begin
         QueryValue(ARequest.Query, 'hash'),
         QueryInteger(ARequest.Query, 'first'),
         QueryInteger(ARequest.Query, 'count'));
+    end
+    else if (ARequest.Method = 'GET') and
+      (ARequest.Path = '/api/export') then
+    begin
+      LReport := BuildReviewedCatalogPacket(ACatalogRoot);
+      LText := LReport.AsJSON + LineEnding;
+      Need(Length(LText) <= CMaximumReviewedExportBytes,
+        'Reviewed export exceeds HTTP packet bound');
+      SendResponse(ASocket, 200, 'application/json; charset=utf-8', LText);
+      Exit;
     end
     else if (ARequest.Method = 'GET') and
       (ARequest.Path = '/api/audio') then
@@ -734,7 +747,7 @@ begin
       LHash := LBody.Strings['source_sha256'];
       LTrack := ReadCatalogTrack(ACatalogRoot, LHash);
       try
-        Need(LTrack.Strings['partition'] <> 'evaluation',
+        Need(CatalogProposalsUnlocked(ACatalogRoot, LTrack),
           'Evaluation proposals require blind review');
       finally
         LTrack.Free;

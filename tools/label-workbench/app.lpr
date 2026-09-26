@@ -84,6 +84,7 @@ type
     procedure LoadAudio; async;
     procedure SuggestBeats; async;
     procedure SaveReview; async;
+    procedure DownloadExport; async;
     function HandleConnect(AEvent: TJSMouseEvent): Boolean;
     function HandleImport(AEvent: TJSMouseEvent): Boolean;
     function HandleTrack(AEvent: TJSMouseEvent): Boolean;
@@ -96,6 +97,7 @@ type
     function HandleLoadAudio(AEvent: TJSMouseEvent): Boolean;
     function HandleSuggest(AEvent: TJSMouseEvent): Boolean;
     function HandleSave(AEvent: TJSMouseEvent): Boolean;
+    function HandleExport(AEvent: TJSMouseEvent): Boolean;
   public
     procedure Run;
   end;
@@ -295,7 +297,7 @@ var
   LIndex: Integer;
 begin
   ClearItems('proposal-list');
-  if FPartition = 'evaluation' then
+  if (FPartition = 'evaluation') and (FReviewRevision = 0) then
   begin
     Element('proposal-note').textContent :=
       'Blind evaluation: Pythian suggestions are hidden. Commit your own label first.';
@@ -655,8 +657,10 @@ begin
     FReviewRevision := Trunc(NumberField(LData, 'review_revision'));
     Element('revision-label').textContent :=
       'Revision ' + IntToStr(FReviewRevision);
+    TJSHTMLButtonElement(Element('suggest-button')).disabled :=
+      (LPartition = 'evaluation') and (FReviewRevision = 0);
     FProposals := nil;
-    if LPartition <> 'evaluation' then
+    if (LPartition <> 'evaluation') or (FReviewRevision > 0) then
     begin
       LPath := '/api/proposals?hash=' + LHash +
         '&start=' + IntToStr(LStart) +
@@ -753,7 +757,8 @@ var
   LBody: TJSObject;
   LResponse: TJSResponse;
 begin
-  if (FSourceHash = '') or (FPartition = 'evaluation') then
+  if (FSourceHash = '') or
+    ((FPartition = 'evaluation') and (FReviewRevision = 0)) then
   begin
     Exit;
   end;
@@ -857,6 +862,47 @@ begin
     on LError: Exception do
     begin
       Status('Review failed: ' + LError.Message, True);
+    end;
+  end;
+end;
+
+procedure TWorkbench.DownloadExport; async;
+var
+  LResponse: TJSResponse;
+  LBlob: TJSBlob;
+  LLink: TJSHTMLAnchorElement;
+  LDownloadUrl: String;
+begin
+  try
+    Element('export-state').textContent :=
+      'Verifying source hashes and building reviewed packet…';
+    LResponse := await(TJSResponse, FetchApi('/api/export', 'GET', ''));
+    if LResponse.status <> 200 then
+    begin
+      raise Exception.Create('Export HTTP ' + IntToStr(LResponse.status));
+    end;
+    LBlob := await(TJSBlob, TWorkbenchResponse(LResponse).blobRequest());
+    LDownloadUrl := TJSURL.createObjectURL(LBlob);
+    LLink := TJSHTMLAnchorElement(document.createElement('a'));
+    LLink.href := LDownloadUrl;
+    LLink.download := 'pythian-reviewed-catalog-v1.json';
+    document.body.appendChild(LLink);
+    LLink.click;
+    LLink.remove;
+    window.setTimeout(
+      procedure()
+      begin
+        TJSURL.revokeObjectURL(LDownloadUrl);
+      end, 30000);
+    Element('export-state').textContent :=
+      'Download requested: ' + IntToStr(LBlob.size) +
+      ' bytes of reviewed catalog JSON.';
+  except
+    on LError: Exception do
+    begin
+      Element('export-state').textContent :=
+        'Export failed: ' + LError.Message;
+      Status('Reviewed export failed: ' + LError.Message, True);
     end;
   end;
 end;
@@ -1015,6 +1061,12 @@ begin
   Result := False;
 end;
 
+function TWorkbench.HandleExport(AEvent: TJSMouseEvent): Boolean;
+begin
+  DownloadExport;
+  Result := False;
+end;
+
 procedure TWorkbench.Run;
 begin
   FCanvas := TJSHTMLCanvasElement(Element('waveform'));
@@ -1028,6 +1080,7 @@ begin
   TJSHTMLButtonElement(Element('load-audio-button')).onclick := @HandleLoadAudio;
   TJSHTMLButtonElement(Element('suggest-button')).onclick := @HandleSuggest;
   TJSHTMLButtonElement(Element('save-label-button')).onclick := @HandleSave;
+  TJSHTMLButtonElement(Element('export-button')).onclick := @HandleExport;
   DrawWaveform;
   Start;
 end;
