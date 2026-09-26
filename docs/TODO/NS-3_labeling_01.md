@@ -195,3 +195,17 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
   The current 64-MiB single-file bound, destination-catalog replay, actual
   Pascal training/evaluation consumption and HTTP/browser export remain open.
   No criterion or task credit is claimed yet.
+- The first **label-contract acceptance criterion is now evidenced** without
+  acoustic claims. An ignored `operator-test` source packet committed beat,
+  downbeat, note/pitch, presence audible/rest/unknown, part/source roles,
+  phrase/section, style preference and a versioned `ext.test` label. Each event
+  retained original source SHA-256, sample rate, source-frame span, group,
+  rights, reviewer, status and revision. Publishing eight native beat
+  suggestions left review revision at five and kept their status `unreviewed`;
+  an explicit later rejection of one stored proposal reached revision 15.
+  A checked Win64 export read by Win32 contained 12 selected approved labels,
+  one separate unknown and 15 history events, with neither uncertain nor
+  rejected status in the selected set. Its SHA-256 is
+  `0fdcfd3ce1009f6402ae6bcbb0b44f2716056049b5fef7551648ae4203217722`.
+  This closes the contract criterion only. All other acceptance criteria and
+  task credit remain open; these synthetic judgments are not training truth.

@@ -13935,3 +13935,24 @@ the single-file bound needs a scale check, destination-catalog replay and real
 training/evaluation consumption remain, and the HTTP/browser export path and
 blind review are absent. No completion credit changes; overall **70.20%**,
 **38 open / 27 DONE**, listening queue **0/20**.
+
+## Label contract criterion closed — 2026-09-25
+
+After the service and first export batches, the next focused check exercised
+every declared label family on an ignored `operator-test` catalog. Beat,
+downbeat, note/pitch, audible/rest/unknown presence, part/source roles,
+phrase/section, style preference and versioned extension all committed with
+source-bound frame spans and explicit reviewer/status/revision. Generating eight
+Pythian beat candidates left the review revision unchanged at five and the
+packet `unreviewed`. One candidate was rejected only through a later explicit
+review edit. The Win64 export read by Win32 retained 15 history events, 12
+selected approvals and one separate unknown; rejected and uncertain decisions
+were absent from the selected set. Packet SHA-256:
+`0fdcfd3ce1009f6402ae6bcbb0b44f2716056049b5fef7551648ae4203217722`.
+
+This is evidence for the first **label-contract criterion** of
+[NS-3_labeling_01](TODO/NS-3_labeling_01.md), not a validated musical label.
+The native catalog task remains open and earns no credit. Next, expose prepared
+inbox and stored proposal reads through the authenticated service, then add
+blind review and a browser path that can use the reviewed export. Overall
+**70.20%**, **38 open / 27 DONE**, pending listening **0/20**.
