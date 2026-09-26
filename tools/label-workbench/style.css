@@ -88,6 +88,8 @@ canvas { display: block; width: 100%; height: auto; touch-action: pan-y; }
 .form-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .8rem; }
 .edit-actions { margin-top: 1rem; }
 .edit-actions span { color: #9db0b9; font-size: .8rem; }
+.packet-import { margin-top: 1rem; align-items: end; }
+.packet-import label { flex: 1 1 15rem; }
 [hidden] { display: none !important; }
 @media (max-width: 1050px) { .form-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 850px) { main { grid-template-columns: 1fr; } .source-column { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

@@ -106,3 +106,14 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
   This is a source-level blind gate; per-reviewer blind sessions, direct
   timeline editing, cue audition, undo/redo, replay import and physical phone
   checks remain open. No completion credit.
+- The page now accepts a reviewed JSON file and uploads it to the authenticated
+  Pascal replay route. A real Edge browser selected the 21,224-byte fixture,
+  submitted it on the LAN-bound page at `192.168.12.109:18097` and displayed
+  `Packet duplicate: 2 tracks.`; the native HTTP
+  route separately restored that packet into a fresh imported catalog. The
+  control and result were inspected at 1280px desktop and 390px emulated mobile
+  widths in ignored build screenshots. The new matching native/browser preview
+  is bound to `192.168.12.109:18097` with an ignored test catalog; the older
+  port 18096 remains an older native host. No physical phone or durable-root
+  review is inferred. Timeline editing, cue audition, undo/redo and final
+  operator QA remain open; no completion credit.

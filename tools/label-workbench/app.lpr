@@ -85,6 +85,7 @@ type
     procedure SuggestBeats; async;
     procedure SaveReview; async;
     procedure DownloadExport; async;
+    procedure UploadReviewed; async;
     function HandleConnect(AEvent: TJSMouseEvent): Boolean;
     function HandleImport(AEvent: TJSMouseEvent): Boolean;
     function HandleTrack(AEvent: TJSMouseEvent): Boolean;
@@ -98,6 +99,7 @@ type
     function HandleSuggest(AEvent: TJSMouseEvent): Boolean;
     function HandleSave(AEvent: TJSMouseEvent): Boolean;
     function HandleExport(AEvent: TJSMouseEvent): Boolean;
+    function HandleUploadReviewed(AEvent: TJSMouseEvent): Boolean;
   public
     procedure Run;
   end;
@@ -907,6 +909,49 @@ begin
   end;
 end;
 
+procedure TWorkbench.UploadReviewed; async;
+var
+  LFiles: TJSHTMLFileList;
+  LFile: TJSHTMLFile;
+  LText: String;
+  LResponse: TJSResponse;
+  LReport: TJSObject;
+begin
+  try
+    LFiles := Input('reviewed-packet').files;
+    if (LFiles = nil) or (LFiles.length <> 1) then
+    begin
+      raise Exception.Create('Choose one reviewed JSON packet.');
+    end;
+    LFile := LFiles[0];
+    if (LFile.size < 1) or (LFile.size > 67108864) then
+    begin
+      raise Exception.Create('Packet must be between 1 byte and 64 MiB.');
+    end;
+    Element('import-reviewed-state').textContent :=
+      'Reading and validating reviewed packet…';
+    LText := await(String, LFile.text());
+    LResponse := await(TJSResponse,
+      FetchApi('/api/import-reviewed', 'POST', LText));
+    if LResponse.status <> 200 then
+    begin
+      raise Exception.Create('Replay HTTP ' + IntToStr(LResponse.status));
+    end;
+    LReport := await(TJSObject, LResponse.json());
+    Element('import-reviewed-state').textContent :=
+      'Packet ' + TextField(LReport, 'status') + ': ' +
+      IntToStr(Trunc(NumberField(LReport, 'track_count'))) + ' tracks.';
+    RefreshLists;
+  except
+    on LError: Exception do
+    begin
+      Element('import-reviewed-state').textContent :=
+        'Replay failed: ' + LError.Message;
+      Status('Reviewed packet replay failed: ' + LError.Message, True);
+    end;
+  end;
+end;
+
 function TWorkbench.HandleConnect(AEvent: TJSMouseEvent): Boolean;
 begin
   Connect;
@@ -1067,6 +1112,12 @@ begin
   Result := False;
 end;
 
+function TWorkbench.HandleUploadReviewed(AEvent: TJSMouseEvent): Boolean;
+begin
+  UploadReviewed;
+  Result := False;
+end;
+
 procedure TWorkbench.Run;
 begin
   FCanvas := TJSHTMLCanvasElement(Element('waveform'));
@@ -1081,6 +1132,8 @@ begin
   TJSHTMLButtonElement(Element('suggest-button')).onclick := @HandleSuggest;
   TJSHTMLButtonElement(Element('save-label-button')).onclick := @HandleSave;
   TJSHTMLButtonElement(Element('export-button')).onclick := @HandleExport;
+  TJSHTMLButtonElement(Element('import-reviewed-button')).onclick :=
+    @HandleUploadReviewed;
   DrawWaveform;
   Start;
 end;

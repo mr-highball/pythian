@@ -145,8 +145,14 @@ SOFTWARE.
           <div><p class="step">07 / EXPORT</p><h2>Reviewed packet</h2></div>
           <button id="export-button" type="button">Download JSON</button>
         </div>
-        <p class="panel-note">The packet includes reviewed decisions and source rights, not source audio or unreviewed suggestions. Keep the original WAVs available for replay.</p>
+        <p class="panel-note">The packet includes reviewed decisions, source rights and proposal evidence cited by reviews. Proposals remain unreviewed. Source audio is separate, so keep the original WAVs available for replay.</p>
         <p id="export-state" class="panel-note" role="status">No export requested in this page session.</p>
+        <div class="toolbar packet-import">
+          <label>Reviewed JSON packet<input id="reviewed-packet" type="file" accept=".json,application/json"></label>
+          <button id="import-reviewed-button" type="button">Re-import packet</button>
+        </div>
+        <p class="panel-note">Re-import requires this catalog to contain the same original WAVs and source records. A different existing review history is refused.</p>
+        <p id="import-reviewed-state" class="panel-note" role="status">No reviewed packet imported in this page session.</p>
       </section>
     </section>
   </main>

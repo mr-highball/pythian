@@ -171,6 +171,10 @@ the native CLI. Evaluation proposal reads and generation return 403 until the
 first approved or uncertain, proposal-free review commits for that source;
 the CLI follows the same rule. Proposal-linked first reviews are rejected. Do not
 train from source records, proposals or test review events alone.
+`POST /api/import-reviewed` accepts a JSON packet of at most 64 MiB after the
+same session-token check. It validates and replays into the configured catalog
+using the CLI's source-hash and conflict rules. The browser's file picker sends
+the packet; the original WAVs must already be imported into that catalog.
 
 For explicit LAN binding, set the secret in the server process before startup:
 
@@ -192,7 +196,7 @@ accepts only three named static assets and keeps catalog routes behind its
 session token. The bind address must belong to the host, such as its Wi-Fi
 address. A local firewall may need to allow the chosen port before a phone can
 connect. The current browser slice supports bounded source listening, basic
-review, source-level blind reveal and reviewed packet download. Full authoring
-controls and destination-catalog replay remain open in
+review, source-level blind reveal, reviewed packet download and re-import.
+Full authoring controls remain open in
 [NS-6_authoring_01](TODO/NS-6_authoring_01.md). Store a real operator catalog
 outside `build/`; the catalog under `build/label-catalog/` is a test fixture.

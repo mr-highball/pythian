@@ -49,17 +49,20 @@ uses
   pythian.tools.annotations.export,
   pythian.tools.annotations.media,
   pythian.tools.annotations.proposal,
+  pythian.tools.annotations.replay,
   pythian.tools.annotations.review
   {$IFDEF MSWINDOWS}, Windows{$ELSE}, BaseUnix{$ENDIF};
 
 const
   CMaximumHeaderBytes = 16384;
   CMaximumBodyBytes = 16384;
+  CMaximumReviewedImportBytes = 67108864;
   CMaximumTargetBytes = 2048;
   CMaximumJsonResponseBytes = 8388608;
   CMaximumReviewedExportBytes = 67108864;
   CMaximumStaticBytes = 8388608;
   CReceiveDeadlineMs = 5000;
+  CReviewedImportDeadlineMs = 60000;
   CSendDeadlineMs = 15000;
   CSocketBlockBytes = 65536;
 
@@ -373,7 +376,11 @@ begin
   begin
     if (LContentLengthText = '') or
       not TryStrToInt(LContentLengthText, AContentLength) or
-      (AContentLength < 1) or (AContentLength > CMaximumBodyBytes) then
+      (AContentLength < 1) or
+      ((ARequest.Path = '/api/import-reviewed') and
+        (AContentLength > CMaximumReviewedImportBytes)) or
+      ((ARequest.Path <> '/api/import-reviewed') and
+        (AContentLength > CMaximumBodyBytes)) then
     begin
       Result := 413;
       Exit;
@@ -396,7 +403,7 @@ begin
 end;
 
 function ReadRequest(const ASocket, APort: Integer;
-  const ABindAddress: String;
+  const ABindAddress, AToken: String;
   out ARequest: TCatalogHttpRequest): Integer;
 var
   LRaw: String;
@@ -406,6 +413,8 @@ var
   LSeparator: Integer;
   LContentLength: Integer;
   LBodyStart: Integer;
+  LBodyBytes: Integer;
+  LDeadline: Integer;
   LStart: QWord;
 begin
   LRaw := '';
@@ -424,7 +433,8 @@ begin
     begin
       Exit(400);
     end;
-    if LReceived > CMaximumHeaderBytes + CMaximumBodyBytes - Length(LRaw) then
+    if LReceived > CMaximumHeaderBytes +
+      CMaximumReviewedImportBytes - Length(LRaw) then
     begin
       Exit(413);
     end;
@@ -447,20 +457,31 @@ begin
   begin
     Exit;
   end;
-  LBodyStart := LSeparator + 4;
-  ARequest.Body := Copy(LRaw, LBodyStart, MaxInt);
-  if Length(ARequest.Body) > LContentLength then
+  if (ARequest.Path = '/api/import-reviewed') and
+    (ARequest.Token <> AToken) then
   begin
-    SetLength(ARequest.Body, LContentLength);
+    Exit(403);
   end;
-  while Length(ARequest.Body) < LContentLength do
+  LBodyStart := LSeparator + 4;
+  LBodyBytes := Min(Length(LRaw) - LBodyStart + 1, LContentLength);
+  SetLength(ARequest.Body, LContentLength);
+  if LBodyBytes > 0 then
   begin
-    if GetTickCount64 - LStart >= CReceiveDeadlineMs then
+    Move(LRaw[LBodyStart], ARequest.Body[1], LBodyBytes);
+  end;
+  LDeadline := CReceiveDeadlineMs;
+  if ARequest.Path = '/api/import-reviewed' then
+  begin
+    LDeadline := CReviewedImportDeadlineMs;
+  end;
+  while LBodyBytes < LContentLength do
+  begin
+    if GetTickCount64 - LStart >= LDeadline then
     begin
       Exit(408);
     end;
     LReceived := fpRecv(ASocket, @LBuffer[0],
-      Min(SizeOf(LBuffer), LContentLength - Length(ARequest.Body)), 0);
+      Min(SizeOf(LBuffer), LContentLength - LBodyBytes), 0);
     if LReceived < 0 then
     begin
       Continue;
@@ -469,9 +490,8 @@ begin
     begin
       Exit(400);
     end;
-    SetLength(ARequest.Body, Length(ARequest.Body) + LReceived);
-    Move(LBuffer[0], ARequest.Body[Length(ARequest.Body) - LReceived + 1],
-      LReceived);
+    Move(LBuffer[0], ARequest.Body[LBodyBytes + 1], LReceived);
+    Inc(LBodyBytes, LReceived);
   end;
 end;
 
@@ -735,6 +755,11 @@ begin
       LReport := ImportLabelInbox(AInboxRoot, ACatalogRoot);
     end
     else if (ARequest.Method = 'POST') and
+      (ARequest.Path = '/api/import-reviewed') then
+    begin
+      LReport := ReplayReviewedCatalogText(ACatalogRoot, ARequest.Body);
+    end
+    else if (ARequest.Method = 'POST') and
       (ARequest.Path = '/api/review') then
     begin
       LBody := ParseBodyObject(ARequest.Body);
@@ -776,7 +801,7 @@ var
   LStatus: Integer;
 begin
   SetClientTimeouts(ASocket);
-  LStatus := ReadRequest(ASocket, APort, ABindAddress, LRequest);
+  LStatus := ReadRequest(ASocket, APort, ABindAddress, AToken, LRequest);
   if LStatus <> 200 then
   begin
     SendResponse(ASocket, LStatus, 'text/plain; charset=utf-8',

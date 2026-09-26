@@ -36,6 +36,8 @@ uses
   duplicate; a differing review tree is never overwritten. }
 function ReplayReviewedCatalogPacket(const ACatalogRoot,
   APacketPath: String): TJSONObject;
+function ReplayReviewedCatalogText(const ACatalogRoot,
+  APacketText: String): TJSONObject;
 
 implementation
 
@@ -261,10 +263,38 @@ begin
   RemoveDir(AProposalStage);
 end;
 
+function ReplayReviewedCatalogData(const ACatalogRoot: String;
+  const APacket: TJSONObject): TJSONObject; forward;
+
 function ReplayReviewedCatalogPacket(const ACatalogRoot,
   APacketPath: String): TJSONObject;
 var
   LPacket: TJSONObject;
+begin
+  LPacket := ReadReviewedCatalogPacket(APacketPath);
+  try
+    Result := ReplayReviewedCatalogData(ACatalogRoot, LPacket);
+  finally
+    LPacket.Free;
+  end;
+end;
+
+function ReplayReviewedCatalogText(const ACatalogRoot,
+  APacketText: String): TJSONObject;
+var
+  LPacket: TJSONObject;
+begin
+  LPacket := ReadReviewedCatalogPacketText(APacketText);
+  try
+    Result := ReplayReviewedCatalogData(ACatalogRoot, LPacket);
+  finally
+    LPacket.Free;
+  end;
+end;
+
+function ReplayReviewedCatalogData(const ACatalogRoot: String;
+  const APacket: TJSONObject): TJSONObject;
+var
   LRebuilt: TJSONObject;
   LCatalog: String;
   LReviews: String;
@@ -276,86 +306,81 @@ var
   LPublishedProposals: Boolean;
   LStatus: String;
 begin
-  LPacket := ReadReviewedCatalogPacket(APacketPath);
-  try
-    VerifyDestination(ACatalogRoot, LPacket);
-    LCatalog := IncludeTrailingPathDelimiter(ExpandFileName(ACatalogRoot));
-    LReviews := LCatalog + 'reviews';
-    LProposals := LCatalog + 'proposals';
-    if DirectoryExists(LReviews) then
-    begin
-      LRebuilt := BuildReviewedCatalogPacket(ACatalogRoot);
-      try
-        Need(LRebuilt.AsJSON = LPacket.AsJSON,
-          'Replay destination review history differs');
-      finally
-        LRebuilt.Free;
-      end;
-      LStatus := 'duplicate';
-    end
-    else
-    begin
-      Need(not FileExists(LReviews) and not FileExists(LProposals),
-        'Replay destination evidence path is a file');
-      LNeedProposals := not DirectoryExists(LProposals);
-      if not LNeedProposals then
-      begin
-        VerifyExistingProposals(ACatalogRoot, LPacket);
-      end;
-      Need(CreateGUID(LGuid) = 0,
-        'Could not create replay stage identity');
-      LReviewStage := LCatalog + 'reviews.' +
-        GUIDToString(LGuid) + '.partial';
-      LProposalStage := LCatalog + 'proposals.' +
-        GUIDToString(LGuid) + '.partial';
-      Need(not DirectoryExists(LReviewStage) and
-        not DirectoryExists(LProposalStage),
-        'Replay stage path already exists');
-      LPublishedProposals := False;
-      try
-        try
-          WriteStage(LPacket, LProposalStage, LReviewStage, LNeedProposals);
-          if LNeedProposals then
-          begin
-            Need(not DirectoryExists(LProposals) and
-              RenameFile(LProposalStage, LProposals),
-              'Could not publish replay proposal evidence');
-            LPublishedProposals := True;
-          end;
-          Need(not DirectoryExists(LReviews) and
-            RenameFile(LReviewStage, LReviews),
-            'Could not publish replay review history');
-        except
-          on LError: Exception do
-          begin
-            if LPublishedProposals and not DirectoryExists(LReviews) and
-              not RenameFile(LProposals, LProposalStage) then
-            begin
-              raise EAudio.Create(LError.Message +
-                '; proposal rollback failed');
-            end;
-            raise;
-          end;
-        end;
-      finally
-        CleanupStage(LPacket, LProposalStage, LReviewStage);
-      end;
-      LRebuilt := BuildReviewedCatalogPacket(ACatalogRoot);
-      try
-        Need(LRebuilt.AsJSON = LPacket.AsJSON,
-          'Replayed reviewed catalog differs from packet');
-      finally
-        LRebuilt.Free;
-      end;
-      LStatus := 'imported';
+  VerifyDestination(ACatalogRoot, APacket);
+  LCatalog := IncludeTrailingPathDelimiter(ExpandFileName(ACatalogRoot));
+  LReviews := LCatalog + 'reviews';
+  LProposals := LCatalog + 'proposals';
+  if DirectoryExists(LReviews) then
+  begin
+    LRebuilt := BuildReviewedCatalogPacket(ACatalogRoot);
+    try
+      Need(LRebuilt.AsJSON = APacket.AsJSON,
+        'Replay destination review history differs');
+    finally
+      LRebuilt.Free;
     end;
-    Result := TJSONObject.Create;
-    Result.Add('version', 1);
-    Result.Add('status', LStatus);
-    Result.Add('track_count', LPacket.Integers['track_count']);
-  finally
-    LPacket.Free;
+    LStatus := 'duplicate';
+  end
+  else
+  begin
+    Need(not FileExists(LReviews) and not FileExists(LProposals),
+      'Replay destination evidence path is a file');
+    LNeedProposals := not DirectoryExists(LProposals);
+    if not LNeedProposals then
+    begin
+      VerifyExistingProposals(ACatalogRoot, APacket);
+    end;
+    Need(CreateGUID(LGuid) = 0,
+      'Could not create replay stage identity');
+    LReviewStage := LCatalog + 'reviews.' +
+      GUIDToString(LGuid) + '.partial';
+    LProposalStage := LCatalog + 'proposals.' +
+      GUIDToString(LGuid) + '.partial';
+    Need(not DirectoryExists(LReviewStage) and
+      not DirectoryExists(LProposalStage),
+      'Replay stage path already exists');
+    LPublishedProposals := False;
+    try
+      try
+        WriteStage(APacket, LProposalStage, LReviewStage, LNeedProposals);
+        if LNeedProposals then
+        begin
+          Need(not DirectoryExists(LProposals) and
+            RenameFile(LProposalStage, LProposals),
+            'Could not publish replay proposal evidence');
+          LPublishedProposals := True;
+        end;
+        Need(not DirectoryExists(LReviews) and
+          RenameFile(LReviewStage, LReviews),
+          'Could not publish replay review history');
+      except
+        on LError: Exception do
+        begin
+          if LPublishedProposals and not DirectoryExists(LReviews) and
+            not RenameFile(LProposals, LProposalStage) then
+          begin
+            raise EAudio.Create(LError.Message +
+              '; proposal rollback failed');
+          end;
+          raise;
+        end;
+      end;
+    finally
+      CleanupStage(APacket, LProposalStage, LReviewStage);
+    end;
+    LRebuilt := BuildReviewedCatalogPacket(ACatalogRoot);
+    try
+      Need(LRebuilt.AsJSON = APacket.AsJSON,
+        'Replayed reviewed catalog differs from packet');
+    finally
+      LRebuilt.Free;
+    end;
+    LStatus := 'imported';
   end;
+  Result := TJSONObject.Create;
+  Result.Add('version', 1);
+  Result.Add('status', LStatus);
+  Result.Add('track_count', APacket.Integers['track_count']);
 end;
 
 end.

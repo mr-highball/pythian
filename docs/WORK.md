@@ -14079,3 +14079,28 @@ from a separate phone or an inbound firewall rule. Automatic approval review
 rejected a background launch attempt with "blocked by policy"; the existing
 preview process was already listening on that address, so no new background
 process was needed.
+
+## Browser reviewed-packet re-import — 2026-09-25
+
+The native host now accepts an authenticated, at-most-64-MiB JSON upload at
+`POST /api/import-reviewed` and calls the same Pascal validator and replay path
+as the CLI. Ordinary edits retain their 16-KiB body bound; the larger route
+checks the session token before allocating its body. A checked stable FPC 3.2.2
+Win64 host restored the 21,224-byte two-track fixture into a fresh imported
+catalog, and its HTTP export matched the packet bytes. Malformed `{}` returned
+422; raw unauthorized headers returned 403, and a declared 64-MiB-plus-one
+body returned 413. Checked stable Win32 compilation and duplicate replay also
+passed.
+
+The pas2js workbench now has a reviewed-packet file picker and upload action.
+A real Edge page on `192.168.12.109:18097` logged in with the LAN access key,
+selected the fixture, posted it and showed `Packet duplicate: 2 tracks.`
+against an already replayed catalog. Desktop
+1280px and emulated mobile 390px screenshots are under ignored
+`build/label-workbench/`. The matching new LAN preview is bound to
+`192.168.12.109:18097` with an ignored artificial-review catalog. The older
+port 18096 uses an older native binary; a separate physical phone, firewall
+traversal and durable operator catalog remain unverified. Browser upload of a
+fresh packet was not exercised; that import was checked at the HTTP boundary.
+No task moved to DONE; overall **70.20%**, **38 open / 27 DONE**, listening
+queue **0/20**.

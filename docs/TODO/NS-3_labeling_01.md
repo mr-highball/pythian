@@ -266,3 +266,13 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
   destination before writes. This establishes packet replay mechanics, not
   acoustic truth or training-tool consumption. No additional criterion or
   task credit is claimed.
+- The authenticated HTTP host now accepts a reviewed packet upload of at most
+  64 MiB and calls the same Pascal validator and replay path as the CLI. The
+  parser keeps ordinary JSON edits at 16 KiB and checks the session token
+  before allocating the larger upload body. A checked stable Win64 host
+  restored the 21,224-byte two-track fixture into a fresh catalog, then its
+  HTTP export matched the input bytes. Malformed `{}` returned 422; raw
+  unauthenticated headers returned 403 and an over-64-MiB length returned 413.
+  Checked stable Win32 compilation and duplicate replay also passed. The
+  uploaded reviews remain artificial test events; actual training/evaluation
+  consumption and other task criteria remain open, with no new credit.

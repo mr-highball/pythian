@@ -36,6 +36,7 @@ uses
 function BuildReviewedCatalogPacket(const ACatalogRoot: String): TJSONObject;
 function ExportReviewedCatalog(const ACatalogRoot, AOutputPath: String): TJSONObject;
 function ReadReviewedCatalogPacket(const APath: String): TJSONObject;
+function ReadReviewedCatalogPacketText(const AText: String): TJSONObject;
 function InspectReviewedCatalogPacket(const APath: String): TJSONObject;
 
 implementation
@@ -674,7 +675,6 @@ function ReadReviewedCatalogPacket(const APath: String): TJSONObject;
 var
   LInput: TFileStream;
   LText: String;
-  LData: TJSONData;
 begin
   LInput := TFileStream.Create(APath, fmOpenRead or fmShareDenyWrite);
   try
@@ -685,7 +685,23 @@ begin
   finally
     LInput.Free;
   end;
-  LData := GetJSON(LText);
+  Result := ReadReviewedCatalogPacketText(LText);
+end;
+
+function ReadReviewedCatalogPacketText(const AText: String): TJSONObject;
+var
+  LData: TJSONData;
+begin
+  Need((Length(AText) > 0) and (Length(AText) <= CMaximumPacketBytes),
+    'Reviewed catalog packet exceeds size bound');
+  try
+    LData := GetJSON(AText);
+  except
+    on LError: Exception do
+    begin
+      raise EAudio.Create('Invalid reviewed catalog JSON: ' + LError.Message);
+    end;
+  end;
   if LData.JSONType <> jtObject then
   begin
     LData.Free;
@@ -695,8 +711,12 @@ begin
   try
     ValidatePacket(Result);
   except
-    Result.Free;
-    raise;
+    on LError: Exception do
+    begin
+      Result.Free;
+      raise EAudio.Create('Invalid reviewed catalog packet: ' +
+        LError.Message);
+    end;
   end;
 end;
 
