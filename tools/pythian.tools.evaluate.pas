@@ -679,6 +679,7 @@ var
   LMethod: String;
   LPurpose: String;
   LText: String;
+  LVocabulary: TJSONArray;
   I: Integer;
 begin
   Fields(AAnnotation, 'format,output,input_class,scope_id,purpose,reference_method,' +
@@ -705,7 +706,13 @@ begin
   LInput := '';
   LMetric := '';
   LUnit := '';
-  if LOutput = 'notes' then
+  if LOutput = 'presence' then
+  begin
+    LInput := 'recorded-sound';
+    LMetric := 'label';
+    LUnit := 'audible-presence';
+  end
+  else if LOutput = 'notes' then
   begin
     LInput := 'attributed-voice';
     LMetric := 'notes';
@@ -804,6 +811,14 @@ begin
   Require((TextField(AAnnotation, 'input_class') = LInput) and
     (TextField(APolicy, 'metric') = LMetric) and (TextField(APolicy, 'unit') = LUnit),
     'Annotation input/output does not match the scoring metric and unit');
+  if LOutput = 'presence' then
+  begin
+    LVocabulary := TJSONArray(Item(APolicy, 'vocabulary', jtArray));
+    Require((LVocabulary.Count = 1) and
+      (LVocabulary.Items[0].JSONType = jtString) and
+      (LVocabulary.Strings[0] = 'audible'),
+      'Presence comparison requires audible vocabulary');
+  end;
 end;
 
 function Cells(const AArray: TJSONArray; const AMetric: String;
@@ -1755,6 +1770,14 @@ begin
       end;
       LCells := EvaluateCells(LReferenceCells, LPredictionCells,
         ABinding.FirstFrame, ABinding.EndFrame, LCellMetric, LScalarTolerance);
+      if (TextField(APolicy, 'unit') = 'audible-presence') and
+        ABinding.ReferenceComplete then
+      begin
+        Require((LCells.ReferenceUnknown = 0) and
+          (LCells.ReferenceAmbiguous = 0) and
+          (LCells.ReferenceUnsupported = 0),
+          'Complete presence reference has unresolved centers');
+      end;
       Result.Add('cell_count', LCells.CellCount);
       Result.Add('reference_active', LCells.ReferenceActive);
       Result.Add('reference_rest', LCells.ReferenceRest);

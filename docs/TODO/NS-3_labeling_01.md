@@ -79,6 +79,14 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
 
 **Dev Notes:**
 
+- 2026-09-25 a Pascal evaluation consumer now builds a source-bound presence
+  reference from the reviewed packet and original WAV. It retains unknown and
+  ambiguous centers, refuses proposal-linked presence for independent reference,
+  and supports the evaluator's exact `audible-presence` vocabulary. Checked
+  stable Win32/Win64 builds and complete/partial reference gates passed. An
+  artificial `operator-test` packet produced byte-identical references on both
+  targets; this does not qualify acoustic truth, a real operator review or the
+  broader training consumer. No completion credit is claimed.
 - 2026-09-25 user-directed gap: publisher labels have not supplied a defensible
   generic same-recording instrument rest at the required exact windows. This
   catalog creates a controlled path for human-authored evidence and reusable

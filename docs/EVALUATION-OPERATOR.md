@@ -97,6 +97,7 @@ verify the annotator's truthfulness. The ancestry checks still apply.
 | `groove-offset` | `attributed-part` | `scalar` | `quarter-note-offset` |
 | `sound-spectrum` | `recorded-sound` | `scalar` | `normalized-band-energy` |
 | `sound-envelope` | `recorded-sound` | `scalar` | `normalized-amplitude` |
+| `presence` | `recorded-sound` | `label` | `audible-presence` |
 
 The operator rejects mismatched input/metric/unit combinations. Normalized scalar
 values must lie in [0,1]; quarter durations must be positive. Signed groove offsets
@@ -152,6 +153,12 @@ and, only for state `value`, a numeric `value`. Other states are `rest`, `unknow
 scalars use the policy's declared unit. Reference and prediction cells must have
 identical centers. Dropping an unavailable prediction rejects rather than hiding
 it from coverage. Shared scoring preserves rest errors and uncertainty counts.
+For `presence`, the vocabulary is exactly `["audible"]` (index 0). A reviewed
+`rest` is a cell state; unreviewed spans and explicit unknown reviews remain
+`unknown`. Overlapping reviews become `ambiguous`. A presence case that declares
+`reference_complete=true` must have no unknown, ambiguous or unsupported
+reference center. Acoustic correctness and independence still require source
+and reviewer evidence beyond the packet's schema.
 
 ## Scoring policy and verdicts
 

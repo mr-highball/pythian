@@ -27,13 +27,20 @@ program pythian_evaluate;
 {$H+}
 
 uses
-  SysUtils, pythian.tools.evaluate;
+  SysUtils, pythian.tools.evaluate,
+  pythian.tools.annotations.reference;
 
 begin
   try
     if (ParamCount = 4) and (ParamStr(1) = '--build-part-reference') then
     begin
       WriteLn(BuildPartReferenceFile(ParamStr(2), ParamStr(3), ParamStr(4)));
+    end
+    else if (ParamCount = 4) and
+      (ParamStr(1) = '--build-reviewed-presence-reference') then
+    begin
+      WriteLn(BuildReviewedPresenceReference(ParamStr(2), ParamStr(3),
+        ParamStr(4)));
     end
     else if ParamCount = 1 then
     begin
@@ -42,7 +49,9 @@ begin
     else
     begin
       raise Exception.Create('Usage: pythian.evaluate CASE.json OR ' +
-        '--build-part-reference DRAFT.json SHA256 SOURCE.wav (JSON on stdout)');
+        '--build-part-reference DRAFT.json SHA256 SOURCE.wav OR ' +
+        '--build-reviewed-presence-reference PLAN.json PACKET.json SOURCE.wav ' +
+        '(JSON on stdout)');
     end;
   except
     on E: Exception do

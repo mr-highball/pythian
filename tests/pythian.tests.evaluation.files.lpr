@@ -1368,6 +1368,81 @@ begin
   end;
 end;
 
+procedure CheckPresenceCases(const ADirectory: String);
+var
+  LCase: TJSONObject;
+  LAnnotation: TJSONObject;
+  LPolicy: TJSONObject;
+  LReference: TJSONObject;
+  LPrediction: TJSONObject;
+  LReport: TJSONObject;
+  LRejected: Boolean;
+begin
+  LCase := Fixture(ADirectory, 'label');
+  LAnnotation := Annotation('presence', 'recorded-sound');
+  LPolicy := nil;
+  LReference := nil;
+  LPrediction := nil;
+  try
+    LPolicy := ReadDocument(ADirectory + 'policy.json');
+    LPolicy.Strings['unit'] := 'audible-presence';
+    LPolicy.Delete('vocabulary');
+    LPolicy.Add('vocabulary', GetJSON('["audible"]'));
+    LReference := ReadDocument(ADirectory + 'reference.json');
+    LPrediction := ReadDocument(ADirectory + 'prediction.json');
+    LReference.Delete('observations');
+    LReference.Add('observations', GetJSON(
+      '[{"frame":100,"state":"value","value":0},' +
+      '{"frame":300,"state":"rest"},' +
+      '{"frame":900,"state":"value","value":0}]'));
+    LPrediction.Delete('observations');
+    LPrediction.Add('observations', LReference.Arrays['observations'].Clone);
+    PublishComparison(ADirectory, LCase, LAnnotation, LPolicy, LReference,
+      LPrediction);
+    LReport := TJSONObject(GetJSON(EvaluateCaseFile(ADirectory + 'case.json')));
+    try
+      Check(LReport.Booleans['metrics_pass'] and
+        (LReport.Objects['scores'].Integers['correct'] = 2) and
+        (LReport.Objects['scores'].Integers['rest_in_rest'] = 1),
+        'Complete reviewed presence comparison failed');
+    finally
+      LReport.Free;
+    end;
+    LReference.Arrays['observations'].Objects[2].Strings['state'] := 'unknown';
+    LReference.Arrays['observations'].Objects[2].Delete('value');
+    LCase.Objects['binding'].Booleans['reference_complete'] := False;
+    PublishComparison(ADirectory, LCase, LAnnotation, LPolicy, LReference,
+      LPrediction);
+    LReport := TJSONObject(GetJSON(EvaluateCaseFile(ADirectory + 'case.json')));
+    try
+      Check(not LReport.Booleans['metrics_pass'] and
+        (LReport.Objects['scores'].Integers['reference_unknown'] = 1),
+        'Partial reviewed presence lost unknown or gained acceptance');
+    finally
+      LReport.Free;
+    end;
+    LCase.Objects['binding'].Booleans['reference_complete'] := True;
+    Save(ADirectory, 'case.json', LCase.FormatJSON);
+    LRejected := False;
+    try
+      EvaluateCaseFile(ADirectory + 'case.json');
+    except
+      on E: Exception do
+      begin
+        LRejected := True;
+      end;
+    end;
+    Check(LRejected, 'Unknown presence center accepted as complete reference');
+  finally
+    LPrediction.Free;
+    LReference.Free;
+    LPolicy.Free;
+    LAnnotation.Free;
+    LCase.Free;
+  end;
+  WriteLn('PASS reviewed presence complete, unknown and declared-complete gate');
+end;
+
 procedure Run(const ADirectory: String);
 var
   LCase: TJSONObject;
@@ -1386,6 +1461,7 @@ begin
   CheckPartCases(ADirectory);
   CheckPartTimingCases(ADirectory);
   CheckAnnotationFailures(ADirectory);
+  CheckPresenceCases(ADirectory);
   for I := 0 to 3 do
   begin
     case I of

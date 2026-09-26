@@ -14104,3 +14104,34 @@ traversal and durable operator catalog remain unverified. Browser upload of a
 fresh packet was not exercised; that import was checked at the HTTP boundary.
 No task moved to DONE; overall **70.20%**, **38 open / 27 DONE**, listening
 queue **0/20**.
+
+## Reviewed presence evaluation consumer and LAN review — 2026-09-25
+
+The Win64 workbench process is listening on the host's Wi-Fi address
+`192.168.12.109:18097`, with an older loopback process separate from it.
+The LAN URL returned HTTP 200 for the page, while an unauthenticated catalog
+request returned 403; access-key login returned 200. This verifies the host
+LAN route, not access from a separate physical device. The running catalog is
+an ignored development fixture. No explicit inbound firewall rule for port
+18097 was found; a narrowly scoped Private/local-subnet rule attempt returned
+`Access is denied`, so an elevated shell or existing allow path is needed if
+phone access fails.
+
+`pythian.evaluate --build-reviewed-presence-reference` now accepts a versioned
+plan, reviewed catalog packet and matching original WAV. It validates packet
+and source identities, group/partition, frame clock and reviewer decisions,
+then emits an evaluator-compatible presence grid. Missing or explicitly unknown
+centers remain unknown; overlapping labels become ambiguous; proposal-linked
+presence cannot serve as an independent reference. The evaluator recognizes
+`presence` with the single `audible` vocabulary and rejects a declared-complete
+reference with unresolved centers.
+
+Checked FPC 3.2.2 Win32 and Win64 builds and focused file-bound evaluator
+checks passed, including complete, partial and falsely complete presence
+cases. The two native builders produced identical bytes from an artificial
+`operator-test` packet (SHA-256
+`934cd9a12576780d0b36bc4308496809939f4e1941f0115e5123e87d6d945df7`).
+A different packet was rejected against the plan hash. These mechanics do not
+establish real acoustic labels, independent review, or training consumption.
+No task moved to DONE; overall **70.20%**, **38 open / 27 DONE**,
+listening queue **0/20**.

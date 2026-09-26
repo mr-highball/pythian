@@ -139,8 +139,29 @@ to overwrite an existing packet and stages the bounded, at-most-64-MiB output.
 The report gives the packet SHA-256. `inspect-export` uses the Pascal packet
 reader to replay history, check group separation and selected-label meaning,
 and report counts. A consumer can call `ReadReviewedCatalogPacket` directly.
-This current single-file limit may require sharding for larger catalogs; actual
+This current single-file limit may require sharding for larger catalogs;
 training-tool integration remains open.
+
+The Pascal evaluation tool can turn a packet's independently reviewed presence
+spans into a source-bound evaluation reference:
+
+```powershell
+& 'build/<target>/pythian.evaluate.exe' --build-reviewed-presence-reference 'D:\path\to\plan.json' 'D:\path\to\reviewed.json' 'D:\path\to\original.wav' > 'D:\path\to\presence-reference.json'
+```
+
+The version-1 `pythian-reviewed-presence-reference-plan` contains
+`packet_sha256`, `source_sha256`, `source_group`, `partition`, `part`,
+`preparation_sha256`, `scoring_policy_sha256`, `annotation_policy_sha256`,
+`first_frame`, `end_frame`, `first_center` and `hop_frames`. The plan must bind
+the actual evaluator policy and preparation files used by its case. The builder
+checks packet/source bytes and group assignment, rejects proposal-linked
+presence as an independent reference, and emits a bounded center grid. Reviewed
+`audible` becomes vocabulary index zero, reviewed `rest` stays rest, missing or
+explicit unknown spans stay unknown, and overlapping labels are ambiguous.
+At least one center must have reviewed audible/rest evidence. A partial grid
+requires `reference_complete=false` in the evaluation case; the reference
+alone does not establish acoustic truth or independence. Keep the packet hash
+in the case's evidence ledger or equivalent provenance record.
 
 `import-reviewed` replays a validated packet into a catalog that already owns
 the exact original WAVs and source records. It verifies each WAV hash and all
