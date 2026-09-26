@@ -79,6 +79,13 @@ SOFTWARE.
           <span id="track-partition" class="partition">—</span>
         </div>
         <p id="track-meta" class="panel-note">Each unrelated recording has its own source-frame timeline.</p>
+        <div class="track-identity" aria-label="Selected source identity and review status">
+          <span class="identity-chip">Source SHA-256 <strong id="source-hash-short">—</strong></span>
+          <details id="source-hash-details" hidden><summary>Full SHA-256</summary><code id="source-hash-full"></code></details>
+          <span id="catalog-import-state" class="identity-chip">Catalog: —</span>
+          <span id="track-review-state" class="identity-chip">Review: —</span>
+          <span id="track-proposal-state" class="identity-chip" hidden></span>
+        </div>
         <div class="toolbar timeline-controls">
           <button id="previous-button" type="button">← Previous</button>
           <button id="zoom-in-button" type="button">Zoom in</button>
@@ -94,6 +101,18 @@ SOFTWARE.
         <div class="canvas-wrap">
           <canvas id="waveform" width="960" height="250" aria-label="Original WAV waveform with review and proposal lanes; tap waveform to seek loaded audio"></canvas>
         </div>
+        <section id="aligned-peer-panel" class="aligned-peer-panel" hidden aria-label="Aligned stems">
+          <div class="panel-head"><h3>Aligned stems</h3></div>
+          <p id="aligned-peer-note" class="panel-note"></p>
+          <div class="peer-overlay-legend" aria-label="Aligned overlay legend">
+            <span><i class="peer-approved"></i> Reviewed · approved</span>
+            <span><i class="peer-uncertain"></i> Reviewed · uncertain</span>
+            <span><i class="peer-rejected"></i> Reviewed · rejected</span>
+            <span><i class="peer-other"></i> Reviewed · other status</span>
+            <span><i class="peer-proposed"></i> Unreviewed Pythian beat ticks, color by candidate rank</span>
+          </div>
+          <div id="aligned-peer-lanes" class="aligned-peer-lanes"></div>
+        </section>
         <div class="legend">
           <span><i class="legend-wave"></i> Source waveform</span>
           <span><i class="legend-reviewed"></i> Reviewed labels</span>

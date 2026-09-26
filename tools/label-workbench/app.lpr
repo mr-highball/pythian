@@ -36,6 +36,7 @@ const
   RememberedAccessKey = 'pythian.catalog.access-key.v1';
   ReviewHistoryPrefix = 'pythian.catalog.review-history.v1.';
   MaximumLocalUndoEntries = 128;
+  MaximumAlignedPeerLanes = 8;
 
 type
   TLabelDragMode = (dmNone, dmCreate, dmMove, dmStart, dmEnd, dmDraft);
@@ -54,6 +55,7 @@ type
     FToken: String;
     FSourceHash: String;
     FSourceGroup: String;
+    FClockId: String;
     FPartition: String;
     FAudioUrl: String;
     FTracks: TJSArray;
@@ -130,6 +132,16 @@ type
     function FrameAtX(const AX: Double): Int64;
     procedure UpdateDrag(const AFrame: Int64);
     procedure UpdateWindowLabel;
+    procedure UpdateTrackIdentity;
+    procedure UpdateTrackProposalIdentity;
+    function SharesSourceClock(const ATrack: TJSObject): Boolean;
+    procedure RenderAlignedPeerScaffold;
+    procedure LoadAlignedPeerWaveforms(const AEpoch: Integer); async;
+    procedure DrawAlignedPeerWaveform(const ACanvas: TJSHTMLCanvasElement;
+      const ABins: TJSArray; const AAvailableRatio: Double);
+    procedure DrawAlignedPeerOverlays(const ACanvas: TJSHTMLCanvasElement;
+      const ALabels: TJSArray; const AProposals: TJSObject;
+      const AStart, AEnd, AVisibleEnd, ASourceFrames: Int64);
     procedure Start; async;
     procedure Connect; async;
     procedure ConnectWithKey(const AKey: String; const ARemember: Boolean); async;
@@ -147,6 +159,7 @@ type
     function HandleForgetDevice(AEvent: TJSMouseEvent): Boolean;
     function HandleImport(AEvent: TJSMouseEvent): Boolean;
     function HandleTrack(AEvent: TJSMouseEvent): Boolean;
+    function HandleAlignedPeer(AEvent: TJSMouseEvent): Boolean;
     function HandleLabel(AEvent: TJSMouseEvent): Boolean;
     function HandleProposal(AEvent: TJSMouseEvent): Boolean;
     function HandlePrevious(AEvent: TJSMouseEvent): Boolean;
@@ -899,8 +912,10 @@ var
   LRows: TJSArray;
   LRow: TJSObject;
   LIndex: Integer;
+  LAnalyzerVersion: String;
 begin
   ClearItems('proposal-list');
+  UpdateTrackProposalIdentity;
   if FSelectedProposal < 0 then
   begin
     Element('load-cue-button').textContent := 'Load selected Pythian cue';
@@ -919,9 +934,12 @@ begin
       'No saved proposals for this window. Suggestions remain unreviewed.';
     Exit;
   end;
+  LAnalyzerVersion := IntToStr(Trunc(NumberField(FProposals,
+    'analyzer_version')));
   Element('proposal-note').textContent :=
     'Pythian beat-grid hypotheses · ' +
-    TextField(FProposals, 'analyzer') + ' · unreviewed';
+    TextField(FProposals, 'analyzer') + ' v' + LAnalyzerVersion +
+    ' · unreviewed';
   LRows := TJSArray(FProposals['candidates']);
   for LIndex := 0 to LRows.length - 1 do
   begin
@@ -930,6 +948,494 @@ begin
       'BPM ' + TJSJSON.stringify(LRow['bpm']) + ' · score ' +
       TJSJSON.stringify(LRow['score']) + ' · tap to review',
       'proposal', LIndex, @HandleProposal);
+  end;
+end;
+
+procedure TWorkbench.UpdateTrackIdentity;
+var
+  LShortHash: String;
+begin
+  if FSourceHash = '' then
+  begin
+    Element('source-hash-short').textContent := '—';
+    Element('source-hash-full').textContent := '';
+    Element('source-hash-details').setAttribute('hidden', '');
+    Element('catalog-import-state').textContent := 'Catalog: —';
+    Element('track-review-state').textContent := 'Review: —';
+    Exit;
+  end;
+  LShortHash := Copy(FSourceHash, 1, 12);
+  if Length(FSourceHash) > 12 then
+    LShortHash := LShortHash + '…';
+  Element('source-hash-short').textContent := LShortHash;
+  Element('source-hash-short').setAttribute('title', FSourceHash);
+  Element('source-hash-full').textContent := FSourceHash;
+  Element('source-hash-details').removeAttribute('hidden');
+  Element('catalog-import-state').textContent := 'Catalog: imported';
+  Element('track-review-state').textContent := 'Review: loading state…';
+end;
+
+procedure TWorkbench.UpdateTrackProposalIdentity;
+var
+  LCandidates: TJSArray;
+  LAnalyzerVersion: String;
+begin
+  Element('track-proposal-state').setAttribute('hidden', '');
+  Element('track-proposal-state').textContent := '';
+  if FProposals = nil then
+    Exit;
+  LCandidates := TJSArray(FProposals['candidates']);
+  if (LCandidates = nil) or (LCandidates.length = 0) or
+    ((FPartition = 'evaluation') and (FReviewRevision = 0)) then
+    Exit;
+  LAnalyzerVersion := IntToStr(Trunc(NumberField(FProposals,
+    'analyzer_version')));
+  Element('track-proposal-state').textContent :=
+    'Proposal analyzer: ' + TextField(FProposals, 'analyzer') +
+    ' v' + LAnalyzerVersion;
+  Element('track-proposal-state').removeAttribute('hidden');
+end;
+
+function TWorkbench.SharesSourceClock(const ATrack: TJSObject): Boolean;
+begin
+  Result := (FClockId <> '') and (FSourceGroup <> '') and
+    (TextField(ATrack, 'clock_id') = FClockId) and
+    (TextField(ATrack, 'source_group') = FSourceGroup) and
+    (Trunc(NumberField(ATrack, 'sample_rate')) = FSampleRate) and
+    (TextField(ATrack, 'source_sha256') <> FSourceHash);
+end;
+
+procedure TWorkbench.RenderAlignedPeerScaffold;
+var
+  LTrack: TJSObject;
+  LWrapper: TJSHTMLElement;
+  LButton: TJSHTMLButtonElement;
+    LCanvas: TJSHTMLCanvasElement;
+    LNote: TJSElement;
+    LOverlayStatus: TJSElement;
+  LIndex: Integer;
+  LCount: Integer;
+  LShown: Integer;
+begin
+  ClearItems('aligned-peer-lanes');
+  Element('aligned-peer-panel').setAttribute('hidden', '');
+  if (FTracks = nil) or (FClockId = '') then
+  begin
+    Element('aligned-peer-note').textContent :=
+      'No shared source clock is declared for this recording.';
+    Exit;
+  end;
+  LCount := 0;
+  for LIndex := 0 to FTracks.length - 1 do
+  begin
+    LTrack := TJSObject(FTracks[LIndex]);
+    if SharesSourceClock(LTrack) then
+      Inc(LCount);
+  end;
+  if LCount = 0 then
+  begin
+    Element('aligned-peer-note').textContent :=
+      'No other catalog track shares this nonempty source clock.';
+    Exit;
+  end;
+  LShown := 0;
+  for LIndex := 0 to FTracks.length - 1 do
+  begin
+    if LShown >= MaximumAlignedPeerLanes then
+      Break;
+    LTrack := TJSObject(FTracks[LIndex]);
+    if not SharesSourceClock(LTrack) then
+      Continue;
+    LWrapper := TJSHTMLElement(document.createElement('div'));
+    LWrapper.className := 'aligned-peer-lane';
+    LButton := TJSHTMLButtonElement(document.createElement('button'));
+    LButton.setAttribute('type', 'button');
+    LButton.setAttribute('data-index', IntToStr(LIndex));
+    LButton.textContent := 'Open aligned stem: ' +
+      TextField(LTrack, 'title');
+    LButton.onclick := @HandleAlignedPeer;
+    LWrapper.appendChild(LButton);
+    LCanvas := TJSHTMLCanvasElement(document.createElement('canvas'));
+    LCanvas.id := 'peer-canvas-' + TextField(LTrack, 'source_sha256');
+    LCanvas.width := FCanvas.width;
+    LCanvas.height := 150;
+    LCanvas.setAttribute('aria-label', 'Aligned waveform for ' +
+      TextField(LTrack, 'title') + ' on the shared source-frame timeline');
+    LWrapper.appendChild(LCanvas);
+    LNote := document.createElement('small');
+    LNote.id := 'peer-gap-' + TextField(LTrack, 'source_sha256');
+    LNote.className := 'peer-source-gap';
+    LNote.textContent := 'Loading exact source-frame window…';
+    LWrapper.appendChild(LNote);
+    LOverlayStatus := document.createElement('small');
+    LOverlayStatus.id := 'peer-overlay-' + TextField(LTrack, 'source_sha256');
+    LOverlayStatus.className := 'peer-overlay-status';
+    LOverlayStatus.textContent := 'Loading review and proposal overlays…';
+    LWrapper.appendChild(LOverlayStatus);
+    Element('aligned-peer-lanes').appendChild(LWrapper);
+    Inc(LShown);
+  end;
+  if LCount > MaximumAlignedPeerLanes then
+    Element('aligned-peer-note').textContent :=
+      'Same group, clock and sample rate; source-frame x positions align. ' +
+      'Showing first ' + IntToStr(MaximumAlignedPeerLanes) + ' of ' +
+      IntToStr(LCount) + ' matching stems.'
+  else
+    Element('aligned-peer-note').textContent :=
+      'Same group, clock and sample rate; source-frame x positions align.';
+  Element('aligned-peer-panel').removeAttribute('hidden');
+end;
+
+procedure TWorkbench.DrawAlignedPeerWaveform(
+  const ACanvas: TJSHTMLCanvasElement; const ABins: TJSArray;
+  const AAvailableRatio: Double);
+var
+  LContext: TJSCanvasRenderingContext2D;
+  LRow: TJSObject;
+  LPeak: Double;
+  LMinimum: Double;
+  LMaximum: Double;
+  LWidth: Double;
+  LAvailableWidth: Double;
+  LIndex: Integer;
+begin
+  LContext := ACanvas.getContextAs2DContext('2d');
+  LContext.fillStyleAsColor := '#11212d';
+  LContext.fillRect(0, 0, ACanvas.width, ACanvas.height);
+  LContext.fillStyleAsColor := '#344852';
+  LContext.fillRect(0, 34, ACanvas.width, 1);
+  LAvailableWidth := ACanvas.width * AAvailableRatio;
+  if LAvailableWidth < ACanvas.width then
+  begin
+    LContext.fillStyleAsColor := '#26363a';
+    LContext.fillRect(LAvailableWidth, 0,
+      ACanvas.width - LAvailableWidth, ACanvas.height);
+  end;
+  if (ABins = nil) or (ABins.length = 0) then
+    Exit;
+  LPeak := 0.00001;
+  for LIndex := 0 to ABins.length - 1 do
+  begin
+    LRow := TJSObject(ABins[LIndex]);
+    LMinimum := Abs(NumberField(LRow, 'min'));
+    LMaximum := Abs(NumberField(LRow, 'max'));
+    if LMinimum > LPeak then
+      LPeak := LMinimum;
+    if LMaximum > LPeak then
+      LPeak := LMaximum;
+  end;
+  LContext.fillStyleAsColor := '#7dd8cf';
+  LWidth := LAvailableWidth / ABins.length;
+  for LIndex := 0 to ABins.length - 1 do
+  begin
+    LRow := TJSObject(ABins[LIndex]);
+    LMinimum := NumberField(LRow, 'min');
+    LMaximum := NumberField(LRow, 'max');
+    LContext.fillRect(LIndex * LWidth,
+      34 - LMaximum / LPeak * 27, LWidth + 1,
+      (LMaximum - LMinimum) / LPeak * 27 + 1);
+  end;
+end;
+
+procedure TWorkbench.DrawAlignedPeerOverlays(
+  const ACanvas: TJSHTMLCanvasElement; const ALabels: TJSArray;
+  const AProposals: TJSObject;
+  const AStart, AEnd, AVisibleEnd, ASourceFrames: Int64);
+var
+  LContext: TJSCanvasRenderingContext2D;
+  LLabel: TJSObject;
+  LCandidates: TJSArray;
+  LCandidate: TJSObject;
+  LFrames: TJSArray;
+  LFrame: Double;
+  LStart: Int64;
+  LEnd: Int64;
+  LDrawEnd: Int64;
+  LX1: Double;
+  LX2: Double;
+  LIndex: Integer;
+  LPoint: Integer;
+  LRow: Integer;
+  LWidth: Double;
+begin
+  LContext := ACanvas.getContextAs2DContext('2d');
+  LDrawEnd := Smaller(AEnd, ASourceFrames);
+  LContext.fillStyleAsColor := '#17252d';
+  LContext.fillRect(0, 74, ACanvas.width, 34);
+  LContext.fillStyleAsColor := '#1d2430';
+  LContext.fillRect(0, 112, ACanvas.width, 38);
+  LContext.strokeStyleAsColor := '#52636d';
+  LContext.beginPath;
+  LContext.moveTo(0, 72);
+  LContext.lineTo(ACanvas.width, 72);
+  LContext.moveTo(0, 110);
+  LContext.lineTo(ACanvas.width, 110);
+  LContext.stroke;
+  if LDrawEnd < AVisibleEnd then
+  begin
+    LX1 := (LDrawEnd - AStart) / (AVisibleEnd - AStart) * ACanvas.width;
+    LContext.fillStyleAsColor := '#26363a';
+    LContext.fillRect(LX1, 74, ACanvas.width - LX1, 76);
+  end;
+  if ALabels <> nil then
+  begin
+    for LIndex := 0 to ALabels.length - 1 do
+    begin
+      LLabel := TJSObject(ALabels[LIndex]);
+      LStart := Trunc(NumberField(LLabel, 'start_frame'));
+      LEnd := Trunc(NumberField(LLabel, 'end_frame'));
+      if (LStart >= LDrawEnd) or (LEnd <= AStart) or (LEnd <= LStart) then
+        Continue;
+      if LStart < AStart then
+        LStart := AStart;
+      if LEnd > LDrawEnd then
+        LEnd := LDrawEnd;
+      LX1 := (LStart - AStart) / (AVisibleEnd - AStart) * ACanvas.width;
+      LX2 := (LEnd - AStart) / (AVisibleEnd - AStart) * ACanvas.width;
+      LRow := LIndex mod 3;
+      if TextField(LLabel, 'status') = 'approved' then
+        LContext.fillStyleAsColor := '#9ce3aa'
+      else if TextField(LLabel, 'status') = 'uncertain' then
+        LContext.fillStyleAsColor := '#f3c98d'
+      else if TextField(LLabel, 'status') = 'rejected' then
+        LContext.fillStyleAsColor := '#f39b91'
+      else
+        LContext.fillStyleAsColor := '#91a4ad';
+      LWidth := LX2 - LX1;
+      if LWidth < 1 then
+        LWidth := 1;
+      LContext.fillRect(LX1, 88 + LRow * 6, LWidth, 4);
+    end;
+  end;
+  if AProposals = nil then
+    Exit;
+  LCandidates := TJSArray(AProposals['candidates']);
+  if LCandidates = nil then
+    Exit;
+  for LIndex := 0 to Smaller(LCandidates.length, 4) - 1 do
+  begin
+    LCandidate := TJSObject(LCandidates[LIndex]);
+    LFrames := TJSArray(LCandidate['frames']);
+    if LFrames = nil then
+      Continue;
+    case LIndex of
+      0: LContext.fillStyleAsColor := '#f5c27c';
+      1: LContext.fillStyleAsColor := '#c8a6ff';
+      2: LContext.fillStyleAsColor := '#79c8ff';
+      else LContext.fillStyleAsColor := '#ff9ec4';
+    end;
+    for LPoint := 0 to LFrames.length - 1 do
+    begin
+      LFrame := Double(LFrames[LPoint]);
+      if (LFrame < AStart) or (LFrame >= LDrawEnd) then
+        Continue;
+      LX1 := (LFrame - AStart) / (AVisibleEnd - AStart) * ACanvas.width;
+      LContext.fillRect(LX1, 126 + LIndex * 5, 2, 4);
+    end;
+  end;
+end;
+
+procedure TWorkbench.LoadAlignedPeerWaveforms(const AEpoch: Integer); async;
+var
+  LTrack: TJSObject;
+  LCanvas: TJSHTMLCanvasElement;
+  LOverlayStatus: TJSElement;
+  LResponse: TJSResponse;
+  LData: TJSObject;
+  LCurrentData: TJSObject;
+  LPeerLabels: TJSArray;
+  LPeerProposals: TJSObject;
+  LBins: TJSArray;
+  LIndex: Integer;
+  LShown: Integer;
+  LPeerFrames: Int64;
+  LPeerEnd: Int64;
+  LVisibleEnd: Int64;
+  LBinCount: Integer;
+  LAvailableRatio: Double;
+  LHash: String;
+  LPath: String;
+  LOverlayMessage: String;
+  LPartition: String;
+  LCurrentError: String;
+  LProposalError: String;
+  LNote: TJSElement;
+begin
+  if (FTracks = nil) or (FClockId = '') then
+    Exit;
+  LVisibleEnd := FWindowStart + FWindowSpan;
+  LShown := 0;
+  for LIndex := 0 to FTracks.length - 1 do
+  begin
+    if LShown >= MaximumAlignedPeerLanes then
+      Break;
+    LTrack := TJSObject(FTracks[LIndex]);
+    if not SharesSourceClock(LTrack) then
+      Continue;
+    Inc(LShown);
+    if AEpoch <> FWindowEpoch then
+      Exit;
+    LHash := TextField(LTrack, 'source_sha256');
+    LCurrentData := nil;
+    LPeerLabels := nil;
+    LPeerProposals := nil;
+    LCanvas := TJSHTMLCanvasElement(
+      document.getElementById('peer-canvas-' + LHash));
+    LNote := document.getElementById('peer-gap-' + LHash);
+    LOverlayStatus := document.getElementById('peer-overlay-' + LHash);
+    if (LCanvas = nil) or (LNote = nil) or (LOverlayStatus = nil) then
+      Continue;
+    LCanvas.setAttribute('data-viewport-start-frame',
+      IntToStr(FWindowStart));
+    LCanvas.setAttribute('data-viewport-end-frame',
+      IntToStr(LVisibleEnd));
+    LPeerFrames := Trunc(NumberField(LTrack, 'frame_count'));
+    LPartition := TextField(LTrack, 'partition');
+    if LPeerFrames <= FWindowStart then
+    begin
+      LCanvas.setAttribute('data-source-start-frame', '');
+      LCanvas.setAttribute('data-source-end-frame', '');
+      DrawAlignedPeerWaveform(LCanvas, nil, 0);
+      DrawAlignedPeerOverlays(LCanvas, nil, nil, FWindowStart,
+        LVisibleEnd, LVisibleEnd, LPeerFrames);
+      LNote.textContent := 'This source ends before the selected frame window.';
+      LOverlayStatus.textContent := 'No source frames for overlays.';
+      Continue;
+    end;
+    LPeerEnd := Smaller(LVisibleEnd, LPeerFrames);
+    if LPeerEnd <= FWindowStart then
+    begin
+      LCanvas.setAttribute('data-source-start-frame', '');
+      LCanvas.setAttribute('data-source-end-frame', '');
+      DrawAlignedPeerWaveform(LCanvas, nil, 0);
+      DrawAlignedPeerOverlays(LCanvas, nil, nil, FWindowStart,
+        LVisibleEnd, LVisibleEnd, LPeerFrames);
+      LNote.textContent := 'No source frames overlap this selected window.';
+      LOverlayStatus.textContent := 'No source frames for overlays.';
+      Continue;
+    end;
+    LCanvas.setAttribute('data-source-start-frame',
+      IntToStr(FWindowStart));
+    LCanvas.setAttribute('data-source-end-frame', IntToStr(LPeerEnd));
+    LBinCount := 256;
+    if (LPeerEnd - FWindowStart) < LBinCount then
+      LBinCount := LPeerEnd - FWindowStart;
+    LPath := '/api/waveform?hash=' + LHash +
+      '&start=' + IntToStr(FWindowStart) +
+      '&end=' + IntToStr(LPeerEnd) + '&bins=' + IntToStr(LBinCount);
+    try
+      LResponse := await(TJSResponse, FetchApi(LPath, 'GET', ''));
+      if AEpoch <> FWindowEpoch then
+        Exit;
+      if LResponse.status <> 200 then
+        raise Exception.Create('Waveform HTTP ' +
+          IntToStr(LResponse.status));
+      LData := await(TJSObject, LResponse.json());
+      if AEpoch <> FWindowEpoch then
+        Exit;
+      LBins := TJSArray(LData['bins']);
+      LAvailableRatio := (LPeerEnd - FWindowStart) / FWindowSpan;
+      DrawAlignedPeerWaveform(LCanvas, LBins, LAvailableRatio);
+      if LPeerEnd < LVisibleEnd then
+        LNote.textContent := 'Shaded area is beyond this stem’s ' +
+          IntToStr(LPeerFrames) + '-frame source.'
+      else
+        LNote.textContent := 'Source frames ' + IntToStr(FWindowStart) +
+          '–' + IntToStr(LPeerEnd) + ' on the shared clock.';
+      LPeerLabels := nil;
+      LPeerProposals := nil;
+      LCurrentError := '';
+      LProposalError := '';
+      LPath := '/api/current?hash=' + LHash +
+        '&start=' + IntToStr(FWindowStart) +
+        '&end=' + IntToStr(LPeerEnd) + '&count=2048';
+      try
+        LResponse := await(TJSResponse, FetchApi(LPath, 'GET', ''));
+        if AEpoch <> FWindowEpoch then
+          Exit;
+        if LResponse.status = 200 then
+        begin
+          LCurrentData := await(TJSObject, LResponse.json());
+          if AEpoch <> FWindowEpoch then
+            Exit;
+          LPeerLabels := TJSArray(LCurrentData['labels']);
+        end
+        else
+          LCurrentError := 'review HTTP ' + IntToStr(LResponse.status);
+      except
+        on LError: Exception do
+        begin
+          if AEpoch <> FWindowEpoch then
+            Exit;
+          LCurrentError := LError.Message;
+        end;
+      end;
+      if (LPartition <> 'evaluation') or
+        ((LCurrentData <> nil) and
+        (NumberField(LCurrentData, 'review_revision') > 0)) then
+      begin
+        LPath := '/api/proposals?hash=' + LHash +
+          '&start=' + IntToStr(FWindowStart) +
+          '&end=' + IntToStr(LPeerEnd);
+        try
+          LResponse := await(TJSResponse, FetchApi(LPath, 'GET', ''));
+          if AEpoch <> FWindowEpoch then
+            Exit;
+          if LResponse.status = 200 then
+          begin
+            LPeerProposals := await(TJSObject, LResponse.json());
+            if AEpoch <> FWindowEpoch then
+              Exit;
+          end
+          else if LResponse.status <> 404 then
+            LProposalError := 'proposal HTTP ' + IntToStr(LResponse.status);
+        except
+          on LError: Exception do
+          begin
+            if AEpoch <> FWindowEpoch then
+              Exit;
+            LProposalError := LError.Message;
+          end;
+        end;
+      end;
+      DrawAlignedPeerOverlays(LCanvas, LPeerLabels, LPeerProposals,
+        FWindowStart, LPeerEnd, LVisibleEnd, LPeerFrames);
+      if LCurrentError <> '' then
+        LOverlayMessage := 'Reviewed labels unavailable: ' + LCurrentError
+      else if (LPartition = 'evaluation') and
+        ((LCurrentData = nil) or
+        (NumberField(LCurrentData, 'review_revision') = 0)) then
+        LOverlayMessage := 'Blind evaluation: proposals hidden; ' +
+          'no saved reviewed labels in this window.'
+      else if (LPeerLabels = nil) or (LPeerLabels.length = 0) then
+        LOverlayMessage := 'No reviewed labels in this window.'
+      else
+        LOverlayMessage := IntToStr(LPeerLabels.length) +
+          ' reviewed label(s) shown.';
+      if LProposalError <> '' then
+        LOverlayMessage := LOverlayMessage + ' Proposals unavailable: ' +
+          LProposalError + '.'
+      else if (LPartition = 'evaluation') and
+        (LCurrentData <> nil) and
+        (NumberField(LCurrentData, 'review_revision') = 0) then
+        LOverlayMessage := LOverlayMessage + ' Blind gate active.'
+      else if LPeerProposals = nil then
+        LOverlayMessage := LOverlayMessage + ' No saved Pythian proposals.'
+      else
+        LOverlayMessage := LOverlayMessage + ' Pythian beat ticks shown.';
+      LOverlayStatus.textContent := LOverlayMessage;
+    except
+      on LError: Exception do
+      begin
+        if AEpoch <> FWindowEpoch then
+          Exit;
+        DrawAlignedPeerWaveform(LCanvas, nil, 0);
+        LNote.textContent := 'Aligned waveform unavailable: ' +
+          LError.Message;
+        LOverlayStatus.textContent :=
+          'Review/proposal overlays unavailable: ' + LError.Message;
+      end;
+    end;
   end;
 end;
 
@@ -1209,6 +1715,9 @@ begin
     IntToStr(FWindowStart) + '–' + IntToStr(LEnd) +
     ' frames · ' + IntToStr(FWindowStart div FSampleRate) +
     '–' + IntToStr(LEnd div FSampleRate) + ' s';
+  FCanvas.setAttribute('data-window-start-frame',
+    IntToStr(FWindowStart));
+  FCanvas.setAttribute('data-window-end-frame', IntToStr(LEnd));
 end;
 
 procedure TWorkbench.Start; async;
@@ -1423,6 +1932,9 @@ end;
 procedure TWorkbench.SelectTrack(const AIndex: Integer); async;
 var
   LTrack: TJSObject;
+  LKeepTimeline: Boolean;
+  LPreviousStart: Int64;
+  LPreviousSpan: Int64;
 begin
   if FSaveInProgress or ((FPendingChanges <> nil) and
     (FPendingChanges.length > 0)) then
@@ -1437,8 +1949,16 @@ begin
     Exit;
   end;
   LTrack := TJSObject(FTracks[AIndex]);
+  LKeepTimeline := (FSourceHash <> '') and (FClockId <> '') and
+    (FSourceGroup <> '') and
+    (TextField(LTrack, 'clock_id') = FClockId) and
+    (TextField(LTrack, 'source_group') = FSourceGroup) and
+    (Trunc(NumberField(LTrack, 'sample_rate')) = FSampleRate);
+  LPreviousStart := FWindowStart;
+  LPreviousSpan := FWindowSpan;
   FSourceHash := TextField(LTrack, 'source_sha256');
   FSourceGroup := TextField(LTrack, 'source_group');
+  FClockId := TextField(LTrack, 'clock_id');
   FPartition := TextField(LTrack, 'partition');
   FSampleRate := Trunc(NumberField(LTrack, 'sample_rate'));
   FFrameCount := Trunc(NumberField(LTrack, 'frame_count'));
@@ -1457,9 +1977,21 @@ begin
     TJSURL.revokeObjectURL(FAudioUrl);
     FAudioUrl := '';
   end;
-  FWindowStart := 0;
-  FWindowSpan := Smaller(FFrameCount,
-    Smaller(Int64(FSampleRate) * 10, 8388608));
+  if LKeepTimeline then
+  begin
+    FWindowSpan := Smaller(LPreviousSpan, FFrameCount);
+    if FWindowSpan <= 0 then
+      FWindowSpan := Smaller(FFrameCount,
+        Smaller(Int64(FSampleRate) * 10, 8388608));
+    FWindowStart := Smaller(LPreviousStart,
+      FFrameCount - FWindowSpan);
+  end
+  else
+  begin
+    FWindowStart := 0;
+    FWindowSpan := Smaller(FFrameCount,
+      Smaller(Int64(FSampleRate) * 10, 8388608));
+  end;
   FWaveBins := nil;
   FCurrentLabels := nil;
   FProposals := nil;
@@ -1472,7 +2004,7 @@ begin
   FHistoryStale := False;
   UpdatePendingUi;
   FDragMode := dmNone;
-  Input('jump-seconds').value := '0';
+  Input('jump-seconds').value := IntToStr(FWindowStart div FSampleRate);
   Input('jump-seconds').setAttribute('max',
     IntToStr((FFrameCount - 1) div FSampleRate));
   Element('track-title').textContent := TextField(LTrack, 'title');
@@ -1483,6 +2015,9 @@ begin
     TextField(LTrack, 'license') + ' · ' +
     IntToStr(FFrameCount div FSampleRate) + ' s · ' +
     IntToStr(FSampleRate) + ' Hz';
+  UpdateTrackIdentity;
+  UpdateTrackProposalIdentity;
+  RenderAlignedPeerScaffold;
   TJSHTMLButtonElement(Element('suggest-button')).disabled :=
     FPartition = 'evaluation';
   Element('proposal-note').textContent := 'Loading suggestions…';
@@ -1497,6 +2032,7 @@ var
   LHash: String;
   LPartition: String;
   LPath: String;
+  LMainBinCount: Integer;
   LResponse: TJSResponse;
   LData: TJSObject;
 begin
@@ -1531,9 +2067,14 @@ begin
     end;
     UpdateWindowLabel;
     Input('jump-seconds').value := IntToStr(FWindowStart div FSampleRate);
+    LMainBinCount := 512;
+    if (LEnd - LStart) < LMainBinCount then
+      LMainBinCount := LEnd - LStart;
+    if LMainBinCount < 1 then
+      raise Exception.Create('The selected source window is empty');
     LPath := '/api/waveform?hash=' + LHash +
       '&start=' + IntToStr(LStart) +
-      '&end=' + IntToStr(LEnd) + '&bins=512';
+      '&end=' + IntToStr(LEnd) + '&bins=' + IntToStr(LMainBinCount);
     LResponse := await(TJSResponse, FetchApi(LPath, 'GET', ''));
     if LEpoch <> FWindowEpoch then
     begin
@@ -1569,6 +2110,11 @@ begin
     FCurrentLabels := TJSArray(LData['labels']);
     FReviewRevision := Trunc(NumberField(LData, 'review_revision'));
     LoadLocalHistory;
+    if FReviewRevision > 0 then
+      Element('track-review-state').textContent :=
+        'Review: revision ' + IntToStr(FReviewRevision)
+    else
+      Element('track-review-state').textContent := 'Review: no saved events';
     Element('revision-label').textContent :=
       'Revision ' + IntToStr(FReviewRevision);
     TJSHTMLButtonElement(Element('suggest-button')).disabled :=
@@ -1604,6 +2150,7 @@ begin
     DrawWaveform;
     Status('Loaded source frames ' + IntToStr(LStart) +
       '–' + IntToStr(LEnd) + '.');
+    LoadAlignedPeerWaveforms(LEpoch);
     if FSaveInProgress then
     begin
       FSaveInProgress := False;
@@ -1626,8 +2173,12 @@ begin
       begin
         FHistoryLoading := False;
         FHistoryLoadFailed := True;
+        Element('track-review-state').textContent :=
+          'Review: load failed';
         UpdatePendingUi;
       end;
+      FProposals := nil;
+      UpdateTrackProposalIdentity;
       Status('Timeline failed: ' + LError.Message, True);
     end;
   end;
@@ -2062,6 +2613,13 @@ begin
 end;
 
 function TWorkbench.HandleTrack(AEvent: TJSMouseEvent): Boolean;
+begin
+  SelectTrack(StrToIntDef(
+    TJSElement(AEvent.currentTarget).getAttribute('data-index'), -1));
+  Result := False;
+end;
+
+function TWorkbench.HandleAlignedPeer(AEvent: TJSMouseEvent): Boolean;
 begin
   SelectTrack(StrToIntDef(
     TJSElement(AEvent.currentTarget).getAttribute('data-index'), -1));

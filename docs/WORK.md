@@ -13,6 +13,37 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Aligned-stem workbench and remembered LAN key — 2026-09-26
+
+The LAN workbench at `192.168.12.109:18097` serves the pas2js page with an
+origin-scoped remembered access key. The native Pascal host reuses its private
+catalog-root key across restarts. A local GET confirmed that the live page and
+app asset include the automatic reconnect path; a physical phone browser has
+not yet confirmed storage persistence or playback. The operator should use
+the same address in a normal browser to retain the saved key.
+
+The selected source now displays its SHA-256, catalog and review state, and
+the analyzer name and numeric version for saved proposals. The browser hides
+the analyzer and makes no proposal read in a controlled evaluation revision-
+zero state. The native blind gate is separately enforced. A Pascal-prepared
+ignored five-track fixture placed three URMP stems on one declared source
+clock, plus two unrelated recordings. Edge and independent Salty Boi QA
+confirmed exactly two aligned peers, a common source-frame axis, bounded
+waveform and annotation reads, a preserved 192000–352000 frame view when
+switching matching stems, and separate timelines for unrelated tracks. Zoom
+reached a one-frame window with one waveform bin; a shorter peer clipped at
+its own end and shaded the remainder. Per-peer read-only bands now show
+reviewed spans and up to four ranked Pythian beat-grid proposals; editing
+still selects one track. A controlled synthetic browser fixture verified
+distinct overlay pixels, exact 0–160000-frame reads, and no proposal request
+for a blind evaluation peer. Desktop and 390px layouts were inspected after
+the compact mobile peer-canvas fix. Evidence is under ignored
+`build/label-workbench/same-clock-qa-v2/` and the `peer-overlays-*` browser
+artifacts. These fixtures prove UI/request behavior, not acoustic annotation
+quality. Criteria 1–4 and 6 of the authoring task have focused evidence;
+criterion 5 still needs physical-phone LAN review, so no task credit moved.
+Overall remains **70.70%**, **37 open / 28 DONE**, listening queue **0/20**.
+
 ## Two-track browser review workflow — 2026-09-26
 
 A fresh isolated Edge run imported two verified development WAVs into a native

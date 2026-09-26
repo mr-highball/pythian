@@ -46,7 +46,11 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
   bulk label approval.
 - Provide assisted training review and a blind evaluation mode. In the blind
   mode, hide model suggestions until the operator commits an independent
-  label; never pass an unreviewed suggestion to the catalog's reviewed export.
+  label; never include an unreviewed suggestion as a selected or unknown
+  training label. A linked suggestion may remain in the reviewed packet as
+  separately marked provenance for a review decision; downstream learners
+  must consume only approved selected/unknown labels, and independent
+  evaluation references must reject proposal-linked labels.
   Show the training/development/evaluation group assignment and export status
   without letting a review action silently move material across groups.
 - Serve locally by default with an explicit opt-in for authenticated LAN/mobile
@@ -69,6 +73,36 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Dev Notes:**
 
+- 2026-09-26 criteria 1 and 2 now have focused browser evidence. The selected
+  track shows its short/full source SHA-256, import and review state, and the
+  proposal analyzer name and numeric version when available; an evaluation
+  revision-zero UI state hides proposals and makes no proposal read. An
+  ignored Pascal-prepared five-track fixture at
+  `build/label-workbench/same-clock-qa-v2/` contains three verified equal-rate
+  stems with one declared source clock, an unrelated equal-rate stem with no
+  clock, and an unrelated piano recording. Native import accepted all five.
+  Edge showed only the two matching peer stems beside the selected track,
+  preserving the exact source-frame axis, bounded waveform and review reads,
+  and same-clock view on source switching. Unrelated tracks reset to their own
+  timelines. An 18-step zoom reached one frame with one bin; a shorter peer
+  clipped at its own end and shaded the remaining shared window. Read-only
+  reviewed-label and Pythian-proposal bands now appear on each peer, while
+  edits stay on the selected track. A controlled browser overlay fixture
+  verified distinct review/proposal pixels, exact 0–160000-frame peer reads,
+  and no proposal request for a blind evaluation peer. Salty Boi independently
+  checked the desktop and 390px layouts, source identity, alignment, zoom and
+  blind guard. The overlay fixture is synthetic rendering evidence, not an
+  acoustic-label or proposal-quality claim. Physical-phone use remains open;
+  this task earns no credit yet.
+- 2026-09-26 criterion 4 clarifies the existing reviewed-packet contract:
+  `linked_proposals` retains audit provenance for explicit reviews, while
+  `selected_labels` and `unknown_labels` alone supply approved training
+  values. The native WFC adapter reads those two reviewed arrays; the
+  independent presence-reference builder also rejects proposal-linked
+  labels. This clarification preserves the prohibition on unreviewed
+  suggestions becoming training or independent reference evidence. Salty
+  Boi's broader criterion audit found no physical-phone LAN result, so
+  criterion 5 remains open.
 - 2026-09-26 a fresh two-track Edge workflow under ignored
   `build/label-workbench/end-to-end-20260926-attempt5/` imported verified
   development WAVs, advanced both original and Pythian cue playback clocks
