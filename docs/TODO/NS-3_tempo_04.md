@@ -51,6 +51,17 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
 
 **Dev Notes:**
 
+- 2026-09-26 a new source-separated ASAP/MAESTRO two-work challenge is
+  prospectively frozen under ignored
+  `build/asap-beat-prospective-20260926/POLICY.md`, SHA-256
+  `f2062ce7d8ba7b8f752dcb3168d1d0501f97bb6df248e9fcc88bb3637affa147`.
+  A checked Pascal metadata-only selector fixed two distinct unexposed work
+  groups, exact first-30-second windows, source/physical floors, default
+  candidate binary/options, 30-ms recall gates and transfer/work stops before
+  either selected annotation, MIDI or WAV was fetched. The policy hash is
+  committed here before source access so the earlier cohort's unprovable
+  policy-timing problem is not repeated. No source, report or result has been
+  scored under this policy yet; the task and credit remain open.
 - 2026-09-26 source-independent capacity attempt 1: the default six-second
   tracker windows now advance by three seconds (half overlap) rather than one,
   while explicit caller hops and the 64-million aggregate fit cap remain
