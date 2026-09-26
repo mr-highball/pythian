@@ -49,8 +49,12 @@ keys. The live host reused that file without rewriting it, returned 403/200
 for wrong/correct keys, and served the workbench page. The earlier environment
 key was not recorded, so an existing browser may need one final entry during
 this transition; later visits to the same origin reconnect automatically.
-New browser origins still require one initial entry. Browser reconnect QA
-remains pending; no task credit yet.
+New browser origins still require one initial entry. Salty Boi reviewed the
+existing browser fixture and its desktop/390px captures: an accepted key is
+stored, reload reconnects, and Forget clears the stored key and session. That
+fixture predates the live key transition; the current key has not been entered
+in a browser during QA, and physical-phone access remains unverified. No task
+credit yet.
 
 ## Prospective recorded beat challenge — 2026-09-26
 

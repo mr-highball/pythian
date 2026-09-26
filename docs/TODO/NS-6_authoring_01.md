@@ -101,7 +101,11 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
   the page. The former environment key was not recorded, so existing browsers
   may need one final entry during this transition; subsequent visits to the
   same origin reconnect automatically. New browser origins still require one
-  initial entry. Final mobile operator QA remains open; no task credit.
+  initial entry. Salty Boi reviewed the existing browser fixture and
+  desktop/390px captures for accepted-key storage, reload reconnect and
+  Forget. That fixture predates the live key transition; the current key has
+  not been entered in a browser during QA. Physical-phone operator QA remains
+  open; no task credit.
 - 2026-09-25 the workbench can select a saved beat-grid hypothesis and load a
   short native Pascal cue overlay in the same bounded player as the original
   WAV. It draws the selected grid on the waveform, keeps cue access behind the
