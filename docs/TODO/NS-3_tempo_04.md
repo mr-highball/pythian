@@ -51,6 +51,24 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
 
 **Dev Notes:**
 
+- 2026-09-26 source-independent additive equal-weight candidate attempt stopped
+  at its frozen authored gate. An ignored Pascal fixture/policy under
+  `build/beat-equal-weight-probe/` fixed four 12-second click controls before
+  scoring. A separate Pascal probe preserved all eight original weighted
+  candidates per window, admitted up to eight equal-weight alternatives, and
+  preflighted their combined fit work under the unchanged 64-million cap.
+  On the main quiet-120/loud-offbeat control, its weighted 240-BPM grid at
+  phase 3952 covers 23/24 authored 120-BPM beat positions within 30 ms;
+  the equal-weight 120-BPM grid at phase 7952 also covers 23/24. Both miss
+  only the source-start beat because bounded rendering starts at frame zero.
+  The frozen gate required at least four additional correct beats, so it
+  fails even though the alternate 120-BPM phase appears in the pool. The
+  main candidate output was byte-identical across checked stable Win32 and
+  Win64 probes, with combined work 15,838,974. The unchanged A/B recorded
+  challenge was not rescored, no new recorded cohort was opened, and no
+  maintained candidate algorithm changed. This result also exposes that
+  recall alone credits double-time grids that predict extra offbeats;
+  future source-free gates need to distinguish their precision as well.
 - 2026-09-26 the maintained Pascal candidate evaluator now reports the
   best-F1 witness, maximum-recall witness and any candidate meeting both 75%
   precision and recall independently. It also reports best-pool source recall

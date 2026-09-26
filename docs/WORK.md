@@ -13,6 +13,19 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Source-free beat candidate gate — 2026-09-26
+
+The additive equal-weight onset hypothesis failed its prospectively frozen
+authored gate and stopped before a new recorded challenge. The original
+weighted 240-BPM candidate and the added equal-weight 120-BPM candidate each
+cover 23/24 authored true-beat positions on the quiet-pulse/loud-offbeat
+control. The fixed gate required four additional matches. The 12-second
+fixture, policy, Pascal probe and candidate output are under ignored
+`build/beat-equal-weight-probe/`; Win32 and Win64 produced identical output
+on the main control. No maintained candidate code changed and no task credit
+moved. The workbench LAN service still serves the saved-key reconnect path at
+`192.168.12.109:18097`; physical-phone persistence remains to be confirmed.
+
 ## Aligned-stem workbench and remembered LAN key — 2026-09-26
 
 The LAN workbench at `192.168.12.109:18097` serves the pas2js page with an
