@@ -74,6 +74,11 @@ main { display: grid; grid-template-columns: minmax(17rem, 20rem) minmax(0, 1fr)
 .item.invalid { border-left: 3px solid #f39b91; }
 .toolbar { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; }
 .timeline-controls { margin: 1rem 0 .65rem; }
+.jump-controls { margin-bottom: .65rem; }
+.jump-controls label { width: 100%; }
+.jump-controls input { width: 9rem; max-width: 50%; }
+.loop-control { display: inline-flex; align-items: center; gap: .4rem; white-space: nowrap; }
+.loop-control input { width: auto; }
 .window-label { margin-left: auto; color: #b5c8ce; font-size: .84rem; font-variant-numeric: tabular-nums; }
 .canvas-wrap { overflow: hidden; border: 1px solid #36515e; border-radius: 9px; background: #11212d; }
 canvas { display: block; width: 100%; height: auto; touch-action: none; }

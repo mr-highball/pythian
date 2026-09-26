@@ -69,6 +69,18 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Dev Notes:**
 
+- 2026-09-25 the workbench now jumps to an absolute source second, pages its
+  bounded waveform, loads at most 30 seconds of original WAV, seeks within
+  that audio from the waveform, and loops the loaded region. Its inbox marks
+  verified assets already present in the catalog and disables repeat import.
+  A real Edge run navigated a five-hour catalog source to its middle and final
+  ten seconds, loaded audio at both, sought within the middle playback and
+  via mobile touch at the end, and checked the loop and unchanged review
+  revision. The emulated 390px mobile
+  player/waveform view was inspected. The live LAN page serves the same durable
+  three-track catalog. Cue audition, physical-phone reachability, split/merge,
+  persisted undo/redo, keyboard navigation and final QA remain open; no task
+  credit is claimed.
 - 2026-09-25 LAN login now remembers an accepted access key in this browser's
   origin-scoped local storage and silently requests a new session on reload.
   A visible **Forget this device** control removes that key and clears the

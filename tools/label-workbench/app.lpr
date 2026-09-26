@@ -114,6 +114,8 @@ type
     function HandleProposal(AEvent: TJSMouseEvent): Boolean;
     function HandlePrevious(AEvent: TJSMouseEvent): Boolean;
     function HandleNext(AEvent: TJSMouseEvent): Boolean;
+    function HandleJump(AEvent: TJSMouseEvent): Boolean;
+    function HandleLoop(AEvent: TJSMouseEvent): Boolean;
     function HandleZoomIn(AEvent: TJSMouseEvent): Boolean;
     function HandleZoomOut(AEvent: TJSMouseEvent): Boolean;
     function HandleLoadAudio(AEvent: TJSMouseEvent): Boolean;
@@ -261,18 +263,62 @@ procedure TWorkbench.RenderInbox(const AData: TJSObject);
 var
   LRows: TJSArray;
   LRow: TJSObject;
+  LCatalogRow: TJSObject;
   LIndex: Integer;
+  LCatalogIndex: Integer;
   LState: String;
+  LRemaining: Integer;
 begin
   ClearItems('inbox-list');
   LRows := TJSArray(AData['tracks']);
+  LRemaining := 0;
   for LIndex := 0 to LRows.length - 1 do
   begin
     LRow := TJSObject(LRows[LIndex]);
     LState := TextField(LRow, 'status');
+    if (LState = 'prepared_unverified') and (FTracks <> nil) then
+    begin
+      for LCatalogIndex := 0 to FTracks.length - 1 do
+      begin
+        LCatalogRow := TJSObject(FTracks[LCatalogIndex]);
+        if TextField(LCatalogRow, 'source_sha256') =
+          TextField(LRow, 'sha256') then
+        begin
+          if (TextField(LCatalogRow, 'source_group') =
+            TextField(LRow, 'source_group')) and
+            (TextField(LCatalogRow, 'partition') =
+            TextField(LRow, 'partition')) then
+          begin
+            LState := 'in catalog';
+          end
+          else
+          begin
+            LState := 'catalog conflict';
+          end;
+          Break;
+        end;
+      end;
+    end;
+    if LState <> 'in catalog' then
+    begin
+      Inc(LRemaining);
+    end;
     AddItem('inbox-list', TextField(LRow, 'title'),
       TextField(LRow, 'file') + ' · ' + LState + ' · ' +
       TextField(LRow, 'partition'), LState, LIndex);
+  end;
+  TJSHTMLButtonElement(Element('import-button')).disabled := LRemaining = 0;
+  if LRows.length = 0 then
+  begin
+    Element('import-button').textContent := 'No prepared files';
+  end
+  else if LRemaining = 0 then
+  begin
+    Element('import-button').textContent := 'All imported';
+  end
+  else
+  begin
+    Element('import-button').textContent := 'Import all';
   end;
 end;
 
@@ -750,13 +796,6 @@ var
   LData: TJSObject;
 begin
   try
-    LResponse := await(TJSResponse, FetchApi('/api/inbox', 'GET', ''));
-    if LResponse.status <> 200 then
-    begin
-      raise Exception.Create('Inbox HTTP ' + IntToStr(LResponse.status));
-    end;
-    LData := await(TJSObject, LResponse.json());
-    RenderInbox(LData);
     LResponse := await(TJSResponse, FetchApi('/api/catalog', 'GET', ''));
     if LResponse.status <> 200 then
     begin
@@ -764,6 +803,13 @@ begin
     end;
     LData := await(TJSObject, LResponse.json());
     RenderCatalog(LData);
+    LResponse := await(TJSResponse, FetchApi('/api/inbox', 'GET', ''));
+    if LResponse.status <> 200 then
+    begin
+      raise Exception.Create('Inbox HTTP ' + IntToStr(LResponse.status));
+    end;
+    LData := await(TJSObject, LResponse.json());
+    RenderInbox(LData);
     Status('Inbox and catalog loaded. Choose a track to review.');
   except
     on LError: Exception do
@@ -835,6 +881,9 @@ begin
   FProposals := nil;
   FSelectedLabel := -1;
   FDragMode := dmNone;
+  Input('jump-seconds').value := '0';
+  Input('jump-seconds').setAttribute('max',
+    IntToStr((FFrameCount - 1) div FSampleRate));
   Element('track-title').textContent := TextField(LTrack, 'title');
   Element('track-partition').textContent := UpperCase(FPartition);
   Element('track-meta').textContent :=
@@ -881,6 +930,7 @@ begin
       FAudioUrl := '';
     end;
     UpdateWindowLabel;
+    Input('jump-seconds').value := IntToStr(FWindowStart div FSampleRate);
     LPath := '/api/waveform?hash=' + LHash +
       '&start=' + IntToStr(LStart) +
       '&end=' + IntToStr(LEnd) + '&bins=512';
@@ -1003,6 +1053,7 @@ begin
     end;
     FAudioUrl := TJSURL.createObjectURL(LBlob);
     FAudio.src := FAudioUrl;
+    FAudio.loop := Input('loop-region').checked;
     FAudio.load;
     Status('Audio region loaded. Press play in the player.');
   except
@@ -1254,6 +1305,7 @@ function TWorkbench.HandleCanvasDown(AEvent: TJSPointerEvent): Boolean;
 var
   LX: Double;
   LY: Double;
+  LSeek: Double;
   LStartX: Double;
   LEndX: Double;
   LRow: TJSObject;
@@ -1270,6 +1322,29 @@ begin
   end;
   LX := CanvasX(AEvent);
   LY := CanvasY(AEvent);
+  if (LY >= 0) and (LY < 207) then
+  begin
+    if (FAudioUrl = '') or (FAudio.readyState = 0) then
+    begin
+      Status('Load this region before seeking within its waveform.');
+    end
+    else
+    begin
+      LSeek := (FrameAtX(LX) - FWindowStart) / FSampleRate;
+      if LSeek >= FAudio.Duration then
+      begin
+        Status('That point is beyond the loaded audio. Zoom in or load a later region.');
+      end
+      else
+      begin
+        FAudio.currentTime := LSeek;
+        Status('Playback moved to source frame ' +
+          IntToStr(FrameAtX(LX)) + '.');
+      end;
+    end;
+    AEvent.preventDefault;
+    Exit;
+  end;
   if (LY < 207) or (LY > 235) then
   begin
     Exit;
@@ -1456,6 +1531,44 @@ begin
   Result := False;
 end;
 
+function TWorkbench.HandleJump(AEvent: TJSMouseEvent): Boolean;
+var
+  LSeconds: Int64;
+  LFrame: Int64;
+begin
+  Result := False;
+  if FSourceHash = '' then
+  begin
+    Status('Choose a catalog track before jumping to a time.', True);
+    Exit;
+  end;
+  if not TryStrToInt64(Trim(Input('jump-seconds').value), LSeconds) or
+    (LSeconds < 0) or
+    (LSeconds > (FFrameCount - 1) div FSampleRate) then
+  begin
+    Status('Enter a whole source second between 0 and ' +
+      IntToStr((FFrameCount - 1) div FSampleRate) + '.', True);
+    Exit;
+  end;
+  LFrame := LSeconds * FSampleRate;
+  if LFrame > FFrameCount - FWindowSpan then
+  begin
+    FWindowStart := FFrameCount - FWindowSpan;
+  end
+  else
+  begin
+    FWindowStart := LFrame;
+  end;
+  RefreshWindow;
+  Input('jump-seconds').value := IntToStr(LSeconds);
+end;
+
+function TWorkbench.HandleLoop(AEvent: TJSMouseEvent): Boolean;
+begin
+  FAudio.loop := Input('loop-region').checked;
+  Result := True;
+end;
+
 function TWorkbench.HandleZoomIn(AEvent: TJSMouseEvent): Boolean;
 begin
   if FSourceHash <> '' then
@@ -1523,6 +1636,8 @@ begin
   TJSHTMLButtonElement(Element('import-button')).onclick := @HandleImport;
   TJSHTMLButtonElement(Element('previous-button')).onclick := @HandlePrevious;
   TJSHTMLButtonElement(Element('next-button')).onclick := @HandleNext;
+  TJSHTMLButtonElement(Element('jump-button')).onclick := @HandleJump;
+  Input('loop-region').onclick := @HandleLoop;
   TJSHTMLButtonElement(Element('zoom-in-button')).onclick := @HandleZoomIn;
   TJSHTMLButtonElement(Element('zoom-out-button')).onclick := @HandleZoomOut;
   TJSHTMLButtonElement(Element('load-audio-button')).onclick := @HandleLoadAudio;

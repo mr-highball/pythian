@@ -79,6 +79,15 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
 
 **Dev Notes:**
 
+- 2026-09-25 the three user-selected complete mixes now reside in a durable
+  catalog outside `build/`, with distinct development-exposed training groups.
+  Native Win64 import verified three original and copied WAVs; reviewed packet
+  export reverified the assets and inspected at three tracks with zero review
+  events or selected labels. The same LAN service now points to this catalog.
+  This exercises the durable import boundary with real multi-hour files, but
+  their style names are user preference candidates, not reviewed timed labels
+  or independent evaluation groups. Real proposal-to-reviewed evidence and
+  other task criteria remain open; no credit is claimed.
 - 2026-09-25 the reviewed packet now has a Pascal WFC training consumer:
   `ReadReviewedNoteSource` binds an original WAV hash and exact part to its
   training-split packet track, maps approved note/rest/unknown spans, and

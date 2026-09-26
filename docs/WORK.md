@@ -26,6 +26,38 @@ inspected under ignored `build/label-workbench/`. This improves operator access
 but does not complete the workbench or claim task credit; physical-phone
 connectivity and final QA remain open.
 
+## Durable full-mix workbench and long-source navigation — 2026-09-25
+
+After the earlier direct-timeline and remembered-login browser slices, the
+remaining authoring task still lacked a real long-source operator path. At the
+two-batch task-flow checkpoint, the next bounded deliverable was a durable
+multi-hour catalog and direct time navigation, rather than another isolated
+control. Three user-selected full mixes were imported from ignored prepared
+WAVs into an adjacent catalog outside disposable `build/`. The native Win64
+importer reported 3 imported / 0 failed after hashing source and copied bytes.
+All three remain separate development-exposed training candidates; no
+publisher song cuts, independent evaluation groups, acoustic reviews or
+universal genre labels are implied. A deterministic export reverified the
+catalog assets and inspected at 3 tracks, 0 selected, 0 unknown and 0 history
+events. The full source identities and provenance stay in ignored local
+records and the configured catalog, outside tracked corpus Markdown.
+
+The same LAN address and access key now serve this durable catalog. The
+pas2js workbench jumps to an absolute source second, streams a bounded page,
+loads at most 30 seconds of original WAV, seeks by tapping the waveform and
+loops the loaded region. An actual Edge run on the five-hour source loaded
+its 9,000-second middle page and final ten seconds, sought within the middle
+audio and via mobile touch at the end, retained the loop setting, and left
+review revision zero. Desktop and emulated 390px mobile layouts were exercised;
+the mobile waveform/playback
+view was inspected. The inbox now marks already imported assets and disables
+the expensive duplicate-import action. The live LAN page returned the updated
+controls and authenticated catalog count 3; unauthenticated audio returned
+403. Physical-phone reachability, cue audition, richer edit history and final
+operator QA remain open. This closes no complete catalog or workbench task and
+earns no credit. The next authoring batch must finish a substantive remaining
+criterion or switch to an unblocked core prerequisite.
+
 ## Reviewed catalog into Pascal WFC training — 2026-09-25
 
 The WFC companion adapter reads a verified reviewed packet and original WAV,
