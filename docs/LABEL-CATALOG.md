@@ -45,6 +45,7 @@ the entire manifest with one command:
 & 'build/<target>/pythian.label.catalog.exe' proposals 'D:\path\to\catalog' SOURCE_SHA256 START_FRAME END_FRAME
 & 'build/<target>/pythian.label.catalog.exe' export 'D:\path\to\catalog' 'D:\path\to\reviewed.json'
 & 'build/<target>/pythian.label.catalog.exe' inspect-export 'D:\path\to\reviewed.json'
+& 'build/<target>/pythian.label.catalog.exe' import-reviewed 'D:\path\to\fresh-catalog' 'D:\path\to\reviewed.json'
 & 'build/<target>/pythian.label.catalog.exe' serve 'D:\path\to\inbox' 'D:\path\to\catalog' 18085
 ```
 
@@ -126,7 +127,10 @@ candidate identities before returning them or accepting a linked review.
 `export` writes one version-1, `pythian.reviewed-catalog.v1` packet without
 source audio. Each source carries its original SHA-256, geometry, group,
 partition, provenance, license and full numbered review history. Its
-`selected_labels` array contains only current approved labels for an assigned
+`linked_proposals` array carries only the stored, unreviewed proposal packets
+referenced by that source's review history. The reader checks every referenced
+candidate ID against the linked packet and rejects missing or changed evidence.
+The `selected_labels` array contains only current approved labels for an assigned
 training, development or evaluation group. Approved `presence=unknown` labels
 go into `unknown_labels` instead. Uncertain, rejected and withdrawn decisions
 remain in history, outside the selected set. The writer verifies every source
@@ -135,12 +139,21 @@ to overwrite an existing packet and stages the bounded, at-most-64-MiB output.
 The report gives the packet SHA-256. `inspect-export` uses the Pascal packet
 reader to replay history, check group separation and selected-label meaning,
 and report counts. A consumer can call `ReadReviewedCatalogPacket` directly.
-This current single-file limit may require sharding for larger catalogs; a
-destination-catalog replay and actual training-tool integration remain open.
+This current single-file limit may require sharding for larger catalogs; actual
+training-tool integration remains open.
+
+`import-reviewed` replays a validated packet into a catalog that already owns
+the exact original WAVs and source records. It verifies each WAV hash and all
+source metadata before writing. It stages linked proposal packets and numbered
+review events, publishes proposals first, then reviews, and refuses to replace
+a different review tree. Repeating an identical replay reports `duplicate`.
+An interruption between the two directory publications can leave unreviewed
+proposal evidence; retrying the same packet can finish the review publication.
+The command does not turn unreviewed proposals into selected labels.
 
 These commands exercise storage and schema, not an operator-approved corpus.
-No review event is produced automatically during import. Full browser editing
-and destination-catalog replay remain open.
+No review event is produced automatically during source import. Full browser
+editing remains open.
 
 The first native HTTP host has fixed routes for session, prepared inbox,
 catalog, stored proposals, waveform, current labels, history, region audio,

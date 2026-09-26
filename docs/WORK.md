@@ -14050,3 +14050,32 @@ Destination-catalog replay, source-linked proposal evidence in that replay,
 per-reviewer blind sessions, richer timeline editing and cue audition remain
 open. No task moved to DONE; overall **70.20%**, **38 open / 27 DONE**,
 listening queue **0/20**.
+
+## Linked proposal packet and destination replay — 2026-09-25
+
+The reviewed packet now carries the stored proposal packets actually cited by
+history, and its Pascal reader verifies every proposal ID against those
+packets. `import-reviewed` restores a validated packet into a freshly imported
+catalog with matching original WAVs and source records. It verifies source
+hashes before writing, stages evidence, publishes proposals before reviews,
+and refuses to replace a different review tree. A duplicate replay is reported
+without changing files. An interrupted publication can leave only unreviewed
+proposal evidence; retrying the packet can finish the review publication.
+
+Checked stable FPC 3.2.2 Win32/Win64 builds passed. A two-track artificial
+`operator-test` fixture with 15 review events and one linked proposal packet
+replayed into a fresh Win32 catalog; its re-export matched the original packet
+SHA-256 `de3493e2b01400dd86ca19e2bef7e1a181e341a8cdca2458e70192a6d5d072ca`.
+Win32 and Win64 both reported duplicate on repeat; Win64 rejected a one-track
+destination before writing. This does not establish acoustic review or actual
+training-tool consumption. No task moved to DONE; overall **70.20%**,
+**38 open / 27 DONE**, listening queue **0/20**.
+
+The workbench preview is reachable at `http://192.168.12.109:18096/` on the
+current Wi-Fi address. A direct request to that address returned the page and
+the catalog API returned 403 without a session; the existing access key logged
+in successfully. This checks the local LAN-address binding, not a connection
+from a separate phone or an inbound firewall rule. Automatic approval review
+rejected a background launch attempt with "blocked by policy"; the existing
+preview process was already listening on that address, so no new background
+process was needed.

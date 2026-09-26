@@ -36,6 +36,7 @@ uses
   pythian.tools.annotations.http,
   pythian.tools.annotations.media,
   pythian.tools.annotations.proposal,
+  pythian.tools.annotations.replay,
   pythian.tools.annotations.review;
 
 procedure RequireProposalAccess(const ACatalogRoot, AHash: String);
@@ -136,6 +137,10 @@ begin
     else if (ParamCount = 2) and (ParamStr(1) = 'inspect-export') then
     begin
       LReport := InspectReviewedCatalogPacket(ParamStr(2));
+    end
+    else if (ParamCount = 3) and (ParamStr(1) = 'import-reviewed') then
+    begin
+      LReport := ReplayReviewedCatalogPacket(ParamStr(2), ParamStr(3));
     end
     else if (ParamCount = 6) and (ParamStr(1) = 'waveform') then
     begin
@@ -262,6 +267,7 @@ begin
       WriteLn(StdErr, '       pythian.label.catalog inbox INBOX_DIR');
       WriteLn(StdErr, '       pythian.label.catalog export CATALOG_DIR OUTPUT.json');
       WriteLn(StdErr, '       pythian.label.catalog inspect-export PACKET.json');
+      WriteLn(StdErr, '       pythian.label.catalog import-reviewed CATALOG_DIR PACKET.json');
       WriteLn(StdErr, '       pythian.label.catalog waveform CATALOG_DIR HASH START END BINS');
       WriteLn(StdErr, '       pythian.label.catalog audio CATALOG_DIR HASH START END OUTPUT.wav');
       WriteLn(StdErr, '       pythian.label.catalog review CATALOG_DIR TRANSACTION.json');

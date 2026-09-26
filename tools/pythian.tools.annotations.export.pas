@@ -47,11 +47,13 @@ uses
   pythian.audio,
   pythian.hash,
   pythian.tools.annotations.catalog,
+  pythian.tools.annotations.proposal,
   pythian.tools.annotations.review;
 
 const
   CMaximumPacketBytes = 67108864;
   CMaximumCurrentLabels = 100000;
+  CMaximumLinkedProposalPackets = 4096;
   CHistoryPage = 256;
 
 procedure Need(const ACondition: Boolean; const AMessage: String);
@@ -177,6 +179,60 @@ begin
   end;
 end;
 
+function PacketHasCandidate(const APacket: TJSONObject;
+  const AProposalId: String): Boolean;
+var
+  LRows: TJSONArray;
+  LIndex: Integer;
+begin
+  Result := False;
+  LRows := APacket.Arrays['candidates'];
+  for LIndex := 0 to LRows.Count - 1 do
+  begin
+    if LRows.Objects[LIndex].Strings['proposal_id'] = AProposalId then
+    begin
+      Exit(True);
+    end;
+  end;
+end;
+
+procedure RememberLinkedProposal(const ACatalogRoot, AHash,
+  AProposalId: String; const APackets: TStringList;
+  var AApproximateBytes: Int64);
+var
+  LDash: Integer;
+  LKey: String;
+  LPosition: Integer;
+  LPacket: TJSONObject;
+begin
+  if AProposalId = '' then
+  begin
+    Exit;
+  end;
+  LDash := LastDelimiter('-', AProposalId);
+  Need(LDash > 5, 'Invalid linked proposal identity');
+  LKey := Copy(AProposalId, 1, LDash - 1);
+  LPosition := APackets.IndexOf(LKey);
+  if LPosition >= 0 then
+  begin
+    Need(PacketHasCandidate(TJSONObject(APackets.Objects[LPosition]),
+      AProposalId), 'Review refers to an unknown proposal');
+    Exit;
+  end;
+  Need(APackets.Count < CMaximumLinkedProposalPackets,
+    'Too many linked proposal packets for reviewed export');
+  LPacket := ReadCatalogProposalForId(ACatalogRoot, AHash, AProposalId);
+  try
+    Inc(AApproximateBytes, Length(LPacket.AsJSON));
+    Need(AApproximateBytes <= CMaximumPacketBytes,
+      'Reviewed export exceeds packet size bound');
+    APackets.AddObject(LKey, LPacket);
+    LPacket := nil;
+  finally
+    LPacket.Free;
+  end;
+end;
+
 function ExportOneSource(const ACatalogRoot: String;
   const ATrack: TJSONObject; var AApproximateBytes: Int64): TJSONObject;
 var
@@ -185,7 +241,9 @@ var
   LHistory: TJSONArray;
   LSelected: TJSONArray;
   LUnknown: TJSONArray;
+  LLinked: TJSONArray;
   LStates: TStringList;
+  LProposalPackets: TStringList;
   LPage: TJSONObject;
   LEvents: TJSONArray;
   LEvent: TJSONObject;
@@ -198,7 +256,10 @@ begin
   LPartition := ATrack.Strings['partition'];
   VerifySource(ACatalogRoot, ATrack);
   LStates := TStringList.Create;
+  LProposalPackets := TStringList.Create;
   try
+    LProposalPackets.Sorted := True;
+    LProposalPackets.CaseSensitive := True;
     Result := TJSONObject.Create;
     try
       LStates.Sorted := True;
@@ -210,6 +271,8 @@ begin
       Result.Add('selected_labels', LSelected);
       LUnknown := TJSONArray.Create;
       Result.Add('unknown_labels', LUnknown);
+      LLinked := TJSONArray.Create;
+      Result.Add('linked_proposals', LLinked);
       LExpectedRevision := 1;
       repeat
         LPage := ReadCatalogReviewHistory(ACatalogRoot, LHash,
@@ -230,6 +293,9 @@ begin
             Need(AApproximateBytes <= CMaximumPacketBytes,
               'Reviewed export exceeds packet size bound');
             RememberCurrent(LStates, LEvent);
+            RememberLinkedProposal(ACatalogRoot, LHash,
+              LEvent.Objects['change'].Strings['proposal_id'],
+              LProposalPackets, AApproximateBytes);
             LHistory.Add(CloneObject(LEvent));
             Inc(LExpectedRevision);
           end;
@@ -239,6 +305,11 @@ begin
           LPage.Free;
         end;
       until LExpectedRevision > LLatestRevision;
+      for LIndex := 0 to LProposalPackets.Count - 1 do
+      begin
+        LLinked.Add(TJSONObject(LProposalPackets.Objects[LIndex]));
+        LProposalPackets.Objects[LIndex] := nil;
+      end;
       for LIndex := 0 to LStates.Count - 1 do
       begin
         LRow := TJSONObject(LStates.Objects[LIndex]);
@@ -264,6 +335,11 @@ begin
       raise;
     end;
   finally
+    for LIndex := 0 to LProposalPackets.Count - 1 do
+    begin
+      LProposalPackets.Objects[LIndex].Free;
+    end;
+    LProposalPackets.Free;
     for LIndex := 0 to LStates.Count - 1 do
     begin
       LStates.Objects[LIndex].Free;
@@ -378,18 +454,30 @@ var
   LHistory: TJSONArray;
   LSelected: TJSONArray;
   LUnknown: TJSONArray;
+  LLinked: TJSONArray;
   LExpectedSelected: TJSONArray;
   LExpectedUnknown: TJSONArray;
   LStates: TStringList;
+  LReferencedIds: TStringList;
+  LReferencedBases: TStringList;
+  LPacketCandidates: TStringList;
   LEvent: TJSONObject;
   LChange: TJSONObject;
   LRow: TJSONObject;
+  LProposalPacket: TJSONObject;
+  LProposalRows: TJSONArray;
   LHash: String;
   LLastHash: String;
   LPartition: String;
+  LProposalId: String;
+  LProposalBase: String;
+  LLastProposalBase: String;
+  LDash: Integer;
   LIndex: Integer;
   LEventIndex: Integer;
   LStateIndex: Integer;
+  LProposalIndex: Integer;
+  LCandidatesIndex: Integer;
 begin
   Need((APacket.Integers['version'] = 1) and
     (APacket.Strings['policy'] = 'pythian.reviewed-catalog.v1') and
@@ -438,15 +526,31 @@ begin
       LHistory := LTrack.Arrays['history'];
       LSelected := LTrack.Arrays['selected_labels'];
       LUnknown := LTrack.Arrays['unknown_labels'];
+      Need((LTrack.Find('linked_proposals') <> nil) and
+        (LTrack.Find('linked_proposals').JSONType = jtArray),
+        'Reviewed catalog requires linked proposals');
+      LLinked := LTrack.Arrays['linked_proposals'];
       Need((LHistory.Count <= 100000) and
+        (LLinked.Count <= CMaximumLinkedProposalPackets) and
         (LTrack.Integers['review_revision'] = LHistory.Count) and
         (LTrack.Integers['selected_count'] = LSelected.Count) and
         (LTrack.Integers['unknown_count'] = LUnknown.Count),
         'Reviewed catalog source counts differ');
       LStates := TStringList.Create;
+      LReferencedIds := TStringList.Create;
+      LReferencedBases := TStringList.Create;
+      LPacketCandidates := TStringList.Create;
       try
         LStates.Sorted := True;
         LStates.CaseSensitive := True;
+        LReferencedIds.Sorted := True;
+        LReferencedIds.CaseSensitive := True;
+        LReferencedIds.Duplicates := dupIgnore;
+        LReferencedBases.Sorted := True;
+        LReferencedBases.CaseSensitive := True;
+        LReferencedBases.Duplicates := dupIgnore;
+        LPacketCandidates.Sorted := True;
+        LPacketCandidates.CaseSensitive := True;
         for LEventIndex := 0 to LHistory.Count - 1 do
         begin
           Need(LHistory[LEventIndex].JSONType = jtObject,
@@ -469,6 +573,14 @@ begin
             (LEvent.Find('change').JSONType = jtObject),
             'Reviewed catalog event requires change');
           LChange := LEvent.Objects['change'];
+          LProposalId := LChange.Strings['proposal_id'];
+          if LProposalId <> '' then
+          begin
+            LDash := LastDelimiter('-', LProposalId);
+            Need(LDash > 5, 'Invalid reviewed proposal identity');
+            LReferencedIds.Add(LProposalId);
+            LReferencedBases.Add(Copy(LProposalId, 1, LDash - 1));
+          end;
           Need((LChange.Int64s['start_frame'] >= 0) and
             (LChange.Int64s['end_frame'] >
               LChange.Int64s['start_frame']) and
@@ -480,6 +592,40 @@ begin
               (LChange.Strings['status'] = 'withdrawn')),
             'Reviewed catalog event span or status differs');
           RememberCurrent(LStates, LEvent);
+        end;
+        Need(LLinked.Count = LReferencedBases.Count,
+          'Reviewed proposal packet count differs from history');
+        LLastProposalBase := '';
+        for LProposalIndex := 0 to LLinked.Count - 1 do
+        begin
+          Need(LLinked[LProposalIndex].JSONType = jtObject,
+            'Reviewed linked proposal must be an object');
+          LProposalPacket := LLinked.Objects[LProposalIndex];
+          ValidateCatalogProposalPacket(LProposalPacket, LSource);
+          LProposalRows := LProposalPacket.Arrays['candidates'];
+          Need(LProposalRows.Count > 0,
+            'Reviewed linked proposal has no candidate');
+          LProposalId := LProposalRows.Objects[0].Strings['proposal_id'];
+          LDash := LastDelimiter('-', LProposalId);
+          Need(LDash > 5, 'Invalid linked candidate identity');
+          LProposalBase := Copy(LProposalId, 1, LDash - 1);
+          Need((LProposalBase > LLastProposalBase) and
+            (LProposalBase = LReferencedBases[LProposalIndex]),
+            'Reviewed proposal order or identity differs');
+          LLastProposalBase := LProposalBase;
+          for LCandidatesIndex := 0 to LProposalRows.Count - 1 do
+          begin
+            LProposalId := LProposalRows.Objects[LCandidatesIndex]
+              .Strings['proposal_id'];
+            Need(LPacketCandidates.IndexOf(LProposalId) < 0,
+              'Duplicate linked proposal candidate');
+            LPacketCandidates.Add(LProposalId);
+          end;
+        end;
+        for LProposalIndex := 0 to LReferencedIds.Count - 1 do
+        begin
+          Need(LPacketCandidates.IndexOf(LReferencedIds[LProposalIndex]) >= 0,
+            'Reviewed history refers to a missing proposal');
         end;
         LExpectedSelected := TJSONArray.Create;
         LExpectedUnknown := TJSONArray.Create;
@@ -509,6 +655,9 @@ begin
           LExpectedSelected.Free;
         end;
       finally
+        LPacketCandidates.Free;
+        LReferencedBases.Free;
+        LReferencedIds.Free;
         for LStateIndex := 0 to LStates.Count - 1 do
         begin
           LStates.Objects[LStateIndex].Free;

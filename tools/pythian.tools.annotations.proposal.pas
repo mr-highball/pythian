@@ -39,6 +39,10 @@ function ReadCatalogBeatProposals(const ACatalogRoot, AHash: String;
   const AStartFrame, AEndFrame: Int64): TJSONObject;
 function CatalogProposalExists(const ACatalogRoot, AHash,
   AProposalId: String): Boolean;
+function ReadCatalogProposalForId(const ACatalogRoot, AHash,
+  AProposalId: String): TJSONObject;
+procedure ValidateCatalogProposalPacket(const APacket,
+  ATrack: TJSONObject);
 
 implementation
 
@@ -332,6 +336,24 @@ begin
   end;
 end;
 
+procedure ValidateCatalogProposalPacket(const APacket,
+  ATrack: TJSONObject);
+var
+  LStartFrame: Int64;
+  LEndFrame: Int64;
+begin
+  LStartFrame := APacket.Int64s['region_start_frame'];
+  LEndFrame := APacket.Int64s['region_end_frame'];
+  Need((LStartFrame >= 0) and (LEndFrame > LStartFrame) and
+    (LEndFrame <= ATrack.Int64s['frame_count']) and
+    (LEndFrame - LStartFrame <= CMaximumProposalFrames) and
+    (LEndFrame - LStartFrame <=
+      Int64(ATrack.Integers['sample_rate']) * CMaximumProposalSeconds),
+    'Linked proposal window exceeds source or analysis bound');
+  ValidateStoredPacket(APacket, ATrack,
+    ATrack.Strings['source_sha256'], LStartFrame, LEndFrame);
+end;
+
 function PublishCatalogBeatProposals(const ACatalogRoot, AHash: String;
   const AStartFrame, AEndFrame: Int64): TJSONObject;
 var
@@ -423,9 +445,6 @@ var
   LDash: Integer;
   LPath: String;
   LPacket: TJSONObject;
-  LRows: TJSONArray;
-  LIndex: Integer;
-  LTrack: TJSONObject;
 begin
   Result := False;
   if not SafeIdentifier(AProposalId) or
@@ -444,30 +463,58 @@ begin
   begin
     Exit;
   end;
-  LPacket := ReadPacket(LPath);
+  LPacket := ReadCatalogProposalForId(ACatalogRoot, AHash, AProposalId);
+  try
+    Result := True;
+  finally
+    LPacket.Free;
+  end;
+end;
+
+function ReadCatalogProposalForId(const ACatalogRoot, AHash,
+  AProposalId: String): TJSONObject;
+var
+  LDash: Integer;
+  LPath: String;
+  LTrack: TJSONObject;
+  LRows: TJSONArray;
+  LIndex: Integer;
+  LFound: Boolean;
+begin
+  Need(SafeIdentifier(AProposalId) and
+    (Copy(AProposalId, 1, 5) = 'beat-'),
+    'Invalid linked proposal identity');
+  LDash := LastDelimiter('-', AProposalId);
+  Need(LDash > 5, 'Invalid linked proposal identity');
+  LPath := IncludeTrailingPathDelimiter(ProposalDirectory(ACatalogRoot,
+    AHash)) + Copy(AProposalId, 1, LDash - 1) + '.json';
+  Need(FileExists(LPath), 'Linked proposal packet does not exist');
+  Result := ReadPacket(LPath);
   try
     LTrack := ReadCatalogTrack(ACatalogRoot, AHash);
     try
       Need(Copy(AProposalId, 1, LDash - 1) =
-        ProposalBase(LPacket.Int64s['region_start_frame'],
-          LPacket.Int64s['region_end_frame']),
+        ProposalBase(Result.Int64s['region_start_frame'],
+          Result.Int64s['region_end_frame']),
         'Stored proposal filename differs from window');
-      ValidateStoredPacket(LPacket, LTrack, AHash,
-        LPacket.Int64s['region_start_frame'],
-        LPacket.Int64s['region_end_frame']);
+      ValidateCatalogProposalPacket(Result, LTrack);
     finally
       LTrack.Free;
     end;
-    LRows := LPacket.Arrays['candidates'];
+    LRows := Result.Arrays['candidates'];
+    LFound := False;
     for LIndex := 0 to LRows.Count - 1 do
     begin
       if LRows.Objects[LIndex].Strings['proposal_id'] = AProposalId then
       begin
-        Exit(True);
+        LFound := True;
+        Break;
       end;
     end;
-  finally
-    LPacket.Free;
+    Need(LFound, 'Linked proposal candidate does not exist');
+  except
+    Result.Free;
+    raise;
   end;
 end;
 

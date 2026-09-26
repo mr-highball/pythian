@@ -253,3 +253,16 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
   packet also does not carry definitions for proposal IDs referenced in review
   history, so replay must preserve that evidence or explicitly constrain the
   replay contract before the task can be accepted. No new completion credit.
+- The current packet now includes only proposal packets cited by review history;
+  the Pascal reader verifies every cited candidate ID. `import-reviewed`
+  preflights the destination's source records and original WAV hashes, stages
+  proposal and review evidence, publishes proposals before reviews, refuses a
+  different existing history, and reports `duplicate` on identical replay.
+  Checked stable FPC 3.2.2 Win32 and Win64 builds passed. A two-track,
+  15-event artificial-review fixture restored one linked proposal packet into
+  a freshly imported catalog. Re-export matched the input SHA-256 exactly:
+  `de3493e2b01400dd86ca19e2bef7e1a181e341a8cdca2458e70192a6d5d072ca`.
+  Repeat replay was a duplicate on both targets; Win64 rejected a one-track
+  destination before writes. This establishes packet replay mechanics, not
+  acoustic truth or training-tool consumption. No additional criterion or
+  task credit is claimed.
