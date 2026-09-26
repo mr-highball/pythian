@@ -14135,3 +14135,31 @@ A different packet was rejected against the plan hash. These mechanics do not
 establish real acoustic labels, independent review, or training consumption.
 No task moved to DONE; overall **70.20%**, **38 open / 27 DONE**,
 listening queue **0/20**.
+
+## Direct waveform review draft and native HTTP criterion — 2026-09-25
+
+The previous reviewed-presence evaluator batch and this browser editing batch
+did not close their full owning tasks. At the task-flow checkpoint, the next
+available criterion-closing action was a focused audit of the native HTTP
+service instead of another partial UI feature. Its documented checked Win32/
+Win64 route, auth, conflict and root tests plus the current LAN page and 403
+unauthenticated data result satisfy NS-3_labeling_01's HTTP criterion at the
+specified service scope. A physical phone remains unverified, and a proposed
+narrow Windows Firewall rule was denied by the host; NS-6 mobile usability
+and durable catalog deployment remain open.
+
+The pas2js workbench now lets the operator drag the reviewed waveform lane to
+draft a span, or select a label and drag its body/edges to move/resize. The
+editor receives exact source frames, while saving remains a separate review
+action. New drafts clear inherited label/value and begin uncertain. The
+Pascal-authored Edge CDP check exercised desktop 1280px and emulated mobile
+390px layouts: draft `220500–308700`, resize `0–48000` to `0–70050`, move
+`0–48000` to `17640–65640`, and a mobile touch draft
+`374850–418950`. Each draft left the revision unchanged. An earlier touch
+draft was explicitly saved as an artificial unknown in the ignored loopback
+catalog and reloaded at revision 4. The taller mobile waveform was visually
+inspected at `build/label-workbench/timeline-mobile.png`. The LAN host serves
+the updated HTML and compiled pas2js asset. Direct editing remains partial;
+split/merge, undo/redo, cue audition and actual phone review are outstanding.
+No task moved to DONE or earned credit: **70.20%**, **38 open / 27 DONE**,
+listening queue **0/20**.

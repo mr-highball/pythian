@@ -69,6 +69,18 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Dev Notes:**
 
+- 2026-09-25 the reviewed waveform lane now drafts a new interval or moves
+  and resizes an existing label with pointer events. It updates the editor but
+  never saves without the explicit review action; a new draft clears inherited
+  label identity/value and starts uncertain. A Pascal-authored Edge CDP check
+  used desktop 1280px and emulated mobile 390px layouts to create, resize and
+  move spans with unchanged catalog revision. A touch gesture also drafted a
+  span on the taller mobile waveform. One artificial touch-created unknown
+  review was saved and reloaded at revision 4 in the ignored loopback catalog.
+  Screenshots are under ignored `build/label-workbench/`. The live LAN host
+  serves the changed assets. This advances direct timeline editing, not
+  split/merge, undo/redo, cue audition, physical-phone validation or the full
+  authoring task; no credit is claimed.
 - 2026-09-25 user selected a Pascal/pas2js web workbench for authoring the
   missing recorded labels. The pinned WFC static server used by Phanes is a
   useful preview reference; catalog writes and large-WAV serving require the

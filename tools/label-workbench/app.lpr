@@ -33,6 +33,8 @@ uses
   SysUtils;
 
 type
+  TLabelDragMode = (dmNone, dmCreate, dmMove, dmStart, dmEnd, dmDraft);
+
   TWorkbenchWindow = class external name 'Window' (TJSWindow)
     function fetch(const AUrl: String;
       const AOptions: TJSObject): TJSPromise; reintroduce;
@@ -60,6 +62,14 @@ type
     FWindowEpoch: Integer;
     FCanvas: TJSHTMLCanvasElement;
     FAudio: TJSHTMLAudioElement;
+    FSelectedLabel: Integer;
+    FDragMode: TLabelDragMode;
+    FDragPointer: NativeInt;
+    FDragAnchor: Int64;
+    FDragOriginalStart: Int64;
+    FDragOriginalEnd: Int64;
+    FDragStart: Int64;
+    FDragEnd: Int64;
     function Element(const AId: String): TJSElement;
     function Input(const AId: String): TJSHTMLInputElement;
     function FetchApi(const APath, AMethod, ABody: String): TJSPromise;
@@ -74,6 +84,11 @@ type
     procedure RenderLabels;
     procedure RenderProposals;
     procedure DrawWaveform;
+    procedure SelectLabel(const AIndex: Integer);
+    function CanvasX(const AEvent: TJSPointerEvent): Double;
+    function CanvasY(const AEvent: TJSPointerEvent): Double;
+    function FrameAtX(const AX: Double): Int64;
+    procedure UpdateDrag(const AFrame: Int64);
     procedure UpdateWindowLabel;
     procedure Start; async;
     procedure Connect; async;
@@ -100,6 +115,10 @@ type
     function HandleSave(AEvent: TJSMouseEvent): Boolean;
     function HandleExport(AEvent: TJSMouseEvent): Boolean;
     function HandleUploadReviewed(AEvent: TJSMouseEvent): Boolean;
+    function HandleCanvasDown(AEvent: TJSPointerEvent): Boolean;
+    function HandleCanvasMove(AEvent: TJSPointerEvent): Boolean;
+    function HandleCanvasUp(AEvent: TJSPointerEvent): Boolean;
+    function HandleCanvasCancel(AEvent: TJSPointerEvent): Boolean;
   public
     procedure Run;
   end;
@@ -339,6 +358,7 @@ var
   LEnd: Double;
   LFrames: TJSArray;
   LCandidates: TJSArray;
+  LSelected: TJSObject;
 begin
   LContext := FCanvas.getContextAs2DContext('2d');
   LContext.fillStyleAsColor := '#11212d';
@@ -392,6 +412,30 @@ begin
       LContext.fillRect(LStart, 211, LEnd - LStart + 2, 18);
     end;
   end;
+  if (FDragMode <> dmNone) or
+    ((FCurrentLabels <> nil) and (FSelectedLabel >= 0) and
+    (FSelectedLabel < FCurrentLabels.length)) then
+  begin
+    if FDragMode <> dmNone then
+    begin
+      LStart := (FDragStart - FWindowStart) /
+        FWindowSpan * FCanvas.width;
+      LEnd := (FDragEnd - FWindowStart) /
+        FWindowSpan * FCanvas.width;
+    end
+    else
+    begin
+      LSelected := TJSObject(FCurrentLabels[FSelectedLabel]);
+      LStart := (NumberField(LSelected, 'start_frame') - FWindowStart) /
+        FWindowSpan * FCanvas.width;
+      LEnd := (NumberField(LSelected, 'end_frame') - FWindowStart) /
+        FWindowSpan * FCanvas.width;
+    end;
+    LContext.fillStyleAsColor := '#b7e6ff';
+    LContext.fillRect(LStart, 209, LEnd - LStart + 2, 2);
+    LContext.fillRect(LStart - 3, 207, 6, 25);
+    LContext.fillRect(LEnd - 3, 207, 6, 25);
+  end;
   if FProposals <> nil then
   begin
     LCandidates := TJSArray(FProposals['candidates']);
@@ -406,6 +450,125 @@ begin
         LContext.fillRect(LX, 164, 2, 35);
       end;
     end;
+  end;
+end;
+
+procedure TWorkbench.SelectLabel(const AIndex: Integer);
+var
+  LRow: TJSObject;
+begin
+  if (FCurrentLabels = nil) or (AIndex < 0) or
+    (AIndex >= FCurrentLabels.length) then
+  begin
+    Exit;
+  end;
+  FSelectedLabel := AIndex;
+  FDragMode := dmNone;
+  LRow := TJSObject(FCurrentLabels[AIndex]);
+  Input('label-id').value := TextField(LRow, 'label_id');
+  Input('label-type').value := TextField(LRow, 'type');
+  Input('label-value').value := TextField(LRow, 'value');
+  Input('label-status').value := TextField(LRow, 'status');
+  Input('label-part').value := TextField(LRow, 'part');
+  Input('label-start').value :=
+    IntToStr(Trunc(NumberField(LRow, 'start_frame')));
+  Input('label-end').value :=
+    IntToStr(Trunc(NumberField(LRow, 'end_frame')));
+  Input('label-proposal').value := TextField(LRow, 'proposal_id');
+  if TextField(LRow, 'type') = 'note' then
+  begin
+    Input('label-pitch').value :=
+      IntToStr(Trunc(NumberField(LRow, 'pitch_midi')));
+  end;
+  DrawWaveform;
+end;
+
+function TWorkbench.CanvasX(const AEvent: TJSPointerEvent): Double;
+var
+  LRect: TJSDOMRect;
+begin
+  LRect := FCanvas.getBoundingClientRect;
+  Result := (AEvent.clientX - LRect.left) / LRect.width * FCanvas.width;
+end;
+
+function TWorkbench.CanvasY(const AEvent: TJSPointerEvent): Double;
+var
+  LRect: TJSDOMRect;
+begin
+  LRect := FCanvas.getBoundingClientRect;
+  Result := (AEvent.clientY - LRect.top) / LRect.height * FCanvas.height;
+end;
+
+function TWorkbench.FrameAtX(const AX: Double): Int64;
+var
+  LEnd: Int64;
+begin
+  LEnd := Smaller(FFrameCount, FWindowStart + FWindowSpan);
+  Result := FWindowStart + Trunc(AX / FCanvas.width * FWindowSpan + 0.5);
+  if Result < FWindowStart then
+  begin
+    Result := FWindowStart;
+  end;
+  if Result > LEnd then
+  begin
+    Result := LEnd;
+  end;
+end;
+
+procedure TWorkbench.UpdateDrag(const AFrame: Int64);
+var
+  LDelta: Int64;
+  LDuration: Int64;
+begin
+  case FDragMode of
+    dmCreate:
+      begin
+        if AFrame < FDragAnchor then
+        begin
+          FDragStart := AFrame;
+          FDragEnd := FDragAnchor;
+        end
+        else
+        begin
+          FDragStart := FDragAnchor;
+          FDragEnd := AFrame;
+        end;
+        if FDragEnd = FDragStart then
+        begin
+          FDragEnd := Smaller(FFrameCount, FDragStart + 1);
+        end;
+      end;
+    dmMove:
+      begin
+        LDelta := AFrame - FDragAnchor;
+        LDuration := FDragOriginalEnd - FDragOriginalStart;
+        FDragStart := FDragOriginalStart + LDelta;
+        if FDragStart < 0 then
+        begin
+          FDragStart := 0;
+        end;
+        if FDragStart > FFrameCount - LDuration then
+        begin
+          FDragStart := FFrameCount - LDuration;
+        end;
+        FDragEnd := FDragStart + LDuration;
+      end;
+    dmStart:
+      begin
+        FDragStart := AFrame;
+        if FDragStart >= FDragOriginalEnd then
+        begin
+          FDragStart := FDragOriginalEnd - 1;
+        end;
+      end;
+    dmEnd:
+      begin
+        FDragEnd := AFrame;
+        if FDragEnd <= FDragOriginalStart then
+        begin
+          FDragEnd := FDragOriginalStart + 1;
+        end;
+      end;
   end;
 end;
 
@@ -576,6 +739,8 @@ begin
   FWaveBins := nil;
   FCurrentLabels := nil;
   FProposals := nil;
+  FSelectedLabel := -1;
+  FDragMode := dmNone;
   Element('track-title').textContent := TextField(LTrack, 'title');
   Element('track-partition').textContent := UpperCase(FPartition);
   Element('track-meta').textContent :=
@@ -612,6 +777,8 @@ begin
     LPartition := FPartition;
     LStart := FWindowStart;
     LEnd := Smaller(FFrameCount, LStart + FWindowSpan);
+    FSelectedLabel := -1;
+    FDragMode := dmNone;
     FAudio.pause;
     FAudio.removeAttribute('src');
     if FAudioUrl <> '' then
@@ -849,6 +1016,7 @@ begin
       TJSJSON.stringify(LTransaction)));
     if LResponse.status = 409 then
     begin
+      FDragMode := dmNone;
       Status('Another review changed this source. Reloading current labels.',
         True);
       RefreshWindow;
@@ -858,6 +1026,7 @@ begin
     begin
       raise Exception.Create('Review HTTP ' + IntToStr(LResponse.status));
     end;
+    FDragMode := dmNone;
     Status('Review event saved. Reloading exact source labels.');
     RefreshWindow;
   except
@@ -974,31 +1143,156 @@ end;
 function TWorkbench.HandleLabel(AEvent: TJSMouseEvent): Boolean;
 var
   LIndex: Integer;
-  LRow: TJSObject;
 begin
   LIndex := StrToIntDef(
     TJSElement(AEvent.currentTarget).getAttribute('data-index'), -1);
-  if (FCurrentLabels <> nil) and (LIndex >= 0) and
-    (LIndex < FCurrentLabels.length) then
+  SelectLabel(LIndex);
+  Result := False;
+end;
+
+function TWorkbench.HandleCanvasDown(AEvent: TJSPointerEvent): Boolean;
+var
+  LX: Double;
+  LY: Double;
+  LStartX: Double;
+  LEndX: Double;
+  LRow: TJSObject;
+  LIndex: Integer;
+  LPass: Integer;
+  LHit: Integer;
+begin
+  Result := False;
+  if (FSourceHash = '') or (FWaveBins = nil) or
+    (AEvent.button <> 0) or
+    (FDragMode in [dmCreate, dmMove, dmStart, dmEnd]) then
   begin
-    LRow := TJSObject(FCurrentLabels[LIndex]);
-    Input('label-id').value := TextField(LRow, 'label_id');
-    Input('label-type').value := TextField(LRow, 'type');
-    Input('label-value').value := TextField(LRow, 'value');
-    Input('label-status').value := TextField(LRow, 'status');
-    Input('label-part').value := TextField(LRow, 'part');
-    Input('label-start').value :=
-      IntToStr(Trunc(NumberField(LRow, 'start_frame')));
-    Input('label-end').value :=
-      IntToStr(Trunc(NumberField(LRow, 'end_frame')));
-    Input('label-proposal').value := TextField(LRow, 'proposal_id');
-    if TextField(LRow, 'type') = 'note' then
+    Exit;
+  end;
+  LX := CanvasX(AEvent);
+  LY := CanvasY(AEvent);
+  if (LY < 207) or (LY > 235) then
+  begin
+    Exit;
+  end;
+  FDragMode := dmNone;
+  LHit := -1;
+  if FCurrentLabels <> nil then
+  begin
+    for LPass := 0 to FCurrentLabels.length do
     begin
-      Input('label-pitch').value :=
-        IntToStr(Trunc(NumberField(LRow, 'pitch_midi')));
+      if LPass = 0 then
+      begin
+        LIndex := FSelectedLabel;
+      end
+      else
+      begin
+        LIndex := FCurrentLabels.length - LPass;
+      end;
+      if (LIndex < 0) or (LIndex >= FCurrentLabels.length) then
+      begin
+        Continue;
+      end;
+      LRow := TJSObject(FCurrentLabels[LIndex]);
+      LStartX := (NumberField(LRow, 'start_frame') - FWindowStart) /
+        FWindowSpan * FCanvas.width;
+      LEndX := (NumberField(LRow, 'end_frame') - FWindowStart) /
+        FWindowSpan * FCanvas.width;
+      if (LX >= LStartX - 10) and (LX <= LEndX + 10) then
+      begin
+        LHit := LIndex;
+        Break;
+      end;
     end;
   end;
+  if LHit >= 0 then
+  begin
+    SelectLabel(LHit);
+    LRow := TJSObject(FCurrentLabels[LHit]);
+    FDragOriginalStart := Trunc(NumberField(LRow, 'start_frame'));
+    FDragOriginalEnd := Trunc(NumberField(LRow, 'end_frame'));
+    FDragStart := FDragOriginalStart;
+    FDragEnd := FDragOriginalEnd;
+    LStartX := (FDragStart - FWindowStart) /
+      FWindowSpan * FCanvas.width;
+    LEndX := (FDragEnd - FWindowStart) /
+      FWindowSpan * FCanvas.width;
+    if Abs(LX - LStartX) <= 10 then
+    begin
+      FDragMode := dmStart;
+    end
+    else if Abs(LX - LEndX) <= 10 then
+    begin
+      FDragMode := dmEnd;
+    end
+    else
+    begin
+      FDragMode := dmMove;
+    end;
+  end
+  else
+  begin
+    FSelectedLabel := -1;
+    FDragMode := dmCreate;
+    FDragStart := FrameAtX(LX);
+    if FDragStart >= FFrameCount then
+    begin
+      FDragStart := FFrameCount - 1;
+    end;
+    FDragEnd := FDragStart + 1;
+    Input('label-id').value := '';
+    Input('label-type').value := 'presence';
+    Input('label-value').value := '';
+    Input('label-status').value := 'uncertain';
+    Input('label-part').value := '';
+    Input('label-proposal').value := '';
+  end;
+  FDragPointer := AEvent.pointerId;
+  FDragAnchor := FrameAtX(LX);
+  FCanvas.setPointerCapture(FDragPointer);
+  AEvent.preventDefault;
+  DrawWaveform;
+end;
+
+function TWorkbench.HandleCanvasMove(AEvent: TJSPointerEvent): Boolean;
+begin
   Result := False;
+  if (FDragMode in [dmCreate, dmMove, dmStart, dmEnd]) and
+    (AEvent.pointerId = FDragPointer) then
+  begin
+    UpdateDrag(FrameAtX(CanvasX(AEvent)));
+    DrawWaveform;
+    AEvent.preventDefault;
+  end;
+end;
+
+function TWorkbench.HandleCanvasUp(AEvent: TJSPointerEvent): Boolean;
+begin
+  Result := False;
+  if (FDragMode in [dmCreate, dmMove, dmStart, dmEnd]) and
+    (AEvent.pointerId = FDragPointer) then
+  begin
+    UpdateDrag(FrameAtX(CanvasX(AEvent)));
+    FCanvas.releasePointerCapture(FDragPointer);
+    FDragMode := dmDraft;
+    Input('label-start').value := IntToStr(FDragStart);
+    Input('label-end').value := IntToStr(FDragEnd);
+    DrawWaveform;
+    Status('Span drafted at frames ' + IntToStr(FDragStart) +
+      '–' + IntToStr(FDragEnd) +
+      '. Check the label and save the review event.');
+    AEvent.preventDefault;
+  end;
+end;
+
+function TWorkbench.HandleCanvasCancel(AEvent: TJSPointerEvent): Boolean;
+begin
+  Result := False;
+  if (FDragMode in [dmCreate, dmMove, dmStart, dmEnd]) and
+    (AEvent.pointerId = FDragPointer) then
+  begin
+    FDragMode := dmNone;
+    DrawWaveform;
+  end;
 end;
 
 function TWorkbench.HandleProposal(AEvent: TJSMouseEvent): Boolean;
@@ -1120,6 +1414,7 @@ end;
 
 procedure TWorkbench.Run;
 begin
+  FSelectedLabel := -1;
   FCanvas := TJSHTMLCanvasElement(Element('waveform'));
   FAudio := TJSHTMLAudioElement(Element('preview'));
   TJSHTMLButtonElement(Element('connect-button')).onclick := @HandleConnect;
@@ -1134,6 +1429,10 @@ begin
   TJSHTMLButtonElement(Element('export-button')).onclick := @HandleExport;
   TJSHTMLButtonElement(Element('import-reviewed-button')).onclick :=
     @HandleUploadReviewed;
+  FCanvas.onpointerdown := @HandleCanvasDown;
+  FCanvas.onpointermove := @HandleCanvasMove;
+  FCanvas.onpointerup := @HandleCanvasUp;
+  FCanvas.onpointercancel := @HandleCanvasCancel;
   DrawWaveform;
   Start;
 end;

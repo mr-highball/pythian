@@ -79,6 +79,18 @@ Starting evidence: [source-bound presence](../PRESENCE.md) · [beat reports](../
 
 **Dev Notes:**
 
+- 2026-09-25 focused criterion audit: the native HTTP criterion is met at
+  its declared local-service scope. The maintained host exposes the specified
+  bounded inbox/catalog, waveform/audio, proposal, review and export routes;
+  it uses configured roots and a whitelist of static assets, binds loopback by
+  default, and accepts an explicit private IPv4 with an access-key session
+  before LAN data access. Prior checked Win32/Win64 request, conflict, path and
+  token checks are recorded in WORK. Current `192.168.12.109:18097` returned
+  the updated page, and its data route rejected an unauthenticated request.
+  A separate phone and Windows firewall rule are NS-6 usability/deployment
+  evidence, not claims made by this native HTTP criterion. Other catalog
+  criteria, especially real reviewed source evidence and training consumption,
+  remain open; no task credit is claimed.
 - 2026-09-25 a Pascal evaluation consumer now builds a source-bound presence
   reference from the reviewed packet and original WAV. It retains unknown and
   ambiguous centers, refuses proposal-linked presence for independent reference,
