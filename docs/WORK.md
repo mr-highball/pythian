@@ -13,6 +13,19 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Remembered LAN workbench access — 2026-09-25
+
+The Pascal/pas2js label workbench now saves an accepted LAN access key in
+origin-scoped browser local storage. On later visits it requests a fresh
+session automatically; **Forget this device** removes the saved key and clears
+the page session. Native service authentication and token-protected catalog
+and audio requests remain in place. A real Edge run on the LAN-bound preview
+verified first login, reload/reconnect, forget, and return to the login prompt
+after another reload. Desktop and emulated mobile top-of-page screenshots were
+inspected under ignored `build/label-workbench/`. This improves operator access
+but does not complete the workbench or claim task credit; physical-phone
+connectivity and final QA remain open.
+
 ## User-authored recorded-label workbench — 2026-09-25
 
 The bounded publisher search did not find same-recording, exact-window

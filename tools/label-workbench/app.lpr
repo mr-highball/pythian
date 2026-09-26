@@ -32,6 +32,9 @@ uses
   Web,
   SysUtils;
 
+const
+  RememberedAccessKey = 'pythian.catalog.access-key.v1';
+
 type
   TLabelDragMode = (dmNone, dmCreate, dmMove, dmStart, dmEnd, dmDraft);
 
@@ -92,6 +95,8 @@ type
     procedure UpdateWindowLabel;
     procedure Start; async;
     procedure Connect; async;
+    procedure ConnectWithKey(const AKey: String; const ARemember: Boolean); async;
+    procedure ForgetDevice;
     procedure RefreshLists; async;
     procedure ImportAll; async;
     procedure SelectTrack(const AIndex: Integer); async;
@@ -102,6 +107,7 @@ type
     procedure DownloadExport; async;
     procedure UploadReviewed; async;
     function HandleConnect(AEvent: TJSMouseEvent): Boolean;
+    function HandleForgetDevice(AEvent: TJSMouseEvent): Boolean;
     function HandleImport(AEvent: TJSMouseEvent): Boolean;
     function HandleTrack(AEvent: TJSMouseEvent): Boolean;
     function HandleLabel(AEvent: TJSMouseEvent): Boolean;
@@ -591,6 +597,7 @@ procedure TWorkbench.Start; async;
 var
   LResponse: TJSResponse;
   LData: TJSObject;
+  LKey: String;
 begin
   try
     LResponse := await(TJSResponse, FetchApi('/api/session', 'GET', ''));
@@ -604,7 +611,21 @@ begin
     end
     else
     begin
-      Status('Enter the local LAN access key to connect.');
+      LKey := '';
+      try
+        LKey := window.localStorage.getItem(RememberedAccessKey);
+      except
+        // Browser storage can be disabled; manual connection still works.
+      end;
+      if isString(LKey) and (LKey <> '') then
+      begin
+        Status('Reconnecting to the LAN catalog…');
+        ConnectWithKey(LKey, False);
+      end
+      else
+      begin
+        Status('Enter the local LAN access key to connect.');
+      end;
     end;
   except
     on LError: Exception do
@@ -617,20 +638,49 @@ end;
 
 procedure TWorkbench.Connect; async;
 var
+  LKey: String;
+begin
+  LKey := Input('access-key').value;
+  Input('access-key').value := '';
+  ConnectWithKey(LKey, True);
+end;
+
+procedure TWorkbench.ConnectWithKey(const AKey: String;
+  const ARemember: Boolean); async;
+var
   LBody: TJSObject;
   LResponse: TJSResponse;
   LData: TJSObject;
+  LStored: Boolean;
 begin
   try
     LBody := TJSObject.new;
-    LBody['access_key'] := Input('access-key').value;
-    Input('access-key').value := '';
+    LBody['access_key'] := AKey;
     LResponse := await(TJSResponse, FetchApi('/api/session', 'POST',
       TJSJSON.stringify(LBody)));
     if LResponse.status <> 200 then
     begin
-      Status('Access key was not accepted (HTTP ' +
-        IntToStr(LResponse.status) + ').', True);
+      if LResponse.status = 403 then
+      begin
+        try
+          window.localStorage.removeItem(RememberedAccessKey);
+        except
+          // A failed storage removal must not prevent manual connection.
+        end;
+        if ARemember then
+        begin
+          Status('Access key was not accepted. Enter the current key.', True);
+        end
+        else
+        begin
+          Status('Saved access key was not accepted. Enter the current key.', True);
+        end;
+      end
+      else
+      begin
+        Status('Connection failed (HTTP ' +
+          IntToStr(LResponse.status) + ').', True);
+      end;
       Exit;
     end;
     LData := await(TJSObject, LResponse.json());
@@ -639,8 +689,27 @@ begin
     begin
       raise Exception.Create('Session token missing');
     end;
+    LStored := not ARemember;
+    if ARemember then
+    begin
+      try
+        window.localStorage.setItem(RememberedAccessKey, AKey);
+        LStored := True;
+      except
+        LStored := False;
+      end;
+    end;
     ShowWorkspace;
-    Status('Connected to catalog.');
+    Element('connection-actions').removeAttribute('hidden');
+    if LStored then
+    begin
+      Status('Connected to catalog. This browser will reconnect automatically.');
+    end
+    else
+    begin
+      Status('Connected to catalog. Browser storage is unavailable; ' +
+        'enter the key again next visit.');
+    end;
     RefreshLists;
   except
     on LError: Exception do
@@ -648,6 +717,31 @@ begin
       Status('Connection failed: ' + LError.Message, True);
     end;
   end;
+end;
+
+procedure TWorkbench.ForgetDevice;
+begin
+  try
+    window.localStorage.removeItem(RememberedAccessKey);
+  except
+    on LError: Exception do
+    begin
+      Status('Could not remove the saved key: ' + LError.Message, True);
+      Exit;
+    end;
+  end;
+  FToken := '';
+  FAudio.pause;
+  FAudio.removeAttribute('src');
+  if FAudioUrl <> '' then
+  begin
+    TJSURL.revokeObjectURL(FAudioUrl);
+    FAudioUrl := '';
+  end;
+  Element('workspace').setAttribute('hidden', '');
+  Element('connection-actions').setAttribute('hidden', '');
+  Element('login-panel').removeAttribute('hidden');
+  Status('Saved key removed from this browser. Enter a key to reconnect.');
 end;
 
 procedure TWorkbench.RefreshLists; async;
@@ -1127,6 +1221,12 @@ begin
   Result := False;
 end;
 
+function TWorkbench.HandleForgetDevice(AEvent: TJSMouseEvent): Boolean;
+begin
+  ForgetDevice;
+  Result := False;
+end;
+
 function TWorkbench.HandleImport(AEvent: TJSMouseEvent): Boolean;
 begin
   ImportAll;
@@ -1418,6 +1518,8 @@ begin
   FCanvas := TJSHTMLCanvasElement(Element('waveform'));
   FAudio := TJSHTMLAudioElement(Element('preview'));
   TJSHTMLButtonElement(Element('connect-button')).onclick := @HandleConnect;
+  TJSHTMLButtonElement(Element('forget-device-button')).onclick :=
+    @HandleForgetDevice;
   TJSHTMLButtonElement(Element('import-button')).onclick := @HandleImport;
   TJSHTMLButtonElement(Element('previous-button')).onclick := @HandlePrevious;
   TJSHTMLButtonElement(Element('next-button')).onclick := @HandleNext;

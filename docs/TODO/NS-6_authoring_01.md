@@ -69,6 +69,14 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Dev Notes:**
 
+- 2026-09-25 LAN login now remembers an accepted access key in this browser's
+  origin-scoped local storage and silently requests a new session on reload.
+  A visible **Forget this device** control removes that key and clears the
+  page session. The service still requires a token on catalog and audio calls.
+  A real LAN-bound Edge run checked login, stored key, reload/reconnect,
+  forget, and the fresh login prompt after another reload. Desktop 1280px and
+  emulated mobile 390px top-of-page screenshots were inspected. Physical-phone
+  access and final operator QA remain open; no task credit is claimed.
 - 2026-09-25 the reviewed waveform lane now drafts a new interval or moves
   and resizes an existing label with pointer events. It updates the editor but
   never saves without the explicit review action; a new draft clears inherited

@@ -214,10 +214,18 @@ Start it on the chosen interface with the same secret:
 
 Open `http://<LAN_IPV4>:18095/` and enter the secret in the page. The server
 accepts only three named static assets and keeps catalog routes behind its
-session token. The bind address must belong to the host, such as its Wi-Fi
-address. A local firewall may need to allow the chosen port before a phone can
-connect. The current browser slice supports bounded source listening, basic
-review, source-level blind reveal, reviewed packet download and re-import.
+session token. After a successful LAN login, the Pascal browser app saves the
+access key in this browser's local storage for that origin and automatically
+requests a new session on later visits. Use **Forget this device** to remove
+the saved key and clear the current page session. This convenience is for a
+trusted device on a trusted LAN: browser storage holds the key as readable
+text, and LAN HTTP is unencrypted. Clearing browser site data also removes it;
+changing the host address or port creates a different browser origin and
+requires entering the key again. The bind address must belong to the host,
+such as its Wi-Fi address. A local firewall may need to allow the chosen port
+before a phone can connect. The current browser slice supports bounded source
+listening, basic review, source-level blind reveal, reviewed packet download
+and re-import.
 Full authoring controls remain open in
 [NS-6_authoring_01](TODO/NS-6_authoring_01.md). Store a real operator catalog
 outside `build/`; the catalog under `build/label-catalog/` is a test fixture.

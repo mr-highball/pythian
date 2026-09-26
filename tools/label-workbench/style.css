@@ -52,6 +52,7 @@ h2 { margin-bottom: 0; font-size: 1.2rem; }
 .subtitle { max-width: 49rem; color: #b6c6cd; margin-bottom: 0; line-height: 1.45; }
 .status { margin: 0; padding: .7rem 2rem; border-bottom: 1px solid #30434e; background: #1c303b; color: #c9e8df; min-height: 2.7rem; }
 .status.error { background: #43292c; color: #ffd5d1; }
+.connection-actions { display: flex; justify-content: flex-end; padding: .5rem 1rem 0; }
 .login-panel { display: flex; justify-content: space-between; gap: 2rem; padding: 1.5rem 2rem; border-bottom: 1px solid #30434e; }
 .login-panel p:not(.step) { color: #b6c6cd; max-width: 38rem; line-height: 1.4; margin: .65rem 0 0; }
 .login-controls { min-width: min(100%, 22rem); display: grid; grid-template-columns: 1fr auto; gap: .5rem; align-items: end; }

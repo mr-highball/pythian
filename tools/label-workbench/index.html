@@ -43,7 +43,7 @@ SOFTWARE.
     <div>
       <p class="step">CONNECT</p>
       <h2 id="login-heading">Open your catalog</h2>
-      <p>For LAN access, enter the key configured when the Pascal service started. It stays in this page session.</p>
+      <p>For LAN access, enter the key configured when the Pascal service started. This browser saves the accepted key on this device and reconnects automatically. Use a trusted device.</p>
     </div>
     <div class="login-controls">
       <label for="access-key">Access key</label>
@@ -53,6 +53,8 @@ SOFTWARE.
   </section>
 
   <p id="status" class="status" role="status" aria-live="polite">Connecting to local service…</p>
+
+  <div id="connection-actions" class="connection-actions" hidden><button id="forget-device-button" type="button">Forget this device</button></div>
 
   <main id="workspace" hidden>
     <aside class="source-column">
