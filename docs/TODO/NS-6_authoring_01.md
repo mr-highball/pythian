@@ -73,6 +73,12 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Dev Notes:**
 
+- 2026-09-26 the user counts the physical-phone operator workflow as one
+  pending item in the cross-task manual review queue, currently 1/20. Its
+  exact URL, actions and decision are in ignored
+  `build/manual-review-queue/queue.tsv`. Queueing does not supply the phone
+  verdict or close criterion 5; continue other tasks until the queue fills or
+  genuine dependencies require this review sooner.
 - 2026-09-26 live LAN readiness check: the current host serves the saved-key
   reconnect assets on `192.168.12.109:18097` and its Wi-Fi profile is Private.
   No explicit port-18097 inbound rule exists; a Private/local-subnet TCP rule

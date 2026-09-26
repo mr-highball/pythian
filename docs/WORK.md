@@ -13,6 +13,27 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Cross-task manual review queue — 2026-09-26
+
+The user broadened the former listening threshold to a **manual review queue**.
+The physical-phone LAN workbench review counts as one item, including
+same-address saved-key reconnect, original/cue playback, zoom, edit handles
+and long-source navigation. Its current target is
+`http://192.168.12.109:18097/`; the exact prompt and state are in ignored
+`build/manual-review-queue/queue.tsv`. The pending queue is **1/20**. It does
+not close workbench criterion 5 or earn credit until an actual operator verdict
+and required QA exist. Continue other ready work; request review when the
+cross-task queue reaches 20, or sooner if no independent task remains and a
+queued item can unblock progress. Historical listening counts below describe
+their dated checkpoints, not the current queue.
+
+The current readiness audit found no independent acceptance batch: recorded
+identity and presence need new qualified source evidence, semantic scale and
+role/style learning depend on accepted recorded events or grounded references,
+and final delivery depends on those paths. The workbench's physical-phone
+check can close its remaining operator criterion; it is the queued early-review
+candidate if no new source evidence arrives.
+
 ## LAN phone check and core route review — 2026-09-26
 
 The live workbench still serves its saved-key reconnect page and app asset at

@@ -37,18 +37,20 @@ the default route to a benchmark. Keep unsupported exact-window claims
 judge substantial **Pythian-synthesized outputs**, where their musical hearing
 can shape the library, rather than repeatedly judging third-party recordings.
 
-Accumulate the next listening request across tasks. Queue substantial,
-individually useful Pythian outputs as the related task reaches a real musical
-checkpoint, and notify the user only after at least 20 pending review items
-have accumulated in total. Do not fill the quota with seed variants or paired
-edits of one task. Keep numbered WAVs and their exact task, identity, and
-listening question in an ignored build ledger; remove reviewed feedback files
-after recording the verdict. Continue independent engineering and task selection
-while the user's listening time is unavailable. A queued clip is evidence to
-review, not acceptance or earned task credit.
+Accumulate a cross-task **manual review queue**. Substantial, individually useful
+manual decisions count, including Pythian-synthesized listening checkpoints and
+operator/tool reviews; the LAN workbench's physical-phone workflow is one item. Give each
+item its task, exact artifact or URL, and the decision needed. Do not pad the
+queue with seed variants, paired edits or separate steps of one review. Notify
+the user when 20 items are pending in total, or earlier if every independently
+workable task is genuinely blocked and a queued review can unblock progress.
+Keep numbered WAVs and the queue ledger under ignored `build/`; remove reviewed
+feedback files after recording the verdict. Continue independent engineering
+and task selection while review is pending. Queueing an item is neither its
+acceptance nor earned task credit.
 
 The user may initiate catalog authoring at any time; the 20-item threshold
-governs our notifications, not access to the new operator workbench. Keep
+governs our review notifications, not access to the new operator workbench. Keep
 Pythian's unreviewed proposals separate from operator-approved labels and
 hide proposals during blind evaluation review. Store the reviewed catalog in
 a durable user-configured root outside disposable `build/`; explicit exports
