@@ -42,11 +42,31 @@ access on the first draft, so the host now restricts the empty key file before
 writing and restricts existing files before reading. Checked Win32/Win64 LAN
 starts produced protected ACLs with only OWNER RIGHTS and SYSTEM full control;
 an older broad test file was restricted on restart. This keeps the login key
-stable across server restarts. The current live
-18097 process was left running; moving to the new binary may require one
-final key entry because its old environment key is not recorded in a file.
-New browser origins still require one initial entry. Salty Boi is auditing
-this with the browser editor and beat-capacity changes; no task credit yet.
+stable across server restarts. The live `192.168.12.109:18097` host now runs
+the persistent-key binary against the durable catalog. A separate-port first
+start created the private key file and returned 403/200 for wrong/correct
+keys. The live host reused that file without rewriting it, returned 403/200
+for wrong/correct keys, and served the workbench page. The earlier environment
+key was not recorded, so an existing browser may need one final entry during
+this transition; later visits to the same origin reconnect automatically.
+New browser origins still require one initial entry. Browser reconnect QA
+remains pending; no task credit yet.
+
+## Prospective recorded beat challenge — 2026-09-26
+
+The separately committed frozen ASAP/MAESTRO policy selected two new works
+before source access. Original-MIDI correspondence, WAV member checks, attack
+controls and source physical floors passed with 47 and 25 supported beats.
+Checked Win64 candidate inference saved both complete pools before physical
+reference CSVs existed. A Pascal recall-first diagnostic of those fixed pools
+found 32/47 and 17/25 best-pool beat recall (68.1% and 68.0%), and only 4/10
+and 2/7 eligible windows with a candidate reaching 75% recall. Both fail the
+frozen 75% source and window gates. The maintained evaluator's stricter
+precision-plus-recall count was 0/10 and 0/7. Exact source identities, hashes,
+the downbeat-label format repair and logs remain under ignored
+`build/asap-beat-prospective-20260926/RESULT.md`. The source route stops without
+retuning or task credit. `NS-3_tempo_04` remains open; source-independent
+candidate improvement and explicit max-recall reporting are next.
 
 ## Bounded half-overlap beat tracking — 2026-09-26
 

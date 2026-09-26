@@ -51,6 +51,22 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
 
 **Dev Notes:**
 
+- 2026-09-26 the prospectively frozen two-work challenge completed its first
+  and only source route; ignored `build/asap-beat-prospective-20260926/RESULT.md`
+  holds exact source identities and checks. Pascal source correspondence,
+  original PCM geometry, and physical-attack controls passed. A source-format
+  parser correction accepted annotated downbeats with comma-suffixed meter
+  metadata before scoring; it did not change physical thresholds. The groups
+  had 47 and 25 physically supported beats, with at least 12 per half.
+  Frozen Win64 inference saved both complete pools before reference CSVs were
+  formed, at 22,059,540 and 21,671,055 fit visits under the unchanged cap.
+  The maintained evaluator found 0/10 and 0/7 eligible windows meeting both
+  75% precision and recall. A separate Pascal recall-first diagnostic of the
+  same saved pools found only 32/47 (68.1%) and 17/25 (68.0%) maximum
+  best-pool recall, with 4/10 and 2/7 eligible windows reaching 75% recall.
+  Both miss the frozen 75% source and window gates. This result does not close
+  the task or earn credit. Keep this cohort fixed; improve the source-independent
+  candidate contract and report max recall explicitly before any new challenge.
 - 2026-09-26 a new source-separated ASAP/MAESTRO two-work challenge is
   prospectively frozen under ignored
   `build/asap-beat-prospective-20260926/POLICY.md`, SHA-256
@@ -60,8 +76,7 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
   candidate binary/options, 30-ms recall gates and transfer/work stops before
   either selected annotation, MIDI or WAV was fetched. The policy hash is
   committed here before source access so the earlier cohort's unprovable
-  policy-timing problem is not repeated. No source, report or result has been
-  scored under this policy yet; the task and credit remain open.
+  policy-timing problem is not repeated. The task and credit remain open.
 - 2026-09-26 source-independent capacity attempt 1: the default six-second
   tracker windows now advance by three seconds (half overlap) rather than one,
   while explicit caller hops and the 64-million aggregate fit cap remain

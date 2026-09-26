@@ -94,9 +94,14 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
   existing files before reading. Checked Win32/Win64 LAN starts produced
   protected ACLs with only OWNER RIGHTS and SYSTEM full control; a legacy
   broad test file was restricted on restart before serving requests.
-  The live 18097 process has not been restarted, and a browser using a new
-  origin still requires one initial entry. Final mobile operator QA remains
-  open; no task credit.
+  The live `192.168.12.109:18097` process now runs this binary against the
+  durable catalog. A separate-port first start created the key file and
+  returned 403/200 for wrong/correct keys. The live host reused that file
+  without rewriting it, returned 403/200 for wrong/correct keys and served
+  the page. The former environment key was not recorded, so existing browsers
+  may need one final entry during this transition; subsequent visits to the
+  same origin reconnect automatically. New browser origins still require one
+  initial entry. Final mobile operator QA remains open; no task credit.
 - 2026-09-25 the workbench can select a saved beat-grid hypothesis and load a
   short native Pascal cue overlay in the same bounded player as the original
   WAV. It draws the selected grid on the waveform, keeps cue access behind the
