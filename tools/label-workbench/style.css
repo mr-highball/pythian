@@ -31,6 +31,7 @@ SOFTWARE.
 
 * { box-sizing: border-box; }
 body { margin: 0; min-width: 300px; }
+[hidden] { display: none !important; }
 button, input, select { font: inherit; }
 button { border: 1px solid #4c6572; border-radius: 8px; padding: .52rem .75rem; background: #263a47; color: #e7edf0; cursor: pointer; }
 button:hover, button:focus-visible { border-color: #72d5c4; background: #304c56; }

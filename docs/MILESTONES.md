@@ -29,7 +29,7 @@ preserve the earlier evidence and the new boundary. Existing note, presence,
 mixture and style-reference criteria remain unchanged.
 
 The old **89.8% is retired**. The accepted planning baseline remains **55.5
-weighted points**. The [63-task catalog](TODO/README.md) allocates every
+weighted points**. The [65-task catalog](TODO/README.md) allocates every
 remaining point to explicit acceptance criteria and prerequisites. Accepted
 corpus identity, consumer/native delivery, named
 voice passes/provider compatibility, granular controls, semantic persistence,
@@ -400,7 +400,7 @@ the accepted baseline or claiming that planning itself advances completion.
 | NS-3 | 30% | 15 | 45% | 55 | 16 |
 | NS-4 | 70% | 29 | 99% | 1 | 1 |
 | NS-5 | 25% | 5 | 30% | 70 | 16 |
-| NS-6 | 50% | 22 | 72% | 28 | 3 |
+| NS-6 | 50% | 22 | 72% | 28 | 4 |
 
 Each completed task adds its declared **goal percentage points** to that goal;
 multiply by the goal weight / 100 for overall movement. The

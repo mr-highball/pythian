@@ -73,18 +73,22 @@ var
   LBindAddress: String;
   LStaticRoot: String;
   LFirstServerArgument: Integer;
+  LOpenLan: Boolean;
 begin
   try
     if ((ParamCount in [4, 5, 6]) and
       (ParamStr(1) = 'serve')) or
       ((ParamCount in [5, 6, 7]) and
-      (ParamStr(1) = 'serve-app')) then
+      (ParamStr(1) = 'serve-app')) or
+      ((ParamCount in [6, 7]) and
+      (ParamStr(1) = 'serve-app-open')) then
     begin
+      LOpenLan := ParamStr(1) = 'serve-app-open';
       LBindAddress := '127.0.0.1';
       LMaximumRequests := 0;
       LStaticRoot := '';
       LFirstServerArgument := 4;
-      if ParamStr(1) = 'serve-app' then
+      if (ParamStr(1) = 'serve-app') or LOpenLan then
       begin
         LStaticRoot := ParamStr(4);
         LFirstServerArgument := 5;
@@ -115,7 +119,7 @@ begin
         end;
       end;
       RunCatalogHttp(ParamStr(2), ParamStr(3), LBindAddress, LPort,
-        LMaximumRequests, LStaticRoot);
+        LMaximumRequests, LStaticRoot, LOpenLan);
       Exit;
     end
     else if (ParamCount = 3) and (ParamStr(1) = 'import') then
@@ -279,6 +283,7 @@ begin
       WriteLn(StdErr, '       pythian.label.catalog serve INBOX_DIR CATALOG_DIR BIND_IP PORT [MAX_REQUESTS]');
       WriteLn(StdErr, '       pythian.label.catalog serve-app INBOX_DIR CATALOG_DIR WEBROOT PORT [MAX_REQUESTS]');
       WriteLn(StdErr, '       pythian.label.catalog serve-app INBOX_DIR CATALOG_DIR WEBROOT BIND_IP PORT [MAX_REQUESTS]');
+      WriteLn(StdErr, '       pythian.label.catalog serve-app-open INBOX_DIR CATALOG_DIR WEBROOT PRIVATE_LAN_IP PORT [MAX_REQUESTS]');
       ExitCode := 2;
       Exit;
     end;

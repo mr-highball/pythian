@@ -1732,12 +1732,17 @@ begin
     begin
       LData := await(TJSObject, LResponse.json());
       FToken := TextField(LData, 'token');
+      if FToken = '' then
+      begin
+        raise Exception.Create('Session token missing');
+      end;
       ShowWorkspace;
-      Status('Connected to loopback catalog.');
+      Status('Connected to catalog.');
       RefreshLists;
     end
     else
     begin
+      Element('login-panel').removeAttribute('hidden');
       LKey := '';
       try
         LKey := window.localStorage.getItem(RememberedAccessKey);
@@ -1757,6 +1762,7 @@ begin
   except
     on LError: Exception do
     begin
+      Element('login-panel').removeAttribute('hidden');
       Status('Could not reach the Pascal catalog service: ' +
         LError.Message, True);
     end;

@@ -17,7 +17,7 @@ The branch is `hello-pythian`; the namespace is `pythian`.
 
 The user broadened the former listening threshold to a **manual review queue**.
 The physical-phone LAN workbench review counts as one item, including
-same-address saved-key reconnect, original/cue playback, zoom, edit handles
+no-key opening and reopening, original/cue playback, zoom, edit handles
 and long-source navigation. Its current target is
 `http://192.168.12.109:18097/`; the exact prompt and state are in ignored
 `build/manual-review-queue/queue.tsv`. The pending queue is **1/20**. It does
@@ -27,12 +27,46 @@ cross-task queue reaches 20, or sooner if no independent task remains and a
 queued item can unblock progress. Historical listening counts below describe
 their dated checkpoints, not the current queue.
 
+The user corrected the LAN requirement after the saved-key implementation:
+they want no access-key entry at all. An explicit private-LAN no-key mode is now
+implemented and served at the target address. The queued item awaits the actual
+physical-phone workflow; host-side HTTP 200 alone cannot prove that path. Keep
+the accepted catalog, Pascal proposal/review boundaries and source data intact.
+
 The current readiness audit found no independent acceptance batch: recorded
 identity and presence need new qualified source evidence, semantic scale and
 role/style learning depend on accepted recorded events or grounded references,
 and final delivery depends on those paths. The workbench's physical-phone
 check can close its remaining operator criterion; it is the queued early-review
 candidate if no new source evidence arrives.
+
+## No-key LAN workbench implementation and deployment — 2026-09-26
+
+The native Pascal service now has explicit `serve-app-open` mode for a selected
+private LAN IPv4 address. It does not require an operator access key, returns a
+session token through `GET /api/session`, and requires that token for catalog
+reads and mutations. The existing keyed mode, exact Host/Origin checks and
+header-based audio authorization remain in place. The pas2js page starts with
+the login panel hidden and opens the catalog silently when the session GET
+succeeds. Checked FPC 3.2.2 Win32/Win64 and pas2js 3.3.1 builds passed.
+
+Salty Boi's focused two-component QA accepted isolated open/keyed HTTP and
+desktop Edge behavior, including tokenless rejections, authorized requests,
+spoofed Host/Origin rejection and no login panel on the open page. Its fresh
+narrow screenshot attempt produced no artifact; earlier narrow layout evidence
+predates this change, so the physical-phone path remains unverified. The
+isolated QA services were stopped. The live no-key service now listens at
+`192.168.12.109:18097` as process 18868, using the durable catalog and
+prepared long-source inbox. A separate live check found a nonempty session
+token, HTTP 200 for the page/app and token-authorized catalog, and HTTP 403
+for tokenless catalog access. Evidence is under ignored
+`build/label-open-smoke/` and `build/label-workbench/live-open/`.
+
+Windows reports its Private firewall policy as `BlockInbound,AllowOutbound`;
+this unelevated shell cannot inspect or add firewall rules. Local host success
+therefore does not establish phone reachability. Criterion 5, the one queued
+operator item and the task's +0.20 overall credit remain open pending actual
+phone review. No recorded-learning or style-acceptance credit follows.
 
 ## LAN phone check and core route review — 2026-09-26
 

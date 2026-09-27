@@ -53,10 +53,12 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
   evaluation references must reject proposal-linked labels.
   Show the training/development/evaluation group assignment and export status
   without letting a review action silently move material across groups.
-- Serve locally by default with an explicit opt-in for authenticated LAN/mobile
-  use. The browser must obtain its LAN session through an access-key form and
-  send the session token on catalog and region-audio requests; it must not put
-  the key or token in audio URLs. Exercise the actual desktop and narrow mobile
+- Serve locally by default with an explicit opt-in for private-LAN/mobile
+  use. The operator's LAN workflow must connect without an access-key form or
+  credential entry. Bind only to an explicitly selected private LAN address;
+  retain same-origin and Host/Origin checks, acquire a session token silently,
+  and require it for state-changing requests. Do not put a token in audio URLs.
+  Exercise the actual desktop and narrow mobile
   browser paths, including
   playback, zoom, edit handles and long-source navigation. Make the UI usable
   for the user's larger cross-task listening batches without repeatedly
@@ -73,6 +75,28 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Dev Notes:**
 
+- 2026-09-26 explicit no-key private-LAN implementation and focused final QA:
+  `serve-app-open` binds a selected private IPv4 address, skips operator access
+  keys, silently serves a session token and requires it for catalog reads and
+  mutations. The pas2js page starts with the login form hidden and opens the
+  catalog automatically; the existing keyed mode remains available. Checked
+  FPC 3.2.2 Win32/Win64 and pas2js 3.3.1 builds passed. Salty Boi accepted
+  isolated open/keyed HTTP checks and a desktop Edge render without a login
+  prompt; spoofed Host/Origin and tokenless calls were rejected. The live
+  `192.168.12.109:18097` service returned HTTP 200 for page/app/session and
+  authorized catalog, and HTTP 403 for tokenless catalog. Evidence is under
+  ignored `build/label-open-smoke/` and `build/label-workbench/live-open/`.
+  Fresh narrow visual capture and actual physical-phone reachability/playback,
+  zoom, edit and long-source navigation remain unverified, so criterion 5 and
+  the task's +0.20 overall credit stay open. Windows Private firewall is
+  `BlockInbound,AllowOutbound`; this shell cannot inspect or add its rules.
+- 2026-09-26 user correction supersedes the earlier access-key requirement:
+  the LAN workbench must open without any operator-entered credential. A saved
+  key per browser origin did not satisfy this. The open-LAN mode must still
+  bind only to an explicit private address and retain the request-origin and
+  mutation-token safeguards above. The existing queued phone review is stale
+  until this mode is built and served; it remains one pending cross-task item,
+  not acceptance evidence or task credit.
 - 2026-09-26 the user counts the physical-phone operator workflow as one
   pending item in the cross-task manual review queue, currently 1/20. Its
   exact URL, actions and decision are in ignored

@@ -33,7 +33,7 @@ interface
   pinned WFC wfc_serve_http reference. Optional static assets use exact names. }
 procedure RunCatalogHttp(const AInboxRoot, ACatalogRoot,
   ABindAddress: String; const APort, AMaximumRequests: Integer;
-  const AStaticRoot: String = '');
+  const AStaticRoot: String = ''; const AOpenLan: Boolean = False);
 
 implementation
 
@@ -630,7 +630,7 @@ end;
 procedure HandleRoute(const ASocket: Integer;
   const ARequest: TCatalogHttpRequest;
   const AInboxRoot, ACatalogRoot, AStaticRoot, AToken,
-    AAccessKey: String);
+    AAccessKey: String; const AOpenLan: Boolean);
 var
   LReport: TJSONObject;
   LBody: TJSONObject;
@@ -651,7 +651,9 @@ begin
     Exit;
   end;
   if not ((ARequest.Path = '/api/session') and
-    (ARequest.Method = 'POST')) and (AAccessKey <> '') then
+    (((ARequest.Method = 'POST') and (AAccessKey <> '')) or
+    ((ARequest.Method = 'GET') and (AAccessKey = '')))) and
+    ((AAccessKey <> '') or AOpenLan) then
   begin
     Need(ARequest.Token = AToken, 'Missing or invalid session token');
   end
@@ -821,7 +823,7 @@ end;
 
 procedure HandleClient(const ASocket, APort: Integer;
   const AInboxRoot, ACatalogRoot, AStaticRoot, ABindAddress, AToken,
-    AAccessKey: String);
+    AAccessKey: String; const AOpenLan: Boolean);
 var
   LRequest: TCatalogHttpRequest;
   LStatus: Integer;
@@ -836,7 +838,7 @@ begin
   end;
   try
     HandleRoute(ASocket, LRequest, AInboxRoot, ACatalogRoot,
-      AStaticRoot, AToken, AAccessKey);
+      AStaticRoot, AToken, AAccessKey, AOpenLan);
   except
     on LError: Exception do
     begin
@@ -999,7 +1001,7 @@ end;
 
 procedure RunCatalogHttp(const AInboxRoot, ACatalogRoot,
   ABindAddress: String; const APort, AMaximumRequests: Integer;
-  const AStaticRoot: String);
+  const AStaticRoot: String; const AOpenLan: Boolean);
 var
   LListener: Integer;
   LClient: Integer;
@@ -1011,6 +1013,8 @@ var
 begin
   Need(ValidBindAddress(ABindAddress),
     'Bind address must be loopback or a private LAN IPv4 address');
+  Need((not AOpenLan) or (ABindAddress <> '127.0.0.1'),
+    'Open LAN mode requires an explicit private LAN IPv4 bind address');
   Need((APort > 0) and (APort <= 65535), 'Invalid HTTP port');
   Need(AMaximumRequests >= 0, 'Invalid maximum HTTP request count');
   Need(DirectoryExists(AInboxRoot) and
@@ -1038,7 +1042,7 @@ begin
     Need(fpBind(LListener, @LAddress, SizeOf(LAddress)) = 0,
       'Could not bind catalog HTTP listener');
     LAccessKey := '';
-    if ABindAddress <> '127.0.0.1' then
+    if (ABindAddress <> '127.0.0.1') and not AOpenLan then
     begin
       LAccessKey := PersistentLanAccessKey(ACatalogRoot);
     end;
@@ -1054,7 +1058,7 @@ begin
       try
         try
           HandleClient(LClient, APort, AInboxRoot, ACatalogRoot,
-            AStaticRoot, ABindAddress, LToken, LAccessKey);
+            AStaticRoot, ABindAddress, LToken, LAccessKey, AOpenLan);
         except
           on LError: Exception do
           begin
