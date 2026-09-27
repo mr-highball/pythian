@@ -80,6 +80,24 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Dev Notes:**
 
+- 2026-09-27 the operator's physical Brave screenshot showed that a presence
+  question instructed `rest` while the nearby generic editor exposed only
+  review statuses. The Pascal/pas2js workbench now puts three unselected
+  answer choices beside playback: instrument audible, no instrument anywhere
+  (`rest`), and cannot tell (`unknown`). Explicit Save revalidates the exact
+  current queue question/source/frames/type/ID before the native
+  revision-checked transaction; approved `unknown` exports as an unknown
+  label. The detailed editor remains for other types. Salty Boi's isolated
+  390-pixel Edge QA passed all three mappings, no autosave, direct 0.5-second
+  Play original, double-click lock, HTTP 500 retry, changed-question rejection
+  before POST, unknown export and the retained note editor. A final harness
+  counter check after navigation failed because its probe was not reinstalled;
+  the relevant browser actions had passed. The checked assets are live at
+  `192.168.12.109:18097`; HTTP hashes match, no-key session opened, and four
+  clarified requests loaded. The original opening WAV is very quiet and the
+  user's report that it sounded silent does not establish an acoustic rest or
+  complete physical Brave playback review. Item 2 remains pending, with
+  cross-task manual queue 5/20 and no new task credit.
 - 2026-09-27 Salty Boi's current-source audit accepted criteria 1 and 2 at
   their declared Pascal browser/native-service scope. The retained checked
   five-track same-clock fixture covers one-action import, source identity,

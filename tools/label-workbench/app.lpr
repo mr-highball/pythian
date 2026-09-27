@@ -72,6 +72,9 @@ type
     FReviewStart: Int64;
     FReviewEnd: Int64;
     FRequestDraft: Boolean;
+    FPresenceValue: String;
+    FPresenceFeedback: String;
+    FPresenceChecking: Boolean;
     FWaveBins: TJSArray;
     FCurrentLabels: TJSArray;
     FPendingChanges: TJSArray;
@@ -127,6 +130,8 @@ type
     procedure ReleaseRequestDraft;
     function SelectedExactRequest: Boolean;
     procedure UpdateRecordAnswerAction;
+    procedure ChoosePresence(const AValue: String);
+    procedure SavePresence; async;
     procedure RenderLabels;
     procedure RenderMergeTargets;
     procedure UpdatePendingUi;
@@ -175,7 +180,7 @@ type
     procedure RefreshWindow; async;
     procedure LoadAudio(const ACue: Boolean); async;
     procedure SuggestBeats; async;
-    procedure SaveReview; async;
+    procedure SaveReview(const AGuidedChange: TJSObject = nil); async;
     procedure RecordAnswer; async;
     procedure DownloadExport; async;
     procedure UploadReviewed; async;
@@ -198,6 +203,8 @@ type
     function HandleSuggest(AEvent: TJSMouseEvent): Boolean;
     function HandleSave(AEvent: TJSMouseEvent): Boolean;
     function HandleRecordAnswer(AEvent: TJSMouseEvent): Boolean;
+    function HandlePresenceChoice(AEvent: TJSMouseEvent): Boolean;
+    function HandlePresenceSave(AEvent: TJSMouseEvent): Boolean;
     function HandleUndo(AEvent: TJSMouseEvent): Boolean;
     function HandleRedo(AEvent: TJSMouseEvent): Boolean;
     function HandleClearHistory(AEvent: TJSMouseEvent): Boolean;
@@ -532,7 +539,12 @@ begin
         (Trunc(NumberField(LRow, 'end_frame')) = FReviewEnd) then
       begin
         LSelectedFound := True;
-        FReviewType := TextField(LRow, 'label_type');
+        if (TextField(LRow, 'label_type') <> FReviewType) or
+          (TextField(LRow, 'question') <> FReviewQuestion) then
+        begin
+          ClearRequest;
+          Break;
+        end;
         FReviewConflict := TextField(LRow, 'answer_conflict');
         Break;
       end;
@@ -594,6 +606,9 @@ end;
 
 procedure TWorkbench.ClearRequest;
 begin
+  FPresenceValue := '';
+  FPresenceFeedback := '';
+  FPresenceChecking := False;
   if FRequestDraft then
   begin
     Input('label-id').value := '';
@@ -617,17 +632,60 @@ end;
 procedure TWorkbench.UpdateRecordAnswerAction;
 var
   LBlocked: Boolean;
+  LPresence: Boolean;
 begin
   if not SelectedExactRequest then
   begin
+    FPresenceChecking := False;
+    FPresenceValue := '';
+    FPresenceFeedback := '';
     Element('record-answer-area').setAttribute('hidden', '');
+    Element('presence-answer-area').setAttribute('hidden', '');
     Element('record-answer-state').textContent := '';
+    Element('presence-answer-state').textContent := '';
     Exit;
   end;
-  Element('record-answer-area').removeAttribute('hidden');
+  LPresence := FReviewType = 'presence';
+  if LPresence then
+  begin
+    Element('record-answer-area').setAttribute('hidden', '');
+    Element('presence-answer-area').removeAttribute('hidden');
+  end
+  else
+  begin
+    Element('presence-answer-area').setAttribute('hidden', '');
+    Element('record-answer-area').removeAttribute('hidden');
+  end;
   LBlocked := (FReviewConflict <> '') or FHistoryLoading or
-    FHistoryLoadFailed or FSaveInProgress or
+    FHistoryLoadFailed or FSaveInProgress or FPresenceChecking or
     ((FPendingChanges <> nil) and (FPendingChanges.length > 0));
+  TJSHTMLButtonElement(Element('presence-audible')).disabled := LBlocked;
+  TJSHTMLButtonElement(Element('presence-rest')).disabled := LBlocked;
+  TJSHTMLButtonElement(Element('presence-unknown')).disabled := LBlocked;
+  Element('presence-audible').setAttribute('aria-pressed',
+    LowerCase(BoolToStr(FPresenceValue = 'audible', True)));
+  Element('presence-rest').setAttribute('aria-pressed',
+    LowerCase(BoolToStr(FPresenceValue = 'rest', True)));
+  Element('presence-unknown').setAttribute('aria-pressed',
+    LowerCase(BoolToStr(FPresenceValue = 'unknown', True)));
+  TJSHTMLButtonElement(Element('presence-save')).disabled :=
+    LBlocked or (FPresenceValue = '');
+  if FReviewConflict <> '' then
+    Element('presence-answer-state').textContent := FReviewConflict
+  else if FHistoryLoading then
+    Element('presence-answer-state').textContent := 'Loading saved decisions…'
+  else if FHistoryLoadFailed then
+    Element('presence-answer-state').textContent := 'Saved decisions could not load.'
+  else if FPresenceChecking then
+    Element('presence-answer-state').textContent := 'Checking the exact request…'
+  else if FSaveInProgress then
+    Element('presence-answer-state').textContent := 'Saving answer…'
+  else if FPresenceFeedback <> '' then
+    Element('presence-answer-state').textContent := FPresenceFeedback
+  else if FPresenceValue = '' then
+    Element('presence-answer-state').textContent := 'Choose one answer. Nothing is saved yet.'
+  else
+    Element('presence-answer-state').textContent := 'Click Save answer to record this decision.';
   TJSHTMLButtonElement(Element('record-answer-button')).disabled := LBlocked;
   if FReviewConflict <> '' then
     Element('record-answer-state').textContent := FReviewConflict
@@ -2532,7 +2590,108 @@ begin
   end;
 end;
 
-procedure TWorkbench.SaveReview; async;
+procedure TWorkbench.ChoosePresence(const AValue: String);
+begin
+  if (FReviewType <> 'presence') or not SelectedExactRequest or
+    (FReviewConflict <> '') or FHistoryLoading or FHistoryLoadFailed or
+    FSaveInProgress or FPresenceChecking or
+    ((FPendingChanges <> nil) and (FPendingChanges.length > 0)) then
+    Exit;
+  if (AValue <> 'audible') and (AValue <> 'rest') and
+    (AValue <> 'unknown') then
+    Exit;
+  FPresenceValue := AValue;
+  FPresenceFeedback := '';
+  UpdateRecordAnswerAction;
+end;
+
+procedure TWorkbench.SavePresence; async;
+var
+  LResponse: TJSResponse;
+  LData: TJSObject;
+  LRows: TJSArray;
+  LRow: TJSObject;
+  LChange: TJSObject;
+  LId, LHash, LQuestion, LValue: String;
+  LStart, LEnd: Int64;
+  LEpoch, LIndex: Integer;
+begin
+  if (FReviewType <> 'presence') or not SelectedExactRequest or
+    (FReviewConflict <> '') or FHistoryLoading or FHistoryLoadFailed or
+    FSaveInProgress or FPresenceChecking or
+    ((FPendingChanges <> nil) and (FPendingChanges.length > 0)) or
+    ((FPresenceValue <> 'audible') and (FPresenceValue <> 'rest') and
+     (FPresenceValue <> 'unknown')) then
+    Exit;
+  LId := FReviewId;
+  LHash := FSourceHash;
+  LQuestion := FReviewQuestion;
+  LStart := FReviewStart;
+  LEnd := FReviewEnd;
+  LValue := FPresenceValue;
+  LEpoch := FWindowEpoch;
+  FPresenceChecking := True;
+  FPresenceFeedback := '';
+  UpdateRecordAnswerAction;
+  try
+    LResponse := await(TJSResponse, FetchApi('/api/review-queue', 'GET', ''));
+    if (LEpoch <> FWindowEpoch) or (LId <> FReviewId) or
+      (LHash <> FSourceHash) or (LQuestion <> FReviewQuestion) or
+      (LStart <> FReviewStart) or (LEnd <> FReviewEnd) or
+      (LValue <> FPresenceValue) or not SelectedExactRequest then
+      Exit;
+    if LResponse.status <> 200 then
+      raise Exception.Create('Request check HTTP ' + IntToStr(LResponse.status));
+    LData := await(TJSObject, LResponse.json());
+    if (LEpoch <> FWindowEpoch) or (LId <> FReviewId) or
+      (LHash <> FSourceHash) or (LQuestion <> FReviewQuestion) or
+      (LStart <> FReviewStart) or (LEnd <> FReviewEnd) or
+      (LValue <> FPresenceValue) or not SelectedExactRequest then
+      Exit;
+    LRows := TJSArray(LData['items']);
+    LRow := nil;
+    for LIndex := 0 to LRows.length - 1 do
+      if TextField(TJSObject(LRows[LIndex]), 'id') = LId then
+      begin
+        LRow := TJSObject(LRows[LIndex]);
+        Break;
+      end;
+    if (LRow = nil) or (TextField(LRow, 'source_sha256') <> LHash) or
+      (Trunc(NumberField(LRow, 'start_frame')) <> LStart) or
+      (Trunc(NumberField(LRow, 'end_frame')) <> LEnd) or
+      (TextField(LRow, 'label_type') <> 'presence') or
+      (TextField(LRow, 'question') <> LQuestion) or
+      (TextField(LRow, 'answer_conflict') <> '') then
+    begin
+      ClearRequest;
+      Status('This request changed or conflicts with a saved label. Select it again.', True);
+      Exit;
+    end;
+    FPresenceChecking := False;
+    LChange := TJSObject.new;
+    LChange['label_id'] := LId;
+    LChange['type'] := 'presence';
+    LChange['value'] := LValue;
+    LChange['status'] := 'approved';
+    LChange['start_frame'] := LStart;
+    LChange['end_frame'] := LEnd;
+    LChange['part'] := '';
+    LChange['proposal_id'] := '';
+    SaveReview(LChange);
+  except
+    on LError: Exception do
+    begin
+      if (LEpoch = FWindowEpoch) and (LId = FReviewId) then
+      begin
+        FPresenceChecking := False;
+        FPresenceFeedback := 'Answer not saved: ' + LError.Message;
+        UpdateRecordAnswerAction;
+      end;
+    end;
+  end;
+end;
+
+procedure TWorkbench.SaveReview(const AGuidedChange: TJSObject); async;
 var
   LTransaction: TJSObject;
   LChange: TJSObject;
@@ -2547,7 +2706,11 @@ var
   LBefore: TJSObject;
   LLabelId: String;
   LRevision: Integer;
+  LGuided: Boolean;
 begin
+  LGuided := AGuidedChange <> nil;
+  if FSaveInProgress then
+    Exit;
   if FSourceHash = '' then
   begin
     Exit;
@@ -2559,6 +2722,8 @@ begin
   end;
   LQueued := (FPendingChanges <> nil) and
     (FPendingChanges.length > 0);
+  if LGuided and LQueued then
+    Exit;
   if LQueued then
   begin
     if FPendingConflict or (FPendingSourceHash <> FSourceHash) or
@@ -2574,6 +2739,19 @@ begin
     LChange := TJSObject(FPendingChanges[0]);
     LStart := Trunc(NumberField(LChange, 'start_frame'));
     LEnd := Trunc(NumberField(LChange, 'end_frame'));
+  end
+  else if LGuided then
+  begin
+    LChange := AGuidedChange;
+    LStart := Trunc(NumberField(LChange, 'start_frame'));
+    LEnd := Trunc(NumberField(LChange, 'end_frame'));
+    if not SelectedExactRequest or (FReviewType <> 'presence') or
+      (FReviewConflict <> '') or (TextField(LChange, 'label_id') <> FReviewId) or
+      (TextField(LChange, 'type') <> 'presence') or
+      (TextField(LChange, 'status') <> 'approved') or
+      (TextField(LChange, 'value') <> FPresenceValue) or
+      (LStart <> FReviewStart) or (LEnd <> FReviewEnd) then
+      Exit;
   end
   else
   begin
@@ -2659,7 +2837,10 @@ begin
         FSaveInProgress := False;
         UpdatePendingUi;
         Status('Another review changed this source. Reloading current labels.');
+        if LGuided then
+          FPresenceFeedback := 'Answer not saved: another review changed this source. Reload and try again.';
       end;
+      UpdateRecordAnswerAction;
       RefreshWindow;
       Exit;
     end;
@@ -2726,7 +2907,13 @@ begin
     else
     begin
       Status('Review event saved. Reloading exact source labels.');
+      if LGuided then
+      begin
+        FPresenceValue := '';
+        FPresenceFeedback := 'Answer saved for this exact region.';
+      end;
     end;
+    UpdateRecordAnswerAction;
     RefreshWindow;
   except
     on LError: Exception do
@@ -2735,6 +2922,11 @@ begin
       UpdatePendingUi;
       UpdateRecordAnswerAction;
       Status('Review failed: ' + LError.Message, True);
+      if LGuided then
+      begin
+        FPresenceFeedback := 'Answer not saved: ' + LError.Message;
+        UpdateRecordAnswerAction;
+      end;
     end;
   end;
 end;
@@ -2848,6 +3040,8 @@ var
   LEpoch: Integer;
   LIndex: Integer;
 begin
+  if FReviewType = 'presence' then
+    Exit;
   if not SelectedExactRequest or (FReviewConflict <> '') or
     FHistoryLoading or FHistoryLoadFailed or FSaveInProgress or
     ((FPendingChanges <> nil) and (FPendingChanges.length > 0)) then
@@ -3380,6 +3574,18 @@ begin
   Result := False;
 end;
 
+function TWorkbench.HandlePresenceChoice(AEvent: TJSMouseEvent): Boolean;
+begin
+  ChoosePresence(TJSElement(AEvent.currentTarget).getAttribute('data-value'));
+  Result := False;
+end;
+
+function TWorkbench.HandlePresenceSave(AEvent: TJSMouseEvent): Boolean;
+begin
+  SavePresence;
+  Result := False;
+end;
+
 function TWorkbench.HandleUndo(AEvent: TJSMouseEvent): Boolean;
 begin
   StageHistoryAction(False);
@@ -3735,6 +3941,17 @@ begin
   TJSHTMLButtonElement(Element('save-label-button')).onclick := @HandleSave;
   TJSHTMLButtonElement(Element('record-answer-button')).onclick :=
     @HandleRecordAnswer;
+  Element('presence-audible').setAttribute('data-value', 'audible');
+  Element('presence-rest').setAttribute('data-value', 'rest');
+  Element('presence-unknown').setAttribute('data-value', 'unknown');
+  TJSHTMLButtonElement(Element('presence-audible')).onclick :=
+    @HandlePresenceChoice;
+  TJSHTMLButtonElement(Element('presence-rest')).onclick :=
+    @HandlePresenceChoice;
+  TJSHTMLButtonElement(Element('presence-unknown')).onclick :=
+    @HandlePresenceChoice;
+  TJSHTMLButtonElement(Element('presence-save')).onclick :=
+    @HandlePresenceSave;
   TJSHTMLButtonElement(Element('undo-review-button')).onclick := @HandleUndo;
   TJSHTMLButtonElement(Element('redo-review-button')).onclick := @HandleRedo;
   TJSHTMLButtonElement(Element('clear-history-button')).onclick :=

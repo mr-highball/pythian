@@ -75,6 +75,17 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-27 the four direct-MAESTRO `presence` questions now name the
+  workbench's explicit `audible`, `rest`, and `unknown` choices. Their IDs,
+  source hashes, exact frame intervals, types and source roles did not change;
+  the clarified queue SHA-256 is
+  `e55190cd2fa5be39fc5abb7c4e765a3c99eb82ea3cda474c32dbe5ecd8bc4c8b`.
+  Before deployment neither new source had a saved review. The operator said
+  the first 0.5-second opening played but sounded silent. Pascal verified that
+  the live-served 22,050-frame WAV exactly matched the original samples and
+  measured RMS 0.001936010. Neither the quiet recording nor the transport
+  check proves no instrument is audible. All four source judgments remain in
+  the manual queue, no scorer ran, and criterion 3/credit remain open.
 - 2026-09-27 the newly frozen direct-MAESTRO publisher-pair packet passed its
   fixed archive, source-clock and physical-playing gates on two fresh
   composition/file/year-disjoint recordings; performer identity is unknown.

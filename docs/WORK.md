@@ -13,6 +13,43 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Guided presence answer on the LAN workbench — 2026-09-27
+
+The operator's physical Brave review exposed a concrete ambiguity: a prepared
+presence question said to choose `rest`, but its nearby action opened a generic
+editor whose visible menu was review status (`Approved`, `Uncertain`, and so on),
+not the audio answer. The Pascal/pas2js workbench now shows three explicit
+choices beside the original player: instrument audible, no instrument anywhere
+in the span (`rest`), or cannot tell (`unknown`). Nothing is preselected or
+saved on choice. `Save answer` checks the current queue ID, source hash, exact
+frames, type and question before using the revision-checked Pascal review
+transaction. Approved `unknown` is exported under `unknown_labels`; the
+reviewer never needs the generic status menu for this guided presence decision.
+The detailed editor remains available for other request types.
+
+The four direct-MAESTRO questions were clarified to name those choices without
+changing their IDs, source hashes, intervals, types or source roles. The new
+queue SHA-256 is `e55190cd2fa5be39fc5abb7c4e765a3c99eb82ea3cda474c32dbe5ecd8bc4c8b`;
+the original was `41aab4219ea2ef57229eb5141cebdeace63396e68645811f3cdd7d13963e9a83`.
+No new-source review existed before deployment. Independent isolated
+390-pixel Edge QA confirmed exact binding, no default or autosave, all three
+value mappings, one POST on rapid double click, retryable HTTP 500 feedback,
+stale-question rejection before POST, unknown export and the retained note
+editor. Its final harness probe of request counts after navigation stopped
+because that probe was not reinstalled; the editor's state assertions had
+passed. The 0.5-second original loaded in the browser with local readiness
+feedback. The live no-key LAN service now serves byte-matching checked assets
+and the clarified four-question queue at `192.168.12.109:18097`.
+
+The operator reported that the opening clip played but sounded silent. A
+Pascal comparison found the live served WAV's 22,050 frames identical to the
+original, with 43,840 of 44,100 stereo samples nonzero and RMS 0.001936010.
+This verifies quiet source audio through the server, not an acoustic rest or
+physical-phone audibility of the later 5–10-second request. The physical
+workbench check remains manual queue item 2; four source-presence decisions
+remain items 3–6. Five items are pending against the cross-task threshold of
+20. No presence score, task completion or milestone credit changed.
+
 ## Manual review allocation and resumed core work — 2026-09-27
 
 The operator confirmed that reviewing the repaired LAN workbench is one

@@ -80,6 +80,17 @@ SOFTWARE.
             <button id="record-answer-button" type="button" class="primary">Record answer</button>
             <span id="record-answer-state" role="status" aria-live="polite"></span>
           </div>
+          <div id="presence-answer-area" class="presence-answer-area" hidden>
+            <strong>What do you hear in this exact region?</strong>
+            <p class="panel-note">A half-second clip may show 0:00 / 0:00 in the player. Use Loop region if useful; choose “I can’t tell” if the sound remains unclear.</p>
+            <div class="presence-choices" role="group" aria-label="Presence answer">
+              <button id="presence-audible" type="button" aria-pressed="false">I hear an instrument <small>(audible)</small></button>
+              <button id="presence-rest" type="button" aria-pressed="false">No instrument throughout <small>(rest)</small></button>
+              <button id="presence-unknown" type="button" aria-pressed="false">I can’t tell <small>(unknown)</small></button>
+            </div>
+            <button id="presence-save" type="button" class="primary" disabled>Save answer</button>
+            <span id="presence-answer-state" role="status" aria-live="polite"></span>
+          </div>
           <p id="audio-feedback" class="audio-feedback" role="status" aria-live="polite">Choose a recording, then press Play original.</p>
           <div class="toolbar playback-options">
             <span id="audio-mode" class="window-label">No region loaded</span>
