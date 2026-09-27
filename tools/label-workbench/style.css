@@ -108,6 +108,8 @@ canvas { display: block; width: 100%; height: auto; touch-action: none; }
 .record-answer-area span { color: #cce8e1; font-size: .85rem; line-height: 1.4; flex: 1 1 14rem; }
 .presence-answer-area { display: grid; gap: .65rem; margin: .7rem 0; padding: .8rem; border: 1px solid #52766d; border-radius: 9px; background: #172c2d; }
 .presence-answer-area[hidden], .record-answer-area[hidden] { display: none; }
+.presence-saved-answer { display: block; padding: .55rem .7rem; border: 1px solid #70a597; border-radius: 7px; background: #20433d; color: #e5fff3; }
+.presence-saved-answer[hidden] { display: none; }
 .presence-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; }
 .presence-choices button { min-height: 4rem; text-align: left; border: 2px solid #55716e; }
 .presence-choices button[aria-pressed="true"] { border-color: #a0ead2; background: #264d46; }

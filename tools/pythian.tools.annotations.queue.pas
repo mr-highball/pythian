@@ -304,7 +304,14 @@ begin
               (LCurrent.Int64s['end_frame'] <> LEnd) or
               (LLabelType = '') or
               (LCurrent.Strings['type'] <> LLabelType) then
+            begin
               LConflict := 'This request ID already names a different saved label.';
+            end
+            else
+            begin
+              LOutputItem.Add('current_value', LCurrent.Strings['value']);
+              LOutputItem.Add('current_status', LCurrent.Strings['status']);
+            end;
           finally
             LCurrent.Free;
           end;

@@ -75,6 +75,14 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-27 the operator approved `presence=rest` for the exact original
+  MAESTRO 2008 Berg opening [0, 22050) frames through the LAN workbench.
+  The durable catalog has one event at revision 1 (15:11:19 local time);
+  a later HTTP 400 request check created no second event. Manual review
+  queue item 3 is reviewed, leaving four cross-task items pending. This is
+  one user acoustic judgment on a quiet recording, not a source-separated
+  presence gate, scorer result or task completion. The other three direct
+  MAESTRO presence requests remain unreviewed.
 - 2026-09-27 the four direct-MAESTRO `presence` questions now name the
   workbench's explicit `audible`, `rest`, and `unknown` choices. Their IDs,
   source hashes, exact frame intervals, types and source roles did not change;

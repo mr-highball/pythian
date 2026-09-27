@@ -80,6 +80,26 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Dev Notes:**
 
+- 2026-09-27 a physical Brave Save showed `Request check HTTP 400`, but the
+  exact `rest` answer for the Berg opening had already been durably saved as
+  review revision 1 at 15:11:19. A later request check failed before another
+  write. The native queue now reports the exact saved value/status. The
+  Pascal/pas2js guided panel displays that answer, blocks duplicate
+  same-value Saves, distinguishes corrections and preserves the selected
+  choice after an HTTP or network failure. The phone's failed request bytes
+  remain unknown; fresh GET succeeds, so this is a state/recovery repair and
+  not a claim that every future parser 400 is eliminated. The operator's
+  firewall rule is installed for Private/local-subnet TCP port 18097. The
+  physical-phone workflow remains manual queue item 2 pending; no task credit
+  follows from this repair alone. Checked stable Win32/Win64 native hosts
+  compiled; Salty Boi's independent isolated 390-pixel browser QA passed
+  fresh/no-autosave, saved same-value/no-POST, HTTP 400 selection recovery,
+  and one-POST revision-checked correction. Its numeric payload extractor was
+  invalid; the accepted event revisions establish the save outcome. The
+  checked no-key Win64 service is live at `192.168.12.109:18097`; the queue
+  reports `rest/approved` for Berg and no second Berg review, and served
+  `app.js`, HTML and CSS hashes match the staged bytes. Physical-phone replay
+  of the revised page is still unverified.
 - 2026-09-27 the operator's physical Brave screenshot showed that a presence
   question instructed `rest` while the nearby generic editor exposed only
   review statuses. The Pascal/pas2js workbench now puts three unselected

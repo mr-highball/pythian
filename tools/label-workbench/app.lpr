@@ -69,6 +69,8 @@ type
     FReviewQuestion: String;
     FReviewType: String;
     FReviewConflict: String;
+    FReviewCurrentValue: String;
+    FReviewCurrentStatus: String;
     FReviewStart: Int64;
     FReviewEnd: Int64;
     FRequestDraft: Boolean;
@@ -129,6 +131,7 @@ type
     procedure ClearRequest;
     procedure ReleaseRequestDraft;
     function SelectedExactRequest: Boolean;
+    function CurrentPresenceAnswer: String;
     procedure UpdateRecordAnswerAction;
     procedure ChoosePresence(const AValue: String);
     procedure SavePresence; async;
@@ -546,6 +549,8 @@ begin
           Break;
         end;
         FReviewConflict := TextField(LRow, 'answer_conflict');
+        FReviewCurrentValue := TextField(LRow, 'current_value');
+        FReviewCurrentStatus := TextField(LRow, 'current_status');
         Break;
       end;
     end;
@@ -593,6 +598,17 @@ begin
     (FWindowStart + FWindowSpan = FReviewEnd);
 end;
 
+function TWorkbench.CurrentPresenceAnswer: String;
+begin
+  Result := '';
+  if (FReviewType = 'presence') and
+    (FReviewCurrentStatus = 'approved') and
+    ((FReviewCurrentValue = 'audible') or
+     (FReviewCurrentValue = 'rest') or
+     (FReviewCurrentValue = 'unknown')) then
+    Result := FReviewCurrentValue;
+end;
+
 procedure TWorkbench.ReleaseRequestDraft;
 begin
   if not FRequestDraft then
@@ -624,6 +640,8 @@ begin
   FReviewQuestion := '';
   FReviewType := '';
   FReviewConflict := '';
+  FReviewCurrentValue := '';
+  FReviewCurrentStatus := '';
   FReviewStart := 0;
   FReviewEnd := 0;
   UpdateRecordAnswerAction;
@@ -633,6 +651,7 @@ procedure TWorkbench.UpdateRecordAnswerAction;
 var
   LBlocked: Boolean;
   LPresence: Boolean;
+  LSaved: String;
 begin
   if not SelectedExactRequest then
   begin
@@ -643,9 +662,19 @@ begin
     Element('presence-answer-area').setAttribute('hidden', '');
     Element('record-answer-state').textContent := '';
     Element('presence-answer-state').textContent := '';
+    Element('presence-saved-answer').setAttribute('hidden', '');
     Exit;
   end;
   LPresence := FReviewType = 'presence';
+  LSaved := CurrentPresenceAnswer;
+  if LSaved <> '' then
+  begin
+    Element('presence-saved-answer').textContent := 'Saved answer: ' +
+      LSaved + '. Select a different answer only to correct it.';
+    Element('presence-saved-answer').removeAttribute('hidden');
+  end
+  else
+    Element('presence-saved-answer').setAttribute('hidden', '');
   if LPresence then
   begin
     Element('record-answer-area').setAttribute('hidden', '');
@@ -669,7 +698,11 @@ begin
   Element('presence-unknown').setAttribute('aria-pressed',
     LowerCase(BoolToStr(FPresenceValue = 'unknown', True)));
   TJSHTMLButtonElement(Element('presence-save')).disabled :=
-    LBlocked or (FPresenceValue = '');
+    LBlocked or (FPresenceValue = '') or (FPresenceValue = LSaved);
+  if LSaved <> '' then
+    Element('presence-save').textContent := 'Save correction'
+  else
+    Element('presence-save').textContent := 'Save answer';
   if FReviewConflict <> '' then
     Element('presence-answer-state').textContent := FReviewConflict
   else if FHistoryLoading then
@@ -682,6 +715,10 @@ begin
     Element('presence-answer-state').textContent := 'Saving answer…'
   else if FPresenceFeedback <> '' then
     Element('presence-answer-state').textContent := FPresenceFeedback
+  else if (LSaved <> '') and (FPresenceValue = LSaved) then
+    Element('presence-answer-state').textContent := 'This answer is already saved. Choose a different value to correct it.'
+  else if (LSaved <> '') and (FPresenceValue = '') then
+    Element('presence-answer-state').textContent := 'The saved answer is shown above. Nothing new will be recorded.'
   else if FPresenceValue = '' then
     Element('presence-answer-state').textContent := 'Choose one answer. Nothing is saved yet.'
   else
@@ -2619,6 +2656,7 @@ begin
   if (FReviewType <> 'presence') or not SelectedExactRequest or
     (FReviewConflict <> '') or FHistoryLoading or FHistoryLoadFailed or
     FSaveInProgress or FPresenceChecking or
+    (FPresenceValue = CurrentPresenceAnswer) or
     ((FPendingChanges <> nil) and (FPendingChanges.length > 0)) or
     ((FPresenceValue <> 'audible') and (FPresenceValue <> 'rest') and
      (FPresenceValue <> 'unknown')) then
@@ -2667,6 +2705,15 @@ begin
       Status('This request changed or conflicts with a saved label. Select it again.', True);
       Exit;
     end;
+    FReviewCurrentValue := TextField(LRow, 'current_value');
+    FReviewCurrentStatus := TextField(LRow, 'current_status');
+    if LValue = CurrentPresenceAnswer then
+    begin
+      FPresenceChecking := False;
+      FPresenceFeedback := 'This answer was already saved. No new review was recorded.';
+      UpdateRecordAnswerAction;
+      Exit;
+    end;
     FPresenceChecking := False;
     LChange := TJSObject.new;
     LChange['label_id'] := LId;
@@ -2684,9 +2731,26 @@ begin
       if (LEpoch = FWindowEpoch) and (LId = FReviewId) then
       begin
         FPresenceChecking := False;
-        FPresenceFeedback := 'Answer not saved: ' + LError.Message;
+        if LError.Message = 'Request check HTTP 400' then
+        begin
+          if CurrentPresenceAnswer <> '' then
+            FPresenceFeedback := 'Request check failed; no correction recorded. The saved answer remains ' +
+              CurrentPresenceAnswer + '.'
+          else
+            FPresenceFeedback := 'Request check failed; no new answer recorded. Your choice is still selected; try again.';
+        end
+        else
+          FPresenceFeedback := 'Request check failed; no new answer recorded (' +
+            LError.Message + '). Your choice is still selected.';
         UpdateRecordAnswerAction;
       end;
+    end;
+  else
+    if (LEpoch = FWindowEpoch) and (LId = FReviewId) then
+    begin
+      FPresenceChecking := False;
+      FPresenceFeedback := 'Request check failed; no new answer or correction was recorded. Your choice is still selected.';
+      UpdateRecordAnswerAction;
     end;
   end;
 end;
@@ -2909,6 +2973,8 @@ begin
       Status('Review event saved. Reloading exact source labels.');
       if LGuided then
       begin
+        FReviewCurrentValue := TextField(LChange, 'value');
+        FReviewCurrentStatus := 'approved';
         FPresenceValue := '';
         FPresenceFeedback := 'Answer saved for this exact region.';
       end;
@@ -2928,6 +2994,13 @@ begin
         UpdateRecordAnswerAction;
       end;
     end;
+  else
+    FSaveInProgress := False;
+    UpdatePendingUi;
+    if LGuided then
+      FPresenceFeedback := 'Review request failed; no new answer or correction was confirmed. Your choice is still selected.';
+    UpdateRecordAnswerAction;
+    Status('Review request failed. Reload current labels before trying again.', True);
   end;
 end;
 
@@ -3157,6 +3230,13 @@ begin
     TextField(LRow, 'id'), TextField(LRow, 'question'),
     TextField(LRow, 'label_type'),
     TextField(LRow, 'answer_conflict'));
+  if (FReviewId = TextField(LRow, 'id')) and
+    (FSourceHash = TextField(LRow, 'source_sha256')) then
+  begin
+    FReviewCurrentValue := TextField(LRow, 'current_value');
+    FReviewCurrentStatus := TextField(LRow, 'current_status');
+    UpdateRecordAnswerAction;
+  end;
   TJSHTMLElement(Element('track-title')).scrollIntoView;
 end;
 

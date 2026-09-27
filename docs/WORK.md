@@ -13,6 +13,50 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Saved presence answer and later request error — 2026-09-27
+
+The operator selected `No instrument throughout (rest)` for the original
+MAESTRO 2008 Berg opening [0, 22050) frames. The durable catalog records an
+approved `presence=rest` event at revision 1, written at 15:11:19 local time.
+The physical Brave screenshot at 15:12 showed `Request check HTTP 400` after
+the saved event. No second review event was written. The saved answer is a
+recorded operator judgment, not an independently established acoustic rest.
+
+The subsequent 400 came from the native request parser before the queue route;
+the exact phone request bytes are unavailable. A fresh queue GET succeeds. The
+Pascal queue now returns the exact saved label's current value and status with
+its prepared request. The pas2js page shows the saved answer, disables a second
+same-value Save, offers an explicit correction for a changed choice and retains
+that choice after an HTTP or network failure. It does not silently retry a
+review write. The cross-task manual queue marks this exact source-presence
+decision reviewed; four items remain pending, including the physical-phone
+tool workflow. No presence score or task credit follows from this event.
+
+The operator ran the firewall line from the prior turn. `netsh` confirms the
+`Pythian LAN Review` inbound rule is enabled for TCP port 18097, the Private
+profile and local-subnet peers. This non-elevated process cannot query the
+PowerShell firewall provider; its initial empty result was an access-denied
+check, not evidence that the rule was absent. Wi-Fi 4 is currently Private.
+
+Checked stable FPC 3.2.2 Win32 and Win64 native hosts compile. Independent
+Salty Boi QA used isolated catalog/server/browser artifacts under ignored
+`build/salty-current-answer-qa-20260927/`: both native targets returned the
+saved `rest/approved` row and omitted saved fields on a fresh request. At
+390 pixels, fresh selection remained blank with no POST; selecting the saved
+value disabled Save with no POST; a forced queue-check HTTP 400 retained a
+changed choice and revision with no POST; an explicit correction committed
+exactly once and advanced the revision. A follow-up correction also committed
+once. The QA harness's direct numeric payload extraction was invalid, but
+the accepted revision-checked events and event sequence verify the save path.
+
+The checked Win64 host and matched pas2js assets were deployed at
+`192.168.12.109:18097` with the same no-key LAN mode and durable catalog.
+Live session-token queue GET reports Berg `rest/approved`, the other three
+requests without saved values, and no second Berg review event. Downloaded
+live `app.js`, `index.html` and `style.css` match the staged SHA-256 values.
+The physical phone has not yet rechecked this revised page; its exact former
+400-triggering request remains unknown.
+
 ## Guided presence answer on the LAN workbench — 2026-09-27
 
 The operator's physical Brave review exposed a concrete ambiguity: a prepared
