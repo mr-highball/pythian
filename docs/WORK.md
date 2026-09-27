@@ -112,6 +112,60 @@ tolerances rejected and exact output replay. No A/B recording was scored, no
 candidate fitter was adopted and no `NS-3_tempo_04` criterion or milestone
 credit changed.
 
+The guided workbench and public pulse contract are two further checked batches
+without closing their owning tasks: the first awaits the queued physical-phone
+verdict, and the second has no accepted recorded beat candidate. Reassess before
+another batch. Stop adding workbench controls until that operator verdict;
+continue the core beat path with one frozen, source-independent candidate
+hypothesis that consumes the public pulse contract, preserves the v1 candidate
+prefix, and explicitly tests boundary birth/death on authored timing controls.
+If that gate fails, stop before A/B recording scoring or another fitter variant.
+If it passes, bind an exposed development comparison separately before any
+new untouched recorded challenge. No credit is inferred from this plan.
+
+That one candidate was frozen under ignored
+`build/beat-pulse-fitter-20260927/POLICY.md` (SHA-256
+`02454d620bb61253b4056ad887e657fd60ec55c6f6f148dd6578f634e7ac52db`)
+before checked stable Win32/Win64 compilation and execution. Both stopped at
+the first authored steady120 owner: the candidate produced a boundary birth
+and the best sequence matched all six authored beats, but emitted seven pulses
+(6/7 precision, below the fixed 0.90 gate), with no terminal seed death.
+Its source-wide terminal-support query can see the next owner's frame-48000
+onset near the old frame-47952 terminal seed. That code/input inspection
+explains the likely cause without scoring another candidate. The remaining
+six controls and recorded A/B were not opened by this probe. Stop the
+elastic/boundary candidate sequence after these two failed attempts; no
+maintained fitter, accepted recorded criterion or credit follows. The next
+active path is a different core prerequisite, with exact manual review queued
+only when justified by source evidence.
+
+The next core prerequisite was a prospectively selected two-composition
+MAESTRO/ASAP packet for `NS-3_notes_05`, with candidate original-audio
+no-playing and playing intervals, rather than another beat variant. Both
+selected WAV members passed bounded original-archive and PCM checks. One
+performance's captured MIDI matched its linked source exactly; the other
+failed the frozen MIDI identity/timing gate, including a mismatched frame-zero
+key event. Stop this fixed packet without a replacement source, catalog
+import, review prompt, label or presence score. The original policy SHA-256
+is `50d43920901351cb550b17756f96526a18df8f9234630fa132387d0480a84367`;
+the workbench's one-label-per-request representation was amended before PCM
+results but after selected MIDI was read, and that exposure is explicit in
+ignored `build/notes-maestro-presence-20260927/`. These are two further
+nonclosing core batches; do not repeat an elastic boundary variation or
+select a replacement row for this source packet. The user-facing manual
+queue remains 1/20, and milestone credit stays 70.70%. Automatic command
+approval rejected cleanup of roughly 544 MB of unused temporary member and
+decoded media in the ignored packet; no live service uses those copies.
+At this two-batch checkpoint, switch from these stopped beat and source
+variants to the ready, reusable style-comparison specification in
+`NS-5_evaluation_01`. Its next deliverable is a complete independently
+grounded preserving/breaking control packet for the six provider dimensions,
+with exact reference links and frozen comparator effects. Stop at source
+qualification if the required musical references cannot be established;
+do not substitute another partial level-only report. This develops general
+style evaluation, not a genre-specific claim. The operator-tool review
+remains queued separately and does not pause this path.
+
 ## Phone review and guided-workbench correction — 2026-09-27
 
 The operator reached the no-key workbench on physical Brave. Their first

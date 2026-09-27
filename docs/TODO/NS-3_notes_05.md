@@ -75,6 +75,28 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-27 a prospectively fixed two-group original MAESTRO/ASAP
+  presence-review packet stopped before catalog import or operator review.
+  Its policy bound distinct unexposed composition groups, original [0,20) s
+  audio, exact [0,0.5) candidate no-playing and [5,10) candidate playing
+  intervals, archive integrity, captured-MIDI identity and a no-substitution
+  rule. A separately recorded queue-format amendment changed one combined
+  prompt per group to two exact-span requests per group, using `presence` only
+  if accepted by the catalog, because the workbench saves one label per
+  request; selected MIDI had already been read,
+  while PCM and human labels had not. Both original WAV members passed bounded
+  archive/PCM checks. Group A's captured MIDI matched its source exactly, but
+  B's ASAP MIDI differed from original MAESTRO in bytes and first-20-second
+  key events, including a frame-zero key absent in the original. Stop the
+  fixed cohort at this identity gate; do not substitute a different row or
+  infer an acoustic rest from either opening MIDI gap. Exact hashes, source
+  scope, policy SHA-256
+  `50d43920901351cb550b17756f96526a18df8f9234630fa132387d0480a84367`
+  and amendment remain under ignored
+  `build/notes-maestro-presence-20260927/`. No reviewed label, source-separated
+  presence score, criterion 3 or credit follows. Automatic command approval
+  rejected cleanup of about 544 MB of temporary media in that ignored packet;
+  bounded 20-second excerpts and evidence are separate from those transients.
 - 2026-09-25 the user selected a Pascal/pas2js operator-authoring route for
   missing acoustic labels. [NS-3_labeling_01](DONE/NS-3_labeling_01.md) and
   [NS-6_authoring_01](NS-6_authoring_01.md) build the catalog and interface;

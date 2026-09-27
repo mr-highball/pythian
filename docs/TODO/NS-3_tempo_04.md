@@ -51,6 +51,23 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
 
 **Dev Notes:**
 
+- 2026-09-27 the single boundary-aware explicit-pulse candidate frozen at the
+  task-flow checkpoint failed its **first** authored gate on stable Win32 and
+  Win64. On steady120 owner 0, a boundary birth existed and the best
+  alternative matched 6/6 authored beats, but it predicted seven pulses, so
+  precision was 6/7 below the fixed 0.90 gate. No terminal death was
+  declared. Code inspection shows that the candidate's terminal-support test
+  could see the next owner's onset at frame 48000 near the old grid seed at
+  47952; that is a causal explanation, not a newly scored trace. Policy SHA-256
+  `02454d620bb61253b4056ad887e657fd60ec55c6f6f148dd6578f634e7ac52db`
+  and checked private Pascal source/logs remain under ignored
+  `build/beat-pulse-fitter-20260927/`. The other six authored controls and
+  recorded A/B were not scored. This is the second stopped elastic/boundary
+  attempt after the fixed-cardinality prototype. Stop this sequence; do not
+  repair the frozen terminal rule or rename it as a new candidate. The public
+  pulse contract remains, but no fitter, recorded criterion or credit is
+  accepted. Continue a different core prerequisite while real note evidence
+  and the queued operator review are prepared.
 - 2026-09-27 a public Pascal `pythian.beat.pulse` contract candidate wraps the
   unchanged v1 grid pool and represents explicit source-frame pulse positions
   with exact base-seed lineage, boundary births and declared dropped seeds.
@@ -73,6 +90,15 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
   task and its credit remain open. The next bounded beat deliverable must
   qualify how an explicit candidate is selected and consumed without crossing
   declared gaps or erasing the accepted grid alternatives.
+- 2026-09-27 task-flow checkpoint after the independently checked pulse
+  contract and guided workbench batches: neither closed its full task. The
+  workbench's physical-phone verdict is queued; stop adding UI controls.
+  This task's next batch is one prospectively frozen source-independent
+  candidate fitter using the public pulse contract and authored birth/death
+  controls, with unchanged v1 candidate ranks. A failed authored gate stops
+  before A/B or another variant; a pass only permits a separately bound exposed
+  development comparison. No recorded candidate or credit follows from the
+  contract alone.
 - 2026-09-27 a frozen elastic-sequence prototype stopped at its first authored
   gate on checked Win32/Win64. It kept weighted grid candidates unchanged and
   placed companion nonuniform source-frame sequences beside them, but its
