@@ -80,6 +80,30 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Dev Notes:**
 
+- 2026-09-27 Salty Boi's current-source audit accepted criteria 1 and 2 at
+  their declared Pascal browser/native-service scope. The retained checked
+  five-track same-clock fixture covers one-action import, source identity,
+  provenance, duration, group, proposal version and aligned versus separate
+  timelines. Retained real-browser checks cover zoom, reviewed/proposal lanes,
+  bounded reads, seek, loop and cue audition; a separate check navigated within
+  a five-hour source. The recent guided-request changes do not alter those
+  underlying routes. This is an engineering signoff, not physical-phone
+  usability or acoustic-label acceptance. The full task and its credit remain
+  open on criterion 5's queued Brave verdict. An optional fresh current-build
+  criterion-6 replay verified two-track import on the intended isolated
+  service, then stopped when that test service reached its configured
+  20-request cap. A preceding harness run used stale ports and is invalid.
+  No product failure or full fresh export/re-import result follows; the
+  previously accepted end-to-end workflow and current focused Save/queue
+  checks remain the criterion-6 evidence. Automatic approval rejected removal
+  of the stale isolated browser profile with `blocked by policy`; a new
+  untouched profile was used without retrying deletion.
+- 2026-09-27 four source-bound presence requests were staged in the live
+  catalog after the direct-MAESTRO source gate. The existing physical-phone
+  item 2 now names a prepared 5–10 s request for playback because the prior
+  empty-queue wording became stale; its ID and pending state remain the same.
+  Items 3–6 are separate acoustic judgments. The cross-task manual queue is
+  5/20, and neither the browser nor queue import selected a label.
 - 2026-09-27 guided `Record answer` candidate for selected prepared requests:
   Pascal queue validation accepts an optional explicit label type and checks
   the exact source-local current label ID without a whole-source 2048-label

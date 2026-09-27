@@ -156,15 +156,57 @@ select a replacement row for this source packet. The user-facing manual
 queue remains 1/20, and milestone credit stays 70.70%. Automatic command
 approval rejected cleanup of roughly 544 MB of unused temporary member and
 decoded media in the ignored packet; no live service uses those copies.
-At this two-batch checkpoint, switch from these stopped beat and source
-variants to the ready, reusable style-comparison specification in
-`NS-5_evaluation_01`. Its next deliverable is a complete independently
-grounded preserving/breaking control packet for the six provider dimensions,
-with exact reference links and frozen comparator effects. Stop at source
-qualification if the required musical references cannot be established;
-do not substitute another partial level-only report. This develops general
-style evaluation, not a genre-specific claim. The operator-tool review
-remains queued separately and does not pause this path.
+At this two-batch checkpoint, the full `NS-5_evaluation_01` record confirms
+its musical reference grounding is itself stopped pending independent
+annotations, so another generic control packet is not the next action.
+The failed MAESTRO/ASAP packet exposed an avoidable cross-dataset identity
+dependency for note presence: the original MAESTRO release already pairs
+captured performance MIDI and original acoustic WAV. The next action is one
+bounded, prospectively selected **direct MAESTRO** source packet on fresh
+recording groups, using that publisher pair as the source contract. It must
+still qualify exact source geometry and physical playing evidence, then ask
+for operator acoustic judgments of the candidate opening rest and later
+positive spans; MIDI silence cannot certify a rest. This changes the source
+contract rather than substituting a row into the stopped ASAP packet. Stop
+without a replacement if the new primary-source gate fails. The
+operator-tool review remains queued separately and does not pause this path.
+
+That new direct-MAESTRO packet passed its frozen primary-source and physical
+gates for two fresh composition/file/year-disjoint groups; performer identity
+is unknown in the publisher metadata. Original captured MIDI and verified WAV
+give zero opening key-ons, 17/23 later key-ons and 13/11 later original-audio
+attacks above the fixed contrast floor. The policy SHA-256 is
+`9138bbc8aef9765c6c724471cd53ae3921c42b878910d54d839938074b0bbb67`;
+the exact archive members, hashes, source clocks, bounded transfer and checked
+native replays are under ignored `build/notes-maestro-direct-20260927/`.
+Two 20-second WAV excerpts are in the durable private catalog, and four exact
+`presence` questions are visible through the LAN service. They are manual
+queue items 3–6, so five items are pending across tasks. No acoustic label is
+selected, no presence scorer has run, and criterion 3 and milestone credit
+remain open. Do not treat MIDI silence as an audible rest; the user can review
+the prepared requests through the tool when the queue reaches its notification
+threshold or whenever convenient. Existing phone-review item 2 now names a
+prepared 5–10 s request for playback, because the earlier empty-queue
+question became stale when these requests were staged; its ID and pending
+state did not change. About 236 MB of disposable compressed
+members remain in the ignored packet. Automatic approval had rejected
+PowerShell cleanup of the preceding packet, so deletion was not retried.
+The source packet has reached its planned handoff;
+next work followed the workbench's independent engineering criteria while
+these acoustic judgments remain queued. Salty Boi's current-source review
+accepted `NS-6_authoring_01` criteria 1 and 2 at their declared browser and
+native-service scope, using retained five-track same-clock and five-hour
+bounded-navigation evidence. Its optional fresh full-workflow replay verified
+two-track import in an isolated catalog, then stopped when the test server's
+20-request cap was reached; a preceding wrong-port harness run is invalid.
+No product failure or new end-to-end result follows. The earlier accepted
+workflow and focused current Save/queue checks remain the criterion-6 basis.
+The physical Brave verdict remains pending, so the authoring task and overall
+completion stay open at 70.70%. A read-only task-catalog audit found no other
+criterion-closing core batch ready without the queued acoustic judgments,
+independent musical references, or a genuinely new discriminating
+observation. Do not fill the 20-item queue with redundant clips to bypass
+these gaps.
 
 ## Phone review and guided-workbench correction — 2026-09-27
 

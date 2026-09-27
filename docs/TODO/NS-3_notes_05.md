@@ -75,6 +75,26 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-27 the newly frozen direct-MAESTRO publisher-pair packet passed its
+  fixed archive, source-clock and physical-playing gates on two fresh
+  composition/file/year-disjoint recordings; performer identity is unknown.
+  The original [0,20) s WAV excerpts and their captured MIDI are bound under
+  ignored `build/notes-maestro-direct-20260927/`. Checked stable Win32/Win64
+  Pascal replays agreed on zero opening key-ons, 17/23 later key-ons and 13/11
+  later original-audio attacks meeting the declared contrast floor; there were
+  no clipped excerpt samples. The policy SHA-256 is
+  `9138bbc8aef9765c6c724471cd53ae3921c42b878910d54d839938074b0bbb67`.
+  Two 20-second excerpts were imported to the durable catalog as separate
+  development/evaluation groups. Four exact-span `presence` requests were
+  validated on both targets and are visible through the running LAN service;
+  they are manual queue items 3–6, bringing pending reviews to 5/20. No answer
+  is preselected, and the measurements do not establish an acoustic rest or
+  approved positive. No presence scorer ran; criterion 3 and task credit remain
+  open until source-bound acoustic judgments and a frozen recorded comparison.
+  Publisher identity, exact members, hashes, byte budget and replay limits are
+  in the ignored packet's `RESULT.md`. The packet retains about 236 MB of
+  disposable compressed member bytes. Automatic approval had rejected
+  PowerShell cleanup of the preceding packet, so deletion was not retried.
 - 2026-09-27 a prospectively fixed two-group original MAESTRO/ASAP
   presence-review packet stopped before catalog import or operator review.
   Its policy bound distinct unexposed composition groups, original [0,20) s
@@ -97,6 +117,13 @@ held-out evidence after a policy change.
   presence score, criterion 3 or credit follows. Automatic command approval
   rejected cleanup of about 544 MB of temporary media in that ignored packet;
   bounded 20-second excerpts and evidence are separate from those transients.
+  Reassessment changes the next source contract to one prospective direct
+  MAESTRO captured-MIDI/original-WAV packet on fresh publisher recording
+  groups. The ASAP correspondence gate is unnecessary for this presence task;
+  dropping it in a newly frozen source strategy is not permission to replace
+  the failed row or reinterpret its negative result. Require physical playing
+  support and later human acoustic review of an exact rest before scoring.
+  Stop the new packet without substitution if its own gate fails.
 - 2026-09-25 the user selected a Pascal/pas2js operator-authoring route for
   missing acoustic labels. [NS-3_labeling_01](DONE/NS-3_labeling_01.md) and
   [NS-6_authoring_01](NS-6_authoring_01.md) build the catalog and interface;
