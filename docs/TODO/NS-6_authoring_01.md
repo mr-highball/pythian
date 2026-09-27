@@ -85,14 +85,13 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
   player at `0:00 / 0:00` with no visible local outcome, and the page exposed
   import, hashes and the full label editor ahead of the review path. This is a
   failed operator usability verdict for criterion 5, not acceptance or task
-  credit. The current uncommitted repair makes playback the primary action,
+  credit. The deployed repair makes playback the primary action,
   reports fetch/player status beside it, folds utility controls, and adds a
   bounded Pascal review-request route and exact-region selection. A native
   check of a current 10-second source region returned complete non-silent PCM16
   stereo WAV. The prior pas2js handler rethrew native rejected fetch/play
   promises, allowing a silent zero-duration failure; the repair reports those
-  beside the player. Physical Brave playback remains to be rechecked after
-  deployment.
+  beside the player. Physical Brave playback remains to be rechecked.
   Salty Boi's isolated 390px browser QA clicked a prepared request, opened
   its exact 0–441000-frame region, and observed a 10.0-second player advancing
   past 0.30 seconds with visible Playing feedback. Empty and malformed queue

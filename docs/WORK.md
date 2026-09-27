@@ -13,6 +13,39 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Manual review allocation and resumed core work — 2026-09-27
+
+The operator confirmed that reviewing the repaired LAN workbench is one
+cross-task manual review item, to be answered when convenient or when the
+20-item queue fills. Its existing post-repair entry remains the sole pending
+item in ignored `build/manual-review-queue/queue.tsv`; no duplicate review is
+created. That pending physical-phone verdict does not pause the goal or block
+independent tasks. The repaired browser path is deployed and isolated browser
+playback passed; physical Brave playback is still unverified, so
+`NS-6_authoring_01` remains open with no new credit.
+
+Work resumed along the reusable-core prerequisite path at `NS-3_tempo_04`.
+One frozen subharmonic candidate family passed its authored gate but added no
+recorded development coverage on either exposed work, so its maintained edits
+were reverted. Together with the preceding equal-weight failure, this reached
+the task-flow two-batch checkpoint. The consequent frozen, Pascal-only geometry
+audit found that even a reference-selected constant grid can meet both 75%
+precision and recall in only 2/10 and 4/7 eligible windows of the two exposed
+works; the saved candidate pool meets neither group's window gate. Independent
+per-window maximum-match totals of 44/47 and 24/25 are optimistic recall
+ceilings, not selected-path accuracy. This separates a representation limit
+from the six windows where feasible grid geometry existed but was not retained.
+The exact private policy and checked Win32/Win64 logs are under ignored
+`build/beat-grid-ceiling-20260927/`; the policy SHA-256 is
+`8416aa1eaa434d50d0d7161a91b896075a299a6be2d6994afd79100268da5078`.
+Both targets agree on every window feasibility result; minor boundary-rounding
+differences in work counts limit claims of bitwise-identical search. Stop further
+constant-grid weight/phase fitting on this cohort. The next candidate batch must
+address local pulse timing as a new representation under a frozen authored gate,
+preserving the accepted grid alternatives and a finite work budget. It may use
+these exposed works for development only; untouched recordings stay protected.
+No operator review, accepted criterion or task credit follows from this audit.
+
 ## Phone review and guided-workbench correction — 2026-09-27
 
 The operator reached the no-key workbench on physical Brave. Their first
@@ -31,7 +64,7 @@ Qualified dataset methods and source integrity remain the primary recorded
 evidence path; the operator's hearing is reserved for specific missing evidence
 and substantial synthesized-output checkpoints.
 
-The current in-progress repair moves prepared requests and playback to the
+The deployed repair moves prepared requests and playback to the
 primary view, folds setup and detailed authoring controls, adds nearby fetch
 and media-player feedback, and uses a read-only Pascal `/api/review-queue` from
 an optional private catalog-root manifest to select exact source intervals.
@@ -76,7 +109,7 @@ implemented and served at the target address. The physical phone confirmed
 no-key reachability, while the repaired playback path still needs its replay.
 Keep the accepted catalog, Pascal proposal/review boundaries and source data intact.
 
-The current readiness audit found no independent acceptance batch: recorded
+The 2026-09-26 readiness audit found no independent acceptance batch: recorded
 identity and presence need new qualified source evidence, semantic scale and
 role/style learning depend on accepted recorded events or grounded references,
 and final delivery depends on those paths. The workbench's physical-phone

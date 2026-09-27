@@ -51,6 +51,53 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
 
 **Dev Notes:**
 
+- 2026-09-27 frozen Pascal constant-grid geometry audit on the same exposed
+  A/B works replayed each saved pool witness and searched every phase state
+  at the existing 801 BPM trials, using the public grid renderer and one-to-one
+  evaluator. Checked Win32/Win64 agree: the best possible grid meets both
+  75% precision and recall in A 2/10 and B 4/7 eligible owner windows; the
+  retained pool meets 0/10 and 0/7. Six feasible-grid windows are fitter
+  misses, but the other eligible windows cannot be repaired by a better phase
+  or weight choice within this constant-grid family. Independent-window
+  maximum-match sums are 44/47 and 24/25; these optimistic recall ceilings do
+  not establish a coherent path or overcome the joint-window failures. Minor
+  Win32/Win64 boundary-rounding differences change item-visit counts, not any
+  window conclusion. The frozen ignored policy SHA-256 is
+  `8416aa1eaa434d50d0d7161a91b896075a299a6be2d6994afd79100268da5078`;
+  source, code and logs are under `build/beat-grid-ceiling-20260927/`.
+  Stop further constant-grid weight/phase fitting on A/B. The next proposal
+  must change the local pulse-timing representation with a source-independent
+  authored gate and work cap, preserve accepted grid alternatives, then use
+  A/B only as exposed development before any prospectively bound fresh source.
+  This audit is diagnostic, closes no criterion and earns no credit.
+- 2026-09-27 subharmonic phase completion passed its frozen 16-window
+  Pascal-authored precision-and-recall gate on checked Win32/Win64, with
+  unchanged weighted rows and bounded derived work. Its ignored policy SHA-256
+  is `1b6ca4fa0fb606eaf30ad103bde9f80632a5ecba0b6a21c106a68fa122794b00`.
+  The maintained candidate and evaluator prototype then ran once on the two
+  already exposed development works. A stayed at 32/47 best-pool matches,
+  4/10 recall-eligible windows and 0/10 joint precision/recall; B stayed at
+  17/25, 2/7 and 0/7. Both selected pulse streams and indices were unchanged.
+  Stop this family for no development gain; its four maintained Pascal edits
+  were reverted. Private Pascal source, reports and exact hashes remain under
+  ignored `build/beat-subharmonic-phase-probe/`. No accepted candidate,
+  prospective challenge, task criterion or credit follows.
+- 2026-09-27 the equal-weight and subharmonic families are two consecutive
+  nonclosing candidate batches. Reassessment changes the next action from
+  another weight/phase variation to one bounded **oracle geometry audit** on
+  the exposed A/B reference windows: determine whether any constant grid in
+  the frozen BPM range can meet the same one-to-one 30-ms precision/recall
+  window gate. Reference beats are diagnostic inputs only, never an inference
+  rate, phase or training input. If the constant-grid ceiling fails, revisit
+  candidate representation before proposing another fitter; if it passes,
+  inspect onset observability and salience before a new source-independent
+  proposal. Stop after this audit and protect all untouched recordings.
+  A metadata-only Pascal selector separately froze two distinct new works
+  under ignored `build/asap-beat-prospective-next/`, policy SHA-256
+  `ace7cd512e0369259db5770903c1927e2005d73aadd454fc569dd3ea10f37484`.
+  Their annotations, MIDI and WAV remain unopened; the selection cannot be
+  scored until a checked candidate and complete policy are frozen and the
+  binding is published before source access. No credit follows from selection.
 - 2026-09-26 source-independent additive equal-weight candidate attempt stopped
   at its frozen authored gate. An ignored Pascal fixture/policy under
   `build/beat-equal-weight-probe/` fixed four 12-second click controls before
