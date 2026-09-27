@@ -67,8 +67,11 @@ type
     FReviewQueue: TJSArray;
     FReviewId: String;
     FReviewQuestion: String;
+    FReviewType: String;
+    FReviewConflict: String;
     FReviewStart: Int64;
     FReviewEnd: Int64;
+    FRequestDraft: Boolean;
     FWaveBins: TJSArray;
     FCurrentLabels: TJSArray;
     FPendingChanges: TJSArray;
@@ -120,6 +123,10 @@ type
     procedure RenderCatalog(const AData: TJSObject);
     procedure RenderAssignments(const AData: TJSObject);
     procedure ReviewPrompt(const AFallback: String);
+    procedure ClearRequest;
+    procedure ReleaseRequestDraft;
+    function SelectedExactRequest: Boolean;
+    procedure UpdateRecordAnswerAction;
     procedure RenderLabels;
     procedure RenderMergeTargets;
     procedure UpdatePendingUi;
@@ -162,11 +169,14 @@ type
     procedure ImportAll; async;
     procedure SelectTrack(const AIndex: Integer;
       const AStartFrame: Int64 = -1; const AEndFrame: Int64 = -1;
-      const AReviewId: String = ''; const AQuestion: String = ''); async;
+      const AReviewId: String = ''; const AQuestion: String = '';
+      const AReviewType: String = '';
+      const AConflict: String = ''); async;
     procedure RefreshWindow; async;
     procedure LoadAudio(const ACue: Boolean); async;
     procedure SuggestBeats; async;
     procedure SaveReview; async;
+    procedure RecordAnswer; async;
     procedure DownloadExport; async;
     procedure UploadReviewed; async;
     function HandleImport(AEvent: TJSMouseEvent): Boolean;
@@ -187,6 +197,7 @@ type
     function HandleAudioError(AEvent: TJSErrorEvent): Boolean;
     function HandleSuggest(AEvent: TJSMouseEvent): Boolean;
     function HandleSave(AEvent: TJSMouseEvent): Boolean;
+    function HandleRecordAnswer(AEvent: TJSMouseEvent): Boolean;
     function HandleUndo(AEvent: TJSMouseEvent): Boolean;
     function HandleRedo(AEvent: TJSMouseEvent): Boolean;
     function HandleClearHistory(AEvent: TJSMouseEvent): Boolean;
@@ -503,13 +514,35 @@ var
   LRow: TJSObject;
   LIndex: Integer;
   LTitle: String;
+  LSelectedFound: Boolean;
 begin
   ClearItems('assignment-list');
   FReviewQueue := TJSArray(AData['items']);
   if FReviewQueue = nil then
     FReviewQueue := TJSArray.new;
+  LSelectedFound := False;
+  if FReviewId <> '' then
+  begin
+    for LIndex := 0 to FReviewQueue.length - 1 do
+    begin
+      LRow := TJSObject(FReviewQueue[LIndex]);
+      if (TextField(LRow, 'id') = FReviewId) and
+        (TextField(LRow, 'source_sha256') = FSourceHash) and
+        (Trunc(NumberField(LRow, 'start_frame')) = FReviewStart) and
+        (Trunc(NumberField(LRow, 'end_frame')) = FReviewEnd) then
+      begin
+        LSelectedFound := True;
+        FReviewType := TextField(LRow, 'label_type');
+        FReviewConflict := TextField(LRow, 'answer_conflict');
+        Break;
+      end;
+    end;
+    if not LSelectedFound then
+      ClearRequest;
+  end;
   if FReviewQueue.length = 0 then
   begin
+    ClearRequest;
     Element('catalog-browser').setAttribute('open', '');
     Element('assignment-state').textContent :=
       'No review requests are ready. Explore the audio if you like; no label is needed.';
@@ -529,16 +562,84 @@ begin
     AddItem('assignment-list', LTitle, TextField(LRow, 'question'),
       'review-request', LIndex, @HandleAssignment);
   end;
+  UpdateRecordAnswerAction;
 end;
 
 procedure TWorkbench.ReviewPrompt(const AFallback: String);
 begin
-  if (FReviewId <> '') and (FReviewQuestion <> '') and
-    (FWindowStart = FReviewStart) and
-    (FWindowStart + FWindowSpan = FReviewEnd) then
+  if SelectedExactRequest then
     Element('review-next-step').textContent := FReviewQuestion
   else
     Element('review-next-step').textContent := AFallback;
+  UpdateRecordAnswerAction;
+end;
+
+function TWorkbench.SelectedExactRequest: Boolean;
+begin
+  Result := (FReviewId <> '') and (FReviewQuestion <> '') and
+    (FSourceHash <> '') and (FWindowStart = FReviewStart) and
+    (FWindowStart + FWindowSpan = FReviewEnd);
+end;
+
+procedure TWorkbench.ReleaseRequestDraft;
+begin
+  if not FRequestDraft then
+    Exit;
+  FRequestDraft := False;
+  Input('label-id').removeAttribute('readonly');
+  Input('label-start').removeAttribute('readonly');
+  Input('label-end').removeAttribute('readonly');
+  Element('label-type').removeAttribute('disabled');
+end;
+
+procedure TWorkbench.ClearRequest;
+begin
+  if FRequestDraft then
+  begin
+    Input('label-id').value := '';
+    Input('label-type').value := '';
+    Input('label-value').value := '';
+    Input('label-start').value := '';
+    Input('label-end').value := '';
+    Input('label-proposal').value := '';
+    Element('review-editor').removeAttribute('open');
+  end;
+  ReleaseRequestDraft;
+  FReviewId := '';
+  FReviewQuestion := '';
+  FReviewType := '';
+  FReviewConflict := '';
+  FReviewStart := 0;
+  FReviewEnd := 0;
+  UpdateRecordAnswerAction;
+end;
+
+procedure TWorkbench.UpdateRecordAnswerAction;
+var
+  LBlocked: Boolean;
+begin
+  if not SelectedExactRequest then
+  begin
+    Element('record-answer-area').setAttribute('hidden', '');
+    Element('record-answer-state').textContent := '';
+    Exit;
+  end;
+  Element('record-answer-area').removeAttribute('hidden');
+  LBlocked := (FReviewConflict <> '') or FHistoryLoading or
+    FHistoryLoadFailed or FSaveInProgress or
+    ((FPendingChanges <> nil) and (FPendingChanges.length > 0));
+  TJSHTMLButtonElement(Element('record-answer-button')).disabled := LBlocked;
+  if FReviewConflict <> '' then
+    Element('record-answer-state').textContent := FReviewConflict
+  else if FHistoryLoading then
+    Element('record-answer-state').textContent := 'Loading saved decisions…'
+  else if FHistoryLoadFailed then
+    Element('record-answer-state').textContent := 'Saved decisions could not load.'
+  else if LBlocked then
+    Element('record-answer-state').textContent := 'Finish the current review first.'
+  else
+    Element('record-answer-state').textContent :=
+      'Opens a draft for this exact region. Status starts Uncertain; choose Approved to accept the answer, then save.';
 end;
 
 procedure TWorkbench.RenderLabels;
@@ -1723,6 +1824,7 @@ begin
   begin
     Exit;
   end;
+  ReleaseRequestDraft;
   FSelectedLabel := AIndex;
   FDragMode := dmNone;
   LRow := TJSObject(FCurrentLabels[AIndex]);
@@ -1929,6 +2031,7 @@ begin
       FetchApi('/api/review-queue', 'GET', ''));
     if LResponse.status = 404 then
     begin
+      ClearRequest;
       Element('assignment-state').textContent :=
         'Review requests are unavailable in this service version.';
       Exit;
@@ -1940,8 +2043,11 @@ begin
     RenderAssignments(LData);
   except
     on LError: Exception do
+    begin
+      ClearRequest;
       Element('assignment-state').textContent :=
         'Review requests could not load: ' + LError.Message;
+    end;
   end;
 end;
 
@@ -1973,7 +2079,7 @@ end;
 
 procedure TWorkbench.SelectTrack(const AIndex: Integer;
   const AStartFrame, AEndFrame: Int64;
-  const AReviewId, AQuestion: String); async;
+  const AReviewId, AQuestion, AReviewType, AConflict: String); async;
 var
   LTrack: TJSObject;
   LKeepTimeline: Boolean;
@@ -1992,6 +2098,7 @@ begin
   begin
     Exit;
   end;
+  ClearRequest;
   LTrack := TJSObject(FTracks[AIndex]);
   LKeepTimeline := (FSourceHash <> '') and (FClockId <> '') and
     (FSourceGroup <> '') and
@@ -2023,13 +2130,10 @@ begin
     end;
     FReviewId := AReviewId;
     FReviewQuestion := AQuestion;
+    FReviewType := AReviewType;
+    FReviewConflict := AConflict;
     FReviewStart := AStartFrame;
     FReviewEnd := AEndFrame;
-  end
-  else
-  begin
-    FReviewId := '';
-    FReviewQuestion := '';
   end;
   Inc(FWindowEpoch);
   FAudio.pause;
@@ -2116,6 +2220,7 @@ begin
   FHistoryLoading := True;
   FHistoryLoadFailed := False;
   UpdatePendingUi;
+  UpdateRecordAnswerAction;
   Status('Loading source frames and saved labels…');
   try
     Inc(FWindowEpoch);
@@ -2223,6 +2328,7 @@ begin
     end;
     RenderLabels;
     RenderProposals;
+    UpdateRecordAnswerAction;
     DrawWaveform;
     Status('Loaded source frames ' + IntToStr(LStart) +
       '–' + IntToStr(LEnd) + '.');
@@ -2231,6 +2337,7 @@ begin
     begin
       FSaveInProgress := False;
       UpdatePendingUi;
+      UpdateRecordAnswerAction;
     end;
   except
     on LError: Exception do
@@ -2255,6 +2362,7 @@ begin
       end;
       FProposals := nil;
       UpdateTrackProposalIdentity;
+      UpdateRecordAnswerAction;
       Status('Timeline failed: ' + LError.Message, True);
     end;
   end;
@@ -2471,9 +2579,30 @@ begin
   begin
     LStart := StrToInt64Def(Input('label-start').value, -1);
     LEnd := StrToInt64Def(Input('label-end').value, -1);
+    if FRequestDraft and
+      (not SelectedExactRequest or
+       (Input('label-id').value <> FReviewId) or
+       (LStart <> FReviewStart) or (LEnd <> FReviewEnd) or
+       (Input('label-proposal').value <> '') or
+       ((FReviewType <> '') and
+        (Input('label-type').value <> FReviewType))) then
+    begin
+      Status('The request draft no longer matches its exact region. Select the request again.', True);
+      Exit;
+    end;
     if (Trim(Input('label-id').value) = '') then
     begin
       Status('Enter a label ID before saving.', True);
+      Exit;
+    end;
+    if Input('label-type').value = '' then
+    begin
+      Status('Choose a label type before saving.', True);
+      Exit;
+    end;
+    if FRequestDraft and (Trim(Input('label-value').value) = '') then
+    begin
+      Status('Enter your answer before saving.', True);
       Exit;
     end;
     LChange := EditorChange(LStart, LEnd, Input('label-id').value);
@@ -2485,6 +2614,7 @@ begin
   end;
   FSaveInProgress := True;
   UpdatePendingUi;
+  UpdateRecordAnswerAction;
   try
     LTransaction := TJSObject.new;
     LTransaction['version'] := 1;
@@ -2603,6 +2733,7 @@ begin
     begin
       FSaveInProgress := False;
       UpdatePendingUi;
+      UpdateRecordAnswerAction;
       Status('Review failed: ' + LError.Message, True);
     end;
   end;
@@ -2706,6 +2837,95 @@ begin
   Result := False;
 end;
 
+procedure TWorkbench.RecordAnswer; async;
+var
+  LResponse: TJSResponse;
+  LData: TJSObject;
+  LRows: TJSArray;
+  LRow: TJSObject;
+  LHash: String;
+  LId: String;
+  LEpoch: Integer;
+  LIndex: Integer;
+begin
+  if not SelectedExactRequest or (FReviewConflict <> '') or
+    FHistoryLoading or FHistoryLoadFailed or FSaveInProgress or
+    ((FPendingChanges <> nil) and (FPendingChanges.length > 0)) then
+  begin
+    UpdateRecordAnswerAction;
+    Exit;
+  end;
+  LHash := FSourceHash;
+  LId := FReviewId;
+  LEpoch := FWindowEpoch;
+  try
+    LResponse := await(TJSResponse, FetchApi('/api/review-queue', 'GET', ''));
+    if (LEpoch <> FWindowEpoch) or not SelectedExactRequest or
+      (LHash <> FSourceHash) or (LId <> FReviewId) then
+      Exit;
+    if LResponse.status <> 200 then
+      raise Exception.Create('Could not verify the request (HTTP ' +
+        IntToStr(LResponse.status) + ')');
+    LData := await(TJSObject, LResponse.json());
+    if (LEpoch <> FWindowEpoch) or not SelectedExactRequest or
+      (LHash <> FSourceHash) or (LId <> FReviewId) then
+      Exit;
+    LRows := TJSArray(LData['items']);
+    LRow := nil;
+    for LIndex := 0 to LRows.length - 1 do
+    begin
+      if TextField(TJSObject(LRows[LIndex]), 'id') = LId then
+      begin
+        LRow := TJSObject(LRows[LIndex]);
+        Break;
+      end;
+    end;
+    if (LRow = nil) or (TextField(LRow, 'source_sha256') <> LHash) or
+      (Trunc(NumberField(LRow, 'start_frame')) <> FReviewStart) or
+      (Trunc(NumberField(LRow, 'end_frame')) <> FReviewEnd) or
+      (TextField(LRow, 'label_type') <> FReviewType) or
+      (TextField(LRow, 'question') <> FReviewQuestion) then
+    begin
+      ClearRequest;
+      Status('This request changed. Select it again from the queue.', True);
+      Exit;
+    end;
+    FReviewConflict := TextField(LRow, 'answer_conflict');
+    if FReviewConflict <> '' then
+    begin
+      UpdateRecordAnswerAction;
+      Exit;
+    end;
+    ReleaseRequestDraft;
+    FRequestDraft := True;
+    FSelectedLabel := -1;
+    FDragMode := dmNone;
+    Input('label-id').value := FReviewId;
+    Input('label-type').value := FReviewType;
+    Input('label-value').value := '';
+    Input('label-status').value := 'uncertain';
+    Input('label-part').value := '';
+    Input('label-start').value := IntToStr(FReviewStart);
+    Input('label-end').value := IntToStr(FReviewEnd);
+    Input('label-pitch').value := '';
+    Input('label-proposal').value := '';
+    Input('label-id').setAttribute('readonly', '');
+    Input('label-start').setAttribute('readonly', '');
+    Input('label-end').setAttribute('readonly', '');
+    if FReviewType <> '' then
+      Element('label-type').setAttribute('disabled', '');
+    Element('review-editor').setAttribute('open', '');
+    TJSHTMLElement(Element('review-editor')).scrollIntoView;
+    if FReviewType = '' then
+      Status('Choose a label type and enter your answer. Status is Uncertain until you choose Approved; then click Save review event.')
+    else
+      Status('Enter your answer. Status is Uncertain until you choose Approved; then click Save review event. Nothing has been saved yet.');
+  except
+    on LError: Exception do
+      Status('Could not open this request draft: ' + LError.Message, True);
+  end;
+end;
+
 function TWorkbench.HandleAssignment(AEvent: TJSMouseEvent): Boolean;
 var
   LIndex: Integer;
@@ -2740,7 +2960,9 @@ begin
   SelectTrack(LTrackIndex,
     Trunc(NumberField(LRow, 'start_frame')),
     Trunc(NumberField(LRow, 'end_frame')),
-    TextField(LRow, 'id'), TextField(LRow, 'question'));
+    TextField(LRow, 'id'), TextField(LRow, 'question'),
+    TextField(LRow, 'label_type'),
+    TextField(LRow, 'answer_conflict'));
   TJSHTMLElement(Element('track-title')).scrollIntoView;
 end;
 
@@ -2873,6 +3095,7 @@ begin
   end
   else
   begin
+    ReleaseRequestDraft;
     FSelectedLabel := -1;
     FDragMode := dmCreate;
     FDragStart := FrameAtX(LX);
@@ -2965,6 +3188,7 @@ begin
     Exit(False);
   end;
   LRow := TJSObject(LRows[LIndex]);
+  ReleaseRequestDraft;
   LFrames := TJSArray(LRow['frames']);
   FSelectedProposal := LIndex;
   TJSHTMLButtonElement(Element('load-cue-button')).disabled :=
@@ -3009,6 +3233,7 @@ begin
   end;
   if FSourceHash <> '' then
   begin
+    ClearRequest;
     if FWindowStart > FWindowSpan then
       Dec(FWindowStart, FWindowSpan)
     else
@@ -3029,6 +3254,7 @@ begin
   end;
   if FSourceHash <> '' then
   begin
+    ClearRequest;
     FWindowStart := Smaller(FFrameCount - 1,
       FWindowStart + FWindowSpan);
     RefreshWindow;
@@ -3063,6 +3289,7 @@ begin
     Exit;
   end;
   LFrame := LSeconds * FSampleRate;
+  ClearRequest;
   if LFrame > FFrameCount - FWindowSpan then
   begin
     FWindowStart := FFrameCount - FWindowSpan;
@@ -3092,6 +3319,7 @@ begin
   end;
   if FSourceHash <> '' then
   begin
+    ClearRequest;
     FWindowSpan := Smaller(FFrameCount,
       FWindowSpan div 2);
     if FWindowSpan < 1 then
@@ -3114,6 +3342,7 @@ begin
   end;
   if FSourceHash <> '' then
   begin
+    ClearRequest;
     FWindowSpan := Smaller(FFrameCount,
       Smaller(8388608, FWindowSpan * 2));
     RefreshWindow;
@@ -3142,6 +3371,12 @@ end;
 function TWorkbench.HandleSave(AEvent: TJSMouseEvent): Boolean;
 begin
   SaveReview;
+  Result := False;
+end;
+
+function TWorkbench.HandleRecordAnswer(AEvent: TJSMouseEvent): Boolean;
+begin
+  RecordAnswer;
   Result := False;
 end;
 
@@ -3498,6 +3733,8 @@ begin
   TJSHTMLButtonElement(Element('load-cue-button')).onclick := @HandleLoadCue;
   TJSHTMLButtonElement(Element('suggest-button')).onclick := @HandleSuggest;
   TJSHTMLButtonElement(Element('save-label-button')).onclick := @HandleSave;
+  TJSHTMLButtonElement(Element('record-answer-button')).onclick :=
+    @HandleRecordAnswer;
   TJSHTMLButtonElement(Element('undo-review-button')).onclick := @HandleUndo;
   TJSHTMLButtonElement(Element('redo-review-button')).onclick := @HandleRedo;
   TJSHTMLButtonElement(Element('clear-history-button')).onclick :=

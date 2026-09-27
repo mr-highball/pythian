@@ -40,6 +40,10 @@ function ReadCatalogReviewHistory(const ACatalogRoot, AHash: String;
   const AFirstRevision, AMaximumCount: Integer): TJSONObject;
 function ReadCatalogCurrentLabels(const ACatalogRoot, AHash: String;
   const AStartFrame, AEndFrame: Int64; const AMaximumCount: Integer): TJSONObject;
+{ Returns the latest event for one source-local label ID, or nil when unused.
+  Memory use is independent of source duration and total label count. }
+function FindCatalogCurrentLabel(const ACatalogRoot, AHash,
+  ALabelId: String): TJSONObject;
 function CatalogProposalsUnlocked(const ACatalogRoot: String;
   const ATrack: TJSONObject): Boolean;
 
@@ -611,6 +615,43 @@ begin
         LStates.Objects[LIndex].Free;
       end;
       LStates.Free;
+    end;
+  finally
+    LTrack.Free;
+  end;
+end;
+
+function FindCatalogCurrentLabel(const ACatalogRoot, AHash,
+  ALabelId: String): TJSONObject;
+var
+  LTrack: TJSONObject;
+  LDirectory: String;
+  LRevision: Integer;
+  LEvent: TJSONObject;
+  LChange: TJSONObject;
+begin
+  Need(SafeIdentifier(ALabelId), 'Invalid label ID');
+  LTrack := ReadCatalogTrack(ACatalogRoot, AHash);
+  try
+    LDirectory := ReviewDirectory(ACatalogRoot, AHash);
+    LRevision := LatestRevision(LDirectory);
+    Result := nil;
+    while LRevision > 0 do
+    begin
+      LEvent := ReadEvent(LDirectory, LRevision);
+      try
+        Need(LEvent.Strings['source_sha256'] = AHash,
+          'Review event source differs from current label');
+        LChange := LEvent.Objects['change'];
+        if RequiredText(LChange, 'label_id', 128) = ALabelId then
+        begin
+          Result := TJSONObject(GetJSON(LChange.AsJSON));
+          Exit;
+        end;
+      finally
+        LEvent.Free;
+      end;
+      Dec(LRevision);
     end;
   finally
     LTrack.Free;

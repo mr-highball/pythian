@@ -76,6 +76,10 @@ SOFTWARE.
             <button id="load-audio-button" type="button" class="primary">Play original</button>
             <audio id="preview" controls preload="none"></audio>
           </div>
+          <div id="record-answer-area" class="record-answer-area" hidden>
+            <button id="record-answer-button" type="button" class="primary">Record answer</button>
+            <span id="record-answer-state" role="status" aria-live="polite"></span>
+          </div>
           <p id="audio-feedback" class="audio-feedback" role="status" aria-live="polite">Choose a recording, then press Play original.</p>
           <div class="toolbar playback-options">
             <span id="audio-mode" class="window-label">No region loaded</span>
@@ -159,6 +163,7 @@ SOFTWARE.
           <label>Reviewer<input id="reviewer" value="operator" maxlength="128"></label>
           <label>Label ID<input id="label-id" placeholder="e.g. bass-note-001" maxlength="128"></label>
           <label>Type<select id="label-type">
+            <option value="">Choose a label type</option>
             <option value="note">Note</option><option value="beat">Beat</option><option value="downbeat">Downbeat</option>
             <option value="presence">Presence</option><option value="part_role">Part role</option>
             <option value="source_role">Source role</option><option value="phrase">Phrase</option>

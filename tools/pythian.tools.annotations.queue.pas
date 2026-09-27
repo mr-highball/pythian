@@ -43,7 +43,8 @@ implementation
 uses
   Classes,
   jsonparser,
-  pythian.tools.annotations.catalog;
+  pythian.tools.annotations.catalog,
+  pythian.tools.annotations.review;
 
 const
   CMaximumQueueBytes = 1048576;
@@ -110,6 +111,15 @@ begin
   end;
 end;
 
+function ValidLabelType(const AType: String): Boolean;
+begin
+  Result := (AType = 'note') or (AType = 'beat') or
+    (AType = 'downbeat') or (AType = 'presence') or
+    (AType = 'part_role') or (AType = 'source_role') or
+    (AType = 'phrase') or (AType = 'section') or
+    (AType = 'style_preference');
+end;
+
 procedure ValidateFields(const AObject: TJSONObject;
   const ARoot: Boolean);
 var
@@ -133,7 +143,8 @@ begin
     begin
       RequireQueue((LName = 'id') or (LName = 'source_sha256') or
         (LName = 'start_frame') or (LName = 'end_frame') or
-        (LName = 'question') or (LName = 'title'),
+        (LName = 'question') or (LName = 'title') or
+        (LName = 'label_type'),
         'unsupported item field');
     end;
   end;
@@ -170,6 +181,9 @@ var
   LQuestion: String;
   LTitle: String;
   LSourceTitle: String;
+  LLabelType: String;
+  LConflict: String;
+  LCurrent: TJSONObject;
   LStart: Int64;
   LEnd: Int64;
   LRate: Integer;
@@ -230,6 +244,13 @@ begin
           LEnd := QueueInteger(LInputItem, 'end_frame');
           LQuestion := QueueText(LInputItem, 'question',
             CMaximumQuestionBytes);
+          LLabelType := '';
+          if LInputItem.Find('label_type') <> nil then
+          begin
+            LLabelType := QueueText(LInputItem, 'label_type', 128);
+            RequireQueue(ValidLabelType(LLabelType),
+              'unsupported label_type at item ' + IntToStr(I));
+          end;
           LSourceTitle := '';
           try
             LSource := ReadCatalogTrack(ACatalogRoot, LHash);
@@ -267,6 +288,28 @@ begin
           LOutputItem.Add('start_frame', LStart);
           LOutputItem.Add('end_frame', LEnd);
           LOutputItem.Add('question', LQuestion);
+          if LLabelType <> '' then
+            LOutputItem.Add('label_type', LLabelType);
+          LConflict := '';
+          LCurrent := nil;
+          try
+            LCurrent := FindCatalogCurrentLabel(ACatalogRoot, LHash, LId);
+          except
+            on Exception do
+              LConflict := 'Could not verify existing label ID for this source.';
+          end;
+          if (LConflict = '') and (LCurrent <> nil) then
+          try
+            if (LCurrent.Int64s['start_frame'] <> LStart) or
+              (LCurrent.Int64s['end_frame'] <> LEnd) or
+              (LLabelType = '') or
+              (LCurrent.Strings['type'] <> LLabelType) then
+              LConflict := 'This request ID already names a different saved label.';
+          finally
+            LCurrent.Free;
+          end;
+          if LConflict <> '' then
+            LOutputItem.Add('answer_conflict', LConflict);
           if LSourceTitle <> '' then
           begin
             LOutputItem.Add('source_title', LSourceTitle);

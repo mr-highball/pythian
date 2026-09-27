@@ -46,6 +46,72 @@ preserving the accepted grid alternatives and a finite work budget. It may use
 these exposed works for development only; untouched recordings stay protected.
 No operator review, accepted criterion or task credit follows from this audit.
 
+The next source-independent elastic-sequence hypothesis froze seven authored
+controls and a 90% joint precision/recall gate before measurement. Its Pascal
+prototype stopped on the first control, steady 120 BPM: both checked targets
+failed the first owner window, where the best sequence matched 5/6 beats at
+5/6 precision and recall. The source-start beat at frame zero had no admitted
+onset; the prototype preserved its seed's pulse count and could not add that
+boundary beat. This rejects the frozen prototype at its first gate and says
+nothing about the remaining authored controls or A/B recordings, which were not
+scored. The ignored policy SHA-256 is
+`91fc5da2639962c1ce5320d1fee69e24b54a8dc3d9b062cd742d25d85d97affc`;
+private Pascal source and logs are under `build/beat-elastic-probe-20260927/`.
+The geometry audit and this failed prototype are two further nonclosing beat
+batches. Stop beat-candidate variants again. The next action follows the ready
+`NS-6_authoring_01` non-phone browser path: finish its independently testable
+operator workflow while the physical-phone check remains queued. A later beat
+batch needs an explicit public contract for nonuniform source-frame pulses,
+including boundary birth/death and stable identity through selection and clock
+consumers, before another recorded candidate hypothesis. No credit changed.
+
+A guided `Record answer` candidate now links a selected prepared request to an
+exact source-local label ID, frame interval and optional validated label type.
+It starts with a blank answer and an uncertain status; the operator must choose
+Approved and explicitly save before it can become a selected training label.
+The Pascal queue checks the exact current label ID instead of paging through a
+multi-hour source's first 2048 labels, and isolates an ID conflict to its own
+request. Focused Win32/Win64 native builds, the Pascal queue fixture and pas2js
+compilation pass. Salty Boi's independent Pascal fixture accepted exact-ID
+reuse, isolated conflicts and a queue with more than 2048 saved events; four
+requests loaded in about 0.7 seconds. An isolated browser replay showed a
+prior saved answer in history, a blank uncertain new draft and an explicit
+revision-advancing Save. It then exposed a disabled `Record answer` button
+after Save: the action had been refreshed while the save lock was still set.
+Ticket Guy repaired the lock transition and a Pascal CDP check passed delayed
+success and failure paths. Salty Boi independently rebuilt the pas2js asset
+and confirmed the action stayed disabled during delayed requests, re-enabled
+after both success and HTTP 500 failure, and only the successful Save advanced
+the revision (2053 to 2054). This focused pass did not repeat 390px layout,
+physical-phone playback, Approved-state interaction, missing-type UI validation,
+conflict display or blind-proposal hiding; prior checks and native validation
+remain separate evidence. The checked native and browser assets were staged
+under ignored `build/record-answer-deploy-20260927/` and replaced the live
+service at `192.168.12.109:18097` as process 18564. Host checks returned
+HTTP 200 for page and app, a silent session, three catalog tracks, an empty
+review-request queue and HTTP 403 for a tokenless catalog read. The one
+physical-phone check remains queued at 1/20; it has not been answered by
+deployment. No criterion or milestone credit changed.
+
+The next beat prerequisite now has a public Pascal candidate contract in new
+`pythian.beat.pulse`: it wraps the accepted grid pool unchanged and gives each
+explicit source-frame pulse a base-seed parent or a boundary-birth marker;
+omitted seeds are declared and become clock gaps. Owner, source, alternative and
+run identities survive selection into a raw clock without fitting or metrical
+admission. The source-free policy was frozen before execution (SHA-256
+`1a9456f596b5701958423a8faabd2dbf447fbc45f58dfb3b1ab5890acba8bffd`).
+Authored Win32/Win64 runs passed exact grid parity, birth/death, identity,
+detachment and budget controls with byte-identical logs. Independent QA found
+that the first wrapper accepted negative analysis-window starts and observations
+outside their analysis window; a second check found that later mutation of the
+public support tolerance bypassed validation. The first defect was repaired by
+Ticket Guy, then implementation transferred to the main agent under the
+two-failed-submission rule for the tolerance repair. Salty Boi rebuilt and
+accepted the final source on Win32/Win64, with both negative cases and mutated
+tolerances rejected and exact output replay. No A/B recording was scored, no
+candidate fitter was adopted and no `NS-3_tempo_04` criterion or milestone
+credit changed.
+
 ## Phone review and guided-workbench correction — 2026-09-27
 
 The operator reached the no-key workbench on physical Brave. Their first

@@ -51,6 +51,46 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
 
 **Dev Notes:**
 
+- 2026-09-27 a public Pascal `pythian.beat.pulse` contract candidate wraps the
+  unchanged v1 grid pool and represents explicit source-frame pulse positions
+  with exact base-seed lineage, boundary births and declared dropped seeds.
+  Dropped seeds and mixed explicit seams become raw-clock gaps; no longer
+  interval is silently admitted as a slower beat. A frozen source-free policy
+  (SHA-256 `1a9456f596b5701958423a8faabd2dbf447fbc45f58dfb3b1ab5890acba8bffd`)
+  and checked Win32/Win64 authored replay passed grid parity, frame-zero birth,
+  edge/interior death, variable timing, identity, detached output and resource
+  rejection, with byte-identical logs under ignored
+  `build/beat-pulse-contract-20260927/`. First independent QA found accepted
+  negative analysis starts and out-of-window observation spans; Ticket Guy
+  repaired the wrapper. The second submission found mutated public support
+  tolerances were accepted; implementation transferred to the main agent under
+  the team rule. Final Salty Boi QA rebuilt both checked targets, confirmed
+  byte-identical replay and independently rejected those invalid geometries and
+  tolerances. The final unit SHA-256 is
+  `5d3704c889f1195c587425ceb691c3715274552d3d7847595794c984a26f694d`.
+  No fitter, path search, admission, A/B scoring or recorded
+  criterion changed, so the
+  task and its credit remain open. The next bounded beat deliverable must
+  qualify how an explicit candidate is selected and consumed without crossing
+  declared gaps or erasing the accepted grid alternatives.
+- 2026-09-27 a frozen elastic-sequence prototype stopped at its first authored
+  gate on checked Win32/Win64. It kept weighted grid candidates unchanged and
+  placed companion nonuniform source-frame sequences beside them, but its
+  steady-120 first owner matched only 5/6 reference beats with 5/6 precision
+  and recall, below the fixed 90% joint gate. The authored frame-zero click
+  was absent from the 23 admitted onsets, and the companion preserved its seed
+  pulse count, so it did not insert a source-start beat. This explains the
+  observed first-window miss without asserting results for the other six
+  authored controls or the recorded A/B works; those were not scored. The
+  ignored policy SHA-256 is
+  `91fc5da2639962c1ce5320d1fee69e24b54a8dc3d9b062cd742d25d85d97affc`;
+  source and logs remain under `build/beat-elastic-probe-20260927/`. The
+  geometry audit and this failed prototype form two further nonclosing beat
+  batches. Stop candidate variants and follow the ready non-phone workbench
+  workflow in [NS-6_authoring_01](NS-6_authoring_01.md). Before another beat
+  candidate, define how a nonuniform pulse sequence gains or loses boundary
+  pulses and retains source-frame, alternative-index and clock-consumer identity.
+  No maintained change, recorded acceptance or credit follows.
 - 2026-09-27 frozen Pascal constant-grid geometry audit on the same exposed
   A/B works replayed each saved pool witness and searched every phase state
   at the existing 801 BPM trials, using the public grid renderer and one-to-one

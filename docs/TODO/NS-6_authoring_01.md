@@ -80,6 +80,32 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Dev Notes:**
 
+- 2026-09-27 guided `Record answer` candidate for selected prepared requests:
+  Pascal queue validation accepts an optional explicit label type and checks
+  the exact source-local current label ID without a whole-source 2048-label
+  page. A conflicting ID disables only its request. The pas2js form prefills
+  request ID, exact frames and available type, while starting with a blank
+  answer/proposal and uncertain status; operator approval and explicit Save
+  remain necessary before a selected training label exists. Focused FPC 3.2.2
+  Win32/Win64 builds, a Pascal queue fixture including >2048 saved labels, and
+  pas2js 3.3.1 compilation passed. Salty Boi's independent native queue check
+  and ~0.7-second isolated HTTP read of four requests passed with 2050 saved
+  events. Browser replay showed saved history, a blank uncertain new draft,
+  no autosave and explicit revision advancement. It also found the guided
+  action stayed disabled after Save because the UI updated it before clearing
+  the asynchronous save lock. Ticket Guy repaired that transition; his isolated
+  Pascal CDP check passed delayed success and failed-POST paths. Salty Boi
+  independently rebuilt pas2js and confirmed disabled-during-Save,
+  re-enabled-after-success/failure, revision 2053 to 2054 on successful Save,
+  and no revision change after failed POST. This focused browser pass did not
+  recheck 390px layout, physical-phone playback, Approved-state interaction,
+  missing-type UI validation, conflict display or blind-proposal hiding;
+  source/native and earlier browser evidence retain their separate scopes.
+  The checked assets are live on `192.168.12.109:18097` as process 18564;
+  page/app returned HTTP 200, silent session opened, three catalog tracks and
+  zero assigned requests loaded, and tokenless catalog read returned 403. The
+  one physical-phone playback/usability
+  verdict remains queued at 1/20; this candidate earns no criterion credit yet.
 - 2026-09-27 the user's physical Brave session reached the no-key LAN page, so
   the access-key barrier was removed. Its `Load this region` control left the
   player at `0:00 / 0:00` with no visible local outcome, and the page exposed

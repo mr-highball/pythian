@@ -103,6 +103,9 @@ canvas { display: block; width: 100%; height: auto; touch-action: none; }
 .playback-controls audio { flex: 1 1 18rem; max-width: 36rem; height: 2.4rem; }
 .playback-controls button { min-height: 2.6rem; }
 .playback-controls { margin-bottom: .3rem; }
+.record-answer-area { display: flex; align-items: center; gap: .65rem; margin: .5rem 0; flex-wrap: wrap; }
+.record-answer-area button { min-height: 2.6rem; }
+.record-answer-area span { color: #cce8e1; font-size: .85rem; line-height: 1.4; flex: 1 1 14rem; }
 .partition, .revision { color: #f3c98d; font-size: .77rem; font-weight: 700; white-space: nowrap; }
 .track-identity { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; margin: .75rem 0; color: #b8c8ce; font-size: .76rem; }
 .identity-chip { display: inline-flex; align-items: center; gap: .3rem; min-height: 1.9rem; padding: .25rem .55rem; border: 1px solid #344852; border-radius: 999px; background: #111d22; overflow-wrap: anywhere; }
@@ -171,6 +174,8 @@ canvas { display: block; width: 100%; height: auto; touch-action: none; }
   .aligned-peer-lane { padding: .4rem; }
   .playback-controls { display: grid; grid-template-columns: 1fr; }
   .playback-controls audio, .playback-controls button { width: 100%; max-width: none; }
+  .record-answer-area { display: grid; grid-template-columns: 1fr; }
+  .record-answer-area button { width: 100%; }
   .playback-options .window-label { width: auto; }
   .review-callout { margin-top: .3rem; }
 }
