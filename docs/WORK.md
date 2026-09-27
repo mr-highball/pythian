@@ -13,25 +13,68 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Phone review and guided-workbench correction — 2026-09-27
+
+The operator reached the no-key workbench on physical Brave. Their first
+playback attempt left the audio control at `0:00 / 0:00`; `Load this region`
+gave no visible feedback beside the player. They also could not tell what
+review they were being asked to perform because import, catalog metadata,
+waveform controls and the generic label editor dominated the mobile page.
+This is an actionable failure of the open workbench operator criterion, not
+review acceptance or a credited task completion.
+
+The intended cooperative contract is that Pythian and the assistant prepare
+source audio and an exact, justified review request; the operator listens,
+checks any unreviewed Pascal suggestion, and records a decision only for that
+request. Catalog sources alone are reference material, not an assignment.
+Qualified dataset methods and source integrity remain the primary recorded
+evidence path; the operator's hearing is reserved for specific missing evidence
+and substantial synthesized-output checkpoints.
+
+The current in-progress repair moves prepared requests and playback to the
+primary view, folds setup and detailed authoring controls, adds nearby fetch
+and media-player feedback, and uses a read-only Pascal `/api/review-queue` from
+an optional private catalog-root manifest to select exact source intervals.
+Queue prompts cannot become labels by import. A live-current 10-second region
+returned a complete non-silent PCM16 stereo WAV from the native HTTP service,
+so the mobile failure is not yet attributed to a WAV encoding defect. Inspection
+of the compiled pas2js path also found that a rejected native browser fetch or
+play promise escaped the former Pascal-exception-only handler, explaining how
+the button could leave the player at zero without a nearby error. The repair
+handles that browser rejection explicitly; the exact physical-phone failure
+still needs replay. Native queue and pas2js builds passed their focused
+compilation checks. Salty Boi's isolated 390×844 browser check selected the
+exact 0–441000-frame assigned region, then observed a 10.0-second player at
+0.306 seconds with playback active and nearby “Playing the original WAV.”
+feedback. It also checked no key prompt, queue-before-catalog layout, empty and
+malformed queue states, no horizontal overflow, blind evaluation with no
+proposal fetch, and no automatic review save. The narrow screenshot is under
+ignored `build/label-workbench/ux-qa-20260927/screens/assigned-mobile.png`.
+The live service was replaced with the checked no-key/queue Win64 build at
+`192.168.12.109:18097` as process 15936. Host checks returned HTTP 200 for
+page and app, three catalog tracks and an empty prepared-request queue. The
+physical Brave replay is still pending. The review queue
+remains **1/20 pending** and the overall task ledger remains **70.70%**.
+
 ## Cross-task manual review queue — 2026-09-26
 
 The user broadened the former listening threshold to a **manual review queue**.
-The physical-phone LAN workbench review counts as one item, including
-no-key opening and reopening, original/cue playback, zoom, edit handles
-and long-source navigation. Its current target is
+The first physical-phone LAN workbench check reached the no-key page but found
+audio stalled at `0:00`; that failed review is recorded. A post-repair phone
+playback and clarity check is the one pending item. Its current target is
 `http://192.168.12.109:18097/`; the exact prompt and state are in ignored
 `build/manual-review-queue/queue.tsv`. The pending queue is **1/20**. It does
-not close workbench criterion 5 or earn credit until an actual operator verdict
-and required QA exist. Continue other ready work; request review when the
+not close workbench criterion 5 or earn credit until the repaired physical
+browser path passes. Continue other ready work; request review when the
 cross-task queue reaches 20, or sooner if no independent task remains and a
 queued item can unblock progress. Historical listening counts below describe
 their dated checkpoints, not the current queue.
 
 The user corrected the LAN requirement after the saved-key implementation:
 they want no access-key entry at all. An explicit private-LAN no-key mode is now
-implemented and served at the target address. The queued item awaits the actual
-physical-phone workflow; host-side HTTP 200 alone cannot prove that path. Keep
-the accepted catalog, Pascal proposal/review boundaries and source data intact.
+implemented and served at the target address. The physical phone confirmed
+no-key reachability, while the repaired playback path still needs its replay.
+Keep the accepted catalog, Pascal proposal/review boundaries and source data intact.
 
 The current readiness audit found no independent acceptance batch: recorded
 identity and presence need new qualified source evidence, semantic scale and

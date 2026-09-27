@@ -49,6 +49,7 @@ uses
   pythian.tools.annotations.export,
   pythian.tools.annotations.media,
   pythian.tools.annotations.proposal,
+  pythian.tools.annotations.queue,
   pythian.tools.annotations.replay,
   pythian.tools.annotations.review
   {$IFDEF MSWINDOWS}, Windows{$ELSE}, BaseUnix{$ENDIF};
@@ -694,6 +695,11 @@ begin
       LReport := ReadPreparedLabelInbox(AInboxRoot);
     end
     else if (ARequest.Method = 'GET') and
+      (ARequest.Path = '/api/review-queue') then
+    begin
+      LReport := ReadReviewQueue(ACatalogRoot);
+    end
+    else if (ARequest.Method = 'GET') and
       (ARequest.Path = '/api/proposals') then
     begin
       LHash := QueryValue(ARequest.Query, 'hash');
@@ -860,6 +866,12 @@ begin
         LowerCase(LError.Message)) > 0 then
       begin
         LStatus := 404;
+      end
+      else if LError is EReviewQueue then
+      begin
+        SendResponse(ASocket, 422, 'text/plain; charset=utf-8',
+          LError.Message + #10);
+        Exit;
       end
       else if LError is EAudio then
       begin

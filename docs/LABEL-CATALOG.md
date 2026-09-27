@@ -189,21 +189,18 @@ an artificial or weakly reviewed label acoustically true. The packet's
 provenance and usage license remain the operator's responsibility when
 selecting sources for training.
 
-The first native HTTP host has fixed routes for session, prepared inbox,
-catalog, stored proposals, waveform, current labels, history, region audio,
-import, review, beat proposals and the reviewed packet download. It
+The native HTTP host has fixed routes for session, prepared inbox,
+catalog, prepared review requests, stored proposals, waveform, current labels,
+history, region audio, import, review, beat proposals and the reviewed packet download. It
 binds only the specified loopback or private LAN IPv4 address, never all
 interfaces. The inbox and catalog roots are process arguments, not URL paths.
-`GET /api/session` provides a local loopback token. LAN mode uses an access key
-of at least 16 characters stored in the catalog root's private `.access-key`
-file. On its first LAN start, the Pascal host saves
-`PYTHIAN_CATALOG_ACCESS_KEY` if supplied, or generates a key. Later starts
-reuse the file. Clients submit the key as JSON to `POST /api/session` and send
-the returned `X-Pythian-Token` header on every subsequent request. The host
-restricts the key file to its owner and Windows SYSTEM (or owner-only Unix
-mode) before writing or reading it. The access key and token stay out of URLs.
-LAN HTTP is not encrypted, so use only a trusted local network. `serve-app`
-serves the Pascal/pas2js page on the same origin with an access-key form.
+`GET /api/session` silently supplies the page's session token in loopback and
+explicit private-LAN `serve-app-open` mode. The browser sends the returned
+`X-Pythian-Token` header on catalog and audio requests. A separate keyed LAN
+API mode retains a private `.access-key` file, but the browser workbench does
+not ask the operator for a key. Tokens stay out of audio URLs. LAN HTTP is
+unencrypted, so use only a trusted local network. `serve-app` is loopback only;
+`serve-app-open` explicitly binds a selected private LAN IPv4 address.
 `GET /api/export` sends the same bounded, deterministic, audio-free packet as
 the native CLI. Evaluation proposal reads and generation return 403 until the
 first approved or uncertain, proposal-free review commits for that source;
@@ -225,24 +222,42 @@ The browser workbench is built with
 Start it on the chosen interface and catalog root:
 
 ```powershell
-& 'build/<target>/pythian.label.catalog.exe' serve-app 'D:\path\to\inbox' 'D:\path\to\catalog' 'build\label-workbench\www' '<LAN_IPV4>' 18095
+& 'build/<target>/pythian.label.catalog.exe' serve-app-open 'D:\path\to\inbox' 'D:\path\to\catalog' 'build\label-workbench\www' '<LAN_IPV4>' 18095
 ```
 
-Open `http://<LAN_IPV4>:18095/` and enter the key from the catalog root's
-`.access-key` file once on each trusted browser origin. The server
-accepts only three named static assets and keeps catalog routes behind its
-session token. After a successful LAN login, the Pascal browser app saves the
-access key in this browser's local storage for that origin and automatically
-requests a new session on later visits. Use **Forget this device** to remove
-the saved key and clear the current page session. This convenience is for a
-trusted device on a trusted LAN: browser storage holds the key as readable
-text, and LAN HTTP is unencrypted. Clearing browser site data also removes it;
-changing the host address or port creates a different browser origin and
-requires entering the key again. The bind address must belong to the host,
-such as its Wi-Fi address. A local firewall may need to allow the chosen port
-before a phone can connect. The current browser slice supports bounded source
-listening, basic review, source-level blind reveal, reviewed packet download
+Open `http://<LAN_IPV4>:18095/`. The page connects without a login form.
+The server accepts only three named static assets and keeps catalog routes
+behind its session token. The bind address must belong to the host, such as
+its Wi-Fi address. A local firewall may need to allow the chosen port before
+a phone can connect. The current browser slice supports bounded source
+listening, explicit review, source-level blind reveal, reviewed packet download
 and re-import.
+
+The assistant prepares optional `review-queue.json` in the private catalog root
+to assign a specific question and source interval. A missing file yields an
+empty queue. A queue item is a prompt, not a label or an automatic approval:
+
+```json
+{
+  "version": 1,
+  "items": [{
+    "id": "presence-check-1",
+    "source_sha256": "lowercase-64-character-sha256-of-the-prepared-wav",
+    "start_frame": 480000,
+    "end_frame": 960000,
+    "question": "Is the named part audible in this interval?",
+    "title": "Optional short review title"
+  }]
+}
+```
+
+The Pascal service validates the source identity, exact frame bounds, unique
+IDs, and a 30-second maximum before serving `GET /api/review-queue`. It adds
+the catalog's source title to each response. The browser opens the requested
+window; the operator's answer is saved only through an explicit review event.
+Remove or replace completed prompts in the private queue after checking the
+saved decision. The catalog can be explored without a request, but those
+recordings are not themselves assignments.
 Full authoring controls remain open in
 [NS-6_authoring_01](TODO/NS-6_authoring_01.md). Store a real operator catalog
 outside `build/`; the catalog under `build/label-catalog/` is a test fixture.

@@ -118,6 +118,12 @@ begin
           raise Exception.Create('Invalid HTTP request limit');
         end;
       end;
+      if (ParamStr(1) = 'serve-app') and
+        (LBindAddress <> '127.0.0.1') then
+      begin
+        raise Exception.Create(
+          'serve-app is loopback only; use serve-app-open for private LAN');
+      end;
       RunCatalogHttp(ParamStr(2), ParamStr(3), LBindAddress, LPort,
         LMaximumRequests, LStaticRoot, LOpenLan);
       Exit;
@@ -282,7 +288,7 @@ begin
       WriteLn(StdErr, '       pythian.label.catalog serve INBOX_DIR CATALOG_DIR PORT [MAX_REQUESTS]');
       WriteLn(StdErr, '       pythian.label.catalog serve INBOX_DIR CATALOG_DIR BIND_IP PORT [MAX_REQUESTS]');
       WriteLn(StdErr, '       pythian.label.catalog serve-app INBOX_DIR CATALOG_DIR WEBROOT PORT [MAX_REQUESTS]');
-      WriteLn(StdErr, '       pythian.label.catalog serve-app INBOX_DIR CATALOG_DIR WEBROOT BIND_IP PORT [MAX_REQUESTS]');
+      WriteLn(StdErr, '       pythian.label.catalog serve-app INBOX_DIR CATALOG_DIR WEBROOT 127.0.0.1 PORT [MAX_REQUESTS]');
       WriteLn(StdErr, '       pythian.label.catalog serve-app-open INBOX_DIR CATALOG_DIR WEBROOT PRIVATE_LAN_IP PORT [MAX_REQUESTS]');
       ExitCode := 2;
       Exit;

@@ -33,7 +33,7 @@ uses
   SysUtils;
 
 const
-  RememberedAccessKey = 'pythian.catalog.access-key.v1';
+  LegacyAccessKeyStorage = 'pythian.catalog.access-key.v1';
   ReviewHistoryPrefix = 'pythian.catalog.review-history.v1.';
   MaximumLocalUndoEntries = 128;
   MaximumAlignedPeerLanes = 8;
@@ -50,6 +50,10 @@ type
     function blobRequest: TJSPromise; external name 'blob';
   end;
 
+  TWorkbenchAudioElement = class external name 'HTMLAudioElement' (TJSHTMLAudioElement)
+    function playRequest: TJSPromise; external name 'play';
+  end;
+
   TWorkbench = class
   private
     FToken: String;
@@ -58,7 +62,13 @@ type
     FClockId: String;
     FPartition: String;
     FAudioUrl: String;
+    FAudioCueLoaded: Boolean;
     FTracks: TJSArray;
+    FReviewQueue: TJSArray;
+    FReviewId: String;
+    FReviewQuestion: String;
+    FReviewStart: Int64;
+    FReviewEnd: Int64;
     FWaveBins: TJSArray;
     FCurrentLabels: TJSArray;
     FPendingChanges: TJSArray;
@@ -99,6 +109,8 @@ type
     function Input(const AId: String): TJSHTMLInputElement;
     function FetchApi(const APath, AMethod, ABody: String): TJSPromise;
     procedure Status(const AText: String; const AError: Boolean = False);
+    procedure AudioFeedback(const AText: String; const AError: Boolean = False);
+    procedure PlayLoadedAudio; async;
     procedure ShowWorkspace;
     procedure ClearItems(const AId: String);
     procedure AddItem(const AContainerId, ATitle, ADetail,
@@ -106,6 +118,8 @@ type
       const AClick: THTMLClickEventHandler = nil);
     procedure RenderInbox(const AData: TJSObject);
     procedure RenderCatalog(const AData: TJSObject);
+    procedure RenderAssignments(const AData: TJSObject);
+    procedure ReviewPrompt(const AFallback: String);
     procedure RenderLabels;
     procedure RenderMergeTargets;
     procedure UpdatePendingUi;
@@ -143,22 +157,21 @@ type
       const ALabels: TJSArray; const AProposals: TJSObject;
       const AStart, AEnd, AVisibleEnd, ASourceFrames: Int64);
     procedure Start; async;
-    procedure Connect; async;
-    procedure ConnectWithKey(const AKey: String; const ARemember: Boolean); async;
-    procedure ForgetDevice;
     procedure RefreshLists; async;
+    procedure RefreshAssignments; async;
     procedure ImportAll; async;
-    procedure SelectTrack(const AIndex: Integer); async;
+    procedure SelectTrack(const AIndex: Integer;
+      const AStartFrame: Int64 = -1; const AEndFrame: Int64 = -1;
+      const AReviewId: String = ''; const AQuestion: String = ''); async;
     procedure RefreshWindow; async;
     procedure LoadAudio(const ACue: Boolean); async;
     procedure SuggestBeats; async;
     procedure SaveReview; async;
     procedure DownloadExport; async;
     procedure UploadReviewed; async;
-    function HandleConnect(AEvent: TJSMouseEvent): Boolean;
-    function HandleForgetDevice(AEvent: TJSMouseEvent): Boolean;
     function HandleImport(AEvent: TJSMouseEvent): Boolean;
     function HandleTrack(AEvent: TJSMouseEvent): Boolean;
+    function HandleAssignment(AEvent: TJSMouseEvent): Boolean;
     function HandleAlignedPeer(AEvent: TJSMouseEvent): Boolean;
     function HandleLabel(AEvent: TJSMouseEvent): Boolean;
     function HandleProposal(AEvent: TJSMouseEvent): Boolean;
@@ -170,6 +183,8 @@ type
     function HandleZoomOut(AEvent: TJSMouseEvent): Boolean;
     function HandleLoadAudio(AEvent: TJSMouseEvent): Boolean;
     function HandleLoadCue(AEvent: TJSMouseEvent): Boolean;
+    function HandleAudioMetadata(AEvent: TEventListenerEvent): Boolean;
+    function HandleAudioError(AEvent: TJSErrorEvent): Boolean;
     function HandleSuggest(AEvent: TJSMouseEvent): Boolean;
     function HandleSave(AEvent: TJSMouseEvent): Boolean;
     function HandleUndo(AEvent: TJSMouseEvent): Boolean;
@@ -293,8 +308,79 @@ end;
 
 procedure TWorkbench.ShowWorkspace;
 begin
-  Element('login-panel').setAttribute('hidden', '');
   Element('workspace').removeAttribute('hidden');
+end;
+
+procedure TWorkbench.AudioFeedback(const AText: String; const AError: Boolean);
+var
+  LFeedback: TJSElement;
+begin
+  LFeedback := Element('audio-feedback');
+  LFeedback.textContent := AText;
+  if AError then
+    LFeedback.setAttribute('class', 'audio-feedback error')
+  else
+    LFeedback.setAttribute('class', 'audio-feedback');
+end;
+
+procedure TWorkbench.PlayLoadedAudio; async;
+begin
+  if FAudioUrl = '' then
+    Exit;
+  try
+    await(TJSObject, TWorkbenchAudioElement(FAudio).playRequest());
+    if FAudioCueLoaded then
+      AudioFeedback('Playing the Pythian cue over the original WAV.')
+    else
+      AudioFeedback('Playing the original WAV.');
+  except
+    on LError: Exception do
+    begin
+      if FAudioUrl = '' then
+        Exit;
+      if FAudio.Error <> nil then
+        AudioFeedback('This browser could not play the WAV (media error ' +
+          IntToStr(FAudio.Error.code) + ').', True)
+      else
+        AudioFeedback('Audio is ready. Tap Play in the player to start it on this browser. ' +
+          LError.Message);
+    end
+    else
+    begin
+      if FAudioUrl <> '' then
+        AudioFeedback('The browser did not start playback. Tap Play in the player; ' +
+          'if it remains at 0:00, report this message.', True);
+    end;
+  end;
+end;
+
+function TWorkbench.HandleAudioMetadata(AEvent: TEventListenerEvent): Boolean;
+begin
+  if FAudioUrl <> '' then
+    AudioFeedback('WAV ready; starting playback. If it stays paused, tap Play in the player.');
+  Result := False;
+end;
+
+function TWorkbench.HandleAudioError(AEvent: TJSErrorEvent): Boolean;
+var
+  LCode: Integer;
+begin
+  if FAudioUrl <> '' then
+  begin
+    LCode := 0;
+    if FAudio.Error <> nil then
+      LCode := FAudio.Error.code;
+    AudioFeedback('This browser could not play the WAV (media error ' +
+      IntToStr(LCode) + '). Try Play original again.', True);
+    Status('Audio player failed after loading the region.', True);
+    TJSURL.revokeObjectURL(FAudioUrl);
+    FAudioUrl := '';
+    FAudio.removeAttribute('src');
+    FAudioCueLoaded := False;
+    Element('audio-mode').textContent := 'Audio unavailable';
+    TJSHTMLButtonElement(Element('load-audio-button')).disabled := False;
+  end;
+  Result := False;
 end;
 
 procedure TWorkbench.ClearItems(const AId: String);
@@ -405,11 +491,54 @@ begin
   begin
     LRow := TJSObject(FTracks[LIndex]);
     AddItem('catalog-list', TextField(LRow, 'title'),
-      TextField(LRow, 'source_group') + ' · ' +
-      TextField(LRow, 'partition') + ' · ' +
-      IntToStr(Trunc(NumberField(LRow, 'frame_count'))) + ' frames',
+      IntToStr(Trunc(NumberField(LRow, 'frame_count') /
+      NumberField(LRow, 'sample_rate') / 60)) + ' min · ' +
+      TextField(LRow, 'partition'),
       '', LIndex, @HandleTrack);
   end;
+end;
+
+procedure TWorkbench.RenderAssignments(const AData: TJSObject);
+var
+  LRow: TJSObject;
+  LIndex: Integer;
+  LTitle: String;
+begin
+  ClearItems('assignment-list');
+  FReviewQueue := TJSArray(AData['items']);
+  if FReviewQueue = nil then
+    FReviewQueue := TJSArray.new;
+  if FReviewQueue.length = 0 then
+  begin
+    Element('catalog-browser').setAttribute('open', '');
+    Element('assignment-state').textContent :=
+      'No review requests are ready. Explore the audio if you like; no label is needed.';
+    Exit;
+  end;
+  Element('catalog-browser').removeAttribute('open');
+  Element('assignment-state').textContent :=
+    'Choose a request, listen to its exact region, then record the requested judgment.';
+  for LIndex := 0 to FReviewQueue.length - 1 do
+  begin
+    LRow := TJSObject(FReviewQueue[LIndex]);
+    LTitle := TextField(LRow, 'title');
+    if LTitle = '' then
+      LTitle := TextField(LRow, 'source_title');
+    if LTitle = '' then
+      LTitle := 'Review ' + IntToStr(LIndex + 1);
+    AddItem('assignment-list', LTitle, TextField(LRow, 'question'),
+      'review-request', LIndex, @HandleAssignment);
+  end;
+end;
+
+procedure TWorkbench.ReviewPrompt(const AFallback: String);
+begin
+  if (FReviewId <> '') and (FReviewQuestion <> '') and
+    (FWindowStart = FReviewStart) and
+    (FWindowStart + FWindowSpan = FReviewEnd) then
+    Element('review-next-step').textContent := FReviewQuestion
+  else
+    Element('review-next-step').textContent := AFallback;
 end;
 
 procedure TWorkbench.RenderLabels;
@@ -918,22 +1047,25 @@ begin
   UpdateTrackProposalIdentity;
   if FSelectedProposal < 0 then
   begin
-    Element('load-cue-button').textContent := 'Load selected Pythian cue';
+    Element('load-cue-button').textContent := 'Play selected Pythian cue';
   end;
   TJSHTMLButtonElement(Element('load-cue-button')).disabled :=
     (FProposals = nil) or (FSelectedProposal < 0);
   if (FPartition = 'evaluation') and (FReviewRevision = 0) then
   begin
+    ReviewPrompt('Blind review: suggestions are hidden until an independent decision is saved.');
     Element('proposal-note').textContent :=
       'Blind evaluation: Pythian suggestions are hidden. Commit your own label first.';
     Exit;
   end;
   if FProposals = nil then
   begin
+    ReviewPrompt('No review request is assigned to this region. You can listen without annotating it.');
     Element('proposal-note').textContent :=
       'No saved proposals for this window. Suggestions remain unreviewed.';
     Exit;
   end;
+  ReviewPrompt('Pythian suggestions are available, but this region has no assigned review request.');
   LAnalyzerVersion := IntToStr(Trunc(NumberField(FProposals,
     'analyzer_version')));
   Element('proposal-note').textContent :=
@@ -1611,6 +1743,7 @@ begin
   end;
   RenderMergeTargets;
   DrawWaveform;
+  Element('review-editor').setAttribute('open', '');
 end;
 
 function TWorkbench.CanvasX(const AEvent: TJSPointerEvent): Double;
@@ -1724,96 +1857,13 @@ procedure TWorkbench.Start; async;
 var
   LResponse: TJSResponse;
   LData: TJSObject;
-  LKey: String;
 begin
   try
     LResponse := await(TJSResponse, FetchApi('/api/session', 'GET', ''));
-    if LResponse.status = 200 then
-    begin
-      LData := await(TJSObject, LResponse.json());
-      FToken := TextField(LData, 'token');
-      if FToken = '' then
-      begin
-        raise Exception.Create('Session token missing');
-      end;
-      ShowWorkspace;
-      Status('Connected to catalog.');
-      RefreshLists;
-    end
-    else
-    begin
-      Element('login-panel').removeAttribute('hidden');
-      LKey := '';
-      try
-        LKey := window.localStorage.getItem(RememberedAccessKey);
-      except
-        // Browser storage can be disabled; manual connection still works.
-      end;
-      if isString(LKey) and (LKey <> '') then
-      begin
-        Status('Reconnecting to the LAN catalog…');
-        ConnectWithKey(LKey, False);
-      end
-      else
-      begin
-        Status('Enter the local LAN access key to connect.');
-      end;
-    end;
-  except
-    on LError: Exception do
-    begin
-      Element('login-panel').removeAttribute('hidden');
-      Status('Could not reach the Pascal catalog service: ' +
-        LError.Message, True);
-    end;
-  end;
-end;
-
-procedure TWorkbench.Connect; async;
-var
-  LKey: String;
-begin
-  LKey := Input('access-key').value;
-  Input('access-key').value := '';
-  ConnectWithKey(LKey, True);
-end;
-
-procedure TWorkbench.ConnectWithKey(const AKey: String;
-  const ARemember: Boolean); async;
-var
-  LBody: TJSObject;
-  LResponse: TJSResponse;
-  LData: TJSObject;
-  LStored: Boolean;
-begin
-  try
-    LBody := TJSObject.new;
-    LBody['access_key'] := AKey;
-    LResponse := await(TJSResponse, FetchApi('/api/session', 'POST',
-      TJSJSON.stringify(LBody)));
     if LResponse.status <> 200 then
     begin
-      if LResponse.status = 403 then
-      begin
-        try
-          window.localStorage.removeItem(RememberedAccessKey);
-        except
-          // A failed storage removal must not prevent manual connection.
-        end;
-        if ARemember then
-        begin
-          Status('Access key was not accepted. Enter the current key.', True);
-        end
-        else
-        begin
-          Status('Saved access key was not accepted. Enter the current key.', True);
-        end;
-      end
-      else
-      begin
-        Status('Connection failed (HTTP ' +
-          IntToStr(LResponse.status) + ').', True);
-      end;
+      Status('Could not open the catalog service (HTTP ' +
+        IntToStr(LResponse.status) + ').', True);
       Exit;
     end;
     LData := await(TJSObject, LResponse.json());
@@ -1822,62 +1872,21 @@ begin
     begin
       raise Exception.Create('Session token missing');
     end;
-    LStored := not ARemember;
-    if ARemember then
-    begin
-      try
-        window.localStorage.setItem(RememberedAccessKey, AKey);
-        LStored := True;
-      except
-        LStored := False;
-      end;
+    try
+      window.localStorage.removeItem(LegacyAccessKeyStorage);
+    except
+      // Disabled browser storage must not block the workbench.
     end;
     ShowWorkspace;
-    Element('connection-actions').removeAttribute('hidden');
-    if LStored then
-    begin
-      Status('Connected to catalog. This browser will reconnect automatically.');
-    end
-    else
-    begin
-      Status('Connected to catalog. Browser storage is unavailable; ' +
-        'enter the key again next visit.');
-    end;
+    Status('Connected to catalog.');
     RefreshLists;
   except
     on LError: Exception do
     begin
-      Status('Connection failed: ' + LError.Message, True);
+      Status('Could not reach the Pascal catalog service: ' +
+        LError.Message, True);
     end;
   end;
-end;
-
-procedure TWorkbench.ForgetDevice;
-begin
-  try
-    window.localStorage.removeItem(RememberedAccessKey);
-  except
-    on LError: Exception do
-    begin
-      Status('Could not remove the saved key: ' + LError.Message, True);
-      Exit;
-    end;
-  end;
-  Inc(FWindowEpoch);
-  Inc(FAudioEpoch);
-  FToken := '';
-  FAudio.pause;
-  FAudio.removeAttribute('src');
-  Element('audio-mode').textContent := 'No region loaded';
-  if FAudioUrl <> '' then
-  begin
-    TJSURL.revokeObjectURL(FAudioUrl);
-    FAudioUrl := '';
-  end;
-  Element('workspace').setAttribute('hidden', '');
-  Element('connection-actions').setAttribute('hidden', '');
-  Element('login-panel').removeAttribute('hidden');
-  Status('Saved key removed from this browser. Enter a key to reconnect.');
 end;
 
 procedure TWorkbench.RefreshLists; async;
@@ -1893,6 +1902,7 @@ begin
     end;
     LData := await(TJSObject, LResponse.json());
     RenderCatalog(LData);
+    RefreshAssignments;
     LResponse := await(TJSResponse, FetchApi('/api/inbox', 'GET', ''));
     if LResponse.status <> 200 then
     begin
@@ -1900,12 +1910,38 @@ begin
     end;
     LData := await(TJSObject, LResponse.json());
     RenderInbox(LData);
-    Status('Inbox and catalog loaded. Choose a track to review.');
+    Status('Audio catalog loaded. Choose a prepared request or explore a recording.');
   except
     on LError: Exception do
     begin
       Status('Catalog list failed: ' + LError.Message, True);
     end;
+  end;
+end;
+
+procedure TWorkbench.RefreshAssignments; async;
+var
+  LResponse: TJSResponse;
+  LData: TJSObject;
+begin
+  try
+    LResponse := await(TJSResponse,
+      FetchApi('/api/review-queue', 'GET', ''));
+    if LResponse.status = 404 then
+    begin
+      Element('assignment-state').textContent :=
+        'Review requests are unavailable in this service version.';
+      Exit;
+    end;
+    if LResponse.status <> 200 then
+      raise Exception.Create('Review queue HTTP ' +
+        IntToStr(LResponse.status));
+    LData := await(TJSObject, LResponse.json());
+    RenderAssignments(LData);
+  except
+    on LError: Exception do
+      Element('assignment-state').textContent :=
+        'Review requests could not load: ' + LError.Message;
   end;
 end;
 
@@ -1935,7 +1971,9 @@ begin
   end;
 end;
 
-procedure TWorkbench.SelectTrack(const AIndex: Integer); async;
+procedure TWorkbench.SelectTrack(const AIndex: Integer;
+  const AStartFrame, AEndFrame: Int64;
+  const AReviewId, AQuestion: String); async;
 var
   LTrack: TJSObject;
   LKeepTimeline: Boolean;
@@ -1974,16 +2012,43 @@ begin
     FSourceHash := '';
     Exit;
   end;
+  if AReviewId <> '' then
+  begin
+    if (AQuestion = '') or (AStartFrame < 0) or
+      (AEndFrame <= AStartFrame) or (AEndFrame > FFrameCount) or
+      (AEndFrame - AStartFrame > Int64(FSampleRate) * 30) then
+    begin
+      Status('The selected review request has an invalid source region.', True);
+      Exit;
+    end;
+    FReviewId := AReviewId;
+    FReviewQuestion := AQuestion;
+    FReviewStart := AStartFrame;
+    FReviewEnd := AEndFrame;
+  end
+  else
+  begin
+    FReviewId := '';
+    FReviewQuestion := '';
+  end;
   Inc(FWindowEpoch);
   FAudio.pause;
   FAudio.removeAttribute('src');
+  FAudioCueLoaded := False;
   Element('audio-mode').textContent := 'No region loaded';
+  AudioFeedback('Press Play original to hear the selected region.');
+  TJSHTMLButtonElement(Element('load-audio-button')).disabled := False;
   if FAudioUrl <> '' then
   begin
     TJSURL.revokeObjectURL(FAudioUrl);
     FAudioUrl := '';
   end;
-  if LKeepTimeline then
+  if AReviewId <> '' then
+  begin
+    FWindowStart := AStartFrame;
+    FWindowSpan := AEndFrame - AStartFrame;
+  end
+  else if LKeepTimeline then
   begin
     FWindowSpan := Smaller(LPreviousSpan, FFrameCount);
     if FWindowSpan <= 0 then
@@ -2014,6 +2079,8 @@ begin
   Input('jump-seconds').setAttribute('max',
     IntToStr((FFrameCount - 1) div FSampleRate));
   Element('track-title').textContent := TextField(LTrack, 'title');
+  if AReviewId <> '' then
+    ReviewPrompt('Review request selected.');
   Element('track-partition').textContent := UpperCase(FPartition);
   Element('track-meta').textContent :=
     TextField(LTrack, 'source_group') + ' · ' +
@@ -2065,7 +2132,10 @@ begin
     FDragMode := dmNone;
     FAudio.pause;
     FAudio.removeAttribute('src');
+    FAudioCueLoaded := False;
     Element('audio-mode').textContent := 'No region loaded';
+    AudioFeedback('Press Play original to hear this region.');
+    TJSHTMLButtonElement(Element('load-audio-button')).disabled := False;
     if FAudioUrl <> '' then
     begin
       TJSURL.revokeObjectURL(FAudioUrl);
@@ -2208,6 +2278,12 @@ begin
   end;
   if FSourceHash = '' then
   begin
+    AudioFeedback('Choose a recording before pressing Play original.', True);
+    Exit;
+  end;
+  if (FAudioUrl <> '') and (FAudioCueLoaded = ACue) then
+  begin
+    PlayLoadedAudio;
     Exit;
   end;
   if ACue and ((FProposals = nil) or (FSelectedProposal < 0)) then
@@ -2230,13 +2306,16 @@ begin
         '&start=' + IntToStr(LStart) + '&end=' + IntToStr(LEnd) +
         '&candidate=' + IntToStr(LCandidate);
       Status('Loading Pythian beat cue over the original WAV…');
+      AudioFeedback('Fetching the Pythian cue…');
     end
     else
     begin
       LPath := '/api/audio?hash=' + LHash +
         '&start=' + IntToStr(LStart) + '&end=' + IntToStr(LEnd);
       Status('Loading original WAV region…');
+      AudioFeedback('Fetching the original WAV region…');
     end;
+    TJSHTMLButtonElement(Element('load-audio-button')).disabled := True;
     LResponse := await(TJSResponse, FetchApi(LPath, 'GET', ''));
     if (LEpoch <> FWindowEpoch) or (LAudioEpoch <> FAudioEpoch) then
     begin
@@ -2257,23 +2336,36 @@ begin
     end;
     FAudioUrl := TJSURL.createObjectURL(LBlob);
     FAudio.src := FAudioUrl;
+    FAudioCueLoaded := ACue;
     FAudio.loop := Input('loop-region').checked;
     FAudio.load;
+    TJSHTMLButtonElement(Element('load-audio-button')).disabled := False;
+    AudioFeedback('WAV received; starting playback…');
     if ACue then
     begin
       Element('audio-mode').textContent :=
         'Pythian cue · grid ' + IntToStr(LCandidate + 1);
-      Status('Pythian cue loaded over original audio. Press play.');
+      Status('Pythian cue received by the browser.');
     end
     else
     begin
       Element('audio-mode').textContent := 'Original WAV';
-      Status('Audio region loaded. Press play in the player.');
+      Status('Original WAV received by the browser.');
     end;
+    PlayLoadedAudio;
   except
     on LError: Exception do
     begin
       Status('Audio failed: ' + LError.Message, True);
+      AudioFeedback('Could not load audio: ' + LError.Message, True);
+      TJSHTMLButtonElement(Element('load-audio-button')).disabled := False;
+    end
+    else
+    begin
+      Status('The browser could not fetch or prepare this audio region.', True);
+      AudioFeedback('Audio request failed in this browser. The player has no region; ' +
+        'press Play original to retry.', True);
+      TJSHTMLButtonElement(Element('load-audio-button')).disabled := False;
     end;
   end;
 end;
@@ -2600,18 +2692,6 @@ begin
   end;
 end;
 
-function TWorkbench.HandleConnect(AEvent: TJSMouseEvent): Boolean;
-begin
-  Connect;
-  Result := False;
-end;
-
-function TWorkbench.HandleForgetDevice(AEvent: TJSMouseEvent): Boolean;
-begin
-  ForgetDevice;
-  Result := False;
-end;
-
 function TWorkbench.HandleImport(AEvent: TJSMouseEvent): Boolean;
 begin
   ImportAll;
@@ -2622,7 +2702,46 @@ function TWorkbench.HandleTrack(AEvent: TJSMouseEvent): Boolean;
 begin
   SelectTrack(StrToIntDef(
     TJSElement(AEvent.currentTarget).getAttribute('data-index'), -1));
+  TJSHTMLElement(Element('track-title')).scrollIntoView;
   Result := False;
+end;
+
+function TWorkbench.HandleAssignment(AEvent: TJSMouseEvent): Boolean;
+var
+  LIndex: Integer;
+  LTrackIndex: Integer;
+  LRow: TJSObject;
+  LTrack: TJSObject;
+begin
+  Result := False;
+  LIndex := StrToIntDef(
+    TJSElement(AEvent.currentTarget).getAttribute('data-index'), -1);
+  if (FReviewQueue = nil) or (LIndex < 0) or
+    (LIndex >= FReviewQueue.length) then
+    Exit;
+  LRow := TJSObject(FReviewQueue[LIndex]);
+  LTrackIndex := -1;
+  if FTracks <> nil then
+    for LIndex := 0 to FTracks.length - 1 do
+    begin
+      LTrack := TJSObject(FTracks[LIndex]);
+      if TextField(LTrack, 'source_sha256') =
+        TextField(LRow, 'source_sha256') then
+      begin
+        LTrackIndex := LIndex;
+        Break;
+      end;
+    end;
+  if LTrackIndex < 0 then
+  begin
+    Status('The requested audio is not in this catalog.', True);
+    Exit;
+  end;
+  SelectTrack(LTrackIndex,
+    Trunc(NumberField(LRow, 'start_frame')),
+    Trunc(NumberField(LRow, 'end_frame')),
+    TextField(LRow, 'id'), TextField(LRow, 'question'));
+  TJSHTMLElement(Element('track-title')).scrollIntoView;
 end;
 
 function TWorkbench.HandleAlignedPeer(AEvent: TJSMouseEvent): Boolean;
@@ -2803,6 +2922,7 @@ begin
     Status('Span drafted at frames ' + IntToStr(FDragStart) +
       '–' + IntToStr(FDragEnd) +
       '. Check the label and save the review event.');
+    Element('review-editor').setAttribute('open', '');
     AEvent.preventDefault;
   end;
 end;
@@ -2850,7 +2970,7 @@ begin
   TJSHTMLButtonElement(Element('load-cue-button')).disabled :=
     LFrames.length = 0;
   Element('load-cue-button').textContent :=
-    'Load cue for grid ' + IntToStr(LIndex + 1);
+    'Play cue for grid ' + IntToStr(LIndex + 1);
   DrawWaveform;
   LFrame := FWindowStart;
   if LFrames.length > 0 then
@@ -2864,6 +2984,9 @@ begin
   Input('label-start').value := IntToStr(LFrame);
   Input('label-end').value := IntToStr(LFrame + 1);
   Input('label-proposal').value := TextField(LRow, 'proposal_id');
+  Element('review-editor').setAttribute('open', '');
+  Element('review-next-step').textContent :=
+    'Compare this Pythian suggestion with the original, then save a review decision if assigned.';
   if LFrames.length = 0 then
   begin
     Status('This proposal has no cue points. Choose your own review verdict.');
@@ -3362,9 +3485,8 @@ begin
   FSelectedLabel := -1;
   FCanvas := TJSHTMLCanvasElement(Element('waveform'));
   FAudio := TJSHTMLAudioElement(Element('preview'));
-  TJSHTMLButtonElement(Element('connect-button')).onclick := @HandleConnect;
-  TJSHTMLButtonElement(Element('forget-device-button')).onclick :=
-    @HandleForgetDevice;
+  FAudio.onloadedmetadata := @HandleAudioMetadata;
+  FAudio.onerror := @HandleAudioError;
   TJSHTMLButtonElement(Element('import-button')).onclick := @HandleImport;
   TJSHTMLButtonElement(Element('previous-button')).onclick := @HandlePrevious;
   TJSHTMLButtonElement(Element('next-button')).onclick := @HandleNext;

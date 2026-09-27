@@ -58,6 +58,11 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
   credential entry. Bind only to an explicitly selected private LAN address;
   retain same-origin and Host/Origin checks, acquire a session token silently,
   and require it for state-changing requests. Do not put a token in audio URLs.
+  Show only curated review requests as operator work, each with its exact source
+  region and question; show an honest empty state when none is assigned. Keep
+  catalog setup and detailed authoring tools available without putting them in
+  the basic listen/review path. Make audio load, readiness, playback and errors
+  visible beside the player on a narrow screen.
   Exercise the actual desktop and narrow mobile
   browser paths, including
   playback, zoom, edit handles and long-source navigation. Make the UI usable
@@ -75,6 +80,32 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Dev Notes:**
 
+- 2026-09-27 the user's physical Brave session reached the no-key LAN page, so
+  the access-key barrier was removed. Its `Load this region` control left the
+  player at `0:00 / 0:00` with no visible local outcome, and the page exposed
+  import, hashes and the full label editor ahead of the review path. This is a
+  failed operator usability verdict for criterion 5, not acceptance or task
+  credit. The current uncommitted repair makes playback the primary action,
+  reports fetch/player status beside it, folds utility controls, and adds a
+  bounded Pascal review-request route and exact-region selection. A native
+  check of a current 10-second source region returned complete non-silent PCM16
+  stereo WAV. The prior pas2js handler rethrew native rejected fetch/play
+  promises, allowing a silent zero-duration failure; the repair reports those
+  beside the player. Physical Brave playback remains to be rechecked after
+  deployment.
+  Salty Boi's isolated 390px browser QA clicked a prepared request, opened
+  its exact 0–441000-frame region, and observed a 10.0-second player advancing
+  past 0.30 seconds with visible Playing feedback. Empty and malformed queue
+  states, no key prompt, zero horizontal overflow, blind proposal hiding and
+  no automatic review save also passed. Evidence is under ignored
+  `build/label-workbench/ux-qa-20260927/`; this does not replace the physical
+  Brave verdict. The checked service is live on `192.168.12.109:18097` as
+  process 15936; authorized queue is empty, catalog has three sources, and
+  page/app return HTTP 200. A post-repair physical phone check is queued as
+  the sole pending cross-task review item (1/20).
+  Review requests are prompts, not accepted labels. The assistant prepares
+  source evidence and requests only specific judgments needed for open tasks;
+  the operator's reviewed decisions alone enter the training catalog.
 - 2026-09-26 explicit no-key private-LAN implementation and focused final QA:
   `serve-app-open` binds a selected private IPv4 address, skips operator access
   keys, silently serves a session token and requires it for catalog reads and
