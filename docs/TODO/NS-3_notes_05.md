@@ -106,6 +106,20 @@ from these four MAESTRO contrasts.
 
 **Dev Notes:**
 
+- 2026-09-28 Good-sounds v1.1 source route stopped. Publisher-matched metadata
+  yielded 25 eligible takes from only one flute player/pack and fixed sound
+  3/take 11, with pre-attack `[0,24000)` and late-release `[323000,335000)`.
+  The first ZIP probe exceeded its one-request cap by one 4-KiB GET. A later
+  frozen member lookup stopped because archive paths had an unanticipated
+  `good-sounds/` prefix. A read-only directory check proved exactly one
+  prefixed match, allowing one separately frozen, bounded original-WAV check.
+  Pascal verified deflate CRC and decoded PCM24 mono at 48 kHz. The fixed
+  late-release RMS was 0.057514923 versus sustain 0.095992107, exceeding the
+  predeclared quiet-tail limit of half sustain. Pre-attack RMS was 0.001243387.
+  The physical gate failed, so no audible/rest label, presence score, review
+  request or task credit follows. Stop this source family without changing
+  the take, windows or threshold. Exact policies, hashes and failures remain
+  under ignored `build/goodsounds-{presence,audio,layout,member}-20260928/`.
 - 2026-09-28 bounded publisher-evidence screen: the official
   [Good-sounds v1.1 record](https://zenodo.org/records/4588740) and
   [UPF project page](https://www.upf.edu/web/mtg/good-sounds) document

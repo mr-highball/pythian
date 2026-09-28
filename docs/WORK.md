@@ -62,6 +62,21 @@ timed musical traits are absent, so another metadata-only or fixed-output
 diagnostic would not close the gate. Continue the cumulative **2/20** manual
 queue while seeking a genuinely distinct source-evidence route.
 
+## Good-sounds source route stopped — 2026-09-28
+
+For [NS-3 presence](TODO/NS-3_notes_05.md), publisher-matched metadata fixed
+one Good-sounds flute take and exact same-WAV pre-attack/release windows. A
+metadata ZIP probe exceeded its frozen one-request limit; a later member gate
+stopped at a missing archive-root prefix. A read-only layout check established
+one prefixed match, so one separately frozen Pascal extraction checked the
+original WAV. Its late-release RMS was about 60% of sustain, failing the
+prospective at-most-50% quiet-tail gate. This is physical evidence only; the
+source has no audible/rest label and was not imported, scored or queued.
+Policies, exact hashes and stop reports remain under ignored
+`build/goodsounds-{presence,audio,layout,member}-20260928/`. Repeated
+nonclosing source batches require a switch away from this family. NS-3
+criterion 3, overall **71.30%** and manual review **2/20** remain unchanged.
+
 ## Global repetition guard feasibility — 2026-09-28
 
 The stopped chunk-local context trial improved joins but raised repeated
