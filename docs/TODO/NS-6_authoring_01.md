@@ -48,7 +48,7 @@ The detailed criteria below remain in force.
   operator sees only waiting requests, clear progress and an honest empty
   state; the producer can read completed, unknown, rejected and conflicting
   outcomes from a durable Pascal report without interpreting screenshots.
-- [ ] **4. Private-LAN startup:** Default loopback and explicitly selected
+- [x] **4. Private-LAN startup:** Default loopback and explicitly selected
   private-LAN binding work after restart, with no access-key form or credential
   entry. A physical phone on the LAN connects; Host/Origin and same-origin
   session checks remain effective, no token appears in an audio URL, and the
@@ -95,7 +95,7 @@ The detailed criteria below remain in force.
   generated-output listening packets: those task-declared decisions need a
   producer-readable response, and a 30-second source label must never be
   counted as a full-duration or paired listening review.
-- [ ] **10. Complete QA matrix:** On a copied catalog, run import → Pascal
+- [x] **10. Complete QA matrix:** On a copied catalog, run import → Pascal
   proposals → original/cue listening → wrong-suggestion correction → approved
   and unknown answers → queue advance → reload/restart → worker report →
   export/re-import, with at least two source groups and a long-source case.
@@ -191,6 +191,56 @@ the underlying musical inference or reference labels already exist.
 
 **Dev Notes:**
 
+- 2026-09-28 physical-phone checkpoint: the operator confirmed audible
+  playback of both 0.5-second and 5-second original regions, successful Save
+  on all three remaining MAESTRO requests, and no new Windows Defender alert
+  after the fixed-path launch. The native source queue now has zero waiting
+  and four completed exact requests; each source has two approved review
+  events, and Salty Boi independently audited their identities, values and
+  frames. This closes checklist points 4 and 10 together with the earlier
+  isolated full-flow QA. Point 5 and task credit remain open until a physical
+  phone audibly plays a bounded longer original region and a real Pascal
+  Pythian beat cue. A separate, source-bound pair
+  `ns6_phone_cue_20260928` (request SHA-256
+  `3d8d53ed7659fc18e9a7ad93d6955743dfba4dc14f6846c4f68848c88cf06095`)
+  passed isolated desktop and 390px browser playback QA. Its first player is
+  the 20-second original Berg WAV with a declared first-10-second range; the
+  second is an exact 10-second Pascal-rendered beat cue from an explicitly
+  unreviewed QA candidate. Both decoded and advanced without a browser error
+  or Save POST. Native `listen-stage` and `listen-publish` then placed this one
+  packet in the live catalog's separate listening queue: one waiting, zero
+  completed. Live HTTP HEAD returned 200 for both assets; the source queue
+  manifest and its four review events remained unchanged. A physical-phone
+  audibility and Save verdict is pending as cross-task manual queue item 7.
+  Salty Boi then repeated the read-only 390px playback check against the live
+  LAN service: both players decoded and advanced, the original's first-10-
+  second seek worked, the cue streamed with HTTP 206, and there were no Save
+  POSTs, browser errors, horizontal overflow or source-review changes. The
+  isolated catalog accepted a synthetic `qa-probe` answer to this exact pair,
+  advanced to zero waiting/one completed, and produced a valid one-event
+  Pascal listening export. That QA verdict is confined to the isolated
+  catalog and is not an acoustic judgment or live operator response.
+- 2026-09-28 stable-LAN deployment checkpoint: the user installed the
+  fixed-program Private/LocalSubnet/TCP 18097 inbound rule, and root verified
+  its scope with `netsh`. Root stopped the old PID 6796 and launched the
+  checked stable executable (SHA-256
+  `c819a9a3bc7da94f148ec2c0f144fb1778ab45b57118e9fccbe459578706dca0`)
+  as PID 16976 on `192.168.12.109:18097`. `GET /`, `GET /api/session` and
+  `GET /listen.html` returned HTTP 200; the source WAV GET returned HTTP 200
+  and an 882,044-byte RIFF body; Host/Origin rejection returned HTTP 403.
+  The durable queue hash
+  stayed `e55190cd2fa5be39fc5abb7c4e765a3c99eb82ea3cda474c32dbe5ecd8bc4c8b`
+  with three waiting, one completed and one existing review event unchanged.
+  Salty Boi independently checked the same PID/rule, GET endpoints and native
+  queue against that hash. A live half-second WAV GET returned HTTP 200 with
+  88,244 bytes. Pascal CDP headless Brave at 1280px and emulated 390px opened
+  the first waiting Berg [5,10) s request; Play original fetched exact frames
+  220500–441000, decoded 5.0 s and advanced the playback clock by
+  0.184/0.165 s respectively, with zero POSTs, JavaScript errors or horizontal
+  overflow. See `build/live-stable-browser-qa/desktop.log` and `mobile.log`.
+  At this read-only deployment checkpoint, physical Android playback/Save and
+  repeat Windows Defender behavior were still unverified. The subsequent
+  physical-phone checkpoint above supplies those results.
 - 2026-09-28 independent Salty Boi QA passed a fresh two-group workflow in
   `D:\Docs\GitHub\pythian-qa-salty-final-20260928\flow5`, outside disposable
   `build/` and outside the live catalog. The browser decoded original/cue WAV,

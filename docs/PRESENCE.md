@@ -86,6 +86,41 @@ cost. This meets the API and consumer acceptance criteria of
 [NS-3_notes_05](TODO/NS-3_notes_05.md) at their source-free scope; it does not
 meet the remaining source-grounded acoustic and recorded-calibration criteria.
 
+## Frozen direct-MAESTRO comparison — 2026-09-28
+
+The unchanged `pythian.presence.rest-contrast.v1` was tested under the
+prospectively frozen policy in ignored
+`build/maestro-presence-recorded-20260928/FREEZE.md` (SHA-256
+`d3431c7438ad47ae48a8da7bd8a90baedc9b0af50c04ce6c35b60e162f484022`).
+The Pascal reviewed export (SHA-256
+`755539a7f4c340d31a534c8ea96d27aafe60929ab24c916748fb434c7244c881`)
+binds approved, exact `presence=rest` and `presence=audible` intervals to each
+of two original MAESTRO recordings: Berg development and composition/file/year-
+disjoint Scriabin independent evaluation. Performer identity is unknown. The
+operator confirmed physical-phone playback and Save; Salty Boi independently
+checked source identities, geometry, gate chronology, controls and replay.
+
+For each source, the rest candidate [11025,22050) was compared with reviewed
+rest [0,11025), and the audible candidate [220500,441000) with reviewed rest
+[0,22050). Berg and Scriabin each returned `compatible_with_reviewed_rest`
+for rest and `above_reviewed_rest` for audible: 2/2 covered per source, zero
+false-active rests, zero missed-active positives and zero unknowns. Checked
+stable FPC 3.2.2 Win32/Win64 source-free controls passed; all four recorded
+TSV rows replayed byte-identically by target with zero reported leaks. Exact
+rows and hashes are in `build/maestro-presence-recorded-20260928/RESULT.md`.
+These are bounded activity contrasts, not claims of piano identity, note
+boundaries or audible endings.
+
+[NS-3_notes_05](TODO/NS-3_notes_05.md) criterion 3 remains open because the
+comparison contains no reviewed audible quiet-tail case. The accepted
+[NSynth packet](TODO/DONE/NS-3_notes_04.md) already has a listener-reviewed
+quiet audible guitar late tail `guitar_acoustic_008-048-075` [60000,64000),
+but it has no disjoint reviewed rest in that same WAV for the maintained
+rest-contrast observation. Its older activity consumer's positive result
+cannot fill this API's missing test. The next bounded comparison must qualify
+a same-source rest and freeze the tail observation before scoring. The exposed
+MAESTRO evaluation result cannot be retuned or replaced to fill that gap.
+
 ## Publisher-grounded nonzero room-tone check — 2026-09-25
 
 The [anechoic quartet publisher](https://zenodo.org/records/4955282) supplies

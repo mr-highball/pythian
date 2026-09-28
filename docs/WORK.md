@@ -13,13 +13,41 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Recorded presence contrast passed; quiet-tail gate remains — 2026-09-28
+
+The frozen direct-MAESTRO [presence comparison](PRESENCE.md#frozen-direct-maestro-comparison--2026-09-28)
+used four exact operator-approved labels on two original, composition/file/year-
+disjoint recordings. The unchanged `pythian.presence.rest-contrast.v1` returned
+the expected rest-compatible and above-rest observations in development Berg
+and independent Scriabin: four covered cases, zero false-active rests, zero
+missed-active positives and zero unknowns. Checked stable FPC 3.2.2 Win32/Win64
+controls and recorded inspector rows replayed exactly with zero reported leaks.
+The operator confirmed phone playback and Save, and Salty Boi independently
+audited the source binding and frozen gate. Policy SHA-256 is
+`d3431c7438ad47ae48a8da7bd8a90baedc9b0af50c04ce6c35b60e162f484022`;
+the reviewed export SHA-256 is
+`755539a7f4c340d31a534c8ea96d27aafe60929ab24c916748fb434c7244c881`.
+The ignored packet is `build/maestro-presence-recorded-20260928/`.
+
+[NS-3_notes_05](TODO/NS-3_notes_05.md) remains open with no credit change.
+Its criterion 3 also requires retaining a reviewed audible quiet-tail case.
+The accepted NSynth packet already binds such a listener-reviewed guitar tail,
+but its original WAV has no reviewed same-source rest required by the maintained
+rest-contrast API. The shortest defensible next batch first checks whether an
+exact, source-bound same-WAV rest can be qualified for that existing tail;
+otherwise it prepares one bounded full-source listening request rather than
+routine microclips. Freeze the tail comparison and stop gate before running the
+unchanged inspector. A failed or unknown tail remains a real failure; the
+exposed independent MAESTRO result is not retuned. Note identity, boundaries
+and audible endings remain owned by [NS-3_notes_02](TODO/NS-3_notes_02.md).
+
 ## Repeated Windows Firewall alerts and stable LAN staging — 2026-09-28
 
 The operator showed repeated Windows Defender prompts for
 `pythian.label.catalog.exe` from changing `build/` executable paths. A
 read-only `netsh` audit found existing Private/TCP 18097/LocalSubnet port
 rules, plus broad Private+Public, any-port/any-remote application rules for an
-older build-specific executable. The currently running LAN service remains
+older build-specific executable. The then-running LAN service was
 PID 6796 on that older path. The likely repeated-alert cause is a new program
 identity on each deployment path; the port rules alone did not prevent the
 observed prompt.
@@ -31,10 +59,52 @@ Ticket Guy and Salty Boi independently checked repeat staging, SHA-256
 destination containment and refusal to replace a running stable binary.
 The script only stages build output. The narrow one-time administrator rule
 and direct Pascal launch are specified in the
-[LAN service procedure](LAN-REVIEW-SERVICE.md). No new firewall rule or stable
-service was launched by this QA, so absence of future prompts and physical
-phone reachability remain unverified. The two finished loopback QA services
-on ports 18107/18108 were stopped; the live operator catalog was untouched.
+[LAN service procedure](LAN-REVIEW-SERVICE.md). At that staging checkpoint,
+no new firewall rule or stable service was launched. The two finished loopback
+QA services on ports 18107/18108 were stopped; the live operator catalog was
+untouched.
+
+The user then installed the fixed-program inbound rule for Private,
+LocalSubnet and TCP 18097; root verified that exact scope with `netsh`,
+stopped PID 6796 and launched the staged executable in the foreground as
+PID 16976 at `192.168.12.109:18097`. Its SHA-256 is
+`c819a9a3bc7da94f148ec2c0f144fb1778ab45b57118e9fccbe459578706dca0`.
+Read-only `GET /`, `GET /api/session` and `GET /listen.html` returned HTTP 200;
+the exact source WAV GET returned HTTP 200 with an 882,044-byte RIFF body.
+Host and Origin rejection probes returned HTTP 403. The live queue retained
+SHA-256 `e55190cd2fa5be39fc5abb7c4e765a3c99eb82ea3cda474c32dbe5ecd8bc4c8b`,
+three waiting requests, one completed request and its single existing review.
+Salty Boi independently checked the same PID 16976, rule scope, GET endpoints
+and native queue against that hash. A live half-second WAV GET returned HTTP
+200 with 88,244 bytes. In headless Brave via Pascal CDP, desktop 1280px and
+emulated 390px opened the first waiting Berg [5,10) s request: Play original
+fetched exact frames 220500–441000, decoded 5.0 s and advanced the playback
+clock by 0.184/0.165 s respectively, with zero POSTs, JavaScript errors or
+horizontal overflow. Logs are in `build/live-stable-browser-qa/desktop.log`
+and `mobile.log`.
+The operator subsequently confirmed audible physical-phone playback of the
+0.5-second and 5-second original regions, successful Save on all three
+remaining MAESTRO requests, and no new Defender prompt. The native source
+queue now has zero waiting and four completed exact requests; the durable
+review journal has two approved events per source. Salty Boi independently
+audited their source hashes, frames, values, revisions and disjoint groups.
+This completes the physical source-review portion of the ten-point NS-6 QA.
+The bounded longer original and actual Pythian cue remain a separate phone
+playback check before NS-6 task acceptance.
+
+One exact playback-only pair is now waiting in the live catalog's separate
+listening queue at `http://192.168.12.109:18097/listen.html`. It presents the
+first 10 seconds of the original Berg recording (the source player contains
+the full 20-second excerpt) beside a 10-second Pascal-rendered cue from an
+explicitly unreviewed QA beat candidate. Request SHA-256 is
+`3d8d53ed7659fc18e9a7ad93d6955743dfba4dc14f6846c4f68848c88cf06095`.
+Salty Boi verified both players on isolated desktop/390px browsers and on the
+live 390px LAN page; both decoded and advanced without browser errors or a
+review POST. Live source queue bytes and four user reviews stayed unchanged.
+An isolated `qa-probe` response to this exact pair round-tripped through the
+Pascal report and one-event export, with no QA response in the live catalog.
+Only physical-phone audibility and Save remain for checklist point 5; the
+cross-task manual review ledger records this as one pending item (1/20).
 
 ## Full-output listening loop accepted — 2026-09-28
 

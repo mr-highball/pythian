@@ -45,6 +45,37 @@ had no reviewed same-source no-guitar reference, so the frozen scorer made no
 presence observation. Player 03 is now exposed and cannot be used as fresh
 held-out evidence after a policy change.
 
+Recorded comparison, 2026-09-28: the unchanged
+`pythian.presence.rest-contrast.v1` passed the prospectively frozen direct-
+MAESTRO development and independent activity-contrast gates. Four exact
+operator-approved `presence` answers bind the original Berg and Scriabin WAVs
+to disjoint same-source rest/candidate windows. Each source returned a
+rest-compatible observation and an above-rest audible candidate: 2/2 covered
+cases per source, zero false-active rests, zero missed-active positives and
+zero unknowns. Checked stable FPC 3.2.2 Win32/Win64 source-free controls and
+all four recorded inspector rows replayed exactly with zero reported leaks.
+The operator confirmed physical-phone playback and Save; Salty Boi independently
+audited source identities, geometry, chronology and two-target output. The
+frozen policy SHA-256 is
+`d3431c7438ad47ae48a8da7bd8a90baedc9b0af50c04ce6c35b60e162f484022`;
+the reviewed export SHA-256 is
+`755539a7f4c340d31a534c8ea96d27aafe60929ab24c916748fb434c7244c881`.
+The bounded result and logs are under ignored
+`build/maestro-presence-recorded-20260928/` and summarized in
+[PRESENCE](../PRESENCE.md#frozen-direct-maestro-comparison--2026-09-28).
+
+Criterion 3 and the task credit remain open: this comparison has no reviewed
+audible quiet-tail candidate. The earlier [NSynth reference packet](DONE/NS-3_notes_04.md)
+contains the listener-reviewed quiet audible guitar late tail
+`guitar_acoustic_008-048-075` [60000,64000), but the maintained
+rest-contrast observation needs a disjoint reviewed rest in that same source;
+the packet has none. Its older activity consumer's correct tail decision does
+not substitute for the current observation gate. A bounded follow-up should
+first establish a valid same-source reference and prospectively freeze the
+tail comparison, then report its result without retuning the independent
+MAESTRO packet. No pitch, note-boundary or audible-ending accuracy follows
+from these four MAESTRO contrasts.
+
 **Acceptance Criteria:**
 
 - Establish a source-bound development/reference convention for audible
@@ -75,6 +106,18 @@ held-out evidence after a policy change.
 
 **Dev Notes:**
 
+- 2026-09-28 one prospectively frozen source-selection screen sought a
+  post-key-release quiet-tail listening candidate in the already exposed
+  Berg/Scriabin 20-second originals, whose reviewed opening rests could have
+  supplied a same-WAV reference. The Pascal screen verified exact WAV/MIDI
+  hashes and PCM geometry, then found no candidate meeting its fixed release,
+  note-free-gap and decay bounds in either recording. It stopped without a
+  label request or observation score; do not loosen or resample this packet.
+  Policy SHA-256
+  `779b4077dbe3a262929086a6f2faa5e5d2fd2fee7581e6a9ee2d3c984c7a98c9`
+  and result are under ignored `build/presence-quiet-tail-20260928/`.
+  The private probe's direct exit reported three unfreed managed blocks
+  (336 bytes); no maintained-code leak or acoustic conclusion follows.
 - 2026-09-27 the operator approved `presence=rest` for the exact original
   MAESTRO 2008 Berg opening [0, 22050) frames through the LAN workbench.
   The durable catalog has one event at revision 1 (15:11:19 local time);
