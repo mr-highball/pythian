@@ -25,8 +25,8 @@ private address changes.
 New-NetFirewallRule -DisplayName 'Pythian Stable LAN Review' -Direction Inbound -Action Allow -Enabled True -Profile Private -Program 'D:\Docs\GitHub\pythian\build\label-service\stable\bin\pythian.label.catalog.exe' -Protocol TCP -LocalPort 18097 -LocalAddress 192.168.12.109 -RemoteAddress LocalSubnet -EdgeTraversalPolicy Block
 ```
 
-Verify with `netsh advfirewall firewall show rule name="Pythian Stable LAN Review"
-verbose`; it must show the exact program path, LocalIP, port, Private profile,
+Verify with `netsh advfirewall firewall show rule name="Pythian Stable LAN Review" verbose`;
+it must show the exact program path, LocalIP, port, Private profile,
 LocalSubnet and Allow. Avoid running the rule-creation line twice; a duplicate
 same-name rule obscures which scope is active. No access key is needed on this
 private LAN route. The server still checks Host/Origin and its same-origin
@@ -43,6 +43,12 @@ The source-label queue is at `http://192.168.12.109:18097/` and complete
 single/paired listening packets are at `/listen.html`. A direct PC HTTP check
 does not establish that a physical phone can play and Save; that is an
 outstanding [authoring acceptance check](TODO/NS-6_authoring_01.md).
+
+For engineering browser QA, bind to `127.0.0.1` and reuse one fixed checked
+executable path. Put each isolated fixture catalog in its own ignored directory,
+but do not copy the server executable into a new per-test path; Windows can
+show another application alert for each distinct executable path. Stop the QA
+listener before replacing its executable.
 
 Windows previously created broad `pythian.label.catalog` application rules
 for changing build paths. Once the stable service is confirmed, disable only
