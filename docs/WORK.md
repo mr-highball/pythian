@@ -13,6 +13,58 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Physical-phone Save failure, parser repair and authoring gate — 2026-09-28
+
+The later phone screenshot showed the Berg 5–10 s original WAV at `0:05 / 0:05`,
+an `audible` choice selected, and `Request check failed; no new answer
+recorded` after Save. The live journal still contained only the earlier Berg
+opening event. An old stderr entry at the phone's time reported a rejected
+request line, but did not capture its bytes or prove that it was the Save
+pre-check. This selected answer was not inserted into the catalog by an agent.
+
+The operator asked for one ten-point completion checklist and no further
+feedback request until every authoring criterion is complete and independently
+validated. The checklist in [NS-6 authoring](TODO/NS-6_authoring_01.md)
+includes source intake, exact worker-to-operator request and response identity,
+all currently known manual-label families, actual browser and phone playback,
+durable review/replay, and a complete copied-catalog QA matrix. No item is
+checked or credited yet. The task audit exposed undeclared relationship and
+vocabulary semantics for later groove, motif and pulse work; a Pascal-native
+structured request contract is in progress separately from this repair.
+
+The native socket reader now accepts at most four leading empty CRLF lines
+before locating the real header terminator, validates header names and control
+bytes, accepts HTTP obs-text only in header values, and returns bounded parser
+reasons. The pas2js Save path displays the pre-check HTTP reason or network
+failure without discarding the selected answer; the player clears stale
+`Playing` feedback when a short region ends. The first QA attempt caught the
+reader/header-parser boundary bug before deployment. After repair, Salty Boi
+rebuilt stable Win32/Win64 and pas2js with its RTL and independently passed
+raw 0–4 leading-line/obs-text acceptance, five-line and malformed rejection,
+390/1280-pixel Brave no-key startup, 5 s and 0.5 s WAV playback, pre-check
+400/rejected-fetch zero-POST behavior, POST 503 retry, one durable event,
+queue advance/reload, and lost-response deduplication on an isolated catalog.
+The bounded replay did not cover stale revision, post-commit refresh failure,
+double click, or a physical phone Save. Evidence is under ignored
+`build/salty-final-save-qa-r2-20260928/`.
+
+A checked native snapshot containing only this parser repair and the checked
+pas2js asset were deployed to the existing no-key LAN service at
+`http://192.168.12.109:18097/` (PID 21628). A read-only raw Pascal probe
+against that live process passed the same parser boundary and exact 882,044
+byte audio response; page/session returned 200. The durable queue SHA-256
+remained `e55190cd2fa5be39fc5abb7c4e765a3c99eb82ea3cda474c32dbe5ecd8bc4c8b`
+and the catalog still had one review event. The physical phone's Save path is
+not yet proven fixed. During deployment, an isolated QA process holding the
+old executable path prevented a first copy; it was identified and stopped,
+then the verified new executable was copied before the final service start.
+
+A read-only Pascal SHA-256 benchmark of the existing 1.56-GB catalog WAV took
+98,609 ms on the local i386 toolchain. Since each Save currently rehashes the
+whole source, repeated multi-hour reviews are too slow. A guarded native
+source-verification cache is being integrated and will require separate
+tamper, long-source and replay QA before the authoring gate can pass.
+
 ## Phone WAV HTTP 400 diagnostics and isolated replay — 2026-09-28
 
 The operator's later physical Brave screenshot showed `Audio HTTP 400` while

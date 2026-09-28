@@ -219,6 +219,7 @@ type
     function HandleLoadAudio(AEvent: TJSMouseEvent): Boolean;
     function HandleLoadCue(AEvent: TJSMouseEvent): Boolean;
     function HandleAudioMetadata(AEvent: TEventListenerEvent): Boolean;
+    function HandleAudioEnded(AEvent: TEventListenerEvent): Boolean;
     function HandleAudioError(AEvent: TJSErrorEvent): Boolean;
     function HandleSuggest(AEvent: TJSMouseEvent): Boolean;
     function HandleSave(AEvent: TJSMouseEvent): Boolean;
@@ -350,6 +351,19 @@ begin
   Element('workspace').removeAttribute('hidden');
 end;
 
+function BoundedRequestDetail(const AText, AToken: String): String;
+var
+  LIndex: Integer;
+begin
+  Result := AText;
+  if AToken <> '' then
+    Result := StringReplace(Result, AToken, '[redacted]', [rfReplaceAll]);
+  Result := Trim(Copy(Result, 1, 160));
+  for LIndex := 1 to Length(Result) do
+    if Ord(Result[LIndex]) < 32 then
+      Result[LIndex] := ' ';
+end;
+
 function ReviewGeometry(const ARow: TJSObject): String;
 begin
   Result := TextField(ARow, 'answer_geometry');
@@ -449,6 +463,13 @@ function TWorkbench.HandleAudioMetadata(AEvent: TEventListenerEvent): Boolean;
 begin
   if FAudioUrl <> '' then
     AudioFeedback('WAV ready; starting playback. If it stays paused, tap Play in the player.');
+  Result := False;
+end;
+
+function TWorkbench.HandleAudioEnded(AEvent: TEventListenerEvent): Boolean;
+begin
+  if FAudioUrl <> '' then
+    AudioFeedback('Playback finished. Press Play in the player to hear this region again.');
   Result := False;
 end;
 
@@ -3008,6 +3029,7 @@ var
   LId, LHash, LQuestion, LType, LGeometry, LValue: String;
   LStart, LEnd: Int64;
   LEpoch, LIndex: Integer;
+  LFailure, LReason, LDetail: String;
 begin
   if not ((FReviewType = 'presence') or (FReviewType = 'activity')) or
     not SelectedExactRequest or
@@ -3029,6 +3051,7 @@ begin
   FPresenceChecking := True;
   FPresenceFeedback := '';
   UpdateRecordAnswerAction;
+  LFailure := 'Network request failed before HTTP response';
   try
     LResponse := await(TJSResponse, FetchApi('/api/review-queue', 'GET', ''));
     if (LEpoch <> FWindowEpoch) or (LId <> FReviewId) or
@@ -3039,7 +3062,20 @@ begin
       (LValue <> FPresenceValue) or not SelectedExactRequest then
       Exit;
     if LResponse.status <> 200 then
-      raise Exception.Create('Request check HTTP ' + IntToStr(LResponse.status));
+    begin
+      LFailure := 'HTTP ' + IntToStr(LResponse.status);
+      LReason := '';
+      try
+        LReason := await(String, LResponse.text());
+      except
+        // The status remains available if the response body cannot be read.
+      end;
+      LReason := BoundedRequestDetail(LReason, FToken);
+      if LReason <> '' then
+        LFailure := LFailure + ': ' + LReason;
+      raise Exception.Create(LFailure);
+    end;
+    LFailure := '';
     LData := await(TJSObject, LResponse.json());
     if (LEpoch <> FWindowEpoch) or (LId <> FReviewId) or
       (LHash <> FSourceHash) or (LQuestion <> FReviewQuestion) or
@@ -3095,17 +3131,23 @@ begin
       if (LEpoch = FWindowEpoch) and (LId = FReviewId) then
       begin
         FPresenceChecking := False;
-        if LError.Message = 'Request check HTTP 400' then
+        LDetail := LFailure;
+        LReason := BoundedRequestDetail(LError.Message, FToken);
+        if LDetail = 'Network request failed before HTTP response' then
         begin
-          if CurrentPresenceAnswer <> '' then
-            FPresenceFeedback := 'Request check failed; no correction recorded. The saved answer remains ' +
-              CurrentPresenceAnswer + '.'
-          else
-            FPresenceFeedback := 'Request check failed; no new answer recorded. Your choice is still selected; try again.';
+          if (LReason <> '') and (LReason <> LDetail) then
+            LDetail := LDetail + ': ' + LReason;
         end
+        else if LDetail = '' then
+          LDetail := LReason;
+        if LDetail = '' then
+          LDetail := 'unknown request error';
+        if CurrentPresenceAnswer <> '' then
+          FPresenceFeedback := 'Request check failed; no correction recorded. The saved answer remains ' +
+            CurrentPresenceAnswer + '. (' + LDetail + ')'
         else
           FPresenceFeedback := 'Request check failed; no new answer recorded (' +
-            LError.Message + '). Your choice is still selected.';
+            LDetail + '). Your choice is still selected; try again.';
         UpdateRecordAnswerAction;
       end;
     end;
@@ -3113,7 +3155,11 @@ begin
     if (LEpoch = FWindowEpoch) and (LId = FReviewId) then
     begin
       FPresenceChecking := False;
-      FPresenceFeedback := 'Request check failed; no new answer or correction was recorded. Your choice is still selected.';
+      LDetail := BoundedRequestDetail(LFailure, FToken);
+      if LDetail = '' then
+        LDetail := 'invalid response or browser request error';
+      FPresenceFeedback := 'Request check failed; no new answer or correction was recorded (' +
+        LDetail + '). Your choice is still selected.';
       UpdateRecordAnswerAction;
     end;
   end;
@@ -4527,6 +4573,7 @@ begin
   FCanvas := TJSHTMLCanvasElement(Element('waveform'));
   FAudio := TJSHTMLAudioElement(Element('preview'));
   FAudio.onloadedmetadata := @HandleAudioMetadata;
+  FAudio.onended := @HandleAudioEnded;
   FAudio.onerror := @HandleAudioError;
   TJSHTMLButtonElement(Element('connect-retry')).onclick :=
     @HandleConnectRetry;

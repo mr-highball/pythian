@@ -235,6 +235,26 @@ begin
   end;
 end;
 
+function ValidHeaderName(const AName: String): Boolean;
+var
+  LIndex: Integer;
+begin
+  Result := AName <> '';
+  if not Result then
+  begin
+    Exit;
+  end;
+  for LIndex := 1 to Length(AName) do
+  begin
+    if not (AName[LIndex] in ['A'..'Z', 'a'..'z', '0'..'9',
+      '!', '#', '$', '%', '&', #39, '*', '+', '-', '.', '^', '_',
+      '`', '|', '~']) then
+    begin
+      Exit(False);
+    end;
+  end;
+end;
+
 function ParseHeaders(const AHeaderText, ABindAddress: String;
   const APort: Integer;
   out ARequest: TCatalogHttpRequest; out AContentLength: Integer;
@@ -252,38 +272,78 @@ var
   LQuestion: Integer;
   LContentLengthText: String;
   LIndex: Integer;
+  LRequestStart: Integer;
 begin
   ARequest := Default(TCatalogHttpRequest);
   AContentLength := 0;
   Result := 400;
-  AFailure := 'header contains a control or non-ASCII byte';
+  AFailure := 'header contains a control byte or malformed line ending';
   for LIndex := 1 to Length(AHeaderText) do
   begin
-    if not (AHeaderText[LIndex] in [#9, #13, #10, #32..#126]) then
+    if AHeaderText[LIndex] = #13 then
+    begin
+      if LIndex = Length(AHeaderText) then
+      begin
+        Exit;
+      end;
+      if AHeaderText[LIndex + 1] <> #10 then
+      begin
+        Exit;
+      end;
+    end
+    else if AHeaderText[LIndex] = #10 then
+    begin
+      if LIndex = 1 then
+      begin
+        Exit;
+      end;
+      if AHeaderText[LIndex - 1] <> #13 then
+      begin
+        Exit;
+      end;
+    end
+    else if not (AHeaderText[LIndex] in [#9, #32..#126, #128..#255]) then
     begin
       Exit;
     end;
   end;
-  AFailure := 'malformed request line';
-  LBreak := Pos(#13#10, AHeaderText);
+  AFailure := 'request line terminator missing';
+  LRequestStart := 1;
+  while Copy(AHeaderText, LRequestStart, 2) = #13#10 do
+  begin
+    Inc(LRequestStart, 2);
+    if LRequestStart > 9 then
+    begin
+      AFailure := 'too many leading empty request lines';
+      Exit;
+    end;
+  end;
+  LBreak := Pos(#13#10, Copy(AHeaderText, LRequestStart, MaxInt));
   if LBreak < 1 then
   begin
     Exit;
   end;
-  LLine := Copy(AHeaderText, 1, LBreak - 1);
+  LLine := Copy(AHeaderText, LRequestStart, LBreak - 1);
+  AFailure := 'request line contains a control or non-ASCII byte';
   for LIndex := 1 to Length(LLine) do
   begin
     if not (LLine[LIndex] in [#32..#126]) then
     begin
+      AFailure := 'request line byte ' + IntToStr(LIndex) +
+        ' is 0x' + IntToHex(Ord(LLine[LIndex]), 2);
       Exit;
     end;
   end;
   LFirstSpace := Pos(' ', LLine);
+  AFailure := 'request method separator missing (line bytes=' +
+    IntToStr(Length(LLine)) + ')';
   if LFirstSpace < 2 then
   begin
     Exit;
   end;
   LSecondSpace := Pos(' ', Copy(LLine, LFirstSpace + 1, MaxInt));
+  AFailure := 'request target separator missing (line bytes=' +
+    IntToStr(Length(LLine)) + ')';
   if LSecondSpace < 2 then
   begin
     Exit;
@@ -323,7 +383,7 @@ begin
   begin
     ARequest.Path := LTarget;
   end;
-  LStart := LBreak + 2;
+  LStart := LRequestStart + LBreak + 1;
   LContentLengthText := '';
   AFailure := 'malformed or duplicate request header';
   while LStart <= Length(AHeaderText) do
@@ -346,6 +406,11 @@ begin
     LColon := Pos(':', LLine);
     if LColon < 2 then
     begin
+      Exit;
+    end;
+    if not ValidHeaderName(Copy(LLine, 1, LColon - 1)) then
+    begin
+      AFailure := 'invalid request header name';
       Exit;
     end;
     LName := LowerCase(Copy(LLine, 1, LColon - 1));
@@ -454,6 +519,7 @@ var
   LBuffer: array[0..1023] of Char;
   LReceived: Integer;
   LSeparator: Integer;
+  LRequestStart: Integer;
   LContentLength: Integer;
   LBodyStart: Integer;
   LBodyBytes: Integer;
@@ -487,7 +553,20 @@ begin
     end;
     SetLength(LRaw, Length(LRaw) + LReceived);
     Move(LBuffer[0], LRaw[Length(LRaw) - LReceived + 1], LReceived);
-    LSeparator := Pos(#13#10#13#10, LRaw);
+    LRequestStart := 1;
+    while Copy(LRaw, LRequestStart, 2) = #13#10 do
+    begin
+      Inc(LRequestStart, 2);
+      if LRequestStart > 9 then
+      begin
+        AFailure := 'too many leading empty request lines';
+        Exit(400);
+      end;
+    end;
+    LSeparator := Pos(#13#10#13#10,
+      Copy(LRaw, LRequestStart, MaxInt));
+    if LSeparator > 0 then
+      Inc(LSeparator, LRequestStart - 1);
     if (LSeparator = 0) and (Length(LRaw) > CMaximumHeaderBytes) then
     begin
       AFailure := 'request header exceeds size bound';

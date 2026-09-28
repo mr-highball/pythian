@@ -25,6 +25,82 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Acceptance Criteria:**
 
+### Ten-point operator and worker acceptance checklist
+
+Every box requires observed evidence on the current source. Complete the
+whole checklist, obtain independent Salty Boi QA, then move this task to DONE;
+an isolated successful browser action does not stand in for the full flow.
+The detailed criteria below remain in force.
+
+- [ ] **1. Pascal ownership:** Stable Win32/Win64 native and pas2js builds pass;
+  maintained import, analysis, inference, WAV serving and review writes stay in
+  Pascal, with generated files confined to ignored `build/` and no third-party
+  inference runtime.
+- [ ] **2. Source intake:** Import a prepared multi-recording/multi-track packet
+  in one action into a durable catalog outside `build/`; show original source
+  hash, provenance, duration, clock, group, partition and analyzer version.
+  Reject bad/mismatched assets without partial labels, and open a multi-hour
+  recording without loading the full WAV into browser memory.
+- [ ] **3. Worker-to-operator queue:** A Pascal producer publishes exact,
+  source-bound requests for distinct tasks with stable IDs, question, vocabulary
+  and answer geometry. Invalid replacement leaves the old queue intact. The
+  operator sees only waiting requests, clear progress and an honest empty
+  state; the producer can read completed, unknown, rejected and conflicting
+  outcomes from a durable Pascal report without interpreting screenshots.
+- [ ] **4. Private-LAN startup:** Default loopback and explicitly selected
+  private-LAN binding work after restart, with no access-key form or credential
+  entry. A physical phone on the LAN connects; Host/Origin and same-origin
+  session checks remain effective, no token appears in an audio URL, and the
+  service is reachable under the installed narrow firewall rule.
+- [ ] **5. Listen before labeling:** Original and available Pythian cue audio
+  load, decode and audibly play on the operator path for 0.5-second, 5-second
+  and bounded longer regions. Seek, loop, readiness and errors are clear next
+  to the player on a narrow screen. Exercise malformed/unauthorized/range,
+  disconnected and slow responses, followed by a successful retry; no silent
+  player or `0:00` display is counted as verified sound.
+- [ ] **6. Source timeline:** Navigate, zoom and seek exact source frames
+  across short and multi-hour WAVs with waveform levels, source time, reviewed
+  labels and separate proposals. Align stems only when their manifest shares a
+  clock. Desktop keyboard and narrow touch controls can select, move and
+  inspect the requested region without changing its source identity.
+- [ ] **7. Backlog label coverage:** Support guided presence and pitch-free
+  attack/continuation/release/rest/noise decisions, note pitch/onset/end and
+  part or role spans, beat/downbeat points, local key/tempo/meter/harmony spans,
+  phrase/section boundaries, pulse omissions/distractors/clock gaps and
+  competing phase/rate evidence needed by the open NS-3/NS-5 tasks. Include
+  task-declared groove traits (accent, swing, syncopation, microtiming and
+  articulation) with role/velocity relationships, and motif repetition,
+  variation and section transitions where a task requests them. Exact,
+  one-frame point and contained-span answers retain request identity; validate
+  each producer-declared vocabulary and link target before treating a value as
+  selected truth. Keep unsupported relationships and unknown/ambiguous answers
+  explicit rather than fitting them into a generic free-text label.
+- [ ] **8. Review controls and blindness:** Create, approve, reject, correct,
+  move, resize, split, merge and undo/redo labels with visible staged versus
+  saved state. Pythian proposals remain distinct from operator judgments;
+  a request to reject a proposal binds its exact `proposal_id`, while blind
+  evaluation hides proposals until an independent review. Bulk import never
+  bulk-approves labels or silently changes group/partition.
+- [ ] **9. Durable feedback loop:** A selected answer makes exactly one
+  revision-checked review event, leaves the waiting queue, advances to the next
+  request and survives reload/restart. Failed checks, conflicts and lost
+  responses retain the choice and avoid duplicate events. The worker reads the
+  revised frames/value/status; export and clean-catalog re-import preserve
+  source identity, history, proposal provenance and selected versus unknown
+  separation. Record the handoff to
+  [NS-5_evaluation_02](NS-5_evaluation_02.md) for full-duration generated-output
+  listening: its task-declared decisions need a producer-readable response,
+  and a 30-second source label must never be counted as that review.
+- [ ] **10. Complete QA matrix:** On a copied catalog, run import → Pascal
+  proposals → original/cue listening → wrong-suggestion correction → approved
+  and unknown answers → queue advance → reload/restart → worker report →
+  export/re-import, with at least two source groups and a long-source case.
+  Include all error/retry boundaries in points 3–9, actual desktop and narrow
+  browser interaction, and the physical LAN phone playback/Save path that
+  previously failed. Salty Boi independently validates the frozen binary and
+  pas2js assets, records exact evidence and confirms no test answer touched
+  the live operator catalog.
+
 - Compile a Pythian-owned Pascal/pas2js browser application that lists the
   prepared inbox and durable catalog, imports all available tracks as one
   operator action, and shows source identity, provenance, duration, group,
@@ -93,6 +169,19 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Dev Notes:**
 
+- 2026-09-28 the physical phone played the Berg 5–10 s WAV to its displayed
+  end, but its selected `audible` answer failed the queue pre-check before any
+  new review event. A bounded ten-point acceptance gate now covers the whole
+  operator/worker loop and all known manual-label needs; no boxes or task
+  credit are closed. The socket reader initially split at leading CRLFs before
+  the parser could process them; independent Salty Boi QA found this and
+  passed the corrected native/pas2js batch on a copied catalog, including
+  browser retry and lost-response deduplication. The repaired no-key service
+  is live at port 18097 with its catalog unchanged, but a physical-phone Save
+  is still unverified. A 1.56-GB source hash took 98.6 s, exposing a separate
+  repeated-Save cost for multi-hour queues. Structured vocabularies/links and
+  guarded long-source verification remain in progress; see
+  [work](../WORK.md#physical-phone-save-failure-parser-repair-and-authoring-gate--2026-09-28).
 - 2026-09-28 a second physical Brave WAV failure showed HTTP 400 on the first
   waiting question. The exact live audio region served a byte-identical Pascal
   render on the host; the prior phone request was not captured. The native
