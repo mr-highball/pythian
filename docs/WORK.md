@@ -13,6 +13,45 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Register feasibility passed; beat event graph stopped — 2026-09-28
+
+A new, prospectively frozen Pascal odd/even harmonic-family observation
+separated C4 and C5 on all 20 paired windows from the eight original Yorita
+flute long tones. Both checked stable FPC 3.2.2 targets passed source-free
+pure, missing-fundamental and quiet-vibrato controls, the 40 recorded activity
+windows and 20/20 physical ratio gates, with 10,160,640 counted visits and
+zero reported leaks. A further unchanged-probe QA replay captured Windows
+peak private commit at 2,912,256 bytes (Win32) and 3,756,032 bytes (Win64),
+below the frozen 64-MiB cap. Salty Boi's isolated 17-significant-digit QA replay
+verified the 20 cross-target ratios within the frozen `1e-9` relative bound;
+its maximum difference was `6.7343388821889347e-13`. Frozen policy and
+probe SHA-256 values are `ea7c43b596ca0c2a6efce15c0dd07d0bf149c343c033094ed33bde4df247d339`
+and `a43d9ff32744f40a1e4795cb6ef8c4cf5e1fc56aa4407930cdeb123dca75550c`.
+The ignored original and independent QA records are in
+`build/register-harmonic-family-20260928/` and
+`build/register-harmonic-family-qa-independent-20260928/`. This is a
+published-long-tone *physical feasibility* result only. The comparison used
+filename pitches; the IDs are not proven distinct people. It has no blind
+register decisions, low/short/quiet/mixed controls on recorded material,
+Spring score, maintained implementation or [NS-3 note task](TODO/NS-3_notes_01.md)
+credit. Ticket Guy verified the original exposed Spring development source
+as `build/recorded-phrases/AuSep_1_fl_08_Spring.wav`, SHA-256
+`595d9a858fcecb0478692a806b961c967f6309de01e58821a4ce69de10fa5d30`,
+16-kHz PCM16 mono, 560,560 frames. The separate 8-kHz
+`build/phrase-evaluation-stable/spring-fl-0.source.wav` is a derivative, not
+the original. A future blind diagnostic must save audio-derived predictions
+before reading its development reference or score.
+
+A separate, frozen source-free beat event-graph candidate failed its first
+`missing120` owner-2 gate: five matches among six reference and six predicted
+pulses, below the declared 0.90 precision/recall floor. Earlier steady,
+alternating and quiet-offbeat controls passed on both checked targets; the
+later three authored controls and recorded A/B were not scored. Salty Boi
+reproduced the same stop. Exact policy, private Pascal source and logs are
+under ignored `build/beat-event-graph-20260928/` and its independent QA
+directory. [NS-3 tempo](TODO/NS-3_tempo_04.md) remains open without credit;
+stop this candidate and its terminal extrapolation variants.
+
 ## Recorded presence contrast passed; quiet-tail gate remains — 2026-09-28
 
 The frozen direct-MAESTRO [presence comparison](PRESENCE.md#frozen-direct-maestro-comparison--2026-09-28)

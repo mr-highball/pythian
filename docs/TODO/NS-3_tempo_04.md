@@ -51,6 +51,24 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
 
 **Dev Notes:**
 
+- 2026-09-28 a distinct source-independent event-graph pulse candidate stopped
+  at its frozen authored gate. Checked stable FPC 3.2.2 Win32 and Win64 runs
+  passed steady 120, alternating 120 and quiet 120 with a loud offbeat. The
+  first `missing120` failure was owner 2: five matches among six expected and
+  six predicted pulses, so both precision and recall were 5/6, below the
+  declared 0.90 gate. Its last expected pulse at frame 136000 had no subsequent
+  admitted onset within the half-open owner; the next owner cannot supply it.
+  This identifies a limit of the fixed graph rule, not acoustic absence.
+  Policy SHA-256
+  `7ccea59777e070a477b3f566d8d3ccc8669e1b46e64854743bffdeaa9601b6d8`
+  and frozen private Pascal source SHA-256
+  `af4cba80ac15284627a26ad3ff705cbd99193e726312669c3b62054be8975985`
+  are recorded with both zero-leak logs under ignored
+  `build/beat-event-graph-20260928/`. Salty Boi independently reproduced the
+  same first failure on both targets. The three later authored controls and
+  recorded A/B were not scored. Reject this candidate without terminal
+  extrapolation retuning or task credit; select a different core need before
+  another pulse-candidate batch.
 - 2026-09-27 the single boundary-aware explicit-pulse candidate frozen at the
   task-flow checkpoint failed its **first** authored gate on stable Win32 and
   Win64. On steady120 owner 0, a boundary birth existed and the best

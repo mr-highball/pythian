@@ -107,6 +107,32 @@ variation is authorized by the existing evidence.
 
 **Dev Notes:**
 
+- 2026-09-28 a prospectively frozen Pascal odd/even harmonic-family screen
+  found a physical C4/C5 contrast in the eight original Yorita flute long
+  tones. It passed all 40 fixed source-activity windows and all 20/20 paired
+  ratio gates across the two published IDs and vibrato/nonvibrato conditions.
+  Pure, missing-fundamental and quiet vibrato source-free controls passed on
+  checked stable FPC 3.2.2 Win32 and Win64; the recorded run used exactly
+  10,160,640 sample-frequency visits with zero reported leaks. QA replay
+  captured Windows peak private commit at 2,912,256 bytes (Win32) and
+  3,756,032 bytes (Win64), below the frozen 64-MiB cap. The frozen
+  policy SHA-256 is
+  `ea7c43b596ca0c2a6efce15c0dd07d0bf149c343c033094ed33bde4df247d339`;
+  frozen Pascal probe SHA-256 is
+  `a43d9ff32744f40a1e4795cb6ef8c4cf5e1fc56aa4407930cdeb123dca75550c`.
+  Salty Boi independently replayed both checked targets. An isolated
+  formatting-only QA copy and Pascal comparator verified all 20 cross-target
+  ratios within the frozen `1e-9` relative tolerance; maximum difference was
+  `6.7343388821889347e-13`. The original result is under ignored
+  `build/register-harmonic-family-20260928/`, with independent precision
+  evidence under `build/register-harmonic-family-qa-independent-20260928/`.
+  This is an oracle physical-feasibility observation: filename pitch supplied
+  the C4/C5 comparison, and the two numeric IDs are not proven independent
+  people. It supplies no blind candidate, ambiguity/coverage policy,
+  low/quiet/short/mixed waveform protection, Spring result, maintained path,
+  criterion closure or task credit. Next bind a prospective blind diagnostic
+  to the original 16-kHz Spring development WAV and save predictions before
+  opening its reference/score; do not repeat source-only octave screens.
 - 2026-09-25 a fresh, publisher-hosted [Yorita flute-tone collection](https://www.brinckerhoff.org/flute-tones/index.html)
   supplied two published player IDs with C4/C5 long tones, with and without
   vibrato. A frozen Pascal eight-WAV source/physical gate passed all 40 fixed
