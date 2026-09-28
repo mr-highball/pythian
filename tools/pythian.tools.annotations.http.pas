@@ -237,7 +237,8 @@ end;
 
 function ParseHeaders(const AHeaderText, ABindAddress: String;
   const APort: Integer;
-  out ARequest: TCatalogHttpRequest; out AContentLength: Integer): Integer;
+  out ARequest: TCatalogHttpRequest; out AContentLength: Integer;
+  out AFailure: String): Integer;
 var
   LStart: Integer;
   LBreak: Integer;
@@ -255,19 +256,28 @@ begin
   ARequest := Default(TCatalogHttpRequest);
   AContentLength := 0;
   Result := 400;
+  AFailure := 'header contains a control or non-ASCII byte';
   for LIndex := 1 to Length(AHeaderText) do
   begin
-    if not (AHeaderText[LIndex] in [#13, #10, #32..#126]) then
+    if not (AHeaderText[LIndex] in [#9, #13, #10, #32..#126]) then
     begin
       Exit;
     end;
   end;
+  AFailure := 'malformed request line';
   LBreak := Pos(#13#10, AHeaderText);
   if LBreak < 1 then
   begin
     Exit;
   end;
   LLine := Copy(AHeaderText, 1, LBreak - 1);
+  for LIndex := 1 to Length(LLine) do
+  begin
+    if not (LLine[LIndex] in [#32..#126]) then
+    begin
+      Exit;
+    end;
+  end;
   LFirstSpace := Pos(' ', LLine);
   if LFirstSpace < 2 then
   begin
@@ -282,11 +292,25 @@ begin
   ARequest.Method := Copy(LLine, 1, LFirstSpace - 1);
   LTarget := Copy(LLine, LFirstSpace + 1,
     LSecondSpace - LFirstSpace - 1);
-  if (Copy(LLine, LSecondSpace + 1, MaxInt) <> 'HTTP/1.1') or
-    (Length(LTarget) < 1) or (Length(LTarget) > CMaximumTargetBytes) or
-    (LTarget[1] <> '/') or (Pos('%', LTarget) > 0) or
-    (Pos('\', LTarget) > 0) or (Pos('#', LTarget) > 0) then
+  if Copy(LLine, LSecondSpace + 1, MaxInt) <> 'HTTP/1.1' then
   begin
+    AFailure := 'unsupported HTTP request version';
+    Exit;
+  end;
+  if (Length(LTarget) < 1) or (Length(LTarget) > CMaximumTargetBytes) or
+    (LTarget[1] <> '/') then
+  begin
+    AFailure := 'invalid request target form or length';
+    Exit;
+  end;
+  if Pos('%', LTarget) > 0 then
+  begin
+    AFailure := 'encoded request target is unsupported';
+    Exit;
+  end;
+  if (Pos('\', LTarget) > 0) or (Pos('#', LTarget) > 0) then
+  begin
+    AFailure := 'invalid request target character';
     Exit;
   end;
   LQuestion := Pos('?', LTarget);
@@ -301,6 +325,7 @@ begin
   end;
   LStart := LBreak + 2;
   LContentLengthText := '';
+  AFailure := 'malformed or duplicate request header';
   while LStart <= Length(AHeaderText) do
   begin
     LBreak := Pos(#13#10, Copy(AHeaderText, LStart, MaxInt));
@@ -370,17 +395,20 @@ begin
     (ARequest.Host <> 'localhost:' + IntToStr(APort))) then
   begin
     Result := 403;
+    AFailure := 'host does not match bound address';
     Exit;
   end;
   if (ARequest.Origin <> '') and
     (ARequest.Origin <> 'http://' + ARequest.Host) then
   begin
     Result := 403;
+    AFailure := 'origin does not match host';
     Exit;
   end;
   if (ARequest.Method <> 'GET') and (ARequest.Method <> 'POST') then
   begin
     Result := 405;
+    AFailure := 'unsupported request method';
     Exit;
   end;
   if ARequest.Method = 'POST' then
@@ -394,11 +422,13 @@ begin
         (AContentLength > CMaximumBodyBytes)) then
     begin
       Result := 413;
+      AFailure := 'POST content length is missing or exceeds bound';
       Exit;
     end;
     if (ARequest.ContentType <> 'application/json') and
       (ARequest.ContentType <> 'application/json; charset=utf-8') then
     begin
+      AFailure := 'POST content type must be application/json';
       Exit;
     end;
   end
@@ -407,15 +437,17 @@ begin
     if not TryStrToInt(LContentLengthText, AContentLength) or
       (AContentLength <> 0) then
     begin
+      AFailure := 'GET content length must be zero';
       Exit;
     end;
   end;
   Result := 200;
+  AFailure := '';
 end;
 
 function ReadRequest(const ASocket, APort: Integer;
   const ABindAddress, AToken: String;
-  out ARequest: TCatalogHttpRequest): Integer;
+  out ARequest: TCatalogHttpRequest; out AFailure: String): Integer;
 var
   LRaw: String;
   LHeader: String;
@@ -429,6 +461,8 @@ var
   LStart: QWord;
 begin
   LRaw := '';
+  ARequest := Default(TCatalogHttpRequest);
+  AFailure := 'request header timed out';
   LStart := GetTickCount64;
   repeat
     if GetTickCount64 - LStart >= CReceiveDeadlineMs then
@@ -442,11 +476,13 @@ begin
     end;
     if LReceived = 0 then
     begin
+      AFailure := 'connection closed before request header';
       Exit(400);
     end;
     if LReceived > CMaximumHeaderBytes +
       CMaximumReviewedImportBytes - Length(LRaw) then
     begin
+      AFailure := 'request exceeds size bound';
       Exit(413);
     end;
     SetLength(LRaw, Length(LRaw) + LReceived);
@@ -454,16 +490,18 @@ begin
     LSeparator := Pos(#13#10#13#10, LRaw);
     if (LSeparator = 0) and (Length(LRaw) > CMaximumHeaderBytes) then
     begin
+      AFailure := 'request header exceeds size bound';
       Exit(431);
     end;
   until LSeparator > 0;
   if LSeparator - 1 > CMaximumHeaderBytes then
   begin
+    AFailure := 'request header exceeds size bound';
     Exit(431);
   end;
   LHeader := Copy(LRaw, 1, LSeparator - 1);
   Result := ParseHeaders(LHeader, ABindAddress, APort,
-    ARequest, LContentLength);
+    ARequest, LContentLength, AFailure);
   if Result <> 200 then
   begin
     Exit;
@@ -471,6 +509,7 @@ begin
   if (ARequest.Path = '/api/import-reviewed') and
     (ARequest.Token <> AToken) then
   begin
+    AFailure := 'reviewed import session token is invalid';
     Exit(403);
   end;
   LBodyStart := LSeparator + 4;
@@ -489,6 +528,7 @@ begin
   begin
     if GetTickCount64 - LStart >= LDeadline then
     begin
+      AFailure := 'request body timed out';
       Exit(408);
     end;
     LReceived := fpRecv(ASocket, @LBuffer[0],
@@ -499,11 +539,13 @@ begin
     end;
     if LReceived = 0 then
     begin
+      AFailure := 'connection closed before complete request body';
       Exit(400);
     end;
     Move(LBuffer[0], ARequest.Body[LBodyBytes + 1], LReceived);
     Inc(LBodyBytes, LReceived);
   end;
+  AFailure := '';
 end;
 
 function QueryValue(const AQuery, AName: String): String;
@@ -760,6 +802,8 @@ begin
           QueryInt64(ARequest.Query, 'start'),
           QueryInt64(ARequest.Query, 'end'), LAudio);
         SendStreamResponse(ASocket, LAudio, 'audio/wav');
+        WriteLn(StdErr, 'HTTP audio served bytes=', LAudio.Size);
+        Flush(StdErr);
       finally
         LAudio.Free;
       end;
@@ -833,13 +877,26 @@ procedure HandleClient(const ASocket, APort: Integer;
 var
   LRequest: TCatalogHttpRequest;
   LStatus: Integer;
+  LFailure: String;
 begin
   SetClientTimeouts(ASocket);
-  LStatus := ReadRequest(ASocket, APort, ABindAddress, AToken, LRequest);
+  LStatus := ReadRequest(ASocket, APort, ABindAddress, AToken,
+    LRequest, LFailure);
   if LStatus <> 200 then
   begin
-    SendResponse(ASocket, LStatus, 'text/plain; charset=utf-8',
-      StatusReason(LStatus) + #10);
+    WriteLn(StdErr, 'HTTP request rejected status=', LStatus,
+      ' path=', LRequest.Path, ' reason=', LFailure);
+    Flush(StdErr);
+    if LStatus = 400 then
+    begin
+      SendResponse(ASocket, LStatus, 'text/plain; charset=utf-8',
+        StatusReason(LStatus) + ': ' + LFailure + #10);
+    end
+    else
+    begin
+      SendResponse(ASocket, LStatus, 'text/plain; charset=utf-8',
+        StatusReason(LStatus) + #10);
+    end;
     Exit;
   end;
   try

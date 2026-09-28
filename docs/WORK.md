@@ -13,6 +13,42 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Phone WAV HTTP 400 diagnostics and isolated replay — 2026-09-28
+
+The operator's later physical Brave screenshot showed `Audio HTTP 400` while
+trying to play the first waiting Berg 5–10 s question. That phone request was
+not captured by the old server, so its cause is still unknown. A direct live
+request for the exact source hash and frames returned 200 with 882,044 bytes.
+The downloaded WAV was byte-identical to a fresh Pascal CLI render of the same
+source region. The operator's statement that the first clip was inaudible was
+not converted into a catalog label while playback was failing.
+
+The native Pascal HTTP host now reports a bounded reason for a rejected request
+header or request line, and logs status, path and reason without the session
+token. The Pascal/pas2js workbench displays the audio response's short reason
+beside the player and keeps Play original available for retry. A deliberate
+encoded-target request returned `400 Bad Request: encoded request target is
+unsupported` on the live service; the exact valid audio route still returned
+200. The updated no-key service is listening at
+`http://192.168.12.109:18097/` as PID 19784, serving the checked `app.js`
+SHA-256 `88864aa95790f128d76a05e7f8f6a822f97c6870b05af7b783c521a54af51892`.
+Its durable queue manifest stayed unchanged: three waiting, one completed.
+
+Salty Boi independently rebuilt the stable Win32/Win64 native targets and
+pas2js UI. In isolated real Brave at 390 and 1280 pixels, the 5-second and
+0.5-second WAVs decoded and their playback clocks advanced. An injected native
+400 showed its exact reason, then a retry played; a blocked fetch and a 30-second
+delayed fetch produced visible retry states, then recovered. One explicit
+`unknown` review made exactly one POST, left the waiting queue, and persisted
+after reload. Unauthorized and malformed requests returned 403/400/422 as
+expected. Export, clean-catalog import and re-export matched byte-for-byte at
+SHA-256 `5bd4195703c24ef1329142cd144ff99197c3d528da2890cfee1aecdd3ef2daa4`.
+All QA review values were isolated fixtures, not musical truth; evidence is
+under ignored `build/live-audio-final-qa-20260928/`. The physical phone must
+retry the new page to reveal whether its 400 is resolved or to supply the new
+server reason. That manual review remains open; no task moved to DONE and
+overall accepted completion remains **70.70%**.
+
 ## LAN review flow and backlog labeling support — 2026-09-28
 
 The operator's physical Brave screenshot showed a failed WAV request on the

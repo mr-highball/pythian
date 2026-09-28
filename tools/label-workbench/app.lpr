@@ -2773,6 +2773,8 @@ var
   LResponse: TJSResponse;
   LBlob: TJSBlob;
   LTimer: NativeInt;
+  LReason: String;
+  LIndex: Integer;
 begin
   if FSaveInProgress then
   begin
@@ -2842,6 +2844,27 @@ begin
     end;
     if LResponse.status <> 200 then
     begin
+      LReason := '';
+      try
+        LReason := await(String, LResponse.text());
+      except
+        // Keep the HTTP status available even if the error body cannot be read.
+      end;
+      if (LEpoch <> FWindowEpoch) or (LAudioEpoch <> FAudioEpoch) then
+      begin
+        window.clearTimeout(LTimer);
+        Exit;
+      end;
+      LReason := Trim(Copy(LReason, 1, 160));
+      for LIndex := 1 to Length(LReason) do
+        if Ord(LReason[LIndex]) < 32 then
+          LReason[LIndex] := ' ';
+      if FToken <> '' then
+        LReason := StringReplace(LReason, FToken, '[redacted]',
+          [rfReplaceAll]);
+      if LReason <> '' then
+        raise Exception.Create('Audio HTTP ' +
+          IntToStr(LResponse.status) + ': ' + LReason);
       raise Exception.Create('Audio HTTP ' + IntToStr(LResponse.status));
     end;
     LBlob := await(TJSBlob, TWorkbenchResponse(LResponse).blobRequest());

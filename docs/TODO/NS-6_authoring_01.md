@@ -93,6 +93,17 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Dev Notes:**
 
+- 2026-09-28 a second physical Brave WAV failure showed HTTP 400 on the first
+  waiting question. The exact live audio region served a byte-identical Pascal
+  render on the host; the prior phone request was not captured. The native
+  service now returns/logs bounded parser failure reasons, and the Pascal/
+  pas2js player exposes the response reason with Retry. Salty Boi's isolated
+  real-Brave QA passed mobile/desktop playback (including 0.5 s), forced 400,
+  blocked and slow fetch recovery, exactly one saved review with queue advance
+  and reload, and byte-identical reviewed-packet export/import replay. The
+  updated no-key LAN service is live, but the physical-phone retry is still
+  needed to identify or clear its specific failure; do not count the user's
+  inaudibility remark as a reviewed label. See [work](../WORK.md#phone-wav-http-400-diagnostics-and-isolated-replay--2026-09-28).
 - 2026-09-28 the physical Brave WAV failure prompted a bounded end-to-end
   browser/service batch. The native route served the exact 882,044-byte WAV
   on the host; the phone failure bytes remain unknown. The Pascal/pas2js UI
