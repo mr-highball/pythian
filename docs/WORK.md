@@ -68,6 +68,25 @@ different independently supported observation with real short/quiet/low-note
 protection. The unused private Pascal scorer was compiled but deliberately
 not run.
 
+This is a task-flow checkpoint after nonclosing physical/decision and beat
+batches. Do not spend the next batch on a nearby odd/even threshold, beat
+terminal extrapolation or another metadata-only tail source. The accepted
+library and task ledger remain at **71.10%**, **37 open / 29 DONE**. Among
+ready core tasks, [note identity](TODO/NS-3_notes_01.md) now needs a different
+short-note-safe register observation; [presence](TODO/NS-3_notes_05.md) needs a
+distinct reviewed quiet-tail and same-source nonzero rest; [tempo](TODO/NS-3_tempo_04.md)
+needs a new justified candidate contract; and [local key](TODO/NS-3_context_01.md)
+still lacks grounded note activity for its next observation. The open
+[style-card task](TODO/NS-5_evaluation_01.md) retains verified cuts and timed
+provider-trait references as its needed input; partial generic controls alone
+would not close it. [NS-6 authoring](TODO/NS-6_authoring_01.md) has one exact
+physical-phone playback/Save decision pending at the live private-LAN service
+`192.168.12.109:18097`, separate from its completed source-review queue.
+Native `listen-report` shows **1 waiting / 0 completed**, so the cross-task
+manual review ledger is **1/20**. Keep the service and durable catalog intact;
+resume the criterion when the operator response arrives. These scientific
+stops do not change the goal's status or manufacture task credit.
+
 A separate, frozen source-free beat event-graph candidate failed its first
 `missing120` owner-2 gate: five matches among six reference and six predicted
 pulses, below the declared 0.90 precision/recall floor. Earlier steady,
