@@ -40,6 +40,9 @@ SOFTWARE.
   </header>
 
   <p id="status" class="status" role="status" aria-live="polite">Connecting to local service…</p>
+  <div id="loading-progress" class="loading-progress" role="progressbar" aria-label="Connecting to local service" aria-valuetext="Connecting to local service">
+    <span id="loading-progress-text">Connecting to local service…</span><span class="loading-progress-track"><span></span></span>
+  </div>
   <button id="connect-retry" type="button" class="connect-retry" hidden>Retry connection</button>
 
   <main id="workspace" hidden>
@@ -83,13 +86,21 @@ SOFTWARE.
             <span id="record-answer-state" role="status" aria-live="polite"></span>
           </div>
           <div id="presence-answer-area" class="presence-answer-area" hidden>
-            <strong>What do you hear in this exact region?</strong>
-            <p class="panel-note">A half-second clip may show 0:00 / 0:00 in the player. Use Loop region if useful; choose “I can’t tell” if the sound remains unclear.</p>
+            <strong id="guided-answer-heading">What do you hear in this exact region?</strong>
+            <p id="guided-answer-help" class="panel-note">A half-second clip may show 0:00 / 0:00 in the player. Use Loop region if useful; choose “I can’t tell” if the sound remains unclear.</p>
             <strong id="presence-saved-answer" class="presence-saved-answer" hidden></strong>
-            <div class="presence-choices" role="group" aria-label="Presence answer">
+            <div id="presence-choices" class="presence-choices" role="group" aria-label="Presence answer">
               <button id="presence-audible" type="button" aria-pressed="false">I hear an instrument <small>(audible)</small></button>
               <button id="presence-rest" type="button" aria-pressed="false">No instrument throughout <small>(rest)</small></button>
               <button id="presence-unknown" type="button" aria-pressed="false">I can’t tell <small>(unknown)</small></button>
+            </div>
+            <div id="activity-choices" class="presence-choices activity-choices" role="group" aria-label="Activity answer" hidden>
+              <button id="activity-attack" type="button" aria-pressed="false">New attack <small>(attack)</small></button>
+              <button id="activity-continuation" type="button" aria-pressed="false">Continuing sound <small>(continuation)</small></button>
+              <button id="activity-release_tail" type="button" aria-pressed="false">Release tail <small>(release_tail)</small></button>
+              <button id="activity-rest" type="button" aria-pressed="false">No instrument throughout <small>(rest)</small></button>
+              <button id="activity-unknown" type="button" aria-pressed="false">I can’t tell <small>(unknown)</small></button>
+              <button id="activity-noise_only" type="button" aria-pressed="false">Nonmusical noise only <small>(noise_only)</small></button>
             </div>
             <button id="presence-save" type="button" class="primary" disabled>Save answer</button>
             <span id="presence-answer-state" role="status" aria-live="polite"></span>
@@ -173,17 +184,18 @@ SOFTWARE.
       <details id="review-editor" class="panel edit-panel">
         <summary>Review or correct a label</summary>
         <div class="panel-head"><p class="panel-note">Check the suggested value, make any correction, then save your decision.</p><span id="revision-label" class="revision">Revision 0</span></div>
+        <p id="request-geometry-help" class="request-geometry-help" hidden></p>
         <div class="form-grid">
           <label>Reviewer<input id="reviewer" value="operator" maxlength="128"></label>
           <label>Label ID<input id="label-id" placeholder="e.g. bass-note-001" maxlength="128"></label>
           <label>Type<select id="label-type">
             <option value="">Choose a label type</option>
             <option value="note">Note</option><option value="beat">Beat</option><option value="downbeat">Downbeat</option>
-            <option value="presence">Presence</option><option value="part_role">Part role</option>
+            <option value="presence">Presence</option><option value="activity">Activity</option><option value="key">Key</option><option value="tempo">Tempo</option><option value="meter">Meter</option><option value="harmony">Harmony</option><option value="part_role">Part role</option>
             <option value="source_role">Source role</option><option value="phrase">Phrase</option>
             <option value="section">Section</option><option value="style_preference">Style preference</option>
           </select></label>
-          <label>Value<input id="label-value" placeholder="C4, audible, rest, unknown…" maxlength="256"></label>
+          <label>Value<input id="label-value" placeholder="C4, audible, rest, unknown…" maxlength="256"><small id="label-value-hint" class="field-hint">Choose a type for its value format.</small></label>
           <label>Status<select id="label-status"><option value="approved">Approved</option><option value="uncertain">Uncertain</option><option value="rejected">Rejected proposal</option><option value="withdrawn">Withdrawn</option></select></label>
           <label>Part<input id="label-part" placeholder="optional" maxlength="128"></label>
           <label>Start frame<input id="label-start" type="number" min="0" step="1"></label>

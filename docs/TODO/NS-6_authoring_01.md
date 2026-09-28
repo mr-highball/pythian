@@ -42,6 +42,13 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 - Let the operator create, approve, reject, move and resize labels, edit
   category/value/pitch/part as appropriate, split or merge spans, mark
   uncertainty, undo/redo and navigate efficiently by keyboard or touch.
+  Cover guided presence and pitch-independent activity decisions, exact
+  beat/downbeat markers, and typed source-local key, tempo, meter and harmony
+  spans. Preserve explicit unknown and ambiguous answers outside selected
+  training labels. Let a prepared request use an exact answer, a one-frame
+  beat/downbeat point inside its listening region, or a contained span while
+  retaining request identity. Validate a moved beat marker and a corrected
+  context span through queue completion, durable export and re-import.
   Display exact source times/frames and save/reload every change with visible
   conflict and failed-save handling. Do not make bulk import equivalent to
   bulk label approval.
@@ -86,6 +93,22 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Dev Notes:**
 
+- 2026-09-28 the physical Brave WAV failure prompted a bounded end-to-end
+  browser/service batch. The native route served the exact 882,044-byte WAV
+  on the host; the phone failure bytes remain unknown. The Pascal/pas2js UI
+  now shows an indeterminate loading bar for connection, catalog, queue and
+  WAV fetches, clears it after errors and offers visible Retry. The open
+  task's source-label scope now covers guided activity, typed key/tempo/meter/
+  harmony values and `exact`/`point`/`contained` queue geometry. Checked
+  Win32/Win64 native publication, review, export and re-import pass on isolated
+  sources. Ticket Guy's 390-pixel Brave checks passed the editor paths;
+  Salty Boi independently replayed actual WAV playback, exact and guided
+  answers, marker placement/correction, contained key review, reload and
+  export/re-import on isolated catalogs at 390/1280 pixels. The live no-key
+  service now serves byte-matching assets at `192.168.12.109:18097`; the
+  durable manifest and one review event did not change. The user's physical
+  phone check remains manual item 2. This engineering QA does not close the
+  complete operator task or add milestone credit; see [work](../WORK.md#lan-review-flow-and-backlog-labeling-support--2026-09-28).
 - 2026-09-27 a physical Brave page showed the workbench shell but remained on
   `Connecting to local service…`. The host's live listener, page, bundled JS,
   session endpoint, private Wi-Fi address and local-subnet firewall rule were

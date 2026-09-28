@@ -64,6 +64,127 @@ const
   CMaximumRevision = 100000;
   CMaximumHistoryPage = 256;
 
+function ValidTonalRoot(const ARoot: String): Boolean;
+begin
+  Result := (Length(ARoot) >= 1) and (Length(ARoot) <= 2);
+  if not Result then
+  begin
+    Exit;
+  end;
+  Result := ARoot[1] in ['A'..'G'];
+  if Result and (Length(ARoot) = 2) then
+  begin
+    Result := ARoot[2] in ['#', 'b'];
+  end;
+end;
+
+function ValidTonalValue(const AValue: String): Boolean;
+var
+  LSeparator: Integer;
+  LName: String;
+  LIndex: Integer;
+begin
+  if (AValue = 'unknown') or (AValue = 'ambiguous') then
+  begin
+    Exit(True);
+  end;
+  LSeparator := Pos(':', AValue);
+  if LSeparator = 0 then
+  begin
+    Exit(False);
+  end;
+  LName := Copy(AValue, LSeparator + 1, MaxInt);
+  Result := ValidTonalRoot(Copy(AValue, 1, LSeparator - 1)) and
+    (Length(LName) >= 1) and (Length(LName) <= 48);
+  if not Result then
+  begin
+    Exit;
+  end;
+  for LIndex := 1 to Length(LName) do
+  begin
+    if not (LName[LIndex] in ['a'..'z', '0'..'9', '_']) then
+    begin
+      Exit(False);
+    end;
+  end;
+end;
+
+function ValidTempoValue(const AValue: String): Boolean;
+var
+  LIndex: Integer;
+  LDecimal: Integer;
+  LCode: Integer;
+  LBpm: Double;
+begin
+  if (AValue = 'unknown') or (AValue = 'ambiguous') then
+  begin
+    Exit(True);
+  end;
+  Result := (Length(AValue) >= 1) and (Length(AValue) <= 10);
+  if not Result then
+  begin
+    Exit;
+  end;
+  LDecimal := 0;
+  for LIndex := 1 to Length(AValue) do
+  begin
+    if AValue[LIndex] = '.' then
+    begin
+      if (LDecimal <> 0) or (LIndex = 1) or
+        (LIndex = Length(AValue)) then
+      begin
+        Exit(False);
+      end;
+      LDecimal := LIndex;
+    end
+    else if not (AValue[LIndex] in ['0'..'9']) then
+    begin
+      Exit(False);
+    end;
+  end;
+  if (LDecimal > 0) and (Length(AValue) - LDecimal > 6) then
+  begin
+    Exit(False);
+  end;
+  Val(AValue, LBpm, LCode);
+  Result := (LCode = 0) and (LBpm >= 0.1) and (LBpm <= 1000);
+end;
+
+function ValidMeterValue(const AValue: String): Boolean;
+var
+  LSeparator: Integer;
+  LIndex: Integer;
+  LNumerator: Integer;
+  LDenominator: Integer;
+begin
+  if (AValue = 'unknown') or (AValue = 'ambiguous') then
+  begin
+    Exit(True);
+  end;
+  LSeparator := Pos('/', AValue);
+  Result := (LSeparator >= 2) and
+    (LSeparator < Length(AValue)) and (Length(AValue) <= 5);
+  if not Result then
+  begin
+    Exit;
+  end;
+  for LIndex := 1 to Length(AValue) do
+  begin
+    if (LIndex <> LSeparator) and
+      not (AValue[LIndex] in ['0'..'9']) then
+    begin
+      Exit(False);
+    end;
+  end;
+  Result := TryStrToInt(Copy(AValue, 1, LSeparator - 1), LNumerator) and
+    TryStrToInt(Copy(AValue, LSeparator + 1, MaxInt), LDenominator);
+  if Result then
+  begin
+    Result := (LNumerator >= 1) and (LNumerator <= 64) and
+      (LDenominator in [1, 2, 4, 8, 16, 32, 64]);
+  end;
+end;
+
 procedure Need(const ACondition: Boolean; const AMessage: String);
 begin
   if not ACondition then
@@ -280,7 +401,10 @@ begin
   Need(SafeIdentifier(LId), 'Invalid label identity');
   LType := RequiredText(AInput, 'type', 128);
   Need((LType = 'beat') or (LType = 'downbeat') or (LType = 'note') or
-    (LType = 'presence') or (LType = 'part_role') or
+    (LType = 'presence') or (LType = 'activity') or
+    (LType = 'key') or (LType = 'tempo') or
+    (LType = 'meter') or (LType = 'harmony') or
+    (LType = 'part_role') or
     (LType = 'source_role') or (LType = 'phrase') or
     (LType = 'section') or (LType = 'style_preference') or
     ((Copy(LType, 1, 4) = 'ext.') and (Length(LType) > 4) and
@@ -295,6 +419,25 @@ begin
   begin
     Need((LValue = 'audible') or (LValue = 'rest') or
       (LValue = 'unknown'), 'Invalid presence value');
+  end;
+  if LType = 'activity' then
+  begin
+    Need((LValue = 'attack') or (LValue = 'continuation') or
+      (LValue = 'release_tail') or (LValue = 'rest') or
+      (LValue = 'unknown') or (LValue = 'noise_only'),
+      'Invalid activity value');
+  end;
+  if (LType = 'key') or (LType = 'harmony') then
+  begin
+    Need(ValidTonalValue(LValue), 'Invalid tonal value');
+  end;
+  if LType = 'tempo' then
+  begin
+    Need(ValidTempoValue(LValue), 'Invalid tempo BPM');
+  end;
+  if LType = 'meter' then
+  begin
+    Need(ValidMeterValue(LValue), 'Invalid meter');
   end;
   LStart := RequiredInt64(AInput, 'start_frame');
   LEnd := RequiredInt64(AInput, 'end_frame');

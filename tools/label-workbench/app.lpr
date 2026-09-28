@@ -58,6 +58,10 @@ type
   private
     FToken: String;
     FStartEpoch: Integer;
+    FConnectionLoading: Boolean;
+    FCatalogLoads: Integer;
+    FQueueLoads: Integer;
+    FAudioLoading: Boolean;
     FSourceHash: String;
     FSourceGroup: String;
     FClockId: String;
@@ -73,6 +77,7 @@ type
     FReviewId: String;
     FReviewQuestion: String;
     FReviewType: String;
+    FReviewGeometry: String;
     FReviewConflict: String;
     FReviewCurrentValue: String;
     FReviewCurrentStatus: String;
@@ -122,6 +127,7 @@ type
     function Input(const AId: String): TJSHTMLInputElement;
     function FetchApi(const APath, AMethod, ABody: String): TJSPromise;
     procedure Status(const AText: String; const AError: Boolean = False);
+    procedure UpdateLoading;
     procedure AudioFeedback(const AText: String; const AError: Boolean = False);
     procedure PlayLoadedAudio; async;
     procedure ShowWorkspace;
@@ -139,6 +145,8 @@ type
     procedure ReleaseRequestDraft;
     function SelectedExactRequest: Boolean;
     function CurrentPresenceAnswer: String;
+    function GuidedValueAllowed(const AType, AValue: String): Boolean;
+    procedure UpdateValueHint;
     procedure UpdateRecordAnswerAction;
     procedure ChoosePresence(const AValue: String);
     procedure SavePresence; async;
@@ -186,7 +194,8 @@ type
       const AStartFrame: Int64 = -1; const AEndFrame: Int64 = -1;
       const AReviewId: String = ''; const AQuestion: String = '';
       const AReviewType: String = '';
-      const AConflict: String = ''); async;
+      const AConflict: String = '';
+      const AGeometry: String = 'exact'); async;
     procedure RefreshWindow; async;
     procedure LoadAudio(const ACue: Boolean); async;
     procedure SuggestBeats; async;
@@ -216,6 +225,7 @@ type
     function HandleRecordAnswer(AEvent: TJSMouseEvent): Boolean;
     function HandlePresenceChoice(AEvent: TJSMouseEvent): Boolean;
     function HandlePresenceSave(AEvent: TJSMouseEvent): Boolean;
+    function HandleLabelTypeChange(AEvent: TEventListenerEvent): Boolean;
     function HandleUndo(AEvent: TJSMouseEvent): Boolean;
     function HandleRedo(AEvent: TJSMouseEvent): Boolean;
     function HandleClearHistory(AEvent: TJSMouseEvent): Boolean;
@@ -338,6 +348,58 @@ end;
 procedure TWorkbench.ShowWorkspace;
 begin
   Element('workspace').removeAttribute('hidden');
+end;
+
+function ReviewGeometry(const ARow: TJSObject): String;
+begin
+  Result := TextField(ARow, 'answer_geometry');
+  if Result = '' then
+    Result := 'exact';
+end;
+
+function RequestGeometryAllows(const AGeometry: String;
+  const ARequestStart, ARequestEnd, ALabelStart,
+  ALabelEnd: Int64): Boolean;
+begin
+  if AGeometry = 'exact' then
+    Result := (ALabelStart = ARequestStart) and
+      (ALabelEnd = ARequestEnd)
+  else if AGeometry = 'point' then
+    Result := (ALabelStart >= ARequestStart) and
+      (ALabelEnd = ALabelStart + 1) and
+      (ALabelEnd <= ARequestEnd)
+  else if AGeometry = 'contained' then
+    Result := (ALabelStart >= ARequestStart) and
+      (ALabelEnd > ALabelStart) and
+      (ALabelEnd <= ARequestEnd)
+  else
+    Result := False;
+end;
+
+procedure TWorkbench.UpdateLoading;
+var
+  LText: String;
+  LProgress: TJSElement;
+begin
+  LText := '';
+  if FAudioLoading then
+    LText := 'Loading original WAV region…'
+  else if FConnectionLoading then
+    LText := 'Connecting to local service…'
+  else if FQueueLoads > 0 then
+    LText := 'Loading prepared requests…'
+  else if FCatalogLoads > 0 then
+    LText := 'Loading audio catalog…';
+  LProgress := Element('loading-progress');
+  if LText = '' then
+    LProgress.setAttribute('hidden', '')
+  else
+  begin
+    Element('loading-progress-text').textContent := LText;
+    LProgress.setAttribute('aria-label', LText);
+    LProgress.setAttribute('aria-valuetext', LText);
+    LProgress.removeAttribute('hidden');
+  end;
 end;
 
 procedure TWorkbench.AudioFeedback(const AText: String; const AError: Boolean);
@@ -564,7 +626,8 @@ begin
       begin
         LSelectedFound := True;
         if (TextField(LRow, 'label_type') <> FReviewType) or
-          (TextField(LRow, 'question') <> FReviewQuestion) then
+          (TextField(LRow, 'question') <> FReviewQuestion) or
+          (ReviewGeometry(LRow) <> FReviewGeometry) then
         begin
           ClearRequest;
           Break;
@@ -666,12 +729,42 @@ end;
 function TWorkbench.CurrentPresenceAnswer: String;
 begin
   Result := '';
-  if (FReviewType = 'presence') and
-    (FReviewCurrentStatus = 'approved') and
-    ((FReviewCurrentValue = 'audible') or
-     (FReviewCurrentValue = 'rest') or
-     (FReviewCurrentValue = 'unknown')) then
+  if (FReviewCurrentStatus = 'approved') and
+    GuidedValueAllowed(FReviewType, FReviewCurrentValue) then
     Result := FReviewCurrentValue;
+end;
+
+function TWorkbench.GuidedValueAllowed(const AType, AValue: String): Boolean;
+begin
+  Result := ((AType = 'presence') and
+    ((AValue = 'audible') or (AValue = 'rest') or
+     (AValue = 'unknown'))) or
+    ((AType = 'activity') and
+    ((AValue = 'attack') or (AValue = 'continuation') or
+     (AValue = 'release_tail') or (AValue = 'rest') or
+     (AValue = 'unknown') or (AValue = 'noise_only')));
+end;
+
+procedure TWorkbench.UpdateValueHint;
+var
+  LType, LHint: String;
+begin
+  LType := Input('label-type').value;
+  if LType = 'key' then
+    LHint := 'Key: C:major or F#:minor; unknown or ambiguous if needed.'
+  else if LType = 'tempo' then
+    LHint := 'Tempo in BPM: 120 or 87.5; unknown or ambiguous if needed.'
+  else if LType = 'meter' then
+    LHint := 'Meter: 4/4 or 7/8; unknown or ambiguous if needed.'
+  else if LType = 'harmony' then
+    LHint := 'Harmony: C:major, A:minor, or a task-declared root:quality such as G:dominant7; unknown or ambiguous if needed.'
+  else if LType = 'activity' then
+    LHint := 'Use attack, continuation, release_tail, rest, unknown, or noise_only.'
+  else if LType = 'presence' then
+    LHint := 'Use audible, rest, or unknown.'
+  else
+    LHint := 'Enter the exact reviewed value for the selected type.';
+  Element('label-value-hint').textContent := LHint;
 end;
 
 procedure TWorkbench.ReleaseRequestDraft;
@@ -679,6 +772,9 @@ begin
   if not FRequestDraft then
     Exit;
   FRequestDraft := False;
+  Element('request-geometry-help').setAttribute('hidden', '');
+  FCanvas.setAttribute('aria-label',
+    'Original WAV waveform with review and proposal lanes; tap waveform to seek loaded audio');
   Input('label-id').removeAttribute('readonly');
   Input('label-start').removeAttribute('readonly');
   Input('label-end').removeAttribute('readonly');
@@ -694,6 +790,7 @@ begin
   begin
     Input('label-id').value := '';
     Input('label-type').value := '';
+    UpdateValueHint;
     Input('label-value').value := '';
     Input('label-start').value := '';
     Input('label-end').value := '';
@@ -704,6 +801,7 @@ begin
   FReviewId := '';
   FReviewQuestion := '';
   FReviewType := '';
+  FReviewGeometry := '';
   FReviewConflict := '';
   FReviewCurrentValue := '';
   FReviewCurrentStatus := '';
@@ -715,7 +813,7 @@ end;
 procedure TWorkbench.UpdateRecordAnswerAction;
 var
   LBlocked: Boolean;
-  LPresence: Boolean;
+  LGuided: Boolean;
   LSaved: String;
 begin
   if not SelectedExactRequest then
@@ -730,7 +828,23 @@ begin
     Element('presence-saved-answer').setAttribute('hidden', '');
     Exit;
   end;
-  LPresence := FReviewType = 'presence';
+  LGuided := (FReviewType = 'presence') or (FReviewType = 'activity');
+  if FReviewType = 'activity' then
+  begin
+    Element('guided-answer-heading').textContent := 'What kind of activity do you hear in this exact region?';
+    Element('guided-answer-help').textContent :=
+      'Choose the best description for the entire requested region. Use unknown if the sound remains unclear.';
+    Element('presence-choices').setAttribute('hidden', '');
+    Element('activity-choices').removeAttribute('hidden');
+  end
+  else
+  begin
+    Element('guided-answer-heading').textContent := 'What do you hear in this exact region?';
+    Element('guided-answer-help').textContent :=
+      'A half-second clip may show 0:00 / 0:00 in the player. Use Loop region if useful; choose “I can’t tell” if the sound remains unclear.';
+    Element('activity-choices').setAttribute('hidden', '');
+    Element('presence-choices').removeAttribute('hidden');
+  end;
   LSaved := CurrentPresenceAnswer;
   if LSaved <> '' then
   begin
@@ -740,7 +854,7 @@ begin
   end
   else
     Element('presence-saved-answer').setAttribute('hidden', '');
-  if LPresence then
+  if LGuided then
   begin
     Element('record-answer-area').setAttribute('hidden', '');
     Element('presence-answer-area').removeAttribute('hidden');
@@ -756,12 +870,30 @@ begin
   TJSHTMLButtonElement(Element('presence-audible')).disabled := LBlocked;
   TJSHTMLButtonElement(Element('presence-rest')).disabled := LBlocked;
   TJSHTMLButtonElement(Element('presence-unknown')).disabled := LBlocked;
+  TJSHTMLButtonElement(Element('activity-attack')).disabled := LBlocked;
+  TJSHTMLButtonElement(Element('activity-continuation')).disabled := LBlocked;
+  TJSHTMLButtonElement(Element('activity-release_tail')).disabled := LBlocked;
+  TJSHTMLButtonElement(Element('activity-rest')).disabled := LBlocked;
+  TJSHTMLButtonElement(Element('activity-unknown')).disabled := LBlocked;
+  TJSHTMLButtonElement(Element('activity-noise_only')).disabled := LBlocked;
   Element('presence-audible').setAttribute('aria-pressed',
     LowerCase(BoolToStr(FPresenceValue = 'audible', True)));
   Element('presence-rest').setAttribute('aria-pressed',
     LowerCase(BoolToStr(FPresenceValue = 'rest', True)));
   Element('presence-unknown').setAttribute('aria-pressed',
     LowerCase(BoolToStr(FPresenceValue = 'unknown', True)));
+  Element('activity-attack').setAttribute('aria-pressed',
+    LowerCase(BoolToStr(FPresenceValue = 'attack', True)));
+  Element('activity-continuation').setAttribute('aria-pressed',
+    LowerCase(BoolToStr(FPresenceValue = 'continuation', True)));
+  Element('activity-release_tail').setAttribute('aria-pressed',
+    LowerCase(BoolToStr(FPresenceValue = 'release_tail', True)));
+  Element('activity-rest').setAttribute('aria-pressed',
+    LowerCase(BoolToStr(FPresenceValue = 'rest', True)));
+  Element('activity-unknown').setAttribute('aria-pressed',
+    LowerCase(BoolToStr(FPresenceValue = 'unknown', True)));
+  Element('activity-noise_only').setAttribute('aria-pressed',
+    LowerCase(BoolToStr(FPresenceValue = 'noise_only', True)));
   TJSHTMLButtonElement(Element('presence-save')).disabled :=
     LBlocked or (FPresenceValue = '') or (FPresenceValue = LSaved);
   if LSaved <> '' then
@@ -797,6 +929,12 @@ begin
     Element('record-answer-state').textContent := 'Saved decisions could not load.'
   else if LBlocked then
     Element('record-answer-state').textContent := 'Finish the current review first.'
+  else if FReviewGeometry = 'point' then
+    Element('record-answer-state').textContent :=
+      'Place a one-frame point inside the listening region. Status starts Uncertain; choose Approved to accept it.'
+  else if FReviewGeometry = 'contained' then
+    Element('record-answer-state').textContent :=
+      'Place the answer span inside the listening region. Status starts Uncertain; choose Approved to accept it.'
   else
     Element('record-answer-state').textContent :=
       'Opens a draft for this exact region. Status starts Uncertain; choose Approved to accept the answer, then save.';
@@ -1990,6 +2128,7 @@ begin
   LRow := TJSObject(FCurrentLabels[AIndex]);
   Input('label-id').value := TextField(LRow, 'label_id');
   Input('label-type').value := TextField(LRow, 'type');
+  UpdateValueHint;
   Input('label-value').value := TextField(LRow, 'value');
   Input('label-status').value := TextField(LRow, 'status');
   Input('label-part').value := TextField(LRow, 'part');
@@ -2125,6 +2264,8 @@ begin
   Inc(FStartEpoch);
   LEpoch := FStartEpoch;
   FToken := '';
+  FConnectionLoading := True;
+  UpdateLoading;
   Element('connect-retry').setAttribute('hidden', '');
   Status('Connecting to local service…');
   LTimer := window.setTimeout(
@@ -2132,6 +2273,8 @@ begin
     begin
       if (LEpoch = FStartEpoch) and (FToken = '') then
       begin
+        FConnectionLoading := False;
+        UpdateLoading;
         Status('Connection is taking too long. Check that this device can reach the catalog, then retry.', True);
         Element('connect-retry').removeAttribute('hidden');
       end;
@@ -2163,6 +2306,8 @@ begin
       // Disabled browser storage must not block the workbench.
     end;
     Element('connect-retry').setAttribute('hidden', '');
+    FConnectionLoading := False;
+    UpdateLoading;
     ShowWorkspace;
     Status('Connected to catalog.');
     RefreshLists;
@@ -2172,6 +2317,8 @@ begin
       if LEpoch = FStartEpoch then
       begin
         window.clearTimeout(LTimer);
+        FConnectionLoading := False;
+        UpdateLoading;
         Status('Could not reach the catalog service: ' +
           LError.Message + '. Retry the connection.', True);
         Element('connect-retry').removeAttribute('hidden');
@@ -2181,6 +2328,8 @@ begin
     if LEpoch = FStartEpoch then
     begin
       window.clearTimeout(LTimer);
+      FConnectionLoading := False;
+      UpdateLoading;
       Status('Could not reach the catalog service. Check this device’s connection and retry.', True);
       Element('connect-retry').removeAttribute('hidden');
     end;
@@ -2192,8 +2341,11 @@ var
   LResponse: TJSResponse;
   LData: TJSObject;
 begin
+  Inc(FCatalogLoads);
+  UpdateLoading;
   try
-    LResponse := await(TJSResponse, FetchApi('/api/catalog', 'GET', ''));
+    try
+      LResponse := await(TJSResponse, FetchApi('/api/catalog', 'GET', ''));
     if LResponse.status <> 200 then
     begin
       raise Exception.Create('Catalog HTTP ' + IntToStr(LResponse.status));
@@ -2209,11 +2361,21 @@ begin
     LData := await(TJSObject, LResponse.json());
     RenderInbox(LData);
     Status('Audio catalog loaded. Choose a prepared request or explore a recording.');
-  except
-    on LError: Exception do
+    except
+      on LError: Exception do
+      begin
+        Status('Catalog list failed: ' + LError.Message + '. Retry connection to reload.', True);
+        Element('connect-retry').removeAttribute('hidden');
+      end;
+    else
     begin
-      Status('Catalog list failed: ' + LError.Message, True);
+      Status('Catalog request failed in this browser. Retry connection to reload.', True);
+      Element('connect-retry').removeAttribute('hidden');
     end;
+    end;
+  finally
+    Dec(FCatalogLoads);
+    UpdateLoading;
   end;
 end;
 
@@ -2222,8 +2384,11 @@ var
   LResponse: TJSResponse;
   LData: TJSObject;
 begin
+  Inc(FQueueLoads);
+  UpdateLoading;
   try
-    LResponse := await(TJSResponse,
+    try
+      LResponse := await(TJSResponse,
       FetchApi('/api/review-queue', 'GET', ''));
     if LResponse.status = 404 then
     begin
@@ -2239,15 +2404,29 @@ begin
         IntToStr(LResponse.status));
     LData := await(TJSObject, LResponse.json());
     RenderAssignments(LData);
-  except
-    on LError: Exception do
-    begin
-      FQueueAdvancePending := False;
-      ClearRequest;
-      Element('queue-progress').textContent := 'Queue unavailable';
-      Element('assignment-state').textContent :=
-        'Review requests could not load: ' + LError.Message;
+    except
+      on LError: Exception do
+      begin
+        FQueueAdvancePending := False;
+        ClearRequest;
+        Element('queue-progress').textContent := 'Queue unavailable';
+        Element('assignment-state').textContent :=
+          'Review requests could not load: ' + LError.Message;
+        Element('connect-retry').removeAttribute('hidden');
+      end;
+    else
+      begin
+        FQueueAdvancePending := False;
+        ClearRequest;
+        Element('queue-progress').textContent := 'Queue unavailable';
+        Element('assignment-state').textContent :=
+          'Review requests could not load. Retry connection to reload.';
+        Element('connect-retry').removeAttribute('hidden');
+      end;
     end;
+  finally
+    Dec(FQueueLoads);
+    UpdateLoading;
   end;
 end;
 
@@ -2279,7 +2458,8 @@ end;
 
 procedure TWorkbench.SelectTrack(const AIndex: Integer;
   const AStartFrame, AEndFrame: Int64;
-  const AReviewId, AQuestion, AReviewType, AConflict: String); async;
+  const AReviewId, AQuestion, AReviewType, AConflict,
+  AGeometry: String); async;
 var
   LTrack: TJSObject;
   LKeepTimeline: Boolean;
@@ -2331,6 +2511,7 @@ begin
     FReviewId := AReviewId;
     FReviewQuestion := AQuestion;
     FReviewType := AReviewType;
+    FReviewGeometry := AGeometry;
     FReviewConflict := AConflict;
     FReviewStart := AStartFrame;
     FReviewEnd := AEndFrame;
@@ -2425,6 +2606,8 @@ begin
   try
     Inc(FWindowEpoch);
     Inc(FAudioEpoch);
+    FAudioLoading := False;
+    UpdateLoading;
     FSelectedProposal := -1;
     FProposals := nil;
     TJSHTMLButtonElement(Element('load-cue-button')).disabled := True;
@@ -2589,6 +2772,7 @@ var
   LPath: String;
   LResponse: TJSResponse;
   LBlob: TJSBlob;
+  LTimer: NativeInt;
 begin
   if FSaveInProgress then
   begin
@@ -2609,6 +2793,7 @@ begin
     Status('Select a saved beat proposal before loading its cue.', True);
     Exit;
   end;
+  LTimer := 0;
   try
     LEpoch := FWindowEpoch;
     Inc(FAudioEpoch);
@@ -2634,9 +2819,25 @@ begin
       AudioFeedback('Fetching the original WAV region…');
     end;
     TJSHTMLButtonElement(Element('load-audio-button')).disabled := True;
+    FAudioLoading := True;
+    UpdateLoading;
+    LTimer := window.setTimeout(
+      procedure()
+      begin
+        if (LEpoch = FWindowEpoch) and (LAudioEpoch = FAudioEpoch) then
+        begin
+          Inc(FAudioEpoch);
+          FAudioLoading := False;
+          UpdateLoading;
+          TJSHTMLButtonElement(Element('load-audio-button')).disabled := False;
+          Status('Audio request timed out. Check the connection and press Play original to retry.', True);
+          AudioFeedback('The WAV request took too long. Press Play original to retry.', True);
+        end;
+      end, 15000);
     LResponse := await(TJSResponse, FetchApi(LPath, 'GET', ''));
     if (LEpoch <> FWindowEpoch) or (LAudioEpoch <> FAudioEpoch) then
     begin
+      window.clearTimeout(LTimer);
       Exit;
     end;
     if LResponse.status <> 200 then
@@ -2646,8 +2847,12 @@ begin
     LBlob := await(TJSBlob, TWorkbenchResponse(LResponse).blobRequest());
     if (LEpoch <> FWindowEpoch) or (LAudioEpoch <> FAudioEpoch) then
     begin
+      window.clearTimeout(LTimer);
       Exit;
     end;
+    window.clearTimeout(LTimer);
+    FAudioLoading := False;
+    UpdateLoading;
     if FAudioUrl <> '' then
     begin
       TJSURL.revokeObjectURL(FAudioUrl);
@@ -2674,16 +2879,29 @@ begin
   except
     on LError: Exception do
     begin
-      Status('Audio failed: ' + LError.Message, True);
-      AudioFeedback('Could not load audio: ' + LError.Message, True);
-      TJSHTMLButtonElement(Element('load-audio-button')).disabled := False;
+      if LTimer <> 0 then window.clearTimeout(LTimer);
+      if (LEpoch = FWindowEpoch) and (LAudioEpoch = FAudioEpoch) then
+      begin
+        FAudioLoading := False;
+        UpdateLoading;
+        Status('Audio failed: ' + LError.Message, True);
+        AudioFeedback('Could not load audio: ' + LError.Message +
+          '. Press Play original to retry.', True);
+        TJSHTMLButtonElement(Element('load-audio-button')).disabled := False;
+      end;
     end
     else
     begin
-      Status('The browser could not fetch or prepare this audio region.', True);
-      AudioFeedback('Audio request failed in this browser. The player has no region; ' +
-        'press Play original to retry.', True);
-      TJSHTMLButtonElement(Element('load-audio-button')).disabled := False;
+      if LTimer <> 0 then window.clearTimeout(LTimer);
+      if (LEpoch = FWindowEpoch) and (LAudioEpoch = FAudioEpoch) then
+      begin
+        FAudioLoading := False;
+        UpdateLoading;
+        Status('The browser could not fetch or prepare this audio region.', True);
+        AudioFeedback('Audio request failed in this browser. The player has no region; ' +
+          'press Play original to retry.', True);
+        TJSHTMLButtonElement(Element('load-audio-button')).disabled := False;
+      end;
     end;
   end;
 end;
@@ -2744,13 +2962,13 @@ end;
 
 procedure TWorkbench.ChoosePresence(const AValue: String);
 begin
-  if (FReviewType <> 'presence') or not SelectedExactRequest or
+  if not ((FReviewType = 'presence') or (FReviewType = 'activity')) or
+    not SelectedExactRequest or
     (FReviewConflict <> '') or FHistoryLoading or FHistoryLoadFailed or
     FSaveInProgress or FPresenceChecking or
     ((FPendingChanges <> nil) and (FPendingChanges.length > 0)) then
     Exit;
-  if (AValue <> 'audible') and (AValue <> 'rest') and
-    (AValue <> 'unknown') then
+  if not GuidedValueAllowed(FReviewType, AValue) then
     Exit;
   FPresenceValue := AValue;
   FPresenceFeedback := '';
@@ -2764,21 +2982,23 @@ var
   LRows: TJSArray;
   LRow: TJSObject;
   LChange: TJSObject;
-  LId, LHash, LQuestion, LValue: String;
+  LId, LHash, LQuestion, LType, LGeometry, LValue: String;
   LStart, LEnd: Int64;
   LEpoch, LIndex: Integer;
 begin
-  if (FReviewType <> 'presence') or not SelectedExactRequest or
+  if not ((FReviewType = 'presence') or (FReviewType = 'activity')) or
+    not SelectedExactRequest or
     (FReviewConflict <> '') or FHistoryLoading or FHistoryLoadFailed or
     FSaveInProgress or FPresenceChecking or
     (FPresenceValue = CurrentPresenceAnswer) or
     ((FPendingChanges <> nil) and (FPendingChanges.length > 0)) or
-    ((FPresenceValue <> 'audible') and (FPresenceValue <> 'rest') and
-     (FPresenceValue <> 'unknown')) then
+    not GuidedValueAllowed(FReviewType, FPresenceValue) then
     Exit;
   LId := FReviewId;
   LHash := FSourceHash;
   LQuestion := FReviewQuestion;
+  LType := FReviewType;
+  LGeometry := FReviewGeometry;
   LStart := FReviewStart;
   LEnd := FReviewEnd;
   LValue := FPresenceValue;
@@ -2790,6 +3010,8 @@ begin
     LResponse := await(TJSResponse, FetchApi('/api/review-queue', 'GET', ''));
     if (LEpoch <> FWindowEpoch) or (LId <> FReviewId) or
       (LHash <> FSourceHash) or (LQuestion <> FReviewQuestion) or
+      (LType <> FReviewType) or
+      (LGeometry <> FReviewGeometry) or
       (LStart <> FReviewStart) or (LEnd <> FReviewEnd) or
       (LValue <> FPresenceValue) or not SelectedExactRequest then
       Exit;
@@ -2798,6 +3020,8 @@ begin
     LData := await(TJSObject, LResponse.json());
     if (LEpoch <> FWindowEpoch) or (LId <> FReviewId) or
       (LHash <> FSourceHash) or (LQuestion <> FReviewQuestion) or
+      (LType <> FReviewType) or
+      (LGeometry <> FReviewGeometry) or
       (LStart <> FReviewStart) or (LEnd <> FReviewEnd) or
       (LValue <> FPresenceValue) or not SelectedExactRequest then
       Exit;
@@ -2812,8 +3036,9 @@ begin
     if (LRow = nil) or (TextField(LRow, 'source_sha256') <> LHash) or
       (Trunc(NumberField(LRow, 'start_frame')) <> LStart) or
       (Trunc(NumberField(LRow, 'end_frame')) <> LEnd) or
-      (TextField(LRow, 'label_type') <> 'presence') or
+      (TextField(LRow, 'label_type') <> LType) or
       (TextField(LRow, 'question') <> LQuestion) or
+      (ReviewGeometry(LRow) <> LGeometry) or
       (TextField(LRow, 'answer_conflict') <> '') then
     begin
       ClearRequest;
@@ -2833,7 +3058,7 @@ begin
     FPresenceChecking := False;
     LChange := TJSObject.new;
     LChange['label_id'] := LId;
-    LChange['type'] := 'presence';
+    LChange['type'] := LType;
     LChange['value'] := LValue;
     LChange['status'] := 'approved';
     LChange['start_frame'] := LStart;
@@ -2888,6 +3113,11 @@ var
   LRevision: Integer;
   LGuided: Boolean;
   LRequestDraft: Boolean;
+  LQueueResponse: TJSResponse;
+  LQueueData: TJSObject;
+  LQueueItems: TJSArray;
+  LQueueRow: TJSObject;
+  LQueueIndex: Integer;
 begin
   LGuided := AGuidedChange <> nil;
   if FSaveInProgress then
@@ -2926,9 +3156,10 @@ begin
     LChange := AGuidedChange;
     LStart := Trunc(NumberField(LChange, 'start_frame'));
     LEnd := Trunc(NumberField(LChange, 'end_frame'));
-    if not SelectedExactRequest or (FReviewType <> 'presence') or
+    if not SelectedExactRequest or
+      not ((FReviewType = 'presence') or (FReviewType = 'activity')) or
       (FReviewConflict <> '') or (TextField(LChange, 'label_id') <> FReviewId) or
-      (TextField(LChange, 'type') <> 'presence') or
+      (TextField(LChange, 'type') <> FReviewType) or
       (TextField(LChange, 'status') <> 'approved') or
       (TextField(LChange, 'value') <> FPresenceValue) or
       (LStart <> FReviewStart) or (LEnd <> FReviewEnd) then
@@ -2941,12 +3172,22 @@ begin
     if FRequestDraft and
       (not SelectedExactRequest or
        (Input('label-id').value <> FReviewId) or
-       (LStart <> FReviewStart) or (LEnd <> FReviewEnd) or
        (Input('label-proposal').value <> '') or
        ((FReviewType <> '') and
         (Input('label-type').value <> FReviewType))) then
     begin
       Status('The request draft no longer matches its exact region. Select the request again.', True);
+      Exit;
+    end;
+    if FRequestDraft and not RequestGeometryAllows(FReviewGeometry,
+      FReviewStart, FReviewEnd, LStart, LEnd) then
+    begin
+      if FReviewGeometry = 'point' then
+        Status('Place a one-frame point inside the selected request region before saving.', True)
+      else if FReviewGeometry = 'contained' then
+        Status('Keep the label span entirely inside the selected request region.', True)
+      else
+        Status('The request draft must use its exact selected region.', True);
       Exit;
     end;
     if (Trim(Input('label-id').value) = '') then
@@ -2976,6 +3217,34 @@ begin
   UpdatePendingUi;
   UpdateRecordAnswerAction;
   try
+    if LRequestDraft then
+    begin
+      LQueueResponse := await(TJSResponse,
+        FetchApi('/api/review-queue', 'GET', ''));
+      if LQueueResponse.status <> 200 then
+        raise Exception.Create('Request check HTTP ' +
+          IntToStr(LQueueResponse.status));
+      LQueueData := await(TJSObject, LQueueResponse.json());
+      LQueueItems := TJSArray(LQueueData['items']);
+      LQueueRow := nil;
+      if LQueueItems <> nil then
+        for LQueueIndex := 0 to LQueueItems.length - 1 do
+          if TextField(TJSObject(LQueueItems[LQueueIndex]), 'id') =
+            FReviewId then
+          begin
+            LQueueRow := TJSObject(LQueueItems[LQueueIndex]);
+            Break;
+          end;
+      if (LQueueRow = nil) or not SelectedExactRequest or
+        (TextField(LQueueRow, 'source_sha256') <> FSourceHash) or
+        (Trunc(NumberField(LQueueRow, 'start_frame')) <> FReviewStart) or
+        (Trunc(NumberField(LQueueRow, 'end_frame')) <> FReviewEnd) or
+        (TextField(LQueueRow, 'question') <> FReviewQuestion) or
+        (TextField(LQueueRow, 'label_type') <> FReviewType) or
+        (ReviewGeometry(LQueueRow) <> FReviewGeometry) or
+        (TextField(LQueueRow, 'answer_conflict') <> '') then
+        raise Exception.Create('Prepared request changed; select it again.');
+    end;
     LTransaction := TJSObject.new;
     LTransaction['version'] := 1;
     LTransaction['source_sha256'] := FSourceHash;
@@ -3254,10 +3523,12 @@ var
   LRow: TJSObject;
   LHash: String;
   LId: String;
+  LQuestion, LType, LGeometry: String;
+  LStart, LEnd: Int64;
   LEpoch: Integer;
   LIndex: Integer;
 begin
-  if FReviewType = 'presence' then
+  if (FReviewType = 'presence') or (FReviewType = 'activity') then
     Exit;
   if not SelectedExactRequest or (FReviewConflict <> '') or
     FHistoryLoading or FHistoryLoadFailed or FSaveInProgress or
@@ -3268,18 +3539,29 @@ begin
   end;
   LHash := FSourceHash;
   LId := FReviewId;
+  LQuestion := FReviewQuestion;
+  LType := FReviewType;
+  LGeometry := FReviewGeometry;
+  LStart := FReviewStart;
+  LEnd := FReviewEnd;
   LEpoch := FWindowEpoch;
   try
     LResponse := await(TJSResponse, FetchApi('/api/review-queue', 'GET', ''));
     if (LEpoch <> FWindowEpoch) or not SelectedExactRequest or
-      (LHash <> FSourceHash) or (LId <> FReviewId) then
+      (LHash <> FSourceHash) or (LId <> FReviewId) or
+      (LQuestion <> FReviewQuestion) or (LType <> FReviewType) or
+      (LGeometry <> FReviewGeometry) or
+      (LStart <> FReviewStart) or (LEnd <> FReviewEnd) then
       Exit;
     if LResponse.status <> 200 then
       raise Exception.Create('Could not verify the request (HTTP ' +
         IntToStr(LResponse.status) + ')');
     LData := await(TJSObject, LResponse.json());
     if (LEpoch <> FWindowEpoch) or not SelectedExactRequest or
-      (LHash <> FSourceHash) or (LId <> FReviewId) then
+      (LHash <> FSourceHash) or (LId <> FReviewId) or
+      (LQuestion <> FReviewQuestion) or (LType <> FReviewType) or
+      (LGeometry <> FReviewGeometry) or
+      (LStart <> FReviewStart) or (LEnd <> FReviewEnd) then
       Exit;
     LRows := TJSArray(LData['items']);
     LRow := nil;
@@ -3292,10 +3574,11 @@ begin
       end;
     end;
     if (LRow = nil) or (TextField(LRow, 'source_sha256') <> LHash) or
-      (Trunc(NumberField(LRow, 'start_frame')) <> FReviewStart) or
-      (Trunc(NumberField(LRow, 'end_frame')) <> FReviewEnd) or
-      (TextField(LRow, 'label_type') <> FReviewType) or
-      (TextField(LRow, 'question') <> FReviewQuestion) then
+      (Trunc(NumberField(LRow, 'start_frame')) <> LStart) or
+      (Trunc(NumberField(LRow, 'end_frame')) <> LEnd) or
+      (TextField(LRow, 'label_type') <> LType) or
+      (TextField(LRow, 'question') <> LQuestion) or
+      (ReviewGeometry(LRow) <> LGeometry) then
     begin
       ClearRequest;
       Status('This request changed. Select it again from the queue.', True);
@@ -3313,21 +3596,51 @@ begin
     FDragMode := dmNone;
     Input('label-id').value := FReviewId;
     Input('label-type').value := FReviewType;
+    UpdateValueHint;
     Input('label-value').value := '';
     Input('label-status').value := 'uncertain';
     Input('label-part').value := '';
     Input('label-start').value := IntToStr(FReviewStart);
-    Input('label-end').value := IntToStr(FReviewEnd);
+    if FReviewGeometry = 'point' then
+      Input('label-end').value := IntToStr(FReviewStart + 1)
+    else
+      Input('label-end').value := IntToStr(FReviewEnd);
     Input('label-pitch').value := '';
     Input('label-proposal').value := '';
     Input('label-id').setAttribute('readonly', '');
-    Input('label-start').setAttribute('readonly', '');
-    Input('label-end').setAttribute('readonly', '');
+    if FReviewGeometry = 'exact' then
+    begin
+      Input('label-start').setAttribute('readonly', '');
+      Input('label-end').setAttribute('readonly', '');
+      Element('request-geometry-help').setAttribute('hidden', '');
+    end
+    else
+    begin
+      Input('label-start').removeAttribute('readonly');
+      Input('label-end').removeAttribute('readonly');
+      if FReviewGeometry = 'point' then
+      begin
+        Element('request-geometry-help').textContent :=
+          'Place one frame-wide point inside request frames ' +
+          IntToStr(FReviewStart) + '–' + IntToStr(FReviewEnd) +
+          '. Tap the reviewed waveform lane or edit Start frame; End frame must equal Start + 1.';
+        FCanvas.setAttribute('aria-label',
+          'Original WAV waveform; tap the reviewed lane to place a one-frame point')
+      end
+      else
+        Element('request-geometry-help').textContent :=
+          'Place this label entirely inside request frames ' +
+          IntToStr(FReviewStart) + '–' + IntToStr(FReviewEnd) +
+          '. Edit Start and End frames before saving.';
+      Element('request-geometry-help').removeAttribute('hidden');
+    end;
     if FReviewType <> '' then
       Element('label-type').setAttribute('disabled', '');
     Element('review-editor').setAttribute('open', '');
     TJSHTMLElement(Element('review-editor')).scrollIntoView;
-    if FReviewType = '' then
+    if FReviewGeometry = 'point' then
+      Status('Tap the reviewed waveform lane to place the one-frame point, enter its value, choose Approved, then Save review event. Nothing is saved yet.')
+    else if FReviewType = '' then
       Status('Choose a label type and enter your answer. Status is Uncertain until you choose Approved; then click Save review event.')
     else
       Status('Enter your answer. Status is Uncertain until you choose Approved; then click Save review event. Nothing has been saved yet.');
@@ -3371,7 +3684,7 @@ begin
     Trunc(NumberField(LRow, 'end_frame')),
     TextField(LRow, 'id'), TextField(LRow, 'question'),
     TextField(LRow, 'label_type'),
-    TextField(LRow, 'answer_conflict'));
+    TextField(LRow, 'answer_conflict'), ReviewGeometry(LRow));
   if (FReviewId = TextField(LRow, 'id')) and
     (FSourceHash = TextField(LRow, 'source_sha256')) then
   begin
@@ -3420,6 +3733,7 @@ var
   LIndex: Integer;
   LPass: Integer;
   LHit: Integer;
+  LPointFrame: Int64;
 begin
   Result := False;
   if (FSourceHash = '') or (FWaveBins = nil) or
@@ -3464,6 +3778,24 @@ begin
       True);
     Exit;
   end;
+  if FRequestDraft and (FReviewGeometry = 'point') and
+    SelectedExactRequest then
+  begin
+    LPointFrame := FrameAtX(LX);
+    if LPointFrame >= FReviewEnd then
+      LPointFrame := FReviewEnd - 1;
+    if LPointFrame < FReviewStart then
+      LPointFrame := FReviewStart;
+    Input('label-start').value := IntToStr(LPointFrame);
+    Input('label-end').value := IntToStr(LPointFrame + 1);
+    FSelectedLabel := -1;
+    FDragMode := dmNone;
+    Status('Point placed at frame ' + IntToStr(LPointFrame) +
+      '. Enter its value, choose Approved, then click Save review event.');
+    DrawWaveform;
+    AEvent.preventDefault;
+    Exit;
+  end;
   FDragMode := dmNone;
   LHit := -1;
   if FCurrentLabels <> nil then
@@ -3506,7 +3838,12 @@ begin
       FWindowSpan * FCanvas.width;
     LEndX := (FDragEnd - FWindowStart) /
       FWindowSpan * FCanvas.width;
-    if Abs(LX - LStartX) <= 10 then
+    if LEndX - LStartX <= 20 then
+    begin
+      // A frame-wide marker has overlapping edge handles; drag its position.
+      FDragMode := dmMove;
+    end
+    else if Abs(LX - LStartX) <= 10 then
     begin
       FDragMode := dmStart;
     end
@@ -3532,6 +3869,7 @@ begin
     FDragEnd := FDragStart + 1;
     Input('label-id').value := '';
     Input('label-type').value := 'presence';
+    UpdateValueHint;
     Input('label-value').value := '';
     Input('label-status').value := 'uncertain';
     Input('label-part').value := '';
@@ -3629,6 +3967,7 @@ begin
   end;
   Input('label-id').value := 'review-' + IntToStr(FReviewRevision + 1);
   Input('label-type').value := 'beat';
+  UpdateValueHint;
   Input('label-value').value := 'candidate-grid-point';
   Input('label-status').value := 'uncertain';
   Input('label-start').value := IntToStr(LFrame);
@@ -3815,6 +4154,12 @@ end;
 function TWorkbench.HandlePresenceSave(AEvent: TJSMouseEvent): Boolean;
 begin
   SavePresence;
+  Result := False;
+end;
+
+function TWorkbench.HandleLabelTypeChange(AEvent: TEventListenerEvent): Boolean;
+begin
+  UpdateValueHint;
   Result := False;
 end;
 
@@ -4184,8 +4529,22 @@ begin
     @HandlePresenceChoice;
   TJSHTMLButtonElement(Element('presence-unknown')).onclick :=
     @HandlePresenceChoice;
+  Element('activity-attack').setAttribute('data-value', 'attack');
+  Element('activity-continuation').setAttribute('data-value', 'continuation');
+  Element('activity-release_tail').setAttribute('data-value', 'release_tail');
+  Element('activity-rest').setAttribute('data-value', 'rest');
+  Element('activity-unknown').setAttribute('data-value', 'unknown');
+  Element('activity-noise_only').setAttribute('data-value', 'noise_only');
+  TJSHTMLButtonElement(Element('activity-attack')).onclick := @HandlePresenceChoice;
+  TJSHTMLButtonElement(Element('activity-continuation')).onclick := @HandlePresenceChoice;
+  TJSHTMLButtonElement(Element('activity-release_tail')).onclick := @HandlePresenceChoice;
+  TJSHTMLButtonElement(Element('activity-rest')).onclick := @HandlePresenceChoice;
+  TJSHTMLButtonElement(Element('activity-unknown')).onclick := @HandlePresenceChoice;
+  TJSHTMLButtonElement(Element('activity-noise_only')).onclick := @HandlePresenceChoice;
   TJSHTMLButtonElement(Element('presence-save')).onclick :=
     @HandlePresenceSave;
+  TJSHTMLInputElement(Element('label-type')).onchange := @HandleLabelTypeChange;
+  UpdateValueHint;
   TJSHTMLButtonElement(Element('undo-review-button')).onclick := @HandleUndo;
   TJSHTMLButtonElement(Element('redo-review-button')).onclick := @HandleRedo;
   TJSHTMLButtonElement(Element('clear-history-button')).onclick :=

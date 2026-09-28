@@ -120,6 +120,9 @@ function ValidLabelType(const AType: String): Boolean;
 begin
   Result := (AType = 'note') or (AType = 'beat') or
     (AType = 'downbeat') or (AType = 'presence') or
+    (AType = 'activity') or (AType = 'key') or
+    (AType = 'tempo') or (AType = 'meter') or
+    (AType = 'harmony') or
     (AType = 'part_role') or (AType = 'source_role') or
     (AType = 'phrase') or (AType = 'section') or
     (AType = 'style_preference');
@@ -149,7 +152,7 @@ begin
       RequireQueue((LName = 'id') or (LName = 'source_sha256') or
         (LName = 'start_frame') or (LName = 'end_frame') or
         (LName = 'question') or (LName = 'title') or
-        (LName = 'label_type'),
+        (LName = 'label_type') or (LName = 'answer_geometry'),
         'unsupported item field');
     end;
   end;
@@ -189,6 +192,7 @@ var
   LTitle: String;
   LSourceTitle: String;
   LLabelType: String;
+  LAnswerGeometry: String;
   LConflict: String;
   LCurrent: TJSONObject;
   LStart: Int64;
@@ -260,6 +264,31 @@ begin
             RequireQueue(ValidLabelType(LLabelType),
               'unsupported label_type at item ' + IntToStr(I));
           end;
+          LAnswerGeometry := 'exact';
+          if LInputItem.Find('answer_geometry') <> nil then
+          begin
+            LAnswerGeometry := QueueText(LInputItem, 'answer_geometry', 16);
+            RequireQueue((LAnswerGeometry = 'exact') or
+              (LAnswerGeometry = 'point') or
+              (LAnswerGeometry = 'contained'),
+              'unsupported answer_geometry at item ' + IntToStr(I));
+          end;
+          if LAnswerGeometry = 'point' then
+          begin
+            RequireQueue((LLabelType = 'beat') or
+              (LLabelType = 'downbeat'),
+              'point answers require beat or downbeat at item ' + IntToStr(I));
+          end;
+          if LAnswerGeometry = 'contained' then
+          begin
+            RequireQueue((LLabelType <> '') and
+              (LLabelType <> 'presence') and
+              (LLabelType <> 'activity') and
+              (LLabelType <> 'beat') and
+              (LLabelType <> 'downbeat'),
+              'contained answers require a span label type at item ' +
+              IntToStr(I));
+          end;
           LSourceTitle := '';
           try
             LSource := ReadCatalogTrack(ACatalogRoot, LHash);
@@ -299,6 +328,8 @@ begin
           LOutputItem.Add('question', LQuestion);
           if LLabelType <> '' then
             LOutputItem.Add('label_type', LLabelType);
+          if LInputItem.Find('answer_geometry') <> nil then
+            LOutputItem.Add('answer_geometry', LAnswerGeometry);
           LCompleted := False;
           LConflict := '';
           LCurrent := nil;
@@ -310,8 +341,17 @@ begin
           end;
           if (LConflict = '') and (LCurrent <> nil) then
           try
-            if (LCurrent.Int64s['start_frame'] <> LStart) or
-              (LCurrent.Int64s['end_frame'] <> LEnd) or
+            if ((LAnswerGeometry = 'exact') and
+              ((LCurrent.Int64s['start_frame'] <> LStart) or
+               (LCurrent.Int64s['end_frame'] <> LEnd))) or
+              ((LAnswerGeometry = 'point') and
+              ((LCurrent.Int64s['start_frame'] < LStart) or
+               (LCurrent.Int64s['end_frame'] > LEnd) or
+               (LCurrent.Int64s['end_frame'] <>
+                 LCurrent.Int64s['start_frame'] + 1))) or
+              ((LAnswerGeometry = 'contained') and
+              ((LCurrent.Int64s['start_frame'] < LStart) or
+               (LCurrent.Int64s['end_frame'] > LEnd))) or
               ((LLabelType <> '') and
               (LCurrent.Strings['type'] <> LLabelType)) then
             begin
@@ -322,6 +362,10 @@ begin
               LOutputItem.Add('current_type', LCurrent.Strings['type']);
               LOutputItem.Add('current_value', LCurrent.Strings['value']);
               LOutputItem.Add('current_status', LCurrent.Strings['status']);
+              LOutputItem.Add('current_start_frame',
+                LCurrent.Int64s['start_frame']);
+              LOutputItem.Add('current_end_frame',
+                LCurrent.Int64s['end_frame']);
               LCompleted :=
                 (LCurrent.Strings['status'] = 'approved') or
                 (LCurrent.Strings['status'] = 'rejected');

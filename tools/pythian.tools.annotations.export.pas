@@ -57,6 +57,19 @@ const
   CMaximumLinkedProposalPackets = 4096;
   CHistoryPage = 256;
 
+function IsExplicitUnknown(const ALabel: TJSONObject): Boolean;
+var
+  LType: String;
+  LValue: String;
+begin
+  LType := ALabel.Strings['type'];
+  LValue := ALabel.Strings['value'];
+  Result := ((LType = 'presence') or (LType = 'activity') or
+    (LType = 'key') or (LType = 'tempo') or
+    (LType = 'meter') or (LType = 'harmony')) and
+    ((LValue = 'unknown') or (LValue = 'ambiguous'));
+end;
+
 procedure Need(const ACondition: Boolean; const AMessage: String);
 begin
   if not ACondition then
@@ -318,8 +331,7 @@ begin
         begin
           Continue;
         end;
-        if (LRow.Strings['type'] = 'presence') and
-          (LRow.Strings['value'] = 'unknown') then
+        if IsExplicitUnknown(LRow) then
         begin
           LUnknown.Add(CloneObject(LRow));
         end
@@ -638,8 +650,7 @@ begin
             begin
               Continue;
             end;
-            if (LRow.Strings['type'] = 'presence') and
-              (LRow.Strings['value'] = 'unknown') then
+            if IsExplicitUnknown(LRow) then
             begin
               LExpectedUnknown.Add(CloneObject(LRow));
             end

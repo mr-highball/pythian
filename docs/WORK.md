@@ -13,6 +13,62 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## LAN review flow and backlog labeling support — 2026-09-28
+
+The operator's physical Brave screenshot showed a failed WAV request on the
+first waiting Berg 5–10 s question, following earlier connection and Save
+failures. The live native `/api/audio` route returned the complete 882,044-byte
+five-second WAV from the host, but the phone's failed request bytes were not
+captured. The Pascal/pas2js page now shows a persistent indeterminate loading
+bar during connection, catalog, queue and WAV requests; all paths clear it on
+completion or error. A failed or slow WAV request restores Play original and
+gives a local retry after 15 seconds. Catalog and queue failures show Retry.
+The phone's underlying failure remains unproven rather than being assigned to
+the WAV codec or network without evidence.
+
+A review of open tasks found that ordinary presence, note, beat/downbeat,
+part/role and phrase/section annotation already had source-frame primitives.
+The native journal and workbench now also accept pitch-independent `activity`
+answers, source-local `key`, `tempo`, `meter` and `harmony` values, with explicit
+unknown/ambiguous export separation. A prepared request may retain an exact
+answer region, request a one-frame beat/downbeat point inside a listening
+region, or request a contained span. The queue returns corrected answer frames
+and keeps a moved point or contained span completed while it remains inside
+the request. See [the queue contract](REVIEW-QUEUE.md). The future 120-second
+generated-output rubric and paired listening flow is assigned to the existing
+[NS-5 evaluation packet task](TODO/NS-5_evaluation_02.md); it is a separate
+full-duration review deliverable, not a present source-label claim.
+
+Checked stable FPC 3.2.2 Win32/Win64 builds passed. On a copied catalog, native
+publication, positive/negative value checks, point and contained corrections,
+export, inspection and re-import passed. A representative reviewed packet
+replayed byte-identically at SHA-256
+`daca21c5d22fc78991c676a6a4d3f2acf873b6bf25aaa30640b564425f457a78`;
+the geometry correction packet passed inspect-export. Ticket Guy's isolated
+Brave checks covered 390-pixel point, contained and exact drafts, local
+out-of-region rejection and one-event queue advance. Salty Boi's independent
+390/1280-pixel Brave replay on the frozen UI/native pair connected without an
+access-key prompt, loaded and played the exact Berg original WAV with
+`readyState=4`, five-second duration and advancing clock, saved an exact
+presence answer, placed a one-frame downbeat by waveform tap, corrected it to
+`[450010,450011)`, and saved a contained key span. Invalid point/span edits
+made no review POST. Reload kept all three decisions completed; browser error
+list and horizontal overflow were empty. Native export/re-import preserved the
+corrected point. QA values are isolated fixture data, not musical judgments.
+Evidence is under ignored `build/salty-point-geometry-qa-20260928/` and
+`build/review-flow-20260927/`.
+
+The checked no-key service is live on the private address
+`http://192.168.12.109:18097/` as PID 15176. The served `app.js` SHA-256 is
+`eaff2e4326c900bbc87f8dd4caa8a0f01c47957fc55a8a4820b4849d3e219dd1`.
+Host HTTP returned page/session 200 and the complete first-question WAV; the
+durable queue manifest stayed at SHA-256
+`e55190cd2fa5be39fc5abb7c4e765a3c99eb82ea3cda474c32dbe5ecd8bc4c8b`:
+three waiting, one completed, one live review event. The physical-phone
+playback/usability verdict remains the existing manual item 2, with four
+cross-task items pending out of 20. No task moved to DONE, no musical truth
+was inferred and overall accepted completion remains **70.70**.
+
 ## LAN workbench startup recovery — 2026-09-27
 
 The operator's physical Brave screenshot showed the page shell at
