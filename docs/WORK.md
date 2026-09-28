@@ -13,6 +13,47 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Unknown-tempo evidence and guarded context accepted — 2026-09-28
+
+The stopped quiet-tail source screen and still-missing style references left the
+larger WAV-learning tasks dependent on fresh external evidence. The current
+context profile also required a positive tempo and could not carry an unknown
+source interval. Following the task-flow split rule, the independently useful
+unknown-tempo admission, persistence and generation boundary moved from
+[NS-3_context_02](TODO/NS-3_context_02.md) to
+[NS-3_context_04](TODO/DONE/NS-3_context_04.md), assigning 1 of the original 2
+unearned NS-3 points to each task. This adds no scope or credit by itself.
+
+Ticket Guy delivered a portable Pascal source-frame evidence contract with
+known, unavailable and ambiguous spans, detached ownership, separate observed
+and selected rates, explicit caller-override origin and a bounded SHA-256-
+checked native archive. Root connected a constant selected range to the
+existing WFC context token; an unknown or changing range rejects before
+constructing a timed output context. The override keeps its raw unknown state.
+No BPM is invented, and the known-only v1 profile/archive codecs are unchanged.
+The supported consumer produces a clock/context, not a new rendered WAV or
+automatic tempo estimate.
+
+Independent Salty Boi QA under ignored `build/salty-context04-qa-20260928/`
+passed checked stable FPC 3.2.2 Win32/Win64 core, WFC consumer, archive,
+profile and current context demo checks with zero reported leaks. The
+known–unknown boundary, ambiguous round-trip, malformed input, explicit
+override and missing-clock failures pass. The source-free tempo fixture is
+byte-identical across targets (SHA-256
+`b46b93a0a903db930cc06e91c04f385b32b87b987114b095a351f538af0c5040`).
+Fresh current-format PTC1/PCP1 archives and four demo WAVs match across
+targets; decode/re-encode of those archives is exact. Old September 14 build
+artifacts predate the current decoder and are not a compatibility golden.
+
+All four task criteria passed at that declared scope. Moving context_04 to DONE
+adds **+1 NS-3** (45% to **46%**) and **+0.25 overall** (71.30% to **71.55%**):
+the 68-task catalog now has **37 open / 31 DONE**, with **28.45 overall points
+remaining**. The task split preserves the original context allocation;
+[context_02](TODO/NS-3_context_02.md) still waits for accepted automatic key
+and timing outputs and remains open. Manual review stays **2/20**. Continue
+independent core prerequisites while the two existing review items remain
+available to the operator.
+
 ## Multi-source listening provenance and next core gate — 2026-09-28
 
 The guarded 256.192-second generated WAV uses three ordered training inputs,

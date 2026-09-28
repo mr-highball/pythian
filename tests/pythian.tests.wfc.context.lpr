@@ -32,6 +32,7 @@ uses
   pythian.time,
   pythian.tonal,
   pythian.music.context,
+  pythian.music.tempo.evidence,
   pythian.wfc.context,
   wfc_model,
   wfc_sequence,
@@ -120,6 +121,93 @@ begin
     LCandidate.Free;
     LClock.Free;
   end;
+end;
+
+procedure CheckTempoEvidenceConsumer;
+var
+  LSpans: TTempoEvidenceSpans;
+  LEvidence, LReloaded: TTempoEvidence;
+  LContext: TMusicContext;
+  LClock: TTempoMap;
+  LToken: String;
+  LRejected: Boolean;
+begin
+  SetLength(LSpans, 3);
+  LSpans[0].StartFrame := 0;
+  LSpans[0].EndFrame := 1000;
+  LSpans[0].Availability := teaKnown;
+  LSpans[0].ObservedMicroseconds := 500000;
+  LSpans[0].SelectedMicroseconds := 500000;
+  LSpans[0].SelectionOrigin := tsoAutomatic;
+  LSpans[1].StartFrame := 1000;
+  LSpans[1].EndFrame := 2000;
+  LSpans[1].Availability := teaUnavailable;
+  LSpans[1].SelectionOrigin := tsoNone;
+  LSpans[2].StartFrame := 2000;
+  LSpans[2].EndFrame := 3000;
+  LSpans[2].Availability := teaKnown;
+  LSpans[2].ObservedMicroseconds := 600000;
+  LSpans[2].SelectedMicroseconds := 600000;
+  LSpans[2].SelectionOrigin := tsoAutomatic;
+  LEvidence := TTempoEvidence.Create(
+    'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    3000, 48000, 'measure.raw.v1', 'admit.explicit.v1', LSpans);
+  try
+    LReloaded := DecodeTempoEvidence(EncodeTempoEvidence(LEvidence));
+    try
+      LToken := TempoContextTokenFromEvidence(LReloaded, 0, 1000);
+      Check(LToken = TempoContextToken(500000),
+        'Recorded selected tempo reaches the canonical WFC provider token');
+      LContext := MusicContextFromTokens(
+        [KeyContextToken(MakeKeyContext(-1, dmMajor))], [LToken], 480, 480);
+      try
+        LClock := LContext.CopyClock;
+        try
+          Check((LContext.KeyAtTick(0).Root = -1) and
+            (LClock.FrameAtTick(480, 48000) = 24000),
+            'Known source tempo drives timed output without inventing a key');
+        finally
+          LClock.Free;
+        end;
+      finally
+        LContext.Free;
+      end;
+      LContext := nil;
+      LRejected := False;
+      try
+        LContext := MusicContextFromTokens(
+          [KeyContextToken(MakeKeyContext(-1, dmMajor))],
+          [TempoContextTokenFromEvidence(LReloaded, 1000, 2000)], 480, 480);
+      except
+        on EAudio do LRejected := True;
+      end;
+      Check(LRejected and (LContext = nil),
+        'Unknown source tempo rejects before a timed output context exists');
+      Check((LReloaded.CopySpans[1].Availability = teaUnavailable) and
+        (LReloaded.CopySpans[1].SelectionOrigin = tsoNone),
+        'Rejected generation retains the raw source evidence');
+    finally
+      LReloaded.Free;
+    end;
+  finally
+    LEvidence.Free;
+  end;
+  LSpans[1].SelectionOrigin := tsoCallerOverride;
+  LSpans[1].SelectedMicroseconds := 500000;
+  LEvidence := TTempoEvidence.Create(
+    'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    3000, 48000, 'measure.raw.v1', 'admit.explicit.v1', LSpans);
+  try
+    Check(TempoContextTokenFromEvidence(LEvidence, 0, 2000) =
+      TempoContextToken(500000),
+      'Explicit caller override permits known constant output');
+    Check((LEvidence.CopySpans[1].Availability = teaUnavailable) and
+      (LEvidence.CopySpans[1].SelectionOrigin = tsoCallerOverride),
+      'Caller override does not rewrite an unknown observation');
+  finally
+    LEvidence.Free;
+  end;
+  WriteLn('Source-bound tempo evidence gates the WFC timing consumer');
 end;
 
 procedure Run;
@@ -275,6 +363,7 @@ begin
   try
     CheckFiniteKey;
     CheckFiniteTempo;
+    CheckTempoEvidenceConsumer;
     Run;
     RunHeld;
   except

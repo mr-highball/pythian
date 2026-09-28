@@ -20,8 +20,9 @@ the original clock and input arrays can be released or changed after constructio
 modes. Root -1 with major mode is the canonical unknown value, carrying no
 claim of major tonality. Unknown remains explicit through learning and decoding.
 This contract does not automatically accept the top tonal-fit candidate as a key.
-Other modes, time signatures and uncertain tempo candidates need separate
-admission or extensions; a positive tempo map represents a selected output clock.
+Other modes and time signatures need separate admission or extensions. A
+positive tempo map represents a selected output clock; the source-frame
+tempo-evidence contract below retains uncertain timing before that choice.
 
 `Grid(StartTick, StepTicks, CellCount)` compiles a requested half-open PPQ scope.
 It returns copied key and microseconds-per-quarter values for every complete
@@ -36,6 +37,35 @@ The timeline keeps its original clock. A scoped grid stores the source start
 tick, but is not an archive of source identity or an audio-frame mapping.
 Use the original clock for absolute source timing. A future profile must retain
 the grid's source identity and admission evidence in addition to these values.
+
+## Source-frame tempo evidence and unknown timing
+
+`pythian.music.tempo.evidence.TTempoEvidence` owns a source SHA-256, source
+frame count and rate, measurement/admission policy identities, and detached
+ordered half-open spans covering the whole source. Each span records its raw
+availability (`known`, `unavailable` or `ambiguous`), optional measured tempo,
+optional selected microseconds per quarter and selection origin (`none`,
+`automatic` or `caller override`). Automatic selection requires a known
+observation and its exact measured value. A caller may explicitly override an
+unknown span; the raw status remains unknown in the persisted record. These
+are caller-supplied evidence decisions, not accepted automatic tempo inference.
+
+`EncodeTempoEvidence`/`DecodeTempoEvidence` round-trip a bounded native v1
+binary record with a SHA-256 integrity trailer. It is separate from the
+known-only v1 context-profile archive and does not change its bytes or token
+vocabulary. The 65536-span and 2 MiB limits reject invalid input rather than
+truncating it. `RequireConstantSelectedTempo(StartFrame, EndFrame)` returns a
+positive selected value only when that complete source range has one value;
+an unknown, unselected or changing range rejects. This query does not map
+source frames into PPQ ticks.
+
+The WFC adapter `TempoContextTokenFromEvidence` applies that guard before
+emitting a canonical known tempo token. The existing
+`MusicContextFromTokens` can then build a timed output scope. The token carries
+only the selected rate: consumers retain the evidence record to audit its
+source, policies and override lineage. No default BPM, interpolation over a
+gap or claim of tempo confidence is introduced. Multi-tempo source-range
+rendering and automatic acceptance remain with the joined context task.
 
 ## Actual WFC context learning
 

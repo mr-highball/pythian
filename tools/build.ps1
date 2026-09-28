@@ -134,6 +134,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Musical context compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.context$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Musical context checks failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.tempo.evidence.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Tempo evidence compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.tempo.evidence$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Tempo evidence checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.context.admission.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'WAV context admission compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.context.admission$executableSuffix") (Join-Path $buildRoot 'key-admission-source.wav')

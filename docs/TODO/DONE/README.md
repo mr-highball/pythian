@@ -5,6 +5,7 @@
 
 | Accepted task | Date | North-star credit | Overall credit |
 | --- | --- | ---: | ---: |
+| [NS-3_context_04](NS-3_context_04.md) — Source-bound unknown tempo evidence and guarded context generation | 2026-09-28 | +1 NS-3 | +0.25 |
 | [NS-5_continuity_02](NS-5_continuity_02.md) — Bounded saved-profile acoustic WFC continuation | 2026-09-28 | +1 NS-5 | +0.20 |
 | [NS-5_evaluation_03](NS-5_evaluation_03.md) — Reusable full-output listening packets and worker readback | 2026-09-28 | +2 NS-5 | +0.40 |
 | [NS-3_labeling_01](NS-3_labeling_01.md) — Durable reviewed WAV catalog and Pascal proposal/training path | 2026-09-26 | +2 NS-3 | +0.50 |

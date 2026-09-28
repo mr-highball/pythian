@@ -30,6 +30,7 @@ interface
 
 uses
   pythian.music.context,
+  pythian.music.tempo.evidence,
   pythian.time,
   wfc_model,
   wfc_sequence;
@@ -46,6 +47,13 @@ function KeyContextToken(const AKey: TKeyContext): String;
 function KeyContextFromToken(const AToken: String): TKeyContext;
 function TempoContextToken(const AMicrosecondsPerQuarter: Integer): String;
 function TempoContextFromToken(const AToken: String): Integer;
+
+{ Converts only a supported, constant source-frame selection into a v1 tempo
+  provider token. Unknown or changing spans reject before timed generation.
+  The token carries a tempo value only; retain the evidence object for source,
+  measurement and caller-override provenance. }
+function TempoContextTokenFromEvidence(const AEvidence: TTempoEvidence;
+  const AStartFrame, AEndFrame: Integer): String;
 
 { Explicit realization policy: a single observed value may hold over an output
   scope. No repeated training observations or changed model are constructed.
@@ -194,6 +202,15 @@ begin
   begin
     raise EAudio.Create('Tempo context token is not canonical v1');
   end;
+end;
+
+function TempoContextTokenFromEvidence(const AEvidence: TTempoEvidence;
+  const AStartFrame, AEndFrame: Integer): String;
+begin
+  if AEvidence = nil then
+    raise EAudio.Create('Tempo source evidence is unavailable');
+  Result := TempoContextToken(
+    AEvidence.RequireConstantSelectedTempo(AStartFrame, AEndFrame));
 end;
 
 function HeldContextToken(const AModel: TWfcSequenceModel;
