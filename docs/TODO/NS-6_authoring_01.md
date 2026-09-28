@@ -20,7 +20,8 @@ Credit is earned only when every acceptance criterion and the task-flow
 completion requirements pass.
 
 Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
-[current beat audition](../BEAT-GRIDS.md) · [task-flow listening allocation](../TASKFLOW.MD).
+[current beat audition](../BEAT-GRIDS.md) · [review queue contract](../REVIEW-QUEUE.md) ·
+[task-flow listening allocation](../TASKFLOW.MD).
 
 **Acceptance Criteria:**
 
@@ -58,8 +59,13 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
   credential entry. Bind only to an explicitly selected private LAN address;
   retain same-origin and Host/Origin checks, acquire a session token silently,
   and require it for state-changing requests. Do not put a token in audio URLs.
+  Provide a validated Pascal producer command to publish prepared requests
+  against imported sources without discarding the existing queue on failure.
   Show only curated review requests as operator work, each with its exact source
-  region and question; show an honest empty state when none is assigned. Keep
+  region and question. Derive pending and completed requests from the durable
+  review journal; a committed answer must leave the active queue, advance the
+  operator to the next request, and remain visible to the producer through a
+  Pascal queue report. Show an honest empty state when none is assigned. Keep
   catalog setup and detailed authoring tools available without putting them in
   the basic listen/review path. Make audio load, readiness, playback and errors
   visible beside the player on a narrow screen.
@@ -80,6 +86,22 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Dev Notes:**
 
+- 2026-09-27 the operator identified that a saved answer remained in the
+  prepared-request list with Save disabled, obscuring the workbench's queue
+  purpose. The native Pascal report now derives waiting and completed rows from
+  exact durable review events. A validated `queue-publish` command lets the
+  producer replace the request manifest; `queue` lets it read outcomes. The
+  pas2js page counts both states, opens the first waiting request and advances
+  after a final answer. The request manifest is input and review event JSON is
+  output; no second label store was added. The physical-phone check remains
+  manual review item 2; no authoring task or milestone credit follows from this
+  slice alone. Independent isolated 390-pixel browser QA passed failed-save
+  retention, one-event advancement, uncertain pending, generic approval and
+  all-done. Win32/Win64 native reports matched the API; valid publication
+  succeeded and invalid publication preserved the old manifest. The checked
+  no-key service is live at `192.168.12.109:18097`, reporting three waiting and
+  Berg `rest/approved` as the one completed request. Physical-phone review of
+  this revised queue remains pending.
 - 2026-09-27 a physical Brave Save showed `Request check HTTP 400`, but the
   exact `rest` answer for the Berg opening had already been durably saved as
   review revision 1 at 15:11:19. A later request check failed before another

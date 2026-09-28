@@ -36,6 +36,7 @@ uses
   pythian.tools.annotations.http,
   pythian.tools.annotations.media,
   pythian.tools.annotations.proposal,
+  pythian.tools.annotations.queue,
   pythian.tools.annotations.replay,
   pythian.tools.annotations.review;
 
@@ -139,6 +140,14 @@ begin
     else if (ParamCount = 2) and (ParamStr(1) = 'inbox') then
     begin
       LReport := ReadPreparedLabelInbox(ParamStr(2));
+    end
+    else if (ParamCount = 2) and (ParamStr(1) = 'queue') then
+    begin
+      LReport := ReadReviewQueue(ParamStr(2));
+    end
+    else if (ParamCount = 3) and (ParamStr(1) = 'queue-publish') then
+    begin
+      LReport := PublishReviewQueue(ParamStr(2), ParamStr(3));
     end
     else if (ParamCount = 3) and (ParamStr(1) = 'export') then
     begin
@@ -275,6 +284,8 @@ begin
       WriteLn(StdErr, 'Usage: pythian.label.catalog import INBOX_DIR CATALOG_DIR');
       WriteLn(StdErr, '       pythian.label.catalog list CATALOG_DIR');
       WriteLn(StdErr, '       pythian.label.catalog inbox INBOX_DIR');
+      WriteLn(StdErr, '       pythian.label.catalog queue CATALOG_DIR');
+      WriteLn(StdErr, '       pythian.label.catalog queue-publish CATALOG_DIR REQUESTS.json');
       WriteLn(StdErr, '       pythian.label.catalog export CATALOG_DIR OUTPUT.json');
       WriteLn(StdErr, '       pythian.label.catalog inspect-export PACKET.json');
       WriteLn(StdErr, '       pythian.label.catalog import-reviewed CATALOG_DIR PACKET.json');

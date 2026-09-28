@@ -65,6 +65,10 @@ type
     FAudioCueLoaded: Boolean;
     FTracks: TJSArray;
     FReviewQueue: TJSArray;
+    FQueueInitialSelectionDone: Boolean;
+    FQueueRefreshPending: Boolean;
+    FQueueAdvancePending: Boolean;
+    FQueueAdvanceIndex: Integer;
     FReviewId: String;
     FReviewQuestion: String;
     FReviewType: String;
@@ -127,6 +131,8 @@ type
     procedure RenderInbox(const AData: TJSObject);
     procedure RenderCatalog(const AData: TJSObject);
     procedure RenderAssignments(const AData: TJSObject);
+    procedure SelectAssignment(const AIndex: Integer;
+      const AScroll: Boolean);
     procedure ReviewPrompt(const AFallback: String);
     procedure ClearRequest;
     procedure ReleaseRequestDraft;
@@ -522,14 +528,27 @@ end;
 procedure TWorkbench.RenderAssignments(const AData: TJSObject);
 var
   LRow: TJSObject;
+  LCompleted: TJSArray;
   LIndex: Integer;
+  LTrackIndex: Integer;
+  LRate: Integer;
+  LCompletedCount: Integer;
+  LSelectIndex: Integer;
   LTitle: String;
+  LDetail: String;
   LSelectedFound: Boolean;
 begin
   ClearItems('assignment-list');
   FReviewQueue := TJSArray(AData['items']);
   if FReviewQueue = nil then
     FReviewQueue := TJSArray.new;
+  LCompleted := TJSArray(AData['completed']);
+  LCompletedCount := 0;
+  if LCompleted <> nil then
+    LCompletedCount := LCompleted.length;
+  Element('queue-progress').textContent :=
+    IntToStr(FReviewQueue.length) + ' waiting · ' +
+    IntToStr(LCompletedCount) + ' completed';
   LSelectedFound := False;
   if FReviewId <> '' then
   begin
@@ -559,25 +578,69 @@ begin
   end;
   if FReviewQueue.length = 0 then
   begin
+    FQueueAdvancePending := False;
+    FQueueInitialSelectionDone := True;
     ClearRequest;
-    Element('catalog-browser').setAttribute('open', '');
-    Element('assignment-state').textContent :=
-      'No review requests are ready. Explore the audio if you like; no label is needed.';
+    if (LCompleted <> nil) and (LCompleted.length > 0) then
+    begin
+      Element('assignment-state').textContent :=
+        'All done — every prepared request has a final review.';
+      ReviewPrompt('All prepared requests are complete.');
+    end
+    else
+    begin
+      Element('catalog-browser').setAttribute('open', '');
+      Element('assignment-state').textContent :=
+        'No review requests are ready. Explore the audio if you like; no label is needed.';
+      ReviewPrompt('No prepared review requests are waiting.');
+    end;
     Exit;
   end;
   Element('catalog-browser').removeAttribute('open');
   Element('assignment-state').textContent :=
-    'Choose a request, listen to its exact region, then record the requested judgment.';
+    'Listen to the selected region, choose an answer, then click Save answer.';
   for LIndex := 0 to FReviewQueue.length - 1 do
   begin
     LRow := TJSObject(FReviewQueue[LIndex]);
     LTitle := TextField(LRow, 'title');
     if LTitle = '' then
-      LTitle := TextField(LRow, 'source_title');
-    if LTitle = '' then
-      LTitle := 'Review ' + IntToStr(LIndex + 1);
-    AddItem('assignment-list', LTitle, TextField(LRow, 'question'),
+      LTitle := 'Request ' + IntToStr(LIndex + 1);
+    LDetail := TextField(LRow, 'source_title');
+    LRate := 0;
+    if FTracks <> nil then
+      for LTrackIndex := 0 to FTracks.length - 1 do
+        if TextField(TJSObject(FTracks[LTrackIndex]), 'source_sha256') =
+          TextField(LRow, 'source_sha256') then
+        begin
+          LRate := Trunc(NumberField(TJSObject(FTracks[LTrackIndex]),
+            'sample_rate'));
+          Break;
+        end;
+    if LRate > 0 then
+      LDetail := FormatFloat('0.0', NumberField(LRow, 'start_frame') /
+        LRate) + '–' + FormatFloat('0.0',
+        NumberField(LRow, 'end_frame') / LRate) + ' s · ' + LDetail
+    else
+      LDetail := IntToStr(Trunc(NumberField(LRow, 'start_frame'))) +
+        '–' + IntToStr(Trunc(NumberField(LRow, 'end_frame'))) +
+        ' frames · ' + LDetail;
+    AddItem('assignment-list', LTitle, LDetail,
       'review-request', LIndex, @HandleAssignment);
+  end;
+  LSelectIndex := -1;
+  if FQueueAdvancePending then
+  begin
+    LSelectIndex := FQueueAdvanceIndex;
+    if LSelectIndex >= FReviewQueue.length then
+      LSelectIndex := 0;
+    FQueueAdvancePending := False;
+  end
+  else if not FQueueInitialSelectionDone and not LSelectedFound then
+    LSelectIndex := 0;
+  if LSelectIndex >= 0 then
+  begin
+    FQueueInitialSelectionDone := True;
+    SelectAssignment(LSelectIndex, True);
   end;
   UpdateRecordAnswerAction;
 end;
@@ -2126,7 +2189,9 @@ begin
       FetchApi('/api/review-queue', 'GET', ''));
     if LResponse.status = 404 then
     begin
+      FQueueAdvancePending := False;
       ClearRequest;
+      Element('queue-progress').textContent := 'Queue unavailable';
       Element('assignment-state').textContent :=
         'Review requests are unavailable in this service version.';
       Exit;
@@ -2139,7 +2204,9 @@ begin
   except
     on LError: Exception do
     begin
+      FQueueAdvancePending := False;
       ClearRequest;
+      Element('queue-progress').textContent := 'Queue unavailable';
       Element('assignment-state').textContent :=
         'Review requests could not load: ' + LError.Message;
     end;
@@ -2433,6 +2500,11 @@ begin
       FSaveInProgress := False;
       UpdatePendingUi;
       UpdateRecordAnswerAction;
+      if FQueueRefreshPending then
+      begin
+        FQueueRefreshPending := False;
+        RefreshAssignments;
+      end;
     end;
   except
     on LError: Exception do
@@ -2459,6 +2531,11 @@ begin
       UpdateTrackProposalIdentity;
       UpdateRecordAnswerAction;
       Status('Timeline failed: ' + LError.Message, True);
+      if FQueueRefreshPending then
+      begin
+        FQueueRefreshPending := False;
+        RefreshAssignments;
+      end;
     end;
   end;
 end;
@@ -2703,6 +2780,7 @@ begin
     begin
       ClearRequest;
       Status('This request changed or conflicts with a saved label. Select it again.', True);
+      RefreshAssignments;
       Exit;
     end;
     FReviewCurrentValue := TextField(LRow, 'current_value');
@@ -2771,6 +2849,7 @@ var
   LLabelId: String;
   LRevision: Integer;
   LGuided: Boolean;
+  LRequestDraft: Boolean;
 begin
   LGuided := AGuidedChange <> nil;
   if FSaveInProgress then
@@ -2854,6 +2933,7 @@ begin
     Status('Enter a valid nonzero half-open source-frame interval.', True);
     Exit;
   end;
+  LRequestDraft := FRequestDraft and not LQueued and not LGuided;
   FSaveInProgress := True;
   UpdatePendingUi;
   UpdateRecordAnswerAction;
@@ -2971,6 +3051,25 @@ begin
     else
     begin
       Status('Review event saved. Reloading exact source labels.');
+      if LGuided or LRequestDraft then
+      begin
+        FQueueRefreshPending := True;
+        FQueueAdvancePending := LGuided or
+          (TextField(LChange, 'status') = 'approved') or
+          (TextField(LChange, 'status') = 'rejected');
+        if FQueueAdvancePending then
+        begin
+          FQueueAdvanceIndex := 0;
+          if FReviewQueue <> nil then
+            for LIndex := 0 to FReviewQueue.length - 1 do
+              if TextField(TJSObject(FReviewQueue[LIndex]), 'id') =
+                TextField(LChange, 'label_id') then
+              begin
+                FQueueAdvanceIndex := LIndex;
+                Break;
+              end;
+        end;
+      end;
       if LGuided then
       begin
         FReviewCurrentValue := TextField(LChange, 'value');
@@ -3096,6 +3195,7 @@ end;
 
 function TWorkbench.HandleTrack(AEvent: TJSMouseEvent): Boolean;
 begin
+  FQueueInitialSelectionDone := True;
   SelectTrack(StrToIntDef(
     TJSElement(AEvent.currentTarget).getAttribute('data-index'), -1));
   TJSHTMLElement(Element('track-title')).scrollIntoView;
@@ -3193,20 +3293,18 @@ begin
   end;
 end;
 
-function TWorkbench.HandleAssignment(AEvent: TJSMouseEvent): Boolean;
+procedure TWorkbench.SelectAssignment(const AIndex: Integer;
+  const AScroll: Boolean);
 var
   LIndex: Integer;
   LTrackIndex: Integer;
   LRow: TJSObject;
   LTrack: TJSObject;
 begin
-  Result := False;
-  LIndex := StrToIntDef(
-    TJSElement(AEvent.currentTarget).getAttribute('data-index'), -1);
-  if (FReviewQueue = nil) or (LIndex < 0) or
-    (LIndex >= FReviewQueue.length) then
+  if (FReviewQueue = nil) or (AIndex < 0) or
+    (AIndex >= FReviewQueue.length) then
     Exit;
-  LRow := TJSObject(FReviewQueue[LIndex]);
+  LRow := TJSObject(FReviewQueue[AIndex]);
   LTrackIndex := -1;
   if FTracks <> nil then
     for LIndex := 0 to FTracks.length - 1 do
@@ -3237,7 +3335,17 @@ begin
     FReviewCurrentStatus := TextField(LRow, 'current_status');
     UpdateRecordAnswerAction;
   end;
-  TJSHTMLElement(Element('track-title')).scrollIntoView;
+  if AScroll then
+    TJSHTMLElement(Element('track-title')).scrollIntoView;
+end;
+
+function TWorkbench.HandleAssignment(AEvent: TJSMouseEvent): Boolean;
+begin
+  FQueueInitialSelectionDone := True;
+  SelectAssignment(StrToIntDef(
+    TJSElement(AEvent.currentTarget).getAttribute('data-index'), -1),
+    True);
+  Result := False;
 end;
 
 function TWorkbench.HandleAlignedPeer(AEvent: TJSMouseEvent): Boolean;

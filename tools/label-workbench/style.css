@@ -86,6 +86,11 @@ main { display: grid; grid-template-columns: minmax(17rem, 20rem) minmax(0, 1fr)
 .item.proposal { border-left: 3px solid #f5c27c; }
 .item.reviewed { border-left: 3px solid #8fdcc2; }
 .item.invalid { border-left: 3px solid #f39b91; }
+.queue-progress { margin: 0 0 .45rem; color: #e4faef; font-weight: 700; font-size: .94rem; }
+.assignment-panel .item-list { max-height: 14rem; gap: .35rem; }
+.assignment-panel .review-request { padding: .48rem .65rem; }
+.assignment-panel .review-request strong { font-size: .86rem; }
+.assignment-panel .review-request small { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .toolbar { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; }
 .timeline-controls { margin: 1rem 0 .65rem; }
 .jump-controls { margin-bottom: .65rem; }

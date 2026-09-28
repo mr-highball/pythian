@@ -13,6 +13,51 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Review request feedback loop — 2026-09-27
+
+The operator clarified the workbench's purpose: an agent publishes exact audio
+questions, the operator answers the waiting queue, and the agent reads the
+committed result. The former static list still displayed the approved Berg
+opening answer as a request with Save disabled. The queue now derives waiting
+and completed rows from the durable native review journal. Exact approved or
+rejected decisions move to `completed`; uncertain or withdrawn decisions remain
+waiting, and a conflicting saved ID stays waiting with a repair message.
+The manifest is input only; review event JSON files remain the output.
+
+The Pascal `queue-publish CATALOG_DIR REQUESTS.json` command validates a batch
+against imported sources before replacing the manifest, and `queue CATALOG_DIR`
+reports waiting and completed requests without a separate database. The pas2js
+page shows the counts, opens the first waiting request, presents compact request
+cards and advances after an explicit final answer. The detailed authoring path
+remains available for non-presence questions. See the
+[review queue contract](REVIEW-QUEUE.md).
+
+The durable manifest still has four source-presence questions. A read-only
+Win32/Win64 report places the operator's previously saved Berg `rest/approved`
+answer in completed and the other three in waiting. No new label or source
+judgment was made by this change. The physical-phone workflow check remains
+cross-task manual queue item 2, alongside the three unanswered source-presence
+requests; the 20-item notification threshold has not been reached.
+
+Independent Salty Boi QA used an isolated catalog and Pascal CDP browser path.
+At 390 pixels, the saved answer was absent from waiting, an injected HTTP 500
+retained the user's choice, a confirmed Save wrote one event and advanced, and
+uncertain generic input stayed pending until approved. The empty state and a
+1280-pixel layout had no horizontal overflow. Stable FPC 3.2.2 Win32 and Win64
+queue reports matched the HTTP result. Valid publication succeeded; invalid
+out-of-source requests left the previous manifest's hash unchanged. Evidence is
+under ignored `build/salty-queue-feedback-qa-20260927/`.
+
+The checked Win64 host and matching pas2js assets are live on the same no-key
+LAN endpoint, `192.168.12.109:18097`, at PID 19768. Live API reports three
+waiting and one completed request, with Berg `rest/approved` only in completed.
+The manifest hash remains
+`e55190cd2fa5be39fc5abb7c4e765a3c99eb82ea3cda474c32dbe5ecd8bc4c8b`;
+there is still one Berg review event. Served `app.js` matches the checked
+artifact hash `5440a8c5d3cf4d0eed782957f46021551fa89248cc8b13f70a7e7fea08916272`.
+The operator's physical-phone verdict on the revised queue and audio path is
+still pending; no task or milestone credit was added.
+
 ## Saved presence answer and later request error — 2026-09-27
 
 The operator selected `No instrument throughout (rest)` for the original

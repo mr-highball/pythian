@@ -35,14 +35,19 @@ uses
 type
   EReviewQueue = class(Exception);
 
-{ Prompts only: this file never supplies reviewed labels or training credit. }
+{ Prepared prompts plus committed outcomes; the review journal owns labels. }
 function ReadReviewQueue(const ACatalogRoot: String): TJSONObject;
+function PublishReviewQueue(const ACatalogRoot,
+  AInputPath: String): TJSONObject;
 
 implementation
 
 uses
   Classes,
   jsonparser,
+  {$IFDEF WINDOWS}
+  Windows,
+  {$ENDIF}
   pythian.tools.annotations.catalog,
   pythian.tools.annotations.review;
 
@@ -165,7 +170,8 @@ begin
   end;
 end;
 
-function ReadReviewQueue(const ACatalogRoot: String): TJSONObject;
+function ReadReviewQueueFile(const ACatalogRoot,
+  AQueuePath: String): TJSONObject;
 var
   LPath: String;
   LData: TJSONData;
@@ -174,6 +180,7 @@ var
   LInputItems: TJSONArray;
   LInputItem: TJSONObject;
   LOutputItems: TJSONArray;
+  LCompletedItems: TJSONArray;
   LOutputItem: TJSONObject;
   LIds: TStringList;
   LId: String;
@@ -187,6 +194,7 @@ var
   LStart: Int64;
   LEnd: Int64;
   LRate: Integer;
+  LCompleted: Boolean;
   I: Integer;
 begin
   Result := TJSONObject.Create;
@@ -194,8 +202,9 @@ begin
     Result.Add('version', 1);
     LOutputItems := TJSONArray.Create;
     Result.Add('items', LOutputItems);
-    LPath := IncludeTrailingPathDelimiter(ExpandFileName(ACatalogRoot)) +
-      'review-queue.json';
+    LCompletedItems := TJSONArray.Create;
+    Result.Add('completed', LCompletedItems);
+    LPath := ExpandFileName(AQueuePath);
     if not FileExists(LPath) then
     begin
       Exit;
@@ -290,6 +299,7 @@ begin
           LOutputItem.Add('question', LQuestion);
           if LLabelType <> '' then
             LOutputItem.Add('label_type', LLabelType);
+          LCompleted := False;
           LConflict := '';
           LCurrent := nil;
           try
@@ -302,15 +312,19 @@ begin
           try
             if (LCurrent.Int64s['start_frame'] <> LStart) or
               (LCurrent.Int64s['end_frame'] <> LEnd) or
-              (LLabelType = '') or
-              (LCurrent.Strings['type'] <> LLabelType) then
+              ((LLabelType <> '') and
+              (LCurrent.Strings['type'] <> LLabelType)) then
             begin
               LConflict := 'This request ID already names a different saved label.';
             end
             else
             begin
+              LOutputItem.Add('current_type', LCurrent.Strings['type']);
               LOutputItem.Add('current_value', LCurrent.Strings['value']);
               LOutputItem.Add('current_status', LCurrent.Strings['status']);
+              LCompleted :=
+                (LCurrent.Strings['status'] = 'approved') or
+                (LCurrent.Strings['status'] = 'rejected');
             end;
           finally
             LCurrent.Free;
@@ -326,6 +340,11 @@ begin
             LTitle := QueueText(LInputItem, 'title', CMaximumTitleBytes);
             LOutputItem.Add('title', LTitle);
           end;
+          if LCompleted then
+          begin
+            LCompletedItems.Add(
+              LOutputItems.Extract(LOutputItems.Count - 1));
+          end;
         end;
       finally
         LIds.Free;
@@ -336,6 +355,63 @@ begin
   except
     Result.Free;
     raise;
+  end;
+end;
+
+function ReviewQueuePath(const ACatalogRoot: String): String;
+begin
+  Result := IncludeTrailingPathDelimiter(ExpandFileName(ACatalogRoot)) +
+    'review-queue.json';
+end;
+
+function ReadReviewQueue(const ACatalogRoot: String): TJSONObject;
+begin
+  Result := ReadReviewQueueFile(ACatalogRoot,
+    ReviewQueuePath(ACatalogRoot));
+end;
+
+function PublishReviewQueue(const ACatalogRoot,
+  AInputPath: String): TJSONObject;
+var
+  LTarget: String;
+  LStage: String;
+  LText: String;
+  LGuid: TGUID;
+  LOutput: TFileStream;
+begin
+  LTarget := ReviewQueuePath(ACatalogRoot);
+  RequireQueue(DirectoryExists(ExtractFileDir(LTarget)),
+    'catalog root does not exist');
+  LText := ReadQueueText(ExpandFileName(AInputPath));
+  RequireQueue(CreateGUID(LGuid) = 0,
+    'could not create stage identity');
+  LStage := LTarget + '.' + GUIDToString(LGuid) + '.partial';
+  try
+    LOutput := TFileStream.Create(LStage, fmCreate or fmShareExclusive);
+    try
+      LOutput.WriteBuffer(LText[1], Length(LText));
+    finally
+      LOutput.Free;
+    end;
+    Result := ReadReviewQueueFile(ACatalogRoot, LStage);
+    try
+      {$IFDEF WINDOWS}
+      RequireQueue(MoveFileEx(PChar(LStage), PChar(LTarget),
+        MOVEFILE_REPLACE_EXISTING),
+        'could not publish request manifest');
+      {$ELSE}
+      RequireQueue(RenameFile(LStage, LTarget),
+        'could not publish request manifest');
+      {$ENDIF}
+    except
+      Result.Free;
+      raise;
+    end;
+  finally
+    if FileExists(LStage) then
+    begin
+      SysUtils.DeleteFile(LStage);
+    end;
   end;
 end;
 
