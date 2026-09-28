@@ -12,8 +12,8 @@ keeps the three user-selected styles as development tests, while reusable core
 behavior takes priority when detailed style review is waiting on evidence.
 This catalog covers the remaining declared end state. Task files own acceptance
 criteria and hard prerequisites; this page supplies navigation and accounting.
-No task earns credit merely by being written. Accepted task credit is **15.20**;
-**29.30 overall points remain**. Baseline 55.5 + accepted 15.20 = **70.70 current**.
+No task earns credit merely by being written. Accepted task credit is **15.60**;
+**28.90 overall points remain**. Baseline 55.5 + accepted 15.60 = **71.10 current**.
 
 The [pause retrospective](../WORK.md#pause-retrospective--2026-09-21) tightens
 existing note, presence, mixture and style-reference criteria without adding
@@ -67,9 +67,9 @@ unless also declared under Blockers; required gaps still follow
 | [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 100% | 0 | 0 | 0.00 |
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 45% | 16 | 55 | 13.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 99% | 1 | 1 | 0.15 |
-| [NS-5 — Many-hour styles that generate and blend usefully](../MILESTONES.md#ns-5) | 30% | 17 | 70 | 14.00 |
+| [NS-5 — Many-hour styles that generate and blend usefully](../MILESTONES.md#ns-5) | 32% | 16 | 68 | 13.60 |
 | [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 72% | 4 | 28 | 1.40 |
-| **Total** | **70.70 weighted points** | **38** | Per-goal credits are not summed across goals | **29.30** |
+| **Total** | **71.10 weighted points** | **37** | Per-goal credits are not summed across goals | **28.90** |
 
 NS-1 is already complete under the accepted extraction scope. Preserve its
 invariants in every applicable task; do not recreate completed extraction work.
@@ -121,7 +121,6 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 | [NS-5_continuity_01.md](NS-5_continuity_01.md) — Accept sustained continuity and useful variation | +5 | +1.00 | TODO |
 | [NS-5_structure_01.md](NS-5_structure_01.md) — Learn supported phrase and section organization | +5 | +1.00 | TODO |
 | [NS-5_structure_02.md](NS-5_structure_02.md) — Generate reusable phrases and sections | +5 | +1.00 | TODO |
-| [NS-5_evaluation_03.md](NS-5_evaluation_03.md) — Deliver reusable full-output listening packets | +2 | +0.40 | TODO |
 | [NS-5_evaluation_02.md](NS-5_evaluation_02.md) — Implement the complete style comparison protocol | +2 | +0.40 | TODO |
 | [NS-5_chillwave_01.md](NS-5_chillwave_01.md) — Accept reusable chillwave learning | +6 | +1.20 | TODO |
 | [NS-5_stoner-rock_01.md](NS-5_stoner-rock_01.md) — Accept reusable stoner rock learning | +6 | +1.20 | TODO |
@@ -141,6 +140,7 @@ keep this navigation ledger and MILESTONES.md synchronized on each completion.
 
 | Task | Accepted evidence | Goal credit | Overall credit |
 | --- | --- | ---: | ---: |
+| [NS-5_evaluation_03.md](DONE/NS-5_evaluation_03.md) | Pascal full-output packet, bounded same-origin streaming, browser single/pair/8,123-second seek and deterministic two-target correspondence replay; independent QA | +2 NS-5 | +0.40 |
 | [NS-3_labeling_01.md](DONE/NS-3_labeling_01.md) | Durable native Pascal catalog, real source-bound proposal/review packet, deterministic checked two-target replay and publisher-linked two-group WFC consumer | +2 NS-3 | +0.50 |
 | [NS-4_composition_02.md](DONE/NS-4_composition_02.md) | Bounded 144-bar WFC-selected harmony, authored portable form, exact checked Win32/Win64 WAV replay, Salty Boi QA and full-track coherent/new-composition user verdict | +1 NS-4 | +0.15 |
 | [NS-3_tempo_05.md](DONE/NS-3_tempo_05.md) | Hash-bound authored fast/half/double/phase and loss controls, maintained candidate/clock API, checked two-target replay and QA | +1 NS-3 | +0.25 |
@@ -258,7 +258,7 @@ first accepted genre is predetermined.
 39. [NS-5_continuity_01.md](NS-5_continuity_01.md)
 40. [NS-5_structure_01.md](NS-5_structure_01.md)
 41. [NS-5_structure_02.md](NS-5_structure_02.md)
-42. [NS-5_evaluation_03.md](NS-5_evaluation_03.md), then [NS-5_evaluation_02.md](NS-5_evaluation_02.md)
+42. [NS-5_evaluation_03.md — DONE](DONE/NS-5_evaluation_03.md), then [NS-5_evaluation_02.md](NS-5_evaluation_02.md)
 43. [NS-5_chillwave_01.md](NS-5_chillwave_01.md)
 44. [NS-5_stoner-rock_01.md](NS-5_stoner-rock_01.md)
 45. [NS-5_lofi_01.md](NS-5_lofi_01.md)
@@ -273,7 +273,7 @@ first accepted genre is predetermined.
 
 The 2026-09-28 full-output listening split assigns 2 of the original 4
 unearned NS-5_evaluation_02 points to the reusable
-[NS-5_evaluation_03](NS-5_evaluation_03.md) packet, bounded audio serving and
+[NS-5_evaluation_03 — DONE](DONE/NS-5_evaluation_03.md) packet, bounded audio serving and
 producer-readable response. NS-5_evaluation_02 retains 2 points for actual
 style-specific comparisons and listener-scored verdicts. The pair remains
 4 NS-5 points (+0.80 overall), with no accepted credit from this split.

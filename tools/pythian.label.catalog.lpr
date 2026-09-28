@@ -27,6 +27,9 @@ program pythian_label_catalog;
 {$H+}
 
 uses
+  {$IFDEF UNIX}
+  cthreads,
+  {$ENDIF}
   Classes,
   SysUtils,
   fpjson,
@@ -38,7 +41,8 @@ uses
   pythian.tools.annotations.proposal,
   pythian.tools.annotations.queue,
   pythian.tools.annotations.replay,
-  pythian.tools.annotations.review;
+  pythian.tools.annotations.review,
+  pythian.tools.listen.catalog;
 
 procedure RequireProposalAccess(const ACatalogRoot, AHash: String);
 var
@@ -148,6 +152,61 @@ begin
     else if (ParamCount = 3) and (ParamStr(1) = 'queue-publish') then
     begin
       LReport := PublishReviewQueue(ParamStr(2), ParamStr(3));
+    end
+    else if (ParamCount = 3) and (ParamStr(1) = 'listen-stage') then
+    begin
+      LReport := StageListeningAsset(ParamStr(2), ParamStr(3));
+    end
+    else if (ParamCount = 3) and (ParamStr(1) = 'listen-publish') then
+    begin
+      LReport := PublishListeningQueue(ParamStr(2), ParamStr(3));
+    end
+    else if (ParamCount = 2) and (ParamStr(1) = 'listen-report') then
+    begin
+      LReport := ReadListeningQueue(ParamStr(2));
+    end
+    else if (ParamCount = 4) and (ParamStr(1) = 'listen-resolve') then
+    begin
+      LReport := ResolveListeningAsset(ParamStr(2), ParamStr(3),
+        ParamStr(4));
+    end
+    else if (ParamCount = 3) and (ParamStr(1) = 'listen-export') then
+    begin
+      LReport := ExportListeningPacket(ParamStr(2), ParamStr(3));
+    end
+    else if (ParamCount = 2) and
+      (ParamStr(1) = 'listen-inspect-export') then
+    begin
+      LReport := InspectListeningPacket(ParamStr(2));
+    end
+    else if (ParamCount = 3) and (ParamStr(1) = 'listen-import') then
+    begin
+      LReport := ReplayListeningPacket(ParamStr(2), ParamStr(3));
+    end
+    else if (ParamCount = 3) and (ParamStr(1) = 'listen-review') then
+    begin
+      LInput := TFileStream.Create(ParamStr(3),
+        fmOpenRead or fmShareDenyWrite);
+      try
+        if (LInput.Size <= 0) or (LInput.Size > 32768) then
+        begin
+          raise Exception.Create('Listening transaction exceeds size bound');
+        end;
+        SetLength(LText, Integer(LInput.Size));
+        LInput.ReadBuffer(LText[1], Length(LText));
+      finally
+        LInput.Free;
+      end;
+      LData := GetJSON(LText);
+      try
+        if LData.JSONType <> jtObject then
+        begin
+          raise Exception.Create('Listening transaction must be an object');
+        end;
+        LReport := CommitListeningReview(ParamStr(2), TJSONObject(LData));
+      finally
+        LData.Free;
+      end;
     end
     else if (ParamCount = 3) and (ParamStr(1) = 'export') then
     begin
@@ -286,6 +345,14 @@ begin
       WriteLn(StdErr, '       pythian.label.catalog inbox INBOX_DIR');
       WriteLn(StdErr, '       pythian.label.catalog queue CATALOG_DIR');
       WriteLn(StdErr, '       pythian.label.catalog queue-publish CATALOG_DIR REQUESTS.json');
+      WriteLn(StdErr, '       pythian.label.catalog listen-stage CATALOG_DIR AUDIO.wav');
+      WriteLn(StdErr, '       pythian.label.catalog listen-publish CATALOG_DIR REQUESTS.json');
+      WriteLn(StdErr, '       pythian.label.catalog listen-report CATALOG_DIR');
+      WriteLn(StdErr, '       pythian.label.catalog listen-resolve CATALOG_DIR REQUEST_ID ASSET_ID');
+      WriteLn(StdErr, '       pythian.label.catalog listen-review CATALOG_DIR TRANSACTION.json');
+      WriteLn(StdErr, '       pythian.label.catalog listen-export CATALOG_DIR OUTPUT.json');
+      WriteLn(StdErr, '       pythian.label.catalog listen-inspect-export PACKET.json');
+      WriteLn(StdErr, '       pythian.label.catalog listen-import CATALOG_DIR PACKET.json');
       WriteLn(StdErr, '       pythian.label.catalog export CATALOG_DIR OUTPUT.json');
       WriteLn(StdErr, '       pythian.label.catalog inspect-export PACKET.json');
       WriteLn(StdErr, '       pythian.label.catalog import-reviewed CATALOG_DIR PACKET.json');

@@ -160,7 +160,7 @@ changes. Version-1-only exports retain their original bytes; mixed histories
 use packet version 2 and clean replay checks those bytes.
 
 This source-label queue remains bounded to 30-second source regions. The
-separate [full-output listening packet](TODO/NS-5_evaluation_03.md) owns
+separate [full-output listening packet](TODO/DONE/NS-5_evaluation_03.md) owns
 continuous whole-asset/120-second playback, paired comparisons, timestamped
 comments, finite choices and 0–3 scores. The actual
 [style comparison task](TODO/NS-5_evaluation_02.md) must consume saved reviewer

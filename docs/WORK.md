@@ -13,6 +13,44 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Full-output listening loop accepted — 2026-09-28
+
+The [reusable full-output listening task](TODO/DONE/NS-5_evaluation_03.md)
+is accepted for its engineering scope. Pascal producers can publish hash-bound
+single or paired WAV requests with source/generated ancestry, declared frames,
+finite choices and optional scores. Correspondence requests additionally retain
+distinct recording, edition and cut evidence IDs/hashes supplied by the owning
+task; this packet does not authenticate the external records. A Pascal report
+returns the operator's saved choices, scores, comments, revision and status;
+export and clean-catalog replay are deterministic. Source-local labels remain a
+separate journal and export.
+
+Salty Boi independently rebuilt stable FPC 3.2.2 Win32/Win64 fixtures. Legacy
+listening export remained identical at SHA-256
+`79f465907dbb16b97b5944d133adad360feff9b7088410781206c0259b617142`;
+correspondence export/replay matched at
+`9ccda8a111eab7221cc4ab5a75bdd40c210f4082284bf91d4099ad5bcd3554ab`.
+Both targets rejected missing, malformed, undeclared and duplicate evidence
+without changing the old queue. On an isolated catalog, real desktop and
+390px Brave decoded, played, sought and saved an authored one-second source
+and complete 120-second source/generated pair. The response advanced the
+queue, survived reload, appeared in the native report, and re-exported
+identically after clean import. The browser also decoded RF64 and sought to
+about 8,118 seconds in a complete 8,123-second WAV; a late byte range
+returned 206 and the unanswered request stayed pending. A bounded four-sender
+slow-client probe kept queue reads responsive. See ignored
+`build/listen-final-qa-20260928/` and
+`build/listen-correspondence-qa-20260928/` and the
+[producer guide](FULL-OUTPUT-LISTENING.md).
+
+This closes 2 NS-5 points (+0.40 overall): NS-5 is **32%**, overall completion
+**71.10%**, with **37 open / 29 DONE** tasks and **28.90** overall points
+remaining. [NS-5_evaluation_02](TODO/NS-5_evaluation_02.md) can now consume
+the packet but still owns real style-specific outputs and listener verdicts.
+The [source-label authoring checklist](TODO/NS-6_authoring_01.md) remains open
+until the physical LAN phone playback and Save path is observed; no authored
+QA answer is counted as that operator's response.
+
 ## Structured operator review and independent QA — 2026-09-28
 
 The [NS-6 authoring task](TODO/NS-6_authoring_01.md) now has a ten-point
@@ -75,7 +113,7 @@ both ignored artifacts remain and no further removal was attempted.
 The open-task audit also separated whole-mix and generated-output listening
 from source labels. [NS-5 reference evaluation](TODO/NS-5_evaluation_01.md)
 owns whole-mix preference and edition/cut evidence;
-[reusable listening packet](TODO/NS-5_evaluation_03.md) now owns complete
+[reusable listening packet](TODO/DONE/NS-5_evaluation_03.md) now owns complete
 single/paired audio transport, explicit saved response and producer readback;
 [NS-5 listening evaluation](TODO/NS-5_evaluation_02.md) owns actual 120-second
 and paired style verdicts. [Continuity](TODO/NS-5_continuity_01.md),

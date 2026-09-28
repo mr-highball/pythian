@@ -1,0 +1,79 @@
+<!--
+MIT License
+
+Copyright (c) 2026 mr-highball
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pythian · Full-output listening</title>
+  <link rel="stylesheet" href="listen.css">
+</head>
+<body>
+  <header>
+    <div><p class="eyebrow">PYTHIAN / OPERATOR LISTENING</p><h1>Full-output listening</h1>
+      <p>Listen to the declared asset or pair, then save an explicit response.</p></div>
+    <a href="/">Source workbench</a>
+  </header>
+  <p id="status" class="status" role="status" aria-live="polite">Connecting to local service…</p>
+  <button id="retry" type="button" hidden>Retry connection</button>
+  <main id="workspace" hidden>
+    <aside class="panel">
+      <h2>Listening packets</h2>
+      <p id="progress" class="progress">Loading queue…</p>
+      <button id="reload" type="button">Reload queue</button>
+      <h3>Waiting</h3><div id="pending" class="queue"></div>
+      <h3>Completed</h3><div id="completed" class="queue"></div>
+    </aside>
+    <section class="panel work">
+      <p id="empty">Choose a packet. No answer is saved until you select Save response.</p>
+      <div id="packet" hidden>
+        <p id="task" class="eyebrow"></p>
+        <h2 id="question"></h2>
+        <p id="identity" class="muted"></p>
+        <div id="assets" class="assets"></div>
+        <div id="ranges" class="ranges"></div>
+        <p id="media-gate" class="muted" role="status" aria-live="polite">Play each WAV before answering.</p>
+        <section id="answer" class="answer" hidden>
+          <h3>Your response</h3>
+          <label for="reviewer">Reviewer</label>
+          <input id="reviewer" type="text" maxlength="128" autocomplete="name" placeholder="Your reviewer ID">
+          <div id="choices" class="dimensions"></div>
+          <div id="scores" class="dimensions"></div>
+          <h3>Timestamped comments</h3>
+          <p class="muted">Seek an asset to the moment you want to mark, choose that asset, enter a comment, then add it. Comments must fall inside its declared listening range.</p>
+          <div class="comment-entry"><select id="comment-asset" aria-label="Comment asset"></select>
+            <input id="comment-text" type="text" maxlength="512" placeholder="What happened at this moment?">
+            <button id="add-comment" type="button">Add at playhead</button></div>
+          <div id="comments" class="comments"></div>
+          <div class="actions"><button id="save" type="button" class="primary">Save response</button>
+            <button id="reset" type="button">Reload saved answer</button></div>
+          <p id="feedback" role="status" aria-live="polite"></p>
+        </section>
+      </div>
+    </section>
+  </main>
+  <script src="listen.js"></script>
+  <script>rtl.run();</script>
+</body>
+</html>

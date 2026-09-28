@@ -36,9 +36,13 @@ $outputRoot = Join-Path $repositoryRoot 'build\label-workbench'
 $unitRoot = Join-Path $outputRoot 'units'
 $webRoot = Join-Path $outputRoot 'www'
 $program = Join-Path $sourceRoot 'app.lpr'
+$listenProgram = Join-Path $sourceRoot 'listen.lpr'
 
-foreach ($required in @($program, (Join-Path $sourceRoot 'index.html'),
-    (Join-Path $sourceRoot 'style.css'), $RtlJavascript,
+foreach ($required in @($program, $listenProgram,
+    (Join-Path $sourceRoot 'index.html'),
+    (Join-Path $sourceRoot 'style.css'),
+    (Join-Path $sourceRoot 'listen.html'),
+    (Join-Path $sourceRoot 'listen.css'), $RtlJavascript,
     (Join-Path $RtlSource 'web.pas'))) {
   if (-not (Test-Path -LiteralPath $required -PathType Leaf)) {
     throw "Missing workbench source or matched pas2js RTL: $required"
@@ -58,6 +62,20 @@ if (-not (Test-Path -LiteralPath $scriptPath -PathType Leaf) -or
     (Get-Item -LiteralPath $scriptPath).Length -eq 0) {
   throw "pas2js did not produce $scriptPath"
 }
+$listenScriptPath = Join-Path $webRoot 'listen.js'
+Remove-Item -LiteralPath $listenScriptPath -Force -ErrorAction SilentlyContinue
+$listenCompilerArguments = @(
+  '-B', '-Tbrowser', '-Mdelphi', '-Jc', "-Ji$RtlJavascript",
+  "-Fu$RtlSource", "-FU$unitRoot", "-FE$webRoot", $listenProgram
+)
+& $Compiler @listenCompilerArguments
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+if (-not (Test-Path -LiteralPath $listenScriptPath -PathType Leaf) -or
+    (Get-Item -LiteralPath $listenScriptPath).Length -eq 0) {
+  throw "pas2js did not produce $listenScriptPath"
+}
 Copy-Item -LiteralPath (Join-Path $sourceRoot 'index.html'),
-  (Join-Path $sourceRoot 'style.css') -Destination $webRoot -Force
+  (Join-Path $sourceRoot 'style.css'),
+  (Join-Path $sourceRoot 'listen.html'),
+  (Join-Path $sourceRoot 'listen.css') -Destination $webRoot -Force
 Write-Host "Label workbench staged at $webRoot"

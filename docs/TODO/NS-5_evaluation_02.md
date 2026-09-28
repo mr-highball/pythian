@@ -7,13 +7,13 @@
 Implement the declared style protocol as a reproducible native comparison
 workflow before opening each style's frozen evaluation set. Consume the
 reusable full-output listening packet from
-[NS-5_evaluation_03](NS-5_evaluation_03.md); this task owns the actual style
+[NS-5_evaluation_03](DONE/NS-5_evaluation_03.md); this task owns the actual style
 outputs, matched controls, trait measures and reviewer-grounded verdicts.
 
 North star: NS-5. Outcome owner: STYLE-EVAL.
 Completion credit: 2 goal percentage points (0.40 overall points), after
 assigning 2 of the original 4 unearned NS-5 points to the reusable
-[listening packet](NS-5_evaluation_03.md). The combined allocation remains
+[listening packet](DONE/NS-5_evaluation_03.md). The combined allocation remains
 4 NS-5 points (0.80 overall points), with no duplicate credit.
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
@@ -35,7 +35,7 @@ Starting evidence: [CORPUS-EVALUATION](../CORPUS-EVALUATION.md).
 **Blockers**
 
 - [NS-5_evaluation_01.md](NS-5_evaluation_01.md)
-- [NS-5_evaluation_03.md](NS-5_evaluation_03.md)
+- [NS-5_evaluation_03.md — DONE](DONE/NS-5_evaluation_03.md)
 - [NS-4_integration_01.md](NS-4_integration_01.md)
 - [NS-5_scale_02.md](NS-5_scale_02.md)
 - [NS-5_continuity_01.md](NS-5_continuity_01.md)

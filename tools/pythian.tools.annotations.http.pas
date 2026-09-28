@@ -51,7 +51,10 @@ uses
   pythian.tools.annotations.proposal,
   pythian.tools.annotations.queue,
   pythian.tools.annotations.replay,
-  pythian.tools.annotations.review
+  pythian.tools.annotations.review,
+  pythian.tools.annotations.sourceguard,
+  pythian.tools.listen.catalog,
+  pythian.tools.listen.stream
   {$IFDEF MSWINDOWS}, Windows{$ELSE}, BaseUnix{$ENDIF};
 
 {$IFDEF MSWINDOWS}
@@ -66,7 +69,7 @@ function ApplyKeyFileDacl(APath: PWideChar; AInformation: DWORD;
 
 const
   CMaximumHeaderBytes = 16384;
-  CMaximumBodyBytes = 16384;
+  CMaximumBodyBytes = 32768;
   CMaximumReviewedImportBytes = 67108864;
   CMaximumTargetBytes = 2048;
   CMaximumJsonResponseBytes = 8388608;
@@ -86,6 +89,9 @@ type
     Origin: String;
     ContentType: String;
     Token: String;
+    Cookie: String;
+    Range: String;
+    IfRange: String;
     Body: String;
   end;
 
@@ -101,15 +107,18 @@ function StatusReason(const AStatus: Integer): String;
 begin
   case AStatus of
     200: Result := 'OK';
+    206: Result := 'Partial Content';
     400: Result := 'Bad Request';
     403: Result := 'Forbidden';
     404: Result := 'Not Found';
     405: Result := 'Method Not Allowed';
     408: Result := 'Request Timeout';
     409: Result := 'Conflict';
+    416: Result := 'Range Not Satisfiable';
     413: Result := 'Content Too Large';
     422: Result := 'Unprocessable Content';
     431: Result := 'Request Header Fields Too Large';
+    503: Result := 'Service Unavailable';
   else
     Result := 'Internal Server Error';
   end;
@@ -170,7 +179,8 @@ begin
 end;
 
 procedure SendResponse(const ASocket, AStatus: Integer;
-  const AContentType, ABody: String);
+  const AContentType, ABody: String;
+  const AExtraHeaders: String = '');
 var
   LHeader: String;
 begin
@@ -178,6 +188,7 @@ begin
     StatusReason(AStatus) + #13#10 +
     'Content-Type: ' + AContentType + #13#10 +
     'Content-Length: ' + IntToStr(Length(ABody)) + #13#10 +
+    AExtraHeaders +
     'Connection: close' + #13#10 +
     'Cache-Control: no-store' + #13#10 +
     'X-Content-Type-Options: nosniff' + #13#10 +
@@ -273,6 +284,9 @@ var
   LContentLengthText: String;
   LIndex: Integer;
   LRequestStart: Integer;
+  LRangeSeen: Boolean;
+  LCookieSeen: Boolean;
+  LIfRangeSeen: Boolean;
 begin
   ARequest := Default(TCatalogHttpRequest);
   AContentLength := 0;
@@ -385,6 +399,9 @@ begin
   end;
   LStart := LRequestStart + LBreak + 1;
   LContentLengthText := '';
+  LRangeSeen := False;
+  LCookieSeen := False;
+  LIfRangeSeen := False;
   AFailure := 'malformed or duplicate request header';
   while LStart <= Length(AHeaderText) do
   begin
@@ -450,6 +467,24 @@ begin
         Exit;
       end;
     end
+    else if LName = 'cookie' then
+    begin
+      if LCookieSeen then Exit;
+      LCookieSeen := True;
+      ARequest.Cookie := LValue;
+    end
+    else if LName = 'range' then
+    begin
+      if LRangeSeen then Exit;
+      LRangeSeen := True;
+      ARequest.Range := LValue;
+    end
+    else if LName = 'if-range' then
+    begin
+      if LIfRangeSeen then Exit;
+      LIfRangeSeen := True;
+      ARequest.IfRange := LValue;
+    end
     else if (LName = 'transfer-encoding') or (LName = 'expect') then
     begin
       Exit;
@@ -470,7 +505,9 @@ begin
     AFailure := 'origin does not match host';
     Exit;
   end;
-  if (ARequest.Method <> 'GET') and (ARequest.Method <> 'POST') then
+  if (ARequest.Method <> 'GET') and (ARequest.Method <> 'POST') and
+    not ((ARequest.Method = 'HEAD') and
+      (ARequest.Path = '/api/listen-audio')) then
   begin
     Result := 405;
     AFailure := 'unsupported request method';
@@ -502,7 +539,7 @@ begin
     if not TryStrToInt(LContentLengthText, AContentLength) or
       (AContentLength <> 0) then
     begin
-      AFailure := 'GET content length must be zero';
+      AFailure := 'GET/HEAD content length must be zero';
       Exit;
     end;
   end;
@@ -639,7 +676,7 @@ begin
   Need(Length(AQuery) <= CMaximumTargetBytes, 'Query exceeds bound');
   for LIndex := 1 to Length(AQuery) do
   begin
-    Need(AQuery[LIndex] in ['a'..'z', 'A'..'Z', '0'..'9', '=', '&', '-', '_'],
+    Need(AQuery[LIndex] in ['a'..'z', 'A'..'Z', '0'..'9', '=', '&', '-', '_', '.'],
       'Invalid query character');
   end;
   LStart := 1;
@@ -679,21 +716,60 @@ begin
     'Invalid integer query ' + AName);
 end;
 
-procedure SendJson(const ASocket: Integer; const AJson: TJSONObject);
+function MediaCookieValid(const ACookie, AToken: String): Boolean;
+var
+  LStart: Integer;
+  LEnd: Integer;
+  LPair: String;
+  LEqual: Integer;
+  LFound: Boolean;
+begin
+  Result := False;
+  LFound := False;
+  LStart := 1;
+  while LStart <= Length(ACookie) do
+  begin
+    LEnd := Pos(';', Copy(ACookie, LStart, MaxInt));
+    if LEnd = 0 then
+      LEnd := Length(ACookie) + 1
+    else
+      Inc(LEnd, LStart - 1);
+    LPair := Trim(Copy(ACookie, LStart, LEnd - LStart));
+    LEqual := Pos('=', LPair);
+    if (LEqual > 1) and
+      (Copy(LPair, 1, LEqual - 1) = 'PythianListen') then
+    begin
+      if LFound then Exit(False);
+      LFound := True;
+      Result := Copy(LPair, LEqual + 1, MaxInt) = AToken;
+    end;
+    LStart := LEnd + 1;
+  end;
+  Result := Result and LFound;
+end;
+
+procedure SendJson(const ASocket: Integer; const AJson: TJSONObject;
+  const AExtraHeaders: String = '');
 var
   LText: String;
 begin
   LText := AJson.AsJSON + LineEnding;
   Need(Length(LText) <= CMaximumJsonResponseBytes,
     'JSON response exceeds bound');
-  SendResponse(ASocket, 200, 'application/json; charset=utf-8', LText);
+  SendResponse(ASocket, 200, 'application/json; charset=utf-8', LText,
+    AExtraHeaders);
 end;
 
 function ParseBodyObject(const ABody: String): TJSONObject;
 var
   LData: TJSONData;
 begin
-  LData := GetJSON(ABody);
+  try
+    LData := GetJSON(ABody);
+  except
+    on E: Exception do
+      raise EAudio.Create('Invalid JSON request body');
+  end;
   if LData.JSONType <> jtObject then
   begin
     LData.Free;
@@ -716,6 +792,12 @@ begin
   begin
     Exit('style.css');
   end;
+  if APath = '/listen.html' then
+    Exit('listen.html');
+  if APath = '/listen.js' then
+    Exit('listen.js');
+  if APath = '/listen.css' then
+    Exit('listen.css');
   Result := '';
 end;
 
@@ -731,11 +813,11 @@ begin
   try
     Need((LInput.Size > 0) and (LInput.Size <= CMaximumStaticBytes),
       'Static asset exceeds size bound');
-    if AName = 'app.js' then
+    if (AName = 'app.js') or (AName = 'listen.js') then
     begin
       LContentType := 'text/javascript; charset=utf-8';
     end
-    else if AName = 'style.css' then
+    else if (AName = 'style.css') or (AName = 'listen.css') then
     begin
       LContentType := 'text/css; charset=utf-8';
     end
@@ -752,7 +834,8 @@ end;
 procedure HandleRoute(const ASocket: Integer;
   const ARequest: TCatalogHttpRequest;
   const AInboxRoot, ACatalogRoot, AStaticRoot, AToken,
-    AAccessKey: String; const AOpenLan: Boolean);
+    AAccessKey: String; const AOpenLan: Boolean;
+  out AHandedOff: Boolean);
 var
   LReport: TJSONObject;
   LBody: TJSONObject;
@@ -761,7 +844,12 @@ var
   LHash: String;
   LStaticName: String;
   LText: String;
+  LExtraHeaders: String;
+  LAsset: TJSONObject;
+  LMediaStream: TFileStream;
 begin
+  AHandedOff := False;
+  LExtraHeaders := '';
   LStaticName := '';
   if (AStaticRoot <> '') and (ARequest.Method = 'GET') then
   begin
@@ -772,7 +860,13 @@ begin
     SendStaticAsset(ASocket, AStaticRoot, LStaticName);
     Exit;
   end;
-  if not ((ARequest.Path = '/api/session') and
+  if ARequest.Path = '/api/listen-audio' then
+  begin
+    Need((ARequest.Token = AToken) or
+      MediaCookieValid(ARequest.Cookie, AToken),
+      'Missing or invalid media session');
+  end
+  else if not ((ARequest.Path = '/api/session') and
     (((ARequest.Method = 'POST') and (AAccessKey <> '')) or
     ((ARequest.Method = 'GET') and (AAccessKey = '')))) and
     ((AAccessKey <> '') or AOpenLan) then
@@ -793,6 +887,8 @@ begin
       LReport := TJSONObject.Create;
       LReport.Add('version', 1);
       LReport.Add('token', AToken);
+      LExtraHeaders := 'Set-Cookie: PythianListen=' + AToken +
+        '; Path=/api/listen-audio; HttpOnly; SameSite=Strict'#13#10;
     end
     else if (ARequest.Method = 'POST') and
       (ARequest.Path = '/api/session') and (AAccessKey <> '') then
@@ -804,6 +900,8 @@ begin
       LReport := TJSONObject.Create;
       LReport.Add('version', 1);
       LReport.Add('token', AToken);
+      LExtraHeaders := 'Set-Cookie: PythianListen=' + AToken +
+        '; Path=/api/listen-audio; HttpOnly; SameSite=Strict'#13#10;
     end
     else if (ARequest.Method = 'GET') and
       (ARequest.Path = '/api/catalog') then
@@ -819,6 +917,11 @@ begin
       (ARequest.Path = '/api/review-queue') then
     begin
       LReport := ReadReviewQueue(ACatalogRoot);
+    end
+    else if (ARequest.Method = 'GET') and
+      (ARequest.Path = '/api/listen-queue') then
+    begin
+      LReport := ReadListeningQueue(ACatalogRoot);
     end
     else if (ARequest.Method = 'GET') and
       (ARequest.Path = '/api/proposals') then
@@ -888,6 +991,41 @@ begin
       end;
       Exit;
     end
+    else if ((ARequest.Method = 'GET') or
+      (ARequest.Method = 'HEAD')) and
+      (ARequest.Path = '/api/listen-audio') then
+    begin
+      LAsset := ResolveListeningAsset(ACatalogRoot,
+        QueryValue(ARequest.Query, 'request'),
+        QueryValue(ARequest.Query, 'asset'));
+      try
+        if LAsset.Strings['request_sha256'] <>
+          QueryValue(ARequest.Query, 'packet') then
+        begin
+          SendResponse(ASocket, 409, 'text/plain; charset=utf-8',
+            'Listening request changed'#10);
+          Exit;
+        end;
+        VerifyGuardedSource(LAsset.Strings['path'],
+          LAsset.Strings['sha256'], LAsset.Int64s['bytes']);
+        LMediaStream := TFileStream.Create(LAsset.Strings['path'],
+          fmOpenRead or fmShareDenyWrite);
+        try
+          Need(LMediaStream.Size = LAsset.Int64s['bytes'],
+            'Listening asset changed after verification');
+          AHandedOff := DispatchListeningMedia(ASocket, LMediaStream,
+            ARequest.Method, ARequest.Range, ARequest.IfRange,
+            LAsset.Strings['sha256']);
+          if AHandedOff then
+            LMediaStream := nil;
+        finally
+          LMediaStream.Free;
+        end;
+      finally
+        LAsset.Free;
+      end;
+      Exit;
+    end
     else if (ARequest.Method = 'GET') and
       (ARequest.Path = '/api/cue') then
     begin
@@ -923,6 +1061,12 @@ begin
       LReport := CommitCatalogReview(ACatalogRoot, LBody);
     end
     else if (ARequest.Method = 'POST') and
+      (ARequest.Path = '/api/listen-review') then
+    begin
+      LBody := ParseBodyObject(ARequest.Body);
+      LReport := CommitListeningReview(ACatalogRoot, LBody);
+    end
+    else if (ARequest.Method = 'POST') and
       (ARequest.Path = '/api/propose-beats') then
     begin
       LBody := ParseBodyObject(ARequest.Body);
@@ -943,7 +1087,7 @@ begin
         'Not Found'#10);
       Exit;
     end;
-    SendJson(ASocket, LReport);
+    SendJson(ASocket, LReport, LExtraHeaders);
   finally
     LBody.Free;
     LReport.Free;
@@ -952,12 +1096,14 @@ end;
 
 procedure HandleClient(const ASocket, APort: Integer;
   const AInboxRoot, ACatalogRoot, AStaticRoot, ABindAddress, AToken,
-    AAccessKey: String; const AOpenLan: Boolean);
+    AAccessKey: String; const AOpenLan: Boolean;
+  out AHandedOff: Boolean);
 var
   LRequest: TCatalogHttpRequest;
   LStatus: Integer;
   LFailure: String;
 begin
+  AHandedOff := False;
   SetClientTimeouts(ASocket);
   LStatus := ReadRequest(ASocket, APort, ABindAddress, AToken,
     LRequest, LFailure);
@@ -980,7 +1126,7 @@ begin
   end;
   try
     HandleRoute(ASocket, LRequest, AInboxRoot, ACatalogRoot,
-      AStaticRoot, AToken, AAccessKey, AOpenLan);
+      AStaticRoot, AToken, AAccessKey, AOpenLan, AHandedOff);
   except
     on LError: Exception do
     begin
@@ -989,6 +1135,7 @@ begin
         LStatus := 409;
       end
       else if (Pos('session token', LowerCase(LError.Message)) > 0) or
+        (Pos('media session', LowerCase(LError.Message)) > 0) or
         (Pos('access key', LowerCase(LError.Message)) > 0) then
       begin
         LStatus := 403;
@@ -1000,6 +1147,12 @@ begin
       end
       else if Pos('stored proposal packet does not exist',
         LowerCase(LError.Message)) > 0 then
+      begin
+        LStatus := 404;
+      end
+      else if (Pos('listening request is not published',
+        LowerCase(LError.Message)) > 0) or
+        (Pos('asset is not declared', LowerCase(LError.Message)) > 0) then
       begin
         LStatus := 404;
       end
@@ -1019,8 +1172,15 @@ begin
         WriteLn(StdErr, 'HTTP request failure: ', LError.ClassName,
           ': ', LError.Message);
       end;
-      SendResponse(ASocket, LStatus, 'text/plain; charset=utf-8',
-        StatusReason(LStatus) + #10);
+      if (LRequest.Path = '/api/listen-review') or
+        (LRequest.Path = '/api/listen-audio') then
+        SendResponse(ASocket, LStatus, 'text/plain; charset=utf-8',
+          StatusReason(LStatus) + ': ' +
+          Copy(StringReplace(StringReplace(LError.Message, #13, ' ',
+            [rfReplaceAll]), #10, ' ', [rfReplaceAll]), 1, 240) + #10)
+      else
+        SendResponse(ASocket, LStatus, 'text/plain; charset=utf-8',
+          StatusReason(LStatus) + #10);
     end;
   end;
 end;
@@ -1158,6 +1318,7 @@ var
   LGuid: TGUID;
   LToken: String;
   LAccessKey: String;
+  LHandedOff: Boolean;
 begin
   Need(ValidBindAddress(ABindAddress),
     'Bind address must be loopback or a private LAN IPv4 address');
@@ -1175,7 +1336,10 @@ begin
     Need(DirectoryExists(AStaticRoot) and
       FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'index.html') and
       FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'app.js') and
-      FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'style.css'),
+      FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'style.css') and
+      FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'listen.html') and
+      FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'listen.js') and
+      FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'listen.css'),
       'Configured browser assets are incomplete');
   end;
   Need(CreateGUID(LGuid) = 0, 'Could not create HTTP session token');
@@ -1203,10 +1367,12 @@ begin
     begin
       LClient := fpAccept(LListener, nil, nil);
       Need(LClient >= 0, 'HTTP listener accept failed');
+      LHandedOff := False;
       try
         try
           HandleClient(LClient, APort, AInboxRoot, ACatalogRoot,
-            AStaticRoot, ABindAddress, LToken, LAccessKey, AOpenLan);
+            AStaticRoot, ABindAddress, LToken, LAccessKey, AOpenLan,
+            LHandedOff);
         except
           on LError: Exception do
           begin
@@ -1214,7 +1380,8 @@ begin
           end;
         end;
       finally
-        CloseSocket(LClient);
+        if not LHandedOff then
+          CloseSocket(LClient);
       end;
       Inc(LCount);
     end;
