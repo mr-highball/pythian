@@ -41,6 +41,18 @@ unchanged inspector. A failed or unknown tail remains a real failure; the
 exposed independent MAESTRO result is not retuned. Note identity, boundaries
 and audible endings remain owned by [NS-3_notes_02](TODO/NS-3_notes_02.md).
 
+That source check is now stopped. A frozen Berg/Scriabin post-release screen
+found no candidate meeting its declared gap/decay bounds. A separate checked
+Pascal scan of the listener-reviewed NSynth guitar original found no disjoint
+4,000-frame exact-zero interval; the longest zero run was 36 frames inside
+the tail. The current contrast would in any case return `unknown` against a
+zero-RMS rest for a nonzero tail. These two nonclosing source batches trigger
+the task-flow reassessment: stop searching or moving windows in these sources.
+Criterion 3 now waits for a distinct source with a defensible nonzero
+same-WAV rest and a reviewed quiet audible tail, then a newly frozen unchanged
+observation comparison. No tail score, user label, queue item or credit was
+created by either screen.
+
 ## Repeated Windows Firewall alerts and stable LAN staging — 2026-09-28
 
 The operator showed repeated Windows Defender prompts for

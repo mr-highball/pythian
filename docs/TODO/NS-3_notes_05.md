@@ -106,6 +106,22 @@ from these four MAESTRO contrasts.
 
 **Dev Notes:**
 
+- 2026-09-28 checkpoint after two nonclosing quiet-tail source batches: the
+  frozen Berg/Scriabin post-release screen below found no eligible candidate.
+  A distinct Pascal audit of the accepted original NSynth
+  `guitar_acoustic_008-048-075.wav` verified SHA-256
+  `39d8f9db0976b5b784c84817bb97e73299c05324935b4ac162b8518deba350ef`,
+  mono PCM16 at 16 kHz and 64,000 frames. Its longest exact-zero run is only
+  [63964,64000), 36 frames inside the reviewed audible tail; none of its 69
+  zero runs reaches the predeclared 4,000-frame rest length. Moreover the
+  maintained contrast returns `unknown` when the same-source reference RMS
+  is zero and the candidate is nonzero. This route cannot manufacture a
+  useful reviewed rest or close criterion 3. The private checked scan exited
+  cleanly with zero leaks under ignored `build/presence-nsynth-zero-audit-20260928/`.
+  Stop these two source-search routes. The next required input is a distinct
+  source with an independently supported or reviewed **nonzero** same-WAV
+  rest and a reviewed quiet audible tail; only then freeze a new observation
+  comparison. Do not retune the exposed MAESTRO gate or relabel a zero run.
 - 2026-09-28 one prospectively frozen source-selection screen sought a
   post-key-release quiet-tail listening candidate in the already exposed
   Berg/Scriabin 20-second originals, whose reviewed opening rests could have
