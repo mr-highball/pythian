@@ -133,6 +133,7 @@ canvas { display: block; width: 100%; height: auto; touch-action: none; }
 .presence-answer-area > span { color: #d4e9e3; font-size: .86rem; }
 .field-hint { display: block; margin-top: .3rem; color: #b8c9cf; font-size: .78rem; line-height: 1.35; }
 .request-geometry-help { padding: .65rem .75rem; border-left: 3px solid #9ee0d2; border-radius: 6px; background: #153038; color: #e4f8ef; line-height: 1.4; }
+.request-geometry-help { overflow-wrap: anywhere; }
 .request-geometry-help[hidden] { display: none; }
 .partition, .revision { color: #f3c98d; font-size: .77rem; font-weight: 700; white-space: nowrap; }
 .track-identity { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; margin: .75rem 0; color: #b8c8ce; font-size: .76rem; }

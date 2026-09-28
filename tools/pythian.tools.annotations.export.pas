@@ -47,9 +47,11 @@ uses
   jsonparser,
   pythian.audio,
   pythian.hash,
+  pythian.tools.annotations.sourceguard,
   pythian.tools.annotations.catalog,
   pythian.tools.annotations.proposal,
-  pythian.tools.annotations.review;
+  pythian.tools.annotations.review,
+  pythian.tools.annotations.contract;
 
 const
   CMaximumPacketBytes = 67108864;
@@ -62,12 +64,47 @@ var
   LType: String;
   LValue: String;
 begin
+  if StructuredUnknown(ALabel) then
+    Exit(True);
   LType := ALabel.Strings['type'];
   LValue := ALabel.Strings['value'];
   Result := ((LType = 'presence') or (LType = 'activity') or
     (LType = 'key') or (LType = 'tempo') or
     (LType = 'meter') or (LType = 'harmony')) and
     ((LValue = 'unknown') or (LValue = 'ambiguous'));
+end;
+
+procedure Need(const ACondition: Boolean; const AMessage: String); forward;
+
+procedure ValidateCurrentLabelLinks(const ARow: TJSONObject;
+  const AStates: TStringList);
+var
+  LLinks: TJSONArray;
+  LLink: TJSONObject;
+  LTarget: TJSONObject;
+  LPosition: Integer;
+  LIndex: Integer;
+begin
+  if ARow.Find('request') = nil then
+    Exit;
+  LLinks := ARow.Objects['request'].Objects['answer_spec'].Arrays['links'];
+  for LIndex := 0 to LLinks.Count - 1 do
+  begin
+    LLink := LLinks.Objects[LIndex];
+    if LLink.Strings['kind'] <> 'label' then
+      Continue;
+    LPosition := AStates.IndexOf(LLink.Strings['target_id']);
+    Need(LPosition >= 0,
+      'Selected structured label refers to an absent reviewed label');
+    LTarget := TJSONObject(AStates.Objects[LPosition]);
+    Need((LTarget.Strings['status'] = 'approved') and
+      (LTarget.Strings['type'] = LLink.Strings['target_type']) and
+      (LTarget.Integers['revision'] =
+        LLink.Integers['target_revision']) and
+      (LTarget.Strings['value'] <> 'unknown') and
+      (LTarget.Strings['value'] <> 'ambiguous'),
+      'Selected structured label target is no longer approved');
+  end;
 end;
 
 procedure Need(const ACondition: Boolean; const AMessage: String);
@@ -101,20 +138,11 @@ procedure VerifySource(const ACatalogRoot: String; const ATrack: TJSONObject);
 var
   LHash: String;
   LPath: String;
-  LInput: TFileStream;
 begin
   LHash := ATrack.Strings['source_sha256'];
   LPath := IncludeTrailingPathDelimiter(ExpandFileName(ACatalogRoot)) +
     'sources' + PathDelim + LHash + '.wav';
-  LInput := TFileStream.Create(LPath, fmOpenRead or fmShareDenyWrite);
-  try
-    Need(LInput.Size = ATrack.Int64s['source_bytes'],
-      'Export source byte count differs from catalog');
-    Need(Sha256Stream(LInput, LInput.Size) = LHash,
-      'Export source SHA256 differs from catalog');
-  finally
-    LInput.Free;
-  end;
+  VerifyGuardedSource(LPath, LHash, ATrack.Int64s['source_bytes']);
 end;
 
 procedure CheckGroups(const ATracks: TJSONArray);
@@ -247,8 +275,29 @@ begin
   end;
 end;
 
+procedure RememberStructuredProposals(const ACatalogRoot, AHash: String;
+  const AChange: TJSONObject; const APackets: TStringList;
+  var AApproximateBytes: Int64);
+var
+  LLinks: TJSONArray;
+  LLink: TJSONObject;
+  LIndex: Integer;
+begin
+  if AChange.Find('request') = nil then
+    Exit;
+  LLinks := AChange.Objects['request'].Objects['answer_spec'].Arrays['links'];
+  for LIndex := 0 to LLinks.Count - 1 do
+  begin
+    LLink := LLinks.Objects[LIndex];
+    if LLink.Strings['kind'] = 'proposal' then
+      RememberLinkedProposal(ACatalogRoot, AHash,
+        LLink.Strings['target_id'], APackets, AApproximateBytes);
+  end;
+end;
+
 function ExportOneSource(const ACatalogRoot: String;
-  const ATrack: TJSONObject; var AApproximateBytes: Int64): TJSONObject;
+  const ATrack: TJSONObject; var AApproximateBytes: Int64;
+  var AHasV2: Boolean): TJSONObject;
 var
   LHash: String;
   LPartition: String;
@@ -303,6 +352,11 @@ begin
               (LEvent.Strings['source_group'] =
                 ATrack.Strings['source_group']),
               'Export history differs from source identity or revision');
+            if LEvent.Integers['version'] = 2 then
+            begin
+              AHasV2 := True;
+              ValidateStructuredChange(LEvent.Objects['change'], LHash);
+            end;
             Inc(AApproximateBytes, Length(LEvent.AsJSON));
             Need(AApproximateBytes <= CMaximumPacketBytes,
               'Reviewed export exceeds packet size bound');
@@ -310,6 +364,9 @@ begin
             RememberLinkedProposal(ACatalogRoot, LHash,
               LEvent.Objects['change'].Strings['proposal_id'],
               LProposalPackets, AApproximateBytes);
+            RememberStructuredProposals(ACatalogRoot, LHash,
+              LEvent.Objects['change'], LProposalPackets,
+              AApproximateBytes);
             LHistory.Add(CloneObject(LEvent));
             Inc(LExpectedRevision);
           end;
@@ -337,6 +394,7 @@ begin
         end
         else if LPartition <> 'unassigned' then
         begin
+          ValidateCurrentLabelLinks(LRow, LStates);
           LSelected.Add(CloneObject(LRow));
         end;
       end;
@@ -368,6 +426,7 @@ var
   LRows: TJSONArray;
   LIndex: Integer;
   LApproximateBytes: Int64;
+  LHasV2: Boolean;
 begin
   LCatalog := ListLabelCatalog(ACatalogRoot);
   try
@@ -381,10 +440,16 @@ begin
       LRows := TJSONArray.Create;
       Result.Add('tracks', LRows);
       LApproximateBytes := 0;
+      LHasV2 := False;
       for LIndex := 0 to LTracks.Count - 1 do
       begin
         LRows.Add(ExportOneSource(ACatalogRoot,
-          LTracks.Objects[LIndex], LApproximateBytes));
+          LTracks.Objects[LIndex], LApproximateBytes, LHasV2));
+      end;
+      if LHasV2 then
+      begin
+        Result.Integers['version'] := 2;
+        Result.Strings['policy'] := 'pythian.reviewed-catalog.v2';
       end;
       Result.Add('track_count', LRows.Count);
       Need(Length(Result.AsJSON) <= CMaximumPacketBytes,
@@ -442,8 +507,8 @@ begin
     end;
     Result := TJSONObject.Create;
     try
-      Result.Add('version', 1);
-      Result.Add('policy', 'pythian.reviewed-catalog.v1');
+      Result.Add('version', LPacket.Integers['version']);
+      Result.Add('policy', LPacket.Strings['policy']);
       Result.Add('source_audio_included', False);
       Result.Add('track_count', LPacket.Integers['track_count']);
       Result.Add('packet_bytes', Length(LText));
@@ -479,6 +544,9 @@ var
   LRow: TJSONObject;
   LProposalPacket: TJSONObject;
   LProposalRows: TJSONArray;
+  LSpec: TJSONObject;
+  LLinks: TJSONArray;
+  LLink: TJSONObject;
   LHash: String;
   LLastHash: String;
   LPartition: String;
@@ -491,11 +559,17 @@ var
   LStateIndex: Integer;
   LProposalIndex: Integer;
   LCandidatesIndex: Integer;
+  LLinkIndex: Integer;
+  LPacketVersion: Integer;
+  LHasV2: Boolean;
 begin
-  Need((APacket.Integers['version'] = 1) and
-    (APacket.Strings['policy'] = 'pythian.reviewed-catalog.v1') and
+  LPacketVersion := APacket.Integers['version'];
+  Need((LPacketVersion in [1, 2]) and
+    (APacket.Strings['policy'] =
+      'pythian.reviewed-catalog.v' + IntToStr(LPacketVersion)) and
     (APacket.Booleans['source_audio_included'] = False),
     'Unsupported reviewed catalog packet');
+  LHasV2 := False;
   Need((APacket.Find('tracks') <> nil) and
     (APacket.Find('tracks').JSONType = jtArray),
     'Reviewed catalog packet requires tracks');
@@ -569,7 +643,7 @@ begin
           Need(LHistory[LEventIndex].JSONType = jtObject,
             'Reviewed catalog history event must be an object');
           LEvent := LHistory.Objects[LEventIndex];
-          Need((LEvent.Integers['version'] = 1) and
+          Need((LEvent.Integers['version'] in [1, 2]) and
             (LEvent.Integers['revision'] = LEventIndex + 1) and
             (LEvent.Strings['source_sha256'] = LHash) and
             (LEvent.Integers['sample_rate'] =
@@ -586,6 +660,31 @@ begin
             (LEvent.Find('change').JSONType = jtObject),
             'Reviewed catalog event requires change');
           LChange := LEvent.Objects['change'];
+          if LEvent.Integers['version'] = 2 then
+          begin
+            LHasV2 := True;
+            ValidateStructuredChange(LChange, LHash);
+            if Copy(LChange.Strings['type'], 1, 4) = 'ext.' then
+              Need(LChange.Int64s['extension_version'] = 2,
+                'Structured event extension version differs');
+            LSpec := LChange.Objects['request'].Objects['answer_spec'];
+            LLinks := LSpec.Arrays['links'];
+            for LLinkIndex := 0 to LLinks.Count - 1 do
+            begin
+              LLink := LLinks.Objects[LLinkIndex];
+              if LLink.Strings['kind'] = 'proposal' then
+              begin
+                LProposalId := LLink.Strings['target_id'];
+                LDash := LastDelimiter('-', LProposalId);
+                Need(LDash > 5, 'Invalid structured proposal link');
+                LReferencedIds.Add(LProposalId);
+                LReferencedBases.Add(Copy(LProposalId, 1, LDash - 1));
+              end;
+            end;
+          end
+          else
+            Need(LChange.Find('request') = nil,
+              'Version 1 event cannot carry structured request');
           LProposalId := LChange.Strings['proposal_id'];
           if LProposalId <> '' then
           begin
@@ -656,6 +755,7 @@ begin
             end
             else if LPartition <> 'unassigned' then
             begin
+              ValidateCurrentLabelLinks(LRow, LStates);
               LExpectedSelected.Add(CloneObject(LRow));
             end;
           end;
@@ -680,6 +780,8 @@ begin
   finally
     LSources.Free;
   end;
+  Need((LPacketVersion = 2) = LHasV2,
+    'Reviewed packet version differs from event history');
 end;
 
 function ReadReviewedCatalogPacket(const APath: String): TJSONObject;
@@ -756,8 +858,8 @@ begin
     LInput := TFileStream.Create(APath, fmOpenRead or fmShareDenyWrite);
     try
       Result := TJSONObject.Create;
-      Result.Add('version', 1);
-      Result.Add('policy', 'pythian.reviewed-catalog.v1');
+      Result.Add('version', LPacket.Integers['version']);
+      Result.Add('policy', LPacket.Strings['policy']);
       Result.Add('packet_sha256', Sha256Stream(LInput, LInput.Size));
       Result.Add('track_count', LTracks.Count);
       Result.Add('selected_count', LSelected);

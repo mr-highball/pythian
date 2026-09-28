@@ -45,7 +45,7 @@ The detailed editor also accepts these source-bound types and values:
 | Type | Value | Geometry |
 | --- | --- | --- |
 | `beat`, `downbeat` | Task-declared marker value | One source frame, `[frame, frame + 1)`, is the precise marker convention. |
-| `key` | `C:major`, `F#:minor`, another declared root:mode, `unknown`, or `ambiguous` | Local tonal span; preserve gaps as separate unknown spans. |
+| `key` | `C:major`, `F#:minor`, another declared root:mode, `no_key`, `unknown`, or `ambiguous` | Local tonal span; `no_key` is a positive reviewed non-tonal verdict, while `unknown` means the key could not be judged. Preserve gaps as separate unknown spans. |
 | `tempo` | Decimal BPM such as `87.5`, `unknown`, or `ambiguous` | Clock segment; use consecutive segments for changes. |
 | `meter` | Numerator/denominator such as `4/4` or `7/8`, `unknown`, or `ambiguous` | Meter segment; use `downbeat` for a measured anchor. |
 | `harmony` | `G:dominant7`, another declared root:quality, `unknown`, or `ambiguous` | Chord span or change boundary. |
@@ -89,3 +89,78 @@ service does not send a message to an idle agent when an operator saves an
 answer. The current manifest may be replaced for a new batch after its
 outcomes are accounted for; older review events remain in the catalog. No
 database or separate completion cache is required.
+
+## Task-declared structured answers
+
+New tasks that need a finite answer vocabulary or a relationship use a
+`version: 2` queue manifest. Existing version-1 manifests and review events
+remain readable and retain their old packet bytes. A version-2 manifest may
+also carry older simple requests; only an item with `answer_spec` is a
+structured request. Its `label_type` and `answer_geometry` are explicit.
+
+```json
+{
+  "version": 2,
+  "items": [{
+    "id": "local-key-001",
+    "source_sha256": "<imported-source-hash>",
+    "start_frame": 0,
+    "end_frame": 48000,
+    "question": "Which declared local key best fits this exact span?",
+    "label_type": "key",
+    "answer_geometry": "exact",
+    "answer_spec": {
+      "facet": "key",
+      "vocabulary": ["C:major", "A:minor", "unknown"],
+      "links": [],
+      "proposal_id": ""
+    }
+  }]
+}
+```
+
+The Pascal publisher validates the entire batch before replacing the old
+manifest. Every structured item declares 2–32 unique values, including
+`unknown`; built-in label values still obey their type's syntax. A note may
+declare `pitch_midi_values` (0–127). A `part_vocabulary` limits the `part`
+field; without it, the only permitted part is empty. The existing exact,
+one-frame point and contained-span geometry rules still apply. The server
+returns a canonical `request_sha256` and `answer_spec` with each pending or
+completed item, so a browser can show only the task's offered values.
+
+`ext.groove_trait` declares accent, swing, syncopation, microtiming,
+articulation, role or velocity relationships. `ext.motif_relation` declares
+repetition, variation or section transitions. `ext.pulse_evidence` declares
+omission, distractor, clock gap or competing phase/rate evidence. Each uses
+`extension_version: 2` in its saved change. A fixed `links` entry names its
+role, same source hash, kind (`label` or `proposal`) and target ID. Label
+links also pin target type and revision. Relationship and phase/rate facets
+require their specified links. A `proposal_id` binds a request to the exact
+candidate it asks about; the producer cannot turn a generic rejection into
+an unbound proposal verdict. Cross-source relationships are not admitted
+without an independently verified shared clock and group policy. Before an
+evaluation source has its first independent review, publication rejects a
+request that names or links to a Pythian proposal, so the question itself
+cannot reveal the blind suggestion.
+
+A structured Save sends a version-2 transaction with `request_id` and
+`request_sha256` as well as the normal source hash, expected revision,
+reviewer and change. The native reviewer re-reads the published request,
+checks the complete source/question/spec hash, answer vocabulary, geometry,
+part/pitch constraints and fixed links, then copies the canonical request into
+the immutable event. A changed request, withdrawn link target or stale
+revision cannot silently become selected truth. Once a label has a structured
+request, a version-1 edit cannot replace it or erase its request ancestry; a
+correction needs the same published request and its current hash. The worker's
+Pascal `queue` report gives the exact current frames, value, status and request
+hash; reviewed export keeps approved `unknown`/`ambiguous` values outside
+`selected_labels`
+and rejects a selected relationship whose pinned target later disappears or
+changes. Version-1-only exports retain their original bytes; mixed histories
+use packet version 2 and clean replay checks those bytes.
+
+This source-label queue remains bounded to 30-second source regions. The
+separate [style listening packet](TODO/NS-5_evaluation_02.md) owns continuous
+120-second generated outputs, paired comparisons, timestamped comments and
+0–3 trait scores; its saved reviewer response must feed the same producer
+before a full-duration listening case is counted.

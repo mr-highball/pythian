@@ -13,6 +13,75 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Structured operator review and independent QA — 2026-09-28
+
+The [NS-6 authoring task](TODO/NS-6_authoring_01.md) now has a ten-point
+operator/worker acceptance checklist. Its source-review extension uses a
+Pascal-owned version-2 request contract with finite values, exact or editable
+geometry, fixed same-source links and optional proposal binding. The native
+reviewer validates the current request hash on Save and copies it into the
+immutable event. The worker's `queue` report and reviewed export expose the
+selected frames/value/status without relying on a browser screenshot. Older
+version-1-only packet bytes remain unchanged. A positive reviewed `key:no_key`
+is selected separately from an unjudged `key:unknown`.
+
+Salty Boi independently rebuilt stable FPC 3.2.2 Win32/Win64 native contract
+fixtures and passed v1/v2 replay plus negative value, link, pitch, part,
+proposal, geometry, stale-revision and blind-publication checks. A copied
+two-group catalog accepted all 28 declared schema families/facets; invalid
+queue replacements left the old manifest intact. The 390px browser saved
+`no_key` and `unknown` with two POSTs, then the Pascal export kept them in
+selected and unknown arrays respectively. Separate browser checks decoded
+original 0.5 s and 5 s WAV regions and a 10 s Pythian cue with advancing
+clocks. Evidence remains under ignored `build/salty-ns6-final-20260928/`.
+
+For a copied 1,559,617,614-byte WAV, the browser played a five-second region
+near 8,118 s, displayed `Saving answer…` with Save disabled while the first
+source hash was checked, then made one POST and advanced the queue from 1/0
+to 0/1. The event retained exact frames `389664384..389904384`; the observed
+first Save took about 30 s on this copy, which may have warmed the OS cache.
+Windows source verification now holds a read handle that denies writes and
+checks file identity/size/mtime on later Saves; a cold same-size tamper test
+was rejected on both targets. An uninterrupted two-source QA workflow then
+passed in an isolated catalog outside `build/` at
+`D:\Docs\GitHub\pythian-qa-salty-final-20260928\flow5`. The browser loaded
+original and cue, corrected a bound Pascal beat proposal from frame 6213 to
+8784, saved a second source's explicit `unknown`, and advanced to 0 waiting /
+2 completed with one POST per answer. Reload and a fresh browser after native
+service restart retained the completed queue and no-key entry. Native
+queue/history matched; selected and unknown exports were separate, and clean
+import/re-export was byte-identical at SHA-256
+`9abbd75332b12793f563258250fff3c9aaeec72cbf216412b88cdc8adb0ad23f`.
+The physical LAN phone playback/Save path remains the only checklist gate
+requiring external operator evidence. No QA answer was written to the live
+operator catalog.
+
+The independently checked Win64 service and pas2js assets were deployed to
+the existing no-key LAN path at `http://192.168.12.109:18097/` (PID 6796).
+Executable SHA-256 is
+`6341f64a1db454422076c3a2ea51f171334d62d6fa6072c86f0af847343439fb`;
+`app.js` SHA-256 is
+`66478b30250ffb63a586d91842568b2a97417e3c068c86201422b82397ec061c`.
+Read-only live page/session/queue/audio probes returned HTTP 200, including
+the exact 882,044-byte Berg 5-second WAV. The durable queue SHA-256 stayed
+`e55190cd2fa5be39fc5abb7c4e765a3c99eb82ea3cda474c32dbe5ecd8bc4c8b`
+with one existing review event. No live Save was made by QA. The first copy
+attempt hit a transient Windows executable lock immediately after stopping
+the prior service; a later copy succeeded after the process exited. An
+attempt to remove the isolated 1.56-GB QA WAV copy and a small read-only
+probe WAV was rejected by automatic approval review as `blocked by policy`;
+both ignored artifacts remain and no further removal was attempted.
+
+The open-task audit also separated whole-mix and generated-output listening
+from source labels. [NS-5 reference evaluation](TODO/NS-5_evaluation_01.md)
+owns whole-mix preference and edition/cut evidence;
+[NS-5 listening evaluation](TODO/NS-5_evaluation_02.md) owns 120-second and
+paired output responses. [Continuity](TODO/NS-5_continuity_01.md),
+[timbre](TODO/NS-3_timbre_02.md) and
+[synthesis integration](TODO/NS-4_integration_01.md) retain their own
+task-bound listening decisions. A 30-second source review does not satisfy
+any of those full-output verdicts.
+
 ## Physical-phone Save failure, parser repair and authoring gate — 2026-09-28
 
 The later phone screenshot showed the Berg 5–10 s original WAV at `0:05 / 0:05`,

@@ -85,6 +85,7 @@ SOFTWARE.
             <button id="record-answer-button" type="button" class="primary">Record answer</button>
             <span id="record-answer-state" role="status" aria-live="polite"></span>
           </div>
+          <p id="structured-request-links" class="request-geometry-help" hidden></p>
           <div id="presence-answer-area" class="presence-answer-area" hidden>
             <strong id="guided-answer-heading">What do you hear in this exact region?</strong>
             <p id="guided-answer-help" class="panel-note">A half-second clip may show 0:00 / 0:00 in the player. Use Loop region if useful; choose “I can’t tell” if the sound remains unclear.</p>
@@ -102,6 +103,8 @@ SOFTWARE.
               <button id="activity-unknown" type="button" aria-pressed="false">I can’t tell <small>(unknown)</small></button>
               <button id="activity-noise_only" type="button" aria-pressed="false">Nonmusical noise only <small>(noise_only)</small></button>
             </div>
+            <div id="structured-choices" class="presence-choices" role="group" aria-label="Declared answer choices" hidden></div>
+            <label id="structured-status-area" hidden>Decision status<select id="structured-status"><option value="approved">Approved answer</option><option value="rejected">Reject bound proposal</option></select></label>
             <button id="presence-save" type="button" class="primary" disabled>Save answer</button>
             <span id="presence-answer-state" role="status" aria-live="polite"></span>
           </div>
@@ -194,13 +197,14 @@ SOFTWARE.
             <option value="presence">Presence</option><option value="activity">Activity</option><option value="key">Key</option><option value="tempo">Tempo</option><option value="meter">Meter</option><option value="harmony">Harmony</option><option value="part_role">Part role</option>
             <option value="source_role">Source role</option><option value="phrase">Phrase</option>
             <option value="section">Section</option><option value="style_preference">Style preference</option>
+            <option value="ext.groove_trait">Groove trait</option><option value="ext.motif_relation">Motif relation</option><option value="ext.pulse_evidence">Pulse evidence</option>
           </select></label>
-          <label>Value<input id="label-value" placeholder="C4, audible, rest, unknown…" maxlength="256"><small id="label-value-hint" class="field-hint">Choose a type for its value format.</small></label>
+          <label>Value<input id="label-value" placeholder="C4, audible, rest, unknown…" maxlength="256"><select id="structured-value" aria-label="Declared answer value" hidden></select><small id="label-value-hint" class="field-hint">Choose a type for its value format.</small></label>
           <label>Status<select id="label-status"><option value="approved">Approved</option><option value="uncertain">Uncertain</option><option value="rejected">Rejected proposal</option><option value="withdrawn">Withdrawn</option></select></label>
-          <label>Part<input id="label-part" placeholder="optional" maxlength="128"></label>
+          <label>Part<input id="label-part" placeholder="optional" maxlength="128"><select id="structured-part" aria-label="Declared part" hidden></select></label>
           <label>Start frame<input id="label-start" type="number" min="0" step="1"></label>
           <label>End frame (exclusive)<input id="label-end" type="number" min="1" step="1"></label>
-          <label>MIDI pitch for note<input id="label-pitch" type="number" min="0" max="127" value="60"></label>
+          <label>MIDI pitch for note<input id="label-pitch" type="number" min="0" max="127" value="60"><select id="structured-pitch" aria-label="Declared MIDI pitch" hidden></select></label>
           <label>Proposal ID if rejecting<input id="label-proposal" maxlength="128"></label>
         </div>
         <div class="toolbar edit-actions">

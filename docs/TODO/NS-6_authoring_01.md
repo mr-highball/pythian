@@ -32,16 +32,16 @@ whole checklist, obtain independent Salty Boi QA, then move this task to DONE;
 an isolated successful browser action does not stand in for the full flow.
 The detailed criteria below remain in force.
 
-- [ ] **1. Pascal ownership:** Stable Win32/Win64 native and pas2js builds pass;
+- [x] **1. Pascal ownership:** Stable Win32/Win64 native and pas2js builds pass;
   maintained import, analysis, inference, WAV serving and review writes stay in
   Pascal, with generated files confined to ignored `build/` and no third-party
   inference runtime.
-- [ ] **2. Source intake:** Import a prepared multi-recording/multi-track packet
+- [x] **2. Source intake:** Import a prepared multi-recording/multi-track packet
   in one action into a durable catalog outside `build/`; show original source
   hash, provenance, duration, clock, group, partition and analyzer version.
   Reject bad/mismatched assets without partial labels, and open a multi-hour
   recording without loading the full WAV into browser memory.
-- [ ] **3. Worker-to-operator queue:** A Pascal producer publishes exact,
+- [x] **3. Worker-to-operator queue:** A Pascal producer publishes exact,
   source-bound requests for distinct tasks with stable IDs, question, vocabulary
   and answer geometry. Invalid replacement leaves the old queue intact. The
   operator sees only waiting requests, clear progress and an honest empty
@@ -58,14 +58,15 @@ The detailed criteria below remain in force.
   to the player on a narrow screen. Exercise malformed/unauthorized/range,
   disconnected and slow responses, followed by a successful retry; no silent
   player or `0:00` display is counted as verified sound.
-- [ ] **6. Source timeline:** Navigate, zoom and seek exact source frames
+- [x] **6. Source timeline:** Navigate, zoom and seek exact source frames
   across short and multi-hour WAVs with waveform levels, source time, reviewed
   labels and separate proposals. Align stems only when their manifest shares a
   clock. Desktop keyboard and narrow touch controls can select, move and
   inspect the requested region without changing its source identity.
-- [ ] **7. Backlog label coverage:** Support guided presence and pitch-free
+- [x] **7. Backlog label coverage:** Support guided presence and pitch-free
   attack/continuation/release/rest/noise decisions, note pitch/onset/end and
-  part or role spans, beat/downbeat points, local key/tempo/meter/harmony spans,
+  part or role spans, beat/downbeat points, local key/tempo/meter/harmony spans
+  with reviewed `no_key` separate from `unknown`,
   phrase/section boundaries, pulse omissions/distractors/clock gaps and
   competing phase/rate evidence needed by the open NS-3/NS-5 tasks. Include
   task-declared groove traits (accent, swing, syncopation, microtiming and
@@ -75,22 +76,22 @@ The detailed criteria below remain in force.
   each producer-declared vocabulary and link target before treating a value as
   selected truth. Keep unsupported relationships and unknown/ambiguous answers
   explicit rather than fitting them into a generic free-text label.
-- [ ] **8. Review controls and blindness:** Create, approve, reject, correct,
+- [x] **8. Review controls and blindness:** Create, approve, reject, correct,
   move, resize, split, merge and undo/redo labels with visible staged versus
   saved state. Pythian proposals remain distinct from operator judgments;
   a request to reject a proposal binds its exact `proposal_id`, while blind
   evaluation hides proposals until an independent review. Bulk import never
   bulk-approves labels or silently changes group/partition.
-- [ ] **9. Durable feedback loop:** A selected answer makes exactly one
+- [x] **9. Durable feedback loop:** A selected answer makes exactly one
   revision-checked review event, leaves the waiting queue, advances to the next
   request and survives reload/restart. Failed checks, conflicts and lost
   responses retain the choice and avoid duplicate events. The worker reads the
   revised frames/value/status; export and clean-catalog re-import preserve
   source identity, history, proposal provenance and selected versus unknown
-  separation. Record the handoff to
-  [NS-5_evaluation_02](NS-5_evaluation_02.md) for full-duration generated-output
-  listening: its task-declared decisions need a producer-readable response,
-  and a 30-second source label must never be counted as that review.
+  separation. Record explicit task ownership for whole-mix preference and
+  generated-output listening packets: those task-declared decisions need a
+  producer-readable response, and a 30-second source label must never be
+  counted as a full-duration or paired listening review.
 - [ ] **10. Complete QA matrix:** On a copied catalog, run import → Pascal
   proposals → original/cue listening → wrong-suggestion correction → approved
   and unknown answers → queue advance → reload/restart → worker report →
@@ -100,6 +101,24 @@ The detailed criteria below remain in force.
   previously failed. Salty Boi independently validates the frozen binary and
   pas2js assets, records exact evidence and confirms no test answer touched
   the live operator catalog.
+
+The review contract is shared by the open source-evidence tasks. Producers
+declare the exact question and finite choices; these mappings do not claim that
+the underlying musical inference or reference labels already exist.
+
+| Manual decision needed by open tasks | Queue representation |
+| --- | --- |
+| NS-3 note presence, attack, continuation, tail, rest, pitched note and part ownership | `presence`, `activity`, `note` with optional pitch and part vocabularies, `part_role`, `source_role` |
+| NS-3 beat level, downbeat, missing or distracting pulses and clock gaps | One-frame `beat`/`downbeat`; `ext.pulse_evidence` with fixed phase/rate candidate links |
+| NS-3 local tonal context and harmonic change | `key`, `tempo`, `meter`, `harmony` spans with explicit unknown or ambiguous values; `key:no_key` is a reviewed non-tonal verdict |
+| NS-3 groove and cross-role rhythmic evidence | `ext.groove_trait` with task-declared traits and source-local role/velocity links |
+| NS-3 evolving sound and envelope boundaries | Source-bound `activity` attack/continuation/release windows and note-relative decisions; paired generated-sound listening remains a separate output review |
+| NS-5 recurring motifs, phrase and section organization | `phrase`, `section`, `ext.motif_relation` with fixed same-source targets |
+| NS-5 source-local preference assignment | `style_preference` only for a task-declared source-local decision; a short window does not establish whole-mix fit |
+| NS-5 full-mix personal reference fit and recording-edition correspondence | [NS-5_evaluation_01](NS-5_evaluation_01.md) owns whole-mix evidence and the verified source/cut correspondence; use a durable whole-asset or paired listening decision, never a short `style_preference` label as a substitute |
+| NS-5 sustained generated-output quality and continuity | [NS-5_continuity_01](NS-5_continuity_01.md) owns timestamped bad-passage judgments; [NS-5_evaluation_02](NS-5_evaluation_02.md) owns the full 120-second 0–3 trait rubric and saved Pascal producer response |
+| NS-3 and NS-4 generated-sound comparisons | [NS-3_timbre_02](NS-3_timbre_02.md) owns paired reference/learned attack, motion, release and identity judgments; [NS-4_integration_01](NS-4_integration_01.md) owns synthesis-path listening. Both require task-bound responses distinct from source labels |
+| NS-5 paired edits and style traits | [NS-5_evaluation_02](NS-5_evaluation_02.md) owns paired 15-second edits, timestamped comments, preserved/changed traits and the explicit saved producer-readable response |
 
 - Compile a Pythian-owned Pascal/pas2js browser application that lists the
   prepared inbox and durable catalog, imports all available tracks as one
@@ -169,6 +188,26 @@ The detailed criteria below remain in force.
 
 **Dev Notes:**
 
+- 2026-09-28 independent Salty Boi QA passed a fresh two-group workflow in
+  `D:\Docs\GitHub\pythian-qa-salty-final-20260928\flow5`, outside disposable
+  `build/` and outside the live catalog. The browser decoded original/cue WAV,
+  corrected a deliberately wrong proposal point from frame 6213 to 8784,
+  saved an explicit `unknown` on the second source, advanced to 0 waiting /
+  2 completed, and retained that state after browser reload and native-service
+  restart. Native history showed one bound revision per source; selected and
+  unknown exports remained separate and clean re-import/re-export was
+  byte-identical at SHA-256
+  `9abbd75332b12793f563258250fff3c9aaeec72cbf216412b88cdc8adb0ad23f`.
+  Together with the prior five-hour timeline, split/merge, undo/redo, blind,
+  conflict and error/retry checks and current 28-facet Win32/Win64 matrix,
+  this closes engineering checklist points 1–3 and 6–9. Points 4, 5 and 10
+  remain open for the current build's physical LAN phone playback/Save path;
+  headless decoded audio does not prove a human heard sound. No live test
+  answer or task credit was added. The independently checked build is live at
+  `http://192.168.12.109:18097/` with read-only HTTP 200 page/session/queue/
+  exact-audio probes and unchanged catalog queue hash/event count. Automatic
+  approval review rejected deletion of the ignored 1.56-GB QA copy as
+  `blocked by policy`, so it remains until the operator can remove it.
 - 2026-09-28 the physical phone played the Berg 5–10 s WAV to its displayed
   end, but its selected `audible` answer failed the queue pre-check before any
   new review event. A bounded ten-point acceptance gate now covers the whole

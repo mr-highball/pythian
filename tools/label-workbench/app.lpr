@@ -73,11 +73,14 @@ type
     FQueueInitialSelectionDone: Boolean;
     FQueueRefreshPending: Boolean;
     FQueueAdvancePending: Boolean;
+    FQueuePostCommitPending: Boolean;
     FQueueAdvanceIndex: Integer;
     FReviewId: String;
     FReviewQuestion: String;
     FReviewType: String;
     FReviewGeometry: String;
+    FReviewRequestHash: String;
+    FReviewSpec: TJSObject;
     FReviewConflict: String;
     FReviewCurrentValue: String;
     FReviewCurrentStatus: String;
@@ -146,6 +149,10 @@ type
     function SelectedExactRequest: Boolean;
     function CurrentPresenceAnswer: String;
     function GuidedValueAllowed(const AType, AValue: String): Boolean;
+    function StructuredGuided: Boolean;
+    procedure ShowStructuredLinks;
+    procedure FillStructuredSelect(const AId: String;
+      const AValues: TJSArray);
     procedure UpdateValueHint;
     procedure UpdateRecordAnswerAction;
     procedure ChoosePresence(const AValue: String);
@@ -195,7 +202,9 @@ type
       const AReviewId: String = ''; const AQuestion: String = '';
       const AReviewType: String = '';
       const AConflict: String = '';
-      const AGeometry: String = 'exact'); async;
+      const AGeometry: String = 'exact';
+      const ARequestHash: String = '';
+      const ASpec: TJSObject = nil); async;
     procedure RefreshWindow; async;
     procedure LoadAudio(const ACue: Boolean); async;
     procedure SuggestBeats; async;
@@ -371,6 +380,20 @@ begin
     Result := 'exact';
 end;
 
+function ReviewSpec(const ARow: TJSObject): TJSObject;
+begin
+  Result := nil;
+  if (ARow <> nil) and isObject(ARow['answer_spec']) then
+    Result := TJSObject(ARow['answer_spec']);
+end;
+
+function StructuredRow(const ARow: TJSObject): Boolean;
+begin
+  Result := (ARow <> nil) and
+    ((TextField(ARow, 'request_sha256') <> '') or
+      isObject(ARow['request']));
+end;
+
 function RequestGeometryAllows(const AGeometry: String;
   const ARequestStart, ARequestEnd, ALabelStart,
   ALabelEnd: Int64): Boolean;
@@ -460,9 +483,20 @@ begin
 end;
 
 function TWorkbench.HandleAudioMetadata(AEvent: TEventListenerEvent): Boolean;
+var
+  LMode: String;
+  LSeconds: String;
 begin
-  if FAudioUrl <> '' then
-    AudioFeedback('WAV ready; starting playback. If it stays paused, tap Play in the player.');
+  if (FAudioUrl <> '') and (FAudio.readyState >= 1) and
+    (FAudio.duration > 0) then
+  begin
+    LMode := 'Original WAV';
+    if FAudioCueLoaded then LMode := 'Pythian cue';
+    LSeconds := FormatFloat('0.00', FAudio.duration) + ' s';
+    Element('audio-mode').textContent := LMode + ' · ' + LSeconds;
+    AudioFeedback('Decoded ' + LSeconds +
+      ' WAV region ready; starting playback. For a half-second clip, the player clock may round to 0:00 / 0:00.');
+  end;
   Result := False;
 end;
 
@@ -648,12 +682,14 @@ begin
         LSelectedFound := True;
         if (TextField(LRow, 'label_type') <> FReviewType) or
           (TextField(LRow, 'question') <> FReviewQuestion) or
-          (ReviewGeometry(LRow) <> FReviewGeometry) then
+          (ReviewGeometry(LRow) <> FReviewGeometry) or
+          (TextField(LRow, 'request_sha256') <> FReviewRequestHash) then
         begin
           ClearRequest;
           Break;
         end;
         FReviewConflict := TextField(LRow, 'answer_conflict');
+        FReviewSpec := ReviewSpec(LRow);
         FReviewCurrentValue := TextField(LRow, 'current_value');
         FReviewCurrentStatus := TextField(LRow, 'current_status');
         Break;
@@ -756,7 +792,19 @@ begin
 end;
 
 function TWorkbench.GuidedValueAllowed(const AType, AValue: String): Boolean;
+var
+  LValues: TJSArray;
+  LIndex: Integer;
 begin
+  if FReviewSpec <> nil then
+  begin
+    Result := False;
+    if not isArray(FReviewSpec['vocabulary']) then Exit;
+    LValues := TJSArray(FReviewSpec['vocabulary']);
+    for LIndex := 0 to LValues.length - 1 do
+      if String(LValues[LIndex]) = AValue then Exit(True);
+    Exit;
+  end;
   Result := ((AType = 'presence') and
     ((AValue = 'audible') or (AValue = 'rest') or
      (AValue = 'unknown'))) or
@@ -764,6 +812,73 @@ begin
     ((AValue = 'attack') or (AValue = 'continuation') or
      (AValue = 'release_tail') or (AValue = 'rest') or
      (AValue = 'unknown') or (AValue = 'noise_only')));
+end;
+
+function TWorkbench.StructuredGuided: Boolean;
+begin
+  Result := (FReviewSpec <> nil) and (FReviewGeometry = 'exact') and
+    (FReviewType <> 'note') and
+    not isArray(FReviewSpec['part_vocabulary']);
+end;
+
+procedure TWorkbench.ShowStructuredLinks;
+var
+  LLinks: TJSArray;
+  LLink: TJSObject;
+  LIndex: Integer;
+  LText: String;
+begin
+  if FReviewSpec = nil then
+  begin
+    Element('structured-request-links').setAttribute('hidden', '');
+    Exit;
+  end;
+  LText := 'Facet: ' + TextField(FReviewSpec, 'facet') + '.';
+  if isArray(FReviewSpec['links']) then
+  begin
+    LLinks := TJSArray(FReviewSpec['links']);
+    for LIndex := 0 to LLinks.length - 1 do
+    begin
+      LLink := TJSObject(LLinks[LIndex]);
+      LText := LText + ' ' + TextField(LLink, 'role') + ': ' +
+        TextField(LLink, 'kind') + ' ' +
+        TextField(LLink, 'target_id');
+      if TextField(LLink, 'kind') = 'label' then
+        LText := LText + ' (' + TextField(LLink, 'target_type') +
+          ', revision ' + IntToStr(Trunc(NumberField(LLink,
+            'target_revision'))) + ')';
+      LText := LText + '.';
+    end;
+  end;
+  if TextField(FReviewSpec, 'proposal_id') <> '' then
+    LText := LText + ' Bound proposal: ' +
+      TextField(FReviewSpec, 'proposal_id') + '.';
+  Element('structured-request-links').textContent := LText;
+  Element('structured-request-links').removeAttribute('hidden');
+end;
+
+procedure TWorkbench.FillStructuredSelect(const AId: String;
+  const AValues: TJSArray);
+var
+  LSelect: TJSHTMLSelectElement;
+  LOption: TJSHTMLOptionElement;
+  LIndex: Integer;
+  LValue: String;
+begin
+  LSelect := TJSHTMLSelectElement(Element(AId));
+  LSelect.innerHTML := '';
+  LOption := TJSHTMLOptionElement(TJSHTMLOptionElement.New(
+    'Choose one', ''));
+  LSelect.add(LOption);
+  if AValues <> nil then
+    for LIndex := 0 to AValues.length - 1 do
+    begin
+      LValue := String(AValues[LIndex]);
+      LOption := TJSHTMLOptionElement(TJSHTMLOptionElement.New(
+        LValue, LValue));
+      LSelect.add(LOption);
+    end;
+  LSelect.value := '';
 end;
 
 procedure TWorkbench.UpdateValueHint;
@@ -797,6 +912,15 @@ begin
   FCanvas.setAttribute('aria-label',
     'Original WAV waveform with review and proposal lanes; tap waveform to seek loaded audio');
   Input('label-id').removeAttribute('readonly');
+  Input('label-value').removeAttribute('readonly');
+  Input('label-value').removeAttribute('hidden');
+  Element('structured-value').setAttribute('hidden', '');
+  Input('label-part').removeAttribute('readonly');
+  Input('label-part').removeAttribute('hidden');
+  Element('structured-part').setAttribute('hidden', '');
+  Input('label-pitch').removeAttribute('hidden');
+  Element('structured-pitch').setAttribute('hidden', '');
+  Input('label-proposal').removeAttribute('readonly');
   Input('label-start').removeAttribute('readonly');
   Input('label-end').removeAttribute('readonly');
   Element('label-type').removeAttribute('disabled');
@@ -816,6 +940,8 @@ begin
     Input('label-start').value := '';
     Input('label-end').value := '';
     Input('label-proposal').value := '';
+    Input('label-part').value := '';
+    Input('label-pitch').value := '';
     Element('review-editor').removeAttribute('open');
   end;
   ReleaseRequestDraft;
@@ -823,6 +949,8 @@ begin
   FReviewQuestion := '';
   FReviewType := '';
   FReviewGeometry := '';
+  FReviewRequestHash := '';
+  FReviewSpec := nil;
   FReviewConflict := '';
   FReviewCurrentValue := '';
   FReviewCurrentStatus := '';
@@ -836,6 +964,10 @@ var
   LBlocked: Boolean;
   LGuided: Boolean;
   LSaved: String;
+  LValues: TJSArray;
+  LButton: TJSHTMLButtonElement;
+  LIndex: Integer;
+  LValue: String;
 begin
   if not SelectedExactRequest then
   begin
@@ -847,10 +979,44 @@ begin
     Element('record-answer-state').textContent := '';
     Element('presence-answer-state').textContent := '';
     Element('presence-saved-answer').setAttribute('hidden', '');
+    Element('structured-request-links').setAttribute('hidden', '');
     Exit;
   end;
-  LGuided := (FReviewType = 'presence') or (FReviewType = 'activity');
-  if FReviewType = 'activity' then
+  ShowStructuredLinks;
+  LGuided := StructuredGuided or
+    ((FReviewSpec = nil) and
+      ((FReviewType = 'presence') or (FReviewType = 'activity')));
+  Element('structured-choices').setAttribute('hidden', '');
+  Element('structured-status-area').setAttribute('hidden', '');
+  if StructuredGuided then
+  begin
+    Element('guided-answer-heading').textContent :=
+      'Choose one declared answer for this exact region';
+    Element('guided-answer-help').textContent :=
+      'The choices below are the request’s complete answer vocabulary. Nothing is saved until you click Save answer.';
+    Element('presence-choices').setAttribute('hidden', '');
+    Element('activity-choices').setAttribute('hidden', '');
+    Element('structured-choices').removeAttribute('hidden');
+    if TextField(FReviewSpec, 'proposal_id') <> '' then
+      Element('structured-status-area').removeAttribute('hidden');
+    ClearItems('structured-choices');
+    LValues := TJSArray(FReviewSpec['vocabulary']);
+    for LIndex := 0 to LValues.length - 1 do
+    begin
+      LValue := String(LValues[LIndex]);
+      LButton := TJSHTMLButtonElement(document.createElement('button'));
+      LButton.setAttribute('type', 'button');
+      LButton.setAttribute('data-value', LValue);
+      LButton.setAttribute('aria-pressed',
+        LowerCase(BoolToStr(FPresenceValue = LValue, True)));
+      LButton.textContent := LValue;
+      LButton.disabled := (FReviewConflict <> '') or FHistoryLoading or
+        FHistoryLoadFailed or FSaveInProgress or FPresenceChecking;
+      LButton.onclick := @HandlePresenceChoice;
+      Element('structured-choices').appendChild(LButton);
+    end;
+  end
+  else if FReviewType = 'activity' then
   begin
     Element('guided-answer-heading').textContent := 'What kind of activity do you hear in this exact region?';
     Element('guided-answer-help').textContent :=
@@ -885,7 +1051,8 @@ begin
     Element('presence-answer-area').setAttribute('hidden', '');
     Element('record-answer-area').removeAttribute('hidden');
   end;
-  LBlocked := (FReviewConflict <> '') or FHistoryLoading or
+  LBlocked := FQueuePostCommitPending or
+    (FReviewConflict <> '') or FHistoryLoading or
     FHistoryLoadFailed or FSaveInProgress or FPresenceChecking or
     ((FPendingChanges <> nil) and (FPendingChanges.length > 0));
   TJSHTMLButtonElement(Element('presence-audible')).disabled := LBlocked;
@@ -917,6 +1084,7 @@ begin
     LowerCase(BoolToStr(FPresenceValue = 'noise_only', True)));
   TJSHTMLButtonElement(Element('presence-save')).disabled :=
     LBlocked or (FPresenceValue = '') or (FPresenceValue = LSaved);
+  TJSHTMLSelectElement(Element('structured-status')).disabled := LBlocked;
   if LSaved <> '' then
     Element('presence-save').textContent := 'Save correction'
   else
@@ -1013,7 +1181,7 @@ begin
       Continue;
     end;
     LRow := TJSObject(FCurrentLabels[LIndex]);
-    if not RowMatchesSource(LRow) or
+    if StructuredRow(LRow) or not RowMatchesSource(LRow) or
       (TextField(LRow, 'status') = 'withdrawn') then
     begin
       Continue;
@@ -1228,11 +1396,20 @@ procedure TWorkbench.StageHistoryTarget(const AEntry: TJSObject;
 var
   LTarget: TJSObject;
   LAfter: TJSObject;
+  LIndex: Integer;
 begin
   if (AEntry = nil) or FHistoryStale or FSaveInProgress or
     ((FPendingChanges <> nil) and (FPendingChanges.length > 0)) then
     Exit;
   LAfter := TJSObject(AEntry['after']);
+  if (TextField(AEntry, 'request_sha256') <> '') or
+    StructuredRow(LAfter) or
+    (isObject(AEntry['before']) and
+      StructuredRow(TJSObject(AEntry['before']))) then
+  begin
+    Status('A structured answer is bound to its request. Undo or redo cannot turn it into a freeform review; use a new prepared request.', True);
+    Exit;
+  end;
   if TextField(AEntry, 'source_sha256') <> FSourceHash then
   begin
     FHistoryStale := True;
@@ -1255,6 +1432,15 @@ begin
     Status('This history entry has no restorable label state.', True);
     Exit;
   end;
+  if FCurrentLabels <> nil then
+    for LIndex := 0 to FCurrentLabels.length - 1 do
+      if (TextField(TJSObject(FCurrentLabels[LIndex]), 'label_id') =
+        TextField(LTarget, 'label_id')) and
+        StructuredRow(TJSObject(FCurrentLabels[LIndex])) then
+      begin
+        Status('A structured answer cannot be restored as a freeform event. Use a new prepared request.', True);
+        Exit;
+      end;
   FPendingHistoryMode := 'undo';
   if ARedo then
     FPendingHistoryMode := 'redo';
@@ -1354,19 +1540,48 @@ end;
 
 function TWorkbench.EditorChange(const AStartFrame, AEndFrame: Int64;
   const ALabelId: String): TJSObject;
+var
+  LValue: String;
 begin
   Result := TJSObject.new;
   Result['label_id'] := ALabelId;
   Result['type'] := Input('label-type').value;
-  Result['value'] := Input('label-value').value;
+  if FRequestDraft and (FReviewSpec <> nil) then
+    LValue := TJSHTMLSelectElement(Element('structured-value')).value
+  else
+    LValue := Input('label-value').value;
+  Result['value'] := LValue;
   Result['status'] := Input('label-status').value;
   Result['start_frame'] := AStartFrame;
   Result['end_frame'] := AEndFrame;
-  Result['part'] := Input('label-part').value;
-  Result['proposal_id'] := Input('label-proposal').value;
+  if FRequestDraft and (FReviewSpec <> nil) then
+  begin
+    if isArray(FReviewSpec['part_vocabulary']) then
+      Result['part'] := TJSHTMLSelectElement(
+        Element('structured-part')).value
+    else
+      Result['part'] := '';
+    Result['proposal_id'] := TextField(FReviewSpec, 'proposal_id');
+    if Copy(Input('label-type').value, 1, 4) = 'ext.' then
+      Result['extension_version'] := 2;
+  end
+  else
+  begin
+    Result['part'] := Input('label-part').value;
+    Result['proposal_id'] := Input('label-proposal').value;
+  end;
   if Input('label-type').value = 'note' then
   begin
-    Result['pitch_midi'] := StrToIntDef(Input('label-pitch').value, -1);
+    if not ((FRequestDraft and (FReviewSpec <> nil)) and
+      ((LValue = 'unknown') or (LValue = 'ambiguous'))) then
+    begin
+      if FRequestDraft and (FReviewSpec <> nil) and
+        isArray(FReviewSpec['pitch_midi_values']) then
+        Result['pitch_midi'] := StrToIntDef(
+          TJSHTMLSelectElement(Element('structured-pitch')).value, -1)
+      else
+        Result['pitch_midi'] := StrToIntDef(Input('label-pitch').value, -1);
+    end;
   end;
 end;
 
@@ -1389,7 +1604,10 @@ begin
   Result['end_frame'] := Trunc(NumberField(ARow, 'end_frame'));
   Result['part'] := TextField(ARow, 'part');
   Result['proposal_id'] := TextField(ARow, 'proposal_id');
-  if TextField(ARow, 'type') = 'note' then
+  if (TextField(ARow, 'type') = 'note') and
+    (not StructuredRow(ARow) or
+      ((TextField(ARow, 'value') <> 'unknown') and
+       (TextField(ARow, 'value') <> 'ambiguous'))) then
   begin
     Result['pitch_midi'] := Trunc(NumberField(ARow, 'pitch_midi'));
   end;
@@ -2143,10 +2361,15 @@ begin
   begin
     Exit;
   end;
+  LRow := TJSObject(FCurrentLabels[AIndex]);
+  if StructuredRow(LRow) then
+  begin
+    Status('This answer is bound to a structured request. Its value and links cannot be edited as a freeform label; use a new prepared request.', True);
+    Exit;
+  end;
   ReleaseRequestDraft;
   FSelectedLabel := AIndex;
   FDragMode := dmNone;
-  LRow := TJSObject(FCurrentLabels[AIndex]);
   Input('label-id').value := TextField(LRow, 'label_id');
   Input('label-type').value := TextField(LRow, 'type');
   UpdateValueHint;
@@ -2413,11 +2636,15 @@ begin
       FetchApi('/api/review-queue', 'GET', ''));
     if LResponse.status = 404 then
     begin
-      FQueueAdvancePending := False;
-      ClearRequest;
+      if not FQueuePostCommitPending then
+      begin
+        FQueueAdvancePending := False;
+        ClearRequest;
+      end;
       Element('queue-progress').textContent := 'Queue unavailable';
       Element('assignment-state').textContent :=
-        'Review requests are unavailable in this service version.';
+        'Review requests are unavailable in this service version. Saved decisions remain in the catalog.';
+      Element('connect-retry').removeAttribute('hidden');
       Exit;
     end;
     if LResponse.status <> 200 then
@@ -2425,23 +2652,40 @@ begin
         IntToStr(LResponse.status));
     LData := await(TJSObject, LResponse.json());
     RenderAssignments(LData);
+    FQueuePostCommitPending := False;
+    UpdateRecordAnswerAction;
     except
       on LError: Exception do
       begin
-        FQueueAdvancePending := False;
-        ClearRequest;
+        if not FQueuePostCommitPending then
+        begin
+          FQueueAdvancePending := False;
+          ClearRequest;
+        end;
         Element('queue-progress').textContent := 'Queue unavailable';
-        Element('assignment-state').textContent :=
-          'Review requests could not load: ' + LError.Message;
+        if FQueuePostCommitPending then
+          Element('assignment-state').textContent :=
+            'Review was saved. Queue refresh failed: ' + LError.Message +
+            '. Retry connection to continue.'
+        else
+          Element('assignment-state').textContent :=
+            'Review requests could not load: ' + LError.Message;
         Element('connect-retry').removeAttribute('hidden');
       end;
     else
       begin
-        FQueueAdvancePending := False;
-        ClearRequest;
+        if not FQueuePostCommitPending then
+        begin
+          FQueueAdvancePending := False;
+          ClearRequest;
+        end;
         Element('queue-progress').textContent := 'Queue unavailable';
-        Element('assignment-state').textContent :=
-          'Review requests could not load. Retry connection to reload.';
+        if FQueuePostCommitPending then
+          Element('assignment-state').textContent :=
+            'Review was saved. Queue refresh failed. Retry connection to continue.'
+        else
+          Element('assignment-state').textContent :=
+            'Review requests could not load. Retry connection to reload.';
         Element('connect-retry').removeAttribute('hidden');
       end;
     end;
@@ -2480,7 +2724,7 @@ end;
 procedure TWorkbench.SelectTrack(const AIndex: Integer;
   const AStartFrame, AEndFrame: Int64;
   const AReviewId, AQuestion, AReviewType, AConflict,
-  AGeometry: String); async;
+  AGeometry, ARequestHash: String; const ASpec: TJSObject); async;
 var
   LTrack: TJSObject;
   LKeepTimeline: Boolean;
@@ -2533,6 +2777,8 @@ begin
     FReviewQuestion := AQuestion;
     FReviewType := AReviewType;
     FReviewGeometry := AGeometry;
+    FReviewRequestHash := ARequestHash;
+    FReviewSpec := ASpec;
     FReviewConflict := AConflict;
     FReviewStart := AStartFrame;
     FReviewEnd := AEndFrame;
@@ -3006,7 +3252,9 @@ end;
 
 procedure TWorkbench.ChoosePresence(const AValue: String);
 begin
-  if not ((FReviewType = 'presence') or (FReviewType = 'activity')) or
+  if not (StructuredGuided or
+    ((FReviewSpec = nil) and
+     ((FReviewType = 'presence') or (FReviewType = 'activity')))) or
     not SelectedExactRequest or
     (FReviewConflict <> '') or FHistoryLoading or FHistoryLoadFailed or
     FSaveInProgress or FPresenceChecking or
@@ -3024,14 +3272,18 @@ var
   LResponse: TJSResponse;
   LData: TJSObject;
   LRows: TJSArray;
+  LCompleted: TJSArray;
   LRow: TJSObject;
   LChange: TJSObject;
   LId, LHash, LQuestion, LType, LGeometry, LValue: String;
+  LRequestHash, LDesiredStatus: String;
   LStart, LEnd: Int64;
   LEpoch, LIndex: Integer;
   LFailure, LReason, LDetail: String;
 begin
-  if not ((FReviewType = 'presence') or (FReviewType = 'activity')) or
+  if not (StructuredGuided or
+    ((FReviewSpec = nil) and
+     ((FReviewType = 'presence') or (FReviewType = 'activity')))) or
     not SelectedExactRequest or
     (FReviewConflict <> '') or FHistoryLoading or FHistoryLoadFailed or
     FSaveInProgress or FPresenceChecking or
@@ -3047,6 +3299,12 @@ begin
   LStart := FReviewStart;
   LEnd := FReviewEnd;
   LValue := FPresenceValue;
+  LRequestHash := FReviewRequestHash;
+  LDesiredStatus := 'approved';
+  if (FReviewSpec <> nil) and
+    (TextField(FReviewSpec, 'proposal_id') <> '') then
+    LDesiredStatus := TJSHTMLSelectElement(
+      Element('structured-status')).value;
   LEpoch := FWindowEpoch;
   FPresenceChecking := True;
   FPresenceFeedback := '';
@@ -3058,6 +3316,7 @@ begin
       (LHash <> FSourceHash) or (LQuestion <> FReviewQuestion) or
       (LType <> FReviewType) or
       (LGeometry <> FReviewGeometry) or
+      (LRequestHash <> FReviewRequestHash) or
       (LStart <> FReviewStart) or (LEnd <> FReviewEnd) or
       (LValue <> FPresenceValue) or not SelectedExactRequest then
       Exit;
@@ -3081,6 +3340,7 @@ begin
       (LHash <> FSourceHash) or (LQuestion <> FReviewQuestion) or
       (LType <> FReviewType) or
       (LGeometry <> FReviewGeometry) or
+      (LRequestHash <> FReviewRequestHash) or
       (LStart <> FReviewStart) or (LEnd <> FReviewEnd) or
       (LValue <> FPresenceValue) or not SelectedExactRequest then
       Exit;
@@ -3092,17 +3352,47 @@ begin
         LRow := TJSObject(LRows[LIndex]);
         Break;
       end;
-    if (LRow = nil) or (TextField(LRow, 'source_sha256') <> LHash) or
+    if LRow = nil then
+    begin
+      LCompleted := TJSArray(LData['completed']);
+      if LCompleted <> nil then
+        for LIndex := 0 to LCompleted.length - 1 do
+          if (TextField(TJSObject(LCompleted[LIndex]), 'id') = LId) and
+            (TextField(TJSObject(LCompleted[LIndex]),
+              'request_sha256') = LRequestHash) and
+            (TextField(TJSObject(LCompleted[LIndex]),
+              'current_value') = LValue) and
+            (TextField(TJSObject(LCompleted[LIndex]),
+              'current_status') = LDesiredStatus) then
+          begin
+            FPresenceChecking := False;
+            FReviewCurrentValue := LValue;
+            FReviewCurrentStatus := LDesiredStatus;
+            FPresenceFeedback := 'This answer is already saved. No duplicate review was recorded.';
+            FQueueAdvancePending := True;
+            FQueueAdvanceIndex := 0;
+            FQueuePostCommitPending := True;
+            UpdateRecordAnswerAction;
+            RefreshAssignments;
+            Exit;
+          end;
+      FPresenceChecking := False;
+      FPresenceFeedback := 'This request is no longer pending. Your choice remains selected; reload the queue before any new save.';
+      UpdateRecordAnswerAction;
+      Exit;
+    end;
+    if (TextField(LRow, 'source_sha256') <> LHash) or
       (Trunc(NumberField(LRow, 'start_frame')) <> LStart) or
       (Trunc(NumberField(LRow, 'end_frame')) <> LEnd) or
       (TextField(LRow, 'label_type') <> LType) or
       (TextField(LRow, 'question') <> LQuestion) or
       (ReviewGeometry(LRow) <> LGeometry) or
+      (TextField(LRow, 'request_sha256') <> LRequestHash) or
       (TextField(LRow, 'answer_conflict') <> '') then
     begin
-      ClearRequest;
-      Status('This request changed or conflicts with a saved label. Select it again.', True);
-      RefreshAssignments;
+      FPresenceChecking := False;
+      FPresenceFeedback := 'The exact request changed or conflicts with a saved label. Your choice remains selected; reload the queue.';
+      UpdateRecordAnswerAction;
       Exit;
     end;
     FReviewCurrentValue := TextField(LRow, 'current_value');
@@ -3119,11 +3409,16 @@ begin
     LChange['label_id'] := LId;
     LChange['type'] := LType;
     LChange['value'] := LValue;
-    LChange['status'] := 'approved';
+    LChange['status'] := LDesiredStatus;
     LChange['start_frame'] := LStart;
     LChange['end_frame'] := LEnd;
     LChange['part'] := '';
-    LChange['proposal_id'] := '';
+    if FReviewSpec <> nil then
+      LChange['proposal_id'] := TextField(FReviewSpec, 'proposal_id')
+    else
+      LChange['proposal_id'] := '';
+    if Copy(LType, 1, 4) = 'ext.' then
+      LChange['extension_version'] := 2;
     SaveReview(LChange);
   except
     on LError: Exception do
@@ -3185,12 +3480,19 @@ var
   LQueueResponse: TJSResponse;
   LQueueData: TJSObject;
   LQueueItems: TJSArray;
+  LQueueCompleted: TJSArray;
   LQueueRow: TJSObject;
+  LCompletion: TJSObject;
   LQueueIndex: Integer;
 begin
   LGuided := AGuidedChange <> nil;
   if FSaveInProgress then
     Exit;
+  if FQueuePostCommitPending then
+  begin
+    Status('The review was saved. Retry the queue connection before starting another answer.', True);
+    Exit;
+  end;
   if FSourceHash = '' then
   begin
     Exit;
@@ -3226,10 +3528,15 @@ begin
     LStart := Trunc(NumberField(LChange, 'start_frame'));
     LEnd := Trunc(NumberField(LChange, 'end_frame'));
     if not SelectedExactRequest or
-      not ((FReviewType = 'presence') or (FReviewType = 'activity')) or
+      not (StructuredGuided or
+        ((FReviewSpec = nil) and
+        ((FReviewType = 'presence') or (FReviewType = 'activity')))) or
       (FReviewConflict <> '') or (TextField(LChange, 'label_id') <> FReviewId) or
       (TextField(LChange, 'type') <> FReviewType) or
-      (TextField(LChange, 'status') <> 'approved') or
+      ((TextField(LChange, 'status') <> 'approved') and
+       ((FReviewSpec = nil) or
+        (TextField(LChange, 'status') <> 'rejected') or
+        (TextField(FReviewSpec, 'proposal_id') = ''))) or
       (TextField(LChange, 'value') <> FPresenceValue) or
       (LStart <> FReviewStart) or (LEnd <> FReviewEnd) then
       Exit;
@@ -3241,7 +3548,8 @@ begin
     if FRequestDraft and
       (not SelectedExactRequest or
        (Input('label-id').value <> FReviewId) or
-       (Input('label-proposal').value <> '') or
+       (Input('label-proposal').value <>
+         TextField(FReviewSpec, 'proposal_id')) or
        ((FReviewType <> '') and
         (Input('label-type').value <> FReviewType))) then
     begin
@@ -3269,7 +3577,14 @@ begin
       Status('Choose a label type before saving.', True);
       Exit;
     end;
-    if FRequestDraft and (Trim(Input('label-value').value) = '') then
+    if FRequestDraft and (FReviewSpec <> nil) and
+      (TJSHTMLSelectElement(Element('structured-value')).value = '') then
+    begin
+      Status('Choose one declared answer before saving.', True);
+      Exit;
+    end;
+    if FRequestDraft and (Trim(Input('label-value').value) = '') and
+      (FReviewSpec = nil) then
     begin
       Status('Enter your answer before saving.', True);
       Exit;
@@ -3282,6 +3597,18 @@ begin
     Exit;
   end;
   LRequestDraft := FRequestDraft and not LQueued and not LGuided;
+  if FCurrentLabels <> nil then
+    for LIndex := 0 to FCurrentLabels.length - 1 do
+      if (TextField(TJSObject(FCurrentLabels[LIndex]), 'label_id') =
+        TextField(LChange, 'label_id')) and
+        StructuredRow(TJSObject(FCurrentLabels[LIndex])) and
+        not ((LGuided or LRequestDraft) and (FReviewSpec <> nil) and
+          (TextField(TJSObject(FCurrentLabels[LIndex]),
+            'request_sha256') = FReviewRequestHash)) then
+      begin
+        Status('This structured label cannot be saved through freeform authoring. Use its prepared request.', True);
+        Exit;
+      end;
   FSaveInProgress := True;
   UpdatePendingUi;
   UpdateRecordAnswerAction;
@@ -3304,6 +3631,44 @@ begin
             LQueueRow := TJSObject(LQueueItems[LQueueIndex]);
             Break;
           end;
+      if LQueueRow = nil then
+      begin
+        LQueueCompleted := TJSArray(LQueueData['completed']);
+        LCompletion := nil;
+        if LQueueCompleted <> nil then
+          for LQueueIndex := 0 to LQueueCompleted.length - 1 do
+            if TextField(TJSObject(LQueueCompleted[LQueueIndex]), 'id') =
+              FReviewId then
+            begin
+              LCompletion := TJSObject(LQueueCompleted[LQueueIndex]);
+              Break;
+            end;
+        if (LCompletion <> nil) and
+          (TextField(LCompletion, 'source_sha256') = FSourceHash) and
+          (TextField(LCompletion, 'request_sha256') =
+            FReviewRequestHash) and
+          (TextField(LCompletion, 'current_type') =
+            TextField(LChange, 'type')) and
+          (TextField(LCompletion, 'current_value') =
+            TextField(LChange, 'value')) and
+          (TextField(LCompletion, 'current_status') =
+            TextField(LChange, 'status')) and
+          (Trunc(NumberField(LCompletion, 'current_start_frame')) =
+            LStart) and
+          (Trunc(NumberField(LCompletion, 'current_end_frame')) =
+            LEnd) then
+        begin
+          FQueueRefreshPending := True;
+          FQueueAdvancePending := True;
+          FQueueAdvanceIndex := 0;
+          FQueuePostCommitPending := True;
+          UpdatePendingUi;
+          UpdateRecordAnswerAction;
+          Status('This exact answer is already saved. No duplicate review event was recorded.');
+          RefreshWindow;
+          Exit;
+        end;
+      end;
       if (LQueueRow = nil) or not SelectedExactRequest or
         (TextField(LQueueRow, 'source_sha256') <> FSourceHash) or
         (Trunc(NumberField(LQueueRow, 'start_frame')) <> FReviewStart) or
@@ -3311,11 +3676,38 @@ begin
         (TextField(LQueueRow, 'question') <> FReviewQuestion) or
         (TextField(LQueueRow, 'label_type') <> FReviewType) or
         (ReviewGeometry(LQueueRow) <> FReviewGeometry) or
+        (TextField(LQueueRow, 'request_sha256') <>
+          FReviewRequestHash) or
         (TextField(LQueueRow, 'answer_conflict') <> '') then
         raise Exception.Create('Prepared request changed; select it again.');
+      if (TextField(LQueueRow, 'current_type') =
+          TextField(LChange, 'type')) and
+        (TextField(LQueueRow, 'current_value') =
+          TextField(LChange, 'value')) and
+        (TextField(LQueueRow, 'current_status') =
+          TextField(LChange, 'status')) and
+        (Trunc(NumberField(LQueueRow, 'current_start_frame')) =
+          LStart) and
+        (Trunc(NumberField(LQueueRow, 'current_end_frame')) =
+          LEnd) then
+      begin
+        FQueueRefreshPending := True;
+        FQueueAdvancePending := False;
+        FQueuePostCommitPending := True;
+        Status('This exact answer is already saved. No duplicate review event was recorded.');
+        RefreshWindow;
+        Exit;
+      end;
     end;
     LTransaction := TJSObject.new;
-    LTransaction['version'] := 1;
+    if (FReviewSpec <> nil) and (LGuided or LRequestDraft) then
+    begin
+      LTransaction['version'] := 2;
+      LTransaction['request_id'] := FReviewId;
+      LTransaction['request_sha256'] := FReviewRequestHash;
+    end
+    else
+      LTransaction['version'] := 1;
     LTransaction['source_sha256'] := FSourceHash;
     LTransaction['expected_revision'] := FReviewRevision;
     LTransaction['reviewer'] := Input('reviewer').value;
@@ -3338,6 +3730,8 @@ begin
       LEntry['before'] := LBefore;
       LEntry['after'] := CloneObject(LChange);
       LEntry['source_sha256'] := FSourceHash;
+      if (FReviewSpec <> nil) and (LGuided or LRequestDraft) then
+        LEntry['request_sha256'] := FReviewRequestHash;
     end;
     LResponse := await(TJSResponse, FetchApi('/api/review', 'POST',
       TJSJSON.stringify(LTransaction)));
@@ -3430,6 +3824,7 @@ begin
       if LGuided or LRequestDraft then
       begin
         FQueueRefreshPending := True;
+        FQueuePostCommitPending := True;
         FQueueAdvancePending := LGuided or
           (TextField(LChange, 'status') = 'approved') or
           (TextField(LChange, 'status') = 'rejected');
@@ -3593,11 +3988,14 @@ var
   LHash: String;
   LId: String;
   LQuestion, LType, LGeometry: String;
+  LRequestHash: String;
   LStart, LEnd: Int64;
   LEpoch: Integer;
   LIndex: Integer;
 begin
-  if (FReviewType = 'presence') or (FReviewType = 'activity') then
+  if StructuredGuided or
+    ((FReviewSpec = nil) and
+     ((FReviewType = 'presence') or (FReviewType = 'activity'))) then
     Exit;
   if not SelectedExactRequest or (FReviewConflict <> '') or
     FHistoryLoading or FHistoryLoadFailed or FSaveInProgress or
@@ -3611,6 +4009,7 @@ begin
   LQuestion := FReviewQuestion;
   LType := FReviewType;
   LGeometry := FReviewGeometry;
+  LRequestHash := FReviewRequestHash;
   LStart := FReviewStart;
   LEnd := FReviewEnd;
   LEpoch := FWindowEpoch;
@@ -3620,6 +4019,7 @@ begin
       (LHash <> FSourceHash) or (LId <> FReviewId) or
       (LQuestion <> FReviewQuestion) or (LType <> FReviewType) or
       (LGeometry <> FReviewGeometry) or
+      (LRequestHash <> FReviewRequestHash) or
       (LStart <> FReviewStart) or (LEnd <> FReviewEnd) then
       Exit;
     if LResponse.status <> 200 then
@@ -3630,6 +4030,7 @@ begin
       (LHash <> FSourceHash) or (LId <> FReviewId) or
       (LQuestion <> FReviewQuestion) or (LType <> FReviewType) or
       (LGeometry <> FReviewGeometry) or
+      (LRequestHash <> FReviewRequestHash) or
       (LStart <> FReviewStart) or (LEnd <> FReviewEnd) then
       Exit;
     LRows := TJSArray(LData['items']);
@@ -3647,7 +4048,8 @@ begin
       (Trunc(NumberField(LRow, 'end_frame')) <> LEnd) or
       (TextField(LRow, 'label_type') <> LType) or
       (TextField(LRow, 'question') <> LQuestion) or
-      (ReviewGeometry(LRow) <> LGeometry) then
+      (ReviewGeometry(LRow) <> LGeometry) or
+      (TextField(LRow, 'request_sha256') <> LRequestHash) then
     begin
       ClearRequest;
       Status('This request changed. Select it again from the queue.', True);
@@ -3675,7 +4077,34 @@ begin
     else
       Input('label-end').value := IntToStr(FReviewEnd);
     Input('label-pitch').value := '';
-    Input('label-proposal').value := '';
+    Input('label-proposal').value := TextField(FReviewSpec,
+      'proposal_id');
+    if FReviewSpec <> nil then
+    begin
+      FillStructuredSelect('structured-value',
+        TJSArray(FReviewSpec['vocabulary']));
+      Input('label-value').setAttribute('hidden', '');
+      Element('structured-value').removeAttribute('hidden');
+      Input('label-part').value := '';
+      Input('label-part').setAttribute('readonly', '');
+      if isArray(FReviewSpec['part_vocabulary']) then
+      begin
+        FillStructuredSelect('structured-part',
+          TJSArray(FReviewSpec['part_vocabulary']));
+        Input('label-part').setAttribute('hidden', '');
+        Element('structured-part').removeAttribute('hidden');
+      end;
+      if isArray(FReviewSpec['pitch_midi_values']) then
+      begin
+        FillStructuredSelect('structured-pitch',
+          TJSArray(FReviewSpec['pitch_midi_values']));
+        Input('label-pitch').setAttribute('hidden', '');
+        Element('structured-pitch').removeAttribute('hidden');
+      end;
+      Input('label-proposal').setAttribute('readonly', '');
+      Element('label-value-hint').textContent :=
+        'Choose only from this request’s declared answer values.';
+    end;
     Input('label-id').setAttribute('readonly', '');
     if FReviewGeometry = 'exact' then
     begin
@@ -3753,7 +4182,8 @@ begin
     Trunc(NumberField(LRow, 'end_frame')),
     TextField(LRow, 'id'), TextField(LRow, 'question'),
     TextField(LRow, 'label_type'),
-    TextField(LRow, 'answer_conflict'), ReviewGeometry(LRow));
+    TextField(LRow, 'answer_conflict'), ReviewGeometry(LRow),
+    TextField(LRow, 'request_sha256'), ReviewSpec(LRow));
   if (FReviewId = TextField(LRow, 'id')) and
     (FSourceHash = TextField(LRow, 'source_sha256')) then
   begin
@@ -3897,6 +4327,12 @@ begin
   end;
   if LHit >= 0 then
   begin
+    if StructuredRow(TJSObject(FCurrentLabels[LHit])) then
+    begin
+      Status('This structured answer is bound to its request and cannot be moved as a freeform label.', True);
+      AEvent.preventDefault;
+      Exit;
+    end;
     SelectLabel(LHit);
     LRow := TJSObject(FCurrentLabels[LHit]);
     FDragOriginalStart := Trunc(NumberField(LRow, 'start_frame'));
@@ -4435,7 +4871,7 @@ begin
     Exit;
   end;
   LTarget := TJSObject(FCurrentLabels[LTargetIndex]);
-  if not RowMatchesSource(LTarget) or
+  if StructuredRow(LTarget) or not RowMatchesSource(LTarget) or
     (TextField(LTarget, 'status') = 'withdrawn') then
   begin
     Status('The merge target is not an active label on this source.', True);

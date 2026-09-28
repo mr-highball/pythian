@@ -54,9 +54,10 @@ uses
   SysUtils,
   jsonparser,
   pythian.audio,
-  pythian.hash,
   pythian.tools.annotations.catalog,
-  pythian.tools.annotations.proposal;
+  pythian.tools.annotations.proposal,
+  pythian.tools.annotations.contract,
+  pythian.tools.annotations.sourceguard;
 
 const
   CMaximumTransactionBytes = 16384;
@@ -338,9 +339,17 @@ begin
   end;
   Result := TJSONObject(LData);
   try
-    Need((Result.Integers['version'] = 1) and
+    Need((Result.Integers['version'] in [1, 2]) and
       (Result.Integers['revision'] = ARevision),
       'Review event revision differs from filename');
+    if Result.Integers['version'] = 2 then
+    begin
+      Need((Result.Find('change') <> nil) and
+        (Result.Find('change').JSONType = jtObject),
+        'Structured review event requires change');
+      ValidateStructuredChange(Result.Objects['change'],
+        Result.Strings['source_sha256']);
+    end;
   except
     Result.Free;
     raise;
@@ -384,7 +393,8 @@ begin
   end;
 end;
 
-function NormalizeChange(const AInput, ATrack: TJSONObject): TJSONObject;
+function NormalizeChange(const AInput, ATrack: TJSONObject;
+  const AStructured: Boolean): TJSONObject;
 var
   LId: String;
   LType: String;
@@ -429,7 +439,8 @@ begin
   end;
   if (LType = 'key') or (LType = 'harmony') then
   begin
-    Need(ValidTonalValue(LValue), 'Invalid tonal value');
+    Need(((LType = 'key') and (LValue = 'no_key')) or
+      ValidTonalValue(LValue), 'Invalid tonal value');
   end;
   if LType = 'tempo' then
   begin
@@ -462,7 +473,9 @@ begin
     Result.Add('end_frame', LEnd);
     Result.Add('part', LPart);
     Result.Add('proposal_id', LProposalId);
-    if LType = 'note' then
+    if (LType = 'note') and
+      (not AStructured or
+       ((LValue <> 'unknown') and (LValue <> 'ambiguous'))) then
     begin
       LPitch := RequiredInt64(AInput, 'pitch_midi');
       Need((LPitch >= 0) and (LPitch <= 127), 'Invalid MIDI pitch');
@@ -481,23 +494,54 @@ begin
   end;
 end;
 
+procedure ValidateFixedLinks(const ACatalogRoot, AHash: String;
+  const ARequest: TJSONObject);
+var
+  LSpec: TJSONObject;
+  LLinks: TJSONArray;
+  LLink: TJSONObject;
+  LTarget: TJSONObject;
+  LIndex: Integer;
+begin
+  LSpec := ARequest.Objects['answer_spec'];
+  LLinks := LSpec.Arrays['links'];
+  for LIndex := 0 to LLinks.Count - 1 do
+  begin
+    LLink := LLinks.Objects[LIndex];
+    if LLink.Strings['kind'] = 'proposal' then
+    begin
+      Need(CatalogProposalExists(ACatalogRoot, AHash,
+        LLink.Strings['target_id']),
+        'Structured answer proposal link is unavailable');
+    end
+    else
+    begin
+      LTarget := FindCatalogCurrentLabel(ACatalogRoot, AHash,
+        LLink.Strings['target_id']);
+      try
+        Need((LTarget <> nil) and
+          (LTarget.Strings['status'] = 'approved') and
+          (LTarget.Strings['type'] = LLink.Strings['target_type']) and
+          (LTarget.Integers['revision'] =
+            LLink.Integers['target_revision']) and
+          (LTarget.Strings['value'] <> 'unknown') and
+          (LTarget.Strings['value'] <> 'ambiguous'),
+          'Structured answer reviewed-label link is unavailable');
+      finally
+        LTarget.Free;
+      end;
+    end;
+  end;
+end;
+
 procedure VerifySourceAsset(const ACatalogRoot, AHash: String;
   const ATrack: TJSONObject);
 var
   LPath: String;
-  LStream: TFileStream;
 begin
   LPath := IncludeTrailingPathDelimiter(ExpandFileName(ACatalogRoot)) +
     'sources' + PathDelim + AHash + '.wav';
-  LStream := TFileStream.Create(LPath, fmOpenRead or fmShareDenyWrite);
-  try
-    Need(LStream.Size = ATrack.Int64s['source_bytes'],
-      'Catalog source byte count changed');
-    Need(Sha256Stream(LStream, LStream.Size) = AHash,
-      'Catalog source SHA256 changed');
-  finally
-    LStream.Free;
-  end;
+  VerifyGuardedSource(LPath, AHash, ATrack.Int64s['source_bytes']);
 end;
 
 procedure WriteNewEvent(const ADirectory: String; const ARevision: Integer;
@@ -545,11 +589,17 @@ var
   LExpected: Int64;
   LRevision: Integer;
   LReviewer: String;
+  LTransactionVersion: Int64;
+  LRequestId: String;
+  LRequestHash: String;
+  LRequest: TJSONObject;
+  LCurrent: TJSONObject;
 begin
   Need(ATransaction <> nil, 'Review transaction is required');
   Need(Length(ATransaction.AsJSON) <= CMaximumTransactionBytes,
     'Review transaction exceeds size bound');
-  Need(RequiredInt64(ATransaction, 'version') = 1,
+  LTransactionVersion := RequiredInt64(ATransaction, 'version');
+  Need(LTransactionVersion in [1, 2],
     'Unsupported review transaction version');
   LHash := RequiredText(ATransaction, 'source_sha256', 64);
   Need(ValidHash(LHash), 'Invalid review source SHA256');
@@ -557,12 +607,22 @@ begin
   Need((LExpected >= 0) and (LExpected < CMaximumRevision),
     'Review expected revision exceeds bound');
   LReviewer := RequiredText(ATransaction, 'reviewer', 128);
+  LRequestId := '';
+  LRequestHash := '';
+  if LTransactionVersion = 2 then
+  begin
+    LRequestId := RequiredText(ATransaction, 'request_id', 128);
+    LRequestHash := RequiredText(ATransaction,
+      'request_sha256', 64);
+    Need(ValidHash(LRequestHash), 'Invalid request SHA256');
+  end;
   Need((ATransaction.Find('change') <> nil) and
     (ATransaction.Find('change').JSONType = jtObject),
     'Review requires one change object');
   LTrack := ReadCatalogTrack(ACatalogRoot, LHash);
   try
-    LChange := NormalizeChange(ATransaction.Objects['change'], LTrack);
+    LChange := NormalizeChange(ATransaction.Objects['change'], LTrack,
+      LTransactionVersion = 2);
     try
       LReviews := IncludeTrailingPathDelimiter(ExpandFileName(ACatalogRoot)) +
         'reviews';
@@ -573,6 +633,41 @@ begin
       try
         LRevision := LatestRevision(LDirectory);
         Need(LExpected = LRevision, 'Review revision conflict');
+        LCurrent := FindCatalogCurrentLabel(ACatalogRoot, LHash,
+          LChange.Strings['label_id']);
+        try
+          if (LCurrent <> nil) and
+            (LCurrent.Find('request_sha256') <> nil) then
+            Need((LTransactionVersion = 2) and
+              (LCurrent.Strings['request_sha256'] = LRequestHash),
+              'Structured label corrections require their exact published request');
+        finally
+          LCurrent.Free;
+        end;
+        if LTransactionVersion = 2 then
+        begin
+          LRequest := FindPublishedStructuredRequest(ACatalogRoot,
+            LRequestId, LRequestHash);
+          try
+            Need((LRequest.Int64s['end_frame'] <=
+              LTrack.Int64s['frame_count']) and
+              (LRequest.Int64s['end_frame'] -
+               LRequest.Int64s['start_frame'] <=
+                Int64(LTrack.Integers['sample_rate']) * 30),
+              'Structured request lies outside bounded source region');
+            if Copy(LChange.Strings['type'], 1, 4) = 'ext.' then
+              Need(LChange.Int64s['extension_version'] = 2,
+                'Structured review extension version must be 2');
+            LChange.Add('request_sha256', LRequestHash);
+            LChange.Add('request', LRequest);
+            LRequest := nil;
+            ValidateStructuredChange(LChange, LHash);
+            ValidateFixedLinks(ACatalogRoot, LHash,
+              LChange.Objects['request']);
+          finally
+            LRequest.Free;
+          end;
+        end;
         Need((LTrack.Strings['partition'] <> 'evaluation') or
           (LRevision > 0) or
           ((LChange.Strings['proposal_id'] = '') and
@@ -588,7 +683,7 @@ begin
         VerifySourceAsset(ACatalogRoot, LHash, LTrack);
         Result := TJSONObject.Create;
         try
-          Result.Add('version', 1);
+          Result.Add('version', LTransactionVersion);
           Result.Add('revision', LRevision + 1);
           Result.Add('source_sha256', LHash);
           Result.Add('sample_rate', LTrack.Integers['sample_rate']);
@@ -789,6 +884,7 @@ begin
         if RequiredText(LChange, 'label_id', 128) = ALabelId then
         begin
           Result := TJSONObject(GetJSON(LChange.AsJSON));
+          Result.Add('revision', LRevision);
           Exit;
         end;
       finally
