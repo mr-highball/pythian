@@ -320,6 +320,21 @@ begin
     StringOfChar('c', 64)));
 end;
 
+function QueueAssetProvenance(const AQueue: TJSONObject;
+  const AItem, AAsset: Integer): TJSONObject;
+begin
+  Result := TJSONObject(TJSONObject(AQueue.Arrays['items'].Items[AItem]).
+    Arrays['assets'].Items[AAsset]).Objects['provenance'];
+end;
+
+function MultiHashes(const AFirst: String): TJSONArray;
+begin
+  Result := TJSONArray.Create;
+  Result.Add(AFirst);
+  Result.Add(StringOfChar('d', 64));
+  Result.Add(StringOfChar('e', 64));
+end;
+
 function Answer(const AId, AValue: String): TJSONObject;
 begin
   Result := TJSONObject.Create;
@@ -397,6 +412,12 @@ var
   LCorrespondenceRequest: TJSONObject;
   LCorrespondenceExportPath: String;
   LCorrespondenceReplayPath: String;
+  LMultiQueue: TJSONObject;
+  LMultiGenerated, LMultiEdited: TJSONObject;
+  LMultiReplayCatalog, LMultiExportPath, LMultiReplayPath: String;
+  LProvenance: TJSONObject;
+  LHashes: TJSONArray;
+  I, J: Integer;
   LSearch: TSearchRec;
 begin
   Need(ParamCount = 1, 'expected isolated output directory');
@@ -866,6 +887,107 @@ begin
         (LReport.Integers['events'] = 4),
         'correspondence evidence/event not retained in export');
       LReport.Free;
+      LMultiGenerated := TJSONObject(LGenerated.Clone);
+      LMultiEdited := TJSONObject(LGenerated.Clone);
+      try
+        LMultiGenerated.Objects['provenance'].Add('source_sha256s',
+          MultiHashes(LSourceHash));
+        LMultiEdited.Strings['role'] := 'edited';
+        LMultiEdited.Objects['provenance'].Add('source_sha256s',
+          MultiHashes(LSourceHash));
+        LMultiQueue := TJSONObject(LCorrespondenceQueue.Clone);
+        try
+          LMultiQueue.Arrays['items'].Add(Request('multi_generated',
+            'pair', LSource, LMultiGenerated));
+          LMultiQueue.Arrays['items'].Add(Request('multi_edited',
+            'pair', LSource, LMultiEdited));
+          WriteJson(LRoot + PathDelim + 'multi-queue.json', LMultiQueue);
+          LReport := PublishListeningQueue(LCatalog,
+            LRoot + PathDelim + 'multi-queue.json');
+          Need((LReport.Integers['waiting_count'] = 2) and
+            (LReport.Integers['completed_count'] = 3),
+            'multi-source queue counts');
+          LReport.Free;
+          LReport := ReadListeningQueue(LCatalog);
+          try
+            for I := 0 to 1 do
+            begin
+              LProvenance := TJSONObject(TJSONObject(LReport.Arrays['items'].
+                Items[I]).Arrays['assets'].Items[1]).Objects['provenance'];
+              LHashes := LProvenance.Arrays['source_sha256s'];
+              Need((LHashes.Count = 3) and
+                (LHashes.Strings[0] = LSourceHash) and
+                (LHashes.Strings[1] = StringOfChar('d', 64)) and
+                (LHashes.Strings[2] = StringOfChar('e', 64)),
+                'multi-source order changed on queue readback');
+            end;
+            LTransaction := Transaction('multi_generated',
+              TJSONObject(LReport.Arrays['items'].Items[0]).
+              Strings['request_sha256'], 'submitted', 'yes', 0);
+          finally LReport.Free end;
+          LEvent := CommitListeningReview(LCatalog, LTransaction);
+          LEvent.Free;
+          LTransaction.Free;
+          LReport := ReadListeningQueue(LCatalog);
+          try
+            LTransaction := Transaction('multi_edited',
+              TJSONObject(LReport.Arrays['items'].Items[0]).
+              Strings['request_sha256'], 'submitted', 'unknown', 0);
+          finally LReport.Free end;
+          LEvent := CommitListeningReview(LCatalog, LTransaction);
+          LEvent.Free;
+          LTransaction.Free;
+          LMultiExportPath := LRoot + PathDelim + 'multi-export.json';
+          LMultiReplayPath := LRoot + PathDelim + 'multi-replay.json';
+          LReport := ExportListeningPacket(LCatalog, LMultiExportPath);
+          LReport.Free;
+          LMultiReplayCatalog := LRoot + PathDelim + 'multi-replay';
+          ImportSource(LInbox, LMultiReplayCatalog, LSourceHash);
+          LReport := StageListeningAsset(LMultiReplayCatalog,
+            LGeneratedPath);
+          LReport.Free;
+          LReport := ReplayListeningPacket(LMultiReplayCatalog,
+            LMultiExportPath);
+          LReport.Free;
+          LReport := ExportListeningPacket(LMultiReplayCatalog,
+            LMultiReplayPath);
+          LReport.Free;
+          Need(FileHash(LMultiExportPath) = FileHash(LMultiReplayPath),
+            'ordered multi-source export/replay bytes differ');
+
+          for I := 0 to 7 do
+          begin
+            LBadQueue := TJSONObject(LMultiQueue.Clone);
+            try
+              LProvenance := QueueAssetProvenance(LBadQueue, 3, 1);
+              LHashes := LProvenance.Arrays['source_sha256s'];
+              case I of
+                0: LHashes.Strings[1] := LSourceHash;
+                1: LHashes.Strings[1] := StringOfChar('A', 64);
+                2: LHashes.Strings[0] := StringOfChar('f', 64);
+                3: begin
+                     LHashes.Delete(2);
+                     LHashes.Delete(1);
+                   end;
+                4: for J := 1 to 30 do
+                     LHashes.Add(LowerCase(IntToHex(J, 64)));
+                5: LProvenance.Delete('source_sha256');
+                6: LProvenance.Add('undeclared', 'x');
+                7: begin
+                     QueueAssetProvenance(LBadQueue, 3, 0).
+                       Add('source_sha256s', MultiHashes(LSourceHash));
+                   end;
+              end;
+              ExpectBadPublish(LCatalog,
+                LRoot + PathDelim + 'bad-queue.json', LBadQueue,
+                'invalid ordered multi-source case ' + IntToStr(I));
+            finally LBadQueue.Free end;
+          end;
+        finally LMultiQueue.Free end;
+      finally
+        LMultiGenerated.Free;
+        LMultiEdited.Free;
+      end;
     finally
       LCorrespondenceQueue.Free;
     end;

@@ -13,6 +13,55 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Multi-source listening provenance and next core gate — 2026-09-28
+
+The guarded 256.192-second generated WAV uses three ordered training inputs,
+but its first listening request carried only the first source hash. Before any
+operator response, root froze a bounded repair under
+[NS-6 authoring](TODO/NS-6_authoring_01.md): generated/edited listening
+provenance may carry an ordered `source_sha256s` array of 2–32 distinct
+lowercase hashes, with the existing singular `source_sha256` as its first
+member. Source/reference and legacy single-source packets keep their existing
+shape. Publication, response history and export/re-import retain order;
+invalid replacement leaves the queue unchanged. The pas2js player shows only
+a compact source count. No acoustic assertion follows from the array.
+
+Ticket Guy's focused checked FPC 3.2.2 Win32/Win64 runs and Salty Boi's
+independent native QA passed generated/edited cases, eight rejected source-set
+variants, unchanged legacy normalization and byte-identical export→fresh-
+catalog replay→export. The new normalization path has no observed leak;
+heaptrc still reports 11 blocks in the pre-existing invalid-reviewer negative
+path, which this batch did not change. The pas2js build passes. The fixed-path
+checked Win64 service was re-staged at the already approved program path and
+restarted as PID 16248 on `192.168.12.109:18097` after a narrow-view spacing
+correction. Page, session and new JS
+return HTTP 200, and an authenticated 65,536-byte generated-WAV range returns
+HTTP 206. The live durable queue now binds all three profile source hashes in
+C/A/B order. Its two requests remain waiting with zero completed responses;
+the first phone-cue request hash is unchanged. The new queue file SHA-256 is
+`d4b2a4755fb5cf122c5c5bd59d0a5cc05a5d957b035875a15e6a35ba2725a230`.
+Native live export/inspect returned two requests, zero events and matching
+packet SHA-256
+`35fa092bb37bd641afdfa8e41fc56ac4a6c14fbf38cdd37b5304b93b4ff3f3fe`.
+Salty Boi's read-only 390px Brave pass on the actual served page showed
+`16000 Hz · 3 source recordings`, decoded the 256.192-second WAV, advanced
+playback, then sought and played at 240 seconds. It had no password prompt,
+JavaScript errors, review POSTs or horizontal overflow. The queue SHA and
+guarded request revision 0 were unchanged. The visual evidence is under
+`build/salty-listen-multisource-qa-20260928/screens5/`. No listening verdict,
+task credit or physical-phone proof is inferred.
+
+The adjacent read-only [NS-3 presence](TODO/NS-3_notes_05.md) publisher screen
+stopped: Good-sounds documents manually marked envelope regions but does not
+independently support this task's required quiet audible tail and disjoint
+nonzero same-WAV rest. Nothing was downloaded, scored or queued. A task-flow
+audit found no other core criterion ready to close without fresh independent
+acoustic evidence or manual listening. The narrowest NS-5 prerequisite remains
+[evaluation](TODO/NS-5_evaluation_01.md): verified complete reference cuts and
+timed musical traits are absent, so another metadata-only or fixed-output
+diagnostic would not close the gate. Continue the cumulative **2/20** manual
+queue while seeking a genuinely distinct source-evidence route.
+
 ## Global repetition guard feasibility — 2026-09-28
 
 The stopped chunk-local context trial improved joins but raised repeated
@@ -82,8 +131,9 @@ outstanding physical-phone cue review. The two reviews count as **two pending
 manual items across tasks**, below the user-directed notification threshold of
 20. The LAN service's authenticated queue request, asset HEAD and ranged WAV
 request returned HTTP 200/200/206; physical-phone playback and musical judgment
-are not inferred. The catalog asset's singular source pointer is one member of
-the three-source set; the saved profile/report bind the complete set.
+are not inferred. The catalog asset now carries the complete ordered
+three-source set as well as its legacy first-source pointer; the saved
+profile/report independently bind the same set.
 
 This and the stopped chunk-local trial are two consecutive NS-5 continuity
 work batches without closing its full acceptance criterion. Reassessment:

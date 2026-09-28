@@ -8,7 +8,7 @@ From the repository root, stage a checked Win64 executable and the six current
 workbench assets. Replace the hash when a later checked binary is deployed.
 
 ```powershell
-& .\tools\build-label-lan-service.ps1 -CheckedExecutable 'build\listen-native\win64\pythian.label.catalog.exe' -ExpectedSha256 'C819A9A3BC7DA94F148EC2C0F144FB1778AB45B57118E9FCCBE459578706DCA0'
+& .\tools\build-label-lan-service.ps1 -CheckedExecutable 'build\listen-multisource-20260928\service-win64\pythian.label.catalog.exe' -ExpectedSha256 'F86433B8B43C1ECE91444EA846049DCA9789BB1316F579B0D81DB1A7691D9758'
 ```
 
 The staging step checks the binary hash, copies the browser assets, and refuses

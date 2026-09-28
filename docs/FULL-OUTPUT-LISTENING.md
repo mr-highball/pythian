@@ -92,6 +92,18 @@ evidence. Listening intake conservatively rejects WAV sample rates below
 8 kHz; the positive browser fixture is 48 kHz. Playback support at exactly
 8 kHz has not been independently verified.
 
+For a generated or edited asset learned from multiple recordings, keep the
+existing `source_sha256` as its first source and add `source_sha256s` to the
+provenance object in the actual learning order. The array must contain 2–32
+distinct lowercase SHA-256 values, beginning with `source_sha256`. It survives
+queue publication, saved responses, export and replay; the listening page shows
+the source count. A single-source packet omits the array, preserving its
+existing canonical request identity. Source/reference asset provenance does
+not accept this array. The hashes identify inputs; they do not assert that
+every source is audible at every moment of the output. The publisher checks
+the array shape and hashes, while the producer must bind secondary hashes to
+its saved learning profile; publication does not re-open those source WAVs.
+
 ### Source correspondence packets
 
 A producer that asks whether two assets correspond to the same source must

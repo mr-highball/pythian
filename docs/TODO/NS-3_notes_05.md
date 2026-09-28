@@ -106,6 +106,16 @@ from these four MAESTRO contrasts.
 
 **Dev Notes:**
 
+- 2026-09-28 bounded publisher-evidence screen: the official
+  [Good-sounds v1.1 record](https://zenodo.org/records/4588740) and
+  [UPF project page](https://www.upf.edu/web/mtg/good-sounds) document
+  hand-marked attack, decay, sustain, release-start and offset regions in
+  isolated monophonic recordings. Neither establishes the two specific
+  acoustic judgments this criterion needs: a quiet but audible release tail
+  and a disjoint nonzero instrument-free interval in the same WAV. No archive
+  was downloaded, no clip was scored or queued, and no task credit follows.
+  This metadata-only route is stopped; the next candidate needs independent
+  acoustic evidence before another operator packet is prepared.
 - 2026-09-28 a distinct publisher-hosted isolated-wind source screen stopped
   before audio access. Its prospectively fixed CR1/alto-saxophone policy treated
   the publisher's rounded `00:48` overview as an exact 48.000-second annotation

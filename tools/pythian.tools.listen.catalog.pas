@@ -442,8 +442,11 @@ function NormalizeProvenance(const AInput: TJSONObject;
   const AStorage, ARole, AHash: String; const ATrack: TJSONObject): TJSONObject;
 var
   LHash: String;
+  LHashes: TJSONArray;
+  LNormalizedHashes: TJSONArray;
+  LIndex, LPrior: Integer;
 begin
-  CheckFields(AInput, '|source_sha256|model_sha256|policy_sha256|' +
+  CheckFields(AInput, '|source_sha256|source_sha256s|model_sha256|policy_sha256|' +
     'parameter_sha256|split|seed|source_group|clock_id|partition|');
   Result := TJSONObject.Create;
   try
@@ -467,10 +470,39 @@ begin
     end
     else if (ARole = 'generated') or (ARole = 'edited') then
     begin
-      Need(AInput.Count = 6, 'generated provenance requires six fields');
+      Need((AInput.Count = 6) or
+        ((AInput.Count = 7) and (AInput.Find('source_sha256s') <> nil)),
+        'generated provenance has missing or unrelated fields');
       LHash := TextField(AInput, 'source_sha256', 64);
       Need(ValidHash(LHash), 'invalid generated source hash');
       Result.Add('source_sha256', LHash);
+      if AInput.Find('source_sha256s') <> nil then
+      begin
+        LHashes := ArrayField(AInput, 'source_sha256s');
+        Need((LHashes.Count >= 2) and (LHashes.Count <= 32),
+          'generated source list requires 2..32 hashes');
+        LNormalizedHashes := TJSONArray.Create;
+        try
+          for LIndex := 0 to LHashes.Count - 1 do
+          begin
+            Need(LHashes.Items[LIndex].JSONType = jtString,
+              'invalid generated source list entry');
+            LHash := LHashes.Strings[LIndex];
+            Need(ValidHash(LHash), 'invalid generated source list hash');
+            if LIndex = 0 then
+              Need(LHash = Result.Strings['source_sha256'],
+                'generated source list first hash differs');
+            for LPrior := 0 to LIndex - 1 do
+              Need(LHash <> LHashes.Strings[LPrior],
+                'duplicate generated source list hash');
+            LNormalizedHashes.Add(LHash);
+          end;
+          Result.Add('source_sha256s', LNormalizedHashes);
+          LNormalizedHashes := nil;
+        finally
+          LNormalizedHashes.Free;
+        end;
+      end;
       LHash := TextField(AInput, 'model_sha256', 64);
       Need(ValidHash(LHash), 'invalid model hash');
       Result.Add('model_sha256', LHash);

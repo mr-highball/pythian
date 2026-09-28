@@ -191,6 +191,24 @@ the underlying musical inference or reference labels already exist.
 
 **Dev Notes:**
 
+- 2026-09-28 multi-source listening provenance repair: the waiting guarded
+  4:16 Pythian render was produced from three ordered WAVs, while its first
+  published packet named only the first source. The Pascal v1 contract now
+  accepts a 2–32-item ordered `source_sha256s` array for generated/edited
+  assets, with the existing singular hash first; source/reference and legacy
+  single-source normalization stay unchanged. Pascal native Win32/Win64 and
+  independent Salty Boi QA passed generated/edited roundtrip, eight rejected
+  replacement cases, unchanged queue on failure and byte-identical export/
+  replay. pas2js shows a compact source count. The fixed-path LAN service was
+  rebuilt and restarted at port 18097, then the unreviewed live guarded packet
+  was replaced with its complete ordered C/A/B source set. Both requests are
+  still waiting, with zero completed; the phone-cue packet hash is unchanged.
+  Independent read-only 390px Brave QA on the deployed page showed
+  `16000 Hz · 3 source recordings`, decoded and played the 256.192-second
+  guarded WAV, then sought and played at 240 seconds. It had no password
+  prompt, JavaScript error, review POST or horizontal overflow; the queue SHA
+  and guarded request revision 0 were unchanged. This repair neither counts
+  as physical-phone playback nor closes checklist point 5 or the task.
 - 2026-09-28 physical-phone checkpoint: the operator confirmed audible
   playback of both 0.5-second and 5-second original regions, successful Save
   on all three remaining MAESTRO requests, and no new Windows Defender alert

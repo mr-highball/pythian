@@ -345,8 +345,8 @@ end;
 
 procedure TListener.DrawPacket;
 var
-  LAssets, LRanges, LChoices, LScores, LSaved: TJSArray;
-  LAsset, LRange, LDimension, LAnswer: TJSObject;
+  LAssets, LRanges, LChoices, LScores, LSaved, LSourceHashes: TJSArray;
+  LAsset, LRange, LDimension, LAnswer, LProvenance: TJSObject;
   LCard, LSelect, LLabel: TJSElement;
   LOption: TJSHTMLSelectElement;
   LAudio: TJSHTMLAudioElement;
@@ -384,6 +384,16 @@ begin
     AddText(LCard, 'small', Str(LAsset, 'storage') + ' · ' +
       IntToStr(Trunc(Num(LAsset, 'frames'))) + ' frames · ' +
       IntToStr(Trunc(Num(LAsset, 'sample_rate'))) + ' Hz', 'muted');
+    if ((Str(LAsset, 'role') = 'generated') or
+      (Str(LAsset, 'role') = 'edited')) and
+      isObject(LAsset['provenance']) then
+    begin
+      LProvenance := Obj(LAsset['provenance']);
+      LSourceHashes := Arr(LProvenance, 'source_sha256s');
+      if (LSourceHashes <> nil) and (LSourceHashes.length > 1) then
+        AddText(LCard, 'small', ' · ' + IntToStr(LSourceHashes.length) +
+          ' source recordings', 'muted');
+    end;
     LAudio := TJSHTMLAudioElement(document.createElement('audio'));
     LAudio.id := 'audio-' + IntToStr(I);
     LAudio.controls := True;
