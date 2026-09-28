@@ -107,6 +107,32 @@ variation is authorized by the existing evidence.
 
 **Dev Notes:**
 
+- 2026-09-28 the frozen blind odd/even candidate stopped before reference
+  scoring. The first Pascal source-free run failed a quiet high-vibrato
+  control because the fixture averaged both harmonic amplitudes; repairing
+  that fixture to the earlier physical control's `first + 0.5*second`
+  amplitudes left the observation, thresholds and decision rule unchanged.
+  A later output-initialization repair cleared invalid evidence fields on
+  out-of-range intervals; withdrawn packet hashes and exact source chronology
+  are recorded in ignored `build/register-odd-even-blind-20260928/RESULT.md`.
+  Final Pascal source SHA-256 is
+  `8edf15545b580ce0c6605e76411b9c9fae88d00393696a12b9015b3d5f5f3e40`;
+  canonical blind packet SHA-256 is
+  `aa90e2c19cae6adf6175e8ec9df515c0e0f1a26954764ac846e466b973bd8902`.
+  Checked Win32/Win64 runs and Salty Boi's independent rebuild reproduced
+  all source-free controls, 96 interval decisions, 4,700,160 visits, the
+  `1e-9` relative ratio agreement, zero leaks and sub-64-MiB private commit.
+  The packet proposed **zero** octave raises: 63 upper alternatives were
+  outside the fixed MIDI limit, 16 intervals were too short for the three
+  windows, 14 retained lower-register support and 3 were ambiguous. The
+  required at-least-one corrected octave error is therefore impossible;
+  stop before opening the reference for a development score. Spring was
+  already exposed development material; this was algorithmic candidate
+  isolation, not an unseen-source test. No maintained inference change,
+  criterion closure or credit follows. Do not retune the 80-ms windows,
+  threshold or note range on this packet. Reassess note evidence only after
+  a distinct independently supported observation can protect short and
+  genuine low notes.
 - 2026-09-28 task-flow reassessment after the physical long-tone pass: the
   independently contrasting observation now permits one blind development
   check, but it does not justify another source-only octave screen. The

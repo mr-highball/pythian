@@ -42,6 +42,32 @@ as `build/recorded-phrases/AuSep_1_fl_08_Spring.wav`, SHA-256
 the original. A future blind diagnostic must save audio-derived predictions
 before reading its development reference or score.
 
+A frozen follow-up did construct one Pascal candidate from that original
+Spring WAV and its existing unlabelled 96-interval inference packet. After a
+source-free fixture-amplitude repair and an evidence-field initialization
+repair, checked Win32/Win64 and Salty Boi's independent rebuild agreed on
+all 96 decisions: **zero proposed octave raises**, 19 unresolved intervals,
+4,700,160 counted visits and numeric ratios within `1e-9` relative. Both
+targets passed the source-free controls, zero-leak and 64-MiB private-commit
+limits. The final source SHA-256 is
+`8edf15545b580ce0c6605e76411b9c9fae88d00393696a12b9015b3d5f5f3e40`;
+canonical prediction SHA-256 is
+`aa90e2c19cae6adf6175e8ec9df515c0e0f1a26954764ac846e466b973bd8902`.
+Sixty-three intervals disallowed an upper note by the frozen range, sixteen
+lacked three contained 80-ms windows, fourteen retained lower support, and
+three were eligible but ambiguous. Because zero raises cannot correct even
+one old octave error, the predeclared development gate fails without opening
+the reference for a new score. The complete chronology, including withdrawn
+pre-repair packets, is under ignored `build/register-odd-even-blind-20260928/`;
+independent QA is under `build/register-odd-even-blind-qa-final-20260928/`.
+Only score-schema lines were inspected before policy freeze; no score values
+or reference cohorts informed candidate construction. This is exposed
+development, not unseen evaluation. Stop this rule without a window/range/
+threshold variant or task credit. The next note-identity proposal needs a
+different independently supported observation with real short/quiet/low-note
+protection. The unused private Pascal scorer was compiled but deliberately
+not run.
+
 A separate, frozen source-free beat event-graph candidate failed its first
 `missing120` owner-2 gate: five matches among six reference and six predicted
 pulses, below the declared 0.90 precision/recall floor. Earlier steady,
