@@ -86,6 +86,22 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 
 **Dev Notes:**
 
+- 2026-09-27 a physical Brave page showed the workbench shell but remained on
+  `Connecting to local service…`. The host's live listener, page, bundled JS,
+  session endpoint, private Wi-Fi address and local-subnet firewall rule were
+  healthy when checked; the phone's failed request was not captured. A real
+  Brave reproduction blocked only `/api/session` and showed that its raw fetch
+  `TypeError` bypassed the Pascal-only exception handler, leaving an unhandled
+  rejection and the original text. The pas2js startup now catches raw rejection,
+  displays a connection error after failure or ten seconds, and offers Retry
+  with stale-attempt protection. This is recovery for the reproduced failure,
+  not proof of physical-phone reachability. The existing manual tool review
+  remains pending and no task credit follows. Independent isolated 390-pixel
+  browser QA passed failed-fetch recovery, ten-second timeout/Retry and a late
+  first response after successful retry, with zero review POSTs; 1280-pixel
+  normal startup had no horizontal overflow. The served no-key LAN page now
+  carries byte-matching checked `app.js`, and its queue remains three waiting /
+  one completed. The phone's actual connection verdict is still required.
 - 2026-09-27 the operator identified that a saved answer remained in the
   prepared-request list with Save disabled, obscuring the workbench's queue
   purpose. The native Pascal report now derives waiting and completed rows from

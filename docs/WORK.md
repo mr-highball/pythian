@@ -13,6 +13,36 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## LAN workbench startup recovery — 2026-09-27
+
+The operator's physical Brave screenshot showed the page shell at
+`192.168.12.109:18097` but left `Connecting to local service…` visible.
+At inspection, the Pascal service was listening on that private Wi-Fi address;
+the page, bundled `app.js` and `/api/session` returned 200 from the host.
+The Private/local-subnet TCP 18097 firewall rule remained enabled. These checks
+do not establish whether the phone's session request reached the server.
+
+A real Brave browser reproduced the exact stuck text by rejecting only its
+`/api/session` fetch: the raw JavaScript `TypeError` bypassed the Pascal-typed
+exception handler and became an unhandled Promise rejection. The Pascal/pas2js
+startup path now catches that rejection, reports a visible connection error,
+times out a pending startup after ten seconds and offers Retry. An attempt
+epoch prevents a late earlier response from replacing a retry's state. This
+repairs error visibility and recovery for the reproduced failure; the phone's
+underlying network cause remains unobserved.
+
+Ticket Guy's isolated Brave check reproduced the failure, then passed normal,
+blocked-session and delayed-session recovery at 390 pixels. Independent Salty
+Boi QA on the staged bytes passed those paths in Edge, verified that a late
+first response left a successful retry unchanged, saw zero review POSTs and
+checked 1280-pixel startup without overflow. Its evidence is under ignored
+`build/salty-startup-qa-20260927/`. The checked assets are now served from the
+same no-key LAN address by PID 19816. Live `/api/session` and page requests
+return 200, the served `app.js` SHA-256 is
+`c67a35b2dbf5f14ac6a1675b575e71a74012160d56cb6d8de62f711047682954`,
+and the review queue remains three waiting / one completed. Physical-phone
+replay stays in the existing manual review item; no milestone credit changed.
+
 ## Review request feedback loop — 2026-09-27
 
 The operator clarified the workbench's purpose: an agent publishes exact audio

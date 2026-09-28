@@ -53,6 +53,8 @@ h2 { margin-bottom: 0; font-size: 1.2rem; }
 .subtitle { max-width: 49rem; color: #b6c6cd; margin-bottom: 0; line-height: 1.45; }
 .status { margin: 0; padding: .7rem 2rem; border-bottom: 1px solid #30434e; background: #1c303b; color: #c9e8df; min-height: 2.7rem; }
 .status.error { background: #43292c; color: #ffd5d1; }
+.connect-retry { margin: .45rem 1rem; min-height: 2.65rem; }
+.connect-retry[hidden] { display: none; }
 main { display: grid; grid-template-columns: minmax(17rem, 20rem) minmax(0, 1fr); gap: 1rem; max-width: 110rem; margin: auto; padding: 1rem; align-items: start; }
 .source-column, .work-column { display: grid; gap: 1rem; min-width: 0; }
 .panel { background: #1b2a35; border: 1px solid #344852; border-radius: 12px; padding: 1rem; min-width: 0; }

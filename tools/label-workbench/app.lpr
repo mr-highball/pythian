@@ -57,6 +57,7 @@ type
   TWorkbench = class
   private
     FToken: String;
+    FStartEpoch: Integer;
     FSourceHash: String;
     FSourceGroup: String;
     FClockId: String;
@@ -194,6 +195,7 @@ type
     procedure DownloadExport; async;
     procedure UploadReviewed; async;
     function HandleImport(AEvent: TJSMouseEvent): Boolean;
+    function HandleConnectRetry(AEvent: TJSMouseEvent): Boolean;
     function HandleTrack(AEvent: TJSMouseEvent): Boolean;
     function HandleAssignment(AEvent: TJSMouseEvent): Boolean;
     function HandleAlignedPeer(AEvent: TJSMouseEvent): Boolean;
@@ -2117,16 +2119,39 @@ procedure TWorkbench.Start; async;
 var
   LResponse: TJSResponse;
   LData: TJSObject;
+  LEpoch: Integer;
+  LTimer: NativeInt;
 begin
+  Inc(FStartEpoch);
+  LEpoch := FStartEpoch;
+  FToken := '';
+  Element('connect-retry').setAttribute('hidden', '');
+  Status('Connecting to local service…');
+  LTimer := window.setTimeout(
+    procedure()
+    begin
+      if (LEpoch = FStartEpoch) and (FToken = '') then
+      begin
+        Status('Connection is taking too long. Check that this device can reach the catalog, then retry.', True);
+        Element('connect-retry').removeAttribute('hidden');
+      end;
+    end, 10000);
   try
     LResponse := await(TJSResponse, FetchApi('/api/session', 'GET', ''));
-    if LResponse.status <> 200 then
+    if LEpoch <> FStartEpoch then
     begin
-      Status('Could not open the catalog service (HTTP ' +
-        IntToStr(LResponse.status) + ').', True);
+      window.clearTimeout(LTimer);
       Exit;
     end;
+    if LResponse.status <> 200 then
+      raise Exception.Create('HTTP ' + IntToStr(LResponse.status));
     LData := await(TJSObject, LResponse.json());
+    if LEpoch <> FStartEpoch then
+    begin
+      window.clearTimeout(LTimer);
+      Exit;
+    end;
+    window.clearTimeout(LTimer);
     FToken := TextField(LData, 'token');
     if FToken = '' then
     begin
@@ -2137,14 +2162,27 @@ begin
     except
       // Disabled browser storage must not block the workbench.
     end;
+    Element('connect-retry').setAttribute('hidden', '');
     ShowWorkspace;
     Status('Connected to catalog.');
     RefreshLists;
   except
     on LError: Exception do
     begin
-      Status('Could not reach the Pascal catalog service: ' +
-        LError.Message, True);
+      if LEpoch = FStartEpoch then
+      begin
+        window.clearTimeout(LTimer);
+        Status('Could not reach the catalog service: ' +
+          LError.Message + '. Retry the connection.', True);
+        Element('connect-retry').removeAttribute('hidden');
+      end;
+    end;
+  else
+    if LEpoch = FStartEpoch then
+    begin
+      window.clearTimeout(LTimer);
+      Status('Could not reach the catalog service. Check this device’s connection and retry.', True);
+      Element('connect-retry').removeAttribute('hidden');
     end;
   end;
 end;
@@ -3193,6 +3231,12 @@ begin
   Result := False;
 end;
 
+function TWorkbench.HandleConnectRetry(AEvent: TJSMouseEvent): Boolean;
+begin
+  Start;
+  Result := False;
+end;
+
 function TWorkbench.HandleTrack(AEvent: TJSMouseEvent): Boolean;
 begin
   FQueueInitialSelectionDone := True;
@@ -4116,6 +4160,8 @@ begin
   FAudio := TJSHTMLAudioElement(Element('preview'));
   FAudio.onloadedmetadata := @HandleAudioMetadata;
   FAudio.onerror := @HandleAudioError;
+  TJSHTMLButtonElement(Element('connect-retry')).onclick :=
+    @HandleConnectRetry;
   TJSHTMLButtonElement(Element('import-button')).onclick := @HandleImport;
   TJSHTMLButtonElement(Element('previous-button')).onclick := @HandlePrevious;
   TJSHTMLButtonElement(Element('next-button')).onclick := @HandleNext;
