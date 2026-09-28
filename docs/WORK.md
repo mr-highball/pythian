@@ -13,6 +13,29 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Repeated Windows Firewall alerts and stable LAN staging — 2026-09-28
+
+The operator showed repeated Windows Defender prompts for
+`pythian.label.catalog.exe` from changing `build/` executable paths. A
+read-only `netsh` audit found existing Private/TCP 18097/LocalSubnet port
+rules, plus broad Private+Public, any-port/any-remote application rules for an
+older build-specific executable. The currently running LAN service remains
+PID 6796 on that older path. The likely repeated-alert cause is a new program
+identity on each deployment path; the port rules alone did not prevent the
+observed prompt.
+
+The checked Win64 binary and six pas2js assets are now staged at a fixed
+ignored path with [build-label-lan-service.ps1](../tools/build-label-lan-service.ps1).
+Ticket Guy and Salty Boi independently checked repeat staging, SHA-256
+`c819a9a3bc7da94f148ec2c0f144fb1778ab45b57118e9fccbe459578706dca0`,
+destination containment and refusal to replace a running stable binary.
+The script only stages build output. The narrow one-time administrator rule
+and direct Pascal launch are specified in the
+[LAN service procedure](LAN-REVIEW-SERVICE.md). No new firewall rule or stable
+service was launched by this QA, so absence of future prompts and physical
+phone reachability remain unverified. The two finished loopback QA services
+on ports 18107/18108 were stopped; the live operator catalog was untouched.
+
 ## Full-output listening loop accepted — 2026-09-28
 
 The [reusable full-output listening task](TODO/DONE/NS-5_evaluation_03.md)
