@@ -106,6 +106,17 @@ from these four MAESTRO contrasts.
 
 **Dev Notes:**
 
+- 2026-09-28 a distinct publisher-hosted isolated-wind source screen stopped
+  before audio access. Its prospectively fixed CR1/alto-saxophone policy treated
+  the publisher's rounded `00:48` overview as an exact 48.000-second annotation
+  bound; the matching note CSV's last row ends at 48.071 seconds. The Pascal
+  metadata gate therefore rejected the fixed member before choosing a tail or
+  rest window or reading its WAV. The ignored policy, verified archive member,
+  CSV hash and stop evidence are in `build/choralebricks-tail-20260928/`.
+  This is a flawed metadata bound, not acoustic evidence that the source lacks
+  either region. Do not substitute a member/window or infer an audible label;
+  stop another source-only screen at this checkpoint. Criterion 3, the manual
+  queue and task credit are unchanged.
 - 2026-09-28 checkpoint after two nonclosing quiet-tail source batches: the
   frozen Berg/Scriabin post-release screen below found no eligible candidate.
   A distinct Pascal audit of the accepted original NSynth

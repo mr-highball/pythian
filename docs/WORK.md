@@ -53,6 +53,14 @@ same-WAV rest and a reviewed quiet audible tail, then a newly frozen unchanged
 observation comparison. No tail score, user label, queue item or credit was
 created by either screen.
 
+A later fixed isolated-wind source screen stopped before WAV access because its
+policy used a publisher's rounded `00:48` display as an exact 48.000-second
+annotation bound; the selected note file ends at 48.071 seconds. Its verified
+metadata and ignored stop record are in `build/choralebricks-tail-20260928/`.
+This invalid bound proves nothing about the sound, and no tail/rest candidate,
+review request or score was produced. Stop source-only retries at this
+checkpoint; the recorded presence criterion remains open without credit.
+
 ## Repeated Windows Firewall alerts and stable LAN staging — 2026-09-28
 
 The operator showed repeated Windows Defender prompts for
