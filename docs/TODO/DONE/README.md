@@ -5,6 +5,7 @@
 
 | Accepted task | Date | North-star credit | Overall credit |
 | --- | --- | ---: | ---: |
+| [NS-5_continuity_02](NS-5_continuity_02.md) — Bounded saved-profile acoustic WFC continuation | 2026-09-28 | +1 NS-5 | +0.20 |
 | [NS-5_evaluation_03](NS-5_evaluation_03.md) — Reusable full-output listening packets and worker readback | 2026-09-28 | +2 NS-5 | +0.40 |
 | [NS-3_labeling_01](NS-3_labeling_01.md) — Durable reviewed WAV catalog and Pascal proposal/training path | 2026-09-26 | +2 NS-3 | +0.50 |
 | [NS-4_composition_02](NS-4_composition_02.md) — Coherent original WFC-selected long-form passage | 2026-09-25 | +1 NS-4 | +0.15 |

@@ -148,6 +148,11 @@ begin
       ReplayJournalFiles;
       Exit;
     end;
+    if ParamStr(1) = 'replay-long' then
+    begin
+      ReplayLongJournalFiles;
+      Exit;
+    end;
     if ParamStr(1) = 'journals' then
     begin
       LearnJournalFiles;

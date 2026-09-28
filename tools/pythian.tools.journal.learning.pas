@@ -32,6 +32,12 @@ interface
 { Command arguments: journals OUTPUT_PREFIX [OPTIONS] INPUT.wav CACHE.pyaf ... }
 procedure LearnJournalFiles;
 procedure ReplayJournalFiles;
+procedure ReplayLongJournalFiles;
+function DistinctUsedJournalSourceRecordings(const AHashes: array of String;
+  const AUse: array of Integer): Integer;
+procedure RequireLongReplayAcceptanceSourceUse(const AHashes: array of String;
+  const AUse: array of Integer; const AOutputFrames: Int64;
+  const ASampleRate: Integer);
 procedure BlendJournalFiles;
 procedure AttachJournalContexts;
 procedure FitJournalFiles;
@@ -50,21 +56,26 @@ uses
   pythian.learning,
   pythian.learning.journal,
   pythian.learning.selection,
+  pythian.learning.render.stream,
   pythian.learning.continuity,
   pythian.learning.context,
   pythian.learning.binding,
   pythian.wfc.learning.profile,
+  pythian.wfc.learning,
   pythian.wfc.learning.blend,
   pythian.wfc.learning.journal,
   pythian.wfc.generation,
+  pythian.wfc.stream,
   pythian.wave.read,
   pythian.wave,
+  pythian.wave.stream,
   pythian.granular,
   pythian.meter,
   pythian.hash,
   pythian.tools.files,
   wfc,
   wfc_sequence,
+  wfc_sequence_graph,
   wfc_sequence_text;
 
 type
@@ -1359,6 +1370,401 @@ end;
 procedure ReplaceJson(const AObject: TJSONObject; const AName: String; const AValue: TJSONData);
 begin
   AObject.Elements[AName] := AValue;
+end;
+
+{ This publication path keeps the audition on disk throughout rendering. As
+  with the short path, report.json is the acceptance marker and moves last. }
+procedure PublishLongJournalResult(const APrefix, AStage: String);
+var
+  LModelMoved, LWaveMoved: Boolean;
+  LSuffix: String;
+begin
+  LModelMoved := False;
+  LWaveMoved := False;
+  try
+    for LSuffix in ['.json', '.wfcs', '.wav'] do
+      if FileExists(APrefix + LSuffix) then
+        raise EAudio.Create('Journal output appeared during publication');
+    if not RenameFile(AStage + PathDelim + 'model.wfcs', APrefix + '.wfcs') then
+      raise EAudio.Create('Cannot publish long journal model');
+    LModelMoved := True;
+    if not RenameFile(AStage + PathDelim + 'audition.wav', APrefix + '.wav') then
+      raise EAudio.Create('Cannot publish long journal audition');
+    LWaveMoved := True;
+    if not RenameFile(AStage + PathDelim + 'report.json', APrefix + '.json') then
+      raise EAudio.Create('Cannot publish long journal report');
+  except
+    if LWaveMoved then DeleteFile(APrefix + '.wav');
+    if LModelMoved then DeleteFile(APrefix + '.wfcs');
+    raise;
+  end;
+end;
+
+function DistinctUsedJournalSourceRecordings(const AHashes: array of String;
+  const AUse: array of Integer): Integer;
+var
+  LIndex, LOther: Integer;
+  LSeen: Boolean;
+begin
+  if Length(AHashes) <> Length(AUse) then
+    raise EAudio.Create('Long replay source-use rows do not match saved sources');
+  Result := 0;
+  for LIndex := 0 to High(AUse) do
+  begin
+    if AUse[LIndex] < 0 then
+      raise EAudio.Create('Long replay source use cannot be negative');
+    if AUse[LIndex] = 0 then Continue;
+    LSeen := False;
+    for LOther := 0 to LIndex - 1 do
+      if (AUse[LOther] > 0) and (AHashes[LOther] = AHashes[LIndex]) then
+      begin
+        LSeen := True;
+        Break;
+      end;
+    if not LSeen then Inc(Result);
+  end;
+end;
+
+procedure RequireLongReplayAcceptanceSourceUse(const AHashes: array of String;
+  const AUse: array of Integer; const AOutputFrames: Int64;
+  const ASampleRate: Integer);
+begin
+  if (ASampleRate < 1) or (AOutputFrames < 1) then
+    raise EAudio.Create('Long replay output geometry invalid');
+  if (AOutputFrames >= Int64(180) * ASampleRate) and
+    (DistinctUsedJournalSourceRecordings(AHashes, AUse) < 2) then
+    raise EAudio.Create('Long acceptance output must use two distinct saved recording hashes');
+end;
+
+procedure ReplayLongJournalFiles;
+var
+  LProfile: TJournalModelProfile;
+  LAccess: TJournalAudioAccess;
+  LLatent: TLearnedSequenceStream;
+  LSelector: TJournalSelectionStream;
+  LRender: TJournalWaveRenderStream;
+  LSink: TStreamAudioSink;
+  LWriter: TWavePcm16Writer;
+  LWaveOutput: TFileStream;
+  LInputDocument, LReport, LRow: TJSONObject;
+  LInputSources, LReportSources, LSchedule, LMap: TJSONArray;
+  LStreams: array of TFileStream;
+  LReaders: array of TWaveFrameReader;
+  LPaths, LHashes: array of String;
+  LSourceHashes: array of String;
+  LWeights: TJournalSelectionWeights;
+  LUse: array of Integer;
+  LSourceBytes: array of Int64;
+  LUsedSlots: array of Boolean;
+  LTokens, LSlots: TAcousticIndices;
+  LChunk: TWfcGeneratedSequenceSegment;
+  LOptions: TSequenceChunkOptions;
+  LSolve: TGraphSolveReport;
+  LSource: TJournalProfileSource;
+  LCandidate, LPrevious: TJournalRepresentative;
+  LInputPrefix, LOutputPrefix, LStage, LReportText, LModelText: String;
+  LWaveHash: String;
+  LExpectedFrames, LActualFrames: Int64;
+  LPeak: Double;
+  LGrains, LChunkGrains, LBlockFrames, LSeed, LSelectionSeed: Integer;
+  LSourceCount, LSourceIndex, LFileIndex, LIndex, LOther, LRemaining: Integer;
+  LChunkIndex, LOffset, LCount, LTokenIndex, LUnique, LUsedSources: Integer;
+  LRepeats, LSwitches, LContiguous: Integer;
+  LMatched, LStageReserved: Boolean;
+begin
+  if ParamCount < 8 then
+    raise EAudio.Create('Usage: pythian.learn replay-long INPUT_PREFIX OUTPUT_PREFIX GRAINS CHUNK_GRAINS BLOCK_FRAMES SOURCE.wav SOURCE.wav [...]');
+  LInputPrefix := ParamStr(2);
+  LOutputPrefix := ParamStr(3);
+  LGrains := StrToInt(ParamStr(4));
+  LChunkGrains := StrToInt(ParamStr(5));
+  LBlockFrames := StrToInt(ParamStr(6));
+  if (LGrains < 1) or (LGrains > MaximumJournalStreamGrains) or
+    (LChunkGrains < 1) or (LChunkGrains > 1024) or
+    (LBlockFrames < 1) or (LBlockFrames > 65536) or
+    (ParamCount - 6 > 32) then
+    raise EAudio.Create('Long replay grain, chunk, block or source count exceeds bounds');
+  RequireFreshJournalPrefix(LOutputPrefix);
+  for LIndex := 0 to 2 do
+    case LIndex of
+      0: if SameFileName(ExpandFileName(LOutputPrefix + '.json'),
+          ExpandFileName(LInputPrefix + '.json')) then
+          raise EAudio.Create('Long replay output must differ from saved profile');
+      1: if SameFileName(ExpandFileName(LOutputPrefix + '.wfcs'),
+          ExpandFileName(LInputPrefix + '.wfcs')) then
+          raise EAudio.Create('Long replay output must differ from saved model');
+      2: if SameFileName(ExpandFileName(LOutputPrefix + '.wav'),
+          ExpandFileName(LInputPrefix + '.wav')) then
+          raise EAudio.Create('Long replay output must differ from saved audition');
+    end;
+  LProfile := nil;
+  LAccess := nil;
+  LLatent := nil;
+  LSelector := nil;
+  LRender := nil;
+  LSink := nil;
+  LWriter := nil;
+  LWaveOutput := nil;
+  LInputDocument := nil;
+  LReport := nil;
+  LStageReserved := False;
+  LStage := LOutputPrefix + '.publishing';
+  try
+    LReportText := ReadProfileText(LInputPrefix + '.json');
+    LModelText := ReadProfileText(LInputPrefix + '.wfcs');
+    LProfile := TJournalModelProfile.Create(LReportText, LModelText);
+    LInputDocument := TJSONObject(GetJSON(LReportText));
+    LInputSources := TJSONArray(LInputDocument.Find('sources'));
+    LSourceCount := LProfile.SourceCount;
+    SetLength(LWeights, LSourceCount);
+    SetLength(LUse, LSourceCount);
+    SetLength(LSourceBytes, LSourceCount);
+    SetLength(LSourceHashes, LSourceCount);
+    for LIndex := 0 to LSourceCount - 1 do
+    begin
+      LWeights[LIndex] :=
+        TJSONObject(LInputSources.Items[LIndex]).Get('generation_weight', 1);
+      LSourceHashes[LIndex] := LProfile.SourceAt(LIndex).Binding.SourceSha256;
+    end;
+    LSeed := LInputDocument.Get('seed', 731);
+    LSelectionSeed := LInputDocument.Get('selection_seed', 731);
+    if (LSeed < 0) or (LSelectionSeed < 0) or
+      (Int64(LSeed) + (LGrains - 1) div LChunkGrains > High(Integer)) or
+      (Int64(LChunkGrains) * LProfile.Model.StateCount > DefaultAcousticStateCells) then
+      raise EAudio.Create('Long replay seed or state-cell schedule exceeds bounds');
+    LExpectedFrames := JournalStreamFrames(LProfile.Options.WindowFrames,
+      LProfile.Options.HopFrames, LGrains);
+    if (LExpectedFrames > Int64(300) * LProfile.SampleRate) then
+      raise EAudio.Create('Long replay exceeds 300-second output cap');
+    SetLength(LStreams, ParamCount - 6);
+    SetLength(LReaders, Length(LStreams));
+    SetLength(LPaths, Length(LStreams));
+    SetLength(LHashes, Length(LStreams));
+    LAccess := TJournalAudioAccess.Create;
+    SetLength(LAccess.Waves, LSourceCount);
+    for LFileIndex := 0 to High(LStreams) do
+    begin
+      LPaths[LFileIndex] := ParamStr(7 + LFileIndex);
+      for LIndex := 0 to 2 do
+        case LIndex of
+          0: if SameFileName(ExpandFileName(LOutputPrefix + '.json'),
+              ExpandFileName(LPaths[LFileIndex])) then
+              raise EAudio.Create('Long replay output overlaps source WAV');
+          1: if SameFileName(ExpandFileName(LOutputPrefix + '.wfcs'),
+              ExpandFileName(LPaths[LFileIndex])) then
+              raise EAudio.Create('Long replay output overlaps source WAV');
+          2: if SameFileName(ExpandFileName(LOutputPrefix + '.wav'),
+              ExpandFileName(LPaths[LFileIndex])) then
+              raise EAudio.Create('Long replay output overlaps source WAV');
+        end;
+      LStreams[LFileIndex] := TFileStream.Create(LPaths[LFileIndex],
+        fmOpenRead or fmShareDenyWrite);
+      LReaders[LFileIndex] := TWaveFrameReader.Create(LStreams[LFileIndex]);
+      LStreams[LFileIndex].Position := 0;
+      LHashes[LFileIndex] := Sha256Stream(LStreams[LFileIndex],
+        LStreams[LFileIndex].Size);
+      for LOther := 0 to LFileIndex - 1 do
+        if LHashes[LOther] = LHashes[LFileIndex] then
+          raise EAudio.Create('Long replay requires distinct explicit source recordings');
+      LMatched := False;
+      for LSourceIndex := 0 to LSourceCount - 1 do
+      begin
+        LSource := LProfile.SourceAt(LSourceIndex);
+        if LSource.Binding.SourceSha256 <> LHashes[LFileIndex] then Continue;
+        if (LAccess.Waves[LSourceIndex] <> nil) or
+          (LReaders[LFileIndex].SampleRate <> LProfile.SampleRate) or
+          (LReaders[LFileIndex].Channels <> LProfile.Channels) or
+          (LReaders[LFileIndex].FrameCount <> LSource.Binding.FrameCount) then
+          raise EAudio.Create('Long replay source hash or geometry mismatch');
+        LAccess.Waves[LSourceIndex] := LReaders[LFileIndex];
+        LSourceBytes[LSourceIndex] := LStreams[LFileIndex].Size;
+        LMatched := True;
+      end;
+      if not LMatched then
+        raise EAudio.Create('Explicit WAV does not match a saved source hash');
+    end;
+    if Length(LStreams) < 2 then
+      raise EAudio.Create('Long replay requires two distinct saved source recordings');
+    for LSourceIndex := 0 to LSourceCount - 1 do
+      if LAccess.Waves[LSourceIndex] = nil then
+        raise EAudio.Create('Supply every saved source by its exact file hash');
+    if not CreateDir(LStage) then
+      raise EAudio.Create('Cannot reserve journal publication prefix');
+    LStageReserved := True;
+    LWaveOutput := TFileStream.Create(LStage + PathDelim + 'audition.wav', fmCreate);
+    LSink := TStreamAudioSink.Create(LWaveOutput);
+    LWriter := TWavePcm16Writer.Create(LSink, LProfile.SampleRate,
+      LProfile.Channels, LExpectedFrames);
+    LRender := TJournalWaveRenderStream.Create(LProfile.Pool,
+      LAccess.ReadWindow, LWriter, LProfile.Options.WindowFrames,
+      LProfile.Options.HopFrames, LGrains, LBlockFrames);
+    LLatent := TLearnedSequenceStream.Create(LProfile.Model);
+    LSelector := TJournalSelectionStream.Create(LProfile.Pool,
+      LWeights, LSelectionSeed);
+    LReport := TJSONObject.Create;
+    LReport.Add('schema', 'pythian.acoustic.long.v1');
+    LReport.Add('input_report_sha256', HashText(LReportText));
+    LReport.Add('model_sha256', HashText(LModelText));
+    LReport.Add('vocabulary_sha256', LProfile.VocabularySha256);
+    LReport.Add('seed', LSeed);
+    LReport.Add('selection_seed', LSelectionSeed);
+    LReport.Add('grains', LGrains);
+    LReport.Add('chunk_grains', LChunkGrains);
+    LReport.Add('block_frames', LBlockFrames);
+    LReport.Add('sample_rate', LProfile.SampleRate);
+    LReport.Add('channels', LProfile.Channels);
+    LReport.Add('window_frames', LProfile.Options.WindowFrames);
+    LReport.Add('hop_frames', LProfile.Options.HopFrames);
+    LReport.Add('expected_frames', TJSONInt64Number.Create(LExpectedFrames));
+    LReport.Add('acceptance_duration_180_to_300_seconds',
+      LExpectedFrames >= Int64(180) * LProfile.SampleRate);
+    LReport.Add('replayed_without_learning', True);
+    LReportSources := TJSONArray.Create;
+    LReport.Add('sources', LReportSources);
+    for LSourceIndex := 0 to LSourceCount - 1 do
+    begin
+      LRow := TJSONObject.Create;
+      LReportSources.Add(LRow);
+      LSource := LProfile.SourceAt(LSourceIndex);
+      LRow.Add('source_index', LSourceIndex);
+      LRow.Add('source_sha256', LSource.Binding.SourceSha256);
+      LRow.Add('source_bytes', TJSONInt64Number.Create(LSourceBytes[LSourceIndex]));
+      LRow.Add('source_frames', TJSONInt64Number.Create(LSource.Binding.FrameCount));
+      LRow.Add('generation_weight', LWeights[LSourceIndex]);
+    end;
+    LSchedule := TJSONArray.Create;
+    LReport.Add('chunk_schedule', LSchedule);
+    LMap := TJSONArray.Create;
+    LReport.Add('grain_map', LMap);
+    SetLength(LUsedSlots, LProfile.Pool.SlotCount);
+    LUnique := 0;
+    LRepeats := 0;
+    LSwitches := 0;
+    LContiguous := 0;
+    LPrevious := Default(TJournalRepresentative);
+    LOffset := 0;
+    LChunkIndex := 0;
+    while LOffset < LGrains do
+    begin
+      LRemaining := LGrains - LOffset;
+      LCount := LChunkGrains;
+      if LCount > LRemaining then LCount := LRemaining;
+      LOptions := DefaultSequenceChunkOptions;
+      LOptions.CellCount := LCount;
+      LOptions.Seed := LSeed + LChunkIndex;
+      if not LLatent.TryNext(LOptions, nil, LChunk, LSolve) then
+        raise EAudio.Create('Saved journal model cannot satisfy long generation chunk ' +
+          IntToStr(LChunkIndex));
+      if Length(LChunk.Tokens) <> LCount then
+        raise EAudio.Create('Long generation returned wrong token count');
+      SetLength(LTokens, LCount);
+      for LIndex := 0 to LCount - 1 do
+        LTokens[LIndex] := AcousticTokenIndex(LChunk.Tokens[LIndex]);
+      LSlots := LSelector.SelectChunk(LTokens);
+      LRender.AppendSelection(LSlots);
+      LRow := TJSONObject.Create;
+      LSchedule.Add(LRow);
+      LRow.Add('chunk_index', LChunkIndex);
+      LRow.Add('first_grain', LOffset);
+      LRow.Add('grains', LCount);
+      LRow.Add('seed', LOptions.Seed);
+      for LIndex := 0 to LCount - 1 do
+      begin
+        LTokenIndex := LOffset + LIndex;
+        LCandidate := LProfile.Pool.CandidateAt(LSlots[LIndex]);
+        Inc(LUse[LCandidate.SegmentIndex]);
+        if not LUsedSlots[LSlots[LIndex]] then
+        begin
+          LUsedSlots[LSlots[LIndex]] := True;
+          Inc(LUnique);
+        end;
+        if LTokenIndex > 0 then
+        begin
+          if LCandidate.SegmentIndex <> LPrevious.SegmentIndex then Inc(LSwitches)
+          else if LCandidate.SourceFrame = LPrevious.SourceFrame then Inc(LRepeats)
+          else if LCandidate.SourceFrame =
+            LPrevious.SourceFrame + LProfile.Options.HopFrames then Inc(LContiguous);
+        end;
+        LRow := TJSONObject.Create;
+        LMap.Add(LRow);
+        LRow.Add('grain', LTokenIndex);
+        LRow.Add('token', LTokens[LIndex]);
+        LRow.Add('candidate_slot', LSlots[LIndex]);
+        LRow.Add('source_index', LCandidate.SegmentIndex);
+        LRow.Add('source_frame', TJSONInt64Number.Create(LCandidate.SourceFrame));
+        LRow.Add('feature_index', TJSONInt64Number.Create(LCandidate.FeatureIndex));
+        LPrevious := LCandidate;
+      end;
+      Inc(LOffset, LCount);
+      Inc(LChunkIndex);
+    end;
+    LRender.Finish;
+    LPeak := LRender.Peak;
+    LActualFrames := LWriter.FrameCount;
+    if (LActualFrames <> LExpectedFrames) or (LPeak > 1) then
+      raise EAudio.Create('Long replay frame count or PCM16 headroom invalid');
+    FreeAndNil(LRender);
+    FreeAndNil(LWriter);
+    FreeAndNil(LSink);
+    FreeAndNil(LWaveOutput);
+    LWaveOutput := TFileStream.Create(LStage + PathDelim + 'audition.wav',
+      fmOpenRead or fmShareDenyWrite);
+    LWaveHash := Sha256Stream(LWaveOutput, LWaveOutput.Size);
+    FreeAndNil(LWaveOutput);
+    for LFileIndex := 0 to High(LStreams) do
+    begin
+      LStreams[LFileIndex].Position := 0;
+      if Sha256Stream(LStreams[LFileIndex], LStreams[LFileIndex].Size) <>
+        LHashes[LFileIndex] then
+        raise EAudio.Create('Long replay source changed; no outputs published');
+    end;
+    for LSourceIndex := 0 to LSourceCount - 1 do
+      TJSONObject(LReportSources.Items[LSourceIndex]).Add('generated_grains',
+        LUse[LSourceIndex]);
+    LUsedSources := DistinctUsedJournalSourceRecordings(LSourceHashes, LUse);
+    RequireLongReplayAcceptanceSourceUse(LSourceHashes, LUse,
+      LExpectedFrames, LProfile.SampleRate);
+    LReport.Add('source_hashes_verified_after_render', True);
+    LReport.Add('source_recordings_used', LUsedSources);
+    LReport.Add('unique_selected_windows', LUnique);
+    LReport.Add('adjacent_same_window', LRepeats);
+    LReport.Add('source_switches', LSwitches);
+    LReport.Add('contiguous_source_links', LContiguous);
+    LReport.Add('join_count', LGrains - 1);
+    LReport.Add('cross_chunk_joins', LChunkIndex - 1);
+    LReport.Add('within_chunk_joins', LGrains - LChunkIndex);
+    LReport.Add('render_peak', LPeak);
+    LReport.Add('headroom', 1.0 - LPeak);
+    LReport.Add('audition_frames', TJSONInt64Number.Create(LActualFrames));
+    LReport.Add('audition_sha256', LWaveHash);
+    if Length(LReport.FormatJSON) > MaximumJournalProfileBytes then
+      raise EAudio.Create('Long replay report exceeds profile byte budget');
+    WriteTextFile(LStage + PathDelim + 'model.wfcs', LModelText);
+    WriteTextFile(LStage + PathDelim + 'report.json', LReport.FormatJSON);
+    PublishLongJournalResult(LOutputPrefix, LStage);
+    WriteLn('Streamed ', LActualFrames, ' frames from ', LGrains,
+      ' grains; report published last');
+  finally
+    LReport.Free;
+    LInputDocument.Free;
+    LRender.Free;
+    LWriter.Free;
+    LSink.Free;
+    LWaveOutput.Free;
+    LSelector.Free;
+    LLatent.Free;
+    LAccess.Free;
+    for LIndex := 0 to High(LReaders) do LReaders[LIndex].Free;
+    for LIndex := 0 to High(LStreams) do LStreams[LIndex].Free;
+    LProfile.Free;
+    if LStageReserved then
+    begin
+      DeleteFile(LStage + PathDelim + 'model.wfcs');
+      DeleteFile(LStage + PathDelim + 'audition.wav');
+      DeleteFile(LStage + PathDelim + 'report.json');
+      RemoveDir(LStage);
+    end;
+  end;
 end;
 
 procedure ReplayJournalFiles;

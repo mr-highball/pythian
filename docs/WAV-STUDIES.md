@@ -1133,3 +1133,55 @@ diagnostics remain. No format, vendor, package, full ordinary build or remote-CI
 change is included. [WAV-03-DURATION](WAV-STUDIES.md#duration-scope-checkpoint)'s mechanical request gate
 is resolved; [WAV-03-PHRASES](MILESTONES.md#wav-03-phrases) still blocks admitted recorded-part
 quality. The broader musical goal remains open and receives no new percentage credit.
+
+<a id="bounded-acoustic-continuation-checkpoint"></a>
+### Bounded acoustic WFC continuation — 2026-09-28
+
+`pythian.learn replay-long INPUT_PREFIX OUTPUT_PREFIX GRAINS CHUNK_GRAINS
+BLOCK_FRAMES SOURCE.wav SOURCE.wav [...]` reloads a saved acoustic journal
+profile and requires the exact declared source WAVs. It verifies their hashes
+and frame clocks before generation and their hashes again before publication.
+The maintained Pascal consumer carries one WFC sequence state, one weighted
+candidate-selection history and one normalized Hann overlap-add timeline across
+internal chunks. Output is staged on disk; the audition report moves last.
+The short `replay` command and its limits remain unchanged.
+
+The fixed development run uses `build/journal-third-source-study/joint` with
+`build/wav-long-source/C-headroom16k.wav`,
+`build/wav-convert-stable/A-early.wav` and
+`build/wav-convert-stable/B-headroom.wav`. It requests 4,000 grains in
+256-grain WFC chunks and 2,048-frame PCM blocks. The resulting stereo PCM16
+WAV has 4,099,072 frames at 16 kHz (256.192 seconds), peak 0.4020633 and
+SHA-256 `9f55f8bcceb05255c8fa95bf2028705661728c9e13f311894e684c849e92d442`.
+The report records 1,482/1,368/1,150 selected grains from the three distinct
+source WAVs, all 3,999 joins (15 across internal chunks), four adjacent exact
+window repeats, 3,969 source switches and zero contiguous source links. These
+are measurements of the fixed output, not a musical-quality verdict. In
+particular, the very frequent source switches require later sustained listening
+and repair under [NS-5 continuity](TODO/NS-5_continuity_01.md).
+
+The output `.json` is an audition report with a per-grain original-source map
+and input profile/model hashes; its paired `.wfcs` is an identity copy of the
+input model. Replaying it uses the *original saved profile* as input. The long
+report itself is not a learned profile for further training or generation.
+Each mapped source window starts at `source_frame` and contains
+`min(window_frames, source_frames - source_frame)` original frames; any
+remaining window frames are zero padding, as enforced by the saved profile.
+The fixed report and native verification logs are under ignored
+`build/journal-long-cli-20260928/`. Checked stable FPC 3.2.2 Win32 and Win64
+produce byte-identical WAVs and reports. A second 4,000-grain Win64 render with
+a different output block size reproduces the same WAV and report fields except
+the declared block size. The Pascal verifier checks WAV geometry/hash, grain
+map, source bounds, source-use, join counts and exact target/block replay.
+The fixed Win64 run took 41,833 ms wall time, with sampled peak private commit
+12,509,184 bytes and peak working set 16,166,912 bytes. Focused negative cases
+reject wrong source hashes, duplicate explicit WAVs, invalid chunk size and
+output collision without an accepted output pair. The source-use gate counts
+distinct *used WAV hashes*: two selected ranges of one WAV with another supplied
+but unused WAV reject a 180-second acceptance run.
+
+An independent replay of a different saved acoustic development profile gave
+identical Win32/Win64 PCM, but its raw `render_peak` JSON number differed in the
+last floating-point digit. Treat the source map and PCM bytes as the exact
+cross-target replay contract; the floating measurement is not a byte-canonical
+cross-target value. The qualifying `joint` profile's reports were byte-identical.

@@ -13,6 +13,61 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Bounded acoustic continuation accepted — 2026-09-28
+
+[NS-5_continuity_02](TODO/DONE/NS-5_continuity_02.md) now supplies a maintained
+Pascal `replay-long` consumer for a saved source-bound acoustic WFC profile.
+One latent WFC state, candidate-selection history and normalized Hann output
+timeline persist across internal chunks. The frozen three-recording development
+profile produces 4,000 grains / 4,099,072 stereo PCM16 frames at 16 kHz
+(256.192 seconds); all three distinct source hashes are used. Its fixed WAV
+SHA-256 is `9f55f8bcceb05255c8fa95bf2028705661728c9e13f311894e684c849e92d442`.
+The report binds all 4,000 selections to original source frames and records
+3,999 joins, including 15 across chunks. The original profile remains the
+reloadable model; the new `.json` is an audition report.
+
+Checked stable FPC 3.2.2 Win32/Win64 builds, source-free stream controls,
+negative source/publication gates, exact two-target and block-size PCM replay,
+and a legacy short-replay regression pass. Salty Boi independently rebuilt and
+replayed the exact saved profile and verified the source/map/report; focused
+component and verifier runs reported zero heap leaks. QA gave a final pass.
+Normal Win64 resource capture: 41,833 ms wall,
+12,509,184-byte sampled peak private commit and 16,166,912-byte peak working
+set. An alternate saved profile also produced exact cross-target PCM but showed
+a last-digit raw floating `render_peak` report difference; this is not a PCM or
+selection mismatch. [WAV study](WAV-STUDIES.md#bounded-acoustic-continuation-checkpoint)
+records the full contract, measurements and ignored evidence locations.
+
+The source selector made 3,969 switches across 3,999 joins in the qualifying
+output. This backend result makes no musical continuity or genre claim. The
+remaining [NS-5_continuity_01](TODO/NS-5_continuity_01.md) retains multi-seed,
+quality, listening and repair gates, and still depends on representative
+[vocabulary learning](TODO/NS-5_vocabulary_01.md). Completion adds **+1 NS-5**
+(32% to **33%**) and **+0.20 overall** (71.10% to **71.30%**): **37 open /
+30 DONE**, 28.70 weighted points remain. The cross-task manual review queue
+stays **1/20**; no new user listening item was added for the raw backend output.
+
+## Bounded acoustic continuation split — 2026-09-28
+
+After the stopped note-identity and beat decision batches, the next ready
+NS-5 core deliverable is [NS-5_continuity_02](TODO/DONE/NS-5_continuity_02.md).
+The existing saved acoustic WFC journal verifies source bindings but caps replay
+at 1,024 grains and materializes one clip; separate chunks would reset solver,
+candidate-selection and Hann overlap state. The new task owns a continuous,
+replayable, bounded Pascal stream and a 180–300-second two-source output. It
+receives one of the original five unearned continuity points. The original
+[NS-5_continuity_01](TODO/NS-5_continuity_01.md) retains four points and all
+multi-seed quality, repair and listening criteria. This split changes the
+catalog to **38 open / 29 DONE** and leaves overall completion **71.10%**.
+The manual review queue remains **1/20**; no operator decision is needed for
+the backend criterion.
+
+This batch closes only when state-continuous WFC, stateful selection, bounded
+normalized overlap-add, exact source/replay identity, two-target/block-size
+determinism, negative failure preservation and real multi-minute PCM have
+independent QA evidence. Stop if a generated profile cannot satisfy frozen
+continuation without changing its trained model or hiding a failed solve.
+
 ## Register feasibility passed; beat event graph stopped — 2026-09-28
 
 A new, prospectively frozen Pascal odd/even harmonic-family observation

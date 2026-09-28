@@ -78,6 +78,27 @@ type
     property BinsPerSegment: Integer read FBins;
   end;
 
+  { Borrows an immutable pool. Each successful chunk continues the same smooth
+    weighted segment rotation, per-token/segment bin cursors and last slot.
+    Failed chunks preserve the cursor and do not publish a partial selection.
+    A new instance starts a new sequence; caller keeps the pool alive. }
+  TJournalSelectionStream = class
+  private
+    FPool: TJournalCandidatePool;
+    FWeights: TJournalSelectionWeights;
+    FCredits: array of Int64;
+    FCursors: array of Integer;
+    FPrevious: Integer;
+    FSelectedCount: Int64;
+    FSelectionVisits: Int64;
+  public
+    constructor Create(const APool: TJournalCandidatePool;
+      const AWeights: TJournalSelectionWeights; const ASeed: Integer = 731);
+    function SelectChunk(const ATokens: TAcousticIndices): TAcousticIndices;
+    property SelectedCount: Int64 read FSelectedCount;
+    property SelectionVisits: Int64 read FSelectionVisits;
+  end;
+
 { Materializes only selected windows, once per slot. The callback returns actual
   ValidFrames; EOF is zero-padded to the declared window before Hann overlap-add.
   Returned audio is caller-owned. No source path, cache or model dependency. }
@@ -366,6 +387,129 @@ begin
     LCursors[LCursor] := (LChosen - LBase + 1) mod FBins;
     LPrevious := LChosen;
   end;
+end;
+
+constructor TJournalSelectionStream.Create(const APool: TJournalCandidatePool;
+  const AWeights: TJournalSelectionWeights; const ASeed: Integer);
+var
+  LIndex: Integer;
+begin
+  inherited Create;
+  if (APool = nil) or (ASeed < 0) then
+  begin
+    raise EAudio.Create('Journal selection stream requires a pool and nonnegative seed');
+  end;
+  if Length(AWeights) <> APool.FSegmentCount then
+  begin
+    raise EAudio.Create('Journal selection stream weights disagree with segments');
+  end;
+  for LIndex := 0 to High(AWeights) do
+  begin
+    if (AWeights[LIndex] < 0) or (AWeights[LIndex] > 4096) then
+    begin
+      raise EAudio.Create('Journal selection weights must be 0..4096');
+    end;
+  end;
+  FPool := APool;
+  FWeights := Copy(AWeights);
+  SetLength(FCredits, APool.FSegmentCount);
+  SetLength(FCursors, APool.FTokenCount * APool.FSegmentCount);
+  for LIndex := 0 to High(FCursors) do
+  begin
+    FCursors[LIndex] := (Int64(ASeed) + LIndex) mod APool.FBins;
+  end;
+  FPrevious := -1;
+end;
+
+function TJournalSelectionStream.SelectChunk(
+  const ATokens: TAcousticIndices): TAcousticIndices;
+var
+  LCredits: array of Int64;
+  LCursors: array of Integer;
+  LEligible: array of Boolean;
+  LIndex, LSegment, LBin, LBase, LSlot, LSelected, LChosen: Integer;
+  LPrevious, LCursor: Integer;
+  LTotalWeight, LWork: Int64;
+begin
+  LWork := Int64(Length(ATokens)) * FPool.FSegmentCount * FPool.FBins;
+  if (Length(ATokens) < 1) or
+    (Length(ATokens) > MaximumJournalSelectionGrains) or
+    (LWork > MaximumJournalSelectionVisits - FSelectionVisits) or
+    (FSelectedCount > High(Int64) - Length(ATokens)) then
+  begin
+    raise EAudio.Create('Journal selection stream chunk or work budget invalid');
+  end;
+  for LIndex := 0 to High(ATokens) do
+  begin
+    if (ATokens[LIndex] < 0) or (ATokens[LIndex] >= FPool.FTokenCount) then
+    begin
+      raise EAudio.Create('Journal selection token out of bounds');
+    end;
+  end;
+  LCredits := Copy(FCredits);
+  LCursors := Copy(FCursors);
+  SetLength(LEligible, FPool.FSegmentCount);
+  LPrevious := FPrevious;
+  Result := nil;
+  SetLength(Result, Length(ATokens));
+  for LIndex := 0 to High(ATokens) do
+  begin
+    LTotalWeight := 0;
+    LSelected := -1;
+    for LSegment := 0 to FPool.FSegmentCount - 1 do
+    begin
+      LEligible[LSegment] := False;
+      LBase := (ATokens[LIndex] * FPool.FSegmentCount + LSegment) * FPool.FBins;
+      if FWeights[LSegment] > 0 then
+      begin
+        for LBin := 0 to FPool.FBins - 1 do
+        begin
+          if FPool.FSlots[LBase + LBin].Found then
+          begin
+            LEligible[LSegment] := True;
+            Break;
+          end;
+        end;
+      end;
+      if LEligible[LSegment] then
+      begin
+        Inc(LTotalWeight, FWeights[LSegment]);
+        Inc(LCredits[LSegment], FWeights[LSegment]);
+        if (LSelected < 0) or (LCredits[LSegment] > LCredits[LSelected]) then
+        begin
+          LSelected := LSegment;
+        end;
+      end;
+    end;
+    if LSelected < 0 then
+    begin
+      raise EAudio.Create('Generated token has no candidate in an enabled segment');
+    end;
+    Dec(LCredits[LSelected], LTotalWeight);
+    LCursor := ATokens[LIndex] * FPool.FSegmentCount + LSelected;
+    LBase := LCursor * FPool.FBins;
+    LChosen := -1;
+    for LBin := 0 to FPool.FBins - 1 do
+    begin
+      LSlot := LBase + (LCursors[LCursor] + LBin) mod FPool.FBins;
+      if FPool.FSlots[LSlot].Found then
+      begin
+        LChosen := LSlot;
+        if LSlot <> LPrevious then
+        begin
+          Break;
+        end;
+      end;
+    end;
+    Result[LIndex] := LChosen;
+    LCursors[LCursor] := (LChosen - LBase + 1) mod FPool.FBins;
+    LPrevious := LChosen;
+  end;
+  FCredits := LCredits;
+  FCursors := LCursors;
+  FPrevious := LPrevious;
+  Inc(FSelectedCount, Length(ATokens));
+  Inc(FSelectionVisits, LWork);
 end;
 
 end.

@@ -1036,6 +1036,14 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Journal learning compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.learning.journal$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Journal learning checks failed' }
+    & $compilerPath @adapterArgs 'tests/pythian.tests.journal.selection.stream.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Journal selection stream compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.journal.selection.stream$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Journal selection stream checks failed' }
+    & $compilerPath @adapterArgs 'tests/pythian.tests.journal.render.stream.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Journal render stream compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.journal.render.stream$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Journal render stream checks failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.learning.profile.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Journal profile compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.learning.profile$executableSuffix")
@@ -1092,6 +1100,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'WFC learning checks failed' }
     & $compilerPath @adapterArgs 'tools/pythian.learn.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WAV learner compilation failed' }
+    & $compilerPath @adapterArgs 'tests/pythian.tests.journal.long.output.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Long journal output verifier compilation failed' }
     & (Join-Path $buildRoot "pythian.learn$executableSuffix") (Join-Path $buildRoot 'synthesis.wav') (Join-Path $buildRoot 'synthesis-model')
     if ($LASTEXITCODE -ne 0) { throw 'WAV learner smoke failed' }
     & (Join-Path $buildRoot "pythian.tests.wave.read$executableSuffix") (Join-Path $buildRoot 'synthesis.wav') (Join-Path $buildRoot 'extensible')
