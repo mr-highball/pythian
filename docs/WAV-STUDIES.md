@@ -1185,3 +1185,59 @@ identical Win32/Win64 PCM, but its raw `render_peak` JSON number differed in the
 last floating-point digit. Treat the source map and PCM bytes as the exact
 cross-target replay contract; the floating measurement is not a byte-canonical
 cross-target value. The qualifying `joint` profile's reports were byte-identical.
+
+<a id="guarded-acoustic-continuation-checkpoint"></a>
+### Guarded long-context continuation — 2026-09-28
+
+The optional `replay-long` arguments `--context-grains 8 --context-uses 4`
+select bounded source contexts from a saved profile. Each fixed WFC chunk first
+receives the ordinary weighted fallback slots. A Pascal global guard accepts
+the whole context chunk only when every resulting prefix has no more exact
+repeated four-window sequences than the unchanged fallback prefix at the same
+grain. Otherwise it appends the whole fallback chunk; an infeasible fallback
+stops publication. Window identity is source index, absolute feature index and
+original source frame. Tokens and per-source counts stay fixed. The stream
+renders selected context coordinates with the same Hann overlap-add path as the
+ordinary replay. A selected coordinate that differs from its original fallback
+slot has `candidate_slot: -1` in the source map; `fallback_candidate_slot`
+records that original slot for every context-mode row. This sentinel does not
+assert that the coordinate is absent from the entire candidate pool.
+
+The fixed 4,000-grain three-recording replay uses the saved context-attached
+profile `build/journal-long-context-20260928/joint-context`, seed 731, 256-grain
+WFC chunks, and the exact WAVs of the bounded checkpoint above. It selected
+13 context chunks and used fallback chunks 0, 2 and 11. The 256.192-second
+stereo PCM16 WAV is SHA-256
+`19febc33f43c51ce1378199d40f82cfe3f850db048d5a3d4cd70206d994ef6d9`.
+
+| Fixed-path measurement | No context | Global guard |
+| --- | ---: | ---: |
+| Source switches / 3,999 joins | 3,969 | 1,899 |
+| Contiguous source links | 0 | 1,657 |
+| Immediate exact-window repeats | 4 | 2 |
+| Repeated exact four-window sequences | 636 | 610 |
+| Original-PCM dense seam mean | 1.011096 | 0.588029 |
+| Original-PCM assembled seam mean | 1.011096 | 1.004068 |
+| Original-PCM 15 cross-chunk seam mean | 1.057891 | 1.008824 |
+
+The source counts remain 1,482/1,368/1,150 and all 4,000 learned tokens match
+the no-context path. A frozen Pascal feasibility probe passed first. The
+maintained guard, explicit-window renderer and command were then checked with
+stable FPC 3.2.2 Win32/Win64. Salty Boi independently reran the original-PCM
+seam comparator against the saved maps on both targets; the logs under ignored
+`build/salty-global-guard-qa-20260928/` record the exact prefix policy, source
+hash/clock checks, measurements and zero leaked blocks. The final Win32/Win64
+WAV, model and JSON bytes match. A 1,024-frame output block yields the same WAV
+and model bytes, with only `block_frames` changing in JSON. The final no-context
+WAV reproduces the accepted baseline hash above. Oversized context work and
+context-use-without-grains requests fail before publishing outputs.
+
+The complete guarded render is one pending manual listening item,
+`ns5_guarded_continuity_20260928`, in the durable catalog. The LAN service
+returned HTTP 200 for its queue and asset HEAD and HTTP 206 for an audio byte
+range; this checks transport, not physical-phone playback or musical quality.
+Its catalog asset uses one declared source hash as a pointer; the saved profile
+and replay report bind all three source hashes. Sustained listener judgment,
+multi-seed generation and representative-vocabulary acceptance remain open in
+[NS-5 continuity](TODO/NS-5_continuity_01.md). These measurements earn no
+completion credit by themselves.

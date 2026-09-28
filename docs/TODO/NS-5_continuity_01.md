@@ -33,6 +33,21 @@ Starting evidence: [WAV-STUDIES](../WAV-STUDIES.md) · [ACTIVITY](../ACTIVITY.md
 
 **Dev Notes:**
 
+- 2026-09-28 a distinct global repetition guard passed the predeclared frozen
+  4,000-grain three-source gate after the failed chunk-local trial. The bounded
+  Pascal renderer/guard/CLI now replay the full saved model with 1,899 source
+  switches, 1,657 contiguous links, two immediate repeats and 610 repeated
+  four-window sequences, against 3,969/0/4/636 without context. All tokens and
+  exact per-source counts remain unchanged. Independent Win32/Win64 QA checked
+  prefix decisions and original-PCM seam costs; PCM/model/report replay and a
+  second output block size passed. The complete 256.192-second render is one
+  pending manual listening item. The [guarded continuation checkpoint](../WAV-STUDIES.md#guarded-acoustic-continuation-checkpoint)
+  and [work record](../WORK.md#global-repetition-guard-feasibility--2026-09-28)
+  retain the frozen policy, hashes and limits. This is the second nonclosing
+  batch: stop tuning this profile/seed and follow the actual vocabulary and
+  context/evaluation blockers. Multi-seed/gap/level checks, sustained listener
+  judgment and defect repair remain open; no continuity credit is earned.
+
 - 2026-09-28 a prospective 4,000-grain three-source long-context trial stopped
   at its frozen repetition gate. The exact saved model and source counts stayed
   fixed; switches improved 3,969→1,373 and contiguous links 0→2,094, but

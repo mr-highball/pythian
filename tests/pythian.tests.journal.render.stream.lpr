@@ -30,7 +30,8 @@ uses
   Classes, SysUtils,
   pythian.audio, pythian.wave, pythian.wave.stream,
   pythian.learning, pythian.learning.journal,
-  pythian.learning.selection, pythian.learning.render.stream;
+  pythian.learning.selection, pythian.learning.context,
+  pythian.learning.render.stream;
 
 type
   TProbe = class
@@ -65,13 +66,15 @@ end;
 
 function RenderStream(const APool: TJournalCandidatePool;
   const AProbe: TProbe; const ASelection: TAcousticIndices;
-  const ABlockFrames, AChunkFrames: Integer): TAudioBytes;
+  const ABlockFrames, AChunkFrames: Integer;
+  const AExplicit: Boolean = False): TAudioBytes;
 var
   LMemory: TMemoryStream;
   LSink: TStreamAudioSink;
   LWriter: TWavePcm16Writer;
   LRender: TJournalWaveRenderStream;
   LChunk: TAcousticIndices;
+  LWindows: TJournalContextWindows;
   LOffset: Integer;
   LIndex: Integer;
   LCount: Integer;
@@ -100,7 +103,17 @@ begin
       begin
         LChunk[LIndex] := ASelection[LOffset + LIndex];
       end;
-      LRender.AppendSelection(LChunk);
+      if AExplicit then
+      begin
+        SetLength(LWindows, LCount);
+        for LIndex := 0 to LCount - 1 do
+        begin
+          LWindows[LIndex].Token := APool.TokenAt(LChunk[LIndex]);
+          LWindows[LIndex].Candidate := APool.CandidateAt(LChunk[LIndex]);
+        end;
+        LRender.AppendWindows(LWindows);
+      end
+      else LRender.AppendSelection(LChunk);
       Inc(LOffset, LCount);
     end;
     LRender.Finish;
@@ -128,6 +141,7 @@ var
   LWriter: TWavePcm16Writer;
   LRender: TJournalWaveRenderStream;
   LSelection: TAcousticIndices;
+  LWindows: TJournalContextWindows;
   LFailed: Boolean;
 begin
   LFailed := False;
@@ -157,6 +171,16 @@ begin
     end;
     Require(LFailed and (LRender.GrainCount = 0) and not LRender.Failed,
       'Invalid preflight mutated stream');
+    SetLength(LWindows, 2);
+    LWindows[0].Token := 0;
+    LWindows[0].Candidate := APool.CandidateAt(3);
+    LWindows[1] := LWindows[0];
+    LWindows[1].Candidate.SourceFrame := -1;
+    LFailed := False;
+    try LRender.AppendWindows(LWindows)
+    except on EAudio do LFailed := True end;
+    Require(LFailed and (LRender.GrainCount = 0) and not LRender.Failed,
+      'Malformed explicit window reached source reader');
     AProbe.FailFeature := 1;
     SetLength(LSelection, 2);
     LSelection[0] := 3;
@@ -210,6 +234,34 @@ begin
     LSink.Free;
     LMemory.Free;
   end;
+  LMemory := TMemoryStream.Create;
+  LSink := nil;
+  LWriter := nil;
+  LRender := nil;
+  try
+    LSink := TStreamAudioSink.Create(LMemory);
+    LWriter := TWavePcm16Writer.Create(LSink, 16000, 1,
+      JournalStreamFrames(8, 4, 2));
+    LRender := TJournalWaveRenderStream.Create(APool, AProbe.ReadWindow,
+      LWriter, 8, 4, 2, 3);
+    SetLength(LWindows, 2);
+    LWindows[0].Token := APool.TokenAt(3);
+    LWindows[0].Candidate := APool.CandidateAt(3);
+    LWindows[1].Token := APool.TokenAt(1);
+    LWindows[1].Candidate := APool.CandidateAt(1);
+    AProbe.FailFeature := 1;
+    LFailed := False;
+    try LRender.AppendWindows(LWindows)
+    except on EAudio do LFailed := True end;
+    Require(LFailed and LRender.Failed and (LRender.GrainCount = 1),
+      'Explicit callback failure did not poison partial stream');
+  finally
+    AProbe.FailFeature := -1;
+    LRender.Free;
+    LWriter.Free;
+    LSink.Free;
+    LMemory.Free;
+  end;
 end;
 
 procedure CheckEqual(const ALeft, ARight: TAudioBytes; const AMessage: String);
@@ -232,6 +284,7 @@ var
   LExpected: TAudioBytes;
   LActualA: TAudioBytes;
   LActualB: TAudioBytes;
+  LExplicit: TAudioBytes;
   LIndex: Integer;
 begin
   LProbe := TProbe.Create;
@@ -260,8 +313,10 @@ begin
     LExpected := EncodeWavePcm16(LWhole);
     LActualA := RenderStream(LPool, LProbe, LSelection, 3, 2);
     LActualB := RenderStream(LPool, LProbe, LSelection, 7, 5);
+    LExplicit := RenderStream(LPool, LProbe, LSelection, 7, 5, True);
     CheckEqual(LExpected, LActualA, 'Whole versus streamed PCM');
     CheckEqual(LActualA, LActualB, 'Block and chunk invariance');
+    CheckEqual(LActualA, LExplicit, 'Slot versus explicit window parity');
     LWhole.Free;
     LWhole := nil;
     SetLength(LSelection, 4103);

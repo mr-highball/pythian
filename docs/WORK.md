@@ -13,6 +13,89 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Global repetition guard feasibility — 2026-09-28
+
+The stopped chunk-local context trial improved joins but raised repeated
+four-window sequences from 636 to 782. One distinct, bounded follow-up tests
+whether a **global** repetition guard can retain useful context without that
+increase. This is a decision on the existing 4,000-grain baseline and context
+source maps, not another context length, start-cap, chunk-size or seed sweep.
+It advances the repetition/continuity comparison in
+[NS-5_continuity_01](TODO/NS-5_continuity_01.md), whose vocabulary and actual
+listening prerequisites remain open.
+
+Freeze this one-pass policy before reading the result: process the 16 fixed WFC
+chunks in order. For each chunk, append all of its previously generated context
+windows only when the resulting prefix's repeated four-window count is no
+greater than the unchanged baseline prefix's count at that same grain. Otherwise
+append that chunk's baseline windows. If even the fallback prefix exceeds the
+baseline prefix after an earlier accepted chunk, stop as infeasible; do not
+backtrack or search combinations. Count a repeated four-window sequence when
+its exact source/feature/frame four-tuple at a later start duplicates any
+earlier start, including overlaps. Preserve every token and per-source count.
+
+The unchanged three-WAV, seed-731 maps must yield a complete path with at most
+3,000 source switches, at least 500 contiguous links, at most four immediate
+exact-window repeats and at most 636 repeated four-window sequences. Separately
+measure dense overall, assembled and all 15 cross-chunk seam costs from the
+original PCM; none may worsen against the no-context baseline. A Pascal-only
+feasibility program must verify map/source identities and the policy on checked
+Win32/Win64. Any failure stops this guard without revising it or modifying the
+maintained renderer. A pass permits a separately reviewed maintained Pascal
+integration and replay check, but cannot establish musical quality or earn
+continuity credit without sustained listening and the actual blocker.
+
+The frozen Pascal feasibility replay passed on checked FPC 3.2.2 Win32/Win64
+using the previously scored source maps and original three WAVs. It selected
+13 context chunks and three baseline chunks (0, 2 and 11), retaining all 4,000
+tokens and exact 1,482/1,368/1,150 source counts. Switches fell 3,969→1,899,
+contiguous links rose 0→1,657, immediate repeats fell 4→2 and repeated
+four-window sequences fell 636→610. The Win64 dense overall, assembled and
+15 cross-chunk seam means were 1.011096→0.588029, 1.011096→1.004068 and
+1.057891→1.008824. Win32 matched all discrete decisions; floating seam sums
+differed only in their last digits. The ignored bound Pascal probe, exact
+input/report checks and logs are under `build/journal-long-context-20260928/`.
+That result passed only the declared *feasibility* gate. At that point,
+maintained integration, deterministic rendered replay and independent QA were
+still outstanding, along with sustained listening and representative vocabulary.
+
+The maintained Pascal guard, explicit-window renderer and optional long replay
+consumer now pass checked Win32/Win64 integration. The final guarded render has
+the same 1,899 switches, 1,657 contiguous links, two immediate repeats and
+610 repeated four-window sequences as the frozen feasibility probe. It retains
+the same 4,000 tokens and 1,482/1,368/1,150 source counts. Salty Boi independently
+recomputed exact prefix choices and original-PCM seam costs from the three WAVs
+and both saved maps on both targets; all frozen mechanical thresholds passed.
+The final Win32/Win64 WAV, model and report bytes match, and a smaller PCM block
+keeps the same WAV/model and every report field other than block size. The
+no-context PCM hash is unchanged. Invalid context-work and context-use inputs
+publish nothing. The source map's `candidate_slot: -1` means the selected
+context coordinate differs from that grain's fallback slot; the report retains
+`fallback_candidate_slot` and the exact selected source/feature/frame. See the
+[guarded continuation checkpoint](WAV-STUDIES.md#guarded-acoustic-continuation-checkpoint)
+and ignored `build/journal-long-context-20260928/` plus
+`build/salty-global-guard-qa-20260928/`.
+
+One full 256.192-second Pythian render is queued as manual listening request
+`ns5_guarded_continuity_20260928` in the durable catalog, alongside the
+outstanding physical-phone cue review. The two reviews count as **two pending
+manual items across tasks**, below the user-directed notification threshold of
+20. The LAN service's authenticated queue request, asset HEAD and ranged WAV
+request returned HTTP 200/200/206; physical-phone playback and musical judgment
+are not inferred. The catalog asset's singular source pointer is one member of
+the three-source set; the saved profile/report bind the complete set.
+
+This and the stopped chunk-local trial are two consecutive NS-5 continuity
+work batches without closing its full acceptance criterion. Reassessment:
+finish the bounded maintained guard and retain its evidence without task credit;
+stop tuning this fixed profile/seed. Full continuity acceptance still needs
+representative vocabulary, multi-seed/gap/level comparisons and sustained
+listening. Follow the actual [vocabulary prerequisite](TODO/NS-5_vocabulary_01.md)
+and its [context](TODO/NS-3_context_02.md) and
+[evaluation](TODO/NS-5_evaluation_01.md) blockers next; keep the listening
+item queued while independent work proceeds. This is a change of task path,
+not a reset of either failed-trial or investigation counts.
+
 ## Bounded long-context continuity trial — 2026-09-28
 
 The accepted four-minute acoustic continuation exposes 3,969 source switches

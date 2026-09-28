@@ -33,6 +33,7 @@ uses
   pythian.learning,
   pythian.learning.journal,
   pythian.learning.selection,
+  pythian.learning.context,
   pythian.wave.stream;
 
 const
@@ -66,12 +67,15 @@ type
     FFinished: Boolean;
     procedure FlushTo(const AFrame: Int64);
     procedure WriteBuffered;
-    procedure AppendOne(const ASlot: Integer);
+    procedure AppendOne(const ACandidate: TJournalRepresentative);
   public
     constructor Create(const APool: TJournalCandidatePool;
       const AReadWindow: TJournalWindowRead; const AWriter: TWavePcm16Writer;
       const AWindowFrames, AHopFrames, AExpectedGrains, ABlockFrames: Integer);
     procedure AppendSelection(const ASelection: TAcousticIndices);
+    { Explicit windows are preflighted as a complete block before source reads.
+      The host's verified profile/source binding owns physical source extents. }
+    procedure AppendWindows(const AWindows: TJournalContextWindows);
     procedure Finish;
     property GrainCount: Integer read FGrainCount;
     property FlushedFrames: Int64 read FFlushedFrames;
@@ -189,9 +193,8 @@ begin
   end;
 end;
 
-procedure TJournalWaveRenderStream.AppendOne(const ASlot: Integer);
+procedure TJournalWaveRenderStream.AppendOne(const ACandidate: TJournalRepresentative);
 var
-  LCandidate: TJournalRepresentative;
   LSamples: TAudioSamples;
   LStart: Int64;
   LFrame: Integer;
@@ -200,9 +203,8 @@ var
   LWeight: Double;
   LValue: Double;
 begin
-  LCandidate := FPool.CandidateAt(ASlot);
-  LSamples := FReadWindow(LCandidate);
-  if Length(LSamples) <> LCandidate.ValidFrames * FChannels then
+  LSamples := FReadWindow(ACandidate);
+  if Length(LSamples) <> ACandidate.ValidFrames * FChannels then
   begin
     raise EAudio.Create('Journal stream callback returned a mismatched window');
   end;
@@ -215,7 +217,7 @@ begin
     for LChannel := 0 to FChannels - 1 do
     begin
       LValue := 0;
-      if LFrame < LCandidate.ValidFrames then
+      if LFrame < ACandidate.ValidFrames then
       begin
         LValue := LSamples[LFrame * FChannels + LChannel];
         RequireFinite(LValue, 'Journal stream source sample');
@@ -258,8 +260,42 @@ begin
   try
     for LSlot in ASelection do
     begin
-      AppendOne(LSlot);
+      AppendOne(FPool.CandidateAt(LSlot));
     end;
+  except
+    FFailed := True;
+    raise;
+  end;
+end;
+
+procedure TJournalWaveRenderStream.AppendWindows(
+  const AWindows: TJournalContextWindows);
+var
+  LIndex: Integer;
+  LWindow: TJournalContextWindow;
+begin
+  if FFailed or FFinished then
+    raise EAudio.Create('Journal stream cannot continue after failure or finish');
+  if (Length(AWindows) < 1) or
+    (Length(AWindows) > FExpectedGrains - FGrainCount) then
+    raise EAudio.Create('Journal stream explicit window count invalid');
+  for LIndex := 0 to High(AWindows) do
+  begin
+    LWindow := AWindows[LIndex];
+    if (LWindow.Token < 0) or
+      (LWindow.Token > FPool.TokenAt(FPool.SlotCount - 1)) or
+      not LWindow.Candidate.Found or
+      (LWindow.Candidate.SegmentIndex < 0) or
+      (LWindow.Candidate.SegmentIndex >= FPool.SegmentCount) or
+      (LWindow.Candidate.FeatureIndex < 0) or
+      (LWindow.Candidate.SourceFrame < 0) or
+      (LWindow.Candidate.ValidFrames < 1) or
+      (LWindow.Candidate.ValidFrames > FWindowFrames) then
+      raise EAudio.Create('Journal stream explicit window invalid');
+  end;
+  try
+    for LIndex := 0 to High(AWindows) do
+      AppendOne(AWindows[LIndex].Candidate);
   except
     FFailed := True;
     raise;

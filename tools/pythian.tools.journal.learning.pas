@@ -57,6 +57,7 @@ uses
   pythian.learning.journal,
   pythian.learning.selection,
   pythian.learning.render.stream,
+  pythian.learning.context.guard,
   pythian.learning.continuity,
   pythian.learning.context,
   pythian.learning.binding,
@@ -1442,6 +1443,11 @@ var
   LAccess: TJournalAudioAccess;
   LLatent: TLearnedSequenceStream;
   LSelector: TJournalSelectionStream;
+  LNovelty: TJournalGlobalRepetitionGuard;
+  LContextPlan, LSelected: TJournalContextWindows;
+  LContextOptions: TJournalContextOptions;
+  LContextReport: TJournalContextReport;
+  LNoveltyReport: TJournalNoveltyReport;
   LRender: TJournalWaveRenderStream;
   LSink: TStreamAudioSink;
   LWriter: TWavePcm16Writer;
@@ -1451,6 +1457,7 @@ var
   LStreams: array of TFileStream;
   LReaders: array of TWaveFrameReader;
   LPaths, LHashes: array of String;
+  LWindowKeys: TStringList;
   LSourceHashes: array of String;
   LWeights: TJournalSelectionWeights;
   LUse: array of Integer;
@@ -1462,27 +1469,62 @@ var
   LSolve: TGraphSolveReport;
   LSource: TJournalProfileSource;
   LCandidate, LPrevious: TJournalRepresentative;
+  LFallbackCandidate: TJournalRepresentative;
   LInputPrefix, LOutputPrefix, LStage, LReportText, LModelText: String;
   LWaveHash: String;
   LExpectedFrames, LActualFrames: Int64;
   LPeak: Double;
   LGrains, LChunkGrains, LBlockFrames, LSeed, LSelectionSeed: Integer;
+  LContextGrains, LContextUses, LArgument, LWindowSlot: Integer;
   LSourceCount, LSourceIndex, LFileIndex, LIndex, LOther, LRemaining: Integer;
   LChunkIndex, LOffset, LCount, LTokenIndex, LUnique, LUsedSources: Integer;
   LRepeats, LSwitches, LContiguous: Integer;
+  LContextPlanned, LContextSelected, LContextRejected, LContextReverted: Integer;
+  LContextAcceptedChunks: Integer;
+  LRepeatedFour: Integer;
+  LContextWork, LContextPreflightWork, LPlanWork: Int64;
+  LPreflightOffset, LPreflightCount: Integer;
+  LWindowKey: String;
   LMatched, LStageReserved: Boolean;
 begin
   if ParamCount < 8 then
-    raise EAudio.Create('Usage: pythian.learn replay-long INPUT_PREFIX OUTPUT_PREFIX GRAINS CHUNK_GRAINS BLOCK_FRAMES SOURCE.wav SOURCE.wav [...]');
+    raise EAudio.Create('Usage: pythian.learn replay-long INPUT_PREFIX OUTPUT_PREFIX GRAINS CHUNK_GRAINS BLOCK_FRAMES [--context-grains N --context-uses N] SOURCE.wav SOURCE.wav [...]');
   LInputPrefix := ParamStr(2);
   LOutputPrefix := ParamStr(3);
   LGrains := StrToInt(ParamStr(4));
   LChunkGrains := StrToInt(ParamStr(5));
   LBlockFrames := StrToInt(ParamStr(6));
+  LContextGrains := 0;
+  LContextUses := 0;
+  LPaths := nil;
+  LArgument := 7;
+  while LArgument <= ParamCount do
+  begin
+    if (ParamStr(LArgument) = '--context-grains') or
+      (ParamStr(LArgument) = '--context-uses') then
+    begin
+      if LArgument = ParamCount then
+        raise EAudio.Create('Long replay context option requires a value');
+      if ParamStr(LArgument) = '--context-grains' then
+        LContextGrains := StrToInt(ParamStr(LArgument + 1))
+      else
+        LContextUses := StrToInt(ParamStr(LArgument + 1));
+      Inc(LArgument, 2);
+      Continue;
+    end;
+    if Copy(ParamStr(LArgument), 1, 2) = '--' then
+      raise EAudio.Create('Unknown long replay option');
+    SetLength(LPaths, Length(LPaths) + 1);
+    LPaths[High(LPaths)] := ParamStr(LArgument);
+    Inc(LArgument);
+  end;
   if (LGrains < 1) or (LGrains > MaximumJournalStreamGrains) or
     (LChunkGrains < 1) or (LChunkGrains > 1024) or
     (LBlockFrames < 1) or (LBlockFrames > 65536) or
-    (ParamCount - 6 > 32) then
+    (Length(LPaths) < 2) or (Length(LPaths) > 32) or
+    (LContextGrains < 0) or (LContextGrains > MaximumJournalContextGrains) or
+    (LContextUses < 0) or (LContextUses > MaximumJournalSelectionGrains) or
+    ((LContextGrains = 0) and (LContextUses <> 0)) then
     raise EAudio.Create('Long replay grain, chunk, block or source count exceeds bounds');
   RequireFreshJournalPrefix(LOutputPrefix);
   for LIndex := 0 to 2 do
@@ -1501,18 +1543,22 @@ begin
   LAccess := nil;
   LLatent := nil;
   LSelector := nil;
+  LNovelty := nil;
   LRender := nil;
   LSink := nil;
   LWriter := nil;
   LWaveOutput := nil;
   LInputDocument := nil;
   LReport := nil;
+  LWindowKeys := nil;
   LStageReserved := False;
   LStage := LOutputPrefix + '.publishing';
   try
     LReportText := ReadProfileText(LInputPrefix + '.json');
     LModelText := ReadProfileText(LInputPrefix + '.wfcs');
     LProfile := TJournalModelProfile.Create(LReportText, LModelText);
+    if (LContextGrains > 0) and (LProfile.Contexts = nil) then
+      raise EAudio.Create('Long replay requires saved source contexts for context selection');
     LInputDocument := TJSONObject(GetJSON(LReportText));
     LInputSources := TJSONArray(LInputDocument.Find('sources'));
     LSourceCount := LProfile.SourceCount;
@@ -1530,21 +1576,44 @@ begin
     LSelectionSeed := LInputDocument.Get('selection_seed', 731);
     if (LSeed < 0) or (LSelectionSeed < 0) or
       (Int64(LSeed) + (LGrains - 1) div LChunkGrains > High(Integer)) or
+      ((LContextGrains > 0) and
+        (Int64(LSelectionSeed) + (LGrains - 1) div LChunkGrains > High(Integer))) or
       (Int64(LChunkGrains) * LProfile.Model.StateCount > DefaultAcousticStateCells) then
       raise EAudio.Create('Long replay seed or state-cell schedule exceeds bounds');
     LExpectedFrames := JournalStreamFrames(LProfile.Options.WindowFrames,
       LProfile.Options.HopFrames, LGrains);
     if (LExpectedFrames > Int64(300) * LProfile.SampleRate) then
       raise EAudio.Create('Long replay exceeds 300-second output cap');
-    SetLength(LStreams, ParamCount - 6);
+    LContextPreflightWork := 0;
+    if LContextGrains > 0 then
+    begin
+      LPreflightOffset := 0;
+      while LPreflightOffset < LGrains do
+      begin
+        LPreflightCount := LChunkGrains;
+        if LPreflightCount > LGrains - LPreflightOffset then
+          LPreflightCount := LGrains - LPreflightOffset;
+        if LContextGrains = 1 then
+          LPlanWork := LPreflightCount
+        else
+          LPlanWork := Int64(LPreflightCount) *
+            (Int64(LProfile.Contexts.WindowCount) * (LContextGrains + 2) +
+              Int64(LProfile.Pool.SlotCount) * 3) +
+            Int64(LPreflightCount) * LPreflightCount * 8;
+        if (LPlanWork > MaximumJournalSelectionVisits) or
+          (LPlanWork > MaximumJournalStreamVisits - LContextPreflightWork) then
+          raise EAudio.Create('Long context selection exceeds aggregate work budget');
+        Inc(LContextPreflightWork, LPlanWork);
+        Inc(LPreflightOffset, LPreflightCount);
+      end;
+    end;
+    SetLength(LStreams, Length(LPaths));
     SetLength(LReaders, Length(LStreams));
-    SetLength(LPaths, Length(LStreams));
     SetLength(LHashes, Length(LStreams));
     LAccess := TJournalAudioAccess.Create;
     SetLength(LAccess.Waves, LSourceCount);
     for LFileIndex := 0 to High(LStreams) do
     begin
-      LPaths[LFileIndex] := ParamStr(7 + LFileIndex);
       for LIndex := 0 to 2 do
         case LIndex of
           0: if SameFileName(ExpandFileName(LOutputPrefix + '.json'),
@@ -1601,6 +1670,14 @@ begin
     LLatent := TLearnedSequenceStream.Create(LProfile.Model);
     LSelector := TJournalSelectionStream.Create(LProfile.Pool,
       LWeights, LSelectionSeed);
+    if LContextGrains > 0 then
+    begin
+      LNovelty := TJournalGlobalRepetitionGuard.Create(LProfile.Pool, LGrains);
+      LWindowKeys := TStringList.Create;
+      LWindowKeys.Sorted := True;
+      LWindowKeys.Duplicates := dupIgnore;
+      LWindowKeys.CaseSensitive := True;
+    end;
     LReport := TJSONObject.Create;
     LReport.Add('schema', 'pythian.acoustic.long.v1');
     LReport.Add('input_report_sha256', HashText(LReportText));
@@ -1641,6 +1718,13 @@ begin
     LRepeats := 0;
     LSwitches := 0;
     LContiguous := 0;
+    LContextPlanned := 0;
+    LContextSelected := 0;
+    LContextRejected := 0;
+    LContextReverted := 0;
+    LContextAcceptedChunks := 0;
+    LContextWork := 0;
+    LRepeatedFour := 0;
     LPrevious := Default(TJournalRepresentative);
     LOffset := 0;
     LChunkIndex := 0;
@@ -1661,19 +1745,81 @@ begin
       for LIndex := 0 to LCount - 1 do
         LTokens[LIndex] := AcousticTokenIndex(LChunk.Tokens[LIndex]);
       LSlots := LSelector.SelectChunk(LTokens);
-      LRender.AppendSelection(LSlots);
+      if LContextGrains > 0 then
+      begin
+        LContextOptions := DefaultJournalContextOptions;
+        LContextOptions.MaximumRunGrains := LContextGrains;
+        LContextOptions.MaximumContextUses := LContextUses;
+        LContextOptions.Seed := LSelectionSeed + LChunkIndex;
+        LContextPlan := LProfile.Contexts.Plan(LSlots, nil,
+          LContextOptions, LContextReport);
+        if Length(LContextPlan) <> LCount then
+          raise EAudio.Create('Long context plan returned wrong grain count');
+        Inc(LContextWork, LContextReport.WorkBound);
+        if LContextWork > LContextPreflightWork then
+          raise EAudio.Create('Long context planning exceeded preflight work');
+        Inc(LContextPlanned, LContextReport.ContextGrains);
+        if LContextReport.Reverted then Inc(LContextReverted);
+        LSelected := LNovelty.SelectChunk(LSlots, LContextPlan,
+          LNoveltyReport);
+        if LNoveltyReport.ContextAccepted then
+        begin
+          Inc(LContextAcceptedChunks);
+          Inc(LContextSelected, LContextReport.ContextGrains);
+        end
+        else
+          Inc(LContextRejected);
+        LRepeatedFour := LNoveltyReport.SelectedRepeatedFour;
+        LRender.AppendWindows(LSelected);
+      end
+      else
+        LRender.AppendSelection(LSlots);
       LRow := TJSONObject.Create;
       LSchedule.Add(LRow);
       LRow.Add('chunk_index', LChunkIndex);
       LRow.Add('first_grain', LOffset);
       LRow.Add('grains', LCount);
       LRow.Add('seed', LOptions.Seed);
+      if LContextGrains > 0 then
+      begin
+        LRow.Add('context_plan_grains', LContextReport.ContextGrains);
+        LRow.Add('context_plan_reverted', LContextReport.Reverted);
+        LRow.Add('context_plan_work_bound',
+          TJSONInt64Number.Create(LContextReport.WorkBound));
+        LRow.Add('context_accepted', LNoveltyReport.ContextAccepted);
+        LRow.Add('first_rejected_grain', LNoveltyReport.FirstRejectedGrain);
+        LRow.Add('baseline_repeated_four',
+          LNoveltyReport.BaselineRepeatedFour);
+        LRow.Add('selected_repeated_four',
+          LNoveltyReport.SelectedRepeatedFour);
+      end;
       for LIndex := 0 to LCount - 1 do
       begin
         LTokenIndex := LOffset + LIndex;
-        LCandidate := LProfile.Pool.CandidateAt(LSlots[LIndex]);
+        if LContextGrains > 0 then
+          LCandidate := LSelected[LIndex].Candidate
+        else
+          LCandidate := LProfile.Pool.CandidateAt(LSlots[LIndex]);
+        LFallbackCandidate := LProfile.Pool.CandidateAt(LSlots[LIndex]);
+        LWindowSlot := LSlots[LIndex];
+        if (LContextGrains > 0) and
+          ((LCandidate.SegmentIndex <> LFallbackCandidate.SegmentIndex) or
+           (LCandidate.FeatureIndex <> LFallbackCandidate.FeatureIndex) or
+           (LCandidate.SourceFrame <> LFallbackCandidate.SourceFrame)) then
+          LWindowSlot := -1;
         Inc(LUse[LCandidate.SegmentIndex]);
-        if not LUsedSlots[LSlots[LIndex]] then
+        if LContextGrains > 0 then
+        begin
+          LWindowKey := IntToStr(LCandidate.SegmentIndex) + ':' +
+            IntToStr(LCandidate.FeatureIndex) + ':' +
+            IntToStr(LCandidate.SourceFrame);
+          if LWindowKeys.IndexOf(LWindowKey) < 0 then
+          begin
+            LWindowKeys.Add(LWindowKey);
+            Inc(LUnique);
+          end;
+        end
+        else if not LUsedSlots[LSlots[LIndex]] then
         begin
           LUsedSlots[LSlots[LIndex]] := True;
           Inc(LUnique);
@@ -1689,7 +1835,9 @@ begin
         LMap.Add(LRow);
         LRow.Add('grain', LTokenIndex);
         LRow.Add('token', LTokens[LIndex]);
-        LRow.Add('candidate_slot', LSlots[LIndex]);
+        LRow.Add('candidate_slot', LWindowSlot);
+        if LContextGrains > 0 then
+          LRow.Add('fallback_candidate_slot', LSlots[LIndex]);
         LRow.Add('source_index', LCandidate.SegmentIndex);
         LRow.Add('source_frame', TJSONInt64Number.Create(LCandidate.SourceFrame));
         LRow.Add('feature_index', TJSONInt64Number.Create(LCandidate.FeatureIndex));
@@ -1698,6 +1846,10 @@ begin
       Inc(LOffset, LCount);
       Inc(LChunkIndex);
     end;
+    if (LContextGrains > 0) and
+      ((LContextWork <> LContextPreflightWork) or
+       (LNovelty.GrainCount <> LGrains)) then
+      raise EAudio.Create('Long context work or guarded grain count differs');
     LRender.Finish;
     LPeak := LRender.Peak;
     LActualFrames := LWriter.FrameCount;
@@ -1730,6 +1882,23 @@ begin
     LReport.Add('adjacent_same_window', LRepeats);
     LReport.Add('source_switches', LSwitches);
     LReport.Add('contiguous_source_links', LContiguous);
+    if LContextGrains > 0 then
+    begin
+      LReport.Add('context_grains', LContextGrains);
+      LReport.Add('context_uses', LContextUses);
+      LReport.Add('context_planned_grains', LContextPlanned);
+      LReport.Add('context_selected_grains', LContextSelected);
+      LReport.Add('context_accepted_chunks', LContextAcceptedChunks);
+      LReport.Add('context_rejected_chunks', LContextRejected);
+      LReport.Add('context_plan_reverted_chunks', LContextReverted);
+      LReport.Add('context_plan_work_bound',
+        TJSONInt64Number.Create(LContextWork));
+      LReport.Add('global_repetition_guard_work_visits',
+        TJSONInt64Number.Create(LNovelty.WorkVisits));
+      LReport.Add('baseline_repeated_four',
+        LNoveltyReport.BaselineRepeatedFour);
+      LReport.Add('selected_repeated_four', LRepeatedFour);
+    end;
     LReport.Add('join_count', LGrains - 1);
     LReport.Add('cross_chunk_joins', LChunkIndex - 1);
     LReport.Add('within_chunk_joins', LGrains - LChunkIndex);
@@ -1751,6 +1920,8 @@ begin
     LWriter.Free;
     LSink.Free;
     LWaveOutput.Free;
+    LWindowKeys.Free;
+    LNovelty.Free;
     LSelector.Free;
     LLatent.Free;
     LAccess.Free;
