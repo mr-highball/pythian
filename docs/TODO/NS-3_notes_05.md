@@ -106,6 +106,25 @@ from these four MAESTRO contrasts.
 
 **Dev Notes:**
 
+- 2026-09-28 a distinct, prospectively frozen Berg original-WAV screen tried to
+  find one quiet late cell against its already approved, nonzero same-source
+  opening rest. The Pascal gate verified the durable rest event, exact source
+  SHA-256 and PCM geometry, then scanned only forty fixed 250-ms cells from
+  10–20 s. A first Win32 output was withdrawn when a Delphi-mode integer-to-
+  floating cast incorrectly printed zero RMS; a source-free PCM16 control and
+  the previously accepted rest RMS exposed and fixed that implementation defect
+  before a valid verdict. Corrected checked Win32/Win64 rows matched byte for
+  byte, selected no cell under the frozen above-rest, decay and half-cell
+  conditions, stayed below the memory/time caps and reported zero leaks. Stop
+  this source/window hypothesis without another threshold, source or window
+  substitution. No tail label, review request, scorer result or task credit
+  follows. Policy, withdrawn chronology and valid result are under ignored
+  `build/maestro-quiet-tail-20260928/`. The task-flow reassessment stops
+  further quiet-tail source screens on these exposed recordings. Criterion 3
+  now awaits a distinct source with independently supported or reviewed
+  audible tail and disjoint nonzero same-WAV rest, followed by a newly frozen
+  comparison. Existing MAESTRO contrasts cannot supply that evidence; no
+  further physical selector on these recordings is the next action.
 - 2026-09-28 Good-sounds v1.1 source route stopped. Publisher-matched metadata
   yielded 25 eligible takes from only one flute player/pack and fixed sound
   3/take 11, with pre-attack `[0,24000)` and late-release `[323000,335000)`.

@@ -13,6 +13,34 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Frozen Berg quiet-tail screen stopped — 2026-09-28
+
+A bounded follow-up to [NS-3 presence](TODO/NS-3_notes_05.md) tested whether
+the already reviewed Berg opening rest could support a late, quiet audible-tail
+case in the same original WAV. The prospective policy fixed the source,
+10–20-second scan cells, above-rest and decay conditions, work budget and
+no-substitution stop. The first Win32 scan was withdrawn after its Pascal
+integer-to-floating conversion printed impossible zero RMS; the source-free
+PCM16 control and accepted-rest sanity check caught the defect before the
+physical verdict. Corrected checked Win32/Win64 scans validated the original
+source and approved rest, matched all 40 cell rows byte for byte, and found no
+qualifying candidate. Both targets stayed within 64 MiB and 10 seconds with
+zero reported leaks. Exact chronology is retained under ignored
+`build/maestro-quiet-tail-20260928/`.
+
+The frozen Berg route is stopped. Nothing was added to the catalog or manual
+queue, and no presence score or acceptance credit follows. This is another
+nonclosing source screen. The task-flow reassessment stops further quiet-tail
+screens on these exposed sources. NS-3 presence needs a distinct source-bound
+audible tail and disjoint nonzero rest before another comparison can close its
+recorded gate. A read-only audit found no ready NS-3 or NS-5 scale/vocabulary
+criterion that the current admitted events and style references can close:
+recorded note/context evidence and verified timed musical traits remain the
+shared missing inputs. Continue from those concrete prerequisites and the two
+already published, substantial operator reviews instead of issuing more short
+source-label requests. Overall remains **71.55%**, **37 open / 31 DONE**;
+the cumulative manual queue remains **2/20**.
+
 ## Unknown-tempo evidence and guarded context accepted — 2026-09-28
 
 The stopped quiet-tail source screen and still-missing style references left the
