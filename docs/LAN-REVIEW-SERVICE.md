@@ -51,8 +51,10 @@ show another application alert for each distinct executable path. Stop the QA
 listener before replacing its executable.
 
 Windows previously created broad `pythian.label.catalog` application rules
-for changing build paths. Once the stable service is confirmed, disable only
-rules whose **Program** is the retired build executable and whose scope is
-Private+Public with Any local port and Any remote address. Keep the narrow
+for changing build paths. Before disabling any of them, verify that no
+process still uses the retired executable path and no listener relies on it.
+Once the stable service is confirmed, disable only rules whose **Program** is
+the retired build executable and whose scope is Private+Public with Any local
+port and Any remote address. Keep the narrow
 named port rules and the new stable-program rule. Never disable a rule by its
 display name alone because several build paths share the same name.
