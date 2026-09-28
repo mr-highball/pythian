@@ -33,6 +33,17 @@ Starting evidence: [WAV-STUDIES](../WAV-STUDIES.md) · [ACTIVITY](../ACTIVITY.md
 
 **Dev Notes:**
 
+- 2026-09-28 a prospective 4,000-grain three-source long-context trial stopped
+  at its frozen repetition gate. The exact saved model and source counts stayed
+  fixed; switches improved 3,969→1,373 and contiguous links 0→2,094, but
+  repeated four-window sequences worsened 636→782 against a no-increase gate.
+  An independent Pascal comparator checked original PCM seams, all 15 chunk
+  joins, hashes and counts on Win32/Win64. The temporary opt-in implementation
+  was reverted after failure; see the [work record](../WORK.md#bounded-long-context-continuity-trial--2026-09-28)
+  and ignored `build/journal-long-context-20260928/`. Stop chunk-local context
+  cap/length variants on this profile. This is one nonclosing quality batch,
+  not a musical or listening verdict; all criteria and credit remain open.
+
 - 2026-09-28 the bounded Pascal stream and replay prerequisite was split into
   [NS-5_continuity_02](DONE/NS-5_continuity_02.md) after the current 1,024-grain
   whole-render ceiling was confirmed. This task retains the full sustained

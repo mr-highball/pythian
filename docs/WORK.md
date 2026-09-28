@@ -13,6 +13,56 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Bounded long-context continuity trial — 2026-09-28
+
+The accepted four-minute acoustic continuation exposes 3,969 source switches
+among 3,999 joins and zero source-contiguous links. The next bounded
+[NS-5 continuity](TODO/NS-5_continuity_01.md) development batch tests one
+distinct hypothesis: saved, source-bound forward contexts can improve that
+mechanical continuity when applied to each fixed 256-grain WFC chunk, without
+changing the WFC tokens or the weighted source selection. This is a preparatory
+quality batch while the representative-vocabulary blocker remains open; it
+cannot accept the sustained multi-seed/listening task on its own.
+
+Before scoring, freeze the same 4,000-grain, three-WAV `joint` model, seed 731,
+selection seed 731, 256-grain WFC chunks and exact existing source caches. Attach
+at most eight-grain contexts without relearning. Run the existing context
+planner once per WFC chunk with an at-most-four start cap, a deterministic
+chunk-index seed, and an aggregate 128-million matching-work bound. PCM block
+size is independent of this planning schedule. Compare against the already
+accepted no-context replay: require all 4,000 latent tokens and the exact
+1,482/1,368/1,150 source counts to remain equal, at most 3,000 source switches
+and at least 500 source-contiguous links, no more than four adjacent exact-window
+repeats, and no increase in repeated four-window sequences. Measure all 15
+cross-chunk joins and any newly assembled seam cost separately. Require exact
+source maps, bounded resources, failed-input nonpublication, unchanged short
+replay, and byte-identical PCM on checked Win32/Win64 and two PCM block sizes
+under the same WFC chunk schedule. If the source, mechanical, repetition,
+resource or replay gate fails, stop this candidate without tuning chunk length,
+context length or caps on the scored profile. A pass is a mechanical improvement,
+not a musical or style verdict; actual sustained listener timestamps remain
+necessary for continuity acceptance.
+
+The one frozen candidate attached 138 exact-cache contexts / 1,079 windows
+without changing the model. The attached profile's no-context WAV reproduced
+the accepted SHA-256 exactly. Checked Win32/Win64 builds and PCM block sizes
+rendered identical context-candidate WAV bytes; the maintained long-output
+verifier passed source/map/frame and join geometry. The independent Pascal
+comparator replayed both targets and original source hashes. All 4,000 tokens
+and the 1,482/1,368/1,150 source counts stayed exact. Source switches fell
+3,969 to 1,373, contiguous links rose zero to 2,094, immediate repeats fell
+four to two, overall dense seam mean fell 1.011096 to 0.478458, assembled
+seam mean fell 1.011096 to 1.004386, and the 15 cross-chunk seam mean fell
+1.057891 to 1.006452. **Repeated four-window sequences rose 636 to 782**,
+failing the frozen no-increase gate. Stop this chunk-local context candidate;
+do not retune its eight-grain length, four-start cap or chunk schedule on the
+scored profile. The unaccepted renderer/CLI edits were reverted, leaving only
+this failure record; ignored Pascal source, logs and WAVs remain under
+`build/journal-long-context-20260928/`. No sustained listening, task
+completion or milestone credit follows. The next continuity proposal needs
+an independently justified way to balance context adjacency and long-range
+reuse, and the representative-vocabulary prerequisite remains open.
+
 ## Bounded acoustic continuation accepted — 2026-09-28
 
 [NS-5_continuity_02](TODO/DONE/NS-5_continuity_02.md) now supplies a maintained
