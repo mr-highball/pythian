@@ -75,12 +75,21 @@ both ignored artifacts remain and no further removal was attempted.
 The open-task audit also separated whole-mix and generated-output listening
 from source labels. [NS-5 reference evaluation](TODO/NS-5_evaluation_01.md)
 owns whole-mix preference and edition/cut evidence;
-[NS-5 listening evaluation](TODO/NS-5_evaluation_02.md) owns 120-second and
-paired output responses. [Continuity](TODO/NS-5_continuity_01.md),
+[reusable listening packet](TODO/NS-5_evaluation_03.md) now owns complete
+single/paired audio transport, explicit saved response and producer readback;
+[NS-5 listening evaluation](TODO/NS-5_evaluation_02.md) owns actual 120-second
+and paired style verdicts. [Continuity](TODO/NS-5_continuity_01.md),
 [timbre](TODO/NS-3_timbre_02.md) and
 [synthesis integration](TODO/NS-4_integration_01.md) retain their own
 task-bound listening decisions. A 30-second source review does not satisfy
 any of those full-output verdicts.
+
+The task-flow split assigns 2 of NS-5_evaluation_02's original 4 unearned
+NS-5 points to the independently executable full-output packet task and
+leaves 2 points with style-specific comparator execution and real listener
+scores. The 4-point total and 70.70 weighted baseline are unchanged. The
+new task is an engineering prerequisite; authored QA answers cannot count as
+a user style, correspondence, continuity, timbre or synthesis verdict.
 
 ## Physical-phone Save failure, parser repair and authoring gate — 2026-09-28
 

@@ -116,9 +116,9 @@ the underlying musical inference or reference labels already exist.
 | NS-5 recurring motifs, phrase and section organization | `phrase`, `section`, `ext.motif_relation` with fixed same-source targets |
 | NS-5 source-local preference assignment | `style_preference` only for a task-declared source-local decision; a short window does not establish whole-mix fit |
 | NS-5 full-mix personal reference fit and recording-edition correspondence | [NS-5_evaluation_01](NS-5_evaluation_01.md) owns whole-mix evidence and the verified source/cut correspondence; use a durable whole-asset or paired listening decision, never a short `style_preference` label as a substitute |
-| NS-5 sustained generated-output quality and continuity | [NS-5_continuity_01](NS-5_continuity_01.md) owns timestamped bad-passage judgments; [NS-5_evaluation_02](NS-5_evaluation_02.md) owns the full 120-second 0–3 trait rubric and saved Pascal producer response |
+| NS-5 sustained generated-output quality and continuity | [NS-5_continuity_01](NS-5_continuity_01.md) owns timestamped bad-passage judgments; [NS-5_evaluation_03](NS-5_evaluation_03.md) owns the reusable full-output response packet, and [NS-5_evaluation_02](NS-5_evaluation_02.md) owns actual 120-second style verdicts |
 | NS-3 and NS-4 generated-sound comparisons | [NS-3_timbre_02](NS-3_timbre_02.md) owns paired reference/learned attack, motion, release and identity judgments; [NS-4_integration_01](NS-4_integration_01.md) owns synthesis-path listening. Both require task-bound responses distinct from source labels |
-| NS-5 paired edits and style traits | [NS-5_evaluation_02](NS-5_evaluation_02.md) owns paired 15-second edits, timestamped comments, preserved/changed traits and the explicit saved producer-readable response |
+| NS-5 paired edits and style traits | [NS-5_evaluation_03](NS-5_evaluation_03.md) owns paired playback and saved comments/scores; [NS-5_evaluation_02](NS-5_evaluation_02.md) owns actual seed-731 edited outputs and reviewer-grounded trait comparisons |
 
 - Compile a Pythian-owned Pascal/pas2js browser application that lists the
   prepared inbox and durable catalog, imports all available tracks as one
