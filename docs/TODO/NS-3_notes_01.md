@@ -107,6 +107,20 @@ variation is authorized by the existing evidence.
 
 **Dev Notes:**
 
+- 2026-09-28 task-flow reassessment after the physical long-tone pass: the
+  independently contrasting observation now permits one blind development
+  check, but it does not justify another source-only octave screen. The
+  prospective Pascal policy is frozen under ignored
+  `build/register-odd-even-blind-20260928/POLICY.md`, SHA-256
+  `a6a54cad8d19a1ac50141102f1c2f13831fd627b0070c480c41b76ccc59c0068`,
+  before candidate scoring. It binds the original 16-kHz Spring WAV and saved
+  inference, requires source-free low/high/weak-fundamental/quiet-vibrato,
+  short/gap/mixture gates, fixed three-window odd/even decisions, a saved
+  blind prediction hash before opening the reference, then one unchanged
+  Pascal evaluator score. Its >=98% precision, >=80% coverage and zero new
+  wrong-center gate stops any failed candidate without a threshold/window
+  sweep. This exposed development check cannot alone earn task credit or
+  qualify independent held-out behavior.
 - 2026-09-28 a prospectively frozen Pascal odd/even harmonic-family screen
   found a physical C4/C5 contrast in the eight original Yorita flute long
   tones. It passed all 40 fixed source-activity windows and all 20/20 paired
