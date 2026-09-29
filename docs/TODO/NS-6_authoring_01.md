@@ -191,6 +191,17 @@ the underlying musical inference or reference labels already exist.
 
 **Dev Notes:**
 
+- 2026-09-29 phone Save 431 repair: the operator's selected `both_audible`
+  answer was blocked by a 64 KiB request-header rejection during the
+  listening-queue preflight, before any review write. Token-authenticated API
+  fetches now omit unrelated browser cookies while session setup still stores
+  the path-scoped media cookie. The native Pascal cap is bounded at 256 KiB
+  with byte-count-only 431 diagnostics. Salty Boi's independent Win32/Win64
+  and copied-catalog 390 px QA passed 70/200 KiB accepted headers, 280 KiB
+  rejection, token/Origin/media guards, exact Range, one no-ID Save, reload
+  and same-answer no-op; no live test write occurred. This advances criterion 9's phone
+  save path; physical-phone confirmation and task credit remain open. See
+  [work](../WORK.md#phone-save-request-header-repair--2026-09-29).
 - 2026-09-29 no-entry listening review repair: the phone exposed an empty
   Reviewer ID field that blocked Save. The pas2js listening form now supplies
   the fixed `operator` role without an input, retaining the native journal's

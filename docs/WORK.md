@@ -13,6 +13,34 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Phone Save request-header repair — 2026-09-29
+
+The operator's phone retained its `both_audible` selection but Save's
+`/api/listen-queue` preflight returned HTTP 431. The live Pascal service
+confirmed a header-bound rejection; no review event was written by that
+attempt. The media session cookie is scoped to `/api/listen-audio`, whereas
+the browser had sent all other matching cookies on every token-authenticated
+API fetch. Both pas2js pages now use `credentials: omit` for those routes,
+keeping `same-origin` credentials only for `/api/session` to receive the media
+cookie. The native parser's total-header bound rises from 64 to 256 KiB for
+session, media and legacy clients; rejected requests log a byte count, never
+header or cookie values. Host, Origin and token checks remain unchanged.
+Independent Salty Boi QA rebuilt checked FPC 3.2.2 Win32/Win64 binaries and
+passed 70/200 KiB session requests, a 70 KiB-cookie queue request and exact
+audio Range, 280 KiB 431 rejection followed by normal service, and Host,
+Origin and media-cookie denials. An isolated 390 px browser carried 70,138
+cookie bytes; it used credentials only for session setup, decoded audio,
+submitted one no-ID response, advanced and reloaded the queue, then avoided a
+duplicate event on same-answer Save. The native report recorded exactly one
+new revision 1 `operator`/`audible` event. Evidence is under ignored
+`build/salty-cookie-qa/`; no test answer touched the live catalog. The
+physical-phone Save verdict remains a manual review item.
+The checked Win64 SHA-256
+`1e54a20f2024a87b5ef1c11d49f50b43660d33a16e8610f194d870a5fb3c94b2`
+and six matching browser assets were staged at the fixed LAN path. After a
+managed foreground restart, the host's session and listening queue returned
+success, with 2 waiting and 0 completed reviews; no live review was written.
+
 ## Listening reviews without reviewer entry — 2026-09-29
 
 The operator's phone showed that Save response rejected an otherwise selected

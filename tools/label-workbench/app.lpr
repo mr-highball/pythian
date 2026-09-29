@@ -361,7 +361,15 @@ begin
   LHeaders := TJSObject.new;
   LOptions['method'] := AMethod;
   LOptions['mode'] := 'same-origin';
-  LOptions['credentials'] := 'same-origin';
+  { Only session setup needs cookies; other API routes use the token header. }
+  if APath = '/api/session' then
+  begin
+    LOptions['credentials'] := 'same-origin';
+  end
+  else
+  begin
+    LOptions['credentials'] := 'omit';
+  end;
   LOptions['redirect'] := 'error';
   LOptions['cache'] := 'no-store';
   LOptions['referrerPolicy'] := 'no-referrer';

@@ -68,7 +68,7 @@ function ApplyKeyFileDacl(APath: PWideChar; AInformation: DWORD;
 {$ENDIF}
 
 const
-  CMaximumHeaderBytes = 65536;
+  CMaximumHeaderBytes = 262144;
   CMaximumBodyBytes = 32768;
   CMaximumReviewedImportBytes = 67108864;
   CMaximumTargetBytes = 2048;
@@ -621,13 +621,15 @@ begin
       Inc(LSeparator, LRequestStart - 1);
     if (LSeparator = 0) and (Length(LRaw) > CMaximumHeaderBytes) then
     begin
-      AFailure := 'request header exceeds size bound';
+      AFailure := 'request header exceeds size bound (bytes=' +
+        IntToStr(Length(LRaw)) + ')';
       Exit(431);
     end;
   until LSeparator > 0;
   if LSeparator - 1 > CMaximumHeaderBytes then
   begin
-    AFailure := 'request header exceeds size bound';
+    AFailure := 'request header exceeds size bound (bytes=' +
+      IntToStr(LSeparator - 1) + ')';
     Exit(431);
   end;
   LHeader := Copy(LRaw, 1, LSeparator - 1);
