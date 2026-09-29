@@ -13,6 +13,30 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Listening reviews without reviewer entry — 2026-09-29
+
+The operator's phone showed that Save response rejected an otherwise selected
+answer because the listening page required an empty Reviewer ID field. The
+pas2js form no longer presents that field. It submits the stable `operator`
+role already used as the source editor's default, while the native catalog
+continues to require a nonempty reviewer in its durable journal. This role
+identifies the local operator workflow, not a verified individual. An unchanged
+legacy response saved under a manually entered reviewer is recognized by its
+status and answer content, so a no-op Save does not create a new event solely
+to replace its reviewer string. A changed correction is a new `operator` event.
+The pas2js build passed. Salty Boi's independent Pascal/CDP test at 390 px on
+a copied catalog saved a new no-entry response in one POST, advanced the queue
+and reloaded it; the native report showed revision 1, reviewer `operator` and
+the selected answer. An unchanged legacy response used zero POSTs, while a
+changed correction used one POST and reached revision 2 under `operator`.
+There were no JavaScript errors or horizontal overflow; evidence is under
+ignored `build/salty-review-ux-final/`. No test response touched the live
+operator catalog. The pending physical-phone listening criterion remains open.
+The two tested static files were copied into the running fixed-path LAN web
+root without changing the native binary. Their staged and live SHA-256 hashes
+match; `GET /listen.html` returned 200 without the Reviewer ID field, and the
+service remained bound to `192.168.12.109:18097`.
+
 ## Review queue clarity and listening media recovery — 2026-09-28
 
 The operator's mobile screenshots showed a misleading split: the source page

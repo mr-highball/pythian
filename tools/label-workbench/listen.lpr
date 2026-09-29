@@ -59,7 +59,6 @@ type
     FAudioFailures: TJSArray;
     FAudioReady: TJSArray;
     FSelectedId: String;
-    FReviewerName: String;
     FSelectedPending: Boolean;
     FSelectedIndex: Integer;
     FSaving: Boolean;
@@ -575,10 +574,6 @@ begin
     LButton.onclick := @HandleRange;
     El('ranges').appendChild(LButton);
   end;
-  TJSHTMLInputElement(El('reviewer')).value :=
-    Str(FRequest, 'current_reviewer');
-  if TJSHTMLInputElement(El('reviewer')).value = '' then
-    TJSHTMLInputElement(El('reviewer')).value := FReviewerName;
   if FComments = nil then FComments := TJSArray.new;
   DrawComments;
   LChoices := Arr(Obj(FRequest['answer_spec']), 'choices');
@@ -724,10 +719,7 @@ begin
   Result['request_id'] := FSelectedId;
   Result['request_sha256'] := Str(FRequest, 'request_sha256');
   Result['expected_revision'] := Trunc(Num(FRequest, 'revision'));
-  LValue := Trim(TJSHTMLInputElement(El('reviewer')).value);
-  if (LValue = '') or (Length(LValue) > 128) then
-    raise Exception.Create('Enter a reviewer ID before saving.');
-  Result['reviewer'] := LValue;
+  Result['reviewer'] := 'operator';
   Result['status'] := 'submitted';
   LChoices := TJSArray.new;
   LScores := TJSArray.new;
@@ -765,7 +757,6 @@ end;
 function TListener.SameSaved(const ARow, ATransaction: TJSObject): Boolean;
 begin
   Result := (Str(ARow, 'current_status') = 'submitted') and
-    (Str(ARow, 'current_reviewer') = Str(ATransaction, 'reviewer')) and
     (TJSJSON.stringify(Arr(ARow, 'current_choices')) =
       TJSJSON.stringify(Arr(ATransaction, 'choices'))) and
     (TJSJSON.stringify(Arr(ARow, 'current_scores')) =
@@ -894,7 +885,6 @@ begin
   except
     on E: Exception do begin Feedback(E.Message, True); Exit; end;
   end;
-  FReviewerName := Str(LTransaction, 'reviewer');
   FSaving := True;
   TJSHTMLButtonElement(El('save')).disabled := True;
   LAdvance := FSelectedPending;

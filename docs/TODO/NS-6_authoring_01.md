@@ -191,6 +191,17 @@ the underlying musical inference or reference labels already exist.
 
 **Dev Notes:**
 
+- 2026-09-29 no-entry listening review repair: the phone exposed an empty
+  Reviewer ID field that blocked Save. The pas2js listening form now supplies
+  the fixed `operator` role without an input, retaining the native journal's
+  nonempty reviewer contract. An unchanged historical response with another
+  reviewer is treated as a no-op by answer content, while changed corrections
+  record the new role. The pas2js build and independent Salty Boi copied-catalog
+  390 px QA passed new Save, queue advance, reload, legacy no-op and changed
+  correction with exactly the expected POST counts and native reviewer values;
+  no test answer touched the live catalog. This repairs the operator path within criterion 9;
+  the physical-phone audio criterion 5 and task credit remain open. See
+  [work](../WORK.md#listening-reviews-without-reviewer-entry--2026-09-29).
 - 2026-09-28 mobile queue/playback repair: the source page's
   source-only `0 waiting · 4 completed` had obscured two pending full-output
   listening reviews. The pas2js home now reports the combined waiting total
