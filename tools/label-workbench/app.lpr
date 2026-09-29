@@ -83,6 +83,13 @@ type
     FConnectionLoading: Boolean;
     FCatalogLoads: Integer;
     FQueueLoads: Integer;
+    FSourceQueueKnown: Boolean;
+    FSourceWaiting: Integer;
+    FSourceCompleted: Integer;
+    FListeningQueueKnown: Boolean;
+    FListeningQueueLoading: Boolean;
+    FListeningWaiting: Integer;
+    FListeningCompleted: Integer;
     FAudioLoading: Boolean;
     FAudioAbort: TWorkbenchAbortController;
     FLoadingStage: String;
@@ -171,6 +178,7 @@ type
     procedure RenderInbox(const AData: TJSObject);
     procedure RenderCatalog(const AData: TJSObject);
     procedure RenderAssignments(const AData: TJSObject);
+    procedure UpdateReviewOverview;
     procedure SelectAssignment(const AIndex: Integer;
       const AScroll: Boolean);
     procedure ReviewPrompt(const AFallback: String);
@@ -226,6 +234,8 @@ type
     procedure Start; async;
     procedure RefreshLists; async;
     procedure RefreshAssignments; async;
+    procedure RefreshListeningOverview; async;
+    function HandlePageShow(AEvent: TEventListenerEvent): Boolean;
     procedure ImportAll; async;
     procedure SelectTrack(const AIndex: Integer;
       const AStartFrame: Int64 = -1; const AEndFrame: Int64 = -1;
@@ -376,6 +386,10 @@ var
 begin
   LStatus := Element('status');
   LStatus.textContent := AText;
+  if AText = '' then
+    LStatus.setAttribute('hidden', '')
+  else
+    LStatus.removeAttribute('hidden');
   if AError then
   begin
     LStatus.setAttribute('class', 'status error');
@@ -731,6 +745,95 @@ begin
   end;
 end;
 
+procedure TWorkbench.UpdateReviewOverview;
+var
+  LKnownWaiting: Integer;
+  LTitle: String;
+begin
+  LKnownWaiting := 0;
+  if FSourceQueueKnown then
+  begin
+    Inc(LKnownWaiting, FSourceWaiting);
+    Element('source-overview-state').textContent :=
+      IntToStr(FSourceWaiting) + ' waiting · ' +
+      IntToStr(FSourceCompleted) + ' completed';
+  end
+  else if (FQueueLoads > 0) or (FCatalogLoads > 0) then
+    Element('source-overview-state').textContent := 'Checking…'
+  else
+    Element('source-overview-state').textContent := 'Status unavailable';
+  if FListeningQueueKnown then
+  begin
+    Inc(LKnownWaiting, FListeningWaiting);
+    Element('listening-overview-state').textContent :=
+      IntToStr(FListeningWaiting) + ' waiting · ' +
+      IntToStr(FListeningCompleted) + ' completed';
+  end
+  else if FListeningQueueLoading then
+    Element('listening-overview-state').textContent := 'Checking…'
+  else
+    Element('listening-overview-state').textContent := 'Status unavailable';
+
+  if FSourceQueueKnown and FListeningQueueKnown then
+  begin
+    if LKnownWaiting = 0 then
+    begin
+      if (FSourceCompleted = 0) and (FListeningCompleted = 0) then
+      begin
+        LTitle := 'No reviews assigned yet';
+        Element('review-overview-detail').textContent :=
+          'New listening reviews and source labels will appear here.';
+      end
+      else
+      begin
+        LTitle := 'All assigned reviews complete';
+        Element('review-overview-detail').textContent :=
+          'There are no listening reviews or source labels waiting.';
+      end;
+    end
+    else
+    begin
+      if LKnownWaiting = 1 then
+        LTitle := '1 review needs your attention'
+      else
+        LTitle := IntToStr(LKnownWaiting) +
+          ' reviews need your attention';
+      Element('review-overview-detail').textContent :=
+        'Choose a queue below. Your saved decisions are removed from its waiting list.';
+    end;
+  end
+  else
+  begin
+    if LKnownWaiting = 1 then
+      LTitle := 'At least 1 review needs your attention'
+    else if LKnownWaiting > 1 then
+      LTitle := 'At least ' + IntToStr(LKnownWaiting) +
+        ' reviews need your attention'
+    else
+      LTitle := 'Checking assigned reviews…';
+    if (FQueueLoads > 0) or (FCatalogLoads > 0) or
+      FListeningQueueLoading then
+      Element('review-overview-detail').textContent :=
+        'Checking listening reviews and source labels.'
+    else
+      Element('review-overview-detail').textContent :=
+        'One queue could not be checked. Open its page or retry the connection.';
+  end;
+  Element('review-overview-title').textContent := LTitle;
+  if FSourceQueueKnown and FListeningQueueKnown then
+    Element('review-overview-announcement').textContent := LTitle +
+      '. ' + IntToStr(FListeningWaiting) + ' listening reviews waiting; ' +
+      IntToStr(FSourceWaiting) + ' source labels waiting.';
+  if FListeningQueueKnown and (FListeningWaiting > 0) then
+    Element('listening-route').setAttribute('class', 'review-route needs-review')
+  else
+    Element('listening-route').setAttribute('class', 'review-route');
+  if FSourceQueueKnown and (FSourceWaiting > 0) then
+    Element('source-route').setAttribute('class', 'review-route needs-review')
+  else
+    Element('source-route').setAttribute('class', 'review-route');
+end;
+
 procedure TWorkbench.RenderAssignments(const AData: TJSObject);
 var
   LRow: TJSObject;
@@ -752,8 +855,12 @@ begin
   LCompletedCount := 0;
   if LCompleted <> nil then
     LCompletedCount := LCompleted.length;
+  FSourceQueueKnown := True;
+  FSourceWaiting := FReviewQueue.length;
+  FSourceCompleted := LCompletedCount;
+  UpdateReviewOverview;
   Element('queue-progress').textContent :=
-    IntToStr(FReviewQueue.length) + ' waiting · ' +
+    IntToStr(FReviewQueue.length) + ' source labels waiting · ' +
     IntToStr(LCompletedCount) + ' completed';
   LSelectedFound := False;
   if FReviewId <> '' then
@@ -793,15 +900,14 @@ begin
     if (LCompleted <> nil) and (LCompleted.length > 0) then
     begin
       Element('assignment-state').textContent :=
-        'All done — every prepared request has a final review.';
-      ReviewPrompt('All prepared requests are complete.');
+        'No source labels waiting. Listening reviews may still need attention above.';
+      ReviewPrompt('All source-label requests are complete.');
     end
     else
     begin
-      Element('catalog-browser').setAttribute('open', '');
       Element('assignment-state').textContent :=
-        'No review requests are ready. Explore the audio if you like; no label is needed.';
-      ReviewPrompt('No prepared review requests are waiting.');
+        'No source labels are assigned. Use the review queue above for your next action.';
+      ReviewPrompt('No source-label requests are waiting.');
     end;
     Exit;
   end;
@@ -2642,7 +2748,11 @@ begin
     UpdateLoading;
     ShowWorkspace;
     Status('Connected to catalog.');
+    FSourceQueueKnown := False;
+    FListeningQueueKnown := False;
+    FListeningQueueLoading := True;
     RefreshLists;
+    RefreshListeningOverview;
   except
     on LError: Exception do
     begin
@@ -2692,7 +2802,7 @@ begin
     end;
     LData := await(TJSObject, LResponse.json());
     RenderInbox(LData);
-    Status('Audio catalog loaded. Choose a prepared request or explore a recording.');
+    Status('');
     except
       on LError: Exception do
       begin
@@ -2708,6 +2818,7 @@ begin
   finally
     Dec(FCatalogLoads);
     UpdateLoading;
+    UpdateReviewOverview;
   end;
 end;
 
@@ -2716,14 +2827,18 @@ var
   LResponse: TJSResponse;
   LData: TJSObject;
 begin
+  FSourceQueueKnown := False;
   Inc(FQueueLoads);
   UpdateLoading;
+  UpdateReviewOverview;
   try
     try
       LResponse := await(TJSResponse,
       FetchApi('/api/review-queue', 'GET', ''));
     if LResponse.status = 404 then
     begin
+      FSourceQueueKnown := False;
+      UpdateReviewOverview;
       if not FQueuePostCommitPending then
       begin
         FQueueAdvancePending := False;
@@ -2745,6 +2860,8 @@ begin
     except
       on LError: Exception do
       begin
+        FSourceQueueKnown := False;
+        UpdateReviewOverview;
         if not FQueuePostCommitPending then
         begin
           FQueueAdvancePending := False;
@@ -2762,6 +2879,8 @@ begin
       end;
     else
       begin
+        FSourceQueueKnown := False;
+        UpdateReviewOverview;
         if not FQueuePostCommitPending then
         begin
           FQueueAdvancePending := False;
@@ -2780,6 +2899,52 @@ begin
   finally
     Dec(FQueueLoads);
     UpdateLoading;
+    UpdateReviewOverview;
+  end;
+end;
+
+procedure TWorkbench.RefreshListeningOverview; async;
+var
+  LResponse: TJSResponse;
+  LData: TJSObject;
+  LWaiting: TJSArray;
+  LCompleted: TJSArray;
+begin
+  FListeningQueueKnown := False;
+  FListeningQueueLoading := True;
+  UpdateReviewOverview;
+  try
+    try
+      LResponse := await(TJSResponse,
+        FetchApi('/api/listen-queue', 'GET', ''));
+      if LResponse.status <> 200 then
+        raise Exception.Create('Listening queue HTTP ' +
+          IntToStr(LResponse.status));
+      LData := await(TJSObject, LResponse.json());
+      LWaiting := TJSArray(LData['items']);
+      LCompleted := TJSArray(LData['completed']);
+      if (LWaiting = nil) or (LCompleted = nil) then
+        raise Exception.Create('Listening queue shape is invalid');
+      FListeningWaiting := LWaiting.length;
+      FListeningCompleted := LCompleted.length;
+      FListeningQueueKnown := True;
+    except
+      FListeningQueueKnown := False;
+    end;
+  finally
+    FListeningQueueLoading := False;
+    UpdateReviewOverview;
+  end;
+end;
+
+function TWorkbench.HandlePageShow(AEvent: TEventListenerEvent): Boolean;
+begin
+  Result := False;
+  if (FToken <> '') and isBoolean(TJSObject(AEvent)['persisted']) and
+    Boolean(TJSObject(AEvent)['persisted']) then
+  begin
+    RefreshAssignments;
+    RefreshListeningOverview;
   end;
 end;
 
@@ -2871,6 +3036,8 @@ begin
     FReviewStart := AStartFrame;
     FReviewEnd := AEndFrame;
   end;
+  Element('work-column').removeAttribute('hidden');
+  Element('workspace').removeAttribute('class');
   Inc(FWindowEpoch);
   FAudio.pause;
   FAudio.removeAttribute('src');
@@ -5196,6 +5363,7 @@ begin
   FCanvas.onpointerup := @HandleCanvasUp;
   FCanvas.onpointercancel := @HandleCanvasCancel;
   document.onkeydown := @HandleKeyboard;
+  window.addEventListener('pageshow', @HandlePageShow);
   DrawWaveform;
   Start;
 end;

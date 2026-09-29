@@ -59,6 +59,7 @@ type
     FAudioFailures: TJSArray;
     FAudioReady: TJSArray;
     FSelectedId: String;
+    FReviewerName: String;
     FSelectedPending: Boolean;
     FSelectedIndex: Integer;
     FSaving: Boolean;
@@ -96,6 +97,7 @@ type
     procedure Connect; async;
     procedure LoadQueue(const APreferred: String = ''; const AAdvance: Boolean = False); async;
     procedure Save; async;
+    function HandlePageShow(AEvent: TEventListenerEvent): Boolean;
     function HandleRetry(AEvent: TJSMouseEvent): Boolean;
     function HandleReload(AEvent: TJSMouseEvent): Boolean;
     function HandleSelect(AEvent: TJSMouseEvent): Boolean;
@@ -157,6 +159,41 @@ begin
     if Ord(Result[I]) < 32 then Result[I] := ' ';
 end;
 
+function PacketTitle(const ARow: TJSObject): String;
+var
+  LQuestion: String;
+begin
+  Result := Str(ARow, 'title');
+  if Result <> '' then
+    Exit;
+  LQuestion := LowerCase(Str(ARow, 'question'));
+  if Str(ARow, 'kind') = 'pair' then
+  begin
+    if Pos('playback', LQuestion) > 0 then
+      Result := 'Check playback of two recordings'
+    else
+      Result := 'Compare two recordings';
+  end
+  else if Pos('full', LQuestion) > 0 then
+    Result := 'Review a complete recording'
+  else
+    Result := 'Review one recording';
+end;
+
+function AssetName(const AAsset: TJSObject): String;
+begin
+  if Str(AAsset, 'role') = 'source' then
+    Result := 'Original recording'
+  else if Str(AAsset, 'id') = 'pythian_beat_cue' then
+    Result := 'Pythian beat cue'
+  else if Str(AAsset, 'role') = 'generated' then
+    Result := 'Pythian generated recording'
+  else if Str(AAsset, 'role') = 'edited' then
+    Result := 'Edited recording'
+  else
+    Result := StringReplace(Str(AAsset, 'id'), '_', ' ', [rfReplaceAll]);
+end;
+
 function TListener.El(const AId: String): TJSElement;
 begin
   Result := document.getElementById(AId);
@@ -189,6 +226,10 @@ end;
 procedure TListener.Status(const AText: String; const AError: Boolean);
 begin
   El('status').textContent := AText;
+  if AText = '' then
+    El('status').setAttribute('hidden', '')
+  else
+    El('status').removeAttribute('hidden');
   if AError then El('status').setAttribute('class', 'status error')
   else El('status').setAttribute('class', 'status');
 end;
@@ -342,11 +383,21 @@ var
   LRow: TJSObject;
   LButton: TJSHTMLButtonElement;
   LParent: TJSElement;
+  LQuestion: String;
 begin
   Clear('pending');
   Clear('completed');
   El('progress').textContent := IntToStr(FPending.length) + ' waiting · ' +
     IntToStr(FCompleted.length) + ' completed';
+  if (FPending.length = 0) and (FCompleted.length = 0) then
+    El('queue-title').textContent := 'No listening reviews assigned'
+  else if FPending.length = 0 then
+    El('queue-title').textContent := 'All listening reviews complete'
+  else if FPending.length = 1 then
+    El('queue-title').textContent := '1 listening review needs attention'
+  else
+    El('queue-title').textContent := IntToStr(FPending.length) +
+      ' listening reviews need attention';
   for I := 0 to FPending.length + FCompleted.length - 1 do
   begin
     if I < FPending.length then
@@ -362,15 +413,18 @@ begin
     LButton := TJSHTMLButtonElement(document.createElement('button'));
     LButton.setAttribute('type', 'button');
     LButton.setAttribute('data-id', Str(LRow, 'id'));
-    LButton.textContent := Str(LRow, 'task_id') + ' · ' +
-      Str(LRow, 'id');
+    AddText(LButton, 'strong', PacketTitle(LRow), '');
+    LQuestion := Str(LRow, 'question');
+    if Length(LQuestion) > 140 then
+      LQuestion := Copy(LQuestion, 1, 137) + '…';
+    AddText(LButton, 'small', LQuestion, '');
     if Str(LRow, 'id') = FSelectedId then
       LButton.setAttribute('class', 'selected');
     LButton.onclick := @HandleSelect;
     LParent.appendChild(LButton);
   end;
   if FPending.length = 0 then
-    AddText(El('pending'), 'p', 'All assigned listening packets are done.',
+    AddText(El('pending'), 'p', 'No listening reviews are waiting.',
       'muted');
   if FCompleted.length = 0 then
     AddText(El('completed'), 'p', 'No saved responses yet.', 'muted');
@@ -404,12 +458,15 @@ procedure TListener.DrawPacket;
 var
   LAssets, LRanges, LChoices, LScores, LSaved, LSourceHashes: TJSArray;
   LAsset, LRange, LDimension, LAnswer, LProvenance: TJSObject;
-  LCard, LSelect, LLabel: TJSElement;
+  LCard, LSelect, LLabel, LDetails: TJSElement;
   LOption: TJSHTMLSelectElement;
   LAudio: TJSHTMLAudioElement;
   LButton: TJSHTMLButtonElement;
   LId: String;
-  I, J: Integer;
+  LAssetName: String;
+  LRate: Integer;
+  LStartSeconds, LEndSeconds: Integer;
+  I, J, K: Integer;
 begin
   PauseAudioPlayers;
   FAudioPlayers := TJSArray.new;
@@ -423,10 +480,15 @@ begin
   end;
   El('empty').setAttribute('hidden', '');
   El('packet').removeAttribute('hidden');
-  El('task').textContent := Str(FRequest, 'task_id') + ' · ' +
-    Str(FRequest, 'kind');
+  if FSelectedPending then
+    El('task').textContent := 'LISTENING REVIEW ' +
+      IntToStr(FSelectedIndex + 1) + ' OF ' + IntToStr(FPending.length)
+  else
+    El('task').textContent := 'COMPLETED LISTENING REVIEW';
+  El('packet-title').textContent := PacketTitle(FRequest);
   El('question').textContent := Str(FRequest, 'question');
-  El('identity').textContent := 'Packet ' + Str(FRequest, 'id') +
+  El('identity').textContent := 'Task ' + Str(FRequest, 'task_id') +
+    ' · packet ' + Str(FRequest, 'id') +
     ' · revision ' + IntToStr(Trunc(Num(FRequest, 'revision'))) +
     ' · exact request ' + Copy(Str(FRequest, 'request_sha256'), 1, 12);
   Clear('assets'); Clear('ranges'); Clear('choices'); Clear('scores');
@@ -436,9 +498,16 @@ begin
   begin
     LAsset := Obj(LAssets[I]);
     LId := Str(LAsset, 'id');
+    LAssetName := AssetName(LAsset);
     LCard := AddText(El('assets'), 'div', '', 'asset');
-    AddText(LCard, 'strong', LId + ' · ' + Str(LAsset, 'role'), '');
-    AddText(LCard, 'small', Str(LAsset, 'storage') + ' · ' +
+    AddText(LCard, 'strong', LAssetName, '');
+    if Num(LAsset, 'sample_rate') > 0 then
+      AddText(LCard, 'small',
+        IntToStr(Round(Num(LAsset, 'frames') /
+          Num(LAsset, 'sample_rate'))) + ' seconds', 'muted');
+    LDetails := AddText(LCard, 'details', '', 'asset-technical');
+    AddText(LDetails, 'summary', 'Audio details', '');
+    AddText(LDetails, 'p', LId + ' · ' + Str(LAsset, 'storage') + ' · ' +
       IntToStr(Trunc(Num(LAsset, 'frames'))) + ' frames · ' +
       IntToStr(Trunc(Num(LAsset, 'sample_rate'))) + ' Hz', 'muted');
     if ((Str(LAsset, 'role') = 'generated') or
@@ -448,7 +517,7 @@ begin
       LProvenance := Obj(LAsset['provenance']);
       LSourceHashes := Arr(LProvenance, 'source_sha256s');
       if (LSourceHashes <> nil) and (LSourceHashes.length > 1) then
-        AddText(LCard, 'small', ' · ' + IntToStr(LSourceHashes.length) +
+        AddText(LDetails, 'small', IntToStr(LSourceHashes.length) +
           ' source recordings', 'muted');
     end;
     LAudio := TJSHTMLAudioElement(document.createElement('audio'));
@@ -485,14 +554,31 @@ begin
     LButton.setAttribute('data-asset', Str(LRange, 'asset_id'));
     LButton.setAttribute('data-frame',
       IntToStr(Trunc(Num(LRange, 'start_frame'))));
-    LButton.textContent := 'Seek ' + Str(LRange, 'asset_id') + ' ' +
-      IntToStr(Trunc(Num(LRange, 'start_frame'))) + '–' +
-      IntToStr(Trunc(Num(LRange, 'end_frame')));
+    LAssetName := Str(LRange, 'asset_id');
+    LRate := 0;
+    for K := 0 to LAssets.length - 1 do
+      if Str(Obj(LAssets[K]), 'id') = Str(LRange, 'asset_id') then
+      begin
+        LAssetName := AssetName(Obj(LAssets[K]));
+        LRate := Trunc(Num(Obj(LAssets[K]), 'sample_rate'));
+        Break;
+      end;
+    if LRate > 0 then
+    begin
+      LStartSeconds := Trunc(Num(LRange, 'start_frame') / LRate);
+      LEndSeconds := Round(Num(LRange, 'end_frame') / LRate);
+      LButton.textContent := 'Seek ' + LAssetName + ': ' +
+        IntToStr(LStartSeconds) + '–' + IntToStr(LEndSeconds) + ' s';
+    end
+    else
+      LButton.textContent := 'Seek ' + LAssetName;
     LButton.onclick := @HandleRange;
     El('ranges').appendChild(LButton);
   end;
   TJSHTMLInputElement(El('reviewer')).value :=
     Str(FRequest, 'current_reviewer');
+  if TJSHTMLInputElement(El('reviewer')).value = '' then
+    TJSHTMLInputElement(El('reviewer')).value := FReviewerName;
   if FComments = nil then FComments := TJSArray.new;
   DrawComments;
   LChoices := Arr(Obj(FRequest['answer_spec']), 'choices');
@@ -596,8 +682,16 @@ begin
     if FPending.length > 0 then LNext := Str(Obj(FPending[0]), 'id');
   end;
   SelectRow(LNext);
+  if AAdvance then
+  begin
+    if FRequest <> nil then
+      TJSHTMLElement(El('packet-title')).focus
+    else
+      TJSHTMLElement(El('queue-title')).focus;
+  end;
   if (FPending.length = 0) and (LNext = '') then
-    El('empty').textContent := 'All assigned listening packets are complete. Open a completed response to review it.';
+    El('empty').textContent :=
+      'All listening reviews are complete. Open a completed response below to review it.';
 end;
 
 function TListener.FrameAllowed(const AAssetId: String;
@@ -762,7 +856,7 @@ begin
         raise Exception.Create('Queue HTTP ' + IntToStr(LResponse.status));
       LData := await(TJSObject, LResponse.json());
       ApplyQueue(LData, APreferred, AAdvance);
-      Status('Listening queue loaded.');
+      Status('');
     except
       on E: Exception do Status('Queue load failed: ' + E.Message +
         '. Use Reload queue.', True);
@@ -772,6 +866,14 @@ begin
     Dec(FQueueLoads);
     UpdateLoading;
   end;
+end;
+
+function TListener.HandlePageShow(AEvent: TEventListenerEvent): Boolean;
+begin
+  Result := False;
+  if (FToken <> '') and isBoolean(TJSObject(AEvent)['persisted']) and
+    Boolean(TJSObject(AEvent)['persisted']) then
+    LoadQueue(FSelectedId);
 end;
 
 procedure TListener.Save; async;
@@ -792,6 +894,7 @@ begin
   except
     on E: Exception do begin Feedback(E.Message, True); Exit; end;
   end;
+  FReviewerName := Str(LTransaction, 'reviewer');
   FSaving := True;
   TJSHTMLButtonElement(El('save')).disabled := True;
   LAdvance := FSelectedPending;
@@ -862,7 +965,10 @@ begin if not FSaving then LoadQueue(FSelectedId); Result := False; end;
 function TListener.HandleSelect(AEvent: TJSMouseEvent): Boolean;
 begin
   if not FSaving then
+  begin
     SelectRow(TJSElement(AEvent.currentTarget).getAttribute('data-id'));
+    TJSHTMLElement(El('packet-title')).focus;
+  end;
   Result := False;
 end;
 
@@ -1097,6 +1203,7 @@ begin
   TJSHTMLButtonElement(El('save')).onclick := @HandleSave;
   TJSHTMLButtonElement(El('reset')).onclick := @HandleReset;
   TJSHTMLButtonElement(El('add-comment')).onclick := @HandleAddComment;
+  window.addEventListener('pageshow', @HandlePageShow);
   Connect;
 end;
 

@@ -45,16 +45,33 @@ SOFTWARE.
   </div>
   <button id="connect-retry" type="button" class="connect-retry" hidden>Retry connection</button>
 
-  <main id="workspace" hidden>
+  <main id="workspace" class="overview-only" hidden>
+    <section id="review-overview" class="panel review-overview" aria-labelledby="review-overview-title">
+      <p class="step">YOUR REVIEW QUEUE</p>
+      <h2 id="review-overview-title">Checking assigned reviews…</h2>
+      <p id="review-overview-announcement" class="visually-hidden" role="status" aria-live="polite"></p>
+      <p id="review-overview-detail" class="panel-note">Checking listening reviews and source labels.</p>
+      <div class="review-routes">
+        <a id="listening-route" class="review-route" href="listen.html">
+          <strong>Listening reviews <span aria-hidden="true">→</span></strong>
+          <span id="listening-overview-state" class="review-route-count">Checking…</span>
+          <small>Play complete recordings or compare Pythian with a source.</small>
+        </a>
+        <a id="source-route" class="review-route" href="#source-requests">
+          <strong>Source labels <span aria-hidden="true">→</span></strong>
+          <span id="source-overview-state" class="review-route-count">Checking…</span>
+          <small>Review a requested region of an original recording.</small>
+        </a>
+      </div>
+    </section>
     <aside class="source-column">
-      <section class="panel assignment-panel">
-        <div class="panel-head"><div><p class="step">01 / YOUR REVIEW</p><h2>Prepared requests</h2></div></div>
-        <p class="panel-note"><a href="listen.html">Open full-track and paired listening queue</a></p>
-        <p id="queue-progress" class="queue-progress" role="status">Checking queue…</p>
+      <section id="source-requests" class="panel assignment-panel">
+        <div class="panel-head"><div><p class="step">SOURCE LABELS</p><h2>Requested regions</h2></div></div>
+        <p id="queue-progress" class="queue-progress" role="status">Checking source labels…</p>
         <p id="assignment-state" class="panel-note" role="status">Checking for review requests…</p>
         <div id="assignment-list" class="item-list"></div>
       </section>
-      <details id="catalog-browser" class="panel utility-panel" open>
+      <details id="catalog-browser" class="panel utility-panel">
         <summary>Explore available audio</summary>
         <p class="panel-note">These recordings are source references. You only need to label an exact region when it appears as a prepared request above.</p>
         <div id="catalog-list" class="item-list"></div>
@@ -67,7 +84,7 @@ SOFTWARE.
       </details>
     </aside>
 
-    <section class="work-column">
+    <section id="work-column" class="work-column" hidden>
       <section class="panel track-panel">
         <div class="panel-head">
           <div><p class="step">02 / LISTEN</p><h2 id="track-title">Choose a recording</h2></div>

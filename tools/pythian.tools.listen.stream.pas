@@ -44,6 +44,7 @@ implementation
 uses
   SysUtils,
   Sockets,
+  {$IFDEF MSWINDOWS}WinSock2,{$ELSE}BaseUnix,{$ENDIF}
   pythian.tools.annotations.sourceguard;
 
 const
@@ -87,6 +88,7 @@ var
   LOffset: Integer;
   LStart: QWord;
   LPointer: PByte;
+  LError: Integer;
 begin
   Result := False;
   LOffset := 0;
@@ -103,6 +105,16 @@ begin
       Exit;
     if LSent < 0 then
     begin
+      {$IFDEF MSWINDOWS}
+      LError := WSAGetLastError;
+      if (LError <> WSAEWOULDBLOCK) and (LError <> WSAEINTR) then
+        Exit;
+      {$ELSE}
+      LError := fpGetErrNo;
+      if (LError <> ESysEAGAIN) and (LError <> ESysEWOULDBLOCK) and
+        (LError <> ESysEINTR) then
+        Exit;
+      {$ENDIF}
       Sleep(10);
       Continue;
     end;

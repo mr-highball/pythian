@@ -68,7 +68,7 @@ function ApplyKeyFileDacl(APath: PWideChar; AInformation: DWORD;
 {$ENDIF}
 
 const
-  CMaximumHeaderBytes = 16384;
+  CMaximumHeaderBytes = 65536;
   CMaximumBodyBytes = 32768;
   CMaximumReviewedImportBytes = 67108864;
   CMaximumTargetBytes = 2048;

@@ -31,9 +31,9 @@ SOFTWARE.
 </head>
 <body>
   <header>
-    <div><p class="eyebrow">PYTHIAN / OPERATOR LISTENING</p><h1>Full-output listening</h1>
-      <p>Listen to the declared asset or pair, then save an explicit response.</p></div>
-    <a href="/">Source workbench</a>
+    <div><p class="eyebrow">PYTHIAN / YOUR REVIEW QUEUE</p><h1>Listening reviews</h1>
+      <p>Play each recording, answer its question, then save your response.</p></div>
+    <a href="/">All reviews</a>
   </header>
   <p id="status" class="status" role="status" aria-live="polite">Loading Pythian application…</p>
   <div id="loading-progress" class="loading-progress" role="progressbar" aria-label="Loading Pythian application" aria-valuetext="Loading Pythian application">
@@ -41,19 +41,19 @@ SOFTWARE.
   </div>
   <button id="retry" type="button" hidden>Retry connection</button>
   <main id="workspace" hidden>
-    <aside class="panel">
-      <h2>Listening packets</h2>
-      <p id="progress" class="progress">Loading queue…</p>
-      <button id="reload" type="button">Reload queue</button>
-      <h3>Waiting</h3><div id="pending" class="queue"></div>
-      <h3>Completed</h3><div id="completed" class="queue"></div>
-    </aside>
+    <section class="panel queue-overview" aria-labelledby="queue-title">
+      <p class="eyebrow">LISTENING REVIEWS</p>
+      <h2 id="queue-title" tabindex="-1">Checking your listening reviews…</h2>
+      <p id="progress" class="progress" role="status">Loading queue…</p>
+      <p class="muted">These are separate from source labels. <a href="/">See all assigned reviews</a>.</p>
+    </section>
     <section class="panel work">
-      <p id="empty">Choose a packet. No answer is saved until you select Save response.</p>
+      <p id="empty">No listening review is selected.</p>
       <div id="packet" hidden>
         <p id="task" class="eyebrow"></p>
-        <h2 id="question"></h2>
-        <p id="identity" class="muted"></p>
+        <h2 id="packet-title" tabindex="-1"></h2>
+        <p id="question" class="packet-question"></p>
+        <details class="request-details"><summary>Request details</summary><p id="identity" class="muted"></p></details>
         <div id="assets" class="assets"></div>
         <div id="ranges" class="ranges"></div>
         <p id="media-gate" class="muted" role="status" aria-live="polite">Play each WAV before answering.</p>
@@ -75,6 +75,14 @@ SOFTWARE.
         </section>
       </div>
     </section>
+    <aside class="panel queue-panel">
+      <div class="queue-head"><h2>Choose a review</h2><button id="reload" type="button">Refresh</button></div>
+      <div id="pending" class="queue"></div>
+      <details id="completed-group" class="completed-group">
+        <summary>Completed reviews</summary>
+        <div id="completed" class="queue"></div>
+      </details>
+    </aside>
   </main>
   <script src="listen.js"></script>
   <script>rtl.run();</script>

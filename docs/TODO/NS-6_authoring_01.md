@@ -191,6 +191,33 @@ the underlying musical inference or reference labels already exist.
 
 **Dev Notes:**
 
+- 2026-09-28 mobile queue/playback repair: the source page's
+  source-only `0 waiting · 4 completed` had obscured two pending full-output
+  listening reviews. The pas2js home now reports the combined waiting total
+  with separate source/listening counts, independent unavailable states and
+  clear routes; the listening page leads with the selected review, keeps the
+  reviewer ID across packet advances, focuses the next task, and puts packet
+  internals under details. The empty source editor stays hidden until a track
+  is selected. Isolated old-versus-new native probes
+  reproduced sender-slot exhaustion after four abandoned media clients
+  (fifth Range 503→206) and a valid 20 KiB Cookie exceeding the former
+  16 KiB header limit (431→206 under a bounded 64 KiB limit). Checked Win32/
+  Win64 builds and a throttled 390 px browser on the exact original/cue passed
+  these focused paths; the phone's exact request bytes remain unknown.
+  Salty Boi's fresh copied-catalog desktop/390px Pascal/CDP pass confirmed
+  combined counts, no login/overflow, WAV error/retry and playback clock,
+  two saved answers with reviewer carry-forward and focus, and persistence
+  after reload. The native raw-socket pass covered 128-byte Range, large
+  valid/invalid headers and four abandoned senders followed by another 206;
+  evidence and screenshots are under ignored `build/salty-review-ux-final/`.
+  The checked Win64 binary SHA-256 `d300bea996a349091aea2277b09b20b20a28d546794f70ace7618a2507f4f027`
+  and six matching browser assets were staged at the fixed LAN path. Host
+  read-only verification returned source 0/4, listening 2/0, both pages 200
+  and a 128-byte generated-cue Range 206 using the session cookie. No test
+  answer touched the live operator catalog. The physical-phone
+  verdict and criterion 5 remain open;
+  no task or milestone credit changes. See
+  [work](../WORK.md#review-queue-clarity-and-listening-media-recovery--2026-09-28).
 - 2026-09-28 LAN connection/performance repair: a cold 1.56 GB source check
   blocked the former single-request HTTP loop while the listener had no
   connection timeout. The Pascal service now runs listening media verification

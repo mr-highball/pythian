@@ -13,6 +13,60 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Review queue clarity and listening media recovery — 2026-09-28
+
+The operator's mobile screenshots showed a misleading split: the source page
+said `0 waiting · 4 completed` while a separate listening page had two waiting
+reviews. The Pascal/pas2js workbench now reads both queue reports after one
+local session and presents their combined waiting count first. Each queue keeps
+its own count and link, and an unavailable queue is never counted as zero.
+The listening page opens the next review, uses readable task and asset names,
+keeps exact packet identity in an optional details panel, and puts the active
+review before secondary navigation on narrow screens. Completed reviews and
+catalog exploration no longer dominate the initial mobile view. The two queue
+reports are independent snapshots; this is an operator summary, not a new
+transactional combined queue.
+
+The same phone screenshots showed a generated cue at `0:00` with browser media
+error 4 and reported stuttering. The live service had rejected a request with
+HTTP 431 near that report. Isolated old-versus-new Pascal probes found two
+concrete failure paths: four abandoned full-WAV clients exhausted all sender
+slots so a fifth exact Range request returned 503; a valid media request with
+a 20 KiB Cookie exceeded the former 16 KiB request-header bound. The revised
+sender releases a slot after a fatal socket error, and a bounded 64 KiB header
+limit accepts that cookie while rejecting over-limit headers. The same probes
+returned 206 for both repaired cases on checked Win32 and Win64 builds. A
+throttled 390 px browser played the exact Berg original and generated beat cue
+without a media error. The phone's failed request bytes were not captured, so
+these are reproduced server defects consistent with the screenshot, not a
+claim of an identified phone header or a new physical-phone verdict.
+
+Salty Boi's independent copied-catalog QA passed on stable FPC 3.2.2
+Win32/Win64 and the current pas2js assets. Pascal/CDP runs at desktop and
+390 px showed the combined `0 source / 2 listening` waiting state, no login
+prompt or horizontal overflow, a hidden empty source editor until a track
+was chosen, an explicit media error and successful retry, decoded playback,
+two saved listening answers with reviewer carry-forward, focus on manual and
+automatic advancement, all-done focus and persistence after reload. The
+native report found exactly two listening review events, `audible` then
+`unknown`; no test answer touched the live operator catalog. A separate
+checked Pascal raw-socket probe returned 206 for a 128-byte Range and a
+20 KiB Cookie, 431 for a 66 KiB header, and 206 after four early-closed media
+clients. Logs and desktop/narrow screenshots remain under ignored
+`build/salty-review-ux-final/`. This batch does not close the remaining
+physical-phone listening gate in
+[NS-6 authoring](TODO/NS-6_authoring_01.md), or earn milestone credit.
+The checked Win64 binary SHA-256
+`d300bea996a349091aea2277b09b20b20a28d546794f70ace7618a2507f4f027`
+and all six matching pas2js/static assets were staged at the fixed LAN path.
+The prior live process was stopped after exact-path verification. The new
+service answered at `192.168.12.109:18097`: source queue 0 waiting/4
+completed, listening queue 2 waiting/0 completed, both pages HTTP 200 and
+the generated beat cue an authenticated same-origin-cookie 128-byte Range
+HTTP 206. Automatic approval review rejected a detached hidden launch; the
+service currently runs in a managed foreground execution session. No live
+review was saved during verification.
+
 ## LAN review connection and transfer responsiveness — 2026-09-28
 
 The reported multi-minute “Connecting to local service” state was traced to
