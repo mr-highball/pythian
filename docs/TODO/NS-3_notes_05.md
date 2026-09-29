@@ -106,6 +106,25 @@ from these four MAESTRO contrasts.
 
 **Dev Notes:**
 
+- 2026-09-28 the distinct NIGENS perceptually annotated piano-tail route was
+  **aborted without a source result**. The frozen private policy SHA-256 was
+  `474f9b2111b22cbe553c86bb0d432fdcadba5692da83bbabf37a1b5d1de43c5b`;
+  the checked Pascal scanner SHA-256 was
+  `dbfb16779b7444ff75a5e14ae9a3c2e77f92a666612808520aca37774c61dacd`.
+  The publisher archive was separately verified at 2,174,918,847 bytes and MD5
+  `939fb4893015cc1434ad47bbd0ceb6b9`. After source-free Win32/Win64 ZIP64,
+  geometry and RMS controls passed, the first source command started on Win64:
+  `win64/scan.exe NIGENS.zip win64`, redirecting output to `win64/run.log`.
+  Independent review then found that the scanner checked the `piano` prefix
+  but did not enforce ASCII for the entire basename as the frozen selector
+  required. The running Win64 command was interrupted, returning exit 1; its
+  log is zero bytes and no selected output exists. Because output was buffered,
+  whether it reached the ZIP directory is unknown. No annotation or media read
+  is claimed or ruled out. Win32 source evaluation was not run. Keep the
+  archive, scanner and ignored outputs under
+  `build/nigens-perceptual-tail-20260928/` for QA; do not repair and rerun this
+  frozen source route. No source decision, presence comparison, criterion 3
+  closure or task credit follows.
 - 2026-09-28 a distinct, prospectively frozen Berg original-WAV screen tried to
   find one quiet late cell against its already approved, nonzero same-source
   opening rest. The Pascal gate verified the durable rest event, exact source

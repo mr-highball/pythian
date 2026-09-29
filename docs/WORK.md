@@ -13,6 +13,33 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Frozen NIGENS source route aborted — 2026-09-28
+
+The publisher-hosted NIGENS piano collection offered perceptual sound-event
+boundaries that could have supported a quiet within-event decay against a
+disjoint same-WAV gap, with note-control time left unknown. A private Pascal
+selector was frozen under ignored `build/nigens-perceptual-tail-20260928/`:
+policy SHA-256
+`474f9b2111b22cbe553c86bb0d432fdcadba5692da83bbabf37a1b5d1de43c5b`,
+scanner SHA-256
+`dbfb16779b7444ff75a5e14ae9a3c2e77f92a666612808520aca37774c61dacd`.
+The acquired `NIGENS.zip` was separately verified at 2,174,918,847 bytes and
+publisher MD5 `939fb4893015cc1434ad47bbd0ceb6b9`. Checked stable Win32 and
+Win64 source-free ZIP64-offset, path, frame-geometry and PCM RMS controls passed
+with zero reported leaks.
+
+The first source command, `win64/scan.exe NIGENS.zip win64` with output
+redirected to `win64/run.log`, began after QA release. Independent review then
+found that the scanner enforced a `piano` basename prefix but omitted the
+frozen policy's whole-basename ASCII check. The Win64 run was interrupted with
+exit 1. Its log is zero bytes, there is no selected output, and buffered output
+does not establish whether the ZIP directory was reached. Neither annotation
+nor media access can be affirmed or excluded. No Win32 source run occurred.
+Stop this frozen route without repairing and rerunning the archive. Preserve
+the ignored archive/scanner outputs for QA. [NS-3 presence](TODO/NS-3_notes_05.md)
+has no new source decision, scored comparison, criterion closure or credit.
+Overall completion remains **71.55%**; no catalog or manual queue change follows.
+
 ## Frozen Berg quiet-tail screen stopped — 2026-09-28
 
 A bounded follow-up to [NS-3 presence](TODO/NS-3_notes_05.md) tested whether
