@@ -13,6 +13,30 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## Fixed QA runtime path and browser cleanup — 2026-09-29
+
+The operator reported repeated Windows Defender alerts for native QA servers
+launched from dated `build/` executable paths, plus a metronome left playing
+from browser QA. The live LAN service already uses the fixed
+`build/label-service/stable/bin/pythian.label.catalog.exe` path. The staging
+script now also accepts `-Slot qa` and verifies/copies a checked binary and
+six browser assets to the fixed ignored `build/label-service/qa/` path. It
+refuses replacement while that slot's executable is running. QA instructions
+now require that fixed path, an isolated browser profile with process cleanup,
+and no server launch until an exact-path firewall rule is installed on this
+host; the loopback QA executable had also triggered an application alert.
+
+The stale loopback QA server PID 1828 was stopped after verifying its exact
+executable path. An inspection found 176 Brave processes across ordinary and
+QA profiles; after QA-browser shutdown, 10 ordinary-profile Brave processes
+remained and no QA-profile Brave process remained. The user's normal Brave
+window was left open. The stable LAN service remained on
+`192.168.12.109:18097`. This shell could not read Windows Defender rules via
+`Get-NetFirewallRule` (`Access is denied`); `netsh` found no
+`Pythian QA LAN Review` rule. A one-time administrator rule for the fixed QA
+path remains needed before another isolated browser/server QA launch. No task
+or milestone credit changes.
+
 ## Phone Save request-header repair — 2026-09-29
 
 The operator's phone retained its `both_audible` selection but Save's

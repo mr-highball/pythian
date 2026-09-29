@@ -20,6 +20,10 @@ Read [the project profile](PROJECT.md) and the relevant standards in
 - Preserve complete license notices and record precursor provenance.
 - Keep generated files under ignored `build/`. Validate meaningful boundaries,
   deterministic replay, and the changed listening path without redundant suites.
+- Launch the review service only from the fixed executable slots described in
+  [the LAN procedure](docs/LAN-REVIEW-SERVICE.md), including isolated QA.
+- Use an isolated browser profile for QA, close its exact process tree when the
+  check ends, and confirm no QA browser or looping audio remains.
 - Read [the work record](docs/WORK.md) before resuming implementation.
 - Follow [task flow](docs/TASKFLOW.MD) and the linked [task catalog](docs/TODO/README.md)
   for task selection, discovered gaps, completion moves and milestone accounting.

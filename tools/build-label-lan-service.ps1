@@ -24,42 +24,44 @@
 param(
   [string] $CheckedExecutable,
   [string] $ExpectedSha256,
-  [string] $WebRoot
+  [string] $WebRoot,
+  [ValidateSet('stable', 'qa')]
+  [string] $Slot = 'stable'
 )
 
 $ErrorActionPreference = 'Stop'
 $repositoryRoot = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
-$stableRoot = [IO.Path]::GetFullPath((Join-Path $repositoryRoot 'build\label-service\stable'))
-$stableBin = Join-Path $stableRoot 'bin'
-$stableWeb = Join-Path $stableRoot 'www'
-$stableExe = Join-Path $stableBin 'pythian.label.catalog.exe'
-$stableHashFile = Join-Path $stableRoot 'executable.sha256'
+$targetRoot = [IO.Path]::GetFullPath((Join-Path $repositoryRoot "build\label-service\$Slot"))
+$targetBin = Join-Path $targetRoot 'bin'
+$targetWeb = Join-Path $targetRoot 'www'
+$targetExe = Join-Path $targetBin 'pythian.label.catalog.exe'
+$targetHashFile = Join-Path $targetRoot 'executable.sha256'
 $webNames = @('index.html', 'app.js', 'style.css',
   'listen.html', 'listen.js', 'listen.css')
 
-function Require-WithinStable([string] $Path) {
+function Require-WithinTarget([string] $Path) {
   $resolved = [IO.Path]::GetFullPath($Path)
-  $prefix = $stableRoot.TrimEnd('\') + '\'
+  $prefix = $targetRoot.TrimEnd('\') + '\'
   if (-not $resolved.StartsWith($prefix, [StringComparison]::OrdinalIgnoreCase)) {
-    throw "Deployment target escapes stable service root: $resolved"
+    throw "Deployment target escapes $Slot service root: $resolved"
   }
   return $resolved
 }
 
-function Require-StableExecutable {
-  if (-not (Test-Path -LiteralPath $stableExe -PathType Leaf)) {
-    throw "Prepare the stable executable first: $stableExe"
+function Require-TargetExecutable {
+  if (-not (Test-Path -LiteralPath $targetExe -PathType Leaf)) {
+    throw "Prepare the $Slot executable first: $targetExe"
   }
-  if (-not (Test-Path -LiteralPath $stableHashFile -PathType Leaf)) {
-    throw "Stable executable hash record is missing: $stableHashFile"
+  if (-not (Test-Path -LiteralPath $targetHashFile -PathType Leaf)) {
+    throw "$Slot executable hash record is missing: $targetHashFile"
   }
-  $expected = (Get-Content -LiteralPath $stableHashFile -Raw).Trim()
+  $expected = (Get-Content -LiteralPath $targetHashFile -Raw).Trim()
   if ($expected -notmatch '^[0-9a-f]{64}$') {
-    throw 'Stable executable hash record is malformed'
+    throw "$Slot executable hash record is malformed"
   }
-  $actual = (Get-FileHash -LiteralPath $stableExe -Algorithm SHA256).Hash.ToLowerInvariant()
+  $actual = (Get-FileHash -LiteralPath $targetExe -Algorithm SHA256).Hash.ToLowerInvariant()
   if ($actual -ne $expected) {
-    throw 'Stable executable differs from the checked SHA-256'
+    throw "$Slot executable differs from the checked SHA-256"
   }
 }
 
@@ -88,24 +90,24 @@ foreach ($name in $webNames) {
 }
 $running = @(Get-CimInstance Win32_Process -Filter "name = 'pythian.label.catalog.exe'" |
   Where-Object { $_.ExecutablePath -and
-    ([IO.Path]::GetFullPath($_.ExecutablePath) -ieq $stableExe) })
+    ([IO.Path]::GetFullPath($_.ExecutablePath) -ieq $targetExe) })
 if ($running.Count -ne 0) {
-  throw 'Stable service is running; coordinate its stop before preparing another binary'
+  throw "$Slot service is running; coordinate its stop before preparing another binary"
 }
-New-Item -ItemType Directory -Force -Path $stableBin, $stableWeb | Out-Null
-$temporaryExe = Require-WithinStable ($stableExe + '.partial')
+New-Item -ItemType Directory -Force -Path $targetBin, $targetWeb | Out-Null
+$temporaryExe = Require-WithinTarget ($targetExe + '.partial')
 Copy-Item -LiteralPath $sourceExe -Destination $temporaryExe -Force
 $copiedHash = (Get-FileHash -LiteralPath $temporaryExe -Algorithm SHA256).Hash.ToLowerInvariant()
 if ($copiedHash -ne $expected) {
   throw 'Copied executable failed SHA-256 verification'
 }
-Move-Item -LiteralPath $temporaryExe -Destination (Require-WithinStable $stableExe) -Force
+Move-Item -LiteralPath $temporaryExe -Destination (Require-WithinTarget $targetExe) -Force
 foreach ($name in $webNames) {
-  $target = Require-WithinStable (Join-Path $stableWeb $name)
+  $target = Require-WithinTarget (Join-Path $targetWeb $name)
   Copy-Item -LiteralPath (Join-Path $sourceWeb $name) -Destination $target -Force
 }
-Set-Content -LiteralPath $stableHashFile -Value $expected -NoNewline
-Require-StableExecutable
-Write-Output "Prepared $stableExe SHA256 $expected"
-Write-Output "Static root: $stableWeb"
+Set-Content -LiteralPath $targetHashFile -Value $expected -NoNewline
+Require-TargetExecutable
+Write-Output "Prepared $targetExe SHA256 $expected"
+Write-Output "Static root: $targetWeb"
 Write-Output 'The running service and Windows Firewall were not changed.'

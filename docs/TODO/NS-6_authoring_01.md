@@ -191,6 +191,17 @@ the underlying musical inference or reference labels already exist.
 
 **Dev Notes:**
 
+- 2026-09-29 QA process and firewall repair: repeated Defender prompts came
+  from checked native servers executed directly under changing dated `build/`
+  paths; a browser QA session also left metronome playback and many Brave
+  child processes. The fixed stable LAN executable remains unchanged, and a
+  new fixed `build/label-service/qa/` staging slot now handles isolated QA.
+  Stale QA server/browser processes were closed while the normal Brave window
+  and live LAN service stayed open. The exact-path QA firewall rule still
+  requires a one-time elevated install; until then, no isolated server is
+  launched. Criterion 4's stable live path remains satisfied, criterion 5's
+  physical-phone verdict remains open, and credit is unchanged. See
+  [work](../WORK.md#fixed-qa-runtime-path-and-browser-cleanup--2026-09-29).
 - 2026-09-29 phone Save 431 repair: the operator's selected `both_audible`
   answer was blocked by a 64 KiB request-header rejection during the
   listening-queue preflight, before any review write. Token-authenticated API
