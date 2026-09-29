@@ -28,9 +28,10 @@ unit pythian.tools.annotations.sourceguard;
 
 interface
 
-{ The native service is single-threaded. On Windows, a verified read handle is
-  kept open with write and delete sharing denied. Every reuse checks the path's
-  file identity and timestamp against that handle. Other hosts hash each edit. }
+{ On Windows, a verified read handle is kept open with write and delete sharing
+  denied. Every reuse checks the path's file identity and timestamp against that
+  handle. The bounded media sender can verify concurrently with HTTP requests,
+  so access to the shared guard table is serialized. Other hosts hash each edit. }
 procedure VerifyGuardedSource(const APath, AExpectedHash: String;
   const AExpectedBytes: Int64);
 
@@ -61,6 +62,7 @@ type
 var
   GGuards: array[0..CMaximumGuards - 1] of TGuard;
   GUseCount: QWord;
+  GGuardLock: TRTLCriticalSection;
 
 procedure Need(const ACondition: Boolean; const AMessage: String);
 begin
@@ -116,7 +118,21 @@ begin
 end;
 {$ENDIF}
 
+procedure VerifyGuardedSourceLocked(const APath, AExpectedHash: String;
+  const AExpectedBytes: Int64); forward;
+
 procedure VerifyGuardedSource(const APath, AExpectedHash: String;
+  const AExpectedBytes: Int64);
+begin
+  EnterCriticalSection(GGuardLock);
+  try
+    VerifyGuardedSourceLocked(APath, AExpectedHash, AExpectedBytes);
+  finally
+    LeaveCriticalSection(GGuardLock);
+  end;
+end;
+
+procedure VerifyGuardedSourceLocked(const APath, AExpectedHash: String;
   const AExpectedBytes: Int64);
 var
   LPath: String;
@@ -179,8 +195,12 @@ end;
 var
   LIndex: Integer;
 
+initialization
+  InitCriticalSection(GGuardLock);
+
 finalization
   for LIndex := 0 to High(GGuards) do
     GGuards[LIndex].Stream.Free;
+  DoneCriticalSection(GGuardLock);
 
 end.

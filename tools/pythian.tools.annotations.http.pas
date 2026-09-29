@@ -95,6 +95,21 @@ type
     Body: String;
   end;
 
+  TListeningReviewWorker = class(TThread)
+  private
+    FSocket: Integer;
+    FCatalogRoot: String;
+    FBody: String;
+  protected
+    procedure Execute; override;
+  public
+    constructor Create(const ASocket: Integer;
+      const ACatalogRoot, ABody: String);
+  end;
+
+var
+  GActiveReviewWorkers: LongInt = 0;
+
 procedure Need(const ACondition: Boolean; const AMessage: String);
 begin
   if not ACondition then
@@ -778,6 +793,87 @@ begin
   Result := TJSONObject(LData);
 end;
 
+constructor TListeningReviewWorker.Create(const ASocket: Integer;
+  const ACatalogRoot, ABody: String);
+begin
+  inherited Create(True);
+  FSocket := ASocket;
+  FCatalogRoot := ACatalogRoot;
+  FBody := ABody;
+end;
+
+procedure TListeningReviewWorker.Execute;
+var
+  LBody: TJSONObject;
+  LReport: TJSONObject;
+  LStatus: Integer;
+  LMessage: String;
+begin
+  LBody := nil;
+  LReport := nil;
+  try
+    try
+      LBody := ParseBodyObject(FBody);
+      LReport := CommitListeningReview(FCatalogRoot, LBody);
+      SendJson(FSocket, LReport);
+    except
+      on LError: Exception do
+      begin
+        if Pos('revision conflict', LowerCase(LError.Message)) > 0 then
+          LStatus := 409
+        else if (LError is EAudio) or (LError is EReviewQueue) then
+          LStatus := 422
+        else
+        begin
+          LStatus := 500;
+          WriteLn(StdErr, 'Listening review worker failed: ',
+            LError.ClassName, ': ', LError.Message);
+        end;
+        LMessage := Copy(StringReplace(StringReplace(LError.Message,
+          #13, ' ', [rfReplaceAll]), #10, ' ', [rfReplaceAll]), 1, 240);
+        SendResponse(FSocket, LStatus, 'text/plain; charset=utf-8',
+          StatusReason(LStatus) + ': ' + LMessage + #10);
+      end;
+    end;
+  finally
+    LReport.Free;
+    LBody.Free;
+    CloseSocket(FSocket);
+    InterlockedDecrement(GActiveReviewWorkers);
+  end;
+end;
+
+function DispatchListeningReview(const ASocket: Integer;
+  const ACatalogRoot, ABody: String): Boolean;
+var
+  LWorker: TListeningReviewWorker;
+begin
+  Result := False;
+  if InterlockedIncrement(GActiveReviewWorkers) > 4 then
+  begin
+    InterlockedDecrement(GActiveReviewWorkers);
+    SendResponse(ASocket, 503, 'text/plain; charset=utf-8',
+      'Listening review workers are busy.'#10);
+    Exit;
+  end;
+  LWorker := nil;
+  try
+    LWorker := TListeningReviewWorker.Create(ASocket, ACatalogRoot, ABody);
+    LWorker.FreeOnTerminate := True;
+    LWorker.Start;
+    Result := True;
+  except
+    if LWorker <> nil then
+    begin
+      LWorker.FreeOnTerminate := False;
+      LWorker.Free;
+    end;
+    InterlockedDecrement(GActiveReviewWorkers);
+    SendResponse(ASocket, 503, 'text/plain; charset=utf-8',
+      'Listening review worker could not start.'#10);
+  end;
+end;
+
 function StaticAssetName(const APath: String): String;
 begin
   if (APath = '/') or (APath = '/index.html') then
@@ -1006,8 +1102,6 @@ begin
             'Listening request changed'#10);
           Exit;
         end;
-        VerifyGuardedSource(LAsset.Strings['path'],
-          LAsset.Strings['sha256'], LAsset.Int64s['bytes']);
         LMediaStream := TFileStream.Create(LAsset.Strings['path'],
           fmOpenRead or fmShareDenyWrite);
         try
@@ -1015,7 +1109,8 @@ begin
             'Listening asset changed after verification');
           AHandedOff := DispatchListeningMedia(ASocket, LMediaStream,
             ARequest.Method, ARequest.Range, ARequest.IfRange,
-            LAsset.Strings['sha256']);
+            LAsset.Strings['sha256'], LAsset.Strings['path'],
+            LAsset.Int64s['bytes']);
           if AHandedOff then
             LMediaStream := nil;
         finally
@@ -1063,8 +1158,9 @@ begin
     else if (ARequest.Method = 'POST') and
       (ARequest.Path = '/api/listen-review') then
     begin
-      LBody := ParseBodyObject(ARequest.Body);
-      LReport := CommitListeningReview(ACatalogRoot, LBody);
+      AHandedOff := DispatchListeningReview(ASocket, ACatalogRoot,
+        ARequest.Body);
+      Exit;
     end
     else if (ARequest.Method = 'POST') and
       (ARequest.Path = '/api/propose-beats') then
@@ -1389,5 +1485,9 @@ begin
     CloseSocket(LListener);
   end;
 end;
+
+finalization
+  while InterlockedCompareExchange(GActiveReviewWorkers, 0, 0) <> 0 do
+    Sleep(10);
 
 end.

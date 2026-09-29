@@ -8,7 +8,7 @@ From the repository root, stage a checked Win64 executable and the six current
 workbench assets. Replace the hash when a later checked binary is deployed.
 
 ```powershell
-& .\tools\build-label-lan-service.ps1 -CheckedExecutable 'build\listen-multisource-20260928\service-win64\pythian.label.catalog.exe' -ExpectedSha256 'F86433B8B43C1ECE91444EA846049DCA9789BB1316F579B0D81DB1A7691D9758'
+& .\tools\build-label-lan-service.ps1 -CheckedExecutable 'build\listen-verify-worker-20260928\win64\pythian.label.catalog.exe' -ExpectedSha256 '579AD33E02759890AB873750FD6AC9251C7DCA80F34FC0314673DA57A08F80A8'
 ```
 
 The staging step checks the binary hash, copies the browser assets, and refuses
@@ -43,6 +43,14 @@ The source-label queue is at `http://192.168.12.109:18097/` and complete
 single/paired listening packets are at `/listen.html`. A direct PC HTTP check
 does not establish that a physical phone can play and Save; that is an
 outstanding [authoring acceptance check](TODO/NS-6_authoring_01.md).
+
+Both pages show elapsed time while connecting. A session request that has not
+completed in 10 seconds exposes Retry. The source page displays an actual WAV
+byte-transfer percentage only after a response with `Content-Length` begins;
+while the server verifies a source, the bar remains indeterminate. Full-output
+audio streams in the browser and labels its percentage as buffered duration.
+The checked native service keeps session and queue requests responsive during
+cold large-WAV verification and listening-review saves.
 
 For engineering browser QA, bind to `127.0.0.1` and reuse one fixed checked
 executable path. Put each isolated fixture catalog in its own ignored directory,

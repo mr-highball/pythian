@@ -191,6 +191,27 @@ the underlying musical inference or reference labels already exist.
 
 **Dev Notes:**
 
+- 2026-09-28 LAN connection/performance repair: a cold 1.56 GB source check
+  blocked the former single-request HTTP loop while the listener had no
+  connection timeout. The Pascal service now runs listening media verification
+  and cold listening-review Saves in bounded workers, retaining hash-before-
+  bytes, exact queue identity and revision checks. Checked Win32/Win64 builds,
+  tampered-media 422/no-audio, exact 206, duplicate Save, stale 409 and a
+  no-read media client passed isolated tests. Concurrent session/queue reads
+  stayed at 0–16 ms during 39–59-second cold Saves. Both pas2js pages show
+  elapsed waits and a 10-second session Retry; source WAV progress uses actual
+  received bytes and full-output audio calls its measured value buffered
+  duration. A Pascal Edge/CDP run observed an intermediate 1% transfer,
+  decode, cleared progress, blocked-session Retry, and a delayed 12-second
+  stale session that did not overwrite the successful retry. Salty Boi QA
+  passed this batch. The fixed-path live service now runs checked Win64 SHA
+  `579ad33e02759890ab873750fd6ac9251c7dca80f34fc0314673da57a08f80a8`;
+  LAN root/session/queues returned in 13–79 ms on the host, and all six served
+  assets match the compiled stage. This advances criterion 5's connection,
+  retry and download evidence but does not close its physical-phone and other
+  listening boundaries, criterion 10, this task, or milestone credit. The
+  native response-wide media deadline is one hour; a slow client can occupy
+  one of four sender slots until then. See [work](../WORK.md#lan-review-connection-and-transfer-responsiveness--2026-09-28).
 - 2026-09-28 multi-source listening provenance repair: the waiting guarded
   4:16 Pythian render was produced from three ordered WAVs, while its first
   published packet named only the first source. The Pascal v1 contract now

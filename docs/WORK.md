@@ -13,6 +13,56 @@ audible generation path. Remove the temporary Phanes reference only after
 extraction gates pass. Keep work native, focused, and proportional to risk.
 The branch is `hello-pythian`; the namespace is `pythian`.
 
+## LAN review connection and transfer responsiveness — 2026-09-28
+
+The reported multi-minute “Connecting to local service” state was traced to
+two mechanisms: the full-output pas2js page had no connection watchdog, and
+the native single-request HTTP loop could spend tens of seconds verifying a
+large listening WAV before serving even `/api/session`. Idle live reads of
+session/catalog/queues were 15–254 ms, so the stall was contingent on cold
+source verification rather than ordinary catalog JSON size. The source page
+also showed an indeterminate bar during a measurable WAV download.
+
+The Pascal browser pages now distinguish application startup from service
+connection, update elapsed wait time each second, and offer Retry after a
+10-second session timeout. Source WAV reception reports a percentage only
+when HTTP `Content-Length` and streamed bytes make one measurable; it aborts
+the old request on timeout or region change. The longer first-verification
+window is bounded at 120 seconds. Full-output media reports buffered duration
+as buffering, rather than calling it a downloaded-byte percentage. Its review
+gate waits for playable audio rather than metadata alone.
+
+The native service now verifies `/api/listen-audio` in its bounded sender
+worker before any WAV bytes and performs cold listening-review Saves in a
+bounded worker. Its source guard is serialized and a response-wide send
+deadline bounds a client that keeps a media socket open. Checked Win32/Win64
+builds and isolated copied-catalog probes are under ignored
+`build/listen-verify-worker-20260928/`: during a 1.56 GB cold media hash,
+session/queue reads completed in 0–16 ms before the exact 206 media response;
+tampered media returned 422 without audio. During a 39–59-second cold Save,
+session/queue remained 0–16 ms, with one event, an idempotent retry and a
+revision conflict on a changed stale answer. A no-read client remained open
+while the deadline test service exited after draining its sender.
+
+An isolated real Edge/CDP check using a Pascal harness at ignored
+`build/label-open-smoke/performance_ui_qa.lpr` observed source and listener
+connection, a throttled 1% byte-transfer update before WAV decode, progress
+cleanup, a blocked listener session with Retry, and successful reconnection.
+This is desktop browser evidence; it does not assert a new physical-phone
+playback or Save verdict. [NS-6 authoring](TODO/NS-6_authoring_01.md) remains
+open under its existing acceptance criteria; no milestone credit changes.
+Salty Boi independently passed the frozen UI/native batch, including a
+12-second delayed session whose 10-second timeout exposed Retry and whose
+late first response did not overwrite the successful retry. The checked
+Win64 binary SHA-256
+`579ad33e02759890ab873750fd6ac9251c7dca80f34fc0314673da57a08f80a8`
+and all six matching browser assets were staged at the fixed firewall path;
+the live service was restarted on `192.168.12.109:18097`. Host read-only
+root/session/queue checks returned HTTP 200 in 13–79 ms, with two full-output
+listening requests still waiting. A very slow media client can occupy one of
+four sender slots until the one-hour response deadline; finite-process
+shutdown waits for those senders. The reviewed catalog was not written.
+
 ## Frozen NIGENS source route aborted — 2026-09-28
 
 The publisher-hosted NIGENS piano collection offered perceptual sound-event

@@ -36,18 +36,25 @@ uses
   False after sending a complete HEAD or error response. }
 function DispatchListeningMedia(const ASocket: Integer;
   const AStream: TStream; const AMethod, ARange, AIfRange,
-  AContentHash: String): Boolean;
+  AContentHash: String; const AVerifyPath: String = '';
+  const AExpectedBytes: Int64 = 0): Boolean;
 
 implementation
 
 uses
   SysUtils,
-  Sockets;
+  Sockets,
+  pythian.tools.annotations.sourceguard;
 
 const
   CBlockBytes = 65536;
   CMaximumSenders = 4;
-  CSendDeadlineMs = 15000;
+  CBlockSendDeadlineMs = 15000;
+  {$IFDEF MEDIA_QA_DEADLINE}
+  CResponseDeadlineMs = 1000;
+  {$ELSE}
+  CResponseDeadlineMs = 3600000;
+  {$ENDIF}
 
 type
   TMediaSender = class(TThread)
@@ -57,18 +64,24 @@ type
     FHeader: String;
     FStart: Int64;
     FLength: Int64;
+    FMethod: String;
+    FVerifyPath: String;
+    FHash: String;
+    FExpectedBytes: Int64;
   protected
     procedure Execute; override;
   public
     constructor Create(const ASocket: Integer; const AStream: TStream;
-      const AHeader: String; const AStart, ALength: Int64);
+      const AHeader: String; const AStart, ALength: Int64;
+      const AMethod, AVerifyPath, AHash: String;
+      const AExpectedBytes: Int64);
   end;
 
 var
   GActiveSenders: LongInt = 0;
 
 function SendBytes(const ASocket: Integer; const ABuffer;
-  const ACount: Integer): Boolean;
+  const ACount: Integer; const ADeadline: QWord = 0): Boolean;
 var
   LSent: Integer;
   LOffset: Integer;
@@ -81,7 +94,8 @@ begin
   LPointer := @ABuffer;
   while LOffset < ACount do
   begin
-    if GetTickCount64 - LStart >= CSendDeadlineMs then
+    if (GetTickCount64 - LStart >= CBlockSendDeadlineMs) or
+      ((ADeadline <> 0) and (GetTickCount64 >= ADeadline)) then
       Exit;
     LSent := fpSend(ASocket, LPointer + LOffset, ACount - LOffset,
       {$IFDEF LINUX}MSG_NOSIGNAL{$ELSE}0{$ENDIF});
@@ -97,9 +111,11 @@ begin
   Result := True;
 end;
 
-function SendText(const ASocket: Integer; const AText: String): Boolean;
+function SendText(const ASocket: Integer; const AText: String;
+  const ADeadline: QWord = 0): Boolean;
 begin
-  Result := (AText = '') or SendBytes(ASocket, AText[1], Length(AText));
+  Result := (AText = '') or
+    SendBytes(ASocket, AText[1], Length(AText), ADeadline);
 end;
 
 function Decimal(const AValue: String; out ANumber: Int64): Boolean;
@@ -203,7 +219,9 @@ end;
 
 constructor TMediaSender.Create(const ASocket: Integer;
   const AStream: TStream; const AHeader: String;
-  const AStart, ALength: Int64);
+  const AStart, ALength: Int64;
+  const AMethod, AVerifyPath, AHash: String;
+  const AExpectedBytes: Int64);
 begin
   inherited Create(True);
   FSocket := ASocket;
@@ -211,6 +229,10 @@ begin
   FHeader := AHeader;
   FStart := AStart;
   FLength := ALength;
+  FMethod := AMethod;
+  FVerifyPath := AVerifyPath;
+  FHash := AHash;
+  FExpectedBytes := AExpectedBytes;
 end;
 
 procedure TMediaSender.Execute;
@@ -219,10 +241,36 @@ var
   LRemaining: Int64;
   LWant: Integer;
   LRead: Integer;
+  LDeadline: QWord;
 begin
   try
     try
-      if not SendText(FSocket, FHeader) then
+      if FVerifyPath <> '' then
+      begin
+        try
+          VerifyGuardedSource(FVerifyPath, FHash, FExpectedBytes);
+          if FStream.Size <> FExpectedBytes then
+            raise Exception.Create('Listening asset changed after verification');
+        except
+          on E: Exception do
+          begin
+            WriteLn(StdErr, 'Listening media verification failed: ', E.Message);
+            SendText(FSocket, 'HTTP/1.1 422 Unprocessable Content'#13#10 +
+              'Content-Type: text/plain; charset=utf-8'#13#10 +
+              'Content-Length: 37'#13#10 +
+              'Connection: close'#13#10 +
+              'Cache-Control: no-store'#13#10 +
+              'X-Content-Type-Options: nosniff'#13#10 +
+              'Cross-Origin-Resource-Policy: same-origin'#13#10#13#10 +
+              'Listening asset verification failed.'#10);
+            Exit;
+          end;
+        end;
+      end;
+      LDeadline := GetTickCount64 + CResponseDeadlineMs;
+      if not SendText(FSocket, FHeader, LDeadline) then
+        Exit;
+      if FMethod = 'HEAD' then
         Exit;
       FStream.Position := FStart;
       LRemaining := FLength;
@@ -232,7 +280,8 @@ begin
         if LRemaining < LWant then
           LWant := Integer(LRemaining);
         LRead := FStream.Read(LBuffer[0], LWant);
-        if (LRead <> LWant) or not SendBytes(FSocket, LBuffer[0], LRead) then
+        if (LRead <> LWant) or
+          not SendBytes(FSocket, LBuffer[0], LRead, LDeadline) then
           Exit;
         Dec(LRemaining, LRead);
       end;
@@ -249,7 +298,8 @@ end;
 
 function DispatchListeningMedia(const ASocket: Integer;
   const AStream: TStream; const AMethod, ARange, AIfRange,
-  AContentHash: String): Boolean;
+  AContentHash: String; const AVerifyPath: String;
+  const AExpectedBytes: Int64): Boolean;
 var
   LStatus: Integer;
   LStart: Int64;
@@ -273,7 +323,7 @@ begin
     SendText(ASocket, Header(LStatus, AContentHash, LSize, LStart, LEnd));
     Exit;
   end;
-  if AMethod = 'HEAD' then
+  if (AMethod = 'HEAD') and (AVerifyPath = '') then
   begin
     SendText(ASocket, Header(LStatus, AContentHash, LSize, LStart, LEnd));
     Exit;
@@ -288,7 +338,8 @@ begin
   LSender := nil;
   try
     LSender := TMediaSender.Create(ASocket, AStream, LHeader,
-      LStart, LEnd - LStart + 1);
+      LStart, LEnd - LStart + 1, AMethod, AVerifyPath,
+      AContentHash, AExpectedBytes);
     LSender.FreeOnTerminate := True;
     LSender.Start;
     Result := True;
@@ -302,5 +353,11 @@ begin
     SendText(ASocket, Header(503, AContentHash, LSize, 0, 0));
   end;
 end;
+
+finalization
+  { A finite-request service must not finalize the shared source guard while a
+    handed-off verification or sender is still using it. }
+  while InterlockedCompareExchange(GActiveSenders, 0, 0) <> 0 do
+    Sleep(10);
 
 end.

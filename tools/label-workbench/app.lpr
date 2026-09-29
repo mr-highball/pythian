@@ -46,8 +46,30 @@ type
       const AOptions: TJSObject): TJSPromise; reintroduce;
   end;
 
+  TWorkbenchStreamReader = class external name 'ReadableStreamDefaultReader' (TJSObject)
+    function read: TJSPromise;
+    function cancel: TJSPromise;
+  end;
+
+  TWorkbenchStream = class external name 'ReadableStream' (TJSObject)
+    function getReader: TWorkbenchStreamReader;
+  end;
+
+  TWorkbenchAbortController = class external name 'AbortController' (TJSObject)
+  private
+    FSignal: TJSObject; external name 'signal';
+  public
+    constructor new;
+    procedure abort;
+    property signal: TJSObject read FSignal;
+  end;
+
   TWorkbenchResponse = class external name 'Response' (TJSResponse)
+  private
+    FBodyStream: TWorkbenchStream; external name 'body';
+  public
     function blobRequest: TJSPromise; external name 'blob';
+    property BodyStream: TWorkbenchStream read FBodyStream;
   end;
 
   TWorkbenchAudioElement = class external name 'HTMLAudioElement' (TJSHTMLAudioElement)
@@ -62,6 +84,12 @@ type
     FCatalogLoads: Integer;
     FQueueLoads: Integer;
     FAudioLoading: Boolean;
+    FAudioAbort: TWorkbenchAbortController;
+    FLoadingStage: String;
+    FLoadingSince: NativeInt;
+    FLoadingTimer: NativeInt;
+    FAudioReceived: Int64;
+    FAudioTotal: Int64;
     FSourceHash: String;
     FSourceGroup: String;
     FClockId: String;
@@ -128,9 +156,11 @@ type
     FDragEnd: Int64;
     function Element(const AId: String): TJSElement;
     function Input(const AId: String): TJSHTMLInputElement;
-    function FetchApi(const APath, AMethod, ABody: String): TJSPromise;
+    function FetchApi(const APath, AMethod, ABody: String;
+      const ASignal: TJSObject = nil): TJSPromise;
     procedure Status(const AText: String; const AError: Boolean = False);
     procedure UpdateLoading;
+    procedure CancelAudioRequest;
     procedure AudioFeedback(const AText: String; const AError: Boolean = False);
     procedure PlayLoadedAudio; async;
     procedure ShowWorkspace;
@@ -312,7 +342,7 @@ begin
 end;
 
 function TWorkbench.FetchApi(const APath, AMethod,
-  ABody: String): TJSPromise;
+  ABody: String; const ASignal: TJSObject): TJSPromise;
 var
   LOptions: TJSObject;
   LHeaders: TJSObject;
@@ -325,6 +355,7 @@ begin
   LOptions['redirect'] := 'error';
   LOptions['cache'] := 'no-store';
   LOptions['referrerPolicy'] := 'no-referrer';
+  if ASignal <> nil then LOptions['signal'] := ASignal;
   if FToken <> '' then
   begin
     LHeaders['X-Pythian-Token'] := FToken;
@@ -358,6 +389,15 @@ end;
 procedure TWorkbench.ShowWorkspace;
 begin
   Element('workspace').removeAttribute('hidden');
+end;
+
+procedure TWorkbench.CancelAudioRequest;
+begin
+  if FAudioAbort <> nil then
+  begin
+    FAudioAbort.abort;
+    FAudioAbort := nil;
+  end;
 end;
 
 function BoundedRequestDetail(const AText, AToken: String): String;
@@ -416,26 +456,73 @@ end;
 procedure TWorkbench.UpdateLoading;
 var
   LText: String;
+  LStage: String;
+  LPercent: Integer;
   LProgress: TJSElement;
 begin
-  LText := '';
+  LStage := '';
   if FAudioLoading then
-    LText := 'Loading original WAV region…'
+    LStage := 'audio'
   else if FConnectionLoading then
-    LText := 'Connecting to local service…'
+    LStage := 'connection'
   else if FQueueLoads > 0 then
-    LText := 'Loading prepared requests…'
+    LStage := 'queue'
   else if FCatalogLoads > 0 then
-    LText := 'Loading audio catalog…';
+    LStage := 'catalog';
+  if LStage <> FLoadingStage then
+  begin
+    FLoadingStage := LStage;
+    FLoadingSince := TJSDate.now;
+  end;
   LProgress := Element('loading-progress');
-  if LText = '' then
+  if LStage = '' then
+  begin
+    if FLoadingTimer <> 0 then window.clearTimeout(FLoadingTimer);
+    FLoadingTimer := 0;
     LProgress.setAttribute('hidden', '')
+  end
   else
   begin
+    if LStage = 'audio' then
+    begin
+      if FAudioTotal > 0 then
+      begin
+        LPercent := Integer((FAudioReceived * 100) div FAudioTotal);
+        if LPercent > 100 then LPercent := 100;
+        LText := 'Receiving WAV: ' + IntToStr(LPercent) + '%';
+        Element('loading-progress-fill').setAttribute('style',
+          'width: ' + IntToStr(LPercent) + '%');
+        Element('loading-progress-fill').setAttribute('class', 'determinate');
+        LProgress.setAttribute('aria-valuenow', IntToStr(LPercent));
+      end
+      else
+        LText := 'Waiting for WAV response';
+    end
+    else if LStage = 'connection' then
+      LText := 'Connecting to local service'
+    else if LStage = 'queue' then
+      LText := 'Loading prepared requests'
+    else
+      LText := 'Loading audio catalog';
+    if (LStage <> 'audio') or (FAudioTotal <= 0) then
+    begin
+      LProgress.removeAttribute('aria-valuenow');
+      Element('loading-progress-fill').removeAttribute('style');
+      Element('loading-progress-fill').removeAttribute('class');
+    end;
+    LText := LText + ' · ' +
+      IntToStr((TJSDate.now - FLoadingSince) div 1000) + ' s';
     Element('loading-progress-text').textContent := LText;
     LProgress.setAttribute('aria-label', LText);
     LProgress.setAttribute('aria-valuetext', LText);
     LProgress.removeAttribute('hidden');
+    if FLoadingTimer = 0 then
+      FLoadingTimer := window.setTimeout(
+        procedure()
+        begin
+          FLoadingTimer := 0;
+          UpdateLoading;
+        end, 1000);
   end;
 end;
 
@@ -2517,6 +2604,7 @@ begin
     begin
       if (LEpoch = FStartEpoch) and (FToken = '') then
       begin
+        Inc(FStartEpoch);
         FConnectionLoading := False;
         UpdateLoading;
         Status('Connection is taking too long. Check that this device can reach the catalog, then retry.', True);
@@ -2872,6 +2960,7 @@ begin
   Status('Loading source frames and saved labels…');
   try
     Inc(FWindowEpoch);
+    CancelAudioRequest;
     Inc(FAudioEpoch);
     FAudioLoading := False;
     UpdateLoading;
@@ -3042,6 +3131,10 @@ var
   LTimer: NativeInt;
   LReason: String;
   LIndex: Integer;
+  LReader: TWorkbenchStreamReader;
+  LRead: TJSObject;
+  LParts: TJSArray;
+  LChunk: TJSUint8Array;
 begin
   if FSaveInProgress then
   begin
@@ -3065,6 +3158,7 @@ begin
   LTimer := 0;
   try
     LEpoch := FWindowEpoch;
+    CancelAudioRequest;
     Inc(FAudioEpoch);
     LAudioEpoch := FAudioEpoch;
     LCandidate := FSelectedProposal;
@@ -3089,12 +3183,16 @@ begin
     end;
     TJSHTMLButtonElement(Element('load-audio-button')).disabled := True;
     FAudioLoading := True;
+    FAudioAbort := TWorkbenchAbortController.new;
+    FAudioReceived := 0;
+    FAudioTotal := 0;
     UpdateLoading;
     LTimer := window.setTimeout(
       procedure()
       begin
         if (LEpoch = FWindowEpoch) and (LAudioEpoch = FAudioEpoch) then
         begin
+          CancelAudioRequest;
           Inc(FAudioEpoch);
           FAudioLoading := False;
           UpdateLoading;
@@ -3102,8 +3200,9 @@ begin
           Status('Audio request timed out. Check the connection and press Play original to retry.', True);
           AudioFeedback('The WAV request took too long. Press Play original to retry.', True);
         end;
-      end, 15000);
-    LResponse := await(TJSResponse, FetchApi(LPath, 'GET', ''));
+      end, 120000);
+    LResponse := await(TJSResponse, FetchApi(LPath, 'GET', '',
+      FAudioAbort.signal));
     if (LEpoch <> FWindowEpoch) or (LAudioEpoch <> FAudioEpoch) then
     begin
       window.clearTimeout(LTimer);
@@ -3134,13 +3233,41 @@ begin
           IntToStr(LResponse.status) + ': ' + LReason);
       raise Exception.Create('Audio HTTP ' + IntToStr(LResponse.status));
     end;
-    LBlob := await(TJSBlob, TWorkbenchResponse(LResponse).blobRequest());
+    if LResponse.headers.has('Content-Length') and
+      (TWorkbenchResponse(LResponse).BodyStream <> nil) then
+      FAudioTotal := StrToInt64Def(LResponse.headers.get('Content-Length'), 0);
+    if FAudioTotal > 0 then
+    begin
+      UpdateLoading;
+      LParts := TJSArray.new;
+      LReader := TWorkbenchResponse(LResponse).BodyStream.getReader();
+      repeat
+        LRead := await(TJSObject, LReader.read());
+        if (LEpoch <> FWindowEpoch) or (LAudioEpoch <> FAudioEpoch) then
+        begin
+          window.clearTimeout(LTimer);
+          LReader.cancel();
+          Exit;
+        end;
+        if Boolean(LRead['done']) then Break;
+        LChunk := TJSUint8Array(LRead['value']);
+        LParts.push(LChunk);
+        Inc(FAudioReceived, LChunk.byteLength);
+        UpdateLoading;
+      until False;
+      LBlob := TJSBlob.new(LParts);
+      if LBlob.size <> FAudioTotal then
+        raise Exception.Create('WAV transfer ended before all bytes arrived');
+    end
+    else
+      LBlob := await(TJSBlob, TWorkbenchResponse(LResponse).blobRequest());
     if (LEpoch <> FWindowEpoch) or (LAudioEpoch <> FAudioEpoch) then
     begin
       window.clearTimeout(LTimer);
       Exit;
     end;
     window.clearTimeout(LTimer);
+    FAudioAbort := nil;
     FAudioLoading := False;
     UpdateLoading;
     if FAudioUrl <> '' then
@@ -3172,6 +3299,7 @@ begin
       if LTimer <> 0 then window.clearTimeout(LTimer);
       if (LEpoch = FWindowEpoch) and (LAudioEpoch = FAudioEpoch) then
       begin
+        CancelAudioRequest;
         FAudioLoading := False;
         UpdateLoading;
         Status('Audio failed: ' + LError.Message, True);
@@ -3185,6 +3313,7 @@ begin
       if LTimer <> 0 then window.clearTimeout(LTimer);
       if (LEpoch = FWindowEpoch) and (LAudioEpoch = FAudioEpoch) then
       begin
+        CancelAudioRequest;
         FAudioLoading := False;
         UpdateLoading;
         Status('The browser could not fetch or prepare this audio region.', True);

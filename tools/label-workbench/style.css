@@ -57,6 +57,7 @@ h2 { margin-bottom: 0; font-size: 1.2rem; }
 .loading-progress[hidden] { display: none; }
 .loading-progress-track { display: block; height: .28rem; margin-top: .25rem; overflow: hidden; border-radius: 999px; background: #3c5b60; }
 .loading-progress-track span { display: block; width: 38%; height: 100%; border-radius: inherit; background: #9ee0d2; animation: loading-sweep 1.2s ease-in-out infinite alternate; }
+.loading-progress-track span.determinate { animation: none; transition: width .15s ease-out; }
 @keyframes loading-sweep { from { transform: translateX(-100%); } to { transform: translateX(265%); } }
 @media (prefers-reduced-motion: reduce) { .loading-progress-track span { animation-duration: 3s; } }
 .connect-retry { margin: .45rem 1rem; min-height: 2.65rem; }

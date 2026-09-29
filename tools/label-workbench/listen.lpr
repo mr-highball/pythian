@@ -35,6 +35,19 @@ type
       reintroduce;
   end;
 
+  TListenerTimeRanges = class external name 'TimeRanges' (TJSObject)
+    length: NativeInt;
+    function finish(const AIndex: NativeInt): Double; external name 'end';
+    function start(const AIndex: NativeInt): Double;
+  end;
+
+  TListenerAudioElement = class external name 'HTMLAudioElement' (TJSHTMLAudioElement)
+  private
+    FBufferedRanges: TListenerTimeRanges; external name 'buffered';
+  public
+    property BufferedRanges: TListenerTimeRanges read FBufferedRanges;
+  end;
+
   TListener = class
   private
     FToken: String;
@@ -50,10 +63,15 @@ type
     FSelectedIndex: Integer;
     FSaving: Boolean;
     FLoading: Boolean;
+    FQueueLoads: Integer;
+    FLoadingStage: String;
+    FLoadingSince: NativeInt;
+    FLoadingTimer: NativeInt;
     FLoadEpoch: Integer;
     function El(const AId: String): TJSElement;
     function FetchApi(const APath, AMethod, ABody: String): TJSPromise;
     procedure Status(const AText: String; const AError: Boolean = False);
+    procedure UpdateLoading;
     procedure Feedback(const AText: String; const AError: Boolean = False);
     procedure Clear(const AId: String);
     procedure PauseAudioPlayers;
@@ -89,6 +107,7 @@ type
     function HandleAudioMetadata(AEvent: TEventListenerEvent): Boolean;
     function HandleAudioLoadStart(AEvent: TJSLoadEvent): Boolean;
     function HandleAudioWaiting(AEvent: TEventListenerEvent): Boolean;
+    function HandleAudioProgress(AEvent: TEventListenerEvent): Boolean;
     function HandleAudioPlaying(AEvent: TEventListenerEvent): Boolean;
     function HandleAudioError(AEvent: TJSErrorEvent): Boolean;
     function HandleAudioPlay(AEvent: TJSPointerEvent): Boolean;
@@ -172,6 +191,44 @@ begin
   El('status').textContent := AText;
   if AError then El('status').setAttribute('class', 'status error')
   else El('status').setAttribute('class', 'status');
+end;
+
+procedure TListener.UpdateLoading;
+var
+  LStage, LText: String;
+begin
+  LStage := '';
+  if FLoading then LStage := 'connection'
+  else if FQueueLoads > 0 then LStage := 'queue';
+  if LStage <> FLoadingStage then
+  begin
+    FLoadingStage := LStage;
+    FLoadingSince := TJSDate.now;
+  end;
+  if LStage = '' then
+  begin
+    if FLoadingTimer <> 0 then window.clearTimeout(FLoadingTimer);
+    FLoadingTimer := 0;
+    El('loading-progress').setAttribute('hidden', '');
+    Exit;
+  end;
+  if LStage = 'connection' then
+    LText := 'Connecting to local service'
+  else
+    LText := 'Loading listening queue';
+  LText := LText + ' · ' +
+    IntToStr((TJSDate.now - FLoadingSince) div 1000) + ' s';
+  El('loading-progress-text').textContent := LText;
+  El('loading-progress').setAttribute('aria-label', LText);
+  El('loading-progress').setAttribute('aria-valuetext', LText);
+  El('loading-progress').removeAttribute('hidden');
+  if FLoadingTimer = 0 then
+    FLoadingTimer := window.setTimeout(
+      procedure()
+      begin
+        FLoadingTimer := 0;
+        UpdateLoading;
+      end, 1000);
 end;
 
 procedure TListener.Feedback(const AText: String; const AError: Boolean);
@@ -404,6 +461,7 @@ begin
     LAudio.onloadedmetadata := @HandleAudioMetadata;
     LAudio.onloadstart := @HandleAudioLoadStart;
     LAudio.onwaiting := @HandleAudioWaiting;
+    LAudio.addEventListener('progress', @HandleAudioProgress);
     LAudio.oncanplay := @HandleAudioPlaying;
     LAudio.onerror := @HandleAudioError;
     LAudio.onplay := @HandleAudioPlay;
@@ -626,17 +684,36 @@ procedure TListener.Connect; async;
 var
   LResponse: TJSResponse;
   LData: TJSObject;
+  LEpoch: Integer;
+  LTimer: NativeInt;
 begin
   if FLoading then Exit;
   FLoading := True;
   Inc(FLoadEpoch);
+  LEpoch := FLoadEpoch;
+  FToken := '';
+  UpdateLoading;
   Status('Connecting to local service…');
   El('retry').setAttribute('hidden', '');
+  LTimer := window.setTimeout(
+    procedure()
+    begin
+      if (LEpoch = FLoadEpoch) and (FToken = '') then
+      begin
+        Inc(FLoadEpoch);
+        FLoading := False;
+        UpdateLoading;
+        Status('Connection is taking too long. Check this device’s network and retry.', True);
+        El('retry').removeAttribute('hidden');
+      end;
+    end, 10000);
   try
     LResponse := await(TJSResponse, FetchApi('/api/session', 'GET', ''));
+    if LEpoch <> FLoadEpoch then Exit;
     if LResponse.status <> 200 then
       raise Exception.Create('Session HTTP ' + IntToStr(LResponse.status));
     LData := await(TJSObject, LResponse.json());
+    if LEpoch <> FLoadEpoch then Exit;
     FToken := Str(LData, 'token');
     if FToken = '' then raise Exception.Create('Session token missing');
     El('workspace').removeAttribute('hidden');
@@ -645,16 +722,27 @@ begin
   except
     on E: Exception do
     begin
-      Status('Connection failed: ' + E.Message, True);
-      El('retry').removeAttribute('hidden');
+      if LEpoch = FLoadEpoch then
+      begin
+        Status('Connection failed: ' + E.Message, True);
+        El('retry').removeAttribute('hidden');
+      end;
     end;
   else
     begin
-      Status('Connection failed in this browser.', True);
-      El('retry').removeAttribute('hidden');
+      if LEpoch = FLoadEpoch then
+      begin
+        Status('Connection failed in this browser.', True);
+        El('retry').removeAttribute('hidden');
+      end;
     end;
   end;
-  FLoading := False;
+  window.clearTimeout(LTimer);
+  if LEpoch = FLoadEpoch then
+  begin
+    FLoading := False;
+    UpdateLoading;
+  end;
 end;
 
 procedure TListener.LoadQueue(const APreferred: String;
@@ -664,18 +752,25 @@ var
   LData: TJSObject;
 begin
   if FToken = '' then begin Connect; Exit; end;
+  Inc(FQueueLoads);
+  UpdateLoading;
   Status('Loading listening packets…');
   try
-    LResponse := await(TJSResponse, FetchApi('/api/listen-queue', 'GET', ''));
-    if LResponse.status <> 200 then
-      raise Exception.Create('Queue HTTP ' + IntToStr(LResponse.status));
-    LData := await(TJSObject, LResponse.json());
-    ApplyQueue(LData, APreferred, AAdvance);
-    Status('Listening queue loaded.');
-  except
-    on E: Exception do Status('Queue load failed: ' + E.Message +
-      '. Use Reload queue.', True);
-  else Status('Queue load failed in this browser. Use Reload queue.', True);
+    try
+      LResponse := await(TJSResponse, FetchApi('/api/listen-queue', 'GET', ''));
+      if LResponse.status <> 200 then
+        raise Exception.Create('Queue HTTP ' + IntToStr(LResponse.status));
+      LData := await(TJSObject, LResponse.json());
+      ApplyQueue(LData, APreferred, AAdvance);
+      Status('Listening queue loaded.');
+    except
+      on E: Exception do Status('Queue load failed: ' + E.Message +
+        '. Use Reload queue.', True);
+    else Status('Queue load failed in this browser. Use Reload queue.', True);
+    end;
+  finally
+    Dec(FQueueLoads);
+    UpdateLoading;
   end;
 end;
 
@@ -861,11 +956,12 @@ begin
   if (LIndex >= 0) and (LIndex < FAudioFailures.length) then
   begin
     FAudioFailures[LIndex] := False;
-    FAudioReady[LIndex] := True;
+    FAudioReady[LIndex] := False;
   end;
   UpdateReviewGate;
   El('media-state-' + Copy(LAudio.id, 7, MaxInt)).textContent :=
-    'WAV ready · ' + FormatFloat('0.0', LAudio.duration) + ' seconds.';
+    'WAV metadata loaded · ' + FormatFloat('0.0', LAudio.duration) +
+    ' seconds. Waiting for playable audio.';
   El('media-state-' + Copy(LAudio.id, 7, MaxInt)).setAttribute(
     'class', 'media-state');
   Result := False;
@@ -894,6 +990,35 @@ begin
     'Loading WAV audio…';
   El('media-state-' + Copy(LAudio.id, 7, MaxInt)).setAttribute(
     'class', 'media-state busy');
+  Result := False;
+end;
+
+function TListener.HandleAudioProgress(AEvent: TEventListenerEvent): Boolean;
+var
+  LAudio: TJSHTMLAudioElement;
+  LRanges: TListenerTimeRanges;
+  LBuffered: Double;
+  LPercent, I: Integer;
+begin
+  LAudio := TJSHTMLAudioElement(AEvent.currentTarget);
+  if CurrentAudioIndex(LAudio) < 0 then Exit(False);
+  LRanges := TListenerAudioElement(LAudio).BufferedRanges;
+  if (LRanges = nil) or (LRanges.length = 0) or
+    (LAudio.duration <= 0) or (LAudio.duration > 1000000000) then
+    Exit(False);
+  LBuffered := 0;
+  for I := 0 to LRanges.length - 1 do
+    LBuffered := LBuffered + LRanges.finish(I) - LRanges.start(I);
+  LPercent := Trunc(LBuffered * 100 / LAudio.duration);
+  if LPercent > 100 then LPercent := 100;
+  if LPercent < 0 then LPercent := 0;
+  if LPercent < 100 then
+  begin
+    El('media-state-' + Copy(LAudio.id, 7, MaxInt)).textContent :=
+      'WAV buffered: ' + IntToStr(LPercent) + '% of its duration. Playback can start before 100%.';
+    El('media-state-' + Copy(LAudio.id, 7, MaxInt)).setAttribute(
+      'class', 'media-state busy');
+  end;
   Result := False;
 end;
 

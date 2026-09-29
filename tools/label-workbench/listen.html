@@ -35,7 +35,10 @@ SOFTWARE.
       <p>Listen to the declared asset or pair, then save an explicit response.</p></div>
     <a href="/">Source workbench</a>
   </header>
-  <p id="status" class="status" role="status" aria-live="polite">Connecting to local service…</p>
+  <p id="status" class="status" role="status" aria-live="polite">Loading Pythian application…</p>
+  <div id="loading-progress" class="loading-progress" role="progressbar" aria-label="Loading Pythian application" aria-valuetext="Loading Pythian application">
+    <span id="loading-progress-text">Loading Pythian application…</span><span class="loading-progress-track"><span></span></span>
+  </div>
   <button id="retry" type="button" hidden>Retry connection</button>
   <main id="workspace" hidden>
     <aside class="panel">

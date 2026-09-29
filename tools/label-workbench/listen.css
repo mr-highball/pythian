@@ -23,6 +23,11 @@ header{display:flex;justify-content:space-between;gap:1rem;align-items:start;pad
 header p{margin:.2rem 0}h1{margin:.1rem 0;font-size:clamp(1.5rem,4vw,2.2rem)}h2{margin:.2rem 0 .7rem;font-size:1.2rem}h3{margin:.9rem 0 .4rem;font-size:1rem}
 a{color:#9ee0d2}.eyebrow{font-size:.72rem;letter-spacing:.1em;color:#9ee0d2;font-weight:750}.muted{color:#a8bac2;font-size:.9rem}
 .status{margin:0;padding:.7rem 1.5rem;background:#1c303b}.status.error,#feedback.error{color:#ffd0c9;background:#43292c}
+.loading-progress{position:sticky;top:0;z-index:20;padding:.35rem 1.5rem .5rem;background:#18313a;color:#e1f8ed;font-size:.8rem;box-shadow:0 2px 8px #0005}
+.loading-progress-track{display:block;height:.28rem;margin-top:.25rem;overflow:hidden;border-radius:999px;background:#3c5b60}
+.loading-progress-track span{display:block;width:38%;height:100%;border-radius:inherit;background:#9ee0d2;animation:connection-sweep 1.2s ease-in-out infinite alternate}
+@keyframes connection-sweep{from{transform:translateX(-100%)}to{transform:translateX(265%)}}
+@media(prefers-reduced-motion:reduce){.loading-progress-track span{animation:none}}
 main{display:grid;grid-template-columns:minmax(15rem,19rem) minmax(0,1fr);gap:1rem;max-width:105rem;margin:auto;padding:1rem;align-items:start}.panel{min-width:0;background:#1b2a35;border:1px solid #344852;border-radius:10px;padding:1rem}.work{min-height:15rem}
 button,input,select{font:inherit}button{border:1px solid #55717a;border-radius:8px;padding:.55rem .75rem;background:#263c48;color:#e7edf0;cursor:pointer}button:hover,button:focus-visible{border-color:#9ee0d2}button:disabled{opacity:.5;cursor:not-allowed}.primary{background:#b7e6d7;border-color:#b7e6d7;color:#10232a;font-weight:700}
 input,select{width:100%;border:1px solid #55717a;border-radius:7px;padding:.55rem;background:#13222e;color:#f2f6f7}label{display:block;margin:.45rem 0;color:#d4e4e7;font-weight:600}
