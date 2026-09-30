@@ -17,6 +17,7 @@ test preferences only. The engineering credit ledger is not a readiness score.
 [Outcome milestones](docs/MILESTONES.md) ·
 [Task catalog](docs/TODO/README.md) · [Task flow](docs/TASKFLOW.MD) ·
 [WAV learning and listening](docs/WAV-LEARNING.md) ·
+[Operator Studio scope](docs/OPERATOR-STUDIO.md) ·
 [Harmonic/percussive separation](docs/SEPARATION.md) ·
 [MIDI and exact timing](docs/MIDI.md) ·
 [Persisted shared corpora](docs/CORPUS.md) ·

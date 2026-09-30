@@ -1,7 +1,7 @@
 # Windows LAN review service
 
 The durable reviewed catalog lives outside `build/`. Checked native binaries
-and the six matching browser assets use fixed ignored `stable` and `qa` slots.
+and the nine matching browser assets use fixed ignored `stable` and `qa` slots.
 The paths stay fixed across rebuilds so Windows Firewall does not see a new
 application identity. Host addresses and catalog locations are local settings;
 never copy a historical machine address or process ID into a new launch.
@@ -61,7 +61,8 @@ run the staged Pascal server in a foreground terminal:
 ```
 
 Open the selected host on port18097: source review is at `/`, and complete
-single/paired listening is at `/listen.html`. No access-key form is needed in
+single/paired listening is at `/listen.html`, and project/source setup is at
+`/studio.html`. Studio drafts do not start training or generation. No access-key form is needed in
 this selected private-LAN mode; Host/Origin and same-origin write-session checks
 still apply. Read-only host HTTP success is not a physical-phone play/Save verdict;
 [authoring_02](TODO/NS-6_authoring_02.md) owns that acceptance.

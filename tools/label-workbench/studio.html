@@ -1,0 +1,107 @@
+<!--
+MIT License
+
+Copyright (c) 2026 mr-highball
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#11252b">
+  <title>Pythian · Studio</title>
+  <link rel="stylesheet" href="studio.css">
+</head>
+<body>
+  <a class="skip-link" href="#style-name">Skip to your style</a>
+  <header class="masthead">
+    <a class="brand" href="studio.html" aria-label="Pythian Studio home">Pythian <span>Studio</span></a>
+    <nav aria-label="Other workspaces"><a href="/">Source reviews</a><a href="listen.html">Listening reviews</a></nav>
+  </header>
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <div><p class="eyebrow">YOUR RECORDINGS. YOUR DIRECTION.</p><h1 id="page-title">Build your style.</h1>
+        <p class="lead">Choose the music to learn from, and describe what you want to carry forward.</p></div>
+      <div class="draft-picker"><label for="draft-list">Saved projects</label>
+        <div class="picker-controls"><select id="draft-list" disabled><option value="">New project</option></select>
+          <button id="new-draft" type="button" disabled>New project</button></div></div>
+    </section>
+    <nav class="steps" aria-label="Studio workflow">
+      <a href="#sources" aria-current="step"><span>1</span> Sources <small>Choose your material</small></a>
+      <a href="#prepare"><span>2</span> Prepare <small>Check your setup</small></a>
+      <a href="#listen"><span>3</span> Listen <small>After generation</small></a>
+      <a href="#refine"><span>4</span> Refine <small>After listening</small></a>
+    </nav>
+    <div id="connection" class="notice" role="status" aria-live="polite">Connecting to your catalog…</div>
+    <button id="retry" class="retry" type="button" hidden>Retry connection</button>
+    <noscript><p class="notice error">This Studio needs JavaScript enabled to use its Pascal application.</p></noscript>
+    <div class="workspace">
+      <div class="editor">
+        <section id="sources" class="panel" aria-labelledby="sources-title">
+          <div class="section-heading"><div><p class="eyebrow">01 / SOURCES</p><h2 id="sources-title">What are you making?</h2></div>
+            <span id="draft-state" class="state" role="status" aria-live="polite">Not saved</span></div>
+          <form id="style-form" novalidate>
+            <label for="style-name">Project name</label>
+            <input id="style-name" type="text" maxlength="128" autocomplete="off" placeholder="For example, Quiet evening piano" disabled aria-describedby="name-error">
+            <p id="name-error" class="field-error" role="alert" hidden></p>
+            <label for="style-qualities">What should the music feel like? (optional)</label>
+            <textarea id="style-qualities" rows="3" maxlength="2048" placeholder="For example, gentle dynamics, space between phrases, and a warm sound." disabled aria-describedby="qualities-help qualities-error"></textarea>
+            <p id="qualities-help" class="hint">A few words about the qualities you want to carry forward.</p>
+            <p id="qualities-error" class="field-error" role="alert" hidden></p>
+          </form>
+          <div class="source-heading"><div><h3>Choose imported recordings</h3><p class="hint">Use a whole recording, or select a time range.</p></div>
+            <button id="refresh-tracks" type="button" disabled>Refresh recordings</button></div>
+          <label class="search-label" for="track-search">Find a recording</label>
+          <input id="track-search" type="search" placeholder="Search recording names" disabled>
+          <p id="tracks-empty" class="empty-state">Your imported recordings will appear here.</p>
+          <div id="tracks" class="tracks" aria-label="Available recordings"></div>
+          <p id="tracks-error" class="field-error" role="alert" hidden></p>
+        </section>
+        <section id="prepare" class="panel prepare" aria-labelledby="prepare-title">
+          <div class="section-heading"><div><p class="eyebrow">02 / PREPARE</p><h2 id="prepare-title">Your setup at a glance</h2></div>
+            </div>
+          <dl class="totals"><div><dt>Selected music</dt><dd id="selected-duration">0 minutes</dd></div>
+            <div><dt>Recordings</dt><dd id="selected-count">0</dd></div></dl>
+          <p id="selection-summary" class="hint">Select recordings to build your source collection.</p>
+
+          <div class="support"><h3>What happens when you save?</h3>
+            <p>Save your project name, musical direction and source selections as a draft.</p>
+            <input id="learning-mode" type="hidden" value="raw_acoustic"><details><summary>Source and preparation details</summary><p id="support-detail">Source details are catalog snapshots. Actual recordings must be verified before training. Saved route preferences do not start learning.</p></details></div>
+        </section>
+        <div class="upcoming">
+          <section id="listen" aria-labelledby="listen-title"><p class="eyebrow">03 / LISTEN</p><h2 id="listen-title">Generated previews</h2><p>Coming next. Training and generated previews are unavailable in this version.</p></section>
+          <section id="refine" aria-labelledby="refine-title"><p class="eyebrow">04 / REFINE</p><h2 id="refine-title">Shape the result</h2><p>Coming next. Refinement follows listening when those stages are available.</p></section>
+        </div>      </div>
+      <aside class="panel save-panel" aria-labelledby="save-title">
+        <p class="eyebrow">YOUR STYLE DRAFT</p><h2 id="save-title">Keep your setup.</h2><p class="draft-badge">Draft · Not trained</p>
+        <p id="draft-caption">Give your style a name, then select its recordings.</p>
+        <div class="save-actions"><button id="save-draft" class="primary" type="button" disabled>Save draft</button>
+          <button id="reload-draft" type="button" disabled>Reload saved draft</button></div>
+        <p id="save-feedback" class="hint" role="status" aria-live="polite">Nothing has been saved yet.</p>
+        <details class="advanced"><summary>Draft details</summary><p id="draft-details" class="hint">A saved draft keeps its source selections and is still not trained.</p></details>
+      </aside>
+    </div>
+  </main>
+
+  <script src="studio.js"></script>
+  <script>rtl.run();</script>
+</body>
+</html>

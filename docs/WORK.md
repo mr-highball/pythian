@@ -14,6 +14,88 @@ Project work and review pushes stay on `hello-pythian`.
 
 ## Current priority decision — 2026-09-30
 
+**Accepted operator Studio setup — Big Boss:** the user explicitly authorizes
+task scoping, milestone reconciliation and implementation of an intuitive,
+powerful web loop for substantial training sources, shorter musical auditions,
+classification and deliberate iteration. The [scope](OPERATOR-STUDIO.md) and
+[studio_01 — DONE](TODO/DONE/NS-6_studio_01.md) -> [studio_02](TODO/NS-6_studio_02.md) ->
+[studio_03](TODO/NS-6_studio_03.md) assign every new outcome. Twelve unearned NS-6
+points move from authoring_02/delivery_03/delivery_04; all original criteria
+remain. Scoping earned no credit. Independent project/setup acceptance adds
+4 NS-6 / 0.40 overall, giving **49.80 accepted / 50.20 remaining, 45 open /
+36 DONE**; NS-6 is **35/65**. All task links and ledgers move together.
+
+The first batch closes all studio_01 criteria through the native durable store
+and desktop/narrow page together. Neo implemented new store/tests; Ticket Guy
+implemented studio.html/css/lpr; Big Boss integrated HTTP/builds and reviewed
+architecture/UI; Salty independently validated both components. Stable checked
+Win32/Win64 tests each pass 89 assertions with zero leaks. Actual browser source
+selection and range 4000..12000 plus full unassigned source survive Save and
+fresh-page reload. Network/422/409 failures preserve entered work; a dropped
+actual POST response reconciles and an identical retry adds no revision.
+Keyboard Tab/Space, focus, no-match/empty/name/range errors, desktop/390 layout,
+all nine assets/MIME and source/listening navigation pass. At the narrow viewport,
+client and scroll widths are both 375 after the scrollbar, with no overflow.
+Every final QA listener/profile process is closed. No training, musical judgment
+or physical-phone acceptance follows from this task.
+
+Draft Save binds catalog metadata and source geometry with bounded work, marking
+actual content verification pending training; it cannot synchronously rehash
+hours of audio or claim that a selected source was admitted. Style intent is
+optional. A saved draft shows not trained and no used-source/model evidence.
+Native persistence and human-friendly UI earn one scoped task credit. Ticket
+Guy's first blocking UI submission had ambiguous future-stage wording. Its
+HTML-only repair explicitly marks later stages as coming next; focused final QA
+reused unchanged functional/native evidence. Final staging then found trailing
+whitespace missed by the unstaged check of a new file. Big Boss counts that as
+the second failed UI submission, takes over the implementation and repairs only
+those blank lines and the terminal newline. Ticket Guy receives the separate
+ready studio_02 UI-state planning assignment; no implementation before its job
+contract freezes. Neo's native QA failure count is zero. Development repairs and QA
+runner setup/native-dialog mistakes remain recorded without calling them product
+failures. This is one closing implementation batch; consecutive nonclosing count
+is now zero because criteria closed, not because of a handoff or renamed task.
+Older failed science and transferred implementation evidence stays intact.
+
+Final evidence is ignored `build/salty-studio-20260930/VERDICT.txt` and
+`FINAL-IDENTITIES.json`, plus native/browser logs and screenshots. The exact
+checked service SHA-256 is
+`ce92b8f2b960a3ed59170731c20515305532790dd7ce1862343d7923775c32ab`;
+Browser-validated Studio HTML is
+`72e34a9a854cb6a9ef42d7b29e7e437a4af48438927a4c8f1280d68a30f20d7b`;
+the final formatting-only revision is
+`888f569d0d990ff78eb6f442e83b9ad3e59da31cdcdd4afd6210551ed979971b`.
+The preserved diff and final staging/identity check qualify that whitespace delta.
+The copied QA runner's orphan historical `TotalSeconds` value is excluded from
+Studio accounting; actual elapsed records are retained. No live catalog changed.
+
+**Next batch:** studio_02's real raw-acoustic source/model/audition job path.
+Neo's read-only map identifies existing journal analysis, saved WFC/model profile,
+generation, source-grain rendering and listening publication APIs. Parameterized
+duration/seeds, bounded asynchronous jobs/cancellation/recovery, source audition
+and exactly-once publication still need implementation. Big Boss must freeze the
+first supported policy/resource bounds; Neo owns complex orchestration and may
+assign disjoint UI work to Ticket Guy. Closing evidence is an actual selected-
+source -> model -> generated WAV -> listening queue result with reload/recovery.
+Stop on unsupported inputs, false admission or incomplete publication. Do not
+route unknown song boundaries through an intake path that rejects them, and do
+not present analyzed duration as retained diversity or accurate musical learning.
+
+This selected consumer supersedes the earlier blanket operator deferral below.
+The old source-marker/full physical matrix remains unselected; shared generated-
+listening usability now has a concrete owner. Big Boss retains old authoring and
+comparator implementation after their two failed worker submissions. No changed
+scope permits another stopped note/presence/context/continuity variant.
+
+Prior published comparator code at `5f9b49a` also passed
+[Linux integration and extracted-package verification](https://github.com/mr-highball/pythian/actions/runs/36780269571).
+Subsequent reference and cross-goal assessments found no calibrated musical
+limits or actual outside consumer result. The user's new operator direction
+now supplies a concrete implementation route into caller preference calibration;
+it does not establish those eventual musical verdicts.
+
+### Retained comparator execution batch
+
 **Qualified execution component:** [evaluation_01](TODO/NS-5_evaluation_01.md)
 now has a maintained source-bound WFC comparator adapter/CLI and an independent
 saved-packet verifier. Final Salty QA passes 133 conformance assertions and
@@ -963,6 +1045,11 @@ there, then validate the coordinated Pythian integration.
 
 ## Next criterion-closing work
 
+The later user-selected [Studio batch](#current-priority-decision--2026-09-30)
+is current: studio_01 project store and responsive setup page, then actual jobs
+and musical iteration. The following retained learning/delivery routes explain
+the return path and their unchanged evidence blockers.
+
 Start from NS-5, currently 14%, following real prerequisites:
 
 - [Generic corpus intake](TODO/DONE/NS-5_corpus_05.md) is accepted, and the
@@ -983,7 +1070,7 @@ Start from NS-5, currently 14%, following real prerequisites:
 - [authoring_01](TODO/DONE/NS-6_authoring_01.md) is accepted with all owned points
   and independently checked current B1–B6, preserving the explicit retained
   source/build limits and both known blocking worker submissions.
-- Deferred lane: [authoring_02](TODO/NS-6_authoring_02.md), owned by Big Boss
+- Deferred source-marker/full physical lane: [authoring_02](TODO/NS-6_authoring_02.md), owned by Big Boss
   after two blocked Neo driver submissions. Copied inputs and exact assets are
   frozen; the stale-audio repair passes independent negative and positive
   desktop/narrow playback/recovery checks. Both fixed rules are verified and

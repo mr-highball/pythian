@@ -54,7 +54,8 @@ uses
   pythian.tools.annotations.review,
   pythian.tools.annotations.sourceguard,
   pythian.tools.listen.catalog,
-  pythian.tools.listen.stream
+  pythian.tools.listen.stream,
+  pythian.tools.studio.projects
   {$IFDEF MSWINDOWS}, Windows{$ELSE}, BaseUnix{$ENDIF};
 
 {$IFDEF MSWINDOWS}
@@ -896,6 +897,12 @@ begin
     Exit('listen.js');
   if APath = '/listen.css' then
     Exit('listen.css');
+  if APath = '/studio.html' then
+    Exit('studio.html');
+  if APath = '/studio.js' then
+    Exit('studio.js');
+  if APath = '/studio.css' then
+    Exit('studio.css');
   Result := '';
 end;
 
@@ -911,11 +918,13 @@ begin
   try
     Need((LInput.Size > 0) and (LInput.Size <= CMaximumStaticBytes),
       'Static asset exceeds size bound');
-    if (AName = 'app.js') or (AName = 'listen.js') then
+    if (AName = 'app.js') or (AName = 'listen.js') or
+      (AName = 'studio.js') then
     begin
       LContentType := 'text/javascript; charset=utf-8';
     end
-    else if (AName = 'style.css') or (AName = 'listen.css') then
+    else if (AName = 'style.css') or (AName = 'listen.css') or
+      (AName = 'studio.css') then
     begin
       LContentType := 'text/css; charset=utf-8';
     end
@@ -1005,6 +1014,28 @@ begin
       (ARequest.Path = '/api/catalog') then
     begin
       LReport := ListLabelCatalog(ACatalogRoot);
+    end
+    else if (ARequest.Method = 'GET') and
+      (ARequest.Path = '/api/studio/sources') then
+    begin
+      LReport := ListStudioSources(ACatalogRoot);
+    end
+    else if (ARequest.Method = 'GET') and
+      (ARequest.Path = '/api/studio/projects') then
+    begin
+      LReport := ListStudioProjects(ACatalogRoot);
+    end
+    else if (ARequest.Method = 'GET') and
+      (ARequest.Path = '/api/studio/project') then
+    begin
+      LReport := ReadStudioProject(ACatalogRoot,
+        QueryValue(ARequest.Query, 'id'));
+    end
+    else if (ARequest.Method = 'POST') and
+      (ARequest.Path = '/api/studio/project') then
+    begin
+      LBody := ParseStudioProjectWrite(ARequest.Body);
+      LReport := SaveStudioProject(ACatalogRoot, LBody);
     end
     else if (ARequest.Method = 'GET') and
       (ARequest.Path = '/api/inbox') then
@@ -1228,7 +1259,8 @@ begin
   except
     on LError: Exception do
     begin
-      if Pos('revision conflict', LowerCase(LError.Message)) > 0 then
+      if (LError is EStudioConflict) or
+        (Pos('revision conflict', LowerCase(LError.Message)) > 0) then
       begin
         LStatus := 409;
       end
@@ -1271,7 +1303,9 @@ begin
           ': ', LError.Message);
       end;
       if (LRequest.Path = '/api/listen-review') or
-        (LRequest.Path = '/api/listen-audio') then
+        (LRequest.Path = '/api/listen-audio') or
+        ((Pos('/api/studio/', LRequest.Path) = 1) and
+         (LError is EAudio)) then
         SendResponse(ASocket, LStatus, 'text/plain; charset=utf-8',
           StatusReason(LStatus) + ': ' +
           Copy(StringReplace(StringReplace(LError.Message, #13, ' ',
@@ -1437,7 +1471,10 @@ begin
       FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'style.css') and
       FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'listen.html') and
       FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'listen.js') and
-      FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'listen.css'),
+      FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'listen.css') and
+      FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'studio.html') and
+      FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'studio.js') and
+      FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'studio.css'),
       'Configured browser assets are incomplete');
   end;
   Need(CreateGUID(LGuid) = 0, 'Could not create HTTP session token');

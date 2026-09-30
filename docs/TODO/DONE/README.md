@@ -3,9 +3,12 @@
 [Task index](../README.md) · [Task flow](../../TASKFLOW.MD) ·
 [Milestones](../../MILESTONES.md) · [Current credit basis](../../REBALANCE-2026-09-29.md#current-credit-basis)
 
-All **35** records retain their acceptance evidence and dates. Points below
+All **36** records retain their acceptance evidence and dates. Points below
 use the user-authorized 2026-09-29 outcome rebase; older amounts in evidence
 narratives are historical. No task was accepted by this reassessment.
+The [2026-09-30 Studio allocation](../../OPERATOR-STUDIO.md#allocation-and-ownership)
+moves only unearned NS-6 points. Subsequent independent Studio setup acceptance
+adds 4 NS-6 / 0.40 overall without changing prior accepted values.
 
 | Accepted task | Date | Current goal credit | Current overall credit |
 | --- | --- | ---: | ---: |
@@ -44,9 +47,10 @@ narratives are historical. No task was accepted by this reassessment.
 | [NS-6_delivery_01](NS-6_delivery_01.md) — Define the supported consumer and distribution contract | 2026-09-20 | 3 NS-6 | 0.30 |
 | [NS-6_delivery_02](NS-6_delivery_02.md) — Verify clean native targets and remote CI | 2026-09-21 | 12 NS-6 | 1.20 |
 | [NS-6_delivery_06](NS-6_delivery_06.md) — Deliver a current minimal native synthesis package | 2026-09-30 | 8 NS-6 | 0.80 |
+| [NS-6_studio_01](NS-6_studio_01.md) — Select and preserve an operator training project | 2026-09-30 | 4 NS-6 | 0.40 |
 
-Current accepted task total is **21.40 weighted points**; the separate accepted
-baseline contributes **28.00**, giving **49.40 overall**. Core source-free
+Current accepted task total is **21.80 weighted points**; the separate accepted
+baseline contributes **28.00**, giving **49.80 overall**. Core source-free
 composition remains accepted with zero extra NS-4 points; it does not prove
 WFC-selected or recorded-provider integration. The prior external-runtime
 execution result remains historical; current inference acceptance is Pascal-owned.

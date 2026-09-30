@@ -142,6 +142,14 @@ Retain and update Dev Notes when a task moves to DONE.
 
 ## Select and execute
 
+The user's 2026-09-30 [operator Studio direction](OPERATOR-STUDIO.md) selects
+project/source setup -> actual training/audition jobs -> musical comparison and
+deliberate iteration as the next NS-5 calibration enabler, with primary NS-6
+credit. UI/UX is an acceptance boundary in every slice. Use short development
+auditions under an explicit policy without replacing the fixed final packet.
+The old blanket operator deferral does not prohibit this named consumer;
+unexplained source-marker QA and stopped scientific variants remain unselected.
+
 1. Read the selected task, its current topic evidence and the work record. Check
    that each file under **Blockers** is accepted in DONE. A draft implementation,
    a passing isolated test or an active task does not satisfy a blocker.
@@ -271,7 +279,7 @@ In the same logical completion change:
    algorithm suites for the documentation move.
 
 The user-authorized **2026-09-29 complete-goal allocations**, updated after
-independent caller-intake, minimal package, caller-provider and editor/queue
+independent caller-intake, minimal package, caller-provider, editor/queue and Studio setup
 acceptance on **2026-09-30**, give:
 
 | Goal | Accepted baseline | Overall weight | Accepted DONE points | Open points |
@@ -281,18 +289,24 @@ acceptance on **2026-09-30**, give:
 | NS-3 | 10 | 25 | 15 | 75 |
 | NS-4 | 20 | 15 | 45 | 35 |
 | NS-5 | 0 | 20 | 14 | 86 |
-| NS-6 | 0 | 10 | 31 | 69 |
+| NS-6 | 0 | 10 | 35 | 65 |
 
 `Goal completion = baseline + sum(accepted DONE task credits for that goal)`.
 `Overall completion = sum(goal completion * goal weight / 100)`.
-Current goal completions are **100/90/25/65/14/31**; weights are
-**5/25/25/15/20/10**. Therefore current accepted scope is **49.40 weighted
-points**, with **50.60 remaining**. The rebase records newly explicit caller
+Current goal completions are **100/90/25/65/14/35**; weights are
+**5/25/25/15/20/10**. Therefore current accepted scope is **49.80 weighted
+points**, with **50.20 remaining**. The rebase records newly explicit caller
 extension, maintained support and adoption requirements; it earns no acceptance.
 For example, accepting `NS-3_notes_01` adds 7 points within NS-3 and 1.75 overall
 point. Record the arithmetic on every completion; preserve the current accepted
 ledger until an actual task closes or a documented reassessment withdraws credit. These allocations are transparent planning
 judgments about scope, not measured engineering precision or effort estimates.
+
+The [operator Studio allocation](OPERATOR-STUDIO.md#allocation-and-ownership)
+redistributed 12 unearned NS-6 points on 2026-09-30 without awarding acceptance.
+Subsequent Studio setup acceptance adds 4 NS-6 / 0.40 overall: **45 open /
+36 accepted tasks**, NS-6 **35/65**, overall **49.80/50.20**. All original donor
+criteria remain required alongside the new operator outcomes.
 
 Task credits, not file counts, drive completion. Partial implementation,
 experiments, more tests, hours collected and this initial task authoring earn no

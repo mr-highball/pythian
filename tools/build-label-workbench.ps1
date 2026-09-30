@@ -43,12 +43,15 @@ $unitRoot = Join-Path $outputRoot 'units'
 $webRoot = Join-Path $outputRoot 'www'
 $program = Join-Path $sourceRoot 'app.lpr'
 $listenProgram = Join-Path $sourceRoot 'listen.lpr'
+$studioProgram = Join-Path $sourceRoot 'studio.lpr'
 
-foreach ($required in @($program, $listenProgram,
+foreach ($required in @($program, $listenProgram, $studioProgram,
     (Join-Path $sourceRoot 'index.html'),
     (Join-Path $sourceRoot 'style.css'),
     (Join-Path $sourceRoot 'listen.html'),
-    (Join-Path $sourceRoot 'listen.css'), $RtlJavascript,
+    (Join-Path $sourceRoot 'listen.css'),
+    (Join-Path $sourceRoot 'studio.html'),
+    (Join-Path $sourceRoot 'studio.css'), $RtlJavascript,
     (Join-Path $RtlSource 'web.pas'))) {
   if (-not (Test-Path -LiteralPath $required -PathType Leaf)) {
     throw "Missing workbench source or matched pas2js RTL: $required"
@@ -80,8 +83,22 @@ if (-not (Test-Path -LiteralPath $listenScriptPath -PathType Leaf) -or
     (Get-Item -LiteralPath $listenScriptPath).Length -eq 0) {
   throw "pas2js did not produce $listenScriptPath"
 }
+$studioScriptPath = Join-Path $webRoot 'studio.js'
+Remove-Item -LiteralPath $studioScriptPath -Force -ErrorAction SilentlyContinue
+$studioCompilerArguments = @(
+  '-B', '-Tbrowser', '-Mdelphi', '-Jc', "-Ji$RtlJavascript",
+  "-Fu$RtlSource", "-FU$unitRoot", "-FE$webRoot", $studioProgram
+)
+& $Compiler @studioCompilerArguments
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+if (-not (Test-Path -LiteralPath $studioScriptPath -PathType Leaf) -or
+    (Get-Item -LiteralPath $studioScriptPath).Length -eq 0) {
+  throw "pas2js did not produce $studioScriptPath"
+}
 Copy-Item -LiteralPath (Join-Path $sourceRoot 'index.html'),
   (Join-Path $sourceRoot 'style.css'),
   (Join-Path $sourceRoot 'listen.html'),
-  (Join-Path $sourceRoot 'listen.css') -Destination $webRoot -Force
+  (Join-Path $sourceRoot 'listen.css'),
+  (Join-Path $sourceRoot 'studio.html'),
+  (Join-Path $sourceRoot 'studio.css') -Destination $webRoot -Force
 Write-Host "Label workbench staged at $webRoot"

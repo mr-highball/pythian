@@ -108,6 +108,11 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Evaluation operator compilation failed' }
   & $compilerPath @compilerArgs '-Futools' 'tools/pythian.label.catalog.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Label catalog operator compilation failed' }
+  & $compilerPath @compilerArgs '-gh' '-Futools' 'tests/pythian.tests.studio.projects.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Studio project contract compilation failed' }
+  $studioProjectRoot = Join-Path $buildRoot ('studio-project-' + [Guid]::NewGuid().ToString('N'))
+  & (Join-Path $buildRoot "pythian.tests.studio.projects$executableSuffix") $studioProjectRoot
+  if ($LASTEXITCODE -ne 0) { throw 'Studio project persistence checks failed' }
   & $compilerPath @compilerArgs '-Futools' 'tools/pythian.part.controls.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Part control operator compilation failed' }
   & (Join-Path $buildRoot "pythian.part.controls$executableSuffix") '--controls'

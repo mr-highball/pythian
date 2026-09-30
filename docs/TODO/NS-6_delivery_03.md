@@ -8,8 +8,8 @@ Deliver current source packages and reproducible examples for the accepted synth
 WAV learning, semantic generation and arbitrary user-defined style blend/reblend workflow.
 
 North star: NS-6. Outcome owner: WAV-05-DELIVERY.
-Completion credit: 10 goal percentage points (1.00 overall points).
-Current complete-goal allocation, 2026-09-29, with NS-6 weighted at 10 overall points,
+Completion credit: 6 goal percentage points (0.60 overall points).
+Current allocation: [2026-09-30 operator rebalance](../OPERATOR-STUDIO.md#allocation-and-ownership), with NS-6 weighted at 10 overall points,
 under the user's authorization
 to rebalance without preserving historical point allocations. All existing
 acceptance criteria remain required; this plan revision earns no acceptance.
@@ -46,11 +46,19 @@ prerequisite or nonreproducible input and follow its owning task.
 - [NS-6_delivery_02.md](DONE/NS-6_delivery_02.md)
 - [NS-6_authoring_01.md](DONE/NS-6_authoring_01.md)
 - [NS-6_authoring_02.md](NS-6_authoring_02.md)
+- [NS-6_studio_01.md](DONE/NS-6_studio_01.md)
+- [NS-6_studio_02.md](NS-6_studio_02.md)
+- [NS-6_studio_03.md](NS-6_studio_03.md)
 - [NS-3_validation_02.md](DONE/NS-3_validation_02.md)
 - [NS-4_integration_01.md](NS-4_integration_01.md)
 - [NS-5_blends_01.md](NS-5_blends_01.md)
 
 **Dev Notes:**
+
+- 2026-09-30, Big Boss: final packaging now explicitly includes the operator
+  Studio source/project, actual jobs and feedback/iteration outcomes. Four
+  unearned points move to their allocation; all five packaging criteria remain.
+  Earlier snapshots do not qualify these new consumers.
 
 - 2026-09-29 current complete-goal credit basis: this task owns 10 NS-6
   goal points (+1.00 overall) by deliverable value. Nine open NS-6

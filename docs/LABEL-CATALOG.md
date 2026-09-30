@@ -230,11 +230,16 @@ Stage and launch **only from the fixed stable/QA slots** using the
 owns local address/root selection, exact-path firewall rules and browser cleanup;
 compiler-output paths are not server-launch paths.
 
-The page connects without a login form. The server serves the six named
-source/listening assets and keeps catalog routes behind its session token.
+The page connects without a login form. The server serves the nine named
+source/listening/Studio assets and keeps catalog routes behind its session token.
 The current browser slice supports bounded source
 listening, explicit review, source-level blind reveal, reviewed packet download
 and re-import.
+
+`/studio.html` adds durable operator project/source setup under the
+[Studio scope](OPERATOR-STUDIO.md). Its drafts retain selected original source
+identities/ranges and musical intent; saving does not run training or certify
+source content. Full source verification belongs to training preflight.
 
 The assistant prepares optional `review-queue.json` in the private catalog root
 to assign a specific question and source interval. A missing file yields an

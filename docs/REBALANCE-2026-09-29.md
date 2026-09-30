@@ -12,6 +12,12 @@ and the editor/queue contract adds 8 NS-6 / 0.80 overall, giving
 **49.40 credited / 50.60 remaining**, **43 open / 35 DONE**.
 The allocation rationale, stopped
 investigations and dated assessment numbers below remain historical evidence.
+The later [operator Studio scope](OPERATOR-STUDIO.md#allocation-and-ownership)
+adds three explicit outcomes and redistributes 12 unearned NS-6 points. Its live
+catalog initially had 46 open / 35 DONE with no added credit. Subsequent
+independent Studio setup acceptance adds 4 NS-6 / 0.40 overall, giving the live
+**49.80 credited / 50.20 remaining**, **45 open / 36 DONE**. Earlier snapshots
+above are retained as history.
 
 ## Finding
 

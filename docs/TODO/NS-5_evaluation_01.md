@@ -21,6 +21,11 @@ execution evidence; contract arithmetic and synthetic execution cannot close
 the task or earn partial credit. Reassess the actual evidence prerequisite
 before another batch, preserving stopped investigations and failure counters.
 Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
+The user's later [Studio direction](../OPERATOR-STUDIO.md) supplies a concrete
+caller-preference calibration route: supported reference/control auditions and
+plain musical feedback through the operator loop. A sole operator can define
+their own style preferences; bounds still require supported controls and a
+separate candidate evaluation. UI/job delivery earns no scientific acceptance.
 This reassessment closes no product criterion and preserves prior failures below.
 
 Deliver a caller-defined style-card contract and a complete bounded note/duration

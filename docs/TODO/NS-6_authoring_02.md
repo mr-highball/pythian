@@ -11,8 +11,8 @@ A desktop or emulated narrow-screen pass does not substitute for an audible
 physical-phone playback and successful Save on the selected private LAN.
 
 North star: NS-6. Outcome owner: WAV-05-AUTHORING.
-Completion credit: 8 goal percentage points (0.80 overall points).
-Current complete-goal allocation, 2026-09-29, with NS-6 weighted at 10 overall points,
+Completion credit: 4 goal percentage points (0.40 overall points).
+Current allocation: [2026-09-30 operator rebalance](../OPERATOR-STUDIO.md#allocation-and-ownership), with NS-6 weighted at 10 overall points,
 under the user's authorization
 to rebalance without preserving historical point allocations. All existing
 acceptance criteria remain required; this plan revision earns no acceptance.
@@ -24,10 +24,15 @@ Starting evidence: [editor and queue](DONE/NS-6_authoring_01.md) ·
 [LAN procedure](../LAN-REVIEW-SERVICE.md) · [review queue](../REVIEW-QUEUE.md) ·
 [phone Save repair](../WORK-HISTORY.md#phone-save-request-header-repair--2026-09-29).
 
-Execution status: **deferred by user priority on 2026-09-30; open and unaccepted**.
+Execution status: **source-marker/full physical matrix deferred; open and unaccepted**.
+The user's later 2026-09-30 direction selects the
+[Studio workflow](../OPERATOR-STUDIO.md), beginning with project/source setup.
+Generated-listening usability and any required shared operator repair may advance
+for that named consumer. This does not select another mechanical marker prompt
+or infer physical-phone acceptance. All criteria below remain required.
 Big Boss retains repair/integration after two blocked Neo driver submissions.
 The first-use phone review exposes unclear question intent and marker/time
-feedback; no further workbench implementation or manual review is selected now.
+feedback; its old blanket workbench deferral is superseded by the Studio scope.
 Its only direct downstream task is [final packaging](NS-6_delivery_03.md), also
 blocked on full recorded integration and style/blend acceptance. Core synthesis,
 WFC and the current NS-3/NS-5 reference/inference gates do not require this task.
@@ -126,6 +131,13 @@ the accepted editor mechanics in authoring_01 retain their scoped evidence.
 - [NS-6_authoring_01.md](DONE/NS-6_authoring_01.md)
 
 **Dev Notes:**
+
+- 2026-09-30, Big Boss: user explicitly prioritizes intuitive operator-driven
+  training/audition preparation and feedback. New studio_01/02/03 own setup,
+  jobs and iteration; this task retains every original physical/source-review
+  criterion and failure. Four unearned points move to the Studio allocation;
+  no acceptance is inferred. Reuse physical evidence only where the exact
+  changed consumer is actually exercised.
 
 - 2026-09-30 user phone feedback and priority decision, Big Boss: the supplied
   Brave screenshot shows an internal instruction to correct a deliberately

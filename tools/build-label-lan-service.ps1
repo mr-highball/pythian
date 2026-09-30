@@ -37,7 +37,8 @@ $targetWeb = Join-Path $targetRoot 'www'
 $targetExe = Join-Path $targetBin 'pythian.label.catalog.exe'
 $targetHashFile = Join-Path $targetRoot 'executable.sha256'
 $webNames = @('index.html', 'app.js', 'style.css',
-  'listen.html', 'listen.js', 'listen.css')
+  'listen.html', 'listen.js', 'listen.css',
+  'studio.html', 'studio.js', 'studio.css')
 
 function Require-WithinTarget([string] $Path) {
   $resolved = [IO.Path]::GetFullPath($Path)
