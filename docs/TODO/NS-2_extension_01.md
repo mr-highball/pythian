@@ -11,14 +11,36 @@ Completion credit: 10 goal percentage points (2.50 overall points).
 Current basis: [full-goal reassessment](../REBALANCE-2026-09-29.md#current-credit-basis).
 No credit is earned until every criterion and prerequisite passes final QA.
 
-Execution status and next batch (2026-09-30): the current minimal package is
-accepted. A bounded caller source/effect conformance example and guide can
-proceed through the public scheduling and processing path; actual independent
-consumer and listening evidence remain unavailable/unearned. Reserve exact
-files before that component starts. Stop on undocumented ownership/work
-semantics or required library edits; repair the public contract before another
-claimed external pass.
+Execution status (2026-09-30): the caller source/effect mechanical component
+passed independent final QA. Checked stable Win32/Win64 and fresh extracted
+core/WFC candidate archives pass; no library change was needed. The next
+deliverable is exact clean-revision archive qualification and published Linux evidence,
+then actual independent consumer use and listening. Stop on a new contract gap;
+full task remains OPEN and earns zero credit.
 Closing evidence: exact external source/package/run identities, public consumer behavior and all criterion results below. Consuming another goal earns no duplicate credit.
+
+Implementation batch (2026-09-30): Ticket Guy delivered the caller-owned source/effect
+unit, its scheduled/streamed example, focused conformance program,
+`docs/CALLER-EXTENSIONS.md` and this task under Big Boss's assignment. The component uses the current
+public core interfaces only: a parameterized two-harmonic factory and bounded
+stateful stereo delay, with ownership/reset, event/release, varied-block replay,
+declared-cost admission and correct fault recovery. Exact commands, source hashes
+and generated WAV/log evidence are retained under ignored
+`build/caller-extensions/`. Independent extracted-package qualification and
+actual outside-consumer/listening evidence remain separate gates; no component
+or task credit is claimed. Stop with a minimal reproduction before any required
+library edit or newly discovered contract gap; do not promise processing rollback,
+arbitrary-code isolation or hard real time.
+
+Integration scope (2026-09-30): Ticket Guy delivered `tools/build.ps1`,
+`tools/package.ps1`, `packaging/README.md` and `docs/WORK.md` under Big Boss's assignment.
+The caller unit, consumer, conformance source and offline guide are included in fresh
+inventory-bound archives; compile/run them using extracted core and caller paths
+only, including the opt-in WFC archive. Checked Win32/Win64 package logs and
+actual saved PCM expectations are the closing evidence for this mechanical
+component. Preserve accepted delivery_06 archive identities. Stop and escalate
+any complex package/source contract gap before widening scope; no ledger credit,
+independent user or listening acceptance follows from these agent-run checks.
 
 **Acceptance Criteria:**
 
@@ -35,9 +57,50 @@ Closing evidence: exact external source/package/run identities, public consumer 
 
 **Dev Notes:**
 
+- 2026-09-30 Salty Boi independent mechanical QA passed: fresh core ZIP extraction
+  compiled only extracted core/examples with stable FPC 3.2.2 Win32/Win64;
+  each passed 163115 ownership/work/reset/tail/replay/failure conformance checks.
+  Actual CLI saved PCM, existing-output rejection and nonfinite control rejection
+  passed with valid-byte preservation; eight independent runtime logs were
+  leak-free. Four candidate package results and unchanged worker boundary checks
+  were reviewed without repeating broad suites. Sources/notices, privacy, offline
+  guide navigation, script parsing and unchanged credit/DAG passed. Evidence:
+  ignored `build/qa-caller-extensions/`. Zero implementation QA failures.
+  These agent-run checks qualify the bounded mechanical component, not outside
+  use, actual listening or full task acceptance. Clean committed archives and
+  exact published Linux evidence remain required; no credit is earned.
+
 - 2026-09-29 Neo contract review: source factories and effects supply their own
   abstract `FrameCost`; scheduled and streamed admission checks those declared
   estimates. AC2 requires a demonstrated conservative estimate and pre-execution
   rejection, with the caller obligation explicit. This does not promise runtime
   isolation or hard real-time enforcement and earns no acceptance.
 - 2026-09-29 completeness audit: the former backlog could close built-in synthesis/style behavior without testing this caller extension outcome. This task fills that distinct public-library gap; internal fixtures and a new genre name cannot close it. Prior accepted built-in evidence is preserved; overall weights are explicitly rebased.
+
+- 2026-09-30 Ticket Guy mechanical handoff: AC2 and AC3 behavior is implemented
+  and worker-verified, pending independent QA. AC1's asset-free extracted-only
+  source/effect closure and AC5's offline reusable guide/conformance source are
+  delivered; independent outside-use qualification remains open. AC4 actual
+  listening is unperformed. No full criterion acceptance or partial task credit
+  is claimed. Stable Linux qualification requires the subsequent exact published
+  revision; current local evidence does not extend that target.
+- Stable FPC 3.2.2 checked Win32/Win64 conformance passed 163115 assertions each,
+  including the CLI's actual saved PCM16 samples. Source lifetime/reset/NoteOff,
+  exact event/release frames, delay impulse/full-tail/reset, declared policy work,
+  pre-execution rejection, replacement preservation and processing poisoning /
+  recovery were exercised. Streamed caps 1/7/257/2048 replay identical bytes;
+  scheduled-vs-streamed comparison separately allows 2/32768 for Single conversion.
+- Each target also passed 14 CLI rejection cases (usage, nonfinite/malformed or
+  out-of-range controls, seed and read bounds, bad extension, missing parent,
+  directory and existing output) with no replacement of valid bytes, plus four
+  boundary/replay runs. Forty-eight scoped runtime logs report zero heap leaks.
+- Four fresh inventory-bound candidates compile only extracted core/examples for
+  caller extensions, even with WFC included. Core archives verify 98 owned units
+  and 111 inventory entries; WFC archives 144 and 259. Generated commands,
+  hashes, archives and results are under ignored `build/caller-extensions/`.
+  Accepted delivery_06 archives remain unchanged; these are dirty candidates
+  based on d6f8fae45fe7a69db88058a60a93a5b090c8dfe2.
+- Local development corrected a Pascal set literal that cannot contain 257/2048,
+  managed-result initialization, and a shell interpolation error before QA.
+  No runtime/public-contract defect required library changes. Submitted
+  implementation QA failures: 0. Stopped scientific sources/counters unchanged.

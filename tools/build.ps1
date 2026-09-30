@@ -65,6 +65,15 @@ try {
   & $deliveryVerifier (Join-Path $deliveryRoot 'core-base.wav') (Join-Path $deliveryRoot 'core-changed.wav') `
     (Join-Path $deliveryRoot 'core-replay.wav') '44100' '2' '67032' '0.5'
   if ($LASTEXITCODE -ne 0) { throw 'Core saved-file control/replay proof failed' }
+  $extensionCompilerArgs = $compilerArgs + @('-gh', '-Fuexamples')
+  & $compilerPath @extensionCompilerArgs 'examples/pythian.example.extensions.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Caller extension compilation failed' }
+  & (Join-Path $buildRoot "pythian.example.extensions$executableSuffix") (Join-Path $deliveryRoot 'extensions.wav')
+  if ($LASTEXITCODE -ne 0) { throw 'Caller extension consumer failed' }
+  & $compilerPath @extensionCompilerArgs 'tests/pythian.tests.extension.conformance.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Caller extension conformance compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.extension.conformance$executableSuffix") (Join-Path $deliveryRoot 'extensions') (Join-Path $deliveryRoot 'extensions.wav')
+  if ($LASTEXITCODE -ne 0) { throw 'Caller extension conformance failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.evaluation.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Shared evaluation compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.evaluation$executableSuffix")

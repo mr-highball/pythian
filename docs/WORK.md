@@ -12,6 +12,52 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current caller source/effect batch — 2026-09-30
+
+Big Boss assigns Ticket Guy the bounded mechanical component of
+[NS-2_extension_01](TODO/NS-2_extension_01.md): the new caller unit, consumer,
+conformance source and [offline guide](CALLER-EXTENSIONS.md), its task, plus
+`tools/build.ps1`, `tools/package.ps1`, `packaging/README.md` and this handoff.
+No library, adapter, vendor or ledger edits belong to this batch. It is the one
+active component-closing batch; source and finite feed-forward delay are ready
+for combined Salty QA. Two failed implementation submissions transfer directly
+to Big Boss; current submitted failures are zero. No helper, service, browser,
+playback or new toolchain was used.
+
+Checked stable FPC 3.2.2 Win32/Win64 each pass 163115 source/effect assertions,
+actual CLI saved-sample agreement, source lifetime/release/reset, finite-tail
+flush, declared-policy admission, fault preservation/poisoning and correct
+recovery. Streamed read caps 1/7/257/2048 replay exact PCM bytes; scheduled versus
+streamed tolerance is separately justified by Single conversion. Four boundary
+CLI runs and fourteen rejected cases per target preserve existing valid files.
+Forty-eight scoped runtime logs are leak-free. Work weights are caller policy,
+not measured CPU bounds; optional observer bookkeeping is excluded.
+
+Fresh core and companion candidates on both targets passed extracted-only
+extension builds using core/examples search paths. They include the caller unit,
+consumer, conformance source and offline guide; their inventories contain 111
+(core) or 259 (companion) entries. These candidates are based on
+`d6f8fae45fe7a69db88058a60a93a5b090c8dfe2`, explicitly dirty and inventory-bound;
+commands, frozen hashes and all results stay under ignored
+`build/caller-extensions/`. Accepted delivery_06 artifacts below are untouched.
+AC2/3 mechanical evidence and AC1/5 package/guide closure passed independent QA; actual
+outside use and AC4 listening remain open. Full task credit stays zero. Matching
+Linux evidence must follow the exact newly published revision, not an older run.
+Stop and escalate a newly demonstrated public-contract gap before library edits.
+
+Final Salty Boi mechanical QA passed both ready components using fresh extracted
+core-only sources on stable FPC 3.2.2 Win32/Win64: 163115 conformance checks per
+target, actual saved PCM and existing/nonfinite rejection preserving valid bytes.
+All eight independent runtime logs were leak-free. Frozen worker boundary and
+four candidate archive results were reviewed; no unchanged broad suite repeated.
+Script parsing, 43 local links including emitted package navigation, notices,
+privacy and the unchanged 78-task/160-edge ledger passed: 45 open / 33 DONE,
+47.10 credited / 52.90 remaining. Failed implementation QA submissions remain zero.
+Ignored evidence is under `build/qa-caller-extensions/`. Commit only the nine
+reviewed paths, then qualify four archives from that exact clean revision before
+pushing. Outside use/listening and matching published Linux remain separate;
+NS-2_extension_01 stays open with zero task credit.
+
 ## Current minimal native package — 2026-09-30
 
 After clean publication `109696d93eec3832be701fbcc694f5122d911816`, Big Boss
@@ -30,7 +76,7 @@ and inventory; current stable Linux evidence must match the published revision.
 Delivery_06 remained OPEN until both local stable targets, independent QA and
 the exact remote run passed; old package evidence was not substituted.
 Agent-run checks do not close delivery_07.
-Submitted implementation QA failures: 0; this is one active batch, and stopped
+Historical delivery_06 candidate-stage submissions: 0 failed; it was one active batch, and stopped
 scientific counters remain unchanged. Full acceptance now earns only its
 8 NS-6 points / 0.80 overall, as recorded below.
 
@@ -105,7 +151,7 @@ The frozen worker/package evidence was reused for unchanged negative and closure
 cases. Both scripts parsed; notices, privacy, dependency boundaries, 124 local
 links and the unchanged 78-task/160-edge ledger passed. Zero implementation QA
 submissions failed. Evidence remains under ignored `build/qa-delivery-native/`.
-This candidate verdict earns no credit: commit the 11 reviewed paths, then qualify
+Historical candidate-stage instruction (subsequently completed): that verdict earned no credit; commit the 11 reviewed paths, then qualify
 both archives on both Windows targets from that exact clean revision before
 pushing. Delivery_06 stays open through its matching published Linux result.
 

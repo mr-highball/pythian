@@ -25,6 +25,12 @@ release tails. Gain 0.5 halves the decoded samples within PCM16 quantization;
 fixed gain/seed replay reproduces the saved bytes on the same target. Library
 units have no WFC, Phanes, engine, browser or playback-device dependency.
 
+The caller-owned source/effect consumer and conformance source are also included.
+See [the offline extension guide](docs/CALLER-EXTENSIONS.md) for checked commands,
+parameters, ownership, declared work policy, reset/recreation and finite tail
+handling. Compile with `-Fusrc -Fuexamples` only, including in the WFC archive;
+these callers use no companion or tool units. The generated source/effect
+checks establish mechanical behavior, not independent user or listening evidence.
 Both minimal examples require a fresh `.wav` path in an existing directory.
 Bad arguments, unavailable parent directories and existing files reject before
 writing; an existing valid output is preserved. Direct file I/O can leave a

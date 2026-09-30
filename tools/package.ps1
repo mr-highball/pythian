@@ -87,6 +87,13 @@ Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.notes.l
 Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.midi.stream.lpr') -Destination $exampleRoot
 Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.instrument.lpr') -Destination $exampleRoot
 Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.processing.lpr') -Destination $exampleRoot
+Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.extensions.lpr') -Destination $exampleRoot
+Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.extension.units.pas') -Destination $exampleRoot
+$testRoot = Join-Path $stage 'tests'
+$docRoot = Join-Path $stage 'docs'
+New-Item -ItemType Directory -Path $testRoot, $docRoot | Out-Null
+Copy-Item -LiteralPath (Join-Path $projectRoot 'tests/pythian.tests.extension.conformance.lpr') -Destination $testRoot
+Copy-Item -LiteralPath (Join-Path $projectRoot 'docs/CALLER-EXTENSIONS.md') -Destination $docRoot
 $wfcRevision = 'not included'
 if ($WithWfc) {
   $wfcRoot = Join-Path $projectRoot 'vendor/wfc'
@@ -221,6 +228,16 @@ try {
   & $compilerPath @coreCompilerArgs 'pythian.tests.delivery.native.lpr' > 'native-proof-build.log' 2>&1
   if ($LASTEXITCODE -ne 0) { throw 'Native saved-file verifier compilation failed' }
   Test-NativeConsumer 'pythian.example.core' 'core-control' '1' '0.5' '44100' '67032' '0.5'
+  # Caller extensions resolve only extracted core/examples, even with WFC enabled.
+  $extensionCompilerArgs = $coreCompilerArgs + @('-gh', ('-Fu' + $exampleRoot))
+  & $compilerPath @extensionCompilerArgs (Join-Path $exampleRoot 'pythian.example.extensions.lpr') > 'extensions-build.log' 2>&1
+  if ($LASTEXITCODE -ne 0) { throw 'Extracted caller extension compilation failed' }
+  & (Join-Path $binRoot "pythian.example.extensions$executableSuffix") 'extensions.wav' > 'extensions-run.log' 2>&1
+  if ($LASTEXITCODE -ne 0) { throw 'Extracted caller extension failed' }
+  & $compilerPath @extensionCompilerArgs (Join-Path $stage 'tests/pythian.tests.extension.conformance.lpr') > 'extension-conformance-build.log' 2>&1
+  if ($LASTEXITCODE -ne 0) { throw 'Extracted caller conformance compilation failed' }
+  & (Join-Path $binRoot "pythian.tests.extension.conformance$executableSuffix") 'extension-evidence' 'extensions.wav' > 'extension-conformance-run.log' 2>&1
+  if ($LASTEXITCODE -ne 0) { throw 'Extracted caller conformance failed' }
   foreach ($exampleName in @('pythian.example.notes', 'pythian.example.midi.stream', 'pythian.example.instrument')) {
     Copy-Item -LiteralPath (Join-Path $exampleRoot ($exampleName + '.lpr')) -Destination $checkRoot
     & $compilerPath @compilerArgs ($exampleName + '.lpr') > ($exampleName + '-build.log') 2>&1
