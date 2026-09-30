@@ -165,13 +165,20 @@ nearby variants. The current minimal package is accepted; an actual outside
 consumer is still needed. Caller source/effect mechanics and caller-provider
 registration/generation/blend mechanisms are accepted at their exact artifact
 scope; outside use/listening and full recorded integration remain open. The
-editor/queue contract is accepted. Physical LAN/audio/full operator use is the
-next lane while the independent musical reference path remains blocked.
+editor/queue contract is accepted. Physical LAN/audio/full operator use is
+deferred under the user's current priority decision. Bounded source-bound WFC
+comparator execution is independently qualified on synthetic inputs. It does
+not supply the absent musical reference evidence or close full AC3.
 
 ### Next work to schedule
 
-- Big Boss: prioritize NS-5's actual reference/inference prerequisites, preserving
-  their evidence-based stop conditions. [Physical LAN/full operator use](TODO/NS-6_authoring_02.md)
+- Big Boss: retain comparator implementation/test ownership after two blocked
+  worker submissions and independently accepted chief repair. Stop the completed
+  execution lane; reassess [evaluation_01](TODO/NS-5_evaluation_01.md)'s independent
+  note/duration reference/calibration evidence and actual prerequisites before
+  selecting another batch. Preserve the nonclosing count and scientific stops;
+  synthetic execution earns no grounded musical acceptance or task credit.
+  [Physical LAN/full operator use](TODO/NS-6_authoring_02.md)
   is deferred under the user's 2026-09-30 instruction: unclear question purpose
   and marker/time feedback are recorded, but the tool does not unblock current
   core/WFC/learning development. It remains required for final packaging, which
@@ -179,9 +186,11 @@ next lane while the independent musical reference path remains blocked.
   named ready outcome needing this operator path or explicit reprioritization.
   Big Boss retains the mandatory repair transfer, all prior evidence and budgets;
   physical acceptance remains open with no new credit.
-- Ticket Guy: another genuinely ready bounded assignment with disjoint ownership
-  if available; authoring_01 repair transferred to Big Boss after two blocking
-  submissions. Do not reopen accepted mechanism implementation or stopped science.
+- Ticket Guy: comparator conformance transferred to Big Boss; the separate
+  support-contract review is finished and its two omissions are documented.
+  Select another genuinely ready disjoint assignment after reassessment.
+  Authoring_01 repair also remains with Big Boss. Do not reopen accepted
+  mechanism implementation or stopped science.
   [Independent minimal use](TODO/NS-6_delivery_07.md) retains its concrete
   [reviewer packet](MINIMAL-CONSUMER-HANDOFF.md) and pending actual reviewer.
   Big Boss retains architecture, priorities and final judgment.

@@ -210,6 +210,7 @@ acceptance remains the [support task](TODO/NS-6_support_01.md).
 | Decode, derive and persist a style | `DecodeWaveStyle`, `TWaveStyleProfile.Encode`, `CreatePreferred`, `CreateBlendDimensions` and `CreateBlendLayers` in [pythian.wfc.style](../adapters/wfc/pythian.wfc.style.pas); [saved style contracts](WAVE-STYLE.md) own evidence, weights, preferences and ancestry. |
 | Discover and edit uniform musical providers | `TStyleGrid`, `CreateSession`, `CopyProvider`, typed masks and `Capture` in the [grid API](GRID-STYLE.md). Inspect the actual provider list before setting locks or preferences. |
 | Generate measured duration spans | `TStylePerformance`, its named session and `Capture` in the [performance API](PERFORMANCE.md), yielding a native plan with its exact musical clock. |
+| Run bounded note/duration comparisons | Companion `pythian.style.comparators MANIFEST.json FRESH_OUTPUT_DIR`; [bounded execution](STYLE-CARDS.md#bounded-note-duration-execution) owns its current formats, authenticated inputs and mechanical limits. This is not grounded musical acceptance or qualification of an older package snapshot. |
 | Apply selective edits and solve | `TLearnedLayerSession` in [named layers](LAYERS.md); training weights, soft preferences and hard locks have different meanings. Realize captured plans through caller-selected core voices and file I/O. |
 
 Ownership is declared per interface, not inferred from a Pascal record assignment.
@@ -247,6 +248,12 @@ Processing chains/streams can enter a failed state after partial advancement and
 require their documented reset or replacement. Physical writes and consumed
 input cannot be rolled back by in-memory candidate validation. Late file I/O can
 leave partial output; durable atomic replacement is not promised.
+
+For comparator failures, preserve `OUTPUT.attempt/packet.json`, its failure
+reason, completed-render count, source/annotation/policy identities, seeds and
+solver ledger. Only nine complete outputs permit publication under the fresh
+requested directory; `grounded_acceptance` remains false. Keep a failed attempt
+under its failed identity instead of renaming it as a completed packet.
 
 ## Inputs and deterministic replay
 

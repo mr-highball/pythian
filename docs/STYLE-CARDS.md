@@ -455,6 +455,134 @@ Multi-recording, single-recording, unlearned and shuffled cases use the same
 supported provider scope, renderer and output-level policy. Compare timbre with
 musical providers fixed; compare musical relationships with rendering fixed.
 
+### Bounded note-duration execution
+
+The maintained companion execution component of
+[evaluation_01](TODO/NS-5_evaluation_01.md) uses the additional dimension tag
+`note_duration_order_v1`. It does not replace any of the six full-provider
+dimensions. Its single-recording candidate is its own single-recording baseline.
+The other cases are a within-recording shuffled/relearned model and a declared
+independently authored equal-choice model with no learned frequencies. A supplied
+authored vocabulary is a provenance declaration, not proof of independence.
+
+The CLI verifies the exact source WAV, annotation bytes and WAV geometry before
+learning. Retain original span IDs, source-frame boundaries, kinds, pitches and
+source/annotation/policy hashes without alteration. Unknown spans and uncovered
+gaps split training runs. Only explicitly annotated silence may become a rest;
+excluded source time is not reconstructed as generated silence. A movable unit
+is one complete note with its duration and any immediately following explicit
+silence in the same known contiguous run. Leading explicit silence stays fixed.
+Never move units across runs or split a note at a source/run boundary.
+Freeze the model's millisecond durations from the original span endpoints before
+permuting. Re-rounding moved frame positions could change duration tokens by a
+millisecond and would violate the preserved-tuples contract. Retain exact source
+frames separately; derive model positions by accumulating the frozen durations
+in the recorded unit order from the run's rounded start.
+
+Apply the SHA permutation above independently to each run. Keep an explicit
+output-position-to-original-unit ledger and separate derived training positions;
+a shuffled note's derived position must never be represented as its original WAV
+annotation. Runs with fewer than two units and permutations that change no
+targeted adjacency are unsupported, with their reason and full available ledger.
+Retain the prescribed identity rotation; do not redraw an ineffective shuffle.
+Report order-sensitive note/duration relationships as well as preserved marginal
+mass. These numbers show the transformation's effect, not calibrated musical
+quality or an acceptance threshold.
+
+The learned and shuffled models use order 3. Adjacent explicit rests are
+coalesced for model tokens while their original spans remain in the ledger.
+This retains note/rest/next-note relationships that an order-2 token model could
+lose across a shared rest token. Shuffle effect uses within-run three-token
+relationship distributions; unchanged pair histograms alone are insufficient.
+The independently authored model uses order 1 and equal legal-choice weights.
+That different prior is explicit, not a recording-derived constraint set.
+
+All cases use the same millisecond clock, synthesis voice/level, sample rate and
+zero-release rendering policy: stereo at 16 kHz, level 0.1, prefix generation.
+The fixed packet remains 120 seconds per output,
+at seeds 731/1731/2731. Disclose any final generated span clipped at that clock
+boundary and retain generated tokens, model text, reload checks, solver options,
+model/output hashes and failures. A token count is not an audio duration. Reject
+unsupported solver/token/resource limits explicitly; do not silently retry,
+pad with invented silence or shorten the output. Generated time does not certify
+source coverage or reproduce excluded unknown time.
+The requested token count is the ceiling of output milliseconds divided by
+the model's minimum token duration, capped at 1,024 tokens. This includes rest
+tokens. An input requiring more is unsupported under this bounded consumer.
+Retain the solved suffix separately when the output clock ends before it;
+output measurements cover only the rendered prefix and its final clipped span.
+
+Clearly labeled synthetic or caller-admitted controls can qualify execution,
+file binding, permutation and renderer mechanics. They cannot replace inferred
+training events, independent reference/calibration evidence, trait ground truth
+or the required listening verdict. The original core-only card consumer stays
+independent of this WFC companion.
+
+The companion [CLI](../tools/pythian.style.comparators.lpr) takes a manifest and
+a fresh output directory:
+
+```text
+pythian.style.comparators MANIFEST.json FRESH_OUTPUT_DIR
+```
+
+The manifest binds four basename-relative files: `source`, `annotations`,
+`policy` and `authored_baseline`, each with its exact `sha256`. The source also
+declares sample rate, channels, frame count, recording/group IDs, provenance
+and exposure (`development` or `caller-control`). Annotation identity,
+publisher and method are explicit. The annotation file lists unique span IDs,
+`pitch`/`silence`/`unknown` kinds, MIDI note (`-1` for non-pitch), and half-open
+`start_frame`/`end_frame` intervals. The authored file supplies provenance and
+unique `pitch`/`silence` choices with `duration_ms`. Policy bytes are authenticated
+as a nonempty caller declaration; the tool does not interpret them as calibrated
+limits or ground truth.
+Annotations describe one ordered, nonoverlapping note lane. This consumer does
+not infer events or admit simultaneous polyphonic notes. Pitches are MIDI 0–127;
+explicit silence and unknown spans use `-1`.
+
+JSON roots have a `format` field. The manifest uses
+`pythian.style.comparators.input.v1` plus those four asset objects; annotations
+use `pythian.style.comparators.annotations.v1` plus `spans`; the authored file
+uses `pythian.style.comparators.authored.v1` plus `provenance` and `choices`.
+Source fields are `file`, `sha256`, `sample_rate`, `channels`, `frames`,
+`recording_id`, `group_id`, `provenance`, `exposure`. Annotation asset fields are
+`file`, `sha256`, `id`, `publisher`, `method`; policy and authored asset objects
+have only `file`, `sha256`. Span fields are `id`, `kind`, `note`, `start_frame`,
+`end_frame`; choice fields are `kind`, `note`, `duration_ms`.
+
+The bounded reader accepts at most 64 MiB of source WAV and 1 MiB per other
+input file, 1,024 spans/choices, 32 known runs, one or two source channels and
+source rates from 1,000 through 384,000 Hz. IDs use a bounded ASCII spelling.
+Unknown fields/types, duplicate IDs, hash/geometry mismatches, invalid intervals
+and an existing output directory reject before publishing outputs. Runtime
+unsupported cases and failures remain recorded; an incomplete packet is not a
+successful execution. Full success still reports `grounded_acceptance: false`.
+JSON nesting is limited to eight levels. IDs contain 1–128 ASCII letters,
+digits or `._:-`; asset basenames allow letters, digits or `._-` and must stay
+beside the manifest. Keep all inputs stable during admission.
+
+Execution stages in `FRESH_OUTPUT_DIR.attempt`; failure retains its incomplete
+packet there. Only nine complete outputs permit publication under the requested
+fresh directory, whose parent must already exist. Existing directories are never
+overwritten. A generated
+conformance fixture is available by running the maintained
+[test consumer](../tests/pythian.tests.wfc.style.comparators.lpr) with a fresh
+directory below ignored `build/`; it writes `manifest.json` and its declared
+synthetic assets. That fixture is for mechanical replay, not recorded evidence.
+After executing the CLI, the same test consumer's
+`verify-packet FRESH_OUTPUT_DIR` mode independently checks saved model/WAV hashes,
+geometry, case/seed accounting, timing and derivation ledgers without rendering
+another packet.
+
+Independent final QA on 2026-09-30 qualifies these execution mechanics: checked
+stable Win32/Win64 each pass 133 conformance and 30,192 saved-packet assertions
+with zero leaks. One Win64 packet produced all nine exact 120-second outputs in
+11.4600149 seconds. An integer cross-count metric repair preserves exact zero
+across targets; ordinary verifier completion fixes leaked argument temporaries.
+Both initial blocking submissions and Big Boss's required takeover remain in
+the [work record](WORK.md#current-priority-decision--2026-09-30). The final verifier
+checked the same saved packet; no second generation run occurred. This does not
+close AC2, full AC3/AC5, recorded inference, style acceptance or listening.
+
 ## Fixed execution and listening packet
 
 Retain seeds **731, 1731, 2731**, **120-second** complete outputs and exact source,

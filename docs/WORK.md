@@ -14,6 +14,112 @@ Project work and review pushes stay on `hello-pythian`.
 
 ## Current priority decision — 2026-09-30
 
+**Qualified execution component:** [evaluation_01](TODO/NS-5_evaluation_01.md)
+now has a maintained source-bound WFC comparator adapter/CLI and an independent
+saved-packet verifier. Final Salty QA passes 133 conformance assertions and
+30,192 saved-packet assertions on each checked stable Win32/Win64 target, with
+zero leaks in all four final runs. The one nine-output packet completed in
+11.4600149 seconds; every output is stereo PCM16 at 16 kHz, exactly 1,920,000
+frames / 120 seconds. Source/model/output hashes, actual model reload, original
+spans, permutations, frozen durations, solver limits and unused generated suffixes
+are retained. The packet was not regenerated after the verifier repair.
+
+Big Boss retains all comparator implementation/test ownership after two blocking
+worker QA submissions. Both failures and the scoped repairs below remain part
+of the evidence. Final independent logs are in ignored
+`build/salty-style-comparators-20260930/chief-repair/`; the packet remains in
+`submission2/packet/` under that QA root. Source-bound execution mechanics are
+qualified, not grounded musical learning: AC2, full AC3/AC5, inferred-event/style
+acceptance and listening stay open. **No task moves or credit: 49.40 overall,
+43 open / 35 DONE.**
+
+**Checkpoint and next action:** this is one nonclosing implementation batch
+since AC1 acceptance, containing two failed worker submissions and Big Boss's
+bounded repair. Handoffs did not reset either counter. Stop this execution lane;
+do not add more synthetic reports or rerender the packet. Reassess independent
+note/duration reference and calibration evidence, or an actual blocking
+prerequisite, before selecting another batch. Stopped scientific investigations
+and the user's operator-work deferral remain in force.
+
+**Retained batch plan:** AC3's maintained note/duration comparator execution.
+Big Boss's pre-batch reassessment found that the accepted card consumer compared
+supplied measurements but did not execute baselines. Missing AC2 calibration prevents grounded
+acceptance; it does not prevent building this required execution path. This is
+one bounded implementation batch after AC1 acceptance, not a resumption or reset
+of stopped pitch, presence, context or source-search experiments.
+
+Initial ownership was Neo for the adapter/CLI and Ticket Guy for the separate
+public-API conformance test. Big Boss owned protocol and integration judgment;
+the mandatory transfer below supersedes those initial implementation assignments.
+Salty reviewed both components together.
+The core-only card consumer keeps its existing dependency boundary. No WFC
+dependency change, operator review or new recording acquisition is selected.
+
+Closing evidence for this execution component: immutable source/annotation
+binding, replayable within-run permutations with a separate derived-position
+ledger, an independently authored equal-choice baseline, saved/reloaded WFC
+models, order-sensitive numeric comparisons and matched native WAV generation.
+Use the fixed seeds 731/1731/2731 and nine exact 120-second outputs from clearly
+declared synthetic controls. Short unit controls test failure boundaries; they
+do not replace that packet. Exact duration uses a common millisecond clock,
+zero release and a disclosed clipped final span. Unsupported/no-effect shuffles
+remain visible, with no redraw or fabricated source silence.
+
+Stop after focused implementation checks and one complete synthetic packet with
+a 180-second execution cap, or at a failed boundary/unsupported budget. Reassess
+before expanding runtime or source scope. Preserve every failed attempt. This
+batch can qualify the maintained execution component, not independently ground
+AC2, supply full AC5, accept actual inferred-style learning or earn task credit.
+The task stays open unless all its criteria pass; no percentage changes are
+authorized by the synthetic packet.
+
+Prospective architecture correction, before execution: Big Boss found that
+order-2 note/rest token pairs can hide the note order an atomic-unit shuffle
+intends to break. Learned/shuffled models therefore use order 3 and coalesce
+adjacent explicit rests for training, retaining all original source spans.
+Three-token relationship distance qualifies actual retained context changes.
+The authored unlearned model remains order 1 with equal choices. The fixed
+synthetic fixture uses token durations of at least 125 ms, including rests, to
+fit the declared 1,024-token ceiling; no source or seed search is authorized.
+
+**Comparator QA submission 1: revise.** Salty's checked Win32 run rejected
+`MarginalDistance = 0` for identical histograms; the same developer controls had
+passed on Win64. Compilation and heap cleanup passed. The frozen adapter SHA
+was `5bbf8968c3574095a5825ee917744831f1a43d9625ada7b50361541d076682fe`;
+the unchanged test SHA was
+`ba6afd133f1e3050988cd6596c78e5b1dbf19e32b1214d554c8137216b536570`.
+Evidence remains in ignored `build/salty-style-comparators-20260930/`.
+No full-length packet ran. Neo owns the bounded integer-count distance repair;
+Big Boss requires exact zero to remain an assertion, with checked developer
+Win32/Win64 evidence before resubmission. This is one failed implementation QA
+submission, not scientific rejection. A second blocking submission transfers
+implementation to Big Boss. Other task failures and stop counts remain intact.
+
+**Comparator QA submission 2: transfer to Big Boss.** The repaired integer-count
+metric passed all 133 checks on both stable targets with zero leaks. The single
+Win64 packet completed all nine outputs in 11.4600149 seconds, also leak-free.
+Independent saved-file verification passed 30,192 assertions, but `Halt(0)`
+bypassed cleanup of two main-scope argument temporaries (187 bytes). That is a
+second blocking implementation QA submission, not a scientific rejection.
+Neo and Ticket Guy released all comparator implementation/test ownership to
+Big Boss; Ticket Guy received a separate support-contract review and identified
+two documentation omissions now incorporated in the consumer contract.
+
+Big Boss replaced early process termination with ordinary branch completion;
+the assertions, model/renderer code and actual packet remain unchanged.
+Checked developer Win32/Win64 verification of that same packet now passes
+30,192 assertions with zero unfreed blocks. Repaired test SHA:
+`8f7a54c08f6bd5ad9a3f679cc4d77a9ec1918deb440453fd2d5b9ee80581aba6`.
+Publication removes only an extra blank line at that test file's end; final
+test SHA is
+`d7cb0ffb494ff90552e5726db36620d815c3705101dd3fa1c0cd511ab3cf8669`.
+This formatting-only change does not alter the independently checked code.
+Packet SHA remains
+`addb9dd10c14deeb58d85ad0a3069bc5df74695e68fbcabc0107b2e601c3a1d6`.
+Evidence: ignored `build/salty-style-comparators-20260930/submission2/` and
+`build/bigboss-style-comparator-repair-20260930/`. Final independent verification
+of this repair passed both targets as recorded above; no second full packet ran.
+
 The user reports that the phone prompt is too wordy, does not explain the
 labeling purpose and provides little frame/time feedback when placing a marker.
 The screenshot shows an internal mechanical QA correction request and exposed

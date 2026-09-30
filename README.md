@@ -109,6 +109,9 @@ pythian.style learn CONTEXT.pcp SOURCE.wav ONSETS.json MAX_ERROR_FRAMES OUTPUT.p
 pythian.style learn-dynamics CONTEXT.pcp SOURCE.wav ONSETS.json MAX_ERROR_FRAMES OUTPUT.pys [PROVENANCE]
 pythian.style blend LEFT.pys RIGHT.pys KEY_SIDE TEMPO_SIDE LEFT_WEIGHT RIGHT_WEIGHT OUTPUT.pys
 pythian.style inspect INPUT.pys OUTPUT.json
+pythian.style.card roundtrip CARD.json
+pythian.style.card compare REFERENCE.json CANDIDATE.json
+pythian.style.comparators MANIFEST.json FRESH_OUTPUT_DIR
 pythian.pitch.wav inspect INPUT.wav REPORT.json TEMPO_US CHANNEL
 pythian.pitch.wav learn INPUT.wav PREFIX TEMPO_US CHANNEL --monophonic
 pythian.pitch.wav generate MODEL.txt OUTPUT.wav TEMPO_US [SEED]
@@ -233,6 +236,11 @@ reconstruction, giving exact output rests and bounded fades. It preserves input
 sample positions; see [output timing, metadata and listening](docs/ARTICULATION.md).
 See [WAV learning](docs/WAV-LEARNING.md) for the operator workflow,
 published-recording evidence, and current limits.
+
+The [style-card and comparator contract](docs/STYLE-CARDS.md) separates declared
+measurement limits from grounded musical acceptance. The optional WFC comparator
+consumer executes source-bound note/duration, shuffled and authored baselines;
+synthetic execution checks do not establish learned musical accuracy.
 
 The MIDI tool renders a note preview through one native synth voice and reports
 discarded MIDI information. It uses an exact PPQ tempo map and integer sample

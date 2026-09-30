@@ -947,6 +947,13 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Admitted pitch group balance compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.admitted.pitch.balance$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Admitted pitch group balance checks failed' }
+    & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.style.comparators.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Style comparator conformance compilation failed' }
+    $styleComparatorRoot = Join-Path $buildRoot ('style-comparators-' + [Guid]::NewGuid().ToString('N'))
+    & (Join-Path $buildRoot "pythian.tests.wfc.style.comparators$executableSuffix") $styleComparatorRoot
+    if ($LASTEXITCODE -ne 0) { throw 'Style comparator conformance failed' }
+    & $compilerPath @adapterArgs 'tools/pythian.style.comparators.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Style comparator operator compilation failed' }
     & $compilerPath @adapterArgs 'tools/pythian.pitch.wav.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Pitch WAV operator compilation failed' }
     & (Join-Path $buildRoot "pythian.pitch.wav$executableSuffix") 'learn' (Join-Path $buildRoot 'pitch-source.wav') (Join-Path $buildRoot 'pitch-learned') '500000' '0' '--monophonic'

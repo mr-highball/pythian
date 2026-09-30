@@ -8,16 +8,18 @@ Completion credit: 3 goal percentage points (0.60 overall points).
 Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
 Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
 
-Execution status (2026-09-30): **Maintained AC1 card contract accepted by
-independent final QA; grounded task acceptance remains blocked**.
-Next deliverable: Obtain independently supported note/duration measures and calibration for
-AC2 before actual comparator/style acceptance. Full-provider grounding stays in
-evaluation_04.
-Closing evidence and stop condition: Two arbitrary labels, malformed-contract
-rejection, exact reload and trait-preserving/breaking comparisons through the
-maintained consumer, plus every grounded criterion below. Stop at missing
-reference/calibration support; passing contract arithmetic alone cannot close
-the task or earn partial credit.
+Execution status (2026-09-30): **AC1 accepted; AC3's maintained execution
+component independently qualified. Grounded task acceptance remains open.**
+Next deliverable: independently grounded note/duration measures and calibration
+for AC2, then qualification of an actual candidate against AC3/AC5. The
+[bounded execution batch](../WORK.md#current-priority-decision--2026-09-30) is
+finished; more synthetic packets are not selected. Full-provider grounding stays
+in evaluation_04.
+Closing evidence and stop condition: independent reference/calibration support
+and every remaining grounded criterion below. Retain the accepted card and
+execution evidence; contract arithmetic and synthetic execution cannot close
+the task or earn partial credit. Reassess the actual evidence prerequisite
+before another batch, preserving stopped investigations and failure counters.
 Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
 This reassessment closes no product criterion and preserves prior failures below.
 
@@ -137,6 +139,57 @@ remain open here, with no task credit.
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
 
 **Dev Notes:**
+
+2026-09-30, final component QA — Salty independently accepts Big Boss's ordinary-
+return repair. Checked stable Win32/Win64 each pass 133 normal assertions and
+30,192 checks of the unchanged saved packet, all with zero leaks. The packet's
+nine exact 120-second native WAVs completed in 11.4600149 seconds, with actual
+model reload, hashes, source/run/permutation provenance and numeric comparisons.
+Evidence and exact hashes are in the
+[work record](../WORK.md#current-priority-decision--2026-09-30) and ignored
+`build/salty-style-comparators-20260930/chief-repair/`. Big Boss retains ownership
+after the two failed worker submissions below. This one implementation batch
+since AC1 closes no complete task criterion: execution mechanics are qualified,
+while AC2, full AC3/AC5 and actual inferred-style acceptance remain open. No
+credit, task move, listening verdict or second full packet follows. Stop the
+execution lane and reassess grounded evidence before selecting further work.
+
+2026-09-30, comparator QA submission 2 — repaired metric passed both stable
+targets' 133 checks, and the nine-output packet completed in 11.4600149 seconds
+with zero leaks. Saved-packet verification passed 30,192 assertions but leaked
+two argument temporaries (187 bytes) through `Halt(0)`. This second blocking
+implementation submission transferred the entire comparator implementation/test
+to Big Boss; Neo does not retain repair ownership. Big Boss's ordinary-return
+repair passes the unchanged packet's 30,192 assertions with zero leaks on checked
+Win32/Win64. See the [work record](../WORK.md#current-priority-decision--2026-09-30)
+for source/packet hashes, retained failure evidence and the independent final
+repair check. No rerender, relaxed assertion or scientific credit follows.
+
+2026-09-30, comparator QA submission 1 — Salty stopped at the checked Win32
+exact-zero marginal assertion. Developer Win64 passed; Win32 compilation and
+heap cleanup passed, but the unchanged runtime assertion failed. Retain the
+frozen hashes and logs in the [work record](../WORK.md#current-priority-decision--2026-09-30)
+and ignored `build/salty-style-comparators-20260930/`. No full-length packet ran.
+Neo owns the count-first integer distance repair and checked two-target developer
+proof before resubmission. Do not relax the exact-zero test or turn numerical
+noise into a successful shuffle. Current comparator implementation QA failures:
+1; the next blocking submission transfers to Big Boss. This does not reset
+older science/authoring failures, supply reference evidence or earn credit.
+
+2026-09-30, Big Boss — execution reassessment: the maintained card tool accepts
+caller-supplied distributions; it does not yet run shuffled/unlearned WFC models.
+Implement that existing AC3 requirement in a companion adapter/CLI without
+coupling the core-only card reader to WFC. Neo owns those new implementation
+files; Ticket Guy owns a disjoint conformance test, and Salty reviews both.
+The [bounded note/duration policy](../STYLE-CARDS.md#bounded-note-duration-execution)
+preserves original frame spans separately from derived shuffle positions,
+requires actual file bindings and independently authored baseline choices, and
+reports ineffective shuffles without redraw. A synthetic nine-output packet
+at the fixed seeds/120-second clock qualifies execution mechanics only. AC2,
+full AC5 and actual inferred-style acceptance stay open; no task credit follows.
+Stop at a failed boundary or the single packet's 180-second cap before any
+expanded run. This changes the implementation action, not the stopped scientific
+investigations or their accumulated nonclosing counts.
 
 - 2026-09-30 independent Salty Boi final QA accepted the maintained AC1 card
   contract only: stable FPC 3.2.2 checked Win32/Win64 each passed 94 assertions,

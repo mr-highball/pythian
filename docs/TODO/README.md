@@ -41,6 +41,11 @@ Start at NS-5 (14%), currently least complete. Generic
 [style-card contract](NS-5_evaluation_01.md) closes AC1 only. Independent
 reference/calibration and actual comparator evidence still block full
 evaluation acceptance. No further task credit comes from its partial contract.
+AC3's maintained source-bound WFC comparator execution is now independently
+qualified on synthetic matched outputs, including both-target saved-packet
+checks. Independent calibration and actual inferred-style acceptance remain
+open. Stop this execution lane and reassess its grounded evidence prerequisite;
+see the [batch and retained failure counters](../WORK.md#current-priority-decision--2026-09-30).
 
 The first bounded learned-style return path is
 [identity](NS-3_notes_01.md) + [presence](NS-3_notes_05.md) ->
