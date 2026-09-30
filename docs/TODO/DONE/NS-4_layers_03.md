@@ -4,10 +4,14 @@
 
 **Description:**
 
+Completion credit: 5 goal percentage points (0.75 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Provide independent hard locks, choice preferences and sound/envelope controls at the semantic role level, below reusable base context.
 
 North star: NS-4. Outcome owner: WFC-LAYERS.
-Completion credit: 4 goal percentage points (0.60 overall points).
+Historical allocation: 4 goal percentage points (0.60 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [MODULATION](../../MODULATION.md) · [WAVE-STYLE](../../WAVE-STYLE.md) · [LAYERS](../../LAYERS.md) · [INDEPENDENT-VOICES](../../INDEPENDENT-VOICES.md).

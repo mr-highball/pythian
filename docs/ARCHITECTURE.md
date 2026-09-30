@@ -25,6 +25,35 @@ WFC remains the actual learner/constraint companion.
 
 ## Musical layers and style direction
 
+### Core and WFC symbiosis
+
+Pythian's portable core must compile, synthesize and run its supported native
+consumers without WFC. The complete Pythian product nevertheless requires WFC
+as its composition/constraint partner: learned evidence feeds actual granular
+passes, their decisions drive Pythian synthesis, and saved styles preserve
+those relationships through selective blending and further blending.
+
+| Responsibility | Owner |
+| --- | --- |
+| Audio data, DSP, synthesis, codecs, source clocks and musical observation/admission | Pythian portable core and Pascal-owned inference/tools |
+| Musical roles, trait/provider vocabulary, key/tempo/time mappings, note/sound realization, evidence/lineage, style codecs and audio-specific blend policies | Pythian `adapters/wfc/` and its consumers |
+| Domain-independent tokens/models, constraints, propagation, pass DAGs/mapping, generic negotiation, transactional regeneration and solver budgets | WFC's separate repository |
+| Current core-only and integrated WFC source delivery, consumer guidance and demonstrated reuse | Pythian delivery tasks, using the reviewed WFC pin |
+
+The closed semantic-provider vocabulary and caller codec/role extensions are
+Pythian gaps owned by [providers_01](TODO/NS-4_providers_01.md).
+[Recorded integration](TODO/NS-4_integration_01.md) owns the complete evidence ->
+WFC -> synthesis path and unknown propagation. [Minimal delivery](TODO/NS-6_delivery_06.md)
+must demonstrate both an isolated core and the opted-in companion closure;
+core independence cannot declare the full product complete without WFC.
+
+Read-only source/test inspection on 2026-09-29 found existing generic WFC
+sequence tokens, mapped pass dependencies, bounded negotiation, selective
+regeneration and immutable composition sufficient for the currently identified
+adapter gaps. No generic failing reproduction was established, no upstream
+change was made, and no new solver correctness claim follows. If a concrete
+generic defect appears, follow [WFC gap handling](TASKFLOW.MD#cross-repository-wfc-gaps).
+
 Use actual WFC passes to compose small, independently controllable musical
 layers. Explicit key/tonal and tempo context should feed harmony/rhythm and
 higher voice parts, with declared joint relationships, scopes and time mappings.

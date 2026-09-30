@@ -4,6 +4,10 @@
 
 **Description:**
 
+Completion credit: 1 goal percentage points (0.20 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Add a bounded source-balanced WFC training comparison over the existing
 source-bound admitted-pitch journal. Make work-group token contribution
 explicit while preserving source, annotation, frame, run, unknown and silence
@@ -11,7 +15,7 @@ evidence. This is a reusable training-control prerequisite; it does not claim
 genre representativeness or automatic note inference.
 
 North star: NS-5. Outcome owner: WAV-04-VOCABULARY.
-Completion credit: 1 goal percentage point (0.20 overall points).
+Historical allocation: 1 goal percentage point (0.20 overall points).
 Credit is earned only when every acceptance criterion and the task-flow
 completion requirements pass.
 

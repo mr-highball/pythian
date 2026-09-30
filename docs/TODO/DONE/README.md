@@ -1,51 +1,52 @@
 # Completed tasks
 
 [Task index](../README.md) · [Task flow](../../TASKFLOW.MD) ·
-[Milestones](../../MILESTONES.md)
+[Milestones](../../MILESTONES.md) · [Current credit basis](../../REBALANCE-2026-09-29.md#current-credit-basis)
 
-| Accepted task | Date | North-star credit | Overall credit |
+All **31** records retain their acceptance evidence and dates. Points below
+use the user-authorized 2026-09-29 outcome rebase; older amounts in evidence
+narratives are historical. No task was accepted by this reassessment.
+
+| Accepted task | Date | Current goal credit | Current overall credit |
 | --- | --- | ---: | ---: |
-| [NS-3_context_04](NS-3_context_04.md) — Source-bound unknown tempo evidence and guarded context generation | 2026-09-28 | +1 NS-3 | +0.25 |
-| [NS-5_continuity_02](NS-5_continuity_02.md) — Bounded saved-profile acoustic WFC continuation | 2026-09-28 | +1 NS-5 | +0.20 |
-| [NS-5_evaluation_03](NS-5_evaluation_03.md) — Reusable full-output listening packets and worker readback | 2026-09-28 | +2 NS-5 | +0.40 |
-| [NS-3_labeling_01](NS-3_labeling_01.md) — Durable reviewed WAV catalog and Pascal proposal/training path | 2026-09-26 | +2 NS-3 | +0.50 |
-| [NS-4_composition_02](NS-4_composition_02.md) — Coherent original WFC-selected long-form passage | 2026-09-25 | +1 NS-4 | +0.15 |
-| [NS-3_tempo_05](NS-3_tempo_05.md) — Bounded authored beat candidates and clock link | 2026-09-25 | +1 NS-3 | +0.25 |
-| [NS-5_corpus_01](NS-5_corpus_01.md) — Verified corpus identity and contribution audit | 2026-09-20 | +2 NS-5 | +0.40 |
-| [NS-5_scale_03](NS-5_scale_03.md) — Bounded multi-recording Pascal raw corpus and measured workload | 2026-09-25 | +1 NS-5 | +0.20 |
-| [NS-5_scale_04](NS-5_scale_04.md) — Canonical admitted-event contribution journal and checked replay | 2026-09-25 | +1 NS-5 | +0.20 |
-| [NS-5_vocabulary_03](NS-5_vocabulary_03.md) — Bounded admitted-pitch work-group balance and actual WFC rebuild | 2026-09-25 | +1 NS-5 | +0.20 |
-| [NS-3_notes_06](NS-3_notes_06.md) — Source-bound admitted notes to saved WFC learning | 2026-09-25 | +1 NS-3 | +0.25 |
-| [NS-6_delivery_01](NS-6_delivery_01.md) — Supported consumer and distribution contract | 2026-09-20 | +8 NS-6 | +0.40 |
-| [NS-6_delivery_02](NS-6_delivery_02.md) — Clean native targets and successful remote CI | 2026-09-21 | +14 NS-6 | +0.70 |
-| [NS-4_layers_01](NS-4_layers_01.md) — Reusable named harmony and voice passes | 2026-09-21 | +6 NS-4 | +0.90 |
-| [NS-4_layers_02](NS-4_layers_02.md) — Semantic provider compatibility and transactional replacement | 2026-09-21 | +4 NS-4 | +0.60 |
-| [NS-4_layers_03](NS-4_layers_03.md) — Granular musical preferences and sound controls | 2026-09-21 | +4 NS-4 | +0.60 |
-| [NS-3_validation_01](NS-3_validation_01.md) — Repaired prediction ancestry and shared musical admission | 2026-09-21 | +2 NS-3 | +0.50 restored |
-| [NS-4_styles_01](NS-4_styles_01.md) — Reusable semantic graphs and derivative evidence | 2026-09-21 | +4 NS-4 | +0.60 |
-| [NS-4_layers_04](NS-4_layers_04.md) — Staged duration and committed-stream edits | 2026-09-21 | +4 NS-4 | +0.60 |
-| [NS-4_styles_02](NS-4_styles_02.md) — Selective semantic blend and further blend | 2026-09-21 | +4 NS-4 | +0.60 |
-| [NS-4_note-events_01](NS-4_note-events_01.md) — Bounded joint note-event generation | 2026-09-24 | +1 NS-4 | +0.15 |
-| [NS-3_parts_04](NS-3_parts_04.md) — Maintained simultaneous-role scoring and reproducible controls | 2026-09-21 | +1 NS-3 | +0.25 |
-| [NS-3_parts_01](NS-3_parts_01.md) — Qualified external reference packet and curator acoustic intervals | 2026-09-21 | +1 NS-3 | +0.25 |
-| [NS-3_validation_03](NS-3_validation_03.md) — Selective Pascal pitch observations | 2026-09-22 | +2 NS-3 | +0.50 |
-| [NS-3_validation_02](NS-3_validation_02.md) — Supervised Pascal WAV inference | 2026-09-22 | +3 NS-3 | +0.75 |
-| [NS-2_synthesis-quality_02](NS-2_synthesis-quality_02.md) — Accepted modulation, processing and routing quality | 2026-09-23 | +6 NS-2 | +1.50 |
-| [NS-2_synthesis-quality_01](NS-2_synthesis-quality_01.md) — Accepted source and articulation quality | 2026-09-23 | +8 NS-2 | +2.00 |
-| [NS-2_synthesis-quality_03](NS-2_synthesis-quality_03.md) — Accepted combined synthesis and streamed listening | 2026-09-23 | +6 NS-2 | +1.50 |
-| [NS-3_context_03](NS-3_context_03.md) — Qualified tonal, ambiguous and reviewed acoustic no-key reference intervals | 2026-09-23 | +1 NS-3 | +0.25 |
-| [NS-3_notes_04](NS-3_notes_04.md) — Qualified source-separated note-presence reference with a held-out miss reported | 2026-09-23 | +1 NS-3 | +0.25 |
-| [NS-4_composition_01](NS-4_composition_01.md) — Coherent original source-free passage | 2026-09-24 | +1 NS-4 | +0.15 |
+| [NS-2_synthesis-quality_01](NS-2_synthesis-quality_01.md) — Accept source and articulation quality | 2026-09-23 | 8 NS-2 | 2.00 |
+| [NS-2_synthesis-quality_02](NS-2_synthesis-quality_02.md) — Accept modulation, processing and routing quality | 2026-09-23 | 6 NS-2 | 1.50 |
+| [NS-2_synthesis-quality_03](NS-2_synthesis-quality_03.md) — Accept combined synthesis and streamed listening | 2026-09-23 | 6 NS-2 | 1.50 |
+| [NS-3_context_03](NS-3_context_03.md) — Qualify local-key and unknown reference intervals | 2026-09-23 | 1 NS-3 | 0.25 |
+| [NS-3_context_04](NS-3_context_04.md) — Preserve unknown tempo evidence through replay and generation | 2026-09-28 | 1 NS-3 | 0.25 |
+| [NS-3_labeling_01](NS-3_labeling_01.md) — Build a durable Pascal audio-label catalog | 2026-09-26 | 2 NS-3 | 0.50 |
+| [NS-3_notes_04](NS-3_notes_04.md) — Qualify independent note-presence references | 2026-09-23 | 1 NS-3 | 0.25 |
+| [NS-3_notes_06](NS-3_notes_06.md) — Bridge admitted note spans to saved WFC learning | 2026-09-25 | 1 NS-3 | 0.25 |
+| [NS-3_parts_01](NS-3_parts_01.md) — Qualify the external attributed-mixture reference packet | 2026-09-21 | 1 NS-3 | 0.25 |
+| [NS-3_parts_04](NS-3_parts_04.md) — Deliver simultaneous-role scoring and reproducible controls | 2026-09-21 | 1 NS-3 | 0.25 |
+| [NS-3_tempo_05](NS-3_tempo_05.md) — Preserve bounded beat candidates on authored controls | 2026-09-25 | 1 NS-3 | 0.25 |
+| [NS-3_validation_01](NS-3_validation_01.md) — Establish executable musical admission and evaluation contracts | 2026-09-21 | 2 NS-3 | 0.50 |
+| [NS-3_validation_02](NS-3_validation_02.md) — Deliver a practical native inference execution path | 2026-09-22 | 2 NS-3 | 0.50 |
+| [NS-3_validation_03](NS-3_validation_03.md) — Accept selective Pascal pitch observations | 2026-09-22 | 2 NS-3 | 0.50 |
+| [NS-4_composition_01](NS-4_composition_01.md) — Generate a coherent original passage | 2026-09-24 | 0 NS-4 | 0.00 |
+| [NS-4_composition_02](NS-4_composition_02.md) — Compose with a WFC-selected harmony path | 2026-09-25 | 1 NS-4 | 0.15 |
+| [NS-4_layers_01](NS-4_layers_01.md) — Deliver reusable named harmony and voice passes | 2026-09-21 | 7 NS-4 | 1.05 |
+| [NS-4_layers_02](NS-4_layers_02.md) — Enforce provider timing, role and vocabulary compatibility | 2026-09-21 | 5 NS-4 | 0.75 |
+| [NS-4_layers_03](NS-4_layers_03.md) — Connect granular musical and sound controls | 2026-09-21 | 5 NS-4 | 0.75 |
+| [NS-4_layers_04](NS-4_layers_04.md) — Handle changing duration and committed-stream edits | 2026-09-21 | 5 NS-4 | 0.75 |
+| [NS-4_note-events_01](NS-4_note-events_01.md) — Generate coordinated note events across parts | 2026-09-24 | 2 NS-4 | 0.30 |
+| [NS-4_styles_01](NS-4_styles_01.md) — Persist reusable semantic providers and joint evidence | 2026-09-21 | 5 NS-4 | 0.75 |
+| [NS-4_styles_02](NS-4_styles_02.md) — Support selective blend and further blend | 2026-09-21 | 5 NS-4 | 0.75 |
+| [NS-5_continuity_02](NS-5_continuity_02.md) — Stream saved acoustic WFC beyond one solve | 2026-09-28 | 2 NS-5 | 0.40 |
+| [NS-5_corpus_01](NS-5_corpus_01.md) — Establish verified corpus identities and contribution audits | 2026-09-20 | 2 NS-5 | 0.40 |
+| [NS-5_evaluation_03](NS-5_evaluation_03.md) — Deliver reusable full-output listening packets | 2026-09-28 | 2 NS-5 | 0.40 |
+| [NS-5_scale_03](NS-5_scale_03.md) — Assemble a bounded multi-recording Pascal observation corpus | 2026-09-25 | 1 NS-5 | 0.20 |
+| [NS-5_scale_04](NS-5_scale_04.md) — Rebuild source-bound admitted-event contributions | 2026-09-25 | 2 NS-5 | 0.40 |
+| [NS-5_vocabulary_03](NS-5_vocabulary_03.md) — Balance admitted-pitch contributions by work group | 2026-09-25 | 1 NS-5 | 0.20 |
+| [NS-6_delivery_01](NS-6_delivery_01.md) — Define the supported consumer and distribution contract | 2026-09-20 | 3 NS-6 | 0.30 |
+| [NS-6_delivery_02](NS-6_delivery_02.md) — Verify clean native targets and remote CI | 2026-09-21 | 12 NS-6 | 1.20 |
 
-The former external-runtime result was withdrawn on 2026-09-22 under the user's
-Pascal-only inference requirement. It remains historical evidence in
-[the accepted Pascal execution task](NS-3_validation_02.md); the current +3
-NS-3 credit is supported by fresh Pascal qualification.
+Current accepted task total is **17.50 weighted points**; the separate accepted
+baseline contributes **28.00**, giving **45.50 overall**. Core source-free
+composition remains accepted with zero extra NS-4 points; it does not prove
+WFC-selected or recorded-provider integration. The prior external-runtime
+execution result remains historical; current inference acceptance is Pascal-owned.
 
-Previously accepted capability stays in the milestone baseline; it is not
-backfilled as new DONE work.
-
-Move accepted task files here with their unchanged filenames and dated completion
-evidence. Update this index, all affected links and milestone percentages in the
-same logical change, following TASKFLOW.MD. A moved file without its required
-evidence does not establish completion.
+Previously accepted baseline capabilities are not backfilled as new tasks.
+Move a newly accepted task here only with all required evidence and satisfied
+prerequisites, preserving its basename, failures and final Dev Notes.

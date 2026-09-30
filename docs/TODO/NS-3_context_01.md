@@ -4,10 +4,20 @@
 
 **Description:**
 
+Completion credit: 6 goal percentage points (1.50 overall points).
+Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
+Execution status (2026-09-29): **Evidence-blocked**.
+Next deliverable: Close maintained local-key admission and independent key/change gates using a justified observation that distinguishes tonic from dominant and timbre from simultaneous notes; retain already satisfied policy/manual-provenance criteria.
+Closing evidence and stop condition: Frozen native estimates, numeric key/change/coverage results and source-bound context reload; current rejected rank/profile/dictionary families stay stopped until different physical evidence exists.
+Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
+This reassessment closes no product criterion and preserves prior failures below.
+
 Turn tonal measurements into supported local-key decisions with calibrated admission, explicit unknowns and independently checked changes.
 
 North star: NS-3. Outcome owner: WAV-02-CONTEXT.
-Completion credit: 3 goal percentage points (0.75 overall points), after
+Historical allocation: 3 goal percentage points (0.75 overall points), after
 assigning 1 of its original 4 unearned points to the independent
 [reference packet](DONE/NS-3_context_03.md).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
@@ -190,7 +200,7 @@ is claimed.
   rejected despite a capable Pascal resampler. The focused adapter change
   admits that exact rate and retains source hash/clock in the identity.
   Authored PCM16 whole/adjacent-scope replay passes checked stable Win32 and
-  Win64 with zero unfreed blocks; see the [work record](../WORK.md#original-22050-hz-wav-inference-preparation--2026-09-23).
+  Win64 with zero unfreed blocks; see the [work record](../WORK-HISTORY.md#original-22050-hz-wav-inference-preparation--2026-09-23).
   Focused integrated QA passed with exact 50-observation halves, completed
   scopes, byte-identical adjacent replay and unsupported-rate rejection. This
   enables a future inference candidate but proves no key accuracy, closes no

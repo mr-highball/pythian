@@ -4,10 +4,20 @@
 
 **Description:**
 
+Completion credit: 4 goal percentage points (0.80 overall points).
+Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
+Execution status (2026-09-29): **Dependency-blocked**.
+Next deliverable: Deliver incremental frozen-vocabulary additions and explicit rebuild behavior.
+Closing evidence and stop condition: Deterministic addition/removal/overlap replay, stale-cache rejection and full affected-model rebinding. Stop if existing token meanings change implicitly.
+Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
+This reassessment closes no product criterion and preserves prior failures below.
+
 Make incremental source additions reproducible without silently changing existing token meanings, weighting or evidence.
 
 North star: NS-5. Outcome owner: WAV-04-VOCABULARY.
-Completion credit: 4 goal percentage points (0.80 overall points).
+Historical allocation: 4 goal percentage points (0.80 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [CORPUS](../CORPUS.md) · [ANALYSIS-WAVE](../ANALYSIS-WAVE.md) · [CORPUS-EVALUATION](../CORPUS-EVALUATION.md).

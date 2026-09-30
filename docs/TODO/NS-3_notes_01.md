@@ -4,10 +4,20 @@
 
 **Description:**
 
+Completion credit: 7 goal percentage points (1.75 overall points).
+Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
+Execution status (2026-09-29): **Stopped investigation; new evidence required**.
+Next deliverable: A new identity observation must protect short/quiet/low notes and close the recorded development register gate. The 2026-09-28 odd/even blind rule proposed zero corrections and is rejected despite its physical feasibility result.
+Closing evidence and stop condition: Audio-derived predictions saved before reference scoring, unchanged waveform controls, >=98% precision and >=80% coverage per supported recording, then maintained consumer. No window/range/threshold variation of the stopped rule.
+Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
+This reassessment closes no product criterion and preserves prior failures below.
+
 Resolve octave/register errors in the supported recorded monophonic scope without sacrificing real low, quiet or short notes. The current flute precision gap remains the primary reference.
 
 North star: NS-3. Outcome owner: WAV-03-REGISTER.
-Completion credit: 4 goal percentage points (1.00 overall points).
+Historical allocation: 4 goal percentage points (1.00 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [PITCH](../PITCH.md).
@@ -106,6 +116,14 @@ variation is authorized by the existing evidence.
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
 
 **Dev Notes:**
+
+- 2026-09-29 status reconciliation: the later
+  [physical feasibility and blind decision record](../WORK-HISTORY.md#register-feasibility-passed-beat-event-graph-stopped--2026-09-28)
+  supersedes earlier next-experiment suggestions. The odd/even probe's 20/20
+  labelled physical result did not transfer: its blind Spring candidate made
+  zero raises in 96 intervals and failed the correction gate. No maintained
+  adoption or independent accuracy follows. Keep both nonclosing results and
+  all earlier failures; this replan does not reset their checkpoint.
 
 - 2026-09-28 the frozen blind odd/even candidate stopped before reference
   scoring. The first Pascal source-free run failed a quiet high-vibrato
@@ -254,7 +272,7 @@ variation is authorized by the existing evidence.
 
 - Investigation reassessment 2026-09-22: this is the second task-specific nonclosing batch after the stopped source-separated scorer. Suspend note-identity experiments until a genuinely new, independently contrasting observation with prospective abstention and source-bound low/quiet/short controls is declared. Accepted Pascal observation/execution work in between did not settle this note-identity cause.
 
-- Follow-up: justify genuinely discriminating identity evidence and prospective ambiguity/coverage handling before another experiment. Coordinate with [presence](NS-3_notes_02.md); preserve genuine low/quiet/short notes and untouched phrase material. The pause retains the one-batch no-criterion-closure count in the [work record](../WORK.md#pause-retrospective--2026-09-21).
+- Follow-up: justify genuinely discriminating identity evidence and prospective ambiguity/coverage handling before another experiment. Coordinate with [presence](NS-3_notes_02.md); preserve genuine low/quiet/short notes and untouched phrase material. The pause retains the one-batch no-criterion-closure count in the [work record](../WORK-HISTORY.md#pause-retrospective--2026-09-21).
 
 - 2026-09-23 native-model feasibility screen: porting CREPE tiny/full would
   reproduce the already failed [recorded capacity comparison](../PHRASE-EVALUATION.md#full-capacity-comparison),
@@ -271,7 +289,7 @@ variation is authorized by the existing evidence.
   and require verified model-training groups or Pascal-owned training with a
   frozen control/coverage gate before another model experiment. No criterion,
   provider or credit changes. This is the second consecutive nonclosing batch
-  after journal publication. The [work reassessment](../WORK.md#core-quality-reassessment--2026-09-23)
+  after journal publication. The [work reassessment](../WORK-HISTORY.md#core-quality-reassessment--2026-09-23)
   changes the next action to the ready NS-2 source/articulation quality review;
   register investigation resumes only with the independent evidence above.
 

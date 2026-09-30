@@ -4,6 +4,10 @@
 
 **Description:**
 
+Completion credit: 1 goal percentage points (0.25 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Deliver a source-frame tempo-evidence contract that can carry unavailable and
 ambiguous timing without assigning a BPM. Retain source identity, measurement
 policy and any caller override separately from the original observation. A
@@ -14,7 +18,7 @@ with [NS-3_tempo_03](../NS-3_tempo_03.md) and
 [NS-3_context_02](../NS-3_context_02.md).
 
 North star: NS-3. Outcome owner: WAV-02-CONTEXT.
-Completion credit: 1 goal percentage point (0.25 overall points), assigned from
+Historical allocation: 1 goal percentage point (0.25 overall points), assigned from
 the original 2 unearned NS-3 points of NS-3_context_02. That task retains 1
 point; their original 2-point total is unchanged.
 Credit is earned only when every acceptance criterion and the task-flow

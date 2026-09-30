@@ -5,6 +5,14 @@
 
 ## Status and reference requirements
 
+Current scope (2026-09-29): [evaluation_01](TODO/NS-5_evaluation_01.md) owns the
+reusable Pascal style-card/comparator contract and a complete bounded
+note/duration instance. [evaluation_04](TODO/NS-5_evaluation_04.md) owns the full
+six-dimension musical grounding and gates below. A card is supplied by the
+caller; the three named preferences are internal examples. All required final
+dimensions remain pending until independently grounded and prospectively frozen.
+The split earns no credit and does not freeze the historical draft below.
+
 This is the working specification for chillwave, stoner rock and lofi, dated
 2026-09-21. It is **not frozen for preference-scoped style evaluation**. The
 three original source families remain development material with unverified genre
@@ -458,5 +466,6 @@ then freeze the packet before evaluation. Existing evidence supports acoustic
 level and external note-register/pitch-class distribution controls. Genre labels,
 complete musical annotations, calibrated trait
 thresholds and complete provider-specific controls remain unresolved in
-[NS-5_evaluation_01](TODO/NS-5_evaluation_01.md); no new task or extra credit is
-created for work already covered by its acceptance criteria.
+[NS-5_evaluation_04](TODO/NS-5_evaluation_04.md), after the reusable bounded
+contract in [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md). The 2026-09-29
+split preserves their original combined four-point allocation.

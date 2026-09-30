@@ -4,13 +4,17 @@
 
 **Description:**
 
+Completion credit: 1 goal percentage points (0.25 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Deliver the maintained measurement and authored-control foundation for mixture
 learning: source-bound per-role scoring, overlapping intervals, reviewed-reference
 construction and an executable native control packet. External musical annotation
 and recording-family qualification remain in [parts_01](NS-3_parts_01.md).
 
 North star: NS-3. Outcome owner: WAV-03-PARTS.
-Completion credit: 1 goal percentage points (0.25 overall points).
+Historical allocation: 1 goal percentage points (0.25 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [role measures and packet](../../PART-EVALUATION.md),

@@ -4,6 +4,10 @@
 
 **Description:**
 
+Completion credit: 1 goal percentage points (0.25 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Deliver a source-bound reference packet for the note-presence and boundary
 problem. Separate a measured note control or annotation from audible activity:
 pickup/MIDI note ends, a residual acoustic tail and an actual rest are different
@@ -11,7 +15,7 @@ facts. This packet is a prerequisite for the acoustic decision in
 [NS-3_notes_02](../NS-3_notes_02.md), not a new decoder or a genre verdict.
 
 North star: NS-3. Outcome owner: WAV-03-BOUNDARIES.
-Completion credit: 1 goal percentage point (0.25 overall points), split from
+Historical allocation: 1 goal percentage point (0.25 overall points), split from
 the original 4 points of NS-3_notes_02. Credit is earned only when every
 acceptance criterion and the task-flow completion requirements pass.
 

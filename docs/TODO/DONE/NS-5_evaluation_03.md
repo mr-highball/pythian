@@ -4,6 +4,10 @@
 
 **Description:**
 
+Completion credit: 2 goal percentage points (0.40 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Give Pascal producers a durable operator decision loop for complete source or
 generated audio and fixed paired comparisons. This is a reusable listening
 contract, separate from the source-frame annotation labels in
@@ -17,7 +21,7 @@ and the 120-second and paired style packet in
 musical evidence and earns its own listening verdict.
 
 North star: NS-5. Outcome owner: STYLE-EVAL.
-Completion credit: 2 goal percentage points (0.40 overall points), reassigned
+Historical allocation: 2 goal percentage points (0.40 overall points), reassigned
 from the original 4 unearned NS-5 points of NS-5_evaluation_02. That task retains
 2 points (0.40 overall); the combined allocation remains 4 points (0.80
 overall). Credit is earned only when every acceptance criterion and the

@@ -4,10 +4,20 @@
 
 **Description:**
 
+Completion credit: 35 goal percentage points (5.25 overall points).
+Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
+Execution status (2026-09-29): **Dependency-blocked**.
+Next deliverable: Deliver full recorded WAV admission -> saved style -> blend/reblend -> granular WFC passes -> native audio with all accepted providers.
+Closing evidence and stop condition: Public native consumer, paired edits, exact saved replay, bounded sustained audio and actual listening. Stop if any required dimension uses authored data while claiming learned support.
+Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
+This reassessment closes no product criterion and preserves prior failures below.
+
 Connect accepted WAV musical providers to saved semantic styles, actual modular WFC generation and useful native synthesis through a reusable public consumer.
 
 North star: NS-4. Outcome owner: WAV-04-INTEGRATION.
-Completion credit: 1 goal percentage point (0.15 overall points), after
+Historical allocation: 1 goal percentage point (0.15 overall points), after
 reallocating 2 original unearned NS-4 points between
 [NS-4_note-events_01](DONE/NS-4_note-events_01.md) and
 [NS-4_composition_01](DONE/NS-4_composition_01.md), and one further unearned
@@ -19,6 +29,8 @@ Credit is earned only when every acceptance criterion and the task-flow completi
 Starting evidence: [WAV-LEARNING](../WAV-LEARNING.md) · [INDEPENDENT-VOICES](../INDEPENDENT-VOICES.md) · [LAYERED-STYLE](../LAYERED-STYLE.md).
 
 **Acceptance Criteria:**
+
+- Publish the final supported-input/provider matrix and every attempted work-group result, including source/clock, known/unknown/unsupported coverage and all frozen denominators. Verify combined admission through downstream passes: dropping an uncertain provider or difficult interval cannot improve a reported success denominator or silently become authored truth. Independent provider gates remain required; this task closes their integrated propagation and actual consumer behavior.
 
 - Reproduce recorded WAV admission -> saved style -> selective blend -> further blend -> actual base/harmony/rhythm/part passes -> native audio, retaining source/model/policy identities.
 - Use accepted recorded context, events/roles, harmonic/groove and evolving sound evidence; label any intentionally authored accompaniment or unsupported dimension explicitly.
@@ -34,8 +46,8 @@ Starting evidence: [WAV-LEARNING](../WAV-LEARNING.md) · [INDEPENDENT-VOICES](..
 - [NS-3_context_02.md](NS-3_context_02.md)
 - [NS-3_notes_03.md](NS-3_notes_03.md)
 - [NS-3_parts_03.md](NS-3_parts_03.md)
-- [NS-3_harmony_01.md](NS-3_harmony_01.md)
-- [NS-3_groove_01.md](NS-3_groove_01.md)
+- [NS-3_harmony_02.md](NS-3_harmony_02.md)
+- [NS-3_groove_02.md](NS-3_groove_02.md)
 - [NS-3_timbre_02.md](NS-3_timbre_02.md)
 - [NS-2_synthesis-quality_03.md — DONE](DONE/NS-2_synthesis-quality_03.md)
 

@@ -4,6 +4,10 @@
 
 **Description:**
 
+Completion credit: 1 goal percentage points (0.25 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Deliver the reusable Pascal boundary that takes admitted monophonic note spans,
 explicit silence/unknown intervals and source ownership into actual saved WFC
 pitch/duration learning. This is a generic bridge, exercised with source-bound
@@ -11,7 +15,7 @@ published reference events so it can be accepted before automatic note
 inference is accurate. It does not assert that those events were inferred from
 audio or that the resulting music passes a listening test.
 
-North star: NS-3. Outcome owner: WAV-03-PHRASES. Completion credit: 1 goal
+North star: NS-3. Outcome owner: WAV-03-PHRASES. Historical allocation: 1 goal
 percentage point (0.25 overall points), split from the original unearned 5
 points of [NS-3_notes_03](../NS-3_notes_03.md). Credit is earned only when every
 acceptance criterion and the task-flow completion requirements pass.

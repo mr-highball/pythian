@@ -4,10 +4,14 @@
 
 **Description:**
 
+Completion credit: 6 goal percentage points (1.50 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Finish the synthesis quality outcome by accepting the complete layered and streamed sounding path, including interactions that isolated source and effect checks cannot establish.
 
 North star: NS-2. Outcome owner: FUND-QUALITY.
-Completion credit: 6 goal percentage points (1.50 overall points).
+Historical allocation: 6 goal percentage points (1.50 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [SYNTHESIS-QUALITY](../../SYNTHESIS-QUALITY.md) · [FUNDAMENTALS](../../FUNDAMENTALS.md) · [SCHEDULING](../../SCHEDULING.md).

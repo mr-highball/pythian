@@ -4,12 +4,22 @@
 
 **Description:**
 
+Completion credit: 5 goal percentage points (1.25 overall points).
+Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
+Execution status (2026-09-29): **Dependency-blocked**.
+Next deliverable: Integrate accepted presence and identity into note events, closing recorded false-rest/boundary gates without discarding short/quiet notes.
+Closing evidence and stop condition: Combined waveform and recorded development scores plus maintained event consumer. Stop if improved boundaries conceal presence or correct-coverage regressions.
+Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
+This reassessment closes no product criterion and preserves prior failures below.
+
 Integrate qualified note-presence evidence with pitch identity to resolve false
 notes in rests and incorrect event boundaries while preserving quiet/repeated
 notes and genuine transitions.
 
 North star: NS-3. Outcome owner: WAV-03-BOUNDARIES.
-Completion credit: 2 goal percentage points (0.50 overall points), after the
+Historical allocation: 2 goal percentage points (0.50 overall points), after the
 1-point external-reference deliverable moved to
 [NS-3_notes_04](DONE/NS-3_notes_04.md) and the 1-point reusable observation
 deliverable moved to [NS-3_notes_05](NS-3_notes_05.md). The original combined
@@ -53,6 +63,7 @@ do not turn a candidate pitch score into a note-presence probability.
 
 **Blockers**
 
+- [NS-3_notes_01.md](NS-3_notes_01.md)
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
 - [NS-3_notes_04.md](DONE/NS-3_notes_04.md)
 - [NS-3_notes_05.md](NS-3_notes_05.md)

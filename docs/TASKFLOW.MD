@@ -9,6 +9,12 @@ Apply Athena's [shared Task flow standard](../vendor/athena/docs/task-flow.md).
 This file records Pythian's adopted paths, scope, acceptance allocation and
 user-directed execution choices; the shared standard owns the general lifecycle.
 
+The current direction and evidence audit are in the
+[2026-09-29 reassessment](REBALANCE-2026-09-29.md) and
+[codebase assessment](CODEBASE-ASSESSMENT.md). They revise the backlog, not
+product acceptance. Personal chillwave, stoner rock and lofi labels are internal
+fixtures; library contracts and final gates accept caller-defined styles.
+
 The north-star goals and completion totals live in [MILESTONES.md](MILESTONES.md).
 Individual task files in `docs/TODO/` own the remaining implementation and
 acceptance criteria. Accepted tasks move to `docs/TODO/DONE/`. The
@@ -87,6 +93,11 @@ sections or in linked topic records, not in a second competing task definition.
 
 High-level outcome, present gap, and scope boundary.
 
+Execution status: ready, dependency-blocked, external/reference-blocked, or stopped investigation.
+Next deliverable: criterion advanced and a usable API/consumer/result.
+Closing evidence and stop condition: exact required outputs and when to stop.
+Primary attribution: one owning north star; secondary contributions receive no duplicate credit.
+
 North star: NS-N. Outcome owner: existing milestone outcome or an explicit new owner.
 Completion credit: X goal percentage points (Y overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
@@ -139,7 +150,7 @@ Retain and update Dev Notes when a task moves to DONE.
    Record external needs such as listening judgments, verified sources, a runner
    or independently reproduced use explicitly; do not invent approval or results.
 3. Define the next observable result and reuse existing verified tools/evidence.
-   Keep one primary agent. Implement maintained behavior in Pascal and use
+   Use the current authorized team below. Implement maintained behavior in Pascal and use
    proportional validation of the changed boundary and consumer.
 4. For inference experiments, declare the hypothesis, fixed evaluation policy,
    cost budget and stop/switch condition before scoring. Stop the same-cause
@@ -233,8 +244,7 @@ task**. Do not silently add an indefinite investigation to the current task.
 - If a task's criteria were missed after closure, either reopen that task or
   create a clearly distinct follow-up and reassess the credited capability.
 
-The initial list is exhaustive for the presently declared end state, not a claim
-that development can reveal no new requirement. Unsupported browser/device APIs,
+The catalog is the current declared scope, subject to evidence-backed reassessment. Unsupported browser/device APIs,
 arbitrary codecs, every synthesis technique and universal transcription are not
 automatically gaps. A new requirement needs a concrete connection to the goal.
 
@@ -260,22 +270,26 @@ In the same logical completion change:
 5. Check local links, prerequisites and credit arithmetic. Do not run unrelated
    algorithm suites for the documentation move.
 
-The accepted baseline at this catalog's creation is:
+The current user-authorized **2026-09-29 complete-goal reassessment** is:
 
-| Goal | Baseline completion | Overall weight | Task points remaining within goal |
-| --- | ---: | ---: | ---: |
-| NS-1 | 100% | 10 | 0 |
-| NS-2 | 80% | 25 | 20 |
-| NS-3 | 30% | 25 | 70 |
-| NS-4 | 70% | 15 | 30 |
-| NS-5 | 25% | 20 | 75 |
-| NS-6 | 50% | 5 | 50 |
+| Goal | Accepted baseline | Overall weight | Accepted DONE points | Open points |
+| --- | ---: | ---: | ---: | ---: |
+| NS-1 | 100 | 5 | 0 | 0 |
+| NS-2 | 70 | 25 | 20 | 10 |
+| NS-3 | 10 | 25 | 15 | 75 |
+| NS-4 | 20 | 15 | 35 | 45 |
+| NS-5 | 0 | 20 | 10 | 90 |
+| NS-6 | 0 | 10 | 15 | 85 |
 
 `Goal completion = baseline + sum(accepted DONE task credits for that goal)`.
 `Overall completion = sum(goal completion * goal weight / 100)`.
-For example, accepting `NS-3_notes_01` adds 4 points within NS-3 and 1 overall
-point. Record the arithmetic on every completion; keep the overall ledger at
-55.5 until an actual task closes. These allocations are transparent planning
+Current goal completions are **100/90/25/55/10/15**; weights are
+**5/25/25/15/20/10**. Therefore current accepted scope is **45.50 weighted
+points**, with **54.50 remaining**. The rebase records newly explicit caller
+extension, maintained support and adoption requirements; it earns no acceptance.
+For example, accepting `NS-3_notes_01` adds 7 points within NS-3 and 1.75 overall
+point. Record the arithmetic on every completion; preserve the current accepted
+ledger until an actual task closes or a documented reassessment withdraws credit. These allocations are transparent planning
 judgments about scope, not measured engineering precision or effort estimates.
 
 Task credits, not file counts, drive completion. Partial implementation,
@@ -284,121 +298,121 @@ automatic credit. Do not retroactively apply the new credits to capability
 already included in the baseline. A completed parent outcome earns no extra
 points on top of its tasks.
 
-When splitting or adding work within the same scope, redistribute only unearned
-credit and record the old/new allocation so the goal still totals 100. Never
-create free percentage points by adding files. A genuine scope expansion or
-disproved accepted capability requires an explicit baseline/scope reassessment
-in MILESTONES.md, with rationale and unchanged historical evidence. Moving a
+For routine splits, redistribute unearned credit and record the allocation so
+each goal still totals 100. The user may authorize a complete outcome rebase,
+as on 2026-09-29; change baseline and accepted/open weights explicitly in
+MILESTONES, every affected task and both ledgers with a capability rationale.
+Preserve evidence, distinguish weight changes from new acceptance, and retire
+the previous basis. Adding files never creates completion. A scope expansion or
+disproved capability also requires an explicit reassessment. Moving a
 reopened task back to TODO removes its accepted credit; recalculate all totals.
 No task may close with an unspecified allocation or unsupported completion claim.
 
-Group execution into meaningful outcome packages, normally at least ten overall
-points as requested; individual tasks may be smaller. This is a planning rule,
-not permission to inflate credit or postpone updates until a giant milestone
-finishes. No final 100% claim is valid while any required task or acceptance
+Group the roadmap into meaningful outcome packages. The former ten-overall-point
+package preference does not size work batches or delay a useful small result;
+use the concrete delivery order in the current reassessment. Individual tasks
+and batches close independently without inflating credit. No final 100% claim is valid while any required task or acceptance
 evidence remains unresolved.
 
 ## Delegated validation and publication
 
-The user-authorized implementation helper may delegate small, noncritical or
-routine subtasks to one junior helper. Only that implementation helper assigns
-the junior's work. Give each assignment concrete acceptance criteria and isolated
-file ownership; keep it independent of work underway elsewhere. The junior follows
-the same project standards and task flow, reports through its delegator, and may
-not delegate further. The user has lifted the implementation helper's task-count
-cap; keep assignment history without treating it as a stopping limit. Respect
-the execution environment's concurrency limits; authorization alone does not
-create an available worker slot.
+### Cross-repository WFC gaps
 
-Under the user's current delegation, final validation belongs to the QA agent.
-Start a fresh QA batch when at least two tasks are ready and combine relevant
-checks. Completion-document follow-ups remain part of that same batch. The QA
-agent may create task files for discovered gaps or deferred bugs; the primary
-agent integrates dependencies and accounting. A defect that violates current
-acceptance criteria still blocks acceptance.
+WFC is required for the complete Pythian composition/synthesis outcome; a
+core-only build is the independent foundation, not a substitute for that outcome.
+Use the [architecture ownership map](ARCHITECTURE.md#core-and-wfc-symbiosis).
 
-Track failed QA submissions separately for each delegated task. A submission
-fails when QA reports a blocking defect in its implementation or required
-acceptance evidence. Multiple findings or target failures in the same submission
-count as one failed submission; repeating an unchanged failure does not create
-another attempt. Runner outages and other failures unrelated to the submitted
-work do not count as implementation failures.
+- Keep audio DSP, musical/provider vocabulary, clocks, note/sound mapping,
+  uncertainty, evidence and style-specific integration in Pythian.
+- Before calling a gap upstream, isolate a domain-independent failing
+  reproduction against the pinned WFC contract and inspect the separate local
+  WFC checkout for an existing fix. A Pythian wrapper restriction is not
+  automatically a missing generic solver feature.
+- For a demonstrated WFC-core gap, read that repository's current guidance and
+  work record, inspect its branch/worktree, and create a new `codex/pythian-<gap>`
+  branch from the appropriate reviewed revision in the separate repository.
+  Tell the user the concrete gap, upstream owner and branch before edits.
+  The user's instruction authorizes that route; do not edit `vendor/wfc/`
+  or silently use unrelated upstream work.
+- Implement and validate the generic fix there with bounded Pascal regressions,
+  preserving replay, budgets and unrelated clients. Keep audio-specific behavior
+  in Pythian. Link the upstream issue/branch/commit from the owning Pythian task;
+  create a distinct coordination prerequisite if needed, with no duplicate credit.
+- Integrate a reviewed upstream commit through an explicit Pythian gitlink
+  update and affected core-isolation/adapter/consumer checks. Keep source and
+  license provenance. Upstream branch work does not by itself close the
+  downstream Pythian criterion or authorize merging another repository's branch.
 
-After the **twentieth failed QA submission for the same task**, stop helper
-resubmissions and diagnose the repeated failure. Remove that task from the
-implementation helper's queue and transfer it, its existing code and all failure
-evidence to the primary agent. The primary agent owns the fixes and subsequent
-QA handoffs. Preserve the implementation for repair; do not delete or reset it,
-mark the task DONE, or award completion credit. Stop helper and junior edits to
-that task before transferring file ownership.
+The 2026-09-29 boundary audit found no demonstrated generic failing contract,
+so no WFC branch or dependency change was made in this reassessment.
 
-Give the implementation helper a different ready task whose scope and files do
-not conflict with the transferred work. Follow actual prerequisite links and
-respect available worker slots. Record the failed submissions, ownership change
-and replacement assignment in the work handoff. The task-count cap remains
-lifted; this rule changes ownership after repeated QA failure, not staffing or
-acceptance requirements. QA retains final validation and publication authority.
+### Current team
 
-## Infrastructure review — dedicated cycle inactive
+The user's 2026-09-29 configuration and subsequent team/model revisions
+supersede all earlier assignments, junior permission and QA failure limits.
 
-On 2026-09-21 the user removed the dedicated senior reviewer from the active
-cycle. Do not trigger a review after two DONE tasks, replace QA with that role,
-or make a dedicated review a prerequisite to the next batch. The primary agent
-may perform the explicitly authorized current review and retain its findings.
-Final testing and validated publication remain assigned to QA under the rules
-above; removing the reviewer does not itself transfer those responsibilities.
+| Role | Configuration | Ownership |
+| --- | --- | --- |
+| Big Boss (main) | GPT-6 Sol, Ultra | Chief oversight, hardest assessment/final judgment, scope/architecture decisions, delegating bounded authority and mandatory repair after worker failures |
+| Ticket Guy | GPT-6.1 Sol, Medium | Bounded implementation work assigned by Big Boss, no task-count cap |
+| Ticket Guy Neo | GPT-6.1 Sol, Ultra | Complex/costly work and audits/integration/coordination delegated by Big Boss; may assign bounded disjoint work to existing Ticket Guy and coordinate Salty Boi |
+| Salty Boi | GPT-6.1 Sol, Low (requested Light) | Final QA; no implementation code; may create actionable backlog tasks |
 
-The following records the former rotation for historical context and applies
-again only if the user explicitly reinstates it.
+These are requested role settings, not permission to misreport the host's
+actual model. Record an unavailable setting rather than silently substitute.
+Only these three helpers are authorized in addition to Big Boss. Big Boss retains
+chief oversight and the hardest assessment/final judgment. Neo receives
+complex/costly work or operational coordination
+by Big Boss's explicit judgment and may delegate within the existing team using
+bounded exclusive ownership. Neo cannot spawn additional helpers, overlap
+assignments or act as a substitute for Big Boss's
+repair required after two failed worker implementation QA submissions.
+Every assignment names exclusive files, concrete acceptance, closing evidence
+and stop condition. Do not overlap ownership. Big Boss may reassign
+preserved work explicitly; a model replacement does not reset task history.
+Call out the handoff when Big Boss takes over a task, keeping the prior evidence
+and counters attached to its current owner.
 
-After at least **two task files reach DONE following QA acceptance** since the
-previous infrastructure review, hand the completed work to the user-authorized
-senior reviewer. Count accepted tasks, not individual tests, partial studies or
-unsuccessful submissions. The user requested an inaugural review on 2026-09-21
-using the seven already completed tasks; subsequent cycles start from that review.
-An explicit user-requested review may run before the two-task threshold. Record
-that exception and, after the review completes, count the next two accepted task
-closures from its reviewed checkpoint. Review activity itself earns no task
-completion credit.
+Start a fresh QA batch only when at least **two tasks or components** are ready.
+For this documentation reassessment, capability/NS-6 review and backlog/workflow
+reconciliation are distinct components; neither creates product milestone credit.
+Combine impact-appropriate checks. Corrections and completion-record verification
+belong to the same batch, without rerunning unaffected suites. A current criterion
+defect blocks acceptance; unrelated discoveries become linked tasks.
 
-Before starting the reviewer, save the QA agent's current verdicts, failed-
-submission counters, evidence locations and any live process handles, then stop
-its active turn and release its worker slot. Do not restart a still-running
-command or infer completion from the handoff. Respect the environment's thread
-limit; the reviewer replaces QA during this interval.
+Track implementation QA submissions separately for each task assigned to
+Ticket Guy or Ticket Guy Neo.
+A blocking implementation or required-evidence defect makes one failed submission,
+regardless of its number of findings. Repeating an unchanged finding adds no
+submission; runner outages do not count. A correctly implemented experiment's
+scientific rejection is separate from implementation failure and still counts
+as a nonclosing work batch where no criterion closes.
 
-Verify that the runner actually releases the retained session's slot: finishing
-or interrupting a turn is not proof of session removal. If creation or resumption
-is rejected by the thread limit and no session-removal operation is available,
-retain the review handoff and report the scheduling blocker. Do not relabel an
-implementation helper as the configured reviewer, claim the review occurred,
-or reset the accepted-closure checkpoint. Resume the requested role rotation
-when the runner permits it.
+After **two failed QA submissions for the same task of either Ticket Guy**, stop worker
+edits and transfer its implementation, task and complete failure evidence to the
+Big Boss for repair. Preserve files and failed approaches. Give Ticket Guy
+another ready task with disjoint ownership; do not add a helper or reset counters.
+Do not route the failed task through Neo to avoid transfer to Big Boss.
+Record transfer and replacement in WORK.md. QA retains final validation.
 
-The reviewer examines the work in the context of the whole library and its
-infrastructure: core/companion boundaries, data and time contracts, ownership,
-source lineage, streaming, determinism, resource bounds and delivery. Trace
-relevant interactions and report concrete defects with file/line evidence,
-triggers, consequences and acceptance implications. Existing unresolved work
-does not become a new defect merely because it remains unfinished.
+The two-nonclosing-batch checkpoint and the separate twenty-unsuccessful-attempt
+scientific cap above both remain in force. Neither a new agent, renamed experiment,
+task split nor this reassessment erases prior counts or reauthorizes a stopped
+source/threshold family. Record at handoff: criteria closed/still open,
+consecutive nonclosing batches (or at least two when older records only establish
+the threshold), failed implementation submissions, current owner and unblock
+condition. Historical cumulative counts that cannot be reconstructed are
+unknown, never invented as zero.
 
-The reviewer writes no implementation code. It may create actionable TODO files
-using this workflow's template, naming and dependency rules. Avoid duplicate
-tasks for defects already covered by an open task's acceptance criteria. Propose
-credit redistribution or reassessment where needed; the primary agent integrates
-the task graph and milestone accounting without creating free completion points.
-This review is not another implementation QA submission and does not increment
-the 20-failure ownership-transfer counter.
+There is no dedicated senior/junior review rotation. Earlier rotation descriptions
+and model assignments in the dated work record are historical only.
 
-When the review finishes, retain its findings and task references, release the
-reviewer's slot, restore the QA agent and resume the saved work. Record the
-reviewed completion checkpoint so the next two-task trigger is unambiguous.
-Final feature testing and validated publication remain QA's responsibility.
+After validation and integrated completion records, Salty Boi commits and pushes
+the reviewed scope to `origin/hello-pythian`. Verify branch, remote, staged paths
+and published commit; use a normal push. Exclude generated/private artifacts,
+unrelated work and dependency source. Report failed validation/publication.
+Publication authority does not authorize implementation edits by QA.
 
-After the batch passes and its completion records are integrated, the QA agent
-commits the validated changes as needed and pushes to `origin/hello-pythian` for
-review. Verify the branch, remote, staged scope and published commit. Include the
-accepted task moves and milestone updates; exclude generated/private artifacts
-and unrelated work. Use a normal push. Report failed validation or publication
-to the primary agent before treating the batch as published. Publication
-authority does not authorize implementation changes by the QA agent.
+For browser/service QA, follow the fixed executable slots, firewall prerequisites,
+isolated profile and exact process cleanup in [LAN procedure](LAN-REVIEW-SERVICE.md).
+A documentation-only batch does not need a service, browser or audio session.

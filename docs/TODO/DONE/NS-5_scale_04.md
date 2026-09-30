@@ -4,6 +4,10 @@
 
 **Description:**
 
+Completion credit: 2 goal percentage points (0.40 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Persist independently supplied admitted pitch-duration contributions so a
 multi-recording WFC model can be rebuilt after a completed journal reload or an
 additional source. This is a reusable semantic recovery boundary ahead of the
@@ -11,7 +15,7 @@ many-hour, multi-provider workload in [NS-5_scale_02](../NS-5_scale_02.md).
 Reference events exercise the mechanism; they are not Pythian WAV inference.
 
 North star: NS-5. Outcome owner: CORPUS-SCALE.
-Completion credit: 1 goal percentage point (0.20 overall points), transferred
+Historical allocation: 1 goal percentage point (0.20 overall points), transferred
 from the original unearned 6 points of `NS-5_scale_02`. Together these tasks
 retain the original 6 points / 1.20 overall points. Credit is earned only when
 every criterion and the task-flow completion requirements pass.

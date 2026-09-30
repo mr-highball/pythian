@@ -4,10 +4,20 @@
 
 **Description:**
 
+Completion credit: 6 goal percentage points (1.20 overall points).
+Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
+Execution status (2026-09-29): **Dependency-blocked**.
+Next deliverable: Accept sustained multi-seed continuity and useful variation through actual complete outputs.
+Closing evidence and stop condition: Full-duration join/repetition/source-use gates, timestamped listening and restart/block-size checks. Stop nearby repetition-guard variants after the recorded frozen failure; preserve poor passages.
+Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
+This reassessment closes no product criterion and preserves prior failures below.
+
 Demonstrate sustained generated audio with acceptable joins and repetition across source recordings, independent of a genre verdict.
 
 North star: NS-5. Outcome owner: WAV-04-CONTINUITY.
-Completion credit: 4 goal percentage points (0.80 overall points). One of the
+Historical allocation: 4 goal percentage points (0.80 overall points). One of the
 original 5 unearned NS-5 points belongs to the independently useful
 [bounded continuation backend](DONE/NS-5_continuity_02.md). Both tasks retain the
 original 5 NS-5 points / 1.00 overall point; this task still owns the full
@@ -42,7 +52,7 @@ Starting evidence: [WAV-STUDIES](../WAV-STUDIES.md) · [ACTIVITY](../ACTIVITY.md
   prefix decisions and original-PCM seam costs; PCM/model/report replay and a
   second output block size passed. The complete 256.192-second render is one
   pending manual listening item. The [guarded continuation checkpoint](../WAV-STUDIES.md#guarded-acoustic-continuation-checkpoint)
-  and [work record](../WORK.md#global-repetition-guard-feasibility--2026-09-28)
+  and [work record](../WORK-HISTORY.md#global-repetition-guard-feasibility--2026-09-28)
   retain the frozen policy, hashes and limits. This is the second nonclosing
   batch: stop tuning this profile/seed and follow the actual vocabulary and
   context/evaluation blockers. Multi-seed/gap/level checks, sustained listener
@@ -54,7 +64,7 @@ Starting evidence: [WAV-STUDIES](../WAV-STUDIES.md) · [ACTIVITY](../ACTIVITY.md
   repeated four-window sequences worsened 636→782 against a no-increase gate.
   An independent Pascal comparator checked original PCM seams, all 15 chunk
   joins, hashes and counts on Win32/Win64. The temporary opt-in implementation
-  was reverted after failure; see the [work record](../WORK.md#bounded-long-context-continuity-trial--2026-09-28)
+  was reverted after failure; see the [work record](../WORK-HISTORY.md#bounded-long-context-continuity-trial--2026-09-28)
   and ignored `build/journal-long-context-20260928/`. Stop chunk-local context
   cap/length variants on this profile. This is one nonclosing quality batch,
   not a musical or listening verdict; all criteria and credit remain open.

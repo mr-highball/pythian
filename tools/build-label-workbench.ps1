@@ -22,14 +22,20 @@
 
 [CmdletBinding()]
 param(
-  [string] $Compiler = $(if ($env:PAS2JS) { $env:PAS2JS } else {
-    'D:\ProgramsAndSuch\fpcupdeluxe\lazarus-trunk\fpc\bin\i386-win32\pas2js.exe'
-  }),
-  [string] $RtlSource = 'D:\ProgramsAndSuch\fpcupdeluxe\lazarus-trunk\ccr\pas2js-rtl\packages\rtl\src',
-  [string] $RtlJavascript = 'D:\ProgramsAndSuch\fpcupdeluxe\lazarus-trunk\fpcsrc\utils\pas2js\dist\rtl.js'
+  [string] $Compiler = $(if ($env:PAS2JS) { $env:PAS2JS } else { 'pas2js' }),
+  [string] $RtlSource = $env:PAS2JS_RTL_SOURCE,
+  [string] $RtlJavascript = $env:PAS2JS_RTL_JS
 )
 
 $ErrorActionPreference = 'Stop'
+# The caller supplies the RTL matching their verified compiler. Do not infer
+# an RTL from an unrelated installation or a developer-specific filesystem.
+if ([string]::IsNullOrWhiteSpace($RtlSource) -or
+    [string]::IsNullOrWhiteSpace($RtlJavascript)) {
+  throw 'Supply matched pas2js RTL with -RtlSource/-RtlJavascript or PAS2JS_RTL_SOURCE/PAS2JS_RTL_JS.'
+}
+$compilerCommand = Get-Command -Name $Compiler -CommandType Application -ErrorAction Stop
+$Compiler = $compilerCommand.Source
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $sourceRoot = Join-Path $PSScriptRoot 'label-workbench'
 $outputRoot = Join-Path $repositoryRoot 'build\label-workbench'

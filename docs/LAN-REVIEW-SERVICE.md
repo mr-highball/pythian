@@ -1,112 +1,116 @@
 # Windows LAN review service
 
-The reviewed catalog lives outside `build/`. The checked native server and
-pas2js files use fixed ignored `stable` and `qa` paths. Rebuilding Pythian
-does not create a new Windows Firewall application identity for either slot.
+The durable reviewed catalog lives outside `build/`. Checked native binaries
+and the six matching browser assets use fixed ignored `stable` and `qa` slots.
+The paths stay fixed across rebuilds so Windows Firewall does not see a new
+application identity. Host addresses and catalog locations are local settings;
+never copy a historical machine address or process ID into a new launch.
 
-From the repository root, stage a checked Win64 executable and the six current
-workbench assets. Use the SHA-256 recorded with that checked build; replace
-both placeholders when a later binary is deployed.
+## Configure this machine
+
+Run from the repository root. Supply the private IPv4 assigned to this machine
+and existing prepared inbox/durable catalog roots. Keep these values in local
+configuration or ignored build records, not tracked project files. Repeat this
+setup in an elevated terminal when installing a firewall rule.
+
+```powershell
+$pythianRoot = (Get-Location).Path
+$reviewIPv4 = Read-Host 'Private IPv4 assigned to this host'
+$reviewInbox = (Resolve-Path -LiteralPath (Read-Host 'Prepared inbox directory')).Path
+$reviewCatalog = (Resolve-Path -LiteralPath (Read-Host 'Durable catalog directory outside build')).Path
+$stableProgram = Join-Path $pythianRoot 'build\label-service\stable\bin\pythian.label.catalog.exe'
+$stableWeb = Join-Path $pythianRoot 'build\label-service\stable\www'
+$qaProgram = Join-Path $pythianRoot 'build\label-service\qa\bin\pythian.label.catalog.exe'
+$qaWeb = Join-Path $pythianRoot 'build\label-service\qa\www'
+```
+
+Verify that the selected interface has the Private network profile. The service
+also rejects an invalid bind address. The user-selected inbox and catalog must
+be correct for the intended mode; QA always uses separate copies.
+
+## Stage and run the stable slot
+
+Stage a checked Win64 executable and matching assets. Replace both placeholders
+with the exact checked build and its recorded SHA-256.
 
 ```powershell
 & .\tools\build-label-lan-service.ps1 -CheckedExecutable 'build\<checked-target>\pythian.label.catalog.exe' -ExpectedSha256 '<recorded-checked-sha256>'
 ```
 
-The staging step checks the binary hash, copies the browser assets, and refuses
-to replace an executable that is running from the selected slot. It does not
-change the live service or Windows Firewall.
+Staging verifies the binary hash and refuses to replace a running slot. It does
+not change a running service or firewall rules. Build the browser assets with
+explicit matched pas2js/RTL settings documented in the
+[workbench build configuration](LABEL-CATALOG.md#workbench-build-configuration).
 
-**One-time administrator step:** Open **Windows PowerShell as Administrator**
-and run this line. It allows only the fixed executable on the current private
-Wi-Fi address, TCP port 18097, from the local subnet. The current address is
-`192.168.12.109`; update it in both the rule and server command if the PC's
-private address changes.
-
-```powershell
-New-NetFirewallRule -DisplayName 'Pythian Stable LAN Review' -Direction Inbound -Action Allow -Enabled True -Profile Private -Program 'D:\Docs\GitHub\pythian\build\label-service\stable\bin\pythian.label.catalog.exe' -Protocol TCP -LocalPort 18097 -LocalAddress 192.168.12.109 -RemoteAddress LocalSubnet -EdgeTraversalPolicy Block
-```
-
-Verify with `netsh advfirewall firewall show rule name="Pythian Stable LAN Review" verbose`;
-it must show the exact program path, LocalIP, port, Private profile,
-LocalSubnet and Allow. Avoid running the rule-creation line twice; a duplicate
-same-name rule obscures which scope is active. No access key is needed on this
-private LAN route. The server still checks Host/Origin and its same-origin
-session for writes.
-
-After the old listener has stopped and port 18097 is free, run the checked
-Pascal server directly in a foreground terminal:
+**One-time administrator step:** inspect the existing rule first. If it is
+absent, create the exact fixed-program, Private/local-subnet rule below in
+Windows PowerShell as Administrator. Do not create duplicate same-name rules.
 
 ```powershell
-& 'D:\Docs\GitHub\pythian\build\label-service\stable\bin\pythian.label.catalog.exe' serve-app-open 'D:\Docs\GitHub\pythian\build\label-catalog\long-inbox' 'D:\Docs\GitHub\pythian-catalog' 'D:\Docs\GitHub\pythian\build\label-service\stable\www' 192.168.12.109 18097
+netsh advfirewall firewall show rule name="Pythian Stable LAN Review" verbose
+New-NetFirewallRule -DisplayName 'Pythian Stable LAN Review' -Direction Inbound -Action Allow -Enabled True -Profile Private -Program $stableProgram -Protocol TCP -LocalPort 18097 -LocalAddress $reviewIPv4 -RemoteAddress LocalSubnet -EdgeTraversalPolicy Block
 ```
 
-The source-label queue is at `http://192.168.12.109:18097/` and complete
-single/paired listening packets are at `/listen.html`. A direct PC HTTP check
-does not establish that a physical phone can play and Save; that is an
-outstanding [authoring acceptance check](TODO/NS-6_authoring_01.md).
+Verify exact Program, LocalIP, TCP18097, Private, LocalSubnet and Allow.
+If the address or checkout root changes, update the existing rule and launch
+settings together. After the old listener has stopped and the port is free,
+run the staged Pascal server in a foreground terminal:
 
-Both pages show elapsed time while connecting. A session request that has not
-completed in 10 seconds exposes Retry. The source page displays an actual WAV
-byte-transfer percentage only after a response with `Content-Length` begins;
-while the server verifies a source, the bar remains indeterminate. Full-output
-audio streams in the browser and labels its percentage as buffered duration.
-The checked native service keeps session and queue requests responsive during
-cold large-WAV verification and listening-review saves.
+```powershell
+& $stableProgram serve-app-open $reviewInbox $reviewCatalog $stableWeb $reviewIPv4 18097
+```
 
-For engineering browser QA, stage the checked binary in the separate fixed QA
-slot. This can be done while the stable service is running; the script refuses
-to replace the QA executable while a QA listener uses it. Give the fixture its
-own ignored catalog and inbox, but always launch the staged QA executable from
-the same path, even when the compiler output is under a dated directory:
+Open the selected host on port18097: source review is at `/`, and complete
+single/paired listening is at `/listen.html`. No access-key form is needed in
+this selected private-LAN mode; Host/Origin and same-origin write-session checks
+still apply. Read-only host HTTP success is not a physical-phone play/Save verdict;
+[authoring_02](TODO/NS-6_authoring_02.md) owns that acceptance.
+
+Connection status exposes Retry after ten seconds. The source player shows
+actual transferred WAV bytes when Content-Length is known; source verification
+remains indeterminate. Full-output playback reports buffered duration. Preserve
+the existing session/queue responsiveness checks for changed serving paths.
+
+## Isolated QA slot
+
+Stage the same checked binary/assets into the fixed QA slot; the live stable
+slot remains independent.
 
 ```powershell
 & .\tools\build-label-lan-service.ps1 -Slot qa -CheckedExecutable 'build\<checked-target>\pythian.label.catalog.exe' -ExpectedSha256 '<recorded-checked-sha256>'
 ```
 
-Use the fixed QA path for native HTTP and browser checks. Windows showed an
-application alert on this host even for a loopback QA executable. The fixed
-path prevents a new identity on later builds; it does not itself install a
-firewall rule. For zero prompts, do not launch the QA server until the scoped
-rule below is installed, then use the private-LAN command. Stop that foreground
-listener before staging a later checked binary. The stable slot and port 18097
-are unaffected.
-
-If a separate phone must reach an **isolated** QA catalog, use the fixed QA
-executable with `serve-app-open` on the selected private IPv4 and TCP 18129.
-First check whether `Pythian QA LAN Review` already exists. If it does, verify
-its full scope before reuse; do not create a duplicate. Otherwise, the one-time
-elevated Windows PowerShell rule is:
+Use this slot for **every native HTTP or browser QA launch**, even loopback.
+A fixed path does not itself install a firewall rule. On hosts requiring the
+explicit rule, do not launch QA until its exact scope is installed; the prior
+development host also prompted on loopback. Inspect before creating:
 
 ```powershell
-New-NetFirewallRule -DisplayName 'Pythian QA LAN Review' -Direction Inbound -Action Allow -Enabled True -Profile Private -Program 'D:\Docs\GitHub\pythian\build\label-service\qa\bin\pythian.label.catalog.exe' -Protocol TCP -LocalPort 18129 -LocalAddress 192.168.12.109 -RemoteAddress LocalSubnet -EdgeTraversalPolicy Block
+netsh advfirewall firewall show rule name="Pythian QA LAN Review" verbose
+New-NetFirewallRule -DisplayName 'Pythian QA LAN Review' -Direction Inbound -Action Allow -Enabled True -Profile Private -Program $qaProgram -Protocol TCP -LocalPort 18129 -LocalAddress $reviewIPv4 -RemoteAddress LocalSubnet -EdgeTraversalPolicy Block
 ```
 
-Verify its program path, Private profile, LocalIP, LocalSubnet, TCP 18129 and
-Allow with `netsh advfirewall firewall show rule name="Pythian QA LAN Review"
-verbose`. Update the private IPv4 in both rule and launch command if it changes.
-Then launch the isolated fixture in a foreground terminal:
+Verify exact Program, LocalIP, TCP18129, Private, LocalSubnet and Allow.
+Use separate fixture directories and a foreground terminal:
 
 ```powershell
-& 'D:\Docs\GitHub\pythian\build\label-service\qa\bin\pythian.label.catalog.exe' serve-app-open 'D:\path\to\isolated-inbox' 'D:\path\to\isolated-catalog' 'D:\Docs\GitHub\pythian\build\label-service\qa\www' 192.168.12.109 18129
+$qaInbox = (Resolve-Path -LiteralPath (Read-Host 'Isolated QA inbox directory')).Path
+$qaCatalog = (Resolve-Path -LiteralPath (Read-Host 'Isolated QA catalog directory')).Path
+& $qaProgram serve-app-open $qaInbox $qaCatalog $qaWeb $reviewIPv4 18129
 ```
 
-If an administrator rule cannot be installed, use CLI checks and read-only
-checks of the existing stable LAN service. Even loopback QA launches prompted
-on this host, so do not start the QA server until an exact-path rule can be
-installed. Do not accept a broad automatic program rule. No QA launch or
-firewall change is part of the staging script.
+Never write test answers into the live operator catalog. Stop the exact QA
+listener before replacing its slot. If the required rule is unavailable, use
+CLI checks and authorized read-only checks of an existing service, recording
+browser/phone acceptance as unverified. The staging script neither launches
+servers nor changes firewall rules.
 
-Browser QA must use an isolated profile and record its process ID. In a
-`try/finally` cleanup, pause loaded audio, close that exact QA browser process
-and its children, and confirm no process still uses the QA profile. Do not
-launch a test tab in the operator's normal Brave profile or leave a looping
-player running after a check.
+Browser QA uses an isolated profile and records the exact process tree. In
+`try/finally`, pause audio, close that QA process and its children, and confirm
+no process uses the QA profile and no looping audio remains. Keep the operator's
+normal browser separate. A documentation/build-configuration check needs no
+service or browser.
 
-Windows previously created broad `pythian.label.catalog` application rules
-for changing build paths. Before disabling any of them, verify that no
-process still uses the retired executable path and no listener relies on it.
-Once the stable service is confirmed, disable only rules whose **Program** is
-the retired build executable and whose scope is Private+Public with Any local
-port and Any remote address. Keep the narrow
-named port rules and the new stable-program rule. Never disable a rule by its
-display name alone because several build paths share the same name.
+Before disabling an old broad application rule, verify the retired executable
+path has no process or listener depending on it. Match exact Program plus the
+obsolete broad scope, never display name alone. Preserve narrow active rules.

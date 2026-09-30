@@ -3,6 +3,12 @@
 [Home](../README.md) · [Pitch contracts](PITCH.md) · [Milestones](MILESTONES.md) ·
 [Work](WORK.md)
 
+The dated checkpoints below preserve source identities, failures and verdicts
+at their recorded revisions. Their percentages, execution assignments and next
+steps are historical. Use the [current task catalog](TODO/README.md) and
+[current credit basis](REBALANCE-2026-09-29.md#current-credit-basis) for active
+scope and accounting; these studies earn no new acceptance from the replan.
+
 The TensorFlow C observations documented in the dated studies below are
 historical experiments. The user now requires a Pascal-only execution path;
 [NS-3_validation_02](TODO/DONE/NS-3_validation_02.md) now qualifies the selected

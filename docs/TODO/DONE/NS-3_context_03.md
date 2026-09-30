@@ -4,6 +4,10 @@
 
 **Description:**
 
+Completion credit: 1 goal percentage points (0.25 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Deliver a reusable, source-bound recorded reference packet for local key,
 changes, no-key and ambiguous intervals before evaluating automatic admission.
 Researcher whole-loop labels and score-level gaps alone cannot supply all of
@@ -12,7 +16,7 @@ key decision and its measured accuracy remain in
 [NS-3_context_01](../NS-3_context_01.md).
 
 North star: NS-3. Outcome owner: WAV-02-CONTEXT.
-Completion credit: 1 goal percentage point (0.25 overall points), split from
+Historical allocation: 1 goal percentage point (0.25 overall points), split from
 the original 4 points of NS-3_context_01. Credit is earned only when every
 acceptance criterion and the task-flow completion requirements pass.
 

@@ -4,10 +4,14 @@
 
 **Description:**
 
+Completion credit: 7 goal percentage points (1.05 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Move reusable harmony/rhythm/independent-voice coordination out of demo-only code into companion APIs using actual WFC passes and caller-declared role identities. This task includes resolving the interrupted, unvalidated harmony/rhythm/voice descriptor extension in pythian.wfc.providers.
 
 North star: NS-4. Outcome owner: WFC-LAYERS.
-Completion credit: 6 goal percentage points (0.90 overall points).
+Historical allocation: 6 goal percentage points (0.90 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [GRID-STYLE](../../GRID-STYLE.md) · [INDEPENDENT-VOICES](../../INDEPENDENT-VOICES.md) · [LAYERS](../../LAYERS.md) · [PRECURSOR-BOUNDARIES](../../PRECURSOR-BOUNDARIES.md).

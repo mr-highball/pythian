@@ -4,7 +4,10 @@
 [Style architecture](LAYERED-STYLE.md#learning-a-style-from-many-hours) ·
 [WAV studies](WAV-STUDIES.md) · [Work](WORK.md)
 
-This is the initial development protocol for chillwave, stoner rock and lofi.
+This is the reusable development protocol for caller-defined musical styles.
+Chillwave, stoner rock and lofi are internal test preferences only. The
+[2026-09-29 reassessment](REBALANCE-2026-09-29.md) replaces label-specific
+gates with generic intake, qualified corpora and one/many-recording acceptance.
 It defines the evidence to prepare before an independent style verdict. It does
 not certify the original inventory recordings, assign their style labels or
 establish a production corpus file format. Freeze a source-bound evaluation packet before
@@ -275,12 +278,13 @@ or unsupported, with observable examples and uncertainty. A caller's genre label
 is not a learned feature or an accuracy reference. Do not infer trait cards from
 the current unreliable note/beat outputs.
 
-No first style is selected yet. The separate
-[chillwave](TODO/NS-5_chillwave_01.md),
-[stoner rock](TODO/NS-5_stoner-rock_01.md) and
-[lofi](TODO/NS-5_lofi_01.md) tasks can start when their own corpus and the shared
-comparison packet are ready. [Cross-style reuse](TODO/NS-5_blends_01.md) requires
-all three accepted styles. Each learned provider must satisfy its own
+The [bounded single-recording result](TODO/NS-5_style_01.md) has its own
+declared note/duration contract and makes no many-hour claim. The complete
+[many-hour result](TODO/NS-5_style_02.md) accepts two contrasting profiles;
+[new-caller transfer](TODO/NS-5_style_03.md) qualifies the third under the same
+full protocol. [Qualified corpora](TODO/NS-5_corpus_06.md) retain the floors
+above for each full profile. [Cross-style reuse](TODO/NS-5_blends_01.md) still
+requires all three accepted parents. Each learned provider must satisfy its own
 [WAV validation](MILESTONES.md#wav-validation) and musical acceptance scope.
 Audit training-data overlap for any external learned estimator separately from
 the project's training/development/evaluation split.

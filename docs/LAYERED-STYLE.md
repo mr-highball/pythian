@@ -11,6 +11,31 @@ using that style to start generation, and using a derived style as input to
 further merges or blends. Control must remain granular: small, reusable layers
 compose the whole. WFC's real pass system is the coordination mechanism.
 
+WFC is integral to the complete composition and audio synthesis product;
+Pythian realizes its learned, constrained plans through reusable native sound
+primitives. The portable core and core-only consumers remain independent of
+WFC. This implementation boundary does not make learned WFC generation,
+granular provider control or blend/reblend optional full-product outcomes.
+
+Keep audio/musical vocabularies, provider codecs, source clocks, uncertainty,
+recording evidence and sound realization here. A reproduced domain-independent
+WFC contract failure follows the
+[separate-repository/new-branch procedure](TASKFLOW.MD#cross-repository-wfc-gaps),
+with the user informed before upstream edits; do not modify this checkout's
+dependency source. The [current audit](CODEBASE-ASSESSMENT.md#wfc-boundary-audit)
+found no demonstrated generic WFC defect, so no branch or dependency change
+was needed. Caller-provider extension and recorded integration remain owned by
+[providers_01](TODO/NS-4_providers_01.md) and
+[integration_01](TODO/NS-4_integration_01.md), rather than duplicate upstream work.
+
+The public scope is **any caller-defined style within declared support**.
+The initial chillwave, stoner rock and lofi preferences are internal regression
+inputs, never required profile names, classifiers or release prerequisites.
+Unknown or unsupported traits remain explicit. The
+[current delivery sequence](REBALANCE-2026-09-29.md#delivery-order) separates
+bounded one-recording usefulness from complete many-hour and new-caller
+acceptance; later full-provider requirements remain required.
+
 The [semantic graph archive](SEMANTIC-STYLES.md) defines reusable mapped and
 named-voice provider configurations with observed runs, source exposure and frozen
 vocabulary ancestry, including bound preparation and original-coordinate overlap
@@ -106,9 +131,9 @@ definitions; shared LFO definitions alone do not provide shared global phase.
 
 ## Learning a style from many hours
 
-The intended high-level styles include **chillwave, stoner rock and lofi**. These
-are caller-provided corpus labels, not classifications inferred by the current
-library. A style may be learned from a long recording or many recordings, then
+Style identifiers are caller-provided labels. **Chillwave, stoner rock and lofi**
+are internal test preferences, not the supported style vocabulary or classifications
+inferred by the library. A style may be learned from one or many recordings, then
 saved, used for generation and reused as a parent in subsequent selective blends.
 Many hours of input should broaden observed behavior, not merely enlarge a
 collection of interchangeable source grains.

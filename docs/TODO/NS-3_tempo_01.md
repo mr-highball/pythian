@@ -4,13 +4,23 @@
 
 **Description:**
 
+Completion credit: 5 goal percentage points (1.25 overall points).
+Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
+Execution status (2026-09-29): **Dependency-blocked**.
+Next deliverable: Select beat level/phase from qualified candidates, closing development metrical accuracy and coverage while preserving alternatives.
+Closing evidence and stop condition: Per-recording stable/deceptive/syncopated/polyrhythm gates and saved native policy. Stop parity/recurrence variants; perfect agreement cannot justify a wrong beat.
+Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
+This reassessment closes no product criterion and preserves prior failures below.
+
 Resolve stable and ambiguous beat-level/phase choices from qualified candidate
 evidence, using source support rather than reference-selected bands, supplied
 BPM hints or agreement alone. [NS-3_tempo_04](NS-3_tempo_04.md) owns bounded
 candidate availability before this task selects the musical pulse.
 
 North star: NS-3. Outcome owner: WAV-02-PULSE.
-Completion credit: 3 goal percentage points (0.75 overall points), after
+Historical allocation: 3 goal percentage points (0.75 overall points), after
 splitting 2 of the original 5 points to [NS-3_tempo_04](NS-3_tempo_04.md).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 

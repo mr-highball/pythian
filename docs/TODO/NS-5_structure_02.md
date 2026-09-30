@@ -4,10 +4,20 @@
 
 **Description:**
 
+Completion credit: 5 goal percentage points (1.00 overall points).
+Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
+Execution status (2026-09-29): **Dependency-blocked**.
+Next deliverable: Generate reusable learned phrase/section organization through actual WFC constraints.
+Closing evidence and stop condition: Saved/reblended structural evidence, independent comparisons, sustained listening and preserved unrelated role edits. Stop if output simply copies source order or loses dependent structure.
+Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
+This reassessment closes no product criterion and preserves prior failures below.
+
 Use learned organization in sustained WFC generation while retaining granular role edits and reusable style derivation.
 
 North star: NS-5. Outcome owner: SONG-STRUCTURE.
-Completion credit: 5 goal percentage points (1.00 overall points).
+Historical allocation: 5 goal percentage points (1.00 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [LAYERED-STYLE](../LAYERED-STYLE.md) · [CORPUS-EVALUATION](../CORPUS-EVALUATION.md) · [LAYERS](../LAYERS.md).

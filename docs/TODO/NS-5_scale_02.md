@@ -4,10 +4,20 @@
 
 **Description:**
 
+Completion credit: 8 goal percentage points (1.60 overall points).
+Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
+Execution status (2026-09-29): **Dependency-blocked**.
+Next deliverable: Deliver restart-equivalent incremental training across all required semantic providers.
+Closing evidence and stop condition: Real process-interruption recovery, mismatch rejection, contribution accounting, selective invalidation and bounded ancestry across the workload. Stop if a failed publication looks complete.
+Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
+This reassessment closes no product criterion and preserves prior failures below.
+
 Run many-hour multi-recording learning and repeated reuse within declared budgets, with recovery and bounded source/model ancestry.
 
 North star: NS-5. Outcome owner: CORPUS-SCALE.
-Completion credit: 5 goal percentage points (1.00 overall points), after
+Historical allocation: 5 goal percentage points (1.00 overall points), after
 assigning 1 of the original 6 unearned points to the independent
 [admitted-event contribution journal](DONE/NS-5_scale_04.md). The original total
 remains 6 NS-5 points / 1.20 overall points.
@@ -17,26 +27,35 @@ Starting evidence: [CORPUS-EVALUATION](../CORPUS-EVALUATION.md) · [ANALYSIS-WAV
 
 **Acceptance Criteria:**
 
+- Qualify the actual complete semantic corpus used by the final style verdict, meeting corpus_06's unique-hour and independent-group floors. Report every recording, successful and rejected scope, resource measurement, restart and source contribution. A convenient bounded subset or the accepted raw 2.322-hour observation run cannot replace this workload; declare capacity exclusions before evaluation.
+
 - Pass the declared end-to-end workload budgets with actual multi-recording training, including the semantic providers required by the chosen evaluation scope.
 - Demonstrate process interruption/restarted equivalence, source/policy mismatch rejection and reusable completed caches across the actual required semantic providers; failures cannot silently publish a complete-looking learned result. Consume the accepted source-bound contribution journal without counting its pitch-only replay twice.
 - Handle incremental additions across the required semantic providers without duplicate parent-range contributions or invented transitions across recordings, songs or unknown spans. Preserve the accepted journal's source-bound pitch-duration behavior.
-- Reconcile corpus growth and repeated blends with current source-count, ancestry-depth/node and model-state bounds (including 32 sources, depth 8, 63 nodes); implement justified bounded aggregation/compaction or explicit rejection with auditable contributions.
+- Reconcile corpus growth and repeated blends with each current artifact's source-count, ancestry-depth/node and model-state bounds. Current sound/context profiles permit depth 8 and 63 retained nodes; semantic styles permit only 8 retained ancestry nodes, and sound profiles permit 32 sources. Exercise the first rejected reblend boundary for the actual semantic path; implement justified bounded aggregation/compaction or explicit rejection with auditable contributions, without silently applying the larger sound-profile limit to semantic styles.
 - Verify selective invalidation/retraining after vocabulary or admission-policy changes, retaining deterministic results and source/exposure lineage through saved reuse.
 
 **Blockers**
 
 - [NS-5_scale_01.md](NS-5_scale_01.md)
+- [NS-5_corpus_06.md](NS-5_corpus_06.md)
 - [NS-5_scale_04.md — DONE](DONE/NS-5_scale_04.md)
 - [NS-5_vocabulary_02.md](NS-5_vocabulary_02.md)
 - [NS-4_styles_02.md](DONE/NS-4_styles_02.md)
 - [NS-3_notes_03.md](NS-3_notes_03.md)
 - [NS-3_parts_03.md](NS-3_parts_03.md)
-- [NS-3_harmony_01.md](NS-3_harmony_01.md)
-- [NS-3_groove_01.md](NS-3_groove_01.md)
+- [NS-3_harmony_02.md](NS-3_harmony_02.md)
+- [NS-3_groove_02.md](NS-3_groove_02.md)
 - [NS-3_timbre_02.md](NS-3_timbre_02.md)
 
 **Dev Notes:**
 
+- 2026-09-29 Neo contract review: semantic style derivation/blending enforces
+  8 retained nodes, while sound/context profiles use depth 8 and 63 nodes.
+  The existing ancestry criterion now names those separate contracts and its
+  first rejected semantic reblend boundary. The corpus_06 prerequisite is
+  explicit because this task already requires its full corpus floors. No
+  limits are raised, criteria accepted, counters reset or credits changed.
 - 2026-09-25 task-flow split: the reusable, source-independent
   [admitted-event contribution journal](DONE/NS-5_scale_04.md) owns bounded
   pitch-duration append/idempotency/canonical reload and deterministic rebuild
@@ -67,7 +86,7 @@ Starting evidence: [CORPUS-EVALUATION](../CORPUS-EVALUATION.md) · [ANALYSIS-WAV
   blend increases weighted samples without duplicating those rows. Saved
   three-source replay verified its explicit source bytes and rendered without
   caches or relearning. See the
-  [work record](../WORK.md#bounded-full-mix-acoustic-learning--2026-09-23).
+  [work record](../WORK-HISTORY.md#bounded-full-mix-acoustic-learning--2026-09-23).
   This is acoustic mechanism evidence only. The semantic providers, independently
   verified song/unknown boundaries, recovery, selective invalidation and final
   workload budgets remain open; no criterion or credit is closed here.

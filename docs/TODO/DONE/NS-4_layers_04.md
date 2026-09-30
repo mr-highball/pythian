@@ -4,10 +4,14 @@
 
 **Description:**
 
+Completion credit: 5 goal percentage points (0.75 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Complete the timing/edit contract for generated durations and future musical changes while protecting already committed audio.
 
 North star: NS-4. Outcome owner: WFC-LAYERS.
-Completion credit: 4 goal percentage points (0.60 overall points).
+Historical allocation: 4 goal percentage points (0.60 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [LAYERS](../../LAYERS.md) · [PERFORMANCE](../../PERFORMANCE.md) · [SCHEDULING](../../SCHEDULING.md) · [LEARNED-STREAMS](../../LEARNED-STREAMS.md).

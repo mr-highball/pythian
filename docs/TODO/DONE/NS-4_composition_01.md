@@ -4,6 +4,10 @@
 
 **Description:**
 
+Completion credit: 0 goal percentage points (0.00 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Generate a substantial, source-free two-part native passage whose harmony,
 melody and rhythm work together as music. This is a core composition checkpoint,
 independent of the user's three personal style tests and of recorded-WAV note
@@ -16,7 +20,7 @@ deterministic audio evidence and listening criterion in full; the adapter task
 retains its codec, replay and bounded joint-generation criteria.
 
 North star: NS-4. Outcome owner: WAV-04-INTEGRATION, core composition prerequisite.
-Completion credit: 1 NS-4 goal percentage point (0.15 overall points),
+Historical allocation: 1 NS-4 goal percentage point (0.15 overall points),
 reallocated from the original unearned 2-point note-event allocation. Together
 with the now accepted note-event task's 1 point and recorded integration's
 2 points, the three allocations preserve the original 4 goal points / 0.60

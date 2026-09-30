@@ -16,7 +16,7 @@ Phanes, then expanded into a fundamental synthesis and audio learning toolkit.
 | Build | `./tools/build.ps1` (checked native fixtures and command-line tools) |
 | CI | [Native workflow](.github/workflows/native.yml), Ubuntu 24.04 / FPC 3.2.2; [first remote run passed](https://github.com/mr-highball/pythian/actions/runs/35557200115) at `0ecfe34` |
 | Outputs | `build/<compiler>-<cpu>-<os>/` |
-| Work profile | Lean, one primary agent |
+| Work profile | Big Boss (main, GPT-6 Sol Ultra) retains chief oversight and the hardest assessment/final judgment; Ticket Guy (GPT-6.1 Sol Medium) implements bounded work; Ticket Guy Neo (GPT-6.1 Sol Ultra) handles assigned complex/costly work and delegated coordination; Salty Boi (GPT-6.1 Sol Low) owns final QA; [current roles](docs/TASKFLOW.MD#delegated-validation-and-publication), no further helper |
 | Publishing | Development snapshots on `hello-pythian` for ongoing review |
 | Branch | `hello-pythian` |
 
@@ -45,6 +45,15 @@ revision above remains historical provenance. Adopt the shared
 
 ## Acceptance
 
+WFC is integral to the intended Pythian composition and synthesis product.
+Core-only builds remain a required independence boundary, while actual WFC
+learning, layered generation and blend/reblend are required full-product
+outcomes. [Architecture ownership](docs/ARCHITECTURE.md#core-and-wfc-symbiosis)
+separates Pythian's audio semantics from generic solver responsibilities.
+Generic WFC defects go to a new branch in its separate checkout under the
+[cross-repository procedure](docs/TASKFLOW.MD#cross-repository-wfc-gaps);
+notify the user of the gap and branch, and never patch this checkout's submodule.
+
 The [supported consumer contract](docs/CONSUMER-CONTRACT.md) declares the native
 target matrix, source/API stability, required inputs and independent-delivery
 checklist. Its definition is accepted; final workflow and independent-use results
@@ -65,8 +74,9 @@ source evidence and lineage. This is an architectural requirement; core audio
 fundamentals remain the priority. See [layered style](docs/LAYERED-STYLE.md) for
 current support, planned contracts and acceptance criteria.
 
-The intended learning unit is a style corpus, such as chillwave, stoner rock or
-lofi, accumulated from many hours across recordings. A learned style must remain
+The intended learning unit is a caller-defined style corpus, accumulated from
+many hours across recordings. Chillwave, stoner rock and lofi are internal test
+preferences only, never the public style vocabulary. A learned style must remain
 reusable for generation and later blends. Short WAV excerpts are development
 probes; they do not establish genre-level learning. See the
 [long-source requirements](docs/LAYERED-STYLE.md#learning-a-style-from-many-hours).

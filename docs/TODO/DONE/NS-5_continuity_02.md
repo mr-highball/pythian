@@ -4,6 +4,10 @@
 
 **Description:**
 
+Completion credit: 2 goal percentage points (0.40 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Deliver a reusable, bounded Pascal continuation path for a saved, source-bound
 acoustic WFC profile. The previous short journal replay stops at 1,024 grains and
 materializes one whole render. A continuous multi-minute passage needs one
@@ -12,7 +16,7 @@ timeline across internal chunks. This is an engineering prerequisite for the
 full musical [continuity verdict](../NS-5_continuity_01.md), not that verdict.
 
 North star: NS-5. Outcome owner: WAV-04-CONTINUITY.
-Completion credit: 1 goal percentage point (0.20 overall points), reallocated
+Historical allocation: 1 goal percentage point (0.20 overall points), reallocated
 from the original 5 unearned points of NS-5_continuity_01. That task retains 4
 points and all sustained quality, multi-source/seed and listening acceptance.
 The pair retains the original 5 NS-5 points / 1.00 overall point; this split

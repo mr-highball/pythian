@@ -4,6 +4,16 @@
 
 **Description:**
 
+Completion credit: 4 goal percentage points (0.80 overall points).
+Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
+Execution status (2026-09-29): **Dependency-blocked**.
+Next deliverable: Run the complete full-provider style comparison consumer after required providers, scale and structure pass.
+Closing evidence and stop condition: Every fixed 120-second seed and paired edit, matched baselines, actual reviewed listening results and bound policies. Stop if any required output/denominator is absent.
+Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
+This reassessment closes no product criterion and preserves prior failures below.
+
 Implement the declared style protocol as a reproducible native comparison
 workflow before opening each style's frozen evaluation set. Consume the
 reusable full-output listening packet from
@@ -11,7 +21,7 @@ reusable full-output listening packet from
 outputs, matched controls, trait measures and reviewer-grounded verdicts.
 
 North star: NS-5. Outcome owner: STYLE-EVAL.
-Completion credit: 2 goal percentage points (0.40 overall points), after
+Historical allocation: 2 goal percentage points (0.40 overall points), after
 assigning 2 of the original 4 unearned NS-5 points to the reusable
 [listening packet](DONE/NS-5_evaluation_03.md). The combined allocation remains
 4 NS-5 points (0.80 overall points), with no duplicate credit.
@@ -34,7 +44,7 @@ Starting evidence: [CORPUS-EVALUATION](../CORPUS-EVALUATION.md).
 
 **Blockers**
 
-- [NS-5_evaluation_01.md](NS-5_evaluation_01.md)
+- [NS-5_evaluation_04.md](NS-5_evaluation_04.md)
 - [NS-5_evaluation_03.md — DONE](DONE/NS-5_evaluation_03.md)
 - [NS-4_integration_01.md](NS-4_integration_01.md)
 - [NS-5_scale_02.md](NS-5_scale_02.md)

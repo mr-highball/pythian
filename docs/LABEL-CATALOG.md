@@ -46,7 +46,6 @@ the entire manifest with one command:
 & 'build/<target>/pythian.label.catalog.exe' export 'D:\path\to\catalog' 'D:\path\to\reviewed.json'
 & 'build/<target>/pythian.label.catalog.exe' inspect-export 'D:\path\to\reviewed.json'
 & 'build/<target>/pythian.label.catalog.exe' import-reviewed 'D:\path\to\fresh-catalog' 'D:\path\to\reviewed.json'
-& 'build/<target>/pythian.label.catalog.exe' serve 'D:\path\to\inbox' 'D:\path\to\catalog' 18085
 ```
 
 The import report gives each track an `imported`, `duplicate`, or `failed`
@@ -211,25 +210,29 @@ same session-token check. It validates and replays into the configured catalog
 using the CLI's source-hash and conflict rules. The browser's file picker sends
 the packet; the original WAVs must already be imported into that catalog.
 
-For explicit LAN binding, start the server on the host's private IPv4 address:
+### Workbench build configuration
+
+Use an existing verified pas2js compiler and its matching RTL sources and
+JavaScript runtime. Configure explicit arguments or local environment variables;
+the repository supplies no developer-machine path or automatic installation.
 
 ```powershell
-& 'build/<target>/pythian.label.catalog.exe' serve 'D:\path\to\inbox' 'D:\path\to\catalog' '<LAN_IPV4>' 18085
+& .\tools\build-label-workbench.ps1 -Compiler '<verified-pas2js-executable>' -RtlSource '<matched-rtl-source-directory>' -RtlJavascript '<matched-rtl.js>'
 ```
 
-The browser workbench is built with
-`powershell -NoProfile -ExecutionPolicy Bypass -File tools\build-label-workbench.ps1`.
-Start it on the chosen interface and catalog root:
+Alternatively set `PAS2JS`, `PAS2JS_RTL_SOURCE` and `PAS2JS_RTL_JS` locally,
+then run the script without those arguments. Without `PAS2JS`, the compiler
+resolves from PATH; both matched RTL locations are still required. Generated
+assets remain under ignored `build/label-workbench/`.
 
-```powershell
-& 'build/<target>/pythian.label.catalog.exe' serve-app-open 'D:\path\to\inbox' 'D:\path\to\catalog' 'build\label-workbench\www' '<LAN_IPV4>' 18095
-```
+Stage and launch **only from the fixed stable/QA slots** using the
+[LAN procedure](LAN-REVIEW-SERVICE.md), including native HTTP QA. The procedure
+owns local address/root selection, exact-path firewall rules and browser cleanup;
+compiler-output paths are not server-launch paths.
 
-Open `http://<LAN_IPV4>:18095/`. The page connects without a login form.
-The server accepts only three named static assets and keeps catalog routes
-behind its session token. The bind address must belong to the host, such as
-its Wi-Fi address. A local firewall may need to allow the chosen port before
-a phone can connect. The current browser slice supports bounded source
+The page connects without a login form. The server serves the six named
+source/listening assets and keeps catalog routes behind its session token.
+The current browser slice supports bounded source
 listening, explicit review, source-level blind reveal, reviewed packet download
 and re-import.
 

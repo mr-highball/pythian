@@ -1,4 +1,4 @@
-# NS-6_authoring_01 — Deliver the pas2js audio-label workbench
+# NS-6_authoring_01 — Deliver the Pascal editor and producer queue contract
 
 [Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
 
@@ -12,10 +12,12 @@ provide structure and presentation, but no maintained JavaScript implementation
 or third-party inference runtime is introduced.
 
 North star: NS-6. Outcome owner: WAV-05-AUTHORING.
-Completion credit: 4 goal percentage points (0.20 overall points), assigned
-from the 12 unearned points of [NS-6_delivery_03](NS-6_delivery_03.md). Final
-workflow packaging retains 8 points and its original acceptance criteria;
-the two tasks preserve the original 12-point total with no new credit.
+Completion credit: 8 goal percentage points (0.80 overall points).
+Current complete-goal allocation, 2026-09-29, with NS-6 weighted at 10 overall points,
+under the user's authorization
+to rebalance without preserving historical point allocations. All existing
+acceptance criteria remain required; this plan revision earns no acceptance.
+Allocation rationale: The durable typed editor and producer-readable queue are a reusable operator contract across recorded-learning tasks.
 Credit is earned only when every acceptance criterion and the task-flow
 completion requirements pass.
 
@@ -24,14 +26,22 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 [task-flow listening allocation](../TASKFLOW.MD) ·
 [stable LAN service procedure](../LAN-REVIEW-SERVICE.md).
 
+Execution status: open; recorded editor/queue checks exist, but the complete
+split contract still needs current-source independent QA. Next deliverable:
+freeze and verify checklist 1–3 and 6–9 with a copied catalog. Closing evidence:
+source/assets and toolchain identities, exact typed-answer/review/replay results
+and durable worker reports. Stop at an unverified owned criterion and record
+its failing boundary; physical/operator acceptance stays in authoring_02.
+
 **Acceptance Criteria:**
 
-### Ten-point operator and worker acceptance checklist
+### Editor and producer acceptance; original checklist numbering
 
-Every box requires observed evidence on the current source. Complete the
-whole checklist, obtain independent Salty Boi QA, then move this task to DONE;
-an isolated successful browser action does not stand in for the full flow.
-The detailed criteria below remain in force.
+The original checklist keeps its stable numbers. This task owns points 1–3
+and 6–9 below; [NS-6_authoring_02](NS-6_authoring_02.md) owns points 4, 5 and 10.
+Existing checked boxes retain recorded evidence, but final acceptance still
+requires current-source independent QA of this complete editor/queue contract.
+The split does not grant credit or convert partial evidence into acceptance.
 
 - [x] **1. Pascal ownership:** Stable Win32/Win64 native and pas2js builds pass;
   maintained import, analysis, inference, WAV serving and review writes stay in
@@ -48,19 +58,6 @@ The detailed criteria below remain in force.
   operator sees only waiting requests, clear progress and an honest empty
   state; the producer can read completed, unknown, rejected and conflicting
   outcomes from a durable Pascal report without interpreting screenshots.
-- [x] **4. Private-LAN startup:** Default loopback and explicitly selected
-  private-LAN binding work after restart, with no access-key form or credential
-  entry. A physical phone on the LAN connects; Host/Origin and same-origin
-  session checks remain effective, no token appears in an audio URL, and the
-  service is reachable under an installed Private/local-subnet/TCP-port and
-  stable-program firewall rule without repeated Windows Defender prompts for
-  each new build path.
-- [ ] **5. Listen before labeling:** Original and available Pythian cue audio
-  load, decode and audibly play on the operator path for 0.5-second, 5-second
-  and bounded longer regions. Seek, loop, readiness and errors are clear next
-  to the player on a narrow screen. Exercise malformed/unauthorized/range,
-  disconnected and slow responses, followed by a successful retry; no silent
-  player or `0:00` display is counted as verified sound.
 - [x] **6. Source timeline:** Navigate, zoom and seek exact source frames
   across short and multi-hour WAVs with waveform levels, source time, reviewed
   labels and separate proposals. Align stems only when their manifest shares a
@@ -95,15 +92,6 @@ The detailed criteria below remain in force.
   generated-output listening packets: those task-declared decisions need a
   producer-readable response, and a 30-second source label must never be
   counted as a full-duration or paired listening review.
-- [x] **10. Complete QA matrix:** On a copied catalog, run import → Pascal
-  proposals → original/cue listening → wrong-suggestion correction → approved
-  and unknown answers → queue advance → reload/restart → worker report →
-  export/re-import, with at least two source groups and a long-source case.
-  Include all error/retry boundaries in points 3–9, actual desktop and narrow
-  browser interaction, and the physical LAN phone playback/Save path that
-  previously failed. Salty Boi independently validates the frozen binary and
-  pas2js assets, records exact evidence and confirms no test answer touched
-  the live operator catalog.
 
 The review contract is shared by the open source-evidence tasks. Producers
 declare the exact question and finite choices; these mappings do not claim that
@@ -118,10 +106,28 @@ the underlying musical inference or reference labels already exist.
 | NS-3 evolving sound and envelope boundaries | Source-bound `activity` attack/continuation/release windows and note-relative decisions; paired generated-sound listening remains a separate output review |
 | NS-5 recurring motifs, phrase and section organization | `phrase`, `section`, `ext.motif_relation` with fixed same-source targets |
 | NS-5 source-local preference assignment | `style_preference` only for a task-declared source-local decision; a short window does not establish whole-mix fit |
-| NS-5 full-mix personal reference fit and recording-edition correspondence | [NS-5_evaluation_01](NS-5_evaluation_01.md) owns whole-mix evidence and the verified source/cut correspondence; use a durable whole-asset or paired listening decision, never a short `style_preference` label as a substitute |
+| NS-5 full-mix personal reference fit and recording-edition correspondence | [NS-5_evaluation_04](NS-5_evaluation_04.md) owns whole-mix evidence and the verified source/cut correspondence; use a durable whole-asset or paired listening decision, never a short `style_preference` label as a substitute |
 | NS-5 sustained generated-output quality and continuity | [NS-5_continuity_01](NS-5_continuity_01.md) owns timestamped bad-passage judgments; [NS-5_evaluation_03 — DONE](DONE/NS-5_evaluation_03.md) owns the reusable full-output response packet, and [NS-5_evaluation_02](NS-5_evaluation_02.md) owns actual 120-second style verdicts |
 | NS-3 and NS-4 generated-sound comparisons | [NS-3_timbre_02](NS-3_timbre_02.md) owns paired reference/learned attack, motion, release and identity judgments; [NS-4_integration_01](NS-4_integration_01.md) owns synthesis-path listening. Both require task-bound responses distinct from source labels |
 | NS-5 paired edits and style traits | [NS-5_evaluation_03 — DONE](DONE/NS-5_evaluation_03.md) owns paired playback and saved comments/scores; [NS-5_evaluation_02](NS-5_evaluation_02.md) owns actual seed-731 edited outputs and reviewer-grounded trait comparisons |
+
+### Retained original detailed criteria and owner map
+
+The six detailed bullets below are retained verbatim to preserve the complete
+pre-split contract. Number them D1–D6 in their existing order. Ownership is:
+
+| Original detailed criterion | Acceptance owner |
+| --- | --- |
+| D1 owned application, inbox/intake and identity | authoring_01 points 1–3 |
+| D2 source-clock timeline, bounded levels/audio streaming | authoring_01 points 2 and 6; original/cue seek, loop and audible playback belongs to authoring_02 point 5 |
+| D3 label types, exact edits, queue completion, conflicts and durable replay | authoring_01 points 7–9 |
+| D4 assistance/blindness and group isolation | authoring_01 point 8 |
+| D5 local/LAN binding, credentials/session/Host/Origin, audio URL and actual physical use | authoring_02 points 4–5; queue publishing, clear work/empty state and producer report remain authoring_01 points 3 and 9; timeline controls/long-source navigation remain point 6 |
+| D6 complete import/propose/listen/correct/unknown/reload/export/re-import and final QA | authoring_02 point 10 |
+
+Only the portions owned by authoring_01 are its closing criteria; the other
+portions remain mandatory closing criteria in authoring_02. Every original
+sentence is accounted for, including physical listening, failures and final QA.
 
 - Compile a Pythian-owned Pascal/pas2js browser application that lists the
   prepared inbox and durable catalog, imports all available tracks as one
@@ -191,6 +197,25 @@ the underlying musical inference or reference labels already exist.
 
 **Dev Notes:**
 
+- 2026-09-29 current complete-goal credit basis: this task owns 8 NS-6
+  goal points (+0.80 overall) by deliverable value. Nine open NS-6
+  tasks allocate 85 goal points (+8.50 overall); the accepted contract and
+  native checkpoint allocate 15 goal points (+1.50 overall), with zero baseline.
+  Lifecycle support and actual ecosystem adoption are now explicit required
+  outcomes. Earlier point amounts and conserved split totals are historical,
+  superseded by this user-directed scope reassessment. Criteria and evidence
+  requirements remain intact; planning earns no acceptance.
+
+
+- 2026-09-29 bounded next deliverable: freeze the editor/queue source and copied
+  catalog fixture; independent QA checks all seven owned checklist points,
+  typed-answer replay and durable producer feedback. Closing evidence records
+  source/assets, toolchain, request/review identities, exact replay results and
+  the complete owner map. Stop if any owned criterion is unverified; record
+  its concrete failing boundary instead of extending unrelated UI features.
+  Final physical/operator QA continues in authoring_02. Earlier Dev Notes
+  remain historical and do not override this ownership split.
+
 - 2026-09-29 QA process and firewall repair: repeated Defender prompts came
   from checked native servers executed directly under changing dated `build/`
   paths; a browser QA session also left metronome playback and many Brave
@@ -201,7 +226,7 @@ the underlying musical inference or reference labels already exist.
   requires a one-time elevated install; until then, no isolated server is
   launched. Criterion 4's stable live path remains satisfied, criterion 5's
   physical-phone verdict remains open, and credit is unchanged. See
-  [work](../WORK.md#fixed-qa-runtime-path-and-browser-cleanup--2026-09-29).
+  [work](../WORK-HISTORY.md#fixed-qa-runtime-path-and-browser-cleanup--2026-09-29).
 - 2026-09-29 phone Save 431 repair: the operator's selected `both_audible`
   answer was blocked by a 64 KiB request-header rejection during the
   listening-queue preflight, before any review write. Token-authenticated API
@@ -212,7 +237,7 @@ the underlying musical inference or reference labels already exist.
   rejection, token/Origin/media guards, exact Range, one no-ID Save, reload
   and same-answer no-op; no live test write occurred. This advances criterion 9's phone
   save path; physical-phone confirmation and task credit remain open. See
-  [work](../WORK.md#phone-save-request-header-repair--2026-09-29).
+  [work](../WORK-HISTORY.md#phone-save-request-header-repair--2026-09-29).
 - 2026-09-29 no-entry listening review repair: the phone exposed an empty
   Reviewer ID field that blocked Save. The pas2js listening form now supplies
   the fixed `operator` role without an input, retaining the native journal's
@@ -223,7 +248,7 @@ the underlying musical inference or reference labels already exist.
   correction with exactly the expected POST counts and native reviewer values;
   no test answer touched the live catalog. This repairs the operator path within criterion 9;
   the physical-phone audio criterion 5 and task credit remain open. See
-  [work](../WORK.md#listening-reviews-without-reviewer-entry--2026-09-29).
+  [work](../WORK-HISTORY.md#listening-reviews-without-reviewer-entry--2026-09-29).
 - 2026-09-28 mobile queue/playback repair: the source page's
   source-only `0 waiting · 4 completed` had obscured two pending full-output
   listening reviews. The pas2js home now reports the combined waiting total
@@ -250,7 +275,7 @@ the underlying musical inference or reference labels already exist.
   answer touched the live operator catalog. The physical-phone
   verdict and criterion 5 remain open;
   no task or milestone credit changes. See
-  [work](../WORK.md#review-queue-clarity-and-listening-media-recovery--2026-09-28).
+  [work](../WORK-HISTORY.md#review-queue-clarity-and-listening-media-recovery--2026-09-28).
 - 2026-09-28 LAN connection/performance repair: a cold 1.56 GB source check
   blocked the former single-request HTTP loop while the listener had no
   connection timeout. The Pascal service now runs listening media verification
@@ -271,7 +296,7 @@ the underlying musical inference or reference labels already exist.
   retry and download evidence but does not close its physical-phone and other
   listening boundaries, criterion 10, this task, or milestone credit. The
   native response-wide media deadline is one hour; a slow client can occupy
-  one of four sender slots until then. See [work](../WORK.md#lan-review-connection-and-transfer-responsiveness--2026-09-28).
+  one of four sender slots until then. See [work](../WORK-HISTORY.md#lan-review-connection-and-transfer-responsiveness--2026-09-28).
 - 2026-09-28 multi-source listening provenance repair: the waiting guarded
   4:16 Pythian render was produced from three ordered WAVs, while its first
   published packet named only the first source. The Pascal v1 contract now
@@ -324,7 +349,7 @@ the underlying musical inference or reference labels already exist.
   its scope with `netsh`. Root stopped the old PID 6796 and launched the
   checked stable executable (SHA-256
   `c819a9a3bc7da94f148ec2c0f144fb1778ab45b57118e9fccbe459578706dca0`)
-  as PID 16976 on `192.168.12.109:18097`. `GET /`, `GET /api/session` and
+  as PID 16976 on `review-host.invalid:18097`. `GET /`, `GET /api/session` and
   `GET /listen.html` returned HTTP 200; the source WAV GET returned HTTP 200
   and an 882,044-byte RIFF body; Host/Origin rejection returned HTTP 403.
   The durable queue hash
@@ -341,7 +366,7 @@ the underlying musical inference or reference labels already exist.
   repeat Windows Defender behavior were still unverified. The subsequent
   physical-phone checkpoint above supplies those results.
 - 2026-09-28 independent Salty Boi QA passed a fresh two-group workflow in
-  `D:\Docs\GitHub\pythian-qa-salty-final-20260928\flow5`, outside disposable
+  `<durable-qa-catalog>/flow5`, outside disposable
   `build/` and outside the live catalog. The browser decoded original/cue WAV,
   corrected a deliberately wrong proposal point from frame 6213 to 8784,
   saved an explicit `unknown` on the second source, advanced to 0 waiting /
@@ -356,7 +381,7 @@ the underlying musical inference or reference labels already exist.
   remain open for the current build's physical LAN phone playback/Save path;
   headless decoded audio does not prove a human heard sound. No live test
   answer or task credit was added. The independently checked build is live at
-  `http://192.168.12.109:18097/` with read-only HTTP 200 page/session/queue/
+  `http://review-host.invalid:18097/` with read-only HTTP 200 page/session/queue/
   exact-audio probes and unchanged catalog queue hash/event count. Automatic
   approval review rejected deletion of the ignored 1.56-GB QA copy as
   `blocked by policy`, so it remains until the operator can remove it.
@@ -372,7 +397,7 @@ the underlying musical inference or reference labels already exist.
   is still unverified. A 1.56-GB source hash took 98.6 s, exposing a separate
   repeated-Save cost for multi-hour queues. Structured vocabularies/links and
   guarded long-source verification remain in progress; see
-  [work](../WORK.md#physical-phone-save-failure-parser-repair-and-authoring-gate--2026-09-28).
+  [work](../WORK-HISTORY.md#physical-phone-save-failure-parser-repair-and-authoring-gate--2026-09-28).
 - 2026-09-28 a second physical Brave WAV failure showed HTTP 400 on the first
   waiting question. The exact live audio region served a byte-identical Pascal
   render on the host; the prior phone request was not captured. The native
@@ -383,7 +408,7 @@ the underlying musical inference or reference labels already exist.
   and reload, and byte-identical reviewed-packet export/import replay. The
   updated no-key LAN service is live, but the physical-phone retry is still
   needed to identify or clear its specific failure; do not count the user's
-  inaudibility remark as a reviewed label. See [work](../WORK.md#phone-wav-http-400-diagnostics-and-isolated-replay--2026-09-28).
+  inaudibility remark as a reviewed label. See [work](../WORK-HISTORY.md#phone-wav-http-400-diagnostics-and-isolated-replay--2026-09-28).
 - 2026-09-28 the physical Brave WAV failure prompted a bounded end-to-end
   browser/service batch. The native route served the exact 882,044-byte WAV
   on the host; the phone failure bytes remain unknown. The Pascal/pas2js UI
@@ -396,10 +421,10 @@ the underlying musical inference or reference labels already exist.
   Salty Boi independently replayed actual WAV playback, exact and guided
   answers, marker placement/correction, contained key review, reload and
   export/re-import on isolated catalogs at 390/1280 pixels. The live no-key
-  service now serves byte-matching assets at `192.168.12.109:18097`; the
+  service now serves byte-matching assets at `review-host.invalid:18097`; the
   durable manifest and one review event did not change. The user's physical
   phone check remains manual item 2. This engineering QA does not close the
-  complete operator task or add milestone credit; see [work](../WORK.md#lan-review-flow-and-backlog-labeling-support--2026-09-28).
+  complete operator task or add milestone credit; see [work](../WORK-HISTORY.md#lan-review-flow-and-backlog-labeling-support--2026-09-28).
 - 2026-09-27 a physical Brave page showed the workbench shell but remained on
   `Connecting to local service…`. The host's live listener, page, bundled JS,
   session endpoint, private Wi-Fi address and local-subnet firewall rule were
@@ -429,7 +454,7 @@ the underlying musical inference or reference labels already exist.
   retention, one-event advancement, uncertain pending, generic approval and
   all-done. Win32/Win64 native reports matched the API; valid publication
   succeeded and invalid publication preserved the old manifest. The checked
-  no-key service is live at `192.168.12.109:18097`, reporting three waiting and
+  no-key service is live at `review-host.invalid:18097`, reporting three waiting and
   Berg `rest/approved` as the one completed request. Physical-phone review of
   this revised queue remains pending.
 - 2026-09-27 a physical Brave Save showed `Request check HTTP 400`, but the
@@ -448,7 +473,7 @@ the underlying musical inference or reference labels already exist.
   fresh/no-autosave, saved same-value/no-POST, HTTP 400 selection recovery,
   and one-POST revision-checked correction. Its numeric payload extractor was
   invalid; the accepted event revisions establish the save outcome. The
-  checked no-key Win64 service is live at `192.168.12.109:18097`; the queue
+  checked no-key Win64 service is live at `review-host.invalid:18097`; the queue
   reports `rest/approved` for Berg and no second Berg review, and served
   `app.js`, HTML and CSS hashes match the staged bytes. Physical-phone replay
   of the revised page is still unverified.
@@ -465,7 +490,7 @@ the underlying musical inference or reference labels already exist.
   before POST, unknown export and the retained note editor. A final harness
   counter check after navigation failed because its probe was not reinstalled;
   the relevant browser actions had passed. The checked assets are live at
-  `192.168.12.109:18097`; HTTP hashes match, no-key session opened, and four
+  `review-host.invalid:18097`; HTTP hashes match, no-key session opened, and four
   clarified requests loaded. The original opening WAV is very quiet and the
   user's report that it sounded silent does not establish an acoustic rest or
   complete physical Brave playback review. Item 2 remains pending, with
@@ -515,7 +540,7 @@ the underlying musical inference or reference labels already exist.
   recheck 390px layout, physical-phone playback, Approved-state interaction,
   missing-type UI validation, conflict display or blind-proposal hiding;
   source/native and earlier browser evidence retain their separate scopes.
-  The checked assets are live on `192.168.12.109:18097` as process 18564;
+  The checked assets are live on `review-host.invalid:18097` as process 18564;
   page/app returned HTTP 200, silent session opened, three catalog tracks and
   zero assigned requests loaded, and tokenless catalog read returned 403. The
   one physical-phone playback/usability
@@ -538,7 +563,7 @@ the underlying musical inference or reference labels already exist.
   states, no key prompt, zero horizontal overflow, blind proposal hiding and
   no automatic review save also passed. Evidence is under ignored
   `build/label-workbench/ux-qa-20260927/`; this does not replace the physical
-  Brave verdict. The checked service is live on `192.168.12.109:18097` as
+  Brave verdict. The checked service is live on `review-host.invalid:18097` as
   process 15936; authorized queue is empty, catalog has three sources, and
   page/app return HTTP 200. A post-repair physical phone check is queued as
   the sole pending cross-task review item (1/20).
@@ -553,12 +578,12 @@ the underlying musical inference or reference labels already exist.
   FPC 3.2.2 Win32/Win64 and pas2js 3.3.1 builds passed. Salty Boi accepted
   isolated open/keyed HTTP checks and a desktop Edge render without a login
   prompt; spoofed Host/Origin and tokenless calls were rejected. The live
-  `192.168.12.109:18097` service returned HTTP 200 for page/app/session and
+  `review-host.invalid:18097` service returned HTTP 200 for page/app/session and
   authorized catalog, and HTTP 403 for tokenless catalog. Evidence is under
   ignored `build/label-open-smoke/` and `build/label-workbench/live-open/`.
   Fresh narrow visual capture and actual physical-phone reachability/playback,
   zoom, edit and long-source navigation remain unverified, so criterion 5 and
-  the task's +0.20 overall credit stay open. Windows Private firewall is
+  the task's then-allocated +0.20 overall credit stayed open (historical amount). Windows Private firewall is
   `BlockInbound,AllowOutbound`; this shell cannot inspect or add its rules.
 - 2026-09-26 user correction supersedes the earlier access-key requirement:
   the LAN workbench must open without any operator-entered credential. A saved
@@ -574,7 +599,7 @@ the underlying musical inference or reference labels already exist.
   verdict or close criterion 5; continue other tasks until the queue fills or
   genuine dependencies require this review sooner.
 - 2026-09-26 live LAN readiness check: the current host serves the saved-key
-  reconnect assets on `192.168.12.109:18097` and its Wi-Fi profile is Private.
+  reconnect assets on `review-host.invalid:18097` and its Wi-Fi profile is Private.
   No explicit port-18097 inbound rule exists; a Private/local-subnet TCP rule
   request was denied by the unelevated Windows shell, so no rule was added.
   This does not prove the phone cannot connect. Physical-phone reconnect,
@@ -638,7 +663,7 @@ the underlying musical inference or reference labels already exist.
   reloaded, saved undo at 2, reloaded, saved redo at 3, then observed an
   external revision 4 and a rejected stale undo at 409 with no revision 5.
   Salty Boi accepted the exact browser behavior and inspected both layouts.
-  The live `192.168.12.109:18097` host serves the updated page and app asset.
+  The live `review-host.invalid:18097` host serves the updated page and app asset.
   This closes the keyboard and staged undo/redo portion of criterion 3; its
   complete criterion and the larger workbench task remain under audit, with
   no credit yet.
@@ -667,7 +692,7 @@ the underlying musical inference or reference labels already exist.
   existing files before reading. Checked Win32/Win64 LAN starts produced
   protected ACLs with only OWNER RIGHTS and SYSTEM full control; a legacy
   broad test file was restricted on restart before serving requests.
-  The live `192.168.12.109:18097` process now runs this binary against the
+  The live `review-host.invalid:18097` process now runs this binary against the
   durable catalog. A separate-port first start created the key file and
   returned 403/200 for wrong/correct keys. The live host reused that file
   without rewriting it, returned 403/200 for wrong/correct keys and served
@@ -760,12 +785,12 @@ the underlying musical inference or reference labels already exist.
   checks remain open. No completion credit.
 - The page now accepts a reviewed JSON file and uploads it to the authenticated
   Pascal replay route. A real Edge browser selected the 21,224-byte fixture,
-  submitted it on the LAN-bound page at `192.168.12.109:18097` and displayed
+  submitted it on the LAN-bound page at `review-host.invalid:18097` and displayed
   `Packet duplicate: 2 tracks.`; the native HTTP
   route separately restored that packet into a fresh imported catalog. The
   control and result were inspected at 1280px desktop and 390px emulated mobile
   widths in ignored build screenshots. The new matching native/browser preview
-  is bound to `192.168.12.109:18097` with an ignored test catalog; the older
+  is bound to `review-host.invalid:18097` with an ignored test catalog; the older
   port 18096 remains an older native host. No physical phone or durable-root
   review is inferred. Timeline editing, cue audition, undo/redo and final
   operator QA remain open; no completion credit.

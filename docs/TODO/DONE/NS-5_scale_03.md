@@ -4,6 +4,10 @@
 
 **Description:**
 
+Completion credit: 1 goal percentage points (0.20 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Deliver a reusable, source-bound stream over multiple Pascal-produced WAV
 observation artifacts and qualify it on the prepared 2.322-hour development
 workload. Preserve original recording and scope boundaries for later musical
@@ -16,7 +20,7 @@ The existing accepted one-hour single-file producer is a prerequisite, not new
 credit. No new source or genre identity is asserted for the three inputs.
 
 North star: NS-5. Outcome owner: CORPUS-SCALE.
-Completion credit: 1 NS-5 goal percentage point (0.20 overall points), moved
+Historical allocation: 1 NS-5 goal percentage point (0.20 overall points), moved
 from the four unearned points of `NS-5_scale_01`. The two tasks retain the
 original four-point allocation. Credit is earned only after every criterion
 and task-flow completion requirement passes.

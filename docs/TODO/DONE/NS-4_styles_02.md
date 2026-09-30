@@ -4,10 +4,14 @@
 
 **Description:**
 
+Completion credit: 5 goal percentage points (0.75 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Make a derived semantic style a full input to later generation and selective blends, retaining joint relationships and auditable source contributions.
 
 North star: NS-4. Outcome owner: WFC-STYLE.
-Completion credit: 4 goal percentage points (0.60 overall points).
+Historical allocation: 4 goal percentage points (0.60 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [WAVE-STYLE](../../WAVE-STYLE.md) · [LAYERED-STYLE](../../LAYERED-STYLE.md) · [CORPUS-EVALUATION](../../CORPUS-EVALUATION.md).

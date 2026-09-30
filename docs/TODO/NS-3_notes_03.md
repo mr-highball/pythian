@@ -4,10 +4,20 @@
 
 **Description:**
 
+Completion credit: 5 goal percentage points (1.25 overall points).
+Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
+Execution status (2026-09-29): **Dependency-blocked**.
+Next deliverable: Freeze the combined decoder and close independent phrase-to-saved-learning acceptance on actual inferred events.
+Closing evidence and stop condition: Per-recording >=80% coverage, >=98% precision, onset F1>=0.80, full-note F1>=0.70, maintained WFC reload and audible passage. Stop on any frozen gate failure; no reference-event substitution.
+Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
+This reassessment closes no product criterion and preserves prior failures below.
+
 Freeze combined pitch/presence/boundary inference, accept supported independent recordings and use their admitted events in the saved learner and actual WFC generation.
 
 North star: NS-3. Outcome owner: WAV-03-PHRASES.
-Completion credit: 2 goal percentage points (0.50 overall points), after
+Historical allocation: 2 goal percentage points (0.50 overall points), after
 assigning 1 of its original 5 unearned points to the generic admitted-event
 [WFC bridge](DONE/NS-3_notes_06.md) and 2 to the recorded
 [annotation catalog](DONE/NS-3_labeling_01.md). All phrase and inferred-event
@@ -60,7 +70,7 @@ Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [PITCH](../PI
   training view. Checked Win32/Win64 produced identical direct and generated
   WAV hashes with zero leaks; the generated 256-span WAV/sidecar replay
   byte-identically. The paired listening packet and exact boundaries are in
-  [WORK](../WORK.md#substantial-generated-development-preview--2026-09-23).
+  [WORK](../WORK-HISTORY.md#substantial-generated-development-preview--2026-09-23).
   The user reports stumbling in both the exact-timing direct solo render and
   the reference-trained WFC render. The direct result is not a positive
   musical control, so the packet cannot attribute the shared problem solely
@@ -73,7 +83,7 @@ Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [PITCH](../PI
   two exposed Spring publisher parts at exact times without WFC. Checked
   Win32/Win64 QA passed after repairing a private error-path leak; the user
   heard no stumbling and correctly recognized a pre-authored song. The
-  [WORK record](../WORK.md#substantial-generated-development-preview--2026-09-23)
+  [WORK record](../WORK-HISTORY.md#substantial-generated-development-preview--2026-09-23)
   retains hashes and scope. The next musical checkpoint needs new multi-part
   choices; this replay earns no WAV inference or phrase credit.
 - Follow-up: use the combined maintained identity/presence path only after both prerequisite tasks pass. The preferred development flute precision remains 91.57% against 98%; violin's passing development result is not independent acceptance. Keep reserved phrase material untouched until the final policy freeze; see [phrase evidence](../PHRASE-EVALUATION.md).

@@ -4,10 +4,20 @@
 
 **Description:**
 
+Completion credit: 2 goal percentage points (0.50 overall points).
+Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
+Execution status (2026-09-29): **Dependency-blocked**.
+Next deliverable: Close evolving-sound admission across declared pitches/dynamics using accepted event fundamentals and ownership.
+Closing evidence and stop condition: Fixed fit-error/unknown bounds and separate-recording evidence through a saved native provider. Stop if pitch movement or role leakage is absorbed as timbre.
+Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
+This reassessment closes no product criterion and preserves prior failures below.
+
 Extend existing stationary/trajectory fitting into reliable recorded evolving sound, separating pitch movement, role leakage and true timbral change.
 
 North star: NS-3. Outcome owner: WAV-03-TIMBRE.
-Completion credit: 4 goal percentage points (1.00 overall points).
+Historical allocation: 4 goal percentage points (1.00 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [SOURCES](../SOURCES.md) · [WAVE-STYLE](../WAVE-STYLE.md) · [SYNTHESIS-QUALITY](../SYNTHESIS-QUALITY.md).

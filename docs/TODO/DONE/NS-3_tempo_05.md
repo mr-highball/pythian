@@ -4,6 +4,10 @@
 
 **Description:**
 
+Completion credit: 1 goal percentage points (0.25 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Deliver the independently usable Pascal beat-candidate pool, source and policy
 ownership, and selected-clock link on authored controls. This is the
 source-independent half of the original [beat-candidate task](../NS-3_tempo_04.md),
@@ -12,7 +16,7 @@ downstream beat-level selection genuine alternatives and explicit uncertainty;
 it does not certify recorded pulse recall or choose a musical beat level.
 
 North star: NS-3. Outcome owner: WAV-02-PULSE.
-Completion credit: 1 goal percentage point (0.25 overall points), transferred
+Historical allocation: 1 goal percentage point (0.25 overall points), transferred
 from the original unearned +2 NS-3 / +0.50 overall allocation of
 [NS-3_tempo_04](../NS-3_tempo_04.md). The two tasks together retain +2 / +0.50;
 creating this file earns no credit.

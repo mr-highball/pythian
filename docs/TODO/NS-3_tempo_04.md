@@ -4,6 +4,16 @@
 
 **Description:**
 
+Completion credit: 2 goal percentage points (0.50 overall points).
+Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
+Execution status (2026-09-29): **Stopped candidate/source investigation**.
+Next deliverable: Close recorded candidate availability with independently attributable pulse evidence and a materially different justified candidate contract. The 2026-09-28 event graph failed missing120 and remains rejected.
+Closing evidence and stop condition: Frozen candidate-only 30-ms recall/coverage/work limits, source evidence and saved pool replay before scoring. No terminal-extrapolation, candidate-window or failed source-route variants.
+Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
+This reassessment closes no product criterion and preserves prior failures below.
+
 Accept the maintained beat-candidate pool on a source-separated recorded
 challenge with independently attributable physical pulse evidence. The
 source-independent Pascal pool, clock contract and authored controls are owned
@@ -12,7 +22,7 @@ challenge, including missing/unsupported evidence and candidate recall rather
 than beat-level selection.
 
 North star: NS-3. Outcome owner: WAV-02-PULSE.
-Completion credit: 1 goal percentage point (0.25 overall points). The original
+Historical allocation: 1 goal percentage point (0.25 overall points). The original
 unearned +2 NS-3 / +0.50 overall allocation, split from the original 5 points
 of [NS-3_tempo_01](NS-3_tempo_01.md), is now shared equally with
 [NS-3_tempo_05](DONE/NS-3_tempo_05.md); total credit is unchanged.
@@ -524,7 +534,7 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
   admitted onset does not prove absence of a source pulse. The frozen 02/04
   candidate gates still fail and criterion 3's source-pulse distinction remains
   open. This is the second consecutive nonclosing batch since criterion 1;
-  stop pool experiments and follow the [work reassessment](../WORK.md#beat-candidate-omission-reassessment--2026-09-23).
+  stop pool experiments and follow the [work reassessment](../WORK-HISTORY.md#beat-candidate-omission-reassessment--2026-09-23).
 - 2026-09-23 first post-freeze batch: a [maintained Pascal checker and
   baseline](../BEAT-TRACKING.md#first-current-policy-candidate-baseline)
   now bind saved pre-reference reports to exact WAV/CSV hashes, default
@@ -557,7 +567,7 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
   Candidate evidence is an independently consumable native result, so this task
   receives 2 of the original 5 goal points and tempo_01 retains 3. The total
   unearned credit and the original acceptance scope do not change. See the
-  [work reassessment](../WORK.md#beat-candidate-deliverable-split--2026-09-23).
+  [work reassessment](../WORK-HISTORY.md#beat-candidate-deliverable-split--2026-09-23).
 - Next bounded deliverable after the reassessment: obtain independently
   reviewable source-pulse status for ambiguous windows and declare one finite
   fit/retention decision before changing policy. The old 32-candidate walk is

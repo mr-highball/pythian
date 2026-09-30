@@ -1,6 +1,7 @@
 /build/
+/.codex-remote-attachments/
+.access-key
 *.ppu
 *.o
 *.or
 *.a
-

@@ -15,8 +15,20 @@ Read [the project profile](PROJECT.md) and the relevant standards in
 - WFC is a retained companion submodule. Put its contracts in `adapters/wfc/`.
   Phanes was removed after its extraction audit; preserve its recorded provenance
   and derived notices. Do not edit dependency source in this checkout.
-- Follow [Lean stewardship](vendor/athena/docs/agent-stewardship.md), with one
-  primary agent and no delegation unless explicitly authorized.
+- WFC is integral to the full product while core-only use stays independent.
+  Keep audio/musical adaptation here. For a demonstrated generic WFC gap, use
+  its separate local repository and a new branch, inform the user, and follow
+  the [cross-repository procedure](docs/TASKFLOW.MD#cross-repository-wfc-gaps).
+- Follow [stewardship](vendor/athena/docs/agent-stewardship.md) and the current
+  [authorized team](docs/TASKFLOW.MD#delegated-validation-and-publication):
+  Big Boss (main, GPT-6 Sol Ultra), Ticket Guy (GPT-6.1 Sol Medium), Ticket Guy Neo
+  (GPT-6.1 Sol Ultra, complex/costly work and coordination Big Boss assigns), and Salty Boi
+  (GPT-6.1 Sol Low) final QA. No helper beyond these three; use exclusive file
+  ownership and transfer either Ticket Guy's task to Big Boss after two failed
+  implementation QA submissions. Neo does not bypass that transfer rule.
+  Big Boss retains chief oversight and the hardest assessment/final judgment;
+  Neo may assign bounded disjoint work to the
+  existing Ticket Guy and coordinate Salty Boi, without additional helpers.
 - Preserve complete license notices and record precursor provenance.
 - Keep generated files under ignored `build/`. Validate meaningful boundaries,
   deterministic replay, and the changed listening path without redundant suites.

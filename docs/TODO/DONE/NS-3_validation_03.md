@@ -4,6 +4,10 @@
 
 **Description:**
 
+Completion credit: 2 goal percentage points (0.50 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Deliver an independently usable, Pascal-owned observation backend for the
 supported WAV pitch range. This task owns selection, measurement semantics,
 controlled discrimination and source-bound recorded development evidence.
@@ -13,13 +17,13 @@ backend is accepted. This split moves 2 of the original 5 unearned NS-3 goal
 points here; the two tasks retain the original 5 points together.
 
 North star: NS-3. Outcome owner: WAV-VALIDATION.
-Completion credit: 2 goal percentage points (0.50 overall points).
+Historical allocation: 2 goal percentage points (0.50 overall points).
 Credit is earned only when every acceptance criterion and the task-flow
 completion requirements pass.
 
 Starting evidence: [three stopped Pascal hypotheses](NS-3_validation_02.md) ·
 [phrase evaluation](../../PHRASE-EVALUATION.md) ·
-[work record](../../WORK.md#periodic-support-recorded-stop-point--2026-09-22).
+[work record](../../WORK-HISTORY.md#periodic-support-recorded-stop-point--2026-09-22).
 
 Accepted 2026-09-22 after focused QA: the owned
 `TSparsePeakInferenceBackend` in `adapters/inference/pythian.inference.sparsepeak.pas`

@@ -1,10 +1,24 @@
-# NS-5_evaluation_01 — Define measurable style cards and comparator contracts
+# NS-5_evaluation_01 — Deliver a reusable style-card and comparison contract
 
 [Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-5)
 
 **Description:**
 
-Complete the executable acceptance specification for chillwave, stoner rock and lofi before their final training/evaluation runs.
+Completion credit: 3 goal percentage points (0.60 overall points).
+Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
+Execution status (2026-09-29): **Ready for a bounded contract batch**.
+Next deliverable: Close the generic Pascal style-card reader/scorer and independently grounded note/duration control criteria; keep full-provider grounding in evaluation_04.
+Closing evidence and stop condition: Two arbitrary labels, malformed-contract rejection, exact reload and trait-preserving/breaking comparisons. Stop on missing reference support; a document or partial generic control alone cannot close the task.
+Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
+This reassessment closes no product criterion and preserves prior failures below.
+
+Deliver a caller-defined style-card contract and a complete bounded note/duration
+comparison through maintained Pascal consumers. Style names are opaque caller
+labels. The full six-dimension reference matrix is owned by
+[NS-5_evaluation_04](NS-5_evaluation_04.md); it remains required for final
+many-hour style acceptance.
 
 For this user-directed test, the three names designate personal style
 preferences anchored by user-selected full mixes. The user confirmed holistic
@@ -15,7 +29,8 @@ records; the [working specification](../STYLE-CARDS.md) retains the common
 measurement contract.
 
 North star: NS-5. Outcome owner: CORPUS-SETUP / STYLE-EVAL.
-Completion credit: 4 goal percentage points (0.80 overall points).
+Historical allocation: 2 goal percentage points (0.40 overall points).
+The other 2 original unearned points now belong to NS-5_evaluation_04.
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [CORPUS-EVALUATION](../CORPUS-EVALUATION.md) · [LAYERED-STYLE](../LAYERED-STYLE.md).
@@ -104,17 +119,24 @@ remain open here, with no task credit.
 
 **Acceptance Criteria:**
 
-- Ground each style card in reference WAV observations across context, groove, harmony, bass/voice relationships, sound/envelope and phrase/section structure; mark required, optional and unsupported traits explicitly. Bind observations to verified recording/edition correspondence, exact intervals, annotation method and uncertainty. Missing required observations remain pending; catalogue tags and aggregate level statistics do not supply them.
-- Define provider-specific quantitative trait/error/coverage criteria and uncertainty references, without deriving ground truth from the current unreliable inference.
-- Specify the single-recording, unlearned and within-recording shuffled comparators and each provider's shuffle semantics, retaining song boundaries.
-- Retain seeds 731/1731/2731, 120-second outputs, fixed listening positions, the existing 0..3 rubric and 15-second paired-edit protocol unless revised with a rationale before evaluation.
-- Freeze the specification and demonstrate a controlled trait-preserving and trait-breaking comparison for each required provider dimension, with expected outcomes grounded independently of the learner. Reuse controls across cards where the measurement contract is identical; a loudness-only comparison does not qualify unrelated musical measures. Do not claim a listening verdict from this protocol work.
+- AC1: Expose a current Pascal-readable style card with caller ID, required/optional/unsupported traits, source/reference bindings, interval clocks, annotation policy, uncertainty, exposure and numeric acceptance limits. Round-trip two unrelated labels and reject missing required references or invalid thresholds before scoring.
+- AC2: Instantiate a fully grounded note/duration card for the bounded single-recording path. Fix quantitative coverage, relationship and novelty limits with independent reference evidence and denominators before candidate evaluation; learner predictions cannot establish truth. Full context/groove/harmony/roles/sound/structure grounding remains in evaluation_04.
+- AC3: Execute matched unlearned and within-recording shuffled comparators plus the single-recording baseline, with explicit shuffle semantics, source/run boundaries and unknown spans. A single-recording candidate is its own single-recording baseline, so its advantage must be measured against the other comparators.
+- AC4: Retain seeds 731/1731/2731, 120-second outputs, fixed listening positions, 0..3 rubric and 15-second paired edits unless prospectively revised with rationale. Unsupported dimensions remain visible; the bounded card cannot remove dimensions required by the final full card.
+- AC5: Run independent trait-preserving and trait-breaking note/duration controls through the maintained reader/scorer and obtain the expected numeric pass/fail results. A schema, report or loudness-only control does not close this contract. No actual style or listening verdict follows.
 
 **Blockers**
 
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
 
 **Dev Notes:**
+
+- 2026-09-29: original 4 points split 2 here +2 in
+  [evaluation_04](NS-5_evaluation_04.md). The old full-provider grounding,
+  quantitative criteria, comparator, listening protocol and per-dimension
+  controls all remain required across those two tasks. This changes the next
+  deliverable from three named genre definitions to one reusable contract
+  exercised on a bounded supported dimension; no credit is earned.
 
 - 2026-09-25 distinct global-offset correspondence check resolved the first
   lofi candidate's repeated-passage ambiguity at three previously unused
@@ -196,7 +218,7 @@ remain open here, with no task credit.
   metadata cuts, timed musical traits and independent evaluation groups remain
   unverified. The acquisition/cache and review-packet batches close no criterion.
   Stop further source-metadata preparation at the task-flow checkpoint. The
-  user's [core-first direction](../WORK.md#core-first-re-alignment--2026-09-23)
+  user's [core-first direction](../WORK-HISTORY.md#core-first-re-alignment--2026-09-23)
   defers detailed style-card review while general core work proceeds; seek their
   input for substantial playable or design checkpoints, not routine labels.
 

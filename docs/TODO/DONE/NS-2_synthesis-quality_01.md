@@ -4,10 +4,14 @@
 
 **Description:**
 
+Completion credit: 8 goal percentage points (2.00 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Accept the audible behavior of the supported oscillator, wavetable, sample and measured-instrument paths. Existing numerical checks are baseline evidence; use their auditions and the supplied listener preview to identify concrete source/articulation defects.
 
 North star: NS-2. Outcome owner: FUND-QUALITY.
-Completion credit: 8 goal percentage points (2.00 overall points).
+Historical allocation: 8 goal percentage points (2.00 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [SYNTHESIS-QUALITY](../../SYNTHESIS-QUALITY.md) · [FUNDAMENTALS](../../FUNDAMENTALS.md) · [SOURCES](../../SOURCES.md) · [INSTRUMENTS](../../INSTRUMENTS.md).

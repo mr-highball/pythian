@@ -4,6 +4,10 @@
 
 **Description:**
 
+Completion credit: 2 goal percentage points (0.30 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Deliver a reusable Pascal WFC adapter for note events in multiple parts. Its
 joint representation must preserve onset ownership, same-pitch retriggers,
 simultaneous starts, individual note durations and inter-onset gaps. A
@@ -17,7 +21,7 @@ which also requires a positive coherence verdict. This task owns the bounded
 exact event adapter and generation contract.
 
 North star: NS-4. Outcome owner: WAV-04-INTEGRATION.
-Completion credit: 1 NS-4 goal percentage point (0.15 overall points),
+Historical allocation: 1 NS-4 goal percentage point (0.15 overall points),
 reallocated from the original unearned 4-point NS-4_integration_01. The
 separate [composition checkpoint](NS-4_composition_01.md) owns the other
 1 point from this task's former 2-point allocation; recorded integration
@@ -26,7 +30,7 @@ points / 0.60 overall points; only this accepted 1 point has been earned.
 Credit is earned only when every acceptance criterion and the task-flow
 completion requirements pass.
 
-Starting evidence: [exact-score two-part control](../../WORK.md#substantial-generated-development-preview--2026-09-23),
+Starting evidence: [exact-score two-part control](../../WORK-HISTORY.md#substantial-generated-development-preview--2026-09-23),
 [layer contracts](../../INDEPENDENT-VOICES.md),
 [native note sequence](../../../src/pythian.music.pas),
 [existing acoustic-event adapter](../../../adapters/wfc/pythian.wfc.events.pas).

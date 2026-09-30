@@ -4,12 +4,16 @@
 
 **Description:**
 
+Completion credit: 2 goal percentage points (0.50 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Remove the production execution barrier between promising WAV studies and the
 maintained Pascal library. Integrate the selected Pascal observation backend
 through a bounded, source-bound native WAV consumer.
 
 North star: NS-3. Outcome owner: WAV-VALIDATION.
-Completion credit: 3 goal percentage points (0.75 overall points).
+Historical allocation: 3 goal percentage points (0.75 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 The [selective observation producer](NS-3_validation_03.md) owns the first
@@ -164,7 +168,7 @@ Attempt ledger under the user's four-attempt cap: 1/4 absolute autocorrelation
 rejected for recorded specificity; the spectral hypothesis reached its fixed
 synthetic stop gate and is recorded as attempt 2/4 below. The two nonclosing
 work batches triggered
-the separate Athena progress reassessment recorded in [WORK](../../WORK.md#periodic-support-recorded-stop-point--2026-09-22).
+the separate Athena progress reassessment recorded in [WORK](../../WORK-HISTORY.md#periodic-support-recorded-stop-point--2026-09-22).
 
 Exact recorded inputs and saved observations for this stopped candidate:
 

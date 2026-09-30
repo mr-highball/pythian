@@ -4,10 +4,20 @@
 
 **Description:**
 
+Completion credit: 2 goal percentage points (0.50 overall points).
+Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
+Execution status (2026-09-29): **Dependency-blocked**.
+Next deliverable: Close recorded envelope and evolving-sound reconstruction acceptance.
+Closing evidence and stop condition: Frozen independent envelope/fit measures, actual paired listening and selective sound-edit reload. Stop on unsupported event assignment or an invalidating synthesis defect.
+Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
+This reassessment closes no product criterion and preserves prior failures below.
+
 Complete the recorded sound outcome with reliable envelope/event mapping and paired audible reconstruction of evolving timbre.
 
 North star: NS-3. Outcome owner: WAV-03-TIMBRE.
-Completion credit: 3 goal percentage points (0.75 overall points).
+Historical allocation: 3 goal percentage points (0.75 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [WAVE-STYLE](../WAVE-STYLE.md) · [INSTRUMENTS](../INSTRUMENTS.md) · [SYNTHESIS-QUALITY](../SYNTHESIS-QUALITY.md).

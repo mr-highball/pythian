@@ -4,10 +4,17 @@
 
 **Description:**
 
+Completion credit: 12 goal percentage points (1.20 overall points).
+Current basis: [2026-09-29 complete-goal reassessment](../../REBALANCE-2026-09-29.md#current-credit-basis).
+NS-6 now has weight 10: accepted contract/checkpoint total 15 goal points
+(+1.50 overall), zero baseline; nine open tasks own the remaining 85 goal points
+(+8.50 overall). Earlier allocations and acceptance-era score sequences below
+are historical; the scoped acceptance evidence and failures remain valid.
+
 Close the remaining clean-checkout and declared target/CI evidence with real runs of the supported project.
 
 North star: NS-6. Outcome owner: WAV-05-DELIVERY.
-Completion credit: 14 goal percentage points (0.70 overall points).
+Historical allocation: 14 goal percentage points (0.70 overall points).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
 
 Starting evidence: [PACKAGING](../../PACKAGING.md) · [.github/workflows/native.yml](../../../.github/workflows/native.yml) · [PROJECT](../../../PROJECT.md).

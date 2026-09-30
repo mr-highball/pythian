@@ -1,8 +1,15 @@
 # Pythian
 
 Reusable audio synthesis and learning for Pascal. Pythian owns its audio data,
-codecs, DSP, and analysis; WFC is a companion for learned constraints and
-generation. The project is under active construction.
+codecs, DSP and analysis. WFC is integral to the intended learned composition
+and audio-generation workflow; the portable synthesis core also works on its
+own. The project is under active construction.
+
+The [current assessment and delivery order](docs/REBALANCE-2026-09-29.md)
+separates accepted synthesis and reuse mechanisms from unfinished recorded
+learning and useful many-hour styles. Style contracts target any caller's
+recordings and declared traits; chillwave, stoner rock and lofi are internal
+test preferences only. The engineering credit ledger is not a readiness score.
 
 [Project profile](PROJECT.md) · [Architecture](docs/ARCHITECTURE.md) ·
 [Source packages and compiler evidence](docs/PACKAGING.md) ·

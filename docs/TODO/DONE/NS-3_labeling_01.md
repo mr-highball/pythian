@@ -4,6 +4,10 @@
 
 **Description:**
 
+Completion credit: 2 goal percentage points (0.50 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Deliver the native Pascal source, proposal, review and export service for an
 operator-authored WAV training/reference catalog. The agent prepares source
 WAVs and an inbox manifest; the operator can import all available tracks into
@@ -17,7 +21,7 @@ durable root, streams bounded waveform/audio pages, stores source-bound Pascal
 proposals apart from reversible reviewed events, gates blind evaluation, and
 exports an audio-free source/group-bound packet that replays unchanged. Checked
 stable Win32/Win64 import, service, conflict, failure, large-WAV and packet
-checks are recorded in [WORK](../../WORK.md#publisher-linked-note-packet-through-pascal-training--2026-09-26)
+checks are recorded in [WORK](../../WORK-HISTORY.md#publisher-linked-note-packet-through-pascal-training--2026-09-26)
 and the [catalog guide](../../LABEL-CATALOG.md). A real development-exposed
 publisher-linked packet explicitly approved a physically supported downbeat
 and rejected a Pythian beat-grid miss. A separate two-group training-path
@@ -29,7 +33,7 @@ note endings, a genre style or the separate browser workbench acceptance.
 The task earns +2 NS-3 / +0.50 overall: NS-3 **43→45%**, total **70.20→70.70%**.
 
 North star: NS-3. Outcome owner: WAV-03-LABELING.
-Completion credit: 2 goal percentage points (0.50 overall points), assigned
+Historical allocation: 2 goal percentage points (0.50 overall points), assigned
 from the 4 unearned points of [NS-3_notes_03](../NS-3_notes_03.md). That task retains
 2 points and all of its original phrase and inferred-event criteria. The
 accepted [WFC bridge](NS-3_notes_06.md) retains its earlier 1 point;
@@ -147,7 +151,7 @@ Starting evidence: [source-bound presence](../../PRESENCE.md) · [beat reports](
   it uses configured roots and a whitelist of static assets, binds loopback by
   default, and accepts an explicit private IPv4 with an access-key session
   before LAN data access. Prior checked Win32/Win64 request, conflict, path and
-  token checks are recorded in WORK. Current `192.168.12.109:18097` returned
+  token checks are recorded in WORK. Current `review-host.invalid:18097` returned
   the updated page, and its data route rejected an unauthenticated request.
   A separate phone and Windows firewall rule are NS-6 usability/deployment
   evidence, not claims made by this native HTTP criterion. Other catalog
@@ -254,7 +258,7 @@ Starting evidence: [source-bound presence](../../PRESENCE.md) · [beat reports](
   access key and an authenticated session for all data endpoints. Checked stable
   Win32/Win64 builds passed. Real loopback requests returned catalog, bounded
   waveform/audio and current labels; wrong token returned 403 and stale review
-  revision returned 409. A real request to 192.168.12.109 returned 403 without
+  revision returned 409. A real request to review-host.invalid returned 403 without
   a token, 403 with a wrong access key, and 200 for login, catalog and audio
   with the issued token. LAN startup without a key failed. The attempted
   encoded traversal target returned 400 and a foreign Host header returned 403;
@@ -296,7 +300,7 @@ Starting evidence: [source-bound presence](../../PRESENCE.md) · [beat reports](
   stored source/window packet. It never reruns inference on a read. It withholds
   proposal reads and generation for evaluation tracks until blind review is
   implemented. Checked stable Win32/Win64 builds passed. Real requests to
-  `192.168.12.109` returned 403 without a token, 403 for a wrong access key,
+  `review-host.invalid` returned 403 without a token, 403 for a wrong access key,
   then two inbox tracks and eight `unreviewed` beat candidates with a valid
   session; a missing window returned 404. A checked Win32 host returned 403
   for both proposal operations with a temporarily evaluation-partitioned
@@ -310,7 +314,7 @@ Starting evidence: [source-bound presence](../../PRESENCE.md) · [beat reports](
   loopback by default and accepts an explicit private IPv4 address. A real
   browser loaded the assets and exercised catalog, waveform, original WAV,
   proposal and review routes against a copied two-track catalog. A separate
-  `192.168.12.109:18095` listener returned 403 without a token and allowed
+  `review-host.invalid:18095` listener returned 403 without a token and allowed
   browser access-key login and catalog load. The Windows firewall path from a
   separate physical device is not yet verified. Browser export/re-import,
   blind evaluation reveal, and durable operator-root deployment remain open;

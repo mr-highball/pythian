@@ -4,6 +4,10 @@
 
 **Description:**
 
+Completion credit: 1 goal percentage points (0.15 overall points).
+Current basis: [2026-09-29 outcome rebase](../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
 Generate a substantial original two-part passage in which an actual Pascal-owned
 WFC pass chooses the harmony path and the portable composer projects that path
 into fresh note events. This closes the core WFC composition gap exposed by the
@@ -13,7 +17,7 @@ claim that the harmony was learned from a recording or that a personal genre
 style has been learned.
 
 North star: NS-4. Outcome owner: WAV-04-INTEGRATION, core WFC composition.
-Completion credit: 1 NS-4 goal percentage point (0.15 overall points),
+Historical allocation: 1 NS-4 goal percentage point (0.15 overall points),
 transferred from the unearned allocation of
 [NS-4_integration_01](../NS-4_integration_01.md). The recorded integration task
 retains its full acceptance criteria and 1 NS-4 point. At allocation, the two

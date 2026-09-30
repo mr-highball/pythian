@@ -33,6 +33,25 @@ learning, named sessions and saved-style providers use this companion. WFC types
 belong at that boundary. Athena supplies repository standards, not a runtime
 dependency; Phanes is removed and contributes only retained extraction provenance.
 
+WFC is integral to the full composition and audio synthesis product: its
+learned constraints and independently controlled passes feed Pythian's native
+sound realization, saved styles, selective blends and further blends. Core-only
+distribution is a required independent foundation, while a companion consumer
+explicitly selects the WFC source closure. This distribution choice does not
+make full-product WFC acceptance optional. The
+[minimal package](TODO/NS-6_delivery_06.md) verifies both subsets; final recorded
+workflow acceptance remains [integration](TODO/NS-4_integration_01.md) and
+[delivery](TODO/NS-6_delivery_03.md).
+
+Audio DSP, provider vocabularies/codecs, musical clocks, source evidence,
+uncertainty and sound mapping belong in Pythian. Only a reproduced generic
+solver/learner contract gap belongs in WFC's separate local repository, on a
+new branch with the user informed before edits, under the
+[cross-repository procedure](TASKFLOW.MD#cross-repository-wfc-gaps). Do not patch
+the dependency source in this checkout. The current
+[boundary audit](CODEBASE-ASSESSMENT.md#wfc-boundary-audit) found no demonstrated
+generic defect and made no WFC branch or dependency change.
+
 The former [external-runtime observation adapter](PROVENANCE.md#optional-native-observation-adapter)
 is historical evidence and is outside the supported Pascal-only workflow. The
 [accepted Pascal execution task](TODO/DONE/NS-3_validation_02.md) qualifies the

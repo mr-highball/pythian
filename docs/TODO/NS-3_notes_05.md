@@ -4,6 +4,16 @@
 
 **Description:**
 
+Completion credit: 3 goal percentage points (0.75 overall points).
+Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
+Execution status (2026-09-29): **Reference-blocked; source-screen sequence stopped**.
+Next deliverable: Close the remaining quiet audible-tail recorded gate with a distinct source-bound tail and disjoint same-source nonzero rest. Preserve the accepted MAESTRO contrasts and existing satisfied observation/consumer criteria.
+Closing evidence and stop condition: Prospectively frozen source/reference identities, meaningful quiet-tail/rest controls and recorded false-active/missed-active/unknown results. Berg and NIGENS routes remain stopped; another metadata-only scan is not a criterion-closing batch.
+Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
+This reassessment closes no product criterion and preserves prior failures below.
+
 Deliver a reusable Pascal observation of audible instrument activity and
 uncertainty separately from pitch identity. It must distinguish evidence for
 attack, continuation, release-tail candidate and rest without treating an
@@ -12,7 +22,7 @@ The later [event-decision task](NS-3_notes_02.md) owns integration with pitch,
 event boundaries and the shared recorded phrase gates.
 
 North star: NS-3. Outcome owner: WAV-03-BOUNDARIES.
-Completion credit: 1 goal percentage point (0.25 overall points), reallocated
+Historical allocation: 1 goal percentage point (0.25 overall points), reallocated
 from the original 3 unearned points of NS-3_notes_02. The two tasks retain
 the original 3-point total with no new credit.
 Credit is earned only when every acceptance criterion and the task-flow

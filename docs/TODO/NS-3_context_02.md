@@ -4,10 +4,20 @@
 
 **Description:**
 
+Completion credit: 3 goal percentage points (0.75 overall points).
+Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
+Execution status (2026-09-29): **Dependency-blocked**.
+Next deliverable: Persist the accepted automatic local-key and timing outputs, unknown regions and overrides through the existing context consumer.
+Closing evidence and stop condition: Annotated changing-context reload, paired key/tempo edit state comparisons and native cost. Stop on any inferred/manual ambiguity or invalid timing map.
+Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
+This reassessment closes no product criterion and preserves prior failures below.
+
 Complete reusable base context by combining independently admitted key and timing in the current saved context/style contracts.
 
 North star: NS-3. Outcome owner: WAV-02-CONTEXT.
-Completion credit: 1 goal percentage point (0.25 overall points), after
+Historical allocation: 1 goal percentage point (0.25 overall points), after
 assigning 1 of its original 2 unearned points to the independently useful
 [unknown-tempo evidence path](DONE/NS-3_context_04.md).
 Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
