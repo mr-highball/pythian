@@ -30,6 +30,7 @@ interface
 
 uses
   pythian.audio, pythian.time, pythian.wfc.layers, pythian.wfc.provider.contracts,
+  pythian.wfc.provider.codecs,
   pythian.wfc.voices, pythian.wfc.instrument, wfc_model, wfc_sequence,
   wfc_music_voices_graph, wfc_music_ensemble_graph;
 
@@ -143,20 +144,29 @@ type
     FParent: TAudioBytes;
     FOtherParent: TAudioBytes;
     FRecipe: TSemanticBlendRecipe;
-    procedure Finish(const ADefinition: TSemanticStyleDefinition; const AParent: TAudioBytes);
+    procedure Finish(const ADefinition: TSemanticStyleDefinition; const AParent: TAudioBytes;
+      const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission);
   public
-    constructor CreateSource(const ADefinition: TSemanticStyleDefinition);
+    constructor CreateSource(const ADefinition: TSemanticStyleDefinition;
+      const ARegistry: TProviderCodecRegistry = nil;
+      const AAdmission: TProviderCodecAdmission = nil);
     { Only preferences/constraints may change in this derivation. Models, source
       contributions and observed relationships retain their frozen ancestry. }
     constructor CreateDerived(const AParent: TSemanticStyle;
-      const ADefinition: TSemanticStyleDefinition);
+      const ADefinition: TSemanticStyleDefinition;
+      const ARegistry: TProviderCodecRegistry = nil;
+      const AAdmission: TProviderCodecAdmission = nil);
     constructor CreateBlend(const ALeft, ARight: TSemanticStyle;
-      const ARecipe: TSemanticBlendRecipe);
+      const ARecipe: TSemanticBlendRecipe;
+      const ARegistry: TProviderCodecRegistry = nil;
+      const AAdmission: TProviderCodecAdmission = nil);
     function CopyBlendRecipe: TSemanticBlendRecipe;
-    function CopyParent(const ASide: Integer): TSemanticStyle;
+    function CopyParent(const ASide: Integer; const ARegistry: TProviderCodecRegistry = nil;
+      const AAdmission: TProviderCodecAdmission = nil): TSemanticStyle;
     function CopyDefinition: TSemanticStyleDefinition;
     function Encode: TAudioBytes;
-    function CreateSession(const ASeed: Integer): TCompatibleProviderSession;
+    function CreateSession(const ASeed: Integer; const ARegistry: TProviderCodecRegistry = nil;
+      const AAdmission: TProviderCodecAdmission = nil): TCompatibleProviderSession;
     function CreateVoiceSession(const ASeed: Integer): TNamedVoiceSession;
     function CreateInstrument(const ARoleId: String; const AZones: TStyleInstrumentZones;
       const ASampleRate: Integer): TStyleInstrument;
@@ -165,11 +175,12 @@ type
     property NodeCount: Integer read FNodeCount;
   end;
 
-function SemanticVocabularyIdentity(const AModelText: String): String;
+function SemanticVocabularyIdentity(const AModelText: String; const AContract: TProviderContract): String;
 function SemanticPreparationIdentity(const ASource: TSemanticSource): String;
 procedure SemanticRunOriginRange(const ASource: TSemanticSource; const ARun: TSemanticRun;
   out AStartFrame, AEndFrame: Int64);
-function DecodeSemanticStyle(const ABytes: TAudioBytes): TSemanticStyle;
+function DecodeSemanticStyle(const ABytes: TAudioBytes; const ARegistry: TProviderCodecRegistry = nil;
+  const AAdmission: TProviderCodecAdmission = nil): TSemanticStyle;
 
 implementation
 
@@ -195,7 +206,8 @@ type
     function Q(const AValue: Int64 = 0): Int64;
     function Count(const AValue, AMaximum: Integer): Integer;
     function Text(const AValue: String = ''): String;
-    function Blob(const AValue: TAudioBytes): TAudioBytes;
+    function Blob(const AValue: TAudioBytes;
+      const AMaximum: Integer = MaximumSemanticStyleBytes): TAudioBytes;
     function Bytes: TAudioBytes;
     procedure EndOfInput;
   end;
@@ -295,12 +307,12 @@ begin
   end;
 end;
 
-function TStyleIO.Blob(const AValue: TAudioBytes): TAudioBytes;
+function TStyleIO.Blob(const AValue: TAudioBytes; const AMaximum: Integer): TAudioBytes;
 var
   LCount: Integer;
 begin
   Result := nil;
-  LCount := Count(Length(AValue), MaximumSemanticStyleBytes);
+  LCount := Count(Length(AValue), AMaximum);
   if FReading then
   begin
     if LCount > FStream.Size - FStream.Position then
@@ -370,12 +382,23 @@ begin
   end;
 end;
 
+procedure CodecBindingIO(const AIO: TStyleIO; var ABinding: TProviderCodecBinding);
+begin
+  ABinding.Identity := AIO.Text(ABinding.Identity);
+  ABinding.Version := AIO.N(ABinding.Version);
+  ABinding.Configuration := AIO.Blob(ABinding.Configuration, MaximumProviderCodecConfigurationBytes);
+  ABinding.Units := AIO.Text(ABinding.Units);
+  ABinding.UnknownMeaning := AIO.Text(ABinding.UnknownMeaning);
+  ABinding.ClockMeaning := AIO.Text(ABinding.ClockMeaning);
+end;
+
 procedure ContractIO(const AIO: TStyleIO; var AContract: TProviderContract);
 var
   LIndex: Integer;
 begin
   AContract.Name := AIO.Text(AContract.Name);
   AContract.Vocabulary := TStyleProviderVocabulary(AIO.Count(Ord(AContract.Vocabulary), Ord(High(TStyleProviderVocabulary))));
+  CodecBindingIO(AIO, AContract.CodecBinding);
   AContract.RoleId := AIO.Text(AContract.RoleId);
   SetLength(AContract.RoleOrder, AIO.Count(Length(AContract.RoleOrder), 6));
   for LIndex := 0 to High(AContract.RoleOrder) do
@@ -657,16 +680,34 @@ begin
   end;
 end;
 
-function SemanticVocabularyIdentity(const AModelText: String): String;
+function SemanticVocabularyIdentity(const AModelText: String; const AContract: TProviderContract): String;
 var
   LModel: TWfcSequenceModel;
   LIO: TStyleIO;
   LIndex: Integer;
+  LBinding: TProviderCodecBinding;
 begin
+  if AContract.Vocabulary = spvCaller then
+  begin
+    ValidateProviderCodecBindingData(AContract.CodecBinding);
+    if AContract.UnknownPolicy <> AContract.CodecBinding.UnknownMeaning then
+    begin
+      raise EAudio.Create('Caller vocabulary digest requires matching declared unknown meaning');
+    end;
+  end
+  else if not EmptyProviderCodecBinding(AContract.CodecBinding) then
+  begin
+    raise EAudio.Create('Built-in vocabulary digest cannot ignore a caller binding');
+  end;
   LModel := DecodeWfcSequenceText(AModelText);
   LIO := nil;
   try
     LIO := TStyleIO.Create(nil, False);
+    LIO.Text('pythian.provider.vocabulary.v2');
+    LIO.N(Ord(AContract.Vocabulary));
+    LIO.Text(AContract.UnknownPolicy);
+    LBinding := CopyProviderCodecBinding(AContract.CodecBinding);
+    CodecBindingIO(LIO, LBinding);
     for LIndex := 0 to LModel.PublicTokenCount - 1 do
     begin
       LIO.Text(LModel.PublicTokenAt(LIndex));
@@ -856,6 +897,9 @@ begin
   Require(ADefinition.NamedVoices and (Length(ALayers) >= 3) and
     (Length(ADefinition.VoiceRanges) = Length(ALayers) - 2), 'Semantic named voice layout is incomplete');
   Require(Length(ADefinition.Projections) = 0, 'Named voice dependencies are defined by its actual config');
+  Require((ADefinition.Providers[0].Contract.Vocabulary = spvHarmony) and
+    (ADefinition.Providers[1].Contract.Vocabulary = spvRhythm),
+    'Named voice schema requires built-in harmony/rhythm codecs');
   Result.StepsPerOctave := 12;
   Result.HarmonyMode := ADefinition.HarmonyMode;
   Result.HarmonyModel := ALayers[0].Model;
@@ -864,13 +908,16 @@ begin
   SetLength(Result.Voices, Length(ALayers) - 2);
   for LIndex := 0 to High(Result.Voices) do
   begin
+    Require(ADefinition.Providers[LIndex + 2].Contract.Vocabulary = spvVoice,
+      'Named voice schema requires built-in voice codecs; caller traits use generic layers');
     Result.Voices[LIndex].Model := ALayers[LIndex + 2].Model;
     Result.Voices[LIndex].MinPitch := ADefinition.VoiceRanges[LIndex].MinimumPitch;
     Result.Voices[LIndex].MaxPitch := ADefinition.VoiceRanges[LIndex].MaximumPitch;
   end;
 end;
 
-function TSemanticStyle.CreateSession(const ASeed: Integer): TCompatibleProviderSession;
+function TSemanticStyle.CreateSession(const ASeed: Integer;
+  const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission): TCompatibleProviderSession;
 var
   LLayers: TLearnedLayers;
   LOptions: TLayerGenerationOptions;
@@ -881,7 +928,7 @@ begin
     LOptions := DefaultLayerGenerationOptions;
     LOptions.Seed := ASeed;
     Result := TCompatibleProviderSession.Create(LLayers, FDefinition.Projections,
-      Contracts(FDefinition), LOptions);
+      Contracts(FDefinition), LOptions, ARegistry, AAdmission);
   finally
     FreeLayers(LLayers);
   end;
@@ -1277,7 +1324,8 @@ begin
   end;
 end;
 
-procedure ValidateDefinition(const AStyle: TSemanticStyle);
+procedure ValidateDefinition(const AStyle: TSemanticStyle;
+  const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission);
 var
   LDefinition: TSemanticStyleDefinition;
   LLayers: TLearnedLayers;
@@ -1468,11 +1516,11 @@ begin
     for LProvider := 0 to High(LLayers) do
     begin
       LContract := LDefinition.Providers[LProvider].Contract;
-      ValidateProviderContract(LLayers[LProvider].Model, LContract);
+      ValidateProviderContract(LLayers[LProvider].Model, LContract, ARegistry, AAdmission);
       Require((Length(LDefinition.Providers[LProvider].ExtractionPolicy) > 0) and
         (Length(LDefinition.Providers[LProvider].ExtractionPolicy) <= 4096), 'Provider extraction policy is required');
       Require(LDefinition.Providers[LProvider].VocabularySha256 =
-        SemanticVocabularyIdentity(LDefinition.Providers[LProvider].ModelText), 'Frozen provider vocabulary identity differs');
+        SemanticVocabularyIdentity(LDefinition.Providers[LProvider].ModelText, LContract), 'Frozen provider vocabulary identity differs');
       if LContract.Source.SourceSha256 <> '' then
       begin
         LFound := False;
@@ -1562,7 +1610,7 @@ begin
     begin
       Require((Length(LDefinition.VoiceRanges) = 0) and (Length(LDefinition.VoicePairs) = 0),
         'Generic style cannot silently ignore named voice constraints');
-      LGrid := AStyle.CreateSession(731);
+      LGrid := AStyle.CreateSession(731, ARegistry, AAdmission);
       LGrid.Free;
       if not AStyle.FInheritedJoints then
       begin
@@ -1642,32 +1690,44 @@ begin
   end;
 end;
 
-procedure TSemanticStyle.Finish(const ADefinition: TSemanticStyleDefinition; const AParent: TAudioBytes);
+procedure TSemanticStyle.Finish(const ADefinition: TSemanticStyleDefinition; const AParent: TAudioBytes;
+  const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission);
 var
   LIO: TStyleIO;
   LBody: TAudioBytes;
+  LAdmission: TProviderCodecAdmission;
+  LOwned: Boolean;
 begin
-  FDefinition := ReadDefinition(DefinitionBytes(ADefinition));
-  ValidateDefinition(Self);
-  FParent := Copy(AParent);
-  LIO := TStyleIO.Create(nil, False);
+  LAdmission := BorrowProviderCodecAdmission(ARegistry, AAdmission, LOwned);
   try
-    LIO.Text('pythian.semantic.style.v1');
-    LIO.N(FKind);
-    LIO.Blob(AParent);
-    LIO.Blob(FOtherParent);
-    BlendRecipeIO(LIO, FRecipe);
-    LIO.Blob(DefinitionBytes(FDefinition));
-    LBody := LIO.Bytes;
-    LIO.Text(Sha256Bytes(LBody));
-    FBytes := LIO.Bytes;
-    FIdentity := Sha256Bytes(FBytes);
+    FDefinition := ReadDefinition(DefinitionBytes(ADefinition));
+    ValidateDefinition(Self, ARegistry, LAdmission);
+    FParent := Copy(AParent);
+    LIO := TStyleIO.Create(nil, False);
+    try
+      LIO.Text('pythian.semantic.style.v2');
+      LIO.N(FKind);
+      LIO.Blob(AParent);
+      LIO.Blob(FOtherParent);
+      BlendRecipeIO(LIO, FRecipe);
+      LIO.Blob(DefinitionBytes(FDefinition));
+      LBody := LIO.Bytes;
+      LIO.Text(Sha256Bytes(LBody));
+      FBytes := LIO.Bytes;
+      FIdentity := Sha256Bytes(FBytes);
+    finally
+      LIO.Free;
+    end;
   finally
-    LIO.Free;
+    if LOwned then
+    begin
+      LAdmission.Free;
+    end;
   end;
 end;
 
-constructor TSemanticStyle.CreateSource(const ADefinition: TSemanticStyleDefinition);
+constructor TSemanticStyle.CreateSource(const ADefinition: TSemanticStyleDefinition;
+  const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission);
 var
   LProvider: Integer;
   LRun: Integer;
@@ -1688,11 +1748,12 @@ begin
       demands exact canonical re-encoding, so an altered archived ID rejects. }
     LDefinition.Runs[LRun].ProviderEvidence := nil;
   end;
-  Finish(LDefinition, nil);
+  Finish(LDefinition, nil, ARegistry, AAdmission);
 end;
 
 constructor TSemanticStyle.CreateDerived(const AParent: TSemanticStyle;
-  const ADefinition: TSemanticStyleDefinition);
+  const ADefinition: TSemanticStyleDefinition;
+  const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission);
 var
   LBaseline: TSemanticStyleDefinition;
   LCandidate: TSemanticStyleDefinition;
@@ -1723,7 +1784,7 @@ begin
   FNodeCount := AParent.NodeCount + 1;
   FInheritedJoints := AParent.FInheritedJoints;
   FKind := 1;
-  Finish(LCandidate, AParent.Encode);
+  Finish(LCandidate, AParent.Encode, ARegistry, AAdmission);
 end;
 
 function ActivePolicyIdentity(const ADefinition: TSemanticStyleDefinition): String;
@@ -1899,7 +1960,8 @@ begin
       end;
       LModel := LearnSequenceModelCorpus(LSamples, LOriginal.Order);
       ADefinition.Providers[LProvider].ModelText := EncodeWfcSequenceText(LModel);
-      Require(SemanticVocabularyIdentity(ADefinition.Providers[LProvider].ModelText) =
+      Require(SemanticVocabularyIdentity(ADefinition.Providers[LProvider].ModelText,
+        ADefinition.Providers[LProvider].Contract) =
         ADefinition.Providers[LProvider].VocabularySha256,
         'Blend changes frozen ordered vocabulary; rebuild vocabulary explicitly');
     finally
@@ -2048,7 +2110,8 @@ begin
 end;
 
 constructor TSemanticStyle.CreateBlend(const ALeft, ARight: TSemanticStyle;
-  const ARecipe: TSemanticBlendRecipe);
+  const ARecipe: TSemanticBlendRecipe;
+  const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission);
 var
   LParents: array[0..1] of TSemanticStyle;
   LDefinitions: array[0..1] of TSemanticStyleDefinition;
@@ -2196,7 +2259,7 @@ begin
     LDefinition.Sounds[LCount] := LSound;
   end;
   FOtherParent := ARight.Encode;
-  Finish(LDefinition, ALeft.Encode);
+  Finish(LDefinition, ALeft.Encode, ARegistry, AAdmission);
 end;
 
 function TSemanticStyle.CopyBlendRecipe: TSemanticBlendRecipe;
@@ -2205,17 +2268,18 @@ begin
   Result := CloneRecipe(FRecipe);
 end;
 
-function TSemanticStyle.CopyParent(const ASide: Integer): TSemanticStyle;
+function TSemanticStyle.CopyParent(const ASide: Integer;
+  const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission): TSemanticStyle;
 begin
   Require(ASide in [0, 1], 'Semantic parent side must be zero or one');
   Result := nil;
   if (ASide = 0) and (Length(FParent) > 0) then
   begin
-    Result := DecodeSemanticStyle(FParent);
+    Result := DecodeSemanticStyle(FParent, ARegistry, AAdmission);
   end;
   if (ASide = 1) and (Length(FOtherParent) > 0) then
   begin
-    Result := DecodeSemanticStyle(FOtherParent);
+    Result := DecodeSemanticStyle(FOtherParent, ARegistry, AAdmission);
   end;
 end;
 
@@ -2229,7 +2293,8 @@ begin
   Result := Copy(FBytes);
 end;
 
-function DecodeAt(const ABytes: TAudioBytes; const ADepth: Integer): TSemanticStyle;
+function DecodeAt(const ABytes: TAudioBytes; const ADepth: Integer;
+  const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission): TSemanticStyle;
 var
   LIO: TStyleIO;
   LParentBytes: TAudioBytes;
@@ -2251,7 +2316,7 @@ begin
   LRecipe := Default(TSemanticBlendRecipe);
   LResult := nil;
   try
-    Require(LIO.Text = 'pythian.semantic.style.v1', 'Unsupported semantic format; regenerate development artifact');
+    Require(LIO.Text = 'pythian.semantic.style.v2', 'Unsupported semantic format; regenerate development artifact');
     LKind := LIO.Count(0, 2);
     LParentBytes := LIO.Blob(nil);
     LOtherBytes := LIO.Blob(nil);
@@ -2265,20 +2330,20 @@ begin
     if LKind = 0 then
     begin
       Require((Length(LParentBytes) = 0) and (Length(LOtherBytes) = 0), 'Source cannot carry parent bytes');
-      LResult := TSemanticStyle.CreateSource(LDefinition);
+      LResult := TSemanticStyle.CreateSource(LDefinition, ARegistry, AAdmission);
     end
     else
     begin
-      LParent := DecodeAt(LParentBytes, ADepth + 1);
+      LParent := DecodeAt(LParentBytes, ADepth + 1, ARegistry, AAdmission);
       if LKind = 1 then
       begin
         Require(Length(LOtherBytes) = 0, 'Control derivation has one parent');
-        LResult := TSemanticStyle.CreateDerived(LParent, LDefinition);
+        LResult := TSemanticStyle.CreateDerived(LParent, LDefinition, ARegistry, AAdmission);
       end
       else
       begin
-        LOtherParent := DecodeAt(LOtherBytes, ADepth + 1);
-        LResult := TSemanticStyle.CreateBlend(LParent, LOtherParent, LRecipe);
+        LOtherParent := DecodeAt(LOtherBytes, ADepth + 1, ARegistry, AAdmission);
+        LResult := TSemanticStyle.CreateBlend(LParent, LOtherParent, LRecipe, ARegistry, AAdmission);
         Require(Sha256Bytes(DefinitionBytes(LResult.FDefinition)) =
           Sha256Bytes(LDefinitionBytes), 'Blend does not reconstruct exact retained recipe and contributions');
       end;
@@ -2294,9 +2359,21 @@ begin
   end;
 end;
 
-function DecodeSemanticStyle(const ABytes: TAudioBytes): TSemanticStyle;
+function DecodeSemanticStyle(const ABytes: TAudioBytes;
+  const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission): TSemanticStyle;
+var
+  LAdmission: TProviderCodecAdmission;
+  LOwned: Boolean;
 begin
-  Result := DecodeAt(ABytes, 1);
+  LAdmission := BorrowProviderCodecAdmission(ARegistry, AAdmission, LOwned);
+  try
+    Result := DecodeAt(ABytes, 1, ARegistry, LAdmission);
+  finally
+    if LOwned then
+    begin
+      LAdmission.Free;
+    end;
+  end;
 end;
 
 function TSemanticStyle.CreateInstrument(const ARoleId: String;

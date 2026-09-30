@@ -96,7 +96,8 @@ begin
     try
       ADefinition.Providers[LProvider].ModelText := EncodeWfcSequenceText(LModel);
       ADefinition.Providers[LProvider].VocabularySha256 :=
-        SemanticVocabularyIdentity(ADefinition.Providers[LProvider].ModelText);
+        SemanticVocabularyIdentity(ADefinition.Providers[LProvider].ModelText,
+          ADefinition.Providers[LProvider].Contract);
     finally
       LModel.Free;
     end;

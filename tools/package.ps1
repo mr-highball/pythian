@@ -110,6 +110,10 @@ if ($WithWfc) {
   [IO.File]::WriteAllText((Join-Path $vendorRoot 'REVISION'), $wfcRevision + "`n")
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.wfc.lpr') -Destination $exampleRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.wfc.provider.lpr') -Destination $exampleRoot
+  Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.provider.extension.units.pas') -Destination $exampleRoot
+  Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.provider.extensions.lpr') -Destination $exampleRoot
+  Copy-Item -LiteralPath (Join-Path $projectRoot 'tests/pythian.tests.provider.extension.lpr') -Destination $testRoot
+  Copy-Item -LiteralPath (Join-Path $projectRoot 'docs/CALLER-PROVIDERS.md') -Destination $docRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.events.lpr') -Destination $exampleRoot
   $toolRoot = Join-Path $stage 'tools'
   New-Item -ItemType Directory -Path $toolRoot | Out-Null
@@ -251,6 +255,15 @@ try {
     if ($LASTEXITCODE -ne 0) { throw "Example failed: $exampleName" }
   }
   if ($WithWfc) {
+    $callerProviderArgs = $compilerArgs + @('-gh', ('-Fu' + $exampleRoot))
+    & $compilerPath @callerProviderArgs (Join-Path $exampleRoot 'pythian.example.provider.extensions.lpr') > 'caller-provider-build.log' 2>&1
+    if ($LASTEXITCODE -ne 0) { throw 'Extracted caller codec consumer compilation failed' }
+    & (Join-Path $binRoot "pythian.example.provider.extensions$executableSuffix") 'caller-provider.wav' '731' > 'caller-provider-run.log' 2>&1
+    if ($LASTEXITCODE -ne 0) { throw 'Extracted caller codec saved-style/native consumer failed' }
+    & $compilerPath @callerProviderArgs (Join-Path $stage 'tests/pythian.tests.provider.extension.lpr') > 'caller-provider-conformance-build.log' 2>&1
+    if ($LASTEXITCODE -ne 0) { throw 'Extracted caller codec conformance compilation failed' }
+    & (Join-Path $binRoot "pythian.tests.provider.extension$executableSuffix") 'caller-provider-control' > 'caller-provider-conformance-run.log' 2>&1
+    if ($LASTEXITCODE -ne 0) { throw 'Extracted caller codec admission/persistence/blend conformance failed' }
     Copy-Item -LiteralPath (Join-Path $exampleRoot 'pythian.example.wfc.provider.lpr') -Destination $checkRoot
     & $compilerPath @compilerArgs 'pythian.example.wfc.provider.lpr' > 'provider-build.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Caller-provider consumer compilation failed' }

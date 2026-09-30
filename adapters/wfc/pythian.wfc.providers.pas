@@ -32,12 +32,13 @@ uses
   pythian.music.context,
   pythian.pitch.track,
   pythian.wfc.layers,
+  pythian.wfc.provider.codecs,
   wfc_sequence,
   wfc_music_ensemble;
 
 type
   TStyleProviderVocabulary = (spvKey, spvTempo, spvOnsets, spvIntensity,
-    spvPitch, spvPitchRhythm, spvPerformance, spvHarmony, spvRhythm, spvVoice);
+    spvPitch, spvPitchRhythm, spvPerformance, spvHarmony, spvRhythm, spvVoice, spvCaller);
   TStyleChoiceDimension = (scdKey, scdTempo, scdOnset, scdIntensity,
     scdPitch, scdDuration, scdHarmony, scdRhythm, scdVoice);
   TStyleChoiceDimensions = set of TStyleChoiceDimension;
@@ -54,6 +55,7 @@ type
     Harmony: TWfcMusicPitchClassSet;
     Rhythm: TWfcMusicRhythmFrame;
     Voice: TWfcMusicVoiceCell;
+    CallerValue: TProviderCodecChoice;
   end;
   TStyleProviderChoices = array of TStyleProviderChoice;
   TStyleProviderTiming = (sptUniform, sptHeld, sptGeneratedSpans);
@@ -72,6 +74,7 @@ type
   TStyleProviderDescription = record
     Name: String;
     Vocabulary: TStyleProviderVocabulary;
+    CodecBinding: TProviderCodecBinding;
     TicksPerQuarter: Integer;
     Timing: TStyleProviderTiming;
     StepTicks: Integer;
@@ -96,7 +99,12 @@ function DecodeStyleProviderChoice(const AVocabulary: TStyleProviderVocabulary;
 { Borrows the immutable model synchronously; returns detached choices in its
   public vocabulary order. Failure leaves a previously assigned result intact. }
 function CopyStyleProviderChoices(const AModel: TWfcSequenceModel;
-  const AVocabulary: TStyleProviderVocabulary): TStyleProviderChoices;
+  const AVocabulary: TStyleProviderVocabulary): TStyleProviderChoices; overload;
+function CopyStyleProviderChoices(const AModel: TWfcSequenceModel;
+  const AVocabulary: TStyleProviderVocabulary; const ABinding: TProviderCodecBinding;
+  const ARegistry: TProviderCodecRegistry = nil;
+  const AAdmission: TProviderCodecAdmission = nil): TStyleProviderChoices; overload;
+function CloneStyleProviderChoices(const AChoices: TStyleProviderChoices): TStyleProviderChoices;
 
 implementation
 
@@ -199,21 +207,70 @@ end;
 
 function CopyStyleProviderChoices(const AModel: TWfcSequenceModel;
   const AVocabulary: TStyleProviderVocabulary): TStyleProviderChoices;
+begin
+  Result := CopyStyleProviderChoices(AModel, AVocabulary,
+    Default(TProviderCodecBinding), nil, nil);
+end;
+
+function CloneStyleProviderChoices(const AChoices: TStyleProviderChoices): TStyleProviderChoices;
+var
+  LIndex: Integer;
+begin
+  Result := Copy(AChoices);
+  for LIndex := 0 to High(Result) do
+  begin
+    Result[LIndex].CallerValue := CopyProviderCodecChoice(AChoices[LIndex].CallerValue);
+    Result[LIndex].Harmony.PitchClasses := Copy(AChoices[LIndex].Harmony.PitchClasses);
+    Result[LIndex].Rhythm.Actions := Copy(AChoices[LIndex].Rhythm.Actions);
+    Result[LIndex].Voice.Tones := Copy(AChoices[LIndex].Voice.Tones);
+  end;
+end;
+
+function CopyStyleProviderChoices(const AModel: TWfcSequenceModel;
+  const AVocabulary: TStyleProviderVocabulary; const ABinding: TProviderCodecBinding;
+  const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission): TStyleProviderChoices;
 var
   LChoices: TStyleProviderChoices;
   LIndex: Integer;
+  LAdmission: TProviderCodecAdmission;
+  LOwned: Boolean;
 begin
   if AModel = nil then
   begin
     raise EAudio.Create('Style provider requires a model');
   end;
-  LChoices := nil;
-  SetLength(LChoices, AModel.PublicTokenCount);
-  for LIndex := 0 to High(LChoices) do
+  if (AVocabulary <> spvCaller) and not EmptyProviderCodecBinding(ABinding) then
   begin
-    LChoices[LIndex] := DecodeStyleProviderChoice(AVocabulary, AModel.PublicTokenAt(LIndex));
+    raise EAudio.Create('Built-in vocabulary cannot carry caller codec meaning');
   end;
-  Result := LChoices;
+  LAdmission := BorrowProviderCodecAdmission(ARegistry, AAdmission, LOwned);
+  try
+    if AVocabulary = spvCaller then
+    begin
+      LAdmission.ValidateBinding(ABinding);
+    end;
+    LChoices := nil;
+    SetLength(LChoices, AModel.PublicTokenCount);
+    for LIndex := 0 to High(LChoices) do
+    begin
+      if AVocabulary = spvCaller then
+      begin
+        LChoices[LIndex] := Default(TStyleProviderChoice);
+        LChoices[LIndex].Token := AModel.PublicTokenAt(LIndex);
+        LChoices[LIndex].CallerValue := LAdmission.DecodeChoice(ABinding, LChoices[LIndex].Token);
+      end
+      else
+      begin
+        LChoices[LIndex] := DecodeStyleProviderChoice(AVocabulary, AModel.PublicTokenAt(LIndex));
+      end;
+    end;
+    Result := LChoices;
+  finally
+    if LOwned then
+    begin
+      LAdmission.Free;
+    end;
+  end;
 end;
 
 end.

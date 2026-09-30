@@ -32,6 +32,7 @@ uses
   pythian.time,
   pythian.wfc.layers,
   pythian.wfc.providers,
+  pythian.wfc.provider.codecs,
   wfc,
   wfc_sequence;
 
@@ -57,6 +58,7 @@ type
   TProviderContract = record
     Name: String;
     Vocabulary: TStyleProviderVocabulary;
+    CodecBinding: TProviderCodecBinding;
     RoleId: String;
     RoleOrder: TLayerNames;
     PitchBasis: TProviderPitchBasis;
@@ -79,14 +81,18 @@ type
   private
     FSession: TLearnedLayerSession;
     FContracts: TProviderContracts;
+    FChoices: array of TStyleProviderChoices;
     FInputs: array of TStyleProviderDependencies;
     function IndexOf(const AName: String): Integer;
   public
     constructor Create(const ALayers: TLearnedLayers;
       const AProjections: TLayerProjections; const AContracts: TProviderContracts;
-      const AOptions: TLayerGenerationOptions);
+      const AOptions: TLayerGenerationOptions;
+      const ARegistry: TProviderCodecRegistry = nil;
+      const AAdmission: TProviderCodecAdmission = nil);
     destructor Destroy; override;
     function CopyContract(const AName: String): TProviderContract;
+    function CopyChoices(const AName: String): TStyleProviderChoices;
     function CopyInputs(const AName: String): TStyleProviderDependencies;
     procedure SetConstraints(const AName: String;
       const AMask: TWfcSequenceTokenConstraints);
@@ -97,7 +103,9 @@ type
       var ASequences: TLayerSequences; out AReport: TGraphSelectiveNegotiationReport): Boolean;
     function TryReplaceProvider(const AName: String; const AModel: TWfcSequenceModel;
       const AContract: TProviderContract; const ASeed: TGraphSeed;
-      var ASequences: TLayerSequences; out AReport: TLayerModelReplacementReport): Boolean;
+      var ASequences: TLayerSequences; out AReport: TLayerModelReplacementReport;
+      const ARegistry: TProviderCodecRegistry = nil;
+      const AAdmission: TProviderCodecAdmission = nil): Boolean;
   end;
 
 function ProviderUnknownPolicy(const AVocabulary: TStyleProviderVocabulary): String;
@@ -105,7 +113,11 @@ function CopyProviderContract(const AContract: TProviderContract): TProviderCont
 function ProviderContractFromDescription(const ADescription: TStyleProviderDescription;
   const AMusicalDomain: String): TProviderContract;
 procedure ValidateProviderContract(const AModel: TWfcSequenceModel;
-  const AContract: TProviderContract);
+  const AContract: TProviderContract; const ARegistry: TProviderCodecRegistry = nil;
+  const AAdmission: TProviderCodecAdmission = nil);
+function AdmitProviderContract(const AModel: TWfcSequenceModel;
+  const AContract: TProviderContract; const ARegistry: TProviderCodecRegistry = nil;
+  const AAdmission: TProviderCodecAdmission = nil): TStyleProviderChoices;
 procedure RequireCompatibleProvider(const AExpected, ACandidate: TProviderContract);
 
 implementation
@@ -136,6 +148,7 @@ end;
 function CopyProviderContract(const AContract: TProviderContract): TProviderContract;
 begin
   Result := AContract;
+  Result.CodecBinding := CopyProviderCodecBinding(AContract.CodecBinding);
   Result.RoleOrder := Copy(AContract.RoleOrder);
   Result.TimeGrid.Boundaries := Copy(AContract.TimeGrid.Boundaries);
   Result.Source.TempoChanges := Copy(AContract.Source.TempoChanges);
@@ -153,6 +166,7 @@ begin
   Result := Default(TProviderContract);
   Result.Name := ADescription.Name;
   Result.Vocabulary := ADescription.Vocabulary;
+  Result.CodecBinding := CopyProviderCodecBinding(ADescription.CodecBinding);
   Result.RoleId := ADescription.RoleId;
   Result.RoleOrder := Copy(ADescription.RoleOrder);
   if ADescription.Vocabulary in [spvPitch, spvPitchRhythm, spvPerformance, spvVoice] then
@@ -163,7 +177,9 @@ begin
   Result.TicksPerQuarter := ADescription.TicksPerQuarter;
   Result.Scope := ADescription.Scope;
   Result.TimeGrid := MakeLayerTimeGrid(0, ADescription.StepTicks);
-  Result.UnknownPolicy := ProviderUnknownPolicy(Result.Vocabulary);
+  if Result.Vocabulary = spvCaller then
+    Result.UnknownPolicy := Result.CodecBinding.UnknownMeaning
+  else Result.UnknownPolicy := ProviderUnknownPolicy(Result.Vocabulary);
 end;
 
 function Boundaries(const AContract: TProviderContract): TLayerTickBoundaries;
@@ -280,7 +296,15 @@ begin
 end;
 
 procedure ValidateProviderContract(const AModel: TWfcSequenceModel;
-  const AContract: TProviderContract);
+  const AContract: TProviderContract; const ARegistry: TProviderCodecRegistry;
+  const AAdmission: TProviderCodecAdmission);
+begin
+  AdmitProviderContract(AModel, AContract, ARegistry, AAdmission);
+end;
+
+function AdmitProviderContract(const AModel: TWfcSequenceModel;
+  const AContract: TProviderContract; const ARegistry: TProviderCodecRegistry;
+  const AAdmission: TProviderCodecAdmission): TStyleProviderChoices;
 var
   LTicks: TLayerTickBoundaries;
   LChoices: TStyleProviderChoices;
@@ -296,9 +320,19 @@ begin
   begin
     raise EAudio.Create('Provider requires a model, named output, musical domain and finite PPQ scope');
   end;
-  if AContract.UnknownPolicy <> ProviderUnknownPolicy(AContract.Vocabulary) then
+  if AContract.Vocabulary = spvCaller then
   begin
-    raise EAudio.Create('Provider unknown/rest semantics differ from the canonical codec');
+    ValidateProviderCodecBindingData(AContract.CodecBinding);
+    if (AContract.UnknownPolicy <> AContract.CodecBinding.UnknownMeaning) or
+      (AContract.CodecBinding.ClockMeaning <> 'explicit-ppq-grid') then
+    begin
+      raise EAudio.Create('Caller provider requires declared unknown meaning and explicit PPQ grid semantics');
+    end;
+  end
+  else if not EmptyProviderCodecBinding(AContract.CodecBinding) or
+    (AContract.UnknownPolicy <> ProviderUnknownPolicy(AContract.Vocabulary)) then
+  begin
+    raise EAudio.Create('Provider unknown/rest semantics differ from its built-in codec');
   end;
   if (AContract.PitchBasis = ppbRelativeKey) or (AContract.KeyReference <> '') then
   begin
@@ -310,7 +344,8 @@ begin
     raise EAudio.Create('Provider pitch basis disagrees with its canonical vocabulary');
   end;
   if ((AContract.Vocabulary = spvVoice) and (AContract.RoleId = '')) or
-    ((AContract.Vocabulary <> spvVoice) and (AContract.RoleId <> '')) then
+    ((not (AContract.Vocabulary in [spvVoice, spvCaller])) and (AContract.RoleId <> '')) or
+    (Length(AContract.RoleId) > 128) then
   begin
     raise EAudio.Create('Only independent voice outputs require a declared role identity');
   end;
@@ -339,11 +374,11 @@ begin
   begin
     raise EAudio.Create('Acoustic palette providers are unsupported by these semantic codecs');
   end;
-  if AModel.PublicTokenCount > 4096 then
+  if AModel.PublicTokenCount > 1024 then
   begin
-    raise EAudio.Create('Provider vocabulary exceeds 4096 choices');
+    raise EAudio.Create('Provider vocabulary exceeds the pinned WFC 1024 choices');
   end;
-  if (AModel.StateCount > MaximumLayerStateCells) or (AModel.Order > 64) then
+  if (AModel.StateCount > 1024) or (AModel.Order > 64) then
   begin
     raise EAudio.Create('Provider model exceeds the state/order preparation bound');
   end;
@@ -355,7 +390,8 @@ begin
   end;
   LTicks := Boundaries(AContract);
   ValidateSource(AContract, LTicks);
-  LChoices := CopyStyleProviderChoices(AModel, AContract.Vocabulary);
+  LChoices := CopyStyleProviderChoices(AModel, AContract.Vocabulary,
+    AContract.CodecBinding, ARegistry, AAdmission);
   if AContract.Vocabulary = spvVoice then
   begin
     WfcIndependentVoiceCapacities([AModel]);
@@ -374,6 +410,7 @@ begin
       raise EAudio.Create('Joint rhythm action vector does not match its declared ordered roles');
     end;
   end;
+  Result := LChoices;
 end;
 
 procedure RequireCompatibleProvider(const AExpected, ACandidate: TProviderContract);
@@ -401,7 +438,8 @@ begin
     (AExpected.PitchBasis <> ACandidate.PitchBasis) or
     (AExpected.KeyReference <> ACandidate.KeyReference) or
     (AExpected.PaletteIdentity <> ACandidate.PaletteIdentity) or
-    (AExpected.UnknownPolicy <> ACandidate.UnknownPolicy) then
+    (AExpected.UnknownPolicy <> ACandidate.UnknownPolicy) or
+    not SameProviderCodecBinding(AExpected.CodecBinding, ACandidate.CodecBinding) then
   begin
     raise EAudio.Create('Provider vocabulary, pitch reference, palette or unknown semantics differ');
   end;
@@ -425,7 +463,8 @@ end;
 
 constructor TCompatibleProviderSession.Create(const ALayers: TLearnedLayers;
   const AProjections: TLayerProjections; const AContracts: TProviderContracts;
-  const AOptions: TLayerGenerationOptions);
+  const AOptions: TLayerGenerationOptions;
+  const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission);
 var
   LOptions: TLayerGenerationOptions;
   LNames: TLayerNames;
@@ -438,75 +477,87 @@ var
   LToken: Integer;
   LVoiceChoice: TStyleProviderChoice;
   LRhythmChoice: TStyleProviderChoice;
+  LAdmission: TProviderCodecAdmission;
+  LOwned: Boolean;
 begin
   inherited Create;
-  if (Length(AContracts) <> Length(ALayers)) or (Length(ALayers) < 1) or
-    (Length(ALayers) > MaximumLearnedLayers) then
-  begin
-    raise EAudio.Create('Provider composition requires one contract per bounded musical layer');
-  end;
-  if (Length(AOptions.Scopes) <> 0) or (Length(AOptions.TimeGrids) <> 0) then
-  begin
-    raise EAudio.Create('Provider contracts own the scopes and grids; duplicate option layouts are unsupported');
-  end;
-  LOptions := AOptions;
-  LOptions.Scopes := nil;
-  LOptions.TimeGrids := nil;
-  SetLength(LOptions.Scopes, Length(ALayers));
-  SetLength(LOptions.TimeGrids, Length(ALayers));
-  SetLength(FContracts, Length(ALayers));
-  SetLength(LNames, Length(ALayers));
-  for LIndex := 0 to High(ALayers) do
-  begin
-    ValidateProviderContract(ALayers[LIndex].Model, AContracts[LIndex]);
-    if (AContracts[LIndex].TicksPerQuarter <> AContracts[0].TicksPerQuarter) or
-      (AContracts[LIndex].MusicalDomain <> AContracts[0].MusicalDomain) then
+  LAdmission := BorrowProviderCodecAdmission(ARegistry, AAdmission, LOwned);
+  try
+    if (Length(AContracts) <> Length(ALayers)) or (Length(ALayers) < 1) or
+      (Length(ALayers) > MaximumLearnedLayers) then
     begin
-      raise EAudio.Create('Composed providers must share an explicit PPQ and musical clock domain');
+      raise EAudio.Create('Provider composition requires one contract per bounded musical layer');
     end;
-    FContracts[LIndex] := CopyProviderContract(AContracts[LIndex]);
-    LNames[LIndex] := AContracts[LIndex].Name;
-    LOptions.Scopes[LIndex] := FContracts[LIndex].Scope;
-    LOptions.TimeGrids[LIndex] := FContracts[LIndex].TimeGrid;
-  end;
-  FSession := TLearnedLayerSession.Create(ALayers, AProjections, LNames, LOptions);
-  SetLength(FInputs, Length(ALayers));
-  for LProjection in AProjections do
-  begin
-    if (FContracts[LProjection.Provider].Vocabulary = spvRhythm) and
-      (FContracts[LProjection.Consumer].Vocabulary = spvVoice) then
+    if (Length(AOptions.Scopes) <> 0) or (Length(AOptions.TimeGrids) <> 0) then
     begin
-      LRoleIndex := -1;
-      for LRole := 0 to High(FContracts[LProjection.Provider].RoleOrder) do
+      raise EAudio.Create('Provider contracts own the scopes and grids; duplicate option layouts are unsupported');
+    end;
+    LOptions := AOptions;
+    LOptions.Scopes := nil;
+    LOptions.TimeGrids := nil;
+    SetLength(LOptions.Scopes, Length(ALayers));
+    SetLength(LOptions.TimeGrids, Length(ALayers));
+    SetLength(FContracts, Length(ALayers));
+    SetLength(FChoices, Length(ALayers));
+    SetLength(LNames, Length(ALayers));
+    for LIndex := 0 to High(ALayers) do
+    begin
+      FChoices[LIndex] := AdmitProviderContract(ALayers[LIndex].Model,
+        AContracts[LIndex], ARegistry, LAdmission);
+      if (AContracts[LIndex].TicksPerQuarter <> AContracts[0].TicksPerQuarter) or
+        (AContracts[LIndex].MusicalDomain <> AContracts[0].MusicalDomain) then
       begin
-        if FContracts[LProjection.Provider].RoleOrder[LRole] =
-          FContracts[LProjection.Consumer].RoleId then
-        begin
-          LRoleIndex := LRole;
-        end;
+        raise EAudio.Create('Composed providers must share an explicit PPQ and musical clock domain');
       end;
-      if LRoleIndex < 0 then
+      FContracts[LIndex] := CopyProviderContract(AContracts[LIndex]);
+      LNames[LIndex] := AContracts[LIndex].Name;
+      LOptions.Scopes[LIndex] := FContracts[LIndex].Scope;
+      LOptions.TimeGrids[LIndex] := FContracts[LIndex].TimeGrid;
+    end;
+    FSession := TLearnedLayerSession.Create(ALayers, AProjections, LNames, LOptions);
+    SetLength(FInputs, Length(ALayers));
+    for LProjection in AProjections do
+    begin
+      if (FContracts[LProjection.Provider].Vocabulary = spvRhythm) and
+        (FContracts[LProjection.Consumer].Vocabulary = spvVoice) then
       begin
-        raise EAudio.Create('Voice input role is absent from the joint rhythm contract');
-      end;
-      for LRule := 0 to High(LProjection.Rules) do
-      begin
-        LVoiceChoice := DecodeStyleProviderChoice(spvVoice, LProjection.Rules[LRule].TargetToken);
-        for LToken := 0 to High(LProjection.Rules[LRule].SourceTokens) do
+        LRoleIndex := -1;
+        for LRole := 0 to High(FContracts[LProjection.Provider].RoleOrder) do
         begin
-          LRhythmChoice := DecodeStyleProviderChoice(spvRhythm,
-            LProjection.Rules[LRule].SourceTokens[LToken]);
-          if LVoiceChoice.Voice.Action <> LRhythmChoice.Rhythm.Actions[LRoleIndex] then
+          if FContracts[LProjection.Provider].RoleOrder[LRole] =
+            FContracts[LProjection.Consumer].RoleId then
           begin
-            raise EAudio.Create('Voice projection uses a different joint rhythm role slot');
+            LRoleIndex := LRole;
+          end;
+        end;
+        if LRoleIndex < 0 then
+        begin
+          raise EAudio.Create('Voice input role is absent from the joint rhythm contract');
+        end;
+        for LRule := 0 to High(LProjection.Rules) do
+        begin
+          LVoiceChoice := DecodeStyleProviderChoice(spvVoice, LProjection.Rules[LRule].TargetToken);
+          for LToken := 0 to High(LProjection.Rules[LRule].SourceTokens) do
+          begin
+            LRhythmChoice := DecodeStyleProviderChoice(spvRhythm,
+              LProjection.Rules[LRule].SourceTokens[LToken]);
+            if LVoiceChoice.Voice.Action <> LRhythmChoice.Rhythm.Actions[LRoleIndex] then
+            begin
+              raise EAudio.Create('Voice projection uses a different joint rhythm role slot');
+            end;
           end;
         end;
       end;
+      LInput := Length(FInputs[LProjection.Consumer]);
+      SetLength(FInputs[LProjection.Consumer], LInput + 1);
+      FInputs[LProjection.Consumer][LInput].Name := FContracts[LProjection.Provider].Name;
+      FInputs[LProjection.Consumer][LInput].TimeMapping := LProjection.TimeMapping;
     end;
-    LInput := Length(FInputs[LProjection.Consumer]);
-    SetLength(FInputs[LProjection.Consumer], LInput + 1);
-    FInputs[LProjection.Consumer][LInput].Name := FContracts[LProjection.Provider].Name;
-    FInputs[LProjection.Consumer][LInput].TimeMapping := LProjection.TimeMapping;
+  finally
+    if LOwned then
+    begin
+      LAdmission.Free;
+    end;
   end;
 end;
 
@@ -531,6 +582,11 @@ end;
 function TCompatibleProviderSession.CopyContract(const AName: String): TProviderContract;
 begin
   Result := CopyProviderContract(FContracts[IndexOf(AName)]);
+end;
+
+function TCompatibleProviderSession.CopyChoices(const AName: String): TStyleProviderChoices;
+begin
+  Result := CloneStyleProviderChoices(FChoices[IndexOf(AName)]);
 end;
 
 function TCompatibleProviderSession.CopyInputs(const AName: String): TStyleProviderDependencies;
@@ -565,21 +621,24 @@ end;
 function TCompatibleProviderSession.TryReplaceProvider(const AName: String;
   const AModel: TWfcSequenceModel; const AContract: TProviderContract;
   const ASeed: TGraphSeed; var ASequences: TLayerSequences;
-  out AReport: TLayerModelReplacementReport): Boolean;
+  out AReport: TLayerModelReplacementReport;
+  const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission): Boolean;
 var
   LIndex: Integer;
   LContract: TProviderContract;
+  LChoices: TStyleProviderChoices;
 begin
   AReport := Default(TLayerModelReplacementReport);
   AReport.ReplacedLayerIndex := -1;
   LIndex := IndexOf(AName);
-  ValidateProviderContract(AModel, AContract);
+  LChoices := AdmitProviderContract(AModel, AContract, ARegistry, AAdmission);
   RequireCompatibleProvider(FContracts[LIndex], AContract);
   LContract := CopyProviderContract(AContract);
   Result := FSession.TryReplaceModel(AName, AModel, ASeed, ASequences, AReport);
   if Result then
   begin
     FContracts[LIndex] := LContract;
+    FChoices[LIndex] := LChoices;
   end;
 end;
 

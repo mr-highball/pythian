@@ -475,6 +475,15 @@ try {
     & $deliveryVerifier (Join-Path $deliveryRoot 'provider-base.wav') (Join-Path $deliveryRoot 'provider-changed.wav') `
       (Join-Path $deliveryRoot 'provider-replay.wav') '16000' '2' '16000' '2'
     if ($LASTEXITCODE -ne 0) { throw 'Provider saved-file control/replay proof failed' }
+    $callerProviderArgs = $adapterArgs + @('-gh', '-Fuexamples')
+    & $compilerPath @callerProviderArgs 'examples/pythian.example.provider.extensions.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Caller codec example compilation failed' }
+    & (Join-Path $buildRoot "pythian.example.provider.extensions$executableSuffix") (Join-Path $deliveryRoot 'caller-trait.wav') '731'
+    if ($LASTEXITCODE -ne 0) { throw 'Caller codec saved-style/native example failed' }
+    & $compilerPath @callerProviderArgs 'tests/pythian.tests.provider.extension.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Caller codec conformance compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.provider.extension$executableSuffix") (Join-Path $deliveryRoot 'caller-codec')
+    if ($LASTEXITCODE -ne 0) { throw 'Caller codec admission/persistence/blend conformance failed' }
     & $compilerPath @adapterArgs 'tools/pythian.corpus.intake.cli.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Corpus intake operator compilation failed' }
     & $compilerPath @adapterArgs 'examples/pythian.example.corpus.intake.lpr'

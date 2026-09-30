@@ -15,7 +15,9 @@ weighted relearning and saved sound recipes; the semantic graph owns an explicit
 provider inventory and executable dependency configuration. Optional sound
 bindings embed current PYS bytes, including their existing ancestry and policies.
 Neither reader accepts historical development variants. The current semantic
-encoding is `pythian.semantic.style.v1`, conventionally stored as `.pysg`.
+encoding is `pythian.semantic.style.v2`, conventionally stored as `.pysg`.
+It persists caller codec identity/version, canonical configuration and declared
+meaning. No v1 reader remains; regenerate earlier development artifacts.
 
 The [selective blend/reblend extension](SEMANTIC-BLENDS.md) adds independent
 provider contributions and retained multi-parent evidence to this same current
@@ -34,15 +36,20 @@ alone do not establish identity. Contracts include PPQ, musical domain, scope,
 uniform/fixed-partition layout, unknown/rest policy, named role or ordered joint
 role vector, pitch basis and optional original-clock conversion evidence.
 
-The supported vocabulary is exactly the existing provider contract: key, tempo,
+Built-in vocabularies cover the existing provider contract: key, tempo,
 onsets, intensity, pitch, joint pitch/rhythm, duration performance, harmony,
-ordered rhythm actions and independent singleton voice frames. Unsupported
+ordered rhythm actions and independent singleton voice frames. The
+[caller-provider contract](CALLER-PROVIDERS.md) additionally admits bounded
+`spvCaller` traits through explicit caller codecs and generic projections.
+Codec configuration belongs once per provider. Ordered tokens and declared
+codec meaning share a vocabulary digest; source/run identities and boundaries
+remain separate evidence checks. Unsupported
 relative-key/palette conversions reject through that contract. A provider missing
 from the inventory is absent, not an inferred default. There is no phrase-model
 vocabulary yet; this format does not claim learned phrase/form behavior.
 
 For a general graph, retain explicit `Projections` and leave `NamedVoices=False`.
-`CreateSession(Seed)` returns an owned `TCompatibleProviderSession`, with exact
+`CreateSession(Seed, Registry)` returns an owned `TCompatibleProviderSession`, with exact
 models, preferences, constraints and time mappings. A named-voice graph instead
 sets `NamedVoices=True`, keeps the harmony/rhythm/role inventory in actual pass
 order, and retains its harmony mode, pitch ranges and directed pair policies.
@@ -50,6 +57,14 @@ order, and retains its harmony mode, pitch ranges and directed pair policies.
 harmony proof. Its dependencies follow that retained configuration; a competing
 explicit projection list rejects. An ordinary mapped graph cannot silently
 ignore named-voice ranges or pair constraints.
+
+Built-in graphs may omit the registry. A graph containing a caller codec requires
+a live sealed registry at each admission, reload, parent reconstruction or new
+session creation. An admitted session retains detached decoded choices and can
+generate after registry/codec destruction; a style retains data and does not
+keep registration alive. One operation budget covers recursive parents,
+definition validation and internally created sessions. The fixed named-voice
+schema remains harmony/rhythm/voice; caller traits use the generic graph path.
 
 Both consumers retain their existing bounded search defaults and ownership
 contracts. The caller supplies the generation seed. Saved preferences remain

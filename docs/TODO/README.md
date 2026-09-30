@@ -50,8 +50,12 @@ Do not restart a rejected variant because a graph leaf looks ready.
 The [minimal native package](DONE/NS-6_delivery_06.md) is accepted at its frozen
 revision. [Independent use](NS-6_delivery_07.md) has a concrete
 [consumer packet](../MINIMAL-CONSUMER-HANDOFF.md) but needs an actual outside
-reviewer. A maintained caller source/effect conformance component is the next
-bounded library lane; its actual independent use/listening remains unearned.
+reviewer. Maintained [caller source/effect mechanics](NS-2_extension_01.md) are
+accepted at their exact published package revision; actual independent use and
+listening remain unearned. The bounded [caller-provider contract](NS-4_providers_01.md)
+has implemented admission, persistence, dependent native generation and reusable
+blends; source/candidate QA passes, while exact published-artifact qualification
+remains pending.
 This is useful parallel work when the prioritized learning path is blocked.
 It does not depend on final operator/full-style completion. Full style,
 blend/reblend, many-hour and operator requirements remain in their owners below.
@@ -94,7 +98,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | Task / primary outcome | Goal points | Overall points | Current readiness |
 | --- | ---: | ---: | --- |
 | [NS-4_integration_01](NS-4_integration_01.md) — Deliver the recorded WAV-to-style-to-audio workflow | 35 | 5.25 | Dependency-blocked |
-| [NS-4_providers_01](NS-4_providers_01.md) — Qualify caller-defined WFC providers and reusable traits | 10 | 1.50 | Current package + caller extension |
+| [NS-4_providers_01](NS-4_providers_01.md) — Qualify caller-defined WFC providers and reusable traits | 10 | 1.50 | Source QA passed; artifact qualification pending |
 
 ### NS-5 — User-defined styles that generate and blend usefully
 

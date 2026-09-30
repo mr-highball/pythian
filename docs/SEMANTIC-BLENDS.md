@@ -173,12 +173,22 @@ exact unrelated controls, not only lineage labels.
 
 ## Current encoding, bounds and verification
 
-The same current `pythian.semantic.style.v1` encoding now records source,
+The current `pythian.semantic.style.v2` encoding records source,
 control-derived and binary-blend kinds, parent bytes, blend recipe, contribution
 identities and full definition. There is no historical-variant reader; regenerate
 older development artifacts. Decode reconstructs rather than trusts a serialized
 blend definition. Corruption or disagreement with the actual recipe cannot
 publish a partial object.
+
+[Caller codecs](CALLER-PROVIDERS.md) retain their identity/version, canonical
+configuration, units and unknown/clock meaning in every root and nested parent.
+Blend compatibility and ordered-vocabulary identity include that meaning, so
+identical token text cannot silently acquire another interpretation. Recording
+identities and source boundaries stay outside the vocabulary digest and retain
+their separate contribution checks. Decode, `CopyParent`, constructors and new
+sessions receive a live explicit registry; accepted sessions own their decoded
+choices. Recursive validation shares one aggregate admission budget. Earlier
+v1 artifacts must be regenerated; there is no legacy reader or executable data.
 
 Semantic ancestry is bounded to 8 encoded tree nodes, counting each retained
 parent occurrence even when its identity repeats. `Depth` reports maximum path

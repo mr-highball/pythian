@@ -12,6 +12,77 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current caller-provider batch — 2026-09-30
+
+Big Boss approved Neo's explicit borrowed caller-codec contract for
+[NS-4_providers_01](TODO/NS-4_providers_01.md). Neo owns adapter admission,
+current v2 persistence, conformance, semantic guides and package/build integration.
+Ticket Guy supplied and released only the external harmonic codec/consumer and
+[caller-provider guide](CALLER-PROVIDERS.md); their source/effect factory dependency
+remains frozen from the accepted `912f037` batch. No core, generic layer or vendor
+source changed. The task is OPEN with zero credit; all scientific stop counters
+remain separate and unchanged.
+
+Checked stable FPC 3.2.2 Win32/Win64 each pass 221 maintained caller-codec checks
+with zero unfreed blocks. They execute actual dependent WFC with typed controls,
+registry/codec destruction, fresh explicit admission, detached mutable snapshots,
+compatible replacement and a real order-2 transition contradiction. Failed
+replacement preserves caller output, accepted tokens/latent states and prior
+evidence. Missing/incompatible root and nested registrations reject without
+changing accepted styles. Shared operation limits cover recursive parents,
+definition validation and internal sessions: a measured callback count admits
+16 high-cost decodes then rejects the next before dispatch. Exact 64-binding,
+262144-dispatch, aggregate I/O/payload and UInt64 overflow boundaries also pass.
+The counters bound declared work and callback I/O, not execution or allocation
+inside arbitrary caller code.
+
+Actual authored reference WAVs bind two source rows. Selective custom weights
+1:2 become 5:4 after reloading a derived blend and using it as a further parent.
+Original source/run evidence remains in exact retained parents; active blend
+rows use canonical IDs and preserve original boundaries and contribution totals.
+Saved styles and actual saved/reloaded PCM replay exactly on each target. Fixed
+pitch/intensity controls with harmonic mix 0 versus 1 have squared correlation
+0.51478870, demonstrating timbre change beyond scalar gain. This is mechanical
+authored evidence, not learned acoustic truth or outside adoption.
+
+Existing built-in semantic-style/blend checks pass on both stable targets with
+zero leaks. External example hashes remain frozen, with its 242 focused private
+assertions per target and 36 leak-free runtime logs. Local conformance fixture
+corrections concerned field/API names, canonical contribution rows, accepted
+session lifecycle and transition order; no library defect or submitted QA
+failure followed. Fresh extracted companion package qualification, independent
+final QA and the exact published revision's Linux result remain release gates.
+Fresh extracted companion candidates now pass on both stable targets: 145 owned
+units, 264 inventory entries and the actual caller consumer plus all 221
+conformance checks, with complete zero-leak reports. These are explicitly dirty
+candidates based on `bb8d2e8`; their inventory/archive hashes are recorded in the
+owning task. Final clean committed artifacts and exact-revision Linux validation
+will remain distinct from these candidate results.
+Private commands/hashes/logs are under ignored `build/provider-extension/` and
+`build/provider-extension-example/`. Salty's first independent submission passed
+all behavioral/package checks and 14 complete zero-leak logs, but its final
+disposition is REVISE for required Athena layout. Neo expands only newly authored
+branches/declarations and shared-wrapper indentation; Ticket Guy owns formatting
+only the new conformance file. No assertions, semantics, API or budgets change.
+Current failed implementation submissions are 1/2 for the entire NS4 task,
+regardless of who formats it; a second failure transfers repair directly to
+Big Boss. Scientific stop counters and task credit are unchanged. Same-batch
+changed-risk QA will verify the corrected source hashes and focused replay.
+The format-only correction is now complete: stable Win32/Win64 each rebuild and
+pass the unchanged 221 checks with zero leaks. All six emitted fixture files on
+each target match their pre-format hashes, and the conformance's 206 ordered
+string literals are unchanged. Exact repaired source/target evidence is under
+ignored `build/provider-extension-format-test/`; final independent re-review
+passed as submission 2, with aggregate historical failure count retained at 1.
+Salty independently rebuilt both targets: unchanged 221 checks each, complete
+zero-leak logs and all 12 fixture hashes matching its first-submission outputs.
+The required layout/control-flow review, 18 frozen hashes and changed links pass.
+Big Boss accepts the repaired implementation scope. Source/candidate QA is
+complete; clean committed Windows companion archives, unchanged reviewed push
+and exact-revision Linux success/uploaded inventories remain release gates.
+NS4 stays OPEN with zero new credit; current ledger remains 47.10, 45 open and
+33 DONE. Exact final review stays under ignored `build/qa-provider-extension/`.
+
 ## Current caller source/effect batch — 2026-09-30
 
 Big Boss assigns Ticket Guy the bounded mechanical component of

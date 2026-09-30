@@ -148,6 +148,27 @@ decoded amplitude within PCM16 quantization; fixed-input/seed replay is exact
 on the same target. These authored samples demonstrate caller extension and
 generation mechanics, without recorded-learning or musical-quality acceptance.
 
+The companion archive also includes a genuinely caller-defined harmonic-balance
+codec in external Pascal units. It uses `spvCaller`, explicit borrowed registration
+and actual pitch-to-balance WFC projections, then drives the caller harmonic
+source. See [the caller-provider guide](docs/CALLER-PROVIDERS.md) for meaning,
+ownership, numeric limits and failure behavior:
+
+```text
+fpc -B -Sa -Cr -Co -Ci -gl -gh -Fusrc -Fuexamples -Fuadapters/wfc -Fuvendor/wfc/src -FUbuild/wfc-units -FEbuild/bin examples/pythian.example.provider.extensions.lpr
+build/bin/pythian.example.provider.extensions harmonic.wav 731
+```
+
+All four publication paths must be fresh: `harmonic.wav`, `harmonic.pys` and
+`harmonic-authored-0.wav` / `harmonic-authored-1.wav`. The style uses current
+`pythian.semantic.style.v2` only; reload/new session creation requires explicit
+registration, while admitted sessions generate after registration objects are
+freed. The native output is 16 kHz stereo, 16000 frames. Authored controls show
+mechanical extension and source binding, not inferred style or human adoption.
+The included `tests/pythian.tests.provider.extension.lpr` exercises admission,
+replacement, nested reload, selective blending and native replay from these
+extracted public sources. Core-only archives omit this WFC codec example.
+
 A second WFC example learns from two recordings, saves their event model and
 generates from the reloaded archive. Use the two native example WAVs above:
 
