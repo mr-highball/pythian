@@ -21,6 +21,67 @@ Final accepted-workflow revalidation and independent downstream-use acceptance r
 [WAV-05-DELIVERY](MILESTONES.md#wav-05-delivery) and
 [DELIVERY-RELEASE](MILESTONES.md#delivery-release).
 
+## Accepted caller-provider artifact — 2026-09-30
+
+[Caller-provider acceptance](TODO/DONE/NS-4_providers_01.md) binds frozen source
+`bdd55eb04a89d0271241da6111f42e47039055d6`. Later record/ledger commits do not
+relabel its archives or rebuild them from a changed checkout. The preceding
+`de45c9e` minimal and `912f037` source/effect acceptances keep their original
+artifact identities. The [consumer packet](MINIMAL-CONSUMER-HANDOFF.md) now uses
+this qualified snapshot for minimal synthesis and optional extension checks;
+actual non-agent use/listening remains unearned.
+
+Independent Salty Boi implementation QA accepts the bounded codec/admission,
+current v2 persistence, actual dependent WFC, replacement preservation,
+selective blend/reload/further blend and external harmonic-balance consumer.
+One historical implementation submission failed required layout; the repaired
+submission passes, preserving 221 checks per stable Windows target and all
+12 same-target fixture comparisons. Neither that correction nor packaging
+changes authored references into acoustic ground truth.
+
+Two clean committed companion archives passed stable FPC 3.2.2 i386-win32 and
+x86_64-win64: each compiled 145 owned units, verified 264 content hashes after
+extraction and ran the external caller plus 221 maintained conformance checks.
+Both new consumer logs explicitly report zero unfreed blocks. The unchanged
+commit was then pushed with local/tracking/remote agreement and a clean tree.
+
+[Native run 36698183025](https://github.com/mr-highball/pythian/actions/runs/36698183025),
+job `109831077627`, completed SUCCESS on Ubuntu 24.04 / FPC 3.2.2 x86_64-linux:
+integration, both extracted packages and both uploads passed. Actual source
+artifact `11088603551` (1,688,303 bytes, outer SHA256
+`22d3b00dcd9f5ad3ba9cebf3bd078037c89c8e2b7b1824603a965100bcd6d5de`)
+and logs `11088638356` (103,895 bytes, outer SHA256
+`3d2e7115078270894f9c3f140680f5698c6f7fb65dd8b716d676cac02d7a91a9`)
+were downloaded and matched the upload digests. Both actual inner ZIPs were
+extracted and every emitted inventory entry checked. Clean metadata binds the
+exact revision, packaging script, stable target and unchanged WFC pin
+`47fa3d8cb8f0f72bf53943eb5eb79758c8f22ce4`.
+
+Linux core contains 98 owned units/111 content hashes; companion contains
+145/264. The custom consumer and 221 conformance checks pass. Integration logs
+explicitly report zero unfreed blocks. The extracted consumer logs have equal
+allocation/free block and byte totals, but trailing zero-unfreed text is
+truncated; no complete extracted heap dump is claimed. Six matched Windows
+fixture outputs are scoped observed parity, not a general cross-target bit
+identity promise. Source archives carry authored examples, complete notices,
+provenance and `SHA256SUMS`; no compiler or private assets are bundled.
+
+| Qualified archive at `bdd55eb` | Bytes | SHA256 |
+| --- | ---: | --- |
+| WFC, i386-win32 | 1331239 | `c970482c555e9e7f324b81129514319a35823ba263c20ce081203f525efe7b83` |
+| WFC, x86_64-win64 | 1331245 | `1a3b8a5a9d3f2e1d245d9f2ee12fbfcfe64f414644a62b6b6639966e22a3571f` |
+| Core, x86_64-linux | 396790 | `99ddb535ce2a65d7cbc364ef92fe7f0ca5f521288975334bf9a088c5cc6fe365` |
+| WFC, x86_64-linux | 1326453 | `6af4d77e041edb05169b5f7ad7b466eea0372d36d10d6676c045e715331074a1` |
+
+Windows companions used `tools/package.ps1 -Compiler EXISTING_STABLE_FPC -WithWfc`
+with separate fresh output roots; Win64 added `-TargetCpu x86_64 -TargetOs win64`.
+Linux used the workflow's existing core and `-WithWfc` commands with `-Compiler fpc`.
+Actual archive/inventory/run identities stay under ignored
+`build/provider-extension/final-bdd55eb-*` and
+`build/provider-extension/linux-bdd55eb/`; final independent review is under
+`build/qa-provider-extension/`. Clean package mechanics do not qualify outside
+adoption, NS2 listening, musical inference or the full recorded-style workflow.
+
 ## Accepted minimal artifact — 2026-09-30
 
 [Delivery_06](TODO/DONE/NS-6_delivery_06.md) accepts the frozen minimal artifact at

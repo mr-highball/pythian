@@ -45,7 +45,7 @@ below 100%. Publication requires its own authorization.
 - [NS-6_support_01.md](NS-6_support_01.md)
 - [NS-6_adoption_01.md](NS-6_adoption_01.md)
 - [NS-2_extension_01.md](NS-2_extension_01.md)
-- [NS-4_providers_01.md](NS-4_providers_01.md)
+- [NS-4_providers_01.md](DONE/NS-4_providers_01.md)
 
 **Dev Notes:**
 

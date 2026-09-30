@@ -1,18 +1,20 @@
 # Minimal synthesis consumer packet
 
-[Package evidence](PACKAGING.md#accepted-minimal-artifact--2026-09-30) ·
+[Package evidence](PACKAGING.md#accepted-caller-provider-artifact--2026-09-30) ·
 [Consumer contract](CONSUMER-CONTRACT.md) · [Independent-use task](TODO/NS-6_delivery_07.md)
 
 Use the frozen source package from
-[`de45c9eb05c9592e15ab19a1b581659610722d13`](https://github.com/mr-highball/pythian/commit/de45c9eb05c9592e15ab19a1b581659610722d13),
+[`bdd55eb04a89d0271241da6111f42e47039055d6`](https://github.com/mr-highball/pythian/commit/bdd55eb04a89d0271241da6111f42e47039055d6),
 verified on stable FPC 3.2.2 Win32, Win64 and Ubuntu 24.04 x86_64 Linux. No actual
 independent reviewer run is recorded yet. This packet requests that result;
 implementation-agent tests and CI are preparation only.
+This later handoff preserves the accepted `de45c9e` minimal and `912f037`
+source/effect artifact histories; it does not relabel those archives.
 
 ## Obtain the artifact
 
-Open the [successful native run](https://github.com/mr-highball/pythian/actions/runs/36677194774)
-and download `pythian-source-packages`, artifact `11080696677`. Its outer ZIP
+Open the [successful native run](https://github.com/mr-highball/pythian/actions/runs/36698183025)
+and download `pythian-source-packages`, artifact `11088603551`. Its outer ZIP
 contains two source ZIPs. Choose the core package for minimal synthesis, or the
 WFC package for the optional caller-provider example. These contain source,
 examples, full notices, provenance, metadata and `SHA256SUMS`, with no compiler
@@ -23,8 +25,8 @@ reviewed identity/evidence rather than substituting a moving checkout.
 
 | Source ZIP in downloaded artifact | Bytes | SHA256 |
 | --- | ---: | --- |
-| `ci-package-core/pythian-source.zip` | 380450 | `10254a8cbef9d436fb390e86bb2056dd4c4069fdc812654dd98ab56cb0ac05a7` |
-| `ci-package-wfc/pythian-source.zip` | 1281236 | `5703c330bf1385d96a6e120ccf2a12788e2fec23fb23eff7edd6d554b234d8df` |
+| `ci-package-core/pythian-source.zip` | 396790 | `99ddb535ce2a65d7cbc364ef92fe7f0ca5f521288975334bf9a088c5cc6fe365` |
+| `ci-package-wfc/pythian-source.zip` | 1326453 | `6af4d77e041edb05169b5f7ad7b466eea0372d36d10d6676c045e715331074a1` |
 
 Verify the chosen ZIP hash before extraction (`Get-FileHash` on Windows or
 `sha256sum` on Linux). Extract into a fresh directory outside the Pythian
@@ -85,7 +87,31 @@ quantization; fixed-input/seed replay must match actual file hashes on your
 target. This demonstrates a canonical-pitch provider, without claiming custom
 semantic codecs, accepted recorded learning or learned styles.
 
-Both examples reject invalid controls/seeds, missing parents and existing
+## Optional caller-source/effect path
+
+Either downloaded package also includes `docs/CALLER-EXTENSIONS.md` and an
+external Pascal source/factory plus stateful stereo delay. From the same fresh
+extracted root, create a separate `build/extension-units` and use:
+
+```text
+fpc -B -Sa -Cr -Co -Ci -gl -gh -Fusrc -Fuexamples -FUbuild/extension-units -FEbuild/bin examples/pythian.example.extensions.lpr
+build/bin/pythian.example.extensions extended.wav 0.35 0.3 731 257
+build/bin/pythian.example.extensions extended-replay.wav 0.35 0.3 731 1
+build/bin/pythian.example.extensions extended-changed.wav 0.7 0.3 731 257
+```
+
+The caller unit owns the harmonic-mix parameter and retained delay state;
+no WFC or Pythian source edits are needed. Each saved/reloaded WAV must be
+16,000 Hz, stereo, 16,240 frames, including the 240-frame delay tail. The first
+two actual WAV hashes must match despite their different read caps; the changed
+harmonic mix must change the output. Listen to the extended output at the
+declared settings and report synthesis defects, audible behavior and whether
+the packaged guide lets you adapt the public caller unit without private help.
+This is useful outside-use/listening evidence for the separately open
+[extension task](TODO/NS-2_extension_01.md), with acceptance assessed against
+its full contract. Our existing mechanical runs are not your listening verdict.
+
+The examples reject invalid controls/seeds, missing parents and existing
 outputs. An existing valid WAV is preserved. Direct writing may leave partial
 new output after an I/O failure; repair the cause and choose a fresh path.
 Concurrent writers are unsupported. Ownership and work are bounded as described
@@ -98,6 +124,8 @@ real-time guarantee follows.
   outside the implementation checkout; omit private contact/machine paths.
 - Received source revision and ZIP hash, checksum verification, and companion
   pin if used.
+- Which optional extension route you used, its exact parameters and actual
+  output hashes, listening verdict and any changes to your own caller unit.
 - OS/CPU, compiler version/target probes and relevant setup differences.
 - Exact commands, any caller changes or external input provenance, and build/
   runtime success or useful error text without credentials/private paths.

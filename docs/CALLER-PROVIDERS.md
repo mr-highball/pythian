@@ -184,11 +184,13 @@ With pitch/intensity fixed, changing balance altered waveform shape rather than
 only scalar gain. Independent source and extracted-candidate QA also pass 221
 maintained checks per stable target, including shared recursive admission,
 failed replacement preservation and reusable blended native audio. This is
-authored mechanical evidence; final clean committed archives and matching
-published-revision Linux qualification remain pending.
+authored mechanical evidence. Clean companion archives at frozen
+`bdd55eb04a89d0271241da6111f42e47039055d6` pass stable Win32/Win64 and the
+matching Linux integration/extracted-consumer run; actual delivered inventories
+and archive bytes are verified in the repository's
+[package evidence](https://github.com/mr-highball/pythian/blob/hello-pythian/docs/PACKAGING.md#accepted-caller-provider-artifact--2026-09-30).
 The example's public-package mechanics do not establish actual third-party
-adoption. Exact delivered-archive qualification is reported separately once it
-passes.
+adoption or learned acoustic truth.
 
 Pythian and these examples use the [MIT license](../LICENSE); source files carry
 complete notices. The included WFC dependency retains its

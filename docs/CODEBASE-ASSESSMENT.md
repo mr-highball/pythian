@@ -10,7 +10,16 @@ corpus_05 criteria at their declared scope. The maintained
 consumer close evaluation_01 AC1 only; independent grounding/calibration and
 full comparator/control outcomes remain open. This does not qualify inferred
 musical styles, many-hour acceptance or outside use. The dated audit below
-retains its original evidence scope; live credit is **47.10 / 52.90 remaining**.
+retains its original evidence scope; live credit is **48.60 / 51.40 remaining**.
+
+The bounded [caller-provider outcome](TODO/DONE/NS-4_providers_01.md) is now
+accepted at frozen `bdd55eb04a89d0271241da6111f42e47039055d6`: explicit borrowed
+registration, detached session choices, source-independent semantic identity,
+shared recursive admission limits and v2-only persistence preserve caller
+meaning through selective blend/reload/further blend. A genuinely custom
+harmonic-balance trait drives native audio through dependent WFC. Independent
+QA and exact clean Windows/Linux package inventories qualify this mechanical
+scope; acoustic inference and non-agent adoption remain unearned.
 
 Minimal source delivery is also accepted at frozen source
 `de45c9eb05c9592e15ab19a1b581659610722d13`: clean core/WFC archives passed
@@ -110,15 +119,16 @@ integration and blend/reblend evidence; a minimal consumer cannot close it.
 
 The completeness audit also assigns explicit owners for
 [caller-owned synthesis extensions](TODO/NS-2_extension_01.md),
-[new caller-provider/trait integration](TODO/NS-4_providers_01.md),
+[accepted caller-provider/trait integration](TODO/DONE/NS-4_providers_01.md),
 [maintained support/update use](TODO/NS-6_support_01.md) and
 [actual ecosystem adoption](TODO/NS-6_adoption_01.md). Public abstract source and
 effect APIs and generic layer inputs exist, but their implementation fixtures
 do not establish independent caller extension or continued product use.
 Single-snapshot packaging and one reviewer likewise cannot establish a
-supported maintenance cycle or de facto standard status. These required
-outcomes remain open; an adoption floor alone does not justify a standard
-claim. The current ledger credits 47.10 weighted points, with 52.90 remaining.
+supported maintenance cycle or de facto standard status. Independent caller
+use, support and adoption remain open; an adoption floor alone does not
+justify a standard claim. The current ledger credits 48.60 weighted points,
+with 51.40 remaining.
 
 ## WFC boundary audit
 

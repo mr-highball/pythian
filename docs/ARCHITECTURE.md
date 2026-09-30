@@ -40,8 +40,9 @@ those relationships through selective blending and further blending.
 | Domain-independent tokens/models, constraints, propagation, pass DAGs/mapping, generic negotiation, transactional regeneration and solver budgets | WFC's separate repository |
 | Current core-only and integrated WFC source delivery, consumer guidance and demonstrated reuse | Pythian delivery tasks, using the reviewed WFC pin |
 
-The closed semantic-provider vocabulary and caller codec/role extensions are
-Pythian gaps owned by [providers_01](TODO/NS-4_providers_01.md).
+The bounded caller codec/provider contract is accepted under
+[providers_01](TODO/DONE/NS-4_providers_01.md). Its generic traits retain explicit
+meaning, clock and admission limits; named voices keep their fixed schema.
 [Recorded integration](TODO/NS-4_integration_01.md) owns the complete evidence ->
 WFC -> synthesis path and unknown propagation. [Minimal delivery](TODO/DONE/NS-6_delivery_06.md)
 must demonstrate both an isolated core and the opted-in companion closure;

@@ -57,6 +57,15 @@ or supported reproduction failure and record its unblock or repair owner.
 
 **Dev Notes:**
 
+- 2026-09-30 handoff refresh: the public packet now binds qualified clean source
+  revision `bdd55eb04a89d0271241da6111f42e47039055d6` and actual downloaded
+  Linux source artifact `11088603551`, with exact core/companion ZIP hashes.
+  It keeps the minimal core/canonical-pitch routes and adds the packaged
+  caller-source/effect path, explicit controls/read-cap replay and requested
+  listening/usability results. Historical `de45c9e` and `912f037` acceptance
+  identities are preserved. No actual outside reviewer run or new provision
+  is recorded; the existing unanswered availability request stays pending.
+  Preparation and agent extraction earn no delivery_07 or NS2 task credit.
 - The package prerequisite is DONE at
   `de45c9eb05c9592e15ab19a1b581659610722d13`, with stable Windows and exact Linux
   artifact verification. The prepared public packet needs no private assets,

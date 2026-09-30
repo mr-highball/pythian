@@ -25,7 +25,7 @@ with the user informed before upstream edits; do not modify this checkout's
 dependency source. The [current audit](CODEBASE-ASSESSMENT.md#wfc-boundary-audit)
 found no demonstrated generic WFC defect, so no branch or dependency change
 was needed. Caller-provider extension and recorded integration remain owned by
-[providers_01](TODO/NS-4_providers_01.md) and
+[accepted providers_01](TODO/DONE/NS-4_providers_01.md) and
 [integration_01](TODO/NS-4_integration_01.md), rather than duplicate upstream work.
 
 The public scope is **any caller-defined style within declared support**.

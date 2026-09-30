@@ -32,7 +32,7 @@ with independent final QA. This planning change accepts no criterion.
 
 **Blockers**
 
-- [NS-4_providers_01.md](NS-4_providers_01.md)
+- [NS-4_providers_01.md](DONE/NS-4_providers_01.md)
 - [NS-5_style_02.md](NS-5_style_02.md)
 
 **Dev Notes:**

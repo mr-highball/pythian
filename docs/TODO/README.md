@@ -3,12 +3,13 @@
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) ·
 [Assessment](../REBALANCE-2026-09-29.md) · [Completed tasks](DONE/README.md) · [Work](../WORK.md)
 
-Updated 2026-09-30. **45 open / 33 accepted tasks.** The user authorized a new
-outcome-based credit allocation: **47.10 current / 52.90 remaining** overall.
+Updated 2026-09-30. **44 open / 34 accepted tasks.** The user authorized a new
+outcome-based credit allocation: **48.60 current / 51.40 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
 adds 4 NS-5 points / 0.80 overall, and the accepted exact-revision minimal native
-package adds 8 NS-6 points / 0.80 overall on 2026-09-30.
+package adds 8 NS-6 points / 0.80 overall on 2026-09-30. Exact-revision
+caller-provider acceptance adds 10 NS-4 points / 1.50 overall.
 
 Style IDs and traits are caller-defined. Chillwave, stoner rock and lofi are
 internal examples, with no special public contract. Task files own acceptance
@@ -23,10 +24,10 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-1 — Independent Pascal foundation](../MILESTONES.md#ns-1) | 100 | 0 | 100% | 0 | 0 | 0.00 |
 | [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 70 | 20 | 90% | 1 | 10 | 2.50 |
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
-| [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 35 | 55% | 2 | 45 | 6.75 |
+| [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 45 | 65% | 1 | 35 | 5.25 |
 | [NS-5 — User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 15 | 86 | 17.20 |
 | [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 23 | 23% | 8 | 77 | 7.70 |
-| **Total** | **28.00 weighted** | **19.10 weighted** | **47.10 weighted** | **45** | Goal points are not summed across goals | **52.90** |
+| **Total** | **28.00 weighted** | **20.60 weighted** | **48.60 weighted** | **44** | Goal points are not summed across goals | **51.40** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -52,12 +53,15 @@ revision. [Independent use](NS-6_delivery_07.md) has a concrete
 [consumer packet](../MINIMAL-CONSUMER-HANDOFF.md) but needs an actual outside
 reviewer. Maintained [caller source/effect mechanics](NS-2_extension_01.md) are
 accepted at their exact published package revision; actual independent use and
-listening remain unearned. The bounded [caller-provider contract](NS-4_providers_01.md)
-has implemented admission, persistence, dependent native generation and reusable
-blends; source/candidate QA passes, while exact published-artifact qualification
-remains pending.
-This is useful parallel work when the prioritized learning path is blocked.
-It does not depend on final operator/full-style completion. Full style,
+listening remain unearned. The bounded [caller-provider contract](DONE/NS-4_providers_01.md)
+is accepted at `bdd55eb`, including exact clean Windows/Linux packages, explicit
+registration, dependent native generation and reusable blends. Actual outside
+use and full recorded integration remain separate outcomes.
+The next ready lane is [editor/queue acceptance](NS-6_authoring_01.md), starting
+with a current-source identity/evidence map and bounded native/pas2js/CLI checks.
+The exact QA firewall rule is absent: no new service/browser launch is permitted.
+Reuse complete unchanged independent evidence where identity is verified; record
+missing current-source cases instead of reopening unrelated UI work. Full style,
 blend/reblend, many-hour and operator requirements remain in their owners below.
 Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each batch.
 
@@ -98,7 +102,6 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | Task / primary outcome | Goal points | Overall points | Current readiness |
 | --- | ---: | ---: | --- |
 | [NS-4_integration_01](NS-4_integration_01.md) — Deliver the recorded WAV-to-style-to-audio workflow | 35 | 5.25 | Dependency-blocked |
-| [NS-4_providers_01](NS-4_providers_01.md) — Qualify caller-defined WFC providers and reusable traits | 10 | 1.50 | Source QA passed; artifact qualification pending |
 
 ### NS-5 — User-defined styles that generate and blend usefully
 

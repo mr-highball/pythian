@@ -6,9 +6,10 @@
 This dated report freezes the **2026-09-29** allocation and 45.50% ledger
 snapshot. Subsequent accepted work updates [live milestones](MILESTONES.md)
 and the [task catalog](TODO/README.md). On 2026-09-30, independently accepted
-caller intake adds 4 NS-5 / 0.80 overall, and exact-revision minimal native
-delivery adds 8 NS-6 / 0.80 overall, giving **47.10 credited / 52.90
-remaining**, **45 open / 33 DONE**. The allocation rationale, stopped
+caller intake adds 4 NS-5 / 0.80 overall, exact-revision minimal native
+delivery adds 8 NS-6 / 0.80 overall, and caller providers add 10 NS-4 / 1.50
+overall, giving **48.60 credited / 51.40 remaining**, **44 open / 34 DONE**.
+The allocation rationale, stopped
 investigations and dated assessment numbers below remain historical evidence.
 
 ## Finding
@@ -173,7 +174,7 @@ now required, and the score is rebased again before publication:
 | Missing outcome | Required owner | Why previous acceptance was insufficient |
 | --- | --- | --- |
 | Reusable caller synthesis extensions | [NS-2_extension_01](TODO/NS-2_extension_01.md), 10 NS-2 points | Built-in tests and internal subclasses do not show an outside caller can implement a source/effect with correct ownership, work, streaming and fault behavior. |
-| Extensible musical providers | [NS-4_providers_01](TODO/NS-4_providers_01.md), 10 NS-4 points | The existing semantic vocabulary is closed; a new style name/corpus is not a new provider or trait schema that survives control, persistence and repeated blending. |
+| Extensible musical providers | [NS-4_providers_01](TODO/DONE/NS-4_providers_01.md), 10 NS-4 points | At the dated audit the semantic vocabulary was closed; the separately accepted `bdd55eb` caller-codec contract now qualifies bounded control, persistence and repeated blending. |
 | A maintained supported library | [NS-6_support_01](TODO/NS-6_support_01.md), 10 NS-6 points | One development snapshot says nothing about a declared release/API policy, a real caller upgrade or a reported issue repaired and delivered. |
 | Evidence of ecosystem adoption | [NS-6_adoption_01](TODO/NS-6_adoption_01.md), 15 NS-6 points | An isolated package consumer, agent run, download or star count cannot establish the de facto standard claim. |
 

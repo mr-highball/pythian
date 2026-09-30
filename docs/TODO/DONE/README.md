@@ -3,7 +3,7 @@
 [Task index](../README.md) · [Task flow](../../TASKFLOW.MD) ·
 [Milestones](../../MILESTONES.md) · [Current credit basis](../../REBALANCE-2026-09-29.md#current-credit-basis)
 
-All **33** records retain their acceptance evidence and dates. Points below
+All **34** records retain their acceptance evidence and dates. Points below
 use the user-authorized 2026-09-29 outcome rebase; older amounts in evidence
 narratives are historical. No task was accepted by this reassessment.
 
@@ -30,6 +30,7 @@ narratives are historical. No task was accepted by this reassessment.
 | [NS-4_layers_03](NS-4_layers_03.md) — Connect granular musical and sound controls | 2026-09-21 | 5 NS-4 | 0.75 |
 | [NS-4_layers_04](NS-4_layers_04.md) — Handle changing duration and committed-stream edits | 2026-09-21 | 5 NS-4 | 0.75 |
 | [NS-4_note-events_01](NS-4_note-events_01.md) — Generate coordinated note events across parts | 2026-09-24 | 2 NS-4 | 0.30 |
+| [NS-4_providers_01](NS-4_providers_01.md) — Qualify caller-defined WFC providers and reusable traits | 2026-09-30 | 10 NS-4 | 1.50 |
 | [NS-4_styles_01](NS-4_styles_01.md) — Persist reusable semantic providers and joint evidence | 2026-09-21 | 5 NS-4 | 0.75 |
 | [NS-4_styles_02](NS-4_styles_02.md) — Support selective blend and further blend | 2026-09-21 | 5 NS-4 | 0.75 |
 | [NS-5_continuity_02](NS-5_continuity_02.md) — Stream saved acoustic WFC beyond one solve | 2026-09-28 | 2 NS-5 | 0.40 |
@@ -43,8 +44,8 @@ narratives are historical. No task was accepted by this reassessment.
 | [NS-6_delivery_02](NS-6_delivery_02.md) — Verify clean native targets and remote CI | 2026-09-21 | 12 NS-6 | 1.20 |
 | [NS-6_delivery_06](NS-6_delivery_06.md) — Deliver a current minimal native synthesis package | 2026-09-30 | 8 NS-6 | 0.80 |
 
-Current accepted task total is **19.10 weighted points**; the separate accepted
-baseline contributes **28.00**, giving **47.10 overall**. Core source-free
+Current accepted task total is **20.60 weighted points**; the separate accepted
+baseline contributes **28.00**, giving **48.60 overall**. Core source-free
 composition remains accepted with zero extra NS-4 points; it does not prove
 WFC-selected or recorded-provider integration. The prior external-runtime
 execution result remains historical; current inference acceptance is Pascal-owned.

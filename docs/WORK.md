@@ -15,13 +15,14 @@ Project work and review pushes stay on `hello-pythian`.
 ## Current caller-provider batch — 2026-09-30
 
 Big Boss approved Neo's explicit borrowed caller-codec contract for
-[NS-4_providers_01](TODO/NS-4_providers_01.md). Neo owns adapter admission,
+[NS-4_providers_01](TODO/DONE/NS-4_providers_01.md). Neo owns adapter admission,
 current v2 persistence, conformance, semantic guides and package/build integration.
 Ticket Guy supplied and released only the external harmonic codec/consumer and
 [caller-provider guide](CALLER-PROVIDERS.md); their source/effect factory dependency
 remains frozen from the accepted `912f037` batch. No core, generic layer or vendor
-source changed. The task is OPEN with zero credit; all scientific stop counters
-remain separate and unchanged.
+source changed. Big Boss accepts all five criteria and DONE prerequisites at
+frozen implementation/artifact revision `bdd55eb04a89d0271241da6111f42e47039055d6`.
+All scientific stop counters remain separate and unchanged.
 
 Checked stable FPC 3.2.2 Win32/Win64 each pass 221 maintained caller-codec checks
 with zero unfreed blocks. They execute actual dependent WFC with typed controls,
@@ -50,8 +51,8 @@ zero leaks. External example hashes remain frozen, with its 242 focused private
 assertions per target and 36 leak-free runtime logs. Local conformance fixture
 corrections concerned field/API names, canonical contribution rows, accepted
 session lifecycle and transition order; no library defect or submitted QA
-failure followed. Fresh extracted companion package qualification, independent
-final QA and the exact published revision's Linux result remain release gates.
+failure followed. The following candidate/repair checkpoints retain their
+original evidence; final clean artifact acceptance is recorded below.
 Fresh extracted companion candidates now pass on both stable targets: 145 owned
 units, 264 inventory entries and the actual caller consumer plus all 221
 conformance checks, with complete zero-leak reports. These are explicitly dirty
@@ -61,13 +62,13 @@ will remain distinct from these candidate results.
 Private commands/hashes/logs are under ignored `build/provider-extension/` and
 `build/provider-extension-example/`. Salty's first independent submission passed
 all behavioral/package checks and 14 complete zero-leak logs, but its final
-disposition is REVISE for required Athena layout. Neo expands only newly authored
+disposition was REVISE for required Athena layout. Neo expanded only newly authored
 branches/declarations and shared-wrapper indentation; Ticket Guy owns formatting
-only the new conformance file. No assertions, semantics, API or budgets change.
-Current failed implementation submissions are 1/2 for the entire NS4 task,
+only the new conformance file. No assertions, semantics, API or budgets changed.
+Historical failed implementation submissions remain 1 for the entire NS4 task,
 regardless of who formats it; a second failure transfers repair directly to
 Big Boss. Scientific stop counters and task credit are unchanged. Same-batch
-changed-risk QA will verify the corrected source hashes and focused replay.
+changed-risk QA subsequently verified the corrected hashes and focused replay.
 The format-only correction is now complete: stable Win32/Win64 each rebuild and
 pass the unchanged 221 checks with zero leaks. All six emitted fixture files on
 each target match their pre-format hashes, and the conformance's 206 ordered
@@ -77,11 +78,42 @@ passed as submission 2, with aggregate historical failure count retained at 1.
 Salty independently rebuilt both targets: unchanged 221 checks each, complete
 zero-leak logs and all 12 fixture hashes matching its first-submission outputs.
 The required layout/control-flow review, 18 frozen hashes and changed links pass.
-Big Boss accepts the repaired implementation scope. Source/candidate QA is
-complete; clean committed Windows companion archives, unchanged reviewed push
-and exact-revision Linux success/uploaded inventories remain release gates.
-NS4 stays OPEN with zero new credit; current ledger remains 47.10, 45 open and
-33 DONE. Exact final review stays under ignored `build/qa-provider-extension/`.
+Big Boss accepts the repaired implementation scope. Salty committed the reviewed
+18 paths as `bdd55eb04a89d0271241da6111f42e47039055d6` and held its push while
+Neo qualified two clean stable Windows companion archives. Each compiled 145
+owned units, verified 264 actual content hashes and passed the external native
+consumer plus 221 conformance checks with zero unfreed blocks. Salty pushed the
+unchanged commit with local/tracking/remote agreement and a clean worktree.
+
+[Exact Linux run 36698183025](https://github.com/mr-highball/pythian/actions/runs/36698183025),
+job `109831077627`, completed SUCCESS, including extracted packages and both
+uploads. Actual source artifact `11088603551` and logs `11088638356` were
+downloaded; their outer digests and every inner inventory hash/count pass.
+Clean metadata binds `bdd55eb`, stable FPC 3.2.2 x86_64-linux and unchanged WFC
+pin. Core has 111 entries; companion has 264, 145 owned units and 221 checks.
+Linux integration explicitly reports zero unfreed blocks; extracted consumer
+allocation/free totals match, but their trailing heap text is truncated. No
+complete extracted heap dump or blanket cross-target bit identity is claimed.
+[Qualified archive identities](PACKAGING.md#accepted-caller-provider-artifact--2026-09-30)
+remain bound to `bdd55eb`; later accounting commits do not relabel them.
+
+Big Boss accepts AC1–5 and all prerequisites. The coordinated DONE move adds
+10 NS-4 / 1.50 overall: goal completions **100/90/25/65/14/23**, **48.60 credited /
+51.40 remaining**, **44 open / 34 DONE** (28.00 baseline + 20.60 DONE).
+This criterion-closing batch retains one failed implementation QA submission
+and notes_05's four-stop lower bound. No human adoption, inferred musical style
+or additional NS2 listening acceptance follows. Final records/artifact review
+stays under ignored `build/qa-provider-extension/`; raw local/remote evidence
+stays under ignored `build/provider-extension/`.
+
+Final Salty Boi artifact/accounting QA passes at frozen `bdd55eb`: six archive
+digests and four complete inventories (111/264/264/264 entries), exact Linux
+run/job identity, scoped runtime evidence and 586 local links in 16 documents.
+The 78-task/160-edge graph remains acyclic; 44 open / 34 DONE reconcile to
+48.60 credited / 51.40 remaining. Extracted Linux heap-text truncation, one
+historical implementation QA failure and notes_05's four-stop lower bound are
+preserved. This documentation publication does not relabel source artifacts or
+earn outside-use/listening acceptance. No source rebuild or media access occurred.
 
 ## Current caller source/effect batch — 2026-09-30
 
@@ -92,7 +124,7 @@ conformance source and [offline guide](CALLER-EXTENSIONS.md), its task, plus
 No library, adapter, vendor or ledger edits belong to this batch. Source and
 finite feed-forward delay passed combined Salty QA and exact artifact
 qualification. Neo has begun the separately approved caller-provider contract
-under [NS-4_providers_01](TODO/NS-4_providers_01.md). Two failed implementation submissions transfer directly
+under [NS-4_providers_01](TODO/DONE/NS-4_providers_01.md). Two failed implementation submissions transfer directly
 to Big Boss; current submitted failures are zero. No helper, service, browser,
 playback or new toolchain was used.
 
@@ -122,7 +154,7 @@ target, actual saved PCM and existing/nonfinite rejection preserving valid bytes
 All eight independent runtime logs were leak-free. Frozen worker boundary and
 four candidate archive results were reviewed; no unchanged broad suite repeated.
 Script parsing, 43 local links including emitted package navigation, notices,
-privacy and the unchanged 78-task/160-edge ledger passed: 45 open / 33 DONE,
+privacy and the then-current 78-task/160-edge ledger passed: 45 open / 33 DONE,
 47.10 credited / 52.90 remaining. Failed implementation QA submissions remain zero.
 Ignored evidence is under `build/qa-caller-extensions/`. The nine reviewed paths
 were committed and normally pushed as
@@ -313,7 +345,7 @@ verified locally. [Package evidence](PACKAGING.md#accepted-minimal-artifact--202
 records all six archive identities and commands; later evidence commits cite
 de45c9e and do not relabel those artifacts.
 
-Delivery_06 moves to DONE after all four criteria and its prerequisite pass:
+Delivery_06 moved to DONE at that checkpoint after all four criteria and its prerequisite passed:
 **45 open / 33 DONE**, goal completions **100/90/25/55/14/23**, and
 **47.10 weighted credited / 52.90 remaining** (28.00 baseline + 19.10 DONE).
 This is a criterion-closing batch; submitted implementation QA failures remain
@@ -325,7 +357,7 @@ publication, with no unchanged algorithm/source suites repeated.
 
 Final documentation QA passed 540 local paths/fragments across 16 documents,
 78 task templates and 160 acyclic prerequisite edges. All first credits match
-the live ledgers: 45 open / 33 DONE, 19.10 accepted plus 28.00 baseline = 47.10
+the then-current ledgers: 45 open / 33 DONE, 19.10 accepted plus 28.00 baseline = 47.10
 credited / 52.90 remaining. The six archive hashes and successful Linux run
 match the frozen de45c9e artifact revision; this documentation commit does not
 rename those artifacts. Privacy, notices, counters and independent-use limits
@@ -521,12 +553,23 @@ Start from NS-5, currently 14%, following real prerequisites:
   has a concrete packet but needs a willing non-agent reviewer; our checks do
   not count. Caller source/effect conformance/example/guide is mechanically
   qualified at exact source/artifact revision `912f037`; actual outside use and
-  listening remain open. Neo implements the approved custom-provider
-  registration/admission/persistence/blend contract, with Ticket Guy's two
-  external harmonic-balance example files now frozen. Big Boss retains chief
-  architecture/final judgment and owns only the narrowly versioned publisher
-  setup correction above. Other stopped inference routes remain stopped;
-  no further recorded comparison follows without its explicit release.
+  listening remain open. The [caller-provider contract](TODO/DONE/NS-4_providers_01.md)
+  is accepted at exact `bdd55eb` Windows/Linux artifact scope. The consumer
+  packet now binds those qualified archives and includes the source/effect path;
+  historical `de45c9e` and `912f037` acceptance identities remain unchanged.
+- Next ready lane: [authoring_01](TODO/NS-6_authoring_01.md) current-contract
+  closure. Its bounded read-only map found all six latest independent cookie-QA
+  assets byte-identical to the current stage and unchanged native dependencies;
+  older complete source-flow assets differ. Preserve mapped prior editor/queue
+  evidence with exact source/asset/toolchain/RTL/dependency identities and impact
+  review. The uncovered changed boundary is source-home answer Save/reload and
+  failed-precheck preservation after `credentials: omit`; listening-route tests
+  do not prove that source route. Prepare current native/pas2js/CLI evidence and
+  concrete copied fixtures after this NS4 publication. The exact fixed-path QA
+  firewall rule is absent: no new HTTP/browser launch, including loopback, until
+  that prerequisite is installed. Actual physical/operator use stays authoring_02.
+  Big Boss retains chief judgment. NIGENS and other stopped inference routes
+  stay closed; no new source/row/window/threshold/format retry is authorized.
 
 Before any batch name the exact criterion, deliverable, closing evidence and
 stop condition. This replan does not authorize a new inference experiment
@@ -540,6 +583,7 @@ without its changed-evidence condition.
 | [notes_05](TODO/NS-3_notes_05.md) | Quiet audible-tail gate remains; Berg found no candidate. Corrected publisher pairing reached row 1, then exact-zero rest and nonquiet tail rejected the source before presence inference. | At least four nonclosing source batches; original exposure unknown/development. Distinct supported audible tail plus disjoint same-source nonzero rest still required. No Win32 replay or source/row/window/threshold/format retry; further route needs independently supported changed evidence. |
 | [tempo_04](TODO/NS-3_tempo_04.md) | Frozen event graph failed missing120; recorded candidate/pulse references still required. | Existing nonclosing checkpoint remains. New justified physical candidate evidence; no terminal-extrapolation variants. |
 | [context_01](TODO/NS-3_context_01.md) | Profile/dictionary approaches rejected; tonal activity/tonic evidence missing. | Existing nonclosing checkpoint remains. New independently supported observation and prospective key/change/coverage gates. |
+| [authoring_01](TODO/NS-6_authoring_01.md) | Complete owned-case identity/impact record and changed source-home Save/reload/failed-precheck evidence remain. | Latest independent listening assets match current; that route does not cover source answers. Exact fixed QA firewall rule is absent; no HTTP/browser launch until installed. |
 | [authoring_02](TODO/NS-6_authoring_02.md) | Actual current physical-phone play/Save and complete operator matrix remain open. | Host/device and exact QA firewall rule are external prerequisites; inspect current local configuration rather than reusing historical addresses/PIDs. |
 | [delivery_07](TODO/NS-6_delivery_07.md), [style_03](TODO/NS-5_style_03.md) | Actual independent caller verdict needed after their package/style prerequisites. | No self-run checkout can substitute. Record reviewer and artifact identity when available. |
 
