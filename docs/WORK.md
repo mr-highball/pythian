@@ -12,7 +12,61 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
-## Current caller-provider batch — 2026-09-30
+## Current editor/queue preparation — 2026-09-30
+
+After accepted NS4 publication `7f1bea82582f03eac14933432b8e9cefa73f87ef`,
+Big Boss selects [authoring_01](TODO/NS-6_authoring_01.md) while the NS-5
+reference path remains blocked. This is current-contract qualification, not a
+new feature, physical-device verdict or restarted scientific investigation.
+Neo exclusively owns this record, the owning task and ignored
+`build/authoring-current-contract/` source/assets/compiler/RTL/dependency/case
+identity packet, necessary checked native/pas2js builds and fixed QA staging.
+Ticket Guy owns only ignored `build/authoring-current-cli/`: inspect exact prior
+native evidence first, then execute only genuinely missing/unbound producer or
+durable-feedback boundaries with small existing first-party Pascal fixtures.
+No overlapping maintained files or new helper.
+
+Closing preparation evidence is an exact current-build identity and complete
+case-to-log/impact map for checklist 1–3 and 6–9. All six latest independent
+cookie-QA assets match the current stage; native dependencies are unchanged.
+Reuse complete unchanged editor/queue proofs with explicit identity/impact
+review. The changed source-home `/api/review-queue` to `/api/review` transport after
+`credentials: omit` still needs one selected-answer Save/queue removal/empty-state/reload plus
+failed-precheck preservation/no-POST and successful retry, in copied fixtures.
+Current listening-route logs do not cover that source route. Historical
+authoring QA failures remain attached to their actual records; an unknown
+cumulative count is not invented or reset.
+
+Stop preparation at an unverified owned case or public-contract defect and
+record its exact boundary. No live catalog mutation, broad replay, media
+acquisition or fresh long-media hashing. The exact fixed-path QA firewall rule
+is absent, so no HTTP/browser process is launched, including loopback. Prepare
+the concrete checked binary/assets, copied fixture, selected interface and
+minimal administrator rule instructions before any user action request.
+Actual browser acceptance stays open until the prerequisite and focused QA
+pass; physical/operator acceptance remains authoring_02. No new task credit.
+
+Current native preparation passes both stable targets: the small maintained
+contract, 66 durable inspector assertions each and 22 zero-leak runtime logs.
+CLI export to an existing packet rejects at the fresh-output guard; the
+maintained contract separately proves withdrawn-link export rejection.
+The copied first-party development fixture contains one pending exact presence
+request, frames 100–1100 of a 1000 Hz mono source. It proves removal/empty state
+when saved; next-request advancement retains the prior unchanged evidence.
+Big Boss prepared the exact scoped administrator rule installer, with only
+read-only build/interface checks executed. Salty's same-batch prepared-component
+review passed after correcting Ticket Guy's private report claim of identical
+Win32/Win64 packet bytes: tiny floating proposal values differ, and replay is
+byte-identical within each target. Frozen target-specific identities were
+already correct. Neo repaired the reporting sentence and Salty verified it;
+no product repair or rerun occurred. Evidence remains in ignored
+`build/qa-authoring-preparation/` and `build/authoring-current-cli/`.
+This is one known blocking prepared-evidence submission correction in this
+sequence; prior cumulative authoring failures remain unknown and retained.
+A second blocking worker submission transfers to Big Boss. The same closing
+batch continues; the HTTP/browser gate and full task remain open, with no credit.
+
+## Accepted caller-provider batch — 2026-09-30
 
 Big Boss approved Neo's explicit borrowed caller-codec contract for
 [NS-4_providers_01](TODO/DONE/NS-4_providers_01.md). Neo owns adapter admission,

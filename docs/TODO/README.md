@@ -138,7 +138,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 
 ## Accepted tasks and retired work
 
-All 33 accepted tasks, including caller corpus intake, the current minimal package
+All 34 accepted tasks, including caller corpus intake, the current minimal package
 and the three NS-2 quality results, are listed in
 the [current DONE ledger](DONE/README.md). Their acceptance dates and detailed
 evidence remain in the unchanged task identities. Allocations now reflect the

@@ -26,12 +26,25 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 [task-flow listening allocation](../TASKFLOW.MD) ·
 [stable LAN service procedure](../LAN-REVIEW-SERVICE.md).
 
-Execution status: open; recorded editor/queue checks exist, but the complete
-split contract still needs current-source independent QA. Next deliverable:
-freeze and verify checklist 1–3 and 6–9 with a copied catalog. Closing evidence:
-source/assets and toolchain identities, exact typed-answer/review/replay results
-and durable worker reports. Stop at an unverified owned criterion and record
-its failing boundary; physical/operator acceptance stays in authoring_02.
+Execution status: open. Big Boss authorizes a bounded current-contract packet
+after accepted NS4 publication `7f1bea8`. Neo owns this task, WORK and ignored
+source/assets/compiler/RTL/dependency/case identities, necessary native/pas2js
+builds and fixed QA staging. Ticket Guy inspects prior native proofs first and
+owns only an exclusive ignored fixture/output root for genuinely missing or
+unbound CLI producer/durable boundaries. No implementation feature is selected.
+Next deliverable: bind complete unchanged checklist 1–3 and 6–9 evidence with
+explicit impact review, and prepare a focused copied-catalog source-answer
+Save/queue removal/empty-state/reload plus failed-precheck preservation/no-POST/retry check after
+the `credentials: omit` change. Latest listening-route checks do not cover it.
+Closing evidence names exact current source/assets/toolchain/RTL/dependencies,
+typed request/review/replay identities and durable reports. Stop at an
+unverified owned criterion or public defect and record its precise boundary.
+The fixed QA firewall rule is absent: no new HTTP/browser launch, including
+loopback, before that prerequisite. Prepare concrete build/fixture/slot and
+minimal administrator instructions first. Historical QA failures remain in
+their actual records; unknown cumulative counts are not reset or invented.
+Physical/operator acceptance stays authoring_02; partial preparation earns no
+task credit.
 
 **Acceptance Criteria:**
 
@@ -197,6 +210,46 @@ sentence is accounted for, including physical listening, failures and final QA.
 
 **Dev Notes:**
 
+- 2026-09-30 current preparation: fresh checked stable Win32/Win64 native
+  catalog builds pass; matched pas2js builds both pages, with all six outputs
+  byte-identical to the latest independent cookie-QA assets. The Win64 binary
+  also matches that independent executable. No HTTP service or browser was
+  launched. Ticket
+  Guy identified one native evidence gap: the existing small annotation-contract
+  logs predate a later sourceguard change, so unchanged test source alone does
+  not establish the full current dependency identity. Big Boss's authorized
+  bounded lane therefore runs only the existing small maintained contract on
+  both stable targets, plus current CLI queue/report/export/replay checks in
+  exclusive ignored fixtures. Its existing withdrawn linked-role control
+  supplies a real answer conflict; no new musical/media experiment or invented
+  conflict fixture. Closing evidence checks known/unknown/rejected/conflicting
+  responses, unchanged request/source/frame/revision identities and replay.
+  Native execution is reported as execution, not read-only inspection. Stop on
+  a public defect or failed/unverified boundary; no implementation repair,
+  long-source/28-facet replay, service/browser or live catalog writes are part
+  of this preparation. Full acceptance and historical QA counts remain open.
+- 2026-09-30 prepared components: the current small native contract and durable
+  CLI checks pass on both stable targets, with 66 inspector assertions each
+  and 22 zero-leak runtime logs. Existing-output export rejection proves
+  preservation at the fresh-output guard; the maintained contract separately
+  proves withdrawn-link export rejection. A copied first-party development
+  fixture has one pending exact presence request at frames 100–1100 of its
+  1000 Hz mono source. The focused browser check can prove queue removal and
+  the empty state; advancement to another request retains its unchanged prior
+  evidence. Prepared-component review does not close the task or earn credit.
+- 2026-09-30 prepared-evidence review: Salty accepted the corrected native,
+  build, fixed-slot, copied-fixture and administrator-installer components.
+  Ticket Guy's initial private validation sentence incorrectly claimed one
+  packet hash on both targets. The frozen hashes already recorded distinct
+  Win32/Win64 packets; small floating proposal values differ, while each target's
+  export/re-import/re-export remains byte-identical. Neo corrected only the
+  report; Salty verified it without a product repair or replay. This is one
+  known blocking prepared-evidence submission correction in this sequence;
+  cumulative historical authoring QA failures remain unknown and retained.
+  A second blocking worker submission transfers to Big Boss under task flow.
+  The same closing batch continues with the administrator/runtime prerequisite
+  and focused source-home browser check pending, without task credit. See
+  [work and evidence ownership](../WORK.md#current-editorqueue-preparation--2026-09-30).
 - 2026-09-29 current complete-goal credit basis: this task owns 8 NS-6
   goal points (+0.80 overall) by deliverable value. Nine open NS-6
   tasks allocate 85 goal points (+8.50 overall); the accepted contract and
