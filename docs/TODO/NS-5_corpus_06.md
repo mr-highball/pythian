@@ -15,7 +15,11 @@ Historical allocation: 3 goal percentage points (0.60 overall points).
 Credit is earned only when every acceptance criterion and prerequisite passes.
 Primary attribution is the delivered outcome above; consuming other goals earns no duplicate credit.
 
-Execution status and next batch: Blocked on generic intake and complete reference contract; source access/reference availability is also required. Next deliverable is one complete profile coverage packet under the declared contract, then the remaining two; stop on missing independence/reference evidence rather than cycling substitute windows.
+Execution status and next batch: Generic intake is accepted in corpus_05;
+the complete reference contract in evaluation_04 and independent source/reference
+availability still block execution. Next deliverable is one complete profile
+coverage packet under that contract, then the remaining two; stop on missing
+independence/reference evidence rather than cycling substitute windows.
 Closing evidence: maintained code/consumer and source-bound acceptance results for every criterion below,
 with independent final QA. This planning change accepts no criterion.
 

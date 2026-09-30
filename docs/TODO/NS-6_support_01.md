@@ -13,8 +13,9 @@ build. It does not promise a permanent ABI or every historical artifact reader.
 
 North star: NS-6. Outcome owner: DELIVERY-SUPPORT.
 Completion credit: 10 goal percentage points (1.00 overall points).
-Current complete-goal basis: 2026-09-29; NS-6 weight 10, zero baseline, 15
-accepted goal points and 85 open goal points. This required outcome earns no
+Allocation-time basis: 2026-09-29; NS-6 weight 10, zero baseline, then 15
+accepted goal points and 85 open goal points. Current accepted totals belong to
+[milestones](../MILESTONES.md#ns-6). This required outcome earns no
 acceptance from its creation. Its value is a supportable public library and an
 observed successful maintenance cycle, not documentation volume.
 Credit is earned only when every acceptance criterion and task-flow completion
@@ -24,14 +25,27 @@ Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
 [packaging](../PACKAGING.md) · [minimal package](DONE/NS-6_delivery_06.md) ·
 [full delivery](NS-6_delivery_03.md) · [independent use](NS-6_delivery_04.md).
 
-Execution status: open, complete acceptance blocked on minimal/full delivery
-and actual outside users. Policy and inventory preparation can begin using
+Execution status: open; the minimal package is accepted, while complete
+acceptance remains blocked on full delivery and actual outside users.
+Policy and inventory preparation can begin using
 current contracts. Next deliverable: a supported public inventory/update policy
 and an outside-user upgrade or issue-to-fixed-package cycle. Closing evidence:
 exact versions, APIs, instructions, user reproduction, maintained change,
 focused regression and the revised delivered artifact. Stop at an unavailable
 consumer, unsupported reproduction or unverified final scope; record its
 unblock/repair owner rather than claiming support from a README alone.
+
+AC2 preparation batch (2026-09-30): Big Boss assigned Neo the consumer contract
+and this task only. Deliver one integrated caller procedure for pinning a
+published snapshot, reviewing changes, rebuilding matched dependencies/assets,
+regenerating affected current-format artifacts and reporting a reproducible
+failure. Closing evidence for this documentation component is focused command,
+link, meaning and privacy review against the accepted `bdd55eb` package and
+existing scripts/consumer evidence. Stop at an unsupported command or missing
+migration evidence; do not rebuild packages, execute media/inference or invent a
+release/compatibility policy. AC2's actual upgrade/regeneration qualification,
+AC4's real outside-user cycle and full task acceptance remain open pending their
+evidence. This batch earns zero task credit and preserves existing counters.
 
 **Acceptance Criteria:**
 
@@ -73,6 +87,23 @@ unblock/repair owner rather than claiming support from a README alone.
 - [NS-6_delivery_04.md](NS-6_delivery_04.md)
 
 **Dev Notes:**
+
+- 2026-09-30 AC2 preparation, Neo: added
+  [updating a pinned consumer](../CONSUMER-CONTRACT.md#updating-a-pinned-consumer)
+  to the maintained consumer contract. It distinguishes moving `hello-pythian`
+  from accepted `bdd55eb` archives, gives exact pinned-checkout/change-review
+  commands, matched rebuild/current-artifact recreation instructions and failure
+  report fields. Existing package/consumer evidence supports the authored v2
+  save/reload/replay route; no old-model migration or real outside-user cycle
+  was executed in this batch. Read-only verification of the public issue page
+  found issue creation restricted, so the procedure requires an available
+  agreed submission channel and does not claim AC3 outside access accepted.
+  Salty's focused command/link/meaning/privacy review passes the exact submitted
+  files and their public support-route limitation. No regeneration or migration
+  execution is inferred from that documentation verdict.
+  AC2 remains unclosed pending its complete qualification; AC4, full-workflow
+  prerequisites and the full task stay open, with zero credit. No source,
+  compiler, asset, package, media or inference execution/change was performed.
 
 - 2026-09-29 Neo's completeness review found that AC4's initial wording required
   an upgrade to need correction. Main revised it to accept a successful real

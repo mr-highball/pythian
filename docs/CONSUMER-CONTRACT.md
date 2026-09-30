@@ -82,6 +82,125 @@ replay; they do not promise historical readers. Retain a compatibility path only
 for a recorded concrete consumer/interoperability requirement. MIDI and WAV retain
 their explicitly documented interoperable subsets.
 
+## Updating a pinned consumer
+
+### Identify and retain the accepted snapshot
+
+`hello-pythian` moves as development continues; its latest commit is not an
+acceptance verdict. The [minimal consumer packet](MINIMAL-CONSUMER-HANDOFF.md)
+identifies the accepted `bdd55eb04a89d0271241da6111f42e47039055d6` core/companion
+archives, hashes, exact CI run and supported targets. Retain the selected ZIP,
+`PACKAGE-INFO.txt`, `SHA256SUMS`, notices and your own caller/input evidence.
+Verify the ZIP before extraction and its inventory afterward. Metadata records
+the base revision, clean/dirty state, compiler and WFC pin; a dirty candidate's
+base revision alone does not identify its bytes. If the frozen download has
+expired, request a qualified replacement rather than substituting branch HEAD.
+
+For a Git source checkout, use a fresh destination and pin the same revision:
+
+```text
+git clone --no-checkout https://github.com/mr-highball/pythian.git pythian-bdd55eb
+git -C pythian-bdd55eb checkout --detach bdd55eb04a89d0271241da6111f42e47039055d6
+git -C pythian-bdd55eb submodule update --init --recursive
+git -C pythian-bdd55eb rev-parse HEAD
+git -C pythian-bdd55eb submodule status --recursive
+git -C pythian-bdd55eb status --short
+```
+
+The submodules must match this checkout's gitlinks, with no missing, changed or
+conflicted entries. Do not update WFC to its moving branch. A companion ZIP
+already contains the selected WFC source; a core-only consumer needs no WFC.
+Preserve your old checkout, caller source and accepted outputs until the new
+candidate is qualified.
+
+### Review changes before switching
+
+Inspect the published commits, affected Pascal interfaces, format contracts,
+examples and dated [package evidence](PACKAGING.md) between your pinned revision
+and the proposed replacement. For example, in the checkout above:
+
+```text
+git -C pythian-bdd55eb log --oneline de45c9e..bdd55eb -- src adapters/wfc tools examples docs PROJECT.md
+git -C pythian-bdd55eb diff de45c9e bdd55eb -- src adapters/wfc examples docs/SEMANTIC-STYLES.md
+```
+
+These inspect an actual published change range; replace both revisions for your
+own upgrade. Current change/deprecation notices live in those commits and the
+owning API/format documents. There is no promised release cadence, notice period
+or legacy-reader tier. In this example the semantic style contract advances to
+`pythian.semantic.style.v2` and removes the v1 reader; the
+[caller-provider guide](CALLER-PROVIDERS.md#persistence-compatibility-and-evidence)
+describes the new codec binding and admission requirements. New source may
+require caller changes or regeneration even when a unit filename is unchanged.
+
+Build the candidate with the declared compiler/target and matching RTL/FCL in
+fresh unit/executable directories. Probe `fpc -iV`, `fpc -iTP` and `fpc -iTO`,
+including any target flags used for compilation. Follow the packet's extracted
+commands or the [checkout build commands](PACKAGING.md#build-and-package);
+`tools/build.ps1 -Compiler EXISTING_STABLE_FPC -CoreOnly` selects the core build,
+and omitting `-CoreOnly` includes the companion. Replace the compiler placeholder
+with your existing verified executable. Keep a changed compiler, dependency pin,
+configuration or generated browser assets explicit; rebuild affected consumers
+with the matched toolchain rather than mixing old compiled units or JS/RTL.
+Operator staging follows the [fixed-slot LAN procedure](LAN-REVIEW-SERVICE.md).
+
+### Regenerate affected artifacts from retained inputs
+
+Use the new current writer/producer with the original legally available inputs,
+preparation/annotation policies, source clocks and boundaries, uncertainty,
+exposure and provenance. Retain old bytes for comparison; changing a format tag
+or filling missing evidence with defaults is not regeneration. If inputs or
+independent support are missing, stop with that artifact unqualified. Register
+the compatible caller codec explicitly when a semantic style is admitted or
+reloaded, including retained parents; a new session cannot borrow a destroyed
+registry. See [semantic styles](SEMANTIC-STYLES.md) and the caller guide.
+
+The existing authored example is a concrete current-format recreation route.
+From the companion root, create fresh `build/update-units`, `build/update-bin`
+and `build/update-output` directories, then run:
+
+```text
+fpc -B -Sa -Cr -Co -Ci -gl -gh -Fusrc -Fuexamples -Fuadapters/wfc -Fuvendor/wfc/src -FUbuild/update-units -FEbuild/update-bin examples/pythian.example.provider.extensions.lpr
+build/update-bin/pythian.example.provider.extensions build/update-output/generated.wav 731
+build/update-bin/pythian.example.provider.extensions build/update-output/replay.wav 731
+```
+
+Windows executables have the `.exe` suffix. Each fresh stem creates a WAV, a
+current semantic style (`.pys` here) and two authored control WAVs. The consumer
+reloads actual saved style bytes with fresh registration and checks saved PCM.
+Compare generated/replay WAV and style hashes on the same target. This example
+recreates authored inputs; it does not migrate an old recording-derived model
+or supply independent musical truth. Existing `bdd55eb` qualification proves
+that route, not a caller's unexecuted upgrade. For your affected artifacts,
+release/reload and recheck identity, controls, failure recovery and replay under
+the owning contract. Requalify changed source on affected targets; exact-revision
+package/CI checks are required before calling new delivered artifacts accepted.
+Unchanged-path evidence may be reused only with exact identities and impact
+review. Do not relabel old qualified archives as a later revision.
+
+### Report a reproducible update failure
+
+Prepare a small redacted report for the
+[repository issue tracker](https://github.com/mr-highball/pythian/issues) if your
+account can submit there, or the maintainer-agreed consumer review channel.
+Public issue creation is currently restricted; the
+[consumer handoff](MINIMAL-CONSUMER-HANDOFF.md#return-these-results) supplies report
+fields, not a promise of unrestricted submissions or a response time. Include:
+
+- Old/new source revisions, ZIP/inventory hashes, subset, clean/dirty state and
+  companion pin; identify any local caller or library changes.
+- OS/CPU, compiler version/target/RTL, build flags and matching assets, exact
+  minimal commands, exit status and useful error/log excerpts.
+- Expected versus actual behavior, first failing stage, format/policy identities,
+  source/input hashes, clock units, seed/settings and source rights/provenance.
+- Same-target replay/reload results and the last valid output's preservation or
+  failure state; provide a small redistributable reproducer where possible.
+
+Keep private paths, credentials and unlicensed media out of the report. Preserve
+the failed candidate separately. A correction needs affected-path rechecking
+against its exact revised source/package; actual outside-user maintenance
+acceptance remains the [support task](TODO/NS-6_support_01.md).
+
 ## Entry points and runtime obligations
 
 | Consumer operation | Public entry point and owning contract |

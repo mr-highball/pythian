@@ -631,6 +631,7 @@ begin
     TJSURL.revokeObjectURL(FAudioUrl);
     FAudioUrl := '';
     FAudio.removeAttribute('src');
+    FAudio.load;
     FAudioCueLoaded := False;
     Element('audio-mode').textContent := 'Audio unavailable';
     TJSHTMLButtonElement(Element('load-audio-button')).disabled := False;
@@ -3049,6 +3050,8 @@ begin
   Inc(FWindowEpoch);
   FAudio.pause;
   FAudio.removeAttribute('src');
+  // Clearing src alone retains the previously decoded recording.
+  FAudio.load;
   FAudioCueLoaded := False;
   Element('audio-mode').textContent := 'No region loaded';
   AudioFeedback('Press Play original to hear the selected region.');
@@ -3151,6 +3154,7 @@ begin
     FDragMode := dmNone;
     FAudio.pause;
     FAudio.removeAttribute('src');
+    FAudio.load;
     FAudioCueLoaded := False;
     Element('audio-mode').textContent := 'No region loaded';
     AudioFeedback('Press Play original to hear this region.');

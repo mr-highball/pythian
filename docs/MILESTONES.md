@@ -170,10 +170,13 @@ next lane while the independent musical reference path remains blocked.
 
 ### Next work to schedule
 
-- Ticket Guy Neo: prepare [physical LAN/full operator use](TODO/NS-6_authoring_02.md)
-  from exact existing copied two-group/long-source inputs, current asset/impact
-  evidence and explicit runtime budgets before execution. Current fixed rules
-  are verified; actual device/audible play/Save and complete matrix remain open.
+- Big Boss: integrate [physical LAN/full operator use](TODO/NS-6_authoring_02.md)
+  after its mandatory transfer following two blocked Neo driver submissions.
+  The repaired stale-audio reset passes independent negative and positive
+  playback checks, matching long CLI/browser exports and guarded replay recovery
+  with exact re-export. Both source/paired-listening physical-device verdicts
+  remain open. Existing copied inputs, exact assets and runtime budgets apply.
+  Neo's disjoint phone preparation is frozen; no worker repair bypass.
 - Ticket Guy: another genuinely ready bounded assignment with disjoint ownership
   if available; authoring_01 repair transferred to Big Boss after two blocking
   submissions. Do not reopen accepted mechanism implementation or stopped science.

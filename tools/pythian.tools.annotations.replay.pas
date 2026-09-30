@@ -45,10 +45,10 @@ uses
   Classes,
   SysUtils,
   pythian.audio,
-  pythian.hash,
   pythian.tools.annotations.catalog,
   pythian.tools.annotations.export,
-  pythian.tools.annotations.proposal;
+  pythian.tools.annotations.proposal,
+  pythian.tools.annotations.sourceguard;
 
 const
   CMaximumEventBytes = 32768;
@@ -110,7 +110,6 @@ var
   LSource: TJSONObject;
   LHash: String;
   LPath: String;
-  LInput: TFileStream;
   LIndex: Integer;
 begin
   LCatalog := ListLabelCatalog(ACatalogRoot);
@@ -127,14 +126,9 @@ begin
       LHash := LSource.Strings['source_sha256'];
       LPath := IncludeTrailingPathDelimiter(ExpandFileName(ACatalogRoot)) +
         'sources' + PathDelim + LHash + '.wav';
-      LInput := TFileStream.Create(LPath, fmOpenRead or fmShareDenyWrite);
-      try
-        Need((LInput.Size = LSource.Int64s['source_bytes']) and
-          (Sha256Stream(LInput, LInput.Size) = LHash),
-          'Replay destination source WAV differs from packet');
-      finally
-        LInput.Free;
-      end;
+      { Retain the same verified source guard used by the rebuilt packet.
+        Windows keeps the immutable handle; other hosts verify on each call. }
+      VerifyGuardedSource(LPath, LHash, LSource.Int64s['source_bytes']);
     end;
   finally
     LCatalog.Free;

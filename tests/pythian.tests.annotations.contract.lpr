@@ -241,6 +241,46 @@ begin
   raise Exception.Create('Queue request hash is missing: ' + AId);
 end;
 
+procedure CheckCorruptReplay(const ARoot, AHash: String;
+  const APacket: TJSONObject);
+var
+  LCatalog: String;
+  LReport: TJSONObject;
+  LStream: TFileStream;
+  LByte: Byte;
+  LRejected: Boolean;
+begin
+  LCatalog := IncludeTrailingPathDelimiter(ARoot) + 'corrupt-replay';
+  LReport := ImportLabelInbox(IncludeTrailingPathDelimiter(ARoot) +
+    'inbox', LCatalog);
+  LReport.Free;
+  LStream := TFileStream.Create(IncludeTrailingPathDelimiter(LCatalog) +
+    'sources' + PathDelim + AHash + '.wav', fmOpenReadWrite);
+  try
+    LStream.Position := 44;
+    LStream.ReadBuffer(LByte, 1);
+    LByte := LByte xor 1;
+    LStream.Position := 44;
+    LStream.WriteBuffer(LByte, 1);
+  finally
+    LStream.Free;
+  end;
+  LRejected := False;
+  try
+    LReport := ReplayReviewedCatalogText(LCatalog, APacket.AsJSON);
+    LReport.Free;
+  except
+    on E: EAudio do
+      LRejected := Pos('SHA256', E.Message) > 0;
+  end;
+  Need(LRejected, 'same-size corrupt destination was not rejected by hash');
+  Need(not DirectoryExists(IncludeTrailingPathDelimiter(LCatalog) +
+    'reviews'), 'corrupt replay published reviews');
+  Need(not DirectoryExists(IncludeTrailingPathDelimiter(LCatalog) +
+    'proposals'), 'corrupt replay published proposals');
+  Writeln('PASS cold same-size replay corruption rejected before publication');
+end;
+
 var
   LRoot: String;
   LCatalog: String;
@@ -490,6 +530,13 @@ begin
     finally
       LReplay.Free;
     end;
+    LReplay := ReplayReviewedCatalogText(LCatalogReplay, LPacket.AsJSON);
+    try
+      Need(LReplay.Strings['status'] = 'duplicate',
+        'matching published replay was not an idempotent duplicate');
+    finally
+      LReplay.Free;
+    end;
     LRebuilt := BuildReviewedCatalogPacket(LCatalogReplay);
     try
       Need(LRebuilt.AsJSON = LPacket.AsJSON,
@@ -497,6 +544,7 @@ begin
     finally
       LRebuilt.Free;
     end;
+    CheckCorruptReplay(LRoot, LHash, LPacket);
   finally
     LPacket.Free;
   end;

@@ -87,24 +87,26 @@ looks plausible.
 
 ## Delivery order
 
-Select from **NS-5 (10%)**, the least-complete goal, and follow actual blockers.
+Select from **NS-5 (14%)**, the least-complete goal after the 2026-09-30
+acceptances, and follow actual blockers. The [live work record](WORK.md#next-criterion-closing-work)
+owns the next bounded assignment.
 Only select unrelated infrastructure when it provides an independently useful
 result and the prioritized path is blocked; record the return path.
 
 | Order / lane | Concrete result and closing evidence | Return path / stop |
 | --- | --- | --- |
 | Reassessment's next Big Boss batch: [corpus_05](TODO/DONE/NS-5_corpus_05.md) | Caller-defined corpus API/consumer: two arbitrary labels, verified source ranges, partitions, reload and maintained learner consumption, with rejection/failure checks. | Ready from the accepted identity baseline at the audit; accepted after independent QA on 2026-09-30. |
-| Next Ticket Guy batch: [evaluation_01](TODO/NS-5_evaluation_01.md) | Generic style-card reader/scorer and complete independent note/duration preserving/breaking controls, matched comparators and frozen limits. | Ready contract work. Before assignment, Big Boss reserves disjoint files from corpus intake; shared-file edits stay with Big Boss. Missing reference support stops the criterion, not a new label-search loop. |
+| Style evaluation: [evaluation_01](TODO/NS-5_evaluation_01.md) | Generic style-card reader/scorer closes AC1 only; independent note/duration preserving/breaking controls, matched comparators and frozen limits remain required. | Independent reference/calibration evidence blocks the remaining criteria. Do not repeat accepted contract mechanics or begin a new label-search loop. |
 | Bounded learning path | notes_01 + notes_05 -> notes_02 -> notes_03 -> style_01. Close actual inferred-event phrase gates, then complete saved/generation/listening usefulness. | Register and presence investigations are stopped/reference-blocked, not “ready” merely because task prerequisites are DONE. Resume only when their changed-evidence conditions hold. |
 | Parallel library delivery when learning is blocked | delivery_06 -> delivery_07: current extracted core-only and WFC companion packages, then real outside-user synthesis/control/WAV round trip. | Does not require the operator or full style learning. External reviewer/runner availability is explicit. Return to NS-5 when its reference/provider path becomes actionable. |
 | Full musical learning | timing/context; events -> roles; harmony/groove development -> independent verdicts; evolving sound; full NS-4 integration. | Preserve accepted native/core boundaries; no all-unknown output can pass useful-coverage gates. |
 | Full style and scale | evaluation_04/corpus_06; vocabulary -> incremental training; learned structure/continuity -> evaluation_02 -> style_02 -> style_03 -> blends_01. | All original full-provider, source-isolation, hours, three-parent blend and listening obligations remain. |
 | Final delivery | authoring_01 -> authoring_02; full delivery_03 -> delivery_04; support_01 exercises maintained updates; adoption_01 establishes independent ecosystem evidence; delivery_05 audits all outcomes. | Physical device and independent-use verdicts cannot be inferred from local QA. |
 
-These are outcome paths, not permission to perform all implementation in this
-assessment. The immediate authorized deliverable here is the reconciled,
-reviewed plan. Future batches identify exact criteria, deliverable, closing
-evidence and stop condition before code or experiments. Two nonclosing batches
+These are outcome paths. The original reassessment delivered the reconciled,
+reviewed plan; the user subsequently authorized its execution. Current batches
+identify exact criteria, deliverable, closing evidence and stop condition before
+code or experiments. Two nonclosing batches
 force reassessment even when different agents or task names were used.
 
 ## Current credit basis

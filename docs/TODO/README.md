@@ -65,6 +65,10 @@ Big Boss's mandatory handoff repair remain recorded. The next lane is
 points 4, 5 and 10, exact current assets and the complete copied-catalog matrix.
 The exact fixed QA/stable rules and current stable binary are verified; fresh
 stable startup and actual physical-phone audible play/Save remain unqualified.
+Big Boss owns implementation and integration after two blocked Neo driver
+submissions. The repaired stale-audio reset passes current negative and positive
+playback/recovery QA. Long CLI/browser exports and guarded replay recovery with
+exact re-export pass; both source/paired-listening physical paths remain open.
 Reuse complete unchanged independent evidence where identity is verified; record
 missing current-source cases instead of reopening unrelated UI work. Full style,
 blend/reblend, many-hour and operator requirements remain in their owners below.

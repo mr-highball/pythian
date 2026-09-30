@@ -24,12 +24,16 @@ Starting evidence: [editor and queue](DONE/NS-6_authoring_01.md) ·
 [LAN procedure](../LAN-REVIEW-SERVICE.md) · [review queue](../REVIEW-QUEUE.md) ·
 [phone Save repair](../WORK-HISTORY.md#phone-save-request-header-repair--2026-09-29).
 
-Execution status: open; repaired isolated browser/HTTP checks do not close the
-physical-phone verdict. The exact fixed QA and stable firewall rules and current
-stable executable identity are verified; authoring_01 is accepted, while fresh
-stable-slot startup and the full device/operator matrix remain open.
-Next deliverable: frozen-asset
-copied-catalog full QA plus physical LAN play/Save.
+Execution status: open; Big Boss owns repair/integration after two blocked Neo
+driver submissions. The repaired stale-audio reset passes independent negative
+and positive desktop/narrow playback/retry QA. Fixed firewall rules and earlier
+HTTP boundaries are verified. Long CLI/browser exports match; actual replay
+published history but timed out before confirmation. The guarded-verification
+repair passes checked Win32/Win64 regressions and independent long duplicate
+recovery with exact re-export. Fresh stable-slot startup and both source/paired-listening
+physical-phone paths remain open; authoring_01 is accepted. Partial checks earn
+no task credit. Next deliverable: the prepared combined physical LAN play/Save
+handoff, preserving all actual reviewed history and failed-run evidence.
 Closing evidence: device/network, binary/assets, audible results, durable Save,
 reload/report and independent QA records. Stop at missing device/firewall
 permission or a concrete failure; record its unblock condition and keep open.
@@ -74,12 +78,272 @@ current combined-path verdict.
   verify no QA browser or looping audio remains. Never write test answers to
   the live operator catalog.
 
+Physical handoff clarification: retain both the main source-review checks and
+the paired `/listen.html` playback/answer Save path whose earlier phone Save
+failed with HTTP 431. A successful source-label Save does not retest the distinct
+listening-answer endpoint. Reuse the unchanged original paired request/assets
+on the dedicated copied catalog, record both producer reports after actual
+device feedback, and keep this combined operator review as existing manual
+item 7 rather than adding queue entries for its steps.
+
 **Blockers**
 
 - [NS-6_authoring_01.md](DONE/NS-6_authoring_01.md)
 
 **Dev Notes:**
 
+- 2026-09-30 physical handoff orchestration stop, Big Boss: the dedicated short
+  catalog is prepared with four source requests and one original paired request,
+  all pending/zero completed. Automatic approval review rejected the combined
+  setup/launch command without a specific reason. Salty retried via a script
+  before the chief stop arrived; it started the service then failed on the
+  reserved PowerShell HOME variable. This retry was an orchestration/policy
+  handling error, not product acceptance. Big Boss stopped further launches and
+  completed exact accidental-process cleanup: zero stable/QA listeners and zero
+  QA browser processes, preserving prepared inputs and evidence. No Save occurred.
+  Reserve the full 30-second failed handoff allowance:
+  automated total 904.0239101 / 1,050, cold total unchanged. A concrete ordinary-
+  terminal operator launcher is prepared under ignored
+  physical-handoff; it verifies the fixed binary/assets/interface/rule and runs
+  only the existing dedicated catalog. Salty caught an elevation requirement in
+  its draft firewall cmdlets; Big Boss replaced them with ordinary read-only
+  netsh verification. The repaired preflight passes; its launch path has not
+  been agent-executed. No retry,
+  reset, physical verdict or task credit follows from this preparation.
+
+- 2026-09-30 guarded recovery accepted by Big Boss after Salty's independent QA:
+  native SHA-256 `7215051a64f4c0d494b1854b0bd20ed8d7b7f8d1825293e0e7cff689ce695762`
+  and frozen driver submit one 16,141-byte POST, receive HTTP 200 with exact
+  duplicate status and download a packet matching prior CLI/browser SHA-256
+  `ab753f47dd7ae30c99b93f28ccfc58b67861da5c05d65bf316256b21b3e02b6e`.
+  Existing revision-one history is preserved. Both native targets also pass
+  fresh short import, duplicate and same-size corruption rejection before
+  publication, with zero leaks. The long recovery takes 55.4574401 seconds;
+  automated usage is 874.0239101 / 1,050 and conservative cold/copy usage is
+  573.8977266 / 720. Browser/comparison logs have zero leaks and cleanup has
+  zero QA listeners/profile processes. Earlier fresh long replay remains
+  incomplete evidence, not relabeled success. No more long reads or retries.
+  Both fixed slots now contain the qualified native and browser assets. Big Boss
+  releases only the prepared 30-second dedicated short phone-service handoff,
+  covering both source-review and original paired-listening endpoints. Physical
+  audible play, both actual Save/reload paths and full task acceptance remain open.
+
+- 2026-09-30 actual replay timeout and chief repair: one valid 16,141-byte POST
+  published all three revision-one journals and the linked proposal, but exceeded
+  its 120-second cap before HTTP 200/re-export. Preserve that history and test
+  recovery as a duplicate, not a reset fresh import. Big Boss replaces replay's
+  separate hash-and-close with the existing immutable source guard used by final
+  packet verification. Qualify fresh import, duplicate replay and cold same-size
+  tamper rejection before publication on checked Win32/Win64, then both native
+  builds. Only after these and independent frozen-input review pass may Salty
+  run one changed 120-second recovery requiring HTTP 200 duplicate and exact
+  re-export bytes. One cold long read, 1,559,617,614 bytes, is authorized; no copy.
+  Carry 812.5293219 automated seconds forward and prospectively extend the ceiling
+  from 870 to 1,050 for this repair and targeted regression. Cold/copy reservations
+  are 518.4402865 / 720 seconds, including the entire last operation. Stop at the
+  first failure without retry. Earlier worker failures and nonclosing batches
+  remain counted; no criterion or physical verdict is accepted by this change.
+
+- 2026-09-30 physical coverage correction, Big Boss: the prepared four source
+  requests and source-label unknown Save omitted the previous paired-listening
+  Save failure on `/listen.html`. Chief review of existing manual item 7 and the
+  retained phone failure identifies this as an untested part of original point
+  10, not a new goal. Neo receives only disjoint preparation of the original
+  paired request and existing ten-second assets; no product/driver repair,
+  rendering, inference, long read or live-catalog edit. Hold stable launch until
+  this original endpoint and source-review checks share a concrete copied-input
+  handoff. Listening answers must reflect what the user actually hears. No extra
+  manual row, worker-count reset or credit follows from correcting the plan.
+
+- 2026-09-30 corrected fresh/no-queue control passes: actual short-source
+  selection reveals the work column, hit-tested pointer interaction submits
+  exactly one 16,141-byte POST, and semantic HTTP 422 confirms admission reached
+  the two-versus-three source-count guard before hashing or writing. Heap and
+  cleanup are zero; cumulative automated runtime is 691.7212953 seconds.
+  This evidence-backed repair changes the next action to the first actually
+  submitted long replay and durable three-track packet equivalence. Big Boss
+  prospectively adds 150 seconds to the original automated ceiling (870 total),
+  preserving all prior consumption/failures and the 120-second operation cap.
+  Authorize two required integrity reads, 3,119,235,228 logical bytes, no media
+  copy and one same-process cached re-export. Conservatively retain both failed
+  attempts as possible cold work (120 and 112.8143733 seconds); known copy/export
+  plus reservations totals 397.6322599 seconds of the unchanged 720-second cold
+  allowance. First failure stops without retry. Success permits at most a further
+  30-second prepared phone-service handoff, never a physical listening verdict.
+  No criterion, task or count is reset by this explicit ceiling extension.
+
+- 2026-09-30 two-nonclosing replay reassessment: the final instrumented attempt
+  retained no POST and no imported history. Big Boss identifies a concrete
+  driver failure: a fresh no-queue catalog has a hidden work column until a
+  source is selected, but the driver clicked its hidden import control. It also
+  matched the initial "No reviewed packet imported" text as success. That PASS
+  line is invalid; native header rejections are not evidence about an absent
+  import POST. The driver now selects the exact short source, verifies actual
+  source geometry and visible/enabled hit-tested controls, requires a POST within
+  five seconds, and accepts only the explicit imported status plus exactly one
+  HTTP 200 POST. Preserve the failed source/executable and 112.8143733 seconds;
+  automated consumption is 678.6483254 of 720 seconds, with no heap-zero claim
+  for the terminated driver. The reassessed next deliverable is a single
+  25-second framing check on the existing fresh two-track/no-queue short catalog.
+  It must reach semantic HTTP 422 for the unchanged three-track packet, before
+  any source hash or write. Stop on failure; no automatic long retry, budget
+  reset, original-task reopening or task credit follows. Earlier counts remain.
+
+- 2026-09-30 transport diagnostic and final replay authorization: the same
+  16,141-byte packet travels through the normal UI with an exact 16,141-byte
+  POST and reaches semantic HTTP 422 in the two-track short catalog. This
+  source-count rejection occurs before hashing or writing; heap and cleanup
+  are zero. The diagnostic consumes 11.372771 seconds, taking automated usage
+  to 565.8339521 of 720 seconds. No product parser change is justified by this
+  passing transport check. The first replay's 431 cannot be conclusively bound
+  to its POST because the old observer retained no request verdict. Big Boss
+  permits one final replay with five-second progress/request snapshots and
+  immediate error failure, under the same enclosing 120-second cap. Reuse the
+  still-fresh destination and exact downloaded packet. Authorize at most two
+  required integrity reads, 3,119,235,228 logical bytes, with no new media copy;
+  conservatively charge the earlier failed replay its whole 120 seconds and
+  up to two possible reads because actual progress is unknown. Known copy/export
+  times plus that conservative debit total 284.8178866 seconds of the separate
+  720-second cold/copy allowance. No count resets or exactly-six-pass claim.
+  Stop at the first failure with no further retry; full physical/task criteria
+  remain open even if the replay succeeds.
+
+- 2026-09-30 long-phase stop and chief reassessment: the corrected stale-media
+  probe and positive desktop/narrow playback/recovery pass; the existing short
+  review state and producer report retain the correction, second-group unknown
+  and original long revision one. The exact final five-second long region
+  plays. Fresh native CLI export (42.1990536 seconds) and browser export
+  (49.359542 seconds) pass with identical 16,141-byte packets, SHA-256
+  `ab753f47dd7ae30c99b93f28ccfc58b67861da5c05d65bf316256b21b3e02b6e`.
+  These execute two approved cold verifications; bounded playback is not a full
+  source hash. Fresh replay exceeded its enclosing 120-second limit and stopped
+  with no published history. Its server reports HTTP 431 with an implausible
+  21,823,487-byte header count; no successful replay or cold-pass count can be
+  inferred from the wait. Preserve failed logs under ignored
+  `build/qa-authoring-operator-20260930/long-phase/`. Automated consumption is
+  554.4611811 seconds, with all previous failed submissions/debits retained.
+  Big Boss authorizes one 25-second framing diagnostic: submit the same packet
+  through the normal UI to an existing two-track short catalog. The destination
+  track-count rejection precedes source hashing, so expected HTTP 422 isolates
+  transport without reading the long recording or publishing an answer. The
+  driver now records body byte counts and fails promptly on an explicit replay
+  error instead of waiting after rejection. Stop on any unexpected verdict;
+  no long retry, new read allowance or physical launch is implied.
+
+- 2026-09-30 rebuilt media reset submitted for final QA: Big Boss adds the
+  explicit media reload to all three source-clearing paths; the qualified
+  pas2js build passes and QA serves the new six-asset set. The first repaired
+  negative probe is inconclusive: decoded state resets to no data, unknown
+  duration and zero clock, but its oracle incorrectly requires an empty
+  currentSrc or rejected play promise. The retained URL behavior is documented
+  in [WHATWG issue 10410](https://github.com/whatwg/html/issues/10410); it is not
+  proof that media remains playable. Preserve this failed probe and its
+  31.7198813-second debit, taking automated consumption to 278.3741521 seconds.
+  The corrected probe samples actual Play ten times over one second, requiring
+  no source attribute, no decoded/buffered data, unknown duration, zero clock
+  and no resolved play promise throughout. Positive original/cue/retry checks
+  remain required. Exact rebuilt assets and corrected driver are frozen under
+  ignored `build/authoring-media-reset/READY-r4.json`. No product failure,
+  long integrity read, full-criterion closure or counter reset follows from
+  this browser-observer correction.
+
+- 2026-09-30 confirmed product failure and repair reassessment: after loading
+  a half-second development source, switching to the other recording's ten-
+  second window and failing the new request, the native media control still
+  played the old blob (clock 0.09527, duration 0.5, unpaused) while the UI named
+  the new source and said no region was loaded. Salty's corrected source-bound
+  probe proves the old/new blob identity under ignored
+  `build/qa-authoring-operator-20260930/private-audio-stale-chief-r2/`;
+  it saved no answer and used no long integrity read. Both earlier wrong-source
+  QA probes and the chief probe's repaired missing separator remain evidence,
+  including the two failed probe exception heaps; they prove no product result.
+  Big Boss owns the fix: explicitly reload the native media element after
+  clearing its source during track/window changes and media errors, discarding
+  the decoded old resource. Criterion 5 is advanced by source-correct playback
+  after selection/failure; closing evidence requires this exact negative probe,
+  positive original/cue recovery and durable workflow preservation against the
+  rebuilt assets. Stop on stale playback, failed current playback, identity or
+  budget mismatch. The stopped batch has consumed 246.6542708 automated seconds;
+  two source copies consumed 73.259291 seconds and all four cold guards remain.
+  These carried-forward limits and two blocked Neo submissions are not reset.
+  No acceptance or credit follows until the full operator/device criteria pass.
+
+- 2026-09-30 mandatory repair transfer: two known blocked Neo final-QA
+  submissions transfer implementation, this task and failure evidence to Big
+  Boss. Submission one contained unquoted numeric CSS selectors. Submission
+  two fixed those selectors but its observer assumed relative API URLs;
+  current FetchApi sends absolute URLs, so session capture, fault matching and
+  transport filters were invalid. Salty observed the actual loaded source and
+  two waiting requests with no browser errors; native session/Host/Origin/
+  malformed/write-token boundaries passed. This is a submitted driver defect,
+  not demonstrated product failure. Preserve both frozen submissions and logs,
+  older unknown cumulative counts and the same batch's 75.3959822-second runtime
+  debit. Salty's separate missing-inbox-manifest runner failure is retained but
+  not attributed to the implementation worker. Cleanup and unfreed blocks are
+  zero; no browser audio or long cold verification ran. Chief repair is isolated
+  under ignored `build/authoring-operator-chief-repair/`; Neo/Ticket continue
+  only disjoint physical-control preparation. No acceptance or credit follows.
+
+- 2026-09-30 first blocked submitted driver: after the QA handoff and before
+  browser execution, Neo found unquoted numeric CSS selector values in Request
+  and Audio. Big Boss counts one known blocked authoring_02 implementation
+  submission; older cumulative counts remain unknown/retained. Original driver
+  and manifest bytes are preserved. The two-selector repair compiles checked
+  Win64 and is refrozen in ignored
+  `harness/ASSEMBLED-submission2.json` SHA-256
+  `510bb2cb0edc7aeb5a8b6967ad6cd2552ecf9162f04b43a23f683c42140bcacd`.
+  Same-batch Salty review resumes; second blocking implementation submission
+  transfers to Big Boss. No product failure, source read, count reset or credit.
+  Separate empty-inbox and missing-merger-path orchestration errors are retained
+  in private runner/preparation evidence and are not attributed to product behavior.
+
+- 2026-09-30 runnable candidate frozen: ignored
+  `build/authoring-operator-plan/harness/ASSEMBLED.json` SHA-256
+  `f3078945823e50fb2b9ce834a9bd6c08424788dadc36f6246e02d3c8a1dfee4c`
+  binds current binary/six assets and actual assembled inputs/checked Win64
+  Pascal drivers. Salty's same-batch runtime remains pending; no credit.
+  Two long copies finished in 73.259291 seconds, four cold guards remain.
+  Two pre-QA queue-admission rejections are retained: missing frozen short
+  proposal JSON and then its directory-placement error. Exact source-hash path
+  repair verifies the three unchanged packets and admits two waiting short
+  requests plus original long completed revision-one history, with zero leaks.
+  No analyzer rerun, additional long read, product failure or final-QA submission
+  occurred. Prior failures/unknown cumulative task counts remain unchanged.
+
+- 2026-09-30 selected bounded preparation after accepted authoring_01:
+  [WORK](../WORK.md#current-physical-lanoperator-preparation--2026-09-30) records
+  exact criterion/deliverable/evidence/stop. Neo owns task/WORK/integration;
+  Ticket Guy exclusively prepares ignored `build/authoring-operator-plan/controls/`
+  with the existing two 20-second source assets and unchanged metadata, fresh
+  copied-catalog CLI import/proposals and actual initial-state/evidence inventory.
+  Neo owns the complex A+B driver under disjoint ignored `harness/`; Ticket
+  authors no integration driver and may compile supplied code only by explicit
+  handoff. Verify
+  actual history from journals/API; do not infer no events from missing locks.
+  Existing evaluation concealment stays intact, and cue uses legitimately
+  available development proposals. Salty alone runs fixed-slot isolated QA
+  after both startup/session and audio/current combined-workflow components are
+  ready. Transfers are at most ten seconds; waits stop at 45 seconds, slow/retry
+  at 90 seconds and automated runtime at 12 minutes, excluding preparation/user
+  wait. Big Boss approves the long phase: two copies plus four cold integrity
+  verifications, exactly 9,357,705,684 long-source read bytes and 3,119,235,228
+  copied write bytes, at most 120 seconds each and 720 seconds total separate
+  from automated runtime. Ticket owns disjoint ignored `long-controls/` copies
+  only; no standalone rehash/long import/inference or early export. Salty's final
+  combined state must pass one fresh-output CLI export, actual browser packet
+  equivalence and fresh source-only replay preserving original history/metadata.
+  Count any additional unavoidable read before execution; first defect/overrun
+  stops without retry or integrity bypass. Physical audible phone play/Save remains
+  external under the existing queued item 7. Prior physical silent-player and
+  HTTP 431 failures, repairs and unknown cumulative task counts remain attached;
+  no reset, new musical ground truth, partial credit or full acceptance follows.
+- 2026-09-30 frozen short controls: fifteen current native runs pass with zero
+  leaks and both fresh catalogs have actual revision-zero/empty histories. Two
+  requests wait. Original 0.5/5/10-second playback is required; available cues
+  are 5/10 seconds. Big Boss's criterion interpretation preserves the valid
+  half-second packet's empty candidate list as unavailable/disabled cue behavior,
+  never a played cue or permission to crop/relabel a different window. Physical
+  listening must retain the same availability matrix.
 - 2026-09-30 current prerequisite status: the user installed the exact fixed QA
   rule and Big Boss verified its enabled Private/local-subnet/inbound TCP scope,
   fixed QA program path and assigned Private interface. Big Boss also verified

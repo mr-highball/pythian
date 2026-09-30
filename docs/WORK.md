@@ -12,6 +12,109 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current physical LAN/operator preparation — 2026-09-30
+
+**Open task:** [authoring_02](TODO/NS-6_authoring_02.md), points 4, 5 and 10.
+Big Boss owns implementation/integration after two blocked Neo driver submissions.
+Salty owns final runtime QA and publication. Neo owns disjoint physical-input
+preparation. The administrator-installed fixed-slot firewall rules are verified;
+no further installer request is needed. Physical listening and full acceptance
+remain open. Partial checks earn no credit; accepted overall progress is 49.40.
+
+The stale-audio defect is repaired: all three source-clearing paths reload the
+media element so old decoded audio cannot play under a new recording's labels.
+Qualified browser build and independent negative/positive desktop/narrow playback,
+0.5/5/10-second original audio, available 5/10-second cues, injected errors and
+successful retry pass. Half-second cue unavailability is retained honestly.
+New app.js SHA-256 is
+`5ad81d5fb92c4856f1d1927c69eba91e3c19b8c83d2083d612f3b429f97ee853`;
+the other five assets are unchanged. Both fixed slots contain these assets.
+The first negative probe was inconclusive because a retained currentSrc URL does
+not establish playable data; the repaired probe checks decoded/buffered state,
+clock and actual native Play. Failed probes and their evidence remain preserved.
+
+The copied two-group correction/unknown workflow and restart/report pass without
+resetting history. The original long revision-one answer remains intact, and its
+last five-second region plays. Fresh CLI and browser exports pass with identical
+16,141-byte packets, SHA-256
+`ab753f47dd7ae30c99b93f28ccfc58b67861da5c05d65bf316256b21b3e02b6e`.
+The fixture is about 2.26 hours, not evidence for five-hour or multi-recording
+style learning. Operator proposals establish mechanics, not musical truth.
+
+Two purported replay runs sent no POST: the driver clicked controls inside a
+hidden work column and incorrectly matched the initial no-import message. Those
+PASS lines are invalid. The corrected visible/hit-tested control passes an exact
+16,141-byte negative short-catalog POST, rejected before source reads/publication.
+The next real long POST published all three revision-one journals and the linked
+proposal, but hit its 120-second cap before HTTP 200 or re-export. This establishes
+published history, not accepted replay. Do not reset it. Earlier 431 errors were
+not bound to valid import POSTs and do not establish a native parser defect.
+
+**Changed recovery deliverable:** replay now uses the existing source guard for
+both destination verification and rebuilt-packet verification, removing their
+separate hash-and-close path. Windows retains a write/delete-denying handle and
+checks exact identity on reuse. Non-Windows and cache-eviction verification remain;
+there is no one-read promise for catalogs beyond the 32-entry guard cache.
+Checked Win32/Win64 fresh import, exact duplicate replay and cold same-size source
+corruption rejection before publication pass with zero leaks; both native builds
+pass. Independently verified Win64 SHA-256
+`7215051a64f4c0d494b1854b0bd20ed8d7b7f8d1825293e0e7cff689ce695762`
+is staged to both fixed slots with the same qualified browser assets.
+
+Salty's changed recovery passes: exactly one 16,141-byte HTTP 200 POST, explicit
+`Packet duplicate: 3 tracks.` and byte-identical downloaded re-export. Original
+revision-one histories remain intact. Runtime was 55.4574401 seconds; browser
+driver and native packet comparison have zero leaks, with zero QA listener or
+profile processes after cleanup. Big Boss independently inspected the result
+and small packet hash. This qualifies fresh short import and actual long recovery;
+the earlier incomplete fresh long replay is not relabeled as a passing run.
+Automated consumption is 874.0239101 / 1,050 seconds, including 6.0371481 seconds
+of short regression. Conservative cold/copy usage is 573.8977266 / 720 seconds.
+All earlier usage, worker failures and nonclosing batches remain counted. No more
+long reads, copies or replay retries are authorized. The subsequent short
+physical-service handoff and its additional 30-second debit are recorded below.
+The [dated repair history](WORK-HISTORY.md#operator-preparation-and-replay-repair-history--2026-09-30)
+preserves each superseded budget/authorization and failure; those are not new
+runtime permissions. Private exact evidence stays under ignored
+`build/qa-authoring-operator-20260930/` and `build/authoring-guard-repair/`.
+
+**Physical handoff prepared; agent launch stopped:** four source requests and the unchanged original
+paired-listening request/assets are prepared on isolated short copies. Both main
+source-review playback/unknown Save and `/listen.html` paired playback/answer Save
+must be exercised; the source-label endpoint cannot substitute for the listening
+endpoint that previously failed. Keep this as existing manual item 7, with actual
+device/browser, audible result, both durable reports and reload evidence. No
+synthetic answer, new inference, long copy or live-catalog edit is authorized.
+Manual item 8 remains the existing synthesized caller source/effect listening
+check. The dedicated short catalog was created with four source requests and one
+paired request, all pending with zero completed answers. No Save occurred.
+Automatic approval review rejected the combined setup/launch tool call without
+stating a specific reason. Before the chief stop arrived, Salty incorrectly
+retried through a script, starting the service before a reserved PowerShell HOME
+variable caused an orchestration error. Big Boss stopped further launches and
+completed cleanup of only that exact process: zero stable/QA listeners and zero
+QA browser processes remain. Preserve both failures; neither is a
+product defect or physical verdict. Conservatively reserve the full 30-second
+handoff allowance, taking automated usage to 904.0239101 / 1,050 seconds; cold
+usage remains unchanged. Do not rerun the failed script or overwrite the catalog.
+The concrete ordinary-terminal operator launcher and combined listening steps
+are prepared under ignored `build/authoring-operator-plan/physical-handoff/`.
+The launcher checks exact fixed assets, interface/rule and free port before
+foreground execution. Salty caught that the draft firewall cmdlets require
+elevation in the ordinary session; Big Boss replaced them with read-only netsh
+verification. The repaired read-only preflight passes without launching anything;
+the launch path has not been agent-executed. Device playback
+and both Save/reload reports still require actual operator evidence.
+
+Support's practical pinned-consumer update procedure is also prepared and passes
+Salty's focused command/link/privacy review in
+[the consumer contract](CONSUMER-CONTRACT.md). Its source/format regeneration,
+caller example and hash/report steps are concrete; no new package regeneration
+or outside-consumer use is claimed. [support_01](TODO/NS-6_support_01.md) remains
+open with zero new credit. The stopped scientific branches retain their original
+budgets and independent-reference blockers; this operator batch does not reopen
+them.
+
 <a id="current-editorqueue-preparation--2026-09-30"></a>
 
 ## Accepted editor/queue contract — 2026-09-30
@@ -737,17 +840,30 @@ Start from NS-5, currently 14%, following real prerequisites:
 - [authoring_01](TODO/DONE/NS-6_authoring_01.md) is accepted with all owned points
   and independently checked current B1–B6, preserving the explicit retained
   source/build limits and both known blocking worker submissions.
-- Next ready lane: [authoring_02](TODO/NS-6_authoring_02.md). Before runtime,
-  freeze existing copied two-group/long-source inputs and exact current-path
-  gaps for its original points 4, 5 and 10. Both exact fixed rules and the current
-  stable binary are verified; restarted stable startup, actual physical-phone
-  audible play/Save and complete
-  desktop/narrow/copied-catalog operator matrix remain unqualified. Use existing
+- Current lane: [authoring_02](TODO/NS-6_authoring_02.md), owned by Big Boss
+  after two blocked Neo driver submissions. Copied inputs and exact assets are
+  frozen; the stale-audio repair passes independent negative and positive
+  desktop/narrow playback/recovery checks. Both fixed rules are verified and
+  long CLI/browser exports match. Guarded duplicate recovery and exact re-export
+  now pass. Dedicated stable startup and actual source/paired-listening
+  physical-phone play/Save remain open. Use existing
   inputs/assets/evidence only, preserve live/operator state, and stop at a
-  missing device or concrete failure. No new source acquisition, long-media
-  rehash, scientific restart or needless broad suite is selected.
+  missing device or concrete failure. No new source acquisition, extra or
+  unaccounted long-media read, scientific restart or needless broad suite is
+  selected; the [current bounded preparation](#current-physical-lanoperator-preparation--2026-09-30)
+  owns the current measured budgets and exact remaining read authorization.
   Big Boss retains chief judgment. NIGENS and other stopped inference routes
   stay closed; no new source/row/window/threshold/format retry is authorized.
+- Parallel bounded preparation: [support_01](TODO/NS-6_support_01.md) explicitly
+  permits preparing its update policy before full-delivery/external gates close.
+  Neo owns only the consumer contract and that task. The concrete AC2 deliverable
+  is caller-facing snapshot identification/pinning, update/deprecation notices,
+  matched rebuild/regeneration instructions and a reproducible issue route.
+  The integrated caller procedure now passes Salty's focused command/link/claim
+  and privacy review against existing qualified package evidence. Preparation
+  stops here: actual migration/regeneration qualification, outside-user
+  maintenance and full-workflow evidence remain open. No new package, experiment,
+  external outreach or automatic AC2/task credit follows from these instructions.
 
 Before any batch name the exact criterion, deliverable, closing evidence and
 stop condition. This replan does not authorize a new inference experiment
@@ -780,7 +896,8 @@ old process ID from the historical work record.
 
 The ignored manual-review ledger currently has two pending decisions: physical
 phone transport/cue playback (7, now attributed to authoring_02) and caller
-source/effect listening (8). Reviewed rows remain history. No live operator
-catalog, service, device or playback was queried or changed by this coordination;
-preserve the operator's service and data.
+source/effect listening (8). Reviewed rows remain history. Current QA uses copied
+catalogs and the fixed QA slot; preserve the live operator catalog and data.
+Exact temporary runtime cleanup and any dedicated operator-service handoff are
+recorded in the current batch's ignored evidence.
 The prior research stop state is independent of this task's replan.

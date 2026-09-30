@@ -1,4 +1,4 @@
-# Historical work record through 2026-09-29
+# Historical work record through 2026-09-30
 
 This file preserves dated evidence and failed approaches. Its progress totals,
 team assignments, process IDs, service states and proposed next actions are
@@ -9,6 +9,222 @@ source/artifact hashes, public attribution and acceptance limits are retained.
 
 [Home](../README.md) · [Profile](../PROJECT.md) ·
 [Architecture and limits](ARCHITECTURE.md) · [Provenance](PROVENANCE.md)
+
+## Operator preparation and replay repair history — 2026-09-30
+
+Current stop supersedes the earlier authorizations below: the corrected driver
+submitted one real 16,141-byte POST. All three revision-one journals and the
+linked proposal were published, but no HTTP 200, final packet or re-export was
+observed before the 120-second cap. Preserve this history. Automated usage is
+812.5293219 / 870 seconds; conservatively reserving the complete latest operation
+raises cold/copy consumption to 518.4402865 / 720 seconds. No task credit follows.
+
+Big Boss's next repair addresses a concrete duplicated full read: destination
+verification hashes and closes the WAV, then rebuilt-packet verification hashes
+it again. Use the existing immutable source guard for both phases. Its Windows
+handle denies writes/deletes and checks file identity on reuse; non-Windows
+verification and cache-eviction fallbacks remain intact. This does not promise
+a single read for catalogs larger than the 32-entry cache. Criterion advanced:
+authoring_02 point 10, bounded long-source export/replay. Deliverable: guarded
+replay plus recovery of already published history. First qualify fresh import,
+idempotent duplicate and same-size corrupted-source rejection before publication
+on checked Win32/Win64; build both native targets. Stop on any failure.
+
+Only after those pass and Salty reviews the frozen binary/driver may one changed
+120-second long recovery operation run, requiring exactly one HTTP 200 duplicate
+and byte-identical downloaded re-export. No history reset or long copy is allowed.
+Authorize one required cold long hash (1,559,617,614 logical bytes), with the whole
+120 seconds reserved inside the unchanged cold allowance. Prospectively add 180
+automated seconds (1,050 total), retaining all 812.5293219 seconds and previous
+failures; this covers targeted short regression and the changed recovery, not an
+unchanged repeat. Stop on failure with no retry. Physical handoff also remains
+held until the original paired-listening endpoint is included in its inputs.
+
+Current stop and two-nonclosing reassessment: both long replay submissions failed
+to exercise import. The latest request snapshots prove no POST was sent; a fresh
+no-queue catalog leaves the work column hidden until a source is selected. The
+driver clicked an invisible control, then incorrectly matched the initial
+"No reviewed packet imported" text as success. That logged PASS is invalid;
+no replay or durable history is accepted. Native header rejections in these
+runs are not bound to an import POST. Big Boss now selects the exact short source
+through the catalog UI, requires visible/enabled hit-tested controls and an actual
+POST within five seconds, and accepts only the explicit imported status plus
+exactly one HTTP 200 POST. The next deliverable is one 25-second negative
+framing check on the existing fresh two-source, no-queue short catalog; its
+source-count rejection precedes hashing. Stop at any mismatch. No further long
+attempt follows automatically. Carry forward 678.6483254 automated seconds of
+720 and every failure; there is no heap-zero claim for the terminated driver.
+
+The corrected fresh/no-queue short control now passes: actual source selection,
+visible hit-tested import control, exactly one 16,141-byte POST and the expected
+semantic 422 before any media hash/write. Automated consumption is 691.7212953
+seconds. This closes the driver diagnosis, not operator acceptance. Big Boss
+prospectively extends the original automated ceiling by 150 seconds to 870,
+carrying every earlier debit and failed submission forward. The changed next
+deliverable is the first actually submitted long replay plus durable three-track
+packet equivalence; one operation remains capped at 120 seconds. Two required
+long integrity reads (3,119,235,228 logical bytes), no copy, and cached same-
+process re-export are authorized. Conservatively retain both failed attempts'
+entire 120 and 112.8143733 seconds as possible cold work; known copy/export plus
+those reservations totals 397.6322599 seconds, below the unchanged 720-second
+cold allowance even after one further 120-second operation. Stop on any failure;
+no repeat, new experiment or automatic credit. Only after success may Salty spend
+at most 30 seconds on the prepared independent phone-service handoff.
+
+Current product repair: Salty confirmed that native Play could resume the old
+half-second recording after switching to another source's ten-second window
+and failing its new audio request. The old blob played at clock 0.09527 while
+the UI named the new source and displayed no loaded region. Big Boss has fixed
+all three media-source clearing paths by calling the browser media reload
+operation, which discards the decoded resource. This is existing authoring_02
+criterion 5, not a new inference feature or task credit.
+
+The qualified browser rebuild passes, with new app.js SHA-256
+`5ad81d5fb92c4856f1d1927c69eba91e3c19b8c83d2083d612f3b429f97ee853`
+staged to QA and, after the repaired playback verdict, the fixed stable slot;
+the native binary and other five assets are unchanged. No stable launch is
+claimed by staging. The
+first repaired probe was inconclusive because it incorrectly equated a retained
+currentSrc URL with playable media. Actual decoded state was empty with zero
+clock. The [browser-standard issue](https://github.com/whatwg/html/issues/10410)
+documents this retained-URL behavior. The corrected probe requires ten native
+Play samples over one second with no decoded/buffered data, no source attribute,
+unknown duration, zero clock and no resolved play promise. Salty's corrected
+negative check and positive desktop/narrow original/cue/retry checks pass;
+failed new loads now retain no decoded data or advancing clock. The durable
+short-state check and producer report also pass without another Save or resetting
+the existing reviewed history. Exact long-region playback and fresh CLI/browser
+exports pass; their 16,141-byte packets match SHA-256
+`ab753f47dd7ae30c99b93f28ccfc58b67861da5c05d65bf316256b21b3e02b6e`.
+
+The batch stopped at the reproduced defect and is reassessed around two
+deliverables: the exact cross-source negative check must reject old playback,
+and positive original/cue loading, recovery and durable state must remain
+correct under rebuilt assets. Reuse unchanged native/HTTP and exact review
+transaction evidence; no broad native rerun or new source/proposal is needed.
+The first fresh replay exceeded its enclosing 120-second cap and published no
+history. A native 431 header rejection is logged, but the old driver did not
+retain the corresponding browser request/error; do not attribute the whole wait
+to source hashing or conclusively identify that rejected request as the POST.
+The exact packet then passed normal UI transport to semantic HTTP 422 in a
+two-track short destination; that count check precedes all source hashes.
+
+Big Boss permits one final replay with five-second request/progress snapshots,
+immediate explicit-error failure and the same enclosing 120-second cap. Stop
+at its first failure; no further retry or physical launch follows automatically.
+Carry forward 565.8339521 automated seconds of 720, both blocked Neo submissions
+and all earlier failures. Two copies consumed 73.259291 seconds and two known
+export hashes took 42.1990536 and 49.359542 seconds. The first failed replay's
+partial/full read count is unknown; conservatively reserve its entire 120 seconds
+and up to two possible reads. This final attempt authorizes at most two required
+integrity reads (3,119,235,228 logical bytes), no media copy and one same-process
+cached re-export. The conservative cold/copy total remains within its separate
+720-second allowance; there is no claim of exactly six actual passes. Physical
+review and every full task criterion remain open. Exact failed probe states are under ignored
+`build/qa-authoring-operator-20260930/private-audio-stale-chief-r2/`.
+
+Earlier driver-repair handoff:
+
+Current repair owner is **Big Boss** after two known blocked Neo driver
+submissions to final QA. The first used unquoted numeric CSS selectors; its
+repair compiled, but the second assumed relative API request URLs although the
+application sends absolute URLs. That prevented session capture and would also
+invalidate audio fault matching and transport assertions. The actual page
+loaded its source and queue without browser errors; no product defect follows.
+Original source/executable/manifest identities and failed logs remain intact.
+Older cumulative failure counts remain unknown. This mandatory transfer covers
+the driver, task and failure evidence; Neo coordinates only the disjoint phone
+preparation. Salty owns runtime and awaits the chief's frozen repair under
+ignored `build/authoring-operator-chief-repair/`.
+
+The same batch has consumed 75.3959822 seconds of automated runtime; its first
+empty-inbox launch was a separately recorded QA-runner error. No browser audio
+or long integrity verification has run. Native HTTP checks passed silent
+session 200, wrong Host/Origin 403, malformed request 400 and missing write
+token 403; failed driver/native logs are leak-free and cleanup is zero. No
+credit or investigation/budget reset follows from this handoff.
+
+After accepted authoring_01 publication `841db2f`, Big Boss authorizes bounded
+[authoring_02](TODO/NS-6_authoring_02.md) preparation for original points 4, 5
+and 10. Neo originally owned this record, the task and ignored `build/authoring-operator-plan/`
+integration. Ticket Guy owns only its disjoint `controls/` for unchanged existing
+two 20-second inputs/metadata, fresh copied-catalog CLI import/proposals and
+initial-state/evidence inventory; no worker integration-driver authoring or
+HTTP/browser launch. Neo prepared the complex A+B Pascal driver under disjoint
+ignored `harness/`. Ticket may compile supplied code only after an explicit
+handoff. Salty alone
+owns independent runtime after startup/session component A and small-source
+audio/combined-workflow component B are ready and exact inputs/assets are frozen.
+All known prior operator/phone failures and unknown cumulative counts remain;
+authoring_01's two blocking submissions and chief repair stay with that task.
+
+Deliverable A is current fixed-slot default/private-LAN startup/restart and
+session/Host/Origin boundaries without credential entry or token-bearing audio
+URLs. B is the current copied two-group original/cue 0.5/5/10-second path,
+visible malformed/unauthorized/range/disconnected/slow errors and successful
+retry, then proposal correction/approved/unknown/queue/reload/report/browser
+packet replay. Existing group/partition/license/provenance and real journal
+state remain intact; cue uses legitimately available development proposals.
+Pascal proposals qualify operator mechanics, not musical inference accuracy.
+Closing evidence binds current executable/six assets, copied source/catalog and
+driver identities, actual desktop/narrow playback/transport/durable results,
+bounded resource measurements and exact cleanup. Accepted authoring_01 mechanism
+proofs are reused without another 28-facet suite.
+
+Stop at the first actual product defect, missing proof or budget overrun: at most
+ten-second transfers, 45-second browser waits, 90-second slow/retry and 12-minute
+automated runtime, excluding preparation and user wait. Keep live/operator
+catalogs untouched. Big Boss approves the long phase's exact six full reads:
+two immutable copies and four required cold verifications, 9,357,705,684 source
+bytes read and 3,119,235,228 copied bytes written. Each pass stops at 120 seconds;
+720 seconds total cold/copy allowance is separate from the 12-minute automated
+budget. Ticket exclusively prepares ignored `long-controls/`; Neo retains the
+driver and Salty alone executes final combined reviews, one fresh-output CLI
+export, browser packet comparison and fresh replay. Preserve original metadata
+and all history; source-only replay is a new derived copy. No extra rehash,
+restart after long admission, long proposal/inference, retry or integrity bypass
+is authorized without first accounting for the additional read. The historical
+export error is the final publication guard, with its OS/collision cause unknown.
+Actual audible/device
+play/Save remains external, using existing manual item 7 when setup is concrete.
+No authoring_02 task credit is earned by preparation or isolated partial QA.
+
+Short controls are frozen under ignored `controls/`: fifteen native executions
+pass with zero leaks, actual revision-zero/empty histories in both fresh catalogs,
+and two waiting source-bound requests. Original playback is 0.5/5/10 seconds;
+available cues are 5/10 seconds. The half-second packet has no candidate and
+must show unavailable/disabled cue behavior; no cropped substitute or played
+half-second cue is claimed. The full physical verdict retains this availability
+matrix.
+
+The runnable A+B/long candidate is frozen under ignored
+`build/authoring-operator-plan/harness/ASSEMBLED.json` SHA-256
+`f3078945823e50fb2b9ce834a9bd6c08424788dadc36f6246e02d3c8a1dfee4c`.
+Checked stable Win64 Pascal browser and HTTP/packet drivers compile. Exact
+small metadata/proposal/queue assembly retains two waiting short requests and
+the original completed long revision-one unknown answer. Two failed preparatory
+queue admissions (missing proposal, then directory-placement error) are retained;
+the diagnosed exact path/hash repair passes admission with zero leaks. These
+pre-QA assembly corrections are not product failures or final-QA submissions.
+Both approved long copies consumed 73.259291 seconds; four cold guards remain.
+Salty receives this same batch for independent current startup/session, audio
+matrix, combined workflow and exact long export/replay, with physical listening
+still external and no partial credit.
+
+After that final-QA handoff, Neo identified invalid unquoted numeric CSS selector
+values in the submitted driver before any browser execution. Big Boss records
+**one known blocked authoring_02 driver submission**, with older cumulative
+counts unknown/retained. Original source/executable/manifest remain frozen as
+submission-one evidence. The bounded two-selector repair compiles checked Win64;
+current ignored `harness/ASSEMBLED-submission2.json` SHA-256
+`510bb2cb0edc7aeb5a8b6967ad6cd2552ecf9162f04b43a23f683c42140bcacd`
+binds revised bytes and the original identities. Same-batch QA resumes without
+counter/budget reset; a second blocking implementation submission transfers to
+Big Boss. Salty's separate empty-inbox server launch and Ticket's assumed merger
+path were pre-execution orchestration errors, retained separately with no product
+failure or additional long read. Physical evidence and task acceptance remain open.
+
+<a id="current-editorqueue-preparation--2026-09-30"></a>
 
 ## Objective and scope
 
