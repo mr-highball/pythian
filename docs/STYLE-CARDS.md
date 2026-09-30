@@ -5,6 +5,71 @@
 
 ## Status and reference requirements
 
+### Maintained current card consumer — 2026-09-30
+
+The [Pascal card API](../src/pythian.evaluation.style.card.pas) provides
+`ValidateStyleCard`, `CloneStyleCard` and `CompareStyleCards`. Cards use opaque
+caller IDs and sorted arbitrary trait IDs; each trait declares required/optional
+status, supported/unsupported status, units, denominator, minimum known coverage
+and maximum total-variation distance. Supported traits carry the existing
+distribution plus one exact source/reference binding per recording/run group.
+Explicitly unsupported traits carry no observations and remain visible;
+unsupported or missing required traits prevent a whole-card declared-limit pass.
+Recording/run IDs govern equal histogram contributions; binding family IDs
+retain conservative exposure and may be shared by several recordings.
+
+The [strict native reader/writer](../tools/pythian.tools.style.card.pas) accepts
+only current version 1. Root fields are `version`, `id`, `traits`. Trait fields
+are `id`, `requirement`, `support`, `units`, `denominator`, `minimum_coverage`,
+`maximum_distance`, `policy_sha256`, `bins`, `groups`. Group fields are `id`,
+`binding`, `assets`, `method`, `uncertainty`, `counts`, `unknown`, `ambiguous`,
+`unsupported`. `binding` retains the public `TEvaluationBinding` fields;
+`assets` binds paths for `source`, `preparation`, `reference`,
+`annotation_policy`, `scoring_policy`, `estimator`. Each asset's exact bytes
+must match its declared hash; the WAV must match its declared rate/frame count
+and interval scope. Relative paths resolve from the card's directory. Reloading
+a moved card therefore requires keeping its declared relative asset layout.
+Unknown/duplicate fields, malformed types, missing references, nonfinite or
+out-of-range limits and invalid policy/clock/exposure declarations reject before
+scoring. JSON is bounded to 8 MiB and depth 16; total asset hashing per card is
+bounded to 1 GiB, including repeated paths. No legacy-format support is promised.
+
+The maintained [CLI](../tools/pythian.style.card.lpr) exposes:
+
+```text
+pythian.style.card roundtrip <card.json>
+pythian.style.card compare <reference.json> <candidate.json>
+```
+
+Round-trip writes canonical current JSON to stdout after file validation;
+comparison writes a complete JSON report. Invalid input exits 1 without success
+output. A valid comparison that fails declared limits exits 0 with an explicit
+negative result. The reference's limits govern scoring; the candidate cannot
+relax them. Coverage is the minimum known/total group fraction on both sides,
+retaining unknown, ambiguous and unsupported observations. A zero-known group
+makes distance undefined (`null`), never a zero-distance match. Generated and
+reference clocks are separately verified, not aligned as transcription truth.
+Units, denominator, scoring-policy hash and vocabulary must match.
+
+`passed_required_declared_limits` reports arithmetic against caller-declared
+limits. `grounded_acceptance` is always false: neither asset hashes nor metadata
+prove annotation truth, histogram derivation, independence, calibrated musical
+gates, novelty or listening fit. Stable FPC 3.2.2 Win32/Win64 developer checks
+exercise two unrelated labels, replay, malformed/hash/clock/ownership failures
+and synthetic supplied-event joint pitch/duration controls. Reordering preserves
+the joint histogram; changing pitch/duration pairing preserves both marginals
+but breaks that relationship. Their limits are fixture arithmetic, not qualified
+style thresholds, elapsed-time coverage or acoustic-rest truth. The retained
+GuitarSet references remain one exposed development family with unspecified
+confidence; no new source admission or screening follows.
+
+AC1 awaits independent final QA. AC2's grounding/calibration and AC3's actual
+comparators remain open; these scoped synthetic controls do not close complete
+AC5. AC4's reviewed seed/output/listening specification remains unchanged.
+The task earns no credit until all criteria pass. Final developer logs are under
+ignored `build/style-card-contract/`; source investigations stopped below remain
+stopped.
+
 Current scope (2026-09-29): [evaluation_01](TODO/NS-5_evaluation_01.md) owns the
 reusable Pascal style-card/comparator contract and a complete bounded
 note/duration instance. [evaluation_04](TODO/NS-5_evaluation_04.md) owns the full

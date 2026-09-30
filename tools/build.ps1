@@ -68,6 +68,12 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Style distribution compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.evaluation.style$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Style distribution checks failed' }
+  & $compilerPath @compilerArgs '-Futools' 'tests/pythian.tests.evaluation.style.card.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Style-card contract compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.evaluation.style.card$executableSuffix") (Join-Path $buildRoot 'style-card-contract')
+  if ($LASTEXITCODE -ne 0) { throw 'Style-card contract checks failed' }
+  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.style.card.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Style-card operator compilation failed' }
   & $compilerPath @compilerArgs '-Futools' 'tests/pythian.tests.evaluation.files.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'File-bound evaluation compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.evaluation.files$executableSuffix") (Join-Path $buildRoot 'evaluation-files')
@@ -178,6 +184,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Corpus compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.corpus$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Corpus checks failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.corpus.intake.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Corpus intake core compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.corpus.intake$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Corpus intake core checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.passage.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Passage compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.passage$executableSuffix")
@@ -427,6 +437,18 @@ try {
     New-Item -ItemType Directory -Force $adapterUnitRoot | Out-Null
     $adapterArgs = @('-B', '-Sa', '-Cr', '-Co', '-Ci', '-gl', '-Fusrc',
       '-Fuadapters/wfc', '-Fuvendor/wfc/src', '-Futools', "-FU$adapterUnitRoot", "-FE$buildRoot")
+    & $compilerPath @adapterArgs 'tools/pythian.corpus.intake.cli.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Corpus intake operator compilation failed' }
+    & $compilerPath @adapterArgs 'examples/pythian.example.corpus.intake.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Corpus intake example compilation failed' }
+    # Native admission requires fresh publication prefixes on every run.
+    $corpusIntakeExample = Join-Path $buildRoot ("corpus-intake-" + [Guid]::NewGuid().ToString('N'))
+    & (Join-Path $buildRoot "pythian.example.corpus.intake$executableSuffix") $corpusIntakeExample
+    if ($LASTEXITCODE -ne 0) { throw 'Corpus intake example failed' }
+    & $compilerPath @adapterArgs 'tests/pythian.tests.corpus.intake.files.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Corpus intake file checks compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.corpus.intake.files$executableSuffix") $corpusIntakeExample
+    if ($LASTEXITCODE -ne 0) { throw 'Corpus intake admission/learner checks failed' }
     & $compilerPath @adapterArgs '-dWFC_MIDI_STREAM_CHECKS' 'tests/pythian.tests.midi.stream.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC MIDI stream parity compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.midi.stream$executableSuffix")

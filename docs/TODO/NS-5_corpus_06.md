@@ -29,7 +29,7 @@ with independent final QA. This planning change accepts no criterion.
 
 **Blockers**
 
-- [NS-5_corpus_05.md](NS-5_corpus_05.md)
+- [NS-5_corpus_05.md](DONE/NS-5_corpus_05.md)
 - [NS-5_evaluation_04.md](NS-5_evaluation_04.md)
 
 **Dev Notes:**

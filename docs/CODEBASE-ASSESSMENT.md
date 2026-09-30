@@ -2,6 +2,16 @@
 
 [Project](../PROJECT.md) · [Task catalog](TODO/README.md) · [Consumer contract](CONSUMER-CONTRACT.md)
 
+2026-09-30 accepted implementation update: the detached
+[caller intake API](../src/pythian.corpus.intake.pas), actual source-bound
+native admission/journal learner and [caller guide](CORPUS-INTAKE.md) pass all
+corpus_05 criteria at their declared scope. The maintained
+[style-card API](../src/pythian.evaluation.style.card.pas) and strict file
+consumer close evaluation_01 AC1 only; independent grounding/calibration and
+full comparator/control outcomes remain open. This does not qualify inferred
+musical styles, many-hour acceptance or outside use. The dated audit below
+retains its original evidence scope; live credit is **46.30 / 53.70 remaining**.
+
 This is a source, contract and recorded-evidence audit of the current checkout. The source audit is supplemented by the focused build-script cleanup checks recorded below; it is not a fresh whole-library, browser, listening or independent-consumer verdict. Dated results apply to the revisions and paths named in their records; an unchecked box remains open even when its implementation appears present. The intended product is a reusable Pascal synthesis library with trustworthy WAV learning and integral WFC composition/synthesis, style generation, blending and further blending for a *user-specified* style. Chillwave, stoner rock and lofi are development test choices, not public style categories or universal genre definitions ([PROJECT](../PROJECT.md), [layered-style direction](LAYERED-STYLE.md#accepted-direction-and-priority)).
 
 ## Capability and boundary map
@@ -96,7 +106,7 @@ do not establish independent caller extension or continued product use.
 Single-snapshot packaging and one reviewer likewise cannot establish a
 supported maintenance cycle or de facto standard status. These required
 outcomes remain open; an adoption floor alone does not justify a standard
-claim. The current ledger credits 45.50 weighted points, with 54.50 remaining.
+claim. The current ledger credits 46.30 weighted points, with 53.70 remaining.
 
 ## WFC boundary audit
 

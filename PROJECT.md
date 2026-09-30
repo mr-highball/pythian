@@ -127,7 +127,7 @@ The [selective Pascal backend](docs/TODO/DONE/NS-3_validation_03.md)
 passes controlled and source-bound recorded gates for its two NS-3 points.
 The [practical Pascal inference task](docs/TODO/DONE/NS-3_validation_02.md)
 passes maintained WAV execution, long-source cost, supervision and replay for
-its remaining three NS-3 points. Preserve notices and exact source lineage.
+its current two NS-3 task points. Preserve notices and exact source lineage.
 Raw pitch or salience observations are not admitted
 notes or learned musical roles. The first Pascal periodic-support probe failed
 recorded specificity and remains rejected.

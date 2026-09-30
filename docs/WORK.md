@@ -12,7 +12,63 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
-## Comprehensive reassessment and rebalance — 2026-09-29
+## Caller corpus intake and style-card contract — 2026-09-30
+
+Implementation batch 1 follows accepted identity into
+[corpus_05](TODO/DONE/NS-5_corpus_05.md) and the usable AC1 slice of
+[evaluation_01](TODO/NS-5_evaluation_01.md). Ticket Guy Neo owns intake and
+shared integration; Ticket Guy owns the six card files; Big Boss retains
+architecture, priorities, hardest assessment and final judgment. Both lanes
+use existing checked stable Win32/Win64 Pascal toolchains. Salty Boi final QA
+follows the two ready components; no fourth helper, browser, service or audio
+session is needed.
+
+The maintained [intake guide](CORPUS-INTAKE.md) describes verified WAV bytes,
+explicit family/exposure/parent coordinates, original-frame duration unions,
+unknown span exclusion and actual existing journal/WFC learner handoff. The
+card reader/scorer retains required/unsupported traits, asset bindings and
+caller-declared limits. Its independently authored synthetic supplied-event
+controls do not ground duration/relationship/novelty gates, acoustic rest/time
+truth, actual learned/unlearned/shuffled comparator execution or full AC5.
+Evaluation_01 remains open with zero task credit; AC2 remains independently
+reference/calibration blocked. Prior stopped source/genre/inference counters
+are unchanged, and this batch performs no revived screening or inference.
+
+Independent Salty Boi QA accepted all corpus criteria and its DONE prerequisite,
+and accepted the card AC1 contract only. Checked stable Win32/Win64 each
+passed 22 core intake, 41 native intake/learner and 94 card assertions with
+zero leaks. Actual order-2 state counts matched within-song observations:
+two segments, three observations, two BOS/start and two end counts. Unknown
+spans and prior flux context stayed outside selected windows; saved-contract
+relearning and seeded saved-model generation matched. Cross-target manifest
+and model bytes matched; only 34 full-precision palette-center coordinates
+differed, maximum 7.5299153780186527E-16. This scope limit is documented,
+not rounded away. Native valid/malformed CLIs, source/geometry/preparation
+rejections, retained old outputs/foreign staging, notices/privacy, isolated
+core compilation, local links and build syntax passed.
+
+Corpus_05 moves to DONE: +4 NS-5 / +0.80 overall. The current catalog is
+**46 open / 32 DONE**, completions **100/90/25/55/14/15**, and
+**46.30 weighted credited / 53.70 remaining**. Evaluation_01 stays OPEN with
+all three points unearned. Candidate checks and source snapshots stay under ignored
+`build/corpus-intake/`, `build/style-card-contract/` and independent
+`build/qa-corpus-card/`. Current submitted
+implementation QA failures: 0 for each task. Consecutive nonclosing batch
+count is not advanced by tool calls or handoffs; this is one criterion-closing
+implementation batch, with consecutive nonclosing count zero. Existing
+stopped scientific investigations retain their separate counters. Publication
+follows targeted moved-task links, complete Blockers graph and credit checks;
+no unchanged product suite is rerun for that documentation integration.
+
+Final integrated QA passed 78 task templates, 160 prerequisite edges and
+443 local paths/fragments in 13 changed/new documents. Every first task credit
+matches its ledger, with 18.30 accepted plus 28.00 baseline = 46.30 credited
+and 53.70 remaining. The moved task and current records preserve the partial
+card verdict and investigation counters. Publication uses only the 26 reviewed
+paths and a normal push to `origin/hello-pythian`; commit/remote agreement is
+reported after publication. No dependency, generated or private files are included.
+
+## Published reassessment context — 2026-09-29
 
 The user requested a whole-project assessment, task redistribution, expanded
 requirements and public-repository cleanup, and explicitly authorized changing
@@ -23,7 +79,7 @@ The old 71.55% ledger is retired: the new outcome basis gives **45.50%**
 This is a reassessment of planning weight, not lost implementation or newly
 accepted capability.
 
-The catalog has **47 open / 31 DONE**: sixteen new files, six retired personal
+At reassessment the catalog had **47 open / 31 DONE**: sixteen new files, six retired personal
 genre tickets, retained open tasks revised, and all accepted allocations
 reviewed. The final completeness pass added caller source/effect extensions,
 caller WFC provider extensions, actual supported-release maintenance and
@@ -112,20 +168,21 @@ there, then validate the coordinated Pythian integration.
 
 ## Next criterion-closing work
 
-Start from NS-5, currently 10%, following real prerequisites:
+Start from NS-5, currently 14%, following real prerequisites:
 
-- Big Boss: [generic corpus intake](TODO/NS-5_corpus_05.md), producing a maintained
-  caller-defined input/partition/range/reload consumer and meaningful rejection
-  checks.
-- Ticket Guy: [bounded style-card/comparators](TODO/NS-5_evaluation_01.md),
-  producing a maintained contract and complete independently grounded
-  note/duration preserving/breaking controls. Assign exclusive files before
-  implementation; shared contract edits remain with Big Boss.
+- [Generic corpus intake](TODO/DONE/NS-5_corpus_05.md) is accepted, and the
+  [style-card contract](TODO/NS-5_evaluation_01.md) closes AC1 only. Full
+  reference-grounded evaluation remains blocked; no new threshold/source
+  screening or ungrounded generated-style claim is authorized.
 - First learned-style return path: notes_01 + notes_05 -> notes_02 -> notes_03 ->
   style_01. Big Boss preserves all stopped observations/source families below.
-- [Current minimal package](TODO/NS-6_delivery_06.md) then
-  [actual independent use](TODO/NS-6_delivery_07.md) are useful work while
-  the prioritized learning path lacks its required evidence.
+- Next [current minimal package](TODO/NS-6_delivery_06.md): Neo owns the
+  caller-controlled core example, actual saved-file reload and source-package
+  integration; Ticket Guy owns a bounded extracted WFC-provider example.
+  Reserve exact files before implementation, with Big Boss chief oversight.
+  Accepted Linux scope requires the exact published revision's remote CI,
+  not an earlier artifact. [Actual independent use](TODO/NS-6_delivery_07.md)
+  follows and requires non-agent evidence; our extracted checks do not count.
 
 Before any batch name the exact criterion, deliverable, closing evidence and
 stop condition. This replan does not authorize a new inference experiment

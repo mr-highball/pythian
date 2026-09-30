@@ -3,10 +3,11 @@
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) ·
 [Assessment](../REBALANCE-2026-09-29.md) · [Completed tasks](DONE/README.md) · [Work](../WORK.md)
 
-Updated 2026-09-29. **47 open / 31 accepted tasks.** The user authorized a new
-outcome-based credit allocation: **45.50 current / 54.50 remaining** overall.
+Updated 2026-09-30. **46 open / 32 accepted tasks.** The user authorized a new
+outcome-based credit allocation: **46.30 current / 53.70 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
-No task closes or gains evidence from this replan.
+The replan earned no acceptance; independently accepted caller corpus intake
+adds 4 NS-5 points / 0.80 overall on 2026-09-30.
 
 Style IDs and traits are caller-defined. Chillwave, stoner rock and lofi are
 internal examples, with no special public contract. Task files own acceptance
@@ -22,9 +23,9 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 70 | 20 | 90% | 1 | 10 | 2.50 |
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 35 | 55% | 2 | 45 | 6.75 |
-| [NS-5 — User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 10 | 10% | 16 | 90 | 18.00 |
+| [NS-5 — User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 15 | 86 | 17.20 |
 | [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 15 | 15% | 9 | 85 | 8.50 |
-| **Total** | **28.00 weighted** | **17.50 weighted** | **45.50 weighted** | **47** | Goal points are not summed across goals | **54.50** |
+| **Total** | **28.00 weighted** | **18.30 weighted** | **46.30 weighted** | **46** | Goal points are not summed across goals | **53.70** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -32,10 +33,11 @@ hours or effort estimates. See the [basis and rationale](../REBALANCE-2026-09-29
 
 ## Selection and actual blockers
 
-Start at NS-5 (10%), currently least complete. The next independent useful
-deliverables are generic [corpus intake](NS-5_corpus_05.md) and the bounded
-[style-card/comparator contract](NS-5_evaluation_01.md), with exclusive source
-ownership assigned before implementation.
+Start at NS-5 (14%), currently least complete. Generic
+[corpus intake](DONE/NS-5_corpus_05.md) is accepted; the maintained
+[style-card contract](NS-5_evaluation_01.md) closes AC1 only. Independent
+reference/calibration and actual comparator evidence still block full
+evaluation acceptance. No further task credit comes from its partial contract.
 
 The first bounded learned-style return path is
 [identity](NS-3_notes_01.md) + [presence](NS-3_notes_05.md) ->
@@ -95,9 +97,8 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | --- | ---: | ---: | --- |
 | [NS-5_blends_01](NS-5_blends_01.md) — Accept cross-style blends and further reuse | 8 | 1.60 | Dependency-blocked |
 | [NS-5_continuity_01](NS-5_continuity_01.md) — Accept sustained continuity and useful variation | 6 | 1.20 | Dependency-blocked |
-| [NS-5_corpus_05](NS-5_corpus_05.md) — Accept user-defined WAV corpus intake | 4 | 0.80 | Ready |
 | [NS-5_corpus_06](NS-5_corpus_06.md) — Qualify contrasting user-defined style corpora | 6 | 1.20 | Dependencies + qualified references |
-| [NS-5_evaluation_01](NS-5_evaluation_01.md) — Deliver a reusable style-card and comparison contract | 3 | 0.60 | Ready |
+| [NS-5_evaluation_01](NS-5_evaluation_01.md) — Deliver a reusable style-card and comparison contract | 3 | 0.60 | AC1 accepted; independent reference/calibration needed |
 | [NS-5_evaluation_02](NS-5_evaluation_02.md) — Implement the complete style comparison protocol | 4 | 0.80 | Dependency-blocked |
 | [NS-5_evaluation_04](NS-5_evaluation_04.md) — Freeze full musical style references and gates | 3 | 0.60 | Full reference evidence needed |
 | [NS-5_scale_01](NS-5_scale_01.md) — Establish executable many-hour semantic workload budgets | 6 | 1.20 | Dependency-blocked |
@@ -126,7 +127,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 
 ## Accepted tasks and retired work
 
-All 31 accepted tasks, including the three NS-2 quality results, are listed in
+All 32 accepted tasks, including caller corpus intake and the three NS-2 quality results, are listed in
 the [current DONE ledger](DONE/README.md). Their acceptance dates and detailed
 evidence remain in the unchanged task identities. Allocations now reflect the
 new outcome basis; for example source-free composition remains accepted with

@@ -5,10 +5,10 @@
 
 ## North-star assessment
 
-Updated **2026-09-29** under the user's authorization to rebalance credit:
-**45.50 outcome-weighted points credited; 54.50 remaining.**
+Updated **2026-09-30** on the user-authorized 2026-09-29 credit basis:
+**46.30 outcome-weighted points credited; 53.70 remaining.**
 The previous 71.55%, 55.5-baseline and older 89.8% assessments are retired.
-The implementation did not regress by 26.05 points; the old weights overstated
+At the rebase, implementation did not regress by 26.05 points; the old weights overstated
 progress toward the unclosed end-to-end results.
 
 The destination is the standard reusable Pascal audio synthesis library:
@@ -29,12 +29,12 @@ ecosystem adoption is unmeasured and is a required completion gate.
 | <a id="fund-contracts"></a><a id="ns-2"></a>**NS-2 — Dependable synthesis fundamentals** | 90% | 25 | Declared synthesis/processing/scheduling families and bounded source, processing and combined listening union. [Map](FUNDAMENTALS.md). | Caller-owned source/effect extension conformance: 1 task / 10 |
 | <a id="wav-02"></a><a id="wav-03"></a><a id="ns-3"></a>**NS-3 — Trustworthy musical learning from WAV** | 25% | 25 | Measurement foundation, Pascal observations/execution, qualified references/scoring, unknown/manual context, catalog and admitted-event bridge. | Independently accepted recorded context, notes, parts, harmony, groove and evolving sound: 19 tasks / 75 |
 | <a id="wfc-preferences"></a><a id="ns-4"></a>**NS-4 — Granular WFC layers and reusable blends** | 55% | 15 | Actual layers, typed controls, persistence, selective reuse and bounded event/composition evidence. | Caller-defined providers plus full recorded-provider workflow through reusable styles and audio: 2 tasks / 45 |
-| <a id="wav-04"></a><a id="ns-5"></a>**NS-5 — User-defined styles that generate and blend usefully** | 10% | 20 | Bounded identity, raw corpus, journal, balance, listening packet and acoustic continuation. | Generic intake, grounded references, semantic scale, structure/continuity, useful one/many-recording and new-user styles, blends: 16 tasks / 90 |
+| <a id="wav-04"></a><a id="ns-5"></a>**NS-5 — User-defined styles that generate and blend usefully** | 14% | 20 | Bounded identity, maintained caller intake, raw corpus, journal, balance, listening packet and acoustic continuation; style-card AC1 only. | Grounded references, semantic scale, structure/continuity, useful one/many-recording and new-user styles, blends: 15 tasks / 86 |
 | <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | 15% | 10 | Supported consumer contract and frozen native package checkpoint. | Current minimal/full packages, outside use, operator workflow, maintained support, ecosystem adoption and final handoff: 9 tasks / 85 |
-| **Total** | **45.50 weighted** | **100** | **31 accepted task records plus explicit baseline** | **47 open tasks / 54.50 weighted points** |
+| **Total** | **46.30 weighted** | **100** | **32 accepted task records plus explicit baseline** | **46 open tasks / 53.70 weighted points** |
 
 Arithmetic:
-`5×1 + 25×.90 + 25×.25 + 15×.55 + 20×.10 + 10×.15 = 45.50`.
+`5×1 + 25×.90 + 25×.25 + 15×.55 + 20×.14 + 10×.15 = 46.30`.
 These are declared scope weights, not measured accuracy, effort, test coverage,
 release prediction or market adoption. The
 [current basis](REBALANCE-2026-09-29.md#current-credit-basis) explains the
@@ -85,7 +85,7 @@ a claim that all downstream outcomes pass.
 | <a id="wfc-style"></a>**WFC-STYLE** | NS-4 | [NS-4_styles_01 — DONE](TODO/DONE/NS-4_styles_01.md), [NS-4_styles_02 — DONE](TODO/DONE/NS-4_styles_02.md) |
 | <a id="wfc-extension"></a>**WFC-EXTENSION** | NS-4 | [NS-4_providers_01](TODO/NS-4_providers_01.md) |
 | <a id="wav-04-integration"></a>**WAV-04-INTEGRATION** | NS-4 | [NS-4_integration_01](TODO/NS-4_integration_01.md) |
-| <a id="corpus-setup"></a>**CORPUS-SETUP** | NS-5 | [NS-5_corpus_05](TODO/NS-5_corpus_05.md), [NS-5_corpus_06](TODO/NS-5_corpus_06.md), [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md), [NS-5_evaluation_04](TODO/NS-5_evaluation_04.md) |
+| <a id="corpus-setup"></a>**CORPUS-SETUP** | NS-5 | [Accepted NS-5_corpus_05](TODO/DONE/NS-5_corpus_05.md), [NS-5_corpus_06](TODO/NS-5_corpus_06.md), [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md), [NS-5_evaluation_04](TODO/NS-5_evaluation_04.md) |
 | <a id="wav-04-vocabulary"></a>**WAV-04-VOCABULARY** | NS-5 | [NS-5_vocabulary_01](TODO/NS-5_vocabulary_01.md), [NS-5_vocabulary_02](TODO/NS-5_vocabulary_02.md) |
 | <a id="corpus-scale"></a>**CORPUS-SCALE** | NS-5 | [NS-5_scale_01](TODO/NS-5_scale_01.md), [NS-5_scale_02](TODO/NS-5_scale_02.md) |
 | <a id="wav-04-continuity"></a>**WAV-04-CONTINUITY** | NS-5 | [NS-5_continuity_01](TODO/NS-5_continuity_01.md) |
@@ -147,7 +147,7 @@ remain open; metadata does not prove audible sound.
 
 ## Execution order and blocking links
 
-Start at **NS-5 (10%)**, follow real prerequisites and return to that outcome.
+Start at **NS-5 (14%)**, follow real prerequisites and return to that outcome.
 The [delivery order](REBALANCE-2026-09-29.md#delivery-order) owns the current
 selection sequence. Final harmonic/groove consumers require independent
 acceptance tasks harmony_02/groove_02, not merely their development providers.
@@ -156,20 +156,21 @@ role ownership. The graph has no intentionally circular acceptance edges.
 
 ## Direction for the next work package
 
-Generic user corpus intake plus the bounded executable style-card/comparator
-contract are ready useful results. The first learned-style path then needs
+Generic user corpus intake is accepted; the executable style-card contract
+closes AC1 only, with independent reference/calibration still open. The first learned-style path needs
 actual accepted note inference. Current register, presence, timing and key
 investigations have explicit stopped/evidence-blocked states; do not restart
 nearby variants. A current minimal source package and outside consumer are
 independent useful work when the learning path is blocked.
 
-### First work to schedule
+### Next work to schedule
 
-- Big Boss: [corpus_05](TODO/NS-5_corpus_05.md), maintained caller intake through
-  existing learning with source/partition/reload/failure evidence.
-- Ticket Guy: [evaluation_01](TODO/NS-5_evaluation_01.md), reusable style-card
-  contract plus independently grounded note/duration controls. Reserve
-  nonoverlapping files before assignment; Big Boss owns any shared edits.
+- Ticket Guy Neo: [delivery_06](TODO/NS-6_delivery_06.md), current core
+  package/control/saved-file reload and shared extracted-consumer integration.
+- Ticket Guy: the same delivery_06's bounded caller WFC-provider example,
+  with exclusive files reserved before implementation. Big Boss retains
+  architecture, priorities and final judgment. Independent reference evidence
+  must change before reopening blocked evaluation_01 or stopped inference.
 - Salty Boi: final QA after at least two tasks/components are ready, under the
   [current team and publication rules](TASKFLOW.MD#delegated-validation-and-publication).
 

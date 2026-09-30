@@ -8,9 +8,17 @@ Completion credit: 3 goal percentage points (0.60 overall points).
 Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
 Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
 
-Execution status (2026-09-29): **Ready for a bounded contract batch**.
-Next deliverable: Close the generic Pascal style-card reader/scorer and independently grounded note/duration control criteria; keep full-provider grounding in evaluation_04.
-Closing evidence and stop condition: Two arbitrary labels, malformed-contract rejection, exact reload and trait-preserving/breaking comparisons. Stop on missing reference support; a document or partial generic control alone cannot close the task.
+Execution status (2026-09-30): **Maintained contract component ready for final QA;
+grounded acceptance remains blocked**.
+Next deliverable: Review the public Pascal card API, strict file reader and CLI;
+then obtain independently supported note/duration measures and calibration for
+AC2 before actual comparator/style acceptance. Full-provider grounding stays in
+evaluation_04.
+Closing evidence and stop condition: Two arbitrary labels, malformed-contract
+rejection, exact reload and trait-preserving/breaking comparisons through the
+maintained consumer, plus every grounded criterion below. Stop at missing
+reference/calibration support; passing contract arithmetic alone cannot close
+the task or earn partial credit.
 Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
 This reassessment closes no product criterion and preserves prior failures below.
 
@@ -130,6 +138,55 @@ remain open here, with no task credit.
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
 
 **Dev Notes:**
+
+- 2026-09-30 independent Salty Boi final QA accepted the maintained AC1 card
+  contract only: stable FPC 3.2.2 checked Win32/Win64 each passed 94 assertions,
+  isolated core-only compilation, strict asset/geometry/unknown/replay and
+  valid/malformed native CLI checks, with zero leaks. Three comparison reports
+  matched across targets. Evidence remains ignored `build/qa-corpus-card/`
+  and `build/style-card-contract/`. AC2 independent reference/calibration,
+  actual learned/unlearned/shuffled AC3 execution and full externally grounded
+  AC5 remain unclosed; the reviewed AC4 protocol is retained. This task stays
+  OPEN with all 3 NS-5 points unearned. One criterion-closing implementation
+  batch; 0 failed implementation QA submissions. Prior stopped source/genre
+  investigations retain their counters.
+
+- 2026-09-30 maintained contract component: new
+  [card API](../../src/pythian.evaluation.style.card.pas),
+  [strict file consumer](../../tools/pythian.tools.style.card.pas),
+  [CLI](../../tools/pythian.style.card.lpr) and
+  [focused tests](../../tests/pythian.tests.evaluation.style.card.lpr) implement
+  caller-labelled current cards, required/optional and explicitly unsupported
+  traits, exact bound assets/clock declarations, uncertainty/exposure,
+  supplied-observation denominators and declared numeric limits. Recording/run
+  balancing IDs are separate from conservative exposure-family IDs. Stable
+  FPC 3.2.2 checked Win32/Win64 developer validation passes 94 assertions per
+  target, CLI round-trip, numeric preserving/breaking comparisons, malformed
+  input rejection and core-only compilation. Three CLI reports match exactly
+  across targets; all fourteen final runtime logs report zero unfreed blocks.
+  Commands, fixture assets and logs remain in ignored
+  `build/style-card-contract/`; final Salty Boi review is pending.
+
+  AC1 is submitted for review, not yet independently accepted. AC2 remains
+  blocked: the retained external supplied-note annotations do not establish
+  acoustic time/rest truth or calibrated duration/relationship/novelty gates.
+  AC3 still needs actual matched comparator runs; labels and fixtures do not
+  execute learned/unlearned/shuffled generation. AC4's reviewed specification
+  remains unchanged. AC5 has useful synthetic supplied-event joint
+  pitch/duration controls through the maintained reader/scorer, with preserved
+  marginals and broken relationships, but no complete independently grounded
+  musical control claim. Reports distinguish `PassedRequiredDeclaredLimits`
+  from `GroundedAcceptance`, which stays false. File hashes bind assets, not
+  the truth or derivation of caller-supplied histogram counts. The existing
+  reference/calibration blocker is unchanged; task open and credit zero.
+
+  Developer checks initially corrected fixture construction against the
+  immutable `TAudioClip` API and a fractional-input test that mutated an
+  integer JSON node and therefore truncated its intended invalid value.
+  These were local pre-submission fixes, not submitted implementation QA
+  failures. This component has zero submitted implementation QA failures;
+  all stopped source investigations and earlier scientific failures below
+  remain recorded without restarting screening, matching or inference truth.
 
 - 2026-09-29: original 4 points split 2 here +2 in
   [evaluation_04](NS-5_evaluation_04.md). The old full-provider grounding,
