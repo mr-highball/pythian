@@ -21,9 +21,11 @@ Final accepted-workflow revalidation and independent downstream-use acceptance r
 [WAV-05-DELIVERY](MILESTONES.md#wav-05-delivery) and
 [DELIVERY-RELEASE](MILESTONES.md#delivery-release).
 
-## Current minimal native package — 2026-09-30
+## Accepted minimal artifact — 2026-09-30
 
-[Delivery_06](TODO/NS-6_delivery_06.md) currently owns the new minimal artifact.
+[Delivery_06](TODO/DONE/NS-6_delivery_06.md) accepts the frozen minimal artifact at
+`de45c9eb05c9592e15ab19a1b581659610722d13`. Later evidence/accounting commits
+cite that revision and do not relabel its source archives.
 The core example creates three tones, applies caller gain/seed, saves PCM16 and
 reloads the actual file: 44,100 Hz/stereo/67,032 frames, including release.
 The opt-in [caller-provider example](../examples/pythian.example.wfc.provider.lpr)
@@ -40,8 +42,8 @@ seed bounds, unavailable parents and existing-output preservation. The maintaine
 analysis; package scripts only orchestrate builds and consumers. The core build
 has only the extracted `src` search path and a fresh separate unit directory.
 Supported target scope is stable FPC 3.2.2 i386-win32, x86_64-win64 and
-x86_64-linux with standard RTL/FCL. Local candidate checks and exact-revision
-remote acceptance are separate; delivery_06 stays OPEN until both pass.
+x86_64-linux with standard RTL/FCL. Candidate checks and exact clean delivered
+artifact qualification were separate; both now passed at the revision above.
 
 The [109696d native run](https://github.com/mr-highball/pythian/actions/runs/36673757355)
 passed the maintained Linux integration build but failed extracted WFC package
@@ -64,7 +66,46 @@ core 98 owned units/107 inventory entries; opt-in WFC 144 owned units/255 entrie
 Each target passed actual saved-file geometry, gain change, exact replay and
 six relevant rejection cases per consumer. Core maximum decoded gain error was
 1.52587890625E-5 for ratio 0.5; provider maximum was 3.0517578125E-5 for ratio 2.
-Independent final QA and the matching new remote result still gate acceptance.
+Independent Salty Boi QA passed both extracted consumers on both Windows targets,
+including actual gain/replay/reload and rejection/preservation with 24 leak-free
+runtime logs. Four final clean Windows archives then passed complete extraction,
+inventory and all-unit/consumer checks at the exact reviewed revision.
+
+The [matching Linux run](https://github.com/mr-highball/pythian/actions/runs/36677194774),
+job `109764605468`, passed maintained integration, both extracted packages and
+both artifact uploads. Source artifact `11080696677` (1,627,825 bytes) and logs
+artifact `11080473700` (92,746 bytes) were downloaded through configured read-only
+access. Both inner ZIPs were extracted locally and every inventory hash/count/
+length checked; metadata declares the exact clean revision and stable Linux
+target, with unchanged WFC `47fa3d8cb8f0f72bf53943eb5eb79758c8f22ce4`.
+All targets compile 98 core units/107 inventory entries or 144 opt-in owned
+units/255 entries. SHA256SUMS excludes itself; archive hashes bind all bytes.
+
+| Qualified archive | SHA256 |
+| --- | --- |
+| Core, i386-win32 | `e2c019b3e7324bec3ebe36b65538184490b7f556c9aa61b604a1bfe46d0cbc23` |
+| Core, x86_64-win64 | `eca3d54c3704783747f77ad6772a762f8a3f0611a927be3a9220de1ff4d1ed1d` |
+| WFC, i386-win32 | `487109beaadd00e0896ccbc84c3e0cfd2f9ab8ad05811c022f20815e66441057` |
+| WFC, x86_64-win64 | `aa4e3e57563db0266dc6a646898c8075eb7771e9b06743a4bbac21820cb826b8` |
+| Core, x86_64-linux, 380450 bytes | `10254a8cbef9d436fb390e86bb2056dd4c4069fdc812654dd98ab56cb0ac05a7` |
+| WFC, x86_64-linux, 1281236 bytes | `5703c330bf1385d96a6e120ccf2a12788e2fec23fb23eff7edd6d554b234d8df` |
+
+For each Windows target, exact clean-revision commands were:
+
+```powershell
+./tools/package.ps1 -Compiler EXISTING_STABLE_FPC -OutputDirectory build/FINAL_CORE
+./tools/package.ps1 -Compiler EXISTING_STABLE_FPC -WithWfc -OutputDirectory build/FINAL_WFC
+```
+
+Win64 additionally used `-TargetCpu x86_64 -TargetOs win64` with the installation's
+verified existing cross compiler. Linux used the same core/WFC commands with
+`-Compiler fpc` in CI. Every root was fresh; checked compilation used
+`-B -Sa -Cr -Co -Ci -gl`. Full inventory paths/lengths/hashes, compiler commands
+and logs are retained under ignored `build/delivery-native/final-de45c9e-*`,
+`build/delivery-native/ci-de45c9e/` and independent `build/qa-delivery-native/`.
+The delivered [consumer packet](MINIMAL-CONSUMER-HANDOFF.md) requires only its
+downloaded archive, native compiler and ordinary checksum tools. Actual outside
+use/listening is still unearned under delivery_07; no agent result substitutes.
 
 ## First remote checkpoint
 

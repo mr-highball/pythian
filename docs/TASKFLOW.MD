@@ -271,7 +271,7 @@ In the same logical completion change:
    algorithm suites for the documentation move.
 
 The user-authorized **2026-09-29 complete-goal allocations**, updated after
-independent caller-intake acceptance on **2026-09-30**, give:
+independent caller-intake and minimal package acceptance on **2026-09-30**, give:
 
 | Goal | Accepted baseline | Overall weight | Accepted DONE points | Open points |
 | --- | ---: | ---: | ---: | ---: |
@@ -280,13 +280,13 @@ independent caller-intake acceptance on **2026-09-30**, give:
 | NS-3 | 10 | 25 | 15 | 75 |
 | NS-4 | 20 | 15 | 35 | 45 |
 | NS-5 | 0 | 20 | 14 | 86 |
-| NS-6 | 0 | 10 | 15 | 85 |
+| NS-6 | 0 | 10 | 23 | 77 |
 
 `Goal completion = baseline + sum(accepted DONE task credits for that goal)`.
 `Overall completion = sum(goal completion * goal weight / 100)`.
-Current goal completions are **100/90/25/55/14/15**; weights are
-**5/25/25/15/20/10**. Therefore current accepted scope is **46.30 weighted
-points**, with **53.70 remaining**. The rebase records newly explicit caller
+Current goal completions are **100/90/25/55/14/23**; weights are
+**5/25/25/15/20/10**. Therefore current accepted scope is **47.10 weighted
+points**, with **52.90 remaining**. The rebase records newly explicit caller
 extension, maintained support and adoption requirements; it earns no acceptance.
 For example, accepting `NS-3_notes_01` adds 7 points within NS-3 and 1.75 overall
 point. Record the arithmetic on every completion; preserve the current accepted

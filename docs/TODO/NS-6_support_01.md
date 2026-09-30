@@ -21,7 +21,7 @@ Credit is earned only when every acceptance criterion and task-flow completion
 requirement passes.
 
 Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
-[packaging](../PACKAGING.md) · [minimal package](NS-6_delivery_06.md) ·
+[packaging](../PACKAGING.md) · [minimal package](DONE/NS-6_delivery_06.md) ·
 [full delivery](NS-6_delivery_03.md) · [independent use](NS-6_delivery_04.md).
 
 Execution status: open, complete acceptance blocked on minimal/full delivery
@@ -67,7 +67,7 @@ unblock/repair owner rather than claiming support from a README alone.
 
 **Blockers**
 
-- [NS-6_delivery_06.md](NS-6_delivery_06.md)
+- [NS-6_delivery_06.md](DONE/NS-6_delivery_06.md)
 - [NS-6_delivery_07.md](NS-6_delivery_07.md)
 - [NS-6_delivery_03.md](NS-6_delivery_03.md)
 - [NS-6_delivery_04.md](NS-6_delivery_04.md)

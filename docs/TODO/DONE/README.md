@@ -3,7 +3,7 @@
 [Task index](../README.md) · [Task flow](../../TASKFLOW.MD) ·
 [Milestones](../../MILESTONES.md) · [Current credit basis](../../REBALANCE-2026-09-29.md#current-credit-basis)
 
-All **32** records retain their acceptance evidence and dates. Points below
+All **33** records retain their acceptance evidence and dates. Points below
 use the user-authorized 2026-09-29 outcome rebase; older amounts in evidence
 narratives are historical. No task was accepted by this reassessment.
 
@@ -41,9 +41,10 @@ narratives are historical. No task was accepted by this reassessment.
 | [NS-5_vocabulary_03](NS-5_vocabulary_03.md) — Balance admitted-pitch contributions by work group | 2026-09-25 | 1 NS-5 | 0.20 |
 | [NS-6_delivery_01](NS-6_delivery_01.md) — Define the supported consumer and distribution contract | 2026-09-20 | 3 NS-6 | 0.30 |
 | [NS-6_delivery_02](NS-6_delivery_02.md) — Verify clean native targets and remote CI | 2026-09-21 | 12 NS-6 | 1.20 |
+| [NS-6_delivery_06](NS-6_delivery_06.md) — Deliver a current minimal native synthesis package | 2026-09-30 | 8 NS-6 | 0.80 |
 
-Current accepted task total is **18.30 weighted points**; the separate accepted
-baseline contributes **28.00**, giving **46.30 overall**. Core source-free
+Current accepted task total is **19.10 weighted points**; the separate accepted
+baseline contributes **28.00**, giving **47.10 overall**. Core source-free
 composition remains accepted with zero extra NS-4 points; it does not prove
 WFC-selected or recorded-provider integration. The prior external-runtime
 execution result remains historical; current inference acceptance is Pascal-owned.

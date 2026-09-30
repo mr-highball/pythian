@@ -6,7 +6,7 @@
 ## North-star assessment
 
 Updated **2026-09-30** on the user-authorized 2026-09-29 credit basis:
-**46.30 outcome-weighted points credited; 53.70 remaining.**
+**47.10 outcome-weighted points credited; 52.90 remaining.**
 The previous 71.55%, 55.5-baseline and older 89.8% assessments are retired.
 At the rebase, implementation did not regress by 26.05 points; the old weights overstated
 progress toward the unclosed end-to-end results.
@@ -30,11 +30,11 @@ ecosystem adoption is unmeasured and is a required completion gate.
 | <a id="wav-02"></a><a id="wav-03"></a><a id="ns-3"></a>**NS-3 — Trustworthy musical learning from WAV** | 25% | 25 | Measurement foundation, Pascal observations/execution, qualified references/scoring, unknown/manual context, catalog and admitted-event bridge. | Independently accepted recorded context, notes, parts, harmony, groove and evolving sound: 19 tasks / 75 |
 | <a id="wfc-preferences"></a><a id="ns-4"></a>**NS-4 — Granular WFC layers and reusable blends** | 55% | 15 | Actual layers, typed controls, persistence, selective reuse and bounded event/composition evidence. | Caller-defined providers plus full recorded-provider workflow through reusable styles and audio: 2 tasks / 45 |
 | <a id="wav-04"></a><a id="ns-5"></a>**NS-5 — User-defined styles that generate and blend usefully** | 14% | 20 | Bounded identity, maintained caller intake, raw corpus, journal, balance, listening packet and acoustic continuation; style-card AC1 only. | Grounded references, semantic scale, structure/continuity, useful one/many-recording and new-user styles, blends: 15 tasks / 86 |
-| <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | 15% | 10 | Supported consumer contract and frozen native package checkpoint. | Current minimal/full packages, outside use, operator workflow, maintained support, ecosystem adoption and final handoff: 9 tasks / 85 |
-| **Total** | **46.30 weighted** | **100** | **32 accepted task records plus explicit baseline** | **46 open tasks / 53.70 weighted points** |
+| <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | 23% | 10 | Supported consumer contract, native checkpoint and exact-revision minimal core/caller-provider package. | Full packages, actual outside use, operator workflow, maintained support, ecosystem adoption and final handoff: 8 tasks / 77 |
+| **Total** | **47.10 weighted** | **100** | **33 accepted task records plus explicit baseline** | **45 open tasks / 52.90 weighted points** |
 
 Arithmetic:
-`5×1 + 25×.90 + 25×.25 + 15×.55 + 20×.14 + 10×.15 = 46.30`.
+`5×1 + 25×.90 + 25×.25 + 15×.55 + 20×.14 + 10×.23 = 47.10`.
 These are declared scope weights, not measured accuracy, effort, test coverage,
 release prediction or market adoption. The
 [current basis](REBALANCE-2026-09-29.md#current-credit-basis) explains the
@@ -92,7 +92,7 @@ a claim that all downstream outcomes pass.
 | <a id="song-structure"></a>**SONG-STRUCTURE** | NS-5 | [NS-5_structure_01](TODO/NS-5_structure_01.md), [NS-5_structure_02](TODO/NS-5_structure_02.md) |
 | <a id="style-eval"></a>**STYLE-EVAL** | NS-5 | [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md), [NS-5_evaluation_04](TODO/NS-5_evaluation_04.md), [NS-5_evaluation_02](TODO/NS-5_evaluation_02.md), [NS-5_style_01](TODO/NS-5_style_01.md), [NS-5_style_02](TODO/NS-5_style_02.md), [NS-5_style_03](TODO/NS-5_style_03.md), [NS-5_blends_01](TODO/NS-5_blends_01.md) |
 | <a id="wav-05-authoring"></a>**WAV-05-AUTHORING** | NS-6 | [NS-6_authoring_01](TODO/NS-6_authoring_01.md), [NS-6_authoring_02](TODO/NS-6_authoring_02.md) |
-| <a id="wav-05-delivery"></a>**WAV-05-DELIVERY** | NS-6 | [NS-6_delivery_06](TODO/NS-6_delivery_06.md), [NS-6_delivery_03](TODO/NS-6_delivery_03.md) |
+| <a id="wav-05-delivery"></a>**WAV-05-DELIVERY** | NS-6 | [NS-6_delivery_06](TODO/DONE/NS-6_delivery_06.md), [NS-6_delivery_03](TODO/NS-6_delivery_03.md) |
 | <a id="delivery-release"></a>**DELIVERY-RELEASE** | NS-6 | [NS-6_delivery_07](TODO/NS-6_delivery_07.md), [NS-6_delivery_04](TODO/NS-6_delivery_04.md), [NS-6_delivery_05](TODO/NS-6_delivery_05.md) |
 | <a id="delivery-support"></a>**DELIVERY-SUPPORT** | NS-6 | [NS-6_support_01](TODO/NS-6_support_01.md) |
 | <a id="delivery-adoption"></a>**DELIVERY-ADOPTION** | NS-6 | [NS-6_adoption_01](TODO/NS-6_adoption_01.md) |
@@ -104,8 +104,8 @@ a claim that all downstream outcomes pass.
 ## Completion accounting
 
 The new baseline is NS-1..6 **100/70/10/20/0/0**; current accepted task points
-are **0/20/15/35/10/15**. Baseline contributes 28.00 weighted points and DONE
-contributes 17.50. The [open](TODO/README.md) and [DONE](TODO/DONE/README.md)
+are **0/20/15/35/14/23**. Baseline contributes 28.00 weighted points and DONE
+contributes 19.10. The [open](TODO/README.md) and [DONE](TODO/DONE/README.md)
 ledgers exhaustively map the 78 current tickets. Baseline + DONE + open equals
 100 within each goal. Historical figures are retained only as dated evidence,
 not current allocation rules.
@@ -160,17 +160,20 @@ Generic user corpus intake is accepted; the executable style-card contract
 closes AC1 only, with independent reference/calibration still open. The first learned-style path needs
 actual accepted note inference. Current register, presence, timing and key
 investigations have explicit stopped/evidence-blocked states; do not restart
-nearby variants. A current minimal source package and outside consumer are
-independent useful work when the learning path is blocked.
+nearby variants. The current minimal package is accepted; an actual outside
+consumer is still needed. Its prepared packet and caller extension conformance
+are useful next work when the learning path is blocked.
 
 ### Next work to schedule
 
-- Ticket Guy Neo: [delivery_06](TODO/NS-6_delivery_06.md), current core
-  package/control/saved-file reload and shared extracted-consumer integration.
-- Ticket Guy: the same delivery_06's bounded caller WFC-provider example,
-  with exclusive files reserved before implementation. Big Boss retains
-  architecture, priorities and final judgment. Independent reference evidence
-  must change before reopening blocked evaluation_01 or stopped inference.
+- Ticket Guy Neo: [independent minimal use](TODO/NS-6_delivery_07.md), with a
+  concrete [reviewer packet](MINIMAL-CONSUMER-HANDOFF.md) and actual reviewer
+  availability still required; coordinate the next bounded library component.
+- Ticket Guy: [caller source/effect extension](TODO/NS-2_extension_01.md)
+  conformance/example/guide preparation with exclusive files before edits;
+  independent consumer/listening acceptance remains unearned. Big Boss retains
+  architecture, priorities and final judgment, including the larger custom
+  provider design. New evidence is required before blocked inference restarts.
 - Salty Boi: final QA after at least two tasks/components are ready, under the
   [current team and publication rules](TASKFLOW.MD#delegated-validation-and-publication).
 

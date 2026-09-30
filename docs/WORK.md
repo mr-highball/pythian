@@ -15,7 +15,7 @@ Project work and review pushes stay on `hello-pythian`.
 ## Current minimal native package — 2026-09-30
 
 After clean publication `109696d93eec3832be701fbcc694f5122d911816`, Big Boss
-authorized [delivery_06](TODO/NS-6_delivery_06.md) implementation batch 1 while
+authorized [delivery_06](TODO/DONE/NS-6_delivery_06.md) implementation batch 1 while
 the prioritized NS-5 path still lacks independent reference/calibration.
 Neo owns the core caller control, actual saved-file reload, generic native
 artifact verifier, package/build integration and instructions. Ticket Guy
@@ -27,11 +27,12 @@ explicit opt-in WFC, with complete sources/notices/exact pin, actual changed
 control, deterministic saved-file replay/reload and relevant bad input/control/
 output checks. Candidate identity includes base revision, explicit dirty state
 and inventory; current stable Linux evidence must match the published revision.
-Keep delivery_06 OPEN until both local stable targets, independent QA and the
-exact remote run pass; record a real runner/closure/replay blocker instead of
-substituting old package evidence. Agent-run checks do not close delivery_07.
+Delivery_06 remained OPEN until both local stable targets, independent QA and
+the exact remote run passed; old package evidence was not substituted.
+Agent-run checks do not close delivery_07.
 Submitted implementation QA failures: 0; this is one active batch, and stopped
-scientific counters remain unchanged. No product credit is assigned yet.
+scientific counters remain unchanged. Full acceptance now earns only its
+8 NS-6 points / 0.80 overall, as recorded below.
 
 Fresh candidate archives passed stable FPC 3.2.2 Win32/Win64: each isolated core
 package compiled 98 owned units and verified 107 inventory entries; each opt-in
@@ -51,10 +52,49 @@ no HTTP/browser/service source or vendor edit was added. A local argument-array
 precedence error in the new core-only compiler path was caught and corrected
 before QA. Candidate metadata explicitly declares dirty/base state and binds the
 delivered inventory; ignored `build/delivery-native/` retains archives, commands,
-target results and baseline/CI diagnostic evidence. Independent final QA and the
-new exact-revision Linux run remain required; delivery_06 stays OPEN/zero credit.
+target results and baseline/CI diagnostic evidence. Independent final QA and
+the new exact-revision stable target checks passed before moving to DONE.
 The two stale current card-status passages now reflect accepted AC1 and blocked
 calibration; dated evidence, scientific counters and task credit are unchanged.
+
+Final delivered artifact revision is
+`de45c9eb05c9592e15ab19a1b581659610722d13`. Salty's reviewed 11-file commit was
+clean; four final Windows core/WFC archives were then built and consumed from
+that exact clean revision, and the unchanged revision was pushed normally.
+Local/remote hashes matched and the worktree was clean. Its
+[Linux run 36677194774](https://github.com/mr-highball/pythian/actions/runs/36677194774)
+passed maintained integration, extracted core/WFC package checks and both
+uploads. Downloaded artifact 11080696677 supplied core/WFC ZIPs whose exact
+bytes, clean metadata and all 107/255 inventory hashes/counts/lengths were
+verified locally. [Package evidence](PACKAGING.md#accepted-minimal-artifact--2026-09-30)
+records all six archive identities and commands; later evidence commits cite
+de45c9e and do not relabel those artifacts.
+
+Delivery_06 moves to DONE after all four criteria and its prerequisite pass:
+**45 open / 33 DONE**, goal completions **100/90/25/55/14/23**, and
+**47.10 weighted credited / 52.90 remaining** (28.00 baseline + 19.10 DONE).
+This is a criterion-closing batch; submitted implementation QA failures remain
+zero and consecutive nonclosing count remains zero. Scientific stopped counters
+are preserved. Live milestone completion prose was also corrected from the
+stale pre-corpus 10 NS-5/17.50 DONE values; this is bookkeeping, not a product
+defect or extra credit. Final accounting/navigation QA precedes documentation
+publication, with no unchanged algorithm/source suites repeated.
+
+Final documentation QA passed 540 local paths/fragments across 16 documents,
+78 task templates and 160 acyclic prerequisite edges. All first credits match
+the live ledgers: 45 open / 33 DONE, 19.10 accepted plus 28.00 baseline = 47.10
+credited / 52.90 remaining. The six archive hashes and successful Linux run
+match the frozen de45c9e artifact revision; this documentation commit does not
+rename those artifacts. Privacy, notices, counters and independent-use limits
+remain intact. Only the 17 reviewed documentation changes are published.
+
+The [concrete independent-consumer packet](MINIMAL-CONSUMER-HANDOFF.md) names
+the downloadable exact artifact, standalone core/optional-provider commands
+and requested output/listening/usability evidence. No willing reviewer or actual
+outside run is recorded, and no third-party messages were sent. Big Boss handles
+the reviewer request; that external condition does not block the next bounded
+caller source/effect conformance component. Independent use, extended-output
+listening and custom semantic provider acceptance remain unearned.
 
 Final independent Salty Boi QA passed the two candidate components. Fresh ZIP
 extractions rebuilt both consumers with stable FPC 3.2.2 Win32/Win64 using only
@@ -104,7 +144,7 @@ not rounded away. Native valid/malformed CLIs, source/geometry/preparation
 rejections, retained old outputs/foreign staging, notices/privacy, isolated
 core compilation, local links and build syntax passed.
 
-Corpus_05 moves to DONE: +4 NS-5 / +0.80 overall. The current catalog is
+Corpus_05 moved to DONE: +4 NS-5 / +0.80 overall. At that publication, the catalog was
 **46 open / 32 DONE**, completions **100/90/25/55/14/15**, and
 **46.30 weighted credited / 53.70 remaining**. Evaluation_01 stays OPEN with
 all three points unearned. Candidate checks and source snapshots stay under ignored
@@ -119,8 +159,8 @@ no unchanged product suite is rerun for that documentation integration.
 
 Final integrated QA passed 78 task templates, 160 prerequisite edges and
 443 local paths/fragments in 13 changed/new documents. Every first task credit
-matches its ledger, with 18.30 accepted plus 28.00 baseline = 46.30 credited
-and 53.70 remaining. The moved task and current records preserve the partial
+matched its ledger, with 18.30 accepted plus 28.00 baseline = 46.30 credited
+and 53.70 remaining before the later delivery_06 acceptance above. The moved task and current records preserve the partial
 card verdict and investigation counters. Publication uses only the 26 reviewed
 paths and a normal push to `origin/hello-pythian`; commit/remote agreement is
 reported after publication. No dependency, generated or private files are included.
@@ -233,13 +273,13 @@ Start from NS-5, currently 14%, following real prerequisites:
   screening or ungrounded generated-style claim is authorized.
 - First learned-style return path: notes_01 + notes_05 -> notes_02 -> notes_03 ->
   style_01. Big Boss preserves all stopped observations/source families below.
-- Next [current minimal package](TODO/NS-6_delivery_06.md): Neo owns the
-  caller-controlled core example, actual saved-file reload and source-package
-  integration; Ticket Guy owns a bounded extracted WFC-provider example.
-  Reserve exact files before implementation, with Big Boss chief oversight.
-  Accepted Linux scope requires the exact published revision's remote CI,
-  not an earlier artifact. [Actual independent use](TODO/NS-6_delivery_07.md)
-  follows and requires non-agent evidence; our extracted checks do not count.
+- [Current minimal package](TODO/DONE/NS-6_delivery_06.md) is accepted at its
+  exact frozen artifact revision. [Actual independent use](TODO/NS-6_delivery_07.md)
+  has a concrete packet but needs a willing non-agent reviewer; our checks do
+  not count. Ticket Guy's next proposed library component is caller source/effect
+  conformance/example/guide, with exact files reserved before edits. Big Boss
+  retains the harder custom-provider architecture judgment. Actual external
+  extension/listening remains unearned; no inference restart is authorized.
 
 Before any batch name the exact criterion, deliverable, closing evidence and
 stop condition. This replan does not authorize a new inference experiment

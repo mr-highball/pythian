@@ -11,7 +11,14 @@ Completion credit: 10 goal percentage points (1.50 overall points).
 Current basis: [full-goal reassessment](../REBALANCE-2026-09-29.md#current-credit-basis).
 No credit is earned until every criterion and prerequisite passes final QA.
 
-Execution status and next batch: Blocked on the current minimal package. Next deliverable is the public caller-provider registration/persistence contract with one genuinely new externally implemented trait path. Stop if a closed enum, omitted codec or shared ownership prevents reuse; implement that owned gap here rather than calling another label extensibility.
+Execution status and next batch (2026-09-30): the current minimal package is
+accepted; custom provider/vocabulary registration and persistence are still
+missing. Next deliverable is a bounded public extension design for Big Boss's
+architecture judgment before implementing one genuinely new externally
+implemented trait path. The new canonical-pitch delivery example does not close
+this semantic extension outcome. Stop if a closed enum, omitted codec or shared
+ownership prevents reuse; implement that owned Pythian gap rather than calling
+another label extensibility.
 Closing evidence: exact external source/package/run identities, public consumer behavior and all criterion results below. Consuming another goal earns no duplicate credit.
 
 **Acceptance Criteria:**
@@ -26,7 +33,7 @@ Closing evidence: exact external source/package/run identities, public consumer 
 
 - [NS-4_layers_04](DONE/NS-4_layers_04.md)
 - [NS-4_styles_02](DONE/NS-4_styles_02.md)
-- [NS-6_delivery_06](NS-6_delivery_06.md)
+- [NS-6_delivery_06](DONE/NS-6_delivery_06.md)
 
 **Dev Notes:**
 

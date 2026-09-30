@@ -3,11 +3,12 @@
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) ·
 [Assessment](../REBALANCE-2026-09-29.md) · [Completed tasks](DONE/README.md) · [Work](../WORK.md)
 
-Updated 2026-09-30. **46 open / 32 accepted tasks.** The user authorized a new
-outcome-based credit allocation: **46.30 current / 53.70 remaining** overall.
+Updated 2026-09-30. **45 open / 33 accepted tasks.** The user authorized a new
+outcome-based credit allocation: **47.10 current / 52.90 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
-adds 4 NS-5 points / 0.80 overall on 2026-09-30.
+adds 4 NS-5 points / 0.80 overall, and the accepted exact-revision minimal native
+package adds 8 NS-6 points / 0.80 overall on 2026-09-30.
 
 Style IDs and traits are caller-defined. Chillwave, stoner rock and lofi are
 internal examples, with no special public contract. Task files own acceptance
@@ -24,8 +25,8 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 35 | 55% | 2 | 45 | 6.75 |
 | [NS-5 — User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 15 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 15 | 15% | 9 | 85 | 8.50 |
-| **Total** | **28.00 weighted** | **18.30 weighted** | **46.30 weighted** | **46** | Goal points are not summed across goals | **53.70** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 23 | 23% | 8 | 77 | 7.70 |
+| **Total** | **28.00 weighted** | **19.10 weighted** | **47.10 weighted** | **45** | Goal points are not summed across goals | **52.90** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -46,8 +47,12 @@ The first bounded learned-style return path is
 stopped or reference-blocked investigations despite accepted task prerequisites.
 Do not restart a rejected variant because a graph leaf looks ready.
 
-The [minimal native package](NS-6_delivery_06.md) -> [independent use](NS-6_delivery_07.md)
-path is a useful parallel result when the prioritized learning path is blocked.
+The [minimal native package](DONE/NS-6_delivery_06.md) is accepted at its frozen
+revision. [Independent use](NS-6_delivery_07.md) has a concrete
+[consumer packet](../MINIMAL-CONSUMER-HANDOFF.md) but needs an actual outside
+reviewer. A maintained caller source/effect conformance component is the next
+bounded library lane; its actual independent use/listening remains unearned.
+This is useful parallel work when the prioritized learning path is blocked.
 It does not depend on final operator/full-style completion. Full style,
 blend/reblend, many-hour and operator requirements remain in their owners below.
 Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each batch.
@@ -121,13 +126,13 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | [NS-6_delivery_03](NS-6_delivery_03.md) — Package and verify the accepted final workflow | 10 | 1.00 | Dependencies |
 | [NS-6_delivery_04](NS-6_delivery_04.md) — Obtain independently reproduced consumer acceptance | 12 | 1.20 | Package + independent consumer |
 | [NS-6_delivery_05](NS-6_delivery_05.md) — Audit north-star completion and supported handoff | 5 | 0.50 | Dependencies |
-| [NS-6_delivery_06](NS-6_delivery_06.md) — Deliver a current minimal native synthesis package | 8 | 0.80 | Ready; verified target runners needed |
-| [NS-6_delivery_07](NS-6_delivery_07.md) — Obtain actual independent minimal synthesis use | 9 | 0.90 | Package + independent consumer |
+| [NS-6_delivery_07](NS-6_delivery_07.md) — Obtain actual independent minimal synthesis use | 9 | 0.90 | Package accepted; prepared packet needs actual reviewer |
 | [NS-6_support_01](NS-6_support_01.md) — Establish and exercise the supported release lifecycle | 10 | 1.00 | Packages + real external update or issue cycle |
 
 ## Accepted tasks and retired work
 
-All 32 accepted tasks, including caller corpus intake and the three NS-2 quality results, are listed in
+All 33 accepted tasks, including caller corpus intake, the current minimal package
+and the three NS-2 quality results, are listed in
 the [current DONE ledger](DONE/README.md). Their acceptance dates and detailed
 evidence remain in the unchanged task identities. Allocations now reflect the
 new outcome basis; for example source-free composition remains accepted with

@@ -10,7 +10,18 @@ corpus_05 criteria at their declared scope. The maintained
 consumer close evaluation_01 AC1 only; independent grounding/calibration and
 full comparator/control outcomes remain open. This does not qualify inferred
 musical styles, many-hour acceptance or outside use. The dated audit below
-retains its original evidence scope; live credit is **46.30 / 53.70 remaining**.
+retains its original evidence scope; live credit is **47.10 / 52.90 remaining**.
+
+Minimal source delivery is also accepted at frozen source
+`de45c9eb05c9592e15ab19a1b581659610722d13`: clean core/WFC archives passed
+stable Win32/Win64 extraction/consumers and the exact revision's successful
+Linux integration/package run. Uploaded archive bytes and inventories were
+downloaded and verified. The actual saved-file core geometry is 67,032 frames
+(including release), rather than its 66,150-frame renderer minimum. The new
+caller-owned canonical-pitch provider is mechanical delivery, not arbitrary
+semantic vocabulary/codec extension. [Artifact evidence](PACKAGING.md#accepted-minimal-artifact--2026-09-30)
+and the [consumer packet](MINIMAL-CONSUMER-HANDOFF.md) leave actual independent
+use, listening and full learned-style workflow acceptance open.
 
 This is a source, contract and recorded-evidence audit of the current checkout. The source audit is supplemented by the focused build-script cleanup checks recorded below; it is not a fresh whole-library, browser, listening or independent-consumer verdict. Dated results apply to the revisions and paths named in their records; an unchecked box remains open even when its implementation appears present. The intended product is a reusable Pascal synthesis library with trustworthy WAV learning and integral WFC composition/synthesis, style generation, blending and further blending for a *user-specified* style. Chillwave, stoner rock and lofi are development test choices, not public style categories or universal genre definitions ([PROJECT](../PROJECT.md), [layered-style direction](LAYERED-STYLE.md#accepted-direction-and-priority)).
 
@@ -40,11 +51,12 @@ The maintained path is the checked source tree (`src/`, `adapters/`, `tools/`, `
 ## Source and verification detail
 
 The [core consumer](../examples/pythian.example.core.lpr) creates three seeded
-frame tones, changes pitch and pan, renders 66,150 stereo frames at 44.1 kHz,
-encodes/decodes PCM16, checks frame/channel geometry, saves WAV and reports a
-hash. Its `uses` list contains RTL and owned core units only. This is concrete
-evidence for a small synthesis consumer, with compilation/execution acceptance
-still tied to the frozen checkpoint or a fresh delivery run. The
+frame tones, exposes caller gain/seed, renders 67,032 stereo frames at 44.1 kHz
+including release, saves PCM16 and reloads the actual file, checks exact bytes
+and geometry, and reports a hash. Its `uses` list contains RTL and owned core
+units only. The 66,150-frame argument is a minimum, not a render cap. Current
+minimal acceptance binds the frozen delivery revision above; its actual outside
+consumer verdict remains open. The
 [WFC example](../examples/pythian.example.wfc.lpr) loads WAV, measures features,
 learns a finite acoustic palette/model, solves a bounded sequence and renders
 selected source grains. That example is acoustic reuse; it does not itself
@@ -75,23 +87,23 @@ extracts the ZIP, verifies count/length/hash closure and compiles extracted
 units/examples. It does not currently stage the complete native inference
 adapter/tool or browser/operator application closures. Full workflow delivery
 must therefore qualify and extend its declared closure; a successful current
-minimal package would establish only its stated slice.
+minimal package establishes only its stated slice.
 
 The [native CI definition](../.github/workflows/native.yml) selects Ubuntu
 24.04 and FPC 3.2.2, runs the maintained build, extracts/checks core and WFC
 packages and retains ZIP/log artifacts for 14 days. The defined workflow is
-not evidence that today's source has passed remotely. Stable Windows matrix,
-Linux run identity and accessible artifact-byte inspection remain distinct
-claims in [packaging](PACKAGING.md) and the native checkpoint.
+not evidence for another revision. Current stable Windows matrix, exact Linux
+run identity and actual uploaded artifact-byte inspection are recorded for
+de45c9e in [packaging](PACKAGING.md); full workflow and outside use remain open.
 
 The documentation generally distinguishes measured/admitted/synthesized and
 accepted/open behavior, but the former fixed three-genre task chain and the
 monolithic NS-6 packaging/consumer gates obscured the reusable-library priority.
-The rebalance assigns a [current minimal native package](TODO/NS-6_delivery_06.md)
+The rebalance assigns a [current minimal native package](TODO/DONE/NS-6_delivery_06.md)
 and [actual independent minimal use](TODO/NS-6_delivery_07.md) their own gates,
 and separates the [editor/queue contract](TODO/NS-6_authoring_01.md) from
 [physical LAN listening and final operator QA](TODO/NS-6_authoring_02.md).
-The current 2026-09-29 complete-goal allocation assigns nine open NS-6 tasks
+The dated 2026-09-29 complete-goal allocation assigned nine open NS-6 tasks
 85 goal points (8.50 overall), with no acceptance earned by the rebalance.
 The full recorded workflow continues to require accepted musical
 integration and blend/reblend evidence; a minimal consumer cannot close it.
@@ -106,7 +118,7 @@ do not establish independent caller extension or continued product use.
 Single-snapshot packaging and one reviewer likewise cannot establish a
 supported maintenance cycle or de facto standard status. These required
 outcomes remain open; an adoption floor alone does not justify a standard
-claim. The current ledger credits 46.30 weighted points, with 53.70 remaining.
+claim. The current ledger credits 47.10 weighted points, with 52.90 remaining.
 
 ## WFC boundary audit
 

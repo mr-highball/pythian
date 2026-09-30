@@ -43,7 +43,7 @@ those relationships through selective blending and further blending.
 The closed semantic-provider vocabulary and caller codec/role extensions are
 Pythian gaps owned by [providers_01](TODO/NS-4_providers_01.md).
 [Recorded integration](TODO/NS-4_integration_01.md) owns the complete evidence ->
-WFC -> synthesis path and unknown propagation. [Minimal delivery](TODO/NS-6_delivery_06.md)
+WFC -> synthesis path and unknown propagation. [Minimal delivery](TODO/DONE/NS-6_delivery_06.md)
 must demonstrate both an isolated core and the opted-in companion closure;
 core independence cannot declare the full product complete without WFC.
 

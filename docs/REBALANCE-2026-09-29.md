@@ -6,8 +6,9 @@
 This dated report freezes the **2026-09-29** allocation and 45.50% ledger
 snapshot. Subsequent accepted work updates [live milestones](MILESTONES.md)
 and the [task catalog](TODO/README.md). On 2026-09-30, independently accepted
-caller intake adds 4 NS-5 / 0.80 overall, giving **46.30 credited / 53.70
-remaining**, **46 open / 32 DONE**. The allocation rationale, stopped
+caller intake adds 4 NS-5 / 0.80 overall, and exact-revision minimal native
+delivery adds 8 NS-6 / 0.80 overall, giving **47.10 credited / 52.90
+remaining**, **45 open / 33 DONE**. The allocation rationale, stopped
 investigations and dated assessment numbers below remain historical evidence.
 
 ## Finding
@@ -44,7 +45,7 @@ instrument, meter or mixture. Unsupported input must remain unknown or reject.
 | The previous complete style workflow required accepted context, parts, harmony, groove, sound, structure and scale before the first style verdict. | Most tasks sit behind the same unresolved inference chain; partial infrastructure keeps being easier to ship. | Add [bounded one-recording usefulness](TODO/NS-5_style_01.md) while retaining the full [many-hour](TODO/NS-5_style_02.md) and [new-caller](TODO/NS-5_style_03.md) gates. |
 | Six tickets made the three personal genre names primary corpus/acceptance gates. | Private preferences could become implicit product scope while arbitrary caller intake had no clear owner. | Replace them with generic [intake](TODO/DONE/NS-5_corpus_05.md), [qualified corpora](TODO/NS-5_corpus_06.md) and three staged style results. |
 | Role recovery and harmonic/groove tasks combined development providers and independent acceptance. | One ticket could hide several distinct usable deliverables and reference blockers. | Split events from stable roles; split harmony/groove providers from independent verdicts. Final consumers depend on the verdict tasks. |
-| [NS-6 delivery](TODO/NS-6_delivery_03.md) waited for the complete learning workflow. Its accepted native checkpoint is frozen at an older revision. | The core library cannot gain a current outside-consumer verdict while research remains open. | Add [minimal current package](TODO/NS-6_delivery_06.md) and [independent minimal use](TODO/NS-6_delivery_07.md); full workflow delivery stays mandatory. |
+| [NS-6 delivery](TODO/NS-6_delivery_03.md) waited for the complete learning workflow. Its accepted native checkpoint is frozen at an older revision. | The core library cannot gain a current outside-consumer verdict while research remains open. | Add [minimal current package](TODO/DONE/NS-6_delivery_06.md) and [independent minimal use](TODO/NS-6_delivery_07.md); full workflow delivery stays mandatory. |
 | [Operator repairs](WORK-HISTORY.md#phone-save-request-header-repair--2026-09-29) have useful isolated evidence but the physical phone and complete workflow gates remain open. | Repeated UI/HTTP repairs consume attention without closing the oversized authoring ticket. | Separate [editor/queue](TODO/NS-6_authoring_01.md) from [physical LAN/final operator use](TODO/NS-6_authoring_02.md), preserving every criterion. |
 | Milestones/catalog repeated long experiment histories and older execution orders; staffing still allowed a junior and twenty QA failures. | Agents can follow stale “next” paragraphs or spend too long repairing one worker assignment. | Current milestones and catalog become short navigation/accounting; dated failures stay in task Dev Notes and WORK. Current team and two-failure transfer live in TASKFLOW. |
 
@@ -125,7 +126,7 @@ Current baseline credits are **100/70/10/20/0/0** within NS-1..6.
 Accepted task credits add **0/20/15/35/10/15**, giving
 **100/90/25/55/10/15**. The baseline covers accepted work predating named
 tickets only; the DONE ledger names the rest. Baseline weighted credit is
-28.00; current DONE weighted credit is 17.50; total **45.50**, with **54.50**
+28.00; at this rebase DONE weighted credit was 17.50; total **45.50**, with **54.50**
 remaining. Overall goal weights still total 100; reducing legacy percentages
 does not claim the implementation became worse.
 
@@ -150,7 +151,7 @@ No task is moved to DONE in this assessment.
 | Retired NS-5 corpus_02/03/04 | [corpus_05 intake](TODO/DONE/NS-5_corpus_05.md): 4; [corpus_06 qualified corpora](TODO/NS-5_corpus_06.md): 6 | Identity, preparation, ranges, duplicates, exposure and native inputs stay. Each of three full profiles retains >=3h/6 training groups, >=30m/2 development groups and >=30m/3 untouched evaluation groups. |
 | Retired NS-5 chillwave_01, stoner-rock_01, lofi_01 | [style_01 bounded](TODO/NS-5_style_01.md): 6; [style_02 many-hour](TODO/NS-5_style_02.md): 10; [style_03 new caller](TODO/NS-5_style_03.md): 6 | Replace personal-name gates. Every old freeze, numeric comparison, >=2/3 listening, baseline advantage, reuse/edit and exact-evidence criterion remains for three full profiles across style_02/03. style_01 adds an earlier bounded result. |
 | NS-6 authoring_01 | authoring_01 editor/queue: 8; [authoring_02 physical/final QA](TODO/NS-6_authoring_02.md): 8 | Numbered points 1–3,6–9 stay; 4,5,10 move. The detailed D1–D6 owner table preserves every sentence. |
-| NS-6 delivery_03 | delivery_03 full package: 10; [delivery_06 minimal package](TODO/NS-6_delivery_06.md): 8 | All five complete-workflow criteria stay; current core delivery gets its own owner. |
+| NS-6 delivery_03 | delivery_03 full package: 10; [delivery_06 minimal package](TODO/DONE/NS-6_delivery_06.md): 8 | All five complete-workflow criteria stay; current core delivery gets its own owner. |
 | NS-6 delivery_04 | delivery_04 full independent use: 12; [delivery_07 minimal independent use](TODO/NS-6_delivery_07.md): 9 | All five full-use criteria stay; final audit depends on both actual-use verdicts. |
 
 Six unaccepted genre-specific files are deleted rather than moved to DONE.

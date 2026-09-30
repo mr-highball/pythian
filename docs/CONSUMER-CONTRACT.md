@@ -39,7 +39,7 @@ sound realization, saved styles, selective blends and further blends. Core-only
 distribution is a required independent foundation, while a companion consumer
 explicitly selects the WFC source closure. This distribution choice does not
 make full-product WFC acceptance optional. The
-[minimal package](TODO/NS-6_delivery_06.md) verifies both subsets; final recorded
+[minimal package](TODO/DONE/NS-6_delivery_06.md) verifies both subsets; final recorded
 workflow acceptance remains [integration](TODO/NS-4_integration_01.md) and
 [delivery](TODO/NS-6_delivery_03.md).
 

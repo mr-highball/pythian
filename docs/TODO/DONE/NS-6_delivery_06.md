@@ -1,6 +1,6 @@
 # NS-6_delivery_06 — Deliver a current minimal native synthesis package
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[DONE index](README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
@@ -24,19 +24,18 @@ Allocation rationale: A current minimal native package makes the central reusabl
 Credit is earned only when every acceptance criterion and the task-flow
 completion requirements pass.
 
-Starting evidence: [accepted native checkpoint](DONE/NS-6_delivery_02.md) ·
-[package script](../../tools/package.ps1) · [core example](../../examples/pythian.example.core.lpr) ·
-[packaging](../PACKAGING.md) · [consumer contract](../CONSUMER-CONTRACT.md).
+Starting evidence: [accepted native checkpoint](NS-6_delivery_02.md) ·
+[package script](../../../tools/package.ps1) · [core example](../../../examples/pythian.example.core.lpr) ·
+[packaging](../../PACKAGING.md) · [consumer contract](../../CONSUMER-CONTRACT.md).
 
-Execution status (2026-09-30): implementation batch 1 has passed local stable
-Win32/Win64 fresh core/WFC archive checks; independent final QA and exact-revision
-Linux acceptance remain required. The accepted earlier checkpoint does not
-qualify this candidate. Next deliverable: independently review and publish the
-frozen candidate, then verify its exact remote run. Closing evidence: inventories,
-declared target/CI runs, changed control output, deterministic replay/reload and
-focused failures. Stop at a missing target runner, nonreproducible input or broken
-extracted closure and record its unblock/repair condition. Keep OPEN/zero credit
-until every criterion and remote gate passes.
+Accepted 2026-09-30: all four criteria and the DONE prerequisite passed independent
+QA and exact-revision stable target qualification. Frozen delivered source is
+`de45c9eb05c9592e15ab19a1b581659610722d13`, with clean Windows core/WFC archives
+and the same revision's [successful Linux run](https://github.com/mr-highball/pythian/actions/runs/36677194774).
+The [package evidence](../../PACKAGING.md#accepted-minimal-artifact--2026-09-30)
+records all six archive identities, inventories and commands. This is minimal
+mechanical delivery, not independent use, inferred styles or full workflow
+acceptance. [Actual independent use](../NS-6_delivery_07.md) remains OPEN.
 
 **Acceptance Criteria:**
 
@@ -68,9 +67,31 @@ until every criterion and remote gate passes.
 
 **Blockers**
 
-- [NS-6_delivery_02.md — DONE](DONE/NS-6_delivery_02.md)
+- [NS-6_delivery_02.md — DONE](NS-6_delivery_02.md)
 
 **Dev Notes:**
+
+- Final acceptance binds the frozen delivered artifact revision above; later
+  evidence/accounting commits do not relabel its archives. Four clean Windows
+  archives passed complete fresh extraction, inventories and consumers on
+  stable FPC 3.2.2 i386-win32/x86_64-win64. The exact Linux run/job 109764605468
+  passed maintained integration, extracted core/WFC consumers and both uploads.
+  Downloaded source artifact 11080696677 contains verified core/WFC ZIPs;
+  every delivered SHA256/count/length was inspected locally. Complete source,
+  notices, provenance and WFC 47fa3d8 pin remain intact; no hidden assets/services.
+- Independent Salty Boi QA rebuilt both minimal consumers solely from extracted
+  sources on both Windows targets, passed actual gain/replay/reload and
+  rejection/preservation with 24 leak-free runtime logs, and checked all 11 reviewed
+  paths, package closure/privacy, script parsing, links/graph and criterion scope.
+  Worker source-boundary checks added 52 provider and 62 core leak-free logs.
+  Exact clean final archive checks then passed on both Windows targets; Linux
+  logs confirm core 67032 frames/44100 Hz/stereo ratio 0.5 max error 1.52587890625E-5
+  and provider 16000 frames/16000 Hz/stereo ratio 2 max error 3.0517578125E-5, with
+  exact same-target saved-file replay. All four criteria close; +8 NS-6/+0.80
+  overall only after the actual remote gate. Current submitted implementation
+  QA failures remain 0; this criterion-closing batch does not reset historical
+  stopped scientific investigations. Prepared independent-consumer instructions
+  are [public](../../MINIMAL-CONSUMER-HANDOFF.md); no actual reviewer/use is claimed.
 
 - 2026-09-30 batch 1: Big Boss selected this ready library slice after corpus_05
   accepted and evaluation_01 AC1 closed while independent reference/calibration
@@ -81,12 +102,13 @@ until every criterion and remote gate passes.
   synthesis→save→actual saved-file reload, exact fixed-seed replay, meaningful
   changed-control and failure boundaries, complete extracted portable/opt-in
   WFC source closure/notices/pin and current artifact identity.
-- Candidate archives bind a base revision plus explicit dirty state and exact
-  inventory hashes; uncommitted candidate bytes are never identified by HEAD
-  alone. Both local stable Windows targets and the exact published revision's
-  stable Linux CI must pass. Core and WFC extracted consumers are two ready
-  components for independent Salty Boi QA. Keep the task OPEN with zero credit
-  through candidate publication; complete/account only after remote success.
+- During candidate validation, archives bound a base revision plus explicit
+  dirty state and exact inventory hashes; uncommitted candidate bytes were never
+  identified by HEAD alone. Both local stable Windows targets and the exact
+  published revision's stable Linux CI had to pass. Core and WFC extracted
+  consumers provided two ready components for independent Salty Boi QA. The
+  task stayed OPEN with zero credit through candidate publication and completed
+  only after the actual clean-artifact and remote gates passed above.
   A missing target runner or failed closure/control/replay stops that scope
   with its exact unblock condition. Our extracted tests are agent-run and do
   not count as actual independent delivery_07 use. No new inference, source

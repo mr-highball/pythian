@@ -20,12 +20,15 @@ Allocation rationale: Actual independent minimal synthesis use validates the lib
 Credit is earned only when every acceptance criterion and the task-flow
 completion requirements pass.
 
-Starting evidence: [minimal artifact](NS-6_delivery_06.md) ·
+Starting evidence: [minimal artifact](DONE/NS-6_delivery_06.md) ·
 [consumer checklist](../CONSUMER-CONTRACT.md#independent-consumer-success-checklist) ·
 [packaging](../PACKAGING.md).
 
-Execution status: blocked until delivery_06's minimal artifact is accepted;
-actual independent minimal use remains undocumented in current evidence. Next deliverable: an outside consumer run of that frozen archive. Closing evidence:
+Execution status (2026-09-30): delivery_06's frozen minimal artifact is accepted.
+The [concrete consumer packet](../MINIMAL-CONSUMER-HANDOFF.md) binds exact source/
+archive identities and standalone commands; no independent reviewer or actual
+outside use is recorded. Next deliverable: a willing consumer's outside-checkout
+run of that frozen archive. Closing evidence:
 their environment, commands, outputs, changed-control/replay/reload observations
 and listening/usability feedback. Stop at an unavailable independent consumer
 or supported reproduction failure and record its unblock or repair owner.
@@ -50,9 +53,19 @@ or supported reproduction failure and record its unblock or repair owner.
 
 **Blockers**
 
-- [NS-6_delivery_06.md](NS-6_delivery_06.md)
+- [NS-6_delivery_06.md](DONE/NS-6_delivery_06.md)
 
 **Dev Notes:**
+
+- The package prerequisite is DONE at
+  `de45c9eb05c9592e15ab19a1b581659610722d13`, with stable Windows and exact Linux
+  artifact verification. The prepared public packet needs no private assets,
+  checkout tool or repository-only verifier. It specifies actual commands,
+  changed-control/replay/reload results, identities and listening/usability
+  feedback. Preparation is not provision to a named reviewer or outside use;
+  all criteria remain unearned until their actual outcomes occur. No third-party
+  messages were sent. The external unblock condition is a willing independent
+  non-agent consumer and their supported environment. Our QA/CI is not a substitute.
 
 - 2026-09-29 current complete-goal credit basis: this task owns 9 NS-6
   goal points (+0.90 overall) by deliverable value. Nine open NS-6

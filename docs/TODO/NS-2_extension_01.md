@@ -11,7 +11,13 @@ Completion credit: 10 goal percentage points (2.50 overall points).
 Current basis: [full-goal reassessment](../REBALANCE-2026-09-29.md#current-credit-basis).
 No credit is earned until every criterion and prerequisite passes final QA.
 
-Execution status and next batch: Blocked on the current minimal package and availability of an independent extension consumer. Next deliverable is that consumer's source/effect implementation through the native scheduling and processing path. Stop on undocumented ownership/work semantics or required library edits; repair the public contract before another claimed external pass.
+Execution status and next batch (2026-09-30): the current minimal package is
+accepted. A bounded caller source/effect conformance example and guide can
+proceed through the public scheduling and processing path; actual independent
+consumer and listening evidence remain unavailable/unearned. Reserve exact
+files before that component starts. Stop on undocumented ownership/work
+semantics or required library edits; repair the public contract before another
+claimed external pass.
 Closing evidence: exact external source/package/run identities, public consumer behavior and all criterion results below. Consuming another goal earns no duplicate credit.
 
 **Acceptance Criteria:**
@@ -25,7 +31,7 @@ Closing evidence: exact external source/package/run identities, public consumer 
 **Blockers**
 
 - [NS-2_synthesis-quality_03](DONE/NS-2_synthesis-quality_03.md)
-- [NS-6_delivery_06](NS-6_delivery_06.md)
+- [NS-6_delivery_06](DONE/NS-6_delivery_06.md)
 
 **Dev Notes:**
 
