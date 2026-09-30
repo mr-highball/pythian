@@ -62,7 +62,7 @@ hide proposals during blind evaluation review. Store the reviewed catalog in
 a durable user-configured root outside disposable `build/`; explicit exports
 must preserve source identity and group isolation. See the
 [Pascal catalog](TODO/DONE/NS-3_labeling_01.md) and
-[pas2js workbench](TODO/NS-6_authoring_01.md) tasks.
+[pas2js workbench](TODO/DONE/NS-6_authoring_01.md) tasks.
 
 NS-1's accepted extraction/independence baseline is already complete. Do not
 manufacture historical DONE files or repeat completed work to populate folders.
@@ -271,7 +271,8 @@ In the same logical completion change:
    algorithm suites for the documentation move.
 
 The user-authorized **2026-09-29 complete-goal allocations**, updated after
-independent caller-intake, minimal package and caller-provider acceptance on **2026-09-30**, give:
+independent caller-intake, minimal package, caller-provider and editor/queue
+acceptance on **2026-09-30**, give:
 
 | Goal | Accepted baseline | Overall weight | Accepted DONE points | Open points |
 | --- | ---: | ---: | ---: | ---: |
@@ -280,13 +281,13 @@ independent caller-intake, minimal package and caller-provider acceptance on **2
 | NS-3 | 10 | 25 | 15 | 75 |
 | NS-4 | 20 | 15 | 45 | 35 |
 | NS-5 | 0 | 20 | 14 | 86 |
-| NS-6 | 0 | 10 | 23 | 77 |
+| NS-6 | 0 | 10 | 31 | 69 |
 
 `Goal completion = baseline + sum(accepted DONE task credits for that goal)`.
 `Overall completion = sum(goal completion * goal weight / 100)`.
-Current goal completions are **100/90/25/65/14/23**; weights are
-**5/25/25/15/20/10**. Therefore current accepted scope is **48.60 weighted
-points**, with **51.40 remaining**. The rebase records newly explicit caller
+Current goal completions are **100/90/25/65/14/31**; weights are
+**5/25/25/15/20/10**. Therefore current accepted scope is **49.40 weighted
+points**, with **50.60 remaining**. The rebase records newly explicit caller
 extension, maintained support and adoption requirements; it earns no acceptance.
 For example, accepting `NS-3_notes_01` adds 7 points within NS-3 and 1.75 overall
 point. Record the arithmetic on every completion; preserve the current accepted

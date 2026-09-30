@@ -7,8 +7,9 @@ This dated report freezes the **2026-09-29** allocation and 45.50% ledger
 snapshot. Subsequent accepted work updates [live milestones](MILESTONES.md)
 and the [task catalog](TODO/README.md). On 2026-09-30, independently accepted
 caller intake adds 4 NS-5 / 0.80 overall, exact-revision minimal native
-delivery adds 8 NS-6 / 0.80 overall, and caller providers add 10 NS-4 / 1.50
-overall, giving **48.60 credited / 51.40 remaining**, **44 open / 34 DONE**.
+delivery adds 8 NS-6 / 0.80 overall, caller providers add 10 NS-4 / 1.50 overall,
+and the editor/queue contract adds 8 NS-6 / 0.80 overall, giving
+**49.40 credited / 50.60 remaining**, **43 open / 35 DONE**.
 The allocation rationale, stopped
 investigations and dated assessment numbers below remain historical evidence.
 
@@ -47,7 +48,7 @@ instrument, meter or mixture. Unsupported input must remain unknown or reject.
 | Six tickets made the three personal genre names primary corpus/acceptance gates. | Private preferences could become implicit product scope while arbitrary caller intake had no clear owner. | Replace them with generic [intake](TODO/DONE/NS-5_corpus_05.md), [qualified corpora](TODO/NS-5_corpus_06.md) and three staged style results. |
 | Role recovery and harmonic/groove tasks combined development providers and independent acceptance. | One ticket could hide several distinct usable deliverables and reference blockers. | Split events from stable roles; split harmony/groove providers from independent verdicts. Final consumers depend on the verdict tasks. |
 | [NS-6 delivery](TODO/NS-6_delivery_03.md) waited for the complete learning workflow. Its accepted native checkpoint is frozen at an older revision. | The core library cannot gain a current outside-consumer verdict while research remains open. | Add [minimal current package](TODO/DONE/NS-6_delivery_06.md) and [independent minimal use](TODO/NS-6_delivery_07.md); full workflow delivery stays mandatory. |
-| [Operator repairs](WORK-HISTORY.md#phone-save-request-header-repair--2026-09-29) have useful isolated evidence but the physical phone and complete workflow gates remain open. | Repeated UI/HTTP repairs consume attention without closing the oversized authoring ticket. | Separate [editor/queue](TODO/NS-6_authoring_01.md) from [physical LAN/final operator use](TODO/NS-6_authoring_02.md), preserving every criterion. |
+| [Operator repairs](WORK-HISTORY.md#phone-save-request-header-repair--2026-09-29) have useful isolated evidence but the physical phone and complete workflow gates remain open. | Repeated UI/HTTP repairs consume attention without closing the oversized authoring ticket. | Separate [editor/queue](TODO/DONE/NS-6_authoring_01.md) from [physical LAN/final operator use](TODO/NS-6_authoring_02.md), preserving every criterion. |
 | Milestones/catalog repeated long experiment histories and older execution orders; staffing still allowed a junior and twenty QA failures. | Agents can follow stale “next” paragraphs or spend too long repairing one worker assignment. | Current milestones and catalog become short navigation/accounting; dated failures stay in task Dev Notes and WORK. Current team and two-failure transfer live in TASKFLOW. |
 
 These findings do not justify weakening reference quality, using external

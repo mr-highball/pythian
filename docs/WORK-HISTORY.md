@@ -138,7 +138,7 @@ checked Pascal raw-socket probe returned 206 for a 128-byte Range and a
 clients. Logs and desktop/narrow screenshots remain under ignored
 `build/salty-review-ux-final/`. This batch does not close the remaining
 physical-phone listening gate in
-[NS-6 authoring](TODO/NS-6_authoring_01.md), or earn milestone credit.
+[NS-6 authoring](TODO/DONE/NS-6_authoring_01.md), or earn milestone credit.
 The checked Win64 binary SHA-256
 `d300bea996a349091aea2277b09b20b20a28d546794f70ace7618a2507f4f027`
 and all six matching pas2js/static assets were staged at the fixed LAN path.
@@ -186,7 +186,7 @@ An isolated real Edge/CDP check using a Pascal harness at ignored
 connection, a throttled 1% byte-transfer update before WAV decode, progress
 cleanup, a blocked listener session with Retry, and successful reconnection.
 This is desktop browser evidence; it does not assert a new physical-phone
-playback or Save verdict. [NS-6 authoring](TODO/NS-6_authoring_01.md) remains
+playback or Save verdict. [NS-6 authoring](TODO/DONE/NS-6_authoring_01.md) remains
 open under its existing acceptance criteria; no milestone credit changes.
 Salty Boi independently passed the frozen UI/native batch, including a
 12-second delayed session whose 10-second timeout exposed Retry and whose
@@ -301,7 +301,7 @@ available to the operator.
 The guarded 256.192-second generated WAV uses three ordered training inputs,
 but its first listening request carried only the first source hash. Before any
 operator response, root froze a bounded repair under
-[NS-6 authoring](TODO/NS-6_authoring_01.md): generated/edited listening
+[NS-6 authoring](TODO/DONE/NS-6_authoring_01.md): generated/edited listening
 provenance may carry an ordered `source_sha256s` array of 2–32 distinct
 lowercase hashes, with the existing singular `source_sha256` as its first
 member. Source/reference and legacy single-source packets keep their existing
@@ -615,7 +615,7 @@ needs a new justified candidate contract; and [local key](TODO/NS-3_context_01.m
 still lacks grounded note activity for its next observation. The open
 [style-card task](TODO/NS-5_evaluation_01.md) retains verified cuts and timed
 provider-trait references as its needed input; partial generic controls alone
-would not close it. [NS-6 authoring](TODO/NS-6_authoring_01.md) has one exact
+would not close it. [NS-6 authoring](TODO/DONE/NS-6_authoring_01.md) has one exact
 physical-phone playback/Save decision pending at the live private-LAN service
 `review-host.invalid:18097`, separate from its completed source-review queue.
 Native `listen-report` shows **1 waiting / 0 completed**, so the cross-task
@@ -780,13 +780,13 @@ This closes 2 NS-5 points (+0.40 overall): NS-5 is **32%**, overall completion
 **71.10%**, with **37 open / 29 DONE** tasks and **28.90** overall points
 remaining. [NS-5_evaluation_02](TODO/NS-5_evaluation_02.md) can now consume
 the packet but still owns real style-specific outputs and listener verdicts.
-The [source-label authoring checklist](TODO/NS-6_authoring_01.md) remains open
+The [source-label authoring checklist](TODO/DONE/NS-6_authoring_01.md) remains open
 until the physical LAN phone playback and Save path is observed; no authored
 QA answer is counted as that operator's response.
 
 ## Structured operator review and independent QA — 2026-09-28
 
-The [NS-6 authoring task](TODO/NS-6_authoring_01.md) now has a ten-point
+The [NS-6 authoring task](TODO/DONE/NS-6_authoring_01.md) now has a ten-point
 operator/worker acceptance checklist. Its source-review extension uses a
 Pascal-owned version-2 request contract with finite values, exact or editable
 geometry, fixed same-source links and optional proposal binding. The native
@@ -873,7 +873,7 @@ pre-check. This selected answer was not inserted into the catalog by an agent.
 
 The operator asked for one ten-point completion checklist and no further
 feedback request until every authoring criterion is complete and independently
-validated. The checklist in [NS-6 authoring](TODO/NS-6_authoring_01.md)
+validated. The checklist in [NS-6 authoring](TODO/DONE/NS-6_authoring_01.md)
 includes source intake, exact worker-to-operator request and response identity,
 all currently known manual-label families, actual browser and phone playback,
 durable review/replay, and a complete copied-catalog QA matrix. No item is
@@ -1830,7 +1830,7 @@ outside disposable `build/` and export only reviewed, source-group-separated
 labels to training/evaluation consumers.
 
 New open [NS-3_labeling_01](TODO/DONE/NS-3_labeling_01.md) and
-[NS-6_authoring_01](TODO/NS-6_authoring_01.md) own those two deliverables.
+[NS-6_authoring_01](TODO/DONE/NS-6_authoring_01.md) own those two deliverables.
 Their **+2 NS-3 / +4 NS-6** goal-point allocations come from the still-open
 [phrase](TODO/NS-3_notes_03.md) and [final delivery](TODO/NS-6_delivery_03.md)
 tasks, which retain all original acceptance criteria and **+2 NS-3 / +8
@@ -13770,7 +13770,7 @@ WFC/Athena submodules are unchanged. Broader project goals are still open.
 ## Next bounded action
 
 Historical planning context follows. The current next work is owned by
-[First work to schedule](MILESTONES.md#first-work-to-schedule); completed mechanisms
+[First work to schedule](MILESTONES.md#next-work-to-schedule); completed mechanisms
 mentioned below must not be scheduled again from this older list.
 
 Prioritize the [current WAV-style outcome milestones](MILESTONES.md#direction-for-the-next-work-package).
@@ -15682,7 +15682,7 @@ content result does not authorize a genre or corpus claim.
 The user chose a Pascal/pas2js recorded-label workbench and then specified
 that mobile review must be reachable on the local LAN. The two linked tasks
 already cover its native catalog and operator UI: [NS-3_labeling_01](TODO/DONE/NS-3_labeling_01.md)
-and [NS-6_authoring_01](TODO/NS-6_authoring_01.md). The retained WFC server
+and [NS-6_authoring_01](TODO/DONE/NS-6_authoring_01.md). The retained WFC server
 served as a bounded socket pattern; the new Pythian HTTP owner preserves its
 MIT notice and is independent of the portable core. No external inference
 runtime is used.

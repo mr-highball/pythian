@@ -20,13 +20,16 @@ Allocation rationale: Actual physical LAN listening and full operator QA establi
 Credit is earned only when every acceptance criterion and the task-flow
 completion requirements pass.
 
-Starting evidence: [editor and queue](NS-6_authoring_01.md) ·
+Starting evidence: [editor and queue](DONE/NS-6_authoring_01.md) ·
 [LAN procedure](../LAN-REVIEW-SERVICE.md) · [review queue](../REVIEW-QUEUE.md) ·
 [phone Save repair](../WORK-HISTORY.md#phone-save-request-header-repair--2026-09-29).
 
 Execution status: open; repaired isolated browser/HTTP checks do not close the
-physical-phone verdict, and the fixed QA firewall prerequisite remains external.
-Next deliverable: frozen-asset copied-catalog full QA plus physical LAN play/Save.
+physical-phone verdict. The exact fixed QA and stable firewall rules and current
+stable executable identity are verified; authoring_01 is accepted, while fresh
+stable-slot startup and the full device/operator matrix remain open.
+Next deliverable: frozen-asset
+copied-catalog full QA plus physical LAN play/Save.
 Closing evidence: device/network, binary/assets, audible results, durable Save,
 reload/report and independent QA records. Stop at missing device/firewall
 permission or a concrete failure; record its unblock condition and keep open.
@@ -35,7 +38,7 @@ permission or a concrete failure; record its unblock condition and keep open.
 
 Own the original authoring checklist points 4, 5 and 10 below, with their
 original wording and numbering. The retained detailed D1–D6 bullets and owner
-map in [authoring_01](NS-6_authoring_01.md#retained-original-detailed-criteria-and-owner-map)
+map in [authoring_01](DONE/NS-6_authoring_01.md#retained-original-detailed-criteria-and-owner-map)
 are normative: this task closes their LAN/session, physical/audio listening
 and complete operator QA portions. Historic checked boxes do not replace a
 current combined-path verdict.
@@ -73,10 +76,20 @@ current combined-path verdict.
 
 **Blockers**
 
-- [NS-6_authoring_01.md](NS-6_authoring_01.md)
+- [NS-6_authoring_01.md](DONE/NS-6_authoring_01.md)
 
 **Dev Notes:**
 
+- 2026-09-30 current prerequisite status: the user installed the exact fixed QA
+  rule and Big Boss verified its enabled Private/local-subnet/inbound TCP scope,
+  fixed QA program path and assigned Private interface. Big Boss also verified
+  the exact fixed stable rule, matching current binary and unused stable port.
+  No further administrator action is currently indicated. These preflights do
+  not qualify restarted stable startup, physical-phone playback/Save or the
+  complete operator matrix. authoring_01
+  is now accepted; this dependent task earns no credit until its own complete
+  criteria pass.
+  The dated missing-rule records below preserve their historical status.
 - 2026-09-29 current complete-goal credit basis: this task owns 8 NS-6
   goal points (+0.80 overall) by deliverable value. Nine open NS-6
   tasks allocate 85 goal points (+8.50 overall); the accepted contract and

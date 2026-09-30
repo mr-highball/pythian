@@ -1,15 +1,23 @@
 # NS-6_authoring_01 — Deliver the Pascal editor and producer queue contract
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
 Build the operator-facing web application for the
-[native annotation catalog](DONE/NS-3_labeling_01.md). The browser application is
+[native annotation catalog](NS-3_labeling_01.md). The browser application is
 authored in Pascal and compiled with pas2js; the native Pascal service owns
 inference, WAV streaming, durable files and review commits. HTML/CSS may
 provide structure and presentation, but no maintained JavaScript implementation
 or third-party inference runtime is introduced.
+
+Completion evidence, 2026-09-30: the unchanged product code at `e040ba7` passes
+checked FPC 3.2.2 Win32/Win64, pas2js 3.3.1 and all owned current browser cases.
+Salty's frozen final `VERDICT.txt` and `FINAL-IDENTITIES.json` are under ignored
+`build/qa-authoring-current-b1-b6/`; their hashes and retained limits are in
+Dev Notes and the [accepted work record](../../WORK.md#accepted-editorqueue-contract--2026-09-30).
+Big Boss accepts checklist 1–3 and 6–9; physical/audio/full operator points
+4, 5 and 10 remain in [authoring_02](../NS-6_authoring_02.md).
 
 North star: NS-6. Outcome owner: WAV-05-AUTHORING.
 Completion credit: 8 goal percentage points (0.80 overall points).
@@ -21,45 +29,35 @@ Allocation rationale: The durable typed editor and producer-readable queue are a
 Credit is earned only when every acceptance criterion and the task-flow
 completion requirements pass.
 
-Starting evidence: [consumer contract](../CONSUMER-CONTRACT.md) ·
-[current beat audition](../BEAT-GRIDS.md) · [review queue contract](../REVIEW-QUEUE.md) ·
-[task-flow listening allocation](../TASKFLOW.MD) ·
-[stable LAN service procedure](../LAN-REVIEW-SERVICE.md).
+Starting evidence: [consumer contract](../../CONSUMER-CONTRACT.md) ·
+[current beat audition](../../BEAT-GRIDS.md) · [review queue contract](../../REVIEW-QUEUE.md) ·
+[task-flow listening allocation](../../TASKFLOW.MD) ·
+[stable LAN service procedure](../../LAN-REVIEW-SERVICE.md).
 
-Execution status: open. Big Boss authorizes a bounded current-contract packet
-after accepted NS4 publication `7f1bea8`. Neo owns this task, WORK and ignored
-source/assets/compiler/RTL/dependency/case identities, necessary native/pas2js
-builds and fixed QA staging. Ticket Guy inspects prior native proofs first and
-owns only an exclusive ignored fixture/output root for genuinely missing or
-unbound CLI producer/durable boundaries. No implementation feature is selected.
-Next deliverable: bind complete unchanged checklist 1–3 and 6–9 evidence with
-explicit impact review, and prepare a focused copied-catalog source-answer
-Save/queue removal/empty-state/reload plus failed-precheck preservation/no-POST/retry check after
-the `credentials: omit` change. Latest listening-route checks do not cover it.
-The final bounded browser checklist also covers current desktop/narrow
-startup/source-view controls and overview counts, source export/import, direct
-source-view blind concealment and one compact typed editor selection/move/resize/
-split/merge/undo/redo flow. All six mapped cases B1–B6 require independent QA;
-the central Save case alone cannot close this task.
-Closing evidence names exact current source/assets/toolchain/RTL/dependencies,
-typed request/review/replay identities and durable reports. Stop at an
-unverified owned criterion or public defect and record its precise boundary.
-The fixed QA firewall rule is absent: no new HTTP/browser launch, including
-loopback, before that prerequisite. Prepare concrete build/fixture/slot and
-minimal administrator instructions first. Historical QA failures remain in
-their actual records; unknown cumulative counts are not reset or invented.
-Physical/operator acceptance stays authoring_02; partial preparation earns no
-task credit.
+Execution status: accepted 2026-09-30. Big Boss accepts all seven owned checklist
+points 1–3 and 6–9, their mapped detailed parts and the completed catalog
+prerequisite after Salty's frozen final B1–B6 PASS. Evidence binds unchanged
+product code at `e040ba73313f40843ab85740cfa968b7c8c5cb8f`, the exact prepared
+stable Win32/Win64 and pas2js builds, six matched assets, current native/CLI
+checks and explicitly scoped retained evidence. No new product source or build
+is claimed by this completion-record revision. Big Boss repaired the submitted
+QA handoff after two known blocking worker submissions; older cumulative
+authoring failures remain unknown and retained. Exact fixed-slot browser
+cleanup leaves no QA listener/profile processes or looping audio. Physical
+LAN/audio/operator checklist points 4, 5 and 10 remain mandatory in authoring_02.
 
 **Acceptance Criteria:**
 
 ### Editor and producer acceptance; original checklist numbering
 
 The original checklist keeps its stable numbers. This task owns points 1–3
-and 6–9 below; [NS-6_authoring_02](NS-6_authoring_02.md) owns points 4, 5 and 10.
+and 6–9 below; [NS-6_authoring_02](../NS-6_authoring_02.md) owns points 4, 5 and 10.
 Existing checked boxes retain recorded evidence, but final acceptance still
 requires current-source independent QA of this complete editor/queue contract.
 The split does not grant credit or convert partial evidence into acceptance.
+That complete owned contract is now accepted using current B1–B6 and the
+independently reviewed source-impact map; its explicit retained-evidence limits
+remain part of the verdict.
 
 - [x] **1. Pascal ownership:** Stable Win32/Win64 native and pas2js builds pass;
   maintained import, analysis, inference, WAV serving and review writes stay in
@@ -124,10 +122,10 @@ the underlying musical inference or reference labels already exist.
 | NS-3 evolving sound and envelope boundaries | Source-bound `activity` attack/continuation/release windows and note-relative decisions; paired generated-sound listening remains a separate output review |
 | NS-5 recurring motifs, phrase and section organization | `phrase`, `section`, `ext.motif_relation` with fixed same-source targets |
 | NS-5 source-local preference assignment | `style_preference` only for a task-declared source-local decision; a short window does not establish whole-mix fit |
-| NS-5 full-mix personal reference fit and recording-edition correspondence | [NS-5_evaluation_04](NS-5_evaluation_04.md) owns whole-mix evidence and the verified source/cut correspondence; use a durable whole-asset or paired listening decision, never a short `style_preference` label as a substitute |
-| NS-5 sustained generated-output quality and continuity | [NS-5_continuity_01](NS-5_continuity_01.md) owns timestamped bad-passage judgments; [NS-5_evaluation_03 — DONE](DONE/NS-5_evaluation_03.md) owns the reusable full-output response packet, and [NS-5_evaluation_02](NS-5_evaluation_02.md) owns actual 120-second style verdicts |
-| NS-3 and NS-4 generated-sound comparisons | [NS-3_timbre_02](NS-3_timbre_02.md) owns paired reference/learned attack, motion, release and identity judgments; [NS-4_integration_01](NS-4_integration_01.md) owns synthesis-path listening. Both require task-bound responses distinct from source labels |
-| NS-5 paired edits and style traits | [NS-5_evaluation_03 — DONE](DONE/NS-5_evaluation_03.md) owns paired playback and saved comments/scores; [NS-5_evaluation_02](NS-5_evaluation_02.md) owns actual seed-731 edited outputs and reviewer-grounded trait comparisons |
+| NS-5 full-mix personal reference fit and recording-edition correspondence | [NS-5_evaluation_04](../NS-5_evaluation_04.md) owns whole-mix evidence and the verified source/cut correspondence; use a durable whole-asset or paired listening decision, never a short `style_preference` label as a substitute |
+| NS-5 sustained generated-output quality and continuity | [NS-5_continuity_01](../NS-5_continuity_01.md) owns timestamped bad-passage judgments; [NS-5_evaluation_03 — DONE](NS-5_evaluation_03.md) owns the reusable full-output response packet, and [NS-5_evaluation_02](../NS-5_evaluation_02.md) owns actual 120-second style verdicts |
+| NS-3 and NS-4 generated-sound comparisons | [NS-3_timbre_02](../NS-3_timbre_02.md) owns paired reference/learned attack, motion, release and identity judgments; [NS-4_integration_01](../NS-4_integration_01.md) owns synthesis-path listening. Both require task-bound responses distinct from source labels |
+| NS-5 paired edits and style traits | [NS-5_evaluation_03 — DONE](NS-5_evaluation_03.md) owns paired playback and saved comments/scores; [NS-5_evaluation_02](../NS-5_evaluation_02.md) owns actual seed-731 edited outputs and reviewer-grounded trait comparisons |
 
 ### Retained original detailed criteria and owner map
 
@@ -211,10 +209,103 @@ sentence is accounted for, including physical listening, failures and final QA.
 
 **Blockers**
 
-- [NS-3_labeling_01.md — DONE](DONE/NS-3_labeling_01.md)
+- [NS-3_labeling_01.md — DONE](NS-3_labeling_01.md)
 
 **Dev Notes:**
 
+- 2026-09-30 final acceptance: Salty's frozen final verdict and identities are
+  under ignored `build/qa-authoring-current-b1-b6/`. `VERDICT.txt` SHA-256
+  `f1b0563c8a43b48d331cce33a322db288530bea8fab4bc45a9525047f037f559` and
+  `FINAL-IDENTITIES.json` SHA-256
+  `9c4d950e61035226153e35774fefcad755d3308e550cab9115a129f9f7f53a10`
+  retain every successful/failed run, executable/assets/driver identities and
+  exact cleanup. Big Boss accepts the full owned contract and satisfied DONE
+  prerequisite. Neo coordinates move, incoming links, current ledgers and final
+  record review. Credit is 8 NS-6 points / 0.80 overall: NS-6 31%, overall
+  49.40 credited / 50.60 remaining, 43 open / 35 DONE. Two known blocking worker
+  submissions and unknown older cumulative history remain attached below.
+  No scientific, physical-phone or audible playback acceptance follows.
+- 2026-09-30 owned criterion evidence: point 1 uses exact current checked native
+  and pas2js identities; point 2 retains the reviewed multi-track intake/native
+  metadata and exact bounded large-frame window, with B1 current source access.
+  Point 3 combines current native producer rollback/report with B1–B3 honest
+  waiting/completed/unavailable/empty states. Point 6 combines scoped retained
+  clock/keyboard/touch/long-window mechanisms with B1 desktop/narrow controls
+  and B6 actual exact-frame editing. Point 7 retains unchanged reviewed typed
+  facets/geometry/link controls plus current native proof, B3 unknown and B6
+  typed presence/audible. Point 8 uses B6 staged create/move/resize/split/merge/
+  undo/redo and B5 genuine evaluation revision-zero concealment with no proposal
+  fetch. Point 9 uses actual committed/dropped-response reconciliation with one
+  POST/event, current producer reports and B4 fresh browser packet replay;
+  scoped retained evidence supplies next-request advancement/restart. B6
+  produces ten exact revisions and durable source/frame rows at revisions 7/10.
+  Its frames move from 1000–3000 to 1500–3500, then 1500–4000. B5 source-only
+  import preserves original evaluation metadata and the original reviewed
+  catalog/history. All final browser drivers have zero leaks, errors and Play
+  calls, with exact cleanup zero. There is no new pitch proof, cross-target
+  packet-byte identity, bfcache result or standalone five-hour build-binding
+  claim. The reviewed impact map retains those limits; every other original
+  criterion stays in its explicit owner.
+- 2026-09-30 transferred B5 fixture finding: the submitted original evaluation
+  catalog has an independent approved held-out A4 review at revision 1, so its
+  README's no-events expectation was false. The product correctly reveals
+  suggestions after independent review. The unchanged chief driver stopped on
+  that assertion; ignored `build/qa-authoring-current-b1-b6/b5-chief/` preserves
+  DOM/logs, zero leaks and exact cleanup zero. Big Boss CLI-imported the unchanged
+  original inbox/manifest into new ignored
+  `build/authoring-chief-repair/b5-source-only/`: exact source/track identities,
+  three successful imports, no journals and no original history/partition edits.
+  This finding remains within the already transferred blocking submission,
+  without adding a worker failure or claiming a product defect. Salty resumes
+  B6 and fresh-copy B5 with the same chief driver; task acceptance stays open.
+- 2026-09-30 mandatory repair transfer: Big Boss takes over after the second
+  known blocking worker submission in this authoring sequence under
+  [task flow](../../TASKFLOW.MD#delegated-validation-and-publication). Ticket Guy's
+  submitted B4 observer omitted the required session-token header and bounded
+  count, yielding expected 403 and 422 responses before UI upload. This is a
+  blocking QA-handoff defect, not a demonstrated product replay failure. The
+  earlier exact transient status wait was a separate readiness assumption.
+  Preserve failed `b4-replay-r3/`, `b4-replay-r4/` and `b4-replay-r6/` evidence
+  under ignored `build/qa-authoring-current-b1-b6/`, with cleanup zero. The
+  already-active `b4-replay-r7/` completed actual fresh UI import and exact
+  same-target re-export before the stop arrived, with zero leaks and cleanup
+  zero; `b4-export-r2/` retains the actual download. Big Boss inspected and adopts
+  this actual download, fresh revision-zero UI import and exact re-export proof.
+  He releases the checked repaired Pascal driver under ignored
+  `build/authoring-chief-repair/` for B5–B6 only; these cases remain unexecuted.
+  The stop transferred driver source ownership to Big Boss. Salty owns resumed
+  runners/runtime and independent validation, with no further QA source edits.
+  Neo retains documentation/integration only. The prior cross-target packet
+  reporting correction plus this handoff defect total two known blocking
+  submissions; older cumulative authoring failures remain unknown and retained.
+  Task stays OPEN with zero credit and no scientific rejection.
+- 2026-09-30 actual B1–B3 PASS: Big Boss accepts scoped current desktop/narrow
+  source-view, honest queue/count/empty-state, failed-precheck preservation and
+  durable Save/reload evidence in `normal-r4/` and `lost-r2/` under ignored
+  `build/qa-authoring-current-b1-b6/`. Both actual saves retain exact
+  source/request/type/value/status/frames in one revision-1 event. Dropping the
+  response after the server commits retains the choice; explicit retry matches
+  the completed row and returns without a second POST. Both checked Pascal
+  driver logs have zero leaks and exact cleanup records show zero QA listeners
+  and profile processes. Dispatched pageshow after reload is not a bfcache
+  observation. Whole-task acceptance still requires B4–B6 and all mapped cases.
+- 2026-09-30 runtime release in the same closing batch: the user ran the
+  prepared administrator installer and Big Boss verified the exact QA rule.
+  Salty owns B1–B6 actual independent browser QA and exact listener/profile
+  cleanup. B1–B3 use the frozen tiny development fixture; B4–B6 use intact copies
+  of existing small replay, genuine evaluation/blind and editor controls.
+  The development source/group/partition is never relabelled as blind.
+  Ticket Guy prepares and compiles the private Pascal harness only; no product
+  feature, inference, source acquisition, long-media/28-facet replay or native
+  suite rerun. Stop at a defect/unverified case; a second blocking worker
+  submission transfers to Big Boss. The one known prepared-evidence correction
+  and older unknown cumulative failures remain attached. Task credit stays zero
+  until all owned criteria, independent QA and Big Boss's judgment pass.
+  Criterion 9 also requires current dropped-response recovery: use a separate
+  copy of the same tiny one-pending control, discard the response after the
+  server commits, then prove reconciliation/retry creates no second POST or
+  durable event. The prior lost-response proof alone does not bind this current
+  shared HTTP/Fetch path; a synthetic failure before commit is insufficient.
 - 2026-09-30 current preparation: fresh checked stable Win32/Win64 native
   catalog builds pass; matched pas2js builds both pages, with all six outputs
   byte-identical to the latest independent cookie-QA assets. The Win64 binary
@@ -254,7 +345,7 @@ sentence is accounted for, including physical listening, failures and final QA.
   A second blocking worker submission transfers to Big Boss under task flow.
   The same closing batch continues with the administrator/runtime prerequisite
   and focused source-home browser check pending, without task credit. See
-  [work and evidence ownership](../WORK.md#current-editorqueue-preparation--2026-09-30).
+  [work and evidence ownership](../../WORK.md#current-editorqueue-preparation--2026-09-30).
 - 2026-09-30 same-batch impact review: the compact owned-case map attributes
   checklist 1–3 and 6–9 to retained logs, actual old generated artifacts and
   current source/dependency deltas. Current visibility/startup/overview and
@@ -301,7 +392,7 @@ sentence is accounted for, including physical listening, failures and final QA.
   requires a one-time elevated install; until then, no isolated server is
   launched. Criterion 4's stable live path remains satisfied, criterion 5's
   physical-phone verdict remains open, and credit is unchanged. See
-  [work](../WORK-HISTORY.md#fixed-qa-runtime-path-and-browser-cleanup--2026-09-29).
+  [work](../../WORK-HISTORY.md#fixed-qa-runtime-path-and-browser-cleanup--2026-09-29).
 - 2026-09-29 phone Save 431 repair: the operator's selected `both_audible`
   answer was blocked by a 64 KiB request-header rejection during the
   listening-queue preflight, before any review write. Token-authenticated API
@@ -312,7 +403,7 @@ sentence is accounted for, including physical listening, failures and final QA.
   rejection, token/Origin/media guards, exact Range, one no-ID Save, reload
   and same-answer no-op; no live test write occurred. This advances criterion 9's phone
   save path; physical-phone confirmation and task credit remain open. See
-  [work](../WORK-HISTORY.md#phone-save-request-header-repair--2026-09-29).
+  [work](../../WORK-HISTORY.md#phone-save-request-header-repair--2026-09-29).
 - 2026-09-29 no-entry listening review repair: the phone exposed an empty
   Reviewer ID field that blocked Save. The pas2js listening form now supplies
   the fixed `operator` role without an input, retaining the native journal's
@@ -323,7 +414,7 @@ sentence is accounted for, including physical listening, failures and final QA.
   correction with exactly the expected POST counts and native reviewer values;
   no test answer touched the live catalog. This repairs the operator path within criterion 9;
   the physical-phone audio criterion 5 and task credit remain open. See
-  [work](../WORK-HISTORY.md#listening-reviews-without-reviewer-entry--2026-09-29).
+  [work](../../WORK-HISTORY.md#listening-reviews-without-reviewer-entry--2026-09-29).
 - 2026-09-28 mobile queue/playback repair: the source page's
   source-only `0 waiting · 4 completed` had obscured two pending full-output
   listening reviews. The pas2js home now reports the combined waiting total
@@ -350,7 +441,7 @@ sentence is accounted for, including physical listening, failures and final QA.
   answer touched the live operator catalog. The physical-phone
   verdict and criterion 5 remain open;
   no task or milestone credit changes. See
-  [work](../WORK-HISTORY.md#review-queue-clarity-and-listening-media-recovery--2026-09-28).
+  [work](../../WORK-HISTORY.md#review-queue-clarity-and-listening-media-recovery--2026-09-28).
 - 2026-09-28 LAN connection/performance repair: a cold 1.56 GB source check
   blocked the former single-request HTTP loop while the listener had no
   connection timeout. The Pascal service now runs listening media verification
@@ -371,7 +462,7 @@ sentence is accounted for, including physical listening, failures and final QA.
   retry and download evidence but does not close its physical-phone and other
   listening boundaries, criterion 10, this task, or milestone credit. The
   native response-wide media deadline is one hour; a slow client can occupy
-  one of four sender slots until then. See [work](../WORK-HISTORY.md#lan-review-connection-and-transfer-responsiveness--2026-09-28).
+  one of four sender slots until then. See [work](../../WORK-HISTORY.md#lan-review-connection-and-transfer-responsiveness--2026-09-28).
 - 2026-09-28 multi-source listening provenance repair: the waiting guarded
   4:16 Pythian render was produced from three ordered WAVs, while its first
   published packet named only the first source. The Pascal v1 contract now
@@ -472,7 +563,7 @@ sentence is accounted for, including physical listening, failures and final QA.
   is still unverified. A 1.56-GB source hash took 98.6 s, exposing a separate
   repeated-Save cost for multi-hour queues. Structured vocabularies/links and
   guarded long-source verification remain in progress; see
-  [work](../WORK-HISTORY.md#physical-phone-save-failure-parser-repair-and-authoring-gate--2026-09-28).
+  [work](../../WORK-HISTORY.md#physical-phone-save-failure-parser-repair-and-authoring-gate--2026-09-28).
 - 2026-09-28 a second physical Brave WAV failure showed HTTP 400 on the first
   waiting question. The exact live audio region served a byte-identical Pascal
   render on the host; the prior phone request was not captured. The native
@@ -483,7 +574,7 @@ sentence is accounted for, including physical listening, failures and final QA.
   and reload, and byte-identical reviewed-packet export/import replay. The
   updated no-key LAN service is live, but the physical-phone retry is still
   needed to identify or clear its specific failure; do not count the user's
-  inaudibility remark as a reviewed label. See [work](../WORK-HISTORY.md#phone-wav-http-400-diagnostics-and-isolated-replay--2026-09-28).
+  inaudibility remark as a reviewed label. See [work](../../WORK-HISTORY.md#phone-wav-http-400-diagnostics-and-isolated-replay--2026-09-28).
 - 2026-09-28 the physical Brave WAV failure prompted a bounded end-to-end
   browser/service batch. The native route served the exact 882,044-byte WAV
   on the host; the phone failure bytes remain unknown. The Pascal/pas2js UI
@@ -499,7 +590,7 @@ sentence is accounted for, including physical listening, failures and final QA.
   service now serves byte-matching assets at `review-host.invalid:18097`; the
   durable manifest and one review event did not change. The user's physical
   phone check remains manual item 2. This engineering QA does not close the
-  complete operator task or add milestone credit; see [work](../WORK-HISTORY.md#lan-review-flow-and-backlog-labeling-support--2026-09-28).
+  complete operator task or add milestone credit; see [work](../../WORK-HISTORY.md#lan-review-flow-and-backlog-labeling-support--2026-09-28).
 - 2026-09-27 a physical Brave page showed the workbench shell but remained on
   `Connecting to local service…`. The host's live listener, page, bundled JS,
   session endpoint, private Wi-Fi address and local-subnet firewall rule were

@@ -13,7 +13,7 @@ operator-authored WAV training/reference catalog. The agent prepares source
 WAVs and an inbox manifest; the operator can import all available tracks into
 a durable catalog. Pythian's inferred events are **unreviewed suggestions**,
 never acoustic truth or training labels merely because they were generated.
-The [pas2js workbench](../NS-6_authoring_01.md) owns the operator interface.
+The [pas2js workbench](NS-6_authoring_01.md) owns the operator interface.
 
 Accepted 2026-09-26: all seven native catalog criteria passed. The maintained
 FPC service imports verified multi-WAV manifests into a separately configured

@@ -141,7 +141,7 @@ Starting evidence: [BEAT-TRACKING](../BEAT-TRACKING.md#candidate-survival-and-pa
   source and logs remain under `build/beat-elastic-probe-20260927/`. The
   geometry audit and this failed prototype form two further nonclosing beat
   batches. Stop candidate variants and follow the ready non-phone workbench
-  workflow in [NS-6_authoring_01](NS-6_authoring_01.md). Before another beat
+  workflow in [NS-6_authoring_01](DONE/NS-6_authoring_01.md). Before another beat
   candidate, define how a nonuniform pulse sequence gains or loses boundary
   pulses and retains source-frame, alternative-index and clock-consumer identity.
   No maintained change, recorded acceptance or credit follows.

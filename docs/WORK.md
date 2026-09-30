@@ -12,19 +12,67 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
-## Current editor/queue preparation — 2026-09-30
+<a id="current-editorqueue-preparation--2026-09-30"></a>
+
+## Accepted editor/queue contract — 2026-09-30
+
+Big Boss accepts [authoring_01](TODO/DONE/NS-6_authoring_01.md): all seven owned
+checklist points 1–3 and 6–9, their mapped detailed parts and the DONE catalog
+prerequisite pass current native/build qualification, scoped retained evidence
+and Salty's final independent B1–B6 verdict. Current product code remains
+`e040ba73313f40843ab85740cfa968b7c8c5cb8f`, bound to the exact prepared stable
+Win32/Win64 and pas2js builds and six matched browser assets. This record does
+not claim a new product build or relabel earlier package revisions.
+
+Final evidence is frozen under ignored `build/qa-authoring-current-b1-b6/`:
+`VERDICT.txt` SHA-256 `f1b0563c8a43b48d331cce33a322db288530bea8fab4bc45a9525047f037f559`
+and `FINAL-IDENTITIES.json` SHA-256
+`9c4d950e61035226153e35774fefcad755d3308e550cab9115a129f9f7f53a10`.
+B1–B3 cover current desktop/narrow queue state and actual lost-response recovery
+with one POST/event; B4 actual download/fresh UI import/re-export; B5 genuine
+evaluation concealment before review; B6 exact-frame typed presence/audible
+editing with ten explicit revisions and durable rows 7/10. Successful drivers
+report zero leaks, browser errors and Play calls, with exact listener/profile
+cleanup zero. The impact map's older build-binding limits, exact bounded
+multi-hour-source window, target-local replay and synthetic pageshow scope
+remain explicit. No pitch, bfcache, new standalone five-hour, audible playback
+or physical-phone proof is claimed by these current cases.
+
+Acceptance adds **8 NS-6 points / 0.80 overall**: goal completions
+**100/90/25/65/14/31**, **49.40 credited / 50.60 remaining**, **43 open / 35 DONE**
+(28.00 baseline + 21.40 DONE). Two known blocking worker submissions and older
+unknown cumulative authoring history remain attached to Big Boss's mandatory
+repair below. [authoring_02](TODO/NS-6_authoring_02.md) now has its accepted
+prerequisite and still owns all original physical LAN/audio/operator points
+4, 5 and 10. Both exact fixed QA/stable firewall rules and the current stable
+binary are verified; restarted startup, device and complete combined-path
+acceptance remain open. No further administrator request is currently needed.
+
+### Preparation and failure history — 2026-09-30
+
+The following preserves the successive pre-acceptance decisions and stops.
+Their pending states are historical, superseded by the final verdict above.
 
 After accepted NS4 publication `7f1bea82582f03eac14933432b8e9cefa73f87ef`,
-Big Boss selects [authoring_01](TODO/NS-6_authoring_01.md) while the NS-5
+Big Boss selects [authoring_01](TODO/DONE/NS-6_authoring_01.md) while the NS-5
 reference path remains blocked. This is current-contract qualification, not a
 new feature, physical-device verdict or restarted scientific investigation.
-Neo exclusively owns this record, the owning task and ignored
-`build/authoring-current-contract/` source/assets/compiler/RTL/dependency/case
-identity packet, necessary checked native/pas2js builds and fixed QA staging.
-Ticket Guy owns only ignored `build/authoring-current-cli/`: inspect exact prior
-native evidence first, then execute only genuinely missing/unbound producer or
-durable-feedback boundaries with small existing first-party Pascal fixtures.
-No overlapping maintained files or new helper.
+Neo exclusively owns tracked documentation/integration. Big Boss now owns the
+authoring task's repair and complete failure evidence after the second blocking
+worker submission below. The ignored `build/authoring-current-contract/`
+source/assets/compiler/RTL/dependency/case identity packet, checked builds and
+fixed QA staging retain their exact evidence identities.
+Ticket Guy's native evidence is frozen under ignored `build/authoring-current-cli/`.
+His released ignored `build/authoring-current-contract/browser-controls/`
+contains isolated copies of existing
+small replay, genuine evaluation/blind and typed-editor controls plus a
+parameterized Pascal browser harness, compiled without launching HTTP/browser.
+Salty exclusively owns the fixed QA listener, isolated browser process trees
+and ignored runtime logs/runners. Big Boss owns the repaired Pascal driver under
+ignored `build/authoring-chief-repair/`; QA makes no further source modifications.
+Ticket Guy is on standby and makes no further authoring edits.
+No worker writes into served catalogs; no overlapping
+maintained files or new helper.
 
 Closing preparation evidence is an exact current-build identity and complete
 case-to-log/impact map for checklist 1–3 and 6–9. All six latest independent
@@ -39,12 +87,15 @@ cumulative count is not invented or reset.
 
 Stop preparation at an unverified owned case or public-contract defect and
 record its exact boundary. No live catalog mutation, broad replay, media
-acquisition or fresh long-media hashing. The exact fixed-path QA firewall rule
-is absent, so no HTTP/browser process is launched, including loopback. Prepare
-the concrete checked binary/assets, copied fixture, selected interface and
-minimal administrator rule instructions before any user action request.
-Actual browser acceptance stays open until the prerequisite and focused QA
-pass; physical/operator acceptance remains authoring_02. No new task credit.
+acquisition or fresh long-media hashing. The user ran the prepared administrator
+step, and Big Boss verified the installed exact fixed QA rule, assigned Private
+interface, checked executable identity and free QA port. The same authoring
+batch is released for B1–B6 independent browser QA after Salty verifies the six
+staged assets/current fixture and exact launch state. Use only the fixed QA slot
+and isolated copies/profiles, with exact process cleanup and audio paused in
+`try/finally`; preserve stable/live/operator state. Stop at a concrete defect or
+unverified case. Actual browser/task acceptance remains open until all owned
+criteria pass; physical/operator acceptance remains authoring_02. No new credit.
 
 Current native preparation passes both stable targets: the small maintained
 contract, 66 durable inspector assertions each and 22 zero-leak runtime logs.
@@ -83,8 +134,60 @@ typed editor selection/move/resize/split/merge/undo/redo flow. These close actua
 attribution gaps; they do not declare a product regression. The central Save
 case alone cannot close authoring. Retain the exact bounded large-frame window
 and unchanged math, without claiming newly verified original five-hour execution.
-All six cases (B1–B6) remain pending the rule and independent browser QA.
-No new runtime, media read, test or rebuild followed from this impact review.
+B1–B4 now pass scoped independent browser QA. B5 stopped on a submitted fixture
+state mismatch; Big Boss prepared a fresh source-only copy for the unreviewed
+gate, and B6 remains unexecuted. The same batch's remaining checks are released.
+B1–B3 use the tiny development fixture.
+B4–B6 use isolated copies of existing small replay/blind/editor controls; the
+development source is never relabelled as blind. No new inference, source
+acquisition, long-media rehash, 28-facet replay or broad rebuild is selected.
+Within B2/B3, Salty also checks an actual committed POST whose response is
+discarded, then reconciliation/retry with exactly one durable event and no
+second POST. This uses a separate isolated copy of the existing tiny one-request
+control. The older lost-response log retains its original build-binding limit;
+normal Save or a synthetic pre-commit failure alone cannot qualify this case.
+
+Actual B1–B3 evidence is frozen under ignored
+`build/qa-authoring-current-b1-b6/normal-r4/` and `lost-r2/`. The normal and
+discarded-after-commit responses each leave exactly one revision-1 event with
+the source/request hashes and presence/unknown/approved frames 100–1100.
+Retry reconciles the completed row before any second POST. Both checked Pascal
+drivers report zero leaks; exact cleanup records show zero QA listeners and
+profile processes. Pageshow was dispatched after reload, not an actual bfcache
+observation. Big Boss accepts this B1–B3 scope; whole-task credit remains zero.
+
+Big Boss takes over authoring repair after the second known blocking worker
+submission in this sequence. Ticket Guy's submitted B4 observer omitted the
+required session-token header, producing the expected 403 before UI upload;
+it also omitted the required bounded count, producing 422. These are defects
+in the submitted QA handoff, not evidence of a product replay failure. The
+earlier transient status-text wait was a separate runner readiness assumption.
+Preserve all failed roots, particularly `b4-replay-r3/`, `b4-replay-r4/` and
+`b4-replay-r6/`, along with their zero-process/listener cleanup. The already
+active `b4-replay-r7/` subsequently completed actual fresh UI import and exact
+same-target re-export with zero leaks and cleanup zero before the stop arrived;
+`b4-export-r2/` preserves the actual browser download. Big Boss inspected and
+adopts this B4 proof: actual download, revision-zero fresh destination, UI import
+of history and exact byte re-export. His checked repaired driver is released to
+Salty for B5–B6 runtime only; Salty owns runners/runtime and makes no source
+changes. This adds one blocking
+handoff submission to the prior packet-reporting correction: two known in this
+sequence, with older cumulative authoring failures still unknown and retained.
+The stop released the driver paths to Big Boss; QA retains independent validation
+and resumes only the authorized B5–B6 checks with the repaired driver.
+No task move, credit, scientific rejection or authoring_02 acceptance follows.
+
+The original B5 fixture contains an independent approved held-out A4 review at
+revision 1, contrary to the submitted README's no-events expectation. The
+product correctly enables suggestions after that review. The unchanged chief
+driver stopped on this fixture assertion with zero leaks and exact cleanup zero;
+retain `b5-chief/` DOM/logs. Big Boss imported the unchanged original inbox and
+manifest into new ignored `build/authoring-chief-repair/b5-source-only/`, with
+exact original source/track identities, three successful imports and no journals.
+Original history and evaluation group/partition remain untouched. This further
+handoff finding stays within the transferred submission, not an extra worker
+failure or product regression. Salty resumes B6 and the fresh B5 copy with the
+same chief driver; both actual remaining verdicts are still required.
 
 ## Accepted caller-provider batch — 2026-09-30
 
@@ -631,18 +734,18 @@ Start from NS-5, currently 14%, following real prerequisites:
   is accepted at exact `bdd55eb` Windows/Linux artifact scope. The consumer
   packet now binds those qualified archives and includes the source/effect path;
   historical `de45c9e` and `912f037` acceptance identities remain unchanged.
-- Next ready lane: [authoring_01](TODO/NS-6_authoring_01.md) current-contract
-  closure. Its bounded read-only map found all six latest independent cookie-QA
-  assets byte-identical to the current stage and unchanged native dependencies;
-  older complete source-flow assets differ. Preserve mapped prior editor/queue
-  evidence with exact source/asset/toolchain/RTL/dependency identities and impact
-  review. Current native/pas2js/CLI preparation and the copied fixture pass;
-  the reviewed impact map retains explicit older build-binding limits. Big Boss
-  requires the bounded B1–B6 current source-view/overview, Save recovery,
-  export/import, blind concealment and typed editor flow. Listening-route tests
-  do not qualify these source-page boundaries. The exact fixed-path QA
-  firewall rule is absent: no new HTTP/browser launch, including loopback, until
-  that prerequisite is installed. Actual physical/operator use stays authoring_02.
+- [authoring_01](TODO/DONE/NS-6_authoring_01.md) is accepted with all owned points
+  and independently checked current B1–B6, preserving the explicit retained
+  source/build limits and both known blocking worker submissions.
+- Next ready lane: [authoring_02](TODO/NS-6_authoring_02.md). Before runtime,
+  freeze existing copied two-group/long-source inputs and exact current-path
+  gaps for its original points 4, 5 and 10. Both exact fixed rules and the current
+  stable binary are verified; restarted stable startup, actual physical-phone
+  audible play/Save and complete
+  desktop/narrow/copied-catalog operator matrix remain unqualified. Use existing
+  inputs/assets/evidence only, preserve live/operator state, and stop at a
+  missing device or concrete failure. No new source acquisition, long-media
+  rehash, scientific restart or needless broad suite is selected.
   Big Boss retains chief judgment. NIGENS and other stopped inference routes
   stay closed; no new source/row/window/threshold/format retry is authorized.
 
@@ -658,8 +761,7 @@ without its changed-evidence condition.
 | [notes_05](TODO/NS-3_notes_05.md) | Quiet audible-tail gate remains; Berg found no candidate. Corrected publisher pairing reached row 1, then exact-zero rest and nonquiet tail rejected the source before presence inference. | At least four nonclosing source batches; original exposure unknown/development. Distinct supported audible tail plus disjoint same-source nonzero rest still required. No Win32 replay or source/row/window/threshold/format retry; further route needs independently supported changed evidence. |
 | [tempo_04](TODO/NS-3_tempo_04.md) | Frozen event graph failed missing120; recorded candidate/pulse references still required. | Existing nonclosing checkpoint remains. New justified physical candidate evidence; no terminal-extrapolation variants. |
 | [context_01](TODO/NS-3_context_01.md) | Profile/dictionary approaches rejected; tonal activity/tonic evidence missing. | Existing nonclosing checkpoint remains. New independently supported observation and prospective key/change/coverage gates. |
-| [authoring_01](TODO/NS-6_authoring_01.md) | Native/build preparation and owned-case attribution are reviewed; bounded current browser B1–B6 remain, with older build-binding limits retained. | Source view/overview, Save recovery, export/import, direct blind concealment and compact typed editing need current proof. Exact fixed QA rule is absent; no HTTP/browser launch until installed. |
-| [authoring_02](TODO/NS-6_authoring_02.md) | Actual current physical-phone play/Save and complete operator matrix remain open. | Host/device and exact QA firewall rule are external prerequisites; inspect current local configuration rather than reusing historical addresses/PIDs. |
+| [authoring_02](TODO/NS-6_authoring_02.md) | Actual current physical-phone play/Save and complete operator matrix remain open; authoring_01 prerequisite is accepted. | Exact fixed QA/stable rules and current stable binary are verified. Restarted startup, device and operator matrix remain unqualified. Inspect each slot/interface afresh rather than reusing historical addresses/PIDs. |
 | [delivery_07](TODO/NS-6_delivery_07.md), [style_03](TODO/NS-5_style_03.md) | Actual independent caller verdict needed after their package/style prerequisites. | No self-run checkout can substitute. Record reviewer and artifact identity when available. |
 
 This table records established checkpoint thresholds, not invented exact

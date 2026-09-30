@@ -1,7 +1,7 @@
 # Prepared WAV catalog import
 
 [Work record](WORK.md) · [Native catalog task](TODO/DONE/NS-3_labeling_01.md) ·
-[Browser workbench task](TODO/NS-6_authoring_01.md)
+[Browser workbench task](TODO/DONE/NS-6_authoring_01.md)
 
 The catalog stores original WAVs, source metadata, separate Pascal proposals,
 explicit operator review events, and a reviewed export packet. A prepared
@@ -261,6 +261,7 @@ window; the operator's answer is saved only through an explicit review event.
 Remove or replace completed prompts in the private queue after checking the
 saved decision. The catalog can be explored without a request, but those
 recordings are not themselves assignments.
-Full authoring controls remain open in
-[NS-6_authoring_01](TODO/NS-6_authoring_01.md). Store a real operator catalog
+The [editor/queue controls](TODO/DONE/NS-6_authoring_01.md) are accepted;
+[physical LAN and full operator use](TODO/NS-6_authoring_02.md) remain open.
+Store a real operator catalog
 outside `build/`; the catalog under `build/label-catalog/` is a test fixture.

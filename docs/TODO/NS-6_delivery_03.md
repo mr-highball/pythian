@@ -44,7 +44,7 @@ prerequisite or nonreproducible input and follow its owning task.
 **Blockers**
 
 - [NS-6_delivery_02.md](DONE/NS-6_delivery_02.md)
-- [NS-6_authoring_01.md](NS-6_authoring_01.md)
+- [NS-6_authoring_01.md](DONE/NS-6_authoring_01.md)
 - [NS-6_authoring_02.md](NS-6_authoring_02.md)
 - [NS-3_validation_02.md](DONE/NS-3_validation_02.md)
 - [NS-4_integration_01.md](NS-4_integration_01.md)

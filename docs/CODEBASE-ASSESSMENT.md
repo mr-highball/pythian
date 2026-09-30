@@ -10,7 +10,7 @@ corpus_05 criteria at their declared scope. The maintained
 consumer close evaluation_01 AC1 only; independent grounding/calibration and
 full comparator/control outcomes remain open. This does not qualify inferred
 musical styles, many-hour acceptance or outside use. The dated audit below
-retains its original evidence scope; live credit is **48.60 / 51.40 remaining**.
+retains its original evidence scope; live credit is **49.40 / 50.60 remaining**.
 
 The bounded [caller-provider outcome](TODO/DONE/NS-4_providers_01.md) is now
 accepted at frozen `bdd55eb04a89d0271241da6111f42e47039055d6`: explicit borrowed
@@ -50,7 +50,7 @@ This is a source, contract and recorded-evidence audit of the current checkout. 
 1. **Deliver a small current library slice independently of final style research.** The existing source ZIP mechanism and public core/WFC interfaces support a minimal load → control → synthesize → save/reload example, but the accepted checkpoint is frozen and self-run. Split current-snapshot packaging from an actual outside-checkout consumer verdict, with no claim of learned genre quality. This makes the project's central reusable-library claim testable now while full workflow work continues ([package script](../tools/package.ps1), [checkpoint](NATIVE-CHECKPOINT.md), [consumer contract](CONSUMER-CONTRACT.md)). NS-6 owns both results; no defect task is needed.
 2. **Keep recording evidence separate from generated meaning.** The saved inference and style architecture can carry provenance, but proposals and measurements only become musical claims through qualified source identity, reviewed labels, independent partitions, comparator policy and synthesized-output listening. The open NS-3/NS-5 tasks already own these gates ([WAV learning](WAV-LEARNING.md), [corpus evaluation](CORPUS-EVALUATION.md), [milestones](MILESTONES.md#north-star-assessment)). Do not award style credit for a longer file, more tokens or a label name.
 3. **Treat WFC blend reuse as a precise, bounded public contract.** Saved style ancestry, explicit weights and repeated derivation exist, but provider compatibility, vocabularies, timing grids and sound/source obligations restrict which arbitrary user inputs can combine. Report rejection and retained dimensions; test user-selected source styles without special genre rules. Open NS-4/NS-5 tasks cover the missing admitted dimensions and quality ([semantic style source](../adapters/wfc/pythian.wfc.semantic.style.pas), [consumer obligations](CONSUMER-CONTRACT.md#inputs-and-deterministic-replay)).
-4. **Close the actual operator listening path.** The current mobile queue and HTTP repairs have focused evidence, yet the physical-phone audio/Save flow and full copied-catalog QA remain open. Keep exact request/asset identity, source-frame spans and reviewed-vs-proposal separation. The workbench is supporting infrastructure for trustworthy learning, not the whole library deliverable ([authoring task](TODO/NS-6_authoring_01.md), [work](WORK-HISTORY.md#review-queue-clarity-and-listening-media-recovery--2026-09-28)).
+4. **Close the actual operator listening path.** The current mobile queue and HTTP repairs have focused evidence, yet the physical-phone audio/Save flow and full copied-catalog QA remain open. Keep exact request/asset identity, source-frame spans and reviewed-vs-proposal separation. The workbench is supporting infrastructure for trustworthy learning, not the whole library deliverable ([accepted editor/queue](TODO/DONE/NS-6_authoring_01.md), [physical/full operator task](TODO/NS-6_authoring_02.md), [work](WORK-HISTORY.md#review-queue-clarity-and-listening-media-recovery--2026-09-28)).
 5. **Refresh delivery only at the right scope.** A documentation audit cannot extend `0ecfe34` package evidence to changed inference, browser and style code. Current source closure, notices, pinned WFC, Pascal producer on the declared stable matrix, artifact hashes and fresh external use must be checked at their respective task gates. Linux upload step success was observed, while local inspection of that uploaded artifact was blocked by unauthenticated 401 ([checkpoint](NATIVE-CHECKPOINT.md), [packaging](PACKAGING.md#first-remote-checkpoint)).
 
 ## Maintained versus experimental evidence
@@ -110,7 +110,7 @@ accepted/open behavior, but the former fixed three-genre task chain and the
 monolithic NS-6 packaging/consumer gates obscured the reusable-library priority.
 The rebalance assigns a [current minimal native package](TODO/DONE/NS-6_delivery_06.md)
 and [actual independent minimal use](TODO/NS-6_delivery_07.md) their own gates,
-and separates the [editor/queue contract](TODO/NS-6_authoring_01.md) from
+and separates the [editor/queue contract](TODO/DONE/NS-6_authoring_01.md) from
 [physical LAN listening and final operator QA](TODO/NS-6_authoring_02.md).
 The dated 2026-09-29 complete-goal allocation assigned nine open NS-6 tasks
 85 goal points (8.50 overall), with no acceptance earned by the rebalance.
@@ -127,8 +127,10 @@ do not establish independent caller extension or continued product use.
 Single-snapshot packaging and one reviewer likewise cannot establish a
 supported maintenance cycle or de facto standard status. Independent caller
 use, support and adoption remain open; an adoption floor alone does not
-justify a standard claim. The current ledger credits 48.60 weighted points,
-with 51.40 remaining.
+justify a standard claim. The editor/producer queue contract now passes its
+owned current-source criteria and independent browser QA; physical LAN/audio
+and full operator use remain separate. The current ledger credits 49.40
+weighted points, with 50.60 remaining.
 
 ## WFC boundary audit
 

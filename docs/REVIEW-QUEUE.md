@@ -1,6 +1,6 @@
 # Operator review queue
 
-[Work](WORK.md) · [Authoring task](TODO/NS-6_authoring_01.md) ·
+[Work](WORK.md) · [Authoring task](TODO/DONE/NS-6_authoring_01.md) ·
 [Catalog task](TODO/DONE/NS-3_labeling_01.md)
 
 The producer prepares a JSON request file after its source WAVs are imported,

@@ -414,7 +414,7 @@ from these four MAESTRO contrasts.
   Stop the new packet without substitution if its own gate fails.
 - 2026-09-25 the user selected a Pascal/pas2js operator-authoring route for
   missing acoustic labels. [NS-3_labeling_01](DONE/NS-3_labeling_01.md) and
-  [NS-6_authoring_01](NS-6_authoring_01.md) build the catalog and interface;
+  [NS-6_authoring_01](DONE/NS-6_authoring_01.md) build the catalog and interface;
   this task still requires actual source-bound reviewed rests, positives and
   independent scored cases. The tool or an inferred proposal alone earns no
   presence credit, and neither authoring task is a formal blocker because a
