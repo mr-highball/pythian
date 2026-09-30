@@ -12,7 +12,44 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
-## Current physical LAN/operator preparation — 2026-09-30
+## Current priority decision — 2026-09-30
+
+The user reports that the phone prompt is too wordy, does not explain the
+labeling purpose and provides little frame/time feedback when placing a marker.
+The screenshot shows an internal mechanical QA correction request and exposed
+proposal details. Big Boss owns that unsuitable human handoff; it was not a
+musical judgment the user needed to make. The image establishes the displayed
+state, not audibility, exact edits, successful Save or current service identity.
+
+**Defer [authoring_02](TODO/NS-6_authoring_02.md)** under the user's instruction to
+continue it now only if critically blocking other work. Its only direct consumer
+is [full packaging](TODO/NS-6_delivery_03.md), which also awaits recorded-provider
+integration and final style/blend acceptance. It does not unblock the current
+NS-3/NS-5 reference/inference gates, core synthesis or WFC development. Retain the
+final-delivery dependency; removing it would conceal an unfinished requirement.
+No UI implementation, browser/server run or further human labeling is selected.
+
+The existing task now requires a plain-language purpose/action, immediate source
+time and accessible exact-frame feedback beside marker controls, clear playback/
+selection/saved state, and separation of mechanical QA prompts from normal
+review. These clarify existing physical/operator acceptance, not a new feature
+or credit-bearing task. Accepted editor mechanics retain their scoped evidence;
+full human usability stays open. Resume only for a named ready outcome that
+actually needs this path, or explicit user reprioritization. Existing failures
+and budgets persist; no task moves or completion credit follow from this review.
+
+Return priority to NS-5's actual reference/inference prerequisites. Their changed-
+evidence stop conditions remain in force: deferring the UI does not authorize
+another source/window/threshold search. Independent minimal-package use and
+caller source/effect listening also remain outside-user gates, not missing
+workbench code. No available non-agent verdict is invented or requested again.
+
+## Retained physical LAN/operator preparation — 2026-09-30
+
+<a id="current-physical-lanoperator-preparation--2026-09-30"></a>
+
+This is retained evidence; the priority decision above supersedes its next-action
+language. Do not infer current runtime state from the earlier cleanup record.
 
 **Open task:** [authoring_02](TODO/NS-6_authoring_02.md), points 4, 5 and 10.
 Big Boss owns implementation/integration after two blocked Neo driver submissions.
@@ -840,13 +877,15 @@ Start from NS-5, currently 14%, following real prerequisites:
 - [authoring_01](TODO/DONE/NS-6_authoring_01.md) is accepted with all owned points
   and independently checked current B1–B6, preserving the explicit retained
   source/build limits and both known blocking worker submissions.
-- Current lane: [authoring_02](TODO/NS-6_authoring_02.md), owned by Big Boss
+- Deferred lane: [authoring_02](TODO/NS-6_authoring_02.md), owned by Big Boss
   after two blocked Neo driver submissions. Copied inputs and exact assets are
   frozen; the stale-audio repair passes independent negative and positive
   desktop/narrow playback/recovery checks. Both fixed rules are verified and
   long CLI/browser exports match. Guarded duplicate recovery and exact re-export
-  now pass. Dedicated stable startup and actual source/paired-listening
-  physical-phone play/Save remain open. Use existing
+  now pass. User feedback exposes unclear question/marker feedback; the task is
+  deferred because it does not unblock current synthesis/WFC/learning work.
+  Dedicated stable startup and actual source/paired-listening physical-phone
+  play/Save remain unqualified. If a ready consumer justifies resumption, use existing
   inputs/assets/evidence only, preserve live/operator state, and stop at a
   missing device or concrete failure. No new source acquisition, extra or
   unaccounted long-media read, scientific restart or needless broad suite is

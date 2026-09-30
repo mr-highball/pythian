@@ -24,16 +24,26 @@ Starting evidence: [editor and queue](DONE/NS-6_authoring_01.md) ·
 [LAN procedure](../LAN-REVIEW-SERVICE.md) · [review queue](../REVIEW-QUEUE.md) ·
 [phone Save repair](../WORK-HISTORY.md#phone-save-request-header-repair--2026-09-29).
 
-Execution status: open; Big Boss owns repair/integration after two blocked Neo
-driver submissions. The repaired stale-audio reset passes independent negative
+Execution status: **deferred by user priority on 2026-09-30; open and unaccepted**.
+Big Boss retains repair/integration after two blocked Neo driver submissions.
+The first-use phone review exposes unclear question intent and marker/time
+feedback; no further workbench implementation or manual review is selected now.
+Its only direct downstream task is [final packaging](NS-6_delivery_03.md), also
+blocked on full recorded integration and style/blend acceptance. Core synthesis,
+WFC and the current NS-3/NS-5 reference/inference gates do not require this task.
+Resume only when a concrete ready deliverable actually needs this operator path,
+or the user explicitly reprioritizes it; preserve the final-delivery prerequisite.
+
+Retained evidence: the repaired stale-audio reset passes independent negative
 and positive desktop/narrow playback/retry QA. Fixed firewall rules and earlier
 HTTP boundaries are verified. Long CLI/browser exports match; actual replay
 published history but timed out before confirmation. The guarded-verification
 repair passes checked Win32/Win64 regressions and independent long duplicate
 recovery with exact re-export. Fresh stable-slot startup and both source/paired-listening
 physical-phone paths remain open; authoring_01 is accepted. Partial checks earn
-no task credit. Next deliverable: the prepared combined physical LAN play/Save
-handoff, preserving all actual reviewed history and failed-run evidence.
+no task credit. On resumption, the next deliverable is a comprehensible operator
+question/marker workflow followed by the combined physical LAN play/Save check,
+preserving all actual reviewed history and failed-run evidence.
 Closing evidence: device/network, binary/assets, audible results, durable Save,
 reload/report and independent QA records. Stop at missing device/firewall
 permission or a concrete failure; record its unblock condition and keep open.
@@ -86,11 +96,55 @@ on the dedicated copied catalog, record both producer reports after actual
 device feedback, and keep this combined operator review as existing manual
 item 7 rather than adding queue entries for its steps.
 
+First-use closure requirements for existing points 5 and 10, from the user's
+2026-09-30 phone feedback:
+
+- Before editing, explain in plain language what the listener should identify,
+  why that answer is needed and what action completes it. A listening-only
+  request must not appear to require a label or musical correction. Keep
+  mechanical QA fixtures separate from the ordinary human review queue.
+- Beside the touch controls, show the selected position or span in source time
+  with sufficient precision, and make its exact source frame available without
+  manual conversion. Distinguish playback position, requested listening window
+  and pending label boundaries. Update feedback immediately when tapping or
+  moving a marker; identify what changed and whether it is saved.
+- Keep proposal identifiers, facet names and implementation diagnostics in
+  inspectable details. Normal instructions must describe a musical/listening
+  decision, not demand an unexplained frame number or internal candidate ID.
+- On an actual narrow device, the operator can explain the intended decision,
+  see the resulting time/marker change and complete the intended answer without
+  developer coaching. Combine this with the existing physical checks when the
+  task is selected again; do not claim understanding or audibility from a
+  screenshot or an automated pass.
+
+These make the existing human operator acceptance concrete. They add no new
+feature family, task credit or prerequisite for the core/learning/WFC paths;
+the accepted editor mechanics in authoring_01 retain their scoped evidence.
+
 **Blockers**
 
 - [NS-6_authoring_01.md](DONE/NS-6_authoring_01.md)
 
 **Dev Notes:**
+
+- 2026-09-30 user phone feedback and priority decision, Big Boss: the supplied
+  Brave screenshot shows an internal instruction to correct a deliberately
+  wrong proposal to frame 8784, a one-frame-point instruction and an exposed
+  proposal identifier. The user reports not understanding the labeling purpose,
+  excessive wording and little frame/time feedback when placing a marker.
+  Capture this as a first-use usability problem, not an accepted playback,
+  precise placement, Save or restart verdict. The screenshot shows the UI only;
+  actual audibility and durable answers remain unverified. The exact frame
+  instruction was a mechanical QA control, not a required musical judgment from
+  the user. Big Boss owns the mistaken human handoff. Their instruction is to
+  continue this task now only if it critically blocks others. Dependency review
+  finds only delivery_03 directly blocked, with integration_01 and blends_01
+  also outstanding; no upstream synthesis/WFC/reference task is unblocked by
+  another phone run. Defer implementation and further user labeling, retain the
+  requirements above under existing points 5/10, and resume only for a named
+  ready consumer or explicit reprioritization. Prior failures, runtime budgets,
+  prerequisite links and zero unearned credit remain intact. The screenshot
+  stays private; no device identifiers, private paths or image bytes enter Git.
 
 - 2026-09-30 physical handoff orchestration stop, Big Boss: the dedicated short
   catalog is prepared with four source requests and one original paired request,

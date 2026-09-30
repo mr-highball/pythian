@@ -60,8 +60,13 @@ registration, dependent native generation and reusable blends. Actual outside
 use and full recorded integration remain separate outcomes.
 The [editor/queue contract](DONE/NS-6_authoring_01.md) is accepted after all owned
 criteria and independent B1–B6 QA. Two known blocking worker submissions and
-Big Boss's mandatory handoff repair remain recorded. The next lane is
-[physical LAN/full operator use](NS-6_authoring_02.md): preserve all original
+Big Boss's mandatory handoff repair remain recorded.
+[Physical LAN/full operator use](NS-6_authoring_02.md) is deferred following
+the user's 2026-09-30 feedback on unclear question intent and marker/time
+feedback. It gates eventual full packaging, also blocked on recorded integration
+and style/blends; it does not unblock current core/WFC/reference development.
+Resume only for a named ready outcome needing it or explicit reprioritization.
+Preserve all original
 points 4, 5 and 10, exact current assets and the complete copied-catalog matrix.
 The exact fixed QA/stable rules and current stable binary are verified; fresh
 stable startup and actual physical-phone audible play/Save remain unqualified.
@@ -137,7 +142,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | Task / primary outcome | Goal points | Overall points | Current readiness |
 | --- | ---: | ---: | --- |
 | [NS-6_adoption_01](NS-6_adoption_01.md) — Establish independent ecosystem adoption evidence | 15 | 1.50 | Supported releases + independent ecosystem evidence |
-| [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 8 | 0.80 | Prerequisite DONE; physical phone/restart/operator matrix; fixed rules verified |
+| [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 8 | 0.80 | Deferred; first-use purpose/marker feedback and physical checks open; not a current upstream blocker |
 | [NS-6_delivery_03](NS-6_delivery_03.md) — Package and verify the accepted final workflow | 10 | 1.00 | Dependencies |
 | [NS-6_delivery_04](NS-6_delivery_04.md) — Obtain independently reproduced consumer acceptance | 12 | 1.20 | Package + independent consumer |
 | [NS-6_delivery_05](NS-6_delivery_05.md) — Audit north-star completion and supported handoff | 5 | 0.50 | Dependencies |

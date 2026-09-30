@@ -170,13 +170,15 @@ next lane while the independent musical reference path remains blocked.
 
 ### Next work to schedule
 
-- Big Boss: integrate [physical LAN/full operator use](TODO/NS-6_authoring_02.md)
-  after its mandatory transfer following two blocked Neo driver submissions.
-  The repaired stale-audio reset passes independent negative and positive
-  playback checks, matching long CLI/browser exports and guarded replay recovery
-  with exact re-export. Both source/paired-listening physical-device verdicts
-  remain open. Existing copied inputs, exact assets and runtime budgets apply.
-  Neo's disjoint phone preparation is frozen; no worker repair bypass.
+- Big Boss: prioritize NS-5's actual reference/inference prerequisites, preserving
+  their evidence-based stop conditions. [Physical LAN/full operator use](TODO/NS-6_authoring_02.md)
+  is deferred under the user's 2026-09-30 instruction: unclear question purpose
+  and marker/time feedback are recorded, but the tool does not unblock current
+  core/WFC/learning development. It remains required for final packaging, which
+  also awaits recorded integration and full style/blends. Resume only for a
+  named ready outcome needing this operator path or explicit reprioritization.
+  Big Boss retains the mandatory repair transfer, all prior evidence and budgets;
+  physical acceptance remains open with no new credit.
 - Ticket Guy: another genuinely ready bounded assignment with disjoint ownership
   if available; authoring_01 repair transferred to Big Boss after two blocking
   submissions. Do not reopen accepted mechanism implementation or stopped science.
