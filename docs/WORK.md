@@ -66,6 +66,26 @@ sequence; prior cumulative authoring failures remain unknown and retained.
 A second blocking worker submission transfers to Big Boss. The same closing
 batch continues; the HTTP/browser gate and full task remain open, with no credit.
 
+The same-batch owned-case impact map is now frozen under ignored
+`build/authoring-current-contract/OWNED-CASE-IMPACT.md` for independent review.
+It attributes all seven owned checklist points and their detailed parts to
+retained logs, actual old generated assets and current source/dependency changes.
+Old HTML/CSS match their published source blobs; that does not establish the
+old Pascal/compiler/RTL build identity. Missing original build bindings and
+standalone five-hour/source-blind proof attribution remain explicitly unverified.
+The current browser check must cover desktop/narrow startup and source-view
+visibility/controls, overview counts, failed-precheck preservation/no POST,
+one successful Save, queue removal/empty state and durable reload. Native
+export/replay is qualified; direct current browser export/import transport is
+not inferred from it. Big Boss's final bounded plan adds current source
+export/import, direct source-view blind/proposal concealment and one compact
+typed editor selection/move/resize/split/merge/undo/redo flow. These close actual
+attribution gaps; they do not declare a product regression. The central Save
+case alone cannot close authoring. Retain the exact bounded large-frame window
+and unchanged math, without claiming newly verified original five-hour execution.
+All six cases (B1–B6) remain pending the rule and independent browser QA.
+No new runtime, media read, test or rebuild followed from this impact review.
+
 ## Accepted caller-provider batch — 2026-09-30
 
 Big Boss approved Neo's explicit borrowed caller-codec contract for
@@ -616,10 +636,11 @@ Start from NS-5, currently 14%, following real prerequisites:
   assets byte-identical to the current stage and unchanged native dependencies;
   older complete source-flow assets differ. Preserve mapped prior editor/queue
   evidence with exact source/asset/toolchain/RTL/dependency identities and impact
-  review. The uncovered changed boundary is source-home answer Save/reload and
-  failed-precheck preservation after `credentials: omit`; listening-route tests
-  do not prove that source route. Prepare current native/pas2js/CLI evidence and
-  concrete copied fixtures after this NS4 publication. The exact fixed-path QA
+  review. Current native/pas2js/CLI preparation and the copied fixture pass;
+  the reviewed impact map retains explicit older build-binding limits. Big Boss
+  requires the bounded B1–B6 current source-view/overview, Save recovery,
+  export/import, blind concealment and typed editor flow. Listening-route tests
+  do not qualify these source-page boundaries. The exact fixed-path QA
   firewall rule is absent: no new HTTP/browser launch, including loopback, until
   that prerequisite is installed. Actual physical/operator use stays authoring_02.
   Big Boss retains chief judgment. NIGENS and other stopped inference routes
@@ -637,7 +658,7 @@ without its changed-evidence condition.
 | [notes_05](TODO/NS-3_notes_05.md) | Quiet audible-tail gate remains; Berg found no candidate. Corrected publisher pairing reached row 1, then exact-zero rest and nonquiet tail rejected the source before presence inference. | At least four nonclosing source batches; original exposure unknown/development. Distinct supported audible tail plus disjoint same-source nonzero rest still required. No Win32 replay or source/row/window/threshold/format retry; further route needs independently supported changed evidence. |
 | [tempo_04](TODO/NS-3_tempo_04.md) | Frozen event graph failed missing120; recorded candidate/pulse references still required. | Existing nonclosing checkpoint remains. New justified physical candidate evidence; no terminal-extrapolation variants. |
 | [context_01](TODO/NS-3_context_01.md) | Profile/dictionary approaches rejected; tonal activity/tonic evidence missing. | Existing nonclosing checkpoint remains. New independently supported observation and prospective key/change/coverage gates. |
-| [authoring_01](TODO/NS-6_authoring_01.md) | Complete owned-case identity/impact record and changed source-home Save/reload/failed-precheck evidence remain. | Latest independent listening assets match current; that route does not cover source answers. Exact fixed QA firewall rule is absent; no HTTP/browser launch until installed. |
+| [authoring_01](TODO/NS-6_authoring_01.md) | Native/build preparation and owned-case attribution are reviewed; bounded current browser B1–B6 remain, with older build-binding limits retained. | Source view/overview, Save recovery, export/import, direct blind concealment and compact typed editing need current proof. Exact fixed QA rule is absent; no HTTP/browser launch until installed. |
 | [authoring_02](TODO/NS-6_authoring_02.md) | Actual current physical-phone play/Save and complete operator matrix remain open. | Host/device and exact QA firewall rule are external prerequisites; inspect current local configuration rather than reusing historical addresses/PIDs. |
 | [delivery_07](TODO/NS-6_delivery_07.md), [style_03](TODO/NS-5_style_03.md) | Actual independent caller verdict needed after their package/style prerequisites. | No self-run checkout can substitute. Record reviewer and artifact identity when available. |
 

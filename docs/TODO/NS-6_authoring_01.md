@@ -36,6 +36,11 @@ Next deliverable: bind complete unchanged checklist 1–3 and 6–9 evidence wit
 explicit impact review, and prepare a focused copied-catalog source-answer
 Save/queue removal/empty-state/reload plus failed-precheck preservation/no-POST/retry check after
 the `credentials: omit` change. Latest listening-route checks do not cover it.
+The final bounded browser checklist also covers current desktop/narrow
+startup/source-view controls and overview counts, source export/import, direct
+source-view blind concealment and one compact typed editor selection/move/resize/
+split/merge/undo/redo flow. All six mapped cases B1–B6 require independent QA;
+the central Save case alone cannot close this task.
 Closing evidence names exact current source/assets/toolchain/RTL/dependencies,
 typed request/review/replay identities and durable reports. Stop at an
 unverified owned criterion or public defect and record its precise boundary.
@@ -250,6 +255,23 @@ sentence is accounted for, including physical listening, failures and final QA.
   The same closing batch continues with the administrator/runtime prerequisite
   and focused source-home browser check pending, without task credit. See
   [work and evidence ownership](../WORK.md#current-editorqueue-preparation--2026-09-30).
+- 2026-09-30 same-batch impact review: the compact owned-case map attributes
+  checklist 1–3 and 6–9 to retained logs, actual old generated artifacts and
+  current source/dependency deltas. Current visibility/startup/overview and
+  shared transport changes extend beyond Fetch credentials. The focused
+  desktop/narrow source check therefore includes request selection, visible
+  controls, honest overview counts and the empty state alongside the planned
+  Save/failure/retry/reload. Original old build bindings and standalone
+  five-hour/source-blind proof attribution remain unverified; a source harness
+  or screenshot alone is not executed proof. Current browser export/import
+  transport is not inferred from qualified native replay. Big Boss's final
+  reuse judgment requires B1–B6, adding actual source export/import, direct
+  source-view blind concealment and one compact current typed edit flow.
+  Retain scoped large-frame-window evidence and unchanged math without newly
+  claiming the original standalone five-hour run. Historical accepted results
+  and their missing original build bindings remain explicit. Salty reviews
+  this readiness scope; complete task acceptance still requires every owned gap.
+  No runtime/test/rebuild or task credit follows; all failure counters remain.
 - 2026-09-29 current complete-goal credit basis: this task owns 8 NS-6
   goal points (+0.80 overall) by deliverable value. Nine open NS-6
   tasks allocate 85 goal points (+8.50 overall); the accepted contract and
