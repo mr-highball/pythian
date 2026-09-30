@@ -8,10 +8,9 @@ Completion credit: 3 goal percentage points (0.60 overall points).
 Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
 Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
 
-Execution status (2026-09-30): **Maintained contract component ready for final QA;
-grounded acceptance remains blocked**.
-Next deliverable: Review the public Pascal card API, strict file reader and CLI;
-then obtain independently supported note/duration measures and calibration for
+Execution status (2026-09-30): **Maintained AC1 card contract accepted by
+independent final QA; grounded task acceptance remains blocked**.
+Next deliverable: Obtain independently supported note/duration measures and calibration for
 AC2 before actual comparator/style acceptance. Full-provider grounding stays in
 evaluation_04.
 Closing evidence and stop condition: Two arbitrary labels, malformed-contract

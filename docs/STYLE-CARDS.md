@@ -63,7 +63,7 @@ style thresholds, elapsed-time coverage or acoustic-rest truth. The retained
 GuitarSet references remain one exposed development family with unspecified
 confidence; no new source admission or screening follows.
 
-AC1 awaits independent final QA. AC2's grounding/calibration and AC3's actual
+AC1 passed independent final QA on 2026-09-30. AC2's grounding/calibration and AC3's actual
 comparators remain open; these scoped synthetic controls do not close complete
 AC5. AC4's reviewed seed/output/listening specification remains unchanged.
 The task earns no credit until all criteria pass. Final developer logs are under

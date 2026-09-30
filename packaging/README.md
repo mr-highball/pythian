@@ -10,11 +10,35 @@ creating separate `build/units` and `build/bin` output directories:
 ```text
 fpc -B -Sa -Cr -Co -Ci -gl -Fusrc -FUbuild/units -FEbuild/bin examples/pythian.example.core.lpr
 build/bin/pythian.example.core core.wav
+build/bin/pythian.example.core quieter.wav 0.5 731
+build/bin/pythian.example.core replay.wav 1 731
 ```
 
 On Windows the executable has the `.exe` suffix. Quote paths containing spaces.
-The core example renders a short phrase and checks its WAV round trip. Library
+The core example creates three panned tones, applies the caller's gain, renders,
+saves PCM16 and reloads the actual saved file. Its arguments are
+`FRESH_OUTPUT.wav [GAIN [SEED]]`: gain is finite dot-decimal 0..1 (default 1),
+seed is unsigned decimal 0..4294967293 (default 731; three voice seeds are
+consecutive). Output is 44,100 Hz, stereo, 67,032 frames (1.52 seconds), including
+the final voice's release. The renderer's minimum frame argument does not cap
+release tails. Gain 0.5 halves the decoded samples within PCM16 quantization;
+fixed gain/seed replay reproduces the saved bytes on the same target. Library
 units have no WFC, Phanes, engine, browser or playback-device dependency.
+
+Both minimal examples require a fresh `.wav` path in an existing directory.
+Bad arguments, unavailable parent directories and existing files reject before
+writing; an existing valid output is preserved. Direct file I/O can leave a
+partial new file if writing fails. The caller owns output paths, recovery and
+objects; concurrent writers are unsupported. No playback, physical write
+atomicity, hard-real-time or learned-style guarantee is implied.
+
+`PACKAGE-INFO.txt` records the base source revision, explicit clean/dirty state,
+packaging script hash, compiler target and companion pin. For a dirty candidate,
+the base revision alone does not identify its contents. `SHA256SUMS` binds every
+delivered file except itself, including metadata. The package verifier checks
+inventory counts, lengths and hashes after fresh ZIP extraction. Accepted target
+scope is stable FPC 3.2.2 i386-win32, x86_64-win64 and x86_64-linux with RTL/FCL;
+current acceptance requires the matching published revision's Linux CI result.
 
 The shared WAV reader accepts ordinary and extensible RIFF/RF64 PCM8/16/24/32
 and float32, within the mono/stereo contract. Extensible PCM retains explicit
@@ -97,6 +121,27 @@ That consumer analyzes WAV features, learns through the actual WFC model and
 reconstructs generated tokens from recorded grains. It demonstrates the integration
 contract; it is not transcription or a musical-quality guarantee.
 
+The caller-provider example requires no external recording or built-in provider.
+It authors two note-token samples, learns a canonical WFC sequence model,
+constructs its own provider description/contracts and independent layer, then
+generates through `TCompatibleProviderSession`, decodes pitches and renders:
+
+```text
+fpc -B -Sa -Cr -Co -Ci -gl -Fusrc -Fuadapters/wfc -Fuvendor/wfc/src -Futools -FUbuild/wfc-units -FEbuild/bin examples/pythian.example.wfc.provider.lpr
+build/bin/pythian.example.wfc.provider provider.wav
+build/bin/pythian.example.wfc.provider louder.wav 0.5 731
+build/bin/pythian.example.wfc.provider provider-replay.wav 0.25 731
+```
+
+Create `build/wfc-units` first. The CLI is `FRESH_OUTPUT.wav [GAIN [SEED]]`:
+gain is finite dot-decimal 0..1 (default 0.25); seed is unsigned decimal
+0..4294967295 (default 731). Eight 120-tick cells at 480 PPQ/120 BPM explicitly
+map to 2,000 frames each. Its bounded release fits each cell; the saved/reloaded
+PCM16 is exactly 16,000 Hz, stereo, 16,000 frames. Gain 0.5 doubles the default
+decoded amplitude within PCM16 quantization; fixed-input/seed replay is exact
+on the same target. These authored samples demonstrate caller extension and
+generation mechanics, without recorded-learning or musical-quality acceptance.
+
 A second WFC example learns from two recordings, saves their event model and
 generates from the reloaded archive. Use the two native example WAVs above:
 
@@ -114,8 +159,11 @@ exact WAV hashes. This demonstrates reusable recorded-event learning, not a
 complete musical-style profile. No maintained workspace tool or music asset is
 required by either packaged consumer.
 
-The WFC package also includes the maintained `pythian.learn` operator and its
-three helper units. Compile it with the same core/companion source paths plus
+The WFC package also includes the maintained `pythian.learn` operator, its
+three helper units and six native annotation units needed by the public reviewed
+catalog adapter: export, sourceguard, catalog, proposal, review and contract.
+Their complete notices ship unchanged. No HTTP/browser/service units ship.
+Compile the full adapter closure with the core/companion source paths plus
 `-Futools`; generated files stay outside the delivered sources:
 
 ```text
@@ -129,7 +177,7 @@ build/bin/pythian.learn contexts journal-derived journal-contexts 8 core.pyaf co
 build/bin/pythian.learn replay journal-contexts journal-replay --context-grains 8 core.wav
 ```
 
-This self-contained workflow uses the core example's authored 1.5-second WAV.
+This self-contained workflow uses the core example's authored 1.52-second WAV.
 It verifies mechanics, not style quality. Cache batches preserve measured source
 coordinates; range boundaries create separate WFC samples without copying audio.
 `--range FIRST_FEATURE COUNT` applies only to the immediately following pair;

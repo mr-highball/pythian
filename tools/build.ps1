@@ -48,6 +48,23 @@ try {
   $executableSuffix = if ($compilerOs -eq 'win32' -or $compilerOs -eq 'win64') { '.exe' } else { '' }
   & (Join-Path $buildRoot "pythian.tests.core$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Core checks failed' }
+  & $compilerPath @compilerArgs 'examples/pythian.example.core.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Controlled core example compilation failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.delivery.native.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Native delivery verifier compilation failed' }
+  $deliveryRoot = Join-Path $buildRoot ('delivery-' + [Guid]::NewGuid().ToString('N'))
+  New-Item -ItemType Directory -Path $deliveryRoot | Out-Null
+  $coreConsumer = Join-Path $buildRoot "pythian.example.core$executableSuffix"
+  & $coreConsumer (Join-Path $deliveryRoot 'core-base.wav') '1' '731'
+  if ($LASTEXITCODE -ne 0) { throw 'Controlled core example failed' }
+  & $coreConsumer (Join-Path $deliveryRoot 'core-changed.wav') '0.5' '731'
+  if ($LASTEXITCODE -ne 0) { throw 'Changed core control failed' }
+  & $coreConsumer (Join-Path $deliveryRoot 'core-replay.wav') '1' '731'
+  if ($LASTEXITCODE -ne 0) { throw 'Core replay failed' }
+  $deliveryVerifier = Join-Path $buildRoot "pythian.tests.delivery.native$executableSuffix"
+  & $deliveryVerifier (Join-Path $deliveryRoot 'core-base.wav') (Join-Path $deliveryRoot 'core-changed.wav') `
+    (Join-Path $deliveryRoot 'core-replay.wav') '44100' '2' '67032' '0.5'
+  if ($LASTEXITCODE -ne 0) { throw 'Core saved-file control/replay proof failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.evaluation.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Shared evaluation compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.evaluation$executableSuffix")
@@ -437,6 +454,18 @@ try {
     New-Item -ItemType Directory -Force $adapterUnitRoot | Out-Null
     $adapterArgs = @('-B', '-Sa', '-Cr', '-Co', '-Ci', '-gl', '-Fusrc',
       '-Fuadapters/wfc', '-Fuvendor/wfc/src', '-Futools', "-FU$adapterUnitRoot", "-FE$buildRoot")
+    & $compilerPath @adapterArgs 'examples/pythian.example.wfc.provider.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Caller-provider example compilation failed' }
+    $providerConsumer = Join-Path $buildRoot "pythian.example.wfc.provider$executableSuffix"
+    & $providerConsumer (Join-Path $deliveryRoot 'provider-base.wav') '0.25' '731'
+    if ($LASTEXITCODE -ne 0) { throw 'Caller-provider example failed' }
+    & $providerConsumer (Join-Path $deliveryRoot 'provider-changed.wav') '0.5' '731'
+    if ($LASTEXITCODE -ne 0) { throw 'Changed provider control failed' }
+    & $providerConsumer (Join-Path $deliveryRoot 'provider-replay.wav') '0.25' '731'
+    if ($LASTEXITCODE -ne 0) { throw 'Provider replay failed' }
+    & $deliveryVerifier (Join-Path $deliveryRoot 'provider-base.wav') (Join-Path $deliveryRoot 'provider-changed.wav') `
+      (Join-Path $deliveryRoot 'provider-replay.wav') '16000' '2' '16000' '2'
+    if ($LASTEXITCODE -ne 0) { throw 'Provider saved-file control/replay proof failed' }
     & $compilerPath @adapterArgs 'tools/pythian.corpus.intake.cli.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Corpus intake operator compilation failed' }
     & $compilerPath @adapterArgs 'examples/pythian.example.corpus.intake.lpr'

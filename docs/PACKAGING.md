@@ -21,6 +21,51 @@ Final accepted-workflow revalidation and independent downstream-use acceptance r
 [WAV-05-DELIVERY](MILESTONES.md#wav-05-delivery) and
 [DELIVERY-RELEASE](MILESTONES.md#delivery-release).
 
+## Current minimal native package — 2026-09-30
+
+[Delivery_06](TODO/NS-6_delivery_06.md) currently owns the new minimal artifact.
+The core example creates three tones, applies caller gain/seed, saves PCM16 and
+reloads the actual file: 44,100 Hz/stereo/67,032 frames, including release.
+The opt-in [caller-provider example](../examples/pythian.example.wfc.provider.lpr)
+authors canonical note samples and its own provider description/contracts/layer,
+generates through the actual compatible WFC session and saves/reloads
+16,000 Hz/stereo/16,000 frames. Neither path needs private assets or a built-in
+provider. Their [standalone instructions](../packaging/README.md) declare gain,
+seed, fresh output, ownership, work scope and direct-I/O recovery limits.
+
+Fresh extracted checks compare a changed gain with the decoded PCM samples,
+verify exact fixed-input/seed file replay and exercise malformed controls,
+seed bounds, unavailable parents and existing-output preservation. The maintained
+[Pascal verifier](../tests/pythian.tests.delivery.native.lpr) performs audio
+analysis; package scripts only orchestrate builds and consumers. The core build
+has only the extracted `src` search path and a fresh separate unit directory.
+Supported target scope is stable FPC 3.2.2 i386-win32, x86_64-win64 and
+x86_64-linux with standard RTL/FCL. Local candidate checks and exact-revision
+remote acceptance are separate; delivery_06 stays OPEN until both pass.
+
+The [109696d native run](https://github.com/mr-highball/pythian/actions/runs/36673757355)
+passed the maintained Linux integration build but failed extracted WFC package
+closure. Its reviewed catalog adapter required `pythian.tools.annotations.export`,
+which the archive omitted. The same published snapshot reproduced this missing
+unit locally. Delivery_06 repairs the complete six-unit native annotation closure
+and its packaged-tools search path without including HTTP/browser/service code
+or changing the WFC pin. That failed package result remains historical evidence;
+it does not qualify the new artifact or imply a generic WFC defect.
+
+`PACKAGE-INFO.txt` records base revision, explicit clean/dirty source state,
+packaging script SHA256, target and WFC pin. Candidate edits are identified by
+their delivered `SHA256SUMS` inventory, rather than HEAD alone. The script reports
+the archive SHA256 and verifies every delivered file count, length and hash after
+extraction. No product credit, independent outside-use claim, acoustic inference
+or accepted learned style follows from local mechanical tests.
+
+Local candidate checks passed stable FPC 3.2.2 Win32/Win64 for both archives:
+core 98 owned units/107 inventory entries; opt-in WFC 144 owned units/255 entries.
+Each target passed actual saved-file geometry, gain change, exact replay and
+six relevant rejection cases per consumer. Core maximum decoded gain error was
+1.52587890625E-5 for ratio 0.5; provider maximum was 3.0517578125E-5 for ratio 2.
+Independent final QA and the matching new remote result still gate acceptance.
+
 ## First remote checkpoint
 
 The [native run 35557200115](https://github.com/mr-highball/pythian/actions/runs/35557200115)
@@ -56,6 +101,10 @@ Use an existing native FPC installation on PATH with its standard RTL/FCL packag
 ```
 
 Both scripts accept `-Compiler` followed by the selected compiler executable path.
+The package script additionally accepts `-TargetCpu x86_64 -TargetOs win64`
+when the selected verified installation already provides that cross compiler.
+Target flags apply to compiler probes and every extracted build; they do not
+install a compiler. The default target comes from the selected executable.
 The package script chooses a fresh directory under `build/packages/`. Optional
 `-OutputDirectory build/source-package` gives it a readable location; an existing
 directory is rejected to prevent stale contents. No compiler installation or
@@ -75,8 +124,9 @@ the extracted package. Standard compiler configuration supplies the RTL/FCL.
 Consumer sources and logs remain in `consumer-check/`; the delivered source
 directory receives no compiled units or generated WAVs.
 
-The [core example](../examples/pythian.example.core.lpr) renders three panned tones,
-checks the stereo WAV round trip and prints its exact byte hash. The
+The [core example](../examples/pythian.example.core.lpr) renders three panned tones
+under caller gain/seed, saves and reloads the actual stereo WAV and prints its
+exact byte hash. The
 [WFC example](../examples/pythian.example.wfc.lpr) analyzes that recording, learns
 through the actual WFC contract, generates tokens and reconstructs source grains.
 Their packaged [README](../packaging/README.md) includes standalone commands and

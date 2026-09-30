@@ -12,6 +12,63 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current minimal native package — 2026-09-30
+
+After clean publication `109696d93eec3832be701fbcc694f5122d911816`, Big Boss
+authorized [delivery_06](TODO/NS-6_delivery_06.md) implementation batch 1 while
+the prioritized NS-5 path still lacks independent reference/calibration.
+Neo owns the core caller control, actual saved-file reload, generic native
+artifact verifier, package/build integration and instructions. Ticket Guy
+owns only the new authored caller WFC-provider example. No source/adapter/
+vendor API edits or new inference/source screening are part of this batch.
+
+Observable acceptance is two freshly extracted consumers: core-only and
+explicit opt-in WFC, with complete sources/notices/exact pin, actual changed
+control, deterministic saved-file replay/reload and relevant bad input/control/
+output checks. Candidate identity includes base revision, explicit dirty state
+and inventory; current stable Linux evidence must match the published revision.
+Keep delivery_06 OPEN until both local stable targets, independent QA and the
+exact remote run pass; record a real runner/closure/replay blocker instead of
+substituting old package evidence. Agent-run checks do not close delivery_07.
+Submitted implementation QA failures: 0; this is one active batch, and stopped
+scientific counters remain unchanged. No product credit is assigned yet.
+
+Fresh candidate archives passed stable FPC 3.2.2 Win32/Win64: each isolated core
+package compiled 98 owned units and verified 107 inventory entries; each opt-in
+package compiled 144 owned units and verified 255 entries. Extracted sources
+alone supplied all project units, with a separate core-only directory/search
+path. Actual saved-WAV checks retained core 67,032 frames/44,100 Hz/stereo and
+provider 16,000 frames/16,000 Hz/stereo; halved/doubled gain matched decoded PCM
+within quantization, and fixed-input/seed replay was exact. Both consumers reject
+bad controls/seeds, missing parents and existing outputs without replacing valid
+bytes. Their generated examples are first-party and asset-free.
+
+The published base's [native run](https://github.com/mr-highball/pythian/actions/runs/36673757355)
+passed Linux integration but failed WFC archive closure. A frozen local snapshot
+reproduced the omitted annotation-export unit. The package now includes all six
+required native annotation helpers/notices and their extracted tools search path;
+no HTTP/browser/service source or vendor edit was added. A local argument-array
+precedence error in the new core-only compiler path was caught and corrected
+before QA. Candidate metadata explicitly declares dirty/base state and binds the
+delivered inventory; ignored `build/delivery-native/` retains archives, commands,
+target results and baseline/CI diagnostic evidence. Independent final QA and the
+new exact-revision Linux run remain required; delivery_06 stays OPEN/zero credit.
+The two stale current card-status passages now reflect accepted AC1 and blocked
+calibration; dated evidence, scientific counters and task credit are unchanged.
+
+Final independent Salty Boi QA passed the two candidate components. Fresh ZIP
+extractions rebuilt both consumers with stable FPC 3.2.2 Win32/Win64 using only
+extracted project paths and separate core-only unit roots. Actual saved-file
+geometry, gain change and exact replay passed; existing-output and nonfinite-gain
+rejections preserved valid bytes. All 24 independent runtime logs were leak-free.
+The frozen worker/package evidence was reused for unchanged negative and closure
+cases. Both scripts parsed; notices, privacy, dependency boundaries, 124 local
+links and the unchanged 78-task/160-edge ledger passed. Zero implementation QA
+submissions failed. Evidence remains under ignored `build/qa-delivery-native/`.
+This candidate verdict earns no credit: commit the 11 reviewed paths, then qualify
+both archives on both Windows targets from that exact clean revision before
+pushing. Delivery_06 stays open through its matching published Linux result.
+
 ## Caller corpus intake and style-card contract — 2026-09-30
 
 Implementation batch 1 follows accepted identity into

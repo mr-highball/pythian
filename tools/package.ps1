@@ -24,7 +24,9 @@ SOFTWARE.
 param(
   [string]$Compiler = 'fpc',
   [switch]$WithWfc,
-  [string]$OutputDirectory = ''
+  [string]$OutputDirectory = '',
+  [string]$TargetCpu = '',
+  [string]$TargetOs = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -38,12 +40,20 @@ function Copy-SourceDirectory([string]$Source, [string]$Destination) {
 
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $compilerPath = (Get-Command $Compiler -ErrorAction Stop).Source
-$compilerVersion = (& $compilerPath '-iV' | Out-String).Trim()
+$targetArgs = @()
+if ($TargetCpu -ne '') { $targetArgs += '-P' + $TargetCpu }
+if ($TargetOs -ne '') { $targetArgs += '-T' + $TargetOs }
+$compilerVersion = (& $compilerPath @targetArgs '-iV' | Out-String).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Compiler version probe failed' }
-$compilerCpu = (& $compilerPath '-iTP' | Out-String).Trim()
+$compilerCpu = (& $compilerPath @targetArgs '-iTP' | Out-String).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Compiler CPU probe failed' }
-$compilerOs = (& $compilerPath '-iTO' | Out-String).Trim()
+$compilerOs = (& $compilerPath @targetArgs '-iTO' | Out-String).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Compiler target probe failed' }
+$sourceRevision = (& git -C $projectRoot rev-parse HEAD | Out-String).Trim()
+if ($LASTEXITCODE -ne 0) { throw 'Source revision probe failed' }
+$sourceChanges = (& git -C $projectRoot status --porcelain --untracked-files=normal | Out-String).Trim()
+if ($LASTEXITCODE -ne 0) { throw 'Source state probe failed' }
+$sourceState = if ($sourceChanges -eq '') { 'clean' } else { 'dirty candidate; base revision alone does not identify delivered bytes' }
 $buildRoot = [IO.Path]::GetFullPath((Join-Path $projectRoot 'build'))
 if ($OutputDirectory -eq '') {
   $OutputDirectory = Join-Path $buildRoot ('packages/' + [Guid]::NewGuid().ToString('N'))
@@ -63,8 +73,9 @@ if (Test-Path -LiteralPath $outputRoot) {
 $stage = Join-Path $outputRoot 'pythian'
 $checkRoot = Join-Path $outputRoot 'consumer-check'
 $unitRoot = Join-Path $checkRoot 'units'
+$coreUnitRoot = Join-Path $checkRoot 'core-units'
 $binRoot = Join-Path $checkRoot 'bin'
-New-Item -ItemType Directory -Force $stage, $unitRoot, $binRoot | Out-Null
+New-Item -ItemType Directory -Force $stage, $unitRoot, $coreUnitRoot, $binRoot | Out-Null
 Copy-SourceDirectory (Join-Path $projectRoot 'src') (Join-Path $stage 'src')
 Copy-Item -LiteralPath (Join-Path $projectRoot 'LICENSE') -Destination $stage
 Copy-Item -LiteralPath (Join-Path $projectRoot 'packaging/README.md') -Destination $stage
@@ -91,15 +102,20 @@ if ($WithWfc) {
   Copy-Item -LiteralPath (Join-Path $wfcRoot 'LICENSE') -Destination $vendorRoot
   [IO.File]::WriteAllText((Join-Path $vendorRoot 'REVISION'), $wfcRevision + "`n")
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.wfc.lpr') -Destination $exampleRoot
+  Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.wfc.provider.lpr') -Destination $exampleRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.events.lpr') -Destination $exampleRoot
   $toolRoot = Join-Path $stage 'tools'
   New-Item -ItemType Directory -Path $toolRoot | Out-Null
   foreach ($toolName in @('pythian.learn.lpr', 'pythian.tools.files.pas',
-      'pythian.tools.features.pas', 'pythian.tools.journal.learning.pas')) {
+      'pythian.tools.features.pas', 'pythian.tools.journal.learning.pas',
+      'pythian.tools.annotations.export.pas', 'pythian.tools.annotations.sourceguard.pas',
+      'pythian.tools.annotations.catalog.pas', 'pythian.tools.annotations.proposal.pas',
+      'pythian.tools.annotations.review.pas', 'pythian.tools.annotations.contract.pas')) {
     Copy-Item -LiteralPath (Join-Path $projectRoot "tools/$toolName") -Destination $toolRoot
   }
 }
-$packageInfo = "Development source snapshot`nCompiler: $compilerVersion $compilerCpu-$compilerOs`nWFC: $wfcRevision`n"
+$packagingHash = (Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash.ToLowerInvariant()
+$packageInfo = "Development source snapshot`nBase source revision: $sourceRevision`nSource state: $sourceState`nDelivered identity: SHA256SUMS inventory (including this metadata)`nPackaging script SHA256: $packagingHash`nCompiler: $compilerVersion $compilerCpu-$compilerOs`nWFC: $wfcRevision`n"
 [IO.File]::WriteAllText((Join-Path $stage 'PACKAGE-INFO.txt'), $packageInfo)
 
 # Bind the delivered inventory before compression; verify extracted bytes before
@@ -140,8 +156,10 @@ $unitPaths = @((Join-Path $stage 'src'))
 $searchArgs = @('-Fu' + (Join-Path $stage 'src'))
 if ($WithWfc) {
   $unitPaths += Join-Path $stage 'adapters/wfc'
+  $unitPaths += Join-Path $stage 'tools'
   $searchArgs += '-Fu' + (Join-Path $stage 'adapters/wfc')
   $searchArgs += '-Fu' + (Join-Path $stage 'vendor/wfc/src')
+  $searchArgs += '-Fu' + (Join-Path $stage 'tools')
 }
 
 # Compile every delivered owned unit in one generated build driver, then run
@@ -153,16 +171,56 @@ $unitProbeText = 'program pythian_package_units;' + "`n" + '{$mode delphi}{$H+}'
   "`nuses`n  " + ($unitNames -join ",`n  ") + ";`nbegin`nend.`n"
 [IO.File]::WriteAllText((Join-Path $checkRoot 'pythian.package.units.lpr'), $unitProbeText)
 Copy-Item -LiteralPath (Join-Path $exampleRoot 'pythian.example.core.lpr') -Destination $checkRoot
-$compilerArgs = @('-B', '-Sa', '-Cr', '-Co', '-Ci', '-gl', "-FU$unitRoot", "-FE$binRoot") + $searchArgs
+$compilerArgs = $targetArgs + @('-B', '-Sa', '-Cr', '-Co', '-Ci', '-gl', "-FU$unitRoot", "-FE$binRoot") + $searchArgs
+$coreCompilerArgs = $targetArgs + @('-B', '-Sa', '-Cr', '-Co', '-Ci', '-gl', "-FU$coreUnitRoot", "-FE$binRoot", ('-Fu' + (Join-Path $stage 'src')))
 $executableSuffix = if ($compilerOs -eq 'win32' -or $compilerOs -eq 'win64') { '.exe' } else { '' }
+
+function Test-NativeConsumer([string]$Name, [string]$Prefix, [string]$BaseGain,
+    [string]$ChangedGain, [string]$Rate, [string]$Frames, [string]$Ratio) {
+  $consumer = Join-Path $binRoot ($Name + $executableSuffix)
+  & $consumer ($Prefix + '-base.wav') $BaseGain '731' > ($Prefix + '-base.log') 2>&1
+  if ($LASTEXITCODE -ne 0) { throw "Native consumer failed: $Prefix base" }
+  & $consumer ($Prefix + '-changed.wav') $ChangedGain '731' > ($Prefix + '-changed.log') 2>&1
+  if ($LASTEXITCODE -ne 0) { throw "Native consumer failed: $Prefix changed control" }
+  & $consumer ($Prefix + '-replay.wav') $BaseGain '731' > ($Prefix + '-replay.log') 2>&1
+  if ($LASTEXITCODE -ne 0) { throw "Native consumer failed: $Prefix replay" }
+  & (Join-Path $binRoot "pythian.tests.delivery.native$executableSuffix") `
+    ($Prefix + '-base.wav') ($Prefix + '-changed.wav') ($Prefix + '-replay.wav') `
+    $Rate '2' $Frames $Ratio > ($Prefix + '-verify.log') 2>&1
+  if ($LASTEXITCODE -ne 0) { throw "Saved-file control/replay proof failed: $Prefix" }
+  $oldHash = (Get-FileHash -LiteralPath ($Prefix + '-base.wav')).Hash
+  $failures = @(
+    @{ Arguments = @(); Output = '' },
+    @{ Arguments = @(($Prefix + '-bad-gain.wav'), '-1'); Output = $Prefix + '-bad-gain.wav' },
+    @{ Arguments = @(($Prefix + '-bad-number.wav'), 'NaN'); Output = $Prefix + '-bad-number.wav' },
+    @{ Arguments = @(($Prefix + '-bad-seed.wav'), $BaseGain, '4294967296'); Output = $Prefix + '-bad-seed.wav' },
+    @{ Arguments = @(($Prefix + '-base.wav'), $BaseGain, '731'); Output = '' },
+    @{ Arguments = @((Join-Path 'absent-parent' ($Prefix + '.wav')), $BaseGain, '731'); Output = Join-Path 'absent-parent' ($Prefix + '.wav') }
+  )
+  for ($case = 0; $case -lt $failures.Count; $case++) {
+    $arguments = $failures[$case].Arguments
+    & $consumer @arguments > ($Prefix + '-reject-' + $case + '.log') 2>&1
+    if ($LASTEXITCODE -eq 0) { throw "Bad input/output accepted: $Prefix case $case" }
+    if ($failures[$case].Output -ne '' -and (Test-Path -LiteralPath $failures[$case].Output)) {
+      throw "Rejected native consumer published an output: $Prefix case $case"
+    }
+    if ((Get-FileHash -LiteralPath ($Prefix + '-base.wav')).Hash -ne $oldHash) {
+      throw "Rejected native consumer changed an existing valid output: $Prefix case $case"
+    }
+  }
+}
 Push-Location $checkRoot
 try {
   & $compilerPath @compilerArgs 'pythian.package.units.lpr' > 'units-build.log' 2>&1
   if ($LASTEXITCODE -ne 0) { throw "Package unit closure failed; see $checkRoot/units-build.log" }
-  & $compilerPath @compilerArgs 'pythian.example.core.lpr' > 'core-build.log' 2>&1
+  & $compilerPath @coreCompilerArgs 'pythian.example.core.lpr' > 'core-build.log' 2>&1
   if ($LASTEXITCODE -ne 0) { throw "Core consumer build failed; see $checkRoot/core-build.log" }
   & (Join-Path $binRoot "pythian.example.core$executableSuffix") 'core.wav' > 'core-run.log'
   if ($LASTEXITCODE -ne 0) { throw 'Core consumer failed' }
+  Copy-Item -LiteralPath (Join-Path $projectRoot 'tests/pythian.tests.delivery.native.lpr') -Destination $checkRoot
+  & $compilerPath @coreCompilerArgs 'pythian.tests.delivery.native.lpr' > 'native-proof-build.log' 2>&1
+  if ($LASTEXITCODE -ne 0) { throw 'Native saved-file verifier compilation failed' }
+  Test-NativeConsumer 'pythian.example.core' 'core-control' '1' '0.5' '44100' '67032' '0.5'
   foreach ($exampleName in @('pythian.example.notes', 'pythian.example.midi.stream', 'pythian.example.instrument')) {
     Copy-Item -LiteralPath (Join-Path $exampleRoot ($exampleName + '.lpr')) -Destination $checkRoot
     & $compilerPath @compilerArgs ($exampleName + '.lpr') > ($exampleName + '-build.log') 2>&1
@@ -176,6 +234,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw "Example failed: $exampleName" }
   }
   if ($WithWfc) {
+    Copy-Item -LiteralPath (Join-Path $exampleRoot 'pythian.example.wfc.provider.lpr') -Destination $checkRoot
+    & $compilerPath @compilerArgs 'pythian.example.wfc.provider.lpr' > 'provider-build.log' 2>&1
+    if ($LASTEXITCODE -ne 0) { throw 'Caller-provider consumer compilation failed' }
+    Test-NativeConsumer 'pythian.example.wfc.provider' 'provider-control' '0.25' '0.5' '16000' '16000' '2'
     Copy-Item -LiteralPath (Join-Path $exampleRoot 'pythian.example.wfc.lpr') -Destination $checkRoot
     & $compilerPath @compilerArgs 'pythian.example.wfc.lpr' > 'wfc-build.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw "WFC consumer build failed; see $checkRoot/wfc-build.log" }
@@ -251,5 +313,7 @@ try {
 }
 Write-Output "Verified $($unitNames.Count) owned units and external consumers with $compilerVersion $compilerCpu-$compilerOs"
 Write-Output "Verified $($inventory.Count) content hashes plus SHA256SUMS after ZIP extraction"
+Write-Output "Base source revision: $sourceRevision ($sourceState)"
+Write-Output "Archive SHA256: $((Get-FileHash -LiteralPath $archivePath -Algorithm SHA256).Hash.ToLowerInvariant())"
 Write-Output "Source package: $archivePath"
 Write-Output "Consumer logs: $checkRoot"

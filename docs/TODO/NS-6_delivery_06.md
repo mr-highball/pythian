@@ -28,12 +28,15 @@ Starting evidence: [accepted native checkpoint](DONE/NS-6_delivery_02.md) ·
 [package script](../../tools/package.ps1) · [core example](../../examples/pythian.example.core.lpr) ·
 [packaging](../PACKAGING.md) · [consumer contract](../CONSUMER-CONTRACT.md).
 
-Execution status: ready for bounded implementation after this planning audit;
-the accepted earlier checkpoint does not qualify a current archive. Next deliverable: freeze the minimal example and verify the freshly extracted current
-source package. Closing evidence: inventories, declared target/CI runs, changed
-control output, deterministic replay/reload and focused failures. Stop at a
-missing target runner, nonreproducible input or broken extracted closure and
-record its unblock/repair condition.
+Execution status (2026-09-30): implementation batch 1 has passed local stable
+Win32/Win64 fresh core/WFC archive checks; independent final QA and exact-revision
+Linux acceptance remain required. The accepted earlier checkpoint does not
+qualify this candidate. Next deliverable: independently review and publish the
+frozen candidate, then verify its exact remote run. Closing evidence: inventories,
+declared target/CI runs, changed control output, deterministic replay/reload and
+focused failures. Stop at a missing target runner, nonreproducible input or broken
+extracted closure and record its unblock/repair condition. Keep OPEN/zero credit
+until every criterion and remote gate passes.
 
 **Acceptance Criteria:**
 
@@ -68,6 +71,47 @@ record its unblock/repair condition.
 - [NS-6_delivery_02.md — DONE](DONE/NS-6_delivery_02.md)
 
 **Dev Notes:**
+
+- 2026-09-30 batch 1: Big Boss selected this ready library slice after corpus_05
+  accepted and evaluation_01 AC1 closed while independent reference/calibration
+  remained blocked. Neo exclusively owns the core example, generic actual-WAV
+  verifier, package/build integration and public instructions/task/WORK; Ticket
+  Guy exclusively owns the new caller WFC-provider example. Existing provider,
+  source and vendor units remain read-only. Scope is create→declared control→
+  synthesis→save→actual saved-file reload, exact fixed-seed replay, meaningful
+  changed-control and failure boundaries, complete extracted portable/opt-in
+  WFC source closure/notices/pin and current artifact identity.
+- Candidate archives bind a base revision plus explicit dirty state and exact
+  inventory hashes; uncommitted candidate bytes are never identified by HEAD
+  alone. Both local stable Windows targets and the exact published revision's
+  stable Linux CI must pass. Core and WFC extracted consumers are two ready
+  components for independent Salty Boi QA. Keep the task OPEN with zero credit
+  through candidate publication; complete/account only after remote success.
+  A missing target runner or failed closure/control/replay stops that scope
+  with its exact unblock condition. Our extracted tests are agent-run and do
+  not count as actual independent delivery_07 use. No new inference, source
+  acquisition or stopped calibration investigation is authorized.
+- Current submitted implementation QA failures: 0. Two failed submissions
+  transfer directly to Big Boss for repair. This is one active implementation
+  batch; earlier stopped scientific counters remain unchanged.
+- Local candidate archive checks passed stable FPC 3.2.2 i386-win32 and
+  x86_64-win64: 98 core units/107 delivered inventory entries and 144 opt-in
+  owned units/255 entries. ZIP extraction verifies every inventory length/hash
+  before compilation; core consumers use only extracted `src` and fresh separate
+  unit output. Core gain 1→0.5 retains 44,100 Hz/stereo/67,032 frames with maximum
+  decoded PCM error 1.52587890625E-5; provider gain 0.25→0.5 retains
+  16,000 Hz/stereo/16,000 frames with maximum error 3.0517578125E-5. Fixed-input/
+  seed saved-file replay is exact on each target. Both paths exercise malformed
+  input, gain/seed bounds, missing parents and preservation of existing outputs.
+  These are candidate mechanical results, not final QA/remote acceptance.
+- Published base `109696d93eec3832be701fbcc694f5122d911816` passed its maintained
+  Linux integration step but failed its WFC extracted-package step: the reviewed
+  catalog adapter's native annotation export dependency was absent. A frozen
+  snapshot reproduced that exact missing unit on stable Win32. The candidate
+  includes its complete six-unit native annotation closure/notices and the
+  extracted tools search path; all delivered owned units now compile. HTTP,
+  browser and service sources remain excluded; WFC source/pin remain unchanged.
+  This existing delivery criterion owns the repair, not a generic WFC gap.
 
 - 2026-09-29 current complete-goal credit basis: this task owns 8 NS-6
   goal points (+0.80 overall) by deliverable value. Nine open NS-6
