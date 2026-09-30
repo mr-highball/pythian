@@ -12,10 +12,10 @@ Current basis: [full-goal reassessment](../REBALANCE-2026-09-29.md#current-credi
 No credit is earned until every criterion and prerequisite passes final QA.
 
 Execution status (2026-09-30): the caller source/effect mechanical component
-passed independent final QA. Checked stable Win32/Win64 and fresh extracted
-core/WFC candidate archives pass; no library change was needed. The next
-deliverable is exact clean-revision archive qualification and published Linux evidence,
-then actual independent consumer use and listening. Stop on a new contract gap;
+passed independent final QA. Clean committed core/WFC archives and the exact
+published revision pass stable Win32, Win64 and Linux; no library change was
+needed. The next deliverable is actual independent consumer use and listening.
+Stop on a new contract gap;
 full task remains OPEN and earns zero credit.
 Closing evidence: exact external source/package/run identities, public consumer behavior and all criterion results below. Consuming another goal earns no duplicate credit.
 
@@ -56,6 +56,31 @@ independent user or listening acceptance follows from these agent-run checks.
 - [NS-6_delivery_06](DONE/NS-6_delivery_06.md)
 
 **Dev Notes:**
+
+- 2026-09-30 exact delivered mechanical evidence: reviewed source revision
+  `912f0370e53bf22187f6af101f52a531406a713b` was committed, qualified in four
+  clean Windows archives and normally pushed without changing those bytes.
+  Stable FPC 3.2.2 core/WFC archives on Win32/Win64 each pass extracted-only
+  caller conformance (163115 checks), complete content hashes and clean-revision
+  metadata: 98 owned units/111 inventory entries for core, 144/259 for WFC.
+  [Exact Linux run 36684620776](https://github.com/mr-highball/pythian/actions/runs/36684620776),
+  job 109787507896, passes maintained integration, both extracted packages and
+  uploaded artifact 11082914836. Both actual downloaded Linux ZIPs pass every
+  inventory hash and the same 163115 caller checks. Linux allocator/free block
+  counts and both byte totals match; the final zero-unfreed line is truncated
+  in the uploaded logs, so it is not described as a complete heap report.
+  Actual artifact identities are retained in ignored
+  `build/caller-extensions/final-912f037-artifacts.json` and
+  `build/caller-extensions/ci-912f037/verified-artifacts.json`.
+  Linux core ZIP SHA256:
+  `46a492b2e88c4ca94927f41c3022fd030b61189a4bcf9a53cbfbdb5da0923c6a`;
+  WFC ZIP SHA256:
+  `151f14e517930baf8551db76f3c26140c0b95d00cb7dcb5d400d31f7f7f58792`.
+  One numbered default source/effect WAV from the clean Win64 core consumer
+  is queued as manual decision 8, with exact source/package/WAV hashes and
+  mix 0.35, wet 0.3, seed 731, block 257, 16000 Hz stereo/16240 frames.
+  Actual listening and outside use remain open; zero task credit and all prior
+  scientific counters remain unchanged.
 
 - 2026-09-30 Salty Boi independent mechanical QA passed: fresh core ZIP extraction
   compiled only extracted core/examples with stable FPC 3.2.2 Win32/Win64;

@@ -8,9 +8,9 @@ Completion credit: 3 goal percentage points (0.75 overall points).
 Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
 Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
 
-Execution status (2026-09-29): **Reference-blocked; source-screen sequence stopped**.
+Execution status (2026-09-30): **Reference-blocked; publisher-contract comparison stopped at the physical gate**.
 Next deliverable: Close the remaining quiet audible-tail recorded gate with a distinct source-bound tail and disjoint same-source nonzero rest. Preserve the accepted MAESTRO contrasts and existing satisfied observation/consumer criteria.
-Closing evidence and stop condition: Prospectively frozen source/reference identities, meaningful quiet-tail/rest controls and recorded false-active/missed-active/unknown results. Berg and NIGENS routes remain stopped; another metadata-only scan is not a criterion-closing batch.
+Closing evidence and stop condition: Prospectively frozen source/reference identities, meaningful quiet-tail/rest controls and recorded false-active/missed-active/unknown results. Berg and other rejected source/window families remain stopped. After independent publisher-contract correction, NIGENS selected and decoded its fixed source but found an exactly zero scored rest; the tail also exceeds the quiet bound. It stopped before presence scoring. No Win32 replay or source, row, format, window or threshold substitution is authorized. A further route needs materially different independently supported quiet-tail/nonzero-rest evidence, not another selector or metadata-only screen on this stopped source. All original setup failures remain below.
 Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
 This reassessment closes no product criterion and preserves prior failures below.
 
@@ -115,6 +115,133 @@ from these four MAESTRO contrasts.
 - [NS-3_notes_04.md](DONE/NS-3_notes_04.md)
 
 **Dev Notes:**
+
+- 2026-09-30 the single released publisher-contract Win64 run is a terminal
+  physical-source nonpass, exit 1 after 66,125 ms including excluded archive
+  hashing. Correct pairing selected piano `PianoComedy_DIGIP05-79.wav`, row 1.
+  The annotation SHA256 is
+  `17e0791a4382119d6b1d8aa6cb9a568890b77bf929a5062c90ca5f15ce49cc93`;
+  original WAV SHA256 is
+  `3341ac0bc4a0ac5b201953801f82bceff19709d7e0c2825931866ef16b7a369c`,
+  1,761,324 bytes, 44,100 Hz stereo and 440,320 frames. The scored rest
+  `[145437,150950)` is exactly zero, so the physical gate stops before any
+  maintained presence observation. Recorded tail RMS 0.17872706091077148 also
+  exceeds half of earlier-active RMS 0.17289724768881970; no rescan or tuned
+  interpretation is needed. The ZIP listing/extraction stage took 734 ms with
+  7,503,872 peak private bytes, within its frozen limits. The decode-stage final
+  resource report was not reached and is not qualified. Heap accounting is
+  leak-free. Log SHA256 is
+  `03d86a3f364f33b33c36595d5501d0d7fe71a6a4ef086a61e0f33ed53b6bc1bb`;
+  exact identities/log and private selected original are under the publisher-
+  contract packet's `win64-recorded/`. Big Boss stopped with no Win32 replay,
+  alternative file/row/format/window/threshold or further archive inspection.
+  Salty's final same-batch result-record QA passed: exact identities, physical
+  stop before observation, ZIP-only resource qualification and the retained
+  exposure/counters agree with the code and log. The later quiet-ratio guard
+  was not executed; its recorded inputs independently fail that bound. No
+  archive or WAV was reopened for this audit. This correctly implemented
+  physical rejection is separate from implementation QA failures. AC3 and all
+  task credit remain open; the retained nonclosing lower bound is now at least
+  four, with original exposure uncertainty and all prior stops preserved.
+
+- 2026-09-30 Big Boss's bounded public-source reassessment found a documented
+  setup mismatch. The publisher-linked authors' supplement uses AMLTTP; its
+  pinned [annotation reader](https://github.com/TWOEARS/Auditory-Machine-Learning-Training-and-Testing-Pipeline/blob/03f148c1df1c6912d1f7662172b895f5093e227d/src/tools/IdEvalFrame.m#L109)
+  appends `.txt` to the full WAV filename and permits a trailing event type.
+  Our frozen setup assumed a basename without `.wav` and exactly two fields.
+  No archive, annotation or audio was accessed during this documentation/code
+  assessment. Neo reviewed and agreed with the narrowly scoped correction.
+  A separate private policy, SHA256
+  `6e41a354a82495cc2fedf5cf28a3bcbc888ee15deca6d074deb3956e8cca052e`,
+  binds the original scientific policy and corrects only unique full-WAV-name
+  pairing and an optional absent/exact `piano` type. Ambiguous pairing, other
+  types and extra fields reject; no alternative suffix is tried. The original
+  policy/scanner/result remain unchanged. All source selection ordering,
+  event/window/physical/scoring/resource rules and earlier stopped families
+  remain binding. Big Boss owns the copied Pascal scanner and source-free
+  controls under ignored `build/nigens-publisher-contract-20260930/`.
+  Frozen scanner SHA256 is
+  `9aefa9b426b5ae75cc73cb3493a7cd9de6a7eb90c58a841318b046a4c00ea79a`;
+  Big Boss's checked stable Win32/Win64 controls and invalid invocations pass
+  with four complete zero-leak runtime logs. Salty independently rebuilt both
+  targets and passed all controls/invalid calls with four zero-leak logs, exact
+  identities and unchanged scientific gates; it also verified the preceding
+  stopped run's log and code reachability without reopening the archive.
+  This changes the next action from an unsupported format guess to an
+  independently documented setup contract. It is not a new acoustic hypothesis,
+  fresh held-out source or counter reset. Before any archive access, checked
+  Win32/Win64 controls and Salty preflight must pass, then Big Boss must record
+  a separate release. Those preflight gates now pass. Big Boss separately
+  releases exactly one Win64 comparison under these frozen identities; any
+  nonpass stops without substitution, and only a pass permits the same frozen
+  Win32 replay. The deliverable remains the actual quiet-tail/rest
+  comparison; source-free preparation earns no criterion or task credit.
+  The nonclosing lower bound remains at least three.
+
+- 2026-09-30 the released repaired Win64 run returned exit 1:
+  `no eligible piano annotation/WAV pair`. The original archive passed its
+  publisher MD5 gate and has SHA-256
+  `dab6bfa48edb5accda25adead5135608df44a297d82973cd9fc3a6d75cf537c8`
+  at 2,174,918,847 bytes. The directory contained 1,654 entries and 29 names
+  passing the frozen ASCII piano-WAV selector; each had zero same-stem `.txt`
+  matches. No annotation member was extracted or parsed, no WAV member was
+  extracted or decoded, and no presence observation was made. This is a
+  pairing-contract nonpass, not evidence that the collection has no annotations
+  or that the acoustic hypothesis fails. The run took 78,941 ms including
+  excluded whole-archive hashing and reported zero heap leaks; it did not reach
+  the source-stage measurement/resource report, so those bounds are unqualified.
+  The exact log SHA-256 is
+  `dbd546458b7fa3367e2a1ad355afe596e6dfd1f2ebeed2eee38b2121876d5ad4`;
+  log and executable/policy/source identities are under
+  `build/nigens-perceptual-tail-repair-20260930/win64-recorded/`.
+  Big Boss stopped without Win32 recorded replay, substitutions or further
+  archive inspection. Salty subsequently verified this stopped result's exact
+  identities and pre-extraction code reachability without archive access. This bounded
+  completion batch closed no criterion; the retained nonclosing lower bound
+  is now at least three. Original exposure uncertainty and earlier scientific
+  stops remain. AC3 and all task credit stay open.
+
+- 2026-09-30 Big Boss reassessment distinguishes the two preceding nonclosing
+  results: the fixed Berg screen selected no candidate; NIGENS was interrupted
+  for an omitted whole-basename ASCII check and produced no scientific result.
+  The original policy and scanner hashes below still match, the source log is
+  empty, and no selected output exists. Buffered output leaves prior annotation
+  and media exposure unknown; this cannot become a fresh held-out claim.
+  The author's [event-label method](https://arxiv.org/pdf/1902.08314) still
+  supports the frozen perceptual-event versus silent-gap distinction; it does
+  not establish that the selected recording will pass the quiet/nonzero gates.
+  Under the [bounded-deliverable checkpoint](../TASKFLOW.MD#task-size-and-investigation-stop-points),
+  Big Boss owns a copied private scanner in
+  `build/nigens-perceptual-tail-repair-20260930/` and the repair preflight.
+  Preserve the original policy/scanner/archive unchanged. Enforce the existing
+  ASCII rule for WAV and annotation basenames and verify ASCII/non-ASCII
+  boundary cases plus the existing source-free controls on stable Win32/Win64.
+  Salty's first preflight passed that repair but found two existing policy
+  mismatches before recorded access: separate 120-second listing/extraction
+  allowances and fixed twelve-decimal measurements that could erase tiny
+  nonzero values. Big Boss also repairs the shared elapsed-time budget and
+  round-trip measurement serialization, with source-free boundary controls.
+  The ASCII-only repair is retained as a withdrawn preflight version; these
+  are implementation/evidence defects, not a rejected scientific result.
+  A source-free development check then caught Win64 general-format output
+  shortening a declared 17-digit value. The Pascal scientific writer passes
+  exact Double text round trips, including tiny nonzero values, on both stable
+  targets; the failed formatting version and logs remain in the repair folder.
+  Salty independently passed the final repair SHA-256
+  `06df85c8918508442e1425b0831ff0a09a51106306600bb51587f862cd4e73ca`
+  on stable Win32/Win64, including the combined budget and exact Double text
+  controls; four independent runtime logs were leak-free. Evidence is under
+  `build/qa-caller-linux-and-nigens-repair/`. Big Boss releases one frozen Win64
+  comparison after recording this decision; only a pass permits the unchanged
+  Win32 replay needed for cross-target qualification. Final recorded-result QA
+  and all original criteria remain mandatory. No recorded access preceded this
+  repair review. The comparison retains
+  the exact frozen selector, source/window/threshold/resource rules and unchanged
+  maintained presence observation, with no fallback or replacement source.
+  This explicit repair decision supersedes only the historical no-repair ban
+  for the NIGENS implementation abort. Other scientific stops, at-least-two
+  nonclosing count, exposure uncertainty and historical failure evidence remain;
+  no criterion or task credit follows from this reassessment or the repair.
 
 - 2026-09-28 the distinct NIGENS perceptually annotated piano-tail route was
   **aborted without a source result**. The frozen private policy SHA-256 was

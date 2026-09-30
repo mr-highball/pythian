@@ -18,9 +18,10 @@ Big Boss assigns Ticket Guy the bounded mechanical component of
 [NS-2_extension_01](TODO/NS-2_extension_01.md): the new caller unit, consumer,
 conformance source and [offline guide](CALLER-EXTENSIONS.md), its task, plus
 `tools/build.ps1`, `tools/package.ps1`, `packaging/README.md` and this handoff.
-No library, adapter, vendor or ledger edits belong to this batch. It is the one
-active component-closing batch; source and finite feed-forward delay are ready
-for combined Salty QA. Two failed implementation submissions transfer directly
+No library, adapter, vendor or ledger edits belong to this batch. Source and
+finite feed-forward delay passed combined Salty QA and exact artifact
+qualification. Neo has begun the separately approved caller-provider contract
+under [NS-4_providers_01](TODO/NS-4_providers_01.md). Two failed implementation submissions transfer directly
 to Big Boss; current submitted failures are zero. No helper, service, browser,
 playback or new toolchain was used.
 
@@ -41,8 +42,7 @@ consumer, conformance source and offline guide; their inventories contain 111
 commands, frozen hashes and all results stay under ignored
 `build/caller-extensions/`. Accepted delivery_06 artifacts below are untouched.
 AC2/3 mechanical evidence and AC1/5 package/guide closure passed independent QA; actual
-outside use and AC4 listening remain open. Full task credit stays zero. Matching
-Linux evidence must follow the exact newly published revision, not an older run.
+outside use and AC4 listening remain open. Full task credit stays zero.
 Stop and escalate a newly demonstrated public-contract gap before library edits.
 
 Final Salty Boi mechanical QA passed both ready components using fresh extracted
@@ -53,10 +53,136 @@ four candidate archive results were reviewed; no unchanged broad suite repeated.
 Script parsing, 43 local links including emitted package navigation, notices,
 privacy and the unchanged 78-task/160-edge ledger passed: 45 open / 33 DONE,
 47.10 credited / 52.90 remaining. Failed implementation QA submissions remain zero.
-Ignored evidence is under `build/qa-caller-extensions/`. Commit only the nine
-reviewed paths, then qualify four archives from that exact clean revision before
-pushing. Outside use/listening and matching published Linux remain separate;
+Ignored evidence is under `build/qa-caller-extensions/`. The nine reviewed paths
+were committed and normally pushed as
+`912f0370e53bf22187f6af101f52a531406a713b`; local/remote agreement and clean
+publication were verified before subsequent work. Four Windows archives were
+qualified from that exact clean commit before push, never rebuilt from later
+unreviewed provider edits. Actual archive/inventory identities are in ignored
+`build/caller-extensions/final-912f037-artifacts.json`.
+[Exact Linux run 36684620776](https://github.com/mr-highball/pythian/actions/runs/36684620776)
+and job 109787507896 succeeded; actual uploaded source artifact 11082914836 was
+downloaded and both inner ZIPs verified (core 111/WFC 259 inventory entries,
+clean revision, FPC 3.2.2 Linux and 163115 extracted caller checks each).
+Linux core/WFC ZIP SHA256 values are respectively
+`46a492b2e88c4ca94927f41c3022fd030b61189a4bcf9a53cbfbdb5da0923c6a` and
+`151f14e517930baf8551db76f3c26140c0b95d00cb7dcb5d400d31f7f7f58792`;
+ignored `build/caller-extensions/ci-912f037/verified-artifacts.json` retains every
+length/hash. Linux allocator/free counts match; uploaded final zero-unfreed
+lines are truncated, so a complete heap report is not claimed.
+Outside use and actual listening remain separate;
 NS-2_extension_01 stays open with zero task credit.
+
+Manual queue decision 8 retains one numbered default caller source/effect WAV
+from the clean Win64 core archive, with source/package/WAV hashes and declared
+mix 0.35, wet 0.3, seed 731, block 257, 16000 Hz stereo/16240 frames. Its verdict
+is pending. Only pending phone decision 7's owner was corrected to the current
+split task NS-6_authoring_02; its target/question/state and six reviewed rows
+were preserved. The ignored queue has two pending useful decisions; no new
+playback/service check or user notification was performed.
+
+## Bounded interrupted scanner repair — 2026-09-30
+
+Big Boss's read-only reassessment found that the frozen NIGENS route was stopped
+by an annotation-basename ASCII-policy implementation failure, with zero source
+log rows and no selected output. That implementation abort does not reject the
+unchanged perceptual tail/rest hypothesis. Big Boss owns only
+`docs/TODO/NS-3_notes_05.md` and a copied scanner under ignored
+`build/nigens-perceptual-tail-repair-20260930/`; the original frozen policy,
+scanner and archive stay untouched. The repair adds the missing basename check
+and source-free controls under the same source, window, threshold and budget
+rules. Salty's first source-free preflight accepted the ASCII correction but
+rejected separate timers exceeding the frozen combined 120-second budget and
+fixed decimal output losing tiny measurements. Big Boss corrected only those
+implementation mismatches; v3 SHA256
+`06df85c8918508442e1425b0831ff0a09a51106306600bb51587f862cd4e73ca`
+passed Salty's independent Win32/Win64 shared-budget, exact metric-roundtrip,
+ASCII and invalid-invocation controls, with four leak-free runtime logs. Original
+policy/scanner/archive and all scientific selections remain unchanged.
+Big Boss releases one Win64 execution of exactly the original frozen comparison,
+with no selector/window/threshold/policy changes or fallback; only a passing
+comparison permits the same frozen Win32 replay. Any source, physical or scorer
+failure stops without substitution. The one Win64 execution exited 1 after
+78941 ms (including excluded full-archive hashes): 1654 directory entries,
+29 eligible ASCII piano WAV names, each with zero matches under the unchanged
+same-stem `.txt` pairing rule. It stopped at source admission without extracting
+or parsing annotation/WAV payload, selecting output or scoring any observation.
+This is a frozen pairing-contract nonpass, not evidence that the dataset lacks
+annotations or that the acoustic hypothesis fails. The 2774-byte run log is
+leak-free; source-stage timing/peak reporting was not reached, so full resource
+qualification is not claimed. Archive SHA256 is
+`dab6bfa48edb5accda25adead5135608df44a297d82973cd9fc3a6d75cf537c8`;
+log SHA256 is
+`dbd546458b7fa3367e2a1ad355afe596e6dfd1f2ebeed2eee38b2121876d5ad4`.
+Exact private evidence is under the repair's `win64-recorded/` directory.
+No Win32 replay, substitution, archive reinspection or pairing-schema retry is
+authorized under that original policy. Salty subsequently verified its exact
+identities and pre-extraction code reachability without reopening the archive.
+The separately justified publisher-contract reassessment follows below.
+AC3 remained open with no criterion closed; this checkpoint retained at least
+three nonclosing batches and unknown/development exposure.
+Prior nonclosing counts, exposure uncertainty and every other stopped source
+family remain intact; no fresh held-out claim or inference acceptance follows.
+This is a bounded completion of interrupted implementation using existing
+evidence/tools. The owning task's tracked delta remains outside the source/effect
+and provider commits until its separate final QA. The one Big Boss source-free
+preflight rejection is retained separately from scientific nonclosing counts.
+
+Big Boss subsequently found independent publisher-linked producer documentation:
+the pinned AMLTTP `03f148c1df1c6912d1f7662172b895f5093e227d` reader appends
+`.txt` to the full sound filename and supports onset/offset with an optional
+type field. That supports a narrowly versioned setup-contract correction, not a
+new source/window/threshold search. Big Boss owns the new private policy/scanner
+under ignored `build/nigens-publisher-contract-20260930/`: unique full WAV
+basename plus `.txt`, optional absent or exact case-insensitive `piano` type;
+all ordinal source selection, event/window/physical/scoring/budget gates remain
+fixed. Policy SHA256
+`6e41a354a82495cc2fedf5cf28a3bcbc888ee15deca6d074deb3956e8cca052e`
+and scanner SHA256
+`9aefa9b426b5ae75cc73cb3493a7cd9de6a7eb90c58a841318b046a4c00ea79a`
+are frozen for independent source-free preflight. Big Boss's stable Win32/Win64
+controls and invalid invocations pass with four leak-free logs; recorded run
+authorization is false. Salty will audit the preceding stopped log/identities
+and this changed setup contract without archive access or replay. Original
+evidence, unknown/development exposure, counters at least three and zero credit
+remain intact; no publication or recorded comparison precedes that review.
+
+Salty subsequently passed the publisher-contract source-free preflight on both
+stable targets (four leak-free logs), exact policy/scanner identities, prior
+recorded-log reachability and the scoped records/ledger. After that review,
+Big Boss releases one Win64 comparison under exactly policy `6e41a354...` and
+scanner `9aefa9b4...` above; no scientific selector, window, threshold, gate or
+fallback changes. Only a passing comparison permits the same frozen Win32
+replay. A recorded nonpass stops without substitution. This is the explicit
+pre-execution release, not a result, criterion closure or credit change; final
+recorded-evidence review remains required.
+
+The released publisher-contract Win64 comparison exited 1 after 66125 ms
+(including archive hashes), selecting `NIGENS/piano/PianoComedy_DIGIP05-79.wav`,
+annotation row 1. Correct producer pairing reached actual physical gates:
+the disjoint rest `[145437,150950)` is exact zero, and measured tail RMS about
+0.178727 versus earlier RMS about 0.172897 also fails the frozen quiet-half
+gate. It stopped before presence inference; no score or criterion closed.
+WAV SHA256 is
+`3341ac0bc4a0ac5b201953801f82bceff19709d7e0c2825931866ef16b7a369c`
+(1761324 bytes, 44100 Hz stereo, 440320 frames); annotation SHA256 is
+`17e0791a4382119d6b1d8aa6cb9a568890b77bf929a5062c90ca5f15ce49cc93`.
+ZIP listing/extraction took 734 ms with 7503872-byte peak, qualifying that
+source stage; final decode resource reporting was not reached, so complete
+resource qualification is not claimed. The leak-free log SHA256 is
+`03d86a3f364f33b33c36595d5501d0d7fe71a6a4ef086a61e0f33ed53b6bc1bb`,
+with full measured metrics retained in ignored `win64-recorded/` evidence.
+This is a correctly implemented physical-source nonpass, not an implementation
+QA failure. No Win32 replay or new source/row/window/threshold/format retry is
+authorized. Salty's independent same-batch log/identity/reachability/result
+review passed without archive or WAV access: the zero-rest guard stops before
+presence observation, and the later quiet guard is unexecuted although its
+logged inputs also fail its bound. Only ZIP-stage resource qualification is
+claimed. Final task/work record links and scoped diff checks pass. The
+nonclosing lower bound is now at least four, with original exposure still
+unknown/development and no credit change. Big Boss freezes these evidence
+records for their separate documentation publication; unreviewed caller-
+provider implementation remains outside that publication.
 
 ## Current minimal native package — 2026-09-30
 
@@ -322,10 +448,14 @@ Start from NS-5, currently 14%, following real prerequisites:
 - [Current minimal package](TODO/DONE/NS-6_delivery_06.md) is accepted at its
   exact frozen artifact revision. [Actual independent use](TODO/NS-6_delivery_07.md)
   has a concrete packet but needs a willing non-agent reviewer; our checks do
-  not count. Ticket Guy's next proposed library component is caller source/effect
-  conformance/example/guide, with exact files reserved before edits. Big Boss
-  retains the harder custom-provider architecture judgment. Actual external
-  extension/listening remains unearned; no inference restart is authorized.
+  not count. Caller source/effect conformance/example/guide is mechanically
+  qualified at exact source/artifact revision `912f037`; actual outside use and
+  listening remain open. Neo implements the approved custom-provider
+  registration/admission/persistence/blend contract, with Ticket Guy's two
+  external harmonic-balance example files now frozen. Big Boss retains chief
+  architecture/final judgment and owns only the narrowly versioned publisher
+  setup correction above. Other stopped inference routes remain stopped;
+  no further recorded comparison follows without its explicit release.
 
 Before any batch name the exact criterion, deliverable, closing evidence and
 stop condition. This replan does not authorize a new inference experiment
@@ -336,7 +466,7 @@ without its changed-evidence condition.
 | Owner | Current stop / missing evidence | Counter and unblock condition |
 | --- | --- | --- |
 | [notes_01](TODO/NS-3_notes_01.md) | Odd/even physical feasibility did not transfer: blind Spring candidate proposed zero corrections. | At least two nonclosing batches in the retained history. A materially different independently supported observation must protect low/short/quiet notes; no threshold/window/range variant. |
-| [notes_05](TODO/NS-3_notes_05.md) | Quiet audible-tail gate remains; Berg found no candidate, NIGENS aborted after a scanner-policy defect. | At least two nonclosing source batches. Distinct supported audible tail plus disjoint same-source nonzero rest required; no new metadata-only screen on stopped routes. |
+| [notes_05](TODO/NS-3_notes_05.md) | Quiet audible-tail gate remains; Berg found no candidate. Corrected publisher pairing reached row 1, then exact-zero rest and nonquiet tail rejected the source before presence inference. | At least four nonclosing source batches; original exposure unknown/development. Distinct supported audible tail plus disjoint same-source nonzero rest still required. No Win32 replay or source/row/window/threshold/format retry; further route needs independently supported changed evidence. |
 | [tempo_04](TODO/NS-3_tempo_04.md) | Frozen event graph failed missing120; recorded candidate/pulse references still required. | Existing nonclosing checkpoint remains. New justified physical candidate evidence; no terminal-extrapolation variants. |
 | [context_01](TODO/NS-3_context_01.md) | Profile/dictionary approaches rejected; tonal activity/tonic evidence missing. | Existing nonclosing checkpoint remains. New independently supported observation and prospective key/change/coverage gates. |
 | [authoring_02](TODO/NS-6_authoring_02.md) | Actual current physical-phone play/Save and complete operator matrix remain open. | Host/device and exact QA firewall rule are external prerequisites; inspect current local configuration rather than reusing historical addresses/PIDs. |
@@ -356,7 +486,9 @@ catalog roots and toolchain paths belong in local configuration/ignored build
 records, not public instructions. Do not stop or restart any process using an
 old process ID from the historical work record.
 
-The last historical manual-review ledger reported two substantial pending
-reviews. This assessment did not query or modify the live catalog, so that
-count is not a current observation. Preserve the operator's service and data.
+The ignored manual-review ledger currently has two pending decisions: physical
+phone transport/cue playback (7, now attributed to authoring_02) and caller
+source/effect listening (8). Reviewed rows remain history. No live operator
+catalog, service, device or playback was queried or changed by this coordination;
+preserve the operator's service and data.
 The prior research stop state is independent of this task's replan.
