@@ -45,7 +45,8 @@ Windows runtime identities remain recorded; fresh Win32/Win64 compile checks
 pass, and actual Linux execution remains a CI check. See
 `build/studio-supervisor-unix-import/VALIDATION.md` for that freeze exception.
 
-Current submitted implementation failures are native **0**, browser **0**.
+Current submitted implementation failures are Windows native **0**, browser **0**,
+and Linux CI **1** for studio_02 (Neo owns the repair).
 Preserved test-runner timing/path/oracle corrections did not change production
 code or erase earlier task failures. This batch closes criteria and four tasks;
 the consecutive nonclosing-batch count is **0**. Final browser verdict SHA256
@@ -61,8 +62,20 @@ are preserved; LAN Studio, localhost session/source/project routes and the
 capture worklet return HTTP 200. The earlier build and catalog were backed up
 under ignored `build/studio-chief/`; local launch settings and health evidence
 stay there. No firewall rule or personal browser was changed. This read-only
-deployment check is not a physical-device or musical verdict. Publication and
-exact-revision Linux CI verification follow this reconciled checkpoint.
+deployment check is not a physical-device or musical verdict.
+
+**Publication follow-up — Big Boss:** `35a49b7d287a5c22f25d025c595c5b5418873a3b`
+was published to `hello-pythian`. Its [Linux CI run](https://github.com/mr-highball/pythian/actions/runs/36818040705)
+failed compiling the supervisor's non-Windows `ProcessAlive`: `ESrch` is not an
+FPC 3.2.2 identifier. Neo's bounded repair uses the declared `ESysESRCH` constant;
+Windows statements and the live reviewed assets are unchanged. Failure logs,
+source proof and fresh checked Win32/Win64 compile results are retained in
+`build/studio-supervisor-errno-repair/REPAIR.json`. This is studio_02's first
+implementation CI failure in this sequence, not a scientific rejection or a
+new work batch. Existing Windows engineering acceptance and credit remain
+scoped to their evidence; Linux requalification and final handoff require a
+passing run of the repaired published revision. Salty reviews this correction
+within the same batch before publication. No further criterion credit is added.
 
 <a id="current-priority-decision--2026-09-30"></a>
 ## Studio batch opening decisions — 2026-09-30

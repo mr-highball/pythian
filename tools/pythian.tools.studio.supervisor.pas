@@ -109,7 +109,7 @@ begin
     CloseHandle(LHandle);
   end;
   {$ELSE}
-  Result := (fpKill(AId, 0) = 0) or (fpGetErrno <> ESrch);
+  Result := (fpKill(AId, 0) = 0) or (fpGetErrno <> ESysESRCH);
   {$ENDIF}
 end;
 

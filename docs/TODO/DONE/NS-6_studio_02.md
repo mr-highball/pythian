@@ -75,6 +75,20 @@ inferred/reference-event learning retain their separate acceptance.
 
 **Dev Notes:**
 
+- 2026-10-01, Big Boss: the first published Studio revision `35a49b7` failed
+  [Linux CI](https://github.com/mr-highball/pythian/actions/runs/36818040705)
+  because the supervisor used undeclared `ESrch` in its non-Windows branch.
+  Neo owns the bounded `ESysESRCH` repair, verified against FPC 3.2.2 sources.
+  Fresh checked Win32/Win64 compile checks pass; no Windows statement or live
+  review asset changes. Evidence and exact identities are retained in
+  `build/studio-supervisor-errno-repair/REPAIR.json`. Count this as implementation
+  CI failure **1** for this task; preserve the earlier zero-failure Windows and
+  browser results as scoped history. Salty's same-batch correction review and
+  exact repaired-revision Linux CI remain required before final handoff. The
+  accepted Windows engineering outcome and its credit do not imply a Linux
+  pass or musical acceptance. A second failed implementation submission
+  transfers implementation and evidence to Big Boss under the task workflow.
+
 - 2026-10-01, Neo: Big Boss accepts all five criteria after Salty's final
   engineering PASS. Retained native tests prove two projects and an actual
   changed-source batch, model reload/replay, source rejection, partial-seed
