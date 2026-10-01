@@ -78,6 +78,16 @@ failures; do not infer actual listening from a screenshot or compilation.
 
 **Dev Notes:**
 
+- 2026-10-01, Big Boss, operator launcher repair: the user's Windows
+  PowerShell restart failed before any mutation because the outer array wrapper
+  around `ConvertFrom-Json` yielded one nested array instead of fourteen assets.
+  Direct assignment fixes the ignored `build/studio-library-lazy/` launcher.
+  Read-only `-CheckOnly` passes from the system-directory working location in
+  explicit Windows PowerShell 5.1.19041.6456 and PowerShell 7.6.5, including the
+  frozen artifact identities and existing local configuration. No native/web
+  artifacts changed; no server restart or browser check was performed. This
+  root-owned handoff failure is separate from Neo's recorded fixture failure 1.
+  Task and credit remain unchanged; the same operator restart command applies.
 - 2026-10-01, Salty Boi / Neo / Big Boss, portable repair accepted:
   `d011ac0881b7351b7e404adb78509f439aa5e3b2` changes only the discovery fixture
   and evidence notes. Independent checked Win32 and Win64 runs pass **63**

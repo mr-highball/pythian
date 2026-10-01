@@ -55,10 +55,21 @@ All **2,624** existing catalog metadata records remain byte-identical; five
 source size/time records are unchanged. Full audio hashes were not recomputed
 for this preservation check. The native HTTP client and an operator-run review
 launcher are prepared under the same ignored evidence directory. The launcher
-is syntax/static-reviewed only, has not restarted the service, and refuses to
+has passed read-only preflight on Windows PowerShell 5.1 and PowerShell 7,
+has not restarted the service through the agent, and refuses to
 stop a different command/catalog or a service with pending jobs/active workers.
 Salty identified and Big Boss repaired its initial missing command/catalog
 ownership check before handoff. No task credit is earned from the checkpoint.
+
+The operator's first restart attempt stopped at the asset-count check before
+any service change. Big Boss repaired the launcher: Windows PowerShell 5.1
+wraps `@(ConvertFrom-Json ...)` as one nested array, while direct assignment
+exposes the fourteen manifest entries on both tested versions. Explicit
+Windows PowerShell 5.1.19041.6456 and PowerShell 7.6.5 executions from the
+operator's system-directory working location pass `-CheckOnly`, including all
+artifact hashes and existing TLS/catalog/network checks. Restart and browser
+behavior are still unexecuted. This is Big Boss's launcher defect; Neo's
+separate fixture-failure count remains 1. No native or browser artifact changed.
 
 **AC1's native discovery contract is accepted.** Big Boss ran Neo's checked
 Pascal metadata proof against the actual three-recording collection, using a
