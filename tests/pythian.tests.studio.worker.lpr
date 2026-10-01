@@ -40,6 +40,7 @@ uses
   pythian.tools.studio.projects,
   pythian.tools.studio.jobs,
   pythian.tools.studio.worker,
+  pythian.tools.studio.&library.discovery,
   pythian.tools.listen.catalog;
 
 var
@@ -514,14 +515,157 @@ begin
   end;
 end;
 
+procedure LibraryRun(const ARoot: String);
+var
+  LCatalog: String;
+  LLibrary: String;
+  LSamples: TAudioSamples;
+  LClip: TAudioClip;
+  LStream: TFileStream;
+  LWrite: TJSONObject;
+  LJob: TJSONObject;
+  LDiscovery: TJSONObject;
+  LRow: TJSONObject;
+  LSelection: TJSONObject;
+  LPreparation: TJSONObject;
+  LHash: String;
+  LOrdinal: Integer;
+  LFailed: Boolean;
+begin
+  Check(not DirectoryExists(ARoot), 'Library worker fixture root must be fresh');
+  LCatalog := ARoot + PathDelim + 'catalog';
+  LLibrary := ARoot + PathDelim + 'library';
+  Check(ForceDirectories(LCatalog), 'Create library worker catalog');
+  Check(ForceDirectories(LLibrary + PathDelim + 'collections' + PathDelim + 'authored'),
+    'Create private first-party library fixture');
+  SetLength(LSamples, 800);
+  for LOrdinal := 0 to High(LSamples) do
+    LSamples[LOrdinal] := 0.125;
+  LClip := TAudioClip.Create(8000, 1, LSamples);
+  try
+    LStream := TFileStream.Create(LLibrary + '/collections/authored/one.wav', fmCreate);
+    try
+      WriteWavePcm16(LStream, LClip);
+    finally
+      LStream.Free;
+    end;
+  finally
+    LClip.Free;
+  end;
+  LHash := HashFile(LLibrary + '/collections/authored/one.wav');
+  LWrite := TJSONObject.Create;
+  LDiscovery := nil;
+  try
+    LWrite.Add('format', StudioJobWriteFormat);
+    LWrite.Add('job_id', 'discover-library');
+    LWrite.Add('kind', 'library_discover');
+    LJob := EnqueueStudioJob(LCatalog, LWrite);
+    LJob.Free;
+    Check(RunStudioWorker(LCatalog, 'discover-library', LLibrary),
+      'Actual metadata-only discovery worker executes');
+    LJob := ReadStudioJob(LCatalog, 'discover-library');
+    try
+      Check((LJob.Strings['status'] = 'completed') and
+        (LJob.Integers['maximum_worker_seconds'] = 600), 'Discovery actual terminal and budget');
+      Check(LJob.Objects['results'].Int64s['content_read_bytes'] = 0,
+        'Actual worker reports no PCM discovery reads');
+    finally
+      LJob.Free;
+    end;
+    Check(not DirectoryExists(LCatalog + '/sources'), 'Discovery worker imports nothing');
+    LDiscovery := ListStudioLibraryDiscovery(LCatalog);
+    LRow := LDiscovery.Arrays['entries'].Objects[0];
+    LWrite.Strings['job_id'] := 'prepare-one';
+    LWrite.Strings['kind'] := 'library_prepare';
+    LWrite.Add('discovery_revision', LDiscovery.Integers['revision']);
+    LWrite.Add('entries', TJSONArray.Create);
+    LSelection := TJSONObject.Create;
+    LSelection.Add('entry_id', LRow.Strings['entry_id']);
+    LSelection.Add('entry_snapshot_sha256', LRow.Strings['entry_snapshot_sha256']);
+    LWrite.Arrays['entries'].Add(LSelection);
+    LPreparation := PrepareStudioJob(LCatalog, LWrite);
+    try
+      Check((LPreparation.Integers['selected_entry_count'] = 1) and
+        (LPreparation.Objects['limits'].Integers['worker_seconds'] = 7200),
+        'Selected preparation preflight binds actual count/long budget');
+      Check(LPreparation.Arrays['used_sources'].Count = 0,
+        'Preflight does not fabricate verified usage');
+    finally
+      LPreparation.Free;
+    end;
+    LJob := EnqueueStudioJob(LCatalog, LWrite);
+    LJob.Free;
+    Check(RunStudioWorker(LCatalog, 'prepare-one', LLibrary), 'Actual selected verification worker');
+    LJob := ReadStudioJob(LCatalog, 'prepare-one');
+    try
+      Check((LJob.Strings['status'] = 'completed') and
+        (LJob.Integers['maximum_worker_seconds'] = 7200), 'Preparation budget retained in actual detail');
+      Check((LJob.Objects['results'].Arrays['mappings'].Count = 1) and
+        (LJob.Objects['results'].Arrays['mappings'].Objects[0].Strings['source_sha256'] = LHash),
+        'Worker returns only actual selected content identity');
+      Check(LJob.Objects['results'].Strings['content_validation'] = 'selected_content_verified',
+        'Completed preparation carries distinct verified status');
+    finally
+      LJob.Free;
+    end;
+    LJob := EnqueueStudioJob(LCatalog, LWrite);
+    try
+      Check(LJob.Strings['status'] = 'completed', 'Same-body lost-response retry reconciles completed preparation');
+    finally
+      LJob.Free;
+    end;
+    LWrite.Strings['job_id'] := 'prepare-cancelled';
+    LJob := EnqueueStudioJob(LCatalog, LWrite);
+    LJob.Free;
+    LJob := CancelStudioJob(LCatalog, 'prepare-cancelled');
+    try
+      Check(LJob.Strings['status'] = 'cancelled', 'Selected queued cancellation terminal');
+    finally
+      LJob.Free;
+    end;
+    LFailed := False;
+    try
+      RunStudioWorker(LCatalog, 'prepare-cancelled', LLibrary);
+    except
+      on EAudio do LFailed := True;
+    end;
+    Check(LFailed, 'Cancelled preparation cannot be claimed/executed');
+    LWrite.Strings['job_id'] := 'prepare-retry';
+    LWrite.Add('retry_of', 'prepare-cancelled');
+    LJob := EnqueueStudioJob(LCatalog, LWrite);
+    LJob.Free;
+    Check(RunStudioWorker(LCatalog, 'prepare-retry', LLibrary), 'Explicit preparation retry executes');
+    LJob := ReadStudioJob(LCatalog, 'prepare-retry');
+    try
+      Check((LJob.Objects['request'].Strings['retry_of'] = 'prepare-cancelled') and
+        (LJob.Objects['results'].Arrays['mappings'].Objects[0].Strings['status'] = 'existing'),
+        'Retry lineage and verified reuse are durable');
+    finally
+      LJob.Free;
+    end;
+  finally
+    LDiscovery.Free;
+    LWrite.Free;
+  end;
+end;
+
 begin
   try
-    if ParamCount <> 1 then
+    if (ParamCount = 2) and (ParamStr(1) = '--library-only') then
+    begin
+      LibraryRun(ExpandFileName(ParamStr(2)));
+      WriteLn('PASS ', GChecks, ' Studio library worker checks');
+    end
+    else if ParamCount = 1 then
+    begin
+      Run(ExpandFileName(ParamStr(1)));
+      LibraryRun(ExpandFileName(ParamStr(1)) + '-library');
+      WriteLn('PASS ', GChecks, ' real Studio worker checks');
+    end
+    else
     begin
       raise Exception.Create('Usage: studio worker test FRESH_ROOT');
     end;
-    Run(ExpandFileName(ParamStr(1)));
-    WriteLn('PASS ', GChecks, ' real Studio worker checks');
   except
     on E: Exception do
     begin

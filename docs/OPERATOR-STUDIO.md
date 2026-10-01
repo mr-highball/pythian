@@ -10,10 +10,11 @@ deliverable's acceptance, not polish deferred until after the backend.
 
 ## Operator flow
 
-[Trusted phone recording](TODO/NS-6_studio_10.md) is selected and remains open.
-It adds same-port Windows Schannel HTTPS and public certificate onboarding;
-HTTP bootstrap and host localhost remain. Native/browser qualification and the
-actual Android Brave recording/preview must pass before phone support is claimed.
+[Metadata discovery and selected-use preparation](TODO/NS-6_studio_11.md) is
+selected. [Phone HTTPS](TODO/NS-6_studio_10.md) remains open: the operator reports
+that the local browser exception worked, while full capture/browser criteria
+remain unverified. Same-port Schannel HTTPS and optional certificate onboarding
+retain HTTP bootstrap and host localhost recording.
 
 The landing page starts with **Record audio**, **Import WAV** and **Browse
 collection**, before project setup. Browse collection opens the recording list;
@@ -94,7 +95,7 @@ completed by planning, and all original criteria in the donor tasks remain.
 | Task | Previous NS-6 points | Current NS-6 points | Outcome |
 | --- | ---: | ---: | --- |
 | [authoring_02](TODO/NS-6_authoring_02.md) | 8 | 1 | Physical LAN/source operator qualification |
-| [delivery_03](TODO/NS-6_delivery_03.md) | 10 | 3 | Final package and extracted workflow |
+| [delivery_03](TODO/NS-6_delivery_03.md) | 10 | 2 | Final package and extracted workflow |
 | [delivery_04](TODO/NS-6_delivery_04.md) | 12 | 8 | Independent complete-workflow reproduction |
 | [studio_01 — DONE](TODO/DONE/NS-6_studio_01.md) | 0 | 4 | Durable intuitive project/source setup |
 | [studio_02](TODO/DONE/NS-6_studio_02.md) | 0 | 2 | Actual bounded jobs and automatic audition queue |
@@ -105,7 +106,8 @@ completed by planning, and all original criteria in the donor tasks remain.
 | [studio_07](TODO/NS-6_studio_07.md) | 0 | 1 | Mixed-format corpus conversion with original lineage |
 | [studio_08](TODO/DONE/NS-6_studio_08.md) | 0 | 1 | Discoverable starting actions, existing music and queue navigation |
 | [studio_09](TODO/DONE/NS-6_studio_09.md) | 0 | 1 | Verified large-library refresh without duplicate staging |
-| [studio_10](TODO/NS-6_studio_10.md) | 0 | 1 | Trusted phone HTTPS and concise certificate onboarding |
+| [studio_10](TODO/NS-6_studio_10.md) | 0 | 1 | Phone HTTPS and optional certificate onboarding |
+| [studio_11](TODO/NS-6_studio_11.md) | 0 | 1 | Metadata-only discovery, bounded preview and selected-use preparation |
 | **Total allocation at scoping** | **30** | **30** | **Scoping earned no credit** |
 
 The added operator outcomes receive explicit weight from later verification
@@ -114,8 +116,8 @@ they do not disappear or move into the new tasks. Scoping left 49.40 accepted;
 independent project/setup acceptance subsequently adds 4 NS-6 / 0.40 overall.
 Private corpora, raw WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall.
 Accepted starting actions/navigation and large-library refresh add 2 NS-6 / 0.20 overall.
-The current ledger is **50.80 accepted / 49.20 remaining**, **46 open / 42 DONE**.
-NS-6 is **45 accepted / 55 unearned** with ten open tasks. Goal weights are unchanged.
+The current ledger is **50.80 accepted / 49.20 remaining**, **47 open / 42 DONE**.
+NS-6 is **45 accepted / 55 unearned** with eleven open tasks. Goal weights are unchanged.
 The later collection and effects requirements each reallocate one unearned point
 from jobs and iteration; all original criteria remain. Scoping earns no acceptance.
 Capture/exploration receives two additional unearned delivery_03 points with
@@ -141,6 +143,11 @@ Phone recording adds studio_10, funded by one additional unearned authoring_02
 point. Authoring_02 retains all physical/full-workflow criteria at one point;
 this scope adds no credit and no emulated phone-success claim.
 
+Metadata-only discovery adds studio_11, funded by one further unearned
+delivery_03 point. Its selected-use preparation preserves verified source
+admission while removing full audio reads from ordinary listing. Delivery_03
+retains every final-package requirement at two points.
+
 ## Private collection library
 
 The default durable drop folder is `local-audio/collections/`, excluded by the
@@ -156,12 +163,15 @@ start unassigned; existing catalog evaluation reservations remain enforced.
 Original audio stays immutable once imported, and a changed file is a new source
 identity. Old saved corpora retain their exact bytes/ranges and classifications.
 
-Refresh is an explicit background job. The collection panel shows the current
-phase, byte progress when known, Cancel and recovery controls; opening Studio
-does not start a scan. Reopening the page reconnects to an active refresh. An
-uncertain submission is checked by its original job ID before an explicit retry.
-The prior published collection index stays available until the new scan succeeds.
-Existing catalog sources are verified in place without another staging WAV.
+Refresh is an explicit background job; opening Studio does not start a scan.
+The currently deployed studio_09 refresh verifies full originals on the server,
+with byte counters describing disk reads rather than phone transfer. Studio_11
+separates this into metadata-only discovery, bounded region audition and explicit
+selected-recording preparation. It retains Cancel/recovery, checks uncertain
+submissions by their original job ID, and preserves the previous complete index
+on failure. Metadata identity is never substituted for an audio content hash.
+Existing catalog sources are verified in place without another staging WAV
+when preparation requires them.
 Collections group recordings; a saved project/corpus chooses the recordings,
 passages and classifications to learn from.
 

@@ -84,6 +84,7 @@ type
     procedure NewDraft;
     procedure DrawProjects;
     procedure DrawTracks;
+    procedure MergeDiscovery(ATracks: TJSArray; ADiscovery: TJSObject);
     procedure UpdateSummary;
     procedure UpdateState;
     procedure Status(const AText: String; AError: Boolean = False);
@@ -604,6 +605,90 @@ begin
   FSourceEditor.Bind(FTracks, FSelections, FBusy or not FConnected);
 end;
 
+procedure TStudio.MergeDiscovery(ATracks: TJSArray; ADiscovery: TJSObject);
+var
+  LEntries: TJSArray;
+  LEntry: TJSObject;
+  LTrack: TJSObject;
+  LCollection: TJSObject;
+  LCollections: TJSArray;
+  LPrevious: String;
+  LIndex: Integer;
+  LOther: Integer;
+begin
+  if (Str(ADiscovery, 'format') <> 'pythian.studio.library.discovery.v1') or
+    not isArray(ADiscovery['entries']) then
+  begin
+    raise Exception.Create('The collection list is unavailable. Retry discovery.');
+  end;
+  LEntries := TJSArray(ADiscovery['entries']);
+  if LEntries.length > 256 then
+  begin
+    raise Exception.Create('The collection list exceeds its supported size.');
+  end;
+  for LIndex := 0 to LEntries.length - 1 do
+  begin
+    LEntry := Obj(LEntries[LIndex]);
+    if (Str(LEntry, 'entry_id') = '') or
+      (Length(Str(LEntry, 'entry_snapshot_sha256')) <> 64) then
+    begin
+      raise Exception.Create('A collection entry has no metadata identity.');
+    end;
+    LTrack := nil;
+    LPrevious := Str(LEntry, 'previous_source_sha256');
+    if LPrevious <> '' then
+    begin
+      for LOther := 0 to ATracks.length - 1 do
+      begin
+        if (Str(Obj(ATracks[LOther]), 'source_sha256') = LPrevious) and
+          (((Num(Obj(ATracks[LOther]), 'sample_rate') = Num(LEntry, 'sample_rate')) and
+          (Num(Obj(ATracks[LOther]), 'frame_count') = Num(LEntry, 'frame_count'))) or
+          (Str(LEntry, 'status') <> 'available')) and
+          (Str(Obj(ATracks[LOther]), 'entry_id') = '') then
+        begin
+          LTrack := Obj(ATracks[LOther]);
+          Break;
+        end;
+      end;
+    end;
+    if LTrack = nil then
+    begin
+      LTrack := CloneObject(LEntry);
+      LTrack['title'] := Str(LEntry, 'original_name');
+      LTrack['source_sha256'] := '';
+      LTrack['partition'] := 'unassigned';
+      ATracks.push(LTrack);
+    end;
+    LTrack['entry_id'] := Str(LEntry, 'entry_id');
+    LTrack['entry_snapshot_sha256'] := Str(LEntry, 'entry_snapshot_sha256');
+    LTrack['discovery_revision'] := Num(ADiscovery, 'revision');
+    LTrack['status'] := Str(LEntry, 'status');
+    LTrack['content_validation'] := 'not_verified';
+    LCollections := TJSArray(LTrack['collections']);
+    if not isArray(LCollections) then
+    begin
+      LCollections := TJSArray.new;
+      LTrack['collections'] := LCollections;
+    end;
+    LPrevious := Str(LEntry, 'collection_id');
+    LCollection := nil;
+    for LOther := 0 to LCollections.length - 1 do
+    begin
+      if Str(Obj(LCollections[LOther]), 'collection_id') = LPrevious then
+      begin
+        LCollection := Obj(LCollections[LOther]);
+      end;
+    end;
+    if LCollection = nil then
+    begin
+      LCollection := TJSObject.new;
+      LCollection['collection_id'] := LPrevious;
+      LCollection['name'] := Str(LEntry, 'collection_name');
+      LCollections.push(LCollection);
+    end;
+  end;
+end;
+
 procedure TStudio.ApplyProject(AProject: TJSObject);
 var
   LSources: TJSArray;
@@ -884,7 +969,7 @@ begin
     begin
       raise Exception.Create('The recording list is not supported by this Studio.');
     end;
-    LResponse := await(TJSResponse, FetchApi('/api/studio/library', 'GET', ''));
+    LResponse := await(TJSResponse, FetchApi('/api/studio/library-discovery', 'GET', ''));
     if LEpoch <> FEpoch then
     begin
       Exit;
@@ -898,15 +983,13 @@ begin
     begin
       Exit;
     end;
+    MergeDiscovery(LTracks, LData);
     El('library-summary').textContent :=
-      'Folder scan: ' + IntToStr(Trunc(Num(LData, 'recording_count'))) + ' recordings in ' +
-      IntToStr(Trunc(Num(LData, 'collection_count'))) + ' collections. Latest refresh: ' +
-      IntToStr(Trunc(Num(LData, 'imported_count'))) + ' new, ' +
-      IntToStr(Trunc(Num(LData, 'duplicate_file_count'))) + ' duplicate files, ' +
-      IntToStr(Trunc(Num(LData, 'changed_count'))) + ' changed, ' +
-      IntToStr(Trunc(Num(LData, 'missing_count'))) + ' missing, ' +
+      IntToStr(Trunc(Num(LData, 'available_count'))) + ' original files in ' +
+      IntToStr(Trunc(Num(LData, 'collection_count'))) + ' collections · ' +
+      IntToStr(Trunc(Num(LData, 'missing_count'))) + ' missing · ' +
       IntToStr(Trunc(Num(LData, 'unsupported_count'))) + ' unsupported. ' +
-      'Saved sources and corpus versions remain available.';
+      'Metadata only. Recordings are prepared when you add them.';
     if Num(LData, 'revision') = 0 then
     begin
       El('collection-empty-state').textContent := 'Your collection folders have not been scanned yet. Refresh the library to discover them.';
@@ -917,7 +1000,7 @@ begin
       El('collection-empty-state').textContent := 'No collection folders were found. Add a folder with WAV recordings, then refresh.';
       El('collection-empty-state').removeAttribute('hidden');
     end
-    else if Num(LData, 'recording_count') = 0 then
+    else if Num(LData, 'available_count') = 0 then
     begin
       El('collection-empty-state').textContent := 'Collection folders were found, but no WAV recordings are available. Add recordings, then refresh.';
       El('collection-empty-state').removeAttribute('hidden');
@@ -1437,7 +1520,7 @@ begin
   FTracks := TJSArray.new;
   FProjects := TJSArray.new;
   FSelections := TJSArray.new;
-  FSourceEditor := TStudioSourceEditor.Create(@FetchApi, @Changed);
+  FSourceEditor := TStudioSourceEditor.Create(@FetchApi, @Changed, @FetchNavigation);
   FBatches := TStudioBatches.Create(@FetchApi);
   FEffects := TStudioEffects.Create(@FetchApi, @FSourceEditor.CurrentRange, @CatalogSaved);
   FReviews := TStudioReviews.Create(@FetchApi, @UseNextBatch);

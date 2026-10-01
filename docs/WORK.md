@@ -12,7 +12,78 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
-## Current phone microphone prerequisite — 2026-10-01
+## Current metadata-only collection work — 2026-10-01
+
+**Big Boss:** the operator reports that phone HTTPS worked, then identifies the
+multi-gigabyte Refresh counter as excessive for a collection listing. Read-only
+tracing proves that counter measures server disk hashing, not phone audio
+downloads. Refresh currently combines directory discovery with full admission:
+two original hash passes and one existing catalog hash pass.
+
+[Studio_11](TODO/NS-6_studio_11.md) now owns metadata-only discovery, bounded
+original-region preview and selected-use verified corpus preparation. One
+unearned delivery_03 point funds it; all donor criteria remain. Current
+accounting is **50.80 accepted / 49.20 remaining; 47 open / 42 DONE; NS-6 45/55
+with eleven open tasks**, across 89 tickets. TASKFLOW's stale pre-navigation
+totals are corrected to the canonical ledger; that correction earns no credit.
+
+Neo implemented native discovery/library/jobs/worker behavior and tests. Ticket
+Guy implemented the disjoint Studio browser sources and presentation. Big Boss
+integrated HTTP, documentation/accounting and the review candidate. Refresh now
+has a metadata-only job; waveform and Play read bounded original windows, and
+explicit corpus or analysis/effects use prepares only the selected recording.
+Saved selections retain their immutable catalog source when originals change.
+The candidate and fourteen artifact identities are retained under
+`build/studio-library-lazy/`; the live stable service is unchanged.
+
+Salty's independent checked FPC 3.2.2 Win32/Win64 runs pass discovery **55**,
+focused jobs **13** and focused worker **18** assertions each, with zero leaks.
+The existing full-refresh **421**-assertion Win64 regression also passes. All
+nine frozen native source identities and fourteen staged candidate artifacts
+match. Matched pas2js compilation and static UI/HTTP review pass. These are
+native/static results, not HTTP or browser interaction acceptance.
+
+Automatic approval review rejected the isolated fixed-slot native HTTP/normal
+trusted HTTPS QA launch before execution, reporting only `blocked by policy`.
+No server, client or browser ran from that action, and no alternative launch
+retried it. Final QA listener/server/worker counts are zero; no QA audio was
+started. The earlier browser-launch rejection also remains. The host CA is now
+trusted and its earlier confirmation process is gone, established by read-only
+inspection; this turn changed no trust setting. Trust alone is not capture QA.
+
+All **2,624** existing catalog metadata records remain byte-identical; five
+source size/time records are unchanged. Full audio hashes were not recomputed
+for this preservation check. The native HTTP client and an operator-run review
+launcher are prepared under the same ignored evidence directory. The launcher
+is syntax/static-reviewed only, has not restarted the service, and refuses to
+stop a different command/catalog or a service with pending jobs/active workers.
+Salty identified and Big Boss repaired its initial missing command/catalog
+ownership check before handoff. No task credit is earned from the checkpoint.
+
+**AC1's native discovery contract is accepted.** Big Boss ran Neo's checked
+Pascal metadata proof against the actual three-recording collection, using a
+fresh ignored catalog. Its 7,045,401,242 declared source bytes required only
+**156 parser header bytes** and **109 ms**; PCM reads, imports and audio copies
+were all zero. Snapshot readback was identical at the clock's 0 ms resolution,
+with zero heap leaks. This is one native function run, not measured physical
+disk traffic or phone-page timing. Evidence is
+`build/studio-library-lazy/actual-metadata/`. The criterion closure resets the
+consecutive nonclosing-batch count from **1 to 0**. Studio_11 remains OPEN;
+accepted task credit and milestone completion remain **50.80**.
+
+The remaining bounded work is HTTP/media/corpus integration, desktop/narrow
+interaction and portable integration, then an actual operator review of Refresh
+and selected preparation. Stop at payload reads during discovery, false content
+identities, unrelated preparation, data loss or a distinct required gap.
+
+The user's later certificate-exception authorization supersedes mandatory CA
+installation in the earlier phone scope. Their positive report does not document
+every record/Stop/audible-preview step; studio_10 stays open. The prior automatic
+browser-launch policy rejection remains a separate execution gate and must not
+be bypassed. The phone record below is a historical checkpoint, not the current
+task selection or a renewed demand to install a certificate.
+
+## Phone microphone engineering checkpoint — 2026-10-01
 
 **Big Boss:** the operator now explicitly selects microphone recording from the
 physical LAN phone. [Studio_10](TODO/NS-6_studio_10.md) owns trusted HTTPS and

@@ -43,6 +43,14 @@ const
 type
   TStudioLibraryProgress = procedure(const AStage: String;
     const ADone, ATotal: Int64) of object;
+  TStudioLibraryFile = record
+    Path: String;
+    Name: String;
+    CollectionName: String;
+    Hash: String;
+    Bytes: Int64;
+  end;
+  TStudioLibraryFiles = array of TStudioLibraryFile;
 
 { Worker-only bounded discovery/import. AStageRoot must be a fresh directory,
   separate from library and catalog; failed stages remain for diagnosis.
@@ -63,6 +71,13 @@ type
   Results are owned, path-free JSON. Partial imports may survive failed refresh;
   the previously published index remains unchanged. }
 function RefreshStudioLibrary(const ACatalogRoot, ALibraryRoot, AStageRoot: String;
+  const AProgress: TStudioLibraryProgress = nil): TJSONObject;
+{ Worker-only explicit selection. The private file paths must resolve exactly
+  under the configured collections directory; no other sources are discovered
+  or hashed. Updates only selected memberships, preserving unrelated entries.
+  Result adds prepared_sources to the published index projection. }
+function PrepareStudioLibraryFiles(const ACatalogRoot, ALibraryRoot, AStageRoot: String;
+  const AFiles: TStudioLibraryFiles;
   const AProgress: TStudioLibraryProgress = nil): TJSONObject;
 { Reads bounded published metadata only; never discovers or hashes audio. }
 function ListStudioLibrary(const ACatalogRoot: String): TJSONObject;
@@ -86,14 +101,8 @@ const
   CProgressMilliseconds = 5000;
 
 type
-  TLibraryFile = record
-    Path: String;
-    Name: String;
-    CollectionName: String;
-    Hash: String;
-    Bytes: Int64;
-  end;
-  TLibraryFiles = array of TLibraryFile;
+  TLibraryFile = TStudioLibraryFile;
+  TLibraryFiles = TStudioLibraryFiles;
 
   TLibraryReadStream = class(TFileStream)
   private
@@ -1172,7 +1181,8 @@ begin
 end;
 
 function RefreshLocked(const ACatalogRoot, ALibraryRoot, AStageRoot: String;
-  const AProgress: TStudioLibraryProgress): TJSONObject;
+  const AProgress: TStudioLibraryProgress; const ASelected: TStudioLibraryFiles;
+  const ASelective: Boolean): TJSONObject;
 var
   LCatalog: String;
   LLibrary: String;
@@ -1199,6 +1209,12 @@ var
   LNewSources: Integer;
   LFileName: String;
   LInbox: String;
+  LMembers: TJSONArray;
+  LPrepared: TJSONArray;
+  LRow: TJSONObject;
+  LOther: Integer;
+  LStream: TFileStream;
+  LSelectedBytes: Int64;
 begin
   LCatalog := RootPath(ACatalogRoot);
   LLibrary := RootPath(ALibraryRoot);
@@ -1228,9 +1244,52 @@ begin
       CatalogInventory(LCatalog, LCatalogHashes);
       LRevision := Result.Integers['revision'] + 1;
       Need(LRevision <= MaximumLibraryRevisions, 'Library revision bound exceeded');
-      Progress(AProgress, 'discovering', 0, 0);
-      Discover(LLibrary, LNames, LFiles, LUnsupported);
-      MarkMissing(Result);
+      LUnsupported := 0;
+      if ASelective then
+      begin
+        Need((Length(ASelected) >= 1) and (Length(ASelected) <= 32),
+          'Library preparation requires 1..32 selected entries');
+        LFiles := Copy(ASelected, 0, Length(ASelected));
+        LSelectedBytes := 0;
+        for LIndex := 0 to High(LFiles) do
+        begin
+          Need(SafeComponent(LFiles[LIndex].CollectionName) and
+            SafeComponent(LFiles[LIndex].Name), 'Selected library naming is unsafe');
+          Need(SameText(ExpandFileName(LFiles[LIndex].Path), LLibrary + 'collections' +
+            PathDelim + LFiles[LIndex].CollectionName + PathDelim + LFiles[LIndex].Name),
+            'Selected library path differs from its configured entry');
+          CheckPath(LFiles[LIndex].Path);
+          Need((LowerCase(ExtractFileExt(LFiles[LIndex].Name)) = '.wav') and
+            FileExists(LFiles[LIndex].Path), 'Selected library original is unavailable');
+          LStream := TFileStream.Create(LFiles[LIndex].Path, fmOpenRead or fmShareDenyWrite);
+          try
+            Need((LStream.Size = LFiles[LIndex].Bytes) and (LStream.Size >= 44) and
+              (LStream.Size <= MaximumLibrarySourceBytes),
+              'Selected library original byte count changed');
+          finally
+            LStream.Free;
+          end;
+          Need(LSelectedBytes <= MaximumLibraryAggregateBytes - LFiles[LIndex].Bytes,
+            'Selected library aggregate byte bound exceeded');
+          Inc(LSelectedBytes, LFiles[LIndex].Bytes);
+          for LOther := 0 to LIndex - 1 do
+          begin
+            Need(not SameText(LFiles[LOther].Path, LFiles[LIndex].Path),
+              'Selected library entry is repeated');
+          end;
+          if LNames.IndexOf(LFiles[LIndex].CollectionName) < 0 then
+          begin
+            LNames.Add(LFiles[LIndex].CollectionName);
+          end;
+          LFiles[LIndex].Hash := '';
+        end;
+      end
+      else
+      begin
+        Progress(AProgress, 'discovering', 0, 0);
+        Discover(LLibrary, LNames, LFiles, LUnsupported);
+        MarkMissing(Result);
+      end;
       Result.Integers['changed_count'] := 0;
       for LIndex := 0 to LNames.Count - 1 do
       begin
@@ -1244,6 +1303,17 @@ begin
         if SourceChanged(LPrevious, LFiles[LIndex]) then
         begin
           Result.Integers['changed_count'] := Result.Integers['changed_count'] + 1;
+        end;
+        if ASelective then
+        begin
+          LMembers := Collection(Result, LFiles[LIndex].CollectionName).Arrays['memberships'];
+          for LOther := 0 to LMembers.Count - 1 do
+          begin
+            if LMembers.Objects[LOther].Strings['original_name'] = LFiles[LIndex].Name then
+            begin
+              LMembers.Objects[LOther].Strings['status'] := 'missing';
+            end;
+          end;
         end;
         AddMembership(Result, LFiles[LIndex]);
       end;
@@ -1350,6 +1420,23 @@ begin
       WriteNew(LPartial, Result.AsJSON + #10);
       Need(not FileExists(LFinal) and RenameFile(LPartial, LFinal),
         'Library index could not be published');
+      if ASelective then
+      begin
+        LPrepared := TJSONArray.Create;
+        Result.Add('prepared_sources', LPrepared);
+        for LIndex := 0 to High(LFiles) do
+        begin
+          LRow := TJSONObject.Create;
+          LRow.Add('collection_name', LFiles[LIndex].CollectionName);
+          LRow.Add('original_name', LFiles[LIndex].Name);
+          LRow.Add('source_sha256', LFiles[LIndex].Hash);
+          if LCatalogHashes.IndexOf(LFiles[LIndex].Hash) >= 0 then
+            LRow.Add('status', 'existing')
+          else
+            LRow.Add('status', 'imported');
+          LPrepared.Add(LRow);
+        end;
+      end;
     except
       Result.Free;
       Result := nil;
@@ -1371,7 +1458,18 @@ function RefreshStudioLibrary(const ACatalogRoot, ALibraryRoot, AStageRoot: Stri
 begin
   EnterCriticalSection(GLibraryLock);
   try
-    Result := RefreshLocked(ACatalogRoot, ALibraryRoot, AStageRoot, AProgress);
+    Result := RefreshLocked(ACatalogRoot, ALibraryRoot, AStageRoot, AProgress, nil, False);
+  finally
+    LeaveCriticalSection(GLibraryLock);
+  end;
+end;
+
+function PrepareStudioLibraryFiles(const ACatalogRoot, ALibraryRoot, AStageRoot: String;
+  const AFiles: TStudioLibraryFiles; const AProgress: TStudioLibraryProgress): TJSONObject;
+begin
+  EnterCriticalSection(GLibraryLock);
+  try
+    Result := RefreshLocked(ACatalogRoot, ALibraryRoot, AStageRoot, AProgress, AFiles, True);
   finally
     LeaveCriticalSection(GLibraryLock);
   end;

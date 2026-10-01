@@ -289,13 +289,13 @@ Studio source/jobs/effects/capture acceptance through **2026-10-01**, give:
 | NS-3 | 10 | 25 | 15 | 75 |
 | NS-4 | 20 | 15 | 45 | 35 |
 | NS-5 | 0 | 20 | 14 | 86 |
-| NS-6 | 0 | 10 | 43 | 57 |
+| NS-6 | 0 | 10 | 45 | 55 |
 
 `Goal completion = baseline + sum(accepted DONE task credits for that goal)`.
 `Overall completion = sum(goal completion * goal weight / 100)`.
-Current goal completions are **100/90/25/65/14/43**; weights are
-**5/25/25/15/20/10**. Therefore current accepted scope is **50.60 weighted
-points**, with **49.40 remaining**. The rebase records newly explicit caller
+Current goal completions are **100/90/25/65/14/45**; weights are
+**5/25/25/15/20/10**. Therefore current accepted scope is **50.80 weighted
+points**, with **49.20 remaining**. The rebase records newly explicit caller
 extension, maintained support and adoption requirements; it earns no acceptance.
 For example, accepting `NS-3_notes_01` adds 7 points within NS-3 and 1.75 overall
 point. Record the arithmetic on every completion; preserve the current accepted
@@ -303,11 +303,13 @@ ledger until an actual task closes or a documented reassessment withdraws credit
 judgments about scope, not measured engineering precision or effort estimates.
 
 The [operator Studio allocation](OPERATOR-STUDIO.md#allocation-and-ownership)
-redistributes 15 unearned NS-6 points across seven outcomes, including collection,
-effects, capture and mixed-format preparation, without awarding acceptance.
+redistributes 19 unearned NS-6 points across eleven outcomes, including collection,
+effects, capture, mixed-format preparation, phone HTTPS and metadata discovery,
+without awarding acceptance.
 Studio setup acceptance adds 4 NS-6 / 0.40 overall; private corpora, bounded raw
-WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall. The catalog
-contains **45 open / 40 accepted tasks**, NS-6 **43/57**, overall **50.60/49.40**. All
+WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall; starting
+actions and verified large-library refresh add 2 NS-6 / 0.20 overall. The catalog
+contains **47 open / 42 accepted tasks**, NS-6 **45/55**, overall **50.80/49.20**. All
 original donor criteria remain required alongside the new operator outcomes.
 
 Task credits, not file counts, drive completion. Partial implementation,

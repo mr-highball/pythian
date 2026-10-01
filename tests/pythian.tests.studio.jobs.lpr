@@ -417,6 +417,78 @@ begin
   end;
 end;
 
+procedure DiscoveryPolicy(const ARoot: String);
+var
+  LWrite: TJSONObject;
+  LResult: TJSONObject;
+  LRequest: TJSONObject;
+  LFailed: Boolean;
+begin
+  Check(not DirectoryExists(ARoot), 'Discovery jobs fixture must be fresh');
+  Check(ForceDirectories(ARoot), 'Create discovery job catalog');
+  LWrite := NewWrite('discover');
+  try
+    LWrite.Strings['kind'] := 'library_discover';
+    LResult := PrepareStudioJob(ARoot, LWrite);
+    try
+      Check((LResult.Objects['limits'].Integers['worker_seconds'] = 600) and
+        (LResult.Objects['limits'].Integers['header_read_bytes_per_file'] = 65536),
+        'Discovery has metadata header and short worker budgets');
+      Check(LResult.Strings['content_validation'] = 'metadata_discovery_only',
+        'Preflight never advertises content admission');
+    finally
+      LResult.Free;
+    end;
+    LResult := EnqueueStudioJob(ARoot, LWrite);
+    try
+      Check(LResult.Integers['maximum_worker_seconds'] = 600, 'Immutable discovery budget');
+    finally
+      LResult.Free;
+    end;
+    LResult := EnqueueStudioJob(ARoot, LWrite);
+    try
+      Check(LResult.Strings['job_id'] = 'discover', 'Identical discovery retry reconciles');
+    finally
+      LResult.Free;
+    end;
+    LRequest := ClaimStudioJob(ARoot, 'discover');
+    try
+      Check(StudioJobRequestRuntimeSeconds(LRequest) = 600, 'Worker reads discovery request budget');
+      Check(LRequest.Strings['request_sha256'] <> '', 'Discovery request has durable identity');
+    finally
+      LRequest.Free;
+    end;
+    AdvanceStudioJob(ARoot, 'discover', 'running', 'reading_headers', 1, 2);
+    LResult := CancelStudioJob(ARoot, 'discover');
+    try
+      Check(LResult.Booleans['cancel_requested'], 'Discovery running cancellation flag');
+    finally
+      LResult.Free;
+    end;
+    Check(StudioJobCancelled(ARoot, 'discover'), 'Worker observes discovery cancellation');
+    AdvanceStudioJob(ARoot, 'discover', 'cancelled', 'cancelled', 1, 2);
+    ReleaseStudioWorker(ARoot);
+    LWrite.Strings['job_id'] := 'prepare-rejected';
+    LWrite.Strings['kind'] := 'library_prepare';
+    LWrite.Add('discovery_revision', 1);
+    LWrite.Add('entries', TJSONArray.Create);
+    LFailed := False;
+    try
+      LResult := EnqueueStudioJob(ARoot, LWrite);
+      LResult.Free;
+    except
+      on EAudio do LFailed := True;
+    end;
+    Check(LFailed and not DirectoryExists(StudioJobDirectory(ARoot, 'prepare-rejected')),
+      'Empty preparation selection rejects before publication');
+    Check(StudioJobRuntimeSeconds('library_prepare') = 7200,
+      'Selected full verification retains separate long budget');
+    Check(StudioJobRuntimeSeconds('train_generate') = 600, 'Generation budget unchanged');
+  finally
+    LWrite.Free;
+  end;
+end;
+
 begin
   try
     if (ParamCount = 2) and (ParamStr(1) = '--hold-writer') then
@@ -427,7 +499,13 @@ begin
     begin
       Run(ExpandFileName(ParamStr(1)));
       WriterContention(ExpandFileName(ParamStr(1)));
+      DiscoveryPolicy(ExpandFileName(ParamStr(1)) + '-discovery');
       WriteLn('PASS ', GChecks, ' Studio job lifecycle checks');
+    end
+    else if (ParamCount = 2) and (ParamStr(1) = '--discovery-only') then
+    begin
+      DiscoveryPolicy(ExpandFileName(ParamStr(2)));
+      WriteLn('PASS ', GChecks, ' Studio discovery job checks');
     end
     else
     begin

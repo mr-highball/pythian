@@ -1,11 +1,11 @@
-# NS-6_studio_10 — Enable trusted phone recording on the private LAN
+# NS-6_studio_10 — Enable phone recording over local HTTPS
 
 [Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
 
 **Description:**
 
-Let the operator record from Android Brave through a trusted HTTPS connection
-to the existing local Windows service. Supply concise certificate onboarding
+Let the operator record from Android Brave through an HTTPS connection
+to the existing local Windows service. Supply optional concise certificate onboarding
 from the disabled microphone state while retaining HTTP bootstrap and host
 localhost recording. Portable synthesis and WFC remain independent of TLS.
 
@@ -19,13 +19,16 @@ owns HTTP/build/deployment integration and final judgment; Neo owns native
 Schannel transport and tests; Ticket Guy owns the disjoint setup/capture link
 and accounting. The same-port HTTPS service, public certificate download and
 setup page are deployed for limited local review; independent native boundary
-checks pass, while trusted browser and physical-phone checks remain open.
-Next closing work: verify trusted capture on the host and the actual phone.
+checks pass. The operator reports that the HTTPS warning-exception route worked;
+the complete record/Stop/audible-preview sequence is not separately documented.
+Next closing work: verify the remaining capture/browser criteria when selected.
 Closing evidence: independent
 native/browser transport and capture checks plus the operator's actual Android
 Brave recording, Stop and audible preview. Preserve input, catalog and device
-cleanup identities. Stop on private-key exposure, a certificate-warning bypass,
-lost state or a phone-success claim supported only by emulation.
+cleanup identities. Stop on private-key exposure, lost state or a phone-success
+claim supported only by emulation. The user's subsequent direction permits a
+local browser certificate exception; CA installation is optional. This does not
+authorize bypassing an execution-tool policy rejection.
 
 **Acceptance Criteria:**
 
@@ -37,16 +40,19 @@ lost state or a phone-success claim supported only by emulation.
   at most 16 KiB. `/phone-setup.html` shows the supplied HTTPS Studio URL and
   matching public certificate SHA-256, concise Android CA-install/Brave steps,
   and removal details. The insecure-LAN capture state links to setup. No private
-  key, accounts, tunnel, warning bypass or extra application confirmation enters
-  the flow. Opening setup does not discard pending input or request microphone
+  key, accounts, tunnel or extra application confirmation enters the flow.
+  The user may choose their browser's local certificate exception where it
+  permits capture; do not promise identical behavior in every browser/version.
+  Opening setup does not discard pending input or request microphone
   permission automatically.
 - AC3: Independently verify trusted HTTPS, exact HTTPS Origin/session handling,
   bounded malformed/untrusted/timeout failures, reconnect/media handoff and
   desktop/narrow onboarding. Exercise actual secure-context record, Stop,
   playback, upload/inspection and device/context cleanup with preserved data.
   Native/browser mechanics alone do not establish physical-phone acceptance.
-- AC4: The actual operator installs the public certificate on the selected
-  Android phone, opens the trusted HTTPS Studio URL in Brave, grants microphone
+- AC4: The actual operator opens the HTTPS Studio URL on the selected Android
+  phone in Brave, using certificate installation or their chosen browser exception,
+  grants microphone
   permission, records, stops and hears the retained preview. Record the actual
   device/browser/origin and outcome privately. Keep this criterion open until
   observed; do not substitute localhost on another computer or emulation.
@@ -57,6 +63,22 @@ lost state or a phone-success claim supported only by emulation.
 - [NS-6_studio_08.md](DONE/NS-6_studio_08.md)
 
 **Dev Notes:**
+
+- 2026-10-01, Big Boss, read-only host follow-up: the recorded CA is now in
+  the host's current-user trusted root store, and the earlier certificate
+  confirmation process is gone. This turn made no trust-store change. Normal
+  trusted HTTPS client execution remains unverified: the later studio_11
+  isolated QA service launch was rejected before execution. Host trust alone
+  closes neither browser capture nor the physical record/Stop/preview criterion.
+- 2026-10-01, Big Boss, later user direction: the operator explicitly prefers
+  minimal local setup over mandatory CA installation and now reports “Looks
+  like that worked,” with an HTTPS Studio screenshot showing a certificate
+  warning. Record that positive report without inventing an observed Stop or
+  audible preview. The local exception is authorized; historical statements
+  forbidding it below describe the earlier scope. The separate automatic
+  browser-launch policy rejection remains an execution gate. Current work is
+  [metadata-only library discovery](NS-6_studio_11.md); no phone credit is earned
+  from this scope correction.
 
 - 2026-10-01, Big Boss / Neo: user explicitly selects phone recording. One
   unearned authoring_02 point funds this separate secure-origin prerequisite;

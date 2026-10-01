@@ -28,7 +28,8 @@ unit pythian.studio.sources;
 
 interface
 
-uses JS, Web, SysUtils, Math, StrUtils, Types;
+uses JS, Web, SysUtils, Math, StrUtils, Types,
+  pythian.studio.&library.refresh;
 
 type
   TStudioFetch = function(const APath, AMethod, ABody: String): TJSPromise of object;
@@ -38,6 +39,16 @@ type
   private
     FFetch: TStudioFetch;
     FChanged: TStudioChange;
+    FPreparation: TStudioLibraryRefresh;
+    FPrepareSelection: TJSObject;
+    FPrepareEntry: String;
+    FPrepareEditing: Integer;
+    FPrepareAnalyze: Boolean;
+    FPrepareDraft: TJSArray;
+    FPreparePrior: TJSObject;
+    FPrepareWindowStart: Double;
+    FPrepareWindowEnd: Double;
+    FPreviewStart: Double;
     FTracks: TJSArray;
     FSelections: TJSArray;
     FTrack: TJSObject;
@@ -69,6 +80,13 @@ type
     function ReadRange(out AStart, AEnd: Double): Boolean;
     procedure SetRange(const AStart, AEnd: Double);
     procedure SaveSelection(const AWhole: Boolean);
+    procedure ApplySelection(ARow: TJSObject; const AEditing: Integer);
+    procedure PrepareRecording(ASelection: TJSObject; const AAnalyze: Boolean);
+    procedure PreparationDone;
+    procedure PreparationState;
+    procedure ApplyPrepared; async;
+    procedure PlayRange(const AStart, AEnd: Double);
+    function CompletedForTrack: Boolean;
     function PointerFrame(AEvent: TJSPointerEvent): Double;
     function Click(AEvent: TJSMouseEvent): Boolean;
     function Edit(AEvent: TEventListenerEvent): Boolean;
@@ -78,7 +96,8 @@ type
     function Up(AEvent: TJSPointerEvent): Boolean;
     function CancelPointer(AEvent: TJSPointerEvent): Boolean;
   public
-    constructor Create(const AFetch: TStudioFetch; const AChanged: TStudioChange);
+    constructor Create(const AFetch: TStudioFetch; const AChanged: TStudioChange;
+      const AJobFetch: TLibraryFetch);
     procedure Bind(ATracks, ASelections: TJSArray; const ADisabled: Boolean);
     procedure SetDisabled(const ADisabled: Boolean);
     procedure Reset;
@@ -173,13 +192,16 @@ begin
 end;
 
 constructor TStudioSourceEditor.Create(const AFetch: TStudioFetch;
-  const AChanged: TStudioChange);
+  const AChanged: TStudioChange; const AJobFetch: TLibraryFetch);
 var
   LNames: array of String;
   LIndex: Integer;
 begin
   FFetch := AFetch;
   FChanged := AChanged;
+  FPreparation := TStudioLibraryRefresh.Create(AJobFetch, @PreparationDone,
+    'library_prepare', 'studio-source-prepare', 'source-prepare');
+  FPreparation.OnStateChanged := @PreparationState;
   FEditing := -1;
   FPlayEnd := -1;
   FTracks := TJSArray.new;
@@ -195,6 +217,7 @@ begin
   FCanvas.addEventListener('pointercancel', @CancelPointer);
   LNames := ['source-mark-in', 'source-mark-out', 'source-prev', 'source-next',
     'source-use-range', 'source-use-whole', 'source-close', 'source-play-range',
+    'source-prepare',
     'source-analyze'];
   for LIndex := 0 to High(LNames) do
   begin
@@ -244,6 +267,11 @@ begin
   FTracks := ATracks;
   FSelections := ASelections;
   SetDisabled(ADisabled);
+  FPreparation.SetConnected(not ADisabled);
+  if not ADisabled then
+  begin
+    FPreparation.Refresh;
+  end;
   DrawTracks;
 end;
 
@@ -293,6 +321,7 @@ var
   LHash: String;
   LTitle: String;
   LCollectionText: String;
+  LDurationText: String;
   LFilterValue: String;
   LQuery: String;
   LCaption: String;
@@ -358,7 +387,11 @@ begin
   for LIndex := 0 to FTracks.length - 1 do
   begin
     LTrack := TJSObject(FTracks[LIndex]);
-    LHash := StudioText(LTrack, 'source_sha256');
+    LHash := StudioText(LTrack, 'entry_id');
+    if LHash = '' then
+    begin
+      LHash := StudioText(LTrack, 'source_sha256');
+    end;
     LTitle := StudioText(LTrack, 'title');
     LCollectionText := '';
     LMatchesCollection := LFilterValue = '';
@@ -384,18 +417,34 @@ begin
     Inc(LShown);
     LCard := Add(LRoot, 'article', '', 'track');
     Add(LCard, 'h3', LTitle, 'track-name');
-    Add(LCard, 'p', StudioTime(StudioNumber(LTrack, 'frame_count') /
-      StudioNumber(LTrack, 'sample_rate')) + ' · ' + LCollectionText, 'track-meta');
+    LDurationText := 'Header unavailable';
+    if StudioNumber(LTrack, 'sample_rate') > 0 then
+    begin
+      LDurationText := StudioTime(StudioNumber(LTrack, 'frame_count') /
+        StudioNumber(LTrack, 'sample_rate'));
+    end;
+    Add(LCard, 'p', LDurationText + ' · ' + LCollectionText, 'track-meta');
     if StudioText(LTrack, 'partition') = 'evaluation' then
     begin
       Add(LCard, 'p', 'Reserved evaluation recording', 'hint');
       Continue;
     end;
+    if (StudioText(LTrack, 'status') = 'missing') or
+      (StudioText(LTrack, 'status') = 'unsupported') then
+    begin
+      Add(LCard, 'p', 'Original unavailable. Refresh after replacing the file.', 'hint');
+      if StudioText(LTrack, 'source_sha256') = '' then
+      begin
+        Continue;
+      end;
+      LHash := StudioText(LTrack, 'source_sha256');
+    end;
     Button(LCard, 'Listen & select', 'open', LHash);
     for LOther := 0 to FSelections.length - 1 do
     begin
       LSelection := TJSObject(FSelections[LOther]);
-      if StudioText(LSelection, 'source_sha256') <> LHash then
+      if StudioText(LSelection, 'source_sha256') <>
+        StudioText(LTrack, 'source_sha256') then
       begin
         Continue;
       end;
@@ -444,7 +493,8 @@ begin
   Reset;
   for LIndex := 0 to FTracks.length - 1 do
   begin
-    if StudioText(TJSObject(FTracks[LIndex]), 'source_sha256') = AHash then
+    if (StudioText(TJSObject(FTracks[LIndex]), 'source_sha256') = AHash) or
+      (StudioText(TJSObject(FTracks[LIndex]), 'entry_id') = AHash) then
     begin
       FTrack := TJSObject(FTracks[LIndex]);
       Break;
@@ -453,6 +503,19 @@ begin
   if FTrack = nil then
   begin
     Exit;
+  end;
+  if (ASelection >= 0) or
+    ((AHash = StudioText(FTrack, 'source_sha256')) and
+    ((StudioText(FTrack, 'status') = 'missing') or
+    (StudioText(FTrack, 'status') = 'unsupported'))) then
+  begin
+    { A saved selection refers to immutable catalog bytes, independently of
+      the current original. Do not change the shared discovery card. }
+    FTrack := TJSObject(TJSJSON.parse(TJSJSON.stringify(FTrack)));
+    FTrack['entry_id'] := '';
+    FTrack['entry_snapshot_sha256'] := '';
+    FTrack['discovery_revision'] := 0;
+    FTrack['prepared_snapshot'] := '';
   end;
   FEditing := ASelection;
   El('source-inspector').removeAttribute('hidden');
@@ -472,8 +535,18 @@ begin
       Input('source-classifications').value := LClasses.join(', ');
     end;
   end;
-  FPlayer.src := '/api/studio/source-audio?hash=' + AHash;
-  FPlayer.load;
+  { Opening shows only the bounded waveform; Play requests bounded PCM. }
+  FPreviewStart := 0;
+  El('source-time').textContent := '0:00 / ' +
+    StudioTime(StudioNumber(FTrack, 'frame_count') / StudioNumber(FTrack, 'sample_rate'));
+  Input('source-seek').value := '0';
+  El('source-prepare').setAttribute('hidden', '');
+  if (StudioText(FTrack, 'entry_id') <> '') and
+    (StudioText(FTrack, 'prepared_snapshot') <>
+      StudioText(FTrack, 'entry_snapshot_sha256')) then
+  begin
+    El('source-prepare').removeAttribute('hidden');
+  end;
   if FEditing < 0 then
   begin
     El('source-use-range').textContent := 'Add passage to corpus';
@@ -484,7 +557,7 @@ begin
   end;
   WindowAt(0);
   Input('source-start').focus;
-  Notice('Listen, drag a passage, or mark its start and end. Add it when ready.');
+  Notice('Preview a passage, then add it. Only this recording will be prepared.');
 end;
 
 procedure TStudioSourceEditor.SetRange(const AStart, AEnd: Double);
@@ -512,7 +585,11 @@ var
   LEnd: Double;
 begin
   Result := nil;
-  if (FTrack = nil) or FDisabled or not ReadRange(LStart, LEnd) then
+  if (FTrack = nil) or FDisabled or
+    (StudioText(FTrack, 'source_sha256') = '') or
+    ((StudioText(FTrack, 'entry_id') <> '') and
+    (StudioText(FTrack, 'prepared_snapshot') <>
+      StudioText(FTrack, 'entry_snapshot_sha256'))) or not ReadRange(LStart, LEnd) then
   begin
     Exit;
   end;
@@ -532,6 +609,8 @@ var
   LEpoch: Integer;
   LRate: Double;
   LHash: String;
+  LPath: String;
+  LEntry: String;
 begin
   if FTrack = nil then
   begin
@@ -543,7 +622,8 @@ begin
   LHash := StudioText(FTrack, 'source_sha256');
   FWindowStart := Floor(Max(0, Min(ASeconds * LRate,
     StudioNumber(FTrack, 'frame_count') - 1)));
-  FWindowEnd := Min(StudioNumber(FTrack, 'frame_count'), FWindowStart + Floor(LRate * 30));
+  FWindowEnd := Min(StudioNumber(FTrack, 'frame_count'),
+    FWindowStart + Min(Floor(LRate * 30), 2000000));
   FAnalysis := nil;
   El('source-analysis-status').textContent := 'Inspect this visible window to see signal levels and timing suggestions.';
   El('source-beat-layer').innerHTML := '<option value="-1">No beat overlay</option>';
@@ -552,9 +632,19 @@ begin
   El('source-window').textContent := StudioTime(FWindowStart / LRate) + '–' +
     StudioTime(FWindowEnd / LRate) + ' · original source time';
   try
-    LResponse := await(TJSResponse, FFetch('/api/waveform?hash=' + LHash +
+    LEntry := StudioText(FTrack, 'entry_id');
+    LPath := '/api/waveform?hash=' + LHash +
       '&start=' + FloatToStr(FWindowStart) + '&end=' + FloatToStr(FWindowEnd) +
-      '&bins=' + FloatToStr(Min(600, FWindowEnd - FWindowStart)), 'GET', ''));
+      '&bins=' + FloatToStr(Min(128, FWindowEnd - FWindowStart));
+    if (LEntry <> '') and (StudioText(FTrack, 'status') = 'available') then
+    begin
+      LPath := '/api/studio/library-waveform?entry=' + encodeURIComponent(LEntry) +
+        '&revision=' + FloatToStr(StudioNumber(FTrack, 'discovery_revision')) +
+        '&snapshot=' + StudioText(FTrack, 'entry_snapshot_sha256') +
+        '&start=' + FloatToStr(FWindowStart) + '&end=' + FloatToStr(FWindowEnd) +
+        '&bins=' + FloatToStr(Min(128, FWindowEnd - FWindowStart));
+    end;
+    LResponse := await(TJSResponse, FFetch(LPath, 'GET', ''));
     if LResponse.status <> 200 then
     begin
       raise Exception.Create('Waveform unavailable. Original playback is still available.');
@@ -564,7 +654,23 @@ begin
     begin
       Exit;
     end;
-    if (StudioText(LData, 'source_sha256') <> LHash) or
+    if Pos('/api/studio/library-waveform?', LPath) = 1 then
+    begin
+      if (StudioText(LData, 'format') <> 'pythian.studio.library.waveform.v1') or
+        (StudioText(LData, 'content_validation') <> 'metadata_only_unverified') or
+        (StudioText(LData, 'sampling') <> 'uniform_windows') or
+        (StudioText(LData, 'entry_id') <> LEntry) or
+        (StudioText(LData, 'entry_snapshot_sha256') <>
+          StudioText(FTrack, 'entry_snapshot_sha256')) or
+        (StudioNumber(LData, 'discovery_revision') <>
+          StudioNumber(FTrack, 'discovery_revision')) or
+        (StudioNumber(LData, 'source_start_frame') <> FWindowStart) or
+        (StudioNumber(LData, 'source_end_frame') <> FWindowEnd) then
+      begin
+        raise Exception.Create('Original changed. Refresh and reopen this recording.');
+      end;
+    end
+    else if (StudioText(LData, 'source_sha256') <> LHash) or
       (StudioNumber(LData, 'start_frame') <> FWindowStart) or
       (StudioNumber(LData, 'end_frame') <> FWindowEnd) then
     begin
@@ -604,6 +710,14 @@ var
 begin
   if (FTrack = nil) or FAnalysisBusy then
   begin
+    Exit;
+  end;
+  if (StudioText(FTrack, 'source_sha256') = '') or
+    ((StudioText(FTrack, 'entry_id') <> '') and
+    (StudioText(FTrack, 'prepared_snapshot') <>
+      StudioText(FTrack, 'entry_snapshot_sha256'))) then
+  begin
+    PrepareRecording(nil, True);
     Exit;
   end;
   FAnalysisBusy := True;
@@ -741,12 +855,21 @@ begin
     for LIndex := 0 to FBins.length - 1 do
     begin
       LBin := TJSObject(FBins[LIndex]);
-      LContext.fillRect(LIndex * FCanvas.width / FBins.length,
-        90 - StudioNumber(LBin, 'max') * 75, FCanvas.width / FBins.length + 1,
-        Max(1, (StudioNumber(LBin, 'max') - StudioNumber(LBin, 'min')) * 75));
+      if isNumber(LBin['peak']) then
+      begin
+        LContext.fillRect(LIndex * FCanvas.width / FBins.length,
+          90 - StudioNumber(LBin, 'peak') * 75, FCanvas.width / FBins.length + 1,
+          Max(1, StudioNumber(LBin, 'peak') * 150));
+      end
+      else
+      begin
+        LContext.fillRect(LIndex * FCanvas.width / FBins.length,
+          90 - StudioNumber(LBin, 'max') * 75, FCanvas.width / FBins.length + 1,
+          Max(1, (StudioNumber(LBin, 'max') - StudioNumber(LBin, 'min')) * 75));
+      end;
     end;
   end;
-  LX := (FPlayer.currentTime * LRate - FWindowStart) * LScale;
+  LX := ((FPreviewStart + FPlayer.currentTime) * LRate - FWindowStart) * LScale;
   LContext.fillStyleAsColor := '#fff4ce';
   LContext.fillRect(LX, 0, 2, FCanvas.height);
   LCandidate := StrToIntDef(TJSHTMLSelectElement(El('source-beat-layer')).value, -1);
@@ -841,9 +964,41 @@ begin
   LRow['end_frame'] := LEnd;
   LRow['range_invalid'] := False;
   LRow['classifications'] := LClasses;
-  if FEditing >= 0 then
+  if (StudioText(FTrack, 'entry_id') <> '') and
+    (StudioText(FTrack, 'prepared_snapshot') <>
+      StudioText(FTrack, 'entry_snapshot_sha256')) then
   begin
-    FSelections[FEditing] := LRow;
+    PrepareRecording(LRow, False);
+    Exit;
+  end;
+  ApplySelection(LRow, FEditing);
+end;
+
+procedure TStudioSourceEditor.ApplySelection(ARow: TJSObject; const AEditing: Integer);
+var
+  LIndex: Integer;
+  LPrior: TJSObject;
+begin
+  for LIndex := 0 to FSelections.length - 1 do
+  begin
+    LPrior := TJSObject(FSelections[LIndex]);
+    if (LIndex <> AEditing) and
+      (StudioText(LPrior, 'source_sha256') = StudioText(ARow, 'source_sha256')) and
+      (StudioNumber(ARow, 'start_frame') < StudioNumber(LPrior, 'end_frame')) and
+      (StudioNumber(ARow, 'end_frame') > StudioNumber(LPrior, 'start_frame')) then
+    begin
+      Notice('This overlaps an existing corpus selection. Edit it instead.', True);
+      Exit;
+    end;
+  end;
+  if AEditing >= 0 then
+  begin
+    if AEditing >= FSelections.length then
+    begin
+      Notice('The selection changed. Add the passage again.', True);
+      Exit;
+    end;
+    FSelections[AEditing] := ARow;
   end
   else
   begin
@@ -852,13 +1007,352 @@ begin
       Notice('This corpus already has 64 selections.', True);
       Exit;
     end;
-    FSelections.push(LRow);
+    FSelections.push(ARow);
   end;
   FEditing := -1;
   El('source-use-range').textContent := 'Add another passage';
   FChanged;
   DrawTracks;
   Notice('Added to this corpus. Save the project to preserve your selection and classifications.');
+end;
+
+procedure TStudioSourceEditor.PrepareRecording(ASelection: TJSObject;
+  const AAnalyze: Boolean);
+var
+  LWrite: TJSObject;
+  LEntry: TJSObject;
+  LEntries: TJSArray;
+begin
+  if (FTrack = nil) or (StudioText(FTrack, 'entry_id') = '') then
+  begin
+    Exit;
+  end;
+  if (FPrepareEntry <> '') and
+    ((StudioText(FPreparation.CurrentJob, 'status') <> 'completed') and
+    (StudioText(FPreparation.CurrentJob, 'status') <> 'failed') and
+    (StudioText(FPreparation.CurrentJob, 'status') <> 'cancelled')) then
+  begin
+    Notice('Preparation is pending. Check its progress or cancel before trying again.');
+    Exit;
+  end;
+  FPrepareSelection := ASelection;
+  FPrepareEntry := StudioText(FTrack, 'entry_id');
+  FPrepareEditing := FEditing;
+  FPrepareAnalyze := AAnalyze;
+  FPrepareDraft := FSelections;
+  FPreparePrior := nil;
+  if FEditing >= 0 then
+  begin
+    FPreparePrior := TJSObject(FSelections[FEditing]);
+  end;
+  FPrepareWindowStart := FWindowStart;
+  FPrepareWindowEnd := FWindowEnd;
+  LWrite := TJSObject.new;
+  LWrite['discovery_revision'] := StudioNumber(FTrack, 'discovery_revision');
+  LEntries := TJSArray.new;
+  LEntry := TJSObject.new;
+  LEntry['entry_id'] := FPrepareEntry;
+  LEntry['entry_snapshot_sha256'] := StudioText(FTrack, 'entry_snapshot_sha256');
+  LEntries.push(LEntry);
+  LWrite['entries'] := LEntries;
+  if not FPreparation.Prepare(LWrite) then
+  begin
+    FPrepareEntry := '';
+    FPrepareSelection := nil;
+    Notice('Checking preparation status. Try this action again when it is ready.');
+    Exit;
+  end;
+  Notice('Preparing only this recording. Your passage and project are preserved.');
+end;
+
+procedure TStudioSourceEditor.PreparationDone;
+begin
+  ApplyPrepared;
+end;
+
+procedure TStudioSourceEditor.PreparationState;
+var
+  LJob: TJSObject;
+  LStatus: String;
+begin
+  LJob := FPreparation.CurrentJob;
+  LStatus := StudioText(LJob, 'status');
+  if (LStatus = 'failed') or (LStatus = 'cancelled') then
+  begin
+    FPrepareEntry := '';
+    Notice('Preparation ' + LStatus + '. Your passage and project are preserved.',
+      LStatus = 'failed');
+  end;
+end;
+
+procedure TStudioSourceEditor.ApplyPrepared; async;
+var
+  LJob: TJSObject;
+  LResult: TJSObject;
+  LMappings: TJSArray;
+  LMapping: TJSObject;
+  LResponse: TJSResponse;
+  LData: TJSObject;
+  LRows: TJSArray;
+  LSource: TJSObject;
+  LTrack: TJSObject;
+  LIndex: Integer;
+  LKey: String;
+  LSelection: TJSObject;
+  LAnalyze: Boolean;
+  LPrevious: TJSObject;
+  LCollections: TJSArray;
+  LTargetCollections: TJSArray;
+  LCollection: TJSObject;
+  LCollectionIndex: Integer;
+  LTargetIndex: Integer;
+  LFoundCollection: Boolean;
+  LNames: TStringDynArray;
+  LName: String;
+begin
+  LJob := FPreparation.CurrentJob;
+  if LJob = nil then
+  begin
+    Exit;
+  end;
+  try
+    LResult := TJSObject(LJob['results']);
+    if (LResult = nil) or not isArray(LResult['mappings']) then
+    begin
+      raise Exception.Create('Preparation returned no verified source. Retry its status.');
+    end;
+    LMappings := TJSArray(LResult['mappings']);
+    if LMappings.length <> 1 then
+    begin
+      raise Exception.Create('Preparation differs from the selected recording.');
+    end;
+    LMapping := TJSObject(LMappings[0]);
+    LKey := StudioText(LMapping, 'entry_id');
+    if (FPrepareEntry <> '') and (LKey <> FPrepareEntry) then
+    begin
+      raise Exception.Create('Preparation has a different entry identity.');
+    end;
+    if (Length(StudioText(LMapping, 'source_sha256')) <> 64) or
+      ((StudioText(LMapping, 'status') <> 'existing') and
+      (StudioText(LMapping, 'status') <> 'imported')) then
+    begin
+      raise Exception.Create('Preparation has no accepted content identity.');
+    end;
+    LResponse := await(TJSResponse, FFetch('/api/studio/sources', 'GET', ''));
+    if LResponse.status <> 200 then
+    begin
+      raise Exception.Create('Recording prepared; reopen or retry to load its catalog details.');
+    end;
+    LData := await(TJSObject, LResponse.json());
+    if StudioText(FPreparation.CurrentJob, 'job_id') <> StudioText(LJob, 'job_id') then
+    begin
+      Exit;
+    end;
+    if (StudioText(LData, 'format') <> 'pythian.studio.sources.v1') or
+      not isArray(LData['sources']) then
+    begin
+      raise Exception.Create('Prepared catalog details are unavailable.');
+    end;
+    LRows := TJSArray(LData['sources']);
+    LSource := nil;
+    for LIndex := 0 to LRows.length - 1 do
+    begin
+      if StudioText(TJSObject(LRows[LIndex]), 'source_sha256') =
+        StudioText(LMapping, 'source_sha256') then
+      begin
+        LSource := TJSObject(LRows[LIndex]);
+        Break;
+      end;
+    end;
+    if LSource = nil then
+    begin
+      raise Exception.Create('Prepared recording is absent from the catalog.');
+    end;
+    if StudioText(LSource, 'partition') = 'evaluation' then
+    begin
+      raise Exception.Create('Evaluation recordings cannot be added to a training corpus.');
+    end;
+    LTrack := nil;
+    for LIndex := 0 to FTracks.length - 1 do
+    begin
+      if (StudioText(TJSObject(FTracks[LIndex]), 'entry_id') = LKey) and
+        (StudioText(TJSObject(FTracks[LIndex]), 'entry_snapshot_sha256') =
+          StudioText(LMapping, 'entry_snapshot_sha256')) then
+      begin
+        LTrack := TJSObject(FTracks[LIndex]);
+        Break;
+      end;
+    end;
+    if LTrack = nil then
+    begin
+      raise Exception.Create('The collection snapshot changed. Refresh and prepare again.');
+    end;
+    if (StudioText(LTrack, 'source_sha256') <> '') and
+      (StudioText(LTrack, 'source_sha256') <> StudioText(LSource, 'source_sha256')) then
+    begin
+      { Preserve the old immutable catalog row for saved corpus selections. }
+      LPrevious := TJSObject(TJSJSON.parse(TJSJSON.stringify(LTrack)));
+      LPrevious['entry_id'] := '';
+      LPrevious['entry_snapshot_sha256'] := '';
+      LPrevious['title'] := StudioText(LPrevious, 'title') + ' (saved recording)';
+      FTracks.push(LPrevious);
+    end;
+    LNames := ['source_sha256', 'partition', 'sample_rate', 'frame_count',
+      'channels', 'source_bytes', 'metadata_sha256', 'license', 'provenance',
+      'source_group', 'clock_id', 'bits_per_sample'];
+    for LIndex := 0 to High(LNames) do
+    begin
+      LName := LNames[LIndex];
+      if LSource.hasOwnProperty(LName) then
+      begin
+        LTrack[LName] := LSource[LName];
+      end;
+    end;
+    LIndex := FTracks.length - 1;
+    while LIndex >= 0 do
+    begin
+      LPrevious := TJSObject(FTracks[LIndex]);
+      if (LPrevious <> LTrack) and
+        (StudioText(LPrevious, 'source_sha256') = StudioText(LSource, 'source_sha256')) then
+      begin
+        LCollections := TJSArray(LPrevious['collections']);
+        if isArray(LCollections) then
+        begin
+          LTargetCollections := TJSArray(LTrack['collections']);
+          if not isArray(LTargetCollections) then
+          begin
+            LTargetCollections := TJSArray.new;
+            LTrack['collections'] := LTargetCollections;
+          end;
+          for LCollectionIndex := 0 to LCollections.length - 1 do
+          begin
+            LCollection := TJSObject(LCollections[LCollectionIndex]);
+            LFoundCollection := False;
+            for LTargetIndex := 0 to LTargetCollections.length - 1 do
+            begin
+              if (StudioText(TJSObject(LTargetCollections[LTargetIndex]), 'collection_id') =
+                StudioText(LCollection, 'collection_id')) and
+                (StudioText(TJSObject(LTargetCollections[LTargetIndex]), 'name') =
+                StudioText(LCollection, 'name')) then
+              begin
+                LFoundCollection := True;
+                Break;
+              end;
+            end;
+            if not LFoundCollection then
+            begin
+              LTargetCollections.push(TJSObject(TJSJSON.parse(TJSJSON.stringify(LCollection))));
+            end;
+          end;
+        end;
+        FTracks.splice(LIndex, 1);
+      end;
+      Dec(LIndex);
+    end;
+    LTrack['prepared_snapshot'] := StudioText(LMapping, 'entry_snapshot_sha256');
+    LSelection := FPrepareSelection;
+    LAnalyze := FPrepareAnalyze;
+    FPrepareSelection := nil;
+    FPrepareEntry := '';
+    FPrepareAnalyze := False;
+    if (FTrack <> nil) and (StudioText(FTrack, 'entry_id') = LKey) then
+    begin
+      El('source-prepare').setAttribute('hidden', '');
+      if LSelection <> nil then
+      begin
+        if (FSelections <> FPrepareDraft) or
+          ((FPrepareEditing >= 0) and
+          ((FPrepareEditing >= FSelections.length) or
+          (TJSObject(FSelections[FPrepareEditing]) <> FPreparePrior))) then
+        begin
+          Notice('Recording prepared. Your project changed; add the passage again.');
+        end
+        else
+        begin
+          LSelection['source_sha256'] := StudioText(LSource, 'source_sha256');
+          ApplySelection(LSelection, FPrepareEditing);
+        end;
+      end
+      else
+      begin
+        Notice('Recording prepared. Analysis and effects can now use it.');
+      end;
+      if LAnalyze and (FSelections = FPrepareDraft) and
+        (FWindowStart = FPrepareWindowStart) and (FWindowEnd = FPrepareWindowEnd) then
+      begin
+        Analyze;
+      end;
+    end
+    else
+    begin
+      Notice('Recording prepared. Open it to add your passage.');
+    end;
+    DrawTracks;
+  except
+    on LException: Exception do
+    begin
+      Notice(LException.Message + ' Your project is preserved.', True);
+    end;
+  end;
+end;
+
+function TStudioSourceEditor.CompletedForTrack: Boolean;
+var
+  LJob: TJSObject;
+  LResult: TJSObject;
+  LMappings: TJSArray;
+begin
+  Result := False;
+  LJob := FPreparation.CurrentJob;
+  if (FTrack = nil) or (StudioText(LJob, 'status') <> 'completed') then
+  begin
+    Exit;
+  end;
+  LResult := TJSObject(LJob['results']);
+  if (LResult = nil) or not isArray(LResult['mappings']) then
+  begin
+    Exit;
+  end;
+  LMappings := TJSArray(LResult['mappings']);
+  if LMappings.length = 1 then
+  begin
+    Result := (StudioText(TJSObject(LMappings[0]), 'entry_id') =
+      StudioText(FTrack, 'entry_id')) and
+      (StudioText(TJSObject(LMappings[0]), 'entry_snapshot_sha256') =
+      StudioText(FTrack, 'entry_snapshot_sha256'));
+  end;
+end;
+
+procedure TStudioSourceEditor.PlayRange(const AStart, AEnd: Double);
+var
+  LRate: Double;
+  LStart: Double;
+  LEnd: Double;
+  LEntry: String;
+  LPath: String;
+begin
+  LRate := StudioNumber(FTrack, 'sample_rate');
+  LStart := Floor(AStart * LRate);
+  LEnd := Min(Ceil(AEnd * LRate), LStart + Min(Floor(30 * LRate), 2000000));
+  LPath := '/api/audio?hash=' + StudioText(FTrack, 'source_sha256');
+  LEntry := StudioText(FTrack, 'entry_id');
+  if (LEntry <> '') and (StudioText(FTrack, 'status') = 'available') then
+  begin
+    LPath := '/api/studio/library-audio?entry=' + encodeURIComponent(LEntry) +
+      '&revision=' + FloatToStr(StudioNumber(FTrack, 'discovery_revision')) +
+      '&snapshot=' + StudioText(FTrack, 'entry_snapshot_sha256');
+  end;
+  FPlayer.pause;
+  FPreviewStart := LStart / LRate;
+  FPlayEnd := LEnd / LRate;
+  FPlayer.src := LPath + '&start=' + FloatToStr(LStart) + '&end=' + FloatToStr(LEnd);
+  FPlayer.load;
+  FPlayer.play;
+  if LEnd < Ceil(AEnd * LRate) then
+  begin
+    Notice('Playing the first ' + StudioTime((LEnd - LStart) / LRate) +
+      ' of your passage. Move the window to hear more.');
+  end;
 end;
 
 function TStudioSourceEditor.Click(AEvent: TJSMouseEvent): Boolean;
@@ -910,8 +1404,19 @@ begin
   case LButton.id of
     'source-close': Reset;
     'source-analyze': Analyze;
-    'source-mark-in': Input('source-start').value := StudioTime(FPlayer.currentTime);
-    'source-mark-out': Input('source-end').value := StudioTime(FPlayer.currentTime);
+    'source-prepare':
+      begin
+        if CompletedForTrack then
+        begin
+          ApplyPrepared;
+        end
+        else
+        begin
+          PrepareRecording(nil, False);
+        end;
+      end;
+    'source-mark-in': Input('source-start').value := StudioTime(FPreviewStart + FPlayer.currentTime);
+    'source-mark-out': Input('source-end').value := StudioTime(FPreviewStart + FPlayer.currentTime);
     'source-prev': WindowAt(Max(0, FWindowStart / StudioNumber(FTrack, 'sample_rate') - 30));
     'source-next': WindowAt(FWindowEnd / StudioNumber(FTrack, 'sample_rate'));
     'source-use-range': SaveSelection(False);
@@ -920,9 +1425,7 @@ begin
       begin
         if ReadRange(LStart, LEnd) then
         begin
-          FPlayer.currentTime := LStart;
-          FPlayEnd := LEnd;
-          FPlayer.play;
+          PlayRange(LStart, LEnd);
           WindowAt(LStart);
         end
         else
@@ -956,9 +1459,9 @@ begin
   end;
   if LId = 'source-seek' then
   begin
-    FPlayer.currentTime := StrToFloat(Input('source-seek').value);
+    FPlayer.pause;
     FPlayEnd := -1;
-    WindowAt(FPlayer.currentTime);
+    WindowAt(StrToFloat(Input('source-seek').value));
   end
   else
   begin
@@ -979,10 +1482,10 @@ begin
     Notice('Original playback failed. Reopen the recording to retry.', True);
     Exit;
   end;
-  El('source-time').textContent := StudioTime(FPlayer.currentTime) + ' / ' +
+  El('source-time').textContent := StudioTime(FPreviewStart + FPlayer.currentTime) + ' / ' +
     StudioTime(StudioNumber(FTrack, 'frame_count') / StudioNumber(FTrack, 'sample_rate'));
-  Input('source-seek').value := FloatToStr(FPlayer.currentTime);
-  if (FPlayEnd >= 0) and (FPlayer.currentTime >= FPlayEnd) then
+  Input('source-seek').value := FloatToStr(FPreviewStart + FPlayer.currentTime);
+  if (FPlayEnd >= 0) and (FPreviewStart + FPlayer.currentTime >= FPlayEnd) then
   begin
     FPlayer.pause;
     FPlayEnd := -1;
@@ -1043,7 +1546,8 @@ begin
     LRate := StudioNumber(FTrack, 'sample_rate');
     if Abs(LFrame - FDragStart) < (FWindowEnd - FWindowStart) / 150 then
     begin
-      FPlayer.currentTime := LFrame / LRate;
+      FPlayer.pause;
+      WindowAt(LFrame / LRate);
       FPlayEnd := -1;
       Input('source-start').value := FDragOldStart;
       Input('source-end').value := FDragOldEnd;

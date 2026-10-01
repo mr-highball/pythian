@@ -63,6 +63,7 @@ uses
   pythian.tools.studio.pitch,
   pythian.tools.studio.reviews,
   pythian.tools.studio.&library,
+  pythian.tools.studio.&library.discovery,
   pythian.tools.studio.jobs,
   pythian.tools.studio.supervisor
   {$IFDEF MSWINDOWS}, Windows, WinSock2{$ELSE}, BaseUnix{$ENDIF};
@@ -121,6 +122,7 @@ type
 var
   GActiveReviewWorkers: LongInt = 0;
   GStudioSupervisor: TStudioJobSupervisor = nil;
+  GStudioLibraryRoot: String = '';
   GPhoneCaBytes: String = '';
   GPhoneCaSha256: String = '';
   GPhoneHttpsOrigin: String = '';
@@ -1061,6 +1063,8 @@ var
   LExtraHeaders: String;
   LAsset: TJSONObject;
   LMediaStream: TFileStream;
+  LLibraryAudio: TStream;
+  LLibraryPreview: TJSONObject;
   LRows: TJSONArray;
   LIndex: Integer;
   LRowName: String;
@@ -1085,6 +1089,8 @@ begin
     Exit;
   end;
   if (ARequest.Path = '/api/listen-audio') or
+    (ARequest.Path = '/api/audio') or
+    (ARequest.Path = '/api/studio/library-audio') or
     (ARequest.Path = '/api/studio/source-audio') or
     (ARequest.Path = '/api/studio/effect-audio') or
     (ARequest.Path = '/api/studio/capture-audio') or
@@ -1145,6 +1151,41 @@ begin
       (ARequest.Path = '/api/studio/library') then
     begin
       LReport := ListStudioLibrary(ACatalogRoot);
+    end
+    else if (ARequest.Method = 'GET') and
+      (ARequest.Path = '/api/studio/library-discovery') then
+    begin
+      LReport := ListStudioLibraryDiscovery(ACatalogRoot);
+    end
+    else if (ARequest.Method = 'GET') and
+      (ARequest.Path = '/api/studio/library-waveform') then
+    begin
+      LReport := ReadStudioLibraryWaveform(ACatalogRoot, GStudioLibraryRoot,
+        QueryInteger(ARequest.Query, 'revision'),
+        QueryValue(ARequest.Query, 'entry'), QueryValue(ARequest.Query, 'snapshot'),
+        QueryInt64(ARequest.Query, 'start'), QueryInt64(ARequest.Query, 'end'),
+        QueryInteger(ARequest.Query, 'bins'));
+    end
+    else if ((ARequest.Method = 'GET') or (ARequest.Method = 'HEAD')) and
+      (ARequest.Path = '/api/studio/library-audio') then
+    begin
+      LLibraryPreview := nil;
+      LLibraryAudio := OpenStudioLibraryEntryAudio(ACatalogRoot, GStudioLibraryRoot,
+        QueryInteger(ARequest.Query, 'revision'),
+        QueryValue(ARequest.Query, 'entry'), QueryValue(ARequest.Query, 'snapshot'),
+        QueryInt64(ARequest.Query, 'start'), QueryInt64(ARequest.Query, 'end'),
+        LLibraryPreview);
+      try
+        AHandedOff := DispatchListeningMedia(ASocket, LLibraryAudio,
+          ARequest.Method, ARequest.Range, ARequest.IfRange,
+          LLibraryPreview.Strings['preview_sha256']);
+        if AHandedOff then
+          LLibraryAudio := nil;
+      finally
+        LLibraryAudio.Free;
+        LLibraryPreview.Free;
+      end;
+      Exit;
     end
     else if ((ARequest.Method = 'GET') or (ARequest.Method = 'HEAD')) and
       (ARequest.Path = '/api/studio/source-audio') then
@@ -1921,6 +1962,7 @@ begin
     begin
       LLibraryRoot := ExpandFileName('local-audio');
     end;
+    GStudioLibraryRoot := ExpandFileName(LLibraryRoot);
     if FileExists(LWorkerPath) then
     begin
       GStudioSupervisor := TStudioJobSupervisor.Create(ACatalogRoot, LLibraryRoot, LWorkerPath);

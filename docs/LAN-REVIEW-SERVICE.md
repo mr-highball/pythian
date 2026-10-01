@@ -72,10 +72,15 @@ still apply. Read-only host HTTP success is not a physical-phone play/Save verdi
 [authoring_02](TODO/NS-6_authoring_02.md) owns that acceptance.
 
 After adding collection folders, use Studio's **Refresh library** action.
-It runs in the background and offers progress, Cancel and reconnect/retry. New
-refreshes have a two-hour worker budget; generation retains ten minutes. Existing
-catalog media is verified without another full staging copy. Keep enough disk
-space for new imports, which still use the maintained staging/import path.
+The metadata-first implementation discovers names and bounded WAV headers,
+then serves the saved listing without reading full recordings. Opening a source
+requests a sampled waveform; Play requests a bounded region. Adding a recording
+or passage to a corpus, or preparing it for analysis/effects, explicitly verifies
+only that recording. Discovery has a ten-minute worker budget and selected
+preparation retains two hours, with progress, Cancel and retry. Keep enough disk
+space for new selected imports. The earlier deployed full-refresh path still
+hashes all originals; deployment and remaining consumer checks for the new path
+are tracked in [studio_11](TODO/NS-6_studio_11.md).
 
 The same service also listens at `http://127.0.0.1:18097/studio.html` on the host
 computer, providing the browser context needed for microphone capture. A phone
@@ -155,7 +160,13 @@ fixed-slot launch with both environment variables set. No certificate or private
 key belongs in Git. The service only publishes a validated public CA DER file,
 bounded to 16 KiB; private-key or arbitrary-file downloads are not supported.
 
-On the Android phone:
+On the Android phone, open the supplied HTTPS Studio URL, tap **Record audio**,
+then **Start microphone** and allow microphone access. The operator has chosen
+to allow the browser's certificate exception for this local service and reports
+that it worked. Browser/version behavior can differ; this does not make the
+certificate trusted or independently verify every capture step.
+
+Certificate installation is an optional route to warning-free HTTPS:
 
 1. Open the host's ordinary HTTP `/phone-setup.html` page and download the certificate.
 2. In Android Settings, search for certificate installation, choose **CA certificate**,
@@ -165,9 +176,9 @@ On the Android phone:
    the same host and port. Tap **Record audio**, then **Start microphone**, and
    allow the browser's microphone request.
 
-A certificate warning or `isSecureContext = false` does not establish recording
-support; finish certificate trust instead of bypassing the warning. Only an actual
-phone recording, Stop and audible preview close
+A loaded page alone does not establish microphone support. If the browser still
+blocks capture after the chosen exception, use certificate installation. Only an
+actual phone recording, Stop and audible preview close
 [studio_10](TODO/NS-6_studio_10.md)'s physical-device criterion. A generated QA
 microphone proves the capture lifecycle, not physical audibility.
 

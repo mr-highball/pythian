@@ -193,3 +193,7 @@ summary { cursor: pointer; color: var(--accent); min-height: 36px; display: list
   .upcoming { order: 4; }
 }
 :is(.batch-identities, .batch-identity) { overflow-wrap: anywhere; }
+.source-preparation { margin: .75rem 0; padding: .75rem 0; border-top: 1px solid var(--line); }
+.source-preparation .actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.source-preparation progress { width: 100%; max-width: 32rem; }
+.source-preparation details { margin-top: .5rem; overflow-wrap: anywhere; }

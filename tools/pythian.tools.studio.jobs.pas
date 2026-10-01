@@ -90,7 +90,8 @@ uses
   jsonscanner,
   pythian.hash,
   pythian.tools.annotations.catalog,
-  pythian.tools.studio.projects
+  pythian.tools.studio.projects,
+  pythian.tools.studio.&library.discovery
   {$IFDEF MSWINDOWS}, Windows{$ENDIF};
 
 const
@@ -101,7 +102,7 @@ var
 
 function StudioJobRuntimeSeconds(const AKind: String): Integer;
 begin
-  if AKind = 'library_refresh' then
+  if (AKind = 'library_refresh') or (AKind = 'library_prepare') then
     Result := MaximumStudioLibrarySeconds
   else
     Result := MaximumStudioJobSeconds;
@@ -576,12 +577,14 @@ begin
   Keys(AWrite, '|format|job_id|kind|project_id|project_revision|project_snapshot_sha256|' +
     'duration_ms|seeds|maximum_tokens|model_order|source_weights|resolve_unassigned|' +
     'parent_job_id|retry_of|source_sha256|start_frame|end_frame|effects|' +
-    'preview_job_id|collection_name|title|capture_id|mode|channel|tempo_bpm|');
+    'preview_job_id|collection_name|title|capture_id|mode|channel|tempo_bpm|' +
+    'discovery_revision|entries|');
   Need(Text(AWrite, 'format') = StudioJobWriteFormat, 'Unsupported Studio job format');
   LJobId := Text(AWrite, 'job_id');
   Need(SafeId(LJobId), 'Invalid job identifier');
   LKind := Text(AWrite, 'kind');
   Need((LKind = 'train_generate') or (LKind = 'library_refresh') or
+    (LKind = 'library_discover') or (LKind = 'library_prepare') or
     (LKind = 'inspect_source') or (LKind = 'effect_preview') or
     (LKind = 'effect_save') or (LKind = 'capture_inspect') or
     (LKind = 'capture_save') or (LKind = 'capture_pitch'), 'Unsupported Studio job kind');
@@ -713,6 +716,17 @@ begin
         'Pitch preview channel must be zero or one');
       Need((Number(AWrite, 'tempo_bpm') >= 40) and (Number(AWrite, 'tempo_bpm') <= 240),
         'MIDI clock tempo must be 40..240 BPM');
+    end
+    else if LKind = 'library_prepare' then
+    begin
+      Keys(AWrite, '|format|job_id|kind|discovery_revision|entries|parent_job_id|retry_of|');
+      Need((Number(AWrite, 'discovery_revision') >= 1) and
+        (Number(AWrite, 'discovery_revision') <= 10000) and
+        (AWrite.Find('entries') <> nil) and (AWrite.Find('entries').JSONType = jtArray),
+        'Preparation requires an immutable discovery selection');
+      LExisting := ValidateStudioLibraryEntries(ACatalogRoot,
+        Number(AWrite, 'discovery_revision'), AWrite.Arrays['entries']);
+      LExisting.Free;
     end
     else
     begin
@@ -851,6 +865,26 @@ begin
         finally
           LTrack.Free;
         end;
+      end
+      else if LRequest.Strings['kind'] = 'library_prepare' then
+      begin
+        LTrack := ValidateStudioLibraryEntries(ACatalogRoot,
+          LRequest.Integers['discovery_revision'], LRequest.Arrays['entries']);
+        try
+          Result.Add('selected_entry_count', LTrack.Integers['selected_entry_count']);
+          Result.Add('selected_source_bytes', LTrack.Int64s['selected_source_bytes']);
+          Result.Add('discovery_revision', LTrack.Integers['discovery_revision']);
+          Result.Add('discovery_index_sha256', LTrack.Strings['discovery_index_sha256']);
+          Result.Add('content_validation', LTrack.Strings['content_validation']);
+        finally
+          LTrack.Free;
+        end;
+      end
+      else if LRequest.Strings['kind'] = 'library_discover' then
+      begin
+        Result.Add('content_validation', 'metadata_discovery_only');
+        LLimits.Add('header_read_bytes_per_file', MaximumLibraryHeaderReadBytes);
+        LLimits.Add('entries', 256);
       end;
     except
       Result.Free;

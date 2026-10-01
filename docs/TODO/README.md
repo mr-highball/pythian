@@ -3,7 +3,7 @@
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) ·
 [Assessment](../REBALANCE-2026-09-29.md) · [Completed tasks](DONE/README.md) · [Work](../WORK.md)
 
-Updated 2026-10-01. **46 open / 42 accepted tasks.** The user authorized a new
+Updated 2026-10-01. **47 open / 42 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **50.80 current / 49.20 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -13,7 +13,7 @@ caller-provider acceptance adds 10 NS-4 points / 1.50 overall. Complete owned
 editor/queue acceptance adds 8 NS-6 points / 0.80 overall.
 
 The later [operator Studio allocation](../OPERATOR-STUDIO.md#allocation-and-ownership)
-moves 18 unearned NS-6 points into ten explicit Studio outcomes.
+moves 19 unearned NS-6 points into eleven explicit Studio outcomes.
 All donor criteria remain required. The scope update earned no completion credit;
 independent Studio project/setup acceptance subsequently adds 4 NS-6 / 0.40 overall.
 Accepted private corpora, raw WFC jobs, effects and capture/exploration add
@@ -37,8 +37,8 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 45 | 65% | 1 | 35 | 5.25 |
 | [NS-5 — User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 15 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 45 | 45% | 10 | 55 | 5.50 |
-| **Total** | **28.00 weighted** | **22.80 weighted** | **50.80 weighted** | **46** | Goal points are not summed across goals | **49.20** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 45 | 45% | 11 | 55 | 5.50 |
+| **Total** | **28.00 weighted** | **22.80 weighted** | **50.80 weighted** | **47** | Goal points are not summed across goals | **49.20** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -46,9 +46,12 @@ hours or effort estimates. See the [basis and rationale](../REBALANCE-2026-09-29
 
 ## Selection and actual blockers
 
-Selected [studio_10](NS-6_studio_10.md) adds trusted phone HTTPS and concise
-certificate setup. One unearned authoring_02 point transfers here; accepted
-50.80 stays unchanged. Actual Android Brave recording/preview remains required.
+Selected [studio_11](NS-6_studio_11.md) separates metadata discovery and bounded
+preview from selected-use corpus preparation. One unearned delivery_03 point
+funds it; accepted completion stays 50.80. The operator reports that the HTTPS
+phone route worked; [studio_10](NS-6_studio_10.md) retains its unverified complete
+capture/browser criteria without requiring certificate installation as the
+only permitted local route.
 
 Accepted [studio_08](DONE/NS-6_studio_08.md) and
 [studio_09](DONE/NS-6_studio_09.md) provide deployed starting actions, shared
@@ -188,14 +191,15 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | --- | ---: | ---: | --- |
 | [NS-6_adoption_01](NS-6_adoption_01.md) — Establish independent ecosystem adoption evidence | 15 | 1.50 | Supported releases + independent ecosystem evidence |
 | [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 1 | 0.10 | Source-marker/full physical matrix deferred; shared usability follows the selected Studio consumer |
-| [NS-6_delivery_03](NS-6_delivery_03.md) — Package and verify the accepted final workflow | 3 | 0.30 | Dependencies, including Studio |
+| [NS-6_delivery_03](NS-6_delivery_03.md) — Package and verify the accepted final workflow | 2 | 0.20 | Dependencies, including Studio |
 | [NS-6_delivery_04](NS-6_delivery_04.md) — Obtain independently reproduced consumer acceptance | 8 | 0.80 | Package + independent consumer |
 | [NS-6_delivery_05](NS-6_delivery_05.md) — Audit north-star completion and supported handoff | 5 | 0.50 | Dependencies |
 | [NS-6_delivery_07](NS-6_delivery_07.md) — Obtain actual independent minimal synthesis use | 9 | 0.90 | Package accepted; prepared packet needs actual reviewer |
 | [NS-6_support_01](NS-6_support_01.md) — Establish and exercise the supported release lifecycle | 10 | 1.00 | Packages + real external update or issue cycle |
 | [NS-6_studio_03](NS-6_studio_03.md) — Compare musical auditions and guide the next batch | 2 | 0.20 | Engineering passed; ready for actual operator purpose/audible/useful-feedback verdict |
 | [NS-6_studio_07](NS-6_studio_07.md) — Train mixed-format corpora with original-clock lineage | 1 | 0.10 | After current review: explicit native conversion and actual mixed-format WFC |
-| [NS-6_studio_10](NS-6_studio_10.md) — Enable trusted phone recording on the private LAN | 1 | 0.10 | Selected: native HTTPS/onboarding plus actual Android Brave recording/preview |
+| [NS-6_studio_10](NS-6_studio_10.md) — Enable phone recording over local HTTPS | 1 | 0.10 | Operator reports HTTPS worked; complete capture/browser checks remain open |
+| [NS-6_studio_11](NS-6_studio_11.md) — Browse collection metadata and prepare recordings only on use | 1 | 0.10 | Selected: metadata listing, bounded preview and verified selected-entry preparation |
 
 ## Accepted tasks and retired work
 

@@ -71,7 +71,8 @@ uses
   pythian.tools.annotations.proposal,
   pythian.tools.listen.catalog,
   pythian.tools.studio.jobs,
-  pythian.tools.studio.&library;
+  pythian.tools.studio.&library,
+  pythian.tools.studio.&library.discovery;
 
 const
   CProfileFormat = 'pythian.studio.acoustic.profile.v1';
@@ -1107,6 +1108,16 @@ var
   LOutputs: TJSONArray;
   LIndex: Integer;
 begin
+  if FRequest.Strings['kind'] = 'library_discover' then
+  begin
+    Exit(DiscoverStudioLibrary(FCatalogRoot, ALibraryRoot, Progress));
+  end;
+  if FRequest.Strings['kind'] = 'library_prepare' then
+  begin
+    Exit(PrepareStudioLibraryEntries(FCatalogRoot, ALibraryRoot,
+      ReserveStudioJobStage(FCatalogRoot, ALibraryRoot, FJobId, 'library-prepare'),
+      FRequest.Integers['discovery_revision'], FRequest.Arrays['entries'], Progress));
+  end;
   if FRequest.Strings['kind'] = 'library_refresh' then
   begin
     Exit(RefreshStudioLibrary(FCatalogRoot, ALibraryRoot,

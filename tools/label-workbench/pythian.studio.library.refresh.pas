@@ -53,6 +53,11 @@ type
   private
     FFetch: TLibraryFetch;
     FChanged: TLibraryChanged;
+    FStateChanged: TLibraryChanged;
+    FKind: String;
+    FPrefix: String;
+    FPreparedWrite: TJSObject;
+    function ActionName: String;
     FConnected: Boolean;
     FPaused: Boolean;
     FBusy: Boolean;
@@ -89,13 +94,28 @@ type
     function Leaving(AEvent: TEventListenerEvent): Boolean;
     function Returning(AEvent: TEventListenerEvent): Boolean;
   public
-    constructor Create(AFetch: TLibraryFetch; AChanged: TLibraryChanged);
+    constructor Create(AFetch: TLibraryFetch; AChanged: TLibraryChanged;
+      const AKind: String = 'library_discover';
+      const AMount: String = 'studio-library-refresh';
+      const APrefix: String = 'library-refresh');
+    function Prepare(AWrite: TJSObject): Boolean;
+    function CurrentJob: TJSObject;
+    property OnStateChanged: TLibraryChanged read FStateChanged write FStateChanged;
     destructor Destroy; override;
     procedure SetConnected(AConnected: Boolean);
     procedure Refresh; async;
   end;
 
 implementation
+
+function TStudioLibraryRefresh.ActionName: String;
+begin
+  Result := 'discovery';
+  if FKind = 'library_prepare' then
+  begin
+    Result := 'preparation';
+  end;
+end;
 
 type
   ERefreshHttp = class(Exception)
@@ -125,7 +145,11 @@ end;
 function Phase(const AStage: String): String;
 begin
   case AStage of
-    'queued': Result := 'Waiting to refresh';
+    'queued': Result := 'Waiting to start';
+    'discovering_metadata': Result := 'Listing collection files';
+    'reading_headers': Result := 'Reading recording details';
+    'publishing_discovery': Result := 'Saving the collection list';
+    'checking_selected_metadata': Result := 'Checking selected recording details';
     'discovering': Result := 'Finding recordings';
     'hashing_sources': Result := 'Checking recording identity';
     'staging_sources': Result := 'Preparing recordings';
@@ -159,7 +183,8 @@ begin
   AParent.appendChild(Result);
 end;
 
-constructor TStudioLibraryRefresh.Create(AFetch: TLibraryFetch; AChanged: TLibraryChanged);
+constructor TStudioLibraryRefresh.Create(AFetch: TLibraryFetch; AChanged: TLibraryChanged;
+  const AKind: String; const AMount: String; const APrefix: String);
 var
   LMount: TJSElement;
   LActions: TJSElement;
@@ -169,28 +194,36 @@ begin
   inherited Create;
   FFetch := AFetch;
   FChanged := AChanged;
+  FKind := AKind;
+  FPrefix := APrefix;
   FObserved := TStringList.Create;
   FNotified := TStringList.Create;
-  LMount := document.getElementById('studio-library-refresh');
+  LMount := document.getElementById(AMount);
   if LMount = nil then
   begin
     raise Exception.Create('Library refresh mount is missing.');
   end;
-  FStatus := Add(LMount, 'p', 'Connect to check collection refresh status.');
-  FStatus.id := 'library-refresh-status';
+  FStatus := Add(LMount, 'p', 'Connect to check collection status.');
+  FStatus.id := FPrefix + '-status';
   FStatus.setAttribute('role', 'status');
   FStatus.setAttribute('aria-live', 'polite');
   FProgress := Add(LMount, 'progress', '');
-  FProgress.id := 'library-refresh-progress';
-  FProgress.setAttribute('aria-label', 'Current refresh phase');
+  FProgress.id := FPrefix + '-progress';
+  FProgress.setAttribute('aria-label', 'Current ' + ActionName + ' phase');
   LActions := Add(LMount, 'div', '');
   LActions.className := 'actions';
   FStart := TJSHTMLButtonElement(Add(LActions, 'button', 'Refresh library'));
-  FStart.id := 'library-refresh-start';
+  FStart.id := FPrefix + '-start';
   FCancel := TJSHTMLButtonElement(Add(LActions, 'button', 'Cancel refresh'));
-  FCancel.id := 'library-refresh-cancel';
+  FCancel.id := FPrefix + '-cancel';
   FRetry := TJSHTMLButtonElement(Add(LActions, 'button', 'Retry status check'));
-  FRetry.id := 'library-refresh-retry';
+  FRetry.id := FPrefix + '-retry';
+  if FKind = 'library_prepare' then
+  begin
+    FStart.textContent := 'Retry preparation';
+    FCancel.textContent := 'Cancel preparation';
+    FStatus.textContent := 'Prepare this recording when you use it.';
+  end;
   FStart.setAttribute('type', 'button');
   FCancel.setAttribute('type', 'button');
   FRetry.setAttribute('type', 'button');
@@ -198,19 +231,19 @@ begin
   FCancel.addEventListener('click', @Click);
   FRetry.addEventListener('click', @Click);
   LDetails := Add(LMount, 'details', '');
-  Add(LDetails, 'summary', 'Refresh details');
+  Add(LDetails, 'summary', 'Job details');
   FDetails := Add(LDetails, 'p', '');
   document.addEventListener('visibilitychange', @Visibility);
   window.addEventListener('pagehide', @Leaving);
   window.addEventListener('pageshow', @Returning);
   try
-    LStored := window.sessionStorage.getItem('pythian.library-refresh.pending.v1');
+    LStored := window.sessionStorage.getItem('pythian.' + FKind + '.pending.v1');
     if LStored <> '' then
     begin
       FWrite := TJSObject(TJSJSON.parse(LStored));
       if (Text(FWrite, 'format') = 'pythian.studio.job.write.v1') and
-        (Text(FWrite, 'kind') = 'library_refresh') and
-        (Pos('library-refresh-', Text(FWrite, 'job_id')) = 1) then
+        (Text(FWrite, 'kind') = FKind) and
+        (Pos(FPrefix + '-', Text(FWrite, 'job_id')) = 1) then
       begin
         FPending := True;
         FObserved.Add(Text(FWrite, 'job_id'));
@@ -227,12 +260,12 @@ begin
   try
     if FPending then
     begin
-      window.sessionStorage.setItem('pythian.library-refresh.pending.v1',
+      window.sessionStorage.setItem('pythian.' + FKind + '.pending.v1',
         TJSJSON.stringify(FWrite));
     end
     else
     begin
-      window.sessionStorage.removeItem('pythian.library-refresh.pending.v1');
+      window.sessionStorage.removeItem('pythian.' + FKind + '.pending.v1');
     end;
   except
     { Storage can be disabled; the current page still retains its exact request. }
@@ -251,6 +284,9 @@ var
   LCap: JSValue;
 begin
   FStart.disabled := not FConnected or FBusy or not FKnown or FPending or Active(FJob);
+  TJSObject(FStart)['hidden'] := (FKind = 'library_prepare') and
+    ((FPreparedWrite = nil) or Active(FJob) or
+    (Text(FJob, 'status') = 'completed'));
   TJSObject(FCancel)['hidden'] := not Active(FJob);
   FCancel.disabled := not FConnected or FBusy;
   TJSObject(FRetry)['hidden'] := FKnown and not FPending;
@@ -258,10 +294,10 @@ begin
   FRetry.textContent := 'Retry status check';
   if FPending then
   begin
-    FRetry.textContent := 'Check refresh';
+    FRetry.textContent := 'Check ' + ActionName;
     if FAbsent then
     begin
-      FRetry.textContent := 'Retry refresh';
+      FRetry.textContent := 'Retry same submission';
     end;
   end;
   TJSObject(FProgress)['hidden'] := not Active(FJob);
@@ -337,21 +373,25 @@ var
   LStatus: String;
 begin
   if (Text(AJob, 'format') <> 'pythian.studio.job.v1') or
-    (Text(AJob, 'kind') <> 'library_refresh') or (Text(AJob, 'job_id') <> AId) then
+    (Text(AJob, 'kind') <> FKind) or (Text(AJob, 'job_id') <> AId) then
   begin
-    raise Exception.Create('Refresh response has a different identity.');
+    raise Exception.Create('Job response has a different identity.');
   end;
   LStatus := Text(AJob, 'status');
   if (LStatus <> 'queued') and (LStatus <> 'running') and
     (LStatus <> 'completed') and (LStatus <> 'failed') and (LStatus <> 'cancelled') then
   begin
-    raise Exception.Create('Refresh status is unknown. Retry its status check.');
+    raise Exception.Create('Job status is unknown. Retry its status check.');
   end;
   FJob := AJob;
   FKnown := True;
   FPending := False;
   FAbsent := False;
   StorePending;
+  if Assigned(FStateChanged) then
+  begin
+    FStateChanged;
+  end;
   if Active(FJob) then
   begin
     if FObserved.IndexOf(AId) < 0 then
@@ -377,15 +417,25 @@ begin
     end;
     if isBoolean(FJob['cancel_requested']) and Boolean(FJob['cancel_requested']) then
     begin
-      Notice('Waiting for the refresh to stop…');
+      Notice('Waiting for ' + ActionName + ' to stop…');
     end;
   end
   else
   begin
     case LStatus of
-      'completed': Notice('Library refreshed.');
-      'failed': Notice('Refresh failed. You can start a new refresh.');
-      'cancelled': Notice('Refresh cancelled. You can start a new refresh.');
+      'completed':
+        begin
+          if FKind = 'library_prepare' then
+          begin
+            Notice('Recording prepared.');
+          end
+          else
+          begin
+            Notice('Collection list refreshed. No recordings were prepared.');
+          end;
+        end;
+      'failed': Notice('This ' + ActionName + ' failed. Retry when ready.');
+      'cancelled': Notice('This ' + ActionName + ' was cancelled. Retry when ready.');
     end;
     if (LStatus = 'completed') and (FObserved.IndexOf(AId) >= 0) and
       (FNotified.IndexOf(AId) < 0) then
@@ -451,26 +501,26 @@ begin
       if (Text(LData, 'format') <> 'pythian.studio.jobs.v1') or
         not isArray(LData['jobs']) then
       begin
-        raise Exception.Create('Refresh history is unavailable.');
+        raise Exception.Create('Job history is unavailable.');
       end;
       LJobs := TJSArray(LData['jobs']);
       if LJobs.length > 256 then
       begin
-        raise Exception.Create('Refresh history exceeds its limit.');
+        raise Exception.Create('Job history exceeds its limit.');
       end;
       for LIndex := 0 to LJobs.length - 1 do
       begin
         if (LJobs[LIndex] = nil) or not isObject(LJobs[LIndex]) or isArray(LJobs[LIndex]) then
         begin
-          raise Exception.Create('Refresh history contains an unreadable entry.');
+          raise Exception.Create('Job history contains an unreadable entry.');
         end;
         LRow := TJSObject(LJobs[LIndex]);
-        if (Text(LRow, 'kind') = 'library_refresh') and
+        if (Text(LRow, 'kind') = FKind) and
           ((Text(LRow, 'job_id') = '') or not ValidStatus(LRow)) then
         begin
-          raise Exception.Create('Recorded refresh status is unknown.');
+          raise Exception.Create('Recorded job status is unknown.');
         end;
-        if (LId = '') and (Text(LRow, 'kind') = 'library_refresh') and Active(LRow) then
+        if (LId = '') and (Text(LRow, 'kind') = FKind) and Active(LRow) then
         begin
           LId := Text(LRow, 'job_id');
         end;
@@ -484,7 +534,14 @@ begin
         else
         begin
           FKnown := True;
-          Notice('Ready to refresh your collections.');
+          if FKind = 'library_prepare' then
+          begin
+            Notice('Prepare a recording when you add or analyze it.');
+          end
+          else
+          begin
+            Notice('Ready to refresh collection names and durations.');
+          end;
         end;
       end;
     end;
@@ -507,7 +564,7 @@ begin
           FPending then
         begin
           FAbsent := True;
-          Notice('No refresh found yet. Retry when ready.');
+          Notice('No job found yet. Retry the same submission when ready.');
         end
         else
         begin
@@ -548,9 +605,22 @@ begin
       Exit;
     end;
     FWrite := TJSObject.new;
+    if FKind = 'library_prepare' then
+    begin
+      if FPreparedWrite = nil then
+      begin
+        Exit;
+      end;
+      FWrite := TJSObject(TJSJSON.parse(TJSJSON.stringify(FPreparedWrite)));
+      if (FJob <> nil) and ((Text(FJob, 'status') = 'failed') or
+        (Text(FJob, 'status') = 'cancelled')) then
+      begin
+        FWrite['retry_of'] := Text(FJob, 'job_id');
+      end;
+    end;
     FWrite['format'] := 'pythian.studio.job.write.v1';
-    FWrite['kind'] := 'library_refresh';
-    FWrite['job_id'] := 'library-refresh-' + FloatToStr(TJSDate.now) + '-' +
+    FWrite['kind'] := FKind;
+    FWrite['job_id'] := FPrefix + '-' + FloatToStr(TJSDate.now) + '-' +
       IntToStr(Trunc(Random * 100000000));
   end;
   FPending := True;
@@ -562,7 +632,7 @@ begin
   begin
     FObserved.Add(Text(FWrite, 'job_id'));
   end;
-  Notice('Starting library refresh…');
+  Notice('Starting ' + ActionName + '…');
   Draw;
   try
     LData := await(TJSObject, Request('/api/studio/job', 'POST', TJSJSON.stringify(FWrite)));
@@ -574,7 +644,7 @@ begin
     if LEpoch = FEpoch then
     begin
       FKnown := False;
-      Notice('Connection lost. Check whether the refresh started.');
+      Notice('Connection lost. Check whether ' + ActionName + ' started.');
     end;
   end;
   if LEpoch = FEpoch then
@@ -601,7 +671,7 @@ begin
   LId := Text(FJob, 'job_id');
   LWrite := TJSObject.new;
   LWrite['job_id'] := LId;
-  Notice('Stopping refresh…');
+  Notice('Requesting cancellation…');
   Draw;
   try
     LData := await(TJSObject, Request('/api/studio/cancel', 'POST', TJSJSON.stringify(LWrite)));
@@ -637,13 +707,47 @@ begin
 end;
 
 function TStudioLibraryRefresh.Click(AEvent: TJSMouseEvent): Boolean;
+var
+  LId: String;
 begin
   Result := True;
-  case TJSElement(AEvent.currentTarget).id of
-    'library-refresh-start': Submit;
-    'library-refresh-cancel': Cancel;
-    'library-refresh-retry': Recover;
+  LId := TJSElement(AEvent.currentTarget).id;
+  if LId = FPrefix + '-start' then
+  begin
+    Submit;
+  end
+  else if LId = FPrefix + '-cancel' then
+  begin
+    Cancel;
+  end
+  else if LId = FPrefix + '-retry' then
+  begin
+    Recover;
   end;
+end;
+
+function TStudioLibraryRefresh.Prepare(AWrite: TJSObject): Boolean;
+begin
+  Result := False;
+  if not FConnected or FPending or FBusy or Active(FJob) then
+  begin
+    Notice('A preparation is already pending. Check its status or cancel it.');
+    Exit;
+  end;
+  if (FPreparedWrite = nil) or
+    (TJSJSON.stringify(FPreparedWrite) <> TJSJSON.stringify(AWrite)) then
+  begin
+    FJob := nil;
+  end;
+  FPreparedWrite := TJSObject(TJSJSON.parse(TJSJSON.stringify(AWrite)));
+  FKnown := True;
+  Result := True;
+  Submit;
+end;
+
+function TStudioLibraryRefresh.CurrentJob: TJSObject;
+begin
+  Result := FJob;
 end;
 
 procedure TStudioLibraryRefresh.PauseReads;
@@ -666,7 +770,7 @@ begin
   begin
     PauseReads;
     FKnown := False;
-    Notice('Disconnected. Reconnect to check refresh status.');
+    Notice('Disconnected. Reconnect to check ' + ActionName + ' status.');
   end;
   Draw;
 end;
