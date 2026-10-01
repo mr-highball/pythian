@@ -71,8 +71,8 @@ disk traffic or phone-page timing. Evidence is
 consecutive nonclosing-batch count from **1 to 0**. Studio_11 remains OPEN;
 accepted task credit and milestone completion remain **50.80**.
 
-The remaining bounded work is HTTP/media/corpus integration, desktop/narrow
-interaction and portable integration, then an actual operator review of Refresh
+The remaining bounded work is HTTP/media/corpus integration and desktop/narrow
+interaction, then an actual operator review of Refresh
 and selected preparation. Stop at payload reads during discovery, false content
 identities, unrelated preparation, data loss or a distinct required gap.
 
@@ -86,6 +86,18 @@ or candidate artifact changes. This is submitted fixture-portability failure
 **1**, preserved separately from the policy execution gate; independent repair
 review and a new exact-revision portable run are required before portability
 is claimed.
+
+The repair is published at `d011ac0881b7351b7e404adb78509f439aa5e3b2`.
+Salty independently passes the changed discovery fixture's **63 assertions**
+on both Windows targets, with zero leaks. Its
+[exact-revision Linux run](https://github.com/mr-highball/pythian/actions/runs/36910949135)
+passes maintained integration and both extracted core-only/WFC package checks.
+The repair changes only the fixture and evidence notes; all fourteen candidate
+artifacts remain unchanged. Failed and successful CI evidence stays under
+`build/studio-library-lazy/ci-<revision>/`. This closes the portable integration
+check, not HTTP/browser acceptance or deployment. The live service is unchanged,
+studio_11 stays OPEN, its recorded submitted failure count remains **1**, and
+milestone credit stays **50.80**.
 
 The user's later certificate-exception authorization supersedes mandatory CA
 installation in the earlier phone scope. Their positive report does not document

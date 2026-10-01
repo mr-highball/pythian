@@ -78,6 +78,16 @@ failures; do not infer actual listening from a screenshot or compilation.
 
 **Dev Notes:**
 
+- 2026-10-01, Salty Boi / Neo / Big Boss, portable repair accepted:
+  `d011ac0881b7351b7e404adb78509f439aa5e3b2` changes only the discovery fixture
+  and evidence notes. Independent checked Win32 and Win64 runs pass **63**
+  assertions each, with zero leaks. The
+  [exact-revision Linux run](https://github.com/mr-highball/pythian/actions/runs/36910949135)
+  passes maintained integration and extracted core-only/WFC package verification.
+  Successful logs are retained under `build/studio-library-lazy/ci-d011ac08*/`.
+  Production sources and all fourteen candidate artifacts are unchanged by the
+  repair. AC4's portable check passes; HTTP/browser checks and live deployment
+  remain unexecuted. Task OPEN, no credit, submitted fixture failure count **1**.
 - 2026-10-01, Neo / Big Boss, first portable CI submission:
   [run 36909986284](https://github.com/mr-highball/pythian/actions/runs/36909986284)
   at `0cee8613f63c99deb70005101c29c440b9f3af73` compiled native discovery but
