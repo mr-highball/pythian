@@ -27,7 +27,7 @@ program PythianFullOutputListener;
 {$H+}
 {$modeswitch externalclass}
 
-uses JS, Web, SysUtils;
+uses JS, Web, SysUtils, pythian.workspace.navigation;
 
 type
   TListenerWindow = class external name 'Window' (TJSWindow)
@@ -50,6 +50,7 @@ type
 
   TListener = class
   private
+    FNavigation: TWorkspaceNavigation;
     FToken: String;
     FPending: TJSArray;
     FCompleted: TJSArray;
@@ -70,6 +71,8 @@ type
     FLoadEpoch: Integer;
     function El(const AId: String): TJSElement;
     function FetchApi(const APath, AMethod, ABody: String): TJSPromise;
+    function FetchNavigation(const APath, AMethod, ABody: String;
+      const ASignal: TJSObject): TJSPromise;
     procedure Status(const AText: String; const AError: Boolean = False);
     procedure UpdateLoading;
     procedure Feedback(const AText: String; const AError: Boolean = False);
@@ -200,6 +203,12 @@ begin
 end;
 
 function TListener.FetchApi(const APath, AMethod, ABody: String): TJSPromise;
+begin
+  Result := FetchNavigation(APath, AMethod, ABody, nil);
+end;
+
+function TListener.FetchNavigation(const APath, AMethod, ABody: String;
+  const ASignal: TJSObject): TJSPromise;
 var
   LOptions, LHeaders: TJSObject;
 begin
@@ -219,6 +228,7 @@ begin
   LOptions['redirect'] := 'error';
   LOptions['cache'] := 'no-store';
   LOptions['referrerPolicy'] := 'no-referrer';
+  if ASignal <> nil then LOptions['signal'] := ASignal;
   if FToken <> '' then LHeaders['X-Pythian-Token'] := FToken;
   if ABody <> '' then
   begin
@@ -228,6 +238,10 @@ begin
   LOptions['headers'] := LHeaders;
   Result := TListenerWindow(window).fetch(window.location.origin + APath,
     LOptions);
+  if (AMethod = 'POST') and (APath = '/api/listen-review') then
+  begin
+    Result := Result._then(@WorkspaceResponseSaved);
+  end;
 end;
 
 procedure TListener.Status(const AText: String; const AError: Boolean);
@@ -797,6 +811,7 @@ begin
         FLoading := False;
         UpdateLoading;
         Status('Connection is taking too long. Check this device’s network and retry.', True);
+        FNavigation.ConnectionFailed;
         El('retry').removeAttribute('hidden');
       end;
     end, 10000);
@@ -809,6 +824,7 @@ begin
     if LEpoch <> FLoadEpoch then Exit;
     FToken := Str(LData, 'token');
     if FToken = '' then raise Exception.Create('Session token missing');
+    FNavigation.Start;
     El('workspace').removeAttribute('hidden');
     Status('Connected. Loading listening packets…');
     LoadQueue(FSelectedId);
@@ -818,6 +834,7 @@ begin
       if LEpoch = FLoadEpoch then
       begin
         Status('Connection failed: ' + E.Message, True);
+        FNavigation.ConnectionFailed;
         El('retry').removeAttribute('hidden');
       end;
     end;
@@ -826,6 +843,7 @@ begin
       if LEpoch = FLoadEpoch then
       begin
         Status('Connection failed in this browser.', True);
+        FNavigation.ConnectionFailed;
         El('retry').removeAttribute('hidden');
       end;
     end;
@@ -1189,6 +1207,7 @@ end;
 
 procedure TListener.Run;
 begin
+  FNavigation := TWorkspaceNavigation.Create(@FetchNavigation, 'listening');
   FPending := TJSArray.new;
   FCompleted := TJSArray.new;
   FComments := TJSArray.new;

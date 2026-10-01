@@ -10,6 +10,20 @@ deliverable's acceptance, not polish deferred until after the backend.
 
 ## Operator flow
 
+The landing page starts with **Record audio**, **Import WAV** and **Browse
+collection**, before project setup. Browse collection opens the recording list;
+named collection shortcuts filter it. A collection organizes available recordings,
+while a saved project records the chosen whole tracks/ranges and classifications.
+Opening the recorder preserves pending input and waits for an explicit Start.
+Microphone capture requires a supported secure browser context; host-computer
+localhost supports it, while plain phone LAN HTTP does not.
+
+Studio, Source reviews and Listening reviews share navigation with actual pending
+counts. Studio comparisons remain in Studio, including withdrawn responses, so
+the ordinary listening badge does not count them again. The next-action link
+points to pending work; unavailable counts remain visibly unknown. Counts refresh
+after responses, on returning to the page and periodically while it is visible.
+
 1. **Sources:** put WAV recordings in private collection folders, then refresh
    the library. Name a style corpus and select whole recordings or several
    passages, adding caller-defined classifications to each selection. Folder
@@ -74,7 +88,7 @@ completed by planning, and all original criteria in the donor tasks remain.
 
 | Task | Previous NS-6 points | Current NS-6 points | Outcome |
 | --- | ---: | ---: | --- |
-| [authoring_02](TODO/NS-6_authoring_02.md) | 8 | 4 | Physical LAN/source operator qualification |
+| [authoring_02](TODO/NS-6_authoring_02.md) | 8 | 2 | Physical LAN/source operator qualification |
 | [delivery_03](TODO/NS-6_delivery_03.md) | 10 | 3 | Final package and extracted workflow |
 | [delivery_04](TODO/NS-6_delivery_04.md) | 12 | 8 | Independent complete-workflow reproduction |
 | [studio_01 — DONE](TODO/DONE/NS-6_studio_01.md) | 0 | 4 | Durable intuitive project/source setup |
@@ -84,6 +98,8 @@ completed by planning, and all original criteria in the donor tasks remain.
 | [studio_05](TODO/DONE/NS-6_studio_05.md) | 0 | 2 | Layered effects preview and derived collection clips |
 | [studio_06](TODO/DONE/NS-6_studio_06.md) | 0 | 2 | WAV import, microphone capture and analysis exploration |
 | [studio_07](TODO/NS-6_studio_07.md) | 0 | 1 | Mixed-format corpus conversion with original lineage |
+| [studio_08](TODO/NS-6_studio_08.md) | 0 | 1 | Discoverable starting actions, existing music and queue navigation |
+| [studio_09](TODO/NS-6_studio_09.md) | 0 | 1 | Verified large-library refresh without duplicate staging |
 | **Total allocation at scoping** | **30** | **30** | **Scoping earned no credit** |
 
 The added operator outcomes receive explicit weight from later verification
@@ -91,8 +107,8 @@ work. Those verification obligations remain required at reduced planning weight;
 they do not disappear or move into the new tasks. Scoping left 49.40 accepted;
 independent project/setup acceptance subsequently adds 4 NS-6 / 0.40 overall.
 Private corpora, raw WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall.
-The current ledger is **50.60 accepted / 49.40 remaining**, **45 open / 40 DONE**.
-NS-6 is **43 accepted / 57 unearned** with nine open tasks. Goal weights are unchanged.
+The current ledger is **50.60 accepted / 49.40 remaining**, **47 open / 40 DONE**.
+NS-6 is **43 accepted / 57 unearned** with eleven open tasks. Goal weights are unchanged.
 The later collection and effects requirements each reallocate one unearned point
 from jobs and iteration; all original criteria remain. Scoping earns no acceptance.
 Capture/exploration receives two additional unearned delivery_03 points with
@@ -104,9 +120,15 @@ the declared supported route until conversion and original-frame maps pass.
 The studio is a current NS-5 calibration enabler, attributed primarily to NS-6
 usability. Actual calibration/control validity remains evaluation_01; complete
 musical references remain evaluation_04; inference and many-hour style quality
-keep their existing owners. Final packaging includes all seven studio outcomes.
+keep their existing owners. Final packaging includes all nine studio outcomes.
+Actual phone feedback adds studio_08, funded by one further unearned authoring_02
+point. Its prominent recording/import/library entry, existing-corpus connection
+and shared attention badges precede further operator iteration acceptance.
 Old source-marker and physical QA failures remain with authoring_02 and Big Boss;
 new task identities do not reset those counters or reopen stopped science.
+Actual multi-hour originals expose a separate refresh prerequisite, studio_09,
+funded by one more unearned authoring_02 point. It removes redundant existing-media
+staging and reconciles bounded collection work with actual workload evidence.
 
 ## Private collection library
 
@@ -122,6 +144,15 @@ scientific genre, training partition, license or musical truth. New recordings
 start unassigned; existing catalog evaluation reservations remain enforced.
 Original audio stays immutable once imported, and a changed file is a new source
 identity. Old saved corpora retain their exact bytes/ranges and classifications.
+
+Refresh is an explicit background job. The collection panel shows the current
+phase, byte progress when known, Cancel and recovery controls; opening Studio
+does not start a scan. Reopening the page reconnects to an active refresh. An
+uncertain submission is checked by its original job ID before an explicit retry.
+The prior published collection index stays available until the new scan succeeds.
+Existing catalog sources are verified in place without another staging WAV.
+Collections group recordings; a saved project/corpus chooses the recordings,
+passages and classifications to learn from.
 
 ## Project setup contract
 
@@ -213,10 +244,23 @@ recombination. Experimental pitch previews are a separate listening tool.
 Jobs retain immutable requests and append-only state events beneath the private
 catalog's `studio/` directory. Requests use stable identities so a lost response
 can be reconciled. One worker runs per catalog, with at most 32 queued and 256
-retained jobs. Work stops at ten minutes; cancellation terminates a child that
-does not cooperate. Interrupted active jobs become failed rather than ready.
+retained jobs. New collection refreshes have a two-hour worker limit; generation
+and other jobs keep a ten-minute limit. Historic requests without an explicit
+budget retain their ten-minute limit. The immutable request controls the worker,
+supervisor and displayed job limit. Cancellation terminates a child that does
+not cooperate. Interrupted active jobs become failed rather than ready.
 Completed source/model/audio hashes and original-frame lineage remain retained.
 Partial seed outcomes remain visible; incomplete batches do not enter listening.
+Job writes wait up to two seconds for another process's current write; an
+unavailable lock fails without stealing ownership or changing accepted state.
+
+Collection discovery permits 64 folders, 256 WAV files, 16 GiB per file and
+32 GiB total original bytes. Reusing existing sources requires two full reads
+of each original and one of each distinct catalog source, with no full media
+writes. Mixed/new imports require at most eight full hash/copy reads and two
+media writes per original byte, plus WAV header reads and bounded metadata work.
+These are logical I/O bounds, not measured disk traffic or a promise that every
+maximum-size collection finishes within the worker deadline.
 
 A corpus permits 64 nonoverlapping selections across 32 recordings, with up to
 eight caller classifications per selection. Training uses every declared range

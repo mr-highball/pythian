@@ -29,16 +29,31 @@ SOFTWARE.
   <meta name="theme-color" content="#11252b">
   <title>Pythian · Studio</title>
   <link rel="stylesheet" href="studio.css">
+  <link rel="stylesheet" href="workspace-nav.css">
 </head>
 <body>
   <a class="skip-link" href="#style-name">Skip to your style</a>
   <header class="masthead">
     <a class="brand" href="studio.html" aria-label="Pythian Studio home">Pythian <span>Studio</span></a>
-    <nav aria-label="Other workspaces"><a href="/">Source reviews</a><a href="listen.html">Listening reviews</a></nav>
   </header>
+  <div id="workspace-navigation"></div>
   <main>
+    <div id="workspace-next-action"></div>
+    <section class="start-panel" aria-labelledby="start-title">
+      <div><p class="eyebrow">MAKE SOMETHING. HEAR WHAT PYTHIAN CAN DO.</p>
+        <h1 id="start-title">Start with sound.</h1><p class="lead">Record an idea, bring a WAV, or explore your collection.</p></div>
+      <div class="start-actions">
+        <button id="start-record" class="start-action" type="button"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="13" rx="4"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3M8 22h8"/></svg><strong>Record audio</strong><small>Open the recorder</small></button>
+        <button id="start-import" class="start-action" type="button"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M4 15v6h16v-6"/></svg><strong>Import WAV</strong><small>Explore a sound file</small></button>
+        <button id="start-browse" class="start-action" type="button"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 6h7l2 3h9v12H3zM3 6V3h7l2 3h9v3"/></svg><strong>Browse collection</strong><small id="start-library-summary">Your tracks and passages</small></button>
+      </div>
+    </section>
+    <section id="capture-panel" class="panel capture-panel" hidden aria-label="Record or import audio" tabindex="-1">
+      <button id="capture-back" type="button">Back to starting actions</button>
+      <div id="studio-capture"></div>
+    </section>
     <section class="intro" aria-labelledby="page-title">
-      <div><p class="eyebrow">YOUR RECORDINGS. YOUR DIRECTION.</p><h1 id="page-title">Build your style.</h1>
+      <div><p class="eyebrow">YOUR RECORDINGS. YOUR DIRECTION.</p><h2 id="page-title">Build your style.</h2>
         <p class="lead">Choose the music to learn from, and describe what you want to carry forward.</p></div>
       <div class="draft-picker"><label for="draft-list">Saved projects</label>
         <div class="picker-controls"><select id="draft-list" disabled><option value="">New project</option></select>
@@ -67,13 +82,14 @@ SOFTWARE.
             <p id="qualities-help" class="hint">A few words about the qualities you want to carry forward.</p>
             <p id="qualities-error" class="field-error" role="alert" hidden></p>
           </form>
-          <div class="source-heading"><div><h3>Your collection library</h3><p class="hint">Choose whole tracks or classify individual passages.</p></div>
-            <button id="refresh-tracks" type="button" disabled>Refresh library</button></div>
+          <div id="collection-library" class="source-heading" tabindex="-1"><div><h3>Your collection library</h3><p class="hint">Collections hold recordings. Save selections as a project to build a style corpus.</p></div></div>
+          <div id="studio-library-refresh" class="library-refresh"></div>
+          <p id="collection-empty-state" class="hint" hidden></p>
           <details><summary>Add music to your library</summary><p class="hint">Place WAV files in <code>local-audio/collections/your-collection/</code>, then refresh. These private files stay outside Git.</p></details>
           <details><summary>Library refresh details</summary><p id="library-summary" class="hint" role="status">Refresh to discover your collection folders.</p></details>
-          <details class="analysis-tools"><summary>Import a WAV or record something new</summary><div id="studio-capture"></div></details>
           <label for="collection-filter">Collection</label>
           <select id="collection-filter"><option value="">All collections</option></select>
+          <div id="collection-shortcuts" class="collection-shortcuts" role="group" aria-label="Browse your collections"></div>
           <label class="search-label" for="track-search">Find a recording</label>
           <input id="track-search" type="search" placeholder="Search recording names" disabled>
           <section id="source-inspector" class="source-inspector" hidden aria-labelledby="source-title">

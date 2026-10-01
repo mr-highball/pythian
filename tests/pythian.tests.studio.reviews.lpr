@@ -359,6 +359,11 @@ begin
         LBindings.Free;
       end;
       Check(IsStudioReviewListeningItemHidden(LCatalog, LItem), 'Generic queue must hide blind mapping');
+      Check(IsStudioReviewListeningItem(LCatalog, LItem), 'Blind request belongs to Studio feedback');
+      Check(not IsStudioReviewListeningItem(LCatalog, 'studio_authored-batch_0'),
+        'Ordinary audition keeps its listening queue owner');
+      Check(not IsStudioReviewListeningItem(LCatalog, 'sr_not_a_session'),
+        'A prefix alone does not establish Studio ownership');
       Check(not IsStudioReviewListeningItemHidden(LCatalog, 'studio_authored-batch_0'),
         'Ordinary job audition remains separate from blind aliases');
       LAsset := ResolveStudioReviewAsset(LCatalog, 'comparison', 'sample_a');
@@ -441,6 +446,8 @@ begin
       try
         Check((LRead.Integers['revision'] = 4) and LRead.Booleans['revealed'],
           'Withdrawal cannot restore an already exposed blind assignment');
+        Check(IsStudioReviewListeningItem(LCatalog, LItem),
+          'Revealed withdrawn feedback still belongs only to Studio');
       finally
         LRead.Free;
       end;
@@ -451,7 +458,9 @@ begin
     finally
       LReply.Free;
     end;
-    Check(not IsStudioReviewListeningItemHidden(LCatalog, LItem), 'Declared reveal releases generic queue mapping');
+    Check(not IsStudioReviewListeningItemHidden(LCatalog, LItem), 'Declared reveal releases generic media mapping');
+    Check(IsStudioReviewListeningItem(LCatalog, LItem),
+      'Submitted revealed feedback retains its Studio queue owner');
     LRead := PinStudioReview(LCatalog, 'comparison', 0, True);
     try
       Check(LRead.Objects['pin'].Booleans['pinned'] and

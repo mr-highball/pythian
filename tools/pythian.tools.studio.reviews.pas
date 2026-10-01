@@ -50,6 +50,9 @@ function PrepareStudioNextBatch(const ACatalogRoot, AReviewId,
   ASampleId: String): TJSONObject;
 function IsStudioReviewListeningItemHidden(const ACatalogRoot,
   AItemId: String): Boolean;
+{ Studio feedback has one owning UI even after reveal or withdrawal. }
+function IsStudioReviewListeningItem(const ACatalogRoot,
+  AItemId: String): Boolean;
 { Server-only stream binding. Do not serialize this object to the operator or
   copy its source hash into a pre-reveal media ETag/content-disposition. }
 function ResolveStudioReviewAsset(const ACatalogRoot, AReviewId,
@@ -956,14 +959,13 @@ begin
   end;
 end;
 
-function IsStudioReviewListeningItemHidden(const ACatalogRoot, AItemId: String): Boolean;
+function StudioSessionForListeningItem(const ACatalogRoot, AItemId: String): TJSONObject;
 var
   LIds: TStringList;
   LId: String;
   LSession: TJSONObject;
-  LRow: TJSONObject;
 begin
-  Result := False;
+  Result := nil;
   if Pos('sr_', AItemId) <> 1 then
   begin
     Exit;
@@ -976,12 +978,9 @@ begin
       try
         if LSession.Objects['listening_request'].Strings['id'] = AItemId then
         begin
-          LRow := ListeningRow(ACatalogRoot, AItemId);
-          try
-            Exit(not Revealed(ACatalogRoot, LSession, LRow));
-          finally
-            LRow.Free;
-          end;
+          Result := LSession;
+          LSession := nil;
+          Exit;
         end;
       finally
         LSession.Free;
@@ -989,6 +988,41 @@ begin
     end;
   finally
     LIds.Free;
+  end;
+end;
+
+function IsStudioReviewListeningItem(const ACatalogRoot, AItemId: String): Boolean;
+var
+  LSession: TJSONObject;
+begin
+  LSession := StudioSessionForListeningItem(ACatalogRoot, AItemId);
+  try
+    Result := LSession <> nil;
+  finally
+    LSession.Free;
+  end;
+end;
+
+function IsStudioReviewListeningItemHidden(const ACatalogRoot, AItemId: String): Boolean;
+var
+  LSession: TJSONObject;
+  LRow: TJSONObject;
+begin
+  Result := False;
+  LSession := StudioSessionForListeningItem(ACatalogRoot, AItemId);
+  try
+    if LSession = nil then
+    begin
+      Exit;
+    end;
+    LRow := ListeningRow(ACatalogRoot, AItemId);
+    try
+      Result := not Revealed(ACatalogRoot, LSession, LRow);
+    finally
+      LRow.Free;
+    end;
+  finally
+    LSession.Free;
   end;
 end;
 

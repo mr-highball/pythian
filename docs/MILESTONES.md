@@ -8,7 +8,7 @@
 Updated **2026-10-01** on the user-authorized 2026-09-29 credit basis:
 **50.60 outcome-weighted points credited; 49.40 remaining.**
 The later [operator Studio scope](OPERATOR-STUDIO.md#allocation-and-ownership)
-redistributes 15 unearned NS-6 points into seven operator outcomes, including
+redistributes 17 unearned NS-6 points into nine operator outcomes, including
 mixed-format corpus preparation. Scoping left completion unchanged; subsequent
 independent Studio setup acceptance adds 0.40 overall, followed by 0.80 for
 private corpora, raw WFC jobs, effects and capture/exploration. Goal weights are unchanged.
@@ -35,8 +35,8 @@ ecosystem adoption is unmeasured and is a required completion gate.
 | <a id="wav-02"></a><a id="wav-03"></a><a id="ns-3"></a>**NS-3 — Trustworthy musical learning from WAV** | 25% | 25 | Measurement foundation, Pascal observations/execution, qualified references/scoring, unknown/manual context, catalog and admitted-event bridge. | Independently accepted recorded context, notes, parts, harmony, groove and evolving sound: 19 tasks / 75 |
 | <a id="wfc-preferences"></a><a id="ns-4"></a>**NS-4 — Granular WFC layers and reusable blends** | 65% | 15 | Actual layers, typed controls, persistence, selective reuse, caller codecs/traits and bounded event/composition evidence. | Full recorded-provider workflow through reusable styles and audio: 1 task / 35 |
 | <a id="wav-04"></a><a id="ns-5"></a>**NS-5 — User-defined styles that generate and blend usefully** | 14% | 20 | Bounded identity, maintained caller intake, raw corpus, journal, balance, listening packet and acoustic continuation; style-card AC1 only. | Grounded references, semantic scale, structure/continuity, useful one/many-recording and new-user styles, blends: 15 tasks / 86 |
-| <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | 43% | 10 | Supported consumer contract, native checkpoint, exact-revision minimal core/caller-provider package, editor/producer queue, Studio setup/private corpora, bounded raw WFC jobs, effects and experimental capture/MIDI exploration. | Studio iteration/conversion, full packages, actual outside use, physical LAN/full operator workflow, maintained support, ecosystem adoption and final handoff: 9 tasks / 57 |
-| **Total** | **50.60 weighted** | **100** | **40 accepted task records plus explicit baseline** | **45 open tasks / 49.40 weighted points** |
+| <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | 43% | 10 | Supported consumer contract, native checkpoint, exact-revision minimal core/caller-provider package, editor/producer queue, Studio setup/private corpora, bounded raw WFC jobs, effects and experimental capture/MIDI exploration. | Studio iteration/conversion/discovery and large-library refresh, full packages, actual outside use, physical LAN/full operator workflow, maintained support, ecosystem adoption and final handoff: 11 tasks / 57 |
+| **Total** | **50.60 weighted** | **100** | **40 accepted task records plus explicit baseline** | **47 open tasks / 49.40 weighted points** |
 
 Arithmetic:
 `5×1 + 25×.90 + 25×.25 + 15×.65 + 20×.14 + 10×.43 = 50.60`.
@@ -98,7 +98,7 @@ a claim that all downstream outcomes pass.
 | <a id="song-structure"></a>**SONG-STRUCTURE** | NS-5 | [NS-5_structure_01](TODO/NS-5_structure_01.md), [NS-5_structure_02](TODO/NS-5_structure_02.md) |
 | <a id="style-eval"></a>**STYLE-EVAL** | NS-5 | [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md), [NS-5_evaluation_04](TODO/NS-5_evaluation_04.md), [NS-5_evaluation_02](TODO/NS-5_evaluation_02.md), [NS-5_style_01](TODO/NS-5_style_01.md), [NS-5_style_02](TODO/NS-5_style_02.md), [NS-5_style_03](TODO/NS-5_style_03.md), [NS-5_blends_01](TODO/NS-5_blends_01.md) |
 | <a id="wav-05-authoring"></a>**WAV-05-AUTHORING** | NS-6 | [NS-6_authoring_01 — DONE](TODO/DONE/NS-6_authoring_01.md), [NS-6_authoring_02](TODO/NS-6_authoring_02.md) |
-| <a id="operator-studio"></a>**OPERATOR-STUDIO** | NS-6 | [NS-6_studio_01 — DONE](TODO/DONE/NS-6_studio_01.md), [NS-6_studio_02](TODO/DONE/NS-6_studio_02.md), [NS-6_studio_03](TODO/NS-6_studio_03.md), [NS-6_studio_04](TODO/DONE/NS-6_studio_04.md), [NS-6_studio_05](TODO/DONE/NS-6_studio_05.md), [NS-6_studio_06](TODO/DONE/NS-6_studio_06.md), [NS-6_studio_07](TODO/NS-6_studio_07.md) |
+| <a id="operator-studio"></a>**OPERATOR-STUDIO** | NS-6 | [NS-6_studio_01 — DONE](TODO/DONE/NS-6_studio_01.md), [NS-6_studio_02](TODO/DONE/NS-6_studio_02.md), [NS-6_studio_03](TODO/NS-6_studio_03.md), [NS-6_studio_04](TODO/DONE/NS-6_studio_04.md), [NS-6_studio_05](TODO/DONE/NS-6_studio_05.md), [NS-6_studio_06](TODO/DONE/NS-6_studio_06.md), [NS-6_studio_07](TODO/NS-6_studio_07.md), [NS-6_studio_08](TODO/NS-6_studio_08.md), [NS-6_studio_09](TODO/NS-6_studio_09.md) |
 | <a id="wav-05-delivery"></a>**WAV-05-DELIVERY** | NS-6 | [NS-6_delivery_06](TODO/DONE/NS-6_delivery_06.md), [NS-6_delivery_03](TODO/NS-6_delivery_03.md) |
 | <a id="delivery-release"></a>**DELIVERY-RELEASE** | NS-6 | [NS-6_delivery_07](TODO/NS-6_delivery_07.md), [NS-6_delivery_04](TODO/NS-6_delivery_04.md), [NS-6_delivery_05](TODO/NS-6_delivery_05.md) |
 | <a id="delivery-support"></a>**DELIVERY-SUPPORT** | NS-6 | [NS-6_support_01](TODO/NS-6_support_01.md) |
@@ -111,9 +111,9 @@ a claim that all downstream outcomes pass.
 ## Completion accounting
 
 The new baseline is NS-1..6 **100/70/10/20/0/0**; current accepted task points
-are **0/20/15/45/14/35**. Baseline contributes 28.00 weighted points and DONE
-contributes 21.80. The [open](TODO/README.md) and [DONE](TODO/DONE/README.md)
-ledgers exhaustively map the 81 current tickets. Baseline + DONE + open equals
+are **0/20/15/45/14/43**. Baseline contributes 28.00 weighted points and DONE
+contributes 22.60. The [open](TODO/README.md) and [DONE](TODO/DONE/README.md)
+ledgers exhaustively map the 87 current tickets. Baseline + DONE + open equals
 100 within each goal. Historical figures are retained only as dated evidence,
 not current allocation rules.
 
@@ -129,8 +129,9 @@ in the same change. Scope changes get an explicit new rationale.
 
 The native catalog and [editor/queue](TODO/DONE/NS-6_authoring_01.md) are accepted.
 [Physical LAN/final use](TODO/NS-6_authoring_02.md) retains original points 4, 5
-and 10 and every mapped detailed condition. Current allocation 8+8 NS-6; older
-4-point splits are historical. The fixed QA rule is verified, while physical
+and 10 and every mapped detailed condition. Current allocation is 8+2 NS-6;
+the remaining unearned authoring points moved into explicit Studio outcomes.
+Older splits are historical. The fixed QA rule is verified, while physical
 phone Save and the complete operator matrix remain actual review gates.
 
 ### NS-5 admitted-pitch balance task split
@@ -172,22 +173,25 @@ nearby variants. The current minimal package is accepted; an actual outside
 consumer is still needed. Caller source/effect mechanics and caller-provider
 registration/generation/blend mechanisms are accepted at their exact artifact
 scope; outside use/listening and full recorded integration remain open. The
-editor/queue contract and Studio project setup are accepted. The Studio job and
-iteration steps follow; the old source-marker/full physical matrix remains deferred. Bounded source-bound WFC
+editor/queue contract, Studio projects, bounded raw WFC jobs, private corpora,
+effects and capture/exploration are accepted. Current phone feedback selects
+starting actions, queue navigation and actual large-library discovery before
+the operator iteration verdict; the old source-marker/full physical matrix
+remains deferred. Bounded source-bound WFC
 comparator execution is independently qualified on synthetic inputs. It does
 not supply the absent musical reference evidence or close full AC3.
 
 ### Next work to schedule
 
-- Big Boss: preserve the accepted [Studio setup batch](OPERATOR-STUDIO.md#first-batch)
-  and freeze the first real job policy for studio_02, retaining current HTTP/build
-  and old mandatory repair ownership. No physical verdict or musical acceptance
-  follows from setup acceptance.
-- Neo: implement and coordinate the bounded native job path using the existing
-  journal/WFC/model/render/listening APIs. Give Ticket Guy disjoint UI work after
-  freezing that job contract. Source audition, actual jobs and feedback iteration
-  follow in studio_02/03, without presenting raw acoustic or supplied-reference
-  modes as accepted inference.
+- Big Boss: close the selected [orientation repair](TODO/NS-6_studio_08.md) and
+  its [large-library prerequisite](TODO/NS-6_studio_09.md) only after independent
+  QA and actual collection discovery pass. Retain current HTTP/build and old
+  mandatory repair ownership. Studio_03's operator verdict remains separate.
+- Neo: coordinate bounded, disjoint work with the existing Ticket Guy and
+  final QA with Salty. Preserve verified originals and truthful job/queue states;
+  raw acoustic recombination and experimental previews do not establish accepted
+  musical inference. The [mixed-format follow-up](TODO/NS-6_studio_07.md) remains
+  open after this review batch.
 - Preserve comparator and source/inference stop counters. A sole operator can
   supply caller preference decisions, but supported controls and separate
   candidate evaluation still belong to [evaluation_01](TODO/NS-5_evaluation_01.md).

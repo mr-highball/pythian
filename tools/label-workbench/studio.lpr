@@ -36,7 +36,9 @@ uses
   pythian.studio.batches,
   pythian.studio.effects,
   pythian.studio.capture,
-  pythian.studio.reviews;
+  pythian.studio.reviews,
+  pythian.workspace.navigation,
+  pythian.studio.&library.refresh;
 
 type
   TStudioWindow = class external name 'Window' (TJSWindow)
@@ -45,6 +47,8 @@ type
 
   TStudio = class
   private
+    FNavigation: TWorkspaceNavigation;
+    FLibraryRefresh: TStudioLibraryRefresh;
     FSourceEditor: TStudioSourceEditor;
     FBatches: TStudioBatches;
     FEffects: TStudioEffects;
@@ -63,16 +67,16 @@ type
     FEpoch: Integer;
     FPendingWrite: TJSObject;
     FConflict: Boolean;
-    FRefreshBusy: Boolean;
-    FRefreshJobId: String;
+    FCatalogRefreshPending: Boolean;
     function El(const AId: String): TJSElement;
     function Input(const AId: String): TJSHTMLInputElement;
     function AddText(AParent: TJSElement; const ATag, AText, AClass: String): TJSElement;
     function FetchApi(const APath, AMethod, ABody: String): TJSPromise;
+    function FetchNavigation(const APath, AMethod, ABody: String;
+      const ASignal: TJSObject): TJSPromise;
     procedure Connect; async;
     procedure LoadProject(const AId: String); async;
     procedure Save; async;
-    procedure RefreshSources; async;
     procedure CatalogSaved;
     function UseNextBatch(APacket: TJSObject): TJSPromise;
     function ApplyNextBatch(APacket: TJSObject): Boolean; async;
@@ -96,12 +100,12 @@ type
     function HandleSave(AEvent: TJSMouseEvent): Boolean;
     function HandleReload(AEvent: TJSMouseEvent): Boolean;
     function HandleRetry(AEvent: TJSMouseEvent): Boolean;
-    function HandleRefresh(AEvent: TJSMouseEvent): Boolean;
     function HandleProject(AEvent: TEventListenerEvent): Boolean;
     function HandleSearch(AEvent: TEventListenerEvent): Boolean;
     function HandleBeforeUnload(AEvent: TEventListenerEvent): Boolean;
     function HandleSubmit(AEvent: TEventListenerEvent): Boolean;
     function HandleAnyPlay(AEvent: TEventListenerEvent): Boolean;
+    function HandleStart(AEvent: TJSMouseEvent): Boolean;
   public
     procedure Run;
   end;
@@ -277,6 +281,12 @@ begin
 end;
 
 function TStudio.FetchApi(const APath, AMethod, ABody: String): TJSPromise;
+begin
+  Result := FetchNavigation(APath, AMethod, ABody, nil);
+end;
+
+function TStudio.FetchNavigation(const APath, AMethod, ABody: String;
+  const ASignal: TJSObject): TJSPromise;
 var
   LOptions: TJSObject;
   LHeaders: TJSObject;
@@ -296,6 +306,7 @@ begin
   LOptions['redirect'] := 'error';
   LOptions['cache'] := 'no-store';
   LOptions['referrerPolicy'] := 'no-referrer';
+  if ASignal <> nil then LOptions['signal'] := ASignal;
   if FToken <> '' then
   begin
     LHeaders['X-Pythian-Token'] := FToken;
@@ -307,6 +318,11 @@ begin
   end;
   LOptions['headers'] := LHeaders;
   Result := TStudioWindow(window).fetch(window.location.origin + APath, LOptions).catch(@NetworkFailure);
+  if (AMethod = 'POST') and ((APath = '/api/studio/review') or
+    (APath = '/api/studio/review/response')) then
+  begin
+    Result := Result._then(@WorkspaceResponseSaved);
+  end;
 end;
 
 procedure TStudio.Status(const AText: String; AError: Boolean);
@@ -367,7 +383,7 @@ var
 begin
   FSourceEditor.SetDisabled(FBusy or not FConnected);
   LControls := ['style-name', 'style-qualities', 'learning-mode', 'new-draft',
-    'draft-list', 'refresh-tracks', 'track-search'];
+    'draft-list', 'track-search'];
   for LIndex := 0 to High(LControls) do
   begin
     if FBusy or not FConnected then
@@ -379,7 +395,6 @@ begin
       El(LControls[LIndex]).removeAttribute('disabled');
     end;
   end;
-  TJSHTMLButtonElement(El('refresh-tracks')).disabled := FBusy or not FConnected or FRefreshBusy;
   TJSHTMLButtonElement(El('save-draft')).disabled := FBusy or not FConnected or
     ((not FDirty) and (FRevision > 0));
   TJSHTMLButtonElement(El('reload-draft')).disabled := FBusy or not FConnected or (FRevision = 0);
@@ -414,6 +429,11 @@ begin
   begin
     El('draft-state').textContent := 'Not saved';
     El('draft-state').className := 'state';
+  end;
+  if FCatalogRefreshPending and not FBusy then
+  begin
+    FCatalogRefreshPending := False;
+    Connect;
   end;
 end;
 
@@ -805,6 +825,7 @@ begin
   LEpoch := FEpoch;
   FBusy := True;
   FConnected := False;
+  FLibraryRefresh.SetConnected(False);
   FToken := '';
   UpdateState;
   Status('Connecting to your catalog…');
@@ -817,6 +838,7 @@ begin
         Inc(FEpoch);
         FBusy := False;
         FConnected := False;
+        FNavigation.ConnectionFailed;
         UpdateState;
         Status('Connection is taking too long. Your edits are still here; retry when ready.', True);
         El('retry').removeAttribute('hidden');
@@ -842,6 +864,7 @@ begin
     begin
       raise Exception.Create('Connection could not be established.');
     end;
+    FNavigation.Start;
     LResponse := await(TJSResponse, FetchApi('/api/studio/sources', 'GET', ''));
     if LEpoch <> FEpoch then
     begin
@@ -884,6 +907,25 @@ begin
       IntToStr(Trunc(Num(LData, 'missing_count'))) + ' missing, ' +
       IntToStr(Trunc(Num(LData, 'unsupported_count'))) + ' unsupported. ' +
       'Saved sources and corpus versions remain available.';
+    if Num(LData, 'revision') = 0 then
+    begin
+      El('collection-empty-state').textContent := 'Your collection folders have not been scanned yet. Refresh the library to discover them.';
+      El('collection-empty-state').removeAttribute('hidden');
+    end
+    else if Num(LData, 'collection_count') = 0 then
+    begin
+      El('collection-empty-state').textContent := 'No collection folders were found. Add a folder with WAV recordings, then refresh.';
+      El('collection-empty-state').removeAttribute('hidden');
+    end
+    else if Num(LData, 'recording_count') = 0 then
+    begin
+      El('collection-empty-state').textContent := 'Collection folders were found, but no WAV recordings are available. Add recordings, then refresh.';
+      El('collection-empty-state').removeAttribute('hidden');
+    end
+    else
+    begin
+      El('collection-empty-state').setAttribute('hidden', '');
+    end;
     LResponse := await(TJSResponse, FetchApi('/api/studio/projects', 'GET', ''));
     if LEpoch <> FEpoch then
     begin
@@ -924,7 +966,10 @@ begin
     end;
     FTracks := LTracks;
     FProjects := LProjects;
+    El('start-library-summary').textContent := IntToStr(FTracks.length) + ' recordings available';
     FConnected := True;
+    FLibraryRefresh.SetConnected(True);
+    FLibraryRefresh.Refresh;
     FBatches.Refresh;
     FReviews.Refresh;
     FCapture.Refresh;
@@ -936,6 +981,7 @@ begin
       if LEpoch = FEpoch then
       begin
         Status(LError.Message + ' Your edits are still here.', True);
+        FNavigation.ConnectionFailed;
         El('retry').removeAttribute('hidden');
       end;
     end;
@@ -944,6 +990,7 @@ begin
       if LEpoch = FEpoch then
       begin
         Status('Connection failed. Your edits are still here; retry when ready.', True);
+        FNavigation.ConnectionFailed;
         El('retry').removeAttribute('hidden');
       end;
     end;
@@ -958,81 +1005,14 @@ begin
   end;
 end;
 
-procedure TStudio.RefreshSources; async;
-var
-  LWrite: TJSObject;
-  LData: TJSObject;
-  LResponse: TJSResponse;
-  LStatus: String;
-  LAttempt: Integer;
-begin
-  if FRefreshBusy then
-  begin
-    Exit;
-  end;
-  FRefreshBusy := True;
-  TJSHTMLButtonElement(El('refresh-tracks')).disabled := True;
-  try
-    if FRefreshJobId = '' then
-    begin
-      FRefreshJobId := 'library-' + FloatToStr(TJSDate.now) + '-' +
-        IntToStr(Random(100000000));
-    end;
-    LWrite := TJSObject.new;
-    LWrite['format'] := 'pythian.studio.job.write.v1';
-    LWrite['job_id'] := FRefreshJobId;
-    LWrite['kind'] := 'library_refresh';
-    Status('Refreshing private collections… You can keep editing your corpus.');
-    LResponse := await(TJSResponse, FetchApi('/api/studio/job', 'POST', TJSJSON.stringify(LWrite)));
-    if LResponse.status <> 200 then
-    begin
-      raise Exception.Create(await(String, LResponse.text()));
-    end;
-    LData := await(TJSObject, LResponse.json());
-    LStatus := Str(LData, 'status');
-    LAttempt := 0;
-    while (LStatus = 'queued') or (LStatus = 'running') do
-    begin
-      Inc(LAttempt);
-      if LAttempt > 660 then
-      begin
-        raise Exception.Create('Library refresh is still pending. Retry to check its existing job.');
-      end;
-      await(JSValue, TJSPromise.new(
-        procedure(AResolve, AReject: TJSPromiseResolver)
-        begin
-          window.setTimeout(procedure() begin AResolve(True); end, 1000);
-        end));
-      LResponse := await(TJSResponse, FetchApi('/api/studio/job?id=' + FRefreshJobId, 'GET', ''));
-      if LResponse.status <> 200 then
-      begin
-        raise Exception.Create('Could not check library refresh. Retry to reconnect.');
-      end;
-      LData := await(TJSObject, LResponse.json());
-      LStatus := Str(LData, 'status');
-      Status('Library refresh: ' + Str(LData, 'stage') + '. Your edits remain available.');
-    end;
-    FRefreshJobId := '';
-    if LStatus <> 'completed' then
-    begin
-      raise Exception.Create('Library refresh ' + LStatus + ': ' + Str(LData, 'error_message'));
-    end;
-    Connect;
-  except
-    on LError: Exception do
-    begin
-      Status('Refresh failed. ' + LError.Message + ' Your corpus edits are preserved.', True);
-    end;
-  else
-    Status('Refresh connection failed. Retry to reconnect to the same job.', True);
-  end;
-  FRefreshBusy := False;
-  UpdateState;
-end;
-
 procedure TStudio.CatalogSaved;
 begin
-  Connect;
+  FCatalogRefreshPending := True;
+  if not FBusy then
+  begin
+    FCatalogRefreshPending := False;
+    Connect;
+  end;
 end;
 
 function TStudio.UseNextBatch(APacket: TJSObject): TJSPromise;
@@ -1361,12 +1341,6 @@ begin
   Connect;
 end;
 
-function TStudio.HandleRefresh(AEvent: TJSMouseEvent): Boolean;
-begin
-  Result := False;
-  RefreshSources;
-end;
-
 function TStudio.HandleProject(AEvent: TEventListenerEvent): Boolean;
 var
   LId: String;
@@ -1427,8 +1401,39 @@ begin
   Result := True;
 end;
 
+function TStudio.HandleStart(AEvent: TJSMouseEvent): Boolean;
+var
+  LAction: String;
+begin
+  Result := False;
+  LAction := TJSElement(AEvent.currentTarget).id;
+  if LAction = 'start-browse' then
+  begin
+    TJSHTMLElement(El('collection-library')).scrollIntoView;
+    TJSHTMLElement(El('collection-library')).focus;
+  end
+  else if LAction = 'capture-back' then
+  begin
+    TJSHTMLElement(El('start-record')).scrollIntoView;
+    TJSHTMLElement(El('start-record')).focus;
+  end
+  else
+  begin
+    El('capture-panel').removeAttribute('hidden');
+    if LAction = 'start-record' then
+    begin
+      FCapture.OpenRecorder;
+    end
+    else
+    begin
+      FCapture.OpenImporter;
+    end;
+  end;
+end;
+
 procedure TStudio.Run;
 begin
+  FNavigation := TWorkspaceNavigation.Create(@FetchNavigation, 'studio');
   FTracks := TJSArray.new;
   FProjects := TJSArray.new;
   FSelections := TJSArray.new;
@@ -1437,6 +1442,11 @@ begin
   FEffects := TStudioEffects.Create(@FetchApi, @FSourceEditor.CurrentRange, @CatalogSaved);
   FReviews := TStudioReviews.Create(@FetchApi, @UseNextBatch);
   FCapture := TStudioCapture.Create(@FetchApi, @CatalogSaved);
+  FLibraryRefresh := TStudioLibraryRefresh.Create(@FetchNavigation, @CatalogSaved);
+  El('start-record').addEventListener('click', @HandleStart);
+  El('start-import').addEventListener('click', @HandleStart);
+  El('start-browse').addEventListener('click', @HandleStart);
+  El('capture-back').addEventListener('click', @HandleStart);
   NewDraft;
   El('style-form').addEventListener('submit', @HandleSubmit);
   El('style-name').addEventListener('input', @HandleEdit);
@@ -1445,7 +1455,6 @@ begin
   El('reload-draft').addEventListener('click', @HandleReload);
   El('new-draft').addEventListener('click', @HandleNew);
   El('retry').addEventListener('click', @HandleRetry);
-  El('refresh-tracks').addEventListener('click', @HandleRefresh);
   El('draft-list').addEventListener('change', @HandleProject);
   El('track-search').addEventListener('input', @HandleSearch);
   window.addEventListener('beforeunload', @HandleBeforeUnload);

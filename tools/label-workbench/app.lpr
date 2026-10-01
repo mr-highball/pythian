@@ -30,7 +30,8 @@ program PythianLabelWorkbench;
 uses
   JS,
   Web,
-  SysUtils;
+  SysUtils,
+  pythian.workspace.navigation;
 
 const
   LegacyAccessKeyStorage = 'pythian.catalog.access-key.v1';
@@ -78,6 +79,7 @@ type
 
   TWorkbench = class
   private
+    FNavigation: TWorkspaceNavigation;
     FToken: String;
     FStartEpoch: Integer;
     FConnectionLoading: Boolean;
@@ -163,6 +165,8 @@ type
     FDragEnd: Int64;
     function Element(const AId: String): TJSElement;
     function Input(const AId: String): TJSHTMLInputElement;
+    function FetchNavigation(const APath, AMethod, ABody: String;
+      const ASignal: TJSObject): TJSPromise;
     function FetchApi(const APath, AMethod, ABody: String;
       const ASignal: TJSObject = nil): TJSPromise;
     procedure Status(const AText: String; const AError: Boolean = False);
@@ -351,6 +355,12 @@ begin
   Result := TJSHTMLInputElement(Element(AId));
 end;
 
+function TWorkbench.FetchNavigation(const APath, AMethod, ABody: String;
+  const ASignal: TJSObject): TJSPromise;
+begin
+  Result := FetchApi(APath, AMethod, ABody, ASignal);
+end;
+
 function TWorkbench.FetchApi(const APath, AMethod,
   ABody: String; const ASignal: TJSObject): TJSPromise;
 var
@@ -386,6 +396,11 @@ begin
   LOptions['headers'] := LHeaders;
   Result := TWorkbenchWindow(window).fetch(
     window.location.origin + APath, LOptions);
+  if (AMethod = 'POST') and ((APath = '/api/review') or
+    (APath = '/api/import-reviewed') or (APath = '/api/import')) then
+  begin
+    Result := Result._then(@WorkspaceResponseSaved);
+  end;
 end;
 
 procedure TWorkbench.Status(const AText: String; const AError: Boolean);
@@ -2723,6 +2738,7 @@ begin
         FConnectionLoading := False;
         UpdateLoading;
         Status('Connection is taking too long. Check that this device can reach the catalog, then retry.', True);
+        FNavigation.ConnectionFailed;
         Element('connect-retry').removeAttribute('hidden');
       end;
     end, 10000);
@@ -2747,6 +2763,7 @@ begin
     begin
       raise Exception.Create('Session token missing');
     end;
+    FNavigation.Start;
     try
       window.localStorage.removeItem(LegacyAccessKeyStorage);
     except
@@ -2772,6 +2789,7 @@ begin
         UpdateLoading;
         Status('Could not reach the catalog service: ' +
           LError.Message + '. Retry the connection.', True);
+        FNavigation.ConnectionFailed;
         Element('connect-retry').removeAttribute('hidden');
       end;
     end;
@@ -2782,6 +2800,7 @@ begin
       FConnectionLoading := False;
       UpdateLoading;
       Status('Could not reach the catalog service. Check this device’s connection and retry.', True);
+      FNavigation.ConnectionFailed;
       Element('connect-retry').removeAttribute('hidden');
     end;
   end;
@@ -5313,6 +5332,7 @@ end;
 
 procedure TWorkbench.Run;
 begin
+  FNavigation := TWorkspaceNavigation.Create(@FetchNavigation, 'source');
   FSelectedLabel := -1;
   FCanvas := TJSHTMLCanvasElement(Element('waveform'));
   FAudio := TJSHTMLAudioElement(Element('preview'));

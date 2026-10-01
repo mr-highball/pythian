@@ -12,7 +12,105 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
-## Current accepted Studio checkpoint — 2026-10-01
+## Current operator orientation repair — 2026-10-01
+
+**Big Boss:** actual phone review found missing existing preference recordings,
+buried capture and weak workspace navigation. [Studio_08](TODO/NS-6_studio_08.md)
+owns this batch: show existing private collections, expose start actions, and
+provide shared navigation with real attention badges and next-action links.
+One unearned authoring_02 point moves to this outcome; accepted scope remains
+**50.60 / 49.40**, with **47 open / 40 DONE**, NS-6 **43/57** and eleven open tasks.
+Neo's read-only inventory found the old private catalog's three preference
+recordings while the stable service initially served only two piano excerpts.
+Preserve both catalogs and all review history; private paths stay in build logs.
+Big Boss owns existing UI/HTTP/build/deployment integration and final judgment;
+Neo owns new shared navigation and corpus assessment; Ticket Guy owns capture
+entry methods. Salty checks the completed navigation and intake components as
+one batch before publication. Closing evidence is actual deployed discovery,
+desktop/narrow entry and honest queue-state transitions. Stop on lost identity,
+invented counts or unsupported recording claims. No criterion closes at scoping;
+nonclosing count starts at zero from the accepted previous batch, preserving all
+earlier worker/chief failure histories. Studio_03's operator verdict stays open.
+
+**Same batch correction — Big Boss:** native review ownership passes 47 checks on
+Win32 and Win64, with zero leaks. Navigation submission 1 failed the independently
+held-request recovery control: the unknown badge was truthful but Refresh stayed
+behind an indefinitely outstanding request. Neo owns cancellation/epoch repair;
+Big Boss supplies the page transport adapters. Preserve the first failure under
+`build/salty-studio-onboarding-20261001/`; a second failed implementation submission
+transfers the new navigation unit to Big Boss. No new criterion has closed.
+
+**Distinct prerequisite — Big Boss:** [studio_09](TODO/NS-6_studio_09.md) owns the
+large-library refresh gap revealed by the actual approximately 7 GB originals.
+The old refresh stages even existing media and repeatedly hashes it under the
+same 600-second generation deadline. Follow this prerequisite before claiming
+studio_08's discovery works. One further unearned authoring_02 point funds it;
+accepted credit stays unchanged. All three original native imports now pass:
+approximately 7.05 GB, zero failed rows, original metadata preserved, and all 20
+prior nonmedia catalog files byte-identical. The qualified previous stable runtime
+is back online and its read-only source endpoint lists five recordings; collection
+memberships await the repaired native refresh. No unsuitable refresh or index
+hand-edit ran. Local paths and measured import costs stay in ignored evidence.
+Neo owns native verified reuse/progress, Ticket Guy a new isolated refresh UI,
+and Big Boss the existing UI and immutable worker/supervisor budget integration.
+This is the same work batch and preserves all failure counts.
+
+**Native acceptance in progress — Big Boss:** independent checked Win32/Win64
+each pass library 421, jobs 37, worker 50 and supervisor 19, with zero leaks.
+All 107 frozen sources and 13 service/worker/browser artifacts match candidate 3.
+The qualified native candidate is deployed for the actual three-mix refresh;
+its immutable request declares 7,200 seconds. The existing catalog's 23 nonmedia
+files were preserved before that job. Focused browser QA continues in the fixed
+isolated slot, including the two previously unexecuted attention states.
+Neither task closes until that QA and actual collection publication pass.
+Evidence remains under `build/salty-studio-refresh-20261001/` and
+`build/studio-onboarding/`; no training or operator answers were submitted.
+
+**Same-batch UI correction — Big Boss:** studio_09's first browser submission
+failed because the parent reload erased the completed refresh outcome with
+generic ready text. Ticket Guy owns the bounded terminal-feedback repair under
+Neo's coordination. Native qualification and the actual scan remain valid;
+no native binary or private media changes are needed. Keep this first failure
+and the independent report; do not reset it after the browser rebuild.
+
+**Actual collection result / cancellation repair — Big Boss:** the original scan
+completed at revision 2 with three collections, three reused originals, zero new
+imports and five catalog sources. All 22 readable pre-existing nonmedia records
+are byte-identical; the active zero-byte supervisor lock is excluded from that
+comparison. Nine completed verification passes account for 7,045,401,242 input
+bytes and 21,136,203,726 logical full-read bytes, not measured physical I/O.
+Completion was observed within 959 seconds of submission, below its declared
+7,200-second budget. No new-source staging events occurred; the exact staging
+parent contains an older directory, so its emptiness is not claimed.
+
+Running-refresh Cancel QA then returned HTTP 422 while work continued. Its body
+was not captured. Big Boss separately reproduced immediate job-writer lock
+rejection with an independent native process, repaired acquisition with a bounded
+two-second wait, and checked unavailable-lock refusal without deleting the lock.
+Development Win32/Win64 each pass 47 job checks with zero parent/child leaks.
+Candidate 5 includes this native repair and the terminal-feedback UI repair;
+its 111 source identities and 13 artifacts are frozen. The library used by the
+successful actual scan is unchanged. Final independent browser/native checks
+and new Linux qualification still gate acceptance and the current ledger.
+
+**Final Windows/browser qualification — Big Boss:** Salty's candidate 5 checks
+pass with all 111 frozen sources and 13 artifacts unchanged. Checked Win32/Win64
+each pass jobs 47, worker 50 and supervisor 19 with zero leaks; unchanged library
+421 and review-ownership 47 checks retain their earlier independent evidence.
+Actual running cancellation returns success and displays cancelled; completed
+and failed outcomes survive inventory reload. Lost-response recovery
+uses the same job identity, and a busy project operation defers one catalog
+reload without losing its draft. Collection filters, narrow layout, source
+conflict and pending-publication attention states pass against native fixtures.
+All isolated QA browser, audio, listener and worker cleanup checks pass.
+The final scoped verdict is `build/salty-studio-refresh-20261001/FINAL-VERDICT.txt`
+(SHA256 `c7fb26ab786378594a62ad14eaf6e962992e4c23cb781a7cda574c88e61beda2`).
+This engineering checkpoint is ready for publication and deployment; both tasks
+remain open at 50.60 accepted pending exact-revision Linux qualification.
+Actual phone microphone and musical-quality acceptance are not claimed.
+
+<a id="current-accepted-studio-checkpoint--2026-10-01"></a>
+## Previously accepted Studio checkpoint — 2026-10-01
 
 **Big Boss:** bounded raw WFC jobs [studio_02](TODO/DONE/NS-6_studio_02.md),
 private collection/classified-corpus setup

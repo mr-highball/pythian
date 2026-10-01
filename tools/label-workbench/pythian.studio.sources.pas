@@ -275,6 +275,8 @@ end;
 procedure TStudioSourceEditor.DrawTracks;
 var
   LRoot: TJSElement;
+  LShortcuts: TJSElement;
+  LShortcut: TJSElement;
   LCard: TJSElement;
   LRow: TJSElement;
   LTrack: TJSObject;
@@ -331,6 +333,25 @@ begin
   begin
     LFilter.selectedIndex := 0;
     LFilterValue := '';
+  end;
+  LShortcuts := El('collection-shortcuts');
+  LShortcuts.innerHTML := '';
+  if LNames.length > 0 then
+  begin
+    LShortcut := Button(LShortcuts, 'All recordings', 'collection', '');
+    LShortcut.id := 'collection-choice-all';
+    LShortcut.setAttribute('aria-pressed', LowerCase(BoolToStr(LFilterValue = '', True)));
+    for LIndex := 0 to Min(LNames.length, 8) - 1 do
+    begin
+      LTitle := String(LNames[LIndex]);
+      LShortcut := Button(LShortcuts, LTitle, 'collection', LTitle);
+      LShortcut.id := 'collection-choice-' + IntToStr(LIndex);
+      LShortcut.setAttribute('aria-pressed', LowerCase(BoolToStr(LFilterValue = LTitle, True)));
+    end;
+    if LNames.length > 8 then
+    begin
+      Add(LShortcuts, 'p', 'More collections are available in the selector above.', 'hint');
+    end;
   end;
   LQuery := LowerCase(Trim(Input('track-search').value));
   LShown := 0;
@@ -858,6 +879,16 @@ begin
   LAction := LButton.getAttribute('data-action');
   LValue := LButton.getAttribute('data-value');
   case LAction of
+    'collection':
+      begin
+        TJSHTMLSelectElement(El('collection-filter')).value := LValue;
+        DrawTracks;
+        if document.getElementById(LButton.id) <> nil then
+        begin
+          TJSHTMLElement(El(LButton.id)).focus;
+        end;
+        Exit;
+      end;
     'open': OpenTrack(LValue, -1);
     'edit':
       begin

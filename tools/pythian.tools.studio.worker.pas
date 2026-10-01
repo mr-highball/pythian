@@ -305,7 +305,7 @@ begin
   begin
     raise EStudioJobCancelled.Create('Studio job cancellation requested');
   end;
-  Need(GetTickCount64 - FStarted <= QWord(MaximumStudioJobSeconds) * 1000,
+  Need(GetTickCount64 - FStarted <= QWord(StudioJobRequestRuntimeSeconds(FRequest)) * 1000,
     'Studio worker exceeded its wall-clock budget');
 end;
 

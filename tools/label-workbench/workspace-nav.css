@@ -1,0 +1,190 @@
+/*
+MIT License
+
+Copyright (c) 2026 mr-highball
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+#workspace-navigation {
+  box-sizing: border-box;
+  max-width: 100%;
+  padding-inline: clamp(.7rem, 2vw, 1.4rem);
+}
+
+.workspace-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .6rem;
+  margin: .8rem 0;
+}
+
+.workspace-tab {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  align-content: center;
+  align-items: center;
+  gap: .3rem .55rem;
+  min-width: 0;
+  min-height: 44px;
+  padding: .7rem .85rem;
+  border: 1px solid #526e74;
+  border-radius: .7rem;
+  background: #11252b;
+  color: #e6f1ee;
+  text-decoration: none;
+  line-height: 1.3;
+}
+
+.workspace-tab:hover {
+  border-color: #b7e6d7;
+  background: #1b333b;
+}
+
+.workspace-tab[aria-current="page"] {
+  border-color: #b7e6d7;
+  box-shadow: inset 0 0 0 1px #b7e6d7;
+  background: #1b333b;
+}
+
+.workspace-tab svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.workspace-label {
+  min-width: 0;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.workspace-badge {
+  display: inline-block;
+  min-width: 1.5em;
+  margin-left: .4rem;
+  padding: .08rem .35rem;
+  border-radius: 1rem;
+  background: #b7e6d7;
+  color: #11252b;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.workspace-detail {
+  grid-column: 2;
+  min-width: 0;
+  color: #b6c6ca;
+  font-size: .8rem;
+  overflow-wrap: anywhere;
+}
+
+.workspace-tab[data-count-state="unavailable"] .workspace-badge {
+  background: #e6c698;
+  color: #352613;
+}
+
+.workspace-tab[data-needs-attention="true"] .workspace-badge {
+  background: #e6c698;
+  color: #352613;
+}
+
+.workspace-next {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem .8rem;
+  margin: .65rem 0 1rem;
+  padding: .7rem .85rem;
+  border: 1px solid #526e74;
+  border-radius: .7rem;
+  background: #11252b;
+  color: #e6f1ee;
+}
+
+.workspace-next-text {
+  flex: 1 1 16rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.workspace-next-link,
+.workspace-refresh {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 44px;
+  max-width: 100%;
+  padding: .55rem .75rem;
+  border: 1px solid #789991;
+  border-radius: .5rem;
+  color: #e6f1ee;
+  background: #1b333b;
+  font: inherit;
+  line-height: 1.25;
+  text-decoration: none;
+  text-align: center;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.workspace-refresh {
+  background: transparent;
+  font-size: .85rem;
+}
+
+.workspace-tab:focus-visible,
+.workspace-next-link:focus-visible,
+.workspace-refresh:focus-visible {
+  outline: 3px solid #b7e6d7;
+  outline-offset: 3px;
+}
+
+@media (max-width: 520px) {
+  .workspace-tabs {
+    gap: .4rem;
+  }
+
+  .workspace-tab {
+    grid-template-columns: minmax(0, 1fr);
+    gap: .3rem;
+    padding: .65rem .5rem;
+  }
+
+  .workspace-detail {
+    grid-column: 1;
+  }
+
+  .workspace-label {
+    font-size: .9rem;
+  }
+
+  .workspace-badge {
+    margin-left: .25rem;
+  }
+
+  .workspace-next {
+    padding: .7rem;
+  }
+}

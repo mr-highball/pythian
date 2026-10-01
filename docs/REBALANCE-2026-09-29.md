@@ -17,9 +17,9 @@ adds three explicit outcomes and redistributes 12 unearned NS-6 points. Its live
 catalog initially had 46 open / 35 DONE with no added credit. Subsequent
 independent Studio setup acceptance adds 4 NS-6 / 0.40 overall. Private corpora,
 raw WFC jobs, effects and capture/exploration acceptance on 2026-10-01 adds another
-8 NS-6 / 0.80 overall, giving **50.60 credited / 49.40 remaining**, **45 open / 40 DONE**.
-Earlier snapshots above are retained as history; the later seven-outcome Studio
-scope redistributes 15 unearned points without removing donor criteria.
+8 NS-6 / 0.80 overall, giving **50.60 credited / 49.40 remaining**, **47 open / 40 DONE**.
+Earlier snapshots above are retained as history; the later nine-outcome Studio
+scope redistributes 17 unearned points without removing donor criteria.
 
 ## Finding
 

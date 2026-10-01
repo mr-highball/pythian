@@ -68,6 +68,23 @@ h2 { font-size: 1.4rem; line-height: 1.3; letter-spacing: -.02em; margin: 0 0 .7
 h3 { font-size: 1rem; margin: 0 0 .3rem; }
 p { margin: .5rem 0; }
 .lead { color: #c5d8d9; max-width: 48ch; }
+.start-panel { padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid #476d70; border-radius: 16px; background: linear-gradient(125deg, #1b3b3d, #14262f); }
+.start-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; margin-top: 1.3rem; }
+.start-action { display: grid; grid-template-columns: 32px minmax(0, 1fr); align-content: center; gap: .2rem .75rem; min-height: 100px; padding: 1rem; text-align: left; border-radius: 12px; background: #1b333b; }
+.start-action svg { grid-row: span 2; width: 28px; height: 28px; align-self: center; fill: none; stroke: #b7e6d7; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.start-action strong { font-size: 1rem; }
+.start-action small { color: var(--muted); font-size: .8rem; font-weight: 400; }
+.capture-panel { margin: 0 0 1.5rem; }
+.capture-panel > button { margin-bottom: 1rem; }
+#page-title { font-size: 1.8rem; }
+#collection-library { scroll-margin-top: 1rem; }
+.collection-shortcuts { display: flex; flex-wrap: wrap; gap: .5rem; margin: .8rem 0; }
+.collection-shortcuts button { border-radius: 99px; font-size: .85rem; overflow-wrap: anywhere; max-width: 100%; }
+.collection-shortcuts button[aria-pressed="true"] { background: #b7e6d7; color: #112b2a; border-color: #b7e6d7; }
+.library-refresh { margin: .75rem 0; padding: .85rem; border: 1px solid var(--line); border-radius: 10px; }
+.library-refresh .actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.library-refresh progress { display: block; width: 100%; height: .8rem; margin: .6rem 0; accent-color: var(--accent); }
+.library-refresh details { margin-top: .5rem; overflow-wrap: anywhere; }
 .draft-picker { width: min(100%, 340px); flex: 0 0 340px; }
 .draft-picker label { margin-top: 0; font-size: .82rem; color: var(--muted); }
 .picker-controls { display: flex; gap: .5rem; }
@@ -129,6 +146,9 @@ summary { cursor: pointer; color: var(--accent); min-height: 36px; display: list
 }
 @media (max-width: 680px) {
   main { padding: 1.4rem .85rem; }
+  .start-panel { padding: 1.1rem; }
+  .start-actions { grid-template-columns: minmax(0, 1fr); gap: .6rem; }
+  .start-action { min-height: 76px; }
   .masthead { padding: .6rem .85rem; gap: .5rem; flex-wrap: wrap; }
   .masthead nav { gap: .9rem; }
   .workspace { grid-template-columns: minmax(0, 1fr); }

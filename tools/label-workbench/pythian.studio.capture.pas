@@ -72,6 +72,7 @@ type
     procedure Layout;
     procedure Notice(const AText: String; const AError: Boolean = False);
     procedure Controls;
+    procedure OpenEntry(const ARecorder: Boolean);
     procedure ResetFeedback;
     procedure ResetInputDisplay;
     procedure ClearPlayers;
@@ -102,6 +103,8 @@ type
   public
     constructor Create(const AFetch: TStudioFetch; const ASaved: TStudioChange);
     destructor Destroy; override;
+    procedure OpenRecorder;
+    procedure OpenImporter;
     procedure Refresh; async;
   end;
 
@@ -175,9 +178,12 @@ begin
   Button(LRow, 'Stop recording', 'stop');
   Button(LRow, 'Cancel microphone request', 'cancel-microphone');
   LControl := Add(LRoot, 'p', '');
+  LControl.id := 'capture-microphone';
+  LControl.setAttribute('tabindex', '-1');
   if not Boolean(TJSObject(window)['isSecureContext']) then
   begin
-    LControl.textContent := 'Record on the host computer at localhost, or import a WAV.';
+    LControl.textContent := 'Microphone needs a secure page on this device. ' +
+      'Localhost recording is only for the host computer.';
   end;
   LControl := Add(LRoot, 'p', '');
   LControl.id := 'capture-level';
@@ -186,6 +192,7 @@ begin
   LControl.id := 'capture-notice';
   LControl.setAttribute('role', 'status');
   LControl.setAttribute('aria-live', 'polite');
+  LControl.setAttribute('tabindex', '-1');
   LRow := Add(LRoot, 'div', '');
   LRow.className := 'source-toolbar';
   LLabel := Add(LRow, 'label', 'Retained input');
@@ -379,6 +386,97 @@ begin
     FPending or LActive;
   TJSHTMLSelectElement(El('capture-rating')).disabled := FFeedback <> nil;
   TJSHTMLTextAreaElement(El('capture-comment')).disabled := FFeedback <> nil;
+end;
+
+procedure TStudioCapture.OpenEntry(const ARecorder: Boolean);
+var
+  LAction: String;
+  LControl: TJSElement;
+begin
+  El('studio-capture').removeAttribute('hidden');
+  TJSHTMLElement(El('studio-capture')).scrollIntoView(True);
+  Controls;
+  LAction := '';
+  if FPending then
+  begin
+    LAction := 'confirm';
+    Notice('Your pending submission is retained. Retry the same submission first.');
+  end
+  else if FWaiting then
+  begin
+    LAction := 'cancel-microphone';
+    Notice('The microphone request is still open. You can cancel it.');
+  end
+  else if FRecording or FStopping then
+  begin
+    LAction := 'stop';
+    if FStopping then
+    begin
+      Notice('Your recording is finishing.');
+    end
+    else
+    begin
+      Notice('Your recording is active. Stop it when ready.');
+    end;
+  end
+  else if (StudioText(FJob, 'status') = 'queued') or
+    (StudioText(FJob, 'status') = 'running') then
+  begin
+    LAction := 'status';
+    Notice('An audio job is active. Check its status before starting another input.');
+  end
+  else if FBusy then
+  begin
+    Notice('The current operation is still running. Your input is retained.');
+  end
+  else if ARecorder and not Boolean(TJSObject(window)['isSecureContext']) then
+  begin
+    TJSHTMLElement(El('capture-microphone')).focus;
+    Exit;
+  end
+  else if ARecorder and ((window.navigator.mediaDevices = nil) or
+    not isFunction(TJSObject(window)['AudioContext'])) then
+  begin
+    El('capture-microphone').textContent := 'This browser cannot record audio here.';
+    TJSHTMLElement(El('capture-microphone')).focus;
+    Exit;
+  end
+  else if ARecorder and (FBlob <> nil) and not FComplete then
+  begin
+    LAction := 'upload';
+    Notice('Your current input is retained. Upload it before starting another recording.');
+  end
+  else if ARecorder then
+  begin
+    LAction := 'record';
+    Notice('Press Start microphone to record.');
+  end
+  else
+  begin
+    TJSHTMLInputElement(El('capture-file')).focus;
+    Exit;
+  end;
+  if LAction <> '' then
+  begin
+    LControl := El('studio-capture').querySelector(
+      'button[data-capture-action="' + LAction + '"]');
+    if (LControl <> nil) and not TJSHTMLButtonElement(LControl).disabled then
+    begin
+      TJSHTMLButtonElement(LControl).focus;
+      Exit;
+    end;
+  end;
+  TJSHTMLElement(El('capture-notice')).focus;
+end;
+
+procedure TStudioCapture.OpenRecorder;
+begin
+  OpenEntry(True);
+end;
+
+procedure TStudioCapture.OpenImporter;
+begin
+  OpenEntry(False);
 end;
 
 procedure TStudioCapture.ResetFeedback;

@@ -49,6 +49,17 @@ type
   Progress callbacks may raise to cancel. No audio learning or admission occurs.
   Input copying, source integrity checks and the maintained importer make
   multiple full reads; byte caps describe input size, not total storage I/O.
+  Existing sources require initial/final original hashes and one catalog hash,
+  without staging media. Byte progress is per current file/pass, emitted after
+  at most five seconds or eight MiB of read progress and at phase completion.
+  Cancellation can raise from these callbacks during hashing/staging copies;
+  new-source importer calls remain opaque between their native boundaries.
+  For discovered original bytes A and distinct reused catalog bytes D, reuse
+  makes 2A+D full verification reads (at most 3A), with zero full media writes.
+  Mixed/new-source paths make at most 8A full hash/copy reads and 2A media
+  writes: 256/64 GiB respectively at the 32 GiB aggregate input cap. WAV chunk
+  header reads and bounded catalog JSON work are additional; these pass counts
+  are logical I/O bounds, not measurements of physical disk traffic.
   Results are owned, path-free JSON. Partial imports may survive failed refresh;
   the previously published index remains unchanged. }
 function RefreshStudioLibrary(const ACatalogRoot, ALibraryRoot, AStageRoot: String;
@@ -65,11 +76,14 @@ uses
   jsonparser,
   pythian.audio,
   pythian.hash,
+  pythian.wave.read,
   pythian.tools.annotations.catalog
   {$IFDEF MSWINDOWS}, Windows{$ENDIF};
 
 const
   CMaximumEntries = 4096;
+  CProgressBytes = 8388608;
+  CProgressMilliseconds = 5000;
 
 type
   TLibraryFile = record
@@ -81,6 +95,20 @@ type
   end;
   TLibraryFiles = array of TLibraryFile;
 
+  TLibraryReadStream = class(TFileStream)
+  private
+    FProgress: TStudioLibraryProgress;
+    FStage: String;
+    FDone: Int64;
+    FTotal: Int64;
+    FLastDone: Int64;
+    FLastTick: QWord;
+  public
+    constructor Create(const APath, AStage: String; const ABytes: Int64;
+      const AProgress: TStudioLibraryProgress);
+    function Read(var ABuffer; ACount: Longint): Longint; override;
+  end;
+
 var
   GLibraryLock: TRTLCriticalSection;
 
@@ -89,6 +117,39 @@ begin
   if not ACondition then
   begin
     raise EAudio.Create(AMessage);
+  end;
+end;
+
+constructor TLibraryReadStream.Create(const APath, AStage: String;
+  const ABytes: Int64; const AProgress: TStudioLibraryProgress);
+begin
+  inherited Create(APath, fmOpenRead or fmShareDenyWrite);
+  Need(Size = ABytes, 'Library source size changed before verification');
+  FProgress := AProgress;
+  FStage := AStage;
+  FTotal := ABytes;
+  FDone := 0;
+  FLastDone := 0;
+  FLastTick := GetTickCount64;
+  if Assigned(FProgress) then
+  begin
+    FProgress(FStage, 0, FTotal);
+  end;
+end;
+
+function TLibraryReadStream.Read(var ABuffer; ACount: Longint): Longint;
+begin
+  Result := inherited Read(ABuffer, ACount);
+  Need((Result >= 0) and (Result <= FTotal - FDone),
+    'Library read progress exceeds the declared source bytes');
+  Inc(FDone, Result);
+  if Assigned(FProgress) and ((FDone = FTotal) or
+    (FDone - FLastDone >= CProgressBytes) or
+    (GetTickCount64 - FLastTick >= CProgressMilliseconds)) then
+  begin
+    FLastDone := FDone;
+    FLastTick := GetTickCount64;
+    FProgress(FStage, FDone, FTotal);
   end;
 end;
 
@@ -640,12 +701,14 @@ begin
   end;
 end;
 
-function FileHash(const APath: String; const ABytes: Int64): String;
+function FileHash(const APath: String; const ABytes: Int64;
+  const AProgress: TStudioLibraryProgress = nil;
+  const AStage: String = 'verifying_source_bytes'): String;
 var
-  LStream: TFileStream;
+  LStream: TLibraryReadStream;
 begin
   CheckPath(APath);
-  LStream := TFileStream.Create(APath, fmOpenRead or fmShareDenyWrite);
+  LStream := TLibraryReadStream.Create(APath, AStage, ABytes, AProgress);
   try
     Need(LStream.Size = ABytes, 'Library source size changed during refresh');
     Result := Sha256Stream(LStream, LStream.Size);
@@ -654,15 +717,17 @@ begin
   end;
 end;
 
-procedure CopySource(const AFile: TLibraryFile; const ATarget: String);
+procedure CopySource(const AFile: TLibraryFile; const ATarget: String;
+  const AProgress: TStudioLibraryProgress);
 var
-  LInput: TFileStream;
+  LInput: TLibraryReadStream;
   LOutput: TFileStream;
 begin
   CheckPath(AFile.Path);
   CheckPath(ATarget);
   Need(not FileExists(ATarget), 'Library staging name conflicts');
-  LInput := TFileStream.Create(AFile.Path, fmOpenRead or fmShareDenyWrite);
+  LInput := TLibraryReadStream.Create(AFile.Path, 'copying_source_bytes',
+    AFile.Bytes, AProgress);
   try
     Need(LInput.Size = AFile.Bytes, 'Library source changed before copy');
     LOutput := TFileStream.Create(ATarget, fmCreate or fmShareExclusive);
@@ -674,7 +739,7 @@ begin
   finally
     LInput.Free;
   end;
-  Need(FileHash(ATarget, AFile.Bytes) = AFile.Hash,
+  Need(FileHash(ATarget, AFile.Bytes, AProgress, 'verifying_stage_bytes') = AFile.Hash,
     'Library source changed during staging');
 end;
 
@@ -989,6 +1054,106 @@ begin
   end;
 end;
 
+function ExistingText(const ATrack: TJSONObject; const AName: String;
+  const AMaximum: Integer; const AEmptyAllowed: Boolean = False): String;
+var
+  LValue: TJSONData;
+begin
+  LValue := ATrack.Find(AName);
+  Need((LValue <> nil) and (LValue.JSONType = jtString),
+    'Existing catalog text is unavailable: ' + AName);
+  Result := LValue.AsString;
+  Need((Length(Result) <= AMaximum) and (AEmptyAllowed or (Result <> '')),
+    'Existing catalog text exceeds its bounds: ' + AName);
+end;
+
+function VerifyExisting(const ACatalog: String; const AFile: TLibraryFile;
+  const ACatalogHashes: TStrings; const AProgress: TStudioLibraryProgress): String;
+var
+  LTrack: TJSONObject;
+  LCurrent: TJSONObject;
+  LStream: TFileStream;
+  LReader: TWaveFrameReader;
+  LPath: String;
+  LName: String;
+  LGroup: String;
+  LClock: String;
+  LPartition: String;
+  LIndex: Integer;
+begin
+  LPath := ACatalog + 'sources' + PathDelim + AFile.Hash + '.wav';
+  CheckPath(LPath);
+  LTrack := ReadCatalogTrack(ACatalog, AFile.Hash);
+  try
+    Result := HashText(LTrack.AsJSON);
+    LName := ExistingText(LTrack, 'original_name', 128);
+    LGroup := ExistingText(LTrack, 'source_group', 128);
+    LClock := ExistingText(LTrack, 'clock_id', 128, True);
+    LPartition := ExistingText(LTrack, 'partition', 16);
+    Need(SafeComponent(LName) and (LowerCase(ExtractFileExt(LName)) = '.wav') and
+      SafeComponent(LGroup) and ((LClock = '') or SafeComponent(LClock)),
+      'Existing catalog source naming differs from the import contract');
+    Need((LPartition = 'training') or (LPartition = 'development') or
+      (LPartition = 'evaluation') or (LPartition = 'unassigned'),
+      'Existing catalog partition is invalid');
+    ExistingText(LTrack, 'title', 256);
+    ExistingText(LTrack, 'provenance', 512);
+    ExistingText(LTrack, 'license', 256);
+    for LIndex := 0 to ACatalogHashes.Count - 1 do
+    begin
+      if ACatalogHashes[LIndex] <> AFile.Hash then
+      begin
+        LCurrent := ReadCatalogTrack(ACatalog, ACatalogHashes[LIndex]);
+        try
+          if LCurrent.Strings['source_group'] = LGroup then
+          begin
+            Need(LCurrent.Strings['partition'] = LPartition,
+              'Existing source group crosses catalog partitions');
+          end;
+          if (LClock <> '') and (LCurrent.Strings['clock_id'] = LClock) then
+          begin
+            Need((LCurrent.Strings['source_group'] = LGroup) and
+              (LCurrent.Integers['sample_rate'] = LTrack.Integers['sample_rate']),
+              'Existing shared source clock is incompatible');
+          end;
+        finally
+          LCurrent.Free;
+        end;
+      end;
+    end;
+    LStream := TFileStream.Create(LPath, fmOpenRead or fmShareDenyWrite);
+    try
+      Need((LStream.Size = AFile.Bytes) and
+        (LTrack.Int64s['source_bytes'] = AFile.Bytes),
+        'Existing catalog source byte count conflicts');
+      LReader := TWaveFrameReader.Create(LStream);
+      try
+        Need((LReader.FrameCount > 0) and
+          (LReader.SampleRate = LTrack.Integers['sample_rate']) and
+          (LReader.Channels = LTrack.Integers['channels']) and
+          (LReader.BitsPerSample = LTrack.Integers['bits_per_sample']) and
+          (LReader.FrameCount = LTrack.Int64s['frame_count']),
+          'Existing catalog source geometry conflicts');
+      finally
+        LReader.Free;
+      end;
+    finally
+      LStream.Free;
+    end;
+    Need(FileHash(LPath, AFile.Bytes, AProgress, 'verifying_catalog_bytes') = AFile.Hash,
+      'Existing catalog audio differs from its content identity');
+    LCurrent := ReadCatalogTrack(ACatalog, AFile.Hash);
+    try
+      Need(HashText(LCurrent.AsJSON) = Result,
+        'Existing catalog metadata changed during verification');
+    finally
+      LCurrent.Free;
+    end;
+  finally
+    LTrack.Free;
+  end;
+end;
+
 procedure WriteInbox(const AEntry: TJSONObject; const ADirectory: String);
 var
   LManifest: TJSONObject;
@@ -1020,11 +1185,13 @@ var
   LNames: TStringList;
   LHashes: TStringList;
   LCatalogHashes: TStringList;
+  LExistingRecords: TStringList;
   LManifest: TJSONObject;
   LPrevious: TJSONObject;
   LEntries: TJSONArray;
   LEntry: TJSONObject;
   LReport: TJSONObject;
+  LTrack: TJSONObject;
   LIndex: Integer;
   LUnsupported: Integer;
   LRevision: Integer;
@@ -1051,6 +1218,7 @@ begin
   LNames := TStringList.Create;
   LHashes := TStringList.Create;
   LCatalogHashes := TStringList.Create;
+  LExistingRecords := TStringList.Create;
   LManifest := nil;
   LPrevious := nil;
   try
@@ -1071,7 +1239,8 @@ begin
       for LIndex := 0 to High(LFiles) do
       begin
         Progress(AProgress, 'hashing_sources', LIndex, Length(LFiles));
-        LFiles[LIndex].Hash := FileHash(LFiles[LIndex].Path, LFiles[LIndex].Bytes);
+        LFiles[LIndex].Hash := FileHash(LFiles[LIndex].Path, LFiles[LIndex].Bytes,
+          AProgress, 'hashing_source_bytes');
         if SourceChanged(LPrevious, LFiles[LIndex]) then
         begin
           Result.Integers['changed_count'] := Result.Integers['changed_count'] + 1;
@@ -1092,31 +1261,45 @@ begin
       Need(LCatalogHashes.Count + LNewSources <= 4096,
         'New library sources exceed the catalog capacity');
       LHashes.Clear;
-      Need(ForceDirectories(LStage), 'Library stage could not be created');
       LManifest := TJSONObject.Create;
       LManifest.Add('version', 1);
       LEntries := TJSONArray.Create;
       LManifest.Add('tracks', LEntries);
+      Result.Integers['imported_count'] := 0;
+      Result.Integers['existing_count'] := 0;
       for LIndex := 0 to High(LFiles) do
       begin
         if LHashes.IndexOf(LFiles[LIndex].Hash) < 0 then
         begin
           LEntry := ManifestEntry(LCatalog, LFiles[LIndex]);
-          LEntries.Add(LEntry);
-          LFileName := LEntry.Strings['file'];
-          Need(SafeComponent(LFileName) and (Length(LFileName) <= 128),
-            'Existing catalog filename is unsupported for library staging');
-          LInbox := LStage + LFiles[LIndex].Hash + PathDelim;
-          Need(ForceDirectories(LInbox), 'Library source stage could not be created');
-          Progress(AProgress, 'staging_sources', LIndex, Length(LFiles));
-          CopySource(LFiles[LIndex], LInbox + LFileName);
-          WriteInbox(LEntry, LInbox);
+          try
+            if LCatalogHashes.IndexOf(LFiles[LIndex].Hash) >= 0 then
+            begin
+              Progress(AProgress, 'verifying_existing_sources', LIndex, Length(LFiles));
+              LExistingRecords.Add(LFiles[LIndex].Hash + '=' +
+                VerifyExisting(LCatalog, LFiles[LIndex], LCatalogHashes, AProgress));
+              Result.Integers['existing_count'] := Result.Integers['existing_count'] + 1;
+            end
+            else
+            begin
+              LFileName := LEntry.Strings['file'];
+              Need(SafeComponent(LFileName) and (Length(LFileName) <= 128),
+                'Catalog filename is unsupported for library staging');
+              LInbox := LStage + LFiles[LIndex].Hash + PathDelim;
+              Need(ForceDirectories(LInbox), 'Library source stage could not be created');
+              Progress(AProgress, 'staging_sources', LIndex, Length(LFiles));
+              CopySource(LFiles[LIndex], LInbox + LFileName, AProgress);
+              WriteInbox(LEntry, LInbox);
+              LEntries.Add(LEntry);
+              LEntry := nil;
+            end;
+          finally
+            LEntry.Free;
+          end;
           LHashes.Add(LFiles[LIndex].Hash);
         end;
       end;
-      LUnique := LEntries.Count;
-      Result.Integers['imported_count'] := 0;
-      Result.Integers['existing_count'] := 0;
+      LUnique := LHashes.Count;
       Result.Integers['duplicate_file_count'] := Length(LFiles) - LUnique;
       Result.Integers['unsupported_count'] := LUnsupported;
       Result.Integers['failed_count'] := 0;
@@ -1140,7 +1323,8 @@ begin
       for LIndex := 0 to High(LFiles) do
       begin
         Progress(AProgress, 'verifying_sources', LIndex, Length(LFiles));
-        Need(FileHash(LFiles[LIndex].Path, LFiles[LIndex].Bytes) = LFiles[LIndex].Hash,
+        Need(FileHash(LFiles[LIndex].Path, LFiles[LIndex].Bytes,
+          AProgress, 'verifying_original_bytes') = LFiles[LIndex].Hash,
           'Original library source changed during refresh');
       end;
       Result.Integers['revision'] := LRevision;
@@ -1153,6 +1337,16 @@ begin
         'revision-' + Format('%.6d', [LRevision]) + '.json';
       LPartial := LFinal + '.partial';
       Progress(AProgress, 'publishing_index', LUnique, LUnique);
+      for LIndex := 0 to LExistingRecords.Count - 1 do
+      begin
+        LTrack := ReadCatalogTrack(LCatalog, LExistingRecords.Names[LIndex]);
+        try
+          Need(HashText(LTrack.AsJSON) = LExistingRecords.ValueFromIndex[LIndex],
+            'Existing catalog metadata changed before index publication');
+        finally
+          LTrack.Free;
+        end;
+      end;
       WriteNew(LPartial, Result.AsJSON + #10);
       Need(not FileExists(LFinal) and RenameFile(LPartial, LFinal),
         'Library index could not be published');
@@ -1165,6 +1359,7 @@ begin
     LManifest.Free;
     LPrevious.Free;
     LCatalogHashes.Free;
+    LExistingRecords.Free;
     LHashes.Free;
     LNames.Free;
     RemoveDir(LLock);

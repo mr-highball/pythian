@@ -27,6 +27,7 @@ program StudioJobsConformance;
 {$H+}
 
 uses
+  Process,
   SysUtils,
   fpjson,
   pythian.audio,
@@ -53,6 +54,152 @@ begin
   Result.Add('kind', 'library_refresh');
 end;
 
+procedure WriterSignal(const ARoot, AName: String);
+var
+  LSignal: TJSONObject;
+begin
+  LSignal := TJSONObject.Create;
+  try
+    LSignal.Add('process_id', GetProcessID);
+    WriteStudioJSONNew(ARoot + PathDelim + AName + '.json', LSignal);
+  finally
+    LSignal.Free;
+  end;
+end;
+
+procedure HoldWriter(const ARoot: String);
+var
+  LLock: String;
+  LStarted: QWord;
+begin
+  LLock := ARoot + PathDelim + 'studio' + PathDelim + 'jobs' + PathDelim + '.write-lock';
+  if not CreateDir(LLock) then
+    raise Exception.Create('Test writer could not acquire its lock');
+  try
+    WriterSignal(ARoot, 'writer-ready');
+    LStarted := GetTickCount64;
+    while not FileExists(ARoot + PathDelim + 'writer-attempt.json') do
+    begin
+      if GetTickCount64 - LStarted > 10000 then
+        raise Exception.Create('Test caller never attempted cancellation');
+      Sleep(10);
+    end;
+    Sleep(350);
+    if not DirectoryExists(LLock) then
+      raise Exception.Create('Cancellation removed another writer lock');
+  finally
+    RemoveDir(LLock);
+  end;
+  WriterSignal(ARoot, 'writer-released');
+end;
+
+procedure WriterContention(const ARoot: String);
+var
+  LWrite: TJSONObject;
+  LResult: TJSONObject;
+  LChild: TProcess;
+  LStarted: QWord;
+  LLock: String;
+  LFailed: Boolean;
+  LRead: LongInt;
+  LBuffer: array[0..4095] of Char;
+  LText: String;
+begin
+  LWrite := NewWrite('writer-contention');
+  try
+    LResult := EnqueueStudioJob(ARoot, LWrite);
+    LResult.Free;
+  finally
+    LWrite.Free;
+  end;
+  LResult := ClaimStudioJob(ARoot, 'writer-contention');
+  LResult.Free;
+  LChild := TProcess.Create(nil);
+  try
+    LChild.Executable := ParamStr(0);
+    LChild.Parameters.Add('--hold-writer');
+    LChild.Parameters.Add(ARoot);
+    LChild.Options := [poUsePipes, poStderrToOutPut, poNoConsole];
+    LChild.Execute;
+    LStarted := GetTickCount64;
+    while not FileExists(ARoot + PathDelim + 'writer-ready.json') and
+      LChild.Running and (GetTickCount64 - LStarted < 5000) do
+      Sleep(10);
+    Check(FileExists(ARoot + PathDelim + 'writer-ready.json') and LChild.Running,
+      'Independent writer owns the lock before cancellation');
+    WriterSignal(ARoot, 'writer-attempt');
+    LResult := CancelStudioJob(ARoot, 'writer-contention');
+    try
+      Check(LResult.Booleans['cancel_requested'] and
+        (LResult.Strings['status'] = 'running'),
+        'Running cancellation waits for a live writer without fabricating completion');
+    finally
+      LResult.Free;
+    end;
+    if LChild.Running then
+      LChild.WaitOnExit(3000);
+    Check(not LChild.Running, 'Owned writer process finishes');
+    while LChild.Output.NumBytesAvailable > 0 do
+    begin
+      LRead := LChild.Output.Read(LBuffer, SizeOf(LBuffer));
+      if LRead <= 0 then Break;
+      SetString(LText, PChar(@LBuffer[0]), LRead);
+      Write(LText);
+    end;
+    Check((LChild.ExitStatus = 0) and FileExists(ARoot + PathDelim + 'writer-released.json'),
+      'Only the owning writer releases its lock');
+  finally
+    if LChild.Running then
+    begin
+      LChild.Terminate(1);
+      if LChild.Running then LChild.WaitOnExit(2000);
+    end;
+    LChild.Free;
+    ReleaseStudioWorker(ARoot);
+  end;
+  AdvanceStudioJob(ARoot, 'writer-contention', 'cancelled', 'cancelled', 0, 0);
+  LLock := ARoot + PathDelim + 'studio' + PathDelim + 'jobs' + PathDelim + '.write-lock';
+  Check(not DirectoryExists(LLock), 'Completed writers leave no lock behind');
+  LWrite := NewWrite('stale-writer');
+  try
+    LResult := EnqueueStudioJob(ARoot, LWrite);
+    LResult.Free;
+  finally
+    LWrite.Free;
+  end;
+  Check(CreateDir(LLock), 'Create test-owned unavailable writer lock');
+  try
+    LStarted := GetTickCount64;
+    LFailed := False;
+    try
+      LResult := CancelStudioJob(ARoot, 'stale-writer');
+      LResult.Free;
+    except
+      on E: EAudio do LFailed := True;
+    end;
+    Check(LFailed and (GetTickCount64 - LStarted < 5000),
+      'Unavailable writer fails within a finite request bound');
+    Check(DirectoryExists(LLock) and not StudioJobCancelled(ARoot, 'stale-writer'),
+      'A timed-out caller cannot steal the lock or publish cancellation');
+    LResult := ReadStudioJob(ARoot, 'stale-writer');
+    try
+      Check((LResult.Strings['status'] = 'queued') and
+        (LResult.Integers['event_revision'] = 1), 'Failed writer acquisition preserves accepted state');
+    finally
+      LResult.Free;
+    end;
+  finally
+    RemoveDir(LLock);
+  end;
+  LResult := CancelStudioJob(ARoot, 'stale-writer');
+  try
+    Check(LResult.Strings['status'] = 'cancelled',
+      'Explicit retry works after the owning test releases its lock');
+  finally
+    LResult.Free;
+  end;
+end;
+
 procedure Run(const ARoot: String);
 var
   LWrite: TJSONObject;
@@ -71,6 +218,8 @@ begin
       Check(LResult.Strings['source_validation'] =
         'metadata_only_pending_worker_content_verification', 'Preparation never certifies source bytes');
       Check(not DirectoryExists(ARoot + PathDelim + 'studio'), 'Preparation does not publish queue storage');
+      Check(LResult.Objects['limits'].Integers['worker_seconds'] = 7200,
+        'Collection preparation declares its independent finite verification budget');
     finally
       LResult.Free;
     end;
@@ -79,6 +228,8 @@ begin
       Check(LResult.Strings['status'] = 'queued', 'Queued state');
       Check(LResult.Integers['event_revision'] = 1, 'Initial revision');
       Check(not LResult.Booleans['already_queued'], 'First enqueue is fresh');
+      Check(LResult.Integers['maximum_worker_seconds'] = 7200,
+        'Queued collection detail agrees with preparation budget');
       LBefore := LResult.Strings['request_sha256'];
       LResult.Strings['stage'] := 'caller-mutated';
     finally
@@ -121,6 +272,19 @@ begin
     LRequest := ClaimStudioJob(ARoot, 'refresh-1');
     try
       Check(LRequest.Strings['request_sha256'] = LBefore, 'Claim binds immutable request');
+      Check(StudioJobRequestRuntimeSeconds(LRequest) = 7200,
+        'Worker claim carries the same immutable collection budget');
+      LRequest.Delete('worker_seconds');
+      Check(StudioJobRequestRuntimeSeconds(LRequest) = 600,
+        'Legacy jobs retain their historical budget');
+      LRequest.Add('worker_seconds', 7201);
+      LFailed := False;
+      try
+        StudioJobRequestRuntimeSeconds(LRequest);
+      except
+        on E: EAudio do LFailed := True;
+      end;
+      Check(LFailed, 'An oversized stored budget cannot bypass worker policy');
     finally
       LRequest.Free;
     end;
@@ -220,6 +384,9 @@ begin
     LResult := ListStudioJobs(ARoot);
     try
       Check(LResult.Integers['count'] = 3, 'Retained job count');
+      Check((LResult.Integers['maximum_library_refresh_seconds'] = 7200) and
+        (LResult.Integers['maximum_generation_seconds'] = 600),
+        'Job inventory exposes separate collection and generation budgets');
       Check(LResult.Arrays['jobs'].Objects[0].Find('results') = nil,
         'List uses compact summaries');
       Check(LResult.Arrays['jobs'].Objects[0].Find('request') = nil,
@@ -252,12 +419,20 @@ end;
 
 begin
   try
-    if ParamCount <> 1 then
+    if (ParamCount = 2) and (ParamStr(1) = '--hold-writer') then
+    begin
+      HoldWriter(ExpandFileName(ParamStr(2)));
+    end
+    else if ParamCount = 1 then
+    begin
+      Run(ExpandFileName(ParamStr(1)));
+      WriterContention(ExpandFileName(ParamStr(1)));
+      WriteLn('PASS ', GChecks, ' Studio job lifecycle checks');
+    end
+    else
     begin
       raise Exception.Create('Usage: studio jobs test FRESH_ROOT');
     end;
-    Run(ExpandFileName(ParamStr(1)));
-    WriteLn('PASS ', GChecks, ' Studio job lifecycle checks');
   except
     on E: Exception do
     begin

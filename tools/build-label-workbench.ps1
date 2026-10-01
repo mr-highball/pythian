@@ -52,7 +52,8 @@ foreach ($required in @($program, $listenProgram, $studioProgram, $captureProgra
     (Join-Path $sourceRoot 'listen.html'),
     (Join-Path $sourceRoot 'listen.css'),
     (Join-Path $sourceRoot 'studio.html'),
-    (Join-Path $sourceRoot 'studio.css'), $RtlJavascript,
+    (Join-Path $sourceRoot 'studio.css'),
+    (Join-Path $sourceRoot 'workspace-nav.css'), $RtlJavascript,
     (Join-Path $RtlSource 'web.pas'))) {
   if (-not (Test-Path -LiteralPath $required -PathType Leaf)) {
     throw "Missing workbench source or matched pas2js RTL: $required"
@@ -113,5 +114,6 @@ Copy-Item -LiteralPath (Join-Path $sourceRoot 'index.html'),
   (Join-Path $sourceRoot 'listen.html'),
   (Join-Path $sourceRoot 'listen.css'),
   (Join-Path $sourceRoot 'studio.html'),
-  (Join-Path $sourceRoot 'studio.css') -Destination $webRoot -Force
+  (Join-Path $sourceRoot 'studio.css'),
+  (Join-Path $sourceRoot 'workspace-nav.css') -Destination $webRoot -Force
 Write-Host "Label workbench staged at $webRoot"

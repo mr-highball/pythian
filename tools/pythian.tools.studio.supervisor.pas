@@ -71,6 +71,7 @@ type
     FProcess: TProcess;
     FJobId: String;
     FStarted: QWord;
+    FMaximumSeconds: Integer;
     FCancelAt: QWord;
     FLog: TFileStream;
     procedure Drain;
@@ -291,7 +292,7 @@ begin
       StopChild('worker_exit', 'Native worker stopped without a completed receipt');
       Exit;
     end;
-    if GetTickCount64 - FStarted > QWord(MaximumStudioJobSeconds) * 1000 then
+    if GetTickCount64 - FStarted > QWord(FMaximumSeconds) * 1000 then
     begin
       StopChild('runtime_budget', 'Native worker exceeded the declared wall-clock limit');
       Exit;
@@ -317,6 +318,7 @@ begin
       if LRow.Strings['status'] = 'queued' then
       begin
         FJobId := LRow.Strings['job_id'];
+        FMaximumSeconds := LRow.Integers['maximum_worker_seconds'];
         FProcess := TProcess.Create(nil);
         FProcess.Executable := FOwner.FWorkerExecutable;
         FProcess.Parameters.Add(FOwner.FCatalogRoot);

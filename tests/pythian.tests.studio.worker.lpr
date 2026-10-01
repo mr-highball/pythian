@@ -302,6 +302,8 @@ begin
           Check(LPreparation.Integers['range_count'] = 2, 'Two original disjoint ranges');
           Check(LPreparation.Int64s['selected_frames'] = 48000, 'Selected original clock');
           Check(LPreparation.Arrays['used_sources'].Count = 0, 'Preparation does not invent used material');
+          Check(LPreparation.Objects['limits'].Integers['worker_seconds'] = 600,
+            'Generation retains its shorter budget beside long collection refresh');
         finally
           LPreparation.Free;
         end;
@@ -312,6 +314,8 @@ begin
         LJob := ReadStudioJob(LCatalog, 'first');
         try
           Check(LJob.Strings['status'] = 'completed', 'Actual job terminal state');
+          Check(LJob.Integers['maximum_worker_seconds'] = 600,
+            'Generation completion detail agrees with its declared budget');
           Check((LJob.Objects['results'].Integers['completed_render_count'] = 1) and
             (LJob.Objects['results'].Integers['expected_render_count'] = 1) and
             (LJob.Objects['results'].Arrays['seed_outcomes'].Objects[0].Strings['status'] = 'verified') and

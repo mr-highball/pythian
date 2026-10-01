@@ -39,6 +39,7 @@ const
   MaximumStudioJobs = 256;
   MaximumStudioQueuedJobs = 32;
   MaximumStudioJobSeconds = 600;
+  MaximumStudioLibrarySeconds = 7200;
   MaximumStudioJobMemoryBytes = 128 * 1024 * 1024;
   MaximumStudioJobSourceBytes: Int64 = 34359738368;
   MaximumStudioJobFeatures = 500000;
@@ -48,6 +49,10 @@ type
 
 { Owned detached results; no source PCM reads, WFC or worker launch here. }
 function ParseStudioJobWrite(const AText: String): TJSONObject;
+{ Collection verification streams potentially hours of source audio; generation
+  retains its shorter limit. Both worker and supervisor use this policy. }
+function StudioJobRuntimeSeconds(const AKind: String): Integer;
+function StudioJobRequestRuntimeSeconds(const ARequest: TJSONObject): Integer;
 function PrepareStudioJob(const ACatalogRoot: String;
   const AWrite: TJSONObject): TJSONObject;
 function EnqueueStudioJob(const ACatalogRoot: String;
@@ -88,8 +93,19 @@ uses
   pythian.tools.studio.projects
   {$IFDEF MSWINDOWS}, Windows{$ENDIF};
 
+const
+  CJobWriterWaitMilliseconds = 2000;
+
 var
   GJobsLock: TRTLCriticalSection;
+
+function StudioJobRuntimeSeconds(const AKind: String): Integer;
+begin
+  if AKind = 'library_refresh' then
+    Result := MaximumStudioLibrarySeconds
+  else
+    Result := MaximumStudioJobSeconds;
+end;
 
 procedure Need(const ACondition: Boolean; const AMessage: String);
 begin
@@ -97,6 +113,20 @@ begin
   begin
     raise EAudio.Create(AMessage);
   end;
+end;
+
+function StudioJobRequestRuntimeSeconds(const ARequest: TJSONObject): Integer;
+var
+  LValue: TJSONData;
+begin
+  LValue := ARequest.Find('worker_seconds');
+  if LValue = nil then
+    Exit(MaximumStudioJobSeconds);
+  Need((LValue.JSONType = jtNumber) and (LValue.AsFloat = LValue.AsInt64) and
+    (LValue.AsInt64 >= 1) and
+    (LValue.AsInt64 <= StudioJobRuntimeSeconds(ARequest.Strings['kind'])),
+    'Stored job runtime budget exceeds its supported policy');
+  Result := LValue.AsInteger;
 end;
 
 function SafeId(const AText: String): Boolean;
@@ -418,6 +448,7 @@ begin
     Result.Delete('request_sha256');
     Need(StudioTextHash(Result.AsJSON) = LHash, 'Stored job request digest differs');
     Result.Add('request_sha256', LHash);
+    StudioJobRequestRuntimeSeconds(Result);
   except
     Result.Free;
     raise;
@@ -464,8 +495,10 @@ begin
     try
       Need(Result.Strings['request_sha256'] = LRequest.Strings['request_sha256'],
         'Studio event request binding differs');
+      Result.Integers['maximum_worker_seconds'] := StudioJobRequestRuntimeSeconds(LRequest);
       LRequest.Delete('project_snapshot');
       LRequest.Delete('request_sha256');
+      LRequest.Delete('worker_seconds');
       Result.Add('request', LRequest.Clone);
     finally
       LRequest.Free;
@@ -478,12 +511,24 @@ begin
 end;
 
 procedure LockJobs(const ACatalogRoot: String);
+var
+  LLock: String;
+  LStarted: QWord;
 begin
   EnterCriticalSection(GJobsLock);
   try
     Need(ForceDirectories(JobsRoot(ACatalogRoot)), 'Cannot create Studio job storage');
-    Need(CreateDir(JobsRoot(ACatalogRoot) + PathDelim + '.write-lock'),
-      'Studio job writer lock exists; inspect stopped writer before recovery');
+    LLock := JobsRoot(ACatalogRoot) + PathDelim + '.write-lock';
+    LStarted := GetTickCount64;
+    { Big Boss: the service and worker publish through the same directory lock.
+      A live progress write is ordinary contention, not an interrupted writer.
+      Wait briefly for its owner; never remove or take over an occupied lock. }
+    while not CreateDir(LLock) do
+    begin
+      Need(GetTickCount64 - LStarted < CJobWriterWaitMilliseconds,
+        'Studio job writer remains busy; retry or inspect a stopped writer before recovery');
+      Sleep(10);
+    end;
   except
     LeaveCriticalSection(GJobsLock);
     raise;
@@ -503,6 +548,7 @@ begin
   LStored := TJSONObject(AState.Clone);
   try
     LStored.Delete('request');
+    LStored.Delete('maximum_worker_seconds');
     WriteStudioJSONNew(StudioJobDirectory(ACatalogRoot, AJobId) + PathDelim +
       Format('%.8d.event.json', [AState.Integers['event_revision']]), LStored);
   finally
@@ -690,6 +736,7 @@ begin
         end;
       end;
     end;
+    LRequest.Add('worker_seconds', StudioJobRuntimeSeconds(LKind));
     LRequest.Add('request_sha256', StudioTextHash(LRequest.AsJSON));
     Result := LRequest;
     LRequest := nil;
@@ -729,7 +776,7 @@ begin
       Result.Add('exclusions', TJSONArray.Create);
       LLimits := TJSONObject.Create;
       Result.Add('limits', LLimits);
-      LLimits.Add('worker_seconds', MaximumStudioJobSeconds);
+      LLimits.Add('worker_seconds', StudioJobRequestRuntimeSeconds(LRequest));
       LLimits.Add('logical_memory_bytes', MaximumStudioJobMemoryBytes);
       LLimits.Add('unique_source_bytes', MaximumStudioJobSourceBytes);
       LLimits.Add('analyzed_features', MaximumStudioJobFeatures);
@@ -835,6 +882,7 @@ begin
     try
       LExisting.Delete('request_sha256');
       LExisting.Delete('project_snapshot');
+      LExisting.Delete('worker_seconds');
       if LExisting.AsJSON <> AWrite.AsJSON then
       begin
         raise EStudioConflict.Create('Job identifier already binds different settings');
@@ -955,7 +1003,9 @@ begin
     Result.Add('count', LRows.Count);
     Result.Add('maximum_retained', MaximumStudioJobs);
     Result.Add('maximum_queued', MaximumStudioQueuedJobs);
-    Result.Add('maximum_worker_seconds', MaximumStudioJobSeconds);
+    Result.Add('maximum_worker_seconds', MaximumStudioLibrarySeconds);
+    Result.Add('maximum_generation_seconds', MaximumStudioJobSeconds);
+    Result.Add('maximum_library_refresh_seconds', MaximumStudioLibrarySeconds);
     Result.Add('logical_memory_budget_bytes', MaximumStudioJobMemoryBytes);
   except
     Result.Free;

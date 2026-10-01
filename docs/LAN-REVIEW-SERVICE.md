@@ -1,7 +1,7 @@
 # Windows LAN review service
 
 The durable reviewed catalog lives outside `build/`. Checked native binaries
-and the ten matching browser assets use fixed ignored `stable` and `qa` slots.
+and the eleven matching browser assets use fixed ignored `stable` and `qa` slots.
 Studio jobs use the matching `pythian.studio.worker.exe` beside the service.
 The paths stay fixed across rebuilds so Windows Firewall does not see a new
 application identity. Host addresses and catalog locations are local settings;
@@ -70,6 +70,12 @@ to another private root containing `collections/`. No access-key form is needed 
 this selected private-LAN mode; Host/Origin and same-origin write-session checks
 still apply. Read-only host HTTP success is not a physical-phone play/Save verdict;
 [authoring_02](TODO/NS-6_authoring_02.md) owns that acceptance.
+
+After adding collection folders, use Studio's **Refresh library** action.
+It runs in the background and offers progress, Cancel and reconnect/retry. New
+refreshes have a two-hour worker budget; generation retains ten minutes. Existing
+catalog media is verified without another full staging copy. Keep enough disk
+space for new imports, which still use the maintained staging/import path.
 
 The same service also listens at `http://127.0.0.1:18097/studio.html` on the host
 computer, providing the browser context needed for microphone capture. A phone

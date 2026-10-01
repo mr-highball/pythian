@@ -915,6 +915,8 @@ begin
     Exit('studio.css');
   if APath = '/capture-worklet.js' then
     Exit('capture-worklet.js');
+  if APath = '/workspace-nav.css' then
+    Exit('workspace-nav.css');
   Result := '';
 end;
 
@@ -936,7 +938,7 @@ begin
       LContentType := 'text/javascript; charset=utf-8';
     end
     else if (AName = 'style.css') or (AName = 'listen.css') or
-      (AName = 'studio.css') then
+      (AName = 'studio.css') or (AName = 'workspace-nav.css') then
     begin
       LContentType := 'text/css; charset=utf-8';
     end
@@ -1301,7 +1303,7 @@ begin
         LRows := LReport.Arrays[LRowName];
         for LIndex := LRows.Count - 1 downto 0 do
         begin
-          if IsStudioReviewListeningItemHidden(ACatalogRoot, LRows.Objects[LIndex].Strings['id']) then
+          if IsStudioReviewListeningItem(ACatalogRoot, LRows.Objects[LIndex].Strings['id']) then
           begin
             LRows.Delete(LIndex);
           end;
@@ -1772,7 +1774,8 @@ begin
       FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'studio.html') and
       FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'studio.js') and
       FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'studio.css') and
-      FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'capture-worklet.js'),
+      FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'capture-worklet.js') and
+      FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'workspace-nav.css'),
       'Configured browser assets are incomplete');
   end;
   Need(CreateGUID(LGuid) = 0, 'Could not create HTTP session token');

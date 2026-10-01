@@ -3,7 +3,7 @@
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) ·
 [Assessment](../REBALANCE-2026-09-29.md) · [Completed tasks](DONE/README.md) · [Work](../WORK.md)
 
-Updated 2026-10-01. **45 open / 40 accepted tasks.** The user authorized a new
+Updated 2026-10-01. **47 open / 40 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **50.60 current / 49.40 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -13,7 +13,7 @@ caller-provider acceptance adds 10 NS-4 points / 1.50 overall. Complete owned
 editor/queue acceptance adds 8 NS-6 points / 0.80 overall.
 
 The later [operator Studio allocation](../OPERATOR-STUDIO.md#allocation-and-ownership)
-moves 15 unearned NS-6 points into seven explicit Studio outcomes.
+moves 17 unearned NS-6 points into nine explicit Studio outcomes.
 All donor criteria remain required. The scope update earned no completion credit;
 independent Studio project/setup acceptance subsequently adds 4 NS-6 / 0.40 overall.
 Accepted private corpora, raw WFC jobs, effects and capture/exploration add
@@ -37,14 +37,19 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 45 | 65% | 1 | 35 | 5.25 |
 | [NS-5 — User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 15 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 43 | 43% | 9 | 57 | 5.70 |
-| **Total** | **28.00 weighted** | **22.60 weighted** | **50.60 weighted** | **45** | Goal points are not summed across goals | **49.40** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 43 | 43% | 11 | 57 | 5.70 |
+| **Total** | **28.00 weighted** | **22.60 weighted** | **50.60 weighted** | **47** | Goal points are not summed across goals | **49.40** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
 hours or effort estimates. See the [basis and rationale](../REBALANCE-2026-09-29.md#current-credit-basis).
 
 ## Selection and actual blockers
+
+Actual phone feedback selects [studio_08](NS-6_studio_08.md): reconnect existing
+private music, expose recording/import at the start and give every workspace
+truthful attention badges and next-action guidance. One unearned authoring_02
+point transfers here; the operator iteration verdict remains open.
 
 The user's latest direction selects the [operator Studio](../OPERATOR-STUDIO.md)
 as the usable path into NS-5 calibration: [source/project setup — DONE](DONE/NS-6_studio_01.md)
@@ -178,7 +183,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | Task / primary outcome | Goal points | Overall points | Current readiness |
 | --- | ---: | ---: | --- |
 | [NS-6_adoption_01](NS-6_adoption_01.md) — Establish independent ecosystem adoption evidence | 15 | 1.50 | Supported releases + independent ecosystem evidence |
-| [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 4 | 0.40 | Source-marker/full physical matrix deferred; shared usability follows the selected Studio consumer |
+| [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 2 | 0.20 | Source-marker/full physical matrix deferred; shared usability follows the selected Studio consumer |
 | [NS-6_delivery_03](NS-6_delivery_03.md) — Package and verify the accepted final workflow | 3 | 0.30 | Dependencies, including Studio |
 | [NS-6_delivery_04](NS-6_delivery_04.md) — Obtain independently reproduced consumer acceptance | 8 | 0.80 | Package + independent consumer |
 | [NS-6_delivery_05](NS-6_delivery_05.md) — Audit north-star completion and supported handoff | 5 | 0.50 | Dependencies |
@@ -186,6 +191,8 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | [NS-6_support_01](NS-6_support_01.md) — Establish and exercise the supported release lifecycle | 10 | 1.00 | Packages + real external update or issue cycle |
 | [NS-6_studio_03](NS-6_studio_03.md) — Compare musical auditions and guide the next batch | 2 | 0.20 | Engineering passed; ready for actual operator purpose/audible/useful-feedback verdict |
 | [NS-6_studio_07](NS-6_studio_07.md) — Train mixed-format corpora with original-clock lineage | 1 | 0.10 | After current review: explicit native conversion and actual mixed-format WFC |
+| [NS-6_studio_08](NS-6_studio_08.md) — Make starting actions and review queues discoverable | 1 | 0.10 | Selected: existing music, recording/import entry and actual attention badges |
+| [NS-6_studio_09](NS-6_studio_09.md) — Refresh large existing collections without recopying media | 1 | 0.10 | Selected prerequisite: verified reuse and suitable collection budgets |
 
 ## Accepted tasks and retired work
 

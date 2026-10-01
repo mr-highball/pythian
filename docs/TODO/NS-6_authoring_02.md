@@ -11,7 +11,7 @@ A desktop or emulated narrow-screen pass does not substitute for an audible
 physical-phone playback and successful Save on the selected private LAN.
 
 North star: NS-6. Outcome owner: WAV-05-AUTHORING.
-Completion credit: 4 goal percentage points (0.40 overall points).
+Completion credit: 2 goal percentage points (0.20 overall points).
 Current allocation: [2026-09-30 operator rebalance](../OPERATOR-STUDIO.md#allocation-and-ownership), with NS-6 weighted at 10 overall points,
 under the user's authorization
 to rebalance without preserving historical point allocations. All existing
@@ -85,7 +85,7 @@ current combined-path verdict.
   pas2js assets, records exact evidence and confirms no test answer touched
   the live operator catalog.
 
-- Record exact source revision, fixed-slot binary and six browser asset hashes,
+- Record exact source revision, fixed-slot binary and all eleven browser asset hashes,
   copied-catalog identities, physical device/browser/network, audible results,
   Save/reload/producer-report evidence and independent Salty Boi verdict.
   Use only the fixed stable/QA executable slots and exact-path firewall setup
@@ -131,6 +131,11 @@ the accepted editor mechanics in authoring_01 retain their scoped evidence.
 - [NS-6_authoring_01.md](DONE/NS-6_authoring_01.md)
 
 **Dev Notes:**
+
+- 2026-10-01, Big Boss: one unearned point transfers to
+  [studio_08](NS-6_studio_08.md) for explicit starting actions, shared queue
+  navigation and connection of existing private music. Every physical-device
+  and end-to-end criterion here remains required; scoping earns no credit.
 
 - 2026-09-30, Big Boss: user explicitly prioritizes intuitive operator-driven
   training/audition preparation and feedback. New studio_01/02/03 own setup,
@@ -441,3 +446,9 @@ the accepted editor mechanics in authoring_01 retain their scoped evidence.
   missing device/firewall permission or concrete failure, record the unblock
   condition, and keep this task open. No musical ground-truth, independent
   consumer or final style credit follows from accepting this operator path.
+
+- 2026-10-01, Big Boss: one further unearned point funds
+  [studio_09](NS-6_studio_09.md)'s actual large-collection refresh prerequisite.
+  Current allocation is 2 goal / 0.20 overall points; every physical and
+  complete-workflow criterion remains required. No acceptance follows from
+  this transfer.

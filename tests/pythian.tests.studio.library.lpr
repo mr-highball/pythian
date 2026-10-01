@@ -44,7 +44,13 @@ type
   public
     Stage: String;
     MutationPath: String;
+    MutationText: String;
     Calls: Integer;
+    InteriorOnly: Boolean;
+    InteriorCalls: Integer;
+    ByteCalls: Integer;
+    LastByteStage: String;
+    LastByteDone: Int64;
     procedure Observe(const AStage: String; const ADone, ATotal: Int64);
   end;
 
@@ -144,11 +150,33 @@ procedure TProgressProbe.Observe(const AStage: String; const ADone, ATotal: Int6
 begin
   Inc(Calls);
   Check((ADone >= 0) and (ATotal >= ADone), 'Progress counters have truthful bounds');
-  if AStage = Stage then
+  if Pos('_bytes', AStage) > 0 then
+  begin
+    Inc(ByteCalls);
+    if (LastByteStage = AStage) and (ADone <> 0) then
+    begin
+      Check(ADone >= LastByteDone, 'Byte progress is monotonic within its file/pass');
+    end;
+    LastByteStage := AStage;
+    LastByteDone := ADone;
+    if (ADone > 0) and (ADone < ATotal) then
+    begin
+      Inc(InteriorCalls);
+    end;
+  end;
+  if (AStage = Stage) and
+    (not InteriorOnly or ((ADone > 0) and (ADone < ATotal))) then
   begin
     if MutationPath <> '' then
     begin
-      MakeWave(MutationPath, 13);
+      if MutationText <> '' then
+      begin
+        WriteText(MutationPath, MutationText);
+      end
+      else
+      begin
+        MakeWave(MutationPath, 13);
+      end;
       MutationPath := '';
     end
     else
@@ -156,6 +184,51 @@ begin
       raise EAudio.Create('Caller cancelled this synthetic refresh');
     end;
   end;
+end;
+
+function MakeProgressWave(const APath: String): String;
+var
+  LStream: TFileStream;
+  LSink: TStreamAudioSink;
+  LWriter: TWavePcm16Writer;
+  LSamples: TAudioSamples;
+  LRemaining: Integer;
+  LCount: Integer;
+  LIndex: Integer;
+begin
+  LStream := TFileStream.Create(APath, fmCreate);
+  try
+    LSink := TStreamAudioSink.Create(LStream);
+    try
+      LWriter := TWavePcm16Writer.Create(LSink, 8000, 1, 4500000);
+      try
+        LRemaining := 4500000;
+        while LRemaining > 0 do
+        begin
+          LCount := 4096;
+          if LCount > LRemaining then
+          begin
+            LCount := LRemaining;
+          end;
+          SetLength(LSamples, LCount);
+          for LIndex := 0 to LCount - 1 do
+          begin
+            LSamples[LIndex] := 0.125;
+          end;
+          LWriter.AppendSamples(LSamples);
+          Dec(LRemaining, LCount);
+        end;
+        LWriter.Finish;
+      finally
+        LWriter.Free;
+      end;
+    finally
+      LSink.Free;
+    end;
+  finally
+    LStream.Free;
+  end;
+  Result := HashFile(APath);
 end;
 
 function FreshStage: String;
@@ -248,6 +321,8 @@ var
   LRevisionPath: String;
   LFullCatalog: String;
   LAvailableLabels: Integer;
+  LProgressPath: String;
+  LProgressHash: String;
 begin
   GRoot := IncludeTrailingPathDelimiter(ExpandFileName(AOutput));
   Check(not DirectoryExists(GRoot), 'Conformance output root must be fresh');
@@ -326,6 +401,8 @@ begin
     Check(LResult.Integers['revision'] = 2, 'Refresh publishes a new immutable revision');
     Check(LResult.Integers['imported_count'] = 0, 'Identical catalog bytes not reclassified');
     Check(LResult.Integers['existing_count'] = 2, 'Existing recordings verified');
+    Check(not DirectoryExists(GRoot + 'stages/' + IntToStr(GStage)),
+      'Verified existing recordings create no full staging files or stage directory');
     LBefore := LResult.AsJSON;
   finally
     LResult.Free;
@@ -415,7 +492,7 @@ begin
     Check(LProbe.Calls > 0, 'Caller cancellation actually executed');
     LProbe.Stage := 'publishing_index';
     ExpectFailure(LCatalog, LLibrary, LBefore, LProbe);
-    LProbe.Stage := 'staging_sources';
+    LProbe.Stage := 'verifying_sources';
     LProbe.MutationPath := LSecond;
     ExpectFailure(LCatalog, LLibrary, LBefore, LProbe);
     MakeWave(LSecond, 9);
@@ -445,6 +522,103 @@ begin
   end;
   ExpectFailure(LCatalog, LLibrary, LBefore);
   CopyFixture(LSecond, LPath);
+  LStream := TFileStream.Create(LPath, fmOpenReadWrite);
+  try
+    LStream.Position := 24;
+    LStream.ReadBuffer(LByte, 1);
+    LByte := LByte xor 1;
+    LStream.Position := 24;
+    LStream.WriteBuffer(LByte, 1);
+  finally
+    LStream.Free;
+  end;
+  ExpectFailure(LCatalog, LLibrary, LBefore);
+  CopyFixture(LSecond, LPath);
+  LTrack := ReadCatalogTrack(LCatalog, LOtherHash);
+  try
+    LMetadata := LTrack.AsJSON;
+    LTrack.Strings['source_group'] := 'preserved_existing_group';
+    WriteText(LCatalog + '/tracks/' + LOtherHash + '.json', LTrack.AsJSON + #10);
+    ExpectFailure(LCatalog, LLibrary, LBefore);
+    WriteText(LCatalog + '/tracks/' + LOtherHash + '.json', LMetadata + #10);
+  finally
+    LTrack.Free;
+  end;
+  LProbe := TProgressProbe.Create;
+  try
+    LTrack := ReadCatalogTrack(LCatalog, LOtherHash);
+    try
+      LMetadata := LTrack.AsJSON;
+      LTrack.Strings['title'] := 'Changed during publication checkpoint';
+      LProbe.Stage := 'publishing_index';
+      LProbe.MutationPath := LCatalog + '/tracks/' + LOtherHash + '.json';
+      LProbe.MutationText := LTrack.AsJSON + #10;
+    finally
+      LTrack.Free;
+    end;
+    ExpectFailure(LCatalog, LLibrary, LBefore, LProbe);
+    WriteText(LCatalog + '/tracks/' + LOtherHash + '.json', LMetadata + #10);
+  finally
+    LProbe.Free;
+  end;
+  Check(ForceDirectories(LLibrary + '/collections/Stream control'),
+    'Create first-party read-progress fixture collection');
+  LProgressPath := LLibrary + '/collections/Stream control/progress.wav';
+  LProgressHash := MakeProgressWave(LProgressPath);
+  LProbe := TProgressProbe.Create;
+  try
+    LProbe.Stage := 'hashing_source_bytes';
+    LProbe.InteriorOnly := True;
+    ExpectFailure(LCatalog, LLibrary, LBefore, LProbe);
+    Check(LProbe.InteriorCalls > 0, 'Cancellation reached an actual partial hash read');
+    LProbe.Stage := 'copying_source_bytes';
+    LProbe.InteriorCalls := 0;
+    ExpectFailure(LCatalog, LLibrary, LBefore, LProbe);
+    Check(LProbe.InteriorCalls > 0, 'Cancellation reached an actual partial staging copy');
+    Check(not FileExists(LCatalog + '/sources/' + LProgressHash + '.wav'),
+      'Cancelled partial new-source copy is not published into catalog');
+  finally
+    LProbe.Free;
+  end;
+  LProbe := TProgressProbe.Create;
+  try
+    LResult := Refresh(LCatalog, LLibrary, LProbe);
+    try
+      Check(LResult.Integers['imported_count'] = 1,
+        'Fresh retry imports the actual first-party progress source once');
+      Check(LProbe.InteriorCalls > 0, 'Successful verification reports actual interior bytes');
+      Check(LProbe.Calls < 100, 'Small progress fixture does not flood callback events');
+      LBefore := LResult.AsJSON;
+    finally
+      LResult.Free;
+    end;
+    LProbe.Stage := 'verifying_catalog_bytes';
+    LProbe.InteriorOnly := True;
+    LProbe.InteriorCalls := 0;
+    ExpectFailure(LCatalog, LLibrary, LBefore, LProbe);
+    Check(LProbe.InteriorCalls > 0,
+      'Verified reuse can cancel during the actual catalog content read');
+    LProbe.Stage := '';
+    LProbe.InteriorOnly := False;
+    LProbe.Calls := 0;
+    LProbe.InteriorCalls := 0;
+    LResult := Refresh(LCatalog, LLibrary, LProbe);
+    try
+      Check((LResult.Integers['imported_count'] = 0) and
+        (LResult.Integers['existing_count'] = 3),
+        'Later read-progress refresh verifies all three existing sources');
+      Check(not DirectoryExists(GRoot + 'stages/' + IntToStr(GStage)),
+        'Existing progress source is reused with zero staging media');
+      Check(LProbe.InteriorCalls >= 3,
+        'Existing large control exposes all three actual hash read passes');
+      Check(LProbe.Calls < 100, 'Verified reuse keeps progress callbacks bounded');
+      LBefore := LResult.AsJSON;
+    finally
+      LResult.Free;
+    end;
+  finally
+    LProbe.Free;
+  end;
   Check(ForceDirectories(LLibrary + '/collections/Bright/nested'),
     'Create forbidden nested directory');
   ExpectFailure(LCatalog, LLibrary, LBefore);
