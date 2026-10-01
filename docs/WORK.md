@@ -89,6 +89,12 @@ engineering checkpoint closes no full task criterion: the consecutive
 nonclosing-batch count is **1**. Resume the named trust/browser/physical checks;
 do not expand into another feature or claim Android success from native tests.
 
+The implementation is published at `bf17c36cb3d9671068265b5d42d9a94df6e4b9fb`.
+Its [Linux FPC integration and extracted core/WFC consumer run](https://github.com/mr-highball/pythian/actions/runs/36889245553)
+passes, including the maintained portable transport contract. Run/job identities
+are retained in `build/studio-phone-https/ci-bf17c36/`. Linux qualification does
+not substitute for the open trusted Windows browser and physical-phone checks.
+
 ## Current accepted collection and navigation checkpoint — 2026-10-01
 
 **Big Boss:** [starting actions and review navigation](TODO/DONE/NS-6_studio_08.md)
