@@ -46,7 +46,7 @@ pass, and actual Linux execution remains a CI check. See
 `build/studio-supervisor-unix-import/VALIDATION.md` for that freeze exception.
 
 Current submitted implementation failures are Windows native **0**, browser **0**,
-and Linux CI **1** for studio_02 (Neo owns the repair).
+and Linux CI **2** for studio_02 (Big Boss owns the transferred repair).
 Preserved test-runner timing/path/oracle corrections did not change production
 code or erase earlier task failures. This batch closes criteria and four tasks;
 the consecutive nonclosing-batch count is **0**. Final browser verdict SHA256
@@ -76,6 +76,29 @@ new work batch. Existing Windows engineering acceptance and credit remain
 scoped to their evidence; Linux requalification and final handoff require a
 passing run of the repaired published revision. Salty reviews this correction
 within the same batch before publication. No further criterion credit is added.
+
+**Second CI submission / mandatory transfer — Big Boss:** the errno repair
+compiled successfully on Linux at `5305a41`, but its
+[run](https://github.com/mr-highball/pythian/actions/runs/36818585073) failed the
+supervisor test's `Test-owned crashed child stopped` assertion, with zero leaks.
+FPC 3.2.2 Unix `TProcess.Terminate` already waits for its child; the test's second
+timed wait can return false after the child is reaped. This is a required-evidence
+defect, not a demonstrated surviving worker. Count **2** transfers the task,
+supervisor/test and complete failure evidence from Neo to Big Boss. The repair
+waits only while the owned child still runs, asserts it stopped, and strengthens
+the Unix check to require the actual PID be absent after cancellation, shutdown
+and simulated crash. It does not weaken the restart criterion or change production
+behavior. Logs remain in `build/studio-publication-ci-5305a41/`; fresh focused
+supervisor QA and repaired-revision Linux CI are required. Neo retains only
+read-only CI evidence work and coordination of Salty's independent QA.
+
+Big Boss's first shared wait-guard repair failed Salty's Win32 process-stop
+assertion (zero leaks): it skipped the Windows handle wait after termination.
+That failed source and QA logs remain under `build/studio-chief/supervisor-reap-repair/`
+and `build/salty-supervisor-reap-20261001/`. Big Boss restores the explicit Windows
+timed handle wait and confines the already-reaped-child guard to Unix. This is
+one additional failed chief repair submission; Neo's transfer count remains two.
+Production code and live service assets remain unchanged.
 
 <a id="current-priority-decision--2026-09-30"></a>
 ## Studio batch opening decisions — 2026-09-30

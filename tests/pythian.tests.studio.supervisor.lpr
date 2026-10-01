@@ -36,7 +36,7 @@ uses
   pythian.tools.studio.jobs,
   pythian.tools.studio.supervisor,
   pythian.tools.studio.worker
-  {$IFDEF MSWINDOWS}, Windows{$ENDIF};
+  {$IFDEF MSWINDOWS}, Windows{$ELSE}, BaseUnix{$ENDIF};
 
 var
   GChecks: Integer;
@@ -128,6 +128,8 @@ begin
   end;
   {$ELSE}
   Check(AId > 0, 'Retained actual owned child identity');
+  Check((fpKill(AId, 0) = -1) and (fpGetErrno = ESysESRCH),
+    'Former owned worker actually absent');
   {$ENDIF}
 end;
 
@@ -236,7 +238,17 @@ begin
     LState.Free;
     LId := JobWorkerId(LCatalog);
     LChild.Terminate(1);
+    {$IFDEF MSWINDOWS}
     Check(LChild.WaitOnExit(5000), 'Test-owned crashed child stopped');
+    {$ELSE}
+    { FPC on Unix may reap the child inside Terminate. A second wait then
+      reports no child, rather than a failure to stop the owned process. }
+    if LChild.Running then
+    begin
+      LChild.WaitOnExit(5000);
+    end;
+    Check(not LChild.Running, 'Test-owned crashed child stopped');
+    {$ENDIF}
   finally
     if LChild.Running then
     begin

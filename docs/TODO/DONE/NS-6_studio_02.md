@@ -75,6 +75,25 @@ inferred/reference-event learning retain their separate acceptance.
 
 **Dev Notes:**
 
+- 2026-10-01, Big Boss: the first transferred repair's shared running-state
+  guard failed Salty's Win32 stopped-process assertion (zero leaks). It omitted
+  the explicit Windows handle wait; preserve that required wait and use the
+  already-reaped-child guard only on Unix. Failed source and exact evidence
+  remain under `build/studio-chief/supervisor-reap-repair/` and
+  `build/salty-supervisor-reap-20261001/`. This adds one chief repair failure;
+  Neo's two-submission transfer stays recorded. Production behavior is unchanged.
+
+- 2026-10-01, Big Boss: second [Linux CI submission](https://github.com/mr-highball/pythian/actions/runs/36818585073)
+  at `5305a41` compiles the errno repair but rejects the supervisor restart test.
+  Stable FPC's Unix `Terminate` already reaps the child; the fixture incorrectly
+  required a second timed wait to succeed. Logs in
+  `build/studio-publication-ci-5305a41/` retain the assertion and zero-leak result.
+  Count **2** is a required-evidence failure and transfers task, supervisor/test
+  implementation and evidence from Neo to Big Boss. Big Boss repairs the wait
+  oracle and adds a real Unix PID-absence assertion after each owned-child stop.
+  Production behavior stays unchanged; focused supervisor QA and exact revised
+  Linux CI must pass before final handoff. No counter reset or new credit.
+
 - 2026-10-01, Big Boss: the first published Studio revision `35a49b7` failed
   [Linux CI](https://github.com/mr-highball/pythian/actions/runs/36818040705)
   because the supervisor used undeclared `ESrch` in its non-Windows branch.
