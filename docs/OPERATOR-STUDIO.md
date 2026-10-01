@@ -98,8 +98,8 @@ completed by planning, and all original criteria in the donor tasks remain.
 | [studio_05](TODO/DONE/NS-6_studio_05.md) | 0 | 2 | Layered effects preview and derived collection clips |
 | [studio_06](TODO/DONE/NS-6_studio_06.md) | 0 | 2 | WAV import, microphone capture and analysis exploration |
 | [studio_07](TODO/NS-6_studio_07.md) | 0 | 1 | Mixed-format corpus conversion with original lineage |
-| [studio_08](TODO/NS-6_studio_08.md) | 0 | 1 | Discoverable starting actions, existing music and queue navigation |
-| [studio_09](TODO/NS-6_studio_09.md) | 0 | 1 | Verified large-library refresh without duplicate staging |
+| [studio_08](TODO/DONE/NS-6_studio_08.md) | 0 | 1 | Discoverable starting actions, existing music and queue navigation |
+| [studio_09](TODO/DONE/NS-6_studio_09.md) | 0 | 1 | Verified large-library refresh without duplicate staging |
 | **Total allocation at scoping** | **30** | **30** | **Scoping earned no credit** |
 
 The added operator outcomes receive explicit weight from later verification
@@ -107,8 +107,9 @@ work. Those verification obligations remain required at reduced planning weight;
 they do not disappear or move into the new tasks. Scoping left 49.40 accepted;
 independent project/setup acceptance subsequently adds 4 NS-6 / 0.40 overall.
 Private corpora, raw WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall.
-The current ledger is **50.60 accepted / 49.40 remaining**, **47 open / 40 DONE**.
-NS-6 is **43 accepted / 57 unearned** with eleven open tasks. Goal weights are unchanged.
+Accepted starting actions/navigation and large-library refresh add 2 NS-6 / 0.20 overall.
+The current ledger is **50.80 accepted / 49.20 remaining**, **45 open / 42 DONE**.
+NS-6 is **45 accepted / 55 unearned** with nine open tasks. Goal weights are unchanged.
 The later collection and effects requirements each reallocate one unearned point
 from jobs and iteration; all original criteria remain. Scoping earns no acceptance.
 Capture/exploration receives two additional unearned delivery_03 points with

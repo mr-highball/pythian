@@ -3,8 +3,8 @@
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) ·
 [Assessment](../REBALANCE-2026-09-29.md) · [Completed tasks](DONE/README.md) · [Work](../WORK.md)
 
-Updated 2026-10-01. **47 open / 40 accepted tasks.** The user authorized a new
-outcome-based credit allocation: **50.60 current / 49.40 remaining** overall.
+Updated 2026-10-01. **45 open / 42 accepted tasks.** The user authorized a new
+outcome-based credit allocation: **50.80 current / 49.20 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
 adds 4 NS-5 points / 0.80 overall, and the accepted exact-revision minimal native
@@ -37,8 +37,8 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 45 | 65% | 1 | 35 | 5.25 |
 | [NS-5 — User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 15 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 43 | 43% | 11 | 57 | 5.70 |
-| **Total** | **28.00 weighted** | **22.60 weighted** | **50.60 weighted** | **47** | Goal points are not summed across goals | **49.40** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 45 | 45% | 9 | 55 | 5.50 |
+| **Total** | **28.00 weighted** | **22.80 weighted** | **50.80 weighted** | **45** | Goal points are not summed across goals | **49.20** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -46,10 +46,10 @@ hours or effort estimates. See the [basis and rationale](../REBALANCE-2026-09-29
 
 ## Selection and actual blockers
 
-Actual phone feedback selects [studio_08](NS-6_studio_08.md): reconnect existing
-private music, expose recording/import at the start and give every workspace
-truthful attention badges and next-action guidance. One unearned authoring_02
-point transfers here; the operator iteration verdict remains open.
+Accepted [studio_08](DONE/NS-6_studio_08.md) and
+[studio_09](DONE/NS-6_studio_09.md) provide deployed starting actions, shared
+attention states and verified discovery of the original collection. Their
+two NS-6 points add 0.20 overall; studio_03's operator verdict remains open.
 
 The user's latest direction selects the [operator Studio](../OPERATOR-STUDIO.md)
 as the usable path into NS-5 calibration: [source/project setup — DONE](DONE/NS-6_studio_01.md)
@@ -191,12 +191,10 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | [NS-6_support_01](NS-6_support_01.md) — Establish and exercise the supported release lifecycle | 10 | 1.00 | Packages + real external update or issue cycle |
 | [NS-6_studio_03](NS-6_studio_03.md) — Compare musical auditions and guide the next batch | 2 | 0.20 | Engineering passed; ready for actual operator purpose/audible/useful-feedback verdict |
 | [NS-6_studio_07](NS-6_studio_07.md) — Train mixed-format corpora with original-clock lineage | 1 | 0.10 | After current review: explicit native conversion and actual mixed-format WFC |
-| [NS-6_studio_08](NS-6_studio_08.md) — Make starting actions and review queues discoverable | 1 | 0.10 | Selected: existing music, recording/import entry and actual attention badges |
-| [NS-6_studio_09](NS-6_studio_09.md) — Refresh large existing collections without recopying media | 1 | 0.10 | Selected prerequisite: verified reuse and suitable collection budgets |
 
 ## Accepted tasks and retired work
 
-All 40 accepted tasks, including caller corpus intake, Studio source/effects/capture, the current minimal package
+All 42 accepted tasks, including caller corpus intake, Studio source/effects/capture, the current minimal package
 and the three NS-2 quality results, are listed in
 the [current DONE ledger](DONE/README.md). Their acceptance dates and detailed
 evidence remain in the unchanged task identities. Allocations now reflect the

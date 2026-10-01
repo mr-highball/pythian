@@ -1,30 +1,33 @@
 # NS-6_studio_09 — Refresh large existing collections without recopying media
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
 Make the operator's multi-hour private collection practical to discover and
-refresh. The current path stages complete copies even when catalog originals
-already exist, repeats their verification, and shares a ten-minute generation
+refresh. The prior path staged complete copies even when catalog originals
+already existed, repeated their verification, and shared a ten-minute generation
 deadline. The actual collection contains approximately 7 GB across three mixes;
 its first approximately 2 GB native import alone took several minutes. Avoid a
 predictably over-budget refresh while retaining source identity and metadata.
 
 North star: NS-6. Outcome owner: OPERATOR-STUDIO.
 Completion credit: 1 goal percentage point (0.10 overall points).
-Basis: one unearned point transfers from [authoring_02](NS-6_authoring_02.md),
+Basis: one unearned point transfers from [authoring_02](../NS-6_authoring_02.md),
 which retains all physical-device and complete-workflow obligations.
 
-Execution status: selected prerequisite of [studio_08](NS-6_studio_08.md)'s
-existing-collection discovery. Big Boss owns assessment, existing transferred
-worker/supervisor integration and final judgment. Neo may own bounded library
-implementation after releasing the navigation repair. Closing evidence is an
-actual completed large-library refresh, independently checked existing/new/
-changed-source integrity and cancellation/recovery, and no duplicate full media
-staging for existing catalog sources. Stop on weakened byte identity, changed
-provenance, unbounded work or an unchanged deadline hidden behind UI retries.
-This is collection engineering, with no musical-learning or scale credit.
+Execution status: accepted by Big Boss on 2026-10-01. Existing originals use
+verified reuse without full staging copies; collection work has an immutable
+7,200-second bound separate from generation's 600 seconds. Checked native and
+independent browser failure/cancellation/recovery checks pass. The actual three
+mixes publish revision 2, three collections and five total catalog recordings.
+Closing evidence is `build/studio-onboarding/actual-refresh-observation/`,
+`build/salty-studio-refresh-20261001/FINAL-VERDICT.txt` and exact-revision
+[Linux qualification](https://github.com/mr-highball/pythian/actions/runs/36832262007);
+see the [accepted checkpoint](../../WORK.md#current-accepted-collection-and-navigation-checkpoint--2026-10-01).
+Next deliverable is studio_03's separate operator verdict. Stop at changed
+source identity or unsupported musical/physical-phone claims; this acceptance
+qualifies collection engineering only.
 
 **Acceptance Criteria:**
 
@@ -49,8 +52,8 @@ This is collection engineering, with no musical-learning or scale credit.
 
 **Blockers**
 
-- [NS-6_studio_04.md](DONE/NS-6_studio_04.md)
-- [NS-6_studio_02.md](DONE/NS-6_studio_02.md)
+- [NS-6_studio_04.md](NS-6_studio_04.md)
+- [NS-6_studio_02.md](NS-6_studio_02.md)
 
 **Dev Notes:**
 
@@ -90,3 +93,30 @@ This is collection engineering, with no musical-learning or scale credit.
   This is a work bound, not a promise that every maximum-size library finishes.
   Existing-source verification still reads content three times; no timing or
   metadata-only cache substitutes for the actual final source check.
+
+- 2026-10-01, Big Boss final acceptance: checked FPC 3.2.2 Win32/Win64 passes
+  library 421, jobs 47, worker 50 and supervisor 19 assertions with zero leaks.
+  Exact implementation `5666eb49af2a1293414bfd2ab3e855d48be1b281` passes
+  [Linux native/package qualification](https://github.com/mr-highball/pythian/actions/runs/36832262007):
+  projects 100, library 417, jobs 47, effects 44, capture 53, worker 50,
+  supervisor 22 and reviews 47, with zero Studio leaks. Four additional Windows
+  library assertions are platform-specific sparse-file setup checks. Extracted
+  core/WFC consumers verify 98/146 owned units and 111/265 content hashes.
+  Logs remain in `build/studio-onboarding/ci-5666eb4/logs/`.
+  Independent browser verdict is `build/salty-studio-refresh-20261001/FINAL-VERDICT.txt`:
+  actual running Cancel returns 200 and reaches cancelled; completed and failed
+  outcomes persist through explicit Connect/inventory. A cancelled-Connect case
+  was not executed and is not claimed. Candidate 5 deployment identities are
+  retained in `build/studio-onboarding/DEPLOYED5.json`.
+  Actual scan verifies 7,045,401,242 input bytes through three full logical
+  content passes plus header work; 21,136,203,726 verification bytes are not
+  measured physical disk traffic. Completion is bounded by observations at
+  887.345–958.510 seconds, below 7,200. Revision 2 has three named collections,
+  three existing originals, zero imports and five total catalog sources.
+  All 22 readable prior records remain byte-identical; the active lock is
+  excluded. No new-source staging events occur; the exact staging parent
+  contains an older directory, so its emptiness is not claimed.
+  Existing 1 NS-6 / 0.10 overall credit is awarded without a new build claim.
+  The first UI failure, historical Cancel 422 with unretained body/unknown cause,
+  independently reproduced native-lock regression and chief repair stay below.
+  No musical learning, physical-phone or operator-listening verdict follows.

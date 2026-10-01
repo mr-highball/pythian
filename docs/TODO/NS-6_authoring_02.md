@@ -133,7 +133,7 @@ the accepted editor mechanics in authoring_01 retain their scoped evidence.
 **Dev Notes:**
 
 - 2026-10-01, Big Boss: one unearned point transfers to
-  [studio_08](NS-6_studio_08.md) for explicit starting actions, shared queue
+  [studio_08](DONE/NS-6_studio_08.md) for explicit starting actions, shared queue
   navigation and connection of existing private music. Every physical-device
   and end-to-end criterion here remains required; scoping earns no credit.
 
@@ -448,7 +448,7 @@ the accepted editor mechanics in authoring_01 retain their scoped evidence.
   consumer or final style credit follows from accepting this operator path.
 
 - 2026-10-01, Big Boss: one further unearned point funds
-  [studio_09](NS-6_studio_09.md)'s actual large-collection refresh prerequisite.
+  [studio_09](DONE/NS-6_studio_09.md)'s actual large-collection refresh prerequisite.
   Current allocation is 2 goal / 0.20 overall points; every physical and
   complete-workflow criterion remains required. No acceptance follows from
   this transfer.

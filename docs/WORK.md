@@ -12,10 +12,67 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
-## Current operator orientation repair — 2026-10-01
+## Current accepted collection and navigation checkpoint — 2026-10-01
+
+**Big Boss:** [starting actions and review navigation](TODO/DONE/NS-6_studio_08.md)
+and [large existing-library refresh](TODO/DONE/NS-6_studio_09.md) are accepted at
+their engineering criteria. Existing private lofi, stoner-rock and chillwave
+recordings are available by collection name. Record, Import and Browse appear
+before project setup; shared navigation shows real pending and attention states
+and a next action. This adds **2 NS-6 / 0.20 overall**: **50.80 accepted /
+49.20 remaining; 45 open / 42 DONE; NS-6 45/55 with nine open tasks**.
+The two tasks close this batch; the consecutive nonclosing-batch count is **0**.
+
+The exact published implementation `5666eb49af2a1293414bfd2ab3e855d48be1b281`
+passes the [Linux FPC integration and core/WFC package run](https://github.com/mr-highball/pythian/actions/runs/36832262007).
+Linux passes projects 100, library 417, jobs 47, effects 44, capture 53, worker
+50, supervisor 22 and reviews 47, with zero Studio heap leaks. The four extra
+Windows library assertions exercise its platform-specific sparse-file control.
+Extracted core/WFC consumers verify 98/146 owned units and 111/265 content hashes
+from the clean published revision. Downloaded logs and artifact identities are
+retained in `build/studio-onboarding/ci-5666eb4/`.
+Independent Windows/browser qualification is retained in
+`build/salty-studio-onboarding-20261001/` and
+`build/salty-studio-refresh-20261001/`; candidate 5 has 111 frozen source
+identities and 13 service/worker/browser artifacts. Both Windows targets pass
+library 421, jobs 47, worker 50, supervisor 19 and review ownership 47, with zero
+leaks. Unchanged checks retain their earlier evidence rather than being rerun.
+Actual running cancellation reaches cancelled; completed and failed feedback
+persist through inventory reload. Lost-response recovery, deferred single reload,
+draft preservation, filtering, narrow layout, source conflicts and pending
+publication pass. All isolated QA browser, worker, listener and audio cleanup
+checks pass. Physical microphone and musical-quality acceptance remain unclaimed.
+
+The native full-collection job completed at index revision 2: three collections,
+three reused originals, zero imports and five total catalog recordings. Its
+7,045,401,242 input bytes were verified through nine complete logical passes;
+completion was observed within 959 seconds against a 7,200-second job limit.
+The 21,136,203,726 logical verification bytes are not measured disk traffic.
+All 22 readable prior nonmedia catalog records remain byte-identical; the active
+zero-byte supervisor lock is excluded. No new-source staging events occurred;
+the staging parent contains an older directory, so its emptiness is not claimed.
+Private source identities, metadata and paths stay in ignored evidence.
+
+The fixed stable service now serves all 13 checked artifacts. Read-only deployed
+verification confirms the three named memberships, five source records, revision
+2, preserved review records and successful localhost/LAN routes. No second
+full-media scan ran. Evidence is `build/studio-onboarding/DEPLOYED5.json` and
+`build/studio-onboarding/actual-refresh-observation/`. Plain LAN HTTP still cannot
+record a phone microphone; the app explains that limit and offers WAV import.
+The host's localhost origin supports microphone capture.
+
+Studio_03's actual operator purpose/audible/useful-feedback gate remains open,
+as do mixed-format preparation and the physical/full workflow. No inference,
+musical style or many-hour learning credit follows from this collection scan.
+The first navigation and first refresh-UI failures, the historical Cancel 422 of
+unconfirmed cause, and Big Boss's separately reproduced native writer-lock repair
+remain below. Earlier transferred task failures are unchanged.
+
+<a id="current-operator-orientation-repair--2026-10-01"></a>
+## Retained operator orientation repair history — 2026-10-01
 
 **Big Boss:** actual phone review found missing existing preference recordings,
-buried capture and weak workspace navigation. [Studio_08](TODO/NS-6_studio_08.md)
+buried capture and weak workspace navigation. [Studio_08](TODO/DONE/NS-6_studio_08.md)
 owns this batch: show existing private collections, expose start actions, and
 provide shared navigation with real attention badges and next-action links.
 One unearned authoring_02 point moves to this outcome; accepted scope remains
@@ -40,7 +97,7 @@ Big Boss supplies the page transport adapters. Preserve the first failure under
 `build/salty-studio-onboarding-20261001/`; a second failed implementation submission
 transfers the new navigation unit to Big Boss. No new criterion has closed.
 
-**Distinct prerequisite — Big Boss:** [studio_09](TODO/NS-6_studio_09.md) owns the
+**Distinct prerequisite — Big Boss:** [studio_09](TODO/DONE/NS-6_studio_09.md) owns the
 large-library refresh gap revealed by the actual approximately 7 GB originals.
 The old refresh stages even existing media and repeatedly hashes it under the
 same 600-second generation deadline. Follow this prerequisite before claiming

@@ -1,6 +1,6 @@
 # NS-6_studio_08 — Make starting actions and review queues discoverable
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
@@ -11,16 +11,21 @@ with consistent navigation, truthful attention badges and a useful next action.
 
 North star: NS-6. Outcome owner: OPERATOR-STUDIO.
 Completion credit: 1 goal percentage point (0.10 overall points).
-Basis: one unearned point transfers from [authoring_02](NS-6_authoring_02.md);
+Basis: one unearned point transfers from [authoring_02](../NS-6_authoring_02.md);
 all of its physical-device and complete-workflow criteria remain required.
 
-Execution status: selected after actual phone feedback on 2026-10-01. Big Boss
-owns integration and existing transferred UI/HTTP repairs. Neo owns new shared
-navigation and private-corpus assessment; Ticket Guy owns capture entry methods.
-Closing evidence is the actual existing music appearing in the deployed library,
-independent desktop/narrow starting-action and queue-state checks, and preserved
-source/review identities. Stop on fabricated counts, hidden failures, lost edits,
-changed source provenance or unsupported microphone claims. No credit at scoping.
+Execution status: accepted by Big Boss on 2026-10-01. Prominent starting actions,
+shared queue navigation and the three named private collections are deployed.
+AC1/2/4 have independent desktop/narrow, keyboard, source-conflict and pending
+publication checks; AC3 binds the actual revision-2 scan and deployed five-source
+catalog to 13 artifact identities. Closing evidence is retained in
+`build/salty-studio-onboarding-20261001/`,
+`build/salty-studio-refresh-20261001/FINAL-VERDICT.txt` and
+`build/studio-onboarding/DEPLOYED5.json`; see the
+[current accepted checkpoint](../../WORK.md#current-accepted-collection-and-navigation-checkpoint--2026-10-01).
+Next deliverable is studio_03's separate operator verdict. Unsupported phone
+microphone, physical listening and musical-learning claims remain outside this
+acceptance. Stop at any changed identity or unsupported broader claim.
 
 **Acceptance Criteria:**
 
@@ -49,10 +54,10 @@ changed source provenance or unsupported microphone claims. No credit at scoping
 **Blockers**
 
 - [NS-6_studio_09.md](NS-6_studio_09.md)
-- [NS-6_studio_01.md](DONE/NS-6_studio_01.md)
-- [NS-6_studio_04.md](DONE/NS-6_studio_04.md)
-- [NS-6_studio_06.md](DONE/NS-6_studio_06.md)
-- [NS-6_authoring_01.md](DONE/NS-6_authoring_01.md)
+- [NS-6_studio_01.md](NS-6_studio_01.md)
+- [NS-6_studio_04.md](NS-6_studio_04.md)
+- [NS-6_studio_06.md](NS-6_studio_06.md)
+- [NS-6_authoring_01.md](NS-6_authoring_01.md)
 
 **Dev Notes:**
 
@@ -73,3 +78,19 @@ changed source provenance or unsupported microphone claims. No credit at scoping
   separate secure-origin requirement. Do not represent a localhost link as
   connecting to the host from a phone or weaken browser security to enable it.
   Scope that prerequisite separately if phone recording is selected.
+
+- 2026-10-01, Big Boss final acceptance: AC1/2/4 pass independent starting-action,
+  navigation, recovery and keyboard/narrow checks, including actual source
+  conflicts and pending-publication producer behavior. AC3 is verified by the
+  completed actual scan and `DEPLOYED5.json`: three named collections, five
+  sources, index revision 2 and 13 deployed service/worker/browser artifacts.
+  All 22 readable prior nonmedia catalog records remain byte-identical; the
+  active supervisor lock is excluded. Final browser verdict is retained in
+  `build/salty-studio-refresh-20261001/FINAL-VERDICT.txt`, with earlier independent
+  evidence in `build/salty-studio-onboarding-20261001/`.
+  Exact implementation `5666eb49af2a1293414bfd2ab3e855d48be1b281` passes the
+  [Linux native/package run](https://github.com/mr-highball/pythian/actions/runs/36832262007).
+  This docs-only closure adds the existing 1 NS-6 / 0.10 overall credit and
+  does not create a new build claim. Navigation's first failed submission and
+  all prior transfer histories remain preserved. Studio_03, physical-phone,
+  musical-scale and inference verdicts remain open.

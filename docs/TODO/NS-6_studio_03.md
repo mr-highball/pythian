@@ -15,8 +15,8 @@ Basis: [2026-09-30 operator allocation](../OPERATOR-STUDIO.md#allocation-and-own
 This owns usable feedback/iteration, not the scientific validity of style limits;
 [evaluation_01](NS-5_evaluation_01.md) and evaluation_04 retain that acceptance.
 
-Execution status: operator review identified orientation gaps now owned by
-[studio_08](NS-6_studio_08.md). Independent
+Execution status: orientation and existing-collection prerequisites are accepted
+in [studio_08](DONE/NS-6_studio_08.md). The actual operator verdict remains open. Independent
 native and desktop/narrow QA passes the single/paired audition, response,
 comparison, blind presentation, history and deliberate next-batch loop. Next
 deliverable: the operator's understandable-purpose, audible-use and useful-feedback
@@ -54,7 +54,7 @@ open; mechanical answers earn no musical verdict or completion credit.
 
 **Blockers**
 
-- [NS-6_studio_08.md](NS-6_studio_08.md)
+- [NS-6_studio_08.md](DONE/NS-6_studio_08.md)
 - [NS-6_studio_02.md](DONE/NS-6_studio_02.md)
 - [NS-5_evaluation_03.md](DONE/NS-5_evaluation_03.md)
 
