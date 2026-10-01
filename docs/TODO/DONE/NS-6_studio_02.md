@@ -28,8 +28,10 @@ matched pas2js 3.3.1. Exact staged service/worker/asset identities remain those
 recorded in the freeze manifests. The actual cancellation and read-only reopen
 are retained in `cancellation/` and `cancellation-readback/` under that browser
 evidence root. The non-Windows supervisor import correction is separately
-recorded in `build/studio-supervisor-unix-import/`; Linux compilation remains a
-CI check. Stop at this accepted raw-acoustic scope; musical usefulness and
+recorded in `build/studio-supervisor-unix-import/`; the repaired source and
+tests at `f85dc3f8cd7e6d7059853781a00d44d23019554a` pass
+[Linux integration and extracted core/WFC consumers](https://github.com/mr-highball/pythian/actions/runs/36819411282).
+Stop at this accepted raw-acoustic scope; musical usefulness and
 inferred/reference-event learning retain their separate acceptance.
 
 **Acceptance Criteria:**
@@ -74,6 +76,16 @@ inferred/reference-event learning retain their separate acceptance.
 - [NS-5_evaluation_03.md](NS-5_evaluation_03.md)
 
 **Dev Notes:**
+
+- 2026-10-01, Big Boss: final source/test revision `f85dc3f` passes the exact
+  Linux FPC 3.2.2 integration/package run linked above: actual worker 48,
+  supervisor 22 and review 42 assertions, with zero heap leaks. Salty's focused
+  corrected supervisor test passes 19 checks on each Windows target; the prior
+  test PID is absent and no owned QA processes remain. Exact source/failure
+  identities stay in `build/salty-supervisor-reap-20261001/revised/` and downloaded
+  Linux logs in `build/studio-publication-ci-f85dc3f/`. Both worker failures and
+  the one chief correction failure below remain recorded. This completes the
+  engineering handoff without adding credit or closing musical acceptance.
 
 - 2026-10-01, Big Boss: the first transferred repair's shared running-state
   guard failed Salty's Win32 stopped-process assertion (zero leaks). It omitted

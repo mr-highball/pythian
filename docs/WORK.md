@@ -25,6 +25,20 @@ Actual Cancel and read-only cancelled-job reopen/refresh pass. Studio_03
 engineering checks pass, but its actual operator purpose/audible/useful-feedback
 verdict remains open. Studio_07 remains the unimplemented mixed-format follow-up.
 
+**Final engineering handoff — Big Boss:** production and maintained tests at
+`f85dc3f8cd7e6d7059853781a00d44d23019554a` pass the exact-revision
+[Linux FPC 3.2.2 integration and core/WFC package run](https://github.com/mr-highball/pythian/actions/runs/36819411282).
+Linux Studio checks pass: projects 100, library 172, jobs 31, effects 44,
+capture 53, worker 48, supervisor 22 and reviews 42; heap-traced runs report zero
+leaks. Core/WFC consumer packages verify 98/146 units and 111/265 hashes.
+Downloaded logs and artifact identities are retained in
+`build/studio-publication-ci-f85dc3f/`. Salty's final focused supervisor checks
+also pass 19 assertions on each Windows target, with zero leaks and no owned
+test processes remaining. The subsequent handoff-record change is documentation
+only; no runtime or asset changes follow the tested source. No further credit is
+added. The live Studio is ready for operator review with short Experimental
+badges and optional technical details.
+
 Independent Salty evidence is under `build/salty-studio-native-20261001/` and
 `build/salty-studio-browser-20261001/`. Stable FPC 3.2.2 Win32/Win64 each pass
 library 176 plus two real junction controls, projects 100, jobs 31, worker 48,
@@ -42,11 +56,12 @@ worker `fe112b792ef394012d2022c439fdf17193fb456d00bf0fd92fdd55708d5c2c33` and te
 browser assets. A prepublication non-Windows-only missing `Unix` import in the
 supervisor was repaired by Neo after Big Boss's assessment. The original
 Windows runtime identities remain recorded; fresh Win32/Win64 compile checks
-pass, and actual Linux execution remains a CI check. See
+pass, and actual Linux execution now passes the final handoff run above. See
 `build/studio-supervisor-unix-import/VALIDATION.md` for that freeze exception.
 
-Current submitted implementation failures are Windows native **0**, browser **0**,
-and Linux CI **2** for studio_02 (Big Boss owns the transferred repair).
+Initial Windows native/browser submissions had **0** failures. The retained
+studio_02 correction sequence has **2** Linux implementation/required-evidence
+failures and **1** failed chief repair; Big Boss owns the completed repair.
 Preserved test-runner timing/path/oracle corrections did not change production
 code or erase earlier task failures. This batch closes criteria and four tasks;
 the consecutive nonclosing-batch count is **0**. Final browser verdict SHA256
@@ -63,6 +78,8 @@ capture worklet return HTTP 200. The earlier build and catalog were backed up
 under ignored `build/studio-chief/`; local launch settings and health evidence
 stay there. No firewall rule or personal browser was changed. This read-only
 deployment check is not a physical-device or musical verdict.
+
+### Retained publication correction history
 
 **Publication follow-up — Big Boss:** `35a49b7d287a5c22f25d025c595c5b5418873a3b`
 was published to `hello-pythian`. Its [Linux CI run](https://github.com/mr-highball/pythian/actions/runs/36818040705)
