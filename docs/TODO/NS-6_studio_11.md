@@ -78,6 +78,18 @@ failures; do not infer actual listening from a screenshot or compilation.
 
 **Dev Notes:**
 
+- 2026-10-01, Neo / Big Boss, first portable CI submission:
+  [run 36909986284](https://github.com/mr-highball/pythian/actions/runs/36909986284)
+  at `0cee8613f63c99deb70005101c29c440b9f3af73` compiled native discovery but
+  stopped in its corruption-test fixture: the handle-based `FileSetDate`
+  could not restore the timestamp on Linux. Projects 100 and the previous
+  library 417 assertions passed; packaging was skipped. Neo changed only the
+  fixture to close the writer, restore by filename, reopen and explicitly
+  verify the timestamp before checking corruption. Production binaries are
+  unchanged. Keep the failed log under `build/studio-library-lazy/ci-0cee8613*/`;
+  this is submitted fixture-portability failure **1** for Neo's task, not a
+  scientific rejection or production-discovery defect. A second failed
+  implementation submission transfers the task and evidence to Big Boss.
 - 2026-10-01, Big Boss, AC1 accepted: independent bounded-read, identity,
   changed/missing/path/failure and snapshot checks pass on both Windows targets.
   A checked native CLI then discovered the actual three-recording collection

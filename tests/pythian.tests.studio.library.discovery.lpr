@@ -108,7 +108,15 @@ begin
     LValue := LValue xor 1;
     LStream.Position := AOffset;
     LStream.WriteBuffer(LValue, 1);
-    Check(FileSetDate(LStream.Handle, LDate) = 0, 'Restore stat to test same-metadata content change');
+  finally
+    LStream.Free;
+  end;
+  Check(FileSetDate(APath, LDate) = 0,
+    'Restore stat to test same-metadata content change');
+  LStream := TFileStream.Create(APath, fmOpenRead);
+  try
+    Check(FileGetDate(LStream.Handle) = LDate,
+      'Verify original timestamp after same-metadata content change');
   finally
     LStream.Free;
   end;

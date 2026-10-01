@@ -76,6 +76,17 @@ interaction and portable integration, then an actual operator review of Refresh
 and selected preparation. Stop at payload reads during discovery, false content
 identities, unrelated preparation, data loss or a distinct required gap.
 
+The engineering checkpoint is published at
+`0cee8613f63c99deb70005101c29c440b9f3af73`. Its first
+[Linux CI run](https://github.com/mr-highball/pythian/actions/runs/36909986284)
+compiled discovery but failed the test fixture's handle-based timestamp restore;
+package checks were skipped. Neo's repair closes the writer, restores by path
+and verifies the timestamp before exercising corruption. No production source
+or candidate artifact changes. This is submitted fixture-portability failure
+**1**, preserved separately from the policy execution gate; independent repair
+review and a new exact-revision portable run are required before portability
+is claimed.
+
 The user's later certificate-exception authorization supersedes mandatory CA
 installation in the earlier phone scope. Their positive report does not document
 every record/Stop/audible-preview step; studio_10 stays open. The prior automatic
