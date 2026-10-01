@@ -184,6 +184,16 @@ begin
   begin
     LControl.textContent := 'Microphone needs a secure page on this device. ' +
       'Localhost recording is only for the host computer.';
+    if window.location.protocol = 'http:' then
+    begin
+      LControl := Add(LRoot, 'a', 'Set up phone recording');
+      LControl.id := 'capture-phone-setup';
+      LControl.setAttribute('href', '/phone-setup.html');
+      LControl.setAttribute('target', '_blank');
+      LControl.setAttribute('rel', 'noopener');
+      LControl.setAttribute('style',
+        'display:inline-flex;align-items:center;min-height:44px');
+    end;
   end;
   LControl := Add(LRoot, 'p', '');
   LControl.id := 'capture-level';

@@ -108,6 +108,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Evaluation operator compilation failed' }
   & $compilerPath @compilerArgs '-Futools' 'tools/pythian.label.catalog.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Label catalog operator compilation failed' }
+  & $compilerPath @compilerArgs '-gh' '-Futools' 'tests/pythian.tests.net.transport.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'HTTP/TLS transport contract compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.net.transport$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'HTTP/TLS transport contract checks failed' }
   & $compilerPath @compilerArgs '-gh' '-Futools' 'tests/pythian.tests.studio.projects.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Studio project contract compilation failed' }
   $studioProjectRoot = Join-Path $buildRoot ('studio-project-' + [Guid]::NewGuid().ToString('N'))

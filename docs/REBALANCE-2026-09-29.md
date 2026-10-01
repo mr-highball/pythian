@@ -21,8 +21,10 @@ raw WFC jobs, effects and capture/exploration acceptance on 2026-10-01 adds anot
 **47 open / 40 DONE** checkpoint. Accepted starting actions/navigation and large-library
 refresh add 2 NS-6 / 0.20 overall, giving **50.80 credited / 49.20 remaining**,
 **45 open / 42 DONE**.
-Earlier snapshots above are retained as history; the later nine-outcome Studio
-scope redistributes 17 unearned points without removing donor criteria.
+The selected phone HTTPS outcome adds one task funded by an unearned authoring_02
+point: the current snapshot is **46 open / 42 DONE**, **50.80 credited / 49.20 remaining**.
+Earlier snapshots above remain historical; the current ten-outcome Studio scope
+redistributes 18 unearned points without removing donor criteria.
 
 ## Finding
 

@@ -1,7 +1,7 @@
 # Windows LAN review service
 
 The durable reviewed catalog lives outside `build/`. Checked native binaries
-and the eleven matching browser assets use fixed ignored `stable` and `qa` slots.
+and the twelve matching browser assets use fixed ignored `stable` and `qa` slots.
 Studio jobs use the matching `pythian.studio.worker.exe` beside the service.
 The paths stay fixed across rebuilds so Windows Firewall does not see a new
 application identity. Host addresses and catalog locations are local settings;
@@ -79,8 +79,104 @@ space for new imports, which still use the maintained staging/import path.
 
 The same service also listens at `http://127.0.0.1:18097/studio.html` on the host
 computer, providing the browser context needed for microphone capture. A phone
-on plain LAN HTTP can import a WAV; microphone access there requires a supported
-secure origin. Capture is explicit and stops its device tracks on Stop or exit.
+uses the trusted HTTPS setup below. Plain HTTP can still import a WAV. Capture
+is explicit and stops its device tracks on Stop or exit.
+
+## Phone microphone over the LAN
+
+On Windows, optional Pascal-owned Schannel transport accepts HTTPS and HTTP on
+the same fixed port. The portable library has no TLS dependency. TLS uses the
+current user's Windows certificate store and TLS 1.2; no external TLS runtime,
+public tunnel or additional firewall rule is needed. Other native hosts retain
+HTTP support and reject a requested Windows TLS configuration explicitly.
+
+For an existing local setup, load its recorded identity under the Windows account
+that runs the service. Do not generate another CA for an ordinary restart:
+
+```powershell
+$tlsConfig = Get-Content -LiteralPath .\local-audio\tls\tls.json -Raw | ConvertFrom-Json
+$env:PYTHIAN_TLS_THUMBPRINT = $tlsConfig.server_thumbprint
+$env:PYTHIAN_TLS_CA_FILE = $tlsConfig.public_certificate
+```
+
+For first-time setup only, use these Windows PKI commands in Windows PowerShell
+5.1. First verify the selected private IPv4 is assigned to the host and that
+`local-audio/tls/` does not contain an existing setup. These are operating-system
+setup instructions; maintained transport and certificate validation are Pascal.
+
+```powershell
+$tlsDirectory = Join-Path $pythianRoot 'local-audio\tls'
+New-Item -ItemType Directory -Path $tlsDirectory -ErrorAction Stop | Out-Null
+$tlsPublicPath = Join-Path $tlsDirectory 'pythian-studio-ca.cer'
+$tlsStart = (Get-Date).AddMinutes(-5)
+$tlsEnd = (Get-Date).AddYears(1)
+$tlsAuthority = New-SelfSignedCertificate -Type Custom -Subject 'CN=Pythian Local Studio CA' `
+  -FriendlyName 'Pythian Local Studio CA' -CertStoreLocation 'Cert:\CurrentUser\My' `
+  -KeyAlgorithm RSA -KeyLength 2048 -HashAlgorithm SHA256 -KeyExportPolicy NonExportable `
+  -KeySpec Signature -KeyUsage CertSign,CRLSign,DigitalSignature `
+  -TextExtension @('2.5.29.19={critical}{text}ca=1&pathlength=0') `
+  -NotBefore $tlsStart -NotAfter $tlsEnd
+$tlsLeaf = New-SelfSignedCertificate -Type Custom -Subject 'CN=Pythian Local Studio' `
+  -FriendlyName 'Pythian Local Studio LAN server' -CertStoreLocation 'Cert:\CurrentUser\My' `
+  -Signer $tlsAuthority -KeyAlgorithm RSA -KeyLength 2048 -HashAlgorithm SHA256 `
+  -Provider 'Microsoft RSA SChannel Cryptographic Provider' -KeySpec KeyExchange `
+  -KeyExportPolicy NonExportable -KeyUsage DigitalSignature,KeyEncipherment `
+  -TextExtension @("2.5.29.17={text}IPAddress=$reviewIPv4&IPAddress=127.0.0.1&DNS=localhost", `
+    '2.5.29.37={text}1.3.6.1.5.5.7.3.1', '2.5.29.19={critical}{text}ca=0') `
+  -NotBefore $tlsStart -NotAfter $tlsEnd.AddMinutes(-1)
+Export-Certificate -Cert $tlsAuthority -FilePath $tlsPublicPath -Type CERT | Out-Null
+[ordered]@{
+  format = 'pythian.local-tls.v1'; lan_address = $reviewIPv4
+  ca_thumbprint = $tlsAuthority.Thumbprint; server_thumbprint = $tlsLeaf.Thumbprint
+  ca_sha256 = (Get-FileHash -LiteralPath $tlsPublicPath -Algorithm SHA256).Hash.ToLowerInvariant()
+  expires_utc = $tlsLeaf.NotAfter.ToUniversalTime().ToString('o'); public_certificate = $tlsPublicPath
+} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $tlsDirectory 'tls.json') -Encoding UTF8
+```
+
+Load that recorded identity using the first snippet. The CA and server certificate
+last one year; private keys remain non-exportable in `CurrentUser/My`. The SANs
+cover the selected LAN IPv4, loopback and localhost. Public certificate and local
+configuration stay in ignored `local-audio/tls/`. A changed address, expired
+certificate or missing key requires deliberate replacement and renewed phone
+trust. Keep the old identity recorded until its replacement is verified.
+
+For normal browser verification on the host, install only this public CA into
+`CurrentUser/Root`. Run interactively, compare the fingerprint and approve
+**Pythian Local Studio CA** in the Windows confirmation; do not repeat this when
+the same CA is already trusted. This does not disable certificate validation:
+
+```powershell
+Get-FileHash -LiteralPath $tlsConfig.public_certificate -Algorithm SHA256
+Import-Certificate -FilePath $tlsConfig.public_certificate -CertStoreLocation 'Cert:\CurrentUser\Root'
+```
+
+Stage the checked TLS-capable service and its twelve assets, then run the usual
+fixed-slot launch with both environment variables set. No certificate or private
+key belongs in Git. The service only publishes a validated public CA DER file,
+bounded to 16 KiB; private-key or arbitrary-file downloads are not supported.
+
+On the Android phone:
+
+1. Open the host's ordinary HTTP `/phone-setup.html` page and download the certificate.
+2. In Android Settings, search for certificate installation, choose **CA certificate**,
+   and select `pythian-studio-ca.cer`. Menu names vary by phone; use the CA option,
+   not Wi-Fi or VPN/client-certificate installation.
+3. Return to the setup page and tap **Open HTTPS Studio in Brave**. The HTTPS address uses
+   the same host and port. Tap **Record audio**, then **Start microphone**, and
+   allow the browser's microphone request.
+
+A certificate warning or `isSecureContext = false` does not establish recording
+support; finish certificate trust instead of bypassing the warning. Only an actual
+phone recording, Stop and audible preview close
+[studio_10](TODO/NS-6_studio_10.md)'s physical-device criterion. A generated QA
+microphone proves the capture lifecycle, not physical audibility.
+
+HTTP and HTTPS enforce their actual scheme in Host/Origin checks. HTTPS media
+uses its own Secure, HttpOnly, SameSite cookie so a prior HTTP tab cannot replace
+it. The local catalog, review records and collection membership are unchanged by
+certificate setup. To remove host trust later, remove only the recorded CA
+thumbprint from `CurrentUser/Root`; remove that named CA from the phone's user
+credentials. Do not clear unrelated certificates.
 
 Connection status exposes Retry after ten seconds. The source player shows
 actual transferred WAV bytes when Content-Length is known; source verification

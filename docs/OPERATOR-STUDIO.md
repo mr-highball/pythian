@@ -10,6 +10,11 @@ deliverable's acceptance, not polish deferred until after the backend.
 
 ## Operator flow
 
+[Trusted phone recording](TODO/NS-6_studio_10.md) is selected and remains open.
+It adds same-port Windows Schannel HTTPS and public certificate onboarding;
+HTTP bootstrap and host localhost remain. Native/browser qualification and the
+actual Android Brave recording/preview must pass before phone support is claimed.
+
 The landing page starts with **Record audio**, **Import WAV** and **Browse
 collection**, before project setup. Browse collection opens the recording list;
 named collection shortcuts filter it. A collection organizes available recordings,
@@ -88,7 +93,7 @@ completed by planning, and all original criteria in the donor tasks remain.
 
 | Task | Previous NS-6 points | Current NS-6 points | Outcome |
 | --- | ---: | ---: | --- |
-| [authoring_02](TODO/NS-6_authoring_02.md) | 8 | 2 | Physical LAN/source operator qualification |
+| [authoring_02](TODO/NS-6_authoring_02.md) | 8 | 1 | Physical LAN/source operator qualification |
 | [delivery_03](TODO/NS-6_delivery_03.md) | 10 | 3 | Final package and extracted workflow |
 | [delivery_04](TODO/NS-6_delivery_04.md) | 12 | 8 | Independent complete-workflow reproduction |
 | [studio_01 — DONE](TODO/DONE/NS-6_studio_01.md) | 0 | 4 | Durable intuitive project/source setup |
@@ -100,6 +105,7 @@ completed by planning, and all original criteria in the donor tasks remain.
 | [studio_07](TODO/NS-6_studio_07.md) | 0 | 1 | Mixed-format corpus conversion with original lineage |
 | [studio_08](TODO/DONE/NS-6_studio_08.md) | 0 | 1 | Discoverable starting actions, existing music and queue navigation |
 | [studio_09](TODO/DONE/NS-6_studio_09.md) | 0 | 1 | Verified large-library refresh without duplicate staging |
+| [studio_10](TODO/NS-6_studio_10.md) | 0 | 1 | Trusted phone HTTPS and concise certificate onboarding |
 | **Total allocation at scoping** | **30** | **30** | **Scoping earned no credit** |
 
 The added operator outcomes receive explicit weight from later verification
@@ -108,8 +114,8 @@ they do not disappear or move into the new tasks. Scoping left 49.40 accepted;
 independent project/setup acceptance subsequently adds 4 NS-6 / 0.40 overall.
 Private corpora, raw WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall.
 Accepted starting actions/navigation and large-library refresh add 2 NS-6 / 0.20 overall.
-The current ledger is **50.80 accepted / 49.20 remaining**, **45 open / 42 DONE**.
-NS-6 is **45 accepted / 55 unearned** with nine open tasks. Goal weights are unchanged.
+The current ledger is **50.80 accepted / 49.20 remaining**, **46 open / 42 DONE**.
+NS-6 is **45 accepted / 55 unearned** with ten open tasks. Goal weights are unchanged.
 The later collection and effects requirements each reallocate one unearned point
 from jobs and iteration; all original criteria remain. Scoping earns no acceptance.
 Capture/exploration receives two additional unearned delivery_03 points with
@@ -121,7 +127,7 @@ the declared supported route until conversion and original-frame maps pass.
 The studio is a current NS-5 calibration enabler, attributed primarily to NS-6
 usability. Actual calibration/control validity remains evaluation_01; complete
 musical references remain evaluation_04; inference and many-hour style quality
-keep their existing owners. Final packaging includes all nine studio outcomes.
+keep their existing owners. Final packaging includes all ten studio outcomes.
 Actual phone feedback adds studio_08, funded by one further unearned authoring_02
 point. Its prominent recording/import/library entry, existing-corpus connection
 and shared attention badges precede further operator iteration acceptance.
@@ -130,6 +136,10 @@ new task identities do not reset those counters or reopen stopped science.
 Actual multi-hour originals expose a separate refresh prerequisite, studio_09,
 funded by one more unearned authoring_02 point. It removes redundant existing-media
 staging and reconciles bounded collection work with actual workload evidence.
+
+Phone recording adds studio_10, funded by one additional unearned authoring_02
+point. Authoring_02 retains all physical/full-workflow criteria at one point;
+this scope adds no credit and no emulated phone-success claim.
 
 ## Private collection library
 

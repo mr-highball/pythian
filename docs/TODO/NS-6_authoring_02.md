@@ -11,7 +11,7 @@ A desktop or emulated narrow-screen pass does not substitute for an audible
 physical-phone playback and successful Save on the selected private LAN.
 
 North star: NS-6. Outcome owner: WAV-05-AUTHORING.
-Completion credit: 2 goal percentage points (0.20 overall points).
+Completion credit: 1 goal percentage point (0.10 overall points).
 Current allocation: [2026-09-30 operator rebalance](../OPERATOR-STUDIO.md#allocation-and-ownership), with NS-6 weighted at 10 overall points,
 under the user's authorization
 to rebalance without preserving historical point allocations. All existing
@@ -452,3 +452,9 @@ the accepted editor mechanics in authoring_01 retain their scoped evidence.
   Current allocation is 2 goal / 0.20 overall points; every physical and
   complete-workflow criterion remains required. No acceptance follows from
   this transfer.
+
+- 2026-10-01, Big Boss: one further unearned point transfers to
+  [studio_10](NS-6_studio_10.md) for trusted phone HTTPS/certificate onboarding.
+  Current allocation is 1 goal / 0.10 overall points. Every original physical
+  and complete-workflow criterion and earlier failure remains required; neither
+  scoping nor browser emulation qualifies the actual phone verdict.

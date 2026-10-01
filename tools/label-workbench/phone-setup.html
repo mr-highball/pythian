@@ -1,0 +1,72 @@
+<!--
+MIT License
+
+Copyright (c) 2026 mr-highball
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Set up phone recording · Pythian</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; }
+    body { margin: 0; background: #10151d; color: #eef3f8; }
+    main { max-width: 42rem; margin: 0 auto; padding: 2rem 1.25rem; }
+    h1 { font-size: clamp(1.8rem, 6vw, 2.5rem); line-height: 1.15; }
+    p, li { line-height: 1.65; }
+    li { margin-bottom: 1rem; padding-left: .25rem; }
+    a { color: #9fd4ff; text-underline-offset: .2em; }
+    a:focus-visible, summary:focus-visible { outline: 3px solid #f4c47b; }
+    .action { display: inline-block; min-height: 44px; box-sizing: border-box;
+      padding: .7rem 1rem; border: 1px solid #64788c; border-radius: .6rem; }
+    details { margin-top: 2rem; border-top: 1px solid #394656; padding-top: .75rem; }
+    summary { min-height: 44px; cursor: pointer; line-height: 2.75rem; }
+    code { overflow-wrap: anywhere; font-size: .85rem; }
+    .back { display: inline-block; padding: .75rem 0; min-height: 44px;
+      box-sizing: border-box; }
+  </style>
+</head>
+<body>
+  <main>
+    <a class="back" href="/studio.html">← Back to Studio</a>
+    <h1>Record from your phone</h1>
+    <p>Set up a trusted connection to this computer, then record in Android Brave.</p>
+    <ol>
+      <li><a class="action" href="/phone-ca.cer">Download this computer’s certificate</a></li>
+      <li>In Android Settings, install the downloaded file as a <strong>CA certificate</strong>.
+        The menu name varies by phone.</li>
+      <li><a class="action" href="@@PYTHIAN_HTTPS_URL@@">Open HTTPS Studio in Brave</a></li>
+      <li>Tap <strong>Record audio</strong>, then <strong>Start microphone</strong>
+        and allow microphone permission.</li>
+    </ol>
+    <details>
+      <summary>Certificate details and removal</summary>
+      <p>Match the certificate’s SHA-256 fingerprint to this computer:</p>
+      <code>@@PYTHIAN_CERT_SHA256@@</code>
+      <p>If Brave still shows a certificate warning, check the installed certificate
+        and Studio address. Bypassing the warning does not complete setup.</p>
+      <p>To remove this trust later, remove this certificate from Android Settings
+        under user-installed credentials or trusted certificates.</p>
+    </details>
+  </main>
+</body>
+</html>

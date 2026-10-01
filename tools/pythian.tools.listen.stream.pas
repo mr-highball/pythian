@@ -45,6 +45,7 @@ uses
   SysUtils,
   Sockets,
   {$IFDEF MSWINDOWS}WinSock2,{$ELSE}BaseUnix,{$ENDIF}
+  pythian.tools.net.transport,
   pythian.tools.annotations.sourceguard;
 
 const
@@ -99,8 +100,7 @@ begin
     if (GetTickCount64 - LStart >= CBlockSendDeadlineMs) or
       ((ADeadline <> 0) and (GetTickCount64 >= ADeadline)) then
       Exit;
-    LSent := fpSend(ASocket, LPointer + LOffset, ACount - LOffset,
-      {$IFDEF LINUX}MSG_NOSIGNAL{$ELSE}0{$ENDIF});
+    LSent := TransportSend(ASocket, LPointer + LOffset, ACount - LOffset);
     if LSent = 0 then
       Exit;
     if LSent < 0 then
@@ -303,7 +303,7 @@ begin
     end;
   finally
     FStream.Free;
-    CloseSocket(FSocket);
+    TransportClose(FSocket);
     InterlockedDecrement(GActiveSenders);
   end;
 end;

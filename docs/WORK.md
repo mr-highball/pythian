@@ -12,6 +12,83 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current phone microphone prerequisite — 2026-10-01
+
+**Big Boss:** the operator now explicitly selects microphone recording from the
+physical LAN phone. [Studio_10](TODO/NS-6_studio_10.md) owns trusted HTTPS and
+short certificate onboarding, funded by one unearned authoring_02 point without
+removing its physical/full-workflow criteria. Accepted credit stays **50.80**;
+the scoped catalog has **46 open / 42 DONE** across 88 tasks. No new criterion
+has closed; the nonclosing-batch count starts at zero after the accepted batch.
+
+Deliver the native Windows TLS connection on the existing fixed LAN port, a
+public certificate download and a clear route from the disabled microphone to
+phone setup. Use Windows Schannel through Pascal-owned transport; preserve
+portable core independence, HTTP clients and worker socket ownership. Big Boss
+owns HTTP/media/build/deployment integration and final judgment. Neo owns the
+bounded transport and coordinates Ticket Guy's disjoint capture/setup UI and
+task accounting. Salty checks transport plus capture/onboarding together.
+
+Closing engineering evidence is trusted TLS, exact HTTPS Origin/session checks,
+bounded failure/cleanup, media handoff, and actual secure-context browser
+record/Stop/preview/upload. The physical Brave microphone result requires the
+operator to install the supplied public certificate and grant microphone access;
+emulation cannot close that criterion. Stop on private-key exposure, a trust
+bypass, lost catalog state or an unsupported phone-success claim. Installed old
+OpenSSL copies were inspected but are not selected. Local identities and private
+certificate material stay outside tracked files; no new firewall port is planned.
+
+The candidate now serves HTTP and certificate-verified HTTPS on the same QA
+port. Independent checked Win32/Win64 transport runs pass 31 portable and 38
+configured-certificate assertions each, with zero unfreed blocks. The native
+HTTPS client compiles on both targets; its trusted-store runtime checks remain
+pending. Big Boss verified HTTPS Studio and byte-identical public CA download
+with the explicit public trust file. The Windows curl probe uses best-effort
+revocation only for the local CA's absent CRL distribution point; chain, name,
+time and signature verification remain enabled. This is not browser acceptance.
+
+Candidate2 contains the service, unchanged worker and twelve browser assets in
+`build/studio-phone-https/CANDIDATE-ASSETS2.json`. Only `studio.js` differs from
+candidate1: Big Boss repaired the setup link to open separately and preserve
+the existing Studio tab. Matched pas2js compilation passes. Salty's evidence is
+under `build/salty-studio-phone-https-20261001/`; do not substitute the old QA web
+asset for this final browser candidate.
+
+Normal host CA trust awaits the existing Windows confirmation. Automatic
+approval review rejected the isolated browser QA preparation/launch before
+execution, reporting only `blocked by policy`; no browser was launched and the
+blocked action was not retried through another route. Trusted browser capture,
+phone audibility and task acceptance remain open. No new completion credit is
+earned from these checks.
+
+The provisional PowerShell PKI setup tool exceeded the repository's build-only
+script boundary. Its provisional source is retained only in ignored build evidence;
+the maintained LAN guide now supplies direct Windows certificate commands.
+Pascal owns runtime certificate validation and transport. This correction does
+not regenerate certificates or alter the operator's catalog. Development
+repairs and remaining acceptance belong to [Studio_10](TODO/NS-6_studio_10.md).
+
+The bounded connection checks independently pass **119 Win64 assertions** with
+zero unfreed blocks. Idle and incomplete handshakes close in about 5.1 seconds;
+an invalid TLS record closes immediately, and each case permits a fresh HTTP
+setup/session connection. This checks real native failure paths, not browser
+capture. Salty retains the exact QA cleanup and limited verdict in the same
+evidence directory. No independently demonstrated implementation QA failure was
+found; the browser execution gate is not an implementation failure.
+
+Big Boss deployed candidate2 to the fixed stable slot for local operator review.
+HTTP setup, matching public certificate download and certificate-verified HTTPS
+Studio all return 200 on the existing port. All fourteen artifact hashes match;
+all **2,567** pre-existing catalog metadata records retain their hashes. Existing
+jobs were completed before restart; no live review answers or new library scan
+were submitted. `build/studio-phone-https/LIVE-DEPLOYMENT.json` and the retained
+candidate launcher record local identities without publishing personal settings.
+The operator has the live phone setup link and a pending record/Stop/preview
+question. Studio_10 stays **OPEN**, completion remains **50.80**, and this
+engineering checkpoint closes no full task criterion: the consecutive
+nonclosing-batch count is **1**. Resume the named trust/browser/physical checks;
+do not expand into another feature or claim Android success from native tests.
+
 ## Current accepted collection and navigation checkpoint — 2026-10-01
 
 **Big Boss:** [starting actions and review navigation](TODO/DONE/NS-6_studio_08.md)

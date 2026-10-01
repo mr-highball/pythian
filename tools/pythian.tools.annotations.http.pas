@@ -45,6 +45,8 @@ uses
   fpjson,
   jsonparser,
   pythian.audio,
+  pythian.hash,
+  pythian.tools.net.transport,
   pythian.tools.annotations.catalog,
   pythian.tools.annotations.export,
   pythian.tools.annotations.media,
@@ -119,6 +121,9 @@ type
 var
   GActiveReviewWorkers: LongInt = 0;
   GStudioSupervisor: TStudioJobSupervisor = nil;
+  GPhoneCaBytes: String = '';
+  GPhoneCaSha256: String = '';
+  GPhoneHttpsOrigin: String = '';
 
 procedure Need(const ACondition: Boolean; const AMessage: String);
 begin
@@ -187,8 +192,7 @@ begin
     begin
       Exit;
     end;
-    LSent := fpSend(ASocket, LPointer + LOffset, ACount - LOffset,
-      {$IFDEF LINUX}MSG_NOSIGNAL{$ELSE}0{$ENDIF});
+    LSent := TransportSend(ASocket, LPointer + LOffset, ACount - LOffset);
     if LSent <= 0 then
     begin
       Exit;
@@ -292,7 +296,7 @@ begin
 end;
 
 function ParseHeaders(const AHeaderText, ABindAddress: String;
-  const APort: Integer;
+  const APort, ASocket: Integer;
   out ARequest: TCatalogHttpRequest; out AContentLength: Integer;
   out AFailure: String): Integer;
 var
@@ -523,8 +527,7 @@ begin
     AFailure := 'host does not match bound address';
     Exit;
   end;
-  if (ARequest.Origin <> '') and
-    (ARequest.Origin <> 'http://' + ARequest.Host) then
+  if not TransportOriginMatches(ASocket, ARequest.Host, ARequest.Origin) then
   begin
     Result := 403;
     AFailure := 'origin does not match host';
@@ -598,7 +601,7 @@ begin
     begin
       Exit(408);
     end;
-    LReceived := fpRecv(ASocket, @LBuffer[0], SizeOf(LBuffer), 0);
+    LReceived := TransportRecv(ASocket, @LBuffer[0], SizeOf(LBuffer));
     if LReceived < 0 then
     begin
       Continue;
@@ -644,7 +647,7 @@ begin
     Exit(431);
   end;
   LHeader := Copy(LRaw, 1, LSeparator - 1);
-  Result := ParseHeaders(LHeader, ABindAddress, APort,
+  Result := ParseHeaders(LHeader, ABindAddress, APort, ASocket,
     ARequest, LContentLength, AFailure);
   if Result <> 200 then
   begin
@@ -675,8 +678,8 @@ begin
       AFailure := 'request body timed out';
       Exit(408);
     end;
-    LReceived := fpRecv(ASocket, @LBuffer[0],
-      Min(SizeOf(LBuffer), LContentLength - LBodyBytes), 0);
+    LReceived := TransportRecv(ASocket, @LBuffer[0],
+      Min(SizeOf(LBuffer), LContentLength - LBodyBytes));
     if LReceived < 0 then
     begin
       Continue;
@@ -744,7 +747,25 @@ begin
     'Invalid integer query ' + AName);
 end;
 
-function MediaCookieValid(const ACookie, AToken: String): Boolean;
+function MediaCookieName(const ASocket: Integer): String;
+begin
+  if TransportIsTls(ASocket) then
+    Result := 'PythianListenTls'
+  else
+    Result := 'PythianListen';
+end;
+
+function MediaSessionCookie(const ASocket: Integer; const AToken: String): String;
+begin
+  Result := 'Set-Cookie: ' + MediaCookieName(ASocket) + '=' + AToken +
+    '; Path=/api/; HttpOnly; SameSite=Strict';
+  if TransportIsTls(ASocket) then
+    Result := Result + '; Secure';
+  Result := Result + #13#10;
+end;
+
+function MediaCookieValid(const ACookie, AToken: String;
+  const ASocket: Integer): Boolean;
 var
   LStart: Integer;
   LEnd: Integer;
@@ -765,7 +786,7 @@ begin
     LPair := Trim(Copy(ACookie, LStart, LEnd - LStart));
     LEqual := Pos('=', LPair);
     if (LEqual > 1) and
-      (Copy(LPair, 1, LEqual - 1) = 'PythianListen') then
+      (Copy(LPair, 1, LEqual - 1) = MediaCookieName(ASocket)) then
     begin
       if LFound then Exit(False);
       LFound := True;
@@ -851,7 +872,7 @@ begin
   finally
     LReport.Free;
     LBody.Free;
-    CloseSocket(FSocket);
+    TransportClose(FSocket);
     InterlockedDecrement(GActiveReviewWorkers);
   end;
 end;
@@ -952,6 +973,78 @@ begin
   end;
 end;
 
+procedure ConfigurePhoneSetup(const AThumbprint, ABindAddress: String;
+  const APort: Integer);
+var
+  LPath: String;
+  LInput: TFileStream;
+  LBytes: TBytes;
+begin
+  GPhoneCaBytes := '';
+  GPhoneCaSha256 := '';
+  GPhoneHttpsOrigin := '';
+  LPath := SysUtils.GetEnvironmentVariable('PYTHIAN_TLS_CA_FILE');
+  if AThumbprint = '' then
+  begin
+    Need(LPath = '', 'A public TLS certificate requires a configured server certificate');
+    Exit;
+  end;
+  Need(LPath <> '', 'Configure PYTHIAN_TLS_CA_FILE for phone certificate setup');
+  LInput := TFileStream.Create(LPath, fmOpenRead or fmShareDenyWrite);
+  try
+    Need((LInput.Size > 0) and (LInput.Size <= 16384),
+      'Phone certificate must be a public DER certificate within 16 KiB');
+    SetLength(LBytes, Integer(LInput.Size));
+    LInput.ReadBuffer(LBytes[0], Length(LBytes));
+    ValidatePublicCaDer(LBytes);
+    LInput.Position := 0;
+    GPhoneCaSha256 := Sha256Stream(LInput, LInput.Size);
+    SetLength(GPhoneCaBytes, Length(LBytes));
+    Move(LBytes[0], GPhoneCaBytes[1], Length(LBytes));
+  finally
+    LInput.Free;
+  end;
+  GPhoneHttpsOrigin := 'https://' + ABindAddress + ':' + IntToStr(APort);
+end;
+
+procedure SendPhoneSetup(const ASocket: Integer;
+  const AStaticRoot, APath: String);
+var
+  LInput: TFileStream;
+  LPage: String;
+begin
+  if GPhoneHttpsOrigin = '' then
+  begin
+    SendResponse(ASocket, 503, 'text/html; charset=utf-8',
+      '<!doctype html><html lang="en"><meta charset="utf-8">' +
+      '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+      '<title>Phone recording setup</title><h1>Phone recording needs HTTPS setup</h1>' +
+      '<p>Configure the local certificate on the host computer using the LAN review guide.</p>' +
+      '<p><a href="/studio.html">Return to Studio</a></p></html>');
+    Exit;
+  end;
+  if APath = '/phone-ca.cer' then
+  begin
+    SendResponse(ASocket, 200, 'application/x-x509-ca-cert', GPhoneCaBytes,
+      'Content-Disposition: attachment; filename="pythian-studio-ca.cer"'#13#10);
+    Exit;
+  end;
+  LInput := TFileStream.Create(IncludeTrailingPathDelimiter(AStaticRoot) +
+    'phone-setup.html', fmOpenRead or fmShareDenyWrite);
+  try
+    Need((LInput.Size > 0) and (LInput.Size <= 65536), 'Phone setup page exceeds bound');
+    SetLength(LPage, Integer(LInput.Size));
+    LInput.ReadBuffer(LPage[1], Length(LPage));
+  finally
+    LInput.Free;
+  end;
+  // Only the validated bind address/port and a hexadecimal public hash enter HTML.
+  LPage := StringReplace(LPage, '@@PYTHIAN_HTTPS_URL@@',
+    GPhoneHttpsOrigin + '/studio.html', [rfReplaceAll]);
+  LPage := StringReplace(LPage, '@@PYTHIAN_CERT_SHA256@@', GPhoneCaSha256, [rfReplaceAll]);
+  SendResponse(ASocket, 200, 'text/html; charset=utf-8', LPage);
+end;
+
 procedure HandleRoute(const ASocket: Integer;
   const ARequest: TCatalogHttpRequest;
   const AInboxRoot, ACatalogRoot, AStaticRoot, AToken,
@@ -975,6 +1068,13 @@ begin
   AHandedOff := False;
   LExtraHeaders := '';
   LStaticName := '';
+  if (ARequest.Method = 'GET') and (AStaticRoot <> '') and
+    ((ARequest.Path = '/phone-setup.html') or
+     (ARequest.Path = '/phone-ca.cer')) then
+  begin
+    SendPhoneSetup(ASocket, AStaticRoot, ARequest.Path);
+    Exit;
+  end;
   if (AStaticRoot <> '') and (ARequest.Method = 'GET') then
   begin
     LStaticName := StaticAssetName(ARequest.Path);
@@ -993,7 +1093,7 @@ begin
     (ARequest.Path = '/api/studio/review-audio') then
   begin
     Need((ARequest.Token = AToken) or
-      MediaCookieValid(ARequest.Cookie, AToken),
+      MediaCookieValid(ARequest.Cookie, AToken, ASocket),
       'Missing or invalid media session');
   end
   else if not ((ARequest.Path = '/api/session') and
@@ -1017,8 +1117,7 @@ begin
       LReport := TJSONObject.Create;
       LReport.Add('version', 1);
       LReport.Add('token', AToken);
-      LExtraHeaders := 'Set-Cookie: PythianListen=' + AToken +
-        '; Path=/api/; HttpOnly; SameSite=Strict'#13#10;
+      LExtraHeaders := MediaSessionCookie(ASocket, AToken);
     end
     else if (ARequest.Method = 'POST') and
       (ARequest.Path = '/api/session') and (AAccessKey <> '') then
@@ -1030,8 +1129,7 @@ begin
       LReport := TJSONObject.Create;
       LReport.Add('version', 1);
       LReport.Add('token', AToken);
-      LExtraHeaders := 'Set-Cookie: PythianListen=' + AToken +
-        '; Path=/api/; HttpOnly; SameSite=Strict'#13#10;
+      LExtraHeaders := MediaSessionCookie(ASocket, AToken);
     end
     else if (ARequest.Method = 'GET') and
       (ARequest.Path = '/api/catalog') then
@@ -1496,6 +1594,7 @@ var
 begin
   AHandedOff := False;
   SetClientTimeouts(ASocket);
+  AcceptTransport(ASocket, GPhoneHttpsOrigin <> '', CReceiveDeadlineMs);
   LStatus := ReadRequest(ASocket, APort, ABindAddress, AToken,
     LRequest, LFailure);
   if LStatus <> 200 then
@@ -1750,6 +1849,7 @@ var
   LHandedOff: Boolean;
   LWorkerPath: String;
   LLibraryRoot: String;
+  LTlsThumbprint: String;
 begin
   Need(ValidBindAddress(ABindAddress),
     'Bind address must be loopback or a private LAN IPv4 address');
@@ -1775,7 +1875,8 @@ begin
       FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'studio.js') and
       FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'studio.css') and
       FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'capture-worklet.js') and
-      FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'workspace-nav.css'),
+      FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'workspace-nav.css') and
+      FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'phone-setup.html'),
       'Configured browser assets are incomplete');
   end;
   Need(CreateGUID(LGuid) = 0, 'Could not create HTTP session token');
@@ -1784,6 +1885,9 @@ begin
   LLoopback := -1;
   Need(LListener >= 0, 'Could not create HTTP listener');
   try
+    LTlsThumbprint := SysUtils.GetEnvironmentVariable('PYTHIAN_TLS_THUMBPRINT');
+    ConfigureTransportTls(LTlsThumbprint);
+    ConfigurePhoneSetup(LTlsThumbprint, ABindAddress, APort);
     FillChar(LAddress, SizeOf(LAddress), 0);
     LAddress.sin_family := AF_INET;
     LAddress.sin_port := htons(Word(APort));
@@ -1823,6 +1927,8 @@ begin
     end;
     WriteLn('Pythian catalog API: http://', ABindAddress, ':',
       APort, '/api/session');
+    if GPhoneHttpsOrigin <> '' then
+      WriteLn('Pythian phone microphone: ', GPhoneHttpsOrigin, '/phone-setup.html');
     Flush(Output);
     LCount := 0;
     while (AMaximumRequests = 0) or (LCount < AMaximumRequests) do
@@ -1851,7 +1957,7 @@ begin
         end;
       finally
         if not LHandedOff then
-          CloseSocket(LClient);
+          TransportClose(LClient);
       end;
       Inc(LCount);
     end;
