@@ -3,12 +3,14 @@
 [Task index](../README.md) · [Task flow](../../TASKFLOW.MD) ·
 [Milestones](../../MILESTONES.md) · [Current credit basis](../../REBALANCE-2026-09-29.md#current-credit-basis)
 
-All **36** records retain their acceptance evidence and dates. Points below
+All **40** records retain their acceptance evidence and dates. Points below
 use the user-authorized 2026-09-29 outcome rebase; older amounts in evidence
 narratives are historical. No task was accepted by this reassessment.
 The [2026-09-30 Studio allocation](../../OPERATOR-STUDIO.md#allocation-and-ownership)
 moves only unearned NS-6 points. Subsequent independent Studio setup acceptance
 adds 4 NS-6 / 0.40 overall without changing prior accepted values.
+Private corpora, bounded raw WFC jobs, effects and experimental capture/exploration
+add a further 8 NS-6 / 0.80 overall on 2026-10-01, without scientific inference credit.
 
 | Accepted task | Date | Current goal credit | Current overall credit |
 | --- | --- | ---: | ---: |
@@ -48,9 +50,13 @@ adds 4 NS-6 / 0.40 overall without changing prior accepted values.
 | [NS-6_delivery_02](NS-6_delivery_02.md) — Verify clean native targets and remote CI | 2026-09-21 | 12 NS-6 | 1.20 |
 | [NS-6_delivery_06](NS-6_delivery_06.md) — Deliver a current minimal native synthesis package | 2026-09-30 | 8 NS-6 | 0.80 |
 | [NS-6_studio_01](NS-6_studio_01.md) — Select and preserve an operator training project | 2026-09-30 | 4 NS-6 | 0.40 |
+| [NS-6_studio_02](NS-6_studio_02.md) — Run bounded training and audition batches from the web | 2026-10-01 | 2 NS-6 | 0.20 |
+| [NS-6_studio_04](NS-6_studio_04.md) — Build style corpora from a private collection library | 2026-10-01 | 2 NS-6 | 0.20 |
+| [NS-6_studio_05](NS-6_studio_05.md) — Audition layered effects and save derived collection clips | 2026-10-01 | 2 NS-6 | 0.20 |
+| [NS-6_studio_06](NS-6_studio_06.md) — Import or record audio and explore its analysis | 2026-10-01 | 2 NS-6 | 0.20 |
 
-Current accepted task total is **21.80 weighted points**; the separate accepted
-baseline contributes **28.00**, giving **49.80 overall**. Core source-free
+Current accepted task total is **22.60 weighted points**; the separate accepted
+baseline contributes **28.00**, giving **50.60 overall**. Core source-free
 composition remains accepted with zero extra NS-4 points; it does not prove
 WFC-selected or recorded-provider integration. The prior external-runtime
 execution result remains historical; current inference acceptance is Pascal-owned.

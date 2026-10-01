@@ -505,6 +505,60 @@ begin
     finally
       LBad.Free;
     end;
+    LBad := MakeWrite(LHash);
+    try
+      LBad.Strings['project_id'] := 'classified-passages';
+      LRow := TJSONObject(LBad.Arrays['sources'].Items[0]);
+      LRow.Strings['selection'] := 'range';
+      LRow.Add('start_frame', 0);
+      LRow.Add('end_frame', 4000);
+      LRow.Add('classifications', TJSONArray.Create(['gentle', 'intro']));
+      LRow := TJSONObject(LRow.Clone);
+      LBad.Arrays['sources'].Add(LRow);
+      LRow.Int64s['start_frame'] := 8000;
+      LRow.Int64s['end_frame'] := 12000;
+      LRow.Arrays['classifications'].Strings[1] := 'outro';
+      LResult := SaveStudioProject(LCatalog, LBad);
+      try
+        Check(LResult.Arrays['sources'].Count = 2,
+          'Disjoint passages from one recording form two corpus selections');
+        Check(TJSONObject(LResult.Arrays['sources'].Items[1]).Arrays['classifications'].
+          Strings[1] = 'outro', 'Passage-specific classification is preserved');
+      finally
+        LResult.Free;
+      end;
+      LBad.Integers['expected_revision'] := 1;
+      LRow.Arrays['classifications'].Strings[1] := 'sustained';
+      LResult := SaveStudioProject(LCatalog, LBad);
+      try
+        Check(LResult.Integers['revision'] = 2, 'Classification edit creates a corpus revision');
+      finally
+        LResult.Free;
+      end;
+      LResult := ReadStudioProjectRevision(LCatalog, 'classified-passages', 1);
+      try
+        Check(TJSONObject(LResult.Arrays['sources'].Items[1]).Arrays['classifications'].
+          Strings[1] = 'outro', 'Original corpus classification remains immutable');
+      finally
+        LResult.Free;
+      end;
+      LBad.Integers['expected_revision'] := 2;
+      LRow.Int64s['start_frame'] := 3999;
+      ExpectSaveFailure(LCatalog, LBad, LBefore);
+      LRow.Int64s['start_frame'] := 8000;
+      LRow.Arrays['classifications'].Strings[1] := 'gentle';
+      ExpectSaveFailure(LCatalog, LBad, LBefore);
+      LRow.Arrays['classifications'].Strings[1] := StringOfChar('x', 65);
+      ExpectSaveFailure(LCatalog, LBad, LBefore);
+    finally
+      LBad.Free;
+    end;
+    LStream := OpenStudioSourceAudio(LCatalog, LHash);
+    try
+      Check(LStream.Size > 44, 'Original audition opens a streaming WAV');
+    finally
+      LStream.Free;
+    end;
     Check(not DirectoryExists(IncludeTrailingPathDelimiter(LCatalog) + 'reviews'),
       'Project drafts create no reviewed labels');
     Check(not DirectoryExists(IncludeTrailingPathDelimiter(LCatalog) + 'proposals'),

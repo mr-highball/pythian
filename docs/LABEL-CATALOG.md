@@ -230,7 +230,7 @@ Stage and launch **only from the fixed stable/QA slots** using the
 owns local address/root selection, exact-path firewall rules and browser cleanup;
 compiler-output paths are not server-launch paths.
 
-The page connects without a login form. The server serves the nine named
+The page connects without a login form. The server serves the ten named
 source/listening/Studio assets and keeps catalog routes behind its session token.
 The current browser slice supports bounded source
 listening, explicit review, source-level blind reveal, reviewed packet download
@@ -240,6 +240,13 @@ and re-import.
 [Studio scope](OPERATOR-STUDIO.md). Its drafts retain selected original source
 identities/ranges and musical intent; saving does not run training or certify
 source content. Full source verification belongs to training preflight.
+Studio also provides private collection discovery, classified passages,
+explicit WFC generation jobs, effects, comparisons, WAV import and experimental
+MIDI playback. The maintained browser build compiles its microphone AudioWorklet
+from Pascal with the same matched RTL, using the module target and a fixed
+`capture-worklet.js` asset. See the [Studio contract](OPERATOR-STUDIO.md) for
+current bounds and the [LAN procedure](LAN-REVIEW-SERVICE.md) for the host-computer
+microphone route.
 
 The assistant prepares optional `review-queue.json` in the private catalog root
 to assign a specific question and source interval. A missing file yields an

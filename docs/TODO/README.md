@@ -3,8 +3,8 @@
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) ·
 [Assessment](../REBALANCE-2026-09-29.md) · [Completed tasks](DONE/README.md) · [Work](../WORK.md)
 
-Updated 2026-09-30. **45 open / 36 accepted tasks.** The user authorized a new
-outcome-based credit allocation: **49.80 current / 50.20 remaining** overall.
+Updated 2026-10-01. **45 open / 40 accepted tasks.** The user authorized a new
+outcome-based credit allocation: **50.60 current / 49.40 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
 adds 4 NS-5 points / 0.80 overall, and the accepted exact-revision minimal native
@@ -13,9 +13,14 @@ caller-provider acceptance adds 10 NS-4 points / 1.50 overall. Complete owned
 editor/queue acceptance adds 8 NS-6 points / 0.80 overall.
 
 The later [operator Studio allocation](../OPERATOR-STUDIO.md#allocation-and-ownership)
-moves 12 unearned NS-6 points into three explicit setup/job/iteration tasks.
+moves 15 unearned NS-6 points into seven explicit Studio outcomes.
 All donor criteria remain required. The scope update earned no completion credit;
 independent Studio project/setup acceptance subsequently adds 4 NS-6 / 0.40 overall.
+Accepted private corpora, raw WFC jobs, effects and capture/exploration add
+8 NS-6 / 0.80 overall.
+The later collection/effects requirements each take one unearned point from
+studio_02/03; capture takes two from delivery_03 and mixed-format preparation
+takes one further unearned point. All donor criteria remain.
 
 Style IDs and traits are caller-defined. Chillwave, stoner rock and lofi are
 internal examples, with no special public contract. Task files own acceptance
@@ -32,8 +37,8 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 45 | 65% | 1 | 35 | 5.25 |
 | [NS-5 — User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 15 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 35 | 35% | 9 | 65 | 6.50 |
-| **Total** | **28.00 weighted** | **21.80 weighted** | **49.80 weighted** | **45** | Goal points are not summed across goals | **50.20** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 43 | 43% | 9 | 57 | 5.70 |
+| **Total** | **28.00 weighted** | **22.60 weighted** | **50.60 weighted** | **45** | Goal points are not summed across goals | **49.40** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -43,12 +48,22 @@ hours or effort estimates. See the [basis and rationale](../REBALANCE-2026-09-29
 
 The user's latest direction selects the [operator Studio](../OPERATOR-STUDIO.md)
 as the usable path into NS-5 calibration: [source/project setup — DONE](DONE/NS-6_studio_01.md)
--> [actual training/audition jobs](NS-6_studio_02.md) ->
+-> [actual training/audition jobs](DONE/NS-6_studio_02.md) ->
 [musical review and deliberate iteration](NS-6_studio_03.md). Native project
 persistence and desktop/narrow selection, Save/reload and recovery are accepted.
-Next connect the real bounded raw-acoustic job path and automatic audition queue.
+The bounded raw-acoustic jobs and automatic audition queue are accepted,
+including actual cancellation/reopen display and independent native recovery.
 This is a concrete operator dependency, not another source-marker QA exercise.
 Actual recorded inference, reference adequacy and calibrated limits stay open.
+The user's private folder collections and classified whole/range corpora add
+[studio_04](DONE/NS-6_studio_04.md) before job acceptance, alongside job implementation.
+[Private corpora](DONE/NS-6_studio_04.md), [effects](DONE/NS-6_studio_05.md) and
+[capture/exploration](DONE/NS-6_studio_06.md) are accepted operator outcomes;
+none implies accepted musical inference. Actual physical microphone quality
+remains unobserved; generated-device checks establish the capture lifecycle.
+The separately scoped [mixed-format preparation](NS-6_studio_07.md) follows this
+review batch. Current generation explicitly requires matching source rate/channels;
+it does not silently convert or omit a recording.
 
 Start at NS-5 (14%), currently least complete. Generic
 [corpus intake](DONE/NS-5_corpus_05.md) is accepted; the maintained
@@ -164,17 +179,17 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | --- | ---: | ---: | --- |
 | [NS-6_adoption_01](NS-6_adoption_01.md) — Establish independent ecosystem adoption evidence | 15 | 1.50 | Supported releases + independent ecosystem evidence |
 | [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 4 | 0.40 | Source-marker/full physical matrix deferred; shared usability follows the selected Studio consumer |
-| [NS-6_delivery_03](NS-6_delivery_03.md) — Package and verify the accepted final workflow | 6 | 0.60 | Dependencies, including Studio |
+| [NS-6_delivery_03](NS-6_delivery_03.md) — Package and verify the accepted final workflow | 3 | 0.30 | Dependencies, including Studio |
 | [NS-6_delivery_04](NS-6_delivery_04.md) — Obtain independently reproduced consumer acceptance | 8 | 0.80 | Package + independent consumer |
 | [NS-6_delivery_05](NS-6_delivery_05.md) — Audit north-star completion and supported handoff | 5 | 0.50 | Dependencies |
 | [NS-6_delivery_07](NS-6_delivery_07.md) — Obtain actual independent minimal synthesis use | 9 | 0.90 | Package accepted; prepared packet needs actual reviewer |
 | [NS-6_support_01](NS-6_support_01.md) — Establish and exercise the supported release lifecycle | 10 | 1.00 | Packages + real external update or issue cycle |
-| [NS-6_studio_02](NS-6_studio_02.md) — Run bounded training and audition batches from the web | 4 | 0.40 | Next: bounded real jobs/source audition; project setup accepted |
-| [NS-6_studio_03](NS-6_studio_03.md) — Compare musical auditions and guide the next batch | 4 | 0.40 | Actual jobs; existing listening contract reused |
+| [NS-6_studio_03](NS-6_studio_03.md) — Compare musical auditions and guide the next batch | 2 | 0.20 | Engineering passed; ready for actual operator purpose/audible/useful-feedback verdict |
+| [NS-6_studio_07](NS-6_studio_07.md) — Train mixed-format corpora with original-clock lineage | 1 | 0.10 | After current review: explicit native conversion and actual mixed-format WFC |
 
 ## Accepted tasks and retired work
 
-All 36 accepted tasks, including caller corpus intake, Studio setup, the current minimal package
+All 40 accepted tasks, including caller corpus intake, Studio source/effects/capture, the current minimal package
 and the three NS-2 quality results, are listed in
 the [current DONE ledger](DONE/README.md). Their acceptance dates and detailed
 evidence remain in the unchanged task identities. Allocations now reflect the

@@ -24,6 +24,8 @@
 param(
   [string] $CheckedExecutable,
   [string] $ExpectedSha256,
+  [string] $CheckedWorker,
+  [string] $ExpectedWorkerSha256,
   [string] $WebRoot,
   [ValidateSet('stable', 'qa')]
   [string] $Slot = 'stable'
@@ -35,10 +37,11 @@ $targetRoot = [IO.Path]::GetFullPath((Join-Path $repositoryRoot "build\label-ser
 $targetBin = Join-Path $targetRoot 'bin'
 $targetWeb = Join-Path $targetRoot 'www'
 $targetExe = Join-Path $targetBin 'pythian.label.catalog.exe'
+$targetWorker = Join-Path $targetBin 'pythian.studio.worker.exe'
 $targetHashFile = Join-Path $targetRoot 'executable.sha256'
 $webNames = @('index.html', 'app.js', 'style.css',
   'listen.html', 'listen.js', 'listen.css',
-  'studio.html', 'studio.js', 'studio.css')
+  'studio.html', 'studio.js', 'studio.css', 'capture-worklet.js')
 
 function Require-WithinTarget([string] $Path) {
   $resolved = [IO.Path]::GetFullPath($Path)
@@ -79,6 +82,18 @@ $sourceHash = (Get-FileHash -LiteralPath $sourceExe -Algorithm SHA256).Hash.ToLo
 if ($sourceHash -ne $expected) {
   throw 'Checked executable does not match ExpectedSha256'
 }
+$sourceWorker = $null
+if (-not [string]::IsNullOrWhiteSpace($CheckedWorker)) {
+  if ($ExpectedWorkerSha256 -notmatch '^[0-9a-fA-F]{64}$') {
+    throw 'Supply the checked worker SHA-256 with -ExpectedWorkerSha256'
+  }
+  $sourceWorker = (Resolve-Path -LiteralPath $CheckedWorker).Path
+  if ((Get-FileHash -LiteralPath $sourceWorker -Algorithm SHA256).Hash -ine $ExpectedWorkerSha256) {
+    throw 'Studio worker differs from its checked SHA-256'
+  }
+} elseif (Test-Path -LiteralPath $targetWorker -PathType Leaf) {
+  throw 'This slot contains a Studio worker; stage its checked matching worker with the service'
+}
 $sourceWeb = if ([string]::IsNullOrWhiteSpace($WebRoot)) {
   Join-Path $repositoryRoot 'build\label-workbench\www'
 } else {
@@ -95,6 +110,12 @@ $running = @(Get-CimInstance Win32_Process -Filter "name = 'pythian.label.catalo
 if ($running.Count -ne 0) {
   throw "$Slot service is running; coordinate its stop before preparing another binary"
 }
+$runningWorker = @(Get-CimInstance Win32_Process -Filter "name = 'pythian.studio.worker.exe'" |
+  Where-Object { $_.ExecutablePath -and
+    ([IO.Path]::GetFullPath($_.ExecutablePath) -ieq $targetWorker) })
+if ($runningWorker.Count -ne 0) {
+  throw "$Slot Studio worker is running; wait for its job or stop its service before staging"
+}
 New-Item -ItemType Directory -Force -Path $targetBin, $targetWeb | Out-Null
 $temporaryExe = Require-WithinTarget ($targetExe + '.partial')
 Copy-Item -LiteralPath $sourceExe -Destination $temporaryExe -Force
@@ -103,6 +124,15 @@ if ($copiedHash -ne $expected) {
   throw 'Copied executable failed SHA-256 verification'
 }
 Move-Item -LiteralPath $temporaryExe -Destination (Require-WithinTarget $targetExe) -Force
+if ($sourceWorker) {
+  $temporaryWorker = Require-WithinTarget ($targetWorker + '.partial')
+  Copy-Item -LiteralPath $sourceWorker -Destination $temporaryWorker -Force
+  if ((Get-FileHash -LiteralPath $temporaryWorker -Algorithm SHA256).Hash -ine $ExpectedWorkerSha256) {
+    throw 'Copied Studio worker failed SHA-256 verification'
+  }
+  Move-Item -LiteralPath $temporaryWorker -Destination (Require-WithinTarget $targetWorker) -Force
+  Set-Content -LiteralPath (Join-Path $targetRoot 'worker.sha256') -Value $ExpectedWorkerSha256.ToLowerInvariant() -NoNewline
+}
 foreach ($name in $webNames) {
   $target = Require-WithinTarget (Join-Path $targetWeb $name)
   Copy-Item -LiteralPath (Join-Path $sourceWeb $name) -Destination $target -Force

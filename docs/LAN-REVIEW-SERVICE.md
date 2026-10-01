@@ -1,7 +1,8 @@
 # Windows LAN review service
 
 The durable reviewed catalog lives outside `build/`. Checked native binaries
-and the nine matching browser assets use fixed ignored `stable` and `qa` slots.
+and the ten matching browser assets use fixed ignored `stable` and `qa` slots.
+Studio jobs use the matching `pythian.studio.worker.exe` beside the service.
 The paths stay fixed across rebuilds so Windows Firewall does not see a new
 application identity. Host addresses and catalog locations are local settings;
 never copy a historical machine address or process ID into a new launch.
@@ -34,7 +35,7 @@ Stage a checked Win64 executable and matching assets. Replace both placeholders
 with the exact checked build and its recorded SHA-256.
 
 ```powershell
-& .\tools\build-label-lan-service.ps1 -CheckedExecutable 'build\<checked-target>\pythian.label.catalog.exe' -ExpectedSha256 '<recorded-checked-sha256>'
+& .\tools\build-label-lan-service.ps1 -CheckedExecutable 'build\<checked-target>\pythian.label.catalog.exe' -ExpectedSha256 '<recorded-service-sha256>' -CheckedWorker 'build\<checked-target>\pythian.studio.worker.exe' -ExpectedWorkerSha256 '<recorded-worker-sha256>'
 ```
 
 Staging verifies the binary hash and refuses to replace a running slot. It does
@@ -62,10 +63,18 @@ run the staged Pascal server in a foreground terminal:
 
 Open the selected host on port18097: source review is at `/`, and complete
 single/paired listening is at `/listen.html`, and project/source setup is at
-`/studio.html`. Studio drafts do not start training or generation. No access-key form is needed in
+`/studio.html`. Saving a Studio draft preserves setup; its Generate action starts
+an explicit worker job. Run from the repository root. The private audio drop
+folder defaults to `local-audio/collections/`; `PYTHIAN_AUDIO_LIBRARY` can point
+to another private root containing `collections/`. No access-key form is needed in
 this selected private-LAN mode; Host/Origin and same-origin write-session checks
 still apply. Read-only host HTTP success is not a physical-phone play/Save verdict;
 [authoring_02](TODO/NS-6_authoring_02.md) owns that acceptance.
+
+The same service also listens at `http://127.0.0.1:18097/studio.html` on the host
+computer, providing the browser context needed for microphone capture. A phone
+on plain LAN HTTP can import a WAV; microphone access there requires a supported
+secure origin. Capture is explicit and stops its device tracks on Stop or exit.
 
 Connection status exposes Retry after ten seconds. The source player shows
 actual transferred WAV bytes when Content-Length is known; source verification
@@ -78,7 +87,7 @@ Stage the same checked binary/assets into the fixed QA slot; the live stable
 slot remains independent.
 
 ```powershell
-& .\tools\build-label-lan-service.ps1 -Slot qa -CheckedExecutable 'build\<checked-target>\pythian.label.catalog.exe' -ExpectedSha256 '<recorded-checked-sha256>'
+& .\tools\build-label-lan-service.ps1 -Slot qa -CheckedExecutable 'build\<checked-target>\pythian.label.catalog.exe' -ExpectedSha256 '<recorded-service-sha256>' -CheckedWorker 'build\<checked-target>\pythian.studio.worker.exe' -ExpectedWorkerSha256 '<recorded-worker-sha256>'
 ```
 
 Use this slot for **every native HTTP or browser QA launch**, even loopback.

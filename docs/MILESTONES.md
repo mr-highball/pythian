@@ -5,12 +5,13 @@
 
 ## North-star assessment
 
-Updated **2026-09-30** on the user-authorized 2026-09-29 credit basis:
-**49.80 outcome-weighted points credited; 50.20 remaining.**
+Updated **2026-10-01** on the user-authorized 2026-09-29 credit basis:
+**50.60 outcome-weighted points credited; 49.40 remaining.**
 The later [operator Studio scope](OPERATOR-STUDIO.md#allocation-and-ownership)
-redistributes 12 unearned NS-6 points into source setup, actual generation jobs
-and musical review/iteration. Scoping left completion unchanged; subsequent
-independent Studio setup acceptance adds 0.40 overall. Goal weights are unchanged.
+redistributes 15 unearned NS-6 points into seven operator outcomes, including
+mixed-format corpus preparation. Scoping left completion unchanged; subsequent
+independent Studio setup acceptance adds 0.40 overall, followed by 0.80 for
+private corpora, raw WFC jobs, effects and capture/exploration. Goal weights are unchanged.
 The previous 71.55%, 55.5-baseline and older 89.8% assessments are retired.
 At the rebase, implementation did not regress by 26.05 points; the old weights overstated
 progress toward the unclosed end-to-end results.
@@ -34,11 +35,11 @@ ecosystem adoption is unmeasured and is a required completion gate.
 | <a id="wav-02"></a><a id="wav-03"></a><a id="ns-3"></a>**NS-3 — Trustworthy musical learning from WAV** | 25% | 25 | Measurement foundation, Pascal observations/execution, qualified references/scoring, unknown/manual context, catalog and admitted-event bridge. | Independently accepted recorded context, notes, parts, harmony, groove and evolving sound: 19 tasks / 75 |
 | <a id="wfc-preferences"></a><a id="ns-4"></a>**NS-4 — Granular WFC layers and reusable blends** | 65% | 15 | Actual layers, typed controls, persistence, selective reuse, caller codecs/traits and bounded event/composition evidence. | Full recorded-provider workflow through reusable styles and audio: 1 task / 35 |
 | <a id="wav-04"></a><a id="ns-5"></a>**NS-5 — User-defined styles that generate and blend usefully** | 14% | 20 | Bounded identity, maintained caller intake, raw corpus, journal, balance, listening packet and acoustic continuation; style-card AC1 only. | Grounded references, semantic scale, structure/continuity, useful one/many-recording and new-user styles, blends: 15 tasks / 86 |
-| <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | 35% | 10 | Supported consumer contract, native checkpoint, exact-revision minimal core/caller-provider package, editor/producer queue and Studio project setup. | Studio jobs/iteration, full packages, actual outside use, physical LAN/full operator workflow, maintained support, ecosystem adoption and final handoff: 9 tasks / 65 |
-| **Total** | **49.80 weighted** | **100** | **36 accepted task records plus explicit baseline** | **45 open tasks / 50.20 weighted points** |
+| <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | 43% | 10 | Supported consumer contract, native checkpoint, exact-revision minimal core/caller-provider package, editor/producer queue, Studio setup/private corpora, bounded raw WFC jobs, effects and experimental capture/MIDI exploration. | Studio iteration/conversion, full packages, actual outside use, physical LAN/full operator workflow, maintained support, ecosystem adoption and final handoff: 9 tasks / 57 |
+| **Total** | **50.60 weighted** | **100** | **40 accepted task records plus explicit baseline** | **45 open tasks / 49.40 weighted points** |
 
 Arithmetic:
-`5×1 + 25×.90 + 25×.25 + 15×.65 + 20×.14 + 10×.35 = 49.80`.
+`5×1 + 25×.90 + 25×.25 + 15×.65 + 20×.14 + 10×.43 = 50.60`.
 These are declared scope weights, not measured accuracy, effort, test coverage,
 release prediction or market adoption. The
 [current basis](REBALANCE-2026-09-29.md#current-credit-basis) explains the
@@ -55,7 +56,7 @@ allocation; no credit was earned by writing this plan.
 | Many-hour learning with sustained musical benefit | No accepted full musical style. Accepted 2.322-hour raw workload is not semantic training. | [scale](#corpus-scale), [style_02](TODO/NS-5_style_02.md) |
 | New caller and further cross-style reuse | No accepted new-caller full style or three-parent musical blend result. | [style_03](TODO/NS-5_style_03.md), [blends](TODO/NS-5_blends_01.md) |
 | Outside consumer can use current package | Historical isolated native checkpoint accepted; actual independent minimal/full use remains open. | [NS-6](#ns-6) |
-| Operator can prepare and guide musical experiments | Durable source/project setup accepted with desktop/narrow recovery checks. Actual jobs, source audition and comparative iteration remain open. | [Operator Studio](OPERATOR-STUDIO.md) |
+| Operator can prepare and guide musical experiments | Private classified corpora, source audition, bounded raw WFC jobs, effects and experimental capture/MIDI exploration accepted with native and desktop/narrow checks. Musical iteration awaits the operator verdict. | [Operator Studio](OPERATOR-STUDIO.md) |
 | Maintained library and de facto standard | Supported release lifecycle and external adoption evidence remain open; a project-count floor alone proves no standard claim. | [support](TODO/NS-6_support_01.md), [adoption](TODO/NS-6_adoption_01.md) |
 
 ### Scope reconciliation
@@ -97,7 +98,7 @@ a claim that all downstream outcomes pass.
 | <a id="song-structure"></a>**SONG-STRUCTURE** | NS-5 | [NS-5_structure_01](TODO/NS-5_structure_01.md), [NS-5_structure_02](TODO/NS-5_structure_02.md) |
 | <a id="style-eval"></a>**STYLE-EVAL** | NS-5 | [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md), [NS-5_evaluation_04](TODO/NS-5_evaluation_04.md), [NS-5_evaluation_02](TODO/NS-5_evaluation_02.md), [NS-5_style_01](TODO/NS-5_style_01.md), [NS-5_style_02](TODO/NS-5_style_02.md), [NS-5_style_03](TODO/NS-5_style_03.md), [NS-5_blends_01](TODO/NS-5_blends_01.md) |
 | <a id="wav-05-authoring"></a>**WAV-05-AUTHORING** | NS-6 | [NS-6_authoring_01 — DONE](TODO/DONE/NS-6_authoring_01.md), [NS-6_authoring_02](TODO/NS-6_authoring_02.md) |
-| <a id="operator-studio"></a>**OPERATOR-STUDIO** | NS-6 | [NS-6_studio_01 — DONE](TODO/DONE/NS-6_studio_01.md), [NS-6_studio_02](TODO/NS-6_studio_02.md), [NS-6_studio_03](TODO/NS-6_studio_03.md) |
+| <a id="operator-studio"></a>**OPERATOR-STUDIO** | NS-6 | [NS-6_studio_01 — DONE](TODO/DONE/NS-6_studio_01.md), [NS-6_studio_02](TODO/DONE/NS-6_studio_02.md), [NS-6_studio_03](TODO/NS-6_studio_03.md), [NS-6_studio_04](TODO/DONE/NS-6_studio_04.md), [NS-6_studio_05](TODO/DONE/NS-6_studio_05.md), [NS-6_studio_06](TODO/DONE/NS-6_studio_06.md), [NS-6_studio_07](TODO/NS-6_studio_07.md) |
 | <a id="wav-05-delivery"></a>**WAV-05-DELIVERY** | NS-6 | [NS-6_delivery_06](TODO/DONE/NS-6_delivery_06.md), [NS-6_delivery_03](TODO/NS-6_delivery_03.md) |
 | <a id="delivery-release"></a>**DELIVERY-RELEASE** | NS-6 | [NS-6_delivery_07](TODO/NS-6_delivery_07.md), [NS-6_delivery_04](TODO/NS-6_delivery_04.md), [NS-6_delivery_05](TODO/NS-6_delivery_05.md) |
 | <a id="delivery-support"></a>**DELIVERY-SUPPORT** | NS-6 | [NS-6_support_01](TODO/NS-6_support_01.md) |

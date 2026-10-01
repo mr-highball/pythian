@@ -36,6 +36,11 @@ uses
 function StageListeningAsset(const ACatalogRoot, AInputPath: String): TJSONObject;
 function PublishListeningQueue(const ACatalogRoot,
   AInputPath: String): TJSONObject;
+{ Appends a producer packet under the same writer lock as reviews/publication.
+  Identical request identities reconcile; changed identities reject. Existing
+  unreviewed and reviewed requests both survive concurrent producer batches. }
+function AppendListeningQueue(const ACatalogRoot,
+  AInputPath: String): TJSONObject;
 function ReadListeningQueue(const ACatalogRoot: String): TJSONObject;
 function CommitListeningReview(const ACatalogRoot: String;
   const ATransaction: TJSONObject): TJSONObject;
@@ -1224,6 +1229,67 @@ begin
   try
     Result := PublishListeningQueueLocked(ACatalogRoot, AInputPath);
   finally
+    LLock.Free;
+  end;
+end;
+
+function AppendListeningQueue(const ACatalogRoot,
+  AInputPath: String): TJSONObject;
+var
+  LLock: TFileStream;
+  LInput: TJSONObject;
+  LAppend: TJSONObject;
+  LQueue: TJSONObject;
+  LExisting: TJSONObject;
+  LRequest: TJSONObject;
+  LStage: String;
+  LText: String;
+  LIndex: Integer;
+begin
+  CheckStorage(ACatalogRoot);
+  CheckNotLink(ListenPath(ACatalogRoot) + 'queue.lock');
+  LLock := TFileStream.Create(ListenPath(ACatalogRoot) + 'queue.lock',
+    fmCreate or fmShareExclusive);
+  LInput := nil;
+  LAppend := nil;
+  LQueue := nil;
+  try
+    LInput := ReadObject(ExpandFileName(AInputPath), CMaximumQueueBytes);
+    LAppend := NormalizeQueue(ACatalogRoot, LInput, True);
+    LQueue := ReadQueueManifest(ACatalogRoot);
+    for LIndex := 0 to LAppend.Arrays['items'].Count - 1 do
+    begin
+      LRequest := LAppend.Arrays['items'].Objects[LIndex];
+      LExisting := FindRequest(LQueue, LRequest.Strings['id']);
+      if LExisting <> nil then
+      begin
+        Need(HashJson(LExisting) = HashJson(LRequest),
+          'appended listening request identity already has different content');
+      end
+      else
+      begin
+        Need(LQueue.Arrays['items'].Count < CMaximumItems, 'too many listening requests');
+        LQueue.Arrays['items'].Add(LRequest.Clone);
+      end;
+    end;
+    LText := LQueue.AsJSON + LineEnding;
+    Need(Length(LText) <= CMaximumQueueBytes, 'appended listening queue exceeds byte bound');
+    CheckNotLink(QueuePath(ACatalogRoot));
+    LStage := NewStagePath(QueuePath(ACatalogRoot));
+    try
+      WriteNewText(LStage, LText);
+      ReplaceFile(LStage, QueuePath(ACatalogRoot));
+    finally
+      if FileExists(LStage) then
+      begin
+        SysUtils.DeleteFile(LStage);
+      end;
+    end;
+    Result := ReadListeningQueue(ACatalogRoot);
+  finally
+    LQueue.Free;
+    LAppend.Free;
+    LInput.Free;
     LLock.Free;
   end;
 end;

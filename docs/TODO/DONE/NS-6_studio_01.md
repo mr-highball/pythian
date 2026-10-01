@@ -106,7 +106,7 @@ musical verdict or physical-phone qualification belongs to this acceptance.
   failures remain zero. The subsequent final-staging failure is recorded below.
   This closes one implementation batch and awards 4 NS-6 / 0.40 overall points;
   old source/science/comparator stop counters are unchanged. Actual jobs and
-  source audition continue in [studio_02](../NS-6_studio_02.md), and musical
+  source audition continue in [studio_02](NS-6_studio_02.md), and musical
   feedback/iteration in [studio_03](../NS-6_studio_03.md).
 - 2026-09-30, Big Boss: final staging finds whitespace-only blank lines 84/103
   in the new HTML; earlier unstaged checks had not included that untracked file.

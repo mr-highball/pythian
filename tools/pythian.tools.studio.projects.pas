@@ -29,6 +29,7 @@ unit pythian.tools.studio.projects;
 interface
 
 uses
+  Classes,
   fpjson,
   pythian.audio;
 
@@ -40,6 +41,7 @@ const
   StudioSourceValidation = 'catalog_snapshot_pending_training_verification';
   MaximumStudioProjects = 256;
   MaximumStudioSources = 32;
+  MaximumStudioSelections = 64;
   MaximumStudioRevision = 100000;
   MaximumStudioDocumentBytes = 1048576;
 
@@ -53,6 +55,11 @@ type
 function ListStudioSources(const ACatalogRoot: String): TJSONObject;
 function ListStudioProjects(const ACatalogRoot: String): TJSONObject;
 function ReadStudioProject(const ACatalogRoot, AProjectId: String): TJSONObject;
+function ReadStudioProjectRevision(const ACatalogRoot, AProjectId: String;
+  const ARevision: Integer): TJSONObject;
+{ Owned, bounded-memory original stream. This preview checks catalog geometry;
+  actual content hashing remains a required training preflight. }
+function OpenStudioSourceAudio(const ACatalogRoot, AHash: String): TFileStream;
 { Bounds byte length/nesting before the strict parser runs. }
 function ParseStudioProjectWrite(const AText: String): TJSONObject;
 { expected_revision=0 creates a project. An identical retry against the directly
@@ -67,7 +74,6 @@ function SaveStudioProject(const ACatalogRoot: String;
 implementation
 
 uses
-  Classes,
   SysUtils,
   jsonparser,
   jsonscanner,
@@ -75,7 +81,8 @@ uses
   pythian.corpus.intake,
   pythian.hash,
   pythian.wave.read,
-  pythian.tools.annotations.catalog
+  pythian.tools.annotations.catalog,
+  pythian.tools.studio.&library
   {$IFDEF MSWINDOWS}, Windows{$ENDIF};
 
 const
@@ -320,6 +327,83 @@ begin
   Result := TJSONArray(LValue);
 end;
 
+procedure SelectionFields(const AObject: TJSONObject; const ARequired: String);
+var
+  LFields: String;
+begin
+  LFields := ARequired;
+  if AObject.Find('classifications') <> nil then
+  begin
+    LFields := LFields + ',classifications';
+  end;
+  if (Pos('metadata_sha256', ARequired) > 0) and (AObject.Find('collections') <> nil) then
+  begin
+    LFields := LFields + ',collections';
+  end;
+  Fields(AObject, LFields);
+end;
+
+procedure ValidateClassifications(const AObject: TJSONObject);
+var
+  LValues: TJSONArray;
+  LIndex: Integer;
+  LPrior: Integer;
+  LText: String;
+begin
+  if AObject.Find('classifications') = nil then
+  begin
+    Exit;
+  end;
+  LValues := ArrayField(AObject, 'classifications');
+  Need(LValues.Count <= 8, 'Use at most eight classifications per selection');
+  for LIndex := 0 to LValues.Count - 1 do
+  begin
+    Need(LValues.Items[LIndex].JSONType = jtString,
+      'Selection classifications must be text');
+    LText := LValues.Strings[LIndex];
+    Need((Length(LText) >= 1) and (Length(LText) <= 64) and (Trim(LText) = LText),
+      'Selection classifications must contain one to 64 bytes without outer spaces');
+    ValidateCorpusText(UTF8String(LText));
+    for LPrior := 0 to LIndex - 1 do
+    begin
+      Need(LValues.Strings[LPrior] <> LText, 'Selection classification is duplicated');
+    end;
+  end;
+end;
+
+procedure ValidateSelectionRanges(const ASources: TJSONArray);
+var
+  LIndex: Integer;
+  LPrior: Integer;
+  LUnique: Integer;
+  LSeen: Boolean;
+  LSource: TJSONObject;
+  LPrevious: TJSONObject;
+begin
+  LUnique := 0;
+  for LIndex := 0 to ASources.Count - 1 do
+  begin
+    LSource := ObjectAt(ASources, LIndex);
+    LSeen := False;
+    for LPrior := 0 to LIndex - 1 do
+    begin
+      LPrevious := ObjectAt(ASources, LPrior);
+      if LPrevious.Strings['source_sha256'] = LSource.Strings['source_sha256'] then
+      begin
+        LSeen := True;
+        Need((IntField(LSource, 'end_frame') <= IntField(LPrevious, 'start_frame')) or
+          (IntField(LSource, 'start_frame') >= IntField(LPrevious, 'end_frame')),
+          'Selected passages from one recording must not overlap');
+      end;
+    end;
+    if not LSeen then
+    begin
+      Inc(LUnique);
+    end;
+  end;
+  Need(LUnique <= MaximumStudioSources, 'Select at most 32 distinct recordings');
+end;
+
 function JsonHash(const AObject: TJSONObject): String;
 var
   LStream: TStringStream;
@@ -410,10 +494,14 @@ begin
   end;
 end;
 
-function ReadSource(const ACatalogRoot, AHash: String): TJSONObject;
+function ReadSource(const ACatalogRoot, AHash: String;
+  const ACollectionIndex: TJSONObject = nil): TJSONObject;
 var
   LRoot: String;
   LTrack: TJSONObject;
+  LCollectionRows: TJSONArray;
+  LCollections: TJSONArray;
+  LCollectionIndex: Integer;
   LStream: TFileStream;
   LWave: TWaveFrameReader;
   LPartition: String;
@@ -478,6 +566,25 @@ begin
       Result.Add('frame_count', IntField(LTrack, 'frame_count'));
       Result.Add('source_bytes', IntField(LTrack, 'source_bytes'));
       Result.Add('metadata_sha256', JsonHash(LTrack));
+      if ACollectionIndex = nil then
+      begin
+        Result.Add('collections', StudioCollectionsForSource(ACatalogRoot, AHash));
+      end
+      else
+      begin
+        LCollections := TJSONArray.Create;
+        Result.Add('collections', LCollections);
+        LCollectionRows := ACollectionIndex.Arrays['source_collection_memberships'];
+        for LCollectionIndex := 0 to LCollectionRows.Count - 1 do
+        begin
+          if LCollectionRows.Objects[LCollectionIndex].Strings['source_sha256'] = AHash then
+          begin
+            Result.Delete('collections');
+            Result.Add('collections', LCollectionRows.Objects[LCollectionIndex].Arrays['collections'].Clone);
+            Break;
+          end;
+        end;
+      end;
       if LPartition = 'evaluation' then
       begin
         Result.Add('selection_status', 'evaluation_only');
@@ -512,11 +619,14 @@ var
   LRows: TJSONArray;
   LIndex: Integer;
   LHash: String;
+  LCollectionIndex: TJSONObject;
 begin
   LDirectory := CatalogPath(ACatalogRoot) + 'tracks';
   Need(DirectoryExists(LDirectory), 'Studio catalog tracks are unavailable');
   LNames := TStringList.Create;
+  LCollectionIndex := nil;
   try
+    LCollectionIndex := ListStudioLibrary(ACatalogRoot);
     LCode := FindFirst(IncludeTrailingPathDelimiter(LDirectory) + '*.json',
       faAnyFile, LFound);
     if LCode = 0 then
@@ -543,7 +653,7 @@ begin
       Result.Add('sources', LRows);
       for LIndex := 0 to LNames.Count - 1 do
       begin
-        LRows.Add(ReadSource(ACatalogRoot, LNames[LIndex]));
+        LRows.Add(ReadSource(ACatalogRoot, LNames[LIndex], LCollectionIndex));
       end;
       Result.Add('count', LRows.Count);
       Result.Add('maximum_sources', 4096);
@@ -553,6 +663,7 @@ begin
       raise;
     end;
   finally
+    LCollectionIndex.Free;
     LNames.Free;
   end;
 end;
@@ -610,7 +721,6 @@ var
   LSources: TJSONArray;
   LSource: TJSONObject;
   LIndex: Integer;
-  LPrior: Integer;
   LUsage: String;
   LValue: TJSONData;
 begin
@@ -630,12 +740,13 @@ begin
   Need((LValue <> nil) and (LValue.JSONType = jtBoolean) and not LValue.AsBoolean,
     'Studio draft implies an available model');
   LSources := ArrayField(AProject, 'sources');
-  Need((LSources.Count >= 1) and (LSources.Count <= MaximumStudioSources),
+  Need((LSources.Count >= 1) and (LSources.Count <= MaximumStudioSelections),
     'Studio selected source count exceeds its bounds');
   for LIndex := 0 to LSources.Count - 1 do
   begin
     LSource := ObjectAt(LSources, LIndex);
-    Fields(LSource, CSelectedFields);
+    SelectionFields(LSource, CSelectedFields);
+    ValidateClassifications(LSource);
     Need(ValidHash(TextField(LSource, 'source_sha256', 64, 64)) and
       ValidHash(TextField(LSource, 'metadata_sha256', 64, 64)),
       'Studio snapshot source identity is invalid');
@@ -665,12 +776,8 @@ begin
     end;
     Need(TextField(LSource, 'usage_status', 1, 32) = LUsage,
       'Studio draft source use differs from its partition');
-    for LPrior := 0 to LIndex - 1 do
-    begin
-      Need(ObjectAt(LSources, LPrior).Strings['source_sha256'] <>
-        LSource.Strings['source_sha256'], 'Studio snapshot contains duplicate sources');
-    end;
   end;
+  ValidateSelectionRanges(LSources);
   LHash := TextField(AProject, 'snapshot_sha256', 64, 64);
   Need(ValidHash(LHash), 'Studio snapshot digest is invalid');
   LCopy := TJSONObject(AProject.Clone);
@@ -706,6 +813,48 @@ begin
     Result := ReadProjectLocked(ACatalogRoot, AProjectId);
   finally
     LeaveCriticalSection(GStudioLock);
+  end;
+end;
+
+function ReadStudioProjectRevision(const ACatalogRoot, AProjectId: String;
+  const ARevision: Integer): TJSONObject;
+begin
+  EnterCriticalSection(GStudioLock);
+  try
+    Need((ARevision >= 1) and (ARevision <= MaximumStudioRevision),
+      'Studio project revision is invalid');
+    Result := ReadObject(IncludeTrailingPathDelimiter(ProjectPath(ACatalogRoot,
+      AProjectId)) + RevisionName(ARevision));
+    try
+      ValidateSnapshot(Result, AProjectId, ARevision);
+    except
+      Result.Free;
+      raise;
+    end;
+  finally
+    LeaveCriticalSection(GStudioLock);
+  end;
+end;
+
+function OpenStudioSourceAudio(const ACatalogRoot, AHash: String): TFileStream;
+var
+  LSource: TJSONObject;
+begin
+  LSource := ReadSource(ACatalogRoot, AHash);
+  try
+    Need(LSource.Strings['partition'] <> 'evaluation',
+      'Evaluation originals are reserved from guided Studio listening');
+    Result := TFileStream.Create(CatalogPath(ACatalogRoot) + 'sources' +
+      PathDelim + AHash + '.wav', fmOpenRead or fmShareDenyWrite);
+    try
+      Need(Result.Size = LSource.Int64s['source_bytes'],
+        'Source audio changed after catalog inspection');
+    except
+      Result.Free;
+      raise;
+    end;
+  finally
+    LSource.Free;
   end;
 end;
 
@@ -809,8 +958,8 @@ begin
   Need((LMode = 'raw_acoustic') or (LMode = 'reference_events') or
     (LMode = 'inferred_events'), 'Studio requested learning mode is unsupported');
   LSelections := ArrayField(AWrite, 'sources');
-  Need((LSelections.Count >= 1) and (LSelections.Count <= MaximumStudioSources),
-    'Select between one and 32 original sources');
+  Need((LSelections.Count >= 1) and (LSelections.Count <= MaximumStudioSelections),
+    'Select between one and 64 passages from at most 32 original recordings');
   Result := TJSONObject.Create;
   try
     Result.Add('format', StudioProjectFormat);
@@ -832,18 +981,14 @@ begin
       Need((LKind = 'full') or (LKind = 'range'), 'Studio source selection is unsupported');
       if LKind = 'full' then
       begin
-        Fields(LSelection, 'source_sha256,selection');
+        SelectionFields(LSelection, 'source_sha256,selection');
       end
       else
       begin
-        Fields(LSelection, 'source_sha256,selection,start_frame,end_frame');
+        SelectionFields(LSelection, 'source_sha256,selection,start_frame,end_frame');
       end;
+      ValidateClassifications(LSelection);
       LHash := TextField(LSelection, 'source_sha256', 64, 64);
-      for LPrior := 0 to LIndex - 1 do
-      begin
-        Need(TextField(ObjectAt(LSelections, LPrior), 'source_sha256', 64, 64) <> LHash,
-          'Studio selection repeats an original source');
-      end;
       LSource := ReadSource(ACatalogRoot, LHash);
       try
         Need(LSource.Strings['partition'] <> 'evaluation',
@@ -871,6 +1016,10 @@ begin
         LSource.Add('selection', LKind);
         LSource.Add('start_frame', LStart);
         LSource.Add('end_frame', LEnd);
+        if LSelection.Find('classifications') <> nil then
+        begin
+          LSource.Add('classifications', LSelection.Find('classifications').Clone);
+        end;
         if LSource.Strings['partition'] = 'evaluation' then
         begin
           LSource.Add('usage_status', 'evaluation_only');

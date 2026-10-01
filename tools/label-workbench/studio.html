@@ -67,10 +67,40 @@ SOFTWARE.
             <p id="qualities-help" class="hint">A few words about the qualities you want to carry forward.</p>
             <p id="qualities-error" class="field-error" role="alert" hidden></p>
           </form>
-          <div class="source-heading"><div><h3>Choose imported recordings</h3><p class="hint">Use a whole recording, or select a time range.</p></div>
-            <button id="refresh-tracks" type="button" disabled>Refresh recordings</button></div>
+          <div class="source-heading"><div><h3>Your collection library</h3><p class="hint">Choose whole tracks or classify individual passages.</p></div>
+            <button id="refresh-tracks" type="button" disabled>Refresh library</button></div>
+          <details><summary>Add music to your library</summary><p class="hint">Place WAV files in <code>local-audio/collections/your-collection/</code>, then refresh. These private files stay outside Git.</p></details>
+          <details><summary>Library refresh details</summary><p id="library-summary" class="hint" role="status">Refresh to discover your collection folders.</p></details>
+          <details class="analysis-tools"><summary>Import a WAV or record something new</summary><div id="studio-capture"></div></details>
+          <label for="collection-filter">Collection</label>
+          <select id="collection-filter"><option value="">All collections</option></select>
           <label class="search-label" for="track-search">Find a recording</label>
           <input id="track-search" type="search" placeholder="Search recording names" disabled>
+          <section id="source-inspector" class="source-inspector" hidden aria-labelledby="source-title">
+            <div class="section-heading"><div><p class="eyebrow">LISTEN · EXPLORE · SELECT</p><h3 id="source-title" tabindex="-1"></h3></div><button id="source-close" type="button">Close</button></div>
+            <audio id="source-audio" controls preload="metadata"></audio>
+            <output id="source-time" class="source-time">0:00 / 0:00</output>
+            <label for="source-seek" class="hint">Seek through the original</label>
+            <input id="source-seek" type="range" min="0" max="1" step="0.01" value="0">
+            <canvas id="source-waveform" width="900" height="180" aria-label="Original waveform. Tap to seek or drag a passage; equivalent time fields and mark buttons are below."></canvas>
+            <div class="source-toolbar"><button id="source-prev" type="button" aria-label="Previous waveform page">← Previous</button><span id="source-window" class="hint"></span><button id="source-next" type="button" aria-label="Next waveform page">Next →</button></div>
+            <p class="wave-legend"><span class="legend-wave">Waveform</span><span class="legend-range">Your passage</span><span class="legend-head">Playhead</span></p>
+            <details class="analysis-tools"><summary>Explore Pythian analysis</summary>
+              <button id="source-analyze" type="button"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path d="M3 12h3l3-8 6 16 3-8h3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Inspect visible window</button>
+              <p id="source-analysis-status" class="hint" role="status" aria-live="polite">Inspect this visible window to see signal levels and timing suggestions.</p>
+              <label for="source-beat-layer">Timing overlay <span class="candidate-label">Experimental</span></label>
+              <select id="source-beat-layer"><option value="-1">No beat overlay</option></select>
+              <p class="hint">Gold marks show suggested beats.</p>
+            </details>
+            <div class="range-fields"><label for="source-start">Start <small>min:sec</small><input id="source-start" type="text" value="0:00.000" inputmode="decimal"></label><label for="source-end">End <small>min:sec</small><input id="source-end" type="text" value="0:30.000" inputmode="decimal"></label></div>
+            <div class="source-toolbar"><button id="source-mark-in" type="button">⇥ Mark start</button><button id="source-mark-out" type="button">⇤ Mark end</button><button id="source-play-range" type="button">▶ Play passage</button></div>
+            <label for="source-classifications">How would you describe this selection?</label>
+            <input id="source-classifications" type="text" placeholder="For example: warm, sparse, intro" maxlength="520" aria-describedby="source-class-help">
+            <p id="source-class-help" class="hint">Your labels, separated by commas. They apply to this selection.</p>
+            <div class="source-toolbar"><button id="source-use-range" class="primary" type="button">Add passage to corpus</button><button id="source-use-whole" type="button">Use whole recording</button></div>
+            <p id="source-notice" class="hint" role="status" aria-live="polite"></p>
+            <details class="analysis-tools"><summary>Shape this passage with effects</summary><div id="studio-effects"></div></details>
+          </section>
           <p id="tracks-empty" class="empty-state">Your imported recordings will appear here.</p>
           <div id="tracks" class="tracks" aria-label="Available recordings"></div>
           <p id="tracks-error" class="field-error" role="alert" hidden></p>
@@ -82,16 +112,17 @@ SOFTWARE.
             <div><dt>Recordings</dt><dd id="selected-count">0</dd></div></dl>
           <p id="selection-summary" class="hint">Select recordings to build your source collection.</p>
 
-          <div class="support"><h3>What happens when you save?</h3>
-            <p>Save your project name, musical direction and source selections as a draft.</p>
+          <div class="support"><h3>Ready for a first audition?</h3>
+            <p>Save your source selections, then choose how much to generate below.</p>
             <input id="learning-mode" type="hidden" value="raw_acoustic"><details><summary>Source and preparation details</summary><p id="support-detail">Source details are catalog snapshots. Actual recordings must be verified before training. Saved route preferences do not start learning.</p></details></div>
+          <div id="studio-batches"></div>
         </section>
         <div class="upcoming">
-          <section id="listen" aria-labelledby="listen-title"><p class="eyebrow">03 / LISTEN</p><h2 id="listen-title">Generated previews</h2><p>Coming next. Training and generated previews are unavailable in this version.</p></section>
-          <section id="refine" aria-labelledby="refine-title"><p class="eyebrow">04 / REFINE</p><h2 id="refine-title">Shape the result</h2><p>Coming next. Refinement follows listening when those stages are available.</p></section>
+          <section id="listen" class="panel" aria-labelledby="listen-title"><p class="eyebrow">03 / LISTEN</p><h2 id="listen-title">Listen and compare</h2><div id="studio-reviews"></div></section>
+          <section id="refine" class="panel" aria-labelledby="refine-title"><p class="eyebrow">04 / REFINE</p><h2 id="refine-title">Shape the next audition</h2><p>Keep the results you like, mark what needs work, and use an audition to prepare your next batch.</p></section>
         </div>      </div>
       <aside class="panel save-panel" aria-labelledby="save-title">
-        <p class="eyebrow">YOUR STYLE DRAFT</p><h2 id="save-title">Keep your setup.</h2><p class="draft-badge">Draft · Not trained</p>
+        <p class="eyebrow">YOUR PROJECT</p><h2 id="save-title">Keep your setup.</h2><p class="draft-badge">Sources and musical direction</p>
         <p id="draft-caption">Give your style a name, then select its recordings.</p>
         <div class="save-actions"><button id="save-draft" class="primary" type="button" disabled>Save draft</button>
           <button id="reload-draft" type="button" disabled>Reload saved draft</button></div>

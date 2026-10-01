@@ -39,6 +39,11 @@ Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [PITCH](../PI
   audible native passage from inferred events with traceable learned versus
   authored behavior. A bridge exercised on reference events alone cannot
   satisfy this criterion. Polyphonic ownership remains a separate task.
+- Export the same independently accepted inferred events through the maintained
+  MIDI writer and decode them back with note/timing agreement. Preserve source
+  timing and unknown-span evidence alongside the MIDI. Compare native playback
+  against the original recording; the experimental
+  [Studio preview](DONE/NS-6_studio_06.md) alone does not close these inference gates.
 
 **Blockers**
 
@@ -49,6 +54,11 @@ Starting evidence: [PHRASE-EVALUATION](../PHRASE-EVALUATION.md) · [PITCH](../PI
 
 **Dev Notes:**
 
+- 2026-09-30, Big Boss: clarified the final WAV-to-MIDI outcome after the user's
+  request to expose present analysis. Existing MIDI writing is available; the
+  trustworthy inferred-event producer remains the actual prerequisite. Studio06
+  owns current experimental preview/feedback, this task owns qualified inferred
+  events exported through that path. Existing credit is unchanged.
 - 2026-09-25 user-directed annotation gap allocation: original +5 NS-3
   points now map to +1 accepted WFC bridge, +2 annotation catalog and +2
   independent phrase acceptance. No recorded threshold, held-out protection,

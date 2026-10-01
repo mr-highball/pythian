@@ -8,7 +8,7 @@ Deliver current source packages and reproducible examples for the accepted synth
 WAV learning, semantic generation and arbitrary user-defined style blend/reblend workflow.
 
 North star: NS-6. Outcome owner: WAV-05-DELIVERY.
-Completion credit: 6 goal percentage points (0.60 overall points).
+Completion credit: 3 goal percentage points (0.30 overall points).
 Current allocation: [2026-09-30 operator rebalance](../OPERATOR-STUDIO.md#allocation-and-ownership), with NS-6 weighted at 10 overall points,
 under the user's authorization
 to rebalance without preserving historical point allocations. All existing
@@ -47,13 +47,28 @@ prerequisite or nonreproducible input and follow its owning task.
 - [NS-6_authoring_01.md](DONE/NS-6_authoring_01.md)
 - [NS-6_authoring_02.md](NS-6_authoring_02.md)
 - [NS-6_studio_01.md](DONE/NS-6_studio_01.md)
-- [NS-6_studio_02.md](NS-6_studio_02.md)
+- [NS-6_studio_02.md](DONE/NS-6_studio_02.md)
 - [NS-6_studio_03.md](NS-6_studio_03.md)
+- [NS-6_studio_04.md](DONE/NS-6_studio_04.md)
+- [NS-6_studio_05.md](DONE/NS-6_studio_05.md)
+- [NS-6_studio_06.md](DONE/NS-6_studio_06.md)
+- [NS-6_studio_07.md](NS-6_studio_07.md)
 - [NS-3_validation_02.md](DONE/NS-3_validation_02.md)
 - [NS-4_integration_01.md](NS-4_integration_01.md)
 - [NS-5_blends_01.md](NS-5_blends_01.md)
 
 **Dev Notes:**
+
+- 2026-10-01, Neo / Big Boss: one unearned NS-6 point transfers to the distinct
+  [mixed-format corpus preparation](NS-6_studio_07.md) outcome. This task retains
+  all five original packaging, extraction and final workflow criteria, including
+  that accepted consumer when delivered. Current allocation becomes 3 NS-6 /
+  0.30 overall; accepted credit is unchanged. Current same-clock jobs are not
+  relabelled as mixed-format support.
+
+- 2026-09-30, Big Boss: two further unearned points transfer to the explicit
+  audio import/capture exploration outcome [studio_06](DONE/NS-6_studio_06.md).
+  All packaging, extraction and final workflow requirements remain required.
 
 - 2026-09-30, Big Boss: final packaging now explicitly includes the operator
   Studio source/project, actual jobs and feedback/iteration outcomes. Four

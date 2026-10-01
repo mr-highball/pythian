@@ -113,7 +113,8 @@ The user permits one-off, external media acquisition and conversion to WAV for
 private development inputs. Such converters stay outside the repository and do
 not become maintained codecs, product dependencies, analysis or inference paths.
 Pythian consumes the resulting WAV through its Pascal-owned readers and learners.
-Keep source-specific private media and conversion artifacts under ignored `build/`.
+Keep durable private audio collections under ignored `local-audio/collections/`;
+keep disposable conversion and experiment artifacts under ignored `build/`.
 Revisit this boundary if a compressed-media importer becomes a supported library
 feature; it would then need Pascal-owned implementation and validation.
 

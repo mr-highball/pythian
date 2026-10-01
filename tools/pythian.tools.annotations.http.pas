@@ -55,8 +55,15 @@ uses
   pythian.tools.annotations.sourceguard,
   pythian.tools.listen.catalog,
   pythian.tools.listen.stream,
-  pythian.tools.studio.projects
-  {$IFDEF MSWINDOWS}, Windows{$ELSE}, BaseUnix{$ENDIF};
+  pythian.tools.studio.projects,
+  pythian.tools.studio.effects,
+  pythian.tools.studio.capture,
+  pythian.tools.studio.pitch,
+  pythian.tools.studio.reviews,
+  pythian.tools.studio.&library,
+  pythian.tools.studio.jobs,
+  pythian.tools.studio.supervisor
+  {$IFDEF MSWINDOWS}, Windows, WinSock2{$ELSE}, BaseUnix{$ENDIF};
 
 {$IFDEF MSWINDOWS}
 function DecodeKeyFileDacl(ASddl: PWideChar; ARevision: DWORD;
@@ -80,6 +87,7 @@ const
   CReviewedImportDeadlineMs = 60000;
   CSendDeadlineMs = 15000;
   CSocketBlockBytes = 65536;
+  CListeningLists: array[0..1] of String = ('items', 'completed');
 
 type
   TCatalogHttpRequest = record
@@ -110,6 +118,7 @@ type
 
 var
   GActiveReviewWorkers: LongInt = 0;
+  GStudioSupervisor: TStudioJobSupervisor = nil;
 
 procedure Need(const ACondition: Boolean; const AMessage: String);
 begin
@@ -580,6 +589,7 @@ var
   LStart: QWord;
 begin
   LRaw := '';
+  LSeparator := 0;
   ARequest := Default(TCatalogHttpRequest);
   AFailure := 'request header timed out';
   LStart := GetTickCount64;
@@ -903,6 +913,8 @@ begin
     Exit('studio.js');
   if APath = '/studio.css' then
     Exit('studio.css');
+  if APath = '/capture-worklet.js' then
+    Exit('capture-worklet.js');
   Result := '';
 end;
 
@@ -919,7 +931,7 @@ begin
     Need((LInput.Size > 0) and (LInput.Size <= CMaximumStaticBytes),
       'Static asset exceeds size bound');
     if (AName = 'app.js') or (AName = 'listen.js') or
-      (AName = 'studio.js') then
+      (AName = 'studio.js') or (AName = 'capture-worklet.js') then
     begin
       LContentType := 'text/javascript; charset=utf-8';
     end
@@ -954,6 +966,9 @@ var
   LExtraHeaders: String;
   LAsset: TJSONObject;
   LMediaStream: TFileStream;
+  LRows: TJSONArray;
+  LIndex: Integer;
+  LRowName: String;
 begin
   AHandedOff := False;
   LExtraHeaders := '';
@@ -967,7 +982,13 @@ begin
     SendStaticAsset(ASocket, AStaticRoot, LStaticName);
     Exit;
   end;
-  if ARequest.Path = '/api/listen-audio' then
+  if (ARequest.Path = '/api/listen-audio') or
+    (ARequest.Path = '/api/studio/source-audio') or
+    (ARequest.Path = '/api/studio/effect-audio') or
+    (ARequest.Path = '/api/studio/capture-audio') or
+    (ARequest.Path = '/api/studio/pitch-audio') or
+    (ARequest.Path = '/api/studio/pitch-midi') or
+    (ARequest.Path = '/api/studio/review-audio') then
   begin
     Need((ARequest.Token = AToken) or
       MediaCookieValid(ARequest.Cookie, AToken),
@@ -995,7 +1016,7 @@ begin
       LReport.Add('version', 1);
       LReport.Add('token', AToken);
       LExtraHeaders := 'Set-Cookie: PythianListen=' + AToken +
-        '; Path=/api/listen-audio; HttpOnly; SameSite=Strict'#13#10;
+        '; Path=/api/; HttpOnly; SameSite=Strict'#13#10;
     end
     else if (ARequest.Method = 'POST') and
       (ARequest.Path = '/api/session') and (AAccessKey <> '') then
@@ -1008,7 +1029,7 @@ begin
       LReport.Add('version', 1);
       LReport.Add('token', AToken);
       LExtraHeaders := 'Set-Cookie: PythianListen=' + AToken +
-        '; Path=/api/listen-audio; HttpOnly; SameSite=Strict'#13#10;
+        '; Path=/api/; HttpOnly; SameSite=Strict'#13#10;
     end
     else if (ARequest.Method = 'GET') and
       (ARequest.Path = '/api/catalog') then
@@ -1021,9 +1042,191 @@ begin
       LReport := ListStudioSources(ACatalogRoot);
     end
     else if (ARequest.Method = 'GET') and
+      (ARequest.Path = '/api/studio/library') then
+    begin
+      LReport := ListStudioLibrary(ACatalogRoot);
+    end
+    else if ((ARequest.Method = 'GET') or (ARequest.Method = 'HEAD')) and
+      (ARequest.Path = '/api/studio/source-audio') then
+    begin
+      LHash := QueryValue(ARequest.Query, 'hash');
+      LMediaStream := OpenStudioSourceAudio(ACatalogRoot, LHash);
+      try
+        LText := IncludeTrailingPathDelimiter(ExpandFileName(ACatalogRoot)) +
+          'sources' + PathDelim + LHash + '.wav';
+        AHandedOff := DispatchListeningMedia(ASocket, LMediaStream,
+          ARequest.Method, ARequest.Range, ARequest.IfRange, LHash,
+          LText, LMediaStream.Size);
+        if AHandedOff then
+        begin
+          LMediaStream := nil;
+        end;
+      finally
+        LMediaStream.Free;
+      end;
+      Exit;
+    end
+    else if ((ARequest.Method = 'GET') or (ARequest.Method = 'HEAD')) and
+      (ARequest.Path = '/api/studio/effect-audio') then
+    begin
+      LText := QueryValue(ARequest.Query, 'job');
+      LMediaStream := OpenStudioEffectPreview(ACatalogRoot, LText, LHash);
+      try
+        LText := StudioJobDirectory(ACatalogRoot, LText) + PathDelim + 'effect.wav';
+        AHandedOff := DispatchListeningMedia(ASocket, LMediaStream,
+          ARequest.Method, ARequest.Range, ARequest.IfRange, LHash,
+          LText, LMediaStream.Size);
+        if AHandedOff then
+        begin
+          LMediaStream := nil;
+        end;
+      finally
+        LMediaStream.Free;
+      end;
+      Exit;
+    end
+    else if ((ARequest.Method = 'GET') or (ARequest.Method = 'HEAD')) and
+      (ARequest.Path = '/api/studio/capture-audio') then
+    begin
+      LMediaStream := OpenStudioCapture(ACatalogRoot, QueryValue(ARequest.Query, 'id'),
+        LHash, LText);
+      try
+        AHandedOff := DispatchListeningMedia(ASocket, LMediaStream,
+          ARequest.Method, ARequest.Range, ARequest.IfRange, LHash);
+        if AHandedOff then
+        begin
+          LMediaStream := nil;
+        end;
+      finally
+        LMediaStream.Free;
+      end;
+      Exit;
+    end
+    else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/pitch-midi') then
+    begin
+      LMediaStream := OpenStudioPitchArtifact(ACatalogRoot, QueryValue(ARequest.Query, 'job'),
+        'midi', LHash);
+      try
+        SendStreamResponse(ASocket, LMediaStream, 'audio/midi');
+      finally
+        LMediaStream.Free;
+      end;
+      Exit;
+    end
+    else if ((ARequest.Method = 'GET') or (ARequest.Method = 'HEAD')) and
+      (ARequest.Path = '/api/studio/pitch-audio') then
+    begin
+      LMediaStream := OpenStudioPitchArtifact(ACatalogRoot, QueryValue(ARequest.Query, 'job'),
+        'audio', LHash);
+      try
+        AHandedOff := DispatchListeningMedia(ASocket, LMediaStream,
+          ARequest.Method, ARequest.Range, ARequest.IfRange, LHash);
+        if AHandedOff then
+        begin
+          LMediaStream := nil;
+        end;
+      finally
+        LMediaStream.Free;
+      end;
+      Exit;
+    end
+    else if (ARequest.Method = 'POST') and (ARequest.Path = '/api/studio/exploration-feedback') then
+    begin
+      LBody := ParseBodyObject(ARequest.Body);
+      LReport := SaveStudioExplorationFeedback(ACatalogRoot, LBody);
+    end
+    else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/captures') then
+    begin
+      LReport := ListStudioCaptures(ACatalogRoot);
+    end
+    else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/capture') then
+    begin
+      LReport := ReadStudioCapture(ACatalogRoot, QueryValue(ARequest.Query, 'id'));
+    end
+    else if (ARequest.Method = 'POST') and (ARequest.Path = '/api/studio/capture/start') then
+    begin
+      LBody := ParseBodyObject(ARequest.Body);
+      LReport := StartStudioCapture(ACatalogRoot, LBody);
+    end
+    else if (ARequest.Method = 'POST') and (ARequest.Path = '/api/studio/capture/chunk') then
+    begin
+      LBody := ParseBodyObject(ARequest.Body);
+      LReport := AppendStudioCapture(ACatalogRoot, LBody);
+    end
+    else if (ARequest.Method = 'POST') and (ARequest.Path = '/api/studio/capture/discard') then
+    begin
+      LBody := ParseBodyObject(ARequest.Body);
+      Need((LBody.Count = 1) and (LBody.Find('capture_id') <> nil), 'Choose one temporary input');
+      LReport := DiscardStudioCapture(ACatalogRoot, LBody.Strings['capture_id']);
+    end
+    else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/reviews') then
+    begin
+      LReport := ListStudioReviews(ACatalogRoot);
+    end
+    else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/review') then
+    begin
+      LReport := ReadStudioReview(ACatalogRoot, QueryValue(ARequest.Query, 'id'));
+    end
+    else if (ARequest.Method = 'POST') and (ARequest.Path = '/api/studio/review') then
+    begin
+      LBody := ParseBodyObject(ARequest.Body);
+      LReport := CreateStudioReview(ACatalogRoot, LBody);
+    end
+    else if (ARequest.Method = 'POST') and (ARequest.Path = '/api/studio/review/response') then
+    begin
+      LBody := ParseBodyObject(ARequest.Body);
+      LReport := CommitStudioReview(ACatalogRoot, LBody);
+    end
+    else if (ARequest.Method = 'POST') and (ARequest.Path = '/api/studio/review/pin') then
+    begin
+      LBody := ParseBodyObject(ARequest.Body);
+      Need((LBody.Count = 3) and (LBody.Find('review_id') <> nil) and
+        (LBody.Find('expected_revision') <> nil) and (LBody.Find('pinned') <> nil) and
+        (LBody.Find('pinned').JSONType = jtBoolean), 'Choose a review and explicit pin state');
+      LReport := PinStudioReview(ACatalogRoot, LBody.Strings['review_id'],
+        LBody.Int64s['expected_revision'], LBody.Booleans['pinned']);
+    end
+    else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/review/next-batch') then
+    begin
+      LReport := PrepareStudioNextBatch(ACatalogRoot, QueryValue(ARequest.Query, 'id'),
+        QueryValue(ARequest.Query, 'sample'));
+    end
+    else if ((ARequest.Method = 'GET') or (ARequest.Method = 'HEAD')) and
+      (ARequest.Path = '/api/studio/review-audio') then
+    begin
+      LAsset := ResolveStudioReviewAsset(ACatalogRoot, QueryValue(ARequest.Query, 'id'),
+        QueryValue(ARequest.Query, 'sample'));
+      try
+        LMediaStream := TFileStream.Create(LAsset.Strings['path'], fmOpenRead or fmShareDenyWrite);
+        try
+          Need(LMediaStream.Size = LAsset.Int64s['bytes'], 'Review audio size changed');
+          LHash := StudioTextHash('review-media:' + QueryValue(ARequest.Query, 'id') + ':' +
+            QueryValue(ARequest.Query, 'sample'));
+          AHandedOff := DispatchListeningMedia(ASocket, LMediaStream,
+            ARequest.Method, ARequest.Range, ARequest.IfRange, LHash,
+            LAsset.Strings['path'], LAsset.Int64s['bytes'], LAsset.Strings['sha256']);
+          if AHandedOff then
+          begin
+            LMediaStream := nil;
+          end;
+        finally
+          LMediaStream.Free;
+        end;
+      finally
+        LAsset.Free;
+      end;
+      Exit;
+    end
+    else if (ARequest.Method = 'GET') and
       (ARequest.Path = '/api/studio/projects') then
     begin
       LReport := ListStudioProjects(ACatalogRoot);
+    end
+    else if (ARequest.Method = 'GET') and
+      (ARequest.Path = '/api/studio/project-revision') then
+    begin
+      LReport := ReadStudioProjectRevision(ACatalogRoot,
+        QueryValue(ARequest.Query, 'id'), QueryInteger(ARequest.Query, 'revision'));
     end
     else if (ARequest.Method = 'GET') and
       (ARequest.Path = '/api/studio/project') then
@@ -1036,6 +1239,48 @@ begin
     begin
       LBody := ParseStudioProjectWrite(ARequest.Body);
       LReport := SaveStudioProject(ACatalogRoot, LBody);
+    end
+    else if (ARequest.Method = 'GET') and
+      (ARequest.Path = '/api/studio/jobs') then
+    begin
+      LReport := ListStudioJobs(ACatalogRoot);
+      LReport.Add('worker_available', GStudioSupervisor <> nil);
+      if GStudioSupervisor <> nil then
+      begin
+        LReport.Add('worker_error', GStudioSupervisor.LastError);
+      end;
+    end
+    else if (ARequest.Method = 'GET') and
+      (ARequest.Path = '/api/studio/job') then
+    begin
+      LReport := ReadStudioJob(ACatalogRoot, QueryValue(ARequest.Query, 'id'));
+    end
+    else if (ARequest.Method = 'POST') and
+      (ARequest.Path = '/api/studio/preflight') then
+    begin
+      LBody := ParseStudioJobWrite(ARequest.Body);
+      LReport := PrepareStudioJob(ACatalogRoot, LBody);
+      LReport.Add('worker_available', GStudioSupervisor <> nil);
+    end
+    else if (ARequest.Method = 'POST') and
+      (ARequest.Path = '/api/studio/job') then
+    begin
+      Need(GStudioSupervisor <> nil, 'Studio worker is not installed. Stage the worker beside the service.');
+      LBody := ParseStudioJobWrite(ARequest.Body);
+      LReport := EnqueueStudioJob(ACatalogRoot, LBody);
+      GStudioSupervisor.Notify;
+    end
+    else if (ARequest.Method = 'POST') and
+      (ARequest.Path = '/api/studio/cancel') then
+    begin
+      LBody := ParseBodyObject(ARequest.Body);
+      Need((LBody.Count = 1) and (LBody.Find('job_id') <> nil) and
+        (LBody.Find('job_id').JSONType = jtString), 'Cancel requires a job identity');
+      LReport := CancelStudioJob(ACatalogRoot, LBody.Strings['job_id']);
+      if GStudioSupervisor <> nil then
+      begin
+        GStudioSupervisor.Notify;
+      end;
     end
     else if (ARequest.Method = 'GET') and
       (ARequest.Path = '/api/inbox') then
@@ -1051,6 +1296,19 @@ begin
       (ARequest.Path = '/api/listen-queue') then
     begin
       LReport := ReadListeningQueue(ACatalogRoot);
+      for LRowName in CListeningLists do
+      begin
+        LRows := LReport.Arrays[LRowName];
+        for LIndex := LRows.Count - 1 downto 0 do
+        begin
+          if IsStudioReviewListeningItemHidden(ACatalogRoot, LRows.Objects[LIndex].Strings['id']) then
+          begin
+            LRows.Delete(LIndex);
+          end;
+        end;
+      end;
+      LReport.Integers['waiting_count'] := LReport.Arrays['items'].Count;
+      LReport.Integers['completed_count'] := LReport.Arrays['completed'].Count;
     end
     else if (ARequest.Method = 'GET') and
       (ARequest.Path = '/api/proposals') then
@@ -1124,6 +1382,8 @@ begin
       (ARequest.Method = 'HEAD')) and
       (ARequest.Path = '/api/listen-audio') then
     begin
+      Need(not IsStudioReviewListeningItemHidden(ACatalogRoot,
+        QueryValue(ARequest.Query, 'request')), 'Use the masked review player for this sample');
       LAsset := ResolveListeningAsset(ACatalogRoot,
         QueryValue(ARequest.Query, 'request'),
         QueryValue(ARequest.Query, 'asset'));
@@ -1439,11 +1699,46 @@ begin
     '; enter it once per trusted browser origin.');
 end;
 
+function ReadyCatalogListener(const APrimary, ALoopback: Integer): Integer;
+var
+  LSet: TFDSet;
+  LReady: Integer;
+begin
+  if ALoopback < 0 then
+  begin
+    Exit(APrimary);
+  end;
+  {$IFDEF MSWINDOWS}
+  FD_ZERO(LSet);
+  FD_SET(APrimary, LSet);
+  FD_SET(ALoopback, LSet);
+  LReady := WinSock2.select(0, @LSet, nil, nil, nil);
+  Need(LReady > 0, 'Catalog listener readiness failed');
+  if FD_ISSET(ALoopback, LSet) then
+  {$ELSE}
+  fpFD_ZERO(LSet);
+  fpFD_SET(APrimary, LSet);
+  fpFD_SET(ALoopback, LSet);
+  LReady := fpSelect(Math.Max(APrimary, ALoopback) + 1, @LSet, nil, nil, nil);
+  Need(LReady > 0, 'Catalog listener readiness failed');
+  if fpFD_ISSET(ALoopback, LSet) <> 0 then
+  {$ENDIF}
+  begin
+    Result := ALoopback;
+  end
+  else
+  begin
+    Result := APrimary;
+  end;
+end;
+
 procedure RunCatalogHttp(const AInboxRoot, ACatalogRoot,
   ABindAddress: String; const APort, AMaximumRequests: Integer;
   const AStaticRoot: String; const AOpenLan: Boolean);
 var
   LListener: Integer;
+  LLoopback: Integer;
+  LReadyListener: Integer;
   LClient: Integer;
   LAddress: TInetSockAddr;
   LCount: Integer;
@@ -1451,6 +1746,8 @@ var
   LToken: String;
   LAccessKey: String;
   LHandedOff: Boolean;
+  LWorkerPath: String;
+  LLibraryRoot: String;
 begin
   Need(ValidBindAddress(ABindAddress),
     'Bind address must be loopback or a private LAN IPv4 address');
@@ -1474,12 +1771,14 @@ begin
       FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'listen.css') and
       FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'studio.html') and
       FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'studio.js') and
-      FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'studio.css'),
+      FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'studio.css') and
+      FileExists(IncludeTrailingPathDelimiter(AStaticRoot) + 'capture-worklet.js'),
       'Configured browser assets are incomplete');
   end;
   Need(CreateGUID(LGuid) = 0, 'Could not create HTTP session token');
   LToken := GUIDToString(LGuid);
   LListener := fpSocket(AF_INET, SOCK_STREAM, 0);
+  LLoopback := -1;
   Need(LListener >= 0, 'Could not create HTTP listener');
   try
     FillChar(LAddress, SizeOf(LAddress), 0);
@@ -1494,20 +1793,53 @@ begin
       LAccessKey := PersistentLanAccessKey(ACatalogRoot);
     end;
     Need(fpListen(LListener, 8) = 0, 'Could not listen on catalog address');
+    if (ABindAddress <> '127.0.0.1') and (AStaticRoot <> '') then
+    begin
+      LLoopback := fpSocket(AF_INET, SOCK_STREAM, 0);
+      Need(LLoopback >= 0, 'Could not create local Studio listener');
+      LAddress.sin_addr := StrToNetAddr('127.0.0.1');
+      Need(fpBind(LLoopback, @LAddress, SizeOf(LAddress)) = 0,
+        'Could not bind local Studio address');
+      Need(fpListen(LLoopback, 8) = 0, 'Could not listen on local Studio address');
+      WriteLn('Pythian local Studio: http://127.0.0.1:', APort, '/studio.html');
+    end;
+    LWorkerPath := SysUtils.GetEnvironmentVariable('PYTHIAN_STUDIO_WORKER');
+    if LWorkerPath = '' then
+    begin
+      LWorkerPath := IncludeTrailingPathDelimiter(ExtractFilePath(ExpandFileName(ParamStr(0)))) +
+        'pythian.studio.worker' {$IFDEF MSWINDOWS} + '.exe' {$ENDIF};
+    end;
+    LLibraryRoot := SysUtils.GetEnvironmentVariable('PYTHIAN_AUDIO_LIBRARY');
+    if LLibraryRoot = '' then
+    begin
+      LLibraryRoot := ExpandFileName('local-audio');
+    end;
+    if FileExists(LWorkerPath) then
+    begin
+      GStudioSupervisor := TStudioJobSupervisor.Create(ACatalogRoot, LLibraryRoot, LWorkerPath);
+    end;
     WriteLn('Pythian catalog API: http://', ABindAddress, ':',
       APort, '/api/session');
     Flush(Output);
     LCount := 0;
     while (AMaximumRequests = 0) or (LCount < AMaximumRequests) do
     begin
-      LClient := fpAccept(LListener, nil, nil);
+      LReadyListener := ReadyCatalogListener(LListener, LLoopback);
+      LClient := fpAccept(LReadyListener, nil, nil);
       Need(LClient >= 0, 'HTTP listener accept failed');
       LHandedOff := False;
       try
         try
-          HandleClient(LClient, APort, AInboxRoot, ACatalogRoot,
-            AStaticRoot, ABindAddress, LToken, LAccessKey, AOpenLan,
-            LHandedOff);
+          if LReadyListener = LLoopback then
+          begin
+            HandleClient(LClient, APort, AInboxRoot, ACatalogRoot,
+              AStaticRoot, '127.0.0.1', LToken, '', False, LHandedOff);
+          end
+          else
+          begin
+            HandleClient(LClient, APort, AInboxRoot, ACatalogRoot,
+              AStaticRoot, ABindAddress, LToken, LAccessKey, AOpenLan, LHandedOff);
+          end;
         except
           on LError: Exception do
           begin
@@ -1521,7 +1853,12 @@ begin
       Inc(LCount);
     end;
   finally
+    FreeAndNil(GStudioSupervisor);
     CloseSocket(LListener);
+    if LLoopback >= 0 then
+    begin
+      CloseSocket(LLoopback);
+    end;
   end;
 end;
 

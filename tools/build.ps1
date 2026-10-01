@@ -113,6 +113,13 @@ try {
   $studioProjectRoot = Join-Path $buildRoot ('studio-project-' + [Guid]::NewGuid().ToString('N'))
   & (Join-Path $buildRoot "pythian.tests.studio.projects$executableSuffix") $studioProjectRoot
   if ($LASTEXITCODE -ne 0) { throw 'Studio project persistence checks failed' }
+  foreach ($studioComponent in @('library', 'jobs', 'effects', 'capture')) {
+    & $compilerPath @compilerArgs '-gh' '-Futools' "tests/pythian.tests.studio.$studioComponent.lpr"
+    if ($LASTEXITCODE -ne 0) { throw "Studio $studioComponent compilation failed" }
+    $studioFixtureRoot = Join-Path $buildRoot ("studio-$studioComponent-" + [Guid]::NewGuid().ToString('N'))
+    & (Join-Path $buildRoot "pythian.tests.studio.$studioComponent$executableSuffix") $studioFixtureRoot
+    if ($LASTEXITCODE -ne 0) { throw "Studio $studioComponent checks failed" }
+  }
   & $compilerPath @compilerArgs '-Futools' 'tools/pythian.part.controls.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Part control operator compilation failed' }
   & (Join-Path $buildRoot "pythian.part.controls$executableSuffix") '--controls'
@@ -468,6 +475,15 @@ try {
     New-Item -ItemType Directory -Force $adapterUnitRoot | Out-Null
     $adapterArgs = @('-B', '-Sa', '-Cr', '-Co', '-Ci', '-gl', '-Fusrc',
       '-Fuadapters/wfc', '-Fuvendor/wfc/src', '-Futools', "-FU$adapterUnitRoot", "-FE$buildRoot")
+    & $compilerPath @adapterArgs 'tools/pythian.studio.worker.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Studio native worker compilation failed' }
+    foreach ($studioComponent in @('worker', 'supervisor', 'reviews')) {
+      & $compilerPath @adapterArgs '-gh' "tests/pythian.tests.studio.$studioComponent.lpr"
+      if ($LASTEXITCODE -ne 0) { throw "Studio $studioComponent compilation failed" }
+      $studioFixtureRoot = Join-Path $buildRoot ("studio-$studioComponent-" + [Guid]::NewGuid().ToString('N'))
+      & (Join-Path $buildRoot "pythian.tests.studio.$studioComponent$executableSuffix") $studioFixtureRoot
+      if ($LASTEXITCODE -ne 0) { throw "Studio $studioComponent checks failed" }
+    }
     & $compilerPath @adapterArgs 'examples/pythian.example.wfc.provider.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Caller-provider example compilation failed' }
     $providerConsumer = Join-Path $buildRoot "pythian.example.wfc.provider$executableSuffix"

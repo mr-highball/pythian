@@ -10,7 +10,19 @@ corpus_05 criteria at their declared scope. The maintained
 consumer close evaluation_01 AC1 only; independent grounding/calibration and
 full comparator/control outcomes remain open. This does not qualify inferred
 musical styles, many-hour acceptance or outside use. The dated audit below
-retains its original evidence scope; live credit is **49.40 / 50.60 remaining**.
+retains its original evidence scope; live credit is owned by the
+[milestone ledger](MILESTONES.md#north-star-assessment).
+
+2026-10-01 implementation update: [Studio](OPERATOR-STUDIO.md) now connects
+private collections and classified passages, native effects, bounded raw WFC
+jobs, comparative feedback, and experimental WAV/microphone-to-MIDI previews.
+Independent native checks pass on stable Win32/Win64; private corpora, effects
+and capture/exploration pass current desktop/narrow acceptance. Bounded raw WFC
+jobs pass, including cancellation/reopen display; comparative iteration awaits the actual
+operator verdict. This exposes current capability without granting scientific
+inference or musical-quality credit. Mixed-rate/channel corpus preparation has
+its own linked task. The dated capability audit below is historical; current
+acceptance and remaining scope belong to the task and milestone ledgers.
 
 The bounded [caller-provider outcome](TODO/DONE/NS-4_providers_01.md) is now
 accepted at frozen `bdd55eb04a89d0271241da6111f42e47039055d6`: explicit borrowed

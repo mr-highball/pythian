@@ -10,16 +10,19 @@ web workflow. Reuse durable listening decisions rather than create a second
 answer store. See the [studio scope](../OPERATOR-STUDIO.md).
 
 North star: NS-6. Outcome owner: OPERATOR-STUDIO.
-Completion credit: 4 goal percentage points (0.40 overall points).
+Completion credit: 2 goal percentage points (0.20 overall points).
 Basis: [2026-09-30 operator allocation](../OPERATOR-STUDIO.md#allocation-and-ownership).
 This owns usable feedback/iteration, not the scientific validity of style limits;
 [evaluation_01](NS-5_evaluation_01.md) and evaluation_04 retain that acceptance.
 
-Execution status: follows studio_02. Next deliverable is one complete audition,
-response, comparison and deliberately changed next-batch loop. Closing evidence:
-real operator use, durable response readback, preserved history and reproducible
-next-batch lineage. Stop at ambiguous question intent, missing playback/Save state,
-unbound feedback or an unsupported control; do not request unexplained markers.
+Execution status: engineering is ready for actual operator review. Independent
+native and desktop/narrow QA passes the single/paired audition, response,
+comparison, blind presentation, history and deliberate next-batch loop. Next
+deliverable: the operator's understandable-purpose, audible-use and useful-feedback
+verdict under AC5. Closing evidence remains real operator use with durable response
+readback and preserved history/lineage. Stop at ambiguous purpose, missing
+playback/Save state, unbound feedback or an unsupported control. This task remains
+open; mechanical answers earn no musical verdict or completion credit.
 
 **Acceptance Criteria:**
 
@@ -50,10 +53,55 @@ unbound feedback or an unsupported control; do not request unexplained markers.
 
 **Blockers**
 
-- [NS-6_studio_02.md](NS-6_studio_02.md)
+- [NS-6_studio_02.md](DONE/NS-6_studio_02.md)
 - [NS-5_evaluation_03.md](DONE/NS-5_evaluation_03.md)
 
 **Dev Notes:**
+
+- 2026-10-01, Neo: Salty's frozen final browser engineering PASS is retained in
+  `build/salty-studio-browser-20261001/VERDICT.txt` and its identity packet. It
+  includes single/paired playback, timestamp comments, unknown choices, blind
+  payload/media masking, one durable lost-response retry, pinning without lost
+  drafts, conflict/history and explicit next-batch preparation with no enqueue.
+  The actual operator's musical/usefulness verdict remains open under AC5; no
+  task credit, calibrated musical limit or untouched source family is claimed.
+
+- 2026-10-01, Neo: native review sessions bind one or two verified generated
+  outputs to server-randomized neutral sample aliases. Ordinary review payloads
+  and listening-queue projection withhold alias assignments until a submitted
+  response; withdrawal cannot undo exposure after reveal. Local files are not a
+  secrecy boundary. Answers reuse the existing listening journals, with
+  revision conflicts, identical lost-response retry, unknown choices, 0–3 word
+  anchors and exact playhead comments. Pins have separate revisioned metadata.
+  Next-batch preparation returns retained controls/corpus revision and parent
+  identity without enqueueing, retraining or admitting generated audio.
+- 2026-10-01, Neo: independent Salty native QA passes 42 checks on each stable
+  Win32/Win64 target with zero leaks, including actual generated audio, blind
+  payload exclusion, correction/withdrawal history, sticky reveal, pin/retry,
+  five-event export, fresh verified-asset replay and identical reexport.
+  Frozen evidence is under `build/salty-studio-native-20261001/`. The new Pascal
+  browser module uses human audition labels, preserves unsaved answers during
+  pinning, retains pending Save identity and awaits successful next-batch project
+  loading before reporting preparation. Root's development browser loop passes;
+  independent complete desktop/narrow QA and the actual operator's audible,
+  understandable-purpose/usefulness verdict remain pending. Native submitted
+  failures are zero. Frozen presentation creates no untouched holdout, calibrated
+  musical limit or task credit.
+- 2026-10-01, Neo: Big Boss's development desktop/narrow review loop passes
+  comparison playback, feedback Save, pinning and next-batch preparation. The
+  narrow layout repair removes the old two-column placeholder and constrains
+  audio, fieldsets and identity text to the available width. This is retained
+  development evidence; independent final browser QA and the operator's musical
+  verdict remain separate requirements.
+
+- 2026-09-30, Big Boss: a second unearned point transfers to effects preparation
+  [studio_05](DONE/NS-6_studio_05.md). Generated feedback and deliberate next-batch
+  requirements remain unchanged; derived sources retain their original family.
+
+- 2026-09-30, Big Boss: one unearned NS-6 point transfers to the distinct private
+  source-library/classification outcome [studio_04](DONE/NS-6_studio_04.md). All
+  generated-feedback and iteration criteria above remain required. Source
+  classifications and generated-output preferences remain separate evidence.
 
 - 2026-09-30, Big Boss: one operator can define a caller-specific preference card;
   this does not require a universal genre panel. Reliable calibration still needs

@@ -31,7 +31,12 @@ uses
   JS,
   Web,
   SysUtils,
-  Math;
+  Math,
+  pythian.studio.sources,
+  pythian.studio.batches,
+  pythian.studio.effects,
+  pythian.studio.capture,
+  pythian.studio.reviews;
 
 type
   TStudioWindow = class external name 'Window' (TJSWindow)
@@ -40,6 +45,12 @@ type
 
   TStudio = class
   private
+    FSourceEditor: TStudioSourceEditor;
+    FBatches: TStudioBatches;
+    FEffects: TStudioEffects;
+    FCapture: TStudioCapture;
+    FReviews: TStudioReviews;
+    FSavedProject: TJSObject;
     FToken: String;
     FProjectId: String;
     FRevision: Integer;
@@ -52,6 +63,8 @@ type
     FEpoch: Integer;
     FPendingWrite: TJSObject;
     FConflict: Boolean;
+    FRefreshBusy: Boolean;
+    FRefreshJobId: String;
     function El(const AId: String): TJSElement;
     function Input(const AId: String): TJSHTMLInputElement;
     function AddText(AParent: TJSElement; const ATag, AText, AClass: String): TJSElement;
@@ -60,6 +73,9 @@ type
     procedure LoadProject(const AId: String); async;
     procedure Save; async;
     procedure RefreshSources; async;
+    procedure CatalogSaved;
+    function UseNextBatch(APacket: TJSObject): TJSPromise;
+    function ApplyNextBatch(APacket: TJSObject): Boolean; async;
     procedure ApplyProject(AProject: TJSObject);
     procedure NewDraft;
     procedure DrawProjects;
@@ -83,11 +99,9 @@ type
     function HandleRefresh(AEvent: TJSMouseEvent): Boolean;
     function HandleProject(AEvent: TEventListenerEvent): Boolean;
     function HandleSearch(AEvent: TEventListenerEvent): Boolean;
-    function HandleTrack(AEvent: TEventListenerEvent): Boolean;
-    function HandleRange(AEvent: TEventListenerEvent): Boolean;
-    function HandleRangeMode(AEvent: TEventListenerEvent): Boolean;
     function HandleBeforeUnload(AEvent: TEventListenerEvent): Boolean;
     function HandleSubmit(AEvent: TEventListenerEvent): Boolean;
+    function HandleAnyPlay(AEvent: TEventListenerEvent): Boolean;
   public
     procedure Run;
   end;
@@ -257,6 +271,11 @@ begin
   AParent.appendChild(Result);
 end;
 
+function NetworkFailure(AReason: JSValue): JSValue;
+begin
+  raise Exception.Create('Connection interrupted. Reconnect and retry.');
+end;
+
 function TStudio.FetchApi(const APath, AMethod, ABody: String): TJSPromise;
 var
   LOptions: TJSObject;
@@ -287,7 +306,7 @@ begin
     LOptions['body'] := ABody;
   end;
   LOptions['headers'] := LHeaders;
-  Result := TStudioWindow(window).fetch(window.location.origin + APath, LOptions);
+  Result := TStudioWindow(window).fetch(window.location.origin + APath, LOptions).catch(@NetworkFailure);
 end;
 
 procedure TStudio.Status(const AText: String; AError: Boolean);
@@ -334,6 +353,7 @@ end;
 procedure TStudio.Changed;
 begin
   FDirty := True;
+  FBatches.SetProject(FSavedProject, True);
   FPendingWrite := nil;
   FConflict := False;
   UpdateSummary;
@@ -345,6 +365,7 @@ var
   LControls: array of String;
   LIndex: Integer;
 begin
+  FSourceEditor.SetDisabled(FBusy or not FConnected);
   LControls := ['style-name', 'style-qualities', 'learning-mode', 'new-draft',
     'draft-list', 'refresh-tracks', 'track-search'];
   for LIndex := 0 to High(LControls) do
@@ -358,6 +379,7 @@ begin
       El(LControls[LIndex]).removeAttribute('disabled');
     end;
   end;
+  TJSHTMLButtonElement(El('refresh-tracks')).disabled := FBusy or not FConnected or FRefreshBusy;
   TJSHTMLButtonElement(El('save-draft')).disabled := FBusy or not FConnected or
     ((not FDirty) and (FRevision > 0));
   TJSHTMLButtonElement(El('reload-draft')).disabled := FBusy or not FConnected or (FRevision = 0);
@@ -428,6 +450,8 @@ end;
 procedure TStudio.NewDraft;
 begin
   Inc(FEpoch);
+  FSavedProject := nil;
+  FBatches.SetProject(nil, False);
   FProjectId := 'style-' + IntToStr(TJSDate.now) + '-' + IntToStr(Random(1000000000));
   FRevision := 0;
   FDirty := False;
@@ -480,7 +504,9 @@ var
   LEvaluation: Integer;
   LName: String;
   LRoute: String;
+  LHashes: TJSArray;
 begin
+  LHashes := TJSArray.new;
   case Input('learning-mode').value of
     'raw_acoustic': LRoute := 'Acoustic recombination';
     'reference_events': LRoute := 'Reference-assisted notes';
@@ -508,7 +534,11 @@ begin
         LSeconds := LSeconds + (Num(LSelected, 'end_frame') - Num(LSelected, 'start_frame')) /
           Num(LTrack, 'sample_rate');
       end;
-      Inc(LCount);
+      if LHashes.indexOf(Str(LSelected, 'source_sha256')) < 0 then
+      begin
+        LHashes.push(Str(LSelected, 'source_sha256'));
+        Inc(LCount);
+      end;
       if Str(LTrack, 'partition') = 'evaluation' then
       begin
         Inc(LEvaluation);
@@ -544,308 +574,14 @@ begin
   end
   else
   begin
-    El('draft-caption').textContent := LName + ' · ' + IntToStr(LCount) + ' recording(s) selected.';
+    El('draft-caption').textContent := LName + ' · ' + IntToStr(LCount) +
+      ' recording(s), ' + IntToStr(FSelections.length) + ' selection(s).';
   end;
 end;
 
 procedure TStudio.DrawTracks;
-var
-  LRoot: TJSElement;
-  LCard: TJSElement;
-  LLabel: TJSElement;
-  LText: TJSElement;
-  LDetails: TJSElement;
-  LFields: TJSElement;
-  LHelp: TJSElement;
-  LCheckbox: TJSHTMLInputElement;
-  LRangeMode: TJSHTMLInputElement;
-  LStart: TJSHTMLInputElement;
-  LEnd: TJSHTMLInputElement;
-  LTrack: TJSObject;
-  LSelected: TJSObject;
-  LIndex: Integer;
-  LHash: String;
-  LQuery: String;
-  LMeta: String;
-  LIsRange: Boolean;
-  LShown: Integer;
 begin
-  LRoot := El('tracks');
-  LRoot.innerHTML := '';
-  LQuery := LowerCase(Trim(Input('track-search').value));
-  LShown := 0;
-  for LIndex := 0 to FTracks.length - 1 do
-  begin
-    LTrack := Obj(FTracks[LIndex]);
-    LHash := Str(LTrack, 'source_sha256');
-    LSelected := FindSelection(LHash);
-    if (LQuery <> '') and (Pos(LQuery, LowerCase(TrackTitle(LTrack))) = 0) and
-      (LSelected = nil) then
-    begin
-      Continue;
-    end;
-    Inc(LShown);
-    LCard := AddText(LRoot, 'div', '', 'track');
-    if LSelected <> nil then
-    begin
-      LCard.className := 'track selected';
-    end;
-    LLabel := AddText(LCard, 'label', '', 'track-toggle');
-    LCheckbox := TJSHTMLInputElement(document.createElement('input'));
-    LCheckbox.id := 'pick-' + LHash;
-    LCheckbox.setAttribute('type', 'checkbox');
-    LCheckbox.checked := LSelected <> nil;
-    LCheckbox.disabled := FBusy or not FConnected or
-      (Str(LTrack, 'partition') = 'evaluation');
-    LCheckbox.setAttribute('data-source', LHash);
-    LCheckbox.addEventListener('change', @HandleTrack);
-    LLabel.appendChild(LCheckbox);
-    LText := AddText(LLabel, 'span', '', '');
-    AddText(LText, 'span', TrackTitle(LTrack), 'track-name');
-    LMeta := TimeText(Num(LTrack, 'frame_count') * 1000 / Num(LTrack, 'sample_rate'));
-    if Str(LTrack, 'partition') = 'evaluation' then
-    begin
-      LMeta := LMeta + ' · Evaluation only — reserved from training';
-    end
-    else if Str(LTrack, 'partition') = 'unassigned' then
-    begin
-      LMeta := LMeta + ' · Use not assigned — draft selection allowed';
-    end
-    else
-    begin
-      LMeta := LMeta + ' · Imported recording';
-    end;
-    AddText(LText, 'span', LMeta, 'track-meta');
-    if LSelected <> nil then
-    begin
-      LDetails := AddText(LCard, 'details', '', '');
-      AddText(LDetails, 'summary', 'Choose a time range', '');
-      LLabel := AddText(LDetails, 'label', '', 'track-toggle');
-      LRangeMode := TJSHTMLInputElement(document.createElement('input'));
-      LRangeMode.setAttribute('type', 'checkbox');
-      LRangeMode.checked := Str(LSelected, 'selection') = 'range';
-      LRangeMode.disabled := FBusy;
-      LRangeMode.setAttribute('data-source', LHash);
-      LRangeMode.addEventListener('change', @HandleRangeMode);
-      LLabel.appendChild(LRangeMode);
-      AddText(LLabel, 'span', 'Use only part of this recording', '');
-      LIsRange := LRangeMode.checked;
-      LFields := AddText(LDetails, 'div', '', 'range-fields');
-      LLabel := AddText(LFields, 'label', 'Start (minutes:seconds)', '');
-      LStart := TJSHTMLInputElement(document.createElement('input'));
-      LStart.setAttribute('type', 'text');
-      LStart.id := 'start-' + LHash;
-      LStart.value := Str(LSelected, 'start_text');
-      LStart.placeholder := '0:00';
-      LStart.disabled := FBusy or not LIsRange;
-      LStart.setAttribute('data-source', LHash);
-      LStart.setAttribute('aria-describedby', 'range-help-' + LHash + ' range-error-' + LHash);
-      LStart.addEventListener('input', @HandleRange);
-      LLabel.appendChild(LStart);
-      LLabel := AddText(LFields, 'label', 'End (minutes:seconds)', '');
-      LEnd := TJSHTMLInputElement(document.createElement('input'));
-      LEnd.setAttribute('type', 'text');
-      LEnd.id := 'end-' + LHash;
-      LEnd.value := Str(LSelected, 'end_text');
-      LEnd.placeholder := '1:30';
-      LEnd.disabled := FBusy or not LIsRange;
-      LEnd.setAttribute('data-source', LHash);
-      LEnd.setAttribute('aria-describedby', 'range-help-' + LHash + ' range-error-' + LHash);
-      LEnd.addEventListener('input', @HandleRange);
-      LLabel.appendChild(LEnd);
-      LHelp := AddText(LDetails, 'p', 'For example, 1:30 to 2:15. Optional milliseconds: 1:30.250. Times snap to source frames.', 'hint');
-      LHelp.id := 'range-help-' + LHash;
-      LHelp := AddText(LDetails, 'p', '', 'field-error');
-      LHelp.id := 'range-error-' + LHash;
-      LHelp.setAttribute('role', 'alert');
-      if Boolean(LSelected['range_invalid']) then
-      begin
-        LHelp.textContent := 'Enter valid times with the end after the start, inside this recording.';
-      end
-      else
-      begin
-        LHelp.setAttribute('hidden', '');
-      end;
-      LDetails := AddText(LCard, 'details', '', '');
-      AddText(LDetails, 'summary', 'Recording details', '');
-      AddText(LDetails, 'p', 'License: ' + Str(LTrack, 'license') + '. Source verification is pending before training. Song boundaries are not verified.', 'hint');
-    end;
-  end;
-  if LShown = 0 then
-  begin
-    El('tracks-empty').removeAttribute('hidden');
-    if FTracks.length = 0 then
-    begin
-      El('tracks-empty').textContent := 'No imported recordings yet. Import recordings into your source catalog, then refresh this list.';
-    end
-    else
-    begin
-      El('tracks-empty').textContent := 'No recording names match your search.';
-    end;
-  end
-  else
-  begin
-    El('tracks-empty').setAttribute('hidden', '');
-  end;
-end;
-
-function TStudio.HandleTrack(AEvent: TEventListenerEvent): Boolean;
-var
-  LInput: TJSHTMLInputElement;
-  LSelected: TJSObject;
-  LTrack: TJSObject;
-  LHash: String;
-  LIndex: Integer;
-begin
-  Result := False;
-  if FBusy then
-  begin
-    Exit;
-  end;
-  LInput := TJSHTMLInputElement(AEvent.target);
-  LHash := LInput.getAttribute('data-source');
-  LTrack := FindTrack(LHash);
-  if LTrack = nil then
-  begin
-    Exit;
-  end;
-  if LInput.checked then
-  begin
-    if FindSelection(LHash) = nil then
-    begin
-      LSelected := TJSObject.new;
-      LSelected['source_sha256'] := LHash;
-      LSelected['selection'] := 'full';
-      LSelected['start_frame'] := 0;
-      LSelected['end_frame'] := Num(LTrack, 'frame_count');
-      LSelected['start_text'] := '0:00';
-      LSelected['end_text'] := TimeText(Num(LTrack, 'frame_count') * 1000 / Num(LTrack, 'sample_rate'));
-      LSelected['range_invalid'] := False;
-      FSelections.push(LSelected);
-    end;
-  end
-  else
-  begin
-    for LIndex := FSelections.length - 1 downto 0 do
-    begin
-      if Str(Obj(FSelections[LIndex]), 'source_sha256') = LHash then
-      begin
-        FSelections.splice(LIndex, 1);
-      end;
-    end;
-  end;
-  Changed;
-  DrawTracks;
-  if document.getElementById('pick-' + LHash) <> nil then
-  begin
-    Input('pick-' + LHash).focus;
-  end
-  else
-  begin
-    Input('track-search').focus;
-  end;
-end;
-
-function TStudio.HandleRangeMode(AEvent: TEventListenerEvent): Boolean;
-var
-  LInput: TJSHTMLInputElement;
-  LSelected: TJSObject;
-  LHash: String;
-begin
-  Result := False;
-  if FBusy then
-  begin
-    Exit;
-  end;
-  LInput := TJSHTMLInputElement(AEvent.target);
-  LHash := LInput.getAttribute('data-source');
-  LSelected := FindSelection(LHash);
-  if LSelected = nil then
-  begin
-    Exit;
-  end;
-  if LInput.checked then
-  begin
-    LSelected['selection'] := 'range';
-  end
-  else
-  begin
-    LSelected['selection'] := 'full';
-    LSelected['range_invalid'] := False;
-  end;
-  Input('start-' + LHash).disabled := not LInput.checked;
-  Input('end-' + LHash).disabled := not LInput.checked;
-  El('range-error-' + LHash).setAttribute('hidden', '');
-  if LInput.checked then
-  begin
-    { Re-entering a range validates the visible fields, including stale errors. }
-    HandleRange(AEvent);
-  end
-  else
-  begin
-    Input('start-' + LHash).removeAttribute('aria-invalid');
-    Input('end-' + LHash).removeAttribute('aria-invalid');
-    Changed;
-  end;
-end;
-
-function TStudio.HandleRange(AEvent: TEventListenerEvent): Boolean;
-var
-  LInput: TJSHTMLInputElement;
-  LSelected: TJSObject;
-  LTrack: TJSObject;
-  LHash: String;
-  LStartMs: Double;
-  LEndMs: Double;
-  LStartFrame: Double;
-  LEndFrame: Double;
-  LValid: Boolean;
-begin
-  Result := False;
-  if FBusy then
-  begin
-    Exit;
-  end;
-  LInput := TJSHTMLInputElement(AEvent.target);
-  LHash := LInput.getAttribute('data-source');
-  LSelected := FindSelection(LHash);
-  LTrack := FindTrack(LHash);
-  if (LSelected = nil) or (LTrack = nil) then
-  begin
-    Exit;
-  end;
-  LSelected['start_text'] := Input('start-' + LHash).value;
-  LSelected['end_text'] := Input('end-' + LHash).value;
-  LValid := ParseTime(Str(LSelected, 'start_text'), LStartMs);
-  LValid := ParseTime(Str(LSelected, 'end_text'), LEndMs) and LValid;
-  LValid := LValid and (LStartMs < LEndMs) and
-    (LEndMs <= Num(LTrack, 'frame_count') * 1000 / Num(LTrack, 'sample_rate'));
-  if not LValid then
-  begin
-    LStartMs := 0;
-    LEndMs := 0;
-  end;
-  LStartFrame := Floor(LStartMs * Num(LTrack, 'sample_rate') / 1000);
-  LEndFrame := Ceil(LEndMs * Num(LTrack, 'sample_rate') / 1000);
-  LValid := LValid and (LStartFrame >= 0) and (LEndFrame > LStartFrame) and
-    (LEndFrame <= Num(LTrack, 'frame_count')) and (LEndFrame <= 9007199254740991);
-  LSelected['range_invalid'] := not LValid;
-  if LValid then
-  begin
-    LSelected['start_frame'] := LStartFrame;
-    LSelected['end_frame'] := LEndFrame;
-    El('range-error-' + LHash).setAttribute('hidden', '');
-    Input('start-' + LHash).removeAttribute('aria-invalid');
-    Input('end-' + LHash).removeAttribute('aria-invalid');
-  end
-  else
-  begin
-    El('range-error-' + LHash).textContent := 'Use minutes:seconds, with the end after the start and within this recording.';
-    El('range-error-' + LHash).removeAttribute('hidden');
-    Input('start-' + LHash).setAttribute('aria-invalid', 'true');
-    Input('end-' + LHash).setAttribute('aria-invalid', 'true');
-  end;
-  Changed;
+  FSourceEditor.Bind(FTracks, FSelections, FBusy or not FConnected);
 end;
 
 procedure TStudio.ApplyProject(AProject: TJSObject);
@@ -863,7 +599,7 @@ begin
     raise Exception.Create('This page supports untrained style drafts only.');
   end;
   LSources := Arr(AProject, 'sources');
-  if (LSources = nil) or (LSources.length < 1) or (LSources.length > 32) then
+  if (LSources = nil) or (LSources.length < 1) or (LSources.length > 64) then
   begin
     raise Exception.Create('The saved draft has an unsupported source selection.');
   end;
@@ -902,6 +638,14 @@ begin
     LSelection['start_text'] := TimeText(Num(LSource, 'start_frame') * 1000 / Num(LSource, 'sample_rate'));
     LSelection['end_text'] := TimeText(Num(LSource, 'end_frame') * 1000 / Num(LSource, 'sample_rate'));
     LSelection['range_invalid'] := False;
+    if Arr(LSource, 'classifications') <> nil then
+    begin
+      LSelection['classifications'] := Arr(LSource, 'classifications').slice;
+    end
+    else
+    begin
+      LSelection['classifications'] := TJSArray.new;
+    end;
     FSelections.push(LSelection);
   end;
   FProjectId := Str(AProject, 'project_id');
@@ -909,6 +653,8 @@ begin
   Input('style-name').value := Str(AProject, 'name');
   TJSHTMLTextAreaElement(El('style-qualities')).value := Str(AProject, 'style_intent');
   Input('learning-mode').value := Str(AProject, 'learning_mode');
+  FSavedProject := CloneObject(AProject);
+  FBatches.SetProject(FSavedProject, False);
   FDirty := False;
   FPendingWrite := nil;
   FConflict := False;
@@ -949,9 +695,9 @@ begin
     El('style-qualities').setAttribute('aria-invalid', 'true');
     LValid := False;
   end;
-  if (FSelections.length < 1) or (FSelections.length > 32) then
+  if (FSelections.length < 1) or (FSelections.length > 64) then
   begin
-    ErrorAt('tracks-error', 'Select between 1 and 32 recordings for this draft.');
+    ErrorAt('tracks-error', 'Select 1 to 64 passages from at most 32 recordings.');
     LValid := False;
   end;
   for LIndex := 0 to FSelections.length - 1 do
@@ -980,6 +726,7 @@ begin
     LSource := TJSObject.new;
     LSource['source_sha256'] := Str(LSelection, 'source_sha256');
     LSource['selection'] := Str(LSelection, 'selection');
+    LSource['classifications'] := Arr(LSelection, 'classifications');
     if Str(LSelection, 'selection') = 'range' then
     begin
       LSource['start_frame'] := Num(LSelection, 'start_frame');
@@ -1019,6 +766,11 @@ begin
     LWrite := Obj(LWriteSources[LIndex]);
     if (Str(LSaved, 'source_sha256') <> Str(LWrite, 'source_sha256')) or
       (Str(LSaved, 'selection') <> Str(LWrite, 'selection')) then
+    begin
+      Exit;
+    end;
+    if TJSJSON.stringify(LSaved['classifications']) <>
+      TJSJSON.stringify(LWrite['classifications']) then
     begin
       Exit;
     end;
@@ -1109,6 +861,29 @@ begin
     begin
       raise Exception.Create('The recording list is not supported by this Studio.');
     end;
+    LResponse := await(TJSResponse, FetchApi('/api/studio/library', 'GET', ''));
+    if LEpoch <> FEpoch then
+    begin
+      Exit;
+    end;
+    if LResponse.status <> 200 then
+    begin
+      raise Exception.Create('Library refresh details could not be loaded.');
+    end;
+    LData := await(TJSObject, LResponse.json());
+    if LEpoch <> FEpoch then
+    begin
+      Exit;
+    end;
+    El('library-summary').textContent :=
+      'Folder scan: ' + IntToStr(Trunc(Num(LData, 'recording_count'))) + ' recordings in ' +
+      IntToStr(Trunc(Num(LData, 'collection_count'))) + ' collections. Latest refresh: ' +
+      IntToStr(Trunc(Num(LData, 'imported_count'))) + ' new, ' +
+      IntToStr(Trunc(Num(LData, 'duplicate_file_count'))) + ' duplicate files, ' +
+      IntToStr(Trunc(Num(LData, 'changed_count'))) + ' changed, ' +
+      IntToStr(Trunc(Num(LData, 'missing_count'))) + ' missing, ' +
+      IntToStr(Trunc(Num(LData, 'unsupported_count'))) + ' unsupported. ' +
+      'Saved sources and corpus versions remain available.';
     LResponse := await(TJSResponse, FetchApi('/api/studio/projects', 'GET', ''));
     if LEpoch <> FEpoch then
     begin
@@ -1150,6 +925,9 @@ begin
     FTracks := LTracks;
     FProjects := LProjects;
     FConnected := True;
+    FBatches.Refresh;
+    FReviews.Refresh;
+    FCapture.Refresh;
     Status('Choose recordings and save your project draft.');
     DrawProjects;
   except
@@ -1181,8 +959,126 @@ begin
 end;
 
 procedure TStudio.RefreshSources; async;
+var
+  LWrite: TJSObject;
+  LData: TJSObject;
+  LResponse: TJSResponse;
+  LStatus: String;
+  LAttempt: Integer;
+begin
+  if FRefreshBusy then
+  begin
+    Exit;
+  end;
+  FRefreshBusy := True;
+  TJSHTMLButtonElement(El('refresh-tracks')).disabled := True;
+  try
+    if FRefreshJobId = '' then
+    begin
+      FRefreshJobId := 'library-' + FloatToStr(TJSDate.now) + '-' +
+        IntToStr(Random(100000000));
+    end;
+    LWrite := TJSObject.new;
+    LWrite['format'] := 'pythian.studio.job.write.v1';
+    LWrite['job_id'] := FRefreshJobId;
+    LWrite['kind'] := 'library_refresh';
+    Status('Refreshing private collections… You can keep editing your corpus.');
+    LResponse := await(TJSResponse, FetchApi('/api/studio/job', 'POST', TJSJSON.stringify(LWrite)));
+    if LResponse.status <> 200 then
+    begin
+      raise Exception.Create(await(String, LResponse.text()));
+    end;
+    LData := await(TJSObject, LResponse.json());
+    LStatus := Str(LData, 'status');
+    LAttempt := 0;
+    while (LStatus = 'queued') or (LStatus = 'running') do
+    begin
+      Inc(LAttempt);
+      if LAttempt > 660 then
+      begin
+        raise Exception.Create('Library refresh is still pending. Retry to check its existing job.');
+      end;
+      await(JSValue, TJSPromise.new(
+        procedure(AResolve, AReject: TJSPromiseResolver)
+        begin
+          window.setTimeout(procedure() begin AResolve(True); end, 1000);
+        end));
+      LResponse := await(TJSResponse, FetchApi('/api/studio/job?id=' + FRefreshJobId, 'GET', ''));
+      if LResponse.status <> 200 then
+      begin
+        raise Exception.Create('Could not check library refresh. Retry to reconnect.');
+      end;
+      LData := await(TJSObject, LResponse.json());
+      LStatus := Str(LData, 'status');
+      Status('Library refresh: ' + Str(LData, 'stage') + '. Your edits remain available.');
+    end;
+    FRefreshJobId := '';
+    if LStatus <> 'completed' then
+    begin
+      raise Exception.Create('Library refresh ' + LStatus + ': ' + Str(LData, 'error_message'));
+    end;
+    Connect;
+  except
+    on LError: Exception do
+    begin
+      Status('Refresh failed. ' + LError.Message + ' Your corpus edits are preserved.', True);
+    end;
+  else
+    Status('Refresh connection failed. Retry to reconnect to the same job.', True);
+  end;
+  FRefreshBusy := False;
+  UpdateState;
+end;
+
+procedure TStudio.CatalogSaved;
 begin
   Connect;
+end;
+
+function TStudio.UseNextBatch(APacket: TJSObject): TJSPromise;
+begin
+  Result := ApplyNextBatch(APacket);
+end;
+
+function TStudio.ApplyNextBatch(APacket: TJSObject): Boolean; async;
+var
+  LRequest: TJSObject;
+  LResponse: TJSResponse;
+  LProject: TJSObject;
+begin
+  Result := False;
+  if FBusy or not FConnected then
+  begin
+    raise Exception.Create('Wait for the current project operation to finish.');
+  end;
+  if FDirty then
+  begin
+    raise Exception.Create('Save your project edits before preparing a different batch.');
+  end;
+  LRequest := TJSObject(APacket['request']);
+  FBusy := True;
+  UpdateState;
+  try
+    LResponse := await(TJSResponse, FetchApi('/api/studio/project-revision?id=' +
+      encodeURIComponent(Str(LRequest, 'project_id')) + '&revision=' +
+      IntToStr(Trunc(Num(LRequest, 'project_revision'))), 'GET', ''));
+    if LResponse.status <> 200 then
+    begin
+      raise Exception.Create('The original project version could not be loaded. Your current setup remains.');
+    end;
+    LProject := await(TJSObject, LResponse.json());
+    if Str(LProject, 'snapshot_sha256') <> Str(LRequest, 'project_snapshot_sha256') then
+    begin
+      raise Exception.Create('The project version differs from the chosen audition.');
+    end;
+    ApplyProject(LProject);
+    FBatches.ApplyNextBatch(LRequest);
+    Status('Next-batch settings are ready. Change what you want, then generate.');
+    Result := True;
+  finally
+    FBusy := False;
+    UpdateState;
+  end;
 end;
 
 procedure TStudio.LoadProject(const AId: String); async;
@@ -1515,11 +1411,32 @@ begin
   end;
 end;
 
+function TStudio.HandleAnyPlay(AEvent: TEventListenerEvent): Boolean;
+var
+  LPlayers: TJSNodeList;
+  LIndex: Integer;
+begin
+  LPlayers := document.querySelectorAll('audio');
+  for LIndex := 0 to LPlayers.length - 1 do
+  begin
+    if LPlayers[LIndex] <> AEvent.target then
+    begin
+      TJSHTMLAudioElement(LPlayers[LIndex]).pause;
+    end;
+  end;
+  Result := True;
+end;
+
 procedure TStudio.Run;
 begin
   FTracks := TJSArray.new;
   FProjects := TJSArray.new;
   FSelections := TJSArray.new;
+  FSourceEditor := TStudioSourceEditor.Create(@FetchApi, @Changed);
+  FBatches := TStudioBatches.Create(@FetchApi);
+  FEffects := TStudioEffects.Create(@FetchApi, @FSourceEditor.CurrentRange, @CatalogSaved);
+  FReviews := TStudioReviews.Create(@FetchApi, @UseNextBatch);
+  FCapture := TStudioCapture.Create(@FetchApi, @CatalogSaved);
   NewDraft;
   El('style-form').addEventListener('submit', @HandleSubmit);
   El('style-name').addEventListener('input', @HandleEdit);
@@ -1532,6 +1449,7 @@ begin
   El('draft-list').addEventListener('change', @HandleProject);
   El('track-search').addEventListener('input', @HandleSearch);
   window.addEventListener('beforeunload', @HandleBeforeUnload);
+  document.addEventListener('play', @HandleAnyPlay, True);
   Connect;
 end;
 

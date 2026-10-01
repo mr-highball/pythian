@@ -10,9 +10,18 @@ deliverable's acceptance, not polish deferred until after the backend.
 
 ## Operator flow
 
-1. **Sources:** name the style and describe the intended musical qualities;
-   choose imported recordings, with full recordings as the default and optional
-   ranges expressed in source time. Show selection count and duration.
+1. **Sources:** put WAV recordings in private collection folders, then refresh
+   the library. Name a style corpus and select whole recordings or several
+   passages, adding caller-defined classifications to each selection. Folder
+   names organize browsing; classifications express the operator's judgments.
+   Show selection count and duration, with ranges expressed in source time.
+   Explore waveform and measured/candidate analysis overlays, then optionally
+   audition an ordered effects rack and explicitly save a derived collection
+   clip. Preserve original audio and source-family lineage through every version.
+   Import a WAV or explicitly record a microphone into temporary preparation;
+   inspect and listen before choosing Save to collection. Try the existing pitch
+   tracker through MIDI download and synthesized playback, marked **Experimental**.
+   Keep technical settings in optional details and save feedback on the exact run.
 2. **Prepare:** show the actual supported learning mode, material used/excluded,
    saved model and generation settings. Audition selected originals with a
    visible source-time playhead and range context. Keep training duration separate from
@@ -30,6 +39,13 @@ acceptance packet. A small set of user ratings establishes preferences, not
 automatically calibrated numerical limits or accurate source transcription.
 
 ## UI and evidence requirements
+
+Local-use policy: no accounts, login screens or repeated confirmation prompts.
+Keep automatic same-origin sessions, folder containment, input validation and
+finite work limits. Preserve originals and source lineage. Browser microphone
+permissions and secure-context requirements are platform constraints, not an
+additional application approval flow. Add security machinery only for a concrete
+local risk or an explicitly selected deployment requirement.
 
 - Every screen states the current action and its completion state. Prefer
   concise labels, useful defaults and progressively disclosed detail to prose
@@ -59,26 +75,53 @@ completed by planning, and all original criteria in the donor tasks remain.
 | Task | Previous NS-6 points | Current NS-6 points | Outcome |
 | --- | ---: | ---: | --- |
 | [authoring_02](TODO/NS-6_authoring_02.md) | 8 | 4 | Physical LAN/source operator qualification |
-| [delivery_03](TODO/NS-6_delivery_03.md) | 10 | 6 | Final package and extracted workflow |
+| [delivery_03](TODO/NS-6_delivery_03.md) | 10 | 3 | Final package and extracted workflow |
 | [delivery_04](TODO/NS-6_delivery_04.md) | 12 | 8 | Independent complete-workflow reproduction |
 | [studio_01 — DONE](TODO/DONE/NS-6_studio_01.md) | 0 | 4 | Durable intuitive project/source setup |
-| [studio_02](TODO/NS-6_studio_02.md) | 0 | 4 | Actual bounded jobs and automatic audition queue |
-| [studio_03](TODO/NS-6_studio_03.md) | 0 | 4 | Musical comparison and deliberate iteration |
+| [studio_02](TODO/DONE/NS-6_studio_02.md) | 0 | 2 | Actual bounded jobs and automatic audition queue |
+| [studio_03](TODO/NS-6_studio_03.md) | 0 | 2 | Musical comparison and deliberate iteration |
+| [studio_04](TODO/DONE/NS-6_studio_04.md) | 0 | 2 | Private collection discovery and classified corpora |
+| [studio_05](TODO/DONE/NS-6_studio_05.md) | 0 | 2 | Layered effects preview and derived collection clips |
+| [studio_06](TODO/DONE/NS-6_studio_06.md) | 0 | 2 | WAV import, microphone capture and analysis exploration |
+| [studio_07](TODO/NS-6_studio_07.md) | 0 | 1 | Mixed-format corpus conversion with original lineage |
 | **Total allocation at scoping** | **30** | **30** | **Scoping earned no credit** |
 
 The added operator outcomes receive explicit weight from later verification
 work. Those verification obligations remain required at reduced planning weight;
 they do not disappear or move into the new tasks. Scoping left 49.40 accepted;
 independent project/setup acceptance subsequently adds 4 NS-6 / 0.40 overall.
-The current ledger is **49.80 accepted / 50.20 remaining**, **45 open / 36 DONE**.
-NS-6 is **35 accepted / 65 unearned** with nine open tasks. Goal weights are unchanged.
+Private corpora, raw WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall.
+The current ledger is **50.60 accepted / 49.40 remaining**, **45 open / 40 DONE**.
+NS-6 is **43 accepted / 57 unearned** with nine open tasks. Goal weights are unchanged.
+The later collection and effects requirements each reallocate one unearned point
+from jobs and iteration; all original criteria remain. Scoping earns no acceptance.
+Capture/exploration receives two additional unearned delivery_03 points with
+all final packaging criteria preserved.
+Mixed-format corpus preparation receives one further unearned delivery_03 point.
+It follows the current review batch; matching-rate/channel generation remains
+the declared supported route until conversion and original-frame maps pass.
 
 The studio is a current NS-5 calibration enabler, attributed primarily to NS-6
 usability. Actual calibration/control validity remains evaluation_01; complete
 musical references remain evaluation_04; inference and many-hour style quality
-keep their existing owners. Final packaging includes all three studio outcomes.
+keep their existing owners. Final packaging includes all seven studio outcomes.
 Old source-marker and physical QA failures remain with authoring_02 and Big Boss;
 new task identities do not reset those counters or reopen stopped science.
+
+## Private collection library
+
+The default durable drop folder is `local-audio/collections/`, excluded by the
+root `.gitignore`. Create caller-named subfolders and place WAV recordings in
+them. Keep this directory backed up with personal media; it is deliberately
+outside disposable `build/`. Audio, private collection names and local indexes
+are not source artifacts. Compressed audio is not yet a maintained import format.
+
+[studio_04](TODO/DONE/NS-6_studio_04.md) owns app discovery, explicit refresh,
+collection browsing and classified selections. Folder grouping never assigns a
+scientific genre, training partition, license or musical truth. New recordings
+start unassigned; existing catalog evaluation reservations remain enforced.
+Original audio stays immutable once imported, and a changed file is a new source
+identity. Old saved corpora retain their exact bytes/ranges and classifications.
 
 ## Project setup contract
 
@@ -128,9 +171,88 @@ Exact QA cleanup is zero. Evidence and both failures remain in the
 [accepted task](TODO/DONE/NS-6_studio_01.md) and ignored
 `build/salty-studio-20260930/`.
 
-A saved draft is explicitly not trained. Actual source audition and bounded
-asynchronous learning/generation now follow in studio_02; the existing native
-journal/WFC/model/render/listening APIs provide the starting path. Freeze the
-supported mode, input/resource/output policy and stop condition before that
-batch. No musical or physical-phone acceptance follows from project setup, and
-old inference/source/comparator stop counters remain intact.
+A saved draft is explicitly not trained. At that checkpoint, actual source
+audition and bounded asynchronous learning/generation remained in studio_02.
+That later outcome now passes with the policy and evidence below. No musical or
+physical-phone acceptance follows from project setup, and old inference/source/
+comparator stop counters remain intact.
+
+## Current Studio evidence — 2026-10-01
+
+Private classified corpora, bounded raw WFC jobs, effects/derived clips and
+import/capture/exploration are accepted through independent stable Win32/Win64
+and desktop/narrow checks. The comparison/next-batch loop passes its engineering
+checks; studio_03 still requires the operator's understandable-purpose,
+audible-use and useful-feedback
+verdict. Microphone controls were exercised with a generated browser device;
+physical microphone quality and the phone listening path remain unverified.
+See the [current work record](WORK.md) for source identities and exact scope.
+
+## Connected Studio contracts
+
+The service and browser use explicit actions. Saving a project, feedback or an
+edited clip never silently enqueues training. Native worker execution is a
+separate executable; the service and portable library compile without WFC.
+The worker retains the actual companion WFC model and renders through its
+Pythian audio adapter. The currently connected learning route is raw acoustic
+recombination. Experimental pitch previews are a separate listening tool.
+
+| Action | Native contract |
+| --- | --- |
+| Browse / refresh collections | `GET /api/studio/library`; enqueue `library_refresh` |
+| Check / generate | `POST /api/studio/preflight`; `POST /api/studio/job` with `train_generate` |
+| Inspect or cancel work | `GET /api/studio/jobs`, `GET /api/studio/job?id=ID`, `POST /api/studio/cancel` |
+| Inspect / process a passage | Jobs `inspect_source`, `effect_preview`, then explicit `effect_save` |
+| Import WAV / captured PCM WAV | `POST /api/studio/capture/start`, then offset-bound `capture/chunk` writes |
+| Inspect / hear notes / save intake | Jobs `capture_inspect`, `capture_pitch`, `capture_save` |
+| Discard temporary intake | `POST /api/studio/capture/discard`; cancel its active job first |
+| Compare / respond / pin | `POST /api/studio/review`, `review/response`, `review/pin` |
+| Prepare next batch | `GET /api/studio/review/next-batch?id=ID&sample=ALIAS`; does not enqueue |
+| Save exploration feedback | `POST /api/studio/exploration-feedback`, bound to the completed job |
+
+Jobs retain immutable requests and append-only state events beneath the private
+catalog's `studio/` directory. Requests use stable identities so a lost response
+can be reconciled. One worker runs per catalog, with at most 32 queued and 256
+retained jobs. Work stops at ten minutes; cancellation terminates a child that
+does not cooperate. Interrupted active jobs become failed rather than ready.
+Completed source/model/audio hashes and original-frame lineage remain retained.
+Partial seed outcomes remain visible; incomplete batches do not enter listening.
+
+A corpus permits 64 nonoverlapping selections across 32 recordings, with up to
+eight caller classifications per selection. Training uses every declared range
+or rejects the workload: at most 500,000 feature observations and 32 GiB of unique
+source bytes, with a 128 MiB logical allocation budget. Generation offers one to
+three 20–40 second auditions, explicit seeds, source weights, palette size and
+model order. Retained palette/candidate counts are distinct from analyzed source
+coverage. Model reuse verifies the same source/policy identity. These limits
+describe the current operator route, not completion of many-hour musical learning.
+
+Effects process a selected passage of at most 30 seconds / two million frames.
+The rack supports eight ordered, bypassable gain/filter/compressor/limiter stages.
+Each preview starts with reset DSP state, produces stereo PCM16 at the original
+rate and adds no tail or hidden limiter. The compressor uses a recorded 6 dB knee.
+The result reports pre-encoding peak and clipped samples. Saving retains the
+exact recipe and source family, including further derived versions.
+
+Temporary intake lives under ignored `build/studio-capture/`, separate from the
+durable collection. Up to eight inputs may be retained, each at most 128 MiB;
+uploads use verified 16 KiB chunks. Analysis accepts mono/stereo WAV at 8–192 kHz
+and initially inspects up to 30 seconds / two million frames. Microphone capture
+records at most two minutes, encodes PCM WAV in the Pascal browser adapter and
+does not monitor the microphone through the speakers. Stop/exit releases tracks.
+
+The **Experimental** note preview runs the existing single-pitch tracker on up
+to the first eight seconds of the selected channel, using native sinc conversion
+to 8 kHz. It retains unknown/silent spans separately and exports pitched spans
+through the existing MIDI codec. Caller BPM defines the MIDI clock, not an
+inferred tempo. Playback uses the existing sine synthesizer with fixed velocity;
+silence produces no fabricated notes. The original, exact analysis settings,
+MIDI/audio hashes and explicit listening feedback remain attributable. The UI
+keeps these details optional and permits trials on mixed material.
+
+Listening comparisons retain versioned responses in the existing listening
+journal. Blind assignments use opaque sample aliases and reveal only after the
+first completed response; withdrawing feedback does not make exposed identities
+blind again. Pins and next-batch ancestry preserve earlier audio and settings.
+Mechanical browser answers establish engineering behavior only. The operator's
+actual usefulness/musical verdict remains an explicit studio_03 acceptance gate.

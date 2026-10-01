@@ -44,8 +44,9 @@ $webRoot = Join-Path $outputRoot 'www'
 $program = Join-Path $sourceRoot 'app.lpr'
 $listenProgram = Join-Path $sourceRoot 'listen.lpr'
 $studioProgram = Join-Path $sourceRoot 'studio.lpr'
+$captureProgram = Join-Path $sourceRoot 'capture-worklet.lpr'
 
-foreach ($required in @($program, $listenProgram, $studioProgram,
+foreach ($required in @($program, $listenProgram, $studioProgram, $captureProgram,
     (Join-Path $sourceRoot 'index.html'),
     (Join-Path $sourceRoot 'style.css'),
     (Join-Path $sourceRoot 'listen.html'),
@@ -94,6 +95,18 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 if (-not (Test-Path -LiteralPath $studioScriptPath -PathType Leaf) -or
     (Get-Item -LiteralPath $studioScriptPath).Length -eq 0) {
   throw "pas2js did not produce $studioScriptPath"
+}
+$captureScriptPath = Join-Path $webRoot 'capture-worklet.js'
+Remove-Item -LiteralPath $captureScriptPath -Force -ErrorAction SilentlyContinue
+$captureCompilerArguments = @(
+  '-B', '-Tmodule', '-Mdelphi', '-Jc', "-Ji$RtlJavascript",
+  "-Fu$RtlSource", "-FU$unitRoot", "-FE$webRoot", $captureProgram
+)
+& $Compiler @captureCompilerArguments
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+if (-not (Test-Path -LiteralPath $captureScriptPath -PathType Leaf) -or
+    (Get-Item -LiteralPath $captureScriptPath).Length -eq 0) {
+  throw "pas2js did not produce $captureScriptPath"
 }
 Copy-Item -LiteralPath (Join-Path $sourceRoot 'index.html'),
   (Join-Path $sourceRoot 'style.css'),

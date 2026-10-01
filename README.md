@@ -79,10 +79,18 @@ Use `-Compiler <executable>` to select a compiler explicitly. Use `-CoreOnly`
 to build the complete core unit set and renderer without any vendor source
 search path. It does not run the WFC integration fixture or learning/remix tools.
 
-The verified native target is i386 Windows with FPC 3.2.2 and the existing
-3.3.1 development compiler. Extracted source packages also pass external core
-and WFC consumer builds on 3.2.2; see [delivery evidence](docs/PACKAGING.md).
+Stable FPC 3.2.2 checks cover i386 and x86_64 Windows; the existing 3.3.1
+development compiler also has recorded i386 evidence. Extracted source packages
+pass core and WFC consumer builds on 3.2.2; exact Linux CI and package revisions
+are recorded in [delivery evidence](docs/PACKAGING.md).
 No installation or global configuration change is performed by the build.
+
+For the optional browser [Studio](docs/OPERATOR-STUDIO.md), follow the
+[local review-service setup](docs/LAN-REVIEW-SERVICE.md), then open `/studio.html`.
+Put WAVs in ignored `local-audio/collections/<your-collection>/` and refresh,
+or import/record audio in the app. Select and classify passages, try effects,
+generate short WFC auditions, and save feedback for the next batch. Current
+note/MIDI previews are marked **Experimental**.
 
 Create a checked development source ZIP with `./tools/package.ps1`, or add
 `-WithWfc` to include the companion sources and WAV-learning example. The script

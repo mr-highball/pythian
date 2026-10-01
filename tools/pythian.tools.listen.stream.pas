@@ -37,7 +37,7 @@ uses
 function DispatchListeningMedia(const ASocket: Integer;
   const AStream: TStream; const AMethod, ARange, AIfRange,
   AContentHash: String; const AVerifyPath: String = '';
-  const AExpectedBytes: Int64 = 0): Boolean;
+  const AExpectedBytes: Int64 = 0; const AVerifyHash: String = ''): Boolean;
 
 implementation
 
@@ -311,13 +311,14 @@ end;
 function DispatchListeningMedia(const ASocket: Integer;
   const AStream: TStream; const AMethod, ARange, AIfRange,
   AContentHash: String; const AVerifyPath: String;
-  const AExpectedBytes: Int64): Boolean;
+  const AExpectedBytes: Int64; const AVerifyHash: String): Boolean;
 var
   LStatus: Integer;
   LStart: Int64;
   LEnd: Int64;
   LSize: Int64;
   LHeader: String;
+  LVerifyHash: String;
   LSender: TMediaSender;
 begin
   Result := False;
@@ -347,11 +348,16 @@ begin
     Exit;
   end;
   LHeader := Header(LStatus, AContentHash, LSize, LStart, LEnd);
+  LVerifyHash := AVerifyHash;
+  if LVerifyHash = '' then
+  begin
+    LVerifyHash := AContentHash;
+  end;
   LSender := nil;
   try
     LSender := TMediaSender.Create(ASocket, AStream, LHeader,
       LStart, LEnd - LStart + 1, AMethod, AVerifyPath,
-      AContentHash, AExpectedBytes);
+      LVerifyHash, AExpectedBytes);
     LSender.FreeOnTerminate := True;
     LSender.Start;
     Result := True;

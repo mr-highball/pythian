@@ -12,13 +12,162 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
-## Current priority decision — 2026-09-30
+## Current accepted Studio checkpoint — 2026-10-01
+
+**Big Boss:** bounded raw WFC jobs [studio_02](TODO/DONE/NS-6_studio_02.md),
+private collection/classified-corpus setup
+[studio_04](TODO/DONE/NS-6_studio_04.md), ordered effects/derived clips
+[studio_05](TODO/DONE/NS-6_studio_05.md), and experimental import/capture/MIDI
+exploration [studio_06](TODO/DONE/NS-6_studio_06.md) are accepted at their scoped
+engineering criteria. This adds **8 NS-6 / 0.80 overall**: **50.60 accepted /
+49.40 remaining; 45 open / 40 DONE; NS-6 43/57 with nine open tasks**.
+Actual Cancel and read-only cancelled-job reopen/refresh pass. Studio_03
+engineering checks pass, but its actual operator purpose/audible/useful-feedback
+verdict remains open. Studio_07 remains the unimplemented mixed-format follow-up.
+
+Independent Salty evidence is under `build/salty-studio-native-20261001/` and
+`build/salty-studio-browser-20261001/`. Stable FPC 3.2.2 Win32/Win64 each pass
+library 176 plus two real junction controls, projects 100, jobs 31, worker 48,
+supervisor 19, reviews 42, capture 53 and effects 44, with zero leaks. Actual
+desktop/narrow checks cover source play/seek/classified ranges, private refresh,
+analysis, effects/retry/further derivation, native WFC auditions, comparisons,
+blind/retry/next-batch state, uploads and capture/MIDI/feedback/save/discard.
+Completed browser runs leave zero owned browser/process/listener residue.
+Generated microphone input establishes lifecycle mechanics; no physical human
+microphone, phone listening or musical-quality acceptance is claimed.
+
+Browser source/assets are bound by `build/studio-chief/BROWSER-FREEZE2.json`
+and `BROWSER-ASSETS2.json`: service SHA256 `094b884e9da98815f5ee7ed5dca9bd79b5ba759e2d03610ebab3de4dc966aad0`,
+worker `fe112b792ef394012d2022c439fdf17193fb456d00bf0fd92fdd55708d5c2c33` and ten
+browser assets. A prepublication non-Windows-only missing `Unix` import in the
+supervisor was repaired by Neo after Big Boss's assessment. The original
+Windows runtime identities remain recorded; fresh Win32/Win64 compile checks
+pass, and actual Linux execution remains a CI check. See
+`build/studio-supervisor-unix-import/VALIDATION.md` for that freeze exception.
+
+Current submitted implementation failures are native **0**, browser **0**.
+Preserved test-runner timing/path/oracle corrections did not change production
+code or erase earlier task failures. This batch closes criteria and four tasks;
+the consecutive nonclosing-batch count is **0**. Final browser verdict SHA256
+`4567f24567692b5b5ba542bc5a76af4809e882c00abbfeb40572fa2aef186cae`
+accepts the scoped engineering outcomes and retains studio_03's operator gate.
+The Pascal task audit passes all 85 templates, 179 prerequisite links, acyclic
+final-goal reachability, accepted prerequisites and **40 DONE / 22.60 task points**
+plus **28.00 baseline**. No research or experimental preview adds scientific credit.
+
+The fixed stable service now runs the checked service/worker and ten browser
+assets against the unchanged durable operator catalog. Existing source hashes
+are preserved; LAN Studio, localhost session/source/project routes and the
+capture worklet return HTTP 200. The earlier build and catalog were backed up
+under ignored `build/studio-chief/`; local launch settings and health evidence
+stay there. No firewall rule or personal browser was changed. This read-only
+deployment check is not a physical-device or musical verdict. Publication and
+exact-revision Linux CI verification follow this reconciled checkpoint.
+
+<a id="current-priority-decision--2026-09-30"></a>
+## Studio batch opening decisions — 2026-09-30
+
+**Active continuation — Big Boss:** user requests completion of the remaining
+Studio engineering for review and adds a private folder collection library.
+The new [studio_04](TODO/DONE/NS-6_studio_04.md) owns collection discovery and classified
+whole/multiple-range corpora, preceding studio_02 job acceptance. The later
+effects and capture steering below completes the current scope and allocation:
+**49.80 accepted / 50.20 remaining, 49 open / 36 DONE**; NS-6 thirteen open tasks.
+All prior criteria remain. The real ignored `local-audio/collections/` directory
+has been created; folder creation alone closes no task criterion.
+
+Current batch advances studio_04 AC1–5 and studio_02 AC1–5: durable private
+collections -> classified immutable corpus -> bounded asynchronous raw WFC
+learning -> verified short auditions -> listening queue. Closing evidence is
+native boundary/replay/recovery checks plus actual desktop/narrow use across
+two projects and changed sources. Stop on unsafe paths, silent source admission,
+false progress or incomplete publication; record any distinct required gap before
+expanding scope. Neo owns new worker/job units and coordinates disjoint library
+work with Ticket Guy. Big Boss owns existing HTTP, Studio UI, project extensions,
+build integration and docs, retaining all earlier transferred repairs. Salty
+validates the integrated components before publication. Concurrent nonclosing
+count starts at zero from actual Studio01 acceptance; this handoff does not reset
+older science or failed QA counts. Studio03 follows through usable comparison,
+feedback and next-batch preparation, with actual user usefulness acceptance still
+required after engineering is ready.
+
+**Additional operator steering:** analysis overlays now belong to studio_04's
+range inspector, displaying actual waveform/signal/beat-candidate evidence with
+uncertainty. Explicit layered-effects preview and Save as new clip is the new
+[studio_05](TODO/DONE/NS-6_studio_05.md) outcome. A second unearned point each moves
+from studio_02/03 (now two each), with no criteria removed.
+Effects reuse existing native DSP, require deterministic source/recipe lineage
+and cannot manufacture independent recordings. Closing evidence adds native
+replay/bounds and actual desktop/narrow preview/edit/bypass/save/reload. This
+extends the selected operator deliverable without restarting stopped science.
+
+**Capture/exploration steering:** [studio_06](TODO/DONE/NS-6_studio_06.md) owns explicit
+WAV import or microphone capture, supported analysis and possible tentative
+MIDI/resynthesis comparison before optional collection Save. It receives two
+unearned delivery_03 points; final package obligations remain. Current ledger is
+**49.80 accepted / 50.20 remaining, 49 open / 36 DONE**, NS-6 thirteen open tasks.
+Secure-context/device permission and microphone cleanup are real acceptance
+boundaries. Stop on unsupported or overstated transcription; existing scientific
+rejections remain in force. This steering adds operator capabilities, not credit.
+
+**Local-use direction and development evidence:** user requests minimal security
+and friction: no accounts, login screens or repeated confirmations. Retain
+automatic same-origin sessions, finite work, corrupt-input/path checks and source
+integrity. Root's classified multi-range project changes pass 100 checked Win32
+assertions with zero leaks. The first actual desktop/narrow source-editor check
+plays an original, saves two separately classified passages, reopens labels and
+stops passage playback at its end; no overflow or console errors. Ignored
+`build/studio-chief/browser/` contains logs/screenshots and zero-profile/listener
+cleanup. This is development evidence, not independent final QA or task credit.
+HTTP now has original streaming and job/preflight/cancel endpoints; the native
+core-only service and pas2js editor compile. Neo's worker and Ticket's library
+have passed focused native development checks. No current worker QA failures
+have been submitted.
+
+**Experimental tools are usable tools:** the user clarified that current
+capabilities must be exposed for listening even before scientific acceptance.
+Use a short Experimental badge, with details collapsed; no purity declaration,
+approval form or validation gate before trying them. Big Boss has connected the
+existing single-pitch tracker to real MIDI export and native note synthesis in
+the capture backend. Focused checked Win32/Win64 capture/preview tests pass 53 checks
+with zero leaks: chunk retry, corrupt/oversize/path rejection, temporary-source
+isolation, explicit save/dedup/discard, actual A3 MIDI decode from an authored
+220-Hz control, byte-identical MIDI/audio replay and exact-job feedback history.
+Additional controls cover silence without fabricated notes, explicit stereo
+channel selection and 16 kHz conversion preserving the four-second MIDI clock,
+plus discoverable/discardable interrupted imports.
+Effects pass 25 native checks including replay/bypass/clipping and collection
+lineage. These are development controls, not a user's musical verdict or task
+acceptance. Actual development browser checks now exercise WFC generation,
+analysis, effects preview/play/save, comparison/playback/feedback/pinning and
+next-batch preparation. A missing-weight pas2js property check was repaired;
+the old placeholder layout was replaced to eliminate narrow overflow. Independent
+native QA passes both checked targets, including the extended 44-check effects
+suite. Development browser capture/worklet/Stop/device release/local playback,
+upload/inspect/MIDI download/synthesized playback/feedback/save/discard pass on
+desktop and narrow layout using an authored 220-Hz fake-device WAV. This proves
+the browser lifecycle, not physical microphone quality. The default browser fake
+signal yields unknown spans without fabricated MIDI. All QA processes/listeners
+are closed. Final independent browser QA remains.
+
+Big Boss also repaired an existing HTTP receive-loop defect exposed by browser
+preconnections: `Continue` in `repeat` tested an uninitialized header separator
+after the first socket timeout. Explicit initialization passes delayed complete
+and split-header requests; the request size/timeout limits are unchanged.
+
+**Required follow-up gap:** [studio_07](TODO/NS-6_studio_07.md) owns native
+mixed-format corpus preparation and original-frame mappings. Current raw jobs
+explicitly require matching rates/channels. The accepted intake and later
+semantic tasks do not supply this conversion consumer. One further unearned
+delivery_03 point moves to this distinct task (delivery_03 now three); all
+packaging criteria remain. The current batch finishes studio_02–06 for review
+before this new implementation is selected. Accepted completion remains 49.80.
 
 **Accepted operator Studio setup — Big Boss:** the user explicitly authorizes
 task scoping, milestone reconciliation and implementation of an intuitive,
 powerful web loop for substantial training sources, shorter musical auditions,
 classification and deliberate iteration. The [scope](OPERATOR-STUDIO.md) and
-[studio_01 — DONE](TODO/DONE/NS-6_studio_01.md) -> [studio_02](TODO/NS-6_studio_02.md) ->
+[studio_01 — DONE](TODO/DONE/NS-6_studio_01.md) -> [studio_02](TODO/DONE/NS-6_studio_02.md) ->
 [studio_03](TODO/NS-6_studio_03.md) assign every new outcome. Twelve unearned NS-6
 points move from authoring_02/delivery_03/delivery_04; all original criteria
 remain. Scoping earned no credit. Independent project/setup acceptance adds
