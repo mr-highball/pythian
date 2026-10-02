@@ -14,8 +14,28 @@ and native rendering uses the existing effect classes. The primitive DSP APIs
 below retain their wider direct ranges. Shelves expose frequency and gain;
 their fixed-slope design ignores Q, so the rack does not offer that control.
 
-Delay and reverb exposure, including explicit saved-tail behavior, is tracked
-in [studio_15](TODO/NS-6_studio_15.md).
+`DefaultCatalogEffect` returns owned values in definition order;
+`ValidateCatalogEffect` checks both individual parameters and cross-parameter
+limits, including the complete delay modulation excursion. The
+`pythian.effects.rack.CreateCatalogEffect` factory constructs owned existing
+core effects from these settings. Studio's former effect-construction branches
+are removed; JSON parsing stays in its adapter.
+
+The rack includes echo/modulated delay and reverb. Echo uses the primary
+fractional delay with opposed stereo sine automation; zero modulation depth
+keeps the delay constant. Both time effects use linear dry/wet mixing. Reverb
+retains the core's rate-scaled default network; its decay control is not a claim
+about a measured room's exact RT60.
+
+Studio accepts an explicit 0–10 second tail after its bounded source passage.
+Tail frames feed zeros through the existing chain without resetting it, then cut
+at the selected duration. Preview and saved clip share that exact WAV and recipe;
+the recipe's original start/end frames exclude the appended tail. Eight stages,
+30 seconds / 2,000,000 source frames and the primary effect-work budget remain
+enforced. Delay history is bounded by 2,030 ms per channel per active stage
+(under 50 MB for eight stages at Studio's maximum 192 kHz); rendering uses
+2,048-frame blocks. No full-output buffer or additional recording is allocated.
+Qualification is owned by [studio_15](TODO/NS-6_studio_15.md).
 
 ## Biquad filtering
 

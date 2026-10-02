@@ -29,6 +29,7 @@ program StudioEffectsConformance;
 uses
   Classes, SysUtils, Math, fpjson,
   pythian.audio, pythian.hash, pythian.wave.stream, pythian.wave.read,
+  pythian.effects, pythian.effects.catalog, pythian.effects.rack,
   pythian.tools.annotations.catalog, pythian.tools.studio.projects,
   pythian.tools.studio.jobs, pythian.tools.studio.effects;
 
@@ -509,6 +510,249 @@ begin
   end;
 end;
 
+procedure SetSetting(var ASettings: TCatalogEffectSettings;
+  const AKey: String; const AValue: Double);
+var
+  LDefinition: TEffectDefinition;
+  LIndex: Integer;
+begin
+  LDefinition := EffectDefinition(ASettings.Kind);
+  for LIndex := 0 to High(LDefinition.Parameters) do
+  begin
+    if LDefinition.Parameters[LIndex].Key = AKey then
+    begin
+      ASettings.Values[LIndex] := AValue;
+      Exit;
+    end;
+  end;
+  raise Exception.Create('Unknown test setting');
+end;
+
+function CatalogStage(const AKind: TCatalogEffect): TJSONObject;
+var
+  LDefinition: TEffectDefinition;
+  LIndex: Integer;
+begin
+  LDefinition := EffectDefinition(AKind);
+  Result := TJSONObject.Create;
+  Result.Add('kind', LDefinition.Key);
+  Result.Add('bypass', False);
+  for LIndex := 0 to High(LDefinition.Parameters) do
+  begin
+    Result.Add(LDefinition.Parameters[LIndex].Key,
+      LDefinition.Parameters[LIndex].DefaultValue);
+  end;
+end;
+
+procedure CheckTimeEffects(const ASource: String);
+var
+  LKind: TCatalogEffect;
+  LSettings: TCatalogEffectSettings;
+  LEffect: TAudioEffect;
+  LLeft: Double;
+  LRight: Double;
+  LValue: Double;
+  LEnergy: Double;
+  LFirst: array[0..7999] of Double;
+  LFrame: Integer;
+  LPass: Integer;
+  LWrite: TJSONObject;
+  LSave: TJSONObject;
+  LResult: TJSONObject;
+  LTrack: TJSONObject;
+  LStage: TJSONObject;
+  LStream: TFileStream;
+  LReader: TWaveFrameReader;
+  LSamples: TAudioSamples;
+  LHash: String;
+  LKey: String;
+begin
+  for LKind := ceDelay to ceReverb do
+  begin
+    LSettings := DefaultCatalogEffect(LKind);
+    SetSetting(LSettings, 'mix', 1);
+    if LKind = ceDelay then
+    begin
+      SetSetting(LSettings, 'delay_ms', 10);
+      SetSetting(LSettings, 'feedback', 0.5);
+    end;
+    LEffect := CreateCatalogEffect(8000, LSettings);
+    try
+      for LPass := 0 to 1 do
+      begin
+        LEffect.Reset;
+        LEnergy := 0;
+        for LFrame := 0 to High(LFirst) do
+        begin
+          LValue := 0;
+          if LFrame = 0 then
+          begin
+            LValue := 1;
+          end;
+          LEffect.Process(LValue, LValue, LLeft, LRight);
+          LEnergy := LEnergy + Sqr(LLeft) + Sqr(LRight);
+          if LPass = 0 then
+          begin
+            LFirst[LFrame] := LLeft;
+          end
+          else if LFirst[LFrame] <> LLeft then
+          begin
+            raise Exception.Create('Time effect Reset changed impulse replay');
+          end;
+        end;
+        Check(LEnergy > 0.0001, 'Native time effect has impulse tail energy');
+      end;
+      Check(True, 'Native time effect deterministic reset over 8000 frames');
+      if LKind = ceDelay then
+      begin
+        Check((LFirst[0] = 0) and (LFirst[79] = 0) and
+          (LFirst[80] = 1) and (LFirst[160] = 0.5), 'Delay timing and feedback are exact');
+      end;
+    finally
+      LEffect.Free;
+    end;
+    if LKind = ceDelay then
+    begin
+      SetSetting(LSettings, 'depth_ms', 5);
+      LEffect := CreateCatalogEffect(8000, LSettings);
+      try
+        LEnergy := 0;
+        for LFrame := 0 to 7999 do
+        begin
+          LValue := Sin(2 * Pi * 220 * LFrame / 8000);
+          LEffect.Process(LValue, LValue, LLeft, LRight);
+          LEnergy := LEnergy + Sqr(LLeft - LRight);
+        end;
+        Check(LEnergy > 1, 'Opposed delay modulation actually changes stereo timing');
+      finally
+        LEffect.Free;
+      end;
+    end;
+    LKey := EffectDefinition(LKind).Key;
+    LWrite := Preview('tail-' + LKey, ASource, 0);
+    try
+      LWrite.Arrays['effects'].Clear;
+      LStage := CatalogStage(LKind);
+      LWrite.Arrays['effects'].Add(LStage);
+      LWrite.Add('tail_seconds', 0.5);
+      LResult := Execute(LWrite);
+      try
+        LHash := LResult.Strings['output_sha256'];
+        Check((LResult.Int64s['frame_count'] = 20000) and
+          (LResult.Objects['recipe'].Int64s['tail_frames'] = 4000) and
+          (LResult.Objects['recipe'].Int64s['start_frame'] = 8000) and
+          (LResult.Objects['recipe'].Int64s['end_frame'] = 24000),
+          'Tail changes output duration, never original source range');
+      finally
+        LResult.Free;
+      end;
+      LStream := OpenStudioEffectPreview(GCatalog, 'tail-' + LKey, LHash);
+      try
+        LReader := TWaveFrameReader.Create(LStream);
+        try
+          Check(LReader.FrameCount = 20000, 'Saved WAV includes exact requested tail');
+          LReader.SeekFrame(16000);
+          LSamples := LReader.ReadFrames(4000);
+          LEnergy := 0;
+          for LFrame := 0 to High(LSamples) do
+          begin
+            LEnergy := LEnergy + Sqr(LSamples[LFrame]);
+          end;
+          Check(LEnergy > 0.01, 'Appended PCM contains real effect tail, not silent padding');
+        finally
+          LReader.Free;
+        end;
+      finally
+        LStream.Free;
+      end;
+      LWrite.Strings['job_id'] := 'tail-replay-' + LKey;
+      LResult := Execute(LWrite);
+      try
+        Check(LResult.Strings['output_sha256'] = LHash, 'Tail preview deterministic replay');
+      finally
+        LResult.Free;
+      end;
+      LSave := SaveWrite('tail-save-' + LKey, 'tail-' + LKey);
+      try
+        LResult := Execute(LSave);
+        try
+          LTrack := ReadCatalogTrack(GCatalog, LResult.Strings['source_sha256']);
+          try
+            Check((LTrack.Int64s['frame_count'] = 20000) and
+              (LTrack.Strings['source_group'] = 'effects_authored_control'),
+              'Derived catalog clip retains full tail and original family');
+          finally
+            LTrack.Free;
+          end;
+        finally
+          LResult.Free;
+        end;
+      finally
+        LSave.Free;
+      end;
+      LWrite.Strings['job_id'] := 'tail-order-a-' + LKey;
+      LWrite.Arrays['effects'].Add(LimiterStage);
+      LResult := Execute(LWrite);
+      try
+        LHash := LResult.Strings['output_sha256'];
+      finally
+        LResult.Free;
+      end;
+      LWrite.Arrays['effects'].Exchange(0, 1);
+      LWrite.Strings['job_id'] := 'tail-order-b-' + LKey;
+      LResult := Execute(LWrite);
+      try
+        Check(LResult.Strings['output_sha256'] <> LHash,
+          'Time effect and nonlinear limiter honor rack order');
+      finally
+        LResult.Free;
+      end;
+      LWrite.Arrays['effects'].Delete(0);
+      LStage := LWrite.Arrays['effects'].Objects[0];
+      LStage.Booleans['bypass'] := True;
+      LWrite.Strings['job_id'] := 'tail-bypass-' + LKey;
+      LResult := Execute(LWrite);
+      LResult.Free;
+      LStream := OpenStudioEffectPreview(GCatalog, 'tail-bypass-' + LKey, LHash);
+      try
+        LReader := TWaveFrameReader.Create(LStream);
+        try
+          LReader.SeekFrame(16000);
+          LSamples := LReader.ReadFrames(4000);
+          LEnergy := 0;
+          for LFrame := 0 to High(LSamples) do
+          begin
+            LEnergy := LEnergy + Sqr(LSamples[LFrame]);
+          end;
+          Check(LEnergy = 0, 'Bypassed time effect contributes no tail');
+        finally
+          LReader.Free;
+        end;
+      finally
+        LStream.Free;
+      end;
+      LWrite.Strings['job_id'] := 'tail-too-long-' + LKey;
+      LWrite.Floats['tail_seconds'] := 10.001;
+      RejectPreview(LWrite, 'Unbounded tail rejected');
+      LWrite.Floats['tail_seconds'] := 0;
+      LWrite.Strings['job_id'] := 'tail-invalid-' + LKey;
+      LStage.Booleans['bypass'] := True;
+      if LKind = ceDelay then
+      begin
+        LStage.Floats['delay_ms'] := 1;
+        LStage.Floats['depth_ms'] := 2;
+      end
+      else
+      begin
+        LStage.Floats['decay_seconds'] := 11;
+      end;
+      RejectPreview(LWrite, 'Bypass cannot hide invalid time-effect settings');
+    finally
+      LWrite.Free;
+    end;
+  end;
+end;
+
 procedure Run;
 var
   LSource: String;
@@ -623,6 +867,7 @@ begin
   end;
   CheckDSPOrder(LSource);
   CheckFurtherDerivation(LSource, LFirstHash);
+  CheckTimeEffects(LSource);
   LStream := OpenStudioEffectPreview(GCatalog, 'gain', LHash);
   try
     Check((LHash = LFirstHash) and (LStream.Size = 64044), 'Verified bounded preview playback');

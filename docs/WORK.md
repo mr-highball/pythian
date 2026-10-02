@@ -30,6 +30,16 @@ and explicit bounded tails. Closing evidence: native impulse/reset, exact tail
 duration/lineage and preview/save/reload in desktop/narrow Codex Browser. Stop at
 a missing DSP prerequisite; no substitute algorithm or live-data mutation.
 
+Studio_15's implementation and solo browser checks now pass. Primary
+`pythian.effects.rack` creates all catalog effects, replacing Studio's local
+constructor branches. Existing delay/automation and reverb own every DSP step;
+shared catalog validation owns the complete delay excursion. Explicit 0–10 s
+tails preserve original ranges and derived lineage. Both checked native targets
+pass 130 cases with no heap leaks. Actual desktop/narrow Codex-browser preview,
+tail edit/invalidation, save/reload and four-second playback pass on authored QA
+audio. Frozen assets/evidence are in `build/studio-tails/`; the QA tab/service
+were cleaned up. Exact-code Linux CI is pending; accounting remains 51.10.
+
 **Big Boss, solo:** operator feedback selects the implemented
 [filter catalog](TODO/DONE/NS-6_studio_12.md), flexible
 [source workspace](TODO/DONE/NS-6_studio_13.md), native

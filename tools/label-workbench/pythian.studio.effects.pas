@@ -167,6 +167,15 @@ begin
   LControl := Add(LRoot, 'div', '', 'tracks');
   LControl.id := 'effects-rack';
   Add(LRoot, 'p', 'Effects run from top to bottom. Originals stay unchanged.', 'hint');
+  LLabel := Add(LRoot, 'label', 'Extra tail (seconds)', '');
+  LControl := Add(LLabel, 'input', '', '');
+  LControl.id := 'effects-tail';
+  LControl.setAttribute('type', 'text');
+  LControl.setAttribute('inputmode', 'decimal');
+  LControl.setAttribute('value', '0');
+  LControl.setAttribute('maxlength', '8');
+  LControl.addEventListener('input', @Edit);
+  Add(LRoot, 'p', '0 ends at your selection. Add up to 10 seconds to hear echoes or reverb fade; the clip cuts at that length.', 'hint');
   LRow := Add(LRoot, 'div', '', 'source-toolbar');
   Button(LRow, 'Preview passage', 'preview');
   Button(LRow, 'Check job status', 'refresh');
@@ -200,7 +209,7 @@ begin
   LDetails := Add(LRoot, 'details', '', 'advanced');
   Add(LDetails, 'summary', 'Preview details', '');
   Add(LDetails, 'p', 'Up to 30 seconds and 2,000,000 frames; eight effects. ' +
-    'The preview starts with reset effect state and ends at the selected range. ' +
+    'The preview starts with reset effect state, then adds your chosen tail. ' +
     'Saving preserves its recipe and source lineage; it does not start training.', 'hint');
   LControl := Add(LDetails, 'p', '', 'hint batch-identity');
   LControl.id := 'effects-identity';
@@ -416,10 +425,17 @@ var
   begin
     LInput := El('effects-rack').querySelector('input[data-row="' +
       StudioText(ARow, 'ui_id') + '"][data-key="' + AKey + '"]');
+    if AKey = 'tail_seconds' then
+    begin
+      LInput := El('effects-tail');
+    end;
     if LInput <> nil then
     begin
       LInput.setAttribute('aria-invalid', 'true');
-      LInput.parentElement.parentElement.parentElement.setAttribute('open', '');
+      if AKey <> 'tail_seconds' then
+      begin
+        LInput.parentElement.parentElement.parentElement.setAttribute('open', '');
+      end;
       TJSHTMLInputElement(LInput).focus;
     end;
     raise Exception.Create(AMessage + StringReplace(AKey, '_', ' ', [rfReplaceAll]) + '.');
@@ -461,6 +477,7 @@ var
   LRow: TJSObject;
   LKind: String;
   LDefinition: TEffectDefinition;
+  LSettings: TCatalogEffectSettings;
   LSetting: TEffectParameter;
   LParameter: Integer;
   LIndex: Integer;
@@ -477,12 +494,15 @@ begin
     begin
       raise Exception.Create('Choose a supported effect.');
     end;
+    LSettings := DefaultCatalogEffect(LDefinition.Kind);
     for LParameter := 0 to High(LDefinition.Parameters) do
     begin
       LSetting := LDefinition.Parameters[LParameter];
-      LRow[LSetting.Key] := Number(LStored, LSetting.Key, LSetting.Minimum,
+      LSettings.Values[LParameter] := Number(LStored, LSetting.Key, LSetting.Minimum,
         EffectParameterMaximum(LSetting, Trunc(ARate)));
+      LRow[LSetting.Key] := LSettings.Values[LParameter];
     end;
+    ValidateCatalogEffect(LSettings, Trunc(ARate));
     Result.push(LRow);
   end;
 end;
@@ -616,6 +636,7 @@ var
   LText: String;
   LResult: TJSObject;
   LId: String;
+  LRecipe: TJSObject;
 begin
   LStatus := StudioText(FJob, 'status');
   LId := StudioText(FJob, 'job_id');
@@ -650,7 +671,11 @@ begin
           FPlayer.setAttribute('data-job', LId);
         end;
         FPlayer.removeAttribute('hidden');
-        Notice('Preview ready. Listen, adjust effects, or save as a new clip.');
+        LRecipe := TJSObject(LResult['recipe']);
+        Notice('Preview ready · ' + StudioTime(StudioNumber(LResult, 'frame_count') /
+          StudioNumber(LResult, 'sample_rate')) + ' total, including ' +
+          StudioTime(StudioNumber(LRecipe, 'tail_frames') /
+          StudioNumber(LResult, 'sample_rate')) + ' tail.');
         if StudioNumber(LResult, 'clipped_samples') > 0 then
         begin
           Notice('Preview ready; samples clipped. Lower gain or adjust the limiter.', True);
@@ -850,6 +875,7 @@ var
   LStart: Double;
   LEnd: Double;
   LRate: Double;
+  LTail: TJSObject;
 begin
   WatchSelection;
   if FBusy or FPending or (StudioText(FJob, 'status') = 'queued') or
@@ -879,6 +905,9 @@ begin
     LRequest['start_frame'] := LStart;
     LRequest['end_frame'] := LEnd;
     LRequest['effects'] := RackRequest(LRate);
+    LTail := TJSObject.new;
+    LTail['tail_seconds'] := TJSHTMLInputElement(El('effects-tail')).value;
+    LRequest['tail_seconds'] := Number(LTail, 'tail_seconds', 0, 10);
     Invalidate;
     FPreviewVersion := FVersion;
     FJob := nil;
@@ -939,6 +968,13 @@ begin
   Result := False;
   LInput := TJSHTMLInputElement(AEvent.currentTarget);
   LInput.removeAttribute('aria-invalid');
+  if LInput.id = 'effects-tail' then
+  begin
+    Invalidate;
+    UpdateControls;
+    Notice('Tail changed. Preview again before saving.');
+    Exit;
+  end;
   LKey := LInput.getAttribute('data-key');
   for LIndex := 0 to FRack.length - 1 do
   begin

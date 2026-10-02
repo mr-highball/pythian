@@ -576,7 +576,7 @@ begin
   Need(AWrite <> nil, 'Job write is required');
   Keys(AWrite, '|format|job_id|kind|project_id|project_revision|project_snapshot_sha256|' +
     'duration_ms|seeds|maximum_tokens|model_order|source_weights|resolve_unassigned|' +
-    'parent_job_id|retry_of|source_sha256|start_frame|end_frame|effects|' +
+    'parent_job_id|retry_of|source_sha256|start_frame|end_frame|effects|tail_seconds|' +
     'preview_job_id|collection_name|title|capture_id|mode|channel|tempo_bpm|' +
     'discovery_revision|entries|');
   Need(Text(AWrite, 'format') = StudioJobWriteFormat, 'Unsupported Studio job format');
@@ -655,7 +655,7 @@ begin
     else if (LKind = 'inspect_source') or (LKind = 'effect_preview') then
     begin
       Keys(AWrite, '|format|job_id|kind|source_sha256|start_frame|end_frame|' +
-        'parent_job_id|retry_of|effects|');
+        'parent_job_id|retry_of|effects|tail_seconds|');
       Need(ValidHash(Text(AWrite, 'source_sha256')) and
         (Number(AWrite, 'start_frame') >= 0) and
         (Number(AWrite, 'end_frame') > Number(AWrite, 'start_frame')) and
@@ -663,6 +663,12 @@ begin
         'Inspection requires one bounded original source range');
       if LKind = 'effect_preview' then
       begin
+        if AWrite.Find('tail_seconds') <> nil then
+        begin
+          Need((AWrite.Find('tail_seconds').JSONType = jtNumber) and
+            (AWrite.Floats['tail_seconds'] >= 0) and
+            (AWrite.Floats['tail_seconds'] <= 10), 'Effect tail must be 0..10 seconds');
+        end;
         Need((AWrite.Find('effects') <> nil) and
           (AWrite.Find('effects').JSONType = jtArray) and
           (AWrite.Arrays['effects'].Count <= 8), 'Effects require at most eight ordered stages');
@@ -674,6 +680,7 @@ begin
       else
       begin
         Need(AWrite.Find('effects') = nil, 'Inspection does not accept effects');
+        Need(AWrite.Find('tail_seconds') = nil, 'Inspection does not accept an effect tail');
       end;
     end
     else if (LKind = 'effect_save') or (LKind = 'capture_save') then

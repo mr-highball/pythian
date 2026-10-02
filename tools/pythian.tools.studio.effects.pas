@@ -34,7 +34,7 @@ type
   TStudioEffectCheck = procedure of object;
 
 { Borrowed request; owned result. Source/preview hashes are verified in worker
-  execution. Zero tail frames, reset DSP state, stereo PCM16 output; no hidden
+  execution. Explicit bounded tail frames, reset DSP state, stereo PCM16 output; no hidden
   normalization or limiter. Over-range samples are counted before PCM clipping. }
 procedure ValidateStudioEffectRequest(const ARequest: TJSONObject);
 procedure ValidateStudioCollectionName(const AName: String);
@@ -49,8 +49,8 @@ implementation
 
 uses
   SysUtils, Math,
-  pythian.audio, pythian.hash, pythian.effects, pythian.biquad, pythian.dynamics,
-  pythian.effects.catalog,
+  pythian.audio, pythian.hash, pythian.effects,
+  pythian.effects.catalog, pythian.effects.rack,
   pythian.wave.read, pythian.wave.stream,
   pythian.tools.annotations.catalog, pythian.tools.annotations.sourceguard,
   pythian.tools.studio.projects, pythian.tools.studio.jobs,
@@ -164,6 +164,10 @@ begin
   LEnd := Number(ARequest, 'end_frame', 1, 9007199254740991);
   Need((Frac(LStart) = 0) and (Frac(LEnd) = 0) and (LEnd > LStart),
     'Effect preview requires an exact original source range');
+  if ARequest.Find('tail_seconds') <> nil then
+  begin
+    Number(ARequest, 'tail_seconds', 0, 10);
+  end;
   Need((ARequest.Find('effects') <> nil) and (ARequest.Find('effects').JSONType = jtArray),
     'Effect stack must be an array');
   LEffects := ARequest.Arrays['effects'];
@@ -191,10 +195,9 @@ function CreateChain(const AEffects: TJSONArray; const ARate: Integer): TEffectC
 var
   LIndex: Integer;
   LRow: TJSONObject;
-  LFilter: TBiquadSettings;
-  LDynamics: TCompressorSettings;
   LEffect: TAudioEffect;
   LDefinition: TEffectDefinition;
+  LSettings: TCatalogEffectSettings;
   LSetting: TEffectParameter;
   LParameter: Integer;
 begin
@@ -204,52 +207,20 @@ begin
     begin
       LRow := AEffects.Objects[LIndex];
       Need(FindEffectDefinition(LRow.Strings['kind'], LDefinition), 'Unsupported effect kind');
+      LSettings := DefaultCatalogEffect(LDefinition.Kind);
       for LParameter := 0 to High(LDefinition.Parameters) do
       begin
         { Big Boss: a bypassed recipe must remain valid when enabled. }
         LSetting := LDefinition.Parameters[LParameter];
-        Number(LRow, LSetting.Key, LSetting.Minimum, EffectParameterMaximum(LSetting, ARate));
+        LSettings.Values[LParameter] := Number(LRow, LSetting.Key, LSetting.Minimum,
+          EffectParameterMaximum(LSetting, ARate));
       end;
+      ValidateCatalogEffect(LSettings, ARate);
       if LRow.Booleans['bypass'] then
       begin
         Continue;
       end;
-      LEffect := nil;
-      if LRow.Strings['kind'] = 'gain' then
-      begin
-        LEffect := TGainEffect.Create(ARate, Power(10, LRow.Floats['gain_db'] / 20), 0);
-      end
-      else if LDefinition.IsBiquad then
-      begin
-        LFilter := DefaultBiquadSettings;
-        LFilter.Kind := LDefinition.BiquadKind;
-        LFilter.FrequencyHz := LRow.Floats['frequency_hz'];
-        if not (LDefinition.Kind in [ceLowShelf, ceHighShelf]) then
-        begin
-          LFilter.Q := LRow.Floats['q'];
-        end;
-        if LDefinition.BiquadKind in [bkPeak, bkLowShelf, bkHighShelf] then
-        begin
-          LFilter.GainDb := LRow.Floats['gain_db'];
-        end;
-        LEffect := TBiquadEffect.Create(ARate, LFilter);
-      end
-      else if LRow.Strings['kind'] = 'compressor' then
-      begin
-        LDynamics := DefaultCompressorSettings;
-        LDynamics.ThresholdDb := LRow.Floats['threshold_db'];
-        LDynamics.Ratio := LRow.Floats['ratio'];
-        LDynamics.AttackSeconds := LRow.Floats['attack_ms'] / 1000;
-        LDynamics.ReleaseSeconds := LRow.Floats['release_ms'] / 1000;
-        LDynamics.MakeupDb := LRow.Floats['makeup_db'];
-        LDynamics.KneeDb := 6;
-        LEffect := TCompressorEffect.Create(ARate, LDynamics);
-      end
-      else if LRow.Strings['kind'] = 'limiter' then
-      begin
-        LEffect := TLimiterEffect.Create(ARate, LRow.Floats['ceiling_db'],
-          LRow.Floats['release_ms'] / 1000);
-      end;
+      LEffect := CreateCatalogEffect(ARate, LSettings);
       try
         Result.Add(LEffect);
         LEffect := nil;
@@ -278,6 +249,8 @@ var
   LRendered: TAudioSamples;
   LStart: Int64;
   LFrames: Int64;
+  LTailFrames: Int64;
+  LInputRemaining: Int64;
   LRemaining: Int64;
   LClipped: Int64;
   LCount: Integer;
@@ -315,11 +288,13 @@ begin
       (LReader.Channels in [1, 2]), 'Effects support mono/stereo WAV at 8–192 kHz');
     LStart := ARequest.Int64s['start_frame'];
     LFrames := ARequest.Int64s['end_frame'] - LStart;
+    LTailFrames := Round(ARequest.Get('tail_seconds', 0.0) * LReader.SampleRate);
     Need((LStart >= 0) and (LFrames > 0) and
       (ARequest.Int64s['end_frame'] <= LReader.FrameCount) and
       (LFrames <= Int64(LReader.SampleRate) * 30), 'Effects preview is limited to a 30-second source passage');
     LChain := CreateChain(ARequest.Arrays['effects'], LReader.SampleRate);
-    Need(LFrames * LChain.FrameCost <= MaximumEffectVisits, 'Effect stack exceeds render work bound');
+    Need((LFrames + LTailFrames) * LChain.FrameCost <= MaximumEffectVisits,
+      'Effect stack and tail exceed render work bound; shorten the passage or tail');
     LTrack := ReadCatalogTrack(ACatalogRoot, ARequest.Strings['source_sha256']);
     LRecipe := TJSONObject.Create;
     LRecipe.Add('format', 'pythian.studio.effect.recipe.v1');
@@ -331,16 +306,18 @@ begin
     LRecipe.Add('effects', ARequest.Arrays['effects'].Clone);
     LRecipe.Add('sample_rate', LReader.SampleRate);
     LRecipe.Add('channels', 2);
-    LRecipe.Add('tail_frames', 0);
+    LRecipe.Add('tail_frames', LTailFrames);
+    LRecipe.Add('tail_policy', 'explicit_zero_input_then_cut');
     LRecipe.Add('initial_state', 'reset');
     LRecipe.Add('encoding', 'pcm16');
     LRecipe.Add('compressor_knee_db', 6);
     LRecipe.Add('policy', 'studio_effects_v1;explicit_order_and_bypass;no_hidden_limiter');
     LOutput := TFileStream.Create(LPath + '.partial', fmCreate or fmShareExclusive);
     LSink := TStreamAudioSink.Create(LOutput);
-    LWriter := TWavePcm16Writer.Create(LSink, LReader.SampleRate, 2, LFrames);
+    LWriter := TWavePcm16Writer.Create(LSink, LReader.SampleRate, 2, LFrames + LTailFrames);
     LReader.SeekFrame(LStart);
-    LRemaining := LFrames;
+    LRemaining := LFrames + LTailFrames;
+    LInputRemaining := LFrames;
     LClipped := 0;
     LPeak := 0;
     while LRemaining > 0 do
@@ -348,14 +325,30 @@ begin
       if Assigned(ACheck) then ACheck;
       LCount := 2048;
       if LRemaining < LCount then LCount := LRemaining;
-      LSamples := LReader.ReadFrames(LCount);
-      Need(Length(LSamples) = LCount * LReader.Channels, 'Short effects source read');
+      if LInputRemaining > 0 then
+      begin
+        LCount := Min(LCount, LInputRemaining);
+        LSamples := LReader.ReadFrames(LCount);
+        Need(Length(LSamples) = LCount * LReader.Channels, 'Short effects source read');
+      end
+      else
+      begin
+        LSamples := nil;
+      end;
       SetLength(LRendered, LCount * 2);
       for LIndex := 0 to LCount - 1 do
       begin
-        LLeft := LSamples[LIndex * LReader.Channels];
-        LRight := LLeft;
-        if LReader.Channels = 2 then LRight := LSamples[LIndex * 2 + 1];
+        LLeft := 0;
+        LRight := 0;
+        if LInputRemaining > 0 then
+        begin
+          LLeft := LSamples[LIndex * LReader.Channels];
+          LRight := LLeft;
+          if LReader.Channels = 2 then
+          begin
+            LRight := LSamples[LIndex * 2 + 1];
+          end;
+        end;
         LChain.Process(LLeft, LRight, LProcessedLeft, LProcessedRight);
         LLeft := LProcessedLeft;
         LRight := LProcessedRight;
@@ -367,6 +360,7 @@ begin
       end;
       LWriter.AppendSamples(LRendered);
       Dec(LRemaining, LCount);
+      LInputRemaining := Max(Int64(0), LInputRemaining - LCount);
     end;
     LWriter.Finish;
     Need(FileFlush(LOutput.Handle), 'Could not flush effect preview');
@@ -386,7 +380,7 @@ begin
     Result.Add('artifact', 'effect.wav');
     Result.Add('sample_rate', LReader.SampleRate);
     Result.Add('channels', 2);
-    Result.Add('frame_count', LFrames);
+    Result.Add('frame_count', LFrames + LTailFrames);
     Result.Add('peak_before_encoding', LPeak);
     Result.Add('clipped_samples', LClipped);
     Result.Add('recipe_sha256', StudioTextHash(LRecipe.AsJSON));

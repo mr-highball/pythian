@@ -14,7 +14,7 @@ Completion credit: 1 goal percentage point (0.10 overall points).
 Basis: one further unearned delivery_04 point transfers here (5 → 4).
 All independent reproduction criteria remain required. Scoping earns no credit.
 
-Execution status: follows the selected filter/transport batch, Big Boss solo.
+Execution status: selected, Big Boss solo; the shared filter prerequisite is accepted.
 Next deliverable: usable time-based effects in the canonical rack, preserving
 source/recipe lineage. Closing evidence: actual native impulse/continuation and
 saved-tail checks plus mobile/desktop preview/save. Stop at a missing DSP
@@ -39,6 +39,23 @@ primitive; give the gap an owner rather than inventing a browser substitute.
 
 **Dev Notes:**
 
+- 2026-10-02, Big Boss: primary `pythian.effects.rack` now constructs every
+  catalog effect; Studio's one-off construction branches are removed. Shared
+  catalog validation also owns joint delay/modulation bounds. Preview accepts
+  explicit tail seconds, feeds zero input without resetting DSP, and records
+  output length separately from the original range. Native impulse/reset,
+  modulation, order, bypass, exact tail, saved lineage and invalid-bound checks
+  pass 130 cases on checked Win64 and Win32 with zero heap leaks. Actual
+  desktop/390 px Codex-browser checks reject invalid delay excursion, preview
+  combined echo/reverb, save/reload a four-second clip from two input seconds
+  plus two tail seconds, and invalidate/rerender after tail edits. The solo
+  verdict and fourteen frozen artifacts are in ignored `build/studio-tails/`.
+  Exact-revision Linux CI remains before acceptance; no task credit yet.
+- Initial tail request was rejected by the outer job key whitelist despite
+  inner effect validation accepting it. Both job-envelope layers now admit the
+  explicit bounded field; inspection still rejects effect-only fields. Failed
+  `build/studio-tails/run-01` is preserved, repaired run-02 and extended run-03
+  pass. This is an implementation repair, not a scientific rejection.
 - 2026-10-02, Big Boss: the operator's consolidation instruction prompted a
   wider core inventory. `src/pythian.delay.modulated.pas` and
   `src/pythian.reverb.pas` already implement the required effect classes. Their
