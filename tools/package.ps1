@@ -303,6 +303,7 @@ try {
     # This verifier stays outside the archive; all its library units come from
     # the extracted package, like the other external consumer checks.
     Copy-Item -LiteralPath (Join-Path $projectRoot 'tests/pythian.tests.learning.profile.lpr') -Destination $checkRoot
+    Copy-Item -LiteralPath (Join-Path $projectRoot 'tests/pythian.tests.audio.session.pas') -Destination $checkRoot
     & $compilerPath @compilerArgs 'pythian.tests.learning.profile.lpr' > 'partition-check-build.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Partition report verifier compilation failed' }
     & (Join-Path $binRoot "pythian.tests.learning.profile$executableSuffix") 'partition' 'journal' 'partitioned' '3' 'training' > 'partition-check.log'

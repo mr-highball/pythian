@@ -51,6 +51,12 @@ repository/new-branch procedure; no companion-source edits in this checkout.
 
 **Dev Notes:**
 
+- First Linux CI at `567d700` passed the full native integration build but
+  failed extracted-package verification: the profile checker was copied without
+  its new shared audio-session test unit. Package verification now copies that
+  dependency. Repaired Win64 extracted WFC package passes 149 owned units and
+  268 content hashes plus consumer runs; log `build/long-session/package-repair.log`.
+  This packaging omission is an implementation failure, not a scientific result.
 - 2026-10-02, Big Boss: primary `TJournalAudioRenderStream` now emits borrowed
   PCM blocks with Int64 grain/output clocks and exact final clipping. Shared
   `GrainWindowWeight` replaces its duplicate Hann formula. Selection work bounds
