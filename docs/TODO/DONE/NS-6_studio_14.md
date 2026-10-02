@@ -1,6 +1,6 @@
 # NS-6_studio_14 — Play custom-duration generation as it is produced
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
@@ -15,13 +15,13 @@ Basis: one unearned delivery_04 point and two delivery_05 points transfer here;
 both donor tasks retain all acceptance requirements.
 Credit is earned only after all criteria and prerequisites pass.
 
-Execution status: selected after the native session's exact-code acceptance.
-Big Boss owns this solo batch.
-Next deliverable: custom duration, native streamed playback
-and comprehensible controls/status in Studio. Closing evidence: two-minute,
-two-hour and twenty-four-hour plans, bounded early playback/buffering, pause,
-cancel/disconnect, replay and desktop/narrow interaction. Stop at unbounded
-buffer/disk growth or a browser-only synthesis replacement.
+Accepted 2026-10-02 by Big Boss under the user's explicit solo instruction.
+All criteria and prerequisites pass at code `9f0a77e`, including
+[Linux integration and extracted packages](https://github.com/mr-highball/pythian/actions/runs/36981642784),
+checked native and actual desktop/narrow Codex-browser evidence below.
+Frozen artifacts and the solo verdict are in `build/studio-live/`.
+Earns 3 NS-6 / 0.30 overall points. Physical-phone, sustained 24-hour playback,
+whole-session export and musical-quality acceptance are not claimed.
 
 **Acceptance Criteria:**
 
@@ -48,9 +48,9 @@ buffer/disk growth or a browser-only synthesis replacement.
 
 **Blockers**
 
-- [NS-4_streaming_01.md](DONE/NS-4_streaming_01.md)
-- [NS-6_studio_02.md](DONE/NS-6_studio_02.md)
-- [NS-6_studio_08.md](DONE/NS-6_studio_08.md)
+- [NS-4_streaming_01.md](NS-4_streaming_01.md)
+- [NS-6_studio_02.md](NS-6_studio_02.md)
+- [NS-6_studio_08.md](NS-6_studio_08.md)
 
 **Dev Notes:**
 

@@ -46,7 +46,7 @@ prerequisite or nonreproducible input and follow its owning task.
 - [NS-6_studio_15.md](DONE/NS-6_studio_15.md)
 - [NS-6_studio_12.md](DONE/NS-6_studio_12.md)
 - [NS-6_studio_13.md](DONE/NS-6_studio_13.md)
-- [NS-6_studio_14.md](NS-6_studio_14.md)
+- [NS-6_studio_14.md](DONE/NS-6_studio_14.md)
 - [NS-6_studio_10.md](NS-6_studio_10.md)
 - [NS-6_studio_11.md](NS-6_studio_11.md)
 - [NS-6_studio_08.md](DONE/NS-6_studio_08.md)

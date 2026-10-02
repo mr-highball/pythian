@@ -12,7 +12,7 @@ deliverable's acceptance, not polish deferred until after the backend.
 
 The selected expansion adds the [implemented filter catalog](TODO/DONE/NS-6_studio_12.md),
 [flexible source workspace](TODO/DONE/NS-6_studio_13.md) and
-[custom-duration streaming](TODO/NS-6_studio_14.md), with a separate
+[custom-duration streaming](TODO/DONE/NS-6_studio_14.md), with a separate
 [native generation prerequisite](TODO/DONE/NS-4_streaming_01.md).
 [Metadata discovery and selected-use preparation](TODO/NS-6_studio_11.md)
 retains its remaining criteria. [Phone HTTPS](TODO/NS-6_studio_10.md) remains open: the operator reports
@@ -100,7 +100,7 @@ completed by planning, and all original criteria in the donor tasks remain.
 | --- | ---: | ---: | --- |
 | [authoring_02](TODO/NS-6_authoring_02.md) | 8 | 1 | Physical LAN/source operator qualification |
 | [delivery_03](TODO/NS-6_delivery_03.md) | 10 | 1 | Final package and extracted workflow |
-| [delivery_04](TODO/NS-6_delivery_04.md) | 12 | 4 | Independent complete-workflow reproduction |
+| [delivery_04](TODO/NS-6_delivery_04.md) | 12 | 3 | Independent complete-workflow reproduction |
 | [delivery_05](TODO/NS-6_delivery_05.md) | 5 | 3 | Final completion audit and handoff |
 | [studio_01 — DONE](TODO/DONE/NS-6_studio_01.md) | 0 | 4 | Durable intuitive project/source setup |
 | [studio_02](TODO/DONE/NS-6_studio_02.md) | 0 | 2 | Actual bounded jobs and automatic audition queue |
@@ -115,8 +115,9 @@ completed by planning, and all original criteria in the donor tasks remain.
 | [studio_11](TODO/NS-6_studio_11.md) | 0 | 1 | Metadata-only discovery, bounded preview and selected-use preparation |
 | [studio_12 — DONE](TODO/DONE/NS-6_studio_12.md) | 0 | 1 | All implemented biquad filters in the effects rack |
 | [studio_13 — DONE](TODO/DONE/NS-6_studio_13.md) | 0 | 2 | Flexible bounded source view and unified preparation |
-| [studio_14](TODO/NS-6_studio_14.md) | 0 | 3 | Custom-duration generation with streamed playback |
+| [studio_14](TODO/DONE/NS-6_studio_14.md) | 0 | 3 | Custom-duration generation with streamed playback |
 | [studio_15](TODO/DONE/NS-6_studio_15.md) | 0 | 1 | Existing delay/reverb exposure with explicit tails |
+| [studio_16](TODO/NS-6_studio_16.md) | 0 | 1 | Primary PCM16/header reuse in microphone capture |
 | **Total allocation at scoping** | **35** | **35** | **Scoping earned no credit** |
 
 The 2026-10-02 expansion transfers six further unearned NS-6 points: one from
@@ -128,6 +129,8 @@ playing before completion, with explicit pause/stop and bounded production;
 24-hour duration planning alone cannot establish 24-hour musical quality.
 The consolidation inventory adds studio_15 with one further unearned
 delivery_04 point, making seven transferred NS-6 points in this expansion.
+The microphone codec inventory adds studio_16 with one further delivery_04
+point: eight transferred points, unchanged accepted credit and donor criteria.
 
 The added operator outcomes receive explicit weight from later verification
 work. Those verification obligations remain required at reduced planning weight;

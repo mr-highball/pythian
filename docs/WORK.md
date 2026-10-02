@@ -104,13 +104,19 @@ Both retained histories enter analysis/training, so this exercised actual cold
 competition. Ordinary worker and listening-catalog regressions pass. Repaired
 actual-browser fresh-model and cached five-second sessions finish exactly.
 Repair evidence: `build/studio-live/repair64/`, `repair32/`, `publish64/`.
-Exact repair-code CI remains required before acceptance/deployment.
+Repair code `9f0a77e` passes
+[Linux integration and extracted packages](https://github.com/mr-highball/pythian/actions/runs/36981642784).
+Studio_14 is accepted and moved to DONE: +3 NS-6 / +0.30 overall. Including the
+separately scoped microphone consolidation task, the current ledger is
+**52.25 accepted / 47.75 remaining**, **48 open / 47 DONE** (95 total),
+NS-6 **52/48**. Nonclosing count remains 0. Frozen streaming artifacts can be
+deployed independently of the selected microphone-codec consolidation.
 
 **Big Boss, solo:** operator feedback selects the implemented
 [filter catalog](TODO/DONE/NS-6_studio_12.md), flexible
 [source workspace](TODO/DONE/NS-6_studio_13.md), native
 [long-session generation](TODO/DONE/NS-4_streaming_01.md) and
-[streamed Studio playback](TODO/NS-6_studio_14.md). Keep this review solo under
+[streamed Studio playback](TODO/DONE/NS-6_studio_14.md). Keep this review solo under
 the existing instruction. The streaming consumer follows its native prerequisite.
 
 First batch advances studio_12 AC1–3 and studio_13 AC1–4: eleven working
@@ -1944,3 +1950,12 @@ catalogs and the fixed QA slot; preserve the live operator catalog and data.
 Exact temporary runtime cleanup and any dedicated operator-service handoff are
 recorded in the current batch's ignored evidence.
 The prior research stop state is independent of this task's replan.
+
+The consolidation inventory found a separate microphone PCM16/header encoder.
+[studio_16](TODO/NS-6_studio_16.md) owns replacement with primary WAV code, funded
+by one unearned delivery_04 point (4 to 3), retaining all consumer criteria.
+Scoping changes no accepted credit: 51.95/48.05, now 49 open/46 DONE (95 total).
+Big Boss owns AC1–3: native/pas2js byte agreement, bounded capture adapter and
+actual browser regression. Stop at an untestable platform dependency; physical
+microphone acceptance remains with the existing operator/device tasks. Current
+streaming repair acceptance is awaiting CI; its frozen artifacts are separate.

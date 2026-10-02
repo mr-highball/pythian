@@ -9,7 +9,7 @@ accepted synthesis, WAV learning and user-defined style/blend/reblend workflow
 and provide actionable feedback.
 
 North star: NS-6. Outcome owner: DELIVERY-RELEASE.
-Completion credit: 4 goal percentage points (0.40 overall points).
+Completion credit: 3 goal percentage points (0.30 overall points).
 Current allocation: [2026-09-30 operator rebalance](../OPERATOR-STUDIO.md#allocation-and-ownership), with NS-6 weighted at 10 overall points,
 under the user's authorization
 to rebalance without preserving historical point allocations. All existing
@@ -40,13 +40,16 @@ supported reproduction failure and record the unblock or repair owner.
 
 **Dev Notes:**
 
+- 2026-10-02, Big Boss: one further unearned point transfers to
+  [shared microphone encoding](NS-6_studio_16.md); all consumer criteria remain.
+
 - 2026-10-02, Big Boss: a further unearned point transfers to
   [existing delay/reverb exposure](DONE/NS-6_studio_15.md), found during the required
   consolidation review. All independent full-workflow criteria remain.
 
 - 2026-10-02, Big Boss: two unearned points transfer to
   [source-view controls](DONE/NS-6_studio_13.md), one to
-  [long-session playback](NS-6_studio_14.md). Independent reproduction of the
+  [long-session playback](DONE/NS-6_studio_14.md). Independent reproduction of the
   complete accepted workflow remains required; no criterion is removed.
 
 - 2026-09-30, Big Boss: four unearned points move to the explicit Studio

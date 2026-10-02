@@ -50,7 +50,7 @@ below 100%. Publication requires its own authorization.
 **Dev Notes:**
 
 - 2026-10-02, Big Boss: two unearned points transfer to
-  [long-session playback](NS-6_studio_14.md). Final north-star reconciliation,
+  [long-session playback](DONE/NS-6_studio_14.md). Final north-star reconciliation,
   supported handoff and all completion gates remain required.
 
 - 2026-09-29 current complete-goal credit basis: this task owns 5 NS-6
