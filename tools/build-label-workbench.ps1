@@ -24,7 +24,8 @@
 param(
   [string] $Compiler = $(if ($env:PAS2JS) { $env:PAS2JS } else { 'pas2js' }),
   [string] $RtlSource = $env:PAS2JS_RTL_SOURCE,
-  [string] $RtlJavascript = $env:PAS2JS_RTL_JS
+  [string] $RtlJavascript = $env:PAS2JS_RTL_JS,
+  [switch] $VerifyCodec
 )
 
 $ErrorActionPreference = 'Stop'
@@ -119,3 +120,14 @@ Copy-Item -LiteralPath (Join-Path $sourceRoot 'index.html'),
   (Join-Path $sourceRoot 'workspace-nav.css'),
   (Join-Path $sourceRoot 'phone-setup.html') -Destination $webRoot -Force
 Write-Host "Label workbench staged at $webRoot"
+if ($VerifyCodec) {
+  $codecRoot = Join-Path $outputRoot 'codec-check'
+  New-Item -ItemType Directory -Force -Path $codecRoot | Out-Null
+  $nodeCommand = Get-Command -Name node -CommandType Application -ErrorAction Stop | Select-Object -First 1
+  & $Compiler '-B' '-Tnodejs' '-Mdelphi' '-Jc' "-Ji$RtlJavascript" `
+    "-Fu$RtlSource" "-Fu$(Join-Path $repositoryRoot 'src')" "-FE$codecRoot" `
+    (Join-Path $repositoryRoot 'tests/pythian.tests.wave.portable.lpr')
+  if ($LASTEXITCODE -ne 0) { throw 'Portable WAV pas2js compilation failed' }
+  & $nodeCommand.Source (Join-Path $codecRoot 'pythian.tests.wave.portable.js')
+  if ($LASTEXITCODE -ne 0) { throw 'Portable WAV pas2js checks failed' }
+}

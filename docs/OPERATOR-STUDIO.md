@@ -354,6 +354,12 @@ uploads use verified 16 KiB chunks. Analysis accepts mono/stereo WAV at 8–192 
 and initially inspects up to 30 seconds / two million frames. Microphone capture
 records at most two minutes, encodes PCM WAV in the Pascal browser adapter and
 does not monitor the microphone through the speakers. Stop/exit releases tracks.
+The primary `QuantizePcm16` and `WavePcm16Header` own encoding for both microphone
+capture and native WAV writers; the browser only stores the resulting bytes.
+The old adapter-specific scaling and manual RIFF header are removed. Run the
+workbench build with its matched compiler/RTL and `-VerifyCodec` to execute the
+same authored PCM/RIFF/RF64 fixture under pas2js using installed Node. The native
+integration build runs that fixture through FPC; neither test uses a microphone.
 
 The **Experimental** note preview runs the existing single-pitch tracker on up
 to the first eight seconds of the selected channel, using native sinc conversion

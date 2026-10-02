@@ -300,6 +300,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Streaming WAVE compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.wave.stream$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Streaming WAVE checks failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.wave.portable.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Portable WAV contract compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.wave.portable$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Portable WAV contract checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.wave.read.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'WAVE reader compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.wave.read$executableSuffix")

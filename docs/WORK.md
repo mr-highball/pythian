@@ -14,7 +14,17 @@ Project work and review pushes stay on `hello-pythian`.
 
 ## Studio expansion — 2026-10-02
 
-**Current checkpoint:** studio_12 and studio_13 are accepted and moved to DONE.
+**Current checkpoint:** studio_12/13/15, streaming_01 and studio_14 are accepted.
+Streaming repair code `9f0a77e` passes Linux integration and extracted packages;
+the current ledger is **52.25 accepted / 47.75 remaining**, **48 open / 47 DONE**.
+The required consolidation inventory also found microphone WAV encoding.
+Studio_16's shared primary codec passes native/pas2js byte agreement and actual
+desktop/narrow browser regression; exact-code CI is pending before its credit
+or deployment. Fourteen matched artifacts are frozen under `build/shared-capture/`.
+All QA tabs/services are closed. Physical microphone/phone and musical-quality
+acceptance remain with their existing owners. Nonclosing count: 0.
+
+**First accepted batch:** studio_12 and studio_13 moved to DONE.
 Code `1b9349c53cdeef7fa3195f824e52002ca56df6ea` passes
 [Linux integration and extracted core/WFC packages](https://github.com/mr-highball/pythian/actions/runs/36970941681)
 as well as the native and actual-browser evidence below. Matched frozen assets
@@ -1958,4 +1968,14 @@ Scoping changes no accepted credit: 51.95/48.05, now 49 open/46 DONE (95 total).
 Big Boss owns AC1–3: native/pas2js byte agreement, bounded capture adapter and
 actual browser regression. Stop at an untestable platform dependency; physical
 microphone acceptance remains with the existing operator/device tasks. Current
-streaming repair acceptance is awaiting CI; its frozen artifacts are separate.
+streaming repair was awaiting CI at discovery; it has since been accepted above.
+
+Studio_16's implementation now removes the browser's local quantizer and manual
+header. Core `QuantizePcm16` and `WavePcm16Header` serve capture and native writers.
+The same authored byte oracle passes checked Win32/Win64 and matched pas2js;
+native stream error/ownership/RF64 boundaries pass with zero leaks on both
+targets. Native capture passes 53 checks. Actual desktop/narrow Codex Browser
+retained-input analysis/eight-second preview and five-second native playback
+pass without console errors or horizontal overflow. All owned tabs are closed;
+physical microphone/phone recording is not claimed. Evidence/frozen assets are
+under `build/shared-capture/`; exact-code CI remains the completion gate.

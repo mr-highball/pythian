@@ -37,6 +37,8 @@ const
   WaveStreamVersion = 1;
   WaveStreamBlockBytes = 4096;
   MaximumWaveStreamBytes: Int64 = 9007199254740991;
+  RiffHeaderBytes = 44;
+  Rf64HeaderBytes = 80;
 
 type
   { Borrowed blocks must be consumed synchronously in full or raise. A raising
@@ -73,7 +75,6 @@ type
     FBuffer: TAudioBytes;
     procedure CheckWritable;
     procedure WriteBuffer(const AFrames: Integer);
-    procedure WriteHeader;
     procedure Append(const AClip: TAudioClip; const ASamples: array of Single);
   public
     constructor Create(const ASink: TAudioByteSink; const ASampleRate, AChannels: Integer;
@@ -92,6 +93,10 @@ type
   end;
 
 procedure WriteWavePcm16(const AStream: TStream; const AClip: TAudioClip);
+{ Shared header for native streaming and bounded device captures whose final
+  frame count becomes known only at stop. Owns validation and RIFF/RF64 choice. }
+function WavePcm16Header(const ASampleRate, AChannels: Integer;
+  const AFrames: Int64): TAudioBytes;
 
 implementation
 
@@ -100,8 +105,6 @@ uses
 
 const
   DWordMaximum: Int64 = 4294967295;
-  RiffHeaderBytes = 44;
-  Rf64HeaderBytes = 80;
 
 procedure PutLE(var ABytes: TAudioBytes; const AOffset, ACount: Integer; AValue: Int64);
 var
@@ -114,7 +117,7 @@ begin
   end;
 end;
 
-procedure PutTag(var ABytes: TAudioBytes; const AOffset: Integer; const ATag: AnsiString);
+procedure PutTag(var ABytes: TAudioBytes; const AOffset: Integer; const ATag: String);
 var
   LIndex: Integer;
 begin
@@ -138,7 +141,11 @@ procedure TStreamAudioSink.WriteBytes(const ABytes: array of Byte);
 begin
   if Length(ABytes) > 0 then
   begin
+    {$IFDEF PAS2JS}
+    FStream.WriteBuffer(ABytes, Length(ABytes));
+    {$ELSE}
     FStream.WriteBuffer(ABytes[0], Length(ABytes));
+    {$ENDIF}
   end;
 end;
 
@@ -146,22 +153,17 @@ constructor TWavePcm16Writer.Create(const ASink: TAudioByteSink;
   const ASampleRate, AChannels: Integer; const AExpectedFrames: Int64);
 begin
   inherited Create;
-  ValidateAudioFormat(ASampleRate, AChannels);
   if ASink = nil then
   begin
     raise EAudio.Create('WAVE writer requires a sink');
-  end;
-  if (AExpectedFrames < 0) or
-    (AExpectedFrames > (MaximumWaveStreamBytes - Rf64HeaderBytes) div (AChannels * 2)) then
-  begin
-    raise EAudio.Create('WAVE expected length exceeds exact file-size envelope');
   end;
   FSink := ASink;
   FSampleRate := ASampleRate;
   FChannels := AChannels;
   FExpectedFrames := AExpectedFrames;
-  FIsRF64 := AExpectedFrames > (DWordMaximum - 36) div (AChannels * 2);
-  WriteHeader;
+  FBuffer := WavePcm16Header(ASampleRate, AChannels, AExpectedFrames);
+  FIsRF64 := Length(FBuffer) = Rf64HeaderBytes;
+  WriteBuffer(0);
 end;
 
 procedure TWavePcm16Writer.CheckWritable;
@@ -196,57 +198,63 @@ begin
   end;
 end;
 
-procedure TWavePcm16Writer.WriteHeader;
+function WavePcm16Header(const ASampleRate, AChannels: Integer;
+  const AFrames: Int64): TAudioBytes;
 var
   LDataBytes: Int64;
   LFormatOffset: Integer;
   LDataOffset: Integer;
+  LIsRF64: Boolean;
 begin
-  LDataBytes := FExpectedFrames * FChannels * 2;
-  if FIsRF64 then
+  ValidateAudioFormat(ASampleRate, AChannels);
+  if (AFrames < 0) or
+    (AFrames > (MaximumWaveStreamBytes - Rf64HeaderBytes) div (AChannels * 2)) then
+    raise EAudio.Create('WAVE expected length exceeds exact file-size envelope');
+  LIsRF64 := AFrames > (DWordMaximum - 36) div (AChannels * 2);
+  LDataBytes := AFrames * AChannels * 2;
+  if LIsRF64 then
   begin
     { EBU Tech 3306 v1.1, section 3.4 and Annex A.2. This encodes the RF64
       size extension, not broadcast metadata or multichannel speaker layouts. }
-    SetLength(FBuffer, Rf64HeaderBytes);
-    PutTag(FBuffer, 0, 'RF64');
-    PutLE(FBuffer, 4, 4, DWordMaximum);
-    PutTag(FBuffer, 8, 'WAVE');
-    PutTag(FBuffer, 12, 'ds64');
-    PutLE(FBuffer, 16, 4, 28);
-    PutLE(FBuffer, 20, 8, LDataBytes + Rf64HeaderBytes - 8);
-    PutLE(FBuffer, 28, 8, LDataBytes);
-    PutLE(FBuffer, 36, 8, FExpectedFrames);
-    PutLE(FBuffer, 44, 4, 0);
+    SetLength(Result, Rf64HeaderBytes);
+    PutTag(Result, 0, 'RF64');
+    PutLE(Result, 4, 4, DWordMaximum);
+    PutTag(Result, 8, 'WAVE');
+    PutTag(Result, 12, 'ds64');
+    PutLE(Result, 16, 4, 28);
+    PutLE(Result, 20, 8, LDataBytes + Rf64HeaderBytes - 8);
+    PutLE(Result, 28, 8, LDataBytes);
+    PutLE(Result, 36, 8, AFrames);
+    PutLE(Result, 44, 4, 0);
     LFormatOffset := 48;
     LDataOffset := 72;
   end
   else
   begin
-    SetLength(FBuffer, RiffHeaderBytes);
-    PutTag(FBuffer, 0, 'RIFF');
-    PutLE(FBuffer, 4, 4, LDataBytes + RiffHeaderBytes - 8);
-    PutTag(FBuffer, 8, 'WAVE');
+    SetLength(Result, RiffHeaderBytes);
+    PutTag(Result, 0, 'RIFF');
+    PutLE(Result, 4, 4, LDataBytes + RiffHeaderBytes - 8);
+    PutTag(Result, 8, 'WAVE');
     LFormatOffset := 12;
     LDataOffset := 36;
   end;
-  PutTag(FBuffer, LFormatOffset, 'fmt ');
-  PutLE(FBuffer, LFormatOffset + 4, 4, 16);
-  PutLE(FBuffer, LFormatOffset + 8, 2, 1);
-  PutLE(FBuffer, LFormatOffset + 10, 2, FChannels);
-  PutLE(FBuffer, LFormatOffset + 12, 4, FSampleRate);
-  PutLE(FBuffer, LFormatOffset + 16, 4, FSampleRate * FChannels * 2);
-  PutLE(FBuffer, LFormatOffset + 20, 2, FChannels * 2);
-  PutLE(FBuffer, LFormatOffset + 22, 2, 16);
-  PutTag(FBuffer, LDataOffset, 'data');
-  if FIsRF64 then
+  PutTag(Result, LFormatOffset, 'fmt ');
+  PutLE(Result, LFormatOffset + 4, 4, 16);
+  PutLE(Result, LFormatOffset + 8, 2, 1);
+  PutLE(Result, LFormatOffset + 10, 2, AChannels);
+  PutLE(Result, LFormatOffset + 12, 4, ASampleRate);
+  PutLE(Result, LFormatOffset + 16, 4, ASampleRate * AChannels * 2);
+  PutLE(Result, LFormatOffset + 20, 2, AChannels * 2);
+  PutLE(Result, LFormatOffset + 22, 2, 16);
+  PutTag(Result, LDataOffset, 'data');
+  if LIsRF64 then
   begin
-    PutLE(FBuffer, LDataOffset + 4, 4, DWordMaximum);
+    PutLE(Result, LDataOffset + 4, 4, DWordMaximum);
   end
   else
   begin
-    PutLE(FBuffer, LDataOffset + 4, 4, LDataBytes);
+    PutLE(Result, LDataOffset + 4, 4, LDataBytes);
   end;
-  WriteBuffer(0);
 end;
 
 procedure TWavePcm16Writer.Append(const AClip: TAudioClip; const ASamples: array of Single);

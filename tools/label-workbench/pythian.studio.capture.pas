@@ -29,7 +29,8 @@ unit pythian.studio.capture;
 interface
 
 uses
-  JS, Web, WebAudio, SysUtils, Math, Types, pythian.studio.sources, pythian.studio.requests;
+  JS, Web, WebAudio, SysUtils, Math, Types, pythian.audio, pythian.wave.stream,
+  pythian.studio.sources, pythian.studio.requests;
 
 type
   TStudioCapture = class
@@ -638,7 +639,7 @@ begin
     FStream := LStream;
     FContext := TJSAudioContext.new;
     FRate := Round(FContext.sampleRate);
-    if (FRate < 8000) or (FRate > 192000) or (44 + FRate * 240 > 134217728) or
+    if (FRate < 8000) or (FRate > 192000) or (RiffHeaderBytes + FRate * 240 > 134217728) or
       (FContext.audioWorklet = nil) then
     begin
       raise Exception.Create('This browser cannot provide the supported microphone worklet.');
@@ -649,7 +650,7 @@ begin
       Exit;
     end;
     ClearPlayers;
-    FPCM := TJSUint8Array.new(44 + FRate * 240);
+    FPCM := TJSUint8Array.new(RiffHeaderBytes + FRate * 240);
     FFrames := 0;
     FBlob := nil;
     FStart := nil;
@@ -787,22 +788,13 @@ begin
   for LIndex := 0 to LSamples.length - 1 do
   begin
     LValue := Double(LSamples[LIndex]);
-    if not ((LValue >= -1.0e10) and (LValue <= 1.0e10)) then
-    begin
-      ProcessorError(nil);
-      Exit;
+    try
+      LSample := QuantizePcm16(LValue);
+    except
+      on E: EAudio do begin ProcessorError(nil); Exit end;
     end;
     LPeak := Max(LPeak, Abs(LValue));
-    LValue := Max(-1, Min(1, LValue));
-    if LValue < 0 then
-    begin
-      LSample := Round(LValue * 32768);
-    end
-    else
-    begin
-      LSample := Round(LValue * 32767);
-    end;
-    LView.setInt16(44 + (FFrames + LIndex) * 2, LSample, True);
+    LView.setInt16(RiffHeaderBytes + (FFrames + LIndex) * 2, LSample, True);
   end;
   Inc(FFrames, LSamples.length);
   El('capture-level').textContent := StudioTime(FFrames / FRate) +
@@ -813,7 +805,7 @@ procedure TStudioCapture.FinishRecording;
 var
   LView: TJSDataView;
   LParts: TJSArray;
-  LHeader: String;
+  LHeader: TAudioBytes;
   LIndex: Integer;
 begin
   CloseMicrophone;
@@ -825,32 +817,10 @@ begin
     Exit;
   end;
   LView := TJSDataView.new(FPCM.buffer);
-  LHeader := 'RIFF';
-  for LIndex := 1 to 4 do
-  begin
-    LView.setUint8(LIndex - 1, Ord(LHeader[LIndex]));
-  end;
-  LView.setUint32(4, 36 + FFrames * 2, True);
-  LHeader := 'WAVEfmt ';
-  for LIndex := 1 to 8 do
-  begin
-    LView.setUint8(LIndex + 7, Ord(LHeader[LIndex]));
-  end;
-  LView.setUint32(16, 16, True);
-  LView.setUint16(20, 1, True);
-  LView.setUint16(22, 1, True);
-  LView.setUint32(24, FRate, True);
-  LView.setUint32(28, FRate * 2, True);
-  LView.setUint16(32, 2, True);
-  LView.setUint16(34, 16, True);
-  LHeader := 'data';
-  for LIndex := 1 to 4 do
-  begin
-    LView.setUint8(LIndex + 35, Ord(LHeader[LIndex]));
-  end;
-  LView.setUint32(40, FFrames * 2, True);
+  LHeader := WavePcm16Header(FRate, 1, FFrames);
+  for LIndex := 0 to High(LHeader) do LView.setUint8(LIndex, LHeader[LIndex]);
   LParts := TJSArray.new;
-  LParts.push(FPCM.subarray(0, 44 + FFrames * 2));
+  LParts.push(FPCM.subarray(0, Length(LHeader) + FFrames * 2));
   FBlob := TJSBlob.new(LParts);
   FPCM := nil;
   FStart := TJSObject.new;
