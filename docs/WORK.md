@@ -14,6 +14,22 @@ Project work and review pushes stay on `hello-pythian`.
 
 ## Current metadata-only collection work — 2026-10-01
 
+**Latest deployment status, Big Boss:** the operator explicitly authorized the
+corrected restart command. Candidate 1 is now running from the fixed stable
+slot with all fourteen reviewed artifact identities intact. HTTP and HTTPS
+Studio return 200; HTTPS uses normal system trust, and the served Studio
+JavaScript matches the candidate hash. All 2,624 earlier catalog metadata
+records retain their hashes. No full audio was rehashed or refresh/review job
+submitted. The intended stable process owns both listeners; no stray QA
+listener or worker remains. Private evidence is
+`build/studio-library-lazy/LIVE-DEPLOYMENT.json`.
+
+This verifies deployment and page delivery, not browser interaction or the
+unexecuted isolated HTTP workflow matrix. Studio_11 remains OPEN at unchanged
+credit; the next operator action is reload Studio and Refresh library.
+
+### Preparation and publication history
+
 **Big Boss:** the operator reports that phone HTTPS worked, then identifies the
 multi-gigabyte Refresh counter as excessive for a collection listing. Read-only
 tracing proves that counter measures server disk hashing, not phone audio

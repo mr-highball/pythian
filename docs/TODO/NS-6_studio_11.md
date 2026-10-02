@@ -78,6 +78,16 @@ failures; do not infer actual listening from a screenshot or compilation.
 
 **Dev Notes:**
 
+- 2026-10-01, Big Boss / Ticket Guy, authorized local deployment: the operator
+  explicitly requested execution of the corrected restart command. The fixed
+  stable slot now runs the reviewed candidate; all fourteen files match hashes
+  and sizes. HTTP/HTTPS Studio return 200 with normal system certificate
+  validation, and the HTTPS-served Studio JavaScript matches the candidate.
+  All 2,624 earlier catalog records remain byte-identical, without rehashing
+  full audio. No live refresh/review job was submitted; no QA listener or stray
+  worker remains. Evidence is `build/studio-library-lazy/LIVE-DEPLOYMENT.json`.
+  Page delivery is not browser interaction or the isolated HTTP workflow matrix.
+  Task OPEN, no additional credit, Neo's fixture-failure count remains 1.
 - 2026-10-01, Big Boss, operator launcher repair: the user's Windows
   PowerShell restart failed before any mutation because the outer array wrapper
   around `ConvertFrom-Json` yielded one nested array instead of fourteen assets.

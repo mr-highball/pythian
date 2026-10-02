@@ -164,14 +164,16 @@ Original audio stays immutable once imported, and a changed file is a new source
 identity. Old saved corpora retain their exact bytes/ranges and classifications.
 
 Refresh is an explicit background job; opening Studio does not start a scan.
-The currently deployed studio_09 refresh verifies full originals on the server,
-with byte counters describing disk reads rather than phone transfer. Studio_11
-separates this into metadata-only discovery, bounded region audition and explicit
-selected-recording preparation. It retains Cancel/recovery, checks uncertain
+The deployed studio_11 review build separates metadata-only discovery, bounded
+region audition and explicit selected-recording preparation. The earlier
+studio_09 byte counters described server disk reads rather than phone transfer.
+The new path retains Cancel/recovery, checks uncertain
 submissions by their original job ID, and preserves the previous complete index
 on failure. Metadata identity is never substituted for an audio content hash.
 Existing catalog sources are verified in place without another staging WAV
 when preparation requires them.
+Native and portable checks pass; the full HTTP/browser workflow remains open
+under studio_11. Successful page delivery alone does not close those checks.
 Collections group recordings; a saved project/corpus chooses the recordings,
 passages and classifications to learn from.
 

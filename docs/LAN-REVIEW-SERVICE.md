@@ -78,9 +78,9 @@ requests a sampled waveform; Play requests a bounded region. Adding a recording
 or passage to a corpus, or preparing it for analysis/effects, explicitly verifies
 only that recording. Discovery has a ten-minute worker budget and selected
 preparation retains two hours, with progress, Cancel and retry. Keep enough disk
-space for new selected imports. The earlier deployed full-refresh path still
-hashes all originals; deployment and remaining consumer checks for the new path
-are tracked in [studio_11](TODO/NS-6_studio_11.md).
+space for new selected imports. The retained legacy full-refresh operation
+hashes all originals; the deployed Studio review build uses metadata discovery.
+Remaining consumer checks are tracked in [studio_11](TODO/NS-6_studio_11.md).
 
 The same service also listens at `http://127.0.0.1:18097/studio.html` on the host
 computer, providing the browser context needed for microphone capture. A phone
