@@ -41,7 +41,7 @@ supported reproduction failure and record the unblock or repair owner.
 **Dev Notes:**
 
 - 2026-10-02, Big Boss: a further unearned point transfers to
-  [existing delay/reverb exposure](NS-6_studio_15.md), found during the required
+  [existing delay/reverb exposure](DONE/NS-6_studio_15.md), found during the required
   consolidation review. All independent full-workflow criteria remain.
 
 - 2026-10-02, Big Boss: two unearned points transfer to

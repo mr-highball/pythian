@@ -29,6 +29,7 @@ unit pythian.tools.studio.jobs;
 interface
 
 uses
+  Classes,
   fpjson,
   pythian.audio;
 
@@ -40,6 +41,7 @@ const
   MaximumStudioQueuedJobs = 32;
   MaximumStudioJobSeconds = 600;
   MaximumStudioLibrarySeconds = 7200;
+  MaximumStudioSessionSeconds = 172800;
   MaximumStudioJobMemoryBytes = 128 * 1024 * 1024;
   MaximumStudioJobSourceBytes: Int64 = 34359738368;
   MaximumStudioJobFeatures = 500000;
@@ -69,7 +71,9 @@ procedure AdvanceStudioJob(const ACatalogRoot, AJobId, AStatus, AStage: String;
   const ADone, ATotal: Int64; const AResults: TJSONObject = nil;
   const AErrorCode: String = ''; const AErrorMessage: String = '');
 function StudioJobCancelled(const ACatalogRoot, AJobId: String): Boolean;
-procedure ReleaseStudioWorker(const ACatalogRoot: String);
+procedure ReleaseStudioWorker(const ACatalogRoot: String; const AStream: Boolean = False);
+function StudioWorkerLockDirectory(const ACatalogRoot: String;
+  const AStream: Boolean = False): String;
 procedure RecoverStudioJobs(const ACatalogRoot: String; const AWorkerStopped: Boolean);
 function StudioJobDirectory(const ACatalogRoot, AJobId: String): String;
 { Creates only the private parent. The fresh leaf remains absent for importer
@@ -78,12 +82,15 @@ function ReserveStudioJobStage(const ACatalogRoot, ALibraryRoot, AJobId,
   APurpose: String): String;
 function StudioTextHash(const AText: String): String;
 function ReadStudioJSON(const APath: String): TJSONObject;
+function OpenStudioReadStream(const APath: String): TFileStream;
 procedure WriteStudioJSONNew(const APath: String; const AObject: TJSONObject);
+{ Mutable bounded checkpoints only; immutable job/identity records use New. }
+procedure ReplaceStudioJSON(const APath: String; const AObject: TJSONObject);
+procedure ReplaceStudioBinary(const APath: String; const ABytes: TAudioBytes);
 
 implementation
 
 uses
-  Classes,
   SysUtils,
   Math,
   jsonparser,
@@ -102,7 +109,9 @@ var
 
 function StudioJobRuntimeSeconds(const AKind: String): Integer;
 begin
-  if (AKind = 'library_refresh') or (AKind = 'library_prepare') then
+  if AKind = 'stream_generate' then
+    Result := MaximumStudioSessionSeconds
+  else if (AKind = 'library_refresh') or (AKind = 'library_prepare') then
     Result := MaximumStudioLibrarySeconds
   else
     Result := MaximumStudioJobSeconds;
@@ -349,13 +358,36 @@ begin
   end;
 end;
 
+function OpenStudioReadStream(const APath: String): TFileStream;
+var
+  LStarted: QWord;
+begin
+  CheckPath(APath);
+  LStarted := GetTickCount64;
+  repeat
+    try
+      Exit(TFileStream.Create(APath, fmOpenRead or fmShareDenyWrite));
+    except
+      on E: EFOpenError do
+      begin
+        {$IFDEF MSWINDOWS}
+        if not (GetLastError in [ERROR_SHARING_VIOLATION, ERROR_LOCK_VIOLATION]) or
+          (GetTickCount64 - LStarted >= 2000) then raise;
+        Sleep(5);
+        {$ELSE}
+        raise;
+        {$ENDIF}
+      end;
+    end;
+  until False;
+end;
+
 function ReadStudioJSON(const APath: String): TJSONObject;
 var
   LStream: TFileStream;
   LText: String;
 begin
-  CheckPath(APath);
-  LStream := TFileStream.Create(APath, fmOpenRead or fmShareDenyWrite);
+  LStream := OpenStudioReadStream(APath);
   try
     Need((LStream.Size > 0) and (LStream.Size <= 1048576), 'Studio record exceeds byte bound');
     SetLength(LText, Integer(LStream.Size));
@@ -366,37 +398,75 @@ begin
   Result := ParseStudioJobWrite(LText);
 end;
 
-procedure WriteStudioJSONNew(const APath: String; const AObject: TJSONObject);
+procedure WriteStudioData(const APath, AText: String;
+  const AReplace: Boolean);
 var
   LStage: String;
   LStream: TFileStream;
-  LText: String;
   LGuid: TGuid;
+  LReplaced: Boolean;
+  LStarted: QWord;
 begin
   CheckPath(APath);
-  Need(not FileExists(APath) and not DirectoryExists(APath), 'Studio record already exists');
+  Need((AReplace or not FileExists(APath)) and not DirectoryExists(APath),
+    'Studio record already exists');
   Need(ForceDirectories(ExtractFileDir(APath)), 'Cannot create Studio record directory');
   CreateGUID(LGuid);
   LStage := IncludeTrailingPathDelimiter(ExtractFileDir(APath)) +
     GUIDToString(LGuid) + '.stage';
   Need(not FileExists(LStage) and not DirectoryExists(LStage), 'Studio record stage must be fresh');
-  LText := AObject.AsJSON;
-  Need(Length(LText) <= 1048576, 'Studio record exceeds byte bound');
+  Need((Length(AText) > 0) and (Length(AText) <= 1048576), 'Studio record exceeds byte bound');
   try
     LStream := TFileStream.Create(LStage, fmCreate or fmShareExclusive);
     try
-      LStream.WriteBuffer(LText[1], Length(LText));
+      LStream.WriteBuffer(AText[1], Length(AText));
       Need(FileFlush(LStream.Handle), 'Cannot flush Studio record');
     finally
       LStream.Free;
     end;
-    Need(not FileExists(APath) and RenameFile(LStage, APath), 'Cannot publish Studio record');
+    if AReplace then
+    begin
+      LStarted := GetTickCount64;
+      repeat
+        {$IFDEF MSWINDOWS}
+        LReplaced := MoveFileExW(PWideChar(UnicodeString(LStage)),
+          PWideChar(UnicodeString(APath)), MOVEFILE_REPLACE_EXISTING);
+        {$ELSE}
+        LReplaced := RenameFile(LStage, APath);
+        {$ENDIF}
+        if LReplaced then Break;
+        Sleep(5);
+      until GetTickCount64 - LStarted >= 2000;
+      Need(LReplaced, 'Cannot replace Studio checkpoint');
+    end
+    else
+      Need(not FileExists(APath) and RenameFile(LStage, APath), 'Cannot publish Studio record');
   finally
     if FileExists(LStage) then
     begin
       SysUtils.DeleteFile(LStage);
     end;
   end;
+end;
+
+procedure WriteStudioJSONNew(const APath: String; const AObject: TJSONObject);
+begin
+  WriteStudioData(APath, AObject.AsJSON, False);
+end;
+
+procedure ReplaceStudioJSON(const APath: String; const AObject: TJSONObject);
+begin
+  WriteStudioData(APath, AObject.AsJSON, True);
+end;
+
+procedure ReplaceStudioBinary(const APath: String; const ABytes: TAudioBytes);
+var
+  LText: String;
+begin
+  Need((Length(ABytes) > 0) and (Length(ABytes) <= 1048576), 'Studio binary checkpoint exceeds byte bound');
+  SetLength(LText, Length(ABytes));
+  Move(ABytes[0], LText[1], Length(ABytes));
+  WriteStudioData(APath, LText, True);
 end;
 
 function Terminal(const AStatus: String): Boolean;
@@ -583,20 +653,24 @@ begin
   LJobId := Text(AWrite, 'job_id');
   Need(SafeId(LJobId), 'Invalid job identifier');
   LKind := Text(AWrite, 'kind');
-  Need((LKind = 'train_generate') or (LKind = 'library_refresh') or
+  Need((LKind = 'train_generate') or (LKind = 'stream_generate') or (LKind = 'library_refresh') or
     (LKind = 'library_discover') or (LKind = 'library_prepare') or
     (LKind = 'inspect_source') or (LKind = 'effect_preview') or
     (LKind = 'effect_save') or (LKind = 'capture_inspect') or
     (LKind = 'capture_save') or (LKind = 'capture_pitch'), 'Unsupported Studio job kind');
   LRequest := TJSONObject(AWrite.Clone);
   try
-    if LKind = 'train_generate' then
+    if (LKind = 'train_generate') or (LKind = 'stream_generate') then
     begin
       Keys(AWrite, '|format|job_id|kind|project_id|project_revision|project_snapshot_sha256|' +
         'duration_ms|seeds|maximum_tokens|model_order|source_weights|resolve_unassigned|' +
         'parent_job_id|retry_of|');
-      Need((Number(AWrite, 'duration_ms') >= 20000) and
-        (Number(AWrite, 'duration_ms') <= 40000), 'Auditions must be 20..40 seconds');
+      if LKind = 'stream_generate' then
+        Need((Number(AWrite, 'duration_ms') >= 1000) and
+          (Number(AWrite, 'duration_ms') <= 86400000), 'Live duration must be 1 second to 24 hours')
+      else
+        Need((Number(AWrite, 'duration_ms') >= 20000) and
+          (Number(AWrite, 'duration_ms') <= 40000), 'Review auditions must be 20..40 seconds');
       Need((Number(AWrite, 'maximum_tokens') >= 2) and
         (Number(AWrite, 'maximum_tokens') <= 16), 'Palette must contain 2..16 tokens');
       Need((Number(AWrite, 'model_order') >= 1) and
@@ -607,6 +681,7 @@ begin
         'Seeds must be an array');
       LSeeds := AWrite.Arrays['seeds'];
       Need((LSeeds.Count >= 1) and (LSeeds.Count <= 3), 'Batch requires 1..3 seeds');
+      Need((LKind <> 'stream_generate') or (LSeeds.Count = 1), 'Live playback requires one seed');
       for LIndex := 0 to LSeeds.Count - 1 do
       begin
         Need((LSeeds[LIndex].JSONType = jtNumber) and
@@ -804,7 +879,8 @@ begin
       LLimits.Add('sources', 32);
       LLimits.Add('ranges', 64);
       LLimits.Add('output_count', 3);
-      if LRequest.Strings['kind'] = 'train_generate' then
+      if (LRequest.Strings['kind'] = 'train_generate') or
+        (LRequest.Strings['kind'] = 'stream_generate') then
       begin
         LRows := LRequest.Objects['project_snapshot'].Arrays['sources'];
         LNames := TStringList.Create;
@@ -851,8 +927,18 @@ begin
           Result.Add('output_count', LRequest.Arrays['seeds'].Count);
           LOutputFrames := Int64(LRequest.Integers['duration_ms']) * LRate div 1000;
           LOutputGrains := (Max(Int64(0), LOutputFrames - 4096) + 1023) div 1024 + 1;
-          Need(LOutputGrains <= 6000, 'Output clock exceeds the bounded grain receipt; reduce duration or prepare a lower rate');
-          LLimits.Add('grain_rows_per_output', 6000);
+          if LRequest.Strings['kind'] = 'train_generate' then
+          begin
+            Need(LOutputGrains <= 6000, 'Output clock exceeds the bounded grain receipt; reduce duration or prepare a lower rate');
+            LLimits.Add('grain_rows_per_output', 6000);
+          end
+          else
+          begin
+            LLimits.Add('buffered_pcm_frames', 131072);
+            LLimits.Add('pull_frames', 65536);
+            LLimits.Add('review_excerpt_seconds', 20);
+            LLimits.Add('whole_output_retained', False);
+          end;
           Result.Add('estimated_grains_per_output', LOutputGrains);
           Result.Add('learning_mode', 'raw_acoustic');
         finally
@@ -1141,11 +1227,15 @@ function ClaimStudioJob(const ACatalogRoot, AJobId: String): TJSONObject;
 var
   LState: TJSONObject;
   LOwner: TJSONObject;
+  LStream: Boolean;
+  LLock: String;
 begin
   LockJobs(ACatalogRoot);
   try
     Result := ReadStudioJobRequest(ACatalogRoot, AJobId);
     try
+      LStream := Result.Strings['kind'] = 'stream_generate';
+      LLock := StudioWorkerLockDirectory(ACatalogRoot, LStream);
       LState := ReadStudioJob(ACatalogRoot, AJobId);
       try
         Need(LState.Strings['status'] = 'queued', 'Only a queued job can be claimed');
@@ -1153,14 +1243,13 @@ begin
         LState.Free;
       end;
       Need(not StudioJobCancelled(ACatalogRoot, AJobId), 'Job was cancelled before claim');
-      Need(CreateDir(JobsRoot(ACatalogRoot) + PathDelim + '.worker-lock'),
+      Need(CreateDir(LLock),
         'A Studio worker already owns this catalog');
       LOwner := TJSONObject.Create;
       try
         LOwner.Add('process_id', GetProcessID);
         LOwner.Add('job_id', AJobId);
-        WriteStudioJSONNew(JobsRoot(ACatalogRoot) + PathDelim + '.worker-lock' +
-          PathDelim + 'owner.json', LOwner);
+        WriteStudioJSONNew(LLock + PathDelim + 'owner.json', LOwner);
       finally
         LOwner.Free;
       end;
@@ -1175,19 +1264,29 @@ begin
     AdvanceStudioJob(ACatalogRoot, AJobId, 'running', 'preflight', 0, 0);
   except
     Result.Free;
-    ReleaseStudioWorker(ACatalogRoot);
+    ReleaseStudioWorker(ACatalogRoot, LStream);
     raise;
   end;
 end;
 
-procedure ReleaseStudioWorker(const ACatalogRoot: String);
+function StudioWorkerLockDirectory(const ACatalogRoot: String;
+  const AStream: Boolean): String;
 begin
-  if FileExists(JobsRoot(ACatalogRoot) + PathDelim + '.worker-lock' + PathDelim + 'owner.json') then
+  Result := JobsRoot(ACatalogRoot) + PathDelim;
+  if AStream then Result := Result + '.stream-worker-lock'
+  else Result := Result + '.worker-lock';
+end;
+
+procedure ReleaseStudioWorker(const ACatalogRoot: String; const AStream: Boolean);
+var
+  LLock: String;
+begin
+  LLock := StudioWorkerLockDirectory(ACatalogRoot, AStream);
+  if FileExists(LLock + PathDelim + 'owner.json') then
   begin
-    SysUtils.DeleteFile(JobsRoot(ACatalogRoot) + PathDelim + '.worker-lock' +
-      PathDelim + 'owner.json');
+    SysUtils.DeleteFile(LLock + PathDelim + 'owner.json');
   end;
-  RemoveDir(JobsRoot(ACatalogRoot) + PathDelim + '.worker-lock');
+  RemoveDir(LLock);
 end;
 
 procedure RecoverStudioJobs(const ACatalogRoot: String; const AWorkerStopped: Boolean);
@@ -1221,6 +1320,7 @@ begin
     LNames.Free;
   end;
   ReleaseStudioWorker(ACatalogRoot);
+  ReleaseStudioWorker(ACatalogRoot, True);
 end;
 
 initialization

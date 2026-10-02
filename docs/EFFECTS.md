@@ -35,7 +35,7 @@ the recipe's original start/end frames exclude the appended tail. Eight stages,
 enforced. Delay history is bounded by 2,030 ms per channel per active stage
 (under 50 MB for eight stages at Studio's maximum 192 kHz); rendering uses
 2,048-frame blocks. No full-output buffer or additional recording is allocated.
-Qualification is owned by [studio_15](TODO/NS-6_studio_15.md).
+Qualification is owned by [studio_15](TODO/DONE/NS-6_studio_15.md).
 
 ## Biquad filtering
 

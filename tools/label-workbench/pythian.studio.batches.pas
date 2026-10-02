@@ -32,12 +32,14 @@ uses
   JS,
   Web,
   SysUtils,
-  pythian.studio.sources;
+  pythian.studio.sources,
+  pythian.studio.live;
 
 type
   TStudioBatches = class
   private
     FFetch: TStudioFetch;
+    FLive: TStudioLive;
     FProject: TJSObject;
     FUnsaved: Boolean;
     FBusy: Boolean;
@@ -220,9 +222,10 @@ var
   LLabel: TJSElement;
   LControl: TJSElement;
   LDetails: TJSElement;
+  LShort, LLength: TJSElement;
 begin
   LRoot := El('studio-batches');
-  Add(LRoot, 'h2', 'Generate short auditions', '');
+  Add(LRoot, 'h2', 'Make music', '');
   LControl := Add(LRoot, 'p', '', 'hint');
   LControl.id := 'batch-project';
   LControl := Add(LRoot, 'p', 'Save a project to prepare its first batch.', 'notice');
@@ -230,6 +233,7 @@ begin
   LControl.setAttribute('role', 'status');
   LControl.setAttribute('aria-live', 'polite');
   LRow := Add(LRoot, 'div', '', 'range-fields');
+  LLength := LRow;
   LLabel := Add(LRow, 'label', 'Audition length', '');
   LControl := Add(LLabel, 'select', '', '');
   LControl.id := 'batch-duration';
@@ -258,7 +262,7 @@ begin
   LDetails := Add(LRoot, 'details', '', 'advanced');
   Add(LDetails, 'summary', 'Generation settings and source weights', '');
   LRow := Add(LDetails, 'div', '', 'range-fields');
-  LLabel := Add(LRow, 'label', 'First deterministic seed', '');
+  LLabel := Add(LRow, 'label', 'Seed (repeat the same result)', '');
   LControl := Add(LLabel, 'input', '', '');
   LControl.id := 'batch-seed';
   LControl.setAttribute('type', 'text');
@@ -290,7 +294,12 @@ begin
   LControl.setAttribute('hidden', '');
   LControl := Add(LDetails, 'div', '', '');
   LControl.id := 'batch-weights';
-  LRow := Add(LRoot, 'div', '', 'source-toolbar');
+  Add(LRoot, 'div', '', '').id := 'studio-live';
+  LShort := Add(LRoot, 'details', '', 'advanced');
+  Add(LShort, 'summary', 'Save short auditions to compare', '');
+  Add(LShort, 'p', 'Generate complete WAV files for listening and feedback.', 'hint');
+  LShort.appendChild(LLength);
+  LRow := Add(LShort, 'div', '', 'source-toolbar');
   Button(LRow, 'batch-check', 'Check setup');
   LControl := Button(LRow, 'batch-submit', 'Generate auditions');
   LControl.className := 'primary';
@@ -298,16 +307,16 @@ begin
   LControl.setAttribute('hidden', '');
   LControl := Button(LRow, 'batch-current', 'Use current project settings');
   LControl.setAttribute('hidden', '');
-  LControl := Add(LRoot, 'p', '', 'hint');
+  LControl := Add(LShort, 'p', '', 'hint');
   LControl.id := 'batch-preflight';
-  LDetails := Add(LRoot, 'details', '', 'advanced');
+  LDetails := Add(LShort, 'details', '', 'advanced');
   Add(LDetails, 'summary', 'Work limits', '');
   Add(LDetails, 'p', 'Worker: 10 minutes; logical memory: 128 MiB; original sources: 32 GiB; ' +
     '500,000 feature observations; 32 recordings, 64 selected ranges and 3 outputs. ' +
     'Full source verification happens in the worker. Cancellation waits for worker checkpoints.',
     'hint');
   LRow := Add(LRoot, 'div', '', 'source-heading');
-  Add(LRow, 'h3', 'Batch history', '');
+  Add(LRow, 'h3', 'Generation history', '');
   Button(LRow, 'batch-refresh', 'Refresh jobs');
   LControl := Add(LRoot, 'div', '', 'tracks');
   LControl.id := 'batch-history';
@@ -348,6 +357,7 @@ begin
   LReady := (FRetryRequest <> nil) or ((FProject <> nil) and not FUnsaved and
     (StudioNumber(FProject, 'revision') >= 1) and
     (StudioText(FProject, 'learning_mode') = 'raw_acoustic'));
+  if FLive <> nil then FLive.SetProject(FProject, LReady and not FUnsaved);
   LControls := ['batch-duration', 'batch-count', 'batch-use', 'batch-seed',
     'batch-palette', 'batch-order'];
   for LIndex := 0 to High(LControls) do
@@ -523,7 +533,7 @@ begin
     end
     else if FPending = nil then
     begin
-      Notice('Experimental · check your saved selections, then generate an audition.');
+      Notice('Ready. Choose how long to play, or save short auditions.');
     end;
   end;
   UpdateControls;
@@ -1116,14 +1126,18 @@ begin
   for LIndex := FJobs.length - 1 downto 0 do
   begin
     LJob := Obj(FJobs[LIndex]);
-    if StudioText(LJob, 'kind') <> 'train_generate' then
+    if (StudioText(LJob, 'kind') <> 'train_generate') and
+      (StudioText(LJob, 'kind') <> 'stream_generate') then
     begin
       Continue;
     end;
     Inc(LShown);
     LRow := Add(LRoot, 'div', '', 'track');
-    LButton := Button(LRow, 'batch-open-' + StudioText(LJob, 'job_id'),
-      'Batch ' + IntToStr(LIndex + 1) + ' · ' + StudioText(LJob, 'status'));
+    if StudioText(LJob, 'kind') = 'stream_generate' then
+      LButton := Button(LRow, 'batch-open-' + StudioText(LJob, 'job_id'),
+        'Live session ' + IntToStr(LIndex + 1) + ' · ' + StudioText(LJob, 'status'))
+    else LButton := Button(LRow, 'batch-open-' + StudioText(LJob, 'job_id'),
+      'Auditions ' + IntToStr(LIndex + 1) + ' · ' + StudioText(LJob, 'status'));
     LButton.setAttribute('data-job', StudioText(LJob, 'job_id'));
     Add(LRow, 'span', StageText(StudioText(LJob, 'stage')), 'track-meta');
   end;
@@ -1171,7 +1185,9 @@ begin
     Exit;
   end;
   LStatus := StudioText(FJob, 'status');
-  Add(LRoot, 'h3', 'Selected batch · ' + LStatus, '');
+  if StudioText(FJob, 'kind') = 'stream_generate' then
+    Add(LRoot, 'h3', 'Selected live session · ' + LStatus, '')
+  else Add(LRoot, 'h3', 'Selected batch · ' + LStatus, '');
   LText := StageText(StudioText(FJob, 'stage'));
   if StudioNumber(FJob, 'total') > 0 then
   begin
@@ -1193,7 +1209,9 @@ begin
   if (LStatus = 'failed') or (LStatus = 'cancelled') then
   begin
     Add(LRoot, 'p', StudioText(FJob, 'error_message'), 'field-error');
-    if isObject(FJob['request']) then
+    if StudioText(FJob, 'kind') = 'stream_generate' then
+      Add(LRoot, 'p', 'This session has ended. Generate & play starts a new session from the beginning.', 'hint')
+    else if isObject(FJob['request']) then
     begin
       Button(LRoot, 'batch-retry', 'Try this batch again');
     end
@@ -1203,6 +1221,10 @@ begin
     end;
   end;
   LResults := Obj(FJob['results']);
+  if (StudioText(FJob, 'kind') = 'stream_generate') and
+    (StudioNumber(LResults, 'sample_rate') > 0) then
+    Add(LRoot, 'p', 'Generated: ' + StudioTime(StudioNumber(LResults, 'generated_frames') /
+      StudioNumber(LResults, 'sample_rate')) + '. Playback may have stopped earlier.', 'hint');
   LSources := ArrayAt(LResults, 'sources');
   if LSources <> nil then
   begin
@@ -1263,6 +1285,9 @@ begin
   LRequest := Obj(FJob['request']);
   if LRequest <> nil then
   begin
+    if StudioText(FJob, 'kind') = 'stream_generate' then
+      Add(LDetails, 'p', 'Requested length: ' + StudioTime(StudioNumber(LRequest, 'duration_ms') / 1000) +
+        '. Only saved review excerpts are retained as WAV files.', 'hint');
     Add(LDetails, 'p', 'Project ' + StudioText(LRequest, 'project_id') +
       ' · revision ' + IntToStr(Trunc(StudioNumber(LRequest, 'project_revision'))) +
       ' · snapshot ' + StudioText(LRequest, 'project_snapshot_sha256'), 'track-meta');
@@ -1607,12 +1632,14 @@ begin
   FFetch := AFetch;
   FJobs := TJSArray.new;
   Layout;
+  FLive := TStudioLive.Create(FFetch, @BuildRequest);
   DrawHistory;
   UpdateControls;
 end;
 
 destructor TStudioBatches.Destroy;
 begin
+  FLive.Free;
   Inc(FEpoch);
   Inc(FRefreshEpoch);
   Inc(FLoadEpoch);

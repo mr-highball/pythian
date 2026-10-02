@@ -307,6 +307,8 @@ begin
   LOptions['redirect'] := 'error';
   LOptions['cache'] := 'no-store';
   LOptions['referrerPolicy'] := 'no-referrer';
+  if (APath = '/api/studio/cancel') and (AMethod = 'POST') then
+    LOptions['keepalive'] := True;
   if ASignal <> nil then LOptions['signal'] := ASignal;
   if FToken <> '' then
   begin

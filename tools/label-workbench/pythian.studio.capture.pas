@@ -29,7 +29,7 @@ unit pythian.studio.capture;
 interface
 
 uses
-  JS, Web, WebAudio, SysUtils, Math, Types, pythian.studio.sources;
+  JS, Web, WebAudio, SysUtils, Math, Types, pythian.studio.sources, pythian.studio.requests;
 
 type
   TStudioCapture = class
@@ -79,7 +79,6 @@ type
     procedure CloseMicrophone;
     function NewId(const APrefix: String): String;
     function Json(const APath, AMethod, ABody: String): TJSObject; async;
-    function Wait(APromise: TJSPromise; ASeconds: Integer): JSValue; async;
     procedure RecordInput; async;
     procedure StopRecording;
     function Samples(AEvent: TJSMessageEvent): Boolean;
@@ -510,51 +509,21 @@ begin
   Result := APrefix + '-' + IntToStr(TJSDate.now) + '-' + IntToStr(Random(1000000000));
 end;
 
-function TStudioCapture.Wait(APromise: TJSPromise; ASeconds: Integer): JSValue; async;
-var
-  LTimer: NativeInt;
-  LTimeout: TJSPromise;
-begin
-  LTimeout := TJSPromise.new(
-    procedure(AResolve, AReject: TJSPromiseResolver)
-    begin
-      LTimer := window.setTimeout(
-        procedure()
-        begin
-          AReject(Exception.Create('Response timed out. Retry or confirm the retained input.'));
-        end, ASeconds * 1000);
-    end);
-  try
-    try
-      Result := await(JSValue, TJSPromise.race([APromise, LTimeout]));
-    except
-      on LException: Exception do
-      begin
-        raise;
-      end;
-    else
-      raise Exception.Create('Connection or browser operation failed. Retry when ready.');
-    end;
-  finally
-    window.clearTimeout(LTimer);
-  end;
-end;
-
 function TStudioCapture.Json(const APath, AMethod, ABody: String): TJSObject; async;
 var
   LResponse: TJSResponse;
   LText: String;
   LError: ECaptureHttp;
 begin
-  LResponse := TJSResponse(await(JSValue, Wait(FFetch(APath, AMethod, ABody), 15)));
+  LResponse := TJSResponse(await(JSValue, AwaitStudioPromise(FFetch(APath, AMethod, ABody), 15)));
   if (LResponse.status <> 200) and (LResponse.status <> 202) then
   begin
-    LText := String(await(JSValue, Wait(LResponse.text(), 15)));
+    LText := String(await(JSValue, AwaitStudioPromise(LResponse.text(), 15)));
     LError := ECaptureHttp.Create(Copy(Trim(LText), 1, 256));
     LError.Status := LResponse.status;
     raise LError;
   end;
-  Result := TJSObject(await(JSValue, Wait(LResponse.json(), 15)));
+  Result := TJSObject(await(JSValue, AwaitStudioPromise(LResponse.json(), 15)));
 end;
 
 procedure TStudioCapture.ClearPlayers;
@@ -661,7 +630,7 @@ begin
           end;
         end;
       end);
-    LStream := TJSMediaStream(await(JSValue, Wait(LPermission, 60)));
+    LStream := TJSMediaStream(await(JSValue, AwaitStudioPromise(LPermission, 60)));
     if LEpoch <> FEpoch then
     begin
       Exit;
@@ -674,7 +643,7 @@ begin
     begin
       raise Exception.Create('This browser cannot provide the supported microphone worklet.');
     end;
-    await(JSValue, Wait(FContext.audioWorklet.addModule('capture-worklet.js'), 15));
+    await(JSValue, AwaitStudioPromise(FContext.audioWorklet.addModule('capture-worklet.js'), 15));
     if LEpoch <> FEpoch then
     begin
       Exit;
@@ -700,7 +669,7 @@ begin
     FSource := FContext.createMediaStreamSource(FStream);
     FSource.connect(FNode);
     FNode.connect(FContext.destination);
-    await(JSValue, Wait(FContext.resume(), 15));
+    await(JSValue, AwaitStudioPromise(FContext.resume(), 15));
     if LEpoch = FEpoch then
     begin
       FRecording := True;
@@ -937,7 +906,7 @@ begin
     while LOffset < FBlob.size do
     begin
       LEnd := Min(FBlob.size, LOffset + 16384);
-      LBuffer := TJSArrayBuffer(await(JSValue, Wait(FBlob.slice(LOffset, LEnd).arrayBuffer(), 15)));
+      LBuffer := TJSArrayBuffer(await(JSValue, AwaitStudioPromise(FBlob.slice(LOffset, LEnd).arrayBuffer(), 15)));
       if LEpoch <> FEpoch then
       begin
         Exit;

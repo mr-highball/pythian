@@ -272,8 +272,10 @@ recombination. Experimental pitch previews are a separate listening tool.
 
 | Action | Native contract |
 | --- | --- |
-| Browse / refresh collections | `GET /api/studio/library`; enqueue `library_refresh` |
+| Browse / refresh collections | `GET /api/studio/library`; enqueue metadata-only `library_discover` |
+| Prepare selected recordings | Enqueue `library_prepare` with discovery revision and entry identities |
 | Check / generate | `POST /api/studio/preflight`; `POST /api/studio/job` with `train_generate` |
+| Generate and play | Same preflight/job contracts with `stream_generate`; `GET/POST /api/studio/live`; bounded `GET /api/studio/live-audio` |
 | Inspect or cancel work | `GET /api/studio/jobs`, `GET /api/studio/job?id=ID`, `POST /api/studio/cancel` |
 | Inspect / process a passage | Jobs `inspect_source`, `effect_preview`, then explicit `effect_save` |
 | Import WAV / captured PCM WAV | `POST /api/studio/capture/start`, then offset-bound `capture/chunk` writes |
@@ -285,9 +287,12 @@ recombination. Experimental pitch previews are a separate listening tool.
 
 Jobs retain immutable requests and append-only state events beneath the private
 catalog's `studio/` directory. Requests use stable identities so a lost response
-can be reconciled. One worker runs per catalog, with at most 32 queued and 256
-retained jobs. New collection refreshes have a two-hour worker limit; generation
-and other jobs keep a ten-minute limit. Historic requests without an explicit
+can be reconciled. One ordinary worker and one live-session worker run per catalog,
+using the same supervisor and fixed executable. At most 32 jobs are queued and
+256 retained. Collection refreshes have a two-hour worker limit; short generation
+and other jobs keep a ten-minute limit. Live sessions permit 48 hours of wall time
+including pauses, with ten minutes for preparation and a 90-second client lease.
+Historic requests without an explicit
 budget retain their ten-minute limit. The immutable request controls the worker,
 supervisor and displayed job limit. Cancellation terminates a child that does
 not cooperate. Interrupted active jobs become failed rather than ready.
@@ -297,26 +302,46 @@ Job writes wait up to two seconds for another process's current write; an
 unavailable lock fails without stealing ownership or changing accepted state.
 
 Collection discovery permits 64 folders, 256 WAV files, 16 GiB per file and
-32 GiB total original bytes. Reusing existing sources requires two full reads
-of each original and one of each distinct catalog source, with no full media
-writes. Mixed/new imports require at most eight full hash/copy reads and two
-media writes per original byte, plus WAV header reads and bounded metadata work.
-These are logical I/O bounds, not measured disk traffic or a promise that every
-maximum-size collection finishes within the worker deadline.
+32 GiB total original bytes. Refresh lists names, duration and file metadata;
+it does not hash or copy complete recordings. Explicit preparation verifies and
+retains only the selected originals. Playing an unprepared source uses bounded
+regions through the primary WAV reader. Generation still verifies its selected
+source identities; metadata discovery is not content verification.
 
 A corpus permits 64 nonoverlapping selections across 32 recordings, with up to
 eight caller classifications per selection. Training uses every declared range
 or rejects the workload: at most 500,000 feature observations and 32 GiB of unique
-source bytes, with a 128 MiB logical allocation budget. Generation offers one to
-three 20–40 second auditions, explicit seeds, source weights, palette size and
-model order. Retained palette/candidate counts are distinct from analyzed source
+source bytes, with a 128 MiB logical allocation budget. Generation offers live
+playback from one second to 24 hours, or one to three saved 20–40 second auditions.
+Both use explicit seeds, source weights, palette size and model order. Retained
+palette/candidate counts are distinct from analyzed source
 coverage. Model reuse verifies the same source/policy identity. These limits
 describe the current operator route, not completion of many-hour musical learning.
 
+Live playback pulls native PCM WAV chunks of at most 65,536 frames. The browser
+queues about three seconds (at most four seconds plus one in-flight chunk);
+the worker replaces two chunk files rather than saving the whole session.
+Pause suspends playback and new pulls; resume keeps the existing native state.
+Stop or leaving the page cancels the session. A disconnected client expires
+after 90 seconds. Restarting the service cannot resume an interrupted session:
+its receipt remains and a new request starts from the beginning. A still-running
+old child prevents duplicate supervision until it exits or its lease expires.
+
+**Save next 20 seconds for review** retains one upcoming excerpt, or the remaining
+audio if shorter. Its receipt records the actual session offset, model, source,
+seed and WAV hash. The existing listening page plays it, accepts feedback and
+offers **Download WAV**. Live-session history retains completed or interrupted
+identity and progress; the entire session is not exported. The browser must
+support the original sample rate. Browser buffering and decoded geometry checks
+establish transport behavior, not physical-phone compatibility or musical quality.
+
 Effects process a selected passage of at most 30 seconds / two million frames.
-The rack supports eight ordered, bypassable gain/filter/compressor/limiter stages.
+The rack supports eight ordered, bypassable stages from the shared thirteen-effect
+catalog, including all eight biquad modes, gain, compressor, limiter, modulated
+delay and reverb. The primary core effect factory owns construction and validation.
 Each preview starts with reset DSP state, produces stereo PCM16 at the original
-rate and adds no tail or hidden limiter. The compressor uses a recorded 6 dB knee.
+rate and has an explicit 0–10-second tail; no hidden limiter is added.
+The compressor uses a recorded 6 dB knee.
 The result reports pre-encoding peak and clipped samples. Saving retains the
 exact recipe and source family, including further derived versions.
 

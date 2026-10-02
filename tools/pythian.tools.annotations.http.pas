@@ -65,6 +65,7 @@ uses
   pythian.tools.studio.&library,
   pythian.tools.studio.&library.discovery,
   pythian.tools.studio.jobs,
+  pythian.tools.studio.live,
   pythian.tools.studio.supervisor
   {$IFDEF MSWINDOWS}, Windows, WinSock2{$ELSE}, BaseUnix{$ENDIF};
 
@@ -1096,6 +1097,7 @@ begin
     (ARequest.Path = '/api/studio/capture-audio') or
     (ARequest.Path = '/api/studio/pitch-audio') or
     (ARequest.Path = '/api/studio/pitch-midi') or
+    (ARequest.Path = '/api/studio/live-audio') or
     (ARequest.Path = '/api/studio/review-audio') then
   begin
     Need((ARequest.Token = AToken) or
@@ -1380,6 +1382,22 @@ begin
     begin
       LBody := ParseStudioProjectWrite(ARequest.Body);
       LReport := SaveStudioProject(ACatalogRoot, LBody);
+    end
+    else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/live') then
+    begin
+      LReport := ReadStudioLiveState(ACatalogRoot, QueryValue(ARequest.Query, 'id'));
+    end
+    else if (ARequest.Method = 'POST') and (ARequest.Path = '/api/studio/live') then
+    begin
+      LBody := ParseStudioJobWrite(ARequest.Body);
+      LReport := RequestStudioLive(ACatalogRoot, LBody);
+    end
+    else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/live-audio') then
+    begin
+      LText := ReadStudioLiveAudio(ACatalogRoot, QueryValue(ARequest.Query, 'id'),
+        QueryInt64(ARequest.Query, 'sequence'));
+      SendResponse(ASocket, 200, 'audio/wav', LText);
+      Exit;
     end
     else if (ARequest.Method = 'GET') and
       (ARequest.Path = '/api/studio/jobs') then

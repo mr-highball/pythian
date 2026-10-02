@@ -62,7 +62,7 @@ its remaining full admission/recovery matrix is separately owned there.
   Saved whole-track project and processed clip reload successfully. Analysis
   from 9:45 measures 9:45–10:00 while retaining the full ten-minute overview.
   Frozen assets, screenshots and verdict are in ignored
-  `build/studio-expansion/`; await exact-code CI before task completion.
+  `build/studio-expansion/`; exact-code CI subsequently passed (linked above).
   No physical-phone or musical-accuracy claim follows from viewport checks.
 - 2026-10-02, Big Boss: collection waveform sampling already accepts a full
   extent with at most 256 windows of 64 frames. Studio fixes its visible span

@@ -72,6 +72,7 @@ uses
   pythian.tools.annotations.proposal,
   pythian.tools.listen.catalog,
   pythian.tools.studio.jobs,
+  pythian.tools.studio.live,
   pythian.tools.studio.&library,
   pythian.tools.studio.&library.discovery;
 
@@ -138,6 +139,7 @@ type
     FPartial: TJSONObject;
     FCurrentOrdinal: Integer;
     FGrainLedger: TJSONArray;
+    FStreaming: Boolean;
     procedure FlushJournal;
     procedure Progress(const AStage: String; const ADone, ATotal: Int64);
     procedure Preflight;
@@ -150,6 +152,7 @@ type
     procedure RecordGrain(const AOrdinal: Int64; const AToken: Integer;
       const ACandidate: TJournalRepresentative);
     function RenderSeed(const ASeed, AOrdinal: Integer): TJSONObject;
+    procedure RenderLive(const AResult: TJSONObject);
     procedure PublishListening(const AOutputs: TJSONArray);
     function InspectSource: TJSONObject;
   public
@@ -312,6 +315,13 @@ begin
   end;
   Need(GetTickCount64 - FStarted <= QWord(StudioJobRequestRuntimeSeconds(FRequest)) * 1000,
     'Studio worker exceeded its wall-clock budget');
+  if FRequest.Strings['kind'] = 'stream_generate' then
+  begin
+    Need(FStreaming or (GetTickCount64 - FStarted <= QWord(MaximumStudioJobSeconds) * 1000),
+      'Live preparation exceeded ten minutes; reduce the selected source material');
+    Need(StudioLiveClientActive(FDirectory, FStarted),
+      'Playback disconnected for 90 seconds; start a new session');
+  end;
 end;
 
 procedure TStudioWork.Progress(const AStage: String; const ADone, ATotal: Int64);
@@ -867,6 +877,145 @@ begin
   end;
 end;
 
+procedure TStudioWork.RenderLive(const AResult: TJSONObject);
+var
+  LSession: TJournalAudioSession;
+  LWeights: TJournalSelectionWeights;
+  LState, LCommand, LExcerpt: TJSONObject;
+  LOutputs: TJSONArray;
+  LSamples, LSlice: TAudioSamples;
+  LOutput: TFileStream;
+  LSink: TStreamAudioSink;
+  LWriter: TWavePcm16Writer;
+  LTotal, LSequence, LStart, LExcerptStart, LExcerptFrames: Int64;
+  LIndex, LTake: Integer;
+  LExcerptDone: Boolean;
+begin
+  LSession := nil;
+  LState := nil;
+  LOutput := nil;
+  LSink := nil;
+  LWriter := nil;
+  LExcerptDone := False;
+  LSequence := -1;
+  LExcerptStart := 0;
+  LExcerptFrames := 0;
+  LOutputs := TJSONArray.Create;
+  AResult.Add('outputs', LOutputs);
+  LTotal := Int64(FRequest.Integers['duration_ms']) * FProfile.SampleRate div 1000;
+  try
+    SetLength(LWeights, Length(FRanges));
+    for LIndex := 0 to High(LWeights) do LWeights[LIndex] := FRanges[LIndex].Weight;
+    LSession := TJournalAudioSession.Create(FProfile, ReadCandidate, LWeights,
+      FRequest.Arrays['seeds'].Integers[0], LTotal);
+    FStreaming := True;
+    LState := TJSONObject.Create;
+    LState.Add('sample_rate', FProfile.SampleRate);
+    LState.Add('channels', FProfile.Channels);
+    LState.Add('total_frames', LTotal);
+    LState.Add('position', Int64(0));
+    LState.Add('sequence', LSequence);
+    LState.Add('model_sha256', FProfile.ModelSha256);
+    LState.Add('request_sha256', FRequest.Strings['request_sha256']);
+    LState.Add('seed', FRequest.Arrays['seeds'].Integers[0]);
+    LState.Add('excerpt_status', 'available');
+    Progress('streaming', 0, LTotal);
+    ReplaceStudioJSON(FDirectory + PathDelim + StudioLiveStateFile, LState);
+    while LSession.State <> assCompleted do
+    begin
+      Check;
+      if not FileExists(FDirectory + PathDelim + StudioLiveCommandFile) then
+      begin
+        Sleep(25);
+        Continue;
+      end;
+      LCommand := ReadStudioJSON(FDirectory + PathDelim + StudioLiveCommandFile);
+      try
+        if LCommand.Int64s['sequence'] <= LSequence then
+        begin
+          Sleep(25);
+          Continue;
+        end;
+        Need(LCommand.Int64s['sequence'] = LSequence + 1, 'Live pull skipped a chunk');
+      finally
+        LCommand.Free;
+      end;
+      LStart := LSession.Position;
+      if not LExcerptDone and (LWriter = nil) and
+        FileExists(FDirectory + PathDelim + StudioLiveExcerptFile) then
+      begin
+        LExcerptStart := LStart;
+        LExcerptFrames := Min(Int64(20) * FProfile.SampleRate, LTotal - LStart);
+        LOutput := TFileStream.Create(FDirectory + PathDelim + 'stream-excerpt.wav',
+          fmCreate or fmShareExclusive);
+        LSink := TStreamAudioSink.Create(LOutput);
+        LWriter := TWavePcm16Writer.Create(LSink, FProfile.SampleRate,
+          FProfile.Channels, LExcerptFrames);
+        LState.Strings['excerpt_status'] := 'recording';
+        LState.Int64s['excerpt_start_frame'] := LExcerptStart;
+        LState.Int64s['excerpt_frames'] := LExcerptFrames;
+      end;
+      LSamples := LSession.ReadFrames(Min(FProfile.SampleRate, StudioLiveChunkFrames));
+      Need(Length(LSamples) > 0, 'Native live session made no progress');
+      if LWriter <> nil then
+      begin
+        LTake := Min(Int64(Length(LSamples) div FProfile.Channels),
+          LExcerptFrames - LWriter.FrameCount);
+        LSlice := Copy(LSamples, 0, LTake * FProfile.Channels);
+        LWriter.AppendSamples(LSlice);
+        if LWriter.FrameCount = LExcerptFrames then
+        begin
+          LWriter.Finish;
+          Need(FileFlush(LOutput.Handle), 'Cannot flush review excerpt');
+          LExcerpt := TJSONObject.Create;
+          LOutputs.Add(LExcerpt);
+          LExcerpt.Add('seed', FRequest.Arrays['seeds'].Integers[0]);
+          LExcerpt.Add('sample_rate', FProfile.SampleRate);
+          LExcerpt.Add('channels', FProfile.Channels);
+          LExcerpt.Add('frame_count', LExcerptFrames);
+          LExcerpt.Add('session_start_frame', LExcerptStart);
+          LExcerpt.Add('session_total_frames', LTotal);
+          LExcerpt.Add('model_sha256', FProfile.ModelSha256);
+          LExcerpt.Add('request_sha256', FRequest.Strings['request_sha256']);
+          LExcerpt.Add('wav_sha256', HashFile(LOutput));
+          LExcerpt.Add('relative_file', 'stream-excerpt.wav');
+          FreeAndNil(LWriter);
+          FreeAndNil(LSink);
+          FreeAndNil(LOutput);
+          VerifySources;
+          PublishListening(LOutputs);
+          WriteStudioJSONNew(FDirectory + PathDelim + 'stream-excerpt.receipt.json', LExcerpt);
+          FPartial.Add('outputs', LOutputs.Clone);
+          LState.Strings['excerpt_status'] := 'saved';
+          LState.Strings['listening_request_id'] := LExcerpt.Strings['listening_request_id'];
+          LExcerptDone := True;
+        end;
+      end;
+      Inc(LSequence);
+      LState.Int64s['sequence'] := LSequence;
+      LState.Int64s['start_frame'] := LStart;
+      LState.Int64s['position'] := LSession.Position;
+      LState.Booleans['complete'] := LSession.State = assCompleted;
+      PublishStudioLiveChunk(FDirectory, LState, LSamples);
+      FPartial.Int64s['generated_frames'] := LSession.Position;
+      FPartial.Int64s['total_frames'] := LTotal;
+      FPartial.Integers['sample_rate'] := FProfile.SampleRate;
+    end;
+    AResult.Add('generated_frames', LSession.Position);
+    AResult.Add('total_frames', LTotal);
+    AResult.Add('whole_output_retained', False);
+    AResult.Add('transport', 'bounded_pcm16_wav_chunks');
+    AResult.Add('replay', 'new session with identical request; progress alone does not restore state');
+    VerifySources;
+  finally
+    LWriter.Free;
+    LSink.Free;
+    LOutput.Free;
+    LState.Free;
+    LSession.Free;
+  end;
+end;
+
 procedure TStudioWork.PublishListening(const AOutputs: TJSONArray);
 var
   LQueue: TJSONObject;
@@ -1076,7 +1225,8 @@ begin
   begin
     Exit(InspectSource);
   end;
-  if FRequest.Strings['kind'] <> 'train_generate' then
+  if (FRequest.Strings['kind'] <> 'train_generate') and
+    (FRequest.Strings['kind'] <> 'stream_generate') then
   begin
     Need(Assigned(AExtension), 'Studio worker does not support this job kind');
     Exit(AExtension(FCatalogRoot, FJobId, ALibraryRoot, FRequest, Check));
@@ -1095,6 +1245,12 @@ begin
     Result.Add('request_sha256', FRequest.Strings['request_sha256']);
     Result.Add('grounded_acceptance', False);
     FPartial.Add('verified_model', Result.Clone);
+    if FRequest.Strings['kind'] = 'stream_generate' then
+    begin
+      RenderLive(Result);
+      WriteStudioJSONNew(FDirectory + PathDelim + 'result.json', Result);
+      Exit;
+    end;
     LOutputs := TJSONArray.Create;
     Result.Add('outputs', LOutputs);
     for LIndex := 0 to FRequest.Arrays['seeds'].Count - 1 do
@@ -1128,6 +1284,7 @@ var
   LRequest: TJSONObject;
   LResults: TJSONObject;
   LWork: TStudioWork;
+  LMessage: String;
 begin
   Result := False;
   LRequest := ClaimStudioJob(ACatalogRoot, AJobId);
@@ -1162,8 +1319,11 @@ begin
           try
             WriteStudioJSONNew(StudioJobDirectory(ACatalogRoot, AJobId) +
               PathDelim + 'attempt-result.json', LResults);
+            LMessage := 'Native Studio work failed; inspect retained details and correct the input';
+            if (LRequest.Strings['kind'] = 'stream_generate') and (E is EAudio) then
+              LMessage := Copy(E.Message, 1, 256);
             AdvanceStudioJob(ACatalogRoot, AJobId, 'failed', 'failed', 0, 0,
-              LResults, 'worker_failure', 'Native Studio work failed; inspect retained details and correct the input');
+              LResults, 'worker_failure', LMessage);
           finally
             LResults.Free;
           end;
@@ -1173,7 +1333,7 @@ begin
       LWork.Free;
     end;
   finally
-    ReleaseStudioWorker(ACatalogRoot);
+    ReleaseStudioWorker(ACatalogRoot, LRequest.Strings['kind'] = 'stream_generate');
     LRequest.Free;
   end;
 end;

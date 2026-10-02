@@ -33,7 +33,8 @@ uses
   SyncObjs;
 
 type
-  { Owns only the configured worker child. No WFC dependency, request-thread
+  { Owns up to two configured children: ordinary jobs and one live session.
+    No WFC dependency, request-thread
     source hashing, arbitrary executable command, or external process cleanup. }
   TStudioJobSupervisor = class
   private
@@ -41,6 +42,7 @@ type
     FLibraryRoot: String;
     FWorkerExecutable: String;
     FThread: TThread;
+    FStreamThread: TThread;
     FWake: TEvent;
     FLock: TFileStream;
     FMessageLock: TRTLCriticalSection;
@@ -61,7 +63,8 @@ uses
   Process,
   fpjson,
   pythian.audio,
-  pythian.tools.studio.jobs
+  pythian.tools.studio.jobs,
+  pythian.tools.studio.live
   {$IFDEF MSWINDOWS}, Windows{$ELSE}, BaseUnix, Unix{$ENDIF};
 
 type
@@ -74,13 +77,14 @@ type
     FMaximumSeconds: Integer;
     FCancelAt: QWord;
     FLog: TFileStream;
+    FIsStream: Boolean;
     procedure Drain;
     procedure StopChild(const ACode, AMessage: String);
     procedure Poll;
   protected
     procedure Execute; override;
   public
-    constructor Create(const AOwner: TStudioJobSupervisor);
+    constructor Create(const AOwner: TStudioJobSupervisor; const AStream: Boolean);
     destructor Destroy; override;
   end;
 
@@ -119,6 +123,8 @@ constructor TStudioJobSupervisor.Create(const ACatalogRoot, ALibraryRoot,
 var
   LRoot: String;
   LOwner: TJSONObject;
+  LIsStream: Boolean;
+  LWorkerLock: String;
 begin
   inherited Create;
   InitCriticalSection(FMessageLock);
@@ -139,30 +145,42 @@ begin
     raise EAudio.Create('A Studio supervisor already owns this catalog');
   end;
   {$ENDIF}
-  if DirectoryExists(LRoot + PathDelim + '.worker-lock') then
+  for LIsStream := False to True do
   begin
-    LOwner := ReadStudioJSON(LRoot + PathDelim + '.worker-lock' + PathDelim + 'owner.json');
-    try
-      if ProcessAlive(LOwner.Int64s['process_id']) then
-      begin
-        raise EAudio.Create('An earlier Studio worker is still running; do not start another');
+    LWorkerLock := StudioWorkerLockDirectory(FCatalogRoot, LIsStream);
+    if DirectoryExists(LWorkerLock) then
+    begin
+      LOwner := ReadStudioJSON(LWorkerLock + PathDelim + 'owner.json');
+      try
+        if ProcessAlive(LOwner.Int64s['process_id']) then
+        begin
+          raise EAudio.Create('An earlier Studio worker is still running; do not start another');
+        end;
+      finally
+        LOwner.Free;
       end;
-    finally
-      LOwner.Free;
     end;
   end;
   RecoverStudioJobs(FCatalogRoot, True);
   FWake := TEvent.Create(nil, False, False, '');
-  FThread := TStudioPump.Create(Self);
+  FThread := TStudioPump.Create(Self, False);
   FThread.Start;
+  FStreamThread := TStudioPump.Create(Self, True);
+  FStreamThread.Start;
 end;
 
 destructor TStudioJobSupervisor.Destroy;
 begin
+  if FStreamThread <> nil then FStreamThread.Terminate;
+  if FThread <> nil then FThread.Terminate;
+  Notify;
+  if FStreamThread <> nil then
+  begin
+    FStreamThread.WaitFor;
+    FStreamThread.Free;
+  end;
   if FThread <> nil then
   begin
-    FThread.Terminate;
-    Notify;
     FThread.WaitFor;
     FThread.Free;
   end;
@@ -171,6 +189,9 @@ begin
   DoneCriticalSection(FMessageLock);
   inherited Destroy;
 end;
+
+{ Existing ordinary-job and live-session children share this supervisor and
+  the fixed executable. Each lane has one child and its own durable owner lock. }
 
 procedure TStudioJobSupervisor.Notify;
 begin
@@ -200,11 +221,12 @@ begin
   end;
 end;
 
-constructor TStudioPump.Create(const AOwner: TStudioJobSupervisor);
+constructor TStudioPump.Create(const AOwner: TStudioJobSupervisor; const AStream: Boolean);
 begin
   inherited Create(True);
   FreeOnTerminate := False;
   FOwner := AOwner;
+  FIsStream := AStream;
 end;
 
 destructor TStudioPump.Destroy;
@@ -272,7 +294,7 @@ begin
   finally
     LState.Free;
   end;
-  ReleaseStudioWorker(FOwner.FCatalogRoot);
+  ReleaseStudioWorker(FOwner.FCatalogRoot, FIsStream);
   FreeAndNil(FLog);
   FreeAndNil(FProcess);
   FJobId := '';
@@ -297,6 +319,20 @@ begin
       StopChild('runtime_budget', 'Native worker exceeded the declared wall-clock limit');
       Exit;
     end;
+    if FIsStream then
+    begin
+      if not StudioLiveClientActive(StudioJobDirectory(FOwner.FCatalogRoot, FJobId), FStarted) then
+      begin
+        StopChild('client_disconnected', 'Playback disconnected for 90 seconds; start a new session');
+        Exit;
+      end;
+      if not FileExists(StudioJobDirectory(FOwner.FCatalogRoot, FJobId) + PathDelim + StudioLiveStateFile) and
+        (GetTickCount64 - FStarted > QWord(MaximumStudioJobSeconds) * 1000) then
+      begin
+        StopChild('preparation_timeout', 'Live preparation exceeded ten minutes; reduce selected source material');
+        Exit;
+      end;
+    end;
     if StudioJobCancelled(FOwner.FCatalogRoot, FJobId) then
     begin
       if FCancelAt = 0 then
@@ -315,7 +351,8 @@ begin
     for LIndex := 0 to LJobs.Arrays['jobs'].Count - 1 do
     begin
       LRow := LJobs.Arrays['jobs'].Objects[LIndex];
-      if LRow.Strings['status'] = 'queued' then
+      if (LRow.Strings['status'] = 'queued') and
+        ((LRow.Strings['kind'] = 'stream_generate') = FIsStream) then
       begin
         FJobId := LRow.Strings['job_id'];
         FMaximumSeconds := LRow.Integers['maximum_worker_seconds'];

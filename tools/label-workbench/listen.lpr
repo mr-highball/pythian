@@ -568,6 +568,9 @@ begin
     LAudio.onerror := @HandleAudioError;
     LAudio.onplay := @HandleAudioPlay;
     LCard.appendChild(LAudio);
+    LSelect := AddText(LCard, 'a', 'Download WAV', '');
+    LSelect.setAttribute('href', LAudio.src);
+    LSelect.setAttribute('download', LId + '.wav');
     FAudioPlayers.push(LAudio);
     FAudioFailures.push(False);
     FAudioReady.push(False);

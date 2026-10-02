@@ -40,11 +40,30 @@ uses
   pythian.tools.studio.projects,
   pythian.tools.studio.jobs,
   pythian.tools.studio.worker,
+  pythian.tools.studio.live,
   pythian.tools.studio.&library.discovery,
   pythian.tools.listen.catalog;
 
 var
   GChecks: Integer;
+
+type
+  TLiveWorker = class(TThread)
+    Catalog: String;
+    JobId: String;
+    Succeeded: Boolean;
+    Failure: String;
+    procedure Execute; override;
+  end;
+
+procedure TLiveWorker.Execute;
+begin
+  try
+    Succeeded := RunStudioWorker(Catalog, JobId, ExtractFileDir(Catalog) + PathDelim + 'library');
+  except
+    on E: Exception do Failure := E.Message;
+  end;
+end;
 
 procedure Check(const ACondition: Boolean; const AMessage: String);
 begin
@@ -515,6 +534,218 @@ begin
   end;
 end;
 
+procedure LiveRun(const ARoot: String);
+var
+  LHash, LCatalog, LDirectory, LText: String;
+  LWrite, LProject, LReply, LCommand, LState: TJSONObject;
+  LWorker: TLiveWorker;
+  LMemory, LExcerptMemory: TStringStream;
+  LWave, LExcerptWave: TWaveFrameReader;
+  LSamples, LExpected, LActual: TAudioSamples;
+  LDeadline: QWord;
+  LSequence, LRun, LFrames, LIndex: Integer;
+  LFailed: Boolean;
+  LReplay: String;
+  LCombined: TMemoryStream;
+
+  procedure WaitReady(const ASequence: Integer);
+  begin
+    LDeadline := GetTickCount64;
+    repeat
+      FreeAndNil(LState);
+      LState := ReadStudioLiveState(LCatalog, LWorker.JobId);
+      Check(LState.Strings['job_status'] <> 'failed', 'Live worker must not fail');
+      if (LState.Find('total_frames') <> nil) and
+        (LState.Int64s['sequence'] = ASequence) then Exit;
+      Sleep(10);
+    until GetTickCount64 - LDeadline > 30000;
+    raise Exception.Create('Live worker did not become ready');
+  end;
+
+begin
+  Check(not DirectoryExists(ARoot), 'Live fixture root is fresh');
+  LCatalog := ARoot + PathDelim + 'catalog';
+  LHash := MakeSource(ARoot, 'live', 0);
+  LWrite := ProjectWrite('live-project', LHash);
+  try LProject := SaveStudioProject(LCatalog, LWrite) finally LWrite.Free end;
+  LState := nil;
+  LReplay := '';
+  try
+    for LRun := 0 to 3 do
+    begin
+      LWrite := JobWrite('live-' + IntToStr(LRun), LHash, LProject);
+      LWorker := nil;
+      LCommand := nil;
+      LCombined := TMemoryStream.Create;
+      try
+        LWrite.Strings['kind'] := 'stream_generate';
+        if LRun < 2 then LWrite.Integers['duration_ms'] := 120000
+        else if LRun = 2 then LWrite.Integers['duration_ms'] := 7200000
+        else LWrite.Integers['duration_ms'] := 86400000;
+        LReply := PrepareStudioJob(LCatalog, LWrite);
+        try
+          Check(LReply.Objects['limits'].Integers['pull_frames'] = 65536,
+            'Long plan declares fixed pull budget');
+        finally LReply.Free end;
+        LReply := EnqueueStudioJob(LCatalog, LWrite);
+        LReply.Free;
+        LWorker := TLiveWorker.Create(True);
+        LWorker.FreeOnTerminate := False;
+        LWorker.Catalog := LCatalog;
+        LWorker.JobId := LWrite.Strings['job_id'];
+        LDirectory := StudioJobDirectory(LCatalog, LWorker.JobId);
+        LWorker.Start;
+        WaitReady(-1);
+        Check(LState.Int64s['position'] = 0, 'Preparation does not generate without demand');
+        if LRun = 0 then
+        begin
+          LReply := TJSONObject.Create;
+          try
+            LReply.Add('format', StudioJobWriteFormat);
+            LReply.Add('job_id', 'alongside-live');
+            LReply.Add('kind', 'inspect_source');
+            LReply.Add('source_sha256', LHash);
+            LReply.Add('start_frame', 0);
+            LReply.Add('end_frame', 8000);
+            LCommand := EnqueueStudioJob(LCatalog, LReply);
+            FreeAndNil(LCommand);
+          finally LReply.Free end;
+          Check(RunStudioWorker(LCatalog, 'alongside-live', ARoot + PathDelim + 'library'),
+            'Ordinary inspection remains available during live playback');
+        end;
+        Sleep(60);
+        WaitReady(-1);
+        LCommand := TJSONObject.Create;
+        LCommand.Add('job_id', LWorker.JobId);
+        LCommand.Add('action', 'excerpt');
+        if LRun = 0 then
+        begin
+          LReply := RequestStudioLive(LCatalog, LCommand);
+          LReply.Free;
+        end;
+        LCommand.Strings['action'] := 'pull';
+        LCommand.Add('sequence', 1);
+        LFailed := False;
+        try
+          LReply := RequestStudioLive(LCatalog, LCommand);
+          LReply.Free;
+        except on EAudio do LFailed := True end;
+        Check(LFailed, 'Skipped first live chunk rejects before generation');
+        for LSequence := 0 to 119 do
+        begin
+          LCommand.Int64s['sequence'] := LSequence;
+          LReply := RequestStudioLive(LCatalog, LCommand);
+          LReply.Free;
+          WaitReady(LSequence);
+          LText := ReadStudioLiveAudio(LCatalog, LWorker.JobId, LSequence);
+          LReply := RequestStudioLive(LCatalog, LCommand);
+          try
+            Check(LReply.Int64s['position'] = LState.Int64s['position'],
+              'Lost-response retry does not advance generation');
+          finally LReply.Free end;
+          LMemory := TStringStream.Create(LText);
+          try
+            LWave := TWaveFrameReader.Create(LMemory);
+            try
+              LFrames := LWave.FrameCount;
+              Check((LFrames > 0) and (LFrames <= 8000) and (LWave.SampleRate = 8000),
+                'Bounded playable WAV chunk retains source clock');
+              LSamples := LWave.ReadFrames(LFrames);
+              LCombined.WriteBuffer(LSamples[0], Length(LSamples) * SizeOf(Single));
+              if (LRun = 0) and (LSequence < 20) then
+              begin
+                LIndex := Length(LExpected);
+                SetLength(LExpected, LIndex + Length(LSamples));
+                Move(LSamples[0], LExpected[LIndex], Length(LSamples) * SizeOf(Single));
+              end;
+            finally LWave.Free end;
+          finally LMemory.Free end;
+          if LRun >= 2 then Break;
+        end;
+        if LRun = 2 then
+        begin
+          LReply := CancelStudioJob(LCatalog, LWorker.JobId);
+          LReply.Free;
+        end
+        else if LRun = 3 then
+        begin
+          LReply := TJSONObject.Create;
+          try
+            LReply.Add('tick_ms', Int64(0));
+            ReplaceStudioJSON(LDirectory + PathDelim + StudioLiveLeaseFile, LReply);
+          finally LReply.Free end;
+        end;
+        LWorker.WaitFor;
+        Check(LWorker.Failure = '', 'Worker thread released its resources normally');
+        LReply := ReadStudioJob(LCatalog, LWorker.JobId);
+        try
+          if LRun < 2 then
+          begin
+            Check(LWorker.Succeeded and (LReply.Strings['status'] = 'completed'),
+              'Actual two-minute live generation completes');
+            Check(LCombined.Size = 120 * 8000 * SizeOf(Single), 'Complete consumed PCM extent');
+            LCombined.Position := 0;
+            if LRun = 0 then LReplay := Sha256Stream(LCombined, LCombined.Size)
+            else Check(LReplay = Sha256Stream(LCombined, LCombined.Size), 'Live session exact replay');
+            Check(FileExists(LDirectory + PathDelim + 'live-chunk-0.wav') and
+              FileExists(LDirectory + PathDelim + 'live-chunk-1.wav') and
+              not FileExists(LDirectory + PathDelim + 'seed-0.wav'), 'No whole-session WAV retained');
+          end
+          else if LRun = 2 then
+            Check(LReply.Strings['status'] = 'cancelled', 'Two-hour session cancels after bounded startup')
+          else Check(LReply.Strings['status'] = 'failed', '24-hour session expires after client lease ends');
+        finally LReply.Free end;
+        if LRun = 0 then
+        begin
+          LReply := ReadStudioJSON(LDirectory + PathDelim + 'stream-excerpt.receipt.json');
+          try
+            Check((LReply.Int64s['session_start_frame'] = 0) and
+              (LReply.Int64s['session_total_frames'] = 960000) and
+              (LReply.Int64s['frame_count'] = 160000) and
+              (LReply.Strings['listening_request_id'] <> ''), 'Excerpt retains live position and listening identity');
+          finally LReply.Free end;
+          LExcerptMemory := TStringStream.Create('');
+          try
+            LExcerptMemory.LoadFromFile(LDirectory + PathDelim + 'stream-excerpt.wav');
+            LExcerptWave := TWaveFrameReader.Create(LExcerptMemory);
+            try
+              SetLength(LActual, 160000);
+              LIndex := 0;
+              while LIndex < Length(LActual) do
+              begin
+                LSamples := LExcerptWave.ReadFrames(Min(65536, Length(LActual) - LIndex));
+                Check(Length(LSamples) > 0, 'Saved excerpt reader advances');
+                Move(LSamples[0], LActual[LIndex], Length(LSamples) * SizeOf(Single));
+                Inc(LIndex, Length(LSamples));
+              end;
+              Check((Length(LActual) = Length(LExpected)) and
+                (CompareByte(LActual[0], LExpected[0], Length(LActual) * SizeOf(Single)) = 0),
+                'Saved review is exact live PCM, not a restarted generation');
+            finally LExcerptWave.Free end;
+          finally LExcerptMemory.Free end;
+        end;
+      finally
+        if LWorker <> nil then
+        begin
+          if not LWorker.Finished then
+          begin
+            LReply := CancelStudioJob(LCatalog, LWorker.JobId);
+            LReply.Free;
+            LWorker.WaitFor;
+          end;
+          LWorker.Free;
+        end;
+        LCombined.Free;
+        LCommand.Free;
+        LWrite.Free;
+      end;
+    end;
+  finally
+    LState.Free;
+    LProject.Free;
+  end;
+end;
+
 procedure LibraryRun(const ARoot: String);
 var
   LCatalog: String;
@@ -651,7 +882,12 @@ end;
 
 begin
   try
-    if (ParamCount = 2) and (ParamStr(1) = '--library-only') then
+    if (ParamCount = 2) and (ParamStr(1) = '--live-only') then
+    begin
+      LiveRun(ExpandFileName(ParamStr(2)));
+      WriteLn('PASS ', GChecks, ' live Studio worker checks');
+    end
+    else if (ParamCount = 2) and (ParamStr(1) = '--library-only') then
     begin
       LibraryRun(ExpandFileName(ParamStr(2)));
       WriteLn('PASS ', GChecks, ' Studio library worker checks');

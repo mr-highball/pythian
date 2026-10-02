@@ -79,6 +79,20 @@ lease/recovery tests and actual desktop/narrow playback, queue bounds, pause,
 cancel, excerpt and failure paths. Stop for unbounded read-ahead or output
 retention; no full-file-first generation or browser DSP substitute.
 
+Studio_14's solo native and actual-browser checks pass. Native transport uses
+the same session/preparation/supervisor/listening code, two fixed chunk files,
+one optional excerpt and a 90-second client lease. Browser playback keeps about
+three seconds queued, pauses without generation and records the native frame
+extent. Full two-minute playback and 2-hour/24-hour startup, exact custom ending,
+stop/page-exit, ordinary jobs alongside playback, saved excerpt playback/download
+action and service crash/restart pass in actual desktop/narrow Codex Browser.
+Win64/Win32 protocol fixtures pass 1246/1264 assertions (variable polling), plus
+68 ordinary worker/19 supervisor regressions; Win32 reports no heap leaks.
+Windows checkpoint sharing and stale async-session repairs are recorded in the
+task. Evidence is under `build/studio-live/`. Await exact-code Linux CI and package
+verification before accepting credit or deploying this batch. Nonclosing count
+remains 0 after the preceding accepted native-session batch.
+
 **Big Boss, solo:** operator feedback selects the implemented
 [filter catalog](TODO/DONE/NS-6_studio_12.md), flexible
 [source workspace](TODO/DONE/NS-6_studio_13.md), native

@@ -487,6 +487,10 @@ try {
       $studioFixtureRoot = Join-Path $buildRoot ("studio-$studioComponent-" + [Guid]::NewGuid().ToString('N'))
       & (Join-Path $buildRoot "pythian.tests.studio.$studioComponent$executableSuffix") $studioFixtureRoot
       if ($LASTEXITCODE -ne 0) { throw "Studio $studioComponent checks failed" }
+      if ($studioComponent -eq 'worker') {
+        & (Join-Path $buildRoot "pythian.tests.studio.worker$executableSuffix") '--live-only' ($studioFixtureRoot + '-live')
+        if ($LASTEXITCODE -ne 0) { throw 'Studio live transport/replay/lease checks failed' }
+      }
     }
     & $compilerPath @adapterArgs 'examples/pythian.example.wfc.provider.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Caller-provider example compilation failed' }

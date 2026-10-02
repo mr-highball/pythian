@@ -280,7 +280,7 @@ In the same logical completion change:
 
 The user-authorized **2026-09-29 complete-goal allocations**, updated after
 independent caller-intake, minimal package, caller-provider, editor/queue and
-Studio source/jobs/effects/capture acceptance through **2026-10-01**, give:
+Studio source/jobs/effects/capture acceptance through **2026-10-02**, give:
 
 | Goal | Accepted baseline | Overall weight | Accepted DONE points | Open points |
 | --- | ---: | ---: | ---: | ---: |
@@ -310,7 +310,7 @@ Studio setup acceptance adds 4 NS-6 / 0.40 overall; private corpora, bounded raw
 WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall; starting
 actions and verified large-library refresh add 2 NS-6 / 0.20 overall. The catalog
 contains **48 open / 46 accepted tasks**, NS-6 **49/51**, overall **51.95/48.05** after
-shared filter-catalog, flexible source-workspace and delay/reverb-tail acceptance. All
+shared filter-catalog, source-workspace, delay/reverb-tail and native-session acceptance. All
 original donor criteria remain required alongside the new operator outcomes.
 
 Task credits, not file counts, drive completion. Partial implementation,

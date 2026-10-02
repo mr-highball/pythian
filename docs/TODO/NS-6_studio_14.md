@@ -54,6 +54,31 @@ buffer/disk growth or a browser-only synthesis replacement.
 
 **Dev Notes:**
 
+- 2026-10-02, Big Boss solo: native demand-driven transport now consumes the
+  accepted session through the existing job preparation, supervisor and listening
+  publication. Two replaceable PCM WAV chunks, one optional twenty-second excerpt,
+  fixed read-ahead and a 90-second client lease bound retention. Ordinary jobs
+  run alongside the live worker. Browser controls use the native frame extent;
+  capture and playback share the browser request helper. No browser synthesis.
+- Checked Win64/Win32 live protocol runs pass 1246/1264 assertions (poll timing
+  changes counts), including two complete 120-second renders, exact PCM replay,
+  demand/idempotence, concurrent ordinary inspection, exact excerpt provenance,
+  two-hour cancel and 24-hour lease expiry. Win32 heap tracing reports zero
+  unfreed blocks. Ordinary Win64 worker/supervisor regressions pass 68/19 checks.
+  Evidence: `build/studio-live/final64/`, `final32/` and the solo QA verdict.
+- Actual Codex Browser: desktop/390 px, complete two-minute playback, 2-hour and
+  24-hour bounded startup, held pause/native position, resume, stop, page exit,
+  rapid restart, service crash/lease expiry/restart, exact 2.125-second ending,
+  excerpt playback/download action, concurrent saved audition and capture
+  analysis pass. No physical-phone or sustained musical verdict is inferred.
+- Repairs: concurrent Windows checkpoint replacement exposed a transient sharing
+  violation (`worker-test/run-01.log`); bounded retry now belongs to the shared
+  Studio reader. A test incorrectly read 160,000 frames in one bounded WAV read;
+  it now uses primary-reader blocks. The browser now isolates asynchronous work
+  by session epoch, accepts queued HTTP responses and takes exact total frames
+  from native state. Failed runs remain retained. Exact-code CI is still required
+  before this task moves to DONE; no credit yet.
+
 - 2026-10-02, Big Boss: the native jobs parser and worker enforce twenty-to-forty
   seconds and publish listening assets only after full WAV completion. Editing
   the HTML choices cannot provide the requested dynamic playback. This task is

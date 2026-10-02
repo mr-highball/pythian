@@ -47,14 +47,14 @@ is inferred. Earns 1 NS-6 / 0.10 overall point.
   not use it. Preview/save/reload, order, bypass and invalidation pass in the
   actual Codex browser at desktop and 390 px. Win32/Win64 checked effects pass
   104 cases, core effect suites pass with zero heap leaks. Frozen artifacts and
-  the solo verdict are in ignored `build/studio-expansion/`. Await exact-code CI
-  before completion. These are media mechanics, not a human listening verdict.
+  the solo verdict are in ignored `build/studio-expansion/`. Initially awaited exact-code CI; the accepted run is linked above.
+  These are media mechanics, not a human listening verdict.
 - The new upper-frequency fixture exposed an x87 intermediate precision
   mismatch on Win32. The primary biquad now supplies explicitly rounded Double
   frequency bounds to both DSP and catalog. Both targets pass after repair;
   failure fixture `effects-win32-run-04` and repaired run-05 are retained.
 - Existing delay/reverb exposure and explicit tails belong to
-  [studio_15](../NS-6_studio_15.md); native long generation belongs to
+  [studio_15](NS-6_studio_15.md); native long generation belongs to
   [streaming_01](NS-4_streaming_01.md), not this filter task.
 - 2026-10-02, Big Boss: phone feedback finds five choices despite eight native
   biquad kinds in `src/pythian.biquad.pas`. This is an operator exposure gap;
