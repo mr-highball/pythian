@@ -1,6 +1,6 @@
 # NS-6_studio_16 — Share microphone WAV encoding with the primary codec
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
@@ -14,11 +14,16 @@ Completion credit: 1 goal percentage point (0.10 overall points).
 Basis: one unearned delivery_04 point transfers here; every independent
 consumer criterion remains required. No credit is earned by this scope change.
 
-Execution status: Big Boss solo; selected after discovery in the required
-consolidation inventory. Deliverable: one primary PCM/header implementation.
-Closing evidence: native/pas2js identical bytes on authored samples, meaningful
-boundary cases and actual browser regression. Stop for an unavailable device
-dependency; do not fabricate microphone or physical-phone acceptance.
+Accepted 2026-10-02 by Big Boss under the user's explicit solo-review instruction.
+Code `6cfb855d6c5e13a4ee8d1f3a1e54f82dbff7dfea` passes
+[Linux integration and extracted package verification](https://github.com/mr-highball/pythian/actions/runs/36983782671).
+Checked Win32/Win64 and matched pas2js execute the same maintained fixture with
+identical PCM/header bytes; both native targets report zero heap leaks. Actual
+Codex Browser covers desktop/narrow intake, analysis, preview and live playback.
+Detailed evidence and frozen artifact hashes: `build/shared-capture/QA-VERDICT.md`
+and `CANDIDATE-ASSETS.json`. The matched assets are deployed to the fixed LAN
+slot, preserving all 3,208 existing catalog JSON hashes. No physical microphone,
+phone, WASM or musical-quality acceptance is claimed. Earned 1 NS-6 / 0.10 overall.
 
 **Acceptance Criteria:**
 
@@ -34,7 +39,7 @@ dependency; do not fabricate microphone or physical-phone acceptance.
 
 **Blockers**
 
-- [NS-6_studio_06.md](DONE/NS-6_studio_06.md)
+- [NS-6_studio_06.md](NS-6_studio_06.md)
 
 **Dev Notes:**
 
@@ -60,11 +65,11 @@ dependency; do not fabricate microphone or physical-phone acceptance.
   the shared header ends at five seconds. No horizontal overflow or console
   warnings/errors; all owned tabs are closed and viewport reset. No physical
   microphone or phone recording was performed. Encoding itself is covered by
-  the shared native/pas2js oracle, not an invented device verdict. Frozen assets
-  and evidence await exact-code CI before acceptance.
+  the shared native/pas2js oracle, not an invented device verdict. Exact-code CI
+  and package verification subsequently passed; frozen assets were deployed.
 
 - 2026-10-02, Big Boss: `TStudioCapture.ProcessorMessage` contains independent
   signed PCM16 scaling, and `FinishRecording` manually writes a 44-byte RIFF
   header. This distinct gap was found while reviewing shared capture requests
-  for [live playback](DONE/NS-6_studio_14.md); it has no browser-device justification.
+  for [live playback](NS-6_studio_14.md); it has no browser-device justification.
   It is separated from streaming acceptance and receives no duplicate credit.

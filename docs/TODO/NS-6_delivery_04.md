@@ -41,7 +41,7 @@ supported reproduction failure and record the unblock or repair owner.
 **Dev Notes:**
 
 - 2026-10-02, Big Boss: one further unearned point transfers to
-  [shared microphone encoding](NS-6_studio_16.md); all consumer criteria remain.
+  [shared microphone encoding](DONE/NS-6_studio_16.md); all consumer criteria remain.
 
 - 2026-10-02, Big Boss: a further unearned point transfers to
   [existing delay/reverb exposure](DONE/NS-6_studio_15.md), found during the required

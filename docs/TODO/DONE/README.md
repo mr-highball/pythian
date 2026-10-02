@@ -3,7 +3,7 @@
 [Task index](../README.md) · [Task flow](../../TASKFLOW.MD) ·
 [Milestones](../../MILESTONES.md) · [Current credit basis](../../REBALANCE-2026-09-29.md#current-credit-basis)
 
-All **47** records retain their acceptance evidence and dates. Points below
+All **48** records retain their acceptance evidence and dates. Points below
 use the user-authorized 2026-09-29 outcome rebase; older amounts in evidence
 narratives are historical. No task was accepted by this reassessment.
 The [2026-09-30 Studio allocation](../../OPERATOR-STUDIO.md#allocation-and-ownership)
@@ -16,6 +16,7 @@ Shared filter catalog and flexible source workspace add 3 NS-6 / 0.30 overall.
 
 | Accepted task | Date | Current goal credit | Current overall credit |
 | --- | --- | ---: | ---: |
+| [NS-6_studio_16](NS-6_studio_16.md) — Primary microphone PCM16 and WAV header encoding | 2026-10-02 | 1 NS-6 | 0.10 |
 | [NS-6_studio_14](NS-6_studio_14.md) — Custom-duration native streamed playback | 2026-10-02 | 3 NS-6 | 0.30 |
 | [NS-4_streaming_01](NS-4_streaming_01.md) — Bounded long-duration native audio sessions | 2026-10-02 | 5 NS-4 | 0.75 |
 | [NS-6_studio_15](NS-6_studio_15.md) — Shared delay/reverb and explicit tails | 2026-10-02 | 1 NS-6 | 0.10 |
@@ -64,8 +65,8 @@ Shared filter catalog and flexible source workspace add 3 NS-6 / 0.30 overall.
 | [NS-6_studio_08](NS-6_studio_08.md) — Make starting actions and review queues discoverable | 2026-10-01 | 1 NS-6 | 0.10 |
 | [NS-6_studio_09](NS-6_studio_09.md) — Refresh large existing collections without recopying media | 2026-10-01 | 1 NS-6 | 0.10 |
 
-Current accepted task total is **23.95 weighted points**; the separate accepted
-baseline contributes **28.00**, giving **51.95 overall**. Core source-free
+Current accepted task total is **24.35 weighted points**; the separate accepted
+baseline contributes **28.00**, giving **52.35 overall**. Core source-free
 composition remains accepted with zero extra NS-4 points; it does not prove
 WFC-selected or recorded-provider integration. The prior external-runtime
 execution result remains historical; current inference acceptance is Pascal-owned.

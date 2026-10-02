@@ -14,15 +14,19 @@ Project work and review pushes stay on `hello-pythian`.
 
 ## Studio expansion — 2026-10-02
 
-**Current checkpoint:** studio_12/13/15, streaming_01 and studio_14 are accepted.
-Streaming repair code `9f0a77e` passes Linux integration and extracted packages;
-the current ledger is **52.25 accepted / 47.75 remaining**, **48 open / 47 DONE**.
-The required consolidation inventory also found microphone WAV encoding.
-Studio_16's shared primary codec passes native/pas2js byte agreement and actual
-desktop/narrow browser regression; exact-code CI is pending before its credit
-or deployment. Fourteen matched artifacts are frozen under `build/shared-capture/`.
-All QA tabs/services are closed. Physical microphone/phone and musical-quality
-acceptance remain with their existing owners. Nonclosing count: 0.
+**Current checkpoint:** studio_12/13/14/15/16 and streaming_01 are accepted.
+Code `6cfb855d6c5e13a4ee8d1f3a1e54f82dbff7dfea` passes
+[Linux integration and extracted packages](https://github.com/mr-highball/pythian/actions/runs/36983782671),
+including the shared primary microphone codec after native/pas2js byte agreement
+and actual desktop/narrow browser regression. The current ledger is
+**52.35 accepted / 47.65 remaining**, **47 open / 48 DONE**; NS-6 is **53/47**.
+Fourteen frozen artifacts under `build/shared-capture/` are deployed to the fixed
+stable LAN slot. All 3,208 pre-existing catalog JSON hashes are unchanged;
+read-only Codex Browser sees the three operator collections with no console
+errors. QA services and owned tabs are closed; only the intended stable service
+remains. Physical microphone/phone, WASM and musical-quality acceptance remain
+with their existing owners. Nonclosing count: 0. The next operator outcome is
+studio_03's listening/iteration verdict; this consolidation earns no style credit.
 
 **First accepted batch:** studio_12 and studio_13 moved to DONE.
 Code `1b9349c53cdeef7fa3195f824e52002ca56df6ea` passes
@@ -1962,7 +1966,7 @@ recorded in the current batch's ignored evidence.
 The prior research stop state is independent of this task's replan.
 
 The consolidation inventory found a separate microphone PCM16/header encoder.
-[studio_16](TODO/NS-6_studio_16.md) owns replacement with primary WAV code, funded
+[studio_16](TODO/DONE/NS-6_studio_16.md) owns replacement with primary WAV code, funded
 by one unearned delivery_04 point (4 to 3), retaining all consumer criteria.
 Scoping changes no accepted credit: 51.95/48.05, now 49 open/46 DONE (95 total).
 Big Boss owns AC1–3: native/pas2js byte agreement, bounded capture adapter and

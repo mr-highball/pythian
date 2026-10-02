@@ -3,8 +3,8 @@
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) ·
 [Assessment](../REBALANCE-2026-09-29.md) · [Completed tasks](DONE/README.md) · [Work](../WORK.md)
 
-Updated 2026-10-02. **48 open / 47 accepted tasks.** The user authorized a new
-outcome-based credit allocation: **52.25 current / 47.75 remaining** overall.
+Updated 2026-10-02. **47 open / 48 accepted tasks.** The user authorized a new
+outcome-based credit allocation: **52.35 current / 47.65 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
 adds 4 NS-5 points / 0.80 overall, and the accepted exact-revision minimal native
@@ -37,8 +37,8 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 50 | 70% | 1 | 30 | 4.50 |
 | [NS-5 — User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 15 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 52 | 52% | 12 | 48 | 4.80 |
-| **Total** | **28.00 weighted** | **24.25 weighted** | **52.25 weighted** | **48** | Goal points are not summed across goals | **47.75** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 53 | 53% | 11 | 47 | 4.70 |
+| **Total** | **28.00 weighted** | **24.35 weighted** | **52.35 weighted** | **47** | Goal points are not summed across goals | **47.65** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -52,8 +52,9 @@ revision, adding 3 NS-6 / 0.30 overall. Accepted shared
 [delay/reverb and tails](DONE/NS-6_studio_15.md) add 1 NS-6 / 0.10 overall. The
 [accepted native long-session generation](DONE/NS-4_streaming_01.md) adds 5 NS-4 /
 0.75 overall. Accepted [streamed Studio playback](DONE/NS-6_studio_14.md) adds
-3 NS-6 / 0.30 overall. The required consolidation inventory now selects
-[shared microphone encoding](NS-6_studio_16.md). In total the 2026-10-02 additions
+3 NS-6 / 0.30 overall. Accepted
+[shared microphone encoding](DONE/NS-6_studio_16.md) adds 1 NS-6 / 0.10 overall.
+In total the 2026-10-02 additions
 transfer eight unearned NS-6 points and five unearned NS-4 points; scoping alone
 earns no acceptance.
 
@@ -217,7 +218,6 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | [NS-6_studio_07](NS-6_studio_07.md) — Train mixed-format corpora with original-clock lineage | 1 | 0.10 | After current review: explicit native conversion and actual mixed-format WFC |
 | [NS-6_studio_10](NS-6_studio_10.md) — Enable phone recording over local HTTPS | 1 | 0.10 | Operator reports HTTPS worked; complete capture/browser checks remain open |
 | [NS-6_studio_11](NS-6_studio_11.md) — Browse collection metadata and prepare recordings only on use | 1 | 0.10 | Selected: metadata listing, bounded preview and verified selected-entry preparation |
-| [NS-6_studio_16](NS-6_studio_16.md) — Shared microphone WAV encoding | 1 | 0.10 | Accepted capture contract |
 
 ## Accepted tasks and retired work
 
