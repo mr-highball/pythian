@@ -95,6 +95,9 @@ WFC defect. [Studio_03](TODO/NS-6_studio_03.md) AC2 owns the still-generic faile
 batch explanation; its operator feedback acceptance remains open.
 
 Matched pas2js builds and checked Win64 FPC 3.2.2 worker compilation pass.
+Published code revision `6e33d71f3fd735648dc1bf4e17117992494be756` also passes
+[Linux integration and extracted core-only/WFC package checks](https://github.com/mr-highball/pythian/actions/runs/36964885635).
+This final evidence update changes no reviewed executable or browser asset.
 Fourteen frozen artifacts, authored jobs/answers, MIDI and desktop/narrow
 screenshots are retained under `build/solo-usability/`. The QA tab was closed,
 viewport restored and exact fixed QA process stopped; no QA listener or worker
