@@ -55,7 +55,7 @@ is inferred. Earns 1 NS-6 / 0.10 overall point.
   failure fixture `effects-win32-run-04` and repaired run-05 are retained.
 - Existing delay/reverb exposure and explicit tails belong to
   [studio_15](../NS-6_studio_15.md); native long generation belongs to
-  [streaming_01](../NS-4_streaming_01.md), not this filter task.
+  [streaming_01](NS-4_streaming_01.md), not this filter task.
 - 2026-10-02, Big Boss: phone feedback finds five choices despite eight native
   biquad kinds in `src/pythian.biquad.pas`. This is an operator exposure gap;
   no new DSP algorithm or WFC dependency is needed for these six additions.

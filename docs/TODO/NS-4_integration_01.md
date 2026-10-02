@@ -40,7 +40,7 @@ Starting evidence: [WAV-LEARNING](../WAV-LEARNING.md) · [INDEPENDENT-VOICES](..
 
 **Blockers**
 
-- [NS-4_streaming_01.md](NS-4_streaming_01.md)
+- [NS-4_streaming_01.md](DONE/NS-4_streaming_01.md)
 - [NS-4_note-events_01.md — DONE](DONE/NS-4_note-events_01.md)
 - [NS-4_styles_02.md](DONE/NS-4_styles_02.md)
 - [NS-4_layers_04.md](DONE/NS-4_layers_04.md)
@@ -55,7 +55,7 @@ Starting evidence: [WAV-LEARNING](../WAV-LEARNING.md) · [INDEPENDENT-VOICES](..
 **Dev Notes:**
 
 - 2026-10-02, Big Boss: five unearned points transfer to
-  [bounded long-session generation](NS-4_streaming_01.md). All recorded-provider,
+  [bounded long-session generation](DONE/NS-4_streaming_01.md). All recorded-provider,
   blend/reblend and full-workflow criteria remain here; scope earns no credit.
 
 - 2026-09-24 the first score-conditioned two-part WFC diagnostic stopped

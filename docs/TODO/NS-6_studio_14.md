@@ -15,8 +15,9 @@ Basis: one unearned delivery_04 point and two delivery_05 points transfer here;
 both donor tasks retain all acceptance requirements.
 Credit is earned only after all criteria and prerequisites pass.
 
-Execution status: dependency-blocked on the native generation session. Big Boss
-owns this solo batch. Next deliverable: custom duration, native streamed playback
+Execution status: selected after the native session's exact-code acceptance.
+Big Boss owns this solo batch.
+Next deliverable: custom duration, native streamed playback
 and comprehensible controls/status in Studio. Closing evidence: two-minute,
 two-hour and twenty-four-hour plans, bounded early playback/buffering, pause,
 cancel/disconnect, replay and desktop/narrow interaction. Stop at unbounded
@@ -47,7 +48,7 @@ buffer/disk growth or a browser-only synthesis replacement.
 
 **Blockers**
 
-- [NS-4_streaming_01.md](NS-4_streaming_01.md)
+- [NS-4_streaming_01.md](DONE/NS-4_streaming_01.md)
 - [NS-6_studio_02.md](DONE/NS-6_studio_02.md)
 - [NS-6_studio_08.md](DONE/NS-6_studio_08.md)
 

@@ -13,7 +13,7 @@ deliverable's acceptance, not polish deferred until after the backend.
 The selected expansion adds the [implemented filter catalog](TODO/DONE/NS-6_studio_12.md),
 [flexible source workspace](TODO/DONE/NS-6_studio_13.md) and
 [custom-duration streaming](TODO/NS-6_studio_14.md), with a separate
-[native generation prerequisite](TODO/NS-4_streaming_01.md).
+[native generation prerequisite](TODO/DONE/NS-4_streaming_01.md).
 [Metadata discovery and selected-use preparation](TODO/NS-6_studio_11.md)
 retains its remaining criteria. [Phone HTTPS](TODO/NS-6_studio_10.md) remains open: the operator reports
 that the local browser exception worked, while full capture/browser criteria
@@ -135,7 +135,7 @@ they do not disappear or move into the new tasks. Scoping left 49.40 accepted;
 independent project/setup acceptance subsequently adds 4 NS-6 / 0.40 overall.
 Private corpora, raw WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall.
 Accepted starting actions/navigation and large-library refresh add 2 NS-6 / 0.20 overall.
-The current ledger is **51.20 accepted / 48.80 remaining**, **49 open / 45 DONE**.
+The current ledger is **51.95 accepted / 48.05 remaining**, **48 open / 46 DONE**.
 NS-6 is **49 accepted / 51 unearned** with twelve open tasks. Goal weights are unchanged.
 The later collection and effects requirements each reallocate one unearned point
 from jobs and iteration; all original criteria remain. Scoping earns no acceptance.

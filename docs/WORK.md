@@ -62,12 +62,27 @@ stereo 2-minute/2-hour/24-hour plans have bounded startup; a full 24-hour run is
 not claimed. Actual Codex-browser generation through the same session produces
 its traceable 20-second audition and plays to the end with no console errors.
 QA tab/service are cleaned up; fourteen artifacts and the solo verdict are under
-`build/long-session/`. Exact-source Linux CI remains before task acceptance.
+`build/long-session/`. First CI passed integration but its extracted verifier
+lacked the new shared test helper. The repaired package passes locally and
+[Linux CI](https://github.com/mr-highball/pythian/actions/runs/36976242691) at
+`fe6cd0e9b34d672df9f111a0a4120dde62e27700`. Streaming_01 is accepted and moved
+to DONE. Matched frozen assets are deployed with all 3,208 existing live JSON
+hashes unchanged. Earned 5 NS-4 / 0.75 overall: current **51.95 accepted / 48.05
+remaining**, **48 open / 46 DONE**, NS-4 **70/30**; nonclosing count is 0.
+
+Studio_14's next solo deliverable is demand-driven native chunks, editable
+duration and bounded browser playback, with pause/stop/disconnect and one
+traceable twenty-second review excerpt. Reuse the existing job preparation,
+model binding, worker supervision and listening publication. One separate
+stream worker keeps ordinary jobs available. Closing evidence: native protocol/
+lease/recovery tests and actual desktop/narrow playback, queue bounds, pause,
+cancel, excerpt and failure paths. Stop for unbounded read-ahead or output
+retention; no full-file-first generation or browser DSP substitute.
 
 **Big Boss, solo:** operator feedback selects the implemented
 [filter catalog](TODO/DONE/NS-6_studio_12.md), flexible
 [source workspace](TODO/DONE/NS-6_studio_13.md), native
-[long-session generation](TODO/NS-4_streaming_01.md) and
+[long-session generation](TODO/DONE/NS-4_streaming_01.md) and
 [streamed Studio playback](TODO/NS-6_studio_14.md). Keep this review solo under
 the existing instruction. The streaming consumer follows its native prerequisite.
 

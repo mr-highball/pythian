@@ -3,8 +3,8 @@
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) ·
 [Assessment](../REBALANCE-2026-09-29.md) · [Completed tasks](DONE/README.md) · [Work](../WORK.md)
 
-Updated 2026-10-02. **49 open / 45 accepted tasks.** The user authorized a new
-outcome-based credit allocation: **51.20 current / 48.80 remaining** overall.
+Updated 2026-10-02. **48 open / 46 accepted tasks.** The user authorized a new
+outcome-based credit allocation: **51.95 current / 48.05 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
 adds 4 NS-5 points / 0.80 overall, and the accepted exact-revision minimal native
@@ -35,10 +35,10 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-1 — Independent Pascal foundation](../MILESTONES.md#ns-1) | 100 | 0 | 100% | 0 | 0 | 0.00 |
 | [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 70 | 20 | 90% | 1 | 10 | 2.50 |
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
-| [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 45 | 65% | 2 | 35 | 5.25 |
+| [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 50 | 70% | 1 | 30 | 4.50 |
 | [NS-5 — User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 15 | 86 | 17.20 |
 | [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 49 | 49% | 12 | 51 | 5.10 |
-| **Total** | **28.00 weighted** | **23.20 weighted** | **51.20 weighted** | **49** | Goal points are not summed across goals | **48.80** |
+| **Total** | **28.00 weighted** | **23.95 weighted** | **51.95 weighted** | **48** | Goal points are not summed across goals | **48.05** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -50,7 +50,8 @@ Big Boss's solo [shared filter catalog](DONE/NS-6_studio_12.md) and
 [flexible waveform controls](DONE/NS-6_studio_13.md) are accepted at the recorded
 revision, adding 3 NS-6 / 0.30 overall. Accepted shared
 [delay/reverb and tails](DONE/NS-6_studio_15.md) add 1 NS-6 / 0.10 overall. Next,
-[native long-session generation](NS-4_streaming_01.md) unblocks
+[accepted native long-session generation](DONE/NS-4_streaming_01.md) adds 5 NS-4 /
+0.75 overall and unblocks
 [streamed Studio playback](NS-6_studio_14.md). The 2026-10-02 additions transfer
 seven unearned NS-6 points and five unearned NS-4 points; no accepted credit changes.
 
@@ -178,7 +179,6 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | Task / primary outcome | Goal points | Overall points | Current readiness |
 | --- | ---: | ---: | --- |
 | [NS-4_integration_01](NS-4_integration_01.md) — Deliver the recorded WAV-to-style-to-audio workflow | 30 | 4.50 | Dependency-blocked |
-| [NS-4_streaming_01](NS-4_streaming_01.md) — Bounded native long-session generation | 5 | 0.75 | Ready; prerequisite for Studio streaming |
 
 ### NS-5 — User-defined styles that generate and blend usefully
 
@@ -219,7 +219,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 
 ## Accepted tasks and retired work
 
-All 45 accepted tasks, including caller corpus intake, Studio source/effects/capture, the current minimal package
+All 46 accepted tasks, including caller corpus intake, Studio source/effects/capture, the current minimal package
 and the three NS-2 quality results, are listed in
 the [current DONE ledger](DONE/README.md). Their acceptance dates and detailed
 evidence remain in the unchanged task identities. Allocations now reflect the

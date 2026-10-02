@@ -23,7 +23,7 @@ Topic documents hold supporting contracts/evidence; they are not another active
 backlog. Historical “remaining” statements do not reopen a completed task without
 checking the current evidence.
 
-The initial catalog contained 49 open tasks and earned no completion credit.
+The initial catalog contained 48 open tasks and earned no completion credit.
 On 2026-09-20 the user authorized execution, starting with the least-complete
 north star (NS-5 at 25%). Follow actual prerequisite tasks when blocked, including
 prerequisites in another north star, then return to the originating task.
@@ -287,15 +287,15 @@ Studio source/jobs/effects/capture acceptance through **2026-10-01**, give:
 | NS-1 | 100 | 5 | 0 | 0 |
 | NS-2 | 70 | 25 | 20 | 10 |
 | NS-3 | 10 | 25 | 15 | 75 |
-| NS-4 | 20 | 15 | 45 | 35 |
+| NS-4 | 20 | 15 | 50 | 30 |
 | NS-5 | 0 | 20 | 14 | 86 |
 | NS-6 | 0 | 10 | 49 | 51 |
 
 `Goal completion = baseline + sum(accepted DONE task credits for that goal)`.
 `Overall completion = sum(goal completion * goal weight / 100)`.
-Current goal completions are **100/90/25/65/14/49**; weights are
-**5/25/25/15/20/10**. Therefore current accepted scope is **51.20 weighted
-points**, with **48.80 remaining**. The rebase records newly explicit caller
+Current goal completions are **100/90/25/70/14/49**; weights are
+**5/25/25/15/20/10**. Therefore current accepted scope is **51.95 weighted
+points**, with **48.05 remaining**. The rebase records newly explicit caller
 extension, maintained support and adoption requirements; it earns no acceptance.
 For example, accepting `NS-3_notes_01` adds 7 points within NS-3 and 1.75 overall
 point. Record the arithmetic on every completion; preserve the current accepted
@@ -309,7 +309,7 @@ without awarding acceptance.
 Studio setup acceptance adds 4 NS-6 / 0.40 overall; private corpora, bounded raw
 WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall; starting
 actions and verified large-library refresh add 2 NS-6 / 0.20 overall. The catalog
-contains **49 open / 45 accepted tasks**, NS-6 **49/51**, overall **51.20/48.80** after
+contains **48 open / 46 accepted tasks**, NS-6 **49/51**, overall **51.95/48.05** after
 shared filter-catalog, flexible source-workspace and delay/reverb-tail acceptance. All
 original donor criteria remain required alongside the new operator outcomes.
 

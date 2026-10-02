@@ -1,6 +1,6 @@
 # NS-4_streaming_01 — Provide bounded long-duration generation sessions
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-4)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-4)
 
 **Description:**
 
@@ -16,12 +16,12 @@ Basis: five unearned integration_01 points transfer here; its full recorded
 provider, blend/reblend and listening requirements remain at thirty points.
 Credit is earned only after all criteria and prerequisites pass.
 
-Execution status: selected; Big Boss owns assessment and implementation for this
-solo operator expansion. Next deliverable: reusable Pascal generation session
-with bounded pull/consumer buffering. Closing evidence: deterministic continuous
-PCM across block sizes, exact 64-bit clocks, cancellation/failure and measured
-memory/throughput. Stop at an actual generic WFC gap and follow TASKFLOW's separate
-repository/new-branch procedure; no companion-source edits in this checkout.
+Accepted 2026-10-02 by Big Boss's authorized solo review at
+`fe6cd0e9b34d672df9f111a0a4120dde62e27700`, after the native and actual-browser
+checks below and repaired [Linux integration/extracted-package CI](https://github.com/mr-highball/pythian/actions/runs/36976242691).
+Matched frozen service/worker assets are deployed; all 3,208 existing live JSON
+records retain their hashes. The web live-stream consumer remains studio_14.
+No companion-source edits or generic WFC prerequisite were needed.
 
 **Acceptance Criteria:**
 
@@ -47,7 +47,7 @@ repository/new-branch procedure; no companion-source edits in this checkout.
 
 **Blockers**
 
-- [NS-5_continuity_02.md](DONE/NS-5_continuity_02.md)
+- [NS-5_continuity_02.md](NS-5_continuity_02.md)
 
 **Dev Notes:**
 
@@ -70,7 +70,7 @@ repository/new-branch procedure; no companion-source edits in this checkout.
   68 real worker checks. Actual checked optimized Win64 runs render 120/7200
   seconds at 8 kHz mono in 875/52703 ms, with identical 571808-byte maximum live
   Pascal heap. No 24-hour render or musical-quality claim. Detailed evidence is
-  under ignored `build/long-session/`; exact-revision CI remains before acceptance.
+  under ignored `build/long-session/`; repaired exact-revision CI subsequently passes.
 - 2026-10-02, Big Boss: current WFC continuation is already incremental, but
   the journal renderer binds its output to a finite PCM16 WAV writer, 32,768
   total grains and 128 million visits. Studio further bounds receipts at 6,000
