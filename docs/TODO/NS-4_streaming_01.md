@@ -16,7 +16,7 @@ Basis: five unearned integration_01 points transfer here; its full recorded
 provider, blend/reblend and listening requirements remain at thirty points.
 Credit is earned only after all criteria and prerequisites pass.
 
-Execution status: ready; Big Boss owns assessment and implementation for this
+Execution status: selected; Big Boss owns assessment and implementation for this
 solo operator expansion. Next deliverable: reusable Pascal generation session
 with bounded pull/consumer buffering. Closing evidence: deterministic continuous
 PCM across block sizes, exact 64-bit clocks, cancellation/failure and measured

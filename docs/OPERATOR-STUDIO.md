@@ -116,7 +116,7 @@ completed by planning, and all original criteria in the donor tasks remain.
 | [studio_12 — DONE](TODO/DONE/NS-6_studio_12.md) | 0 | 1 | All implemented biquad filters in the effects rack |
 | [studio_13 — DONE](TODO/DONE/NS-6_studio_13.md) | 0 | 2 | Flexible bounded source view and unified preparation |
 | [studio_14](TODO/NS-6_studio_14.md) | 0 | 3 | Custom-duration generation with streamed playback |
-| [studio_15](TODO/NS-6_studio_15.md) | 0 | 1 | Existing delay/reverb exposure with explicit tails |
+| [studio_15](TODO/DONE/NS-6_studio_15.md) | 0 | 1 | Existing delay/reverb exposure with explicit tails |
 | **Total allocation at scoping** | **35** | **35** | **Scoping earned no credit** |
 
 The 2026-10-02 expansion transfers six further unearned NS-6 points: one from
@@ -135,8 +135,8 @@ they do not disappear or move into the new tasks. Scoping left 49.40 accepted;
 independent project/setup acceptance subsequently adds 4 NS-6 / 0.40 overall.
 Private corpora, raw WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall.
 Accepted starting actions/navigation and large-library refresh add 2 NS-6 / 0.20 overall.
-The current ledger is **51.10 accepted / 48.90 remaining**, **50 open / 44 DONE**.
-NS-6 is **48 accepted / 52 unearned** with thirteen open tasks. Goal weights are unchanged.
+The current ledger is **51.20 accepted / 48.80 remaining**, **49 open / 45 DONE**.
+NS-6 is **49 accepted / 51 unearned** with twelve open tasks. Goal weights are unchanged.
 The later collection and effects requirements each reallocate one unearned point
 from jobs and iteration; all original criteria remain. Scoping earns no acceptance.
 Capture/exploration receives two additional unearned delivery_03 points with

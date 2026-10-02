@@ -38,7 +38,20 @@ tails preserve original ranges and derived lineage. Both checked native targets
 pass 130 cases with no heap leaks. Actual desktop/narrow Codex-browser preview,
 tail edit/invalidation, save/reload and four-second playback pass on authored QA
 audio. Frozen assets/evidence are in `build/studio-tails/`; the QA tab/service
-were cleaned up. Exact-code Linux CI is pending; accounting remains 51.10.
+were cleaned up. Code `7de571249ec0dc17212686db18e8e1dad29109c6` also passes
+[Linux integration and extracted packages](https://github.com/mr-highball/pythian/actions/runs/36972618910).
+Studio_15 is accepted and deployed with all 3,208 existing live JSON hashes
+unchanged. Deployed read-only Codex-browser checks load all collections without
+console errors; the owned tab is closed. Current accounting is **51.20 accepted /
+48.80 remaining**, **49 open / 45 DONE**, NS-6 **49/51**. Nonclosing count: 0.
+
+The next solo batch advances streaming_01 AC1–5: shared bounded native pull
+generation, fixed WFC continuation/seed policy, exact 64-bit duration, consumer
+backpressure and finite failure. Closing evidence: partition-invariant PCM,
+pause/stop/failure, large clocks and measured sustained memory/throughput.
+Stop for a demonstrated generic WFC gap or duration-dependent resource growth.
+The worker now consumes the same primary renderer directly; its temporary WAV
+and readback trimming are removed. Browser streaming follows this prerequisite.
 
 **Big Boss, solo:** operator feedback selects the implemented
 [filter catalog](TODO/DONE/NS-6_studio_12.md), flexible
@@ -71,7 +84,7 @@ because the contracts are portable. This is part of the current outcomes, with
 no extra credit for refactoring.
 
 The wider inventory finds existing modulated delay and reverb classes. Their
-[exposure and tail contract](TODO/NS-6_studio_15.md) is a linked follow-up,
+[exposure and tail contract](TODO/DONE/NS-6_studio_15.md) is a linked follow-up,
 funded by one more unearned delivery_04 point (5 → 4). Current task count becomes
 52 open / 42 DONE, 94 total; accepted completion remains 50.80. Return to the
 current filter/transport batch before implementing that distinct gap.
