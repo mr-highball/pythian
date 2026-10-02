@@ -49,6 +49,12 @@ type
     FPrepareWindowStart: Double;
     FPrepareWindowEnd: Double;
     FPreviewStart: Double;
+    FPosition: Double;
+    FChunkEnd: Double;
+    FMediaEpoch: Integer;
+    FPlaying: Boolean;
+    FSeeking: Boolean;
+    FResumeAfterSeek: Boolean;
     FTracks: TJSArray;
     FSelections: TJSArray;
     FTrack: TJSObject;
@@ -86,11 +92,16 @@ type
     procedure PreparationState;
     procedure ApplyPrepared; async;
     procedure PlayRange(const AStart, AEnd: Double);
+    procedure PlayChunk; async;
+    procedure ReplacePlayer;
+    procedure SeekTo(const ASeconds: Double; const AResume: Boolean);
+    procedure UpdateTransport;
     function CompletedForTrack: Boolean;
     function PointerFrame(AEvent: TJSPointerEvent): Double;
     function Click(AEvent: TJSMouseEvent): Boolean;
     function Edit(AEvent: TEventListenerEvent): Boolean;
     function Playback(AEvent: TEventListenerEvent): Boolean;
+    function LeavePage(AEvent: TEventListenerEvent): Boolean;
     function Down(AEvent: TJSPointerEvent): Boolean;
     function Move(AEvent: TJSPointerEvent): Boolean;
     function Up(AEvent: TJSPointerEvent): Boolean;
@@ -130,9 +141,12 @@ begin
 end;
 
 function StudioTime(const ASeconds: Double): String;
+var
+  LSeconds: Double;
 begin
-  Result := IntToStr(Floor(Max(0, ASeconds) / 60)) + ':' +
-    FormatFloat('00.000', Max(0, ASeconds) - Floor(Max(0, ASeconds) / 60) * 60);
+  LSeconds := Round(Max(0, ASeconds) * 1000) / 1000;
+  Result := IntToStr(Floor(LSeconds / 60)) + ':' +
+    FormatFloat('00.000', LSeconds - Floor(LSeconds / 60) * 60);
 end;
 
 function ParseSourceTime(const AText: String; out ASeconds: Double): Boolean;
@@ -208,16 +222,15 @@ begin
   FSelections := TJSArray.new;
   FPlayer := TJSHTMLAudioElement(El('source-audio'));
   FCanvas := TJSHTMLCanvasElement(El('source-waveform'));
-  FPlayer.addEventListener('timeupdate', @Playback);
-  FPlayer.addEventListener('loadedmetadata', @Playback);
-  FPlayer.addEventListener('error', @Playback);
+  ReplacePlayer;
+  window.addEventListener('pagehide', @LeavePage);
   FCanvas.addEventListener('pointerdown', @Down);
   FCanvas.addEventListener('pointermove', @Move);
   FCanvas.addEventListener('pointerup', @Up);
   FCanvas.addEventListener('pointercancel', @CancelPointer);
   LNames := ['source-mark-in', 'source-mark-out', 'source-prev', 'source-next',
     'source-use-range', 'source-use-whole', 'source-close', 'source-play-range',
-    'source-prepare',
+    'source-prepare', 'source-play', 'source-waveform-retry',
     'source-analyze'];
   for LIndex := 0 to High(LNames) do
   begin
@@ -227,8 +240,33 @@ begin
   El('source-end').addEventListener('input', @Edit);
   El('source-classifications').addEventListener('input', @Edit);
   El('source-seek').addEventListener('input', @Edit);
+  El('source-seek').addEventListener('change', @Edit);
   El('collection-filter').addEventListener('change', @Edit);
   El('source-beat-layer').addEventListener('change', @Edit);
+end;
+
+procedure TStudioSourceEditor.ReplacePlayer;
+var
+  LPlayer: TJSHTMLAudioElement;
+begin
+  { Big Boss: each request owns its media element. Late events and a failed
+    decoder/network state from the previous request cannot affect its retry. }
+  FPlayer.pause;
+  FPlayer.removeAttribute('src');
+  FPlayer.load;
+  LPlayer := TJSHTMLAudioElement(document.createElement('audio'));
+  LPlayer.id := 'source-audio';
+  LPlayer.preload := 'none';
+  LPlayer.setAttribute('hidden', '');
+  FPlayer.parentNode.replaceChild(LPlayer, FPlayer);
+  FPlayer := LPlayer;
+  FPlayer.addEventListener('timeupdate', @Playback);
+  FPlayer.addEventListener('loadedmetadata', @Playback);
+  FPlayer.addEventListener('error', @Playback);
+  FPlayer.addEventListener('ended', @Playback);
+  FPlayer.addEventListener('waiting', @Playback);
+  FPlayer.addEventListener('playing', @Playback);
+  FPlayer.addEventListener('pause', @Playback);
 end;
 
 procedure TStudioSourceEditor.Notice(const AText: String; const AError: Boolean);
@@ -247,6 +285,11 @@ end;
 procedure TStudioSourceEditor.Reset;
 begin
   Inc(FEpoch);
+  Inc(FMediaEpoch);
+  FPlaying := False;
+  FSeeking := False;
+  FDragging := False;
+  FPosition := 0;
   FPlayer.pause;
   FPlayer.removeAttribute('src');
   FPlayer.load;
@@ -255,6 +298,7 @@ begin
   FPlayEnd := -1;
   FBins := nil;
   FEditing := -1;
+  El('source-reconnect').setAttribute('hidden', '');
   El('source-inspector').setAttribute('hidden', '');
 end;
 
@@ -536,10 +580,13 @@ begin
     end;
   end;
   { Opening shows only the bounded waveform; Play requests bounded PCM. }
-  FPreviewStart := 0;
-  El('source-time').textContent := '0:00 / ' +
-    StudioTime(StudioNumber(FTrack, 'frame_count') / StudioNumber(FTrack, 'sample_rate'));
-  Input('source-seek').value := '0';
+  FPosition := 0;
+  if ASelection >= 0 then
+    FPosition := StudioNumber(LSelection, 'start_frame') / StudioNumber(FTrack, 'sample_rate');
+  FPreviewStart := FPosition;
+  FPlayEnd := StudioNumber(FTrack, 'frame_count') / StudioNumber(FTrack, 'sample_rate');
+  UpdateTransport;
+  El('source-playback-status').textContent := 'Choose a position, then press Play.';
   El('source-prepare').setAttribute('hidden', '');
   if (StudioText(FTrack, 'entry_id') <> '') and
     (StudioText(FTrack, 'prepared_snapshot') <>
@@ -549,14 +596,14 @@ begin
   end;
   if FEditing < 0 then
   begin
-    El('source-use-range').textContent := 'Add passage to corpus';
+    El('source-use-range').textContent := 'Add passage to project';
   end
   else
   begin
-    El('source-use-range').textContent := 'Update corpus selection';
+    El('source-use-range').textContent := 'Update selection';
   end;
-  WindowAt(0);
-  Input('source-start').focus;
+  WindowAt(FPosition);
+  TJSHTMLElement(El('source-title')).focus;
   Notice('Preview a passage, then add it. Only this recording will be prepared.');
 end;
 
@@ -628,9 +675,13 @@ begin
   El('source-analysis-status').textContent := 'Inspect this visible window to see signal levels and timing suggestions.';
   El('source-beat-layer').innerHTML := '<option value="-1">No beat overlay</option>';
   FBins := nil;
+  El('source-waveform-state').textContent := 'Loading waveform…';
+  El('source-waveform-state').className := 'hint';
+  El('source-waveform-retry').setAttribute('hidden', '');
+  FCanvas.setAttribute('aria-busy', 'true');
   DrawWaveform;
   El('source-window').textContent := StudioTime(FWindowStart / LRate) + '–' +
-    StudioTime(FWindowEnd / LRate) + ' · original source time';
+    StudioTime(FWindowEnd / LRate);
   try
     LEntry := StudioText(FTrack, 'entry_id');
     LPath := '/api/waveform?hash=' + LHash +
@@ -647,7 +698,7 @@ begin
     LResponse := await(TJSResponse, FFetch(LPath, 'GET', ''));
     if LResponse.status <> 200 then
     begin
-      raise Exception.Create('Waveform unavailable. Original playback is still available.');
+      raise Exception.Create('Waveform unavailable. Check the recording or reconnect, then retry.');
     end;
     LData := await(TJSObject, LResponse.json());
     if LEpoch <> FEpoch then
@@ -677,19 +728,29 @@ begin
       raise Exception.Create('Waveform identity changed. Reload this recording.');
     end;
     FBins := TJSArray(LData['bins']);
+    if not isArray(LData['bins']) or (FBins.length = 0) then
+      raise Exception.Create('Waveform unavailable. You can still try Play.');
+    El('source-waveform-state').textContent := 'Tap to seek. Drag to select a passage.';
+    FCanvas.setAttribute('aria-busy', 'false');
     DrawWaveform;
   except
     on LError: Exception do
     begin
       if LEpoch = FEpoch then
       begin
-        Notice(LError.Message, True);
+        El('source-waveform-state').textContent := LError.Message;
+        El('source-waveform-state').className := 'field-error';
+        El('source-waveform-retry').removeAttribute('hidden');
+        FCanvas.setAttribute('aria-busy', 'false');
       end;
     end;
   else
     if LEpoch = FEpoch then
     begin
-      Notice('Waveform connection failed. Use Previous or Next to retry.', True);
+      El('source-waveform-state').textContent := 'Waveform could not load. Try again.';
+      El('source-waveform-state').className := 'field-error';
+      El('source-waveform-retry').removeAttribute('hidden');
+      FCanvas.setAttribute('aria-busy', 'false');
     end;
   end;
 end;
@@ -869,7 +930,7 @@ begin
       end;
     end;
   end;
-  LX := ((FPreviewStart + FPlayer.currentTime) * LRate - FWindowStart) * LScale;
+  LX := (FPosition * LRate - FWindowStart) * LScale;
   LContext.fillStyleAsColor := '#fff4ce';
   LContext.fillRect(LX, 0, 2, FCanvas.height);
   LCandidate := StrToIntDef(TJSHTMLSelectElement(El('source-beat-layer')).value, -1);
@@ -1324,16 +1385,75 @@ begin
 end;
 
 procedure TStudioSourceEditor.PlayRange(const AStart, AEnd: Double);
+begin
+  SeekTo(AStart, False);
+  FPlayEnd := AEnd;
+  FPlaying := True;
+  PlayChunk;
+end;
+
+procedure TStudioSourceEditor.UpdateTransport;
+begin
+  if FTrack = nil then Exit;
+  El('source-time').textContent := StudioTime(FPosition) + ' / ' +
+    StudioTime(StudioNumber(FTrack, 'frame_count') / StudioNumber(FTrack, 'sample_rate'));
+  if not FSeeking then Input('source-seek').value := FloatToStr(FPosition);
+  Input('source-seek').setAttribute('aria-valuetext', StudioTime(FPosition));
+  if FPlaying then
+    El('source-play').textContent := 'Pause'
+  else
+    El('source-play').textContent := 'Play from here';
+  DrawWaveform;
+end;
+
+procedure TStudioSourceEditor.SeekTo(const ASeconds: Double; const AResume: Boolean);
+var
+  LRate: Double;
+begin
+  if FTrack = nil then Exit;
+  Inc(FMediaEpoch);
+  FPlaying := False;
+  FSeeking := False;
+  FPlayer.pause;
+  FPlayer.removeAttribute('src');
+  FPlayer.load;
+  LRate := StudioNumber(FTrack, 'sample_rate');
+  FPosition := Max(0, Min(ASeconds,
+    (StudioNumber(FTrack, 'frame_count') - 1) / LRate));
+  FPreviewStart := FPosition;
+  FPlayEnd := StudioNumber(FTrack, 'frame_count') / LRate;
+  El('source-playback-status').textContent := 'Ready at ' + StudioTime(FPosition) + '.';
+  UpdateTransport;
+  WindowAt(FPosition);
+  if AResume then
+  begin
+    FPlaying := True;
+    PlayChunk;
+  end;
+end;
+
+procedure TStudioSourceEditor.PlayChunk; async;
 var
   LRate: Double;
   LStart: Double;
   LEnd: Double;
   LEntry: String;
   LPath: String;
+  LEpoch: Integer;
 begin
+  if (FTrack = nil) or not FPlaying then Exit;
+  Inc(FMediaEpoch);
+  LEpoch := FMediaEpoch;
   LRate := StudioNumber(FTrack, 'sample_rate');
-  LStart := Floor(AStart * LRate);
-  LEnd := Min(Ceil(AEnd * LRate), LStart + Min(Floor(30 * LRate), 2000000));
+  LStart := Floor(FPosition * LRate + 0.000001);
+  LEnd := Min(StudioNumber(FTrack, 'frame_count'),
+    Min(Ceil(FPlayEnd * LRate), LStart + Min(Floor(30 * LRate), 2000000)));
+  if LEnd <= LStart then
+  begin
+    FPlaying := False;
+    UpdateTransport;
+    Exit;
+  end;
   LPath := '/api/audio?hash=' + StudioText(FTrack, 'source_sha256');
   LEntry := StudioText(FTrack, 'entry_id');
   if (LEntry <> '') and (StudioText(FTrack, 'status') = 'available') then
@@ -1342,16 +1462,26 @@ begin
       '&revision=' + FloatToStr(StudioNumber(FTrack, 'discovery_revision')) +
       '&snapshot=' + StudioText(FTrack, 'entry_snapshot_sha256');
   end;
-  FPlayer.pause;
+  ReplacePlayer;
   FPreviewStart := LStart / LRate;
-  FPlayEnd := LEnd / LRate;
+  FPosition := FPreviewStart;
+  FChunkEnd := LEnd / LRate;
   FPlayer.src := LPath + '&start=' + FloatToStr(LStart) + '&end=' + FloatToStr(LEnd);
   FPlayer.load;
-  FPlayer.play;
-  if LEnd < Ceil(AEnd * LRate) then
-  begin
-    Notice('Playing the first ' + StudioTime((LEnd - LStart) / LRate) +
-      ' of your passage. Move the window to hear more.');
+  El('source-playback-status').textContent := 'Loading audio at ' + StudioTime(FPosition) + '…';
+  UpdateTransport;
+  try
+    await(FPlayer.play());
+  except
+    { Big Boss: a replaced seek/pause rejects the old play promise normally.
+      Only the current request may report failure or change transport state. }
+    if (LEpoch = FMediaEpoch) and (FTrack <> nil) then
+    begin
+      FPlaying := False;
+      El('source-playback-status').textContent := 'Audio could not play. Retry Play, or reconnect if the server restarted.';
+      El('source-reconnect').removeAttribute('hidden');
+      UpdateTransport;
+    end;
   end;
 end;
 
@@ -1415,10 +1545,32 @@ begin
           PrepareRecording(nil, False);
         end;
       end;
-    'source-mark-in': Input('source-start').value := StudioTime(FPreviewStart + FPlayer.currentTime);
-    'source-mark-out': Input('source-end').value := StudioTime(FPreviewStart + FPlayer.currentTime);
-    'source-prev': WindowAt(Max(0, FWindowStart / StudioNumber(FTrack, 'sample_rate') - 30));
-    'source-next': WindowAt(FWindowEnd / StudioNumber(FTrack, 'sample_rate'));
+    'source-mark-in': Input('source-start').value := StudioTime(FPosition);
+    'source-mark-out': Input('source-end').value := StudioTime(FPosition);
+    'source-prev': SeekTo(Max(0, FWindowStart / StudioNumber(FTrack, 'sample_rate') - 30), FPlaying);
+    'source-next': SeekTo(FWindowEnd / StudioNumber(FTrack, 'sample_rate'), FPlaying);
+    'source-waveform-retry': WindowAt(FWindowStart / StudioNumber(FTrack, 'sample_rate'));
+    'source-play':
+      begin
+        if FPlaying then
+        begin
+          if (FPlayer.readyState >= 1) and (FPlayer.currentSrc = FPlayer.src) then
+            FPosition := Min(FChunkEnd, FPreviewStart + FPlayer.currentTime);
+          Inc(FMediaEpoch);
+          FPlaying := False;
+          FPlayer.pause;
+          El('source-playback-status').textContent := 'Paused at ' + StudioTime(FPosition) + '.';
+          UpdateTransport;
+        end
+        else
+        begin
+          if FPosition >= FPlayEnd then
+            FPlayEnd := StudioNumber(FTrack, 'frame_count') / StudioNumber(FTrack, 'sample_rate');
+          if FPosition >= FPlayEnd then SeekTo(0, False);
+          FPlaying := True;
+          PlayChunk;
+        end;
+      end;
     'source-use-range': SaveSelection(False);
     'source-use-whole': SaveSelection(True);
     'source-play-range':
@@ -1426,7 +1578,6 @@ begin
         if ReadRange(LStart, LEnd) then
         begin
           PlayRange(LStart, LEnd);
-          WindowAt(LStart);
         end
         else
         begin
@@ -1459,38 +1610,82 @@ begin
   end;
   if LId = 'source-seek' then
   begin
-    FPlayer.pause;
-    FPlayEnd := -1;
-    WindowAt(StrToFloat(Input('source-seek').value));
+    if AEvent._type = 'input' then
+    begin
+      if not FSeeking then
+      begin
+        FResumeAfterSeek := FPlaying;
+        FSeeking := True;
+        Inc(FMediaEpoch);
+        FPlaying := False;
+        FPlayer.pause;
+      end;
+      FPosition := StrToFloat(Input('source-seek').value);
+      El('source-playback-status').textContent := 'Seek to ' + StudioTime(FPosition) + '.';
+      UpdateTransport;
+    end
+    else
+      SeekTo(StrToFloat(Input('source-seek').value), FSeeking and FResumeAfterSeek);
   end
   else
   begin
-    Notice('Selection edited. Add or update it below to include these changes in the corpus.');
+    Notice('Selection changed. Add it below to keep these changes.');
   end;
   DrawWaveform;
+end;
+
+function TStudioSourceEditor.LeavePage(AEvent: TEventListenerEvent): Boolean;
+begin
+  Reset;
+  Result := False;
 end;
 
 function TStudioSourceEditor.Playback(AEvent: TEventListenerEvent): Boolean;
 begin
   Result := False;
-  if FTrack = nil then
+  if (AEvent.target <> FPlayer) or (FTrack = nil) or FSeeking or not FPlaying then
   begin
     Exit;
   end;
   if AEvent._type = 'error' then
   begin
-    Notice('Original playback failed. Reopen the recording to retry.', True);
+    if FPlayer.error = nil then Exit;
+    FPlaying := False;
+    El('source-playback-status').textContent := 'Audio could not load. Retry Play, or reconnect if the server restarted.';
+    El('source-reconnect').removeAttribute('hidden');
+    UpdateTransport;
     Exit;
   end;
-  El('source-time').textContent := StudioTime(FPreviewStart + FPlayer.currentTime) + ' / ' +
-    StudioTime(StudioNumber(FTrack, 'frame_count') / StudioNumber(FTrack, 'sample_rate'));
-  Input('source-seek').value := FloatToStr(FPreviewStart + FPlayer.currentTime);
-  if (FPlayEnd >= 0) and (FPreviewStart + FPlayer.currentTime >= FPlayEnd) then
+  if (FPlayer.readyState < 1) or (FPlayer.currentSrc <> FPlayer.src) then Exit;
+  FPosition := Min(FChunkEnd, FPreviewStart + FPlayer.currentTime);
+  if (AEvent._type = 'pause') and FPlayer.paused and not FPlayer.ended then
   begin
-    FPlayer.pause;
-    FPlayEnd := -1;
+    Inc(FMediaEpoch);
+    FPlaying := False;
+    El('source-playback-status').textContent := 'Paused at ' + StudioTime(FPosition) + '.';
+  end
+  else if AEvent._type = 'playing' then
+  begin
+    El('source-playback-status').textContent := 'Playing';
+    El('source-reconnect').setAttribute('hidden', '');
+  end
+  else if AEvent._type = 'waiting' then
+    El('source-playback-status').textContent := 'Buffering audio…';
+  if (AEvent._type = 'ended') and FPlayer.ended then
+  begin
+    FPosition := FChunkEnd;
+    if FChunkEnd < FPlayEnd - 0.5 / StudioNumber(FTrack, 'sample_rate') then
+    begin
+      WindowAt(FPosition);
+      PlayChunk;
+    end
+    else
+    begin
+      FPlaying := False;
+      El('source-playback-status').textContent := 'Playback finished.';
+    end;
   end;
-  DrawWaveform;
+  UpdateTransport;
 end;
 
 function TStudioSourceEditor.PointerFrame(AEvent: TJSPointerEvent): Double;
@@ -1546,9 +1741,7 @@ begin
     LRate := StudioNumber(FTrack, 'sample_rate');
     if Abs(LFrame - FDragStart) < (FWindowEnd - FWindowStart) / 150 then
     begin
-      FPlayer.pause;
-      WindowAt(LFrame / LRate);
-      FPlayEnd := -1;
+      SeekTo(LFrame / LRate, FPlaying);
       Input('source-start').value := FDragOldStart;
       Input('source-end').value := FDragOldEnd;
     end

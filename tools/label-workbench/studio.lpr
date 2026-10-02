@@ -84,7 +84,7 @@ type
     procedure NewDraft;
     procedure DrawProjects;
     procedure DrawTracks;
-    procedure MergeDiscovery(ATracks: TJSArray; ADiscovery: TJSObject);
+    procedure MergeDiscovery(ATracks: TJSArray; ADiscovery, APrepared: TJSObject);
     procedure UpdateSummary;
     procedure UpdateState;
     procedure Status(const AText: String; AError: Boolean = False);
@@ -605,7 +605,7 @@ begin
   FSourceEditor.Bind(FTracks, FSelections, FBusy or not FConnected);
 end;
 
-procedure TStudio.MergeDiscovery(ATracks: TJSArray; ADiscovery: TJSObject);
+procedure TStudio.MergeDiscovery(ATracks: TJSArray; ADiscovery, APrepared: TJSObject);
 var
   LEntries: TJSArray;
   LEntry: TJSObject;
@@ -615,6 +615,10 @@ var
   LPrevious: String;
   LIndex: Integer;
   LOther: Integer;
+  LGroupIndex: Integer;
+  LMemberIndex: Integer;
+  LGroups: TJSArray;
+  LMembers: TJSArray;
 begin
   if (Str(ADiscovery, 'format') <> 'pythian.studio.library.discovery.v1') or
     not isArray(ADiscovery['entries']) then
@@ -622,6 +626,10 @@ begin
     raise Exception.Create('The collection list is unavailable. Retry discovery.');
   end;
   LEntries := TJSArray(ADiscovery['entries']);
+  if (Str(APrepared, 'format') <> 'pythian.studio.library.v1') or
+    not isArray(APrepared['collections']) then
+    raise Exception.Create('Prepared recording details are unavailable. Retry connection.');
+  LGroups := TJSArray(APrepared['collections']);
   if LEntries.length > 256 then
   begin
     raise Exception.Create('The collection list exceeds its supported size.');
@@ -636,6 +644,18 @@ begin
     end;
     LTrack := nil;
     LPrevious := Str(LEntry, 'previous_source_sha256');
+    { Big Boss: preparation may be newer than the last discovery scan.
+      Join its recorded membership for display only; selected use still
+      verifies the current original in the native preparation job. }
+    for LGroupIndex := 0 to LGroups.length - 1 do
+      if Str(Obj(LGroups[LGroupIndex]), 'collection_id') = Str(LEntry, 'collection_id') then
+      begin
+        LMembers := Arr(Obj(LGroups[LGroupIndex]), 'memberships');
+        if LMembers <> nil then
+          for LMemberIndex := 0 to LMembers.length - 1 do
+            if Str(Obj(LMembers[LMemberIndex]), 'original_name') = Str(LEntry, 'original_name') then
+              LPrevious := Str(Obj(LMembers[LMemberIndex]), 'source_sha256');
+      end;
     if LPrevious <> '' then
     begin
       for LOther := 0 to ATracks.length - 1 do
@@ -643,8 +663,7 @@ begin
         if (Str(Obj(ATracks[LOther]), 'source_sha256') = LPrevious) and
           (((Num(Obj(ATracks[LOther]), 'sample_rate') = Num(LEntry, 'sample_rate')) and
           (Num(Obj(ATracks[LOther]), 'frame_count') = Num(LEntry, 'frame_count'))) or
-          (Str(LEntry, 'status') <> 'available')) and
-          (Str(Obj(ATracks[LOther]), 'entry_id') = '') then
+          (Str(LEntry, 'status') <> 'available')) then
         begin
           LTrack := Obj(ATracks[LOther]);
           Break;
@@ -659,10 +678,15 @@ begin
       LTrack['partition'] := 'unassigned';
       ATracks.push(LTrack);
     end;
-    LTrack['entry_id'] := Str(LEntry, 'entry_id');
-    LTrack['entry_snapshot_sha256'] := Str(LEntry, 'entry_snapshot_sha256');
-    LTrack['discovery_revision'] := Num(ADiscovery, 'revision');
-    LTrack['status'] := Str(LEntry, 'status');
+    if (Str(LTrack, 'entry_id') = '') or
+      ((Str(LTrack, 'status') <> 'available') and (Str(LEntry, 'status') = 'available')) or
+      (Str(LTrack, 'entry_id') = Str(LEntry, 'entry_id')) then
+    begin
+      LTrack['entry_id'] := Str(LEntry, 'entry_id');
+      LTrack['entry_snapshot_sha256'] := Str(LEntry, 'entry_snapshot_sha256');
+      LTrack['discovery_revision'] := Num(ADiscovery, 'revision');
+      LTrack['status'] := Str(LEntry, 'status');
+    end;
     LTrack['content_validation'] := 'not_verified';
     LCollections := TJSArray(LTrack['collections']);
     if not isArray(LCollections) then
@@ -893,6 +917,7 @@ procedure TStudio.Connect; async;
 var
   LResponse: TJSResponse;
   LData: TJSObject;
+  LPrepared: TJSObject;
   LTracks: TJSArray;
   LProjects: TJSArray;
   LEpoch: Integer;
@@ -969,6 +994,12 @@ begin
     begin
       raise Exception.Create('The recording list is not supported by this Studio.');
     end;
+    LResponse := await(TJSResponse, FetchApi('/api/studio/library', 'GET', ''));
+    if LEpoch <> FEpoch then Exit;
+    if LResponse.status <> 200 then
+      raise Exception.Create('Prepared recording details could not be loaded.');
+    LPrepared := await(TJSObject, LResponse.json());
+    if LEpoch <> FEpoch then Exit;
     LResponse := await(TJSResponse, FetchApi('/api/studio/library-discovery', 'GET', ''));
     if LEpoch <> FEpoch then
     begin
@@ -983,7 +1014,7 @@ begin
     begin
       Exit;
     end;
-    MergeDiscovery(LTracks, LData);
+    MergeDiscovery(LTracks, LData, LPrepared);
     El('library-summary').textContent :=
       IntToStr(Trunc(Num(LData, 'available_count'))) + ' original files in ' +
       IntToStr(Trunc(Num(LData, 'collection_count'))) + ' collections · ' +
@@ -1538,6 +1569,7 @@ begin
   El('reload-draft').addEventListener('click', @HandleReload);
   El('new-draft').addEventListener('click', @HandleNew);
   El('retry').addEventListener('click', @HandleRetry);
+  El('source-reconnect').addEventListener('click', @HandleRetry);
   El('draft-list').addEventListener('change', @HandleProject);
   El('track-search').addEventListener('input', @HandleSearch);
   window.addEventListener('beforeunload', @HandleBeforeUnload);

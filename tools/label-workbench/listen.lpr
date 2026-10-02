@@ -161,6 +161,18 @@ begin
     if Ord(Result[I]) < 32 then Result[I] := ' ';
 end;
 
+function AnswerCaption(const AValue: String): String;
+begin
+  case AValue of
+    'style_fit': Result := 'Style match';
+    'does_not_fit': Result := 'Does not fit';
+    'unknown': Result := 'I can’t tell';
+  else
+    Result := StringReplace(AValue, '_', ' ', [rfReplaceAll]);
+    if Result <> '' then Result[1] := UpCase(Result[1]);
+  end;
+end;
+
 function PacketTitle(const ARow: TJSObject): String;
 var
   LQuestion: String;
@@ -354,14 +366,14 @@ begin
     if FAudioReady[I] = True then Inc(LReady);
   if AnyAudioFailure then
     El('media-gate').textContent :=
-      'A declared WAV failed to play. Retry that player or reload the queue; no response can be saved yet.'
+      'A recording could not play. Try Play again before saving your response.'
   else if not AllAudioReady then
     El('media-gate').textContent := IntToStr(LReady) + ' of ' +
       IntToStr(FAudioReady.length) +
-      ' WAVs ready. Tap Play on each asset to verify it loads before answering.'
+      ' recordings ready. Press Play on each recording before answering.'
   else
     El('media-gate').textContent :=
-      'All declared WAVs decoded in this browser. Listen to the requested span, then answer.';
+      'Audio is ready. Listen, then share your response below.';
   if AllAudioReady and not AnyAudioFailure then
     El('answer').removeAttribute('hidden')
   else
@@ -564,7 +576,7 @@ begin
     LSelect.id := 'media-state-' + IntToStr(I);
     LSelect.setAttribute('role', 'status');
     LSelect.setAttribute('aria-live', 'polite');
-    AddOption(TJSHTMLSelectElement(El('comment-asset')), LId, LId);
+    AddOption(TJSHTMLSelectElement(El('comment-asset')), LAssetName, LId);
   end;
   LRanges := Arr(FRequest, 'ranges');
   for I := 0 to LRanges.length - 1 do
@@ -604,13 +616,13 @@ begin
   begin
     LDimension := Obj(LChoices[I]);
     LLabel := AddText(El('choices'), 'label',
-      'Choice · ' + Str(LDimension, 'id'), 'dimension');
+      AnswerCaption(Str(LDimension, 'id')), 'dimension');
     LOption := TJSHTMLSelectElement(document.createElement('select'));
     LOption.id := 'choice-' + IntToStr(I);
     AddOption(LOption, 'Choose an answer', '');
     LSaved := Arr(FRequest, 'current_choices');
     for J := 0 to Arr(LDimension, 'values').length - 1 do
-      AddOption(LOption, String(Arr(LDimension, 'values')[J]),
+      AddOption(LOption, AnswerCaption(String(Arr(LDimension, 'values')[J])),
         String(Arr(LDimension, 'values')[J]));
     if LSaved <> nil then
       for J := 0 to LSaved.length - 1 do
@@ -625,13 +637,13 @@ begin
   begin
     LDimension := Obj(LScores[I]);
     LLabel := AddText(El('scores'), 'label',
-      'Score · ' + Str(LDimension, 'id') + ' (0–3 or unknown)',
+      AnswerCaption(Str(LDimension, 'id')) + ' (0–3)',
       'dimension');
     LOption := TJSHTMLSelectElement(document.createElement('select'));
     LOption.id := 'score-' + IntToStr(I);
     AddOption(LOption, 'Choose a score', '');
     for J := 0 to 3 do AddOption(LOption, IntToStr(J), IntToStr(J));
-    AddOption(LOption, 'unknown', 'unknown');
+    AddOption(LOption, 'I can’t tell', 'unknown');
     LSaved := Arr(FRequest, 'current_scores');
     if LSaved <> nil then
       for J := 0 to LSaved.length - 1 do
@@ -646,7 +658,7 @@ begin
       end;
     LLabel.appendChild(LOption);
   end;
-  if FSelectedPending then Feedback('Choose every declared answer, then Save response.')
+  if FSelectedPending then Feedback('Answer each question, then press Save response.')
   else Feedback('Saved response loaded. You may submit an explicit correction.');
   UpdateReviewGate;
 end;
@@ -695,6 +707,12 @@ begin
   if (FindRow(FPending, LNext) = nil) and
     (FindRow(FCompleted, LNext) = nil) then
   begin
+    if (APreferred <> '') and not AAdvance then
+    begin
+      SelectRow('');
+      El('empty').textContent := 'This listening review is unavailable. Choose another review below.';
+      Exit;
+    end;
     LNext := '';
     if FPending.length > 0 then LNext := Str(Obj(FPending[0]), 'id');
   end;
@@ -1029,7 +1047,7 @@ begin
         Num(Obj(LAssets[I]), 'sample_rate'));
       if not FrameAllowed(LId, LFrame) then
       begin
-        Feedback('Seek inside a declared listening range before adding this comment.', True);
+        Feedback('Choose a moment inside the requested clip before adding your comment.', True);
         Exit(False);
       end;
       LRow := TJSObject.new;
@@ -1042,7 +1060,7 @@ begin
       Feedback('Timestamped comment staged. Save response to keep it.');
       Exit(False);
     end;
-  Feedback('Choose a declared asset for the comment.', True);
+  Feedback('Choose a recording for your comment.', True);
   Result := False;
 end;
 
@@ -1206,6 +1224,8 @@ begin
 end;
 
 procedure TListener.Run;
+var
+  LRequested: JSValue;
 begin
   FNavigation := TWorkspaceNavigation.Create(@FetchNavigation, 'listening');
   FPending := TJSArray.new;
@@ -1215,6 +1235,8 @@ begin
   FAudioFailures := TJSArray.new;
   FAudioReady := TJSArray.new;
   FSelectedIndex := -1;
+  LRequested := TJSURLSearchParams.new(window.location.search).get('request');
+  if isString(LRequested) then FSelectedId := String(LRequested);
   TJSHTMLButtonElement(El('retry')).onclick := @HandleRetry;
   TJSHTMLButtonElement(El('reload')).onclick := @HandleReload;
   TJSHTMLButtonElement(El('save')).onclick := @HandleSave;

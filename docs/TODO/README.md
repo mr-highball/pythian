@@ -3,7 +3,7 @@
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) ·
 [Assessment](../REBALANCE-2026-09-29.md) · [Completed tasks](DONE/README.md) · [Work](../WORK.md)
 
-Updated 2026-10-01. **47 open / 42 accepted tasks.** The user authorized a new
+Updated 2026-10-02. **47 open / 42 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **50.80 current / 49.20 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -52,6 +52,12 @@ funds it; accepted completion stays 50.80. The operator reports that the HTTPS
 phone route worked; [studio_10](NS-6_studio_10.md) retains its unverified complete
 capture/browser criteria without requiring certificate installation as the
 only permitted local route.
+
+The user's solo Big Boss browser review now closes studio_11 AC2's bounded
+transport checks and deploys simpler source/listening instructions. AC1 was
+already closed; AC3/AC4 and [authoring_02](NS-6_authoring_02.md)'s complete
+physical/operator matrix remain open. Browser checks earn no whole-task credit;
+see the [review evidence](../WORK.md#solo-operator-usability-repair--2026-10-01).
 
 Accepted [studio_08](DONE/NS-6_studio_08.md) and
 [studio_09](DONE/NS-6_studio_09.md) provide deployed starting actions, shared

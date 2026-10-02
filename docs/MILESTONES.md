@@ -5,7 +5,7 @@
 
 ## North-star assessment
 
-Updated **2026-10-01** on the user-authorized 2026-09-29 credit basis:
+Updated **2026-10-02** on the user-authorized 2026-09-29 credit basis:
 **50.80 outcome-weighted points credited; 49.20 remaining.**
 The later [operator Studio scope](OPERATOR-STUDIO.md#allocation-and-ownership)
 redistributes 19 unearned NS-6 points into eleven operator outcomes, including
@@ -175,16 +175,19 @@ registration/generation/blend mechanisms are accepted at their exact artifact
 scope; outside use/listening and full recorded integration remain open. The
 editor/queue contract, Studio projects, bounded raw WFC jobs, private corpora,
 effects, capture/exploration, starting actions, queue navigation and actual
-large-library discovery are accepted. The operator iteration verdict stays open;
-the old source-marker/full physical matrix
-remains deferred. Bounded source-bound WFC
+large-library discovery are accepted. The operator iteration verdict stays open.
+The user's solo Big Boss review resumes operator usability, closes studio_11
+AC2's bounded-preview/transport criterion and deploys clearer instructions;
+the complete physical/operator matrix remains unaccepted. No whole-task credit
+is earned by this partial criterion closure. Bounded source-bound WFC
 comparator execution is independently qualified on synthetic inputs. It does
 not supply the absent musical reference evidence or close full AC3.
 
 ### Next work to schedule
 
-- Big Boss / Neo / Ticket Guy: deliver [metadata-only discovery](TODO/NS-6_studio_11.md),
-  bounded preview and selected-use preparation. Preserve verified corpus
+- Big Boss: retain the solo browser-tested repair of
+  [metadata-only discovery](TODO/NS-6_studio_11.md), bounded preview and selected-use
+  preparation; AC1/AC2 close, while full AC3/AC4 acceptance remains. Preserve verified corpus
   identities without rereading every original during Refresh. The operator
   reports that phone HTTPS worked; [studio_10](TODO/NS-6_studio_10.md) retains
   its unverified capture/browser criteria with optional certificate installation.

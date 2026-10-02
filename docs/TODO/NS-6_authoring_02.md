@@ -24,7 +24,12 @@ Starting evidence: [editor and queue](DONE/NS-6_authoring_01.md) ·
 [LAN procedure](../LAN-REVIEW-SERVICE.md) · [review queue](../REVIEW-QUEUE.md) ·
 [phone Save repair](../WORK-HISTORY.md#phone-save-request-header-repair--2026-09-29).
 
-Execution status: **source-marker/full physical matrix deferred; open and unaccepted**.
+Execution status: **explicitly resumed for Big Boss's solo usability review;
+open and unaccepted**. The 2026-10-01 request supersedes the earlier deferral
+below and the usual delegated QA assignment for this batch. Big Boss performs
+implementation and browser QA alone; physical-phone evidence remains required.
+
+Prior scope and preserved history:
 The user's later 2026-09-30 direction selects the
 [Studio workflow](../OPERATOR-STUDIO.md), beginning with project/source setup.
 Generated-listening usability and any required shared operator repair may advance
@@ -85,7 +90,7 @@ current combined-path verdict.
   pas2js assets, records exact evidence and confirms no test answer touched
   the live operator catalog.
 
-- Record exact source revision, fixed-slot binary and all eleven browser asset hashes,
+- Record exact source revision, fixed-slot binary and all twelve browser asset hashes,
   copied-catalog identities, physical device/browser/network, audible results,
   Save/reload/producer-report evidence and independent Salty Boi verdict.
   Use only the fixed stable/QA executable slots and exact-path firewall setup
@@ -131,6 +136,19 @@ the accepted editor mechanics in authoring_01 retain their scoped evidence.
 - [NS-6_authoring_01.md](DONE/NS-6_authoring_01.md)
 
 **Dev Notes:**
+
+- 2026-10-02, Big Boss: the explicit solo review repairs confusing fixture
+  prompts, marker feedback and repeated navigation. Actual Codex Browser tests
+  separate optional developer checks from attention counts; save unknown and
+  corrected-point answers, reject a point outside the request, reload saved
+  answers and clear the unsaved-marker message. Listening tests also play a
+  generated request and save its separate response endpoint. Exact-frame
+  controls remain available behind a disclosure; seconds are the main input.
+  [WORK](../WORK.md#solo-operator-usability-repair--2026-10-01) records the
+  frozen artifacts, screenshots and failures under `build/solo-usability/`.
+  The user-required solo batch supersedes independent Salty assignment for this
+  repair, not the remaining physical and complete-workflow acceptance. No actual
+  phone sound, full export/replay matrix or whole-task completion is claimed.
 
 - 2026-10-01, Big Boss: one unearned point transfers to
   [studio_08](DONE/NS-6_studio_08.md) for explicit starting actions, shared queue

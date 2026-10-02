@@ -174,7 +174,7 @@ var
 begin
   LRoot := El('studio-effects');
   Add(LRoot, 'h2', 'Effects and new clips', '');
-  LControl := Add(LRoot, 'p', 'Select a source passage to preview.', 'hint');
+  LControl := Add(LRoot, 'p', 'Choose a passage above. If asked, prepare the recording before previewing effects.', 'hint');
   LControl.id := 'effects-selection';
   LRow := Add(LRoot, 'div', '', 'source-toolbar');
   LLabel := Add(LRow, 'label', 'Add an effect', '');
@@ -358,7 +358,7 @@ begin
     Invalidate;
     if LSelection = nil then
     begin
-      El('effects-selection').textContent := 'Select a source passage to preview.';
+      El('effects-selection').textContent := 'Choose a passage above. If asked, prepare the recording before previewing effects.';
     end
     else
     begin

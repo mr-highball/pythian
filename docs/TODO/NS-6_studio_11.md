@@ -28,6 +28,9 @@ consumer. Salty Boi performs final independent QA once native and UI components
 are ready. The preceding nonclosing-batch count was 1. AC1's native discovery
 contract now passes independent checks and the actual collection proof below;
 that criterion closure resets the count to 0, with no whole-task credit.
+Big Boss's subsequent user-requested solo browser batch also closes AC2's
+bounded-preview/transport contract. AC3/AC4 complete acceptance remains open;
+see the dated evidence below and the current work record.
 
 Batch deliverable: AC1–AC3 native behavior and AC4's integrated operator flow.
 Closing evidence: bounded read counters/fixtures, native job and HTTP checks,
@@ -52,6 +55,10 @@ failures; do not infer actual listening from a screenshot or compilation.
   full-media download or preparation occurs while listing. Resolve only indexed
   entries, recheck their metadata snapshot, bound ranges and preserve source
   time. This provisional preview is not scientific or corpus admission evidence.
+  Seeking and Previous/Next must change the audio position as well as the
+  waveform, preserve paused/playing intent, and report the full recording's
+  time. Exercise a late window, rapid repeated seeks, failed media and retry;
+  no stale audio callback may move the controls back to an old window.
 - AC3: Explicit corpus use prepares only selected entries asynchronously with
   visible progress, cancellation and retry. Retain complete content-hash,
   header, family/partition and provenance validation before returning verified
@@ -77,6 +84,33 @@ failures; do not infer actual listening from a screenshot or compilation.
 - [NS-6_studio_09.md](DONE/NS-6_studio_09.md)
 
 **Dev Notes:**
+
+- 2026-10-02, Big Boss: AC2 closes in the user-requested solo Codex Browser
+  batch. A ten-minute authored WAV passes late/rapid, paused/playing and
+  Previous/Next seeks, continuous bounded-chunk progression, passage/end stops,
+  missing-original retry and service-restart reconnect. A fresh media element
+  prevents old request callbacks affecting the new position; it did not alone
+  fix an expired session, so explicit reconnect is also tested. AC4's duplicate
+  card is repaired through recorded membership metadata and verified on reload.
+  Selected-only preparation, saved late passage and effects use pass; the full
+  remaining stale/cancel/failure matrix is not declared complete. Evidence and
+  limits: [solo review](../WORK.md#solo-operator-usability-repair--2026-10-01),
+  ignored `build/solo-usability/`. Count remains 0 after this criterion closure;
+  the task stays OPEN and earns no whole-task credit.
+
+- 2026-10-02, Big Boss: actual Codex Browser review finds that preparing an
+  entry and reloading before another discovery scan renders its imported
+  catalog track and original as separate cards. AC4 already owns duplicate
+  merging. Repair must join recorded collection membership metadata, never
+  guess content identity from a filename or make a stale snapshot verified.
+  Evidence: isolated `build/solo-usability/` catalog, long entry preparation
+  followed by reload; the saved passage remains intact.
+
+- 2026-10-01, Big Boss: the user's solo browser usability review selects AC2/AC4
+  repair without helpers. Inspection confirms seeking changed the waveform
+  while retaining the previous audio URL/offset. The usual team assignment
+  above describes the earlier implementation batch. This repair preserves the
+  bounded-media contract, previous failures and current credit; see WORK.
 
 - 2026-10-01, Big Boss / Ticket Guy, authorized local deployment: the operator
   explicitly requested execution of the corrected restart command. The fixed

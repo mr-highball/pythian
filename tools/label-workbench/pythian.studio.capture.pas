@@ -173,7 +173,7 @@ begin
   LControl.setAttribute('type', 'file');
   LControl.setAttribute('accept', '.wav,audio/wav');
   LControl.addEventListener('change', @FileChanged);
-  Button(LRow, 'Upload input', 'upload');
+  Button(LRow, 'Upload WAV', 'upload');
   Button(LRow, 'Start microphone', 'record');
   Button(LRow, 'Stop recording', 'stop');
   Button(LRow, 'Cancel microphone request', 'cancel-microphone');
@@ -205,12 +205,12 @@ begin
   LControl.setAttribute('tabindex', '-1');
   LRow := Add(LRoot, 'div', '');
   LRow.className := 'source-toolbar';
-  LLabel := Add(LRow, 'label', 'Retained input');
+  LLabel := Add(LRow, 'label', 'Your inputs');
   LControl := Add(LLabel, 'select', '');
   LControl.id := 'capture-input';
   LControl.addEventListener('change', @InputChanged);
   Button(LRow, 'Refresh inputs', 'refresh');
-  Button(LRow, 'Inspect audio', 'inspect');
+  Button(LRow, 'Analyze audio', 'inspect');
   Button(LRow, 'Discard input', 'discard');
   FOriginal := TJSHTMLAudioElement(Add(LRoot, 'audio', ''));
   FOriginal.controls := True;
@@ -252,7 +252,7 @@ begin
   FCandidate.setAttribute('hidden', '');
   FCandidate.setAttribute('aria-label', 'Experimental note preview');
   FCandidate.addEventListener('play', @Playing);
-  LControl := Add(LDetails, 'a', 'Download candidate MIDI');
+  LControl := Add(LDetails, 'a', 'Download MIDI');
   LControl.id := 'capture-midi';
   LControl.setAttribute('hidden', '');
   LControl := Add(LDetails, 'p', '');
@@ -286,7 +286,7 @@ begin
   LControl.setAttribute('maxlength', '96');
   LControl := Input(LRow, 'capture-title', 'Clip title', '');
   LControl.setAttribute('maxlength', '128');
-  Button(LRoot, 'Save input to collection', 'save');
+  Button(LRoot, 'Save to collection', 'save');
   LDetails := Add(LRoot, 'details', '');
   LDetails.className := 'advanced';
   Add(LDetails, 'summary', 'Input details');
@@ -967,13 +967,13 @@ begin
       Notice('Uploading · ' + IntToStr(LOffset) + ' / ' + IntToStr(FBlob.size) + ' bytes');
     end;
     FComplete := True;
-    Notice('Upload complete. Inspect audio before listening, trying notes, or saving.');
+    Notice('Upload complete. Press Analyze audio to listen and explore it.');
   except
     on LException: Exception do
     begin
       if LEpoch = FEpoch then
       begin
-        Notice('Upload paused. Upload input resumes the same bytes and identity. ' +
+        Notice('Upload paused. Press Upload WAV to resume. ' +
           LException.Message, True);
       end;
     end;
@@ -1014,7 +1014,7 @@ begin
       LRows := TJSArray(LList['captures']);
       LSelect := TJSHTMLSelectElement(El('capture-input'));
       LSelect.innerHTML := '';
-      LOption := Add(LSelect, 'option', 'Choose an input');
+      LOption := Add(LSelect, 'option', 'Choose a recording');
       LOption.setAttribute('value', '');
       for LIndex := 0 to LRows.length - 1 do
       begin
@@ -1230,8 +1230,10 @@ begin
   end;
   FJob := AJob;
   FPending := False;
-  El('capture-job').textContent := StudioText(AJob, 'status') + ' · ' +
-    StringReplace(StudioText(AJob, 'stage'), '_', ' ', [rfReplaceAll]);
+  El('capture-job').textContent := StudioText(AJob, 'status');
+  if StudioText(AJob, 'stage') <> StudioText(AJob, 'status') then
+    El('capture-job').textContent := El('capture-job').textContent + ' · ' +
+      StringReplace(StudioText(AJob, 'stage'), '_', ' ', [rfReplaceAll]);
   if StudioNumber(AJob, 'total') > 0 then
   begin
     El('capture-job').textContent := El('capture-job').textContent + ' · ' +
@@ -1373,13 +1375,15 @@ begin
     end;
     if LPulseText = '' then
     begin
-      LPulseText := 'no candidate reported';
-    end;
+      LPulseText := 'No tempo suggestion';
+    end
+    else
+      LPulseText := 'Suggested tempo: ' + LPulseText + ' BPM';
     El('capture-analysis').textContent := El('capture-analysis').textContent +
-      ' · pulse candidates: ' + LPulseText + ' BPM';
-    Notice('Inspection complete. Waveform and pulse proposals cover ' +
+      ' · ' + LPulseText;
+    Notice('Analysis complete. Showing the first ' +
       StudioTime((StudioNumber(LResult, 'end_frame') - StudioNumber(LResult, 'start_frame')) /
-      StudioNumber(LResult, 'sample_rate')) + ' from the beginning.');
+      StudioNumber(LResult, 'sample_rate')) + '.');
   end
   else if LKind = 'capture_pitch' then
   begin
@@ -1401,8 +1405,8 @@ begin
       end;
     end;
     El('capture-notes').textContent := IntToStr(Trunc(StudioNumber(LResult, 'note_count'))) +
-      ' candidate notes · ' + IntToStr(LSilence) + ' silence spans · ' +
-      IntToStr(LUnknown) + ' unknown spans';
+      ' suggested notes · ' + IntToStr(LSilence) + ' silent regions · ' +
+      IntToStr(LUnknown) + ' uncertain regions';
     FOriginal.src := '/api/studio/capture-audio?id=' + encodeURIComponent(FInputId);
     FOriginal.removeAttribute('hidden');
     if Flag(LResult, 'audio_available') then
@@ -1679,7 +1683,7 @@ begin
   FStart['bytes'] := LFile.size;
   FStart['origin'] := 'wav_import';
   TJSHTMLInputElement(El('capture-title')).value := Copy(LFile.name, 1, 128);
-  Notice('WAV selected. Upload input retains its original bytes.');
+  Notice('WAV selected. Press Upload WAV to continue.');
   Controls;
 end;
 

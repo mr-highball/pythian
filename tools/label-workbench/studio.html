@@ -94,12 +94,15 @@ SOFTWARE.
           <input id="track-search" type="search" placeholder="Search recording names" disabled>
           <section id="source-inspector" class="source-inspector" hidden aria-labelledby="source-title">
             <div class="section-heading"><div><p class="eyebrow">LISTEN · EXPLORE · SELECT</p><h3 id="source-title" tabindex="-1"></h3></div><button id="source-close" type="button">Close</button></div>
-            <audio id="source-audio" controls preload="none"></audio>
-            <output id="source-time" class="source-time">0:00 / 0:00</output>
-            <label for="source-seek" class="hint">Seek through the original</label>
+            <audio id="source-audio" preload="none" hidden></audio>
+            <div class="source-toolbar"><button id="source-play" class="primary" type="button">Play from here</button><output id="source-time" class="source-time">0:00 / 0:00</output></div>
+            <p id="source-playback-status" class="hint" role="status" aria-live="polite">Choose a position, then press Play.</p>
+            <button id="source-reconnect" type="button" hidden>Reconnect to server</button>
+            <label for="source-seek" class="hint">Position in recording</label>
             <input id="source-seek" type="range" min="0" max="1" step="0.01" value="0">
             <canvas id="source-waveform" width="900" height="180" aria-label="Sampled source waveform. Tap to browse or drag a passage; equivalent time fields and mark buttons are below."></canvas>
-            <div class="source-toolbar"><button id="source-prev" type="button" aria-label="Previous waveform page">← Previous</button><span id="source-window" class="hint"></span><button id="source-next" type="button" aria-label="Next waveform page">Next →</button></div>
+            <p id="source-waveform-state" class="hint" role="status">Loading waveform…</p><button id="source-waveform-retry" type="button" hidden>Retry waveform</button>
+            <div class="source-toolbar"><button id="source-prev" type="button" aria-label="Previous 30 seconds">← 30 s</button><span id="source-window" class="hint"></span><button id="source-next" type="button" aria-label="Next 30 seconds">30 s →</button></div>
             <p class="wave-legend"><span class="legend-wave">Sampled waveform</span><span class="legend-range">Your passage</span><span class="legend-head">Playhead</span></p>
             <details class="analysis-tools"><summary>Explore Pythian analysis</summary>
               <button id="source-analyze" type="button"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path d="M3 12h3l3-8 6 16 3-8h3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Inspect visible window</button>
@@ -113,7 +116,7 @@ SOFTWARE.
             <label for="source-classifications">How would you describe this selection?</label>
             <input id="source-classifications" type="text" placeholder="For example: warm, sparse, intro" maxlength="520" aria-describedby="source-class-help">
             <p id="source-class-help" class="hint">Your labels, separated by commas. They apply to this selection.</p>
-            <div class="source-toolbar"><button id="source-use-range" class="primary" type="button">Add passage to corpus</button><button id="source-use-whole" type="button">Use whole recording</button></div>
+            <div class="source-toolbar"><button id="source-use-range" class="primary" type="button">Add passage to project</button><button id="source-use-whole" type="button">Use whole recording</button></div>
             <button id="source-prepare" type="button" hidden>Prepare recording for analysis &amp; effects</button>
             <div id="studio-source-prepare" class="source-preparation"></div>
             <p id="source-notice" class="hint" role="status" aria-live="polite"></p>

@@ -100,6 +100,7 @@ type
 { A response-chain observer: successful writes notify mounted navigation without
   changing the response, consuming its body, or triggering writes themselves. }
 function WorkspaceResponseSaved(AValue: JSValue): JSValue;
+function SourceQuestionIsAppCheck(const AQuestion: String): Boolean;
 
 implementation
 
@@ -113,6 +114,15 @@ const
     'M3 3h7v7H3z M14 3h7v7h-7z M3 14h7v7H3z M14 14h7v7h-7z',
     'M3 12h2l2-6 3 12 3-15 3 18 2-9h3',
     'M4 14v-3a8 8 0 0 1 16 0v3 M4 13H2v7h4v-7z M20 13h2v7h-4v-7z');
+
+function SourceQuestionIsAppCheck(const AQuestion: String): Boolean;
+begin
+  { These are the explicit declarations used by the existing operator-check
+    publisher. Do not infer purpose from IDs, partitions or arbitrary words.
+    This is presentation only; requests and saved evidence remain intact. }
+  Result := (Pos('QA fixture only:', AQuestion) = 1) or
+    (Pos('Operator mechanics only:', AQuestion) = 1);
+end;
 
 function WorkspaceResponseSaved(AValue: JSValue): JSValue;
 var
@@ -411,6 +421,11 @@ begin
     end;
     FNextLink.textContent := LLabel;
     FNextLink.setAttribute('href', LPath);
+    if ((FCurrentPage = 'source') and (LPath = '/')) or
+      ((FCurrentPage = 'listening') and (LPath = '/listen.html')) then
+      FNextLink.setAttribute('hidden', '')
+    else
+      FNextLink.removeAttribute('hidden');
     TJSObject(FRefreshButton)['disabled'] := not FConnected;
   end;
 end;
@@ -452,6 +467,8 @@ begin
       raise Exception.Create('Workspace count row is invalid');
     end;
     LRow := TJSObject(LRows[LIndex]);
+    if (ARoute = 1) and isString(LRow['question']) and
+      SourceQuestionIsAppCheck(String(LRow['question'])) then Continue;
     if ARoute = 0 then
     begin
       if not isString(LRow['status']) then

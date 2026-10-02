@@ -149,6 +149,10 @@ SOFTWARE.
   cursor: pointer;
 }
 
+.workspace-next-link[hidden] {
+  display: none;
+}
+
 .workspace-refresh {
   background: transparent;
   font-size: .85rem;

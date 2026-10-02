@@ -26,18 +26,17 @@ SOFTWARE.
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pythian · Label Workbench</title>
+  <title>Pythian · Source reviews</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="workspace-nav.css">
 </head>
 <body>
   <header class="masthead">
     <div>
-      <p class="eyebrow">PYTHIAN / SOURCE EVIDENCE</p>
-      <h1>Label Workbench</h1>
-      <p class="subtitle">Listen to prepared audio, check Pythian's suggestions, and save only the decisions requested for review.</p>
+      <p class="eyebrow">PYTHIAN</p>
+      <h1>Source reviews</h1>
+      <p class="subtitle">Help check what Pythian hears. Each review asks one question about a short clip.</p>
     </div>
-    <span class="build-tag">LOCAL CATALOG · VERSION 1</span>
   </header>
   <div id="workspace-navigation"></div>
   <div id="workspace-next-action"></div>
@@ -49,7 +48,8 @@ SOFTWARE.
   <button id="connect-retry" type="button" class="connect-retry" hidden>Retry connection</button>
 
   <main id="workspace" class="overview-only" hidden>
-    <section id="review-overview" class="panel review-overview" aria-labelledby="review-overview-title">
+    <details id="review-overview" class="panel review-overview" aria-labelledby="review-overview-title">
+      <summary>Review totals</summary>
       <p class="step">YOUR REVIEW QUEUE</p>
       <h2 id="review-overview-title">Checking assigned reviews…</h2>
       <p id="review-overview-announcement" class="visually-hidden" role="status" aria-live="polite"></p>
@@ -71,17 +71,18 @@ SOFTWARE.
           <small>Review a requested region of an original recording.</small>
         </a>
       </div>
-    </section>
+    </details>
     <aside class="source-column">
       <section id="source-requests" class="panel assignment-panel">
-        <div class="panel-head"><div><p class="step">SOURCE LABELS</p><h2>Requested regions</h2></div></div>
+        <div class="panel-head"><div><h2>Questions for you</h2></div></div>
         <p id="queue-progress" class="queue-progress" role="status">Checking source labels…</p>
         <p id="assignment-state" class="panel-note" role="status">Checking for review requests…</p>
         <div id="assignment-list" class="item-list"></div>
+        <details id="developer-checks" hidden><summary>Developer checks <span id="developer-check-count"></span></summary><p class="panel-note">Optional app tests. These do not ask for your musical judgment.</p><div id="developer-check-list" class="item-list"></div></details>
       </section>
       <details id="catalog-browser" class="panel utility-panel">
         <summary>Explore available audio</summary>
-        <p class="panel-note">These recordings are source references. You only need to label an exact region when it appears as a prepared request above.</p>
+        <p class="panel-note">Browse and listen freely. Only the questions above need an answer.</p>
         <div id="catalog-list" class="item-list"></div>
       </details>
       <details class="panel utility-panel">
@@ -100,7 +101,7 @@ SOFTWARE.
         </div>
         <div class="review-callout" role="status" aria-live="polite">
           <strong id="review-next-step">Choose audio to begin.</strong>
-          <span>Only save a label when a specific review request asks for your judgment.</span>
+          <span id="review-purpose">Your answer helps check Pythian’s audio analysis.</span>
         </div>
         <div class="playback-block">
           <div class="toolbar playback-controls">
@@ -108,26 +109,26 @@ SOFTWARE.
             <audio id="preview" controls preload="none"></audio>
           </div>
           <div id="record-answer-area" class="record-answer-area" hidden>
-            <button id="record-answer-button" type="button" class="primary">Record answer</button>
+            <button id="record-answer-button" type="button" class="primary">Edit my answer</button>
             <span id="record-answer-state" role="status" aria-live="polite"></span>
           </div>
-          <p id="structured-request-links" class="request-geometry-help" hidden></p>
+          <details><summary>Request details</summary><p id="structured-request-links" class="request-geometry-help" hidden></p></details>
           <div id="presence-answer-area" class="presence-answer-area" hidden>
             <strong id="guided-answer-heading">What do you hear in this exact region?</strong>
             <p id="guided-answer-help" class="panel-note">A half-second clip may show 0:00 / 0:00 in the player. Use Loop region if useful; choose “I can’t tell” if the sound remains unclear.</p>
             <strong id="presence-saved-answer" class="presence-saved-answer" hidden></strong>
             <div id="presence-choices" class="presence-choices" role="group" aria-label="Presence answer">
-              <button id="presence-audible" type="button" aria-pressed="false">I hear an instrument <small>(audible)</small></button>
-              <button id="presence-rest" type="button" aria-pressed="false">No instrument throughout <small>(rest)</small></button>
-              <button id="presence-unknown" type="button" aria-pressed="false">I can’t tell <small>(unknown)</small></button>
+              <button id="presence-audible" type="button" aria-pressed="false">I hear an instrument</button>
+              <button id="presence-rest" type="button" aria-pressed="false">No instrument</button>
+              <button id="presence-unknown" type="button" aria-pressed="false">I can’t tell</button>
             </div>
             <div id="activity-choices" class="presence-choices activity-choices" role="group" aria-label="Activity answer" hidden>
-              <button id="activity-attack" type="button" aria-pressed="false">New attack <small>(attack)</small></button>
-              <button id="activity-continuation" type="button" aria-pressed="false">Continuing sound <small>(continuation)</small></button>
-              <button id="activity-release_tail" type="button" aria-pressed="false">Release tail <small>(release_tail)</small></button>
-              <button id="activity-rest" type="button" aria-pressed="false">No instrument throughout <small>(rest)</small></button>
-              <button id="activity-unknown" type="button" aria-pressed="false">I can’t tell <small>(unknown)</small></button>
-              <button id="activity-noise_only" type="button" aria-pressed="false">Nonmusical noise only <small>(noise_only)</small></button>
+              <button id="activity-attack" type="button" aria-pressed="false">A note starts</button>
+              <button id="activity-continuation" type="button" aria-pressed="false">Sound continues</button>
+              <button id="activity-release_tail" type="button" aria-pressed="false">Sound fades away</button>
+              <button id="activity-rest" type="button" aria-pressed="false">No instrument</button>
+              <button id="activity-unknown" type="button" aria-pressed="false">I can’t tell</button>
+              <button id="activity-noise_only" type="button" aria-pressed="false">Only noise</button>
             </div>
             <div id="structured-choices" class="presence-choices" role="group" aria-label="Declared answer choices" hidden></div>
             <label id="structured-status-area" hidden>Decision status<select id="structured-status"><option value="approved">Approved answer</option><option value="rejected">Reject bound proposal</option></select></label>
@@ -149,6 +150,7 @@ SOFTWARE.
         <div class="canvas-wrap">
           <canvas id="waveform" width="960" height="250" aria-label="Original WAV waveform with review and proposal lanes; tap waveform to seek loaded audio"></canvas>
         </div>
+        <p id="marker-feedback" class="request-geometry-help" role="status" aria-live="polite" hidden></p>
         <details class="timeline-more">
           <summary>Navigate or inspect the source</summary>
           <div class="toolbar timeline-controls">
@@ -193,7 +195,7 @@ SOFTWARE.
         </details>
       </section>
 
-      <div class="review-grid">
+      <details class="panel utility-panel"><summary>Suggestions and saved answers</summary><div class="review-grid">
         <section class="panel">
           <div class="panel-head">
             <div><p class="step">03 / REVIEW</p><h2>Pythian suggestions</h2></div>
@@ -208,15 +210,13 @@ SOFTWARE.
           <p class="panel-note">Choose a saved decision to inspect or adjust it.</p>
           <div id="review-list" class="item-list"></div>
         </section>
-      </div>
+      </div></details>
 
       <details id="review-editor" class="panel edit-panel">
         <summary>Review or correct a label</summary>
         <div class="panel-head"><p class="panel-note">Check the suggested value, make any correction, then save your decision.</p><span id="revision-label" class="revision">Revision 0</span></div>
         <p id="request-geometry-help" class="request-geometry-help" hidden></p>
         <div class="form-grid">
-          <label>Reviewer<input id="reviewer" value="operator" maxlength="128"></label>
-          <label>Label ID<input id="label-id" placeholder="e.g. bass-note-001" maxlength="128"></label>
           <label>Type<select id="label-type">
             <option value="">Choose a label type</option>
             <option value="note">Note</option><option value="beat">Beat</option><option value="downbeat">Downbeat</option>
@@ -225,24 +225,30 @@ SOFTWARE.
             <option value="section">Section</option><option value="style_preference">Style preference</option>
             <option value="ext.groove_trait">Groove trait</option><option value="ext.motif_relation">Motif relation</option><option value="ext.pulse_evidence">Pulse evidence</option>
           </select></label>
-          <label>Value<input id="label-value" placeholder="C4, audible, rest, unknown…" maxlength="256"><select id="structured-value" aria-label="Declared answer value" hidden></select><small id="label-value-hint" class="field-hint">Choose a type for its value format.</small></label>
-          <label>Status<select id="label-status"><option value="approved">Approved</option><option value="uncertain">Uncertain</option><option value="rejected">Rejected proposal</option><option value="withdrawn">Withdrawn</option></select></label>
+          <label>Answer<input id="label-value" placeholder="C4, audible, rest, unknown…" maxlength="256"><select id="structured-value" aria-label="Answer" hidden></select><small id="label-value-hint" class="field-hint">Choose a type for its value format.</small></label>
+          <label>Your decision<select id="label-status"><option value="approved">Confirmed</option><option value="uncertain">Not sure yet</option><option value="rejected">Suggestion is wrong</option><option value="withdrawn">Withdraw this answer</option></select></label>
           <label>Part<input id="label-part" placeholder="optional" maxlength="128"><select id="structured-part" aria-label="Declared part" hidden></select></label>
+          <label>Start time (seconds)<input id="label-start-seconds" type="number" min="0" step="any"></label>
+          <label id="label-end-seconds-area">End time (seconds)<input id="label-end-seconds" type="number" min="0" step="any"></label>
+          <label>MIDI pitch for note<input id="label-pitch" type="number" min="0" max="127" value="60"><select id="structured-pitch" aria-label="Declared MIDI pitch" hidden></select></label>
+        </div>
+        <details class="source-details"><summary>Precise frames and record IDs</summary><div class="form-grid">
           <label>Start frame<input id="label-start" type="number" min="0" step="1"></label>
           <label>End frame (exclusive)<input id="label-end" type="number" min="1" step="1"></label>
-          <label>MIDI pitch for note<input id="label-pitch" type="number" min="0" max="127" value="60"><select id="structured-pitch" aria-label="Declared MIDI pitch" hidden></select></label>
+          <label>Reviewer<input id="reviewer" value="operator" maxlength="128"></label>
+          <label>Label ID<input id="label-id" placeholder="e.g. bass-note-001" maxlength="128"></label>
           <label>Proposal ID if rejecting<input id="label-proposal" maxlength="128"></label>
-        </div>
+        </div></details>
         <div class="toolbar edit-actions">
-          <button id="save-label-button" type="button" class="primary">Save review event</button>
-          <span>Saved edits create a new revision. Source groups and splits stay fixed.</span>
+          <button id="save-label-button" type="button" class="primary">Save answer</button>
+          <span>You can correct saved answers later.</span>
         </div>
-        <section class="history-tools" aria-labelledby="history-tools-title">
+        <details class="history-tools"><summary>Undo and review history</summary>
           <div class="history-head"><h3 id="history-tools-title">Review history</h3><div class="history-actions"><button id="undo-review-button" type="button" disabled>Stage undo</button><button id="redo-review-button" type="button" disabled>Stage redo</button><button id="clear-history-button" type="button" disabled>Clear local history</button></div></div>
           <p id="history-note" class="panel-note" aria-live="polite">Undo and redo apply to saved review events for the selected source. They never save automatically.</p>
-          <p class="panel-note">Keyboard: Ctrl/Cmd+Z stages undo, Ctrl/Cmd+Shift+Z or Ctrl/Cmd+Y stages redo. Left/right moves between source windows; up/down selects a label. Use Save review event to append every change.</p>
-        </section>
-        <section class="span-tools" aria-labelledby="span-tools-title">
+          <p class="panel-note">Keyboard: Ctrl/Cmd+Z stages undo, Ctrl/Cmd+Shift+Z or Ctrl/Cmd+Y stages redo. Left/right moves between source windows; up/down selects a label. Press Save answer to keep each change.</p>
+        </details>
+        <details class="span-tools"><summary>Split or join labels</summary>
           <h3 id="span-tools-title">Split or merge spans</h3>
           <p class="panel-note">Operations use exact half-open source frames. They are staged locally and never save automatically. A split withdraws the selected saved label and adds two labels. A merge accepts only adjacent or overlapping labels with matching identity on this source.</p>
           <div class="span-tool-grid">
@@ -256,7 +262,7 @@ SOFTWARE.
             <p id="pending-review-list" class="pending-review-list"></p>
             <button id="cancel-staged-button" type="button" disabled>Cancel remaining staged events</button>
           </div>
-        </section>
+        </details>
       </details>
 
       <details class="panel utility-panel">

@@ -60,6 +60,20 @@ open; mechanical answers earn no musical verdict or completion credit.
 
 **Dev Notes:**
 
+- 2026-10-02, Big Boss: the solo usability batch fixes the generated-audition
+  feedback link to select its exact listening request, simplifies displayed
+  answer vocabulary, and gives new requests a plain style-fit question.
+  Browser playback/unknown Save pass; unavailable deep links no longer open an
+  unrelated request. Existing request text/hash and serialized answers remain
+  unchanged. AC2 still owns a discovered usability gap: the two-second authored
+  source's declared-seed WFC rejection appears as a generic worker failure in
+  Studio, although its retained failure evidence gives the cause. Explain this
+  actionable failure without inventing a source-quality diagnosis or retrying
+  different seeds. The eight-second authored control generates successfully.
+  Evidence: `build/solo-usability/`, linked
+  [solo review](../WORK.md#solo-operator-usability-repair--2026-10-01).
+  These mechanical checks do not replace the operator verdict or earn credit.
+
 - 2026-10-01, Neo: Salty's frozen final browser engineering PASS is retained in
   `build/salty-studio-browser-20261001/VERDICT.txt` and its identity packet. It
   includes single/paired playback, timestamp comments, unknown choices, blind

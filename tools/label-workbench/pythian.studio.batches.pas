@@ -523,7 +523,7 @@ begin
     end
     else if FPending = nil then
     begin
-      Notice('Raw acoustic recombination · check the saved selection before generating.');
+      Notice('Experimental · check your saved selections, then generate an audition.');
     end;
   end;
   UpdateControls;
@@ -924,7 +924,7 @@ begin
         ' observations. ' + IntToStr(Trunc(StudioNumber(LRequest, 'duration_ms') / 1000)) +
         '-second auditions, seeds ' + TJSJSON.stringify(LRequest['seeds']) +
         '. No sources used yet; content verification is pending.';
-      Notice('Setup checked. Generate the declared acoustic auditions when ready.');
+      Notice('Setup is ready. Press Generate auditions to start.');
     end;
   except
     on LException: Exception do
@@ -1195,7 +1195,7 @@ begin
     Add(LRoot, 'p', StudioText(FJob, 'error_message'), 'field-error');
     if isObject(FJob['request']) then
     begin
-      Button(LRoot, 'batch-retry', 'Prepare a linked retry');
+      Button(LRoot, 'batch-retry', 'Try this batch again');
     end
     else
     begin
@@ -1244,8 +1244,9 @@ begin
       LRow := Add(LRoot, 'div', '', 'track');
       Add(LRow, 'p', 'Audition ' + IntToStr(LIndex + 1) + ' · seed ' +
         IntToStr(Trunc(StudioNumber(LOutput, 'seed'))), '');
-      LLink := Add(LRow, 'a', 'Open listening queue', '');
-      LLink.setAttribute('href', 'listen.html');
+      LLink := Add(LRow, 'a', 'Listen and give feedback', '');
+      LLink.setAttribute('href', 'listen.html?request=' +
+        encodeURIComponent(StudioText(LOutput, 'listening_request_id')));
       Add(LRow, 'p', 'Listening request: ' + StudioText(LOutput, 'listening_request_id'),
         'track-meta batch-identity');
     end;
@@ -1256,7 +1257,7 @@ begin
   begin
     LDetails.setAttribute('open', '');
   end;
-  Add(LDetails, 'summary', 'Immutable batch and model details', '');
+  Add(LDetails, 'summary', 'Batch and model details', '');
   Add(LDetails, 'p', 'Batch ' + StudioText(FJob, 'job_id') +
     ' · request ' + StudioText(FJob, 'request_sha256'), 'track-meta');
   LRequest := Obj(FJob['request']);

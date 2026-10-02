@@ -967,7 +967,7 @@ begin
       LRequest.Add('id', LId);
       LRequest.Add('task_id', 'NS-6_studio_03');
       LRequest.Add('kind', 'single');
-      LRequest.Add('question', 'How well does this acoustic recombination fit your intended style?');
+      LRequest.Add('question', 'Does this generated music fit the style you want?');
       LAssets := TJSONArray.Create;
       LRequest.Add('assets', LAssets);
       LAsset := TJSONObject.Create;

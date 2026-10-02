@@ -280,6 +280,7 @@ type
     function HandlePresenceChoice(AEvent: TJSMouseEvent): Boolean;
     function HandlePresenceSave(AEvent: TJSMouseEvent): Boolean;
     function HandleLabelTypeChange(AEvent: TEventListenerEvent): Boolean;
+    function HandleMarkerEdit(AEvent: TEventListenerEvent): Boolean;
     function HandleUndo(AEvent: TJSMouseEvent): Boolean;
     function HandleRedo(AEvent: TJSMouseEvent): Boolean;
     function HandleClearHistory(AEvent: TJSMouseEvent): Boolean;
@@ -870,21 +871,40 @@ var
   LTitle: String;
   LDetail: String;
   LSelectedFound: Boolean;
+  LFirstReview: Integer;
+  LChecks: Integer;
+  LList: String;
 begin
   ClearItems('assignment-list');
+  ClearItems('developer-check-list');
   FReviewQueue := TJSArray(AData['items']);
   if FReviewQueue = nil then
     FReviewQueue := TJSArray.new;
   LCompleted := TJSArray(AData['completed']);
   LCompletedCount := 0;
   if LCompleted <> nil then
-    LCompletedCount := LCompleted.length;
+    for LIndex := 0 to LCompleted.length - 1 do
+      if not SourceQuestionIsAppCheck(TextField(TJSObject(LCompleted[LIndex]), 'question')) then
+        Inc(LCompletedCount);
   FSourceQueueKnown := True;
-  FSourceWaiting := FReviewQueue.length;
+  FSourceWaiting := 0;
+  LFirstReview := -1;
+  LChecks := 0;
+  for LIndex := 0 to FReviewQueue.length - 1 do
+    if SourceQuestionIsAppCheck(TextField(TJSObject(FReviewQueue[LIndex]), 'question')) then
+      Inc(LChecks)
+    else
+    begin
+      Inc(FSourceWaiting);
+      if LFirstReview < 0 then LFirstReview := LIndex;
+    end;
+  if LChecks > 0 then Element('developer-checks').removeAttribute('hidden')
+  else Element('developer-checks').setAttribute('hidden', '');
+  Element('developer-check-count').textContent := '(' + IntToStr(LChecks) + ')';
   FSourceCompleted := LCompletedCount;
   UpdateReviewOverview;
   Element('queue-progress').textContent :=
-    IntToStr(FReviewQueue.length) + ' source labels waiting · ' +
+    IntToStr(FSourceWaiting) + ' waiting · ' +
     IntToStr(LCompletedCount) + ' completed';
   LSelectedFound := False;
   if FReviewId <> '' then
@@ -938,6 +958,13 @@ begin
   Element('catalog-browser').removeAttribute('open');
   Element('assignment-state').textContent :=
     'Listen to the selected region, choose an answer, then click Save answer.';
+  if FSourceWaiting = 0 then
+  begin
+    Element('assignment-state').textContent :=
+      'No questions need your answer. Use Studio to choose music or record something new.';
+    if FReviewId = '' then
+      ReviewPrompt('No question is selected. You can listen or return to Studio.');
+  end;
   for LIndex := 0 to FReviewQueue.length - 1 do
   begin
     LRow := TJSObject(FReviewQueue[LIndex]);
@@ -963,7 +990,10 @@ begin
       LDetail := IntToStr(Trunc(NumberField(LRow, 'start_frame'))) +
         '–' + IntToStr(Trunc(NumberField(LRow, 'end_frame'))) +
         ' frames · ' + LDetail;
-    AddItem('assignment-list', LTitle, LDetail,
+    LList := 'assignment-list';
+    if SourceQuestionIsAppCheck(TextField(LRow, 'question')) then
+      LList := 'developer-check-list';
+    AddItem(LList, LTitle, LDetail,
       'review-request', LIndex, @HandleAssignment);
   end;
   LSelectIndex := -1;
@@ -972,10 +1002,12 @@ begin
     LSelectIndex := FQueueAdvanceIndex;
     if LSelectIndex >= FReviewQueue.length then
       LSelectIndex := 0;
+    if SourceQuestionIsAppCheck(TextField(TJSObject(FReviewQueue[LSelectIndex]), 'question')) then
+      LSelectIndex := LFirstReview;
     FQueueAdvancePending := False;
   end
   else if not FQueueInitialSelectionDone and not LSelectedFound then
-    LSelectIndex := 0;
+    LSelectIndex := LFirstReview;
   if LSelectIndex >= 0 then
   begin
     FQueueInitialSelectionDone := True;
@@ -990,6 +1022,12 @@ begin
     Element('review-next-step').textContent := FReviewQuestion
   else
     Element('review-next-step').textContent := AFallback;
+  if SourceQuestionIsAppCheck(FReviewQuestion) then
+    Element('review-purpose').textContent := 'Optional developer check. This does not train your style.'
+  else if SelectedExactRequest then
+    Element('review-purpose').textContent := 'Your answer helps check Pythian’s audio analysis.'
+  else
+    Element('review-purpose').textContent := 'Just listening? No answer is needed.';
   UpdateRecordAnswerAction;
 end;
 
@@ -1125,6 +1163,7 @@ begin
   if not FRequestDraft then
     Exit;
   FRequestDraft := False;
+  Element('marker-feedback').setAttribute('hidden', '');
   Element('request-geometry-help').setAttribute('hidden', '');
   FCanvas.setAttribute('aria-label',
     'Original WAV waveform with review and proposal lanes; tap waveform to seek loaded audio');
@@ -1140,6 +1179,9 @@ begin
   Input('label-proposal').removeAttribute('readonly');
   Input('label-start').removeAttribute('readonly');
   Input('label-end').removeAttribute('readonly');
+  Input('label-start-seconds').removeAttribute('readonly');
+  Input('label-end-seconds').removeAttribute('readonly');
+  Element('label-end-seconds-area').removeAttribute('hidden');
   Element('label-type').removeAttribute('disabled');
 end;
 
@@ -1208,9 +1250,9 @@ begin
   if StructuredGuided then
   begin
     Element('guided-answer-heading').textContent :=
-      'Choose one declared answer for this exact region';
+      'Choose your answer';
     Element('guided-answer-help').textContent :=
-      'The choices below are the request’s complete answer vocabulary. Nothing is saved until you click Save answer.';
+      'Listen, choose an answer, then press Save answer.';
     Element('presence-choices').setAttribute('hidden', '');
     Element('activity-choices').setAttribute('hidden', '');
     Element('structured-choices').removeAttribute('hidden');
@@ -1235,17 +1277,17 @@ begin
   end
   else if FReviewType = 'activity' then
   begin
-    Element('guided-answer-heading').textContent := 'What kind of activity do you hear in this exact region?';
+    Element('guided-answer-heading').textContent := 'How does the sound change?';
     Element('guided-answer-help').textContent :=
-      'Choose the best description for the entire requested region. Use unknown if the sound remains unclear.';
+      'Choose the closest description for this clip. It is fine to choose “I can’t tell”.';
     Element('presence-choices').setAttribute('hidden', '');
     Element('activity-choices').removeAttribute('hidden');
   end
   else
   begin
-    Element('guided-answer-heading').textContent := 'What do you hear in this exact region?';
+    Element('guided-answer-heading').textContent := 'Choose your answer';
     Element('guided-answer-help').textContent :=
-      'A half-second clip may show 0:00 / 0:00 in the player. Use Loop region if useful; choose “I can’t tell” if the sound remains unclear.';
+      'Listen again if needed. It is fine to choose “I can’t tell”.';
     Element('activity-choices').setAttribute('hidden', '');
     Element('presence-choices').removeAttribute('hidden');
   end;
@@ -1337,13 +1379,13 @@ begin
     Element('record-answer-state').textContent := 'Finish the current review first.'
   else if FReviewGeometry = 'point' then
     Element('record-answer-state').textContent :=
-      'Place a one-frame point inside the listening region. Status starts Uncertain; choose Approved to accept it.'
+      'Tap Edit my answer, then tap the waveform to place a mark. Confirm and save below.'
   else if FReviewGeometry = 'contained' then
     Element('record-answer-state').textContent :=
-      'Place the answer span inside the listening region. Status starts Uncertain; choose Approved to accept it.'
+      'Edit your answer, select the part you mean, then confirm and save.'
   else
     Element('record-answer-state').textContent :=
-      'Opens a draft for this exact region. Status starts Uncertain; choose Approved to accept the answer, then save.';
+      'Edit your answer, choose Confirmed when ready, then save.';
 end;
 
 procedure TWorkbench.RenderLabels;
@@ -1456,7 +1498,7 @@ begin
       'Split and merge edits stay in this browser until you explicitly save a review event.';
     Element('pending-review-list').textContent := '';
     TJSHTMLButtonElement(Element('save-label-button')).textContent :=
-      'Save review event';
+      'Save answer';
     UpdateHistoryUi;
     Exit;
   end;
@@ -1671,7 +1713,7 @@ begin
   Status(FPendingOperation + ' is staged for source frames ' +
     IntToStr(Trunc(NumberField(LTarget, 'start_frame'))) + '–' +
     IntToStr(Trunc(NumberField(LTarget, 'end_frame'))) +
-    '. Click Save review event to append it to the audit history.');
+    '. Press Save answer to keep this change.');
 end;
 
 procedure TWorkbench.StageHistoryAction(const ARedo: Boolean);
@@ -2442,6 +2484,28 @@ var
   LCandidates: TJSArray;
   LSelected: TJSObject;
 begin
+  if FSampleRate > 0 then
+  begin
+    if document.activeElement <> Input('label-start-seconds') then
+      Input('label-start-seconds').value := FormatFloat('0.000000',
+        StrToInt64Def(Input('label-start').value, 0) / FSampleRate);
+    if document.activeElement <> Input('label-end-seconds') then
+      Input('label-end-seconds').value := FormatFloat('0.000000',
+        StrToInt64Def(Input('label-end').value, 0) / FSampleRate);
+  end;
+  Element('marker-feedback').setAttribute('hidden', '');
+  if FRequestDraft and (FSampleRate > 0) then
+  begin
+    if FReviewGeometry = 'point' then
+      Element('marker-feedback').textContent := 'Your unsaved mark: ' +
+        FormatFloat('0.000000', StrToInt64Def(Input('label-start').value, 0) / FSampleRate) +
+        ' s · frame ' + Input('label-start').value
+    else
+      Element('marker-feedback').textContent := 'Your unsaved selection: ' +
+        FormatFloat('0.000', StrToInt64Def(Input('label-start').value, 0) / FSampleRate) + '–' +
+        FormatFloat('0.000', StrToInt64Def(Input('label-end').value, 0) / FSampleRate) + ' s';
+    Element('marker-feedback').removeAttribute('hidden');
+  end;
   LContext := FCanvas.getContextAs2DContext('2d');
   LContext.fillStyleAsColor := '#11212d';
   LContext.fillRect(0, 0, FCanvas.width, FCanvas.height);
@@ -2707,9 +2771,8 @@ begin
   end;
   LEnd := Smaller(FFrameCount, FWindowStart + FWindowSpan);
   Element('window-label').textContent :=
-    IntToStr(FWindowStart) + '–' + IntToStr(LEnd) +
-    ' frames · ' + IntToStr(FWindowStart div FSampleRate) +
-    '–' + IntToStr(LEnd div FSampleRate) + ' s';
+    FormatFloat('0.000', FWindowStart / FSampleRate) +
+    '–' + FormatFloat('0.000', LEnd / FSampleRate) + ' s in recording';
   FCanvas.setAttribute('data-window-start-frame',
     IntToStr(FWindowStart));
   FCanvas.setAttribute('data-window-end-frame', IntToStr(LEnd));
@@ -3267,8 +3330,8 @@ begin
     RenderProposals;
     UpdateRecordAnswerAction;
     DrawWaveform;
-    Status('Loaded source frames ' + IntToStr(LStart) +
-      '–' + IntToStr(LEnd) + '.');
+    Status('Ready to listen: ' + FormatFloat('0.00', LStart / FSampleRate) +
+      '–' + FormatFloat('0.00', LEnd / FSampleRate) + ' seconds.');
     LoadAlignedPeerWaveforms(LEpoch);
     if FSaveInProgress then
     begin
@@ -3887,7 +3950,7 @@ begin
       FReviewStart, FReviewEnd, LStart, LEnd) then
     begin
       if FReviewGeometry = 'point' then
-        Status('Place a one-frame point inside the selected request region before saving.', True)
+        Status('Place your mark inside the highlighted clip before saving.', True)
       else if FReviewGeometry = 'contained' then
         Status('Keep the label span entirely inside the selected request region.', True)
       else
@@ -3907,7 +3970,7 @@ begin
     if FRequestDraft and (FReviewSpec <> nil) and
       (TJSHTMLSelectElement(Element('structured-value')).value = '') then
     begin
-      Status('Choose one declared answer before saving.', True);
+      Status('Choose an answer before saving.', True);
       Exit;
     end;
     if FRequestDraft and (Trim(Input('label-value').value) = '') and
@@ -3920,7 +3983,7 @@ begin
   end;
   if (LStart < 0) or (LEnd <= LStart) or (LEnd > FFrameCount) then
   begin
-    Status('Enter a valid nonzero half-open source-frame interval.', True);
+    Status('Choose an end after the start, within this recording.', True);
     Exit;
   end;
   LRequestDraft := FRequestDraft and not LQueued and not LGuided;
@@ -4147,7 +4210,7 @@ begin
     end
     else
     begin
-      Status('Review event saved. Reloading exact source labels.');
+      Status('Answer saved. Updating this review…');
       if LGuided or LRequestDraft then
       begin
         FQueueRefreshPending := True;
@@ -4430,13 +4493,15 @@ begin
       end;
       Input('label-proposal').setAttribute('readonly', '');
       Element('label-value-hint').textContent :=
-        'Choose only from this request’s declared answer values.';
+        'Choose one of the answers listed for this question.';
     end;
     Input('label-id').setAttribute('readonly', '');
     if FReviewGeometry = 'exact' then
     begin
       Input('label-start').setAttribute('readonly', '');
       Input('label-end').setAttribute('readonly', '');
+      Input('label-start-seconds').setAttribute('readonly', '');
+      Input('label-end-seconds').setAttribute('readonly', '');
       Element('request-geometry-help').setAttribute('hidden', '');
     end
     else
@@ -4445,30 +4510,36 @@ begin
       Input('label-end').removeAttribute('readonly');
       if FReviewGeometry = 'point' then
       begin
+        Element('label-end-seconds-area').setAttribute('hidden', '');
         Element('request-geometry-help').textContent :=
-          'Place one frame-wide point inside request frames ' +
-          IntToStr(FReviewStart) + '–' + IntToStr(FReviewEnd) +
-          '. Tap the reviewed waveform lane or edit Start frame; End frame must equal Start + 1.';
+          'Tap the waveform to place your mark. Its time appears below the waveform. Choose Confirmed, then Save answer.';
         FCanvas.setAttribute('aria-label',
-          'Original WAV waveform; tap the reviewed lane to place a one-frame point')
+          'Original WAV waveform; tap to place your answer marker')
       end
       else
         Element('request-geometry-help').textContent :=
-          'Place this label entirely inside request frames ' +
-          IntToStr(FReviewStart) + '–' + IntToStr(FReviewEnd) +
-          '. Edit Start and End frames before saving.';
+          'Select the part you mean within this clip. Check its start and end, choose Confirmed, then Save answer.';
       Element('request-geometry-help').removeAttribute('hidden');
     end;
     if FReviewType <> '' then
       Element('label-type').setAttribute('disabled', '');
     Element('review-editor').setAttribute('open', '');
-    TJSHTMLElement(Element('review-editor')).scrollIntoView;
+    DrawWaveform;
     if FReviewGeometry = 'point' then
-      Status('Tap the reviewed waveform lane to place the one-frame point, enter its value, choose Approved, then Save review event. Nothing is saved yet.')
+    begin
+      TJSHTMLElement(FCanvas).scrollIntoView;
+      Status('Tap to place your mark. Your answer is not saved yet.');
+    end
     else if FReviewType = '' then
-      Status('Choose a label type and enter your answer. Status is Uncertain until you choose Approved; then click Save review event.')
+    begin
+      TJSHTMLElement(Element('review-editor')).scrollIntoView;
+      Status('Choose what to label, enter your answer, then confirm and save.');
+    end
     else
-      Status('Enter your answer. Status is Uncertain until you choose Approved; then click Save review event. Nothing has been saved yet.');
+    begin
+      TJSHTMLElement(Element('review-editor')).scrollIntoView;
+      Status('Enter your answer, choose Confirmed, then Save answer.');
+    end;
   except
     on LError: Exception do
       Status('Could not open this request draft: ' + LError.Message, True);
@@ -4570,7 +4641,8 @@ begin
   end;
   LX := CanvasX(AEvent);
   LY := CanvasY(AEvent);
-  if (LY >= 0) and (LY < 207) then
+  if (LY >= 0) and (LY < 207) and not
+    (FRequestDraft and (FReviewGeometry = 'point') and SelectedExactRequest) then
   begin
     if (FAudioUrl = '') or (FAudio.readyState = 0) then
     begin
@@ -4586,14 +4658,14 @@ begin
       else
       begin
         FAudio.currentTime := LSeek;
-        Status('Playback moved to source frame ' +
-          IntToStr(FrameAtX(LX)) + '.');
+        Status('Playing from ' + FormatFloat('0.000', FrameAtX(LX) / FSampleRate) + ' s.');
       end;
     end;
     AEvent.preventDefault;
     Exit;
   end;
-  if (LY < 207) or (LY > 235) then
+  if (LY > 235) or ((LY < 207) and not
+    (FRequestDraft and (FReviewGeometry = 'point') and SelectedExactRequest)) then
   begin
     Exit;
   end;
@@ -4616,8 +4688,8 @@ begin
     Input('label-end').value := IntToStr(LPointFrame + 1);
     FSelectedLabel := -1;
     FDragMode := dmNone;
-    Status('Point placed at frame ' + IntToStr(LPointFrame) +
-      '. Enter its value, choose Approved, then click Save review event.');
+    Status('Mark placed at ' + FormatFloat('0.000000', LPointFrame / FSampleRate) +
+      ' s. Confirm and save your answer below.');
     DrawWaveform;
     AEvent.preventDefault;
     Exit;
@@ -4993,6 +5065,31 @@ function TWorkbench.HandleLabelTypeChange(AEvent: TEventListenerEvent): Boolean;
 begin
   UpdateValueHint;
   Result := False;
+end;
+
+function TWorkbench.HandleMarkerEdit(AEvent: TEventListenerEvent): Boolean;
+var
+  LId: String;
+  LSeconds: Double;
+  LFrameId: String;
+begin
+  Result := False;
+  LId := TJSElement(AEvent.target).id;
+  if (LId = 'label-start-seconds') or (LId = 'label-end-seconds') then
+  begin
+    if LId = 'label-start-seconds' then LFrameId := 'label-start'
+    else LFrameId := 'label-end';
+    if Input(LFrameId).hasAttribute('readonly') then Exit;
+    if (FSampleRate > 0) and TryStrToFloat(Input(LId).value, LSeconds) and
+      (LSeconds >= 0) and (LSeconds <= FFrameCount / FSampleRate) then
+      Input(LFrameId).value := IntToStr(Round(LSeconds * FSampleRate))
+    else
+      Input(LFrameId).value := '-1';
+  end;
+  if FRequestDraft and (FReviewGeometry = 'point') and
+    ((LId = 'label-start') or (LId = 'label-start-seconds')) then
+    Input('label-end').value := IntToStr(StrToInt64Def(Input('label-start').value, 0) + 1);
+  DrawWaveform;
 end;
 
 function TWorkbench.HandleUndo(AEvent: TJSMouseEvent): Boolean;
@@ -5378,6 +5475,10 @@ begin
   TJSHTMLButtonElement(Element('presence-save')).onclick :=
     @HandlePresenceSave;
   TJSHTMLInputElement(Element('label-type')).onchange := @HandleLabelTypeChange;
+  Input('label-start').oninput := @HandleMarkerEdit;
+  Input('label-end').oninput := @HandleMarkerEdit;
+  Input('label-start-seconds').oninput := @HandleMarkerEdit;
+  Input('label-end-seconds').oninput := @HandleMarkerEdit;
   UpdateValueHint;
   TJSHTMLButtonElement(Element('undo-review-button')).onclick := @HandleUndo;
   TJSHTMLButtonElement(Element('redo-review-button')).onclick := @HandleRedo;

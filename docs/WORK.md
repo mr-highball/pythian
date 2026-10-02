@@ -12,10 +12,111 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Solo operator usability repair — 2026-10-01
+
+**Big Boss:** the operator explicitly selects a complete browser usability
+review and asks Big Boss to perform it alone. No helper is assigned to this
+batch. Existing [studio_11](TODO/NS-6_studio_11.md) AC2/AC4 own the long-source
+transport repair; [authoring_02](TODO/NS-6_authoring_02.md) owns the source-review
+question, marker feedback and complete operator review. Its prior deferral is
+superseded by this request. Preserve all existing physical-device criteria.
+
+Deliverable: seeking changes the audible source position, with matching time
+and waveform feedback; ordinary source reviews explain the requested decision
+and saving action without the engineering diagnostics dominating the page.
+Closing evidence: late-source seek, paused/playing seek, request races,
+selection playback, recovery, source-answer Save/reload and desktop/narrow
+interaction on an isolated catalog. Stop on a distinct prerequisite or missing
+execution capability; neither code inspection nor compilation proves browser
+interaction or audible physical-phone playback. Starting nonclosing-batch
+count is 0. Accounting stays 50.80 accepted / 49.20 remaining, 47 open / 42 DONE.
+
+Code inspection confirms the reported seek defect: source-seek updated only
+the waveform window, leaving the old audio URL and source offset; subsequent
+audio events then overwrote the slider with the old position. Browser setup
+finds the installed, enabled plugin at its matching configured cache version,
+but its supported discovery reports no connected browsers in this chat.
+Opening this same remote thread with the desktop app's documented
+`codex://threads/<thread-id>` link restored the actual Codex in-app browser.
+The existing browser runtime then selected `iab` successfully, without a
+configuration change or restart. Remote access itself is supported; this is a
+verified session recovery, not proof of the underlying Codex defect. Keep this
+recovery step for later remote sessions rather than repeatedly searching caches.
+
+The earlier separate Chromium smoke check was stopped when the operator
+specified the desktop plugin. Final interaction used the actual Codex in-app
+browser, one agent-created tab, the fixed QA slot and an authored isolated
+catalog. No helper took part. Desktop and 390 px checks now pass:
+
+- Metadata refresh reads 132 header bytes for the fixture listing, with zero
+  content reads/imports. Opening the ten-minute recording does not prepare it.
+  Late and rapid seeks replace the bounded audio request and preserve playback
+  intent; Previous/Next moves audio and waveform together. Playback continues
+  from 7:30 through the next 30-second chunk, and stops at a two-second passage
+  or the end of the recording. The clock reports original-source time.
+- A missing original gives adjacent waveform/audio errors; restoring it and
+  retrying works. A service restart also invalidates the session: replacing the
+  media element alone did not repair that failure. The new Reconnect to server
+  action renews the session and resumes at the retained position. No session
+  token is added to media URLs and no authorization check was weakened.
+- Preparing one selected source, adding a late passage, saving and reloading
+  retains the project. Collection membership metadata now merges its duplicate
+  card immediately after reload. Duplicate originals retain all collection
+  names, without treating metadata as verified content.
+- Ordinary source questions exclude explicitly declared developer fixtures
+  from attention badges. Question purpose, Save and uncertainty are simpler;
+  a marker reports seconds with optional exact frames. UI checks save an unknown
+  answer and a corrected two-second point, reject an out-of-request point,
+  advance the queue and preserve answers on reload. The unsaved-marker message
+  is absent after completion.
+- A generated audition opens its own listening request. Its 20-second WAV
+  decodes and advances, and an unknown answer saves through the listening
+  endpoint. A nonexistent request shows unavailable instead of another review.
+  The default new question asks whether the music fits the intended style;
+  existing published questions and request hashes are preserved.
+- WAV upload, native inspection, experimental note playback, a downloaded MIDI
+  header and save-to-collection succeed on an eight-second authored fixture.
+  A two-second late-source effect preview and derived-clip Save also succeed.
+  Import/analysis instructions and the effects preparation hint are simplified.
+
+**Studio_11 AC2 is accepted for its bounded-preview and transport contract.**
+Its other full-task checks remain open, including AC4's remaining combined
+recovery matrix. The criterion closure keeps the consecutive nonclosing-batch
+count at 0. No whole-task credit changes: **50.80 accepted / 49.20 remaining;
+47 open / 42 DONE**. Authoring_02 remains open for the complete export/replay
+and physical-phone audible play/Save matrix. These browser results establish
+UI/media mechanics, not a human listening verdict or musical accuracy.
+
+One two-second toy source failed generation with `WFC could not generate the
+declared seed; no seed substitution`; the established eight-second fixture
+then generated successfully with the declared seed. Both results are retained,
+with no seed search or discarded failure. This is not evidence of a generic
+WFC defect. [Studio_03](TODO/NS-6_studio_03.md) AC2 owns the still-generic failed
+batch explanation; its operator feedback acceptance remains open.
+
+Matched pas2js builds and checked Win64 FPC 3.2.2 worker compilation pass.
+Fourteen frozen artifacts, authored jobs/answers, MIDI and desktop/narrow
+screenshots are retained under `build/solo-usability/`. The QA tab was closed,
+viewport restored and exact fixed QA process stopped; no QA listener or worker
+remains. The Codex desktop application was left running for Remote access.
+
+Deployment initially stopped because the LAN interface reported Public. It
+subsequently reported Private and passed the unchanged launcher preflight;
+Big Boss did not change the network profile, trust or firewall. The permission
+question became unnecessary. The guarded restart then deployed the fourteen
+reviewed artifacts to the fixed stable slot. HTTP and normally trusted HTTPS
+return 200, all artifact hashes match, and all **2,625** pre-existing catalog
+metadata records retain their hashes without rehashing source WAVs. Read-only
+Codex Browser checks find chillwave, lofi and stoner-rock collections and zero
+ordinary source questions; the two pending developer checks are optional.
+No live test answer was submitted. Deployment evidence is
+`build/solo-usability/LIVE-DEPLOYMENT.json`. Reload the existing LAN Studio to
+review this build; physical-phone audible acceptance remains unclaimed.
+
 ## Current metadata-only collection work — 2026-10-01
 
-**Latest deployment status, Big Boss:** the operator explicitly authorized the
-corrected restart command. Candidate 1 is now running from the fixed stable
+**Prior metadata deployment, Big Boss:** the operator explicitly authorized the
+corrected restart command. Candidate 1 ran from the fixed stable
 slot with all fourteen reviewed artifact identities intact. HTTP and HTTPS
 Studio return 200; HTTPS uses normal system trust, and the served Studio
 JavaScript matches the candidate hash. All 2,624 earlier catalog metadata
