@@ -144,6 +144,8 @@ type
     procedure Progress(const AStage: String; const ADone, ATotal: Int64);
     procedure Preflight;
     procedure VerifySources;
+    function TryReuseModel(const AExpected: TJSONObject = nil;
+      const AModelText: String = ''): Boolean;
     procedure Train;
     function MakeProfile(const AReader: TJournalTrainingReader;
       const APalette: TAcousticPalette; const AModel: TWfcSequenceModel;
@@ -603,6 +605,39 @@ begin
   end;
 end;
 
+function TStudioWork.TryReuseModel(const AExpected: TJSONObject;
+  const AModelText: String): Boolean;
+var
+  LOuter: TJSONObject;
+  LModelText: String;
+  LProfile: TJournalModelProfile;
+begin
+  Result := DirectoryExists(FModelRoot);
+  if not Result then Exit;
+  LProfile := nil;
+  LOuter := ReadStudioJSON(FModelRoot + PathDelim + 'profile.json');
+  try
+    Need((LOuter.Strings['format'] = CProfileFormat) and
+      (LOuter.Strings['training_identity_sha256'] = FTrainingHash) and
+      (LOuter.Arrays['sources'].AsJSON = FReceipt.Arrays['sources'].AsJSON),
+      'Saved model source/range/classification identity differs');
+    LModelText := ReadText(FModelRoot + PathDelim + 'model.wfcs');
+    if AExpected <> nil then
+      Need((LOuter.AsJSON = AExpected.AsJSON) and (LModelText = AModelText),
+        'Concurrent model publication differs from this verified candidate');
+    LProfile := TJournalModelProfile.Create(LOuter.Objects['journal_profile'].AsJSON, LModelText);
+    Need(LProfile.ModelSha256 = LOuter.Strings['model_sha256'], 'Saved model hash differs');
+    FProfile.Free;
+    FProfile := LProfile;
+    LProfile := nil;
+    FReceipt.Strings['model_sha256'] := FProfile.ModelSha256;
+    FModelReused := True;
+  finally
+    LProfile.Free;
+    LOuter.Free;
+  end;
+end;
+
 procedure TStudioWork.Train;
 var
   LIndex: Integer;
@@ -627,24 +662,10 @@ var
   LGuid: TGuid;
   LFeatureIndex: Integer;
 begin
-  if DirectoryExists(FModelRoot) then
+  if TryReuseModel then
   begin
     Progress('reload_verified_model', 0, 1);
-    LOuter := ReadStudioJSON(FModelRoot + PathDelim + 'profile.json');
-    try
-      Need((LOuter.Strings['format'] = CProfileFormat) and
-        (LOuter.Strings['training_identity_sha256'] = FTrainingHash) and
-        (LOuter.Arrays['sources'].AsJSON = FReceipt.Arrays['sources'].AsJSON),
-        'Saved model source/range/classification identity differs');
-      LModelText := ReadText(FModelRoot + PathDelim + 'model.wfcs');
-      FProfile := TJournalModelProfile.Create(LOuter.Objects['journal_profile'].AsJSON, LModelText);
-      Need(FProfile.ModelSha256 = LOuter.Strings['model_sha256'], 'Saved model hash differs');
-      FReceipt.Add('model_sha256', FProfile.ModelSha256);
-      FModelReused := True;
-      Exit;
-    finally
-      LOuter.Free;
-    end;
+    Exit;
   end;
   Need(ForceDirectories(FDirectory + PathDelim + 'analysis'), 'Cannot create private analysis stage');
   SetLength(LSegments, Length(FRanges));
@@ -722,8 +743,15 @@ begin
     WriteTextNew(LStage + PathDelim + 'model.wfcs', LModelText);
     WriteStudioJSONNew(LStage + PathDelim + 'profile.json', LOuter);
     Check;
-    Need(not DirectoryExists(FModelRoot) and RenameFile(LStage, FModelRoot),
-      'Cannot publish immutable verified model');
+    if DirectoryExists(FModelRoot) or not RenameFile(LStage, FModelRoot) then
+    begin
+      { Big Boss: ordinary and live jobs can finish the same cold model together.
+        Reuse only the identical published candidate through the primary verifier. }
+      Need(TryReuseModel(LOuter, LModelText), 'Cannot publish immutable verified model');
+      Need(SysUtils.DeleteFile(LStage + PathDelim + 'model.wfcs') and
+        SysUtils.DeleteFile(LStage + PathDelim + 'profile.json') and RemoveDir(LStage),
+        'Cannot release duplicate model candidate stage');
+    end;
   finally
     LOuter.Free;
     LInner.Free;

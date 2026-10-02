@@ -93,6 +93,19 @@ task. Evidence is under `build/studio-live/`. Await exact-code Linux CI and pack
 verification before accepting credit or deploying this batch. Nonclosing count
 remains 0 after the preceding accepted native-session batch.
 
+The first streaming code commit `4c97808` passes
+[Linux integration and extracted packages](https://github.com/mr-highball/pythian/actions/runs/36980731223).
+Final concurrency review found that ordinary/live cold learners could compete
+for one immutable model. Shared `TryReuseModel` now verifies the winning identical
+candidate; the primary listening-asset publisher also reconciles a competing
+content-hash rename through its existing inspector. Repaired Win64/Win32 live
+runs pass 1182/1198 checks, including both cold learners; zero Win32 leaks.
+Both retained histories enter analysis/training, so this exercised actual cold
+competition. Ordinary worker and listening-catalog regressions pass. Repaired
+actual-browser fresh-model and cached five-second sessions finish exactly.
+Repair evidence: `build/studio-live/repair64/`, `repair32/`, `publish64/`.
+Exact repair-code CI remains required before acceptance/deployment.
+
 **Big Boss, solo:** operator feedback selects the implemented
 [filter catalog](TODO/DONE/NS-6_studio_12.md), flexible
 [source workspace](TODO/DONE/NS-6_studio_13.md), native

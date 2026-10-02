@@ -538,7 +538,7 @@ procedure LiveRun(const ARoot: String);
 var
   LHash, LCatalog, LDirectory, LText: String;
   LWrite, LProject, LReply, LCommand, LState: TJSONObject;
-  LWorker: TLiveWorker;
+  LWorker, LColdWorker: TLiveWorker;
   LMemory, LExcerptMemory: TStringStream;
   LWave, LExcerptWave: TWaveFrameReader;
   LSamples, LExpected, LActual: TAudioSamples;
@@ -575,6 +575,7 @@ begin
     begin
       LWrite := JobWrite('live-' + IntToStr(LRun), LHash, LProject);
       LWorker := nil;
+      LColdWorker := nil;
       LCommand := nil;
       LCombined := TMemoryStream.Create;
       try
@@ -594,8 +595,27 @@ begin
         LWorker.Catalog := LCatalog;
         LWorker.JobId := LWrite.Strings['job_id'];
         LDirectory := StudioJobDirectory(LCatalog, LWorker.JobId);
+        if LRun = 0 then
+        begin
+          LReply := JobWrite('cold-alongside-live', LHash, LProject);
+          try
+            LCommand := EnqueueStudioJob(LCatalog, LReply);
+            FreeAndNil(LCommand);
+          finally LReply.Free end;
+          LColdWorker := TLiveWorker.Create(True);
+          LColdWorker.Catalog := LCatalog;
+          LColdWorker.JobId := 'cold-alongside-live';
+          LColdWorker.Start;
+        end;
         LWorker.Start;
         WaitReady(-1);
+        if LColdWorker <> nil then
+        begin
+          LColdWorker.WaitFor;
+          Check(LColdWorker.Succeeded and (LColdWorker.Failure = ''),
+            'Cold ordinary and live learning share immutable model publication');
+          FreeAndNil(LColdWorker);
+        end;
         Check(LState.Int64s['position'] = 0, 'Preparation does not generate without demand');
         if LRun = 0 then
         begin
@@ -725,6 +745,16 @@ begin
           finally LExcerptMemory.Free end;
         end;
       finally
+        if LColdWorker <> nil then
+        begin
+          if not LColdWorker.Finished then
+          begin
+            LReply := CancelStudioJob(LCatalog, LColdWorker.JobId);
+            LReply.Free;
+            LColdWorker.WaitFor;
+          end;
+          LColdWorker.Free;
+        end;
         if LWorker <> nil then
         begin
           if not LWorker.Finished then

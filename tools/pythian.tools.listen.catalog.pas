@@ -421,7 +421,9 @@ begin
         CheckNotLink(LPath);
         if not FileExists(LPath) then
         begin
-          Need(RenameFile(LStage, LPath), 'cannot publish staged asset');
+          { Another publisher may have installed this content hash since the
+            existence check. The primary inspector below still verifies it. }
+          Need(RenameFile(LStage, LPath) or FileExists(LPath), 'cannot publish staged asset');
         end;
       finally
         if FileExists(LStage) then

@@ -78,6 +78,18 @@ buffer/disk growth or a browser-only synthesis replacement.
   by session epoch, accepts queued HTTP responses and takes exact total frames
   from native state. Failed runs remain retained. Exact-code CI is still required
   before this task moves to DONE; no credit yet.
+- Final concurrency review also found competing cold-model publication, exposed
+  by the new live/ordinary worker pair. Both paths now use `TryReuseModel` to
+  verify a published model; a losing publisher reuses only an identical model
+  and removes its own staging files. The primary listening-asset publisher
+  likewise verifies the installed content hash after a competing rename.
+  The added cold-cache native case requires both jobs to succeed; the retained
+  event histories show both entered training before publication.
+- Repair qualification: `repair64/live-01.log` passes 1182 checks and
+  `repair32/live-01.log` passes 1198 with zero leaks; repaired ordinary worker
+  passes 68, primary listening catalog staging/review/replay passes. Actual
+  Codex Browser fresh-model and cached five-second streams finish exactly.
+  Original code `4c97808` passed Linux CI; await the repair's exact-code run.
 
 - 2026-10-02, Big Boss: the native jobs parser and worker enforce twenty-to-forty
   seconds and publish listening assets only after full WAV completion. Editing
