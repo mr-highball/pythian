@@ -14,9 +14,25 @@ Project work and review pushes stay on `hello-pythian`.
 
 ## Studio expansion — 2026-10-02
 
+**Current checkpoint:** studio_12 and studio_13 are accepted and moved to DONE.
+Code `1b9349c53cdeef7fa3195f824e52002ca56df6ea` passes
+[Linux integration and extracted core/WFC packages](https://github.com/mr-highball/pythian/actions/runs/36970941681)
+as well as the native and actual-browser evidence below. Matched frozen assets
+are running in the stable LAN slot; all 3,208 pre-existing live JSON records
+retained their hashes. Read-only deployed Studio loaded the operator's three
+collections without console errors. Both agent-created tabs are closed and the
+QA service is stopped. Physical-phone, music and WASM acceptance are unchanged.
+
+Earned 3 NS-6 / 0.30 overall: **51.10 accepted / 48.90 remaining**, **50 open /
+44 DONE**, NS-6 **48/52**. Consecutive nonclosing count remains 0. Next solo batch
+advances studio_15 AC1–3: shared core effect factory, existing delay/reverb controls
+and explicit bounded tails. Closing evidence: native impulse/reset, exact tail
+duration/lineage and preview/save/reload in desktop/narrow Codex Browser. Stop at
+a missing DSP prerequisite; no substitute algorithm or live-data mutation.
+
 **Big Boss, solo:** operator feedback selects the implemented
-[filter catalog](TODO/NS-6_studio_12.md), flexible
-[source workspace](TODO/NS-6_studio_13.md), native
+[filter catalog](TODO/DONE/NS-6_studio_12.md), flexible
+[source workspace](TODO/DONE/NS-6_studio_13.md), native
 [long-session generation](TODO/NS-4_streaming_01.md) and
 [streamed Studio playback](TODO/NS-6_studio_14.md). Keep this review solo under
 the existing instruction. The streaming consumer follows its native prerequisite.

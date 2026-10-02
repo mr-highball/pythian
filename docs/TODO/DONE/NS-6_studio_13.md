@@ -1,6 +1,6 @@
 # NS-6_studio_13 — Unify source transport, zoom and preparation
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
@@ -14,11 +14,14 @@ Completion credit: 2 goal percentage points (0.20 overall points).
 Basis: two unearned delivery_04 points transfer here; all its criteria remain.
 Credit is earned only after all criteria and prerequisites pass.
 
-Execution status: selected, Big Boss solo. Next deliverable: zoomable source
-timeline and one visible preparation state shared by project admission,
-analysis and effects. Closing evidence: full/late/custom views, bounded reads,
-selection stability, preparation progress and recovery in desktop/narrow Codex
-Browser. Stop if an overview reads full PCM or changes the selected corpus.
+Accepted 2026-10-02 by Big Boss under the explicit solo instruction. All ACs and
+both prerequisites pass at `1b9349c53cdeef7fa3195f824e52002ca56df6ea`:
+checked Win32/Win64 waveform/discovery fixtures, capture regression and actual
+desktop/390 px Codex-browser transport, preparation and recovery matrix below.
+Exact-revision [Linux integration and core/WFC packages](https://github.com/mr-highball/pythian/actions/runs/36970941681)
+pass. Frozen artifact hashes/screenshots and solo verdict are retained under
+ignored `build/studio-expansion/`. Earns 2 NS-6 / 0.20 overall points; no physical
+phone or musical-accuracy credit.
 The accepted studio_11 AC1/AC2 contracts are the existing implementation basis;
 its remaining full admission/recovery matrix is separately owned there.
 
@@ -42,8 +45,8 @@ its remaining full admission/recovery matrix is separately owned there.
 
 **Blockers**
 
-- [NS-6_studio_04.md](DONE/NS-6_studio_04.md)
-- [NS-6_studio_08.md](DONE/NS-6_studio_08.md)
+- [NS-6_studio_04.md](NS-6_studio_04.md)
+- [NS-6_studio_08.md](NS-6_studio_08.md)
 
 **Dev Notes:**
 

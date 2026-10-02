@@ -35,7 +35,7 @@ primitive; give the gap an owner rather than inventing a browser substitute.
 
 **Blockers**
 
-- [NS-6_studio_12.md](NS-6_studio_12.md)
+- [NS-6_studio_12.md](DONE/NS-6_studio_12.md)
 
 **Dev Notes:**
 

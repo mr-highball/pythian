@@ -6,7 +6,7 @@
 ## North-star assessment
 
 Updated **2026-10-02** on the user-authorized 2026-09-29 credit basis:
-**50.80 outcome-weighted points credited; 49.20 remaining.**
+**51.10 outcome-weighted points credited; 48.90 remaining.**
 The later [operator Studio scope](OPERATOR-STUDIO.md#allocation-and-ownership)
 redistributes 26 unearned NS-6 points into fifteen operator outcomes, including
 mixed-format corpus preparation. Scoping left completion unchanged; subsequent
@@ -35,11 +35,11 @@ ecosystem adoption is unmeasured and is a required completion gate.
 | <a id="wav-02"></a><a id="wav-03"></a><a id="ns-3"></a>**NS-3 — Trustworthy musical learning from WAV** | 25% | 25 | Measurement foundation, Pascal observations/execution, qualified references/scoring, unknown/manual context, catalog and admitted-event bridge. | Independently accepted recorded context, notes, parts, harmony, groove and evolving sound: 19 tasks / 75 |
 | <a id="wfc-preferences"></a><a id="ns-4"></a>**NS-4 — Granular WFC layers and reusable blends** | 65% | 15 | Actual layers, typed controls, persistence, selective reuse, caller codecs/traits and bounded event/composition evidence. | Full recorded-provider workflow and bounded long-session generation: 2 tasks / 35 |
 | <a id="wav-04"></a><a id="ns-5"></a>**NS-5 — User-defined styles that generate and blend usefully** | 14% | 20 | Bounded identity, maintained caller intake, raw corpus, journal, balance, listening packet and acoustic continuation; style-card AC1 only. | Grounded references, semantic scale, structure/continuity, useful one/many-recording and new-user styles, blends: 15 tasks / 86 |
-| <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | 45% | 10 | Supported consumer contract, native checkpoint, exact-revision minimal core/caller-provider package, editor/producer queue, Studio setup/private corpora, bounded raw WFC jobs, effects, experimental capture/MIDI exploration, starting actions/navigation and verified large-library refresh. | Studio iteration/conversion, phone HTTPS and metadata-only discovery, full packages, actual outside use, physical LAN/full operator workflow, maintained support, ecosystem adoption and final handoff, expanded effects/source view and streamed playback: 15 tasks / 55 |
-| **Total** | **50.80 weighted** | **100** | **42 accepted task records plus explicit baseline** | **52 open tasks / 49.20 weighted points** |
+| <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | 48% | 10 | Supported consumer contract, native checkpoint, exact-revision minimal core/caller-provider package, editor/producer queue, Studio setup/private corpora, bounded raw WFC jobs, effects, experimental capture/MIDI exploration, starting actions/navigation, verified large-library refresh, shared filter catalog and flexible bounded source workspace. | Studio iteration/conversion, phone HTTPS and metadata-only discovery, full packages, actual outside use, physical LAN/full operator workflow, maintained support, ecosystem adoption and final handoff, time effects/tails and streamed playback: 13 tasks / 52 |
+| **Total** | **51.10 weighted** | **100** | **44 accepted task records plus explicit baseline** | **50 open tasks / 48.90 weighted points** |
 
 Arithmetic:
-`5×1 + 25×.90 + 25×.25 + 15×.65 + 20×.14 + 10×.45 = 50.80`.
+`5×1 + 25×.90 + 25×.25 + 15×.65 + 20×.14 + 10×.48 = 51.10`.
 These are declared scope weights, not measured accuracy, effort, test coverage,
 release prediction or market adoption. The
 [current basis](REBALANCE-2026-09-29.md#current-credit-basis) explains the
@@ -98,7 +98,7 @@ a claim that all downstream outcomes pass.
 | <a id="song-structure"></a>**SONG-STRUCTURE** | NS-5 | [NS-5_structure_01](TODO/NS-5_structure_01.md), [NS-5_structure_02](TODO/NS-5_structure_02.md) |
 | <a id="style-eval"></a>**STYLE-EVAL** | NS-5 | [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md), [NS-5_evaluation_04](TODO/NS-5_evaluation_04.md), [NS-5_evaluation_02](TODO/NS-5_evaluation_02.md), [NS-5_style_01](TODO/NS-5_style_01.md), [NS-5_style_02](TODO/NS-5_style_02.md), [NS-5_style_03](TODO/NS-5_style_03.md), [NS-5_blends_01](TODO/NS-5_blends_01.md) |
 | <a id="wav-05-authoring"></a>**WAV-05-AUTHORING** | NS-6 | [NS-6_authoring_01 — DONE](TODO/DONE/NS-6_authoring_01.md), [NS-6_authoring_02](TODO/NS-6_authoring_02.md) |
-| <a id="operator-studio"></a>**OPERATOR-STUDIO** | NS-6 | [NS-6_studio_01 — DONE](TODO/DONE/NS-6_studio_01.md), [NS-6_studio_02](TODO/DONE/NS-6_studio_02.md), [NS-6_studio_03](TODO/NS-6_studio_03.md), [NS-6_studio_04](TODO/DONE/NS-6_studio_04.md), [NS-6_studio_05](TODO/DONE/NS-6_studio_05.md), [NS-6_studio_06](TODO/DONE/NS-6_studio_06.md), [NS-6_studio_07](TODO/NS-6_studio_07.md), [NS-6_studio_08](TODO/DONE/NS-6_studio_08.md), [NS-6_studio_09](TODO/DONE/NS-6_studio_09.md), [NS-6_studio_10](TODO/NS-6_studio_10.md), [NS-6_studio_11](TODO/NS-6_studio_11.md), [NS-6_studio_12](TODO/NS-6_studio_12.md), [NS-6_studio_13](TODO/NS-6_studio_13.md), [NS-6_studio_14](TODO/NS-6_studio_14.md), [NS-6_studio_15](TODO/NS-6_studio_15.md) |
+| <a id="operator-studio"></a>**OPERATOR-STUDIO** | NS-6 | [NS-6_studio_01 — DONE](TODO/DONE/NS-6_studio_01.md), [NS-6_studio_02](TODO/DONE/NS-6_studio_02.md), [NS-6_studio_03](TODO/NS-6_studio_03.md), [NS-6_studio_04](TODO/DONE/NS-6_studio_04.md), [NS-6_studio_05](TODO/DONE/NS-6_studio_05.md), [NS-6_studio_06](TODO/DONE/NS-6_studio_06.md), [NS-6_studio_07](TODO/NS-6_studio_07.md), [NS-6_studio_08](TODO/DONE/NS-6_studio_08.md), [NS-6_studio_09](TODO/DONE/NS-6_studio_09.md), [NS-6_studio_10](TODO/NS-6_studio_10.md), [NS-6_studio_11](TODO/NS-6_studio_11.md), [NS-6_studio_12](TODO/DONE/NS-6_studio_12.md), [NS-6_studio_13](TODO/DONE/NS-6_studio_13.md), [NS-6_studio_14](TODO/NS-6_studio_14.md), [NS-6_studio_15](TODO/NS-6_studio_15.md) |
 | <a id="wav-05-delivery"></a>**WAV-05-DELIVERY** | NS-6 | [NS-6_delivery_06](TODO/DONE/NS-6_delivery_06.md), [NS-6_delivery_03](TODO/NS-6_delivery_03.md) |
 | <a id="delivery-release"></a>**DELIVERY-RELEASE** | NS-6 | [NS-6_delivery_07](TODO/NS-6_delivery_07.md), [NS-6_delivery_04](TODO/NS-6_delivery_04.md), [NS-6_delivery_05](TODO/NS-6_delivery_05.md) |
 | <a id="delivery-support"></a>**DELIVERY-SUPPORT** | NS-6 | [NS-6_support_01](TODO/NS-6_support_01.md) |
@@ -111,8 +111,8 @@ a claim that all downstream outcomes pass.
 ## Completion accounting
 
 The new baseline is NS-1..6 **100/70/10/20/0/0**; current accepted task points
-are **0/20/15/45/14/45**. Baseline contributes 28.00 weighted points and DONE
-contributes 22.80. The [open](TODO/README.md) and [DONE](TODO/DONE/README.md)
+are **0/20/15/45/14/48**. Baseline contributes 28.00 weighted points and DONE
+contributes 23.10. The [open](TODO/README.md) and [DONE](TODO/DONE/README.md)
 ledgers exhaustively map the 94 current tickets. Baseline + DONE + open equals
 100 within each goal. Historical figures are retained only as dated evidence,
 not current allocation rules.

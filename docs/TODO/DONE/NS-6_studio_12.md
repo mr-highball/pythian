@@ -1,6 +1,6 @@
 # NS-6_studio_12 — Expose the implemented filter catalog in Studio
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
@@ -13,11 +13,14 @@ Completion credit: 1 goal percentage point (0.10 overall points).
 Basis: one unearned delivery_03 point transfers here; every donor criterion remains.
 Credit is earned only after all criteria and prerequisites pass.
 
-Execution status: selected, Big Boss solo under the current operator instruction.
-Next deliverable: eleven working effect choices with typed parameters and native
-preview/save/reload. Closing evidence: checked native filter/recipe boundaries,
-audible-media browser path and desktop/narrow rack use. Stop at an unsupported
-DSP or a separate required feature, record its owner, and preserve the current rack.
+Accepted 2026-10-02 by Big Boss under the explicit solo instruction. All ACs and
+the prerequisite pass at code `1b9349c53cdeef7fa3195f824e52002ca56df6ea`:
+checked Win32/Win64 native fixtures, matched pas2js and actual Codex-browser
+desktop/390 px multi-filter preview/save/reload. Exact-revision
+[Linux integration and extracted core/WFC packages](https://github.com/mr-highball/pythian/actions/runs/36970941681)
+pass. Frozen artifact hashes, screenshots, repaired failure and the solo verdict
+remain in ignored `build/studio-expansion/`. No musical or physical-phone verdict
+is inferred. Earns 1 NS-6 / 0.10 overall point.
 
 **Acceptance Criteria:**
 
@@ -34,7 +37,7 @@ DSP or a separate required feature, record its owner, and preserve the current r
 
 **Blockers**
 
-- [NS-6_studio_05.md](DONE/NS-6_studio_05.md)
+- [NS-6_studio_05.md](NS-6_studio_05.md)
 
 **Dev Notes:**
 
@@ -51,8 +54,8 @@ DSP or a separate required feature, record its owner, and preserve the current r
   frequency bounds to both DSP and catalog. Both targets pass after repair;
   failure fixture `effects-win32-run-04` and repaired run-05 are retained.
 - Existing delay/reverb exposure and explicit tails belong to
-  [studio_15](NS-6_studio_15.md); native long generation belongs to
-  [streaming_01](NS-4_streaming_01.md), not this filter task.
+  [studio_15](../NS-6_studio_15.md); native long generation belongs to
+  [streaming_01](../NS-4_streaming_01.md), not this filter task.
 - 2026-10-02, Big Boss: phone feedback finds five choices despite eight native
   biquad kinds in `src/pythian.biquad.pas`. This is an operator exposure gap;
   no new DSP algorithm or WFC dependency is needed for these six additions.

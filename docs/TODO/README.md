@@ -3,8 +3,8 @@
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) ·
 [Assessment](../REBALANCE-2026-09-29.md) · [Completed tasks](DONE/README.md) · [Work](../WORK.md)
 
-Updated 2026-10-02. **52 open / 42 accepted tasks.** The user authorized a new
-outcome-based credit allocation: **50.80 current / 49.20 remaining** overall.
+Updated 2026-10-02. **50 open / 44 accepted tasks.** The user authorized a new
+outcome-based credit allocation: **51.10 current / 48.90 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
 adds 4 NS-5 points / 0.80 overall, and the accepted exact-revision minimal native
@@ -37,8 +37,8 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 45 | 65% | 2 | 35 | 5.25 |
 | [NS-5 — User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 15 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 45 | 45% | 15 | 55 | 5.50 |
-| **Total** | **28.00 weighted** | **22.80 weighted** | **50.80 weighted** | **52** | Goal points are not summed across goals | **49.20** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 48 | 48% | 13 | 52 | 5.20 |
+| **Total** | **28.00 weighted** | **23.10 weighted** | **51.10 weighted** | **50** | Goal points are not summed across goals | **48.90** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -46,8 +46,10 @@ hours or effort estimates. See the [basis and rationale](../REBALANCE-2026-09-29
 
 ## Selection and actual blockers
 
-Big Boss's current solo batch exposes the [existing filter catalog](NS-6_studio_12.md)
-and adds [flexible waveform controls](NS-6_studio_13.md). Then
+Big Boss's solo [shared filter catalog](DONE/NS-6_studio_12.md) and
+[flexible waveform controls](DONE/NS-6_studio_13.md) are accepted at the recorded
+revision, adding 3 NS-6 / 0.30 overall. The next batch exposes existing
+[delay/reverb and tails](NS-6_studio_15.md). Then
 [native long-session generation](NS-4_streaming_01.md) unblocks
 [streamed Studio playback](NS-6_studio_14.md). The 2026-10-02 additions transfer
 seven unearned NS-6 points and five unearned NS-4 points; no accepted credit changes.
@@ -213,14 +215,12 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | [NS-6_studio_07](NS-6_studio_07.md) — Train mixed-format corpora with original-clock lineage | 1 | 0.10 | After current review: explicit native conversion and actual mixed-format WFC |
 | [NS-6_studio_10](NS-6_studio_10.md) — Enable phone recording over local HTTPS | 1 | 0.10 | Operator reports HTTPS worked; complete capture/browser checks remain open |
 | [NS-6_studio_11](NS-6_studio_11.md) — Browse collection metadata and prepare recordings only on use | 1 | 0.10 | Selected: metadata listing, bounded preview and verified selected-entry preparation |
-| [NS-6_studio_12](NS-6_studio_12.md) — Expose the implemented filter catalog | 1 | 0.10 | Selected, Big Boss solo |
-| [NS-6_studio_13](NS-6_studio_13.md) — Flexible source-view and preparation workspace | 2 | 0.20 | Selected, Big Boss solo |
 | [NS-6_studio_14](NS-6_studio_14.md) — Custom-duration streamed generation | 3 | 0.30 | Native streaming prerequisite |
-| [NS-6_studio_15](NS-6_studio_15.md) — Expose existing delay/reverb with explicit tails | 1 | 0.10 | Shared filter catalog prerequisite |
+| [NS-6_studio_15](NS-6_studio_15.md) — Expose existing delay/reverb with explicit tails | 1 | 0.10 | Selected, Big Boss solo; shared catalog prerequisite accepted |
 
 ## Accepted tasks and retired work
 
-All 42 accepted tasks, including caller corpus intake, Studio source/effects/capture, the current minimal package
+All 44 accepted tasks, including caller corpus intake, Studio source/effects/capture, the current minimal package
 and the three NS-2 quality results, are listed in
 the [current DONE ledger](DONE/README.md). Their acceptance dates and detailed
 evidence remain in the unchanged task identities. Allocations now reflect the

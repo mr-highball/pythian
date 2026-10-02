@@ -3,7 +3,7 @@
 [Task index](../README.md) · [Task flow](../../TASKFLOW.MD) ·
 [Milestones](../../MILESTONES.md) · [Current credit basis](../../REBALANCE-2026-09-29.md#current-credit-basis)
 
-All **42** records retain their acceptance evidence and dates. Points below
+All **44** records retain their acceptance evidence and dates. Points below
 use the user-authorized 2026-09-29 outcome rebase; older amounts in evidence
 narratives are historical. No task was accepted by this reassessment.
 The [2026-09-30 Studio allocation](../../OPERATOR-STUDIO.md#allocation-and-ownership)
@@ -12,9 +12,12 @@ adds 4 NS-6 / 0.40 overall without changing prior accepted values.
 Private corpora, bounded raw WFC jobs, effects and experimental capture/exploration
 add a further 8 NS-6 / 0.80 overall on 2026-10-01, without scientific inference credit.
 Accepted starting actions/navigation and large-library refresh add 2 NS-6 / 0.20 overall.
+Shared filter catalog and flexible source workspace add 3 NS-6 / 0.30 overall.
 
 | Accepted task | Date | Current goal credit | Current overall credit |
 | --- | --- | ---: | ---: |
+| [NS-6_studio_12](NS-6_studio_12.md) — Share and expose the implemented filter catalog | 2026-10-02 | 1 NS-6 | 0.10 |
+| [NS-6_studio_13](NS-6_studio_13.md) — Unify source transport, zoom and preparation | 2026-10-02 | 2 NS-6 | 0.20 |
 | [NS-2_synthesis-quality_01](NS-2_synthesis-quality_01.md) — Accept source and articulation quality | 2026-09-23 | 8 NS-2 | 2.00 |
 | [NS-2_synthesis-quality_02](NS-2_synthesis-quality_02.md) — Accept modulation, processing and routing quality | 2026-09-23 | 6 NS-2 | 1.50 |
 | [NS-2_synthesis-quality_03](NS-2_synthesis-quality_03.md) — Accept combined synthesis and streamed listening | 2026-09-23 | 6 NS-2 | 1.50 |
@@ -59,7 +62,7 @@ Accepted starting actions/navigation and large-library refresh add 2 NS-6 / 0.20
 | [NS-6_studio_09](NS-6_studio_09.md) — Refresh large existing collections without recopying media | 2026-10-01 | 1 NS-6 | 0.10 |
 
 Current accepted task total is **22.80 weighted points**; the separate accepted
-baseline contributes **28.00**, giving **50.80 overall**. Core source-free
+baseline contributes **28.00**, giving **51.10 overall**. Core source-free
 composition remains accepted with zero extra NS-4 points; it does not prove
 WFC-selected or recorded-provider integration. The prior external-runtime
 execution result remains historical; current inference acceptance is Pascal-owned.

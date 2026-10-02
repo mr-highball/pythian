@@ -45,7 +45,7 @@ supported reproduction failure and record the unblock or repair owner.
   consolidation review. All independent full-workflow criteria remain.
 
 - 2026-10-02, Big Boss: two unearned points transfer to
-  [source-view controls](NS-6_studio_13.md), one to
+  [source-view controls](DONE/NS-6_studio_13.md), one to
   [long-session playback](NS-6_studio_14.md). Independent reproduction of the
   complete accepted workflow remains required; no criterion is removed.
 
