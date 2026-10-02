@@ -64,6 +64,19 @@ automatically calibrated numerical limits or accurate source transcription.
 
 ## UI and evidence requirements
 
+**Learn to teach Pythian** is shared by Studio, Source reviews and Listening
+reviews. Its four first-project lessons teach choosing examples, generating a
+small experiment, saving listening feedback and changing one thing for the next
+batch. Tool lessons explain recording/import, selection/zoom, analysis/MIDI,
+effects, long playback, generation settings and the two review queues.
+Contextual help opens the relevant lesson; Show me reveals and highlights real
+controls or explains the missing prerequisite. Close/reopen, Escape, restart and
+browser-local reading position do not alter projects or start audio or jobs.
+Descriptions are metadata, feedback does not automatically retrain, and current
+raw acoustic generation does not establish learned notes or song structure.
+Delivery owner: [studio_17](TODO/NS-6_studio_17.md). Actual operator usefulness
+remains with studio_03; reading progress is not learning or acceptance credit.
+
 Local-use policy: no accounts, login screens or repeated confirmation prompts.
 Keep automatic same-origin sessions, folder containment, input validation and
 finite work limits. Preserve originals and source lineage. Browser microphone
@@ -100,7 +113,7 @@ completed by planning, and all original criteria in the donor tasks remain.
 | --- | ---: | ---: | --- |
 | [authoring_02](TODO/NS-6_authoring_02.md) | 8 | 1 | Physical LAN/source operator qualification |
 | [delivery_03](TODO/NS-6_delivery_03.md) | 10 | 1 | Final package and extracted workflow |
-| [delivery_04](TODO/NS-6_delivery_04.md) | 12 | 3 | Independent complete-workflow reproduction |
+| [delivery_04](TODO/NS-6_delivery_04.md) | 12 | 2 | Independent complete-workflow reproduction |
 | [delivery_05](TODO/NS-6_delivery_05.md) | 5 | 3 | Final completion audit and handoff |
 | [studio_01 — DONE](TODO/DONE/NS-6_studio_01.md) | 0 | 4 | Durable intuitive project/source setup |
 | [studio_02](TODO/DONE/NS-6_studio_02.md) | 0 | 2 | Actual bounded jobs and automatic audition queue |
@@ -118,6 +131,7 @@ completed by planning, and all original criteria in the donor tasks remain.
 | [studio_14](TODO/DONE/NS-6_studio_14.md) | 0 | 3 | Custom-duration generation with streamed playback |
 | [studio_15](TODO/DONE/NS-6_studio_15.md) | 0 | 1 | Existing delay/reverb exposure with explicit tails |
 | [studio_16](TODO/DONE/NS-6_studio_16.md) | 0 | 1 | Primary PCM16/header reuse in microphone capture |
+| [studio_17](TODO/NS-6_studio_17.md) | 0 | 1 | Shared first-project and contextual tool teaching |
 | **Total allocation at scoping** | **35** | **35** | **Scoping earned no credit** |
 
 The 2026-10-02 expansion transfers six further unearned NS-6 points: one from
@@ -131,6 +145,8 @@ The consolidation inventory adds studio_15 with one further unearned
 delivery_04 point, making seven transferred NS-6 points in this expansion.
 The microphone codec inventory adds studio_16 with one further delivery_04
 point: eight transferred points, unchanged accepted credit and donor criteria.
+Guided teaching transfers one further delivery_04 point to studio_17: nine
+transferred points, still with no credit for scoping and no removed criterion.
 
 The added operator outcomes receive explicit weight from later verification
 work. Those verification obligations remain required at reduced planning weight;
@@ -138,8 +154,8 @@ they do not disappear or move into the new tasks. Scoping left 49.40 accepted;
 independent project/setup acceptance subsequently adds 4 NS-6 / 0.40 overall.
 Private corpora, raw WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall.
 Accepted starting actions/navigation and large-library refresh add 2 NS-6 / 0.20 overall.
-The current ledger is **52.35 accepted / 47.65 remaining**, **47 open / 48 DONE**.
-NS-6 is **53 accepted / 47 unearned** with eleven open tasks. Goal weights are unchanged.
+The current ledger is **52.35 accepted / 47.65 remaining**, **48 open / 48 DONE**.
+NS-6 is **53 accepted / 47 unearned** with twelve open tasks. Goal weights are unchanged.
 The later collection and effects requirements each reallocate one unearned point
 from jobs and iteration; all original criteria remain. Scoping earns no acceptance.
 Capture/exploration receives two additional unearned delivery_03 points with
@@ -151,7 +167,7 @@ the declared supported route until conversion and original-frame maps pass.
 The studio is a current NS-5 calibration enabler, attributed primarily to NS-6
 usability. Actual calibration/control validity remains evaluation_01; complete
 musical references remain evaluation_04; inference and many-hour style quality
-keep their existing owners. Final packaging includes all fifteen studio outcomes.
+keep their existing owners. Final packaging includes every required Studio outcome.
 Actual phone feedback adds studio_08, funded by one further unearned authoring_02
 point. Its prominent recording/import/library entry, existing-corpus connection
 and shared attention badges precede further operator iteration acceptance.

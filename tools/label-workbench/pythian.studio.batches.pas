@@ -270,7 +270,7 @@ begin
   LControl.setAttribute('value', '731');
   LControl.setAttribute('maxlength', '10');
   LControl.addEventListener('input', @Edit);
-  LLabel := Add(LRow, 'label', 'Maximum acoustic examples', '');
+  LLabel := Add(LRow, 'label', 'Sound examples to keep (2–16)', '');
   LControl := Add(LLabel, 'input', '', '');
   LControl.id := 'batch-palette';
   LControl.setAttribute('type', 'text');
@@ -278,12 +278,12 @@ begin
   LControl.setAttribute('value', '8');
   LControl.setAttribute('maxlength', '2');
   LControl.addEventListener('input', @Edit);
-  LLabel := Add(LDetails, 'label', 'Sequence context', '');
+  LLabel := Add(LDetails, 'label', 'How many neighboring sound pieces to consider', '');
   LControl := Add(LLabel, 'select', '', '');
   LControl.id := 'batch-order';
-  SelectOption(LControl, '1', '1 acoustic window');
-  SelectOption(LControl, '2', '2 acoustic windows');
-  SelectOption(LControl, '3', '3 acoustic windows');
+  SelectOption(LControl, '1', '1 sound piece');
+  SelectOption(LControl, '2', '2 sound pieces');
+  SelectOption(LControl, '3', '3 sound pieces');
   TJSHTMLSelectElement(LControl).value := '2';
   LControl.addEventListener('change', @Edit);
   LControl := Add(LDetails, 'p', 'Additional seeds use first seed +1,000 and +2,000. ' +
@@ -1237,17 +1237,17 @@ begin
           StudioNumber(Obj(LSources[LIndex]), 'sample_rate');
       end;
     end;
-    Add(LRoot, 'p', 'Analyzed coverage: ' + StudioTime(LSeconds) + ' · ' +
+    Add(LRoot, 'p', 'Source audio analyzed: ' + StudioTime(LSeconds) + ' · ' +
       IntToStr(Trunc(StudioNumber(LResults, 'total_analyzed_observations'))) +
       ' feature observations.', 'hint');
   end;
   if (LResults <> nil) and isNumber(LResults['retained_token_count']) and
     isNumber(LResults['retained_candidate_count']) then
   begin
-    Add(LRoot, 'p', 'Retained palette: ' +
+    Add(LRoot, 'p', 'Sound examples kept: ' +
       IntToStr(Trunc(StudioNumber(LResults, 'retained_token_count'))) +
-      ' acoustic choices / ' + IntToStr(Trunc(StudioNumber(LResults, 'retained_candidate_count'))) +
-      ' candidate windows. These counts do not establish musical variety.', 'hint');
+      ' types / ' + IntToStr(Trunc(StudioNumber(LResults, 'retained_candidate_count'))) +
+      ' recorded pieces. More examples do not necessarily mean more musical variety.', 'hint');
   end
   else if LStatus = 'completed' then
   begin

@@ -309,7 +309,7 @@ without awarding acceptance.
 Studio setup acceptance adds 4 NS-6 / 0.40 overall; private corpora, bounded raw
 WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall; starting
 actions and verified large-library refresh add 2 NS-6 / 0.20 overall. The catalog
-contains **47 open / 48 accepted tasks**, NS-6 **53/47**, overall **52.35/47.65** after
+contains **48 open / 48 accepted tasks**, NS-6 **53/47**, overall **52.35/47.65** after
 shared filter-catalog, source-workspace, delay/reverb-tail, native-session,
 streamed-playback and microphone-codec acceptance. All
 original donor criteria remain required alongside the new operator outcomes.

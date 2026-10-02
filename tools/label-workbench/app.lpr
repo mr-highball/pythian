@@ -5121,6 +5121,10 @@ var
   LKey: String;
 begin
   Result := False;
+  if TJSElement(AEvent.target).closest('.workspace-guide, [data-guide-topic]') <> nil then
+  begin
+    Exit;
+  end;
   LTarget := TJSObject(AEvent.target);
   LTag := UpperCase(TextField(LTarget, 'tagName'));
   if (LTag = 'INPUT') or (LTag = 'TEXTAREA') or (LTag = 'SELECT') or

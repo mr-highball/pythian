@@ -32,7 +32,8 @@ interface
 uses
   JS,
   Web,
-  SysUtils;
+  SysUtils,
+  pythian.workspace.guide;
 
 type
   TWorkspaceFetch = function(const APath, AMethod, ABody: String;
@@ -65,6 +66,7 @@ type
   TWorkspaceNavigation = class
   private
     FFetch: TWorkspaceFetch;
+    FGuide: TWorkspaceGuide;
     FCurrentPage: String;
     FStarted: Boolean;
     FConnected: Boolean;
@@ -166,6 +168,7 @@ begin
     FCounts[LIndex].Controller := nil;
   end;
   Layout;
+  FGuide := TWorkspaceGuide.Create(FCurrentPage);
   Draw;
 end;
 
@@ -174,6 +177,7 @@ var
   LIndex: Integer;
 begin
   FStarted := False;
+  FGuide.Free;
   FConnected := False;
   window.clearTimeout(FTimer);
   for LIndex := 0 to 2 do

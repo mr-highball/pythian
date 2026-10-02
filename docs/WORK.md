@@ -14,6 +14,14 @@ Project work and review pushes stay on `hello-pythian`.
 
 ## Studio expansion — 2026-10-02
 
+**Selected tutorial batch:** Big Boss alone implements
+[studio_17](TODO/NS-6_studio_17.md): a shared optional first-project guide and
+contextual help for the existing tools. Closing evidence is matched pas2js and
+actual desktop/narrow browser navigation, reading-position persistence and
+non-interference with drafts/playback/jobs. Stop at unsupported instructions or
+claims. One unearned delivery_04 point transfers here; accepted credit stays
+52.35, with 48 open / 48 DONE. Physical and musical verdicts remain open.
+
 **Current checkpoint:** studio_12/13/14/15/16 and streaming_01 are accepted.
 Code `6cfb855d6c5e13a4ee8d1f3a1e54f82dbff7dfea` passes
 [Linux integration and extracted packages](https://github.com/mr-highball/pythian/actions/runs/36983782671),

@@ -28,6 +28,97 @@ SOFTWARE.
   padding-inline: clamp(.7rem, 2vw, 1.4rem);
 }
 
+.workspace-guide {
+  margin: .7rem 0 1rem;
+  border: 1px solid #54786f;
+  border-radius: .85rem;
+  background: #112a30;
+  color: #e6f1ee;
+  overflow-wrap: anywhere;
+}
+
+.guide-bar, .guide-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .6rem 1rem;
+}
+
+.guide-bar { padding: .7rem; }
+.guide-intro { color: #b9cfc9; font-size: .85rem; }
+.guide-panel { padding: .4rem clamp(.85rem, 3vw, 1.5rem) 1.2rem; max-width: 54rem; }
+.workspace-guide [hidden] { display: none !important; }
+.guide-panel label { display: block; margin: .5rem 0; font-weight: 600; }
+.guide-panel select {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-height: 44px;
+  padding: .6rem;
+  background: #122329;
+  color: #e6f1ee;
+  border: 1px solid #789991;
+  border-radius: .5rem;
+  font: inherit;
+}
+.guide-panel h2 { margin: .3rem 0 1rem; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.2; }
+.guide-panel h3 { margin: 1rem 0 .35rem; font-size: .95rem; color: #b7e6d7; }
+.guide-panel p { line-height: 1.55; margin: .3rem 0 1rem; }
+.guide-panel .guide-progress { margin-top: 1rem; color: #b7e6d7; font-size: .75rem; letter-spacing: .1em; }
+.guide-result { padding: .75rem; background: #193e42; border-left: 3px solid #b7e6d7; border-radius: .3rem; }
+.guide-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  box-sizing: border-box;
+  min-height: 44px;
+  max-width: 100%;
+  padding: .65rem .85rem;
+  border: 1px solid #789991;
+  border-radius: .5rem;
+  color: #e6f1ee;
+  background: #1b333b;
+  font: inherit;
+  line-height: 1.3;
+  white-space: normal;
+  cursor: pointer;
+}
+.guide-button svg { width: 1.4rem; height: 1.4rem; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.6; }
+.guide-button:hover { background: #2a4b4e; }
+.guide-button:disabled { opacity: .45; cursor: default; }
+.guide-primary { background: #b7e6d7; color: #11252b; font-weight: 650; }
+.guide-primary:hover { background: #d4f4e9; }
+.guide-button:focus-visible, .guide-panel select:focus-visible, .guide-more summary:focus-visible {
+  outline: 3px solid #e6c698;
+  outline-offset: 3px;
+}
+.guide-panel .guide-notice { font-size: .9rem; color: #e6c698; }
+.guide-notice:empty { display: none; }
+.guide-actions { margin-top: 1rem; }
+.guide-more { margin-top: 1rem; color: #b9cfc9; font-size: .85rem; }
+.guide-more summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; }
+.guide-highlight { outline: 3px solid #e6c698 !important; outline-offset: 5px; scroll-margin-top: 1rem; }
+.guide-return { position: fixed; bottom: 1rem; right: 1rem; z-index: 30; max-width: calc(100vw - 2rem); background: #193e42; box-shadow: 0 4px 20px #0008; }
+.guide-context {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  max-width: 100%;
+  padding: .4rem .2rem;
+  margin: .2rem .8rem .4rem 0;
+  border: 0;
+  background: transparent;
+  color: #b7e6d7;
+  font: inherit;
+  font-size: .85rem;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: .2em;
+  cursor: pointer;
+}
+.guide-context:focus-visible { outline: 3px solid #e6c698; outline-offset: 3px; }
+
 .workspace-tabs {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

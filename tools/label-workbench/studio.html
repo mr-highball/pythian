@@ -50,6 +50,7 @@ SOFTWARE.
     </section>
     <section id="capture-panel" class="panel capture-panel" hidden aria-label="Record or import audio" tabindex="-1">
       <button id="capture-back" type="button">Back to starting actions</button>
+      <button type="button" class="guide-context" data-guide-topic="record">Recording &amp; import help</button>
       <div id="studio-capture"></div>
     </section>
     <section class="intro" aria-labelledby="page-title">
@@ -74,12 +75,13 @@ SOFTWARE.
           <div class="section-heading"><div><p class="eyebrow">01 / SOURCES</p><h2 id="sources-title">What are you making?</h2></div>
             <span id="draft-state" class="state" role="status" aria-live="polite">Not saved</span></div>
           <form id="style-form" novalidate>
+            <button type="button" class="guide-context" data-guide-topic="choose">How to choose teaching examples</button>
             <label for="style-name">Project name</label>
             <input id="style-name" type="text" maxlength="128" autocomplete="off" placeholder="For example, Quiet evening piano" disabled aria-describedby="name-error">
             <p id="name-error" class="field-error" role="alert" hidden></p>
             <label for="style-qualities">What should the music feel like? (optional)</label>
             <textarea id="style-qualities" rows="3" maxlength="2048" placeholder="For example, gentle dynamics, space between phrases, and a warm sound." disabled aria-describedby="qualities-help qualities-error"></textarea>
-            <p id="qualities-help" class="hint">A few words about the qualities you want to carry forward.</p>
+            <p id="qualities-help" class="hint">Your listening goal. These words describe your intent; they do not yet control generation.</p>
             <p id="qualities-error" class="field-error" role="alert" hidden></p>
           </form>
           <div id="collection-library" class="source-heading" tabindex="-1"><div><h3>Your collection library</h3><p class="hint">Collections hold recordings. Save selections as a project to build a style corpus.</p></div></div>
@@ -94,6 +96,7 @@ SOFTWARE.
           <input id="track-search" type="search" placeholder="Search recording names" disabled>
           <section id="source-inspector" class="source-inspector" hidden aria-labelledby="source-title">
             <div class="section-heading"><div><p class="eyebrow">LISTEN · EXPLORE · SELECT</p><h3 id="source-title" tabindex="-1"></h3></div><button id="source-close" type="button">Close</button></div>
+            <button type="button" class="guide-context" data-guide-topic="select">Selection &amp; waveform help</button>
             <audio id="source-audio" preload="none" hidden></audio>
             <div class="source-console" role="group" aria-label="Recording player and waveform view">
             <div class="source-toolbar"><button id="source-play" class="primary" type="button"><svg aria-hidden="true" viewBox="0 0 24 24"><path class="play-shape" d="m8 5 11 7-11 7Z"/><path class="pause-shape" d="M7 5h3v14H7zm7 0h3v14h-3Z"/></svg><span id="source-play-label">Play</span></button><output id="source-time" class="source-time">0:00 / 0:00</output></div>
@@ -123,6 +126,7 @@ SOFTWARE.
               <p id="source-notice" class="hint" role="status" aria-live="polite"></p>
             </section>
             <details class="analysis-tools"><summary>Explore Pythian analysis</summary>
+              <button type="button" class="guide-context" data-guide-topic="analysis">What can this analysis tell me?</button>
               <button id="source-analyze" type="button"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path d="M3 12h3l3-8 6 16 3-8h3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Analyze from playhead</button>
               <p id="source-analysis-status" class="hint" role="status" aria-live="polite">Inspect this visible window to see signal levels and timing suggestions.</p>
               <label for="source-beat-layer">Timing overlay <span class="candidate-label">Experimental</span></label>
@@ -133,9 +137,9 @@ SOFTWARE.
             <div class="source-toolbar"><button id="source-mark-in" type="button">⇥ Mark start</button><button id="source-mark-out" type="button">⇤ Mark end</button><button id="source-play-range" type="button">▶ Play passage</button></div>
             <label for="source-classifications">How would you describe this selection?</label>
             <input id="source-classifications" type="text" placeholder="For example: warm, sparse, intro" maxlength="520" aria-describedby="source-class-help">
-            <p id="source-class-help" class="hint">Your labels, separated by commas. They apply to this selection.</p>
+            <p id="source-class-help" class="hint">Separate labels with commas. They describe this passage for your project and reviews.</p>
             <div class="source-toolbar"><button id="source-use-range" class="primary" type="button">Add passage to project</button><button id="source-use-whole" type="button">Add whole recording to project</button></div>
-            <details class="analysis-tools"><summary>Shape this passage with effects</summary><div id="studio-effects"></div></details>
+            <details class="analysis-tools"><summary>Shape this passage with effects</summary><button type="button" class="guide-context" data-guide-topic="effects">Effects &amp; saving help</button><div id="studio-effects"></div></details>
           </section>
           <p id="tracks-empty" class="empty-state">Your imported recordings will appear here.</p>
           <div id="tracks" class="tracks" aria-label="Available recordings"></div>
@@ -151,11 +155,13 @@ SOFTWARE.
           <div class="support"><h3>Ready for a first audition?</h3>
             <p>Save your source selections, then choose how much to generate below.</p>
             <input id="learning-mode" type="hidden" value="raw_acoustic"><details><summary>Source and preparation details</summary><p id="support-detail">Source details are catalog snapshots. Actual recordings must be verified before training. Saved route preferences do not start learning.</p></details></div>
+          <button type="button" class="guide-context" data-guide-topic="generate">How to run a first experiment</button>
+          <button type="button" class="guide-context" data-guide-topic="long">Long playback &amp; saving help</button>
           <div id="studio-batches"></div>
         </section>
         <div class="upcoming">
-          <section id="listen" class="panel" aria-labelledby="listen-title"><p class="eyebrow">03 / LISTEN</p><h2 id="listen-title">Listen and compare</h2><div id="studio-reviews"></div></section>
-          <section id="refine" class="panel" aria-labelledby="refine-title"><p class="eyebrow">04 / REFINE</p><h2 id="refine-title">Shape the next audition</h2><p>Keep the results you like, mark what needs work, and use an audition to prepare your next batch.</p></section>
+          <section id="listen" class="panel" aria-labelledby="listen-title"><p class="eyebrow">03 / LISTEN</p><h2 id="listen-title">Listen and compare</h2><button type="button" class="guide-context" data-guide-topic="listen">What should I listen for?</button><div id="studio-reviews"></div></section>
+          <section id="refine" class="panel" aria-labelledby="refine-title"><p class="eyebrow">04 / REFINE</p><h2 id="refine-title">Shape the next audition</h2><p>Save feedback above, then use a result's settings to start your next experiment. Change one thing and compare.</p><button type="button" class="guide-context" data-guide-topic="refine">How feedback guides the next batch</button></section>
         </div>      </div>
       <aside class="panel save-panel" aria-labelledby="save-title">
         <p class="eyebrow">YOUR PROJECT</p><h2 id="save-title">Keep your setup.</h2><p class="draft-badge">Sources and musical direction</p>

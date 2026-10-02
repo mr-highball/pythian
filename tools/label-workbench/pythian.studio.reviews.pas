@@ -295,19 +295,19 @@ begin
   LField := Field(LDetails, 'review-output-b', 'Second passage (optional)', 'select');
   Option(LField, '', 'Single passage');
   LField := Field(LDetails, 'review-question', 'What are you listening for?', 'input');
-  TJSHTMLInputElement(LField).value := 'Which passage keeps the direction you wanted?';
+  TJSHTMLInputElement(LField).value := 'Does this sound like the music you wanted to make?';
   LField.setAttribute('maxlength', '1024');
   LField := Field(LDetails, 'review-context', 'Context (optional)', 'input');
   LField.setAttribute('maxlength', '2048');
-  LField := Field(LDetails, 'review-styles', 'Your direction choices (one per line)', 'textarea');
+  LField := Field(LDetails, 'review-styles', 'Labels for these results (one per line)', 'textarea');
   TJSHTMLTextAreaElement(LField).value := 'Matches my intent' + #10 + 'Different direction';
   LField.setAttribute('maxlength', '512');
   LField := Field(LDetails, 'review-blind', 'Hide sample identities until feedback is saved', 'input');
   LField.setAttribute('type', 'checkbox');
   TJSHTMLInputElement(LField).checked := True;
   LField := Field(LDetails, 'review-mode', 'Review purpose', 'select');
-  Option(LField, 'development', 'Development / calibration');
-  Option(LField, 'frozen_evaluation', 'Frozen comparison');
+  Option(LField, 'development', 'Explore and improve');
+  Option(LField, 'frozen_evaluation', 'Keep comparison fixed');
   LQualification := Add(LDetails, 'details', '', '');
   Add(LQualification, 'summary', 'About review purpose', '');
   Add(LQualification, 'p', 'A frozen comparison keeps this setup fixed. It does not turn previously used sources into an untouched test.', '');
@@ -675,7 +675,7 @@ begin
       LPlayer.addEventListener('play', @Play);
       LPlayer.setAttribute('aria-label', StudioText(LSample, 'label') + ' audio');
       LId := 'style_' + LAlias;
-      LField := Field(LCard, 'review-answer-' + LId, 'Which direction does it take?', 'select');
+      LField := Field(LCard, 'review-answer-' + LId, 'Which label fits this result?', 'select');
       Option(LField, '', 'Choose after listening');
       for LChoiceIndex := 0 to LStyles.length - 1 do
       begin
@@ -694,6 +694,14 @@ begin
         else if LName = 'technical' then
         begin
           LField := Field(LCard, 'review-answer-' + LId, 'Sound quality', 'select');
+        end
+        else if LName = 'continuity' then
+        begin
+          LField := Field(LCard, 'review-answer-' + LId, 'Flow between sounds', 'select');
+        end
+        else if LName = 'repetition' then
+        begin
+          LField := Field(LCard, 'review-answer-' + LId, 'How repetition feels', 'select');
         end
         else
         begin
@@ -719,7 +727,7 @@ begin
       end;
       if StudioText(FReview, 'status') = 'submitted' then
       begin
-        Button(LCard, 'Use this direction for next batch', 'next', LAlias);
+        Button(LCard, 'Use these settings for next batch', 'next', LAlias);
       end;
     end;
   finally
