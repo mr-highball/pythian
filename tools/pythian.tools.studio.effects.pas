@@ -50,6 +50,7 @@ implementation
 uses
   SysUtils, Math,
   pythian.audio, pythian.hash, pythian.effects, pythian.biquad, pythian.dynamics,
+  pythian.effects.catalog,
   pythian.wave.read, pythian.wave.stream,
   pythian.tools.annotations.catalog, pythian.tools.annotations.sourceguard,
   pythian.tools.studio.projects, pythian.tools.studio.jobs,
@@ -133,12 +134,17 @@ begin
   Need(SafeName(AName), 'Choose a plain collection name without path separators');
 end;
 
+
 procedure ValidateStudioEffectRequest(const ARequest: TJSONObject);
 var
   LEffects: TJSONArray;
   LRow: TJSONObject;
   LIndex: Integer;
   LKind: String;
+  LDefinition: TEffectDefinition;
+  LSetting: TEffectParameter;
+  LParameter: Integer;
+  LKeys: String;
   LStart: Double;
   LEnd: Double;
 begin
@@ -169,36 +175,15 @@ begin
     LKind := LRow.Get('kind', '');
     Need((LRow.Find('bypass') <> nil) and (LRow.Find('bypass').JSONType = jtBoolean),
       'Each effect stage must declare bypass');
-    if LKind = 'gain' then
+    Need(FindEffectDefinition(LKind, LDefinition), 'Unsupported effect kind');
+    LKeys := '|kind|bypass|';
+    for LParameter := 0 to High(LDefinition.Parameters) do
     begin
-      CheckKeys(LRow, '|kind|bypass|gain_db|');
-      Number(LRow, 'gain_db', -48, 12);
-    end
-    else if (LKind = 'lowpass') or (LKind = 'highpass') then
-    begin
-      CheckKeys(LRow, '|kind|bypass|frequency_hz|q|');
-      Number(LRow, 'frequency_hz', 20, 20000);
-      Number(LRow, 'q', 0.1, 10);
-    end
-    else if LKind = 'compressor' then
-    begin
-      CheckKeys(LRow, '|kind|bypass|threshold_db|ratio|attack_ms|release_ms|makeup_db|');
-      Number(LRow, 'threshold_db', -60, 0);
-      Number(LRow, 'ratio', 1, 20);
-      Number(LRow, 'attack_ms', 0, 200);
-      Number(LRow, 'release_ms', 1, 2000);
-      Number(LRow, 'makeup_db', 0, 12);
-    end
-    else if LKind = 'limiter' then
-    begin
-      CheckKeys(LRow, '|kind|bypass|ceiling_db|release_ms|');
-      Number(LRow, 'ceiling_db', -24, 0);
-      Number(LRow, 'release_ms', 1, 2000);
-    end
-    else
-    begin
-      raise EAudio.Create('Supported effects: gain, lowpass, highpass, compressor and limiter');
+      LSetting := LDefinition.Parameters[LParameter];
+      LKeys := LKeys + LSetting.Key + '|';
+      Number(LRow, LSetting.Key, LSetting.Minimum, LSetting.Maximum);
     end;
+    CheckKeys(LRow, LKeys);
   end;
 end;
 
@@ -209,12 +194,22 @@ var
   LFilter: TBiquadSettings;
   LDynamics: TCompressorSettings;
   LEffect: TAudioEffect;
+  LDefinition: TEffectDefinition;
+  LSetting: TEffectParameter;
+  LParameter: Integer;
 begin
   Result := TEffectChain.Create(ARate);
   try
     for LIndex := 0 to AEffects.Count - 1 do
     begin
       LRow := AEffects.Objects[LIndex];
+      Need(FindEffectDefinition(LRow.Strings['kind'], LDefinition), 'Unsupported effect kind');
+      for LParameter := 0 to High(LDefinition.Parameters) do
+      begin
+        { Big Boss: a bypassed recipe must remain valid when enabled. }
+        LSetting := LDefinition.Parameters[LParameter];
+        Number(LRow, LSetting.Key, LSetting.Minimum, EffectParameterMaximum(LSetting, ARate));
+      end;
       if LRow.Booleans['bypass'] then
       begin
         Continue;
@@ -224,14 +219,18 @@ begin
       begin
         LEffect := TGainEffect.Create(ARate, Power(10, LRow.Floats['gain_db'] / 20), 0);
       end
-      else if (LRow.Strings['kind'] = 'lowpass') or (LRow.Strings['kind'] = 'highpass') then
+      else if LDefinition.IsBiquad then
       begin
         LFilter := DefaultBiquadSettings;
+        LFilter.Kind := LDefinition.BiquadKind;
         LFilter.FrequencyHz := LRow.Floats['frequency_hz'];
-        LFilter.Q := LRow.Floats['q'];
-        if LRow.Strings['kind'] = 'highpass' then
+        if not (LDefinition.Kind in [ceLowShelf, ceHighShelf]) then
         begin
-          LFilter.Kind := bkHighPass;
+          LFilter.Q := LRow.Floats['q'];
+        end;
+        if LDefinition.BiquadKind in [bkPeak, bkLowShelf, bkHighShelf] then
+        begin
+          LFilter.GainDb := LRow.Floats['gain_db'];
         end;
         LEffect := TBiquadEffect.Create(ARate, LFilter);
       end

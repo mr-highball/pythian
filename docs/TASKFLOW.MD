@@ -303,13 +303,13 @@ ledger until an actual task closes or a documented reassessment withdraws credit
 judgments about scope, not measured engineering precision or effort estimates.
 
 The [operator Studio allocation](OPERATOR-STUDIO.md#allocation-and-ownership)
-redistributes 19 unearned NS-6 points across eleven outcomes, including collection,
+redistributes 26 unearned NS-6 points across fifteen outcomes, including collection,
 effects, capture, mixed-format preparation, phone HTTPS and metadata discovery,
 without awarding acceptance.
 Studio setup acceptance adds 4 NS-6 / 0.40 overall; private corpora, bounded raw
 WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall; starting
 actions and verified large-library refresh add 2 NS-6 / 0.20 overall. The catalog
-contains **47 open / 42 accepted tasks**, NS-6 **45/55**, overall **50.80/49.20**. All
+contains **52 open / 42 accepted tasks**, NS-6 **45/55**, overall **50.80/49.20**. All
 original donor criteria remain required alongside the new operator outcomes.
 
 Task credits, not file counts, drive completion. Partial implementation,

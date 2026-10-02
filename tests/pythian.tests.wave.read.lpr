@@ -277,6 +277,9 @@ var
   LStream: TVirtualWave;
   LReader: TWaveFrameReader;
   LBlock: TAudioSamples;
+  LOverview: TWaveformOverview;
+  LReadBefore: Integer;
+  LRejected: Boolean;
 begin
   LSink := THeaderSink.Create;
   LWriter := nil;
@@ -295,7 +298,35 @@ begin
     LBlock := LReader.ReadFrames(8);
     Check((Length(LBlock) = 2) and (LBlock[0] = 0.5) and (LBlock[1] = -0.5) and
       (LReader.FramePosition = CFrames), '64-bit seek addresses final stereo frame beyond 4 GB');
-    Check(LStream.BytesRead = 84, 'Large-file check uses bounded reads only');
+      Check(LStream.BytesRead = 84, 'Large-file check uses bounded reads only');
+      LReadBefore := LStream.BytesRead;
+      LOverview := LReader.ReadWaveform(0, CFrames, 256, True);
+      Check((LOverview.SampledFrames = 16384) and (LOverview.PayloadBytes = 65536) and
+        (LStream.BytesRead - LReadBefore = 65536),
+        'Shared multi-gigabyte overview reads exactly the declared sparse payload');
+      Check((LOverview.Bins[255].EndFrame = CFrames) and
+        (LOverview.Bins[255].SampledEndFrame < CFrames),
+        'Sampled coverage never claims to measure the unsampled end of a bin');
+      LOverview := LReader.ReadWaveform(CFrames - 1, CFrames, 1, True);
+      Check((LOverview.Bins[0].Minimum = -0.5) and
+        (LOverview.Bins[0].Maximum = 0.5) and
+        (LOverview.Bins[0].Rms = 0.5), 'Shared overview measures both channels at 64-bit offset');
+      LReadBefore := LStream.BytesRead;
+      LRejected := False;
+      try
+        LOverview := LReader.ReadWaveform(0, CFrames, 256, False);
+      except
+        on EAudio do
+        begin
+          LRejected := True;
+        end;
+      end;
+      Check(LRejected and not LReader.Failed and (LReader.FramePosition = CFrames) and
+        (LReadBefore = LStream.BytesRead), 'Invalid exact overview preserves reader and reads nothing');
+      LOverview := LReader.ReadWaveform(CFrames - 3, CFrames, 2, False);
+      Check((LOverview.SampledFrames = 3) and (LOverview.Bins[0].EndFrame = CFrames - 2) and
+        (Abs(LOverview.Bins[1].Rms - Sqrt(0.125)) < 1E-12),
+        'Exact mode shares uneven bin geometry and amplitude measurement');
   finally
     LReader.Free;
     LStream.Free;

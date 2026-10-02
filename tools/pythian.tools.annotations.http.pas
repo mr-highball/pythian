@@ -1473,7 +1473,8 @@ begin
         QueryValue(ARequest.Query, 'hash'),
         QueryInt64(ARequest.Query, 'start'),
         QueryInt64(ARequest.Query, 'end'),
-        QueryInteger(ARequest.Query, 'bins'));
+        QueryInteger(ARequest.Query, 'bins'),
+        QueryValue(ARequest.Query, 'sampled') = '1');
     end
     else if (ARequest.Method = 'GET') and
       (ARequest.Path = '/api/current') then

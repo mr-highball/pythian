@@ -4,7 +4,7 @@
 
 **Description:**
 
-Completion credit: 35 goal percentage points (5.25 overall points).
+Completion credit: 30 goal percentage points (4.50 overall points).
 Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
 Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
 
@@ -40,6 +40,7 @@ Starting evidence: [WAV-LEARNING](../WAV-LEARNING.md) · [INDEPENDENT-VOICES](..
 
 **Blockers**
 
+- [NS-4_streaming_01.md](NS-4_streaming_01.md)
 - [NS-4_note-events_01.md — DONE](DONE/NS-4_note-events_01.md)
 - [NS-4_styles_02.md](DONE/NS-4_styles_02.md)
 - [NS-4_layers_04.md](DONE/NS-4_layers_04.md)
@@ -52,6 +53,10 @@ Starting evidence: [WAV-LEARNING](../WAV-LEARNING.md) · [INDEPENDENT-VOICES](..
 - [NS-2_synthesis-quality_03.md — DONE](DONE/NS-2_synthesis-quality_03.md)
 
 **Dev Notes:**
+
+- 2026-10-02, Big Boss: five unearned points transfer to
+  [bounded long-session generation](NS-4_streaming_01.md). All recorded-provider,
+  blend/reblend and full-workflow criteria remain here; scope earns no credit.
 
 - 2026-09-24 the first score-conditioned two-part WFC diagnostic stopped
   before solve/render at a 40,424-frame training-grid displacement. The

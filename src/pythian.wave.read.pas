@@ -38,8 +38,29 @@ const
   MaximumWaveReadFrames = 65536;
   MaximumWaveReadChunks = 65536;
   MaximumRF64TableEntries = 4096;
+  MaximumWaveformBins = 2048;
+  MaximumWaveformExactFrames = 8388608;
+  MaximumWaveformSampledBins = 256;
+  MaximumWaveformSampleWindow = 64;
 
 type
+  TWaveformBin = record
+    StartFrame: Int64;
+    EndFrame: Int64;
+    SampledEndFrame: Int64;
+    Minimum: Single;
+    Maximum: Single;
+    Peak: Double;
+    Rms: Double;
+  end;
+  TWaveformBins = array of TWaveformBin;
+  TWaveformOverview = record
+    Bins: TWaveformBins;
+    Sampled: Boolean;
+    SampledFrames: Int64;
+    PayloadBytes: Int64;
+  end;
+
   { Borrows a seekable stream from its current position through its exact end.
     Construction scans chunk structure without reading the audio payload.
     ReadFrames returns owned interleaved samples; empty means end of audio.
@@ -78,6 +99,13 @@ type
   public
     constructor Create(const AStream: TStream);
     function ReadFrames(const ACount: Integer = 4096): TAudioSamples;
+    { Owned bin data, combining all channels. Sampled mode reads only the first
+      64 frames of each uniform bin: it is not an exact peak envelope. Exact
+      mode visits every frame within its finite page bound. Both modes move
+      this reader's cursor; argument errors preserve it and I/O failures use
+      the normal poisoned-reader contract. No catalog, JSON or WFC dependency. }
+    function ReadWaveform(const AStartFrame, AEndFrame: Int64;
+      const ABins: Integer; const ASampled: Boolean): TWaveformOverview;
     procedure SeekFrame(const AFrame: Int64);
     property SampleRate: Integer read FSampleRate;
     property Channels: Integer read FChannels;
@@ -467,6 +495,93 @@ begin
   finally
     FBusy := False;
   end;
+end;
+
+function TWaveFrameReader.ReadWaveform(const AStartFrame, AEndFrame: Int64;
+  const ABins: Integer; const ASampled: Boolean): TWaveformOverview;
+var
+  LSpan: Int64;
+  LRemaining: Int64;
+  LCount: Integer;
+  LIndex: Integer;
+  LSample: Integer;
+  LSum: Double;
+  LValue: Double;
+  LFirst: Boolean;
+  LSamples: TAudioSamples;
+  LBin: TWaveformBin;
+
+  function Boundary(const AOrdinal: Integer): Int64;
+  begin
+    { Big Boss: quotient/remainder avoids multiplying a long RF64 span. }
+    Result := AStartFrame + (LSpan div ABins) * AOrdinal +
+      ((LSpan mod ABins) * AOrdinal) div ABins;
+  end;
+
+begin
+  CheckReady;
+  if (AStartFrame < 0) or (AEndFrame <= AStartFrame) or
+    (AEndFrame > FFrameCount) or (ABins < 1) or
+    (ABins > MaximumWaveformBins) then
+  begin
+    raise EAudio.Create('Waveform range or bin count exceeds bounds');
+  end;
+  LSpan := AEndFrame - AStartFrame;
+  if (ABins > LSpan) or (ASampled and (ABins > MaximumWaveformSampledBins)) or
+    (not ASampled and (LSpan > MaximumWaveformExactFrames)) then
+  begin
+    raise EAudio.Create('Waveform exceeds read budget or has empty bins');
+  end;
+  Result.Bins := nil;
+  Result.Sampled := ASampled;
+  Result.SampledFrames := 0;
+  Result.PayloadBytes := 0;
+  SetLength(Result.Bins, ABins);
+  for LIndex := 0 to ABins - 1 do
+  begin
+    LBin.StartFrame := Boundary(LIndex);
+    LBin.EndFrame := Boundary(LIndex + 1);
+    LRemaining := LBin.EndFrame - LBin.StartFrame;
+    if ASampled then
+    begin
+      LRemaining := Min(LRemaining, MaximumWaveformSampleWindow);
+    end;
+    LBin.SampledEndFrame := LBin.StartFrame + LRemaining;
+    LBin.Minimum := 0;
+    LBin.Maximum := 0;
+    LBin.Peak := 0;
+    LBin.Rms := 0;
+    LSum := 0;
+    LFirst := True;
+    SeekFrame(LBin.StartFrame);
+    Inc(Result.SampledFrames, LRemaining);
+    while LRemaining > 0 do
+    begin
+      LCount := Min(LRemaining, 4096);
+      LSamples := ReadFrames(LCount);
+      for LSample := 0 to High(LSamples) do
+      begin
+        if LFirst then
+        begin
+          LBin.Minimum := LSamples[LSample];
+          LBin.Maximum := LSamples[LSample];
+          LFirst := False;
+        end
+        else
+        begin
+          LBin.Minimum := Min(LBin.Minimum, LSamples[LSample]);
+          LBin.Maximum := Max(LBin.Maximum, LSamples[LSample]);
+        end;
+        LValue := LSamples[LSample];
+        LSum := LSum + Sqr(LValue);
+        LBin.Peak := Max(LBin.Peak, Abs(LSamples[LSample]));
+      end;
+      Dec(LRemaining, LCount);
+    end;
+    LBin.Rms := Sqrt(LSum / ((LBin.SampledEndFrame - LBin.StartFrame) * FChannels));
+    Result.Bins[LIndex] := LBin;
+  end;
+  Result.PayloadBytes := Result.SampledFrames * FAlign;
 end;
 
 function TWaveFrameReader.ReadFrames(const ACount: Integer): TAudioSamples;

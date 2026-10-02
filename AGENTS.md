@@ -8,6 +8,10 @@ Read [the project profile](PROJECT.md) and the relevant standards in
 
 - Root owned Pascal units at `pythian`; keep the portable library independent
   of WFC, Phanes, browser APIs, engines, and playback devices.
+- Consolidate duplicated algorithms and contracts into the primary portable
+  library implementation. Native, pas2js and future WASM consumers share it;
+  keep only platform I/O and presentation in adapters. Remove superseded
+  one-off logic rather than preserving it for compatibility.
 - Use Pascal for implementation, analysis, codecs, and maintained tools.
   Scripts orchestrate builds only. Use existing verified toolchains.
 - Keep all inference execution, including experimental probes, Pascal-owned.

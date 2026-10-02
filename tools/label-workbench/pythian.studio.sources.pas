@@ -63,6 +63,7 @@ type
     FBins: TJSArray;
     FWindowStart: Double;
     FWindowEnd: Double;
+    FViewSeconds: Double;
     FEpoch: Integer;
     FDragging: Boolean;
     FDragStart: Double;
@@ -80,6 +81,7 @@ type
     procedure Notice(const AText: String; const AError: Boolean = False);
     procedure OpenTrack(const AHash: String; const ASelection: Integer);
     procedure WindowAt(const ASeconds: Double); async;
+    procedure ResizeView(const ASeconds: Double);
     procedure Analyze; async;
     procedure DrawWaveform;
     procedure DrawTracks;
@@ -231,7 +233,8 @@ begin
   LNames := ['source-mark-in', 'source-mark-out', 'source-prev', 'source-next',
     'source-use-range', 'source-use-whole', 'source-close', 'source-play-range',
     'source-prepare', 'source-play', 'source-waveform-retry',
-    'source-analyze'];
+    'source-analyze', 'source-go', 'source-zoom-in', 'source-zoom-out',
+    'source-view-whole', 'source-view-apply'];
   for LIndex := 0 to High(LNames) do
   begin
     El(LNames[LIndex]).addEventListener('click', @Click);
@@ -562,6 +565,7 @@ begin
     FTrack['prepared_snapshot'] := '';
   end;
   FEditing := ASelection;
+  FViewSeconds := 30;
   El('source-inspector').removeAttribute('hidden');
   El('source-title').textContent := StudioText(FTrack, 'title');
   Input('source-seek').max := FloatToStr(StudioNumber(FTrack, 'frame_count') /
@@ -588,11 +592,13 @@ begin
   UpdateTransport;
   El('source-playback-status').textContent := 'Choose a position, then press Play.';
   El('source-prepare').setAttribute('hidden', '');
+  El('source-preparation-purpose').textContent := 'Ready for project use, analysis and effects.';
   if (StudioText(FTrack, 'entry_id') <> '') and
     (StudioText(FTrack, 'prepared_snapshot') <>
       StudioText(FTrack, 'entry_snapshot_sha256')) then
   begin
     El('source-prepare').removeAttribute('hidden');
+    El('source-preparation-purpose').textContent := 'Browsing needs no preparation. Add music to your project, or prepare it for analysis and effects.';
   end;
   if FEditing < 0 then
   begin
@@ -604,7 +610,8 @@ begin
   end;
   WindowAt(FPosition);
   TJSHTMLElement(El('source-title')).focus;
-  Notice('Preview a passage, then add it. Only this recording will be prepared.');
+  Notice('');
+  PreparationState;
 end;
 
 procedure TStudioSourceEditor.SetRange(const AStart, AEnd: Double);
@@ -668,11 +675,11 @@ begin
   LRate := StudioNumber(FTrack, 'sample_rate');
   LHash := StudioText(FTrack, 'source_sha256');
   FWindowStart := Floor(Max(0, Min(ASeconds * LRate,
-    StudioNumber(FTrack, 'frame_count') - 1)));
+    StudioNumber(FTrack, 'frame_count') - Min(StudioNumber(FTrack, 'frame_count'), Round(FViewSeconds * LRate)))));
   FWindowEnd := Min(StudioNumber(FTrack, 'frame_count'),
-    FWindowStart + Min(Floor(LRate * 30), 2000000));
+    FWindowStart + Max(1, Round(LRate * FViewSeconds)));
   FAnalysis := nil;
-  El('source-analysis-status').textContent := 'Inspect this visible window to see signal levels and timing suggestions.';
+  El('source-analysis-status').textContent := 'Analyze up to 30 seconds from the playhead for levels and suggested beats.';
   El('source-beat-layer').innerHTML := '<option value="-1">No beat overlay</option>';
   FBins := nil;
   El('source-waveform-state').textContent := 'Loading waveform…';
@@ -682,11 +689,16 @@ begin
   DrawWaveform;
   El('source-window').textContent := StudioTime(FWindowStart / LRate) + '–' +
     StudioTime(FWindowEnd / LRate);
+  Input('source-view-length').value := StudioTime((FWindowEnd - FWindowStart) / LRate);
+  El('source-view-whole').setAttribute('aria-pressed', BoolToStr(
+    (FWindowStart = 0) and (FWindowEnd = StudioNumber(FTrack, 'frame_count')), 'true', 'false'));
+  TJSHTMLButtonElement(El('source-prev')).disabled := FDisabled or (FWindowStart = 0);
+  TJSHTMLButtonElement(El('source-next')).disabled := FDisabled or (FWindowEnd = StudioNumber(FTrack, 'frame_count'));
   try
     LEntry := StudioText(FTrack, 'entry_id');
     LPath := '/api/waveform?hash=' + LHash +
       '&start=' + FloatToStr(FWindowStart) + '&end=' + FloatToStr(FWindowEnd) +
-      '&bins=' + FloatToStr(Min(128, FWindowEnd - FWindowStart));
+      '&bins=' + FloatToStr(Min(128, FWindowEnd - FWindowStart)) + '&sampled=1';
     if (LEntry <> '') and (StudioText(FTrack, 'status') = 'available') then
     begin
       LPath := '/api/studio/library-waveform?entry=' + encodeURIComponent(LEntry) +
@@ -755,6 +767,17 @@ begin
   end;
 end;
 
+procedure TStudioSourceEditor.ResizeView(const ASeconds: Double);
+begin
+  if FTrack = nil then
+  begin
+    Exit;
+  end;
+  FViewSeconds := Min(StudioNumber(FTrack, 'frame_count') /
+    StudioNumber(FTrack, 'sample_rate'), Max(0.1, ASeconds));
+  WindowAt(FPosition - FViewSeconds / 2);
+end;
+
 procedure TStudioSourceEditor.Analyze; async;
 var
   LRequest: TJSObject;
@@ -768,6 +791,8 @@ var
   LAttempt: Integer;
   LIndex: Integer;
   LOption: TJSElement;
+  LStart: Double;
+  LEnd: Double;
 begin
   if (FTrack = nil) or FAnalysisBusy then
   begin
@@ -785,15 +810,20 @@ begin
   LEpoch := FEpoch;
   LJobId := 'inspect-' + FloatToStr(TJSDate.now) + '-' + IntToStr(Random(100000000));
   TJSHTMLButtonElement(El('source-analyze')).disabled := True;
-  El('source-analysis-status').textContent := 'Queued for analysis…';
+  LStart := Floor(FPosition * StudioNumber(FTrack, 'sample_rate'));
+  LEnd := Min(StudioNumber(FTrack, 'frame_count'), LStart +
+    Min(2000000, 30 * StudioNumber(FTrack, 'sample_rate')));
+  El('source-analysis-status').textContent := 'Analyzing ' + StudioTime(LStart /
+    StudioNumber(FTrack, 'sample_rate')) + '–' + StudioTime(LEnd /
+    StudioNumber(FTrack, 'sample_rate')) + '…';
   try
     LRequest := TJSObject.new;
     LRequest['format'] := 'pythian.studio.job.write.v1';
     LRequest['job_id'] := LJobId;
     LRequest['kind'] := 'inspect_source';
     LRequest['source_sha256'] := StudioText(FTrack, 'source_sha256');
-    LRequest['start_frame'] := FWindowStart;
-    LRequest['end_frame'] := Min(FWindowEnd, FWindowStart + 2000000);
+    LRequest['start_frame'] := LStart;
+    LRequest['end_frame'] := LEnd;
     LResponse := await(TJSResponse, FFetch('/api/studio/job', 'POST', TJSJSON.stringify(LRequest)));
     if LResponse.status <> 200 then
     begin
@@ -1108,6 +1138,11 @@ begin
   end;
   FPrepareWindowStart := FWindowStart;
   FPrepareWindowEnd := FWindowEnd;
+  if CompletedForTrack then
+  begin
+    ApplyPrepared;
+    Exit;
+  end;
   LWrite := TJSObject.new;
   LWrite['discovery_revision'] := StudioNumber(FTrack, 'discovery_revision');
   LEntries := TJSArray.new;
@@ -1123,7 +1158,20 @@ begin
     Notice('Checking preparation status. Try this action again when it is ready.');
     Exit;
   end;
-  Notice('Preparing only this recording. Your passage and project are preserved.');
+  if ASelection <> nil then
+  begin
+    El('source-preparation-purpose').textContent := 'Preparing this recording to add your selection to the project.';
+  end
+  else if AAnalyze then
+  begin
+    El('source-preparation-purpose').textContent := 'Preparing this recording, then analyzing at the playhead.';
+  end
+  else
+  begin
+    El('source-preparation-purpose').textContent := 'Preparing this recording for analysis and effects.';
+  end;
+  Notice('Your passage and project are preserved.');
+  TJSHTMLElement(El('source-preparation-purpose')).scrollIntoView;
 end;
 
 procedure TStudioSourceEditor.PreparationDone;
@@ -1138,9 +1186,23 @@ var
 begin
   LJob := FPreparation.CurrentJob;
   LStatus := StudioText(LJob, 'status');
-  if (LStatus = 'failed') or (LStatus = 'cancelled') then
+  if FTrack = nil then
   begin
-    FPrepareEntry := '';
+    Exit;
+  end;
+  if CompletedForTrack and (StudioText(FTrack, 'prepared_snapshot') <>
+    StudioText(FTrack, 'entry_snapshot_sha256')) then
+  begin
+    El('source-prepare').textContent := 'Use prepared recording';
+    El('source-preparation-purpose').textContent := 'Already prepared. Load it for analysis and effects.';
+  end
+  else
+  begin
+    El('source-prepare').textContent := 'Prepare for analysis & effects';
+  end;
+  if ((LStatus = 'failed') or (LStatus = 'cancelled')) and
+    (FPrepareEntry = StudioText(FTrack, 'entry_id')) then
+  begin
     Notice('Preparation ' + LStatus + '. Your passage and project are preserved.',
       LStatus = 'failed');
   end;
@@ -1319,6 +1381,7 @@ begin
     if (FTrack <> nil) and (StudioText(FTrack, 'entry_id') = LKey) then
     begin
       El('source-prepare').setAttribute('hidden', '');
+      El('source-preparation-purpose').textContent := 'Ready for project use, analysis and effects.';
       if LSelection <> nil then
       begin
         if (FSelections <> FPrepareDraft) or
@@ -1336,7 +1399,7 @@ begin
       end
       else
       begin
-        Notice('Recording prepared. Analysis and effects can now use it.');
+        Notice('');
       end;
       if LAnalyze and (FSelections = FPrepareDraft) and
         (FWindowStart = FPrepareWindowStart) and (FWindowEnd = FPrepareWindowEnd) then
@@ -1399,10 +1462,19 @@ begin
     StudioTime(StudioNumber(FTrack, 'frame_count') / StudioNumber(FTrack, 'sample_rate'));
   if not FSeeking then Input('source-seek').value := FloatToStr(FPosition);
   Input('source-seek').setAttribute('aria-valuetext', StudioTime(FPosition));
+  if document.activeElement <> Input('source-position') then
+  begin
+    Input('source-position').value := StudioTime(FPosition);
+  end;
+  El('source-play').setAttribute('data-playing', BoolToStr(FPlaying, 'true', 'false'));
   if FPlaying then
-    El('source-play').textContent := 'Pause'
+  begin
+    El('source-play-label').textContent := 'Pause';
+  end
   else
-    El('source-play').textContent := 'Play from here';
+  begin
+    El('source-play-label').textContent := 'Play';
+  end;
   DrawWaveform;
 end;
 
@@ -1424,7 +1496,10 @@ begin
   FPlayEnd := StudioNumber(FTrack, 'frame_count') / LRate;
   El('source-playback-status').textContent := 'Ready at ' + StudioTime(FPosition) + '.';
   UpdateTransport;
-  WindowAt(FPosition);
+  if (FPosition * LRate < FWindowStart) or (FPosition * LRate >= FWindowEnd) then
+  begin
+    WindowAt(FPosition);
+  end;
   if AResume then
   begin
     FPlaying := True;
@@ -1547,8 +1622,44 @@ begin
       end;
     'source-mark-in': Input('source-start').value := StudioTime(FPosition);
     'source-mark-out': Input('source-end').value := StudioTime(FPosition);
-    'source-prev': SeekTo(Max(0, FWindowStart / StudioNumber(FTrack, 'sample_rate') - 30), FPlaying);
-    'source-next': SeekTo(FWindowEnd / StudioNumber(FTrack, 'sample_rate'), FPlaying);
+    'source-prev':
+      begin
+        LStart := Max(0, FWindowStart / StudioNumber(FTrack, 'sample_rate') - FViewSeconds);
+        WindowAt(LStart);
+        SeekTo(LStart, FPlaying);
+      end;
+    'source-next':
+      begin
+        LStart := FWindowEnd / StudioNumber(FTrack, 'sample_rate');
+        WindowAt(LStart);
+        SeekTo(LStart, FPlaying);
+      end;
+    'source-zoom-in': ResizeView(FViewSeconds / 2);
+    'source-zoom-out': ResizeView(FViewSeconds * 2);
+    'source-view-whole': ResizeView(StudioNumber(FTrack, 'frame_count') / StudioNumber(FTrack, 'sample_rate'));
+    'source-view-apply':
+    begin
+      if ParseSourceTime(Input('source-view-length').value, LStart) and (LStart > 0) then
+      begin
+        ResizeView(LStart);
+      end
+      else
+      begin
+        Notice('Enter a positive view length as minutes:seconds, for example 2:00.', True);
+      end;
+    end;
+    'source-go':
+    begin
+      if ParseSourceTime(Input('source-position').value, LStart) and
+        (LStart < StudioNumber(FTrack, 'frame_count') / StudioNumber(FTrack, 'sample_rate')) then
+      begin
+        SeekTo(LStart, FPlaying);
+      end
+      else
+      begin
+        Notice('Enter a position inside the recording as minutes:seconds.', True);
+      end;
+    end;
     'source-waveform-retry': WindowAt(FWindowStart / StudioNumber(FTrack, 'sample_rate'));
     'source-play':
       begin
@@ -1676,7 +1787,10 @@ begin
     FPosition := FChunkEnd;
     if FChunkEnd < FPlayEnd - 0.5 / StudioNumber(FTrack, 'sample_rate') then
     begin
-      WindowAt(FPosition);
+      if FPosition * StudioNumber(FTrack, 'sample_rate') >= FWindowEnd then
+      begin
+        WindowAt(FPosition);
+      end;
       PlayChunk;
     end
     else

@@ -427,7 +427,7 @@ begin
         begin
           if FKind = 'library_prepare' then
           begin
-            Notice('Recording prepared.');
+            Notice('');
           end
           else
           begin
@@ -536,7 +536,7 @@ begin
           FKnown := True;
           if FKind = 'library_prepare' then
           begin
-            Notice('Prepare a recording when you add or analyze it.');
+            Notice('');
           end
           else
           begin

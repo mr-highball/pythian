@@ -10,8 +10,12 @@ deliverable's acceptance, not polish deferred until after the backend.
 
 ## Operator flow
 
-[Metadata discovery and selected-use preparation](TODO/NS-6_studio_11.md) is
-selected. [Phone HTTPS](TODO/NS-6_studio_10.md) remains open: the operator reports
+The selected expansion adds the [implemented filter catalog](TODO/NS-6_studio_12.md),
+[flexible source workspace](TODO/NS-6_studio_13.md) and
+[custom-duration streaming](TODO/NS-6_studio_14.md), with a separate
+[native generation prerequisite](TODO/NS-4_streaming_01.md).
+[Metadata discovery and selected-use preparation](TODO/NS-6_studio_11.md)
+retains its remaining criteria. [Phone HTTPS](TODO/NS-6_studio_10.md) remains open: the operator reports
 that the local browser exception worked, while full capture/browser criteria
 remain unverified. Same-port Schannel HTTPS and optional certificate onboarding
 retain HTTP bootstrap and host localhost recording.
@@ -95,8 +99,9 @@ completed by planning, and all original criteria in the donor tasks remain.
 | Task | Previous NS-6 points | Current NS-6 points | Outcome |
 | --- | ---: | ---: | --- |
 | [authoring_02](TODO/NS-6_authoring_02.md) | 8 | 1 | Physical LAN/source operator qualification |
-| [delivery_03](TODO/NS-6_delivery_03.md) | 10 | 2 | Final package and extracted workflow |
-| [delivery_04](TODO/NS-6_delivery_04.md) | 12 | 8 | Independent complete-workflow reproduction |
+| [delivery_03](TODO/NS-6_delivery_03.md) | 10 | 1 | Final package and extracted workflow |
+| [delivery_04](TODO/NS-6_delivery_04.md) | 12 | 4 | Independent complete-workflow reproduction |
+| [delivery_05](TODO/NS-6_delivery_05.md) | 5 | 3 | Final completion audit and handoff |
 | [studio_01 — DONE](TODO/DONE/NS-6_studio_01.md) | 0 | 4 | Durable intuitive project/source setup |
 | [studio_02](TODO/DONE/NS-6_studio_02.md) | 0 | 2 | Actual bounded jobs and automatic audition queue |
 | [studio_03](TODO/NS-6_studio_03.md) | 0 | 2 | Musical comparison and deliberate iteration |
@@ -108,7 +113,21 @@ completed by planning, and all original criteria in the donor tasks remain.
 | [studio_09](TODO/DONE/NS-6_studio_09.md) | 0 | 1 | Verified large-library refresh without duplicate staging |
 | [studio_10](TODO/NS-6_studio_10.md) | 0 | 1 | Phone HTTPS and optional certificate onboarding |
 | [studio_11](TODO/NS-6_studio_11.md) | 0 | 1 | Metadata-only discovery, bounded preview and selected-use preparation |
-| **Total allocation at scoping** | **30** | **30** | **Scoping earned no credit** |
+| [studio_12](TODO/NS-6_studio_12.md) | 0 | 1 | All implemented biquad filters in the effects rack |
+| [studio_13](TODO/NS-6_studio_13.md) | 0 | 2 | Flexible bounded source view and unified preparation |
+| [studio_14](TODO/NS-6_studio_14.md) | 0 | 3 | Custom-duration generation with streamed playback |
+| [studio_15](TODO/NS-6_studio_15.md) | 0 | 1 | Existing delay/reverb exposure with explicit tails |
+| **Total allocation at scoping** | **35** | **35** | **Scoping earned no credit** |
+
+The 2026-10-02 expansion transfers six further unearned NS-6 points: one from
+delivery_03, three from delivery_04 and two from delivery_05. Native long-session
+generation separately receives five unearned NS-4 points from integration_01
+(35 → 30). All donor criteria remain. The waveform's 30-second default becomes
+an adjustable view, independent of bounded audio chunks. Long output starts
+playing before completion, with explicit pause/stop and bounded production;
+24-hour duration planning alone cannot establish 24-hour musical quality.
+The consolidation inventory adds studio_15 with one further unearned
+delivery_04 point, making seven transferred NS-6 points in this expansion.
 
 The added operator outcomes receive explicit weight from later verification
 work. Those verification obligations remain required at reduced planning weight;
@@ -116,8 +135,8 @@ they do not disappear or move into the new tasks. Scoping left 49.40 accepted;
 independent project/setup acceptance subsequently adds 4 NS-6 / 0.40 overall.
 Private corpora, raw WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall.
 Accepted starting actions/navigation and large-library refresh add 2 NS-6 / 0.20 overall.
-The current ledger is **50.80 accepted / 49.20 remaining**, **47 open / 42 DONE**.
-NS-6 is **45 accepted / 55 unearned** with eleven open tasks. Goal weights are unchanged.
+The current ledger is **50.80 accepted / 49.20 remaining**, **52 open / 42 DONE**.
+NS-6 is **45 accepted / 55 unearned** with fifteen open tasks. Goal weights are unchanged.
 The later collection and effects requirements each reallocate one unearned point
 from jobs and iteration; all original criteria remain. Scoping earns no acceptance.
 Capture/exploration receives two additional unearned delivery_03 points with
@@ -129,7 +148,7 @@ the declared supported route until conversion and original-frame maps pass.
 The studio is a current NS-5 calibration enabler, attributed primarily to NS-6
 usability. Actual calibration/control validity remains evaluation_01; complete
 musical references remain evaluation_04; inference and many-hour style quality
-keep their existing owners. Final packaging includes all ten studio outcomes.
+keep their existing owners. Final packaging includes all fifteen studio outcomes.
 Actual phone feedback adds studio_08, funded by one further unearned authoring_02
 point. Its prominent recording/import/library entry, existing-corpus connection
 and shared attention badges precede further operator iteration acceptance.

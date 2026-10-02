@@ -35,6 +35,7 @@ uses
   pythian.wave,
   pythian.wave.read,
   pythian.tools.annotations.catalog,
+  pythian.tools.annotations.media,
   pythian.tools.studio.&library,
   pythian.tools.studio.&library.discovery;
 
@@ -478,6 +479,53 @@ begin
     finally
       LReport.Free;
     end;
+    LSelection := Selection(RowNamed(LIndex, 'large.wav'));
+    try
+      LReport := PrepareStudioLibraryEntries(LCatalog, LLibrary, Stage, 1, LSelection);
+      try
+        LHash := LReport.Arrays['mappings'].Objects[0].Strings['source_sha256'];
+      finally
+        LReport.Free;
+      end;
+    finally
+      LSelection.Free;
+    end;
+    LReport := CatalogWaveformRegion(LCatalog, LHash, 0, 8388608, 256, True);
+    try
+      Check((LReport.Strings['sampling'] = 'uniform_windows') and
+        (LReport.Int64s['sampled_frame_count'] = 16384) and
+        (LReport.Int64s['payload_read_bytes'] = 32768),
+        'Prepared whole-track overview shares bounded sampling, not full PCM scan');
+      Check(LReport.Arrays['bins'].Objects[255].Int64s['end_frame'] = 8388608,
+        'Overview bins retain full original extent');
+    finally
+      LReport.Free;
+    end;
+    LReport := CatalogWaveformRegion(LCatalog, LHash, 8388607, 8388608, 1, True);
+    try
+      Check((LReport.Int64s['sampled_frame_count'] = 1) and
+        (LReport.Int64s['payload_read_bytes'] = 2) and
+        (LReport.Arrays['bins'].Objects[0].Int64s['sampled_start_frame'] = 8388607),
+        'Single final frame samples exact late source clock');
+    finally
+      LReport.Free;
+    end;
+    LFailed := False;
+    try
+      LReport := CatalogWaveformRegion(LCatalog, LHash, 0, 8388608, 257, True);
+      LReport.Free;
+    except
+      on EAudio do LFailed := True;
+    end;
+    Check(LFailed, 'Sampled catalog overview enforces finite window count');
+    LFailed := False;
+    try
+      LReport := CatalogWaveformRegion(LCatalog, LHash, 8388607, 8388609, 1, True);
+      LReport.Free;
+    except
+      on EAudio do LFailed := True;
+    end;
+    Check(LFailed, 'Overview cannot sample beyond original extent');
     LProbe := TProbe.Create;
     try
       LProbe.StopStage := 'publishing_discovery';

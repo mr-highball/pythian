@@ -33,6 +33,7 @@ uses
   Web,
   SysUtils,
   Types,
+  pythian.effects.catalog,
   pythian.studio.sources;
 
 type
@@ -112,30 +113,6 @@ begin
   Result := TJSObject(TJSJSON.parse(TJSJSON.stringify(AObject)));
 end;
 
-function EffectName(const AKind: String): String;
-begin
-  Result := AKind;
-  if AKind = 'gain' then
-  begin
-    Result := 'Gain';
-  end
-  else if AKind = 'lowpass' then
-  begin
-    Result := 'Low-pass filter';
-  end
-  else if AKind = 'highpass' then
-  begin
-    Result := 'High-pass filter';
-  end
-  else if AKind = 'compressor' then
-  begin
-    Result := 'Compressor';
-  end
-  else if AKind = 'limiter' then
-  begin
-    Result := 'Limiter';
-  end;
-end;
 
 function TStudioEffects.El(const AId: String): TJSElement;
 begin
@@ -168,8 +145,8 @@ var
   LLabel: TJSElement;
   LControl: TJSElement;
   LOption: TJSElement;
-  LKind: String;
-  LKinds: array of String;
+  LKind: TCatalogEffect;
+  LDefinition: TEffectDefinition;
   LDetails: TJSElement;
 begin
   LRoot := El('studio-effects');
@@ -180,11 +157,11 @@ begin
   LLabel := Add(LRow, 'label', 'Add an effect', '');
   LControl := Add(LLabel, 'select', '', '');
   LControl.id := 'effects-kind';
-  LKinds := ['gain', 'lowpass', 'highpass', 'compressor', 'limiter'];
-  for LKind in LKinds do
+  for LKind := Low(TCatalogEffect) to High(TCatalogEffect) do
   begin
-    LOption := Add(LControl, 'option', EffectName(LKind), '');
-    LOption.setAttribute('value', LKind);
+    LDefinition := EffectDefinition(LKind);
+    LOption := Add(LControl, 'option', LDefinition.Caption, '');
+    LOption.setAttribute('value', LDefinition.Key);
   end;
   Button(LRow, 'Add effect', 'add');
   LControl := Add(LRoot, 'div', '', 'tracks');
@@ -259,6 +236,9 @@ var
   LKind: String;
   LId: String;
   LIndex: Integer;
+  LDefinition: TEffectDefinition;
+  LSetting: TEffectParameter;
+  LParameter: Integer;
 begin
   LRoot := El('effects-rack');
   LRoot.innerHTML := '';
@@ -270,9 +250,14 @@ begin
   begin
     LEffect := TJSObject(FRack[LIndex]);
     LKind := StudioText(LEffect, 'kind');
+    if not FindEffectDefinition(LKind, LDefinition) then
+    begin
+      raise Exception.Create('Unsupported effect in rack.');
+    end;
     LId := StudioText(LEffect, 'ui_id');
     LCard := Add(LRoot, 'div', '', 'track');
-    Add(LCard, 'h3', IntToStr(LIndex + 1) + '. ' + EffectName(LKind), '');
+    Add(LCard, 'h3', IntToStr(LIndex + 1) + '. ' + LDefinition.Caption, '');
+    Add(LCard, 'p', LDefinition.Purpose, 'hint');
     LRow := Add(LCard, 'div', '', 'source-toolbar');
     LLabel := Add(LRow, 'label', '', '');
     LCheck := Add(LLabel, 'input', '', '');
@@ -288,29 +273,17 @@ begin
     TJSHTMLButtonElement(LRow.lastElementChild).disabled := LIndex = FRack.length - 1;
     Button(LRow, 'Remove', 'remove:' + LId);
     LDetails := Add(LCard, 'details', '', 'advanced');
+    LDetails.setAttribute('open', '');
     Add(LDetails, 'summary', 'Parameters', '');
     LParams := Add(LDetails, 'div', '', 'range-fields');
-    if LKind = 'gain' then
+    for LParameter := 0 to High(LDefinition.Parameters) do
     begin
-      Parameter(LParams, LEffect, 'gain_db', 'Gain (−48 to +12 dB)');
-    end
-    else if (LKind = 'lowpass') or (LKind = 'highpass') then
+      LSetting := LDefinition.Parameters[LParameter];
+      Parameter(LParams, LEffect, LSetting.Key, LSetting.Caption);
+    end;
+    if LDefinition.IsBiquad and not (LDefinition.Kind in [ceLowShelf, ceHighShelf]) then
     begin
-      Parameter(LParams, LEffect, 'frequency_hz', 'Cutoff (Hz, below half the source rate)');
-      Parameter(LParams, LEffect, 'q', 'Resonance Q (0.1–10)');
-    end
-    else if LKind = 'compressor' then
-    begin
-      Parameter(LParams, LEffect, 'threshold_db', 'Threshold (−60 to 0 dB)');
-      Parameter(LParams, LEffect, 'ratio', 'Ratio (1–20)');
-      Parameter(LParams, LEffect, 'attack_ms', 'Attack (0–200 ms)');
-      Parameter(LParams, LEffect, 'release_ms', 'Release (1–2,000 ms)');
-      Parameter(LParams, LEffect, 'makeup_db', 'Makeup gain (0–12 dB)');
-    end
-    else if LKind = 'limiter' then
-    begin
-      Parameter(LParams, LEffect, 'ceiling_db', 'Ceiling (−24 to 0 dB)');
-      Parameter(LParams, LEffect, 'release_ms', 'Release (1–2,000 ms)');
+      Add(LDetails, 'p', 'Higher Q makes a narrower or more resonant shape.', 'hint');
     end;
   end;
 end;
@@ -466,7 +439,7 @@ begin
     begin
       Inc(LDots);
     end
-    else if not ((LText[LIndex] = '-') and (LIndex = 1)) then
+    else if not ((LText[LIndex] in ['-', '+']) and (LIndex = 1)) then
     begin
       Reject('Use a decimal number for ');
     end;
@@ -478,7 +451,7 @@ begin
     not TryStrToFloat(LText, Result, LSettings) or
     not ((Result >= AMinimum) and (Result <= AMaximum)) then
   begin
-    Reject('Check the allowed range for ');
+    Reject('Use ' + FloatToStr(AMinimum) + ' to ' + FloatToStr(AMaximum) + ' for ');
   end;
 end;
 
@@ -487,7 +460,9 @@ var
   LStored: TJSObject;
   LRow: TJSObject;
   LKind: String;
-  LFrequency: Double;
+  LDefinition: TEffectDefinition;
+  LSetting: TEffectParameter;
+  LParameter: Integer;
   LIndex: Integer;
 begin
   Result := TJSArray.new;
@@ -498,32 +473,15 @@ begin
     LRow := TJSObject.new;
     LRow['kind'] := LKind;
     LRow['bypass'] := Boolean(LStored['bypass']);
-    if LKind = 'gain' then
+    if not FindEffectDefinition(LKind, LDefinition) then
     begin
-      LRow['gain_db'] := Number(LStored, 'gain_db', -48, 12);
-    end
-    else if (LKind = 'lowpass') or (LKind = 'highpass') then
+      raise Exception.Create('Choose a supported effect.');
+    end;
+    for LParameter := 0 to High(LDefinition.Parameters) do
     begin
-      LFrequency := Number(LStored, 'frequency_hz', 20, 20000);
-      if LFrequency >= ARate / 2 then
-      begin
-        raise Exception.Create('Filter cutoff must be below half the source sample rate.');
-      end;
-      LRow['frequency_hz'] := LFrequency;
-      LRow['q'] := Number(LStored, 'q', 0.1, 10);
-    end
-    else if LKind = 'compressor' then
-    begin
-      LRow['threshold_db'] := Number(LStored, 'threshold_db', -60, 0);
-      LRow['ratio'] := Number(LStored, 'ratio', 1, 20);
-      LRow['attack_ms'] := Number(LStored, 'attack_ms', 0, 200);
-      LRow['release_ms'] := Number(LStored, 'release_ms', 1, 2000);
-      LRow['makeup_db'] := Number(LStored, 'makeup_db', 0, 12);
-    end
-    else if LKind = 'limiter' then
-    begin
-      LRow['ceiling_db'] := Number(LStored, 'ceiling_db', -24, 0);
-      LRow['release_ms'] := Number(LStored, 'release_ms', 1, 2000);
+      LSetting := LDefinition.Parameters[LParameter];
+      LRow[LSetting.Key] := Number(LStored, LSetting.Key, LSetting.Minimum,
+        EffectParameterMaximum(LSetting, Trunc(ARate)));
     end;
     Result.push(LRow);
   end;
@@ -1010,8 +968,9 @@ var
   LRow: TJSObject;
   LSwap: JSValue;
   LIndex: Integer;
-  LSelection: TJSObject;
-  LCutoff: Integer;
+  LDefinition: TEffectDefinition;
+  LSetting: TEffectParameter;
+  LParameter: Integer;
 begin
   Result := False;
   LAction := TJSElement(AEvent.currentTarget).getAttribute('data-effect-action');
@@ -1052,44 +1011,15 @@ begin
     LRow['ui_id'] := IntToStr(FSerial);
     LRow['kind'] := LKind;
     LRow['bypass'] := False;
-    if LKind = 'gain' then
+    if not FindEffectDefinition(LKind, LDefinition) then
     begin
-      LRow['gain_db'] := '0';
-    end
-    else if (LKind = 'lowpass') or (LKind = 'highpass') then
+      Notice('Choose a supported effect.', True);
+      Exit;
+    end;
+    for LParameter := 0 to High(LDefinition.Parameters) do
     begin
-      if LKind = 'lowpass' then
-      begin
-        LSelection := FSelection();
-        LCutoff := 1000;
-        if (LSelection <> nil) and (StudioNumber(LSelection, 'sample_rate') < 4000) then
-        begin
-          LCutoff := Trunc(StudioNumber(LSelection, 'sample_rate') / 4);
-          if LCutoff < 20 then
-          begin
-            LCutoff := 20;
-          end;
-        end;
-        LRow['frequency_hz'] := IntToStr(LCutoff);
-      end
-      else
-      begin
-        LRow['frequency_hz'] := '80';
-      end;
-      LRow['q'] := '0.707';
-    end
-    else if LKind = 'compressor' then
-    begin
-      LRow['threshold_db'] := '-18';
-      LRow['ratio'] := '3';
-      LRow['attack_ms'] := '10';
-      LRow['release_ms'] := '100';
-      LRow['makeup_db'] := '0';
-    end
-    else if LKind = 'limiter' then
-    begin
-      LRow['ceiling_db'] := '-1';
-      LRow['release_ms'] := '100';
+      LSetting := LDefinition.Parameters[LParameter];
+      LRow[LSetting.Key] := FloatToStr(LSetting.DefaultValue);
     end;
     FRack.push(LRow);
   end

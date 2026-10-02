@@ -12,6 +12,60 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Studio expansion — 2026-10-02
+
+**Big Boss, solo:** operator feedback selects the implemented
+[filter catalog](TODO/NS-6_studio_12.md), flexible
+[source workspace](TODO/NS-6_studio_13.md), native
+[long-session generation](TODO/NS-4_streaming_01.md) and
+[streamed Studio playback](TODO/NS-6_studio_14.md). Keep this review solo under
+the existing instruction. The streaming consumer follows its native prerequisite.
+
+First batch advances studio_12 AC1–3 and studio_13 AC1–4: eleven working
+effects and a bounded waveform/transport workspace with custom and whole-track
+views. Closing evidence is checked native boundaries/replay plus actual desktop
+and narrow Codex-browser use, preview/save and late-source seek/selection.
+Stop at a distinct prerequisite and give it an owner before expanding scope.
+The following batch targets native streaming, then its browser consumer; it must
+preserve WFC continuation, overlap state and bounded memory rather than simply
+raise the finite WAV job limit. A 24-hour clock test is not a 24-hour audio run.
+
+Starting consecutive nonclosing count: 0 after the prior AC2 closure. Scope
+transfers six unearned NS-6 points and five unearned NS-4 points; all donor
+criteria remain. Current accounting: **50.80 accepted / 49.20 remaining**,
+**51 open / 42 DONE**, 93 tasks. No acceptance credit is earned by this replan.
+
+Operator steering requires consolidation wherever equivalent one-off code is
+found. Waveform geometry, measurements and sampling bounds move into the
+existing core WAV reader; both service paths call it and share JSON conversion.
+Effect names, parameters, defaults and supported bounds move into a core catalog
+compiled by both native FPC and pas2js. File identity and DOM bindings remain
+at their boundaries. Remove replaced logic; do not claim WASM execution merely
+because the contracts are portable. This is part of the current outcomes, with
+no extra credit for refactoring.
+
+The wider inventory finds existing modulated delay and reverb classes. Their
+[exposure and tail contract](TODO/NS-6_studio_15.md) is a linked follow-up,
+funded by one more unearned delivery_04 point (5 → 4). Current task count becomes
+52 open / 42 DONE, 94 total; accepted completion remains 50.80. Return to the
+current filter/transport batch before implementing that distinct gap.
+
+The first batch now passes checked Win32/Win64 primary waveform, core effects,
+104 Studio-effects cases and 68 discovery cases; the exact-waveform capture
+consumer passes 53 Win64 cases. A new upper-frequency fixture exposed an x87
+precision mismatch: the primary biquad now owns rounded Double bounds shared
+with the catalog. Both targets pass after repair; failed and repaired fixtures
+remain under ignored `build/studio-expansion/`.
+
+Actual Codex-browser desktop/390 px checks pass original/catalog whole/late/custom
+views, continuous bounded playback, selection preservation, missing-source
+recovery, matching preparation reuse, saved whole-track project reload and
+multi-filter preview/save/reload. Analysis from the playhead reports its actual
+bounded time range. All media was paused, the QA tab closed, viewport restored
+and exact isolated service stopped; Codex remains running for Remote. The frozen
+fourteen artifacts and detailed solo verdict await exact-revision Linux CI.
+No task move or completion credit is claimed before that qualification.
+
 ## Solo operator usability repair — 2026-10-01
 
 **Big Boss:** the operator explicitly selects a complete browser usability

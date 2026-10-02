@@ -8,7 +8,7 @@ Deliver current source packages and reproducible examples for the accepted synth
 WAV learning, semantic generation and arbitrary user-defined style blend/reblend workflow.
 
 North star: NS-6. Outcome owner: WAV-05-DELIVERY.
-Completion credit: 2 goal percentage points (0.20 overall points).
+Completion credit: 1 goal percentage point (0.10 overall points).
 Current allocation: [2026-09-30 operator rebalance](../OPERATOR-STUDIO.md#allocation-and-ownership), with NS-6 weighted at 10 overall points,
 under the user's authorization
 to rebalance without preserving historical point allocations. All existing
@@ -43,6 +43,10 @@ prerequisite or nonreproducible input and follow its owning task.
 
 **Blockers**
 
+- [NS-6_studio_15.md](NS-6_studio_15.md)
+- [NS-6_studio_12.md](NS-6_studio_12.md)
+- [NS-6_studio_13.md](NS-6_studio_13.md)
+- [NS-6_studio_14.md](NS-6_studio_14.md)
 - [NS-6_studio_10.md](NS-6_studio_10.md)
 - [NS-6_studio_11.md](NS-6_studio_11.md)
 - [NS-6_studio_08.md](DONE/NS-6_studio_08.md)
@@ -61,6 +65,10 @@ prerequisite or nonreproducible input and follow its owning task.
 - [NS-5_blends_01.md](NS-5_blends_01.md)
 
 **Dev Notes:**
+
+- 2026-10-02, Big Boss: one unearned point transfers to the
+  [implemented filter catalog](NS-6_studio_12.md). Packaging includes all
+  fourteen Studio outcomes; every original criterion remains required.
 
 - 2026-10-01, Big Boss: one unearned point transfers to
   [metadata discovery and selected-use preparation](NS-6_studio_11.md).

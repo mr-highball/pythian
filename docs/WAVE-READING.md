@@ -29,6 +29,23 @@ temporary during header scanning. Audio length does not determine block memory.
 Short positive source reads are accumulated; zero before the requested byte
 extent is a truncation error.
 
+## Shared waveform measurement
+
+`ReadWaveform(StartFrame, EndFrame, Bins, Sampled)` is the shared measurement
+path for catalog pages and collection overviews. It returns owned bin records
+with original and sampled frame extents, min/max, peak and RMS across channels,
+plus total sampled frames and payload bytes. Sampled mode accepts at most 256
+bins and reads the first 64 frames of each bin regardless of recording length.
+It can miss peaks between those windows; it is explicitly an overview. Exact
+mode reads every sample in a bounded page of at most 8,388,608 frames / 2,048 bins.
+Both modes move the reader cursor and use the existing argument/I/O failure
+contract. Neither mode needs catalog, browser, JSON or WFC code.
+
+The RF64 reader fixture measures actual stream reads: a multi-gigabyte stereo
+overview consumes 65,536 payload bytes, and a final-frame request preserves its
+64-bit position and channel amplitudes. This is bounded-reader evidence, not a
+claim to have measured all the audio represented by sparse bins.
+
 ## Supported formats and admission
 
 Supported samples are little-endian PCM8/16/24/32 and IEEE float32, mono/stereo,

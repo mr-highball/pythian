@@ -39,8 +39,6 @@ const
   StudioLibraryWaveformFormat = 'pythian.studio.library.waveform.v1';
   StudioLibraryPreviewFormat = 'pythian.studio.library.preview.v1';
   MaximumLibraryHeaderReadBytes = 65536;
-  MaximumLibraryWaveformBins = 256;
-  MaximumLibraryWaveformWindowFrames = 64;
   MaximumLibraryPreviewFrames = 2000000;
   MaximumLibraryPreparedEntries = 32;
 
@@ -83,7 +81,8 @@ uses
   pythian.audio,
   pythian.hash,
   pythian.wave,
-  pythian.wave.read
+  pythian.wave.read,
+  pythian.tools.annotations.media
   {$IFDEF MSWINDOWS}, Windows{$ENDIF};
 
 type
@@ -1067,96 +1066,54 @@ function ReadStudioLibraryWaveform(const ACatalogRoot, ALibraryRoot: String;
 var
   LIndex: TJSONObject;
   LRow: TJSONObject;
-  LBin: TJSONObject;
   LStream: TFileStream;
   LWave: TWaveFrameReader;
-  LSamples: TAudioSamples;
   LBounded: THeaderStream;
-  LOrdinal: Integer;
-  LSample: Integer;
-  LCount: Integer;
-  LStart: Int64;
-  LEnd: Int64;
-  LSampled: Int64;
-  LSum: Double;
-  LPeak: Double;
+  LOverview: TWaveformOverview;
   LBins: Integer;
 begin
-  Need((ABins >= 1) and (ABins <= MaximumLibraryWaveformBins) and
+  Need((ABins >= 1) and (ABins <= MaximumWaveformSampledBins) and
     (AStartFrame >= 0) and (AEndFrame > AStartFrame), 'Waveform bounds are invalid');
   LStream := OpenEntry(ACatalogRoot, ALibraryRoot, ARevision, AEntryId,
     ASnapshotSha256, LIndex, LRow);
   Result := nil;
   try
-    try
-      Need(AEndFrame <= LRow.Int64s['frame_count'], 'Waveform exceeds original extent');
+    Need(AEndFrame <= LRow.Int64s['frame_count'], 'Waveform exceeds original extent');
     LBounded := THeaderStream.Create(LStream);
     try
       LWave := TWaveFrameReader.Create(LBounded);
       try
-      Need(LBounded.Digest = LRow.Strings['header_sha256'],
-        'Original header changed before waveform');
-      LBounded.BeginPayload(Int64(MaximumLibraryWaveformBins) *
-        MaximumLibraryWaveformWindowFrames * LWave.Channels *
-        (LWave.BitsPerSample div 8));
-      Result := AuditionMetadata(StudioLibraryWaveformFormat, ARevision, LRow,
-        AStartFrame, AEndFrame);
-      Result.Add('sample_rate', LWave.SampleRate);
-      Result.Add('channels', LWave.Channels);
-      Result.Add('sampling', 'uniform_windows');
-      Result.Add('bins', TJSONArray.Create);
-      LSampled := 0;
-      LBins := ABins;
-      if AEndFrame - AStartFrame < LBins then
-        LBins := AEndFrame - AStartFrame;
-      for LOrdinal := 0 to LBins - 1 do
-      begin
-        LStart := AStartFrame + (AEndFrame - AStartFrame) * LOrdinal div LBins;
-        LEnd := AStartFrame + (AEndFrame - AStartFrame) * (LOrdinal + 1) div LBins;
-      LCount := MaximumLibraryWaveformWindowFrames;
-      if LEnd - LStart < LCount then
-        LCount := LEnd - LStart;
-        LWave.SeekFrame(LStart);
-        LSamples := LWave.ReadFrames(LCount);
-        LSum := 0;
-        LPeak := 0;
-        for LSample := 0 to High(LSamples) do
-        begin
-          LSum := LSum + Sqr(LSamples[LSample]);
-          if Abs(LSamples[LSample]) > LPeak then
-            LPeak := Abs(LSamples[LSample]);
+        Need(LBounded.Digest = LRow.Strings['header_sha256'],
+          'Original header changed before waveform');
+        LBounded.BeginPayload(Int64(MaximumWaveformSampledBins) *
+          MaximumWaveformSampleWindow * LWave.Channels * (LWave.BitsPerSample div 8));
+        LBins := Min(Int64(ABins), AEndFrame - AStartFrame);
+        LOverview := LWave.ReadWaveform(AStartFrame, AEndFrame, LBins, True);
+        Need(LOverview.PayloadBytes = LBounded.PayloadBytes, 'Waveform read accounting mismatch');
+        Result := AuditionMetadata(StudioLibraryWaveformFormat, ARevision, LRow,
+          AStartFrame, AEndFrame);
+        try
+          Result.Add('sample_rate', LWave.SampleRate);
+          Result.Add('channels', LWave.Channels);
+          Result.Add('sampling', 'uniform_windows');
+          Result.Add('bins', WaveformBinsJSON(LOverview));
+          Result.Add('sampled_frame_count', LOverview.SampledFrames);
+          Result.Add('payload_read_bytes', LOverview.PayloadBytes);
+        except
+          Result.Free;
+          raise;
         end;
-        LBin := TJSONObject.Create;
-        LBin.Add('start_frame', LStart);
-        LBin.Add('end_frame', LEnd);
-        LBin.Add('sampled_start_frame', LStart);
-        LBin.Add('sampled_end_frame', LStart + LCount);
-        if Length(LSamples) = 0 then
-          LBin.Add('rms', 0.0)
-        else
-          LBin.Add('rms', Sqrt(LSum / Length(LSamples)));
-        LBin.Add('peak', LPeak);
-        Result.Arrays['bins'].Add(LBin);
-        Inc(LSampled, LCount);
-      end;
-      Result.Add('sampled_frame_count', LSampled);
-      Result.Add('payload_read_bytes', LBounded.PayloadBytes);
       finally
         LWave.Free;
       end;
     finally
       LBounded.Free;
     end;
-    except
-      Result.Free;
-      raise;
-    end;
   finally
     LStream.Free;
     LIndex.Free;
   end;
 end;
-
 function OpenStudioLibraryEntryAudio(const ACatalogRoot, ALibraryRoot: String;
   const ARevision: Integer; const AEntryId, ASnapshotSha256: String;
   const AStartFrame, AEndFrame: Int64; out AMetadata: TJSONObject): TStream;

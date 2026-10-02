@@ -95,17 +95,35 @@ SOFTWARE.
           <section id="source-inspector" class="source-inspector" hidden aria-labelledby="source-title">
             <div class="section-heading"><div><p class="eyebrow">LISTEN · EXPLORE · SELECT</p><h3 id="source-title" tabindex="-1"></h3></div><button id="source-close" type="button">Close</button></div>
             <audio id="source-audio" preload="none" hidden></audio>
-            <div class="source-toolbar"><button id="source-play" class="primary" type="button">Play from here</button><output id="source-time" class="source-time">0:00 / 0:00</output></div>
+            <div class="source-console" role="group" aria-label="Recording player and waveform view">
+            <div class="source-toolbar"><button id="source-play" class="primary" type="button"><svg aria-hidden="true" viewBox="0 0 24 24"><path class="play-shape" d="m8 5 11 7-11 7Z"/><path class="pause-shape" d="M7 5h3v14H7zm7 0h3v14h-3Z"/></svg><span id="source-play-label">Play</span></button><output id="source-time" class="source-time">0:00 / 0:00</output></div>
             <p id="source-playback-status" class="hint" role="status" aria-live="polite">Choose a position, then press Play.</p>
             <button id="source-reconnect" type="button" hidden>Reconnect to server</button>
             <label for="source-seek" class="hint">Position in recording</label>
             <input id="source-seek" type="range" min="0" max="1" step="0.01" value="0">
+            <div class="source-jump"><label for="source-position">Go to <small>min:sec</small></label><input id="source-position" type="text" value="0:00.000" inputmode="decimal"><button id="source-go" type="button">Go</button></div>
             <canvas id="source-waveform" width="900" height="180" aria-label="Sampled source waveform. Tap to browse or drag a passage; equivalent time fields and mark buttons are below."></canvas>
             <p id="source-waveform-state" class="hint" role="status">Loading waveform…</p><button id="source-waveform-retry" type="button" hidden>Retry waveform</button>
-            <div class="source-toolbar"><button id="source-prev" type="button" aria-label="Previous 30 seconds">← 30 s</button><span id="source-window" class="hint"></span><button id="source-next" type="button" aria-label="Next 30 seconds">30 s →</button></div>
+            <output id="source-window" class="source-view-time"></output>
+            <div class="source-view-buttons" role="group" aria-label="Waveform view controls">
+              <button id="source-prev" type="button" aria-label="Previous view" title="Previous view"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></svg></button>
+              <button id="source-zoom-in" type="button" aria-label="Zoom in" title="Zoom in"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6M7 10h6m-3-3v6"/></svg></button>
+              <button id="source-zoom-out" type="button" aria-label="Zoom out" title="Zoom out"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6M7 10h6"/></svg></button>
+              <button id="source-view-whole" type="button" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5v14M20 5v14M7 12h10m-7-3-3 3 3 3m4-6 3 3-3 3"/></svg>Whole track</button>
+              <button id="source-next" type="button" aria-label="Next view" title="Next view"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m10 6 6 6-6 6"/></svg></button>
+            </div>
+            <div class="source-jump"><label for="source-view-length">View length <small>min:sec</small></label><input id="source-view-length" type="text" value="0:30.000" inputmode="decimal"><button id="source-view-apply" type="button">Apply</button></div>
             <p class="wave-legend"><span class="legend-wave">Sampled waveform</span><span class="legend-range">Your passage</span><span class="legend-head">Playhead</span></p>
+            </div>
+            <section class="source-preparation" aria-label="Recording preparation">
+              <h4>Use this recording</h4>
+              <p id="source-preparation-purpose" class="hint">Browsing needs no preparation. Add music to your project, or prepare it for analysis and effects.</p>
+              <button id="source-prepare" type="button" hidden>Prepare for analysis &amp; effects</button>
+              <div id="studio-source-prepare"></div>
+              <p id="source-notice" class="hint" role="status" aria-live="polite"></p>
+            </section>
             <details class="analysis-tools"><summary>Explore Pythian analysis</summary>
-              <button id="source-analyze" type="button"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path d="M3 12h3l3-8 6 16 3-8h3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Inspect visible window</button>
+              <button id="source-analyze" type="button"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path d="M3 12h3l3-8 6 16 3-8h3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Analyze from playhead</button>
               <p id="source-analysis-status" class="hint" role="status" aria-live="polite">Inspect this visible window to see signal levels and timing suggestions.</p>
               <label for="source-beat-layer">Timing overlay <span class="candidate-label">Experimental</span></label>
               <select id="source-beat-layer"><option value="-1">No beat overlay</option></select>
@@ -116,10 +134,7 @@ SOFTWARE.
             <label for="source-classifications">How would you describe this selection?</label>
             <input id="source-classifications" type="text" placeholder="For example: warm, sparse, intro" maxlength="520" aria-describedby="source-class-help">
             <p id="source-class-help" class="hint">Your labels, separated by commas. They apply to this selection.</p>
-            <div class="source-toolbar"><button id="source-use-range" class="primary" type="button">Add passage to project</button><button id="source-use-whole" type="button">Use whole recording</button></div>
-            <button id="source-prepare" type="button" hidden>Prepare recording for analysis &amp; effects</button>
-            <div id="studio-source-prepare" class="source-preparation"></div>
-            <p id="source-notice" class="hint" role="status" aria-live="polite"></p>
+            <div class="source-toolbar"><button id="source-use-range" class="primary" type="button">Add passage to project</button><button id="source-use-whole" type="button">Add whole recording to project</button></div>
             <details class="analysis-tools"><summary>Shape this passage with effects</summary><div id="studio-effects"></div></details>
           </section>
           <p id="tracks-empty" class="empty-state">Your imported recordings will appear here.</p>

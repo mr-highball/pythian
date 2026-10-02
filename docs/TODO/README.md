@@ -3,7 +3,7 @@
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) ·
 [Assessment](../REBALANCE-2026-09-29.md) · [Completed tasks](DONE/README.md) · [Work](../WORK.md)
 
-Updated 2026-10-02. **47 open / 42 accepted tasks.** The user authorized a new
+Updated 2026-10-02. **52 open / 42 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **50.80 current / 49.20 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -13,7 +13,7 @@ caller-provider acceptance adds 10 NS-4 points / 1.50 overall. Complete owned
 editor/queue acceptance adds 8 NS-6 points / 0.80 overall.
 
 The later [operator Studio allocation](../OPERATOR-STUDIO.md#allocation-and-ownership)
-moves 19 unearned NS-6 points into eleven explicit Studio outcomes.
+moves 26 unearned NS-6 points into fifteen explicit Studio outcomes.
 All donor criteria remain required. The scope update earned no completion credit;
 independent Studio project/setup acceptance subsequently adds 4 NS-6 / 0.40 overall.
 Accepted private corpora, raw WFC jobs, effects and capture/exploration add
@@ -35,16 +35,22 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-1 — Independent Pascal foundation](../MILESTONES.md#ns-1) | 100 | 0 | 100% | 0 | 0 | 0.00 |
 | [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 70 | 20 | 90% | 1 | 10 | 2.50 |
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
-| [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 45 | 65% | 1 | 35 | 5.25 |
+| [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 45 | 65% | 2 | 35 | 5.25 |
 | [NS-5 — User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 15 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 45 | 45% | 11 | 55 | 5.50 |
-| **Total** | **28.00 weighted** | **22.80 weighted** | **50.80 weighted** | **47** | Goal points are not summed across goals | **49.20** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 45 | 45% | 15 | 55 | 5.50 |
+| **Total** | **28.00 weighted** | **22.80 weighted** | **50.80 weighted** | **52** | Goal points are not summed across goals | **49.20** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
 hours or effort estimates. See the [basis and rationale](../REBALANCE-2026-09-29.md#current-credit-basis).
 
 ## Selection and actual blockers
+
+Big Boss's current solo batch exposes the [existing filter catalog](NS-6_studio_12.md)
+and adds [flexible waveform controls](NS-6_studio_13.md). Then
+[native long-session generation](NS-4_streaming_01.md) unblocks
+[streamed Studio playback](NS-6_studio_14.md). The 2026-10-02 additions transfer
+seven unearned NS-6 points and five unearned NS-4 points; no accepted credit changes.
 
 Selected [studio_11](NS-6_studio_11.md) separates metadata discovery and bounded
 preview from selected-use corpus preparation. One unearned delivery_03 point
@@ -113,13 +119,13 @@ use and full recorded integration remain separate outcomes.
 The [editor/queue contract](DONE/NS-6_authoring_01.md) is accepted after all owned
 criteria and independent B1–B6 QA. Two known blocking worker submissions and
 Big Boss's mandatory handoff repair remain recorded.
-[Physical LAN/source operator matrix](NS-6_authoring_02.md) remains deferred following
-the user's 2026-09-30 feedback on unclear question intent and marker/time
-feedback. It gates eventual full packaging, also blocked on recorded integration
-and style/blends; it does not unblock current core/WFC/reference development.
-Resume only for a named ready outcome needing it or explicit reprioritization.
-The later Studio direction supplies that named consumer for generated-listening
-and shared usability work; it does not require another mechanical source marker.
+[Physical LAN/source operator matrix](NS-6_authoring_02.md) resumed under the
+user's solo usability review. Clearer questions, marker times and desktop/narrow
+Save/reload are checked; the complete physical-phone and export/replay matrix
+remains open. It gates eventual full packaging, also blocked on recorded
+integration and style/blends. Studio supplies the current consumer for
+generated-listening and shared usability work; it does not require another
+mechanical source marker.
 Preserve all original
 points 4, 5 and 10, exact current assets and the complete copied-catalog matrix.
 The exact fixed QA/stable rules and current stable binary are verified; fresh
@@ -169,7 +175,8 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 
 | Task / primary outcome | Goal points | Overall points | Current readiness |
 | --- | ---: | ---: | --- |
-| [NS-4_integration_01](NS-4_integration_01.md) — Deliver the recorded WAV-to-style-to-audio workflow | 35 | 5.25 | Dependency-blocked |
+| [NS-4_integration_01](NS-4_integration_01.md) — Deliver the recorded WAV-to-style-to-audio workflow | 30 | 4.50 | Dependency-blocked |
+| [NS-4_streaming_01](NS-4_streaming_01.md) — Bounded native long-session generation | 5 | 0.75 | Ready; prerequisite for Studio streaming |
 
 ### NS-5 — User-defined styles that generate and blend usefully
 
@@ -196,16 +203,20 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | Task / primary outcome | Goal points | Overall points | Current readiness |
 | --- | ---: | ---: | --- |
 | [NS-6_adoption_01](NS-6_adoption_01.md) — Establish independent ecosystem adoption evidence | 15 | 1.50 | Supported releases + independent ecosystem evidence |
-| [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 1 | 0.10 | Source-marker/full physical matrix deferred; shared usability follows the selected Studio consumer |
-| [NS-6_delivery_03](NS-6_delivery_03.md) — Package and verify the accepted final workflow | 2 | 0.20 | Dependencies, including Studio |
-| [NS-6_delivery_04](NS-6_delivery_04.md) — Obtain independently reproduced consumer acceptance | 8 | 0.80 | Package + independent consumer |
-| [NS-6_delivery_05](NS-6_delivery_05.md) — Audit north-star completion and supported handoff | 5 | 0.50 | Dependencies |
+| [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 1 | 0.10 | Solo usability resumed; complete physical matrix remains open |
+| [NS-6_delivery_03](NS-6_delivery_03.md) — Package and verify the accepted final workflow | 1 | 0.10 | Dependencies, including Studio |
+| [NS-6_delivery_04](NS-6_delivery_04.md) — Obtain independently reproduced consumer acceptance | 4 | 0.40 | Package + independent consumer |
+| [NS-6_delivery_05](NS-6_delivery_05.md) — Audit north-star completion and supported handoff | 3 | 0.30 | Dependencies |
 | [NS-6_delivery_07](NS-6_delivery_07.md) — Obtain actual independent minimal synthesis use | 9 | 0.90 | Package accepted; prepared packet needs actual reviewer |
 | [NS-6_support_01](NS-6_support_01.md) — Establish and exercise the supported release lifecycle | 10 | 1.00 | Packages + real external update or issue cycle |
 | [NS-6_studio_03](NS-6_studio_03.md) — Compare musical auditions and guide the next batch | 2 | 0.20 | Engineering passed; ready for actual operator purpose/audible/useful-feedback verdict |
 | [NS-6_studio_07](NS-6_studio_07.md) — Train mixed-format corpora with original-clock lineage | 1 | 0.10 | After current review: explicit native conversion and actual mixed-format WFC |
 | [NS-6_studio_10](NS-6_studio_10.md) — Enable phone recording over local HTTPS | 1 | 0.10 | Operator reports HTTPS worked; complete capture/browser checks remain open |
 | [NS-6_studio_11](NS-6_studio_11.md) — Browse collection metadata and prepare recordings only on use | 1 | 0.10 | Selected: metadata listing, bounded preview and verified selected-entry preparation |
+| [NS-6_studio_12](NS-6_studio_12.md) — Expose the implemented filter catalog | 1 | 0.10 | Selected, Big Boss solo |
+| [NS-6_studio_13](NS-6_studio_13.md) — Flexible source-view and preparation workspace | 2 | 0.20 | Selected, Big Boss solo |
+| [NS-6_studio_14](NS-6_studio_14.md) — Custom-duration streamed generation | 3 | 0.30 | Native streaming prerequisite |
+| [NS-6_studio_15](NS-6_studio_15.md) — Expose existing delay/reverb with explicit tails | 1 | 0.10 | Shared filter catalog prerequisite |
 
 ## Accepted tasks and retired work
 

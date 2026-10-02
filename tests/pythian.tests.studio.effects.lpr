@@ -235,7 +235,10 @@ begin
   Result.Add('kind', AKind);
   Result.Add('bypass', False);
   Result.Add('frequency_hz', 600);
-  Result.Add('q', 0.707);
+  if (AKind <> 'lowshelf') and (AKind <> 'highshelf') then
+  begin
+    Result.Add('q', 0.707);
+  end;
 end;
 
 function ToneAmplitude(const AId: String; const AFrequency: Double): Double;
@@ -274,6 +277,94 @@ begin
   end;
 end;
 
+procedure CheckExpandedFilters(const ASource: String);
+const
+  CKinds: array[0..5] of String = ('bandpass', 'notch', 'allpass',
+    'peak', 'lowshelf', 'highshelf');
+var
+  LWrite: TJSONObject;
+  LResult: TJSONObject;
+  LStage: TJSONObject;
+  LHash: String;
+  LDryHash: String;
+  LLow, LHigh: Double;
+  LIndex: Integer;
+begin
+  LResult := ReadStudioJob(GCatalog, 'dry');
+  try
+    LDryHash := LResult.Objects['results'].Strings['output_sha256'];
+  finally
+    LResult.Free;
+  end;
+  for LIndex := 0 to High(CKinds) do
+  begin
+    LWrite := Preview('filter-' + CKinds[LIndex], ASource, 0);
+    try
+      LWrite.Arrays['effects'].Clear;
+      LStage := FilterStage(CKinds[LIndex]);
+      LWrite.Arrays['effects'].Add(LStage);
+      if LIndex <= 3 then LStage.Floats['frequency_hz'] := 220;
+      if LIndex in [0, 1, 3] then LStage.Floats['q'] := 2;
+      if LIndex >= 3 then LStage.Add('gain_db', 6);
+      LResult := Execute(LWrite);
+      try
+        LHash := LResult.Strings['output_sha256'];
+        Check(LResult.Objects['recipe'].Arrays['effects'].AsJSON =
+          LWrite.Arrays['effects'].AsJSON, 'Exact expanded filter recipe retained');
+      finally
+        LResult.Free;
+      end;
+      LLow := ToneAmplitude(LWrite.Strings['job_id'], 220);
+      LHigh := ToneAmplitude(LWrite.Strings['job_id'], 1900);
+      case LIndex of
+        0: Check((LLow > 0.44) and (LHigh < 0.02), 'Bandpass retains center, rejects distant tone');
+        1: Check((LLow < 0.001) and (LHigh > 0.19), 'Notch rejects center, retains distant tone');
+        2: Check((Abs(LLow - 0.45) < 0.001) and (Abs(LHigh - 0.2) < 0.001) and
+          (LHash <> LDryHash),
+          'Allpass changes phase while preserving tone magnitudes');
+        3: Check((LLow > 0.88) and (LHigh < 0.21), 'Peaking EQ boosts chosen band');
+        4: Check((LLow > 0.85) and (LHigh < 0.21), 'Low shelf boosts lows');
+        5: Check((LLow < 0.48) and (LHigh > 0.38), 'High shelf boosts highs');
+      end;
+      LWrite.Strings['job_id'] := 'replay-' + CKinds[LIndex];
+      LResult := Execute(LWrite);
+      try
+        Check(LResult.Strings['output_sha256'] = LHash, 'Expanded filter deterministic replay');
+      finally
+        LResult.Free;
+      end;
+      LStage.Floats['frequency_hz'] := 3999.92;
+      LWrite.Strings['job_id'] := 'upper-' + CKinds[LIndex];
+      LResult := Execute(LWrite);
+      try
+        Check(LResult.Strings['output_sha256'] <> '', 'Shared upper frequency bound renders');
+      finally
+        LResult.Free;
+      end;
+      LWrite.Strings['job_id'] := 'invalid-' + CKinds[LIndex];
+      LStage.Booleans['bypass'] := True;
+      LStage.Floats['frequency_hz'] := 4000;
+      RejectPreview(LWrite, 'Bypass cannot hide source Nyquist violation');
+      LWrite.Strings['job_id'] := 'margin-' + CKinds[LIndex];
+      LStage.Floats['frequency_hz'] := 3999.99;
+      RejectPreview(LWrite, 'Bypass preserves the core DSP frequency safety margin');
+      LWrite.Strings['job_id'] := 'missing-' + CKinds[LIndex];
+      LStage.Delete('frequency_hz');
+      RejectPreview(LWrite, 'Missing filter parameter rejected before enqueue');
+      if LIndex >= 3 then
+      begin
+        LStage.Add('frequency_hz', 600);
+        LStage.Floats['gain_db'] := 25;
+        RejectPreview(LWrite, 'EQ gain bound enforced even while bypassed');
+        LStage.Delete('gain_db');
+        RejectPreview(LWrite, 'Missing EQ gain cannot silently default');
+      end;
+    finally
+      LWrite.Free;
+    end;
+  end;
+end;
+
 procedure CheckDSPOrder(const ASource: String);
 var
   LWrite: TJSONObject;
@@ -289,6 +380,7 @@ begin
   LDryHigh := ToneAmplitude('dry', 1900);
   Check((Abs(LDryLow - 0.45) < 0.001) and (Abs(LDryHigh - 0.2) < 0.001),
     'Independent decoded-PCM projection recovers authored dry tones');
+  CheckExpandedFilters(ASource);
   LWrite := Preview('gain-compressor', ASource, -12);
   try
     LWrite.Arrays['effects'].Add(CompressorStage);

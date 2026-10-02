@@ -3,6 +3,20 @@
 [Home](../README.md) · [Sources](SOURCES.md) · [Modulation](MODULATION.md) ·
 [Bus routing](BUSES.md) · [Work](WORK.md)
 
+## Shared effects catalog
+
+`pythian.effects.catalog` owns the built-in rack's effect names, parameter keys,
+captions, defaults and supported ranges. Native Studio validation and the
+pas2js controls compile this same unit. `EffectDefinition` returns owned
+parameter data; `EffectParameterMaximum` applies the core biquad frequency
+margin for the recording's sample rate. Platform adapters own JSON and controls,
+and native rendering uses the existing effect classes. The primitive DSP APIs
+below retain their wider direct ranges. Shelves expose frequency and gain;
+their fixed-slope design ignores Q, so the rack does not offer that control.
+
+Delay and reverb exposure, including explicit saved-tail behavior, is tracked
+in [studio_15](TODO/NS-6_studio_15.md).
+
 ## Biquad filtering
 
 `pythian.biquad` implements low-pass, high-pass, unity-center band-pass,

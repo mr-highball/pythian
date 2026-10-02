@@ -90,7 +90,7 @@ $studioScriptPath = Join-Path $webRoot 'studio.js'
 Remove-Item -LiteralPath $studioScriptPath -Force -ErrorAction SilentlyContinue
 $studioCompilerArguments = @(
   '-B', '-Tbrowser', '-Mdelphi', '-Jc', "-Ji$RtlJavascript",
-  "-Fu$RtlSource", "-FU$unitRoot", "-FE$webRoot", $studioProgram
+  "-Fu$RtlSource", "-Fu$(Join-Path $repositoryRoot 'src')", "-FU$unitRoot", "-FE$webRoot", $studioProgram
 )
 & $Compiler @studioCompilerArguments
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

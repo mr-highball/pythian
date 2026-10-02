@@ -30,12 +30,18 @@ interface
 
 uses
   Classes,
-  fpjson;
+  fpjson,
+  pythian.wave.read;
 
-{ Source-frame coordinates; no whole-file audio allocation. Waveform calls are
-  limited to a window, so clients navigate long recordings by requesting pages. }
+{ Shared presentation of the native reader's owned measurements. }
+function WaveformBinsJSON(const AOverview: TWaveformOverview): TJSONArray;
+
+{ Source-frame coordinates; no whole-file audio allocation. Exact waveform pages
+  have a frame bound. Sampled overviews inspect at most 256 windows of 64 frames
+  regardless of span, and explicitly return their sampled extent/read count. }
 function CatalogWaveformRegion(const ACatalogRoot, AHash: String;
-  const AStartFrame, AEndFrame: Int64; const ABins: Integer): TJSONObject;
+  const AStartFrame, AEndFrame: Int64; const ABins: Integer;
+  const ASampled: Boolean = False): TJSONObject;
 procedure WriteCatalogAudioRegion(const ACatalogRoot, AHash: String;
   const AStartFrame, AEndFrame: Int64; const AOutput: TStream);
 procedure WriteCatalogBeatCueRegion(const ACatalogRoot, AHash: String;
@@ -49,15 +55,12 @@ uses
   Math,
   pythian.audio,
   pythian.oscillator,
-  pythian.wave.read,
   pythian.wave.stream,
   pythian.tools.annotations.catalog,
   pythian.tools.annotations.proposal,
   pythian.tools.annotations.review;
 
 const
-  CMaximumWaveformBins = 2048;
-  CMaximumWaveformFrames: Int64 = 8388608;
   CMaximumAudioSeconds = 30;
   CMaximumAudioBytes: Int64 = 16777216;
   CReadFrames = 4096;
@@ -112,34 +115,45 @@ begin
     'Region lies outside catalog source frames');
 end;
 
+function WaveformBinsJSON(const AOverview: TWaveformOverview): TJSONArray;
+var
+  LIndex: Integer;
+  LRow: TJSONObject;
+  LBin: TWaveformBin;
+begin
+  Result := TJSONArray.Create;
+  try
+    for LIndex := 0 to High(AOverview.Bins) do
+    begin
+      LBin := AOverview.Bins[LIndex];
+      LRow := TJSONObject.Create;
+      Result.Add(LRow);
+      LRow.Add('start_frame', LBin.StartFrame);
+      LRow.Add('end_frame', LBin.EndFrame);
+      LRow.Add('min', LBin.Minimum);
+      LRow.Add('max', LBin.Maximum);
+      LRow.Add('peak', LBin.Peak);
+      LRow.Add('rms', LBin.Rms);
+      LRow.Add('sampled_start_frame', LBin.StartFrame);
+      LRow.Add('sampled_end_frame', LBin.SampledEndFrame);
+    end;
+  except
+    Result.Free;
+    raise;
+  end;
+end;
+
 function CatalogWaveformRegion(const ACatalogRoot, AHash: String;
-  const AStartFrame, AEndFrame: Int64; const ABins: Integer): TJSONObject;
+  const AStartFrame, AEndFrame: Int64; const ABins: Integer;
+  const ASampled: Boolean): TJSONObject;
 var
   LStream: TFileStream;
   LReader: TWaveFrameReader;
-  LSpan: Int64;
-  LRows: TJSONArray;
-  LRow: TJSONObject;
-  LIndex: Integer;
-  LBinStart: Int64;
-  LBinEnd: Int64;
-  LRemaining: Int64;
-  LCount: Integer;
-  LSample: Integer;
-  LSamples: TAudioSamples;
-  LLow: Single;
-  LHigh: Single;
-  LHasSample: Boolean;
+  LOverview: TWaveformOverview;
 begin
-  Need((ABins > 0) and (ABins <= CMaximumWaveformBins),
-    'Waveform bin count exceeds bound');
   LReader := OpenCatalogWave(ACatalogRoot, AHash, LStream);
   try
-    CheckRegion(LReader, AStartFrame, AEndFrame);
-    LSpan := AEndFrame - AStartFrame;
-    Need((LSpan <= CMaximumWaveformFrames) and (ABins <= LSpan),
-      'Waveform frame span exceeds page bound or has empty bins');
-    LReader.SeekFrame(AStartFrame);
+    LOverview := LReader.ReadWaveform(AStartFrame, AEndFrame, ABins, ASampled);
     Result := TJSONObject.Create;
     try
       Result.Add('version', 1);
@@ -148,54 +162,13 @@ begin
       Result.Add('source_channels', LReader.Channels);
       Result.Add('start_frame', AStartFrame);
       Result.Add('end_frame', AEndFrame);
-      LRows := TJSONArray.Create;
-      Result.Add('bins', LRows);
-      for LIndex := 0 to ABins - 1 do
+      if ASampled then
       begin
-        LBinStart := AStartFrame + (LSpan * LIndex) div ABins;
-        LBinEnd := AStartFrame + (LSpan * (LIndex + 1)) div ABins;
-        LRemaining := LBinEnd - LBinStart;
-        LHasSample := False;
-        while LRemaining > 0 do
-        begin
-          LCount := CReadFrames;
-          if LRemaining < LCount then
-          begin
-            LCount := Integer(LRemaining);
-          end;
-          LSamples := LReader.ReadFrames(LCount);
-          Need(Length(LSamples) = LCount * LReader.Channels,
-            'Short catalog WAV read');
-          for LSample := 0 to High(LSamples) do
-          begin
-            if not LHasSample then
-            begin
-              LLow := LSamples[LSample];
-              LHigh := LSamples[LSample];
-              LHasSample := True;
-            end
-            else
-            begin
-              if LSamples[LSample] < LLow then
-              begin
-                LLow := LSamples[LSample];
-              end;
-              if LSamples[LSample] > LHigh then
-              begin
-                LHigh := LSamples[LSample];
-              end;
-            end;
-          end;
-          Dec(LRemaining, LCount);
-        end;
-        Need(LHasSample, 'Empty catalog waveform bin');
-        LRow := TJSONObject.Create;
-        LRows.Add(LRow);
-        LRow.Add('start_frame', LBinStart);
-        LRow.Add('end_frame', LBinEnd);
-        LRow.Add('min', LLow);
-        LRow.Add('max', LHigh);
+        Result.Add('sampling', 'uniform_windows');
       end;
+      Result.Add('bins', WaveformBinsJSON(LOverview));
+      Result.Add('sampled_frame_count', LOverview.SampledFrames);
+      Result.Add('payload_read_bytes', LOverview.PayloadBytes);
     except
       Result.Free;
       raise;

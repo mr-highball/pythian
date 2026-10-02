@@ -7,7 +7,7 @@
 Verify the complete original scope against current evidence before marking the library goals finished.
 
 North star: NS-6. Outcome owner: DELIVERY-RELEASE.
-Completion credit: 5 goal percentage points (0.50 overall points).
+Completion credit: 3 goal percentage points (0.30 overall points).
 Current complete-goal allocation, 2026-09-29, with NS-6 weighted at 10 overall points,
 under the user's authorization
 to rebalance without preserving historical point allocations. All existing
@@ -48,6 +48,10 @@ below 100%. Publication requires its own authorization.
 - [NS-4_providers_01.md](DONE/NS-4_providers_01.md)
 
 **Dev Notes:**
+
+- 2026-10-02, Big Boss: two unearned points transfer to
+  [long-session playback](NS-6_studio_14.md). Final north-star reconciliation,
+  supported handoff and all completion gates remain required.
 
 - 2026-09-29 current complete-goal credit basis: this task owns 5 NS-6
   goal points (+0.50 overall) by deliverable value. Nine open NS-6

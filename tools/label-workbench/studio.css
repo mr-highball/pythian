@@ -198,3 +198,24 @@ summary { cursor: pointer; color: var(--accent); min-height: 36px; display: list
 .source-preparation .actions { display: flex; flex-wrap: wrap; gap: .5rem; }
 .source-preparation progress { width: 100%; max-width: 32rem; }
 .source-preparation details { margin-top: .5rem; overflow-wrap: anywhere; }
+.source-console { background: #0b2028; border: 1px solid var(--line); border-radius: 10px; padding: .7rem; }
+.source-console svg { width: 20px; height: 20px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.source-console button { display: inline-flex; align-items: center; justify-content: center; gap: .35rem; padding: .55rem; }
+.source-view-buttons { display: flex; gap: .25rem; margin: .55rem 0; }
+.source-view-buttons button { flex: 1; min-width: 0; font-size: .78rem; }
+.source-view-buttons #source-view-whole { flex: 3; }
+.source-console button[aria-pressed="true"] { background: #225b58; border-color: var(--accent); }
+.source-jump { display: grid; grid-template-columns: 1fr minmax(0, 1fr) auto; gap: .4rem; align-items: center; }
+.source-jump label { margin: 0; font-size: .78rem; }
+.source-jump small { display: block; color: var(--muted); }
+.source-jump input { padding: .55rem; font-size: .85rem; }
+.source-view-time { display: block; font-size: .8rem; font-variant-numeric: tabular-nums; text-align: center; color: var(--muted); }
+#source-play svg { fill: currentColor; stroke: none; }
+#source-play .pause-shape, #source-play[data-playing="true"] .play-shape { display: none; }
+#source-play[data-playing="true"] .pause-shape { display: block; }
+.source-preparation h4 { margin: 0; }
+.source-preparation p:empty { display: none; }
+@media (max-width: 680px) {
+  .source-view-buttons { display: grid; grid-template-columns: repeat(4, minmax(44px, 1fr)); }
+  .source-view-buttons #source-view-whole { grid-column: 1 / -1; grid-row: 2; }
+}

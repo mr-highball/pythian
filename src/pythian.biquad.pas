@@ -78,6 +78,10 @@ type
   end;
 
 function DefaultBiquadSettings: TBiquadSettings;
+{ Explicit Double boundaries shared by DSP validation and parameter consumers.
+  The output parameters round x87 intermediates to the settings' own precision. }
+procedure BiquadFrequencyBounds(const ASampleRate: Integer;
+  out AMinimumHz, AMaximumHz: Double);
 function DesignBiquad(const ASampleRate: Integer;
   const ASettings: TBiquadSettings): TBiquadCoefficients;
 
@@ -95,6 +99,14 @@ begin
   Result.GainDb := 0;
 end;
 
+procedure BiquadFrequencyBounds(const ASampleRate: Integer;
+  out AMinimumHz, AMaximumHz: Double);
+begin
+  ValidateAudioFormat(ASampleRate, 1);
+  AMinimumHz := ASampleRate * MinimumBiquadFrequencyRatio;
+  AMaximumHz := ASampleRate * (0.5 - MinimumBiquadFrequencyRatio);
+end;
+
 function DesignBiquad(const ASampleRate: Integer;
   const ASettings: TBiquadSettings): TBiquadCoefficients;
 var
@@ -105,15 +117,17 @@ var
   LA: Double;
   LBeta: Double;
   LA0: Double;
+  LMinimumHz: Double;
+  LMaximumHz: Double;
 begin
-  ValidateAudioFormat(ASampleRate, 1);
+  BiquadFrequencyBounds(ASampleRate, LMinimumHz, LMaximumHz);
   RequireFinite(ASettings.FrequencyHz, 'Biquad frequency');
   RequireFinite(ASettings.Q, 'Biquad Q');
   RequireFinite(ASettings.GainDb, 'Biquad gain');
   if not (ASettings.Kind in [bkLowPass, bkHighPass, bkBandPass, bkNotch, bkAllPass,
     bkPeak, bkLowShelf, bkHighShelf]) or
-    (ASettings.FrequencyHz < ASampleRate * MinimumBiquadFrequencyRatio) or
-    (ASettings.FrequencyHz > ASampleRate * (0.5 - MinimumBiquadFrequencyRatio)) or
+    (ASettings.FrequencyHz < LMinimumHz) or
+    (ASettings.FrequencyHz > LMaximumHz) or
     (ASettings.Q < 0.05) or (ASettings.Q > 100) or (Abs(ASettings.GainDb) > 48) then
   begin
     raise EAudio.Create('Biquad settings outside frequency/Q/gain bounds');
@@ -295,4 +309,3 @@ begin
 end;
 
 end.
-
