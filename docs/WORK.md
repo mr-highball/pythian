@@ -14,15 +14,26 @@ Project work and review pushes stay on `hello-pythian`.
 
 ## Studio expansion — 2026-10-02
 
-**Selected tutorial batch:** Big Boss alone implements
-[studio_17](TODO/NS-6_studio_17.md): a shared optional first-project guide and
-contextual help for the existing tools. Closing evidence is matched pas2js and
-actual desktop/narrow browser navigation, reading-position persistence and
-non-interference with drafts/playback/jobs. Stop at unsupported instructions or
-claims. One unearned delivery_04 point transfers here; accepted credit stays
-52.35, with 48 open / 48 DONE. Physical and musical verdicts remain open.
+**Current checkpoint — guided teaching:** Big Boss's solo
+[studio_17](TODO/DONE/NS-6_studio_17.md) is accepted and deployed at source
+`f154d1db7ef1eebc8935890ca7cfd5505822abd1`. The shared four-step guide and eight
+tool lessons pass matched pas2js and actual desktop/390px Codex Browser checks.
+Contextual help, prerequisite messages, keyboard/escape, draft preservation,
+reading-position resume/dismiss and storage-unavailable fallback pass. Simplified
+captions retain existing feedback meanings and data. Evidence and fourteen
+frozen artifacts: `build/studio-guide/`. All 3,208 existing live catalog JSON
+hashes are unchanged; deployed guide opens without errors. All owned tabs and
+QA services are closed, with no playback started in this batch. Native binaries
+are unchanged, so no unrelated native suite was repeated. The automatically
+triggered Linux run is supplemental; no result is claimed for it here.
 
-**Current checkpoint:** studio_12/13/14/15/16 and streaming_01 are accepted.
+One unearned delivery_04 point funded this explicit new outcome; acceptance
+earns 1 NS-6 / 0.10 overall. Current ledger: **52.45 accepted / 47.55 remaining**,
+**47 open / 49 DONE**, NS-6 **54/46**. Consecutive nonclosing count: 0. The next
+operator outcome remains studio_03's useful listening/refinement verdict;
+physical-phone and musical-learning acceptance are unchanged.
+
+**Preceding consolidation checkpoint:** studio_12/13/14/15/16 and streaming_01 are accepted.
 Code `6cfb855d6c5e13a4ee8d1f3a1e54f82dbff7dfea` passes
 [Linux integration and extracted packages](https://github.com/mr-highball/pythian/actions/runs/36983782671),
 including the shared primary microphone codec after native/pas2js byte agreement

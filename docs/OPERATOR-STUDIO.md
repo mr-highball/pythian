@@ -74,7 +74,7 @@ controls or explains the missing prerequisite. Close/reopen, Escape, restart and
 browser-local reading position do not alter projects or start audio or jobs.
 Descriptions are metadata, feedback does not automatically retrain, and current
 raw acoustic generation does not establish learned notes or song structure.
-Delivery owner: [studio_17](TODO/NS-6_studio_17.md). Actual operator usefulness
+Delivery owner: [studio_17 — DONE](TODO/DONE/NS-6_studio_17.md). Actual operator usefulness
 remains with studio_03; reading progress is not learning or acceptance credit.
 
 Local-use policy: no accounts, login screens or repeated confirmation prompts.
@@ -131,7 +131,7 @@ completed by planning, and all original criteria in the donor tasks remain.
 | [studio_14](TODO/DONE/NS-6_studio_14.md) | 0 | 3 | Custom-duration generation with streamed playback |
 | [studio_15](TODO/DONE/NS-6_studio_15.md) | 0 | 1 | Existing delay/reverb exposure with explicit tails |
 | [studio_16](TODO/DONE/NS-6_studio_16.md) | 0 | 1 | Primary PCM16/header reuse in microphone capture |
-| [studio_17](TODO/NS-6_studio_17.md) | 0 | 1 | Shared first-project and contextual tool teaching |
+| [studio_17 — DONE](TODO/DONE/NS-6_studio_17.md) | 0 | 1 | Shared first-project and contextual tool teaching |
 | **Total allocation at scoping** | **35** | **35** | **Scoping earned no credit** |
 
 The 2026-10-02 expansion transfers six further unearned NS-6 points: one from
@@ -154,8 +154,8 @@ they do not disappear or move into the new tasks. Scoping left 49.40 accepted;
 independent project/setup acceptance subsequently adds 4 NS-6 / 0.40 overall.
 Private corpora, raw WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall.
 Accepted starting actions/navigation and large-library refresh add 2 NS-6 / 0.20 overall.
-The current ledger is **52.35 accepted / 47.65 remaining**, **48 open / 48 DONE**.
-NS-6 is **53 accepted / 47 unearned** with twelve open tasks. Goal weights are unchanged.
+The current ledger is **52.45 accepted / 47.55 remaining**, **47 open / 49 DONE**.
+NS-6 is **54 accepted / 46 unearned** with eleven open tasks. Goal weights are unchanged.
 The later collection and effects requirements each reallocate one unearned point
 from jobs and iteration; all original criteria remain. Scoping earns no acceptance.
 Capture/exploration receives two additional unearned delivery_03 points with

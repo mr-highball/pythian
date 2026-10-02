@@ -3,8 +3,8 @@
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) ·
 [Assessment](../REBALANCE-2026-09-29.md) · [Completed tasks](DONE/README.md) · [Work](../WORK.md)
 
-Updated 2026-10-02. **48 open / 48 accepted tasks.** The user authorized a new
-outcome-based credit allocation: **52.35 current / 47.65 remaining** overall.
+Updated 2026-10-02. **47 open / 49 accepted tasks.** The user authorized a new
+outcome-based credit allocation: **52.45 current / 47.55 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
 adds 4 NS-5 points / 0.80 overall, and the accepted exact-revision minimal native
@@ -37,8 +37,8 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 50 | 70% | 1 | 30 | 4.50 |
 | [NS-5 — User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 15 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 53 | 53% | 12 | 47 | 4.70 |
-| **Total** | **28.00 weighted** | **24.35 weighted** | **52.35 weighted** | **48** | Goal points are not summed across goals | **47.65** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 11 | 46 | 4.60 |
+| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **47** | Goal points are not summed across goals | **47.55** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -47,8 +47,9 @@ hours or effort estimates. See the [basis and rationale](../REBALANCE-2026-09-29
 ## Selection and actual blockers
 
 The operator requests in-app teaching for future public users.
-[studio_17](NS-6_studio_17.md) delivers a shared first-project guide and tool
-lessons, funded by one unearned delivery_04 point; no scoping credit is earned.
+[studio_17](DONE/NS-6_studio_17.md) is accepted and deployed: shared first-project
+and tool guides earn 1 NS-6 / 0.10 overall after native-unchanged browser delivery
+checks. The actual studio_03 operator verdict remains open.
 
 Big Boss's solo [shared filter catalog](DONE/NS-6_studio_12.md) and
 [flexible waveform controls](DONE/NS-6_studio_13.md) are accepted at the recorded
@@ -223,11 +224,9 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | [NS-6_studio_10](NS-6_studio_10.md) — Enable phone recording over local HTTPS | 1 | 0.10 | Operator reports HTTPS worked; complete capture/browser checks remain open |
 | [NS-6_studio_11](NS-6_studio_11.md) — Browse collection metadata and prepare recordings only on use | 1 | 0.10 | Selected: metadata listing, bounded preview and verified selected-entry preparation |
 
-| [NS-6_studio_17](NS-6_studio_17.md) — Teach operators to teach Pythian | 1 | 0.10 | Shared guide and tool lessons; existing prerequisites accepted |
-
 ## Accepted tasks and retired work
 
-All 48 accepted tasks, including caller corpus intake, Studio source/effects/capture, the current minimal package
+All 49 accepted tasks, including caller corpus intake, Studio source/effects/capture, the current minimal package
 and the three NS-2 quality results, are listed in
 the [current DONE ledger](DONE/README.md). Their acceptance dates and detailed
 evidence remain in the unchanged task identities. Allocations now reflect the

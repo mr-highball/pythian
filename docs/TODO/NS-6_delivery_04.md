@@ -41,7 +41,7 @@ supported reproduction failure and record the unblock or repair owner.
 **Dev Notes:**
 
 - 2026-10-02, Big Boss: one unearned point transfers to
-  [guided operator teaching](NS-6_studio_17.md), reducing this task from 3 to 2.
+  [guided operator teaching](DONE/NS-6_studio_17.md), reducing this task from 3 to 2.
   Every independent-consumer criterion remains required.
 
 - 2026-10-02, Big Boss: one further unearned point transfers to

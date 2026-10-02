@@ -1,6 +1,6 @@
 # NS-6_studio_17 — Teach operators to teach Pythian
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
@@ -15,13 +15,18 @@ Completion credit: 1 goal percentage point (0.10 overall points).
 Basis: one unearned delivery_04 point transfers here (3 to 2); all independent
 consumer criteria remain required. Scoping earns no completion credit.
 
-Execution: Big Boss solo under the continuing usability-review instruction.
-Criterion advanced: discoverable, actionable guidance. Deliverable: a four-step
-first-project guide, contextual tool lessons and accessible resume/dismiss.
-Closing evidence: matched pas2js build and actual desktop/narrow Codex Browser
-checks of all destinations, persistence, keyboard use and unchanged drafts.
-Stop at unsupported controls or claims; keep musical/operator acceptance with
-studio_03 and physical-device acceptance with authoring_02/studio_10.
+Accepted 2026-10-02 by Big Boss under the continuing solo usability instruction.
+Code `f154d1db7ef1eebc8935890ca7cfd5505822abd1` passes the matched pas2js build
+and actual desktop/390px Codex Browser checks of every lesson, destination,
+persistence, storage-unavailable fallback, keyboard use and unchanged drafts.
+Evidence: `build/studio-guide/QA-VERDICT.md`, `guide-destinations.json`, screenshots
+and fourteen frozen hashes in `CANDIDATE-ASSETS.json`. The native service/worker
+are reused unchanged from their accepted build; no native algorithm suite was
+required for these presentation changes. The matched bundle is deployed in the
+fixed stable slot, preserving all 3,208 pre-existing catalog JSON hashes. Final
+deployed guide opens without console errors; QA processes and all owned tabs are
+closed. Musical/operator acceptance remains with studio_03; physical acceptance
+remains with authoring_02/studio_10. Earned 1 NS-6 / 0.10 overall.
 
 **Acceptance Criteria:**
 
@@ -43,8 +48,8 @@ studio_03 and physical-device acceptance with authoring_02/studio_10.
 
 **Blockers**
 
-- [NS-6_studio_08.md](DONE/NS-6_studio_08.md)
-- [NS-6_studio_14.md](DONE/NS-6_studio_14.md)
+- [NS-6_studio_08.md](NS-6_studio_08.md)
+- [NS-6_studio_14.md](NS-6_studio_14.md)
 
 **Dev Notes:**
 
