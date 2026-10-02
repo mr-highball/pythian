@@ -230,10 +230,14 @@ begin
       Check(LStream.SelectionVisits=Int64(976)*2048*32,
         'large geometry visit accounting');
       SetLength(LTokens,1);
-      MustRejectChunk(LStream,LTokens,'cumulative 64m visit cap');
+      LStream.SelectChunk(LTokens);
+      Check(LStream.SelectionVisits=Int64(977)*2048*32,
+        'bounded calls continue beyond the former cumulative cap');
+      SetLength(LTokens,977);
+      MustRejectChunk(LStream,LTokens,'single call exceeds 64m visits');
     finally LStream.Free; end;
   finally LPool.Free; end;
-  WriteLn('PASS cumulative work bound and rollback');
+  WriteLn('PASS per-call work bound, long continuation and rollback');
 end;
 
 var LPool:TJournalCandidatePool;

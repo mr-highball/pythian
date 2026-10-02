@@ -33,32 +33,33 @@ uses
   pythian.learning,
   pythian.learning.journal,
   pythian.learning.selection,
-  pythian.learning.context,
-  pythian.wave.stream;
+  pythian.learning.context;
 
 const
-  MaximumJournalStreamGrains = 32768;
+  MaximumJournalStreamChunkGrains = 4096;
   MaximumJournalStreamVisits: Int64 = 128000000;
 
 type
-  { Borrows its pool, callback and PCM16 writer. The writer must declare the
-    exact total frame count returned by JournalStreamFrames. Each selection
-    chunk is only an input block; Hann normalization continues across blocks.
-    A callback or writer failure poisons this stream; discard its staged WAV. }
-  TJournalWaveRenderStream = class
+  TJournalAudioWrite = procedure(const ASamples: array of Single) of object;
+  { Borrows pool and callbacks. Output blocks are borrowed for the callback
+    only; copy before retaining. Hann normalization continues across blocks.
+    Callback failures poison this stream; the host owns output publication.
+    Positive OutputFrames trims the ending without a second rendering pass. }
+  TJournalAudioRenderStream = class
   private
     FPool: TJournalCandidatePool;
     FReadWindow: TJournalWindowRead;
-    FWriter: TWavePcm16Writer;
+    FWriteAudio: TJournalAudioWrite;
     FChannels: Integer;
     FWindowFrames: Integer;
     FHopFrames: Integer;
-    FExpectedGrains: Integer;
-    FGrainCount: Integer;
+    FExpectedGrains: Int64;
+    FGrainCount: Int64;
     FFlushedFrames: Int64;
     FOutputFrames: Int64;
     FMix: array of Double;
     FWeights: array of Double;
+    FWindowWeights: array of Double;
     FBlock: TAudioSamples;
     FBlockFrames: Integer;
     FBufferedFrames: Integer;
@@ -70,72 +71,92 @@ type
     procedure AppendOne(const ACandidate: TJournalRepresentative);
   public
     constructor Create(const APool: TJournalCandidatePool;
-      const AReadWindow: TJournalWindowRead; const AWriter: TWavePcm16Writer;
-      const AWindowFrames, AHopFrames, AExpectedGrains, ABlockFrames: Integer);
+      const AReadWindow: TJournalWindowRead; const AWriteAudio: TJournalAudioWrite;
+      const AChannels, AWindowFrames, AHopFrames: Integer;
+      const AExpectedGrains: Int64; const ABlockFrames: Integer;
+      const AOutputFrames: Int64 = 0);
     procedure AppendSelection(const ASelection: TAcousticIndices);
     { Explicit windows are preflighted as a complete block before source reads.
       The host's verified profile/source binding owns physical source extents. }
     procedure AppendWindows(const AWindows: TJournalContextWindows);
     procedure Finish;
-    property GrainCount: Integer read FGrainCount;
+    property GrainCount: Int64 read FGrainCount;
     property FlushedFrames: Int64 read FFlushedFrames;
     property Peak: Double read FPeak;
     property Failed: Boolean read FFailed;
     property Finished: Boolean read FFinished;
   end;
 
-function JournalStreamFrames(const AWindowFrames, AHopFrames,
-  AGrainCount: Integer): Int64;
+function JournalStreamFrames(const AWindowFrames, AHopFrames: Integer;
+  const AGrainCount: Int64): Int64;
 
 implementation
 
 uses
-  Math;
+  Math,
+  pythian.granular;
 
-function JournalStreamFrames(const AWindowFrames, AHopFrames,
-  AGrainCount: Integer): Int64;
+function JournalStreamFrames(const AWindowFrames, AHopFrames: Integer;
+  const AGrainCount: Int64): Int64;
 begin
   if (AWindowFrames < 1) or (AWindowFrames > 65536) or
     (AHopFrames < 1) or (AHopFrames > AWindowFrames) or
-    (AGrainCount < 1) or (AGrainCount > MaximumJournalStreamGrains) then
+    (AGrainCount < 1) then
   begin
     raise EAudio.Create('Journal stream geometry or grain count invalid');
   end;
-  Result := Int64(AGrainCount - 1) * AHopFrames + AWindowFrames;
+  if AGrainCount - 1 > (High(Int64) - AWindowFrames) div AHopFrames then
+  begin
+    raise EAudio.Create('Journal stream output clock overflows Int64');
+  end;
+  Result := (AGrainCount - 1) * AHopFrames + AWindowFrames;
 end;
 
-constructor TJournalWaveRenderStream.Create(const APool: TJournalCandidatePool;
-  const AReadWindow: TJournalWindowRead; const AWriter: TWavePcm16Writer;
-  const AWindowFrames, AHopFrames, AExpectedGrains, ABlockFrames: Integer);
+constructor TJournalAudioRenderStream.Create(const APool: TJournalCandidatePool;
+  const AReadWindow: TJournalWindowRead; const AWriteAudio: TJournalAudioWrite;
+  const AChannels, AWindowFrames, AHopFrames: Integer;
+  const AExpectedGrains: Int64; const ABlockFrames: Integer;
+  const AOutputFrames: Int64);
+var
+  LFrame: Integer;
 begin
   inherited Create;
-  if (APool = nil) or not Assigned(AReadWindow) or (AWriter = nil) or
+  if (APool = nil) or not Assigned(AReadWindow) or not Assigned(AWriteAudio) or
+    not (AChannels in [1, 2]) or
     (ABlockFrames < 1) or (ABlockFrames > 65536) then
   begin
-    raise EAudio.Create('Journal stream requires pool, reader, writer and bounded block');
+    raise EAudio.Create('Journal stream requires pool, callbacks, channels and bounded block');
   end;
   FOutputFrames := JournalStreamFrames(AWindowFrames, AHopFrames, AExpectedGrains);
-  if (Int64(AExpectedGrains) * AWindowFrames * AWriter.Channels >
-      MaximumJournalStreamVisits) or
-    (AWriter.ExpectedFrames <> FOutputFrames) or AWriter.Finished or AWriter.Failed or
-    (AWriter.FrameCount <> 0) then
+  if (AOutputFrames < 0) or (AOutputFrames > FOutputFrames) or
+    ((AOutputFrames > 0) and (AExpectedGrains > 1) and
+      (AOutputFrames <= (AExpectedGrains - 2) * AHopFrames + AWindowFrames)) then
   begin
-    raise EAudio.Create('Journal stream work or writer geometry invalid');
+    raise EAudio.Create('Exact output must end within the final required grain');
+  end;
+  if AOutputFrames > 0 then
+  begin
+    FOutputFrames := AOutputFrames;
   end;
   FPool := APool;
   FReadWindow := AReadWindow;
-  FWriter := AWriter;
-  FChannels := AWriter.Channels;
+  FWriteAudio := AWriteAudio;
+  FChannels := AChannels;
   FWindowFrames := AWindowFrames;
   FHopFrames := AHopFrames;
   FExpectedGrains := AExpectedGrains;
   FBlockFrames := ABlockFrames;
   SetLength(FMix, AWindowFrames * FChannels);
   SetLength(FWeights, AWindowFrames);
+  SetLength(FWindowWeights, AWindowFrames);
+  for LFrame := 0 to AWindowFrames - 1 do
+  begin
+    FWindowWeights[LFrame] := GrainWindowWeight(gwHann, LFrame, AWindowFrames);
+  end;
   SetLength(FBlock, ABlockFrames * FChannels);
 end;
 
-procedure TJournalWaveRenderStream.WriteBuffered;
+procedure TJournalAudioRenderStream.WriteBuffered;
 var
   LSamples: TAudioSamples;
 begin
@@ -145,18 +166,18 @@ begin
   end;
   if FBufferedFrames = FBlockFrames then
   begin
-    FWriter.AppendSamples(FBlock);
+    FWriteAudio(FBlock);
   end
   else
   begin
     SetLength(LSamples, FBufferedFrames * FChannels);
     Move(FBlock[0], LSamples[0], Length(LSamples) * SizeOf(Single));
-    FWriter.AppendSamples(LSamples);
+    FWriteAudio(LSamples);
   end;
   FBufferedFrames := 0;
 end;
 
-procedure TJournalWaveRenderStream.FlushTo(const AFrame: Int64);
+procedure TJournalAudioRenderStream.FlushTo(const AFrame: Int64);
 var
   LRing: Integer;
   LChannel: Integer;
@@ -193,7 +214,7 @@ begin
   end;
 end;
 
-procedure TJournalWaveRenderStream.AppendOne(const ACandidate: TJournalRepresentative);
+procedure TJournalAudioRenderStream.AppendOne(const ACandidate: TJournalRepresentative);
 var
   LSamples: TAudioSamples;
   LStart: Int64;
@@ -212,7 +233,7 @@ begin
   for LFrame := 0 to FWindowFrames - 1 do
   begin
     LRing := (LStart + LFrame) mod FWindowFrames;
-    LWeight := Sqr(Sin(Pi * (LFrame + 0.5) / FWindowFrames));
+    LWeight := FWindowWeights[LFrame];
     FWeights[LRing] := FWeights[LRing] + LWeight;
     for LChannel := 0 to FChannels - 1 do
     begin
@@ -231,10 +252,10 @@ begin
     end;
   end;
   Inc(FGrainCount);
-  FlushTo(Int64(FGrainCount) * FHopFrames);
+  FlushTo(Min(FGrainCount * FHopFrames, FOutputFrames));
 end;
 
-procedure TJournalWaveRenderStream.AppendSelection(const ASelection: TAcousticIndices);
+procedure TJournalAudioRenderStream.AppendSelection(const ASelection: TAcousticIndices);
 var
   LSlot: Integer;
   LCandidate: TJournalRepresentative;
@@ -244,7 +265,9 @@ begin
     raise EAudio.Create('Journal stream cannot continue after failure or finish');
   end;
   if (Length(ASelection) < 1) or
-    (Length(ASelection) > FExpectedGrains - FGrainCount) then
+    (Length(ASelection) > FExpectedGrains - FGrainCount) or
+    (Length(ASelection) > MaximumJournalStreamChunkGrains) or
+    (Int64(Length(ASelection)) * FWindowFrames * FChannels > MaximumJournalStreamVisits) then
   begin
     raise EAudio.Create('Journal stream selection count invalid');
   end;
@@ -268,7 +291,7 @@ begin
   end;
 end;
 
-procedure TJournalWaveRenderStream.AppendWindows(
+procedure TJournalAudioRenderStream.AppendWindows(
   const AWindows: TJournalContextWindows);
 var
   LIndex: Integer;
@@ -277,7 +300,9 @@ begin
   if FFailed or FFinished then
     raise EAudio.Create('Journal stream cannot continue after failure or finish');
   if (Length(AWindows) < 1) or
-    (Length(AWindows) > FExpectedGrains - FGrainCount) then
+    (Length(AWindows) > FExpectedGrains - FGrainCount) or
+    (Length(AWindows) > MaximumJournalStreamChunkGrains) or
+    (Int64(Length(AWindows)) * FWindowFrames * FChannels > MaximumJournalStreamVisits) then
     raise EAudio.Create('Journal stream explicit window count invalid');
   for LIndex := 0 to High(AWindows) do
   begin
@@ -302,7 +327,7 @@ begin
   end;
 end;
 
-procedure TJournalWaveRenderStream.Finish;
+procedure TJournalAudioRenderStream.Finish;
 begin
   if FFailed or FFinished or (FGrainCount <> FExpectedGrains) then
   begin
@@ -311,7 +336,6 @@ begin
   try
     FlushTo(FOutputFrames);
     WriteBuffered;
-    FWriter.Finish;
     FFinished := True;
   except
     FFailed := True;

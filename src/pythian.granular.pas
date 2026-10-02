@@ -69,6 +69,9 @@ type
   end;
 
 function DefaultGrainRenderOptions(const ASampleRate, AChannels: Integer): TGrainRenderOptions;
+{ Shared sample-centered window for finite and streaming renderers. }
+function GrainWindowWeight(const AWindow: TGrainWindow;
+  const AFrame, AFrameCount: Integer): Double;
 { Normalized squared difference of paired waveform probes; 1..128 finite samples.
   Equal signals score zero, opposite nonzero signals approach two. This is a
   local join diagnostic, not a perceptual quality score. }
@@ -92,6 +95,21 @@ implementation
 uses
   Math,
   pythian.resample;
+
+function GrainWindowWeight(const AWindow: TGrainWindow;
+  const AFrame, AFrameCount: Integer): Double;
+begin
+  if (AFrameCount < 1) or (AFrame < 0) or (AFrame >= AFrameCount) or
+    not (AWindow in [gwRectangular, gwHann]) then
+  begin
+    raise EAudio.Create('Invalid grain window coordinate');
+  end;
+  Result := 1;
+  if AWindow = gwHann then
+  begin
+    Result := Sqr(Sin(Pi * (AFrame + 0.5) / AFrameCount));
+  end;
+end;
 
 function ExtractGrainJoinProbe(const ASamples: TAudioSamples;
   const AWindowFrames, AHopFrames, AChannels, AProbeFrames: Integer): TGrainJoinProbe;
@@ -298,7 +316,7 @@ begin
         LWeight := 1;
         if LGrain.Window = gwHann then
         begin
-          LWeight := Sqr(Sin(Pi * (LFrame + 0.5) / LGrain.FrameCount));
+          LWeight := GrainWindowWeight(gwHann, LFrame, LGrain.FrameCount);
         end;
         LWeights[LOutputFrame] := LWeights[LOutputFrame] + LWeight;
         if LSampler <> nil then

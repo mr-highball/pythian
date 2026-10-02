@@ -42,6 +42,7 @@ uses
   pythian.wfc.learning,
   pythian.wfc.learning.profile,
   pythian.wfc.learning.blend,
+  pythian.tests.audio.session,
   pythian.hash,
   wfc_sequence,
   wfc_sequence_text;
@@ -598,6 +599,12 @@ begin
       end;
     end;
     LProfile := TJournalModelProfile.Create(LDocument.FormatJSON, LText);
+    if ParamStr(1) = 'stream-soak' then
+    begin
+      SoakAudioSession(LProfile, StrToInt(ParamStr(2)));
+      Exit;
+    end;
+    CheckAudioSession(LProfile);
     LReloaded := TJournalModelProfile.Create(LDocument.AsJSON, LText);
     LProfile.RequireCompatible(LReloaded);
     Check((LProfile.VocabularySha256 = LVocabulary) and
@@ -967,6 +974,10 @@ begin
     if ParamStr(1) = 'partition' then
     begin
       CheckPartitionOutput;
+    end
+    else if ParamStr(1) = 'stream-soak' then
+    begin
+      Run(2);
     end
     else if ParamCount = 0 then
     begin

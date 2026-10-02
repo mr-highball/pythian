@@ -1438,6 +1438,8 @@ begin
 end;
 
 procedure ReplayLongJournalFiles;
+const
+  CMaximumReceiptGrains = 32768;
 var
   LProfile: TJournalModelProfile;
   LAccess: TJournalAudioAccess;
@@ -1448,7 +1450,7 @@ var
   LContextOptions: TJournalContextOptions;
   LContextReport: TJournalContextReport;
   LNoveltyReport: TJournalNoveltyReport;
-  LRender: TJournalWaveRenderStream;
+  LRender: TJournalAudioRenderStream;
   LSink: TStreamAudioSink;
   LWriter: TWavePcm16Writer;
   LWaveOutput: TFileStream;
@@ -1518,7 +1520,7 @@ begin
     LPaths[High(LPaths)] := ParamStr(LArgument);
     Inc(LArgument);
   end;
-  if (LGrains < 1) or (LGrains > MaximumJournalStreamGrains) or
+  if (LGrains < 1) or (LGrains > CMaximumReceiptGrains) or
     (LChunkGrains < 1) or (LChunkGrains > 1024) or
     (LBlockFrames < 1) or (LBlockFrames > 65536) or
     (Length(LPaths) < 2) or (Length(LPaths) > 32) or
@@ -1664,8 +1666,8 @@ begin
     LSink := TStreamAudioSink.Create(LWaveOutput);
     LWriter := TWavePcm16Writer.Create(LSink, LProfile.SampleRate,
       LProfile.Channels, LExpectedFrames);
-    LRender := TJournalWaveRenderStream.Create(LProfile.Pool,
-      LAccess.ReadWindow, LWriter, LProfile.Options.WindowFrames,
+    LRender := TJournalAudioRenderStream.Create(LProfile.Pool,
+      LAccess.ReadWindow, LWriter.AppendSamples, LProfile.Channels, LProfile.Options.WindowFrames,
       LProfile.Options.HopFrames, LGrains, LBlockFrames);
     LLatent := TLearnedSequenceStream.Create(LProfile.Model);
     LSelector := TJournalSelectionStream.Create(LProfile.Pool,
@@ -1851,6 +1853,7 @@ begin
        (LNovelty.GrainCount <> LGrains)) then
       raise EAudio.Create('Long context work or guarded grain count differs');
     LRender.Finish;
+    LWriter.Finish;
     LPeak := LRender.Peak;
     LActualFrames := LWriter.FrameCount;
     if (LActualFrames <> LExpectedFrames) or (LPeak > 1) then

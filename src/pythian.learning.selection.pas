@@ -80,6 +80,7 @@ type
 
   { Borrows an immutable pool. Each successful chunk continues the same smooth
     weighted segment rotation, per-token/segment bin cursors and last slot.
+    Grain and visit budgets apply per call; total counters are checked Int64.
     Failed chunks preserve the cursor and do not publish a partial selection.
     A new instance starts a new sequence; caller keeps the pool alive. }
   TJournalSelectionStream = class
@@ -434,7 +435,8 @@ begin
   LWork := Int64(Length(ATokens)) * FPool.FSegmentCount * FPool.FBins;
   if (Length(ATokens) < 1) or
     (Length(ATokens) > MaximumJournalSelectionGrains) or
-    (LWork > MaximumJournalSelectionVisits - FSelectionVisits) or
+    (LWork > MaximumJournalSelectionVisits) or
+    (LWork > High(Int64) - FSelectionVisits) or
     (FSelectedCount > High(Int64) - Length(ATokens)) then
   begin
     raise EAudio.Create('Journal selection stream chunk or work budget invalid');

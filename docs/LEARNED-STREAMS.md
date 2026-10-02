@@ -45,6 +45,68 @@ sequence identity promise. A valid chunk does not prove a later requested
 length, endpoint or lock is satisfiable. An observed end is learned sequence
 structure, not proof of an audible cadence.
 
+## Pulling continuous acoustic audio
+
+[`TJournalAudioSession`](../adapters/wfc/pythian.wfc.audio.stream.pas) combines the
+existing WFC continuation, weighted source selection and primary core overlap
+renderer. It borrows a verified immutable `TJournalModelProfile` and a source
+window callback. The host keeps both alive and verifies physical source bytes
+against the profile; constructing a session does not read or verify those bytes.
+
+Pass positive Int64 total frames, source weights and a nonnegative Integer seed.
+Call `ReadFrames(1..65536)` for owned interleaved Single PCM. Short positive blocks
+are normal: one call solves at most one 128-grain chunk and renders at most 128
+grains. The last block ends at exactly the requested frame. No WAV or full grain
+ledger is created. Optional per-grain callbacks let the host stream provenance;
+their data must not be retained without copying. Position counts frames returned
+by successful calls, separately from internal read-ahead and grain notices.
+
+Solver chunks remain 128 grains regardless of consumer block size. Chunk seed is
+`(baseSeed + chunkIndex) mod 2^32`, with 256 backtracks, open endings and the same
+private latent predecessor. Selection rotation and Hann overlap continue without
+reset. Identical profile, weights, total length and seed yield identical PCM and
+grain choices across consumer pull partitions. Changing total length may change
+the last solver chunk; it is a replay input. A failed seed is never replaced.
+
+`Pause` suspends pulls without source reads; `Resume` continues that session.
+`Stop` discards pending PCM permanently. Completed/stopped/paused calls return
+empty blocks. Solver, source, output or receipt callback failure permanently marks
+the session failed and throws, returning no partial block; prior returned frames
+remain identified by Position. Caller callbacks may have external side effects
+before failure and must treat such uncommitted output accordingly. Calls are
+serialized; callback reentry rejects. There is no background producer, so
+withholding pulls supplies backpressure. Reopening requires a new session;
+position alone cannot restore solver/selection/overlap state.
+
+The PCM queue holds at most 131072 frames (1 MiB stereo); a returned block is at
+most 65536 frames (512 KiB stereo). Overlap and window storage depend only on
+the profile's maximum 65536-frame window. Candidate slots, selection and WFC
+graphs retain their existing bounded profile/chunk limits. These allocations
+do not grow with declared hours. This bounds work, not wall-clock latency on
+arbitrary storage. The host can check cancellation between pulls and in reads.
+Requests whose final natural grain extent would overflow Int64 reject.
+
+The core-only [`TJournalAudioRenderStream`](../src/pythian.learning.render.stream.pas)
+borrows an audio callback rather than a WAV writer. Its grain count is Int64;
+4096 grains and 128 million channel/frame visits are per-call limits. Selection's
+64-million visit limit likewise applies per call. The shared
+`GrainWindowWeight` in `pythian.granular` owns window coefficients for both whole
+and streamed rendering. Exact output length clips the final output directly.
+The Studio finite worker now writes that output once, with no temporary natural
+WAV/readback trim. The journal CLI retains its own bounded full receipt and
+32768-grain export limit. A WAV consumer must declare its RIFF/RF64 format and
+size policy before writing; raw PCM sessions have no WAV size dependency.
+
+Checked native tests reuse the existing source-bound profile fixtures to cover
+block-invariant PCM/provenance, exact/sub-window endings, pause/resume/stop,
+source/output/reentry failures and impossible WFC continuation. Maximum-rate
+stereo plans for 2 minutes, 2 hours and 24 hours exercise clocks beyond 32 bits
+and bounded startup. Actual optimized checked Win64 runs render 120 and 7200
+seconds of an authored 8-kHz mono control while retaining only the current
+block: 960000/57600000 frames, 875/52703 ms, and 571808-byte maximum live Pascal
+heap in both runs. These are complete control renders, not physical playback,
+24-hour completion, realistic high-rate throughput or musical acceptance.
+
 ## Native WAV workflow
 
 ```text

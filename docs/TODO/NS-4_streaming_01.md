@@ -51,6 +51,20 @@ repository/new-branch procedure; no companion-source edits in this checkout.
 
 **Dev Notes:**
 
+- 2026-10-02, Big Boss: primary `TJournalAudioRenderStream` now emits borrowed
+  PCM blocks with Int64 grain/output clocks and exact final clipping. Shared
+  `GrainWindowWeight` replaces its duplicate Hann formula. Selection work bounds
+  apply per pull rather than lifetime. `TJournalAudioSession` in the WFC adapter
+  retains latent/selection/overlap history and fixed 128-grain solve chunks;
+  its consumer owns format, verification, bounded receipts and cancellation.
+  The finite worker uses this session and removes its temporary WAV/readback trim.
+  Checked Win32/Win64 tests pass partition-identical PCM/provenance, short endings,
+  beyond-32-bit clocks, maximum-rate stereo duration startup, lifecycle and
+  source/output/reentry/solver failures, with zero heap leaks. Both targets pass
+  68 real worker checks. Actual checked optimized Win64 runs render 120/7200
+  seconds at 8 kHz mono in 875/52703 ms, with identical 571808-byte maximum live
+  Pascal heap. No 24-hour render or musical-quality claim. Detailed evidence is
+  under ignored `build/long-session/`; exact-revision CI remains before acceptance.
 - 2026-10-02, Big Boss: current WFC continuation is already incremental, but
   the journal renderer binds its output to a finite PCM16 WAV writer, 32,768
   total grains and 128 million visits. Studio further bounds receipts at 6,000

@@ -53,6 +53,17 @@ Stop for a demonstrated generic WFC gap or duration-dependent resource growth.
 The worker now consumes the same primary renderer directly; its temporary WAV
 and readback trimming are removed. Browser streaming follows this prerequisite.
 
+Streaming_01's shared native implementation now passes checked Win32/Win64
+partition-identical PCM/provenance, exact endings, large clocks and lifecycle/
+failure cases, plus 68 real worker checks per target; no heap leaks. Actual
+optimized checked Win64 control renders complete 120/7200 seconds at 8 kHz mono
+in 875/52703 ms, both with 571808-byte maximum live Pascal heap. Maximum-rate
+stereo 2-minute/2-hour/24-hour plans have bounded startup; a full 24-hour run is
+not claimed. Actual Codex-browser generation through the same session produces
+its traceable 20-second audition and plays to the end with no console errors.
+QA tab/service are cleaned up; fourteen artifacts and the solo verdict are under
+`build/long-session/`. Exact-source Linux CI remains before task acceptance.
+
 **Big Boss, solo:** operator feedback selects the implemented
 [filter catalog](TODO/DONE/NS-6_studio_12.md), flexible
 [source workspace](TODO/DONE/NS-6_studio_13.md), native

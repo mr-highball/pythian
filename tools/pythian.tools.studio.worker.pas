@@ -63,6 +63,7 @@ uses
   pythian.wfc.learning.journal,
   pythian.wfc.learning.profile,
   pythian.wfc.stream,
+  pythian.wfc.audio.stream,
   wfc,
   wfc_sequence,
   wfc_sequence_graph,
@@ -136,6 +137,7 @@ type
     FModelReused: Boolean;
     FPartial: TJSONObject;
     FCurrentOrdinal: Integer;
+    FGrainLedger: TJSONArray;
     procedure FlushJournal;
     procedure Progress(const AStage: String; const ADone, ATotal: Int64);
     procedure Preflight;
@@ -145,6 +147,8 @@ type
       const APalette: TAcousticPalette; const AModel: TWfcSequenceModel;
       const APool: TJournalCandidatePool; const AModelText: String): TJSONObject;
     function ReadCandidate(const ACandidate: TJournalRepresentative): TAudioSamples;
+    procedure RecordGrain(const AOrdinal: Int64; const AToken: Integer;
+      const ACandidate: TJournalRepresentative);
     function RenderSeed(const ASeed, AOrdinal: Integer): TJSONObject;
     procedure PublishListening(const AOutputs: TJSONArray);
     function InspectSource: TJSONObject;
@@ -735,36 +739,38 @@ begin
   Result := FSources[LRange.SourceIndex].Wave.ReadFrames(ACandidate.ValidFrames);
 end;
 
+procedure TStudioWork.RecordGrain(const AOrdinal: Int64; const AToken: Integer;
+  const ACandidate: TJournalRepresentative);
+var
+  LRow: TJSONObject;
+begin
+  Need((FGrainLedger <> nil) and (AOrdinal = FGrainLedger.Count),
+    'Finite audition grain receipt is out of sequence');
+  LRow := TJSONObject.Create;
+  FGrainLedger.Add(LRow);
+  LRow.Add('token', AToken);
+  LRow.Add('range_index', ACandidate.SegmentIndex);
+  LRow.Add('original_source_frame', FRanges[ACandidate.SegmentIndex].Origin +
+    ACandidate.SourceFrame);
+  LRow.Add('valid_frames', ACandidate.ValidFrames);
+end;
+
 function TStudioWork.RenderSeed(const ASeed, AOrdinal: Integer): TJSONObject;
 var
-  LNaturalPath: String;
   LFinalPath: String;
   LOutput: TFileStream;
   LSink: TStreamAudioSink;
   LWriter: TWavePcm16Writer;
-  LRender: TJournalWaveRenderStream;
-  LLatent: TLearnedSequenceStream;
-  LSelector: TJournalSelectionStream;
-  LOptions: TSequenceChunkOptions;
-  LChunk: TWfcGeneratedSequenceSegment;
-  LSolve: TGraphSolveReport;
-  LTokens: TAcousticIndices;
-  LSlots: TAcousticIndices;
+  LSession: TJournalAudioSession;
+  LSamples: TAudioSamples;
   LWeights: TJournalSelectionWeights;
   LLedger: TJSONArray;
-  LRow: TJSONObject;
   LRequestedFrames: Int64;
   LNaturalFrames: Int64;
   LGrains: Integer;
-  LCount: Integer;
-  LEmitted: Integer;
-  LChunkIndex: Integer;
   LIndex: Integer;
-  LCandidate: TJournalRepresentative;
   LInput: TCheckedStream;
   LWave: TWaveFrameReader;
-  LFrames: Int64;
-  LSamples: TAudioSamples;
   LArtifact: TJSONObject;
 begin
   LRequestedFrames := Int64(FRequest.Integers['duration_ms']) * FProfile.SampleRate div 1000;
@@ -774,98 +780,41 @@ begin
   Need(Int64(LGrains) * FOptions.WindowFrames * FProfile.Channels <=
     MaximumJournalStreamVisits, 'Audition render work exceeds bounded visits');
   Need(LGrains <= 6000, 'Audition grain receipt exceeds bounded rows');
-  LNaturalPath := FDirectory + PathDelim + 'seed-' + IntToStr(AOrdinal) + '.natural.wav';
   LFinalPath := FDirectory + PathDelim + 'seed-' + IntToStr(AOrdinal) + '.wav';
-  Need(not FileExists(LNaturalPath) and not FileExists(LFinalPath), 'Seed output already exists');
+  Need(not FileExists(LFinalPath), 'Seed output already exists');
   LOutput := nil;
   LSink := nil;
   LWriter := nil;
-  LRender := nil;
-  LLatent := nil;
-  LSelector := nil;
+  LSession := nil;
   Result := TJSONObject.Create;
   try
     try
       LLedger := TJSONArray.Create;
       Result.Add('grain_map', LLedger);
+      FGrainLedger := LLedger;
       SetLength(LWeights, Length(FRanges));
       for LIndex := 0 to High(LWeights) do
       begin
         LWeights[LIndex] := FRanges[LIndex].Weight;
       end;
-      LOutput := TFileStream.Create(LNaturalPath, fmCreate or fmShareExclusive);
+      LOutput := TFileStream.Create(LFinalPath, fmCreate or fmShareExclusive);
       LSink := TStreamAudioSink.Create(LOutput);
-      LWriter := TWavePcm16Writer.Create(LSink, FProfile.SampleRate, FProfile.Channels, LNaturalFrames);
-      LRender := TJournalWaveRenderStream.Create(FProfile.Pool, ReadCandidate, LWriter,
-        FOptions.WindowFrames, FOptions.HopFrames, LGrains, 4096);
-      LLatent := TLearnedSequenceStream.Create(FProfile.Model);
-      LSelector := TJournalSelectionStream.Create(FProfile.Pool, LWeights, ASeed);
-      LEmitted := 0;
-      LChunkIndex := 0;
-      while LEmitted < LGrains do
+      LWriter := TWavePcm16Writer.Create(LSink, FProfile.SampleRate, FProfile.Channels, LRequestedFrames);
+      LSession := TJournalAudioSession.Create(FProfile, ReadCandidate, LWeights,
+        ASeed, LRequestedFrames, RecordGrain);
+      while LSession.State <> assCompleted do
       begin
         Check;
-        LCount := Min(128, LGrains - LEmitted);
-        LOptions := DefaultSequenceChunkOptions;
-        LOptions.CellCount := LCount;
-        LOptions.Seed := ASeed + LChunkIndex;
-        Need(LLatent.TryNext(LOptions, nil, LChunk, LSolve),
-          'WFC could not generate the declared seed; no seed substitution');
-        SetLength(LTokens, LCount);
-        for LIndex := 0 to LCount - 1 do
-        begin
-          LTokens[LIndex] := AcousticTokenIndex(LChunk.Tokens[LIndex]);
-        end;
-        LSlots := LSelector.SelectChunk(LTokens);
-        LRender.AppendSelection(LSlots);
-        for LIndex := 0 to LCount - 1 do
-        begin
-          LCandidate := FProfile.Pool.CandidateAt(LSlots[LIndex]);
-          LRow := TJSONObject.Create;
-          LLedger.Add(LRow);
-          LRow.Add('token', LTokens[LIndex]);
-          LRow.Add('range_index', LCandidate.SegmentIndex);
-          LRow.Add('original_source_frame', FRanges[LCandidate.SegmentIndex].Origin +
-            LCandidate.SourceFrame);
-          LRow.Add('valid_frames', LCandidate.ValidFrames);
-        end;
-        Inc(LEmitted, LCount);
-        Inc(LChunkIndex);
+        LSamples := LSession.ReadFrames(4096);
+        Need(Length(LSamples) > 0, 'Audio session made no progress');
+        LWriter.AppendSamples(LSamples);
       end;
-      LRender.Finish;
       LWriter.Finish;
-      FreeAndNil(LRender);
+      Need(FileFlush(LOutput.Handle), 'Cannot flush audition');
+      FreeAndNil(LSession);
       FreeAndNil(LWriter);
       FreeAndNil(LSink);
       FreeAndNil(LOutput);
-      LInput := TCheckedStream.Create(LNaturalPath, Self);
-      try
-        LWave := TWaveFrameReader.Create(LInput);
-        try
-          LOutput := TFileStream.Create(LFinalPath, fmCreate or fmShareExclusive);
-          LSink := TStreamAudioSink.Create(LOutput);
-          LWriter := TWavePcm16Writer.Create(LSink, FProfile.SampleRate, FProfile.Channels,
-            LRequestedFrames);
-          LFrames := 0;
-          while LFrames < LRequestedFrames do
-          begin
-            LCount := Integer(Min(Int64(4096), LRequestedFrames - LFrames));
-            LSamples := LWave.ReadFrames(LCount);
-            Need(Length(LSamples) = LCount * FProfile.Channels, 'Rendered audition is incomplete');
-            LWriter.AppendSamples(LSamples);
-            Inc(LFrames, LCount);
-          end;
-          LWriter.Finish;
-          Need(FileFlush(LOutput.Handle), 'Cannot flush audition');
-          FreeAndNil(LWriter);
-          FreeAndNil(LSink);
-          FreeAndNil(LOutput);
-        finally
-          LWave.Free;
-        end;
-      finally
-        LInput.Free;
-      end;
       LInput := TCheckedStream.Create(LFinalPath, Self);
       try
         Result.Add('wav_sha256', HashFile(LInput));
@@ -903,15 +852,15 @@ begin
       end;
       Result.Add('grain_map_sha256', StudioTextHash(LLedger.AsJSON));
       Result.Add('grain_map_count', LLedger.Count);
+      FGrainLedger := nil;
       Result.Delete('grain_map');
     except
       Result.Free;
       raise;
     end;
   finally
-    LSelector.Free;
-    LLatent.Free;
-    LRender.Free;
+    FGrainLedger := nil;
+    LSession.Free;
     LWriter.Free;
     LSink.Free;
     LOutput.Free;

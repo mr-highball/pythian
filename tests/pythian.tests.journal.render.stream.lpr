@@ -37,8 +37,14 @@ type
   TProbe = class
     FailFeature: Integer;
     Gain: Single;
+    procedure FailWrite(const ASamples: array of Single);
     function ReadWindow(const ACandidate: TJournalRepresentative): TAudioSamples;
   end;
+
+procedure TProbe.FailWrite(const ASamples: array of Single);
+begin
+  raise EAudio.Create('Deliberate output callback failure');
+end;
 
 function TProbe.ReadWindow(const ACandidate: TJournalRepresentative): TAudioSamples;
 var
@@ -72,7 +78,7 @@ var
   LMemory: TMemoryStream;
   LSink: TStreamAudioSink;
   LWriter: TWavePcm16Writer;
-  LRender: TJournalWaveRenderStream;
+  LRender: TJournalAudioRenderStream;
   LChunk: TAcousticIndices;
   LWindows: TJournalContextWindows;
   LOffset: Integer;
@@ -88,8 +94,8 @@ begin
     LSink := TStreamAudioSink.Create(LMemory);
     LWriter := TWavePcm16Writer.Create(LSink, 16000, 1,
       JournalStreamFrames(8, 4, Length(ASelection)));
-    LRender := TJournalWaveRenderStream.Create(APool, AProbe.ReadWindow,
-      LWriter, 8, 4, Length(ASelection), ABlockFrames);
+    LRender := TJournalAudioRenderStream.Create(APool, AProbe.ReadWindow,
+      LWriter.AppendSamples, 1, 8, 4, Length(ASelection), ABlockFrames);
     LOffset := 0;
     while LOffset < Length(ASelection) do
     begin
@@ -117,6 +123,7 @@ begin
       Inc(LOffset, LCount);
     end;
     LRender.Finish;
+    LWriter.Finish;
     Require(LRender.Finished and not LRender.Failed and
       (LWriter.FrameCount = JournalStreamFrames(8, 4, Length(ASelection))),
       'Stream did not finish exact frame count');
@@ -139,11 +146,21 @@ var
   LMemory: TMemoryStream;
   LSink: TStreamAudioSink;
   LWriter: TWavePcm16Writer;
-  LRender: TJournalWaveRenderStream;
+  LRender: TJournalAudioRenderStream;
   LSelection: TAcousticIndices;
   LWindows: TJournalContextWindows;
   LFailed: Boolean;
 begin
+  LFailed := False;
+  LRender := TJournalAudioRenderStream.Create(APool, AProbe.ReadWindow,
+    AProbe.FailWrite, 1, 8, 4, 1, 1);
+  try
+    try LRender.AppendSelection(TAcousticIndices.Create(3));
+    except on EAudio do LFailed := True end;
+    Require(LFailed and LRender.Failed, 'Output callback failure did not poison renderer');
+  finally
+    LRender.Free;
+  end;
   LFailed := False;
   try
     JournalStreamFrames(8, 9, 2);
@@ -159,8 +176,8 @@ begin
     LSink := TStreamAudioSink.Create(LMemory);
     LWriter := TWavePcm16Writer.Create(LSink, 16000, 1,
       JournalStreamFrames(8, 4, 2));
-    LRender := TJournalWaveRenderStream.Create(APool, AProbe.ReadWindow,
-      LWriter, 8, 4, 2, 3);
+    LRender := TJournalAudioRenderStream.Create(APool, AProbe.ReadWindow,
+      LWriter.AppendSamples, 1, 8, 4, 2, 3);
     SetLength(LSelection, 1);
     LSelection[0] := -1;
     LFailed := False;
@@ -215,8 +232,8 @@ begin
     LSink := TStreamAudioSink.Create(LMemory);
     LWriter := TWavePcm16Writer.Create(LSink, 16000, 1,
       JournalStreamFrames(8, 4, 1));
-    LRender := TJournalWaveRenderStream.Create(APool, AProbe.ReadWindow,
-      LWriter, 8, 4, 1, 3);
+    LRender := TJournalAudioRenderStream.Create(APool, AProbe.ReadWindow,
+      LWriter.AppendSamples, 1, 8, 4, 1, 3);
     AProbe.Gain := 16;
     SetLength(LSelection, 1);
     LSelection[0] := 3;
@@ -242,8 +259,8 @@ begin
     LSink := TStreamAudioSink.Create(LMemory);
     LWriter := TWavePcm16Writer.Create(LSink, 16000, 1,
       JournalStreamFrames(8, 4, 2));
-    LRender := TJournalWaveRenderStream.Create(APool, AProbe.ReadWindow,
-      LWriter, 8, 4, 2, 3);
+    LRender := TJournalAudioRenderStream.Create(APool, AProbe.ReadWindow,
+      LWriter.AppendSamples, 1, 8, 4, 2, 3);
     SetLength(LWindows, 2);
     LWindows[0].Token := APool.TokenAt(3);
     LWindows[0].Candidate := APool.CandidateAt(3);
