@@ -12,6 +12,30 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Stable Studio availability recovery — 2026-10-02
+
+Big Boss responded to the operator's failed Studio load: the stable executable
+and listener were absent, while the configured LAN address was unchanged. There
+was no host reboot or matching recorded Application crash. The original exit
+reason remains unconfirmed; do not describe session cleanup as a proven cause.
+
+The unchanged checked bundle was restored through the existing guarded launcher,
+then launched from an independent hidden Windows process. The launcher exited;
+the stable service remained and returned HTTP 200 on loopback and LAN HTTPS.
+Actual Codex Browser loaded Studio, connected to the library and showed saved
+projects without console errors. The temporary tab is closed; no audio started.
+No catalog, firewall, certificate, synthesis or UI contract was changed.
+
+For subsequent local background starts, use the ignored
+`build/studio-tabs/start-studio-independent.ps1` wrapper around the guarded
+launcher, rather than tying the service to the agent command's process lifetime.
+The independent mechanism is verified; the wrapper's CheckOnly passed without
+restarting the operator again. Local identities and recovery evidence remain in
+`build/studio-tabs/recovery.json` and `independent-launch.json`. This is an
+operational repair under authoring_02, with no additional milestone credit or
+claim of complete physical-phone acceptance. Ledger remains 52.45/47.55,
+47 open / 50 DONE.
+
 ## Studio tabs and contextual help — 2026-10-02
 
 Big Boss's solo [studio_18](TODO/DONE/NS-6_studio_18.md) repair is accepted and

@@ -61,6 +61,15 @@ run the staged Pascal server in a foreground terminal:
 & $stableProgram serve-app-open $reviewInbox $reviewCatalog $stableWeb $reviewIPv4 18097
 ```
 
+For a background launch from a short-lived agent command, keep the checked
+service's lifetime independent of that command. An operating-system-owned
+hidden launcher can run the same guarded startup with the current user's TLS
+identity and private catalog. Verify the launcher has exited while the exact
+stable executable still owns the port, then check LAN HTTPS and browser loading.
+A background process ID alone does not establish continued availability. Keep
+machine-specific wrappers, identities and logs under ignored `build/`; do not
+add automatic logon/startup registration for a one-time review launch.
+
 Open the selected host on port18097: source review is at `/`, and complete
 single/paired listening is at `/listen.html`, and project/source setup is at
 `/studio.html`. Saving a Studio draft preserves setup; its Generate action starts

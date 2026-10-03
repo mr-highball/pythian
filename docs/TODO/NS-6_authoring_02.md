@@ -137,6 +137,15 @@ the accepted editor mechanics in authoring_01 retain their scoped evidence.
 
 **Dev Notes:**
 
+- 2026-10-02, Big Boss: repaired the operator-reported absent stable service.
+  The checked bundle now runs from an independent hidden Windows launcher;
+  service lifetime was verified after that launcher exited, followed by HTTP,
+  LAN HTTPS and actual browser/catalog loading. The previous exit cause is
+  unconfirmed (no matching crash or reboot evidence). See the current work
+  record and ignored `build/studio-tabs/recovery.json`. No additional credit;
+  the full physical-phone and durable feedback acceptance remains open.
+
+
 - 2026-10-02, Big Boss: the explicit solo review repairs confusing fixture
   prompts, marker feedback and repeated navigation. Actual Codex Browser tests
   separate optional developer checks from attention counts; save unknown and
