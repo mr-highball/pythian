@@ -129,6 +129,10 @@ begin
     Result.Add('job_id', AJobId);
     Result.Add('job_status', LJob.Strings['status']);
     Result.Add('stage', LJob.Strings['stage']);
+    Result.Add('done', LJob.Int64s['done']);
+    Result.Add('total', LJob.Int64s['total']);
+    Result.Add('progress_unit', LJob.Get('progress_unit', ''));
+    Result.Add('progress_pass', LJob.Get('progress_pass', 0));
     Result.Add('error_code', LJob.Strings['error_code']);
     Result.Add('error_message', LJob.Strings['error_message']);
     if LJob.Find('results') <> nil then Result.Add('results', LJob.Find('results').Clone);

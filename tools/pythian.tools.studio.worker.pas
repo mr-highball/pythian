@@ -90,9 +90,11 @@ type
   TCheckedStream = class(TFileStream)
   private
     FWork: TStudioWork;
+    FHashStage: String;
   public
     constructor Create(const APath: String; const AWork: TStudioWork);
     function Read(var ABuffer; ACount: LongInt): LongInt; override;
+    function HashWithProgress(const AStage: String): String;
   end;
 
   TRangeAnalysis = class(TAudioAnalysisSource)
@@ -140,10 +142,20 @@ type
     FCurrentOrdinal: Integer;
     FGrainLedger: TJSONArray;
     FStreaming: Boolean;
+    FLastProgressAt: QWord;
+    FLastProgressStage: String;
+    FLastProgressPass: Integer;
+    FLastProgressDone: Int64;
+    FLastProgressTotal: Int64;
+    FLearningStage: String;
+    FFirstLearningPass: Integer;
     procedure FlushJournal;
-    procedure Progress(const AStage: String; const ADone, ATotal: Int64);
+    procedure Progress(const AStage: String; const ADone, ATotal: Int64;
+      const AUnit: String = ''; const APass: Integer = 0);
+    procedure LearningProgress(const APass: Integer; const ADone, ATotal: Int64);
+    procedure LibraryProgress(const AStage: String; const ADone, ATotal: Int64);
     procedure Preflight;
-    procedure VerifySources;
+    procedure VerifySources(const AStage: String = 'verify_output_sources');
     function TryReuseModel(const AExpected: TJSONObject = nil;
       const AModelText: String = ''): Boolean;
     procedure Train;
@@ -220,7 +232,21 @@ end;
 function TCheckedStream.Read(var ABuffer; ACount: LongInt): LongInt;
 begin
   FWork.Check;
+  if FHashStage <> '' then
+    FWork.Progress(FHashStage, Position, Size, 'bytes');
   Result := inherited Read(ABuffer, ACount);
+end;
+
+function TCheckedStream.HashWithProgress(const AStage: String): String;
+begin
+  FHashStage := AStage;
+  try
+    FWork.Progress(AStage, 0, Size, 'bytes');
+    Result := HashFile(Self);
+    FWork.Progress(AStage, Size, Size, 'bytes');
+  finally
+    FHashStage := '';
+  end;
 end;
 
 constructor TRangeAnalysis.Create(const AWave: TWaveFrameReader;
@@ -326,10 +352,35 @@ begin
   end;
 end;
 
-procedure TStudioWork.Progress(const AStage: String; const ADone, ATotal: Int64);
+procedure TStudioWork.Progress(const AStage: String; const ADone, ATotal: Int64;
+  const AUnit: String; const APass: Integer);
 begin
   Check;
-  AdvanceStudioJob(FCatalogRoot, FJobId, 'running', AStage, ADone, ATotal);
+  { Big Boss: cancellation is checked at every callback, immutable status writes
+    at most twice a second within a pass. Boundaries are always published. }
+  if (AStage = FLastProgressStage) and (APass = FLastProgressPass) and
+    (ATotal = FLastProgressTotal) and (ADone >= FLastProgressDone) and
+    ((ADone = FLastProgressDone) or
+     ((ADone < ATotal) and (GetTickCount64 - FLastProgressAt < 500))) then Exit;
+  AdvanceStudioJob(FCatalogRoot, FJobId, 'running', AStage, ADone, ATotal,
+    nil, '', '', AUnit, APass);
+  FLastProgressAt := GetTickCount64;
+  FLastProgressStage := AStage;
+  FLastProgressPass := APass;
+  FLastProgressDone := ADone;
+  FLastProgressTotal := ATotal;
+end;
+
+procedure TStudioWork.LearningProgress(const APass: Integer; const ADone, ATotal: Int64);
+begin
+  if FFirstLearningPass = 0 then FFirstLearningPass := APass;
+  Progress(FLearningStage, ADone, ATotal, 'observations', APass - FFirstLearningPass + 1);
+end;
+
+procedure TStudioWork.LibraryProgress(const AStage: String; const ADone, ATotal: Int64);
+begin
+  if Pos('_bytes', AStage) > 0 then Progress(AStage, ADone, ATotal, 'bytes')
+  else Progress(AStage, ADone, ATotal, 'items');
 end;
 
 procedure TStudioWork.FlushJournal;
@@ -379,7 +430,7 @@ begin
   LTotalFeatures := 0;
   for LIndex := 0 to LSelections.Count - 1 do
   begin
-    Progress('verify_sources', LIndex, LSelections.Count);
+    Progress('verify_sources', 0, 0);
     LSnapshot := LSelections.Objects[LIndex];
     LHash := LSnapshot.Strings['source_sha256'];
     LTrack := ReadCatalogTrack(FCatalogRoot, LHash);
@@ -410,7 +461,7 @@ begin
         Inc(LUniqueBytes, FSources[LSourceIndex].Stream.Size);
         Need(LUniqueBytes <= MaximumStudioJobSourceBytes, 'Source byte budget exceeded');
         Need((FSources[LSourceIndex].Stream.Size = LSnapshot.Int64s['source_bytes']) and
-          (HashFile(FSources[LSourceIndex].Stream) = LHash), 'Actual source bytes differ from imported identity');
+          (FSources[LSourceIndex].Stream.HashWithProgress('verify_sources') = LHash), 'Actual source bytes differ from imported identity');
         FSources[LSourceIndex].Stream.Position := 0;
         FSources[LSourceIndex].Wave := TWaveFrameReader.Create(FSources[LSourceIndex].Stream);
         Need((FSources[LSourceIndex].Wave.SampleRate = LSnapshot.Integers['sample_rate']) and
@@ -504,14 +555,14 @@ begin
     'models' + PathDelim + FTrainingHash;
 end;
 
-procedure TStudioWork.VerifySources;
+procedure TStudioWork.VerifySources(const AStage: String);
 var
   LIndex: Integer;
 begin
   for LIndex := 0 to High(FSources) do
   begin
     Check;
-    Need(HashFile(FSources[LIndex].Stream) = FSources[LIndex].Hash,
+    Need(FSources[LIndex].Stream.HashWithProgress(AStage) = FSources[LIndex].Hash,
       'Source content changed during Studio work; no accepted publication');
   end;
 end;
@@ -661,17 +712,22 @@ var
   LModelText: String;
   LGuid: TGuid;
   LFeatureIndex: Integer;
+  LAnalyzed: Int64;
+  LAllFeatures: Int64;
 begin
+  Progress('find_saved_model', 0, 0);
   if TryReuseModel then
   begin
-    Progress('reload_verified_model', 0, 1);
+    Progress('reload_verified_model', 1, 1, 'items');
     Exit;
   end;
+  LAnalyzed := 0;
+  LAllFeatures := FReceipt.Int64s['total_analyzed_observations'];
+  Progress('analyze_selected_ranges', 0, LAllFeatures, 'observations');
   Need(ForceDirectories(FDirectory + PathDelim + 'analysis'), 'Cannot create private analysis stage');
   SetLength(LSegments, Length(FRanges));
   for LIndex := 0 to High(FRanges) do
   begin
-    Progress('analyze_selected_ranges', LIndex, Length(FRanges));
     LBinding := Default(TFeatureJournalBinding);
     LBinding.SourceSha256 := FReceipt.Arrays['sources'].Objects[LIndex].Strings['analysis_range_sha256'];
     LBinding.SampleRate := FSources[FRanges[LIndex].SourceIndex].Wave.SampleRate;
@@ -707,6 +763,8 @@ begin
         LBatch.Completed := LBatch.NextFeature = LTotal;
         FRanges[LIndex].Journal.Append(LBatch);
         LFirst := LBatch.NextFeature;
+        Inc(LAnalyzed, LCount);
+        Progress('analyze_selected_ranges', LAnalyzed, LAllFeatures, 'observations');
       finally
         LSource.Free;
       end;
@@ -722,17 +780,24 @@ begin
   LOuter := nil;
   try
     LReader := TJournalTrainingReader.Create(LSegments);
-    Progress('learn_raw_palette', 0, 1);
+    LReader.OnProgress := LearningProgress;
+    FLearningStage := 'learn_raw_palette';
+    FFirstLearningPass := 0;
     LPalette := TAcousticPalette.CreateFromReader(LReader, FRequest.Integers['maximum_tokens']);
     Check;
-    Progress('learn_wfc_model', 0, 1);
+    FLearningStage := 'learn_wfc_model';
+    FFirstLearningPass := 0;
     LModel := LearnJournalAcousticModel(LReader, LPalette, FRequest.Integers['model_order']);
+    FLearningStage := 'select_sound_examples';
+    FFirstLearningPass := 0;
     LPool := TJournalCandidatePool.Create(LReader, LPalette, CCandidateBins);
+    Progress('check_learned_model', 0, 0);
     LModelText := EncodeWfcSequenceText(LModel);
     LInner := MakeProfile(LReader, LPalette, LModel, LPool, LModelText);
     FProfile := TJournalModelProfile.Create(LInner.AsJSON, LModelText);
     Need(FProfile.EncodeModel = LModelText, 'Reloaded model canonical text differs');
-    VerifySources;
+    VerifySources('verify_model_sources');
+    Progress('save_learned_model', 0, 0);
     FReceipt.Add('model_sha256', FProfile.ModelSha256);
     LOuter := TJSONObject(FReceipt.Clone);
     LOuter.Add('journal_profile', LInner.Clone);
@@ -810,6 +875,7 @@ var
   LInput: TCheckedStream;
   LWave: TWaveFrameReader;
   LArtifact: TJSONObject;
+  LRendered: Int64;
 begin
   LRequestedFrames := Int64(FRequest.Integers['duration_ms']) * FProfile.SampleRate div 1000;
   LGrains := Integer(Max(Int64(1), (Max(Int64(0), LRequestedFrames - FOptions.WindowFrames) +
@@ -840,12 +906,18 @@ begin
       LWriter := TWavePcm16Writer.Create(LSink, FProfile.SampleRate, FProfile.Channels, LRequestedFrames);
       LSession := TJournalAudioSession.Create(FProfile, ReadCandidate, LWeights,
         ASeed, LRequestedFrames, RecordGrain);
+      LRendered := 0;
+      Progress('generate_auditions', Int64(AOrdinal) * LRequestedFrames,
+        Int64(FRequest.Arrays['seeds'].Count) * LRequestedFrames, 'frames');
       while LSession.State <> assCompleted do
       begin
         Check;
         LSamples := LSession.ReadFrames(4096);
         Need(Length(LSamples) > 0, 'Audio session made no progress');
         LWriter.AppendSamples(LSamples);
+        Inc(LRendered, Length(LSamples) div FProfile.Channels);
+        Progress('generate_auditions', Int64(AOrdinal) * LRequestedFrames + LRendered,
+          Int64(FRequest.Arrays['seeds'].Count) * LRequestedFrames, 'frames');
       end;
       LWriter.Finish;
       Need(FileFlush(LOutput.Handle), 'Cannot flush audition');
@@ -1236,18 +1308,18 @@ var
 begin
   if FRequest.Strings['kind'] = 'library_discover' then
   begin
-    Exit(DiscoverStudioLibrary(FCatalogRoot, ALibraryRoot, Progress));
+    Exit(DiscoverStudioLibrary(FCatalogRoot, ALibraryRoot, LibraryProgress));
   end;
   if FRequest.Strings['kind'] = 'library_prepare' then
   begin
     Exit(PrepareStudioLibraryEntries(FCatalogRoot, ALibraryRoot,
       ReserveStudioJobStage(FCatalogRoot, ALibraryRoot, FJobId, 'library-prepare'),
-      FRequest.Integers['discovery_revision'], FRequest.Arrays['entries'], Progress));
+      FRequest.Integers['discovery_revision'], FRequest.Arrays['entries'], LibraryProgress));
   end;
   if FRequest.Strings['kind'] = 'library_refresh' then
   begin
     Exit(RefreshStudioLibrary(FCatalogRoot, ALibraryRoot,
-      ReserveStudioJobStage(FCatalogRoot, ALibraryRoot, FJobId, 'library-refresh'), Progress));
+      ReserveStudioJobStage(FCatalogRoot, ALibraryRoot, FJobId, 'library-refresh'), LibraryProgress));
   end;
   if FRequest.Strings['kind'] = 'inspect_source' then
   begin
@@ -1285,14 +1357,13 @@ begin
     begin
       FCurrentOrdinal := LIndex;
       FPartial.Arrays['seed_outcomes'].Objects[LIndex].Strings['status'] := 'rendering';
-      Progress('generate_auditions', LIndex, FRequest.Arrays['seeds'].Count);
       LOutputs.Add(RenderSeed(FRequest.Arrays['seeds'].Integers[LIndex], LIndex));
       FPartial.Arrays['seed_outcomes'].Objects[LIndex].Strings['status'] := 'verified';
       FPartial.Arrays['outputs'].Add(LOutputs.Objects[LIndex].Clone);
       FPartial.Integers['completed_render_count'] := LOutputs.Count;
     end;
     VerifySources;
-    Progress('publish_listening', 0, LOutputs.Count);
+    Progress('publish_listening', 0, 0);
     PublishListening(LOutputs);
     FPartial.Strings['publication_status'] := 'published';
     Result.Add('completed_render_count', LOutputs.Count);

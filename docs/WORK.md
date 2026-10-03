@@ -12,6 +12,32 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Measured learning progress — 2026-10-03
+
+Big Boss's solo [studio_20](TODO/DONE/NS-6_studio_20.md) is accepted and deployed.
+Journal callbacks expose actual observations per learning pass and abort cleanly;
+worker progress measures source bytes, analysis windows and generated frames.
+Job and live-preparation UI share short step names and real progress bars. The
+selected job appears before expandable history. Reuse skips learning explicitly;
+unmeasured work has no invented percent or ETA. Native learning output parity and
+164 real worker checks pass; actual Codex Browser runs cover a ten-minute source,
+live cancellation, completed/failed history labels and 390px/1280px layouts.
+
+Evidence and independent launch: `build/studio-progress/QA-VERDICT.md` and
+`build/studio-progress/start-studio-independent.ps1`. Fourteen frozen assets match
+stable delivery; all 3,957 prior operator JSON/JSONL hashes are unchanged. Owned
+tabs/QA service closed, zero active audio. Physical-phone/musical acceptance is
+unchanged. A stale already-running worker cannot gain callbacks until a new job.
+
+Ledger: **52.45 accepted / 47.55 remaining**, **48 open / 52 DONE** (100 records),
+NS-6 **54/46**. Consecutive nonclosing count: 0.
+
+The operator now requests the same lesson across long operations. Next selected
+work is [observability_01](TODO/NS-6_observability_01.md): inventory existing
+checkpoints/pull interfaces; add shared bulk analysis/hash/resample/pitch callbacks
+and connect silent effect/capture/inspection paths. Keep user work independent of
+authored QA, and record distinct remaining gaps without overstating coverage.
+
 ## Explicit training choices and collection playback — 2026-10-03
 
 Big Boss's solo [studio_19](TODO/DONE/NS-6_studio_19.md) repair is accepted and live.

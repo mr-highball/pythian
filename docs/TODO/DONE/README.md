@@ -3,7 +3,7 @@
 [Task index](../README.md) · [Task flow](../../TASKFLOW.MD) ·
 [Milestones](../../MILESTONES.md) · [Current credit basis](../../REBALANCE-2026-09-29.md#current-credit-basis)
 
-All **51** records retain their acceptance evidence and dates. Points below
+All **52** records retain their acceptance evidence and dates. Points below
 use the user-authorized 2026-09-29 outcome rebase; older amounts in evidence
 narratives are historical. No task was accepted by this reassessment.
 The [2026-09-30 Studio allocation](../../OPERATOR-STUDIO.md#allocation-and-ownership)
@@ -16,6 +16,7 @@ Shared filter catalog and flexible source workspace add 3 NS-6 / 0.30 overall.
 
 | Accepted task | Date | Current goal credit | Current overall credit |
 | --- | --- | ---: | ---: |
+| [NS-6_studio_20](NS-6_studio_20.md) — Measured learning progress | 2026-10-03 | 0 NS-6 | 0.00 |
 | [NS-6_studio_19](NS-6_studio_19.md) — Explicit training choices and collection playback | 2026-10-03 | 0 additional NS-6 | 0.00 |
 | [NS-6_studio_18](NS-6_studio_18.md) — Repair tabbed workflow and contextual modal help | 2026-10-02 | 0 additional NS-6 | 0.00 |
 | [NS-6_studio_17](NS-6_studio_17.md) — Shared guided project and contextual tool teaching | 2026-10-02 | 1 NS-6 | 0.10 |

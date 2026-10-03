@@ -30,7 +30,7 @@ interface
 
 uses
   JS, Web, WebAudio, SysUtils, Math, pythian.time,
-  pythian.studio.sources, pythian.studio.requests;
+  pythian.studio.sources, pythian.studio.requests, pythian.studio.progress;
 
 type
   TStudioLiveRequest = function: TJSObject of object;
@@ -129,6 +129,7 @@ begin
   LInput.className := 'notice';
   LInput.setAttribute('role', 'status');
   LInput.setAttribute('aria-live', 'polite');
+  Add(LRoot, 'div', '', 'live-learning-progress');
   Add(LRoot, 'p', '', 'live-clock');
   Add(LRoot, 'p', '', 'live-source');
   LRow := Add(LRoot, 'div', '', '');
@@ -319,9 +320,14 @@ begin
           (StudioText(LReply, 'job_status') = 'cancelled') then
           raise Exception.Create(StudioText(LReply, 'error_message') + ' Start a new session.');
         if StudioNumber(LReply, 'total_frames') = 0 then
-          Notice('Preparing your selected recordings…')
+        begin
+          Notice(StudioStageText(StudioText(LReply, 'stage')));
+          El('live-learning-progress').innerHTML := '';
+          DrawStudioProgress(El('live-learning-progress'), LReply);
+        end
         else
         begin
+          El('live-learning-progress').innerHTML := '';
           FTotal := StudioNumber(LReply, 'total_frames');
           LCommand := TJSObject.new;
           LCommand['job_id'] := FJobId; LCommand['action'] := 'pull';
@@ -423,6 +429,7 @@ begin
   FJobId := '';
   window.clearTimeout(FTimer);
   CloseAudio; Controls;
+  El('live-learning-progress').innerHTML := '';
   if (FRate > 0) and (FTotal > 0) then
     El('live-clock').textContent := StudioTime(FPlayed / FRate) + ' / ' +
       StudioTime(FTotal / FRate) + ' · 0.0 s buffered';

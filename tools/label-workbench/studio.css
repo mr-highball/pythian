@@ -254,3 +254,10 @@ body:has(#listen:not([hidden])) .save-panel { display: none; }
 .training-state { font-size:.88rem; color:#b6e6d8; }
 .training-summary { padding:.8rem; margin:.7rem 0; border-left:3px solid #b6e6d8; background:#18343d; border-radius:.3rem; }
 .training-summary p { margin:.4rem 0; }
+
+/* Big Boss: current-step progress uses measured native work, with no fake ETA. */
+.learning-progress { margin:.8rem 0; padding:.9rem; border:1px solid #527971; border-radius:.65rem; background:#123239; }
+.learning-progress p { margin:.3rem 0 .65rem; overflow-wrap:anywhere; }
+.learning-progress .progress-heading { font-weight:650; color:#d4f4e9; }
+.learning-progress progress { display:block; width:100%; height:1rem; margin:.65rem 0; accent-color:#a5e6d3; }
+.learning-progress small { display:block; color:var(--muted); line-height:1.5; }

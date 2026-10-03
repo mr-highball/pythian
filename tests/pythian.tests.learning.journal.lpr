@@ -47,6 +47,13 @@ uses
   wfc_sequence_text;
 
 type
+  TProgressProbe = class
+    Pass, Starts, Ends: Integer;
+    Done, Total: Int64;
+    Abort: Boolean;
+    procedure Report(const APass: Integer; const ADone, ATotal: Int64);
+  end;
+
   TJoinFixtureSource = class
     Reads: Integer;
     function ReadWindow(const ACandidate: TJournalRepresentative): TAudioSamples;
@@ -94,6 +101,20 @@ begin
   begin
     raise Exception.Create(AMessage);
   end;
+end;
+
+procedure TProgressProbe.Report(const APass: Integer; const ADone, ATotal: Int64);
+begin
+  Check((ATotal > 0) and (ADone >= 0) and (ADone <= ATotal), 'Measured progress bounds');
+  if APass <> Pass then
+  begin
+    Check((APass > Pass) and (ADone = 0), 'Each new pass starts at zero');
+    Inc(Starts);
+  end
+  else Check((ADone > Done) and (ATotal = Total), 'Progress increases within a pass');
+  Pass := APass; Done := ADone; Total := ATotal;
+  if ADone = ATotal then Inc(Ends);
+  if Abort then raise EAudio.Create('Requested callback cancellation');
 end;
 
 procedure CheckContextBoundaries;
@@ -1026,6 +1047,8 @@ end;
 
 procedure Run;
 var
+  LProgress: TProgressProbe;
+  LObservation: TJournalTrainingObservation;
   LBaseline: TJournalRepresentatives;
   LStorage: TMemoryCommit;
   LJournal: TFeatureJournal;
@@ -1078,6 +1101,7 @@ begin
   end;
   for LSize in [1, 7, 13] do
   begin
+    LProgress := TProgressProbe.Create;
     LStorage := TMemoryCommit.Create;
     LJournal := nil;
     LReader := nil;
@@ -1114,6 +1138,7 @@ begin
       LReader := TJournalTrainingReader.Create(LSegments);
       Check((LReader.ObservationCount = 37) and (LReader.WeightedObservationCount = 56),
         'Declared multiplicity counts whole recordings');
+      LReader.OnProgress := LProgress.Report;
       LPalette := TAcousticPalette.CreateFromReader(LReader, 3);
       SetLength(LWeighted, 56);
       LPosition := 0;
@@ -1167,6 +1192,16 @@ begin
         end;
       end;
       CheckSelection(LReader, LPalette, LFeatures, LBaseline);
+      Check((LProgress.Starts > 8) and (LProgress.Starts = LProgress.Ends),
+        'Palette, sequence and selection passes all report complete measured work');
+      LProgress.Abort := True;
+      LReader.Rewind;
+      LRejected := False;
+      try LReader.ReadObservation(LObservation) except on EAudio do LRejected := True end;
+      Check(LRejected, 'Progress callback can abort before work');
+      LRejected := False;
+      try LReader.Rewind except on EAudio do LRejected := True end;
+      Check(LRejected, 'Callback failure poisons reader; no false continuation');
       LSegments[1].FirstFeature := 18;
       LRejected := False;
       try
@@ -1183,6 +1218,7 @@ begin
       LReader.Free;
       LJournal.Free;
       LStorage.Free;
+      LProgress.Free;
     end;
   end;
   WriteLn('Bounded weighted palette, exact WFC count parity, recording boundaries, candidate selection and overlap checks PASS');

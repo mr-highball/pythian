@@ -39,6 +39,13 @@ const
   MaximumJournalTrainingSegments = 4096;
 
 type
+  { Big Boss: pass-local observations consumed by the caller, reported before
+    the next read (every 128 observations, plus start/end). Rewind starts a new
+    pass. Raising aborts and poisons the reader; callbacks must not re-enter it.
+    A completed pass is not a claim that its caller's algorithm has finished. }
+  TJournalTrainingProgress = procedure(const APass: Integer;
+    const ADone, ATotal: Int64) of object;
+
   TJournalTrainingSegment = record
     Journal: TFeatureJournal;
     FirstFeature: Int64;
@@ -107,6 +114,10 @@ type
     FObservations: Int64;
     FWeightedObservations: Int64;
     FFailed: Boolean;
+    FProgress: TJournalTrainingProgress;
+    FPass: Integer;
+    FConsumed: Int64;
+    FReported: Int64;
     function GetSegmentCount: Integer;
   public
     constructor Create(const ASegments: TJournalTrainingSegments);
@@ -118,6 +129,7 @@ type
     property SegmentCount: Integer read GetSegmentCount;
     property ObservationCount: Int64 read FObservations;
     property WeightedObservationCount: Int64 read FWeightedObservations;
+    property OnProgress: TJournalTrainingProgress read FProgress write FProgress;
   end;
 
 function WholeJournalSegment(const AJournal: TFeatureJournal;
@@ -467,6 +479,9 @@ begin
   FBatch := Default(TWaveFeatureBatch);
   FBatchIndex := 0;
   FEmitted := 0;
+  Inc(FPass);
+  FConsumed := 0;
+  FReported := -1;
 end;
 
 function TJournalTrainingReader.ReadObservation(
@@ -481,6 +496,12 @@ begin
     raise EAudio.Create('Journal training reader failed; create a new reader');
   end;
   try
+    if Assigned(FProgress) and (FConsumed <> FReported) and
+      ((FConsumed mod 128 = 0) or (FConsumed = FObservations)) then
+    begin
+      FProgress(FPass, FConsumed, FObservations);
+      FReported := FConsumed;
+    end;
     if FSegment >= Length(FSegments) then
     begin
       Exit(False);
@@ -531,6 +552,7 @@ begin
       LObservation.Multiplicity := LSegment.Multiplicity;
       Inc(FBatchIndex);
       Inc(FEmitted);
+      Inc(FConsumed);
       AObservation := LObservation;
       Exit(True);
     end;

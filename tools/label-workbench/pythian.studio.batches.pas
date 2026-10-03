@@ -34,7 +34,8 @@ uses
   SysUtils,
   pythian.studio.sources,
   pythian.workspace.tabs,
-  pythian.studio.live;
+  pythian.studio.live,
+  pythian.studio.progress;
 
 type
   TStudioBatches = class
@@ -127,58 +128,6 @@ end;
 function Terminal(const AStatus: String): Boolean;
 begin
   Result := (AStatus = 'completed') or (AStatus = 'failed') or (AStatus = 'cancelled');
-end;
-
-function StageText(const AStage: String): String;
-begin
-  case AStage of
-    'queued':
-    begin
-      Result := 'Waiting for the worker';
-    end;
-    'preflight':
-    begin
-      Result := 'Checking the saved selection';
-    end;
-    'verify_sources':
-    begin
-      Result := 'Verifying original recordings';
-    end;
-    'analyze_selected_ranges':
-    begin
-      Result := 'Analyzing selected audio';
-    end;
-    'learn_raw_palette':
-    begin
-      Result := 'Retaining acoustic examples';
-    end;
-    'learn_wfc_model':
-    begin
-      Result := 'Learning the sequence model';
-    end;
-    'reload_verified_model':
-    begin
-      Result := 'Reloading a verified model';
-    end;
-    'generate_auditions':
-    begin
-      Result := 'Rendering auditions';
-    end;
-    'publish_listening':
-    begin
-      Result := 'Publishing verified listening results';
-    end;
-    'interrupted':
-    begin
-      Result := 'Interrupted before completion';
-    end;
-    'cancelled_before_start':
-    begin
-      Result := 'Cancelled before work started';
-    end;
-  else
-    Result := StringReplace(AStage, '_', ' ', [rfReplaceAll]);
-  end;
 end;
 
 function TStudioBatches.El(const AId: String): TJSElement;
@@ -351,12 +300,14 @@ begin
   LHistory := Add(LRoot, 'section', '', '');
   LHistory.id := 'jobs-step';
   LRow := Add(LHistory, 'div', '', 'source-heading');
-  Add(LRow, 'h3', 'Generation history', '');
+  Add(LRow, 'h3', 'Job progress', '');
   Button(LRow, 'batch-refresh', 'Refresh jobs');
-  LControl := Add(LHistory, 'div', '', 'tracks');
-  LControl.id := 'batch-history';
   LControl := Add(LHistory, 'div', '', '');
   LControl.id := 'batch-detail';
+  LDetails := Add(LHistory, 'details', '', 'support');
+  Add(LDetails, 'summary', 'Choose a job from history', '');
+  LControl := Add(LDetails, 'div', '', 'tracks');
+  LControl.id := 'batch-history';
 end;
 
 procedure TStudioBatches.Notice(const AText: String; const AError: Boolean);
@@ -1180,7 +1131,7 @@ begin
     else LButton := Button(LRow, 'batch-open-' + StudioText(LJob, 'job_id'),
       'Auditions ' + IntToStr(LIndex + 1) + ' · ' + StudioText(LJob, 'status'));
     LButton.setAttribute('data-job', StudioText(LJob, 'job_id'));
-    Add(LRow, 'span', StageText(StudioText(LJob, 'stage')), 'track-meta');
+    Add(LRow, 'span', StudioStageText(StudioText(LJob, 'stage')), 'track-meta');
   end;
   if LShown = 0 then
   begin
@@ -1229,13 +1180,7 @@ begin
   if StudioText(FJob, 'kind') = 'stream_generate' then
     Add(LRoot, 'h3', 'Selected live session · ' + LStatus, '')
   else Add(LRoot, 'h3', 'Selected batch · ' + LStatus, '');
-  LText := StageText(StudioText(FJob, 'stage'));
-  if StudioNumber(FJob, 'total') > 0 then
-  begin
-    LText := LText + ' · ' + IntToStr(Trunc(StudioNumber(FJob, 'done'))) +
-      ' / ' + IntToStr(Trunc(StudioNumber(FJob, 'total')));
-  end;
-  Add(LRoot, 'p', LText, 'hint');
+  DrawStudioProgress(LRoot, FJob);
   if (LStatus = 'queued') or (LStatus = 'running') then
   begin
     if Boolean(FJob['cancel_requested']) then

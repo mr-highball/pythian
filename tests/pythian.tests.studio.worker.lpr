@@ -74,6 +74,52 @@ begin
   end;
 end;
 
+procedure CheckProgressEvents(const ACatalog, AId: String; const AReused: Boolean);
+var
+  LJob, LEvent: TJSONObject;
+  LIndex, LEvents, LLearning, LPasses: Integer;
+  LAnalysis, LRender, LBytes, LReuse: Boolean;
+  LStage: String;
+begin
+  LLearning := 0; LPasses := 0;
+  LAnalysis := False; LRender := False; LBytes := False; LReuse := False;
+  LJob := ReadStudioJob(ACatalog, AId);
+  try
+    LEvents := LJob.Integers['event_revision'];
+    Check(LEvents < 300, 'Small job has bounded checkpoint writes, not one event per observation/frame');
+    Check((LJob.Get('progress_unit', '') = '') and (LJob.Get('progress_pass', 0) = 0),
+      'Terminal status clears intermediate progress metadata');
+    for LIndex := 1 to LEvents do
+    begin
+      LEvent := ReadStudioJSON(StudioJobDirectory(ACatalog, AId) + PathDelim +
+        Format('%.8d.event.json', [LIndex]));
+      try
+        Check((LEvent.Int64s['done'] >= 0) and (LEvent.Int64s['done'] <= LEvent.Int64s['total']),
+          'Persisted progress has valid measured bounds');
+        LStage := LEvent.Strings['stage'];
+        if LStage = 'reload_verified_model' then LReuse := True;
+        if LStage = 'analyze_selected_ranges' then
+          LAnalysis := LAnalysis or ((LEvent.Strings['progress_unit'] = 'observations') and
+            (LEvent.Int64s['done'] = LEvent.Int64s['total']) and (LEvent.Int64s['done'] > 1));
+        if LStage = 'verify_sources' then
+          LBytes := LBytes or ((LEvent.Get('progress_unit', '') = 'bytes') and (LEvent.Int64s['done'] > 1));
+        if LStage = 'generate_auditions' then
+          LRender := LRender or ((LEvent.Strings['progress_unit'] = 'frames') and
+            (LEvent.Int64s['done'] = LEvent.Int64s['total']) and (LEvent.Int64s['done'] > 1));
+        if (LStage = 'learn_raw_palette') or (LStage = 'learn_wfc_model') then
+        begin
+          Inc(LLearning);
+          LPasses := Max(LPasses, LEvent.Integers['progress_pass']);
+          Check(LEvent.Strings['progress_unit'] = 'observations', 'Learning uses actual observation units');
+        end;
+      finally LEvent.Free end;
+    end;
+    Check(LBytes and LRender, 'Source verification and rendering have real measured completion');
+    if AReused then Check(LReuse and not LAnalysis and (LLearning = 0), 'Reuse explicitly skips learning')
+    else Check(LAnalysis and (LLearning > 2) and (LPasses > 8), 'Cold analysis and multiple learning passes are observable');
+  finally LJob.Free end;
+end;
+
 function HashFile(const APath: String): String;
 var
   LStream: TFileStream;
@@ -377,6 +423,7 @@ begin
         LJob.Free;
         Check(RunStudioWorker(LCatalog, 'first', ARoot + PathDelim + 'library'),
           'Actual source-to-WFC-to-20-second-audio pipeline; inspect first/failure.txt on failure');
+        CheckProgressEvents(LCatalog, 'first', False);
         LJob := ReadStudioJob(LCatalog, 'first');
         try
           Check(LJob.Strings['status'] = 'completed', 'Actual job terminal state');
@@ -444,6 +491,7 @@ begin
         LJob := EnqueueStudioJob(LCatalog, LWrite);
         LJob.Free;
         Check(RunStudioWorker(LCatalog, 'replay', ARoot + PathDelim + 'library'), 'Same model explicit new batch');
+        CheckProgressEvents(LCatalog, 'replay', True);
         LJob := ReadStudioJob(LCatalog, 'replay');
         try
           Check(LJob.Objects['results'].Booleans['model_reused'], 'Verified dependencies permit model reuse');
