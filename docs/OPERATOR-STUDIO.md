@@ -164,7 +164,7 @@ they do not disappear or move into the new tasks. Scoping left 49.40 accepted;
 independent project/setup acceptance subsequently adds 4 NS-6 / 0.40 overall.
 Private corpora, raw WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall.
 Accepted starting actions/navigation and large-library refresh add 2 NS-6 / 0.20 overall.
-The current ledger is **52.45 accepted / 47.55 remaining**, **47 open / 50 DONE**.
+The current ledger is **52.45 accepted / 47.55 remaining**, **47 open / 51 DONE**.
 NS-6 is **54 accepted / 46 unearned** with eleven open tasks. Goal weights are unchanged.
 The later collection and effects requirements each reallocate one unearned point
 from jobs and iteration; all original criteria remain. Scoping earns no acceptance.
@@ -225,6 +225,22 @@ under studio_11. Successful page delivery alone does not close those checks.
 Collections group recordings; a saved project/corpus chooses the recordings,
 passages and classifications to learn from.
 
+## Choosing training music
+
+In Collection, check **Train on whole recording** or check the saved passages you
+want. Choosing the whole track unchecks its passages without deleting them;
+checking a passage unchecks the whole track. Overlapping checked passages show a
+clear error. **Save draft** freezes choices for the next generation; existing
+jobs retain their original revision. Collection and Generate show the checked
+count and duration. **Choose a passage** opens the range editor; **Edit passage**
+reopens a saved definition. **Delete passage** removes that saved definition.
+
+Grouped Play/Pause and editing controls use the existing bounded source player.
+Preview stays in Collection, changes no training checkbox and displays source
+time. Another preview replaces the old one; passage playback stops at its end.
+Library maintenance is under **Manage library & folders**. This zero-credit
+[repair](TODO/DONE/NS-6_studio_19.md) does not qualify musical learning.
+
 ## Project setup contract
 
 The native service exposes `GET /api/studio/sources`,
@@ -233,7 +249,12 @@ The native service exposes `GET /api/studio/sources`,
 Project lists contain summaries; opening a project returns its source snapshot.
 The `pythian.studio.project.write.v1` write carries a stable project ID,
 `expected_revision`, project name, optional musical intent, requested learning
-mode and 1–32 distinct imported recordings. Each selection is either the full
+mode and checked `sources`. Optional `parked_sources` retains unchecked choices
+with the same validated source/range/classification shape. Both lists share a
+64-selection limit. Checked sources permit at most 32 distinct recordings and
+must not overlap. Empty checked lists can be saved when parked choices exist,
+but cannot generate. Old drafts load with existing sources checked.
+Each selection is either the full
 recording or an explicit half-open original-frame range. The UI presents ranges
 as source time. Evaluation recordings remain unavailable for training selection.
 Unassigned recordings can remain in a draft with that uncertainty intact;
@@ -337,8 +358,10 @@ retains only the selected originals. Playing an unprepared source uses bounded
 regions through the primary WAV reader. Generation still verifies its selected
 source identities; metadata discovery is not content verification.
 
-A corpus permits 64 nonoverlapping selections across 32 recordings, with up to
-eight caller classifications per selection. Training uses every declared range
+A project retains up to 64 selections with eight caller classifications each.
+Only checked `sources` form the corpus: at most 32 recordings, with nonoverlapping
+ranges. Unchecked `parked_sources` remain editable and never enter training,
+preflight counts, source weights or analysis. Training uses every checked range
 or rejects the workload: at most 500,000 feature observations and 32 GiB of unique
 source bytes, with a 128 MiB logical allocation budget. Generation offers live
 playback from one second to 24 hours, or one to three saved 20–40 second auditions.

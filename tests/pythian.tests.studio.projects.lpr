@@ -553,6 +553,62 @@ begin
     finally
       LBad.Free;
     end;
+    { Big Boss: unchecked passages are durable, but never job inputs. }
+    LBad := MakeWrite(LHash);
+    try
+      LBad.Strings['project_id'] := 'training-choices';
+      LBad.Add('parked_sources', TJSONArray.Create);
+      LRow := TJSONObject(LBad.Arrays['sources'].Items[0].Clone);
+      LRow.Strings['selection'] := 'range';
+      LRow.Add('start_frame', 0);
+      LRow.Add('end_frame', 4000);
+      LRow.Add('classifications', TJSONArray.Create(['kept for later']));
+      LBad.Arrays['parked_sources'].Add(LRow);
+      LResult := SaveStudioProject(LCatalog, LBad);
+      try
+        Check((LResult.Arrays['sources'].Count = 1) and
+          (LResult.Arrays['parked_sources'].Count = 1),
+          'Whole selection parks its overlapping passage without deleting it');
+      finally
+        LResult.Free;
+      end;
+      LResult := ReadStudioProject(LCatalog, 'training-choices');
+      try
+        Check(LResult.Arrays['parked_sources'].Objects[0].Arrays['classifications'].
+          Strings[0] = 'kept for later', 'Unchecked passage labels survive disk reload');
+      finally
+        LResult.Free;
+      end;
+      LBad.Integers['expected_revision'] := 1;
+      LBad.Arrays['parked_sources'].Add(LBad.Arrays['sources'].Items[0].Clone);
+      LBad.Arrays['sources'].Delete(0);
+      LBad.Arrays['sources'].Add(LBad.Arrays['parked_sources'].Items[0].Clone);
+      LBad.Arrays['parked_sources'].Delete(0);
+      LResult := SaveStudioProject(LCatalog, LBad);
+      try
+        Check((LResult.Arrays['sources'].Objects[0].Strings['selection'] = 'range') and
+          (LResult.Arrays['parked_sources'].Objects[0].Strings['selection'] = 'full'),
+          'Passage selection excludes the whole recording from training');
+      finally
+        LResult.Free;
+      end;
+      LBad.Integers['expected_revision'] := 2;
+      LBad.Arrays['parked_sources'].Add(LBad.Arrays['sources'].Items[0].Clone);
+      LBad.Arrays['sources'].Delete(0);
+      LResult := SaveStudioProject(LCatalog, LBad);
+      try
+        Check((LResult.Arrays['sources'].Count = 0) and
+          (LResult.Arrays['parked_sources'].Count = 2),
+          'All unchecked choices can be saved without implicit whole-track inclusion');
+      finally
+        LResult.Free;
+      end;
+      LBad.Integers['expected_revision'] := 3;
+      LBad.Arrays['parked_sources'].Objects[1].Int64s['end_frame'] := 16001;
+      ExpectSaveFailure(LCatalog, LBad, LBefore);
+    finally
+      LBad.Free;
+    end;
     LStream := OpenStudioSourceAudio(LCatalog, LHash);
     try
       Check(LStream.Size > 44, 'Original audition opens a streaming WAV');

@@ -526,6 +526,7 @@ var
   LTrack: TJSObject;
   LSeconds: Double;
   LCount: Integer;
+  LSelectedCount: Integer;
   LEvaluation: Integer;
   LName: String;
   LRoute: String;
@@ -543,10 +544,13 @@ begin
     '. This does not start training. Source details are catalog snapshots; recordings must be verified before training.';
   LSeconds := 0;
   LCount := 0;
+  LSelectedCount := 0;
   LEvaluation := 0;
   for LIndex := 0 to FSelections.length - 1 do
   begin
     LSelected := Obj(FSelections[LIndex]);
+    if not StudioIncluded(LSelected) then Continue;
+    Inc(LSelectedCount);
     LTrack := FindTrack(Str(LSelected, 'source_sha256'));
     if (LTrack <> nil) and (Num(LTrack, 'sample_rate') > 0) then
     begin
@@ -581,17 +585,19 @@ begin
   El('selected-count').textContent := IntToStr(LCount);
   if LCount = 0 then
   begin
-    El('selection-summary').textContent := 'Select recordings to build your source collection.';
+    El('selection-summary').textContent := 'Nothing checked for training. Choose music in Collection.';
   end
   else
   begin
-    El('selection-summary').textContent := TimeText(LSeconds * 1000) + ' selected.';
+    El('selection-summary').textContent := IntToStr(LSelectedCount) + ' checked for training · ' + TimeText(LSeconds * 1000);
     if LEvaluation > 0 then
     begin
       El('selection-summary').textContent := El('selection-summary').textContent + ' ' +
         IntToStr(LEvaluation) + ' evaluation-only recording(s) are reserved from training.';
     end;
   end;
+  El('collection-training-summary').textContent := El('selection-summary').textContent;
+  El('generation-training-summary').textContent := El('selection-summary').textContent;
   LName := Trim(Input('style-name').value);
   if LName = '' then
   begin
@@ -600,7 +606,7 @@ begin
   else
   begin
     El('draft-caption').textContent := LName + ' · ' + IntToStr(LCount) +
-      ' recording(s), ' + IntToStr(FSelections.length) + ' selection(s).';
+      ' recording(s), ' + IntToStr(LSelectedCount) + ' checked for training.';
   end;
 end;
 
@@ -723,6 +729,7 @@ var
   LSource: TJSObject;
   LSelection: TJSObject;
   LIndex: Integer;
+  LIncludedCount: Integer;
 begin
   if (Str(AProject, 'format') <> 'pythian.studio.project.v1') or
     (Str(AProject, 'status') <> 'draft') or
@@ -732,6 +739,14 @@ begin
     raise Exception.Create('This page supports untrained style drafts only.');
   end;
   LSources := Arr(AProject, 'sources');
+  LIncludedCount := 0;
+  if LSources <> nil then
+  begin
+    LIncludedCount := LSources.length;
+    LSources := LSources.slice;
+    if Arr(AProject, 'parked_sources') <> nil then
+      LSources := LSources.concat(Arr(AProject, 'parked_sources'));
+  end;
   if (LSources = nil) or (LSources.length < 1) or (LSources.length > 64) then
   begin
     raise Exception.Create('The saved draft has an unsupported source selection.');
@@ -771,6 +786,7 @@ begin
     LSelection['start_text'] := TimeText(Num(LSource, 'start_frame') * 1000 / Num(LSource, 'sample_rate'));
     LSelection['end_text'] := TimeText(Num(LSource, 'end_frame') * 1000 / Num(LSource, 'sample_rate'));
     LSelection['range_invalid'] := False;
+    LSelection['included'] := LIndex < LIncludedCount;
     if Arr(LSource, 'classifications') <> nil then
     begin
       LSelection['classifications'] := Arr(LSource, 'classifications').slice;
@@ -803,6 +819,7 @@ end;
 function TStudio.BuildWrite: TJSObject;
 var
   LSources: TJSArray;
+  LParked: TJSArray;
   LSource: TJSObject;
   LSelection: TJSObject;
   LIndex: Integer;
@@ -870,6 +887,7 @@ begin
   Result['style_intent'] := LIntent;
   Result['learning_mode'] := Input('learning-mode').value;
   LSources := TJSArray.new;
+  LParked := TJSArray.new;
   for LIndex := 0 to FSelections.length - 1 do
   begin
     LSelection := Obj(FSelections[LIndex]);
@@ -882,9 +900,13 @@ begin
       LSource['start_frame'] := Num(LSelection, 'start_frame');
       LSource['end_frame'] := Num(LSelection, 'end_frame');
     end;
-    LSources.push(LSource);
+    if StudioIncluded(LSelection) then
+      LSources.push(LSource)
+    else
+      LParked.push(LSource);
   end;
   Result['sources'] := LSources;
+  Result['parked_sources'] := LParked;
 end;
 
 function TStudio.MatchesWrite(AProject, AWrite: TJSObject): Boolean;
@@ -905,6 +927,14 @@ begin
   end;
   LSavedSources := Arr(AProject, 'sources');
   LWriteSources := Arr(AWrite, 'sources');
+  if (LSavedSources = nil) or (LWriteSources = nil) or
+    (LSavedSources.length <> LWriteSources.length) then Exit;
+  LSavedSources := LSavedSources.slice;
+  LWriteSources := LWriteSources.slice;
+  if Arr(AProject, 'parked_sources') <> nil then
+    LSavedSources := LSavedSources.concat(Arr(AProject, 'parked_sources'));
+  if Arr(AWrite, 'parked_sources') <> nil then
+    LWriteSources := LWriteSources.concat(Arr(AWrite, 'parked_sources'));
   if (LSavedSources = nil) or (LWriteSources = nil) or
     (LSavedSources.length <> LWriteSources.length) then
   begin

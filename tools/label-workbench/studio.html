@@ -86,18 +86,21 @@ SOFTWARE.
       </div>
     </section>
 </div>
-<div id="library-step">          <div id="collection-library" class="source-heading" tabindex="-1"><div><h3>Your collection library</h3><p class="hint">Collections hold recordings. Save selections as a project to build a style corpus.</p></div></div>
+<div id="library-step">          <div id="collection-library" class="source-heading" tabindex="-1"><div><h3>Your collection library</h3><p class="hint">Choose the music Pythian should learn from.</p></div></div>
+          <div class="training-summary"><strong>Music for the next generation</strong><p id="collection-training-summary" role="status">Nothing checked for training.</p><p class="hint">Check the whole recording or the passages you want. Unchecked passages stay saved. Playing audio does not select it.</p><p id="collection-choice-notice" class="hint" role="status"></p></div>
+          <details class="library-management"><summary>Manage library &amp; folders</summary>
           <div id="studio-library-refresh" class="library-refresh"></div>
           <p id="collection-empty-state" class="hint" hidden></p>
           <details><summary>Add music to your library</summary><p class="hint">Place WAV files in <code>local-audio/collections/your-collection/</code>, then refresh. These private files stay outside Git.</p></details>
           <details><summary>Library refresh details</summary><p id="library-summary" class="hint" role="status">Refresh to discover your collection folders.</p></details>
+          </details>
           <label for="collection-filter">Collection</label>
           <select id="collection-filter"><option value="">All collections</option></select>
           <div id="collection-shortcuts" class="collection-shortcuts" role="group" aria-label="Browse your collections"></div>
           <label class="search-label" for="track-search">Find a recording</label>
           <input id="track-search" type="search" placeholder="Search recording names" disabled>
           <p id="tracks-empty" class="empty-state">Your imported recordings will appear here.</p>
-          <div id="tracks" class="tracks" aria-label="Available recordings"></div>
+<div id="tracks" class="tracks" aria-label="Available recordings"></div>
           <p id="tracks-error" class="field-error" role="alert" hidden></p>
 </div>
 <div id="selection-step"><p class="selection-empty">Choose a recording in Collection to listen and select a passage.</p>          <section id="source-inspector" class="source-inspector" hidden aria-labelledby="source-title">
@@ -144,7 +147,7 @@ SOFTWARE.
             <label for="source-classifications">How would you describe this selection?</label>
             <input id="source-classifications" type="text" placeholder="For example: warm, sparse, intro" maxlength="520" aria-describedby="source-class-help">
             <p id="source-class-help" class="hint">Separate labels with commas. They describe this passage for your project and reviews.</p>
-            <div class="source-toolbar"><button id="source-use-range" class="primary" type="button">Add passage to project</button><button id="source-use-whole" type="button">Add whole recording to project</button></div>
+            <div class="source-toolbar"><button id="source-use-range" class="primary" type="button">Save passage &amp; include</button><button id="source-use-whole" type="button">Train on whole recording</button></div>
             <details class="analysis-tools"><summary>Shape this passage with effects</summary><button type="button" class="guide-context" data-guide-topic="effects">Effects &amp; saving help</button><div id="studio-effects"></div></details>
           </section>
 <button type="button" data-open-pane="library-step">Choose another recording</button><button type="button" class="step-next" data-open-pane="prepare">Next: generate →</button></div>
@@ -167,7 +170,7 @@ SOFTWARE.
           </details>
           <button id="generation-help" type="button" class="guide-context" data-guide-topic="generate">How to run a first experiment</button>
           <button id="long-generation-help" type="button" class="guide-context" data-guide-topic="long">Long playback &amp; saving help</button>
-          <div id="studio-batches"></div>
+          <p id="generation-training-summary" class="training-summary" role="status"></p><button type="button" data-open-pane="library-step">Change training music</button><div id="studio-batches"></div>
         </section>
           <section id="listen" class="panel" aria-labelledby="listen-title"><p class="eyebrow">03 / REVIEW</p><h2 id="listen-title">Listen &amp; refine</h2><button type="button" class="guide-context" data-guide-topic="listen">What should I listen for?</button><button type="button" class="guide-context" data-guide-topic="refine">How to improve the next batch</button><div id="studio-reviews"></div></section>
 </div>

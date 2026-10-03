@@ -391,6 +391,7 @@ var
 begin
   LReady := (FRetryRequest <> nil) or ((FProject <> nil) and not FUnsaved and
     (StudioNumber(FProject, 'revision') >= 1) and
+    (TJSArray(FProject['sources']).length > 0) and
     (StudioText(FProject, 'learning_mode') = 'raw_acoustic'));
   if FLive <> nil then FLive.SetProject(FProject, LReady and not FUnsaved);
   LControls := ['batch-duration', 'batch-count', 'batch-use', 'batch-seed',
@@ -565,6 +566,10 @@ begin
     begin
       Notice('This project requests a note-learning route that is unavailable here. ' +
         'No acoustic fallback will run.', True);
+    end
+    else if TJSArray(FProject['sources']).length = 0 then
+    begin
+      Notice('Nothing checked for training. Choose music in Collection, then Save draft.');
     end
     else if FPending = nil then
     begin

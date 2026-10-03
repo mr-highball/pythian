@@ -243,3 +243,14 @@ body:has(#listen:not([hidden])) .save-panel { display: none; }
 #prepare > .section-heading .eyebrow { display: none; }
 #settings-step h3 { margin-top: .7rem; }
 #settings-step .support { border: 0; padding: 0; }
+
+/* Big Boss: training choices and preview are independent controls. */
+.training-choice { display:flex; align-items:center; gap:.7rem; min-height:48px; margin:.6rem 0; font-weight:650; cursor:pointer; }
+.training-choice input { width:1.4rem; height:1.4rem; flex:0 0 1.4rem; accent-color:#b6e6d8; }
+.training-choice span { overflow-wrap:anywhere; }
+.quick-player { display:flex; align-items:center; flex-wrap:wrap; gap:.7rem; margin:.5rem 0; }
+.quick-player output { flex:1 0 100%; order:2; overflow-wrap:anywhere; }
+.quick-player output:empty { display:none; }
+.training-state { font-size:.88rem; color:#b6e6d8; }
+.training-summary { padding:.8rem; margin:.7rem 0; border-left:3px solid #b6e6d8; background:#18343d; border-radius:.3rem; }
+.training-summary p { margin:.4rem 0; }

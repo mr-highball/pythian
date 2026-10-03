@@ -104,8 +104,8 @@ const
 
   CLessons: array[0..11] of TGuideLesson = (
     (Id: 'choose'; Title: 'Choose what to carry forward';
-     Action: 'Name a project. Browse a collection, open Listen & select, and add a whole recording or passages you like. Describe each selection in your own words, then Save draft.';
-     Expectation: 'These selections are your corpus: the examples for this project. Choose material that expresses your intent. Labels such as warm or sparse describe your choices; they do not yet act as generation commands.';
+     Action: 'Name a project, then open Collection. Check Train on whole recording, or choose and save passages. Check only the passages you want for the next generation, then Save draft.';
+     Expectation: 'Checked music is the training corpus. Unchecked passages stay saved for later. Play previews without changing the checkboxes. Labels describe your choices; they do not yet act as generation commands.';
      DoneWhen: 'Your saved project lists the intended recordings, ranges and descriptions.';
      Page: 'studio'; Target: 'style-name'; Prerequisite: 'Wait for the catalog to connect before naming or saving a project.'),
     (Id: 'generate'; Title: 'Make a small first experiment';
@@ -129,20 +129,20 @@ const
      DoneWhen: 'You can hear the input, see its analysis and find any saved copy in your collection.';
      Page: 'studio'; Target: 'start-record'; Prerequisite: 'Connect to Studio before importing or recording.'),
     (Id: 'select'; Title: 'Find and describe a passage';
-     Action: 'Open a recording with Listen & select. Tap the waveform to seek, drag to select, or enter Start and End times. Zoom or change View length to see more. Add passage to project, then Save draft.';
-     Expectation: 'The waveform view is a window onto the recording, not a duration limit. Add whole recording to project selects the full track. Preview browsing stays light; adding material prepares that recording for learning.';
+     Action: 'Open a recording with Choose a passage. Tap the waveform to seek, drag to select, or enter Start and End times. Zoom or change View length to see more. Save passage & include, then Save draft. Return to Collection to check or uncheck saved passages.';
+     Expectation: 'The waveform view is a window onto the recording, not a duration limit. Train on whole recording includes the full track and unchecks its passages without deleting them. Preview browsing stays light; adding material prepares that recording for learning.';
      DoneWhen: 'Play the selected passage and check its start and end. Your saved project shows that range and its labels.';
-     Page: 'studio'; Target: 'source-position'; Prerequisite: 'Choose a recording and open Listen & select first.'),
+     Page: 'studio'; Target: 'source-position'; Prerequisite: 'Choose a recording and open Choose a passage first.'),
     (Id: 'analysis'; Title: 'Explore what Pythian hears';
      Action: 'Open a recording and expand Explore Pythian analysis for timing overlays. For an imported or recorded input, Analyze audio, open Try a note preview and try notes from the first 8 seconds. Download MIDI when available.';
      Expectation: 'Experimental: beat marks and detected pitches are suggestions. Listen for missed notes, extra notes and timing drift. MIDI represents detected note events; it does not reproduce the original voice or instrument.';
      DoneWhen: 'You can compare the original with the preview and describe where the analysis agrees or fails.';
-     Page: 'studio'; Target: 'source-beat-layer'; Prerequisite: 'Open Listen & select for a recording first. Recording preparation may be needed for analysis.'),
+     Page: 'studio'; Target: 'source-beat-layer'; Prerequisite: 'Open Choose a passage for a recording first. Recording preparation may be needed for analysis.'),
     (Id: 'effects'; Title: 'Shape a sound without losing the original';
      Action: 'Open a recording, prepare it for analysis & effects, and expand Shape this passage with effects. Add effects, adjust their order and settings, then preview. Save the result to your collection when useful.';
      Expectation: 'Effects run in order, so changing their order can change the sound. Delay and reverb can add a tail after the passage. A saved version keeps its source connection; processing it does not make it an independent recording.';
      DoneWhen: 'The preview matches your intention and the saved version appears in the collection. Add that version to a project explicitly if you want to learn from it.';
-     Page: 'studio'; Target: 'studio-effects'; Prerequisite: 'Open a recording with Listen & select first, then prepare it for effects.'),
+     Page: 'studio'; Target: 'studio-effects'; Prerequisite: 'Open a recording with Choose a passage first, then prepare it for effects.'),
     (Id: 'long'; Title: 'Listen as music is generated';
      Action: 'Save a project, choose a Length and Time unit under Generate and play, then start. Pause or Stop whenever you want. Save next 20 seconds for review captures a short upcoming excerpt.';
      Expectation: 'Experimental: output streams as it is made, up to 24 hours. Keep the page open. Only saved excerpts are retained as WAV files. Longer playback is not evidence of deeper learning or long-form musical quality.';

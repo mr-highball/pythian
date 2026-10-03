@@ -3,9 +3,10 @@
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) ·
 [Assessment](../REBALANCE-2026-09-29.md) · [Completed tasks](DONE/README.md) · [Work](../WORK.md)
 
-Accepted zero-credit usability repair: [studio_18](DONE/NS-6_studio_18.md).
+Accepted zero-credit usability repairs: [training choices and playback](DONE/NS-6_studio_19.md),
+[tabbed workflow and help](DONE/NS-6_studio_18.md).
 
-Updated 2026-10-02. **47 open / 50 accepted tasks.** The user authorized a new
+Updated 2026-10-03. **47 open / 51 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **52.45 current / 47.55 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -228,7 +229,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 
 ## Accepted tasks and retired work
 
-All 50 accepted tasks, including caller corpus intake, Studio source/effects/capture, the current minimal package
+All 51 accepted tasks, including caller corpus intake, Studio source/effects/capture, the current minimal package
 and the three NS-2 quality results, are listed in
 the [current DONE ledger](DONE/README.md). Their acceptance dates and detailed
 evidence remain in the unchanged task identities. Allocations now reflect the

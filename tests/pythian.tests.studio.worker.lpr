@@ -177,6 +177,14 @@ begin
     LLabels.Add('caller control');
     LRow.Add('classifications', LLabels);
   end;
+  LRows := TJSONArray.Create;
+  Result.Add('parked_sources', LRows);
+  LRow := TJSONObject.Create;
+  LRows.Add(LRow);
+  LRow.Add('source_sha256', AHash);
+  LRow.Add('selection', 'full');
+  LRow.Add('classifications', TJSONArray.Create(['unchecked whole recording']));
+
 end;
 
 function JobWrite(const AId, AHash: String; const AProject: TJSONObject): TJSONObject;
@@ -205,6 +213,43 @@ begin
   LWeight.Add('source_sha256', AHash);
   LWeight.Add('weight', 1);
   LWeights.Add(LWeight);
+end;
+
+procedure CheckEmptyTraining(const ACatalog, AHash: String);
+var
+  LWrite: TJSONObject;
+  LProject: TJSONObject;
+  LJob: TJSONObject;
+  LResult: TJSONObject;
+  LFailed: Boolean;
+begin
+  LWrite := ProjectWrite('all-unchecked', AHash);
+  try
+    LWrite.Arrays['sources'].Clear;
+    LProject := SaveStudioProject(ACatalog, LWrite);
+    try
+      LJob := JobWrite('empty-training', AHash, LProject);
+      try
+        LFailed := False;
+        try
+          LResult := PrepareStudioJob(ACatalog, LJob);
+          LResult.Free;
+        except
+          on E: Exception do
+          begin
+            LFailed := Pos('range count', E.Message) > 0;
+          end;
+        end;
+        Check(LFailed, 'All unchecked project cannot prepare generation');
+      finally
+        LJob.Free;
+      end;
+    finally
+      LProject.Free;
+    end;
+  finally
+    LWrite.Free;
+  end;
 end;
 
 procedure CheckAtomicListening(const ACatalog: String);
@@ -310,6 +355,7 @@ begin
   LHash := MakeSource(ARoot, 'one', 0);
   LHash2 := MakeSource(ARoot, 'two', 1);
   LCatalog := ARoot + PathDelim + 'catalog';
+  CheckEmptyTraining(LCatalog, LHash);
   LProjectWrite := ProjectWrite('one', LHash);
   try
     LProject := SaveStudioProject(LCatalog, LProjectWrite);
@@ -346,7 +392,7 @@ begin
             (LJob.Objects['results'].Integers['retained_model_state_count'] > 0),
             'Actual retained model/palette counts reported');
           Check(not LJob.Objects['results'].Booleans['grounded_acceptance'], 'No musical acceptance');
-          Check(LJob.Objects['results'].Arrays['sources'].Count = 2, 'Original range ledger retained');
+          Check(LJob.Objects['results'].Arrays['sources'].Count = 2, 'Only the two checked passages reach training; parked whole recording excluded');
           Check(LJob.Objects['results'].Arrays['sources'].Objects[0].Strings['source_sha256'] = LHash,
             'Original source hash not analysis coordinate identity');
           Check(LJob.Objects['results'].Arrays['sources'].Objects[1].Int64s['start_frame'] = 32000,

@@ -713,38 +713,16 @@ begin
   Need(LCount = Result, 'Studio revision history has a gap');
 end;
 
-procedure ValidateSnapshot(const AProject: TJSONObject; const AId: String;
-  const ARevision: Integer);
+procedure ValidateSnapshotSources(const ASources: TJSONArray;
+  const AIncluded: Boolean);
 var
-  LCopy: TJSONObject;
-  LHash: String;
-  LSources: TJSONArray;
   LSource: TJSONObject;
   LIndex: Integer;
   LUsage: String;
-  LValue: TJSONData;
 begin
-  Fields(AProject, CSnapshotFields);
-  Need((TextField(AProject, 'format', 1, 64) = StudioProjectFormat) and
-    (TextField(AProject, 'project_id', 1, 64) = AId) and
-    (IntField(AProject, 'revision') = ARevision), 'Studio snapshot identity differs');
-  TextField(AProject, 'name', 1, 128);
-  TextField(AProject, 'style_intent', 0, 2048);
-  LUsage := TextField(AProject, 'learning_mode', 1, 32);
-  Need((LUsage = 'raw_acoustic') or (LUsage = 'reference_events') or
-    (LUsage = 'inferred_events'), 'Studio learning mode is unsupported');
-  Need((TextField(AProject, 'status', 1, 32) = 'draft') and
-    (TextField(AProject, 'training_status', 1, 32) = 'not_started') and
-    (ArrayField(AProject, 'used_sources').Count = 0), 'Studio draft implies used training');
-  LValue := AProject.Find('model_available');
-  Need((LValue <> nil) and (LValue.JSONType = jtBoolean) and not LValue.AsBoolean,
-    'Studio draft implies an available model');
-  LSources := ArrayField(AProject, 'sources');
-  Need((LSources.Count >= 1) and (LSources.Count <= MaximumStudioSelections),
-    'Studio selected source count exceeds its bounds');
-  for LIndex := 0 to LSources.Count - 1 do
+  for LIndex := 0 to ASources.Count - 1 do
   begin
-    LSource := ObjectAt(LSources, LIndex);
+    LSource := ObjectAt(ASources, LIndex);
     SelectionFields(LSource, CSelectedFields);
     ValidateClassifications(LSource);
     Need(ValidHash(TextField(LSource, 'source_sha256', 64, 64)) and
@@ -777,7 +755,51 @@ begin
     Need(TextField(LSource, 'usage_status', 1, 32) = LUsage,
       'Studio draft source use differs from its partition');
   end;
-  ValidateSelectionRanges(LSources);
+  if AIncluded then
+  begin
+    ValidateSelectionRanges(ASources);
+  end;
+end;
+
+procedure ValidateSnapshot(const AProject: TJSONObject; const AId: String;
+  const ARevision: Integer);
+var
+  LCopy: TJSONObject;
+  LHash: String;
+  LSources: TJSONArray;
+  LTotal: Integer;
+  LUsage: String;
+  LValue: TJSONData;
+begin
+  if AProject.Find('parked_sources') <> nil then
+    Fields(AProject, CSnapshotFields + ',parked_sources')
+  else
+    Fields(AProject, CSnapshotFields);
+  Need((TextField(AProject, 'format', 1, 64) = StudioProjectFormat) and
+    (TextField(AProject, 'project_id', 1, 64) = AId) and
+    (IntField(AProject, 'revision') = ARevision), 'Studio snapshot identity differs');
+  TextField(AProject, 'name', 1, 128);
+  TextField(AProject, 'style_intent', 0, 2048);
+  LUsage := TextField(AProject, 'learning_mode', 1, 32);
+  Need((LUsage = 'raw_acoustic') or (LUsage = 'reference_events') or
+    (LUsage = 'inferred_events'), 'Studio learning mode is unsupported');
+  Need((TextField(AProject, 'status', 1, 32) = 'draft') and
+    (TextField(AProject, 'training_status', 1, 32) = 'not_started') and
+    (ArrayField(AProject, 'used_sources').Count = 0), 'Studio draft implies used training');
+  LValue := AProject.Find('model_available');
+  Need((LValue <> nil) and (LValue.JSONType = jtBoolean) and not LValue.AsBoolean,
+    'Studio draft implies an available model');
+  LSources := ArrayField(AProject, 'sources');
+  LTotal := LSources.Count;
+  ValidateSnapshotSources(LSources, True);
+  if AProject.Find('parked_sources') <> nil then
+  begin
+    LSources := ArrayField(AProject, 'parked_sources');
+    Inc(LTotal, LSources.Count);
+    ValidateSnapshotSources(LSources, False);
+  end;
+  Need((LTotal >= 1) and (LTotal <= MaximumStudioSelections),
+    'Keep between one and 64 saved selections');
   LHash := TextField(AProject, 'snapshot_sha256', 64, 64);
   Need(ValidHash(LHash), 'Studio snapshot digest is invalid');
   LCopy := TJSONObject(AProject.Clone);
@@ -939,44 +961,24 @@ begin
   end;
 end;
 
-function CandidateProject(const ACatalogRoot: String;
-  const AWrite: TJSONObject; const ARevision: Integer): TJSONObject;
+function CandidateSources(const ACatalogRoot: String;
+  const ASelections: TJSONArray): TJSONArray;
 var
-  LSelections: TJSONArray;
   LRows: TJSONArray;
   LSelection: TJSONObject;
   LSource: TJSONObject;
   LIndex: Integer;
   LPrior: Integer;
-  LMode: String;
   LKind: String;
   LHash: String;
   LStart: Int64;
   LEnd: Int64;
 begin
-  LMode := TextField(AWrite, 'learning_mode', 1, 32);
-  Need((LMode = 'raw_acoustic') or (LMode = 'reference_events') or
-    (LMode = 'inferred_events'), 'Studio requested learning mode is unsupported');
-  LSelections := ArrayField(AWrite, 'sources');
-  Need((LSelections.Count >= 1) and (LSelections.Count <= MaximumStudioSelections),
-    'Select between one and 64 passages from at most 32 original recordings');
-  Result := TJSONObject.Create;
+  LRows := TJSONArray.Create;
   try
-    Result.Add('format', StudioProjectFormat);
-    Result.Add('project_id', TextField(AWrite, 'project_id', 1, 64));
-    Result.Add('revision', ARevision);
-    Result.Add('name', TextField(AWrite, 'name', 1, 128));
-    Result.Add('style_intent', TextField(AWrite, 'style_intent', 0, 2048));
-    Result.Add('learning_mode', LMode);
-    Result.Add('status', 'draft');
-    Result.Add('training_status', 'not_started');
-    Result.Add('model_available', False);
-    Result.Add('used_sources', TJSONArray.Create);
-    LRows := TJSONArray.Create;
-    Result.Add('sources', LRows);
-    for LIndex := 0 to LSelections.Count - 1 do
+    for LIndex := 0 to ASelections.Count - 1 do
     begin
-      LSelection := ObjectAt(LSelections, LIndex);
+      LSelection := ObjectAt(ASelections, LIndex);
       LKind := TextField(LSelection, 'selection', 1, 16);
       Need((LKind = 'full') or (LKind = 'range'), 'Studio source selection is unsupported');
       if LKind = 'full' then
@@ -1034,6 +1036,49 @@ begin
         LSource.Free;
       end;
     end;
+    Result := LRows;
+  except
+    LRows.Free;
+    raise;
+  end;
+end;
+
+function CandidateProject(const ACatalogRoot: String;
+  const AWrite: TJSONObject; const ARevision: Integer): TJSONObject;
+var
+  LSelections: TJSONArray;
+  LTotal: Integer;
+  LMode: String;
+begin
+  LMode := TextField(AWrite, 'learning_mode', 1, 32);
+  Need((LMode = 'raw_acoustic') or (LMode = 'reference_events') or
+    (LMode = 'inferred_events'), 'Studio requested learning mode is unsupported');
+  LSelections := ArrayField(AWrite, 'sources');
+  LTotal := LSelections.Count;
+  if AWrite.Find('parked_sources') <> nil then
+  begin
+    Inc(LTotal, ArrayField(AWrite, 'parked_sources').Count);
+  end;
+  Need((LTotal >= 1) and (LTotal <= MaximumStudioSelections),
+    'Keep between one and 64 saved selections');
+  Result := TJSONObject.Create;
+  try
+    Result.Add('format', StudioProjectFormat);
+    Result.Add('project_id', TextField(AWrite, 'project_id', 1, 64));
+    Result.Add('revision', ARevision);
+    Result.Add('name', TextField(AWrite, 'name', 1, 128));
+    Result.Add('style_intent', TextField(AWrite, 'style_intent', 0, 2048));
+    Result.Add('learning_mode', LMode);
+    Result.Add('status', 'draft');
+    Result.Add('training_status', 'not_started');
+    Result.Add('model_available', False);
+    Result.Add('used_sources', TJSONArray.Create);
+    Result.Add('sources', CandidateSources(ACatalogRoot, LSelections));
+    if AWrite.Find('parked_sources') <> nil then
+    begin
+      Result.Add('parked_sources', CandidateSources(ACatalogRoot,
+        ArrayField(AWrite, 'parked_sources')));
+    end;
     Result.Add('snapshot_sha256', JsonHash(Result));
     ValidateSnapshot(Result, Result.Strings['project_id'], ARevision);
   except
@@ -1084,7 +1129,10 @@ var
 begin
   LValueCount := 0;
   BoundJson(AWrite, 1, LValueCount);
-  Fields(AWrite, 'format,project_id,expected_revision,name,style_intent,learning_mode,sources');
+  if AWrite.Find('parked_sources') <> nil then
+    Fields(AWrite, 'format,project_id,expected_revision,name,style_intent,learning_mode,sources,parked_sources')
+  else
+    Fields(AWrite, 'format,project_id,expected_revision,name,style_intent,learning_mode,sources');
   Need(Length(AWrite.AsJSON) <= MaximumStudioDocumentBytes, 'Studio write exceeds its byte bound');
   Need(TextField(AWrite, 'format', 1, 64) = StudioProjectWriteFormat,
     'Studio write format is unsupported');

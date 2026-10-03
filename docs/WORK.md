@@ -12,6 +12,43 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Explicit training choices and collection playback — 2026-10-03
+
+Big Boss's solo [studio_19](TODO/DONE/NS-6_studio_19.md) repair is accepted and live.
+Collection separates available recordings, saved passages and checked training
+inputs. Whole-track selection unchecks its passages without removing them;
+checking a passage excludes the whole track. Save/reload preserves unchecked
+definitions and labels. Collection and Generate show checked count/duration.
+Native jobs use only `sources`; optional `parked_sources` retains unchecked
+snapshots through shared validation. Empty checked lists save but cannot generate.
+
+Every recording/passage offers grouped Play/Pause and editing controls. The same
+bounded source player supplies original-time feedback and exact passage endpoints
+without changing choices or leaving Collection. Library maintenance is collapsed
+beneath the training summary; the shared guide explains the new controls.
+
+Evidence: `build/studio-selection/QA-VERDICT.md`, 106 Win64 project and 69 real
+worker checks, matched pas2js builds, actual 390px/1280px Codex Browser checks and
+fourteen frozen hashes. Browser QA completes a 20-second audition from five checked
+passages / 30 seconds, with a sixth passage and whole recording excluded. Late
+preview requests only six seconds and stops at its end. Overlap feedback,
+keyboard focus, old drafts, Save/reload and empty training checks pass. Authored
+fixture mechanics provide no musical quality verdict.
+
+Use `build/studio-selection/start-studio-independent.ps1` for this checked bundle.
+The guard now trims surrounding process-command whitespace after a verified
+trailing-space mismatch; its initial refusal left the old service running. Final
+deployment preserves all 3,943 existing operator JSON/JSONL hashes and serves HTTPS.
+Read-only live verification confirms the existing Lofi passage remains checked.
+All owned tabs and the isolated QA service are closed; no QA audio or worker remains.
+No firewall, certificate or private catalog configuration changed.
+
+Ledger: **52.45 accepted / 47.55 remaining**, **47 open / 51 DONE** (98 records),
+NS-6 **54/46**. Zero additional credit for repairing credited usability.
+Consecutive nonclosing count: 0. Physical-phone and musical/usefulness verdicts
+remain open. Next operator action: refresh Studio, load the saved project, check
+the whole recordings or passages wanted, Save draft, then Generate.
+
 ## Stable Studio availability recovery — 2026-10-02
 
 Big Boss responded to the operator's failed Studio load: the stable executable
