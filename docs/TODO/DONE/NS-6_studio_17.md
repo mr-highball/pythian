@@ -74,3 +74,7 @@ remains with authoring_02/studio_10. Earned 1 NS-6 / 0.10 overall.
   feedback loop and requested teaching inside the app for future public users.
   This is a distinct usability deliverable; it does not close studio_03's real
   operator verdict or award scientific style-learning credit.
+
+- Operator feedback subsequently rejected inline help that scrolled away from
+  the current task. The accepted [studio_18 repair](NS-6_studio_18.md) replaces
+  it with shared modal help and tabs; no duplicate credit was awarded.

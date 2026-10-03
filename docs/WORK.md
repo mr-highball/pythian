@@ -14,17 +14,31 @@ Project work and review pushes stay on `hello-pythian`.
 
 ## Studio tabs and contextual help — 2026-10-02
 
-Big Boss solo is repairing the operator-reported scrolling and help displacement
-in [studio_18](TODO/NS-6_studio_18.md). Before this batch: actual tabs, smaller
-source/generation steps and modal help are the deliverable; preserved state,
-focus/scroll restoration and actual narrow/desktop browser checks close the
-criteria. Stop on lost edits or hidden controls. This repairs existing credited
-outcomes and earns no additional percentage. Ledger remains 52.45/47.55;
-48 open / 49 DONE (97 task records). Operator musical/physical verdicts stay open.
+Big Boss's solo [studio_18](TODO/DONE/NS-6_studio_18.md) repair is accepted and
+deployed at `2725742130c1680ad774747483b077c6bcff7fb2`. Studio now has real Sources,
+Generate and Review tabs with smaller source/mode/review/sample steps. Shared
+modal help returns to its invoking focus and scroll position; explicit Show me
+reveals nested controls. Save bars distinguish project drafts from feedback.
+
+Matched pas2js and actual 390px/1280px Codex Browser checks pass draft/selection
+readback, native audition completion, feedback preservation, next-batch routing,
+keyboard tabs, source playback completion and modal return across all three
+pages. Evidence: `build/studio-tabs/QA-VERDICT.md`, screenshots, structured checks
+and fourteen frozen hashes. Deployment preserves all 3,943 existing operator JSON
+hashes. All owned tabs/QA processes are closed, viewport reset, no QA audio left.
+Native service/worker are reused unchanged; no unrelated native suite was run.
+
+This repairs credited outcomes and earns **zero additional percentage**. Current
+ledger: **52.45 accepted / 47.55 remaining**, **47 open / 50 DONE** (97 records),
+NS-6 **54/46**. Consecutive nonclosing count: 0. The actual physical-phone and
+musical/operator verdicts remain open, including studio_03. Next operator action:
+refresh Studio, choose the saved project, use Sources → Collection/Passage, then
+Generate → Auditions and Review → Feedback. Judge usefulness through real music;
+mechanical QA answers are not scientific acceptance.
 
 ## Studio expansion — 2026-10-02
 
-**Current checkpoint — guided teaching:** Big Boss's solo
+**Preceding checkpoint — guided teaching:** Big Boss's solo
 [studio_17](TODO/DONE/NS-6_studio_17.md) is accepted and deployed at source
 `f154d1db7ef1eebc8935890ca7cfd5505822abd1`. The shared four-step guide and eight
 tool lessons pass matched pas2js and actual desktop/390px Codex Browser checks.
@@ -38,7 +52,7 @@ are unchanged, so no unrelated native suite was repeated. The automatically
 triggered Linux run is supplemental; no result is claimed for it here.
 
 One unearned delivery_04 point funded this explicit new outcome; acceptance
-earns 1 NS-6 / 0.10 overall. Current ledger: **52.45 accepted / 47.55 remaining**,
+earns 1 NS-6 / 0.10 overall. Ledger at that checkpoint: **52.45 accepted / 47.55 remaining**,
 **47 open / 49 DONE**, NS-6 **54/46**. Consecutive nonclosing count: 0. The next
 operator outcome remains studio_03's useful listening/refinement verdict;
 physical-phone and musical-learning acceptance are unchanged.

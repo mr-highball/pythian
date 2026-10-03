@@ -1,6 +1,6 @@
 # NS-6_studio_18 — Keep Studio tasks and help in context
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
@@ -20,6 +20,14 @@ AC1/AC2 below. Deliverable: tabbed Studio and shared modal help. Closing evidenc
 matched pas2js build plus actual desktop/narrow Codex Browser navigation,
 keyboard, focus/scroll restoration and unchanged-state checks. Stop on lost edits,
 hidden required controls, unsolicited media/jobs, or inability to return from help.
+
+Accepted 2026-10-02 by Big Boss under the user's solo UX instruction. Source
+`2725742130c1680ad774747483b077c6bcff7fb2` passes the matched pas2js build and actual
+390px/1280px Codex Browser checks. Evidence: `build/studio-tabs/QA-VERDICT.md`,
+`browser-checks.json`, screenshots and fourteen frozen artifact hashes. The
+matched bundle is deployed in the fixed stable slot; all 3,943 existing operator
+JSON hashes are unchanged. All owned tabs and QA processes are closed. No extra
+credit; physical-phone and musical/operator verdicts remain separately open.
 
 **Acceptance Criteria:**
 
@@ -42,8 +50,8 @@ hidden required controls, unsolicited media/jobs, or inability to return from he
 
 **Blockers**
 
-- [NS-6_studio_01.md](DONE/NS-6_studio_01.md)
-- [NS-6_studio_17.md](DONE/NS-6_studio_17.md)
+- [NS-6_studio_01.md](NS-6_studio_01.md)
+- [NS-6_studio_17.md](NS-6_studio_17.md)
 
 **Dev Notes:**
 
@@ -54,3 +62,15 @@ hidden required controls, unsolicited media/jobs, or inability to return from he
 - The implementation follows WAI's [tabs](https://www.w3.org/WAI/ARIA/apg/patterns/tabs/)
   and [modal dialog](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/) interaction
   patterns. Native dialog supplies modality; Pascal owns orchestration.
+
+- Accepted checks include saved draft/range/classification readback, native
+  audition completion, comparison history, paired answers preserved across tabs,
+  next-batch routing, keyboard tabs, contextual modal return on all three pages,
+  unavailable prerequisites, deep links and stopped source playback. No native
+  algorithm changed; unrelated native suites were not rerun.
+- Repaired missing-attribute tab selection, hidden-step Save errors and help
+  return focus. A screenshot review moved generation setup into Settings and
+  placed feedback Save in its own bar. Final desktop dimensions were explicitly
+  checked after discovering an earlier screenshot still used the narrow view.
+- The remaining [actual operator verdict](../NS-6_studio_03.md) must come from
+  real use; this repair does not close it. Consecutive nonclosing count: 0.

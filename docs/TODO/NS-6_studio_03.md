@@ -60,6 +60,13 @@ open; mechanical answers earn no musical verdict or completion credit.
 
 **Dev Notes:**
 
+- 2026-10-02, Big Boss: [studio_18](DONE/NS-6_studio_18.md) repairs the operator's
+  scrolling/help-placement feedback with tabs, contextual modals, paired-sample
+  views and appropriate save bars. Isolated browser checks preserve feedback and
+  next-batch routing. AC5 still needs actual operator musical/usefulness review;
+  a UI repair does not supply that verdict or earn this task's completion credit.
+
+
 - 2026-10-02, Big Boss: the solo usability batch fixes the generated-audition
   feedback link to select its exact listening request, simplifies displayed
   answer vocabulary, and gives new requests a plain style-fit question.

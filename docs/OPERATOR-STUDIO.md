@@ -71,7 +71,7 @@ Feedback and History; paired samples have their own tabs. Switching steps keeps
 mounted tools and unsaved edits. A compact save bar shows the appropriate project
 or feedback action. Help never jumps away from the current task unless the
 operator explicitly chooses Show me. This operator-requested repair is tracked
-in [studio_18](TODO/NS-6_studio_18.md), with no additional completion credit.
+in [studio_18](TODO/DONE/NS-6_studio_18.md), with no additional completion credit.
 
 **Learn to teach Pythian** is shared by Studio, Source reviews and Listening
 reviews. Its four first-project lessons teach choosing examples, generating a
@@ -164,7 +164,7 @@ they do not disappear or move into the new tasks. Scoping left 49.40 accepted;
 independent project/setup acceptance subsequently adds 4 NS-6 / 0.40 overall.
 Private corpora, raw WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall.
 Accepted starting actions/navigation and large-library refresh add 2 NS-6 / 0.20 overall.
-The current ledger is **52.45 accepted / 47.55 remaining**, **47 open / 49 DONE**.
+The current ledger is **52.45 accepted / 47.55 remaining**, **47 open / 50 DONE**.
 NS-6 is **54 accepted / 46 unearned** with eleven open tasks. Goal weights are unchanged.
 The later collection and effects requirements each reallocate one unearned point
 from jobs and iteration; all original criteria remain. Scoping earns no acceptance.
