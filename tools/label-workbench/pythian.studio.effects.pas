@@ -28,7 +28,7 @@ unit pythian.studio.effects;
 
 interface
 
-uses
+uses pythian.studio.progress,
   JS,
   Web,
   SysUtils,
@@ -185,7 +185,7 @@ begin
   LControl.id := 'effects-notice';
   LControl.setAttribute('role', 'status');
   LControl.setAttribute('aria-live', 'polite');
-  LControl := Add(LRoot, 'p', '', 'hint');
+  LControl := Add(LRoot, 'div', '', 'hint');
   LControl.id := 'effects-status';
   FPlayer := TJSHTMLAudioElement(Add(LRoot, 'audio', '', ''));
   FPlayer.controls := True;
@@ -640,17 +640,10 @@ var
 begin
   LStatus := StudioText(FJob, 'status');
   LId := StudioText(FJob, 'job_id');
-  LText := LStatus + ' · ' + StudioText(FJob, 'stage');
-  if StudioNumber(FJob, 'total') > 0 then
-  begin
-    LText := LText + ' · ' + FloatToStr(StudioNumber(FJob, 'done')) + ' / ' +
-      FloatToStr(StudioNumber(FJob, 'total'));
-  end;
-  if Boolean(FJob['cancel_requested']) then
-  begin
-    LText := LText + ' · cancellation requested';
-  end;
-  El('effects-status').textContent := LText;
+  El('effects-status').innerHTML := '';
+  DrawStudioProgress(El('effects-status'), FJob);
+  if Boolean(FJob['cancel_requested']) and ((LStatus = 'queued') or (LStatus = 'running')) then
+    Add(El('effects-status'), 'p', 'Stopping…', 'hint');
   El('effects-identity').textContent := 'Job: ' + LId;
   if (LStatus = 'failed') or (LStatus = 'cancelled') then
   begin

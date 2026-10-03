@@ -130,4 +130,10 @@ if ($VerifyCodec) {
   if ($LASTEXITCODE -ne 0) { throw 'Portable WAV pas2js compilation failed' }
   & $nodeCommand.Source (Join-Path $codecRoot 'pythian.tests.wave.portable.js')
   if ($LASTEXITCODE -ne 0) { throw 'Portable WAV pas2js checks failed' }
+  & $Compiler '-B' '-Tnodejs' '-Mdelphi' '-Jc' "-Ji$RtlJavascript" `
+    "-Fu$RtlSource" "-Fu$(Join-Path $repositoryRoot 'src')" "-FE$codecRoot" `
+    (Join-Path $repositoryRoot 'tests/pythian.tests.progress.portable.lpr')
+  if ($LASTEXITCODE -ne 0) { throw 'Portable progress pas2js compilation failed' }
+  & $nodeCommand.Source (Join-Path $codecRoot 'pythian.tests.progress.portable.js')
+  if ($LASTEXITCODE -ne 0) { throw 'Portable progress checks failed' }
 }

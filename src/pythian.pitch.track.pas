@@ -30,6 +30,7 @@ unit pythian.pitch.track;
 interface
 
 uses
+  pythian.progress,
   pythian.audio,
   pythian.pitch,
   pythian.time;
@@ -103,7 +104,8 @@ type
       Explicit windows trade temporal resolution for longer difference integration;
       they retain the same estimator, hop, admission thresholds and work budget. }
     constructor Create(const AClip: TAudioClip; const AChannel: Integer;
-      const AOptions: TPitchTrackOptions; const AWindowFrames: Integer = 0);
+      const AOptions: TPitchTrackOptions; const AWindowFrames: Integer = 0;
+  const AProgress: TWorkProgressCallback = nil);
     constructor CreateFromEvidence(const AEvidence: TPitchTrackEvidence;
       const ASampleRate, AChannels, AFrameCount: Integer);
     function CopyEvidence: TPitchTrackEvidence;
@@ -317,7 +319,8 @@ begin
 end;
 
 constructor TPitchTrack.Create(const AClip: TAudioClip; const AChannel: Integer;
-  const AOptions: TPitchTrackOptions; const AWindowFrames: Integer);
+  const AOptions: TPitchTrackOptions; const AWindowFrames: Integer;
+  const AProgress: TWorkProgressCallback);
 var
   LCount: Integer;
   LIndex: Integer;
@@ -331,10 +334,13 @@ begin
   end;
   LCount := InitializeGeometry(AClip.SampleRate, AClip.Channels, AClip.FrameCount,
     AChannel, AOptions, AWindowFrames);
+  ReportWork(AProgress, 'estimate_pitch', wuObservations, 0, LCount);
   SetLength(FEstimates, LCount);
   SetLength(LSamples, FWindowFrames);
   for LIndex := 0 to LCount - 1 do
   begin
+    if (LIndex > 0) and (LIndex mod 16 = 0) then
+      ReportWork(AProgress, 'estimate_pitch', wuObservations, LIndex, LCount);
     for LFrame := 0 to FWindowFrames - 1 do
     begin
       LSamples[LFrame] := AClip.SampleAt(LIndex * AOptions.HopFrames + LFrame, AChannel);
@@ -342,6 +348,7 @@ begin
     FEstimates[LIndex] := EstimatePitch(LSamples, FSampleRate, 1, 0, AOptions.Pitch);
   end;
   BuildSpans;
+  ReportWork(AProgress, 'estimate_pitch', wuObservations, LCount, LCount);
 end;
 
 constructor TPitchTrack.CreateFromEvidence(const AEvidence: TPitchTrackEvidence;

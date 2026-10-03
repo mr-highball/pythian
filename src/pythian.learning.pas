@@ -28,7 +28,7 @@ unit pythian.learning;
 
 interface
 
-uses
+uses pythian.progress,
   pythian.analysis;
 
 const
@@ -57,19 +57,22 @@ type
   strict private
     FCenters: TAcousticVectors;
     function GetCount: Integer;
-    procedure TrainReader(const AReader: TAcousticVectorReader; const AMaximumTokens: Integer);
+    procedure TrainReader(const AReader: TAcousticVectorReader; const AMaximumTokens: Integer;
+  const AProgress: TWorkProgressCallback = nil);
   public
-    constructor Create(const AFeatures: TAudioFeatures; const AMaximumTokens: Integer = 16);
+    constructor Create(const AFeatures: TAudioFeatures; const AMaximumTokens: Integer = 16;
+  const AProgress: TWorkProgressCallback = nil);
     constructor CreateFromCenters(const ACenters: TAcousticVectors);
     constructor CreateFromReader(const AReader: TAcousticVectorReader;
-      const AMaximumTokens: Integer = 16);
+      const AMaximumTokens: Integer = 16;
+  const AProgress: TWorkProgressCallback = nil);
     function CopyCenters: TAcousticVectors;
-    function Encode(const AFeatures: TAudioFeatures): TAcousticIndices;
+    function Encode(const AFeatures: TAudioFeatures; const AProgress: TWorkProgressCallback = nil): TAcousticIndices;
     function EncodeFeature(const AFeature: TAudioFeature): Integer;
     function FeatureDistance(const AFeature: TAudioFeature; const AToken: Integer): Double;
     { Returns a feature-array index per token, nearest to its center among
       frames assigned to that token. Empty clusters return -1. }
-    function RepresentativeFrames(const AFeatures: TAudioFeatures): TAcousticIndices;
+    function RepresentativeFrames(const AFeatures: TAudioFeatures; const AProgress: TWorkProgressCallback = nil): TAcousticIndices;
     function CenterAt(const AIndex: Integer): TAcousticVector;
     property Count: Integer read GetCount;
   end;
@@ -144,22 +147,26 @@ type
     FVectors: TAcousticVectors;
     FIndex: Integer;
   public
-    constructor Create(const AFeatures: TAudioFeatures);
+    constructor Create(const AFeatures: TAudioFeatures; const AProgress: TWorkProgressCallback);
     procedure Rewind; override;
     function ReadVector(var AVector: TAcousticVector;
       var AMultiplicity: Integer): Boolean; override;
   end;
 
-constructor TArrayVectorReader.Create(const AFeatures: TAudioFeatures);
+constructor TArrayVectorReader.Create(const AFeatures: TAudioFeatures; const AProgress: TWorkProgressCallback);
 var
   LIndex: Integer;
 begin
   inherited Create;
+  ReportWork(AProgress, 'prepare_learning', wuObservations, 0, Length(AFeatures));
   SetLength(FVectors, Length(AFeatures));
   for LIndex := 0 to High(AFeatures) do
   begin
     FVectors[LIndex] := AcousticVector(AFeatures[LIndex]);
+    if ((LIndex + 1) mod 128 = 0) and (LIndex + 1 < Length(AFeatures)) then
+      ReportWork(AProgress, 'prepare_learning', wuObservations, LIndex + 1, Length(AFeatures));
   end;
+  ReportWork(AProgress, 'prepare_learning', wuObservations, Length(AFeatures), Length(AFeatures));
 end;
 
 procedure TArrayVectorReader.Rewind;
@@ -180,7 +187,8 @@ begin
 end;
 
 constructor TAcousticPalette.Create(const AFeatures: TAudioFeatures;
-  const AMaximumTokens: Integer);
+  const AMaximumTokens: Integer;
+  const AProgress: TWorkProgressCallback);
 var
   LReader: TArrayVectorReader;
 begin
@@ -190,23 +198,25 @@ begin
   begin
     raise EAudio.Create('Invalid acoustic corpus size');
   end;
-  LReader := TArrayVectorReader.Create(AFeatures);
+  LReader := TArrayVectorReader.Create(AFeatures, AProgress);
   try
-    TrainReader(LReader, AMaximumTokens);
+    TrainReader(LReader, AMaximumTokens, AProgress);
   finally
     LReader.Free;
   end;
 end;
 
 constructor TAcousticPalette.CreateFromReader(const AReader: TAcousticVectorReader;
-  const AMaximumTokens: Integer);
+  const AMaximumTokens: Integer;
+  const AProgress: TWorkProgressCallback);
 begin
   inherited Create;
-  TrainReader(AReader, AMaximumTokens);
+  TrainReader(AReader, AMaximumTokens, AProgress);
 end;
 
 procedure TAcousticPalette.TrainReader(const AReader: TAcousticVectorReader;
-  const AMaximumTokens: Integer);
+  const AMaximumTokens: Integer;
+  const AProgress: TWorkProgressCallback);
 const
   CMaximumExactMass = Int64(9007199254740991);
 var
@@ -225,18 +235,24 @@ var
   LPassMass: Int64;
   LExpectedCount: Int64;
   LExpectedMass: Int64;
+  LPass: Integer;
 
   procedure BeginPass;
   begin
     LPassCount := 0;
     LPassMass := 0;
     AReader.Rewind;
+    Inc(LPass);
+    ReportWork(AProgress, 'learn_sounds', wuObservations, 0, LExpectedCount, LPass);
   end;
 
   function NextVector: Boolean;
   var
     LIndex: Integer;
   begin
+    if (LPassCount > 0) and (LPassCount mod 128 = 0) and
+      ((LExpectedCount = 0) or (LPassCount < LExpectedCount)) then
+      ReportWork(AProgress, 'learn_sounds', wuObservations, LPassCount, LExpectedCount, LPass);
     Result := AReader.ReadVector(LVector, LMultiplicity);
     if not Result then
     begin
@@ -269,6 +285,7 @@ var
     begin
       raise EAudio.Create('Acoustic evidence count changed between training passes');
     end;
+    ReportWork(AProgress, 'learn_sounds', wuObservations, LPassCount, LExpectedCount, LPass);
   end;
 
 begin
@@ -277,6 +294,7 @@ begin
   begin
     raise EAudio.Create('Acoustic reader and valid vocabulary budget are required');
   end;
+  LPass := 0;
   LExpectedCount := 0;
   LExpectedMass := 0;
   BeginPass;
@@ -404,7 +422,7 @@ begin
   Result := Distance(AcousticVector(AFeature), CenterAt(AToken));
 end;
 
-function TAcousticPalette.Encode(const AFeatures: TAudioFeatures): TAcousticIndices;
+function TAcousticPalette.Encode(const AFeatures: TAudioFeatures; const AProgress: TWorkProgressCallback): TAcousticIndices;
 var
   LIndex: Integer;
   LDistance: Double;
@@ -415,14 +433,18 @@ begin
   end;
   Result := nil;
   SetLength(Result, Length(AFeatures));
+  ReportWork(AProgress, 'encode_sounds', wuObservations, 0, Length(AFeatures));
   for LIndex := 0 to High(AFeatures) do
   begin
+    if (LIndex > 0) and (LIndex mod 128 = 0) then
+      ReportWork(AProgress, 'encode_sounds', wuObservations, LIndex, Length(AFeatures));
     Result[LIndex] := Closest(AcousticVector(AFeatures[LIndex]), FCenters, LDistance);
   end;
+  ReportWork(AProgress, 'encode_sounds', wuObservations, Length(AFeatures), Length(AFeatures));
 end;
 
 function TAcousticPalette.RepresentativeFrames(
-  const AFeatures: TAudioFeatures): TAcousticIndices;
+  const AFeatures: TAudioFeatures; const AProgress: TWorkProgressCallback): TAcousticIndices;
 var
   LIndices: TAcousticIndices;
   LDistances: array of Double;
@@ -430,7 +452,7 @@ var
   LToken: Integer;
   LDistance: Double;
 begin
-  LIndices := Encode(AFeatures);
+  LIndices := Encode(AFeatures, AProgress);
   Result := nil;
   SetLength(Result, Count);
   SetLength(LDistances, Count);
@@ -439,8 +461,11 @@ begin
     Result[LToken] := -1;
     LDistances[LToken] := MaxDouble;
   end;
+  ReportWork(AProgress, 'choose_examples', wuObservations, 0, Length(AFeatures));
   for LIndex := 0 to High(AFeatures) do
   begin
+    if (LIndex > 0) and (LIndex mod 128 = 0) then
+      ReportWork(AProgress, 'choose_examples', wuObservations, LIndex, Length(AFeatures));
     LToken := LIndices[LIndex];
     LDistance := Distance(AcousticVector(AFeatures[LIndex]), FCenters[LToken]);
     if LDistance < LDistances[LToken] then
@@ -449,6 +474,7 @@ begin
       LDistances[LToken] := LDistance;
     end;
   end;
+  ReportWork(AProgress, 'choose_examples', wuObservations, Length(AFeatures), Length(AFeatures));
 end;
 
 end.

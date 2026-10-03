@@ -58,6 +58,23 @@ begin
     'interrupted': Result := 'Interrupted';
     'cancelled': Result := 'Cancelled';
     'cancelled_before_start': Result := 'Cancelled before starting';
+    'verify_audio_bytes': Result := 'Check audio file';
+    'read_audio': Result := 'Read selected audio';
+    'analyze_audio', 'inspect_temporary_audio': Result := 'Analyze audio';
+    'inspect_levels': Result := 'Measure volume';
+    'resample_audio': Result := 'Prepare audio for pitch detection';
+    'estimate_pitch', 'preview_pitch': Result := 'Find pitches';
+    'locate_onsets': Result := 'Find sound starts';
+    'estimate_beats': Result := 'Find beat candidates';
+    'prepare_learning': Result := 'Prepare sound examples';
+    'encode_sounds': Result := 'Match sounds';
+    'choose_examples': Result := 'Choose sound examples';
+    'learn_sounds': Result := 'Learn sounds';
+    'render_effects': Result := 'Apply effects';
+    'render_note_preview': Result := 'Create note preview';
+    'import_audio': Result := 'Add audio to catalog';
+    'copy_audio': Result := 'Copy audio';
+    'save_capture', 'save_derived_clip': Result := 'Save to collection';
   else Result := 'Preparing music';
   end;
 end;
@@ -103,7 +120,9 @@ begin
   if (LStatus = 'failed') or (LStatus = 'cancelled') then Exit;
   if LStatus = 'completed' then
   begin
-    Add(LRoot, 'p', 'Ready to review.');
+    if (StudioText(AJob, 'kind') = 'train_generate') or
+      (StudioText(AJob, 'kind') = 'stream_generate') then
+      Add(LRoot, 'p', 'Ready to review.');
     Exit;
   end;
   if (LStage = 'reload_verified_model') then
@@ -128,7 +147,10 @@ begin
         FormatFloat('0.0', LTotal / 1048576) + ' MB in this recording'
     else if LUnit = 'observations' then
       LDetail := IntToStr(Trunc(LDone)) + ' / ' + IntToStr(Trunc(LTotal)) + ' audio windows'
-    else if LUnit = 'frames' then LDetail := 'of requested audio generated'
+    else if LUnit = 'frames' then
+      if (LStage = 'generate_auditions') or (LStage = 'streaming') then
+        LDetail := 'of requested audio generated'
+      else LDetail := IntToStr(Trunc(LDone)) + ' / ' + IntToStr(Trunc(LTotal)) + ' audio frames'
     else LDetail := IntToStr(Trunc(LDone)) + ' / ' + IntToStr(Trunc(LTotal));
     LBar.setAttribute('aria-valuetext', LText + ' · ' + LDetail);
     Add(LRoot, 'p', LText + ' · ' + LDetail);

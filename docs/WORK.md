@@ -12,6 +12,46 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Shared bulk callbacks and observability audit — 2026-10-03
+
+Big Boss's solo [observability_01](TODO/DONE/NS-6_observability_01.md) is accepted
+and deployed. [Coverage and contract](OBSERVABILITY.md) record a 262-file static
+inventory and manual call-chain review. Optional primary callbacks measure hash
+bytes, analysis/pitch windows, resampled/effect frames, beat/onset trials and
+learning passes. Core owns no UI or clock; callbacks can raise to abort. Studio
+source analysis, effects, capture and pitch share short labels and measured bars.
+Existing streaming/library/inference checkpoints remain in place.
+
+Native evidence: 385 callback/parity/abort checks, existing hash/WAV analysis,
+corpus/archive reconstruction, weighted journal/WFC parity, 164 real worker,
+130 effects and 53 capture checks. Actual pas2js/Node contract checks pass for
+large counters and exceptions. Full pas2js analysis hits older native-memory
+primitives: [portability_01](TODO/NS-6_portability_01.md) owns primary-code repair.
+No claim of full browser analysis, WASM execution or musical quality.
+
+Actual Codex Browser checks: source inspection shows 0→66% file bytes then
+analysis and measured results; effects complete/cancel and pitch preview complete.
+Fixed cancelled effects still saying “Stopping…”. No overflow at 390px/1280px,
+no console errors. Short pitch stages finish between polls; no intermediate
+browser-pitch progress claim. Authored QA remains separate from operator work.
+
+Evidence: `build/observability/QA-VERDICT.md`. Independent restart wrapper:
+`build/observability/start-studio-independent.ps1`. All fourteen frozen artifacts
+match stable delivery and all 3,957 prior operator JSON/JSONL hashes are unchanged.
+Live Studio loads. Owned browser tabs and QA service are closed; no QA audio or
+worker remains. No TLS/firewall/catalog configuration changes.
+
+Remaining required gaps: [catalog import](TODO/NS-6_observability_02.md),
+[offline render/separation](TODO/NS-6_observability_03.md),
+[retained corpus/style monitoring](TODO/NS-6_observability_04.md), and the
+portability task above. Next ready observability task is catalog import, including
+careful cancellation propagation through per-file error handling. No generic WFC
+defect was demonstrated; no dependency source changed.
+
+Ledger: **52.45 accepted / 47.55 remaining**, **51 open / 53 DONE** (104 records),
+NS-6 **54/46**, fifteen open tasks. No additional credit. Nonclosing count: 0.
+Physical-phone and musical acceptance remain with their existing outcome owners.
+
 ## Measured learning progress — 2026-10-03
 
 Big Boss's solo [studio_20](TODO/DONE/NS-6_studio_20.md) is accepted and deployed.
@@ -33,7 +73,7 @@ Ledger: **52.45 accepted / 47.55 remaining**, **48 open / 52 DONE** (100 records
 NS-6 **54/46**. Consecutive nonclosing count: 0.
 
 The operator now requests the same lesson across long operations. Next selected
-work is [observability_01](TODO/NS-6_observability_01.md): inventory existing
+work was [observability_01](TODO/DONE/NS-6_observability_01.md): inventory existing
 checkpoints/pull interfaces; add shared bulk analysis/hash/resample/pitch callbacks
 and connect silent effect/capture/inspection paths. Keep user work independent of
 authored QA, and record distinct remaining gaps without overstating coverage.

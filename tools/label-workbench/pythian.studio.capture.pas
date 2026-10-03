@@ -28,7 +28,7 @@ unit pythian.studio.capture;
 
 interface
 
-uses
+uses pythian.studio.progress,
   JS, Web, WebAudio, SysUtils, Math, Types, pythian.audio, pythian.wave.stream,
   pythian.studio.sources, pythian.studio.requests;
 
@@ -278,7 +278,7 @@ begin
   Button(LRow, 'Check job status', 'status');
   Button(LRow, 'Retry same submission', 'confirm');
   Button(LRow, 'Cancel job', 'cancel');
-  LControl := Add(LRoot, 'p', '');
+  LControl := Add(LRoot, 'div', '');
   LControl.id := 'capture-job';
   LRow := Add(LRoot, 'div', '');
   LRow.className := 'range-fields';
@@ -1169,15 +1169,8 @@ begin
   end;
   FJob := AJob;
   FPending := False;
-  El('capture-job').textContent := StudioText(AJob, 'status');
-  if StudioText(AJob, 'stage') <> StudioText(AJob, 'status') then
-    El('capture-job').textContent := El('capture-job').textContent + ' · ' +
-      StringReplace(StudioText(AJob, 'stage'), '_', ' ', [rfReplaceAll]);
-  if StudioNumber(AJob, 'total') > 0 then
-  begin
-    El('capture-job').textContent := El('capture-job').textContent + ' · ' +
-      FloatToStr(StudioNumber(AJob, 'done')) + ' / ' + FloatToStr(StudioNumber(AJob, 'total'));
-  end;
+  El('capture-job').innerHTML := '';
+  DrawStudioProgress(El('capture-job'), AJob);
   El('capture-identity').textContent := 'Input: ' + FInputId + ' · Job: ' +
     StudioText(AJob, 'job_id');
   window.clearTimeout(FPoll);

@@ -136,6 +136,8 @@ function StudioTime(const ASeconds: Double): String;
 
 implementation
 
+uses pythian.studio.progress;
+
 function StudioIncluded(AObject: TJSObject): Boolean;
 begin
   Result := not isBoolean(AObject['included']) or Boolean(AObject['included']);
@@ -1034,7 +1036,8 @@ begin
       LStatus := StudioText(LJob, 'status');
       if LEpoch = FEpoch then
       begin
-        El('source-analysis-status').textContent := 'Analysis: ' + StudioText(LJob, 'stage');
+        El('source-analysis-status').innerHTML := '';
+        DrawStudioProgress(El('source-analysis-status'), LJob);
       end;
     end;
     if LStatus <> 'completed' then

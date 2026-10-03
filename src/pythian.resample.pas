@@ -29,6 +29,7 @@ unit pythian.resample;
 interface
 
 uses
+  pythian.progress,
   pythian.audio,
   pythian.sample.sequence;
 
@@ -69,7 +70,8 @@ function SincKernelWeight(const ADistance, ACutoff: Double; const ARadius: Integ
   budgets before allocation. Equal rates make an exact detached copy. }
 procedure PlanResample(const ASourceFrames, AChannels, ASourceRate, AOutputRate: Integer;
   out AOutputFrames: Integer; out AVisits: Int64);
-function ResampleClip(const ASource: TAudioClip; const AOutputRate: Integer): TAudioClip;
+function ResampleClip(const ASource: TAudioClip; const AOutputRate: Integer;
+  const AProgress: TWorkProgressCallback = nil): TAudioClip;
 
 implementation
 
@@ -258,7 +260,8 @@ begin
   AVisits := LVisits;
 end;
 
-function ResampleClip(const ASource: TAudioClip; const AOutputRate: Integer): TAudioClip;
+function ResampleClip(const ASource: TAudioClip; const AOutputRate: Integer;
+  const AProgress: TWorkProgressCallback): TAudioClip;
 var
   LFrames: Integer;
   LVisits: Int64;
@@ -275,9 +278,12 @@ begin
   end;
   PlanResample(ASource.FrameCount, ASource.Channels, ASource.SampleRate, AOutputRate,
     LFrames, LVisits);
+  ReportWork(AProgress, 'resample_audio', wuFrames, 0, LFrames);
   if ASource.SampleRate = AOutputRate then
   begin
-    Exit(TAudioClip.Create(AOutputRate, ASource.Channels, ASource.CopySamples));
+    LSamples := ASource.CopySamples;
+    ReportWork(AProgress, 'resample_audio', wuFrames, LFrames, LFrames);
+    Exit(TAudioClip.Create(AOutputRate, ASource.Channels, LSamples));
   end;
   SetLength(LSamples, LFrames * ASource.Channels);
   if LFrames > 0 then
@@ -286,6 +292,8 @@ begin
     try
       for LFrame := 0 to LFrames - 1 do
       begin
+        if (LFrame > 0) and (LFrame mod 1024 = 0) then
+          ReportWork(AProgress, 'resample_audio', wuFrames, LFrame, LFrames);
         { Integer product preserves exact anchors and avoids accumulated drift. }
         LPosition := (Int64(LFrame) * ASource.SampleRate) / AOutputRate;
         LSampler.ReadFrame(LPosition, LLeft, LRight);
@@ -303,6 +311,7 @@ begin
       LSampler.Free;
     end;
   end;
+  ReportWork(AProgress, 'resample_audio', wuFrames, LFrames, LFrames);
   Result := TAudioClip.Create(AOutputRate, ASource.Channels, LSamples);
 end;
 

@@ -29,16 +29,19 @@ unit pythian.hash;
 interface
 
 uses
+  pythian.progress,
   Classes,
   pythian.audio;
 
 { SHA256 of exact bytes, retaining the Phanes provenance-helper contract.
   Native FIPS 180-4 algorithm with fixed-size working storage and RTL only. }
-function Sha256Bytes(const ABytes: TAudioBytes): String;
+function Sha256Bytes(const ABytes: TAudioBytes;
+  const AProgress: TWorkProgressCallback = nil): String;
 { Hash exactly AByteCount bytes from the current position, using fixed storage.
   Borrows the stream; short positive reads accumulate. Invalid counts reject
   before reading. Source errors/early EOF may advance its physical position. }
-function Sha256Stream(const AStream: TStream; const AByteCount: Int64): String;
+function Sha256Stream(const AStream: TStream; const AByteCount: Int64;
+  const AProgress: TWorkProgressCallback = nil): String;
 
 implementation
 
@@ -147,13 +150,15 @@ begin
   end;
 end;
 
-function Sha256Bytes(const ABytes: TAudioBytes): String;
+function Sha256Bytes(const ABytes: TAudioBytes;
+  const AProgress: TWorkProgressCallback): String;
 var
   LState: TShaState;
   LBlock: TShaBlock;
   LOffset: SizeInt;
   LRemaining: Integer;
 begin
+  ReportWork(AProgress, 'verify_audio_bytes', wuBytes, 0, Length(ABytes));
   LState := CInitial;
   LOffset := 0;
   while Length(ABytes) - LOffset >= SizeOf(LBlock) do
@@ -161,6 +166,7 @@ begin
     Move(ABytes[LOffset], LBlock[0], SizeOf(LBlock));
     Compress(LState, LBlock);
     Inc(LOffset, SizeOf(LBlock));
+    if (LOffset < Length(ABytes)) and (LOffset mod 8192 = 0) then ReportWork(AProgress, 'verify_audio_bytes', wuBytes, LOffset, Length(ABytes));
   end;
   FillChar(LBlock, SizeOf(LBlock), 0);
   LRemaining := Length(ABytes) - LOffset;
@@ -169,9 +175,11 @@ begin
     Move(ABytes[LOffset], LBlock[0], LRemaining);
   end;
   Result := FinishHash(LState, LBlock, LRemaining, QWord(Length(ABytes)));
+  ReportWork(AProgress, 'verify_audio_bytes', wuBytes, Length(ABytes), Length(ABytes));
 end;
 
-function Sha256Stream(const AStream: TStream; const AByteCount: Int64): String;
+function Sha256Stream(const AStream: TStream; const AByteCount: Int64;
+  const AProgress: TWorkProgressCallback): String;
 var
   LState: TShaState;
   LBlock: TShaBlock;
@@ -187,6 +195,7 @@ begin
   begin
     raise EAudio.Create('Invalid SHA256 stream or byte count');
   end;
+  ReportWork(AProgress, 'verify_audio_bytes', wuBytes, 0, AByteCount);
   LState := CInitial;
   LRemaining := AByteCount;
   FillChar(LBlock, SizeOf(LBlock), 0);
@@ -217,6 +226,8 @@ begin
       Inc(LOffset, SizeOf(LBlock));
     end;
     Dec(LRemaining, LChunk);
+    if LRemaining > 0 then
+      ReportWork(AProgress, 'verify_audio_bytes', wuBytes, AByteCount - LRemaining, AByteCount);
   end;
   FillChar(LBlock, SizeOf(LBlock), 0);
   if LChunk > LOffset then
@@ -224,6 +235,7 @@ begin
     Move(LBuffer[LOffset], LBlock[0], LChunk - LOffset);
   end;
   Result := FinishHash(LState, LBlock, LChunk - LOffset, QWord(AByteCount));
+  ReportWork(AProgress, 'verify_audio_bytes', wuBytes, AByteCount, AByteCount);
 end;
 
 end.

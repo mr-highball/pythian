@@ -164,8 +164,14 @@ they do not disappear or move into the new tasks. Scoping left 49.40 accepted;
 independent project/setup acceptance subsequently adds 4 NS-6 / 0.40 overall.
 Private corpora, raw WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall.
 Accepted starting actions/navigation and large-library refresh add 2 NS-6 / 0.20 overall.
-The current ledger is **52.45 accepted / 47.55 remaining**, **48 open / 52 DONE**.
-NS-6 is **54 accepted / 46 unearned** with eleven open tasks. Goal weights are unchanged.
+The current ledger is **52.45 accepted / 47.55 remaining**, **51 open / 53 DONE**.
+NS-6 is **54 accepted / 46 unearned** with fifteen open tasks. Goal weights are unchanged.
+
+The accepted [shared observability audit](TODO/DONE/NS-6_observability_01.md)
+extends common progress to source analysis, effects, capture and pitch jobs.
+Actual units and current passes drive bars; unknown work remains indeterminate.
+The [coverage map](OBSERVABILITY.md) explicitly retains import, offline rendering,
+retained-style operations and full pas2js analysis gaps. These repairs add no credit.
 The later collection and effects requirements each reallocate one unearned point
 from jobs and iteration; all original criteria remain. Scoping earns no acceptance.
 Capture/exploration receives two additional unearned delivery_03 points with

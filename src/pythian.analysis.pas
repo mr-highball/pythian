@@ -29,6 +29,7 @@ unit pythian.analysis;
 interface
 
 uses
+  pythian.progress,
   pythian.audio;
 
 const
@@ -95,17 +96,20 @@ procedure PlanAudioAnalysis(const AFrameCount, AChannels: Integer;
   Final windows are zero-padded; RMS excludes padding. Chroma is spectral energy
   folded to equal-tempered pitch classes, not a note/chord transcription. }
 function AnalyzeAudio(const AClip: TAudioClip;
-  const AOptions: TAnalysisOptions): TAudioFeatures;
+  const AOptions: TAnalysisOptions;
+  const AProgress: TWorkProgressCallback = nil): TAudioFeatures;
 { Shares the same FFT/feature engine and budgets as clip analysis. Source
   exceptions propagate; the caller's previously assigned features survive.
   Source position/history may advance. The source is borrowed for this call. }
 function AnalyzeAudioSource(const ASource: TAudioAnalysisSource;
-  const AOptions: TAnalysisOptions): TAudioFeatures;
+  const AOptions: TAnalysisOptions;
+  const AProgress: TWorkProgressCallback = nil): TAudioFeatures;
 { Bounded feature-index range. Recomputes the preceding spectrum when starting
   after zero, so flux agrees with uninterrupted analysis. Returned coordinates
   remain relative to the source. Budgets include this one context observation. }
 function AnalyzeAudioSourceRange(const ASource: TAudioAnalysisSource;
-  const AOptions: TAnalysisOptions; const AFirstFeature, AFeatureCount: Integer): TAudioFeatures;
+  const AOptions: TAnalysisOptions; const AFirstFeature, AFeatureCount: Integer;
+  const AProgress: TWorkProgressCallback = nil): TAudioFeatures;
 
 { Optional measurements from the same FFT pass, leaving TAudioFeature unchanged.
   Supply 2..33 strictly increasing finite edges within [0, sample rate/2].
@@ -121,9 +125,11 @@ function AnalyzeAudioSourceRange(const ASource: TAudioAnalysisSource;
   from edges/source. Invalid admission preserves an assigned result. }
 function AnalyzeAudioSourceRangeBands(const ASource: TAudioAnalysisSource;
   const AOptions: TAnalysisOptions; const ABandEdges: TAnalysisBandEdges;
-  const AFirstFeature, AFeatureCount: Integer): TAudioBandAnalysis;
+  const AFirstFeature, AFeatureCount: Integer;
+  const AProgress: TWorkProgressCallback = nil): TAudioBandAnalysis;
 function AnalyzeAudioBands(const AClip: TAudioClip; const AOptions: TAnalysisOptions;
-  const ABandEdges: TAnalysisBandEdges): TAudioBandAnalysis;
+  const ABandEdges: TAnalysisBandEdges;
+  const AProgress: TWorkProgressCallback = nil): TAudioBandAnalysis;
 
 implementation
 
@@ -223,7 +229,8 @@ end;
 
 function AnalyzeAudioSourceRangeCore(const ASource: TAudioAnalysisSource;
   const AOptions: TAnalysisOptions; const AFirstFeature, AFeatureCount: Integer;
-  const ABandEdges: TAnalysisBandEdges; out ABands: TAudioBandSeriesArray): TAudioFeatures;
+  const ABandEdges: TAnalysisBandEdges; out ABands: TAudioBandSeriesArray;
+  const AProgress: TWorkProgressCallback): TAudioFeatures;
 var
   LFeatures: TAudioFeatures;
   LSamples: TAudioSamples;
@@ -299,6 +306,7 @@ begin
       SetLength(ABands[LBand].PositiveFlux, LCount);
     end;
   end;
+  ReportWork(AProgress, 'analyze_audio', wuObservations, 0, LCount);
   SetLength(LFeatures, LCount);
   SetLength(LReal, LSize);
   SetLength(LImaginary, LSize);
@@ -443,23 +451,28 @@ begin
     if LFrame >= AFirstFeature then
     begin
       LFeatures[LFrame - AFirstFeature] := LFeature;
+      if ((LFrame - AFirstFeature + 1) mod 16 = 0) and (LFrame - AFirstFeature + 1 < LCount) then
+        ReportWork(AProgress, 'analyze_audio', wuObservations, LFrame - AFirstFeature + 1, LCount);
     end;
   end;
+  ReportWork(AProgress, 'analyze_audio', wuObservations, LCount, LCount);
   Result := LFeatures;
 end;
 
 function AnalyzeAudioSourceRange(const ASource: TAudioAnalysisSource;
-  const AOptions: TAnalysisOptions; const AFirstFeature, AFeatureCount: Integer): TAudioFeatures;
+  const AOptions: TAnalysisOptions; const AFirstFeature, AFeatureCount: Integer;
+  const AProgress: TWorkProgressCallback): TAudioFeatures;
 var
   LBands: TAudioBandSeriesArray;
 begin
   Result := AnalyzeAudioSourceRangeCore(ASource, AOptions, AFirstFeature,
-    AFeatureCount, nil, LBands);
+    AFeatureCount, nil, LBands, AProgress);
 end;
 
 function AnalyzeAudioSourceRangeBands(const ASource: TAudioAnalysisSource;
   const AOptions: TAnalysisOptions; const ABandEdges: TAnalysisBandEdges;
-  const AFirstFeature, AFeatureCount: Integer): TAudioBandAnalysis;
+  const AFirstFeature, AFeatureCount: Integer;
+  const AProgress: TWorkProgressCallback): TAudioBandAnalysis;
 var
   LIndex: Integer;
   LResult: TAudioBandAnalysis;
@@ -486,12 +499,13 @@ begin
   end;
   LResult := Default(TAudioBandAnalysis);
   LResult.Features := AnalyzeAudioSourceRangeCore(ASource, AOptions, AFirstFeature,
-    AFeatureCount, ABandEdges, LResult.Bands);
+    AFeatureCount, ABandEdges, LResult.Bands, AProgress);
   Result := LResult;
 end;
 
 function AnalyzeAudioBands(const AClip: TAudioClip; const AOptions: TAnalysisOptions;
-  const ABandEdges: TAnalysisBandEdges): TAudioBandAnalysis;
+  const ABandEdges: TAnalysisBandEdges;
+  const AProgress: TWorkProgressCallback): TAudioBandAnalysis;
 var
   LSource: TClipAnalysisSource;
   LCount: Integer;
@@ -500,14 +514,15 @@ begin
   LSource := TClipAnalysisSource.Create(AClip);
   try
     PlanAudioAnalysis(LSource.FrameCount, LSource.Channels, AOptions, LCount, LWork);
-    Result := AnalyzeAudioSourceRangeBands(LSource, AOptions, ABandEdges, 0, LCount);
+    Result := AnalyzeAudioSourceRangeBands(LSource, AOptions, ABandEdges, 0, LCount, AProgress);
   finally
     LSource.Free;
   end;
 end;
 
 function AnalyzeAudioSource(const ASource: TAudioAnalysisSource;
-  const AOptions: TAnalysisOptions): TAudioFeatures;
+  const AOptions: TAnalysisOptions;
+  const AProgress: TWorkProgressCallback): TAudioFeatures;
 var
   LCount: Integer;
   LWork: Int64;
@@ -517,17 +532,18 @@ begin
     raise EAudio.Create('Analysis source is required');
   end;
   PlanAudioAnalysis(ASource.FrameCount, ASource.Channels, AOptions, LCount, LWork);
-  Result := AnalyzeAudioSourceRange(ASource, AOptions, 0, LCount);
+  Result := AnalyzeAudioSourceRange(ASource, AOptions, 0, LCount, AProgress);
 end;
 
 function AnalyzeAudio(const AClip: TAudioClip;
-  const AOptions: TAnalysisOptions): TAudioFeatures;
+  const AOptions: TAnalysisOptions;
+  const AProgress: TWorkProgressCallback): TAudioFeatures;
 var
   LSource: TClipAnalysisSource;
 begin
   LSource := TClipAnalysisSource.Create(AClip);
   try
-    Result := AnalyzeAudioSource(LSource, AOptions);
+    Result := AnalyzeAudioSource(LSource, AOptions, AProgress);
   finally
     LSource.Free;
   end;

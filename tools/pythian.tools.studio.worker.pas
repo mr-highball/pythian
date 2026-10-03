@@ -29,12 +29,13 @@ unit pythian.tools.studio.worker;
 interface
 
 uses
-  fpjson;
+  fpjson, pythian.progress;
 
 type
   TStudioWorkerCheck = procedure of object;
   TStudioWorkerExtension = function(const ACatalogRoot, AJobId, ALibraryRoot: String;
-    const ARequest: TJSONObject; const ACheck: TStudioWorkerCheck): TJSONObject;
+    const ARequest: TJSONObject; const ACheck: TStudioWorkerCheck;
+    const AProgress: TWorkProgressCallback): TJSONObject;
 
 { One claimed job, no service/session/browser dependency. Exact production
   durations are 20..40 seconds; missing modes never fall back to inferred notes. }
@@ -94,6 +95,7 @@ type
   public
     constructor Create(const APath: String; const AWork: TStudioWork);
     function Read(var ABuffer; ACount: LongInt): LongInt; override;
+    procedure HashProgress(const AProgress: TWorkProgress);
     function HashWithProgress(const AStage: String): String;
   end;
 
@@ -152,7 +154,8 @@ type
     procedure FlushJournal;
     procedure Progress(const AStage: String; const ADone, ATotal: Int64;
       const AUnit: String = ''; const APass: Integer = 0);
-    procedure LearningProgress(const APass: Integer; const ADone, ATotal: Int64);
+    procedure LearningProgress(const AProgress: TWorkProgress);
+    procedure WorkProgress(const AProgress: TWorkProgress);
     procedure LibraryProgress(const AStage: String; const ADone, ATotal: Int64);
     procedure Preflight;
     procedure VerifySources(const AStage: String = 'verify_output_sources');
@@ -232,18 +235,20 @@ end;
 function TCheckedStream.Read(var ABuffer; ACount: LongInt): LongInt;
 begin
   FWork.Check;
-  if FHashStage <> '' then
-    FWork.Progress(FHashStage, Position, Size, 'bytes');
   Result := inherited Read(ABuffer, ACount);
+end;
+
+procedure TCheckedStream.HashProgress(const AProgress: TWorkProgress);
+begin
+  FWork.Progress(FHashStage, AProgress.Done, AProgress.Total, WorkUnitName(AProgress.Units));
 end;
 
 function TCheckedStream.HashWithProgress(const AStage: String): String;
 begin
   FHashStage := AStage;
   try
-    FWork.Progress(AStage, 0, Size, 'bytes');
-    Result := HashFile(Self);
-    FWork.Progress(AStage, Size, Size, 'bytes');
+    Position := 0;
+    Result := Sha256Stream(Self, Size, HashProgress);
   finally
     FHashStage := '';
   end;
@@ -371,10 +376,17 @@ begin
   FLastProgressTotal := ATotal;
 end;
 
-procedure TStudioWork.LearningProgress(const APass: Integer; const ADone, ATotal: Int64);
+procedure TStudioWork.LearningProgress(const AProgress: TWorkProgress);
 begin
-  if FFirstLearningPass = 0 then FFirstLearningPass := APass;
-  Progress(FLearningStage, ADone, ATotal, 'observations', APass - FFirstLearningPass + 1);
+  if FFirstLearningPass = 0 then FFirstLearningPass := AProgress.Pass;
+  Progress(FLearningStage, AProgress.Done, AProgress.Total, 'observations', AProgress.Pass - FFirstLearningPass + 1);
+end;
+
+procedure TStudioWork.WorkProgress(const AProgress: TWorkProgress);
+begin
+  if AProgress.Total = 0 then Progress(AProgress.Stage, 0, 0)
+  else Progress(AProgress.Stage, AProgress.Done, AProgress.Total,
+    WorkUnitName(AProgress.Units), AProgress.Pass);
 end;
 
 procedure TStudioWork.LibraryProgress(const AStage: String; const ADone, ATotal: Int64);
@@ -1248,7 +1260,7 @@ begin
     LStream := TCheckedStream.Create(IncludeTrailingPathDelimiter(FCatalogRoot) +
       'sources' + PathDelim + FRequest.Strings['source_sha256'] + '.wav', Self);
     try
-      Need(HashFile(LStream) = FRequest.Strings['source_sha256'], 'Inspection source hash differs');
+      Need(LStream.HashWithProgress('verify_audio_bytes') = FRequest.Strings['source_sha256'], 'Inspection source hash differs');
       LStream.Position := 0;
       LWave := TWaveFrameReader.Create(LStream);
       try
@@ -1271,6 +1283,8 @@ begin
             Inc(LMeasured);
           end;
           Inc(LPosition, LCount);
+          Progress('inspect_levels', LPosition - FRequest.Int64s['start_frame'],
+            LEnd - FRequest.Int64s['start_frame'], 'frames');
         end;
         Result := TJSONObject.Create;
         Result.Add('source_sha256', FRequest.Strings['source_sha256']);
@@ -1288,7 +1302,7 @@ begin
     try
       Check;
       LProposal := PublishCatalogBeatProposals(FCatalogRoot, FRequest.Strings['source_sha256'],
-        FRequest.Int64s['start_frame'], FRequest.Int64s['end_frame']);
+        FRequest.Int64s['start_frame'], FRequest.Int64s['end_frame'], WorkProgress);
       Result.Add('beat_proposal', LProposal);
       Result.Add('uncertainty', 'Unreviewed native pulse hypotheses; not admitted beat truth');
     except
@@ -1329,7 +1343,7 @@ begin
     (FRequest.Strings['kind'] <> 'stream_generate') then
   begin
     Need(Assigned(AExtension), 'Studio worker does not support this job kind');
-    Exit(AExtension(FCatalogRoot, FJobId, ALibraryRoot, FRequest, Check));
+    Exit(AExtension(FCatalogRoot, FJobId, ALibraryRoot, FRequest, Check, WorkProgress));
   end;
   Preflight;
   Train;

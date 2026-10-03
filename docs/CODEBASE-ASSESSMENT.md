@@ -2,6 +2,12 @@
 
 [Project](../PROJECT.md) · [Task catalog](TODO/README.md) · [Consumer contract](CONSUMER-CONTRACT.md)
 
+2026-10-03 [observability audit](OBSERVABILITY.md): shared callbacks now cover
+primary hash/analysis/resample/pitch/beat/learning paths and their Studio consumers.
+The 262-file inventory also records remaining import, offline DSP, retained-style
+and pas2js analysis gaps. Native parity and cancellation pass; this adds no
+musical acceptance or completion credit. The dated assessment below is retained.
+
 2026-09-30 accepted implementation update: the detached
 [caller intake API](../src/pythian.corpus.intake.pas), actual source-bound
 native admission/journal learner and [caller guide](CORPUS-INTAKE.md) pass all

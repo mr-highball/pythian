@@ -61,4 +61,4 @@ operator JSON/JSONL records. No musical or physical-phone verdict is inferred.
   adding optional parameters still changes a Pascal method-pointer type. A
   bounded bridge keeps the existing library callback and the shared job publisher.
 - The requested broader audit is owned by
-  [observability_01](../NS-6_observability_01.md). No extra credit. Nonclosing count: 0.
+  [observability_01 — DONE](NS-6_observability_01.md). No extra credit. Nonclosing count: 0.

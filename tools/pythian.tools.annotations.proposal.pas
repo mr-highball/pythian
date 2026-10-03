@@ -28,13 +28,14 @@ unit pythian.tools.annotations.proposal;
 
 interface
 
-uses
+uses pythian.progress,
   fpjson;
 
 { Native pulse hypotheses over one bounded source window. A packet is always
   unreviewed, even when its analysis has a strong periodic score. }
 function PublishCatalogBeatProposals(const ACatalogRoot, AHash: String;
-  const AStartFrame, AEndFrame: Int64): TJSONObject;
+  const AStartFrame, AEndFrame: Int64;
+  const AProgress: TWorkProgressCallback = nil): TJSONObject;
 function ReadCatalogBeatProposals(const ACatalogRoot, AHash: String;
   const AStartFrame, AEndFrame: Int64): TJSONObject;
 function CatalogProposalExists(const ACatalogRoot, AHash,
@@ -99,7 +100,8 @@ begin
 end;
 
 function BoundedSourceClip(const ACatalogRoot, AHash: String;
-  const ATrack: TJSONObject; const AStartFrame, AEndFrame: Int64): TAudioClip;
+  const ATrack: TJSONObject; const AStartFrame, AEndFrame: Int64;
+  const AProgress: TWorkProgressCallback): TAudioClip;
 var
   LPath: String;
   LStream: TFileStream;
@@ -131,6 +133,7 @@ begin
         'Proposal source geometry differs from catalog');
       SetLength(LSamples, Integer(LSpan) * LReader.Channels);
       LReader.SeekFrame(AStartFrame);
+      ReportWork(AProgress, 'read_audio', wuFrames, 0, LSpan);
       LRemaining := LSpan;
       LOffset := 0;
       while LRemaining > 0 do
@@ -146,6 +149,7 @@ begin
         Move(LBatch[0], LSamples[LOffset], Length(LBatch) * SizeOf(Single));
         Inc(LOffset, Length(LBatch));
         Dec(LRemaining, LCount);
+        ReportWork(AProgress, 'read_audio', wuFrames, LSpan - LRemaining, LSpan);
       end;
       Result := TAudioClip.Create(LReader.SampleRate, LReader.Channels, LSamples);
     finally
@@ -157,7 +161,8 @@ begin
 end;
 
 function GeneratePacket(const ACatalogRoot, AHash: String;
-  const AStartFrame, AEndFrame: Int64): TJSONObject;
+  const AStartFrame, AEndFrame: Int64;
+  const AProgress: TWorkProgressCallback): TJSONObject;
 var
   LTrack: TJSONObject;
   LClip: TAudioClip;
@@ -175,10 +180,10 @@ begin
   LTrack := ReadCatalogTrack(ACatalogRoot, AHash);
   try
     LClip := BoundedSourceClip(ACatalogRoot, AHash, LTrack,
-      AStartFrame, AEndFrame);
+      AStartFrame, AEndFrame, AProgress);
     try
       LOptions := DefaultBeatGridOptions;
-      LEvidence := MeasureWaveBeats(LClip, LOptions);
+      LEvidence := MeasureWaveBeats(LClip, LOptions, AProgress);
       Result := TJSONObject.Create;
       try
         Result.Add('version', 1);
@@ -355,7 +360,8 @@ begin
 end;
 
 function PublishCatalogBeatProposals(const ACatalogRoot, AHash: String;
-  const AStartFrame, AEndFrame: Int64): TJSONObject;
+  const AStartFrame, AEndFrame: Int64;
+  const AProgress: TWorkProgressCallback): TJSONObject;
 var
   LDirectory: String;
   LFinal: String;
@@ -365,7 +371,7 @@ var
   LStream: TFileStream;
   LExisting: TJSONObject;
 begin
-  Result := GeneratePacket(ACatalogRoot, AHash, AStartFrame, AEndFrame);
+  Result := GeneratePacket(ACatalogRoot, AHash, AStartFrame, AEndFrame, AProgress);
   try
     LDirectory := ProposalDirectory(ACatalogRoot, AHash);
     Need(ForceDirectories(LDirectory), 'Could not create proposal directory');

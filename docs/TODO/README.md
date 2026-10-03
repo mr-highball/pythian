@@ -6,7 +6,7 @@
 Accepted zero-credit usability repairs: [training choices and playback](DONE/NS-6_studio_19.md),
 [tabbed workflow and help](DONE/NS-6_studio_18.md).
 
-Updated 2026-10-03. **48 open / 52 accepted tasks.** The user authorized a new
+Updated 2026-10-03. **51 open / 53 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **52.45 current / 47.55 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -40,8 +40,8 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 50 | 70% | 1 | 30 | 4.50 |
 | [NS-5 — User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 15 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 12 | 46 | 4.60 |
-| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **48** | Goal points are not summed across goals | **47.55** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 15 | 46 | 4.60 |
+| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **51** | Goal points are not summed across goals | **47.55** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -50,8 +50,10 @@ hours or effort estimates. See the [basis and rationale](../REBALANCE-2026-09-29
 ## Selection and actual blockers
 
 Accepted [measured learning progress](DONE/NS-6_studio_20.md) adds no credit.
-Selected follow-through: [long-operation observability audit](NS-6_observability_01.md),
-Big Boss solo; no additional completion credit.
+Accepted follow-through: [long-operation observability audit](DONE/NS-6_observability_01.md),
+Big Boss solo; no additional completion credit. The [coverage map](../OBSERVABILITY.md)
+owns remaining import, offline DSP, retained-style and primary-analysis portability
+gaps. Next ready observability task: [catalog import](NS-6_observability_02.md).
 
 
 The operator requests in-app teaching for future public users.
@@ -220,7 +222,10 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 
 | Task / primary outcome | Goal points | Overall points | Current readiness |
 | --- | ---: | ---: | --- |
-| [NS-6_observability_01](NS-6_observability_01.md) — Audit long operations and extend shared callbacks | 0 | 0.00 | Selected; learning progress prerequisite accepted |
+| [NS-6_observability_02](NS-6_observability_02.md) — Catalog import checkpoints and cancellation | 0 | 0.00 | Ready; shared callback contract accepted |
+| [NS-6_observability_03](NS-6_observability_03.md) — Offline rendering and separation checkpoints | 0 | 0.00 | Ready; preserve primary render/output contracts |
+| [NS-6_observability_04](NS-6_observability_04.md) — Retained corpus/style operations and operator monitoring | 0 | 0.00 | Ready; bounded owned work, no demonstrated generic WFC gap |
+| [NS-6_portability_01](NS-6_portability_01.md) — Primary analysis callbacks in a pas2js consumer | 0 | 0.00 | Ready; reproduced native memory primitive blocker |
 | [NS-6_adoption_01](NS-6_adoption_01.md) — Establish independent ecosystem adoption evidence | 15 | 1.50 | Supported releases + independent ecosystem evidence |
 | [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 1 | 0.10 | Solo usability resumed; complete physical matrix remains open |
 | [NS-6_delivery_03](NS-6_delivery_03.md) — Package and verify the accepted final workflow | 1 | 0.10 | Dependencies, including Studio |
@@ -235,7 +240,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 
 ## Accepted tasks and retired work
 
-All 52 accepted tasks, including caller corpus intake, Studio source/effects/capture, the current minimal package
+All 53 accepted tasks, including caller corpus intake, Studio source/effects/capture, the current minimal package
 and the three NS-2 quality results, are listed in
 the [current DONE ledger](DONE/README.md). Their acceptance dates and detailed
 evidence remain in the unchanged task identities. Allocations now reflect the

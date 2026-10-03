@@ -30,6 +30,7 @@ unit pythian.analysis.wave;
 interface
 
 uses
+  pythian.progress,
   pythian.analysis,
   pythian.wave.read;
 
@@ -38,7 +39,8 @@ uses
   Existing analysis frame/work budgets apply. Reader position may advance;
   reader failures propagate. No clip or whole encoded-file buffer is created. }
 function AnalyzeWave(const AReader: TWaveFrameReader;
-  const AOptions: TAnalysisOptions): TAudioFeatures;
+  const AOptions: TAnalysisOptions;
+  const AProgress: TWorkProgressCallback = nil): TAudioFeatures;
 
 type
   TWaveFeatureBatch = record
@@ -60,7 +62,8 @@ type
   Caller owns source identity/options verification and durable checkpointing. }
 function AnalyzeWaveBatch(const AReader: TWaveFrameReader;
   const AOptions: TAnalysisOptions; const AFirstFeature: Int64;
-  const AMaximumFeatures: Integer = 1024): TWaveFeatureBatch;
+  const AMaximumFeatures: Integer = 1024;
+  const AProgress: TWorkProgressCallback = nil): TWaveFeatureBatch;
 
 { Same source coordinates, overlap/context and bounded resume behavior, with
   caller-selected spectral bands from the shared FFT pass. Band values align
@@ -68,7 +71,8 @@ function AnalyzeWaveBatch(const AReader: TWaveFrameReader;
   Band validation precedes source reads, including at EOF. }
 function AnalyzeWaveBandBatch(const AReader: TWaveFrameReader;
   const AOptions: TAnalysisOptions; const ABandEdges: TAnalysisBandEdges;
-  const AFirstFeature: Int64; const AMaximumFeatures: Integer = 1024): TWaveBandFeatureBatch;
+  const AFirstFeature: Int64; const AMaximumFeatures: Integer = 1024;
+  const AProgress: TWorkProgressCallback = nil): TWaveBandFeatureBatch;
 
 implementation
 
@@ -169,7 +173,8 @@ end;
 function AnalyzeWaveBatchCore(const AReader: TWaveFrameReader;
   const AOptions: TAnalysisOptions; const AFirstFeature: Int64;
   const AMaximumFeatures: Integer; const ABandEdges: TAnalysisBandEdges;
-  out ABands: TAudioBandSeriesArray): TWaveFeatureBatch;
+  out ABands: TAudioBandSeriesArray;
+  const AProgress: TWorkProgressCallback): TWaveFeatureBatch;
 var
   LSource: TWaveAnalysisSource;
   LBandResult: TAudioBandAnalysis;
@@ -209,12 +214,13 @@ begin
     begin
       LSource := TWaveAnalysisSource.CreateRange(AReader, AReader.FrameCount, 0);
       try
-        LBandResult := AnalyzeAudioSourceRangeBands(LSource, AOptions, ABandEdges, 0, 0);
+        LBandResult := AnalyzeAudioSourceRangeBands(LSource, AOptions, ABandEdges, 0, 0, AProgress);
         ABands := LBandResult.Bands;
       finally
         LSource.Free;
       end;
     end;
+    if Length(ABandEdges) = 0 then ReportWork(AProgress, 'analyze_audio', wuObservations, 0, 0);
     Exit;
   end;
   Result.SourceStartFrame := AFirstFeature * AOptions.HopFrames;
@@ -232,13 +238,13 @@ begin
     if Length(ABandEdges) > 0 then
     begin
       LBandResult := AnalyzeAudioSourceRangeBands(LSource, AOptions, ABandEdges,
-        LContext, LCount);
+        LContext, LCount, AProgress);
       Result.Features := LBandResult.Features;
       ABands := LBandResult.Bands;
     end
     else
     begin
-      Result.Features := AnalyzeAudioSourceRange(LSource, AOptions, LContext, LCount);
+      Result.Features := AnalyzeAudioSourceRange(LSource, AOptions, LContext, LCount, AProgress);
     end;
   finally
     LSource.Free;
@@ -253,16 +259,18 @@ end;
 
 function AnalyzeWaveBatch(const AReader: TWaveFrameReader;
   const AOptions: TAnalysisOptions; const AFirstFeature: Int64;
-  const AMaximumFeatures: Integer): TWaveFeatureBatch;
+  const AMaximumFeatures: Integer;
+  const AProgress: TWorkProgressCallback): TWaveFeatureBatch;
 var
   LBands: TAudioBandSeriesArray;
 begin
-  Result := AnalyzeWaveBatchCore(AReader, AOptions, AFirstFeature, AMaximumFeatures, nil, LBands);
+  Result := AnalyzeWaveBatchCore(AReader, AOptions, AFirstFeature, AMaximumFeatures, nil, LBands, AProgress);
 end;
 
 function AnalyzeWaveBandBatch(const AReader: TWaveFrameReader;
   const AOptions: TAnalysisOptions; const ABandEdges: TAnalysisBandEdges;
-  const AFirstFeature: Int64; const AMaximumFeatures: Integer): TWaveBandFeatureBatch;
+  const AFirstFeature: Int64; const AMaximumFeatures: Integer;
+  const AProgress: TWorkProgressCallback): TWaveBandFeatureBatch;
 var
   LResult: TWaveBandFeatureBatch;
 begin
@@ -272,18 +280,19 @@ begin
   end;
   LResult := Default(TWaveBandFeatureBatch);
   LResult.Batch := AnalyzeWaveBatchCore(AReader, AOptions, AFirstFeature,
-    AMaximumFeatures, ABandEdges, LResult.Bands);
+    AMaximumFeatures, ABandEdges, LResult.Bands, AProgress);
   Result := LResult;
 end;
 
 function AnalyzeWave(const AReader: TWaveFrameReader;
-  const AOptions: TAnalysisOptions): TAudioFeatures;
+  const AOptions: TAnalysisOptions;
+  const AProgress: TWorkProgressCallback): TAudioFeatures;
 var
   LSource: TWaveAnalysisSource;
 begin
   LSource := TWaveAnalysisSource.Create(AReader);
   try
-    Result := AnalyzeAudioSource(LSource, AOptions);
+    Result := AnalyzeAudioSource(LSource, AOptions, AProgress);
   finally
     LSource.Free;
   end;

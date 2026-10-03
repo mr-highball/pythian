@@ -28,7 +28,7 @@ unit pythian.onset;
 
 interface
 
-uses
+uses pythian.progress,
   pythian.audio,
   pythian.analysis,
   pythian.activity;
@@ -146,7 +146,8 @@ function LocateEnergyFallWindow(const AClip: TAudioClip;
   Features must describe this clip; byte/source identity remains caller-owned. }
 function LocalizeAcousticOnsets(const AClip: TAudioClip; const AFeatures: TAudioFeatures;
   const AAnalysis: TAnalysisOptions; const AActivity: TActivityOptions;
-  const AOptions: TOnsetLocationOptions): TOnsetLocations;
+  const AOptions: TOnsetLocationOptions;
+  const AProgress: TWorkProgressCallback = nil): TOnsetLocations;
 
 implementation
 
@@ -473,7 +474,8 @@ end;
 
 function LocalizeAcousticOnsets(const AClip: TAudioClip; const AFeatures: TAudioFeatures;
   const AAnalysis: TAnalysisOptions; const AActivity: TActivityOptions;
-  const AOptions: TOnsetLocationOptions): TOnsetLocations;
+  const AOptions: TOnsetLocationOptions;
+  const AProgress: TWorkProgressCallback): TOnsetLocations;
 var
   LActivity: TAcousticActivity;
   LCandidate: TOnsetLocations;
@@ -505,6 +507,7 @@ begin
   LCandidate := nil;
   SetLength(LCandidate, LCount);
   LOutput := 0;
+  ReportWork(AProgress, 'locate_onsets', wuItems, 0, LCount);
   for LIndex := 0 to High(LActivity.Actions) do
   begin
     if LActivity.Actions[LIndex] = aaOnset then
@@ -513,8 +516,11 @@ begin
         AFeatures[LIndex].ValidFrames, AOptions);
       LCandidate[LOutput].FeatureIndex := LIndex;
       Inc(LOutput);
+      if (LOutput < LCount) and (LOutput mod 8 = 0) then
+        ReportWork(AProgress, 'locate_onsets', wuItems, LOutput, LCount);
     end;
   end;
+  ReportWork(AProgress, 'locate_onsets', wuItems, LCount, LCount);
   Result := LCandidate;
 end;
 

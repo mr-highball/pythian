@@ -28,7 +28,7 @@ unit pythian.beat.wave;
 
 interface
 
-uses
+uses pythian.progress,
   pythian.audio,
   pythian.analysis,
   pythian.activity,
@@ -52,7 +52,8 @@ type
   and admission decision. Source bytes/identity and candidate selection belong
   to the caller. No meter, downbeat or automatic confidence admission. }
 function MeasureWaveBeats(const AClip: TAudioClip;
-  const AOptions: TBeatGridOptions): TWaveBeatEvidence;
+  const AOptions: TBeatGridOptions;
+  const AProgress: TWorkProgressCallback = nil): TWaveBeatEvidence;
 
 implementation
 
@@ -60,7 +61,8 @@ uses
   Math;
 
 function MeasureWaveBeats(const AClip: TAudioClip;
-  const AOptions: TBeatGridOptions): TWaveBeatEvidence;
+  const AOptions: TBeatGridOptions;
+  const AProgress: TWorkProgressCallback): TWaveBeatEvidence;
 var
   LResult: TWaveBeatEvidence;
   LFeatures: TAudioFeatures;
@@ -73,14 +75,14 @@ begin
     raise EAudio.Create('Beat measurement requires a WAV clip');
   end;
   LResult := Default(TWaveBeatEvidence);
-  LResult.Grid := EstimateBeatGrids(nil, AClip.SampleRate, AClip.FrameCount, AOptions);
+  LResult.Grid := EstimateBeatGrids(nil, AClip.SampleRate, AClip.FrameCount, AOptions, AProgress);
   LResult.AnalysisOptions := DefaultOnsetAnalysisOptions(AClip.SampleRate);
   LResult.ActivityOptions := DefaultActivityOptions;
   LResult.LocationOptions := DefaultOnsetLocationOptions(AClip.SampleRate);
   LResult.EventOptions := DefaultOnsetEventOptions(AClip.SampleRate);
-  LFeatures := AnalyzeAudio(AClip, LResult.AnalysisOptions);
+  LFeatures := AnalyzeAudio(AClip, LResult.AnalysisOptions, AProgress);
   LResult.Locations := LocalizeAcousticOnsets(AClip, LFeatures, LResult.AnalysisOptions,
-    LResult.ActivityOptions, LResult.LocationOptions);
+    LResult.ActivityOptions, LResult.LocationOptions, AProgress);
   LResult.Events := PlanOnsetEvents(LResult.Locations, AClip.FrameCount, LResult.EventOptions);
   SetLength(LResult.Observations, Length(LResult.Events.Bounds) - 2);
   LPeak := 0;
@@ -99,7 +101,7 @@ begin
     end;
   end;
   LResult.Grid := EstimateBeatGrids(LResult.Observations,
-    AClip.SampleRate, AClip.FrameCount, AOptions);
+    AClip.SampleRate, AClip.FrameCount, AOptions, AProgress);
   Result := LResult;
 end;
 

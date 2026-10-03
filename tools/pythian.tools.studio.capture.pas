@@ -28,7 +28,7 @@ unit pythian.tools.studio.capture;
 
 interface
 
-uses Classes, fpjson, pythian.tools.studio.effects;
+uses pythian.progress, Classes, fpjson, pythian.tools.studio.effects;
 
 const
   MaximumStudioUploadBytes = 134217728;
@@ -40,9 +40,11 @@ function ReadStudioCapture(const ACatalogRoot, ACaptureId: String): TJSONObject;
 function ListStudioCaptures(const ACatalogRoot: String): TJSONObject;
 function DiscardStudioCapture(const ACatalogRoot, ACaptureId: String): TJSONObject;
 function InspectStudioCapture(const ACatalogRoot, ACaptureId: String;
-  const ACheck: TStudioEffectCheck = nil): TJSONObject;
+  const ACheck: TStudioEffectCheck = nil;
+  const AProgress: TWorkProgressCallback = nil): TJSONObject;
 function SaveStudioCapture(const ACatalogRoot, AJobId, ALibraryRoot: String;
-  const AWrite: TJSONObject; const ACheck: TStudioEffectCheck = nil): TJSONObject;
+  const AWrite: TJSONObject; const ACheck: TStudioEffectCheck = nil;
+  const AProgress: TWorkProgressCallback = nil): TJSONObject;
 function OpenStudioCapture(const ACatalogRoot, ACaptureId: String;
   out AHash, APath: String): TFileStream;
 
@@ -271,7 +273,8 @@ begin
 end;
 
 function InspectStudioCapture(const ACatalogRoot, ACaptureId: String;
-  const ACheck: TStudioEffectCheck): TJSONObject;
+  const ACheck: TStudioEffectCheck;
+  const AProgress: TWorkProgressCallback): TJSONObject;
 var
   LRoot: String;
   LTemporary: String;
@@ -307,7 +310,7 @@ begin
     end;
     LStream := TFileStream.Create(LRoot + PathDelim + 'incoming' + PathDelim + 'input.wav',
       fmOpenRead or fmShareDenyWrite);
-    LHash := Sha256Stream(LStream, LStream.Size);
+    LHash := Sha256Stream(LStream, LStream.Size, AProgress);
     LStream.Position := 0;
     LWave := TWaveFrameReader.Create(LStream);
     Need((LWave.FrameCount > 0) and (LWave.SampleRate >= 8000) and
@@ -323,6 +326,7 @@ begin
       begin
         ACheck;
       end;
+      ReportWork(AProgress, 'inspect_levels', wuFrames, LWave.FramePosition, LEnd);
       LSamples := LWave.ReadFrames(Integer(Min(Int64(4096), LEnd - LWave.FramePosition)));
       for LSample in LSamples do
       begin
@@ -337,6 +341,7 @@ begin
     begin
       WriteStudioJSONNew(LRoot + PathDelim + 'incoming' + PathDelim + 'manifest.json', LManifest);
     end;
+    ReportWork(AProgress, 'import_audio', wuItems, 0, 0);
     LReport := ImportLabelInbox(LRoot + PathDelim + 'incoming', LTemporary);
     Need(LReport.Integers['failed'] = 0, 'Temporary WAV validation failed');
     FreeAndNil(LReport);
@@ -357,7 +362,7 @@ begin
       begin
         ACheck;
       end;
-      Result.Add('beat_proposal', PublishCatalogBeatProposals(LTemporary, LHash, 0, LEnd));
+      Result.Add('beat_proposal', PublishCatalogBeatProposals(LTemporary, LHash, 0, LEnd, AProgress));
       Result.Add('uncertainty', 'Unreviewed pulse hypotheses; no beat or note truth is admitted');
       Result.Add('midi_available', False);
       Result.Add('pitch_preview_available', True);
@@ -402,7 +407,8 @@ begin
 end;
 
 function SaveStudioCapture(const ACatalogRoot, AJobId, ALibraryRoot: String;
-  const AWrite: TJSONObject; const ACheck: TStudioEffectCheck): TJSONObject;
+  const AWrite: TJSONObject; const ACheck: TStudioEffectCheck;
+  const AProgress: TWorkProgressCallback): TJSONObject;
 var
   LInput: TFileStream;
   LOutput: TFileStream;
@@ -431,7 +437,7 @@ begin
       ACheck;
     end;
     LInput := OpenStudioCapture(ACatalogRoot, AWrite.Strings['capture_id'], LHash, LPath);
-    Need(Sha256Stream(LInput, LInput.Size) = LHash, 'Temporary audio content changed');
+    Need(Sha256Stream(LInput, LInput.Size, AProgress) = LHash, 'Temporary audio content changed');
     LExists := FileExists(IncludeTrailingPathDelimiter(ACatalogRoot) + 'tracks' + PathDelim + LHash + '.json');
     if not LExists then
     begin
@@ -448,6 +454,7 @@ begin
         if LCount > 0 then
         begin
           LOutput.WriteBuffer(LBuffer, LCount);
+          ReportWork(AProgress, 'copy_audio', wuBytes, LOutput.Size, LInput.Size);
         end;
       until LCount = 0;
       Need(LOutput.Size = LInput.Size, 'Short capture save');
@@ -456,6 +463,7 @@ begin
       LManifest := Manifest(LHash, AWrite.Strings['title'], LReport.Strings['origin'], nil);
       FreeAndNil(LReport);
       WriteStudioJSONNew(LStage + PathDelim + 'manifest.json', LManifest);
+      ReportWork(AProgress, 'import_audio', wuItems, 0, 0);
       LReport := ImportLabelInbox(LStage, ACatalogRoot);
       Need(LReport.Integers['failed'] = 0, 'Verified capture could not join catalog');
       FreeAndNil(LReport);
@@ -479,19 +487,20 @@ begin
         if LCount > 0 then
         begin
           LOutput.WriteBuffer(LBuffer, LCount);
+          ReportWork(AProgress, 'copy_audio', wuBytes, LOutput.Size, LInput.Size);
         end;
       until LCount = 0;
       Need((LOutput.Size = LInput.Size) and FileFlush(LOutput.Handle), 'Could not finish collection audio');
       FreeAndNil(LOutput);
       LOutput := TFileStream.Create(LFinal + '.partial', fmOpenRead or fmShareDenyWrite);
-      Need(Sha256Stream(LOutput, LOutput.Size) = LHash, 'Collection copy hash differs');
+      Need(Sha256Stream(LOutput, LOutput.Size, AProgress) = LHash, 'Collection copy hash differs');
       FreeAndNil(LOutput);
       Need(RenameFile(LFinal + '.partial', LFinal), 'Could not publish collection audio');
     end
     else
     begin
       LOutput := TFileStream.Create(LFinal, fmOpenRead or fmShareDenyWrite);
-      Need(Sha256Stream(LOutput, LOutput.Size) = LHash, 'Existing collection audio differs');
+      Need(Sha256Stream(LOutput, LOutput.Size, AProgress) = LHash, 'Existing collection audio differs');
       FreeAndNil(LOutput);
     end;
     FreeAndNil(LInput);

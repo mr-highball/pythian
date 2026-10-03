@@ -146,6 +146,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Hash compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.hash$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Hash checks failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.progress.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Progress compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.progress$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Progress parity and cancellation checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.chord.stream.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Chord stream compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.chord.stream$executableSuffix")

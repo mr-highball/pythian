@@ -30,6 +30,7 @@ unit pythian.learning.journal;
 interface
 
 uses
+  pythian.progress,
   pythian.analysis,
   pythian.analysis.wave,
   pythian.analysis.journal,
@@ -43,8 +44,7 @@ type
     the next read (every 128 observations, plus start/end). Rewind starts a new
     pass. Raising aborts and poisons the reader; callbacks must not re-enter it.
     A completed pass is not a claim that its caller's algorithm has finished. }
-  TJournalTrainingProgress = procedure(const APass: Integer;
-    const ADone, ATotal: Int64) of object;
+  TJournalTrainingProgress = TWorkProgressCallback;
 
   TJournalTrainingSegment = record
     Journal: TFeatureJournal;
@@ -499,7 +499,7 @@ begin
     if Assigned(FProgress) and (FConsumed <> FReported) and
       ((FConsumed mod 128 = 0) or (FConsumed = FObservations)) then
     begin
-      FProgress(FPass, FConsumed, FObservations);
+      ReportWork(FProgress, 'read_training', wuObservations, FConsumed, FObservations, FPass);
       FReported := FConsumed;
     end;
     if FSegment >= Length(FSegments) then

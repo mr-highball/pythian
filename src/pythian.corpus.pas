@@ -28,7 +28,7 @@ unit pythian.corpus;
 
 interface
 
-uses
+uses pythian.progress,
   pythian.audio,
   pythian.analysis,
   pythian.learning,
@@ -69,7 +69,8 @@ type
     function GetPaletteCount: Integer;
   public
     constructor Create(const AOptions: TAnalysisOptions;
-      const ACenters: TAcousticVectors; const ARecordings: TAcousticRecordings);
+      const ACenters: TAcousticVectors; const ARecordings: TAcousticRecordings;
+      const AProgress: TWorkProgressCallback = nil);
     destructor Destroy; override;
     function CopyPalette: TAcousticPalette;
     function SourceInfoAt(const AIndex: Integer): TAcousticSourceInfo;
@@ -85,7 +86,8 @@ procedure ValidateCorpusText(const AText: UTF8String);
 procedure ValidateSourceInfo(const AInfo: TAcousticSourceInfo);
 function TrainAcousticCorpus(const ASources: TAudioSources;
   const AInfo: TAcousticSourceInfos; const AOptions: TAnalysisOptions;
-  const AMaximumTokens: Integer = 16): TAcousticCorpusData;
+  const AMaximumTokens: Integer = 16;
+      const AProgress: TWorkProgressCallback = nil): TAcousticCorpusData;
 
 implementation
 
@@ -156,7 +158,8 @@ begin
 end;
 
 constructor TAcousticCorpusData.Create(const AOptions: TAnalysisOptions;
-  const ACenters: TAcousticVectors; const ARecordings: TAcousticRecordings);
+  const ACenters: TAcousticVectors; const ARecordings: TAcousticRecordings;
+      const AProgress: TWorkProgressCallback);
 var
   LIndex: Integer;
   LFrame: Integer;
@@ -214,7 +217,7 @@ begin
   LOffset := 0;
   for LIndex := 0 to High(ARecordings) do
   begin
-    LTokens := FPalette.Encode(ARecordings[LIndex].Features);
+    LTokens := FPalette.Encode(ARecordings[LIndex].Features, AProgress);
     FRecordings[LIndex].Info := ARecordings[LIndex].Info;
     FRecordings[LIndex].Features := Copy(ARecordings[LIndex].Features);
     FRecordings[LIndex].Tokens := Copy(ARecordings[LIndex].Tokens);
@@ -328,7 +331,8 @@ end;
 
 function TrainAcousticCorpus(const ASources: TAudioSources;
   const AInfo: TAcousticSourceInfos; const AOptions: TAnalysisOptions;
-  const AMaximumTokens: Integer): TAcousticCorpusData;
+  const AMaximumTokens: Integer;
+      const AProgress: TWorkProgressCallback): TAcousticCorpusData;
 var
   LRecordings: TAcousticRecordings;
   LFlat: TAudioFeatures;
@@ -387,20 +391,20 @@ begin
   for LIndex := 0 to High(ASources) do
   begin
     LRecordings[LIndex].Info := AInfo[LIndex];
-    LRecordings[LIndex].Features := AnalyzeAudio(ASources[LIndex], AOptions);
+    LRecordings[LIndex].Features := AnalyzeAudio(ASources[LIndex], AOptions, AProgress);
     for LFrame := 0 to High(LRecordings[LIndex].Features) do
     begin
       LFlat[LOffset + LFrame] := LRecordings[LIndex].Features[LFrame];
     end;
     Inc(LOffset, Length(LRecordings[LIndex].Features));
   end;
-  LPalette := TAcousticPalette.Create(LFlat, AMaximumTokens);
+  LPalette := TAcousticPalette.Create(LFlat, AMaximumTokens, AProgress);
   try
     for LIndex := 0 to High(LRecordings) do
     begin
-      LRecordings[LIndex].Tokens := LPalette.Encode(LRecordings[LIndex].Features);
+      LRecordings[LIndex].Tokens := LPalette.Encode(LRecordings[LIndex].Features, AProgress);
     end;
-    Result := TAcousticCorpusData.Create(AOptions, LPalette.CopyCenters, LRecordings);
+    Result := TAcousticCorpusData.Create(AOptions, LPalette.CopyCenters, LRecordings, AProgress);
   finally
     LPalette.Free;
   end;

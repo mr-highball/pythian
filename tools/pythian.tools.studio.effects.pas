@@ -28,7 +28,7 @@ unit pythian.tools.studio.effects;
 
 interface
 
-uses Classes, fpjson;
+uses pythian.progress, Classes, fpjson;
 
 type
   TStudioEffectCheck = procedure of object;
@@ -39,9 +39,11 @@ type
 procedure ValidateStudioEffectRequest(const ARequest: TJSONObject);
 procedure ValidateStudioCollectionName(const AName: String);
 function RenderStudioEffectPreview(const ACatalogRoot, AJobId: String;
-  const ARequest: TJSONObject; const ACheck: TStudioEffectCheck = nil): TJSONObject;
+  const ARequest: TJSONObject; const ACheck: TStudioEffectCheck = nil;
+  const AProgress: TWorkProgressCallback = nil): TJSONObject;
 function SaveStudioEffectPreview(const ACatalogRoot, AJobId, ALibraryRoot: String;
-  const ARequest: TJSONObject; const ACheck: TStudioEffectCheck = nil): TJSONObject;
+  const ARequest: TJSONObject; const ACheck: TStudioEffectCheck = nil;
+  const AProgress: TWorkProgressCallback = nil): TJSONObject;
 function OpenStudioEffectPreview(const ACatalogRoot, AJobId: String;
   out AHash: String): TFileStream;
 
@@ -235,7 +237,8 @@ begin
 end;
 
 function RenderStudioEffectPreview(const ACatalogRoot, AJobId: String;
-  const ARequest: TJSONObject; const ACheck: TStudioEffectCheck): TJSONObject;
+  const ARequest: TJSONObject; const ACheck: TStudioEffectCheck;
+  const AProgress: TWorkProgressCallback): TJSONObject;
 var
   LInput: TFileStream;
   LOutput: TFileStream;
@@ -279,7 +282,7 @@ begin
   try
     if Assigned(ACheck) then ACheck;
     LInput := OpenStudioSourceAudio(ACatalogRoot, ARequest.Strings['source_sha256']);
-    Need(Sha256Stream(LInput, LInput.Size) = ARequest.Strings['source_sha256'],
+    Need(Sha256Stream(LInput, LInput.Size, AProgress) = ARequest.Strings['source_sha256'],
       'Effect source hash changed');
     if Assigned(ACheck) then ACheck;
     LInput.Position := 0;
@@ -320,6 +323,7 @@ begin
     LInputRemaining := LFrames;
     LClipped := 0;
     LPeak := 0;
+    ReportWork(AProgress, 'render_effects', wuFrames, 0, LRemaining);
     while LRemaining > 0 do
     begin
       if Assigned(ACheck) then ACheck;
@@ -360,6 +364,7 @@ begin
       end;
       LWriter.AppendSamples(LRendered);
       Dec(LRemaining, LCount);
+      ReportWork(AProgress, 'render_effects', wuFrames, LFrames + LTailFrames - LRemaining, LFrames + LTailFrames);
       LInputRemaining := Max(Int64(0), LInputRemaining - LCount);
     end;
     LWriter.Finish;
@@ -370,7 +375,7 @@ begin
     if Assigned(ACheck) then ACheck;
     LOutput := TFileStream.Create(LPath + '.partial', fmOpenRead or fmShareDenyWrite);
     LBytes := LOutput.Size;
-    LHash := Sha256Stream(LOutput, LBytes);
+    LHash := Sha256Stream(LOutput, LBytes, AProgress);
     FreeAndNil(LOutput);
     Need(RenameFile(LPath + '.partial', LPath), 'Could not publish effect preview');
     Result := TJSONObject.Create;
@@ -421,7 +426,8 @@ begin
 end;
 
 function SaveStudioEffectPreview(const ACatalogRoot, AJobId, ALibraryRoot: String;
-  const ARequest: TJSONObject; const ACheck: TStudioEffectCheck): TJSONObject;
+  const ARequest: TJSONObject; const ACheck: TStudioEffectCheck;
+  const AProgress: TWorkProgressCallback): TJSONObject;
 var
   LPreview: TJSONObject;
   LPreviewResult: TJSONObject;
@@ -495,6 +501,7 @@ begin
       if LRead > 0 then
       begin
         LOutput.WriteBuffer(LBuffer, LRead);
+        ReportWork(AProgress, 'copy_audio', wuBytes, LOutput.Size, LBytes);
       end;
     until LRead = 0;
     Need(LOutput.Size = LBytes, 'Short effect preview copy');
@@ -546,6 +553,7 @@ begin
     begin
       ACheck;
     end;
+    ReportWork(AProgress, 'import_audio', wuItems, 0, 0);
     LReport := ImportLabelInbox(LStage, ACatalogRoot);
     Need(LReport.Integers['failed'] = 0, 'Effect source import failed; verified preview remains available');
     FreeAndNil(LReport);
@@ -572,6 +580,7 @@ begin
         if LRead > 0 then
         begin
           LOutput.WriteBuffer(LBuffer, LRead);
+        ReportWork(AProgress, 'copy_audio', wuBytes, LOutput.Size, LBytes);
         end;
       until LRead = 0;
       Need(LOutput.Size = LBytes, 'Short derived collection copy');
@@ -579,7 +588,7 @@ begin
       FreeAndNil(LOutput);
       FreeAndNil(LInput);
       LInput := TFileStream.Create(LFinal + '.partial', fmOpenRead or fmShareDenyWrite);
-      Need((LInput.Size = LBytes) and (Sha256Stream(LInput, LInput.Size) = LHash),
+      Need((LInput.Size = LBytes) and (Sha256Stream(LInput, LInput.Size, AProgress) = LHash),
         'Derived collection copy differs from its verified preview');
       FreeAndNil(LInput);
       Need(RenameFile(LFinal + '.partial', LFinal), 'Could not publish derived collection clip');

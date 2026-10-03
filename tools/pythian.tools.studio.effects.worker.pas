@@ -28,10 +28,11 @@ unit pythian.tools.studio.effects.worker;
 
 interface
 
-uses fpjson, pythian.tools.studio.worker;
+uses pythian.progress, fpjson, pythian.tools.studio.worker;
 
 function RunStudioEffectJob(const ACatalogRoot, AJobId, ALibraryRoot: String;
-  const ARequest: TJSONObject; const ACheck: TStudioWorkerCheck): TJSONObject;
+  const ARequest: TJSONObject; const ACheck: TStudioWorkerCheck;
+  const AProgress: TWorkProgressCallback): TJSONObject;
 
 implementation
 
@@ -39,36 +40,37 @@ uses pythian.audio, pythian.tools.studio.jobs, pythian.tools.studio.effects,
   pythian.tools.studio.capture, pythian.tools.studio.pitch;
 
 function RunStudioEffectJob(const ACatalogRoot, AJobId, ALibraryRoot: String;
-  const ARequest: TJSONObject; const ACheck: TStudioWorkerCheck): TJSONObject;
+  const ARequest: TJSONObject; const ACheck: TStudioWorkerCheck;
+  const AProgress: TWorkProgressCallback): TJSONObject;
 begin
   if ARequest.Strings['kind'] = 'capture_pitch' then
   begin
     AdvanceStudioJob(ACatalogRoot, AJobId, 'running', 'preview_pitch', 0, 0);
-    Exit(PreviewStudioPitch(ACatalogRoot, AJobId, ARequest, TStudioEffectCheck(ACheck)));
+    Exit(PreviewStudioPitch(ACatalogRoot, AJobId, ARequest, TStudioEffectCheck(ACheck), AProgress));
   end;
   if ARequest.Strings['kind'] = 'capture_inspect' then
   begin
     AdvanceStudioJob(ACatalogRoot, AJobId, 'running', 'inspect_temporary_audio', 0, 0);
     Exit(InspectStudioCapture(ACatalogRoot, ARequest.Strings['capture_id'],
-      TStudioEffectCheck(ACheck)));
+      TStudioEffectCheck(ACheck), AProgress));
   end;
   if ARequest.Strings['kind'] = 'capture_save' then
   begin
     AdvanceStudioJob(ACatalogRoot, AJobId, 'running', 'save_capture', 0, 0);
     Exit(SaveStudioCapture(ACatalogRoot, AJobId, ALibraryRoot, ARequest,
-      TStudioEffectCheck(ACheck)));
+      TStudioEffectCheck(ACheck), AProgress));
   end;
   ValidateStudioEffectRequest(ARequest);
   if ARequest.Strings['kind'] = 'effect_preview' then
   begin
     AdvanceStudioJob(ACatalogRoot, AJobId, 'running', 'render_effects', 0, 0);
-    Result := RenderStudioEffectPreview(ACatalogRoot, AJobId, ARequest, TStudioEffectCheck(ACheck));
+    Result := RenderStudioEffectPreview(ACatalogRoot, AJobId, ARequest, TStudioEffectCheck(ACheck), AProgress);
   end
   else if ARequest.Strings['kind'] = 'effect_save' then
   begin
     AdvanceStudioJob(ACatalogRoot, AJobId, 'running', 'save_derived_clip', 0, 0);
     Result := SaveStudioEffectPreview(ACatalogRoot, AJobId, ALibraryRoot, ARequest,
-      TStudioEffectCheck(ACheck));
+      TStudioEffectCheck(ACheck), AProgress);
   end
   else
   begin

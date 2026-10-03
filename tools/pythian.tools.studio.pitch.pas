@@ -28,10 +28,11 @@ unit pythian.tools.studio.pitch;
 
 interface
 
-uses Classes, fpjson, pythian.tools.studio.effects;
+uses pythian.progress, Classes, fpjson, pythian.tools.studio.effects;
 
 function PreviewStudioPitch(const ACatalogRoot, AJobId: String;
-  const ARequest: TJSONObject; const ACheck: TStudioEffectCheck = nil): TJSONObject;
+  const ARequest: TJSONObject; const ACheck: TStudioEffectCheck = nil;
+  const AProgress: TWorkProgressCallback = nil): TJSONObject;
 function OpenStudioPitchArtifact(const ACatalogRoot, AJobId, AKind: String;
   out AHash: String): TFileStream;
 function SaveStudioExplorationFeedback(const ACatalogRoot: String;
@@ -67,7 +68,8 @@ begin
 end;
 
 function PreviewStudioPitch(const ACatalogRoot, AJobId: String;
-  const ARequest: TJSONObject; const ACheck: TStudioEffectCheck): TJSONObject;
+  const ARequest: TJSONObject; const ACheck: TStudioEffectCheck;
+  const AProgress: TWorkProgressCallback): TJSONObject;
 var
   LStream: TFileStream;
   LOutput: TFileStream;
@@ -121,7 +123,7 @@ begin
       ACheck;
     end;
     LStream := OpenStudioCapture(ACatalogRoot, ARequest.Strings['capture_id'], LHash, LSourcePath);
-    Need(Sha256Stream(LStream, LStream.Size) = LHash, 'Pitch source content changed');
+    Need(Sha256Stream(LStream, LStream.Size, AProgress) = LHash, 'Pitch source content changed');
     LStream.Position := 0;
     LWave := TWaveFrameReader.Create(LStream);
     Need(LChannel < LWave.Channels, 'This recording does not have that channel');
@@ -142,15 +144,16 @@ begin
         LMono[LPosition + LIndex] := LSamples[LIndex * LWave.Channels + LChannel];
       end;
       Inc(LPosition, LCount);
+      ReportWork(AProgress, 'read_audio', wuFrames, LPosition, LFrames);
     end;
     LOriginal := TAudioClip.Create(LWave.SampleRate, 1, LMono);
-    LAnalysis := ResampleClip(LOriginal, 8000);
+    LAnalysis := ResampleClip(LOriginal, 8000, AProgress);
     if Assigned(ACheck) then
     begin
       ACheck;
     end;
     LOptions := DefaultPitchTrackOptions(8000);
-    LTrack := TPitchTrack.Create(LAnalysis, 0, LOptions);
+    LTrack := TPitchTrack.Create(LAnalysis, 0, LOptions, 0, AProgress);
     LTempo := Round(60000000 / LTempo);
     LLengthTicks := Ceil(LAnalysis.FrameCount * 1000000.0 * 480 / (8000.0 * LTempo)) + 1;
     LClock := TTempoMap.Create(480, LLengthTicks, [MakeTempoChange(0, LTempo)]);
@@ -241,6 +244,7 @@ begin
         LVoice.Gain := 0.2;
         LVoice.Envelope.AttackSeconds := 0.005;
         LVoice.Envelope.ReleaseSeconds := 0.015;
+        ReportWork(AProgress, 'render_note_preview', wuItems, 0, 0);
         LPreview := RenderNoteSequence(LSequence, 22050, LVoice, LRenderReport);
         LOutput := TFileStream.Create(LPath + PathDelim + 'notes.wav', fmCreate or fmShareExclusive);
         WriteWavePcm16(LOutput, LPreview);

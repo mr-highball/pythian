@@ -28,7 +28,7 @@ unit pythian.beat;
 
 interface
 
-uses
+uses pythian.progress,
   pythian.audio;
 
 const
@@ -102,7 +102,8 @@ function BeatGridFitWork(const AObservationCount, ATrialCount: Integer): Int64;
   descending score. Invalid admission preserves an assigned result. }
 function EstimateBeatGrids(const AObservations: TBeatObservations;
   const ASampleRate, ASourceFrames: Integer;
-  const AOptions: TBeatGridOptions): TBeatGridAnalysis;
+  const AOptions: TBeatGridOptions;
+  const AProgress: TWorkProgressCallback = nil): TBeatGridAnalysis;
 
 { Optional bounded diagnostic from the same native fitter. Positive trial
   scores are fitted proposals; PeakEligible records the local tempo-peak gate
@@ -114,7 +115,8 @@ function EstimateBeatGrids(const AObservations: TBeatObservations;
 function InspectBeatGridCandidates(const AObservations: TBeatObservations;
   const ASampleRate, ASourceFrames: Integer;
   const AOptions: TBeatGridOptions;
-  out ATrace: TBeatCandidateTrace): TBeatGridAnalysis;
+  out ATrace: TBeatCandidateTrace;
+  const AProgress: TWorkProgressCallback = nil): TBeatGridAnalysis;
 
 { Rounded grid points in [AStartFrame,AEndFrame), with half-frame ties later.
   Phase is canonical in [0,period). Explicit caller-selected hypothesis; this
@@ -380,7 +382,8 @@ end;
 function EstimateBeatGridsCore(const AObservations: TBeatObservations;
   const ASampleRate, ASourceFrames: Integer;
   const AOptions: TBeatGridOptions; const ACollectTrace: Boolean;
-  out ATrace: TBeatCandidateTrace): TBeatGridAnalysis;
+  out ATrace: TBeatCandidateTrace;
+  const AProgress: TWorkProgressCallback): TBeatGridAnalysis;
 var
   LResult: TBeatGridAnalysis;
   LTrials: TBeatGridCandidates;
@@ -431,10 +434,13 @@ begin
   end;
   if Length(AObservations) >= 4 then
   begin
+    ReportWork(AProgress, 'estimate_beats', wuItems, 0, LResult.TrialCount);
     SetLength(LTrials, LResult.TrialCount * CPhaseCount);
     SetLength(LEligible, Length(LTrials));
     for LIndex := 0 to LResult.TrialCount - 1 do
     begin
+      if (LIndex > 0) and (LIndex mod 8 = 0) then
+        ReportWork(AProgress, 'estimate_beats', wuItems, LIndex, LResult.TrialCount);
       LPair := FitGrids(AObservations, ASampleRate,
         AOptions.MinimumBpm + LIndex * AOptions.StepBpm, LMaximumWeight, AOptions);
       for LPhaseIndex := 0 to CPhaseCount - 1 do
@@ -533,26 +539,30 @@ begin
     end;
     SetLength(LResult.Candidates, LCount);
   end;
+  if Length(AObservations) >= 4 then
+    ReportWork(AProgress, 'estimate_beats', wuItems, LResult.TrialCount, LResult.TrialCount);
   Result := LResult;
 end;
 
 function EstimateBeatGrids(const AObservations: TBeatObservations;
   const ASampleRate, ASourceFrames: Integer;
-  const AOptions: TBeatGridOptions): TBeatGridAnalysis;
+  const AOptions: TBeatGridOptions;
+  const AProgress: TWorkProgressCallback): TBeatGridAnalysis;
 var
   LTrace: TBeatCandidateTrace;
 begin
   Result := EstimateBeatGridsCore(AObservations, ASampleRate, ASourceFrames,
-    AOptions, False, LTrace);
+    AOptions, False, LTrace, AProgress);
 end;
 
 function InspectBeatGridCandidates(const AObservations: TBeatObservations;
   const ASampleRate, ASourceFrames: Integer;
   const AOptions: TBeatGridOptions;
-  out ATrace: TBeatCandidateTrace): TBeatGridAnalysis;
+  out ATrace: TBeatCandidateTrace;
+  const AProgress: TWorkProgressCallback): TBeatGridAnalysis;
 begin
   Result := EstimateBeatGridsCore(AObservations, ASampleRate, ASourceFrames,
-    AOptions, True, ATrace);
+    AOptions, True, ATrace, AProgress);
 end;
 
 function BeatGridFrames(const ACandidate: TBeatGridCandidate;

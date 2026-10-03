@@ -32,6 +32,7 @@ uses
   SysUtils,
   Math,
   pythian.audio,
+  pythian.progress,
   pythian.granular,
   pythian.analysis,
   pythian.analysis.wave,
@@ -51,7 +52,7 @@ type
     Pass, Starts, Ends: Integer;
     Done, Total: Int64;
     Abort: Boolean;
-    procedure Report(const APass: Integer; const ADone, ATotal: Int64);
+    procedure Report(const AProgress: TWorkProgress);
   end;
 
   TJoinFixtureSource = class
@@ -103,8 +104,10 @@ begin
   end;
 end;
 
-procedure TProgressProbe.Report(const APass: Integer; const ADone, ATotal: Int64);
+procedure TProgressProbe.Report(const AProgress: TWorkProgress);
+var APass: Integer; ADone, ATotal: Int64;
 begin
+  APass := AProgress.Pass; ADone := AProgress.Done; ATotal := AProgress.Total;
   Check((ATotal > 0) and (ADone >= 0) and (ADone <= ATotal), 'Measured progress bounds');
   if APass <> Pass then
   begin
