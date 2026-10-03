@@ -46,14 +46,14 @@ after responses, on returning to the page and periodically while it is visible.
    inspect and listen before choosing Save to collection. Try the existing pitch
    tracker through MIDI download and synthesized playback, marked **Experimental**.
    Keep technical settings in optional details and save feedback on the exact run.
-2. **Prepare:** show the actual supported learning mode, material used/excluded,
+2. **Generate:** show the actual supported learning mode, material used/excluded,
    saved model and generation settings. Audition selected originals with a
    visible source-time playhead and range context. Keep training duration separate from
    audition length. Explain unsupported choices before work starts.
-3. **Listen:** start with a small development batch of roughly 20–40-second
+3. **Review — listen:** start with a small development batch of roughly 20–40-second
    auditions. Ask one clear musical question at a time, retain unsure/neither,
    and allow optional comments at the playhead. No routine frame annotation.
-4. **Refine:** compare against earlier results, pin useful examples, deliberately
+4. **Review — refine:** compare against earlier results, pin useful examples, deliberately
    change a supported control or source selection, and queue a traceable new batch.
 
 Short auditions help development but do not replace full-duration continuity or
@@ -64,12 +64,22 @@ automatically calibrated numerical limits or accurate source transcription.
 
 ## UI and evidence requirements
 
+Studio uses three real tabs: **Sources**, **Generate**, and **Review**. Sources
+contains Project, Collection, Passage and Import/record steps. Generate separates
+Auditions, Long playback, Jobs and Settings. Review separates Choose auditions,
+Feedback and History; paired samples have their own tabs. Switching steps keeps
+mounted tools and unsaved edits. A compact save bar shows the appropriate project
+or feedback action. Help never jumps away from the current task unless the
+operator explicitly chooses Show me. This operator-requested repair is tracked
+in [studio_18](TODO/NS-6_studio_18.md), with no additional completion credit.
+
 **Learn to teach Pythian** is shared by Studio, Source reviews and Listening
 reviews. Its four first-project lessons teach choosing examples, generating a
 small experiment, saving listening feedback and changing one thing for the next
 batch. Tool lessons explain recording/import, selection/zoom, analysis/MIDI,
 effects, long playback, generation settings and the two review queues.
-Contextual help opens the relevant lesson; Show me reveals and highlights real
+Contextual help opens the relevant lesson in a modal, retaining focus and scroll
+position when closed; Show me reveals and highlights real
 controls or explains the missing prerequisite. Close/reopen, Escape, restart and
 browser-local reading position do not alter projects or start audio or jobs.
 Descriptions are metadata, feedback does not automatically retrain, and current

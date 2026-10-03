@@ -25,17 +25,25 @@ unit pythian.workspace.guide;
 
 {$mode delphi}
 {$H+}
+{$modeswitch externalclass}
 
 interface
 
 uses
   JS,
   Web,
-  SysUtils;
+  SysUtils,
+  pythian.workspace.tabs;
 
 type
   { Presentation only. Reading a lesson never performs a project, media or job
     action. All three applications consume this one guide and its destinations. }
+  TGuideDialog = class external name 'HTMLDialogElement' (TJSHTMLElement)
+    open: Boolean;
+    procedure showModal;
+    procedure close;
+  end;
+
   TWorkspaceGuide = class
   private
     FPage: String;
@@ -44,6 +52,10 @@ type
     FStorage: Boolean;
     FRoot: TJSElement;
     FPanel: TJSElement;
+    FOrigin: TJSElement;
+    FScrollX: NativeInt;
+    FScrollY: NativeInt;
+    FOverflow: String;
     FTitle: TJSElement;
     FProgress: TJSElement;
     FTry: TJSElement;
@@ -89,7 +101,7 @@ type
 
 const
   CPlace = 'pythian.guide.place.v1';
-  COpen = 'pythian.guide.open.v1';
+
   CLessons: array[0..11] of TGuideLesson = (
     (Id: 'choose'; Title: 'Choose what to carry forward';
      Action: 'Name a project. Browse a collection, open Listen & select, and add a whole recording or passages you like. Describe each selection in your own words, then Save draft.';
@@ -97,12 +109,12 @@ const
      DoneWhen: 'Your saved project lists the intended recordings, ranges and descriptions.';
      Page: 'studio'; Target: 'style-name'; Prerequisite: 'Wait for the catalog to connect before naming or saving a project.'),
     (Id: 'generate'; Title: 'Make a small first experiment';
-     Action: 'With a saved project, open Save short auditions to compare. Choose two 20-second auditions, Check setup, then Generate auditions. If asked, choose Development and exploration.';
+     Action: 'With a saved project, choose Generate, then Auditions. Choose two 20-second auditions, Check setup, then Generate auditions. If asked, choose Development and exploration.';
      Expectation: 'Experimental: the current mode rearranges short pieces of your selected audio through WFC. Longer sources can supply more examples, but do not by themselves teach notes, song structure or a complete style. Source length and output length are separate.';
-     DoneWhen: 'Finished auditions appear in Generation history. Check source coverage there to see what was actually used.';
+     DoneWhen: 'Finished auditions appear under Generate → Jobs. Check source coverage there to see what was actually used.';
      Page: 'studio'; Target: 'batch-duration'; Prerequisite: 'Select recordings and Save draft first. Then these generation controls become available.'),
     (Id: 'listen'; Title: 'Tell Pythian what you hear';
-     Action: 'In New comparison, choose your finished auditions and Start listening. Judge style fit, flow, repetition and sound quality. Choose what you would keep, or neither. Add a note at a useful moment, then Save feedback.';
+     Action: 'In Review → Choose auditions, select your finished auditions and Start listening. Judge style fit, flow, repetition and sound quality. Choose what you would keep, or neither. Add a note at a useful moment, then Save feedback.';
      Expectation: 'A useful answer can be: the texture fits, but the join at 0:12 clicks. Use Cannot judge yet when unsure. Hide sample identities for a comparison without knowing which settings made each take.';
      DoneWhen: 'Reload saved feedback and see your answers again. A bad result is useful feedback too.';
      Page: 'studio'; Target: 'review-output-a'; Prerequisite: 'Generate saved auditions first, then select them for a comparison.'),
@@ -143,11 +155,11 @@ const
      Page: 'source'; Target: 'source-requests'; Prerequisite: 'Wait for the review queue to connect. Only assigned questions need an answer.'),
     (Id: 'listening-review'; Title: 'Review a saved musical result';
      Action: 'Choose a review in Listening reviews, read its question and play each recording. Answer what you can, add a comment at the playhead if useful, and Save response.';
-     Expectation: 'These are assigned listening questions and saved live excerpts. For your own batch comparisons and next-batch controls, use Listen and compare in Studio. Feedback records your judgment without silently starting training.';
+     Expectation: 'These are assigned listening questions and saved live excerpts. For your own batch comparisons and next-batch controls, use Review in Studio. Feedback records your judgment without silently starting training.';
      DoneWhen: 'The review moves to Completed reviews and your saved response can be reopened.';
      Page: 'listening'; Target: 'pending'; Prerequisite: 'Wait for the queue to connect. An empty queue means there are no assigned listening questions.'),
     (Id: 'settings'; Title: 'Understand generation settings';
-     Action: 'Open Generation settings and source weights. A source weight changes a recording''s relative influence. Keep the seed to repeat a setup, or change it for a different take. Adjust one setting at a time.';
+     Action: 'In Generate, open Settings for source weights and generation controls. A source weight changes a recording''s relative influence. Keep the seed to repeat a setup, or change it for a different take. Adjust one setting at a time.';
      Expectation: 'Sound examples to keep limits the types of short recorded pieces available. Neighboring pieces sets how much local sequence context the model considers. These controls do not specify instruments, notes, tempo or song sections.';
      DoneWhen: 'Before generating, you know which setting changed and what you want to listen for. Compare against an earlier saved audition.';
      Page: 'studio'; Target: 'batch-palette'; Prerequisite: 'Select recordings and Save draft before adjusting generation settings.')
@@ -202,7 +214,6 @@ begin
         FTopic := LIndex;
       end;
     end;
-    FOpen := window.localStorage.getItem(COpen) = 'yes';
   except
     FStorage := False;
   end;
@@ -225,6 +236,7 @@ begin
   FToggle := Button(LBar, '', 'toggle');
   FToggle.id := 'guide-toggle';
   FToggle.setAttribute('aria-controls', 'guide-panel');
+  FToggle.setAttribute('aria-haspopup', 'dialog');
   LIcon := document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   LIcon.setAttribute('viewBox', '0 0 24 24');
   LIcon.setAttribute('aria-hidden', 'true');
@@ -234,7 +246,11 @@ begin
   FToggle.appendChild(LIcon);
   Add(FToggle, 'span', 'Learn to teach Pythian', '');
   Add(LBar, 'span', 'A guided project + help with each tool', 'guide-intro');
-  FPanel := Add(FRoot, 'div', '', 'guide-panel');
+  FPanel := Add(FRoot, 'dialog', '', 'guide-panel');
+  FPanel.setAttribute('aria-modal', 'true');
+  LRow := Add(FPanel, 'div', '', 'guide-dialog-header');
+  Add(LRow, 'strong', 'Pythian help', '');
+  Button(LRow, 'Close help', 'close');
   FPanel.id := 'guide-panel';
   Add(FPanel, 'label', 'Learn about', '').setAttribute('for', 'guide-topic');
   FTopics := TJSHTMLSelectElement(Add(FPanel, 'select', '', ''));
@@ -283,6 +299,8 @@ end;
 
 destructor TWorkspaceGuide.Destroy;
 begin
+  FOpen := False;
+  Draw;
   ClearHighlight;
   FRoot.removeEventListener('click', @Click);
   FRoot.removeEventListener('keydown', @Key);
@@ -296,14 +314,6 @@ procedure TWorkspaceGuide.Remember;
 begin
   try
     window.localStorage.setItem(CPlace, CLessons[FTopic].Id);
-    if FOpen then
-    begin
-      window.localStorage.setItem(COpen, 'yes');
-    end
-    else
-    begin
-      window.localStorage.setItem(COpen, 'no');
-    end;
   except
     FStorage := False;
   end;
@@ -355,12 +365,29 @@ begin
   end;
   if FOpen then
   begin
-    FPanel.removeAttribute('hidden');
+    if not TGuideDialog(FPanel).open then
+    begin
+      FOrigin := document.activeElement;
+      FScrollX := window.scrollX;
+      FScrollY := window.scrollY;
+      FOverflow := TJSHTMLElement(document.documentElement).style.getPropertyValue('overflow');
+      TJSHTMLElement(document.documentElement).style.setProperty('overflow', 'hidden');
+      TGuideDialog(FPanel).showModal;
+    end;
     FToggle.setAttribute('aria-expanded', 'true');
   end
   else
   begin
-    FPanel.setAttribute('hidden', '');
+    if TGuideDialog(FPanel).open then
+    begin
+      TGuideDialog(FPanel).close;
+      TJSHTMLElement(document.documentElement).style.setProperty('overflow', FOverflow);
+      if (FOrigin <> nil) and document.body.contains(FOrigin) then
+      begin
+        TJSHTMLElement(FOrigin).focus;
+      end;
+      window.scrollTo(FScrollX, FScrollY);
+    end;
     FToggle.setAttribute('aria-expanded', 'false');
     ClearHighlight;
   end;
@@ -375,7 +402,7 @@ procedure TWorkspaceGuide.FocusGuide;
 begin
   ClearHighlight;
   TJSHTMLElement(FTitle).focus;
-  TJSHTMLElement(FRoot).scrollIntoView;
+  TJSHTMLElement(FPanel).scrollTop := 0;
 end;
 
 procedure TWorkspaceGuide.ClearHighlight;
@@ -418,6 +445,7 @@ begin
   end;
   ClearHighlight;
   LTarget := document.getElementById(CLessons[FTopic].Target);
+  RevealWorkspaceControl(LTarget);
   LUnavailable := LTarget = nil;
   LParent := LTarget;
   while LParent <> nil do
@@ -463,6 +491,8 @@ begin
   begin
     LTarget.setAttribute('tabindex', '-1');
   end;
+  FOpen := False;
+  Draw;
   FHighlight := LTarget;
   FHighlight.classList.add('guide-highlight');
   TJSHTMLElement(LTarget).focus;
@@ -490,6 +520,12 @@ begin
   end;
   if LAction = 'return' then
   begin
+    FOpen := True;
+    Draw;
+    if FHighlight <> nil then
+    begin
+      FOrigin := FHighlight;
+    end;
     FocusGuide;
     Exit;
   end;
@@ -530,10 +566,6 @@ begin
   if FOpen then
   begin
     FocusGuide;
-  end
-  else
-  begin
-    TJSHTMLElement(FToggle).focus;
   end;
 end;
 
@@ -586,7 +618,6 @@ begin
     FOpen := False;
     Remember;
     Draw;
-    TJSHTMLElement(FToggle).focus;
     AEvent.preventDefault;
   end;
 end;

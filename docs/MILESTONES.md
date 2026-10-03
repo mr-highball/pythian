@@ -6,6 +6,8 @@
 ## North-star assessment
 
 Updated **2026-10-02** on the user-authorized 2026-09-29 credit basis:
+Required [Studio navigation/help repair](TODO/NS-6_studio_18.md) adds no credit.
+
 **52.45 outcome-weighted points credited; 47.55 remaining.**
 The later [operator Studio scope](OPERATOR-STUDIO.md#allocation-and-ownership)
 redistributes 26 unearned NS-6 points into fifteen operator outcomes, including
@@ -35,8 +37,8 @@ ecosystem adoption is unmeasured and is a required completion gate.
 | <a id="wav-02"></a><a id="wav-03"></a><a id="ns-3"></a>**NS-3 — Trustworthy musical learning from WAV** | 25% | 25 | Measurement foundation, Pascal observations/execution, qualified references/scoring, unknown/manual context, catalog and admitted-event bridge. | Independently accepted recorded context, notes, parts, harmony, groove and evolving sound: 19 tasks / 75 |
 | <a id="wfc-preferences"></a><a id="ns-4"></a>**NS-4 — Granular WFC layers and reusable blends** | 70% | 15 | Actual layers, typed controls, persistence, selective reuse, caller codecs/traits, bounded event/composition evidence and continuous native audio sessions. | Full recorded-provider workflow: 1 task / 30 |
 | <a id="wav-04"></a><a id="ns-5"></a>**NS-5 — User-defined styles that generate and blend usefully** | 14% | 20 | Bounded identity, maintained caller intake, raw corpus, journal, balance, listening packet and acoustic continuation; style-card AC1 only. | Grounded references, semantic scale, structure/continuity, useful one/many-recording and new-user styles, blends: 15 tasks / 86 |
-| <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | 54% | 10 | Supported consumer contract, native checkpoint, exact-revision minimal core/caller-provider package, editor/producer queue, Studio setup/private corpora, bounded raw WFC jobs, effects, experimental capture/MIDI exploration, starting actions/navigation, verified large-library refresh, shared filter catalog, flexible bounded source workspace, delay/reverb with explicit tails, native streamed playback, shared microphone codec and guided operator teaching. | Studio iteration/conversion, phone HTTPS and metadata-only discovery, full packages, actual outside use, physical LAN/full operator workflow, maintained support, ecosystem adoption and final handoff: 11 tasks / 46 |
-| **Total** | **52.45 weighted** | **100** | **49 accepted task records plus explicit baseline** | **47 open tasks / 47.55 weighted points** |
+| <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | 54% | 10 | Supported consumer contract, native checkpoint, exact-revision minimal core/caller-provider package, editor/producer queue, Studio setup/private corpora, bounded raw WFC jobs, effects, experimental capture/MIDI exploration, starting actions/navigation, verified large-library refresh, shared filter catalog, flexible bounded source workspace, delay/reverb with explicit tails, native streamed playback, shared microphone codec and guided operator teaching. | Studio iteration/conversion, phone HTTPS and metadata-only discovery, full packages, actual outside use, physical LAN/full operator workflow, maintained support, ecosystem adoption and final handoff: 12 tasks / 46 |
+| **Total** | **52.45 weighted** | **100** | **49 accepted task records plus explicit baseline** | **48 open tasks / 47.55 weighted points** |
 
 Arithmetic:
 `5×1 + 25×.90 + 25×.25 + 15×.70 + 20×.14 + 10×.54 = 52.45`.

@@ -29,6 +29,7 @@ unit pythian.studio.sources;
 interface
 
 uses JS, Web, SysUtils, Math, StrUtils, Types,
+  pythian.workspace.tabs,
   pythian.studio.&library.refresh;
 
 type
@@ -568,6 +569,8 @@ begin
   FViewSeconds := 30;
   El('source-inspector').removeAttribute('hidden');
   El('source-title').textContent := StudioText(FTrack, 'title');
+  RevealWorkspaceControl(El('source-title'));
+  TJSHTMLElement(El('source-title')).focus;
   Input('source-seek').max := FloatToStr(StudioNumber(FTrack, 'frame_count') /
     StudioNumber(FTrack, 'sample_rate'));
   Input('source-classifications').value := '';
@@ -1607,7 +1610,11 @@ begin
     Exit;
   end;
   case LButton.id of
-    'source-close': Reset;
+    'source-close':
+      begin
+        Reset;
+        SelectWorkspacePane('library-step', True);
+      end;
     'source-analyze': Analyze;
     'source-prepare':
       begin

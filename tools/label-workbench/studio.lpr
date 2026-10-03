@@ -38,6 +38,7 @@ uses
   pythian.studio.capture,
   pythian.studio.reviews,
   pythian.workspace.navigation,
+  pythian.workspace.tabs,
   pythian.studio.&library.refresh;
 
 type
@@ -48,6 +49,7 @@ type
   TStudio = class
   private
     FNavigation: TWorkspaceNavigation;
+    FTabs: TWorkspaceTabs;
     FLibraryRefresh: TStudioLibraryRefresh;
     FSourceEditor: TStudioSourceEditor;
     FBatches: TStudioBatches;
@@ -817,6 +819,7 @@ begin
   begin
     ErrorAt('name-error', 'Give your project a name, up to 128 characters.');
     Input('style-name').setAttribute('aria-invalid', 'true');
+    RevealWorkspaceControl(El('style-name'));
     Input('style-name').focus;
     LValid := False;
   end;
@@ -841,6 +844,22 @@ begin
   end;
   if not LValid then
   begin
+    if not El('name-error').hasAttribute('hidden') then
+    begin
+      RevealWorkspaceControl(El('style-name'));
+      Input('style-name').focus;
+    end
+    else if not El('qualities-error').hasAttribute('hidden') then
+    begin
+      RevealWorkspaceControl(El('style-qualities'));
+      TJSHTMLElement(El('style-qualities')).focus;
+    end
+    else
+    begin
+      RevealWorkspaceControl(El('tracks-error'));
+      El('tracks-error').setAttribute('tabindex', '-1');
+      TJSHTMLElement(El('tracks-error')).focus;
+    end;
     Exit;
   end;
   Result := TJSObject.new;
@@ -1089,7 +1108,7 @@ begin
     FBatches.Refresh;
     FReviews.Refresh;
     FCapture.Refresh;
-    Status('Choose recordings and save your project draft.');
+    Status('Connected to your library.');
     DrawProjects;
   except
     on LError: Exception do
@@ -1170,6 +1189,8 @@ begin
     ApplyProject(LProject);
     FBatches.ApplyNextBatch(LRequest);
     Status('Next-batch settings are ready. Change what you want, then generate.');
+    RevealWorkspaceControl(El('batch-duration'));
+    SelectWorkspacePane('prepare', True);
     Result := True;
   finally
     FBusy := False;
@@ -1436,6 +1457,7 @@ begin
     Exit;
   end;
   NewDraft;
+  RevealWorkspaceControl(El('style-name'));
   Input('style-name').focus;
 end;
 
@@ -1525,17 +1547,19 @@ begin
   LAction := TJSElement(AEvent.currentTarget).id;
   if LAction = 'start-browse' then
   begin
+    RevealWorkspaceControl(El('collection-library'));
     TJSHTMLElement(El('collection-library')).scrollIntoView;
     TJSHTMLElement(El('collection-library')).focus;
   end
   else if LAction = 'capture-back' then
   begin
+    RevealWorkspaceControl(El('start-record'));
     TJSHTMLElement(El('start-record')).scrollIntoView;
     TJSHTMLElement(El('start-record')).focus;
   end
   else
   begin
-    El('capture-panel').removeAttribute('hidden');
+    RevealWorkspaceControl(El('studio-capture'));
     if LAction = 'start-record' then
     begin
       FCapture.OpenRecorder;
@@ -1563,6 +1587,7 @@ begin
   El('start-import').addEventListener('click', @HandleStart);
   El('start-browse').addEventListener('click', @HandleStart);
   El('capture-back').addEventListener('click', @HandleStart);
+  FTabs := TWorkspaceTabs.Create;
   NewDraft;
   El('style-form').addEventListener('submit', @HandleSubmit);
   El('style-name').addEventListener('input', @HandleEdit);

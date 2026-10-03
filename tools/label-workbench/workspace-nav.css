@@ -46,7 +46,11 @@ SOFTWARE.
 
 .guide-bar { padding: .7rem; }
 .guide-intro { color: #b9cfc9; font-size: .85rem; }
-.guide-panel { padding: .4rem clamp(.85rem, 3vw, 1.5rem) 1.2rem; max-width: 54rem; }
+.guide-panel { position: fixed; padding: 0 1.1rem 1.1rem; width: min(36rem, calc(100vw - 1.5rem)); max-height: 85dvh; overflow: auto; overscroll-behavior: contain; border: 1px solid #7faaa0; border-radius: 14px; background: #142e35; color: #edf4f2; box-shadow: 0 16px 80px #0009; }
+.guide-panel::backdrop { background: #061419bc; }
+.guide-dialog-header { display: flex; justify-content: space-between; align-items: center; gap: .5rem; position: sticky; top: 0; z-index: 1; padding: .65rem 0; background: #142e35; border-bottom: 1px solid #53736c; }
+.guide-dialog-header .guide-button { padding: .4rem .7rem; }
+.guide-panel:not([open]) { display: none; }
 .workspace-guide [hidden] { display: none !important; }
 .guide-panel label { display: block; margin: .5rem 0; font-weight: 600; }
 .guide-panel select {
@@ -99,7 +103,7 @@ SOFTWARE.
 .guide-more { margin-top: 1rem; color: #b9cfc9; font-size: .85rem; }
 .guide-more summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; }
 .guide-highlight { outline: 3px solid #e6c698 !important; outline-offset: 5px; scroll-margin-top: 1rem; }
-.guide-return { position: fixed; bottom: 1rem; right: 1rem; z-index: 30; max-width: calc(100vw - 2rem); background: #193e42; box-shadow: 0 4px 20px #0008; }
+.guide-return { position: fixed; bottom: 8rem; right: 1rem; z-index: 30; max-width: calc(100vw - 2rem); background: #193e42; box-shadow: 0 4px 20px #0008; }
 .guide-context {
   display: inline-flex;
   align-items: center;

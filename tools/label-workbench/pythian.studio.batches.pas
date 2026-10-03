@@ -33,6 +33,7 @@ uses
   Web,
   SysUtils,
   pythian.studio.sources,
+  pythian.workspace.tabs,
   pythian.studio.live;
 
 type
@@ -222,10 +223,14 @@ var
   LLabel: TJSElement;
   LControl: TJSElement;
   LDetails: TJSElement;
-  LShort, LLength: TJSElement;
+  LShort: TJSElement;
+  LLength: TJSElement;
+  LNav: TJSElement;
+  LLive: TJSElement;
+  LHistory: TJSElement;
+  LSettings: TJSElement;
 begin
   LRoot := El('studio-batches');
-  Add(LRoot, 'h2', 'Make music', '');
   LControl := Add(LRoot, 'p', '', 'hint');
   LControl.id := 'batch-project';
   LControl := Add(LRoot, 'p', 'Save a project to prepare its first batch.', 'notice');
@@ -259,8 +264,11 @@ begin
   SelectOption(LControl, 'training', 'Training material');
   LControl.addEventListener('change', @Edit);
   Add(LRow, 'p', 'This choice applies to this job; evaluation sources stay excluded.', 'hint');
-  LDetails := Add(LRoot, 'details', '', 'advanced');
-  Add(LDetails, 'summary', 'Generation settings and source weights', '');
+  LSettings := Add(LRoot, 'section', '', '');
+  LSettings.id := 'settings-step';
+  LSettings.appendChild(El('generation-source-summary'));
+  LDetails := LSettings;
+  Add(LDetails, 'h3', 'Generation settings and source weights', '');
   LRow := Add(LDetails, 'div', '', 'range-fields');
   LLabel := Add(LRow, 'label', 'Seed (repeat the same result)', '');
   LControl := Add(LLabel, 'input', '', '');
@@ -294,9 +302,34 @@ begin
   LControl.setAttribute('hidden', '');
   LControl := Add(LDetails, 'div', '', '');
   LControl.id := 'batch-weights';
-  Add(LRoot, 'div', '', '').id := 'studio-live';
-  LShort := Add(LRoot, 'details', '', 'advanced');
-  Add(LShort, 'summary', 'Save short auditions to compare', '');
+  LNav := Add(LRoot, 'nav', '', 'substeps');
+  LNav.setAttribute('data-tab-group', '');
+  LNav.setAttribute('aria-label', 'Generation mode');
+  LControl := Add(LNav, 'button', 'Auditions', '');
+  LControl.id := 'tab-auditions';
+  LControl.setAttribute('type', 'button');
+  LControl.setAttribute('aria-controls', 'audition-step');
+  LControl := Add(LNav, 'button', 'Long playback', '');
+  LControl.id := 'tab-live';
+  LControl.setAttribute('type', 'button');
+  LControl.setAttribute('aria-controls', 'live-step');
+  LControl := Add(LNav, 'button', 'Jobs', '');
+  LControl.id := 'tab-jobs';
+  LControl.setAttribute('type', 'button');
+  LControl.setAttribute('aria-controls', 'jobs-step');
+  LControl := Add(LNav, 'button', 'Settings', '');
+  LControl.id := 'tab-settings';
+  LControl.setAttribute('type', 'button');
+  LControl.setAttribute('aria-controls', 'settings-step');
+  LRoot.appendChild(LSettings);
+  LLive := Add(LRoot, 'section', '', '');
+  LLive.id := 'live-step';
+  LLive.appendChild(El('long-generation-help'));
+  Add(LLive, 'div', '', '').id := 'studio-live';
+  LShort := Add(LRoot, 'section', '', '');
+  LShort.id := 'audition-step';
+  LShort.appendChild(El('generation-help'));
+  LShort.appendChild(El('batch-partition'));
   Add(LShort, 'p', 'Generate complete WAV files for listening and feedback.', 'hint');
   LShort.appendChild(LLength);
   LRow := Add(LShort, 'div', '', 'source-toolbar');
@@ -315,12 +348,14 @@ begin
     '500,000 feature observations; 32 recordings, 64 selected ranges and 3 outputs. ' +
     'Full source verification happens in the worker. Cancellation waits for worker checkpoints.',
     'hint');
-  LRow := Add(LRoot, 'div', '', 'source-heading');
+  LHistory := Add(LRoot, 'section', '', '');
+  LHistory.id := 'jobs-step';
+  LRow := Add(LHistory, 'div', '', 'source-heading');
   Add(LRow, 'h3', 'Generation history', '');
   Button(LRow, 'batch-refresh', 'Refresh jobs');
-  LControl := Add(LRoot, 'div', '', 'tracks');
+  LControl := Add(LHistory, 'div', '', 'tracks');
   LControl.id := 'batch-history';
-  LControl := Add(LRoot, 'div', '', '');
+  LControl := Add(LHistory, 'div', '', '');
   LControl.id := 'batch-detail';
 end;
 
@@ -991,6 +1026,7 @@ begin
     FPending := nil;
     Invalidate;
     DrawJob;
+    SelectWorkspacePane('jobs-step', True);
     Notice('Batch accepted. Source edits remain available while the worker runs.');
   except
     on LException: Exception do

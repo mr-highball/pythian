@@ -34,6 +34,7 @@ uses
   Classes,
   SysUtils,
   Math,
+  pythian.workspace.tabs,
   pythian.studio.sources;
 
 type
@@ -280,6 +281,8 @@ var
   LDetails: TJSElement;
   LField: TJSElement;
   LQualification: TJSElement;
+  LNav: TJSElement;
+  LHistory: TJSElement;
 begin
   LMount := El('studio-reviews');
   LMount.textContent := '';
@@ -288,8 +291,23 @@ begin
   LField := Add(LMount, 'p', 'Generate an audition to begin.', '');
   LField.id := 'review-notice';
   LField.setAttribute('aria-live', 'polite');
-  LDetails := Add(LMount, 'details', '', '');
-  Add(LDetails, 'summary', 'New comparison', '');
+  LNav := Add(LMount, 'nav', '', 'substeps');
+  LNav.setAttribute('data-tab-group', '');
+  LNav.setAttribute('aria-label', 'Review steps');
+  LField := Add(LNav, 'button', 'Choose auditions', '');
+  LField.id := 'tab-review-choose';
+  LField.setAttribute('type', 'button');
+  LField.setAttribute('aria-controls', 'review-choose');
+  LField := Add(LNav, 'button', 'Feedback', '');
+  LField.id := 'tab-review-feedback';
+  LField.setAttribute('type', 'button');
+  LField.setAttribute('aria-controls', 'review-feedback');
+  LField := Add(LNav, 'button', 'History', '');
+  LField.id := 'tab-review-history';
+  LField.setAttribute('type', 'button');
+  LField.setAttribute('aria-controls', 'review-past');
+  LDetails := Add(LMount, 'section', '', '');
+  LDetails.id := 'review-choose';
   LField := Field(LDetails, 'review-output-a', 'First passage', 'select');
   Option(LField, '', 'Choose a finished audition');
   LField := Field(LDetails, 'review-output-b', 'Second passage (optional)', 'select');
@@ -313,10 +331,15 @@ begin
   Add(LQualification, 'p', 'A frozen comparison keeps this setup fixed. It does not turn previously used sources into an untouched test.', '');
   LField := Button(LDetails, 'Start listening', 'create', '');
   LField.id := 'review-create';
-  LField := Add(LMount, 'div', '', '');
+  LDetails := Add(LMount, 'section', '', '');
+  LDetails.id := 'review-feedback';
+  Add(LDetails, 'p', 'Choose auditions and start listening, or reopen a comparison from History.', 'review-empty');
+  LField := Add(LDetails, 'div', '', '');
   LField.id := 'review-current';
-  Add(LMount, 'h3', 'Comparison history', '');
-  LField := Add(LMount, 'div', 'No comparisons yet.', '');
+  LHistory := Add(LMount, 'section', '', '');
+  LHistory.id := 'review-past';
+  Add(LHistory, 'h3', 'Comparison history', '');
+  LField := Add(LHistory, 'div', 'No comparisons yet.', '');
   LField.id := 'review-history';
 end;
 
@@ -541,6 +564,7 @@ begin
     FReview := LData;
     FComments := Arr(FReview, 'comments');
     Draw;
+    SelectWorkspacePane('review-feedback', True);
     Notice('Listen first. Nothing is answered for you.');
   except
     on E: Exception do
@@ -579,6 +603,7 @@ begin
     FSaveBody := '';
     FComments := Arr(FReview, 'comments');
     Draw;
+    SelectWorkspacePane('review-feedback', True);
     Notice('Saved feedback loaded. You can correct it and Save a new version.');
   except
     on E: Exception do
@@ -622,6 +647,8 @@ procedure TStudioReviews.Draw;
 var
   LMount: TJSElement;
   LCard: TJSElement;
+  LNav: TJSElement;
+  LActions: TJSElement;
   LDetails: TJSElement;
   LField: TJSElement;
   LPlayer: TJSHTMLAudioElement;
@@ -653,6 +680,9 @@ begin
   begin
     Add(LMount, 'p', 'Sample identities are hidden until you Save completed feedback.', '');
   end;
+  LNav := Add(LMount, 'nav', '', 'substeps sample-tabs');
+  LNav.setAttribute('data-tab-group', '');
+  LNav.setAttribute('aria-label', 'Audition samples');
   LSamples := Arr(FReview, 'samples');
   LStyles := Arr(FReview, 'style_options');
   LNames := TStringList.Create;
@@ -665,7 +695,12 @@ begin
     begin
       LSample := TJSObject(LSamples[LIndex]);
       LAlias := StudioText(LSample, 'sample_id');
+      LField := Add(LNav, 'button', StudioText(LSample, 'label'), '');
+      LField.id := 'tab-sample-' + LAlias;
+      LField.setAttribute('type', 'button');
+      LField.setAttribute('aria-controls', 'sample-' + LAlias);
       LCard := Add(LMount, 'fieldset', '', '');
+      LCard.id := 'sample-' + LAlias;
       Add(LCard, 'legend', StudioText(LSample, 'label'), '');
       LPlayer := TJSHTMLAudioElement(Add(LCard, 'audio', '', ''));
       LPlayer.id := 'review-audio-' + LAlias;
@@ -746,18 +781,21 @@ begin
   LField := Add(LMount, 'div', '', '');
   LField.id := 'review-comments';
   DrawComments;
-  LField := Button(LMount, 'Save feedback', 'save', '');
+  LActions := Add(LMount, 'div', '', 'review-save-bar');
+  LField := Button(LActions, 'Save feedback', 'save', '');
+  LField.classList.add('primary');
   LField.id := 'review-save';
-  Button(LMount, 'Reload saved feedback', 'reload', '');
+  Button(LActions, 'Reload saved feedback', 'reload', '');
   if Boolean(TJSObject(FReview['pin'])['pinned']) then
   begin
-    LField := Button(LMount, 'Unpin result', 'pin', '');
+    LField := Button(LActions, 'Unpin result', 'pin', '');
   end
   else
   begin
-    LField := Button(LMount, 'Pin useful result', 'pin', '');
+    LField := Button(LActions, 'Pin useful result', 'pin', '');
   end;
   LField.id := 'review-pin';
+  ConfigureWorkspaceTabs(LMount);
 end;
 
 procedure TStudioReviews.DrawComments;

@@ -12,6 +12,16 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Studio tabs and contextual help — 2026-10-02
+
+Big Boss solo is repairing the operator-reported scrolling and help displacement
+in [studio_18](TODO/NS-6_studio_18.md). Before this batch: actual tabs, smaller
+source/generation steps and modal help are the deliverable; preserved state,
+focus/scroll restoration and actual narrow/desktop browser checks close the
+criteria. Stop on lost edits or hidden controls. This repairs existing credited
+outcomes and earns no additional percentage. Ledger remains 52.45/47.55;
+48 open / 49 DONE (97 task records). Operator musical/physical verdicts stay open.
+
 ## Studio expansion — 2026-10-02
 
 **Current checkpoint — guided teaching:** Big Boss's solo
