@@ -321,6 +321,22 @@ See the [current work record](WORK.md) for source identities and exact scope.
 
 ## Connected Studio contracts
 
+**Compare with original** appears beside generated auditions in Listening
+reviews and Studio comparisons. Open it to choose a retained original training
+selection by name and source time. Play loads at most thirty seconds through
+the existing WAV region reader; the position slider and previous/next controls
+explore the selected range. Opening the panel loads metadata only. Playing an
+original pauses generated audio and vice versa; closing the panel releases it.
+The original and generated timelines are independent, not note-aligned.
+
+References come from the exact finite job's saved request and result, checked
+against the published output/model identity, rather than the currently edited
+project. Missing files or unsupported producer provenance remain explicit.
+New development comparisons show originals before feedback. Explicit blind
+comparisons keep sources hidden until their declared reveal; existing sessions
+keep their original policy. The remaining actual-browser check is tracked in
+[studio_22](TODO/NS-6_studio_22.md); native/DOM checks alone do not close it.
+
 The service and browser use explicit actions. Saving a project, feedback or an
 edited clip never silently enqueues training. Native worker execution is a
 separate executable; the service and portable library compile without WFC.
@@ -335,6 +351,7 @@ recombination. Experimental pitch previews are a separate listening tool.
 | Check / generate | `POST /api/studio/preflight`; `POST /api/studio/job` with `train_generate` |
 | Generate and play | Same preflight/job contracts with `stream_generate`; `GET/POST /api/studio/live`; bounded `GET /api/studio/live-audio` |
 | Inspect or cancel work | `GET /api/studio/jobs`, `GET /api/studio/job?id=ID`, `POST /api/studio/cancel` |
+| Compare selected originals | `GET /api/listen-references?request=ID&asset=ALIAS`; existing bounded `GET /api/audio?hash=HASH&start=FRAME&end=FRAME` |
 | Inspect / process a passage | Jobs `inspect_source`, `effect_preview`, then explicit `effect_save` |
 | Import WAV / captured PCM WAV | `POST /api/studio/capture/start`, then offset-bound `capture/chunk` writes |
 | Inspect / hear notes / save intake | Jobs `capture_inspect`, `capture_pitch`, `capture_save` |

@@ -43,6 +43,19 @@ Starting evidence: [WAV-STUDIES](../WAV-STUDIES.md) · [ACTIVITY](../ACTIVITY.md
 
 **Dev Notes:**
 
+- 2026-10-05, Big Boss: actual Studio feedback supplies a negative development
+  listening result: abundant jittering and missing sustains, with continuity
+  1/3, technical quality 1/3 and style fit 0/3. Repetition is unknown. The comment
+  was placed at the 20-second audition's end; do not interpret it as a precisely
+  timed defect. [studio_03](NS-6_studio_03.md) retains the response/readback scope.
+  Its saved raw-acoustic policy uses 4,096-frame windows and 1,024-frame hops at
+  48 kHz (about 85 ms / 21 ms), eight tokens and 32 retained source candidates
+  from a 156.171-second selection. These settings identify a concrete path to
+  assess; they do not prove a particular cause or a remedy. Preserve the exact
+  failed output for a future fixed comparison of source continuity, candidate
+  coverage and rendering. No new tuning batch is selected, no generic WFC defect
+  is established, and the stopped sequence and prerequisite gates below remain.
+
 - 2026-09-28 a distinct global repetition guard passed the predeclared frozen
   4,000-grain three-source gate after the failed chunk-local trial. The bounded
   Pascal renderer/guard/CLI now replay the full saved model with 1,899 source

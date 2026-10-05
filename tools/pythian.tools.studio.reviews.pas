@@ -738,6 +738,8 @@ begin
           if LRevealed then
           begin
             LSample.Add('assignment', LSession.Arrays['bindings'].Objects[LIndex].Clone);
+            LSample.Add('reference_url', '/api/listen-references?request=' +
+              LSession.Objects['listening_request'].Strings['id'] + '&asset=' + LAsset.Strings['id']);
           end;
         end;
       except

@@ -62,6 +62,7 @@ uses
   pythian.tools.studio.capture,
   pythian.tools.studio.pitch,
   pythian.tools.studio.reviews,
+  pythian.tools.studio.references,
   pythian.tools.studio.&library,
   pythian.tools.studio.&library.discovery,
   pythian.tools.studio.jobs,
@@ -1450,6 +1451,12 @@ begin
       (ARequest.Path = '/api/review-queue') then
     begin
       LReport := ReadReviewQueue(ACatalogRoot);
+    end
+    else if (ARequest.Method = 'GET') and
+      (ARequest.Path = '/api/listen-references') then
+    begin
+      LReport := ReadListeningSourceReferences(ACatalogRoot,
+        QueryValue(ARequest.Query, 'request'), QueryValue(ARequest.Query, 'asset'));
     end
     else if (ARequest.Method = 'GET') and
       (ARequest.Path = '/api/listen-queue') then

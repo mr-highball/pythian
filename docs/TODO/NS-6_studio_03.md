@@ -16,11 +16,13 @@ This owns usable feedback/iteration, not the scientific validity of style limits
 [evaluation_01](NS-5_evaluation_01.md) and evaluation_04 retain that acceptance.
 
 Execution status: orientation and existing-collection prerequisites are accepted
-in [studio_08](DONE/NS-6_studio_08.md). The actual operator verdict remains open. Independent
+in [studio_08](DONE/NS-6_studio_08.md). The operator has now saved an actual
+negative musical review; purpose/usefulness and deliberate iteration remain open. Independent
 native and desktop/narrow QA passes the single/paired audition, response,
 comparison, blind presentation, history and deliberate next-batch loop. Next
-deliverable: the operator's understandable-purpose, audible-use and useful-feedback
-verdict under AC5. Closing evidence remains real operator use with durable response
+deliverable: complete the operator's purpose/usefulness and next-batch verdict
+under AC5, retaining the audible-use and saved-response evidence below. Closing
+evidence remains real operator use with durable response
 readback and preserved history/lineage. Stop at ambiguous purpose, missing
 playback/Save state, unbound feedback or an unsupported control. This task remains
 open; mechanical answers earn no musical verdict or completion credit.
@@ -54,11 +56,26 @@ open; mechanical answers earn no musical verdict or completion credit.
 
 **Blockers**
 
+- [Original/generated source comparison](NS-6_studio_22.md) — repairs AC1's missing audible source context.
 - [NS-6_studio_08.md](DONE/NS-6_studio_08.md)
 - [NS-6_studio_02.md](DONE/NS-6_studio_02.md)
 - [NS-5_evaluation_03.md](DONE/NS-5_evaluation_03.md)
 
 **Dev Notes:**
+
+- 2026-10-05, Big Boss: the operator's first Studio comparison response is
+  durably submitted at revision 1 and reads back through the live review API.
+  The 20-second audition received style fit 0/3, continuity 1/3 and technical
+  quality 1/3; style classification and repetition remain unknown. The comment
+  reports abundant jittering and missing sustains, preventing a coherent track.
+  Its marker is at the end of the audition, not a precisely localized defect.
+  This is actual listening evidence and useful defect feedback, not musical
+  acceptance or an explicit verdict on the complete iteration UI. The saved
+  output predates the runtime repair; it used 156.171 seconds of selected audio,
+  eight tokens and 32 retained candidates. Private response/output identities
+  remain in the operator catalog and ignored `build/navigation-review/`.
+  [continuity_01](NS-5_continuity_01.md) owns the musical defect; do not ask the
+  operator to relabel this result or treat longer training as a demonstrated fix.
 
 - 2026-10-02, Big Boss: [studio_18](DONE/NS-6_studio_18.md) repairs the operator's
   scrolling/help-placement feedback with tabs, contextual modals, paired-sample

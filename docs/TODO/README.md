@@ -6,7 +6,7 @@
 Accepted zero-credit usability repairs: [training choices and playback](DONE/NS-6_studio_19.md),
 [tabbed workflow and help](DONE/NS-6_studio_18.md).
 
-Updated 2026-10-05. **52 open / 53 accepted tasks.** The user authorized a new
+Updated 2026-10-05. **53 open / 53 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **52.45 current / 47.55 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -40,14 +40,17 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 50 | 70% | 1 | 30 | 4.50 |
 | [NS-5 — User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 15 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 16 | 46 | 4.60 |
-| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **52** | Goal points are not summed across goals | **47.55** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 17 | 46 | 4.60 |
+| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **53** | Goal points are not summed across goals | **47.55** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
 hours or effort estimates. See the [basis and rationale](../REBALANCE-2026-09-29.md#current-credit-basis).
 
 ## Selection and actual blockers
+
+Selected zero-credit repair: [original/generated comparison](NS-6_studio_22.md),
+Big Boss solo. Saved training selections must be audible beside generated music.
 
 Active zero-credit repair: [background recovery and long-source learning](NS-6_studio_21.md),
 Big Boss solo. Native execution, recorded replays and DOM recovery checks pass;
@@ -227,6 +230,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | Task / primary outcome | Goal points | Overall points | Current readiness |
 | --- | ---: | ---: | --- |
 | [NS-6_studio_21](NS-6_studio_21.md) — Background recovery and long-source learning | 0 | 0.00 | Deployed; actual browser acceptance remains |
+| [NS-6_studio_22](NS-6_studio_22.md) — Original/generated listening comparison | 0 | 0.00 | Deployed for review; native/DOM checks pass, actual browser acceptance remains |
 | [NS-6_observability_02](NS-6_observability_02.md) — Catalog import checkpoints and cancellation | 0 | 0.00 | Ready; shared callback contract accepted |
 | [NS-6_observability_03](NS-6_observability_03.md) — Offline rendering and separation checkpoints | 0 | 0.00 | Ready; preserve primary render/output contracts |
 | [NS-6_observability_04](NS-6_observability_04.md) — Retained corpus/style operations and operator monitoring | 0 | 0.00 | Ready; bounded owned work, no demonstrated generic WFC gap |
@@ -238,7 +242,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | [NS-6_delivery_05](NS-6_delivery_05.md) — Audit north-star completion and supported handoff | 3 | 0.30 | Dependencies |
 | [NS-6_delivery_07](NS-6_delivery_07.md) — Obtain actual independent minimal synthesis use | 9 | 0.90 | Package accepted; prepared packet needs actual reviewer |
 | [NS-6_support_01](NS-6_support_01.md) — Establish and exercise the supported release lifecycle | 10 | 1.00 | Packages + real external update or issue cycle |
-| [NS-6_studio_03](NS-6_studio_03.md) — Compare musical auditions and guide the next batch | 2 | 0.20 | Engineering passed; ready for actual operator purpose/audible/useful-feedback verdict |
+| [NS-6_studio_03](NS-6_studio_03.md) — Compare musical auditions and guide the next batch | 2 | 0.20 | Actual negative listening response saved; purpose/usefulness and iteration verdict remain |
 | [NS-6_studio_07](NS-6_studio_07.md) — Train mixed-format corpora with original-clock lineage | 1 | 0.10 | After current review: explicit native conversion and actual mixed-format WFC |
 | [NS-6_studio_10](NS-6_studio_10.md) — Enable phone recording over local HTTPS | 1 | 0.10 | Operator reports HTTPS worked; complete capture/browser checks remain open |
 | [NS-6_studio_11](NS-6_studio_11.md) — Browse collection metadata and prepare recordings only on use | 1 | 0.10 | Selected: metadata listing, bounded preview and verified selected-entry preparation |

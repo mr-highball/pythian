@@ -41,6 +41,8 @@ uses
   pythian.tools.studio.jobs,
   pythian.tools.studio.worker,
   pythian.tools.studio.reviews,
+  pythian.tools.studio.references,
+  pythian.tools.annotations.media,
   pythian.tools.listen.catalog;
 
 const
@@ -310,6 +312,92 @@ begin
   end;
 end;
 
+procedure CheckOriginalReference(const ACatalog, AHash: String);
+var
+  LRead, LWrite, LSaved, LSource: TJSONObject;
+  LAudio: TMemoryStream;
+  LReader: TWaveFrameReader;
+  LFile: String;
+  LFailed: Boolean;
+begin
+  LRead := ReadListeningSourceReferences(ACatalog, 'studio_authored-batch_0', 'audition');
+  try
+    Check(LRead.Strings['status'] = 'ready', 'Published audition finds retained originals');
+    Check((LRead.Arrays['sources'].Count = 1) and
+      (LRead.Arrays['sources'].Objects[0].Strings['source_sha256'] = AHash),
+      'Reference retains exact source identity');
+    Check((LRead.Arrays['sources'].Objects[0].Int64s['start_frame'] = 0) and
+      (LRead.Arrays['sources'].Objects[0].Int64s['end_frame'] = 64000),
+      'Reference uses actual training extent');
+    Check((Pos('path', LRead.AsJSON) = 0) and
+      (LRead.Arrays['sources'].Objects[0].Strings['title'] = 'Pascal-authored review control'),
+      'Reference exposes recording name without local file paths');
+    LWrite := TJSONObject.Create;
+    try
+      LWrite.Add('format', StudioProjectWriteFormat);
+      LWrite.Add('project_id', 'control');
+      LWrite.Add('expected_revision', 1);
+      LWrite.Add('name', 'Changed after generation');
+      LWrite.Add('style_intent', '');
+      LWrite.Add('learning_mode', 'raw_acoustic');
+      LWrite.Add('sources', TJSONArray.Create);
+      LSource := TJSONObject.Create;
+      LWrite.Arrays['sources'].Add(LSource);
+      LSource.Add('source_sha256', AHash);
+      LSource.Add('selection', 'range');
+      LSource.Add('start_frame', 8000);
+      LSource.Add('end_frame', 16000);
+      LSource.Add('classifications', TJSONArray.Create);
+      LSaved := SaveStudioProject(ACatalog, LWrite);
+      LSaved.Free;
+    finally
+      LWrite.Free;
+    end;
+    LSaved := ReadListeningSourceReferences(ACatalog, 'studio_authored-batch_0', 'audition');
+    try
+      Check(LRead.AsJSON = LSaved.AsJSON, 'Editing current project cannot change generated references');
+    finally
+      LSaved.Free;
+    end;
+  finally
+    LRead.Free;
+  end;
+  LAudio := TMemoryStream.Create;
+  try
+    WriteCatalogAudioRegion(ACatalog, AHash, 8000, 16000, LAudio);
+    LAudio.Position := 0;
+    LReader := TWaveFrameReader.Create(LAudio);
+    try
+      Check((LReader.FrameCount = 8000) and (LReader.SampleRate = 8000),
+        'Primary region reader returns only requested original frames');
+    finally
+      LReader.Free;
+    end;
+    LFailed := False;
+    try
+      WriteCatalogAudioRegion(ACatalog, AHash, 60000, 70000, LAudio);
+    except
+      on E: EAudio do LFailed := True;
+    end;
+    Check(LFailed, 'Primary region reader rejects past-end originals');
+  finally
+    LAudio.Free;
+  end;
+  LFile := ACatalog + PathDelim + 'sources' + PathDelim + AHash + '.wav';
+  Check(RenameFile(LFile, LFile + '.missing'), 'Temporarily hide only authored original');
+  try
+    LRead := ReadListeningSourceReferences(ACatalog, 'studio_authored-batch_0', 'audition');
+    try
+      Check(not LRead.Arrays['sources'].Objects[0].Booleans['available'],
+        'Missing original remains explicit without substituting another recording');
+    finally
+      LRead.Free;
+    end;
+  finally
+    Check(RenameFile(LFile + '.missing', LFile), 'Restore authored original');
+  end;
+end;
+
 procedure Run(const ARoot: String);
 var
   LCatalog: String;
@@ -332,12 +420,15 @@ begin
   LHash := SourceFixture(ARoot);
   LCatalog := ARoot + PathDelim + 'catalog';
   Generate(LCatalog, LHash);
+  CheckOriginalReference(LCatalog, LHash);
   LWrite := NewReview;
   try
     LRead := CreateStudioReview(LCatalog, LWrite);
     try
       Check(LRead.Arrays['samples'].Count = 2, 'Actual paired comparison');
       Check(not LRead.Booleans['revealed'], 'Blind assignment starts unrevealed');
+      Check(LRead.Arrays['samples'].Objects[0].Find('reference_url') = nil,
+        'Blind sample has no source-reference link');
       Check(LRead.Integers['revision'] = 0, 'No fabricated answer');
       Check((Pos('authored-batch', LRead.AsJSON) = 0) and (Pos(LHash, LRead.AsJSON) = 0) and
         (Pos('sha256', LRead.AsJSON) = 0) and (Pos('seed', LRead.AsJSON) = 0),
@@ -359,6 +450,14 @@ begin
         LBindings.Free;
       end;
       Check(IsStudioReviewListeningItemHidden(LCatalog, LItem), 'Generic queue must hide blind mapping');
+      LFailed := False;
+      try
+        LOther := ReadListeningSourceReferences(LCatalog, LItem, 'sample_a');
+        LOther.Free;
+      except
+        on E: EAudio do LFailed := True;
+      end;
+      Check(LFailed, 'Direct source-reference lookup cannot bypass blind reveal');
       Check(IsStudioReviewListeningItem(LCatalog, LItem), 'Blind request belongs to Studio feedback');
       Check(not IsStudioReviewListeningItem(LCatalog, 'studio_authored-batch_0'),
         'Ordinary audition keeps its listening queue owner');
@@ -412,6 +511,15 @@ begin
         Check(LRead.Arrays['samples'].Objects[0].Objects['assignment'].Strings['job_id'] =
           'authored-batch', 'Auditable assignment exposed only at reveal');
         Check(not LRead.Booleans['grounded_acceptance'], 'Mechanical review does not grant musical acceptance');
+        Check(LRead.Arrays['samples'].Objects[0].Find('reference_url') <> nil,
+          'Submitted comparison exposes original reference control');
+        LOther := ReadListeningSourceReferences(LCatalog, LItem, 'sample_a');
+        try
+          Check(LOther.Arrays['sources'].Objects[0].Strings['source_sha256'] = LHash,
+            'Revealed neutral sample resolves its exact original');
+        finally
+          LOther.Free;
+        end;
       finally
         LRead.Free;
       end;

@@ -137,6 +137,19 @@ the accepted editor mechanics in authoring_01 retain their scoped evidence.
 
 **Dev Notes:**
 
+- 2026-10-05, Big Boss: after saving a Studio generation review, the operator
+  reports that ordinary Pythian navigation opened the former host address over
+  HTTP; editing to the currently assigned address restored the app. The stable
+  server remained running throughout. Current Studio/source/listening pages
+  return 200 over both HTTP and HTTPS, with no redirect and `Cache-Control:
+  no-store`. Audited primary and deployed navigation uses relative paths; the
+  phone-setup HTTPS link is built from the current bind address. No old address,
+  HTML base override or origin stored for navigation was found. The route that
+  restored the old origin remains unexplained: do not attribute it to an
+  operator edit or claim the navigation defect fixed. Exact clicked control and
+  browser reproduction remain needed. Private checks are under ignored
+  `build/navigation-review/`; no service restart, operator write or QA audio.
+
 - 2026-10-02, Big Boss: repaired the operator-reported absent stable service.
   The checked bundle now runs from an independent hidden Windows launcher;
   service lifetime was verified after that launcher exited, followed by HTTP,

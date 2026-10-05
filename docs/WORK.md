@@ -12,6 +12,68 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Original/generated reference comparison — 2026-10-05
+
+Big Boss's solo [studio_22](TODO/NS-6_studio_22.md) connects selected original
+audio beside generated auditions in both listening views. Names and original
+ranges come from the exact saved finite generation, bound to its published
+WAV/model/request. Current project edits cannot change the comparison. A shared
+Pascal component loads reference metadata on demand and uses the existing
+bounded WAV endpoint for thirty-second windows anywhere in the selected range.
+Original timestamps, selection choices and previous/next/seek controls remain
+beside the generated player. Switching players pauses the other; closing the
+view releases playback. Unsupported or missing source references stay explicit.
+
+New ordinary comparisons permit source listening before feedback; blind mode is
+an explicit choice, and existing blind reviews retain their reveal contract.
+No stored request, feedback or generation is rewritten. No synthesis tuning or
+automatic retraining was performed. The operator's negative result remains
+attributed to [continuity_01](TODO/NS-5_continuity_01.md).
+
+AC1–3 engineering checks: 61 native review/iteration checks with zero leaks,
+24 Pascal DOM reference checks, 20 retained recovery checks, and isolated
+fixed-slot HTTP original/reference/media-cookie checks. Actual desktop/narrow
+browser playback is still unavailable and required by AC4. Keep studio_22 open;
+the operator can review the checked implementation without treating it as full
+acceptance. Evidence and frozen assets: `build/source-reference/`.
+The checked version is deployed through its `start-studio-independent.ps1`.
+All fourteen stable artifacts match and all 5,948 preceding operator metadata
+hashes are unchanged. Both review paths resolve the actual selected original;
+a one-second original request returns only 192,044 bytes. The isolated QA
+service is closed; no QA browser/audio was opened. Reload the page to obtain
+the new controls and session after this guarded restart.
+One bounded implementation batch advances AC1–3 engineering; nonclosing count
+remains 0. Ledger: **53 open / 53 DONE**, **52.45 current / 47.55 remaining**.
+
+## Saved musical review and navigation incident — 2026-10-05
+
+Big Boss read the operator's submitted revision-1 Studio response from durable
+storage and the live review API. The 20-second audition received style fit 0/3,
+continuity 1/3 and technical quality 1/3; style classification and repetition
+remain unknown. The comment describes abundant jittering and missing sustains.
+This is actual negative musical evidence. [studio_03](TODO/NS-6_studio_03.md)
+retains the audible-use/Save evidence; [continuity_01](TODO/NS-5_continuity_01.md)
+owns musical defect assessment without restarting its stopped tuning sequence.
+The reviewed output is the earlier completed short-selection job, not a new
+post-repair generation. Its raw-acoustic policy uses roughly 85 ms windows,
+21 ms hops, eight tokens and 32 candidates; cause and remedy remain unproven.
+
+The subsequent phone failure targeted the previous LAN address over HTTP.
+The operator reports standard app navigation and confirms that editing to the
+current host restored access. The same stable process stayed running. Current
+Studio, source/listening and phone-setup pages return 200 on both protocols,
+with no redirect; navigation source and deployed assets contain no old address
+or HTML base override. Relative links preserve the page's existing origin.
+This excludes a literal stale address in the audited links, but does not explain
+the operator's transition; do not claim a fixed navigation bug or operator error.
+[authoring_02](TODO/NS-6_authoring_02.md) retains the reproduction gap. No service
+restart or production mutation was needed, and no QA browser/audio was opened.
+Private evidence: `build/navigation-review/`. This evidence readback is not a
+new implementation/experimental batch; no stop counter resets or credit changes.
+At this readback the ledger remained **52 open / 53 DONE**; the subsequent
+source-comparison repair above adds one zero-credit open task. Completion
+remains **52.45 current / 47.55 remaining**.
+
 ## Background recovery and long-source learning — 2026-10-05
 
 Big Boss's solo [studio_21](TODO/NS-6_studio_21.md) repairs the operator's two

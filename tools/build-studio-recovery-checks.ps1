@@ -24,16 +24,18 @@ param(
   [Parameter(Mandatory=$true)][string] $Compiler,
   [Parameter(Mandatory=$true)][string] $RtlSource,
   [Parameter(Mandatory=$true)][string] $RtlJavascript,
-  [Parameter(Mandatory=$true)][string] $DomModule
+  [Parameter(Mandatory=$true)][string] $DomModule,
+  [ValidateSet('recovery','references')][string] $Suite = 'recovery'
 )
 $ErrorActionPreference = 'Stop'
 $repository = Split-Path -Parent $PSScriptRoot
-$output = Join-Path $repository 'build/studio-recovery-tests'
+$output = Join-Path $repository "build/studio-$Suite-tests"
+$testProgram = if ($Suite -eq 'references') { 'pythian.tests.listening.references' } else { 'pythian.tests.studio.recovery' }
 New-Item -ItemType Directory -Force -Path $output | Out-Null
 $domPath = (Resolve-Path -LiteralPath $DomModule).Path
 & $Compiler '-B' '-Tbrowser' '-Mdelphi' '-Jc' "-Ji$RtlJavascript" "-Fu$RtlSource" `
   "-Fu$(Join-Path $repository 'src')" "-Fu$(Join-Path $repository 'tools/label-workbench')" `
-  "-FU$output" "-FE$output" (Join-Path $repository 'tests/pythian.tests.studio.recovery.lpr')
+  "-FU$output" "-FE$output" (Join-Path $repository "tests/$testProgram.lpr")
 if ($LASTEXITCODE -ne 0) { throw 'Studio recovery test compilation failed' }
 # Only test-host setup lives here; behavior and assertions are Pascal-owned.
 $hostScript = @'
@@ -46,7 +48,11 @@ const dom = new JSDOM(fs.readFileSync(STUDIO_HTML, 'utf8'), {
 const nativeTimer = dom.window.setTimeout.bind(dom.window);
 dom.window.setTimeout = (fn, delay, ...args) =>
   nativeTimer(fn, delay === 15000 ? 30 : delay === 3000 ? 5 : delay, ...args);
-dom.window.eval(fs.readFileSync(path.join(__dirname, 'pythian.tests.studio.recovery.js'), 'utf8'));
+// DOM host only: no real device or speaker is opened by these checks.
+dom.window.HTMLMediaElement.prototype.pause = function() { this.testPauseCount = (this.testPauseCount || 0) + 1; };
+dom.window.HTMLMediaElement.prototype.load = function() {};
+dom.window.HTMLMediaElement.prototype.testPauseCount = 0;
+dom.window.eval(fs.readFileSync(path.join(__dirname, TEST_PROGRAM), 'utf8'));
 dom.window.rtl.run();
 const started = Date.now();
 const check = setInterval(() => {
@@ -62,7 +68,7 @@ const check = setInterval(() => {
   }
 }, 20);
 '@
-$hostScript = $hostScript.Replace('DOM_MODULE', ($domPath | ConvertTo-Json -Compress)).Replace(
+$hostScript = $hostScript.Replace('TEST_PROGRAM', (("$testProgram.js") | ConvertTo-Json -Compress)).Replace('DOM_MODULE', ($domPath | ConvertTo-Json -Compress)).Replace(
   'STUDIO_HTML', ((Join-Path $repository 'tools/label-workbench/studio.html') | ConvertTo-Json -Compress))
 $hostPath = Join-Path $output 'run.cjs'
 [IO.File]::WriteAllText($hostPath, $hostScript)

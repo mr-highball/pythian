@@ -79,7 +79,7 @@ $listenScriptPath = Join-Path $webRoot 'listen.js'
 Remove-Item -LiteralPath $listenScriptPath -Force -ErrorAction SilentlyContinue
 $listenCompilerArguments = @(
   '-B', '-Tbrowser', '-Mdelphi', '-Jc', "-Ji$RtlJavascript",
-  "-Fu$RtlSource", "-FU$unitRoot", "-FE$webRoot", $listenProgram
+  "-Fu$RtlSource", "-Fu$(Join-Path $repositoryRoot 'src')", "-FU$unitRoot", "-FE$webRoot", $listenProgram
 )
 & $Compiler @listenCompilerArguments
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

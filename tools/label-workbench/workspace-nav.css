@@ -287,3 +287,21 @@ SOFTWARE.
     padding: .7rem;
   }
 }
+.original-reference {
+  margin-block: 1rem;
+  padding: .85rem;
+  border: 1px solid #58747c;
+  border-radius: .75rem;
+  background: #102e35;
+  min-width: 0;
+}
+.original-reference summary { cursor: pointer; color: #b1ead8; font-weight: 700; }
+.original-reference label { display: grid; gap: .45rem; margin-block: .7rem; }
+.original-reference select, .original-reference audio, .original-reference input {
+  width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box;
+}
+.original-reference select { text-overflow: ellipsis; }
+.original-reference p { overflow-wrap: anywhere; }
+.original-clock { font-variant-numeric: tabular-nums; }
+.original-transport { display: flex; flex-wrap: wrap; gap: .5rem; }
+.original-transport button { min-height: 44px; flex: 1 1 6rem; }

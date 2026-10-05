@@ -35,6 +35,7 @@ uses
   SysUtils,
   Math,
   pythian.workspace.tabs,
+  pythian.listening.references,
   pythian.studio.sources;
 
 type
@@ -51,6 +52,8 @@ type
     FBusy: Boolean;
     FEpoch: Integer;
     FTimer: NativeInt;
+    FReferences: array of TListeningReference;
+    procedure ClearReferences;
     function El(const AId: String): TJSElement;
     function Add(AParent: TJSElement; const ATag, AText, AClass: String): TJSElement;
     function Button(AParent: TJSElement; const AText, AAction, AValue: String): TJSElement;
@@ -256,6 +259,14 @@ begin
   end;
 end;
 
+procedure TStudioReviews.ClearReferences;
+var
+  I: Integer;
+begin
+  for I := 0 to High(FReferences) do FReferences[I].Free;
+  SetLength(FReferences, 0);
+end;
+
 constructor TStudioReviews.Create(const AFetch: TStudioFetch; const ANext: TStudioNextBatch);
 begin
   inherited Create;
@@ -268,6 +279,7 @@ end;
 
 destructor TStudioReviews.Destroy;
 begin
+  ClearReferences;
   Inc(FEpoch);
   window.clearTimeout(FTimer);
   window.removeEventListener('pagehide', @Hide);
@@ -320,9 +332,9 @@ begin
   LField := Field(LDetails, 'review-styles', 'Labels for these results (one per line)', 'textarea');
   TJSHTMLTextAreaElement(LField).value := 'Matches my intent' + #10 + 'Different direction';
   LField.setAttribute('maxlength', '512');
-  LField := Field(LDetails, 'review-blind', 'Hide sample identities until feedback is saved', 'input');
+  LField := Field(LDetails, 'review-blind', 'Blind comparison (hide originals until after feedback)', 'input');
   LField.setAttribute('type', 'checkbox');
-  TJSHTMLInputElement(LField).checked := True;
+  TJSHTMLInputElement(LField).checked := False;
   LField := Field(LDetails, 'review-mode', 'Review purpose', 'select');
   Option(LField, 'development', 'Explore and improve');
   Option(LField, 'frozen_evaluation', 'Keep comparison fixed');
@@ -665,6 +677,7 @@ var
   LChoiceIndex: Integer;
 begin
   StopAudio;
+  ClearReferences;
   LMount := El('review-current');
   LMount.textContent := '';
   if FReview = nil then
@@ -709,6 +722,14 @@ begin
       LPlayer.src := StudioText(LSample, 'audio_url');
       LPlayer.addEventListener('play', @Play);
       LPlayer.setAttribute('aria-label', StudioText(LSample, 'label') + ' audio');
+      if StudioText(LSample, 'reference_url') <> '' then
+      begin
+        SetLength(FReferences, Length(FReferences) + 1);
+        FReferences[High(FReferences)] := TListeningReference.Create(LCard,
+          FFetch, StudioText(LSample, 'reference_url'));
+      end
+      else if Boolean(FReview['blind']) and not Boolean(FReview['revealed']) then
+        Add(LCard, 'p', 'Originals appear after feedback in this blind comparison.', 'hint');
       LId := 'style_' + LAlias;
       LField := Field(LCard, 'review-answer-' + LId, 'Which label fits this result?', 'select');
       Option(LField, '', 'Choose after listening');

@@ -27,7 +27,7 @@ program PythianFullOutputListener;
 {$H+}
 {$modeswitch externalclass}
 
-uses JS, Web, SysUtils, pythian.workspace.navigation;
+uses JS, Web, SysUtils, pythian.workspace.navigation, pythian.listening.references;
 
 type
   TListenerWindow = class external name 'Window' (TJSWindow)
@@ -59,6 +59,7 @@ type
     FAudioPlayers: TJSArray;
     FAudioFailures: TJSArray;
     FAudioReady: TJSArray;
+    FReferences: array of TListeningReference;
     FSelectedId: String;
     FSelectedPending: Boolean;
     FSelectedIndex: Integer;
@@ -502,6 +503,8 @@ var
   I, J, K: Integer;
 begin
   PauseAudioPlayers;
+  for I := 0 to High(FReferences) do FReferences[I].Free;
+  SetLength(FReferences, 0);
   FAudioPlayers := TJSArray.new;
   FAudioFailures := TJSArray.new;
   FAudioReady := TJSArray.new;
@@ -580,6 +583,13 @@ begin
     LSelect.setAttribute('role', 'status');
     LSelect.setAttribute('aria-live', 'polite');
     AddOption(TJSHTMLSelectElement(El('comment-asset')), LAssetName, LId);
+    if Str(LAsset, 'role') = 'generated' then
+    begin
+      SetLength(FReferences, Length(FReferences) + 1);
+      FReferences[High(FReferences)] := TListeningReference.Create(LCard, @FetchApi,
+        '/api/listen-references?request=' + encodeURIComponent(Str(FRequest, 'id')) +
+        '&asset=' + encodeURIComponent(LId));
+    end;
   end;
   LRanges := Arr(FRequest, 'ranges');
   for I := 0 to LRanges.length - 1 do
