@@ -31,9 +31,18 @@ interface
 uses JS, Web, SysUtils, Math, pythian.studio.sources;
 
 function StudioStageText(const AStage: String): String;
+function StudioByteSize(const ABytes: Double): String;
 procedure DrawStudioProgress(const AParent: TJSElement; const AJob: TJSObject);
 
 implementation
+
+function StudioByteSize(const ABytes: Double): String;
+begin
+  if ABytes >= 1073741824 then Result := FormatFloat('0.00', ABytes / 1073741824) + ' GiB'
+  else if ABytes >= 1048576 then Result := FormatFloat('0.0', ABytes / 1048576) + ' MiB'
+  else if ABytes >= 1024 then Result := FormatFloat('0.0', ABytes / 1024) + ' KiB'
+  else Result := IntToStr(Trunc(ABytes)) + ' bytes';
+end;
 
 function StudioStageText(const AStage: String): String;
 begin
@@ -55,6 +64,8 @@ begin
     'publish_listening': Result := 'Save results for review';
     'completed': Result := 'Complete';
     'failed': Result := 'Could not finish';
+    'runtime_budget', 'preparation_timeout': Result := 'Time limit reached';
+    'client_disconnected': Result := 'Playback connection lost';
     'interrupted': Result := 'Interrupted';
     'cancelled': Result := 'Cancelled';
     'cancelled_before_start': Result := 'Cancelled before starting';
@@ -114,6 +125,17 @@ begin
   LRoot.className := 'learning-progress';
   LStep := StepNumber(LStage);
   LText := StudioStageText(LStage);
+  if LStatus = 'failed' then
+  begin
+    LStep := 0;
+    if (LStage <> 'runtime_budget') and (LStage <> 'preparation_timeout') and
+      (LStage <> 'client_disconnected') then LText := 'Could not finish';
+  end;
+  if LStatus = 'cancelled' then
+  begin
+    LStep := 0;
+    LText := 'Cancelled';
+  end;
   if LStep > 0 then LText := 'Step ' + IntToStr(LStep) + ' of 6 · ' + LText;
   LLabel := Add(LRoot, 'p', LText);
   LLabel.className := 'progress-heading';
@@ -144,7 +166,7 @@ begin
     if LPass > 0 then LText := 'Pass ' + IntToStr(LPass) + ' · ' + LText;
     if LUnit = 'bytes' then
       LDetail := FormatFloat('0.0', LDone / 1048576) + ' / ' +
-        FormatFloat('0.0', LTotal / 1048576) + ' MB in this recording'
+        FormatFloat('0.0', LTotal / 1048576) + ' MiB of original file'
     else if LUnit = 'observations' then
       LDetail := IntToStr(Trunc(LDone)) + ' / ' + IntToStr(Trunc(LTotal)) + ' audio windows'
     else if LUnit = 'frames' then
@@ -154,6 +176,9 @@ begin
     else LDetail := IntToStr(Trunc(LDone)) + ' / ' + IntToStr(Trunc(LTotal));
     LBar.setAttribute('aria-valuetext', LText + ' · ' + LDetail);
     Add(LRoot, 'p', LText + ' · ' + LDetail);
+    if (LUnit = 'bytes') and ((LStage = 'verify_sources') or
+      (LStage = 'verify_model_sources') or (LStage = 'verify_output_sources')) then
+      Add(LRoot, 'small', 'Checking the full file identity. Only your selected audio is learned.');
     if LPass > 0 then
       Add(LRoot, 'small', 'Learning makes several passes. This bar shows the current pass.');
     if LDone = LTotal then Add(LRoot, 'small', 'Finishing this step…');

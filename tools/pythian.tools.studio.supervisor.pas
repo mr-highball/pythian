@@ -316,7 +316,7 @@ begin
     end;
     if GetTickCount64 - FStarted > QWord(FMaximumSeconds) * 1000 then
     begin
-      StopChild('runtime_budget', 'Native worker exceeded the declared wall-clock limit');
+      StopChild('runtime_budget', StudioTimeoutMessage);
       Exit;
     end;
     if FIsStream then

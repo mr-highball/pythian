@@ -164,8 +164,10 @@ they do not disappear or move into the new tasks. Scoping left 49.40 accepted;
 independent project/setup acceptance subsequently adds 4 NS-6 / 0.40 overall.
 Private corpora, raw WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall.
 Accepted starting actions/navigation and large-library refresh add 2 NS-6 / 0.20 overall.
-The current ledger is **52.45 accepted / 47.55 remaining**, **51 open / 53 DONE**.
-NS-6 is **54 accepted / 46 unearned** with fifteen open tasks. Goal weights are unchanged.
+The current ledger is **52.45 accepted / 47.55 remaining**, **52 open / 53 DONE**.
+The zero-credit [background recovery and long-source repair](TODO/NS-6_studio_21.md)
+has passed recorded replays and remains open for actual browser checks.
+NS-6 is **54 accepted / 46 unearned** with sixteen open tasks. Goal weights are unchanged.
 
 The accepted [shared observability audit](TODO/DONE/NS-6_observability_01.md)
 extends common progress to source analysis, effects, capture and pitch jobs.
@@ -345,14 +347,19 @@ Jobs retain immutable requests and append-only state events beneath the private
 catalog's `studio/` directory. Requests use stable identities so a lost response
 can be reconciled. One ordinary worker and one live-session worker run per catalog,
 using the same supervisor and fixed executable. At most 32 jobs are queued and
-256 retained. Collection refreshes have a two-hour worker limit; short generation
-and other jobs keep a ten-minute limit. Live sessions permit 48 hours of wall time
+256 retained. Collection refreshes and new audition-learning jobs have a two-hour
+worker limit; other finite jobs keep ten minutes. Live sessions permit 48 hours of wall time
 including pauses, with ten minutes for preparation and a 90-second client lease.
 Historic requests without an explicit
 budget retain their ten-minute limit. The immutable request controls the worker,
 supervisor and displayed job limit. Cancellation terminates a child that does
 not cooperate. Interrupted active jobs become failed rather than ready.
 Completed source/model/audio hashes and original-frame lineage remain retained.
+Audition jobs run independently of the browser. The page restores the selected
+project's latest batch and reconnects after visibility, page or network changes;
+failed status reads retry without submitting work. Live playback still needs its
+client connection. File identity verification reads whole originals even for
+short selections; only selected frames reach analysis and learning.
 Partial seed outcomes remain visible; incomplete batches do not enter listening.
 Job writes wait up to two seconds for another process's current write; an
 unavailable lock fails without stealing ownership or changing accepted state.

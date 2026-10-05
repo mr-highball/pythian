@@ -66,8 +66,9 @@ presentation adapter; stage identifiers belong to the operation.
   the running bar; reused learning explicitly skips analysis and learning.
 - The core owns no clock, thread, UI, device or browser API. Hosts schedule work,
   choose publication frequency and maintain their own cancellation flag. Studio
-  checks cancellation on every checkpoint and throttles repeated same-stage/pass
-  publication to 500 ms; boundaries publish immediately.
+  checks deadlines at every checkpoint and polls disk-backed cancellation at most
+  once per 100 ms, with an unconditional check before completion. Repeated
+  same-stage/pass publication is throttled to 500 ms; boundaries publish immediately.
 
 For example, a caller-owned observer can forward measurements and stop a scan:
 

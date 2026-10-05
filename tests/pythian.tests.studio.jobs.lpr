@@ -385,7 +385,7 @@ begin
     try
       Check(LResult.Integers['count'] = 3, 'Retained job count');
       Check((LResult.Integers['maximum_library_refresh_seconds'] = 7200) and
-        (LResult.Integers['maximum_generation_seconds'] = 600),
+        (LResult.Integers['maximum_generation_seconds'] = MaximumStudioTrainingSeconds),
         'Job inventory exposes separate collection and generation budgets');
       Check(LResult.Arrays['jobs'].Objects[0].Find('results') = nil,
         'List uses compact summaries');
@@ -483,7 +483,8 @@ begin
       'Empty preparation selection rejects before publication');
     Check(StudioJobRuntimeSeconds('library_prepare') = 7200,
       'Selected full verification retains separate long budget');
-    Check(StudioJobRuntimeSeconds('train_generate') = 600, 'Generation budget unchanged');
+    Check(StudioJobRuntimeSeconds('train_generate') = MaximumStudioTrainingSeconds,
+      'Long-source training gets a finite two-hour budget');
   finally
     LWrite.Free;
   end;

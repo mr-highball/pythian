@@ -12,6 +12,49 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Background recovery and long-source learning — 2026-10-05
+
+Big Boss's solo [studio_21](TODO/NS-6_studio_21.md) repairs the operator's two
+600-second failures. One stopped during whole-file verification; the other
+selected a complete 135-minute mix and stopped during analysis. Neither was a
+recorded cancellation. A browser timeout could separately stop status polling.
+
+Host cancellation-file checks now run at a 100 ms cadence while deadline checks
+remain frequent; final completion checks cancellation unconditionally. New
+audition jobs receive a finite 7,200-second budget shared by worker/supervisor.
+Old immutable attempts retain their original limits. Source integrity and core
+algorithms remain unchanged. The page restores the saved project's latest batch,
+reconnects after suspension/network return, retries failed status reads and ignores
+stale replies without resubmitting work. Original verification bytes, selected
+training duration and requested output are distinguished; timeouts say what failed.
+
+AC1–3 engineering evidence: 165 real worker, 60 lifecycle, 19 supervisor and
+20 maintained Pascal DOM recovery checks. A 32 MiB checkpoint probe measured
+844 ms unobserved, 5,281 ms with per-callback cancellation I/O and 875 ms with
+the host cadence. Explicit cancellation during a large original-file check
+completed in 234 ms. The operator's 156.171-second passage completed cold replay
+in 8m53s while another large replay was running; model and WAV hashes match its
+earlier successful result exactly. No musical quality acceptance is inferred.
+The complete 135-minute mix also completed cold replay in 29m48s: all 389,904,384
+selected frames / 380,766 observations were learned and a verified 960,000-frame
+(20-second) audition was published in the isolated catalog. No source truncation.
+An isolated one-second request confirms that native timeout classification still
+works and publishes no output.
+
+The checked native/UI repair is deployed to the fixed stable slot. Launcher and
+artifact manifest: `build/studio-recovery/start-studio-independent.ps1` and
+`build/studio-recovery/CANDIDATE-ASSETS.json`. All 5,944 prior operator JSON/JSONL
+hashes are unchanged. Current address/certificate/firewall settings are retained.
+
+AC4 remains open only for actual browser validation: Codex Browser bootstrap references a missing plugin
+service module before browser selection. DOM checks do not establish real browser
+layout or physical-phone suspension. No QA browser/audio was opened. Both owned
+replay workers exited; the unused queued replay was cancelled, and no QA service
+or audio remains. Big Boss retains the browser check; do not move the task to DONE or
+claim full acceptance. One combined worker/status batch closes AC1–3 engineering
+criteria, so the consecutive nonclosing count remains 0. No helper QA submission.
+Ledger: **52 open / 53 DONE**, **52.45 current / 47.55 remaining**, NS-6 **54/46**.
+
 ## Shared bulk callbacks and observability audit — 2026-10-03
 
 Big Boss's solo [observability_01](TODO/DONE/NS-6_observability_01.md) is accepted

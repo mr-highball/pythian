@@ -37,9 +37,11 @@ const
   StudioJobWriteFormat = 'pythian.studio.job.write.v1';
   StudioJobFormat = 'pythian.studio.job.v1';
   StudioJobsFormat = 'pythian.studio.jobs.v1';
+  StudioTimeoutMessage = 'Time limit reached. Try a shorter selection or smaller operation.';
   MaximumStudioJobs = 256;
   MaximumStudioQueuedJobs = 32;
   MaximumStudioJobSeconds = 600;
+  MaximumStudioTrainingSeconds = 7200;
   MaximumStudioLibrarySeconds = 7200;
   MaximumStudioSessionSeconds = 172800;
   MaximumStudioJobMemoryBytes = 128 * 1024 * 1024;
@@ -48,11 +50,12 @@ const
 
 type
   EStudioJobCancelled = class(EAudio);
+  EStudioJobTimeout = class(EAudio);
 
 { Owned detached results; no source PCM reads, WFC or worker launch here. }
 function ParseStudioJobWrite(const AText: String): TJSONObject;
-{ Collection verification streams potentially hours of source audio; generation
-  retains its shorter limit. Both worker and supervisor use this policy. }
+{ Collection verification and audition learning can read hours of source audio.
+  Both worker and supervisor use the declared finite job policy. }
 function StudioJobRuntimeSeconds(const AKind: String): Integer;
 function StudioJobRequestRuntimeSeconds(const ARequest: TJSONObject): Integer;
 function PrepareStudioJob(const ACatalogRoot: String;
@@ -114,6 +117,8 @@ begin
     Result := MaximumStudioSessionSeconds
   else if (AKind = 'library_refresh') or (AKind = 'library_prepare') then
     Result := MaximumStudioLibrarySeconds
+  else if AKind = 'train_generate' then
+    Result := MaximumStudioTrainingSeconds
   else
     Result := MaximumStudioJobSeconds;
 end;
@@ -923,6 +928,7 @@ begin
           Result.Add('estimated_analyzed_frames', LSelectedFrames);
           Result.Add('estimated_analyzed_features', LEstimatedFeatures);
           Result.Add('selected_seconds', LSelectedFrames / LRate);
+          Result.Add('unique_source_bytes_to_verify', LBytes);
           Result.Add('expected_used_status', 'All selected ranges or explicit failure; no silent truncation');
           Result.Add('duration_ms', LRequest.Integers['duration_ms']);
           Result.Add('output_count', LRequest.Arrays['seeds'].Count);
@@ -1132,7 +1138,7 @@ begin
     Result.Add('maximum_retained', MaximumStudioJobs);
     Result.Add('maximum_queued', MaximumStudioQueuedJobs);
     Result.Add('maximum_worker_seconds', MaximumStudioLibrarySeconds);
-    Result.Add('maximum_generation_seconds', MaximumStudioJobSeconds);
+    Result.Add('maximum_generation_seconds', MaximumStudioTrainingSeconds);
     Result.Add('maximum_library_refresh_seconds', MaximumStudioLibrarySeconds);
     Result.Add('logical_memory_budget_bytes', MaximumStudioJobMemoryBytes);
   except

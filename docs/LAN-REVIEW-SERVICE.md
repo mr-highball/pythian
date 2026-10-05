@@ -3,6 +3,10 @@
 The durable reviewed catalog lives outside `build/`. Checked native binaries
 and the twelve matching browser assets use fixed ignored `stable` and `qa` slots.
 Studio jobs use the matching `pythian.studio.worker.exe` beside the service.
+Audition learning runs on the host, independently of a phone page. New audition
+jobs allow two hours; returning to the page reconnects status without resubmitting.
+Live playback keeps its separate client lease. Restarting the service interrupts
+active workers, so wait for them to finish or explicitly cancel them first.
 The paths stay fixed across rebuilds so Windows Firewall does not see a new
 application identity. Host addresses and catalog locations are local settings;
 never copy a historical machine address or process ID into a new launch.

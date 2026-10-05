@@ -132,6 +132,8 @@ type
     FDirectory: String;
     FRequest: TJSONObject;
     FStarted: QWord;
+    FLastControlCheck: QWord;
+    FMaximumMilliseconds: QWord;
     FSources: array of TSourceHandle;
     FRanges: array of TRangeHandle;
     FOptions: TAnalysisOptions;
@@ -176,6 +178,7 @@ type
     constructor Create(const ACatalogRoot, AJobId: String; const ARequest: TJSONObject);
     destructor Destroy; override;
     procedure Check;
+    procedure CheckNow;
     function FailureResults(const AStatus: String): TJSONObject;
     function Run(const ALibraryRoot: String;
       const AExtension: TStudioWorkerExtension): TJSONObject;
@@ -285,6 +288,7 @@ begin
   FDirectory := StudioJobDirectory(FCatalogRoot, FJobId);
   FRequest := ARequest;
   FStarted := GetTickCount64;
+  FMaximumMilliseconds := QWord(StudioJobRequestRuntimeSeconds(FRequest)) * 1000;
   FOptions := DefaultAnalysisOptions;
   FCurrentOrdinal := -1;
   FPartial := TJSONObject.Create;
@@ -342,12 +346,27 @@ end;
 
 procedure TStudioWork.Check;
 begin
+  if GetTickCount64 - FStarted > FMaximumMilliseconds then
+  begin
+    CheckNow;
+    Exit;
+  end;
+  { Big Boss: audio/hash callbacks remain frequent, but disk-backed control
+    checks run at most every 100 ms. A checkpoint must not become the work. }
+  if (FLastControlCheck <> 0) and
+    (GetTickCount64 - FLastControlCheck < 100) then Exit;
+  CheckNow;
+end;
+
+procedure TStudioWork.CheckNow;
+begin
+  FLastControlCheck := GetTickCount64;
   if StudioJobCancelled(FCatalogRoot, FJobId) then
   begin
     raise EStudioJobCancelled.Create('Studio job cancellation requested');
   end;
-  Need(GetTickCount64 - FStarted <= QWord(StudioJobRequestRuntimeSeconds(FRequest)) * 1000,
-    'Studio worker exceeded its wall-clock budget');
+  if GetTickCount64 - FStarted > FMaximumMilliseconds then
+    raise EStudioJobTimeout.Create(StudioTimeoutMessage);
   if FRequest.Strings['kind'] = 'stream_generate' then
   begin
     Need(FStreaming or (GetTickCount64 - FStarted <= QWord(MaximumStudioJobSeconds) * 1000),
@@ -361,7 +380,7 @@ procedure TStudioWork.Progress(const AStage: String; const ADone, ATotal: Int64;
   const AUnit: String; const APass: Integer);
 begin
   Check;
-  { Big Boss: cancellation is checked at every callback, immutable status writes
+  { Big Boss: callbacks share bounded control checks; immutable status writes
     at most twice a second within a pass. Boundaries are always published. }
   if (AStage = FLastProgressStage) and (APass = FLastProgressPass) and
     (ATotal = FLastProgressTotal) and (ADone >= FLastProgressDone) and
@@ -1407,13 +1426,23 @@ begin
       try
         LResults := LWork.Run(ALibraryRoot, AExtension);
         try
-          LWork.Check;
+          LWork.CheckNow;
           AdvanceStudioJob(ACatalogRoot, AJobId, 'completed', 'completed', 1, 1, LResults);
           Result := True;
         finally
           LResults.Free;
         end;
       except
+        on E: EStudioJobTimeout do
+        begin
+          LResults := LWork.FailureResults('failed');
+          try
+            AdvanceStudioJob(ACatalogRoot, AJobId, 'failed', 'runtime_budget', 0, 0,
+              LResults, 'runtime_budget', E.Message);
+          finally
+            LResults.Free;
+          end;
+        end;
         on E: EStudioJobCancelled do
         begin
           LResults := LWork.FailureResults('cancelled');

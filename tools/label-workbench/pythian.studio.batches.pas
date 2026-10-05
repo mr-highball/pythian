@@ -64,6 +64,9 @@ type
     FJob: TJSObject;
     FSelectedId: String;
     FLastHistory: String;
+    FDisposed: Boolean;
+    procedure ScheduleRefresh;
+    function ResumeStatus(AEvent: TEventListenerEvent): Boolean;
     function El(const AId: String): TJSElement;
     function Add(AParent: TJSElement; const ATag, AText, AClass: String): TJSElement;
     function Button(AParent: TJSElement; const AId, AText: String): TJSElement;
@@ -293,7 +296,7 @@ begin
   LControl.id := 'batch-preflight';
   LDetails := Add(LShort, 'details', '', 'advanced');
   Add(LDetails, 'summary', 'Work limits', '');
-  Add(LDetails, 'p', 'Worker: 10 minutes; logical memory: 128 MiB; original sources: 32 GiB; ' +
+  Add(LDetails, 'p', 'Worker: 2 hours; logical memory: 128 MiB; original sources: 32 GiB; ' +
     '500,000 feature observations; 32 recordings, 64 selected ranges and 3 outputs. ' +
     'Full source verification happens in the worker. Cancellation waits for worker checkpoints.',
     'hint');
@@ -445,6 +448,7 @@ procedure TStudioBatches.SetProject(AProject: TJSObject; AUnsaved: Boolean);
 var
   LOldKey: String;
   LNewKey: String;
+  LProjectChanged: Boolean;
   LKeepParent: Boolean;
   LRows: TJSArray;
   LHasUnassigned: Boolean;
@@ -452,6 +456,7 @@ var
 begin
   LOldKey := StudioText(FProject, 'snapshot_sha256');
   LNewKey := StudioText(AProject, 'snapshot_sha256');
+  LProjectChanged := StudioText(FProject, 'project_id') <> StudioText(AProject, 'project_id');
   LKeepParent := (FParentJobId <> '') and (FProject <> nil) and (AProject <> nil) and
     (StudioText(FProject, 'project_id') = StudioText(AProject, 'project_id'));
   if (LOldKey <> LNewKey) or (FUnsaved <> AUnsaved) then
@@ -467,6 +472,13 @@ begin
     FProject := Clone(AProject);
   end;
   FUnsaved := AUnsaved;
+  if LProjectChanged then
+  begin
+    Inc(FLoadEpoch);
+    FSelectedId := '';
+    FJob := nil;
+    DrawJob;
+  end;
   if LOldKey <> LNewKey then
   begin
     if not LKeepParent then
@@ -528,6 +540,7 @@ begin
     end;
   end;
   UpdateControls;
+  if (LOldKey <> LNewKey) or LProjectChanged then ResumeStatus(nil);
 end;
 
 function TStudioBatches.ReadInteger(const AId: String;
@@ -920,11 +933,12 @@ begin
       El('batch-preflight').textContent := StudioTime(StudioNumber(LData, 'selected_seconds')) +
         ' selected across ' + IntToStr(Trunc(StudioNumber(LData, 'source_count'))) +
         ' recordings / ' + IntToStr(Trunc(StudioNumber(LData, 'range_count'))) +
-      ' ranges. Estimated analysis: ' +
-        IntToStr(Trunc(StudioNumber(LData, 'estimated_analyzed_features'))) +
-        ' observations. ' + IntToStr(Trunc(StudioNumber(LRequest, 'duration_ms') / 1000)) +
-        '-second auditions, seeds ' + TJSJSON.stringify(LRequest['seeds']) +
-        '. No sources used yet; content verification is pending.';
+        ' selections. Check ' + StudioByteSize(
+        StudioNumber(LData, 'unique_source_bytes_to_verify')) +
+        ' of original files; learn only the selected audio. Generate ' +
+        IntToStr(Trunc(StudioNumber(LData, 'output_count'))) + ' × ' +
+        IntToStr(Trunc(StudioNumber(LRequest, 'duration_ms') / 1000)) +
+        '-second auditions. Runs on this computer with a two-hour time limit; you can leave this page.';
       Notice('Setup is ready. Press Generate auditions to start.');
     end;
   except
@@ -1183,6 +1197,9 @@ begin
   DrawStudioProgress(LRoot, FJob);
   if (LStatus = 'queued') or (LStatus = 'running') then
   begin
+    if StudioText(FJob, 'kind') = 'train_generate' then
+      Add(LRoot, 'p', 'Runs on this computer. You can leave this page and return for results.', 'hint')
+    else Add(LRoot, 'p', 'Keep this page open for live playback. Audition batches can run while you are away.', 'hint');
     if Boolean(FJob['cancel_requested']) then
     begin
       Add(LRoot, 'p', 'Cancellation requested; waiting for a worker checkpoint.', 'hint');
@@ -1194,7 +1211,11 @@ begin
   end;
   if (LStatus = 'failed') or (LStatus = 'cancelled') then
   begin
-    Add(LRoot, 'p', StudioText(FJob, 'error_message'), 'field-error');
+    if StudioText(FJob, 'error_code') = 'runtime_budget' then
+      Add(LRoot, 'p', 'This attempt reached its ' +
+        IntToStr(Trunc(StudioNumber(FJob, 'maximum_worker_seconds') / 60)) +
+        '-minute time limit. Retry with the current limit, or use fewer or shorter selections.', 'field-error')
+    else Add(LRoot, 'p', StudioText(FJob, 'error_message'), 'field-error');
     if StudioText(FJob, 'kind') = 'stream_generate' then
       Add(LRoot, 'p', 'This session has ended. Generate & play starts a new session from the beginning.', 'hint')
     else if isObject(FJob['request']) then
@@ -1266,11 +1287,17 @@ begin
     LDetails.setAttribute('open', '');
   end;
   Add(LDetails, 'summary', 'Batch and model details', '');
+  Add(LDetails, 'p', 'Time limit for this attempt: ' +
+    IntToStr(Trunc(StudioNumber(FJob, 'maximum_worker_seconds') / 60)) + ' minutes.', 'hint');
   Add(LDetails, 'p', 'Batch ' + StudioText(FJob, 'job_id') +
     ' · request ' + StudioText(FJob, 'request_sha256'), 'track-meta');
   LRequest := Obj(FJob['request']);
   if LRequest <> nil then
   begin
+    if (StudioText(FJob, 'kind') = 'train_generate') and
+      (ArrayAt(LRequest, 'seeds') <> nil) then
+      Add(LDetails, 'p', 'Requested output: ' + IntToStr(ArrayAt(LRequest, 'seeds').length) +
+        ' × ' + StudioTime(StudioNumber(LRequest, 'duration_ms') / 1000) + ' auditions.', 'hint');
     if StudioText(FJob, 'kind') = 'stream_generate' then
       Add(LDetails, 'p', 'Requested length: ' + StudioTime(StudioNumber(LRequest, 'duration_ms') / 1000) +
         '. Only saved review excerpts are retained as WAV files.', 'hint');
@@ -1339,53 +1366,83 @@ begin
         Inc(FLoadEpoch);
         if not FBusy then
         begin
-          Notice('Status is taking too long. Previous results remain; refresh to retry.',
+          Notice('Reconnecting to job status… Previous results are retained.',
             True);
         end;
+        ScheduleRefresh;
       end;
     end, 15000);
   try
-    LData := await(TJSObject, Json('/api/studio/job?id=' + encodeURIComponent(AId), 'GET', ''));
-    if (FSelectedId <> AId) or (LEpoch <> FLoadEpoch) then
-    begin
-      Exit;
-    end;
-    if (StudioText(LData, 'format') <> 'pythian.studio.job.v1') or
-      (StudioText(LData, 'job_id') <> AId) then
-    begin
-      raise Exception.Create('Selected batch identity is unsupported.');
-    end;
-    if (FJob <> nil) and (StudioText(FJob, 'job_id') = AId) and
-      (StudioNumber(LData, 'event_revision') < StudioNumber(FJob, 'event_revision')) then
-    begin
-      Exit;
-    end;
-    if (FJob = nil) or (TJSJSON.stringify(FJob) <> TJSJSON.stringify(LData)) then
-    begin
-      FJob := Clone(LData);
-      DrawJob;
-    end;
-    if LChanged and not FBusy then
-    begin
-      Notice('Selected batch status loaded.');
-    end;
-  except
-    on LException: Exception do
-    begin
-      if LEpoch = FLoadEpoch then
+    try
+      LData := await(TJSObject, Json('/api/studio/job?id=' + encodeURIComponent(AId), 'GET', ''));
+      if (FSelectedId <> AId) or (LEpoch <> FLoadEpoch) then
       begin
-        Notice('Batch status could not be refreshed: ' + LException.Message, True);
+        Exit;
+      end;
+      if (StudioText(LData, 'format') <> 'pythian.studio.job.v1') or
+        (StudioText(LData, 'job_id') <> AId) then
+      begin
+        raise Exception.Create('Selected batch identity is unsupported.');
+      end;
+      if (FJob <> nil) and (StudioText(FJob, 'job_id') = AId) and
+        (StudioNumber(LData, 'event_revision') < StudioNumber(FJob, 'event_revision')) then
+      begin
+        Exit;
+      end;
+      if (FJob = nil) or (TJSJSON.stringify(FJob) <> TJSJSON.stringify(LData)) then
+      begin
+        FJob := Clone(LData);
+        DrawJob;
+      end;
+      if not FBusy and (LChanged or
+        (Pos('Reconnecting', El('batch-notice').textContent) = 1) or
+        (Pos('Batch status could not', El('batch-notice').textContent) = 1)) then
+      begin
+        Notice('Job status is up to date.');
+      end;
+    except
+      on LException: Exception do
+      begin
+        if LEpoch = FLoadEpoch then
+        begin
+          Notice('Batch status could not be refreshed: ' + LException.Message, True);
+          ScheduleRefresh;
+        end;
+      end;
+    else
+      begin
+        if LEpoch = FLoadEpoch then
+        begin
+          Notice('Batch status could not be refreshed. Retained results remain.', True);
+          ScheduleRefresh;
+        end;
       end;
     end;
-  else
-    begin
-      if LEpoch = FLoadEpoch then
-      begin
-        Notice('Batch status could not be refreshed. Retained results remain.', True);
-      end;
-    end;
+  finally
+    window.clearTimeout(LTimer);
   end;
-  window.clearTimeout(LTimer);
+end;
+
+procedure TStudioBatches.ScheduleRefresh;
+begin
+  window.clearTimeout(FPollTimer);
+  if FDisposed or (document.visibilityState = 'hidden') then Exit;
+  FPollTimer := window.setTimeout(
+    procedure()
+    begin
+      Refresh;
+    end, 3000);
+end;
+
+function TStudioBatches.ResumeStatus(AEvent: TEventListenerEvent): Boolean;
+begin
+  Result := True;
+  Inc(FRefreshEpoch);
+  Inc(FLoadEpoch);
+  window.clearTimeout(FRefreshTimer);
+  window.clearTimeout(FPollTimer);
+  FRefreshing := False;
+  if not FDisposed and (document.visibilityState <> 'hidden') then Refresh;
 end;
 
 procedure TStudioBatches.Refresh; async;
@@ -1396,7 +1453,7 @@ var
   LIndex: Integer;
   LActive: Boolean;
 begin
-  if FRefreshing then
+  if FDisposed or FRefreshing or (document.visibilityState = 'hidden') then
   begin
     Exit;
   end;
@@ -1404,7 +1461,7 @@ begin
   window.clearTimeout(FPollTimer);
   Inc(FRefreshEpoch);
   LEpoch := FRefreshEpoch;
-  LActive := False;
+  LActive := True;
   FRefreshTimer := window.setTimeout(
     procedure()
     begin
@@ -1415,9 +1472,10 @@ begin
         FRefreshing := False;
         if not FBusy then
         begin
-          Notice('Status refresh is taking too long. Existing results remain; refresh to retry.',
+          Notice('Reconnecting to job status… Work on the computer continues.',
             True);
         end;
+        ScheduleRefresh;
       end;
     end, 15000);
   try
@@ -1432,6 +1490,19 @@ begin
       raise Exception.Create('Batch history response is unsupported.');
     end;
     FJobs := LJobs;
+    LActive := False;
+    if (FSelectedId = '') and (FProject <> nil) then
+    begin
+      for LIndex := FJobs.length - 1 downto 0 do
+      begin
+        if (StudioText(Obj(FJobs[LIndex]), 'kind') = 'train_generate') and
+          (StudioText(Obj(FJobs[LIndex]), 'project_id') = StudioText(FProject, 'project_id')) then
+        begin
+          FSelectedId := StudioText(Obj(FJobs[LIndex]), 'job_id');
+          Break;
+        end;
+      end;
+    end;
     for LIndex := 0 to FJobs.length - 1 do
     begin
       LActive := LActive or ((StudioText(Obj(FJobs[LIndex]), 'kind') = 'train_generate') and
@@ -1448,14 +1519,14 @@ begin
     begin
       if (LEpoch = FRefreshEpoch) and not FBusy then
       begin
-        Notice('History is unavailable: ' + LException.Message + ' Refresh to retry.', True);
+        Notice('Reconnecting to job status… ' + LException.Message, True);
       end;
     end;
   else
     begin
       if (LEpoch = FRefreshEpoch) and not FBusy then
       begin
-        Notice('History is unavailable. Refresh to retry; existing settings remain.', True);
+        Notice('Reconnecting to job status… Your settings are retained.', True);
       end;
     end;
   end;
@@ -1465,11 +1536,7 @@ begin
     FRefreshing := False;
     if LActive then
     begin
-      FPollTimer := window.setTimeout(
-        procedure()
-        begin
-          Refresh;
-        end, 3000);
+      ScheduleRefresh;
     end;
   end;
 end;
@@ -1619,12 +1686,19 @@ begin
   FJobs := TJSArray.new;
   Layout;
   FLive := TStudioLive.Create(FFetch, @BuildRequest);
+  document.addEventListener('visibilitychange', @ResumeStatus);
+  window.addEventListener('pageshow', @ResumeStatus);
+  window.addEventListener('online', @ResumeStatus);
   DrawHistory;
   UpdateControls;
 end;
 
 destructor TStudioBatches.Destroy;
 begin
+  FDisposed := True;
+  document.removeEventListener('visibilitychange', @ResumeStatus);
+  window.removeEventListener('pageshow', @ResumeStatus);
+  window.removeEventListener('online', @ResumeStatus);
   FLive.Free;
   Inc(FEpoch);
   Inc(FRefreshEpoch);

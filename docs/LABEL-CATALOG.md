@@ -230,7 +230,20 @@ Stage and launch **only from the fixed stable/QA slots** using the
 owns local address/root selection, exact-path firewall rules and browser cleanup;
 compiler-output paths are not server-launch paths.
 
-The page connects without a login form. The server serves the ten named
+The Pascal [job-recovery checks](../tests/pythian.tests.studio.recovery.lpr) use
+the actual Studio DOM and mocked transport to exercise suspension, timeouts,
+reconnect, cancellation and scope labels. They do not establish browser layout
+or physical-phone behavior. With Node and jsdom 29.1.1 installed in an ignored
+test directory, run:
+
+```powershell
+& .\tools\build-studio-recovery-checks.ps1 -Compiler '<verified-pas2js-executable>' -RtlSource '<matched-rtl-source-directory>' -RtlJavascript '<matched-rtl.js>' -DomModule '<test-directory>/node_modules/jsdom'
+```
+
+The runner compiles the maintained Pascal assertions and sets up the DOM host;
+it does not download dependencies or open a browser.
+
+The page connects without a login form. The server serves the twelve named
 source/listening/Studio assets and keeps catalog routes behind its session token.
 The current browser slice supports bounded source
 listening, explicit review, source-level blind reveal, reviewed packet download
