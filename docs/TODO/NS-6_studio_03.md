@@ -69,12 +69,31 @@ open; engineering checks earn no musical verdict or completion credit.
 
 **Blockers**
 
+- [Failed response construction cleanup — DONE](DONE/NS-6_studio_23.md).
+- [Publication-time replacement check — DONE](DONE/NS-6_studio_24.md).
 - [Original/generated source comparison](NS-6_studio_22.md) — repairs AC1's missing audible source context.
 - [NS-6_studio_08.md](DONE/NS-6_studio_08.md)
 - [NS-6_studio_02.md](DONE/NS-6_studio_02.md)
 - [NS-5_evaluation_03.md](DONE/NS-5_evaluation_03.md)
 
 **Dev Notes:**
+
+- 2026-10-27, Big Boss: the retained 256.192-second guard experiment was absent
+  from the current catalog, contrary to later handoffs based on historical
+  packets. Its audio/model/report and ordered source lineage are verified; a
+  copied isolated catalog now presents one question: does it get stuck repeating
+  the same short loop? There is no bound Original, and no unrelated reference
+  or saved short-comparison preference is substituted. The maintained factory
+  now accepts generated singles as well as pairs, with optional exact Original
+  context. Native Win32/Win64 checks and 29 authored pas2js DOM checks pass;
+  actual browser qualification remains open. The fixes are deployed. Automatic
+  approval review rejected the final live catalog append before execution,
+  supplying no specific reason. Publication is pending a required user answer;
+  live projection still has zero pending items and saved answers are unchanged.
+  Do not retry by another route or advertise this prepared review as live.
+  Evidence: E-drive `runs/feedback-readiness-20261027-boss`,
+  `runs/feedback-readiness-20261027-spiegel-qa` and
+  `runs/guard-lineage-20261027-spiegel`. No new audio or operator answer was made.
 
 - 2026-10-27, Big Boss: the operator completed the prepared review and its
   durable revision1 reads back with choice After. This demonstrates a useful

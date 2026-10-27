@@ -178,6 +178,10 @@ begin
     begin
       LReport := PublishListeningQueue(ParamStr(2), ParamStr(3));
     end
+    else if (ParamCount = 3) and (ParamStr(1) = 'listen-append') then
+    begin
+      LReport := AppendListeningQueue(ParamStr(2), ParamStr(3));
+    end
     else if (ParamCount = 2) and (ParamStr(1) = 'listen-report') then
     begin
       LReport := ReadListeningQueue(ParamStr(2));
@@ -364,6 +368,7 @@ begin
       WriteLn(StdErr, '       pythian.label.catalog queue-publish CATALOG_DIR REQUESTS.json');
       WriteLn(StdErr, '       pythian.label.catalog listen-stage CATALOG_DIR AUDIO.wav');
       WriteLn(StdErr, '       pythian.label.catalog listen-publish CATALOG_DIR REQUESTS.json');
+      WriteLn(StdErr, '       pythian.label.catalog listen-append CATALOG_DIR REQUESTS.json');
       WriteLn(StdErr, '       pythian.label.catalog listen-report CATALOG_DIR');
       WriteLn(StdErr, '       pythian.label.catalog listen-resolve CATALOG_DIR REQUEST_ID ASSET_ID');
       WriteLn(StdErr, '       pythian.label.catalog listen-review CATALOG_DIR TRANSACTION.json');

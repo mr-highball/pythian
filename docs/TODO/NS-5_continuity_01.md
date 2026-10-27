@@ -43,6 +43,17 @@ Starting evidence: [WAV-STUDIES](../WAV-STUDIES.md) · [ACTIVITY](../ACTIVITY.md
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss: queue reconciliation corrects the historical pending
+  claim below. The retained 256.192-second render is absent from the current
+  operator catalog. Exact audio/model/report/ordered-source lineage was verified
+  without rendering again, and [studio_03](NS-6_studio_03.md) prepared a single
+  repetition question in an isolated copied catalog. Automatic approval review
+  rejected the final live append with no specific reason; publication awaits
+  the user's answer. No sustained listening verdict, current live item or new
+  musical credit is claimed. The older guard is distinct from the saved
+  20-second source-successor preference; neither verdict can stand in for the
+  other. Full criteria, prerequisite blockers and stopped counters remain.
+
 - 2026-10-27, Big Boss: [long source-continuity playback](NS-5_continuity_05.md)
   now connects the same accepted successor mechanism to bounded native sessions
   and source-bound excerpts. Mechanical two-minute replay is not sustained

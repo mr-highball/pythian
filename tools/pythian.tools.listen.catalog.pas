@@ -1251,6 +1251,42 @@ begin
   end;
 end;
 
+{ Caller holds queue.lock. Existing identical experiments are historical facts;
+  only newly introduced or changed replacements require a still-unanswered target. }
+procedure VerifyFreshReplacements(const ACatalogRoot: String;
+  const AIncoming, AExisting: TJSONObject);
+var
+  LItems: TJSONArray;
+  LRequest: TJSONObject;
+  LExisting: TJSONObject;
+  LExperiment: TJSONObject;
+  LTargetId: String;
+  LIndex: Integer;
+begin
+  LItems := AIncoming.Arrays['items'];
+  for LIndex := 0 to LItems.Count - 1 do
+  begin
+    LRequest := LItems.Objects[LIndex];
+    if LRequest.Find('experiment') = nil then
+    begin
+      Continue;
+    end;
+    LExperiment := LRequest.Objects['experiment'];
+    if LExperiment.Find('replaces') = nil then
+    begin
+      Continue;
+    end;
+    LExisting := FindRequest(AExisting, LRequest.Strings['id']);
+    if (LExisting <> nil) and (HashJson(LExisting) = HashJson(LRequest)) then
+    begin
+      Continue;
+    end;
+    LTargetId := LExperiment.Objects['replaces'].Strings['request_id'];
+    Need(LatestRevision(ReviewPath(ACatalogRoot, LTargetId)) = 0,
+      'cannot publish a new replacement for an answered listening request');
+  end;
+end;
+
 function PublishListeningQueueLocked(const ACatalogRoot,
   AInputPath: String): TJSONObject;
 var
@@ -1274,6 +1310,7 @@ begin
   try
     LOld := ReadQueueManifest(ACatalogRoot);
     try
+      VerifyFreshReplacements(ACatalogRoot, LQueue, LOld);
       LItems := LOld.Arrays['items'];
       for I := 0 to LItems.Count - 1 do
       begin
@@ -1348,6 +1385,7 @@ begin
     LInput := ReadObject(ExpandFileName(AInputPath), CMaximumQueueBytes);
     LAppend := NormalizeQueue(ACatalogRoot, LInput, True);
     LQueue := ReadQueueManifest(ACatalogRoot);
+    VerifyFreshReplacements(ACatalogRoot, LAppend, LQueue);
     for LIndex := 0 to LAppend.Arrays['items'].Count - 1 do
     begin
       LRequest := LAppend.Arrays['items'].Objects[LIndex];
@@ -1582,17 +1620,17 @@ begin
   try
     if ATransaction.Find('choices') <> nil then
     begin
-      LInputChoices.Free;
+      FreeAndNil(LInputChoices);
       LInputChoices := TJSONArray(ArrayField(ATransaction, 'choices').Clone);
     end;
     if ATransaction.Find('scores') <> nil then
     begin
-      LInputScores.Free;
+      FreeAndNil(LInputScores);
       LInputScores := TJSONArray(ArrayField(ATransaction, 'scores').Clone);
     end;
     if ATransaction.Find('comments') <> nil then
     begin
-      LInputComments.Free;
+      FreeAndNil(LInputComments);
       LInputComments := TJSONArray(ArrayField(ATransaction, 'comments').Clone);
     end;
     LChoices := NormalizeAnswers(LInputChoices,
@@ -1606,14 +1644,22 @@ begin
         LComments := NormalizeComments(LInputComments, ARequest);
         try
           Result := TJSONObject.Create;
-          Result.Add('version', 1);
-          Result.Add('request_id', ARequest.Strings['id']);
-          Result.Add('request_sha256', HashJson(ARequest));
-          Result.Add('reviewer', TextField(ATransaction, 'reviewer', 128));
-          Result.Add('status', LStatus);
-          Result.Add('choices', LChoices);
-          Result.Add('scores', LScores);
-          Result.Add('comments', LComments);
+          try
+            Result.Add('version', 1);
+            Result.Add('request_id', ARequest.Strings['id']);
+            Result.Add('request_sha256', HashJson(ARequest));
+            Result.Add('reviewer', TextField(ATransaction, 'reviewer', 128));
+            Result.Add('status', LStatus);
+            Result.Add('choices', LChoices);
+            LChoices := nil;
+            Result.Add('scores', LScores);
+            LScores := nil;
+            Result.Add('comments', LComments);
+            LComments := nil;
+          except
+            Result.Free;
+            raise;
+          end;
           Exit;
         except
           LComments.Free;
@@ -1848,6 +1894,8 @@ var
     LSpec, LChoice, LAsset: TJSONObject;
   LItems, LRows: TJSONArray;
   LKind: String;
+  LComparisonId: String;
+  LReferenceId: String;
   I: Integer;
 const
   CQueueArrays: array[0..1] of String = ('items', 'completed');
@@ -1857,27 +1905,43 @@ begin
   try
     LPrevious := nil;
     LReference := nil;
+    LComparisonId := TextField(ADefinition, 'comparison_id', 128);
+    LReferenceId := '';
+    if ADefinition.Find('reference_id') <> nil then
+    begin
+      LReferenceId := TextField(ADefinition, 'reference_id', 128);
+      Need(LReferenceId <> '', 'Prepared reference ID cannot be empty');
+    end;
     for LKind in CQueueArrays do
     begin
       LRows := LQueue.Arrays[LKind];
       for I := 0 to LRows.Count - 1 do
       begin
         LRequest := LRows.Objects[I];
-        if LRequest.Strings['id'] = TextField(ADefinition, 'comparison_id', 128) then LPrevious := LRequest;
-        if LRequest.Strings['id'] = TextField(ADefinition, 'reference_id', 128) then LReference := LRequest;
+        if LRequest.Strings['id'] = LComparisonId then LPrevious := LRequest;
+        if (LReferenceId <> '') and (LRequest.Strings['id'] = LReferenceId) then LReference := LRequest;
       end;
     end;
-    Need((LPrevious <> nil) and (LReference <> nil) and
-      (LPrevious.Arrays['assets'].Count = 2) and (LReference.Arrays['assets'].Count = 1),
-      'Prepared comparison requires two generated examples and one original reference');
-    Need(((LPrevious.Arrays['assets'].Objects[0].Strings['role'] = 'generated') or
-        (LPrevious.Arrays['assets'].Objects[0].Strings['role'] = 'edited')) and
-      ((LPrevious.Arrays['assets'].Objects[1].Strings['role'] = 'generated') or
-        (LPrevious.Arrays['assets'].Objects[1].Strings['role'] = 'edited')) and
-      ((LReference.Arrays['assets'].Objects[0].Strings['role'] = 'source') or
-        (LReference.Arrays['assets'].Objects[0].Strings['role'] = 'reference')),
-      'Prepared original must be source audio; Before and After must be generated audio');
+    Need((LPrevious <> nil) and (LPrevious.Find('experiment') = nil) and
+      ((LPrevious.Strings['kind'] = 'single') or (LPrevious.Strings['kind'] = 'pair')),
+      'Prepared experiment requires an ordinary generated request');
     Need(LPrevious.Get('revision', 0) = 0, 'An answered comparison cannot be replaced');
+    for I := 0 to LPrevious.Arrays['assets'].Count - 1 do
+    begin
+      LAsset := LPrevious.Arrays['assets'].Objects[I];
+      Need((LAsset.Strings['role'] = 'generated') or (LAsset.Strings['role'] = 'edited'),
+        'Prepared experiment requires generated audio');
+    end;
+    if LReferenceId <> '' then
+    begin
+      Need((LReference <> nil) and (LReference.Find('experiment') = nil) and
+        (LReference.Strings['kind'] = 'single') and (LReference.Arrays['assets'].Count = 1),
+        'Prepared original must be one ordinary reference request');
+      LAsset := LReference.Arrays['assets'].Objects[0];
+      Need(((LAsset.Strings['role'] = 'source') or (LAsset.Strings['role'] = 'reference')) and
+        (LAsset.Int64s['frames'] <= Int64(LAsset.Integers['sample_rate']) * 30),
+        'Prepared original must be source context at most thirty seconds');
+    end;
     Result := TJSONObject.Create;
     try
       Result.Add('version', 1);
@@ -1887,7 +1951,7 @@ begin
       LItems.Add(LRequest);
       LRequest.Add('id', TextField(ADefinition, 'id', 128));
       LRequest.Add('task_id', TextField(ADefinition, 'task_id', 64));
-      LRequest.Add('kind', 'pair');
+      LRequest.Add('kind', LPrevious.Strings['kind']);
       LRequest.Add('question', TextField(ADefinition, 'question', 1024));
       LRequest.Add('assets', LPrevious.Arrays['assets'].Clone);
       LRequest.Add('ranges', LPrevious.Arrays['ranges'].Clone);
@@ -1898,8 +1962,16 @@ begin
       LSpec.Add('scores', TJSONArray.Create);
       LChoice := TJSONObject.Create;
       LRows.Add(LChoice);
-      LChoice.Add('id', 'continuity_preference');
-      LChoice.Add('values', TJSONArray.Create(['before', 'after', 'same', 'neither', 'unknown']));
+      if LPrevious.Strings['kind'] = 'pair' then
+      begin
+        LChoice.Add('id', 'continuity_preference');
+        LChoice.Add('values', TJSONArray.Create(['before', 'after', 'same', 'neither', 'unknown']));
+      end
+      else
+      begin
+        LChoice.Add('id', 'listening_answer');
+        LChoice.Add('values', TJSONArray.Create(['yes', 'no', 'unknown']));
+      end;
       LExperiment := TJSONObject.Create;
       LRequest.Add('experiment', LExperiment);
       LExperiment.Add('title', TextField(ADefinition, 'title', 128));
@@ -1907,6 +1979,7 @@ begin
       LExperiment.Add('decision', TextField(ADefinition, 'decision', 512));
       for LKind in CBindings do
       begin
+        if (LKind = 'reference') and (LReference = nil) then Continue;
         if LKind = 'reference' then LAsset := LReference else LAsset := LPrevious;
         LBinding := TJSONObject.Create;
         LExperiment.Add(LKind, LBinding);

@@ -171,6 +171,7 @@ begin
     'does_not_fit': Result := 'Does not fit';
     'unknown': Result := 'I can’t tell';
     'continuity_preference': Result := 'Your pick';
+    'listening_answer': Result := 'Your answer';
     'before': Result := 'Before';
     'after': Result := 'After';
     'same': Result := 'About the same';
@@ -514,6 +515,7 @@ var
   LTabs, LOriginal, LRadioLabel: TJSElement;
   LRadio: TJSHTMLInputElement;
   LExperimental: Boolean;
+  LHasSampleTabs: Boolean;
   LRate: Integer;
   LStartSeconds, LEndSeconds: Integer;
   I, J, K: Integer;
@@ -546,6 +548,8 @@ begin
   Clear('assets'); Clear('ranges'); Clear('choices'); Clear('scores');
   Clear('experiment-brief');
   LExperimental := isObject(FRequest['experiment']);
+  LAssets := Arr(FRequest, 'assets');
+  LHasSampleTabs := False;
   El('experiment-brief').setAttribute('hidden', '');
   if LExperimental then
   begin
@@ -553,8 +557,12 @@ begin
     El('experiment-brief').removeAttribute('hidden');
     AddText(El('experiment-brief'), 'p', 'What changed: ' + Str(LExperiment, 'change'), '');
     AddText(El('experiment-brief'), 'p', Str(LExperiment, 'decision'), 'muted');
-    LTabs := AddText(El('assets'), 'nav', '', 'sample-switch');
-    LTabs.setAttribute('aria-label', 'Compare recordings');
+    LHasSampleTabs := isObject(LExperiment['reference']) or (LAssets.length > 1);
+    if LHasSampleTabs then
+    begin
+      LTabs := AddText(El('assets'), 'nav', '', 'sample-switch');
+      LTabs.setAttribute('aria-label', 'Compare recordings');
+    end;
     if isObject(LExperiment['reference']) then
     begin
       LReference := Obj(LExperiment['reference']);
@@ -580,15 +588,19 @@ begin
     end;
   end;
   TJSHTMLSelectElement(El('comment-asset')).innerHTML := '';
-  LAssets := Arr(FRequest, 'assets');
   for I := 0 to LAssets.length - 1 do
   begin
     LAsset := Obj(LAssets[I]);
     LId := Str(LAsset, 'id');
     LAssetName := AssetName(LAsset);
-    if LExperimental and (LAssets.length = 2) then
+    if LHasSampleTabs then
     begin
-      if I = 0 then LAssetName := 'Before' else LAssetName := 'After';
+      if LAssets.length = 1 then
+        LAssetName := 'Generated'
+      else if I = 0 then
+        LAssetName := 'Before'
+      else
+        LAssetName := 'After';
       LButton := TJSHTMLButtonElement(AddText(LTabs, 'button', LAssetName, ''));
       LButton.setAttribute('type', 'button');
       LButton.setAttribute('data-panel', 'sample-card-' + IntToStr(I));

@@ -379,6 +379,274 @@ begin
   end;
 end;
 
+procedure CheckPreparedSingles(const ARoot, AInbox, ASourceHash,
+  AGeneratedPath: String; const ASource, AGenerated: TJSONObject);
+var
+  LCatalog: String;
+  LPath: String;
+  LQueue: TJSONObject;
+  LRequest: TJSONObject;
+  LDefinition: TJSONObject;
+  LPrepared: TJSONObject;
+  LReport: TJSONObject;
+  LRaw: TJSONObject;
+  LProjected: TJSONObject;
+  LTransaction: TJSONObject;
+  LEvent: TJSONObject;
+  LProvenance: TJSONObject;
+  LOldBytes: String;
+  LOldHash: String;
+  LQueueHash: String;
+  LReviewHash: String;
+  LStalePath: String;
+  LQueuePath: String;
+  LReviewPath: String;
+  LIndex: Integer;
+  LRejected: Boolean;
+begin
+  LCatalog := ARoot + PathDelim + 'prepared-single';
+  ImportSource(AInbox, LCatalog, ASourceHash);
+  LReport := StageListeningAsset(LCatalog, AGeneratedPath);
+  LReport.Free;
+  LQueue := TJSONObject.Create;
+  try
+    LQueue.Add('version', 1);
+    LQueue.Add('items', TJSONArray.Create);
+    LRequest := Request('single-generated', 'single', AGenerated, AGenerated);
+    LRequest.Arrays['ranges'].Objects[0].Strings['asset_id'] := 'generated';
+    LQueue.Arrays['items'].Add(LRequest);
+    LRequest := Request('single-generated-no-ref', 'single', AGenerated, AGenerated);
+    LRequest.Arrays['ranges'].Objects[0].Strings['asset_id'] := 'generated';
+    LQueue.Arrays['items'].Add(LRequest);
+    LQueue.Arrays['items'].Add(Request('original-reference', 'single', ASource, AGenerated));
+    LRequest := Request('long-reference', 'single', AGenerated, AGenerated);
+    LRequest.Arrays['ranges'].Objects[0].Strings['asset_id'] := 'generated';
+    LRequest.Arrays['assets'].Objects[0].Strings['role'] := 'reference';
+    LRequest.Arrays['assets'].Objects[0].Delete('provenance');
+    LProvenance := TJSONObject.Create;
+    LRequest.Arrays['assets'].Objects[0].Add('provenance', LProvenance);
+    LProvenance.Add('source_sha256', AGenerated.Strings['sha256']);
+    LProvenance.Add('source_group', 'authored-control');
+    LProvenance.Add('clock_id', 'authored-clock');
+    LProvenance.Add('partition', 'development');
+    LQueue.Arrays['items'].Add(LRequest);
+    LRequest := Request('pair-generated', 'pair', AGenerated, AGenerated);
+    LRequest.Arrays['assets'].Objects[1].Strings['id'] := 'after';
+    LRequest.Arrays['ranges'].Objects[0].Strings['asset_id'] := 'generated';
+    LRequest.Arrays['ranges'].Objects[1].Strings['asset_id'] := 'after';
+    LQueue.Arrays['items'].Add(LRequest);
+    LPath := ARoot + PathDelim + 'prepared-single-input.json';
+    WriteJson(LPath, LQueue);
+    LReport := AppendListeningQueue(LCatalog, LPath);
+    LReport.Free;
+  finally
+    LQueue.Free;
+  end;
+  LRaw := ReadListeningQueue(LCatalog);
+  try
+    LOldBytes := LRaw.AsJSON;
+    LOldHash := LRaw.Arrays['items'].Objects[0].Strings['request_sha256'];
+    LDefinition := TJSONObject.Create;
+    try
+      LDefinition.Add('id', 'guided-single');
+      LDefinition.Add('task_id', 'NS-6_studio_03');
+      LDefinition.Add('comparison_id', 'single-generated');
+      LDefinition.Add('reference_id', 'original-reference');
+      LDefinition.Add('title', 'Authored comparison');
+      LDefinition.Add('question', 'Does this sound fit?');
+      LDefinition.Add('change', 'Use the prepared candidate.');
+      LDefinition.Add('decision', 'Choose whether it fits.');
+      LPrepared := PrepareListeningExperiment(LCatalog, LDefinition);
+      try
+        LRequest := LPrepared.Arrays['items'].Objects[0];
+        Need((LRequest.Strings['kind'] = 'single') and
+          (LRequest.Arrays['assets'].AsJSON = LRaw.Arrays['items'].Objects[0].Arrays['assets'].AsJSON) and
+          (LRequest.Arrays['ranges'].AsJSON = LRaw.Arrays['items'].Objects[0].Arrays['ranges'].AsJSON) and
+          (LRequest.Objects['experiment'].Objects['replaces'].Strings['request_sha256'] = LOldHash) and
+          (LRequest.Objects['experiment'].Find('reference') <> nil) and
+          (LRequest.Objects['answer_spec'].Arrays['choices'].Objects[0].Strings['id'] = 'listening_answer') and
+          (LRequest.Objects['answer_spec'].Arrays['choices'].Objects[0].Arrays['values'].Count = 3) and
+          (LRequest.Objects['answer_spec'].Arrays['choices'].Objects[0].Arrays['values'].Strings[0] = 'yes') and
+          (LRequest.Objects['answer_spec'].Arrays['choices'].Objects[0].Arrays['values'].Strings[1] = 'no') and
+          (LRequest.Objects['answer_spec'].Arrays['choices'].Objects[0].Arrays['values'].Strings[2] = 'unknown') and
+          (LRequest.Objects['answer_spec'].Arrays['scores'].Count = 0),
+          'Prepared single retains audio, bindings and one simple choice');
+        LPath := ARoot + PathDelim + 'prepared-single-output.json';
+        WriteJson(LPath, LPrepared);
+        LReport := AppendListeningQueue(LCatalog, LPath);
+        LReport.Free;
+      finally
+        LPrepared.Free;
+      end;
+      LReport := ReadListeningQueue(LCatalog);
+      try
+        Need((LReport.Arrays['items'].Count = 6) and
+          (LReport.Arrays['completed'].Count = 0), 'No automatic answer');
+        for LIndex := 0 to 4 do
+          Need(LReport.Arrays['items'].Objects[LIndex].AsJSON = LRaw.Arrays['items'].Objects[LIndex].AsJSON,
+            'Original requests unchanged');
+        LProjected := TJSONObject(LReport.Clone);
+        try
+          ProjectListeningExperiments(LProjected);
+          Need((LProjected.Arrays['items'].Count = 4) and (LRaw.AsJSON = LOldBytes),
+            'Projection hides only bound context and preserves readback');
+        finally
+          LProjected.Free;
+        end;
+      finally
+        LReport.Free;
+      end;
+      LDefinition.Strings['id'] := 'guided-single-no-ref';
+      LDefinition.Strings['comparison_id'] := 'single-generated-no-ref';
+      LDefinition.Delete('reference_id');
+      LPrepared := PrepareListeningExperiment(LCatalog, LDefinition);
+      try
+        Need(LPrepared.Arrays['items'].Objects[0].Objects['experiment'].Find('reference') = nil,
+          'Optional original remains absent');
+        LPath := ARoot + PathDelim + 'prepared-single-no-ref.json';
+        WriteJson(LPath, LPrepared);
+        LReport := AppendListeningQueue(LCatalog, LPath);
+        try
+          Need((LReport.Arrays['items'].Count = 7) and
+            (LReport.Arrays['completed'].Count = 0) and
+            (LReport.Arrays['items'].Objects[6].Objects['experiment'].Find('reference') = nil),
+            'Published no-reference single remains pending and without original');
+        finally
+          LReport.Free;
+        end;
+      finally
+        LPrepared.Free;
+      end;
+      LDefinition.Strings['comparison_id'] := 'pair-generated';
+      LPrepared := PrepareListeningExperiment(LCatalog, LDefinition);
+      try
+        LRequest := LPrepared.Arrays['items'].Objects[0];
+        Need((LRequest.Strings['kind'] = 'pair') and
+          (LRequest.Objects['answer_spec'].Arrays['choices'].Objects[0].Strings['id'] =
+            'continuity_preference') and
+          (LRequest.Objects['answer_spec'].Arrays['choices'].Objects[0].Arrays['values'].Count = 5),
+          'Pair retains its existing preference choices');
+      finally
+        LPrepared.Free;
+      end;
+      LDefinition.Strings['comparison_id'] := 'single-generated-no-ref';
+      LDefinition.Add('reference_id', 'missing-reference');
+      LRejected := False;
+      try
+        LPrepared := PrepareListeningExperiment(LCatalog, LDefinition);
+        LPrepared.Free;
+      except
+        on EAudio do LRejected := True;
+      end;
+      Need(LRejected, 'Missing original must reject');
+      LDefinition.Strings['reference_id'] := 'long-reference';
+      LRejected := False;
+      try
+        LPrepared := PrepareListeningExperiment(LCatalog, LDefinition);
+        LPrepared.Free;
+      except
+        on EAudio do LRejected := True;
+      end;
+      Need(LRejected, 'Original longer than thirty seconds must reject');
+      LDefinition.Strings['reference_id'] := 'single-generated';
+      LRejected := False;
+      try
+        LPrepared := PrepareListeningExperiment(LCatalog, LDefinition);
+        LPrepared.Free;
+      except
+        on EAudio do LRejected := True;
+      end;
+      Need(LRejected, 'Generated audio cannot be the original reference');
+      LDefinition.Strings['comparison_id'] := 'original-reference';
+      LDefinition.Strings['reference_id'] := 'original-reference';
+      LRejected := False;
+      try
+        LPrepared := PrepareListeningExperiment(LCatalog, LDefinition);
+        LPrepared.Free;
+      except
+        on EAudio do LRejected := True;
+      end;
+      Need(LRejected, 'Source audio cannot be the generated candidate');
+      LDefinition.Strings['id'] := 'stale-guided';
+      LDefinition.Strings['comparison_id'] := 'single-generated';
+      LDefinition.Strings['reference_id'] := 'original-reference';
+      LPrepared := PrepareListeningExperiment(LCatalog, LDefinition);
+      try
+        LStalePath := ARoot + PathDelim + 'prepared-single-stale.json';
+        WriteJson(LStalePath, LPrepared);
+      finally
+        LPrepared.Free;
+      end;
+      LTransaction := Transaction('single-generated', LOldHash, 'submitted', 'yes', 0);
+      try
+        LTransaction.Arrays['comments'].Objects[0].Strings['asset_id'] := 'generated';
+        LEvent := CommitListeningReview(LCatalog, LTransaction);
+        LEvent.Free;
+      finally
+        LTransaction.Free;
+      end;
+      LQueuePath := LCatalog + PathDelim + 'listening' + PathDelim + 'queue.json';
+      LReviewPath := LCatalog + PathDelim + 'listening' + PathDelim + 'reviews' +
+        PathDelim + 'single-generated' + PathDelim + '00000001.json';
+      LQueueHash := FileHash(LQueuePath);
+      LReviewHash := FileHash(LReviewPath);
+      LRejected := False;
+      try
+        LReport := AppendListeningQueue(LCatalog, LStalePath);
+        LReport.Free;
+      except
+        on EAudio do LRejected := True;
+      end;
+      Need(LRejected and (FileHash(LQueuePath) = LQueueHash) and
+        (FileHash(LReviewPath) = LReviewHash), 'Stale append preserves queue and saved answer');
+      LQueue := ReadJson(LQueuePath);
+      try
+        LPrepared := ReadJson(LStalePath);
+        try
+          LQueue.Arrays['items'].Add(LPrepared.Arrays['items'].Objects[0].Clone);
+        finally
+          LPrepared.Free;
+        end;
+        LPath := ARoot + PathDelim + 'prepared-single-stale-full.json';
+        WriteJson(LPath, LQueue);
+      finally
+        LQueue.Free;
+      end;
+      LRejected := False;
+      try
+        LReport := PublishListeningQueue(LCatalog, LPath);
+        LReport.Free;
+      except
+        on EAudio do LRejected := True;
+      end;
+      Need(LRejected and (FileHash(LQueuePath) = LQueueHash) and
+        (FileHash(LReviewPath) = LReviewHash), 'Stale full publication preserves queue and saved answer');
+      LPath := ARoot + PathDelim + 'prepared-single-output.json';
+      LReport := AppendListeningQueue(LCatalog, LPath);
+      LReport.Free;
+      Need((FileHash(LQueuePath) = LQueueHash) and (FileHash(LReviewPath) = LReviewHash),
+        'Identical historical experiment retry remains valid');
+      LReport := PublishListeningQueue(LCatalog, LQueuePath);
+      LReport.Free;
+      Need((FileHash(LQueuePath) = LQueueHash) and (FileHash(LReviewPath) = LReviewHash),
+        'Identical historical full publication remains valid');
+      LDefinition.Strings['comparison_id'] := 'single-generated';
+      LRejected := False;
+      try
+        LPrepared := PrepareListeningExperiment(LCatalog, LDefinition);
+        LPrepared.Free;
+      except
+        on EAudio do LRejected := True;
+      end;
+      Need(LRejected, 'Answered candidate cannot be replaced');
+    finally
+      LDefinition.Free;
+    end;
+  finally
+    LRaw.Free;
+  end;
+end;
+
 var
   LRoot: String;
   LInbox: String;
@@ -464,6 +732,7 @@ begin
     FileBytes(LSourcePath), 48000, LSourceHash);
   LGenerated := Asset('generated', 'listening', LGeneratedHash,
     'generated', FileBytes(LGeneratedPath), 5760000, LSourceHash);
+  CheckPreparedSingles(LRoot, LInbox, LSourceHash, LGeneratedPath, LSource, LGenerated);
   LQueue := TJSONObject.Create;
   try
     LQueue.Add('version', 1);
@@ -564,6 +833,39 @@ begin
       LReport.Free;
     end;
     try
+      for I := 0 to 2 do
+      begin
+        LBadTransaction := TJSONObject(LTransaction.Clone);
+        try
+          case I of
+            0:
+              begin
+                LBadTransaction.Delete('choices');
+                LBadTransaction.Add('choices', 'wrong-type');
+              end;
+            1:
+              begin
+                LBadTransaction.Delete('scores');
+                LBadTransaction.Add('scores', 'wrong-type');
+              end;
+            2:
+              begin
+                LBadTransaction.Delete('comments');
+                LBadTransaction.Add('comments', 'wrong-type');
+              end;
+          end;
+          LFailed := False;
+          try
+            LEvent := CommitListeningReview(LCatalog, LBadTransaction);
+            LEvent.Free;
+          except
+            on EAudio do LFailed := True;
+          end;
+          Need(LFailed, 'Wrong-type response arrays require a validation error');
+        finally
+          LBadTransaction.Free;
+        end;
+      end;
       LBadTransaction := TJSONObject(LTransaction.Clone);
       try
         LBadTransaction.Strings['request_sha256'] := StringOfChar('0', 64);

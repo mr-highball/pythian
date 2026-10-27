@@ -6,7 +6,7 @@
 Accepted zero-credit usability repairs: [training choices and playback](DONE/NS-6_studio_19.md),
 [tabbed workflow and help](DONE/NS-6_studio_18.md).
 
-Updated 2026-10-27. **52 open / 62 accepted tasks.** The user authorized a new
+Updated 2026-10-27. **52 open / 64 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **52.45 current / 47.55 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -75,6 +75,16 @@ do not ask for the same answer again or infer sustained/style acceptance.
 The [current goal and prerequisite checkpoint](../WORK.md#governing-goal-and-prerequisite-checkpoint---2026-10-27)
 retains the musical-reference blockers and scientific stops. No new segmentation
 or generation setup is required from the operator.
+
+The retained 4:16 repetition review was absent from the current catalog. Its
+lineage and isolated prepared question are verified, and the native single/pair
+factory plus UI are deployed. The final live catalog append was rejected by
+automatic approval review without a specific reason; publication awaits the
+user's answer. Current live pending count is zero. Do not send the operator to
+an unavailable review or ask for the saved short comparison again.
+Accepted [failed Save cleanup](DONE/NS-6_studio_23.md) and
+[publication-time freshness](DONE/NS-6_studio_24.md) preserve native response
+ownership and answers saved after preparation. Both earn zero additional credit.
 
 Accepted generation slice: [exact source-successor reconstruction](DONE/NS-5_continuity_03.md),
 2026-10-13. The retained failed audition replays exactly; bounded before/after
@@ -305,7 +315,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 
 ## Accepted tasks and retired work
 
-All 62 accepted tasks, including [retained corpus archives](DONE/NS-6_observability_05.md), [composition planning](DONE/NS-6_observability_06.md), [offline native observability](DONE/NS-6_observability_03.md), [catalog import observability](DONE/NS-6_observability_02.md), [primary analysis portability](DONE/NS-6_portability_01.md), shared intake/text portability, caller corpus intake, Studio source/effects/capture, the current minimal package
+All 64 accepted tasks, including [failed Save cleanup](DONE/NS-6_studio_23.md), [publication-time freshness](DONE/NS-6_studio_24.md), [retained corpus archives](DONE/NS-6_observability_05.md), [composition planning](DONE/NS-6_observability_06.md), [offline native observability](DONE/NS-6_observability_03.md), [catalog import observability](DONE/NS-6_observability_02.md), [primary analysis portability](DONE/NS-6_portability_01.md), shared intake/text portability, caller corpus intake, Studio source/effects/capture, the current minimal package
 and the three NS-2 quality results, are listed in
 the [current DONE ledger](DONE/README.md). Their acceptance dates and detailed
 evidence remain in the unchanged task identities. Allocations now reflect the

@@ -3,7 +3,7 @@
 [Task index](../README.md) · [Task flow](../../TASKFLOW.MD) ·
 [Milestones](../../MILESTONES.md) · [Current credit basis](../../REBALANCE-2026-09-29.md#current-credit-basis)
 
-All **62** records retain their acceptance evidence and dates. Points below
+All **64** records retain their acceptance evidence and dates. Points below
 use the user-authorized 2026-09-29 outcome rebase; older amounts in evidence
 narratives are historical. No task was accepted by this reassessment.
 The [2026-09-30 Studio allocation](../../OPERATOR-STUDIO.md#allocation-and-ownership)
@@ -16,6 +16,8 @@ Shared filter catalog and flexible source workspace add 3 NS-6 / 0.30 overall.
 
 | Accepted task | Date | Current goal credit | Current overall credit |
 | --- | --- | ---: | ---: |
+| [NS-6_studio_23](NS-6_studio_23.md) — Failed listening-response construction cleanup | 2026-10-27 | 0 NS-6 | 0.00 |
+| [NS-6_studio_24](NS-6_studio_24.md) — Publication-time replacement freshness | 2026-10-27 | 0 NS-6 | 0.00 |
 | [NS-6_observability_05](NS-6_observability_05.md) — Retained corpus archive progress and cancellation | 2026-10-27 | 0 NS-6 | 0.00 |
 | [NS-6_observability_06](NS-6_observability_06.md) — WFC composition planning progress and cancellation | 2026-10-27 | 0 NS-6 | 0.00 |
 | [NS-6_portability_03](NS-6_portability_03.md) — Actual shared synth/instrument/note/grain execution | 2026-10-27 | 0 NS-6 | 0.00 |

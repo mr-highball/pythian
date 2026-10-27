@@ -18,6 +18,7 @@ verified SHA-256 before publishing a request that names it.
 pythian.label.catalog import INBOX CATALOG
 pythian.label.catalog listen-stage CATALOG generated.wav
 pythian.label.catalog listen-publish CATALOG requests.json
+pythian.label.catalog listen-append CATALOG additional-requests.json
 pythian.label.catalog listen-report CATALOG
 pythian.label.catalog listen-resolve CATALOG browser_pair_48k_120s generated
 ```
@@ -30,6 +31,11 @@ atomically. `listen-report` returns pending `items`, `completed` requests,
 counts, each canonical `request_sha256`, and the latest revision. Use that
 reported request hash in a transaction; do not calculate one from hand-edited
 JSON. A request can be `single` with one asset or `pair` with two assets.
+
+`listen-publish` declares the complete queue. Use `listen-append` to add requests
+without removing existing items or response history. An identical append is
+idempotent; a changed request with an existing ID is rejected. Both commands use
+the primary native catalog implementation and the same queue writer lock.
 
 Here is a compact **authored engineering fixture**, including a one-second
 imported 48 kHz source and a 120-second 48 kHz generated WAV. The hashes and measurements
@@ -106,29 +112,40 @@ its saved learning profile; publication does not re-open those source WAVs.
 
 ### Prepared core experiments
 
-The listening page can present one short development question with Original,
-Before and After tabs and **Save & next**. Only the two generated examples are
-voting assets. Original is optional source context; its timeline does not align
+The listening page presents one development question and **Save & next**.
+A pair has Before/After tabs; a single has one generated example. Optional
+Original context shares the same view, with a Generated return tab for a single.
+Only generated examples are voting assets. Original's timeline does not align
 with the generated music. No answer is preselected, and a note is optional.
 Saving records a judgment and advances the queue; it does not train or generate.
 
-To reuse an existing pending pair and a separately published original reference:
+To reuse an existing pending single or pair:
 
 ```text
 pythian.label.catalog listen-experiment CATALOG definition.json NEW_PACKET.json
 ```
 
-The definition contains `id`, `task_id`, `comparison_id`, `reference_id`, `title`,
-`question`, `change` and `decision`. The last three describe the single musical
-question, changed mechanism and next development decision. Both examples must be
-generated/edited assets; the original must be a source/reference asset at most
-30 seconds long. The command preserves exact audio, ranges and request hashes
-and appends a new immutable request. It refuses to replace an answered pair.
+The definition contains `id`, `task_id`, `comparison_id`, `title`, `question`,
+`change` and `decision`. The last three describe the single musical question,
+changed mechanism and next development decision. Every voting asset must be
+generated/edited audio from an ordinary request. A pair uses
+`continuity_preference`: before/after/same/neither/unknown. A single uses
+`listening_answer`: yes/no/unknown. Neither adds scores.
+
+Optional `reference_id` binds an ordinary single source/reference request at
+most 30 seconds long. A supplied invalid reference is rejected; omitting it
+does not attach unrelated source audio. The producer must explain missing
+Original context. The command preserves exact audio, ranges and canonical
+replacement binding and appends a new immutable request. It refuses to replace
+an answered request or use an existing prepared experiment as its base.
 
 Optional request `experiment` metadata contains `title`, `change`, `decision`
 and bound `reference`, `replaces` or `parent` descriptors. Each descriptor names
 an existing `request_id`, `asset_id` and canonical `request_sha256`. Publication
-verifies those bindings; replacement must retain the exact pair and ranges.
+verifies those bindings; replacement must retain the exact assets and ranges.
+Under the queue writer lock, both append and full publication reject a new or
+changed replacement if its original acquired a review after preparation.
+Identical existing experiments, historical reads and export/replay remain valid.
 The web queue hides pending contextual/replaced questions, including after the
 prepared answer is saved. Raw reports, exports, earlier requests and all response
 history remain intact. Parent comparisons remain available in their own history.

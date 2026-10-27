@@ -41,6 +41,10 @@ var
 begin
   if Pos('/api/listen-queue', AUrl) > 0 then
     Exit(TJSPromise.resolve(BridgeReply(BridgeQueue)));
+  if Pos('/api/listen-references', AUrl) > 0 then
+    Exit(TJSPromise.resolve(BridgeReply(Obj(TJSJSON.parse(
+      '{"format":"pythian.listening.references.v1","sources":[],' +
+      '"message":"Original selections are unavailable for this older clip."}')))));
   BridgeCheck((Pos('/api/listen-review', AUrl) > 0) and
     (Str(AOptions, 'method') = 'POST'), 'Only the explicit feedback write is allowed');
   Inc(BridgeWrites);
@@ -146,6 +150,62 @@ begin
     AListener.HandlePageHide(nil);
     BridgeCheck(document.querySelector('audio[src]') = nil,
       'Leaving releases every audio source, including Original');
+    BridgeQueue := Obj(TJSJSON.parse('{"items":[],"completed":[]}'));
+    LRow := Obj(TJSJSON.parse('{"id":"qa-single","task_id":"NS-5_continuity_01",' +
+      '"kind":"single","question":"Does this clip get stuck in a short loop?",' +
+      '"request_sha256":"qa-single-bound","revision":0,' +
+      '"assets":[{"id":"generated","storage":"listening","role":"generated",' +
+      '"sample_rate":8000,"channels":1,"frames":160000}],' +
+      '"ranges":[{"asset_id":"generated","start_frame":0,"end_frame":160000}],' +
+      '"answer_spec":{"choices":[{"id":"listening_answer",' +
+      '"values":["yes","no","unknown"]}],"scores":[]},' +
+      '"experiment":{"title":"Long playback","change":"Retained experimental clip.",' +
+      '"decision":"Judge repeated patterns, without retraining.","reference":{' +
+      '"request_id":"original","asset_id":"reference","request_sha256":"qa-original"}}}'));
+    Arr(BridgeQueue, 'items').push(LRow);
+    AListener.ApplyQueue(Obj(Cloned(BridgeQueue)), '', False);
+    LButtons := document.querySelectorAll('.sample-switch button');
+    BridgeCheck((LButtons.length = 2) and
+      (LButtons[1].textContent = 'Generated'), 'Single Original and Generated tabs');
+    TJSHTMLElement(LButtons[0]).click;
+    BridgeCheck(not AListener.El('original-context').hasAttribute('hidden') and
+      AListener.El('sample-card-0').hasAttribute('hidden'), 'Open original in place');
+    TJSHTMLElement(LButtons[1]).click;
+    BridgeCheck(AListener.El('original-context').hasAttribute('hidden') and
+      not AListener.El('sample-card-0').hasAttribute('hidden'), 'Return to generated single');
+    Obj(LRow['experiment'])['reference'] := Undefined;
+    AListener.ApplyQueue(Obj(Cloned(BridgeQueue)), '', False);
+    BridgeCheck(document.querySelector('.sample-switch') = nil,
+      'Single without Original needs no empty comparison toolbar');
+    BridgeCheck(document.querySelectorAll('input[type=radio]').length = 3,
+      'Single has yes, no and uncertainty choices');
+    BridgeCheck(document.querySelector('input[type=radio]:checked') = nil,
+      'Single has no automatic answer');
+    TJSHTMLAudioElement(AListener.El('audio-0')).dispatchEvent(TJSEvent.new('canplay'));
+    TJSHTMLInputElement(document.querySelector('input[value=unknown]')).checked := True;
+    LTransaction := AListener.BuildTransaction;
+    BridgeCheck((Str(Obj(Arr(LTransaction, 'choices')[0]), 'value') = 'unknown') and
+      (Arr(LTransaction, 'scores').length = 0) and
+      (Arr(LTransaction, 'comments').length = 0), 'Single uncertainty with optional notes');
+    TJSHTMLElement(document.querySelector('.original-reference')).setAttribute('open', '');
+    document.querySelector('.original-reference').dispatchEvent(TJSEvent.new('toggle'));
+    await(BridgeTurn);
+    BridgeCheck(Pos('unavailable', document.querySelector(
+      '.original-reference [role=status]').textContent) > 0,
+      'Missing source context is explicit and is not unrelated Original audio');
+    BridgeWrites := 0;
+    AListener.Save;
+    await(BridgeTurn);
+    AListener.Save;
+    await(BridgeTurn);
+    BridgeCheck((BridgeWrites = 1) and (AListener.FPending.length = 0),
+      'Single Save/Next reconciles a lost response without a duplicate write');
+    AListener.ApplyQueue(Obj(Cloned(BridgeQueue)), 'qa-single', False);
+    BridgeCheck(TJSHTMLInputElement(document.querySelector('input[value=unknown]')).checked,
+      'Single reload retains uncertainty');
+    AListener.HandlePageHide(nil);
+    BridgeCheck(document.querySelector('audio[src]') = nil,
+      'Leaving single releases generated and optional source audio');
     document.body.setAttribute('data-test-result', 'PASS ' + IntToStr(BridgeChecks) + ' listening bridge checks');
   except
     on E: Exception do document.body.setAttribute('data-test-result', 'FAIL ' + E.Message);

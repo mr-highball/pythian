@@ -12,6 +12,106 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Existing long listening item: prepared, publication pending - 2026-10-27
+
+Previous goal turn is progress at `947c220`: two complete native observability
+consumers were accepted and published. Delivery nonclosing count enters at **0**.
+Big Boss rechecked the least-complete NS-5 requirements: accepted external-event
+training and work-group balancing do not supply inferred notes, independent
+style calibration or representative musical coverage. No new tuning/scoring,
+source acquisition or stopped experiment is authorized by this assessment.
+
+The concrete operator blocker is narrower than previous handoffs stated. The
+old 256.192-second generated item exists in historical packets but is **absent
+from the current operator catalog**. Today's six requests include four answered
+items; the two raw unanswered setup requests are hidden by the completed prepared
+20-second comparison. Its saved After answer remains valid. The old manual
+ledger also does not contain the long item. Historical queue presence was
+incorrectly treated as current availability in later handoffs.
+
+Selected existing [studio_03](TODO/NS-6_studio_03.md) AC1/AC2 and
+[continuity_01](TODO/NS-5_continuity_01.md)'s pending listening evidence.
+Criterion: a technically ready, understandable generated experiment must actually
+reach the current queue. Deliverable: qualify the retained long WAV/report/model/
+ordered source/policy lineage, then restore one immutable development question
+through the existing publisher without rendering again. Ask only whether the
+clip gets stuck on short repeating patterns; uncertainty and notes are optional.
+The older guard cannot inherit the saved short source-successor preference, and
+no unrelated Original will be attached. Closing evidence for this bounded
+delivery: exact asset/provenance verification, current API projection and preserved
+answers/requests after append and retry. Stop at incomplete identity/rights,
+ambiguous purpose, ID collision, lost responses or a browser-policy workaround.
+Actual browser/operator and full musical criteria remain required.
+
+Spike owns exposing the existing atomic `AppendListeningQueue` through the
+maintained CLI, removing the need for the historical one-off append consumer.
+Spiegel owns independent read-only lineage qualification. Big Boss owns the
+question, isolated preflight, final integration/publication and judgment. New
+generated output stays on the dedicated E drive. No further helper is started.
+
+Bounded result: the retained WAV is 256.192 seconds, stereo 16 kHz, 4,099,072
+frames and 16,396,332 bytes. Its historical request, report, model and ordered
+three-source profile agree. The permitted private development use is retained;
+no media, source identities or responses enter Git. A copied isolated catalog
+contains the exact ordinary request plus one prepared single experiment, no
+false Original, no generated answer and no new audio. The question asks whether
+the clip gets stuck repeating the same short loop. Yes/No/Unsure and an optional
+note inform whether this older guard warrants further comparison; Save does not
+retrain. It is distinct from the already answered source-successor comparison.
+
+Spike exposed primary `AppendListeningQueue` as maintained `listen-append` and
+extended the existing factory to generated singles or pairs with optional exact
+Original context. Big Boss integrated the actual listener: single experiments
+without Original have no empty comparison toolbar; those with Original have a
+Generated return tab. The retained pair path and finite answer semantics stay
+unchanged. No alternative queue or response store was introduced.
+
+Two discovered native prerequisites are independently accepted together:
+[failed response construction cleanup](TODO/DONE/NS-6_studio_23.md) and
+[publication-time replacement freshness](TODO/DONE/NS-6_studio_24.md). The initial
+full fixture exposed the existing empty-reviewer leak; malformed array fields
+also exposed dangling-pointer cleanup. The first combined factory QA submission
+then found a prepare/answer/publish race. Its repaired second submission passes;
+the two-failure transfer threshold was not reached. Failures remain recorded.
+Both new tasks have zero credit; full studio_03 and musical continuity stay open.
+
+Validation: checked FPC 3.2.2 Win32/Win64 native fixtures pass with zero leaks,
+preserved valid export identity, malformed transaction refusal, exact queue/
+review preservation, both locked publication paths and historical retry/replay.
+Spiegel independently ran checked Win64/source review and the actual authored
+pas2js DOM bridge, now 29 checks. Big Boss's optimized checked Win64 run also
+passes. Actual CLI append/retry/collision checks use isolated authored data;
+the concrete copied-catalog restoration uses existing audio without rendering.
+The 12 matched web assets and native service/worker are deployed in the fixed
+stable slots, all 14 hashes verified. No active job was interrupted.
+
+Publication remains incomplete: automatic approval review rejected the final
+live catalog stage/append before execution, giving only `blocked by policy`
+and no specific reason. A required user publication question is pending; Big
+Boss did not retry through another tool, API or indirect route. Read-only checks
+confirm all 5,951 earlier baseline JSON records and all 12 current closure files
+unchanged. Raw queue counts are two unanswered/four answered; the browser-facing
+API projects zero pending/three completed after hiding superseded setup items.
+The prepared long review is not live. Do not offer its deep link as available.
+
+Evidence is under E-drive `runs/feedback-readiness-20261027-boss`,
+`runs/feedback-readiness-20261027-spiegel-qa`,
+`runs/feedback-race-20261027-spike` and `runs/guard-lineage-20261027-spiegel`;
+the isolated catalog is under `tests/review-restore-20261027`. No actual browser
+or audio session ran. The earlier browser authority rejection remains open;
+native/API/DOM qualification is not physical desktop/phone qualification. No
+task-specific QA browser or worker process remains; system-wide speaker silence
+was not independently measured.
+
+Accounting: **52 open / 64 DONE, 116 total**, NS-6 **14 open**. Accepted scope
+remains **100/90/25/70/14/54**, **52.45 weighted / 47.55 remaining**. Native repair
+criteria closed, so delivery nonclosing count is **0**. Musical/reference and
+stopped scientific counters are unchanged. Next dependent action: only after an
+actual publication answer, publish the prepared immutable request by the normal
+route and verify old answers plus the live projection. If approved, the operator
+owes one substantial listening answer, not more manual source segmentation.
+No adjacent scientific tuning or claim of full continuity/style is selected.
+
 ## Retained artifact and composition checkpoints accepted - 2026-10-27
 
 Big Boss entered at `e0049c8` with delivery nonclosing count **0**. Actual
