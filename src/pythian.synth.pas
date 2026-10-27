@@ -30,6 +30,7 @@ interface
 
 uses
   pythian.audio,
+  pythian.progress,
   pythian.automation,
   pythian.source,
   pythian.biquad,
@@ -155,10 +156,10 @@ function DefaultSynthVoice: TSynthVoice;
 { Offline stereo rendering: per-note phase/filter state, equal-power pan,
   explicit seed. Output length includes release, and silence may be appended. }
 function RenderTones(const ATones: TTones; const ASampleRate: Integer;
-  const AMinimumSeconds: Double = 0): TAudioClip;
+  const AMinimumSeconds: Double = 0; const AProgress: TWorkProgressCallback = nil): TAudioClip;
 { Exact integer placement and gate duration; release alone rounds up to frames. }
 function RenderFrameTones(const ATones: TFrameTones; const ASampleRate: Integer;
-  const AMinimumFrames: Int64 = 0): TAudioClip;
+  const AMinimumFrames: Int64 = 0; const AProgress: TWorkProgressCallback = nil): TAudioClip;
 
 implementation
 
@@ -709,7 +710,7 @@ begin
 end;
 
 function RenderPrepared(const ATones: TPreparedTones; const ASampleRate,
-  AMinimumFrames: Integer): TAudioClip;
+  AMinimumFrames: Integer; const AProgress: TWorkProgressCallback): TAudioClip;
 var
   LSamples: TAudioSamples;
   LVoice: TPlayingTone;
@@ -718,6 +719,8 @@ var
   LStart: Integer;
   LFrames: Integer;
   LVisits: Int64;
+  LTotalFrames: Int64;
+  LDone: Int64;
   LValue: Double;
   LRightValue: Double;
   LLeftPan: Double;
@@ -725,9 +728,11 @@ var
 begin
   LFrames := AMinimumFrames;
   LVisits := 0;
+  LTotalFrames := 0;
   for LIndex := 0 to High(ATones) do
   begin
     LFrames := Max(LFrames, ATones[LIndex].StartFrame + ATones[LIndex].FrameCount);
+    Inc(LTotalFrames, ATones[LIndex].FrameCount);
     Inc(LVisits, Int64(ATones[LIndex].FrameCount) *
       SynthFrameCost(ATones[LIndex].Tone.Voice, ASampleRate));
     if LVisits > MaximumRenderVisits then
@@ -735,7 +740,11 @@ begin
       raise EAudio.Create('Tone rendering exceeds visit budget');
     end;
   end;
+  ReportWork(AProgress, 'synth_allocate_frames', wuFrames, 0, LFrames);
   SetLength(LSamples, LFrames * 2);
+  ReportWork(AProgress, 'synth_allocate_frames', wuFrames, LFrames, LFrames);
+  LDone := 0;
+  ReportWork(AProgress, 'synth_voice_frames', wuFrames, 0, LTotalFrames);
   for LIndex := 0 to High(ATones) do
   begin
     LVoice := TPlayingTone.CreatePrepared(ASampleRate, ATones[LIndex].Tone,
@@ -749,16 +758,20 @@ begin
         LSamples[(LStart + LFrame) * 2] := LSamples[(LStart + LFrame) * 2] + LValue * LLeftPan;
         LSamples[(LStart + LFrame) * 2 + 1] :=
           LSamples[(LStart + LFrame) * 2 + 1] + LRightValue * LRightPan;
+        Inc(LDone);
+        if (LDone mod 4096 = 0) and (LDone < LTotalFrames) then
+          ReportWork(AProgress, 'synth_voice_frames', wuFrames, LDone, LTotalFrames);
       end;
     finally
       LVoice.Free;
     end;
   end;
+  ReportWork(AProgress, 'synth_voice_frames', wuFrames, LDone, LTotalFrames);
   Result := TAudioClip.Create(ASampleRate, 2, LSamples);
 end;
 
 function RenderTones(const ATones: TTones; const ASampleRate: Integer;
-  const AMinimumSeconds: Double): TAudioClip;
+  const AMinimumSeconds: Double; const AProgress: TWorkProgressCallback): TAudioClip;
 var
   LPrepared: TPreparedTones;
   LTone: TTone;
@@ -814,11 +827,11 @@ begin
         SampleFramesFromSeconds(LTone.GateSeconds + LTone.Voice.Envelope.ReleaseSeconds, ASampleRate);
     end;
   end;
-  Result := RenderPrepared(LPrepared, ASampleRate, SampleFramesFromSeconds(AMinimumSeconds, ASampleRate));
+  Result := RenderPrepared(LPrepared, ASampleRate, SampleFramesFromSeconds(AMinimumSeconds, ASampleRate), AProgress);
 end;
 
 function RenderFrameTones(const ATones: TFrameTones; const ASampleRate: Integer;
-  const AMinimumFrames: Int64): TAudioClip;
+  const AMinimumFrames: Int64; const AProgress: TWorkProgressCallback): TAudioClip;
 var
   LPrepared: TPreparedTones;
   LIndex: Integer;
@@ -861,7 +874,7 @@ begin
     LPrepared[LIndex].GateFrames := ATones[LIndex].GateFrames;
     LPrepared[LIndex].FrameCount := ATones[LIndex].GateFrames + LReleaseFrames;
   end;
-  Result := RenderPrepared(LPrepared, ASampleRate, AMinimumFrames);
+  Result := RenderPrepared(LPrepared, ASampleRate, AMinimumFrames, AProgress);
 end;
 
 end.

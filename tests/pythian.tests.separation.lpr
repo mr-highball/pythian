@@ -32,6 +32,7 @@ uses
   pythian.audio,
   pythian.fourier,
   pythian.separation,
+  pythian.progress,
   pythian.wave;
 
 procedure Check(const AValue: Boolean; const AMessage: String);
@@ -40,6 +41,41 @@ begin
   begin
     raise Exception.Create(AMessage);
   end;
+end;
+
+type
+  TProgressProbe = class
+    AbortStage: String;
+    Seen: array[0..4] of Boolean;
+    Last: array[0..4] of Int64;
+    Calls: Integer;
+    procedure Observe(const AProgress: TWorkProgress);
+  end;
+
+procedure TProgressProbe.Observe(const AProgress: TWorkProgress);
+const
+  Stages: array[0..4] of String = ('separation_spectrum', 'separation_magnitudes',
+    'separation_mask', 'separation_reconstruction', 'separation_residual');
+var
+  LIndex: Integer;
+begin
+  for LIndex := 0 to High(Stages) do
+  begin
+    if AProgress.Stage = Stages[LIndex] then
+    begin
+      Check((AProgress.Done >= Last[LIndex]) and (AProgress.Done <= AProgress.Total),
+        'Progress stays monotonic and bounded');
+      Last[LIndex] := AProgress.Done;
+      if AProgress.Done = AProgress.Total then
+        Seen[LIndex] := True;
+      Inc(Calls);
+      if (AProgress.Stage = AbortStage) and (AProgress.Done > 0) and
+        (AProgress.Done < AProgress.Total) then
+        raise EAbort.Create('progress abort');
+      Exit;
+    end;
+  end;
+  raise Exception.Create('Unknown separation progress stage');
 end;
 
 procedure FourierChecks;
@@ -164,6 +200,9 @@ var
   LSource: TAudioClip;
   LResult: THarmonicPercussive;
   LPrior: THarmonicPercussive;
+  LObserved: THarmonicPercussive;
+  LProbe: TProgressProbe;
+  LStage: Integer;
   LOptions: THarmonicPercussiveOptions;
   LPlan: TSeparationPlan;
   LFrame: Integer;
@@ -198,6 +237,57 @@ begin
   LResult := nil;
   try
     LResult := THarmonicPercussive.Create(LSource, LOptions);
+    LProbe := TProgressProbe.Create;
+    try
+      LObserved := THarmonicPercussive.Create(LSource, LOptions, LProbe.Observe);
+      try
+        for LStage := 0 to 4 do
+          Check(LProbe.Seen[LStage], 'Every progress stage completes');
+        Check(LProbe.Calls < 1000, 'Progress callbacks are bounded');
+        for LFrame := 0 to LSource.FrameCount - 1 do
+          for LChannel := 0 to LSource.Channels - 1 do
+            Check((LObserved.Harmonic.SampleAt(LFrame, LChannel) =
+              LResult.Harmonic.SampleAt(LFrame, LChannel)) and
+              (LObserved.Percussive.SampleAt(LFrame, LChannel) =
+              LResult.Percussive.SampleAt(LFrame, LChannel)), 'Observed output is identical');
+      finally
+        LObserved.Free;
+      end;
+    finally
+      LProbe.Free;
+    end;
+    for LStage := 0 to 4 do
+    begin
+      LProbe := TProgressProbe.Create;
+      try
+        case LStage of
+          0: LProbe.AbortStage := 'separation_spectrum';
+          1: LProbe.AbortStage := 'separation_magnitudes';
+          2: LProbe.AbortStage := 'separation_mask';
+          3: LProbe.AbortStage := 'separation_reconstruction';
+          4: LProbe.AbortStage := 'separation_residual';
+        end;
+        LRejected := False;
+        try
+          LObserved := THarmonicPercussive.Create(LSource, LOptions, LProbe.Observe);
+          LObserved.Free;
+        except
+          on LException: EAbort do
+            LRejected := LException.Message = 'progress abort';
+        end;
+        Check(LRejected, 'Interior callback abort propagates');
+      finally
+        LProbe.Free;
+      end;
+    end;
+
+    LObserved := THarmonicPercussive.Create(LSource, LOptions);
+    try
+      Check(LObserved.Harmonic.SampleAt(1000, 0) = LResult.Harmonic.SampleAt(1000, 0),
+        'Retry after all callback aborts preserves output');
+    finally
+      LObserved.Free;
+    end;
     LPlan := PlanHarmonicPercussive(LSource.FrameCount, LSource.Channels, LOptions);
     Check((LPlan.AnalysisFrames = 251) and (LPlan.FrequencyBins = 257) and
       (LPlan.SpectralCells = 64507) and (LPlan.Work = LResult.Plan.Work),

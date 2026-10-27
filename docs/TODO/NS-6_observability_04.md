@@ -35,6 +35,15 @@ Stop on invented overall percentages, swallowed cancellation or dependency edits
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss: [offline native phases](DONE/NS-6_observability_03.md)
+  are accepted; this retained batch audit still owns nested metadata/graph
+  validation and publication boundaries. Inherited clip allocation/finite-check/
+  copying and RTL JSON parsing remain synchronous without a millisecond promise;
+  the [coverage map](../OBSERVABILITY.md#offline-native-consumers) records their
+  static bounds separately from callback coverage. Measure representative upper
+  boundaries before declaring them short; extend the primary boundary where
+  actual latency warrants it. Do not reopen completed DSP/codec math or infer
+  that an end-of-stage callback is durable publication.
 - 2026-10-03, Big Boss: audit identifies `pythian.corpus.archive`, WFC profile/
   provider/archive constructors and `pythian.wfc.compose.CheckReachability` as
   remaining bulk boundaries. No generic WFC defect has yet been demonstrated.

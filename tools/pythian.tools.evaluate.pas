@@ -28,16 +28,20 @@ unit pythian.tools.evaluate;
 
 interface
 
+uses
+  pythian.progress;
+
 { Native file boundary. Returns a complete JSON report only after all identities,
   clocks, exposure declarations and scoring inputs validate. Paths in the case
   are relative to that case. Does not run inference or write/modify input files. }
-function EvaluateCaseFile(const APath: String): UTF8String;
+function EvaluateCaseFile(const APath: String;
+  const AProgress: TWorkProgressCallback = nil): UTF8String;
 
 { Expands a hash-bound reviewed interval draft into the current reference JSON.
   Checks the declared WAV identity/clock, but does not infer truth or acceptance.
   Output is returned only after complete validation; no files are written. }
 function BuildPartReferenceFile(const ADraftPath, ADraftSha256,
-  ASourcePath: String): UTF8String;
+  ASourcePath: String; const AProgress: TWorkProgressCallback = nil): UTF8String;
 
 implementation
 
@@ -947,21 +951,29 @@ begin
 end;
 
 procedure CheckNoteCells(const ACells: TEvaluationCells; const ANotes: TPitchReferenceNotes;
-  const AReference: Boolean);
+  const AReference: Boolean; const AProgress: TWorkProgressCallback);
 var
   LMatches: Integer;
   LNote: Integer;
   I: Integer;
   J: Integer;
+  LWork: Int64;
+  LTotal: Int64;
 begin
   Require(Int64(Length(ACells)) * Length(ANotes) <= MaximumPitchEvaluationPairs,
     'Note/cell consistency check exceeds work budget');
+  LWork := 0;
+  LTotal := Int64(Length(ACells)) * Length(ANotes);
+  ReportWork(AProgress, 'evaluation_note_cells', wuItems, 0, LTotal);
   for I := 0 to High(ACells) do
   begin
     LMatches := 0;
     LNote := -1;
     for J := 0 to High(ANotes) do
     begin
+      Inc(LWork);
+      if LWork mod 4096 = 0 then
+        ReportWork(AProgress, 'evaluation_note_cells', wuItems, LWork, LTotal);
       if (ACells[I].Frame >= ANotes[J].StartFrame) and
         (ACells[I].Frame < ANotes[J].EndFrame) then
       begin
@@ -989,6 +1001,7 @@ begin
       end;
     end;
   end;
+  ReportWork(AProgress, 'evaluation_note_cells', wuItems, LWork, LTotal);
 end;
 
 function PartPitches(const AArray: TJSONArray): TPartPitchSet;
@@ -1292,7 +1305,7 @@ end;
 
 procedure CheckPartTimingCells(const ACells: TPartEvaluationCells; const ARole: Integer;
   const ANotes: TEvaluationNotes; const ARegions: TEvaluationNoteRegions;
-  const AReference: Boolean; var AWork: Int64);
+  const AReference: Boolean; var AWork: Int64; const AProgress: TWorkProgressCallback);
 var
   LPitches: array[0..127] of Boolean;
   LCount: Integer;
@@ -1324,6 +1337,8 @@ begin
     begin
       Inc(AWork);
       Require(AWork <= MaximumNoteMatchingWork, 'Timing/center consistency work budget exceeded');
+      if AWork mod 4096 = 0 then
+        ReportWork(AProgress, 'evaluation_timing_cells', wuItems, AWork, 0);
       if (ACells[I].Frame >= ANotes[J].StartFrame) and
         (ACells[I].Frame < ANotes[J].EndFrame) and not LPitches[ANotes[J].Pitch] then
       begin
@@ -1343,7 +1358,8 @@ end;
 
 procedure ScorePartTiming(const AReference, APrediction: TJSONObject;
   const AVocabulary: TJSONArray; const ABinding: TEvaluationBinding;
-  const AMinimumF1: Double; const AReport: TJSONObject; var APass: Boolean);
+  const AMinimumF1: Double; const AReport: TJSONObject; var APass: Boolean;
+  const AProgress: TWorkProgressCallback);
 var
   LReferenceRows: TJSONArray;
   LPredictionRows: TJSONArray;
@@ -1389,6 +1405,7 @@ begin
   LReports := TJSONArray.Create;
   AReport.Add('timing_roles', LReports);
   LWork := 0;
+  ReportWork(AProgress, 'evaluation_timing_cells', wuItems, 0, 0);
   LMatchingWork := 0;
   LRegionWork := 0;
   LReferenceIds := TStringList.Create;
@@ -1414,11 +1431,12 @@ begin
       Inc(LRegionWork, Int64(Length(LReferenceNotes) + Length(LPredictionNotes)) * Length(LRegions));
       Require(LRegionWork <= 16777216, 'Combined timing annotation work exceeds budget');
       LScore := EvaluateOverlappingNotes(LReferenceNotes, LPredictionNotes, LRegions,
-        ABinding.FirstFrame, ABinding.EndFrame, LOptions, MaximumNoteMatchingWork - LMatchingWork);
+        ABinding.FirstFrame, ABinding.EndFrame, LOptions, MaximumNoteMatchingWork - LMatchingWork,
+        AProgress);
       Inc(LMatchingWork, LScore.MatchingWork);
       Require(LMatchingWork <= MaximumNoteMatchingWork, 'Combined role timing work exceeds budget');
-      CheckPartTimingCells(LReferenceCells, I, LReferenceNotes, LRegions, True, LWork);
-      CheckPartTimingCells(LPredictionCells, I, LPredictionNotes, LRegions, False, LWork);
+      CheckPartTimingCells(LReferenceCells, I, LReferenceNotes, LRegions, True, LWork, AProgress);
+      CheckPartTimingCells(LPredictionCells, I, LPredictionNotes, LRegions, False, LWork, AProgress);
       LReport := TJSONObject.Create;
       LReports.Add(LReport);
       LReport.Add('role_id', AVocabulary.Strings[I]);
@@ -1446,6 +1464,7 @@ begin
       LReport.Add('passes_declared_gates', LPass);
       APass := APass and LPass;
     end;
+    ReportWork(AProgress, 'evaluation_timing_cells', wuItems, LWork, LWork);
     AReport.Add('timing_center_work', LWork);
     AReport.Add('combined_matching_work', LMatchingWork);
     AReport.Add('timing_region_work', LRegionWork);
@@ -1456,7 +1475,7 @@ begin
 end;
 
 function BuildPartReferenceFile(const ADraftPath, ADraftSha256,
-  ASourcePath: String): UTF8String;
+  ASourcePath: String; const AProgress: TWorkProgressCallback): UTF8String;
 const
   CStateNames: array[TEvaluationState] of String =
     ('value', 'rest', 'unknown', 'ambiguous', 'unsupported');
@@ -1528,7 +1547,7 @@ begin
       (LCount * LTiming.Count <= 32768), 'Draft file role/center budget');
     LSource := TFileStream.Create(ASourcePath, fmOpenRead or fmShareDenyWrite);
     Require(LSource.Size <= MaximumSourceBytes, 'Draft WAV exceeds byte budget');
-    Require(Sha256Stream(LSource, LSource.Size) = LSourceHash, 'Draft WAV identity differs');
+    Require(Sha256Stream(LSource, LSource.Size, AProgress) = LSourceHash, 'Draft WAV identity differs');
     LSource.Position := 0;
     LReader := TWaveFrameReader.Create(LSource);
     Require((LReader.FrameCount = LSourceFrames) and
@@ -1599,7 +1618,7 @@ begin
       end;
     end;
     LSource.Position := 0;
-    Require(Sha256Stream(LSource, LSource.Size) = LSourceHash, 'Draft WAV changed');
+    Require(Sha256Stream(LSource, LSource.Size, AProgress) = LSourceHash, 'Draft WAV changed');
     Result := LOutput.AsJSON;
     Require(Length(Result) <= MaximumDocumentBytes, 'Expanded reference exceeds byte budget');
   finally
@@ -1612,7 +1631,8 @@ begin
 end;
 
 function Score(const AReference, APrediction, APolicy: TJSONObject;
-  const ABinding: TEvaluationBinding; out APass: Boolean): TJSONObject;
+  const ABinding: TEvaluationBinding; out APass: Boolean;
+  const AProgress: TWorkProgressCallback): TJSONObject;
 var
   LMetric: String;
   LVocabulary: TJSONArray;
@@ -1731,7 +1751,8 @@ begin
         LMinimumCoverage, LMinimumPrecision, LMinimumReference, Result, APass);
       if LMetric = 'part-notes' then
       begin
-        ScorePartTiming(AReference, APrediction, LVocabulary, ABinding, LMinimumF1, Result, APass);
+        ScorePartTiming(AReference, APrediction, LVocabulary, ABinding, LMinimumF1, Result,
+          APass, AProgress);
       end;
     end
     else if LMetric = 'events' then
@@ -1810,9 +1831,9 @@ begin
           False, ABinding.SourceFrames);
         LNoteOptions := DefaultPitchEvaluationOptions(ABinding.SampleRate);
         LNoteScore := EvaluatePitchNoteIntervals(LPredictionNotes, LReferenceNotes,
-          ABinding.FirstFrame, ABinding.EndFrame, LNoteOptions);
-        CheckNoteCells(LReferenceCells, LReferenceNotes, True);
-        CheckNoteCells(LPredictionCells, LPredictionNotes, False);
+          ABinding.FirstFrame, ABinding.EndFrame, LNoteOptions, AProgress);
+        CheckNoteCells(LReferenceCells, LReferenceNotes, True, AProgress);
+        CheckNoteCells(LPredictionCells, LPredictionNotes, False, AProgress);
         LOnsetF1 := NoteF1(LNoteScore.MatchedOnsets, LNoteScore.ReferenceNotes,
           LNoteScore.EstimatedNotes);
         LNoteF1 := NoteF1(LNoteScore.MatchedNotes, LNoteScore.ReferenceNotes,
@@ -1842,7 +1863,8 @@ begin
   end;
 end;
 
-function EvaluateCaseFile(const APath: String): UTF8String;
+function EvaluateCaseFile(const APath: String;
+  const AProgress: TWorkProgressCallback): UTF8String;
 var
   LCase: TJSONObject;
   LFiles: TJSONObject;
@@ -1902,19 +1924,19 @@ begin
     LSourceSize := LSource.Size;
     Require((LSourceSize >= 12) and (LSourceSize <= MaximumSourceBytes),
       'Evaluation WAV exceeds source budget');
-    Require(Sha256Stream(LSource, LSourceSize) = LBinding.SourceSha256,
+    Require(Sha256Stream(LSource, LSourceSize, AProgress) = LBinding.SourceSha256,
       'Evaluation WAV digest mismatch');
     LSource.Position := 0;
     LReader := TWaveFrameReader.Create(LSource);
     Require((LReader.SampleRate = LBinding.SampleRate) and
       (LReader.FrameCount = LBinding.SourceFrames), 'Evaluation WAV clock differs from case');
     LReport := TJSONObject.Create;
-    LReport.Add('scores', Score(LReference, LPrediction, LPolicy, LBinding, LPass));
+    LReport.Add('scores', Score(LReference, LPrediction, LPolicy, LBinding, LPass, AProgress));
     LIndependent := LPrimary and IsIndependentEvaluation(LBinding) and
       (LPredictionAncestryReason = '');
     LSource.Position := 0;
     Require((LSource.Size = LSourceSize) and
-      (Sha256Stream(LSource, LSourceSize) = LBinding.SourceSha256),
+      (Sha256Stream(LSource, LSourceSize, AProgress) = LBinding.SourceSha256),
       'Evaluation WAV changed during scoring');
     LReport.Add('format', 'pythian-evaluation-report');
     LReport.Add('case_sha256', Sha256Bytes(LCaseBytes));

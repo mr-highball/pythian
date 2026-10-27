@@ -31,7 +31,8 @@ interface
 
 uses
   Classes,
-  pythian.audio;
+  pythian.audio,
+  pythian.progress;
 
 const
   WaveStreamVersion = 1;
@@ -59,8 +60,10 @@ type
   { Sequential PCM16 RIFF/RF64 writer extracted from WFC's sink contract.
     Borrows its sink; neither destruction nor Finish closes it. Expected length
     is known before the first write. FrameCount includes confirmed blocks only.
-    Input/short-Finish errors are recoverable. Sink exceptions poison the writer.
-    Calls are sequential and non-reentrant, including callbacks from the sink. }
+    Input/short-Finish errors are recoverable. Sink or observer exceptions poison
+    the writer; already confirmed bytes remain in the borrowed sink. Callbacks
+    count validation items and confirmed PCM frames, not successful publication.
+    Calls are sequential and non-reentrant, including sink/progress callbacks. }
   TWavePcm16Writer = class
   strict private
     FSink: TAudioByteSink;
@@ -71,14 +74,17 @@ type
     FFinished: Boolean;
     FFailed: Boolean;
     FWriting: Boolean;
+    FProgress: TWorkProgressCallback;
     FIsRF64: Boolean;
     FBuffer: TAudioBytes;
     procedure CheckWritable;
+    procedure Observe(const AStage: String; const AUnits: TWorkUnit;
+      const ADone, ATotal: Int64);
     procedure WriteBuffer(const AFrames: Integer);
     procedure Append(const AClip: TAudioClip; const ASamples: array of Single);
   public
     constructor Create(const ASink: TAudioByteSink; const ASampleRate, AChannels: Integer;
-      const AExpectedFrames: Int64);
+      const AExpectedFrames: Int64; const AProgress: TWorkProgressCallback = nil);
     procedure AppendClip(const AClip: TAudioClip);
     { Interleaved borrowed samples; callers keep them unchanged until return. }
     procedure AppendSamples(const ASamples: array of Single);
@@ -92,7 +98,8 @@ type
     property IsRF64: Boolean read FIsRF64;
   end;
 
-procedure WriteWavePcm16(const AStream: TStream; const AClip: TAudioClip);
+procedure WriteWavePcm16(const AStream: TStream; const AClip: TAudioClip;
+  const AProgress: TWorkProgressCallback = nil);
 { Shared header for native streaming and bounded device captures whose final
   frame count becomes known only at stop. Owns validation and RIFF/RF64 choice. }
 function WavePcm16Header(const ASampleRate, AChannels: Integer;
@@ -153,7 +160,8 @@ begin
 end;
 
 constructor TWavePcm16Writer.Create(const ASink: TAudioByteSink;
-  const ASampleRate, AChannels: Integer; const AExpectedFrames: Int64);
+  const ASampleRate, AChannels: Integer; const AExpectedFrames: Int64;
+  const AProgress: TWorkProgressCallback);
 begin
   inherited Create;
   if ASink = nil then
@@ -164,6 +172,7 @@ begin
   FSampleRate := ASampleRate;
   FChannels := AChannels;
   FExpectedFrames := AExpectedFrames;
+  FProgress := AProgress;
   FBuffer := WavePcm16Header(ASampleRate, AChannels, AExpectedFrames);
   FIsRF64 := Length(FBuffer) = Rf64HeaderBytes;
   WriteBuffer(0);
@@ -191,13 +200,25 @@ begin
   try
     try
       FSink.WriteBytes(FBuffer);
+      Inc(FFrameCount, AFrames);
+      Observe('write_wave_pcm16', wuFrames, FFrameCount, FExpectedFrames);
     except
       FFailed := True;
       raise;
     end;
-    Inc(FFrameCount, AFrames);
   finally
     FWriting := False;
+  end;
+end;
+
+procedure TWavePcm16Writer.Observe(const AStage: String; const AUnits: TWorkUnit;
+  const ADone, ATotal: Int64);
+begin
+  try
+    ReportWork(FProgress, AStage, AUnits, ADone, ATotal);
+  except
+    FFailed := True;
+    raise;
   end;
 end;
 
@@ -291,9 +312,18 @@ begin
   end;
   if AClip = nil then
   begin
-    for LIndex := 0 to High(ASamples) do
-    begin
-      RequireFinite(ASamples[LIndex], 'Borrowed WAVE sample');
+    FWriting := True;
+    try
+      Observe('validate_wave_samples', wuItems, 0, Length(ASamples));
+      for LIndex := 0 to High(ASamples) do
+      begin
+        RequireFinite(ASamples[LIndex], 'Borrowed WAVE sample');
+        if Assigned(FProgress) and (((LIndex + 1) mod 4096 = 0) or
+          (LIndex = High(ASamples))) then
+          Observe('validate_wave_samples', wuItems, LIndex + 1, Length(ASamples));
+      end;
+    finally
+      FWriting := False;
     end;
   end;
   LOffset := 0;
@@ -360,7 +390,8 @@ begin
   FFinished := True;
 end;
 
-procedure WriteWavePcm16(const AStream: TStream; const AClip: TAudioClip);
+procedure WriteWavePcm16(const AStream: TStream; const AClip: TAudioClip;
+  const AProgress: TWorkProgressCallback);
 var
   LSink: TStreamAudioSink;
   LWriter: TWavePcm16Writer;
@@ -372,7 +403,7 @@ begin
   LSink := TStreamAudioSink.Create(AStream);
   try
     LWriter := TWavePcm16Writer.Create(LSink, AClip.SampleRate,
-      AClip.Channels, AClip.FrameCount);
+      AClip.Channels, AClip.FrameCount, AProgress);
     try
       LWriter.AppendClip(AClip);
       LWriter.Finish;

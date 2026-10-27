@@ -28,30 +28,39 @@ program pythian_evaluate;
 
 uses
   SysUtils, pythian.tools.evaluate,
-  pythian.tools.annotations.reference;
+  pythian.tools.annotations.reference,
+  pythian.tools.progress;
+
+var
+  LObserver: TConsoleWorkProgress;
 
 begin
   try
-    if (ParamCount = 4) and (ParamStr(1) = '--build-part-reference') then
-    begin
-      WriteLn(BuildPartReferenceFile(ParamStr(2), ParamStr(3), ParamStr(4)));
-    end
-    else if (ParamCount = 4) and
-      (ParamStr(1) = '--build-reviewed-presence-reference') then
-    begin
-      WriteLn(BuildReviewedPresenceReference(ParamStr(2), ParamStr(3),
-        ParamStr(4)));
-    end
-    else if ParamCount = 1 then
-    begin
-      WriteLn(EvaluateCaseFile(ParamStr(1)));
-    end
-    else
-    begin
-      raise Exception.Create('Usage: pythian.evaluate CASE.json OR ' +
-        '--build-part-reference DRAFT.json SHA256 SOURCE.wav OR ' +
-        '--build-reviewed-presence-reference PLAN.json PACKET.json SOURCE.wav ' +
-        '(JSON on stdout)');
+    LObserver := TConsoleWorkProgress.Create;
+    try
+      if (ParamCount = 4) and (ParamStr(1) = '--build-part-reference') then
+      begin
+        WriteLn(BuildPartReferenceFile(ParamStr(2), ParamStr(3), ParamStr(4), LObserver.Observe));
+      end
+      else if (ParamCount = 4) and
+        (ParamStr(1) = '--build-reviewed-presence-reference') then
+      begin
+        WriteLn(BuildReviewedPresenceReference(ParamStr(2), ParamStr(3),
+          ParamStr(4), LObserver.Observe));
+      end
+      else if ParamCount = 1 then
+      begin
+        WriteLn(EvaluateCaseFile(ParamStr(1), LObserver.Observe));
+      end
+      else
+      begin
+        raise Exception.Create('Usage: pythian.evaluate CASE.json OR ' +
+          '--build-part-reference DRAFT.json SHA256 SOURCE.wav OR ' +
+          '--build-reviewed-presence-reference PLAN.json PACKET.json SOURCE.wav ' +
+          '(JSON on stdout)');
+      end;
+    finally
+      LObserver.Free;
     end;
   except
     on E: Exception do

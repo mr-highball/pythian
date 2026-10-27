@@ -33,7 +33,7 @@ Studio callers, plus existing streaming, inference and library contracts.
 | Streaming synthesis/WFC audio | Existing bounded pull, frame clocks, state and cancellation retained | A caller can observe each block; bulk helpers are a separate gap |
 | Pascal inference | Existing observation checkpoints, budgets, cancellation and deadlines retained | Reconcile remaining operator phases in [observability_04](TODO/NS-6_observability_04.md); no third-party execution |
 | Catalog import and verification | Shared measured hash/copy/verification phases; callback failures escape per-file error handling | [observability_02](TODO/DONE/NS-6_observability_02.md) |
-| Offline render, separation, export and evaluation | Whole-clip work can remain silent; separation admits up to two billion planned visits | [observability_03](TODO/NS-6_observability_03.md) |
+| Offline render, separation, export and evaluation | Primary native engines report measured windows/cells/frames/comparisons; maintained operators forward callbacks | [observability_03 — DONE](TODO/DONE/NS-6_observability_03.md); scoped phases below |
 | Retained corpus/style/archive/provider operations | Nested serialization, validation, blending and composition reachability need further measured checkpoints | [observability_04](TODO/NS-6_observability_04.md) |
 | Primary analysis in pas2js | Full callback consumer executes shared primary algorithms; optional timer adapter yields between bounded WAV analysis batches | [portability_01 — DONE](TODO/DONE/NS-6_portability_01.md); actual browser presentation and WASM remain unqualified |
 
@@ -114,6 +114,69 @@ bridge. No hash or copying algorithm is replicated in the bridge. The common
 Studio display names the import phases; native job history retains byte units.
 Actual browser/phone presentation remains part of the open operator matrix.
 
+## Offline native consumers
+
+Accepted 2026-10-27: [offline checkpoints](TODO/DONE/NS-6_observability_03.md)
+extend the existing primary engines. Nil observers preserve audio/score/encoded
+results. These are synchronous stage measurements, not an overall percentage
+or an asynchronous job scheduler.
+
+| Primary boundary | Stage and measured units | Checkpoint cadence |
+| --- | --- | --- |
+| Harmonic/percussive separation | `separation_spectrum` and `separation_reconstruction`: analysis windows (`wuFrames`); `separation_magnitudes` and `separation_mask`: spectral cells; `separation_residual`: original frames | 16 windows, 4,096 magnitude cells, 256 mask cells and 4,096 residual frames, plus start/end |
+| Synth and note/chord wrappers | `synth_allocate_frames`: output frames including trailing silence; `synth_voice_frames`: summed rendered voice frames | Allocation start/end; 4,096 aggregate voice frames across voice boundaries |
+| Granular renderer | `grain_mix_frames`: summed grain frames; `grain_output_frames`: all output frames including gaps/tail | 4,096 aggregate mix/output frames and start/end |
+| PCM16 writer/export | `write_wave_pcm16`: confirmed frames; `validate_wave_samples`: borrowed-array scalar samples; `encode_wave_bytes`: returned-array bytes | Existing 4-KiB sink blocks, 4,096 validation items, 64-KiB readback blocks |
+| Overlapping-note evaluation | `evaluation_note_regions`, `evaluation_note_candidates`, `evaluation_note_matching`: actual comparison visits | 4,096 visits; active total unknown, final total equals actual completed work |
+| Pitch evaluation and native consistency checks | `evaluation_pitch_pairs`, `evaluation_pitch_frames`, `evaluation_note_cells`, `evaluation_timing_cells`: actual comparisons | 4,096 comparisons; pitch pairs distinguish onset/full passes; timing consistency has an unknown active total |
+| Reviewed-presence reference | Primary `verify_audio_bytes` plus `reference_centers`: completed centers | Shared 8-KiB hash blocks and 256-center blocks |
+| Separation CLI audit | `separation_audit`: source/reconstruction frames | 4,096 frames and start/end |
+
+Separation's mask and reconstruction stages interleave. Track counters by stage,
+not one last global value. Their `wuFrames` spectral counts are FFT windows,
+not original-source frames. Summed voice/grain work includes overlaps and can
+exceed playback duration. No stage uses a maximum-work budget as completed work.
+The shared native console adapter retains each stage/pass, emits starts/resets/
+completion and throttles intermediate stderr lines to 250 ms. Evaluator stdout
+remains machine-readable JSON.
+
+Callback exceptions preserve their identity and release local resources. The
+PCM16 writer updates its frame count only after its borrowed sink confirms a
+block; a sink/observer exception poisons that writer. Confirmed bytes remain.
+Input-validation and short-Finish errors retain their previous recoverability.
+`SaveWavePcm16` still writes its caller-named file directly, so cancellation can
+leave a partial file. Stage output elsewhere if atomic publication is required.
+
+The audit retains distinct static bounds: separation admits at most 8 million
+spectral cells / 2 billion planned visits; synth at most 100 million costed
+visits; grains at most 64 million visits / 16 million output samples. Immutable
+clips admit 64 million scalar samples. Overlapping notes admit 4,096 notes per
+side, 16,384 regions and 50 million matching visits; pitch evaluation admits
+16,777,216 pairs. Reviewed references admit 32,768 centers / 50 million
+label-center visits. File-bound evaluation admits 8-MiB documents / 1-GiB sources.
+These are admission limits, not measured latency bounds. Allocation, immutable
+clip validation/copying, bounded planning and RTL JSON parsing remain synchronous
+between checkpoints. The retained [batch audit](TODO/NS-6_observability_04.md)
+owns the remaining nested metadata/graph/publication assessment; it must measure
+or instrument those boundaries before describing them as short. This batch does
+not promise a maximum time to cancellation inside an allocator, FFT, median,
+stream write or callback.
+
+Final checked Win64 fixtures pass 187 render, 1,730 WAV, 1,093 evaluation and
+91 reference checks; independent helper checks pass the same counts. The full
+file-bound evaluation and separation regressions pass. All checked native runs
+report zero leaks. Checked Win32 WAV passes 1,730; actual pas2js/Node WAV passes
+1,475 shared checks, excluding filename I/O. Render/MIDI-render/separation/
+evaluation CLIs exercise the same primary engines with authored inputs. Evidence
+is under E-drive `build/tests/runs/offline-progress-20261027-*`.
+
+This qualifies the stated native phases and portable WAV callbacks. The actual
+pas2js synth/music-render closure fails at the primary instrument constructor's
+native `SizeOf` assumption before JavaScript execution. Its linked
+[portability task](TODO/NS-6_portability_03.md) owns repair and actual shared
+execution/parity. No browser, WASM, physical-phone or musical result is inferred.
+No service/browser asset replacement was needed for these optional native APIs.
+
 ## pas2js analysis execution
 
 Accepted 2026-10-27: [the primary portability repair](TODO/DONE/NS-6_portability_01.md)
@@ -185,6 +248,7 @@ authored browser traces are under ignored `build/observability/`.
 
 These checks establish mechanics and output preservation, not musical truth,
 complete physical-phone qualification or universal responsiveness. A short job
-can finish between browser polls. Offline DSP, retained style operations
-and actual browser presentation remain explicitly open. Observability
+can finish between browser polls. The offline native phases above are accepted;
+retained style/metadata operations, shared synthesis portability and actual
+browser presentation remain explicitly open. Observability
 repairs earn no additional north-star credit.

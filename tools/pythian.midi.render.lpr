@@ -35,7 +35,8 @@ uses
   pythian.music.render,
   pythian.synth,
   pythian.midi.smf,
-  pythian.midi.notes;
+  pythian.midi.notes,
+  pythian.tools.progress;
 
 procedure Run;
 var
@@ -48,6 +49,7 @@ var
   LSequence: TNoteSequence;
   LClip: TAudioClip;
   LIndex: Integer;
+  LObserver: TConsoleWorkProgress;
 begin
   if ParamCount < 2 then
   begin
@@ -98,10 +100,12 @@ begin
     LStream.Free;
   end;
   LSequence := DecodeMidiNotes(LBytes, LOptions, LImport);
+  LObserver := nil;
   try
-    LClip := RenderNoteSequence(LSequence, 44100, DefaultSynthVoice, LRender);
+    LObserver := TConsoleWorkProgress.Create;
+    LClip := RenderNoteSequence(LSequence, 44100, DefaultSynthVoice, LRender, LObserver.Observe);
     try
-      SaveWavePcm16(ParamStr(2), LClip);
+      SaveWavePcm16(ParamStr(2), LClip, LObserver.Observe);
       WriteLn('Rendered ', LRender.RenderedNotes, ' notes, ', LClip.FrameCount,
         ' stereo frames at 44100 Hz');
     finally
@@ -109,6 +113,7 @@ begin
     end;
   finally
     LSequence.Free;
+    LObserver.Free;
   end;
   WriteLn('Single-voice note preview; channel 10 uses pitched notes unless excluded.');
   WriteLn('Source tracks/events: ', LImport.SourceTracks, '/', LImport.SourceEvents);

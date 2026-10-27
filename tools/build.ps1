@@ -88,6 +88,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Overlapping-note evaluation compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.evaluation.notes$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Overlapping-note evaluation checks failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.evaluation.progress.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Evaluation progress compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.evaluation.progress$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Evaluation progress and cancellation checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.evaluation.reference.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Part reference builder compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.evaluation.reference$executableSuffix")
@@ -106,6 +110,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'File-bound evaluation compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.evaluation.files$executableSuffix") (Join-Path $buildRoot 'evaluation-files')
   if ($LASTEXITCODE -ne 0) { throw 'File-bound evaluation checks failed' }
+  & $compilerPath @compilerArgs '-Futools' 'tests/pythian.tests.reference.progress.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Reviewed reference progress compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.reference.progress$executableSuffix") (Join-Path $buildRoot ('reference-progress-' + [Guid]::NewGuid().ToString('N')))
+  if ($LASTEXITCODE -ne 0) { throw 'Reviewed reference progress and cancellation checks failed' }
   & $compilerPath @compilerArgs '-Futools' 'tools/pythian.evaluate.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Evaluation operator compilation failed' }
   & $compilerPath @compilerArgs '-Futools' 'tools/pythian.label.catalog.lpr'
@@ -334,6 +342,16 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Streaming WAVE compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.wave.stream$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Streaming WAVE checks failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.wave.progress.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Observed WAVE export compilation failed' }
+  $waveProgressRoot = Join-Path $buildRoot ('wave-progress-' + [Guid]::NewGuid().ToString('N'))
+  New-Item -ItemType Directory -Force -Path $waveProgressRoot | Out-Null
+  & (Join-Path $buildRoot "pythian.tests.wave.progress$executableSuffix") $waveProgressRoot
+  if ($LASTEXITCODE -ne 0) { throw 'Observed WAVE export checks failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.render.progress.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Observed bulk rendering compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.render.progress$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Observed bulk rendering checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.wave.portable.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Portable WAV contract compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.wave.portable$executableSuffix")
@@ -432,11 +450,11 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'MIDI tonal inspection failed' }
   & $compilerPath @compilerArgs '-Futools' 'tools/pythian.articulate.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Articulation tool compilation failed' }
-  & $compilerPath @compilerArgs 'tools/pythian.midi.render.lpr'
+  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.midi.render.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'MIDI renderer compilation failed' }
   & (Join-Path $buildRoot "pythian.midi.render$executableSuffix") (Join-Path $buildRoot 'timing.mid') (Join-Path $buildRoot 'timing.wav')
   if ($LASTEXITCODE -ne 0) { throw 'MIDI renderer smoke failed' }
-  & $compilerPath @compilerArgs 'tools/pythian.render.lpr'
+  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.render.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Renderer compilation failed' }
   & (Join-Path $buildRoot "pythian.render$executableSuffix") (Join-Path $buildRoot 'synthesis.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Renderer smoke failed' }

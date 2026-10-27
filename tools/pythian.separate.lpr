@@ -33,10 +33,13 @@ uses
   pythian.audio,
   pythian.wave,
   pythian.separation,
-  pythian.tools.files;
+  pythian.progress,
+  pythian.tools.files,
+  pythian.tools.progress;
 
 procedure Run;
 var
+  LObserver: TConsoleWorkProgress;
   LSource: TAudioClip;
   LSeparated: THarmonicPercussive;
   LOptions: THarmonicPercussiveOptions;
@@ -74,15 +77,17 @@ begin
     LOptions.HarmonicMedianFrames := StrToInt(ParamStr(5));
     LOptions.PercussiveMedianBins := StrToInt(ParamStr(6));
   end;
+  LObserver := TConsoleWorkProgress.Create;
   LSource := nil;
   LSeparated := nil;
   LReport := nil;
   try
     LSource := LoadWaveSource(ParamStr(1), LSourceHash);
-    LSeparated := THarmonicPercussive.Create(LSource, LOptions);
+    LSeparated := THarmonicPercussive.Create(LSource, LOptions, LObserver.Observe);
     LMaximumError := 0;
     LHEnergy := 0;
     LPEnergy := 0;
+    ReportWork(LObserver.Observe, 'separation_audit', wuFrames, 0, LSource.FrameCount);
     for LFrame := 0 to LSource.FrameCount - 1 do
     begin
       for LChannel := 0 to LSource.Channels - 1 do
@@ -98,9 +103,12 @@ begin
         LHEnergy := LHEnergy + Sqr(LH);
         LPEnergy := LPEnergy + Sqr(LP);
       end;
+      if ((LFrame + 1) mod 4096 = 0) or (LFrame + 1 = LSource.FrameCount) then
+        ReportWork(LObserver.Observe, 'separation_audit', wuFrames,
+          LFrame + 1, LSource.FrameCount);
     end;
-    LHarmonicBytes := EncodeWavePcm16(LSeparated.Harmonic);
-    LPercussiveBytes := EncodeWavePcm16(LSeparated.Percussive);
+    LHarmonicBytes := EncodeWavePcm16(LSeparated.Harmonic, LObserver.Observe);
+    LPercussiveBytes := EncodeWavePcm16(LSeparated.Percussive, LObserver.Observe);
     LReport := TJSONObject.Create;
     LReport.Add('source', ExtractFileName(ParamStr(1)));
     LReport.Add('source_sha256', LSourceHash);
@@ -138,6 +146,7 @@ begin
     LReport.Free;
     LSeparated.Free;
     LSource.Free;
+    LObserver.Free;
   end;
 end;
 

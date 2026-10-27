@@ -28,7 +28,29 @@ program pythian_tests_evaluation_files;
 
 uses
   SysUtils, fpjson, jsonparser, pythian.audio, pythian.wave,
-  pythian.tools.files, pythian.tools.evaluate;
+  pythian.tools.files, pythian.tools.evaluate, pythian.progress;
+
+type
+  EObservedAbort = class(Exception);
+  TEvaluationObserver = class
+    Calls: Integer;
+    AbortStage: String;
+    Raised: Exception;
+    procedure Observe(const AProgress: TWorkProgress);
+  end;
+
+procedure TEvaluationObserver.Observe(const AProgress: TWorkProgress);
+begin
+  Inc(Calls);
+  if (AProgress.Done < 0) or (AProgress.Total < 0) or
+    ((AProgress.Total > 0) and (AProgress.Done > AProgress.Total)) then
+    raise Exception.Create('Invalid native evaluator progress bounds');
+  if (AProgress.Stage = AbortStage) and (AProgress.Done > 0) then
+  begin
+    Raised := EObservedAbort.Create('native evaluator callback abort');
+    raise Raised;
+  end;
+end;
 
 procedure Check(const ACondition: Boolean; const AMessage: String);
 begin
@@ -42,6 +64,45 @@ function Save(const ADirectory, AName, AText: String): String;
 begin
   WriteTextFile(ADirectory + AName, AText);
   Result := HashText(AText);
+end;
+
+function ObservedEvaluation(const APath, AScoringStage: String): String;
+var
+  LBaseline: String;
+  LUnpublished: String;
+  LObserver: TEvaluationObserver;
+  LRejected: Boolean;
+  LPass: Integer;
+begin
+  LBaseline := EvaluateCaseFile(APath);
+  LObserver := TEvaluationObserver.Create;
+  try
+    Result := EvaluateCaseFile(APath, LObserver.Observe);
+    Check((Result = LBaseline) and (LObserver.Calls > 0),
+      'Observed native evaluation changes its report or emits no progress');
+    for LPass := 0 to Ord(AScoringStage <> '') do
+    begin
+      if LPass = 0 then
+        LObserver.AbortStage := 'verify_audio_bytes'
+      else
+        LObserver.AbortStage := AScoringStage;
+      LUnpublished := 'previous accepted result';
+      LRejected := False;
+      try
+        LUnpublished := EvaluateCaseFile(APath, LObserver.Observe);
+      except
+        on E: EObservedAbort do
+          LRejected := E = LObserver.Raised;
+      end;
+      Check(LRejected and (LUnpublished = 'previous accepted result'),
+        'Native evaluation abort must preserve exception and previous result');
+      LObserver.AbortStage := '';
+      Check(EvaluateCaseFile(APath, LObserver.Observe) = LBaseline,
+        'Native evaluation retry differs after callback abort');
+    end;
+  finally
+    LObserver.Free;
+  end;
 end;
 
 function Artifact(const ADigest, AGroup: String;
@@ -1231,7 +1292,7 @@ begin
       PublishComparison(ADirectory, LCase, LAnnotation, LPolicy, LReference, LPrediction);
       if I in [0, 1, 5] then
       begin
-        LBefore := EvaluateCaseFile(ADirectory + 'case.json');
+        LBefore := ObservedEvaluation(ADirectory + 'case.json', 'evaluation_timing_cells');
         Check(LBefore = EvaluateCaseFile(ADirectory + 'case.json'), 'Part timing report replay differs');
         LReport := TJSONObject(GetJSON(LBefore));
         try
@@ -1472,7 +1533,10 @@ begin
     end;
     LCase := Fixture(ADirectory, LMetric);
     try
-      LBefore := EvaluateCaseFile(ADirectory + 'case.json');
+      if LMetric = 'notes' then
+        LBefore := ObservedEvaluation(ADirectory + 'case.json', 'evaluation_pitch_pairs')
+      else
+        LBefore := ObservedEvaluation(ADirectory + 'case.json', '');
       Check(LBefore = EvaluateCaseFile(ADirectory + 'case.json'), 'Report replay differs');
       LReport := TJSONObject(GetJSON(LBefore));
       try

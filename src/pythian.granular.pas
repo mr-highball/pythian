@@ -29,7 +29,8 @@ unit pythian.granular;
 interface
 
 uses
-  pythian.audio;
+  pythian.audio,
+  pythian.progress;
 
 const
   GranularVersion = 1;
@@ -88,7 +89,8 @@ function ExtractGrainJoinProbe(const ASamples: TAudioSamples;
   sample-centered windows. Optional normalization divides by max(1, summed
   window weights), retaining boundary fades and each grain's explicit gain. }
 function RenderGrains(const ASources: TAudioSources; const AGrains: TAudioGrains;
-  const AOptions: TGrainRenderOptions): TAudioClip;
+  const AOptions: TGrainRenderOptions;
+  const AProgress: TWorkProgressCallback = nil): TAudioClip;
 
 implementation
 
@@ -210,7 +212,8 @@ begin
 end;
 
 function RenderGrains(const ASources: TAudioSources; const AGrains: TAudioGrains;
-  const AOptions: TGrainRenderOptions): TAudioClip;
+  const AOptions: TGrainRenderOptions;
+  const AProgress: TWorkProgressCallback): TAudioClip;
 var
   LMix: array of Double;
   LWeights: array of Double;
@@ -219,6 +222,8 @@ var
   LSource: TAudioClip;
   LFrames: Integer;
   LVisits: Int64;
+  LTotalFrames: Int64;
+  LDone: Int64;
   LIndex: Integer;
   LFrame: Integer;
   LChannel: Integer;
@@ -244,6 +249,7 @@ begin
   end;
   LFrames := AOptions.MinimumFrames;
   LVisits := 0;
+  LTotalFrames := 0;
   for LIndex := 0 to High(AGrains) do
   begin
     LGrain := AGrains[LIndex];
@@ -281,6 +287,7 @@ begin
       raise EAudio.Create('Grain extends beyond source frames');
     end;
     LFrames := Max(LFrames, LGrain.OutputStartFrame + LGrain.FrameCount);
+    Inc(LTotalFrames, LGrain.FrameCount);
     LTaps := 1;
     if (AOptions.Interpolation = giSinc) and (LGrain.PlaybackRate <> 0) and
       (LGrain.PlaybackRate <> 1) then
@@ -296,6 +303,8 @@ begin
 
   SetLength(LMix, LFrames * AOptions.Channels);
   SetLength(LWeights, LFrames);
+  LDone := 0;
+  ReportWork(AProgress, 'grain_mix_frames', wuFrames, 0, LTotalFrames);
   for LIndex := 0 to High(AGrains) do
   begin
     LGrain := AGrains[LIndex];
@@ -342,12 +351,17 @@ begin
           LSampleIndex := LOutputFrame * AOptions.Channels + LChannel;
           LMix[LSampleIndex] := LMix[LSampleIndex] + LValue * LWeight * LGrain.Gain;
         end;
+        Inc(LDone);
+        if (LDone mod 4096 = 0) and (LDone < LTotalFrames) then
+          ReportWork(AProgress, 'grain_mix_frames', wuFrames, LDone, LTotalFrames);
       end;
     finally
       LSampler.Free;
     end;
   end;
+  ReportWork(AProgress, 'grain_mix_frames', wuFrames, LDone, LTotalFrames);
   SetLength(LSamples, Length(LMix));
+  ReportWork(AProgress, 'grain_output_frames', wuFrames, 0, LFrames);
   for LFrame := 0 to LFrames - 1 do
   begin
     LWeight := 1;
@@ -366,7 +380,10 @@ begin
       end;
       LSamples[LSampleIndex] := LValue;
     end;
+    if ((LFrame + 1) mod 4096 = 0) and (LFrame + 1 < LFrames) then
+      ReportWork(AProgress, 'grain_output_frames', wuFrames, LFrame + 1, LFrames);
   end;
+  ReportWork(AProgress, 'grain_output_frames', wuFrames, LFrames, LFrames);
   Result := TAudioClip.Create(AOptions.SampleRate, AOptions.Channels, LSamples);
 end;
 

@@ -29,6 +29,7 @@ unit pythian.pitch.evaluate;
 interface
 
 uses
+  pythian.progress,
   pythian.pitch.track;
 
 const
@@ -109,7 +110,7 @@ function DefaultPitchEvaluationOptions(const ASampleRate: Integer): TPitchEvalua
   Sorted overlaps are allowed; callers evaluate each attributed voice separately. }
 function EvaluatePitchNoteIntervals(const AActual, AReferences: TPitchReferenceNotes;
   const AStartFrame, AEndFrame: Int64;
-  const AOptions: TPitchEvaluationOptions): TPitchNoteEvaluation;
+  const AOptions: TPitchEvaluationOptions; const AProgress: TWorkProgressCallback = nil): TPitchNoteEvaluation;
 { Score inferred monophonic intervals at the track's window centers, using only
   its geometry and supported frequency range, never its measured pitch labels.
   Both note arrays use absolute frames. Actual intervals must not overlap;
@@ -118,7 +119,7 @@ function EvaluatePitchNoteIntervals(const AActual, AReferences: TPitchReferenceN
   frame scores. Inputs remain borrowed and unchanged. }
 function EvaluatePitchIntervalFrames(const ATrack: TPitchTrack;
   const AActual, AReferences: TPitchReferenceNotes;
-  const ASourceStartFrame: Int64): TPitchIntervalFrameEvaluation;
+  const ASourceStartFrame: Int64; const AProgress: TWorkProgressCallback = nil): TPitchIntervalFrameEvaluation;
 { References use absolute frames at the track's rate; ASourceStartFrame maps
   local measured bins to that timeline. Sorted references may overlap: ambiguous
   centers are reported separately and excluded from pitch precision/coverage.
@@ -129,7 +130,7 @@ function EvaluatePitchIntervalFrames(const ATrack: TPitchTrack;
   Inputs remain borrowed and unchanged; no annotations enter pitch estimation. }
 function EvaluatePitchTrack(const ATrack: TPitchTrack;
   const AReferences: TPitchReferenceNotes; const ASourceStartFrame: Int64;
-  const AOptions: TPitchEvaluationOptions): TPitchEvaluation;
+  const AOptions: TPitchEvaluationOptions; const AProgress: TWorkProgressCallback = nil): TPitchEvaluation;
 function PitchCoverage(const AResult: TPitchEvaluation): Double;
 function PitchPrecision(const AResult: TPitchEvaluation): Double;
 function NoteF1(const AMatched, AReference, AEstimated: Integer): Double;
@@ -175,7 +176,8 @@ begin
 end;
 
 function MatchNotes(const AActual, AReference: TPitchReferenceNotes;
-  const AOptions: TPitchEvaluationOptions; const AOffsets: Boolean): TMatchScore;
+  const AOptions: TPitchEvaluationOptions; const AOffsets: Boolean;
+  const AProgress: TWorkProgressCallback): TMatchScore;
 var
   LPrevious: TMatchScores;
   LCurrent: TMatchScores;
@@ -184,6 +186,8 @@ var
   LOnsetError: Int64;
   LOffsetError: Int64;
   LOffsetLimit: Double;
+  LDone: Int64;
+  LTotal: Int64;
   I: Integer;
   J: Integer;
 begin
@@ -191,6 +195,9 @@ begin
   begin
     raise EAudio.Create('Pitch note matching exceeds pair budget');
   end;
+  LTotal := Int64(Length(AActual)) * Length(AReference);
+  LDone := 0;
+  ReportWork(AProgress, 'evaluation_pitch_pairs', wuItems, 0, LTotal, Ord(AOffsets) + 1);
   SetLength(LPrevious, Length(AReference) + 1);
   SetLength(LCurrent, Length(AReference) + 1);
   for I := 1 to Length(AActual) do
@@ -198,6 +205,9 @@ begin
     LCurrent[0] := Default(TMatchScore);
     for J := 1 to Length(AReference) do
     begin
+      Inc(LDone);
+      if (LDone mod 4096 = 0) and (LDone < LTotal) then
+        ReportWork(AProgress, 'evaluation_pitch_pairs', wuItems, LDone, LTotal, Ord(AOffsets) + 1);
       LCurrent[J] := Better(LPrevious[J], LCurrent[J - 1]);
       LOnsetError := Abs(AActual[I - 1].StartFrame - AReference[J - 1].StartFrame);
       LOffsetError := Abs(AActual[I - 1].EndFrame - AReference[J - 1].EndFrame);
@@ -219,6 +229,7 @@ begin
     LPrevious := LCurrent;
     LCurrent := LSwap;
   end;
+  ReportWork(AProgress, 'evaluation_pitch_pairs', wuItems, LDone, LTotal, Ord(AOffsets) + 1);
   Result := LPrevious[Length(AReference)];
 end;
 
@@ -246,7 +257,7 @@ end;
 
 function EvaluatePitchIntervalFrames(const ATrack: TPitchTrack;
   const AActual, AReferences: TPitchReferenceNotes;
-  const ASourceStartFrame: Int64): TPitchIntervalFrameEvaluation;
+  const ASourceStartFrame: Int64; const AProgress: TWorkProgressCallback): TPitchIntervalFrameEvaluation;
 var
   LActualIndex: Integer;
   LNote: Integer;
@@ -255,6 +266,8 @@ var
   LCenter: Int64;
   I: Integer;
   J: Integer;
+  LWork: Int64;
+  LTotal: Int64;
 begin
   Result := Default(TPitchIntervalFrameEvaluation);
   if (ATrack = nil) or (ASourceStartFrame < 0) or
@@ -272,8 +285,14 @@ begin
   ValidateNoteIntervals(AReferences, False);
   LActualIndex := 0;
   Result.WindowCount := ATrack.WindowCount;
+  LWork := 0;
+  LTotal := Int64(ATrack.WindowCount) * (Length(AReferences) + 1);
+  ReportWork(AProgress, 'evaluation_pitch_frames', wuItems, 0, LTotal);
   for I := 0 to ATrack.WindowCount - 1 do
   begin
+    Inc(LWork);
+    if (LWork mod 4096 = 0) and (LWork < LTotal) then
+      ReportWork(AProgress, 'evaluation_pitch_frames', wuItems, LWork, LTotal);
     LCenter := ASourceStartFrame + Int64(I) * ATrack.Options.HopFrames +
       ATrack.WindowFrames div 2;
     while (LActualIndex < Length(AActual)) and
@@ -291,6 +310,9 @@ begin
     LReferenceNote := -1;
     for J := 0 to High(AReferences) do
     begin
+      Inc(LWork);
+      if (LWork mod 4096 = 0) and (LWork < LTotal) then
+        ReportWork(AProgress, 'evaluation_pitch_frames', wuItems, LWork, LTotal);
       if (AReferences[J].StartFrame <= LCenter) and (AReferences[J].EndFrame > LCenter) then
       begin
         Inc(LCount);
@@ -343,6 +365,7 @@ begin
       end;
     end;
   end;
+  ReportWork(AProgress, 'evaluation_pitch_frames', wuItems, LWork, LTotal);
   if Result.ReferenceActive > 0 then
   begin
     Result.PitchCoverage := Result.CorrectPitch / Result.ReferenceActive;
@@ -356,7 +379,7 @@ end;
 
 function EvaluatePitchNoteIntervals(const AActual, AReferences: TPitchReferenceNotes;
   const AStartFrame, AEndFrame: Int64;
-  const AOptions: TPitchEvaluationOptions): TPitchNoteEvaluation;
+  const AOptions: TPitchEvaluationOptions; const AProgress: TWorkProgressCallback): TPitchNoteEvaluation;
 var
   LActual: TPitchReferenceNotes;
   LReferences: TPitchReferenceNotes;
@@ -403,17 +426,17 @@ begin
   LReferences := SelectInterior(AReferences);
   Result.ReferenceNotes := Length(LReferences);
   Result.EstimatedNotes := Length(LActual);
-  LMatch := MatchNotes(LActual, LReferences, AOptions, False);
+  LMatch := MatchNotes(LActual, LReferences, AOptions, False, AProgress);
   Result.MatchedOnsets := LMatch.Count;
   Result.MatchedOnsetErrorFrames := LMatch.OnsetError;
   Result.MatchedOffsetErrorFrames := LMatch.OffsetError;
-  LMatch := MatchNotes(LActual, LReferences, AOptions, True);
+  LMatch := MatchNotes(LActual, LReferences, AOptions, True, AProgress);
   Result.MatchedNotes := LMatch.Count;
 end;
 
 function EvaluatePitchTrack(const ATrack: TPitchTrack;
   const AReferences: TPitchReferenceNotes; const ASourceStartFrame: Int64;
-  const AOptions: TPitchEvaluationOptions): TPitchEvaluation;
+  const AOptions: TPitchEvaluationOptions; const AProgress: TWorkProgressCallback): TPitchEvaluation;
 var
   LSpans: TPitchSpans;
   LRuns: TPitchRuns;
@@ -431,6 +454,8 @@ var
   LEstimate: TPitchEstimate;
   I: Integer;
   J: Integer;
+  LWork: Int64;
+  LTotal: Int64;
 begin
   Result := Default(TPitchEvaluation);
   if (ATrack = nil) or (ASourceStartFrame < 0) or
@@ -478,8 +503,14 @@ begin
   LSpans := ATrack.CopySpans;
   LSpan := 0;
   Result.WindowCount := ATrack.WindowCount;
+  LWork := 0;
+  LTotal := Int64(ATrack.WindowCount) * (Length(AReferences) + 1);
+  ReportWork(AProgress, 'evaluation_pitch_frames', wuItems, 0, LTotal);
   for I := 0 to ATrack.WindowCount - 1 do
   begin
+    Inc(LWork);
+    if (LWork mod 4096 = 0) and (LWork < LTotal) then
+      ReportWork(AProgress, 'evaluation_pitch_frames', wuItems, LWork, LTotal);
     while (LSpan < High(LSpans)) and
       (I >= LSpans[LSpan].FirstWindow + LSpans[LSpan].WindowCount) do
     begin
@@ -493,6 +524,9 @@ begin
     LReferenceNote := -1;
     for J := 0 to High(AReferences) do
     begin
+      Inc(LWork);
+      if (LWork mod 4096 = 0) and (LWork < LTotal) then
+        ReportWork(AProgress, 'evaluation_pitch_frames', wuItems, LWork, LTotal);
       if (AReferences[J].StartFrame <= LCenter) and (AReferences[J].EndFrame > LCenter) then
       begin
         Inc(LCount);
@@ -589,6 +623,7 @@ begin
   LRuns := ATrack.CopyRuns;
   SetLength(LActual, Length(LRuns));
   LCount := 0;
+  ReportWork(AProgress, 'evaluation_pitch_frames', wuItems, LWork, LTotal);
   for I := 0 to High(LRuns) do
   begin
     LReference.StartFrame := ASourceStartFrame + LRuns[I].StartFrame;
@@ -604,11 +639,11 @@ begin
   SetLength(LActual, LCount);
   Result.ReferenceNotes := Length(LReferences);
   Result.EstimatedNotes := Length(LActual);
-  LMatch := MatchNotes(LActual, LReferences, AOptions, False);
+  LMatch := MatchNotes(LActual, LReferences, AOptions, False, AProgress);
   Result.MatchedOnsets := LMatch.Count;
   Result.MatchedOnsetErrorFrames := LMatch.OnsetError;
   Result.MatchedOffsetErrorFrames := LMatch.OffsetError;
-  LMatch := MatchNotes(LActual, LReferences, AOptions, True);
+  LMatch := MatchNotes(LActual, LReferences, AOptions, True, AProgress);
   Result.MatchedNotes := LMatch.Count;
 end;
 

@@ -3,7 +3,7 @@
 [Task index](../README.md) · [Task flow](../../TASKFLOW.MD) ·
 [Milestones](../../MILESTONES.md) · [Current credit basis](../../REBALANCE-2026-09-29.md#current-credit-basis)
 
-All **57** records retain their acceptance evidence and dates. Points below
+All **58** records retain their acceptance evidence and dates. Points below
 use the user-authorized 2026-09-29 outcome rebase; older amounts in evidence
 narratives are historical. No task was accepted by this reassessment.
 The [2026-09-30 Studio allocation](../../OPERATOR-STUDIO.md#allocation-and-ownership)
@@ -16,6 +16,7 @@ Shared filter catalog and flexible source workspace add 3 NS-6 / 0.30 overall.
 
 | Accepted task | Date | Current goal credit | Current overall credit |
 | --- | --- | ---: | ---: |
+| [NS-6_observability_03](NS-6_observability_03.md) — Offline render, separation, WAV export and evaluation progress | 2026-10-27 | 0 NS-6 | 0.00 |
 | [NS-6_observability_02](NS-6_observability_02.md) — Catalog import progress and connected cancellation | 2026-10-27 | 0 NS-6 | 0.00 |
 | [NS-6_portability_01](NS-6_portability_01.md) — Shared primary analysis and cooperative pas2js execution | 2026-10-27 | 0 NS-6 | 0.00 |
 | [NS-6_portability_02](NS-6_portability_02.md) — Shared corpus text and intake across native/pas2js | 2026-10-27 | 0 NS-6 | 0.00 |

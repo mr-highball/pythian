@@ -30,6 +30,7 @@ interface
 
 uses
   pythian.audio,
+  pythian.progress,
   pythian.music,
   pythian.instrument,
   pythian.synth;
@@ -60,7 +61,8 @@ type
 function PlanNoteTones(const ASequence: TNoteSequence; const ASampleRate: Integer;
   const AVoice: TSynthVoice; out AReport: TNoteRenderReport): TFrameTones; overload;
 function RenderNoteSequence(const ASequence: TNoteSequence; const ASampleRate: Integer;
-  const AVoice: TSynthVoice; out AReport: TNoteRenderReport): TAudioClip; overload;
+  const AVoice: TSynthVoice; out AReport: TNoteRenderReport;
+  const AProgress: TWorkProgressCallback = nil): TAudioClip; overload;
 
 { Explicit dense table indexed by TNoteGate.Voice, independent of track/channel.
   Every note, including a sub-frame gate, must have a binding. There is no implicit
@@ -69,7 +71,8 @@ function RenderNoteSequence(const ASequence: TNoteSequence; const ASampleRate: I
 function PlanNoteTones(const ASequence: TNoteSequence; const ASampleRate: Integer;
   const AVoices: TNoteVoices; out AReport: TNoteRenderReport): TFrameTones; overload;
 function RenderNoteSequence(const ASequence: TNoteSequence; const ASampleRate: Integer;
-  const AVoices: TNoteVoices; out AReport: TNoteRenderReport): TAudioClip; overload;
+  const AVoices: TNoteVoices; out AReport: TNoteRenderReport;
+  const AProgress: TWorkProgressCallback = nil): TAudioClip; overload;
 
 { Instruments are borrowed during planning. All matching zones expand in input
   note order, then zone order. RenderedNotes counts sounding source gates;
@@ -82,9 +85,11 @@ function PlanNoteTones(const ASequence: TNoteSequence; const ASampleRate: Intege
 function PlanNoteTones(const ASequence: TNoteSequence; const ASampleRate: Integer;
   const AInstruments: TNoteInstruments; out AReport: TNoteRenderReport): TFrameTones; overload;
 function RenderNoteSequence(const ASequence: TNoteSequence; const ASampleRate: Integer;
-  const AInstrument: TInstrument; out AReport: TNoteRenderReport): TAudioClip; overload;
+  const AInstrument: TInstrument; out AReport: TNoteRenderReport;
+  const AProgress: TWorkProgressCallback = nil): TAudioClip; overload;
 function RenderNoteSequence(const ASequence: TNoteSequence; const ASampleRate: Integer;
-  const AInstruments: TNoteInstruments; out AReport: TNoteRenderReport): TAudioClip; overload;
+  const AInstruments: TNoteInstruments; out AReport: TNoteRenderReport;
+  const AProgress: TWorkProgressCallback = nil): TAudioClip; overload;
 
 implementation
 
@@ -235,7 +240,8 @@ begin
 end;
 
 function RenderNoteSequence(const ASequence: TNoteSequence; const ASampleRate: Integer;
-  const AVoice: TSynthVoice; out AReport: TNoteRenderReport): TAudioClip;
+  const AVoice: TSynthVoice; out AReport: TNoteRenderReport;
+  const AProgress: TWorkProgressCallback): TAudioClip;
 var
   LTones: TFrameTones;
   LReport: TNoteRenderReport;
@@ -243,12 +249,13 @@ begin
   AReport := Default(TNoteRenderReport);
   LTones := PlanNoteTones(ASequence, ASampleRate, AVoice, LReport);
   Result := RenderFrameTones(LTones, ASampleRate,
-    ASequence.FrameAtTick(ASequence.LengthTicks, ASampleRate));
+    ASequence.FrameAtTick(ASequence.LengthTicks, ASampleRate), AProgress);
   AReport := LReport;
 end;
 
 function RenderNoteSequence(const ASequence: TNoteSequence; const ASampleRate: Integer;
-  const AVoices: TNoteVoices; out AReport: TNoteRenderReport): TAudioClip;
+  const AVoices: TNoteVoices; out AReport: TNoteRenderReport;
+  const AProgress: TWorkProgressCallback): TAudioClip;
 var
   LTones: TFrameTones;
   LReport: TNoteRenderReport;
@@ -256,12 +263,13 @@ begin
   AReport := Default(TNoteRenderReport);
   LTones := PlanNoteTones(ASequence, ASampleRate, AVoices, LReport);
   Result := RenderFrameTones(LTones, ASampleRate,
-    ASequence.FrameAtTick(ASequence.LengthTicks, ASampleRate));
+    ASequence.FrameAtTick(ASequence.LengthTicks, ASampleRate), AProgress);
   AReport := LReport;
 end;
 
 function RenderNoteSequence(const ASequence: TNoteSequence; const ASampleRate: Integer;
-  const AInstrument: TInstrument; out AReport: TNoteRenderReport): TAudioClip;
+  const AInstrument: TInstrument; out AReport: TNoteRenderReport;
+  const AProgress: TWorkProgressCallback): TAudioClip;
 var
   LTones: TFrameTones;
   LReport: TNoteRenderReport;
@@ -269,12 +277,13 @@ begin
   AReport := Default(TNoteRenderReport);
   LTones := PlanNoteTones(ASequence, ASampleRate, AInstrument, LReport);
   Result := RenderFrameTones(LTones, ASampleRate,
-    ASequence.FrameAtTick(ASequence.LengthTicks, ASampleRate));
+    ASequence.FrameAtTick(ASequence.LengthTicks, ASampleRate), AProgress);
   AReport := LReport;
 end;
 
 function RenderNoteSequence(const ASequence: TNoteSequence; const ASampleRate: Integer;
-  const AInstruments: TNoteInstruments; out AReport: TNoteRenderReport): TAudioClip;
+  const AInstruments: TNoteInstruments; out AReport: TNoteRenderReport;
+  const AProgress: TWorkProgressCallback): TAudioClip;
 var
   LTones: TFrameTones;
   LReport: TNoteRenderReport;
@@ -282,7 +291,7 @@ begin
   AReport := Default(TNoteRenderReport);
   LTones := PlanNoteTones(ASequence, ASampleRate, AInstruments, LReport);
   Result := RenderFrameTones(LTones, ASampleRate,
-    ASequence.FrameAtTick(ASequence.LengthTicks, ASampleRate));
+    ASequence.FrameAtTick(ASequence.LengthTicks, ASampleRate), AProgress);
   AReport := LReport;
 end;
 

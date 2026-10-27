@@ -68,7 +68,7 @@ acceptance is implied; zero additional goal credit.
   identity was verified and that exact three-file stage moved to E with hashes
   preserved. Further checks and the review service use an E-drive working directory.
   Fixed executable slots and historical D-drive evidence remain intact.
-- Remaining work: [offline DSP](../NS-6_observability_03.md),
+- Follow-through: [offline DSP — now accepted](NS-6_observability_03.md),
   [retained operations](../NS-6_observability_04.md), and actual operator/browser
   presentation. See [coverage](../../OBSERVABILITY.md) and [work](../../WORK.md).
 - 2026-10-03, Big Boss: audit of `pythian.tools.annotations.catalog` finds

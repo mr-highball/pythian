@@ -12,6 +12,68 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Offline native progress accepted; synthesis portability gap retained - 2026-10-27
+
+Previous turn is progress at `775b3a8`: independent playback preferences were
+implemented, checked and published, without closing a complete vocabulary
+criterion. The delivery nonclosing count entering this batch was **1**. Big Boss
+rechecked NS-5's actual note-presence, tonal/harmonic and physical-pulse reference
+blockers; no new supported evidence reopens the stopped scientific lanes.
+
+Selected [observability_03](TODO/DONE/NS-6_observability_03.md), zero credit:
+criterion: measured primary offline native work and cancellation without changed
+output. Deliverable: separation, synth/note/chord/grain, WAV export and bulk
+evaluation callbacks, forwarded by actual Pascal operators. Closing evidence:
+exact output/report parity, real per-phase counts, interior abort cleanup,
+retry and bounded callback cadence. Stop on a duplicate engine/codec, changed
+math/audio or per-sample callbacks. Spike owned separation and reviewed-reference
+construction; Spiegel owned render/evaluation engines; Big Boss owned WAV,
+operator integration, audit, build registration and final judgment. Ownership
+was disjoint; combined independent QA began after multiple components were ready.
+
+All four selected native criteria pass and the task moves to DONE. Final checked
+FPC 3.2.2 Win64: render 187, WAV 1,730, evaluation 1,093 and reviewed reference
+91 assertions; independent helper checks pass the same counts. The full native
+file-bound evaluator and separation regressions pass. All report zero leaks.
+Checked Win32 WAV passes 1,730; actual pas2js/Node WAV passes 1,475, excluding
+native filename I/O. Actual render, authored MIDI render, separation and evaluator
+CLIs use primary engines; JSON remains stdout and shared throttled progress is
+stderr. No new musical inference or private recording was selected as evidence.
+
+Core phases count actual frames/windows/cells/comparisons; unknown matching totals
+finish with the actual completed count. Confirmed PCM writes retain the primary
+writer's sink ownership, poisoning and retry contract. SaveWavePcm16 still writes
+directly and may leave a partial destination. Allocation, immutable clip copying
+and bounded metadata/JSON parsing retain synchronous boundaries; no universal
+latency or complete-observability claim follows. The [coverage map](OBSERVABILITY.md#offline-native-consumers)
+and [retained-operation audit](TODO/NS-6_observability_04.md) preserve those limits.
+
+A separate actual synth/music-render pas2js closure fails at `pythian.instrument`'s
+native SizeOf assumption before execution. Big Boss created the linked zero-credit
+[portability_03](TODO/NS-6_portability_03.md), returned to this native batch and
+made no instrument/compiler/dependency patch. Portable WAV execution does not
+qualify synthesis, browser presentation or WASM. The prior browser request is
+still unqualified; no QA browser or playback was launched in this batch.
+
+Repaired findings: CLI separation audit, reviewed-reference forwarding, final
+unknown-count publication and fixture reset/platform/layout issues. Preserve the
+initial missing-output-directory Win32 failure and the wrong-cwd evaluation build
+plus stale-executable execution; only fresh corrected runs count. Spiegel also
+accidentally ran the existing authored synthetic pitch fixture outside the
+no-inference assignment. Its passing log is retained and excluded from scientific
+acceptance; it was not repeated. No implementation task reached two failed
+formal QA submissions. Full evidence and source/artifact manifests are under
+E-drive `build/tests/runs/offline-progress-20261027-*`, especially
+`runs/offline-progress-20261027-boss-final/`.
+
+The full criterion closure resets the delivery nonclosing count to **0**;
+scientific stops/exposure counters are unchanged. No musical or additional goal
+credit: **53 open /58 DONE (111 total); 52.45 credited /47.55 remaining**;
+NS completions stay **100/90/25/70/14/54**. The new portability gap replaces the
+closed zero-credit task in the open count. Stable deployment is unchanged:
+existing fixed service remains alive, loopback and LAN HTTPS return 200, and all
+5,951 baseline private JSON/JSONL hashes are unchanged. No native QA worker,
+Pythian QA browser or playback remains. No generic WFC gap or companion change.
 ## Independent playback preferences connected to retained learning - 2026-10-27
 
 Previous goal turn is progress: mixed-format native WFC learning was implemented,
@@ -756,7 +818,7 @@ Live Studio loads. Owned browser tabs and QA service are closed; no QA audio or
 worker remains. No TLS/firewall/catalog configuration changes.
 
 Remaining required gaps at that checkpoint: [catalog import — subsequently accepted](TODO/DONE/NS-6_observability_02.md),
-[offline render/separation](TODO/NS-6_observability_03.md),
+[offline render/separation](TODO/DONE/NS-6_observability_03.md),
 [retained corpus/style monitoring](TODO/NS-6_observability_04.md), and the
 portability task above. Next ready observability task is catalog import, including
 careful cancellation propagation through per-file error handling. No generic WFC

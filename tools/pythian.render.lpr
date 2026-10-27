@@ -31,7 +31,8 @@ uses
   pythian.audio,
   pythian.wave,
   pythian.oscillator,
-  pythian.synth;
+  pythian.synth,
+  pythian.tools.progress;
 
 const
   CPitches: array[0..7] of Integer = (60, 64, 67, 71, 69, 67, 64, 62);
@@ -40,6 +41,7 @@ var
   LTones: TTones;
   LClip: TAudioClip;
   LIndex: Integer;
+  LObserver: TConsoleWorkProgress;
 begin
   try
     if ParamCount <> 1 then
@@ -60,12 +62,17 @@ begin
       LTones[LIndex].Velocity := 0.8;
       LTones[LIndex].Seed := 731 + LIndex;
     end;
-    LClip := RenderTones(LTones, 44100);
+    LObserver := TConsoleWorkProgress.Create;
     try
-      SaveWavePcm16(ParamStr(1), LClip);
-      WriteLn('Rendered ', LClip.FrameCount, ' stereo frames at ', LClip.SampleRate, ' Hz');
+      LClip := RenderTones(LTones, 44100, 0, LObserver.Observe);
+      try
+        SaveWavePcm16(ParamStr(1), LClip, LObserver.Observe);
+        WriteLn('Rendered ', LClip.FrameCount, ' stereo frames at ', LClip.SampleRate, ' Hz');
+      finally
+        LClip.Free;
+      end;
     finally
-      LClip.Free;
+      LObserver.Free;
     end;
   except
     on LException: Exception do

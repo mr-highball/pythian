@@ -28,11 +28,14 @@ unit pythian.tools.annotations.reference;
 
 interface
 
+uses
+  pythian.progress;
+
 { Creates an evaluator-compatible presence reference from a reviewed catalog.
   Unlabeled centers stay unknown; this does not establish acoustic correctness,
   complete reference coverage, or independence from an estimator. }
 function BuildReviewedPresenceReference(const APlanPath, APacketPath,
-  ASourcePath: String): UTF8String;
+  ASourcePath: String; const AProgress: TWorkProgressCallback = nil): UTF8String;
 
 implementation
 
@@ -245,7 +248,7 @@ begin
 end;
 
 function BuildReviewedPresenceReference(const APlanPath, APacketPath,
-  ASourcePath: String): UTF8String;
+  ASourcePath: String; const AProgress: TWorkProgressCallback): UTF8String;
 var
   LPlan: TJSONObject;
   LPacket: TJSONObject;
@@ -279,7 +282,7 @@ begin
   try
     LPacketStream := TFileStream.Create(APacketPath,
       fmOpenRead or fmShareDenyWrite);
-    Need(Sha256Stream(LPacketStream, LPacketStream.Size) =
+    Need(Sha256Stream(LPacketStream, LPacketStream.Size, AProgress) =
       TextField(LPlan, 'packet_sha256'),
       'Presence reference packet SHA256 differs from plan');
     LPacket := ReadReviewedCatalogPacket(APacketPath);
@@ -305,7 +308,7 @@ begin
     LSourceStream := TFileStream.Create(ASourcePath,
       fmOpenRead or fmShareDenyWrite);
     Need((LSourceStream.Size = LSource.Int64s['source_bytes']) and
-      (Sha256Stream(LSourceStream, LSourceStream.Size) =
+      (Sha256Stream(LSourceStream, LSourceStream.Size, AProgress) =
       LSource.Strings['source_sha256']),
       'Presence reference WAV identity differs');
     LSourceStream.Position := 0;
@@ -339,6 +342,7 @@ begin
       TextField(LPlan, 'annotation_policy_sha256'));
     LCells := TJSONArray.Create;
     LOutput.Add('observations', LCells);
+    ReportWork(AProgress, 'reference_centers', wuItems, 0, LCount);
     for LIndex := 0 to LCount - 1 do
     begin
       LFrame := LCenter + Int64(LIndex) * LHop;
@@ -355,14 +359,16 @@ begin
       begin
         Inc(LKnown);
       end;
+      if ((LIndex + 1) mod 256 = 0) or (LIndex + 1 = LCount) then
+        ReportWork(AProgress, 'reference_centers', wuItems, LIndex + 1, LCount);
     end;
     Need(LKnown > 0, 'Presence reference has no reviewed audible/rest center');
     LSourceStream.Position := 0;
-    Need(Sha256Stream(LSourceStream, LSourceStream.Size) =
+    Need(Sha256Stream(LSourceStream, LSourceStream.Size, AProgress) =
       LSource.Strings['source_sha256'],
       'Presence reference WAV changed during build');
     LPacketStream.Position := 0;
-    Need(Sha256Stream(LPacketStream, LPacketStream.Size) =
+    Need(Sha256Stream(LPacketStream, LPacketStream.Size, AProgress) =
       TextField(LPlan, 'packet_sha256'),
       'Presence reference packet changed during build');
     Result := LOutput.AsJSON;

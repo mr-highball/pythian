@@ -31,7 +31,8 @@ interface
 
 uses
   Classes,
-  pythian.audio;
+  pythian.audio,
+  pythian.progress;
 
 const
   WaveContractVersion = 1;
@@ -60,9 +61,11 @@ function ReadWaveLoopInfo(const ABytes: TAudioBytes): TWaveLoopInfo;
   compressed formats are rejected.
   Shares the bounded frame reader; full clips retain MaximumClipSamples. }
 function DecodeWave(const ABytes: TAudioBytes): TAudioClip;
-function EncodeWavePcm16(const AClip: TAudioClip): TAudioBytes;
+function EncodeWavePcm16(const AClip: TAudioClip;
+  const AProgress: TWorkProgressCallback = nil): TAudioBytes;
 function LoadWave(const AFileName: String): TAudioClip;
-procedure SaveWavePcm16(const AFileName: String; const AClip: TAudioClip);
+procedure SaveWavePcm16(const AFileName: String; const AClip: TAudioClip;
+  const AProgress: TWorkProgressCallback = nil);
 
 implementation
 
@@ -211,19 +214,34 @@ begin
   end;
 end;
 
-function EncodeWavePcm16(const AClip: TAudioClip): TAudioBytes;
+function EncodeWavePcm16(const AClip: TAudioClip;
+  const AProgress: TWorkProgressCallback): TAudioBytes;
 var
   LStream: TMemoryStream;
+  LOffset: Integer;
+  LCount: Integer;
 begin
   Result := nil;
   LStream := TMemoryStream.Create;
   try
-    WriteWavePcm16(LStream, AClip);
+    WriteWavePcm16(LStream, AClip, AProgress);
     SetLength(Result, LStream.Size);
     LStream.Position := 0;
-    if ReadStreamBytes(LStream, Result, 0, Length(Result)) <> Length(Result) then
+    LOffset := 0;
+    ReportWork(AProgress, 'encode_wave_bytes', wuBytes, 0, Length(Result));
+    while LOffset < Length(Result) do
     begin
-      raise EAudio.Create('Encoded WAVE stream ended before its declared size');
+      LCount := Length(Result) - LOffset;
+      if LCount > 65536 then
+      begin
+        LCount := 65536;
+      end;
+      if ReadStreamBytes(LStream, Result, LOffset, LCount) <> LCount then
+      begin
+        raise EAudio.Create('Encoded WAVE stream ended before its declared size');
+      end;
+      Inc(LOffset, LCount);
+      ReportWork(AProgress, 'encode_wave_bytes', wuBytes, LOffset, Length(Result));
     end;
   finally
     LStream.Free;
@@ -248,7 +266,8 @@ begin
   {$endif}
 end;
 
-procedure SaveWavePcm16(const AFileName: String; const AClip: TAudioClip);
+procedure SaveWavePcm16(const AFileName: String; const AClip: TAudioClip;
+  const AProgress: TWorkProgressCallback);
 {$ifndef pas2js}
 var
   LStream: TFileStream;
@@ -263,7 +282,7 @@ begin
   end;
   LStream := TFileStream.Create(AFileName, fmCreate);
   try
-    WriteWavePcm16(LStream, AClip);
+    WriteWavePcm16(LStream, AClip, AProgress);
   finally
     LStream.Free;
   end;

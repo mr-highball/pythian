@@ -29,7 +29,8 @@ unit pythian.evaluation.notes;
 interface
 
 uses
-  pythian.evaluation;
+  pythian.evaluation,
+  pythian.progress;
 
 const
   MaximumOverlappingNotes = 4096;
@@ -108,7 +109,8 @@ type
 function EvaluateOverlappingNotes(const AReference, APrediction: TEvaluationNotes;
   const ARegions: TEvaluationNoteRegions; const AFirstFrame, AEndFrame: Int64;
   const AOptions: TOverlappingNoteOptions;
-  const AMatchingWorkLimit: Int64 = MaximumNoteMatchingWork): TOverlappingNoteEvaluation;
+  const AMatchingWorkLimit: Int64 = MaximumNoteMatchingWork;
+  const AProgress: TWorkProgressCallback = nil): TOverlappingNoteEvaluation;
 
 implementation
 
@@ -258,7 +260,8 @@ end;
 
 function SelectNotes(const ANotes: TEvaluationNotes; const AIndices: TIndices;
   const ARegions: TEvaluationNoteRegions; const AFirst, AEnd: Int64;
-  const AReference: Boolean; var ACensored, AUncertain: TEvaluationNoteIds): TIndices;
+  const AReference: Boolean; var ACensored, AUncertain: TEvaluationNoteIds;
+  var AWork: Int64; const AProgress: TWorkProgressCallback): TIndices;
 var
   LNote: TEvaluationNote;
   LUncertain: Boolean;
@@ -272,6 +275,9 @@ begin
     LUncertain := False;
     for J := 0 to High(ARegions) do
     begin
+      Inc(AWork);
+      if AWork mod 4096 = 0 then
+        ReportWork(AProgress, 'evaluation_note_regions', wuItems, AWork, 0);
       if (LNote.StartFrame < ARegions[J].EndFrame) and
         (LNote.EndFrame > ARegions[J].FirstFrame) then
       begin
@@ -315,7 +321,7 @@ end;
 
 function Edges(const AReference, APrediction: TEvaluationNotes;
   const AReferences, APredictions: TIndices; const AOptions: TOverlappingNoteOptions;
-  var AResult: TOverlappingNoteEvaluation): TEdges;
+  var AResult: TOverlappingNoteEvaluation; const AProgress: TWorkProgressCallback): TEdges;
 var
   LOnset: Int64;
   LOffset: Int64;
@@ -332,6 +338,8 @@ begin
     for J := 0 to High(APredictions) do
     begin
       Inc(AResult.CandidateChecks);
+      if AResult.CandidateChecks mod 4096 = 0 then
+        ReportWork(AProgress, 'evaluation_note_candidates', wuItems, AResult.CandidateChecks, 0);
       LOnset := Abs(AReference[AReferences[I]].StartFrame - APrediction[APredictions[J]].StartFrame);
       if LOnset > AOptions.OnsetToleranceFrames then
       begin
@@ -370,7 +378,7 @@ end;
 procedure MatchGroup(const AReference, APrediction: TEvaluationNotes;
   const AReferences, APredictions: TIndices; const AEdges: TEdges;
   const AFull: Boolean; var AAssignment: TNoteAssignment; var AWork: Int64;
-  const AWorkLimit: Int64);
+  const AWorkLimit: Int64; const AProgress: TWorkProgressCallback);
 var
   LMatchR: TIndices;
   LMatchP: TIndices;
@@ -427,6 +435,8 @@ begin
       begin
         Inc(AWork);
         Require(AWork <= AWorkLimit, 'Note matching work budget exceeded');
+        if AWork mod 4096 = 0 then
+          ReportWork(AProgress, 'evaluation_note_matching', wuItems, AWork, 0);
         if AFull and not AEdges[J].Full then
         begin
           Continue;
@@ -578,7 +588,8 @@ end;
 function EvaluateOverlappingNotes(const AReference, APrediction: TEvaluationNotes;
   const ARegions: TEvaluationNoteRegions; const AFirstFrame, AEndFrame: Int64;
   const AOptions: TOverlappingNoteOptions;
-  const AMatchingWorkLimit: Int64): TOverlappingNoteEvaluation;
+  const AMatchingWorkLimit: Int64;
+  const AProgress: TWorkProgressCallback): TOverlappingNoteEvaluation;
 var
   LReferences: TIndices;
   LPredictions: TIndices;
@@ -587,6 +598,7 @@ var
   LEdges: TEdges;
   LEnd: Int64;
   LFirst: Int64;
+  LRegionWork: Int64;
   I: Integer;
 begin
   Require((AMatchingWorkLimit >= 0) and (AMatchingWorkLimit <= MaximumNoteMatchingWork),
@@ -634,22 +646,29 @@ begin
   Require(ARegions[High(ARegions)].EndFrame = AEndFrame, 'Annotation scope end differs');
   Result.ReferenceCoverage := (Result.RegionFrames[esValue] + Result.RegionFrames[esRest]) /
     (AEndFrame - AFirstFrame);
+  LRegionWork := 0;
+  ReportWork(AProgress, 'evaluation_note_regions', wuItems, 0, 0);
   LReferences := SelectNotes(AReference, LReferences, ARegions, LFirst, LEnd, True,
-    Result.ReferenceCensored, Result.ReferenceUncertain);
+    Result.ReferenceCensored, Result.ReferenceUncertain, LRegionWork, AProgress);
   LPredictions := SelectNotes(APrediction, LPredictions, ARegions, LFirst, LEnd, False,
-    Result.PredictionCensored, Result.PredictionUnscorable);
+    Result.PredictionCensored, Result.PredictionUnscorable, LRegionWork, AProgress);
+  ReportWork(AProgress, 'evaluation_note_regions', wuItems, LRegionWork, LRegionWork);
+  ReportWork(AProgress, 'evaluation_note_candidates', wuItems, 0, 0);
+  ReportWork(AProgress, 'evaluation_note_matching', wuItems, 0, 0);
   Result.ReferenceNotes := Length(LReferences);
   Result.PredictionNotes := Length(LPredictions);
   for I := 0 to 127 do
   begin
     LReferencePitch := PitchIndices(AReference, LReferences, I);
     LPredictionPitch := PitchIndices(APrediction, LPredictions, I);
-    LEdges := Edges(AReference, APrediction, LReferencePitch, LPredictionPitch, AOptions, Result);
+    LEdges := Edges(AReference, APrediction, LReferencePitch, LPredictionPitch, AOptions, Result, AProgress);
     MatchGroup(AReference, APrediction, LReferencePitch, LPredictionPitch, LEdges, False,
-      Result.Onsets, Result.MatchingWork, AMatchingWorkLimit);
+      Result.Onsets, Result.MatchingWork, AMatchingWorkLimit, AProgress);
     MatchGroup(AReference, APrediction, LReferencePitch, LPredictionPitch, LEdges, True,
-      Result.FullNotes, Result.MatchingWork, AMatchingWorkLimit);
+      Result.FullNotes, Result.MatchingWork, AMatchingWorkLimit, AProgress);
   end;
+  ReportWork(AProgress, 'evaluation_note_candidates', wuItems, Result.CandidateChecks, Result.CandidateChecks);
+  ReportWork(AProgress, 'evaluation_note_matching', wuItems, Result.MatchingWork, Result.MatchingWork);
   FinishAssignment(Result.Onsets, Result.ReferenceNotes, Result.PredictionNotes);
   FinishAssignment(Result.FullNotes, Result.ReferenceNotes, Result.PredictionNotes);
 end;

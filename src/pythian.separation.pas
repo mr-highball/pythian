@@ -29,7 +29,8 @@ unit pythian.separation;
 interface
 
 uses
-  pythian.audio;
+  pythian.audio,
+  pythian.progress;
 
 const
   MaximumSeparationCells = 8000000;
@@ -67,7 +68,8 @@ type
     FPercussive: TAudioClip;
     FPlan: TSeparationPlan;
   public
-    constructor Create(const ASource: TAudioClip; const AOptions: THarmonicPercussiveOptions);
+    constructor Create(const ASource: TAudioClip; const AOptions: THarmonicPercussiveOptions;
+      const AProgress: TWorkProgressCallback = nil);
     destructor Destroy; override;
     property Harmonic: TAudioClip read FHarmonic;
     property Percussive: TAudioClip read FPercussive;
@@ -164,7 +166,7 @@ begin
 end;
 
 constructor THarmonicPercussive.Create(const ASource: TAudioClip;
-  const AOptions: THarmonicPercussiveOptions);
+  const AOptions: THarmonicPercussiveOptions; const AProgress: TWorkProgressCallback);
 var
   LMagnitudes: TFourierValues;
   LWindow: TFourierValues;
@@ -229,6 +231,7 @@ begin
   begin
     LWindow[LIndex] := 0.5 - 0.5 * Cos(2 * Pi * LIndex / LSize);
   end;
+  ReportWork(AProgress, 'separation_spectrum', wuFrames, 0, FPlan.AnalysisFrames);
   for LFrame := 0 to FPlan.AnalysisFrames - 1 do
   begin
     LStart := LFrame * AOptions.HopFrames - LSize div 2;
@@ -242,11 +245,18 @@ begin
           (Sqr(LReal[LBin]) + Sqr(LImaginary[LBin])) / ASource.Channels;
       end;
     end;
+    if ((LFrame + 1) mod 16 = 0) or (LFrame + 1 = FPlan.AnalysisFrames) then
+      ReportWork(AProgress, 'separation_spectrum', wuFrames, LFrame + 1, FPlan.AnalysisFrames);
   end;
+  ReportWork(AProgress, 'separation_magnitudes', wuItems, 0, FPlan.SpectralCells);
   for LIndex := 0 to High(LMagnitudes) do
   begin
     LMagnitudes[LIndex] := Sqrt(LMagnitudes[LIndex]);
+    if ((LIndex + 1) mod 4096 = 0) or (LIndex + 1 = FPlan.SpectralCells) then
+      ReportWork(AProgress, 'separation_magnitudes', wuItems, LIndex + 1, FPlan.SpectralCells);
   end;
+  ReportWork(AProgress, 'separation_mask', wuItems, 0, FPlan.SpectralCells);
+  ReportWork(AProgress, 'separation_reconstruction', wuFrames, 0, FPlan.AnalysisFrames);
   for LFrame := 0 to FPlan.AnalysisFrames - 1 do
   begin
     LStart := LFrame * AOptions.HopFrames - LSize div 2;
@@ -277,6 +287,9 @@ begin
         LP := LP / LScale;
         LMask[LBin] := Sqr(LH) / (Sqr(LH) + Sqr(LP));
       end;
+      LPosition := LFrame * FPlan.FrequencyBins + LBin + 1;
+      if (LPosition mod 256 = 0) or (LPosition = FPlan.SpectralCells) then
+        ReportWork(AProgress, 'separation_mask', wuItems, LPosition, FPlan.SpectralCells);
     end;
     for LChannel := 0 to ASource.Channels - 1 do
     begin
@@ -302,9 +315,12 @@ begin
         end;
       end;
     end;
+    if ((LFrame + 1) mod 16 = 0) or (LFrame + 1 = FPlan.AnalysisFrames) then
+      ReportWork(AProgress, 'separation_reconstruction', wuFrames, LFrame + 1, FPlan.AnalysisFrames);
   end;
   SetLength(LHarmonic, Length(LAccumulated));
   SetLength(LPercussive, Length(LAccumulated));
+  ReportWork(AProgress, 'separation_residual', wuFrames, 0, ASource.FrameCount);
   for LSourceFrame := 0 to ASource.FrameCount - 1 do
   begin
     if LWeights[LSourceFrame] <= 0 then
@@ -329,6 +345,8 @@ begin
       end;
       LPercussive[LPosition] := LResidual;
     end;
+    if ((LSourceFrame + 1) mod 4096 = 0) or (LSourceFrame + 1 = ASource.FrameCount) then
+      ReportWork(AProgress, 'separation_residual', wuFrames, LSourceFrame + 1, ASource.FrameCount);
   end;
   FHarmonic := TAudioClip.Create(ASource.SampleRate, ASource.Channels, LHarmonic);
   FPercussive := TAudioClip.Create(ASource.SampleRate, ASource.Channels, LPercussive);
