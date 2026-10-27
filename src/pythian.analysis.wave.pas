@@ -116,6 +116,7 @@ var
   LNew: TAudioSamples;
   LKeep: Integer;
   LCacheEnd: Integer;
+  LSample: Integer;
 begin
   if (AStartFrame < 0) or (AStartFrame > FrameCount) or
     (AValidFrames < 1) or (AValidFrames > 16384) or
@@ -132,8 +133,10 @@ begin
   SetLength(LCandidate, AValidFrames * Channels);
   if LKeep > 0 then
   begin
-    Move(FCache[(AStartFrame - FStart) * Channels], LCandidate[0],
-      LKeep * Channels * SizeOf(Single));
+    for LSample := 0 to LKeep * Channels - 1 do
+    begin
+      LCandidate[LSample] := FCache[(AStartFrame - FStart) * Channels + LSample];
+    end;
   end;
   if LKeep < AValidFrames then
   begin
@@ -146,7 +149,10 @@ begin
     begin
       raise EAudio.Create('WAV analysis window ended early');
     end;
-    Move(LNew[0], LCandidate[LKeep * Channels], Length(LNew) * SizeOf(Single));
+    for LSample := 0 to High(LNew) do
+    begin
+      LCandidate[LKeep * Channels + LSample] := LNew[LSample];
+    end;
   end;
   FCache := LCandidate;
   FStart := AStartFrame;

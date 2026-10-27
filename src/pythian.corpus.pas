@@ -42,9 +42,9 @@ const
 
 type
   TAcousticSourceInfo = record
-    Name: UTF8String;
+    Name: TCorpusText;
     Sha256: String;
-    Provenance: UTF8String;
+    Provenance: TCorpusText;
     SampleRate: Integer;
     Channels: Integer;
     FrameCount: Integer;
@@ -83,7 +83,7 @@ type
     property FeatureCount: Integer read FFeatureCount;
   end;
 
-procedure ValidateCorpusText(const AText: UTF8String);
+procedure ValidateCorpusText(const AText: TCorpusText);
 procedure ValidateSourceInfo(const AInfo: TAcousticSourceInfo);
 function TrainAcousticCorpus(const ASources: TAudioSources;
   const AInfo: TAcousticSourceInfos; const AOptions: TAnalysisOptions;
@@ -94,9 +94,10 @@ implementation
 
 uses
   Math,
+  pythian.ieee754,
   SysUtils;
 
-procedure ValidateCorpusText(const AText: UTF8String);
+procedure ValidateCorpusText(const AText: TCorpusText);
 begin
   pythian.corpus.text.ValidateCorpusText(AText);
 end;
@@ -134,7 +135,7 @@ begin
   if (AFeature.StartFrame <> Int64(AIndex) * AOptions.HopFrames) or
     (AFeature.ValidFrames <> Min(AOptions.WindowFrames, AInfo.FrameCount -
       AFeature.StartFrame)) or (AFeature.ValidFrames < 1) or
-    (AFeature.Peak < 0) or (AFeature.Peak > MaxSingle) or
+    (AFeature.Peak < 0) or (AFeature.Peak > MaximumFiniteFloat32) or
     (AFeature.Rms > AFeature.Peak + 1E-9 * Max(1, AFeature.Peak)) or
     (AFeature.CentroidHz > AInfo.SampleRate / 2 + 1E-6) or
     (AFeature.Silent <> (AFeature.Rms <= AOptions.SilenceRms)) then

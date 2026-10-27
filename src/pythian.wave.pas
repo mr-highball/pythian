@@ -56,7 +56,8 @@ function ReadWaveLoopInfo(const ABytes: TAudioBytes): TWaveLoopInfo;
 
 { RIFF/RF64 little-endian PCM8/16/24/32 and IEEE float32, mono/stereo.
   Unknown chunks are skipped with padding; malformed and ambiguous input fails.
-  Decoding owns no caller data. Extensible/compressed formats are rejected.
+  Decoding owns no caller data. Supported extensible PCM/float is retained;
+  compressed formats are rejected.
   Shares the bounded frame reader; full clips retain MaximumClipSamples. }
 function DecodeWave(const ABytes: TAudioBytes): TAudioClip;
 function EncodeWavePcm16(const AClip: TAudioClip): TAudioBytes;
@@ -67,6 +68,8 @@ implementation
 
 uses
   SysUtils,
+  pythian.ieee754,
+  pythian.stream.bytes,
   pythian.wave.stream,
   pythian.wave.read;
 
@@ -86,7 +89,7 @@ begin
 end;
 
 function HasTag(const ABytes: TAudioBytes; const AOffset: Integer;
-  const ATag: AnsiString): Boolean;
+  const ATag: String): Boolean;
 var
   LIndex: Integer;
 begin
@@ -149,41 +152,12 @@ begin
       LInfo.MeterDenominator := ReadLE(ABytes, LOffset + 24, 2);
       LInfo.MeterNumerator := ReadLE(ABytes, LOffset + 26, 2);
       LWord := ReadLE(ABytes, LOffset + 28, 4);
-      Move(LWord, LInfo.TempoBpm, SizeOf(LWord));
+      LInfo.TempoBpm := DecodeFloat32Bits(LWord);
       RequireFinite(LInfo.TempoBpm, 'ACID tempo');
     end;
     LOffset := LNext;
   end;
   Result := LInfo;
-end;
-
-type
-  TWaveBytesView = class(TCustomMemoryStream)
-  strict private
-    FBytes: TAudioBytes;
-  public
-    constructor Create(const ABytes: TAudioBytes);
-    function Write(const ABuffer; ACount: LongInt): LongInt; override;
-  end;
-
-constructor TWaveBytesView.Create(const ABytes: TAudioBytes);
-begin
-  inherited Create;
-  FBytes := ABytes;
-  if Length(FBytes) > 0 then
-  begin
-    SetPointer(@FBytes[0], Length(FBytes));
-  end
-  else
-  begin
-    SetPointer(nil, 0);
-  end;
-end;
-
-function TWaveBytesView.Write(const ABuffer; ACount: LongInt): LongInt;
-begin
-  Result := 0;
-  raise EAudio.Create('WAVE byte view is read-only');
 end;
 
 function ReadWaveClip(const AStream: TStream): TAudioClip;
@@ -192,6 +166,7 @@ var
   LSamples: TAudioSamples;
   LBlock: TAudioSamples;
   LOffset: Integer;
+  LIndex: Integer;
 begin
   LReader := TWaveFrameReader.Create(AStream);
   try
@@ -208,7 +183,10 @@ begin
       begin
         raise EAudio.Create('WAVE reader ended before declared frame extent');
       end;
-      Move(LBlock[0], LSamples[LOffset], Length(LBlock) * SizeOf(Single));
+      for LIndex := 0 to High(LBlock) do
+      begin
+        LSamples[LOffset + LIndex] := LBlock[LIndex];
+      end;
       Inc(LOffset, Length(LBlock));
     end;
     Result := TAudioClip.Create(LReader.SampleRate, LReader.Channels, LSamples);
@@ -219,13 +197,13 @@ end;
 
 function DecodeWave(const ABytes: TAudioBytes): TAudioClip;
 var
-  LStream: TWaveBytesView;
+  LStream: TAudioBytesReadStream;
 begin
   if (Length(ABytes) < 12) or (Length(ABytes) > MaximumWaveBytes) then
   begin
     raise EAudio.Create('WAVE size outside decoder budget');
   end;
-  LStream := TWaveBytesView.Create(ABytes);
+  LStream := TAudioBytesReadStream.Create(ABytes);
   try
     Result := ReadWaveClip(LStream);
   finally
@@ -243,28 +221,42 @@ begin
     WriteWavePcm16(LStream, AClip);
     SetLength(Result, LStream.Size);
     LStream.Position := 0;
-    LStream.ReadBuffer(Result[0], Length(Result));
+    if ReadStreamBytes(LStream, Result, 0, Length(Result)) <> Length(Result) then
+    begin
+      raise EAudio.Create('Encoded WAVE stream ended before its declared size');
+    end;
   finally
     LStream.Free;
   end;
 end;
 
 function LoadWave(const AFileName: String): TAudioClip;
+{$ifndef pas2js}
 var
   LStream: TFileStream;
+{$endif}
 begin
+  {$ifdef pas2js}
+  raise EAudio.Create('Filename WAV I/O is native-only; supply explicit WAV bytes');
+  {$else}
   LStream := TFileStream.Create(AFileName, fmOpenRead or fmShareDenyWrite);
   try
     Result := ReadWaveClip(LStream);
   finally
     LStream.Free;
   end;
+  {$endif}
 end;
 
 procedure SaveWavePcm16(const AFileName: String; const AClip: TAudioClip);
+{$ifndef pas2js}
 var
   LStream: TFileStream;
+{$endif}
 begin
+  {$ifdef pas2js}
+  raise EAudio.Create('Filename WAV I/O is native-only; use encoded WAV bytes');
+  {$else}
   if AClip = nil then
   begin
     raise EAudio.Create('WAVE output requires a clip');
@@ -275,6 +267,7 @@ begin
   finally
     LStream.Free;
   end;
+  {$endif}
 end;
 
 end.

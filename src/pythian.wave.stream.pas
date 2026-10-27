@@ -101,7 +101,8 @@ function WavePcm16Header(const ASampleRate, AChannels: Integer;
 implementation
 
 uses
-  Math;
+  Math,
+  pythian.stream.bytes;
 
 const
   DWordMaximum: Int64 = 4294967295;
@@ -138,14 +139,16 @@ begin
 end;
 
 procedure TStreamAudioSink.WriteBytes(const ABytes: array of Byte);
+var
+  LWritten: Integer;
 begin
   if Length(ABytes) > 0 then
   begin
-    {$IFDEF PAS2JS}
-    FStream.WriteBuffer(ABytes, Length(ABytes));
-    {$ELSE}
-    FStream.WriteBuffer(ABytes[0], Length(ABytes));
-    {$ENDIF}
+    LWritten := WriteStreamBytes(FStream, ABytes, 0, Length(ABytes));
+    if LWritten <> Length(ABytes) then
+    begin
+      raise EAudio.Create('Incomplete WAVE stream write');
+    end;
   end;
 end;
 

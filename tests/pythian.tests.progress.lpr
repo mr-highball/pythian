@@ -25,6 +25,7 @@ program pythian_tests_progress;
 {$mode delphi}
 {$H+}
 uses Classes, SysUtils, Math, pythian.audio, pythian.progress, pythian.hash,
+  pythian.stream.bytes,
   pythian.analysis, pythian.analysis.wave, pythian.wave.read, pythian.wave.stream,
   pythian.resample, pythian.pitch, pythian.pitch.track, pythian.learning,
   pythian.beat, pythian.beat.wave;
@@ -90,7 +91,7 @@ begin
     P.Reset;
     Check(Sha256Bytes(Bytes, P.Report) = H, 'Byte hash callback preserves digest');
     Check((P.Intermediate > 0) and (P.Last.Done = Length(Bytes)), 'Byte hash intermediate and completion');
-    M.WriteBuffer(Bytes[0], Length(Bytes)); M.Position := 0;
+    WriteStreamBytes(M, Bytes, 0, Length(Bytes)); M.Position := 0;
     P.Reset;
     Check(Sha256Stream(M, M.Size, P.Report) = H, 'Stream hash callback preserves digest');
     Check((P.Intermediate > 0) and (P.Last.Done = M.Size), 'Stream hash measured bytes');
@@ -164,5 +165,17 @@ begin
   end;
 end;
 begin
-  try Run except on E: Exception do begin WriteLn(E.ClassName, ': ', E.Message); Halt(1) end end;
+  try
+    Run;
+  except
+    on E: Exception do
+    begin
+      WriteLn(E.ClassName, ': ', E.Message);
+      {$ifdef pas2js}
+      raise;
+      {$else}
+      Halt(1);
+      {$endif}
+    end;
+  end;
 end.

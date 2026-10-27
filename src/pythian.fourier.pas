@@ -66,10 +66,23 @@ var
   LReal: Double;
   LImaginary: Double;
   LLimit: Double;
+  LOriginalReal: TFourierValues;
+  LAliasedVariable: Boolean;
 begin
   LSize := Length(AReal);
-  if (@AReal = @AImaginary) or (LSize < 2) or (LSize > MaximumFourierSize) or
+  if (LSize < 2) or (LSize > MaximumFourierSize) or
     ((LSize and (LSize - 1)) <> 0) or (Length(AImaginary) <> LSize) then
+  begin
+    raise EAudio.Create('Fourier transform requires distinct variables and equal power-of-two arrays');
+  end;
+  { Probe variable identity without native addresses. Distinct variables may
+    share their original array; only passing the same variable twice is invalid.
+    Retain and restore its reference before validation or transform work. }
+  LOriginalReal := AReal;
+  AReal := nil;
+  LAliasedVariable := Length(AImaginary) = 0;
+  AReal := LOriginalReal;
+  if LAliasedVariable then
   begin
     raise EAudio.Create('Fourier transform requires distinct variables and equal power-of-two arrays');
   end;

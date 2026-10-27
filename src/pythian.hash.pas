@@ -39,15 +39,28 @@ function Sha256Bytes(const ABytes: TAudioBytes;
   const AProgress: TWorkProgressCallback = nil): String;
 { Hash exactly AByteCount bytes from the current position, using fixed storage.
   Borrows the stream; short positive reads accumulate. Invalid counts reject
-  before reading. Source errors/early EOF may advance its physical position. }
+  before reading. pas2js rejects counts above 2^53-1; native permits SHA-256
+  byte counts through 2^61-1. Source errors/early EOF may advance position. }
 function Sha256Stream(const AStream: TStream; const AByteCount: Int64;
   const AProgress: TWorkProgressCallback = nil): String;
 
 implementation
 
+uses
+  pythian.stream.bytes;
+
 type
   TShaState = array[0..7] of Cardinal;
   TShaBlock = array[0..63] of Byte;
+
+function AddWords(const A, B: Cardinal): Cardinal; inline;
+begin
+  {$ifdef pas2js}
+  Result := Cardinal((Int64(A) + Int64(B)) mod Int64(4294967296));
+  {$else}
+  Result := Cardinal((QWord(A) + B) and $FFFFFFFF);
+  {$endif}
+end;
 
 function RotateRight(const AValue: Cardinal; const ACount: Integer): Cardinal; inline;
 begin
@@ -88,29 +101,29 @@ begin
       (LW[LIndex - 15] shr 3);
     LS1 := RotateRight(LW[LIndex - 2], 17) xor RotateRight(LW[LIndex - 2], 19) xor
       (LW[LIndex - 2] shr 10);
-    LW[LIndex] := Cardinal((QWord(LW[LIndex - 16]) + LS0 + LW[LIndex - 7] + LS1) and $FFFFFFFF);
+    LW[LIndex] := AddWords(AddWords(LW[LIndex - 16], LS0), AddWords(LW[LIndex - 7], LS1));
   end;
   LV := AState;
   for LIndex := 0 to 63 do
   begin
     LS1 := RotateRight(LV[4], 6) xor RotateRight(LV[4], 11) xor RotateRight(LV[4], 25);
     LChoice := (LV[4] and LV[5]) xor ((not LV[4]) and LV[6]);
-    LT1 := Cardinal((QWord(LV[7]) + LS1 + LChoice + CK[LIndex] + LW[LIndex]) and $FFFFFFFF);
+    LT1 := AddWords(AddWords(AddWords(AddWords(LV[7], LS1), LChoice), CK[LIndex]), LW[LIndex]);
     LS0 := RotateRight(LV[0], 2) xor RotateRight(LV[0], 13) xor RotateRight(LV[0], 22);
     LMajority := (LV[0] and LV[1]) xor (LV[0] and LV[2]) xor (LV[1] and LV[2]);
-    LT2 := Cardinal((QWord(LS0) + LMajority) and $FFFFFFFF);
+    LT2 := AddWords(LS0, LMajority);
     LV[7] := LV[6];
     LV[6] := LV[5];
     LV[5] := LV[4];
-    LV[4] := Cardinal((QWord(LV[3]) + LT1) and $FFFFFFFF);
+    LV[4] := AddWords(LV[3], LT1);
     LV[3] := LV[2];
     LV[2] := LV[1];
     LV[1] := LV[0];
-    LV[0] := Cardinal((QWord(LT1) + LT2) and $FFFFFFFF);
+    LV[0] := AddWords(LT1, LT2);
   end;
   for LIndex := 0 to 7 do
   begin
-    AState[LIndex] := Cardinal((QWord(AState[LIndex]) + LV[LIndex]) and $FFFFFFFF);
+    AState[LIndex] := AddWords(AState[LIndex], LV[LIndex]);
   end;
 end;
 
@@ -123,7 +136,8 @@ function FinishHash(var AState: TShaState; var ABlock: TShaBlock;
 const
   CHex: String = '0123456789abcdef';
 var
-  LBits: QWord;
+  LHighBits: Cardinal;
+  LLowBits: Cardinal;
   LIndex: Integer;
   LNibble: Integer;
 begin
@@ -131,21 +145,25 @@ begin
   if ARemaining >= 56 then
   begin
     Compress(AState, ABlock);
-    FillChar(ABlock, SizeOf(ABlock), 0);
+    for LIndex := 0 to 63 do
+    begin
+      ABlock[LIndex] := 0;
+    end;
   end;
-  LBits := AByteCount * 8;
-  for LIndex := 0 to 7 do
+  LHighBits := Cardinal(AByteCount div 536870912);
+  LLowBits := Cardinal((AByteCount mod 536870912) * 8);
+  for LIndex := 0 to 3 do
   begin
-    ABlock[63 - LIndex] := (LBits shr (LIndex * 8)) and $FF;
+    ABlock[63 - LIndex] := (LLowBits shr (LIndex * 8)) and $FF;
+    ABlock[59 - LIndex] := (LHighBits shr (LIndex * 8)) and $FF;
   end;
   Compress(AState, ABlock);
-  SetLength(Result, 64);
+  Result := '';
   for LIndex := 0 to 7 do
   begin
     for LNibble := 0 to 7 do
     begin
-      Result[LIndex * 8 + LNibble + 1] :=
-        CHex[((AState[LIndex] shr ((7 - LNibble) * 4)) and $F) + 1];
+      Result := Result + CHex[((AState[LIndex] shr ((7 - LNibble) * 4)) and $F) + 1];
     end;
   end;
 end;
@@ -157,22 +175,40 @@ var
   LBlock: TShaBlock;
   LOffset: SizeInt;
   LRemaining: Integer;
+  LIndex: Integer;
 begin
   ReportWork(AProgress, 'verify_audio_bytes', wuBytes, 0, Length(ABytes));
   LState := CInitial;
   LOffset := 0;
-  while Length(ABytes) - LOffset >= SizeOf(LBlock) do
+  while Length(ABytes) - LOffset >= 64 do
   begin
-    Move(ABytes[LOffset], LBlock[0], SizeOf(LBlock));
+    {$ifdef pas2js}
+    for LIndex := 0 to 63 do
+    begin
+      LBlock[LIndex] := ABytes[LOffset + LIndex];
+    end;
+    {$else}
+    Move(ABytes[LOffset], LBlock[0], 64);
+    {$endif}
     Compress(LState, LBlock);
-    Inc(LOffset, SizeOf(LBlock));
+    Inc(LOffset, 64);
     if (LOffset < Length(ABytes)) and (LOffset mod 8192 = 0) then ReportWork(AProgress, 'verify_audio_bytes', wuBytes, LOffset, Length(ABytes));
   end;
-  FillChar(LBlock, SizeOf(LBlock), 0);
+  for LIndex := 0 to 63 do
+  begin
+    LBlock[LIndex] := 0;
+  end;
   LRemaining := Length(ABytes) - LOffset;
   if LRemaining > 0 then
   begin
+    {$ifdef pas2js}
+    for LIndex := 0 to LRemaining - 1 do
+    begin
+      LBlock[LIndex] := ABytes[LOffset + LIndex];
+    end;
+    {$else}
     Move(ABytes[LOffset], LBlock[0], LRemaining);
+    {$endif}
   end;
   Result := FinishHash(LState, LBlock, LRemaining, QWord(Length(ABytes)));
   ReportWork(AProgress, 'verify_audio_bytes', wuBytes, Length(ABytes), Length(ABytes));
@@ -183,27 +219,33 @@ function Sha256Stream(const AStream: TStream; const AByteCount: Int64;
 var
   LState: TShaState;
   LBlock: TShaBlock;
-  LBuffer: array[0..8191] of Byte;
+  LBuffer: TAudioBytes;
   LRemaining: Int64;
   LChunk: Integer;
   LRead: Integer;
   LReceived: Integer;
   LOffset: Integer;
+  LIndex: Integer;
 begin
   if (AStream = nil) or (AByteCount < 0) or
-    (AByteCount > 2305843009213693951) then
+    (AByteCount > 2305843009213693951)
+    {$ifdef pas2js} or (AByteCount > 9007199254740991) {$endif} then
   begin
     raise EAudio.Create('Invalid SHA256 stream or byte count');
   end;
   ReportWork(AProgress, 'verify_audio_bytes', wuBytes, 0, AByteCount);
+  SetLength(LBuffer, 8192);
   LState := CInitial;
   LRemaining := AByteCount;
-  FillChar(LBlock, SizeOf(LBlock), 0);
+  for LIndex := 0 to 63 do
+  begin
+    LBlock[LIndex] := 0;
+  end;
   LOffset := 0;
   LChunk := 0;
   while LRemaining > 0 do
   begin
-    LChunk := SizeOf(LBuffer);
+    LChunk := 8192;
     if LRemaining < LChunk then
     begin
       LChunk := Integer(LRemaining);
@@ -211,7 +253,7 @@ begin
     LReceived := 0;
     while LReceived < LChunk do
     begin
-      LRead := AStream.Read(LBuffer[LReceived], LChunk - LReceived);
+      LRead := ReadStreamBytes(AStream, LBuffer, LReceived, LChunk - LReceived);
       if (LRead <= 0) or (LRead > LChunk - LReceived) then
       begin
         raise EAudio.Create('SHA256 source ended early or returned an invalid read count');
@@ -219,20 +261,37 @@ begin
       Inc(LReceived, LRead);
     end;
     LOffset := 0;
-    while LChunk - LOffset >= SizeOf(LBlock) do
+    while LChunk - LOffset >= 64 do
     begin
-      Move(LBuffer[LOffset], LBlock[0], SizeOf(LBlock));
+      {$ifdef pas2js}
+      for LIndex := 0 to 63 do
+      begin
+        LBlock[LIndex] := LBuffer[LOffset + LIndex];
+      end;
+      {$else}
+      Move(LBuffer[LOffset], LBlock[0], 64);
+      {$endif}
       Compress(LState, LBlock);
-      Inc(LOffset, SizeOf(LBlock));
+      Inc(LOffset, 64);
     end;
     Dec(LRemaining, LChunk);
     if LRemaining > 0 then
       ReportWork(AProgress, 'verify_audio_bytes', wuBytes, AByteCount - LRemaining, AByteCount);
   end;
-  FillChar(LBlock, SizeOf(LBlock), 0);
+  for LIndex := 0 to 63 do
+  begin
+    LBlock[LIndex] := 0;
+  end;
   if LChunk > LOffset then
   begin
+    {$ifdef pas2js}
+    for LIndex := 0 to LChunk - LOffset - 1 do
+    begin
+      LBlock[LIndex] := LBuffer[LOffset + LIndex];
+    end;
+    {$else}
     Move(LBuffer[LOffset], LBlock[0], LChunk - LOffset);
+    {$endif}
   end;
   Result := FinishHash(LState, LBlock, LChunk - LOffset, QWord(AByteCount));
   ReportWork(AProgress, 'verify_audio_bytes', wuBytes, AByteCount, AByteCount);

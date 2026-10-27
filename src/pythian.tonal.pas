@@ -82,6 +82,7 @@ implementation
 
 uses
   Math,
+  pythian.ieee754,
   pythian.audio;
 
 function NotePitchClassWeights(const ASequence: TNoteSequence;
@@ -139,7 +140,7 @@ begin
     RequireFinite(LFeature.Rms, 'Tonal feature RMS');
     if (LFeature.StartFrame <> Int64(LIndex) * AOptions.HopFrames) or
       (LFeature.ValidFrames <> Min(AOptions.WindowFrames, ASourceFrames - LFeature.StartFrame)) or
-      (LFeature.Rms < 0) or (LFeature.Rms > MaxSingle * (1 + 1E-9)) or
+      (LFeature.Rms < 0) or (LFeature.Rms > MaximumFiniteFloat32 * (1 + 1E-9)) or
       (LFeature.Silent <> (LFeature.Rms <= AOptions.SilenceRms)) then
     begin
       raise EAudio.Create('Tonal feature geometry or RMS is invalid');

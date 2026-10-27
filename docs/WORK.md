@@ -12,6 +12,67 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Primary analysis portability accepted - 2026-10-27
+
+Selected batch: [portability_01](TODO/DONE/NS-6_portability_01.md), its three
+engineering criteria. Deliverable: shared primary hash/WAV/analysis callbacks
+executing natively and in pas2js, plus a bounded cooperative host adapter.
+Closing evidence: unchanged bytes/ownership and features, callback aborts,
+actual target execution, native throughput and yielding/cancellation/failure
+checks. Stop at drift, copied analyzers or an unsupported browser/WASM claim.
+This follows the reference-blocked musical checkpoint below and earns no
+musical acceptance or additional outcome credit.
+
+Spiegel implemented the shared hash and stream representation; Spike implemented
+WAV reader/writer portability and the cross-target analysis fixture. Big Boss
+integrated one finite binary32 decoder, typed cache/beat clearing, FFT variable
+identity, existing primary corpus text, wrapper byte-stream reuse and the pas2js
+timer adapter. Actual compilation exposed reachable `MaxSingle` and native-only
+text assumptions after the original beat `SizeOf` blocker; these now use shared
+contracts. The original encoder test was inadvertently overwritten during
+integration; Big Boss restored it and preserved the new reader fixture separately.
+
+The maintained native/pas2js suite passes the full 385 callback checks on each
+target, 14,055 binary/oracle checks, known-answer/fragmented-stream hash checks,
+both WAV fixture families and 257 authored feature/FFT checks. A native Pascal
+comparator verifies eight actual target feature rows at the prospective `1e-6`
+scaled tolerance; maximum observed difference is `8.099e-9`. Checked native core,
+separation and WAV-window regressions also pass, with zero leaks. A local
+optimized native float32 WAV timing comparison passed the declared 1.25 ratio
+bound: median 234 ms before and after over three alternating 16,777,216-frame
+runs with exact checksum. A whole WAV-analysis/cache comparison also retained
+the emitted RMS/centroid sum, with medians 531 ms before and 532 ms after across three
+alternating 2,097,152-frame runs. This does not certify universal latency.
+
+The helpers independently checked the other's components and Big Boss's
+integration after multiple components were ready. Spiegel reported one adapter
+QA defect: a terminal callback exception left the job marked complete. Big Boss
+repaired failure recording/rethrow without a second notification. The repair and
+reader-failure/cancellation paths were independently verified and retained in
+the maintained 345-check Node scheduling fixture; Big Boss reran the final
+fixture. The full maintained command preceded the extra regression cases; only
+the changed cooperative fixture was rebuilt/rerun afterward. One repaired
+implementation QA finding; no scientific rejection.
+The previous transient helper model-capacity error was not a QA result.
+
+The adapter delegates `AnalyzeWaveBatch`, yields between timer turns and owns no
+whole-recording accumulation. A batch is still synchronous; other bulk APIs
+need their own scheduling. Native filename I/O remains unsupported in pas2js.
+Actual browser presentation, physical-phone latency and WASM remain unqualified.
+No browser/audio session, private recording/response, deployed service or
+dependency source was changed. Evidence stays under E-drive
+`build/tests/runs/analysis-portability-20261027*`; maintained orchestration is
+`tools/check-analysis-portability.ps1`, with new native fixtures also registered
+in `tools/build.ps1`.
+
+All owned engineering criteria close; incoming links and both ledgers move with
+the task: **53 open /56 DONE; 52.45 credited /47.55 remaining.** Consecutive
+nonclosing delivery batches: zero. Scientific stops and exposure counters remain
+unchanged. The next musical work still needs the independently supported
+context/activity observations below; do not restart the rejected source/model
+families or ask the operator to repeat their saved After preference. Actual
+browser checks remain with continuity_04/studio_22 when that surface is available.
+
 ## Shared corpus intake repair accepted - 2026-10-27
 
 The preceding goal turn changed authoritative goal/work records, but closed no
@@ -461,7 +522,7 @@ Native evidence: 385 callback/parity/abort checks, existing hash/WAV analysis,
 corpus/archive reconstruction, weighted journal/WFC parity, 164 real worker,
 130 effects and 53 capture checks. Actual pas2js/Node contract checks pass for
 large counters and exceptions. Full pas2js analysis hits older native-memory
-primitives: [portability_01](TODO/NS-6_portability_01.md) owns primary-code repair.
+primitives: [portability_01 — now DONE](TODO/DONE/NS-6_portability_01.md) owns primary-code repair.
 No claim of full browser analysis, WASM execution or musical quality.
 
 Actual Codex Browser checks: source inspection shows 0→66% file bytes then

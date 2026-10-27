@@ -10,7 +10,7 @@ the paths below. It does **not** certify that every bulk operation is observable
 
 ## Scope and findings
 
-The static inventory covers 262 owned Pascal files: 101 core units, 40 WFC
+The 2026-10-03 static inventory covered 262 owned Pascal files: 101 core units, 40 WFC
 adapters, five inference adapters and 116 tools/browser units or programs.
 It excludes tests, generated output and dependency source. Loop/callback counts
 in `build/observability/inventory.csv` guide inspection; they are not measured
@@ -35,7 +35,7 @@ Studio callers, plus existing streaming, inference and library contracts.
 | Catalog import and verification | Outer phase can remain indeterminate during nested hashes/copies; per-file exception handling needs careful abort propagation | [observability_02](TODO/NS-6_observability_02.md) |
 | Offline render, separation, export and evaluation | Whole-clip work can remain silent; separation admits up to two billion planned visits | [observability_03](TODO/NS-6_observability_03.md) |
 | Retained corpus/style/archive/provider operations | Nested serialization, validation, blending and composition reachability need further measured checkpoints | [observability_04](TODO/NS-6_observability_04.md) |
-| Browser-side primary analysis | Shared callback record works in pas2js; full analysis test encounters older native memory primitives | [portability_01](TODO/NS-6_portability_01.md); no full browser/WASM analysis claim |
+| Primary analysis in pas2js | Full callback consumer executes shared primary algorithms; optional timer adapter yields between bounded WAV analysis batches | [portability_01 — DONE](TODO/DONE/NS-6_portability_01.md); actual browser presentation and WASM remain unqualified |
 
 Per-sample oscillators, filters and small fixed transforms should not publish a
 callback per sample. Observe their caller's bounded render block instead. Static
@@ -85,11 +85,69 @@ Features := AnalyzeAudio(Clip, Options, Host.OnWork);
 ```
 
 A callback does not yield a browser event loop. Long pas2js work needs a worker
-or cooperative scheduling adapter. Current browser tests execute the shared
-record, large counters and exception contract, plus the existing shared WAV
-codec. The full analysis test stops at pre-existing `SizeOf` use in beat histogram
-clearing; hash/WAV cache paths also use native memory operations. The tracked
-portability task owns primary-code fixes and actual cross-target parity.
+or cooperative scheduling adapter. The shared primary analysis consumer now
+executes under actual pas2js/Node, including hash, WAV, resampling, pitch,
+learning, beat measurement and abort paths. The host adapter below yields WAV
+analysis batches; this does not make every synchronous bulk API asynchronous.
+
+## pas2js analysis execution
+
+Accepted 2026-10-27: [the primary portability repair](TODO/DONE/NS-6_portability_01.md)
+removes reachable native memory/text assumptions while retaining one primary
+algorithm. Native and pas2js share finite IEEE-754 binary32 interpretation, WAV
+decoding/window analysis, FFT and SHA-256 compression. The shared stream byte
+adapter handles only physical stream representation; native fast byte copies
+and unsigned word arithmetic remain at their representation boundary. SHA stream
+counts reject above `2^53-1` in pas2js and `2^61-1` natively. Large-counter checks
+do not imply that a huge stream was traversed.
+
+[`TCooperativeWaveAnalysis`](../adapters/pas2js/pythian.analysis.cooperative.pas)
+is an optional pas2js host adapter. It calls primary `AnalyzeWaveBatch` for
+1..64 features per timer turn, retaining no whole-recording feature array. Its
+batch callback receives original-source coordinates and completion metadata;
+the cursor advances only after that callback succeeds. Keep the reader/source
+immutable and alive until terminal notification or destruction. A host can
+stage its own journal and publish it only after completion. Saving/staging a
+batch is not proof of durable overall publication.
+
+`Start` defers the first read; unrelated timers run between turns. `Cancel` is
+observed before the next batch and may also be called from a batch callback.
+Batch or reader failure ends the job. A terminal callback exception records
+failure and propagates to the host without a second notification. Destroying
+the adapter clears its pending timer; defer destruction until outside callbacks.
+Choose a small batch for the device. An individual FFT batch is synchronous,
+and there is no promised millisecond bound. This adapter does not survive page
+suspension or replace Studio's durable native jobs.
+
+The maintained [cross-target check](../tools/check-analysis-portability.ps1)
+accepts explicit native/pas2js compiler paths, matching RTL source/JavaScript and
+an output root. It runs the same primary fixtures on both targets, executes
+the timer adapter in Node, and invokes a Pascal comparator over the emitted
+feature rows. The full callback suite passes 385 checks per target; authored
+analysis passes 257 per target, with eight compared rows at the predeclared
+`1e-6 * max(1, abs(left), abs(right))` tolerance. Maximum observed difference is
+`8.099e-9`. Exact PCM/hash contracts, Fourier alias preservation and 14,055
+finite binary32/oracle checks are separate from that floating tolerance.
+The cooperative fixture passes 345 scheduling/cancel/failure/publication checks.
+The original encoder/RF64 fixture remains alongside the new reader fixture.
+
+Local optimized native float32 WAV decoding took a median 234 ms both before
+and after across three alternating runs of 16,777,216 authored frames; exact
+checksums agree and the prospective 1.25 time-ratio limit passes. Whole WAV
+analysis/cache medians were 531 ms before and 532 ms after across three
+alternating 2,097,152-frame runs, retaining the emitted RMS/centroid sum. Scoped
+native hash timing also showed no observed regression. These are local throughput
+checks, not universal latency or browser performance guarantees. Checked native
+fixtures and independently authored adversarial probes report zero leaks.
+Evidence is retained under E-drive `build/tests/runs/analysis-portability-20261027*`.
+
+This qualifies actual pas2js execution and timer scheduling, not visual browser
+presentation, physical-phone performance or WASM. Filename-based WAV I/O is
+native-only; pas2js callers supply bytes or streams. Other native units and
+inference runtimes are not implicitly qualified. Future WASM requires its own
+compiler, host I/O and execution evidence. Actual Studio browser qualification
+remains with the existing [continuity](TODO/NS-5_continuity_04.md) and
+[listening-comparison](TODO/NS-6_studio_22.md) tasks.
 
 ## Validation and limits
 
@@ -104,5 +162,5 @@ authored browser traces are under ignored `build/observability/`.
 These checks establish mechanics and output preservation, not musical truth,
 complete physical-phone qualification or universal responsiveness. A short job
 can finish between browser polls. Imports, offline DSP, retained style operations
-and the full browser analysis boundary remain explicitly open. Observability
+and actual browser presentation remain explicitly open. Observability
 repairs earn no additional north-star credit.

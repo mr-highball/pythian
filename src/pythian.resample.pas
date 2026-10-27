@@ -76,7 +76,8 @@ function ResampleClip(const ASource: TAudioClip; const AOutputRate: Integer;
 implementation
 
 uses
-  Math;
+  Math,
+  pythian.ieee754;
 
 function FilterCutoff(const ASourceStep: Double): Double;
 begin
@@ -297,7 +298,7 @@ begin
         { Integer product preserves exact anchors and avoids accumulated drift. }
         LPosition := (Int64(LFrame) * ASource.SampleRate) / AOutputRate;
         LSampler.ReadFrame(LPosition, LLeft, LRight);
-        if (Abs(LLeft) > MaxSingle) or (Abs(LRight) > MaxSingle) then
+        if (Abs(LLeft) > MaximumFiniteFloat32) or (Abs(LRight) > MaximumFiniteFloat32) then
         begin
           raise EAudio.Create('Resampled audio exceeds Single range');
         end;

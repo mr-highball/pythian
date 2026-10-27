@@ -243,8 +243,14 @@ begin
   LTolerance := Min(LPeriod / 4, ASampleRate * AOptions.ToleranceSeconds);
   LRadius := LTolerance / LPeriod * CBins;
   LReach := Ceil(LRadius);
-  FillChar(LHistogram, SizeOf(LHistogram), 0);
-  FillChar(LPeakBins, SizeOf(LPeakBins), 0);
+  for LIndex := 0 to High(LHistogram) do
+  begin
+    LHistogram[LIndex] := 0;
+  end;
+  for LIndex := 0 to High(LPeakBins) do
+  begin
+    LPeakBins[LIndex] := 0;
+  end;
   LWeight := 0;
   for LIndex := 0 to High(AObservations) do
   begin

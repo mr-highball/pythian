@@ -89,9 +89,9 @@ type
     FIsRF64: Boolean;
     FBusy: Boolean;
     FFailed: Boolean;
-    FBuffer: array[0..4095] of Byte;
+    FBuffer: TAudioBytes;
     procedure ReadBytes(const ACount: Integer);
-    function Number(const AOffset, AWidth: Integer): QWord;
+    function Number(const AOffset, AWidth: Integer): Int64;
     function SizeNumber(const AOffset: Integer): Int64;
     procedure SeekRelative(const AOffset: Int64);
     procedure Scan;
@@ -124,7 +124,9 @@ implementation
 
 uses
   Math,
-  pythian.wave.stream;
+  pythian.wave.stream,
+  pythian.stream.bytes,
+  pythian.ieee754;
 
 const
   RiffTag = $46464952;
@@ -133,7 +135,7 @@ const
   FormatTagId = $20746D66;
   DataTag = $61746164;
   Ds64Tag = $34367364;
-  SizeSentinel = QWord($FFFFFFFF);
+  SizeSentinel: Int64 = 4294967295;
 
 type
   TRF64Size = record
@@ -152,6 +154,7 @@ begin
     raise EAudio.Create('WAVE reader requires a seekable stream');
   end;
   FStream := AStream;
+  SetLength(FBuffer, 4096);
   FBusy := True;
   try
     FOrigin := FStream.Position;
@@ -177,14 +180,14 @@ var
   LRead: Integer;
   LCount: LongInt;
 begin
-  if (ACount < 0) or (ACount > SizeOf(FBuffer)) then
+  if (ACount < 0) or (ACount > Length(FBuffer)) then
   begin
     raise EAudio.Create('Internal WAVE read exceeds buffer');
   end;
   LRead := 0;
   while LRead < ACount do
   begin
-    LCount := FStream.Read(FBuffer[LRead], ACount - LRead);
+    LCount := ReadStreamBytes(FStream, FBuffer, LRead, ACount - LRead);
     if (LCount <= 0) or (LCount > ACount - LRead) then
     begin
       raise EAudio.Create('Truncated or invalid WAVE stream read');
@@ -193,23 +196,28 @@ begin
   end;
 end;
 
-function TWaveFrameReader.Number(const AOffset, AWidth: Integer): QWord;
+function TWaveFrameReader.Number(const AOffset, AWidth: Integer): Int64;
 var
   I: Integer;
 begin
   Result := 0;
   for I := AWidth - 1 downto 0 do
   begin
-    Result := (Result shl 8) or FBuffer[AOffset + I];
+    if (AWidth > 4) and
+      (Result > (MaximumWaveStreamBytes - FBuffer[AOffset + I]) div 256) then
+    begin
+      Exit(MaximumWaveStreamBytes + 1);
+    end;
+    Result := Result * 256 + FBuffer[AOffset + I];
   end;
 end;
 
 function TWaveFrameReader.SizeNumber(const AOffset: Integer): Int64;
 var
-  LValue: QWord;
+  LValue: Int64;
 begin
   LValue := Number(AOffset, 8);
-  if LValue > QWord(MaximumWaveStreamBytes) then
+  if LValue > Int64(MaximumWaveStreamBytes) then
   begin
     raise EAudio.Create('RF64 size exceeds exact file-size envelope');
   end;
@@ -233,10 +241,10 @@ var
   LOffset: Int64;
   LNext: Int64;
   LChunkSize: Int64;
-  LRawSize: QWord;
+  LRawSize: Int64;
   LRiffSize: Int64;
-  LDataSize64: QWord;
-  LSampleCount64: QWord;
+  LDataSize64: Int64;
+  LSampleCount64: Int64;
   LDataSize: Int64;
   LTag: Cardinal;
   LTable: array of TRF64Size;
@@ -245,7 +253,7 @@ var
   LFormatFound: Boolean;
   LDataFound: Boolean;
   LFound: Boolean;
-  LRate: QWord;
+  LRate: Int64;
   I: Integer;
 begin
   SeekRelative(0);
@@ -270,7 +278,7 @@ begin
     ReadBytes(8);
     LChunkSize := Number(4, 4);
     if (Number(0, 4) <> Ds64Tag) or (LChunkSize < 28) or
-      (QWord(LChunkSize) = SizeSentinel) or
+      (Int64(LChunkSize) = SizeSentinel) or
       (LChunkSize > FSize - 20) then
     begin
       raise EAudio.Create('Invalid leading RF64 ds64 chunk');
@@ -329,7 +337,7 @@ begin
     begin
       if LTag = DataTag then
       begin
-        if LDataSize64 > QWord(MaximumWaveStreamBytes) then
+        if LDataSize64 > Int64(MaximumWaveStreamBytes) then
         begin
           raise EAudio.Create('RF64 data size exceeds exact file-size envelope');
         end;
@@ -390,8 +398,8 @@ begin
       end;
       FWidth := FBits div 8;
       FAlign := FChannels * FWidth;
-      if (Number(12, 2) <> QWord(FAlign)) or
-        (Number(8, 4) <> QWord(FSampleRate * FAlign)) then
+      if (Number(12, 2) <> Int64(FAlign)) or
+        (Number(8, 4) <> Int64(FSampleRate * FAlign)) then
       begin
         raise EAudio.Create('Inconsistent WAVE alignment or byte rate');
       end;
@@ -404,7 +412,7 @@ begin
           raise EAudio.Create('Short extensible WAVE format');
         end;
         ReadBytes(24);
-        if (Number(0, 2) < 22) or (18 + Number(0, 2) > QWord(LChunkSize)) then
+        if (Number(0, 2) < 22) or (18 + Number(0, 2) > Int64(LChunkSize)) then
         begin
           raise EAudio.Create('Extensible WAVE extension exceeds format extent');
         end;
@@ -437,8 +445,8 @@ begin
       begin
         raise EAudio.Create('Unsupported WAVE encoding');
       end;
-      FPaddingMask := (Int64(1) shl (FBits - FValidBits)) - 1;
-      FScale := Int64(1) shl (FBits - 1);
+      FPaddingMask := Round(Power(2, FBits - FValidBits)) - 1;
+      FScale := Round(Power(2, FBits - 1));
       LFormatFound := True;
     end;
     if LTag = DataTag then
@@ -462,7 +470,7 @@ begin
     raise EAudio.Create('WAVE data does not contain complete frames');
   end;
   FFrameCount := LDataSize div FAlign;
-  if FIsRF64 and (LSampleCount64 <> 0) and (LSampleCount64 <> QWord(FFrameCount)) then
+  if FIsRF64 and (LSampleCount64 <> 0) and (LSampleCount64 <> Int64(FFrameCount)) then
   begin
     raise EAudio.Create('RF64 nonzero sample count disagrees with decoded frame extent');
   end;
@@ -591,7 +599,6 @@ var
   LDone: Integer;
   LIndex: Integer;
   LValue: Int64;
-  LWord: Cardinal;
   LSample: Single;
   LCandidate: TAudioSamples;
 begin
@@ -614,23 +621,18 @@ begin
       LDone := 0;
       while LDone < LFrames do
       begin
-        LBlockFrames := Min(LFrames - LDone, SizeOf(FBuffer) div FAlign);
+        LBlockFrames := Min(LFrames - LDone, Length(FBuffer) div FAlign);
         ReadBytes(LBlockFrames * FAlign);
         for LIndex := 0 to LBlockFrames * FChannels - 1 do
         begin
           LValue := Number(LIndex * FWidth, FWidth);
           if FEncodingTag = 3 then
           begin
-            LWord := LValue;
-            if (LWord and $7F800000) = $7F800000 then
-            begin
-              raise EAudio.Create('Non-finite WAVE float sample');
-            end;
-            Move(LWord, LSample, SizeOf(LWord));
+            LSample := DecodeFloat32Bits(LValue);
           end
           else
           begin
-            if (LValue and FPaddingMask) <> 0 then
+            if (LValue mod (FPaddingMask + 1)) <> 0 then
             begin
               raise EAudio.Create('Nonzero unused bits in extensible WAVE PCM sample');
             end;
@@ -638,9 +640,9 @@ begin
             begin
               Dec(LValue, 128);
             end
-            else if LValue >= (Int64(1) shl (FBits - 1)) then
+            else if LValue >= (Round(Power(2, FBits - 1))) then
             begin
-              Dec(LValue, Int64(1) shl FBits);
+              Dec(LValue, Round(Power(2, FBits)));
             end;
             LSample := LValue / FScale;
           end;

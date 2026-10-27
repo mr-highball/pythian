@@ -68,7 +68,7 @@ into unrelated algorithm work; distinct remaining gaps get explicit linked tasks
   Short pitch stages finish between UI polls, so no intermediate browser-pitch
   claim. Phone/desktop widths have no horizontal overflow or console errors.
 - Full analysis under pas2js exposed an older `SizeOf` portability failure.
-  [portability_01](../NS-6_portability_01.md) owns primary-code repair. Actual
+  [portability_01 — now DONE](NS-6_portability_01.md) owns primary-code repair. Actual
   pas2js/Node callback-record checks pass for large counters and exceptions;
   this does not establish full browser-side analysis or WASM execution.
 - Fourteen frozen native/browser assets match stable delivery; all 3,957 existing

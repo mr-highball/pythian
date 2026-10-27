@@ -94,6 +94,7 @@ implementation
 
 uses
   Math,
+  pythian.ieee754,
   pythian.resample;
 
 function GrainWindowWeight(const AWindow: TGrainWindow;
@@ -359,7 +360,7 @@ begin
       LSampleIndex := LFrame * AOptions.Channels + LChannel;
       LValue := LMix[LSampleIndex] / LWeight;
       RequireFinite(LValue, 'Grain mix');
-      if Abs(LValue) > MaxSingle then
+      if Abs(LValue) > MaximumFiniteFloat32 then
       begin
         raise EAudio.Create('Grain mix exceeds Single range');
       end;
