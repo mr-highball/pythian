@@ -25,7 +25,7 @@ Stop on invented overall percentages, swallowed cancellation or dependency edits
   item/byte/pass units. Retained wave-style operations and consumer are owned by
   [observability_07](NS-6_observability_07.md), semantic archive/blend operations
   by [observability_08 — DONE](DONE/NS-6_observability_08.md), primary pitch preparation by
-  [observability_09](NS-6_observability_09.md), and corpus archives by
+  [observability_09 — DONE](DONE/NS-6_observability_09.md), and corpus archives by
   [observability_05](DONE/NS-6_observability_05.md). Parent acceptance retains all
   unobserved owned internals outside those scopes, not merely caller-code limits.
 - Cover retained-style batch evaluation stages; short fixed transforms may

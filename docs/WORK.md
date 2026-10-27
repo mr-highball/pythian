@@ -12,11 +12,39 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
-## Pitch learner consumer selected - 2026-10-27
+## Pitch accepted; primary binary reuse selected - 2026-10-27
+
+The preceding goal turn is progress: `f203195` connected the real retained
+source, passed checked native parity/cancellation and published its consumer.
+Actual Ubuntu [run449](https://github.com/mr-highball/pythian/actions/runs/40571651841)
+is now terminal Success, total7m33s/job7m30s, including integration and both
+extracted consumers. Accept [pitch preparation](TODO/DONE/NS-6_observability_09.md)
+AC1–3 with incoming links and accounting. Big Boss performed solo checks; CI
+is not independent review. No musical or browser performance result is inferred.
+
+Before extending task07, the pre-edit audit demonstrated repeated archive
+integer/real primitives in core corpus, wave and semantic codecs, plus unsigned
+WAV metadata/header helpers. The user's reuse instruction makes
+[binary-codec_01](TODO/NS-6_binary-codec_01.md) the linked prerequisite. Big Boss
+owns it solo. Criterion/deliverable: shared primary byte-field and finite
+binary64 conversion with actual consumer adoption, deleting superseded loops.
+Closing evidence: authored byte/value/bounds oracles on checked Win32/Win64
+and actual pas2js, same-target prior/current formats and affected consumers,
+then published Ubuntu integration. Stop on changed archive bytes, false wide
+precision claims or unowned scope. Full profile callbacks remain07; scientific
+families stay stopped. This is Pythian-owned, with no WFC branch required.
+
+One zero-credit task closes and one required reuse gap is added. Accounting is
+**54 open / 67 DONE, 121 total**, NS-6 16 open; completion remains
+**100/90/25/70/14/54**, **52.45 credited / 47.55 remaining**. Delivery nonclosing
+count is **0** after an actual criterion closure; adding the gap grants no credit
+and resets no scientific counter. The earlier pending-job text below is history.
+
+## Pitch learner consumer preparation history - 2026-10-27
 
 The preceding goal turn is progress: actual clean Ubuntu consumers passed and
 semantic callbacks moved to DONE. Return to the linked wave-profile prerequisite
-[observability_09](TODO/NS-6_observability_09.md), Big Boss solo under the supplied
+[observability_09](TODO/DONE/NS-6_observability_09.md), Big Boss solo under the supplied
 operator override. Criterion: AC2 real retained-source forwarding, then AC1–3
 verification. Deliverable: the primary source constructor forwards its optional
 shared callback into the existing pitch/rhythm/duration learners. Closing
@@ -40,6 +68,15 @@ compile's missing files/tonal imports were repaired and its logs preserved.
 The maintained build now includes this fixture. Keep task09 open pending its
 published Ubuntu consumer, with counts and credits unchanged. Full wave-profile
 and CLI observation remains07; no generic WFC defect is demonstrated.
+
+Published candidate `f203195` is on `hello-pythian` with a clean implementation
+worktree. Authenticated browser inspection confirms Ubuntu
+[run449](https://github.com/mr-highball/pythian/actions/runs/40571651841),
+job122427140480, is live at this exact revision. Continue this same run before
+acceptance; a navigation/observation timeout does not justify restarting it.
+Task09 and all downstream task07 obligations remain open. The current batch
+awaits that concrete external check; no stopped-family counter is reset and
+no task or musical credit is claimed from the pending result.
 
 ## Semantic style callbacks accepted - 2026-10-27
 

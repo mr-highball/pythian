@@ -35,10 +35,17 @@ invented totals or dependency edits. This earns no musical credit.
 **Blockers**
 
 - [Shared progress contract — DONE](DONE/NS-6_observability_01.md).
-- [Owned pitch-learning preparation](NS-6_observability_09.md).
+- [Owned pitch-learning preparation — DONE](DONE/NS-6_observability_09.md).
+- [Shared binary field primitives](NS-6_binary-codec_01.md).
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss pre-edit audit: the pitch prerequisite is accepted.
+  Archive integer/real primitives repeat primary corpus and semantic codec
+  code. The user's consolidation instruction requires the linked binary-codec
+  prerequisite before extending these same primitive loops with callbacks.
+  Preserve this task's full API/CLI and interior coverage obligations; the
+  scalar consolidation does not itself qualify retained-profile observation.
 - 2026-10-27, Big Boss: split from [observability_04](NS-6_observability_04.md)
   at its independent public profile/CLI boundary, with zero added credit. Batch
   evaluation, inference reporting and provider-contract internals stay there;

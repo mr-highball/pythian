@@ -6,7 +6,7 @@
 Accepted zero-credit usability repairs: [training choices and playback](DONE/NS-6_studio_19.md),
 [tabbed workflow and help](DONE/NS-6_studio_18.md).
 
-Updated 2026-10-27. **54 open / 66 accepted tasks.** The user authorized a new
+Updated 2026-10-27. **54 open / 67 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **52.45 current / 47.55 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -315,8 +315,8 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | [NS-6_studio_21](NS-6_studio_21.md) — Background recovery and long-source learning | 0 | 0.00 | Deployed; actual browser acceptance remains |
 | [NS-6_studio_22](NS-6_studio_22.md) — Original/generated listening comparison | 0 | 0.00 | Deployed for review; native/DOM checks pass, actual browser acceptance remains |
 | [NS-6_observability_04](NS-6_observability_04.md) — Remaining provider/batch operations and operator monitoring | 0 | 0.00 | Provider-contract/registry internals, batch evaluation and inference reporting remain |
-| [NS-6_observability_07](NS-6_observability_07.md) — Retained wave-style operations | 0 | 0.00 | Selected API/CLI scope; primary pitch preparation09 is a prerequisite |
-| [NS-6_observability_09](NS-6_observability_09.md) — Owned pitch-model preparation | 0 | 0.00 | Native learner/profile parity and abort/retry pass; published Ubuntu consumer pending |
+| [NS-6_observability_07](NS-6_observability_07.md) — Retained wave-style operations | 0 | 0.00 | Pitch preparation accepted; shared binary primitives are the next prerequisite |
+| [NS-6_binary-codec_01](NS-6_binary-codec_01.md) — Shared portable binary field primitives | 0 | 0.00 | Ready: consolidate demonstrated archive/WAV scalar duplicates before extending their callbacks |
 | [NS-6_adoption_01](NS-6_adoption_01.md) — Establish independent ecosystem adoption evidence | 15 | 1.50 | Supported releases + independent ecosystem evidence |
 | [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 1 | 0.10 | Solo usability resumed; complete physical matrix remains open |
 | [NS-6_delivery_03](NS-6_delivery_03.md) — Package and verify the accepted final workflow | 1 | 0.10 | Dependencies, including Studio |
@@ -331,7 +331,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 
 ## Accepted tasks and retired work
 
-All 66 accepted tasks, including [semantic archive/blend callbacks](DONE/NS-6_observability_08.md), [Linux CI repair](DONE/NS-6_portability_05.md), [failed Save cleanup](DONE/NS-6_studio_23.md), [publication-time freshness](DONE/NS-6_studio_24.md), [retained corpus archives](DONE/NS-6_observability_05.md), [composition planning](DONE/NS-6_observability_06.md), [offline native observability](DONE/NS-6_observability_03.md), [catalog import observability](DONE/NS-6_observability_02.md), [primary analysis portability](DONE/NS-6_portability_01.md), shared intake/text portability, caller corpus intake, Studio source/effects/capture, the current minimal package
+All 67 accepted tasks, including [pitch preparation callbacks](DONE/NS-6_observability_09.md), [semantic archive/blend callbacks](DONE/NS-6_observability_08.md), [Linux CI repair](DONE/NS-6_portability_05.md), [failed Save cleanup](DONE/NS-6_studio_23.md), [publication-time freshness](DONE/NS-6_studio_24.md), [retained corpus archives](DONE/NS-6_observability_05.md), [composition planning](DONE/NS-6_observability_06.md), [offline native observability](DONE/NS-6_observability_03.md), [catalog import observability](DONE/NS-6_observability_02.md), [primary analysis portability](DONE/NS-6_portability_01.md), shared intake/text portability, caller corpus intake, Studio source/effects/capture, the current minimal package
 and the three NS-2 quality results, are listed in
 the [current DONE ledger](DONE/README.md). Their acceptance dates and detailed
 evidence remain in the unchanged task identities. Allocations now reflect the

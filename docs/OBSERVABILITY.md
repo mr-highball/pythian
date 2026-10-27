@@ -347,10 +347,11 @@ acceptance is inferred. Evidence: E-drive `runs/semantic-style-progress-20261027
 
 ## Pitch-model preparation
 
-The [pitch preparation task](TODO/NS-6_observability_09.md) adds optional shared
+The accepted [pitch preparation task](TODO/DONE/NS-6_observability_09.md) adds optional shared
 callbacks to pitch, paired pitch/rhythm and both duration learner overloads.
-Checked Win32/Win64 learner and retained-source fixtures pass locally; published
-Ubuntu integration remains pending before task acceptance.
+Checked Win32/Win64 learner and retained-source fixtures and actual Ubuntu
+[run449](https://github.com/mr-highball/pythian/actions/runs/40571651841) pass at
+`f203195`, including maintained integration and extracted consumers.
 
 `pitch_validate_cells` visits all raw cells, including zero-weight sources.
 `pitch_scan_cells` counts active-source cells scanned to separate known runs;
