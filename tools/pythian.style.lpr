@@ -236,13 +236,13 @@ begin
       (ParamStr(1) = 'learn-duration') then
     begin
       LEvidence.Dynamics := MeasureOnsetDynamics(LSource, LEvidence.OnsetFrames,
-        Max(1, LSource.SampleRate div 50));
+        Max(1, LSource.SampleRate div 50), GProgress.Observe);
       LEvidence.Policy := LEvidence.Policy + '; onset dynamics v1: forward 20ms RMS, stereo mean energy, EOF shortened, four relative amplitude bands';
     end;
     if (ParamStr(1) = 'learn-pitch') or (ParamStr(1) = 'learn-duration') then
     begin
       LEvidence.Pitch := MeasurePitchCells(LSource, LGrid, StrToInt(ParamStr(7)),
-        DefaultPitchOptions, 25);
+        DefaultPitchOptions, 25, GProgress.Observe);
       LEvidence.Policy := LEvidence.Policy +
         '; declared monophonic source; centered periodic pitch cells v1; 25-cent admission; unknowns split runs; same-cell pairing does not infer note-onset ownership';
     end;
@@ -1076,7 +1076,8 @@ begin
         LPitchNotes := LStyle.PitchNotesAt(LIndex, GProgress.Observe);
         LGrid := CreateStyleSourceGrid(LEvidence, LContext.TicksPerQuarter, LContext.StepTicks, GProgress.Observe);
         try
-          LPitchSummary := SummarizePitchCells(LEvidence.Pitch, LGrid, LEvidence.Source.Channels);
+          LPitchSummary := SummarizePitchCells(LEvidence.Pitch, LGrid,
+            LEvidence.Source.Channels, GProgress.Observe);
         finally
           LGrid.Free;
         end;

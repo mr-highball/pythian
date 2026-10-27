@@ -32,6 +32,7 @@ interface
 
 uses
   pythian.audio,
+  pythian.progress,
   pythian.music.grid.frames,
   pythian.pitch;
 
@@ -67,25 +68,31 @@ type
   Cell centers are analysis windows, not inferred note boundaries. }
 function MeasurePitchCells(const AClip: TAudioClip; const ATempo, APpq, AStep,
   AChannel: Integer; const AOptions: TPitchOptions;
-  const AMaximumCents: Double; const AStartTick: Integer = 0): TPitchCellEvidence; overload;
+  const AMaximumCents: Double; const AStartTick: Integer = 0;
+  const AProgress: TWorkProgressCallback = nil): TPitchCellEvidence; overload;
 function AdmitPitchCells(const AEvidence: TPitchCellEvidence; const ASampleRate,
   AChannels, AFrames, ATempo, APpq, AStep: Integer;
-  const AStartTick: Integer = 0): TPitchNotes; overload;
+  const AStartTick: Integer = 0;
+  const AProgress: TWorkProgressCallback = nil): TPitchNotes; overload;
 
 { Summarizes validated source evidence, not confidence or maximum generatable
   length. Silence remains distinct from uncertain and unmeasured cells. }
 function SummarizePitchCells(const AEvidence: TPitchCellEvidence; const ASampleRate,
   AChannels, AFrames, ATempo, APpq, AStep: Integer;
-  const AStartTick: Integer = 0): TPitchCellSummary; overload;
+  const AStartTick: Integer = 0;
+  const AProgress: TWorkProgressCallback = nil): TPitchCellSummary; overload;
 
 { Explicit mapped cells share the same changing clock and physical source origin. }
 function MeasurePitchCells(const AClip: TAudioClip; const AGrid: TMusicGridFrames;
   const AChannel: Integer; const AOptions: TPitchOptions;
-  const AMaximumCents: Double): TPitchCellEvidence; overload;
+  const AMaximumCents: Double;
+  const AProgress: TWorkProgressCallback = nil): TPitchCellEvidence; overload;
 function AdmitPitchCells(const AEvidence: TPitchCellEvidence; const AGrid: TMusicGridFrames;
-  const AChannels: Integer): TPitchNotes; overload;
+  const AChannels: Integer;
+  const AProgress: TWorkProgressCallback = nil): TPitchNotes; overload;
 function SummarizePitchCells(const AEvidence: TPitchCellEvidence; const AGrid: TMusicGridFrames;
-  const AChannels: Integer): TPitchCellSummary; overload;
+  const AChannels: Integer;
+  const AProgress: TWorkProgressCallback = nil): TPitchCellSummary; overload;
 
 implementation
 
@@ -97,20 +104,39 @@ uses
   pythian.music.context.admission;
 
 function ConstantGrid(const ASampleRate, AFrames, ATempo, APpq, AStep,
-  AStartTick: Integer): TMusicGridFrames;
+  AStartTick: Integer; const AProgress: TWorkProgressCallback): TMusicGridFrames;
 var
   LScope: TWaveContextScope;
   LClock: TTempoMap;
+  LGrid: TMusicGridFrames;
 begin
+  ReportWork(AProgress, 'pitch_cell_grid', wuItems, 0, 1);
   LScope := WaveContextScope(ASampleRate, AFrames, ATempo, APpq, AStep,
     MakeKeyContext(-1, dmMajor), AStartTick);
   LClock := TTempoMap.Create(APpq, AStartTick + Length(LScope.Grid.Keys) * AStep,
     [MakeTempoChange(0, ATempo)]);
   try
-    Result := TMusicGridFrames.Create(LClock, ASampleRate, AFrames, 0,
+    LGrid := TMusicGridFrames.Create(LClock, ASampleRate, AFrames, 0,
       AStartTick, AStep, Length(LScope.Grid.Keys));
+    try
+      ReportWork(AProgress, 'pitch_cell_grid', wuItems, 1, 1);
+      Result := LGrid;
+      LGrid := nil;
+    finally
+      LGrid.Free;
+    end;
   finally
     LClock.Free;
+  end;
+end;
+
+procedure ObserveCells(const AProgress: TWorkProgressCallback;
+  const AStage: String; const ADone, ATotal: Integer);
+begin
+  if Assigned(AProgress) and ((ADone = 0) or (ADone = ATotal) or
+    ((ADone mod 8) = 0)) then
+  begin
+    ReportWork(AProgress, AStage, wuItems, ADone, ATotal);
   end;
 end;
 
@@ -138,19 +164,21 @@ begin
 end;
 
 function AdmitPitchCells(const AEvidence: TPitchCellEvidence;
-  const AGrid: TMusicGridFrames; const AChannels: Integer): TPitchNotes;
+  const AGrid: TMusicGridFrames; const AChannels: Integer;
+  const AProgress: TWorkProgressCallback): TPitchNotes;
 var
   LCell: Integer;
   LWidth: Integer;
   LEstimate: TPitchEstimate;
+  LNotes: TPitchNotes;
 begin
-  Result := nil;
   if AEvidence.WindowFrames = 0 then
   begin
     if Length(AEvidence.Cells) <> 0 then
     begin
       raise EAudio.Create('Unavailable pitch evidence must have no cells');
     end;
+    Result := nil;
     Exit;
   end;
   ValidateCellWork(AEvidence, AGrid, AChannels);
@@ -158,10 +186,12 @@ begin
   begin
     raise EAudio.Create('Pitch evidence must cover the complete declared source grid');
   end;
-  SetLength(Result, AGrid.CellCount);
+  SetLength(LNotes, AGrid.CellCount);
+  ObserveCells(AProgress, 'pitch_cell_validate', 0, AGrid.CellCount);
   for LCell := 0 to AGrid.CellCount - 1 do
   begin
-    Result[LCell] := -1;
+    ObserveCells(AProgress, 'pitch_cell_validate', LCell, AGrid.CellCount);
+    LNotes[LCell] := -1;
     LWidth := AGrid.BoundaryAt(LCell + 1) - AGrid.BoundaryAt(LCell);
     if AEvidence.Cells[LCell].Measured <> (LWidth >= AEvidence.WindowFrames) then
     begin
@@ -173,40 +203,44 @@ begin
     end;
     LEstimate := AEvidence.Cells[LCell].Estimate;
     ValidatePitchEstimate(LEstimate, AGrid.SampleRate, AEvidence.Options);
-    Result[LCell] := AdmitPitchNote(LEstimate, AEvidence.MaximumCents);
+    LNotes[LCell] := AdmitPitchNote(LEstimate, AEvidence.MaximumCents);
   end;
+  ObserveCells(AProgress, 'pitch_cell_validate', AGrid.CellCount, AGrid.CellCount);
+  Result := LNotes;
 end;
 
 function AdmitPitchCells(const AEvidence: TPitchCellEvidence; const ASampleRate,
   AChannels, AFrames, ATempo, APpq, AStep: Integer;
-  const AStartTick: Integer): TPitchNotes;
+  const AStartTick: Integer; const AProgress: TWorkProgressCallback): TPitchNotes;
 var
   LGrid: TMusicGridFrames;
 begin
   if AEvidence.WindowFrames = 0 then
   begin
-    Exit(AdmitPitchCells(AEvidence, nil, AChannels));
+    Exit(AdmitPitchCells(AEvidence, nil, AChannels, AProgress));
   end;
-  LGrid := ConstantGrid(ASampleRate, AFrames, ATempo, APpq, AStep, AStartTick);
+  LGrid := ConstantGrid(ASampleRate, AFrames, ATempo, APpq, AStep, AStartTick, AProgress);
   try
-    Result := AdmitPitchCells(AEvidence, LGrid, AChannels);
+    Result := AdmitPitchCells(AEvidence, LGrid, AChannels, AProgress);
   finally
     LGrid.Free;
   end;
 end;
 
 function SummarizePitchCells(const AEvidence: TPitchCellEvidence;
-  const AGrid: TMusicGridFrames; const AChannels: Integer): TPitchCellSummary;
+  const AGrid: TMusicGridFrames; const AChannels: Integer;
+  const AProgress: TWorkProgressCallback): TPitchCellSummary;
 var
   LNotes: TPitchNotes;
   LResult: TPitchCellSummary;
   LRun: Integer;
   LIndex: Integer;
 begin
-  LNotes := AdmitPitchCells(AEvidence, AGrid, AChannels);
+  LNotes := AdmitPitchCells(AEvidence, AGrid, AChannels, AProgress);
   LResult := Default(TPitchCellSummary);
   LResult.Cells := Length(LNotes);
   LRun := 0;
+  ObserveCells(AProgress, 'pitch_cell_summary', 0, Length(LNotes));
   for LIndex := 0 to High(LNotes) do
   begin
     if LNotes[LIndex] >= 0 then
@@ -235,23 +269,24 @@ begin
         Inc(LResult.UncertainPitch);
       end;
     end;
+    ObserveCells(AProgress, 'pitch_cell_summary', LIndex + 1, Length(LNotes));
   end;
   Result := LResult;
 end;
 
 function SummarizePitchCells(const AEvidence: TPitchCellEvidence; const ASampleRate,
   AChannels, AFrames, ATempo, APpq, AStep: Integer;
-  const AStartTick: Integer): TPitchCellSummary;
+  const AStartTick: Integer; const AProgress: TWorkProgressCallback): TPitchCellSummary;
 var
   LGrid: TMusicGridFrames;
 begin
   if AEvidence.WindowFrames = 0 then
   begin
-    Exit(SummarizePitchCells(AEvidence, nil, AChannels));
+    Exit(SummarizePitchCells(AEvidence, nil, AChannels, AProgress));
   end;
-  LGrid := ConstantGrid(ASampleRate, AFrames, ATempo, APpq, AStep, AStartTick);
+  LGrid := ConstantGrid(ASampleRate, AFrames, ATempo, APpq, AStep, AStartTick, AProgress);
   try
-    Result := SummarizePitchCells(AEvidence, LGrid, AChannels);
+    Result := SummarizePitchCells(AEvidence, LGrid, AChannels, AProgress);
   finally
     LGrid.Free;
   end;
@@ -259,7 +294,8 @@ end;
 
 function MeasurePitchCells(const AClip: TAudioClip; const AGrid: TMusicGridFrames;
   const AChannel: Integer; const AOptions: TPitchOptions;
-  const AMaximumCents: Double): TPitchCellEvidence;
+  const AMaximumCents: Double;
+  const AProgress: TWorkProgressCallback): TPitchCellEvidence;
 var
   LResult: TPitchCellEvidence;
   LCell: Integer;
@@ -267,6 +303,8 @@ var
   LStart: Integer;
   LEnd: Integer;
   LSamples: TAudioSamples;
+  LCopied: Int64;
+  LEstimated: Integer;
 begin
   if (AClip = nil) or (AGrid = nil) then
   begin
@@ -286,8 +324,14 @@ begin
   ValidateCellWork(LResult, AGrid, AClip.Channels);
   SetLength(LResult.Cells, AGrid.CellCount);
   SetLength(LSamples, LResult.WindowFrames);
+  LCopied := 0;
+  LEstimated := 0;
+  ObserveCells(AProgress, 'pitch_cell_measure', 0, AGrid.CellCount);
+  ReportWork(AProgress, 'pitch_cell_window_frames', wuFrames, 0, 0);
+  ObserveCells(AProgress, 'pitch_cell_estimates', 0, 0);
   for LCell := 0 to AGrid.CellCount - 1 do
   begin
+    ObserveCells(AProgress, 'pitch_cell_measure', LCell, AGrid.CellCount);
     LStart := AGrid.BoundaryAt(LCell);
     LEnd := AGrid.BoundaryAt(LCell + 1);
     LResult.Cells[LCell].Measured := LEnd - LStart >= LResult.WindowFrames;
@@ -299,16 +343,27 @@ begin
     for LFrame := 0 to High(LSamples) do
     begin
       LSamples[LFrame] := AClip.SampleAt(LStart + LFrame, AChannel);
+      Inc(LCopied);
+      if Assigned(AProgress) and ((LCopied mod 1024) = 0) then
+      begin
+        ReportWork(AProgress, 'pitch_cell_window_frames', wuFrames, LCopied, 0);
+      end;
     end;
     LResult.Cells[LCell].Estimate := EstimatePitch(LSamples, AClip.SampleRate, 1, 0, AOptions);
+    Inc(LEstimated);
+    ObserveCells(AProgress, 'pitch_cell_estimates', LEstimated, 0);
   end;
-  AdmitPitchCells(LResult, AGrid, AClip.Channels);
+  ObserveCells(AProgress, 'pitch_cell_measure', AGrid.CellCount, AGrid.CellCount);
+  ReportWork(AProgress, 'pitch_cell_window_frames', wuFrames, LCopied, LCopied);
+  ObserveCells(AProgress, 'pitch_cell_estimates', LEstimated, LEstimated);
+  AdmitPitchCells(LResult, AGrid, AClip.Channels, AProgress);
   Result := LResult;
 end;
 
 function MeasurePitchCells(const AClip: TAudioClip; const ATempo, APpq, AStep,
   AChannel: Integer; const AOptions: TPitchOptions;
-  const AMaximumCents: Double; const AStartTick: Integer): TPitchCellEvidence;
+  const AMaximumCents: Double; const AStartTick: Integer;
+  const AProgress: TWorkProgressCallback): TPitchCellEvidence;
 var
   LGrid: TMusicGridFrames;
 begin
@@ -316,9 +371,10 @@ begin
   begin
     raise EAudio.Create('Pitch measurement requires a WAV clip');
   end;
-  LGrid := ConstantGrid(AClip.SampleRate, AClip.FrameCount, ATempo, APpq, AStep, AStartTick);
+  LGrid := ConstantGrid(AClip.SampleRate, AClip.FrameCount, ATempo, APpq, AStep,
+    AStartTick, AProgress);
   try
-    Result := MeasurePitchCells(AClip, LGrid, AChannel, AOptions, AMaximumCents);
+    Result := MeasurePitchCells(AClip, LGrid, AChannel, AOptions, AMaximumCents, AProgress);
   finally
     LGrid.Free;
   end;

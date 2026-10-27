@@ -1215,7 +1215,8 @@ begin
     raise EAudio.Create('Unavailable duration evidence must have no estimates');
   end;
   ReportWork(AProgress, 'wave_source_validation', wuItems, 1, 4);
-  ValidateOnsetDynamics(AEvidence.Dynamics, Length(AEvidence.OnsetFrames), AEvidence.Source.Channels);
+  ValidateOnsetDynamics(AEvidence.Dynamics, Length(AEvidence.OnsetFrames),
+    AEvidence.Source.Channels, AProgress);
   PlanAudioAnalysis(AEvidence.Source.FrameCount, AEvidence.Source.Channels,
     AEvidence.Analysis, LFeatureCount, LAnalysisWork);
   if AEvidence.OnsetVersion <> OnsetLocationVersion then
@@ -1260,7 +1261,7 @@ begin
     FAdmissions[0] := AdmitWaveRhythm(LGrid, AEvidence.MaximumErrorFrames, AEvidence.OnsetFrames);
     ReportWork(AProgress, 'wave_rhythm_admission', wuItems, 1, 1);
     ReportWork(AProgress, 'wave_pitch_admission', wuItems, 0, 1);
-    AdmitPitchCells(AEvidence.Pitch, LGrid, AEvidence.Source.Channels);
+    AdmitPitchCells(AEvidence.Pitch, LGrid, AEvidence.Source.Channels, AProgress);
     ReportWork(AProgress, 'wave_pitch_admission', wuItems, 1, 1);
     ReportWork(AProgress, 'wave_source_validation', wuItems, 3, 4);
     ReportWork(AProgress, 'wave_context_evidence', wuItems, 0, 1);
@@ -2714,7 +2715,7 @@ begin
     FContext.StepTicks, AProgress);
   try
     ReportWork(AProgress, 'wave_pitch_admission', wuItems, 0, 1);
-    Result := AdmitPitchCells(LEvidence.Pitch, LGrid, LEvidence.Source.Channels);
+    Result := AdmitPitchCells(LEvidence.Pitch, LGrid, LEvidence.Source.Channels, AProgress);
     ReportWork(AProgress, 'wave_pitch_admission', wuItems, 1, 1);
   finally
     LGrid.Free;
@@ -2729,7 +2730,7 @@ begin
     raise EAudio.Create('Intensity source index outside style');
   end;
   ReportWork(AProgress, 'wave_intensity_admission', wuItems, 0, 1);
-  Result := OnsetIntensityPattern(FAdmissions[AIndex], FEvidence[AIndex].Dynamics);
+  Result := OnsetIntensityPattern(FAdmissions[AIndex], FEvidence[AIndex].Dynamics, AProgress);
   ReportWork(AProgress, 'wave_intensity_admission', wuItems, 1, 1);
 end;
 

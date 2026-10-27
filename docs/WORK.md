@@ -45,6 +45,26 @@ must not restart with nearby variants. The existing repetition answer remains
 pending. Source measurement advances visibility/cancellation only. No new source,
 operator answer, retraining or deployed service is selected. Full goal remains.
 
+Source-measurement local result: optional primary callbacks now cover measured
+cells/window copies, admission/summary and dynamics validation/measurement/
+projection, forwarded through the profile and actual style CLI. The estimator,
+RMS accumulation order, source clocks, decisions and current archives are
+preserved. Checked Win32/Win64 and actual pas2js each pass **24,731 checks and
+16 abort/retry selections**. Native affected consumers have zero leaks. All
+**20 prior artifacts and ten CLI stdout streams** match separately compiled
+`f82adeb` sources on each native target; an additional pitch-inspection JSON and
+stdout match after summary forwarding. Prior compilation paths and source blobs
+are verified. Existing core pitch, profile and 56 model-preparation checks pass.
+The original model/profile cadence cap remains 2,000, with 1,885 old-scope calls
+and 1,078 separately counted new primary calls. The test of a hidden string
+dispatcher was repaired; direct typed tests exposed and repaired partial-note
+publication on abort. Failures and final evidence remain under the dedicated
+E-drive measurement-progress roots. The source measurement fixture is in both
+maintained native and pas2js lists. [Residual call limits](OBSERVABILITY.md#source-measurement-and-admission)
+remain explicit. Task10 stays open for published clean Ubuntu integration;
+counts/credits remain **53/69, 122 total**, **52.45/47.55**. No stopped scientific
+family, operator answer, private source or deployed service changed.
+
 ## Wave-profile candidate verified locally - 2026-10-27
 
 The preceding GitHub-only turn revalidated status and closed no criterion; it

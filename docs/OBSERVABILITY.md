@@ -402,12 +402,42 @@ maximum workloads nor promise cancellation latency, browser yielding or phone
 performance. Provider/context internals retain
 [observability_04](TODO/NS-6_observability_04.md).
 
-Primary `MeasurePitchCells` and `MeasureOnsetDynamics`, used before retained
-profile construction in the CLI, still lack observers. The separately tracked
-[source measurement task](TODO/NS-6_observability_10.md) owns those interiors and
-their consumer. The existing dense pitch tracker already accepts an observer
-and is forwarded here. This scope distinction preserves the remaining work;
-profile callbacks do not qualify raw measurements or musical accuracy.
+Primary measurement now has the separately tracked candidate below. The
+existing dense pitch tracker is also forwarded. Profile acceptance alone does
+not qualify raw measurements or musical accuracy.
+
+## Source measurement and admission
+
+[Source measurement](TODO/NS-6_observability_10.md) has a locally verified
+candidate through the primary Pascal units and actual retained style CLI.
+Both pitch-cell measurement overloads, admission and summaries accept the shared
+optional callback. `pitch_cell_measure` counts visited cells, including cells too
+short for the estimator; `pitch_cell_estimates` counts only completed estimator
+calls. Copied window frames count actual visits, with unknown total until counted.
+Cell/admission/summary counters report every eight visits and at completion;
+window copies report every 1,024 frames. A constant-grid constructor reports a
+call boundary and frees its result if the final callback rejects it.
+
+Dynamics validates actual RMS values and source onsets, counts completed windows,
+and reports actual frame visits every 1,024 frames. Frames shortened at EOF use
+their real lengths; overlapping windows can visit the same source frame more
+than once, and both stereo channels are included in each frame. Validation,
+reference selection, intensity projection and final cell verification report
+every 256 items. Projection does not turn rejected onsets into training labels.
+Native style commands forward these callbacks on stderr without changing saved
+evidence, stdout or publication. Pitch admission holds its candidate array until
+validation and the final callback pass, avoiding partial caller arrays on abort.
+
+Individual `EstimatePitch` calls, grid construction and RTL allocations remain
+synchronous. The fixture measures one 8,192-frame near-limit estimator call with
+16,773,120 declared squared-difference terms on Win64/pas2js and 16,777,216 on
+Win32 under its existing rounding. Observed local intervals span 203–297 ms
+native and 219–234 ms pas2js. This is a representative workload, not a maximum
+latency guarantee or browser-yielding evidence. Numerical/decision rules are
+unchanged; native same-target prior artifacts and actual pas2js checks qualify
+mechanics, not recorded accuracy. Evidence is under dedicated E-drive
+`build/tests/runs/measurement-progress-20261027-boss*`; published Ubuntu
+integration remains pending for this candidate.
 
 ## Validation and limits
 

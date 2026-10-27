@@ -435,6 +435,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Pitch estimator compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.pitch$executableSuffix") (Join-Path $buildRoot 'pitch-source.wav') (Join-Path $buildRoot 'pitch-octave.wav') (Join-Path $buildRoot 'run-source.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Pitch estimator checks failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.measurement.progress.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Primary measurement progress compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.measurement.progress$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Primary measurement progress and cancellation failed' }
   & $compilerPath @compilerArgs '-Futools' 'tools/pythian.phrase.wav.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Recorded phrase evaluator compilation failed' }
   & $compilerPath @compilerArgs 'tools/pythian.presence.reference.lpr'
