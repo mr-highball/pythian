@@ -12,6 +12,31 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Linux consumer gate restored - 2026-10-27
+
+The previous goal turn is progress at `22afc3d`: repaired fixture construction,
+native/pas2js execution and a real Ubuntu job advanced the selected criterion.
+The same [run446](https://github.com/mr-highball/pythian/actions/runs/40558817533)
+is now terminal **Success**, total11m9s/job11m5s. Maintained integration and both
+extracted core/WFC consumers pass. The two retained artifact containers are
+`native-fpc-logs` (744 KiB, digest `b54a9444ca68a1edcbc1dc1818dfabe1daf5cc348e2172c9525fadc0e1214861`)
+and `pythian-source-packages` (1.67 MiB, digest `18cbc3da66e274dbaa64b30ff28802f93fd0d2e97d8765f4638c683d583795a1`).
+These are GitHub artifact-container digests, not individual source ZIP hashes.
+
+Accept [portability_05](TODO/DONE/NS-6_portability_05.md) AC1–3 and move it to
+DONE with incoming links and accounting. Local checks are Big Boss solo; actual
+Linux execution is not an independent code review. The validator is unchanged.
+No service restart, saved-answer edit, inference or musical acceptance occurs.
+The native retained repetition request is still revision0 without an answer;
+the earlier short After preference remains preserved. Do not ask it again.
+
+Delivery nonclosing count resets to **0** because an actual consumer criterion
+closes; scientific stopped-family counters are unchanged. Accounting is now
+**55 open / 65 DONE, 120 total**, NS-6 17 open. Completion remains
+**100/90/25/70/14/54**, **52.45 credited / 47.55 remaining**. Return to the
+linked retained-operation work; its uncommitted sources and empty semantic
+fixture remain unaccepted. The earlier live-run paragraphs below are history.
+
 ## Linux corpus-text CI repair selected - 2026-10-27
 
 The previous goal turn is progress: authenticated GitHub inspection identifies
@@ -27,7 +52,7 @@ Reassessment: hold the unfinished observability changes. Their expanded scope
 has linked owners 07/08/09, but an empty semantic fixture still needs reconstruction
 and none has passed final integration. Current CI has failed since the earlier
 shared-text change, so its Linux consumer is the immediate delivery prerequisite.
-Select [portability_05](TODO/NS-6_portability_05.md), Big Boss solo under the
+Select [portability_05](TODO/DONE/NS-6_portability_05.md), Big Boss solo under the
 currently supplied operator override. The retained helper roster is inactive
 for this batch. No independent review is claimed for solo checks.
 
@@ -61,6 +86,19 @@ and the adversarial consumer. These are Big Boss's solo checks. Real Ubuntu
 execution and complete package acceptance remain pending; the task stays open.
 The CI wrapper now prints the final 100 build/package log lines on failure and
 rethrows, retaining existing artifacts and nonzero failure behavior.
+
+Repair commit `22afc3d` is pushed to `hello-pythian`. The exact workflow build
+body was exercised with an intentional failure: captured context appears in
+stdout and exit1 is preserved. Actual Ubuntu
+[run446](https://github.com/mr-highball/pythian/actions/runs/40558817533),
+job122381990646, is confirmed live in the authenticated browser, still in the
+integration step after passing setup/compiler installation. It has progressed
+beyond the former early failure time; no completed integration/package result
+is claimed. Poll this same job next; do not restart on an observation timeout
+or push a documentation-only update that would cancel it. Local source hashes
+and results are in `repair-validation.json` beside the E-drive logs. The
+retained-operation source changes remain uncommitted and unaccepted, including
+the empty semantic progress fixture that still requires reconstruction.
 
 ## Retained repetition review published - 2026-10-27
 
