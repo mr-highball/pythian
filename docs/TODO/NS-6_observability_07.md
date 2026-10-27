@@ -10,8 +10,9 @@ control separation, provenance, current archive bytes and audio unchanged.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
 Selected 2026-10-27 from observability_04's existing AC1 and associated AC5.
-Spike owns the profile, native style CLI and focused fixture; Big Boss owns
-integration, acceptance and final judgment. Deliverable: optional shared
+Big Boss owns the profile, native style CLI, focused fixture and solo
+verification under the supplied operator override; earlier Spike preparation
+is retained. Deliverable: optional shared
 callbacks through the primary implementation, including its owned nested pitch
 preparation prerequisite. Closing evidence: checked Win32/Win64 parity,
 interior abort/retry and actual maintained CLI execution. Stop on changed

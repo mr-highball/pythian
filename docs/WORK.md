@@ -12,6 +12,35 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Pitch learner consumer selected - 2026-10-27
+
+The preceding goal turn is progress: actual clean Ubuntu consumers passed and
+semantic callbacks moved to DONE. Return to the linked wave-profile prerequisite
+[observability_09](TODO/NS-6_observability_09.md), Big Boss solo under the supplied
+operator override. Criterion: AC2 real retained-source forwarding, then AC1–3
+verification. Deliverable: the primary source constructor forwards its optional
+shared callback into the existing pitch/rhythm/duration learners. Closing
+evidence: exact nil/observed canonical models and profile archives, interior
+abort/original exception, cleanup, unchanged borrowed context/evidence and retry
+on checked Win32/Win64, followed by its registered published Ubuntu consumer.
+Stop on changed musical/serialization semantics or an unmapped required gap.
+Full wave-profile preparation, blends and archives retain task07; source pitch
+forwarding does not certify their coverage. Delivery nonclosing count enters at
+0; all stopped scientific families remain stopped. The existing 4:16 repetition
+request is freshly confirmed revision0 and unanswered; preserve the earlier
+saved After verdict and do not reissue it. No source audio or answer is changed.
+
+Local result: the actual retained source now forwards pitch, paired rhythm and
+duration preparation. Checked Win32/Win64 each pass 56 focused checks with zero
+leaks, including 16 selected abort/retry cases across the learners and actual
+profile. All four canonical model files and the retained profile archive match
+separately compiled prior `1bf491c` adapters byte-for-byte on each target.
+No cross-target PCM identity or musical result is inferred. The first fixture
+compile's missing files/tonal imports were repaired and its logs preserved.
+The maintained build now includes this fixture. Keep task09 open pending its
+published Ubuntu consumer, with counts and credits unchanged. Full wave-profile
+and CLI observation remains07; no generic WFC defect is demonstrated.
+
 ## Semantic style callbacks accepted - 2026-10-27
 
 Authenticated GitHub inspection confirms actual Ubuntu/FPC

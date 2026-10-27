@@ -1054,6 +1054,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Separated style voice/model validation failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.pitch.wfc.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Pitch learner fixture compilation failed' }
+    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.pitch.learning.progress.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Pitch preparation progress compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.pitch.learning.progress$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Pitch preparation progress checks failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.admitted.pitch.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Admitted pitch/WFC bridge fixture compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.admitted.pitch$executableSuffix")

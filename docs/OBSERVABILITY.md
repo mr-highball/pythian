@@ -345,6 +345,31 @@ interior work in those other units. RTL allocations/copies remain synchronous.
 No maximum cancellation latency, browser yielding, phone performance or musical
 acceptance is inferred. Evidence: E-drive `runs/semantic-style-progress-20261027-boss`.
 
+## Pitch-model preparation
+
+The [pitch preparation task](TODO/NS-6_observability_09.md) adds optional shared
+callbacks to pitch, paired pitch/rhythm and both duration learner overloads.
+Checked Win32/Win64 learner and retained-source fixtures pass locally; published
+Ubuntu integration remains pending before task acceptance.
+
+`pitch_validate_cells` visits all raw cells, including zero-weight sources.
+`pitch_scan_cells` counts active-source cells scanned to separate known runs;
+`pitch_encode_cells` counts admitted cells encoded. `pitch_measured_spans` and
+`pitch_duration_spans` count actual converted/validated spans. These item stages
+report every 256 visits and at completion. `pitch_weighted_cells` and
+`pitch_duration_weighted` count observations copied into weighted samples,
+reporting when a completed sample crosses a 256-observation boundary. Active
+totals remain unknown; final totals are actual completed work, never the cap.
+
+The retained source constructor forwards its observer through all three model
+families. Its archive and the four canonical model texts match prior same-target
+bytes. The focused fixture checks 16 cancellation/retry selections, exact
+exception identity, released unpublished state and unchanged borrowed inputs.
+Generic WFC learning and RTL copies remain synchronous. Other wave-profile
+preparation, preference/blend/parent/archive loops and CLI forwarding remain with
+[observability_07](TODO/NS-6_observability_07.md); this source pitch callback does
+not qualify them, maximum latency, Studio presentation or musical accuracy.
+
 ## Validation and limits
 
 The current native callback suite has 385 checks, including identical hashes,

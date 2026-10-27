@@ -31,6 +31,7 @@ interface
 
 uses
   pythian.audio,
+  pythian.progress,
   pythian.time,
   pythian.music.grid.frames,
   pythian.analysis,
@@ -152,7 +153,7 @@ type
     procedure InheritGenerationPreferences(const ALeft, ARight: TWaveStyleProfile;
       const AKeySide, ATempoSide, ALeftRhythmWeight, ARightRhythmWeight,
       ALeftPitchWeight, ARightPitchWeight: Integer);
-    procedure Learn;
+    procedure Learn(const AProgress: TWorkProgressCallback = nil);
     procedure SaveSource;
     procedure SaveBlend(const ALeft, ARight: TWaveStyleProfile;
       const AKeySide, ATempoSide, ALeftWeight, ARightWeight,
@@ -164,8 +165,11 @@ type
       const ALeftEnvelopeWeight: Integer = -1; const ARightEnvelopeWeight: Integer = -1);
     function GetSourceCount: Integer;
   public
+    { Currently forwards pitch-model preparation only. Other owned profile work
+      remains synchronous until the retained wave-profile audit is complete. }
     constructor CreateSource(const AContext: TContextProfile;
-      const AEvidence: TRhythmStyleEvidence; const AOrder: Integer = 3);
+      const AEvidence: TRhythmStyleEvidence; const AOrder: Integer = 3;
+      const AProgress: TWorkProgressCallback = nil);
     { Complete replacement of output preferences, not training weights.
       Owns a detached definition and retains the parent archive in its lineage. }
     constructor CreatePreferred(const AParent: TWaveStyleProfile;
@@ -905,7 +909,8 @@ begin
 end;
 
 constructor TWaveStyleProfile.CreateSource(const AContext: TContextProfile;
-  const AEvidence: TRhythmStyleEvidence; const AOrder: Integer);
+  const AEvidence: TRhythmStyleEvidence; const AOrder: Integer;
+  const AProgress: TWorkProgressCallback);
 var
   LInfo: TAcousticSourceInfo;
   LBundle: TContextLearningBundle;
@@ -1022,7 +1027,7 @@ begin
     LGrid.Free;
     LClock.Free;
   end;
-  Learn;
+  Learn(AProgress);
   SaveSource;
 end;
 
@@ -1284,7 +1289,7 @@ begin
     LEnvelopeFactors[0], LEnvelopeFactors[1]);
 end;
 
-procedure TWaveStyleProfile.Learn;
+procedure TWaveStyleProfile.Learn(const AProgress: TWorkProgressCallback);
 var
   LSamples: TWfcSequenceSamples;
   LJointSamples: TWfcSequenceSamples;
@@ -1413,7 +1418,7 @@ begin
     begin
       LPitchTracks[LSource] := PitchNotesAt(LSource);
     end;
-    FPitchModel := LearnPitchModel(LPitchTracks, FPitchWeights, FOrder);
+    FPitchModel := LearnPitchModel(LPitchTracks, FPitchWeights, FOrder, AProgress);
     FHasPitchRhythm := True;
     for LSource := 0 to SourceCount - 1 do
     begin
@@ -1441,7 +1446,8 @@ begin
           end;
         end;
       end;
-      FPitchRhythmModel := LearnPitchRhythmModel(LPitchTracks, LPitchPatterns, FPitchWeights, FOrder);
+      FPitchRhythmModel := LearnPitchRhythmModel(LPitchTracks, LPitchPatterns,
+        FPitchWeights, FOrder, AProgress);
     end;
   end;
   FHasDuration := FHasPitch;
@@ -1473,7 +1479,8 @@ begin
       LDurationWeights[LDurationCount] := FPitchWeights[LSource];
       Inc(LDurationCount);
     end;
-    FDurationModel := LearnPitchDurationModel(LDurationTracks, LDurationWeights, FOrder);
+    FDurationModel := LearnPitchDurationModel(LDurationTracks, LDurationWeights,
+      FOrder, AProgress);
   end;
 end;
 

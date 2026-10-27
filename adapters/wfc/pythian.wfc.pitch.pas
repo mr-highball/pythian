@@ -30,6 +30,7 @@ unit pythian.wfc.pitch;
 interface
 
 uses
+  pythian.progress,
   pythian.pitch,
   pythian.pitch.track,
   wfc_sequence;
@@ -52,21 +53,26 @@ type
 function PitchNoteToken(const ANote: Integer): UTF8String;
 function PitchDurationToken(const ACell: TPitchDurationCell): UTF8String;
 function DecodePitchDurationToken(const AToken: UTF8String): TPitchDurationCell;
+{ Progress reports raw visited cells/spans separately from weighted sample
+  observations. Totals are unknown until the corresponding pass completes.
+  Generic WFC learning remains synchronous. }
 function LearnPitchDurationModel(const ATracks: TMeasuredPitchTracks;
-  const AWeights: array of Integer; const AOrder: Integer = 2): TWfcSequenceModel; overload;
+  const AWeights: array of Integer; const AOrder: Integer = 2;
+  const AProgress: TWorkProgressCallback = nil): TWfcSequenceModel; overload;
 function LearnPitchDurationModel(const ATracks: TTimedPitchTracks;
-  const AWeights: array of Integer; const AOrder: Integer = 2): TWfcSequenceModel; overload;
+  const AWeights: array of Integer; const AOrder: Integer = 2;
+  const AProgress: TWorkProgressCallback = nil): TWfcSequenceModel; overload;
 function DecodePitchNoteToken(const AToken: UTF8String): Integer;
 function PitchRhythmToken(const ANote, ALevel: Integer): UTF8String;
 function DecodePitchRhythmToken(const AToken: UTF8String): TPitchRhythmCell;
 function LearnPitchRhythmModel(const ATracks: TPitchTracks;
   const APatterns: TPitchRhythmPatterns; const AWeights: array of Integer;
-  const AOrder: Integer = 2): TWfcSequenceModel;
+  const AOrder: Integer = 2; const AProgress: TWorkProgressCallback = nil): TWfcSequenceModel;
 { Actual WFC learning over admitted pitch runs. Unknown cells split samples;
   recordings and repeated weighted samples never join across boundaries.
   Weights 0..64 repeat complete runs. They are not output quotas. }
 function LearnPitchModel(const ATracks: TPitchTracks; const AWeights: array of Integer;
-  const AOrder: Integer = 2): TWfcSequenceModel;
+  const AOrder: Integer = 2; const AProgress: TWorkProgressCallback = nil): TWfcSequenceModel;
 
 implementation
 
@@ -132,13 +138,15 @@ begin
 end;
 
 function LearnPitchDurationModel(const ATracks: TMeasuredPitchTracks;
-  const AWeights: array of Integer; const AOrder: Integer): TWfcSequenceModel;
+  const AWeights: array of Integer; const AOrder: Integer;
+  const AProgress: TWorkProgressCallback): TWfcSequenceModel;
 var
   LTracks: TTimedPitchTracks;
   LSpans: TPitchSpans;
   LReference: TPitchTrack;
   LSource: Integer;
   LIndex: Integer;
+  LDone: Int64;
 begin
   if (Length(ATracks) < 1) or (Length(ATracks) > 32) or
     (Length(AWeights) <> Length(ATracks)) then
@@ -146,6 +154,8 @@ begin
     raise EAudio.Create('Pitch duration corpus requires 1..32 weighted sources');
   end;
   LReference := nil;
+  LDone := 0;
+  ReportWork(AProgress, 'pitch_measured_spans', wuItems, 0, 0);
   SetLength(LTracks, Length(ATracks));
   for LSource := 0 to High(ATracks) do
   begin
@@ -173,13 +183,20 @@ begin
       LTracks[LSource][LIndex].Note := LSpans[LIndex].Note;
       LTracks[LSource][LIndex].StartTick := LSpans[LIndex].FirstWindow;
       LTracks[LSource][LIndex].EndTick := LSpans[LIndex].FirstWindow + LSpans[LIndex].WindowCount;
+      Inc(LDone);
+      if LDone mod 256 = 0 then
+      begin
+        ReportWork(AProgress, 'pitch_measured_spans', wuItems, LDone, 0);
+      end;
     end;
   end;
-  Result := LearnPitchDurationModel(LTracks, AWeights, AOrder);
+  ReportWork(AProgress, 'pitch_measured_spans', wuItems, LDone, LDone);
+  Result := LearnPitchDurationModel(LTracks, AWeights, AOrder, AProgress);
 end;
 
 function LearnPitchDurationModel(const ATracks: TTimedPitchTracks;
-  const AWeights: array of Integer; const AOrder: Integer): TWfcSequenceModel;
+  const AWeights: array of Integer; const AOrder: Integer;
+  const AProgress: TWorkProgressCallback): TWfcSequenceModel;
 var
   LSamples: TWfcSequenceSamples;
   LSpans: TTimedPitchSpans;
@@ -190,6 +207,8 @@ var
   LRepeat: Integer;
   LCount: Integer;
   LWork: Int64;
+  LDone: Int64;
+  LWeighted: Int64;
 begin
   if (Length(ATracks) < 1) or (Length(ATracks) > 32) or
     (Length(AWeights) <> Length(ATracks)) or (AOrder < 1) or (AOrder > 4) then
@@ -217,6 +236,10 @@ begin
   end;
   SetLength(LSamples, LCount);
   LCount := 0;
+  LDone := 0;
+  LWeighted := 0;
+  ReportWork(AProgress, 'pitch_duration_spans', wuItems, 0, 0);
+  ReportWork(AProgress, 'pitch_duration_weighted', wuObservations, 0, 0);
   for LSource := 0 to High(ATracks) do
   begin
     if AWeights[LSource] = 0 then
@@ -237,13 +260,29 @@ begin
       end;
       LCell.Duration := LSpans[LIndex].EndTick - LSpans[LIndex].StartTick;
       LTokens[LIndex] := PitchDurationToken(LCell);
+      Inc(LDone);
+      if LDone mod 256 = 0 then
+      begin
+        ReportWork(AProgress, 'pitch_duration_spans', wuItems, LDone, 0);
+      end;
     end;
     for LRepeat := 1 to AWeights[LSource] do
     begin
       LSamples[LCount] := MakeWfcSequenceSample(LTokens);
       Inc(LCount);
+      if (LWeighted div 256) <> ((LWeighted + Length(LTokens)) div 256) then
+      begin
+        Inc(LWeighted, Length(LTokens));
+        ReportWork(AProgress, 'pitch_duration_weighted', wuObservations, LWeighted, 0);
+      end
+      else
+      begin
+        Inc(LWeighted, Length(LTokens));
+      end;
     end;
   end;
+  ReportWork(AProgress, 'pitch_duration_spans', wuItems, LDone, LDone);
+  ReportWork(AProgress, 'pitch_duration_weighted', wuObservations, LWeighted, LWeighted);
   Result := LearnSequenceModelCorpus(LSamples, AOrder);
 end;
 
@@ -305,7 +344,8 @@ begin
 end;
 
 function LearnPitchCorpus(const ATracks: TPitchTracks; const AWeights: array of Integer;
-  const AOrder: Integer; const APatterns: TPitchRhythmPatterns): TWfcSequenceModel;
+  const AOrder: Integer; const APatterns: TPitchRhythmPatterns;
+  const AProgress: TWorkProgressCallback): TWfcSequenceModel;
 var
   LSamples: TWfcSequenceSamples;
   LTokens: TWfcModelTokens;
@@ -317,6 +357,9 @@ var
   LSampleCount: Integer;
   LWork: Int64;
   LPaired: Boolean;
+  LDone: Int64;
+  LTraversed: Int64;
+  LWeighted: Int64;
 begin
   LPaired := Length(APatterns) > 0;
   if LPaired and (Length(APatterns) <> Length(ATracks)) then
@@ -330,6 +373,8 @@ begin
   end;
   LWork := 0;
   LSampleCount := 0;
+  LDone := 0;
+  ReportWork(AProgress, 'pitch_validate_cells', wuItems, 0, 0);
   for LSource := 0 to High(ATracks) do
   begin
     if LPaired and (Length(APatterns[LSource]) <> Length(ATracks[LSource])) then
@@ -361,14 +406,26 @@ begin
       begin
         Inc(LSampleCount, AWeights[LSource]);
       end;
+      Inc(LDone);
+      if LDone mod 256 = 0 then
+      begin
+        ReportWork(AProgress, 'pitch_validate_cells', wuItems, LDone, 0);
+      end;
     end;
   end;
+  ReportWork(AProgress, 'pitch_validate_cells', wuItems, LDone, LDone);
   if (LSampleCount < 1) or (LSampleCount > WFC_SEQUENCE_MAX_SAMPLE_COUNT) then
   begin
     raise EAudio.Create('Pitch corpus has no admitted runs or too many weighted runs');
   end;
   SetLength(LSamples, LSampleCount);
   LSampleCount := 0;
+  LDone := 0;
+  LTraversed := 0;
+  LWeighted := 0;
+  ReportWork(AProgress, 'pitch_encode_cells', wuItems, 0, 0);
+  ReportWork(AProgress, 'pitch_scan_cells', wuItems, 0, 0);
+  ReportWork(AProgress, 'pitch_weighted_cells', wuObservations, 0, 0);
   for LSource := 0 to High(ATracks) do
   begin
     if AWeights[LSource] = 0 then
@@ -381,12 +438,22 @@ begin
       if ATracks[LSource][LCell] < 0 then
       begin
         Inc(LCell);
+        Inc(LTraversed);
+        if LTraversed mod 256 = 0 then
+        begin
+          ReportWork(AProgress, 'pitch_scan_cells', wuItems, LTraversed, 0);
+        end;
         Continue;
       end;
       LStart := LCell;
       while (LCell < Length(ATracks[LSource])) and (ATracks[LSource][LCell] >= 0) do
       begin
         Inc(LCell);
+        Inc(LTraversed);
+        if LTraversed mod 256 = 0 then
+        begin
+          ReportWork(AProgress, 'pitch_scan_cells', wuItems, LTraversed, 0);
+        end;
       end;
       SetLength(LTokens, LCell - LStart);
       for LIndex := LStart to LCell - 1 do
@@ -400,32 +467,49 @@ begin
         begin
           LTokens[LIndex - LStart] := PitchNoteToken(ATracks[LSource][LIndex]);
         end;
+        Inc(LDone);
+        if LDone mod 256 = 0 then
+        begin
+          ReportWork(AProgress, 'pitch_encode_cells', wuItems, LDone, 0);
+        end;
       end;
       for LRepeat := 1 to AWeights[LSource] do
       begin
         LSamples[LSampleCount] := MakeWfcSequenceSample(LTokens);
         Inc(LSampleCount);
+        if (LWeighted div 256) <> ((LWeighted + Length(LTokens)) div 256) then
+        begin
+          Inc(LWeighted, Length(LTokens));
+          ReportWork(AProgress, 'pitch_weighted_cells', wuObservations, LWeighted, 0);
+        end
+        else
+        begin
+          Inc(LWeighted, Length(LTokens));
+        end;
       end;
     end;
   end;
+  ReportWork(AProgress, 'pitch_encode_cells', wuItems, LDone, LDone);
+  ReportWork(AProgress, 'pitch_scan_cells', wuItems, LTraversed, LTraversed);
+  ReportWork(AProgress, 'pitch_weighted_cells', wuObservations, LWeighted, LWeighted);
   Result := LearnSequenceModelCorpus(LSamples, AOrder);
 end;
 
 function LearnPitchModel(const ATracks: TPitchTracks; const AWeights: array of Integer;
-  const AOrder: Integer): TWfcSequenceModel;
+  const AOrder: Integer; const AProgress: TWorkProgressCallback): TWfcSequenceModel;
 begin
-  Result := LearnPitchCorpus(ATracks, AWeights, AOrder, nil);
+  Result := LearnPitchCorpus(ATracks, AWeights, AOrder, nil, AProgress);
 end;
 
 function LearnPitchRhythmModel(const ATracks: TPitchTracks;
   const APatterns: TPitchRhythmPatterns; const AWeights: array of Integer;
-  const AOrder: Integer): TWfcSequenceModel;
+  const AOrder: Integer; const AProgress: TWorkProgressCallback): TWfcSequenceModel;
 begin
   if Length(APatterns) = 0 then
   begin
     raise EAudio.Create('Pitch/rhythm learning requires aligned source patterns');
   end;
-  Result := LearnPitchCorpus(ATracks, AWeights, AOrder, APatterns);
+  Result := LearnPitchCorpus(ATracks, AWeights, AOrder, APatterns, AProgress);
 end;
 
 end.
