@@ -74,7 +74,7 @@ semantics, callback swallowing, synthetic musical credit or a dependency edit.
   the focused fixture checks actual profile bytes, callback exception cleanup,
   unchanged borrowed context/evidence and retry on checked Win32/Win64.
   Full wave-profile validation/blend/archive observation remains with
-  [observability_07](../NS-6_observability_07.md); source pitch forwarding does not
+  [observability_07](NS-6_observability_07.md); source pitch forwarding does not
   certify those interiors or create a circular prerequisite. Register this
   consumer in the maintained build and inspect its published Ubuntu run before
   acceptance. Stop on changed model/archive bytes, pitch semantics, hidden
@@ -84,5 +84,5 @@ semantics, callback swallowing, synthetic musical credit or a dependency edit.
   calls `LearnPitchModel`, `LearnPitchRhythmModel` and duration overloads in
   `pythian.wfc.pitch`. Their validation/tokenization loops belong to Pythian,
   not the companion. This linked prerequisite is separated immediately from
-  [wave-style observability](../NS-6_observability_07.md); every original obligation
+  [wave-style observability](NS-6_observability_07.md); every original obligation
   remains mapped in [observability_04](../NS-6_observability_04.md), with no new credit.

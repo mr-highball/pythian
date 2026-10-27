@@ -112,5 +112,5 @@ or a dependency edit. This is a Pythian gap, not a generic WFC gap.
   primary `pythian.ieee754` owns binary32 interpretation; extend the primary
   numerical boundary rather than putting another host cast in an adapter.
   This linked task is created before expanding
-  [wave-style callbacks](../NS-6_observability_07.md). It adds no scope credit and
+  [wave-style callbacks](NS-6_observability_07.md). It adds no scope credit and
   preserves existing investigation counters and all format-specific obligations.

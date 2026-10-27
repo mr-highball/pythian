@@ -1,6 +1,6 @@
 # NS-6_observability_07 — Observe retained wave-style learning and archives
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
@@ -8,15 +8,18 @@ Expose measured work and cancellation through the existing retained wave-style
 source/preference/blend/archive API and its maintained CLI. Keep learning,
 control separation, provenance, current archive bytes and audio unchanged.
 Raw pitch-cell/onset-dynamics measurement before profile construction has its
-own [required owner](NS-6_observability_10.md); callbacks here do not certify it.
+own [required owner](../NS-6_observability_10.md); callbacks here do not certify it.
 
-Local candidate evidence (2026-10-27): checked Win32/Win64 each pass 8,303
+Accepted 2026-10-27 at `af46648`: checked Win32/Win64 each pass 8,303
 focused checks, 57 stages and 26 abort/retry selections, existing wave-style and
 pitch consumers, with zero leaks. Eighteen separately compiled immediate-prior
 artifacts and eight CLI stdout streams match on each target, including strict
 onset admission, dense-duration learning and verified generated audio. Borrowed
-evidence is replayed after cancellation. Keep this task open pending published
-clean Ubuntu integration. See the [coverage and residual limits](../OBSERVABILITY.md#retained-wave-style-profiles).
+evidence is replayed after cancellation. Actual clean Ubuntu
+[run451](https://github.com/mr-highball/pythian/actions/runs/40590839661) passes
+integration and both extracted consumers, total10m17s/job10m13s. Big Boss
+performed solo checks; CI is not independent review. See the
+[coverage and residual limits](../../OBSERVABILITY.md#retained-wave-style-profiles).
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
 Selected 2026-10-27 from observability_04's existing AC1 and associated AC5.
@@ -44,12 +47,18 @@ invented totals or dependency edits. This earns no musical credit.
 
 **Blockers**
 
-- [Shared progress contract — DONE](DONE/NS-6_observability_01.md).
-- [Owned pitch-learning preparation — DONE](DONE/NS-6_observability_09.md).
-- [Shared binary field primitives — DONE](DONE/NS-6_binary-codec_01.md).
+- [Shared progress contract — DONE](NS-6_observability_01.md).
+- [Owned pitch-learning preparation — DONE](NS-6_observability_09.md).
+- [Shared binary field primitives — DONE](NS-6_binary-codec_01.md).
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss acceptance: native evidence and actual published Ubuntu
+  integration satisfy AC1–3. Artifact-container digests (not ZIP hashes): logs
+  `073bae5fe1a0d44ff1b96c092ce8aca872cca5930368baefded79a830b8e0046`, packages
+  `dde93f79064f50608a7680511b967cc14f83cf98505af2345ed07398afcd6171`.
+  Raw measurement remains task10; provider/context interiors retain04. No
+  maximum cancellation latency, browser/phone or musical acceptance is inferred.
 - 2026-10-27, Big Boss candidate: owned source/context-cell, rhythm/intensity
   token, weighted-sample, preference, timbre/trajectory and archive loops now
   report real work; callback state stays local. Parent cursors are initialized,
@@ -71,7 +80,7 @@ invented totals or dependency edits. This earns no musical credit.
   and retry on checked Win32/Win64 plus actual CLI execution. Measure named
   synchronous residual calls separately; an outer boundary does not qualify
   their interiors or a maximum latency. Provider/context internals retain
-  [observability_04](NS-6_observability_04.md). Stop on changed schemas/math/
+  [observability_04](../NS-6_observability_04.md). Stop on changed schemas/math/
   controls, false progress or a distinct required gap; a demonstrated generic
   companion gap follows the separate-repository procedure. Big Boss stays solo.
   Entry delivery nonclosing count is 0; scientific stopped families stay fixed.
@@ -81,7 +90,7 @@ invented totals or dependency edits. This earns no musical credit.
   prerequisite before extending these same primitive loops with callbacks.
   Preserve this task's full API/CLI and interior coverage obligations; the
   scalar consolidation does not itself qualify retained-profile observation.
-- 2026-10-27, Big Boss: split from [observability_04](NS-6_observability_04.md)
+- 2026-10-27, Big Boss: split from [observability_04](../NS-6_observability_04.md)
   at its independent public profile/CLI boundary, with zero added credit. Batch
   evaluation, inference reporting and provider-contract internals stay there;
   semantic styles have their own owner. Before edits, Spike correctly stopped

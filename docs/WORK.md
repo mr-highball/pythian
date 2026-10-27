@@ -12,11 +12,44 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Wave profiles accepted; source measurement selected - 2026-10-27
+
+The preceding goal turn is progress: `af46648` delivered the actual profile/CLI
+consumer with native replay and abort cleanup, and published it. Authenticated
+browser inspection now confirms terminal Ubuntu
+[run451](https://github.com/mr-highball/pythian/actions/runs/40590839661),
+job122494347025, Success total10m17s/job10m13s, including integration and both
+extracted packages. Accept [observability_07](TODO/DONE/NS-6_observability_07.md)
+AC1–3 and move it to DONE with incoming links/accounting. Big Boss performed
+solo checks; CI is not independent review. Artifact-container identities are in
+the task and E-drive validation record. Prior pending-run notes below are history.
+Counts are **53 open / 69 DONE, 122 total**, NS-6 15 open. Completion remains
+**100/90/25/70/14/54**, **52.45/47.55**. Delivery nonclosing count is **0** after
+criterion closure; scientific counters remain stopped and no musical credit is
+inferred from instrumentation.
+
+Big Boss selects the linked [source-measurement gap](TODO/NS-6_observability_10.md)
+AC1–3 solo: optional callbacks in primary pitch-cell and onset-dynamics
+measurement, nested owned validation/admission/summary/projection and actual
+style CLI forwarding. Evidence: nil/observed measurements and native archives/
+stdout, real skipped/EOF counts, original callback exceptions, unchanged borrowed
+inputs, cleanup/retry on checked Win32/Win64 and actual pas2js primary execution.
+Name and measure synchronous estimator calls without claiming a latency bound.
+Stop on altered math/decisions, false totals, duplicated analysis or a distinct
+required gap. Before edits, preserve exact prior sources under the dedicated
+E-drive measurement-progress baseline; all new output stays on E.
+
+The least-complete musical review is unchanged: vocabulary/continuity require
+grounded context and references; note identity and the frozen repetition family
+must not restart with nearby variants. The existing repetition answer remains
+pending. Source measurement advances visibility/cancellation only. No new source,
+operator answer, retraining or deployed service is selected. Full goal remains.
+
 ## Wave-profile candidate verified locally - 2026-10-27
 
 The preceding GitHub-only turn revalidated status and closed no criterion; it
 did not reset a batch or scientific counter. Big Boss continued the existing
-[wave-profile batch](TODO/NS-6_observability_07.md) AC1–3 solo, under the supplied
+[wave-profile batch](TODO/DONE/NS-6_observability_07.md) AC1–3 solo, under the supplied
 operator override. Criterion/deliverable: optional callbacks through actual
 retained learning, preference/blend, detached copies, parents and archives, with
 the maintained CLI. Stop conditions remain changed math/schema/controls, false
@@ -67,7 +100,7 @@ notes below are history. Counts are **53 open / 68 DONE, 121 total**, NS-6
 nonclosing count is **0** after a criterion closes; scientific counters do not
 reset and no musical credit is inferred.
 
-Both prerequisites for [wave profiles](TODO/NS-6_observability_07.md) are now
+Both prerequisites for [wave profiles](TODO/DONE/NS-6_observability_07.md) are now
 accepted. Big Boss selects AC1–3 solo: optional source/preference/blend/archive/
 parent callbacks and actual CLI forwarding. Closing evidence: populated nested
 styles, nil/observed model/archive/audio parity, original callback exceptions,

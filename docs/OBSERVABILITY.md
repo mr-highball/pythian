@@ -339,7 +339,7 @@ style and two authored WAVs retain exact same-target bytes.
 Caller codec bodies and generic WFC model decoding/learning/solving remain
 synchronous. Provider-contract internals and nested context metadata remain
 with [observability_04](TODO/NS-6_observability_04.md); embedded wave-profile
-internals remain with [observability_07](TODO/NS-6_observability_07.md). Embedded
+internals remain with [observability_07](TODO/DONE/NS-6_observability_07.md). Embedded
 source/parent callbacks describe the semantic audit and call boundaries, not
 interior work in those other units. RTL allocations/copies remain synchronous.
 No maximum cancellation latency, browser yielding, phone performance or musical
@@ -368,13 +368,16 @@ bytes. The focused fixture checks 16 cancellation/retry selections, exact
 exception identity, released unpublished state and unchanged borrowed inputs.
 Generic WFC learning and RTL copies remain synchronous. Other wave-profile
 preparation, preference/blend/parent/archive loops and CLI forwarding remain with
-[observability_07](TODO/NS-6_observability_07.md); this source pitch callback does
+[observability_07](TODO/DONE/NS-6_observability_07.md); this source pitch callback does
 not qualify them, maximum latency, Studio presentation or musical accuracy.
 
 ## Retained wave-style profiles
 
-The [wave-profile task](TODO/NS-6_observability_07.md) now has a native candidate,
-with optional callbacks through source/preference/blend constructors, detached
+The [wave-profile task](TODO/DONE/NS-6_observability_07.md) is accepted at `af46648`
+after checked native consumers and actual Ubuntu
+[run451](https://github.com/mr-highball/pythian/actions/runs/40590839661), including
+integration and both extracted packages. It provides
+optional callbacks through source/preference/blend constructors, detached
 copies, parent reconstruction and current-format archives. The maintained style
 CLI forwards them on stderr; stdout and publication remain separate.
 
@@ -408,7 +411,7 @@ profile callbacks do not qualify raw measurements or musical accuracy.
 
 ## Validation and limits
 
-The current native callback suite has 385 checks, including identical hashes,
+The original 2026-10-03 native callback suite has 385 checks, including identical hashes,
 resampled samples, analysis features, pitch estimates, learned centers and abort
 cleanup. Existing hash, WAV analysis, weighted journal/WFC tests also pass, as do
 164 real Studio worker checks, 130 effects checks and 53 capture checks. The

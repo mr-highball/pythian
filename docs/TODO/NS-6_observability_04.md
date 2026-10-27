@@ -23,7 +23,7 @@ Stop on invented overall percentages, swallowed cancellation or dependency edits
 - Audit and extend remaining provider-contract/registry preparation, including
   `ValidateProviderContract` and `TCompatibleProviderSession.Create`, naming real
   item/byte/pass units. Retained wave-style operations and consumer are owned by
-  [observability_07](NS-6_observability_07.md), semantic archive/blend operations
+  [observability_07](DONE/NS-6_observability_07.md), semantic archive/blend operations
   by [observability_08 — DONE](DONE/NS-6_observability_08.md), primary pitch preparation by
   [observability_09 — DONE](DONE/NS-6_observability_09.md), and corpus archives by
   [observability_05](DONE/NS-6_observability_05.md). Parent acceptance retains all
@@ -46,6 +46,11 @@ Stop on invented overall percentages, swallowed cancellation or dependency edits
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss consumer audit: task10 owns primary pitch-cell/dynamics
+  measurement and its style CLI forwarding. Other native pitch-tool forwarding,
+  including `pythian.pitch.wav`'s model/generation commands, remains part of this
+  maintained-tool audit. Neither task07's accepted profile observer nor task10's
+  new optional API establishes those consumers' reporting automatically.
 - 2026-10-27, Big Boss: retained wave profiles/CLI and semantic styles/caller
   consumer are independently usable public API boundaries, split to 07/08 from
   AC1 and associated AC5 without extra credit. Their discovered primary pitch
