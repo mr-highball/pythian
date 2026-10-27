@@ -755,6 +755,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'WAV style fixture compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wave.style$executableSuffix") (Join-Path $buildRoot 'wave-style')
     if ($LASTEXITCODE -ne 0) { throw 'Weighted saved WAV style checks failed' }
+    & $compilerPath @adapterArgs 'tests/pythian.tests.wave.style.progress.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Wave-style progress fixture compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.wave.style.progress$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Wave-style progress and cancellation checks failed' }
     & $compilerPath @adapterArgs 'tools/pythian.style.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WAV style operator compilation failed' }
     & (Join-Path $buildRoot "pythian.onsets$executableSuffix") $admissionSource (Join-Path $buildRoot 'style-onsets.json') '1024' '128'

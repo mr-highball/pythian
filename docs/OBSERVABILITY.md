@@ -371,6 +371,41 @@ preparation, preference/blend/parent/archive loops and CLI forwarding remain wit
 [observability_07](TODO/NS-6_observability_07.md); this source pitch callback does
 not qualify them, maximum latency, Studio presentation or musical accuracy.
 
+## Retained wave-style profiles
+
+The [wave-profile task](TODO/NS-6_observability_07.md) now has a native candidate,
+with optional callbacks through source/preference/blend constructors, detached
+copies, parent reconstruction and current-format archives. The maintained style
+CLI forwards them on stderr; stdout and publication remain separate.
+
+Owned cell/token/coefficient/lookup loops report at 256 visits and completion.
+Weighted samples count actual samples, independently of raw cell counts.
+Ancestry nodes count visits with unknown total until complete. Archive numeric
+prefix fields report every 4,096 fields; stream/copy/blob bytes every 64 KiB;
+hash callbacks retain primary SHA cadence. Serialized stream bytes exclude the
+64-byte digest trailer; the subsequent identity hash includes it. Each nested
+input can restart its stage. No cap is reported as completed work.
+
+Evidence/component copying reports completed arrays, not their individual
+elements; RTL allocation/copy calls remain synchronous. Context codecs and
+selection, generic WFC learning/model codecs, clock/grid construction, pitch/
+rhythm/intensity admission, duration evidence/spans/articulation, harmonic
+factoring and envelope/factory construction also retain synchronous calls.
+Their entry/exit counters describe calls, not interior cancellation. The native
+fixture records local call intervals with `GetTickCount64`; zero is below timer
+resolution. Composite parent-copy intervals include observed nested work and
+must not be treated as uninterrupted time. These fixtures neither measure all
+maximum workloads nor promise cancellation latency, browser yielding or phone
+performance. Provider/context internals retain
+[observability_04](TODO/NS-6_observability_04.md).
+
+Primary `MeasurePitchCells` and `MeasureOnsetDynamics`, used before retained
+profile construction in the CLI, still lack observers. The separately tracked
+[source measurement task](TODO/NS-6_observability_10.md) owns those interiors and
+their consumer. The existing dense pitch tracker already accepts an observer
+and is forwarded here. This scope distinction preserves the remaining work;
+profile callbacks do not qualify raw measurements or musical accuracy.
+
 ## Validation and limits
 
 The current native callback suite has 385 checks, including identical hashes,

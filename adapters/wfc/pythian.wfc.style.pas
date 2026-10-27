@@ -148,70 +148,94 @@ type
     FIdentity: String;
     FParentIds: array[0..1] of String;
     FGenerationPreferences: TStyleGenerationPreferences;
-    procedure AssignGenerationPreferences(const APreferences: TStyleGenerationPreferences);
-    procedure SavePreferred(const AParent: TWaveStyleProfile);
+    procedure AssignGenerationPreferences(const APreferences: TStyleGenerationPreferences;
+      const AProgress: TWorkProgressCallback);
+    procedure SavePreferred(const AParent: TWaveStyleProfile;
+      const AProgress: TWorkProgressCallback);
     procedure InheritGenerationPreferences(const ALeft, ARight: TWaveStyleProfile;
       const AKeySide, ATempoSide, ALeftRhythmWeight, ARightRhythmWeight,
-      ALeftPitchWeight, ARightPitchWeight: Integer);
+      ALeftPitchWeight, ARightPitchWeight: Integer;
+      const AProgress: TWorkProgressCallback);
     procedure Learn(const AProgress: TWorkProgressCallback = nil);
-    procedure SaveSource;
+    procedure SaveSource(const AProgress: TWorkProgressCallback);
     procedure SaveBlend(const ALeft, ARight: TWaveStyleProfile;
       const AKeySide, ATempoSide, ALeftWeight, ARightWeight,
       ALeftPitchWeight, ARightPitchWeight, ALeftTimbreWeight, ARightTimbreWeight,
-      ALeftEnvelopeWeight, ARightEnvelopeWeight: Integer);
+      ALeftEnvelopeWeight, ARightEnvelopeWeight: Integer;
+      const AProgress: TWorkProgressCallback);
     procedure BuildBlend(const ALeft, ARight: TWaveStyleProfile;
       const AKeySide, ATempoSide, ALeftWeight, ARightWeight,
       ALeftPitchWeight, ARightPitchWeight, ALeftTimbreWeight, ARightTimbreWeight: Integer;
-      const ALeftEnvelopeWeight: Integer = -1; const ARightEnvelopeWeight: Integer = -1);
+      const ALeftEnvelopeWeight: Integer = -1; const ARightEnvelopeWeight: Integer = -1;
+      const AProgress: TWorkProgressCallback = nil);
     function GetSourceCount: Integer;
   public
-    { Currently forwards pitch-model preparation only. Other owned profile work
-      remains synchronous until the retained wave-profile audit is complete. }
+    { Optional synchronous observer; never retained by the profile. Owned bulk
+      work reports aggregate items/bytes. Nested context/model/factory calls
+      remain synchronous between their reported call boundaries. }
     constructor CreateSource(const AContext: TContextProfile;
       const AEvidence: TRhythmStyleEvidence; const AOrder: Integer = 3;
       const AProgress: TWorkProgressCallback = nil);
     { Complete replacement of output preferences, not training weights.
       Owns a detached definition and retains the parent archive in its lineage. }
     constructor CreatePreferred(const AParent: TWaveStyleProfile;
-      const APreferences: TStyleGenerationPreferences);
-    function CopyGenerationPreferences: TStyleGenerationPreferences;
+      const APreferences: TStyleGenerationPreferences;
+      const AProgress: TWorkProgressCallback = nil);
+    function CopyGenerationPreferences(
+      const AProgress: TWorkProgressCallback = nil): TStyleGenerationPreferences;
     function HasGenerationPreferences: Boolean;
     constructor CreateBlend(const ALeft, ARight: TWaveStyleProfile;
-      const AKeySide, ATempoSide, ALeftWeight, ARightWeight: Integer);
+      const AKeySide, ATempoSide, ALeftWeight, ARightWeight: Integer;
+      const AProgress: TWorkProgressCallback = nil);
     { Rhythm weights also govern its observed joint intensity model.
       Pitch weights are independent; both zero explicitly omits generated pitch. }
     constructor CreateBlendDimensions(const ALeft, ARight: TWaveStyleProfile;
       const AKeySide, ATempoSide, ALeftRhythmWeight, ARightRhythmWeight,
-      ALeftPitchWeight, ARightPitchWeight: Integer);
+      ALeftPitchWeight, ARightPitchWeight: Integer;
+      const AProgress: TWorkProgressCallback = nil);
     { Independent stationary timbre weights; both zero omit timbre. Existing
       convenience blends follow rhythm weights when any selected parent has it. }
     constructor CreateBlendLayers(const ALeft, ARight: TWaveStyleProfile;
       const AKeySide, ATempoSide, ALeftRhythmWeight, ARightRhythmWeight,
       ALeftPitchWeight, ARightPitchWeight, ALeftTimbreWeight, ARightTimbreWeight: Integer;
-      const ALeftEnvelopeWeight: Integer = -1; const ARightEnvelopeWeight: Integer = -1);
+      const ALeftEnvelopeWeight: Integer = -1; const ARightEnvelopeWeight: Integer = -1;
+      const AProgress: TWorkProgressCallback = nil);
     destructor Destroy; override;
-    function CopyContext: TContextProfile;
-    function CopyRhythmModel: TWfcSequenceModel;
-    function CopyIntensityModel: TWfcSequenceModel;
-    function CopyPitchModel: TWfcSequenceModel;
-    function CopyPitchRhythmModel: TWfcSequenceModel;
-    function CopyDurationModel: TWfcSequenceModel;
-    function CopyDurationTrack(const AIndex: Integer): TPitchTrack;
+    function CopyContext(
+      const AProgress: TWorkProgressCallback = nil): TContextProfile;
+    function CopyRhythmModel(
+      const AProgress: TWorkProgressCallback = nil): TWfcSequenceModel;
+    function CopyIntensityModel(
+      const AProgress: TWorkProgressCallback = nil): TWfcSequenceModel;
+    function CopyPitchModel(
+      const AProgress: TWorkProgressCallback = nil): TWfcSequenceModel;
+    function CopyPitchRhythmModel(
+      const AProgress: TWorkProgressCallback = nil): TWfcSequenceModel;
+    function CopyDurationModel(
+      const AProgress: TWorkProgressCallback = nil): TWfcSequenceModel;
+    function CopyDurationTrack(const AIndex: Integer;
+      const AProgress: TWorkProgressCallback = nil): TPitchTrack;
     { Scoped source-frame endpoints map to the first PPQ tick whose floor frame
       reaches that boundary. Round endpoints, never each duration. }
-    function CopyTimedDurationSpans(const AIndex: Integer): TTimedPitchSpans;
+    function CopyTimedDurationSpans(const AIndex: Integer;
+      const AProgress: TWorkProgressCallback = nil): TTimedPitchSpans;
     function DurationTicksPerQuarter: Integer;
-    function PitchNotesAt(const AIndex: Integer): TPitchNotes;
-    function IntensityPatternAt(const AIndex: Integer): String;
-    function EvidenceAt(const AIndex: Integer): TRhythmStyleEvidence;
-    function AdmissionAt(const AIndex: Integer): TRhythmAdmission;
+    function PitchNotesAt(const AIndex: Integer;
+      const AProgress: TWorkProgressCallback = nil): TPitchNotes;
+    function IntensityPatternAt(const AIndex: Integer;
+      const AProgress: TWorkProgressCallback = nil): String;
+    function EvidenceAt(const AIndex: Integer;
+      const AProgress: TWorkProgressCallback = nil): TRhythmStyleEvidence;
+    function AdmissionAt(const AIndex: Integer;
+      const AProgress: TWorkProgressCallback = nil): TRhythmAdmission;
     function RhythmWeightAt(const AIndex: Integer): Integer;
     function PitchWeightAt(const AIndex: Integer): Integer;
     function TimbreWeightAt(const AIndex: Integer): Integer;
     { Weighted mean harmonic magnitudes, all rendered with sine phase zero.
       Missing measured higher harmonics contribute zero. No loudness scaling,
       DC, recording phase, attack envelope or inferred role is transferred. }
-    function CopyTimbreRecipe: TWavetableCycleRecipe;
+    function CopyTimbreRecipe(
+      const AProgress: TWorkProgressCallback = nil): TWavetableCycleRecipe;
     { Static styles keep their existing magnitude/amplitude recipe. If any active
       source has a trajectory, all contributing spectra become unit-RMS magnitude
       shapes. Their independently normalized shapes are averaged with timbre
@@ -219,16 +243,20 @@ type
       the magnitude source. No time stretching or measured envelope is applied.
       Output is bounded to 32 union knots; caller owns the detached factory. }
     function CopyTimbreFactory(const AOutputRate: Integer;
-      const ATrajectoryRms: Double = 0.1): TWavetableSourceFactory;
+      const ATrajectoryRms: Double = 0.1;
+      const AProgress: TWorkProgressCallback = nil): TWavetableSourceFactory;
     function EnvelopeWeightAt(const AIndex: Integer): Integer;
     { Peak-normalized held levels and gate-relative release shapes are averaged
       independently on the union of retimed frame knots. No time stretching. }
-    function CopyGateEnvelope(const AOutputRate: Integer): TGateEnvelope;
+    function CopyGateEnvelope(const AOutputRate: Integer;
+      const AProgress: TWorkProgressCallback = nil): TGateEnvelope;
     function ParentIdentity(const ASide: Integer): String;
     { Caller-owned current-format parent. A missing source/preference side
       returns nil; out-of-range sides reject. No source-file access. }
-    function CopyParent(const ASide: Integer): TWaveStyleProfile;
-    function Encode: TAudioBytes;
+    function CopyParent(const ASide: Integer;
+      const AProgress: TWorkProgressCallback = nil): TWaveStyleProfile;
+    function Encode(
+      const AProgress: TWorkProgressCallback = nil): TAudioBytes;
     property Identity: String read FIdentity;
     property SourceCount: Integer read GetSourceCount;
     property Order: Integer read FOrder;
@@ -246,16 +274,19 @@ type
 { Checks bounded ancestry, digests, source clock binding, native quantization
   replay and canonical actual weighted model text before publishing a result.
   Does not reopen source WAV/onset files or execute descriptive policies. }
-function DecodeWaveStyle(const ABytes: TAudioBytes): TWaveStyleProfile;
+function DecodeWaveStyle(const ABytes: TAudioBytes;
+  const AProgress: TWorkProgressCallback = nil): TWaveStyleProfile;
 function StyleIntensityToken(const ABand: Integer): UTF8String;
 function DecodeStyleIntensityToken(const AToken: UTF8String): Integer;
 
 { Caller owns the detached exact clock/grid. Explicit clocks retain finite scope;
   the constant-clock shorthand keeps the complete-source admission contract. }
 function CreateStyleSourceClock(const AEvidence: TRhythmStyleEvidence;
-  const APpq, AStep: Integer): TTempoMap;
+  const APpq, AStep: Integer;
+  const AProgress: TWorkProgressCallback = nil): TTempoMap;
 function CreateStyleSourceGrid(const AEvidence: TRhythmStyleEvidence;
-  const APpq, AStep: Integer): TMusicGridFrames;
+  const APpq, AStep: Integer;
+  const AProgress: TWorkProgressCallback = nil): TMusicGridFrames;
 
 implementation
 
@@ -265,6 +296,7 @@ uses
   Math,
   pythian.hash,
   pythian.binary,
+  pythian.stream.bytes,
   pythian.tonal,
   pythian.music.context,
   pythian.music.context.admission,
@@ -288,10 +320,34 @@ const
   IntensityPrefix = 'pythian.rhythm.intensity.v1.';
 
 type
+  TStyleArchiveStream = class(TMemoryStream)
+  private
+    FProgress: TWorkProgressCallback;
+    FFields: Int64;
+    FReportedBytes: Int64;
+  public
+    constructor Create(const AProgress: TWorkProgressCallback);
+    function Write(const ABuffer; ACount: LongInt): LongInt; override;
+    procedure Field;
+    procedure Complete;
+    property Progress: TWorkProgressCallback read FProgress;
+  end;
+
+  TStyleHashProgress = class
+  public
+    Callback: TWorkProgressCallback;
+    procedure Observe(const AWork: TWorkProgress);
+  end;
+
   TStyleCursor = record
     Bytes: TAudioBytes;
     Offset: Integer;
     Limit: Integer;
+    Progress: TWorkProgressCallback;
+    Fields: Int64;
+    procedure Initialize(const ABytes: TAudioBytes;
+      const AProgress: TWorkProgressCallback);
+    procedure Complete;
     procedure Need(const ACount: Integer);
     function Number: Integer;
     function Blob(const AMaximum: Integer): TAudioBytes;
@@ -299,14 +355,145 @@ type
     function RealValue: Double;
   end;
 
+constructor TStyleArchiveStream.Create(const AProgress: TWorkProgressCallback);
+begin
+  inherited Create;
+  FProgress := AProgress;
+  ReportWork(FProgress, 'wave_archive_fields', wuItems, 0, 0);
+  ReportWork(FProgress, 'wave_archive_bytes', wuBytes, 0, 0);
+end;
+
+function TStyleArchiveStream.Write(const ABuffer; ACount: LongInt): LongInt;
+begin
+  Result := inherited Write(ABuffer, ACount);
+  if Assigned(FProgress) and (Position - FReportedBytes >= 65536) then
+  begin
+    FReportedBytes := Position;
+    ReportWork(FProgress, 'wave_archive_bytes', wuBytes, Position, 0);
+  end;
+end;
+
+procedure TStyleArchiveStream.Field;
+begin
+  if not Assigned(FProgress) then
+  begin
+    Exit;
+  end;
+  Inc(FFields);
+  if FFields mod 4096 = 0 then
+  begin
+    ReportWork(FProgress, 'wave_archive_fields', wuItems, FFields, 0);
+  end;
+end;
+
+procedure TStyleArchiveStream.Complete;
+begin
+  ReportWork(FProgress, 'wave_archive_fields', wuItems, FFields, FFields);
+  ReportWork(FProgress, 'wave_archive_bytes', wuBytes, Size, Size);
+end;
+
+procedure TStyleHashProgress.Observe(const AWork: TWorkProgress);
+begin
+  ReportWork(Callback, 'wave_archive_hash', AWork.Units,
+    AWork.Done, AWork.Total, AWork.Pass);
+end;
+
+function HashStyleBytes(const ABytes: TAudioBytes;
+  const AProgress: TWorkProgressCallback): String;
+var
+  LBridge: TStyleHashProgress;
+begin
+  if not Assigned(AProgress) then
+  begin
+    Exit(Sha256Bytes(ABytes));
+  end;
+  LBridge := TStyleHashProgress.Create;
+  try
+    LBridge.Callback := AProgress;
+    Result := Sha256Bytes(ABytes, LBridge.Observe);
+  finally
+    LBridge.Free;
+  end;
+end;
+
+function CopyStyleBytes(const ABytes: TAudioBytes; const AOffset, ACount: Integer;
+  const AProgress: TWorkProgressCallback; const AStage: String): TAudioBytes;
+var
+  LOffset: Integer;
+  LBlock: Integer;
+begin
+  if not Assigned(AProgress) then
+  begin
+    Exit(Copy(ABytes, AOffset, ACount));
+  end;
+  ReportWork(AProgress, AStage, wuBytes, 0, ACount);
+  SetLength(Result, ACount);
+  LOffset := 0;
+  while LOffset < ACount do
+  begin
+    LBlock := Min(65536, ACount - LOffset);
+    Move(ABytes[AOffset + LOffset], Result[LOffset], LBlock);
+    Inc(LOffset, LBlock);
+    ReportWork(AProgress, AStage, wuBytes, LOffset, ACount);
+  end;
+end;
+
+procedure CompleteOwnedStep(const AObject: TObject;
+  const AProgress: TWorkProgressCallback; const AStage: String);
+begin
+  try
+    ReportWork(AProgress, AStage, wuItems, 1, 1);
+  except
+    AObject.Free;
+    raise;
+  end;
+end;
+
+procedure ObserveStyleItems(const AProgress: TWorkProgressCallback;
+  const AStage: String; const ADone, ATotal: Int64);
+begin
+  if Assigned(AProgress) and ((ADone = 0) or (ADone = ATotal) or
+    ((ADone mod 256) = 0)) then
+  begin
+    ReportWork(AProgress, AStage, wuItems, ADone, ATotal);
+  end;
+end;
+
+function CopyStyleModel(const AModel: TWfcSequenceModel;
+  const AProgress: TWorkProgressCallback): TWfcSequenceModel;
+begin
+  ReportWork(AProgress, 'wave_model_copy', wuItems, 0, 1);
+  Result := DecodeWfcSequenceText(EncodeWfcSequenceText(AModel));
+  CompleteOwnedStep(Result, AProgress, 'wave_model_copy');
+end;
+
+procedure TStyleCursor.Initialize(const ABytes: TAudioBytes;
+  const AProgress: TWorkProgressCallback);
+begin
+  Self := Default(TStyleCursor);
+  Bytes := ABytes;
+  Limit := Length(ABytes) - 64;
+  Progress := AProgress;
+  ReportWork(Progress, 'wave_archive_input', wuBytes, 0, Limit);
+  ReportWork(Progress, 'wave_archive_fields', wuItems, 0, 0);
+end;
+
+procedure TStyleCursor.Complete;
+begin
+  ReportWork(Progress, 'wave_archive_fields', wuItems, Fields, Fields);
+  ReportWork(Progress, 'wave_archive_input', wuBytes, Offset, Limit);
+end;
+
 function CreateStyleSourceClock(const AEvidence: TRhythmStyleEvidence;
-  const APpq, AStep: Integer): TTempoMap;
+  const APpq, AStep: Integer;
+  const AProgress: TWorkProgressCallback): TTempoMap;
 var
   LScope: TWaveContextScope;
   LCount: Integer;
   LChanges: TTempoChanges;
   LEnd: Int64;
 begin
+  ReportWork(AProgress, 'wave_source_clock', wuItems, 0, 1);
   if Length(AEvidence.SourceClock) = 0 then
   begin
     if (AEvidence.SourceCellCount <> 0) or (AEvidence.SourceFrameOffset <> 0) then
@@ -336,18 +523,22 @@ begin
     raise EAudio.Create('Style source clock exceeds tick extent');
   end;
   Result := TTempoMap.Create(APpq, LEnd, LChanges);
+  CompleteOwnedStep(Result, AProgress, 'wave_source_clock');
 end;
 
 function CreateStyleSourceGrid(const AEvidence: TRhythmStyleEvidence;
-  const APpq, AStep: Integer): TMusicGridFrames;
+  const APpq, AStep: Integer;
+  const AProgress: TWorkProgressCallback): TMusicGridFrames;
 var
   LClock: TTempoMap;
 begin
-  LClock := CreateStyleSourceClock(AEvidence, APpq, AStep);
+  LClock := CreateStyleSourceClock(AEvidence, APpq, AStep, AProgress);
   try
+    ReportWork(AProgress, 'wave_source_grid', wuItems, 0, 1);
     Result := TMusicGridFrames.Create(LClock, AEvidence.Source.SampleRate,
       AEvidence.Source.FrameCount, AEvidence.SourceFrameOffset, AEvidence.SourceStartTick,
       AStep, (LClock.LengthTicks - AEvidence.SourceStartTick) div AStep);
+    CompleteOwnedStep(Result, AProgress, 'wave_source_grid');
   finally
     LClock.Free;
   end;
@@ -374,7 +565,7 @@ begin
   raise EAudio.Create('Unknown style intensity token');
 end;
 
-procedure PutNumber(const AStream: TMemoryStream; const AValue: Integer);
+procedure PutNumber(const AStream: TStyleArchiveStream; const AValue: Integer);
 var
   LBytes: array[0..3] of Byte;
 begin
@@ -384,9 +575,13 @@ begin
   end;
   WriteUInt32LE(LBytes, 0, Cardinal(AValue));
   AStream.WriteBuffer(LBytes[0], 4);
+  AStream.Field;
 end;
 
-procedure PutBlob(const AStream: TMemoryStream; const ABytes: TAudioBytes);
+procedure PutBlob(const AStream: TStyleArchiveStream; const ABytes: TAudioBytes);
+var
+  LOffset: Integer;
+  LBlock: Integer;
 begin
   if AStream.Size + Length(ABytes) > MaximumStyleBytes - 68 then
   begin
@@ -395,11 +590,24 @@ begin
   PutNumber(AStream, Length(ABytes));
   if Length(ABytes) > 0 then
   begin
-    AStream.WriteBuffer(ABytes[0], Length(ABytes));
+    if not Assigned(AStream.Progress) then
+    begin
+      AStream.WriteBuffer(ABytes[0], Length(ABytes));
+    end
+    else
+    begin
+      LOffset := 0;
+      while LOffset < Length(ABytes) do
+      begin
+        LBlock := Min(65536, Length(ABytes) - LOffset);
+        AStream.WriteBuffer(ABytes[LOffset], LBlock);
+        Inc(LOffset, LBlock);
+      end;
+    end;
   end;
 end;
 
-procedure PutText(const AStream: TMemoryStream; const AText: UTF8String);
+procedure PutText(const AStream: TStyleArchiveStream; const AText: UTF8String);
 var
   LBytes: TAudioBytes;
 begin
@@ -411,25 +619,47 @@ begin
   PutBlob(AStream, LBytes);
 end;
 
-function FinishArchive(const AStream: TMemoryStream): TAudioBytes;
+function FinishArchive(const AStream: TStyleArchiveStream): TAudioBytes;
 var
   LBytes: TAudioBytes;
   LHash: String;
   LSize: Integer;
+  LOffset: Integer;
+  LBlock: Integer;
 begin
   LSize := Integer(AStream.Size);
   SetLength(LBytes, LSize);
   if LSize > 0 then
   begin
-    Move(AStream.Memory^, LBytes[0], LSize);
+    if not Assigned(AStream.Progress) then
+    begin
+      Move(AStream.Memory^, LBytes[0], LSize);
+    end
+    else
+    begin
+      ReportWork(AStream.Progress, 'wave_archive_copy', wuBytes, 0, LSize);
+      AStream.Position := 0;
+      LOffset := 0;
+      while LOffset < LSize do
+      begin
+        LBlock := Min(65536, LSize - LOffset);
+        if ReadStreamBytes(AStream, LBytes, LOffset, LBlock) <> LBlock then
+        begin
+          raise EAudio.Create('Incomplete owned style archive copy');
+        end;
+        Inc(LOffset, LBlock);
+        ReportWork(AStream.Progress, 'wave_archive_copy', wuBytes, LOffset, LSize);
+      end;
+    end;
   end;
-  LHash := Sha256Bytes(LBytes);
+  LHash := HashStyleBytes(LBytes, AStream.Progress);
   SetLength(LBytes, LSize + 64);
   Move(LHash[1], LBytes[LSize], 64);
+  AStream.Complete;
   Result := LBytes;
 end;
 
-procedure PutReal(const AStream: TMemoryStream; const AValue: Double);
+procedure PutReal(const AStream: TStyleArchiveStream; const AValue: Double);
 var
   LBytes: TAudioBytes;
 begin
@@ -458,6 +688,15 @@ begin
     raise EAudio.Create('Style integer exceeds signed range');
   end;
   Result := Integer(LBits);
+  if Assigned(Progress) then
+  begin
+    Inc(Fields);
+    if Fields mod 4096 = 0 then
+    begin
+      ReportWork(Progress, 'wave_archive_fields', wuItems, Fields, 0);
+      ReportWork(Progress, 'wave_archive_input', wuBytes, Offset, Limit);
+    end;
+  end;
 end;
 
 function TStyleCursor.Blob(const AMaximum: Integer): TAudioBytes;
@@ -470,7 +709,14 @@ begin
     raise EAudio.Create('Style field exceeds declared budget');
   end;
   Need(LCount);
-  Result := Copy(Bytes, Offset, LCount);
+  if Assigned(Progress) and (LCount >= 65536) then
+  begin
+    Result := CopyStyleBytes(Bytes, Offset, LCount, Progress, 'wave_archive_blob');
+  end
+  else
+  begin
+    Result := Copy(Bytes, Offset, LCount);
+  end;
   Inc(Offset, LCount);
 end;
 
@@ -499,7 +745,7 @@ begin
   Result := ReadFloat64LE(LBytes, 0);
 end;
 
-procedure PutHarmonicEvidence(const AStream: TMemoryStream; const AEvidence: THarmonicStyleEvidence);
+procedure PutHarmonicEvidence(const AStream: TStyleArchiveStream; const AEvidence: THarmonicStyleEvidence);
 var
   LIndex: Integer;
 begin
@@ -560,7 +806,7 @@ begin
   Result := LEvidence;
 end;
 
-procedure PutEvidence(const AStream: TMemoryStream; const AEvidence: TRhythmStyleEvidence);
+procedure PutEvidence(const AStream: TStyleArchiveStream; const AEvidence: TRhythmStyleEvidence);
 var
   LIndex: Integer;
 begin
@@ -692,7 +938,8 @@ begin
 end;
 
 function EnvelopeFromEvidence(const AEvidence: TEnvelopeStyleEvidence;
-  const ASource: TAcousticSourceInfo; const AOutputRate: Integer): TGateEnvelope;
+  const ASource: TAcousticSourceInfo; const AOutputRate: Integer;
+  const AProgress: TWorkProgressCallback): TGateEnvelope;
 var
   LTrace: TEnvelopeTrace;
 begin
@@ -704,6 +951,7 @@ begin
     raise EAudio.Create('Envelope evidence requires a source interval, channel and policy');
   end;
   ValidateCorpusText(AEvidence.Policy);
+  ReportWork(AProgress, 'wave_envelope_factory', wuItems, 0, 1);
   LTrace := TEnvelopeTrace.CreateMeasured(ASource.SampleRate, AEvidence.StartFrame,
     AEvidence.FrameCount, AEvidence.Channel, AEvidence.WindowFrames, AEvidence.RmsPoints);
   try
@@ -712,10 +960,12 @@ begin
   finally
     LTrace.Free;
   end;
+  CompleteOwnedStep(Result, AProgress, 'wave_envelope_factory');
 end;
 
 procedure ValidateEnvelope(const AEvidence: TEnvelopeStyleEvidence;
-  const ASource: TAcousticSourceInfo);
+  const ASource: TAcousticSourceInfo;
+  const AProgress: TWorkProgressCallback);
 var
   LEnvelope: TGateEnvelope;
 begin
@@ -727,12 +977,13 @@ begin
     end;
     Exit;
   end;
-  LEnvelope := EnvelopeFromEvidence(AEvidence, ASource, ASource.SampleRate);
+  LEnvelope := EnvelopeFromEvidence(AEvidence, ASource, ASource.SampleRate, AProgress);
   LEnvelope.Free;
 end;
 
 procedure ValidateTimbre(const AEvidence: THarmonicStyleEvidence;
-  const ASource: TAcousticSourceInfo);
+  const ASource: TAcousticSourceInfo;
+  const AProgress: TWorkProgressCallback);
 var
   LIndex: Integer;
   LRatio: Double;
@@ -776,6 +1027,8 @@ begin
   begin
     raise EAudio.Create('Timbre residual ratio disagrees with measured RMS');
   end;
+  ObserveStyleItems(AProgress, 'wave_timbre_coefficients', 0,
+    Length(AEvidence.Fit.Recipe.Sine));
   for LIndex := 0 to High(AEvidence.Fit.Recipe.Sine) do
   begin
     RequireFinite(AEvidence.Fit.Recipe.Sine[LIndex], 'Timbre sine coefficient');
@@ -787,11 +1040,14 @@ begin
     begin
       raise EAudio.Create('Timbre harmonic magnitude exceeds factory limit 16');
     end;
+    ObserveStyleItems(AProgress, 'wave_timbre_coefficients', LIndex + 1,
+      Length(AEvidence.Fit.Recipe.Sine));
   end;
 end;
 
 procedure ValidateTimbreTrajectory(const AEvidence: TTimbreTrajectoryEvidence;
-  const ASource: TAcousticSourceInfo);
+  const ASource: TAcousticSourceInfo;
+  const AProgress: TWorkProgressCallback);
 var
   LIndex: Integer;
   LCenter: Int64;
@@ -816,9 +1072,10 @@ begin
   end;
   LWork := 0;
   LPrevious := -1;
+  ReportWork(AProgress, 'wave_timbre_knots', wuItems, 0, Length(AEvidence.Knots));
   for LIndex := 0 to High(AEvidence.Knots) do
   begin
-    ValidateTimbre(AEvidence.Knots[LIndex], ASource);
+    ValidateTimbre(AEvidence.Knots[LIndex], ASource, AProgress);
     if (AEvidence.Knots[LIndex].FrameCount = 0) or
       (AEvidence.Knots[LIndex].Channel <> AEvidence.Knots[0].Channel) or
       (AEvidence.Knots[LIndex].Fit.FrequencyHz <> AEvidence.Knots[0].Fit.FrequencyHz) then
@@ -843,42 +1100,67 @@ begin
     begin
       raise EAudio.Create('Trajectory knot has no modeled harmonic level');
     end;
+    ReportWork(AProgress, 'wave_timbre_knots', wuItems, LIndex + 1,
+      Length(AEvidence.Knots));
   end;
 end;
 
-function EvidenceIdentity(const AEvidence: TRhythmStyleEvidence): String;
+function EvidenceIdentity(const AEvidence: TRhythmStyleEvidence;
+  const AProgress: TWorkProgressCallback): String;
 var
-  LStream: TMemoryStream;
+  LStream: TStyleArchiveStream;
 begin
-  LStream := TMemoryStream.Create;
+  LStream := TStyleArchiveStream.Create(AProgress);
   try
     PutEvidence(LStream, AEvidence);
-    Result := Sha256Bytes(FinishArchive(LStream));
+    Result := HashStyleBytes(FinishArchive(LStream), AProgress);
   finally
     LStream.Free;
   end;
 end;
 
-function CloneEvidence(const AEvidence: TRhythmStyleEvidence): TRhythmStyleEvidence;
+function CloneEvidence(const AEvidence: TRhythmStyleEvidence;
+  const AProgress: TWorkProgressCallback): TRhythmStyleEvidence;
 var
   LIndex: Integer;
+  LDone: Integer;
+  LTotal: Integer;
+  procedure Copied;
+  begin
+    Inc(LDone);
+    ReportWork(AProgress, 'wave_evidence_components', wuItems, LDone, LTotal);
+  end;
 begin
+  LDone := 0;
+  LTotal := 9 + 2 * Length(AEvidence.TimbreTrajectory.Knots);
+  ReportWork(AProgress, 'wave_evidence_components', wuItems, 0, LTotal);
   Result := AEvidence;
   Result.SourceClock := Copy(AEvidence.SourceClock);
+  Copied;
   Result.OnsetFrames := Copy(AEvidence.OnsetFrames);
+  Copied;
   Result.Dynamics.Rms := Copy(AEvidence.Dynamics.Rms);
+  Copied;
   Result.Pitch.Cells := Copy(AEvidence.Pitch.Cells);
+  Copied;
   Result.Duration.Estimates := Copy(AEvidence.Duration.Estimates);
+  Copied;
   Result.Timbre.Fit.Recipe.Sine := Copy(AEvidence.Timbre.Fit.Recipe.Sine);
+  Copied;
   Result.Timbre.Fit.Recipe.Cosine := Copy(AEvidence.Timbre.Fit.Recipe.Cosine);
+  Copied;
   Result.Envelope.RmsPoints := Copy(AEvidence.Envelope.RmsPoints);
+  Copied;
   Result.TimbreTrajectory.Knots := Copy(AEvidence.TimbreTrajectory.Knots);
+  Copied;
   for LIndex := 0 to High(Result.TimbreTrajectory.Knots) do
   begin
     Result.TimbreTrajectory.Knots[LIndex].Fit.Recipe.Sine :=
       Copy(AEvidence.TimbreTrajectory.Knots[LIndex].Fit.Recipe.Sine);
+    Copied;
     Result.TimbreTrajectory.Knots[LIndex].Fit.Recipe.Cosine :=
       Copy(AEvidence.TimbreTrajectory.Knots[LIndex].Fit.Recipe.Cosine);
+    Copied;
   end;
 end;
 
@@ -903,14 +1185,15 @@ begin
   begin
     raise EAudio.Create('Source style requires context and order 1..4');
   end;
+  ReportWork(AProgress, 'wave_source_validation', wuItems, 0, 4);
   ValidateSourceInfo(AEvidence.Source);
-  ValidateTimbre(AEvidence.Timbre, AEvidence.Source);
-  ValidateTimbreTrajectory(AEvidence.TimbreTrajectory, AEvidence.Source);
+  ValidateTimbre(AEvidence.Timbre, AEvidence.Source, AProgress);
+  ValidateTimbreTrajectory(AEvidence.TimbreTrajectory, AEvidence.Source, AProgress);
   if (AEvidence.Timbre.FrameCount > 0) and (Length(AEvidence.TimbreTrajectory.Knots) > 0) then
   begin
     raise EAudio.Create('A source selects stationary or trajectory timbre, not both');
   end;
-  ValidateEnvelope(AEvidence.Envelope, AEvidence.Source);
+  ValidateEnvelope(AEvidence.Envelope, AEvidence.Source, AProgress);
   if AEvidence.DurationArticulateOnsets and (AEvidence.Duration.WindowFrames <= 0) then
   begin
     raise EAudio.Create('Onset-assisted duration requires dense pitch evidence');
@@ -921,14 +1204,17 @@ begin
     begin
       raise EAudio.Create('Duration evidence requires the source pitch capability');
     end;
+    ReportWork(AProgress, 'wave_duration_track', wuItems, 0, 1);
     LDurationTrack := TPitchTrack.CreateFromEvidence(AEvidence.Duration,
       AEvidence.Source.SampleRate, AEvidence.Source.Channels, AEvidence.Source.FrameCount);
     LDurationTrack.Free;
+    ReportWork(AProgress, 'wave_duration_track', wuItems, 1, 1);
   end
   else if Length(AEvidence.Duration.Estimates) > 0 then
   begin
     raise EAudio.Create('Unavailable duration evidence must have no estimates');
   end;
+  ReportWork(AProgress, 'wave_source_validation', wuItems, 1, 4);
   ValidateOnsetDynamics(AEvidence.Dynamics, Length(AEvidence.OnsetFrames), AEvidence.Source.Channels);
   PlanAudioAnalysis(AEvidence.Source.FrameCount, AEvidence.Source.Channels,
     AEvidence.Analysis, LFeatureCount, LAnalysisWork);
@@ -944,7 +1230,10 @@ begin
   begin
     raise EAudio.Create('Style requires an explicit onset admission policy');
   end;
+  ReportWork(AProgress, 'wave_context_copy', wuItems, 0, 1);
   FContext := DecodeContextProfile(EncodeContextProfile(AContext));
+  ReportWork(AProgress, 'wave_context_copy', wuItems, 1, 1);
+  ReportWork(AProgress, 'wave_source_validation', wuItems, 2, 4);
   FOrder := AOrder;
   FDepth := 1;
   FNodeCount := 1;
@@ -958,19 +1247,26 @@ begin
   SetLength(FEnvelopeWeights, 1);
   FEnvelopeWeights[0] := Ord(AEvidence.Envelope.FrameCount > 0);
   FPitchWeights[0] := Ord(AEvidence.Pitch.WindowFrames > 0);
-  FEvidence[0] := CloneEvidence(AEvidence);
+  FEvidence[0] := CloneEvidence(AEvidence, AProgress);
   FRhythmWeights[0] := 1;
-  LClock := CreateStyleSourceClock(AEvidence, FContext.TicksPerQuarter, FContext.StepTicks);
+  LClock := CreateStyleSourceClock(AEvidence, FContext.TicksPerQuarter, FContext.StepTicks, AProgress);
   LGrid := nil;
   LBundle := nil;
   try
     LGrid := TMusicGridFrames.Create(LClock, AEvidence.Source.SampleRate,
       AEvidence.Source.FrameCount, AEvidence.SourceFrameOffset, AEvidence.SourceStartTick,
       FContext.StepTicks, (LClock.LengthTicks - AEvidence.SourceStartTick) div FContext.StepTicks);
+    ReportWork(AProgress, 'wave_rhythm_admission', wuItems, 0, 1);
     FAdmissions[0] := AdmitWaveRhythm(LGrid, AEvidence.MaximumErrorFrames, AEvidence.OnsetFrames);
+    ReportWork(AProgress, 'wave_rhythm_admission', wuItems, 1, 1);
+    ReportWork(AProgress, 'wave_pitch_admission', wuItems, 0, 1);
     AdmitPitchCells(AEvidence.Pitch, LGrid, AEvidence.Source.Channels);
+    ReportWork(AProgress, 'wave_pitch_admission', wuItems, 1, 1);
+    ReportWork(AProgress, 'wave_source_validation', wuItems, 3, 4);
+    ReportWork(AProgress, 'wave_context_evidence', wuItems, 0, 1);
     LBundle := FContext.CopyBundle(cdTempo);
     LContextEvidence := LBundle.CopyEvidence;
+    ReportWork(AProgress, 'wave_context_evidence', wuItems, 1, 1);
     if (Length(LContextEvidence) <> 1) or
       (LContextEvidence[0].SourceSha256 <> AEvidence.Source.Sha256) or
       (LContextEvidence[0].SourceFrameOffset <> AEvidence.SourceFrameOffset) or
@@ -980,6 +1276,8 @@ begin
       raise EAudio.Create('Rhythm origin requires matching source context, frame offset, start tick and scope');
     end;
     LChange := 0;
+    ObserveStyleItems(AProgress, 'wave_context_cells', 0,
+      Length(LContextEvidence[0].Grid.Tempos));
     for LIndex := 0 to High(LContextEvidence[0].Grid.Tempos) do
     begin
       LTick := AEvidence.SourceStartTick + LIndex * FContext.StepTicks;
@@ -995,14 +1293,17 @@ begin
       begin
         raise EAudio.Create('Rhythm source tempo map must match complete admitted context cells');
       end;
+      ObserveStyleItems(AProgress, 'wave_context_cells', LIndex + 1,
+        Length(LContextEvidence[0].Grid.Tempos));
     end;
   finally
     LBundle.Free;
     LGrid.Free;
     LClock.Free;
   end;
+  ReportWork(AProgress, 'wave_source_validation', wuItems, 4, 4);
   Learn(AProgress);
-  SaveSource;
+  SaveSource(AProgress);
 end;
 
 function Gcd(const ALeft, ARight: Integer): Integer;
@@ -1047,7 +1348,8 @@ begin
 end;
 
 constructor TWaveStyleProfile.CreateBlend(const ALeft, ARight: TWaveStyleProfile;
-  const AKeySide, ATempoSide, ALeftWeight, ARightWeight: Integer);
+  const AKeySide, ATempoSide, ALeftWeight, ARightWeight: Integer;
+  const AProgress: TWorkProgressCallback);
 var
   LLeftPitchWeight: Integer;
   LRightPitchWeight: Integer;
@@ -1076,12 +1378,13 @@ begin
     LRightTimbreWeight := ARightWeight;
   end;
   BuildBlend(ALeft, ARight, AKeySide, ATempoSide, ALeftWeight, ARightWeight,
-    LLeftPitchWeight, LRightPitchWeight, LLeftTimbreWeight, LRightTimbreWeight);
+    LLeftPitchWeight, LRightPitchWeight, LLeftTimbreWeight, LRightTimbreWeight, -1, -1, AProgress);
 end;
 
 constructor TWaveStyleProfile.CreateBlendDimensions(const ALeft, ARight: TWaveStyleProfile;
   const AKeySide, ATempoSide, ALeftRhythmWeight, ARightRhythmWeight,
-  ALeftPitchWeight, ARightPitchWeight: Integer);
+  ALeftPitchWeight, ARightPitchWeight: Integer;
+  const AProgress: TWorkProgressCallback);
 var
   LLeftTimbreWeight: Integer;
   LRightTimbreWeight: Integer;
@@ -1100,24 +1403,26 @@ begin
     LRightTimbreWeight := ARightRhythmWeight;
   end;
   BuildBlend(ALeft, ARight, AKeySide, ATempoSide, ALeftRhythmWeight, ARightRhythmWeight,
-    ALeftPitchWeight, ARightPitchWeight, LLeftTimbreWeight, LRightTimbreWeight);
+    ALeftPitchWeight, ARightPitchWeight, LLeftTimbreWeight, LRightTimbreWeight, -1, -1, AProgress);
 end;
 
 constructor TWaveStyleProfile.CreateBlendLayers(const ALeft, ARight: TWaveStyleProfile;
   const AKeySide, ATempoSide, ALeftRhythmWeight, ARightRhythmWeight,
   ALeftPitchWeight, ARightPitchWeight, ALeftTimbreWeight, ARightTimbreWeight: Integer;
-  const ALeftEnvelopeWeight, ARightEnvelopeWeight: Integer);
+  const ALeftEnvelopeWeight, ARightEnvelopeWeight: Integer;
+  const AProgress: TWorkProgressCallback);
 begin
   inherited Create;
   BuildBlend(ALeft, ARight, AKeySide, ATempoSide, ALeftRhythmWeight, ARightRhythmWeight,
     ALeftPitchWeight, ARightPitchWeight, ALeftTimbreWeight, ARightTimbreWeight,
-    ALeftEnvelopeWeight, ARightEnvelopeWeight);
+    ALeftEnvelopeWeight, ARightEnvelopeWeight, AProgress);
 end;
 
 procedure TWaveStyleProfile.BuildBlend(const ALeft, ARight: TWaveStyleProfile;
   const AKeySide, ATempoSide, ALeftWeight, ARightWeight,
   ALeftPitchWeight, ARightPitchWeight, ALeftTimbreWeight, ARightTimbreWeight: Integer;
-  const ALeftEnvelopeWeight, ARightEnvelopeWeight: Integer);
+  const ALeftEnvelopeWeight, ARightEnvelopeWeight: Integer;
+  const AProgress: TWorkProgressCallback);
 var
   LParents: array[0..1] of TWaveStyleProfile;
   LFactors: array[0..1] of Integer;
@@ -1133,6 +1438,8 @@ var
   LPitchWeight: Integer;
   LTimbreWeight: Integer;
   LEnvelopeWeight: Integer;
+  LVisited: Integer;
+  LComparisons: Int64;
 begin
   if (ALeft = nil) or (ARight = nil) or not (AKeySide in [0, 1]) or
     not (ATempoSide in [0, 1]) or (ALeftWeight < 0) or (ARightWeight < 0) or
@@ -1196,10 +1503,17 @@ begin
   LPitchFactors[1] := ARightPitchWeight;
   LTimbreFactors[0] := ALeftTimbreWeight;
   LTimbreFactors[1] := ARightTimbreWeight;
+  ReportWork(AProgress, 'wave_context_selection', wuItems, 0, 1);
   FContext := SelectContextProfile(LParents[AKeySide].FContext, LParents[ATempoSide].FContext);
+  ReportWork(AProgress, 'wave_context_selection', wuItems, 1, 1);
   FOrder := ALeft.FOrder;
   FParentIds[0] := ALeft.Identity;
   FParentIds[1] := ARight.Identity;
+  LVisited := 0;
+  LComparisons := 0;
+  ReportWork(AProgress, 'wave_blend_sources', wuItems, 0,
+    ALeft.SourceCount + ARight.SourceCount);
+  ReportWork(AProgress, 'wave_blend_comparisons', wuItems, 0, 0);
   for LSide := 0 to 1 do
   begin
     for LIndex := 0 to LParents[LSide].SourceCount - 1 do
@@ -1211,16 +1525,21 @@ begin
       if (LRhythmWeight = 0) and (LPitchWeight = 0) and (LTimbreWeight = 0) and
         (LEnvelopeWeight = 0) then
       begin
+        Inc(LVisited);
+        ReportWork(AProgress, 'wave_blend_sources', wuItems, LVisited,
+          ALeft.SourceCount + ARight.SourceCount);
         Continue;
       end;
       LFound := -1;
       for LOther := 0 to High(FEvidence) do
       begin
+        Inc(LComparisons);
+        ObserveStyleItems(AProgress, 'wave_blend_comparisons', LComparisons, 0);
         if FEvidence[LOther].Source.Sha256 =
           LParents[LSide].FEvidence[LIndex].Source.Sha256 then
         begin
-          if EvidenceIdentity(FEvidence[LOther]) <>
-            EvidenceIdentity(LParents[LSide].FEvidence[LIndex]) then
+          if EvidenceIdentity(FEvidence[LOther], AProgress) <>
+            EvidenceIdentity(LParents[LSide].FEvidence[LIndex], AProgress) then
           begin
             raise EAudio.Create('Repeated source has conflicting measurements; normalize explicitly');
           end;
@@ -1241,26 +1560,31 @@ begin
         SetLength(FPitchWeights, LCount + 1);
         SetLength(FTimbreWeights, LCount + 1);
         SetLength(FEnvelopeWeights, LCount + 1);
-        FEvidence[LCount] := LParents[LSide].EvidenceAt(LIndex);
-        FAdmissions[LCount] := LParents[LSide].AdmissionAt(LIndex);
+        FEvidence[LCount] := LParents[LSide].EvidenceAt(LIndex, AProgress);
+        FAdmissions[LCount] := LParents[LSide].AdmissionAt(LIndex, AProgress);
         LFound := LCount;
       end;
       Inc(FRhythmWeights[LFound], LRhythmWeight);
       Inc(FPitchWeights[LFound], LPitchWeight);
       Inc(FTimbreWeights[LFound], LTimbreWeight);
       Inc(FEnvelopeWeights[LFound], LEnvelopeWeight);
+      Inc(LVisited);
+      ReportWork(AProgress, 'wave_blend_sources', wuItems, LVisited,
+        ALeft.SourceCount + ARight.SourceCount);
     end;
   end;
+  ReportWork(AProgress, 'wave_blend_comparisons', wuItems,
+    LComparisons, LComparisons);
   NormalizeStyleWeights(FRhythmWeights);
   NormalizeStyleWeights(FPitchWeights);
   NormalizeStyleWeights(FTimbreWeights);
   NormalizeStyleWeights(FEnvelopeWeights);
-  Learn;
+  Learn(AProgress);
   InheritGenerationPreferences(ALeft, ARight, AKeySide, ATempoSide, ALeftWeight, ARightWeight,
-    ALeftPitchWeight, ARightPitchWeight);
+    ALeftPitchWeight, ARightPitchWeight, AProgress);
   SaveBlend(ALeft, ARight, AKeySide, ATempoSide, ALeftWeight, ARightWeight,
     ALeftPitchWeight, ARightPitchWeight, ALeftTimbreWeight, ARightTimbreWeight,
-    LEnvelopeFactors[0], LEnvelopeFactors[1]);
+    LEnvelopeFactors[0], LEnvelopeFactors[1], AProgress);
 end;
 
 procedure TWaveStyleProfile.Learn(const AProgress: TWorkProgressCallback);
@@ -1280,6 +1604,8 @@ var
   LSource: Integer;
   LRepeat: Integer;
   LCell: Integer;
+  LSampleTotal: Integer;
+  LModels: Integer;
 begin
   LCount := 0;
   LTotal := 0;
@@ -1288,8 +1614,10 @@ begin
   FHasTimbre := False;
   FHasTimbreTrajectory := False;
   FHasEnvelope := False;
+  ReportWork(AProgress, 'wave_learn_sources', wuItems, 0, SourceCount);
   for LSource := 0 to High(FEvidence) do
   begin
+    ObserveStyleItems(AProgress, 'wave_learn_sources', LSource, SourceCount);
     if FEnvelopeWeights[LSource] > 0 then
     begin
       if FEvidence[LSource].Envelope.FrameCount = 0 then
@@ -1332,6 +1660,7 @@ begin
     Inc(LCount, FRhythmWeights[LSource]);
     Inc(LTotal, Int64(FRhythmWeights[LSource]) * Length(FAdmissions[LSource].Pattern));
   end;
+  ReportWork(AProgress, 'wave_learn_sources', wuItems, SourceCount, SourceCount);
   if (LCount < 1) or (LCount > WFC_SEQUENCE_MAX_SAMPLE_COUNT) or
     (LTotal > MaximumStyleCells) then
   begin
@@ -1342,7 +1671,9 @@ begin
   begin
     SetLength(LJointSamples, LCount);
   end;
+  LSampleTotal := LCount;
   LCount := 0;
+  ObserveStyleItems(AProgress, 'wave_weighted_samples', 0, LSampleTotal);
   for LSource := 0 to High(FEvidence) do
   begin
     if FRhythmWeights[LSource] = 0 then
@@ -1352,13 +1683,17 @@ begin
     SetLength(LTokens, Length(FAdmissions[LSource].Pattern));
     if FHasDynamics then
     begin
-      LIntensity := IntensityPatternAt(LSource);
+      LIntensity := IntensityPatternAt(LSource, AProgress);
       SetLength(LJointTokens, Length(LTokens));
+      ObserveStyleItems(AProgress, 'wave_intensity_tokens', 0, Length(LJointTokens));
       for LCell := 0 to High(LJointTokens) do
       begin
         LJointTokens[LCell] := StyleIntensityToken(Ord(LIntensity[LCell + 1]) - Ord('0'));
+        ObserveStyleItems(AProgress, 'wave_intensity_tokens', LCell + 1,
+          Length(LJointTokens));
       end;
     end;
+    ObserveStyleItems(AProgress, 'wave_rhythm_tokens', 0, Length(LTokens));
     for LCell := 0 to High(LTokens) do
     begin
       if FAdmissions[LSource].Pattern[LCell + 1] = 'x' then
@@ -1369,6 +1704,7 @@ begin
       begin
         LTokens[LCell] := RhythmEmptyToken;
       end;
+      ObserveStyleItems(AProgress, 'wave_rhythm_tokens', LCell + 1, Length(LTokens));
     end;
     for LRepeat := 1 to FRhythmWeights[LSource] do
     begin
@@ -1378,21 +1714,34 @@ begin
         LJointSamples[LCount] := MakeWfcSequenceSample(LJointTokens);
       end;
       Inc(LCount);
+      ObserveStyleItems(AProgress, 'wave_weighted_samples', LCount, LSampleTotal);
     end;
   end;
+  LModels := 0;
+  ReportWork(AProgress, 'wave_learn_models', wuItems, 0, 0);
+  ReportWork(AProgress, 'wave_rhythm_model_call', wuItems, 0, 1);
   FModel := LearnSequenceModelCorpus(LSamples, FOrder);
+  ReportWork(AProgress, 'wave_rhythm_model_call', wuItems, 1, 1);
+  Inc(LModels);
+  ReportWork(AProgress, 'wave_learn_models', wuItems, LModels, 0);
   if FHasDynamics then
   begin
+    ReportWork(AProgress, 'wave_intensity_model_call', wuItems, 0, 1);
     FJointModel := LearnSequenceModelCorpus(LJointSamples, FOrder);
+    ReportWork(AProgress, 'wave_intensity_model_call', wuItems, 1, 1);
+    Inc(LModels);
+    ReportWork(AProgress, 'wave_learn_models', wuItems, LModels, 0);
   end;
   if FHasPitch then
   begin
     SetLength(LPitchTracks, SourceCount);
     for LSource := 0 to SourceCount - 1 do
     begin
-      LPitchTracks[LSource] := PitchNotesAt(LSource);
+      LPitchTracks[LSource] := PitchNotesAt(LSource, AProgress);
     end;
     FPitchModel := LearnPitchModel(LPitchTracks, FPitchWeights, FOrder, AProgress);
+    Inc(LModels);
+    ReportWork(AProgress, 'wave_learn_models', wuItems, LModels, 0);
     FHasPitchRhythm := True;
     for LSource := 0 to SourceCount - 1 do
     begin
@@ -1406,22 +1755,28 @@ begin
       begin
         if FHasDynamics then
         begin
-          LPitchPatterns[LSource] := IntensityPatternAt(LSource);
+          LPitchPatterns[LSource] := IntensityPatternAt(LSource, AProgress);
         end
         else
         begin
           LPitchPatterns[LSource] := StringOfChar('0', Length(FAdmissions[LSource].Pattern));
+          ObserveStyleItems(AProgress, 'wave_pitch_pattern', 0,
+            Length(LPitchPatterns[LSource]));
           for LCell := 1 to Length(LPitchPatterns[LSource]) do
           begin
             if FAdmissions[LSource].Pattern[LCell] = 'x' then
             begin
               LPitchPatterns[LSource][LCell] := '5';
             end;
+            ObserveStyleItems(AProgress, 'wave_pitch_pattern', LCell,
+              Length(LPitchPatterns[LSource]));
           end;
         end;
       end;
       FPitchRhythmModel := LearnPitchRhythmModel(LPitchTracks, LPitchPatterns,
         FPitchWeights, FOrder, AProgress);
+      Inc(LModels);
+      ReportWork(AProgress, 'wave_learn_models', wuItems, LModels, 0);
     end;
   end;
   FHasDuration := FHasPitch;
@@ -1449,13 +1804,15 @@ begin
       begin
         Continue;
       end;
-      LDurationTracks[LDurationCount] := CopyTimedDurationSpans(LSource);
+      LDurationTracks[LDurationCount] := CopyTimedDurationSpans(LSource, AProgress);
       LDurationWeights[LDurationCount] := FPitchWeights[LSource];
       Inc(LDurationCount);
     end;
     FDurationModel := LearnPitchDurationModel(LDurationTracks, LDurationWeights,
       FOrder, AProgress);
+    Inc(LModels);
   end;
+  ReportWork(AProgress, 'wave_learn_models', wuItems, LModels, LModels);
 end;
 
 function OptionalModelText(const AModel: TWfcSequenceModel): UTF8String;
@@ -1468,17 +1825,23 @@ begin
 end;
 
 procedure TWaveStyleProfile.AssignGenerationPreferences(
-  const APreferences: TStyleGenerationPreferences);
+  const APreferences: TStyleGenerationPreferences;
+  const AProgress: TWorkProgressCallback);
 var
   LProvider: TStylePreferenceProvider;
   LModel: TWfcSequenceModel;
   LIndex: Integer;
   LOther: Integer;
   LCopy: TStyleGenerationPreferences;
+  LComparisons: Int64;
 begin
   LCopy := Default(TStyleGenerationPreferences);
+  LComparisons := 0;
+  ReportWork(AProgress, 'wave_preference_comparisons', wuItems, 0, 0);
   for LProvider := Low(LProvider) to High(LProvider) do
   begin
+    ReportWork(AProgress, 'wave_preference_providers', wuItems, Ord(LProvider),
+      Ord(High(LProvider)) + 1);
     if Length(APreferences[LProvider]) > MaximumLayerPreferences then
     begin
       raise EAudio.Create('Style preference count exceeds layer bounds');
@@ -1492,12 +1855,14 @@ begin
       case LProvider of
         sppKey: LModel := FContext.CopyModel(cdKey);
         sppTempo: LModel := FContext.CopyModel(cdTempo);
-        sppPerformance: LModel := CopyDurationModel;
-        sppRhythm: LModel := CopyRhythmModel;
-        sppIntensity: LModel := CopyIntensityModel;
-        sppPitch: LModel := CopyPitchModel;
-        sppPitchRhythm: LModel := CopyPitchRhythmModel;
+        sppPerformance: LModel := CopyDurationModel(AProgress);
+        sppRhythm: LModel := CopyRhythmModel(AProgress);
+        sppIntensity: LModel := CopyIntensityModel(AProgress);
+        sppPitch: LModel := CopyPitchModel(AProgress);
+        sppPitchRhythm: LModel := CopyPitchRhythmModel(AProgress);
       end;
+      ObserveStyleItems(AProgress, 'wave_preference_tokens', 0,
+        Length(APreferences[LProvider]));
       for LIndex := 0 to High(APreferences[LProvider]) do
       begin
         if (APreferences[LProvider][LIndex].Multiplier < 1) or
@@ -1508,28 +1873,40 @@ begin
         end;
         for LOther := 0 to LIndex - 1 do
         begin
+          Inc(LComparisons);
+          ObserveStyleItems(AProgress, 'wave_preference_comparisons', LComparisons, 0);
           if APreferences[LProvider][LOther].Token = APreferences[LProvider][LIndex].Token then
           begin
             raise EAudio.Create('Duplicate style preference token');
           end;
         end;
+        ObserveStyleItems(AProgress, 'wave_preference_tokens', LIndex + 1,
+          Length(APreferences[LProvider]));
       end;
       LCopy[LProvider] := Copy(APreferences[LProvider]);
     finally
       LModel.Free;
     end;
   end;
+  ReportWork(AProgress, 'wave_preference_comparisons', wuItems,
+    LComparisons, LComparisons);
+  ReportWork(AProgress, 'wave_preference_providers', wuItems,
+    Ord(High(LProvider)) + 1, Ord(High(LProvider)) + 1);
   FGenerationPreferences := LCopy;
 end;
 
-function TWaveStyleProfile.CopyGenerationPreferences: TStyleGenerationPreferences;
+function TWaveStyleProfile.CopyGenerationPreferences(
+  const AProgress: TWorkProgressCallback): TStyleGenerationPreferences;
 var
   LProvider: TStylePreferenceProvider;
 begin
   Result := Default(TStyleGenerationPreferences);
+  ReportWork(AProgress, 'wave_preference_copy', wuItems, 0, Ord(High(LProvider)) + 1);
   for LProvider := Low(LProvider) to High(LProvider) do
   begin
     Result[LProvider] := Copy(FGenerationPreferences[LProvider]);
+    ReportWork(AProgress, 'wave_preference_copy', wuItems, Ord(LProvider) + 1,
+      Ord(High(LProvider)) + 1);
   end;
 end;
 
@@ -1548,7 +1925,8 @@ begin
 end;
 
 constructor TWaveStyleProfile.CreatePreferred(const AParent: TWaveStyleProfile;
-  const APreferences: TStyleGenerationPreferences);
+  const APreferences: TStyleGenerationPreferences;
+  const AProgress: TWorkProgressCallback);
 var
   LIndex: Integer;
 begin
@@ -1561,31 +1939,35 @@ begin
   begin
     raise EAudio.Create('Preferred style exceeds bounded ancestry');
   end;
-  FContext := AParent.CopyContext;
+  FContext := AParent.CopyContext(AProgress);
   FOrder := AParent.Order;
   FDepth := AParent.Depth + 1;
   FNodeCount := AParent.NodeCount + 1;
   FParentIds[0] := AParent.Identity;
   SetLength(FEvidence, AParent.SourceCount);
   SetLength(FAdmissions, AParent.SourceCount);
+  ReportWork(AProgress, 'wave_preferred_sources', wuItems, 0, AParent.SourceCount);
   for LIndex := 0 to AParent.SourceCount - 1 do
   begin
-    FEvidence[LIndex] := AParent.EvidenceAt(LIndex);
-    FAdmissions[LIndex] := AParent.AdmissionAt(LIndex);
+    FEvidence[LIndex] := AParent.EvidenceAt(LIndex, AProgress);
+    FAdmissions[LIndex] := AParent.AdmissionAt(LIndex, AProgress);
+    ReportWork(AProgress, 'wave_preferred_sources', wuItems, LIndex + 1,
+      AParent.SourceCount);
   end;
   FRhythmWeights := Copy(AParent.FRhythmWeights);
   FPitchWeights := Copy(AParent.FPitchWeights);
   FTimbreWeights := Copy(AParent.FTimbreWeights);
   FEnvelopeWeights := Copy(AParent.FEnvelopeWeights);
-  Learn;
-  AssignGenerationPreferences(APreferences);
-  SavePreferred(AParent);
+  Learn(AProgress);
+  AssignGenerationPreferences(APreferences, AProgress);
+  SavePreferred(AParent, AProgress);
 end;
 
 procedure TWaveStyleProfile.InheritGenerationPreferences(
   const ALeft, ARight: TWaveStyleProfile;
   const AKeySide, ATempoSide, ALeftRhythmWeight, ARightRhythmWeight,
-  ALeftPitchWeight, ARightPitchWeight: Integer);
+  ALeftPitchWeight, ARightPitchWeight: Integer;
+  const AProgress: TWorkProgressCallback);
 var
   LParents: array[0..1] of TWaveStyleProfile;
   LWeights: array[0..1] of Integer;
@@ -1597,6 +1979,8 @@ var
   LFound: Integer;
   LProvider: TStylePreferenceProvider;
   LActive: Boolean;
+  LComparisons: Int64;
+  LVisited: Int64;
 begin
   LParents[0] := ALeft;
   LParents[1] := ARight;
@@ -1607,6 +1991,10 @@ begin
   LPreferences := Default(TStyleGenerationPreferences);
   LPreferences[sppKey] := Copy(LParents[AKeySide].FGenerationPreferences[sppKey]);
   LPreferences[sppTempo] := Copy(LParents[ATempoSide].FGenerationPreferences[sppTempo]);
+  LComparisons := 0;
+  LVisited := 0;
+  ReportWork(AProgress, 'wave_inherited_tokens', wuItems, 0, 0);
+  ReportWork(AProgress, 'wave_inherited_comparisons', wuItems, 0, 0);
   for LProvider := sppPerformance to High(LProvider) do
   begin
     for LSide := 0 to 1 do
@@ -1629,6 +2017,8 @@ begin
         LFound := -1;
         for LIndex := 0 to High(LPreferences[LProvider]) do
         begin
+          Inc(LComparisons);
+          ObserveStyleItems(AProgress, 'wave_inherited_comparisons', LComparisons, 0);
           if LPreferences[LProvider][LIndex].Token = LPreference.Token then
           begin
             LFound := LIndex;
@@ -1652,19 +2042,25 @@ begin
           SetLength(LPreferences[LProvider], LIndex + 1);
           LPreferences[LProvider][LIndex] := LPreference;
         end;
+        Inc(LVisited);
+        ObserveStyleItems(AProgress, 'wave_inherited_tokens', LVisited, 0);
       end;
     end;
   end;
-  AssignGenerationPreferences(LPreferences);
+  ReportWork(AProgress, 'wave_inherited_tokens', wuItems, LVisited, LVisited);
+  ReportWork(AProgress, 'wave_inherited_comparisons', wuItems,
+    LComparisons, LComparisons);
+  AssignGenerationPreferences(LPreferences, AProgress);
 end;
 
-procedure TWaveStyleProfile.SavePreferred(const AParent: TWaveStyleProfile);
+procedure TWaveStyleProfile.SavePreferred(const AParent: TWaveStyleProfile;
+  const AProgress: TWorkProgressCallback);
 var
-  LStream: TMemoryStream;
+  LStream: TStyleArchiveStream;
   LProvider: TStylePreferenceProvider;
   LPreference: TLayerTokenPreference;
 begin
-  LStream := TMemoryStream.Create;
+  LStream := TStyleArchiveStream.Create(AProgress);
   try
     PutNumber(LStream, StyleMagic);
     PutNumber(LStream, WaveStyleVersion);
@@ -1686,17 +2082,17 @@ begin
     PutText(LStream, OptionalModelText(FPitchRhythmModel));
     PutText(LStream, OptionalModelText(FDurationModel));
     FBytes := FinishArchive(LStream);
-    FIdentity := Sha256Bytes(FBytes);
+    FIdentity := HashStyleBytes(FBytes, AProgress);
   finally
     LStream.Free;
   end;
 end;
 
-procedure TWaveStyleProfile.SaveSource;
+procedure TWaveStyleProfile.SaveSource(const AProgress: TWorkProgressCallback);
 var
-  LStream: TMemoryStream;
+  LStream: TStyleArchiveStream;
 begin
-  LStream := TMemoryStream.Create;
+  LStream := TStyleArchiveStream.Create(AProgress);
   try
     PutNumber(LStream, StyleMagic);
     PutNumber(LStream, WaveStyleVersion);
@@ -1710,7 +2106,7 @@ begin
     PutText(LStream, OptionalModelText(FPitchRhythmModel));
     PutText(LStream, OptionalModelText(FDurationModel));
     FBytes := FinishArchive(LStream);
-    FIdentity := Sha256Bytes(FBytes);
+    FIdentity := HashStyleBytes(FBytes, AProgress);
   finally
     LStream.Free;
   end;
@@ -1719,11 +2115,12 @@ end;
 procedure TWaveStyleProfile.SaveBlend(const ALeft, ARight: TWaveStyleProfile;
   const AKeySide, ATempoSide, ALeftWeight, ARightWeight,
   ALeftPitchWeight, ARightPitchWeight, ALeftTimbreWeight, ARightTimbreWeight,
-  ALeftEnvelopeWeight, ARightEnvelopeWeight: Integer);
+  ALeftEnvelopeWeight, ARightEnvelopeWeight: Integer;
+  const AProgress: TWorkProgressCallback);
 var
-  LStream: TMemoryStream;
+  LStream: TStyleArchiveStream;
 begin
-  LStream := TMemoryStream.Create;
+  LStream := TStyleArchiveStream.Create(AProgress);
   try
     PutNumber(LStream, StyleMagic);
     PutNumber(LStream, WaveStyleVersion);
@@ -1747,7 +2144,7 @@ begin
     PutText(LStream, OptionalModelText(FPitchRhythmModel));
     PutText(LStream, OptionalModelText(FDurationModel));
     FBytes := FinishArchive(LStream);
-    FIdentity := Sha256Bytes(FBytes);
+    FIdentity := HashStyleBytes(FBytes, AProgress);
   finally
     LStream.Free;
   end;
@@ -1769,25 +2166,31 @@ begin
   Result := Length(FEvidence);
 end;
 
-function TWaveStyleProfile.EvidenceAt(const AIndex: Integer): TRhythmStyleEvidence;
+function TWaveStyleProfile.EvidenceAt(const AIndex: Integer;
+  const AProgress: TWorkProgressCallback): TRhythmStyleEvidence;
 begin
   if (AIndex < 0) or (AIndex >= SourceCount) then
   begin
     raise EAudio.Create('Style evidence index outside source table');
   end;
-  Result := CloneEvidence(FEvidence[AIndex]);
+  Result := CloneEvidence(FEvidence[AIndex], AProgress);
 end;
 
-function TWaveStyleProfile.AdmissionAt(const AIndex: Integer): TRhythmAdmission;
+function TWaveStyleProfile.AdmissionAt(const AIndex: Integer;
+  const AProgress: TWorkProgressCallback): TRhythmAdmission;
 begin
   if (AIndex < 0) or (AIndex >= SourceCount) then
   begin
     raise EAudio.Create('Style admission index outside source table');
   end;
+  ReportWork(AProgress, 'wave_admission_copy', wuItems, 0, 3);
   Result := FAdmissions[AIndex];
   Result.Cells := Copy(Result.Cells);
+  ReportWork(AProgress, 'wave_admission_copy', wuItems, 1, 3);
   Result.FrameErrors := Copy(Result.FrameErrors);
+  ReportWork(AProgress, 'wave_admission_copy', wuItems, 2, 3);
   Result.Decisions := Copy(Result.Decisions);
+  ReportWork(AProgress, 'wave_admission_copy', wuItems, 3, 3);
 end;
 
 function TWaveStyleProfile.RhythmWeightAt(const AIndex: Integer): Integer;
@@ -1817,7 +2220,8 @@ begin
   Result := FParentIds[ASide];
 end;
 
-function TWaveStyleProfile.CopyParent(const ASide: Integer): TWaveStyleProfile;
+function TWaveStyleProfile.CopyParent(const ASide: Integer;
+  const AProgress: TWorkProgressCallback): TWaveStyleProfile;
 var
   LCursor: TStyleCursor;
   LKind: Integer;
@@ -1833,9 +2237,9 @@ begin
   begin
     Exit;
   end;
-  LCursor.Bytes := FBytes;
+  ReportWork(AProgress, 'wave_parent_copy', wuItems, 0, 1);
+  LCursor.Initialize(FBytes, AProgress);
   LCursor.Offset := 8;
-  LCursor.Limit := Length(FBytes) - 64;
   LKind := LCursor.Number;
   LCursor.Number; { Model order precedes the current derivation payload. }
   if LKind = 1 then
@@ -1854,7 +2258,9 @@ begin
   begin
     LBytes := LCursor.Blob(MaximumStyleBytes);
   end;
-  Result := DecodeWaveStyle(LBytes);
+  LCursor.Complete;
+  Result := DecodeWaveStyle(LBytes, AProgress);
+  CompleteOwnedStep(Result, AProgress, 'wave_parent_copy');
 end;
 
 function TWaveStyleProfile.TimbreWeightAt(const AIndex: Integer): Integer;
@@ -1875,7 +2281,8 @@ begin
   Result := FEnvelopeWeights[AIndex];
 end;
 
-function TWaveStyleProfile.CopyGateEnvelope(const AOutputRate: Integer): TGateEnvelope;
+function TWaveStyleProfile.CopyGateEnvelope(const AOutputRate: Integer;
+  const AProgress: TWorkProgressCallback): TGateEnvelope;
 var
   LEnvelopes: array of TGateEnvelope;
   I: Integer;
@@ -1886,14 +2293,17 @@ begin
   end;
   SetLength(LEnvelopes, SourceCount);
   try
+    ReportWork(AProgress, 'wave_envelope_sources', wuItems, 0, SourceCount);
     for I := 0 to SourceCount - 1 do
     begin
       if FEnvelopeWeights[I] > 0 then
       begin
         LEnvelopes[I] := EnvelopeFromEvidence(FEvidence[I].Envelope, FEvidence[I].Source,
-          AOutputRate);
+          AOutputRate, AProgress);
       end;
+      ReportWork(AProgress, 'wave_envelope_sources', wuItems, I + 1, SourceCount);
     end;
+    ReportWork(AProgress, 'wave_envelope_blend', wuItems, 0, 1);
     Result := TGateEnvelope.Blend(LEnvelopes, FEnvelopeWeights);
   finally
     for I := 0 to High(LEnvelopes) do
@@ -1901,9 +2311,11 @@ begin
       LEnvelopes[I].Free;
     end;
   end;
+  CompleteOwnedStep(Result, AProgress, 'wave_envelope_blend');
 end;
 
-function TWaveStyleProfile.CopyTimbreRecipe: TWavetableCycleRecipe;
+function TWaveStyleProfile.CopyTimbreRecipe(
+  const AProgress: TWorkProgressCallback): TWavetableCycleRecipe;
 var
   LRecipe: TWavetableCycleRecipe;
   LSource: Integer;
@@ -1911,6 +2323,8 @@ var
   LCount: Integer;
   LTotal: Integer;
   LWeight: Double;
+  LTerms: Int64;
+  LDone: Int64;
 begin
   if not FHasTimbre or FHasTimbreTrajectory then
   begin
@@ -1918,17 +2332,21 @@ begin
   end;
   LCount := 0;
   LTotal := 0;
+  LTerms := 0;
   for LSource := 0 to SourceCount - 1 do
   begin
     if FTimbreWeights[LSource] > 0 then
     begin
       LCount := Max(LCount, Length(FEvidence[LSource].Timbre.Fit.Recipe.Sine));
       Inc(LTotal, FTimbreWeights[LSource]);
+      Inc(LTerms, Length(FEvidence[LSource].Timbre.Fit.Recipe.Sine));
     end;
   end;
   LRecipe := Default(TWavetableCycleRecipe);
   SetLength(LRecipe.Sine, LCount);
   SetLength(LRecipe.Cosine, LCount);
+  LDone := 0;
+  ObserveStyleItems(AProgress, 'wave_timbre_mix_coefficients', 0, LTerms + LCount);
   for LSource := 0 to SourceCount - 1 do
   begin
     if FTimbreWeights[LSource] = 0 then
@@ -1941,17 +2359,24 @@ begin
       LRecipe.Sine[LHarmonic] := LRecipe.Sine[LHarmonic] + LWeight * Sqrt(
         Sqr(FEvidence[LSource].Timbre.Fit.Recipe.Sine[LHarmonic]) +
         Sqr(FEvidence[LSource].Timbre.Fit.Recipe.Cosine[LHarmonic]));
+      Inc(LDone);
+      ObserveStyleItems(AProgress, 'wave_timbre_mix_coefficients', LDone,
+        LTerms + LCount);
     end;
   end;
   for LHarmonic := 0 to High(LRecipe.Sine) do
   begin
     LRecipe.Sine[LHarmonic] := LRecipe.Sine[LHarmonic] / LTotal;
+    Inc(LDone);
+    ObserveStyleItems(AProgress, 'wave_timbre_mix_coefficients', LDone,
+      LTerms + LCount);
   end;
   Result := LRecipe;
 end;
 
 function TWaveStyleProfile.CopyTimbreFactory(const AOutputRate: Integer;
-  const ATrajectoryRms: Double): TWavetableSourceFactory;
+  const ATrajectoryRms: Double;
+  const AProgress: TWorkProgressCallback): TWavetableSourceFactory;
 type
   TPreparedShape = record
     Frames: array of Int64;
@@ -1975,6 +2400,8 @@ var
   LShape: TWavetableMagnitudeShape;
   LPoints: TAutomationPoints;
   LCurve: TAutomationCurve;
+  LPreparedCount: Integer;
+  LCoefficients: Int64;
 
   procedure AddFrame(const AFrame: Int64);
   var
@@ -2006,8 +2433,11 @@ begin
   ValidateAudioFormat(AOutputRate, 1);
   if not FHasTimbreTrajectory then
   begin
-    LRecipe := CopyTimbreRecipe;
-    Exit(TWavetableSourceFactory.Create(LRecipe.Sine, LRecipe.Cosine));
+    LRecipe := CopyTimbreRecipe(AProgress);
+    ReportWork(AProgress, 'wave_timbre_factory', wuItems, 0, 1);
+    Result := TWavetableSourceFactory.Create(LRecipe.Sine, LRecipe.Cosine);
+    CompleteOwnedStep(Result, AProgress, 'wave_timbre_factory');
+    Exit;
   end;
   RequireFinite(ATrajectoryRms, 'Style trajectory reference RMS');
   if (ATrajectoryRms <= 0) or (ATrajectoryRms > 16) then
@@ -2018,6 +2448,8 @@ begin
   LCount := 0;
   LTotal := 0;
   LMaximumHarmonics := 0;
+  LPreparedCount := 0;
+  ReportWork(AProgress, 'wave_trajectory_shapes', wuItems, 0, 0);
   for LSource := 0 to SourceCount - 1 do
   begin
     if FTimbreWeights[LSource] = 0 then
@@ -2033,6 +2465,8 @@ begin
       LShape := FactorWavetableMagnitudes(FEvidence[LSource].Timbre.Fit.Recipe);
       LPrepared[LSource].Recipes[0] := LShape.Recipe;
       LMaximumHarmonics := Max(LMaximumHarmonics, Length(LShape.Recipe.Sine));
+      Inc(LPreparedCount);
+      ObserveStyleItems(AProgress, 'wave_trajectory_shapes', LPreparedCount, 0);
       Continue;
     end;
     SetLength(LPrepared[LSource].Frames, LIndex);
@@ -2053,10 +2487,16 @@ begin
         FEvidence[LSource].TimbreTrajectory.Knots[LKnot].Fit.Recipe);
       LPrepared[LSource].Recipes[LKnot] := LShape.Recipe;
       LMaximumHarmonics := Max(LMaximumHarmonics, Length(LShape.Recipe.Sine));
+      Inc(LPreparedCount);
+      ObserveStyleItems(AProgress, 'wave_trajectory_shapes', LPreparedCount, 0);
     end;
   end;
+  ReportWork(AProgress, 'wave_trajectory_shapes', wuItems, LPreparedCount, LPreparedCount);
   SetLength(LRecipes, LCount);
   SetLength(LPoints, LCount);
+  LCoefficients := 0;
+  ReportWork(AProgress, 'wave_trajectory_coefficients', wuItems, 0, 0);
+  ReportWork(AProgress, 'wave_trajectory_knots', wuItems, 0, LCount);
   for LKnot := 0 to LCount - 1 do
   begin
     LPoints[LKnot].Frame := LFrames[LKnot];
@@ -2098,83 +2538,104 @@ begin
           LValue := LValue + LWeight * LPrepared[LSource].Recipes[LIndex + 1].Sine[LHarmonic];
         end;
         LRecipe.Sine[LHarmonic] := LValue;
+        Inc(LCoefficients);
+        ObserveStyleItems(AProgress, 'wave_trajectory_coefficients', LCoefficients, 0);
       end;
       LShape := FactorWavetableMagnitudes(LRecipe);
       for LHarmonic := 0 to LMaximumHarmonics - 1 do
       begin
         LRecipes[LKnot].Sine[LHarmonic] := LRecipes[LKnot].Sine[LHarmonic] +
           LShape.Recipe.Sine[LHarmonic] * (FTimbreWeights[LSource] / LTotal);
+        Inc(LCoefficients);
+        ObserveStyleItems(AProgress, 'wave_trajectory_coefficients', LCoefficients, 0);
       end;
     end;
+    ReportWork(AProgress, 'wave_trajectory_knots', wuItems, LKnot + 1, LCount);
   end;
+  ReportWork(AProgress, 'wave_trajectory_coefficients', wuItems,
+    LCoefficients, LCoefficients);
+  ReportWork(AProgress, 'wave_timbre_factory', wuItems, 0, 1);
   LCurve := TAutomationCurve.Create(LPoints);
   try
     Result := TWavetableSourceFactory.CreateMagnitudeTrajectory(LRecipes, LCurve, ATrajectoryRms);
   finally
     LCurve.Free;
   end;
+  CompleteOwnedStep(Result, AProgress, 'wave_timbre_factory');
 end;
 
-function TWaveStyleProfile.CopyContext: TContextProfile;
+function TWaveStyleProfile.CopyContext(
+  const AProgress: TWorkProgressCallback): TContextProfile;
 begin
+  ReportWork(AProgress, 'wave_context_copy', wuItems, 0, 1);
   Result := DecodeContextProfile(EncodeContextProfile(FContext));
+  CompleteOwnedStep(Result, AProgress, 'wave_context_copy');
 end;
 
-function TWaveStyleProfile.CopyRhythmModel: TWfcSequenceModel;
+function TWaveStyleProfile.CopyRhythmModel(
+  const AProgress: TWorkProgressCallback): TWfcSequenceModel;
 begin
-  Result := DecodeWfcSequenceText(EncodeWfcSequenceText(FModel));
+  Result := CopyStyleModel(FModel, AProgress);
 end;
 
-function TWaveStyleProfile.CopyIntensityModel: TWfcSequenceModel;
+function TWaveStyleProfile.CopyIntensityModel(
+  const AProgress: TWorkProgressCallback): TWfcSequenceModel;
 begin
   if not FHasDynamics then
   begin
     raise EAudio.Create('Style has no measured onset dynamics');
   end;
-  Result := DecodeWfcSequenceText(EncodeWfcSequenceText(FJointModel));
+  Result := CopyStyleModel(FJointModel, AProgress);
 end;
 
-function TWaveStyleProfile.CopyPitchModel: TWfcSequenceModel;
+function TWaveStyleProfile.CopyPitchModel(
+  const AProgress: TWorkProgressCallback): TWfcSequenceModel;
 begin
   if not FHasPitch then
   begin
     raise EAudio.Create('Style has no admitted monophonic pitch model');
   end;
-  Result := DecodeWfcSequenceText(EncodeWfcSequenceText(FPitchModel));
+  Result := CopyStyleModel(FPitchModel, AProgress);
 end;
 
-function TWaveStyleProfile.CopyPitchRhythmModel: TWfcSequenceModel;
+function TWaveStyleProfile.CopyPitchRhythmModel(
+  const AProgress: TWorkProgressCallback): TWfcSequenceModel;
 begin
   if not FHasPitchRhythm then
   begin
     raise EAudio.Create('Observed pitch/rhythm requires identical source weights in both dimensions');
   end;
-  Result := DecodeWfcSequenceText(EncodeWfcSequenceText(FPitchRhythmModel));
+  Result := CopyStyleModel(FPitchRhythmModel, AProgress);
 end;
 
-function TWaveStyleProfile.CopyDurationModel: TWfcSequenceModel;
+function TWaveStyleProfile.CopyDurationModel(
+  const AProgress: TWorkProgressCallback): TWfcSequenceModel;
 begin
   if not FHasDuration then
   begin
     raise EAudio.Create('Duration generation requires dense evidence for every active pitch source');
   end;
-  Result := DecodeWfcSequenceText(EncodeWfcSequenceText(FDurationModel));
+  Result := CopyStyleModel(FDurationModel, AProgress);
 end;
 
-function TWaveStyleProfile.CopyDurationTrack(const AIndex: Integer): TPitchTrack;
+function TWaveStyleProfile.CopyDurationTrack(const AIndex: Integer;
+  const AProgress: TWorkProgressCallback): TPitchTrack;
 var
   LEvidence: TRhythmStyleEvidence;
 begin
-  LEvidence := EvidenceAt(AIndex);
+  LEvidence := EvidenceAt(AIndex, AProgress);
   if LEvidence.Duration.WindowFrames = 0 then
   begin
     raise EAudio.Create('Source has no dense duration evidence');
   end;
+  ReportWork(AProgress, 'wave_duration_track', wuItems, 0, 1);
   Result := TPitchTrack.CreateFromEvidence(LEvidence.Duration,
     LEvidence.Source.SampleRate, LEvidence.Source.Channels, LEvidence.Source.FrameCount);
+  CompleteOwnedStep(Result, AProgress, 'wave_duration_track');
 end;
 
-function TWaveStyleProfile.CopyTimedDurationSpans(const AIndex: Integer): TTimedPitchSpans;
+function TWaveStyleProfile.CopyTimedDurationSpans(const AIndex: Integer;
+  const AProgress: TWorkProgressCallback): TTimedPitchSpans;
 var
   LEvidence: TRhythmStyleEvidence;
   LTrack: TPitchTrack;
@@ -2187,23 +2648,31 @@ var
   LFirst: Integer;
   LLast: Integer;
 begin
-  LEvidence := EvidenceAt(AIndex);
-  LTrack := CopyDurationTrack(AIndex);
+  LEvidence := EvidenceAt(AIndex, AProgress);
+  LTrack := CopyDurationTrack(AIndex, AProgress);
   LClock := nil;
   LGrid := nil;
   try
-    LClock := CreateStyleSourceClock(LEvidence, FContext.TicksPerQuarter, FContext.StepTicks);
+    LClock := CreateStyleSourceClock(LEvidence, FContext.TicksPerQuarter,
+      FContext.StepTicks, AProgress);
+    ReportWork(AProgress, 'wave_duration_spans', wuItems, 0, 1);
     LSpans := LTrack.TimedSpans(LClock, LEvidence.SourceFrameOffset,
       LEvidence.SourceStartTick, LClock.LengthTicks);
+    ReportWork(AProgress, 'wave_duration_spans', wuItems, 1, 1);
     if LEvidence.DurationArticulateOnsets then
     begin
-      LGrid := CreateStyleSourceGrid(LEvidence, FContext.TicksPerQuarter, FContext.StepTicks);
+      LGrid := CreateStyleSourceGrid(LEvidence, FContext.TicksPerQuarter,
+        FContext.StepTicks, AProgress);
       LFirst := LGrid.BoundaryAt(0);
       LLast := LGrid.BoundaryAt(LGrid.CellCount);
       SetLength(LAttacks, Length(LEvidence.OnsetFrames));
       LCount := 0;
+      ObserveStyleItems(AProgress, 'wave_duration_onsets', 0,
+        Length(LEvidence.OnsetFrames));
       for LOnset := 0 to High(LEvidence.OnsetFrames) do
       begin
+        ObserveStyleItems(AProgress, 'wave_duration_onsets', LOnset,
+          Length(LEvidence.OnsetFrames));
         if (LEvidence.OnsetFrames[LOnset] < LFirst) or
           (LEvidence.OnsetFrames[LOnset] >= LLast) then
         begin
@@ -2214,8 +2683,12 @@ begin
           LEvidence.Source.SampleRate, 1);
         Inc(LCount);
       end;
+      ObserveStyleItems(AProgress, 'wave_duration_onsets', Length(LEvidence.OnsetFrames),
+        Length(LEvidence.OnsetFrames));
       SetLength(LAttacks, LCount);
+      ReportWork(AProgress, 'wave_duration_articulation', wuItems, 0, 1);
       LSpans := RearticulatePitchSpans(LSpans, LAttacks);
+      ReportWork(AProgress, 'wave_duration_articulation', wuItems, 1, 1);
     end;
     Result := LSpans;
   finally
@@ -2230,36 +2703,44 @@ begin
   Result := FContext.TicksPerQuarter;
 end;
 
-function TWaveStyleProfile.PitchNotesAt(const AIndex: Integer): TPitchNotes;
+function TWaveStyleProfile.PitchNotesAt(const AIndex: Integer;
+  const AProgress: TWorkProgressCallback): TPitchNotes;
 var
   LEvidence: TRhythmStyleEvidence;
   LGrid: TMusicGridFrames;
 begin
-  LEvidence := EvidenceAt(AIndex);
-  LGrid := CreateStyleSourceGrid(LEvidence, FContext.TicksPerQuarter, FContext.StepTicks);
+  LEvidence := EvidenceAt(AIndex, AProgress);
+  LGrid := CreateStyleSourceGrid(LEvidence, FContext.TicksPerQuarter,
+    FContext.StepTicks, AProgress);
   try
+    ReportWork(AProgress, 'wave_pitch_admission', wuItems, 0, 1);
     Result := AdmitPitchCells(LEvidence.Pitch, LGrid, LEvidence.Source.Channels);
+    ReportWork(AProgress, 'wave_pitch_admission', wuItems, 1, 1);
   finally
     LGrid.Free;
   end;
 end;
 
-function TWaveStyleProfile.IntensityPatternAt(const AIndex: Integer): String;
+function TWaveStyleProfile.IntensityPatternAt(const AIndex: Integer;
+  const AProgress: TWorkProgressCallback): String;
 begin
   if (AIndex < 0) or (AIndex >= SourceCount) then
   begin
     raise EAudio.Create('Intensity source index outside style');
   end;
+  ReportWork(AProgress, 'wave_intensity_admission', wuItems, 0, 1);
   Result := OnsetIntensityPattern(FAdmissions[AIndex], FEvidence[AIndex].Dynamics);
+  ReportWork(AProgress, 'wave_intensity_admission', wuItems, 1, 1);
 end;
 
-function TWaveStyleProfile.Encode: TAudioBytes;
+function TWaveStyleProfile.Encode(
+  const AProgress: TWorkProgressCallback): TAudioBytes;
 begin
-  Result := Copy(FBytes);
+  Result := CopyStyleBytes(FBytes, 0, Length(FBytes), AProgress, 'wave_archive_copy');
 end;
 
 function DecodeAt(const ABytes: TAudioBytes; const ADepth: Integer;
-  var ANodes: Integer): TWaveStyleProfile;
+  var ANodes: Integer; const AProgress: TWorkProgressCallback): TWaveStyleProfile;
 var
   LCursor: TStyleCursor;
   LHash: String;
@@ -2298,15 +2779,15 @@ begin
   begin
     raise EAudio.Create('Style payload/ancestry exceeds bounds');
   end;
+  ReportWork(AProgress, 'wave_archive_nodes', wuItems, ANodes, 0);
   SetLength(LHash, 64);
   Move(ABytes[Length(ABytes) - 64], LHash[1], 64);
-  if LHash <> Sha256Bytes(Copy(ABytes, 0, Length(ABytes) - 64)) then
+  if LHash <> HashStyleBytes(CopyStyleBytes(ABytes, 0, Length(ABytes) - 64,
+    AProgress, 'wave_archive_copy'), AProgress) then
   begin
     raise EAudio.Create('Style payload digest mismatch');
   end;
-  LCursor.Bytes := ABytes;
-  LCursor.Offset := 0;
-  LCursor.Limit := Length(ABytes) - 64;
+  LCursor.Initialize(ABytes, AProgress);
   if LCursor.Number <> StyleMagic then
   begin
     raise EAudio.Create('Unsupported development style archive; regenerate from source evidence');
@@ -2567,7 +3048,7 @@ begin
           LEvidence.TimbreTrajectory.Knots[LIndex] := ReadHarmonicEvidence(LCursor);
         end;
       end;
-      LResult := TWaveStyleProfile.CreateSource(LContext, LEvidence, LOrder);
+      LResult := TWaveStyleProfile.CreateSource(LContext, LEvidence, LOrder, AProgress);
     end
     else if LKind = 1 then
     begin
@@ -2581,11 +3062,11 @@ begin
       LRightTimbreWeight := LCursor.Number;
       LLeftEnvelopeWeight := LCursor.Number;
       LRightEnvelopeWeight := LCursor.Number;
-      LLeft := DecodeAt(LCursor.Blob(MaximumStyleBytes), ADepth + 1, ANodes);
-      LRight := DecodeAt(LCursor.Blob(MaximumStyleBytes), ADepth + 1, ANodes);
+      LLeft := DecodeAt(LCursor.Blob(MaximumStyleBytes), ADepth + 1, ANodes, AProgress);
+      LRight := DecodeAt(LCursor.Blob(MaximumStyleBytes), ADepth + 1, ANodes, AProgress);
       LResult := TWaveStyleProfile.CreateBlendLayers(LLeft, LRight,
         LKeySide, LTempoSide, LLeftWeight, LRightWeight, LLeftPitchWeight, LRightPitchWeight,
-        LLeftTimbreWeight, LRightTimbreWeight, LLeftEnvelopeWeight, LRightEnvelopeWeight);
+        LLeftTimbreWeight, LRightTimbreWeight, LLeftEnvelopeWeight, LRightEnvelopeWeight, AProgress);
       if LResult.Order <> LOrder then
       begin
         raise EAudio.Create('Style blend order disagrees with parents');
@@ -2597,7 +3078,7 @@ begin
       begin
         raise EAudio.Create('Unknown style node kind');
       end;
-      LLeft := DecodeAt(LCursor.Blob(MaximumStyleBytes), ADepth + 1, ANodes);
+      LLeft := DecodeAt(LCursor.Blob(MaximumStyleBytes), ADepth + 1, ANodes, AProgress);
       LPreferences := Default(TStyleGenerationPreferences);
       for LProvider := Low(LProvider) to High(LProvider) do
       begin
@@ -2613,7 +3094,7 @@ begin
           LPreferences[LProvider][LIndex].Multiplier := LCursor.Number;
         end;
       end;
-      LResult := TWaveStyleProfile.CreatePreferred(LLeft, LPreferences);
+      LResult := TWaveStyleProfile.CreatePreferred(LLeft, LPreferences, AProgress);
       if LResult.Order <> LOrder then
       begin
         raise EAudio.Create('Preferred style order disagrees with parent');
@@ -2633,10 +3114,11 @@ begin
     end;
     if (LCursor.Offset <> LCursor.Limit) or
       (LModelText <> EncodeWfcSequenceText(LResult.FModel)) or
-      (LResult.Identity <> Sha256Bytes(ABytes)) then
+      (LResult.Identity <> HashStyleBytes(ABytes, AProgress)) then
     begin
       raise EAudio.Create('Style evidence/model/canonical archive replay differs');
     end;
+    LCursor.Complete;
     Result := LResult;
     LResult := nil;
   finally
@@ -2647,12 +3129,22 @@ begin
   end;
 end;
 
-function DecodeWaveStyle(const ABytes: TAudioBytes): TWaveStyleProfile;
+function DecodeWaveStyle(const ABytes: TAudioBytes;
+  const AProgress: TWorkProgressCallback): TWaveStyleProfile;
 var
   LNodes: Integer;
+  LStyle: TWaveStyleProfile;
 begin
   LNodes := 0;
-  Result := DecodeAt(ABytes, 1, LNodes);
+  ReportWork(AProgress, 'wave_archive_nodes', wuItems, 0, 0);
+  LStyle := DecodeAt(ABytes, 1, LNodes, AProgress);
+  try
+    ReportWork(AProgress, 'wave_archive_nodes', wuItems, LNodes, LNodes);
+    Result := LStyle;
+    LStyle := nil;
+  finally
+    LStyle.Free;
+  end;
 end;
 
 end.

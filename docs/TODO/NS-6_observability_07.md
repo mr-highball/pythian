@@ -7,6 +7,16 @@
 Expose measured work and cancellation through the existing retained wave-style
 source/preference/blend/archive API and its maintained CLI. Keep learning,
 control separation, provenance, current archive bytes and audio unchanged.
+Raw pitch-cell/onset-dynamics measurement before profile construction has its
+own [required owner](NS-6_observability_10.md); callbacks here do not certify it.
+
+Local candidate evidence (2026-10-27): checked Win32/Win64 each pass 8,303
+focused checks, 57 stages and 26 abort/retry selections, existing wave-style and
+pitch consumers, with zero leaks. Eighteen separately compiled immediate-prior
+artifacts and eight CLI stdout streams match on each target, including strict
+onset admission, dense-duration learning and verified generated audio. Borrowed
+evidence is replayed after cancellation. Keep this task open pending published
+clean Ubuntu integration. See the [coverage and residual limits](../OBSERVABILITY.md#retained-wave-style-profiles).
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
 Selected 2026-10-27 from observability_04's existing AC1 and associated AC5.
@@ -40,6 +50,18 @@ invented totals or dependency edits. This earns no musical credit.
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss candidate: owned source/context-cell, rhythm/intensity
+  token, weighted-sample, preference, timbre/trajectory and archive loops now
+  report real work; callback state stays local. Parent cursors are initialized,
+  and late callbacks free unpublished returned objects. Native CLI forwards
+  retained-profile callbacks and the existing dense pitch tracker, with progress
+  on stderr and success after writing output. Draft QA caught and repaired an
+  output-count variable reuse; selected and admitted onset counts stay distinct.
+  Fixture compile errors used nonexistent `Channel`/`SpanCount` members, and an
+  authored harmonic interval lacked four periods; those are repaired with the
+  original logs preserved under E-drive `runs/wave-style-progress-20261027-boss`.
+  Raw source pitch-cell/dynamics measurement is the distinct linked task10 gap;
+  context/provider internals retain04. No companion source was changed.
 - 2026-10-27, Big Boss selected after both prerequisites pass: deliver AC1–3
   through optional callbacks on source/preference/blend, archive and parent
   APIs, forwarded by the maintained CLI. Owned validation, source/run/token

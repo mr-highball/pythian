@@ -54,9 +54,13 @@ uses
   pythian.wfc.grid,
   pythian.wfc.performance,
   pythian.tools.files,
+  pythian.tools.progress,
   pythian.tools.events,
   wfc_sequence,
   wfc_sequence_text;
+
+var
+  GProgress: TConsoleWorkProgress;
 
 procedure ProtectOutput(const AOutput, AInput: String);
 begin
@@ -94,6 +98,7 @@ var
   LPlan: TOnsetEventPlan;
   LIndex: Integer;
   LCount: Integer;
+  LAccepted: Integer;
   LOnsetOptions: TOnsetEventOptions;
   LDurationTrack: TPitchTrack;
   LGrid: TMusicGridFrames;
@@ -225,7 +230,7 @@ begin
       end;
     end;
     SetLength(LEvidence.SourceClock, LClockCount);
-    LGrid := CreateStyleSourceGrid(LEvidence, LContext.TicksPerQuarter, LContext.StepTicks);
+    LGrid := CreateStyleSourceGrid(LEvidence, LContext.TicksPerQuarter, LContext.StepTicks, GProgress.Observe);
     LEvidence.MaximumErrorFrames := StrToInt(ParamStr(5));
     if (ParamStr(1) = 'learn-dynamics') or (ParamStr(1) = 'learn-pitch') or
       (ParamStr(1) = 'learn-duration') then
@@ -244,7 +249,7 @@ begin
     if ParamStr(1) = 'learn-duration' then
     begin
       LDurationTrack := TPitchTrack.Create(LSource, StrToInt(ParamStr(7)),
-        DefaultPitchTrackOptions(LSource.SampleRate), LWindowFrames);
+        DefaultPitchTrackOptions(LSource.SampleRate), LWindowFrames, GProgress.Observe);
       LEvidence.Duration := LDurationTrack.CopyEvidence;
       LEvidence.DurationArticulateOnsets := LUseDurationOnsets;
       LEvidence.Policy := LEvidence.Policy +
@@ -255,10 +260,11 @@ begin
           '; explicit source-onset ownership inside known pitch spans; source-clock PPQ attack boundaries; no new notes in unknown/silence';
       end;
     end;
-    LStyle := TWaveStyleProfile.CreateSource(LContext, LEvidence);
-    WriteFileBytes(ParamStr(6), LStyle.Encode);
+    LStyle := TWaveStyleProfile.CreateSource(LContext, LEvidence, 3, GProgress.Observe);
+    LAccepted := LStyle.AdmissionAt(0, GProgress.Observe).Accepted;
+    WriteFileBytes(ParamStr(6), LStyle.Encode(GProgress.Observe));
     WriteLn('Saved WAV rhythm/context style ', LStyle.Identity, '; selected source onsets ', LCount,
-      '; admitted grid onsets ', LStyle.AdmissionAt(0).Accepted);
+      '; admitted grid onsets ', LAccepted);
   finally
     LGrid.Free;
     LDurationTrack.Free;
@@ -278,7 +284,7 @@ begin
   begin
     Exit;
   end;
-  LPreferred := TWaveStyleProfile.CreatePreferred(AResult, AOriginal.CopyGenerationPreferences);
+  LPreferred := TWaveStyleProfile.CreatePreferred(AResult, AOriginal.CopyGenerationPreferences(GProgress.Observe), GProgress.Observe);
   AResult.Free;
   AResult := LPreferred;
 end;
@@ -306,12 +312,12 @@ begin
   LFormat := DefaultFormatSettings;
   LFormat.DecimalSeparator := '.';
   try
-    LOriginal := DecodeWaveStyle(ReadFileBytes(ParamStr(2), MaximumStyleBytes));
+    LOriginal := DecodeWaveStyle(ReadFileBytes(ParamStr(2), MaximumStyleBytes), GProgress.Observe);
     if (LOriginal.Depth <> 1) or (LOriginal.SourceCount <> 1) then
     begin
       raise EAudio.Create('Timbre measurement augments a source style; measure before blending');
     end;
-    LEvidence := LOriginal.EvidenceAt(0);
+    LEvidence := LOriginal.EvidenceAt(0, GProgress.Observe);
     LClip := LoadWaveSource(ParamStr(3), LHash);
     if (LHash <> LEvidence.Source.Sha256) or
       (LClip.SampleRate <> LEvidence.Source.SampleRate) or
@@ -362,10 +368,10 @@ begin
       '; caller-selected interval; weighted magnitudes use zero sine phase; no role/envelope inference');
     LEvidence.Timbre.Fit := FitWavetableHarmonics(LClip, LEvidence.Timbre.StartFrame,
       LEvidence.Timbre.FrameCount, LEvidence.Timbre.Channel, StrToInt(ParamStr(7)), LFrequency);
-    LContext := LOriginal.CopyContext;
-    LResult := TWaveStyleProfile.CreateSource(LContext, LEvidence, LOriginal.Order);
+    LContext := LOriginal.CopyContext(GProgress.Observe);
+    LResult := TWaveStyleProfile.CreateSource(LContext, LEvidence, LOriginal.Order, GProgress.Observe);
     RetainPreferences(LResult, LOriginal);
-    WriteFileBytes(ParamStr(10), LResult.Encode);
+    WriteFileBytes(ParamStr(10), LResult.Encode(GProgress.Observe));
     WriteLn('Saved source timbre ', LResult.Identity, '; source ', LHash,
       '; frequency ', LFrequency:0:12, '; relative error ', LEvidence.Timbre.Fit.RelativeError:0:12);
   finally
@@ -404,12 +410,12 @@ begin
   LFormat := DefaultFormatSettings;
   LFormat.DecimalSeparator := '.';
   try
-    LOriginal := DecodeWaveStyle(ReadFileBytes(ParamStr(2), MaximumStyleBytes));
+    LOriginal := DecodeWaveStyle(ReadFileBytes(ParamStr(2), MaximumStyleBytes), GProgress.Observe);
     if (LOriginal.Depth <> 1) or (LOriginal.SourceCount <> 1) then
     begin
       raise EAudio.Create('Trajectory measurement augments a source style; measure before blending');
     end;
-    LEvidence := LOriginal.EvidenceAt(0);
+    LEvidence := LOriginal.EvidenceAt(0, GProgress.Observe);
     LClip := LoadWaveSource(ParamStr(3), LHash);
     if (LHash <> LEvidence.Source.Sha256) or
       (LClip.SampleRate <> LEvidence.Source.SampleRate) or
@@ -459,10 +465,10 @@ begin
       WriteLn('Knot ', LIndex, ': start=', LStart + LIndex * LHop,
         ' residual=', LEvidence.TimbreTrajectory.Knots[LIndex].Fit.RelativeError:0:12);
     end;
-    LContext := LOriginal.CopyContext;
-    LResult := TWaveStyleProfile.CreateSource(LContext, LEvidence, LOriginal.Order);
+    LContext := LOriginal.CopyContext(GProgress.Observe);
+    LResult := TWaveStyleProfile.CreateSource(LContext, LEvidence, LOriginal.Order, GProgress.Observe);
     RetainPreferences(LResult, LOriginal);
-    WriteFileBytes(ParamStr(13), LResult.Encode);
+    WriteFileBytes(ParamStr(13), LResult.Encode(GProgress.Observe));
     WriteLn('Saved source trajectory ', LResult.Identity, '; source ', LHash,
       '; knots ', LCount, '; note origin ', LEvidence.TimbreTrajectory.OriginFrame);
   finally
@@ -494,12 +500,12 @@ begin
   LFormat := DefaultFormatSettings;
   LFormat.DecimalSeparator := '.';
   try
-    LOriginal := DecodeWaveStyle(ReadFileBytes(ParamStr(2), MaximumStyleBytes));
+    LOriginal := DecodeWaveStyle(ReadFileBytes(ParamStr(2), MaximumStyleBytes), GProgress.Observe);
     if (LOriginal.Depth <> 1) or (LOriginal.SourceCount <> 1) then
     begin
       raise EAudio.Create('Envelope measurement augments a source style; measure before blending');
     end;
-    LEvidence := LOriginal.EvidenceAt(0);
+    LEvidence := LOriginal.EvidenceAt(0, GProgress.Observe);
     LClip := LoadWaveSource(ParamStr(3), LHash);
     if (LHash <> LEvidence.Source.Sha256) or
       (LClip.SampleRate <> LEvidence.Source.SampleRate) or
@@ -520,10 +526,10 @@ begin
     LTrace := TEnvelopeTrace.Create(LClip, LEvidence.Envelope.StartFrame,
       LEvidence.Envelope.FrameCount, LEvidence.Envelope.Channel, LEvidence.Envelope.WindowFrames);
     LEvidence.Envelope.RmsPoints := LTrace.CopyRmsPoints;
-    LContext := LOriginal.CopyContext;
-    LResult := TWaveStyleProfile.CreateSource(LContext, LEvidence, LOriginal.Order);
+    LContext := LOriginal.CopyContext(GProgress.Observe);
+    LResult := TWaveStyleProfile.CreateSource(LContext, LEvidence, LOriginal.Order, GProgress.Observe);
     RetainPreferences(LResult, LOriginal);
-    WriteFileBytes(ParamStr(10), LResult.Encode);
+    WriteFileBytes(ParamStr(10), LResult.Encode(GProgress.Observe));
     WriteLn('Saved envelope style ', LResult.Identity, '; RMS points ',
       Length(LEvidence.Envelope.RmsPoints), '; peak RMS ', LTrace.PeakRms:0:12);
   finally
@@ -567,27 +573,27 @@ begin
   LRight := nil;
   LStyle := nil;
   try
-    LLeft := DecodeWaveStyle(ReadFileBytes(ParamStr(2), MaximumStyleBytes));
-    LRight := DecodeWaveStyle(ReadFileBytes(ParamStr(3), MaximumStyleBytes));
+    LLeft := DecodeWaveStyle(ReadFileBytes(ParamStr(2), MaximumStyleBytes), GProgress.Observe);
+    LRight := DecodeWaveStyle(ReadFileBytes(ParamStr(3), MaximumStyleBytes), GProgress.Observe);
     if ALayers then
     begin
       LStyle := TWaveStyleProfile.CreateBlendLayers(LLeft, LRight,
         StrToInt(ParamStr(4)), StrToInt(ParamStr(5)), StrToInt(ParamStr(6)), StrToInt(ParamStr(7)),
         StrToInt(ParamStr(8)), StrToInt(ParamStr(9)), StrToInt(ParamStr(10)), StrToInt(ParamStr(11)),
-        LLeftEnvelopeWeight, LRightEnvelopeWeight);
+        LLeftEnvelopeWeight, LRightEnvelopeWeight, GProgress.Observe);
     end
     else if ADimensions then
     begin
       LStyle := TWaveStyleProfile.CreateBlendDimensions(LLeft, LRight,
         StrToInt(ParamStr(4)), StrToInt(ParamStr(5)), StrToInt(ParamStr(6)), StrToInt(ParamStr(7)),
-        StrToInt(ParamStr(8)), StrToInt(ParamStr(9)));
+        StrToInt(ParamStr(8)), StrToInt(ParamStr(9)), GProgress.Observe);
     end
     else
     begin
       LStyle := TWaveStyleProfile.CreateBlend(LLeft, LRight,
-        StrToInt(ParamStr(4)), StrToInt(ParamStr(5)), StrToInt(ParamStr(6)), StrToInt(ParamStr(7)));
+        StrToInt(ParamStr(4)), StrToInt(ParamStr(5)), StrToInt(ParamStr(6)), StrToInt(ParamStr(7)), GProgress.Observe);
     end;
-    WriteFileBytes(LOutput, LStyle.Encode);
+    WriteFileBytes(LOutput, LStyle.Encode(GProgress.Observe));
     WriteLn('Saved derived style ', LStyle.Identity, '; sources ', LStyle.SourceCount,
       '; depth ', LStyle.Depth, '; nodes ', LStyle.NodeCount);
   finally
@@ -641,10 +647,10 @@ begin
   end;
   LOutput := ParamStr(ParamCount);
   ProtectOutput(LOutput, ParamStr(2));
-  LSource := DecodeWaveStyle(ReadFileBytes(ParamStr(2), MaximumStyleBytes));
+  LSource := DecodeWaveStyle(ReadFileBytes(ParamStr(2), MaximumStyleBytes), GProgress.Observe);
   LResult := nil;
   try
-    LPreferences := LSource.CopyGenerationPreferences;
+    LPreferences := LSource.CopyGenerationPreferences(GProgress.Observe);
     if AClear then
     begin
       LPreferences[LProvider] := nil;
@@ -666,8 +672,8 @@ begin
       end;
       LPreferences[LProvider][LFound] := MakeLayerTokenPreference(ParamStr(4), StrToInt(ParamStr(5)));
     end;
-    LResult := TWaveStyleProfile.CreatePreferred(LSource, LPreferences);
-    WriteFileBytes(LOutput, LResult.Encode);
+    LResult := TWaveStyleProfile.CreatePreferred(LSource, LPreferences, GProgress.Observe);
+    WriteFileBytes(LOutput, LResult.Encode(GProgress.Observe));
     WriteLn('Saved generation preferences ', LResult.Identity, '; parent ', LSource.Identity);
   finally
     LResult.Free;
@@ -750,7 +756,7 @@ begin
   LGrid := nil;
   LPerformance := nil;
   try
-    LStyle := DecodeWaveStyle(ReadFileBytes(ParamStr(2), MaximumStyleBytes));
+    LStyle := DecodeWaveStyle(ReadFileBytes(ParamStr(2), MaximumStyleBytes), GProgress.Observe);
     if ParamStr(3) = 'performance' then
     begin
       LPerformanceOptions := DefaultStylePerformanceOptions;
@@ -834,13 +840,13 @@ begin
   LDurationTrack := nil;
   LDocument := TJSONObject.Create;
   try
-    LStyle := DecodeWaveStyle(ReadFileBytes(ParamStr(2), MaximumStyleBytes));
-    LContext := LStyle.CopyContext;
-    LModel := LStyle.CopyRhythmModel;
+    LStyle := DecodeWaveStyle(ReadFileBytes(ParamStr(2), MaximumStyleBytes), GProgress.Observe);
+    LContext := LStyle.CopyContext(GProgress.Observe);
+    LModel := LStyle.CopyRhythmModel(GProgress.Observe);
     LDocument.Add('contract', 'pythian.wave-style.v1');
     LDocument.Add('style_sha256', LStyle.Identity);
     LDocument.Add('archive_version', WaveStyleVersion);
-    LPreferences := LStyle.CopyGenerationPreferences;
+    LPreferences := LStyle.CopyGenerationPreferences(GProgress.Observe);
     LPreferenceRows := TJSONArray.Create;
     LDocument.Add('generation_preferences', LPreferenceRows);
     for LProvider := Low(LProvider) to High(LProvider) do
@@ -881,21 +887,21 @@ begin
     if LStyle.HasDuration then
     begin
       FreeAndNil(LModel);
-      LModel := LStyle.CopyDurationModel;
+      LModel := LStyle.CopyDurationModel(GProgress.Observe);
       LDocument.Add('duration_model', EncodeWfcSequenceText(LModel));
       LDocument.Add('duration_ticks_per_quarter', LStyle.DurationTicksPerQuarter);
       LDocument.Add('duration_policy', 'Dense pitch/silence/unknown spans use pitch-source weights; all active pitch sources require dense evidence normalized through their own source clocks to common PPQ ticks');
       FreeAndNil(LModel);
-      LModel := LStyle.CopyRhythmModel;
+      LModel := LStyle.CopyRhythmModel(GProgress.Observe);
     end;
     if LStyle.HasPitchRhythm then
     begin
       FreeAndNil(LModel);
-      LModel := LStyle.CopyPitchRhythmModel;
+      LModel := LStyle.CopyPitchRhythmModel(GProgress.Observe);
       LDocument.Add('pitch_rhythm_model', EncodeWfcSequenceText(LModel));
       LDocument.Add('pitch_rhythm_policy', 'Same-source aligned known-pitch runs; equal rhythm/pitch weights; no joining across unknowns or recordings');
       FreeAndNil(LModel);
-      LModel := LStyle.CopyRhythmModel;
+      LModel := LStyle.CopyRhythmModel(GProgress.Observe);
     end;
     if LStyle.HasDynamics then
     begin
@@ -903,20 +909,20 @@ begin
       LDocument.Add('intensity_policy', 'Per-source accepted-onset maximum RMS; four equal amplitude bands; zero token means no admitted onset');
       LModel.Free;
       LModel := nil;
-      LModel := LStyle.CopyIntensityModel;
+      LModel := LStyle.CopyIntensityModel(GProgress.Observe);
       LDocument.Add('joint_intensity_model', EncodeWfcSequenceText(LModel));
       FreeAndNil(LModel);
-      LModel := LStyle.CopyRhythmModel;
+      LModel := LStyle.CopyRhythmModel(GProgress.Observe);
     end;
     LDocument.Add('depth', LStyle.Depth);
     if LStyle.HasPitch then
     begin
       FreeAndNil(LModel);
-      LModel := LStyle.CopyPitchModel;
+      LModel := LStyle.CopyPitchModel(GProgress.Observe);
       LDocument.Add('pitch_model', EncodeWfcSequenceText(LModel));
       LDocument.Add('pitch_policy', 'Declared monophonic, absolute MIDI notes; unknowns split runs; independent models remain available; has_pitch_rhythm identifies optional observed coupling');
       FreeAndNil(LModel);
-      LModel := LStyle.CopyRhythmModel;
+      LModel := LStyle.CopyRhythmModel(GProgress.Observe);
     end;
     LDocument.Add('nodes', LStyle.NodeCount);
     if LStyle.Depth > 1 then
@@ -938,8 +944,8 @@ begin
     LDocument.Add('sources', LSources);
     for LIndex := 0 to LStyle.SourceCount - 1 do
     begin
-      LEvidence := LStyle.EvidenceAt(LIndex);
-      LAdmission := LStyle.AdmissionAt(LIndex);
+      LEvidence := LStyle.EvidenceAt(LIndex, GProgress.Observe);
+      LAdmission := LStyle.AdmissionAt(LIndex, GProgress.Observe);
       LRow := TJSONObject.Create;
       LSources.Add(LRow);
       LRow.Add('name', LEvidence.Source.Name);
@@ -1067,8 +1073,8 @@ begin
         LRow.Add('pitch_difference_threshold', LEvidence.Pitch.Options.DifferenceThreshold);
         LRow.Add('pitch_silence_ac_rms', LEvidence.Pitch.Options.SilenceRms);
         LRow.Add('pitch_maximum_cents', LEvidence.Pitch.MaximumCents);
-        LPitchNotes := LStyle.PitchNotesAt(LIndex);
-        LGrid := CreateStyleSourceGrid(LEvidence, LContext.TicksPerQuarter, LContext.StepTicks);
+        LPitchNotes := LStyle.PitchNotesAt(LIndex, GProgress.Observe);
+        LGrid := CreateStyleSourceGrid(LEvidence, LContext.TicksPerQuarter, LContext.StepTicks, GProgress.Observe);
         try
           LPitchSummary := SummarizePitchCells(LEvidence.Pitch, LGrid, LEvidence.Source.Channels);
         finally
@@ -1108,7 +1114,7 @@ begin
       if LEvidence.Duration.WindowFrames > 0 then
       begin
         LRow.Add('duration_articulate_onsets', LEvidence.DurationArticulateOnsets);
-        LDurationTrack := LStyle.CopyDurationTrack(LIndex);
+        LDurationTrack := LStyle.CopyDurationTrack(LIndex, GProgress.Observe);
         LRow.Add('duration_window_frames', LDurationTrack.WindowFrames);
         LRow.Add('duration_hop_frames', LDurationTrack.Options.HopFrames);
         LRow.Add('duration_channel', LDurationTrack.Channel);
@@ -1129,7 +1135,7 @@ begin
           LPitchRow.Add('start_frame', LSpans[LSpanIndex].StartFrame);
           LPitchRow.Add('end_frame', LSpans[LSpanIndex].EndFrame);
         end;
-        LTimedSpans := LStyle.CopyTimedDurationSpans(LIndex);
+        LTimedSpans := LStyle.CopyTimedDurationSpans(LIndex, GProgress.Observe);
         LPitchRows := TJSONArray.Create;
         LRow.Add('duration_timed_spans', LPitchRows);
         for LSpanIndex := 0 to High(LTimedSpans) do
@@ -1146,7 +1152,7 @@ begin
       if LEvidence.Dynamics.WindowFrames > 0 then
       begin
         LRow.Add('dynamics_window_frames', LEvidence.Dynamics.WindowFrames);
-        LRow.Add('intensity_pattern', LStyle.IntensityPatternAt(LIndex));
+        LRow.Add('intensity_pattern', LStyle.IntensityPatternAt(LIndex, GProgress.Observe));
       end;
       LOnsets := TJSONArray.Create;
       LRow.Add('onsets', LOnsets);
@@ -1176,77 +1182,82 @@ begin
 end;
 
 begin
+  GProgress := TConsoleWorkProgress.Create;
   try
-    if ((ParamStr(1) = 'learn') or (ParamStr(1) = 'learn-dynamics')) and (ParamCount in [6, 7]) then
-    begin
-      Learn;
-    end
-    else if ((ParamStr(1) = 'learn-pitch') or (ParamStr(1) = 'learn-duration')) and
-      (ParamCount >= 8) and (ParamCount <= 12) and
-      (ParamStr(8) = '--monophonic') then
-    begin
-      Learn;
-    end
-    else if (ParamStr(1) = 'learn-trajectory') and (ParamCount = 13) then
-    begin
-      LearnTrajectory;
-    end
-    else if (ParamStr(1) = 'learn-timbre') and (ParamCount = 10) then
-    begin
-      LearnTimbre;
-    end
-    else if (ParamStr(1) = 'learn-envelope') and (ParamCount = 10) then
-    begin
-      LearnEnvelope;
-    end
-    else if (ParamStr(1) = 'blend-layers') and ((ParamCount = 12) or (ParamCount = 14)) then
-    begin
-      Blend(True, True);
-    end
-    else if (ParamStr(1) = 'blend') and (ParamCount = 8) then
-    begin
-      Blend(False);
-    end
-    else if (ParamStr(1) = 'blend-dimensions') and (ParamCount = 10) then
-    begin
-      Blend(True);
-    end
-    else if (ParamStr(1) = 'prefer') and (ParamCount = 6) then
-    begin
-      Prefer(False);
-    end
-    else if (ParamStr(1) = 'clear-preferences') and (ParamCount = 4) then
-    begin
-      Prefer(True);
-    end
-    else if ParamStr(1) = 'providers' then
-    begin
-      InspectProviders;
-    end
-    else if (ParamStr(1) = 'inspect') and (ParamCount = 3) then
-    begin
-      Inspect;
-    end
-    else
-    begin
-      raise EAudio.Create('Usage: pythian.style learn|learn-dynamics CONTEXT.pcp SOURCE.wav ONSETS.json MAX_ERROR_FRAMES OUTPUT.pys [PROVENANCE]; ' +
-        'learn-pitch|learn-duration CONTEXT.pcp SOURCE.wav ONSETS.json MAX_ERROR_FRAMES OUTPUT.pys CHANNEL --monophonic [--articulate-onsets (duration only)] [--window-frames N (duration only)] [PROVENANCE]; ' +
-        'blend LEFT.pys RIGHT.pys KEY_SIDE TEMPO_SIDE LEFT_WEIGHT RIGHT_WEIGHT OUTPUT.pys; ' +
-        'learn-timbre SOURCE_STYLE.pys SOURCE.wav START COUNT CHANNEL HARMONICS HZ|auto[:PITCH_FRAMES] MAX_ERROR OUTPUT.pys; ' +
-        'learn-trajectory SOURCE_STYLE.pys SOURCE.wav ORIGIN START HOP WINDOW KNOTS CHANNEL HARMONICS HZ MAX_ERROR OUTPUT.pys; ' +
-        'learn-envelope SOURCE_STYLE.pys SOURCE.wav START COUNT GATE CHANNEL WINDOW MAX_TAIL_RATIO OUTPUT.pys; ' +
-        'blend-layers LEFT.pys RIGHT.pys KEY_SIDE TEMPO_SIDE LEFT_RHYTHM RIGHT_RHYTHM LEFT_PITCH RIGHT_PITCH LEFT_TIMBRE RIGHT_TIMBRE [LEFT_ENVELOPE RIGHT_ENVELOPE] OUTPUT.pys; ' +
-        'blend-dimensions LEFT.pys RIGHT.pys KEY_SIDE TEMPO_SIDE LEFT_RHYTHM RIGHT_RHYTHM LEFT_PITCH RIGHT_PITCH OUTPUT.pys; ' +
-        'prefer INPUT.pys PROVIDER TOKEN MULTIPLIER OUTPUT.pys; ' +
-        'clear-preferences INPUT.pys PROVIDER OUTPUT.pys; inspect INPUT.pys OUTPUT.json; ' +
-        'providers INPUT.pys grid|coupled CELLS; ' +
-        'providers INPUT.pys performance SPANS KEY_CELLS TEMPO_CELLS');
+    try
+      if ((ParamStr(1) = 'learn') or (ParamStr(1) = 'learn-dynamics')) and (ParamCount in [6, 7]) then
+      begin
+        Learn;
+      end
+      else if ((ParamStr(1) = 'learn-pitch') or (ParamStr(1) = 'learn-duration')) and
+        (ParamCount >= 8) and (ParamCount <= 12) and
+        (ParamStr(8) = '--monophonic') then
+      begin
+        Learn;
+      end
+      else if (ParamStr(1) = 'learn-trajectory') and (ParamCount = 13) then
+      begin
+        LearnTrajectory;
+      end
+      else if (ParamStr(1) = 'learn-timbre') and (ParamCount = 10) then
+      begin
+        LearnTimbre;
+      end
+      else if (ParamStr(1) = 'learn-envelope') and (ParamCount = 10) then
+      begin
+        LearnEnvelope;
+      end
+      else if (ParamStr(1) = 'blend-layers') and ((ParamCount = 12) or (ParamCount = 14)) then
+      begin
+        Blend(True, True);
+      end
+      else if (ParamStr(1) = 'blend') and (ParamCount = 8) then
+      begin
+        Blend(False);
+      end
+      else if (ParamStr(1) = 'blend-dimensions') and (ParamCount = 10) then
+      begin
+        Blend(True);
+      end
+      else if (ParamStr(1) = 'prefer') and (ParamCount = 6) then
+      begin
+        Prefer(False);
+      end
+      else if (ParamStr(1) = 'clear-preferences') and (ParamCount = 4) then
+      begin
+        Prefer(True);
+      end
+      else if ParamStr(1) = 'providers' then
+      begin
+        InspectProviders;
+      end
+      else if (ParamStr(1) = 'inspect') and (ParamCount = 3) then
+      begin
+        Inspect;
+      end
+      else
+      begin
+        raise EAudio.Create('Usage: pythian.style learn|learn-dynamics CONTEXT.pcp SOURCE.wav ONSETS.json MAX_ERROR_FRAMES OUTPUT.pys [PROVENANCE]; ' +
+          'learn-pitch|learn-duration CONTEXT.pcp SOURCE.wav ONSETS.json MAX_ERROR_FRAMES OUTPUT.pys CHANNEL --monophonic [--articulate-onsets (duration only)] [--window-frames N (duration only)] [PROVENANCE]; ' +
+          'blend LEFT.pys RIGHT.pys KEY_SIDE TEMPO_SIDE LEFT_WEIGHT RIGHT_WEIGHT OUTPUT.pys; ' +
+          'learn-timbre SOURCE_STYLE.pys SOURCE.wav START COUNT CHANNEL HARMONICS HZ|auto[:PITCH_FRAMES] MAX_ERROR OUTPUT.pys; ' +
+          'learn-trajectory SOURCE_STYLE.pys SOURCE.wav ORIGIN START HOP WINDOW KNOTS CHANNEL HARMONICS HZ MAX_ERROR OUTPUT.pys; ' +
+          'learn-envelope SOURCE_STYLE.pys SOURCE.wav START COUNT GATE CHANNEL WINDOW MAX_TAIL_RATIO OUTPUT.pys; ' +
+          'blend-layers LEFT.pys RIGHT.pys KEY_SIDE TEMPO_SIDE LEFT_RHYTHM RIGHT_RHYTHM LEFT_PITCH RIGHT_PITCH LEFT_TIMBRE RIGHT_TIMBRE [LEFT_ENVELOPE RIGHT_ENVELOPE] OUTPUT.pys; ' +
+          'blend-dimensions LEFT.pys RIGHT.pys KEY_SIDE TEMPO_SIDE LEFT_RHYTHM RIGHT_RHYTHM LEFT_PITCH RIGHT_PITCH OUTPUT.pys; ' +
+          'prefer INPUT.pys PROVIDER TOKEN MULTIPLIER OUTPUT.pys; ' +
+          'clear-preferences INPUT.pys PROVIDER OUTPUT.pys; inspect INPUT.pys OUTPUT.json; ' +
+          'providers INPUT.pys grid|coupled CELLS; ' +
+          'providers INPUT.pys performance SPANS KEY_CELLS TEMPO_CELLS');
+      end;
+    except
+      on LException: Exception do
+      begin
+        WriteLn(StdErr, LException.ClassName, ': ', LException.Message);
+        ExitCode := 1;
+      end;
     end;
-  except
-    on LException: Exception do
-    begin
-      WriteLn(StdErr, LException.ClassName, ': ', LException.Message);
-      Halt(1);
-    end;
+  finally
+    GProgress.Free;
   end;
 end.

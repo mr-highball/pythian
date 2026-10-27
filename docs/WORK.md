@@ -12,6 +12,48 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Wave-profile candidate verified locally - 2026-10-27
+
+The preceding GitHub-only turn revalidated status and closed no criterion; it
+did not reset a batch or scientific counter. Big Boss continued the existing
+[wave-profile batch](TODO/NS-6_observability_07.md) AC1–3 solo, under the supplied
+operator override. Criterion/deliverable: optional callbacks through actual
+retained learning, preference/blend, detached copies, parents and archives, with
+the maintained CLI. Stop conditions remain changed math/schema/controls, false
+counts, unpublished-object leaks or a distinct required gap.
+
+The candidate now reports owned cells/tokens/coefficients/lookups, weighted
+samples, archive bytes/numeric fields/hashes and ancestry visits. Returned
+objects remain owned until their final callback succeeds. The CLI sends work
+to stderr and retains publication-time success. Final checked Win32/Win64 each
+pass **8,303 focused checks, 57 stages and 26 abort/retry selections**, plus the
+existing wave suite and 56 pitch regression checks, all with zero leaks.
+Actual source records and returned parent evidence are replayed after the aborts,
+beyond checking cached archive identities. Models/archives and stationary/
+trajectory synthesized samples agree for nil/observed execution. All **18
+same-target immediate-prior artifacts** and **eight actual CLI stdout streams**
+match separately compiled `5b01cc9` sources. These include strict admission
+(seven selected onsets, zero accepted), dense-duration learning and an actual
+verified rendered WAV. No cross-target PCM identity is inferred.
+
+Call intervals and residual limits are in [observability](OBSERVABILITY.md#retained-wave-style-profiles).
+The fixture/CLI evidence, repaired draft failures and verified input copies are
+under E-drive `build/tests/runs/wave-style-progress-20261027-boss*`. The maintained
+build registers the new fixture. Keep task07 open until its published clean
+Ubuntu consumer is verified; no musical or phone acceptance is earned.
+
+The actual CLI review exposed unobserved primary pitch-cell and onset-dynamics
+measurement before the retained profile. Big Boss stopped expansion and created
+[observability_10](TODO/NS-6_observability_10.md), preserving the gap outside
+task07's profile scope. The existing dense pitch tracker callback is forwarded.
+No generic WFC defect is demonstrated. Accounting is **54 open / 68 DONE, 122
+total**, NS-6 16 open; percentages stay **100/90/25/70/14/54**, **52.45/47.55**.
+This adds no credit and resets no stopped scientific family. Entry delivery
+nonclosing count was 0; the same batch awaits published integration.
+The retained repetition request was freshly confirmed in the waiting list at
+revision0. No answer, source audio or deployed service changed, and no QA
+browser or audio was started. The full goal remains active.
+
 ## Binary fields accepted; wave-style work selected - 2026-10-27
 
 The preceding goal turn is progress: `f973df7` consolidated primary scalar code
