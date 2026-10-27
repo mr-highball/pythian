@@ -12,6 +12,53 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Shared corpus intake repair accepted - 2026-10-27
+
+The preceding goal turn changed authoritative goal/work records, but closed no
+musical criterion. Big Boss's bounded follow-through first checked the missing
+quiet-tail evidence. The TU-Note publisher's manual transient/silence labels
+identify a possible release candidate, but do not establish exact-window quiet
+audibility. Spike and Spiegel independently identified that limitation. No
+archive/audio was acquired, no inference ran and no failed source family resumed;
+[notes_05](TODO/NS-3_notes_05.md) remains reference-blocked. This assessment does
+not earn musical credit or reset its stopped-source counters.
+
+Selected repair: [portability_02](TODO/DONE/NS-6_portability_02.md), all three
+engineering criteria. Deliverable: one primary exact Unicode/UTF-8 text contract
+and the unchanged shared declaration/accounting implementation running natively
+and in pas2js. Closing evidence: valid-text identity and byte budgets, original
+mapping/duplicate/exposure/ownership and safe-integer parity, plus the maintained
+native file/WFC consumer. Stop at a lossy identity, accounting fork or unrelated
+analyzer change. This is required library reuse, without vocabulary/style credit.
+
+The first native compatibility probes exposed a real bug: the old text
+round-trip accepted malformed UTF-8, including encoded surrogates and overlong
+NUL. Big Boss's explicit repair decision follows the user's removal of inferior
+behavior/no backwards compatibility direction. Strict malformed-byte rejection
+is intentional; valid Unicode scalars, noncharacters and exact unnormalized
+identity remain. The primary text unit also fixes cross-target BMP/astral sort
+order. Intake preserves native ASCII-only edge-whitespace rejection rather than
+adopting JavaScript's broader Unicode trim behavior. The acoustic corpus delegates
+to the primary validator; intake no longer imports the acoustic implementation.
+
+Spiegel owns shared text/native delegation and its fixture. Big Boss owns intake,
+consumer integration and maintained check orchestration. Spike's independent
+adversarial native/pas2js fixture passes after both components were ready, with
+identical UTF-8 identity/accounting output after newline normalization and zero
+native leaks. Checked stable FPC 3.2.2 Win32/Win64 text fixtures pass 18; the native
+corpus, 29 Win64 intake and 50 file/WFC checks pass, zero leaks. Actual pas2js/Node
+passes 14 text and the same 29 intake checks. The maintained target command also
+executes the independent fixture. Scripts parse; no browser UI/WASM qualification
+is inferred. Evidence stays under the three E-drive
+`runs/text-portability-20261027-{boss,spiegel,spike}/` folders.
+
+The task moves to DONE with incoming links and both ledgers. **54 open /55 DONE;
+52.45 credited /47.55 remaining.** This closes the selected engineering criteria;
+the consecutive nonclosing delivery count is now zero. Earlier scientific
+sequences retain their failures, exposure and stop counters. No private media,
+operator answer, live service or QA browser/audio was changed. Remaining musical
+evidence gates and actual browser qualification remain open.
+
 ## Governing goal and prerequisite checkpoint - 2026-10-27
 
 The operator adopted the new active goal: turn working foundations into
@@ -121,7 +168,7 @@ Evidence lives under the `spiegel-20261027`, `contributions-20261027` and
 `spike-20261027` E-drive run directories; all new generated outputs remain there.
 
 An actual pas2js compile stops at the existing intake `UTF8String` declaration.
-The distinct [intake/text portability repair](TODO/NS-6_portability_02.md) is
+The distinct [intake/text portability repair](TODO/DONE/NS-6_portability_02.md) is
 recorded before expanding scope; it earns no credit and does not block the
 native consumer. No lossy alias or alternate JS algorithm was introduced.
 The native accounting component is delivered, not the full vocabulary criterion

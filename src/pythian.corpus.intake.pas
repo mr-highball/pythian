@@ -28,6 +28,9 @@ unit pythian.corpus.intake;
 
 interface
 
+uses
+  pythian.corpus.text;
+
 const
   CorpusIntakeVersion = 1;
   MaximumIntakeSources = 32;
@@ -38,9 +41,9 @@ type
   TCorpusPartition = (cpTraining, cpDevelopment, cpEvaluation);
   TCorpusExposures = set of TCorpusPartition;
   TCorpusFamily = record
-    Id: UTF8String;
-    WorkId: UTF8String;
-    IdentityEvidence: UTF8String;
+    Id: TCorpusText;
+    WorkId: TCorpusText;
+    IdentityEvidence: TCorpusText;
     Partition: TCorpusPartition;
     Verified: Boolean;
     PreviouslyUsed: Boolean;
@@ -48,17 +51,17 @@ type
   end;
   TCorpusFamilies = array of TCorpusFamily;
   TCorpusIntakeSource = record
-    Id: UTF8String;
-    Path: UTF8String;
+    Id: TCorpusText;
+    Path: TCorpusText;
     Sha256: String;
-    RecordingId: UTF8String;
+    RecordingId: TCorpusText;
     Family: Integer;
     SampleRate: Integer;
     Channels: Integer;
     FrameCount: Int64;
-    Acquisition: UTF8String;
-    LicenseNotice: UTF8String;
-    PreparationPolicy: UTF8String;
+    Acquisition: TCorpusText;
+    LicenseNotice: TCorpusText;
+    PreparationPolicy: TCorpusText;
     PreparationSha256: String;
     PreparationAccepted: Boolean;
     PeakCeiling: Double;
@@ -71,21 +74,21 @@ type
     ParentEndFrame: Int64;
     { Empty means unknown song boundaries. A default whole-WAV range may be
       admitted only when the caller supplies this identity/evidence pair. }
-    SingleSongId: UTF8String;
-    SongEvidence: UTF8String;
+    SingleSongId: TCorpusText;
+    SongEvidence: TCorpusText;
   end;
   TCorpusIntakeSources = array of TCorpusIntakeSource;
   TCorpusIntakeRange = record
     Source: Integer;
     FirstFrame: Int64;
     EndFrame: Int64;
-    SongId: UTF8String;
-    BoundaryEvidence: UTF8String;
+    SongId: TCorpusText;
+    BoundaryEvidence: TCorpusText;
     Multiplicity: Integer;
   end;
   TCorpusIntakeRanges = array of TCorpusIntakeRange;
   TCorpusIntakeDefinition = record
-    StyleId: UTF8String;
+    StyleId: TCorpusText;
     Families: TCorpusFamilies;
     Sources: TCorpusIntakeSources;
     Ranges: TCorpusIntakeRanges;
@@ -96,7 +99,7 @@ type
     boundary evidence text does not add weight. Musical repeated-section identity
     remains unknown. Training admission is not assessed. }
   TCorpusRecordingContribution = record
-    RecordingId: UTF8String;
+    RecordingId: TCorpusText;
     Partition: TCorpusPartition;
     SampleRate: Integer;
     UniqueFrames: Int64;
@@ -146,8 +149,7 @@ implementation
 uses
   SysUtils,
   Math,
-  pythian.audio,
-  pythian.corpus;
+  pythian.audio;
 
 procedure Require(const ACondition: Boolean; const AMessage: String);
 begin
@@ -157,11 +159,18 @@ begin
   end;
 end;
 
-procedure Text(const AValue: UTF8String; const ARequired: Boolean = True);
+procedure Text(const AValue: TCorpusText; const ARequired: Boolean = True);
 begin
   ValidateCorpusText(AValue);
-  Require((not ARequired or (Length(AValue) > 0)) and (Trim(AValue) = AValue),
+  Require(not ARequired or (Length(AValue) > 0),
     'Intake requires exact bounded text without surrounding whitespace');
+  if Length(AValue) > 0 then
+  begin
+    { Native Trim excludes ASCII controls/space only. Browser Trim also removes
+      Unicode whitespace, which would silently change valid caller identities. }
+    Require((Ord(AValue[1]) > 32) and (Ord(AValue[Length(AValue)]) > 32),
+      'Intake requires exact bounded text without surrounding whitespace');
+  end;
 end;
 
 procedure Digest(const AValue: String);
@@ -386,13 +395,13 @@ function TCorpusIntakePlan.BuildContributions(
   const ACountWeights: Boolean): TCorpusRecordingContributions;
 type
   TInterval = record
-    Recording: UTF8String;
+    Recording: TCorpusText;
     SourceHash: String;
     Partition: TCorpusPartition;
     Rate: Integer;
     FirstFrame: Int64;
     EndFrame: Int64;
-    SongId: UTF8String;
+    SongId: TCorpusText;
     Multiplicity: Integer;
   end;
 var
@@ -429,7 +438,8 @@ begin
   begin
     LOther := LIndex;
     while (LOther > 0) and
-      ((LIntervals[LOther].Recording < LIntervals[LOther - 1].Recording) or
+      ((CompareCorpusText(LIntervals[LOther].Recording,
+        LIntervals[LOther - 1].Recording) < 0) or
       ((LIntervals[LOther].Recording = LIntervals[LOther - 1].Recording) and
       (LIntervals[LOther].FirstFrame < LIntervals[LOther - 1].FirstFrame))) do
     begin

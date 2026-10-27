@@ -28,7 +28,8 @@ unit pythian.corpus;
 
 interface
 
-uses pythian.progress,
+uses pythian.corpus.text,
+  pythian.progress,
   pythian.audio,
   pythian.analysis,
   pythian.learning,
@@ -37,7 +38,7 @@ uses pythian.progress,
 const
   AcousticCorpusVersion = 1;
   MaximumCorpusSources = 32;
-  MaximumCorpusTextBytes = 4096;
+  MaximumCorpusTextBytes = pythian.corpus.text.MaximumCorpusTextBytes;
 
 type
   TAcousticSourceInfo = record
@@ -97,11 +98,7 @@ uses
 
 procedure ValidateCorpusText(const AText: UTF8String);
 begin
-  if (Length(AText) > MaximumCorpusTextBytes) or (Pos(#0, AText) <> 0) or
-    (UTF8Encode(UTF8Decode(AText)) <> AText) then
-  begin
-    raise EAudio.Create('Corpus text must be bounded UTF-8 without NUL bytes');
-  end;
+  pythian.corpus.text.ValidateCorpusText(AText);
 end;
 
 procedure ValidateSourceInfo(const AInfo: TAcousticSourceInfo);

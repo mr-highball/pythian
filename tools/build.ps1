@@ -232,10 +232,18 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Corpus compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.corpus$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Corpus checks failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.corpus.text.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Corpus text compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.corpus.text$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Corpus text checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.corpus.intake.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Corpus intake core compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.corpus.intake$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Corpus intake core checks failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.corpus.portability.qa.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Corpus intake portability compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.corpus.portability.qa$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Corpus intake portability checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.passage.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Passage compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.passage$executableSuffix")

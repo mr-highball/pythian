@@ -116,6 +116,14 @@ from these four MAESTRO contrasts.
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss / Spike / Spiegel: a bounded publisher-documentation
+  check of [TU-Note's insert, section4.2](https://depositonce.tu-berlin.de/bitstreams/4a86fb10-cc11-48d2-9884-2f215e6c1679/download)
+  found manually labelled silent/steady/transient intervals. The predetermined
+  two-note example's final transient is a release candidate, but does not prove
+  an exact subwindow is quietly audible. The one-player source is development
+  only. No archive/audio acquisition, PCM screening or presence scoring follows;
+  this lead is not a qualified rest/tail packet. Keep AC3 reference-blocked,
+  prior stops/exposure and the recorded nonclosing lower bound unchanged.
 - 2026-09-30 the single released publisher-contract Win64 run is a terminal
   physical-source nonpass, exit 1 after 66,125 ms including excluded archive
   hashing. Correct pairing selected piano `PianoComedy_DIGIP05-79.wav`, row 1.

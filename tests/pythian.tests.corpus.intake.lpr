@@ -224,5 +224,15 @@ begin
       Check(LRejected, 'History may not erase exposure');
     finally Q.Free; P.Free; end;
     WriteLn('Corpus intake core: ', LChecks, ' checks passed');
-  except on E: Exception do begin WriteLn(StdErr, E.Message); Halt(1); end; end;
+  except
+    on E: Exception do
+    begin
+      WriteLn(E.Message);
+      {$ifdef pas2js}
+      raise;
+      {$else}
+      Halt(1);
+      {$endif}
+    end;
+  end;
 end.

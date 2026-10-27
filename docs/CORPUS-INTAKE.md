@@ -15,6 +15,25 @@ acoustic-palette and WFC sequence learner. This is raw acoustic learning;
 tokens are not inferred notes, style accuracy, calibrated confidence or an
 accepted learned musical profile.
 
+## Shared text and target checks
+
+The declaration API and contribution accounting use the same Pascal units on
+native FPC and pas2js. [Corpus text](../src/pythian.corpus.text.pas) represents
+valid UTF-8 bytes natively and Unicode text in pas2js, with the same 4096-byte
+UTF-8 budget, NUL/malformed-encoding rejection and exact identity. It does not
+normalize or case-fold names. Contribution rows use canonical UTF-8 order,
+including supplementary-plane characters. Native corpus validation delegates
+to this primary implementation; declaration intake has no acoustic analyzer
+or WFC dependency. The old native round-trip check admitted malformed bytes;
+strict rejection intentionally repairs that behavior.
+
+The normal native build includes the shared text, intake and adversarial
+portability fixtures. Run [check-corpus-portability.ps1](../tools/check-corpus-portability.ps1)
+with `-Compiler`, `-RtlSource`, `-RtlJavascript` for the verified matched pas2js
+toolchain, and an explicit `-OutputRoot`. It executes those Pascal fixtures in
+Node and propagates their runtime status. This qualifies the shared declaration
+logic; browser UI, native file/WFC learning and future WASM are separate scopes.
+
 ## Run the redistributable example
 
 Use an existing verified FPC toolchain. The normal [build](../tools/build.ps1)
@@ -96,9 +115,10 @@ counts separately.
 Weighted totals reject before exceeding the exact `MaximumIntakeFrame` integer
 budget. Existing coverage remains available for otherwise valid plans even when
 their declaration-weight total exceeds that budget. Native checked fixtures and
-independent native consumer learning/replay pass. Actual pas2js compilation is
-blocked by the existing intake text representation; see
-[portability_02](TODO/NS-6_portability_02.md). No browser or WASM parity is claimed.
+independent native consumer learning/replay pass. Shared declaration and
+accounting parity also passes actual pas2js execution under
+[portability_02](TODO/DONE/NS-6_portability_02.md); browser presentation and WASM
+remain outside that qualification.
 
 ### Format and source identity
 

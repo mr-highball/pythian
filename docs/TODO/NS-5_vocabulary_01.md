@@ -61,9 +61,10 @@ not prevent declaration-only accounting through the existing native intake API.
   `spike-20261027` run directories. This closes the bounded native component,
   not all AC1 obligations or the task; completion credit stays unchanged.
 - Actual pas2js compilation stops at the existing `UTF8String` intake type.
-  [portability_02](NS-6_portability_02.md) records the separate shared-text and
-  declaration portability repair. Native consumers can use this component now;
-  browser/WASM parity and grounded musical coverage are not inferred.
+  [portability_02](DONE/NS-6_portability_02.md) records the separate shared-text
+  repair, subsequently accepted with actual shared pas2js execution. Native
+  consumers and the portable declaration API can use this component now;
+  browser presentation, WASM and grounded musical coverage are not inferred.
 
 On 2026-09-25, the admitted-pitch work-group contribution comparison was split
 to [NS-5_vocabulary_03](DONE/NS-5_vocabulary_03.md) for one NS-5 point. This task
