@@ -43,10 +43,18 @@ Stop on invented overall percentages, swallowed cancellation or dependency edits
 **Blockers**
 
 - [Shared callbacks and audit — DONE](DONE/NS-6_observability_01.md).
-- [Provider/context metadata reuse](NS-6_metadata_01.md).
+- [Provider/context metadata reuse — DONE](DONE/NS-6_metadata_01.md).
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss return path: metadata reuse is accepted at `c64bf7f`
+  after native/pas2js consumer parity and terminal Ubuntu run453, including both
+  extracted packages. The ready AC1 boundary remains provider admission/choice
+  decoding, registry/session preparation, nested context and layer validation.
+  Extend callbacks through the shared primitives rather than around old loops.
+  Codec implementation callbacks and companion calls need explicit residual
+  accounting; do not claim their interiors from wrapper checkpoints. Batch,
+  inference/operator phases and remaining native pitch forwarding stay required.
 - 2026-10-27, Big Boss pre-edit audit: provider validation/registry and context
   preparation remain the next AC1 scope, but private UTF-8 and context binary
   scalar algorithms duplicate the primary library. Follow the linked metadata

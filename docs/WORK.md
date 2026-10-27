@@ -12,6 +12,28 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Metadata reuse accepted; return to provider preparation - 2026-10-27
+
+The metadata batch made concrete progress: shared scalar metadata and
+context fields are published at `c64bf7f`. Authenticated inspection confirms
+[Ubuntu run453](https://github.com/mr-highball/pythian/actions/runs/40599653753),
+job122524285361, terminal Success, total10m29s/job10m26s. Integration and both
+extracted consumers pass. Accept [metadata_01](TODO/DONE/NS-6_metadata_01.md)
+AC1–3 with the authored native/pas2js and actual prior-consumer evidence below.
+The task/E-drive validation record preserves displayed artifact-container
+digests. Big Boss verified solo; CI is not independent review. Older pending
+entries below are history.
+
+Counts are **52 open / 71 DONE, 123 total**, NS-6 14 open. Completion remains
+**100/90/25/70/14/54**, **52.45/47.55**. Delivery nonclosing count is **0** after
+criterion closure; scientific counters/stops and pending listening are unchanged.
+Return to [task04](TODO/NS-6_observability_04.md)'s provider admission/choice,
+registry/session and nested context/layer preparation. Metadata reuse does not
+close their interior callbacks, batch evaluation or inference/operator reporting.
+The next batch must declare its actual criterion, consumer evidence and stop
+before edits. No new scientific experiment, browser/audio process, private
+source, answer, retraining or companion branch is selected. Full goal stays active.
+
 ## Metadata reuse locally qualified; published acceptance pending - 2026-10-27
 
 The intervening GitHub-status turn confirmed the repaired Actions history but
@@ -21,7 +43,7 @@ Big Boss alone follows the user's supplied single-agent AGENTS override. Stale
 active staffing text in AGENTS/PROJECT/TASKFLOW/MILESTONES is corrected; older
 dated delegation descriptions remain historical, not current authority.
 
-[metadata_01](TODO/NS-6_metadata_01.md) now shares the primary scalar traversal
+[metadata_01](TODO/DONE/NS-6_metadata_01.md) now shares the primary scalar traversal
 between corpus/provider contracts and primary UInt32 fields in context codecs.
 Delete the superseded algorithms; keep the caller's distinct empty/NUL/byte
 policies and native raw-byte identity. Checked native primary fixtures each pass
@@ -88,7 +110,7 @@ This verified wait is not a scientific or implementation failure.
 Big Boss audited the next provider-contract/session boundary under task04 AC1
 before edits. It exposes duplicated UTF-8 decoding in provider codecs and private
 context byte-field loops despite accepted primary implementations. The user's
-reuse instruction requires [metadata_01](TODO/NS-6_metadata_01.md) before extending
+reuse instruction requires [metadata_01](TODO/DONE/NS-6_metadata_01.md) before extending
 those paths. Big Boss owns it solo: share primary scalar text validation with
 explicit byte/empty/NUL policies and native/pas2js semantics, adopt primary
 binary fields in context archives/profiles, and delete the old algorithms.

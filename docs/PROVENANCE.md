@@ -16,7 +16,7 @@ normalization or external Unicode implementation is introduced. Context
 archive/profile scalar fields reuse the existing primary `pythian.binary`.
 Superseded private algorithms are removed, with their original MIT attribution
 retained. Native/pas2js and prior-consumer evidence belongs to
-[metadata reuse](TODO/NS-6_metadata_01.md).
+[metadata reuse](TODO/DONE/NS-6_metadata_01.md).
 
 Extensible WAV decoding is new native Pythian code within the existing bounded
 reader. Its subtype identifiers, valid-bit alignment and speaker-mask meanings

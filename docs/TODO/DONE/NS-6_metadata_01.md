@@ -1,6 +1,6 @@
 # NS-6_metadata_01 — Share provider/context metadata primitives
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
@@ -12,8 +12,10 @@ codec text has its declared limits, optional emptiness and existing scalar
 policy. Share the algorithm without silently changing those requirements.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
-Execution status: local qualification passed; published integration and extracted
-consumers remain pending. Selected as the provider-observability prerequisite.
+Accepted 2026-10-27 at `c64bf7f`: checked native and actual pas2js qualification,
+prior-consumer byte parity and published Ubuntu integration/extracted consumers
+pass. Big Boss verified solo; CI is not independent review. Provider/context
+and batch observability obligations remain in [task04](../NS-6_observability_04.md).
 Big Boss owns implementation and solo verification. Deliverable: one portable
 Unicode scalar validator/comparator with explicit byte/scalar policy, actual
 corpus/provider adoption, and primary binary-field adoption in both context
@@ -41,12 +43,25 @@ altered context bytes, hidden host code-page conversion or a distinct gap.
 
 **Blockers**
 
-- [Primary binary fields — DONE](DONE/NS-6_binary-codec_01.md).
-- [Shared text portability — DONE](DONE/NS-6_portability_02.md).
-- [Shared progress contract — DONE](DONE/NS-6_observability_01.md).
+- [Primary binary fields — DONE](NS-6_binary-codec_01.md).
+- [Shared text portability — DONE](NS-6_portability_02.md).
+- [Shared progress contract — DONE](NS-6_observability_01.md).
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss acceptance: authenticated
+  [Ubuntu run453](https://github.com/mr-highball/pythian/actions/runs/40599653753),
+  job122524285361, is terminal Success at `c64bf7f1f65a951a44722cc5ea18e0857cc9045c`,
+  total10m29s/job10m26s. Integration and both extracted consumers pass. This
+  closes AC1–3 with the local authored/actual-consumer evidence below; older
+  pending-publication statements are historical. Artifact-container SHA-256:
+  logs `e5053af4eacf4b0f19e9a4d47d0798816a42a8ef87d5b2502de8537dc0c11def`;
+  packages `8e85bb3c83db5a2de252b4d3b91bf8ffa6fd132327cf78aaff351cc4936c269a`.
+  These identify the displayed containers, not downloaded ZIP verification.
+  Update incoming links and accounting together: 52 open/71 DONE, 123 total,
+  NS-6 14 open. Zero additional credit; no musical/physical-phone/outside-use
+  acceptance follows. Delivery nonclosing count is 0 after criterion closure;
+  all scientific counters/stops and the unanswered retained review persist.
 - 2026-10-27, Big Boss local qualification: `pythian.text` owns the extracted
   scalar traversal, explicit UTF-8 byte/empty/NUL policies and scalar ordering.
   Native `RawByteString` preserves caller byte identities regardless of code-page
