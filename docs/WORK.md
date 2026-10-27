@@ -12,7 +12,172 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
-## Original/generated reference comparison — 2026-10-05
+## Core-driven review bridge implementation - 2026-10-26
+
+Big Boss worked alone. [continuity_04](TODO/NS-5_continuity_04.md) now connects
+the accepted primary source-successor index to explicit finite Studio jobs.
+Sparse requests preserve exact replay; changing reconstruction keeps the training
+identity/model fixed. Complete range-bound journals are reused, with progress,
+cancellation, memory/cost declarations and hash receipts. Missing or modified
+journals fail without reanalysis or silent fallback; live use rejects the option.
+Matching standard auditions publish a continuity pair with exact parent identity.
+No WFC dependency source or primary reconstruction algorithm changed.
+
+[studio_03](TODO/NS-6_studio_03.md) now presents prepared experiments through
+the existing queue and response journals: Original/Before/After tabs, one short
+question, explicit uncertainty, optional note and Save/Next. A producer command
+binds existing comparison/reference requests and preserves their audio and
+history. Completed prepared answers do not resurrect superseded setup questions.
+Help explains the question and that Save does not automatically train preferences.
+An end-of-playback note now binds the final valid sample instead of failing.
+
+Solo verification: **367 native worker/feedback checks**, zero leaked blocks;
+**17 actual-listener Pascal DOM checks**, including lost-response retry, exactly
+one write, restored choice and source release; **24 shared-reference DOM checks**;
+all four normal pas2js programs compile. A real Studio worker/API replay on an
+isolated copy of the operator's saved project reuses the exact model and 7,321
+observations without analysis/training. The 117,328-byte index produces the exact
+accepted Oct13 raw after WAV, including all 960,000 stereo frames. The accepted
+Oct13 core/adapter/tool/test source hashes remain unchanged; its prior independent
+native evidence remains applicable to that implementation, not to this new UI.
+Fresh-catalog listening export/replay preserves bound original/parent/replacement
+requests and the saved answer, with an identical reexport. This repaired a
+publication-order assumption caught during final integration review.
+
+The live catalog contains one curated, level-matched continuity question:
+**Which version has fewer broken or jittery notes?** Original is context;
+Before/After are the voting examples. Five prior requests and eleven existing
+response/audio files retain exact identity; no operator answer or new live render
+was created. The checked service, worker and twelve browser assets are staged
+in the established stable slot and the independent LAN service is running.
+Host LAN HTTPS returns200 for the page and206 for each bounded media route.
+Existing TLS/firewall settings are unchanged. Exact private route, identities,
+hashes and evidence stay in `E:/CodexWork/pythian/runs/review-bridge/`.
+
+**Qualification remains open.** Codex's browser inventory was empty and its
+requested panel queued. An isolated desktop Edge loaded the page but capture
+timed out, then recovery failed with `GetCursorPos failed: Access is denied`.
+No actual visual/playback pass or independent QA is claimed. The exact QA browser
+tree and isolated QA service are closed, no QA browser/audio remains, and the
+stable review service remains. Actual desktop/narrow and phone review still
+belong to continuity_04/studio_03/studio_22 as applicable. No new annotation,
+segmentation or generation setup is required for this prepared question.
+
+All new compiler/test/cache/run output is isolated under the Pythian E-drive
+root. Fixed D-drive deployment slots and existing private durable catalog remain
+in place. Missing-input/tail-journal and stale test-fixture failures were repaired
+and retained; no scientific tuning resumed. The earlier scientific stop counters
+are unchanged. Tasks stay open at **54 open /54 DONE**, **52.45/47.55**: engineering
+integration is ready for review, without extra credit or musical acceptance.
+
+## Core-driven review bridge assessment and operator mode - 2026-10-26
+
+Current operator instruction: **single-agent mode, Big Boss only, until the
+user explicitly changes it**. The briefly started read-only Neo assessment is
+interrupted; no helper implementation or QA is active. Preserve earlier team
+roles as inactive configuration. Solo checks cannot be called independent QA.
+
+The user supplied long recordings, is willing to classify and give musical
+feedback, but cannot reasonably hand-segment them and lacks a clear queue of
+generated experiments. This is not a missing operator effort prerequisite.
+Existing raw Studio learning retains classifications as metadata; saved answers
+do not automatically train a preference model. One pending successor before/after
+and its separate original-reference request exist, but do not establish a clear
+guided review flow. Do not ask for new note/beat microclip truth or another broad
+style verdict merely because a technical comparison is ready.
+
+Selected next deliverable: [continuity_04](TODO/NS-5_continuity_04.md) connects
+the accepted optional primary source-successor mechanism to native Studio jobs
+without reanalyzing/retraining the same model. [studio_03](TODO/NS-6_studio_03.md)
+is revised to own prepared experiments, original/before/after context, a short
+question tied to a core decision and Save/Next through the existing queue.
+Begin with the retained jitter/sustain comparison. Better sustain continuity,
+useful variation and final style fit are different decisions; the first result
+does not qualify the later ones. Full recorded semantics remain with the NS-3
+and NS-5 tasks; prior scientific stops and counters are unchanged.
+
+New local output root is `E:/CodexWork/pythian/`, with dedicated `build/`,
+`tests/`, `cache/` and `runs/` subdirectories and an owner/workspace marker.
+The parent is an ordinary directory and the isolated root is writable.
+The repo's existing `build/` is still a real D-drive directory, not a junction;
+inspect/add explicit output overrides before running scripts that hardcode it.
+No historical artifacts, stable service files, private catalog, shared caches or
+another project's output were moved. No generation, build, service launch or
+new listening request ran in this assessment. Existing Oct13 code stays intact.
+
+This scopes the missing consumer integration and prepared-review ownership;
+it closes no product criterion and does not restart an experiment. Ledger:
+**54 open / 54 DONE**, **52.45 current / 47.55 remaining**. Big Boss alone owns
+the next bounded implementation. The existing QA-passed Oct13 code and its
+evidence remain uncommitted; this record does not claim publication.
+
+## Exact source-successor generation batch - 2026-10-13
+
+Later packet-only follow-through creates three 20-second RMS-level-matched
+copies under `build/source-successor-20261013/listening-packet/`, preserving the
+raw WAVs. Existing Pascal metering/quantization/writing applies one attenuation
+gain per stereo file; no generation algorithm changes. Native and independent
+QA pass all 5,760,000 decoded sample comparisons, exact clocks, headroom and raw
+hashes. This is unweighted sample-energy matching, not perceptual/LUFS equality.
+Exact gains/method, changed source paths and limits are in the packet notes.
+The user cancelled cloud delivery; no upload completed and no Library action is
+pending. The existing local listening app now contains one original-reference
+request and one labelled RMS-matched before/after request. All three prior
+requests and revisions, seven response-event files and six raw/matched WAVs are
+preserved. The stopped app was started from its unchanged fixed stable slot
+using the existing Private LAN/TLS/firewall configuration. Host-side LAN page
+and queue checks return 200; all three bounded audio routes return 206 with
+matching identities. No response, generation, deployment or security change
+was made; physical-phone playback remains unverified. Exact local routes and
+checks are in `build/source-successor-20261013/LOCAL-APP-HANDOFF.json` and `.md`;
+`LIBRARY-HANDOFF.md` retains the rejected attempt as cancelled history.
+
+The operator-authorized generation batch is accepted as a bounded engineering
+slice: [continuity_03](TODO/DONE/NS-5_continuity_03.md). Optional journal-backed
+source successors and the maintained native comparison consumer reuse the
+failed audition's model and 7,321 observations without analysis, training or
+acquisition. Big Boss owns integration/consumer/evidence and final judgment;
+Ticket Guy Neo delivered shared core/adapter/fixtures using the requested
+GPT-6.1 Sol Ultra. Salty Boi independently passes the shared implementation and
+actual recorded output as two components in one QA batch.
+
+The rule consumes the original fallback selection and admits only an exact next
+source hop with the requested token and fallback source range. It preserves the
+generated token sequence, output clock, source contributions and existing Hann
+DSP. The first seed-731 gate passes: exact contiguous links change 0 to 748,
+repeated four-window sequences 628 to 436, and longest source span 85.3 to
+661.3 ms. The before WAV exactly matches the retained negative audition; all
+935 tokens, source ranges and 960,000 stereo frames stay fixed. Raw RMS changes
+0.0853 to 0.1337 and peak 0.4388 to 0.8932; levels are not matched. Complete
+20-second before/after/original reference files remain for later curation.
+These coordinates do not establish sustained notes, useful music or style fit.
+Prior scientific/continuity stops remain; no nearby tuning variants are selected.
+
+Checked stable Win32/Win64 fixtures pass observed successors, unchanged corpus
+planner behavior, partial tails/rollback and actual WFC sessions across 128-cell
+chunks with 113/65,536-frame pull replay. Mismatched vocabulary/source/range
+reject before reads; callback failure stays terminal. Independent Pascal QA
+validates the actual grain maps, selected-range/EOF bounds and three WAV hashes;
+passing runtime logs are leak-free. Complete evidence/replay is under ignored
+`build/source-successor-20261013/`: `EXPERIMENT.md`, `qa-final.md`, `DELIVERY.json`.
+Full source verification/render takes 87.125 seconds; the index uses 117,328
+bytes. One Neo fixture-loader QA failure is repaired and retained (count 1;
+second submission passes), without resetting scientific counters. A temporary
+executor connection outage interrupted final QA; actual execution resumed and
+remaining checks passed without restarting completed work or rerendering audio.
+
+Initial checkout: `hello-pythian`, `19617b4ebb974c395cf111a2e2b308096a068dba`,
+no tracked changes. D: initially had about 118.5 GiB free; active Nyx is untouched.
+Generated output is capped at 128 MiB and three 20-second comparisons, one
+generation process at a time. No service/browser session, deployment, publication,
+installation, update, configuration change or dataset deletion is selected.
+Checkout `.agents/skills` and conventional local Codex memory summaries are
+absent; current project records are the evidence source, with no raw session
+directory read. Linux/pas2js/WASM and musical listening remain unqualified.
+Ledger: **53 open / 54 DONE**, **52.45 / 47.55**, zero additional credit. This
+bounded engineering task is closed; full continuity/style blockers stay open.
+
+## Original/generated reference comparison - 2026-10-05
 
 Big Boss's solo [studio_22](TODO/NS-6_studio_22.md) connects selected original
 audio beside generated auditions in both listening views. Names and original

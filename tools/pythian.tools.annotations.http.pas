@@ -1462,6 +1462,7 @@ begin
       (ARequest.Path = '/api/listen-queue') then
     begin
       LReport := ReadListeningQueue(ACatalogRoot);
+      ProjectListeningExperiments(LReport);
       for LRowName in CListeningLists do
       begin
         LRows := LReport.Arrays[LRowName];

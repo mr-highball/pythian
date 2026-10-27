@@ -25,17 +25,26 @@ param(
   [Parameter(Mandatory=$true)][string] $RtlSource,
   [Parameter(Mandatory=$true)][string] $RtlJavascript,
   [Parameter(Mandatory=$true)][string] $DomModule,
-  [ValidateSet('recovery','references')][string] $Suite = 'recovery'
+  [ValidateSet('recovery','references','bridge')][string] $Suite = 'recovery',
+  [string] $OutputRoot = $env:PYTHIAN_BUILD_ROOT
 )
 $ErrorActionPreference = 'Stop'
 $repository = Split-Path -Parent $PSScriptRoot
-$output = Join-Path $repository "build/studio-$Suite-tests"
-$testProgram = if ($Suite -eq 'references') { 'pythian.tests.listening.references' } else { 'pythian.tests.studio.recovery' }
+if ([string]::IsNullOrWhiteSpace($OutputRoot)) { $OutputRoot = Join-Path $repository 'build' }
+$output = Join-Path ([IO.Path]::GetFullPath($OutputRoot)) "studio-$Suite-tests"
+$testProgram = switch ($Suite) {
+  'references' { 'pythian.tests.listening.references' }
+  'bridge' { 'listen' }
+  default { 'pythian.tests.studio.recovery' }
+}
+$testSource = if ($Suite -eq 'bridge') { Join-Path $repository 'tools/label-workbench/listen.lpr' } else { Join-Path $repository "tests/$testProgram.lpr" }
+$testDefines = @(if ($Suite -eq 'bridge') { '-dLISTENING_BRIDGE_TEST' })
+$testHtml = if ($Suite -eq 'bridge') { 'listen.html' } else { 'studio.html' }
 New-Item -ItemType Directory -Force -Path $output | Out-Null
 $domPath = (Resolve-Path -LiteralPath $DomModule).Path
-& $Compiler '-B' '-Tbrowser' '-Mdelphi' '-Jc' "-Ji$RtlJavascript" "-Fu$RtlSource" `
+& $Compiler @testDefines '-B' '-Tbrowser' '-Mdelphi' '-Jc' "-Ji$RtlJavascript" "-Fu$RtlSource" `
   "-Fu$(Join-Path $repository 'src')" "-Fu$(Join-Path $repository 'tools/label-workbench')" `
-  "-FU$output" "-FE$output" (Join-Path $repository "tests/$testProgram.lpr")
+  "-FU$output" "-FE$output" $testSource
 if ($LASTEXITCODE -ne 0) { throw 'Studio recovery test compilation failed' }
 # Only test-host setup lives here; behavior and assertions are Pascal-owned.
 $hostScript = @'
@@ -69,7 +78,7 @@ const check = setInterval(() => {
 }, 20);
 '@
 $hostScript = $hostScript.Replace('TEST_PROGRAM', (("$testProgram.js") | ConvertTo-Json -Compress)).Replace('DOM_MODULE', ($domPath | ConvertTo-Json -Compress)).Replace(
-  'STUDIO_HTML', ((Join-Path $repository 'tools/label-workbench/studio.html') | ConvertTo-Json -Compress))
+  'STUDIO_HTML', ((Join-Path $repository "tools/label-workbench/$testHtml") | ConvertTo-Json -Compress))
 $hostPath = Join-Path $output 'run.cjs'
 [IO.File]::WriteAllText($hostPath, $hostScript)
 & node $hostPath

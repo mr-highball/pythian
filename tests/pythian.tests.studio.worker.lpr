@@ -300,6 +300,7 @@ end;
 
 procedure CheckAtomicListening(const ACatalog: String);
 var
+  LOriginalCount: Integer;
   LPacket: TJSONObject;
   LResult: TJSONObject;
   LFirst: String;
@@ -310,6 +311,12 @@ var
   LLock: TFileStream;
   LFailed: Boolean;
 begin
+  LResult := ReadListeningQueue(ACatalog);
+  try
+    LOriginalCount := LResult.Integers['waiting_count'];
+  finally
+    LResult.Free;
+  end;
   LFirst := ACatalog + PathDelim + 'append-first.json';
   LSecond := ACatalog + PathDelim + 'append-second.json';
   LConflict := ACatalog + PathDelim + 'append-conflict.json';
@@ -331,7 +338,7 @@ begin
   LResult.Free;
   LResult := AppendListeningQueue(ACatalog, LSecond);
   try
-    Check(LResult.Integers['waiting_count'] = 5, 'Independent packets both retained');
+    Check(LResult.Integers['waiting_count'] = LOriginalCount + 2, 'Independent packets both retained');
   finally
     LResult.Free;
   end;
@@ -376,6 +383,169 @@ begin
   Check(HashFile(LQueuePath) = LQueueHash, 'Exact retry after released lock reconciles');
 end;
 
+procedure CheckExperiments(const ACatalog: String);
+var
+  LPacket, LRow, LReference, LAsset, LStaged, LProvenance, LReport,
+    LDefinition, LPrepared, LRaw, LProjected, LTransaction, LChoice: TJSONObject;
+  LPath, LBeforeHash, LReplayRoot, LExportPath, LExportHash: String;
+  LCount, I, J: Integer;
+  LRejected: Boolean;
+begin
+  { Big Boss: synthetic originals and copied generated clips, never operator votes. }
+  LPath := ACatalog + PathDelim + 'experiment-fixture.json';
+  LPacket := ReadStudioJSON(StudioJobDirectory(ACatalog, 'successor') +
+    PathDelim + 'listening-publication.json');
+  try
+    LRow := LPacket.Arrays['items'].Objects[0];
+    Check((LRow.Strings['kind'] = 'pair') and
+      (LRow.Objects['experiment'].Objects['parent'].Strings['request_id'] <> ''),
+      'Source continuity publishes exact parent comparison identity');
+    LRow.Delete('experiment');
+    LRow.Strings['id'] := 'experiment-before-after';
+    LReference := TJSONObject(LRow.Clone);
+    LPacket.Arrays['items'].Add(LReference);
+    LReference.Strings['id'] := 'experiment-original';
+    LReference.Strings['kind'] := 'single';
+    LReference.Arrays['assets'].Delete(1);
+    LReference.Arrays['ranges'].Delete(1);
+    LAsset := LReference.Arrays['assets'].Objects[0];
+    LStaged := StageListeningAsset(ACatalog, ExtractFileDir(ACatalog) + PathDelim +
+      'inbox-one' + PathDelim + 'source.wav');
+    try
+      LAsset.Strings['role'] := 'reference';
+      LAsset.Strings['sha256'] := LStaged.Strings['sha256'];
+      LAsset.Int64s['bytes'] := LStaged.Int64s['bytes'];
+      LAsset.Int64s['frames'] := LStaged.Int64s['frames'];
+      LAsset.Integers['sample_rate'] := LStaged.Integers['sample_rate'];
+      LAsset.Integers['channels'] := LStaged.Integers['channels'];
+      LAsset.Delete('provenance');
+      LProvenance := TJSONObject.Create;
+      LAsset.Add('provenance', LProvenance);
+      LProvenance.Add('source_sha256', LStaged.Strings['sha256']);
+      LProvenance.Add('source_group', 'authored-synthetic');
+      LProvenance.Add('clock_id', 'synthetic-original');
+      LProvenance.Add('partition', 'development');
+      LReference.Arrays['ranges'].Objects[0].Int64s['end_frame'] := LStaged.Int64s['frames'];
+      LReference.Arrays['ranges'].Objects[0].Strings['asset_id'] := LAsset.Strings['id'];
+    finally
+      LStaged.Free;
+    end;
+    WriteStudioJSONNew(LPath, LPacket);
+  finally
+    LPacket.Free;
+  end;
+  LReport := AppendListeningQueue(ACatalog, LPath);
+  LReport.Free;
+  LRaw := ReadListeningQueue(ACatalog);
+  try
+    LCount := LRaw.Arrays['items'].Count;
+    LBeforeHash := StudioTextHash(LRaw.AsJSON);
+    LDefinition := TJSONObject.Create;
+    try
+      LDefinition.Add('id', 'guided-continuity');
+      LDefinition.Add('task_id', 'NS-5_continuity_01');
+      LDefinition.Add('comparison_id', 'experiment-before-after');
+      LDefinition.Add('reference_id', 'experiment-original');
+      LDefinition.Add('title', 'Smoother notes');
+      LDefinition.Add('question', 'Which version has fewer broken or jittery notes?');
+      LDefinition.Add('change', 'Keep matching neighbors together.');
+      LDefinition.Add('decision', 'Decide whether to keep this core change.');
+      LPrepared := PrepareListeningExperiment(ACatalog, LDefinition);
+    finally
+      LDefinition.Free;
+    end;
+    try
+      LRow := LPrepared.Arrays['items'].Objects[0];
+      Check((LRow.Arrays['assets'].Count = 2) and
+        (LRow.Objects['answer_spec'].Arrays['choices'].Count = 1),
+        'Prepared experiment has two voting clips and one question');
+      LPath := ACatalog + PathDelim + 'experiment-prepared.json';
+      WriteStudioJSONNew(LPath, LPrepared);
+      LReport := AppendListeningQueue(ACatalog, LPath);
+      LReport.Free;
+      LReport := ReadListeningQueue(ACatalog);
+      try
+        Check(LReport.Arrays['items'].Count = LCount + 1, 'Raw history keeps original requests');
+        for I := 0 to LCount - 1 do
+          Check(LReport.Arrays['items'].Objects[I].AsJSON = LRaw.Arrays['items'].Objects[I].AsJSON,
+            'Existing request, answer and hash remain unchanged');
+        LProjected := TJSONObject(LReport.Clone);
+        try
+          ProjectListeningExperiments(LProjected);
+          Check(LProjected.Arrays['items'].Count = LCount - 1,
+            'Prepared context replaces only the two pending context rows');
+          Check(StudioTextHash(LRaw.AsJSON) = LBeforeHash, 'Projection never mutates durable readback');
+        finally
+          LProjected.Free;
+        end;
+        LRow := LReport.Arrays['items'].Objects[LCount];
+        LTransaction := TJSONObject.Create;
+        try
+          LTransaction.Add('version', 1);
+          LTransaction.Add('request_id', LRow.Strings['id']);
+          LTransaction.Add('request_sha256', LRow.Strings['request_sha256']);
+          LTransaction.Add('expected_revision', 0);
+          LTransaction.Add('reviewer', 'synthetic-qa');
+          LTransaction.Add('status', 'submitted');
+          LTransaction.Add('choices', TJSONArray.Create);
+          LChoice := TJSONObject.Create;
+          LTransaction.Arrays['choices'].Add(LChoice);
+          LChoice.Add('id', 'continuity_preference'); LChoice.Add('value', 'unknown');
+          LTransaction.Add('scores', TJSONArray.Create);
+          LTransaction.Add('comments', TJSONArray.Create);
+          LReference := CommitListeningReview(ACatalog, LTransaction); LReference.Free;
+          LReference := CommitListeningReview(ACatalog, LTransaction);
+          try
+            Check(LReference.Integers['revision'] = 1, 'Lost-response retry commits exactly once');
+          finally LReference.Free; end;
+        finally LTransaction.Free; end;
+      finally LReport.Free; end;
+      LReport := ReadListeningQueue(ACatalog);
+      try
+        ProjectListeningExperiments(LReport);
+        Check(LReport.Arrays['items'].Count = LCount - 2,
+          'Save and reload do not resurrect the superseded context questions');
+      finally LReport.Free; end;
+      LRow := LPrepared.Arrays['items'].Objects[0];
+      LRow.Strings['id'] := 'bad-guided-binding';
+      LRow.Objects['experiment'].Objects['reference'].Strings['request_sha256'] := StringOfChar('0', 64);
+      LPath := ACatalog + PathDelim + 'experiment-bad.json';
+      WriteStudioJSONNew(LPath, LPrepared);
+      LRejected := False;
+      try
+        LReport := AppendListeningQueue(ACatalog, LPath); LReport.Free;
+      except on E: EAudio do LRejected := True; end;
+      Check(LRejected, 'Changed original-reference identity is rejected');
+    finally LPrepared.Free; end;
+  finally LRaw.Free; end;
+  LReplayRoot := ACatalog + '-listening-replay';
+  Check(ForceDirectories(LReplayRoot), 'Create fresh experiment replay catalog');
+  LRaw := ReadStudioJSON(ACatalog + PathDelim + 'listening' + PathDelim + 'queue.json');
+  try
+    for I := 0 to LRaw.Arrays['items'].Count - 1 do
+      for J := 0 to LRaw.Arrays['items'].Objects[I].Arrays['assets'].Count - 1 do
+      begin
+        LAsset := LRaw.Arrays['items'].Objects[I].Arrays['assets'].Objects[J];
+        Check(LAsset.Strings['storage'] = 'listening', 'Replay fixture uses staged first-party audio');
+        LReport := StageListeningAsset(LReplayRoot, ACatalog + PathDelim + 'listening' +
+          PathDelim + 'assets' + PathDelim + LAsset.Strings['sha256'] + '.wav');
+        LReport.Free;
+      end;
+  finally LRaw.Free; end;
+  LExportPath := ACatalog + PathDelim + 'experiment-export.json';
+  LReport := ExportListeningPacket(ACatalog, LExportPath);
+  try LExportHash := LReport.Strings['sha256']; finally LReport.Free; end;
+  LReport := ReplayListeningPacket(LReplayRoot, LExportPath);
+  try
+    Check(LReport.Integers['events'] = 1, 'Fresh replay retains the explicit saved answer only');
+  finally LReport.Free; end;
+  LReport := ExportListeningPacket(LReplayRoot, LReplayRoot + PathDelim + 'reexport.json');
+  try
+    Check(LReport.Strings['sha256'] = LExportHash,
+      'Fresh experiment export/replay preserves exact requests, context and response history');
+  finally LReport.Free; end;
+end;
+
 procedure Run(const ARoot: String);
 var
   LHash: String;
@@ -393,6 +563,12 @@ var
   LWave: TWaveFrameReader;
   LModelHash: String;
   LWaveHash: String;
+  LSuccessorHash: String;
+  LJournalPath: String;
+  LJournalBytes: Int64;
+  LBaselineLedger: TJSONObject;
+  LSuccessorLedger: TJSONObject;
+  LIndex: Integer;
   LFailed: Boolean;
   LByte: Byte;
 begin
@@ -504,6 +680,96 @@ begin
         finally
           LJob.Free;
         end;
+        LWrite.Strings['job_id'] := 'successor';
+        LWrite.Add('reconstruction', 'source_successor');
+        LPreparation := PrepareStudioJob(LCatalog, LWrite);
+        try
+          Check((LPreparation.Strings['reconstruction'] = 'source_successor') and
+            (LPreparation.Objects['limits'].Int64s['successor_index_bytes'] > 0),
+            'Source continuity preflight declares its bounded index');
+        finally
+          LPreparation.Free;
+        end;
+        LJob := EnqueueStudioJob(LCatalog, LWrite);
+        LJob.Free;
+        Check(RunStudioWorker(LCatalog, 'successor', ARoot + PathDelim + 'library'),
+          'Source continuity reuses the actual retained multi-range journals');
+        LJob := ReadStudioJob(LCatalog, 'successor');
+        try
+          Check(LJob.Objects['results'].Booleans['model_reused'] and
+            (LJob.Objects['results'].Strings['model_sha256'] = LModelHash),
+            'Changing reconstruction reuses exact training model');
+          Check((LJob.Objects['results'].Arrays['reconstruction_journals'].Count = 2) and
+            not DirectoryExists(StudioJobDirectory(LCatalog, 'successor') + PathDelim + 'analysis'),
+            'No hidden reanalysis for source continuity');
+          Check(LJob.Objects['results'].Integers['successor_observations'] > 0,
+            'Actual completed observation index recorded');
+          LSuccessorHash := LJob.Objects['results'].Arrays['outputs'].Objects[0].Strings['wav_sha256'];
+        finally
+          LJob.Free;
+        end;
+        LBaselineLedger := ReadStudioJSON(StudioJobDirectory(LCatalog, 'first') + PathDelim + 'seed-0.receipt.json');
+        LSuccessorLedger := ReadStudioJSON(StudioJobDirectory(LCatalog, 'successor') + PathDelim + 'seed-0.receipt.json');
+        try
+          Check(LBaselineLedger.Arrays['grain_map'].Count = LSuccessorLedger.Arrays['grain_map'].Count,
+            'Same generated clock and grain count');
+          for LIndex := 0 to LBaselineLedger.Arrays['grain_map'].Count - 1 do
+          begin
+            Check((LBaselineLedger.Arrays['grain_map'].Objects[LIndex].Integers['token'] =
+              LSuccessorLedger.Arrays['grain_map'].Objects[LIndex].Integers['token']) and
+              (LBaselineLedger.Arrays['grain_map'].Objects[LIndex].Integers['range_index'] =
+              LSuccessorLedger.Arrays['grain_map'].Objects[LIndex].Integers['range_index']),
+              'Source successor preserves each requested token and fallback range');
+          end;
+        finally
+          LSuccessorLedger.Free;
+          LBaselineLedger.Free;
+        end;
+        LWrite.Strings['job_id'] := 'successor-replay';
+        LJob := EnqueueStudioJob(LCatalog, LWrite);
+        LJob.Free;
+        Check(RunStudioWorker(LCatalog, 'successor-replay', ARoot + PathDelim + 'library'),
+          'Second source-continuity job completes from retained observations');
+        Check(HashFile(StudioJobDirectory(LCatalog, 'successor-replay') + PathDelim + 'seed-0.wav') =
+          LSuccessorHash, 'Source continuity output replays exactly');
+        LJournalPath := StudioJobDirectory(LCatalog, 'first') + PathDelim + 'analysis' + PathDelim + '0.pyaf';
+        LStream := TFileStream.Create(LJournalPath, fmOpenReadWrite);
+        try
+          LJournalBytes := LStream.Size;
+          LStream.Position := LJournalBytes;
+          LByte := 123;
+          LStream.WriteBuffer(LByte, 1);
+        finally LStream.Free; end;
+        try
+          LWrite.Strings['job_id'] := 'invalid-journal';
+          LJob := EnqueueStudioJob(LCatalog, LWrite); LJob.Free;
+          Check(not RunStudioWorker(LCatalog, 'invalid-journal', ARoot + PathDelim + 'library'),
+            'Uncommitted journal tail rejects reused source continuity');
+          Check(not DirectoryExists(StudioJobDirectory(LCatalog, 'invalid-journal') + PathDelim + 'analysis'),
+            'Invalid retained journal never triggers hidden reanalysis');
+        finally
+          LStream := TFileStream.Create(LJournalPath, fmOpenReadWrite);
+          try LStream.Size := LJournalBytes; finally LStream.Free; end;
+        end;
+        Check(RenameFile(LJournalPath, LJournalPath + '.qa-held'), 'Hold the retained journal for missing-input check');
+        try
+          LWrite.Strings['job_id'] := 'missing-journal';
+          LJob := EnqueueStudioJob(LCatalog, LWrite); LJob.Free;
+          Check(not RunStudioWorker(LCatalog, 'missing-journal', ARoot + PathDelim + 'library'),
+            'Missing retained observations reject instead of silently using sparse selection');
+        finally
+          Check(RenameFile(LJournalPath + '.qa-held', LJournalPath), 'Restore retained journal');
+        end;
+        LWrite.Strings['reconstruction'] := 'unsupported';
+        LFailed := False;
+        try
+          LPreparation := PrepareStudioJob(LCatalog, LWrite);
+          LPreparation.Free;
+        except
+          on E: EAudio do LFailed := True;
+        end;
+        Check(LFailed, 'Unknown reconstruction fails before execution');
+        LWrite.Delete('reconstruction');
         LProjectWrite.Integers['expected_revision'] := 1;
         LProjectWrite.Strings['name'] := 'edited draft';
         LJob := SaveStudioProject(LCatalog, LProjectWrite);
@@ -599,11 +865,12 @@ begin
   end;
   LQueue := ReadListeningQueue(LCatalog);
   try
-    Check(LQueue.Integers['waiting_count'] = 3, 'Exactly one listening request per successful seed/batch');
+    Check(LQueue.Integers['waiting_count'] = 5, 'Exactly one listening request per successful seed/batch');
   finally
     LQueue.Free;
   end;
   CheckAtomicListening(LCatalog);
+  CheckExperiments(LCatalog);
   LWrite := TJSONObject.Create;
   try
     LWrite.Add('format', StudioJobWriteFormat);

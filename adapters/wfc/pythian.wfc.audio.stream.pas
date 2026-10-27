@@ -33,6 +33,7 @@ uses
   pythian.learning,
   pythian.learning.journal,
   pythian.learning.selection,
+  pythian.learning.context,
   pythian.learning.render.stream,
   pythian.wfc.learning.profile,
   pythian.wfc.stream;
@@ -47,7 +48,10 @@ type
   TAudioSessionGrain = procedure(const AOrdinal: Int64; const AToken: Integer;
     const ACandidate: TJournalRepresentative) of object;
 
-  { Borrows an immutable verified profile and source reader. All state is owned
+  { Borrows an immutable verified profile, source reader and optional immutable
+    successor index. Keep them alive for this session. Nil keeps sparse selection.
+    The index must match the exact profile vocabulary and selected source ranges.
+    All state is owned
     here; calls must be serialized and callbacks must not reenter. No WAV or
     whole-output ledger is required. ReadFrames returns owned PCM and at most
     one fixed 128-grain solve per call. Short positive blocks are normal.
@@ -61,7 +65,7 @@ type
     FSelector: TJournalSelectionStream;
     FRender: TJournalAudioRenderStream;
     FOnGrain: TAudioSessionGrain;
-    FSlots: TAcousticIndices;
+    FWindows: TJournalRepresentatives;
     FTokens: TAcousticIndices;
     FSlotIndex: Integer;
     FSeed: Integer;
@@ -82,7 +86,8 @@ type
     constructor Create(const AProfile: TJournalModelProfile;
       const AReadWindow: TJournalWindowRead; const AWeights: TJournalSelectionWeights;
       const ASeed: Integer; const ATotalFrames: Int64;
-      const AOnGrain: TAudioSessionGrain = nil);
+      const AOnGrain: TAudioSessionGrain = nil;
+      const ASuccessors: TJournalSourceSuccessors = nil);
     destructor Destroy; override;
     function ReadFrames(const AMaximumFrames: Integer): TAudioSamples;
     procedure Pause;
@@ -108,9 +113,13 @@ uses
 constructor TJournalAudioSession.Create(const AProfile: TJournalModelProfile;
   const AReadWindow: TJournalWindowRead; const AWeights: TJournalSelectionWeights;
   const ASeed: Integer; const ATotalFrames: Int64;
-  const AOnGrain: TAudioSessionGrain);
+  const AOnGrain: TAudioSessionGrain;
+  const ASuccessors: TJournalSourceSuccessors);
 var
   LRemaining: Int64;
+  LIndex: Integer;
+  LSuccessorSource: TJournalSuccessorSource;
+  LProfileSource: TJournalProfileSource;
 begin
   inherited Create;
   if (AProfile = nil) or not Assigned(AReadWindow) or
@@ -128,8 +137,28 @@ begin
     Inc(FTotalGrains);
   end;
   FOnGrain := AOnGrain;
+  if ASuccessors <> nil then
+  begin
+    if (ASuccessors.VocabularySha256 <> AProfile.VocabularySha256) or
+      (ASuccessors.SourceCount <> AProfile.SourceCount) then
+    begin
+      raise EAudio.Create('Audio successor vocabulary or source count differs from profile');
+    end;
+    for LIndex := 0 to AProfile.SourceCount - 1 do
+    begin
+      LSuccessorSource := ASuccessors.SourceAt(LIndex);
+      LProfileSource := AProfile.SourceAt(LIndex);
+      if (LSuccessorSource.Binding.SourceSha256 <> LProfileSource.Binding.SourceSha256) or
+        (LSuccessorSource.Binding.FrameCount <> LProfileSource.Binding.FrameCount) or
+        (LSuccessorSource.FirstFeature <> LProfileSource.FirstFeature) or
+        (LSuccessorSource.FeatureCount <> LProfileSource.FeatureCount) then
+      begin
+        raise EAudio.Create('Audio successor source range differs from profile');
+      end;
+    end;
+  end;
   FSequence := TLearnedSequenceStream.Create(AProfile.Model);
-  FSelector := TJournalSelectionStream.Create(AProfile.Pool, AWeights, ASeed);
+  FSelector := TJournalSelectionStream.Create(AProfile.Pool, AWeights, ASeed, ASuccessors);
   SetLength(FQueue, MaximumSessionBufferedFrames * AProfile.Channels);
   FRender := TJournalAudioRenderStream.Create(AProfile.Pool, AReadWindow,
     ReceiveAudio, AProfile.Channels, AProfile.Options.WindowFrames,
@@ -206,7 +235,7 @@ begin
   begin
     FTokens[LIndex] := AcousticTokenIndex(LChunk.Tokens[LIndex]);
   end;
-  FSlots := FSelector.SelectChunk(FTokens);
+  FWindows := FSelector.SelectWindowsChunk(FTokens);
   FSlotIndex := 0;
   Inc(FChunkIndex);
 end;
@@ -217,9 +246,8 @@ var
   LCount: Integer;
   LGrains: Integer;
   LSolved: Boolean;
-  LOne: TAcousticIndices;
+  LOne: TJournalContextWindows;
   LOutput: TAudioSamples;
-  LCandidate: TJournalRepresentative;
 begin
   RequireIdle;
   if (AMaximumFrames < 1) or (AMaximumFrames > MaximumSessionPullFrames) then
@@ -268,7 +296,7 @@ begin
         begin
           Break;
         end;
-        if FSlotIndex = Length(FSlots) then
+        if FSlotIndex = Length(FWindows) then
         begin
           if LSolved then
           begin
@@ -277,12 +305,12 @@ begin
           GenerateChunk;
           LSolved := True;
         end;
-        LOne[0] := FSlots[FSlotIndex];
-        FRender.AppendSelection(LOne);
+        LOne[0].Token := FTokens[FSlotIndex];
+        LOne[0].Candidate := FWindows[FSlotIndex];
+        FRender.AppendWindows(LOne);
         if Assigned(FOnGrain) then
         begin
-          LCandidate := FProfile.Pool.CandidateAt(LOne[0]);
-          FOnGrain(FRender.GrainCount - 1, FTokens[FSlotIndex], LCandidate);
+          FOnGrain(FRender.GrainCount - 1, FTokens[FSlotIndex], LOne[0].Candidate);
         end;
         Inc(FSlotIndex);
         Inc(LGrains);

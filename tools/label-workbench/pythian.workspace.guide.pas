@@ -154,8 +154,8 @@ const
      DoneWhen: 'The answer is shown as saved and the queue updates. You do not need to annotate every recording to use Studio.';
      Page: 'source'; Target: 'source-requests'; Prerequisite: 'Wait for the review queue to connect. Only assigned questions need an answer.'),
     (Id: 'listening-review'; Title: 'Review a saved musical result';
-     Action: 'Choose a review in Listening reviews, read its question and play each recording. Answer what you can, add a comment at the playhead if useful, and Save response.';
-     Expectation: 'These are assigned listening questions and saved live excerpts. For your own batch comparisons and next-batch controls, use Review in Studio. Feedback records your judgment without silently starting training.';
+     Action: 'Read the one listening question. For a prepared comparison, switch between Before and After; Original gives source context. Choose Before, After, Same, Neither or Unsure, then Save & next. A note is optional.';
+     Expectation: 'Each prepared experiment explains what changed and which core decision your answer guides. No new recording, segmentation or generation setup is needed. Saving records your judgment for the next development step. It does not automatically train a preference model.';
      DoneWhen: 'The review moves to Completed reviews and your saved response can be reopened.';
      Page: 'listening'; Target: 'pending'; Prerequisite: 'Wait for the queue to connect. An empty queue means there are no assigned listening questions.'),
     (Id: 'settings'; Title: 'Understand generation settings';

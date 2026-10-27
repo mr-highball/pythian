@@ -108,6 +108,8 @@ type
     function HandleAddComment(AEvent: TJSMouseEvent): Boolean;
     function HandleRemoveComment(AEvent: TJSMouseEvent): Boolean;
     function HandleSave(AEvent: TJSMouseEvent): Boolean;
+    function HandleSampleTab(AEvent: TJSMouseEvent): Boolean;
+    function HandlePageHide(AEvent: TEventListenerEvent): Boolean;
     function HandleReset(AEvent: TJSMouseEvent): Boolean;
     function HandleAudioMetadata(AEvent: TEventListenerEvent): Boolean;
     function HandleAudioLoadStart(AEvent: TJSLoadEvent): Boolean;
@@ -168,6 +170,11 @@ begin
     'style_fit': Result := 'Style match';
     'does_not_fit': Result := 'Does not fit';
     'unknown': Result := 'I can’t tell';
+    'continuity_preference': Result := 'Your pick';
+    'before': Result := 'Before';
+    'after': Result := 'After';
+    'same': Result := 'About the same';
+    'neither': Result := 'Neither works';
   else
     Result := StringReplace(AValue, '_', ' ', [rfReplaceAll]);
     if Result <> '' then Result[1] := UpCase(Result[1]);
@@ -178,6 +185,8 @@ function PacketTitle(const ARow: TJSObject): String;
 var
   LQuestion: String;
 begin
+  if isObject(ARow['experiment']) then
+    Exit(Str(Obj(ARow['experiment']), 'title'));
   Result := Str(ARow, 'title');
   if Result <> '' then
     Exit;
@@ -321,7 +330,10 @@ end;
 procedure TListener.PauseAudioPlayers;
 var
   I: Integer;
+  LOriginal: TJSElement;
 begin
+  LOriginal := document.getElementById('original-context-audio');
+  if LOriginal <> nil then TJSHTMLAudioElement(LOriginal).pause;
   if FAudioPlayers = nil then Exit;
   for I := 0 to FAudioPlayers.length - 1 do
     TJSHTMLAudioElement(FAudioPlayers[I]).pause;
@@ -498,6 +510,10 @@ var
   LButton: TJSHTMLButtonElement;
   LId: String;
   LAssetName: String;
+  LExperiment, LReference: TJSObject;
+  LTabs, LOriginal, LRadioLabel: TJSElement;
+  LRadio: TJSHTMLInputElement;
+  LExperimental: Boolean;
   LRate: Integer;
   LStartSeconds, LEndSeconds: Integer;
   I, J, K: Integer;
@@ -528,6 +544,41 @@ begin
     ' · revision ' + IntToStr(Trunc(Num(FRequest, 'revision'))) +
     ' · exact request ' + Copy(Str(FRequest, 'request_sha256'), 1, 12);
   Clear('assets'); Clear('ranges'); Clear('choices'); Clear('scores');
+  Clear('experiment-brief');
+  LExperimental := isObject(FRequest['experiment']);
+  El('experiment-brief').setAttribute('hidden', '');
+  if LExperimental then
+  begin
+    LExperiment := Obj(FRequest['experiment']);
+    El('experiment-brief').removeAttribute('hidden');
+    AddText(El('experiment-brief'), 'p', 'What changed: ' + Str(LExperiment, 'change'), '');
+    AddText(El('experiment-brief'), 'p', Str(LExperiment, 'decision'), 'muted');
+    LTabs := AddText(El('assets'), 'nav', '', 'sample-switch');
+    LTabs.setAttribute('aria-label', 'Compare recordings');
+    if isObject(LExperiment['reference']) then
+    begin
+      LReference := Obj(LExperiment['reference']);
+      LButton := TJSHTMLButtonElement(AddText(LTabs, 'button', 'Original', ''));
+      LButton.setAttribute('type', 'button');
+      LButton.setAttribute('data-panel', 'original-context');
+      LButton.setAttribute('aria-pressed', 'false');
+      LButton.onclick := @HandleSampleTab;
+      LOriginal := AddText(El('assets'), 'div', '', 'asset');
+      LOriginal.id := 'original-context';
+      LOriginal.setAttribute('hidden', '');
+      AddText(LOriginal, 'strong', 'Original context', '');
+      AddText(LOriginal, 'p', 'This is an example from the selected recording. Generated times differ.', 'muted');
+      LAudio := TJSHTMLAudioElement(AddText(LOriginal, 'audio', '', ''));
+      LAudio.id := 'original-context-audio';
+      LAudio.controls := True;
+      LAudio.preload := 'none';
+      LAudio.setAttribute('aria-label', 'Original context audio');
+      LAudio.src := '/api/listen-audio?request=' + encodeURIComponent(Str(LReference, 'request_id')) +
+        '&asset=' + encodeURIComponent(Str(LReference, 'asset_id')) +
+        '&packet=' + Str(LReference, 'request_sha256');
+      LAudio.onplay := @HandleAudioPlay;
+    end;
+  end;
   TJSHTMLSelectElement(El('comment-asset')).innerHTML := '';
   LAssets := Arr(FRequest, 'assets');
   for I := 0 to LAssets.length - 1 do
@@ -535,7 +586,19 @@ begin
     LAsset := Obj(LAssets[I]);
     LId := Str(LAsset, 'id');
     LAssetName := AssetName(LAsset);
+    if LExperimental and (LAssets.length = 2) then
+    begin
+      if I = 0 then LAssetName := 'Before' else LAssetName := 'After';
+      LButton := TJSHTMLButtonElement(AddText(LTabs, 'button', LAssetName, ''));
+      LButton.setAttribute('type', 'button');
+      LButton.setAttribute('data-panel', 'sample-card-' + IntToStr(I));
+      if I = 0 then LButton.setAttribute('aria-pressed', 'true')
+      else LButton.setAttribute('aria-pressed', 'false');
+      LButton.onclick := @HandleSampleTab;
+    end;
     LCard := AddText(El('assets'), 'div', '', 'asset');
+    LCard.id := 'sample-card-' + IntToStr(I);
+    if LExperimental and (I > 0) then LCard.setAttribute('hidden', '');
     AddText(LCard, 'strong', LAssetName, '');
     if Num(LAsset, 'sample_rate') > 0 then
       AddText(LCard, 'small',
@@ -583,7 +646,8 @@ begin
     LSelect.setAttribute('role', 'status');
     LSelect.setAttribute('aria-live', 'polite');
     AddOption(TJSHTMLSelectElement(El('comment-asset')), LAssetName, LId);
-    if Str(LAsset, 'role') = 'generated' then
+    if (Str(LAsset, 'role') = 'generated') and
+      (not LExperimental or not isObject(LExperiment['reference'])) and (I = 0) then
     begin
       SetLength(FReferences, Length(FReferences) + 1);
       FReferences[High(FReferences)] := TListeningReference.Create(LCard, @FetchApi,
@@ -594,6 +658,7 @@ begin
   LRanges := Arr(FRequest, 'ranges');
   for I := 0 to LRanges.length - 1 do
   begin
+    if LExperimental then Break;
     LRange := Obj(LRanges[I]);
     LButton := TJSHTMLButtonElement(document.createElement('button'));
     LButton.setAttribute('type', 'button');
@@ -628,8 +693,28 @@ begin
   for I := 0 to LChoices.length - 1 do
   begin
     LDimension := Obj(LChoices[I]);
-    LLabel := AddText(El('choices'), 'label',
-      AnswerCaption(Str(LDimension, 'id')), 'dimension');
+    if LExperimental then
+    begin
+      LLabel := AddText(El('choices'), 'fieldset', '', 'experiment-picks');
+      LLabel.id := 'choice-' + IntToStr(I);
+      AddText(LLabel, 'legend', AnswerCaption(Str(LDimension, 'id')), '');
+      for J := 0 to Arr(LDimension, 'values').length - 1 do
+      begin
+        LRadioLabel := AddText(LLabel, 'label', '', 'experiment-pick');
+        LRadio := TJSHTMLInputElement(AddText(LRadioLabel, 'input', '', ''));
+        LRadio.setAttribute('type', 'radio');
+        LRadio.name := 'choice-' + IntToStr(I);
+        LRadio.value := String(Arr(LDimension, 'values')[J]);
+        LSaved := Arr(FRequest, 'current_choices');
+        if LSaved <> nil then
+          for K := 0 to LSaved.length - 1 do
+            if (Str(Obj(LSaved[K]), 'id') = Str(LDimension, 'id')) and
+              (Str(Obj(LSaved[K]), 'value') = LRadio.value) then LRadio.checked := True;
+        AddText(LRadioLabel, 'span', AnswerCaption(LRadio.value), '');
+      end;
+      Continue;
+    end;
+    LLabel := AddText(El('choices'), 'label', AnswerCaption(Str(LDimension, 'id')), 'dimension');
     LOption := TJSHTMLSelectElement(document.createElement('select'));
     LOption.id := 'choice-' + IntToStr(I);
     AddOption(LOption, 'Choose an answer', '');
@@ -671,7 +756,7 @@ begin
       end;
     LLabel.appendChild(LOption);
   end;
-  if FSelectedPending then Feedback('Answer each question, then press Save response.')
+  if FSelectedPending then Feedback('Choose your answer, then Save & next.')
   else Feedback('Saved response loaded. You may submit an explicit correction.');
   UpdateReviewGate;
 end;
@@ -781,9 +866,15 @@ begin
   for I := 0 to LDeclared.length - 1 do
   begin
     LDimension := Obj(LDeclared[I]);
-    LValue := TJSHTMLSelectElement(El('choice-' + IntToStr(I))).value;
+    if El('choice-' + IntToStr(I)).tagName = 'FIELDSET' then
+    begin
+      LValue := '';
+      if El('choice-' + IntToStr(I)).querySelector('input:checked') <> nil then
+        LValue := TJSHTMLInputElement(El('choice-' + IntToStr(I)).querySelector('input:checked')).value;
+    end
+    else LValue := TJSHTMLSelectElement(El('choice-' + IntToStr(I))).value;
     if LValue = '' then
-      raise Exception.Create('Choose ' + Str(LDimension, 'id') + '.');
+      raise Exception.Create('Choose your answer, or “I can’t tell”.');
     LAnswer := TJSObject.new;
     LAnswer['id'] := Str(LDimension, 'id');
     LAnswer['value'] := LValue;
@@ -1058,6 +1149,8 @@ begin
     begin
       LFrame := Trunc(TJSHTMLAudioElement(El('audio-' + IntToStr(I))).currentTime *
         Num(Obj(LAssets[I]), 'sample_rate'));
+      if LFrame >= Trunc(Num(Obj(LAssets[I]), 'frames')) then
+        LFrame := Trunc(Num(Obj(LAssets[I]), 'frames')) - 1;
       if not FrameAllowed(LId, LFrame) then
       begin
         Feedback('Choose a moment inside the requested clip before adding your comment.', True);
@@ -1094,6 +1187,40 @@ end;
 
 function TListener.HandleSave(AEvent: TJSMouseEvent): Boolean;
 begin Save; Result := False; end;
+
+function TListener.HandleSampleTab(AEvent: TJSMouseEvent): Boolean;
+var
+  LNodes: TJSNodeList;
+  LId: String;
+  I: Integer;
+begin
+  Result := False;
+  PauseAudioPlayers;
+  LId := TJSElement(AEvent.currentTarget).getAttribute('data-panel');
+  LNodes := El('assets').querySelectorAll('.asset');
+  for I := 0 to LNodes.length - 1 do
+    if TJSElement(LNodes[I]).id = LId then TJSElement(LNodes[I]).removeAttribute('hidden')
+    else TJSElement(LNodes[I]).setAttribute('hidden', '');
+  LNodes := El('assets').querySelectorAll('.sample-switch button');
+  for I := 0 to LNodes.length - 1 do
+    TJSElement(LNodes[I]).setAttribute('aria-pressed', BoolToStr(
+      TJSElement(LNodes[I]).getAttribute('data-panel') = LId, 'true', 'false'));
+end;
+
+function TListener.HandlePageHide(AEvent: TEventListenerEvent): Boolean;
+var
+  LNodes: TJSNodeList;
+  I: Integer;
+begin
+  Result := False;
+  PauseAudioPlayers;
+  LNodes := document.querySelectorAll('audio');
+  for I := 0 to LNodes.length - 1 do
+  begin
+    TJSHTMLAudioElement(LNodes[I]).removeAttribute('src');
+    TJSHTMLAudioElement(LNodes[I]).load;
+  end;
+end;
 
 function TListener.HandleReset(AEvent: TJSMouseEvent): Boolean;
 begin if not FSaving then LoadQueue(FSelectedId); Result := False; end;
@@ -1226,13 +1353,11 @@ end;
 function TListener.HandleAudioPlay(AEvent: TJSPointerEvent): Boolean;
 var
   I: Integer;
+  LNodes: TJSNodeList;
 begin
-  if CurrentAudioIndex(TJSHTMLAudioElement(AEvent.currentTarget)) < 0 then
-    Exit(False);
-  for I := 0 to FAudioPlayers.length - 1 do
-    if TJSHTMLAudioElement(FAudioPlayers[I]).id <>
-      TJSHTMLAudioElement(AEvent.currentTarget).id then
-      TJSHTMLAudioElement(FAudioPlayers[I]).pause;
+  LNodes := document.querySelectorAll('audio');
+  for I := 0 to LNodes.length - 1 do
+    if LNodes[I] <> AEvent.currentTarget then TJSHTMLAudioElement(LNodes[I]).pause;
   Result := False;
 end;
 
@@ -1256,11 +1381,20 @@ begin
   TJSHTMLButtonElement(El('reset')).onclick := @HandleReset;
   TJSHTMLButtonElement(El('add-comment')).onclick := @HandleAddComment;
   window.addEventListener('pageshow', @HandlePageShow);
+  window.addEventListener('pagehide', @HandlePageHide);
   Connect;
 end;
+
+{$IFDEF LISTENING_BRIDGE_TEST}
+{$I ../../tests/pythian.tests.listening.bridge.inc}
+{$ENDIF}
 
 var Listener: TListener;
 begin
   Listener := TListener.Create;
+  {$IFDEF LISTENING_BRIDGE_TEST}
+  RunListeningBridgeChecks(Listener);
+  {$ELSE}
   Listener.Run;
+  {$ENDIF}
 end.

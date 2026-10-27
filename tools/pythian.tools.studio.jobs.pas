@@ -654,7 +654,7 @@ begin
     'duration_ms|seeds|maximum_tokens|model_order|source_weights|resolve_unassigned|' +
     'parent_job_id|retry_of|source_sha256|start_frame|end_frame|effects|tail_seconds|' +
     'preview_job_id|collection_name|title|capture_id|mode|channel|tempo_bpm|' +
-    'discovery_revision|entries|');
+    'discovery_revision|entries|reconstruction|');
   Need(Text(AWrite, 'format') = StudioJobWriteFormat, 'Unsupported Studio job format');
   LJobId := Text(AWrite, 'job_id');
   Need(SafeId(LJobId), 'Invalid job identifier');
@@ -670,7 +670,14 @@ begin
     begin
       Keys(AWrite, '|format|job_id|kind|project_id|project_revision|project_snapshot_sha256|' +
         'duration_ms|seeds|maximum_tokens|model_order|source_weights|resolve_unassigned|' +
-        'parent_job_id|retry_of|');
+        'parent_job_id|retry_of|reconstruction|');
+      if AWrite.Find('reconstruction') <> nil then
+      begin
+        Need((Text(AWrite, 'reconstruction') = 'sparse') or
+          (Text(AWrite, 'reconstruction') = 'source_successor'), 'Unsupported reconstruction policy');
+        Need((LKind = 'train_generate') or (Text(AWrite, 'reconstruction') = 'sparse'),
+          'Source continuity currently supports saved auditions; live playback uses sparse reconstruction');
+      end;
       if LKind = 'stream_generate' then
         Need((Number(AWrite, 'duration_ms') >= 1000) and
           (Number(AWrite, 'duration_ms') <= 86400000), 'Live duration must be 1 second to 24 hours')
@@ -948,6 +955,12 @@ begin
           end;
           Result.Add('estimated_grains_per_output', LOutputGrains);
           Result.Add('learning_mode', 'raw_acoustic');
+          Result.Add('reconstruction', LRequest.Get('reconstruction', 'sparse'));
+          if LRequest.Get('reconstruction', 'sparse') = 'source_successor' then
+          begin
+            LLimits.Add('successor_index_bytes', LEstimatedFeatures * 16);
+            Result.Add('reconstruction_note', 'Experimental source continuity; reuses the saved model and completed feature journals. No note or style learning is implied.');
+          end;
         finally
           LNames.Free;
         end;

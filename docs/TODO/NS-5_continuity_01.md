@@ -43,6 +43,17 @@ Starting evidence: [WAV-STUDIES](../WAV-STUDIES.md) · [ACTIVITY](../ACTIVITY.md
 
 **Dev Notes:**
 
+- 2026-10-13, Big Boss: [exact source-successor admission](DONE/NS-5_continuity_03.md)
+  is accepted as a zero-credit engineering slice grounded in the retained
+  negative audition. It keeps the model/tokens/clock and fallback source counts
+  fixed, admitting exact matching adjacent source observations beyond sparse
+  exemplars. The before WAV is exact; contiguous links change 0 to 748 and
+  four-window repeats 628 to 436. Complete 20-second before/after/reference WAVs
+  are retained for later listening, with differing raw levels explicit. These
+  coordinates do not establish sustained notes, useful composition or style
+  fit. Full task blockers/credit and the earlier stopped context/guard sequence
+  remain unchanged. No more tuning is selected under that sequence.
+
 - 2026-10-05, Big Boss: actual Studio feedback supplies a negative development
   listening result: abundant jittering and missing sustains, with continuity
   1/3, technical quality 1/3 and style fit 0/3. Repetition is unknown. The comment

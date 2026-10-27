@@ -284,6 +284,12 @@ begin
   LShort.appendChild(El('batch-partition'));
   Add(LShort, 'p', 'Generate complete WAV files for listening and feedback.', 'hint');
   LShort.appendChild(LLength);
+  LLabel := Add(LShort, 'label', 'Sound joins', '');
+  LControl := Add(LLabel, 'select', '', '');
+  LControl.id := 'batch-reconstruction';
+  SelectOption(LControl, 'sparse', 'Standard');
+  SelectOption(LControl, 'source_successor', 'Use neighboring fragments · Experimental');
+  LControl.addEventListener('change', @Edit);
   LRow := Add(LShort, 'div', '', 'source-toolbar');
   Button(LRow, 'batch-check', 'Check setup');
   LControl := Button(LRow, 'batch-submit', 'Generate auditions');
@@ -724,6 +730,10 @@ begin
   TJSHTMLInputElement(El('batch-palette')).value := IntToStr(LPalette);
   TJSHTMLSelectElement(El('batch-order')).value := IntToStr(LOrder);
   TJSHTMLSelectElement(El('batch-use')).value := StudioText(ARequest, 'resolve_unassigned');
+  if StudioText(ARequest, 'reconstruction') = '' then
+    TJSHTMLSelectElement(El('batch-reconstruction')).value := 'sparse'
+  else
+    TJSHTMLSelectElement(El('batch-reconstruction')).value := StudioText(ARequest, 'reconstruction');
   for LIndex := 0 to LInputs.length - 1 do
   begin
     LHash := TJSElement(LInputs[LIndex]).getAttribute('data-source');
@@ -781,6 +791,7 @@ begin
   Result['maximum_tokens'] := ReadInteger('batch-palette', 2, 16);
   Result['model_order'] := ReadInteger('batch-order', 1, 3);
   Result['resolve_unassigned'] := LUse;
+  Result['reconstruction'] := TJSHTMLSelectElement(El('batch-reconstruction')).value;
   LSeeds := TJSArray.new;
   if FExplicitSeeds <> nil then
   begin
@@ -939,6 +950,10 @@ begin
         IntToStr(Trunc(StudioNumber(LData, 'output_count'))) + ' × ' +
         IntToStr(Trunc(StudioNumber(LRequest, 'duration_ms') / 1000)) +
         '-second auditions. Runs on this computer with a two-hour time limit; you can leave this page.';
+      if StudioText(LData, 'reconstruction') = 'source_successor' then
+        El('batch-preflight').textContent := El('batch-preflight').textContent +
+          ' Experimental neighboring fragments: ' + StudioByteSize(StudioNumber(
+          TJSObject(LData['limits']), 'successor_index_bytes')) + ' estimated index; uses retained observations.';
       Notice('Setup is ready. Press Generate auditions to start.');
     end;
   except

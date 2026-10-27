@@ -139,6 +139,7 @@ type
     FOptions: TAnalysisOptions;
     FReceipt: TJSONObject;
     FProfile: TJournalModelProfile;
+    FSuccessors: TJournalSourceSuccessors;
     FTrainingHash: String;
     FModelRoot: String;
     FModelReused: Boolean;
@@ -164,6 +165,7 @@ type
     function TryReuseModel(const AExpected: TJSONObject = nil;
       const AModelText: String = ''): Boolean;
     procedure Train;
+    procedure PrepareSourceContinuity;
     function MakeProfile(const AReader: TJournalTrainingReader;
       const APalette: TAcousticPalette; const AModel: TWfcSequenceModel;
       const APool: TJournalCandidatePool; const AModelText: String): TJSONObject;
@@ -316,6 +318,7 @@ destructor TStudioWork.Destroy;
 var
   LIndex: Integer;
 begin
+  FSuccessors.Free;
   FProfile.Free;
   FReceipt.Free;
   FPartial.Free;
@@ -858,6 +861,110 @@ begin
   end;
 end;
 
+procedure TStudioWork.PrepareSourceContinuity;
+var
+  LJobs: TJSONObject;
+  LJob: TJSONObject;
+  LResults: TJSONObject;
+  LRows: TJSONArray;
+  LRow: TJSONObject;
+  LDirectory: String;
+  LPath: String;
+  LIndex: Integer;
+  LRange: Integer;
+  LComplete: Boolean;
+  LBinding: TFeatureJournalBinding;
+  LSegments: TJournalTrainingSegments;
+  LReader: TJournalTrainingReader;
+begin
+  FReceipt.Add('reconstruction', FRequest.Get('reconstruction', 'sparse'));
+  if FRequest.Get('reconstruction', 'sparse') = 'sparse' then Exit;
+  Need(FRequest.Strings['kind'] = 'train_generate', 'Source continuity requires a saved audition');
+  Progress('find_feature_journals', 0, 0);
+  LDirectory := FDirectory;
+  if FModelReused then
+  begin
+    LDirectory := '';
+    LJobs := ListStudioJobs(FCatalogRoot);
+    try
+      for LIndex := 0 to LJobs.Arrays['jobs'].Count - 1 do
+      begin
+        Check;
+        LRow := LJobs.Arrays['jobs'].Objects[LIndex];
+        if (LRow.Strings['status'] <> 'completed') or
+          (LRow.Strings['kind'] <> 'train_generate') then Continue;
+        LJob := ReadStudioJob(FCatalogRoot, LRow.Strings['job_id']);
+        try
+          if LJob.Find('results') = nil then Continue;
+          LResults := LJob.Objects['results'];
+          if (LResults.Get('training_identity_sha256', '') <> FTrainingHash) or
+            (LResults.Get('model_sha256', '') <> FProfile.ModelSha256) then Continue;
+          LComplete := True;
+          for LRange := 0 to High(FRanges) do
+            LComplete := LComplete and FileExists(StudioJobDirectory(FCatalogRoot,
+              LRow.Strings['job_id']) + PathDelim + 'analysis' + PathDelim + IntToStr(LRange) + '.pyaf');
+          if LComplete then
+          begin
+            LDirectory := StudioJobDirectory(FCatalogRoot, LRow.Strings['job_id']);
+            Break;
+          end;
+        finally
+          LJob.Free;
+        end;
+      end;
+    finally
+      LJobs.Free;
+    end;
+    Need(LDirectory <> '', 'Saved feature journals are unavailable. Use sparse reconstruction or prepare a new learning project.');
+  end;
+  LRows := TJSONArray.Create;
+  FReceipt.Add('reconstruction_journals', LRows);
+  SetLength(LSegments, Length(FRanges));
+  for LRange := 0 to High(FRanges) do
+  begin
+    Check;
+    LPath := LDirectory + PathDelim + 'analysis' + PathDelim + IntToStr(LRange) + '.pyaf';
+    if FRanges[LRange].Journal = nil then
+    begin
+      LBinding := Default(TFeatureJournalBinding);
+      LBinding.SourceSha256 := FReceipt.Arrays['sources'].Objects[LRange].Strings['analysis_range_sha256'];
+      LBinding.SampleRate := FProfile.SampleRate;
+      LBinding.Channels := FProfile.Channels;
+      LBinding.FrameCount := FRanges[LRange].Frames;
+      LBinding.Options := FOptions;
+      FRanges[LRange].JournalStream := TCheckedStream.Create(LPath, Self);
+      FRanges[LRange].Journal := TFeatureJournal.Create(FRanges[LRange].JournalStream,
+        LBinding, FlushJournal, False);
+    end;
+    Need(FRanges[LRange].Journal.Completed and (FRanges[LRange].Journal.TailBytes = 0),
+      'Source continuity needs complete, unmodified feature journals');
+    LRow := TJSONObject.Create;
+    LRows.Add(LRow);
+    LRow.Add('range_index', LRange);
+    LRow.Add('analysis_range_sha256', FRanges[LRange].Journal.Binding.SourceSha256);
+    FRanges[LRange].JournalStream.Position := 0;
+    LRow.Add('journal_sha256', Sha256Stream(FRanges[LRange].JournalStream,
+      FRanges[LRange].JournalStream.Size, WorkProgress));
+    LSegments[LRange] := WholeJournalSegment(FRanges[LRange].Journal, FRanges[LRange].Weight);
+  end;
+  LReader := TJournalTrainingReader.Create(LSegments);
+  try
+    FLearningStage := 'prepare_source_continuity';
+    FFirstLearningPass := 0;
+    LReader.OnProgress := LearningProgress;
+    FSuccessors := TJournalSourceSuccessors.Create(LReader, FProfile.Palette);
+    FSuccessors.RequireCompatible(FProfile.Pool);
+    Need(FSuccessors.StorageBytes <= MaximumStudioJobMemoryBytes div 4,
+      'Source continuity index exceeds its memory allowance');
+    FReceipt.Add('reconstruction_policy', 'exact_source_successor_v1');
+    FReceipt.Add('reconstruction_policy_sha256', StudioTextHash('exact_source_successor_v1'));
+    FReceipt.Add('successor_index_bytes', FSuccessors.StorageBytes);
+    FReceipt.Add('successor_observations', FSuccessors.ObservationCount);
+  finally
+    LReader.Free;
+  end;
+end;
+
 function TStudioWork.ReadCandidate(const ACandidate: TJournalRepresentative): TAudioSamples;
 var
   LRange: TRangeHandle;
@@ -936,7 +1043,7 @@ begin
       LSink := TStreamAudioSink.Create(LOutput);
       LWriter := TWavePcm16Writer.Create(LSink, FProfile.SampleRate, FProfile.Channels, LRequestedFrames);
       LSession := TJournalAudioSession.Create(FProfile, ReadCandidate, LWeights,
-        ASeed, LRequestedFrames, RecordGrain);
+        ASeed, LRequestedFrames, RecordGrain, FSuccessors);
       LRendered := 0;
       Progress('generate_auditions', Int64(AOrdinal) * LRequestedFrames,
         Int64(FRequest.Arrays['seeds'].Count) * LRequestedFrames, 'frames');
@@ -983,6 +1090,7 @@ begin
       Result.Add('chunk_cells', 128);
       Result.Add('max_backtracks', 256);
       Result.Add('generated_from_reloaded_model', True);
+      Result.Add('reconstruction', FRequest.Get('reconstruction', 'sparse'));
       Result.Add('status', 'verified');
       Result.Add('relative_file', 'seed-' + IntToStr(AOrdinal) + '.wav');
       LArtifact := TJSONObject(Result.Clone);
@@ -1169,7 +1277,65 @@ var
   LOptionIndex: Integer;
   LNames: array[0..2] of String;
   LId: String;
+  LParent, LExperiment, LBinding: TJSONObject;
+  LSuccessor: Boolean;
+
+  function FindParent(const AOutput: TJSONObject): TJSONObject;
+  var
+    LJobs, LJob, LResults, LQueue, LRow, LBefore: TJSONObject;
+    I, J, K, N: Integer;
+    LGroup: String;
+  const
+    CGroups: array[0..1] of String = ('items', 'completed');
+  begin
+    Result := nil;
+    LJobs := ListStudioJobs(FCatalogRoot);
+    LQueue := nil;
+    try
+      LQueue := ReadListeningQueue(FCatalogRoot);
+      for I := 0 to LJobs.Arrays['jobs'].Count - 1 do
+      begin
+        Check;
+        LRow := LJobs.Arrays['jobs'].Objects[I];
+        if (LRow.Strings['status'] <> 'completed') or
+          (LRow.Strings['kind'] <> 'train_generate') then Continue;
+        LJob := ReadStudioJob(FCatalogRoot, LRow.Strings['job_id']);
+        try
+          if LJob.Find('results') = nil then Continue;
+          LResults := LJob.Objects['results'];
+          if (LResults.Get('training_identity_sha256', '') <> FTrainingHash) or
+            (LResults.Get('model_sha256', '') <> FProfile.ModelSha256) or
+            (LResults.Get('reconstruction', 'sparse') <> 'sparse') then Continue;
+          for J := 0 to LResults.Arrays['outputs'].Count - 1 do
+          begin
+            LBefore := LResults.Arrays['outputs'].Objects[J];
+            if (LBefore.Integers['seed'] <> AOutput.Integers['seed']) or
+              (LBefore.Int64s['frame_count'] <> AOutput.Int64s['frame_count']) then Continue;
+            for LGroup in CGroups do
+              for K := 0 to LQueue.Arrays[LGroup].Count - 1 do
+              begin
+                LRow := LQueue.Arrays[LGroup].Objects[K];
+                if (LRow.Strings['id'] <> LBefore.Get('listening_request_id', '')) or
+                  (LRow.Arrays['assets'].Count <> 1) then Continue;
+                N := LRow.Arrays['assets'].Objects[0].Integers['sample_rate'];
+                if (N <> AOutput.Integers['sample_rate']) or
+                  (LRow.Arrays['assets'].Objects[0].Integers['channels'] <> AOutput.Integers['channels']) then Continue;
+                Result := TJSONObject(LRow.Clone);
+                AOutput.Add('comparison_parent_job_id', LJob.Strings['job_id']);
+                Exit;
+              end;
+          end;
+        finally
+          LJob.Free;
+        end;
+      end;
+    finally
+      LQueue.Free;
+      LJobs.Free;
+    end;
+  end;
 begin
+  LSuccessor := FRequest.Get('reconstruction', 'sparse') = 'source_successor';
   LNames[0] := 'fits';
   LNames[1] := 'does_not_fit';
   LNames[2] := 'unknown';
@@ -1199,6 +1365,33 @@ begin
       LRequest.Add('question', 'Does this generated music fit the style you want?');
       LAssets := TJSONArray.Create;
       LRequest.Add('assets', LAssets);
+      LParent := nil;
+      if LSuccessor then LParent := FindParent(LOutput);
+      try
+        if LParent <> nil then
+        begin
+          LRequest.Strings['kind'] := 'pair';
+          LRequest.Strings['task_id'] := 'NS-5_continuity_01';
+          LRequest.Strings['question'] := 'Which version has fewer broken or jittery notes?';
+          LAsset := TJSONObject(LParent.Arrays['assets'].Objects[0].Clone);
+          LAsset.Strings['id'] := 'before';
+          LAssets.Add(LAsset);
+          LExperiment := TJSONObject.Create;
+          LRequest.Add('experiment', LExperiment);
+          LExperiment.Add('title', 'Smoother notes');
+          LExperiment.Add('change', 'After keeps matching neighboring sound fragments together.');
+          LExperiment.Add('decision', 'Your answer will help decide whether to keep this reconstruction change.');
+          LBinding := TJSONObject.Create;
+          LExperiment.Add('parent', LBinding);
+          LBinding.Add('request_id', LParent.Strings['id']);
+          LBinding.Add('asset_id', LParent.Arrays['assets'].Objects[0].Strings['id']);
+          LBinding.Add('request_sha256', LParent.Strings['request_sha256']);
+          LOutput.Add('comparison_parent_request_id', LParent.Strings['id']);
+          LOutput.Add('comparison_parent_request_sha256', LParent.Strings['request_sha256']);
+        end;
+      finally
+        LParent.Free;
+      end;
       LAsset := TJSONObject.Create;
       LAssets.Add(LAsset);
       LAsset.Add('id', 'audition');
@@ -1222,7 +1415,9 @@ begin
         LProvenance.Add('source_sha256s', LSourceHashes);
       end;
       LProvenance.Add('model_sha256', FProfile.ModelSha256);
-      LProvenance.Add('policy_sha256', StudioTextHash(CPolicy));
+      if LSuccessor then
+        LProvenance.Add('policy_sha256', StudioTextHash(CPolicy + ';exact_source_successor_v1'))
+      else LProvenance.Add('policy_sha256', StudioTextHash(CPolicy));
       LProvenance.Add('parameter_sha256', FRequest.Strings['request_sha256']);
       LProvenance.Add('split', 'development');
       LProvenance.Add('seed', LOutput.Integers['seed']);
@@ -1233,6 +1428,14 @@ begin
       LRange.Add('asset_id', 'audition');
       LRange.Add('start_frame', 0);
       LRange.Add('end_frame', LOutput.Int64s['frame_count']);
+      if LAssets.Count = 2 then
+      begin
+        LAsset.Strings['id'] := 'after';
+        LRange.Strings['asset_id'] := 'after';
+        LRange := TJSONObject(LRange.Clone);
+        LRange.Strings['asset_id'] := 'before';
+        LRanges.Add(LRange);
+      end;
       LSpec := TJSONObject.Create;
       LRequest.Add('answer_spec', LSpec);
       LChoices := TJSONArray.Create;
@@ -1240,10 +1443,16 @@ begin
       LSpec.Add('scores', TJSONArray.Create);
       LChoice := TJSONObject.Create;
       LChoices.Add(LChoice);
-      LChoice.Add('id', 'style_fit');
+      if LAssets.Count = 2 then LChoice.Add('id', 'continuity_preference')
+      else LChoice.Add('id', 'style_fit');
       LOptions := TJSONArray.Create;
       LChoice.Add('values', LOptions);
-      for LOptionIndex := 0 to 2 do
+      if LAssets.Count = 2 then
+      begin
+        LOptions.Add('before'); LOptions.Add('after'); LOptions.Add('same');
+        LOptions.Add('neither'); LOptions.Add('unknown');
+      end
+      else for LOptionIndex := 0 to 2 do
       begin
         LOptions.Add(LNames[LOptionIndex]);
       end;
@@ -1366,6 +1575,7 @@ begin
   end;
   Preflight;
   Train;
+  PrepareSourceContinuity;
   FReceipt.Add('retained_token_count', FProfile.Palette.Count);
   FReceipt.Add('retained_candidate_count', FProfile.Pool.SlotCount);
   FReceipt.Add('retained_model_state_count', FProfile.Model.StateCount);

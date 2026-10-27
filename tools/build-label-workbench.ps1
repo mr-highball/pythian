@@ -25,6 +25,7 @@ param(
   [string] $Compiler = $(if ($env:PAS2JS) { $env:PAS2JS } else { 'pas2js' }),
   [string] $RtlSource = $env:PAS2JS_RTL_SOURCE,
   [string] $RtlJavascript = $env:PAS2JS_RTL_JS,
+  [string] $OutputRoot = $env:PYTHIAN_BUILD_ROOT,
   [switch] $VerifyCodec
 )
 
@@ -39,7 +40,10 @@ $compilerCommand = Get-Command -Name $Compiler -CommandType Application -ErrorAc
 $Compiler = $compilerCommand.Source
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $sourceRoot = Join-Path $PSScriptRoot 'label-workbench'
-$outputRoot = Join-Path $repositoryRoot 'build\label-workbench'
+if ([string]::IsNullOrWhiteSpace($OutputRoot)) {
+  $OutputRoot = Join-Path $repositoryRoot 'build'
+}
+$outputRoot = Join-Path ([IO.Path]::GetFullPath($OutputRoot)) 'label-workbench'
 $unitRoot = Join-Path $outputRoot 'units'
 $webRoot = Join-Path $outputRoot 'www'
 $program = Join-Path $sourceRoot 'app.lpr'

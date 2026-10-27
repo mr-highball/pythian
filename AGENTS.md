@@ -24,6 +24,12 @@ Read [the project profile](PROJECT.md) and the relevant standards in
   its separate local repository and a new branch, inform the user, and follow
   the [cross-repository procedure](docs/TASKFLOW.MD#cross-repository-wfc-gaps).
 - Follow [stewardship](vendor/athena/docs/agent-stewardship.md) and the current
+  operator override: **single-agent mode, Big Boss only, from 2026-10-26 until
+  the user explicitly changes it**. Do not start, resume or delegate to helpers.
+  Big Boss owns implementation and verification; do not describe solo checks
+  as independent review. The team below is retained configuration for a later
+  explicit return to delegation, not current authorization to use helpers.
+- Retained team configuration:
   [authorized team](docs/TASKFLOW.MD#delegated-validation-and-publication):
   Big Boss (main, GPT-6 Sol Ultra), Ticket Guy (GPT-6.1 Sol Medium), Ticket Guy Neo
   (GPT-6.1 Sol Ultra, complex/costly work and coordination Big Boss assigns), and Salty Boi
@@ -34,7 +40,13 @@ Read [the project profile](PROJECT.md) and the relevant standards in
   Neo may assign bounded disjoint work to the
   existing Ticket Guy and coordinate Salty Boi, without additional helpers.
 - Preserve complete license notices and record precursor provenance.
-- Keep generated files under ignored `build/`. Validate meaningful boundaries,
+- On this workstation, put new build/test/cache/run output under
+  `E:/CodexWork/pythian/`, in its dedicated `build/`, `tests/`, `cache/` and
+  `runs/` folders. Existing repo-local `build/` is a real D-drive directory,
+  not a redirection; inspect or add an explicit output-root override before
+  running a script that hardcodes it. Keep historical evidence and fixed
+  deployed service slots intact. Other projects' E-drive folders are unrelated.
+  Keep generated files outside source control. Validate meaningful boundaries,
   deterministic replay, and the changed listening path without redundant suites.
 - Launch the review service only from the fixed executable slots described in
   [the LAN procedure](docs/LAN-REVIEW-SERVICE.md), including isolated QA.

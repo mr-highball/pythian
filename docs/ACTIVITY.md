@@ -118,6 +118,58 @@ and exact source/output coordinates.
 
 ## Native comparison
 
+### Journal-backed exact source successors
+
+Studio's finite auditions can use this optional rule through
+`reconstruction: "source_successor"`; the standard `"sparse"` mode is unchanged.
+Studio reuses the saved model and complete journals, recording reconstruction
+policy and source bindings separately from training identity. This remains
+experimental acoustic reconstruction. The prepared
+[listening flow](FULL-OUTPUT-LISTENING.md#prepared-core-experiments) asks one
+continuity question; no note, style or sustain acceptance follows from the option.
+
+`TJournalSourceSuccessors` in `pythian.learning.selection` builds a detached,
+bounded token/distance index from completed saved journals and their existing
+palette. It performs no analysis or training. The optional
+`TJournalSelectionStream.SelectWindowsChunk` path consumes the original weighted
+fallback rotation and can select the previous actual window's next observed hop
+when its token and source range match the current fallback. All other positions
+keep the fallback. The predicate is shared with the primary corpus planner.
+
+The index's `RequireCompatible` checks structural coordinates and observed-token
+membership. Like the existing coordinate-only candidate pool, it cannot establish
+source or palette provenance. Hosts retain exact journal/source/palette bindings;
+the bound `TJournalAudioSession` additionally rejects incompatible vocabulary and
+profile ranges before rendering. The optional index is borrowed for the session
+lifetime. Nil retains baseline behavior; explicit windows use the existing Hann
+renderer, and predecessor state continues across internal chunks.
+
+The maintained native comparison consumer accepts one saved Studio raw-acoustic
+range and a new output directory:
+
+```text
+pythian.source.successor PROFILE_DIR JOB_DIR SOURCE.wav NEW_OUTPUT_DIR [BLOCK_FRAMES] [SEED]
+```
+
+It verifies exact source/journal bytes, loads the frozen model, and retains
+`before.wav`, `after.wav`, `original-reference.wav` and a full `comparison.json`
+grain map. Source and journal stay open read-only, denying writes; existing output
+directories reject. Comparisons are at most 20 seconds and seeds are fixed at
+731/1731/2731. Seed 731 must reproduce the saved baseline and its original grain
+coordinates exactly. A 180-second budget and bounded journals/windows limit work.
+This opt-in native path does not change or deploy the Studio default.
+
+The 2026-10-13 retained negative-audition comparison preserves all 935 tokens,
+one source range and 960,000 stereo frames at 48 kHz. Exact contiguous links change
+from 0 to 748, while repeated exact four-window sequences change from 628 to 436.
+The longest source-contiguous span changes from 85.3 ms to 661.3 ms. Those are
+source-coordinate measurements, not admitted sustained notes or musical quality.
+Levels also change: raw RMS is 0.0853 versus 0.1337, and peak 0.4388 versus 0.8932;
+the outputs are not loudness matched. Retain that distinction during listening.
+Private reproducible outputs and experiment notes are under
+`build/source-successor-20261013/`; the scoped task is
+[continuity_03](TODO/DONE/NS-5_continuity_03.md), with no additional milestone credit.
+
 ```text
 pythian.archive remix-continuous INPUT.pyac OUTPUT.wav SEED ACOUSTIC_FRAMES SOURCE.wav [SOURCE.wav ...]
 ```

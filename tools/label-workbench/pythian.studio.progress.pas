@@ -58,6 +58,8 @@ begin
     'verify_model_sources': Result := 'Recheck recordings before saving learning';
     'save_learned_model': Result := 'Save learning';
     'reload_verified_model': Result := 'Use saved learning';
+    'find_feature_journals': Result := 'Find saved sound observations';
+    'prepare_source_continuity': Result := 'Prepare source continuity';
     'generate_auditions': Result := 'Generate music';
     'streaming': Result := 'Generate & play';
     'verify_output_sources': Result := 'Recheck recordings before saving results';

@@ -31,6 +31,7 @@ interface
 
 uses
   pythian.audio,
+  pythian.analysis.journal,
   pythian.learning,
   pythian.learning.journal;
 
@@ -38,6 +39,7 @@ const
   MaximumJournalCandidateSlots = 65536;
   MaximumJournalSelectionGrains = 4096;
   MaximumJournalSelectionVisits = 64000000;
+  MaximumJournalSuccessorObservations = 1048576;
 
 type
   TJournalSelectionWeights = array of Integer;
@@ -78,6 +80,57 @@ type
     property BinsPerSegment: Integer read FBins;
   end;
 
+  TJournalSuccessorSource = record
+    Binding: TFeatureJournalBinding;
+    FirstFeature: Int64;
+    FeatureCount: Int64;
+  end;
+
+  { Detaches token/distance observations from completed, verified journals using
+    the supplied existing palette. No training, source PCM or feature arrays are
+    retained. Host verification binds journal bytes, palette and original ranges.
+    The hard observation bound is checked before allocation. }
+  TJournalSourceSuccessors = class
+  private
+    type
+      TNode = record
+        Token: Integer;
+        Distance: Double;
+      end;
+      TSource = record
+        Geometry: TJournalSuccessorSource;
+        NodeOffset: Integer;
+      end;
+    var
+      FNodes: array of TNode;
+      FSources: array of TSource;
+      FTokenCount: Integer;
+      FHopFrames: Integer;
+      FWindowFrames: Integer;
+      FVocabularySha256: String;
+      function GetSourceCount: Integer;
+      function GetObservationCount: Integer;
+      function GetStorageBytes: Int64;
+      function NodeAt(const ACandidate: TJournalRepresentative): Integer;
+  public
+    constructor Create(const AReader: TJournalTrainingReader;
+      const APalette: TAcousticPalette);
+    function SourceAt(const AIndex: Integer): TJournalSuccessorSource;
+    { Checks pool geometry, candidate coordinates and observed token membership.
+      A coordinate-only pool cannot prove source bytes or palette provenance;
+      callers separately bind those identities before rendering. }
+    procedure RequireCompatible(const APool: TJournalCandidatePool);
+    { Only the exact next observed source hop is eligible. A fallback range
+      mismatch, token mismatch or selected-range endpoint keeps the fallback.
+      All decisions are deterministic and leave this index unchanged. }
+    function Select(const APrevious, AFallback: TJournalRepresentative;
+      const ARequestedToken: Integer): TJournalRepresentative;
+    property SourceCount: Integer read GetSourceCount;
+    property ObservationCount: Integer read GetObservationCount;
+    property StorageBytes: Int64 read GetStorageBytes;
+    property VocabularySha256: String read FVocabularySha256;
+  end;
+
   { Borrows an immutable pool. Each successful chunk continues the same smooth
     weighted segment rotation, per-token/segment bin cursors and last slot.
     Grain and visit budgets apply per call; total counters are checked Int64.
@@ -92,10 +145,19 @@ type
     FPrevious: Integer;
     FSelectedCount: Int64;
     FSelectionVisits: Int64;
+    FSuccessors: TJournalSourceSuccessors;
+    FPreviousWindow: TJournalRepresentative;
   public
     constructor Create(const APool: TJournalCandidatePool;
-      const AWeights: TJournalSelectionWeights; const ASeed: Integer = 731);
+      const AWeights: TJournalSelectionWeights; const ASeed: Integer = 731;
+      const ASuccessors: TJournalSourceSuccessors = nil);
     function SelectChunk(const ATokens: TAcousticIndices): TAcousticIndices;
+    { Borrows the optional immutable successor index for this stream's lifetime.
+      Consumes the same fallback rotation as SelectChunk; actual windows can
+      extend outside the sparse pool, preserving each token and fallback range.
+      Failed calls preserve fallback cursors, counters and previous actual window.
+      Use one selection method consistently during a sequence. }
+    function SelectWindowsChunk(const ATokens: TAcousticIndices): TJournalRepresentatives;
     property SelectedCount: Int64 read FSelectedCount;
     property SelectionVisits: Int64 read FSelectionVisits;
   end;
@@ -111,6 +173,8 @@ implementation
 
 uses
   Math,
+  pythian.continuity,
+  pythian.learning.binding,
   pythian.granular;
 
 function RenderJournalSelection(const APool: TJournalCandidatePool;
@@ -390,8 +454,198 @@ begin
   end;
 end;
 
+constructor TJournalSourceSuccessors.Create(const AReader: TJournalTrainingReader;
+  const APalette: TAcousticPalette);
+var
+  LSegment: TJournalTrainingSegment;
+  LObservation: TJournalTrainingObservation;
+  LIndex: Integer;
+  LOffset: Integer;
+  LNode: Integer;
+  LRead: Integer;
+begin
+  inherited Create;
+  if (AReader = nil) or (APalette = nil) or
+    (AReader.ObservationCount < 1) or
+    (AReader.ObservationCount > MaximumJournalSuccessorObservations) then
+  begin
+    raise EAudio.Create('Successor index requires reader, palette and bounded observations');
+  end;
+  FTokenCount := APalette.Count;
+  SetLength(FSources, AReader.SegmentCount);
+  LOffset := 0;
+  for LIndex := 0 to AReader.SegmentCount - 1 do
+  begin
+    LSegment := AReader.SegmentAt(LIndex);
+    FSources[LIndex].Geometry.Binding := LSegment.Journal.Binding;
+    FSources[LIndex].Geometry.FirstFeature := LSegment.FirstFeature;
+    FSources[LIndex].Geometry.FeatureCount := LSegment.FeatureCount;
+    FSources[LIndex].NodeOffset := LOffset;
+    Inc(LOffset, Integer(LSegment.FeatureCount));
+  end;
+  FHopFrames := FSources[0].Geometry.Binding.Options.HopFrames;
+  FWindowFrames := FSources[0].Geometry.Binding.Options.WindowFrames;
+  FVocabularySha256 := AcousticVocabularySha256(APalette,
+    FSources[0].Geometry.Binding.Options, FSources[0].Geometry.Binding.SampleRate,
+    FSources[0].Geometry.Binding.Channels);
+  SetLength(FNodes, Integer(AReader.ObservationCount));
+  AReader.Rewind;
+  LRead := 0;
+  while AReader.ReadObservation(LObservation) do
+  begin
+    LNode := FSources[LObservation.SegmentIndex].NodeOffset +
+      Integer(LObservation.FeatureIndex -
+        FSources[LObservation.SegmentIndex].Geometry.FirstFeature);
+    FNodes[LNode].Token := APalette.EncodeFeature(LObservation.Feature);
+    FNodes[LNode].Distance := APalette.FeatureDistance(LObservation.Feature,
+      FNodes[LNode].Token);
+    Inc(LRead);
+  end;
+  if (LRead <> Length(FNodes)) or (LOffset <> Length(FNodes)) then
+  begin
+    raise EAudio.Create('Successor index did not consume every declared observation');
+  end;
+end;
+
+function TJournalSourceSuccessors.GetSourceCount: Integer;
+begin
+  Result := Length(FSources);
+end;
+
+function TJournalSourceSuccessors.GetObservationCount: Integer;
+begin
+  Result := Length(FNodes);
+end;
+
+function TJournalSourceSuccessors.GetStorageBytes: Int64;
+var
+  LSource: TSource;
+begin
+  Result := Int64(Length(FNodes)) * SizeOf(TNode) +
+    Int64(Length(FSources)) * SizeOf(TSource) + Length(FVocabularySha256);
+  for LSource in FSources do
+  begin
+    Inc(Result, Length(LSource.Geometry.Binding.SourceSha256));
+  end;
+end;
+
+function TJournalSourceSuccessors.SourceAt(const AIndex: Integer): TJournalSuccessorSource;
+begin
+  if (AIndex < 0) or (AIndex >= SourceCount) then
+  begin
+    raise EAudio.Create('Successor source index out of bounds');
+  end;
+  Result := FSources[AIndex].Geometry;
+end;
+
+function TJournalSourceSuccessors.NodeAt(const ACandidate: TJournalRepresentative): Integer;
+var
+  LSource: TSource;
+  LOffset: Int64;
+begin
+  Result := -1;
+  if not ACandidate.Found or (ACandidate.SegmentIndex < 0) or
+    (ACandidate.SegmentIndex >= SourceCount) then
+  begin
+    Exit;
+  end;
+  LSource := FSources[ACandidate.SegmentIndex];
+  if (ACandidate.FeatureIndex < LSource.Geometry.FirstFeature) or
+    (ACandidate.FeatureIndex >= LSource.Geometry.FirstFeature + LSource.Geometry.FeatureCount) or
+    (ACandidate.SourceFrame < 0) or
+    (ACandidate.SourceFrame >= LSource.Geometry.Binding.FrameCount) then
+  begin
+    Exit;
+  end;
+  LOffset := ACandidate.FeatureIndex - LSource.Geometry.FirstFeature;
+  if (ACandidate.SourceFrame mod FHopFrames <> 0) or
+    (ACandidate.SourceFrame div FHopFrames <> ACandidate.FeatureIndex) or
+    (ACandidate.ValidFrames <> Min(Int64(FWindowFrames),
+      LSource.Geometry.Binding.FrameCount - ACandidate.SourceFrame)) then
+  begin
+    Exit;
+  end;
+  Result := LSource.NodeOffset + Integer(LOffset);
+end;
+
+procedure TJournalSourceSuccessors.RequireCompatible(const APool: TJournalCandidatePool);
+var
+  LSlot: Integer;
+  LNode: Integer;
+  LCandidate: TJournalRepresentative;
+begin
+  if (APool = nil) or (APool.FTokenCount <> FTokenCount) or
+    (APool.SegmentCount <> SourceCount) then
+  begin
+    raise EAudio.Create('Successor index and fallback pool geometry differ');
+  end;
+  for LSlot := 0 to APool.SlotCount - 1 do
+  begin
+    LCandidate := APool.CandidateAt(LSlot);
+    if not LCandidate.Found then
+    begin
+      Continue;
+    end;
+    LNode := NodeAt(LCandidate);
+    if (LNode < 0) or (FNodes[LNode].Token <> APool.TokenAt(LSlot)) then
+    begin
+      raise EAudio.Create('Fallback candidate differs from its observed successor index');
+    end;
+  end;
+end;
+
+function TJournalSourceSuccessors.Select(const APrevious,
+  AFallback: TJournalRepresentative; const ARequestedToken: Integer): TJournalRepresentative;
+var
+  LNode: Integer;
+  LNext: Integer;
+  LSource: TSource;
+  LCandidate: TJournalRepresentative;
+begin
+  LNode := NodeAt(AFallback);
+  if (LNode < 0) or (FNodes[LNode].Token <> ARequestedToken) then
+  begin
+    raise EAudio.Create('Successor fallback does not match its requested observed token');
+  end;
+  Result := AFallback;
+  if not APrevious.Found then
+  begin
+    Exit;
+  end;
+  LNode := NodeAt(APrevious);
+  if LNode < 0 then
+  begin
+    raise EAudio.Create('Previous successor window leaves its declared source range');
+  end;
+  if APrevious.SegmentIndex <> AFallback.SegmentIndex then
+  begin
+    Exit;
+  end;
+  LSource := FSources[APrevious.SegmentIndex];
+  LNext := LNode + 1;
+  if LNext >= LSource.NodeOffset + LSource.Geometry.FeatureCount then
+  begin
+    Exit;
+  end;
+  LCandidate := Default(TJournalRepresentative);
+  LCandidate.Found := True;
+  LCandidate.SegmentIndex := APrevious.SegmentIndex;
+  LCandidate.FeatureIndex := APrevious.FeatureIndex + 1;
+  LCandidate.SourceFrame := LCandidate.FeatureIndex * FHopFrames;
+  LCandidate.ValidFrames := Integer(Min(Int64(FWindowFrames),
+    LSource.Geometry.Binding.FrameCount - LCandidate.SourceFrame));
+  LCandidate.Distance := FNodes[LNext].Distance;
+  if IsExactSourceSuccessor(APrevious.SegmentIndex, LCandidate.SegmentIndex,
+    FNodes[LNext].Token, ARequestedToken, APrevious.SourceFrame,
+    LCandidate.SourceFrame, FHopFrames) then
+  begin
+    Result := LCandidate;
+  end;
+end;
+
 constructor TJournalSelectionStream.Create(const APool: TJournalCandidatePool;
-  const AWeights: TJournalSelectionWeights; const ASeed: Integer);
+  const AWeights: TJournalSelectionWeights; const ASeed: Integer;
+  const ASuccessors: TJournalSourceSuccessors);
 var
   LIndex: Integer;
 begin
@@ -412,6 +666,12 @@ begin
     end;
   end;
   FPool := APool;
+  if ASuccessors <> nil then
+  begin
+    ASuccessors.RequireCompatible(APool);
+  end;
+  FSuccessors := ASuccessors;
+  FPreviousWindow := Default(TJournalRepresentative);
   FWeights := Copy(AWeights);
   SetLength(FCredits, APool.FSegmentCount);
   SetLength(FCursors, APool.FTokenCount * APool.FSegmentCount);
@@ -512,6 +772,49 @@ begin
   FPrevious := LPrevious;
   Inc(FSelectedCount, Length(ATokens));
   Inc(FSelectionVisits, LWork);
+end;
+
+function TJournalSelectionStream.SelectWindowsChunk(
+  const ATokens: TAcousticIndices): TJournalRepresentatives;
+var
+  LSlots: TAcousticIndices;
+  LCredits: array of Int64;
+  LCursors: array of Integer;
+  LPrevious: Integer;
+  LSelectedCount: Int64;
+  LSelectionVisits: Int64;
+  LPreviousWindow: TJournalRepresentative;
+  LIndex: Integer;
+begin
+  Result := nil;
+  LCredits := FCredits;
+  LCursors := FCursors;
+  LPrevious := FPrevious;
+  LSelectedCount := FSelectedCount;
+  LSelectionVisits := FSelectionVisits;
+  LPreviousWindow := FPreviousWindow;
+  try
+    LSlots := SelectChunk(ATokens);
+    SetLength(Result, Length(LSlots));
+    for LIndex := 0 to High(LSlots) do
+    begin
+      Result[LIndex] := FPool.CandidateAt(LSlots[LIndex]);
+      if FSuccessors <> nil then
+      begin
+        Result[LIndex] := FSuccessors.Select(LPreviousWindow, Result[LIndex], ATokens[LIndex]);
+      end;
+      LPreviousWindow := Result[LIndex];
+    end;
+    FPreviousWindow := LPreviousWindow;
+  except
+    FCredits := LCredits;
+    FCursors := LCursors;
+    FPrevious := LPrevious;
+    FSelectedCount := LSelectedCount;
+    FSelectionVisits := LSelectionVisits;
+    Result := nil;
+    raise;
+  end;
 end;
 
 end.

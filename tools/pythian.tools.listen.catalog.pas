@@ -42,6 +42,11 @@ function PublishListeningQueue(const ACatalogRoot,
 function AppendListeningQueue(const ACatalogRoot,
   AInputPath: String): TJSONObject;
 function ReadListeningQueue(const ACatalogRoot: String): TJSONObject;
+{ Prepared experiments reuse the same immutable requests and answer journal.
+  This only removes supporting/replaced unreviewed items from the app projection. }
+procedure ProjectListeningExperiments(const AQueue: TJSONObject);
+function PrepareListeningExperiment(const ACatalogRoot: String;
+  const ADefinition: TJSONObject): TJSONObject;
 function CommitListeningReview(const ACatalogRoot: String;
   const ATransaction: TJSONObject): TJSONObject;
 function ExportListeningPacket(const ACatalogRoot, AOutputPath: String): TJSONObject;
@@ -864,6 +869,39 @@ begin
   end;
 end;
 
+function ReadQueueManifest(const ACatalogRoot: String): TJSONObject; forward;
+function FindRequest(const AQueue: TJSONObject; const AId: String): TJSONObject; forward;
+
+function NormalizeExperiment(const AInput: TJSONObject): TJSONObject;
+var
+  LName: String;
+  LBinding: TJSONObject;
+const
+  CBindings: array[0..2] of String = ('reference', 'replaces', 'parent');
+begin
+  CheckFields(AInput, '|title|change|decision|reference|replaces|parent|');
+  Result := TJSONObject.Create;
+  try
+    Result.Add('title', TextField(AInput, 'title', 128));
+    Result.Add('change', TextField(AInput, 'change', 512));
+    Result.Add('decision', TextField(AInput, 'decision', 512));
+    for LName in CBindings do
+      if AInput.Find(LName) <> nil then
+      begin
+        LBinding := ObjectField(AInput, LName);
+        CheckFields(LBinding, '|request_id|asset_id|request_sha256|');
+        Need((LBinding.Count = 3) and
+          SafeId(TextField(LBinding, 'request_id', 128), 128) and
+          SafeId(TextField(LBinding, 'asset_id', 64), 64) and
+          ValidHash(TextField(LBinding, 'request_sha256', 64)), 'Invalid experiment reference');
+        Result.Add(LName, LBinding.Clone);
+      end;
+  except
+    Result.Free;
+    raise;
+  end;
+end;
+
 function NormalizeRequest(const ACatalogRoot: String;
   const AInput: TJSONObject; const AVerifyAssets: Boolean): TJSONObject;
 var
@@ -878,7 +916,7 @@ var
   J: Integer;
 begin
   CheckFields(AInput, '|id|task_id|kind|question|assets|ranges|' +
-    'answer_spec|purpose|correspondence_evidence|');
+    'answer_spec|purpose|correspondence_evidence|experiment|');
   Need(SafeId(TextField(AInput, 'id', 128), 128), 'invalid request ID');
   Need(SafeId(TextField(AInput, 'task_id', 64), 64),
     'invalid task ID');
@@ -937,10 +975,60 @@ begin
     Result.Add('ranges', LOutputRanges);
     LSpec := NormalizeSpec(ObjectField(AInput, 'answer_spec'));
     Result.Add('answer_spec', LSpec);
+    if AInput.Find('experiment') <> nil then
+      Result.Add('experiment', NormalizeExperiment(ObjectField(AInput, 'experiment')));
   except
     LAsset.Free;
     Result.Free;
     raise;
+  end;
+end;
+
+procedure VerifyExperimentBindings(const ACatalogRoot: String;
+  const AQueue: TJSONObject);
+var
+  LExisting, LRequest, LExperiment, LBinding, LTarget, LAsset: TJSONObject;
+  LName: String;
+  I: Integer;
+const
+  CBindings: array[0..2] of String = ('reference', 'replaces', 'parent');
+begin
+  { Big Boss: resolve within a complete imported packet before consulting the
+    current catalog. A fresh replay must not require prior publication. }
+  LExisting := ReadQueueManifest(ACatalogRoot);
+  try
+    for I := 0 to AQueue.Arrays['items'].Count - 1 do
+    begin
+      LRequest := AQueue.Arrays['items'].Objects[I];
+      if LRequest.Find('experiment') = nil then Continue;
+      LExperiment := LRequest.Objects['experiment'];
+      for LName in CBindings do
+        if LExperiment.Find(LName) <> nil then
+        begin
+          LBinding := LExperiment.Objects[LName];
+          LTarget := FindRequest(AQueue, LBinding.Strings['request_id']);
+          if LTarget = nil then LTarget := FindRequest(LExisting, LBinding.Strings['request_id']);
+          Need((LTarget <> nil) and (LTarget.Strings['id'] <> LRequest.Strings['id']) and
+            (LTarget.Find('experiment') = nil), 'Experiment context must bind an ordinary request');
+          Need(HashJson(LTarget) = LBinding.Strings['request_sha256'], 'Experiment reference changed');
+          LAsset := FindAsset(LTarget.Arrays['assets'], LBinding.Strings['asset_id']);
+          Need(LAsset <> nil, 'Experiment asset is not declared by its bound request');
+          if LName = 'reference' then
+            Need((LAsset.Int64s['frames'] <= Int64(LAsset.Integers['sample_rate']) * 30) and
+              ((LAsset.Strings['role'] = 'source') or (LAsset.Strings['role'] = 'reference')),
+              'Prepared original must be source context at most thirty seconds');
+          if LName = 'replaces' then
+            Need((LTarget.Arrays['assets'].AsJSON = LRequest.Arrays['assets'].AsJSON) and
+              (LTarget.Arrays['ranges'].AsJSON = LRequest.Arrays['ranges'].AsJSON),
+              'Replacement must preserve the exact comparison audio and ranges');
+          if LName = 'parent' then
+            Need((LRequest.Arrays['assets'].Count = 2) and
+              (LRequest.Arrays['assets'].Objects[0].Strings['sha256'] = LAsset.Strings['sha256']),
+              'Parent must identify the exact Before audio');
+        end;
+    end;
+  finally
+    LExisting.Free;
   end;
 end;
 
@@ -978,6 +1066,7 @@ begin
       LOutput.Add(LRequest);
       LRequest := nil;
     end;
+    if AVerifyAssets then VerifyExperimentBindings(ACatalogRoot, Result);
   except
     LRequest.Free;
     Result.Free;
@@ -1706,6 +1795,131 @@ begin
     Result := CommitListeningReviewLocked(ACatalogRoot, ATransaction);
   finally
     LLock.Free;
+  end;
+end;
+
+procedure ProjectListeningExperiments(const AQueue: TJSONObject);
+var
+  LItems, LRows: TJSONArray;
+  LExperiment, LBinding, LRow: TJSONObject;
+  LHidden: TStringList;
+  LName, LGroup: String;
+  I, J: Integer;
+const
+  CBindings: array[0..1] of String = ('reference', 'replaces');
+  CGroups: array[0..1] of String = ('items', 'completed');
+begin
+  LItems := AQueue.Arrays['items'];
+  LHidden := TStringList.Create;
+  try
+    for LGroup in CGroups do
+    begin
+      LRows := AQueue.Arrays[LGroup];
+      for I := 0 to LRows.Count - 1 do
+      begin
+      LRow := LRows.Objects[I];
+      if LRow.Find('experiment') = nil then Continue;
+      LExperiment := LRow.Objects['experiment'];
+      for LName in CBindings do
+        if LExperiment.Find(LName) <> nil then
+        begin
+          LBinding := LExperiment.Objects[LName];
+          for J := 0 to LItems.Count - 1 do
+            if (LItems.Objects[J].Strings['id'] = LBinding.Strings['request_id']) and
+              (LItems.Objects[J].Strings['request_sha256'] = LBinding.Strings['request_sha256']) and
+              (LItems.Objects[J].Find('experiment') = nil) and
+              (LItems.Objects[J].Strings['id'] <> LRow.Strings['id']) then
+              LHidden.Add(LBinding.Strings['request_id']);
+        end;
+      end;
+    end;
+    for I := LItems.Count - 1 downto 0 do
+      if LHidden.IndexOf(LItems.Objects[I].Strings['id']) >= 0 then LItems.Delete(I);
+    AQueue.Integers['waiting_count'] := LItems.Count;
+  finally
+    LHidden.Free;
+  end;
+end;
+
+function PrepareListeningExperiment(const ACatalogRoot: String;
+  const ADefinition: TJSONObject): TJSONObject;
+var
+  LQueue, LPrevious, LReference, LRequest, LExperiment, LBinding,
+    LSpec, LChoice, LAsset: TJSONObject;
+  LItems, LRows: TJSONArray;
+  LKind: String;
+  I: Integer;
+const
+  CQueueArrays: array[0..1] of String = ('items', 'completed');
+  CBindings: array[0..1] of String = ('reference', 'replaces');
+begin
+  LQueue := ReadListeningQueue(ACatalogRoot);
+  try
+    LPrevious := nil;
+    LReference := nil;
+    for LKind in CQueueArrays do
+    begin
+      LRows := LQueue.Arrays[LKind];
+      for I := 0 to LRows.Count - 1 do
+      begin
+        LRequest := LRows.Objects[I];
+        if LRequest.Strings['id'] = TextField(ADefinition, 'comparison_id', 128) then LPrevious := LRequest;
+        if LRequest.Strings['id'] = TextField(ADefinition, 'reference_id', 128) then LReference := LRequest;
+      end;
+    end;
+    Need((LPrevious <> nil) and (LReference <> nil) and
+      (LPrevious.Arrays['assets'].Count = 2) and (LReference.Arrays['assets'].Count = 1),
+      'Prepared comparison requires two generated examples and one original reference');
+    Need(((LPrevious.Arrays['assets'].Objects[0].Strings['role'] = 'generated') or
+        (LPrevious.Arrays['assets'].Objects[0].Strings['role'] = 'edited')) and
+      ((LPrevious.Arrays['assets'].Objects[1].Strings['role'] = 'generated') or
+        (LPrevious.Arrays['assets'].Objects[1].Strings['role'] = 'edited')) and
+      ((LReference.Arrays['assets'].Objects[0].Strings['role'] = 'source') or
+        (LReference.Arrays['assets'].Objects[0].Strings['role'] = 'reference')),
+      'Prepared original must be source audio; Before and After must be generated audio');
+    Need(LPrevious.Get('revision', 0) = 0, 'An answered comparison cannot be replaced');
+    Result := TJSONObject.Create;
+    try
+      Result.Add('version', 1);
+      LItems := TJSONArray.Create;
+      Result.Add('items', LItems);
+      LRequest := TJSONObject.Create;
+      LItems.Add(LRequest);
+      LRequest.Add('id', TextField(ADefinition, 'id', 128));
+      LRequest.Add('task_id', TextField(ADefinition, 'task_id', 64));
+      LRequest.Add('kind', 'pair');
+      LRequest.Add('question', TextField(ADefinition, 'question', 1024));
+      LRequest.Add('assets', LPrevious.Arrays['assets'].Clone);
+      LRequest.Add('ranges', LPrevious.Arrays['ranges'].Clone);
+      LSpec := TJSONObject.Create;
+      LRequest.Add('answer_spec', LSpec);
+      LRows := TJSONArray.Create;
+      LSpec.Add('choices', LRows);
+      LSpec.Add('scores', TJSONArray.Create);
+      LChoice := TJSONObject.Create;
+      LRows.Add(LChoice);
+      LChoice.Add('id', 'continuity_preference');
+      LChoice.Add('values', TJSONArray.Create(['before', 'after', 'same', 'neither', 'unknown']));
+      LExperiment := TJSONObject.Create;
+      LRequest.Add('experiment', LExperiment);
+      LExperiment.Add('title', TextField(ADefinition, 'title', 128));
+      LExperiment.Add('change', TextField(ADefinition, 'change', 512));
+      LExperiment.Add('decision', TextField(ADefinition, 'decision', 512));
+      for LKind in CBindings do
+      begin
+        if LKind = 'reference' then LAsset := LReference else LAsset := LPrevious;
+        LBinding := TJSONObject.Create;
+        LExperiment.Add(LKind, LBinding);
+        LBinding.Add('request_id', LAsset.Strings['id']);
+        LBinding.Add('asset_id', LAsset.Arrays['assets'].Objects[0].Strings['id']);
+        LBinding.Add('request_sha256', LAsset.Strings['request_sha256']);
+      end;
+    except
+      Result.Free;
+      raise;
+    end;
+  finally
+    LQueue.Free;
   end;
 end;
 

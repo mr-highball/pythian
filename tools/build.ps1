@@ -23,7 +23,8 @@ SOFTWARE.
 #>
 param(
   [string]$Compiler = 'fpc',
-  [switch]$CoreOnly
+  [switch]$CoreOnly,
+  [string]$OutputRoot = $env:PYTHIAN_BUILD_ROOT
 )
 
 $ErrorActionPreference = 'Stop'
@@ -35,7 +36,8 @@ $compilerCpu = (& $compilerPath '-iTP' | Out-String).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Compiler CPU probe failed' }
 $compilerOs = (& $compilerPath '-iTO' | Out-String).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Compiler OS probe failed' }
-$buildRoot = Join-Path $projectRoot "build/$compilerVersion-$compilerCpu-$compilerOs"
+if ([string]::IsNullOrWhiteSpace($OutputRoot)) { $OutputRoot = Join-Path $projectRoot 'build' }
+$buildRoot = Join-Path ([IO.Path]::GetFullPath($OutputRoot)) "$compilerVersion-$compilerCpu-$compilerOs"
 $unitRoot = Join-Path $buildRoot 'core-units'
 New-Item -ItemType Directory -Force $unitRoot | Out-Null
 Write-Output "Compiler: $compilerPath ($compilerVersion $compilerCpu-$compilerOs)"
@@ -242,6 +244,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Activity compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.activity$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Activity and continuity checks failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.journal.source.successor.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Exact source successor compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.journal.source.successor$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Exact source successor checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.presence.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Presence evidence compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.presence$executableSuffix")
@@ -1217,6 +1223,12 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'WFC learning checks failed' }
     & $compilerPath @adapterArgs 'tools/pythian.learn.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WAV learner compilation failed' }
+    & $compilerPath @adapterArgs 'tools/pythian.source.successor.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Source successor comparison compilation failed' }
+    # The bounded session fixture takes caller-supplied profile/journal files;
+    # private recorded evidence is not a build or CI input.
+    & $compilerPath @adapterArgs 'tests/pythian.tests.journal.source.session.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Source successor session fixture compilation failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.journal.long.output.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Long journal output verifier compilation failed' }
     & (Join-Path $buildRoot "pythian.learn$executableSuffix") (Join-Path $buildRoot 'synthesis.wav') (Join-Path $buildRoot 'synthesis-model')

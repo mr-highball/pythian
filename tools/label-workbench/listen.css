@@ -74,3 +74,22 @@ button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid #b7
   .queue-overview{padding:.85rem}
   .work{padding:.85rem}
 }
+.experiment-brief { border-left: 3px solid #9ee0d2; padding: 0 .8rem; margin: .8rem 0; }
+.sample-switch { display: flex; gap: .4rem; margin-bottom: .7rem; }
+.assets:has(.sample-switch) { grid-template-columns: 1fr; }
+.sample-switch button { flex: 1; min-width: 0; }
+.sample-switch button[aria-pressed="true"] { color: #102b31; background: #b3e8d7; font-weight: 700; }
+.experiment-picks { display: flex; flex-wrap: wrap; gap: .5rem; padding: .65rem; border: 1px solid #54786f; border-radius: .75rem; }
+.experiment-pick { display: flex; gap: .4rem; align-items: center; padding: .65rem; min-height: 44px; flex: 1 1 8rem; border: 1px solid #58747c; border-radius: .6rem; cursor: pointer; }
+.experiment-pick:has(input:checked) { background: #164e4b; border-color: #b3e8d7; }
+.experiment-pick input { width: auto; }
+#note-details { margin: .8rem 0; }
+#workspace-next-action { display: none; }
+@media(max-width:760px) {
+  header { padding: .6rem 1rem; }
+  header .eyebrow, header div > p:last-child { display: none; }
+  header h1 { font-size: 1.35rem; }
+  .queue-overview .eyebrow, .queue-overview > .muted { display: none; }
+  .queue-overview h2 { font-size: 1.1rem; }
+  .experiment-brief { font-size: .9rem; }
+}

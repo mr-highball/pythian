@@ -370,6 +370,15 @@ so no WFC branch or dependency change was made in this reassessment.
 
 ### Current team
 
+**Active operator override — 2026-10-26:** single-agent mode until the user
+explicitly changes it. Big Boss alone performs assessment, implementation and
+verification. Do not start or resume Ticket Guy, Neo, Salty Boi or other helpers.
+The briefly started read-only Neo assessment was interrupted before this record;
+Big Boss owns the remaining assessment. Do not claim independent helper QA for
+solo work. Required actual listening and independent-consumer evidence remains
+required. The retained team configuration and delegated batch rules below apply
+only after explicit authorization to resume delegation.
+
 The user's 2026-09-29 configuration and subsequent team/model revisions
 supersede all earlier assignments, junior permission and QA failure limits.
 

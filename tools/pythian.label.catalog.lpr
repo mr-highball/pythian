@@ -42,7 +42,8 @@ uses
   pythian.tools.annotations.queue,
   pythian.tools.annotations.replay,
   pythian.tools.annotations.review,
-  pythian.tools.listen.catalog;
+  pythian.tools.listen.catalog,
+  pythian.tools.studio.jobs;
 
 procedure RequireProposalAccess(const ACatalogRoot, AHash: String);
 var
@@ -132,6 +133,22 @@ begin
       RunCatalogHttp(ParamStr(2), ParamStr(3), LBindAddress, LPort,
         LMaximumRequests, LStaticRoot, LOpenLan);
       Exit;
+    end
+    else if (ParamCount = 4) and (ParamStr(1) = 'listen-experiment') then
+    begin
+      LData := ReadStudioJSON(ParamStr(3));
+      try
+        LReport := PrepareListeningExperiment(ParamStr(2), TJSONObject(LData));
+        try
+          WriteStudioJSONNew(ParamStr(4), LReport);
+        finally
+          LReport.Free;
+          LReport := nil;
+        end;
+      finally
+        LData.Free;
+      end;
+      LReport := AppendListeningQueue(ParamStr(2), ParamStr(4));
     end
     else if (ParamCount = 3) and (ParamStr(1) = 'import') then
     begin
@@ -364,6 +381,7 @@ begin
       WriteLn(StdErr, '       pythian.label.catalog propose-beats CATALOG_DIR HASH START END');
       WriteLn(StdErr, '       pythian.label.catalog proposals CATALOG_DIR HASH START END');
       WriteLn(StdErr, '       pythian.label.catalog serve INBOX_DIR CATALOG_DIR PORT [MAX_REQUESTS]');
+      WriteLn(StdErr, '       pythian.label.catalog listen-experiment CATALOG_DIR DEFINITION_JSON NEW_PACKET_JSON');
       WriteLn(StdErr, '       pythian.label.catalog serve INBOX_DIR CATALOG_DIR BIND_IP PORT [MAX_REQUESTS]');
       WriteLn(StdErr, '       pythian.label.catalog serve-app INBOX_DIR CATALOG_DIR WEBROOT PORT [MAX_REQUESTS]');
       WriteLn(StdErr, '       pythian.label.catalog serve-app INBOX_DIR CATALOG_DIR WEBROOT 127.0.0.1 PORT [MAX_REQUESTS]');

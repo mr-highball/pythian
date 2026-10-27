@@ -20,6 +20,13 @@ Phanes, then expanded into a fundamental synthesis and audio learning toolkit.
 | Publishing | Development snapshots on `hello-pythian` for ongoing review |
 | Branch | `hello-pythian` |
 
+Current operator mode (2026-10-26): **Big Boss alone until the user explicitly
+changes the instruction**. Retained team/model descriptions above are inactive.
+New local build, test, cache and run artifacts use the dedicated
+`E:/CodexWork/pythian/` workspace described in [AGENTS.md](AGENTS.md).
+The portable repository/CI build default does not establish local redirection;
+existing scripts need an explicit output override before use on this workstation.
+
 ## Dependencies
 
 The retained submodules and former Phanes reference are MIT licensed. Current

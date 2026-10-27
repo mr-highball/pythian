@@ -104,6 +104,48 @@ every source is audible at every moment of the output. The publisher checks
 the array shape and hashes, while the producer must bind secondary hashes to
 its saved learning profile; publication does not re-open those source WAVs.
 
+### Prepared core experiments
+
+The listening page can present one short development question with Original,
+Before and After tabs and **Save & next**. Only the two generated examples are
+voting assets. Original is optional source context; its timeline does not align
+with the generated music. No answer is preselected, and a note is optional.
+Saving records a judgment and advances the queue; it does not train or generate.
+
+To reuse an existing pending pair and a separately published original reference:
+
+```text
+pythian.label.catalog listen-experiment CATALOG definition.json NEW_PACKET.json
+```
+
+The definition contains `id`, `task_id`, `comparison_id`, `reference_id`, `title`,
+`question`, `change` and `decision`. The last three describe the single musical
+question, changed mechanism and next development decision. Both examples must be
+generated/edited assets; the original must be a source/reference asset at most
+30 seconds long. The command preserves exact audio, ranges and request hashes
+and appends a new immutable request. It refuses to replace an answered pair.
+
+Optional request `experiment` metadata contains `title`, `change`, `decision`
+and bound `reference`, `replaces` or `parent` descriptors. Each descriptor names
+an existing `request_id`, `asset_id` and canonical `request_sha256`. Publication
+verifies those bindings; replacement must retain the exact pair and ranges.
+The web queue hides pending contextual/replaced questions, including after the
+prepared answer is saved. Raw reports, exports, earlier requests and all response
+history remain intact. Parent comparisons remain available in their own history.
+
+Studio's finite auditions accept `reconstruction: "source_successor"` in an
+explicit job write; absence or `"sparse"` retains standard reconstruction.
+The experimental option reuses the model and complete feature journals and
+preserves WFC tokens, source ranges and existing DSP. Missing/modified journals
+fail without hidden reanalysis or sparse fallback. Preflight declares its index
+cost. Live generation rejects this option. This is acoustic reconstruction,
+without a claim of learned notes, sustained music or style quality.
+When a completed standard audition has the exact training/model identity, seed,
+duration and audio geometry, Studio can publish a Before/After continuity
+question with its exact parent identity. Original selections use the shared
+source-reference component. The initial curated operator comparison also binds
+a short level-matched original; level matching remains explicit producer work.
+
 ### Source correspondence packets
 
 A producer that asks whether two assets correspond to the same source must

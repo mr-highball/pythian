@@ -107,6 +107,11 @@ type
 
 function DefaultContinuityOptions: TContinuityOptions;
 procedure ValidateContinuityOptions(const AOptions: TContinuityOptions);
+{ Admission is independent of search policy. Tokens remain hard constraints and
+  a successor advances exactly one original source hop without crossing a range. }
+function IsExactSourceSuccessor(const APreviousSource, ANextSource,
+  ANextToken, ARequestedToken: Integer;
+  const APreviousFrame, ANextFrame, AHopFrames: Int64): Boolean;
 
 implementation
 
@@ -124,6 +129,20 @@ type
     Count: Integer;
     Nodes: array[0..31] of TBeamNode;
   end;
+
+function IsExactSourceSuccessor(const APreviousSource, ANextSource,
+  ANextToken, ARequestedToken: Integer;
+  const APreviousFrame, ANextFrame, AHopFrames: Int64): Boolean;
+begin
+  Result := False;
+  if (APreviousSource < 0) or (APreviousSource <> ANextSource) or
+    (ARequestedToken < 0) or (ANextToken <> ARequestedToken) or (APreviousFrame < 0) or
+    (AHopFrames < 1) or (APreviousFrame > High(Int64) - AHopFrames) then
+  begin
+    Exit;
+  end;
+  Result := ANextFrame = APreviousFrame + AHopFrames;
+end;
 
 function DefaultContinuityOptions: TContinuityOptions;
 begin
@@ -459,8 +478,9 @@ begin
         LNode := LLayers[LFrame - 1].Nodes[LParent].NodeIndex;
         LNext := LNode + 1;
         if (LNext >= Length(FNodes)) or
-          (FNodes[LNext].SourceIndex <> FNodes[LNode].SourceIndex) or
-          (FNodes[LNext].Token <> AIndices[LFrame]) or
+          not IsExactSourceSuccessor(FNodes[LNode].SourceIndex,
+            FNodes[LNext].SourceIndex, FNodes[LNext].Token, AIndices[LFrame],
+            FNodes[LNode].StartFrame, FNodes[LNext].StartFrame, FHopFrames) or
           ((Length(AActions) > 0) and (FNodes[LNext].Action <> AActions[LFrame])) then
         begin
           Continue;

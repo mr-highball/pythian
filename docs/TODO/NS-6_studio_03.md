@@ -15,17 +15,20 @@ Basis: [2026-09-30 operator allocation](../OPERATOR-STUDIO.md#allocation-and-own
 This owns usable feedback/iteration, not the scientific validity of style limits;
 [evaluation_01](NS-5_evaluation_01.md) and evaluation_04 retain that acceptance.
 
-Execution status: orientation and existing-collection prerequisites are accepted
-in [studio_08](DONE/NS-6_studio_08.md). The operator has now saved an actual
-negative musical review; purpose/usefulness and deliberate iteration remain open. Independent
-native and desktop/narrow QA passes the single/paired audition, response,
-comparison, blind presentation, history and deliberate next-batch loop. Next
-deliverable: complete the operator's purpose/usefulness and next-batch verdict
-under AC5, retaining the audible-use and saved-response evidence below. Closing
-evidence remains real operator use with durable response
-readback and preserved history/lineage. Stop at ambiguous purpose, missing
-playback/Save state, unbound feedback or an unsupported control. This task remains
-open; mechanical answers earn no musical verdict or completion credit.
+Execution status: existing engineering checks and the actual negative listening
+response are retained. The 2026-10-26 operator report identifies a remaining
+delivery gap: the app does not present a clear, prepared queue of generated
+experiments. The operator is willing to classify and listen; additional manual
+segmentation or an abstract usability verdict is not the next prerequisite.
+Big Boss owns the preparation and explanation of the next core-driven experiment.
+Next deliverable: show a prepared before/after comparison with its original
+context, one short musical question, explicit uncertainty and Save/Next.
+The exact-source-successor core integration is tracked separately in
+[continuity_04](NS-5_continuity_04.md). Existing queue/review mechanisms must be
+reused. Closing evidence remains real operator use with durable response readback
+and preserved output/source/task lineage. Stop at ambiguous purpose, missing
+playback/Save state, unbound feedback or unsupported controls. This task remains
+open; engineering checks earn no musical verdict or completion credit.
 
 **Acceptance Criteria:**
 
@@ -34,10 +37,20 @@ open; mechanical answers earn no musical verdict or completion credit.
   separate continuity/repetition/technical-quality judgments, preference with
   neither/unsure options, and optional playhead-based comments. Explain 0–3
   anchors in words; no automatic/preselected answer or mandatory frame editing.
+  Prepared experiments name the core task, what changed and the specific
+  listening decision in plain language. Present original context with the
+  before/after question in one review flow, rather than require an unrelated
+  reference-playback answer first. Loading a prepared review must not require
+  the operator to configure or generate another batch.
 - AC2: Compare current and earlier batches, with relevant changed controls,
   actual learning coverage, failures and unknowns visible. Let the operator pin
   useful results, correct feedback and reopen history without changing original
   audio. Preserve revision-checked saved responses through reload/export/report.
+  Use the existing queue for technical-ready generated experiments, one question
+  at a time. Distinguish defects in joins/sustains, repetition and style fit;
+  do not ask a broad style question when the experiment tests only continuity.
+  Keep poor musical results as evidence and avoid padding the queue with seed
+  variants or turning one comparison into several manual-review items.
 - AC3: Prepare an explicit next batch from a reviewed one: retain its corpus/model
   or deliberately change source selection, supported controls or seeds. Explain
   the change before enqueueing and preserve parent lineage. A preference Save
@@ -62,6 +75,33 @@ open; mechanical answers earn no musical verdict or completion credit.
 - [NS-5_evaluation_03.md](DONE/NS-5_evaluation_03.md)
 
 **Dev Notes:**
+
+- 2026-10-26, Big Boss: prepared experiments now use the existing immutable
+  listening queue and answer journals. One short question, Original/Before/After
+  tabs, Before/After/Same/Neither/Unsure choices, optional timestamp note and
+  Save/Next replace the separate original-reference answer plus verbose A/B
+  setup. Existing audio, requests and responses stay intact. Completed prepared
+  experiments continue to hide their superseded setup questions. The producer
+  command is documented in [full-output listening](../FULL-OUTPUT-LISTENING.md#prepared-core-experiments).
+  The actual listener passes 17 Pascal DOM checks, including a lost successful
+  Save response, one-write reconciliation, restored answer and audio-source
+  release. Native/API checks pass on copied operator data. Actual desktop/narrow
+  browser qualification is blocked by desktop-control access failure; it is not
+  a pass. The next operator action is one curated continuity comparison, without
+  new segmentation or generation setup. This task and its credit remain open.
+
+- 2026-10-26, Big Boss: the operator has supplied long recordings and is willing
+  to classify/listen, but cannot reasonably hand-segment them into training truth
+  and cannot find a useful generated-review queue. One existing successor A/B
+  and its separate original reference are pending in the catalog; their presence
+  does not establish discoverability or comprehensible intent. Reuse this real
+  comparison to close the prepared-review flow before creating more variants.
+  Whole-recording/coarse passage labels are valid source preferences; exact
+  note/beat truth and supported semantic learning remain with NS-3/NS-5 owners.
+  Current raw generation retains classifications as metadata and saved feedback
+  does not automatically retrain a preference model. Explain that briefly and
+  link each review to a deliberate core decision. No new review or render was
+  produced in this assessment; the earlier scientific stops remain in force.
 
 - 2026-10-05, Big Boss: the operator's first Studio comparison response is
   durably submitted at revision 1 and reads back through the live review API.

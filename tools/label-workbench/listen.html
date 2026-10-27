@@ -33,7 +33,7 @@ SOFTWARE.
 <body>
   <header>
     <div><p class="eyebrow">PYTHIAN / YOUR REVIEW QUEUE</p><h1>Listening reviews</h1>
-      <p>Play each recording, answer its question, then save your response.</p></div>
+      <p>Listen to a prepared experiment. Your answer guides the next core improvement.</p></div>
   </header>
   <div id="workspace-navigation"></div>
   <div id="workspace-next-action"></div>
@@ -48,7 +48,7 @@ SOFTWARE.
       <h2 id="queue-title" tabindex="-1">Checking your listening reviews…</h2>
       <button type="button" class="guide-context" data-guide-topic="listening-review">How to review a result</button>
       <p id="progress" class="progress" role="status">Loading queue…</p>
-      <p class="muted">Give feedback on the sound and musical direction. The badges above show what is waiting.</p>
+        <p class="muted">Each experiment asks one listening question. No setup or labeling is needed.</p>
     </section>
     <section class="panel work">
       <p id="empty">No listening review is selected.</p>
@@ -56,6 +56,7 @@ SOFTWARE.
         <p id="task" class="eyebrow"></p>
         <h2 id="packet-title" tabindex="-1"></h2>
         <p id="question" class="packet-question"></p>
+        <div id="experiment-brief" class="experiment-brief" hidden></div>
         <details class="request-details"><summary>Request details</summary><p id="identity" class="muted"></p></details>
         <div id="assets" class="assets"></div>
         <div id="ranges" class="ranges"></div>
@@ -64,13 +65,14 @@ SOFTWARE.
           <h3>Your response</h3>
           <div id="choices" class="dimensions"></div>
           <div id="scores" class="dimensions"></div>
-          <h3>Timestamped comments</h3>
+          <details id="note-details"><summary>Optional note</summary>
           <p class="muted">Pause at a moment you want to comment on, choose the recording, then add your note.</p>
           <div class="comment-entry"><select id="comment-asset" aria-label="Recording to comment on"></select>
             <input id="comment-text" type="text" maxlength="512" placeholder="What happened at this moment?">
             <button id="add-comment" type="button">Add at playhead</button></div>
           <div id="comments" class="comments"></div>
-          <div class="actions"><button id="save" type="button" class="primary">Save response</button>
+          </details>
+          <div class="actions"><button id="save" type="button" class="primary">Save &amp; next</button>
             <button id="reset" type="button">Reload saved answer</button></div>
           <p id="feedback" role="status" aria-live="polite"></p>
         </section>
