@@ -44,9 +44,17 @@ Stop on invented overall percentages, swallowed cancellation or dependency edits
 
 - [Shared callbacks and audit — DONE](DONE/NS-6_observability_01.md).
 - [Provider/context metadata reuse — DONE](DONE/NS-6_metadata_01.md).
+- [Layer request/graph preparation](NS-6_observability_11.md).
+- [Generic WFC bulk constraint preparation](NS-6_observability_12.md).
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss pre-edit dependency: provider construction enters the
+  independently reusable layer graph/session API, whose owned bulk preparation
+  is unobserved. Follow task11 for that part of AC1/AC5; no wrapper-only closure.
+  Provider/registry/context interiors, batch/inference/operator and later
+  generation/capture/replacement audit obligations remain here. The split earns
+  no points and resets no counter.
 - 2026-10-27, Big Boss return path: metadata reuse is accepted at `c64bf7f`
   after native/pas2js consumer parity and terminal Ubuntu run453, including both
   extracted packages. The ready AC1 boundary remains provider admission/choice

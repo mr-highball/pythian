@@ -29,6 +29,7 @@ unit pythian.wfc.layers;
 interface
 
 uses
+  pythian.progress,
   wfc,
   wfc_sequence,
   wfc_sequence_graph;
@@ -128,16 +129,21 @@ type
     function RegenerationRoots(const ARoots: array of String): TGraphPassLabels;
     procedure AcceptSolved;
   public
+    { Observer covers request/graph/model/domain preparation, not companion solve
+      internals or later capture. Borrowed only during this construction. }
     constructor Create(const ALayers: TLearnedLayers;
       const AProjections: TLayerProjections; const ANames: TLayerNames;
-      const AOptions: TLayerGenerationOptions);
+      const AOptions: TLayerGenerationOptions;
+      const AProgress: TWorkProgressCallback = nil);
     destructor Destroy; override;
     procedure SetConstraints(const AName: String;
-      const AConstraints: TWfcSequenceTokenConstraints);
+      const AConstraints: TWfcSequenceTokenConstraints;
+      const AProgress: TWorkProgressCallback = nil);
     { Replaces the complete preference list, retaining accepted output until solve.
       Detached ownership; nil restores learned choice weights. Not a hard mask. }
     procedure SetPreferences(const AName: String;
-      const APreferences: TLayerTokenPreferences);
+      const APreferences: TLayerTokenPreferences;
+      const AProgress: TWorkProgressCallback = nil);
     function CopyPreferences(const AName: String): TLayerTokenPreferences;
     function TryGenerate(var ASequences: TLayerSequences;
       out AReport: TGraphNegotiationReport): Boolean;
@@ -172,7 +178,8 @@ function ResolveLayerScope(const AOptions: TLayerGenerationOptions;
   preserves ASequences. AReport distinguishes contradiction from either budget. }
 function TryGenerateLayers(const ALayers: TLearnedLayers;
   const AProjections: TLayerProjections; const AOptions: TLayerGenerationOptions;
-  var ASequences: TLayerSequences; out AReport: TGraphNegotiationReport): Boolean;
+  var ASequences: TLayerSequences; out AReport: TGraphNegotiationReport;
+  const AProgress: TWorkProgressCallback = nil): Boolean;
 
 implementation
 
@@ -183,6 +190,19 @@ uses
   wfc_lattice;
 
 type
+  { Call-scoped, never retained by a graph or session. Visits count owned loop
+    iterations, not companion internals or estimated overall work. }
+  TLayerPreparation = class
+  private
+    FCallback: TWorkProgressCallback;
+    FStage: String;
+    FVisits: Int64;
+  public
+    constructor Create(const ACallback: TWorkProgressCallback; const AStage: String);
+    procedure Visit;
+    procedure Checkpoint;
+    procedure Finish;
+  end;
   TLayerCellIndices = array of Integer;
   TPositionedLayer = class
   private
@@ -193,9 +213,10 @@ type
     FValues: array of TGraphValues;
   public
     constructor Create(const AModel: TWfcSequenceModel; const ACount: Integer;
-      const AExtent: TWfcSequenceExtent);
-    procedure Apply(const APass: TGraph);
-    procedure SetMasks(const APass: TGraph; const AMasks: TWfcSequenceTokenConstraints);
+      const AExtent: TWfcSequenceExtent; const APreparation: TLayerPreparation = nil);
+    procedure Apply(const APass: TGraph; const APreparation: TLayerPreparation = nil);
+    procedure SetMasks(const APass: TGraph; const AMasks: TWfcSequenceTokenConstraints;
+      const APreparation: TLayerPreparation = nil);
     function ValueAt(const APosition, AState: Integer): TGraphValue;
     function Capture(const APass: TGraph): TWfcGeneratedSequence;
   end;
@@ -223,6 +244,50 @@ type
     destructor Destroy; override;
   end;
 
+constructor TLayerPreparation.Create(const ACallback: TWorkProgressCallback;
+  const AStage: String);
+begin
+  inherited Create;
+  FCallback := ACallback;
+  FStage := AStage;
+  Checkpoint;
+end;
+
+procedure TLayerPreparation.Visit;
+begin
+  Inc(FVisits);
+  if Assigned(FCallback) and ((FVisits mod 256) = 0) then
+  begin
+    Checkpoint;
+  end;
+end;
+
+procedure TLayerPreparation.Checkpoint;
+begin
+  ReportWork(FCallback, FStage, wuItems, FVisits, 0);
+end;
+
+procedure TLayerPreparation.Finish;
+begin
+  ReportWork(FCallback, FStage, wuItems, FVisits, FVisits);
+end;
+
+procedure VisitLayer(const APreparation: TLayerPreparation); inline;
+begin
+  if APreparation <> nil then
+  begin
+    APreparation.Visit;
+  end;
+end;
+
+procedure LayerCheckpoint(const APreparation: TLayerPreparation);
+begin
+  if APreparation <> nil then
+  begin
+    APreparation.Checkpoint;
+  end;
+end;
+
 function MakeLayerTokenPreference(const AToken: String;
   const AMultiplier: Integer): TLayerTokenPreference;
 begin
@@ -235,7 +300,8 @@ begin
 end;
 
 procedure ValidatePreferences(const ALayer: TLearnedLayer; const AValueCopies: Integer;
-  const APartitioned: Boolean; var AWork: Int64);
+  const APartitioned: Boolean; var AWork: Int64;
+  const APreparation: TLayerPreparation = nil);
 var
   LIndex: Integer;
   LOther: Integer;
@@ -270,10 +336,12 @@ begin
   SetLength(LMultipliers, ALayer.Model.PublicTokenCount);
   for LIndex := 0 to High(LMultipliers) do
   begin
+    VisitLayer(APreparation);
     LMultipliers[LIndex] := 1;
   end;
   for LIndex := 0 to High(ALayer.Preferences) do
   begin
+    VisitLayer(APreparation);
     LToken := ALayer.Model.FindPublicToken(ALayer.Preferences[LIndex].Token);
     if (LToken < 0) or (ALayer.Preferences[LIndex].Multiplier < 1) or
       (ALayer.Preferences[LIndex].Multiplier > MaximumLayerPreferenceMultiplier) then
@@ -282,6 +350,7 @@ begin
     end;
     for LOther := 0 to LIndex - 1 do
     begin
+      VisitLayer(APreparation);
       if ALayer.Preferences[LOther].Token = ALayer.Preferences[LIndex].Token then
       begin
         raise EAudio.Create('Duplicate layer preference token');
@@ -292,6 +361,7 @@ begin
   LTotal := 0;
   for LState := 0 to ALayer.Model.StateCount - 1 do
   begin
+    VisitLayer(APreparation);
     LToken := ALayer.Model.FindPublicToken(ALayer.Model.ProjectStateToken(LState));
     LWeight := Int64(ALayer.Model.StateObservationCountAt(LState)) * LMultipliers[LToken];
     Inc(LTotal, LWeight * AValueCopies);
@@ -314,7 +384,8 @@ begin
 end;
 
 constructor TPositionedLayer.Create(const AModel: TWfcSequenceModel;
-  const ACount: Integer; const AExtent: TWfcSequenceExtent);
+  const ACount: Integer; const AExtent: TWfcSequenceExtent;
+  const APreparation: TLayerPreparation);
 var
   LPosition: Integer;
   LState: Integer;
@@ -328,9 +399,11 @@ begin
   SetLength(FDomains, ACount);
   for LPosition := 0 to ACount - 1 do
   begin
+    VisitLayer(APreparation);
     SetLength(FValues[LPosition], AModel.StateCount);
     for LState := 0 to AModel.StateCount - 1 do
     begin
+      VisitLayer(APreparation);
       FValues[LPosition][LState] := 'pythian-position:' + IntToStr(LPosition) +
         ':state:' + IntToStr(LState);
       LAllowed := True;
@@ -361,7 +434,8 @@ begin
   Result := FValues[APosition][AState];
 end;
 
-procedure TPositionedLayer.Apply(const APass: TGraph);
+procedure TPositionedLayer.Apply(const APass: TGraph;
+  const APreparation: TLayerPreparation);
 var
   LPosition: Integer;
   LNeighbor: Integer;
@@ -383,18 +457,23 @@ begin
   SetLength(LDeny, FCount * FModel.StateCount);
   for LPosition := 0 to FCount - 1 do
   begin
+    VisitLayer(APreparation);
     for LState := 0 to FModel.StateCount - 1 do
     begin
+      VisitLayer(APreparation);
       APass.AddValue(ValueAt(LPosition, LState), FModel.StateObservationCountAt(LState));
     end;
   end;
   for LPosition := 0 to FCount - 1 do
   begin
+    VisitLayer(APreparation);
     for LState := 0 to FModel.StateCount - 1 do
     begin
+      VisitLayer(APreparation);
       LRules := nil;
       for LStep := 0 to 1 do
       begin
+        VisitLayer(APreparation);
         LNeighbor := LPosition + 1;
         LDirection := gdWest;
         if LStep = 0 then
@@ -411,6 +490,7 @@ begin
         begin
           for LOther := 0 to FModel.StateCount - 1 do
           begin
+            VisitLayer(APreparation);
             if LStep = 0 then
             begin
               LCompatible := FModel.StatesCompatible(LOther, LState);
@@ -445,8 +525,10 @@ begin
   end;
   for LPosition := 0 to FCount - 1 do
   begin
+    VisitLayer(APreparation);
     for LState := 0 to FModel.StateCount - 1 do
     begin
+      VisitLayer(APreparation);
       if LDeny[LPosition * FModel.StateCount + LState] <> [] then
       begin
         APass.Rules[ValueAt(LPosition, LState)].DenyAll(
@@ -454,11 +536,11 @@ begin
       end;
     end;
   end;
-  SetMasks(APass, nil);
+  SetMasks(APass, nil, APreparation);
 end;
 
 procedure TPositionedLayer.SetMasks(const APass: TGraph;
-  const AMasks: TWfcSequenceTokenConstraints);
+  const AMasks: TWfcSequenceTokenConstraints; const APreparation: TLayerPreparation);
 var
   LCandidates: array of TGraphValues;
   LPosition: Integer;
@@ -469,20 +551,26 @@ var
   LMatch: Boolean;
   LAllowed: Boolean;
 begin
+  LayerCheckpoint(APreparation);
   ValidateSequenceTokenConstraints(FModel, FCount, AMasks);
+  LayerCheckpoint(APreparation);
   SetLength(LCandidates, FCount);
   for LPosition := 0 to FCount - 1 do
   begin
+    VisitLayer(APreparation);
     for LValue in FDomains[LPosition] do
     begin
+      VisitLayer(APreparation);
       LState := 0;
       while ValueAt(LPosition, LState) <> LValue do
       begin
+        VisitLayer(APreparation);
         Inc(LState);
       end;
       LAllowed := True;
       for LMask := 0 to High(AMasks) do
       begin
+        VisitLayer(APreparation);
         if AMasks[LMask].Position <> LPosition then
         begin
           Continue;
@@ -490,6 +578,7 @@ begin
         LMatch := False;
         for LToken in AMasks[LMask].AllowedTokens do
         begin
+          VisitLayer(APreparation);
           LMatch := LMatch or (LToken = FModel.ProjectStateToken(LState));
         end;
         LAllowed := LAllowed and LMatch;
@@ -503,6 +592,7 @@ begin
   end;
   for LPosition := 0 to FCount - 1 do
   begin
+    VisitLayer(APreparation);
     APass.SetAllowedValues(LPosition, 0, 0, LCandidates[LPosition]);
   end;
 end;
@@ -712,7 +802,8 @@ begin
 end;
 
 function PartitionCoverage(const AProjection: TLayerProjection;
-  const AOptions: TLayerGenerationOptions; const APosition: Integer): TLayerCellIndices;
+  const AOptions: TLayerGenerationOptions; const APosition: Integer;
+  const APreparation: TLayerPreparation = nil): TLayerCellIndices;
 var
   LProvider: TLayerScope;
   LStart: Int64;
@@ -752,6 +843,7 @@ begin
   end;
   for LCell := 0 to LProvider.CellCount - 1 do
   begin
+    VisitLayer(APreparation);
     LLeft := LayerTick(AOptions, AProjection.Provider, LCell);
     LRight := LayerTick(AOptions, AProjection.Provider, LCell + 1);
     if AProjection.TimeMapping = ltmStartTick then
@@ -811,26 +903,28 @@ begin
 end;
 
 function ProjectionCells(const AProjection: TLayerProjection;
-  const AOptions: TLayerGenerationOptions; const APosition: Integer): TLayerCellIndices;
+  const AOptions: TLayerGenerationOptions; const APosition: Integer;
+  const APreparation: TLayerPreparation = nil): TLayerCellIndices;
 var
   LCoverage: TWfcLatticeCoverage;
   LIndex: Integer;
 begin
   if HasTimePartitions(AOptions) then
   begin
-    Exit(PartitionCoverage(AProjection, AOptions, APosition));
+    Exit(PartitionCoverage(AProjection, AOptions, APosition, APreparation));
   end;
   LCoverage := ProjectionCoverage(AProjection, AOptions, APosition);
   Result := nil;
   SetLength(Result, WfcLatticeCoverageCellCount(LCoverage));
   for LIndex := 0 to High(Result) do
   begin
+    VisitLayer(APreparation);
     Result[LIndex] := WfcLatticeCoverageCell(LCoverage, LIndex).X;
   end;
 end;
 
 procedure ValidateMappedRules(const AProjection: TLayerProjection;
-  const ALayers: TLearnedLayers);
+  const ALayers: TLearnedLayers; const APreparation: TLayerPreparation = nil);
 var
   LSeen: array of Boolean;
   LRule: Integer;
@@ -845,6 +939,7 @@ begin
   SetLength(LSeen, Length(AProjection.Rules));
   for LRule := 0 to High(AProjection.Rules) do
   begin
+    VisitLayer(APreparation);
     LToken := ALayers[AProjection.Consumer].Model.FindPublicToken(
       AProjection.Rules[LRule].TargetToken);
     if (LToken < 0) or LSeen[LToken] then
@@ -858,6 +953,7 @@ begin
     end;
     for LAlternative := 0 to High(AProjection.Rules[LRule].SourceTokens) do
     begin
+      VisitLayer(APreparation);
       if ALayers[AProjection.Provider].Model.FindPublicToken(
         AProjection.Rules[LRule].SourceTokens[LAlternative]) < 0 then
       begin
@@ -865,6 +961,7 @@ begin
       end;
       for LPrevious := 0 to LAlternative - 1 do
       begin
+        VisitLayer(APreparation);
         if AProjection.Rules[LRule].SourceTokens[LPrevious] =
           AProjection.Rules[LRule].SourceTokens[LAlternative] then
         begin
@@ -876,7 +973,8 @@ begin
 end;
 
 procedure ValidateRequest(const ALayers: TLearnedLayers;
-  const AProjections: TLayerProjections; const AOptions: TLayerGenerationOptions);
+  const AProjections: TLayerProjections; const AOptions: TLayerGenerationOptions;
+  const APreparation: TLayerPreparation = nil);
 var
   LIndex: Integer;
   LOther: Integer;
@@ -935,6 +1033,7 @@ begin
   LPreferenceWork := 0;
   for LIndex := 0 to High(ALayers) do
   begin
+    VisitLayer(APreparation);
     if ALayers[LIndex].Model = nil then
     begin
       raise EAudio.Create('Layer requires a learned model');
@@ -942,11 +1041,11 @@ begin
     LScope := ResolveLayerScope(AOptions, LIndex);
     if LPartitioned then
     begin
-      ValidatePreferences(ALayers[LIndex], LScope.CellCount, True, LPreferenceWork);
+      ValidatePreferences(ALayers[LIndex], LScope.CellCount, True, LPreferenceWork, APreparation);
     end
     else
     begin
-      ValidatePreferences(ALayers[LIndex], 1, False, LPreferenceWork);
+      ValidatePreferences(ALayers[LIndex], 1, False, LPreferenceWork, APreparation);
     end;
     if Length(AOptions.TimeGrids) > 0 then
     begin
@@ -960,6 +1059,7 @@ begin
         end;
         for LBoundary := 1 to High(LGrid.Boundaries) do
         begin
+          VisitLayer(APreparation);
           if LGrid.Boundaries[LBoundary] <= LGrid.Boundaries[LBoundary - 1] then
           begin
             raise EAudio.Create('Layer time partition boundaries must strictly increase');
@@ -993,14 +1093,17 @@ begin
     begin
       raise EAudio.Create('Layer has too many position constraints');
     end;
+    LayerCheckpoint(APreparation);
     ValidateSequenceTokenConstraints(ALayers[LIndex].Model, LScope.CellCount,
       ALayers[LIndex].Constraints);
+    LayerCheckpoint(APreparation);
   end;
   LWork := 0;
   LRules := 0;
   LAlternatives := 0;
   for LIndex := 0 to High(AProjections) do
   begin
+    VisitLayer(APreparation);
     LProjection := AProjections[LIndex];
     if (LProjection.Provider < 0) or (LProjection.Consumer >= Length(ALayers)) or
       (LProjection.Provider >= LProjection.Consumer) then
@@ -1009,6 +1112,7 @@ begin
     end;
     for LOther := 0 to LIndex - 1 do
     begin
+      VisitLayer(APreparation);
       if (AProjections[LOther].Consumer = LProjection.Consumer) and
         (AProjections[LOther].Provider = LProjection.Provider) then
       begin
@@ -1048,7 +1152,8 @@ begin
       LPairs := 0;
       for LPosition := 0 to LScope.CellCount - 1 do
       begin
-        Inc(LPairs, Length(ProjectionCells(LProjection, AOptions, LPosition)));
+        VisitLayer(APreparation);
+        Inc(LPairs, Length(ProjectionCells(LProjection, AOptions, LPosition, APreparation)));
       end;
     end;
     Inc(LWork, Int64(ALayers[LProjection.Consumer].Model.StateCount) *
@@ -1074,6 +1179,7 @@ begin
     LProjectionAlternatives := 0;
     for LRule := 0 to High(LProjection.Rules) do
     begin
+      VisitLayer(APreparation);
       Inc(LAlternatives, Length(LProjection.Rules[LRule].SourceTokens));
       Inc(LProjectionAlternatives, Length(LProjection.Rules[LRule].SourceTokens));
       if LAlternatives > 16384 then
@@ -1093,12 +1199,13 @@ begin
     end;
     if LPartitioned or (LProjection.TimeMapping <> ltmCellIndex) then
     begin
-      ValidateMappedRules(LProjection, ALayers);
+      ValidateMappedRules(LProjection, ALayers, APreparation);
     end;
   end;
   LPreparation := 0;
   for LIndex := 0 to High(ALayers) do
   begin
+    VisitLayer(APreparation);
     if LMapped[LIndex] and not LPartitioned then
     begin
       { Public token-domain extraction validates the applied model each time.
@@ -1163,7 +1270,7 @@ begin
 end;
 
 function CopyTokenDomains(const AModel: TWfcSequenceModel;
-  const APass: TGraph): TLayerDomains;
+  const APass: TGraph; const APreparation: TLayerPreparation = nil): TLayerDomains;
 var
   LHadDomain: Boolean;
   LDomain: TGraphValues;
@@ -1178,8 +1285,11 @@ begin
   try
     for LToken := 0 to AModel.PublicTokenCount - 1 do
     begin
+      VisitLayer(APreparation);
       APass.ClearAllowedValues(0, 0, 0);
+      LayerCheckpoint(APreparation);
       IntersectSequenceAllowedTokens(AModel, APass, 0, AModel.PublicTokenAt(LToken));
+      LayerCheckpoint(APreparation);
       Result[LToken] := APass.CopyAllowedValues(0, 0, 0);
     end;
   finally
@@ -1292,7 +1402,8 @@ end;
 
 procedure ApplyMappedProjection(const AProjection: TLayerProjection;
   const ALayers: TLearnedLayers; const AGraph: TGraph;
-  const AConsumerDomains, AProviderDomains: TLayerDomains);
+  const AConsumerDomains, AProviderDomains: TLayerDomains;
+  const APreparation: TLayerPreparation = nil);
 var
   LRule: Integer;
   LToken: Integer;
@@ -1304,15 +1415,18 @@ var
 begin
   for LRule := 0 to High(AProjection.Rules) do
   begin
+    VisitLayer(APreparation);
     LAllowed := nil;
     for LAlternative := 0 to High(AProjection.Rules[LRule].SourceTokens) do
     begin
+      VisitLayer(APreparation);
       LToken := ALayers[AProjection.Provider].Model.FindPublicToken(
         AProjection.Rules[LRule].SourceTokens[LAlternative]);
       LCount := Length(LAllowed);
       SetLength(LAllowed, LCount + Length(AProviderDomains[LToken]));
       for LValue in AProviderDomains[LToken] do
       begin
+        VisitLayer(APreparation);
         LAllowed[LCount] := LValue;
         Inc(LCount);
       end;
@@ -1329,6 +1443,7 @@ begin
       AProjection.Rules[LRule].TargetToken);
     for LValue in AConsumerDomains[LToken] do
     begin
+      VisitLayer(APreparation);
       AGraph.PassGraph[AProjection.Consumer].Rules[LValue].RequireMappedFromPass(
         LayerName(AProjection.Provider), LQuery);
     end;
@@ -1336,7 +1451,8 @@ begin
 end;
 
 function BuildPositionedGraph(const ALayers: TLearnedLayers;
-  const AProjections: TLayerProjections; const AOptions: TLayerGenerationOptions): TGraph;
+  const AProjections: TLayerProjections; const AOptions: TLayerGenerationOptions;
+  const APreparation: TLayerPreparation = nil): TGraph;
 var
   LGraph: TPositionedLayerGraph;
   LLayouts: TWfcLatticeLayouts;
@@ -1361,6 +1477,7 @@ begin
     SetLength(LGraph.Compilers, Length(ALayers));
     for LIndex := 0 to High(ALayers) do
     begin
+      VisitLayer(APreparation);
       if LIndex = 0 then
       begin
         LGraph.CurrentPass := LayerName(LIndex);
@@ -1375,30 +1492,37 @@ begin
       LLayouts[LIndex] := MakeWfcLatticeLayout(LScope.CellCount, 1, 1,
         LScope.Extent = wseWrap);
       LGraph.Compilers[LIndex] := TPositionedLayer.Create(ALayers[LIndex].Model,
-        LScope.CellCount, LScope.Extent);
+        LScope.CellCount, LScope.Extent, APreparation);
     end;
     LGraph.ConfigurePassLayouts(LLayouts);
     for LIndex := 0 to High(ALayers) do
     begin
-      LGraph.Compilers[LIndex].Apply(LGraph.PassGraph[LIndex]);
-      LGraph.Compilers[LIndex].SetMasks(LGraph.PassGraph[LIndex], ALayers[LIndex].Constraints);
+      VisitLayer(APreparation);
+      LGraph.Compilers[LIndex].Apply(LGraph.PassGraph[LIndex], APreparation);
+      LGraph.Compilers[LIndex].SetMasks(LGraph.PassGraph[LIndex], ALayers[LIndex].Constraints, APreparation);
     end;
     for LProjection in AProjections do
     begin
+      VisitLayer(APreparation);
       LScope := ResolveLayerScope(AOptions, LProjection.Consumer);
       for LPosition := 0 to LScope.CellCount - 1 do
       begin
-        LCells := ProjectionCells(LProjection, AOptions, LPosition);
+        VisitLayer(APreparation);
+        LCells := ProjectionCells(LProjection, AOptions, LPosition, APreparation);
         for LRule := 0 to High(LProjection.Rules) do
         begin
+          VisitLayer(APreparation);
           for LProviderCell in LCells do
           begin
+            VisitLayer(APreparation);
             LAllowed := nil;
             for LSourceState := 0 to ALayers[LProjection.Provider].Model.StateCount - 1 do
             begin
+              VisitLayer(APreparation);
               LMatch := False;
               for LAlternative := 0 to High(LProjection.Rules[LRule].SourceTokens) do
               begin
+                VisitLayer(APreparation);
                 if ALayers[LProjection.Provider].Model.ProjectStateToken(LSourceState) =
                   LProjection.Rules[LRule].SourceTokens[LAlternative] then
                 begin
@@ -1417,6 +1541,7 @@ begin
               MakeGraphOffset(LProviderCell - LPosition, 0, 0), LAllowed);
             for LState := 0 to ALayers[LProjection.Consumer].Model.StateCount - 1 do
             begin
+              VisitLayer(APreparation);
               if ALayers[LProjection.Consumer].Model.ProjectStateToken(LState) =
                 LProjection.Rules[LRule].TargetToken then
               begin
@@ -1437,7 +1562,8 @@ begin
 end;
 
 function BuildLayerGraph(const ALayers: TLearnedLayers;
-  const AProjections: TLayerProjections; const AOptions: TLayerGenerationOptions): TGraph;
+  const AProjections: TLayerProjections; const AOptions: TLayerGenerationOptions;
+  const APreparation: TLayerPreparation = nil): TGraph;
 var
   LGraph: TGraph;
   LIndex: Integer;
@@ -1450,7 +1576,7 @@ var
 begin
   if HasTimePartitions(AOptions) then
   begin
-    Exit(BuildPositionedGraph(ALayers, AProjections, AOptions));
+    Exit(BuildPositionedGraph(ALayers, AProjections, AOptions, APreparation));
   end;
   LGraph := TGraph.Create;
   try
@@ -1462,6 +1588,7 @@ begin
     LGraph.Seed := AOptions.Seed;
     for LIndex := 0 to High(ALayers) do
     begin
+      VisitLayer(APreparation);
       if LIndex = 0 then
       begin
         LGraph.CurrentPass := LayerName(LIndex);
@@ -1479,18 +1606,24 @@ begin
     LGraph.ConfigurePassLayouts(LLayouts);
     for LIndex := 0 to High(ALayers) do
     begin
+      VisitLayer(APreparation);
       LGraph.SwitchToPass(LayerName(LIndex));
       LScope := ResolveLayerScope(AOptions, LIndex);
+      LayerCheckpoint(APreparation);
       ApplySequenceModelToGraph(ALayers[LIndex].Model, LGraph, LScope.Extent);
+      LayerCheckpoint(APreparation);
       IntersectSequenceTokenConstraints(ALayers[LIndex].Model, LGraph,
         ALayers[LIndex].Constraints);
+      LayerCheckpoint(APreparation);
     end;
     for LIndex := 0 to High(ALayers) do
     begin
+      VisitLayer(APreparation);
       LGraph.SwitchToPass(LayerName(LIndex));
       LBindings := nil;
       for LOther := 0 to High(AProjections) do
       begin
+        VisitLayer(APreparation);
         if AProjections[LOther].Consumer = LIndex then
         begin
           if AProjections[LOther].TimeMapping <> ltmCellIndex then
@@ -1499,15 +1632,15 @@ begin
             if Length(LTokenDomains[LIndex]) = 0 then
             begin
               LTokenDomains[LIndex] := CopyTokenDomains(ALayers[LIndex].Model,
-                LGraph.PassGraph[LIndex]);
+                LGraph.PassGraph[LIndex], APreparation);
             end;
             if Length(LTokenDomains[LProvider]) = 0 then
             begin
               LTokenDomains[LProvider] := CopyTokenDomains(ALayers[LProvider].Model,
-                LGraph.PassGraph[LProvider]);
+                LGraph.PassGraph[LProvider], APreparation);
             end;
             ApplyMappedProjection(AProjections[LOther], ALayers, LGraph,
-              LTokenDomains[LIndex], LTokenDomains[LProvider]);
+              LTokenDomains[LIndex], LTokenDomains[LProvider], APreparation);
             Continue;
           end;
           SetLength(LBindings, Length(LBindings) + 1);
@@ -1518,7 +1651,9 @@ begin
       end;
       if Length(LBindings) > 0 then
       begin
+      LayerCheckpoint(APreparation);
         RequireSequenceProjectionMapsFromPasses(ALayers[LIndex].Model, LGraph, LBindings);
+      LayerCheckpoint(APreparation);
       end;
     end;
     Result := LGraph;
@@ -1583,14 +1718,21 @@ end;
 
 function TryGenerateLayers(const ALayers: TLearnedLayers;
   const AProjections: TLayerProjections; const AOptions: TLayerGenerationOptions;
-  var ASequences: TLayerSequences; out AReport: TGraphNegotiationReport): Boolean;
+  var ASequences: TLayerSequences; out AReport: TGraphNegotiationReport;
+  const AProgress: TWorkProgressCallback): Boolean;
 var
   LGraph: TGraph;
+  LPreparation: TLayerPreparation;
 begin
   AReport := Default(TGraphNegotiationReport);
-  ValidateRequest(ALayers, AProjections, AOptions);
-  LGraph := BuildLayerGraph(ALayers, AProjections, AOptions);
+  LGraph := nil;
+  LPreparation := TLayerPreparation.Create(AProgress, 'layer_prepare_visits');
   try
+    ValidateRequest(ALayers, AProjections, AOptions, LPreparation);
+    LGraph := BuildLayerGraph(ALayers, AProjections, AOptions, LPreparation);
+    { This phase covers preparation. Solving/capture have their own audit;
+      its final total does not mean that generation or publication succeeded. }
+    LPreparation.Finish;
     Result := SolvePreferredLayers(ALayers, LGraph, AOptions, AReport);
     if Result then
     begin
@@ -1598,12 +1740,13 @@ begin
     end;
   finally
     LGraph.Free;
+    LPreparation.Free;
   end;
 end;
 
 constructor TLearnedLayerSession.Create(const ALayers: TLearnedLayers;
   const AProjections: TLayerProjections; const ANames: TLayerNames;
-  const AOptions: TLayerGenerationOptions);
+  const AOptions: TLayerGenerationOptions; const AProgress: TWorkProgressCallback);
 var
   LIndex: Integer;
   LOther: Integer;
@@ -1611,81 +1754,99 @@ var
   LCell: Integer;
   LPass: TGraph;
   LScope: TLayerScope;
+  LPreparation: TLayerPreparation;
 begin
   inherited Create;
-  ValidateRequest(ALayers, AProjections, AOptions);
-  if Length(ANames) <> Length(ALayers) then
-  begin
-    raise EAudio.Create('Session requires one unique name per layer');
-  end;
-  for LIndex := 0 to High(ANames) do
-  begin
-    if (Length(ANames[LIndex]) < 1) or (Length(ANames[LIndex]) > 128) or
-      (Trim(ANames[LIndex]) <> ANames[LIndex]) then
+  LPreparation := TLayerPreparation.Create(AProgress, 'layer_prepare_visits');
+  try
+    ValidateRequest(ALayers, AProjections, AOptions, LPreparation);
+    if Length(ANames) <> Length(ALayers) then
     begin
-      raise EAudio.Create('Layer names must contain 1..128 characters without surrounding spaces');
+      raise EAudio.Create('Session requires one unique name per layer');
     end;
-    for LOther := 1 to Length(ANames[LIndex]) do
+    for LIndex := 0 to High(ANames) do
     begin
-      if Ord(ANames[LIndex][LOther]) < 32 then
+      LPreparation.Visit;
+      if (Length(ANames[LIndex]) < 1) or (Length(ANames[LIndex]) > 128) or
+        (Trim(ANames[LIndex]) <> ANames[LIndex]) then
       begin
-        raise EAudio.Create('Layer names cannot contain control characters');
+        raise EAudio.Create('Layer names must contain 1..128 characters without surrounding spaces');
+      end;
+      for LOther := 1 to Length(ANames[LIndex]) do
+      begin
+        LPreparation.Visit;
+        if Ord(ANames[LIndex][LOther]) < 32 then
+        begin
+          raise EAudio.Create('Layer names cannot contain control characters');
+        end;
+      end;
+      for LOther := 0 to LIndex - 1 do
+      begin
+        LPreparation.Visit;
+        if ANames[LOther] = ANames[LIndex] then
+        begin
+          raise EAudio.Create('Duplicate session layer name');
+        end;
       end;
     end;
-    for LOther := 0 to LIndex - 1 do
+    FOptions := AOptions;
+    FOptions.Scopes := Copy(AOptions.Scopes);
+    FOptions.TimeGrids := Copy(AOptions.TimeGrids);
+    for LIndex := 0 to High(FOptions.TimeGrids) do
     begin
-      if ANames[LOther] = ANames[LIndex] then
+      LPreparation.Visit;
+      FOptions.TimeGrids[LIndex].Boundaries := Copy(AOptions.TimeGrids[LIndex].Boundaries);
+    end;
+    FNames := Copy(ANames);
+    SetLength(FLayers, Length(ALayers));
+    SetLength(FDirty, Length(ALayers));
+    SetLength(FBaseline, Length(ALayers));
+    SetLength(FHasBaseline, Length(ALayers));
+    for LIndex := 0 to High(ALayers) do
+    begin
+      LPreparation.Visit;
+      LPreparation.Checkpoint;
+      FLayers[LIndex].Model := DecodeWfcSequenceText(EncodeWfcSequenceText(ALayers[LIndex].Model));
+      LPreparation.Checkpoint;
+      FLayers[LIndex].Preferences := Copy(ALayers[LIndex].Preferences);
+    end;
+    SetLength(FProjections, Length(AProjections));
+    for LIndex := 0 to High(AProjections) do
+    begin
+      LPreparation.Visit;
+      FProjections[LIndex].Provider := AProjections[LIndex].Provider;
+      FProjections[LIndex].Consumer := AProjections[LIndex].Consumer;
+      FProjections[LIndex].TimeMapping := AProjections[LIndex].TimeMapping;
+      SetLength(FProjections[LIndex].Rules, Length(AProjections[LIndex].Rules));
+      for LRule := 0 to High(AProjections[LIndex].Rules) do
       begin
-        raise EAudio.Create('Duplicate session layer name');
+        LPreparation.Visit;
+        FProjections[LIndex].Rules[LRule] := AProjections[LIndex].Rules[LRule];
+        FProjections[LIndex].Rules[LRule].SourceTokens :=
+          Copy(AProjections[LIndex].Rules[LRule].SourceTokens);
       end;
     end;
-  end;
-  FOptions := AOptions;
-  FOptions.Scopes := Copy(AOptions.Scopes);
-  FOptions.TimeGrids := Copy(AOptions.TimeGrids);
-  for LIndex := 0 to High(FOptions.TimeGrids) do
-  begin
-    FOptions.TimeGrids[LIndex].Boundaries := Copy(AOptions.TimeGrids[LIndex].Boundaries);
-  end;
-  FNames := Copy(ANames);
-  SetLength(FLayers, Length(ALayers));
-  SetLength(FDirty, Length(ALayers));
-  SetLength(FBaseline, Length(ALayers));
-  SetLength(FHasBaseline, Length(ALayers));
-  for LIndex := 0 to High(ALayers) do
-  begin
-    FLayers[LIndex].Model := DecodeWfcSequenceText(EncodeWfcSequenceText(ALayers[LIndex].Model));
-    FLayers[LIndex].Preferences := Copy(ALayers[LIndex].Preferences);
-  end;
-  SetLength(FProjections, Length(AProjections));
-  for LIndex := 0 to High(AProjections) do
-  begin
-    FProjections[LIndex].Provider := AProjections[LIndex].Provider;
-    FProjections[LIndex].Consumer := AProjections[LIndex].Consumer;
-    FProjections[LIndex].TimeMapping := AProjections[LIndex].TimeMapping;
-    SetLength(FProjections[LIndex].Rules, Length(AProjections[LIndex].Rules));
-    for LRule := 0 to High(AProjections[LIndex].Rules) do
+    { Capture model/extent domains before adding caller masks. Clearing a mask
+      must restore endpoint restrictions as well as the full token vocabulary. }
+    FGraph := BuildLayerGraph(FLayers, FProjections, FOptions, LPreparation);
+    for LIndex := 0 to High(FLayers) do
     begin
-      FProjections[LIndex].Rules[LRule] := AProjections[LIndex].Rules[LRule];
-      FProjections[LIndex].Rules[LRule].SourceTokens :=
-        Copy(AProjections[LIndex].Rules[LRule].SourceTokens);
+      LPreparation.Visit;
+      LPass := FGraph.PassGraph[LIndex];
+      LScope := ResolveLayerScope(FOptions, LIndex);
+      SetLength(FBaseline[LIndex], LScope.CellCount);
+      SetLength(FHasBaseline[LIndex], LScope.CellCount);
+      for LCell := 0 to LScope.CellCount - 1 do
+      begin
+        LPreparation.Visit;
+        FHasBaseline[LIndex][LCell] := LPass.HasAllowedValues(LCell, 0, 0);
+        FBaseline[LIndex][LCell] := LPass.CopyAllowedValues(LCell, 0, 0);
+      end;
+      SetConstraints(FNames[LIndex], ALayers[LIndex].Constraints, AProgress);
     end;
-  end;
-  { Capture model/extent domains before adding caller masks. Clearing a mask
-    must restore endpoint restrictions as well as the full token vocabulary. }
-  FGraph := BuildLayerGraph(FLayers, FProjections, FOptions);
-  for LIndex := 0 to High(FLayers) do
-  begin
-    LPass := FGraph.PassGraph[LIndex];
-    LScope := ResolveLayerScope(FOptions, LIndex);
-    SetLength(FBaseline[LIndex], LScope.CellCount);
-    SetLength(FHasBaseline[LIndex], LScope.CellCount);
-    for LCell := 0 to LScope.CellCount - 1 do
-    begin
-      FHasBaseline[LIndex][LCell] := LPass.HasAllowedValues(LCell, 0, 0);
-      FBaseline[LIndex][LCell] := LPass.CopyAllowedValues(LCell, 0, 0);
-    end;
-    SetConstraints(FNames[LIndex], ALayers[LIndex].Constraints);
+    LPreparation.Finish;
+  finally
+    LPreparation.Free;
   end;
 end;
 
@@ -1714,7 +1875,7 @@ begin
 end;
 
 procedure TLearnedLayerSession.SetConstraints(const AName: String;
-  const AConstraints: TWfcSequenceTokenConstraints);
+  const AConstraints: TWfcSequenceTokenConstraints; const AProgress: TWorkProgressCallback);
 var
   LIndex: Integer;
   LCell: Integer;
@@ -1724,71 +1885,93 @@ var
   LHadPrevious: TLayerDomainFlags;
   LConstraints: TWfcSequenceTokenConstraints;
   LConstraint: Integer;
+  LPreparation: TLayerPreparation;
 begin
-  LIndex := LayerIndex(AName);
-  LScope := ResolveLayerScope(FOptions, LIndex);
-  if Length(AConstraints) > LScope.CellCount then
-  begin
-    raise EAudio.Create('Layer has too many position constraints');
-  end;
-  ValidateSequenceTokenConstraints(FLayers[LIndex].Model, LScope.CellCount, AConstraints);
-  LConstraints := Copy(AConstraints);
-  for LConstraint := 0 to High(LConstraints) do
-  begin
-    LConstraints[LConstraint].AllowedTokens := Copy(AConstraints[LConstraint].AllowedTokens);
-  end;
-  LPass := FGraph.PassGraph[LIndex];
-  SetLength(LPrevious, LScope.CellCount);
-  SetLength(LHadPrevious, LScope.CellCount);
-  for LCell := 0 to LScope.CellCount - 1 do
-  begin
-    LHadPrevious[LCell] := LPass.HasAllowedValues(LCell, 0, 0);
-    LPrevious[LCell] := LPass.CopyAllowedValues(LCell, 0, 0);
-  end;
+  LPreparation := TLayerPreparation.Create(AProgress, 'layer_constraint_visits');
   try
+    LIndex := LayerIndex(AName);
+    LScope := ResolveLayerScope(FOptions, LIndex);
+    if Length(AConstraints) > LScope.CellCount then
+    begin
+      raise EAudio.Create('Layer has too many position constraints');
+    end;
+    LPreparation.Checkpoint;
+    ValidateSequenceTokenConstraints(FLayers[LIndex].Model, LScope.CellCount, AConstraints);
+    LPreparation.Checkpoint;
+    LConstraints := Copy(AConstraints);
+    for LConstraint := 0 to High(LConstraints) do
+    begin
+      LPreparation.Visit;
+      LConstraints[LConstraint].AllowedTokens := Copy(AConstraints[LConstraint].AllowedTokens);
+    end;
+    LPass := FGraph.PassGraph[LIndex];
+    SetLength(LPrevious, LScope.CellCount);
+    SetLength(LHadPrevious, LScope.CellCount);
     for LCell := 0 to LScope.CellCount - 1 do
     begin
-      LPass.ClearAllowedValues(LCell, 0, 0);
-      if FHasBaseline[LIndex][LCell] then
+      LPreparation.Visit;
+      LHadPrevious[LCell] := LPass.HasAllowedValues(LCell, 0, 0);
+      LPrevious[LCell] := LPass.CopyAllowedValues(LCell, 0, 0);
+    end;
+    try
+      for LCell := 0 to LScope.CellCount - 1 do
       begin
-        LPass.SetAllowedValues(LCell, 0, 0, FBaseline[LIndex][LCell]);
+        LPreparation.Visit;
+        LPass.ClearAllowedValues(LCell, 0, 0);
+        if FHasBaseline[LIndex][LCell] then
+        begin
+          LPass.SetAllowedValues(LCell, 0, 0, FBaseline[LIndex][LCell]);
+        end;
       end;
-    end;
-    if FGraph is TPositionedLayerGraph then
-    begin
-      TPositionedLayerGraph(FGraph).Compilers[LIndex].SetMasks(LPass, AConstraints);
-    end
-    else
-    begin
-      IntersectSequenceTokenConstraints(FLayers[LIndex].Model, LPass, AConstraints);
-    end;
-  except
-    for LCell := 0 to LScope.CellCount - 1 do
-    begin
-      LPass.ClearAllowedValues(LCell, 0, 0);
-      if LHadPrevious[LCell] then
+      if FGraph is TPositionedLayerGraph then
       begin
-        LPass.SetAllowedValues(LCell, 0, 0, LPrevious[LCell]);
+        TPositionedLayerGraph(FGraph).Compilers[LIndex].SetMasks(LPass, AConstraints, LPreparation);
+      end
+      else
+      begin
+        LPreparation.Checkpoint;
+        IntersectSequenceTokenConstraints(FLayers[LIndex].Model, LPass, AConstraints);
+        LPreparation.Checkpoint;
       end;
+      { Include the final observer call in rollback, before pending-mask publication. }
+      LPreparation.Finish;
+    except
+      for LCell := 0 to LScope.CellCount - 1 do
+      begin
+        LPass.ClearAllowedValues(LCell, 0, 0);
+        if LHadPrevious[LCell] then
+        begin
+          LPass.SetAllowedValues(LCell, 0, 0, LPrevious[LCell]);
+        end;
+      end;
+      raise;
     end;
-    raise;
+    FLayers[LIndex].Constraints := LConstraints;
+    FDirty[LIndex] := True;
+  finally
+    LPreparation.Free;
   end;
-  FLayers[LIndex].Constraints := LConstraints;
-  FDirty[LIndex] := True;
 end;
 
 procedure TLearnedLayerSession.SetPreferences(const AName: String;
-  const APreferences: TLayerTokenPreferences);
+  const APreferences: TLayerTokenPreferences; const AProgress: TWorkProgressCallback);
 var
   LIndex: Integer;
   LRequested: TLearnedLayers;
+  LPreparation: TLayerPreparation;
 begin
-  LIndex := LayerIndex(AName);
-  LRequested := Copy(FLayers);
-  LRequested[LIndex].Preferences := Copy(APreferences);
-  ValidateRequest(LRequested, FProjections, FOptions);
-  FLayers[LIndex].Preferences := LRequested[LIndex].Preferences;
-  FDirty[LIndex] := True;
+  LPreparation := TLayerPreparation.Create(AProgress, 'layer_preference_visits');
+  try
+    LIndex := LayerIndex(AName);
+    LRequested := Copy(FLayers);
+    LRequested[LIndex].Preferences := Copy(APreferences);
+    ValidateRequest(LRequested, FProjections, FOptions, LPreparation);
+    LPreparation.Finish;
+    FLayers[LIndex].Preferences := LRequested[LIndex].Preferences;
+    FDirty[LIndex] := True;
+  finally
+    LPreparation.Free;
+  end;
 end;
 
 function TLearnedLayerSession.CopyPreferences(const AName: String): TLayerTokenPreferences;

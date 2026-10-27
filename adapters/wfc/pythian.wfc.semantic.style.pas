@@ -998,7 +998,7 @@ begin
     LOptions.Seed := ASeed;
     ReportWork(AProgress, 'semantic_prepare_session', wuItems, 1, 2);
     Result := TCompatibleProviderSession.Create(LLayers, FDefinition.Projections,
-      Contracts(FDefinition), LOptions, ARegistry, AAdmission);
+      Contracts(FDefinition), LOptions, ARegistry, AAdmission, AProgress);
     try
       ReportWork(AProgress, 'semantic_prepare_session', wuItems, 2, 2);
     except

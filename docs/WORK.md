@@ -12,6 +12,77 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Layer construction locally qualified; generic WFC gap isolated - 2026-10-27
+
+Big Boss's solo layer-construction batch now has measured owned-visit callbacks
+through the real compatible-provider/semantic consumer. Checked Win32/Win64
+each pass14325 preparation checks/21 abort-retries/1282 callbacks and25795
+semantic-consumer checks, with zero leaks. Original exceptions, constructor
+cleanup and initial mask rollback/retry pass; final mask callbacks stay inside
+rollback before publication. All **34 prior artifacts per native target** match
+separately compiled frozen `3c8e12f` sources: complete tokens/latent states, saved
+styles and rendered PCM. Count oracles13/8/2 distinguish owned work from dependency
+internals. Publish [task11](TODO/NS-6_observability_11.md) and require actual clean
+Ubuntu integration and both extracted consumers before acceptance. Native
+one-shot callbacks cover preparation only; solve/capture and other parent
+obligations remain required. New fixture is registered in the maintained build.
+
+The named synchronous residual measurement found a distinct **generic WFC gap**:
+256 states/1024 cells exactly meet the262144 state/cell budget, but1024 valid
+bulk masks repeatedly invoke public single-mask model validation. The isolated
+probe was identity-verified and externally stopped at119.944 seconds total,
+119.609 CPU seconds, while still in intersection; an earlier38.48 CPU-second
+observation proves over81 further CPU seconds in that call. No final intersection
+result or zero-leak claim. Encode0/decode16/apply1766/preflight15 ms and sub-clock
+RTL copies precede the stall. Evidence and the setup failures are preserved in
+dedicated E-drive layer-preparation roots. All other local test handles are
+terminal. This discovery neither reopens a stopped scientific family nor resets
+a delivery counter.
+
+Create [coordination task12](TODO/NS-6_observability_12.md) under the cross-repo
+procedure. Relevant WFC source is identical at the pinned47fa3d8 and separate
+checkout85d19fe; no fix exists there. The separate worktree at
+`E:/CodexWork/pythian/runs/wfc-sequence-preparation-20261027-boss/worktree` now
+has **codex/pythian-sequence-preparation**, based exactly on47fa3d8. User was
+informed of owner/gap/branch before edits. No upstream source edit or Pythian
+gitlink update has happened yet; preserve the unrelated expansion checkout and
+its attachments. Task12 owns generic single-preflight/observer/rollback work
+and explicit integration; no WFC branch merge is authorized or implied.
+
+Counts are **54 open / 71 DONE, 125 total**, NS-6 16 open. Completion remains
+**100/90/25/70/14/54**, **52.45/47.55**. Delivery nonclosing count enters0;
+local qualification is not criterion acceptance. Musical gates, stopped counters
+and the retained unanswered4:16 review persist. No service, private source,
+answer or retraining changed. Full goal remains active.
+
+## Layer preparation prerequisite selected - 2026-10-27
+
+The previous goal turn made progress: metadata reuse AC1–3 closed after actual
+Ubuntu run453 and prior native/pas2js consumers, with zero additional credit.
+Revalidate the clean `3c8e12f` worktree and stay solo under the user's AGENTS
+override. Before extending provider callbacks, inspection demonstrates that
+its constructor enters substantial unobserved Pythian-owned layer preparation.
+Record [task11](TODO/NS-6_observability_11.md) as the actual AC1/AC5 prerequisite;
+parent task04 retains provider/registry/context interiors and all other phases.
+No wrapper-only acceptance or new generic WFC defect is inferred.
+
+Big Boss owns layer request/graph/model/domain construction callbacks and their
+actual compatible-provider/style forwarding. Closing evidence: truthful owned
+visits, unchanged prior tokens/archives/PCM, actual consumers, original interior
+and final abort cleanup/retry, checked native zero leaks and clean published
+integration/extracted consumers. Stop on changed WFC decisions, partial state
+publication, false totals, dependency edits or a distinct gap. Exact prior layer,
+provider and semantic sources are frozen at `3c8e12f` under dedicated E-drive
+`tests/layer-preparation-20261027-boss-baseline`; all output uses corresponding
+E-drive build/tests/runs roots. Native solve/capture/replacement and companion
+interiors are not certified by construction checkpoints.
+
+Counts are **53 open / 71 DONE, 124 total**, NS-6 15 open; percentages stay
+**100/90/25/70/14/54**, **52.45/47.55**. Delivery nonclosing count enters at 0;
+the new prerequisite resets no counter. Scientific stops and the retained
+unanswered listening review persist. No service, browser/audio process, private
+source, response, retraining or companion branch is selected. Full goal stays.
+
 ## Metadata reuse accepted; return to provider preparation - 2026-10-27
 
 The metadata batch made concrete progress: shared scalar metadata and

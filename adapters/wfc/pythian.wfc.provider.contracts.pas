@@ -29,6 +29,7 @@ unit pythian.wfc.provider.contracts;
 interface
 
 uses
+  pythian.progress,
   pythian.time,
   pythian.wfc.layers,
   pythian.wfc.providers,
@@ -89,7 +90,8 @@ type
       const AProjections: TLayerProjections; const AContracts: TProviderContracts;
       const AOptions: TLayerGenerationOptions;
       const ARegistry: TProviderCodecRegistry = nil;
-      const AAdmission: TProviderCodecAdmission = nil);
+      const AAdmission: TProviderCodecAdmission = nil;
+      const AProgress: TWorkProgressCallback = nil);
     destructor Destroy; override;
     function CopyContract(const AName: String): TProviderContract;
     function CopyChoices(const AName: String): TStyleProviderChoices;
@@ -464,7 +466,8 @@ end;
 constructor TCompatibleProviderSession.Create(const ALayers: TLearnedLayers;
   const AProjections: TLayerProjections; const AContracts: TProviderContracts;
   const AOptions: TLayerGenerationOptions;
-  const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission);
+  const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission;
+  const AProgress: TWorkProgressCallback);
 var
   LOptions: TLayerGenerationOptions;
   LNames: TLayerNames;
@@ -514,7 +517,7 @@ begin
       LOptions.Scopes[LIndex] := FContracts[LIndex].Scope;
       LOptions.TimeGrids[LIndex] := FContracts[LIndex].TimeGrid;
     end;
-    FSession := TLearnedLayerSession.Create(ALayers, AProjections, LNames, LOptions);
+    FSession := TLearnedLayerSession.Create(ALayers, AProjections, LNames, LOptions, AProgress);
     SetLength(FInputs, Length(ALayers));
     for LProjection in AProjections do
     begin

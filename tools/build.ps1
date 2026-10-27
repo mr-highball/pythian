@@ -659,6 +659,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'WFC streaming compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.stream$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'WFC streaming checks failed' }
+    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.layer.preparation.progress.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Layer preparation progress compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.layer.preparation.progress$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Layer preparation progress checks failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.layers.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC layer compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.layers$executableSuffix")

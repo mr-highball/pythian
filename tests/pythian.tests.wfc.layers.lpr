@@ -27,6 +27,7 @@ program pythian_tests_wfc_layers;
 {$H+}
 
 uses
+  Classes,
   SysUtils,
   pythian.oscillator,
   pythian.audio,
@@ -174,6 +175,31 @@ begin
   Result := RenderFrameTones(LTones, 16000, 32000);
 end;
 
+procedure SaveLayerReceipt(const APath: String; const ASequences: TLayerSequences);
+var
+  LLines: TStringList;
+  LLayer: Integer;
+  LCell: Integer;
+begin
+  LLines := TStringList.Create;
+  try
+    for LLayer := 0 to High(ASequences) do
+    begin
+      LLines.Add('layer=' + IntToStr(LLayer) + ';boundary=' +
+        IntToStr(Ord(ASequences[LLayer].Boundary)) + ';extent=' +
+        IntToStr(Ord(ASequences[LLayer].Extent)));
+      for LCell := 0 to High(ASequences[LLayer].Tokens) do
+      begin
+        LLines.Add(IntToStr(LCell) + ';' + ASequences[LLayer].Tokens[LCell] +
+          ';' + IntToStr(ASequences[LLayer].StateIndices[LCell]));
+      end;
+    end;
+    LLines.SaveToFile(APath);
+  finally
+    LLines.Free;
+  end;
+end;
+
 procedure CheckLayerAudio(const ABefore, AAfter: TLayerSequences;
   const AMapped: Boolean; const APartitioned: Boolean = False);
 var
@@ -241,6 +267,8 @@ begin
         end;
         SaveWavePcm16(LStem + 'before.wav', LBefore);
         SaveWavePcm16(LStem + 'after.wav', LAfter);
+        SaveLayerReceipt(LStem + 'before.txt', ABefore);
+        SaveLayerReceipt(LStem + 'after.txt', AAfter);
       end;
     finally
       LAfter.Free;
