@@ -12,7 +12,32 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
-## Pitch accepted; primary binary reuse selected - 2026-10-27
+## Binary fields accepted; wave-style work selected - 2026-10-27
+
+The preceding goal turn is progress: `f973df7` consolidated primary scalar code
+with actual consumers, exact prior formats and native/pas2js evidence. Actual
+Ubuntu [run450](https://github.com/mr-highball/pythian/actions/runs/40581158188)
+now passes, total11m58s/job11m55s, including integration and both extracted
+consumers. Accept [binary-codec_01](TODO/DONE/NS-6_binary-codec_01.md) AC1–4;
+Big Boss performed solo checks, not independent review. The prior pending-run
+notes below are history. Counts are **53 open / 68 DONE, 121 total**, NS-6
+15 open. Completion stays **100/90/25/70/14/54**, **52.45/47.55**. Delivery
+nonclosing count is **0** after a criterion closes; scientific counters do not
+reset and no musical credit is inferred.
+
+Both prerequisites for [wave profiles](TODO/NS-6_observability_07.md) are now
+accepted. Big Boss selects AC1–3 solo: optional source/preference/blend/archive/
+parent callbacks and actual CLI forwarding. Closing evidence: populated nested
+styles, nil/observed model/archive/audio parity, original callback exceptions,
+unpublished-state cleanup, unchanged borrowed inputs and retry on checked
+Win32/Win64 plus maintained CLI execution. Measure and name synchronous residuals;
+an outer boundary does not qualify their interiors or a maximum latency. Stop
+on changed formats/math/controls, false counts or a distinct required gap.
+Provider/context internals retain04; any demonstrated generic companion defect
+uses the separate-repository procedure. Full goal scope and all stopped
+scientific families are preserved. No source, answer or service is changed.
+
+## Primary binary reuse preparation history - 2026-10-27
 
 The preceding goal turn is progress: `f203195` connected the real retained
 source, passed checked native parity/cancellation and published its consumer.
@@ -25,7 +50,7 @@ is not independent review. No musical or browser performance result is inferred.
 Before extending task07, the pre-edit audit demonstrated repeated archive
 integer/real primitives in core corpus, wave and semantic codecs, plus unsigned
 WAV metadata/header helpers. The user's reuse instruction makes
-[binary-codec_01](TODO/NS-6_binary-codec_01.md) the linked prerequisite. Big Boss
+[binary-codec_01](TODO/DONE/NS-6_binary-codec_01.md) the linked prerequisite. Big Boss
 owns it solo. Criterion/deliverable: shared primary byte-field and finite
 binary64 conversion with actual consumer adoption, deleting superseded loops.
 Closing evidence: authored byte/value/bounds oracles on checked Win32/Win64
@@ -63,6 +88,16 @@ fixture lists include the new scalar consumer. Keep the task open for published
 Ubuntu/extracted verification; counts/credits and scientific counters stay fixed.
 The retained repetition request was freshly confirmed revision0 and unanswered;
 no response or source data was changed.
+
+Published binary candidate `f973df7` is on `hello-pythian`. Authenticated browser
+inspection confirms actual Ubuntu
+[run450](https://github.com/mr-highball/pythian/actions/runs/40581158188),
+job122460574595, is live at this exact revision. Continue this same run for AC4;
+do not restart on an observation timeout or cancel it with a documentation-only
+push. Binary-codec_01 remains open, task07 still follows that prerequisite, and
+counts/credits stay **54 open / 67 DONE, 121 total**, **52.45/47.55**. All local
+validation processes are terminal, no QA browser/audio was started, and the
+user's authenticated GitHub tab is preserved. The full goal remains active.
 
 ## Pitch learner consumer preparation history - 2026-10-27
 

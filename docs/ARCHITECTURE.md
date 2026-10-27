@@ -224,7 +224,7 @@ as one JavaScript integer. Native memory reinterpretation and the standard
 pas2js numerical bit view stay inside this primary boundary; no browser/device
 API or borrowed scratch buffer enters the format adapters.
 
-[Qualification](TODO/NS-6_binary-codec_01.md) covers scalar execution and actual
+[Qualification](TODO/DONE/NS-6_binary-codec_01.md) covers scalar execution and actual
 format consumers. It does not imply complete WFC/pas2js, phone or WASM support.
 
 ## Synthesis

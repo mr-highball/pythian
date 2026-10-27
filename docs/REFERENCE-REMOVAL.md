@@ -55,4 +55,4 @@ archive field primitives into [pythian.binary](../src/pythian.binary.pas).
 The extracted unit retains the WAV code's complete 2021/2026 MIT notice; the
 original units and precursor records remain intact. This is reuse of Pythian's
 owned implementation, not a new dependency extraction or a reopened removal
-gate. [Its task](TODO/NS-6_binary-codec_01.md) owns current target/consumer evidence.
+gate. [Its task](TODO/DONE/NS-6_binary-codec_01.md) owns current target/consumer evidence.

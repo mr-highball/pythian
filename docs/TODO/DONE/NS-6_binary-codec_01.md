@@ -1,6 +1,6 @@
 # NS-6_binary-codec_01 — Share portable binary archive field primitives
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
@@ -10,6 +10,13 @@ and semantic style codecs. WAV metadata/header helpers also repeat unsigned
 little-endian field handling. Consolidate those primitives into the portable
 library before extending the retained archive callbacks. Format admission,
 field prefixes, schemas and musical data remain with their existing owners.
+
+Accepted 2026-10-27 at `f973df7`: native/pas2js scalar and actual format evidence
+below is joined by successful Ubuntu
+[run450](https://github.com/mr-highball/pythian/actions/runs/40581158188).
+Maintained integration and both extracted core/WFC consumers pass at the
+published revision. Big Boss performed solo checks; CI is not independent code
+review. No additional musical credit or new target scope is implied.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS and ONE-IMPLEMENTATION.
 Completion credit: 0 additional; this preserves the existing reuse invariant.
@@ -50,6 +57,15 @@ or a dependency edit. This is a Pythian gap, not a generic WFC gap.
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss acceptance: actual Ubuntu run450/job122460574595 is
+  terminal Success at `f973df7`, total11m58s/job11m55s. Maintained integration
+  and both extracted consumers pass. Retained artifact containers are
+  `native-fpc-logs` (746 KB, SHA256 `c279180d3bfb9ecda540e2c9489761fd04d3661f8d38da9494203318b2029378`)
+  and `pythian-source-packages` (1.67 MB, SHA256 `04a2f1bf810744082bbf720552e31cd2f1acb0d076d46001702343ab2cdc5893`).
+  These are GitHub container digests, not individual source ZIP hashes. This
+  closes AC4 alongside the local AC1–3 evidence. Earlier pending statements
+  below record intermediate checkpoints. Full retained-profile observation
+  remains with its linked owner; no phone/WASM or musical gate closes here.
 - 2026-10-27, Big Boss local qualification: checked Win32/Win64 each pass
   33,071 scalar assertions; actual pas2js passes 33,113, including its additional
   unsafe-integer rejection cases. This includes 16,376 selected finite binary64
@@ -96,5 +112,5 @@ or a dependency edit. This is a Pythian gap, not a generic WFC gap.
   primary `pythian.ieee754` owns binary32 interpretation; extend the primary
   numerical boundary rather than putting another host cast in an adapter.
   This linked task is created before expanding
-  [wave-style callbacks](NS-6_observability_07.md). It adds no scope credit and
+  [wave-style callbacks](../NS-6_observability_07.md). It adds no scope credit and
   preserves existing investigation counters and all format-specific obligations.

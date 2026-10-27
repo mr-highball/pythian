@@ -36,10 +36,23 @@ invented totals or dependency edits. This earns no musical credit.
 
 - [Shared progress contract — DONE](DONE/NS-6_observability_01.md).
 - [Owned pitch-learning preparation — DONE](DONE/NS-6_observability_09.md).
-- [Shared binary field primitives](NS-6_binary-codec_01.md).
+- [Shared binary field primitives — DONE](DONE/NS-6_binary-codec_01.md).
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss selected after both prerequisites pass: deliver AC1–3
+  through optional callbacks on source/preference/blend, archive and parent
+  APIs, forwarded by the maintained CLI. Owned validation, source/run/token
+  loops and archive byte/field/hash work report actual counts. Closing evidence:
+  populated nested styles, exact nil/observed archives/models/audio, original
+  callback exceptions, released unpublished state, unchanged borrowed parents
+  and retry on checked Win32/Win64 plus actual CLI execution. Measure named
+  synchronous residual calls separately; an outer boundary does not qualify
+  their interiors or a maximum latency. Provider/context internals retain
+  [observability_04](NS-6_observability_04.md). Stop on changed schemas/math/
+  controls, false progress or a distinct required gap; a demonstrated generic
+  companion gap follows the separate-repository procedure. Big Boss stays solo.
+  Entry delivery nonclosing count is 0; scientific stopped families stay fixed.
 - 2026-10-27, Big Boss pre-edit audit: the pitch prerequisite is accepted.
   Archive integer/real primitives repeat primary corpus and semantic codec
   code. The user's consolidation instruction requires the linked binary-codec
