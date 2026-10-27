@@ -6,7 +6,7 @@
 Accepted zero-credit usability repairs: [training choices and playback](DONE/NS-6_studio_19.md),
 [tabbed workflow and help](DONE/NS-6_studio_18.md).
 
-Updated 2026-10-27. **53 open / 56 accepted tasks.** The user authorized a new
+Updated 2026-10-27. **54 open / 56 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **52.45 current / 47.55 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -39,9 +39,9 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-2 — Dependable synthesis fundamentals](../MILESTONES.md#ns-2) | 70 | 20 | 90% | 1 | 10 | 2.50 |
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 50 | 70% | 1 | 30 | 4.50 |
-| [NS-5 - User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 16 | 86 | 17.20 |
+| [NS-5 - User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 17 | 86 | 17.20 |
 | [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 16 | 46 | 4.60 |
-| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **53** | Goal points are not summed across goals | **47.55** |
+| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **54** | Goal points are not summed across goals | **47.55** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -237,7 +237,8 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | --- | ---: | ---: | --- |
 | [NS-5_blends_01](NS-5_blends_01.md) — Accept cross-style blends and further reuse | 8 | 1.60 | Dependency-blocked |
 | [NS-5_continuity_01](NS-5_continuity_01.md) — Accept sustained continuity and useful variation | 6 | 1.20 | Dependency-blocked |
-| [NS-5_continuity_04](NS-5_continuity_04.md) — Use shared source continuity in Studio generation | 0 | 0.00 | Ready; selected native integration, no new tuning or model training |
+| [NS-5_continuity_04](NS-5_continuity_04.md) — Use shared source continuity in Studio generation | 0 | 0.00 | Implemented; actual desktop/narrow browser acceptance remains |
+| [NS-5_continuity_05](NS-5_continuity_05.md) — Keep source continuity through long Studio playback | 0 | 0.00 | AC1–4 mechanically qualified and deployed; actual browser AC5 remains |
 | [NS-5_corpus_06](NS-5_corpus_06.md) — Qualify contrasting user-defined style corpora | 6 | 1.20 | Dependencies + qualified references |
 | [NS-5_evaluation_01](NS-5_evaluation_01.md) — Deliver a reusable style-card and comparison contract | 3 | 0.60 | AC1 accepted; independent reference/calibration needed |
 | [NS-5_evaluation_02](NS-5_evaluation_02.md) — Implement the complete style comparison protocol | 4 | 0.80 | Dependency-blocked |

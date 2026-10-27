@@ -117,6 +117,13 @@ begin
   LOption := Add(LInput, 'option', 'Minutes', ''); LOption.setAttribute('value', '60');
   LOption := Add(LInput, 'option', 'Hours', ''); LOption.setAttribute('value', '3600');
   TJSHTMLSelectElement(LInput).value := '60';
+  LLabel := Add(LRow, 'label', 'Sound joins', '');
+  LInput := Add(LLabel, 'select', '', 'live-reconstruction');
+  LOption := Add(LInput, 'option', 'Standard', '');
+  LOption.setAttribute('value', 'sparse');
+  LOption := Add(LInput, 'option', 'Use neighboring fragments · Experimental', '');
+  LOption.setAttribute('value', 'source_successor');
+  TJSHTMLSelectElement(LInput).value := 'sparse';
   LRow := Add(LRoot, 'div', '', '');
   LRow.className := 'source-toolbar';
   LRow.setAttribute('role', 'group');
@@ -154,6 +161,7 @@ begin
   TJSHTMLButtonElement(El('live-start')).disabled := FActive or not FAllowed;
   TJSHTMLInputElement(El('live-duration')).disabled := FActive;
   TJSHTMLSelectElement(El('live-unit')).disabled := FActive;
+  TJSHTMLSelectElement(El('live-reconstruction')).disabled := FActive;
   TJSHTMLButtonElement(El('live-pause')).disabled := not FActive or (FContext = nil);
   TJSHTMLButtonElement(El('live-stop')).disabled := not FActive;
   TJSHTMLButtonElement(El('live-excerpt')).disabled := not FActive or FComplete or FExcerptRequested or
@@ -203,6 +211,7 @@ end;
 procedure TStudioLive.Start; async;
 var LRequest, LPlan, LReply: TJSObject; LOptions: TJSAudioContextOptions;
   LSeconds, LValue: Double; LEpoch: Integer; LSeeds: TJSArray;
+  LReconstruction: String;
 begin
   if FActive or not FAllowed then Exit;
   Inc(FEpoch); LEpoch := FEpoch;
@@ -212,7 +221,11 @@ begin
     LSeconds := LValue * StrToInt(TJSHTMLSelectElement(El('live-unit')).value);
     if not ((LSeconds >= 1) and (LSeconds <= 86400)) then
       raise Exception.Create('Choose a length from 1 second to 24 hours.');
+    LReconstruction := TJSHTMLSelectElement(El('live-reconstruction')).value;
+    if (LReconstruction <> 'sparse') and (LReconstruction <> 'source_successor') then
+      raise Exception.Create('Choose a supported sound-join option.');
     LRequest := FBuildRequest();
+    LRequest['reconstruction'] := LReconstruction;
     LRequest['kind'] := 'stream_generate';
     LRequest['duration_ms'] := SampleFramesFromSeconds(LSeconds, 1000, frFloor);
     LSeeds := TJSArray.new;

@@ -25,7 +25,7 @@ param(
   [Parameter(Mandatory=$true)][string] $RtlSource,
   [Parameter(Mandatory=$true)][string] $RtlJavascript,
   [Parameter(Mandatory=$true)][string] $DomModule,
-  [ValidateSet('recovery','references','bridge')][string] $Suite = 'recovery',
+  [ValidateSet('recovery','references','bridge','live-policy')][string] $Suite = 'recovery',
   [string] $OutputRoot = $env:PYTHIAN_BUILD_ROOT
 )
 $ErrorActionPreference = 'Stop'
@@ -35,6 +35,7 @@ $output = Join-Path ([IO.Path]::GetFullPath($OutputRoot)) "studio-$Suite-tests"
 $testProgram = switch ($Suite) {
   'references' { 'pythian.tests.listening.references' }
   'bridge' { 'listen' }
+  'live-policy' { 'pythian.tests.studio.live.policy' }
   default { 'pythian.tests.studio.recovery' }
 }
 $testSource = if ($Suite -eq 'bridge') { Join-Path $repository 'tools/label-workbench/listen.lpr' } else { Join-Path $repository "tests/$testProgram.lpr" }
@@ -42,6 +43,11 @@ $testDefines = @(if ($Suite -eq 'bridge') { '-dLISTENING_BRIDGE_TEST' })
 $testHtml = if ($Suite -eq 'bridge') { 'listen.html' } else { 'studio.html' }
 New-Item -ItemType Directory -Force -Path $output | Out-Null
 $domPath = (Resolve-Path -LiteralPath $DomModule).Path
+$htmlPath = Join-Path $repository "tools/label-workbench/$testHtml"
+if ($Suite -eq 'live-policy') {
+  $htmlPath = Join-Path $output 'fixture.html'
+  [IO.File]::WriteAllText($htmlPath, '<!doctype html><body><div id="studio-live"></div></body>')
+}
 & $Compiler @testDefines '-B' '-Tbrowser' '-Mdelphi' '-Jc' "-Ji$RtlJavascript" "-Fu$RtlSource" `
   "-Fu$(Join-Path $repository 'src')" "-Fu$(Join-Path $repository 'tools/label-workbench')" `
   "-FU$output" "-FE$output" $testSource
@@ -61,6 +67,7 @@ dom.window.setTimeout = (fn, delay, ...args) =>
 dom.window.HTMLMediaElement.prototype.pause = function() { this.testPauseCount = (this.testPauseCount || 0) + 1; };
 dom.window.HTMLMediaElement.prototype.load = function() {};
 dom.window.HTMLMediaElement.prototype.testPauseCount = 0;
+AUDIO_HOST
 dom.window.eval(fs.readFileSync(path.join(__dirname, TEST_PROGRAM), 'utf8'));
 dom.window.rtl.run();
 const started = Date.now();
@@ -77,8 +84,11 @@ const check = setInterval(() => {
   }
 }, 20);
 '@
+$audioHost = if ($Suite -eq 'live-policy') {
+  'dom.window.AudioContext = class { constructor(options) { this.sampleRate=options.sampleRate; this.currentTime=0; } resume() { return Promise.resolve(); } suspend() { return Promise.resolve(); } close() { return Promise.resolve(); } };'
+} else { '' }
 $hostScript = $hostScript.Replace('TEST_PROGRAM', (("$testProgram.js") | ConvertTo-Json -Compress)).Replace('DOM_MODULE', ($domPath | ConvertTo-Json -Compress)).Replace(
-  'STUDIO_HTML', ((Join-Path $repository "tools/label-workbench/$testHtml") | ConvertTo-Json -Compress))
+  'STUDIO_HTML', ($htmlPath | ConvertTo-Json -Compress)).Replace('AUDIO_HOST', $audioHost)
 $hostPath = Join-Path $output 'run.cjs'
 [IO.File]::WriteAllText($hostPath, $hostScript)
 & node $hostPath

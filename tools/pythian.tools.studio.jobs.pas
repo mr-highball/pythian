@@ -675,8 +675,6 @@ begin
       begin
         Need((Text(AWrite, 'reconstruction') = 'sparse') or
           (Text(AWrite, 'reconstruction') = 'source_successor'), 'Unsupported reconstruction policy');
-        Need((LKind = 'train_generate') or (Text(AWrite, 'reconstruction') = 'sparse'),
-          'Source continuity currently supports saved auditions; live playback uses sparse reconstruction');
       end;
       if LKind = 'stream_generate' then
         Need((Number(AWrite, 'duration_ms') >= 1000) and
@@ -959,7 +957,9 @@ begin
           if LRequest.Get('reconstruction', 'sparse') = 'source_successor' then
           begin
             LLimits.Add('successor_index_bytes', LEstimatedFeatures * 16);
-            Result.Add('reconstruction_note', 'Experimental source continuity; reuses the saved model and completed feature journals. No note or style learning is implied.');
+            LLimits.Add('successor_index_budget_bytes', MaximumStudioJobMemoryBytes div 4);
+            LLimits.Add('successor_observations_upper_bound', LEstimatedFeatures);
+            Result.Add('reconstruction_note', 'Experimental source continuity uses complete verified feature journals. A reused model requires its retained journals; a cold job prepares its own. No note or style learning is implied.');
           end;
         finally
           LNames.Free;

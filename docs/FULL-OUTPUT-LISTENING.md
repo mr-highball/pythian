@@ -138,8 +138,15 @@ explicit job write; absence or `"sparse"` retains standard reconstruction.
 The experimental option reuses the model and complete feature journals and
 preserves WFC tokens, source ranges and existing DSP. Missing/modified journals
 fail without hidden reanalysis or sparse fallback. Preflight declares its index
-cost. Live generation rejects this option. This is acoustic reconstruction,
+cost. Long playback also offers the explicit **Sound joins** option and reuses
+the same index/session. Its completed preparation remains reusable after Stop;
+missing or damaged retained journals fail without hidden reanalysis or fallback.
+Saved live excerpts retain their actual session offset and original selections.
+They ask one continuity question and never acquire an unrelated finite Before
+example simply because seed and length match. This is acoustic reconstruction,
 without a claim of learned notes, sustained music or style quality.
+The [long-playback integration](TODO/NS-5_continuity_05.md) passes native and
+pas2js/DOM mechanics; actual desktop/narrow playback remains an open gate.
 When a completed standard audition has the exact training/model identity, seed,
 duration and audio geometry, Studio can publish a Before/After continuity
 question with its exact parent identity. Original selections use the shared

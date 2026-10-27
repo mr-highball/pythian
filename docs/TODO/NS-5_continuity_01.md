@@ -43,6 +43,12 @@ Starting evidence: [WAV-STUDIES](../WAV-STUDIES.md) · [ACTIVITY](../ACTIVITY.md
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss: [long source-continuity playback](NS-5_continuity_05.md)
+  now connects the same accepted successor mechanism to bounded native sessions
+  and source-bound excerpts. Mechanical two-minute replay is not sustained
+  musical acceptance. Actual browser/playback and this task's full musical
+  criteria remain open; no new tuning or operator answer was created.
+
 - 2026-10-27, Big Boss: the operator submitted the prepared, level-matched
   20-second comparison at revision1 and selected **After** for fewer broken or
   jittery notes. This supplies a positive development preference for the exact

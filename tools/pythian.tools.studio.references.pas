@@ -47,7 +47,7 @@ function ReadListeningSourceReferences(const ACatalogRoot, ARequestId,
   AAssetId: String): TJSONObject;
 var
   LQueue, LJobs, LJob, LResult, LAsset, LProvenance, LRow, LSource,
-    LReference, LSnapshot, LBound, LRequest: TJSONObject;
+    LReference, LSnapshot, LBound, LRequest, LStreamResult: TJSONObject;
   LList: String;
   I, J, K: Integer;
   LMatched: Boolean;
@@ -85,18 +85,39 @@ begin
         begin
           LRow := LJobs.Arrays['jobs'].Objects[I];
           if (LRow.Get('request_sha256', '') <> LProvenance.Get('parameter_sha256', '')) or
-            (LRow.Get('kind', '') <> 'train_generate') then Continue;
+            ((LRow.Get('kind', '') <> 'train_generate') and
+            (LRow.Get('kind', '') <> 'stream_generate')) then Continue;
           LJob := ReadStudioJob(ACatalogRoot, LRow.Strings['job_id']);
           LRequest := nil;
+          LStreamResult := nil;
           try
-            if LJob.Find('results') = nil then Continue;
-            LResult := LJob.Objects['results'];
+            if LRow.Get('kind', '') = 'stream_generate' then
+            begin
+              { A saved excerpt is durable while its bounded session still runs.
+                Read its committed binding, never the current project or an
+                uncommitted worker status snapshot. }
+              if not FileExists(StudioJobDirectory(ACatalogRoot, LRow.Strings['job_id']) +
+                PathDelim + 'stream-excerpt.receipt.json') then Continue;
+              LStreamResult := ReadStudioJSON(StudioJobDirectory(ACatalogRoot,
+                LRow.Strings['job_id']) + PathDelim + 'stream-excerpt.receipt.json');
+              LResult := LStreamResult;
+              if LResult.Get('request_sha256', '') <>
+                LProvenance.Get('parameter_sha256', '') then Continue;
+            end
+            else
+            begin
+              if LJob.Find('results') = nil then Continue;
+              LResult := LJob.Objects['results'];
+            end;
             if (LResult.Get('model_sha256', '') <> LProvenance.Get('model_sha256', '')) or
-              (LResult.Find('outputs') = nil) or (LResult.Find('sources') = nil) then Continue;
+              (LResult.Find('sources') = nil) then Continue;
             LMatched := False;
-            for J := 0 to LResult.Arrays['outputs'].Count - 1 do
-              if LResult.Arrays['outputs'].Objects[J].Get('wav_sha256', '') =
-                LAsset.Strings['sha256'] then LMatched := True;
+            if LStreamResult <> nil then
+              LMatched := LResult.Get('wav_sha256', '') = LAsset.Strings['sha256']
+            else if LResult.Find('outputs') <> nil then
+              for J := 0 to LResult.Arrays['outputs'].Count - 1 do
+                if LResult.Arrays['outputs'].Objects[J].Get('wav_sha256', '') =
+                  LAsset.Strings['sha256'] then LMatched := True;
             if not LMatched then Continue;
             LRequest := ReadStudioJobRequest(ACatalogRoot, LRow.Strings['job_id']);
             LSnapshot := LRequest.Objects['project_snapshot'];
@@ -133,6 +154,7 @@ begin
             end;
             Exit;
           finally
+            LStreamResult.Free;
             LRequest.Free;
             LJob.Free;
           end;

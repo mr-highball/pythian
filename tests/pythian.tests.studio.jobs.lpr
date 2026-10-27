@@ -27,10 +27,14 @@ program StudioJobsConformance;
 {$H+}
 
 uses
+  Classes,
   Process,
   SysUtils,
   fpjson,
   pythian.audio,
+  pythian.hash,
+  pythian.wave.stream,
+  pythian.tools.annotations.catalog,
   pythian.tools.studio.projects,
   pythian.tools.studio.jobs;
 
@@ -43,6 +47,222 @@ begin
   if not ACondition then
   begin
     raise Exception.Create(AMessage);
+  end;
+end;
+
+procedure LiveSuccessorPreflight(const ARoot: String);
+const
+  CDurations: array[0..2] of Integer = (120000, 7200000, 86400000);
+var
+  LInbox: String;
+  LCatalog: String;
+  LSamples: TAudioSamples;
+  LClip: TAudioClip;
+  LStream: TFileStream;
+  LHash: String;
+  LManifest: TJSONObject;
+  LRows: TJSONArray;
+  LRow: TJSONObject;
+  LProjectWrite: TJSONObject;
+  LProject: TJSONObject;
+  LWrite: TJSONObject;
+  LReport: TJSONObject;
+  LQueued: TJSONObject;
+  LDuration: Integer;
+  LIndex: Integer;
+  LIndexBytes: Int64;
+  LBefore: String;
+  LSuccessorHash: String;
+  LFailed: Boolean;
+begin
+  LInbox := ARoot + PathDelim + 'preflight-inbox';
+  LCatalog := ARoot + PathDelim + 'preflight-catalog';
+  Check(ForceDirectories(LInbox), 'Create isolated authored inbox');
+  SetLength(LSamples, 16000);
+  for LIndex := 0 to High(LSamples) do
+  begin
+    if LIndex mod 100 < 50 then
+    begin
+      LSamples[LIndex] := 0.125;
+    end;
+  end;
+  LClip := TAudioClip.Create(8000, 1, LSamples);
+  try
+    LStream := TFileStream.Create(LInbox + PathDelim + 'source.wav', fmCreate);
+    try
+      WriteWavePcm16(LStream, LClip);
+    finally
+      LStream.Free;
+    end;
+  finally
+    LClip.Free;
+  end;
+  LStream := TFileStream.Create(LInbox + PathDelim + 'source.wav', fmOpenRead);
+  try
+    LHash := Sha256Stream(LStream, LStream.Size);
+  finally
+    LStream.Free;
+  end;
+  LManifest := TJSONObject.Create;
+  try
+    LManifest.Add('version', 1);
+    LRows := TJSONArray.Create;
+    LManifest.Add('tracks', LRows);
+    LRow := TJSONObject.Create;
+    LRows.Add(LRow);
+    LRow.Add('file', 'source.wav');
+    LRow.Add('sha256', LHash);
+    LRow.Add('source_group', 'live-preflight');
+    LRow.Add('clock_id', '');
+    LRow.Add('partition', 'unassigned');
+    LRow.Add('title', 'Authored preflight control');
+    LRow.Add('provenance', 'First-party synthetic control');
+    LRow.Add('license', 'MIT');
+    WriteStudioJSONNew(LInbox + PathDelim + 'manifest.json', LManifest);
+  finally
+    LManifest.Free;
+  end;
+  LReport := ImportLabelInbox(LInbox, LCatalog);
+  try
+    Check((LReport.Integers['imported'] = 1) and (LReport.Integers['failed'] = 0),
+      'Import authored preflight source');
+  finally
+    LReport.Free;
+  end;
+  LProjectWrite := TJSONObject.Create;
+  try
+    LProjectWrite.Add('format', StudioProjectWriteFormat);
+    LProjectWrite.Add('project_id', 'live-preflight');
+    LProjectWrite.Add('expected_revision', 0);
+    LProjectWrite.Add('name', 'Live preflight control');
+    LProjectWrite.Add('style_intent', '');
+    LProjectWrite.Add('learning_mode', 'raw_acoustic');
+    LRows := TJSONArray.Create;
+    LProjectWrite.Add('sources', LRows);
+    LRow := TJSONObject.Create;
+    LRows.Add(LRow);
+    LRow.Add('source_sha256', LHash);
+    LRow.Add('selection', 'full');
+    LProject := SaveStudioProject(LCatalog, LProjectWrite);
+  finally
+    LProjectWrite.Free;
+  end;
+  try
+    LWrite := TJSONObject.Create;
+    try
+      LWrite.Add('format', StudioJobWriteFormat);
+      LWrite.Add('job_id', 'live-plan');
+      LWrite.Add('kind', 'stream_generate');
+      LWrite.Add('project_id', LProject.Strings['project_id']);
+      LWrite.Add('project_revision', LProject.Int64s['revision']);
+      LWrite.Add('project_snapshot_sha256', LProject.Strings['snapshot_sha256']);
+      LWrite.Add('duration_ms', CDurations[0]);
+      LWrite.Add('seeds', TJSONArray.Create([731]));
+      LWrite.Add('maximum_tokens', 4);
+      LWrite.Add('model_order', 2);
+      LWrite.Add('resolve_unassigned', 'development');
+      LRows := TJSONArray.Create;
+      LWrite.Add('source_weights', LRows);
+      LRow := TJSONObject.Create;
+      LRows.Add(LRow);
+      LRow.Add('source_sha256', LHash);
+      LRow.Add('weight', 1);
+      LWrite.Add('reconstruction', 'source_successor');
+      LIndexBytes := -1;
+      for LDuration in CDurations do
+      begin
+        LWrite.Integers['duration_ms'] := LDuration;
+        LReport := PrepareStudioJob(LCatalog, LWrite);
+        try
+          Check((LReport.Strings['reconstruction'] = 'source_successor') and
+            (LReport.Integers['duration_ms'] = LDuration), 'Live policy and duration retained');
+          Check((LReport.Objects['limits'].Int64s['successor_index_bytes'] > 0) and
+            (LReport.Objects['limits'].Int64s['successor_index_budget_bytes'] =
+              MaximumStudioJobMemoryBytes div 4) and
+            (LReport.Objects['limits'].Int64s['successor_observations_upper_bound'] =
+              LReport.Int64s['estimated_analyzed_features']), 'Index and observation bounds declared');
+          Check(Pos('retained journals', LReport.Strings['reconstruction_note']) > 0,
+            'Reuse requires retained journals');
+          if LIndexBytes >= 0 then
+          begin
+            Check(LIndexBytes = LReport.Objects['limits'].Int64s['successor_index_bytes'],
+              'Index estimate independent of output duration');
+          end;
+          LIndexBytes := LReport.Objects['limits'].Int64s['successor_index_bytes'];
+        finally
+          LReport.Free;
+        end;
+      end;
+      LWrite.Integers['duration_ms'] := CDurations[0];
+      LReport := PrepareStudioJob(LCatalog, LWrite);
+      try
+        LSuccessorHash := LReport.Strings['request_sha256'];
+      finally
+        LReport.Free;
+      end;
+      LWrite.Strings['reconstruction'] := 'sparse';
+      LReport := PrepareStudioJob(LCatalog, LWrite);
+      try
+        Check(LReport.Strings['request_sha256'] <> LSuccessorHash,
+          'Reconstruction participates in immutable request identity');
+        Check(LReport.Objects['limits'].Find('successor_index_bytes') = nil,
+          'Sparse preflight does not allocate a successor index');
+      finally
+        LReport.Free;
+      end;
+      LWrite.Strings['reconstruction'] := 'source_successor';
+      LWrite.Int64s['duration_ms'] := 86400001;
+      LFailed := False;
+      try
+        LReport := PrepareStudioJob(LCatalog, LWrite);
+        LReport.Free;
+      except
+        on LException: EAudio do LFailed := True;
+      end;
+      Check(LFailed, 'Live policy cannot exceed the 24-hour limit');
+      LWrite.Integers['duration_ms'] := CDurations[0];
+      LQueued := EnqueueStudioJob(LCatalog, LWrite);
+      try
+        LBefore := LQueued.Strings['request_sha256'];
+      finally
+        LQueued.Free;
+      end;
+      LWrite.Strings['reconstruction'] := 'sparse';
+      LFailed := False;
+      try
+        LQueued := EnqueueStudioJob(LCatalog, LWrite);
+        LQueued.Free;
+      except
+        on LException: EAudio do LFailed := True;
+      end;
+      Check(LFailed, 'Accepted policy cannot be silently replaced');
+      LReport := ReadStudioJob(LCatalog, 'live-plan');
+      try
+        Check(LReport.Strings['request_sha256'] = LBefore, 'Immutable request hash retained');
+      finally
+        LReport.Free;
+      end;
+      LWrite.Strings['reconstruction'] := 'unknown';
+      LFailed := False;
+      try
+        LReport := PrepareStudioJob(LCatalog, LWrite);
+        LReport.Free;
+      except
+        on LException: EAudio do LFailed := True;
+      end;
+      Check(LFailed, 'Unknown reconstruction rejected at preflight');
+      LWrite.Delete('reconstruction');
+      LReport := PrepareStudioJob(LCatalog, LWrite);
+      try
+        Check(LReport.Strings['reconstruction'] = 'sparse', 'Omitted policy remains sparse');
+      finally
+        LReport.Free;
+      end;
+    finally
+      LWrite.Free;
+    end;
+  finally
+    LProject.Free;
   end;
 end;
 
@@ -211,6 +431,7 @@ var
 begin
   Check(not DirectoryExists(ARoot), 'Conformance root must be fresh');
   Check(ForceDirectories(ARoot), 'Create first-party empty catalog');
+  LiveSuccessorPreflight(ARoot);
   LWrite := NewWrite('refresh-1');
   try
     LResult := PrepareStudioJob(ARoot, LWrite);

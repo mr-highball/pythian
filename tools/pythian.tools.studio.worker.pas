@@ -869,6 +869,7 @@ var
   LRows: TJSONArray;
   LRow: TJSONObject;
   LDirectory: String;
+  LJournalJobId: String;
   LPath: String;
   LIndex: Integer;
   LRange: Integer;
@@ -879,9 +880,9 @@ var
 begin
   FReceipt.Add('reconstruction', FRequest.Get('reconstruction', 'sparse'));
   if FRequest.Get('reconstruction', 'sparse') = 'sparse' then Exit;
-  Need(FRequest.Strings['kind'] = 'train_generate', 'Source continuity requires a saved audition');
   Progress('find_feature_journals', 0, 0);
   LDirectory := FDirectory;
+  LJournalJobId := FJobId;
   if FModelReused then
   begin
     LDirectory := '';
@@ -891,12 +892,19 @@ begin
       begin
         Check;
         LRow := LJobs.Arrays['jobs'].Objects[LIndex];
-        if (LRow.Strings['status'] <> 'completed') or
-          (LRow.Strings['kind'] <> 'train_generate') then Continue;
+        if ((LRow.Strings['status'] <> 'completed') and
+          (LRow.Strings['status'] <> 'cancelled') and
+          (LRow.Strings['status'] <> 'failed')) or
+          ((LRow.Strings['kind'] <> 'train_generate') and
+          (LRow.Strings['kind'] <> 'stream_generate')) then Continue;
         LJob := ReadStudioJob(FCatalogRoot, LRow.Strings['job_id']);
         try
           if LJob.Find('results') = nil then Continue;
           LResults := LJob.Objects['results'];
+          { A stopped stream can retain a fully verified preparation. Only
+            that frozen component, not arbitrary partial job data, is reusable. }
+          if LResults.Find('verified_model') <> nil then
+            LResults := LResults.Objects['verified_model'];
           if (LResults.Get('training_identity_sha256', '') <> FTrainingHash) or
             (LResults.Get('model_sha256', '') <> FProfile.ModelSha256) then Continue;
           LComplete := True;
@@ -906,6 +914,7 @@ begin
           if LComplete then
           begin
             LDirectory := StudioJobDirectory(FCatalogRoot, LRow.Strings['job_id']);
+            LJournalJobId := LRow.Strings['job_id'];
             Break;
           end;
         finally
@@ -917,6 +926,7 @@ begin
     end;
     Need(LDirectory <> '', 'Saved feature journals are unavailable. Use sparse reconstruction or prepare a new learning project.');
   end;
+  FReceipt.Add('reconstruction_journal_job_id', LJournalJobId);
   LRows := TJSONArray.Create;
   FReceipt.Add('reconstruction_journals', LRows);
   SetLength(LSegments, Length(FRanges));
@@ -1129,6 +1139,16 @@ var
   LTotal, LSequence, LStart, LExcerptStart, LExcerptFrames: Int64;
   LIndex, LTake: Integer;
   LExcerptDone: Boolean;
+
+  procedure BindReconstruction(const ATarget: TJSONObject);
+  begin
+    ATarget.Add('reconstruction', FReceipt.Strings['reconstruction']);
+    if FReceipt.Find('reconstruction_policy') <> nil then
+    begin
+      ATarget.Add('reconstruction_policy', FReceipt.Strings['reconstruction_policy']);
+      ATarget.Add('reconstruction_policy_sha256', FReceipt.Strings['reconstruction_policy_sha256']);
+    end;
+  end;
 begin
   LSession := nil;
   LState := nil;
@@ -1146,7 +1166,7 @@ begin
     SetLength(LWeights, Length(FRanges));
     for LIndex := 0 to High(LWeights) do LWeights[LIndex] := FRanges[LIndex].Weight;
     LSession := TJournalAudioSession.Create(FProfile, ReadCandidate, LWeights,
-      FRequest.Arrays['seeds'].Integers[0], LTotal);
+      FRequest.Arrays['seeds'].Integers[0], LTotal, nil, FSuccessors);
     FStreaming := True;
     LState := TJSONObject.Create;
     LState.Add('sample_rate', FProfile.SampleRate);
@@ -1157,6 +1177,7 @@ begin
     LState.Add('model_sha256', FProfile.ModelSha256);
     LState.Add('request_sha256', FRequest.Strings['request_sha256']);
     LState.Add('seed', FRequest.Arrays['seeds'].Integers[0]);
+    BindReconstruction(LState);
     LState.Add('excerpt_status', 'available');
     Progress('streaming', 0, LTotal);
     ReplaceStudioJSON(FDirectory + PathDelim + StudioLiveStateFile, LState);
@@ -1216,6 +1237,8 @@ begin
           LExcerpt.Add('session_total_frames', LTotal);
           LExcerpt.Add('model_sha256', FProfile.ModelSha256);
           LExcerpt.Add('request_sha256', FRequest.Strings['request_sha256']);
+          BindReconstruction(LExcerpt);
+          LExcerpt.Add('sources', FReceipt.Arrays['sources'].Clone);
           LExcerpt.Add('wav_sha256', HashFile(LOutput));
           LExcerpt.Add('relative_file', 'stream-excerpt.wav');
           FreeAndNil(LWriter);
@@ -1363,10 +1386,23 @@ begin
       LRequest.Add('task_id', 'NS-6_studio_03');
       LRequest.Add('kind', 'single');
       LRequest.Add('question', 'Does this generated music fit the style you want?');
+      if LSuccessor and (FRequest.Strings['kind'] = 'stream_generate') then
+      begin
+        LRequest.Strings['task_id'] := 'NS-5_continuity_05';
+        LRequest.Strings['question'] := 'Do the notes stay connected without obvious stutters?';
+        LExperiment := TJSONObject.Create;
+        LRequest.Add('experiment', LExperiment);
+        LExperiment.Add('title', 'Notes in long playback');
+        LExperiment.Add('change', 'Experimental playback keeps matching neighboring sound fragments together.');
+        LExperiment.Add('decision', 'Your answer will help decide whether to keep this option for longer listening. Saving does not train.');
+      end;
       LAssets := TJSONArray.Create;
       LRequest.Add('assets', LAssets);
       LParent := nil;
-      if LSuccessor then LParent := FindParent(LOutput);
+      { A live excerpt has its own session offset and total length. It is not
+        the zero-offset finite generation merely because seed/length match. }
+      if LSuccessor and (FRequest.Strings['kind'] = 'train_generate') then
+        LParent := FindParent(LOutput);
       try
         if LParent <> nil then
         begin
@@ -1444,6 +1480,8 @@ begin
       LChoice := TJSONObject.Create;
       LChoices.Add(LChoice);
       if LAssets.Count = 2 then LChoice.Add('id', 'continuity_preference')
+      else if LSuccessor and (FRequest.Strings['kind'] = 'stream_generate') then
+        LChoice.Add('id', 'continuity')
       else LChoice.Add('id', 'style_fit');
       LOptions := TJSONArray.Create;
       LChoice.Add('values', LOptions);
@@ -1451,6 +1489,10 @@ begin
       begin
         LOptions.Add('before'); LOptions.Add('after'); LOptions.Add('same');
         LOptions.Add('neither'); LOptions.Add('unknown');
+      end
+      else if LSuccessor and (FRequest.Strings['kind'] = 'stream_generate') then
+      begin
+        LOptions.Add('yes'); LOptions.Add('no'); LOptions.Add('unknown');
       end
       else for LOptionIndex := 0 to 2 do
       begin

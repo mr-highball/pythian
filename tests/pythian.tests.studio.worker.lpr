@@ -41,6 +41,7 @@ uses
   pythian.tools.studio.jobs,
   pythian.tools.studio.worker,
   pythian.tools.studio.live,
+  pythian.tools.studio.references,
   pythian.tools.studio.&library.discovery,
   pythian.tools.listen.catalog;
 
@@ -1140,6 +1141,209 @@ begin
   end;
 end;
 
+procedure LiveSuccessorRun(const ARoot: String);
+var
+  LCatalog, LHash, LDirectory, LReplay, LPath, LQueueId: String;
+  LProject, LWrite, LJob, LState, LCommand, LReply, LReceipt, LReferences, LQueue: TJSONObject;
+  LWorker: TLiveWorker;
+  LCombined: TMemoryStream;
+  LStream: TFileStream;
+  LWave: TWaveFrameReader;
+  LSamples, LExpected: TAudioSamples;
+  LMemory: TStringStream;
+  LDeadline: QWord;
+  LIndex, LSequence, LOffset: Integer;
+  LOriginalSize: Int64;
+  LByte: Byte;
+  LFound: Boolean;
+
+  procedure WaitReady(const ASequence: Integer);
+  begin
+    LDeadline:=GetTickCount64;
+    repeat
+      FreeAndNil(LState);
+      LState:=ReadStudioLiveState(LCatalog,LWorker.JobId);
+      Check(LState.Strings['job_status']<>'failed','Successor live worker remains valid');
+      if (LState.Find('total_frames')<>nil) and (LState.Int64s['sequence']=ASequence) then Exit;
+      Sleep(10);
+    until GetTickCount64-LDeadline>30000;
+    raise Exception.Create('Successor live worker did not become ready');
+  end;
+
+  procedure RunLive(const AId: String; const ADuration, APulls: Integer;
+    const AExcerpt, ACancel: Boolean);
+  var LTurn, LQueueIndex: Integer; LPayload: String;
+  begin
+    LCombined.Clear; LWorker:=nil; LWrite:=JobWrite(AId,LHash,LProject);
+    LCommand:=nil;
+    try
+      LWrite.Strings['kind']:='stream_generate';
+      LWrite.Integers['duration_ms']:=ADuration;
+      LWrite.Add('reconstruction','source_successor');
+      LReply:=EnqueueStudioJob(LCatalog,LWrite); LReply.Free;
+      LWorker:=TLiveWorker.Create(True); LWorker.FreeOnTerminate:=False;
+      LWorker.Catalog:=LCatalog; LWorker.JobId:=AId; LWorker.Start;
+      LDirectory:=StudioJobDirectory(LCatalog,AId); WaitReady(-1);
+      Check((LState.Strings['reconstruction']='source_successor') and
+        (LState.Strings['reconstruction_policy']='exact_source_successor_v1'),
+        'Live status publishes explicit shared reconstruction policy');
+      Check((LState.Int64s['position']=0) and
+        (LState.Int64s['total_frames']=Int64(ADuration)*8),'Exact long clock, no work without pull');
+      LCommand:=TJSONObject.Create; LCommand.Add('job_id',AId);
+      LCommand.Add('action','pull'); LCommand.Add('sequence',0);
+      for LTurn:=0 to APulls-1 do
+      begin
+        if AExcerpt and (LTurn=5) then
+        begin
+          LCommand.Strings['action']:='excerpt'; LReply:=RequestStudioLive(LCatalog,LCommand);
+          LReply.Free; LCommand.Strings['action']:='pull';
+        end;
+        LCommand.Int64s['sequence']:=LTurn; LReply:=RequestStudioLive(LCatalog,LCommand); LReply.Free;
+        WaitReady(LTurn); LPayload:=ReadStudioLiveAudio(LCatalog,AId,LTurn);
+        LMemory:=TStringStream.Create(LPayload);
+        try
+          LWave:=TWaveFrameReader.Create(LMemory);
+          try
+            Check(LWave.FrameCount=8000,'Bounded one-second native successor pull');
+            LSamples:=LWave.ReadFrames(8000);
+            LCombined.WriteBuffer(LSamples[0],Length(LSamples)*SizeOf(Single));
+          finally LWave.Free end;
+        finally LMemory.Free end;
+        if AExcerpt and (LTurn=24) then
+        begin
+          LReceipt:=ReadStudioJSON(LDirectory+PathDelim+'stream-excerpt.receipt.json');
+          try
+            Check((LReceipt.Int64s['session_start_frame']=40000) and
+              (LReceipt.Strings['reconstruction']='source_successor') and
+              (LReceipt.Strings['reconstruction_policy_sha256']=LState.Strings['reconstruction_policy_sha256']),
+              'Later excerpt preserves policy and actual session offset');
+            LQueueId:=LReceipt.Strings['listening_request_id'];
+            LReferences:=ReadListeningSourceReferences(LCatalog,LQueueId,'audition');
+            try
+              Check((LReferences.Strings['status']='ready') and
+                (LReferences.Arrays['sources'].Count=2) and
+                (LReferences.Arrays['sources'].Objects[1].Int64s['start_frame']=32000),
+                'Running live excerpt resolves its exact original selections');
+            finally LReferences.Free end;
+            LQueue:=ReadListeningQueue(LCatalog); LFound:=False;
+            try
+              for LQueueIndex:=0 to LQueue.Arrays['items'].Count-1 do
+                if LQueue.Arrays['items'].Objects[LQueueIndex].Strings['id']=LQueueId then
+                begin
+                  LFound:=True;
+                  Check(LQueue.Arrays['items'].Objects[LQueueIndex].Arrays['assets'].Count=1,
+                    'Later live excerpt is never paired with a zero-offset finite baseline');
+                  Check((LQueue.Arrays['items'].Objects[LQueueIndex].Strings['task_id']='NS-5_continuity_05') and
+                    (LQueue.Arrays['items'].Objects[LQueueIndex].Objects['answer_spec'].Arrays['choices'].Objects[0].Strings['id']='continuity') and
+                    (LQueue.Arrays['items'].Objects[LQueueIndex].Find('experiment')<>nil),
+                    'Live successor asks one task-bound continuity question, not general style fit');
+                end;
+              Check(LFound,'Exact live excerpt appears in existing review queue');
+            finally LQueue.Free end;
+          finally LReceipt.Free end;
+        end;
+      end;
+      if ACancel then begin LReply:=CancelStudioJob(LCatalog,AId); LReply.Free end;
+      LWorker.WaitFor;
+      Check(LWorker.Failure='','Worker thread releases resources normally');
+      LJob:=ReadStudioJob(LCatalog,AId);
+      try
+        if ACancel then
+          Check((LJob.Strings['status']='cancelled') and
+            (LJob.Objects['results'].Find('verified_model')<>nil),
+            'Stopped live session retains verified preparation')
+        else
+        begin
+          Check(LWorker.Succeeded and (LJob.Strings['status']='completed'),
+            'Complete declared source-successor session');
+          Check(LJob.Objects['results'].Booleans['model_reused'] and
+            (LJob.Objects['results'].Strings['reconstruction_journal_job_id']='cold-live'),
+            'Completed journals from stopped cold live job are reused');
+          Check(not DirectoryExists(LDirectory+PathDelim+'analysis'),
+            'Warm long session performs no hidden reanalysis');
+        end;
+        Check(not FileExists(LDirectory+PathDelim+'seed-0.wav') and
+          not FileExists(LDirectory+PathDelim+'seed-0.receipt.json'),
+          'Long playback retains no whole-output WAV or grain ledger');
+      finally LJob.Free end;
+    finally
+      if LWorker<>nil then
+      begin
+        if not LWorker.Finished then begin LReply:=CancelStudioJob(LCatalog,AId); LReply.Free; LWorker.WaitFor end;
+        LWorker.Free;
+      end;
+      LCommand.Free; LWrite.Free;
+    end;
+  end;
+
+  procedure RunFinite(const AId: String; const ADuration: Integer; const APolicy: String);
+  begin
+    LWrite:=JobWrite(AId,LHash,LProject);
+    try
+      LWrite.Integers['duration_ms']:=ADuration; LWrite.Add('reconstruction',APolicy);
+      LReply:=EnqueueStudioJob(LCatalog,LWrite); LReply.Free;
+      Check(RunStudioWorker(LCatalog,AId,ARoot+PathDelim+'library'),'Finite retained-model consumer');
+    finally LWrite.Free end;
+  end;
+
+begin
+  Check(not DirectoryExists(ARoot),'Live successor fixture root is fresh');
+  LCatalog:=ARoot+PathDelim+'catalog'; LHash:=MakeSource(ARoot,'successor',0);
+  LWrite:=ProjectWrite('successor-project',LHash);
+  try LProject:=SaveStudioProject(LCatalog,LWrite) finally LWrite.Free end;
+  LState:=nil; LCombined:=TMemoryStream.Create;
+  try
+    RunLive('cold-live',86400000,25,True,True);
+    RunFinite('finite-before',20000,'sparse');
+    RunLive('warm-live',120000,120,True,False);
+    LCombined.Position:=0; LReplay:=Sha256Stream(LCombined,LCombined.Size);
+    RunLive('replay-live',120000,120,False,False);
+    LCombined.Position:=0;
+    Check(Sha256Stream(LCombined,LCombined.Size)=LReplay,'Complete successor live session replays exactly');
+    RunLive('finite-length-live',20000,20,False,False);
+    RunFinite('finite-successor',20000,'source_successor');
+    LStream:=TFileStream.Create(StudioJobDirectory(LCatalog,'finite-successor')+PathDelim+'seed-0.wav',fmOpenRead);
+    try
+      LWave:=TWaveFrameReader.Create(LStream);
+      try
+        Check(LWave.FrameCount=160000,'Finite and live consumers use the same planned clock');
+        LCombined.Position:=0; LOffset:=0;
+        repeat
+          LSamples:=LWave.ReadFrames(4096);
+          SetLength(LExpected,Length(LSamples));
+          if Length(LSamples)>0 then
+          begin
+            LCombined.ReadBuffer(LExpected[0],Length(LExpected)*SizeOf(Single));
+            Check(CompareByte(LSamples[0],LExpected[0],Length(LSamples)*SizeOf(Single))=0,
+              'Every finite/live PCM sample agrees across native pull boundaries');
+          end;
+          Inc(LOffset,Length(LSamples));
+        until Length(LSamples)=0;
+        Check(LOffset=160000,'Compared the full matched-clock output');
+      finally LWave.Free end;
+    finally LStream.Free end;
+    LPath:=StudioJobDirectory(LCatalog,'cold-live')+PathDelim+'analysis'+PathDelim+'0.pyaf';
+    LStream:=TFileStream.Create(LPath,fmOpenReadWrite);
+    try LOriginalSize:=LStream.Size; LStream.Position:=LOriginalSize; LByte:=123; LStream.WriteBuffer(LByte,1)
+    finally LStream.Free end;
+    try
+      LWrite:=JobWrite('damaged-live',LHash,LProject);
+      try
+        LWrite.Strings['kind']:='stream_generate'; LWrite.Add('reconstruction','source_successor');
+        LReply:=EnqueueStudioJob(LCatalog,LWrite); LReply.Free;
+        Check(not RunStudioWorker(LCatalog,'damaged-live',ARoot+PathDelim+'library'),
+          'Damaged retained live journal fails without sparse fallback');
+        LDirectory:=StudioJobDirectory(LCatalog,'damaged-live');
+        Check(not DirectoryExists(LDirectory+PathDelim+'analysis') and
+          not FileExists(LDirectory+PathDelim+StudioLiveStateFile),
+          'Damaged journal performs no hidden reanalysis or audio publication');
+      finally LWrite.Free end;
+    finally
+      LStream:=TFileStream.Create(LPath,fmOpenReadWrite);
+      try LStream.Size:=LOriginalSize finally LStream.Free end;
+    end;
+  finally LCombined.Free; LState.Free; LProject.Free end;
+end;
 procedure LibraryRun(const ARoot: String);
 var
   LCatalog: String;
@@ -1276,7 +1480,12 @@ end;
 
 begin
   try
-    if (ParamCount = 2) and (ParamStr(1) = '--live-only') then
+    if (ParamCount = 2) and (ParamStr(1) = '--successor-live-only') then
+    begin
+      LiveSuccessorRun(ExpandFileName(ParamStr(2)));
+      WriteLn('PASS ', GChecks, ' long source-continuity Studio checks');
+    end
+    else if (ParamCount = 2) and (ParamStr(1) = '--live-only') then
     begin
       LiveRun(ExpandFileName(ParamStr(2)));
       WriteLn('PASS ', GChecks, ' live Studio worker checks');

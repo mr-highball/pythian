@@ -519,6 +519,8 @@ try {
       if ($studioComponent -eq 'worker') {
         & (Join-Path $buildRoot "pythian.tests.studio.worker$executableSuffix") '--live-only' ($studioFixtureRoot + '-live')
         if ($LASTEXITCODE -ne 0) { throw 'Studio live transport/replay/lease checks failed' }
+        & (Join-Path $buildRoot "pythian.tests.studio.worker$executableSuffix") '--successor-live-only' ($studioFixtureRoot + '-successor-live')
+        if ($LASTEXITCODE -ne 0) { throw 'Studio long source-continuity/reuse/excerpt checks failed' }
       }
     }
     & $compilerPath @adapterArgs 'examples/pythian.example.wfc.provider.lpr'

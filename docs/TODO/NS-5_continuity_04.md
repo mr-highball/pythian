@@ -16,7 +16,7 @@ and the six remaining continuity goal points stay with
 [continuity_01](NS-5_continuity_01.md). The guided review queue remains owned by
 [studio_03](NS-6_studio_03.md), without duplicate implementation or credit.
 
-Execution status: implemented by Big Boss, single agent; native/API/DOM checks
+Execution status (2026-10-26 implementation): implemented by Big Boss, single agent; native/API/DOM checks
 pass. Actual desktop/narrow browser acceptance remains open after desktop-control
 capture/activation failed. No independent QA or musical acceptance is claimed.
 Delivered: an explicit reconstruction option in immutable Studio jobs, using
@@ -59,6 +59,12 @@ new scientific tuning, seed sweep or larger listening campaign.
 - [Native Studio generation](DONE/NS-6_studio_02.md).
 
 **Dev Notes:**
+
+- 2026-10-27, Big Boss: the separate [long-playback connection](NS-5_continuity_05.md)
+  now reuses the same primary index/session and retains source-bound excerpt
+  evidence. Its native/DOM checks do not close this finite route's actual
+  browser gate. The finite-only restriction recorded in the earlier notes below
+  is historical; no scientific policy, baseline audio or training identity changed.
 
 - 2026-10-26, Big Boss: finite Studio jobs now select sparse or source-successor
   reconstruction explicitly. Training identity is unchanged; retained complete
