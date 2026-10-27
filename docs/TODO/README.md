@@ -6,7 +6,7 @@
 Accepted zero-credit usability repairs: [training choices and playback](DONE/NS-6_studio_19.md),
 [tabbed workflow and help](DONE/NS-6_studio_18.md).
 
-Updated 2026-10-27. **52 open / 60 accepted tasks.** The user authorized a new
+Updated 2026-10-27. **52 open / 62 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **52.45 current / 47.55 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -63,8 +63,11 @@ point credit or musical acceptance is inferred.
 
 Implemented core delivery: [source-continuity Studio integration](NS-5_continuity_04.md),
 zero additional credit, with exact saved-model/journal reuse and native/API/DOM
-checks. Actual desktop/narrow qualification remains open after desktop-control
-access failed; a fresh Oct27 in-app-browser request is also unavailable.
+checks. Actual desktop/narrow qualification remains open. On Oct27 the browser
+inventory became visible, but its security gate rejected observation of the
+existing error tab because page-protocol authority was not granted. No alternate
+surface or raw browser workaround was attempted; a normally loaded authorized
+page is needed before that review can resume.
 [studio_03](NS-6_studio_03.md) offers the prepared continuity question with
 Original/Before/After and Save/Next. The operator has answered **After** for
 fewer broken/jittery notes. Preserve that narrow positive development preference;
@@ -97,7 +100,11 @@ is now [accepted](DONE/NS-6_portability_01.md). The
 accepted with zero additional credit. The scoped
 [offline native phases](DONE/NS-6_observability_03.md) are also accepted after
 independent parity/abort/consumer checks. Remaining retained-operation
-checkpoints remain open. [Shared synthesis](DONE/NS-6_portability_03.md) and
+checkpoints remain open. The scoped [corpus archive](DONE/NS-6_observability_05.md)
+and [composition planning](DONE/NS-6_observability_06.md) consumers are accepted
+with actual native byte/report/audio parity, abort and retry; retained-style/
+provider/evaluation/inference coverage remains in observability_04.
+[Shared synthesis](DONE/NS-6_portability_03.md) and
 [exact shared timing](DONE/NS-6_portability_04.md) now execute on native and
 actual pas2js with complete sample comparison within the declared tolerance,
 exact state parity and abort/retry checks. Browser
@@ -283,7 +290,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | --- | ---: | ---: | --- |
 | [NS-6_studio_21](NS-6_studio_21.md) — Background recovery and long-source learning | 0 | 0.00 | Deployed; actual browser acceptance remains |
 | [NS-6_studio_22](NS-6_studio_22.md) — Original/generated listening comparison | 0 | 0.00 | Deployed for review; native/DOM checks pass, actual browser acceptance remains |
-| [NS-6_observability_04](NS-6_observability_04.md) — Retained corpus/style operations and operator monitoring | 0 | 0.00 | Ready; bounded owned work, no demonstrated generic WFC gap |
+| [NS-6_observability_04](NS-6_observability_04.md) — Retained corpus/style operations and operator monitoring | 0 | 0.00 | Retained-style/provider/evaluation/inference scope remains; archive/composition consumers accepted separately |
 | [NS-6_adoption_01](NS-6_adoption_01.md) — Establish independent ecosystem adoption evidence | 15 | 1.50 | Supported releases + independent ecosystem evidence |
 | [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 1 | 0.10 | Solo usability resumed; complete physical matrix remains open |
 | [NS-6_delivery_03](NS-6_delivery_03.md) — Package and verify the accepted final workflow | 1 | 0.10 | Dependencies, including Studio |
@@ -298,7 +305,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 
 ## Accepted tasks and retired work
 
-All 60 accepted tasks, including [offline native observability](DONE/NS-6_observability_03.md), [catalog import observability](DONE/NS-6_observability_02.md), [primary analysis portability](DONE/NS-6_portability_01.md), shared intake/text portability, caller corpus intake, Studio source/effects/capture, the current minimal package
+All 62 accepted tasks, including [retained corpus archives](DONE/NS-6_observability_05.md), [composition planning](DONE/NS-6_observability_06.md), [offline native observability](DONE/NS-6_observability_03.md), [catalog import observability](DONE/NS-6_observability_02.md), [primary analysis portability](DONE/NS-6_portability_01.md), shared intake/text portability, caller corpus intake, Studio source/effects/capture, the current minimal package
 and the three NS-2 quality results, are listed in
 the [current DONE ledger](DONE/README.md). Their acceptance dates and detailed
 evidence remain in the unchanged task identities. Allocations now reflect the

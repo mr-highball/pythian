@@ -30,6 +30,7 @@ uses
   Classes,
   SysUtils,
   pythian.audio,
+  pythian.progress,
   pythian.hash,
   pythian.music,
   pythian.music.compose,
@@ -55,6 +56,43 @@ procedure Check(const ACondition: Boolean; const AMessage: String);
 begin
   if not ACondition then
     raise Exception.Create(AMessage);
+end;
+
+type
+  EProgressAbort = class(EAudio);
+  TCompositionObserver = class
+    AbortStage: String;
+    Raised: Exception;
+    CompatibilityCalls: Integer;
+    ReachabilityCalls: Integer;
+    CompatibilityDone: Int64;
+    ReachabilityDone: Int64;
+    procedure Observe(const AWork: TWorkProgress);
+  end;
+
+procedure TCompositionObserver.Observe(const AWork: TWorkProgress);
+begin
+  Check(AWork.Units = wuItems, 'Composition progress units');
+  if AWork.Stage = 'composition_compatibility' then
+  begin
+    Inc(CompatibilityCalls);
+    Check(AWork.Done >= CompatibilityDone, 'Compatibility progress monotonic');
+    CompatibilityDone := AWork.Done;
+  end
+  else if AWork.Stage = 'composition_reachability' then
+  begin
+    Inc(ReachabilityCalls);
+    Check(AWork.Done >= ReachabilityDone, 'Reachability progress monotonic');
+    ReachabilityDone := AWork.Done;
+  end
+  else
+    raise Exception.Create('Unexpected composition progress stage');
+  if (AWork.Stage = AbortStage) and (AWork.Done > 0) and
+    ((AWork.Total = 0) or (AWork.Done < AWork.Total)) then
+  begin
+    Raised := EProgressAbort.Create('observer identity');
+    raise Raised;
+  end;
 end;
 
 function HashUtf8(const AText: UTF8String): String;
@@ -288,6 +326,11 @@ var
   LAfterChanges: TTempoChanges;
   LIndex: Integer;
   LSuccess: Boolean;
+  LObserver: TCompositionObserver;
+  LObserved: TNoteSequence;
+  LObservedReport: TWfcCompositionReport;
+  LAbortIndex: Integer;
+  LRejected: Boolean;
 begin
   LSources := BuildSources;
   CheckSourceFreeSeed(1731, CSeed1731EventHash);
@@ -337,6 +380,63 @@ begin
     Check(LOutput.NoteCount = 97, 'Candidate event count changed');
     Check(LReport.EventLedgerHash = CCandidateEventHash,
       'Candidate projected event-ledger hash changed');
+    LObserver := TCompositionObserver.Create;
+    LObserved := nil;
+    try
+      Check(TryGenerateWfcChordComposition(LSources, 1731, LObserved,
+        LObservedReport, LObserver.Observe), 'Observed composition succeeds');
+      Check((LObservedReport.Text = LReport.Text) and
+        (LObservedReport.TokenHash = LReport.TokenHash) and
+        (LObservedReport.EventLedgerHash = LReport.EventLedgerHash) and
+        (LObserved.NoteCount = LOutput.NoteCount), 'Observed graph and output parity');
+      for LIndex := 0 to LOutput.NoteCount - 1 do
+      begin
+        Check(SameGate(LOutput.GateAt(LIndex), LObserved.GateAt(LIndex)),
+          'Observed note gate parity');
+      end;
+      Check((LObserver.CompatibilityDone = 169) and
+        (LObserver.ReachabilityDone = 2002) and
+        (LObserver.CompatibilityCalls <= 5) and (LObserver.ReachabilityCalls <= 10),
+        'Measured graph traversal and bounded cadence');
+      WriteLn('composition_progress compatibility=', LObserver.CompatibilityDone,
+        ' visits=', LObserver.ReachabilityDone);
+      for LAbortIndex := 0 to 1 do
+      begin
+        LObserver.CompatibilityDone := 0;
+        LObserver.ReachabilityDone := 0;
+        if LAbortIndex = 0 then
+          LObserver.AbortStage := 'composition_compatibility'
+        else
+          LObserver.AbortStage := 'composition_reachability';
+        LBefore := LObserved;
+        LRejected := False;
+        try
+          TryGenerateWfcChordComposition(LSources, 1731, LObserved,
+            LObservedReport, LObserver.Observe);
+        except
+          on E: EProgressAbort do
+          begin
+            LRejected := E = LObserver.Raised;
+          end;
+        end;
+        Check(LRejected and (LObserved = LBefore), 'Observer abort identity and output ownership');
+        Check(LOutput.NoteCount = LObserved.NoteCount, 'Abort preserves output gates');
+        for LIndex := 0 to LOutput.NoteCount - 1 do
+        begin
+          Check(SameGate(LOutput.GateAt(LIndex), LObserved.GateAt(LIndex)),
+            'Abort leaves each caller note unchanged');
+        end;
+      end;
+      LObserver.AbortStage := '';
+      LObserver.CompatibilityDone := 0;
+      LObserver.ReachabilityDone := 0;
+      Check(TryGenerateWfcChordComposition(LSources, 1731, LObserved,
+        LObservedReport, LObserver.Observe) and (LObservedReport.Text = LReport.Text),
+        'Retry after abort preserves result');
+    finally
+      LObserved.Free;
+      LObserver.Free;
+    end;
     Write(String(LReport.Text));
   finally
     LOutput.Free;

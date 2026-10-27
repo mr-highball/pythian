@@ -45,12 +45,16 @@ uses
   pythian.wfc.joint.archive,
   pythian.wfc.stream,
   pythian.tools.files,
+  pythian.tools.progress,
   pythian.tools.sources,
   wfc,
   wfc_music_arrangement,
   wfc_sequence,
   wfc_sequence_graph,
   wfc_sequence_text;
+
+var
+  GProgress: TConsoleWorkProgress;
 
 procedure ProtectInput(const AInput, AOutput: String);
 begin
@@ -143,7 +147,7 @@ begin
     end;
     LCorpus := TrainAcousticCorpus(LSources, LInfo, DefaultAnalysisOptions);
     try
-      LBytes := EncodeWfcAcousticCorpus(LCorpus);
+      LBytes := EncodeWfcAcousticCorpus(LCorpus, 2, GProgress.Observe);
       WriteFileBytes(ParamStr(2), LBytes);
       WriteLn('Saved ', LCorpus.SourceCount, ' recordings, ', LCorpus.FeatureCount,
         ' observations and ', LCorpus.PaletteCount, ' shared tokens');
@@ -532,7 +536,7 @@ begin
   end
   else
   begin
-    LCorpus := DecodeWfcAcousticCorpus(LBytes, LModel);
+    LCorpus := DecodeWfcAcousticCorpus(LBytes, LModel, GProgress.Observe);
   end;
   try
     LDocument := DescribeCorpus(LCorpus, LModel, HashAudioBytes(LBytes));
@@ -749,7 +753,7 @@ begin
   end;
   ProtectInput(ParamStr(2), ParamStr(3));
   LBytes := ReadFileBytes(ParamStr(2), MaximumCorpusArchiveBytes);
-  LCorpus := DecodeWfcAcousticCorpus(LBytes, LModel);
+  LCorpus := DecodeWfcAcousticCorpus(LBytes, LModel, GProgress.Observe);
   try
     LOrder := LModel.Order;
     if ParamCount = 4 then
@@ -773,6 +777,7 @@ begin
 end;
 
 begin
+  GProgress := TConsoleWorkProgress.Create;
   try
     if ParamStr(1) = 'learn' then
     begin
@@ -824,7 +829,9 @@ begin
     on LException: Exception do
     begin
       WriteLn(StdErr, LException.Message);
+      GProgress.Free;
       Halt(1);
     end;
   end;
+  GProgress.Free;
 end.

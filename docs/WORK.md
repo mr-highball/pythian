@@ -12,6 +12,75 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Retained artifact and composition checkpoints accepted - 2026-10-27
+
+Big Boss entered at `e0049c8` with delivery nonclosing count **0**. Actual
+browser inventory is now visible, but its security gate rejected observing the
+existing error tab because page-protocol authority was not granted. No raw
+browser/native/alternate-surface workaround was attempted. A normally loaded
+authorized page is needed to resume visual qualification. The attempted operator
+qualification closes no criterion; nonclosing count becomes **1**. Catalog and
+discovery metadata also lack a qualifying recorded 48-kHz mono source for
+studio_07 AC5; authored fixtures or transformed stereo copies cannot supply it.
+No recorded WFC job was started or operator response changed.
+
+The least-complete NS-5 musical paths retain their source/reference blockers and
+stopped scientific counters. Big Boss selected independently usable retained
+artifact work: [corpus archives](TODO/DONE/NS-6_observability_05.md) and
+[composition planning](TODO/DONE/NS-6_observability_06.md), split without additional
+credit from [observability_04](TODO/NS-6_observability_04.md). Its remaining
+retained-style/provider, batch evaluation and inference scope stays open.
+Criterion: real owned bulk-work measurements and safe cancellation. Deliverable:
+primary archive callbacks, WFC adapter/CLI forwarding, and measured composition
+compatibility/reachability. Closing evidence: exact prior-revision and observed
+parity, interior abort/cleanup, successful retry and maintained native consumers.
+Stop on changed math/formats, unowned dependency edits, invented percentages or
+partial caller-output publication. Spike owns archives, Spiegel composition;
+Big Boss owns assessment, integration and final judgment. New output stays under
+the dedicated E-drive build/tests/runs roots. No musical acceptance is inferred.
+
+Combined independent QA started after both components were ready. Composition
+passes Spike's independent checks. Archive submission **1** is blocked: the
+Pythian-owned `ValidateWfcCorpusModel` loop was misidentified as generic
+companion validation and still lacked callbacks. It initializes up to 1,185,921
+lookup entries and checks corpus tokens/states. Spike owns its repair and
+revalidation; a second failed implementation submission transfers it to Big
+Boss. No dependency edit is needed. The failed candidate evidence is preserved.
+The repaired second archive submission passes Spiegel's independent focused
+execution/source review; one failed submission is preserved, no takeover
+threshold is reached. Both complete scoped tasks move to DONE after root
+integration. Final checked native Win32/Win64 archive fixtures pass **11,712**
+checks each on 65,536 authored features and a 1-MiB attachment, with measured
+aggregate callback counts. The maintained WFC corpus fixture passes observed
+encode/decode identity, interior lookup/token abort, nil-model cleanup and
+explicit encode/decode retry. Corpus regression and composition fixtures pass
+on both targets. Independent helper checks pass; final test-only cadence/retry
+additions received independent source review and root execution.
+
+The populated eight-source composition reports 169 compatibility checks and
+2,002 target visits, retaining original work, seed, notes and report. Root's
+actual prior-revision consumer comparison preserves exact composition WAV/report
+(excluding output pathname), archive bytes, inspection JSON and saved-model remix
+WAV. All valid native runs report zero leaks. No audio was played. Existing
+allocation/whole-array copies and generic companion learning/text/solve internals
+remain synchronous; file writes retain their previous publication contract.
+Stage completion is not durable success, and no maximum cancellation latency
+or whole many-hour semantic acceptance is claimed.
+
+Counts become **52 open /62 DONE (114 total)**, with **52.45 credited /47.55
+remaining** and NS completions **100/90/25/70/14/54** unchanged. Delivery
+nonclosing count returns to **0** after closing both complete scoped consumers;
+musical/reference failure and exposure counters are unchanged. No generic WFC
+defect or dependency change was demonstrated. Stable deployment stays unchanged:
+the fixed stable process retains loopback/LAN listeners, no worker or QA listener
+remains, and all 5,951 baseline private JSON/JSONL hashes are unchanged. Browser
+review remains blocked at the actual security rejection above; no alternate
+browser/audio was launched. Evidence and source/artifact identities are in
+E-drive `build/tests/runs/retained-progress-20261027-*` and helper-specific archive/
+composition folders. Next: resume the existing musical/reference or authorized
+operator gate when its stated evidence is available; retained-style/provider
+observability remains separately open and earns no musical credit.
+
 ## Shared synthesis and exact timing accepted - 2026-10-27
 
 Previous goal turn is progress: native offline observability was accepted and

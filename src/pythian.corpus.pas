@@ -171,6 +171,7 @@ var
   LFlat: TAudioFeatures;
   LTokens: TAcousticIndices;
   LRepresentatives: TAcousticIndices;
+  LValidated: Integer;
 begin
   inherited Create;
   if (Length(ARecordings) < 1) or (Length(ARecordings) > MaximumCorpusSources) then
@@ -213,6 +214,8 @@ begin
   SetLength(FRecordings, Length(ARecordings));
   SetLength(LFlat, FFeatureCount);
   LOffset := 0;
+  LValidated := 0;
+  ReportWork(AProgress, 'corpus_validate_features', wuObservations, 0, FFeatureCount);
   for LIndex := 0 to High(ARecordings) do
   begin
     LTokens := FPalette.Encode(ARecordings[LIndex].Features, AProgress);
@@ -228,10 +231,16 @@ begin
         raise EAudio.Create('Persisted tokens disagree with the shared palette');
       end;
       LFlat[LOffset + LFrame] := ARecordings[LIndex].Features[LFrame];
+      Inc(LValidated);
+      if (LValidated mod 256 = 0) or (LValidated = FFeatureCount) then
+      begin
+        ReportWork(AProgress, 'corpus_validate_features', wuObservations,
+          LValidated, FFeatureCount);
+      end;
     end;
     Inc(LOffset, Length(LTokens));
   end;
-  LRepresentatives := FPalette.RepresentativeFrames(LFlat);
+  LRepresentatives := FPalette.RepresentativeFrames(LFlat, AProgress);
   SetLength(FRepresentatives, FPalette.Count);
   for LToken := 0 to High(LRepresentatives) do
   begin

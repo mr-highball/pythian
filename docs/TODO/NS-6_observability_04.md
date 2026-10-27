@@ -4,23 +4,29 @@
 
 **Description:**
 
-Instrument the remaining retained-corpus/archive and Pythian-owned style/provider
-batch work. Public boundaries can contain nested validation, graph reachability,
-encoding, selective blending and multi-recording evaluation. Static work limits
-alone do not make those operations observable.
+Instrument the remaining Pythian-owned retained-style/provider batch work.
+Public boundaries can contain nested validation, encoding, selective blending
+and multi-recording evaluation. Static work limits alone do not make those
+operations observable. The independently useful corpus-archive and composition
+consumers now have dedicated zero-credit owners below; all original obligations
+remain required.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
 Deliverable: measured bulk-operation map and callbacks at owned work boundaries,
-forwarded through maintained corpus/style tools. Closing evidence: deterministic
+forwarded through maintained style tools. Closing evidence: deterministic
 archive/model parity, cancellation and a reproducible long-operation trace.
 Stop on invented overall percentages, swallowed cancellation or dependency edits.
 
 **Acceptance Criteria:**
 
-- Audit and extend corpus/archive serialization/validation and retained-style
+- Audit and extend retained-style archive validation/serialization and
   learning/blending/provider preparation, naming real item/byte/pass units.
-- Cover Pythian composition reachability and batch evaluation stages; short fixed
-  transforms may retain bounded contracts with documented measured evidence.
+  Corpus-archive serialization/validation and its consumer are owned by
+  [observability_05](DONE/NS-6_observability_05.md).
+- Cover retained-style batch evaluation stages; short fixed transforms may
+  retain bounded contracts with documented measured evidence. Pythian composition
+  reachability and its consumer are owned by
+  [observability_06](DONE/NS-6_observability_06.md).
 - Keep inference's existing deadlines, cancellation and observation checkpoints;
   reconcile operator phase reporting without replacing its scientific semantics.
 - Generic WFC gaps require a demonstrated repro, a new branch in the separate
@@ -35,6 +41,15 @@ Stop on invented overall percentages, swallowed cancellation or dependency edits
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss scope split: the original task spans three independently
+  usable APIs/consumers and cannot honestly be closed by archive or composition
+  callbacks alone. Original AC1 corpus/archive and associated AC5 evidence map
+  to observability_05; original AC2 composition and associated AC5 evidence map
+  to observability_06. Retained-style/provider/batch evaluation, inference AC3,
+  generic-gap AC4 and remaining AC5 stay here. Both new owners carry zero
+  credit; original credit and every required gate are unchanged. The two
+  children are not blockers of independent style work, nor is this task a
+  blocker of their independent consumers.
 - 2026-10-27, Big Boss: [offline native phases](DONE/NS-6_observability_03.md)
   are accepted; this retained batch audit still owns nested metadata/graph
   validation and publication boundaries. Inherited clip allocation/finite-check/

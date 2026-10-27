@@ -352,6 +352,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Observed bulk rendering compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.render.progress$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Observed bulk rendering checks failed' }
+  & $compilerPath @compilerArgs '-gh' 'tests/pythian.tests.archive.progress.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Observed corpus archive compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.archive.progress$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Observed corpus archive parity/abort/retry checks failed' }
   foreach ($sharedFixture in @('synthesis.portable', 'time.portable')) {
     & $compilerPath @compilerArgs '-gh' "tests/pythian.tests.$sharedFixture.lpr"
     if ($LASTEXITCODE -ne 0) { throw "Shared $sharedFixture compilation failed" }

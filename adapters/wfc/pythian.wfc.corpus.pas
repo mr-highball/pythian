@@ -30,6 +30,7 @@ interface
 
 uses
   pythian.audio,
+  pythian.progress,
   pythian.corpus,
   wfc_sequence;
 
@@ -38,14 +39,14 @@ const
 
 { Trains the actual companion model once and packages it with the corpus. }
 function EncodeWfcAcousticCorpus(const ACorpus: TAcousticCorpusData;
-  const AOrder: Integer = 2): TAudioBytes;
+  const AOrder: Integer = 2; const AProgress: TWorkProgressCallback = nil): TAudioBytes;
 { Loads without FFT, clustering or model learning. Independently checks every
   stored state count and sample boundary against the measured token corpus.
   Both returned objects are caller-owned. Failure sets AModel=nil. }
 function DecodeWfcAcousticCorpus(const ABytes: TAudioBytes;
-  out AModel: TWfcSequenceModel): TAcousticCorpusData;
+  out AModel: TWfcSequenceModel; const AProgress: TWorkProgressCallback = nil): TAcousticCorpusData;
 procedure ValidateWfcCorpusModel(const ACorpus: TAcousticCorpusData;
-  const AModel: TWfcSequenceModel);
+  const AModel: TWfcSequenceModel; const AProgress: TWorkProgressCallback = nil);
 
 implementation
 
@@ -57,7 +58,7 @@ uses
   wfc_sequence_text;
 
 procedure ValidateWfcCorpusModel(const ACorpus: TAcousticCorpusData;
-  const AModel: TWfcSequenceModel);
+  const AModel: TWfcSequenceModel; const AProgress: TWorkProgressCallback);
 const
   CAlphabet = MaximumAcousticVocabulary + 1;
 var
@@ -77,6 +78,7 @@ var
   LPosition: Integer;
   LState: Integer;
   LToken: Integer;
+  LDone: Integer;
 begin
   if (ACorpus = nil) or (AModel = nil) then
   begin
@@ -104,13 +106,19 @@ begin
   end;
   { At most 33^4 entries (~4.6 MiB); no search/relearning and no quadratic scan. }
   SetLength(LLookup, LKeyCount);
+  ReportWork(AProgress, 'wfc_corpus_lookup', wuItems, 0, LKeyCount);
   for LIndex := 0 to High(LLookup) do
   begin
     LLookup[LIndex] := -1;
+    if ((LIndex + 1) mod 4096 = 0) or (LIndex + 1 = LKeyCount) then
+    begin
+      ReportWork(AProgress, 'wfc_corpus_lookup', wuItems, LIndex + 1, LKeyCount);
+    end;
   end;
   SetLength(LCounts, AModel.StateCount);
   SetLength(LStarts, AModel.StateCount);
   SetLength(LEnds, AModel.StateCount);
+  ReportWork(AProgress, 'wfc_corpus_states', wuItems, 0, AModel.StateCount * 2);
   for LState := 0 to AModel.StateCount - 1 do
   begin
     LKey := 0;
@@ -130,7 +138,13 @@ begin
       raise EAudio.Create('Duplicate companion acoustic state');
     end;
     LLookup[LKey] := LState;
+    if (LState + 1) mod 256 = 0 then
+    begin
+      ReportWork(AProgress, 'wfc_corpus_states', wuItems, LState + 1, AModel.StateCount * 2);
+    end;
   end;
+  LDone := 0;
+  ReportWork(AProgress, 'wfc_corpus_tokens', wuObservations, 0, ACorpus.FeatureCount);
   for LSource := 0 to ACorpus.SourceCount - 1 do
   begin
     LRecording := ACorpus.RecordingAt(LSource);
@@ -165,6 +179,11 @@ begin
       begin
         Inc(LEnds[LState]);
       end;
+      Inc(LDone);
+      if (LDone mod 256 = 0) or (LDone = ACorpus.FeatureCount) then
+      begin
+        ReportWork(AProgress, 'wfc_corpus_tokens', wuObservations, LDone, ACorpus.FeatureCount);
+      end;
     end;
   end;
   for LState := 0 to AModel.StateCount - 1 do
@@ -174,6 +193,11 @@ begin
       (LEnds[LState] <> AModel.EndCountAt(LState)) then
     begin
       raise EAudio.Create('Companion observation/boundary counts disagree with corpus');
+    end;
+    if ((LState + 1) mod 256 = 0) or (LState + 1 = AModel.StateCount) then
+    begin
+      ReportWork(AProgress, 'wfc_corpus_states', wuItems,
+        AModel.StateCount + LState + 1, AModel.StateCount * 2);
     end;
   end;
   for LIndex := 0 to AModel.PublicTokenCount - 1 do
@@ -187,7 +211,7 @@ begin
 end;
 
 function EncodeWfcAcousticCorpus(const ACorpus: TAcousticCorpusData;
-  const AOrder: Integer): TAudioBytes;
+  const AOrder: Integer; const AProgress: TWorkProgressCallback): TAudioBytes;
 var
   LSequences: TAcousticCorpus;
   LPalette: TAcousticPalette;
@@ -209,14 +233,14 @@ begin
   try
     LModel := LearnAcousticModel(LSequences, LPalette, AOrder);
     try
-      ValidateWfcCorpusModel(ACorpus, LModel);
+      ValidateWfcCorpusModel(ACorpus, LModel, AProgress);
       LText := EncodeWfcSequenceText(LModel);
       SetLength(LBytes, Length(LText));
       if Length(LBytes) > 0 then
       begin
         Move(LText[1], LBytes[0], Length(LBytes));
       end;
-      Result := EncodeAcousticArchive(ACorpus, WfcCorpusAttachmentContract, LBytes);
+      Result := EncodeAcousticArchive(ACorpus, WfcCorpusAttachmentContract, LBytes, AProgress);
     finally
       LModel.Free;
     end;
@@ -226,7 +250,7 @@ begin
 end;
 
 function DecodeWfcAcousticCorpus(const ABytes: TAudioBytes;
-  out AModel: TWfcSequenceModel): TAcousticCorpusData;
+  out AModel: TWfcSequenceModel; const AProgress: TWorkProgressCallback): TAcousticCorpusData;
 var
   LCorpus: TAcousticCorpusData;
   LModel: TWfcSequenceModel;
@@ -236,7 +260,7 @@ var
 begin
   AModel := nil;
   LModel := nil;
-  LCorpus := DecodeAcousticArchive(ABytes, LContract, LBytes);
+  LCorpus := DecodeAcousticArchive(ABytes, LContract, LBytes, AProgress);
   try
     if LContract <> WfcCorpusAttachmentContract then
     begin
@@ -248,7 +272,7 @@ begin
       Move(LBytes[0], LText[1], Length(LBytes));
     end;
     LModel := DecodeWfcSequenceText(LText);
-    ValidateWfcCorpusModel(LCorpus, LModel);
+    ValidateWfcCorpusModel(LCorpus, LModel, AProgress);
     Result := LCorpus;
     AModel := LModel;
   except

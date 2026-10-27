@@ -30,6 +30,7 @@ interface
 
 uses
   pythian.audio,
+  pythian.progress,
   pythian.corpus;
 
 const
@@ -40,9 +41,11 @@ const
   The optional attachment is opaque to core (for example, a companion model).
   The digest detects corruption and binds the payloads; it is not a signature. }
 function EncodeAcousticArchive(const ACorpus: TAcousticCorpusData;
-  const AAttachmentContract: UTF8String; const AAttachment: TAudioBytes): TAudioBytes;
+  const AAttachmentContract: UTF8String; const AAttachment: TAudioBytes;
+  const AProgress: TWorkProgressCallback = nil): TAudioBytes;
 function DecodeAcousticArchive(const ABytes: TAudioBytes;
-  out AAttachmentContract: UTF8String; out AAttachment: TAudioBytes): TAcousticCorpusData;
+  out AAttachmentContract: UTF8String; out AAttachment: TAudioBytes;
+  const AProgress: TWorkProgressCallback = nil): TAcousticCorpusData;
 
 implementation
 
@@ -64,7 +67,7 @@ type
     procedure Number(const AValue: Integer);
     procedure RealNumber(const AValue: Double);
     procedure TextValue(const AValue: UTF8String);
-    function Finish: TAudioBytes;
+    function Finish(const AProgress: TWorkProgressCallback): TAudioBytes;
   end;
 
   TArchiveReader = record
@@ -142,7 +145,7 @@ begin
   end;
 end;
 
-function TArchiveWriter.Finish: TAudioBytes;
+function TArchiveWriter.Finish(const AProgress: TWorkProgressCallback): TAudioBytes;
 var
   LHash: String;
   LCount: Integer;
@@ -155,7 +158,7 @@ begin
   begin
     FStream.ReadBuffer(Result[0], LCount);
   end;
-  LHash := Sha256Bytes(Result);
+  LHash := Sha256Bytes(Result, AProgress);
   SetLength(Result, LCount + 64);
   Move(LHash[1], Result[LCount], 64);
 end;
@@ -237,7 +240,8 @@ begin
 end;
 
 function EncodeAcousticArchive(const ACorpus: TAcousticCorpusData;
-  const AAttachmentContract: UTF8String; const AAttachment: TAudioBytes): TAudioBytes;
+  const AAttachmentContract: UTF8String; const AAttachment: TAudioBytes;
+  const AProgress: TWorkProgressCallback): TAudioBytes;
 const
   CMagic: array[0..3] of Byte = ($50, $59, $41, $43);
 var
@@ -249,6 +253,9 @@ var
   LIndex: Integer;
   LFrame: Integer;
   LComponent: Integer;
+  LDone: Integer;
+  LByteOffset: Integer;
+  LByteCount: Integer;
 begin
   if ACorpus = nil then
   begin
@@ -279,6 +286,8 @@ begin
       LPalette.Free;
     end;
     LWriter.Number(ACorpus.SourceCount);
+    LDone := 0;
+    ReportWork(AProgress, 'archive_encode_features', wuObservations, 0, ACorpus.FeatureCount);
     for LIndex := 0 to ACorpus.SourceCount - 1 do
     begin
       LRecording := ACorpus.RecordingAt(LIndex);
@@ -304,22 +313,37 @@ begin
         begin
           LWriter.RealNumber(LFeature.Chroma[LComponent]);
         end;
+        Inc(LDone);
+        if (LDone mod 256 = 0) or (LDone = ACorpus.FeatureCount) then
+        begin
+          ReportWork(AProgress, 'archive_encode_features', wuObservations, LDone, ACorpus.FeatureCount);
+        end;
       end;
     end;
     LWriter.TextValue(AAttachmentContract);
     LWriter.Number(Length(AAttachment));
-    if Length(AAttachment) > 0 then
+    LByteOffset := 0;
+    ReportWork(AProgress, 'archive_encode_attachment', wuBytes, 0, Length(AAttachment));
+    while LByteOffset < Length(AAttachment) do
     begin
-      LWriter.Raw(AAttachment[0], Length(AAttachment));
+      LByteCount := Length(AAttachment) - LByteOffset;
+      if LByteCount > 65536 then
+      begin
+        LByteCount := 65536;
+      end;
+      LWriter.Raw(AAttachment[LByteOffset], LByteCount);
+      Inc(LByteOffset, LByteCount);
+      ReportWork(AProgress, 'archive_encode_attachment', wuBytes, LByteOffset, Length(AAttachment));
     end;
-    Result := LWriter.Finish;
+    Result := LWriter.Finish(AProgress);
   finally
     LWriter.Free;
   end;
 end;
 
 function DecodeAcousticArchive(const ABytes: TAudioBytes;
-  out AAttachmentContract: UTF8String; out AAttachment: TAudioBytes): TAcousticCorpusData;
+  out AAttachmentContract: UTF8String; out AAttachment: TAudioBytes;
+  const AProgress: TWorkProgressCallback): TAcousticCorpusData;
 var
   LReader: TArchiveReader;
   LOptions: TAnalysisOptions;
@@ -334,6 +358,9 @@ var
   LFrame: Integer;
   LComponent: Integer;
   LFlag: Integer;
+  LDone: Integer;
+  LByteOffset: Integer;
+  LByteCount: Integer;
 begin
   AAttachmentContract := '';
   AAttachment := nil;
@@ -343,7 +370,7 @@ begin
   end;
   SetLength(LHash, 64);
   Move(ABytes[Length(ABytes) - 64], LHash[1], 64);
-  if Sha256Bytes(Copy(ABytes, 0, Length(ABytes) - 64)) <> LHash then
+  if Sha256Bytes(Copy(ABytes, 0, Length(ABytes) - 64), AProgress) <> LHash then
   begin
     raise EAudio.Create('Acoustic archive SHA256 mismatch');
   end;
@@ -383,6 +410,8 @@ begin
   end;
   SetLength(LRecordings, LCount);
   LTotal := 0;
+  LDone := 0;
+  ReportWork(AProgress, 'archive_decode_features', wuObservations, 0, 0);
   for LIndex := 0 to High(LRecordings) do
   begin
     LRecordings[LIndex].Info.Name := LReader.TextValue;
@@ -420,19 +449,38 @@ begin
       begin
         LRecordings[LIndex].Features[LFrame].Chroma[LComponent] := LReader.RealNumber;
       end;
+      Inc(LDone);
+      if LDone mod 256 = 0 then
+      begin
+        ReportWork(AProgress, 'archive_decode_features', wuObservations, LDone, 0);
+      end;
     end;
   end;
+  ReportWork(AProgress, 'archive_decode_features', wuObservations, LDone, LDone);
   LAttachmentContract := LReader.TextValue;
   LCount := LReader.Number;
   ValidateAttachment(LAttachmentContract, LCount);
   LReader.Need(LCount);
-  LAttachment := Copy(ABytes, LReader.Offset, LCount);
+  SetLength(LAttachment, LCount);
+  LByteOffset := 0;
+  ReportWork(AProgress, 'archive_decode_attachment', wuBytes, 0, LCount);
+  while LByteOffset < LCount do
+  begin
+    LByteCount := LCount - LByteOffset;
+    if LByteCount > 65536 then
+    begin
+      LByteCount := 65536;
+    end;
+    Move(ABytes[LReader.Offset + LByteOffset], LAttachment[LByteOffset], LByteCount);
+    Inc(LByteOffset, LByteCount);
+    ReportWork(AProgress, 'archive_decode_attachment', wuBytes, LByteOffset, LCount);
+  end;
   Inc(LReader.Offset, LCount);
   if LReader.Offset <> LReader.Limit then
   begin
     raise EAudio.Create('Trailing bytes in acoustic archive');
   end;
-  Result := TAcousticCorpusData.Create(LOptions, LCenters, LRecordings);
+  Result := TAcousticCorpusData.Create(LOptions, LCenters, LRecordings, AProgress);
   AAttachmentContract := LAttachmentContract;
   AAttachment := LAttachment;
 end;

@@ -44,6 +44,11 @@ The [shared synthesis repair](TODO/DONE/NS-6_portability_03.md) and discovered
 [exact timing prerequisite](TODO/DONE/NS-6_portability_04.md) are now accepted
 through actual native/pas2js sample/state comparison. No browser, WASM, musical
 or additional goal credit follows.
+Scoped [retained corpus archives](TODO/DONE/NS-6_observability_05.md) and
+[composition planning](TODO/DONE/NS-6_observability_06.md) now pass measured
+native progress/cancellation and exact prior-revision archive/report/audio
+comparison. Both are zero-credit splits from the still-open retained-style/
+provider/evaluation/inference audit; scope and percentages are unchanged.
 Accepted [training-choice/playback repair](TODO/DONE/NS-6_studio_19.md) also adds no credit.
 Accepted [Studio navigation/help repair](TODO/DONE/NS-6_studio_18.md) adds no credit.
 
@@ -77,7 +82,7 @@ ecosystem adoption is unmeasured and is a required completion gate.
 | <a id="wfc-preferences"></a><a id="ns-4"></a>**NS-4 — Granular WFC layers and reusable blends** | 70% | 15 | Actual layers, typed controls, persistence, selective reuse, caller codecs/traits, bounded event/composition evidence and continuous native audio sessions. | Full recorded-provider workflow: 1 task / 30 |
 | <a id="wav-04"></a><a id="ns-5"></a>**NS-5 — User-defined styles that generate and blend usefully** | 14% | 20 | Bounded identity, maintained caller intake, raw corpus, journal, balance, listening packet and acoustic continuation; style-card AC1 only. | Grounded references, semantic scale, structure/continuity, useful one/many-recording and new-user styles, blends, source-continuity consumer integration: 17 tasks / 86 |
 | <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | 54% | 10 | Supported consumer contract, native checkpoint, exact-revision minimal core/caller-provider package, editor/producer queue, Studio setup/private corpora, bounded raw WFC jobs, effects, experimental capture/MIDI exploration, starting actions/navigation, verified large-library refresh, shared filter catalog, flexible bounded source workspace, delay/reverb with explicit tails, native streamed playback, shared microphone codec, guided operator teaching, shared corpus intake/text, primary analysis/synthesis portability, exact shared timing, connected import and offline native progress. | Studio iteration/conversion, phone HTTPS and metadata-only discovery, retained-operation observability, full packages, actual outside use, physical LAN/full operator workflow, maintained support, ecosystem adoption and final handoff: 14 tasks / 46 |
-| **Total** | **52.45 weighted** | **100** | **60 accepted task records plus explicit baseline** | **52 open tasks / 47.55 weighted points** |
+| **Total** | **52.45 weighted** | **100** | **62 accepted task records plus explicit baseline** | **52 open tasks / 47.55 weighted points** |
 
 Arithmetic:
 `5×1 + 25×.90 + 25×.25 + 15×.70 + 20×.14 + 10×.54 = 52.45`.
@@ -155,7 +160,7 @@ a claim that all downstream outcomes pass.
 The new baseline is NS-1..6 **100/70/10/20/0/0**; current accepted task points
 are **0/20/15/50/14/54**. Baseline contributes 28.00 weighted points and DONE
 contributes 24.45. The [open](TODO/README.md) and [DONE](TODO/DONE/README.md)
-ledgers exhaustively map the 112 current tickets. Baseline + DONE + open equals
+ledgers exhaustively map the 114 current tickets. Baseline + DONE + open equals
 100 within each goal. Historical figures are retained only as dated evidence,
 not current allocation rules.
 

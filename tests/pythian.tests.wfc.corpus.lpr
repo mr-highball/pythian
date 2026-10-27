@@ -29,6 +29,9 @@ program pythian_tests_wfc_corpus;
 uses
   SysUtils,
   pythian.audio,
+  pythian.analysis,
+  pythian.progress,
+  pythian.hash,
   pythian.corpus,
   pythian.corpus.archive,
   pythian.learning,
@@ -47,6 +50,126 @@ begin
   if not AValue then
   begin
     raise Exception.Create(AMessage);
+  end;
+end;
+
+type
+  EObserverAbort = class(Exception);
+  TCorpusObserver = class
+    AbortStage: String;
+    RaisedObject: Exception;
+    procedure Observe(const AWork: TWorkProgress);
+  end;
+
+procedure TCorpusObserver.Observe(const AWork: TWorkProgress);
+begin
+  if (AWork.Stage = AbortStage) and (AWork.Done > 0) and
+    (AWork.Total > 0) and (AWork.Done < AWork.Total) then
+  begin
+    RaisedObject := EObserverAbort.Create('observer identity');
+    raise RaisedObject;
+  end;
+end;
+
+procedure CheckObservedAdapter(const ACorpus: TAcousticCorpusData;
+  const AStage: String);
+var
+  LProbe: TCorpusObserver;
+  LBytes: TAudioBytes;
+  LObserved: TAudioBytes;
+  LLoaded: TAcousticCorpusData;
+  LModel: TWfcSequenceModel;
+  LHash: String;
+  LMode: Integer;
+  LRejected: Boolean;
+begin
+  LProbe := TCorpusObserver.Create;
+  try
+    LBytes := EncodeWfcAcousticCorpus(ACorpus, 4);
+    LHash := Sha256Bytes(LBytes);
+    LObserved := EncodeWfcAcousticCorpus(ACorpus, 4, LProbe.Observe);
+    Check((Length(LBytes) = Length(LObserved)) and
+      (CompareByte(LBytes[0], LObserved[0], Length(LBytes)) = 0),
+      'Observed adapter retains complete archive bytes');
+    for LMode := 0 to 1 do
+    begin
+      LProbe.AbortStage := AStage;
+      LModel := nil;
+      LRejected := False;
+      try
+        if LMode = 0 then
+        begin
+          LObserved := EncodeWfcAcousticCorpus(ACorpus, 4, LProbe.Observe);
+        end
+        else
+        begin
+          LLoaded := DecodeWfcAcousticCorpus(LBytes, LModel, LProbe.Observe);
+          LModel.Free;
+          LLoaded.Free;
+        end;
+      except
+        on LException: EObserverAbort do
+        begin
+          LRejected := LException = LProbe.RaisedObject;
+        end;
+      end;
+      Check(LRejected and (LModel = nil) and (Sha256Bytes(LBytes) = LHash),
+        'Adapter abort preserves exception, nil model and archive bytes');
+      LProbe.AbortStage := '';
+      LObserved := EncodeWfcAcousticCorpus(ACorpus, 4, LProbe.Observe);
+      Check((Length(LBytes) = Length(LObserved)) and
+        (CompareByte(LBytes[0], LObserved[0], Length(LBytes)) = 0),
+        'Observed encode retry retains complete archive bytes');
+      LLoaded := DecodeWfcAcousticCorpus(LBytes, LModel, LProbe.Observe);
+      try
+        Check((LLoaded.FeatureCount = ACorpus.FeatureCount) and
+          (LModel.ObservationCount = ACorpus.FeatureCount), 'Adapter retry retains observations');
+      finally
+        LModel.Free;
+        LLoaded.Free;
+      end;
+    end;
+  finally
+    LProbe.Free;
+  end;
+end;
+
+procedure CheckObservedTokens;
+var
+  LOptions: TAnalysisOptions;
+  LCenters: TAcousticVectors;
+  LRecords: TAcousticRecordings;
+  LCorpus: TAcousticCorpusData;
+  LIndex: Integer;
+begin
+  LOptions := DefaultAnalysisOptions;
+  LOptions.WindowFrames := 64;
+  LOptions.HopFrames := 32;
+  SetLength(LCenters, 1);
+  SetLength(LRecords, 1);
+  LRecords[0].Info.Name := 'authored-silence';
+  LRecords[0].Info.Sha256 := StringOfChar('a', 64);
+  LRecords[0].Info.Provenance := 'Synthetic measured test fixture';
+  LRecords[0].Info.SampleRate := 8000;
+  LRecords[0].Info.Channels := 1;
+  LRecords[0].Info.FrameCount := 16384;
+  SetLength(LRecords[0].Features, 512);
+  SetLength(LRecords[0].Tokens, 512);
+  for LIndex := 0 to 511 do
+  begin
+    LRecords[0].Features[LIndex].StartFrame := LIndex * 32;
+    LRecords[0].Features[LIndex].ValidFrames := 64;
+    if LIndex = 511 then
+    begin
+      LRecords[0].Features[LIndex].ValidFrames := 32;
+    end;
+    LRecords[0].Features[LIndex].Silent := True;
+  end;
+  LCorpus := TAcousticCorpusData.Create(LOptions, LCenters, LRecords);
+  try
+    CheckObservedAdapter(LCorpus, 'wfc_corpus_tokens');
+  finally
+    LCorpus.Free;
   end;
 end;
 
@@ -77,6 +200,8 @@ var
 begin
   LCorpus := CreateCorpusFixture(LSources);
   try
+    CheckObservedAdapter(LCorpus, 'wfc_corpus_lookup');
+    CheckObservedTokens;
     for LOrder := 1 to 4 do
     begin
       LBytes := EncodeWfcAcousticCorpus(LCorpus, LOrder);

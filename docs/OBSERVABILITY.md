@@ -34,7 +34,9 @@ Studio callers, plus existing streaming, inference and library contracts.
 | Pascal inference | Existing observation checkpoints, budgets, cancellation and deadlines retained | Reconcile remaining operator phases in [observability_04](TODO/NS-6_observability_04.md); no third-party execution |
 | Catalog import and verification | Shared measured hash/copy/verification phases; callback failures escape per-file error handling | [observability_02](TODO/DONE/NS-6_observability_02.md) |
 | Offline render, separation, export and evaluation | Primary native engines report measured windows/cells/frames/comparisons; maintained operators forward callbacks | [observability_03 — DONE](TODO/DONE/NS-6_observability_03.md); scoped phases below |
-| Retained corpus/style/archive/provider operations | Nested serialization, validation, blending and composition reachability need further measured checkpoints | [observability_04](TODO/NS-6_observability_04.md) |
+| Retained corpus archive and WFC model validation | Actual feature/attachment/hash bytes and owned lookup/state/token validation are observable through the native archive operator | [observability_05 — DONE](TODO/DONE/NS-6_observability_05.md); synchronous residuals below |
+| WFC chord composition planning | Actual compatibility checks and target visits, unknown traversal total until counted; prior caller output preserved on abort | [observability_06 — DONE](TODO/DONE/NS-6_observability_06.md) |
+| Retained style/provider and batch evaluation | Nested style serialization/validation/blending/provider preparation and inference reporting still need assessment | [observability_04](TODO/NS-6_observability_04.md) |
 | Primary analysis in pas2js | Full callback consumer executes shared primary algorithms; optional timer adapter yields between bounded WAV analysis batches | [portability_01 — DONE](TODO/DONE/NS-6_portability_01.md); actual browser presentation and WASM remain unqualified |
 | Primary synthesis in pas2js | Actual shared synth/instrument/note/chord/grain cases execute with measured callbacks, abort/retry and exact supported clocks | [portability_03 — DONE](TODO/DONE/NS-6_portability_03.md), [timing repair — DONE](TODO/DONE/NS-6_portability_04.md); synchronous Node consumers, no browser/WASM claim |
 
@@ -180,6 +182,62 @@ render callback fixture also executes on both targets. See the
 [supported limits](MIDI.md#shared-synthesis-and-exact-counter-limits). No browser,
 WASM, physical-phone or musical result is inferred. No service/browser asset
 replacement was needed for these library/CLI changes.
+
+## Retained corpus and composition consumers
+
+Accepted 2026-10-27, native scope only: the
+[corpus archive](TODO/DONE/NS-6_observability_05.md) and
+[composition planning](TODO/DONE/NS-6_observability_06.md) APIs expose optional
+shared callbacks through their maintained Pascal CLIs. These independently
+usable consumers were split from observability_04 with no added credit. Its
+remaining retained-style/provider/evaluation/inference requirements stay open.
+
+| Owned boundary | Real measured work | Cadence and completion |
+| --- | --- | --- |
+| Primary archive encode/decode | `archive_encode_features`, `archive_decode_features`: observations | 256 features; decode active total unknown, actual final total |
+| Archive attachment copy | `archive_encode_attachment`, `archive_decode_attachment`: bytes | 64-KiB blocks, confirmed local copy counts |
+| Archive payload digest | Existing `verify_audio_bytes`: bytes | Shared 8-KiB SHA checkpoints; archive trailer excluded from its payload digest |
+| Primary persisted-corpus validation | `corpus_validate_features`: observations | 256 validated features; existing palette encode/representative callbacks also forwarded |
+| Pythian WFC corpus model validation | `wfc_corpus_lookup`: initialized entries; `wfc_corpus_states`: actual items across both state passes; `wfc_corpus_tokens`: corpus observations | 4,096 lookup entries, 256 state/token items; counts can interleave |
+| Pythian chord compatibility/reachability | `composition_compatibility`: state-pair checks; `composition_reachability`: target visits | 64 compatibility checks /256 target visits; active traversal total unknown, final total actual |
+
+The WFC corpus validator is owned here, not in the companion. Independent QA
+caught its missing callback in the first submission. The repaired second
+submission reports its actual work and preserves exception identity and nil
+failed-decode model cleanup. Generic companion learning, model text handling
+and solving remain synchronous, and no companion defect was demonstrated.
+
+The capped authored corpus contains 65,536 features and a 1-MiB opaque attachment:
+257 encode-feature callbacks, 258 decode-feature callbacks, 257 validation
+callbacks and 17 attachment callbacks per direction. Final maintained native
+Win32/Win64 fixtures pass 11,712 checks each; maintained WFC corpus tests cover
+interior lookup/token abort on public encode/decode, exact observed encode retry,
+decode retry, saved-model token/audio replay and unchanged borrowed archives.
+The populated eight-source/13-state composition reports 169 compatibility checks
+and 2,002 target visits. Independent boundary checks retain prior output on
+initial/interior/final observer failure. All valid checked native runs report
+zero leaks. Fixture wall times include multiple passes/abort/retry and concurrent
+target execution; they are not per-operation performance comparisons.
+
+Actual maintained CLI output against `e0049c8` preserves archive bytes,
+inspection JSON, saved-model remix WAV and composition WAV/report (excluding
+the different output pathname). Counts go to stderr. No audio playback, actual
+browser presentation, pas2js archive execution or musical acceptance follows.
+
+Static archive limits remain 32 MiB, attachment 16 MiB, 32 sources and 65,536
+features. WFC validation's order-four lookup admits at most 1,185,921 entries.
+Composition retains its existing 16,777,216 combined-work cap; the cap is never
+a progress denominator. Allocations, whole-array copies, bounded metadata,
+reachability cell scans and generic companion calls remain synchronous. A final
+reachability callback precedes remaining path validation/generation. No maximum
+cancellation latency is promised. Existing archive CLI direct file writes remain
+non-atomic; completed local stages are not durable publication. The capped
+whole-memory archive does not certify journal-based many-hour semantic recovery.
+
+Evidence: E-drive `build/tests/runs/{archive,composition}-progress-20261027-*`
+and `build/tests/runs/retained-progress-20261027-*`, including frozen prior-revision
+consumers, exact hashes, measured counts, failure/review evidence and final native
+runs. Stable service assets and private operator records were not changed.
 
 ## pas2js analysis execution
 

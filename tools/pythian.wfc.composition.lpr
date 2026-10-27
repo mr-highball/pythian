@@ -37,7 +37,8 @@ uses
   pythian.articulation,
   pythian.wave,
   pythian.hash,
-  pythian.wfc.compose;
+  pythian.wfc.compose,
+  pythian.tools.progress;
 
 const
   CSampleRate = 44100;
@@ -167,6 +168,7 @@ var
   LPlan: TArticulationPlan;
   LOmitted: Integer;
   LWav: TAudioBytes;
+  LObserver: TConsoleWorkProgress;
 begin
   Require((ParamCount >= 2) and (ParamCount <= 3),
     'Usage: pythian.wfc.composition OUTPUT.wav SOURCES.txt [SEED]');
@@ -182,9 +184,10 @@ begin
   LRaw := nil;
   LClip := nil;
   LPlan := nil;
+  LObserver := TConsoleWorkProgress.Create;
   try
     if not TryGenerateWfcChordComposition(LSources, LSeed,
-      LSequence, LReport) then
+      LSequence, LReport, LObserver.Observe) then
       raise EAudio.Create('WFC chord composition stopped: ' +
         LReport.FailureReason);
     SetLength(LVoices, 2);
@@ -222,6 +225,7 @@ begin
     LClip.Free;
     LRaw.Free;
     LSequence.Free;
+    LObserver.Free;
   end;
 end;
 

@@ -29,6 +29,7 @@ unit pythian.wfc.compose;
 interface
 
 uses
+  pythian.progress,
   pythian.music,
   pythian.music.compose,
   wfc,
@@ -96,7 +97,8 @@ type
   replaced. On False or exception AOutput remains untouched. }
 function TryGenerateWfcChordComposition(
   const ASources: TCompositionChordSources; const ASeed: Cardinal;
-  var AOutput: TNoteSequence; out AReport: TWfcCompositionReport): Boolean;
+  var AOutput: TNoteSequence; out AReport: TWfcCompositionReport;
+  const AProgress: TWorkProgressCallback = nil): Boolean;
 
 function WfcCompositionStatusText(
   const AStatus: TWfcCompositionStatus): String;
@@ -324,7 +326,8 @@ begin
 end;
 
 function CheckReachability(const AModel: TWfcSequenceModel;
-  const ASamples: TWfcSequenceSamples; out AHasPath, AHasNovel: Boolean): Int64;
+  const ASamples: TWfcSequenceSamples; out AHasPath, AHasNovel: Boolean;
+  const AProgress: TWorkProgressCallback; var AProgressFailed: Boolean): Int64;
 var
   LCells: TReachabilityCells;
   LCompatible: TCompatibilityCells;
@@ -338,8 +341,21 @@ var
   LStateCount: Integer;
   LAllSources: Integer;
   LWork: Int64;
+  LCompatibilityDone: Int64;
+  LVisits: Int64;
   LCellIndex: Integer;
   LChord: TCompositionChord;
+
+  procedure Observe(const AStage: String; const ADone, ATotal: Int64);
+  begin
+    try
+      ReportWork(AProgress, AStage, wuItems, ADone, ATotal);
+    except
+      AProgressFailed := True;
+      raise;
+    end;
+  end;
+
 begin
   LStateCount := AModel.StateCount;
   LMaskCount := 1 shl Length(ASamples);
@@ -347,14 +363,27 @@ begin
   SetLength(LCells, WfcCompositionChordBars * LStateCount * LMaskCount);
   SetLength(LCompatible, LStateCount * LStateCount);
   SetLength(LStateTokens, LStateCount);
+  LCompatibilityDone := 0;
+  Observe('composition_compatibility', 0,
+    Int64(LStateCount) * LStateCount);
   for LSource := 0 to LStateCount - 1 do
   begin
     LStateTokens[LSource] := AModel.ProjectStateToken(LSource);
     for LTarget := 0 to LStateCount - 1 do
+    begin
       LCompatible[LSource * LStateCount + LTarget] :=
         AModel.StatesCompatible(LSource, LTarget);
+      Inc(LCompatibilityDone);
+      if (LCompatibilityDone mod 64 = 0) and
+        (LCompatibilityDone < Int64(LStateCount) * LStateCount) then
+        Observe('composition_compatibility',
+          LCompatibilityDone, Int64(LStateCount) * LStateCount);
+    end;
   end;
+  Observe('composition_compatibility', LCompatibilityDone, LCompatibilityDone);
   LWork := Int64(LStateCount) * LStateCount;
+  LVisits := 0;
+  Observe('composition_reachability', 0, 0);
   for LTarget := 0 to LStateCount - 1 do
   begin
     if AModel.StartCountAt(LTarget) = 0 then
@@ -383,6 +412,9 @@ begin
           Inc(LWork);
           if LWork > WfcCompositionMaximumReachabilityWork then
             raise EAudio.Create('WFC chord reachability exceeded fixed work bound');
+          Inc(LVisits);
+          if LVisits mod 256 = 0 then
+            Observe('composition_reachability', LVisits, 0);
           if not LCompatible[LSource * LStateCount + LTarget] then
             Continue;
           if not TokenChord(LStateTokens[LTarget], LChord) then
@@ -398,6 +430,7 @@ begin
       end;
     end;
   end;
+  Observe('composition_reachability', LVisits, LVisits);
   AHasPath := False;
   AHasNovel := False;
   for LTarget := 0 to LStateCount - 1 do
@@ -617,7 +650,8 @@ end;
 
 function TryGenerateWfcChordComposition(
   const ASources: TCompositionChordSources; const ASeed: Cardinal;
-  var AOutput: TNoteSequence; out AReport: TWfcCompositionReport): Boolean;
+  var AOutput: TNoteSequence; out AReport: TWfcCompositionReport;
+  const AProgress: TWorkProgressCallback): Boolean;
 var
   LSamples: TWfcSequenceSamples;
   LModel: TWfcSequenceModel;
@@ -642,6 +676,7 @@ var
   LBaselineReport: TCompositionScaffoldReport;
   LCandidateReport: TCompositionScaffoldReport;
   LCandidateComplete: Boolean;
+  LProgressFailed: Boolean;
 begin
   AReport := Default(TWfcCompositionReport);
   AReport.Status := wcsNotRun;
@@ -653,6 +688,7 @@ begin
   LReachable := False;
   LNovelReachable := False;
   LWork := 0;
+  LProgressFailed := False;
   try
     try
       AReport.SourceCount := Length(ASources);
@@ -676,7 +712,7 @@ begin
       LModelText := EncodeWfcSequenceText(LModel);
       AReport.ModelTextHash := HashUtf8(UTF8String(LModelText));
       AReport.Status := wcsNoNovelReachablePath;
-      LWork := CheckReachability(LModel, LSamples, LReachable, LNovelReachable);
+      LWork := CheckReachability(LModel, LSamples, LReachable, LNovelReachable, AProgress, LProgressFailed);
       AReport.ReachabilityWork := LWork;
       AReport.HasLegalWholePath := LReachable;
       AReport.HasNovelWholePath := LNovelReachable;
@@ -798,6 +834,8 @@ begin
     except
       on E: Exception do
       begin
+        if LProgressFailed then
+          raise;
         if AReport.Status = wcsNotRun then
           AReport.Status := wcsInvalidSources
         else if AReport.Status = wcsSolved then
