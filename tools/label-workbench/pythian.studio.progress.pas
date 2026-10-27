@@ -60,6 +60,9 @@ begin
     'reload_verified_model': Result := 'Use saved learning';
     'find_feature_journals': Result := 'Find saved sound observations';
     'prepare_source_continuity': Result := 'Prepare source continuity';
+    'prepare_audio': Result := 'Prepare selected audio';
+    'prepare_hash_bytes': Result := 'Check prepared audio';
+    'prepare_verify_bytes': Result := 'Verify prepared audio';
     'generate_auditions': Result := 'Generate music';
     'streaming': Result := 'Generate & play';
     'verify_output_sources': Result := 'Recheck recordings before saving results';
@@ -100,7 +103,8 @@ function StepNumber(const AStage: String): Integer;
 begin
   case AStage of
     'preflight', 'verify_sources': Result := 1;
-    'find_saved_model', 'analyze_selected_ranges': Result := 2;
+    'find_saved_model', 'analyze_selected_ranges', 'prepare_audio',
+      'prepare_hash_bytes', 'prepare_verify_bytes': Result := 2;
     'learn_raw_palette': Result := 3;
     'learn_wfc_model', 'select_sound_examples', 'check_learned_model',
       'verify_model_sources', 'save_learned_model': Result := 4;

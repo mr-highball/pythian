@@ -12,6 +12,66 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Mixed-format WFC learning implemented; browser qualification open - 2026-10-27
+
+Big Boss selected [studio_07](TODO/NS-6_studio_07.md), a real multi-recording
+learning prerequisite: jobs previously rejected different rates/channel layouts.
+The retained musical-reference and scientific stops still apply. Criterion:
+convert included ranges without losing original identity/time, then consume them
+in actual WFC learning. Deliverable: explicit preparation settings, one bounded
+primary-reader/resampler path, immutable cache/receipts and finite/live model
+reuse. Closing evidence: exact mappings, changed-config identity, original
+preservation, cancellation/corruption rejection and actual mixed-format replay.
+Stop on unverifiable mapping, lost source restrictions, silent clipping or
+unsupported resource use. No source acquisition or scientific retuning selected.
+
+Spike owns the primary range reader, preparation unit and fixture; Spiegel owns
+jobs/preflight and shared settings; Big Boss owns worker/reference/progress
+integration, build registration, deployment and final judgment. The common
+preparation plan computes exact output counts, storage and conservative work
+bounds. Native conversion reuses the primary sinc resampler and PCM16 writer,
+never reads outside a selection and publishes verified immutable recipe/WAV
+pairs atomically. Original hashes, ranges, weights, classifications, families,
+partition/use restrictions and playable source references remain bound. Exact
+rational original coordinates are filter-footprint centers, not false exact
+sample matches. Changed preparation settings create a new model identity.
+
+AC3/AC4 mechanical checks pass with authored 44.1-kHz stereo and 48-kHz mono
+inputs: four disjoint ranges, actual raw-acoustic WFC learning, saved-model
+reload, exact 20-second stereo output and complete finite/live PCM equality.
+Cache corruption rejects before reuse/publication; original sources are unchanged.
+Checked FPC 3.2.2: preparation 37,651 assertions on Win64 and Win32 plus independent
+Win64 execution and existing resampler regression; jobs 87; root final mixed
+worker 1,126 and independent mixed worker 1,135 (poll-dependent counts);
+same-format worker/library regression 376. All report zero leaks. Actual pas2js
+settings/recovery passes 40 DOM checks and live policy 21; all four web programs
+compile. Independent combined QA found no blocking implementation defect.
+
+Preserved repairs: duplicate plan estimates consolidated, accidental PATH FPC
+3.3.1 run replaced with explicit stable 3.2.2, detailed frame/filter text moved
+into Preparation details, and preparation audio failures made actionable in job
+history. An initial full regression from a deep E-drive cwd exceeded retained
+Windows staging path limits. Its failure remains; the complete fixture passes
+from the short E-drive service cwd. Big Boss corrected an early progress claim
+made before that failed run finished. New stage/cache/test output stays on E.
+
+Actual browser inventory is empty and an `iab` creation reports unavailable;
+no tab or audio started. Desktop/narrow preflight through completed publication
+and complete recorded-workload qualification remain open. Studio_07 is not moved
+to DONE and earns no point. **53 open /57 DONE, 52.45 credited /47.55 remaining**;
+NS completions stay **100/90/25/70/14/54**. Delivery nonclosing-batch count stays
+**0** because the stated AC3/AC4 engineering components closed; retained musical
+stop counters are unchanged. Evidence lives in the dedicated E-drive
+`build/tests/runs/studio-{mixed,preparation}-20261027-*` folders. Deployment
+uses the fixed stable executable slot and short E-drive cwd, with prepared cache
+explicitly under `E:/CodexWork/pythian/cache/studio-prepared`. Guarded restart
+found no pending/active job. All fourteen final artifact hashes and the served
+Studio JavaScript match; LAN HTTPS returns 200. All 5,951 preexisting private
+JSON/JSONL hashes are unchanged. No QA browser, worker or audio remains. The
+private root run manifest freezes final source/artifact hashes and deployment
+checks. Spike's focused closure review confirms task scope, UI labels, links
+and unchanged accounting; it is not a browser or musical verdict.
+
 ## Catalog import observability accepted and deployed - 2026-10-27
 
 Big Boss selected [observability_02](TODO/DONE/NS-6_observability_02.md), after

@@ -46,10 +46,13 @@ type
     FBlock: TAudioSamples;
     FIndex: Integer;
     FExpectedPosition: Int64;
+    FEndFrame: Int64;
     FFailed: Boolean;
     FPeak: Double;
   public
     constructor Create(const AReader: TWaveFrameReader; const ABlockFrames: Integer = 4096);
+    constructor CreateRange(const AReader: TWaveFrameReader; const AStartFrame,
+      AEndFrame: Int64; const ABlockFrames: Integer = 4096);
     function ReadFrame(out ALeft, ARight: Double): Boolean; override;
     property BlockFrames: Integer read FBlockFrames;
     property Peak: Double read FPeak;
@@ -63,14 +66,34 @@ uses
 constructor TWavePcmReader.Create(const AReader: TWaveFrameReader;
   const ABlockFrames: Integer);
 begin
+  if AReader = nil then
+  begin
+    raise EAudio.Create('WAVE PCM adapter requires a reader');
+  end;
+  CreateRange(AReader, AReader.FramePosition, AReader.FrameCount, ABlockFrames);
+end;
+
+constructor TWavePcmReader.CreateRange(const AReader: TWaveFrameReader;
+  const AStartFrame, AEndFrame: Int64; const ABlockFrames: Integer);
+begin
   if (AReader = nil) or (ABlockFrames < 1) or
     (ABlockFrames > MaximumWaveReadFrames) then
   begin
     raise EAudio.Create('WAVE PCM adapter requires a reader and 1..65536 block frames');
   end;
+  if (AStartFrame < 0) or (AEndFrame < AStartFrame) or
+    (AEndFrame > AReader.FrameCount) then
+  begin
+    raise EAudio.Create('WAVE PCM range is outside the source');
+  end;
   inherited Create(AReader.SampleRate, AReader.Channels);
+  if AReader.FramePosition <> AStartFrame then
+  begin
+    AReader.SeekFrame(AStartFrame);
+  end;
   FWave := AReader;
   FBlockFrames := ABlockFrames;
+  FEndFrame := AEndFrame;
   FExpectedPosition := AReader.FramePosition;
 end;
 
@@ -87,12 +110,16 @@ begin
     end;
     if FIndex = Length(FBlock) then
     begin
-      FBlock := FWave.ReadFrames(FBlockFrames);
+      if FExpectedPosition = FEndFrame then
+      begin
+        Exit(False);
+      end;
+      FBlock := FWave.ReadFrames(Min(Int64(FBlockFrames), FEndFrame - FExpectedPosition));
       FExpectedPosition := FWave.FramePosition;
       FIndex := 0;
       if Length(FBlock) = 0 then
       begin
-        Exit(False);
+        raise EAudio.Create('WAVE PCM range ended before its declared end');
       end;
     end;
     ALeft := FBlock[FIndex];

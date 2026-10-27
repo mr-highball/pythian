@@ -74,6 +74,16 @@ A background process ID alone does not establish continued availability. Keep
 machine-specific wrappers, identities and logs under ignored `build/`; do not
 add automatic logon/startup registration for a one-time review launch.
 
+On the current workstation, new wrappers/logs belong under the dedicated
+`E:/CodexWork/pythian/runs/` root instead. The deployed stable/QA executable
+slots remain fixed. Set `PYTHIAN_STUDIO_PREPARED_CACHE` to
+`E:/CodexWork/pythian/cache/studio-prepared` before launching the service; workers
+inherit it for immutable mixed-format recipe/WAV pairs. Run the service from
+the short `E:/CodexWork/pythian` cwd so retained relative staging also stays on E
+without exceeding Windows path limits. Supply the audio-library root explicitly
+when changing cwd. Other installations may choose their own cache root; the
+portable fallback is `build/cache/studio-prepared` relative to cwd.
+
 Open the selected host on port18097: source review is at `/`, and complete
 single/paired listening is at `/listen.html`, and project/source setup is at
 `/studio.html`. Saving a Studio draft preserves setup; its Generate action starts

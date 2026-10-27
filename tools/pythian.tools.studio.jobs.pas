@@ -100,6 +100,7 @@ uses
   jsonparser,
   jsonscanner,
   pythian.hash,
+  pythian.tools.studio.preparation,
   pythian.tools.annotations.catalog,
   pythian.tools.studio.projects,
   pythian.tools.studio.&library.discovery
@@ -648,13 +649,14 @@ var
   LWeights: TJSONArray;
   LHash: String;
   LRow: TJSONObject;
+  LPreparation: TJSONObject;
 begin
   Need(AWrite <> nil, 'Job write is required');
   Keys(AWrite, '|format|job_id|kind|project_id|project_revision|project_snapshot_sha256|' +
     'duration_ms|seeds|maximum_tokens|model_order|source_weights|resolve_unassigned|' +
     'parent_job_id|retry_of|source_sha256|start_frame|end_frame|effects|tail_seconds|' +
     'preview_job_id|collection_name|title|capture_id|mode|channel|tempo_bpm|' +
-    'discovery_revision|entries|reconstruction|');
+    'discovery_revision|entries|reconstruction|preparation|');
   Need(Text(AWrite, 'format') = StudioJobWriteFormat, 'Unsupported Studio job format');
   LJobId := Text(AWrite, 'job_id');
   Need(SafeId(LJobId), 'Invalid job identifier');
@@ -670,7 +672,15 @@ begin
     begin
       Keys(AWrite, '|format|job_id|kind|project_id|project_revision|project_snapshot_sha256|' +
         'duration_ms|seeds|maximum_tokens|model_order|source_weights|resolve_unassigned|' +
-        'parent_job_id|retry_of|reconstruction|');
+        'parent_job_id|retry_of|reconstruction|preparation|');
+      if AWrite.Find('preparation') <> nil then
+      begin
+        Need(AWrite.Find('preparation').JSONType = jtObject,
+          'Preparation must be a configuration object');
+        LPreparation := CanonicalStudioPreparationConfig(AWrite.Objects['preparation']);
+        LRequest.Delete('preparation');
+        LRequest.Add('preparation', LPreparation);
+      end;
       if AWrite.Find('reconstruction') <> nil then
       begin
         Need((Text(AWrite, 'reconstruction') = 'sparse') or
@@ -869,6 +879,17 @@ var
   LOutputFrames: Int64;
   LOutputGrains: Int64;
   LLimits: TJSONObject;
+  LPreparation: TJSONObject;
+  LRecipe: TJSONObject;
+  LGeometry: TJSONObject;
+  LGeometries: TJSONArray;
+  LFrames: Int64;
+  LPreparedFrames: Int64;
+  LPreparedBytes: Int64;
+  LVisits: Int64;
+  LPlan: TStudioPreparationPlan;
+  LSelectedSeconds: Double;
+  LPreparing: Boolean;
 begin
   LRequest := BuildJobRequest(ACatalogRoot, AWrite);
   try
@@ -899,18 +920,76 @@ begin
           LSelectedFrames := 0;
           LEstimatedFeatures := 0;
           LBytes := 0;
-          LRate := LRows.Objects[0].Integers['sample_rate'];
-          LChannels := LRows.Objects[0].Integers['channels'];
+          LPreparing := LRequest.Find('preparation') <> nil;
+          LPreparedFrames := 0;
+          LPreparedBytes := 0;
+          LVisits := 0;
+          LSelectedSeconds := 0;
+          LGeometries := nil;
+          if LPreparing then
+          begin
+            LPreparation := LRequest.Objects['preparation'];
+            LRate := LPreparation.Integers['sample_rate'];
+            LChannels := LPreparation.Integers['channels'];
+            LGeometries := TJSONArray.Create;
+            Result.Add('prepared_ranges', LGeometries);
+            Result.Add('preparation', LPreparation.Clone);
+          end
+          else
+          begin
+            LRate := LRows.Objects[0].Integers['sample_rate'];
+            LChannels := LRows.Objects[0].Integers['channels'];
+          end;
           Need(LChannels <= 2, 'Raw Studio supports mono or stereo recordings');
           for LIndex := 0 to LRows.Count - 1 do
           begin
             LRow := LRows.Objects[LIndex];
-            Need((LRow.Integers['sample_rate'] = LRate) and
-              (LRow.Integers['channels'] = LChannels),
-              'Selected recordings require matching rate/channels; prepare conversion separately');
-            Inc(LSelectedFrames, LRow.Int64s['end_frame'] - LRow.Int64s['start_frame']);
-            Inc(LEstimatedFeatures, (LRow.Int64s['end_frame'] -
-              LRow.Int64s['start_frame'] + 1023) div 1024);
+            Need((LRow.Integers['sample_rate'] > 0) and
+              (LRow.Integers['channels'] in [1, 2]) and
+              (LRow.Int64s['start_frame'] >= 0) and
+              (LRow.Int64s['end_frame'] > LRow.Int64s['start_frame']) and
+              (LRow.Int64s['end_frame'] <= LRow.Int64s['frame_count']),
+              'Selected source geometry is unsupported');
+            if not LPreparing then
+            begin
+              Need((LRow.Integers['sample_rate'] = LRate) and
+                (LRow.Integers['channels'] = LChannels),
+                'Selected recordings require matching rate/channels; prepare conversion separately');
+            end;
+            LFrames := LRow.Int64s['end_frame'] - LRow.Int64s['start_frame'];
+            Inc(LSelectedFrames, LFrames);
+            LSelectedSeconds := LSelectedSeconds + LFrames / LRow.Integers['sample_rate'];
+            if LPreparing then
+            begin
+              LPlan := PlanStudioPreparation(LFrames, LRow.Integers['sample_rate'],
+                LRow.Integers['channels'], LPreparation);
+              LFrames := LPlan.OutputFrames;
+              Need(LPreparedBytes <= MaximumStudioPreparedBytes - LPlan.OutputBytesUpperBound,
+                'Prepared ranges exceed storage budget');
+              Inc(LPreparedBytes, LPlan.OutputBytesUpperBound);
+              Need(LVisits <= MaximumStudioPreparationVisits - LPlan.VisitsUpperBound,
+                'Preparation exceeds work budget');
+              Inc(LVisits, LPlan.VisitsUpperBound);
+              LRecipe := BuildStudioPreparationRecipe(LRow, LPreparation);
+              try
+                LGeometry := TJSONObject.Create;
+                LGeometries.Add(LGeometry);
+                LGeometry.Add('source_sha256', LRow.Strings['source_sha256']);
+                LGeometry.Add('original_start_frame', LRow.Int64s['start_frame']);
+                LGeometry.Add('original_end_frame', LRow.Int64s['end_frame']);
+                LGeometry.Add('original_sample_rate', LRow.Integers['sample_rate']);
+                LGeometry.Add('original_channels', LRow.Integers['channels']);
+                LGeometry.Add('prepared_frames', LFrames);
+                LGeometry.Add('prepared_sample_rate', LRate);
+                LGeometry.Add('prepared_channels', LChannels);
+                LGeometry.Add('mapping', 'range-relative rational; output count ceiling');
+                LGeometry.Add('recipe_sha256', StudioTextHash(LRecipe.AsJSON));
+              finally
+                LRecipe.Free;
+              end;
+            end;
+            Inc(LPreparedFrames, LFrames);
+            Inc(LEstimatedFeatures, (LFrames + 1023) div 1024);
             if LNames.IndexOf(LRow.Strings['source_sha256']) < 0 then
             begin
               LNames.Add(LRow.Strings['source_sha256']);
@@ -930,9 +1009,22 @@ begin
           Result.Add('range_count', LRows.Count);
           Result.Add('sample_rate', LRate);
           Result.Add('selected_frames', LSelectedFrames);
-          Result.Add('estimated_analyzed_frames', LSelectedFrames);
+          Result.Add('estimated_analyzed_frames', LPreparedFrames);
           Result.Add('estimated_analyzed_features', LEstimatedFeatures);
-          Result.Add('selected_seconds', LSelectedFrames / LRate);
+          if LPreparing then
+            Result.Add('selected_seconds', LSelectedSeconds)
+          else
+            Result.Add('selected_seconds', LSelectedFrames / LRate);
+          if LPreparing then
+          begin
+            Result.Add('prepared_frames', LPreparedFrames);
+            Result.Add('prepared_seconds', LPreparedFrames / LRate);
+            Result.Add('prepared_channels', LChannels);
+            Result.Add('prepared_bytes_upper_bound', LPreparedBytes);
+            Result.Add('preparation_visits_upper_bound', LVisits);
+            LLimits.Add('prepared_bytes', MaximumStudioPreparedBytes);
+            LLimits.Add('preparation_visits', MaximumStudioPreparationVisits);
+          end;
           Result.Add('unique_source_bytes_to_verify', LBytes);
           Result.Add('expected_used_status', 'All selected ranges or explicit failure; no silent truncation');
           Result.Add('duration_ms', LRequest.Integers['duration_ms']);
@@ -1014,6 +1106,8 @@ var
   LRequest: TJSONObject;
   LExisting: TJSONObject;
   LPrepared: TJSONObject;
+  LCanonicalWrite: TJSONObject;
+  LCanonicalPreparation: TJSONObject;
   LJob: TJSONObject;
   LNames: TStringList;
   LJobId: String;
@@ -1030,9 +1124,22 @@ begin
       LExisting.Delete('request_sha256');
       LExisting.Delete('project_snapshot');
       LExisting.Delete('worker_seconds');
-      if LExisting.AsJSON <> AWrite.AsJSON then
-      begin
-        raise EStudioConflict.Create('Job identifier already binds different settings');
+      LCanonicalWrite := TJSONObject(AWrite.Clone);
+      try
+        if LCanonicalWrite.Find('preparation') <> nil then
+        begin
+          Need(LCanonicalWrite.Find('preparation').JSONType = jtObject,
+            'Preparation must be a configuration object');
+          LCanonicalPreparation := CanonicalStudioPreparationConfig(LCanonicalWrite.Objects['preparation']);
+          LCanonicalWrite.Delete('preparation');
+          LCanonicalWrite.Add('preparation', LCanonicalPreparation);
+        end;
+        if LExisting.AsJSON <> LCanonicalWrite.AsJSON then
+        begin
+          raise EStudioConflict.Create('Job identifier already binds different settings');
+        end;
+      finally
+        LCanonicalWrite.Free;
       end;
       Result := ReadStudioJob(ACatalogRoot, LJobId);
       Result.Add('already_queued', True);

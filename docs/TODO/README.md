@@ -54,6 +54,13 @@ explicitly requested by the user. The older roster remains inactive. New local
 builds/tests/cache/run output use `E:/CodexWork/pythian/`; existing repo-local
 build defaults are not redirected automatically.
 
+Implemented native prerequisite: [mixed-format learning](NS-6_studio_07.md)
+now explicitly prepares selected ranges through the primary resampler, retaining
+original identities and rational clocks. Actual mixed-format WFC learning,
+saved-model reuse and matched finite/live replay pass authored fixtures;
+desktop/narrow and recorded-workload qualification remain open. No task move,
+point credit or musical acceptance is inferred.
+
 Implemented core delivery: [source-continuity Studio integration](NS-5_continuity_04.md),
 zero additional credit, with exact saved-model/journal reuse and native/API/DOM
 checks. Actual desktop/narrow qualification remains open after desktop-control
@@ -271,7 +278,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | [NS-6_delivery_07](NS-6_delivery_07.md) — Obtain actual independent minimal synthesis use | 9 | 0.90 | Package accepted; prepared packet needs actual reviewer |
 | [NS-6_support_01](NS-6_support_01.md) — Establish and exercise the supported release lifecycle | 10 | 1.00 | Packages + real external update or issue cycle |
 | [NS-6_studio_03](NS-6_studio_03.md) — Compare musical auditions and guide the next batch | 2 | 0.20 | Actual negative listening response saved; purpose/usefulness and iteration verdict remain |
-| [NS-6_studio_07](NS-6_studio_07.md) — Train mixed-format corpora with original-clock lineage | 1 | 0.10 | After current review: explicit native conversion and actual mixed-format WFC |
+| [NS-6_studio_07](NS-6_studio_07.md) — Train mixed-format corpora with original-clock lineage | 1 | 0.10 | Native conversion, WFC/model reuse and finite/live replay pass; browser/recorded qualification open |
 | [NS-6_studio_10](NS-6_studio_10.md) — Enable phone recording over local HTTPS | 1 | 0.10 | Operator reports HTTPS worked; complete capture/browser checks remain open |
 | [NS-6_studio_11](NS-6_studio_11.md) — Browse collection metadata and prepare recordings only on use | 1 | 0.10 | Selected: metadata listing, bounded preview and verified selected-entry preparation |
 

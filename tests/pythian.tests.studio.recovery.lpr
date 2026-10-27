@@ -34,6 +34,7 @@ type
     Writes: Integer;
     Mode: String;
     Job: TJSObject;
+    LastRequest: TJSObject;
     Stale: TJSPromiseResolver;
     function Fetch(const APath, AMethod, ABody: String): TJSPromise;
     procedure Run; async;
@@ -86,6 +87,16 @@ begin
   begin
     Request := TJSObject(TJSJSON.parse(ABody));
     Data := TJSObject(TJSJSON.parse('{"format":"pythian.studio.job.preparation.v1","learning_mode":"raw_acoustic","selected_seconds":156.171,"source_count":1,"range_count":2,"unique_source_bytes_to_verify":1966128086,"output_count":1}'));
+    LastRequest := Request;
+    if Request.hasOwnProperty('preparation') then
+    begin
+      Data['preparation'] := Request['preparation'];
+      Data['sample_rate'] := 48000;
+      Data['prepared_channels'] := 2;
+      Data['prepared_bytes_upper_bound'] := 192080;
+      Data['preparation_visits_upper_bound'] := 100000;
+      Data['prepared_ranges'] := TJSJSON.parse('[{"source_sha256":"test-source","original_start_frame":0,"original_end_frame":44100,"original_sample_rate":44100,"original_channels":1,"prepared_frames":48000,"prepared_sample_rate":48000,"prepared_channels":2}]');
+    end;
     Data['job_id'] := Request['job_id'];
     Data['request_sha256'] := StringOfChar('0', 64);
   end
@@ -238,6 +249,32 @@ begin
       Check(Pos('1 × 20-second auditions', document.getElementById('batch-preflight').textContent) > 0,
         'Requested output is distinct from the training duration');
       Check(Writes = 2, 'Checking setup adds no enqueue or cancellation');
+      Check(not LastRequest.hasOwnProperty('preparation'), 'Preparation is opt-in');
+      TJSHTMLInputElement(document.getElementById('batch-prepare')).checked := True;
+      document.getElementById('batch-prepare').dispatchEvent(TJSEvent.new('change'));
+      TJSHTMLElement(document.getElementById('batch-check')).click;
+      for I := 1 to 4 do await(WaitTurn);
+      Check(LastRequest.hasOwnProperty('preparation'), 'Opt-in reaches preflight');
+      Check((TJSObject(LastRequest['preparation'])['sample_rate'] = 48000) and
+        (TJSObject(LastRequest['preparation'])['channels'] = 2) and
+        (TJSObject(LastRequest['preparation'])['gain'] = 1), 'Explicit preparation defaults retained');
+      Check(document.querySelector('#batch-preflight details summary').textContent =
+        'Preparation details', 'Range details are expandable');
+      Check(Pos('Original mix: 0:00.000–0:01.000',
+        document.querySelector('#batch-preflight details').textContent) > 0,
+        'Selection leads with title and original time range');
+      Check(Pos('filter visits', document.getElementById('batch-preflight').firstChild.textContent) = 0,
+        'Filter work is absent from the main summary');
+      Check(Pos('44100', document.getElementById('batch-preflight').textContent) > 0,
+        'Preflight displays original clock');
+      Check(Pos('48000 prepared frames', document.getElementById('batch-preflight').textContent) > 0,
+        'Preflight displays prepared geometry');
+      Before := Writes;
+      TJSHTMLInputElement(document.getElementById('batch-prepare-gain')).value := '0';
+      document.getElementById('batch-prepare-gain').dispatchEvent(TJSEvent.new('input'));
+      TJSHTMLElement(document.getElementById('batch-check')).click;
+      for I := 1 to 4 do await(WaitTurn);
+      Check(Writes = Before, 'Invalid preparation gain does not submit a request');
       Other := TJSObject(TJSJSON.parse(TJSJSON.stringify(Project)));
       Other['project_id'] := 'different';
       Other['snapshot_sha256'] := 'different';

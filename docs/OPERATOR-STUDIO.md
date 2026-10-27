@@ -62,6 +62,34 @@ records its duration/count/seeds without relabeling those outputs as the fixed
 acceptance packet. A small set of user ratings establishes preferences, not
 automatically calibrated numerical limits or accurate source transcription.
 
+### Learning from recordings with different formats
+
+In **Generate → Settings**, enable **Prepare recordings to one format** when
+the selected recordings have different rates or channel layouts. Choose the
+target rate and **Mono** or **Stereo**; the default is 48,000 Hz stereo.
+**Preparation volume** applies one uniform multiplier, above zero and at most
+one. Leave it at one unless preparation reports that audio is too loud.
+
+Choose **Check setup** before starting. The summary shows the target format and
+storage estimate; **Preparation details** shows each original passage's times
+and original/prepared geometry. Learning converts only included ranges, runs on
+the native host and reports conversion and verification progress. Cancel stops
+unfinished preparation; a later explicit retry may reuse verified cached ranges.
+Saving settings or feedback never starts learning by itself.
+
+Original recordings and their classifications remain intact. Source comparison
+still plays the original selected passages. Prepared audio is a derivative:
+mono duplicates into stereo, stereo averages into mono, and rate conversion uses
+the primary sinc resampler. No automatic normalization, clipping or tempo change
+is applied. Saved model identity includes these settings, so a different format
+or volume creates a new identity. With preparation disabled, recordings must
+retain the existing matching-rate/channel requirement.
+
+This is an experimental operator path with native authored mixed-format and
+finite/live replay evidence. [Studio_07](TODO/NS-6_studio_07.md) retains actual
+desktop/narrow and recorded-workload qualification; it does not establish
+supported musical inference or many-hour learning quality.
+
 ## UI and evidence requirements
 
 Studio uses three real tabs: **Sources**, **Generate**, and **Review**. Sources
@@ -164,23 +192,25 @@ they do not disappear or move into the new tasks. Scoping left 49.40 accepted;
 independent project/setup acceptance subsequently adds 4 NS-6 / 0.40 overall.
 Private corpora, raw WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall.
 Accepted starting actions/navigation and large-library refresh add 2 NS-6 / 0.20 overall.
-The current ledger is **52.45 accepted / 47.55 remaining**, **52 open / 53 DONE**.
+The current ledger is **52.45 accepted / 47.55 remaining**, **53 open / 57 DONE**.
 The zero-credit [background recovery and long-source repair](TODO/NS-6_studio_21.md)
 has passed recorded replays and remains open for actual browser checks.
-NS-6 is **54 accepted / 46 unearned** with sixteen open tasks. Goal weights are unchanged.
+NS-6 is **54 accepted / 46 unearned** with fifteen open tasks. Goal weights are unchanged.
 
 The accepted [shared observability audit](TODO/DONE/NS-6_observability_01.md)
 extends common progress to source analysis, effects, capture and pitch jobs.
 Actual units and current passes drive bars; unknown work remains indeterminate.
-The [coverage map](OBSERVABILITY.md) explicitly retains import, offline rendering,
-retained-style operations and full pas2js analysis gaps. These repairs add no credit.
+The [coverage map](OBSERVABILITY.md) retains offline rendering and retained-style
+operation gaps. Primary pas2js analysis and connected import progress now have
+accepted task records; these repairs add no musical credit.
 The later collection and effects requirements each reallocate one unearned point
 from jobs and iteration; all original criteria remain. Scoping earns no acceptance.
 Capture/exploration receives two additional unearned delivery_03 points with
 all final packaging criteria preserved.
 Mixed-format corpus preparation receives one further unearned delivery_03 point.
-It follows the current review batch; matching-rate/channel generation remains
-the declared supported route until conversion and original-frame maps pass.
+Native conversion, immutable original-frame maps, mixed-format WFC learning and
+saved-model finite/live replay now pass authored fixtures. Actual browser and
+recorded-workload qualification remain open, so the point is still unearned.
 
 The studio is a current NS-5 calibration enabler, attributed primarily to NS-6
 usability. Actual calibration/control validity remains evaluation_01; complete

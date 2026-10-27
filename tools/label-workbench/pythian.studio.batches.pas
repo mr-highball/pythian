@@ -246,6 +246,34 @@ begin
   SelectOption(LControl, '3', '3 sound pieces');
   TJSHTMLSelectElement(LControl).value := '2';
   LControl.addEventListener('change', @Edit);
+  LRow := Add(LDetails, 'div', '', 'range-fields');
+  LLabel := Add(LRow, 'label', 'Prepare recordings to one format', '');
+  LControl := Add(LLabel, 'input', '', '');
+  LControl.id := 'batch-prepare';
+  LControl.setAttribute('type', 'checkbox');
+  LControl.addEventListener('change', @Edit);
+  LLabel := Add(LRow, 'label', 'Prepared sample rate (Hz)', '');
+  LControl := Add(LLabel, 'input', '', '');
+  LControl.id := 'batch-prepare-rate';
+  LControl.setAttribute('type', 'text');
+  LControl.setAttribute('inputmode', 'numeric');
+  LControl.setAttribute('value', '48000');
+  LControl.addEventListener('input', @Edit);
+  LLabel := Add(LRow, 'label', 'Prepared channels', '');
+  LControl := Add(LLabel, 'select', '', '');
+  LControl.id := 'batch-prepare-channels';
+  SelectOption(LControl, '1', 'Mono');
+  SelectOption(LControl, '2', 'Stereo');
+  TJSHTMLSelectElement(LControl).value := '2';
+  LControl.addEventListener('change', @Edit);
+  LLabel := Add(LRow, 'label', 'Preparation volume (above 0 to 1)', '');
+  LControl := Add(LLabel, 'input', '', '');
+  LControl.id := 'batch-prepare-gain';
+  LControl.setAttribute('type', 'text');
+  LControl.setAttribute('inputmode', 'decimal');
+  LControl.setAttribute('value', '1');
+  LControl.addEventListener('input', @Edit);
+  Add(LDetails, 'p', 'If audio exceeds full scale, lower preparation volume.', 'hint');
   LControl := Add(LDetails, 'p', 'Additional seeds use first seed +1,000 and +2,000. ' +
     'Example count is a cap, not a measure of learned musical variety.', 'hint');
   LControl.id := 'batch-seed-rule';
@@ -607,6 +635,8 @@ var
   LHash: String;
   LParent: String;
   LSeedText: String;
+  LPreparation: TJSObject;
+  LGain: Double;
 
   function IntegerValue(AValue: JSValue; AMinimum, AMaximum: Integer): Integer;
   var
@@ -717,7 +747,30 @@ begin
       raise Exception.Create('The next batch weights do not match this saved project.');
     end;
   end;
+  LPreparation := nil;
+  if ARequest.hasOwnProperty('preparation') then
+  begin
+    if not isObject(ARequest['preparation']) then
+      raise Exception.Create('The next batch has invalid preparation settings.');
+    LPreparation := TJSObject(ARequest['preparation']);
+    IntegerValue(LPreparation['sample_rate'], 8000, 192000);
+    IntegerValue(LPreparation['channels'], 1, 2);
+    if not isNumber(LPreparation['gain']) then
+      raise Exception.Create('The next batch has invalid preparation volume.');
+    LGain := Double(LPreparation['gain']);
+    if not ((LGain > 0) and (LGain <= 1)) then
+      raise Exception.Create('The next batch has invalid preparation volume.');
+  end;
   Invalidate;
+  TJSHTMLInputElement(El('batch-prepare')).checked := LPreparation <> nil;
+  if LPreparation <> nil then
+  begin
+    TJSHTMLInputElement(El('batch-prepare-rate')).value :=
+      IntToStr(IntegerValue(LPreparation['sample_rate'], 8000, 192000));
+    TJSHTMLSelectElement(El('batch-prepare-channels')).value :=
+      IntToStr(IntegerValue(LPreparation['channels'], 1, 2));
+    TJSHTMLInputElement(El('batch-prepare-gain')).value := FloatToStr(LGain);
+  end;
   TJSHTMLSelectElement(El('batch-duration')).value := IntToStr(LDuration);
   if TJSHTMLSelectElement(El('batch-duration')).value = '' then
   begin
@@ -759,6 +812,8 @@ var
   LSeed: Integer;
   LIndex: Integer;
   LUse: String;
+  LPreparation: TJSObject;
+  LGain: Double;
 begin
   if (FProject = nil) or FUnsaved or
     (StudioText(FProject, 'learning_mode') <> 'raw_acoustic') then
@@ -792,6 +847,17 @@ begin
   Result['model_order'] := ReadInteger('batch-order', 1, 3);
   Result['resolve_unassigned'] := LUse;
   Result['reconstruction'] := TJSHTMLSelectElement(El('batch-reconstruction')).value;
+  if TJSHTMLInputElement(El('batch-prepare')).checked then
+  begin
+    if not TryStrToFloat(TJSHTMLInputElement(El('batch-prepare-gain')).value, LGain) or
+      not ((LGain > 0) and (LGain <= 1)) then
+      raise Exception.Create('Preparation volume must be above 0 and at most 1.');
+    LPreparation := TJSObject.new;
+    LPreparation['sample_rate'] := ReadInteger('batch-prepare-rate', 8000, 192000);
+    LPreparation['channels'] := ReadInteger('batch-prepare-channels', 1, 2);
+    LPreparation['gain'] := LGain;
+    Result['preparation'] := LPreparation;
+  end;
   LSeeds := TJSArray.new;
   if FExplicitSeeds <> nil then
   begin
@@ -893,6 +959,19 @@ var
   LVersion: Integer;
   LRequest: TJSObject;
   LData: TJSObject;
+  LRange: TJSObject;
+  LRanges: TJSArray;
+  LIndex: Integer;
+  LSourceIndex: Integer;
+  LSources: TJSArray;
+  LSource: TJSObject;
+  LDetails: TJSElement;
+  LTitle: String;
+  LRate: Double;
+  function ChannelName(const AChannels: Double): String;
+  begin
+    if AChannels = 1 then Result := 'mono' else Result := 'stereo';
+  end;
 begin
   if FBusy or (FPending <> nil) then
   begin
@@ -939,8 +1018,6 @@ begin
     end
     else
     begin
-      FRequest := Clone(LRequest);
-      FPreparation := Clone(LData);
       El('batch-preflight').textContent := StudioTime(StudioNumber(LData, 'selected_seconds')) +
         ' selected across ' + IntToStr(Trunc(StudioNumber(LData, 'source_count'))) +
         ' recordings / ' + IntToStr(Trunc(StudioNumber(LData, 'range_count'))) +
@@ -950,10 +1027,59 @@ begin
         IntToStr(Trunc(StudioNumber(LData, 'output_count'))) + ' × ' +
         IntToStr(Trunc(StudioNumber(LRequest, 'duration_ms') / 1000)) +
         '-second auditions. Runs on this computer with a two-hour time limit; you can leave this page.';
+      if isObject(LData['preparation']) then
+      begin
+        LRanges := TJSArray(LData['prepared_ranges']);
+        if LRanges = nil then
+          raise Exception.Create('Prepared range geometry is missing.');
+        El('batch-preflight').textContent := El('batch-preflight').textContent +
+          ' Prepare to ' + IntToStr(Trunc(StudioNumber(LData, 'sample_rate'))) + ' Hz ' +
+          ChannelName(StudioNumber(LData, 'prepared_channels')) + '; up to ' +
+          StudioByteSize(StudioNumber(LData, 'prepared_bytes_upper_bound')) + ' prepared storage.';
+      end;
       if StudioText(LData, 'reconstruction') = 'source_successor' then
         El('batch-preflight').textContent := El('batch-preflight').textContent +
           ' Experimental neighboring fragments: ' + StudioByteSize(StudioNumber(
           TJSObject(LData['limits']), 'successor_index_bytes')) + ' estimated index; uses retained observations.';
+      if isObject(LData['preparation']) then
+      begin
+        LDetails := Add(El('batch-preflight'), 'details', '', '');
+        Add(LDetails, 'summary', 'Preparation details', '');
+        LSources := ArrayAt(FProject, 'sources');
+        for LIndex := 0 to LRanges.length - 1 do
+        begin
+          LRange := TJSObject(LRanges[LIndex]);
+          LTitle := '';
+          if LSources <> nil then
+          begin
+            for LSourceIndex := 0 to LSources.length - 1 do
+            begin
+              LSource := TJSObject(LSources[LSourceIndex]);
+              if StudioText(LSource, 'source_sha256') = StudioText(LRange, 'source_sha256') then
+              begin
+                LTitle := StudioText(LSource, 'title');
+                Break;
+              end;
+            end;
+          end;
+          if LTitle = '' then LTitle := 'Selection ' + IntToStr(LIndex + 1);
+          LRate := StudioNumber(LRange, 'original_sample_rate');
+          if LRate <= 0 then raise Exception.Create('Original range rate is missing.');
+          Add(LDetails, 'p', LTitle + ': ' +
+            StudioTime(StudioNumber(LRange, 'original_start_frame') / LRate) + '–' +
+            StudioTime(StudioNumber(LRange, 'original_end_frame') / LRate) + ' · ' +
+            FloatToStr(LRate) + ' Hz ' + ChannelName(StudioNumber(LRange, 'original_channels')) +
+            ' → ' + FloatToStr(StudioNumber(LRange, 'prepared_sample_rate')) + ' Hz ' +
+            ChannelName(StudioNumber(LRange, 'prepared_channels')) + '. Original frames ' +
+            FloatToStr(StudioNumber(LRange, 'original_start_frame')) + '–' +
+            FloatToStr(StudioNumber(LRange, 'original_end_frame')) + '; ' +
+            FloatToStr(StudioNumber(LRange, 'prepared_frames')) + ' prepared frames.', '');
+        end;
+        Add(LDetails, 'p', 'Maximum filter visits: ' + FloatToStr(StudioNumber(LData,
+          'preparation_visits_upper_bound')) + '. Output frames use ceiling rounding.', '');
+      end;
+      FRequest := Clone(LRequest);
+      FPreparation := Clone(LData);
       Notice('Setup is ready. Press Generate auditions to start.');
     end;
   except

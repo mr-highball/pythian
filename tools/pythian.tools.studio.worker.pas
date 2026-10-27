@@ -74,6 +74,7 @@ uses
   pythian.tools.listen.catalog,
   pythian.tools.studio.jobs,
   pythian.tools.studio.live,
+  pythian.tools.studio.preparation,
   pythian.tools.studio.&library,
   pythian.tools.studio.&library.discovery;
 
@@ -121,6 +122,7 @@ type
     Origin: Int64;
     Frames: Int64;
     Weight: Integer;
+    Prepared: TStudioPreparedRange;
     JournalStream: TFileStream;
     Journal: TFeatureJournal;
   end;
@@ -143,6 +145,8 @@ type
     FTrainingHash: String;
     FModelRoot: String;
     FModelReused: Boolean;
+    FWorkingRate: Integer;
+    FWorkingChannels: Integer;
     FPartial: TJSONObject;
     FCurrentOrdinal: Integer;
     FGrainLedger: TJSONArray;
@@ -162,6 +166,8 @@ type
     procedure LibraryProgress(const AStage: String; const ADone, ATotal: Int64);
     procedure Preflight;
     procedure VerifySources(const AStage: String = 'verify_output_sources');
+    function RangeWave(const AIndex: Integer): TWaveFrameReader;
+    function RangeOrigin(const AIndex: Integer): Int64;
     function TryReuseModel(const AExpected: TJSONObject = nil;
       const AModelText: String = ''): Boolean;
     procedure Train;
@@ -326,6 +332,7 @@ begin
   begin
     FRanges[LIndex].Journal.Free;
     FRanges[LIndex].JournalStream.Free;
+    FRanges[LIndex].Prepared.Free;
   end;
   for LIndex := 0 to High(FSources) do
   begin
@@ -444,10 +451,44 @@ var
   LStart: Int64;
   LEnd: Int64;
   LClassifications: TJSONData;
+  LConfig: TJSONObject;
+  LCacheRoot: String;
+  LPreparedBytes: Int64;
+  LPlannedBytes: Int64;
+  LPlannedVisits: Int64;
+  LPlannedFeatures: Int64;
+  LPlan: TStudioPreparationPlan;
 begin
   LProject := FRequest.Objects['project_snapshot'];
   LSelections := LProject.Arrays['sources'];
   LWeights := FRequest.Arrays['source_weights'];
+  LConfig := nil;
+  if FRequest.Find('preparation') <> nil then
+    LConfig := FRequest.Objects['preparation'];
+  LCacheRoot := GetEnvironmentVariable('PYTHIAN_STUDIO_PREPARED_CACHE');
+  if LCacheRoot = '' then LCacheRoot := ExpandFileName('build' + PathDelim + 'cache' +
+    PathDelim + 'studio-prepared');
+  LPreparedBytes := 0;
+  if LConfig <> nil then
+  begin
+    LPlannedBytes := 0;
+    LPlannedVisits := 0;
+    LPlannedFeatures := 0;
+    for LIndex := 0 to LSelections.Count - 1 do
+    begin
+      LSnapshot := LSelections.Objects[LIndex];
+      LPlan := PlanStudioPreparation(LSnapshot.Int64s['end_frame'] -
+        LSnapshot.Int64s['start_frame'], LSnapshot.Integers['sample_rate'],
+        LSnapshot.Integers['channels'], LConfig);
+      Need((LPlannedBytes <= MaximumStudioPreparedBytes - LPlan.OutputBytesUpperBound) and
+        (LPlannedVisits <= MaximumStudioPreparationVisits - LPlan.VisitsUpperBound),
+        'Aggregate preparation exceeds storage/work budget');
+      Inc(LPlannedBytes, LPlan.OutputBytesUpperBound);
+      Inc(LPlannedVisits, LPlan.VisitsUpperBound);
+      Inc(LPlannedFeatures, (LPlan.OutputFrames + FOptions.HopFrames - 1) div FOptions.HopFrames);
+      Need(LPlannedFeatures <= MaximumStudioJobFeatures, 'Prepared analysis exceeds feature budget');
+    end;
+  end;
   FReceipt := TJSONObject.Create;
   FReceipt.Add('format', CProfileFormat);
   FReceipt.Add('mode', 'raw_acoustic');
@@ -457,6 +498,12 @@ begin
   FReceipt.Add('song_boundaries', 'unknown');
   FReceipt.Add('source_validation', 'full_content_hash_verified_for_this_job');
   FReceipt.Add('classifications_usage', 'Caller corpus observations retained in identity; not semantically inferred by raw learning');
+  if LConfig <> nil then
+  begin
+    FReceipt.Add('preparation', LConfig.Clone);
+    FWorkingRate := LConfig.Integers['sample_rate'];
+    FWorkingChannels := LConfig.Integers['channels'];
+  end;
   LRows := TJSONArray.Create;
   FReceipt.Add('sources', LRows);
   SetLength(FRanges, LSelections.Count);
@@ -503,7 +550,7 @@ begin
           (FSources[LSourceIndex].Wave.FrameCount = LSnapshot.Int64s['frame_count']),
           'Source WAV clock differs from project snapshot');
         Need(FSources[LSourceIndex].Wave.Channels <= 2, 'Raw Studio supports mono or stereo sources');
-        if LSourceIndex > 0 then
+        if (LSourceIndex > 0) and (LConfig = nil) then
         begin
           Need((FSources[LSourceIndex].Wave.SampleRate = FSources[0].Wave.SampleRate) and
             (FSources[LSourceIndex].Wave.Channels = FSources[0].Wave.Channels),
@@ -518,6 +565,19 @@ begin
       FRanges[LIndex].SourceIndex := LSourceIndex;
       FRanges[LIndex].Origin := LStart;
       FRanges[LIndex].Frames := LEnd - LStart;
+      if LConfig <> nil then
+      begin
+        FRanges[LIndex].Prepared := PrepareStudioRange(LCacheRoot,
+          FSources[LSourceIndex].Wave, LSnapshot, LConfig, WorkProgress);
+        FRanges[LIndex].Frames := FRanges[LIndex].Prepared.Wave.FrameCount;
+        Inc(LPreparedBytes, FRanges[LIndex].Prepared.Receipt.Int64s['bytes']);
+        Need(LPreparedBytes <= MaximumStudioPreparedBytes, 'Prepared storage budget exceeded');
+      end
+      else if LIndex = 0 then
+      begin
+        FWorkingRate := FSources[LSourceIndex].Wave.SampleRate;
+        FWorkingChannels := FSources[LSourceIndex].Wave.Channels;
+      end;
       FRanges[LIndex].Weight := 0;
       for LWeightIndex := 0 to LWeights.Count - 1 do
       begin
@@ -547,7 +607,7 @@ begin
       LRow.Add('channels', FSources[LSourceIndex].Wave.Channels);
       LRow.Add('weight', FRanges[LIndex].Weight);
       LRow.Add('selected_frames', LEnd - LStart);
-      LRow.Add('analyzed_frames', LEnd - LStart);
+      LRow.Add('analyzed_frames', FRanges[LIndex].Frames);
       LRow.Add('observations', LFeatures);
       LClassifications := LSnapshot.Find('classifications');
       if LClassifications <> nil then
@@ -558,8 +618,16 @@ begin
       begin
         LRow.Add('classifications', TJSONArray.Create);
       end;
-      LRow.Add('analysis_range_sha256', StudioTextHash('pythian.studio.analysis.range.v1|' +
-        LHash + '|' + IntToStr(LStart) + '|' + IntToStr(LEnd)));
+      if FRanges[LIndex].Prepared <> nil then
+      begin
+        LRow.Add('prepared', FRanges[LIndex].Prepared.Receipt.Clone);
+        LRow.Add('analysis_range_sha256', StudioTextHash('pythian.studio.analysis.prepared.v1|' +
+          FRanges[LIndex].Prepared.RecipeSha256 + '|' +
+          FRanges[LIndex].Prepared.Receipt.Strings['prepared_sha256']));
+      end
+      else
+        LRow.Add('analysis_range_sha256', StudioTextHash('pythian.studio.analysis.range.v1|' +
+          LHash + '|' + IntToStr(LStart) + '|' + IntToStr(LEnd)));
     finally
       LTrack.Free;
     end;
@@ -573,6 +641,7 @@ begin
     Int64(262144) * 64 < MaximumStudioJobMemoryBytes, 'Logical worker memory budget exceeded');
   FReceipt.Add('total_analyzed_observations', LTotalFeatures);
   FReceipt.Add('unique_source_bytes_verified', LUniqueBytes);
+  if LConfig <> nil then FReceipt.Add('prepared_bytes_verified', LPreparedBytes);
   FReceipt.Add('logical_memory_budget_bytes', MaximumStudioJobMemoryBytes);
   LIdentity := TJSONObject.Create;
   try
@@ -599,6 +668,22 @@ begin
     Need(FSources[LIndex].Stream.HashWithProgress(AStage) = FSources[LIndex].Hash,
       'Source content changed during Studio work; no accepted publication');
   end;
+  for LIndex := 0 to High(FRanges) do
+    if FRanges[LIndex].Prepared <> nil then
+      FRanges[LIndex].Prepared.Verify(WorkProgress);
+end;
+
+function TStudioWork.RangeWave(const AIndex: Integer): TWaveFrameReader;
+begin
+  if FRanges[AIndex].Prepared <> nil then
+    Result := FRanges[AIndex].Prepared.Wave
+  else Result := FSources[FRanges[AIndex].SourceIndex].Wave;
+end;
+
+function TStudioWork.RangeOrigin(const AIndex: Integer): Int64;
+begin
+  if FRanges[AIndex].Prepared <> nil then Result := 0
+  else Result := FRanges[AIndex].Origin;
 end;
 
 function TStudioWork.MakeProfile(const AReader: TJournalTrainingReader;
@@ -628,13 +713,13 @@ begin
     Result.Add('wfc_states', AModel.StateCount);
     Result.Add('order', AModel.Order);
     LVocabulary := AcousticVocabularySha256(APalette, FOptions,
-      FSources[0].Wave.SampleRate, FSources[0].Wave.Channels);
+      FWorkingRate, FWorkingChannels);
     Result.Add('vocabulary_sha256', LVocabulary);
     Result.Add('model_binding_sha256', AcousticModelBindingSha256(LVocabulary,
       StudioTextHash(AModelText)));
     Result.Add('model_sha256', StudioTextHash(AModelText));
-    Result.Add('sample_rate', FSources[0].Wave.SampleRate);
-    Result.Add('channels', FSources[0].Wave.Channels);
+    Result.Add('sample_rate', FWorkingRate);
+    Result.Add('channels', FWorkingChannels);
     Result.Add('window_frames', FOptions.WindowFrames);
     Result.Add('hop_frames', FOptions.HopFrames);
     Result.Add('silence_rms', FOptions.SilenceRms);
@@ -764,8 +849,8 @@ begin
   begin
     LBinding := Default(TFeatureJournalBinding);
     LBinding.SourceSha256 := FReceipt.Arrays['sources'].Objects[LIndex].Strings['analysis_range_sha256'];
-    LBinding.SampleRate := FSources[FRanges[LIndex].SourceIndex].Wave.SampleRate;
-    LBinding.Channels := FSources[FRanges[LIndex].SourceIndex].Wave.Channels;
+    LBinding.SampleRate := RangeWave(LIndex).SampleRate;
+    LBinding.Channels := RangeWave(LIndex).Channels;
     LBinding.FrameCount := FRanges[LIndex].Frames;
     LBinding.Options := FOptions;
     FRanges[LIndex].JournalStream := TFileStream.Create(FDirectory + PathDelim +
@@ -782,8 +867,7 @@ begin
       LOffset := (LFirst - LContext) * FOptions.HopFrames;
       LExtent := Integer(Min(FRanges[LIndex].Frames - LOffset,
         Int64(LCount + LContext - 1) * FOptions.HopFrames + FOptions.WindowFrames));
-      LSource := TRangeAnalysis.Create(FSources[FRanges[LIndex].SourceIndex].Wave,
-        FRanges[LIndex].Origin + LOffset, LExtent);
+      LSource := TRangeAnalysis.Create(RangeWave(LIndex), RangeOrigin(LIndex) + LOffset, LExtent);
       try
         LBatch := Default(TWaveFeatureBatch);
         LBatch.FirstFeature := LFirst;
@@ -986,14 +1070,17 @@ begin
   Need((ACandidate.SourceFrame >= 0) and
     (ACandidate.SourceFrame + ACandidate.ValidFrames <= LRange.Frames),
     'Candidate exceeds its selected source range');
-  FSources[LRange.SourceIndex].Wave.SeekFrame(LRange.Origin + ACandidate.SourceFrame);
-  Result := FSources[LRange.SourceIndex].Wave.ReadFrames(ACandidate.ValidFrames);
+  RangeWave(ACandidate.SegmentIndex).SeekFrame(RangeOrigin(ACandidate.SegmentIndex) + ACandidate.SourceFrame);
+  Result := RangeWave(ACandidate.SegmentIndex).ReadFrames(ACandidate.ValidFrames);
 end;
 
 procedure TStudioWork.RecordGrain(const AOrdinal: Int64; const AToken: Integer;
   const ACandidate: TJournalRepresentative);
 var
   LRow: TJSONObject;
+  LRange: TRangeHandle;
+  LNumerator: Int64;
+  LRate: Integer;
 begin
   Need((FGrainLedger <> nil) and (AOrdinal = FGrainLedger.Count),
     'Finite audition grain receipt is out of sequence');
@@ -1001,8 +1088,18 @@ begin
   FGrainLedger.Add(LRow);
   LRow.Add('token', AToken);
   LRow.Add('range_index', ACandidate.SegmentIndex);
-  LRow.Add('original_source_frame', FRanges[ACandidate.SegmentIndex].Origin +
-    ACandidate.SourceFrame);
+  LRange := FRanges[ACandidate.SegmentIndex];
+  if LRange.Prepared <> nil then
+  begin
+    LRate := FSources[LRange.SourceIndex].Wave.SampleRate;
+    LNumerator := LRange.Origin * Int64(FWorkingRate) + ACandidate.SourceFrame * Int64(LRate);
+    LRow.Add('prepared_source_frame', ACandidate.SourceFrame);
+    LRow.Add('original_source_frame_numerator', LNumerator);
+    LRow.Add('original_source_frame_denominator', FWorkingRate);
+    LRow.Add('original_source_frame_floor', LNumerator div FWorkingRate);
+    LRow.Add('frame_mapping', 'rational_center_of_filtered_footprint');
+  end
+  else LRow.Add('original_source_frame', LRange.Origin + ACandidate.SourceFrame);
   LRow.Add('valid_frames', ACandidate.ValidFrames);
 end;
 
@@ -1714,7 +1811,8 @@ begin
             WriteStudioJSONNew(StudioJobDirectory(ACatalogRoot, AJobId) +
               PathDelim + 'attempt-result.json', LResults);
             LMessage := 'Native Studio work failed; inspect retained details and correct the input';
-            if (LRequest.Strings['kind'] = 'stream_generate') and (E is EAudio) then
+            if ((LRequest.Strings['kind'] = 'stream_generate') or
+              (LRequest.Find('preparation') <> nil)) and (E is EAudio) then
               LMessage := Copy(E.Message, 1, 256);
             AdvanceStudioJob(ACatalogRoot, AJobId, 'failed', 'failed', 0, 0,
               LResults, 'worker_failure', LMessage);

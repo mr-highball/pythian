@@ -230,17 +230,21 @@ not supply the absent musical reference evidence or close full AC3.
   are recorded with [continuity_01](TODO/NS-5_continuity_01.md). No musical or
   whole-task acceptance is inferred.
   Physical/full workflow and musical-evidence gates remain unchanged.
-- Neo: coordinate bounded, disjoint work with the existing Ticket Guy and
-  final QA with Salty. Preserve verified originals and truthful job/queue states;
+- Big Boss, with bounded disjoint Spike/Spiegel assignments: preserve verified
+  originals and truthful job/queue states;
   raw acoustic recombination and experimental previews do not establish accepted
-  musical inference. The [mixed-format follow-up](TODO/NS-6_studio_07.md) remains
-  open after this review batch.
+  musical inference. The [mixed-format consumer](TODO/NS-6_studio_07.md) now passes
+  native conversion, original-clock mapping, actual WFC learning and saved-model
+  finite/live replay on authored 44.1/48-kHz stereo/mono inputs. Actual
+  desktop/narrow and recorded-workload qualification remain open. No conversion
+  task credit is accepted; NS-6 stays 54 and the overall total stays 52.45.
 - Preserve comparator and source/inference stop counters. A sole operator can
   supply caller preference decisions, but supported controls and separate
   candidate evaluation still belong to [evaluation_01](TODO/NS-5_evaluation_01.md).
   [Independent minimal use](TODO/NS-6_delivery_07.md) still needs its actual
   outside reviewer; neither Studio nor agent tests substitute for that result.
-- Salty Boi: final QA after at least two tasks/components are ready, under the
+- Big Boss: combine independent helper QA after multiple components are ready,
+  retain failure evidence and take over after two failed submissions, under the
   [current team and publication rules](TASKFLOW.MD#delegated-validation-and-publication).
 
 ### Checkpoint accounting

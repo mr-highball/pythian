@@ -144,6 +144,8 @@ begin
               LReference.Add('sample_rate', LSource.Integers['sample_rate']);
               LReference.Add('start_frame', LSource.Int64s['start_frame']);
               LReference.Add('end_frame', LSource.Int64s['end_frame']);
+              if LSource.Find('prepared') <> nil then
+                LReference.Add('prepared', LSource.Objects['prepared'].Clone);
               LReference.Add('available', FileExists(IncludeTrailingPathDelimiter(ACatalogRoot) +
                 'sources' + PathDelim + LSource.Strings['source_sha256'] + '.wav'));
             end;

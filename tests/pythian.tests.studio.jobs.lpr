@@ -74,6 +74,7 @@ var
   LBefore: String;
   LSuccessorHash: String;
   LFailed: Boolean;
+  LConfig: TJSONObject;
 begin
   LInbox := ARoot + PathDelim + 'preflight-inbox';
   LCatalog := ARoot + PathDelim + 'preflight-catalog';
@@ -252,6 +253,53 @@ begin
       end;
       Check(LFailed, 'Unknown reconstruction rejected at preflight');
       LWrite.Delete('reconstruction');
+      LWrite.Strings['job_id'] := 'prepared-plan';
+      LConfig := TJSONObject.Create;
+      LConfig.Add('channels', 2);
+      LConfig.Add('gain', 1.0);
+      LConfig.Add('sample_rate', 48000);
+      LWrite.Add('preparation', LConfig);
+      LReport := PrepareStudioJob(LCatalog, LWrite);
+      try
+        LBefore := LReport.Strings['request_sha256'];
+        Check(LReport.Int64s['prepared_frames'] = 96000, 'Prepared frames use target clock');
+        Check(Abs(LReport.Floats['selected_seconds'] - 2.0) < 0.000001,
+          'Original seconds retain original clock');
+        Check(LReport.Integers['sample_rate'] = 48000, 'Target sample rate is explicit');
+        Check(LReport.Arrays['prepared_ranges'].Objects[0].Int64s['prepared_frames'] = 96000,
+          'Per-range prepared geometry is explicit');
+      finally
+        LReport.Free;
+      end;
+      LWrite.Delete('preparation');
+      LConfig := TJSONObject.Create;
+      LConfig.Add('sample_rate', 48000);
+      LConfig.Add('channels', 2);
+      LConfig.Add('gain', 1.0);
+      LWrite.Add('preparation', LConfig);
+      LReport := PrepareStudioJob(LCatalog, LWrite);
+      try
+        Check(LReport.Strings['request_sha256'] = LBefore, 'Preparation key ordering is canonical');
+      finally
+        LReport.Free;
+      end;
+      LConfig.Floats['gain'] := 0.5;
+      LReport := PrepareStudioJob(LCatalog, LWrite);
+      try
+        Check(LReport.Strings['request_sha256'] <> LBefore, 'Preparation gain changes request identity');
+      finally
+        LReport.Free;
+      end;
+      LConfig.Floats['gain'] := 0.0;
+      LFailed := False;
+      try
+        LReport := PrepareStudioJob(LCatalog, LWrite);
+        LReport.Free;
+      except
+        on LException: EAudio do LFailed := True;
+      end;
+      Check(LFailed, 'Zero preparation gain is rejected');
+      LWrite.Delete('preparation');
       LReport := PrepareStudioJob(LCatalog, LWrite);
       try
         Check(LReport.Strings['reconstruction'] = 'sparse', 'Omitted policy remains sparse');

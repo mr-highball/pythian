@@ -133,7 +133,8 @@ begin
   end;
 end;
 
-function MakeSource(const ARoot, AName: String; const APhase: Integer): String;
+function MakeSource(const ARoot, AName: String; const APhase: Integer;
+  const ARate: Integer = 8000; const AChannels: Integer = 1): String;
 var
   LSamples: TAudioSamples;
   LClip: TAudioClip;
@@ -146,16 +147,19 @@ var
   LPath: String;
   LIndex: Integer;
   LFrequency: Double;
+  LChannel: Integer;
 begin
   LInbox := ARoot + PathDelim + 'inbox-' + AName;
   Check(ForceDirectories(LInbox), 'Create first-party source inbox');
-  SetLength(LSamples, 64000);
-  for LIndex := 0 to High(LSamples) do
+  SetLength(LSamples, 64000 * AChannels);
+  for LIndex := 0 to 63999 do
   begin
     LFrequency := 220 + (((LIndex div 4000) + APhase) mod 4) * 55;
-    LSamples[LIndex] := 0.15 * Sin(2 * Pi * LFrequency * LIndex / 8000);
+    for LChannel := 0 to AChannels - 1 do
+      LSamples[LIndex * AChannels + LChannel] :=
+        0.15 * Sin(2 * Pi * (LFrequency + LChannel * 110) * LIndex / ARate);
   end;
-  LClip := TAudioClip.Create(8000, 1, LSamples);
+  LClip := TAudioClip.Create(ARate, AChannels, LSamples);
   try
     LPath := LInbox + PathDelim + 'source.wav';
     LStream := TFileStream.Create(LPath, fmCreate);
@@ -1344,6 +1348,337 @@ begin
     end;
   finally LCombined.Free; LState.Free; LProject.Free end;
 end;
+procedure PreparedLiveRun(const ACatalog: String; const AWrite: TJSONObject);
+var
+  LWrite: TJSONObject;
+  LReply: TJSONObject;
+  LCommand: TJSONObject;
+  LState: TJSONObject;
+  LWorker: TLiveWorker;
+  LBody: TStringStream;
+  LActual: TMemoryStream;
+  LExpected: TMemoryStream;
+  LFile: TFileStream;
+  LWave: TWaveFrameReader;
+  LSamples: TAudioSamples;
+  LSequence: Integer;
+  LDeadline: QWord;
+begin
+  LWrite := TJSONObject(AWrite.Clone);
+  LCommand := TJSONObject.Create;
+  LActual := TMemoryStream.Create;
+  LExpected := TMemoryStream.Create;
+  LWorker := nil;
+  try
+    LWrite.Strings['job_id'] := 'mixed-live';
+    LWrite.Strings['kind'] := 'stream_generate';
+    LReply := EnqueueStudioJob(ACatalog, LWrite);
+    LReply.Free;
+    LWorker := TLiveWorker.Create(True);
+    LWorker.FreeOnTerminate := False;
+    LWorker.Catalog := ACatalog;
+    LWorker.JobId := 'mixed-live';
+    LWorker.Start;
+    LDeadline := GetTickCount64;
+    repeat
+      LState := ReadStudioLiveState(ACatalog, 'mixed-live');
+      try
+        Check(LState.Strings['job_status'] <> 'failed', 'Prepared live model starts');
+        if LState.Find('total_frames') <> nil then Break;
+      finally
+        LState.Free;
+      end;
+      Check(GetTickCount64 - LDeadline < 30000, 'Prepared live model meets fixture deadline');
+      Sleep(10);
+    until False;
+    LCommand.Add('job_id', 'mixed-live');
+    LCommand.Add('action', 'pull');
+    LCommand.Add('sequence', 0);
+    for LSequence := 0 to 19 do
+    begin
+      LCommand.Integers['sequence'] := LSequence;
+      LReply := RequestStudioLive(ACatalog, LCommand);
+      LReply.Free;
+      LDeadline := GetTickCount64;
+      repeat
+        LState := ReadStudioLiveState(ACatalog, 'mixed-live');
+        try
+          Check(LState.Strings['job_status'] <> 'failed', 'Prepared live worker remains valid');
+          if (LState.Find('sequence') <> nil) and
+            (LState.Int64s['sequence'] = LSequence) then Break;
+        finally
+          LState.Free;
+        end;
+        Check(GetTickCount64 - LDeadline < 30000, 'Prepared live chunk meets fixture deadline');
+        Sleep(10);
+      until False;
+      LBody := TStringStream.Create(ReadStudioLiveAudio(ACatalog, 'mixed-live', LSequence));
+      try
+        LWave := TWaveFrameReader.Create(LBody);
+        try
+          Check((LWave.SampleRate = 48000) and (LWave.Channels = 2) and
+            (LWave.FrameCount = 48000), 'Live output uses prepared clock and layout');
+          LSamples := LWave.ReadFrames(48000);
+          LActual.WriteBuffer(LSamples[0], Length(LSamples) * SizeOf(Single));
+        finally
+          LWave.Free;
+        end;
+      finally
+        LBody.Free;
+      end;
+    end;
+    LWorker.WaitFor;
+    Check(LWorker.Succeeded and (LWorker.Failure = ''), 'Prepared live session completes after bounded pulls');
+    LFile := TFileStream.Create(StudioJobDirectory(ACatalog, 'mixed-cold') + PathDelim + 'seed-0.wav', fmOpenRead);
+    try
+      LWave := TWaveFrameReader.Create(LFile);
+      try
+        repeat
+          LSamples := LWave.ReadFrames(48000);
+          if Length(LSamples) = 0 then Break;
+          LExpected.WriteBuffer(LSamples[0], Length(LSamples) * SizeOf(Single));
+        until False;
+      finally
+        LWave.Free;
+      end;
+    finally
+      LFile.Free;
+    end;
+    Check((LActual.Size = LExpected.Size) and
+      (CompareByte(LActual.Memory^, LExpected.Memory^, LActual.Size) = 0),
+      'Prepared live and finite consumers produce identical complete PCM');
+  finally
+    if LWorker <> nil then
+    begin
+      if not LWorker.Finished then
+      begin
+        LReply := CancelStudioJob(ACatalog, 'mixed-live');
+        LReply.Free;
+        LWorker.WaitFor;
+      end;
+      LWorker.Free;
+    end;
+    LExpected.Free;
+    LActual.Free;
+    LCommand.Free;
+    LWrite.Free;
+  end;
+end;
+
+procedure MixedRun(const ARoot: String);
+var
+  LCatalog: String;
+  LLibrary: String;
+  LHashes: array[0..1] of String;
+  LRates: array[0..1] of Integer;
+  LWrite: TJSONObject;
+  LProject: TJSONObject;
+  LJob: TJSONObject;
+  LCold: TJSONObject;
+  LWarm: TJSONObject;
+  LPlan: TJSONObject;
+  LRow: TJSONObject;
+  LRecipe: TJSONObject;
+  LRefs: TJSONObject;
+  LLedger: TJSONObject;
+  LStream: TFileStream;
+  LWave: TWaveFrameReader;
+  LCache: String;
+  LChangedPath: String;
+  LIndex: Integer;
+  LPart: Integer;
+  LRate: Integer;
+  LByte: Byte;
+begin
+  Check(not DirectoryExists(ARoot), 'Mixed fixture root must be fresh');
+  LCatalog := ARoot + PathDelim + 'catalog';
+  LLibrary := ARoot + PathDelim + 'library';
+  LRates[0] := 44100;
+  LRates[1] := 48000;
+  LHashes[0] := MakeSource(ARoot, 'mixed-stereo', 0, LRates[0], 2);
+  LHashes[1] := MakeSource(ARoot, 'mixed-mono', 1, LRates[1], 1);
+  LWrite := ProjectWrite('mixed-formats', LHashes[0]);
+  LProject := nil;
+  LCold := nil;
+  LWarm := nil;
+  try
+    LWrite.Arrays['sources'].Clear;
+    for LIndex := 0 to 1 do
+      for LPart := 0 to 1 do
+      begin
+        LRow := TJSONObject.Create;
+        LWrite.Arrays['sources'].Add(LRow);
+        LRow.Add('source_sha256', LHashes[LIndex]);
+        LRow.Add('selection', 'range');
+        LRow.Add('start_frame', LRates[LIndex] div 8 + LPart * (LRates[LIndex] div 2));
+        LRow.Add('end_frame', LRates[LIndex] div 8 + LPart * (LRates[LIndex] div 2) + LRates[LIndex] div 4);
+        LRow.Add('classifications', TJSONArray.Create(['authored mixed-clock control']));
+      end;
+    LProject := SaveStudioProject(LCatalog, LWrite);
+    FreeAndNil(LWrite);
+    LWrite := JobWrite('mixed-cold', LHashes[0], LProject);
+    LRow := TJSONObject.Create;
+    LWrite.Arrays['source_weights'].Add(LRow);
+    LRow.Add('source_sha256', LHashes[1]);
+    LRow.Add('weight', 2);
+    LWrite.Add('preparation', TJSONObject.Create(['sample_rate', 48000, 'channels', 2, 'gain', 0.8]));
+    LWrite.Add('reconstruction', 'source_successor');
+    LPlan := PrepareStudioJob(LCatalog, LWrite);
+    try
+      Check((LPlan.Arrays['prepared_ranges'].Count = 4) and
+        (LPlan.Int64s['prepared_frames'] = 48000) and
+        (Abs(LPlan.Floats['selected_seconds'] - 1) < 1E-12), 'Mixed preflight uses original seconds and prepared clock');
+      Check((LPlan.Arrays['used_sources'].Count = 0) and
+        not DirectoryExists(LCatalog + PathDelim + 'studio' + PathDelim + 'models'),
+        'Mixed preflight does not fabricate verified use or train');
+    finally
+      LPlan.Free;
+    end;
+    LJob := EnqueueStudioJob(LCatalog, LWrite);
+    LJob.Free;
+    Check(RunStudioWorker(LCatalog, 'mixed-cold', LLibrary), 'Actual mixed-rate/layout WFC worker completes');
+    LJob := ReadStudioJob(LCatalog, 'mixed-cold');
+    try
+      LCold := TJSONObject(LJob.Objects['results'].Clone);
+    finally
+      LJob.Free;
+    end;
+    Check((LCold.Arrays['sources'].Count = 4) and not LCold.Booleans['model_reused'], 'Cold model uses all four original selections');
+    for LIndex := 0 to 3 do
+    begin
+      LRow := LCold.Arrays['sources'].Objects[LIndex];
+      LRecipe := LRow.Objects['prepared'];
+      Check((LRow.Strings['source_sha256'] = LHashes[LIndex div 2]) and
+        (LRow.Integers['sample_rate'] = LRates[LIndex div 2]) and
+        (LRecipe.Int64s['frame_count'] = 12000) and
+        (LRecipe.Integers['sample_rate'] = 48000) and (LRecipe.Integers['channels'] = 2),
+        'Receipt retains separate original/prepared identities and geometry');
+      Check((LRow.Int64s['start_frame'] = LProject.Arrays['sources'].Objects[LIndex].Int64s['start_frame']) and
+        (LRow.Arrays['classifications'].AsJSON = LProject.Arrays['sources'].Objects[LIndex].Arrays['classifications'].AsJSON) and
+        (LRow.Strings['source_partition'] = 'unassigned') and
+        (LRow.Strings['effective_partition'] = 'development') and
+        (LRow.Integers['weight'] = 1 + LIndex div 2), 'Original classification, scope, use and weight survive conversion');
+    end;
+    LRow := LCold.Arrays['outputs'].Objects[0];
+    Check((LRow.Int64s['frame_count'] = 960000) and
+      (LRow.Integers['channels'] = 2) and (LRow.Integers['sample_rate'] = 48000) and
+      LRow.Booleans['generated_from_reloaded_model'], 'Actual reloaded WFC output has exact twenty-second target clock');
+    LStream := TFileStream.Create(StudioJobDirectory(LCatalog, 'mixed-cold') + PathDelim + 'seed-0.wav', fmOpenRead);
+    try
+      LWave := TWaveFrameReader.Create(LStream);
+      try
+        Check((LWave.FrameCount = 960000) and (LWave.SampleRate = 48000) and (LWave.Channels = 2),
+          'Independently parsed mixed output WAV geometry');
+      finally
+        LWave.Free;
+      end;
+    finally
+      LStream.Free;
+    end;
+    LLedger := ReadStudioJSON(StudioJobDirectory(LCatalog, 'mixed-cold') + PathDelim + 'seed-0.receipt.json');
+    try
+      for LIndex := 0 to LLedger.Arrays['grain_map'].Count - 1 do
+      begin
+        LRow := LLedger.Arrays['grain_map'].Objects[LIndex];
+        LRate := LRates[LRow.Integers['range_index'] div 2];
+        Check((LRow.Find('original_source_frame') = nil) and
+          (LRow.Int64s['original_source_frame_denominator'] = 48000) and
+          (LRow.Int64s['original_source_frame_numerator'] =
+            LCold.Arrays['sources'].Objects[LRow.Integers['range_index']].Int64s['start_frame'] * 48000 +
+            LRow.Int64s['prepared_source_frame'] * LRate), 'Every grain retains exact rational original coordinate');
+      end;
+    finally
+      LLedger.Free;
+    end;
+    LRefs := ReadListeningSourceReferences(LCatalog,
+      LCold.Arrays['outputs'].Objects[0].Strings['listening_request_id'], 'audition');
+    try
+      Check((LRefs.Strings['status'] = 'ready') and (LRefs.Arrays['sources'].Count = 4) and
+        (LRefs.Arrays['sources'].Objects[0].Integers['sample_rate'] = 44100) and
+        (LRefs.Arrays['sources'].Objects[2].Integers['sample_rate'] = 48000),
+        'Listening publication points back to exact original clocks');
+    finally
+      LRefs.Free;
+    end;
+    LWrite.Strings['job_id'] := 'mixed-warm';
+    LJob := EnqueueStudioJob(LCatalog, LWrite);
+    LJob.Free;
+    Check(RunStudioWorker(LCatalog, 'mixed-warm', LLibrary), 'Verified mixed model reuse completes');
+    LJob := ReadStudioJob(LCatalog, 'mixed-warm');
+    try
+      LWarm := TJSONObject(LJob.Objects['results'].Clone);
+      Check(LWarm.Booleans['model_reused'] and
+        (LWarm.Strings['training_identity_sha256'] = LCold.Strings['training_identity_sha256']) and
+        (LWarm.Arrays['sources'].AsJSON = LCold.Arrays['sources'].AsJSON) and
+        (LWarm.Arrays['outputs'].Objects[0].Strings['wav_sha256'] = LCold.Arrays['outputs'].Objects[0].Strings['wav_sha256']),
+        'Prepared reuse preserves identity, complete receipts and every output byte');
+    finally
+      LJob.Free;
+    end;
+    PreparedLiveRun(LCatalog, LWrite);
+    LCache := GetEnvironmentVariable('PYTHIAN_STUDIO_PREPARED_CACHE');
+    Check(LCache <> '', 'Mixed fixture requires an isolated explicit cache root');
+    LChangedPath := IncludeTrailingPathDelimiter(LCache) +
+      LCold.Arrays['sources'].Objects[0].Objects['prepared'].Strings['recipe_sha256'] + PathDelim + 'audio.wav';
+    LStream := TFileStream.Create(LChangedPath, fmOpenReadWrite);
+    try
+      LStream.Position := 60;
+      LStream.ReadBuffer(LByte, 1);
+      LByte := LByte xor 1;
+      LStream.Position := 60;
+      LStream.WriteBuffer(LByte, 1);
+    finally
+      LStream.Free;
+    end;
+    try
+      LWrite.Strings['job_id'] := 'mixed-corrupt';
+      LJob := EnqueueStudioJob(LCatalog, LWrite);
+      LJob.Free;
+      Check(not RunStudioWorker(LCatalog, 'mixed-corrupt', LLibrary), 'Corrupt prepared bytes fail before saved model reuse');
+      LJob := ReadStudioJob(LCatalog, 'mixed-corrupt');
+      try
+        Check((LJob.Strings['status'] = 'failed') and
+          not FileExists(StudioJobDirectory(LCatalog, 'mixed-corrupt') + PathDelim + 'seed-0.wav'),
+          'Corrupt cache never silently falls back or publishes generated audio');
+        Check(Pos('Prepared WAV hash differs', LJob.Strings['error_message']) > 0,
+          'Preparation failures expose a useful path-free explanation');
+      finally
+        LJob.Free;
+      end;
+    finally
+      LStream := TFileStream.Create(LChangedPath, fmOpenReadWrite);
+      try
+        LStream.Position := 60;
+        LByte := LByte xor 1;
+        LStream.WriteBuffer(LByte, 1);
+      finally
+        LStream.Free;
+      end;
+    end;
+    LWrite.Strings['job_id'] := 'mixed-changed';
+    LWrite.Objects['preparation'].Floats['gain'] := 0.5;
+    LJob := EnqueueStudioJob(LCatalog, LWrite);
+    LJob.Free;
+    Check(RunStudioWorker(LCatalog, 'mixed-changed', LLibrary), 'Changed preparation recipe learns a distinct model identity');
+    LJob := ReadStudioJob(LCatalog, 'mixed-changed');
+    try
+      Check(not LJob.Objects['results'].Booleans['model_reused'] and
+        (LJob.Objects['results'].Strings['training_identity_sha256'] <> LCold.Strings['training_identity_sha256']),
+        'Preparation configuration participates in saved learning identity');
+    finally
+      LJob.Free;
+    end;
+    for LIndex := 0 to 1 do
+      Check(HashFile(LCatalog + PathDelim + 'sources' + PathDelim + LHashes[LIndex] + '.wav') = LHashes[LIndex],
+        'Mixed preparation never replaces original source bytes');
+  finally
+    LWarm.Free;
+    LCold.Free;
+    LWrite.Free;
+    LProject.Free;
+  end;
+end;
+
 procedure LibraryRun(const ARoot: String);
 var
   LCatalog: String;
@@ -1512,7 +1847,12 @@ end;
 
 begin
   try
-    if (ParamCount = 2) and (ParamStr(1) = '--successor-live-only') then
+    if (ParamCount = 2) and (ParamStr(1) = '--mixed-only') then
+    begin
+      MixedRun(ExpandFileName(ParamStr(2)));
+      WriteLn('PASS ', GChecks, ' mixed-format Studio worker checks');
+    end
+    else if (ParamCount = 2) and (ParamStr(1) = '--successor-live-only') then
     begin
       LiveSuccessorRun(ExpandFileName(ParamStr(2)));
       WriteLn('PASS ', GChecks, ' long source-continuity Studio checks');

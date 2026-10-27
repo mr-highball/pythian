@@ -256,6 +256,11 @@ begin
     El('live-source').textContent := StudioText(FProject, 'name') + ' · ' +
       StudioTime(StudioNumber(LPlan, 'selected_seconds')) + ' of source music · seed ' +
       IntToStr(Trunc(Double(LSeeds[0])));
+    if isObject(LPlan['preparation']) then
+      El('live-source').textContent := El('live-source').textContent +
+        ' · prepared at ' + IntToStr(FRate) + ' Hz, ' +
+        IntToStr(Trunc(StudioNumber(TJSObject(LPlan['preparation']), 'channels'))) +
+        ' channel(s), volume ' + FloatToStr(StudioNumber(TJSObject(LPlan['preparation']), 'gain'));
     Notice('Preparing your selected recordings…');
     LReply := await(TJSObject, Json('/api/studio/job', 'POST', TJSJSON.stringify(LRequest)));
     if LEpoch <> FEpoch then Exit;

@@ -115,6 +115,10 @@ try {
   $importProgressRoot = Join-Path $buildRoot ('import-progress-' + [Guid]::NewGuid().ToString('N'))
   & (Join-Path $buildRoot "pythian.tests.annotations.import.progress$executableSuffix") $importProgressRoot
   if ($LASTEXITCODE -ne 0) { throw 'Catalog import progress and cancellation checks failed' }
+  & $compilerPath @compilerArgs '-gh' '-Futools' 'tests/pythian.tests.studio.preparation.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Studio range preparation compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.studio.preparation$executableSuffix") (Join-Path $buildRoot ('studio-preparation-' + [Guid]::NewGuid().ToString('N')))
+  if ($LASTEXITCODE -ne 0) { throw 'Studio range preparation checks failed' }
   & $compilerPath @compilerArgs '-gh' '-Futools' 'tests/pythian.tests.net.transport.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'HTTP/TLS transport contract compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.net.transport$executableSuffix")
@@ -526,6 +530,16 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Studio live transport/replay/lease checks failed' }
         & (Join-Path $buildRoot "pythian.tests.studio.worker$executableSuffix") '--successor-live-only' ($studioFixtureRoot + '-successor-live')
         if ($LASTEXITCODE -ne 0) { throw 'Studio long source-continuity/reuse/excerpt checks failed' }
+        $mixedCachePrevious = $env:PYTHIAN_STUDIO_PREPARED_CACHE
+        $env:PYTHIAN_STUDIO_PREPARED_CACHE = Join-Path $buildRoot ('mixed-cache-' + [Guid]::NewGuid().ToString('N'))
+        Push-Location $buildRoot
+        try {
+          & (Join-Path $buildRoot "pythian.tests.studio.worker$executableSuffix") '--mixed-only' ($studioFixtureRoot + '-mixed')
+          if ($LASTEXITCODE -ne 0) { throw 'Studio mixed-format WFC/reuse/live/source-lineage checks failed' }
+        } finally {
+          Pop-Location
+          $env:PYTHIAN_STUDIO_PREPARED_CACHE = $mixedCachePrevious
+        }
       }
     }
     & $compilerPath @adapterArgs 'examples/pythian.example.wfc.provider.lpr'
