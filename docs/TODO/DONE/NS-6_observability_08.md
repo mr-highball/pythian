@@ -1,12 +1,19 @@
 # NS-6_observability_08 — Observe semantic style archives and selective blends
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
 Expose actual owned semantic-style validation, archive and selective blend work
 through the existing public API and provider-extension consumer. Preserve source
 lineage, codec admission budgets, preferences, locks and session results.
+
+Accepted 2026-10-27 at `19124a6`: checked native parity, cancellation and actual
+consumer evidence below is joined by successful Ubuntu 24.04/FPC3.2.2
+[run448](https://github.com/mr-highball/pythian/actions/runs/40567472267).
+Maintained integration, including this task's fixture, and extracted core/WFC
+consumers pass from the published Git revision. Big Boss performed solo checks;
+CI execution is not an independent code review. No additional musical credit.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
 Selected 2026-10-27 from observability_04's existing AC1 and associated AC5.
@@ -39,10 +46,20 @@ changed formats, codec/control semantics, duplicate algorithms or dependency edi
 
 **Blockers**
 
-- [Shared progress contract — DONE](DONE/NS-6_observability_01.md).
+- [Shared progress contract — DONE](NS-6_observability_01.md).
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss acceptance: actual Ubuntu run448/job122412472083 is
+  terminal Success at `19124a6`, total11m48s/job11m44s. Integration and both
+  extracted consumer packages pass. Retained artifact containers are
+  `native-fpc-logs` (745 KB, SHA256 `1f67a69e905d4db1529ded12dfb0cb41f41876124e2467df68a53c124e1b5042`)
+  and `pythian-source-packages` (1.67 MB, SHA256 `d1732ea3c7c2380ae3f026b67fcbf49dc3a1b98ee215c17fd82def4d6fb2ac82`).
+  These are GitHub artifact-container digests, not individual ZIP hashes.
+  This closes AC4 alongside the local AC1–3 evidence; earlier pending statements
+  below record intermediate checkpoints. Provider-contract and embedded
+  wave-profile internals stay with their linked owners. No maximum cancellation
+  latency, browser/phone performance or musical result is qualified here.
 - 2026-10-27, Big Boss local validation: checked FPC3.2.2 Win32/Win64 passes the
   restored progress fixture (20 selected cancellation/retry cases), the existing
   semantic style/blend and 220-case caller-codec fixture, with zero leaks.
@@ -78,10 +95,10 @@ changed formats, codec/control semantics, duplicate algorithms or dependency edi
   also needs its shared console-progress unit in the extracted package and its
   documented search path. Closing evidence remains archive/session parity,
   interior abort/cleanup/retry and actual consumer/package execution. Keep
-  provider-contract internals in [observability_04](NS-6_observability_04.md) and
-  embedded wave-profile internals in [observability_07](NS-6_observability_07.md).
+  provider-contract internals in [observability_04](../NS-6_observability_04.md) and
+  embedded wave-profile internals in [observability_07](../NS-6_observability_07.md).
   Boundaries around those units do not prove their interior cancellation.
-- 2026-10-27, Big Boss: split from [observability_04](NS-6_observability_04.md)
+- 2026-10-27, Big Boss: split from [observability_04](../NS-6_observability_04.md)
   at its independently usable semantic archive/blend API and caller consumer.
   Its provider-contract internals, batch evaluation and inference-reporting
   obligations stay in the parent. Callback boundaries around an unobserved

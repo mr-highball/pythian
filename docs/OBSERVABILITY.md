@@ -300,9 +300,11 @@ remains with the existing [continuity](TODO/NS-5_continuity_04.md) and
 
 ## Semantic style archives and selective blends
 
-The [semantic callback task](TODO/NS-6_observability_08.md) is implemented and
-mechanically checked on stable FPC3.2.2 Win32/Win64. Clean-revision Ubuntu CI is
-still pending, so the task remains open and earns no additional credit.
+The [semantic callback task](TODO/DONE/NS-6_observability_08.md) is accepted at
+`19124a6`: stable FPC3.2.2 Win32/Win64 checks and actual Ubuntu
+[run448](https://github.com/mr-highball/pythian/actions/runs/40567472267) pass.
+Maintained integration and extracted core/WFC consumers qualify the published
+revision. This instrumentation earns no additional musical credit.
 
 Optional callbacks reach source/derived/blend constructors, encode/decode,
 definition/parent copies and generic/named session preparation. Vocabulary,

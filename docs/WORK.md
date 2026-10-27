@@ -12,9 +12,31 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
-## Semantic style observability resumed - 2026-10-27
+## Semantic style callbacks accepted - 2026-10-27
 
-Return from the accepted CI prerequisite to [observability_08](TODO/NS-6_observability_08.md)
+Authenticated GitHub inspection confirms actual Ubuntu/FPC
+[run448](https://github.com/mr-highball/pythian/actions/runs/40567472267) is
+terminal **Success** at `19124a6`, total11m48s/job11m44s. Maintained integration
+and both extracted core/WFC consumers pass. Together with the retained native
+parity/abort/retry and caller evidence, this closes
+[observability_08](TODO/DONE/NS-6_observability_08.md) AC1–4. Big Boss owns solo
+verification; CI is not independent code review. Three consecutive runs now
+pass after the corpus-text repair; notification settings are unchanged.
+
+The task moves to DONE with incoming links and accounting. Counts are
+**54 open / 66 DONE, 120 total**, NS-6 16 open. Percentages remain
+**100/90/25/70/14/54**, **52.45 credited / 47.55 remaining** because this closes
+zero-credit instrumentation. Delivery nonclosing count remains **0** after an
+actual criterion closure; scientific stopped-family counters stay unchanged.
+The pitch draft remains unaccepted. Provider/batch internals, wave profiles and
+pitch preparation retain owners 04/07/09; no musical result is inferred.
+Artifact-container identities and exact-revision evidence are retained with
+the accepted task and E-drive semantic validation record. No local service or
+browser audio was started, and the user's GitHub tab remains open.
+
+## Semantic style observability preparation history - 2026-10-27
+
+Return from the accepted CI prerequisite to [observability_08](TODO/DONE/NS-6_observability_08.md)
 AC1–3. Big Boss owns the retained draft and lost fixture under the current
 supplied single-agent override; no helper is resumed. The disk-full failure was
 environmental and is not counted as a failed implementation QA submission.
@@ -52,6 +74,17 @@ AC4 before this task moves to DONE. Keep the task and accounting unchanged
 pending that run. Source and logs are under dedicated E-drive
 `build/tests/runs/semantic-style-progress-20261027-boss*`; no service/browser
 asset replacement, musical scoring or saved-response change occurred.
+
+Published semantic candidate: `19124a6` on `hello-pythian`. The automatic Git
+maintenance completed normally before the push; no restart or alternate path
+was used. The separate pitch-preparation unit/fixture remain the only uncommitted
+implementation draft and retain their frozen hashes. Actual Ubuntu
+[run448](https://github.com/mr-highball/pythian/actions/runs/40567472267),
+job122412472083, was initially confirmed live in the authenticated browser at
+this revision. It was allowed to finish without restart or inference from local
+dirty packages. The acceptance above supersedes that intermediate checkpoint.
+Prior run447 also succeeded, preserving the earlier corpus-text repair. The
+overall goal remains open and scientific stopped-family counters are unchanged.
 
 ## Linux consumer gate restored - 2026-10-27
 
