@@ -146,6 +146,73 @@ begin
   end;
 end;
 
+procedure CheckContributionAudit(const APlan: TCorpusIntakePlan);
+var
+  LDefinition: TCorpusIntakeDefinition;
+  LChanged: TCorpusIntakePlan;
+  LReport: TJSONObject;
+  LDeclarations: TJSONObject;
+  LRecording: TJSONObject;
+  LLastRange: Integer;
+begin
+  LReport := TJSONObject(GetJSON(CorpusIntakeAuditJSON(APlan)));
+  try
+    LDeclarations := LReport.Objects['declared_contributions'];
+    Check((LDeclarations.Strings['training_admission'] = 'not_assessed') and
+      (LDeclarations.Strings['repeated_section_identity'] = 'unknown'),
+      'Contribution declarations must not imply trained or repeated musical content');
+    Check((LDeclarations.Arrays['recordings'].Count = 2) and
+      (LReport.Objects['training'].Integers['declared_range_rows'] = 3) and
+      (LReport.Objects['training'].Integers['distinct_declarations'] = 3) and
+      (Abs(LReport.Objects['training'].Floats['declared_weighted_seconds'] - 2) < 1e-12),
+      'Partition declaration counts and explicit weight');
+    LRecording := LDeclarations.Arrays['recordings'].Objects[0];
+    Check((LRecording.Strings['recording_id'] = 'first-party-recording-0') and
+      (LRecording.Strings['partition'] = 'training') and
+      (LRecording.Int64s['unique_original_frames'] = 16000) and
+      (LRecording.Int64s['unknown_song_frames'] = 4000) and
+      (LRecording.Int64s['declared_weighted_frames'] = 16000),
+      'Native audit retains exact original clock and unknown coverage');
+    Check((LDeclarations.Arrays['recordings'].Objects[1].Strings['partition'] = 'development') and
+      (LReport.Objects['development'].Integers['declared_range_rows'] = 1),
+      'Independent development recording remains separate');
+    Check(not LReport.Booleans['musical_acceptance'], 'Declaration accounting earns no musical acceptance');
+  finally
+    LReport.Free;
+  end;
+  LDefinition := APlan.CopyDefinition;
+  LDefinition.Ranges[0].Multiplicity := 3;
+  LLastRange := Length(LDefinition.Ranges);
+  SetLength(LDefinition.Ranges, LLastRange + 1);
+  LDefinition.Ranges[LLastRange] := LDefinition.Ranges[0];
+  LDefinition.Ranges[LLastRange].BoundaryEvidence := 'Additional evidence for the same selection';
+  LChanged := TCorpusIntakePlan.Create(LDefinition);
+  try
+    LReport := TJSONObject(GetJSON(CorpusIntakeAuditJSON(LChanged)));
+    try
+      LRecording := LReport.Objects['declared_contributions'].Arrays['recordings'].Objects[0];
+      Check((LRecording.Integers['declared_range_rows'] = 4) and
+        (LRecording.Integers['distinct_declarations'] = 3) and
+        (LRecording.Int64s['unique_original_frames'] = 16000) and
+        (LRecording.Int64s['declared_weighted_frames'] = 28000),
+        'Explicit multiplicity counts once for duplicate declarations');
+      Check(Abs(LReport.Objects['training'].Floats['declared_weighted_seconds'] - 3.5) < 1e-12,
+        'Weighted declaration duration is distinct from unique audio duration');
+    finally
+      LReport.Free;
+    end;
+  finally
+    LChanged.Free;
+  end;
+  LReport := TJSONObject(GetJSON(CorpusIntakeAuditJSON(APlan)));
+  try
+    Check(LReport.Objects['training'].Integers['declared_range_rows'] = 3,
+      'Contribution audit does not mutate its caller');
+  finally
+    LReport.Free;
+  end;
+end;
+
 var
   P, Q: TCorpusIntakePlan;
   A: TCorpusAdmission;
@@ -165,6 +232,7 @@ begin
       LDirectory := IncludeTrailingPathDelimiter(ExpandFileName(ParamStr(1)));
       P := ReadCorpusIntake(LDirectory + 'example-0.json');
       LBaseline := EncodeCorpusIntake(P); D := P.CopyDefinition;
+      CheckContributionAudit(P);
       CheckActualSegments(P);
       for I := 0 to 2 do
       begin
@@ -185,6 +253,16 @@ begin
       LearnCorpusIntake(LDirectory + 'accepted-0.json', LDirectory + 'replayed');
       Check(HashAudioBytes(Bytes('replayed.wfcs')) = LModelHash, 'Reloaded intake learning replay differs');
       Check(FileText('replayed.audit.json') = FileText('accepted-0.audit.json'), 'Audit replay differs');
+      O := TJSONObject(GetJSON(FileText('accepted-0.audit.json')));
+      try
+        Check(O.Booleans['verified_file_bytes'] and
+          (O.Integers['training_segments'] = 2) and
+          (O.Objects['declared_contributions'].Strings['training_admission'] = 'not_assessed') and
+          (O.Objects['declared_contributions'].Arrays['recordings'].Objects[0].Int64s['unknown_song_frames'] = 4000),
+          'Learned audit separates actual admitted segments from declaration accounting');
+      finally
+        O.Free;
+      end;
       for I := 0 to 5 do
       begin
         if I = 1 then

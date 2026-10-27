@@ -354,25 +354,77 @@ end;
 
 function CorpusIntakeAuditJSON(const APlan: TCorpusIntakePlan): UTF8String;
 var
-  C: TCorpusIntakeCoverage;
-  R, O: TJSONObject;
-  P: TCorpusPartition;
+  LCoverage: TCorpusIntakeCoverage;
+  LContributions: TCorpusRecordingContributions;
+  LReport: TJSONObject;
+  LPartitionReport: TJSONObject;
+  LDeclarations: TJSONObject;
+  LRecording: TJSONObject;
+  LRecordings: TJSONArray;
+  LPartition: TCorpusPartition;
+  LIndex: Integer;
+  LDeclaredRows: Integer;
+  LDistinctDeclarations: Integer;
+  LWeightedSeconds: Double;
 begin
-  C := APlan.Coverage;
-  R := TJSONObject.Create;
+  Require(APlan <> nil, 'Corpus audit requires an intake plan');
+  LCoverage := APlan.Coverage;
+  LContributions := APlan.Contributions;
+  LReport := TJSONObject.Create;
   try
-    R.Add('kind', 'pythian-corpus-intake-audit'); R.Add('version', CorpusIntakeVersion);
-    R.Add('musical_acceptance', False); R.Add('identity_basis', 'caller-declared family/work evidence');
-    for P := Low(TCorpusPartition) to High(TCorpusPartition) do
+    LReport.Add('kind', 'pythian-corpus-intake-audit');
+    LReport.Add('version', CorpusIntakeVersion);
+    LReport.Add('musical_acceptance', False);
+    LReport.Add('identity_basis', 'caller-declared family/work evidence');
+    for LPartition := Low(TCorpusPartition) to High(TCorpusPartition) do
     begin
-      O := TJSONObject.Create; R.Add(CorpusPartitionName(P), O);
-      O.Add('unique_source_seconds', C.UniqueSeconds[P]);
-      O.Add('unknown_song_seconds', C.UnknownBoundarySeconds[P]);
-      O.Add('declared_verified_groups', C.DeclaredVerifiedGroups[P]);
+      LPartitionReport := TJSONObject.Create;
+      LReport.Add(CorpusPartitionName(LPartition), LPartitionReport);
+      LPartitionReport.Add('unique_source_seconds', LCoverage.UniqueSeconds[LPartition]);
+      LPartitionReport.Add('unknown_song_seconds', LCoverage.UnknownBoundarySeconds[LPartition]);
+      LPartitionReport.Add('declared_verified_groups', LCoverage.DeclaredVerifiedGroups[LPartition]);
+      LDeclaredRows := 0;
+      LDistinctDeclarations := 0;
+      LWeightedSeconds := 0;
+      for LIndex := 0 to High(LContributions) do
+      begin
+        if LContributions[LIndex].Partition <> LPartition then
+        begin
+          Continue;
+        end;
+        Inc(LDeclaredRows, LContributions[LIndex].DeclaredRows);
+        Inc(LDistinctDeclarations, LContributions[LIndex].DistinctDeclarations);
+        LWeightedSeconds := LWeightedSeconds +
+          LContributions[LIndex].DeclaredWeightedFrames / LContributions[LIndex].SampleRate;
+      end;
+      LPartitionReport.Add('declared_range_rows', LDeclaredRows);
+      LPartitionReport.Add('distinct_declarations', LDistinctDeclarations);
+      LPartitionReport.Add('declared_weighted_seconds', LWeightedSeconds);
     end;
-    Result := R.AsJSON;
+    LDeclarations := TJSONObject.Create;
+    LReport.Add('declared_contributions', LDeclarations);
+    LDeclarations.Add('scope', 'caller-declared ranges, not admitted training observations');
+    LDeclarations.Add('weight_kind', 'explicit training multiplicity');
+    LDeclarations.Add('training_admission', 'not_assessed');
+    LDeclarations.Add('repeated_section_identity', 'unknown');
+    LRecordings := TJSONArray.Create;
+    LDeclarations.Add('recordings', LRecordings);
+    for LIndex := 0 to High(LContributions) do
+    begin
+      LRecording := TJSONObject.Create;
+      LRecordings.Add(LRecording);
+      LRecording.Add('recording_id', LContributions[LIndex].RecordingId);
+      LRecording.Add('partition', CorpusPartitionName(LContributions[LIndex].Partition));
+      LRecording.Add('sample_rate', LContributions[LIndex].SampleRate);
+      LRecording.Add('unique_original_frames', LContributions[LIndex].UniqueFrames);
+      LRecording.Add('unknown_song_frames', LContributions[LIndex].UnknownBoundaryFrames);
+      LRecording.Add('declared_range_rows', LContributions[LIndex].DeclaredRows);
+      LRecording.Add('distinct_declarations', LContributions[LIndex].DistinctDeclarations);
+      LRecording.Add('declared_weighted_frames', LContributions[LIndex].DeclaredWeightedFrames);
+    end;
+    Result := LReport.AsJSON;
   finally
-    R.Free;
+    LReport.Free;
   end;
 end;
 

@@ -12,6 +12,70 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Operator review and resumed delegation - 2026-10-27
+
+The user's latest instruction resumes delegation with **Spike and Spiegel,
+both GPT-6.1 Terra**. This supersedes the Oct26 single-agent instruction and
+leaves the older team inactive. Big Boss retains chief assessment, task
+selection, architecture, integration and final judgment. No additional helpers.
+Existing scientific stop counters, failures and evidence qualifications persist.
+
+The actual saved prepared-review answer is revision1, submitted by the operator,
+choosing **After** for fewer broken/jittery notes. The source-bound level-matched
+comparison and original context are unchanged. This is a useful positive
+development preference for the optional successor mechanism; it is not a full
+style, sustained-output, multi-source or desktop/narrow QA verdict. No milestone
+credit follows automatically. Private request/event identities remain in the
+catalog and E-drive evidence.
+
+First bounded check: Spike independently inspected the two implemented components
+(native continuity integration and prepared listening path), with acceptance
+mapped to continuity_04/studio_22 and any unavailable browser route reported
+honestly. He found no demonstrated defect by source/evidence inspection; he did
+not relabel the prior367 solo checks as independent execution or repeat failed
+desktop-control attempts. Actual desktop/narrow acceptance stays open.
+
+Selected implementation batch: [vocabulary_01](TODO/NS-5_vocabulary_01.md) AC1's
+bounded native declaration-accounting component. Deliverable: reusable primary
+per-recording/split contribution metrics plus their maintained intake/learning
+consumer. Closing evidence: original-coordinate union across overlaps/derivatives,
+duplicate declarations versus explicit multiplicity, unknown boundaries,
+detached deterministic results, checked exact-integer budgets and unchanged
+training admission/WFC replay. Stop at invented musical-repeat/identity evidence,
+altered training policy or a duplicated overlap algorithm. Full representative
+selection, normalization and musical comparisons retain their real reference
+and automatic-context prerequisites; no stopped tuning sequence was resumed.
+
+Spiegel implemented only `pythian.corpus.intake` and its core fixture. Big Boss
+integrated the existing native audit/learning consumer and its file fixture.
+Spike independently authored/executed a focused boundary/consumer fixture after
+both components were ready. Primary `Coverage` and the new `Contributions` share
+one union implementation. Reports distinguish unique original frames, unknown
+song coverage, declaration counts and weighted declaration mass. Repeated musical
+sections remain unknown and declaration accounting does not assess actual
+training admission. Existing training-range selection and model behavior remain.
+
+Verification: stable FPC3.2.2 checked Win64 passes29 core and50 file/WFC consumer
+checks with zero leaks; the implementer's development FPC3.3.1 Win32 core run
+also passes29. Spike's checked Win64 final batch passes14 independent checks,
+including large exact multiplication/addition limits, canonical intake replay,
+actual learned segment/observation separation and two fresh WFC models with
+identical hashes. The independent fixture is registered in the normal native
+build alongside existing intake checks. No browser, microphone, service restart,
+private-source render or operator-data write was needed for this batch.
+Evidence lives under the `spiegel-20261027`, `contributions-20261027` and
+`spike-20261027` E-drive run directories; all new generated outputs remain there.
+
+An actual pas2js compile stops at the existing intake `UTF8String` declaration.
+The distinct [intake/text portability repair](TODO/NS-6_portability_02.md) is
+recorded before expanding scope; it earns no credit and does not block the
+native consumer. No lossy alias or alternate JS algorithm was introduced.
+The native accounting component is delivered, not the full vocabulary criterion
+or style outcome. No task is moved to DONE; ledger **55 open /54 DONE**,
+**52.45/47.55**. The next vocabulary decision still needs grounded coverage and
+context evidence; the new report makes contribution claims inspectable, without
+claiming that more bytes or more declarations establish deeper musical learning.
+
 ## Core-driven review bridge implementation - 2026-10-26
 
 Big Boss worked alone. [continuity_04](TODO/NS-5_continuity_04.md) now connects

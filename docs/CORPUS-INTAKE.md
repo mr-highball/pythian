@@ -65,6 +65,43 @@ does not relearn those centers.
 
 ## Current declarations and coordinates
 
+### Contribution accounting
+
+`TCorpusIntakePlan.Contributions` returns detached rows ordered by recording ID.
+Each row keeps its recording, partition and sample clock, original-coordinate
+unique frames, unknown-boundary frames, raw declaration count, distinct
+declaration count and explicit multiplicity-weighted declaration frames.
+`Coverage` uses the same interval-union implementation; prepared crops and
+overlapping selections do not add unique source duration.
+
+Exact duplicate declarations coalesce for weighted accounting when their source
+SHA, mapped original interval, song ID and multiplicity agree. Extra boundary
+evidence text does not create more weight. For example, declaring the same
+1.5-second range twice with multiplicity4 reports two rows, one distinct
+declaration, 1.5 unique seconds and six weighted declaration seconds.
+Different prepared WAV bytes remain distinct declarations while their original
+coverage still overlaps. Conflicting or partly overlapping declarations may be
+reported; this does not admit them to training.
+
+The native `verify` audit and saved learning audit expose these rows under
+`declared_contributions.recordings`, with partition counts and
+`declared_weighted_seconds` beside existing coverage. The scope explicitly says
+`training_admission: "not_assessed"` and `repeated_section_identity: "unknown"`.
+Unknown song spans remain in declared mass; only the existing `TrainingRanges`
+and verified consumer determine actual admitted segments/observations. This
+does not detect repeated music, assign song boundaries or alter generation
+preferences/hard locks. A learned audit retains actual segment/observation
+counts separately.
+
+Weighted totals reject before exceeding the exact `MaximumIntakeFrame` integer
+budget. Existing coverage remains available for otherwise valid plans even when
+their declaration-weight total exceeds that budget. Native checked fixtures and
+independent native consumer learning/replay pass. Actual pas2js compilation is
+blocked by the existing intake text representation; see
+[portability_02](TODO/NS-6_portability_02.md). No browser or WASM parity is claimed.
+
+### Format and source identity
+
 The only accepted format is `kind: "pythian-corpus-intake"`, `version: 1`,
 `coordinate_units: "source_frames"`. Unknown fields, duplicate fields,
 future versions, fractional integer fields, excessive nesting/counts and

@@ -5,12 +5,16 @@
 
 ## North-star assessment
 
-Updated **2026-10-26** on the user-authorized 2026-09-29 credit basis:
+Updated **2026-10-27** on the user-authorized 2026-09-29 credit basis:
 Implemented [source-continuity Studio integration](TODO/NS-5_continuity_04.md)
 passes native/API/DOM checks; actual desktop/narrow qualification remains open
-after a desktop-control access failure. It adds no credit. Big Boss works alone
-until the user changes that instruction. One prepared continuity comparison is
-available under [studio_03](TODO/NS-6_studio_03.md); musical judgment stays open.
+after a desktop-control access failure. It adds no credit. On 2026-10-27 the user
+resumed delegation with Spike and Spiegel, both GPT-6.1 Terra. The saved prepared
+continuity comparison favors After for fewer broken/jittery notes; broader
+musical judgment and [studio_03](TODO/NS-6_studio_03.md) acceptance stay open.
+Native contribution accounting advances [vocabulary_01](TODO/NS-5_vocabulary_01.md)
+without completing it. The demonstrated intake-text pas2js gap is recorded in
+[portability_02](TODO/NS-6_portability_02.md), with no additional credit.
 Accepted [exact source-successor reconstruction](TODO/DONE/NS-5_continuity_03.md)
 is a zero-credit generation slice with before/after audio; listening remains open.
 Active [background recovery/long-source repair](TODO/NS-6_studio_21.md) adds no credit.
@@ -50,8 +54,8 @@ ecosystem adoption is unmeasured and is a required completion gate.
 | <a id="wav-02"></a><a id="wav-03"></a><a id="ns-3"></a>**NS-3 — Trustworthy musical learning from WAV** | 25% | 25 | Measurement foundation, Pascal observations/execution, qualified references/scoring, unknown/manual context, catalog and admitted-event bridge. | Independently accepted recorded context, notes, parts, harmony, groove and evolving sound: 19 tasks / 75 |
 | <a id="wfc-preferences"></a><a id="ns-4"></a>**NS-4 — Granular WFC layers and reusable blends** | 70% | 15 | Actual layers, typed controls, persistence, selective reuse, caller codecs/traits, bounded event/composition evidence and continuous native audio sessions. | Full recorded-provider workflow: 1 task / 30 |
 | <a id="wav-04"></a><a id="ns-5"></a>**NS-5 — User-defined styles that generate and blend usefully** | 14% | 20 | Bounded identity, maintained caller intake, raw corpus, journal, balance, listening packet and acoustic continuation; style-card AC1 only. | Grounded references, semantic scale, structure/continuity, useful one/many-recording and new-user styles, blends, source-continuity consumer integration: 16 tasks / 86 |
-| <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | 54% | 10 | Supported consumer contract, native checkpoint, exact-revision minimal core/caller-provider package, editor/producer queue, Studio setup/private corpora, bounded raw WFC jobs, effects, experimental capture/MIDI exploration, starting actions/navigation, verified large-library refresh, shared filter catalog, flexible bounded source workspace, delay/reverb with explicit tails, native streamed playback, shared microphone codec and guided operator teaching. | Studio iteration/conversion, phone HTTPS and metadata-only discovery, remaining bulk observability/primary analysis portability, full packages, actual outside use, physical LAN/full operator workflow, maintained support, ecosystem adoption and final handoff: 17 tasks / 46 |
-| **Total** | **52.45 weighted** | **100** | **54 accepted task records plus explicit baseline** | **54 open tasks / 47.55 weighted points** |
+| <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | 54% | 10 | Supported consumer contract, native checkpoint, exact-revision minimal core/caller-provider package, editor/producer queue, Studio setup/private corpora, bounded raw WFC jobs, effects, experimental capture/MIDI exploration, starting actions/navigation, verified large-library refresh, shared filter catalog, flexible bounded source workspace, delay/reverb with explicit tails, native streamed playback, shared microphone codec and guided operator teaching. | Studio iteration/conversion, phone HTTPS and metadata-only discovery, remaining bulk observability/primary analysis portability, full packages, actual outside use, physical LAN/full operator workflow, maintained support, ecosystem adoption and final handoff: 18 tasks / 46 |
+| **Total** | **52.45 weighted** | **100** | **54 accepted task records plus explicit baseline** | **55 open tasks / 47.55 weighted points** |
 
 Arithmetic:
 `5×1 + 25×.90 + 25×.25 + 15×.70 + 20×.14 + 10×.54 = 52.45`.

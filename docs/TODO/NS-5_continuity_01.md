@@ -43,6 +43,15 @@ Starting evidence: [WAV-STUDIES](../WAV-STUDIES.md) · [ACTIVITY](../ACTIVITY.md
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss: the operator submitted the prepared, level-matched
+  20-second comparison at revision1 and selected **After** for fewer broken or
+  jittery notes. This supplies a positive development preference for the exact
+  source-successor option. Keep the mechanism and retained poor baseline; no
+  wider tuning, multi-source/seed quality, sustained musical result or final
+  style acceptance follows from one comparison. Earlier stopped sequences and
+  this task's blockers/counters remain unchanged. The saved response and exact
+  source/model/output bindings remain in the private listening journal.
+
 - 2026-10-13, Big Boss: [exact source-successor admission](DONE/NS-5_continuity_03.md)
   is accepted as a zero-credit engineering slice grounded in the retained
   negative audition. It keeps the model/tokens/clock and fallback source counts

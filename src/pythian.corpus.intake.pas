@@ -90,6 +90,23 @@ type
     Sources: TCorpusIntakeSources;
     Ranges: TCorpusIntakeRanges;
   end;
+  { Declaration accounting, not admitted training. Weighted frames sum distinct
+    declarations, including unknowns and overlaps; they are not a weighted union.
+    Same source SHA, mapped original interval, song ID and multiplicity coalesce;
+    boundary evidence text does not add weight. Musical repeated-section identity
+    remains unknown. Training admission is not assessed. }
+  TCorpusRecordingContribution = record
+    RecordingId: UTF8String;
+    Partition: TCorpusPartition;
+    SampleRate: Integer;
+    UniqueFrames: Int64;
+    UnknownBoundaryFrames: Int64;
+    DeclaredRows: Integer;
+    DistinctDeclarations: Integer;
+    DeclaredWeightedFrames: Int64;
+  end;
+  TCorpusRecordingContributions = array of TCorpusRecordingContribution;
+
   TCorpusIntakeCoverage = record
     UniqueSeconds: array[TCorpusPartition] of Double;
     UnknownBoundarySeconds: array[TCorpusPartition] of Double;
@@ -103,11 +120,13 @@ type
   private
     FDefinition: TCorpusIntakeDefinition;
     procedure Validate;
+    function BuildContributions(const ACountWeights: Boolean): TCorpusRecordingContributions;
   public
     constructor Create(const ADefinition: TCorpusIntakeDefinition);
     function CopyDefinition: TCorpusIntakeDefinition;
     procedure OriginalRange(const ARange: Integer; out AOriginal: Integer;
       out AFirstFrame, AEndFrame: Int64);
+    function Contributions: TCorpusRecordingContributions;
     function Coverage: TCorpusIntakeCoverage;
     { Unknown song spans are excluded from training. Exact duplicate ranges
       coalesce once; derivative/partial overlap rejects. Multiplicity is the
@@ -363,15 +382,18 @@ begin
   end;
 end;
 
-function TCorpusIntakePlan.Coverage: TCorpusIntakeCoverage;
+function TCorpusIntakePlan.BuildContributions(
+  const ACountWeights: Boolean): TCorpusRecordingContributions;
 type
   TInterval = record
     Recording: UTF8String;
-    Rate: Integer;
+    SourceHash: String;
     Partition: TCorpusPartition;
+    Rate: Integer;
     FirstFrame: Int64;
     EndFrame: Int64;
-    Unknown: Boolean;
+    SongId: UTF8String;
+    Multiplicity: Integer;
   end;
 var
   LIntervals: array of TInterval;
@@ -379,25 +401,29 @@ var
   LIndex: Integer;
   LOther: Integer;
   LOriginal: Integer;
+  LEntry: Integer;
+  LPass: Integer;
   LFirst: Int64;
   LEnd: Int64;
   LCursor: Int64;
-  LSeconds: Double;
-  LFamily: TCorpusFamily;
-  LUnknownPass: Integer;
+  LFrames: Int64;
+  LDuplicate: Boolean;
 begin
-  Result := Default(TCorpusIntakeCoverage);
+  Result := nil;
   SetLength(LIntervals, Length(FDefinition.Ranges));
   for LIndex := 0 to High(LIntervals) do
   begin
     OriginalRange(LIndex, LOriginal, LFirst, LEnd);
     LIntervals[LIndex].Recording := FDefinition.Sources[LOriginal].RecordingId;
-    LIntervals[LIndex].Rate := FDefinition.Sources[LOriginal].SampleRate;
+    LIntervals[LIndex].SourceHash :=
+      FDefinition.Sources[FDefinition.Ranges[LIndex].Source].Sha256;
     LIntervals[LIndex].Partition :=
       FDefinition.Families[FDefinition.Sources[LOriginal].Family].Partition;
+    LIntervals[LIndex].Rate := FDefinition.Sources[LOriginal].SampleRate;
     LIntervals[LIndex].FirstFrame := LFirst;
     LIntervals[LIndex].EndFrame := LEnd;
-    LIntervals[LIndex].Unknown := FDefinition.Ranges[LIndex].SongId = '';
+    LIntervals[LIndex].SongId := FDefinition.Ranges[LIndex].SongId;
+    LIntervals[LIndex].Multiplicity := FDefinition.Ranges[LIndex].Multiplicity;
   end;
   for LIndex := 1 to High(LIntervals) do
   begin
@@ -413,17 +439,62 @@ begin
       Dec(LOther);
     end;
   end;
-  for LUnknownPass := 0 to 1 do
+  LEntry := -1;
+  for LIndex := 0 to High(LIntervals) do
   begin
+    if (LIndex = 0) or
+      (LIntervals[LIndex].Recording <> LIntervals[LIndex - 1].Recording) then
+    begin
+      Inc(LEntry);
+      SetLength(Result, LEntry + 1);
+      Result[LEntry].RecordingId := LIntervals[LIndex].Recording;
+      Result[LEntry].Partition := LIntervals[LIndex].Partition;
+      Result[LEntry].SampleRate := LIntervals[LIndex].Rate;
+    end;
+    Inc(Result[LEntry].DeclaredRows);
+    LDuplicate := False;
+    for LOther := 0 to LIndex - 1 do
+    begin
+      if (LIntervals[LOther].Recording = LIntervals[LIndex].Recording) and
+        (LIntervals[LOther].SourceHash = LIntervals[LIndex].SourceHash) and
+        (LIntervals[LOther].FirstFrame = LIntervals[LIndex].FirstFrame) and
+        (LIntervals[LOther].EndFrame = LIntervals[LIndex].EndFrame) and
+        (LIntervals[LOther].SongId = LIntervals[LIndex].SongId) and
+        (LIntervals[LOther].Multiplicity = LIntervals[LIndex].Multiplicity) then
+      begin
+        LDuplicate := True;
+        Break;
+      end;
+    end;
+    if not LDuplicate then
+    begin
+      Inc(Result[LEntry].DistinctDeclarations);
+      if not ACountWeights then
+      begin
+        Continue;
+      end;
+      LFrames := LIntervals[LIndex].EndFrame - LIntervals[LIndex].FirstFrame;
+      Require(LFrames <= MaximumIntakeFrame div LIntervals[LIndex].Multiplicity,
+        'Declared weighted frames exceed exact integer budget');
+      LFrames := LFrames * LIntervals[LIndex].Multiplicity;
+      Require(Result[LEntry].DeclaredWeightedFrames <= MaximumIntakeFrame - LFrames,
+        'Declared weighted frames exceed exact integer budget');
+      Inc(Result[LEntry].DeclaredWeightedFrames, LFrames);
+    end;
+  end;
+  for LPass := 0 to 1 do
+  begin
+    LEntry := -1;
     LCursor := 0;
     for LIndex := 0 to High(LIntervals) do
     begin
       if (LIndex = 0) or
         (LIntervals[LIndex].Recording <> LIntervals[LIndex - 1].Recording) then
       begin
+        Inc(LEntry);
         LCursor := 0;
       end;
-      if (LUnknownPass = 1) and not LIntervals[LIndex].Unknown then
+      if (LPass = 1) and (LIntervals[LIndex].SongId <> '') then
       begin
         Continue;
       end;
@@ -431,20 +502,43 @@ begin
       LEnd := LIntervals[LIndex].EndFrame;
       if LEnd > LFirst then
       begin
-        LSeconds := (LEnd - LFirst) / LIntervals[LIndex].Rate;
-        if LUnknownPass = 0 then
+        LFrames := LEnd - LFirst;
+        if LPass = 0 then
         begin
-          Result.UniqueSeconds[LIntervals[LIndex].Partition] :=
-            Result.UniqueSeconds[LIntervals[LIndex].Partition] + LSeconds;
+          Inc(Result[LEntry].UniqueFrames, LFrames);
         end
         else
         begin
-          Result.UnknownBoundarySeconds[LIntervals[LIndex].Partition] :=
-            Result.UnknownBoundarySeconds[LIntervals[LIndex].Partition] + LSeconds;
+          Inc(Result[LEntry].UnknownBoundaryFrames, LFrames);
         end;
       end;
       LCursor := Max(LCursor, LEnd);
     end;
+  end;
+end;
+
+function TCorpusIntakePlan.Contributions: TCorpusRecordingContributions;
+begin
+  Result := BuildContributions(True);
+end;
+
+function TCorpusIntakePlan.Coverage: TCorpusIntakeCoverage;
+var
+  LContributions: TCorpusRecordingContributions;
+  LIndex: Integer;
+  LOther: Integer;
+  LFamily: TCorpusFamily;
+begin
+  Result := Default(TCorpusIntakeCoverage);
+  LContributions := BuildContributions(False);
+  for LIndex := 0 to High(LContributions) do
+  begin
+    Result.UniqueSeconds[LContributions[LIndex].Partition] :=
+      Result.UniqueSeconds[LContributions[LIndex].Partition] +
+      LContributions[LIndex].UniqueFrames / LContributions[LIndex].SampleRate;
+    Result.UnknownBoundarySeconds[LContributions[LIndex].Partition] :=
+      Result.UnknownBoundarySeconds[LContributions[LIndex].Partition] +
+      LContributions[LIndex].UnknownBoundaryFrames / LContributions[LIndex].SampleRate;
   end;
   for LIndex := 0 to High(FDefinition.Families) do
   begin

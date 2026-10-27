@@ -8,7 +8,8 @@ Completion credit: 6 goal percentage points (1.20 overall points).
 Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
 Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
 
-Execution status (2026-09-29): **Dependency-blocked**.
+Execution status (2026-10-27): **Native contribution-accounting component
+delivered; representative musical vocabulary and comparisons remain blocked.**
 Next deliverable: Close representative vocabulary and coverage/diversity acceptance across verified recordings; bounded token-mass balance is already accepted separately.
 Closing evidence and stop condition: Frozen balanced/unbalanced comparison, unique/repeated contributions and original/normalized coordinates through actual WFC learning. Stop if lower average feature distance is the only benefit.
 Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
@@ -32,12 +33,37 @@ Starting evidence: [CORPUS-EVALUATION](../CORPUS-EVALUATION.md) · [ANALYSIS-WAV
 
 **Blockers**
 
+These block full musical selection/normalization/comparison acceptance; they do
+not prevent declaration-only accounting through the existing native intake API.
+
 - [NS-5_corpus_01.md](DONE/NS-5_corpus_01.md)
 - [NS-5_evaluation_04.md](NS-5_evaluation_04.md)
 - [NS-3_context_02.md](NS-3_context_02.md)
 - [NS-5_vocabulary_03.md](DONE/NS-5_vocabulary_03.md) — accepted
 
 **Dev Notes:**
+
+- 2026-10-27, Spiegel / Big Boss / Spike: AC1's native declaration-accounting
+  component now reports per-recording/split unique original coverage, unknown
+  boundary coverage, declared rows, distinct excerpts and explicit weighted
+  declaration mass. Exact duplicates do not amplify weight; original/derivative
+  overlap shares the primary union algorithm. Existing `Coverage` delegates to
+  that implementation and remains available on weighted-total overflow.
+  Training ranges, observations and actual WFC policy are unchanged. Repeated
+  musical sections remain explicitly unknown; declarations do not prove training
+  admission, representative selection or musical diversity.
+- Spiegel owns the primary core/fixture; Big Boss integrated the existing native
+  intake/learning audit and file-consumer fixture; Spike independently executed
+  both ready components. Checked Win64 results: 29 core and50 file/consumer
+  checks with zero leaks, plus14 independent boundary/consumer/replay checks.
+  Two independent actual WFC learning runs produce the same model. Evidence is
+  under the Pythian E-drive `spiegel-20261027`, `contributions-20261027` and
+  `spike-20261027` run directories. This closes the bounded native component,
+  not all AC1 obligations or the task; completion credit stays unchanged.
+- Actual pas2js compilation stops at the existing `UTF8String` intake type.
+  [portability_02](NS-6_portability_02.md) records the separate shared-text and
+  declaration portability repair. Native consumers can use this component now;
+  browser/WASM parity and grounded musical coverage are not inferred.
 
 On 2026-09-25, the admitted-pitch work-group contribution comparison was split
 to [NS-5_vocabulary_03](DONE/NS-5_vocabulary_03.md) for one NS-5 point. This task

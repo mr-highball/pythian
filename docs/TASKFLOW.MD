@@ -370,14 +370,17 @@ so no WFC branch or dependency change was made in this reassessment.
 
 ### Current team
 
-**Active operator override — 2026-10-26:** single-agent mode until the user
-explicitly changes it. Big Boss alone performs assessment, implementation and
-verification. Do not start or resume Ticket Guy, Neo, Salty Boi or other helpers.
-The briefly started read-only Neo assessment was interrupted before this record;
-Big Boss owns the remaining assessment. Do not claim independent helper QA for
-solo work. Required actual listening and independent-consumer evidence remains
-required. The retained team configuration and delegated batch rules below apply
-only after explicit authorization to resume delegation.
+**Active operator override — 2026-10-27:** the user resumed delegation and
+requested exactly two helpers, **Spike and Spiegel, both GPT-6.1 Terra**.
+Big Boss retains task selection, hardest assessment, architecture, integration
+and final judgment. The two helpers receive bounded disjoint assignments with
+explicit acceptance and stop conditions; neither may spawn more helpers.
+Ticket Guy, Neo and Salty Boi remain inactive. Preserve earlier solo evidence
+as solo evidence; new independent checks must actually be performed by another
+agent. All scientific stops, task history and required real acceptance persist.
+The previous 2026-10-26 single-agent instruction is superseded. Delegated
+validation/publication and two-failure repair principles below apply to the
+current named assignments; the older roster is retained history/configuration.
 
 The user's 2026-09-29 configuration and subsequent team/model revisions
 supersede all earlier assignments, junior permission and QA failure limits.
@@ -391,7 +394,8 @@ supersede all earlier assignments, junior permission and QA failure limits.
 
 These are requested role settings, not permission to misreport the host's
 actual model. Record an unavailable setting rather than silently substitute.
-Only these three helpers are authorized in addition to Big Boss. Big Boss retains
+Under that retained configuration, only those three helpers were authorized.
+The active operator override above controls current staffing. Big Boss retains
 chief oversight and the hardest assessment/final judgment. Neo receives
 complex/costly work or operational coordination
 by Big Boss's explicit judgment and may delegate within the existing team using

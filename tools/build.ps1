@@ -539,6 +539,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Corpus intake file checks compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.corpus.intake.files$executableSuffix") $corpusIntakeExample
     if ($LASTEXITCODE -ne 0) { throw 'Corpus intake admission/learner checks failed' }
+    & $compilerPath @adapterArgs 'tests/pythian.tests.corpus.contributions.qa.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Corpus contribution boundary compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.corpus.contributions.qa$executableSuffix") $corpusIntakeExample
+    if ($LASTEXITCODE -ne 0) { throw 'Corpus contribution boundary/consumer replay checks failed' }
     & $compilerPath @adapterArgs '-dWFC_MIDI_STREAM_CHECKS' 'tests/pythian.tests.midi.stream.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC MIDI stream parity compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.midi.stream$executableSuffix")

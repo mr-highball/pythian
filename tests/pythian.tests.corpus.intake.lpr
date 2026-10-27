@@ -74,6 +74,8 @@ var
   P, Q: TCorpusIntakePlan;
   C: TCorpusIntakeCoverage;
   R: TCorpusIntakeRanges;
+  Contributions: TCorpusRecordingContributions;
+  Again: TCorpusRecordingContributions;
   LRejected: Boolean;
   I: Integer;
 begin
@@ -116,18 +118,102 @@ begin
       C := P.Coverage; R := P.TrainingRanges;
       Check((Length(R) = 2) and (R[0].EndFrame = 6000) and (R[1].FirstFrame = 10000), 'Unknown span exclusion');
       Check(Abs(C.UnknownBoundarySeconds[cpTraining] - 0.5) < 1e-12, 'Unknown union');
+      Contributions := P.Contributions;
+      Check((Contributions[0].UniqueFrames = 16000) and
+        (Contributions[0].UnknownBoundaryFrames = 4000) and
+        (Contributions[0].DeclaredRows = 3) and
+        (Contributions[0].DeclaredWeightedFrames = 16000), 'Unknown contribution');
     finally P.Free; end;
     D.Ranges[1].FirstFrame := 5000; Reject(D, True);
     D := Fixture; SetLength(D.Ranges, 2);
     D.Ranges[0].EndFrame := 12000; D.Ranges[0].SongId := 'song'; D.Ranges[0].BoundaryEvidence := 'declared';
     D.Ranges[0].Multiplicity := 4; D.Ranges[1] := D.Ranges[0];
+    D.Ranges[1].BoundaryEvidence := 'another supporting source';
     P := TCorpusIntakePlan.Create(D);
     try
       R := P.TrainingRanges; C := P.Coverage;
       Check((Length(R) = 1) and (R[0].Multiplicity = 4), 'Exact duplicate must not amplify weight');
       Check(Abs(C.UniqueSeconds[cpTraining] - 1.5) < 1e-12, 'Duplicate duration union');
+      Contributions := P.Contributions;
+      Check((Length(Contributions) = 1) and
+        (Contributions[0].RecordingId = 'recording') and
+        (Contributions[0].UniqueFrames = 12000) and
+        (Contributions[0].DeclaredRows = 2) and
+        (Contributions[0].DistinctDeclarations = 1) and
+        (Contributions[0].DeclaredWeightedFrames = 48000), 'Duplicate weighted declaration');
+      Contributions[0].RecordingId := 'mutated';
+      Again := P.Contributions;
+      Check(Again[0].RecordingId = 'recording', 'Contribution result must be detached');
     finally P.Free; end;
     D.Ranges[1].FirstFrame := 1000; Reject(D, True);
+    D := Fixture;
+    D.Sources[0].SingleSongId := ''; D.Sources[0].SongEvidence := '';
+    SetLength(D.Sources, 2); D.Sources[1] := D.Sources[0];
+    D.Sources[1].Id := 'derivative'; D.Sources[1].Sha256 := StringOfChar('c', 64);
+    D.Sources[1].Parent := 0; D.Sources[1].ParentFirstFrame := 4000;
+    D.Sources[1].ParentEndFrame := 12000; D.Sources[1].FrameCount := 8000;
+    SetLength(D.Ranges, 2);
+    D.Ranges[0].EndFrame := 8000; D.Ranges[0].Multiplicity := 1;
+    D.Ranges[1].Source := 1; D.Ranges[1].EndFrame := 8000; D.Ranges[1].Multiplicity := 2;
+    P := TCorpusIntakePlan.Create(D);
+    try
+      Contributions := P.Contributions;
+      Check((Contributions[0].UniqueFrames = 12000) and
+        (Contributions[0].UnknownBoundaryFrames = 12000) and
+        (Contributions[0].DeclaredWeightedFrames = 24000), 'Mapped derivative union');
+    finally
+      P.Free;
+    end;
+    E := D; E.Ranges := Copy(D.Ranges); E.Ranges[0] := D.Ranges[1]; E.Ranges[1] := D.Ranges[0];
+    P := TCorpusIntakePlan.Create(E);
+    try
+      Again := P.Contributions;
+      Check((Again[0].UniqueFrames = Contributions[0].UniqueFrames) and
+        (Again[0].DeclaredWeightedFrames = Contributions[0].DeclaredWeightedFrames), 'Order replay');
+    finally
+      P.Free;
+    end;
+    D := Fixture; SetLength(D.Families, 2); SetLength(D.Sources, 2);
+    D.Families[1] := D.Families[0]; D.Families[1].Id := 'family-2';
+    D.Families[1].WorkId := 'work-2'; D.Families[1].Partition := cpDevelopment;
+    D.Sources[1] := D.Sources[0]; D.Sources[1].Id := 'second';
+    D.Sources[1].RecordingId := 'another'; D.Sources[1].Family := 1;
+    D.Sources[1].Sha256 := StringOfChar('c', 64); D.Sources[1].SingleSongId := 'song-2';
+    SetLength(D.Ranges, 2); D.Ranges[0].EndFrame := 8000;
+    D.Ranges[0].SongId := 'song'; D.Ranges[0].BoundaryEvidence := 'declared';
+    D.Ranges[0].Multiplicity := 1; D.Ranges[1] := D.Ranges[0];
+    D.Ranges[1].Source := 1; D.Ranges[1].SongId := 'song-2';
+    P := TCorpusIntakePlan.Create(D);
+    try
+      Contributions := P.Contributions;
+      Check((Length(Contributions) = 2) and (Contributions[0].RecordingId = 'another') and
+        (Contributions[0].Partition = cpDevelopment) and
+        (Contributions[1].RecordingId = 'recording') and
+        (Contributions[1].Partition = cpTraining), 'Recording and partition order');
+    finally
+      P.Free;
+    end;
+    D := Fixture; D.Sources[0].FrameCount := MaximumIntakeFrame;
+    D.Sources[0].ParentEndFrame := MaximumIntakeFrame;
+    SetLength(D.Ranges, 1); D.Ranges[0].EndFrame := MaximumIntakeFrame;
+    D.Ranges[0].SongId := 'song'; D.Ranges[0].BoundaryEvidence := 'declared';
+    D.Ranges[0].Multiplicity := 2;
+    P := TCorpusIntakePlan.Create(D);
+    try
+      C := P.Coverage;
+      LRejected := False;
+      try
+        Contributions := P.Contributions;
+      except
+        on E: EAudio do
+        begin
+          LRejected := True;
+        end;
+      end;
+      Check(LRejected and (C.UniqueSeconds[cpTraining] > 0), 'Weight overflow and coverage preservation');
+    finally
+      P.Free;
+    end;
     D := Fixture; P := TCorpusIntakePlan.Create(D);
     D.Families[0].PreviouslyUsed := True; D.Families[0].PriorExposure := [cpDevelopment];
     Q := TCorpusIntakePlan.Create(D);

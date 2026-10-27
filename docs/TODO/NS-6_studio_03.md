@@ -76,6 +76,13 @@ open; engineering checks earn no musical verdict or completion credit.
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss: the operator completed the prepared review and its
+  durable revision1 reads back with choice After. This demonstrates a useful
+  answer through the assigned one-question bridge; it does not establish every
+  desktop/narrow/control or full musical-iteration criterion. Spike independently
+  inspected the native/queue implementation and prior evidence, without claiming
+  a new execution or browser pass. No operator response was authored by an agent.
+
 - 2026-10-26, Big Boss: prepared experiments now use the existing immutable
   listening queue and answer journals. One short question, Original/Before/After
   tabs, Before/After/Same/Neither/Unsure choices, optional timestamp note and
