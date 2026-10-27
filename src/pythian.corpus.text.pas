@@ -47,179 +47,30 @@ function CompareCorpusText(const ALeft, ARight: TCorpusText): Integer;
 implementation
 
 uses
-  pythian.audio;
-
-procedure InvalidText;
-begin
-  raise EAudio.Create('Corpus text must be bounded UTF-8 without NUL bytes');
-end;
-
-function NextScalar(const AText: TCorpusText; var AIndex: Integer;
-  out AByteCount: Integer): Cardinal;
-var
-  LFirst: Cardinal;
-  LNext: Cardinal;
-  LIndex: Integer;
-  LMinimum: Cardinal;
-begin
-  LFirst := Ord(AText[AIndex]);
-  Inc(AIndex);
-  {$ifdef pas2js}
-  if (LFirst >= $D800) and (LFirst <= $DBFF) then
-  begin
-    if AIndex > Length(AText) then
-    begin
-      InvalidText;
-    end;
-    LNext := Ord(AText[AIndex]);
-    if (LNext < $DC00) or (LNext > $DFFF) then
-    begin
-      InvalidText;
-    end;
-    Inc(AIndex);
-    Result := $10000 + (LFirst - $D800) * $400 + LNext - $DC00;
-  end
-  else
-  begin
-    if (LFirst >= $DC00) and (LFirst <= $DFFF) then
-    begin
-      InvalidText;
-    end;
-    Result := LFirst;
-  end;
-  if Result < $80 then
-  begin
-    AByteCount := 1;
-  end
-  else if Result < $800 then
-  begin
-    AByteCount := 2;
-  end
-  else if Result < $10000 then
-  begin
-    AByteCount := 3;
-  end
-  else
-  begin
-    AByteCount := 4;
-  end;
-  {$else}
-  if LFirst < $80 then
-  begin
-    Result := LFirst;
-    AByteCount := 1;
-  end
-  else
-  begin
-    if (LFirst >= $C2) and (LFirst <= $DF) then
-    begin
-      AByteCount := 2;
-      LMinimum := $80;
-      Result := LFirst and $1F;
-    end
-    else if (LFirst >= $E0) and (LFirst <= $EF) then
-    begin
-      AByteCount := 3;
-      LMinimum := $800;
-      Result := LFirst and $0F;
-    end
-    else if (LFirst >= $F0) and (LFirst <= $F4) then
-    begin
-      AByteCount := 4;
-      LMinimum := $10000;
-      Result := LFirst and $07;
-    end
-    else
-    begin
-      InvalidText;
-      Result := 0;
-      AByteCount := 0;
-      LMinimum := 0;
-    end;
-    for LIndex := 2 to AByteCount do
-    begin
-      if AIndex > Length(AText) then
-      begin
-        InvalidText;
-      end;
-      LNext := Ord(AText[AIndex]);
-      Inc(AIndex);
-      if (LNext < $80) or (LNext > $BF) then
-      begin
-        InvalidText;
-      end;
-      Result := Result * 64 + (LNext and $3F);
-    end;
-    if (Result < LMinimum) or (Result > $10FFFF) or
-      ((Result >= $D800) and (Result <= $DFFF)) then
-    begin
-      InvalidText;
-    end;
-  end;
-  {$endif}
-  if Result = 0 then
-  begin
-    InvalidText;
-  end;
-end;
+  pythian.audio,
+  pythian.text;
 
 procedure ValidateCorpusText(const AText: TCorpusText);
-var
-  LIndex: Integer;
-  LBytes: Integer;
-  LCount: Integer;
 begin
-  LIndex := 1;
-  LBytes := 0;
-  while LIndex <= Length(AText) do
-  begin
-    NextScalar(AText, LIndex, LCount);
-    Inc(LBytes, LCount);
-    if LBytes > MaximumCorpusTextBytes then
+  try
+    ValidateScalarText(AText, MaximumCorpusTextBytes, True, False);
+  except
+    on ETextValidation do
     begin
-      InvalidText;
+      raise EAudio.Create('Corpus text must be bounded UTF-8 without NUL bytes');
     end;
   end;
 end;
 
 function CompareCorpusText(const ALeft, ARight: TCorpusText): Integer;
-var
-  LLeftIndex: Integer;
-  LRightIndex: Integer;
-  LCount: Integer;
-  LLeft: Cardinal;
-  LRight: Cardinal;
 begin
-  ValidateCorpusText(ALeft);
-  ValidateCorpusText(ARight);
-  LLeftIndex := 1;
-  LRightIndex := 1;
-  while (LLeftIndex <= Length(ALeft)) and (LRightIndex <= Length(ARight)) do
-  begin
-    LLeft := NextScalar(ALeft, LLeftIndex, LCount);
-    LRight := NextScalar(ARight, LRightIndex, LCount);
-    if LLeft < LRight then
+  try
+    Result := CompareScalarText(ALeft, ARight, MaximumCorpusTextBytes, False);
+  except
+    on ETextValidation do
     begin
-      Result := -1;
-      Exit;
+      raise EAudio.Create('Corpus text must be bounded UTF-8 without NUL bytes');
     end;
-    if LLeft > LRight then
-    begin
-      Result := 1;
-      Exit;
-    end;
-  end;
-  if LLeftIndex <= Length(ALeft) then
-  begin
-    Result := 1;
-  end
-  else if LRightIndex <= Length(ARight) then
-  begin
-    Result := -1;
-  end
-  else
-  begin
-    Result := 0;
   end;
 end;
 

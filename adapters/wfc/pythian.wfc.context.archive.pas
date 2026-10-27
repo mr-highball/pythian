@@ -88,6 +88,7 @@ uses
   SysUtils,
   pythian.corpus,
   pythian.hash,
+  pythian.binary,
   pythian.tonal,
   wfc_sequence_learn,
   wfc_sequence_text;
@@ -236,32 +237,22 @@ begin
 end;
 
 procedure TContextCursor.PutNumber(const AValue: Integer);
-var
-  LIndex: Integer;
 begin
   Need(4);
   if AValue < 0 then
   begin
     raise EAudio.Create('Context archive integer must be nonnegative');
   end;
-  for LIndex := 0 to 3 do
-  begin
-    Bytes[Offset + LIndex] := (Cardinal(AValue) shr (8 * LIndex)) and $FF;
-  end;
+  WriteUInt32LE(Bytes, Offset, AValue);
   Inc(Offset, 4);
 end;
 
 function TContextCursor.GetNumber: Integer;
 var
   LBits: Cardinal;
-  LIndex: Integer;
 begin
   Need(4);
-  LBits := 0;
-  for LIndex := 0 to 3 do
-  begin
-    LBits := LBits or (Cardinal(Bytes[Offset + LIndex]) shl (8 * LIndex));
-  end;
+  LBits := ReadUInt32LE(Bytes, Offset);
   Inc(Offset, 4);
   if LBits > High(Integer) then
   begin

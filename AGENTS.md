@@ -24,18 +24,16 @@ Read [the project profile](PROJECT.md) and the relevant standards in
   its separate local repository and a new branch, inform the user, and follow
   the [cross-repository procedure](docs/TASKFLOW.MD#cross-repository-wfc-gaps).
 - Follow [stewardship](vendor/athena/docs/agent-stewardship.md) and the current
-  operator override: **from 2026-10-27, Big Boss plus Spike and Spiegel, both
-  GPT-6.1 Terra**. The user explicitly resumed delegation with these two named
-  helpers. Give bounded assignments, exclusive file ownership, acceptance and
-  stop conditions. No further helpers; the earlier team below remains inactive.
-  Big Boss retains chief assessment, integration and final judgment. Distinguish
-  independently performed checks from earlier solo evidence.
+  operator override: **single-agent mode, Big Boss only, from 2026-10-26 until
+  the user explicitly changes it**. Do not start, resume or delegate to helpers.
+  Big Boss owns implementation and verification; do not describe solo checks
+  as independent review. The team below is retained configuration for a later
+  explicit return to delegation, not current authorization to use helpers.
 - Retained team configuration:
   [authorized team](docs/TASKFLOW.MD#delegated-validation-and-publication):
   Big Boss (main, GPT-6 Sol Ultra), Ticket Guy (GPT-6.1 Sol Medium), Ticket Guy Neo
   (GPT-6.1 Sol Ultra, complex/costly work and coordination Big Boss assigns), and Salty Boi
-  (GPT-6.1 Sol Low) final QA. This older roster is inactive under the current
-  operator override. When reauthorized, use exclusive file
+  (GPT-6.1 Sol Low) final QA. No helper beyond these three; use exclusive file
   ownership and transfer either Ticket Guy's task to Big Boss after two failed
   implementation QA submissions. Neo does not bypass that transfer rule.
   Big Boss retains chief oversight and the hardest assessment/final judgment;

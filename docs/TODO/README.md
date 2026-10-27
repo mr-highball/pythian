@@ -314,7 +314,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | --- | ---: | ---: | --- |
 | [NS-6_studio_21](NS-6_studio_21.md) — Background recovery and long-source learning | 0 | 0.00 | Deployed; actual browser acceptance remains |
 | [NS-6_studio_22](NS-6_studio_22.md) — Original/generated listening comparison | 0 | 0.00 | Deployed for review; native/DOM checks pass, actual browser acceptance remains |
-| [NS-6_metadata_01](NS-6_metadata_01.md) — Shared provider/context metadata primitives | 0 | 0.00 | Selected reuse prerequisite for provider observability |
+| [NS-6_metadata_01](NS-6_metadata_01.md) — Shared provider/context metadata primitives | 0 | 0.00 | Local native/pas2js consumer and prior-byte qualification passed; published consumers pending |
 | [NS-6_observability_04](NS-6_observability_04.md) — Remaining provider/batch operations and operator monitoring | 0 | 0.00 | Provider-contract/registry internals, batch evaluation and inference reporting remain |
 | [NS-6_adoption_01](NS-6_adoption_01.md) — Establish independent ecosystem adoption evidence | 15 | 1.50 | Supported releases + independent ecosystem evidence |
 | [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 1 | 0.10 | Solo usability resumed; complete physical matrix remains open |

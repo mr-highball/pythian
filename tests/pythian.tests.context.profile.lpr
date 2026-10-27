@@ -167,6 +167,7 @@ var
   LCProvider: String;
   LRejected: Boolean;
   LDepth: Integer;
+  LArtifact: TFileStream;
 begin
   LA := nil;
   LB := nil;
@@ -193,6 +194,15 @@ begin
     Check((LSecond.Depth = 3) and (LSecond.NodeCount = 5) and
       (LSecond.EvidenceCells = 24), 'Complete two-stage ancestry counts');
     LBytes := EncodeContextProfile(LSecond);
+    if ParamCount = 1 then
+    begin
+      LArtifact := TFileStream.Create(ParamStr(1), fmCreate);
+      try
+        LArtifact.WriteBuffer(LBytes[0], Length(LBytes));
+      finally
+        LArtifact.Free;
+      end;
+    end;
     FreeAndNil(LA);
     FreeAndNil(LB);
     FreeAndNil(LC);

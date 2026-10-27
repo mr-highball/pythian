@@ -16,15 +16,14 @@ Phanes, then expanded into a fundamental synthesis and audio learning toolkit.
 | Build | `./tools/build.ps1` (checked native fixtures and command-line tools) |
 | CI | [Native workflow](.github/workflows/native.yml), Ubuntu 24.04 / FPC 3.2.2; [first remote run passed](https://github.com/mr-highball/pythian/actions/runs/35557200115) at `0ecfe34` |
 | Outputs | `build/<compiler>-<cpu>-<os>/` |
-| Work profile | Big Boss retains chief assessment, architecture, integration and final judgment; Spike and Spiegel use GPT-6.1 Terra for bounded disjoint assignments; [current roles](docs/TASKFLOW.MD#delegated-validation-and-publication), no further helper |
+| Work profile | Single-agent Big Boss implementation and verification; retained team settings are inactive until explicit user authorization; [current roles](docs/TASKFLOW.MD#delegated-validation-and-publication) |
 | Publishing | Development snapshots on `hello-pythian` for ongoing review |
 | Branch | `hello-pythian` |
 
-Current operator mode (2026-10-27): **Big Boss plus Spike and Spiegel, both
-GPT-6.1 Terra**, explicitly authorized by the user after the saved listening
-review. Big Boss selects bounded disjoint assignments and retains chief
-assessment/integration/final judgment. The older team/model descriptions above
-remain inactive; the new helpers cannot start further helpers.
+Current operator mode: **single-agent Big Boss only**, following the user's
+supplied AGENTS override from 2026-10-26 until explicitly changed. Big Boss owns
+implementation, verification and final judgment. Earlier delegation descriptions
+are retained history and do not authorize helpers or independent-review claims.
 New local build, test, cache and run artifacts use the dedicated
 `E:/CodexWork/pythian/` workspace described in [AGENTS.md](AGENTS.md).
 The portable repository/CI build default does not establish local redirection;

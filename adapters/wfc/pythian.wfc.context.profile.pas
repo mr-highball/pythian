@@ -93,6 +93,7 @@ uses
   Math,
   SysUtils,
   pythian.hash,
+  pythian.binary,
   pythian.music.context;
 
 const
@@ -120,13 +121,8 @@ begin
 end;
 
 procedure PutNumber(var ABytes: TAudioBytes; var AOffset: Integer; const AValue: Integer);
-var
-  LIndex: Integer;
 begin
-  for LIndex := 0 to 3 do
-  begin
-    ABytes[AOffset + LIndex] := (Cardinal(AValue) shr (LIndex * 8)) and $FF;
-  end;
+  WriteUInt32LE(ABytes, AOffset, Cardinal(AValue));
   Inc(AOffset, 4);
 end;
 
@@ -134,17 +130,12 @@ function GetNumber(const ABytes: TAudioBytes; var AOffset: Integer;
   const ALimit: Integer): Integer;
 var
   LValue: Cardinal;
-  LIndex: Integer;
 begin
   if (AOffset < 0) or (AOffset > ALimit - 4) then
   begin
     raise EAudio.Create('Context profile field exceeds payload');
   end;
-  LValue := 0;
-  for LIndex := 0 to 3 do
-  begin
-    LValue := LValue or (Cardinal(ABytes[AOffset + LIndex]) shl (LIndex * 8));
-  end;
+  LValue := ReadUInt32LE(ABytes, AOffset);
   Inc(AOffset, 4);
   if LValue > High(Integer) then
   begin

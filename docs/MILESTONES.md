@@ -13,8 +13,8 @@ The operator adopted the [musical-outcome goal and prerequisite checkpoint](WORK
 The goal replacement changes no acceptance, credit or stopped-batch counter.
 Implemented [source-continuity Studio integration](TODO/NS-5_continuity_04.md)
 passes native/API/DOM checks; actual desktop/narrow qualification remains open
-after a desktop-control access failure. It adds no credit. On 2026-10-27 the user
-resumed delegation with Spike and Spiegel, both GPT-6.1 Terra. The saved prepared
+after a desktop-control access failure. It adds no credit. The user's supplied
+AGENTS override currently requires solo Big Boss work. The saved prepared
 continuity comparison favors After for fewer broken/jittery notes; broader
 musical judgment and [studio_03](TODO/NS-6_studio_03.md) acceptance stay open.
 The [long-playback connection](TODO/NS-5_continuity_05.md) now carries the same

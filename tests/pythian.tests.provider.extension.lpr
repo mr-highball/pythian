@@ -215,6 +215,72 @@ begin
   Check(LRejected, AReason);
 end;
 
+procedure TestScalarTextPolicies;
+var
+  LBinding: TProviderCodecBinding;
+  LCodec: TFixtureCodec;
+  LRegistry: TProviderCodecRegistry;
+  LAdmission: TProviderCodecAdmission;
+  LDeclaration: TProviderCodecDeclaration;
+  LToken: String;
+  LCalls: Integer;
+  procedure RejectBindingText(const AReason: String);
+  var
+    LRejected: Boolean;
+  begin
+    LRejected := False;
+    try
+      ValidateProviderCodecBindingData(LBinding);
+    except
+      on EAudio do
+      begin
+        LRejected := True;
+      end;
+    end;
+    Check(LRejected, AReason);
+  end;
+begin
+  LBinding := Binding;
+  LToken := Text([$F0, $9F, $98, $80]);
+  LBinding.Units := StringOfChar('a', MaximumProviderCodecIdentityBytes - 4) + LToken;
+  LBinding.UnknownMeaning := #0;
+  ValidateProviderCodecBindingData(LBinding);
+  Check((Length(LBinding.Units) = MaximumProviderCodecIdentityBytes) and
+    (LBinding.UnknownMeaning = #0), 'Codec text retains UTF-8 byte boundary and explicit NUL policy');
+  LBinding.Units := LBinding.Units + 'a';
+  RejectBindingText('Codec binding rejects one byte beyond its declared boundary');
+  LBinding.Units := '';
+  RejectBindingText('Codec binding rejects empty required text');
+  LBinding.Units := Text([$ED, $A0, $80]);
+  RejectBindingText('Codec binding rejects encoded surrogate scalar');
+  LCodec := TFixtureCodec.Create;
+  LRegistry := nil;
+  LAdmission := nil;
+  try
+    LCodec.Echo := True;
+    LDeclaration := Declaration;
+    LDeclaration.MaximumPayloadBytes := 4;
+    LDeclaration.MaximumTokenBytes := 4;
+    LRegistry := Registry(LCodec, LDeclaration);
+    LAdmission := TProviderCodecAdmission.Create(LRegistry);
+    LBinding := Binding;
+    LToken := #0 + Text([$E2, $82, $AC]);
+    Check(Text(LAdmission.DecodeChoice(LBinding, LToken).Bytes) = LToken,
+      'Actual codec callback round trip retains NUL and multibyte scalar bytes');
+    LCalls := LCodec.DecodeCalls;
+    RejectDecode(LAdmission, LBinding, '', 'Empty codec token rejects');
+    RejectDecode(LAdmission, LBinding, LToken + 'a', 'Multibyte codec token byte boundary rejects');
+    RejectDecode(LAdmission, LBinding, Text([$F4, $90, $80, $80]),
+      'Out-of-range codec token scalar rejects');
+    RejectDecode(LAdmission, LBinding, Text([$E2, $82]), 'Truncated codec token rejects');
+    Check(LCodec.DecodeCalls = LCalls, 'Invalid token rejection precedes caller callback');
+  finally
+    LAdmission.Free;
+    LRegistry.Free;
+    LCodec.Free;
+  end;
+end;
+
 procedure TestCodecBoundary;
 var
   LCodec: TFixtureCodec;
@@ -1177,6 +1243,7 @@ end;
 
 begin
   try
+    TestScalarTextPolicies;
     TestCodecBoundary;
     TestRegistryBound;
     TestAggregateBudgets;

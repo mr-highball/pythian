@@ -9,6 +9,15 @@ fitting still uses `pythian.beat`; phase/context conversion uses the existing
 exact PPQ clock. The original beat report is byte-identical on the controlled
 before/after comparison. This is reuse of owned code, not a second estimator.
 
+`pythian.text` extracts the existing owned corpus scalar traversal into the
+primary portable library, with explicit UTF-8 byte, empty and NUL policies.
+The corpus facade and caller-provider codec use it; no host conversion,
+normalization or external Unicode implementation is introduced. Context
+archive/profile scalar fields reuse the existing primary `pythian.binary`.
+Superseded private algorithms are removed, with their original MIT attribution
+retained. Native/pas2js and prior-consumer evidence belongs to
+[metadata reuse](TODO/NS-6_metadata_01.md).
+
 Extensible WAV decoding is new native Pythian code within the existing bounded
 reader. Its subtype identifiers, valid-bit alignment and speaker-mask meanings
 follow Microsoft's

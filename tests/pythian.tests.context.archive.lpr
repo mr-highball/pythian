@@ -27,6 +27,7 @@ program pythian_tests_context_archive;
 {$H+}
 
 uses
+  Classes,
   SysUtils,
   pythian.audio,
   pythian.hash,
@@ -100,6 +101,7 @@ var
   LKeyText: UTF8String;
   LTempoText: UTF8String;
   LFirstCell: Integer;
+  LArtifact: TFileStream;
   I: Integer;
   J: Integer;
 begin
@@ -139,6 +141,15 @@ begin
     LKeyText := LBundle.ModelText(cdKey);
     LTempoText := LBundle.ModelText(cdTempo);
     LBytes := EncodeContextLearning(LBundle);
+    if ParamCount = 1 then
+    begin
+      LArtifact := TFileStream.Create(ParamStr(1), fmCreate);
+      try
+        LArtifact.WriteBuffer(LBytes[0], Length(LBytes));
+      finally
+        LArtifact.Free;
+      end;
+    end;
     FreeAndNil(LBundle);
     LLoaded := DecodeContextLearning(LBytes);
     LRoundTrip := EncodeContextLearning(LLoaded);

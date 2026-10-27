@@ -309,7 +309,7 @@ without awarding acceptance.
 Studio setup acceptance adds 4 NS-6 / 0.40 overall; private corpora, bounded raw
 WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall; starting
 actions and verified large-library refresh add 2 NS-6 / 0.20 overall. The catalog
-contains **53 open / 68 accepted tasks**, NS-6 **54/46**, overall **52.45/47.55** after
+contains **53 open / 70 accepted tasks**, NS-6 **54/46**, overall **52.45/47.55** after
 shared filter-catalog, source-workspace, delay/reverb-tail, native-session,
 streamed-playback, microphone-codec and guided-help acceptance, plus later
 zero-credit shared-consumer, observability and response/publication repairs. All
@@ -371,17 +371,15 @@ so no WFC branch or dependency change was made in this reassessment.
 
 ### Current team
 
-**Active operator override — 2026-10-27:** the user resumed delegation and
-requested exactly two helpers, **Spike and Spiegel, both GPT-6.1 Terra**.
-Big Boss retains task selection, hardest assessment, architecture, integration
-and final judgment. The two helpers receive bounded disjoint assignments with
-explicit acceptance and stop conditions; neither may spawn more helpers.
-Ticket Guy, Neo and Salty Boi remain inactive. Preserve earlier solo evidence
-as solo evidence; new independent checks must actually be performed by another
-agent. All scientific stops, task history and required real acceptance persist.
-The previous 2026-10-26 single-agent instruction is superseded. Delegated
-validation/publication and two-failure repair principles below apply to the
-current named assignments; the older roster is retained history/configuration.
+**Active operator override:** the user's supplied AGENTS instructions require
+**single-agent Big Boss only from 2026-10-26 until explicitly changed**. Do not
+start, resume or delegate to helpers. Big Boss retains task selection, hardest
+assessment, architecture, implementation, verification and final judgment.
+Earlier Spike/Spiegel and other team descriptions are retained history/settings,
+not authorization. Preserve solo evidence as solo evidence. Scientific stops,
+task history and required real acceptance persist; CI is not independent review.
+The delegated validation/publication and two-failure repair rules below apply
+only after an explicit return to delegation.
 
 The user's 2026-09-29 configuration and subsequent team/model revisions
 supersede all earlier assignments, junior permission and QA failure limits.

@@ -141,7 +141,8 @@ function BorrowProviderCodecAdmission(const ARegistry: TProviderCodecRegistry;
 implementation
 
 uses
-  SysUtils;
+  SysUtils,
+  pythian.text;
 
 function SameBytes(const ALeft, ARight: TAudioBytes): Boolean;
 var
@@ -163,67 +164,8 @@ end;
 
 procedure CheckText(const AText: String; const AMaximum: Integer;
   const AAllowEmpty: Boolean);
-var
-  LIndex: Integer;
-  LCount: Integer;
-  LOffset: Integer;
-  LByte: Integer;
-  LCode: Cardinal;
 begin
-  if (Length(AText) > AMaximum) or ((AText = '') and not AAllowEmpty) then
-  begin
-    raise EAudio.Create('Caller codec text exceeds its declared byte boundary');
-  end;
-  LIndex := 1;
-  while LIndex <= Length(AText) do
-  begin
-    LByte := Ord(AText[LIndex]);
-    if LByte < $80 then
-    begin
-      Inc(LIndex);
-      Continue;
-    end;
-    if (LByte >= $C2) and (LByte <= $DF) then
-    begin
-      LCount := 1;
-      LCode := LByte and $1F;
-    end
-    else if (LByte >= $E0) and (LByte <= $EF) then
-    begin
-      LCount := 2;
-      LCode := LByte and $0F;
-    end
-    else if (LByte >= $F0) and (LByte <= $F4) then
-    begin
-      LCount := 3;
-      LCode := LByte and $07;
-    end
-    else
-    begin
-      raise EAudio.Create('Caller codec text is not canonical UTF-8');
-    end;
-    if Length(AText) - LIndex < LCount then
-    begin
-      raise EAudio.Create('Truncated caller codec UTF-8');
-    end;
-    for LOffset := 1 to LCount do
-    begin
-      LByte := Ord(AText[LIndex + LOffset]);
-      if (LByte < $80) or (LByte > $BF) then
-      begin
-        raise EAudio.Create('Invalid caller codec UTF-8 continuation');
-      end;
-      LCode := (LCode shl 6) or (LByte and $3F);
-    end;
-    if ((LCount = 1) and (LCode < $80)) or
-      ((LCount = 2) and (LCode < $800)) or
-      ((LCount = 3) and (LCode < $10000)) or
-      ((LCode >= $D800) and (LCode <= $DFFF)) or (LCode > $10FFFF) then
-    begin
-      raise EAudio.Create('Noncanonical caller codec UTF-8 code point');
-    end;
-    Inc(LIndex, LCount + 1);
-  end;
+  ValidateScalarText(AText, AMaximum, AAllowEmpty, True);
 end;
 
 procedure CheckIdentity(const AIdentity: String);

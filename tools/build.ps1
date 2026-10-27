@@ -256,6 +256,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Corpus compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.corpus$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Corpus checks failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.text.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Scalar text compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.text$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Scalar text checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.corpus.text.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Corpus text compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.corpus.text$executableSuffix")

@@ -12,6 +12,45 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Metadata reuse locally qualified; published acceptance pending - 2026-10-27
+
+The intervening GitHub-status turn confirmed the repaired Actions history but
+closed no new goal criterion. Revalidate the retained draft and continue the
+same selected metadata prerequisite; no delivery/scientific counter reset.
+Big Boss alone follows the user's supplied single-agent AGENTS override. Stale
+active staffing text in AGENTS/PROJECT/TASKFLOW/MILESTONES is corrected; older
+dated delegation descriptions remain historical, not current authority.
+
+[metadata_01](TODO/NS-6_metadata_01.md) now shares the primary scalar traversal
+between corpus/provider contracts and primary UInt32 fields in context codecs.
+Delete the superseded algorithms; keep the caller's distinct empty/NUL/byte
+policies and native raw-byte identity. Checked native primary fixtures each pass
+73 checks, actual pas2js65; actual native provider231, corpus/context consumers
+and the maintained caller run with zero leaks. All **12 prior artifacts per
+native target** match exact separately compiled `7da8569` source blobs, including
+context archives, caller-derived/reblended styles and rendered audio. Actual
+pas2js corpus text/intake/adversarial consumers pass. Register the new primary
+fixture in maintained native/portable orchestration. Evidence stays in the
+dedicated E-drive metadata-reuse roots and `runs/.../VALIDATION.json`.
+
+The corpus regression exposed a changed facade error message, now repaired
+without restoring duplicate traversal. Preserve its failed log. The evidence
+wrapper's slash-style comparison also stopped after valid prior Win32 checks;
+normalize only that proof and reuse completed results. Every local process is
+terminal. Publish this batch and require clean Ubuntu integration plus both
+extracted consumers before acceptance or task movement. Counts remain **53 open /
+70 DONE, 123 total**, NS-6 15 open; percentages **100/90/25/70/14/54**, overall
+**52.45/47.55**. Delivery nonclosing count enters at 0; pending qualification is
+not closure. No musical credit or inference change. Provider/context/batch/
+operator observability remains with task04 after its reuse prerequisite closes.
+
+The retained 4:16 repetition review remains waiting at revision0 in a fresh
+read-only catalog report. Preserve the existing request and earlier 20-second
+After preference; no reissue, response fabrication or silent retraining. The
+grounded-context/vocabulary/continuity scientific gates and stopped families
+remain intact. No service, browser/audio process or companion checkout change.
+The full goal stays active.
+
 ## Source measurement accepted; metadata reuse in progress - 2026-10-27
 
 Authenticated inspection now confirms Ubuntu
