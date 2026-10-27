@@ -37,6 +37,13 @@ const
   IncrementalTimingVersion = 1;
   MaximumTempoChanges = 65536;
   MaximumTempoMicroseconds = $FFFFFF;
+  { Native clocks retain Int64; pas2js counters must be exactly representable
+    as Number integers. Intermediate tick products are divided exactly below. }
+  {$ifdef pas2js}
+  MaximumTimingInteger = Int64(9007199254740991);
+  {$else}
+  MaximumTimingInteger = High(Int64);
+  {$endif}
 
 type
   TTempoChange = record
@@ -119,6 +126,7 @@ type
   end;
 
 function MakeTempoChange(const ATick, AMicrosecondsPerQuarter: Integer): TTempoChange;
+procedure RequireExactTimingCounter(const AValue: Int64; const AName: String);
 function MusicTimeToFrame(const ATime: TMusicTime; const ASampleRate: Integer;
   const ARounding: TFrameRounding = frFloor): Int64;
 { Floating seconds use a binary64 sample product before explicit floor/ceiling.
@@ -136,6 +144,66 @@ uses
 const
   MicrosecondsPerSecond = 1000000;
 
+procedure RequireExactTimingCounter(const AValue: Int64; const AName: String);
+begin
+  {$ifdef pas2js}
+  RequireFinite(AValue, AName);
+  if (AValue > MaximumTimingInteger) or (Frac(AValue) <> 0) then
+  begin
+    raise EAudio.Create(AName + ' exceeds the target exact-integer range');
+  end;
+  {$endif}
+  if AValue < 0 then
+  begin
+    raise EAudio.Create(AName + ' must be nonnegative');
+  end;
+end;
+
+{$ifdef pas2js}
+procedure DivideTickProduct(const ATicks, ATempo, ACarry: Integer;
+  const ADivisor: Int64; out AQuotient, ARemainder: Int64);
+var
+  LWords: array[0..3] of Integer;
+  LLow: Int64;
+  LHigh: Int64;
+  LBit: Integer;
+  LDigit: Integer;
+begin
+  { MIDI tempo times Integer ticks can exceed 2^53. Form base-2^16 limbs
+    with exact products below 2^41, then divide bitwise. The largest divisor
+    is PPQ * 1000000; doubled remainders stay below 2^52. This handles only
+    integer representation, retaining the primary PPQ carry algorithm. }
+  LLow := Int64(ATicks mod 65536) * ATempo + ACarry;
+  LHigh := Int64(ATicks div 65536) * ATempo + LLow div 65536;
+  LWords[0] := LLow mod 65536;
+  LWords[1] := LHigh mod 65536;
+  LHigh := LHigh div 65536;
+  LWords[2] := LHigh mod 65536;
+  LWords[3] := LHigh div 65536;
+  AQuotient := 0;
+  ARemainder := 0;
+  for LBit := 63 downto 0 do
+  begin
+    ARemainder := ARemainder * 2;
+    if (LWords[LBit div 16] and (1 shl (LBit mod 16))) <> 0 then
+    begin
+      Inc(ARemainder);
+    end;
+    LDigit := 0;
+    if ARemainder >= ADivisor then
+    begin
+      Dec(ARemainder, ADivisor);
+      LDigit := 1;
+    end;
+    if AQuotient > (MaximumTimingInteger - LDigit) div 2 then
+    begin
+      raise EAudio.Create('Musical time exceeds the target exact-integer range');
+    end;
+    AQuotient := AQuotient * 2 + LDigit;
+  end;
+end;
+{$endif}
+
 function TTempoMap.Intervals(const AStartTick, ALengthTicks: Integer): TTempoIntervals;
 var
   LLow: Integer;
@@ -148,6 +216,8 @@ var
   LCount: Integer;
 begin
   Result := nil;
+  RequireExactTimingCounter(AStartTick, 'Interval start');
+  RequireExactTimingCounter(ALengthTicks, 'Interval length');
   if (AStartTick < 0) or (ALengthTicks < 1) or
     (Int64(AStartTick) + ALengthTicks > FLengthTicks) then
   begin
@@ -226,7 +296,8 @@ constructor TIncrementalTempoClock.Create(const ATicksPerQuarter, ASampleRate: I
 begin
   inherited Create;
   ValidateAudioFormat(ASampleRate, 1);
-  if ATicksPerQuarter < 1 then
+  RequireExactTimingCounter(ATicksPerQuarter, 'Clock PPQ');
+  if (ATicksPerQuarter < 1) or (ATicksPerQuarter > High(Integer)) then
   begin
     raise EAudio.Create('Incremental clock PPQ must be positive');
   end;
@@ -244,6 +315,9 @@ end;
 
 procedure TIncrementalTempoClock.Restore(const ASnapshot: TTempoClockSnapshot);
 begin
+  RequireExactTimingCounter(ASnapshot.TickCount, 'Clock ticks');
+  RequireExactTimingCounter(ASnapshot.FrameCount, 'Clock frames');
+  RequireExactTimingCounter(ASnapshot.FractionNumerator, 'Clock fraction');
   if (ASnapshot.TicksPerQuarter <> FState.TicksPerQuarter) or
     (ASnapshot.SampleRate <> FState.SampleRate) or (ASnapshot.TickCount < 0) or
     (ASnapshot.FrameCount < 0) or (ASnapshot.FractionNumerator < 0) or
@@ -259,7 +333,12 @@ end;
 function TIncrementalTempoClock.Advance(const ALengthTicks,
   ATempoMicrosecondsPerQuarter: Integer): Int64;
 var
+  {$ifndef pas2js}
   LNumerator: Int64;
+  {$else}
+  LWholeSeconds: Int64;
+  LSecondFraction: Int64;
+  {$endif}
   LWholeUs: Int64;
   LTickRemainder: Int64;
   LFrames: Int64;
@@ -268,8 +347,10 @@ var
   LDenominator: Int64;
   LNext: TTempoClockSnapshot;
 begin
+  RequireExactTimingCounter(ALengthTicks, 'Clock length');
   MakeTempoChange(0, ATempoMicrosecondsPerQuarter);
-  if (ALengthTicks < 0) or (FState.TickCount > High(Int64) - ALengthTicks) then
+  if (ALengthTicks > High(Integer)) or
+    (FState.TickCount > MaximumTimingInteger - ALengthTicks) then
   begin
     raise EAudio.Create('Incremental clock tick length or total exceeds integer range');
   end;
@@ -278,17 +359,26 @@ begin
     products stay below 1.4E16 at 384000 Hz; the combined fraction is <5.2E15
     even with High(Integer) PPQ. Only cumulative counters need overflow guards. }
   LDenominator := Int64(FState.TicksPerQuarter) * MicrosecondsPerSecond;
+  {$ifdef pas2js}
+  DivideTickProduct(ALengthTicks, ATempoMicrosecondsPerQuarter, 0,
+    LDenominator, LWholeSeconds, LSecondFraction);
+  LWholeUs := LSecondFraction div FState.TicksPerQuarter;
+  LTickRemainder := LSecondFraction mod FState.TicksPerQuarter;
+  LFrames := LWholeSeconds * FState.SampleRate;
+  LSubFrames := LWholeUs * FState.SampleRate;
+  {$else}
   LNumerator := Int64(ALengthTicks) * ATempoMicrosecondsPerQuarter;
   LWholeUs := LNumerator div FState.TicksPerQuarter;
   LTickRemainder := LNumerator mod FState.TicksPerQuarter;
   LFrames := (LWholeUs div MicrosecondsPerSecond) * FState.SampleRate;
   LSubFrames := (LWholeUs mod MicrosecondsPerSecond) * FState.SampleRate;
+  {$endif}
   Inc(LFrames, LSubFrames div MicrosecondsPerSecond);
   LFraction := FState.FractionNumerator +
     (LSubFrames mod MicrosecondsPerSecond) * FState.TicksPerQuarter +
     LTickRemainder * FState.SampleRate;
   Inc(LFrames, LFraction div LDenominator);
-  if FState.FrameCount > High(Int64) - LFrames then
+  if FState.FrameCount > MaximumTimingInteger - LFrames then
   begin
     raise EAudio.Create('Incremental clock frame total exceeds integer range');
   end;
@@ -302,7 +392,9 @@ end;
 
 function MakeTempoChange(const ATick, AMicrosecondsPerQuarter: Integer): TTempoChange;
 begin
-  if (ATick < 0) or (AMicrosecondsPerQuarter < 1) or
+  RequireExactTimingCounter(ATick, 'Tempo tick');
+  RequireExactTimingCounter(AMicrosecondsPerQuarter, 'Tempo value');
+  if (ATick > High(Integer)) or (AMicrosecondsPerQuarter < 1) or
     (AMicrosecondsPerQuarter > MaximumTempoMicroseconds) then
   begin
     raise EAudio.Create('Tempo tick must be nonnegative and tempo must fit MIDI microseconds');
@@ -313,13 +405,29 @@ end;
 
 procedure AdvanceTime(var ATime: TMusicTime; const ADeltaTicks, ATempo: Integer);
 var
+  {$ifdef pas2js}
+  LWhole: Int64;
+  LFraction: Int64;
+  {$else}
   LNumerator: Int64;
+  {$endif}
 begin
   { Integer tick range * MIDI tempo fits Int64. Carry the exact PPQ remainder,
     as in WFC's audio clock; never round separately at individual segments. }
+  {$ifdef pas2js}
+  DivideTickProduct(ADeltaTicks, ATempo, ATime.FractionNumerator,
+    ATime.Denominator, LWhole, LFraction);
+  if ATime.WholeMicroseconds > MaximumTimingInteger - LWhole then
+  begin
+    raise EAudio.Create('Musical time exceeds the target exact-integer range');
+  end;
+  Inc(ATime.WholeMicroseconds, LWhole);
+  ATime.FractionNumerator := LFraction;
+  {$else}
   LNumerator := Int64(ADeltaTicks) * ATempo + ATime.FractionNumerator;
   Inc(ATime.WholeMicroseconds, LNumerator div ATime.Denominator);
   ATime.FractionNumerator := LNumerator mod ATime.Denominator;
+  {$endif}
 end;
 
 function MusicTimeToFrame(const ATime: TMusicTime; const ASampleRate: Integer;
@@ -331,14 +439,17 @@ var
   LSeconds: Int64;
 begin
   ValidateAudioFormat(ASampleRate, 1);
-  if (ATime.WholeMicroseconds < 0) or (ATime.Denominator < 1) or
+  RequireExactTimingCounter(ATime.WholeMicroseconds, 'Musical microseconds');
+  RequireExactTimingCounter(ATime.FractionNumerator, 'Musical fraction');
+  RequireExactTimingCounter(ATime.Denominator, 'Musical PPQ');
+  if (ATime.Denominator < 1) or (ATime.Denominator > High(Integer)) or
     (ATime.FractionNumerator < 0) or (ATime.FractionNumerator >= ATime.Denominator) then
   begin
     raise EAudio.Create('Invalid rational music time');
   end;
   LSeconds := ATime.WholeMicroseconds div MicrosecondsPerSecond;
   { Reserve one complete fractional second plus rounding headroom. }
-  if LSeconds > (High(Int64) - ASampleRate) div ASampleRate then
+  if LSeconds > (MaximumTimingInteger - ASampleRate) div ASampleRate then
   begin
     raise EAudio.Create('Music time exceeds sample-frame integer range');
   end;
@@ -362,7 +473,10 @@ var
   LTime: TMusicTime;
 begin
   inherited Create;
-  if (ATicksPerQuarter < 1) or (ALengthTicks < 0) or
+  RequireExactTimingCounter(ATicksPerQuarter, 'Tempo PPQ');
+  RequireExactTimingCounter(ALengthTicks, 'Tempo extent');
+  if (ATicksPerQuarter < 1) or (ATicksPerQuarter > High(Integer)) or
+    (ALengthTicks > High(Integer)) or
     (Length(AChanges) < 1) or (Length(AChanges) > MaximumTempoChanges) then
   begin
     raise EAudio.Create('Invalid PPQ, timeline extent, or tempo change count');
@@ -407,6 +521,7 @@ var
   LMiddle: Integer;
   LIndex: Integer;
 begin
+  RequireExactTimingCounter(ATick, 'Tempo tick');
   if (ATick < 0) or (ATick > FLengthTicks) then
   begin
     raise EAudio.Create('Tick lies outside tempo-map extent');
@@ -466,6 +581,8 @@ var
   LGridTick: Int64;
 begin
   ValidateAudioFormat(ASampleRate, 1);
+  RequireExactTimingCounter(AFrame, 'Grid frame');
+  RequireExactTimingCounter(AGridTicks, 'Grid ticks');
   if (AFrame < 0) or (AGridTicks < 1) then
   begin
     raise EAudio.Create('Grid frame must be nonnegative and grid ticks positive');
@@ -503,6 +620,7 @@ var
   LCount: Integer;
 begin
   MakeTempoChange(ATick, AMicrosecondsPerQuarter);
+  RequireExactTimingCounter(AFrozenBeforeFrame, 'Committed frames');
   if (AFrozenBeforeFrame < 0) or
     (FrameAtTick(ATick, ASampleRate) < AFrozenBeforeFrame) then
   begin

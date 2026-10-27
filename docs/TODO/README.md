@@ -6,7 +6,7 @@
 Accepted zero-credit usability repairs: [training choices and playback](DONE/NS-6_studio_19.md),
 [tabbed workflow and help](DONE/NS-6_studio_18.md).
 
-Updated 2026-10-27. **53 open / 58 accepted tasks.** The user authorized a new
+Updated 2026-10-27. **52 open / 60 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **52.45 current / 47.55 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -40,8 +40,8 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 50 | 70% | 1 | 30 | 4.50 |
 | [NS-5 - User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 17 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 15 | 46 | 4.60 |
-| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **53** | Goal points are not summed across goals | **47.55** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 14 | 46 | 4.60 |
+| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **52** | Goal points are not summed across goals | **47.55** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -97,8 +97,11 @@ is now [accepted](DONE/NS-6_portability_01.md). The
 accepted with zero additional credit. The scoped
 [offline native phases](DONE/NS-6_observability_03.md) are also accepted after
 independent parity/abort/consumer checks. Remaining retained-operation
-checkpoints and [actual shared synthesis under pas2js](NS-6_portability_03.md)
-remain open; the latter is a demonstrated native-representation compile gap.
+checkpoints remain open. [Shared synthesis](DONE/NS-6_portability_03.md) and
+[exact shared timing](DONE/NS-6_portability_04.md) now execute on native and
+actual pas2js with complete sample comparison within the declared tolerance,
+exact state parity and abort/retry checks. Browser
+presentation, WASM and musical acceptance remain unqualified.
 
 
 The operator requests in-app teaching for future public users.
@@ -280,7 +283,6 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | --- | ---: | ---: | --- |
 | [NS-6_studio_21](NS-6_studio_21.md) — Background recovery and long-source learning | 0 | 0.00 | Deployed; actual browser acceptance remains |
 | [NS-6_studio_22](NS-6_studio_22.md) — Original/generated listening comparison | 0 | 0.00 | Deployed for review; native/DOM checks pass, actual browser acceptance remains |
-| [NS-6_portability_03](NS-6_portability_03.md) — Execute shared synthesis consumers under pas2js | 0 | 0.00 | Ready; actual closure fails at native instrument SizeOf assumption |
 | [NS-6_observability_04](NS-6_observability_04.md) — Retained corpus/style operations and operator monitoring | 0 | 0.00 | Ready; bounded owned work, no demonstrated generic WFC gap |
 | [NS-6_adoption_01](NS-6_adoption_01.md) — Establish independent ecosystem adoption evidence | 15 | 1.50 | Supported releases + independent ecosystem evidence |
 | [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 1 | 0.10 | Solo usability resumed; complete physical matrix remains open |
@@ -296,7 +298,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 
 ## Accepted tasks and retired work
 
-All 58 accepted tasks, including [offline native observability](DONE/NS-6_observability_03.md), [catalog import observability](DONE/NS-6_observability_02.md), [primary analysis portability](DONE/NS-6_portability_01.md), shared intake/text portability, caller corpus intake, Studio source/effects/capture, the current minimal package
+All 60 accepted tasks, including [offline native observability](DONE/NS-6_observability_03.md), [catalog import observability](DONE/NS-6_observability_02.md), [primary analysis portability](DONE/NS-6_portability_01.md), shared intake/text portability, caller corpus intake, Studio source/effects/capture, the current minimal package
 and the three NS-2 quality results, are listed in
 the [current DONE ledger](DONE/README.md). Their acceptance dates and detailed
 evidence remain in the unchanged task identities. Allocations now reflect the

@@ -352,6 +352,13 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Observed bulk rendering compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.render.progress$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Observed bulk rendering checks failed' }
+  foreach ($sharedFixture in @('synthesis.portable', 'time.portable')) {
+    & $compilerPath @compilerArgs '-gh' "tests/pythian.tests.$sharedFixture.lpr"
+    if ($LASTEXITCODE -ne 0) { throw "Shared $sharedFixture compilation failed" }
+    & (Join-Path $buildRoot "pythian.tests.$sharedFixture$executableSuffix") `
+      *> (Join-Path $buildRoot "$sharedFixture.native.log")
+    if ($LASTEXITCODE -ne 0) { throw "Shared $sharedFixture checks failed (see build log)" }
+  }
   & $compilerPath @compilerArgs 'tests/pythian.tests.wave.portable.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Portable WAV contract compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.wave.portable$executableSuffix")

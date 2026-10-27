@@ -80,7 +80,13 @@ begin
   begin
     raise EAudio.Create('Instrument requires 1..256 zones');
   end;
-  FillChar(LCounts, SizeOf(LCounts), 0);
+  for LKey := 0 to 127 do
+  begin
+    for LVelocity := 1 to 127 do
+    begin
+      LCounts[LKey, LVelocity] := 0;
+    end;
+  end;
   for LZone in AZones do
   begin
     if (LZone.MinimumKey < 0) or (LZone.MaximumKey > 127) or

@@ -127,7 +127,8 @@ function RenderEffectClip(const ASource: TAudioClip; const AChain: TEffectChain;
 implementation
 
 uses
-  Math;
+  Math,
+  pythian.ieee754;
 
 constructor TAudioEffect.Create(const ASampleRate: Integer);
 begin
@@ -426,7 +427,7 @@ begin
         end;
       end;
       AChain.Process(LInputLeft, LInputRight, LLeft, LRight);
-      if (Abs(LLeft) > MaxSingle) or (Abs(LRight) > MaxSingle) then
+      if (Abs(LLeft) > MaximumFiniteFloat32) or (Abs(LRight) > MaximumFiniteFloat32) then
       begin
         { Processing consumed the frame; a failed render requires an explicit reset. }
         AChain.FFailed := True;

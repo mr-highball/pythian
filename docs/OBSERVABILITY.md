@@ -36,6 +36,7 @@ Studio callers, plus existing streaming, inference and library contracts.
 | Offline render, separation, export and evaluation | Primary native engines report measured windows/cells/frames/comparisons; maintained operators forward callbacks | [observability_03 — DONE](TODO/DONE/NS-6_observability_03.md); scoped phases below |
 | Retained corpus/style/archive/provider operations | Nested serialization, validation, blending and composition reachability need further measured checkpoints | [observability_04](TODO/NS-6_observability_04.md) |
 | Primary analysis in pas2js | Full callback consumer executes shared primary algorithms; optional timer adapter yields between bounded WAV analysis batches | [portability_01 — DONE](TODO/DONE/NS-6_portability_01.md); actual browser presentation and WASM remain unqualified |
+| Primary synthesis in pas2js | Actual shared synth/instrument/note/chord/grain cases execute with measured callbacks, abort/retry and exact supported clocks | [portability_03 — DONE](TODO/DONE/NS-6_portability_03.md), [timing repair — DONE](TODO/DONE/NS-6_portability_04.md); synchronous Node consumers, no browser/WASM claim |
 
 Per-sample oscillators, filters and small fixed transforms should not publish a
 callback per sample. Observe their caller's bounded render block instead. Static
@@ -170,12 +171,15 @@ report zero leaks. Checked Win32 WAV passes 1,730; actual pas2js/Node WAV passes
 evaluation CLIs exercise the same primary engines with authored inputs. Evidence
 is under E-drive `build/tests/runs/offline-progress-20261027-*`.
 
-This qualifies the stated native phases and portable WAV callbacks. The actual
-pas2js synth/music-render closure fails at the primary instrument constructor's
-native `SizeOf` assumption before JavaScript execution. Its linked
-[portability task](TODO/NS-6_portability_03.md) owns repair and actual shared
-execution/parity. No browser, WASM, physical-phone or musical result is inferred.
-No service/browser asset replacement was needed for these optional native APIs.
+This qualifies the stated native phases and portable WAV callbacks. The later
+[shared synthesis repair](TODO/DONE/NS-6_portability_03.md) now executes the actual
+primary consumer under pas2js, retaining the original instrument compiler failure
+and independently reproduced [exact-clock defect](TODO/DONE/NS-6_portability_04.md).
+Four source/render cases compare all emitted samples; the original 187-check
+render callback fixture also executes on both targets. See the
+[supported limits](MIDI.md#shared-synthesis-and-exact-counter-limits). No browser,
+WASM, physical-phone or musical result is inferred. No service/browser asset
+replacement was needed for these library/CLI changes.
 
 ## pas2js analysis execution
 
@@ -249,6 +253,6 @@ authored browser traces are under ignored `build/observability/`.
 These checks establish mechanics and output preservation, not musical truth,
 complete physical-phone qualification or universal responsiveness. A short job
 can finish between browser polls. The offline native phases above are accepted;
-retained style/metadata operations, shared synthesis portability and actual
-browser presentation remain explicitly open. Observability
+retained style/metadata operations and actual browser presentation remain
+explicitly open. Shared synthesis qualification is scoped above. Observability
 repairs earn no additional north-star credit.

@@ -108,7 +108,7 @@ browser responsiveness or musical inference; remaining owners are linked below.
   fixture; Big Boss owns WAV writer/export, other operator forwarding, audit,
   integration and final judgment. No musical credit follows from observability.
 - A distinct actual pas2js render-closure blocker is recorded in
-  [portability_03](../NS-6_portability_03.md). Native verification continues here;
+  [portability_03](NS-6_portability_03.md). Native verification continues here;
   no unsupported JavaScript or browser claim may substitute for that task.
 - 2026-10-03, Big Boss: `THarmonicPercussive.Create` has full spectrogram and
   median passes without callbacks; `RenderNoteSequence` delegates to whole-clip

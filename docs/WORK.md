@@ -12,6 +12,76 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Shared synthesis and exact timing accepted - 2026-10-27
+
+Previous goal turn is progress: native offline observability was accepted and
+published at `d3dc6b0`. Big Boss rechecked the least-complete NS-5 path with
+bounded Spike/Spiegel assessments. Existing note-presence, physical pulse,
+tonal/harmonic and representative-section evidence still cannot support a new
+musical acceptance batch. No stopped source/model family or saved listening
+question was repeated; caller declarations are not inferred musical repetition.
+
+Selected [portability_03](TODO/DONE/NS-6_portability_03.md): actual primary
+synth/instrument/note/chord/grain execution on native and pas2js. Deliverable:
+shared source behavior with exact clocks/identities, per-sample cross-target
+comparison and callback abort/retry. Predeclared numerical bound is
+`1e-6 * max(1, abs(native), abs(pas2js))`; integer/clock fields and same-target
+replay are exact. Stop on duplicated synthesis, changed native math, relaxed
+tolerance or compile-only evidence. Spike owned instrument initialization,
+Spiegel shared consumer fixtures, Big Boss other representation repairs,
+maintained check/build integration and final judgment. No inference selected.
+
+Actual execution passed the instrument after removing its native FillChar/
+SizeOf assumption; the next effects MaxSingle failure was consolidated into
+the primary IEEE-754 limit. Big Boss then reproduced a separate timing defect:
+maximum Integer PPQ / 384-kHz output returned the right 6,442,450 frames while
+its carried fraction was wrong by 768,000 numerator units. Big Boss stopped
+scope expansion, created [portability_04](TODO/DONE/NS-6_portability_04.md) and
+followed that true prerequisite before returning to synthesis acceptance.
+
+The primary PPQ algorithm now divides exact product limbs at the pas2js
+representation boundary. Its witness fraction is exactly 1202590842320000.
+Native Int64 behavior is retained; pas2js exposes the exact `2^53-1` counter
+limit and rejects unsafe/nonfinite/fractional input before accepted state/plan
+changes. Snapshots, absolute voice ends and public timing boundaries retain
+explicit validation. Seven state rows plus terminal PASS compare exactly;
+independent adversarial evidence covers 15 further shared-range states. Native
+above-2^53 support and target-specific rejection remain separate results.
+
+The final maintained command passes checked FPC 3.2.2 Win32 and Win64 plus actual
+matched pas2js/Node. Four actual synthesis cases compare every one of 162,542
+scalar samples, with exact named geometries and ordered rows. Source ownership,
+seeded replay, note/chord clocks, internal grain gap/tail, malformed zones/layer
+limits, progress cadence, interior abort and retry pass. The existing callback
+consumer passes 187 checks on both targets. Native valid fixture/comparator runs
+report zero leaks; native instrument, effects and clock/music regressions pass.
+The ordinary build registers both new fixtures; maintained command syntax and
+overall success status pass, including expected empty/truncated-log rejection.
+
+Combined independent QA after components were ready found a comparator weakness:
+two empty identical logs could pass. The repaired maintained gate requires all
+four sample cases and terminal PASS; the timing comparator requires its exact
+eight rows. Locale-specific float text was removed. Preserve test development
+and invocation failures: missing import/formatter, incorrect >32-bit witness,
+unsafe test literal, original clock compiler/probe failures and Big Boss's
+music-fixture directory argument. The latter left temporary allocations on its
+failed path; a correct MIDI filename invocation passes with zero leaks. No task
+accumulated two failed formal implementation QA submissions. Evidence remains
+under E-drive `build/tests/runs/{synth,synthesis,timing}-portability-20261027-*`,
+with final maintained output under
+`build/synth-portability-20261027-boss/final-{win32,win64}/synthesis-portability/`.
+
+Both complete portability tasks move to DONE together with links, ledgers and
+milestones: **52 open /60 DONE (112 total); 52.45 credited /47.55 remaining**;
+NS completions stay **100/90/25/70/14/54**. Delivery nonclosing count stays **0**;
+scientific stops/exposure counters are unchanged. No musical credit, source
+acquisition or WFC dependency change. Synchronous Node execution is not browser,
+phone/device or WASM qualification; those and the musical gates remain open.
+Stable deployment is unchanged and still responds on loopback/LAN HTTPS (200).
+All 5,951 baseline private JSON/JSONL hashes are unchanged; no QA worker/browser
+or playback remains. Source/artifact identities and verification manifests are
+in `runs/synth-portability-20261027-boss/`.
+
 ## Offline native progress accepted; synthesis portability gap retained - 2026-10-27
 
 Previous turn is progress at `775b3a8`: independent playback preferences were
@@ -50,7 +120,7 @@ and [retained-operation audit](TODO/NS-6_observability_04.md) preserve those lim
 
 A separate actual synth/music-render pas2js closure fails at `pythian.instrument`'s
 native SizeOf assumption before execution. Big Boss created the linked zero-credit
-[portability_03](TODO/NS-6_portability_03.md), returned to this native batch and
+[portability_03](TODO/DONE/NS-6_portability_03.md), returned to this native batch and
 made no instrument/compiler/dependency patch. Portable WAV execution does not
 qualify synthesis, browser presentation or WASM. The prior browser request is
 still unqualified; no QA browser or playback was launched in this batch.
@@ -74,6 +144,7 @@ closed zero-credit task in the open count. Stable deployment is unchanged:
 existing fixed service remains alive, loopback and LAN HTTPS return 200, and all
 5,951 baseline private JSON/JSONL hashes are unchanged. No native QA worker,
 Pythian QA browser or playback remains. No generic WFC gap or companion change.
+
 ## Independent playback preferences connected to retained learning - 2026-10-27
 
 Previous goal turn is progress: mixed-format native WFC learning was implemented,

@@ -429,6 +429,8 @@ var
   LMaximumFrames: Int64;
 begin
   ValidateAudioFormat(ASampleRate, 2);
+  RequireExactTimingCounter(ATone.StartFrame, 'Voice start');
+  RequireExactTimingCounter(ATone.GateFrames, 'Voice gate');
   LTone := FrameToneValue(ATone, ASampleRate);
   ValidateTone(LTone, ASampleRate);
   LMaximumFrames := Int64(ASampleRate) * 86400;
@@ -438,7 +440,7 @@ begin
     raise EAudio.Create('Voice time exceeds nonnegative one-day duration bound');
   end;
   Result := ATone.GateFrames + SynthReleaseFrames(ATone.Voice, ASampleRate);
-  if (Result > LMaximumFrames) or (ATone.StartFrame > High(Int64) - Result) then
+  if (Result > LMaximumFrames) or (ATone.StartFrame > MaximumTimingInteger - Result) then
   begin
     raise EAudio.Create('Voice end exceeds duration or absolute frame bound');
   end;
@@ -850,6 +852,8 @@ begin
   SetLength(LPrepared, Length(ATones));
   for LIndex := 0 to High(ATones) do
   begin
+    RequireExactTimingCounter(ATones[LIndex].StartFrame, 'Voice start');
+    RequireExactTimingCounter(ATones[LIndex].GateFrames, 'Voice gate');
     LTone := Default(TTone);
     LTone.FrequencyHz := ATones[LIndex].FrequencyHz;
     LTone.Velocity := ATones[LIndex].Velocity;

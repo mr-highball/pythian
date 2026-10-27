@@ -88,6 +88,52 @@ The ordinary native build uses no vendor paths. The WFC build repeats it with
 `WFC_CLOCK_CHECKS`, comparing each field against the actual ensemble clock,
 including a High(Integer)-tick interval.
 
+## Shared synthesis and exact counter limits
+
+The primary synth/instrument, note/chord and grain consumers now execute under
+actual pas2js/Node as well as checked native Win32/Win64. They share the existing
+Pascal engines. The instrument's layer grid is initialized portably, and the
+effects boundary uses the primary IEEE-754 finite float32 limit. Four authored
+consumer cases compare every emitted sample at the predeclared
+`1e-6 * max(1, abs(native), abs(pas2js))` bound; same-target replay and
+clock/identity/geometry fields remain exact. This qualifies those consumers,
+not every source/effect family or a browser/device performance promise.
+
+`MaximumTimingInteger` declares the exact nonnegative counter limit:
+`High(Int64)` natively and `2^53-1` under pas2js. Musical microseconds, cumulative
+ticks/frames, snapshots and absolute voice start/end coordinates must fit the
+target limit. PPQ and interval ticks retain the positive/nonnegative native
+Integer domain. `RequireExactTimingCounter` rejects negative counters and, in
+pas2js, fractional, nonfinite or unsafe values. Invalid snapshots, advances and
+plans preserve previously accepted caller state/results. Native clocks still
+support exact counts above `2^53`; those larger values are unsupported in pas2js.
+Floating-seconds conversion retains its existing separate `2^53-1` bound.
+
+Tick-times-tempo intermediates can exceed Number's exact range even when output
+fits. The primary timing unit divides exact 16-bit product limbs at that
+representation boundary before applying its existing PPQ carry/frame conversion.
+It never accepts a rounded timestamp as exact. At maximum PPQ / 384 kHz, the
+previously failing split interval now retains fractional numerator
+`1202590842320000` and 6,442,450 frames exactly. Independent adversarial cases
+and the maintained state comparator agree exactly on the shared supported domain.
+
+Use [the maintained cross-target check](../tools/check-synthesis-portability.ps1)
+with verified native/pas2js compiler paths, matched RTL source/JavaScript, optional
+native target arguments and an explicit output root. On this workstation that
+root belongs below `E:/CodexWork/pythian/build/`. The command compiles/runs shared
+render, synthesis and timing consumers, invokes Pascal comparators over complete
+sample/state rows and rejects empty/truncated logs. Both new fixtures also run
+in the ordinary native build; their sample logs stay under its output root.
+
+These are synchronous bulk APIs and bounded test workloads. Callback exceptions
+abort at primary work checkpoints; they do not yield a browser event loop or
+provide an allocator/FFT/stream deadline. Node qualification is not actual
+browser presentation, phone playback or WASM. Studio's native worker architecture
+is unchanged, and recorded musical learning/continuity/style gates remain open.
+Acceptance and retained failure evidence:
+[synthesis](TODO/DONE/NS-6_portability_03.md),
+[timing](TODO/DONE/NS-6_portability_04.md).
+
 ## Raw MIDI and note extraction
 
 `pythian.midi.smf` is the native extraction of WFC's format 0/1 PPQ SMF codec.
