@@ -57,10 +57,14 @@ build defaults are not redirected automatically.
 Implemented core delivery: [source-continuity Studio integration](NS-5_continuity_04.md),
 zero additional credit, with exact saved-model/journal reuse and native/API/DOM
 checks. Actual desktop/narrow qualification remains open after desktop-control
-access failed. [studio_03](NS-6_studio_03.md) now offers one prepared continuity
-question with Original/Before/After and Save/Next. The next useful operator
-action is that listening judgment; no new segmentation or generation setup is
-needed. All remaining task criteria and scientific stops remain in force.
+access failed; a fresh Oct27 in-app-browser request is also unavailable.
+[studio_03](NS-6_studio_03.md) offers the prepared continuity question with
+Original/Before/After and Save/Next. The operator has answered **After** for
+fewer broken/jittery notes. Preserve that narrow positive development preference;
+do not ask for the same answer again or infer sustained/style acceptance.
+The [current goal and prerequisite checkpoint](../WORK.md#governing-goal-and-prerequisite-checkpoint---2026-10-27)
+retains the musical-reference blockers and scientific stops. No new segmentation
+or generation setup is required from the operator.
 
 Accepted generation slice: [exact source-successor reconstruction](DONE/NS-5_continuity_03.md),
 2026-10-13. The retained failed audition replays exactly; bounded before/after

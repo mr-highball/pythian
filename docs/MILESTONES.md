@@ -6,6 +6,8 @@
 ## North-star assessment
 
 Updated **2026-10-27** on the user-authorized 2026-09-29 credit basis:
+The operator adopted the [musical-outcome goal and prerequisite checkpoint](WORK.md#governing-goal-and-prerequisite-checkpoint---2026-10-27).
+The goal replacement changes no acceptance, credit or stopped-batch counter.
 Implemented [source-continuity Studio integration](TODO/NS-5_continuity_04.md)
 passes native/API/DOM checks; actual desktop/narrow qualification remains open
 after a desktop-control access failure. It adds no credit. On 2026-10-27 the user

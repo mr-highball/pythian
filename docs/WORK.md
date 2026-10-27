@@ -12,6 +12,60 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Governing goal and prerequisite checkpoint - 2026-10-27
+
+The operator adopted the new active goal: turn working foundations into
+demonstrably useful musical learning and generation. Prioritize grounded
+context, representative vocabulary, honest source coverage, sustained
+continuity, useful variation and reusable styles/blends. Use long recordings
+and coarse classifications; routine source micro-segmentation is not the
+operator's next job. Prepared Original/Before/After questions must support a
+specific development decision, preserve uncertainty and lineage, and never
+silently retrain when feedback is saved.
+
+Keep Studio's tabs, steps, contextual help, clear training inclusion, source
+playback, private collections, analysis/effects and long-running native jobs
+as the bridge to those core outcomes. Shared implementation and inference stay
+Pascal-owned, with independent core-only use and integral WFC product paths.
+The current team is Big Boss plus Spike and Spiegel, both GPT-6.1 Terra;
+earlier teams remain inactive. Output roots, privacy, licenses, provenance and
+branch rules are unchanged. This goal replacement earns no credit and resets
+no scientific, implementation-QA or consecutive-nonclosing counter.
+
+Big Boss's prerequisite checkpoint follows the native integration and
+contribution-accounting deliveries, neither of which closes a full musical
+criterion. Spiegel traced vocabulary -> automatic context -> tonal admission;
+Spike traced the exact source-successor result and remaining continuity gates.
+These were bounded read-only assessments, not new experiments or independent
+execution of earlier tests. The stopped key/profile/dictionary/note-aware and
+beat-grid/metrical/candidate families remain stopped. A new inference batch
+needs genuinely different supported physical observations and prospective
+controls, not another rank, threshold, seed or window variant.
+
+The next musical prerequisite is still independently supported recorded
+activity/context evidence under [notes_05](TODO/NS-3_notes_05.md),
+[context_01](TODO/NS-3_context_01.md) and
+[tempo_04](TODO/NS-3_tempo_04.md). The quiet-tail/nonzero-rest gate and the
+distinction between simultaneous notes and timbral harmonics are unresolved.
+No new recording window, source acquisition, inference run or tuning policy
+was selected at this checkpoint. The declared intake portability repair is
+ready engineering work, but does not displace this musical critical path merely
+because it is easier to execute.
+
+The saved 20-second After preference remains positive, narrow development
+evidence. Remaining sustained-listening, multi-source/seed and musical-reference
+gates stay open; do not manufacture a fresh queue of variants or ask the
+operator to repeat the answered question. Actual browser qualification of the
+existing integration remains a separate closing gate. A fresh Codex browser
+check returned an empty inventory, and a direct in-app-browser tab creation
+returned `Browser is not available: iab`. No QA browser or playback was started;
+this is not a visual pass. The next browser batch, when that surface is
+available, belongs to [continuity_04](TODO/NS-5_continuity_04.md) AC5 and
+[studio_22](TODO/NS-6_studio_22.md) AC4: exercise the implemented references and
+prepared listener at desktop/narrow widths on isolated operator data; stop on
+identity, range, save/retry or orphan-audio failure. No new UI infrastructure is
+selected. **55 open /54 DONE; 52.45 credited /47.55 remaining.**
+
 ## Operator review and resumed delegation - 2026-10-27
 
 The user's latest instruction resumes delegation with **Spike and Spiegel,
