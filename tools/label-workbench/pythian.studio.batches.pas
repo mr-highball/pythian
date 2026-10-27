@@ -75,7 +75,7 @@ type
     procedure Notice(const AText: String; const AError: Boolean = False);
     procedure Invalidate;
     procedure UpdateControls;
-    procedure DrawWeights;
+    procedure DrawWeights(const AKeepValues: Boolean);
     procedure DrawHistory;
     procedure DrawJob;
     function ReadInteger(const AId: String; const AMinimum, AMaximum: Integer): Integer;
@@ -430,7 +430,7 @@ begin
   end;
 end;
 
-procedure TStudioBatches.DrawWeights;
+procedure TStudioBatches.DrawWeights(const AKeepValues: Boolean);
 var
   LRoot: TJSElement;
   LRows: TJSArray;
@@ -441,16 +441,26 @@ var
   LHash: String;
   LTitle: String;
   LIndex: Integer;
+  LOld: TJSObject;
+  LInputs: TJSNodeList;
+  LKey: String;
 begin
   LRoot := El('batch-weights');
+  LOld := TJSObject.new;
+  if AKeepValues then
+  begin
+    LInputs := LRoot.querySelectorAll('input');
+    for LIndex := 0 to LInputs.length - 1 do
+      LOld[TJSElement(LInputs[LIndex]).id] := TJSHTMLInputElement(LInputs[LIndex]).value;
+  end;
   LRoot.innerHTML := '';
   LRows := ArrayAt(FProject, 'sources');
   if LRows = nil then
   begin
     Exit;
   end;
-  Add(LRoot, 'h3', 'Recording weights', '');
-  Add(LRoot, 'p', '1–16 per recording; all its selected ranges share the weight.', 'hint');
+  Add(LRoot, 'h3', 'Recording preferences', '');
+  Add(LRoot, 'p', 'Training weight changes the learned distribution and requires a model. Playback preference changes eligible source choices using the same model; shares and quality are not guaranteed. Each recording’s selected passages share its preference. Use 1–16.', 'hint');
   LSeen := TJSObject.new;
   for LIndex := 0 to LRows.length - 1 do
   begin
@@ -466,14 +476,28 @@ begin
     begin
       LTitle := StudioText(LRow, 'original_name');
     end;
-    LLabel := Add(LRoot, 'label', LTitle, '');
-    LInput := Add(LLabel, 'input', '', '');
+    Add(LRoot, 'h4', LTitle, '');
+    LLabel := Add(LRoot, 'label', 'Training weight', '');
+    LInput := Add(LLabel, 'input', '', 'training-weight');
     LInput.id := 'batch-weight-' + LHash;
     LInput.setAttribute('type', 'text');
     LInput.setAttribute('inputmode', 'numeric');
     LInput.setAttribute('maxlength', '2');
     LInput.setAttribute('value', '1');
     LInput.setAttribute('data-source', LHash);
+    LKey := LInput.id;
+    if LOld.hasOwnProperty(LKey) then TJSHTMLInputElement(LInput).value := String(LOld[LKey]);
+    LInput.addEventListener('input', @Edit);
+    LLabel := Add(LRoot, 'label', 'Playback preference', '');
+    LInput := Add(LLabel, 'input', '', 'playback-weight');
+    LInput.id := 'batch-playback-' + LHash;
+    LInput.setAttribute('type', 'text');
+    LInput.setAttribute('inputmode', 'numeric');
+    LInput.setAttribute('maxlength', '2');
+    LInput.setAttribute('value', '1');
+    LInput.setAttribute('data-source', LHash);
+    LKey := LInput.id;
+    if LOld.hasOwnProperty(LKey) then TJSHTMLInputElement(LInput).value := String(LOld[LKey]);
     LInput.addEventListener('input', @Edit);
   end;
 end;
@@ -513,7 +537,7 @@ begin
     FJob := nil;
     DrawJob;
   end;
-  if LOldKey <> LNewKey then
+  if (LOldKey <> LNewKey) or LProjectChanged then
   begin
     if not LKeepParent then
     begin
@@ -524,7 +548,7 @@ begin
         'Additional seeds use first seed +1,000 and +2,000. Example count is a cap, ' +
         'not a measure of learned musical variety.';
     end;
-    DrawWeights;
+    DrawWeights(not LProjectChanged);
     LRows := ArrayAt(FProject, 'sources');
     LHasUnassigned := False;
     if LRows <> nil then
@@ -623,6 +647,8 @@ var
   LSeeds: TJSArray;
   LWeights: TJSArray;
   LSeen: TJSObject;
+  LPlaybackSeen: TJSObject;
+  LPlayback: TJSArray;
   LRow: TJSObject;
   LInputs: TJSNodeList;
   LIndex: Integer;
@@ -722,7 +748,7 @@ begin
   begin
     raise Exception.Create('The next batch needs an explicit recording-use choice.');
   end;
-  LInputs := El('batch-weights').querySelectorAll('input');
+  LInputs := El('batch-weights').querySelectorAll('input.training-weight');
   if LWeights.length <> LInputs.length then
   begin
     raise Exception.Create('The next batch weights do not match this saved project.');
@@ -745,6 +771,23 @@ begin
     if not isNumber(LSeen[LHash]) then
     begin
       raise Exception.Create('The next batch weights do not match this saved project.');
+    end;
+  end;
+  LPlaybackSeen := LSeen;
+  if ARequest.hasOwnProperty('generation_weights') then
+  begin
+    LPlayback := ArrayAt(ARequest, 'generation_weights');
+    if (LPlayback = nil) or (LPlayback.length <> LInputs.length) then
+      raise Exception.Create('Playback preferences do not match this saved project.');
+    LPlaybackSeen := TJSObject.new;
+    for LIndex := 0 to LPlayback.length - 1 do
+    begin
+      LRow := Obj(LPlayback[LIndex]);
+      LHash := StudioText(LRow, 'source_sha256');
+      LWeight := IntegerValue(LRow['weight'], 1, 16);
+      if LPlaybackSeen.hasOwnProperty(LHash) or not LSeen.hasOwnProperty(LHash) then
+        raise Exception.Create('Playback preferences do not match this saved project.');
+      LPlaybackSeen[LHash] := LWeight;
     end;
   end;
   LPreparation := nil;
@@ -791,6 +834,12 @@ begin
   begin
     LHash := TJSElement(LInputs[LIndex]).getAttribute('data-source');
     TJSHTMLInputElement(LInputs[LIndex]).value := IntToStr(IntegerValue(LSeen[LHash], 1, 16));
+  end;
+  LInputs := El('batch-weights').querySelectorAll('input.playback-weight');
+  for LIndex := 0 to LInputs.length - 1 do
+  begin
+    LHash := TJSElement(LInputs[LIndex]).getAttribute('data-source');
+    TJSHTMLInputElement(LInputs[LIndex]).value := IntToStr(IntegerValue(LPlaybackSeen[LHash], 1, 16));
   end;
   FExplicitSeeds := TJSArray(TJSJSON.parse(TJSJSON.stringify(LSeeds)));
   FParentJobId := LParent;
@@ -879,7 +928,7 @@ begin
     Result['parent_job_id'] := FParentJobId;
   end;
   LWeights := TJSArray.new;
-  LInputs := El('batch-weights').querySelectorAll('input');
+  LInputs := El('batch-weights').querySelectorAll('input.training-weight');
   for LIndex := 0 to LInputs.length - 1 do
   begin
     LRow := TJSObject.new;
@@ -888,6 +937,16 @@ begin
     LWeights.push(LRow);
   end;
   Result['source_weights'] := LWeights;
+  LWeights := TJSArray.new;
+  LInputs := El('batch-weights').querySelectorAll('input.playback-weight');
+  for LIndex := 0 to LInputs.length - 1 do
+  begin
+    LRow := TJSObject.new;
+    LRow['source_sha256'] := TJSElement(LInputs[LIndex]).getAttribute('data-source');
+    LRow['weight'] := ReadInteger(TJSElement(LInputs[LIndex]).id, 1, 16);
+    LWeights.push(LRow);
+  end;
+  Result['generation_weights'] := LWeights;
 end;
 
 function TStudioBatches.Json(const APath, AMethod, ABody: String): TJSObject; async;

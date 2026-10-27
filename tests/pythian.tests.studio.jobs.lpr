@@ -50,6 +50,149 @@ begin
   end;
 end;
 
+procedure PartialPreferenceCheck(const AInbox, ACatalog, AFirstHash: String);
+var
+  LSamples: TAudioSamples;
+  LClip: TAudioClip;
+  LStream: TFileStream;
+  LHash: String;
+  LManifest: TJSONObject;
+  LRows: TJSONArray;
+  LRow: TJSONObject;
+  LProjectWrite: TJSONObject;
+  LProject: TJSONObject;
+  LWrite: TJSONObject;
+  LReport: TJSONObject;
+  LIndex: Integer;
+  LFailed: Boolean;
+begin
+  SetLength(LSamples, 16000);
+  for LIndex := 0 to High(LSamples) do
+  begin
+    if LIndex mod 120 < 60 then LSamples[LIndex] := 0.25;
+  end;
+  LClip := TAudioClip.Create(8000, 1, LSamples);
+  try
+    LStream := TFileStream.Create(AInbox + PathDelim + 'second.wav', fmCreate);
+    try
+      WriteWavePcm16(LStream, LClip);
+    finally
+      LStream.Free;
+    end;
+  finally
+    LClip.Free;
+  end;
+  LStream := TFileStream.Create(AInbox + PathDelim + 'second.wav', fmOpenRead);
+  try
+    LHash := Sha256Stream(LStream, LStream.Size);
+  finally
+    LStream.Free;
+  end;
+  LManifest := TJSONObject.Create;
+  try
+    LManifest.Add('version', 1);
+    LRows := TJSONArray.Create;
+    LManifest.Add('tracks', LRows);
+    LRow := TJSONObject.Create;
+    LRows.Add(LRow);
+    LRow.Add('file', 'second.wav');
+    LRow.Add('sha256', LHash);
+    LRow.Add('source_group', 'second-preflight');
+    LRow.Add('clock_id', '');
+    LRow.Add('partition', 'unassigned');
+    LRow.Add('title', 'Second authored preflight control');
+    LRow.Add('provenance', 'First-party synthetic control');
+    LRow.Add('license', 'MIT');
+    DeleteFile(AInbox + PathDelim + 'manifest.json');
+    WriteStudioJSONNew(AInbox + PathDelim + 'manifest.json', LManifest);
+  finally
+    LManifest.Free;
+  end;
+  LReport := ImportLabelInbox(AInbox, ACatalog);
+  try
+    Check(LReport.Integers['imported'] = 1, 'Import second selected source');
+  finally
+    LReport.Free;
+  end;
+  LProjectWrite := TJSONObject.Create;
+  try
+    LProjectWrite.Add('format', StudioProjectWriteFormat);
+    LProjectWrite.Add('project_id', 'two-sources');
+    LProjectWrite.Add('expected_revision', 0);
+    LProjectWrite.Add('name', 'Two recordings');
+    LProjectWrite.Add('style_intent', '');
+    LProjectWrite.Add('learning_mode', 'raw_acoustic');
+    LRows := TJSONArray.Create;
+    LProjectWrite.Add('sources', LRows);
+    for LIndex := 0 to 1 do
+    begin
+      LRow := TJSONObject.Create;
+      LRows.Add(LRow);
+      if LIndex = 0 then LRow.Add('source_sha256', AFirstHash)
+      else LRow.Add('source_sha256', LHash);
+      LRow.Add('selection', 'full');
+    end;
+    LProject := SaveStudioProject(ACatalog, LProjectWrite);
+  finally
+    LProjectWrite.Free;
+  end;
+  try
+    LWrite := TJSONObject.Create;
+    try
+      LWrite.Add('format', StudioJobWriteFormat);
+      LWrite.Add('job_id', 'partial-preference');
+      LWrite.Add('kind', 'train_generate');
+      LWrite.Add('project_id', LProject.Strings['project_id']);
+      LWrite.Add('project_revision', LProject.Int64s['revision']);
+      LWrite.Add('project_snapshot_sha256', LProject.Strings['snapshot_sha256']);
+      LWrite.Add('duration_ms', 20000);
+      LWrite.Add('seeds', TJSONArray.Create([731]));
+      LWrite.Add('maximum_tokens', 4);
+      LWrite.Add('model_order', 2);
+      LWrite.Add('resolve_unassigned', 'development');
+      LRows := TJSONArray.Create;
+      LWrite.Add('source_weights', LRows);
+      for LIndex := 0 to 1 do
+      begin
+        LRow := TJSONObject.Create;
+        LRows.Add(LRow);
+        if LIndex = 0 then LRow.Add('source_sha256', AFirstHash)
+        else LRow.Add('source_sha256', LHash);
+        LRow.Add('weight', 1);
+      end;
+      LRows := TJSONArray.Create;
+      LWrite.Add('generation_weights', LRows);
+      LRow := TJSONObject.Create;
+      LRows.Add(LRow);
+      LRow.Add('source_sha256', AFirstHash);
+      LRow.Add('weight', 1);
+      LFailed := False;
+      try
+        LReport := PrepareStudioJob(ACatalog, LWrite);
+        LReport.Free;
+      except
+        on LException: EAudio do LFailed := True;
+      end;
+      Check(LFailed, 'Partial vector for two selected recordings rejected');
+      LRow := TJSONObject.Create;
+      LRows.Add(LRow);
+      LRow.Add('source_sha256', LHash);
+      LRow.Add('weight', 2);
+      LReport := PrepareStudioJob(ACatalog, LWrite);
+      try
+        Check(LReport.Arrays['generation_weights'].Count = 2,
+          'Complete vector for two selected recordings accepted');
+      finally
+        LReport.Free;
+      end;
+    finally
+      LWrite.Free;
+    end;
+  finally
+    LProject.Free;
+  end;
+end;
+
 procedure LiveSuccessorPreflight(const ARoot: String);
 const
   CDurations: array[0..2] of Integer = (120000, 7200000, 86400000);
@@ -75,6 +218,7 @@ var
   LSuccessorHash: String;
   LFailed: Boolean;
   LConfig: TJSONObject;
+  LGeneration: TJSONArray;
 begin
   LInbox := ARoot + PathDelim + 'preflight-inbox';
   LCatalog := ARoot + PathDelim + 'preflight-catalog';
@@ -303,15 +447,122 @@ begin
       LReport := PrepareStudioJob(LCatalog, LWrite);
       try
         Check(LReport.Strings['reconstruction'] = 'sparse', 'Omitted policy remains sparse');
+        Check((LReport.Strings['generation_preference_policy'] = 'inherited_training_weights') and
+          (LReport.Arrays['generation_weights'].Objects[0].Integers['weight'] = 1),
+          'Omitted generation preference inherits training weights');
       finally
         LReport.Free;
       end;
+      LGeneration := TJSONArray.Create;
+      LWrite.Add('generation_weights', LGeneration);
+      LRow := TJSONObject.Create;
+      LRow.Add('source_sha256', LHash);
+      LRow.Add('weight', 3);
+      LGeneration.Add(LRow);
+      LWrite.Strings['job_id'] := 'preference-live';
+      LReport := PrepareStudioJob(LCatalog, LWrite);
+      try
+        Check((LReport.Strings['generation_preference_policy'] = 'explicit') and
+          (LReport.Arrays['training_weights'].Objects[0].Integers['weight'] = 1) and
+          (LReport.Arrays['generation_weights'].Objects[0].Integers['weight'] = 3),
+          'Preflight distinguishes training and generation preferences');
+        Check(Pos('not learning', LReport.Strings['generation_preference_note']) > 0,
+          'Preflight explains soft preference scope');
+      finally
+        LReport.Free;
+      end;
+      LQueued := EnqueueStudioJob(LCatalog, LWrite);
+      LQueued.Free;
+      LQueued := EnqueueStudioJob(LCatalog, LWrite);
+      try
+        Check(LQueued.Booleans['already_queued'], 'Identical live preference retry reconciles');
+      finally
+        LQueued.Free;
+      end;
+      LRow.Integers['weight'] := 4;
+      LFailed := False;
+      try
+        LQueued := EnqueueStudioJob(LCatalog, LWrite);
+        LQueued.Free;
+      except
+        on LException: EAudio do LFailed := True;
+      end;
+      Check(LFailed, 'Live preference cannot replace immutable request');
+      LWrite.Strings['job_id'] := 'preference-finite';
+      LWrite.Strings['kind'] := 'train_generate';
+      LWrite.Integers['duration_ms'] := 20000;
+      LReport := PrepareStudioJob(LCatalog, LWrite);
+      try
+        Check((LReport.Strings['generation_preference_policy'] = 'explicit') and
+          (LReport.Arrays['generation_weights'].Objects[0].Integers['weight'] = 4),
+          'Finite audition accepts explicit generation preference');
+      finally
+        LReport.Free;
+      end;
+      LQueued := EnqueueStudioJob(LCatalog, LWrite);
+      LQueued.Free;
+      LQueued := EnqueueStudioJob(LCatalog, LWrite);
+      try
+        Check(LQueued.Booleans['already_queued'], 'Identical finite preference retry reconciles');
+      finally
+        LQueued.Free;
+      end;
+      LRow.Integers['weight'] := 0;
+      LFailed := False;
+      try
+        LReport := PrepareStudioJob(LCatalog, LWrite);
+        LReport.Free;
+      except
+        on LException: EAudio do LFailed := True;
+      end;
+      Check(LFailed, 'Zero generation preference is rejected');
+      LRow.Delete('weight');
+      LRow.Add('weight', 1.5);
+      LFailed := False;
+      try
+        LReport := PrepareStudioJob(LCatalog, LWrite);
+        LReport.Free;
+      except
+        on LException: EAudio do LFailed := True;
+      end;
+      Check(LFailed, 'Noninteger generation preference is rejected');
+      LRow.Delete('weight');
+      LRow.Add('weight', 1);
+      LRow.Strings['source_sha256'] := StringOfChar('f', 64);
+      LFailed := False;
+      try
+        LReport := PrepareStudioJob(LCatalog, LWrite);
+        LReport.Free;
+      except
+        on LException: EAudio do LFailed := True;
+      end;
+      Check(LFailed, 'Foreign recording preference is rejected');
+      LRow.Strings['source_sha256'] := LHash;
+      LGeneration.Add(LRow.Clone);
+      LFailed := False;
+      try
+        LReport := PrepareStudioJob(LCatalog, LWrite);
+        LReport.Free;
+      except
+        on LException: EAudio do LFailed := True;
+      end;
+      Check(LFailed, 'Duplicate recording preference is rejected');
+      LGeneration.Clear;
+      LFailed := False;
+      try
+        LReport := PrepareStudioJob(LCatalog, LWrite);
+        LReport.Free;
+      except
+        on LException: EAudio do LFailed := True;
+      end;
+      Check(LFailed, 'Missing recording preference is rejected');
     finally
       LWrite.Free;
     end;
   finally
     LProject.Free;
   end;
+  PartialPreferenceCheck(LInbox, LCatalog, LHash);
 end;
 
 function NewWrite(const AId: String): TJSONObject;

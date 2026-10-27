@@ -134,7 +134,8 @@ begin
 end;
 
 function MakeSource(const ARoot, AName: String; const APhase: Integer;
-  const ARate: Integer = 8000; const AChannels: Integer = 1): String;
+  const ARate: Integer = 8000; const AChannels: Integer = 1;
+  const AInvert: Boolean = False): String;
 var
   LSamples: TAudioSamples;
   LClip: TAudioClip;
@@ -156,8 +157,12 @@ begin
   begin
     LFrequency := 220 + (((LIndex div 4000) + APhase) mod 4) * 55;
     for LChannel := 0 to AChannels - 1 do
+    begin
       LSamples[LIndex * AChannels + LChannel] :=
         0.15 * Sin(2 * Pi * (LFrequency + LChannel * 110) * LIndex / ARate);
+      if AInvert then
+        LSamples[LIndex * AChannels + LChannel] := -LSamples[LIndex * AChannels + LChannel];
+    end;
   end;
   LClip := TAudioClip.Create(ARate, AChannels, LSamples);
   try
@@ -1348,7 +1353,8 @@ begin
     end;
   finally LCombined.Free; LState.Free; LProject.Free end;
 end;
-procedure PreparedLiveRun(const ACatalog: String; const AWrite: TJSONObject);
+procedure CheckLiveReplay(const ACatalog: String; const AWrite: TJSONObject;
+  const AJobId, AReferenceJobId: String; const ARate, AChannels: Integer);
 var
   LWrite: TJSONObject;
   LReply: TJSONObject;
@@ -1370,18 +1376,18 @@ begin
   LExpected := TMemoryStream.Create;
   LWorker := nil;
   try
-    LWrite.Strings['job_id'] := 'mixed-live';
+    LWrite.Strings['job_id'] := AJobId;
     LWrite.Strings['kind'] := 'stream_generate';
     LReply := EnqueueStudioJob(ACatalog, LWrite);
     LReply.Free;
     LWorker := TLiveWorker.Create(True);
     LWorker.FreeOnTerminate := False;
     LWorker.Catalog := ACatalog;
-    LWorker.JobId := 'mixed-live';
+    LWorker.JobId := AJobId;
     LWorker.Start;
     LDeadline := GetTickCount64;
     repeat
-      LState := ReadStudioLiveState(ACatalog, 'mixed-live');
+      LState := ReadStudioLiveState(ACatalog, AJobId);
       try
         Check(LState.Strings['job_status'] <> 'failed', 'Prepared live model starts');
         if LState.Find('total_frames') <> nil then Break;
@@ -1391,7 +1397,7 @@ begin
       Check(GetTickCount64 - LDeadline < 30000, 'Prepared live model meets fixture deadline');
       Sleep(10);
     until False;
-    LCommand.Add('job_id', 'mixed-live');
+    LCommand.Add('job_id', AJobId);
     LCommand.Add('action', 'pull');
     LCommand.Add('sequence', 0);
     for LSequence := 0 to 19 do
@@ -1401,7 +1407,7 @@ begin
       LReply.Free;
       LDeadline := GetTickCount64;
       repeat
-        LState := ReadStudioLiveState(ACatalog, 'mixed-live');
+        LState := ReadStudioLiveState(ACatalog, AJobId);
         try
           Check(LState.Strings['job_status'] <> 'failed', 'Prepared live worker remains valid');
           if (LState.Find('sequence') <> nil) and
@@ -1412,13 +1418,13 @@ begin
         Check(GetTickCount64 - LDeadline < 30000, 'Prepared live chunk meets fixture deadline');
         Sleep(10);
       until False;
-      LBody := TStringStream.Create(ReadStudioLiveAudio(ACatalog, 'mixed-live', LSequence));
+      LBody := TStringStream.Create(ReadStudioLiveAudio(ACatalog, AJobId, LSequence));
       try
         LWave := TWaveFrameReader.Create(LBody);
         try
-          Check((LWave.SampleRate = 48000) and (LWave.Channels = 2) and
-            (LWave.FrameCount = 48000), 'Live output uses prepared clock and layout');
-          LSamples := LWave.ReadFrames(48000);
+          Check((LWave.SampleRate = ARate) and (LWave.Channels = AChannels) and
+            (LWave.FrameCount = ARate), 'Live output uses requested clock and layout');
+          LSamples := LWave.ReadFrames(ARate);
           LActual.WriteBuffer(LSamples[0], Length(LSamples) * SizeOf(Single));
         finally
           LWave.Free;
@@ -1429,12 +1435,12 @@ begin
     end;
     LWorker.WaitFor;
     Check(LWorker.Succeeded and (LWorker.Failure = ''), 'Prepared live session completes after bounded pulls');
-    LFile := TFileStream.Create(StudioJobDirectory(ACatalog, 'mixed-cold') + PathDelim + 'seed-0.wav', fmOpenRead);
+    LFile := TFileStream.Create(StudioJobDirectory(ACatalog, AReferenceJobId) + PathDelim + 'seed-0.wav', fmOpenRead);
     try
       LWave := TWaveFrameReader.Create(LFile);
       try
         repeat
-          LSamples := LWave.ReadFrames(48000);
+          LSamples := LWave.ReadFrames(ARate);
           if Length(LSamples) = 0 then Break;
           LExpected.WriteBuffer(LSamples[0], Length(LSamples) * SizeOf(Single));
         until False;
@@ -1452,7 +1458,7 @@ begin
     begin
       if not LWorker.Finished then
       begin
-        LReply := CancelStudioJob(ACatalog, 'mixed-live');
+        LReply := CancelStudioJob(ACatalog, AJobId);
         LReply.Free;
         LWorker.WaitFor;
       end;
@@ -1615,7 +1621,7 @@ begin
     finally
       LJob.Free;
     end;
-    PreparedLiveRun(LCatalog, LWrite);
+    CheckLiveReplay(LCatalog, LWrite, 'mixed-live', 'mixed-cold', 48000, 2);
     LCache := GetEnvironmentVariable('PYTHIAN_STUDIO_PREPARED_CACHE');
     Check(LCache <> '', 'Mixed fixture requires an isolated explicit cache root');
     LChangedPath := IncludeTrailingPathDelimiter(LCache) +
@@ -1676,6 +1682,222 @@ begin
     LCold.Free;
     LWrite.Free;
     LProject.Free;
+  end;
+end;
+
+procedure PreferenceRun(const ARoot: String);
+var
+  LCatalog: String;
+  LLibrary: String;
+  LHashes: array[0..1] of String;
+  LProjectWrite: TJSONObject;
+  LProject: TJSONObject;
+  LWrite: TJSONObject;
+  LJob: TJSONObject;
+  LRow: TJSONObject;
+  LCold: TJSONObject;
+  LMatched: TJSONObject;
+  LBiased: TJSONObject;
+  LReplay: TJSONObject;
+  LTraining: TJSONObject;
+  LColdLedger: TJSONObject;
+  LBiasedLedger: TJSONObject;
+  LProfile: TJSONObject;
+  LPreferences: TJSONArray;
+  LModelRoot: String;
+  LProfileHash: String;
+  LModelHash: String;
+  LJournalHashes: array[0..2] of String;
+  LIndex: Integer;
+  LBeforeSecond: Integer;
+  LAfterSecond: Integer;
+  LRange: Integer;
+  LFailed: Boolean;
+
+  function ExecuteJob(const AId: String): TJSONObject;
+  var
+    LDetail: TJSONObject;
+  begin
+    LWrite.Strings['job_id'] := AId;
+    LDetail := EnqueueStudioJob(LCatalog, LWrite);
+    LDetail.Free;
+    Check(RunStudioWorker(LCatalog, AId, LLibrary), 'Preference job completes: ' + AId);
+    LDetail := ReadStudioJob(LCatalog, AId);
+    try
+      Result := TJSONObject(LDetail.Objects['results'].Clone);
+    finally
+      LDetail.Free;
+    end;
+  end;
+
+  procedure SetPreferences(const AFirst, ASecond: Integer);
+  begin
+    if LWrite.Find('generation_weights') <> nil then
+      LWrite.Delete('generation_weights');
+    LPreferences := TJSONArray.Create;
+    LPreferences.Add(TJSONObject.Create(['source_sha256', LHashes[0], 'weight', AFirst]));
+    LPreferences.Add(TJSONObject.Create(['source_sha256', LHashes[1], 'weight', ASecond]));
+    LWrite.Add('generation_weights', LPreferences);
+  end;
+
+begin
+  Check(not DirectoryExists(ARoot), 'Preference fixture root must be fresh');
+  Check(ForceDirectories(ARoot), 'Create preference fixture root');
+  LCatalog := ARoot + PathDelim + 'catalog';
+  LLibrary := ARoot + PathDelim + 'library';
+  { Identical sign-independent acoustic features, distinct original PCM/identity.
+    This checks eligible candidate choice, not musical discrimination or quality. }
+  LHashes[0] := MakeSource(ARoot, 'preference-one', 0);
+  LHashes[1] := MakeSource(ARoot, 'preference-two', 0, 8000, 1, True);
+  Check(LHashes[0] <> LHashes[1], 'Preference originals have distinct identities');
+  LProjectWrite := ProjectWrite('preferences', LHashes[0]);
+  LProject := nil;
+  LWrite := nil;
+  LCold := nil;
+  LMatched := nil;
+  LBiased := nil;
+  LReplay := nil;
+  LTraining := nil;
+  LColdLedger := nil;
+  LBiasedLedger := nil;
+  LProfile := nil;
+  try
+    LRow := TJSONObject.Create(['source_sha256', LHashes[1], 'selection', 'full']);
+    LRow.Add('classifications', TJSONArray.Create(['second authored control']));
+    LProjectWrite.Arrays['sources'].Add(LRow);
+    LProject := SaveStudioProject(LCatalog, LProjectWrite);
+    LWrite := JobWrite('preference-legacy', LHashes[0], LProject);
+    LWrite.Arrays['source_weights'].Objects[0].Integers['weight'] := 2;
+    LWrite.Arrays['source_weights'].Add(TJSONObject.Create([
+      'source_sha256', LHashes[1], 'weight', 1]));
+    LWrite.Add('reconstruction', 'source_successor');
+    LCold := ExecuteJob('preference-legacy');
+    Check(not LCold.Booleans['model_reused'], 'First preference model is actually learned');
+    Check((LCold.Strings['generation_preference_policy'] = 'inherited_training_weights') and
+      (LCold.Arrays['generation_weights'].AsJSON = LWrite.Arrays['source_weights'].AsJSON),
+      'Historical omission binds inherited choices without changing request');
+    LModelRoot := LCatalog + PathDelim + 'studio' + PathDelim + 'models' + PathDelim +
+      LCold.Strings['training_identity_sha256'];
+    LProfileHash := HashFile(LModelRoot + PathDelim + 'profile.json');
+    LModelHash := HashFile(LModelRoot + PathDelim + 'model.wfcs');
+    LProfile := ReadStudioJSON(LModelRoot + PathDelim + 'profile.json');
+    Check(LProfile.Find('generation_weights') = nil,
+      'Per-job generation preference does not enter immutable trained profile');
+    for LIndex := 0 to 2 do
+      Check(LProfile.Objects['journal_profile'].Arrays['sources'].Objects[LIndex].Find(
+        'generation_weight') = nil, 'New learned profiles do not retain unused playback metadata');
+    for LIndex := 0 to 2 do
+      LJournalHashes[LIndex] := HashFile(StudioJobDirectory(LCatalog, 'preference-legacy') +
+        PathDelim + 'analysis' + PathDelim + IntToStr(LIndex) + '.pyaf');
+    LColdLedger := ReadStudioJSON(StudioJobDirectory(LCatalog, 'preference-legacy') +
+      PathDelim + 'seed-0.receipt.json');
+
+    SetPreferences(2, 1);
+    LMatched := ExecuteJob('preference-matched');
+    Check(LMatched.Booleans['model_reused'] and
+      (LMatched.Strings['training_identity_sha256'] = LCold.Strings['training_identity_sha256']) and
+      (LMatched.Arrays['outputs'].Objects[0].Strings['wav_sha256'] =
+        LCold.Arrays['outputs'].Objects[0].Strings['wav_sha256']),
+      'Explicit legacy-equivalent preferences reuse exact model and original audio');
+
+    SetPreferences(1, 8);
+    LBiased := ExecuteJob('preference-biased');
+    Check(LBiased.Booleans['model_reused'] and
+      (LBiased.Strings['training_identity_sha256'] = LCold.Strings['training_identity_sha256']) and
+      (LBiased.Strings['model_sha256'] = LCold.Strings['model_sha256']) and
+      (LBiased.Arrays['sources'].AsJSON = LCold.Arrays['sources'].AsJSON),
+      'Generation preference preserves learned sources, weights, identity and WFC model');
+    Check((LBiased.Strings['generation_preference_policy'] = 'explicit') and
+      (LBiased.Arrays['generation_weights'].AsJSON = LWrite.Arrays['generation_weights'].AsJSON),
+      'Per-job receipt binds explicit generation preferences');
+    Check(not DirectoryExists(StudioJobDirectory(LCatalog, 'preference-biased') + PathDelim + 'analysis'),
+      'Preference-only change does not regenerate feature journals');
+    LBiasedLedger := ReadStudioJSON(StudioJobDirectory(LCatalog, 'preference-biased') +
+      PathDelim + 'seed-0.receipt.json');
+    Check(LBiasedLedger.Arrays['grain_map'].Count = LColdLedger.Arrays['grain_map'].Count,
+      'Preference change preserves complete grain clock');
+    LBeforeSecond := 0;
+    LAfterSecond := 0;
+    for LIndex := 0 to LColdLedger.Arrays['grain_map'].Count - 1 do
+    begin
+      Check(LColdLedger.Arrays['grain_map'].Objects[LIndex].Integers['token'] =
+        LBiasedLedger.Arrays['grain_map'].Objects[LIndex].Integers['token'],
+        'Preference preserves every WFC token at the same fixed-hop ordinal');
+      LRange := LColdLedger.Arrays['grain_map'].Objects[LIndex].Integers['range_index'];
+      if LCold.Arrays['sources'].Objects[LRange].Strings['source_sha256'] = LHashes[1] then
+        Inc(LBeforeSecond);
+      LRange := LBiasedLedger.Arrays['grain_map'].Objects[LIndex].Integers['range_index'];
+      if LBiased.Arrays['sources'].Objects[LRange].Strings['source_sha256'] = LHashes[1] then
+        Inc(LAfterSecond);
+    end;
+    Check((LAfterSecond > LBeforeSecond) and (LBeforeSecond > 0) and
+      (LAfterSecond < LBiasedLedger.Arrays['grain_map'].Count),
+      'Higher preference increases eligible recording choices without a hard lock');
+    Check((LBiased.Arrays['outputs'].Objects[0].Strings['wav_sha256'] <>
+      LCold.Arrays['outputs'].Objects[0].Strings['wav_sha256']) and
+      (LBiased.Arrays['outputs'].Objects[0].Int64s['frame_count'] = 160000),
+      'Candidate choice affects actual PCM while twenty-second clock stays exact');
+    LReplay := ExecuteJob('preference-replay');
+    Check(LReplay.Booleans['model_reused'] and
+      (LReplay.Arrays['outputs'].Objects[0].Strings['wav_sha256'] =
+        LBiased.Arrays['outputs'].Objects[0].Strings['wav_sha256']) and
+      (LReplay.Arrays['outputs'].Objects[0].Strings['grain_map_sha256'] =
+        LBiased.Arrays['outputs'].Objects[0].Strings['grain_map_sha256']),
+      'Preference replay repeats complete PCM and source choices');
+    CheckLiveReplay(LCatalog, LWrite, 'preference-live', 'preference-biased', 8000, 1);
+    LJob := ReadStudioJob(LCatalog, 'preference-live');
+    try
+      Check(LJob.Objects['results'].Booleans['model_reused'] and
+        (LJob.Objects['results'].Arrays['generation_weights'].AsJSON =
+          LWrite.Arrays['generation_weights'].AsJSON),
+        'Live session reuses model and retains the exact generation preference');
+    finally
+      LJob.Free;
+    end;
+    LJob := EnqueueStudioJob(LCatalog, LWrite);
+    try
+      Check(LJob.Strings['status'] = 'completed', 'Lost-response retry reconciles exact preference request');
+    finally
+      LJob.Free;
+    end;
+    SetPreferences(8, 1);
+    LFailed := False;
+    try
+      LJob := EnqueueStudioJob(LCatalog, LWrite);
+      LJob.Free;
+    except
+      on EAudio do LFailed := True;
+    end;
+    Check(LFailed, 'Existing immutable job cannot acquire different preferences');
+    LWrite.Arrays['source_weights'].Objects[0].Integers['weight'] := 3;
+    LTraining := ExecuteJob('preference-new-training');
+    Check(not LTraining.Booleans['model_reused'] and
+      (LTraining.Strings['training_identity_sha256'] <> LCold.Strings['training_identity_sha256']),
+      'Actual training-weight change creates a separate learned identity');
+    Check((HashFile(LModelRoot + PathDelim + 'profile.json') = LProfileHash) and
+      (HashFile(LModelRoot + PathDelim + 'model.wfcs') = LModelHash),
+      'All preference changes leave the original saved model bytes intact');
+    for LIndex := 0 to 2 do
+      Check(HashFile(StudioJobDirectory(LCatalog, 'preference-legacy') + PathDelim +
+        'analysis' + PathDelim + IntToStr(LIndex) + '.pyaf') = LJournalHashes[LIndex],
+        'Original verified feature journals remain byte-identical');
+    Check((HashFile(ARoot + PathDelim + 'inbox-preference-one' + PathDelim + 'source.wav') = LHashes[0]) and
+      (HashFile(ARoot + PathDelim + 'inbox-preference-two' + PathDelim + 'source.wav') = LHashes[1]),
+      'Preference learning never replaces original recordings');
+    WriteLn('Preference source choices: ', LBeforeSecond, ' -> ', LAfterSecond,
+      ' of ', LBiasedLedger.Arrays['grain_map'].Count);
+  finally
+    LProfile.Free;
+    LBiasedLedger.Free;
+    LColdLedger.Free;
+    LTraining.Free;
+    LReplay.Free;
+    LBiased.Free;
+    LMatched.Free;
+    LCold.Free;
+    LWrite.Free;
+    LProject.Free;
+    LProjectWrite.Free;
   end;
 end;
 
@@ -1847,7 +2069,12 @@ end;
 
 begin
   try
-    if (ParamCount = 2) and (ParamStr(1) = '--mixed-only') then
+    if (ParamCount = 2) and (ParamStr(1) = '--preferences-only') then
+    begin
+      PreferenceRun(ExpandFileName(ParamStr(2)));
+      WriteLn('PASS ', GChecks, ' source-preference worker checks');
+    end
+    else if (ParamCount = 2) and (ParamStr(1) = '--mixed-only') then
     begin
       MixedRun(ExpandFileName(ParamStr(2)));
       WriteLn('PASS ', GChecks, ' mixed-format Studio worker checks');

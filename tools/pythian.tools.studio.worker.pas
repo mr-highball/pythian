@@ -138,6 +138,7 @@ type
     FMaximumMilliseconds: QWord;
     FSources: array of TSourceHandle;
     FRanges: array of TRangeHandle;
+    FGenerationWeights: TJournalSelectionWeights;
     FOptions: TAnalysisOptions;
     FReceipt: TJSONObject;
     FProfile: TJournalModelProfile;
@@ -171,6 +172,7 @@ type
     function TryReuseModel(const AExpected: TJSONObject = nil;
       const AModelText: String = ''): Boolean;
     procedure Train;
+    procedure BindGenerationPreferences;
     procedure PrepareSourceContinuity;
     function MakeProfile(const AReader: TJournalTrainingReader;
       const APalette: TAcousticPalette; const AModel: TWfcSequenceModel;
@@ -433,6 +435,7 @@ procedure TStudioWork.Preflight;
 var
   LSelections: TJSONArray;
   LWeights: TJSONArray;
+  LGenerationWeights: TJSONArray;
   LRows: TJSONArray;
   LRow: TJSONObject;
   LTrack: TJSONObject;
@@ -462,6 +465,9 @@ begin
   LProject := FRequest.Objects['project_snapshot'];
   LSelections := LProject.Arrays['sources'];
   LWeights := FRequest.Arrays['source_weights'];
+  LGenerationWeights := LWeights;
+  if FRequest.Find('generation_weights') <> nil then
+    LGenerationWeights := FRequest.Arrays['generation_weights'];
   LConfig := nil;
   if FRequest.Find('preparation') <> nil then
     LConfig := FRequest.Objects['preparation'];
@@ -507,6 +513,7 @@ begin
   LRows := TJSONArray.Create;
   FReceipt.Add('sources', LRows);
   SetLength(FRanges, LSelections.Count);
+  SetLength(FGenerationWeights, LSelections.Count);
   LUniqueBytes := 0;
   LTotalFeatures := 0;
   for LIndex := 0 to LSelections.Count - 1 do
@@ -587,6 +594,13 @@ begin
         end;
       end;
       Need(FRanges[LIndex].Weight >= 1, 'Every selected source needs an explicit weight');
+      for LWeightIndex := 0 to LGenerationWeights.Count - 1 do
+      begin
+        if LGenerationWeights.Objects[LWeightIndex].Strings['source_sha256'] = LHash then
+          FGenerationWeights[LIndex] := LGenerationWeights.Objects[LWeightIndex].Integers['weight'];
+      end;
+      Need((FGenerationWeights[LIndex] >= 1) and (FGenerationWeights[LIndex] <= 16),
+        'Every selected source needs a playback preference from 1 to 16');
       LFeatures := (FRanges[LIndex].Frames + FOptions.HopFrames - 1) div FOptions.HopFrames;
       Inc(LTotalFeatures, LFeatures);
       Need(LTotalFeatures <= MaximumStudioJobFeatures, 'Analyzed feature budget exceeded');
@@ -633,6 +647,8 @@ begin
     end;
   end;
   Need(LWeights.Count = Length(FSources), 'Weights must match exactly the selected source set');
+  Need(LGenerationWeights.Count = Length(FSources),
+    'Playback preferences must match exactly the selected source set');
   { Journals live on disk. Estimate simultaneous fixed feature batches, palette
     sampling, candidate slots, source/window caches and solver cells conservatively. }
   Need(Int64(CBatchFeatures) * 136 * 4 + Int64(65536) * 15 * SizeOf(Double) +
@@ -737,7 +753,6 @@ begin
       LRow.Add('first_feature', 0);
       LRow.Add('observations', FRanges[LIndex].Journal.TotalFeatures);
       LRow.Add('multiplicity', FRanges[LIndex].Weight);
-      LRow.Add('generation_weight', FRanges[LIndex].Weight);
     end;
     LCenters := TJSONArray.Create;
     Result.Add('palette', LCenters);
@@ -945,6 +960,23 @@ begin
   end;
 end;
 
+procedure TStudioWork.BindGenerationPreferences;
+begin
+  { Big Boss: bind output preferences after immutable model publication. They
+    must never enter the training receipt, cache identity or concurrent-model
+    comparison. Omitted historical requests retain their original audio choices. }
+  if FRequest.Find('generation_weights') = nil then
+  begin
+    FReceipt.Add('generation_weights', FRequest.Arrays['source_weights'].Clone);
+    FReceipt.Add('generation_preference_policy', 'inherited_training_weights');
+  end
+  else
+  begin
+    FReceipt.Add('generation_weights', FRequest.Arrays['generation_weights'].Clone);
+    FReceipt.Add('generation_preference_policy', 'explicit');
+  end;
+end;
+
 procedure TStudioWork.PrepareSourceContinuity;
 var
   LJobs: TJSONObject;
@@ -1111,12 +1143,10 @@ var
   LWriter: TWavePcm16Writer;
   LSession: TJournalAudioSession;
   LSamples: TAudioSamples;
-  LWeights: TJournalSelectionWeights;
   LLedger: TJSONArray;
   LRequestedFrames: Int64;
   LNaturalFrames: Int64;
   LGrains: Integer;
-  LIndex: Integer;
   LInput: TCheckedStream;
   LWave: TWaveFrameReader;
   LArtifact: TJSONObject;
@@ -1141,15 +1171,10 @@ begin
       LLedger := TJSONArray.Create;
       Result.Add('grain_map', LLedger);
       FGrainLedger := LLedger;
-      SetLength(LWeights, Length(FRanges));
-      for LIndex := 0 to High(LWeights) do
-      begin
-        LWeights[LIndex] := FRanges[LIndex].Weight;
-      end;
       LOutput := TFileStream.Create(LFinalPath, fmCreate or fmShareExclusive);
       LSink := TStreamAudioSink.Create(LOutput);
       LWriter := TWavePcm16Writer.Create(LSink, FProfile.SampleRate, FProfile.Channels, LRequestedFrames);
-      LSession := TJournalAudioSession.Create(FProfile, ReadCandidate, LWeights,
+      LSession := TJournalAudioSession.Create(FProfile, ReadCandidate, FGenerationWeights,
         ASeed, LRequestedFrames, RecordGrain, FSuccessors);
       LRendered := 0;
       Progress('generate_auditions', Int64(AOrdinal) * LRequestedFrames,
@@ -1226,7 +1251,6 @@ end;
 procedure TStudioWork.RenderLive(const AResult: TJSONObject);
 var
   LSession: TJournalAudioSession;
-  LWeights: TJournalSelectionWeights;
   LState, LCommand, LExcerpt: TJSONObject;
   LOutputs: TJSONArray;
   LSamples, LSlice: TAudioSamples;
@@ -1260,9 +1284,7 @@ begin
   AResult.Add('outputs', LOutputs);
   LTotal := Int64(FRequest.Integers['duration_ms']) * FProfile.SampleRate div 1000;
   try
-    SetLength(LWeights, Length(FRanges));
-    for LIndex := 0 to High(LWeights) do LWeights[LIndex] := FRanges[LIndex].Weight;
-    LSession := TJournalAudioSession.Create(FProfile, ReadCandidate, LWeights,
+    LSession := TJournalAudioSession.Create(FProfile, ReadCandidate, FGenerationWeights,
       FRequest.Arrays['seeds'].Integers[0], LTotal, nil, FSuccessors);
     FStreaming := True;
     LState := TJSONObject.Create;
@@ -1714,6 +1736,7 @@ begin
   end;
   Preflight;
   Train;
+  BindGenerationPreferences;
   PrepareSourceContinuity;
   FReceipt.Add('retained_token_count', FProfile.Palette.Count);
   FReceipt.Add('retained_candidate_count', FProfile.Pool.SlotCount);

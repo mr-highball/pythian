@@ -12,6 +12,66 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Independent playback preferences connected to retained learning - 2026-10-27
+
+Previous goal turn is progress: mixed-format native WFC learning was implemented,
+checked, deployed and pushed at `811b0a4`. Big Boss rechecked the least-complete
+NS-5 critical path. Spiegel's bounded source/reference assessment found no new
+supported quiet-tail/rest, tonal-versus-harmonic or physical pulse evidence;
+all existing scientific stops remain. Spike identified a concrete existing
+[vocabulary_01](TODO/NS-5_vocabulary_01.md) AC1 gap: Studio passed one recording
+weight into both learning multiplicity and generation-time selection, despite
+the primary selector already supporting independent preferences.
+
+Selected criterion: separate those inputs without retraining. Deliverable:
+explicit immutable generation preferences, settings/receipts and primary finite/
+live session wiring. Closing evidence: same model/journals, WFC tokens and output
+clock, deterministic changed eligible source choices, exact finite/live replay,
+unchanged inherited-request behavior and original preservation. Stop on identity/
+clock/token drift, hidden retraining or guaranteed source-share claims.
+Spike owns jobs/preflight, Spiegel owns shared settings, Big Boss owns worker,
+actual consumer fixture, build registration and integration/final judgment.
+
+New UI labels are Training weight and Playback preference; all new requests
+carry separate vectors. Existing immutable requests with omission inherit their
+recorded weights. Preferences bind to per-job receipts after model publication,
+so neither model identity nor concurrent candidate comparison depends on the
+requested audio share. Each included range receives its recording's positive
+preference; token eligibility and range layout still affect realized shares.
+No new selector, inference method or WFC dependency change was introduced.
+
+Actual authored two-recording/three-range WFC generation changes source-two
+choices from 31 to 123 of 154 while preserving every generated token, model and
+journal bytes, source receipts and the exact 20-second clock. Actual PCM changes,
+then repeats exactly; complete live and finite output match. Training-weight
+changes create a different identity, and immutable request/retry checks pass.
+Checked stable FPC 3.2.2 Win64: final root 310 /independent 314 preference checks,
+native jobs 102 /independent 102, historical worker/library 376 and mixed-format
+regression 1,134; all zero leaks. Actual pas2js settings/recovery passes 50 /
+independent 50 and all four web programs compile. Polling changes assertion
+counts, not the deterministic source-choice result. Final review removed one
+unused render variable and dead generation-weight metadata from newly written
+model profiles. Focused worker checks were repeated; the older profile decoder
+is unchanged and cached models are not rewritten. The fresh fixture does not
+claim a newly exercised historical cache. No algorithm changed. Combined QA found no blocker or
+failed implementation submission. Evidence remains in dedicated E-drive
+`build/tests/runs/source-preferences-20261027-*` folders.
+
+Actual browser inventory remains empty. The app's blank-browser request is queued
+without a controllable surface; no browser playback or visual evidence follows.
+The bounded AC1 separation requirement is mechanically qualified, but no full
+numbered vocabulary criterion closes: repeated musical-section accounting and
+representative musical evaluation remain open. Consecutive nonclosing delivery
+count is **1**; scientific stops/exposure counters remain unchanged. No task move
+or point credit: **53 open /57 DONE; 52.45 credited /47.55 remaining**, with NS
+completions **100/90/25/70/14/54**. No private recordings or responses were used
+for this batch. The final matched service/worker and twelve web assets are
+deployed to the fixed stable slot after a guard verified no active/pending jobs.
+All fourteen staged hashes and the served Studio JavaScript match; LAN HTTPS
+returns 200. All 5,951 existing private JSON/JSONL hashes are unchanged. The
+short E-drive cwd/cache settings remain, and no QA worker/browser or playback
+remains. Private manifests bind final source/artifact identities and these checks.
+
 ## Mixed-format WFC learning implemented; browser qualification open - 2026-10-27
 
 Big Boss selected [studio_07](TODO/NS-6_studio_07.md), a real multi-recording

@@ -634,6 +634,35 @@ begin
   end;
 end;
 
+procedure ValidateWeightVector(const AWrite: TJSONObject; const AName: String);
+var
+  LWeights: TJSONArray;
+  LRow: TJSONObject;
+  LHash: String;
+  LIndex: Integer;
+  LPrevious: Integer;
+begin
+  Need((AWrite.Find(AName) <> nil) and (AWrite.Find(AName).JSONType = jtArray),
+    AName + ' must be an array');
+  LWeights := AWrite.Arrays[AName];
+  Need((LWeights.Count >= 1) and (LWeights.Count <= 32), AName + ' exceeds bounds');
+  for LIndex := 0 to LWeights.Count - 1 do
+  begin
+    Need(LWeights[LIndex].JSONType = jtObject, 'Invalid ' + AName + ' entry');
+    LRow := TJSONObject(LWeights[LIndex]);
+    Keys(LRow, '|source_sha256|weight|');
+    Need((Number(LRow, 'weight') >= 1) and (Number(LRow, 'weight') <= 16),
+      AName + ' weight must be 1..16');
+    LHash := Text(LRow, 'source_sha256');
+    Need(ValidHash(LHash), 'Invalid ' + AName + ' source identity');
+    for LPrevious := 0 to LIndex - 1 do
+    begin
+      Need(LWeights.Objects[LPrevious].Strings['source_sha256'] <> LHash,
+        'Duplicate source in ' + AName);
+    end;
+  end;
+end;
+
 function BuildJobRequest(const ACatalogRoot: String;
   const AWrite: TJSONObject): TJSONObject;
 var
@@ -646,14 +675,11 @@ var
   LQueued: Integer;
   LIndex: Integer;
   LSeeds: TJSONArray;
-  LWeights: TJSONArray;
-  LHash: String;
-  LRow: TJSONObject;
   LPreparation: TJSONObject;
 begin
   Need(AWrite <> nil, 'Job write is required');
   Keys(AWrite, '|format|job_id|kind|project_id|project_revision|project_snapshot_sha256|' +
-    'duration_ms|seeds|maximum_tokens|model_order|source_weights|resolve_unassigned|' +
+    'duration_ms|seeds|maximum_tokens|model_order|source_weights|generation_weights|resolve_unassigned|' +
     'parent_job_id|retry_of|source_sha256|start_frame|end_frame|effects|tail_seconds|' +
     'preview_job_id|collection_name|title|capture_id|mode|channel|tempo_bpm|' +
     'discovery_revision|entries|reconstruction|preparation|');
@@ -671,7 +697,7 @@ begin
     if (LKind = 'train_generate') or (LKind = 'stream_generate') then
     begin
       Keys(AWrite, '|format|job_id|kind|project_id|project_revision|project_snapshot_sha256|' +
-        'duration_ms|seeds|maximum_tokens|model_order|source_weights|resolve_unassigned|' +
+        'duration_ms|seeds|maximum_tokens|model_order|source_weights|generation_weights|resolve_unassigned|' +
         'parent_job_id|retry_of|reconstruction|preparation|');
       if AWrite.Find('preparation') <> nil then
       begin
@@ -724,24 +750,10 @@ begin
           'Only raw acoustic recombination is currently runnable');
         Need((LProject.Arrays['sources'].Count >= 1) and
           (LProject.Arrays['sources'].Count <= 64), 'Project range count exceeds bound');
-        Need((AWrite.Find('source_weights') <> nil) and
-          (AWrite.Find('source_weights').JSONType = jtArray), 'Source weights are required');
-        LWeights := AWrite.Arrays['source_weights'];
-        Need((LWeights.Count >= 1) and (LWeights.Count <= 32), 'Source weights exceed bound');
-        for LIndex := 0 to LWeights.Count - 1 do
+        ValidateWeightVector(AWrite, 'source_weights');
+        if AWrite.Find('generation_weights') <> nil then
         begin
-          Need(LWeights[LIndex].JSONType = jtObject, 'Invalid source weight');
-          LRow := TJSONObject(LWeights[LIndex]);
-          Keys(LRow, '|source_sha256|weight|');
-          Need((Number(LRow, 'weight') >= 1) and (Number(LRow, 'weight') <= 16),
-            'Source weight must be 1..16');
-          LHash := Text(LRow, 'source_sha256');
-          Need(ValidHash(LHash), 'Invalid source weight identity');
-          for LQueued := 0 to LIndex - 1 do
-          begin
-            Need(LWeights.Objects[LQueued].Strings['source_sha256'] <> LHash,
-              'Duplicate source weight');
-          end;
+          ValidateWeightVector(AWrite, 'generation_weights');
         end;
         LRequest.Add('project_snapshot', LProject.Clone);
       finally
@@ -1005,6 +1017,27 @@ begin
             Need(LNames.IndexOf(LRequest.Arrays['source_weights'].Objects[LIndex].
               Strings['source_sha256']) >= 0, 'Source weight does not match the selected recordings');
           end;
+          if LRequest.Find('generation_weights') <> nil then
+          begin
+            Need(LRequest.Arrays['generation_weights'].Count = LNames.Count,
+              'Provide one generation preference for each selected recording');
+            for LIndex := 0 to LRequest.Arrays['generation_weights'].Count - 1 do
+            begin
+              Need(LNames.IndexOf(LRequest.Arrays['generation_weights'].Objects[LIndex].
+                Strings['source_sha256']) >= 0,
+                'Generation preference does not match the selected recordings');
+            end;
+            Result.Add('generation_weights', LRequest.Arrays['generation_weights'].Clone);
+            Result.Add('generation_preference_policy', 'explicit');
+          end
+          else
+          begin
+            Result.Add('generation_weights', LRequest.Arrays['source_weights'].Clone);
+            Result.Add('generation_preference_policy', 'inherited_training_weights');
+          end;
+          Result.Add('training_weights', LRequest.Arrays['source_weights'].Clone);
+          Result.Add('generation_preference_note',
+            'Preferences affect eligible candidate choices, not learning or guaranteed recording shares.');
           Result.Add('source_count', LNames.Count);
           Result.Add('range_count', LRows.Count);
           Result.Add('sample_rate', LRate);

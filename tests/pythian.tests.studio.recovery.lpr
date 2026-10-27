@@ -250,6 +250,53 @@ begin
         'Requested output is distinct from the training duration');
       Check(Writes = 2, 'Checking setup adds no enqueue or cancellation');
       Check(not LastRequest.hasOwnProperty('preparation'), 'Preparation is opt-in');
+      Check(Pos('Training weight', document.getElementById('batch-weights').textContent) > 0,
+        'Training control is labelled');
+      Check(Pos('Playback preference', document.getElementById('batch-weights').textContent) > 0,
+        'Playback control is labelled');
+      Check((TJSObject(TJSArray(LastRequest['source_weights'])[0])['weight'] = 1) and
+        (TJSObject(TJSArray(LastRequest['generation_weights'])[0])['weight'] = 1),
+        'Both recording preferences default to one');
+      TJSHTMLInputElement(document.getElementById('batch-weight-test-source')).value := '3';
+      TJSHTMLInputElement(document.getElementById('batch-playback-test-source')).value := '7';
+      document.getElementById('batch-playback-test-source').dispatchEvent(TJSEvent.new('input'));
+      TJSHTMLElement(document.getElementById('batch-check')).click;
+      for I := 1 to 4 do await(WaitTurn);
+      Check((TJSObject(TJSArray(LastRequest['source_weights'])[0])['weight'] = 3) and
+        (TJSObject(TJSArray(LastRequest['generation_weights'])[0])['weight'] = 7),
+        'Training and playback vectors remain separate');
+      Other := TJSObject(TJSJSON.parse(TJSJSON.stringify(LastRequest)));
+      Other['parent_job_id'] := 'reviewed';
+      Batches.ApplyNextBatch(Other);
+      Check(TJSHTMLInputElement(document.getElementById('batch-playback-test-source')).value = '7',
+        'Reviewed explicit playback preference restored');
+      asm delete Other.generation_weights; end;
+      Batches.ApplyNextBatch(Other);
+      Check(TJSHTMLInputElement(document.getElementById('batch-playback-test-source')).value = '3',
+        'Legacy reviewed batch inherits training preference');
+      Other['generation_weights'] := TJSJSON.parse('[{"source_sha256":"other","weight":2}]');
+      try
+        Batches.ApplyNextBatch(Other);
+        Check(False, 'Mismatched reviewed preferences must fail');
+      except
+        on E: Exception do Check(True, 'Mismatched reviewed preferences are rejected');
+      end;
+      Check(TJSHTMLInputElement(document.getElementById('batch-playback-test-source')).value = '3',
+        'Rejected reviewed preferences do not change controls');
+      Project['snapshot_sha256'] := 'qa-preflight-updated';
+      Batches.SetProject(Project, False);
+      Check((TJSHTMLInputElement(document.getElementById('batch-weight-test-source')).value = '3') and
+        (TJSHTMLInputElement(document.getElementById('batch-playback-test-source')).value = '3'),
+        'Same-project redraw preserves unsaved recording preferences');
+      Before := Writes;
+      TJSHTMLInputElement(document.getElementById('batch-playback-test-source')).value := '17';
+      document.getElementById('batch-playback-test-source').dispatchEvent(TJSEvent.new('input'));
+      TJSHTMLElement(document.getElementById('batch-check')).click;
+      for I := 1 to 4 do await(WaitTurn);
+      Check(Writes = Before, 'Out-of-range playback preference is rejected before request');
+      TJSHTMLInputElement(document.getElementById('batch-playback-test-source')).value := '3';
+      document.getElementById('batch-playback-test-source').dispatchEvent(TJSEvent.new('input'));
+
       TJSHTMLInputElement(document.getElementById('batch-prepare')).checked := True;
       document.getElementById('batch-prepare').dispatchEvent(TJSEvent.new('change'));
       TJSHTMLElement(document.getElementById('batch-check')).click;

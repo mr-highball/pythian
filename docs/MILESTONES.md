@@ -19,8 +19,12 @@ source-continuity mechanism through native streaming, stopped-preparation reuse
 and source-bound review excerpts. Native replay and pas2js/DOM checks pass;
 actual browser AC5 remains open. It adds one zero-credit task, with no new
 musical judgment or accepted-task movement.
-Native contribution accounting advances [vocabulary_01](TODO/NS-5_vocabulary_01.md)
-without completing it. The shared intake/text repair is accepted in
+Native contribution accounting and independent playback preferences advance
+[vocabulary_01](TODO/NS-5_vocabulary_01.md) without completing it. Authored native
+checks preserve exact model/journal bytes, WFC tokens and clocks while eligible
+source choices change; actual finite/live PCM replay passes. Browser and full
+musical criteria remain open, with no point credit or task move. The shared
+intake/text repair is accepted in
 [portability_02](TODO/DONE/NS-6_portability_02.md): actual native/pas2js execution
 and independent parity pass, with no additional credit.
 The shared [primary analysis repair](TODO/DONE/NS-6_portability_01.md) is also

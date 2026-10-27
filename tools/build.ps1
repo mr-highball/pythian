@@ -530,6 +530,13 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Studio live transport/replay/lease checks failed' }
         & (Join-Path $buildRoot "pythian.tests.studio.worker$executableSuffix") '--successor-live-only' ($studioFixtureRoot + '-successor-live')
         if ($LASTEXITCODE -ne 0) { throw 'Studio long source-continuity/reuse/excerpt checks failed' }
+        Push-Location $buildRoot
+        try {
+          & (Join-Path $buildRoot "pythian.tests.studio.worker$executableSuffix") '--preferences-only' ($studioFixtureRoot + '-preferences')
+          if ($LASTEXITCODE -ne 0) { throw 'Studio independent training/playback preference checks failed' }
+        } finally {
+          Pop-Location
+        }
         $mixedCachePrevious = $env:PYTHIAN_STUDIO_PREPARED_CACHE
         $env:PYTHIAN_STUDIO_PREPARED_CACHE = Join-Path $buildRoot ('mixed-cache-' + [Guid]::NewGuid().ToString('N'))
         Push-Location $buildRoot

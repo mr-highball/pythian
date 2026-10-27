@@ -90,7 +90,7 @@ actual browser/phone acceptance is not inferred from DOM tests.
 Accepted [measured learning progress](DONE/NS-6_studio_20.md) adds no credit.
 Accepted follow-through: [long-operation observability audit](DONE/NS-6_observability_01.md),
 That earlier solo batch earned no additional completion credit. The
-[coverage map](../OBSERVABILITY.md) owns remaining import, offline DSP,
+[coverage map](../OBSERVABILITY.md) owns remaining offline DSP,
 retained-style and actual browser-presentation gaps. Primary analysis execution
 is now [accepted](DONE/NS-6_portability_01.md). The
 [catalog importer and connected consumers](DONE/NS-6_observability_02.md) are
@@ -148,9 +148,17 @@ The user's private folder collections and classified whole/range corpora add
 [capture/exploration](DONE/NS-6_studio_06.md) are accepted operator outcomes;
 none implies accepted musical inference. Actual physical microphone quality
 remains unobserved; generated-device checks establish the capture lifecycle.
-The separately scoped [mixed-format preparation](NS-6_studio_07.md) follows this
-review batch. Current generation explicitly requires matching source rate/channels;
-it does not silently convert or omit a recording.
+The separately scoped [mixed-format preparation](NS-6_studio_07.md) now passes
+native conversion and mixed-format WFC/model replay checks, with actual browser
+and recorded-workload qualification open. Conversion is explicit; disabling it
+retains the matching-rate/channel requirement. No recording is silently omitted.
+
+[Vocabulary_01](NS-5_vocabulary_01.md) AC1 now separates training weights from
+playback preferences through the existing selector. Preference-only changes reuse
+the same learned model and journals; exact finite/live/replay checks pass on
+authored sources. Full vocabulary criteria, browser qualification and all credit
+remain open. This is one nonclosing delivery batch after mixed-format AC3/AC4;
+retained scientific stops are unchanged.
 
 Start at NS-5 (14%), currently least complete. Generic
 [corpus intake](DONE/NS-5_corpus_05.md) is accepted; the maintained
@@ -259,7 +267,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | [NS-5_style_01](NS-5_style_01.md) — Accept a bounded single-recording learned style | 6 | 1.20 | Dependencies |
 | [NS-5_style_02](NS-5_style_02.md) — Accept many-hour musical style learning | 10 | 2.00 | Dependencies |
 | [NS-5_style_03](NS-5_style_03.md) — Accept a new user's style without library changes | 6 | 1.20 | Dependencies + independent caller |
-| [NS-5_vocabulary_01](NS-5_vocabulary_01.md) — Learn balanced, representative reusable vocabularies | 6 | 1.20 | Native declaration accounting delivered; musical selection/normalization/comparison blocked |
+| [NS-5_vocabulary_01](NS-5_vocabulary_01.md) — Learn balanced, representative reusable vocabularies | 6 | 1.20 | Native accounting and separate generation preferences delivered; full musical coverage/comparison blocked |
 | [NS-5_vocabulary_02](NS-5_vocabulary_02.md) — Support frozen vocabulary growth and explicit rebuilds | 4 | 0.80 | Dependency-blocked |
 
 ### NS-6 — Independently usable library and delivery

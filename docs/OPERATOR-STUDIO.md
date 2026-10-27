@@ -90,6 +90,24 @@ finite/live replay evidence. [Studio_07](TODO/NS-6_studio_07.md) retains actual
 desktop/narrow and recorded-workload qualification; it does not establish
 supported musical inference or many-hour learning quality.
 
+### Adjust learning and playback separately
+
+**Generate → Settings → Recording preferences** has two controls per recording:
+**Training weight** changes its contribution to learning; **Playback preference**
+changes how often its eligible audio candidates are chosen using the same model.
+Both use 1..16. Start at one, change one control, then **Check setup** and generate
+an explicit new batch. Each included passage receives its recording's preference;
+this is not a guaranteed proportion of the final audio. A recording cannot supply
+a token it has no eligible candidate for.
+
+Changing only playback preference can reuse existing verified learned state. A
+first run or missing saved model still requires learning. Changing a
+training weight creates a separate training identity. Reviewed older batches
+restore their recorded choices when they did not have a separate preference.
+Saving a draft or feedback still does not start learning. Native/DOM replay checks
+cover this connection; browser presentation and musical benefit remain unqualified
+under [vocabulary_01](TODO/NS-5_vocabulary_01.md).
+
 ## UI and evidence requirements
 
 Studio uses three real tabs: **Sources**, **Generate**, and **Review**. Sources
