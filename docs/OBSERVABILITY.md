@@ -408,8 +408,11 @@ not qualify raw measurements or musical accuracy.
 
 ## Source measurement and admission
 
-[Source measurement](TODO/NS-6_observability_10.md) has a locally verified
-candidate through the primary Pascal units and actual retained style CLI.
+[Source measurement](TODO/DONE/NS-6_observability_10.md) is accepted at `7da8569`
+after native/pas2js checks and actual Ubuntu
+[run452](https://github.com/mr-highball/pythian/actions/runs/40595844656), including
+integration and both extracted consumers. It serves the primary Pascal units
+and actual retained style CLI.
 Both pitch-cell measurement overloads, admission and summaries accept the shared
 optional callback. `pitch_cell_measure` counts visited cells, including cells too
 short for the estimator; `pitch_cell_estimates` counts only completed estimator
@@ -436,8 +439,7 @@ native and 219–234 ms pas2js. This is a representative workload, not a maximum
 latency guarantee or browser-yielding evidence. Numerical/decision rules are
 unchanged; native same-target prior artifacts and actual pas2js checks qualify
 mechanics, not recorded accuracy. Evidence is under dedicated E-drive
-`build/tests/runs/measurement-progress-20261027-boss*`; published Ubuntu
-integration remains pending for this candidate.
+`build/tests/runs/measurement-progress-20261027-boss*`.
 
 ## Validation and limits
 

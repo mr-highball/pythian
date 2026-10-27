@@ -43,9 +43,17 @@ Stop on invented overall percentages, swallowed cancellation or dependency edits
 **Blockers**
 
 - [Shared callbacks and audit — DONE](DONE/NS-6_observability_01.md).
+- [Provider/context metadata reuse](NS-6_metadata_01.md).
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss pre-edit audit: provider validation/registry and context
+  preparation remain the next AC1 scope, but private UTF-8 and context binary
+  scalar algorithms duplicate the primary library. Follow the linked metadata
+  prerequisite before adding callbacks to these paths. Its text policy must
+  distinguish caller codec limits/NUL from corpus constraints; a wrapper around
+  the old parser is insufficient. No provider preparation criterion closes
+  from this assessment and the original obligations/counters remain intact.
 - 2026-10-27, Big Boss consumer audit: task10 owns primary pitch-cell/dynamics
   measurement and its style CLI forwarding. Other native pitch-tool forwarding,
   including `pythian.pitch.wav`'s model/generation commands, remains part of this

@@ -1,17 +1,21 @@
 # NS-6_observability_10 — Observe source measurement in wave-style learning
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
 Expose actual work and cancellation in primary pitch-cell and onset-dynamics
 measurement, then forward it through the retained style CLI. These raw source
 measurements precede the retained profile constructor; profile/model callbacks
-do not observe them. `MeasurePitchCells` calls the pitch estimator per cell,
-while `MeasureOnsetDynamics` visits source windows without a callback today.
+alone do not observe them. `MeasurePitchCells` calls the pitch estimator per
+cell, while `MeasureOnsetDynamics` visits source windows. Both now report their
+owned work through the shared callback.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
-Execution status: local candidate verified; published Ubuntu integration pending.
+Accepted 2026-10-27 at `7da8569` after native/pas2js evidence and actual Ubuntu
+[run452](https://github.com/mr-highball/pythian/actions/runs/40595844656):
+Success total10m40s/job10m37s, including integration and both extracted consumers.
+Big Boss performed solo verification; CI is not independent review.
 Big Boss owns this task solo under the
 current supplied operator instructions. Next deliverable: optional shared
 callbacks in the primary implementations and both pitch-cell overloads, with
@@ -37,11 +41,17 @@ math, invented totals, duplicated analysis or a distinct required gap.
 
 **Blockers**
 
-- [Shared progress contract — DONE](DONE/NS-6_observability_01.md).
-- [Retained wave-style API and CLI — DONE](DONE/NS-6_observability_07.md).
+- [Shared progress contract — DONE](NS-6_observability_01.md).
+- [Retained wave-style API and CLI — DONE](NS-6_observability_07.md).
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss acceptance: AC1–3 pass on the actual published consumer.
+  Artifact-container SHA256s (not ZIP hashes): logs
+  `660d1f0b9009497954d3a4a9a6f5ee5470a07740a544cebe8fb57e08d18bce1e`, packages
+  `e11978a911e9238629d8c5e23835325e15f5b9911fc40c34a78664583d74a556`.
+  Synchronous limits remain as recorded; no inference/math/clock policy changed.
+  This closes zero-credit observation, not musical or browser/phone acceptance.
 - 2026-10-27, Big Boss local result: checked Win32/Win64 and actual pas2js each
   pass 24,731 primary checks and 16 original-exception abort/retry selections.
   Native runs and affected core pitch, profile and retained-model consumers have

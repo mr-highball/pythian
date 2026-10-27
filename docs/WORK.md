@@ -12,6 +12,61 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Source measurement accepted; metadata reuse in progress - 2026-10-27
+
+Authenticated inspection now confirms Ubuntu
+[run452](https://github.com/mr-highball/pythian/actions/runs/40595844656),
+job122511422043, terminal Success at `7da8569`, total10m40s/job10m37s, including
+integration and both extracted consumers. Accept
+[observability_10](TODO/DONE/NS-6_observability_10.md) AC1–3 with its native/
+pas2js and actual consumer evidence. Big Boss verified solo; CI is not
+independent review. Artifact-container digests are in the task/E-drive record.
+Counts are **53 open / 70 DONE, 123 total**, NS-6 15 open; completion remains
+**100/90/25/70/14/54**, **52.45/47.55**. Delivery nonclosing count is **0** after
+criterion closure; no scientific counter or musical credit changes. Earlier
+pending-run entries below are history. Do not reinterpret old source/answer
+evidence as a new result.
+
+Continue the linked metadata reuse prerequisite solo under the batch and stop
+conditions below. Exact source blobs at `7da8569` are frozen under the dedicated
+E-drive metadata-reuse baseline. The draft removes duplicate text and context
+byte loops and adopts the primary implementation. Existing corpus regression
+caught its promised error-message contract; the facade now preserves it while
+sharing scalar validation. Checked Win64 corpus19 passes with zero leaks;
+generic policy/Unicode/callback and native consumer parity remain unqualified.
+No metadata task acceptance is inferred from this initial check. Full goal,
+provider return path and all stopped scientific families remain intact.
+
+## Metadata reuse prerequisite selected - 2026-10-27
+
+The preceding goal turn is progress: `7da8569` delivered primary measurement
+callbacks and repaired partial note-array publication during callback abort,
+with actual native/pas2js consumers and prior output parity. Ubuntu run452 is
+freshly confirmed live at that revision; keep the same job and do not cancel it
+with another push. Task10 remains open pending its clean published consumer.
+This verified wait is not a scientific or implementation failure.
+
+Big Boss audited the next provider-contract/session boundary under task04 AC1
+before edits. It exposes duplicated UTF-8 decoding in provider codecs and private
+context byte-field loops despite accepted primary implementations. The user's
+reuse instruction requires [metadata_01](TODO/NS-6_metadata_01.md) before extending
+those paths. Big Boss owns it solo: share primary scalar text validation with
+explicit byte/empty/NUL policies and native/pas2js semantics, adopt primary
+binary fields in context archives/profiles, and delete the old algorithms.
+Evidence: authored text oracles and policy/abort/retry checks, actual corpus and
+provider consumers, same-target prior archives/behavior and clean published
+integration. Stop on host encoding conversion, altered scalar policies/bytes,
+false callback counts or an unowned required gap. Freeze exact pre-edit sources
+under the dedicated E-drive metadata-reuse baseline; all new output remains E.
+
+Task04 retains all provider/context preparation, batch and operator obligations;
+the prerequisite does not certify their interiors. Accounting is **54 open /
+69 DONE, 123 total**, NS-6 16 open; percentages stay **100/90/25/70/14/54**,
+**52.45/47.55**. Delivery nonclosing count enters at 0 after the accepted
+wave-profile criterion; adding the gap resets no counter or stopped family.
+No new musical experiment, source, operator answer, retraining, companion edit,
+service replacement or browser audio is selected. The full goal stays active.
+
 ## Wave profiles accepted; source measurement selected - 2026-10-27
 
 The preceding goal turn is progress: `af46648` delivered the actual profile/CLI
@@ -28,7 +83,7 @@ Counts are **53 open / 69 DONE, 122 total**, NS-6 15 open. Completion remains
 criterion closure; scientific counters remain stopped and no musical credit is
 inferred from instrumentation.
 
-Big Boss selects the linked [source-measurement gap](TODO/NS-6_observability_10.md)
+Big Boss selects the linked [source-measurement gap](TODO/DONE/NS-6_observability_10.md)
 AC1–3 solo: optional callbacks in primary pitch-cell and onset-dynamics
 measurement, nested owned validation/admission/summary/projection and actual
 style CLI forwarding. Evidence: nil/observed measurements and native archives/
@@ -97,7 +152,7 @@ Ubuntu consumer is verified; no musical or phone acceptance is earned.
 
 The actual CLI review exposed unobserved primary pitch-cell and onset-dynamics
 measurement before the retained profile. Big Boss stopped expansion and created
-[observability_10](TODO/NS-6_observability_10.md), preserving the gap outside
+[observability_10](TODO/DONE/NS-6_observability_10.md), preserving the gap outside
 task07's profile scope. The existing dense pitch tracker callback is forwarded.
 No generic WFC defect is demonstrated. Accounting is **54 open / 68 DONE, 122
 total**, NS-6 16 open; percentages stay **100/90/25/70/14/54**, **52.45/47.55**.

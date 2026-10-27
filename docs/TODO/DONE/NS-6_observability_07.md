@@ -8,7 +8,7 @@ Expose measured work and cancellation through the existing retained wave-style
 source/preference/blend/archive API and its maintained CLI. Keep learning,
 control separation, provenance, current archive bytes and audio unchanged.
 Raw pitch-cell/onset-dynamics measurement before profile construction has its
-own [required owner](../NS-6_observability_10.md); callbacks here do not certify it.
+own [required owner](NS-6_observability_10.md); callbacks here do not certify it.
 
 Accepted 2026-10-27 at `af46648`: checked Win32/Win64 each pass 8,303
 focused checks, 57 stages and 26 abort/retry selections, existing wave-style and
