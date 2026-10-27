@@ -12,6 +12,71 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Retained repetition review published - 2026-10-27
+
+Previous goal turn is progress at `9009d92`: vocabulary declaration-only AC1
+closed through maintained portable/native consumers, unchanged learning and
+independent checks. Delivery nonclosing count enters at **0**. This turn's
+read-only prerequisite check confirms the frozen pitch-register and timing
+failures still lack a justified new physical observation/reference; it selects
+no new tuning, scoring, acquisition or renamed scientific variant.
+
+The user explicitly answered **Publish the prepared review**. That resolves
+the catalog-publication question recorded in the older sections below. Big Boss
+selected the existing studio_03 AC1/AC2 delivery requirement: the qualified
+retained experiment must actually be available in the current operator queue.
+Deliverable: the exact prepared 256.192-second single, one repetition question,
+uncertainty/optional notes and no false Original or inherited short-comparison
+answer. Closing evidence: native stage/append, actual projected API, existing
+identity/response preservation and byte-idempotent retry. Stop on identity
+collision, changed earlier answers, invented musical verdict or another policy
+rejection. No code change or service restart is needed for this publication.
+
+The normal maintained publisher succeeded after the explicit answer:
+`listen-stage` reused the qualified audio and `listen-append` added the retained
+ordinary request plus its prepared replacement. No alternative route was used.
+The live HTTP API projects **one pending / three completed**. The prepared
+single is revision0 and asks whether it gets stuck repeating the same short loop,
+with Yes/No/Unsure, no scores and optional notes. Its missing Original is explicit;
+it has no unrelated reference or parent comparison. Saving does not retrain.
+The operator received the current LAN deep link and needs no new source
+segmentation or generation setup.
+
+An identical native append leaves the queue byte-identical. Spike's independent
+read-only check finds **5,950 of 5,951** prior baseline files unchanged, with
+only the queue changed and none missing; the later closure has **11 of 12**
+unchanged, again only the queue. All earlier response files remain exact. The
+six earlier canonical request identities/objects match the frozen prepared
+packet; raw storage now has eight requests. Staged audio matches both packet and
+receipt by hash/size. The stable process is unchanged and no worker was started.
+Spiegel independently checks brief, choices, exact historical replacement and
+asset/range equality, no inherited answer, and preserved hidden history. Root
+and Spiegel each successfully read the actual HTTP projection. Spike's native
+raw report has four pending/four completed before projection; his separate HTTP
+attempt was Forbidden and is not counted as successful HTTP qualification. No
+alternate network retry followed that refusal.
+
+This publishes already-produced private development audio only. No new render,
+source analysis, inferred label, model change, operator response or actual
+browser/audio session was made. The earlier page-authority rejection remains;
+native API/metadata success is not visual, phone playback or musical acceptance.
+No QA browser was launched. The historical automatic publication rejection gave
+no specific reason; the user-approved normal publication now succeeds.
+
+Evidence: E-drive `runs/review-publication-20261027-boss`,
+`runs/review-publication-20261027-spike`, the retained
+`runs/feedback-readiness-20261027-boss` live stage/append logs and
+`tests/review-restore-20261027`. Earlier blocked/preparation records remain as
+dated history, not the current queue state. The next useful operator action is
+this substantial repetition answer; it informs whether the older guard warrants
+further comparison, not whether a style or sustained musical workflow passes.
+
+No complete numbered studio_03 or continuity_01 criterion closes from publication
+alone. Both tasks and their prerequisites stay open; delivery nonclosing count
+becomes **1**. Scientific counters remain unchanged. Accounting stays **52 open /
+64 DONE, 116 total**, NS completions **100/90/25/70/14/54**, **52.45 credited /
+47.55 remaining**. Do not infer a verdict from playback or queue publication.
+
 ## Caller-declared section accounting accepted - 2026-10-27
 
 Previous goal turn is progress at `9f12e04`: two native Save/publication repairs

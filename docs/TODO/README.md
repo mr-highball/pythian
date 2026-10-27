@@ -86,10 +86,11 @@ or generation setup is required from the operator.
 
 The retained 4:16 repetition review was absent from the current catalog. Its
 lineage and isolated prepared question are verified, and the native single/pair
-factory plus UI are deployed. The final live catalog append was rejected by
-automatic approval review without a specific reason; publication awaits the
-user's answer. Current live pending count is zero. Do not send the operator to
-an unavailable review or ask for the saved short comparison again.
+factory plus UI are deployed. The user explicitly approved publication, and the
+normal native publisher restored the review after the earlier automatic
+rejection. Current live projection has one pending repetition question and three
+completed items, with prior answers preserved. No new segmentation or generation
+setup is needed. Do not ask for the saved short comparison again.
 Accepted [failed Save cleanup](DONE/NS-6_studio_23.md) and
 [publication-time freshness](DONE/NS-6_studio_24.md) preserve native response
 ownership and answers saved after preparation. Both earn zero additional credit.

@@ -63,8 +63,11 @@ defect. No new recording, inference experiment, seed sweep or tuning policy.
 - 2026-10-27, Big Boss: source inspection reproduces three explicit omissions:
   job validation rejects live source-successor requests; worker preparation is
   finite-only; `RenderLive` omits the existing index argument. The retained
-  256.192-second guarded render is already queued; do not duplicate it or apply
-  the newer single-source After judgment to that older three-source mechanism.
+  256.192-second guarded render was in a historical packet, not the current
+  catalog; the later queue reconciliation corrected that assumption. After
+  explicit user approval, its prepared repetition review is now published.
+  Do not duplicate it or apply the newer single-source After judgment to that
+  older three-source mechanism.
 - The preceding browser attempt returned empty app/browser inventories and
   `Browser is not available: iab`. No tab, audio or QA service was started.
   This is one nonclosing browser-validation batch following the accepted

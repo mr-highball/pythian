@@ -59,10 +59,12 @@ Accepted native [failed Save cleanup](TODO/DONE/NS-6_studio_23.md) and
 [publication-time freshness](TODO/DONE/NS-6_studio_24.md) add no credit. The
 retained 4:16 guard review was absent from the current catalog; its exact lineage
 and isolated prepared single question now pass native checks. The single/pair
-factory and UI are deployed, with 29 authored DOM checks. Final live publication
-was rejected by automatic approval review without a specific reason and awaits
-the user's answer. Live pending count remains zero; actual browser and musical
-acceptance remain open.
+factory and UI are deployed, with 29 authored DOM checks. After the user explicitly
+approved publication, the normal native publisher restored the retained review.
+The live API now presents one pending repetition question, with prior requests
+and saved answers preserved. An identical append is byte-idempotent. The earlier
+automatic rejection is historical; actual browser and musical acceptance remain
+open. See the [publication result](WORK.md#retained-repetition-review-published---2026-10-27).
 
 **52.45 outcome-weighted points credited; 47.55 remaining.**
 The later [operator Studio scope](OPERATOR-STUDIO.md#allocation-and-ownership)

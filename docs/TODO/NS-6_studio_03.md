@@ -15,14 +15,15 @@ Basis: [2026-09-30 operator allocation](../OPERATOR-STUDIO.md#allocation-and-own
 This owns usable feedback/iteration, not the scientific validity of style limits;
 [evaluation_01](NS-5_evaluation_01.md) and evaluation_04 retain that acceptance.
 
-Execution status: existing engineering checks and the actual negative listening
-response are retained. The 2026-10-26 operator report identifies a remaining
-delivery gap: the app does not present a clear, prepared queue of generated
-experiments. The operator is willing to classify and listen; additional manual
-segmentation or an abstract usability verdict is not the next prerequisite.
-Big Boss owns the preparation and explanation of the next core-driven experiment.
-Next deliverable: show a prepared before/after comparison with its original
-context, one short musical question, explicit uncertainty and Save/Next.
+Execution status (2026-10-27): prepared short-comparison feedback is saved, and
+the retained long repetition review is now published after explicit user
+approval. Existing negative listening evidence remains intact. The operator
+does not need more manual segmentation or generation setup to answer the next
+question. Big Boss owns the purpose and subsequent explicit development decision.
+Next deliverable: the operator's repetition answer and durable readback, followed
+by the remaining actual playback/iteration qualification. The prepared single
+declares its missing Original context; it cannot inherit the short comparison's
+answer or supply a broad style/continuity verdict.
 The exact-source-successor core integration is tracked separately in
 [continuity_04](NS-5_continuity_04.md). Existing queue/review mechanisms must be
 reused. Closing evidence remains real operator use with durable response readback
@@ -87,13 +88,19 @@ open; engineering checks earn no musical verdict or completion credit.
   now accepts generated singles as well as pairs, with optional exact Original
   context. Native Win32/Win64 checks and 29 authored pas2js DOM checks pass;
   actual browser qualification remains open. The fixes are deployed. Automatic
-  approval review rejected the final live catalog append before execution,
-  supplying no specific reason. Publication is pending a required user answer;
-  live projection still has zero pending items and saved answers are unchanged.
-  Do not retry by another route or advertise this prepared review as live.
+  approval review initially rejected the final live append without a specific
+  reason. The user then explicitly approved publication. The normal native
+  `listen-stage`/`listen-append` succeeded, with one projected pending item and
+  three completed items. An identical append leaves the queue byte-identical;
+  all earlier answers and six request identities are preserved. The new single
+  remains revision0, with no inherited or agent-authored response. No alternative
+  route or browser workaround was used. Source metadata/answer preservation is
+  independently checked; root and Spiegel also read the live HTTP projection
+  successfully.
   Evidence: E-drive `runs/feedback-readiness-20261027-boss`,
   `runs/feedback-readiness-20261027-spiegel-qa` and
-  `runs/guard-lineage-20261027-spiegel`. No new audio or operator answer was made.
+  `runs/guard-lineage-20261027-spiegel`, plus final
+  `runs/review-publication-20261027-*`. No new audio or operator answer was made.
 
 - 2026-10-27, Big Boss: the operator completed the prepared review and its
   durable revision1 reads back with choice After. This demonstrates a useful
