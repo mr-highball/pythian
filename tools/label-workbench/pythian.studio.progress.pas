@@ -86,6 +86,10 @@ begin
     'render_effects': Result := 'Apply effects';
     'render_note_preview': Result := 'Create note preview';
     'import_audio': Result := 'Add audio to catalog';
+    'import_hash_bytes': Result := 'Check audio to add';
+    'import_copy_bytes': Result := 'Copy audio to catalog';
+    'import_verify_bytes': Result := 'Verify catalog audio';
+    'import_items': Result := 'Add recordings to catalog';
     'copy_audio': Result := 'Copy audio';
     'save_capture', 'save_derived_clip': Result := 'Save to collection';
   else Result := 'Preparing music';
@@ -167,8 +171,14 @@ begin
     LText := IntToStr(Trunc(100 * LDone / LTotal)) + '%';
     if LPass > 0 then LText := 'Pass ' + IntToStr(LPass) + ' · ' + LText;
     if LUnit = 'bytes' then
+    begin
       LDetail := FormatFloat('0.0', LDone / 1048576) + ' / ' +
-        FormatFloat('0.0', LTotal / 1048576) + ' MiB of original file'
+        FormatFloat('0.0', LTotal / 1048576) + ' MiB';
+      if (LStage = 'verify_sources') or (LStage = 'verify_model_sources') or
+        (LStage = 'verify_output_sources') then
+        LDetail := LDetail + ' of original file'
+      else LDetail := LDetail + ' of audio';
+    end
     else if LUnit = 'observations' then
       LDetail := IntToStr(Trunc(LDone)) + ' / ' + IntToStr(Trunc(LTotal)) + ' audio windows'
     else if LUnit = 'frames' then

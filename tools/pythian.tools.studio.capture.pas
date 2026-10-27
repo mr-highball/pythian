@@ -342,7 +342,7 @@ begin
       WriteStudioJSONNew(LRoot + PathDelim + 'incoming' + PathDelim + 'manifest.json', LManifest);
     end;
     ReportWork(AProgress, 'import_audio', wuItems, 0, 0);
-    LReport := ImportLabelInbox(LRoot + PathDelim + 'incoming', LTemporary);
+    LReport := ImportLabelInbox(LRoot + PathDelim + 'incoming', LTemporary, AProgress);
     Need(LReport.Integers['failed'] = 0, 'Temporary WAV validation failed');
     FreeAndNil(LReport);
     Result := TJSONObject.Create;
@@ -464,7 +464,7 @@ begin
       FreeAndNil(LReport);
       WriteStudioJSONNew(LStage + PathDelim + 'manifest.json', LManifest);
       ReportWork(AProgress, 'import_audio', wuItems, 0, 0);
-      LReport := ImportLabelInbox(LStage, ACatalogRoot);
+      LReport := ImportLabelInbox(LStage, ACatalogRoot, AProgress);
       Need(LReport.Integers['failed'] = 0, 'Verified capture could not join catalog');
       FreeAndNil(LReport);
     end;
@@ -504,8 +504,8 @@ begin
       FreeAndNil(LOutput);
     end;
     FreeAndNil(LInput);
-    LReport := RefreshStudioLibrary(ACatalogRoot, ALibraryRoot,
-      ReserveStudioJobStage(ACatalogRoot, ALibraryRoot, AJobId, 'capture-refresh'));
+    LReport := RefreshStudioLibraryObserved(ACatalogRoot, ALibraryRoot,
+      ReserveStudioJobStage(ACatalogRoot, ALibraryRoot, AJobId, 'capture-refresh'), AProgress);
     Result := TJSONObject.Create;
     Result.Add('source_sha256', LHash);
     Result.Add('capture_id', AWrite.Strings['capture_id']);

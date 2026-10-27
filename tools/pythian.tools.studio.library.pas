@@ -29,7 +29,8 @@ unit pythian.tools.studio.&library;
 interface
 
 uses
-  fpjson;
+  fpjson,
+  pythian.progress;
 
 const
   StudioLibraryFormat = 'pythian.studio.library.v1';
@@ -60,8 +61,9 @@ type
   Existing sources require initial/final original hashes and one catalog hash,
   without staging media. Byte progress is per current file/pass, emitted after
   at most five seconds or eight MiB of read progress and at phase completion.
-  Cancellation can raise from these callbacks during hashing/staging copies;
-  new-source importer calls remain opaque between their native boundaries.
+  Cancellation can raise during hashing, staging and nested importer work;
+  importer byte progress follows the same eight-MiB/five-second library
+  presentation cadence; phase starts, resets and completion always report.
   For discovered original bytes A and distinct reused catalog bytes D, reuse
   makes 2A+D full verification reads (at most 3A), with zero full media writes.
   Mixed/new-source paths make at most 8A full hash/copy reads and 2A media
@@ -72,6 +74,9 @@ type
   the previously published index remains unchanged. }
 function RefreshStudioLibrary(const ACatalogRoot, ALibraryRoot, AStageRoot: String;
   const AProgress: TStudioLibraryProgress = nil): TJSONObject;
+{ Shared-callback consumer bridge; the same library and importer path is used. }
+function RefreshStudioLibraryObserved(const ACatalogRoot, ALibraryRoot, AStageRoot: String;
+  const AProgress: TWorkProgressCallback): TJSONObject;
 { Worker-only explicit selection. The private file paths must resolve exactly
   under the configured collections directory; no other sources are discovered
   or hashed. Updates only selected memberships, preserving unrelated entries.
@@ -104,6 +109,22 @@ type
   TLibraryFile = TStudioLibraryFile;
   TLibraryFiles = TStudioLibraryFiles;
 
+  TLibrarySharedProgress = class
+  public
+    Callback: TWorkProgressCallback;
+    procedure Observe(const AStage: String; const ADone, ATotal: Int64);
+  end;
+
+  TLibraryImportProgress = class
+  private
+    FLastStage: String;
+    FLastDone: Int64;
+    FLastTick: QWord;
+  public
+    Callback: TStudioLibraryProgress;
+    procedure Observe(const AProgress: TWorkProgress);
+  end;
+
   TLibraryReadStream = class(TFileStream)
   private
     FProgress: TStudioLibraryProgress;
@@ -126,6 +147,40 @@ begin
   if not ACondition then
   begin
     raise EAudio.Create(AMessage);
+  end;
+end;
+
+procedure TLibrarySharedProgress.Observe(const AStage: String;
+  const ADone, ATotal: Int64);
+var
+  LUnits: TWorkUnit;
+begin
+  if Pos('_bytes', AStage) > 0 then
+  begin
+    LUnits := wuBytes;
+  end
+  else
+  begin
+    LUnits := wuItems;
+  end;
+  ReportWork(Callback, AStage, LUnits, ADone, ATotal);
+end;
+
+procedure TLibraryImportProgress.Observe(const AProgress: TWorkProgress);
+begin
+  if not Assigned(Callback) then
+  begin
+    Exit;
+  end;
+  if (AProgress.Units <> wuBytes) or (AProgress.Stage <> FLastStage) or
+    (AProgress.Done = 0) or (AProgress.Done = AProgress.Total) or
+    (AProgress.Done - FLastDone >= CProgressBytes) or
+    (GetTickCount64 - FLastTick >= CProgressMilliseconds) then
+  begin
+    FLastStage := AProgress.Stage;
+    FLastDone := AProgress.Done;
+    FLastTick := GetTickCount64;
+    Callback(AProgress.Stage, AProgress.Done, AProgress.Total);
   end;
 end;
 
@@ -1202,6 +1257,7 @@ var
   LEntry: TJSONObject;
   LReport: TJSONObject;
   LTrack: TJSONObject;
+  LImportProgress: TLibraryImportProgress;
   LIndex: Integer;
   LUnsupported: Integer;
   LRevision: Integer;
@@ -1377,7 +1433,13 @@ begin
       begin
         LInbox := LStage + LEntries.Objects[LIndex].Strings['sha256'] + PathDelim;
         Progress(AProgress, 'importing_sources', LIndex, LUnique);
-        LReport := ImportLabelInbox(LInbox, LCatalog);
+        LImportProgress := TLibraryImportProgress.Create;
+        try
+          LImportProgress.Callback := AProgress;
+          LReport := ImportLabelInbox(LInbox, LCatalog, LImportProgress.Observe);
+        finally
+          LImportProgress.Free;
+        end;
         try
           WriteNew(LInbox + 'import-report.json', LReport.AsJSON + #10);
           Need(LReport.Integers['failed'] = 0,
@@ -1461,6 +1523,24 @@ begin
     Result := RefreshLocked(ACatalogRoot, ALibraryRoot, AStageRoot, AProgress, nil, False);
   finally
     LeaveCriticalSection(GLibraryLock);
+  end;
+end;
+
+function RefreshStudioLibraryObserved(const ACatalogRoot, ALibraryRoot, AStageRoot: String;
+  const AProgress: TWorkProgressCallback): TJSONObject;
+var
+  LBridge: TLibrarySharedProgress;
+begin
+  if not Assigned(AProgress) then
+  begin
+    Exit(RefreshStudioLibrary(ACatalogRoot, ALibraryRoot, AStageRoot));
+  end;
+  LBridge := TLibrarySharedProgress.Create;
+  try
+    LBridge.Callback := AProgress;
+    Result := RefreshStudioLibrary(ACatalogRoot, ALibraryRoot, AStageRoot, LBridge.Observe);
+  finally
+    LBridge.Free;
   end;
 end;
 

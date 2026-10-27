@@ -28,10 +28,19 @@ program StudioEffectsConformance;
 
 uses
   Classes, SysUtils, Math, fpjson,
-  pythian.audio, pythian.hash, pythian.wave.stream, pythian.wave.read,
+  pythian.audio, pythian.progress, pythian.hash, pythian.wave.stream, pythian.wave.read,
   pythian.effects, pythian.effects.catalog, pythian.effects.rack,
   pythian.tools.annotations.catalog, pythian.tools.studio.projects,
   pythian.tools.studio.jobs, pythian.tools.studio.effects;
+
+type
+  EImportAbort = class(Exception);
+  TImportProbe = class
+    Stage: String;
+    Calls: Integer;
+    SawRefresh: Boolean;
+    procedure Observe(const AProgress: TWorkProgress);
+  end;
 
 var
   GChecks: Integer;
@@ -44,6 +53,30 @@ begin
   if not ACondition then
   begin
     raise Exception.Create(AMessage);
+  end;
+end;
+
+procedure TImportProbe.Observe(const AProgress: TWorkProgress);
+begin
+  if (AProgress.Stage = 'hashing_source_bytes') and (AProgress.Units = wuBytes) then
+  begin
+    SawRefresh := True;
+  end;
+  if (AProgress.Stage = Stage) and (AProgress.Done > 0) then
+  begin
+    Inc(Calls);
+    raise EImportAbort.Create('effects importer abort');
+  end;
+end;
+
+function NoCatalogPartials(const ACatalog: String): Boolean;
+var
+  LSearch: TSearchRec;
+begin
+  Result := FindFirst(ACatalog + '/sources/*.partial', faAnyFile, LSearch) <> 0;
+  if not Result then
+  begin
+    FindClose(LSearch);
   end;
 end;
 
@@ -139,7 +172,8 @@ begin
   LEffect.Add('gain_db', AGain);
 end;
 
-function Execute(const AWrite: TJSONObject): TJSONObject;
+function Execute(const AWrite: TJSONObject;
+  const AProgress: TWorkProgressCallback = nil): TJSONObject;
 var
   LJob: TJSONObject;
 begin
@@ -157,7 +191,7 @@ begin
       else
       begin
         Result := SaveStudioEffectPreview(GCatalog, AWrite.Strings['job_id'],
-          GRoot + '/library', AWrite);
+          GRoot + '/library', AWrite, nil, AProgress);
       end;
       AdvanceStudioJob(GCatalog, AWrite.Strings['job_id'], 'completed', 'completed', 1, 1, Result);
     except
@@ -765,6 +799,10 @@ var
   LStream: TFileStream;
   LByte: Byte;
   LFailed: Boolean;
+  LProbe: TImportProbe;
+  LStageIndex: Integer;
+const
+  CImportStages: array[0..2] of String = ('import_hash_bytes', 'import_copy_bytes', 'import_verify_bytes');
 begin
   Check(not DirectoryExists(GRoot), 'Use a fresh isolated fixture root');
   LSource := MakeSource;
@@ -829,7 +867,45 @@ begin
   end;
   LWrite := SaveWrite('save', 'gain');
   try
-    LResult := Execute(LWrite);
+    LProbe := TImportProbe.Create;
+    try
+      for LStageIndex := 0 to High(CImportStages) do
+      begin
+        LProbe.Stage := CImportStages[LStageIndex];
+        LFailed := False;
+        try
+          LResult := SaveStudioEffectPreview(GCatalog, 'abort-save-' + IntToStr(LStageIndex),
+            GRoot + '/library', LWrite, nil, LProbe.Observe);
+          LResult.Free;
+        except
+          on E: EImportAbort do
+          begin
+            LFailed := E.Message = 'effects importer abort';
+          end;
+        end;
+        Check(LFailed and not FileExists(GCatalog + '/tracks/' + LFirstHash + '.json') and
+          not FileExists(GCatalog + '/sources/' + LFirstHash + '.wav'),
+          'Effects importer abort propagates and publishes no partial source');
+        Check(NoCatalogPartials(GCatalog), 'Importer abort removes catalog partials');
+        LStream := OpenStudioEffectPreview(GCatalog, 'gain', LHash);
+        try
+          Check((LHash = LFirstHash) and (Sha256Stream(LStream, LStream.Size) = LFirstHash),
+            'Verified preview survives aborted import');
+        finally
+          LStream.Free;
+        end;
+      end;
+      Check(LProbe.Calls = 3, 'All effects importer phases executed');
+    finally
+      LProbe.Free;
+    end;
+    LProbe := TImportProbe.Create;
+    try
+      LResult := Execute(LWrite, LProbe.Observe);
+      Check(LProbe.SawRefresh, 'Effects forwards shared progress through final library refresh');
+    finally
+      LProbe.Free;
+    end;
     try
       Check(LResult.Strings['source_sha256'] = LFirstHash, 'Save publishes exact preview');
       Check(not LResult.Booleans['independent_recording'], 'Variant not independent recording');

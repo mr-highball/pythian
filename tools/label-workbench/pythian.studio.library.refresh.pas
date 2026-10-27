@@ -154,6 +154,10 @@ begin
     'hashing_sources': Result := 'Checking recording identity';
     'staging_sources': Result := 'Preparing recordings';
     'importing_sources': Result := 'Adding recordings';
+    'import_items': Result := 'Adding recordings';
+    'import_hash_bytes': Result := 'Checking audio to add';
+    'import_copy_bytes': Result := 'Copying audio to catalog';
+    'import_verify_bytes': Result := 'Verifying catalog audio';
     'verifying_sources': Result := 'Verifying recordings';
     'verifying_existing_sources': Result := 'Checking existing recordings';
     'hashing_source_bytes': Result := 'Checking original audio';

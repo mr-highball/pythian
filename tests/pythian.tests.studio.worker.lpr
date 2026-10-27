@@ -1357,9 +1357,13 @@ var
   LRow: TJSONObject;
   LSelection: TJSONObject;
   LPreparation: TJSONObject;
+  LEvent: TJSONObject;
   LHash: String;
   LOrdinal: Integer;
   LFailed: Boolean;
+  LImportHash: Boolean;
+  LImportCopy: Boolean;
+  LImportVerify: Boolean;
 begin
   Check(not DirectoryExists(ARoot), 'Library worker fixture root must be fresh');
   LCatalog := ARoot + PathDelim + 'catalog';
@@ -1434,6 +1438,34 @@ begin
         'Worker returns only actual selected content identity');
       Check(LJob.Objects['results'].Strings['content_validation'] = 'selected_content_verified',
         'Completed preparation carries distinct verified status');
+      LImportHash := False;
+      LImportCopy := False;
+      LImportVerify := False;
+      for LOrdinal := 1 to LJob.Integers['event_revision'] do
+      begin
+        LEvent := ReadStudioJSON(StudioJobDirectory(LCatalog, 'prepare-one') + PathDelim +
+          Format('%.8d.event.json', [LOrdinal]));
+        try
+          if (LEvent.Strings['stage'] = 'import_hash_bytes') or
+            (LEvent.Strings['stage'] = 'import_copy_bytes') or
+            (LEvent.Strings['stage'] = 'import_verify_bytes') then
+          begin
+            Check((LEvent.Strings['progress_unit'] = 'bytes') and
+              (LEvent.Int64s['total'] = 1644) and (LEvent.Int64s['done'] >= 0) and
+              (LEvent.Int64s['done'] <= 1644), 'Actual worker persists measured import bytes');
+            if LEvent.Int64s['done'] = 1644 then
+            begin
+              LImportHash := LImportHash or (LEvent.Strings['stage'] = 'import_hash_bytes');
+              LImportCopy := LImportCopy or (LEvent.Strings['stage'] = 'import_copy_bytes');
+              LImportVerify := LImportVerify or (LEvent.Strings['stage'] = 'import_verify_bytes');
+            end;
+          end;
+        finally
+          LEvent.Free;
+        end;
+      end;
+      Check(LImportHash and LImportCopy and LImportVerify,
+        'Actual selected preparation exposes completed importer byte phases');
     finally
       LJob.Free;
     end;

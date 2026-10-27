@@ -49,7 +49,7 @@ into unrelated algorithm work; distinct remaining gaps get explicit linked tasks
   owns the broader audit; studio_20 remains bounded to the learning workflow.
 - AC1: static inventory of 262 owned Pascal files and manual bulk-call-chain
   review distinguishes instrumented, bounded streaming and still-silent work.
-  [Catalog import](../NS-6_observability_02.md),
+  [Catalog import — DONE](NS-6_observability_02.md),
   [offline render/separation](../NS-6_observability_03.md) and
   [retained corpus/style work](../NS-6_observability_04.md) remain required.
 - AC2: `pythian.progress` supplies optional shared records with actual units and

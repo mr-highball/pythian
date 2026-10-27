@@ -130,8 +130,36 @@ var
   History: TJSObject;
   Before: Integer;
   I: Integer;
+  LProgress: TJSElement;
+  LImportJob: TJSObject;
+  LStages: array of String;
 begin
   try
+    LProgress := document.createElement('div');
+    document.body.appendChild(LProgress);
+    try
+      LImportJob := TJSObject(TJSJSON.parse('{"status":"running","done":65536,"total":131072,"progress_unit":"bytes"}'));
+      LStages := ['import_hash_bytes', 'import_copy_bytes', 'import_verify_bytes'];
+      for I := 0 to High(LStages) do
+      begin
+        LImportJob['stage'] := LStages[I];
+        LProgress.textContent := '';
+        DrawStudioProgress(LProgress, LImportJob);
+        Check(Pos('50%', LProgress.textContent) > 0, 'Import phase shows actual byte ratio');
+        Check(Pos('MiB of audio', LProgress.textContent) > 0, 'Import bytes describe current audio');
+        Check(Pos('Preparing music', LProgress.textContent) = 0, 'Import phase has a specific label');
+      end;
+      LImportJob['status'] := 'cancelled';
+      LProgress.textContent := '';
+      DrawStudioProgress(LProgress, LImportJob);
+      Check(LProgress.querySelector('progress') = nil, 'Cancelled import removes running bar');
+      LImportJob['status'] := 'completed';
+      LProgress.textContent := '';
+      DrawStudioProgress(LProgress, LImportJob);
+      Check(LProgress.querySelector('progress') = nil, 'Completed import leaves no partial byte bar');
+    finally
+      LProgress.remove;
+    end;
     Job := TJSObject(TJSJSON.parse('{"format":"pythian.studio.job.v1","job_id":"batch-qa","project_id":"qa","kind":"train_generate","status":"running","stage":"verify_sources","done":100,"total":200,"progress_unit":"bytes","event_revision":2,"maximum_worker_seconds":7200,"results":{}}'));
     Project := TJSObject(TJSJSON.parse('{"project_id":"qa","snapshot_sha256":"qa-snapshot","name":"QA","revision":1,"learning_mode":"raw_acoustic","sources":[]}'));
     Job['cancel_requested'] := False;

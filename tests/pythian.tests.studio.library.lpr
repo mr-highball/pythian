@@ -46,6 +46,7 @@ type
     MutationPath: String;
     MutationText: String;
     Calls: Integer;
+    StageCalls: Integer;
     InteriorOnly: Boolean;
     InteriorCalls: Integer;
     ByteCalls: Integer;
@@ -167,6 +168,7 @@ begin
   if (AStage = Stage) and
     (not InteriorOnly or ((ADone > 0) and (ADone < ATotal))) then
   begin
+    Inc(StageCalls);
     if MutationPath <> '' then
     begin
       if MutationText <> '' then
@@ -183,6 +185,17 @@ begin
     begin
       raise EAudio.Create('Caller cancelled this synthetic refresh');
     end;
+  end;
+end;
+
+function NoCatalogPartials(const ACatalog: String): Boolean;
+var
+  LSearch: TSearchRec;
+begin
+  Result := FindFirst(ACatalog + '/sources/*.partial', faAnyFile, LSearch) <> 0;
+  if not Result then
+  begin
+    SysUtils.FindClose(LSearch);
   end;
 end;
 
@@ -264,6 +277,12 @@ begin
     on LException: Exception do
     begin
       LFailed := True;
+      if (AProbe <> nil) and (Pos('import_', AProbe.Stage) = 1) then
+      begin
+        Check((LException is EAudio) and
+          (LException.Message = 'Caller cancelled this synthetic refresh'),
+          'Importer callback exception propagates unchanged');
+      end;
       WriteLn('EXPECTED: ', LException.ClassName, ': ', LException.Message);
     end;
   end;
@@ -577,6 +596,25 @@ begin
     Check(LProbe.InteriorCalls > 0, 'Cancellation reached an actual partial staging copy');
     Check(not FileExists(LCatalog + '/sources/' + LProgressHash + '.wav'),
       'Cancelled partial new-source copy is not published into catalog');
+    LProbe.Stage := 'import_hash_bytes';
+    LProbe.StageCalls := 0;
+    LProbe.InteriorCalls := 0;
+    ExpectFailure(LCatalog, LLibrary, LBefore, LProbe);
+    Check(LProbe.StageCalls = 1, 'Library cancellation reached importer source hash');
+    LProbe.Stage := 'import_copy_bytes';
+    LProbe.StageCalls := 0;
+    LProbe.InteriorCalls := 0;
+    ExpectFailure(LCatalog, LLibrary, LBefore, LProbe);
+    Check(LProbe.StageCalls = 1, 'Library cancellation reached importer copy');
+    LProbe.Stage := 'import_verify_bytes';
+    LProbe.StageCalls := 0;
+    LProbe.InteriorCalls := 0;
+    ExpectFailure(LCatalog, LLibrary, LBefore, LProbe);
+    Check(LProbe.StageCalls = 1, 'Library cancellation reached importer verification');
+    Check(not FileExists(LCatalog + '/sources/' + LProgressHash + '.wav') and
+      not FileExists(LCatalog + '/tracks/' + LProgressHash + '.json'),
+      'Nested importer cancellations publish no incomplete new source');
+    Check(NoCatalogPartials(LCatalog), 'Nested importer abort removes catalog partials');
   finally
     LProbe.Free;
   end;

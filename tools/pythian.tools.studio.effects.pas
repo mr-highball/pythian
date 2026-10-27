@@ -554,7 +554,7 @@ begin
       ACheck;
     end;
     ReportWork(AProgress, 'import_audio', wuItems, 0, 0);
-    LReport := ImportLabelInbox(LStage, ACatalogRoot);
+    LReport := ImportLabelInbox(LStage, ACatalogRoot, AProgress);
     Need(LReport.Integers['failed'] = 0, 'Effect source import failed; verified preview remains available');
     FreeAndNil(LReport);
     LCollection := IncludeTrailingPathDelimiter(ExpandFileName(ALibraryRoot)) +
@@ -597,8 +597,8 @@ begin
     begin
       ACheck;
     end;
-    LReport := RefreshStudioLibrary(ACatalogRoot, ALibraryRoot,
-      ReserveStudioJobStage(ACatalogRoot, ALibraryRoot, AJobId, 'effects-refresh'));
+    LReport := RefreshStudioLibraryObserved(ACatalogRoot, ALibraryRoot,
+      ReserveStudioJobStage(ACatalogRoot, ALibraryRoot, AJobId, 'effects-refresh'), AProgress);
     Result := TJSONObject.Create;
     Result.Add('source_sha256', LHash);
     Result.Add('parent_source_sha256', LRecipe.Strings['source_sha256']);

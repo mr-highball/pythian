@@ -110,6 +110,11 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Evaluation operator compilation failed' }
   & $compilerPath @compilerArgs '-Futools' 'tools/pythian.label.catalog.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Label catalog operator compilation failed' }
+  & $compilerPath @compilerArgs '-gh' '-Futools' 'tests/pythian.tests.annotations.import.progress.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Catalog import progress compilation failed' }
+  $importProgressRoot = Join-Path $buildRoot ('import-progress-' + [Guid]::NewGuid().ToString('N'))
+  & (Join-Path $buildRoot "pythian.tests.annotations.import.progress$executableSuffix") $importProgressRoot
+  if ($LASTEXITCODE -ne 0) { throw 'Catalog import progress and cancellation checks failed' }
   & $compilerPath @compilerArgs '-gh' '-Futools' 'tests/pythian.tests.net.transport.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'HTTP/TLS transport contract compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.net.transport$executableSuffix")

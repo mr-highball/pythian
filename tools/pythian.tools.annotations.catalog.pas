@@ -29,11 +29,17 @@ unit pythian.tools.annotations.catalog;
 interface
 
 uses
-  fpjson;
+  fpjson,
+  pythian.progress;
 
 { Native import boundary. Reviews and Pythian proposals have distinct future
-  stores; importing a source never creates a reviewed label. }
-function ImportLabelInbox(const AInboxRoot, ACatalogRoot: String): TJSONObject;
+  stores; importing a source never creates a reviewed label. Progress reports
+  per-entry byte phases, restarting verification at zero for each input or
+  staged/existing source, and item counts before the next entry. A callback
+  exception escapes unchanged; previously committed entries remain accepted.
+  No terminal callback runs after the final record commit. }
+function ImportLabelInbox(const AInboxRoot, ACatalogRoot: String;
+  const AProgress: TWorkProgressCallback = nil): TJSONObject;
 function ReadPreparedLabelInbox(const AInboxRoot: String): TJSONObject;
 function ListLabelCatalog(const ACatalogRoot: String): TJSONObject;
 function ReadCatalogTrack(const ACatalogRoot, AHash: String): TJSONObject;
@@ -57,6 +63,15 @@ const
   CCopyBytes = 65536;
 
 type
+  TImportProgress = class
+  public
+    Callback: TWorkProgressCallback;
+    Stage: String;
+    CallbackFailed: Boolean;
+    procedure Forward(const AWork: TWorkProgress);
+    procedure Report(const AStage: String; const AUnit: TWorkUnit;
+      const ADone, ATotal: Int64);
+  end;
   TSourceInfo = record
     Bytes: Int64;
     SampleRate: Integer;
@@ -64,6 +79,23 @@ type
     Frames: Int64;
     Bits: Integer;
   end;
+
+procedure TImportProgress.Report(const AStage: String; const AUnit: TWorkUnit;
+  const ADone, ATotal: Int64);
+begin
+  if not Assigned(Callback) then
+  begin
+    Exit;
+  end;
+  CallbackFailed := True;
+  ReportWork(Callback, AStage, AUnit, ADone, ATotal);
+  CallbackFailed := False;
+end;
+
+procedure TImportProgress.Forward(const AWork: TWorkProgress);
+begin
+  Report(Stage, wuBytes, AWork.Done, AWork.Total);
+end;
 
 procedure Need(const ACondition: Boolean; const AMessage: String);
 begin
@@ -182,7 +214,8 @@ begin
   end;
 end;
 
-function InspectSource(const APath, AExpectedHash: String): TSourceInfo;
+function InspectSource(const APath, AExpectedHash: String;
+  const AProgress: TImportProgress): TSourceInfo;
 var
   LStream: TFileStream;
   LReader: TWaveFrameReader;
@@ -193,7 +226,8 @@ begin
     Need((LStream.Size >= 44) and (LStream.Size <= CMaximumSourceBytes),
       'Source WAV exceeds import size bound');
     Result.Bytes := LStream.Size;
-    Need(Sha256Stream(LStream, Result.Bytes) = AExpectedHash,
+    AProgress.Stage := 'import_hash_bytes';
+    Need(Sha256Stream(LStream, Result.Bytes, AProgress.Forward) = AExpectedHash,
       'Prepared WAV differs from manifest SHA256');
     LStream.Position := 0;
     LReader := TWaveFrameReader.Create(LStream);
@@ -212,7 +246,8 @@ begin
 end;
 
 procedure CopyVerifiedSource(const AInputPath, AFinalPath,
-  ASourceDirectory, AHash: String; const AExpectedBytes: Int64);
+  ASourceDirectory, AHash: String; const AExpectedBytes: Int64;
+  const AProgress: TImportProgress);
 var
   LInput: TFileStream;
   LOutput: TFileStream;
@@ -225,8 +260,9 @@ begin
   begin
     LInput := TFileStream.Create(AFinalPath, fmOpenRead or fmShareDenyWrite);
     try
+      AProgress.Stage := 'import_verify_bytes';
       Need((LInput.Size = AExpectedBytes) and
-        (Sha256Stream(LInput, LInput.Size) = AHash),
+        (Sha256Stream(LInput, LInput.Size, AProgress.Forward) = AHash),
         'Existing catalog WAV differs from source identity');
     finally
       LInput.Free;
@@ -241,6 +277,7 @@ begin
       LOutput := TFileStream.Create(LStage, fmCreate or fmShareExclusive);
       try
         LRemaining := AExpectedBytes;
+        AProgress.Report('import_copy_bytes', wuBytes, 0, AExpectedBytes);
         while LRemaining > 0 do
         begin
           LCount := CCopyBytes;
@@ -251,12 +288,15 @@ begin
           LInput.ReadBuffer(LBuffer[0], LCount);
           LOutput.WriteBuffer(LBuffer[0], LCount);
           Dec(LRemaining, LCount);
+          AProgress.Report('import_copy_bytes', wuBytes,
+            AExpectedBytes - LRemaining, AExpectedBytes);
         end;
       finally
         LOutput.Free;
       end;
       LInput.Position := 0;
-      Need(Sha256Stream(LInput, AExpectedBytes) = AHash,
+      AProgress.Stage := 'import_verify_bytes';
+      Need(Sha256Stream(LInput, AExpectedBytes, AProgress.Forward) = AHash,
         'Prepared WAV changed during copy');
     finally
       LInput.Free;
@@ -264,7 +304,7 @@ begin
     LOutput := TFileStream.Create(LStage, fmOpenRead or fmShareDenyWrite);
     try
       Need((LOutput.Size = AExpectedBytes) and
-        (Sha256Stream(LOutput, LOutput.Size) = AHash),
+        (Sha256Stream(LOutput, LOutput.Size, AProgress.Forward) = AHash),
         'Copied catalog WAV differs from source identity');
     finally
       LOutput.Free;
@@ -323,7 +363,7 @@ begin
 end;
 
 function ImportOne(const AEntry: TJSONObject; const AInboxRoot,
-  ATrackDirectory, ASourceDirectory: String): String;
+  ATrackDirectory, ASourceDirectory: String; const AProgress: TImportProgress): String;
 var
   LName: String;
   LHash: String;
@@ -358,7 +398,7 @@ begin
   LProvenance := RequiredText(AEntry, 'provenance', 512);
   LLicense := RequiredText(AEntry, 'license', 256);
   LInputPath := IncludeTrailingPathDelimiter(AInboxRoot) + LName;
-  LInfo := InspectSource(LInputPath, LHash);
+  LInfo := InspectSource(LInputPath, LHash, AProgress);
   LAssetPath := IncludeTrailingPathDelimiter(ASourceDirectory) + LHash + '.wav';
   LRecordPath := IncludeTrailingPathDelimiter(ATrackDirectory) + LHash + '.json';
   CheckGroupPartition(ATrackDirectory, LHash, LGroup, LPartition,
@@ -384,11 +424,11 @@ begin
       LExisting.Free;
     end;
     CopyVerifiedSource(LInputPath, LAssetPath, ASourceDirectory,
-      LHash, LInfo.Bytes);
+      LHash, LInfo.Bytes, AProgress);
     Exit('duplicate');
   end;
   CopyVerifiedSource(LInputPath, LAssetPath, ASourceDirectory,
-    LHash, LInfo.Bytes);
+    LHash, LInfo.Bytes, AProgress);
   LRecord := TJSONObject.Create;
   try
     LRecord.Add('version', 1);
@@ -423,7 +463,8 @@ begin
   Result := 'imported';
 end;
 
-function ImportLabelInbox(const AInboxRoot, ACatalogRoot: String): TJSONObject;
+function ImportLabelInbox(const AInboxRoot, ACatalogRoot: String;
+  const AProgress: TWorkProgressCallback): TJSONObject;
 var
   LInbox: String;
   LCatalog: String;
@@ -438,71 +479,83 @@ var
   LImported: Integer;
   LDuplicates: Integer;
   LFailed: Integer;
+  LProgress: TImportProgress;
 begin
-  LInbox := IncludeTrailingPathDelimiter(ExpandFileName(AInboxRoot));
-  LCatalog := IncludeTrailingPathDelimiter(ExpandFileName(ACatalogRoot));
-  Need(DirectoryExists(LInbox), 'Prepared inbox does not exist');
-  Need(not SameText(LInbox, LCatalog) and
-    (Pos(LInbox, LCatalog) <> 1) and (Pos(LCatalog, LInbox) <> 1),
-    'Inbox and catalog roots must be separate');
-  LManifest := ReadObject(LInbox + 'manifest.json', CManifestBytes);
+  LProgress := TImportProgress.Create;
+  LProgress.Callback := AProgress;
   try
-    Need(LManifest.Integers['version'] = 1, 'Unsupported inbox manifest version');
-    Need((LManifest.Find('tracks') <> nil) and
-      (LManifest.Find('tracks').JSONType = jtArray),
-      'Manifest requires tracks array');
-    LEntries := LManifest.Arrays['tracks'];
-    Need((LEntries.Count > 0) and (LEntries.Count <= CMaximumInboxTracks),
-      'Manifest track count exceeds bounds');
-    LTrackDirectory := LCatalog + 'tracks';
-    LSourceDirectory := LCatalog + 'sources';
-    Need(ForceDirectories(LTrackDirectory) and
-      ForceDirectories(LSourceDirectory), 'Could not create catalog directories');
-    LRows := TJSONArray.Create;
-    Result := TJSONObject.Create;
-    Result.Add('version', 1);
-    Result.Add('tracks', LRows);
-    LImported := 0;
-    LDuplicates := 0;
-    LFailed := 0;
+    LInbox := IncludeTrailingPathDelimiter(ExpandFileName(AInboxRoot));
+    LCatalog := IncludeTrailingPathDelimiter(ExpandFileName(ACatalogRoot));
+    Need(DirectoryExists(LInbox), 'Prepared inbox does not exist');
+    Need(not SameText(LInbox, LCatalog) and
+      (Pos(LInbox, LCatalog) <> 1) and (Pos(LCatalog, LInbox) <> 1),
+      'Inbox and catalog roots must be separate');
+    LManifest := ReadObject(LInbox + 'manifest.json', CManifestBytes);
     try
-      for LIndex := 0 to LEntries.Count - 1 do
-      begin
-        LRow := TJSONObject.Create;
-        LRows.Add(LRow);
-        LRow.Add('index', LIndex);
-        try
-          Need(LEntries[LIndex].JSONType = jtObject,
-            'Manifest track must be an object');
-          LStatus := ImportOne(TJSONObject(LEntries[LIndex]),
-            LInbox, LTrackDirectory, LSourceDirectory);
-          LRow.Add('status', LStatus);
-          if LStatus = 'imported' then
-          begin
-            Inc(LImported);
-          end
-          else
-          begin
-            Inc(LDuplicates);
-          end;
-        except
-          on LError: Exception do
-          begin
-            LRow.Add('status', 'failed');
-            LRow.Add('error', LError.Message);
-            Inc(LFailed);
+      Need(LManifest.Integers['version'] = 1, 'Unsupported inbox manifest version');
+      Need((LManifest.Find('tracks') <> nil) and
+        (LManifest.Find('tracks').JSONType = jtArray),
+        'Manifest requires tracks array');
+      LEntries := LManifest.Arrays['tracks'];
+      Need((LEntries.Count > 0) and (LEntries.Count <= CMaximumInboxTracks),
+        'Manifest track count exceeds bounds');
+      LTrackDirectory := LCatalog + 'tracks';
+      LSourceDirectory := LCatalog + 'sources';
+      Need(ForceDirectories(LTrackDirectory) and
+        ForceDirectories(LSourceDirectory), 'Could not create catalog directories');
+      LRows := TJSONArray.Create;
+      Result := TJSONObject.Create;
+      Result.Add('version', 1);
+      Result.Add('tracks', LRows);
+      LImported := 0;
+      LDuplicates := 0;
+      LFailed := 0;
+      try
+        for LIndex := 0 to LEntries.Count - 1 do
+        begin
+          LProgress.Report('import_items', wuItems, LIndex, LEntries.Count);
+          LRow := TJSONObject.Create;
+          LRows.Add(LRow);
+          LRow.Add('index', LIndex);
+          try
+            Need(LEntries[LIndex].JSONType = jtObject,
+              'Manifest track must be an object');
+            LStatus := ImportOne(TJSONObject(LEntries[LIndex]),
+              LInbox, LTrackDirectory, LSourceDirectory, LProgress);
+            LRow.Add('status', LStatus);
+            if LStatus = 'imported' then
+            begin
+              Inc(LImported);
+            end
+            else
+            begin
+              Inc(LDuplicates);
+            end;
+          except
+            on LError: Exception do
+            begin
+              if LProgress.CallbackFailed then
+              begin
+                raise;
+              end;
+              LRow.Add('status', 'failed');
+              LRow.Add('error', LError.Message);
+              Inc(LFailed);
+            end;
           end;
         end;
+        Result.Add('imported', LImported);
+        Result.Add('duplicate', LDuplicates);
+        Result.Add('failed', LFailed);
+      except
+        Result.Free;
+        raise;
       end;
-      Result.Add('imported', LImported);
-      Result.Add('duplicate', LDuplicates);
-      Result.Add('failed', LFailed);
-    except
-      Result.Free;
-      raise;
+    finally
+      LManifest.Free;
     end;
   finally
-    LManifest.Free;
+    LProgress.Free;
   end;
 end;
 

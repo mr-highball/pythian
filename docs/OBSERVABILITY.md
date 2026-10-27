@@ -29,10 +29,10 @@ Studio callers, plus existing streaming, inference and library contracts.
 | Studio learning/generation | Source bytes, analysis windows, learning passes, generated frames; cache reuse and final publication are explicit | Accepted [learning-progress batch](TODO/DONE/NS-6_studio_20.md) and real worker checks |
 | Studio source/capture inspection and pitch exploration | Shared hash, volume, onset/beat, resample and pitch counts, shown by the common progress component | Native capture checks and authored browser runs; short stages can finish between UI polls |
 | Studio effects | Selected audio plus tail frames, hash bytes and derived-copy bytes; common progress display | Native effects parity/cancellation checks and browser completion/cancel paths |
-| Library discovery/preparation | Existing byte/item callbacks, cancellation, staged publication and throttling retained | Inner catalog import still needs [observability_02](TODO/NS-6_observability_02.md) |
+| Library discovery/preparation | Byte/item callbacks reach nested import; existing library notification throttle, cancellation and staged index publication retained | [observability_02](TODO/DONE/NS-6_observability_02.md) |
 | Streaming synthesis/WFC audio | Existing bounded pull, frame clocks, state and cancellation retained | A caller can observe each block; bulk helpers are a separate gap |
 | Pascal inference | Existing observation checkpoints, budgets, cancellation and deadlines retained | Reconcile remaining operator phases in [observability_04](TODO/NS-6_observability_04.md); no third-party execution |
-| Catalog import and verification | Outer phase can remain indeterminate during nested hashes/copies; per-file exception handling needs careful abort propagation | [observability_02](TODO/NS-6_observability_02.md) |
+| Catalog import and verification | Shared measured hash/copy/verification phases; callback failures escape per-file error handling | [observability_02](TODO/DONE/NS-6_observability_02.md) |
 | Offline render, separation, export and evaluation | Whole-clip work can remain silent; separation admits up to two billion planned visits | [observability_03](TODO/NS-6_observability_03.md) |
 | Retained corpus/style/archive/provider operations | Nested serialization, validation, blending and composition reachability need further measured checkpoints | [observability_04](TODO/NS-6_observability_04.md) |
 | Primary analysis in pas2js | Full callback consumer executes shared primary algorithms; optional timer adapter yields between bounded WAV analysis batches | [portability_01 — DONE](TODO/DONE/NS-6_portability_01.md); actual browser presentation and WASM remain unqualified |
@@ -89,6 +89,30 @@ or cooperative scheduling adapter. The shared primary analysis consumer now
 executes under actual pas2js/Node, including hash, WAV, resampling, pitch,
 learning, beat measurement and abort paths. The host adapter below yields WAV
 analysis batches; this does not make every synchronous bulk API asynchronous.
+
+## Native catalog imports
+
+`ImportLabelInbox` accepts the shared optional callback. `import_hash_bytes`,
+`import_copy_bytes` and `import_verify_bytes` report actual bytes of the current
+file and phase; verification restarts for each source/staged/existing read.
+The primary SHA implementation retains its 8-KiB checkpoints; staged copying
+reports every 64 KiB. `import_items` reports entries already processed before
+starting the next entry. A phase reaching its byte total is not an import result.
+
+Callback exceptions propagate unchanged through ordinary per-file failure
+handling. An interrupted uncommitted entry leaves no importer `.partial` file;
+previously accepted records and originals remain intact. Earlier complete entries
+may remain accepted after a later cancellation, so retry reconciles them as
+duplicates. There is deliberately no callback after the final record commit that
+could report cancellation after successful publication.
+
+Library preparation, capture inspection/saving and effects saving use this same
+importer. The library adapts notifications to its existing eight-MiB/five-second
+cadence, always forwarding phase starts, resets and completion. Capture/effects
+also forward their observer into the final library refresh through one callback
+bridge. No hash or copying algorithm is replicated in the bridge. The common
+Studio display names the import phases; native job history retains byte units.
+Actual browser/phone presentation remains part of the open operator matrix.
 
 ## pas2js analysis execution
 
@@ -161,6 +185,6 @@ authored browser traces are under ignored `build/observability/`.
 
 These checks establish mechanics and output preservation, not musical truth,
 complete physical-phone qualification or universal responsiveness. A short job
-can finish between browser polls. Imports, offline DSP, retained style operations
+can finish between browser polls. Offline DSP, retained style operations
 and actual browser presentation remain explicitly open. Observability
 repairs earn no additional north-star credit.

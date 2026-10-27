@@ -12,6 +12,59 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Catalog import observability accepted and deployed - 2026-10-27
+
+Big Boss selected [observability_02](TODO/DONE/NS-6_observability_02.md), after
+the retained NS-5 musical prerequisites and scientific stops were checked in the
+preceding goal turn. Criterion: measured import hash/copy/verification and reliable
+callback aborts through actual consumers. Deliverable: one observed importer,
+library/capture/effects forwarding and named Studio phases. Closing evidence:
+native parity, interior cancellation, durable preservation/retry and job history.
+Stop: swallowed cancellation, incomplete accepted source or duplicated algorithm.
+All three task criteria close; zero additional musical or milestone credit.
+
+Spike implemented importer callbacks, using the existing SHA implementation and
+64-KiB copy blocks. Callback failures retain their original exception identity
+through per-file error handling. Earlier complete entries may remain accepted;
+retry reconciles duplicates. The final record commit has no subsequent callback
+that could falsely report cancellation. Spiegel connected library, capture and
+effects, including final collection refreshes. The library retains its existing
+eight-MiB/five-second notification cadence; direct import retains fine checkpoints.
+Big Boss integrated actual worker events, display wording and build registration.
+
+Checked FPC 3.2.2 evidence: importer 395 assertions on Win32 and Win64;
+library 588, capture 71, effects 141, original source review/import/export contract
+and actual library worker 27 on Win64; all report zero leaks. Combined independent
+QA began after multiple components were ready: Spiegel executed/reviewed Spike's
+importer (395); Spike freshly compiled/executed capture/effects (71/141) and
+reviewed library forwarding/throttling and integration. No blocking defect or
+failed formal submission. Actual pas2js/JSDOM recovery/display passes 31;
+all four browser programs compile. DOM does not qualify actual browser/phone UI.
+
+Development repairs retained in task notes/evidence: excessive legacy library
+notifications, omitted final refresh forwarding and overly generic original-file
+wording. The first root library-worker fixture exposed cwd/build staging and
+created one isolated D-drive stage. Its exact catalog-bound directory and all
+three file hashes were verified before moving it to E. Subsequent executable
+tests and the stable launch use E working directories. Historical D-drive
+evidence and fixed executable slots remain intact.
+
+The matched checked optimized service/worker and twelve web assets are deployed
+to the fixed stable slot. Guarded restart found no active/pending jobs; all 14
+staged hashes match, LAN HTTPS returns 200 and the served script contains the new
+import phases. All 5,951 preexisting private JSON/JSONL hashes are unchanged.
+No QA service, worker, browser or audio session remains. Evidence is retained
+under E-drive `build/tests/runs/import-progress-20261027-{boss,spike,spiegel}`;
+the root run manifest records frozen source/artifact identities and launch details.
+
+Task and incoming links move together with the ledgers: **53 open /57 DONE
+(110 total), 52.45 credited /47.55 remaining**; NS completions remain
+**100/90/25/70/14/54**. Delivery nonclosing-batch count remains **0** because
+this batch closed all import criteria. Musical source/model/tempo/key stops and
+their separate counters remain unchanged. The full goal stays active; actual
+browser and sustained musical acceptance remain open. Offline DSP and retained
+operation callbacks are the next ready observability work, not musical credit.
+
 ## Long source-continuity playback delivered; browser gate open - 2026-10-27
 
 The preceding goal turn was progress: portability_01 was committed/pushed.
@@ -582,7 +635,7 @@ match stable delivery and all 3,957 prior operator JSON/JSONL hashes are unchang
 Live Studio loads. Owned browser tabs and QA service are closed; no QA audio or
 worker remains. No TLS/firewall/catalog configuration changes.
 
-Remaining required gaps: [catalog import](TODO/NS-6_observability_02.md),
+Remaining required gaps at that checkpoint: [catalog import — subsequently accepted](TODO/DONE/NS-6_observability_02.md),
 [offline render/separation](TODO/NS-6_observability_03.md),
 [retained corpus/style monitoring](TODO/NS-6_observability_04.md), and the
 portability task above. Next ready observability task is catalog import, including

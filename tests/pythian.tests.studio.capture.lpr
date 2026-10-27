@@ -27,10 +27,19 @@ program StudioCaptureConformance;
 {$H+}
 
 uses Classes, SysUtils, Math, Base64, fpjson,
-  pythian.audio, pythian.hash, pythian.wave.stream,
+  pythian.audio, pythian.progress, pythian.hash, pythian.wave.stream,
   pythian.tools.annotations.catalog, pythian.tools.studio.projects,
   pythian.tools.studio.jobs, pythian.tools.studio.capture, pythian.tools.studio.pitch,
   pythian.music, pythian.midi.smf, pythian.midi.notes;
+
+type
+  EImportAbort = class(Exception);
+  TImportProbe = class
+    Stage: String;
+    Calls: Integer;
+    SawRefresh: Boolean;
+    procedure Observe(const AProgress: TWorkProgress);
+  end;
 
 var
   GChecks: Integer;
@@ -43,6 +52,30 @@ begin
   if not ACondition then
   begin
     raise Exception.Create(AMessage);
+  end;
+end;
+
+procedure TImportProbe.Observe(const AProgress: TWorkProgress);
+begin
+  if (AProgress.Stage = 'hashing_source_bytes') and (AProgress.Units = wuBytes) then
+  begin
+    SawRefresh := True;
+  end;
+  if (AProgress.Stage = Stage) and (AProgress.Done > 0) then
+  begin
+    Inc(Calls);
+    raise EImportAbort.Create('capture importer abort');
+  end;
+end;
+
+function NoCatalogPartials(const ACatalog: String): Boolean;
+var
+  LSearch: TSearchRec;
+begin
+  Result := FindFirst(ACatalog + '/sources/*.partial', faAnyFile, LSearch) <> 0;
+  if not Result then
+  begin
+    FindClose(LSearch);
   end;
 end;
 
@@ -218,6 +251,10 @@ var
   LMidiReport: TMidiNoteReport;
   LMidiHash: String;
   LPitchHash: String;
+  LProbe: TImportProbe;
+  LStageIndex: Integer;
+const
+  CImportStages: array[0..2] of String = ('import_hash_bytes', 'import_copy_bytes', 'import_verify_bytes');
 begin
   Check(not DirectoryExists(GRoot), 'Use fresh isolated root');
   Check(ForceDirectories(GCatalog), 'Create isolated catalog');
@@ -282,6 +319,33 @@ begin
     finally
       LChunk.Free;
     end;
+    LProbe := TImportProbe.Create;
+    try
+      for LStageIndex := 0 to High(CImportStages) do
+      begin
+        LProbe.Stage := CImportStages[LStageIndex];
+        LFailed := False;
+        try
+          LResult := InspectStudioCapture(GCatalog, 'uploaded', nil, LProbe.Observe);
+          LResult.Free;
+        except
+          on E: EImportAbort do
+          begin
+            LFailed := E.Message = 'capture importer abort';
+          end;
+        end;
+        Check(LFailed, 'Capture inspection propagates importer abort unchanged');
+        LResult := ReadStudioCapture(GCatalog, 'uploaded');
+        try
+          Check(LResult.Booleans['complete'], 'Capture upload survives importer abort');
+        finally
+          LResult.Free;
+        end;
+      end;
+      Check(LProbe.Calls = 3, 'All nested capture importer phases executed');
+    finally
+      LProbe.Free;
+    end;
     LResult := InspectStudioCapture(GCatalog, 'uploaded');
     try
       LHash := LResult.Strings['source_sha256'];
@@ -307,7 +371,45 @@ begin
       LSave.Add('capture_id', 'uploaded');
       LSave.Add('collection_name', 'recordings');
       LSave.Add('title', 'Saved oscillator control');
-      LResult := SaveStudioCapture(GCatalog, 'save-upload', GRoot + '/library', LSave);
+      LProbe := TImportProbe.Create;
+      try
+        for LStageIndex := 0 to High(CImportStages) do
+        begin
+          LProbe.Stage := CImportStages[LStageIndex];
+          LFailed := False;
+          try
+            LResult := SaveStudioCapture(GCatalog, 'abort-save-' + IntToStr(LStageIndex),
+              GRoot + '/library', LSave, nil, LProbe.Observe);
+            LResult.Free;
+          except
+            on E: EImportAbort do
+            begin
+              LFailed := E.Message = 'capture importer abort';
+            end;
+          end;
+          Check(LFailed and not FileExists(GCatalog + '/tracks/' + LHash + '.json') and
+            not FileExists(GCatalog + '/sources/' + LHash + '.wav'),
+            'Capture save abort leaves catalog unpublished');
+          Check(NoCatalogPartials(GCatalog), 'Importer abort removes catalog partials');
+          LStream := OpenStudioCapture(GCatalog, 'uploaded', LHash, LPath);
+          try
+            Check(Sha256Stream(LStream, LStream.Size) = LHash, 'Capture preview survives save abort');
+          finally
+            LStream.Free;
+          end;
+        end;
+        Check(LProbe.Calls = 3, 'All capture save importer phases executed');
+      finally
+        LProbe.Free;
+      end;
+      LProbe := TImportProbe.Create;
+      try
+        LResult := SaveStudioCapture(GCatalog, 'save-upload', GRoot + '/library',
+          LSave, nil, LProbe.Observe);
+        Check(LProbe.SawRefresh, 'Capture forwards shared progress through final library refresh');
+      finally
+        LProbe.Free;
+      end;
       try
         Check(LResult.Strings['source_sha256'] = LHash, 'Explicit save preserves audio identity');
         Check(not LResult.Booleans['already_catalogued'], 'First save adds one source');
