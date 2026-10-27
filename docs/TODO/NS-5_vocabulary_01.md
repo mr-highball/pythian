@@ -8,21 +8,25 @@ Completion credit: 6 goal percentage points (1.20 overall points).
 Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
 Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
 
-Execution status (2026-10-27): **Native contribution-accounting component
-delivered; representative musical vocabulary and comparisons remain blocked.**
+Execution status (2026-10-27): **Declaration-only AC1 accepted;
+representative musical vocabulary AC2–5 remain open.**
 AC1's training-versus-generation separation component is now implemented through
 the existing primary selector. Native jobs and Studio settings expose distinct
 immutable playback preferences. Actual generation-only changes reuse exact
 saved model/journals, WFC token sequence and clocks while eligible source choices
 change deterministically; finite/live/retry and inherited request replay pass.
-Actual browser presentation remains unqualified. Full AC1 still retains repeated
-musical-section accounting; the task and musical selection/normalization/
-comparison criteria remain open. No representative-selection experiment or
+Actual browser presentation remains unqualified. Repeated-section occurrences
+now have optional caller declarations, original-coordinate accounting and native
+consumer replay; they are not detected or verified musical equivalence. The
+complete declaration-only AC1 is now supported by this component, earlier
+recording/excerpt accounting, actual independent playback preferences and the
+accepted separation of training weights, preferences and hard locks. The task
+and musical selection/normalization/comparison criteria remain open. No representative-selection experiment or
 stopped scientific family was reopened.
 Next deliverable: Close representative vocabulary and coverage/diversity acceptance across verified recordings; bounded token-mass balance is already accepted separately.
 Closing evidence and stop condition: Frozen balanced/unbalanced comparison, unique/repeated contributions and original/normalized coordinates through actual WFC learning. Stop if lower average feature distance is the only benefit.
 Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
-This reassessment closes no product criterion and preserves prior failures below.
+The 2026-09-29 reassessment itself earned no acceptance and preserved prior failures.
 
 Prevent long or repetitive recordings from dominating learned styles while retaining supported musical evidence across sources.
 
@@ -51,6 +55,30 @@ not prevent declaration-only accounting through the existing native intake API.
 - [NS-5_vocabulary_03.md](DONE/NS-5_vocabulary_03.md) — accepted
 
 **Dev Notes:**
+
+- 2026-10-27, Big Boss / Spike / Spiegel: the remaining repeated-section
+  declaration component is implemented in the primary portable intake and
+  maintained native parser/audit/learning consumer. Optional occurrences retain
+  source frames, caller group ID and evidence without changing selection or
+  admission. Original/crop aliases coalesce; group unions and a cross-group
+  tagged union preserve unlabelled selected coverage, including unknown-song
+  spans. Group identity is explicitly a caller assertion, not detection or
+  verified truth. The [intake guide](../CORPUS-INTAKE.md#caller-declared-section-occurrences)
+  documents the API and current-format optional array. Big Boss accepts AC1 at
+  its declaration-only scope after independent cross-QA and review of the
+  earlier actual playback-preference evidence plus
+  [accepted weight/preference/lock separation](DONE/NS-4_layers_03.md).
+  The maintained layer fixture makes a lock win against a contrary preference;
+  the semantic blend fixture retains preferences/locks when training weights
+  change. Those accepted contracts are unchanged, not newly re-executed here.
+  AC1 does not require automatic repetition detection or one combined GUI.
+  Full AC2–5 remain open; no musical point credit or task move.
+  Checked Win32/Win64 core44 and file/learning71 checks pass with zero leaks;
+  actual pas2js core44 also passes. Independent cross-QA passes both components.
+  The maintained CLI against `9f12e04` preserves no-section canonical manifests
+  and actual WFC model bytes. Evidence stays under dedicated E-drive
+  `build/tests/runs/section-accounting-20261027-*`. No private audio, operator
+  answer, actual browser, new inference or stopped source family was used.
 
 - 2026-10-27, Big Boss / Spike / Spiegel: batch criterion was the existing AC1
   requirement to keep training weights distinct from generation preferences.

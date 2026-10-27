@@ -35,6 +35,7 @@ const
   CorpusIntakeVersion = 1;
   MaximumIntakeSources = 32;
   MaximumIntakeRanges = 4096;
+  MaximumIntakeSectionOccurrences = 4096;
   MaximumIntakeFrame: Int64 = 9007199254740991;
 
 type
@@ -87,17 +88,28 @@ type
     Multiplicity: Integer;
   end;
   TCorpusIntakeRanges = array of TCorpusIntakeRange;
+  { Section identity and evidence are caller assertions, not detected or verified
+    musical equivalence. Coordinates refer to the declared source clock. }
+  TCorpusSectionOccurrence = record
+    Source: Integer;
+    FirstFrame: Int64;
+    EndFrame: Int64;
+    SectionId: TCorpusText;
+    Evidence: TCorpusText;
+  end;
+  TCorpusSectionOccurrences = array of TCorpusSectionOccurrence;
   TCorpusIntakeDefinition = record
     StyleId: TCorpusText;
     Families: TCorpusFamilies;
     Sources: TCorpusIntakeSources;
     Ranges: TCorpusIntakeRanges;
+    SectionOccurrences: TCorpusSectionOccurrences;
   end;
   { Declaration accounting, not admitted training. Weighted frames sum distinct
     declarations, including unknowns and overlaps; they are not a weighted union.
     Same source SHA, mapped original interval, song ID and multiplicity coalesce;
-    boundary evidence text does not add weight. Musical repeated-section identity
-    remains unknown. Training admission is not assessed. }
+    boundary evidence text does not add weight. Section tags are caller assertions,
+    not verification of musical repetition. Training admission is not assessed. }
   TCorpusRecordingContribution = record
     RecordingId: TCorpusText;
     Partition: TCorpusPartition;
@@ -107,8 +119,20 @@ type
     DeclaredRows: Integer;
     DistinctDeclarations: Integer;
     DeclaredWeightedFrames: Int64;
+    SectionTaggedFrames: Int64;
+    UnknownSectionFrames: Int64;
   end;
   TCorpusRecordingContributions = array of TCorpusRecordingContribution;
+  TCorpusSectionContribution = record
+    RecordingId: TCorpusText;
+    Partition: TCorpusPartition;
+    SampleRate: Integer;
+    SectionId: TCorpusText;
+    DeclaredRows: Integer;
+    DistinctOccurrences: Integer;
+    UniqueFrames: Int64;
+  end;
+  TCorpusSectionContributions = array of TCorpusSectionContribution;
 
   TCorpusIntakeCoverage = record
     UniqueSeconds: array[TCorpusPartition] of Double;
@@ -123,13 +147,18 @@ type
   private
     FDefinition: TCorpusIntakeDefinition;
     procedure Validate;
+    procedure MapOriginal(const ASource: Integer; const AFirst, AEnd: Int64;
+      out AOriginal: Integer; out AFirstFrame, AEndFrame: Int64);
     function BuildContributions(const ACountWeights: Boolean): TCorpusRecordingContributions;
   public
     constructor Create(const ADefinition: TCorpusIntakeDefinition);
     function CopyDefinition: TCorpusIntakeDefinition;
     procedure OriginalRange(const ARange: Integer; out AOriginal: Integer;
       out AFirstFrame, AEndFrame: Int64);
+    procedure OriginalOccurrence(const AOccurrence: Integer; out AOriginal: Integer;
+      out AFirstFrame, AEndFrame: Int64);
     function Contributions: TCorpusRecordingContributions;
+    function SectionContributions: TCorpusSectionContributions;
     function Coverage: TCorpusIntakeCoverage;
     { Unknown song spans are excluded from training. Exact duplicate ranges
       coalesce once; derivative/partial overlap rejects. Multiplicity is the
@@ -150,6 +179,69 @@ uses
   SysUtils,
   Math,
   pythian.audio;
+
+type
+  TCoordinateInterval = record
+    Recording: TCorpusText;
+    Section: TCorpusText;
+    Partition: TCorpusPartition;
+    Rate: Integer;
+    FirstFrame: Int64;
+    EndFrame: Int64;
+  end;
+  TCoordinateIntervals = array of TCoordinateInterval;
+
+procedure SortCoordinates(var AIntervals: TCoordinateIntervals; const ASectionFirst: Boolean);
+var
+  LIndex: Integer;
+  LOther: Integer;
+  LCompare: Integer;
+  LSwap: TCoordinateInterval;
+begin
+  for LIndex := 1 to High(AIntervals) do
+  begin
+    LOther := LIndex;
+    while LOther > 0 do
+    begin
+      LCompare := CompareCorpusText(AIntervals[LOther].Recording,
+        AIntervals[LOther - 1].Recording);
+      if (LCompare = 0) and ASectionFirst then
+      begin
+        LCompare := CompareCorpusText(AIntervals[LOther].Section,
+          AIntervals[LOther - 1].Section);
+      end;
+      if LCompare = 0 then
+      begin
+        if AIntervals[LOther].FirstFrame < AIntervals[LOther - 1].FirstFrame then
+          LCompare := -1
+        else if AIntervals[LOther].FirstFrame > AIntervals[LOther - 1].FirstFrame then
+          LCompare := 1;
+      end;
+      if LCompare >= 0 then
+      begin
+        Break;
+      end;
+      LSwap := AIntervals[LOther];
+      AIntervals[LOther] := AIntervals[LOther - 1];
+      AIntervals[LOther - 1] := LSwap;
+      Dec(LOther);
+    end;
+  end;
+end;
+
+{ Intervals must be sorted by start within their current group. }
+function UnionIncrement(const AFirst, AEnd: Int64; var ACursor: Int64): Int64;
+var
+  LFirst: Int64;
+begin
+  LFirst := Max(AFirst, ACursor);
+  Result := 0;
+  if AEnd > LFirst then
+  begin
+    Result := AEnd - LFirst;
+  end;
+  ACursor := Max(ACursor, AEnd);
+end;
 
 procedure Require(const ACondition: Boolean; const AMessage: String);
 begin
@@ -204,6 +296,7 @@ begin
   FDefinition.Families := Copy(ADefinition.Families);
   FDefinition.Sources := Copy(ADefinition.Sources);
   FDefinition.Ranges := Copy(ADefinition.Ranges);
+  FDefinition.SectionOccurrences := Copy(ADefinition.SectionOccurrences);
   if Length(FDefinition.Ranges) = 0 then
   begin
     SetLength(FDefinition.Ranges, Length(FDefinition.Sources));
@@ -225,6 +318,7 @@ begin
   Result.Families := Copy(FDefinition.Families);
   Result.Sources := Copy(FDefinition.Sources);
   Result.Ranges := Copy(FDefinition.Ranges);
+  Result.SectionOccurrences := Copy(FDefinition.SectionOccurrences);
 end;
 
 procedure TCorpusIntakePlan.Validate;
@@ -235,6 +329,12 @@ var
   LSource: TCorpusIntakeSource;
   LParent: TCorpusIntakeSource;
   LRange: TCorpusIntakeRange;
+  LOccurrence: TCorpusSectionOccurrence;
+  LSelected: TCoordinateIntervals;
+  LOriginal: Integer;
+  LFirst: Int64;
+  LEnd: Int64;
+  LCursor: Int64;
 begin
   Text(FDefinition.StyleId, False);
   Require((Length(FDefinition.Families) >= 1) and
@@ -242,7 +342,9 @@ begin
     (Length(FDefinition.Sources) >= 1) and
     (Length(FDefinition.Sources) <= MaximumIntakeSources) and
     (Length(FDefinition.Ranges) >= 1) and
-    (Length(FDefinition.Ranges) <= MaximumIntakeRanges), 'Intake count exceeds its bounds');
+    (Length(FDefinition.Ranges) <= MaximumIntakeRanges) and
+    (Length(FDefinition.SectionOccurrences) <= MaximumIntakeSectionOccurrences),
+    'Intake count exceeds its bounds');
   for LIndex := 0 to High(FDefinition.Families) do
   begin
     LFamily := FDefinition.Families[LIndex];
@@ -370,24 +472,155 @@ begin
       end;
     end;
   end;
+  if Length(FDefinition.SectionOccurrences) = 0 then
+  begin
+    Exit;
+  end;
+  SetLength(LSelected, Length(FDefinition.Ranges));
+  for LIndex := 0 to High(FDefinition.Ranges) do
+  begin
+    OriginalRange(LIndex, LOriginal, LFirst, LEnd);
+    LSelected[LIndex].Recording := FDefinition.Sources[LOriginal].RecordingId;
+    LSelected[LIndex].FirstFrame := LFirst;
+    LSelected[LIndex].EndFrame := LEnd;
+  end;
+  SortCoordinates(LSelected, False);
+  for LIndex := 0 to High(FDefinition.SectionOccurrences) do
+  begin
+    LOccurrence := FDefinition.SectionOccurrences[LIndex];
+    Require((LOccurrence.Source >= 0) and
+      (LOccurrence.Source < Length(FDefinition.Sources)),
+      'Section occurrence references an unregistered source');
+    Require((LOccurrence.FirstFrame >= 0) and
+      (LOccurrence.EndFrame > LOccurrence.FirstFrame) and
+      (LOccurrence.EndFrame <= FDefinition.Sources[LOccurrence.Source].FrameCount),
+      'Section occurrence is outside its source geometry');
+    Text(LOccurrence.SectionId);
+    Text(LOccurrence.Evidence);
+    OriginalOccurrence(LIndex, LOriginal, LFirst, LEnd);
+    LCursor := LFirst;
+    for LOther := 0 to High(LSelected) do
+    begin
+      if (LSelected[LOther].Recording = FDefinition.Sources[LOriginal].RecordingId) and
+        (LSelected[LOther].FirstFrame <= LCursor) and
+        (LSelected[LOther].EndFrame > LCursor) then
+      begin
+        LCursor := LSelected[LOther].EndFrame;
+        if LCursor >= LEnd then
+        begin
+          Break;
+        end;
+      end;
+    end;
+    Require(LCursor >= LEnd, 'Section occurrence extends outside selected recording coverage');
+  end;
 end;
 
-procedure TCorpusIntakePlan.OriginalRange(const ARange: Integer;
+procedure TCorpusIntakePlan.MapOriginal(const ASource: Integer; const AFirst, AEnd: Int64;
   out AOriginal: Integer; out AFirstFrame, AEndFrame: Int64);
-var
-  LRange: TCorpusIntakeRange;
 begin
-  Require((ARange >= 0) and (ARange < Length(FDefinition.Ranges)),
-    'Intake range index is outside the plan');
-  LRange := FDefinition.Ranges[ARange];
-  AOriginal := LRange.Source;
-  AFirstFrame := LRange.FirstFrame;
-  AEndFrame := LRange.EndFrame;
+  AOriginal := ASource;
+  AFirstFrame := AFirst;
+  AEndFrame := AEnd;
   while FDefinition.Sources[AOriginal].Parent >= 0 do
   begin
     Inc(AFirstFrame, FDefinition.Sources[AOriginal].ParentFirstFrame);
     Inc(AEndFrame, FDefinition.Sources[AOriginal].ParentFirstFrame);
     AOriginal := FDefinition.Sources[AOriginal].Parent;
+  end;
+end;
+
+procedure TCorpusIntakePlan.OriginalRange(const ARange: Integer;
+  out AOriginal: Integer; out AFirstFrame, AEndFrame: Int64);
+begin
+  Require((ARange >= 0) and (ARange < Length(FDefinition.Ranges)),
+    'Intake range index is outside the plan');
+  MapOriginal(FDefinition.Ranges[ARange].Source, FDefinition.Ranges[ARange].FirstFrame,
+    FDefinition.Ranges[ARange].EndFrame, AOriginal, AFirstFrame, AEndFrame);
+end;
+
+procedure TCorpusIntakePlan.OriginalOccurrence(const AOccurrence: Integer;
+  out AOriginal: Integer; out AFirstFrame, AEndFrame: Int64);
+begin
+  Require((AOccurrence >= 0) and (AOccurrence < Length(FDefinition.SectionOccurrences)),
+    'Section occurrence index is outside the plan');
+  MapOriginal(FDefinition.SectionOccurrences[AOccurrence].Source,
+    FDefinition.SectionOccurrences[AOccurrence].FirstFrame,
+    FDefinition.SectionOccurrences[AOccurrence].EndFrame, AOriginal, AFirstFrame, AEndFrame);
+end;
+
+function SectionCoordinates(const APlan: TCorpusIntakePlan;
+  const ADefinition: TCorpusIntakeDefinition): TCoordinateIntervals;
+var
+  LIndex: Integer;
+  LOriginal: Integer;
+  LFirst: Int64;
+  LEnd: Int64;
+begin
+  Result := nil;
+  SetLength(Result, Length(ADefinition.SectionOccurrences));
+  for LIndex := 0 to High(Result) do
+  begin
+    APlan.OriginalOccurrence(LIndex, LOriginal, LFirst, LEnd);
+    Result[LIndex].Recording := ADefinition.Sources[LOriginal].RecordingId;
+    Result[LIndex].Section := ADefinition.SectionOccurrences[LIndex].SectionId;
+    Result[LIndex].Partition := ADefinition.Families[ADefinition.Sources[LOriginal].Family].Partition;
+    Result[LIndex].Rate := ADefinition.Sources[LOriginal].SampleRate;
+    Result[LIndex].FirstFrame := LFirst;
+    Result[LIndex].EndFrame := LEnd;
+  end;
+end;
+
+function TCorpusIntakePlan.SectionContributions: TCorpusSectionContributions;
+var
+  LIntervals: TCoordinateIntervals;
+  LIndex: Integer;
+  LOther: Integer;
+  LEntry: Integer;
+  LCursor: Int64;
+  LDuplicate: Boolean;
+begin
+  Result := nil;
+  LIntervals := SectionCoordinates(Self, FDefinition);
+  SortCoordinates(LIntervals, True);
+  LEntry := -1;
+  LCursor := 0;
+  for LIndex := 0 to High(LIntervals) do
+  begin
+    if (LIndex = 0) or
+      (LIntervals[LIndex].Recording <> LIntervals[LIndex - 1].Recording) or
+      (LIntervals[LIndex].Section <> LIntervals[LIndex - 1].Section) then
+    begin
+      Inc(LEntry);
+      SetLength(Result, LEntry + 1);
+      Result[LEntry].RecordingId := LIntervals[LIndex].Recording;
+      Result[LEntry].Partition := LIntervals[LIndex].Partition;
+      Result[LEntry].SampleRate := LIntervals[LIndex].Rate;
+      Result[LEntry].SectionId := LIntervals[LIndex].Section;
+      LCursor := 0;
+    end;
+    Inc(Result[LEntry].DeclaredRows);
+    LDuplicate := False;
+    for LOther := LIndex - 1 downto 0 do
+    begin
+      if (LIntervals[LOther].Recording <> LIntervals[LIndex].Recording) or
+        (LIntervals[LOther].Section <> LIntervals[LIndex].Section) or
+        (LIntervals[LOther].FirstFrame <> LIntervals[LIndex].FirstFrame) then
+      begin
+        Break;
+      end;
+      if LIntervals[LOther].EndFrame = LIntervals[LIndex].EndFrame then
+      begin
+        LDuplicate := True;
+        Break;
+      end;
+    end;
+    if not LDuplicate then
+    begin
+      Inc(Result[LEntry].DistinctOccurrences);
+    end;
+    Inc(Result[LEntry].UniqueFrames,
+      UnionIncrement(LIntervals[LIndex].FirstFrame, LIntervals[LIndex].EndFrame, LCursor));
   end;
 end;
 
@@ -417,6 +650,8 @@ var
   LCursor: Int64;
   LFrames: Int64;
   LDuplicate: Boolean;
+  LSections: TCoordinateIntervals;
+  LSectionIndex: Integer;
 begin
   Result := nil;
   SetLength(LIntervals, Length(FDefinition.Ranges));
@@ -508,11 +743,10 @@ begin
       begin
         Continue;
       end;
-      LFirst := Max(LIntervals[LIndex].FirstFrame, LCursor);
-      LEnd := LIntervals[LIndex].EndFrame;
-      if LEnd > LFirst then
+      LFrames := UnionIncrement(LIntervals[LIndex].FirstFrame,
+        LIntervals[LIndex].EndFrame, LCursor);
+      if LFrames > 0 then
       begin
-        LFrames := LEnd - LFirst;
         if LPass = 0 then
         begin
           Inc(Result[LEntry].UniqueFrames, LFrames);
@@ -522,8 +756,24 @@ begin
           Inc(Result[LEntry].UnknownBoundaryFrames, LFrames);
         end;
       end;
-      LCursor := Max(LCursor, LEnd);
     end;
+  end;
+  LSections := SectionCoordinates(Self, FDefinition);
+  SortCoordinates(LSections, False);
+  LSectionIndex := 0;
+  for LEntry := 0 to High(Result) do
+  begin
+    LCursor := 0;
+    while (LSectionIndex < Length(LSections)) and
+      (LSections[LSectionIndex].Recording = Result[LEntry].RecordingId) do
+    begin
+      Inc(Result[LEntry].SectionTaggedFrames,
+        UnionIncrement(LSections[LSectionIndex].FirstFrame,
+          LSections[LSectionIndex].EndFrame, LCursor));
+      Inc(LSectionIndex);
+    end;
+    Result[LEntry].UnknownSectionFrames := Result[LEntry].UniqueFrames -
+      Result[LEntry].SectionTaggedFrames;
   end;
 end;
 

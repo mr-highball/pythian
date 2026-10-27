@@ -12,6 +12,99 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Caller-declared section accounting accepted - 2026-10-27
+
+Previous goal turn is progress at `9f12e04`: two native Save/publication repairs
+were accepted, pushed and deployed. Delivery nonclosing count enters at **0**.
+The final retained-review publication question remains unanswered; automatic
+review's catalog-write rejection is unchanged and is not retried by another
+route. The browser authority gate also remains open.
+
+Big Boss followed least-complete NS-5 and actual musical prerequisites. Spiegel
+confirmed timbre, harmony and groove still need accepted inferred events, roles
+or independent context; their existing providers cannot substitute for those
+observations. Spike identified a concrete remaining
+[vocabulary_01](TODO/NS-5_vocabulary_01.md) AC1 declaration gap: the primary intake
+cannot represent caller-labelled occurrences of repeated musical sections.
+No stopped scientific family, source acquisition or new inference is selected.
+
+Batch criterion: truthful repeated-section contribution accounting, separate
+from physical unique duration, training multiplicity and generation preferences.
+Deliverable: optional caller-declared occurrence intervals and section IDs in
+the primary portable intake, with original-coordinate mapping, alias dedup,
+group union, explicit unlabelled coverage and native verify/learning audit.
+Declarations are assertions, not acoustic repetition detection or verified
+equivalence. Existing whole-recording/coarse selection remains usable without
+supplying any occurrences or changing training ranges.
+
+Closing evidence: meaningful aliases/distinct occurrences/overlap/unknowns,
+source/split and malformed-input checks, detached copies, current-format native
+roundtrip, actual unchanged authored WFC learning and shared pas2js execution.
+Stop on lost evidence, duplicate mapping/union algorithms, altered training
+admission, guessed musical identity or source/evaluation leakage. This component
+does not close representative selection, musical coverage/diversity or the full
+task, and earns no point credit. Judge full AC1 only against its complete scope.
+
+Spike owns `src/pythian.corpus.intake.pas` and its portable intake fixture.
+Spiegel owns `tools/pythian.tools.corpus.intake.pas` and the native file-consumer
+fixture. Big Boss owns assessment, actual consumer integration/parity, docs,
+independent checks and final judgment. The public API is fixed before disjoint
+consumer edits; no further helper or live catalog/browser action is authorized.
+All new generated output uses E-drive `section-accounting-20261027-*` roots.
+
+Delivered and accepted by Big Boss: optional section declarations, detached
+evidence, shared original-frame mapping, caller-group occurrence counts and
+physical unions, plus cross-group tagged/untagged coverage. Section IDs are
+scoped per recording. Multiple aliases and evidence texts cannot multiply the
+same occurrence. Overlapping group totals are explicitly non-additive; no label
+is detected or authenticated. Unknown-song regions remain unknown for training.
+No Studio annotation UI, automatic musical equivalence or model-quality claim
+is introduced. The native current-format optional array is omitted when empty;
+there is no historical format branch or alternate mapping/union implementation.
+
+First combined implementation QA passes. Spike independently checked the native
+consumer/CLI after both components were ready; Spiegel independently checked
+the primary API and actual pas2js execution. Checked FPC 3.2.2 Win32/Win64:
+core **44** and file/learning **71** checks per target, zero leaks. Actual matched
+pas2js/Node core **44** passes. Independent checks confirm alias grouping,
+physical overlap, unknown coverage, strict malformed JSON, source/split bounds,
+detached data and unchanged admitted ranges/analysis/palette. Canonical UTF-8
+ordering was source-reviewed through the previously qualified shared comparator;
+this section fixture does not execute a new Unicode ordering case.
+No failed implementation submission or transfer was needed.
+
+Big Boss also compiled the maintained example/CLI from `9f12e04` in isolated
+E-drive output, then compiled the candidate CLI. The same original authored
+input gives byte-identical roundtrip output, saved manifest and WFC model.
+Actual candidate verify/learn on the section fixture reports three declarations,
+two distinct occurrences, 4,000 tagged frames and 12,000 unknown frames; its WFC
+model also matches the prior-revision model exactly. All root CLI runs are
+leak-free. Source hashes, commands/logs and parity evidence stay under E-drive
+`runs/section-accounting-20261027-boss`, with helper implementation and cross-QA
+folders using the same prefix. No private corpus, feedback or live service slot
+was changed. Native/DOM/browser service artifacts remain at the preceding
+deployed revision; this component is a portable-library/native-CLI delivery.
+
+AC1 final scope review: the wording requires separate declarations and separation
+of training weights, preferences and hard locks; it does not require detecting
+repetition or one combined GUI. Its earlier accounting and finite/live playback
+evidence, this section component and
+[accepted hard-lock/preference separation](TODO/DONE/NS-4_layers_03.md) meet that
+declaration-only criterion. Big Boss inspected the unchanged maintained tests
+that preserve preferences/locks under changed training weights and make a lock
+win over a contrary preference; those earlier accepted tests were not rerun.
+Full vocabulary AC2–5 and all musical/reference blockers remain open. No task
+moves to DONE and no point credit follows. Counts stay **52 open / 64 DONE,
+116 total**, completion **52.45 / 47.55**; delivery nonclosing count stays **0**
+because the complete AC1 closes. Scientific stop counters are unchanged.
+
+Next: actual representative vocabulary needs the qualified musical reference/
+context prerequisites, or the pending prepared-review publication decision can
+make the retained repetition experiment available. Do not treat this accounting
+criterion as evidence that unlabelled music has been understood. The final live
+catalog append remains rejected by automatic approval review without a specific
+reason, pending a real user answer; no alternate-route retry was made.
+
 ## Existing long listening item: prepared, publication pending - 2026-10-27
 
 Previous goal turn is progress at `947c220`: two complete native observability

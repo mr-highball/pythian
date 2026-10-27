@@ -105,7 +105,8 @@ reported; this does not admit them to training.
 The native `verify` audit and saved learning audit expose these rows under
 `declared_contributions.recordings`, with partition counts and
 `declared_weighted_seconds` beside existing coverage. The scope explicitly says
-`training_admission: "not_assessed"` and `repeated_section_identity: "unknown"`.
+`training_admission: "not_assessed"`; repeated-section identity stays `unknown`
+unless the caller supplies the separate assertions described below.
 Unknown song spans remain in declared mass; only the existing `TrainingRanges`
 and verified consumer determine actual admitted segments/observations. This
 does not detect repeated music, assign song boundaries or alter generation
@@ -119,6 +120,55 @@ independent native consumer learning/replay pass. Shared declaration and
 accounting parity also passes actual pas2js execution under
 [portability_02](TODO/DONE/NS-6_portability_02.md); browser presentation and WASM
 remain outside that qualification.
+
+### Caller-declared section occurrences
+
+Optional `TCorpusIntakeDefinition.SectionOccurrences` lets a caller annotate
+sections without splitting or changing training selections. Each occurrence has
+a registered `Source`, half-open `FirstFrame`/`EndFrame`, opaque `SectionId` and
+nonempty `Evidence`. Up to 4096 occurrences are supported. The interval must lie
+wholly inside the selected original coverage of that recording, including across
+adjacent selected ranges; a gap rejects. No annotation is required for a whole
+recording or a coarse selection.
+
+The current manifest accepts the optional root array `section_occurrences`:
+
+```json
+"section_occurrences": [
+  {"source": 0, "first_frame": 0, "end_frame": 2000,
+   "section_id": "A", "evidence": "Caller annotation"},
+  {"source": 0, "first_frame": 10000, "end_frame": 12000,
+   "section_id": "A", "evidence": "Caller annotation"}
+]
+```
+
+Those illustrative values assert a relationship; Pythian does not detect or
+verify it. IDs are scoped to one recording, so the same text in two recordings
+does not assert a cross-recording match. Raw declarations and evidence survive
+detached copies, native roundtrip and saved learning manifests. An omitted or
+empty array adds no tags and is omitted from canonical output.
+
+`OriginalOccurrence` uses the same parent mapping as `OriginalRange`.
+`SectionContributions` returns recording/section rows in canonical UTF-8 order,
+with partition, sample rate, declared rows, distinct original-coordinate
+occurrences and their physical frame union. An original and a supported crop
+alias of the same occurrence count once, even with different evidence text.
+Distinct positions remain distinct occurrences; overlapping positions share
+physical coverage. Group unions can overlap and must not be summed as unique
+music or representative vocabulary.
+
+Recording contributions separately report `SectionTaggedFrames`, the union
+across all tagged groups, and `UnknownSectionFrames`, the untagged selected
+original coverage. Unknown song spans can carry section assertions without
+becoming known songs or entering training. Native verify/learning audits expose
+these fields, mapped occurrences and evidence under `declared_contributions`;
+nonempty annotations use `repeated_section_identity:
+"caller_asserted_not_verified"`. No annotated identity becomes acoustic truth.
+Training ranges, multiplicity, admission, analysis, WFC model and playback
+preferences are unchanged. This closes the declaration-only AC1 scope in
+[vocabulary_01](TODO/NS-5_vocabulary_01.md); representative musical selection,
+normalization and quality comparisons remain open. Studio has no new section
+annotation UI from this component.
 
 ### Format and source identity
 

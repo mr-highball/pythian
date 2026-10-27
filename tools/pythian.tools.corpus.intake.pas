@@ -214,7 +214,10 @@ begin
   LDefinition := Default(TCorpusIntakeDefinition);
   LRoot := Parse(APath);
   try
-    Fields(LRoot, 'kind,version,coordinate_units,style_id,families,sources,ranges');
+    if LRoot.Find('section_occurrences') <> nil then
+      Fields(LRoot, 'kind,version,coordinate_units,style_id,families,sources,ranges,section_occurrences')
+    else
+      Fields(LRoot, 'kind,version,coordinate_units,style_id,families,sources,ranges');
     Require((Text(LRoot, 'kind') = 'pythian-corpus-intake') and
       (IntegerField(LRoot, 'version') = CorpusIntakeVersion) and
       (Text(LRoot, 'coordinate_units') = 'source_frames'), 'Unsupported intake format/coordinate units');
@@ -284,6 +287,25 @@ begin
         BoundaryEvidence := Text(LObject, 'boundary_evidence'); Multiplicity := IndexField(LObject, 'multiplicity');
       end;
     end;
+    if LRoot.Find('section_occurrences') <> nil then
+    begin
+      LArray := TJSONArray(Item(LRoot, 'section_occurrences', jtArray));
+      Require(LArray.Count <= MaximumIntakeSectionOccurrences, 'Intake section count exceeds bounds');
+      SetLength(LDefinition.SectionOccurrences, LArray.Count);
+      for I := 0 to LArray.Count - 1 do
+      begin
+        LObject := ObjectAt(LArray, I);
+        Fields(LObject, 'source,first_frame,end_frame,section_id,evidence');
+        with LDefinition.SectionOccurrences[I] do
+        begin
+          Source := IndexField(LObject, 'source');
+          FirstFrame := IntegerField(LObject, 'first_frame');
+          EndFrame := IntegerField(LObject, 'end_frame');
+          SectionId := Text(LObject, 'section_id');
+          Evidence := Text(LObject, 'evidence');
+        end;
+      end;
+    end;
     Result := TCorpusIntakePlan.Create(LDefinition);
   finally
     LRoot.Free;
@@ -345,6 +367,24 @@ begin
         O.Add('song_id', SongId); O.Add('boundary_evidence', BoundaryEvidence); O.Add('multiplicity', Multiplicity);
       end;
     end;
+    if Length(D.SectionOccurrences) > 0 then
+    begin
+      A := TJSONArray.Create;
+      R.Add('section_occurrences', A);
+      for I := 0 to High(D.SectionOccurrences) do
+      begin
+        O := TJSONObject.Create;
+        A.Add(O);
+        with D.SectionOccurrences[I] do
+        begin
+          O.Add('source', Source);
+          O.Add('first_frame', FirstFrame);
+          O.Add('end_frame', EndFrame);
+          O.Add('section_id', SectionId);
+          O.Add('evidence', Evidence);
+        end;
+      end;
+    end;
     Result := R.AsJSON;
     Require(Length(Result) <= MaximumIntakeDocumentBytes, 'Encoded intake exceeds document budget');
   finally
@@ -356,11 +396,19 @@ function CorpusIntakeAuditJSON(const APlan: TCorpusIntakePlan): UTF8String;
 var
   LCoverage: TCorpusIntakeCoverage;
   LContributions: TCorpusRecordingContributions;
+  LSections: TCorpusSectionContributions;
+  LDefinition: TCorpusIntakeDefinition;
   LReport: TJSONObject;
   LPartitionReport: TJSONObject;
   LDeclarations: TJSONObject;
   LRecording: TJSONObject;
   LRecordings: TJSONArray;
+  LSectionRows: TJSONArray;
+  LSection: TJSONObject;
+  LOccurrences: TJSONArray;
+  LOriginal: Integer;
+  LFirstFrame: Int64;
+  LEndFrame: Int64;
   LPartition: TCorpusPartition;
   LIndex: Integer;
   LDeclaredRows: Integer;
@@ -370,6 +418,8 @@ begin
   Require(APlan <> nil, 'Corpus audit requires an intake plan');
   LCoverage := APlan.Coverage;
   LContributions := APlan.Contributions;
+  LSections := APlan.SectionContributions;
+  LDefinition := APlan.CopyDefinition;
   LReport := TJSONObject.Create;
   try
     LReport.Add('kind', 'pythian-corpus-intake-audit');
@@ -406,7 +456,10 @@ begin
     LDeclarations.Add('scope', 'caller-declared ranges, not admitted training observations');
     LDeclarations.Add('weight_kind', 'explicit training multiplicity');
     LDeclarations.Add('training_admission', 'not_assessed');
-    LDeclarations.Add('repeated_section_identity', 'unknown');
+    if Length(LDefinition.SectionOccurrences) = 0 then
+      LDeclarations.Add('repeated_section_identity', 'unknown')
+    else
+      LDeclarations.Add('repeated_section_identity', 'caller_asserted_not_verified');
     LRecordings := TJSONArray.Create;
     LDeclarations.Add('recordings', LRecordings);
     for LIndex := 0 to High(LContributions) do
@@ -418,9 +471,40 @@ begin
       LRecording.Add('sample_rate', LContributions[LIndex].SampleRate);
       LRecording.Add('unique_original_frames', LContributions[LIndex].UniqueFrames);
       LRecording.Add('unknown_song_frames', LContributions[LIndex].UnknownBoundaryFrames);
+      LRecording.Add('section_tagged_frames', LContributions[LIndex].SectionTaggedFrames);
+      LRecording.Add('unknown_section_frames', LContributions[LIndex].UnknownSectionFrames);
       LRecording.Add('declared_range_rows', LContributions[LIndex].DeclaredRows);
       LRecording.Add('distinct_declarations', LContributions[LIndex].DistinctDeclarations);
       LRecording.Add('declared_weighted_frames', LContributions[LIndex].DeclaredWeightedFrames);
+    end;
+    LDeclarations.Add('section_scope', 'caller assertions; grouped frames may overlap and are not additive');
+    LSectionRows := TJSONArray.Create;
+    LDeclarations.Add('sections', LSectionRows);
+    for LIndex := 0 to High(LSections) do
+    begin
+      LSection := TJSONObject.Create;
+      LSectionRows.Add(LSection);
+      LSection.Add('recording_id', LSections[LIndex].RecordingId);
+      LSection.Add('partition', CorpusPartitionName(LSections[LIndex].Partition));
+      LSection.Add('sample_rate', LSections[LIndex].SampleRate);
+      LSection.Add('section_id', LSections[LIndex].SectionId);
+      LSection.Add('declared_rows', LSections[LIndex].DeclaredRows);
+      LSection.Add('distinct_occurrences', LSections[LIndex].DistinctOccurrences);
+      LSection.Add('unique_original_frames', LSections[LIndex].UniqueFrames);
+    end;
+    LOccurrences := TJSONArray.Create;
+    LDeclarations.Add('section_occurrences', LOccurrences);
+    for LIndex := 0 to High(LDefinition.SectionOccurrences) do
+    begin
+      APlan.OriginalOccurrence(LIndex, LOriginal, LFirstFrame, LEndFrame);
+      LSection := TJSONObject.Create;
+      LOccurrences.Add(LSection);
+      LSection.Add('source', LDefinition.SectionOccurrences[LIndex].Source);
+      LSection.Add('original_source', LOriginal);
+      LSection.Add('original_first_frame', LFirstFrame);
+      LSection.Add('original_end_frame', LEndFrame);
+      LSection.Add('section_id', LDefinition.SectionOccurrences[LIndex].SectionId);
+      LSection.Add('evidence', LDefinition.SectionOccurrences[LIndex].Evidence);
     end;
     Result := LReport.AsJSON;
   finally

@@ -54,6 +54,14 @@ explicitly requested by the user. The older roster remains inactive. New local
 builds/tests/cache/run output use `E:/CodexWork/pythian/`; existing repo-local
 build defaults are not redirected automatically.
 
+Accepted criterion: [vocabulary_01](NS-5_vocabulary_01.md) AC1 now has complete
+declaration accounting, including optional caller-labelled section occurrences
+and explicit untagged coverage. Portable/native consumers retain exact original
+coordinates, evidence and alias/union counts without changing actual learning.
+Earlier training/playback/hard-lock separation remains accepted. This does not
+detect repeated music, qualify representative vocabulary or add musical credit;
+AC2–5 and the task remain open.
+
 Implemented native prerequisite: [mixed-format learning](NS-6_studio_07.md)
 now explicitly prepares selected ranges through the primary resampler, retaining
 original identities and rational clocks. Actual mixed-format WFC learning,

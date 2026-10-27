@@ -69,6 +69,154 @@ begin
   Check(LRejected, 'Invalid intake accepted');
 end;
 
+procedure SectionChecks;
+var
+  LDefinition: TCorpusIntakeDefinition;
+  LCopy: TCorpusIntakeDefinition;
+  LPlan: TCorpusIntakePlan;
+  LRows: TCorpusRecordingContributions;
+  LGroups: TCorpusSectionContributions;
+  LOriginal: Integer;
+  LFirst: Int64;
+  LEnd: Int64;
+  LIndex: Integer;
+begin
+  LDefinition := Fixture;
+  LPlan := TCorpusIntakePlan.Create(LDefinition);
+  try
+    LRows := LPlan.Contributions;
+    LGroups := LPlan.SectionContributions;
+    Check((Length(LGroups) = 0) and (LRows[0].SectionTaggedFrames = 0) and
+      (LRows[0].UnknownSectionFrames = LRows[0].UniqueFrames),
+      'Omitted section declarations preserve unknown selected coverage');
+  finally
+    LPlan.Free;
+  end;
+  LDefinition.Sources[0].SingleSongId := '';
+  LDefinition.Sources[0].SongEvidence := '';
+  SetLength(LDefinition.Families, 2);
+  LDefinition.Families[1] := LDefinition.Families[0];
+  LDefinition.Families[1].Id := 'other-family';
+  LDefinition.Families[1].WorkId := 'other-work';
+  LDefinition.Families[1].Partition := cpDevelopment;
+  SetLength(LDefinition.Sources, 3);
+  LDefinition.Sources[1] := LDefinition.Sources[0];
+  LDefinition.Sources[1].Id := 'derivative';
+  LDefinition.Sources[1].Sha256 := StringOfChar('c', 64);
+  LDefinition.Sources[1].Parent := 0;
+  LDefinition.Sources[1].ParentFirstFrame := 4000;
+  LDefinition.Sources[1].ParentEndFrame := 12000;
+  LDefinition.Sources[1].FrameCount := 8000;
+  LDefinition.Sources[2] := LDefinition.Sources[0];
+  LDefinition.Sources[2].Id := 'other';
+  LDefinition.Sources[2].RecordingId := 'other-recording';
+  LDefinition.Sources[2].Family := 1;
+  LDefinition.Sources[2].Sha256 := StringOfChar('d', 64);
+  SetLength(LDefinition.Ranges, 3);
+  LDefinition.Ranges[0].EndFrame := 8000;
+  LDefinition.Ranges[0].Multiplicity := 1;
+  LDefinition.Ranges[1].Source := 1;
+  LDefinition.Ranges[1].EndFrame := 8000;
+  LDefinition.Ranges[1].Multiplicity := 2;
+  LDefinition.Ranges[2].Source := 2;
+  LDefinition.Ranges[2].EndFrame := 8000;
+  LDefinition.Ranges[2].Multiplicity := 1;
+  SetLength(LDefinition.SectionOccurrences, 5);
+  for LIndex := 0 to 4 do
+  begin
+    LDefinition.SectionOccurrences[LIndex].SectionId := 'A';
+    LDefinition.SectionOccurrences[LIndex].Evidence := 'caller assertion';
+  end;
+  LDefinition.SectionOccurrences[0].FirstFrame := 4000;
+  LDefinition.SectionOccurrences[0].EndFrame := 6000;
+  LDefinition.SectionOccurrences[1].Source := 1;
+  LDefinition.SectionOccurrences[1].EndFrame := 2000;
+  LDefinition.SectionOccurrences[1].Evidence := 'another assertion';
+  LDefinition.SectionOccurrences[2].FirstFrame := 5500;
+  LDefinition.SectionOccurrences[2].EndFrame := 7500;
+  LDefinition.SectionOccurrences[3].FirstFrame := 7000;
+  LDefinition.SectionOccurrences[3].EndFrame := 9000;
+  LDefinition.SectionOccurrences[3].SectionId := 'B';
+  LDefinition.SectionOccurrences[4].Source := 2;
+  LDefinition.SectionOccurrences[4].FirstFrame := 1000;
+  LDefinition.SectionOccurrences[4].EndFrame := 2000;
+  LPlan := TCorpusIntakePlan.Create(LDefinition);
+  try
+    LPlan.OriginalOccurrence(1, LOriginal, LFirst, LEnd);
+    Check((LOriginal = 0) and (LFirst = 4000) and (LEnd = 6000), 'Occurrence original mapping');
+    LRows := LPlan.Contributions;
+    Check((Length(LRows) = 2) and (LRows[0].RecordingId = 'other-recording') and
+      (LRows[0].SectionTaggedFrames = 1000) and (LRows[0].UnknownSectionFrames = 7000) and
+      (LRows[0].Partition = cpDevelopment), 'Other recording section coverage');
+    Check((LRows[1].UniqueFrames = 12000) and (LRows[1].UnknownBoundaryFrames = 12000) and
+      (LRows[1].SectionTaggedFrames = 5000) and (LRows[1].UnknownSectionFrames = 7000) and
+      (LRows[1].DeclaredWeightedFrames = 24000), 'Cross-group physical union and unknown coverage');
+    LGroups := LPlan.SectionContributions;
+    Check((Length(LGroups) = 3) and (LGroups[1].SectionId = 'A') and
+      (LGroups[1].DeclaredRows = 3) and (LGroups[1].DistinctOccurrences = 2) and
+      (LGroups[1].UniqueFrames = 3500) and (LGroups[2].SectionId = 'B') and
+      (LGroups[2].UniqueFrames = 2000), 'Alias, overlap and section group accounting');
+    LDefinition.SectionOccurrences[0].Evidence := 'mutated';
+    LCopy := LPlan.CopyDefinition;
+    Check(LCopy.SectionOccurrences[0].Evidence = 'caller assertion', 'Input evidence detached');
+    LCopy.SectionOccurrences[0].Evidence := 'output mutation';
+    LCopy := LPlan.CopyDefinition;
+    LGroups[1].SectionId := 'mutated';
+    LGroups := LPlan.SectionContributions;
+    Check((LCopy.SectionOccurrences[0].Evidence = 'caller assertion') and
+      (LGroups[1].SectionId = 'A'), 'Returned evidence and rows detached');
+  finally
+    LPlan.Free;
+  end;
+  LCopy := LDefinition;
+  LCopy.SectionOccurrences := Copy(LDefinition.SectionOccurrences);
+  LCopy.SectionOccurrences[0] := LDefinition.SectionOccurrences[4];
+  LCopy.SectionOccurrences[4] := LDefinition.SectionOccurrences[0];
+  LPlan := TCorpusIntakePlan.Create(LCopy);
+  try
+    LGroups := LPlan.SectionContributions;
+    LRows := LPlan.Contributions;
+    Check((LGroups[1].DistinctOccurrences = 2) and (LGroups[1].UniqueFrames = 3500) and
+      (LRows[1].SectionTaggedFrames = 5000), 'Section declaration order does not change accounting');
+  finally
+    LPlan.Free;
+  end;
+  LDefinition.SectionOccurrences[0].Evidence := '';
+  Reject(LDefinition);
+  LDefinition.SectionOccurrences[0].Evidence := 'caller assertion';
+  LDefinition.SectionOccurrences[0].SectionId := '';
+  Reject(LDefinition);
+  LDefinition.SectionOccurrences[0].SectionId := 'A';
+  LDefinition.SectionOccurrences[0].Evidence := StringOfChar('e', 4097);
+  Reject(LDefinition);
+  LDefinition.SectionOccurrences[0].Evidence := 'caller assertion';
+  LDefinition.SectionOccurrences[0].EndFrame := MaximumIntakeFrame;
+  Reject(LDefinition);
+  LDefinition.SectionOccurrences[0].EndFrame := 6000;
+  LDefinition.Ranges[0].EndFrame := 5000;
+  LDefinition.Ranges[1].FirstFrame := 2000;
+  Reject(LDefinition);
+  SetLength(LDefinition.SectionOccurrences, MaximumIntakeSectionOccurrences + 1);
+  Reject(LDefinition);
+  LDefinition := Fixture;
+  LDefinition.Sources[0].FrameCount := MaximumIntakeFrame;
+  LDefinition.Sources[0].ParentEndFrame := MaximumIntakeFrame;
+  SetLength(LDefinition.SectionOccurrences, 1);
+  LDefinition.SectionOccurrences[0].FirstFrame := MaximumIntakeFrame - 100;
+  LDefinition.SectionOccurrences[0].EndFrame := MaximumIntakeFrame;
+  LDefinition.SectionOccurrences[0].SectionId := 'boundary';
+  LDefinition.SectionOccurrences[0].Evidence := 'caller assertion';
+  LPlan := TCorpusIntakePlan.Create(LDefinition);
+  try
+    LRows := LPlan.Contributions;
+    Check((LRows[0].SectionTaggedFrames = 100) and
+      (LRows[0].UnknownSectionFrames = MaximumIntakeFrame - 100),
+      'Exact integer section boundary remains valid');
+  finally
+    LPlan.Free;
+  end;
+end;
+
 var
   D, E: TCorpusIntakeDefinition;
   P, Q: TCorpusIntakePlan;
@@ -80,6 +228,7 @@ var
   I: Integer;
 begin
   try
+    SectionChecks;
     D := Fixture;
     P := TCorpusIntakePlan.Create(D);
     try

@@ -213,6 +213,142 @@ begin
   end;
 end;
 
+procedure CheckSections(const ADefinition: TCorpusIntakeDefinition;
+  const ABaselineModel: String);
+var
+  D: TCorpusIntakeDefinition;
+  P: TCorpusIntakePlan;
+  Q: TCorpusIntakePlan;
+  O: TJSONObject;
+  R: TJSONObject;
+  A: TJSONArray;
+  S: String;
+  I: Integer;
+  Original: Integer;
+  FirstFrame: Int64;
+  EndFrame: Int64;
+  BaselineRanges: TCorpusIntakeRanges;
+  SectionRanges: TCorpusIntakeRanges;
+  BaselineAudit: TJSONObject;
+  SectionAudit: TJSONObject;
+begin
+  D := ADefinition;
+  SetLength(D.SectionOccurrences, 3);
+  D.SectionOccurrences[0].Source := 0;
+  D.SectionOccurrences[0].FirstFrame := 0;
+  D.SectionOccurrences[0].EndFrame := 2000;
+  D.SectionOccurrences[0].SectionId := 'chorus';
+  D.SectionOccurrences[0].Evidence := 'Caller annotation';
+  D.SectionOccurrences[1] := D.SectionOccurrences[0];
+  D.SectionOccurrences[1].Source := 2;
+  D.SectionOccurrences[1].Evidence := 'Crop alias';
+  D.SectionOccurrences[2] := D.SectionOccurrences[0];
+  D.SectionOccurrences[2].FirstFrame := 10000;
+  D.SectionOccurrences[2].EndFrame := 12000;
+  D.SectionOccurrences[2].Evidence := 'Second occurrence';
+  P := TCorpusIntakePlan.Create(D);
+  try
+    P.OriginalOccurrence(1, Original, FirstFrame, EndFrame);
+    Check((Original = 0) and (FirstFrame = 0) and (EndFrame = 2000),
+      'Prepared alias maps to original frames');
+    S := EncodeCorpusIntake(P);
+    WriteTextFile(LDirectory + 'sections.json', S);
+    Q := ReadCorpusIntake(LDirectory + 'sections.json');
+    try
+      Check(EncodeCorpusIntake(Q) = S, 'Section manifest roundtrip');
+      SectionRanges := Q.TrainingRanges;
+      D.SectionOccurrences := nil;
+      P.Free;
+      P := TCorpusIntakePlan.Create(D);
+      BaselineRanges := P.TrainingRanges;
+      Check(Length(SectionRanges) = Length(BaselineRanges), 'Section declarations change training range count');
+      for I := 0 to High(SectionRanges) do
+        Check((SectionRanges[I].Source = BaselineRanges[I].Source) and
+          (SectionRanges[I].FirstFrame = BaselineRanges[I].FirstFrame) and
+          (SectionRanges[I].EndFrame = BaselineRanges[I].EndFrame) and
+          (SectionRanges[I].SongId = BaselineRanges[I].SongId) and
+          (SectionRanges[I].Multiplicity = BaselineRanges[I].Multiplicity),
+          'Section declarations changed a training range');
+      P.Free;
+      P := TCorpusIntakePlan.Create(Q.CopyDefinition);
+    finally
+      Q.Free;
+    end;
+    O := TJSONObject(GetJSON(CorpusIntakeAuditJSON(P)));
+    try
+      R := O.Objects['declared_contributions'];
+      Check(R.Strings['repeated_section_identity'] = 'caller_asserted_not_verified',
+        'Section identity must remain an unverified caller assertion');
+      Check((R.Arrays['sections'].Count = 1) and
+        (R.Arrays['sections'].Objects[0].Integers['declared_rows'] = 3) and
+        (R.Arrays['sections'].Objects[0].Integers['distinct_occurrences'] = 2) and
+        (R.Arrays['sections'].Objects[0].Int64s['unique_original_frames'] = 4000),
+        'Section alias and disjoint occurrence accounting');
+      Check((R.Arrays['recordings'].Objects[0].Int64s['section_tagged_frames'] = 4000) and
+        (R.Arrays['recordings'].Objects[0].Int64s['unknown_section_frames'] = 12000),
+        'Untagged selected frames remain unknown');
+      Check((R.Arrays['section_occurrences'].Objects[1].Integers['original_source'] = 0) and
+        (R.Arrays['section_occurrences'].Objects[1].Strings['evidence'] = 'Crop alias'),
+        'Original mapping and declaration evidence retained in audit');
+    finally
+      O.Free;
+    end;
+    LearnCorpusIntake(LDirectory + 'sections.json', LDirectory + 'sections-learned');
+    Check(HashAudioBytes(Bytes('sections-learned.wfcs')) = ABaselineModel,
+      'Section declarations changed actual learned model');
+    BaselineAudit := TJSONObject(GetJSON(FileText('accepted-0.audit.json')));
+    SectionAudit := TJSONObject(GetJSON(FileText('sections-learned.audit.json')));
+    try
+      Check((BaselineAudit.Integers['training_segments'] = SectionAudit.Integers['training_segments']) and
+        (BaselineAudit.Integers['training_observations'] = SectionAudit.Integers['training_observations']) and
+        (BaselineAudit.Integers['analysis_window_frames'] = SectionAudit.Integers['analysis_window_frames']) and
+        (BaselineAudit.Integers['analysis_hop_frames'] = SectionAudit.Integers['analysis_hop_frames']) and
+        (BaselineAudit.Arrays['acoustic_palette_centers'].AsJSON = SectionAudit.Arrays['acoustic_palette_centers'].AsJSON),
+        'Section declarations changed journal analysis or palette');
+    finally
+      SectionAudit.Free;
+      BaselineAudit.Free;
+    end;
+    Q := ReadCorpusIntake(LDirectory + 'sections-learned.json');
+    try
+      Check(EncodeCorpusIntake(Q) = S, 'Saved learned manifest lost section evidence');
+    finally
+      Q.Free;
+    end;
+    for I := 0 to 5 do
+    begin
+      O := TJSONObject(GetJSON(S));
+      try
+        A := O.Arrays['section_occurrences'];
+        case I of
+          0: A.Objects[0].Add('unexpected', True);
+          1: A.Objects[0].Delete('evidence');
+          2: begin A.Objects[0].Delete('source'); A.Objects[0].Add('source', 0.5); end;
+          3: begin A.Objects[0].Delete('section_id'); A.Objects[0].Add('section_id', 4); end;
+          4: begin O.Delete('section_occurrences'); O.Add('section_occurrences', 'invalid'); end;
+          5: begin A.Objects[0].Delete('end_frame'); A.Objects[0].Add('end_frame', -1); end;
+        end;
+        RejectJSON(O.AsJSON);
+      finally
+        O.Free;
+      end;
+    end;
+    O := TJSONObject(GetJSON(S));
+    try
+      A := O.Arrays['section_occurrences'];
+      while A.Count <= MaximumIntakeSectionOccurrences do
+        A.Add(TJSONObject(GetJSON(A.Objects[0].AsJSON)));
+      RejectJSON(O.AsJSON);
+    finally
+      O.Free;
+    end;
+    RejectJSON(Copy(S, 1, Length(S) - 1) + ',"section_occurrences":[]}');
+    RejectJSON(StringOfChar('[', 20) + StringOfChar(']', 20));
+  finally
+    P.Free;
+  end;
+end;
+
 var
   P, Q: TCorpusIntakePlan;
   A: TCorpusAdmission;
@@ -328,6 +464,7 @@ begin
       Q := TCorpusIntakePlan.Create(E);
       try A := TCorpusAdmission.Create(Q, LDirectory); A.Free; A := nil; Check(True, 'Supported parent crop/gain');
       finally Q.Free; Q := nil; end;
+      CheckSections(E, LModelHash);
       E.Sources[2].ParentGain := 0.75; RejectAdmission(E);
       E.Sources[2].ParentGain := 0.5; E.Sources[2].SampleRate := 16000; RejectAdmission(E);
       E := P.CopyDefinition; E.Families[1].Partition := cpEvaluation;

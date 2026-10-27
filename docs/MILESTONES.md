@@ -22,8 +22,12 @@ musical judgment or accepted-task movement.
 Native contribution accounting and independent playback preferences advance
 [vocabulary_01](TODO/NS-5_vocabulary_01.md) without completing it. Authored native
 checks preserve exact model/journal bytes, WFC tokens and clocks while eligible
-source choices change; actual finite/live PCM replay passes. Browser and full
-musical criteria remain open, with no point credit or task move. The shared
+source choices change; actual finite/live PCM replay passes. Caller-declared
+section occurrences now complete vocabulary_01's declaration-only AC1, with
+original-frame alias/union accounting and explicit unlabelled coverage through
+the portable API and maintained native consumer. Existing model/manifest replay
+matches the prior revision. This does not detect or verify musical repetition.
+Browser and full musical criteria remain open, with no point credit or task move. The shared
 intake/text repair is accepted in
 [portability_02](TODO/DONE/NS-6_portability_02.md): actual native/pas2js execution
 and independent parity pass, with no additional credit.
