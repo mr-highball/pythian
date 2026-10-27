@@ -54,6 +54,7 @@ uses
   SysUtils,
   pythian.analysis,
   pythian.learning,
+  pythian.binary,
   pythian.hash;
 
 type
@@ -107,31 +108,20 @@ end;
 procedure TArchiveWriter.Number(const AValue: Integer);
 var
   LBytes: array[0..3] of Byte;
-  LIndex: Integer;
 begin
   if AValue < 0 then
   begin
     raise EAudio.Create('Archive integer must be nonnegative');
   end;
-  for LIndex := 0 to 3 do
-  begin
-    LBytes[LIndex] := (Cardinal(AValue) shr (LIndex * 8)) and $FF;
-  end;
+  WriteUInt32LE(LBytes, 0, Cardinal(AValue));
   Raw(LBytes[0], SizeOf(LBytes));
 end;
 
 procedure TArchiveWriter.RealNumber(const AValue: Double);
 var
-  LBits: QWord;
   LBytes: array[0..7] of Byte;
-  LIndex: Integer;
 begin
-  RequireFinite(AValue, 'Archive real');
-  Move(AValue, LBits, SizeOf(LBits));
-  for LIndex := 0 to 7 do
-  begin
-    LBytes[LIndex] := (LBits shr (LIndex * 8)) and $FF;
-  end;
+  WriteFloat64LE(LBytes, 0, AValue);
   Raw(LBytes[0], SizeOf(LBytes));
 end;
 
@@ -174,14 +164,9 @@ end;
 function TArchiveReader.Number: Integer;
 var
   LValue: Cardinal;
-  LIndex: Integer;
 begin
   Need(4);
-  LValue := 0;
-  for LIndex := 0 to 3 do
-  begin
-    LValue := LValue or (Cardinal(Bytes[Offset + LIndex]) shl (LIndex * 8));
-  end;
+  LValue := ReadUInt32LE(Bytes, Offset);
   Inc(Offset, 4);
   if LValue > High(Integer) then
   begin
@@ -191,22 +176,10 @@ begin
 end;
 
 function TArchiveReader.RealNumber: Double;
-var
-  LBits: QWord;
-  LIndex: Integer;
 begin
   Need(8);
-  LBits := 0;
-  for LIndex := 0 to 7 do
-  begin
-    LBits := LBits or (QWord(Bytes[Offset + LIndex]) shl (LIndex * 8));
-  end;
+  Result := ReadFloat64LE(Bytes, Offset);
   Inc(Offset, 8);
-  if (LBits and QWord($7FF0000000000000)) = QWord($7FF0000000000000) then
-  begin
-    raise EAudio.Create('Archive contains non-finite binary64');
-  end;
-  Move(LBits, Result, SizeOf(Result));
 end;
 
 function TArchiveReader.TextValue: UTF8String;

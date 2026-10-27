@@ -316,7 +316,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | [NS-6_studio_22](NS-6_studio_22.md) — Original/generated listening comparison | 0 | 0.00 | Deployed for review; native/DOM checks pass, actual browser acceptance remains |
 | [NS-6_observability_04](NS-6_observability_04.md) — Remaining provider/batch operations and operator monitoring | 0 | 0.00 | Provider-contract/registry internals, batch evaluation and inference reporting remain |
 | [NS-6_observability_07](NS-6_observability_07.md) — Retained wave-style operations | 0 | 0.00 | Pitch preparation accepted; shared binary primitives are the next prerequisite |
-| [NS-6_binary-codec_01](NS-6_binary-codec_01.md) — Shared portable binary field primitives | 0 | 0.00 | Ready: consolidate demonstrated archive/WAV scalar duplicates before extending their callbacks |
+| [NS-6_binary-codec_01](NS-6_binary-codec_01.md) — Shared portable binary field primitives | 0 | 0.00 | Native/pas2js, exact prior formats and local runtime pass; published Ubuntu consumer pending |
 | [NS-6_adoption_01](NS-6_adoption_01.md) — Establish independent ecosystem adoption evidence | 15 | 1.50 | Supported releases + independent ecosystem evidence |
 | [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 1 | 0.10 | Solo usability resumed; complete physical matrix remains open |
 | [NS-6_delivery_03](NS-6_delivery_03.md) — Package and verify the accepted final workflow | 1 | 0.10 | Dependencies, including Studio |

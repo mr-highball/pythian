@@ -195,7 +195,7 @@ function DecodeSemanticStyle(const ABytes: TAudioBytes; const ARegistry: TProvid
 implementation
 
 uses
-  Classes, SysUtils, pythian.hash, pythian.wfc.providers, wfc,
+  Classes, SysUtils, pythian.hash, pythian.binary, pythian.wfc.providers, wfc,
   pythian.wfc.style, pythian.wfc.context.profile, pythian.wfc.context.archive,
   pythian.wfc.context, wfc_sequence_learn, wfc_sequence_text;
 
@@ -268,8 +268,6 @@ end;
 function TStyleIO.N(const AValue: Integer): Integer;
 var
   LBytes: array[0..3] of Byte;
-  LBits: Cardinal;
-  LIndex: Integer;
 begin
   Inc(FFields);
   if FFields mod 4096 = 0 then
@@ -284,20 +282,11 @@ begin
       raise EAudio.Create('Truncated semantic number');
     end;
     FStream.ReadBuffer(LBytes, 4);
-    LBits := 0;
-    for LIndex := 0 to 3 do
-    begin
-      LBits := LBits or (Cardinal(LBytes[LIndex]) shl (8 * LIndex));
-    end;
-    Move(LBits, Result, 4);
+    Result := ReadInt32LE(LBytes, 0);
   end
   else
   begin
-    Move(AValue, LBits, 4);
-    for LIndex := 0 to 3 do
-    begin
-      LBytes[LIndex] := Byte((LBits shr (8 * LIndex)) and 255);
-    end;
+    WriteInt32LE(LBytes, 0, AValue);
     FStream.WriteBuffer(LBytes, 4);
   end;
 end;
@@ -305,8 +294,6 @@ end;
 function TStyleIO.Q(const AValue: Int64): Int64;
 var
   LBytes: array[0..7] of Byte;
-  LBits: QWord;
-  LIndex: Integer;
 begin
   Result := AValue;
   if FReading then
@@ -316,20 +303,11 @@ begin
       raise EAudio.Create('Truncated semantic wide number');
     end;
     FStream.ReadBuffer(LBytes, 8);
-    LBits := 0;
-    for LIndex := 0 to 7 do
-    begin
-      LBits := LBits or (QWord(LBytes[LIndex]) shl (8 * LIndex));
-    end;
-    Move(LBits, Result, 8);
+    Result := ReadInt64LE(LBytes, 0);
   end
   else
   begin
-    Move(AValue, LBits, 8);
-    for LIndex := 0 to 7 do
-    begin
-      LBytes[LIndex] := Byte((LBits shr (8 * LIndex)) and 255);
-    end;
+    WriteInt64LE(LBytes, 0, AValue);
     FStream.WriteBuffer(LBytes, 8);
   end;
 end;

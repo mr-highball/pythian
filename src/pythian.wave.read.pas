@@ -126,7 +126,8 @@ uses
   Math,
   pythian.wave.stream,
   pythian.stream.bytes,
-  pythian.ieee754;
+  pythian.ieee754,
+  pythian.binary;
 
 const
   RiffTag = $46464952;
@@ -197,19 +198,9 @@ begin
 end;
 
 function TWaveFrameReader.Number(const AOffset, AWidth: Integer): Int64;
-var
-  I: Integer;
 begin
-  Result := 0;
-  for I := AWidth - 1 downto 0 do
-  begin
-    if (AWidth > 4) and
-      (Result > (MaximumWaveStreamBytes - FBuffer[AOffset + I]) div 256) then
-    begin
-      Exit(MaximumWaveStreamBytes + 1);
-    end;
-    Result := Result * 256 + FBuffer[AOffset + I];
-  end;
+  Result := MaximumWaveStreamBytes + 1;
+  TryReadUnsignedLE(FBuffer, AOffset, AWidth, Result, MaximumWaveStreamBytes);
 end;
 
 function TWaveFrameReader.SizeNumber(const AOffset: Integer): Int64;

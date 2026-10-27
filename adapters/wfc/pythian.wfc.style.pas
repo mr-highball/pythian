@@ -264,6 +264,7 @@ uses
   SysUtils,
   Math,
   pythian.hash,
+  pythian.binary,
   pythian.tonal,
   pythian.music.context,
   pythian.music.context.admission,
@@ -376,16 +377,12 @@ end;
 procedure PutNumber(const AStream: TMemoryStream; const AValue: Integer);
 var
   LBytes: array[0..3] of Byte;
-  LIndex: Integer;
 begin
   if (AValue < 0) or (AStream.Size > MaximumStyleBytes - 68) then
   begin
     raise EAudio.Create('Style integer/archive exceeds bounds');
   end;
-  for LIndex := 0 to 3 do
-  begin
-    LBytes[LIndex] := (Cardinal(AValue) shr (8 * LIndex)) and $FF;
-  end;
+  WriteUInt32LE(LBytes, 0, Cardinal(AValue));
   AStream.WriteBuffer(LBytes[0], 4);
 end;
 
@@ -434,17 +431,10 @@ end;
 
 procedure PutReal(const AStream: TMemoryStream; const AValue: Double);
 var
-  LBits: QWord;
   LBytes: TAudioBytes;
-  LIndex: Integer;
 begin
-  RequireFinite(AValue, 'Style analysis threshold');
-  Move(AValue, LBits, 8);
   SetLength(LBytes, 8);
-  for LIndex := 0 to 7 do
-  begin
-    LBytes[LIndex] := (LBits shr (8 * LIndex)) and $FF;
-  end;
+  WriteFloat64LE(LBytes, 0, AValue);
   PutBlob(AStream, LBytes);
 end;
 
@@ -459,14 +449,9 @@ end;
 function TStyleCursor.Number: Integer;
 var
   LBits: Cardinal;
-  LIndex: Integer;
 begin
   Need(4);
-  LBits := 0;
-  for LIndex := 0 to 3 do
-  begin
-    LBits := LBits or (Cardinal(Bytes[Offset + LIndex]) shl (8 * LIndex));
-  end;
+  LBits := ReadUInt32LE(Bytes, Offset);
   Inc(Offset, 4);
   if LBits > High(Integer) then
   begin
@@ -505,24 +490,13 @@ end;
 function TStyleCursor.RealValue: Double;
 var
   LBytes: TAudioBytes;
-  LBits: QWord;
-  LIndex: Integer;
 begin
   LBytes := Blob(8);
   if Length(LBytes) <> 8 then
   begin
     raise EAudio.Create('Style real field requires eight bytes');
   end;
-  LBits := 0;
-  for LIndex := 0 to 7 do
-  begin
-    LBits := LBits or (QWord(LBytes[LIndex]) shl (8 * LIndex));
-  end;
-  if (LBits and QWord($7FF0000000000000)) = QWord($7FF0000000000000) then
-  begin
-    raise EAudio.Create('Nonfinite style analysis threshold');
-  end;
-  Move(LBits, Result, 8);
+  Result := ReadFloat64LE(LBytes, 0);
 end;
 
 procedure PutHarmonicEvidence(const AStream: TMemoryStream; const AEvidence: THarmonicStyleEvidence);

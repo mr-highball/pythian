@@ -205,6 +205,28 @@ and [WAVEFORMATEX documentation](https://learn.microsoft.com/en-us/windows/win32
 checked 2026-09-14. The implementation deliberately supports the common legacy
 PCM24/32 container convention as well as the documented PCM8/16 and float32.
 
+### Shared binary fields
+
+[`pythian.binary`](../src/pythian.binary.pas) owns little-endian byte fields for
+the corpus/style archives and WAV metadata/headers. Readers borrow their byte
+windows; writers validate the complete window and value before changing bytes.
+`TryReadUnsignedLE` leaves its result unchanged when a valid field exceeds the
+caller's maximum, preserving format-specific sentinel policies. Format owners
+retain their own field prefixes, admission limits and schemas.
+
+Native signed fields cover the full Int64 domain. Pas2js signed/wide integer
+fields are limited to `±(2^53 - 1)`; unsigned fields have widths 1–8 and use the
+target's `MaximumBinaryInteger` ceiling. Physical UInt32/Int32 fields retain
+their 32-bit domains on both targets. Finite binary64 conversion belongs to
+[`pythian.ieee754`](../src/pythian.ieee754.pas), using two exact 32-bit words to
+preserve its payload, signed zero and subnormals without representing all bits
+as one JavaScript integer. Native memory reinterpretation and the standard
+pas2js numerical bit view stay inside this primary boundary; no browser/device
+API or borrowed scratch buffer enters the format adapters.
+
+[Qualification](TODO/NS-6_binary-codec_01.md) covers scalar execution and actual
+format consumers. It does not imply complete WFC/pas2js, phone or WASM support.
+
 ## Synthesis
 
 WFC's fixed oscillator path retains its Q12 tuning table, 24-bit phase,

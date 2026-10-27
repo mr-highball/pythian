@@ -40,6 +40,30 @@ One zero-credit task closes and one required reuse gap is added. Accounting is
 count is **0** after an actual criterion closure; adding the gap grants no credit
 and resets no scientific counter. The earlier pending-job text below is history.
 
+Binary candidate local result: primary `pythian.binary` and the existing IEEE
+unit now serve corpus/wave/semantic fields and WAV metadata/header parsing.
+Old primitive loops are removed. The bounded try-reader preserves the existing
+RF64 sentinel policy. Native signed64 stays complete; pas2js wide integers stop
+at its declared exact domain. Host bit views stay inside the primary numerical
+boundary; no new WFC dependency, inference runtime or browser/device API enters
+the core. Existing 2021/2026 derived notices are retained in the extracted unit.
+
+Checked Win32/Win64 each pass 33,071 scalar assertions; actual pas2js passes
+33,113. Affected native corpus, WAV, passage and semantic consumers pass with
+zero leaks. All 24 files match separately compiled immediate-prior `6b14cb7`
+consumers on each target. Actual pas2js header/frame-reading checks also pass.
+The original fixture bitwise-sign and compiler conversion/default-constant
+errors are preserved with their repairs. The initial generic codec met its
+predeclared runtime bound but added observed cost; the shared UInt32 path now
+measures 1.01x/0.97x prior Win64/Win32 medians in three alternating runs, below
+the unchanged 1.25 limit. These are local checks, not universal performance,
+phone/WASM, independent review or musical acceptance. Evidence is under E-drive
+`build/tests/runs/binary-codec-20261027-boss*`. The maintained native and pas2js
+fixture lists include the new scalar consumer. Keep the task open for published
+Ubuntu/extracted verification; counts/credits and scientific counters stay fixed.
+The retained repetition request was freshly confirmed revision0 and unanswered;
+no response or source data was changed.
+
 ## Pitch learner consumer preparation history - 2026-10-27
 
 The preceding goal turn is progress: actual clean Ubuntu consumers passed and

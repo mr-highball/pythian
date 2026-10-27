@@ -49,7 +49,7 @@ $suffix = if ($targetOs -in @('win32','win64')) { '.exe' } else { '' }
 $units = Join-Path $output 'units'
 New-Item -ItemType Directory -Force -Path $units | Out-Null
 $fixtures = @('pythian.tests.hash.portable', 'pythian.tests.stream.bytes',
-  'pythian.tests.binary.portable', 'pythian.tests.wave.portable',
+  'pythian.tests.binary.portable', 'pythian.tests.binary.fields', 'pythian.tests.wave.portable',
   'pythian.tests.wave.reader.portable', 'pythian.tests.analysis.portable',
   'pythian.tests.progress')
 foreach ($program in $fixtures) {

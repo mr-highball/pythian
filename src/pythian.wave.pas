@@ -72,24 +72,10 @@ implementation
 uses
   SysUtils,
   pythian.ieee754,
+  pythian.binary,
   pythian.stream.bytes,
   pythian.wave.stream,
   pythian.wave.read;
-
-function ReadLE(const ABytes: TAudioBytes; const AOffset, ACount: Integer): Int64;
-var
-  LIndex: Integer;
-begin
-  if (AOffset < 0) or (AOffset > Length(ABytes) - ACount) then
-  begin
-    raise EAudio.Create('Truncated WAVE field');
-  end;
-  Result := 0;
-  for LIndex := ACount - 1 downto 0 do
-  begin
-    Result := Result * 256 + ABytes[AOffset + LIndex];
-  end;
-end;
 
 function HasTag(const ABytes: TAudioBytes; const AOffset: Integer;
   const ATag: String): Boolean;
@@ -125,7 +111,7 @@ begin
   begin
     raise EAudio.Create('Loop metadata requires bounded RIFF/WAVE');
   end;
-  if ReadLE(ABytes, 4, 4) + 8 <> Length(ABytes) then
+  if ReadUnsignedLE(ABytes, 4, 4) + 8 <> Length(ABytes) then
   begin
     raise EAudio.Create('Loop metadata RIFF length mismatch');
   end;
@@ -136,7 +122,7 @@ begin
     begin
       raise EAudio.Create('Truncated loop metadata chunk header');
     end;
-    LSize := ReadLE(ABytes, LOffset + 4, 4);
+    LSize := ReadUnsignedLE(ABytes, LOffset + 4, 4);
     LNext := Int64(LOffset) + 8 + LSize + (LSize mod 2);
     if LNext > Length(ABytes) then
     begin
@@ -149,12 +135,12 @@ begin
         raise EAudio.Create('Duplicate or short ACID metadata');
       end;
       LInfo.Found := True;
-      LInfo.Flags := ReadLE(ABytes, LOffset + 8, 4);
-      LInfo.RootNote := ReadLE(ABytes, LOffset + 12, 2);
-      LInfo.BeatCount := ReadLE(ABytes, LOffset + 20, 4);
-      LInfo.MeterDenominator := ReadLE(ABytes, LOffset + 24, 2);
-      LInfo.MeterNumerator := ReadLE(ABytes, LOffset + 26, 2);
-      LWord := ReadLE(ABytes, LOffset + 28, 4);
+      LInfo.Flags := ReadUnsignedLE(ABytes, LOffset + 8, 4);
+      LInfo.RootNote := ReadUnsignedLE(ABytes, LOffset + 12, 2);
+      LInfo.BeatCount := ReadUnsignedLE(ABytes, LOffset + 20, 4);
+      LInfo.MeterDenominator := ReadUnsignedLE(ABytes, LOffset + 24, 2);
+      LInfo.MeterNumerator := ReadUnsignedLE(ABytes, LOffset + 26, 2);
+      LWord := ReadUnsignedLE(ABytes, LOffset + 28, 4);
       LInfo.TempoBpm := DecodeFloat32Bits(LWord);
       RequireFinite(LInfo.TempoBpm, 'ACID tempo');
     end;

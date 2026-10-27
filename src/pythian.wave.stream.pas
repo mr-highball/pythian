@@ -109,21 +109,11 @@ implementation
 
 uses
   Math,
+  pythian.binary,
   pythian.stream.bytes;
 
 const
   DWordMaximum: Int64 = 4294967295;
-
-procedure PutLE(var ABytes: TAudioBytes; const AOffset, ACount: Integer; AValue: Int64);
-var
-  LIndex: Integer;
-begin
-  for LIndex := 0 to ACount - 1 do
-  begin
-    ABytes[AOffset + LIndex] := AValue mod 256;
-    AValue := AValue div 256;
-  end;
-end;
 
 procedure PutTag(var ABytes: TAudioBytes; const AOffset: Integer; const ATag: String);
 var
@@ -242,14 +232,14 @@ begin
       size extension, not broadcast metadata or multichannel speaker layouts. }
     SetLength(Result, Rf64HeaderBytes);
     PutTag(Result, 0, 'RF64');
-    PutLE(Result, 4, 4, DWordMaximum);
+    WriteUnsignedLE(Result, 4, 4, DWordMaximum);
     PutTag(Result, 8, 'WAVE');
     PutTag(Result, 12, 'ds64');
-    PutLE(Result, 16, 4, 28);
-    PutLE(Result, 20, 8, LDataBytes + Rf64HeaderBytes - 8);
-    PutLE(Result, 28, 8, LDataBytes);
-    PutLE(Result, 36, 8, AFrames);
-    PutLE(Result, 44, 4, 0);
+    WriteUnsignedLE(Result, 16, 4, 28);
+    WriteUnsignedLE(Result, 20, 8, LDataBytes + Rf64HeaderBytes - 8);
+    WriteUnsignedLE(Result, 28, 8, LDataBytes);
+    WriteUnsignedLE(Result, 36, 8, AFrames);
+    WriteUnsignedLE(Result, 44, 4, 0);
     LFormatOffset := 48;
     LDataOffset := 72;
   end
@@ -257,27 +247,27 @@ begin
   begin
     SetLength(Result, RiffHeaderBytes);
     PutTag(Result, 0, 'RIFF');
-    PutLE(Result, 4, 4, LDataBytes + RiffHeaderBytes - 8);
+    WriteUnsignedLE(Result, 4, 4, LDataBytes + RiffHeaderBytes - 8);
     PutTag(Result, 8, 'WAVE');
     LFormatOffset := 12;
     LDataOffset := 36;
   end;
   PutTag(Result, LFormatOffset, 'fmt ');
-  PutLE(Result, LFormatOffset + 4, 4, 16);
-  PutLE(Result, LFormatOffset + 8, 2, 1);
-  PutLE(Result, LFormatOffset + 10, 2, AChannels);
-  PutLE(Result, LFormatOffset + 12, 4, ASampleRate);
-  PutLE(Result, LFormatOffset + 16, 4, ASampleRate * AChannels * 2);
-  PutLE(Result, LFormatOffset + 20, 2, AChannels * 2);
-  PutLE(Result, LFormatOffset + 22, 2, 16);
+  WriteUnsignedLE(Result, LFormatOffset + 4, 4, 16);
+  WriteUnsignedLE(Result, LFormatOffset + 8, 2, 1);
+  WriteUnsignedLE(Result, LFormatOffset + 10, 2, AChannels);
+  WriteUnsignedLE(Result, LFormatOffset + 12, 4, ASampleRate);
+  WriteUnsignedLE(Result, LFormatOffset + 16, 4, ASampleRate * AChannels * 2);
+  WriteUnsignedLE(Result, LFormatOffset + 20, 2, AChannels * 2);
+  WriteUnsignedLE(Result, LFormatOffset + 22, 2, 16);
   PutTag(Result, LDataOffset, 'data');
   if LIsRF64 then
   begin
-    PutLE(Result, LDataOffset + 4, 4, DWordMaximum);
+    WriteUnsignedLE(Result, LDataOffset + 4, 4, DWordMaximum);
   end
   else
   begin
-    PutLE(Result, LDataOffset + 4, 4, LDataBytes);
+    WriteUnsignedLE(Result, LDataOffset + 4, 4, LDataBytes);
   end;
 end;
 

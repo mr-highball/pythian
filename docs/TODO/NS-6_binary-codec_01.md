@@ -50,6 +50,44 @@ or a dependency edit. This is a Pythian gap, not a generic WFC gap.
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss local qualification: checked Win32/Win64 each pass
+  33,071 scalar assertions; actual pas2js passes 33,113, including its additional
+  unsafe-integer rejection cases. This includes 16,376 selected finite binary64
+  patterns and authored value/endian/boundary oracles, not exhaustive 64-bit
+  coverage. Native WAV reading/streaming, passage metadata, corpus archive and
+  semantic source/blend consumers pass with zero leaks. Actual pas2js PCM/RF64
+  headers and the 55-case frame-reader fixture pass; the existing 14,055-case
+  binary portability fixture also passed at the unchanged IEEE32 boundary.
+  Immediate-prior `6b14cb7` consumer sources were separately compiled on each
+  native target. All 24 corpus/style/audio files match byte-for-byte; no
+  cross-target PCM or full WFC/pas2js qualification is inferred.
+  Three alternating large-corpus timings per version/target meet the predeclared
+  1.25 ratio: Win64 medians 11,311/11,432 ms prior/current (1.01); Win32
+  12,354/11,977 ms (0.97). The initial generic-field version passed but measured
+  1.12/1.21 ratios; it is preserved as `performance-general-fields.json`.
+  The canonical UInt32 specialization removes that avoidable field cost; bounded
+  variable-width calls delegate to it for width four. No format adapter retains
+  the superseded primitive loops. A typed-constant default-argument compile
+  error was repaired with a true constant; its native/pas2js logs are retained.
+  Evidence is under E-drive `build/tests/runs/binary-codec-20261027-boss*`.
+  Published Ubuntu integration/extracted consumers remain required for AC4;
+  the task remains open without additional milestone credit.
+- 2026-10-27, Big Boss implementation: shared scalar helpers and a primary
+  finite binary64 bit boundary replace the archive and WAV header/loop primitives.
+  A bounded try-reader also preserves the frame reader's RF64 overflow sentinel
+  without duplicating its byte assembly. Scalar authored oracles, finite pattern
+  coverage and failed-write boundaries pass on checked native and actual
+  pas2js; the browser's unsafe signed64 input is rejected explicitly. Earlier
+  fixture construction used signed JavaScript bitwise results for a Cardinal
+  high word; its corrected arithmetic construction and original failed log are
+  preserved. Explicit pas2js numeric conversions and an untypable unsafe fixture
+  literal were also repaired. No format schema or inference policy changed.
+  The immediate-prior comparison initially matches all 24 corpus/style/audio
+  files per native target; rerun changed paths after the final bounded-reader
+  consolidation before qualification. Prospective runtime check: three
+  alternating executions of the same 65,536-feature corpus consumer per target,
+  using the median current/prior ratio and a 1.25 stop threshold. This is a local
+  regression check, not a universal performance or cancellation-latency claim.
 - 2026-10-27, Big Boss pre-edit evidence at `f203195`: corpus archive
   `TArchiveWriter.Number`/`TArchiveReader.Number` repeat wave-style
   `PutNumber`/`TStyleCursor.Number`; binary64 bit assembly also repeats across
