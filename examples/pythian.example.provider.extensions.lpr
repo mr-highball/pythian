@@ -27,10 +27,13 @@ program pythian_example_provider_extensions;
 {$H+}
 
 uses
-  Classes, SysUtils, pythian.audio, pythian.wave, pythian.hash,
+  Classes, SysUtils, pythian.audio, pythian.wave, pythian.hash, pythian.tools.progress,
   pythian.wfc.layers, pythian.wfc.providers, pythian.wfc.provider.codecs,
   pythian.wfc.provider.contracts, pythian.wfc.semantic.style,
   pythian.example.provider.extension.units, wfc;
+
+var
+  LProgress: TConsoleWorkProgress;
 
 { Mechanical first-party control. No inferred acoustic truth, outside-use,
   listening, hard-real-time or direct-write atomicity claim. }
@@ -165,7 +168,7 @@ begin
     begin
       raise EAudio.Create('Authored controls did not produce distinct WAV bytes');
     end;
-    LStyleBytes := LStyle.Encode;
+    LStyleBytes := LStyle.Encode(LProgress.Observe);
   finally
     LOther.Free;
     LStyle.Free;
@@ -184,12 +187,12 @@ begin
       LRegistry := TProviderCodecRegistry.Create;
       RegisterHarmonicCodec(LRegistry, LCodec);
       LRegistry.Seal;
-      LReloadedStyle := DecodeSemanticStyle(LoadBytes(LStylePath), LRegistry);
+      LReloadedStyle := DecodeSemanticStyle(LoadBytes(LStylePath), LRegistry, nil, LProgress.Observe);
       if Sha256Bytes(LReloadedStyle.Encode) <> Sha256Bytes(LStyleBytes) then
       begin
         raise EAudio.Create('Actual saved style changed its detached data');
       end;
-      LSession := LReloadedStyle.CreateSession(LSeed, LRegistry);
+      LSession := LReloadedStyle.CreateSession(LSeed, LRegistry, nil, LProgress.Observe);
       LBinding := LSession.CopyContract('balance').CodecBinding;
       LChoices := LSession.CopyChoices('balance');
     finally
@@ -248,13 +251,18 @@ begin
 end;
 
 begin
+  LProgress := TConsoleWorkProgress.Create;
   try
-    Run;
-  except
-    on LException: Exception do
-    begin
-      WriteLn(StdErr, LException.ClassName, ': ', LException.Message);
-      ExitCode := 1;
+    try
+      Run;
+    except
+      on LException: Exception do
+      begin
+        WriteLn(StdErr, LException.ClassName, ': ', LException.Message);
+        ExitCode := 1;
+      end;
     end;
+  finally
+    LProgress.Free;
   end;
 end.

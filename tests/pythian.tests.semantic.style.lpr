@@ -27,7 +27,8 @@ program pythian_tests_semantic_style;
 {$H+}
 
 uses
-  Classes, SysUtils, Math, pythian.audio, pythian.hash, pythian.analysis, pythian.onset, pythian.time,
+  Classes, SysUtils, Math, pythian.audio, pythian.hash, pythian.progress,
+  pythian.analysis, pythian.onset, pythian.time,
   pythian.wave, pythian.synth, pythian.envelope, pythian.source.wavetable,
   pythian.music.context, pythian.tonal, pythian.wfc.context,
   pythian.wfc.context.profile, pythian.wfc.context.archive, pythian.wfc.style,
@@ -35,6 +36,37 @@ uses
   pythian.wfc.layers, pythian.wfc.voices, pythian.wfc.instrument,
   wfc, wfc_model, wfc_sequence, wfc_sequence_learn, wfc_sequence_text, wfc_sequence_graph,
   wfc_music, wfc_music_sequence, wfc_music_ensemble, wfc_music_ensemble_graph, wfc_music_voices_graph;
+
+type
+  TVoiceSessionObserver = class
+  public
+    AbortOnComplete: Boolean;
+    AbortEmbeddedSound: Boolean;
+    Completed: Boolean;
+    EmbeddedSoundSeen: Boolean;
+    Marker: Exception;
+    procedure Observe(const AWork: TWorkProgress);
+  end;
+
+procedure TVoiceSessionObserver.Observe(const AWork: TWorkProgress);
+begin
+  if (AWork.Stage = 'semantic_embedded_sound_sources') and (AWork.Done > 0) then
+  begin
+    EmbeddedSoundSeen := True;
+    if AbortEmbeddedSound then
+    begin
+      raise Marker;
+    end;
+  end;
+  if (AWork.Stage = 'semantic_prepare_voice_session') and (AWork.Done = 2) then
+  begin
+    Completed := True;
+    if AbortOnComplete then
+    begin
+      raise Marker;
+    end;
+  end;
+end;
 
 procedure Check(const ACondition: Boolean; const AMessage: String);
 begin
@@ -852,6 +884,8 @@ end;
 
 procedure VoiceAndSoundChecks;
 var
+  LObserver: TVoiceSessionObserver;
+  LExactAbort: Boolean;
   LDefinition: TSemanticStyleDefinition;
   LSource: TSemanticStyle;
   LLoaded: TSemanticStyle;
@@ -870,6 +904,7 @@ var
   LRejected: Boolean;
   LSavedBytes: TAudioBytes;
 begin
+  LObserver := TVoiceSessionObserver.Create;
   LSource := nil;
   LLoaded := nil;
   LSound := nil;
@@ -925,10 +960,52 @@ begin
     LDefinition.Sounds[0].Timbre := LSound.Encode;
     LDefinition.Sounds[0].Envelope := LSound.Encode;
     FreeAndNil(LSound);
-    LSource := TSemanticStyle.CreateSource(LDefinition);
+    LObserver.AbortEmbeddedSound := True;
+    LObserver.Marker := Exception.Create('embedded sound observer marker');
+    LExactAbort := False;
+    try
+      LSource := TSemanticStyle.CreateSource(LDefinition, nil, nil, LObserver.Observe);
+    except
+      on LException: Exception do
+      begin
+        LExactAbort := LException = LObserver.Marker;
+      end;
+    end;
+    if not LExactAbort then
+    begin
+      LObserver.Marker.Free;
+    end;
+    LObserver.Marker := nil;
+    Check(LExactAbort, 'Embedded sound audit propagates exact callback exception');
+    LObserver.AbortEmbeddedSound := False;
+    LSource := TSemanticStyle.CreateSource(LDefinition, nil, nil, LObserver.Observe);
+    Check(LObserver.EmbeddedSoundSeen, 'Embedded sound source audit reports actual visits');
     SaveFixture('-voices.pysg', LSource.Encode);
     LLoaded := DecodeSemanticStyle(LSource.Encode);
-    LSession := LLoaded.CreateVoiceSession(731);
+    LSavedBytes := LLoaded.Encode;
+    LObserver.AbortOnComplete := True;
+    LObserver.Marker := Exception.Create('named session observer marker');
+    LExactAbort := False;
+    try
+      LSession := LLoaded.CreateVoiceSession(731, LObserver.Observe);
+    except
+      on LException: Exception do
+      begin
+        LExactAbort := LException = LObserver.Marker;
+      end;
+    end;
+    if not LExactAbort then
+    begin
+      LObserver.Marker.Free;
+    end;
+    LObserver.Marker := nil;
+    Check(LExactAbort, 'Named session propagates exact late callback exception');
+    Check(Sha256Bytes(LLoaded.Encode) = Sha256Bytes(LSavedBytes),
+      'Named session abort preserves borrowed style');
+    LObserver.AbortOnComplete := False;
+    LObserver.Completed := False;
+    LSession := LLoaded.CreateVoiceSession(731, LObserver.Observe);
+    Check(LObserver.Completed, 'Named session retry reports completion');
     Check(LSession.TryGenerate(LGenerated, LReport, LProof) and LProof.Valid,
       'Reloaded named harmonic/rhythm/role graph independently proves generation');
     Check((LGenerated.Frames[0].Voices[0].Tones[0].Pitch = 60) and
@@ -986,6 +1063,7 @@ begin
     LSource.Free;
     LSound.Free;
     LBaseSound.Free;
+    LObserver.Free;
   end;
 end;
 

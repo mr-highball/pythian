@@ -22,7 +22,7 @@ these examples. Create `build/units` and `build/bin` first. No private include p
 asset, inference runtime, playback device or browser is required.
 
 ```text
-fpc -B -Sa -Cr -Co -Ci -gl -gh -Fusrc -Fuexamples -Fuadapters/wfc -Fuvendor/wfc/src -FUbuild/units -FEbuild/bin examples/pythian.example.provider.extensions.lpr
+fpc -B -Sa -Cr -Co -Ci -gl -gh -Fusrc -Futools -Fuexamples -Fuadapters/wfc -Fuvendor/wfc/src -FUbuild/units -FEbuild/bin examples/pythian.example.provider.extensions.lpr
 build/bin/pythian.example.provider.extensions generated.wav
 build/bin/pythian.example.provider.extensions replay.wav 731
 ```

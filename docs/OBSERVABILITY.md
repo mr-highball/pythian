@@ -298,6 +298,51 @@ compiler, host I/O and execution evidence. Actual Studio browser qualification
 remains with the existing [continuity](TODO/NS-5_continuity_04.md) and
 [listening-comparison](TODO/NS-6_studio_22.md) tasks.
 
+## Semantic style archives and selective blends
+
+The [semantic callback task](TODO/NS-6_observability_08.md) is implemented and
+mechanically checked on stable FPC3.2.2 Win32/Win64. Clean-revision Ubuntu CI is
+still pending, so the task remains open and earns no additional credit.
+
+Optional callbacks reach source/derived/blend constructors, encode/decode,
+definition/parent copies and generic/named session preparation. Vocabulary,
+preparation and run identities forward through the same owned serializer and
+primary SHA implementation. Existing archive schemas and musical math are
+unchanged. The maintained caller example uses the shared console adapter;
+packaging includes it and accepts the build's output-root override.
+
+| Owned boundary | Reported work |
+| --- | --- |
+| Archive input/output/blob/copy | Actual bytes in 64-KiB blocks |
+| Archive numeric fields | Actual visits every 4096 fields; total unknown while active |
+| Vocabulary tokens | Actual token visits, aggregate cadence |
+| Source/run/provider validation | Actual items, including source/preparation evidence |
+| Run clocks and joint constraint preparation | Actual cell visits every 256; active total unknown, actual final total |
+| Co-observed projection pairs | Actual tested pairs every 4096; active total unknown, actual final total |
+| Blend source/run/provider preparation | Actual items and parent-side passes |
+| Semantic ancestry and embedded source/exposure audits | Actual node/depth and source visits |
+| Session preparation | Actual provider loads and preparation boundaries |
+| Payload/identity digests | Primary `verify_audio_bytes` checkpoints |
+
+Checked native fixtures cover populated multi-source/provider/run styles,
+selective blend/reblend, exact nil/observed archives/session results, original
+callback exceptions, cleanup, unchanged borrowed parents/registry and retry.
+Named session and embedded sound audit failures also retain exact exception
+identity and zero leaks. Twenty selected cancellation/retry cases run in the
+new fixture; callback-count assertions are not twenty thousand distinct product
+outcomes. All 23 saved semantic fixtures replay exactly against a separately
+compiled prior revision on each target. The maintained caller's generated WAV,
+style and two authored WAVs retain exact same-target bytes.
+
+Caller codec bodies and generic WFC model decoding/learning/solving remain
+synchronous. Provider-contract internals and nested context metadata remain
+with [observability_04](TODO/NS-6_observability_04.md); embedded wave-profile
+internals remain with [observability_07](TODO/NS-6_observability_07.md). Embedded
+source/parent callbacks describe the semantic audit and call boundaries, not
+interior work in those other units. RTL allocations/copies remain synchronous.
+No maximum cancellation latency, browser yielding, phone performance or musical
+acceptance is inferred. Evidence: E-drive `runs/semantic-style-progress-20261027-boss`.
+
 ## Validation and limits
 
 The current native callback suite has 385 checks, including identical hashes,

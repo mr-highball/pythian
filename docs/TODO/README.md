@@ -316,7 +316,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | [NS-6_studio_22](NS-6_studio_22.md) — Original/generated listening comparison | 0 | 0.00 | Deployed for review; native/DOM checks pass, actual browser acceptance remains |
 | [NS-6_observability_04](NS-6_observability_04.md) — Remaining provider/batch operations and operator monitoring | 0 | 0.00 | Provider-contract/registry internals, batch evaluation and inference reporting remain |
 | [NS-6_observability_07](NS-6_observability_07.md) — Retained wave-style operations | 0 | 0.00 | Selected API/CLI scope; primary pitch preparation09 is a prerequisite |
-| [NS-6_observability_08](NS-6_observability_08.md) — Semantic archive and selective blend operations | 0 | 0.00 | Selected owned-unit/caller-consumer scope; provider-contract internals stay04 |
+| [NS-6_observability_08](NS-6_observability_08.md) — Semantic archive and selective blend operations | 0 | 0.00 | Native parity/abort/consumer and dirty packages pass; clean-revision Ubuntu CI pending |
 | [NS-6_observability_09](NS-6_observability_09.md) — Owned pitch-model preparation | 0 | 0.00 | Selected real validation/tokenization gap, not generic companion work |
 | [NS-6_adoption_01](NS-6_adoption_01.md) — Establish independent ecosystem adoption evidence | 15 | 1.50 | Supported releases + independent ecosystem evidence |
 | [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 1 | 0.10 | Solo usability resumed; complete physical matrix remains open |

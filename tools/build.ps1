@@ -729,6 +729,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Semantic blend compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.semantic.blend$executableSuffix") (Join-Path $buildRoot 'semantic-blend')
     if ($LASTEXITCODE -ne 0) { throw 'Semantic blend checks failed' }
+    & $compilerPath @adapterArgs '-Fuexamples' '-gh' 'tests/pythian.tests.semantic.style.progress.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Semantic progress compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.semantic.style.progress$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Semantic progress and cancellation checks failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.duration.stream.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Duration stream compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.duration.stream$executableSuffix") (Join-Path $buildRoot 'duration-stream')

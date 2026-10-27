@@ -12,6 +12,47 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Semantic style observability resumed - 2026-10-27
+
+Return from the accepted CI prerequisite to [observability_08](TODO/NS-6_observability_08.md)
+AC1–3. Big Boss owns the retained draft and lost fixture under the current
+supplied single-agent override; no helper is resumed. The disk-full failure was
+environmental and is not counted as a failed implementation QA submission.
+Criterion/deliverable: complete semantic owned-loop callbacks and the actual
+caller consumer without changing archive, codec or generation semantics.
+Closing evidence: restored populated multi-source/provider blend/reblend fixture,
+nil/observed archive/session parity, interior abort/cleanup/retry, actual native
+caller and extracted package. Stop on changed musical/codec/control behavior,
+unobserved owned work being claimed covered or a distinct gap outside this scope.
+Entry delivery nonclosing count is **0**; scientific counters stay stopped.
+Review of the draft found missing callback forwarding through owned identity
+serialization/hash and clock/mask loops. Finish those existing AC1 obligations;
+the provider-contract and embedded wave/context internals retain their linked
+owners and are not qualified by an outer callback. No task is accepted yet.
+
+Local semantic result: optional owned-loop callbacks now include identity
+serialization/hash, run clocks, masks, semantic ancestry and embedded source
+audits. The restored fixture covers twenty cancellation/retry selections,
+nil/observed archives/sessions and unchanged borrowed parents/registry; checked
+Win32/Win64 passes with zero leaks. The existing named fixture also checks exact
+late session and embedded-sound callback exceptions, cleanup and retry. Existing
+blend and 220-case caller-codec consumers pass. All 23 saved semantic fixtures
+match separate same-target `22afc3d` baselines; no cross-target PCM equality is
+claimed. Actual caller WAV/style/two-reference bytes match the prior Win64
+consumer. Preserve the underfilled-field and incorrect command-argument logs as
+development fixture/orchestration failures, not hidden library acceptance.
+
+The package includes the shared console adapter and supports the build's
+output-root override. E-drive Win64 and final Win32 extracted companion checks
+each verify 154 owned units and 273 content hashes plus SHA256SUMS, run core and
+WFC/caller consumers, and pass. These are dirty candidate snapshots, containing
+the separate uncommitted pitch draft. They do not qualify an exact published
+revision. Clean-revision Ubuntu integration/extracted consumers are now explicit
+AC4 before this task moves to DONE. Keep the task and accounting unchanged
+pending that run. Source and logs are under dedicated E-drive
+`build/tests/runs/semantic-style-progress-20261027-boss*`; no service/browser
+asset replacement, musical scoring or saved-response change occurred.
+
 ## Linux consumer gate restored - 2026-10-27
 
 The previous goal turn is progress at `22afc3d`: repaired fixture construction,

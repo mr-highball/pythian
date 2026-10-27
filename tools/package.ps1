@@ -26,7 +26,8 @@ param(
   [switch]$WithWfc,
   [string]$OutputDirectory = '',
   [string]$TargetCpu = '',
-  [string]$TargetOs = ''
+  [string]$TargetOs = '',
+  [string]$OutputRoot = $env:PYTHIAN_BUILD_ROOT
 )
 
 $ErrorActionPreference = 'Stop'
@@ -54,7 +55,10 @@ if ($LASTEXITCODE -ne 0) { throw 'Source revision probe failed' }
 $sourceChanges = (& git -C $projectRoot status --porcelain --untracked-files=normal | Out-String).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Source state probe failed' }
 $sourceState = if ($sourceChanges -eq '') { 'clean' } else { 'dirty candidate; base revision alone does not identify delivered bytes' }
-$buildRoot = [IO.Path]::GetFullPath((Join-Path $projectRoot 'build'))
+if ([string]::IsNullOrWhiteSpace($OutputRoot)) {
+  $OutputRoot = Join-Path $projectRoot 'build'
+}
+$buildRoot = [IO.Path]::GetFullPath($OutputRoot)
 if ($OutputDirectory -eq '') {
   $OutputDirectory = Join-Path $buildRoot ('packages/' + [Guid]::NewGuid().ToString('N'))
 }
@@ -65,7 +69,7 @@ $outputRoot = [IO.Path]::GetFullPath($OutputDirectory)
 $buildPrefix = $buildRoot + [IO.Path]::DirectorySeparatorChar
 $pathComparison = if ($env:OS -eq 'Windows_NT') { [StringComparison]::OrdinalIgnoreCase } else { [StringComparison]::Ordinal }
 if (-not $outputRoot.StartsWith($buildPrefix, $pathComparison)) {
-  throw 'Package output must stay under the project build directory'
+  throw 'Package output must stay under the configured build directory'
 }
 if (Test-Path -LiteralPath $outputRoot) {
   throw 'Package output already exists; choose a fresh directory to avoid stale files'
@@ -118,6 +122,7 @@ if ($WithWfc) {
   $toolRoot = Join-Path $stage 'tools'
   New-Item -ItemType Directory -Path $toolRoot | Out-Null
   foreach ($toolName in @('pythian.learn.lpr', 'pythian.tools.files.pas',
+      'pythian.tools.progress.pas',
       'pythian.tools.features.pas', 'pythian.tools.journal.learning.pas',
       'pythian.tools.annotations.export.pas', 'pythian.tools.annotations.sourceguard.pas',
       'pythian.tools.annotations.catalog.pas', 'pythian.tools.annotations.proposal.pas',

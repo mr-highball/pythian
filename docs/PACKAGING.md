@@ -9,6 +9,11 @@ with self-contained examples and full notices. They exclude Phanes and external
 music/model assets. Fresh ZIP extraction verifies delivered bytes before compiling
 and running consumers solely against package sources.
 
+The packager accepts `-OutputRoot` or `PYTHIAN_BUILD_ROOT` for generated output,
+matching the maintained build. Its default remains the repository's `build/`.
+An explicit `-OutputDirectory` must stay inside that configured root and must be
+fresh; overriding the root does not relax source, inventory or consumer checks.
+
 The [current API delivery](#current-api-delivery) includes the later spectral
 partition and pitch boundary queries, phase-aware harmonic fitting, corrected
 automation workload accounting, transactional layer edits, explicit/fixed timing
