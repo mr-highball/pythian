@@ -62,14 +62,29 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           New-Item -ItemType Directory -Force build | Out-Null
-          ./tools/build.ps1 -Compiler fpc *> build/ci-build.log
+          try {
+            ./tools/build.ps1 -Compiler fpc *> build/ci-build.log
+          } catch {
+            Get-Content -LiteralPath build/ci-build.log -Tail 100
+            throw
+          }
 
       - name: Package and verify extracted consumers
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          ./tools/package.ps1 -Compiler fpc -OutputDirectory build/ci-package-core *> build/ci-package-core.log
-          ./tools/package.ps1 -Compiler fpc -WithWfc -OutputDirectory build/ci-package-wfc *> build/ci-package-wfc.log
+          try {
+            ./tools/package.ps1 -Compiler fpc -OutputDirectory build/ci-package-core *> build/ci-package-core.log
+            ./tools/package.ps1 -Compiler fpc -WithWfc -OutputDirectory build/ci-package-wfc *> build/ci-package-wfc.log
+          } catch {
+            foreach ($log in @('build/ci-package-core.log', 'build/ci-package-wfc.log')) {
+              if (Test-Path -LiteralPath $log) {
+                Write-Output "Failure context: $log"
+                Get-Content -LiteralPath $log -Tail 100
+              }
+            }
+            throw
+          }
 
       - name: Retain verified development packages
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6

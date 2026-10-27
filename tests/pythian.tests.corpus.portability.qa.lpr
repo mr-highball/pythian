@@ -27,6 +27,12 @@ uses
   pythian.corpus.text,
   pythian.corpus.intake;
 
+const
+  CAccentText: TCorpusText = 'é';
+  CWhitespaceIdentity: TCorpusText = ' style﻿';
+  CBmpRecording: TCorpusText = '';
+  CAstralRecording: TCorpusText = '𐀀';
+
 var
   GChecks: Integer;
 
@@ -103,7 +109,13 @@ begin
   ValidateCorpusText(StringOfChar('a', 4096));
   Inc(GChecks);
   RejectText(StringOfChar('a', 4097), 'byte limit');
-  LText := StringOfChar('a', 4094) + 'é';
+  LText := StringOfChar('a', 4094);
+  LText := LText + CAccentText;
+  {$ifdef pas2js}
+  Check(Length(LText) = 4095, 'multibyte fixture UTF-16 length');
+  {$else}
+  Check(Length(LText) = 4096, 'multibyte fixture UTF-8 byte length');
+  {$endif}
   ValidateCorpusText(LText);
   Inc(GChecks);
   RejectText(LText + 'a', 'multibyte byte limit');
@@ -126,11 +138,11 @@ begin
   {$endif}
   Check(CompareCorpusText('', '𐀀') < 0, 'UTF-8 scalar ordering');
   LDefinition := Definition;
-  LDefinition.StyleId := ' style﻿';
+  LDefinition.StyleId := CWhitespaceIdentity;
   LPlan := TCorpusIntakePlan.Create(LDefinition);
   try
     LCopy := LPlan.CopyDefinition;
-    Check(LCopy.StyleId = ' style﻿', 'non-ASCII whitespace identity');
+    Check(LCopy.StyleId = CWhitespaceIdentity, 'non-ASCII whitespace identity');
   finally
     LPlan.Free;
   end;
@@ -165,7 +177,7 @@ begin
   LDefinition.Families[1].WorkId := 'work-2';
   LDefinition.Families[1].Partition := cpDevelopment;
   SetLength(LDefinition.Sources, 3);
-  LDefinition.Sources[0].RecordingId := '𐀀';
+  LDefinition.Sources[0].RecordingId := CAstralRecording;
   LDefinition.Sources[1] := LDefinition.Sources[0];
   LDefinition.Sources[1].Id := 'derivative';
   LDefinition.Sources[1].Sha256 := StringOfChar('c', 64);
@@ -175,7 +187,7 @@ begin
   LDefinition.Sources[1].FrameCount := 8000;
   LDefinition.Sources[2] := LDefinition.Sources[0];
   LDefinition.Sources[2].Id := 'other';
-  LDefinition.Sources[2].RecordingId := '';
+  LDefinition.Sources[2].RecordingId := CBmpRecording;
   LDefinition.Sources[2].Family := 1;
   LDefinition.Sources[2].Sha256 := StringOfChar('d', 64);
   SetLength(LDefinition.Ranges, 4);
@@ -197,13 +209,13 @@ begin
   try
     LDefinition.Sources[0].RecordingId := 'mutated';
     LCopy := LPlan.CopyDefinition;
-    Check(LCopy.Sources[0].RecordingId = '𐀀', 'input detached');
+    Check(LCopy.Sources[0].RecordingId = CAstralRecording, 'input detached');
     LCopy.Sources[0].RecordingId := 'changed';
     LCopy := LPlan.CopyDefinition;
-    Check(LCopy.Sources[0].RecordingId = '𐀀', 'output detached');
+    Check(LCopy.Sources[0].RecordingId = CAstralRecording, 'output detached');
     LRows := LPlan.Contributions;
-    Check((Length(LRows) = 2) and (LRows[0].RecordingId = '') and
-      (LRows[1].RecordingId = '𐀀'), 'portable recording order');
+    Check((Length(LRows) = 2) and (LRows[0].RecordingId = CBmpRecording) and
+      (LRows[1].RecordingId = CAstralRecording), 'portable recording order');
     Check((LRows[1].UniqueFrames = 12000) and (LRows[1].UnknownBoundaryFrames = 8000) and
       (LRows[1].DeclaredRows = 3) and (LRows[1].DistinctDeclarations = 2) and
       (LRows[1].DeclaredWeightedFrames = 24000), 'derivative union and duplicate');

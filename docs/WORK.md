@@ -12,6 +12,56 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Linux corpus-text CI repair selected - 2026-10-27
+
+The previous goal turn is progress: authenticated GitHub inspection identifies
+the first failing shared-text revision and matching current failures; the two
+tracked files emptied by the disk-full write are restored exactly from HEAD,
+and surviving changes have verified E-drive backups. This is evidence and
+recovery, not a closed acceptance criterion. The retained review publication
+closed no full criterion, and the interrupted retained-operation batch also
+closed none: delivery nonclosing count is **2**. Renaming work, the disk failure,
+handoffs and the CI request do not reset it. Scientific counters stay unchanged.
+
+Reassessment: hold the unfinished observability changes. Their expanded scope
+has linked owners 07/08/09, but an empty semantic fixture still needs reconstruction
+and none has passed final integration. Current CI has failed since the earlier
+shared-text change, so its Linux consumer is the immediate delivery prerequisite.
+Select [portability_05](TODO/NS-6_portability_05.md), Big Boss solo under the
+currently supplied operator override. The retained helper roster is inactive
+for this batch. No independent review is claimed for solo checks.
+
+Criterion/deliverable: repair the demonstrated corpus-text failure and expose
+useful Actions failure context. Closing evidence: native and actual pas2js
+affected consumers, followed by real Ubuntu/FPC integration and extracted
+consumer packages. Stop on weaker identity/byte tests, changed validator
+semantics or a distinct required gap; create its linked owner first. The
+Pascal diagnostic reproduces the original fixture's failure with the RTL's
+default conversion behavior; it is not actual Linux execution. No new musical
+experiment, operator answer or retraining is selected.
+
+Accounting: **56 open / 64 DONE, 120 total**, NS-6 18 open. Completion remains
+**100/90/25/70/14/54**, **52.45 credited / 47.55 remaining**. The CI repair is
+zero-credit. E-drive evidence: `runs/ci-inspection-20261027-boss`. The approved
+build-folder migration was rejected again by automatic review without a specific
+reason and was not retried through another route. Restoring the tracked files
+became possible after disk space independently became available; the migration
+itself remains unperformed.
+
+Local repair evidence: typed corpus-text constants prevent the fixtures'
+unintended host Unicode conversion. Both the astral 4096-byte boundary and the
+mixed ASCII/accent boundary now assert their native-byte / browser-code-unit
+sizes. The adversarial fixture also compares typed identities, preserving
+non-ASCII whitespace, BMP/astral ordering and detached copies without a host
+conversion prerequisite. Both repaired fixtures pass the RTL-default-manager
+diagnostic; the original astral fixture fails it with `Invalid text accepted`.
+Checked stable FPC3.2.2 Win32/Win64 passes 19 text, 44 intake and the adversarial
+consumer, all zero leaks. Actual pas2js/Node passes 15 text, the same 44 intake
+and the adversarial consumer. These are Big Boss's solo checks. Real Ubuntu
+execution and complete package acceptance remain pending; the task stays open.
+The CI wrapper now prints the final 100 build/package log lines on failure and
+rethrows, retaining existing artifacts and nonzero failure behavior.
+
 ## Retained repetition review published - 2026-10-27
 
 Previous goal turn is progress at `9009d92`: vocabulary declaration-only AC1

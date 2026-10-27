@@ -24,6 +24,10 @@ SOFTWARE.
 program pythian_tests_corpus_text;
 {$mode delphi}{$H+}{$codepage utf8}
 uses SysUtils, pythian.audio, pythian.corpus.text;
+const
+  { Keep concatenation in the corpus representation. An untyped astral literal
+    promotes it through the host Unicode conversion manager on native FPC. }
+  CAstralText: TCorpusText = '😀';
 var
   LChecks: Integer;
 procedure Check(const ACondition: Boolean; const AMessage: String);
@@ -64,8 +68,13 @@ begin
   LText := '';
   for LIndex := 1 to 1024 do
   begin
-    LText := LText + '😀';
+    LText := LText + CAstralText;
   end;
+  {$ifdef pas2js}
+  Check(Length(LText) = 2048, 'Astral fixture UTF-16 length');
+  {$else}
+  Check(Length(LText) = 4096, 'Astral fixture UTF-8 byte length');
+  {$endif}
   ValidateCorpusText(LText);
   Reject(LText + 'a');
   Reject('abc' + #0);

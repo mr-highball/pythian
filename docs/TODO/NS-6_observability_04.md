@@ -4,12 +4,13 @@
 
 **Description:**
 
-Instrument the remaining Pythian-owned retained-style/provider batch work.
+Instrument the remaining Pythian-owned provider-contract and batch work.
 Public boundaries can contain nested validation, encoding, selective blending
 and multi-recording evaluation. Static work limits alone do not make those
 operations observable. The independently useful corpus-archive and composition
-consumers now have dedicated zero-credit owners below; all original obligations
-remain required.
+consumers now have dedicated zero-credit owners below, as do retained wave and
+semantic style operations and primary pitch preparation. All original obligations
+remain required; a callback around another owned unit is not its interior coverage.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
 Deliverable: measured bulk-operation map and callbacks at owned work boundaries,
@@ -19,10 +20,14 @@ Stop on invented overall percentages, swallowed cancellation or dependency edits
 
 **Acceptance Criteria:**
 
-- Audit and extend retained-style archive validation/serialization and
-  learning/blending/provider preparation, naming real item/byte/pass units.
-  Corpus-archive serialization/validation and its consumer are owned by
-  [observability_05](DONE/NS-6_observability_05.md).
+- Audit and extend remaining provider-contract/registry preparation, including
+  `ValidateProviderContract` and `TCompatibleProviderSession.Create`, naming real
+  item/byte/pass units. Retained wave-style operations and consumer are owned by
+  [observability_07](NS-6_observability_07.md), semantic archive/blend operations
+  by [observability_08](NS-6_observability_08.md), primary pitch preparation by
+  [observability_09](NS-6_observability_09.md), and corpus archives by
+  [observability_05](DONE/NS-6_observability_05.md). Parent acceptance retains all
+  unobserved owned internals outside those scopes, not merely caller-code limits.
 - Cover retained-style batch evaluation stages; short fixed transforms may
   retain bounded contracts with documented measured evidence. Pythian composition
   reachability and its consumer are owned by
@@ -40,6 +45,15 @@ Stop on invented overall percentages, swallowed cancellation or dependency edits
 - [Shared callbacks and audit — DONE](DONE/NS-6_observability_01.md).
 
 **Dev Notes:**
+
+- 2026-10-27, Big Boss: retained wave profiles/CLI and semantic styles/caller
+  consumer are independently usable public API boundaries, split to 07/08 from
+  AC1 and associated AC5 without extra credit. Their discovered primary pitch
+  validation/tokenization prerequisite is 09. Provider-contract and registry
+  internals, batch comparisons, inference reporting and generic-gap procedure
+  stay here. Source inspection confirmed that provider contract/session loops
+  are Pythian-owned; child08 entry/exit observations cannot certify their interior
+  cancellation. The split preserves every obligation and batch counter.
 
 - 2026-10-27, Big Boss scope split: the original task spans three independently
   usable APIs/consumers and cannot honestly be closed by archive or composition

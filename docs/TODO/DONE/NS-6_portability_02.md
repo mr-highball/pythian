@@ -47,6 +47,11 @@ WASM and browser presentation are outside this repair's qualification.
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss: the native evidence below is Windows evidence. Subsequent
+  authenticated CI inspection finds the Ubuntu consumer failing in the new text
+  fixture. The linked [Linux repair](../NS-6_portability_05.md) owns actual Linux
+  qualification, explicit UTF-8 fixture operands and useful failure output.
+  Do not reinterpret the earlier native/pas2js acceptance as a Linux pass.
 - 2026-10-27 acceptance: checked stable FPC 3.2.2 Win32/Win64 text fixtures pass 18
   cases and the existing corpus fixture, with zero leaks. Big Boss's checked
   Win64 corpus, 29 intake and 50 native file/WFC learner checks pass, zero leaks.
