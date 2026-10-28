@@ -1,18 +1,21 @@
 # NS-6_json-text_02 — Consolidate portable JSON decoding storage
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
-The primary JSON string decoder still fills a pre-sized text string one character
-at a time. Actual pas2js output emits `LBuffer = rtl.setCharAt(...)` inside that
+Before this repair, the primary JSON string decoder filled a pre-sized text string
+one character at a time. Actual pas2js output emitted `LBuffer = rtl.setCharAt(...)` inside that
 loop. JavaScript strings are immutable; pre-sizing this string is not a mutable
 buffer and does not establish linear storage work on long tokens. Native scalar
 correctness and small portable controls do not qualify long-token cost.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
-Big Boss works solo. Execution status: implementation under qualification, with
-[shared output staging](DONE/NS-6_serialization_01.md) accepted at `ae91789`/Ubuntu CI461.
+Big Boss works solo. Execution status: accepted at `1c52398` after native/actual
+pas2js controls, frozen source traces, prior artifacts and
+[Ubuntu CI462](https://github.com/mr-highball/pythian/actions/runs/40715102230),
+including integration and both extracted consumer packages. Prerequisite
+[shared output staging](NS-6_serialization_01.md) accepted at `ae91789`/Ubuntu CI461.
 Consolidate decoded
 text staging with the primary bounded buffer, retaining target-specific storage
 only where required by native bytes versus immutable UTF-16 strings. Do not copy
@@ -40,11 +43,26 @@ replacement inside the scalar loop, changed byte/source progress or a separate g
 
 **Blockers**
 
-- [Primary JSON decoding — DONE](DONE/NS-6_json-text_01.md).
-- [Shared output staging](DONE/NS-6_serialization_01.md) — reuse the qualified primary
+- [Primary JSON decoding — DONE](NS-6_json-text_01.md).
+- [Shared output staging](NS-6_serialization_01.md) — reuse the qualified primary
   buffer rather than adding a decoder-specific chunk builder.
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss acceptance: exact source
+  `1c5239861fd5a779a4334e0e235c22d18a2f9efd` passes Ubuntu CI462,
+  job122910521604, terminal Success14m9s: integration13m1s and extracted
+  core-only/full consumers44s. AC1–3 and both prerequisites pass with the native,
+  actual portable, frozen source-trace, prior-byte and increasing-size evidence
+  below. Both clean extracted Win64 packages also pass107/158 owned units and
+  120/277 inventory entries. CI upload-container digests: logs
+  `7149d91e7e5f0ec213d3ffdcc126ffea02ec283409b066c63da63b94f73b9617`,
+  packages `3f14d436a58cbe856c669e5679d2fc380d42fbadc5a6782bd6690107a84962f8`.
+  These are not native ZIP hashes. Move this task, incoming links and ledgers
+  together:52 open/79 DONE/131 total, NS-6 14 open;52.45/47.55 unchanged. Real
+  closure resets delivery nonclosing1 to0. Parent04, actual browser/phone and
+  musical acceptance remain open. Preserve the initial probe-clock compile
+  failure and all measured residuals. Verification is solo; no musical points.
 
 - 2026-10-28, Big Boss local qualification: `ReadJSONString` now borrows the
   primary TJSONTextBuffer for decoded staging, removing its separate growth and

@@ -40,7 +40,7 @@ Studio callers, plus existing streaming, inference and library contracts.
 | Retained corpus archive and WFC model validation | Actual feature/attachment/hash bytes and owned lookup/state/token validation are observable through the native archive operator | [observability_05 — DONE](TODO/DONE/NS-6_observability_05.md); synchronous residuals below |
 | WFC chord composition planning | Actual compatibility checks and target visits, unknown traversal total until counted; prior caller output preserved on abort | [observability_06 — DONE](TODO/DONE/NS-6_observability_06.md) |
 | Provider admission, registry and compatible-session preparation | Optional callbacks reach source grids, choice decoding/validation, registry searches, configuration comparisons and actual capacity scans, through the semantic consumer | [observability_04](TODO/NS-6_observability_04.md); provider CI456 and context CI458 components qualified. Later replacement/generation, batch and inference reporting remain open |
-| Retained style distributions/cards and native asset comparison | Optional callbacks reach actual bins/counts/normalization, bindings/traits, JSON scanning/value visits, emitted bytes/items and primary asset hashing | Shared JSON/text accepted at `1ed5e34`/CI460; [bulk publication](TODO/DONE/NS-6_serialization_01.md) accepted at `ae91789`/CI461 with extracted consumers. Final shrink/join/copy remain synchronous; [decoder storage](TODO/NS-6_json-text_02.md) remains open |
+| Retained style distributions/cards and native asset comparison | Optional callbacks reach actual bins/counts/normalization, bindings/traits, JSON scanning/value visits, emitted bytes/items and primary asset hashing | Shared JSON/text accepted at `1ed5e34`/CI460; [bulk publication](TODO/DONE/NS-6_serialization_01.md) accepted at `ae91789`/CI461 with extracted consumers. Final shrink/join/copy remain synchronous; [decoder storage](TODO/DONE/NS-6_json-text_02.md) remains open |
 | Primary analysis in pas2js | Full callback consumer executes shared primary algorithms; optional timer adapter yields between bounded WAV analysis batches | [portability_01 — DONE](TODO/DONE/NS-6_portability_01.md); actual browser presentation and WASM remain unqualified |
 | Primary synthesis in pas2js | Actual shared synth/instrument/note/chord/grain cases execute with measured callbacks, abort/retry and exact supported clocks | [portability_03 — DONE](TODO/DONE/NS-6_portability_03.md), [timing repair — DONE](TODO/DONE/NS-6_portability_04.md); synchronous Node consumers, no browser/WASM claim |
 
@@ -733,14 +733,20 @@ job122882866023, terminal Success10m5s: integration9m4s and extracted consumers4
 Both clean extracted Win64 packages also pass107/158 owned units and120/277
 inventory entries. This closes serialization_01, with no musical points.
 The retained decoder's generated per-character immutable-string replacement
-is repaired by the [storage candidate](TODO/NS-6_json-text_02.md), pending published
-qualification. It reuses the same primary bounded buffer while retaining only
+is repaired by accepted [shared storage](TODO/DONE/NS-6_json-text_02.md) at `1c52398`.
+It reuses the same primary bounded buffer while retaining only
 `json_string_bytes` source progress. Actual portable increasing-size traces keep
 all12 source digests/counts and exact text/cursors. Checked native5859/14 original
 abort-retries/2952 callbacks per target and actual pas2js5642/10/2760 pass; existing
 writer controls also pass. Local65536-scalar escaped-astral time changes10130ms
 to18ms. This is one local measurement, not a browser or event-loop bound. Final
 decoded shrink/join remains synchronous before the final source callback.
+Exact published source `1c5239861fd5a779a4334e0e235c22d18a2f9efd` passes Ubuntu
+CI462/job122910521604, terminal Success14m9s: integration13m1s and both extracted
+consumers44s. Both clean extracted Win64 packages pass107/158 owned units and
+120/277 inventory entries; actual94 card controls,13 frozen artifacts and prior
+CLI report remain exact. Broader task04 and actual browser/operator qualification
+remain open; this zero-credit repair changes no musical acceptance.
 
 Evidence: E-drive `style-evaluation-20261028-boss` build/test/run roots, frozen
 `1be04c0` sources, original compiler/tag/adapter failures and separate no-heap

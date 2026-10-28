@@ -12,6 +12,34 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Portable JSON decoder storage accepted - 2026-10-28
+
+Big Boss confirms exact published source `1c5239861fd5a779a4334e0e235c22d18a2f9efd`
+passes [Ubuntu CI462](https://github.com/mr-highball/pythian/actions/runs/40715102230),
+job122910521604, terminal Success14m9s: maintained integration13m1s and both
+extracted consumers44s. Both clean extracted Win64 packages also pass107/158
+owned units and120/277 inventory entries. Native5859 checks/14 original abort-
+retries/2952 callbacks per target, actual pas2js5642/10/2760 and unchanged writer
+controls pass, with zero native leaks. Actual94 card controls,13 frozen artifacts
+and CLI report remain exact; all12 frozen source-trace digests/counts and decoded
+text/cursors match. The increasing-size local timings below remain observations,
+not latency or musical guarantees. Preserve the initial probe-clock failure.
+
+Accept [decoder storage02](TODO/DONE/NS-6_json-text_02.md), AC1–3 and prerequisites,
+with task move/incoming links/ledgers together:52 open/79 DONE/131 total, NS-6
+14 open;100/90/25/70/14/54 and52.45/47.55 unchanged. Real closure resets delivery
+nonclosing1 to0. Broader parent04 and actual browser/operator/music outcomes stay
+open. Goal active, Big Boss solo; no full-goal completion or musical credit.
+
+The Studio handoff remains pending: retained QA error-tab access was refused by
+browser policy, and its existing firewall rule retains a retired host address.
+A one-time exact-program/port Private/LocalSubnet host repair is prepared and
+syntax-checked under E-drive `studio-qa-20261028-boss`; the operator's administrator
+execution is requested. It has not been executed by Big Boss. Verify actual rule
+scope and legitimate normal-page authority before QA; no workaround, repeated
+permission request or invented browser pass. No rule mutation, service restart,
+private recording/answer change, retraining, browser/audio QA or WFC change occurred.
+
 ## Studio browser prerequisite rechecked; core storage follows - 2026-10-28
 
 Previous goal turn is progress: `6610fe8` publishes acceptance of serialization_01
@@ -39,7 +67,7 @@ to run it once as Administrator. It has not executed; no rules, services or user
 records changed. Actual browser acceptance stays open. This bounded preflight
 closed no criterion: delivery nonclosing1 from entry0, not reset by the handoff.
 
-Continue independent ready [decoder storage02](TODO/NS-6_json-text_02.md), following
+Continue independent ready [decoder storage02](TODO/DONE/NS-6_json-text_02.md), following
 its accepted primary-buffer prerequisite. Next batch criterion: AC1–3; consolidate
 the retained decoder's storage into that primary buffer, preserving exact source
 byte progress, cursor/output on original cancellation, malformed rejection and
@@ -78,7 +106,7 @@ AC1–3 of [serialization_01](TODO/DONE/NS-6_serialization_01.md); its prerequis
 Move that task to DONE and update incoming links and ledgers together. Current
 53 open/78 DONE/131 total, NS-6 15 open; completion stays100/90/25/70/14/54,
 52.45/47.55. This closes a real required criterion and retains delivery nonclosing0.
-Parent04 and [decoder storage02](TODO/NS-6_json-text_02.md) stay open; no musical
+Parent04 and [decoder storage02](TODO/DONE/NS-6_json-text_02.md) stay open; no musical
 credit, browser/phone acceptance, service deployment or full-goal completion is
 inferred. Preserve failures and measured residuals. Goal remains active; Big Boss
 works solo. No live service, private recording/answer, retraining or WFC pin changed.
@@ -121,7 +149,7 @@ both extracted packages remain required before task acceptance.
 
 Generated pas2js exposes a distinct retained decoder storage gap: per-character
 `rtl.setCharAt` into one pre-sized string. Create linked
-[json-text_02](TODO/NS-6_json-text_02.md), then return here without a decoder
+[json-text_02](TODO/DONE/NS-6_json-text_02.md), then return here without a decoder
 performance experiment. Current54 open/77 DONE/131 total, NS-6 16 open;52.45/47.55
 unchanged. No criterion/counter reset is inferred from discovery. Build/test/run
 evidence stays in dedicated E-drive `json-write-20261028-boss` roots. No live

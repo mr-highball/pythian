@@ -6,7 +6,7 @@
 Accepted zero-credit usability repairs: [training choices and playback](DONE/NS-6_studio_19.md),
 [tabbed workflow and help](DONE/NS-6_studio_18.md).
 
-Updated 2026-10-28. **53 open / 78 accepted tasks.** The user authorized a new
+Updated 2026-10-28. **52 open / 79 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **52.45 current / 47.55 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -40,8 +40,8 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 50 | 70% | 1 | 30 | 4.50 |
 | [NS-5 - User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 17 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 15 | 46 | 4.60 |
-| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **53** | Goal points are not summed across goals | **47.55** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 14 | 46 | 4.60 |
+| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **52** | Goal points are not summed across goals | **47.55** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -49,18 +49,24 @@ hours or effort estimates. See the [basis and rationale](../REBALANCE-2026-09-29
 
 ## Selection and actual blockers
 
+Accepted zero-credit prerequisite: [portable JSON decoding storage](DONE/NS-6_json-text_02.md)
+at `1c52398` after native/actual pas2js long-input/cancellation controls, frozen
+source traces, prior bytes, clean extracted Win64 consumers and Ubuntu CI462
+integration/extracted packages. Parent04 and actual Studio browser qualification
+remain open. Delivery nonclosing resets1 to0 on real closure; no musical credit.
+
 Accepted zero-credit prerequisite: [shared JSON publication](DONE/NS-6_serialization_01.md).
 Exact source `ae91789` passes Ubuntu CI461 integration and both extracted packages,
 plus clean extracted Win64 consumers, actual portable/native cancellation and
-prior report-byte controls. [Decoder storage](NS-6_json-text_02.md) remains open;
+prior report-byte controls. [Decoder storage](DONE/NS-6_json-text_02.md) is also accepted;
 broader parent04 and musical credit remain separate. Delivery nonclosing0.
 
 Accepted zero-credit prerequisites: [shared JSON scalar preservation](DONE/NS-6_json-text_01.md)
 and [portable style evaluation](DONE/NS-6_portability_06.md). Actual Ubuntu CI460
 passes maintained integration and both extracted packages at `1ed5e34` after
 native/actual pas2js controls and exact prior artifact/CLI parity. The earlier
-CI459 rejection remains preserved. Parent04 and decoder storage remain
-open; no musical credit follows. Delivery nonclosing count resets0 on closure.
+CI459 rejection remains preserved. Parent04 and actual Studio operator paths
+remain open; no musical credit follows. Delivery nonclosing count resets0 on closure.
 
 Accepted zero-credit prerequisite: [Linux corpus-text CI repair](DONE/NS-6_portability_05.md).
 Actual Ubuntu/FPC run446 passes integration and both extracted consumer packages
@@ -330,7 +336,6 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | [NS-6_studio_21](NS-6_studio_21.md) — Background recovery and long-source learning | 0 | 0.00 | Deployed; actual browser acceptance remains |
 | [NS-6_studio_22](NS-6_studio_22.md) — Original/generated listening comparison | 0 | 0.00 | Deployed for review; native/DOM checks pass, actual browser acceptance remains |
 | [NS-6_observability_04](NS-6_observability_04.md) — Remaining provider/batch operations and operator monitoring | 0 | 0.00 | Provider and context components qualified; later session work, batch and inference/operator reporting remain |
-| [NS-6_json-text_02](NS-6_json-text_02.md) — Consolidate portable JSON decoding storage | 0 | 0.00 | Shared primary staging implemented; native/pas2js and frozen source traces pass; published qualification pending |
 | [NS-6_adoption_01](NS-6_adoption_01.md) — Establish independent ecosystem adoption evidence | 15 | 1.50 | Supported releases + independent ecosystem evidence |
 | [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 1 | 0.10 | Solo usability resumed; complete physical matrix remains open |
 | [NS-6_delivery_03](NS-6_delivery_03.md) — Package and verify the accepted final workflow | 1 | 0.10 | Dependencies, including Studio |
@@ -345,7 +350,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 
 ## Accepted tasks and retired work
 
-All 78 accepted tasks, including [observable bulk JSON publication](DONE/NS-6_serialization_01.md), [shared JSON scalar preservation](DONE/NS-6_json-text_01.md), [portable evaluation](DONE/NS-6_portability_06.md), [primary digest publication](DONE/NS-6_hash-publication_01.md), [generic WFC learning observation](DONE/NS-6_observability_13.md), [generic WFC bulk preparation](DONE/NS-6_observability_12.md), [owned layer construction](DONE/NS-6_observability_11.md), [shared metadata](DONE/NS-6_metadata_01.md), [source measurement callbacks](DONE/NS-6_observability_10.md), [wave-style callbacks](DONE/NS-6_observability_07.md), [shared binary fields](DONE/NS-6_binary-codec_01.md), [pitch preparation callbacks](DONE/NS-6_observability_09.md), [semantic archive/blend callbacks](DONE/NS-6_observability_08.md), [Linux CI repair](DONE/NS-6_portability_05.md), [failed Save cleanup](DONE/NS-6_studio_23.md), [publication-time freshness](DONE/NS-6_studio_24.md), [retained corpus archives](DONE/NS-6_observability_05.md), [composition planning](DONE/NS-6_observability_06.md), [offline native observability](DONE/NS-6_observability_03.md), [catalog import observability](DONE/NS-6_observability_02.md), [primary analysis portability](DONE/NS-6_portability_01.md), shared intake/text portability, caller corpus intake, Studio source/effects/capture, the current minimal package
+All 79 accepted tasks, including [shared portable JSON decoding](DONE/NS-6_json-text_02.md), [observable bulk JSON publication](DONE/NS-6_serialization_01.md), [shared JSON scalar preservation](DONE/NS-6_json-text_01.md), [portable evaluation](DONE/NS-6_portability_06.md), [primary digest publication](DONE/NS-6_hash-publication_01.md), [generic WFC learning observation](DONE/NS-6_observability_13.md), [generic WFC bulk preparation](DONE/NS-6_observability_12.md), [owned layer construction](DONE/NS-6_observability_11.md), [shared metadata](DONE/NS-6_metadata_01.md), [source measurement callbacks](DONE/NS-6_observability_10.md), [wave-style callbacks](DONE/NS-6_observability_07.md), [shared binary fields](DONE/NS-6_binary-codec_01.md), [pitch preparation callbacks](DONE/NS-6_observability_09.md), [semantic archive/blend callbacks](DONE/NS-6_observability_08.md), [Linux CI repair](DONE/NS-6_portability_05.md), [failed Save cleanup](DONE/NS-6_studio_23.md), [publication-time freshness](DONE/NS-6_studio_24.md), [retained corpus archives](DONE/NS-6_observability_05.md), [composition planning](DONE/NS-6_observability_06.md), [offline native observability](DONE/NS-6_observability_03.md), [catalog import observability](DONE/NS-6_observability_02.md), [primary analysis portability](DONE/NS-6_portability_01.md), shared intake/text portability, caller corpus intake, Studio source/effects/capture, the current minimal package
 and the three NS-2 quality results, are listed in
 the [current DONE ledger](DONE/README.md). Their acceptance dates and detailed
 evidence remain in the unchanged task identities. Allocations now reflect the

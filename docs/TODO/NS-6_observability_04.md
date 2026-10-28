@@ -33,8 +33,8 @@ extracted consumers. Subsequent bulk JSON publication qualification follows belo
 Shared bulk JSON publication is now qualified at `ae91789` with native/actual
 pas2js cancellation, prior exact reports and Ubuntu CI461 integration/extracted
 consumers. Final shrink/join, native copy and platform writes retain synchronous
-boundaries. Portable decoder storage remains with json-text_02; whole AC2 stays
-open for other retained metadata/graph/publication work.
+boundaries. Portable decoder storage is now qualified at `1c52398`/Ubuntu CI462;
+whole AC2 stays open for other retained metadata/graph/publication work.
 
 Whole AC1 stays open for later provider/session replacement, generation and capture.
 AC2 batch evaluation and AC3 inference/operator reporting remain required. These
@@ -79,10 +79,18 @@ Naming a task or narrowing a component does not reset that count.
   Linux literal and Windows escaped-text failures require the shared boundary.
 - [Bulk native JSON publication — DONE](DONE/NS-6_serialization_01.md) — interior
   byte/item work qualified; final shrink/join/copy remain synchronous.
-- [Portable JSON decoder storage](NS-6_json-text_02.md) — consolidate the
-  retained per-character immutable-string builder.
+- [Portable JSON decoder storage — DONE](DONE/NS-6_json-text_02.md) — qualified
+  shared staging with exact original source-byte progress.
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss: decoder storage prerequisite passes Ubuntu CI462 at
+  `1c52398`, integration13m1s and extracted consumers44s, terminal Success14m9s.
+  Accept linked json-text_02 with actual portable/native long-input and original
+  cancellation controls, prior canonical bytes, frozen source traces and separate
+  increasing-size measurements. This real closure resets delivery nonclosing1
+  to0. Broader retained operations, actual operator/browser paths and musical
+  criteria remain open; no automatic point credit follows.
 
 - 2026-10-28, Big Boss: shared serialization prerequisite passes published Ubuntu
   CI461/job122882866023 at `ae91789`, maintained integration9m4s and extracted

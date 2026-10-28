@@ -9,8 +9,8 @@ Updated **2026-10-28** on the user-authorized 2026-09-29 credit basis:
 [Owned layer construction](TODO/DONE/NS-6_observability_11.md) is accepted at
 `be34725` after checked native consumers, exact prior state/audio artifacts and
 [Ubuntu run454](https://github.com/mr-highball/pythian/actions/runs/40604981876),
-including both extracted packages. Current counts are **53 open / 78 DONE,
-131 total**, NS-6 15 open; completion remains **100/90/25/70/14/54**, **52.45/47.55**.
+including both extracted packages. Current counts are **52 open / 79 DONE,
+131 total**, NS-6 14 open; completion remains **100/90/25/70/14/54**, **52.45/47.55**.
 [Generic WFC bulk preparation](TODO/DONE/NS-6_observability_12.md) is accepted at
 Pythian `573103e` with explicit WFC pin `d1c1c81`, checked replay/abort consumers,
 terminal five-job upstream CI50 and Ubuntu integration/extracted consumers in
@@ -46,9 +46,14 @@ separate capacity traces and clean extracted Win64 consumers, followed by
 integration and both extracted packages. Final shrink/join/copy remain explicit
 synchronous boundaries. Broad retained-operation acceptance stays open; this
 zero-credit closure changes counts only and retains delivery nonclosing0.
-Actual pas2js decoder output also exposes per-character immutable-string
-replacement. Linked [JSON storage consolidation](TODO/NS-6_json-text_02.md)
-follows the accepted output-staging repair; discovery earns no credit.
+Actual pas2js decoder output exposed per-character immutable-string replacement.
+[JSON storage consolidation](TODO/DONE/NS-6_json-text_02.md) is accepted at `1c52398`
+after native/actual portable long-input/cancellation controls, frozen source
+traces, prior bytes, clean extracted Win64 consumers and
+[Ubuntu CI462](https://github.com/mr-highball/pythian/actions/runs/40715102230)
+integration plus both extracted packages. Real closure resets delivery
+nonclosing1 to0; no musical points follow. Actual Studio browser qualification
+remains pending on host-rule setup and legitimate page access.
 Zero-credit [shared metadata reuse](TODO/DONE/NS-6_metadata_01.md) is accepted at
 `c64bf7f` after checked native/pas2js consumers, prior-byte parity and actual
 [Ubuntu run453](https://github.com/mr-highball/pythian/actions/runs/40599653753),
@@ -145,8 +150,8 @@ ecosystem adoption is unmeasured and is a required completion gate.
 | <a id="wav-02"></a><a id="wav-03"></a><a id="ns-3"></a>**NS-3 — Trustworthy musical learning from WAV** | 25% | 25 | Measurement foundation, Pascal observations/execution, qualified references/scoring, unknown/manual context, catalog and admitted-event bridge. | Independently accepted recorded context, notes, parts, harmony, groove and evolving sound: 19 tasks / 75 |
 | <a id="wfc-preferences"></a><a id="ns-4"></a>**NS-4 — Granular WFC layers and reusable blends** | 70% | 15 | Actual layers, typed controls, persistence, selective reuse, caller codecs/traits, bounded event/composition evidence and continuous native audio sessions. | Full recorded-provider workflow: 1 task / 30 |
 | <a id="wav-04"></a><a id="ns-5"></a>**NS-5 — User-defined styles that generate and blend usefully** | 14% | 20 | Bounded identity, maintained caller intake, raw corpus, journal, balance, listening packet and acoustic continuation; style-card AC1 only. | Grounded references, semantic scale, structure/continuity, useful one/many-recording and new-user styles, blends, source-continuity consumer integration: 17 tasks / 86 |
-| <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | 54% | 10 | Supported consumer contract, native checkpoint, exact-revision minimal core/caller-provider package, editor/producer queue, Studio setup/private corpora, bounded raw WFC jobs, effects, experimental capture/MIDI exploration, starting actions/navigation, verified large-library refresh, shared filter catalog, flexible bounded source workspace, delay/reverb with explicit tails, native streamed playback, shared microphone codec, guided operator teaching, shared corpus intake/text, primary analysis/synthesis portability, exact shared timing, connected import and offline native progress, repaired Linux corpus-text consumer, semantic archive/blend and pitch preparation callbacks, shared binary fields, retained wave-style and primary source-measurement callbacks, plus shared provider/context metadata primitives, owned layer construction and generic WFC bulk preparation/learning observation and primary digest publication, scalar-preserving JSON, portable style evaluation and observable bulk JSON publication. | Studio iteration/conversion, phone HTTPS and metadata-only discovery, remaining retained-operation observability, full packages, actual outside use, physical LAN/full operator workflow, maintained support, ecosystem adoption and final handoff: 15 tasks / 46 |
-| **Total** | **52.45 weighted** | **100** | **78 accepted task records plus explicit baseline** | **53 open tasks / 47.55 weighted points** |
+| <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | 54% | 10 | Supported consumer contract, native checkpoint, exact-revision minimal core/caller-provider package, editor/producer queue, Studio setup/private corpora, bounded raw WFC jobs, effects, experimental capture/MIDI exploration, starting actions/navigation, verified large-library refresh, shared filter catalog, flexible bounded source workspace, delay/reverb with explicit tails, native streamed playback, shared microphone codec, guided operator teaching, shared corpus intake/text, primary analysis/synthesis portability, exact shared timing, connected import and offline native progress, repaired Linux corpus-text consumer, semantic archive/blend and pitch preparation callbacks, shared binary fields, retained wave-style and primary source-measurement callbacks, plus shared provider/context metadata primitives, owned layer construction and generic WFC bulk preparation/learning observation and primary digest publication, scalar-preserving JSON, portable style evaluation, observable bulk JSON publication and shared decoder storage. | Studio iteration/conversion, phone HTTPS and metadata-only discovery, remaining retained-operation observability, full packages, actual outside use, physical LAN/full operator workflow, maintained support, ecosystem adoption and final handoff: 14 tasks / 46 |
+| **Total** | **52.45 weighted** | **100** | **79 accepted task records plus explicit baseline** | **52 open tasks / 47.55 weighted points** |
 
 Arithmetic:
 `5×1 + 25×.90 + 25×.25 + 15×.70 + 20×.14 + 10×.54 = 52.45`.
@@ -184,7 +189,7 @@ a claim that all downstream outcomes pass.
 
 | Outcome | North star | Required task owners |
 | --- | --- | --- |
-| **REUSABLE-OPERATIONS** | NS-6 | [Remaining provider/batch audit](TODO/NS-6_observability_04.md) and [portable decoder storage](TODO/NS-6_json-text_02.md); accepted [bulk JSON publication](TODO/DONE/NS-6_serialization_01.md), [shared JSON preservation](TODO/DONE/NS-6_json-text_01.md), [portable evaluation](TODO/DONE/NS-6_portability_06.md), [primary digest publication](TODO/DONE/NS-6_hash-publication_01.md), [generic learning observation](TODO/DONE/NS-6_observability_13.md), [generic WFC bulk preparation](TODO/DONE/NS-6_observability_12.md), [layer preparation](TODO/DONE/NS-6_observability_11.md), [metadata reuse](TODO/DONE/NS-6_metadata_01.md), [raw source measurement](TODO/DONE/NS-6_observability_10.md), [wave profiles](TODO/DONE/NS-6_observability_07.md), [shared binary primitives](TODO/DONE/NS-6_binary-codec_01.md), [pitch preparation](TODO/DONE/NS-6_observability_09.md), [semantic styles](TODO/DONE/NS-6_observability_08.md), [Linux consumer repair](TODO/DONE/NS-6_portability_05.md), [corpus archives](TODO/DONE/NS-6_observability_05.md) and [composition planning](TODO/DONE/NS-6_observability_06.md). All have zero additional credit. |
+| **REUSABLE-OPERATIONS** | NS-6 | [Remaining provider/batch audit](TODO/NS-6_observability_04.md); accepted [portable decoder storage](TODO/DONE/NS-6_json-text_02.md), [bulk JSON publication](TODO/DONE/NS-6_serialization_01.md), [shared JSON preservation](TODO/DONE/NS-6_json-text_01.md), [portable evaluation](TODO/DONE/NS-6_portability_06.md), [primary digest publication](TODO/DONE/NS-6_hash-publication_01.md), [generic learning observation](TODO/DONE/NS-6_observability_13.md), [generic WFC bulk preparation](TODO/DONE/NS-6_observability_12.md), [layer preparation](TODO/DONE/NS-6_observability_11.md), [metadata reuse](TODO/DONE/NS-6_metadata_01.md), [raw source measurement](TODO/DONE/NS-6_observability_10.md), [wave profiles](TODO/DONE/NS-6_observability_07.md), [shared binary primitives](TODO/DONE/NS-6_binary-codec_01.md), [pitch preparation](TODO/DONE/NS-6_observability_09.md), [semantic styles](TODO/DONE/NS-6_observability_08.md), [Linux consumer repair](TODO/DONE/NS-6_portability_05.md), [corpus archives](TODO/DONE/NS-6_observability_05.md) and [composition planning](TODO/DONE/NS-6_observability_06.md). All have zero additional credit. |
 | <a id="fund-quality"></a>**FUND-QUALITY** | NS-2 | [NS-2_synthesis-quality_01 — DONE](TODO/DONE/NS-2_synthesis-quality_01.md), [NS-2_synthesis-quality_02 — DONE](TODO/DONE/NS-2_synthesis-quality_02.md), [NS-2_synthesis-quality_03 — DONE](TODO/DONE/NS-2_synthesis-quality_03.md) |
 | <a id="fund-extension"></a>**FUND-EXTENSION** | NS-2 | [NS-2_extension_01](TODO/NS-2_extension_01.md) |
 | <a id="wav-validation"></a>**WAV-VALIDATION** | NS-3 | [NS-3_validation_01 — DONE](TODO/DONE/NS-3_validation_01.md), [NS-3_validation_02 — DONE](TODO/DONE/NS-3_validation_02.md), [NS-3_validation_03 — DONE](TODO/DONE/NS-3_validation_03.md) |

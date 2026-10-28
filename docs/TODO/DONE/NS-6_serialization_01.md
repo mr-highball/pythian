@@ -97,7 +97,7 @@ callback-driven partial accepted publication or a distinct required gap.
 
 - 2026-10-28, Big Boss distinct gap: actual emitted pas2js shows the retained
   decoder still using per-character `rtl.setCharAt` on its pre-sized string.
-  Create [json-text_02](../NS-6_json-text_02.md) to consolidate that storage after
+  Create [json-text_02](NS-6_json-text_02.md) to consolidate that storage after
   this writer is qualified, then return here. Do not expand this batch into
   decoder performance work or infer a measured latency from source inspection.
 
