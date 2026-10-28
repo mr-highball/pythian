@@ -26,8 +26,9 @@ CLI progress uses stderr, preserving JSON stdout and existing exit semantics.
 The native JSON bridge copies canonical scalar bytes into fpjson's UTF8String
 without host transcoding. Shared native `WriteTextFile` also writes supplied bytes
 without interpreting their code-page tag. This changes no JSON schema or score.
-Core/native/actual pas2js checks pass locally under
-[portability_06](TODO/NS-6_portability_06.md); published acceptance is still pending.
+Core/native/actual pas2js checks pass under accepted
+[portability_06](TODO/DONE/NS-6_portability_06.md). Published source `1ed5e34`
+passes Ubuntu CI460 integration and both extracted consumer packages.
 Final whole-document JSON formatting remains synchronous and has a linked
 [serialization owner](TODO/NS-6_serialization_01.md). Endpoint callbacks do not
 cover that interior. These mechanics do not close musical/reference acceptance.

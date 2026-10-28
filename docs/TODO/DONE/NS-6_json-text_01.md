@@ -1,6 +1,6 @@
 # NS-6_json-text_01 — Preserve scalar identities through native JSON
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
@@ -14,7 +14,7 @@ edit RTL sources or copy a second JSON grammar into Pythian.
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
 Big Boss works solo. This is a demonstrated prerequisite of
 [evaluation portability_06](NS-6_portability_06.md) and retained metadata work in
-[task04](NS-6_observability_04.md). Preserve partial callbacks and all failures.
+[task04](../NS-6_observability_04.md). Preserve partial callbacks and all failures.
 
 Deliverable: one primary portable JSON string decoder reusing `pythian.text`
 scalar traversal/encoding. Native adapters frame string tokens through an ASCII
@@ -29,8 +29,10 @@ callback abort, actual native consumers, prior bytes, Linux integration/extracte
 consumers and resource cleanup. Stop on normalization, partial publication,
 invented progress, altered scientific semantics or a distinct required gap.
 
-Execution status: implementation under qualification. The primary portable
-`pythian.json.text` reuses scalar traversal and encoding; native
+Execution status: accepted at `1ed5e34` after native/actual pas2js checks and
+[Ubuntu CI460](https://github.com/mr-highball/pythian/actions/runs/40700972559),
+including maintained integration and both extracted consumer packages.
+The primary portable `pythian.json.text` reuses scalar traversal and encoding; native
 `pythian.tools.json` restores decoded strings through the RTL key/value hooks.
 The shared reader deliberately rejects previously tolerated invalid JSON in
 legacy lenient readers. Valid numeric parsing remains RTL-owned. Input byte,
@@ -38,7 +40,7 @@ depth and container limits remain caller-owned; ASCII framing is at most six
 times source bytes and cannot exceed the native string ceiling. Existing
 unbounded-depth readers gain no invented depth policy. RTL structure parsing
 remains synchronous between explicit endpoints; final formatting remains in
-[serialization_01](NS-6_serialization_01.md).
+[serialization_01](../NS-6_serialization_01.md).
 
 **Acceptance Criteria:**
 
@@ -57,10 +59,26 @@ remains synchronous between explicit endpoints; final formatting remains in
 
 **Blockers**
 
-- [Shared scalar implementation — DONE](DONE/NS-6_metadata_01.md).
-- [Shared progress contract — DONE](DONE/NS-6_observability_01.md).
+- [Shared scalar implementation — DONE](NS-6_metadata_01.md).
+- [Shared progress contract — DONE](NS-6_observability_01.md).
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss acceptance: exact published source
+  `1ed5e340c061db3993ae1a32434522d04b73c62a` passes Ubuntu CI460,
+  job122860363942, in13m37s: maintained integration12m25s and extracted
+  core-only/full consumers42s. AC1–3 and both prerequisites pass; move this task
+  and portability_06 together. Native JSON357/6 original abort-retries/269
+  callbacks per target, actual pas2js141/2/77, Win64 style2923146/210/1460801,
+  zero leaks, frozen13 artifacts and CLI byte parity support the published gate.
+  CI artifact-container digests: logs
+  `981f0bd8f2f875ff717d0f13ee368aad7d6aafa92b7c68b6089f6e96c60d7d11`,
+  packages `92aa4d6bc9ee544e0833436edfe385944289628d4d49ce091b3697df22686fa2`.
+  These are upload-container digests, not package ZIP hashes. Preserve CI459
+  rejection and all diagnostic/orchestration failures below. Accounting becomes
+  53 open/77 DONE/130 total, NS-6 15 open;52.45% remains unchanged. Real criterion
+  closure resets delivery nonclosing count0. Parent04, serialization_01 and
+  actual browser/phone acceptance remain open. Verification was solo.
 
 - 2026-10-28, Big Boss complete local consumers: all maintained native build
   commands pass across the preserved prefix and explicit continuations. Local

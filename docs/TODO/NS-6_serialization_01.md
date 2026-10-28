@@ -48,7 +48,7 @@ callback-driven partial accepted publication or a distinct required gap.
 **Blockers**
 
 - [Shared progress contract — DONE](DONE/NS-6_observability_01.md).
-- [Shared evaluation text](NS-6_portability_06.md) — retain exact native text
+- [Shared evaluation text](DONE/NS-6_portability_06.md) — retain exact native text
   bytes and the corrected fpjson/file-write bridge during serialization reuse.
 
 **Dev Notes:**

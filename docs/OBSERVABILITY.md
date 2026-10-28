@@ -40,7 +40,7 @@ Studio callers, plus existing streaming, inference and library contracts.
 | Retained corpus archive and WFC model validation | Actual feature/attachment/hash bytes and owned lookup/state/token validation are observable through the native archive operator | [observability_05 — DONE](TODO/DONE/NS-6_observability_05.md); synchronous residuals below |
 | WFC chord composition planning | Actual compatibility checks and target visits, unknown traversal total until counted; prior caller output preserved on abort | [observability_06 — DONE](TODO/DONE/NS-6_observability_06.md) |
 | Provider admission, registry and compatible-session preparation | Optional callbacks reach source grids, choice decoding/validation, registry searches, configuration comparisons and actual capacity scans, through the semantic consumer | [observability_04](TODO/NS-6_observability_04.md); provider CI456 and context CI458 components qualified. Later replacement/generation, batch and inference reporting remain open |
-| Retained style distributions/cards and native asset comparison | Optional callbacks reach actual bins/counts/normalization, bindings/traits, JSON scanning/value visits and primary asset hashing | CI459 rejected Unicode round-trip; [shared JSON preservation](TODO/NS-6_json-text_01.md) is under qualification before [portability_06](TODO/NS-6_portability_06.md) acceptance; final [JSON formatting](TODO/NS-6_serialization_01.md) remains a linked gap |
+| Retained style distributions/cards and native asset comparison | Optional callbacks reach actual bins/counts/normalization, bindings/traits, JSON scanning/value visits and primary asset hashing | [Shared JSON preservation](TODO/DONE/NS-6_json-text_01.md) and [portability_06](TODO/DONE/NS-6_portability_06.md) accepted at `1ed5e34` with Ubuntu CI460 integration/extracted packages; final [JSON formatting](TODO/NS-6_serialization_01.md) remains a linked gap |
 | Primary analysis in pas2js | Full callback consumer executes shared primary algorithms; optional timer adapter yields between bounded WAV analysis batches | [portability_01 — DONE](TODO/DONE/NS-6_portability_01.md); actual browser presentation and WASM remain unqualified |
 | Primary synthesis in pas2js | Actual shared synth/instrument/note/chord/grain cases execute with measured callbacks, abort/retry and exact supported clocks | [portability_03 — DONE](TODO/DONE/NS-6_portability_03.md), [timing repair — DONE](TODO/DONE/NS-6_portability_04.md); synchronous Node consumers, no browser/WASM claim |
 
@@ -706,13 +706,17 @@ Record the actual remaining bulk JSON gap in
 
 Evidence: E-drive `style-evaluation-20261028-boss` build/test/run roots, frozen
 `1be04c0` sources, original compiler/tag/adapter failures and separate no-heap
-measurements. Exact published integration/extracted consumers are still required
-before accepting portability_06. CI459 then rejected native scalar file round-trip;
-these earlier local results do not qualify Linux. The shared primary string decoder
-and native framing/restoration repair is tracked by
-[json-text_01](TODO/NS-6_json-text_01.md), including escaped Unicode and actual
-native consumer checks. Actual browser/phone and complete parent04 remain
-unqualified; no service, private audio, saved response or WFC pin changed.
+measurements. CI459 rejected native scalar file round-trip; those earlier local
+results did not qualify Linux. The shared primary string decoder and native
+framing/restoration repair in [json-text_01](TODO/DONE/NS-6_json-text_01.md) now pass
+literal/escaped Unicode and actual native consumers. Exact published source
+`1ed5e340c061db3993ae1a32434522d04b73c62a` passes
+[Ubuntu CI460](https://github.com/mr-highball/pythian/actions/runs/40700972559),
+job122860363942: maintained integration12m25s and both extracted consumer
+packages42s, terminal success13m37s. Accept JSON and portability_06 together;
+original canonical artifacts and CLI reports remain exact. Broader parent04,
+final formatting and actual browser/phone remain unqualified. No service,
+private audio, saved response or WFC pin changed; this is solo verification.
 
 ### Retained baseline and other limits
 

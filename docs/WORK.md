@@ -12,6 +12,40 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Published JSON and portable evaluation accepted - 2026-10-28
+
+Big Boss verifies exact published source `1ed5e340c061db3993ae1a32434522d04b73c62a`
+on `hello-pythian` in the authenticated GitHub browser.
+[Ubuntu CI460](https://github.com/mr-highball/pythian/actions/runs/40700972559)
+is terminal Success: job122860363942 takes13m37s, maintained integration12m25s,
+extracted core-only/full consumers42s. Native JSON357 checks/6 original
+abort-retries/269 callbacks per target, actual pas2js141/2/77 and Win64 style
+2923146/210/1460801 pass with zero leaks. Frozen13 artifacts per native target
+and prior CLI reports remain exact. Preserve CI459 rejection and every failed
+diagnostic/orchestration attempt in the earlier entries and E-drive evidence.
+
+Accept [shared JSON preservation](TODO/DONE/NS-6_json-text_01.md) and
+[portable evaluation](TODO/DONE/NS-6_portability_06.md) together; all criteria and
+prerequisites pass. Update task moves, incoming links and both ledgers. Current
+53 open/77 DONE/130 total, NS-6 15 open; completion stays100/90/25/70/14/54,
+52.45/47.55. Real criterion closure resets delivery nonclosing count0. Broader
+parent04, bulk JSON formatting, actual browser/phone and musical outcomes remain
+open. These were solo checks, not independent review. No service, private media,
+saved answers, retraining or WFC pin changed.
+
+Status follow-up: the saved goal is blocked. No audio/review input was required
+for this repair; the user must resume the goal for automatic continuation. Tools
+cannot reactivate it, and this status is not a request to pause or complete it.
+
+Firewall follow-up: the screenshot names Nyx, not Pythian. Read-only registry
+inspection confirms existing Private TCP allow rules for both Pythian fixed
+slots. Nyx's current configured executable is already approved on Private,
+with Public blocks, but twelve different past Nyx paths have allow rules.
+Record reuse of the approved deployment path in Nyx's own instructions, without
+changing either listener, firewall, private runtime or payload. No administrator
+rule update is needed for an already approved path. Build-folder churn must not
+be handled by disabling notifications or repeatedly requesting approval.
+
 ## Linux qualification rejected; native JSON scalar prerequisite selected - 2026-10-28
 
 The repaired candidate completes every maintained native build command across
@@ -49,7 +83,7 @@ Reassessment: hold final acceptance and later JSON formatting work. Installed
 RTL converts UTF-8 strings through its host manager; a raw-token override still
 loses escaped text in the scanner, and an actual checked Windows control fails
 for a valid escaped BMP/astral key. The attempted cwstring-only fix is discarded.
-Follow new [json-text_01](TODO/NS-6_json-text_01.md): shared primary string decoding,
+Follow new [json-text_01](TODO/DONE/NS-6_json-text_01.md): shared primary string decoding,
 native ASCII framing/restoration through the existing RTL grammar, consolidated
 maintained consumers. Require native/actual portable literal/escape/malformed
 and original abort evidence, prior bytes and real Linux consumers. Stop on
@@ -88,7 +122,7 @@ or close broader parent04 AC2. Other measured native residuals and exact phases
 are in [Observability](OBSERVABILITY.md#retained-style-evaluation-component--2026-10-28).
 Actual portable qualification does not establish browser/phone use or musical truth.
 
-[Portability_06](TODO/NS-6_portability_06.md) remains open pending exact published
+[Portability_06](TODO/DONE/NS-6_portability_06.md) remains open pending exact published
 integration/extracted consumers. No full criterion has closed in this batch yet:
 delivery nonclosing count1, from entry0; discovery/naming does not reset it.
 Current accounting54 open/75 DONE/129 total, NS-6 16 open. Completion remains
@@ -114,7 +148,7 @@ Stop on a distinct required gap, changed scores or invented acceptance.
 Frozen `1be04c0` native distribution and94 card controls pass on both targets,
 with CLI reports retained under E-drive `style-evaluation-20261028-boss`. Actual
 pas2js cannot compile the primary distribution's `UTF8String`; the new linked
-[portability_06](TODO/NS-6_portability_06.md) owns shared scalar adoption before
+[portability_06](TODO/DONE/NS-6_portability_06.md) owns shared scalar adoption before
 portable qualification. Preserve partial callback work and the failure log. An
 earlier command preceded completed extraction and lacked its input; that separate
 orchestration failure is preserved, not mistaken for the compiler defect.

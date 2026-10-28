@@ -1,6 +1,6 @@
 # NS-6_portability_06 — Execute shared style evaluation with portable text
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
@@ -12,8 +12,12 @@ parallel comparator or an alias that silently changes byte limits/scalar order.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
 Big Boss works solo. This is a demonstrated prerequisite of the shared checks in
-[retained evaluation task04](NS-6_observability_04.md). Preserve its partially
+[retained evaluation task04](../NS-6_observability_04.md). Preserve its partially
 implemented callbacks and the frozen pre-change native evidence.
+
+Execution status: accepted at `1ed5e34` after actual native/pas2js qualification
+and [Ubuntu CI460](https://github.com/mr-highball/pythian/actions/runs/40700972559),
+including maintained integration and both extracted core-only/full consumers.
 
 Deliverable: adopt the existing primary scalar-text contract in evaluation
 bindings, style distributions and cards. Preserve valid canonical native text,
@@ -41,11 +45,23 @@ semantics, host conversion, duplicated scalar logic or a separate required gap.
 **Blockers**
 
 - [Native JSON scalar preservation](NS-6_json-text_01.md) — demonstrated real
-  Linux literal and checked Windows escape paths; keep this task open.
-- [Shared scalar implementation — DONE](DONE/NS-6_metadata_01.md).
-- [Shared callback contract — DONE](DONE/NS-6_observability_01.md).
+  Linux literal and checked Windows escape paths; accepted at the same revision.
+- [Shared scalar implementation — DONE](NS-6_metadata_01.md).
+- [Shared callback contract — DONE](NS-6_observability_01.md).
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss acceptance: shared primary evaluation APIs execute in
+  native Pascal and actual pas2js with scalar policies, byte/order boundaries,
+  detached state and original exceptions preserved. Prior same-target canonical
+  artifacts and CLI reports remain exact. Shared JSON prerequisite and actual
+  published Ubuntu CI460/job122860363942 pass at
+  `1ed5e340c061db3993ae1a32434522d04b73c62a`, including maintained integration
+  and extracted core-only/full packages. AC1–3 and prerequisites pass. Move both
+  tasks and repair incoming links/accounting together; retain the original
+  CI459 rejection below as history. This solo engineering acceptance earns no
+  musical points. Parent04 and bulk formatting remain open; delivery nonclosing
+  count resets0 only on this real closure.
 
 - 2026-10-28, Big Boss published rejection: CI459 at `31d3033` is terminal Failure
   in29s/job25s. Its actual new fixture passes operations0–3, then rejects native
@@ -66,7 +82,7 @@ semantics, host conversion, duplicated scalar logic or a separate required gap.
   actual adapter diagnostic changes only tags: old JSON75936 versus75914 bytes
   and file-writing conversion disagree; repaired JSON/file bytes both75914 and
   scalar comparison0. Preserve both logs. A final synchronous JSON formatting
-  gap has its own [owner](NS-6_serialization_01.md), retaining parent04 AC2.
+  gap has its own [owner](../NS-6_serialization_01.md), retaining parent04 AC2.
   Exact published integration/extracted consumers remain pending; this task is
   still open, with no criterion/counter reset or musical credit claimed.
 

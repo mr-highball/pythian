@@ -11,6 +11,13 @@ The paths stay fixed across rebuilds so Windows Firewall does not see a new
 application identity. Host addresses and catalog locations are local settings;
 never copy a historical machine address or process ID into a new launch.
 
+Firewall approval belongs to each exact executable path. Rebuild and stage
+checked replacements into these same slots; do not run another copy from a new
+experiment folder, even for loopback QA. A saved rule for one path does not cover
+the same filename elsewhere. Reuse the existing Private-network approval and
+inspect its scope before requesting another; do not disable notifications to
+hide a changing launch path.
+
 ## Configure this machine
 
 Run from the repository root. Supply the private IPv4 assigned to this machine

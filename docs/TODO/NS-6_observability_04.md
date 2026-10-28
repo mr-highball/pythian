@@ -26,6 +26,10 @@ and the primary hash publication repair are qualified at `dde2df3` after Ubuntu
 CI458 integration/extracted consumers. The evidence-array candidate also remains
 private until its final callback succeeds.
 
+Retained evaluation callbacks and their portable-text/shared JSON prerequisites
+are published-qualified at `1ed5e34` after Ubuntu CI460 integration and both
+extracted consumers. Final bulk JSON formatting remains with serialization_01.
+
 Whole AC1 stays open for later provider/session replacement, generation and capture.
 AC2 batch evaluation and AC3 inference/operator reporting remain required. These
 component qualifications close neither this parent nor musical acceptance and
@@ -63,14 +67,23 @@ Naming a task or narrowing a component does not reset that count.
 - [Generic WFC bulk constraint preparation](DONE/NS-6_observability_12.md).
 - [Generic WFC sequence learning observation — DONE](DONE/NS-6_observability_13.md).
 - [Primary hash cancellation publication — DONE](DONE/NS-6_hash-publication_01.md).
-- [Shared style evaluation text](NS-6_portability_06.md) — required for actual
+- [Shared style evaluation text](DONE/NS-6_portability_06.md) — required for actual
   portable comparison/callback qualification; native execution alone is insufficient.
-- [Native JSON scalar preservation](NS-6_json-text_01.md) — demonstrated
+- [Native JSON scalar preservation](DONE/NS-6_json-text_01.md) — demonstrated
   Linux literal and Windows escaped-text failures require the shared boundary.
 - [Bulk native JSON publication](NS-6_serialization_01.md) — actual final
   formatting remains synchronous after observable value construction.
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss published retained evaluation: Ubuntu CI460 at `1ed5e34`
+  passes maintained integration and both extracted core-only/full packages.
+  Accept linked portability_06 and json-text_01 with native/actual pas2js controls,
+  retained-output cancellation and exact prior artifacts/CLI reports. This real
+  prerequisite closure resets delivery nonclosing count0. Whole AC2 remains
+  open for final formatting and other retained metadata/graph/publication;
+  later AC1 session/generation/capture and AC3 inference/operator remain.
+  No musical credit or actual browser/phone qualification follows.
 
 - 2026-10-28, Big Boss retained evaluation component: actual distribution/card
   and native file/CLI callbacks pass checked Win32/Win64 and actual pas2js; the
