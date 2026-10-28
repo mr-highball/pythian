@@ -12,6 +12,35 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Remaining named-voice prerequisite demonstrated — 2026-10-28
+
+Previous goal turn is progress:3e04571 implements retained layer publication and
+7d5566a records clean exact packages/live CI468. Root starts clean. This turn
+confirms exact CI468 job123088311149 is live in maintained integration; do not
+restart it or infer terminal success from predecessor green. Fresh read-only
+catalog lookup retains long repetition revision0 and short continuity revision1;
+no answer change/new review or stopped scientific family follows.
+
+Read-only remaining-path audit finds separate generic voice construction/proof
+without observer and a fixed TGraph factory. A bounded authored native repro
+uses1024 voice states/255 cells, aggregate261630 within existing limits. Its
+builder has not returned after140 seconds residence; stop only that identified
+probe at the first checked point beyond its two-minute observation cap. Do not
+claim solve/capture timing or a leak-free terminated exit. Actual compiler
+observer probes reject both builder/capture calls; no dependency source changes.
+Create linked [task17](TODO/NS-6_observability_17.md) before extending named-voice
+scope. It retains generic observation, subclass factory, strict proof/exception/
+publication and exact upstream/downstream qualification; Pythian publication/
+pending edits/consumers stay parent04. Branch creation remains a future action,
+requiring operator notification. Evidence uses E-drive voice-observation-audit-
+20261028-boss roots. No generic algorithm is copied into Pythian.
+
+Counts53 open/82 DONE/135 total, NS6 15 open;52.45/47.55 unchanged. Scoping closes
+no criterion and resets no count. Delivery entry0 remains while the selected
+layer batch's exact gate runs; this audit does not widen that implementation.
+After its gate, record the component honestly, then select the next actual
+prerequisite. No service/firewall/private-media/answer or browser/audio QA change.
+
 ## Retained layer publication published candidate — 2026-10-28
 
 Source candidate3e045712e05f614bf5cac46b90909bcc273f983f is pushed on

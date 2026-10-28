@@ -6,7 +6,7 @@
 Accepted zero-credit usability repairs: [training choices and playback](DONE/NS-6_studio_19.md),
 [tabbed workflow and help](DONE/NS-6_studio_18.md).
 
-Updated 2026-10-28. **52 open / 82 accepted tasks.** The user authorized a new
+Updated 2026-10-28. **53 open / 82 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **52.45 current / 47.55 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -40,8 +40,8 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 50 | 70% | 1 | 30 | 4.50 |
 | [NS-5 - User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 17 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 14 | 46 | 4.60 |
-| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **52** | Goal points are not summed across goals | **47.55** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 15 | 46 | 4.60 |
+| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **53** | Goal points are not summed across goals | **47.55** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -49,13 +49,20 @@ hours or effort estimates. See the [basis and rationale](../REBALANCE-2026-09-29
 
 ## Selection and actual blockers
 
+New zero-credit prerequisite: [generic independent-voice observation17](NS-6_observability_17.md).
+The admitted1024-state/255-cell construction has not returned after140 seconds,
+and actual observer API probes reject. Follow the separate WFC repository/new
+branch for named-voice construction/proof; do not copy it here. This does not
+block current layer candidate3e04571's CI468 qualification. Counts53/82/135,
+NS6 15 open; no criterion, completion points or counter reset follows from scoping.
+
 Accepted zero-credit prerequisite: [generic capture observation16](DONE/NS-6_observability_16.md)
 at Pythian8cf6f5c/WFCf85d733 after all five upstream CI55 jobs, downstream CI467
 integration/extracted consumers, clean Win64 packages and native/actual pas2js
 abort/replay. The separate capture-progress branch remains unmerged. Parent04
 retained/session/stream/voice and maintained operator forwarding remain open.
 Real closure resets delivery nonclosing1 to0; scientific stops and52.45/47.55
-are unchanged. Counts52/82/134, NS6 14 open; no musical credit follows.
+were unchanged at acceptance (then52/82/134, NS6 14 open); no musical credit follows.
 
 Accepted zero-credit prerequisite: [inference corpus/auditor observation15](DONE/NS-6_observability_15.md)
 at fe431bd after exact Ubuntu CI466 integration/extracted consumers and separate

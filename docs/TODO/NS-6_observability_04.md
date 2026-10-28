@@ -80,6 +80,9 @@ Naming a task or narrowing a component does not reset that count.
 
 **Blockers**
 
+- [Generic independent-voice observation](NS-6_observability_17.md) — demonstrated
+  prerequisite for remaining named-voice/duration construction and proof; it does
+  not block the separate layer component's exact CI468 qualification.
 - [Generic sequence capture observation — DONE](DONE/NS-6_observability_16.md) —
   accepted AC1 prerequisite; retained publication and operator forwarding remain.
 - [Retained inference corpus observation — DONE](DONE/NS-6_observability_15.md) —
