@@ -12,6 +12,39 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Provider admission AC1 selected after dependency acceptance - 2026-10-27
+
+Task12's actual upstream/downstream CI and task move close a criterion this turn;
+delivery nonclosing count0. Big Boss remains solo. Return to task04 AC1 with a
+usable optional observer through provider admission, choices, codec budget/cache
+checks and compatible-session preparation, forwarded by the actual semantic
+consumer. Frozen prior source is `e34f9e6`, with accepted WFC `d1c1c81`, in
+dedicated E-drive `tests/provider-admission-20261027-boss-baseline`. The four
+owned units and hashes are retained before any source edits; no implementation
+has started. New output will use matching dedicated E-drive build/runs roots.
+
+The actual call graph matters: semantic validation enters
+`ValidateProviderContract`, which copies/decodes choices and source-clock/grid
+evidence; compatible sessions repeat admission through one shared codec budget.
+Registry lookup and cached-binding byte comparisons are nested owned work.
+Spent codec work/dispatch/byte budgets are deliberately monotonic, including
+failed calls; cancellation must not refund or silently reset them. Do not retain
+an observer in accepted objects or treat caller-owned codec execution as our
+interruptible interior. The existing budget declarations do not measure internal
+byte-comparison cost. Reuse primary scalar validation instead of duplicating it,
+and avoid resetting tiny subphase counters so often that host publication becomes
+the work. Full context archive/profile operations and later replacement/solve,
+batch and inference reporting remain distinct parent obligations.
+
+Closing evidence: actual provider/semantic consumers, truthful count/cadence
+oracles, unchanged prior models/archives/tokens/PCM, original interior/final abort
+cleanup and retry with budget semantics intact, checked native zero leaks and
+clean published integration/extracted consumers. Stop on state publication after
+abort, changed inference/replay, false overall percentages or a distinct required
+gap. This selection changes no acceptance or credit. Counts stay52 open/73 DONE,
+125 total, completion52.45/47.55. Scientific stops and the pending4:16 review
+remain unchanged; no source audio, service, operator response or retraining changes.
+
 ## WFC bulk preparation accepted; provider caller unblocked - 2026-10-27
 
 Big Boss accepts [task12](TODO/DONE/NS-6_observability_12.md) AC1–3 at Pythian
