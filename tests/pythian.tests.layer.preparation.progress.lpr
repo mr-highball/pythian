@@ -30,6 +30,10 @@ uses
   SysUtils, pythian.progress, pythian.wfc.layers, wfc, wfc_sequence,
   wfc_sequence_learn, wfc_sequence_text, wfc_sequence_graph;
 
+const
+  CCompanionStages: array[0..3] of String = ('layer_wfc_model_rows',
+    'layer_wfc_constraint_rows', 'layer_wfc_snapshot_cells', 'layer_wfc_mask_rows');
+
 type
   TObserver = class
   public
@@ -37,6 +41,9 @@ type
     PrepareTotal: Int64;
     ConstraintTotal: Int64;
     PreferenceTotal: Int64;
+    WfcCalls: Integer;
+    WfcModelTotal: Int64;
+    WfcSnapshotTotal: Int64;
     AbortStage: String;
     AbortFinal: Boolean;
     MinimumDone: Int64;
@@ -59,10 +66,32 @@ begin
 end;
 
 procedure TObserver.Observe(const AWork: TWorkProgress);
+var
+  LCompanion: Boolean;
+  LAbortPoint: Boolean;
 begin
   Inc(Calls);
+  LCompanion := Copy(AWork.Stage, 1, 10) = 'layer_wfc_';
   Check((AWork.Units = wuItems) and (AWork.Done >= 0) and
-    ((AWork.Total = 0) or (AWork.Total = AWork.Done)), 'Invalid owned-visit units or totals');
+    (AWork.Total >= 0) and ((AWork.Total = 0) or (AWork.Done <= AWork.Total)),
+    'Invalid preparation units or totals');
+  if LCompanion then
+  begin
+    Inc(WfcCalls);
+    if AWork.Stage = 'layer_wfc_model_rows' then
+    begin
+      WfcModelTotal := AWork.Total;
+    end;
+    if AWork.Stage = 'layer_wfc_snapshot_cells' then
+    begin
+      WfcSnapshotTotal := AWork.Total;
+    end;
+  end
+  else
+  begin
+    Check((AWork.Total = 0) or (AWork.Total = AWork.Done),
+      'Owned visit total was estimated from companion work');
+  end;
   if (AWork.Total > 0) then
   begin
     if AWork.Stage = 'layer_prepare_visits' then
@@ -78,9 +107,19 @@ begin
       PreferenceTotal := AWork.Total;
     end;
   end;
-  if (AWork.Stage = AbortStage) and (AWork.Done >= MinimumDone) and
-    (((not AbortFinal) and (AWork.Total = 0)) or
-      (AbortFinal and (AWork.Total > 0))) then
+  if AbortFinal then
+  begin
+    LAbortPoint := (AWork.Total > 0) and (AWork.Done = AWork.Total);
+  end
+  else if LCompanion then
+  begin
+    LAbortPoint := (AWork.Done > 0) and (AWork.Done < AWork.Total);
+  end
+  else
+  begin
+    LAbortPoint := AWork.Total = 0;
+  end;
+  if (AWork.Stage = AbortStage) and (AWork.Done >= MinimumDone) and LAbortPoint then
   begin
     raise Marker;
   end;
@@ -130,6 +169,9 @@ begin
       internals and initial masks are NOT added to that thirteen. }
     Check(GObserver.PrepareTotal = 13, 'Authored construction visit oracle differs');
     Check(GObserver.ConstraintTotal = 8, 'Authored snapshot/reset cell oracle differs');
+    Check((GObserver.WfcModelTotal = LLayers[0].Model.StateCount) and
+      (GObserver.WfcSnapshotTotal = 4) and (GObserver.WfcCalls > 0),
+      'Actual companion model/cell counts did not reach the primary callback');
     LSession.SetPreferences('a', nil, GObserver.Observe);
     Check(GObserver.PreferenceTotal = 2, 'Authored preference-validation oracle differs');
   finally
@@ -157,6 +199,9 @@ var
   LBoundary: Integer;
   LLayer: Integer;
   LAborted: Boolean;
+  LMask: Integer;
+  LStage: String;
+  LFinal: Boolean;
 
   procedure AbortOperation(const AOperation: Integer; const AStage: String;
     const AFinal: Boolean; const AMinimum: Int64);
@@ -198,7 +243,8 @@ var
         LAssigned.Free;
       end;
     end;
-    Check(LAborted and (LAssigned = LSession), 'Abort did not preserve assigned session');
+    Check(LAborted and (LAssigned = LSession), 'Abort did not preserve assigned session at ' +
+      AStage + ' final=' + BoolToStr(AFinal, True));
     Same(LBefore, LAfter);
     Same(LBefore, LSession.CopyAccepted);
     if AOperation = 2 then
@@ -276,6 +322,24 @@ begin
     AbortOperation(2, 'layer_constraint_visits', False, 256);
     AbortOperation(2, 'layer_constraint_visits', True, 1);
     AbortOperation(3, 'layer_preference_visits', True, 1);
+    if AKind = 0 then
+    begin
+      { Real session mutation covers every generic phase, including final-mask
+        rollback after earlier masks have already changed domains. }
+      SetLength(LMasks, 128);
+      for LMask := 0 to High(LMasks) do
+      begin
+        LMasks[LMask] := MakeWfcSequenceTokenConstraint(LMask, ['x', 'y']);
+      end;
+      LMasks[0] := MakeWfcSequenceTokenConstraint(0, ['x']);
+      for LStage in CCompanionStages do
+      begin
+        for LFinal := False to True do
+        begin
+          AbortOperation(2, LStage, LFinal, 1);
+        end;
+      end;
+    end;
     LRetry := TLearnedLayerSession.Create(LLayers, LMaps, ['provider', 'voice'], LOptions, GObserver.Observe);
     Check(LRetry.TryGenerate(LAfter, LReport), 'Construction retry failed');
     Same(LExpected, LAfter);
@@ -302,7 +366,8 @@ begin
     RunCase(1);
     RunCase(2);
     WriteLn('Layer preparation: ', GChecks, ' checks; ', GAborts,
-      ' abort/retries; ', GObserver.Calls, ' aggregated callbacks; visit oracles 13/8/2');
+      ' abort/retries; ', GObserver.Calls, ' callbacks (', GObserver.WfcCalls,
+      ' companion); visit oracles 13/8/2');
   finally
     GObserver.Free;
   end;

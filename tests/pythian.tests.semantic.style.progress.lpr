@@ -367,6 +367,8 @@ begin
     AbortAndRetry(opSession, 'semantic_prepare_session', 2, False);
     AbortAndRetry(opSession, 'layer_prepare_visits', 256);
     AbortAndRetry(opSession, 'layer_constraint_visits', 1);
+    AbortAndRetry(opSession, 'layer_wfc_model_rows', 1);
+    AbortAndRetry(opSession, 'layer_wfc_snapshot_cells', 1);
 
     { A 128-cell definition contains fewer than one 4096-field checkpoint.
       Exercise a larger source alone without exceeding the blend work budget. }

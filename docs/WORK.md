@@ -12,6 +12,46 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## WFC bulk repair integrated locally; published qualification pending - 2026-10-27
+
+Big Boss continues the selected task12 batch solo. The intervening GitHub-status
+turn closed no criterion and resets no delivery/scientific counter. The separate
+WFC branch now publishes reviewed commit
+[`d1c1c81`](https://github.com/mr-highball/wfc/commit/d1c1c81b914a71a31a27b4abefcabede4a567abd),
+one commit above the exact prior pin, with no merge or unrelated expansion work.
+[Upstream CI50](https://github.com/mr-highball/wfc/actions/runs/40610315254) remains
+live. The maintained native sequence120/preparation18528 checks pass both targets;
+actual pas2js preparation18532 passes. Eight original interior/final aborts,
+mixed absent/empty-domain rollback and1024-cell replay pass, native zero leaks.
+The exact old probe was externally stopped; optimized nil-observer intersection
+6594 ms and observed final Win32/Win64 intersection2000/7344 ms establish this
+workload's completion, not a universal speedup or response-time bound.
+
+Pythian explicitly adopts that gitlink and forwards the four generic phase
+records through its primary progress contract, without counting them as owned
+visits or retaining callbacks. Nil primary callbacks keep the generic observer
+nil. Real layer/session tests pass **25077 checks /29 abort-retries /4477
+callbacks (3161 companion)** on each checked native target; real semantic/provider
+consumer tests each pass **30766 checks /30674 callbacks**, zero leaks. All **34
+prior artifacts per target** match separately compiled frozen `bcabd70` layer
+source and `47fa3d8` WFC source, including complete token/state receipts, saved
+styles and rendered PCM. Existing provider codec and maintained caller consumers
+pass too. The stage-array truncation failure and diagnostic working-directory
+setup failure are preserved and repaired. Extra Pythian-layer pas2js compilation
+hits pre-existing native `UTF8String`; no adapter browser claim follows from
+WFC's actual portable pass. Support scope remains explicit.
+
+Evidence and frozen inputs stay in dedicated E-drive
+`build/tests/runs/wfc-sequence-preparation-20261027-boss*` roots. All local test
+handles are terminal. Publish this Pythian batch and require clean Ubuntu
+integration/core-isolated and full extracted consumers, plus upstream CI, before
+task12 acceptance. Counts stay **53 open /72 DONE /125 total**, NS-6 15 open;
+completion **100/90/25/70/14/54**, **52.45/47.55**. Delivery nonclosing count enters0;
+qualification is not closure. Task04 retains provider/registry/context interiors,
+later generation/capture/replacement, batch/inference/operator reporting.
+The retained4:16 review remains waiting at revision0 in a fresh read-only report.
+No service, private audio, saved response or retraining changed. Full goal stays.
+
 ## Layer construction accepted; WFC bulk fix in progress - 2026-10-27
 
 Big Boss's published layer component is accepted at `be34725`: authenticated

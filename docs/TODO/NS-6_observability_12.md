@@ -48,6 +48,37 @@ dependency edits in this checkout, unrelated upstream adoption or a distinct gap
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss downstream qualification: explicit gitlink/borrowed bridge
+  pass checked Win32/Win64 layer25077 checks/29 abort-retries/4477 callbacks
+  (3161 companion), plus actual semantic/provider30766 checks/30674 callbacks,
+  zero leaks. All34 same-target artifacts match independently compiled frozen
+  `bcabd70` layers plus prior `47fa3d8` companion sources. Actual provider codec
+  and maintained caller pass. Owned visit oracles13/8/2 remain unchanged; known
+  generic totals are phase-local. All local handles are terminal; publish and
+  require clean integration/extracted consumers plus upstream CI before closure.
+- 2026-10-27, Big Boss upstream publication: reviewed/pushed
+  [d1c1c81](https://github.com/mr-highball/wfc/commit/d1c1c81b914a71a31a27b4abefcabede4a567abd)
+  on the named branch, with no merge. Maintained native sequence/preparation
+  loops pass both checked targets: existing120 checks, new18528 checks with
+  8 original interior/final aborts and5384 callbacks, zero leaks. Actual
+  pas2js new fixture passes18532 checks; its additional malformed JS controls
+  account for the count difference. Existing text consumer passes48 checks.
+  Original nil-observer exact probe completes6594 ms; final observed workload
+  2000/7344 ms are local Win32/Win64 observations only. Mixed pre-existing
+  absent/empty domains now have explicit rollback/retry coverage. PowerShell
+  maintained loop execution and Bash syntax pass. Upstream
+  [CI50](https://github.com/mr-highball/wfc/actions/runs/40610315254) is running;
+  final downstream acceptance is still open. Explicit Pythian gitlink and
+  primary-callback bridge are drafted; source changes here never patch WFC.
+- 2026-10-27, Big Boss failed checks: the new integration fixture initially
+  inferred a fixed-width array from its first stage-name string, truncating
+  later names and missing the intended abort. Replace it with a typed String
+  array; preserve both failed logs in the E-drive record. A diagnostic build
+  used the wrong working directory before execution; preserve that setup log.
+  An additional Pythian layer pas2js compile stops at its pre-existing native
+  `UTF8String` local in positioned masks. No browser support is claimed for
+  that native adapter by this task; WFC's changed portable API executes under
+  actual pas2js. [Support scope](NS-6_support_01.md) owns target declarations.
 - 2026-10-27, Big Boss upstream draft: new shared preflighted intersection core
   removes repeated definition checks, with public single-mask guards retained.
   Generic borrowed phase/count callbacks cover graph model validation, full mask

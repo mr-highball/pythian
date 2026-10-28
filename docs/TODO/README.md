@@ -54,8 +54,8 @@ Actual Ubuntu/FPC run446 passes integration and both extracted consumer packages
 at `22afc3d`. The repaired fixtures retain exact UTF-8 inputs without changing the
 validator. Retained-operation work remains open; no musical credit follows.
 
-Current mode (2026-10-27): **Big Boss plus Spike and Spiegel, GPT-6.1 Terra**,
-explicitly requested by the user. The older roster remains inactive. New local
+Current mode (2026-10-27): **single-agent Big Boss only**, following the user's
+supplied AGENTS override until explicitly changed. Earlier rosters are inactive. New local
 builds/tests/cache/run output use `E:/CodexWork/pythian/`; existing repo-local
 build defaults are not redirected automatically.
 

@@ -202,6 +202,8 @@ type
     procedure Visit;
     procedure Checkpoint;
     procedure Finish;
+    procedure ObserveSequence(const AWork: TWfcSequencePreparationProgress);
+    function SequenceObserver: TWfcSequencePreparationObserver;
   end;
   TLayerCellIndices = array of Integer;
   TPositionedLayer = class
@@ -270,6 +272,40 @@ end;
 procedure TLayerPreparation.Finish;
 begin
   ReportWork(FCallback, FStage, wuItems, FVisits, FVisits);
+end;
+
+procedure TLayerPreparation.ObserveSequence(const AWork: TWfcSequencePreparationProgress);
+var
+  LStage: String;
+begin
+  case AWork.Phase of
+    wspValidateConstraints: LStage := 'layer_wfc_constraint_rows';
+    wspValidateGraphModel: LStage := 'layer_wfc_model_rows';
+    wspSnapshotDomains: LStage := 'layer_wfc_snapshot_cells';
+    wspIntersectDomains: LStage := 'layer_wfc_mask_rows';
+  else
+    raise EAudio.Create('Unknown companion preparation phase');
+  end;
+  { Companion counts remain phase-local. They never inflate owned visit totals. }
+  ReportWork(FCallback, LStage, wuItems, AWork.Done, AWork.Total);
+end;
+
+function TLayerPreparation.SequenceObserver: TWfcSequencePreparationObserver;
+begin
+  Result := nil;
+  if Assigned(FCallback) then
+  begin
+    Result := ObserveSequence;
+  end;
+end;
+
+function LayerSequenceObserver(const APreparation: TLayerPreparation): TWfcSequencePreparationObserver;
+begin
+  Result := nil;
+  if APreparation <> nil then
+  begin
+    Result := APreparation.SequenceObserver;
+  end;
 end;
 
 procedure VisitLayer(const APreparation: TLayerPreparation); inline;
@@ -552,7 +588,7 @@ var
   LAllowed: Boolean;
 begin
   LayerCheckpoint(APreparation);
-  ValidateSequenceTokenConstraints(FModel, FCount, AMasks);
+  ValidateSequenceTokenConstraints(FModel, FCount, AMasks, LayerSequenceObserver(APreparation));
   LayerCheckpoint(APreparation);
   SetLength(LCandidates, FCount);
   for LPosition := 0 to FCount - 1 do
@@ -1095,7 +1131,7 @@ begin
     end;
     LayerCheckpoint(APreparation);
     ValidateSequenceTokenConstraints(ALayers[LIndex].Model, LScope.CellCount,
-      ALayers[LIndex].Constraints);
+      ALayers[LIndex].Constraints, LayerSequenceObserver(APreparation));
     LayerCheckpoint(APreparation);
   end;
   LWork := 0;
@@ -1613,7 +1649,7 @@ begin
       ApplySequenceModelToGraph(ALayers[LIndex].Model, LGraph, LScope.Extent);
       LayerCheckpoint(APreparation);
       IntersectSequenceTokenConstraints(ALayers[LIndex].Model, LGraph,
-        ALayers[LIndex].Constraints);
+        ALayers[LIndex].Constraints, LayerSequenceObserver(APreparation));
       LayerCheckpoint(APreparation);
     end;
     for LIndex := 0 to High(ALayers) do
@@ -1896,7 +1932,8 @@ begin
       raise EAudio.Create('Layer has too many position constraints');
     end;
     LPreparation.Checkpoint;
-    ValidateSequenceTokenConstraints(FLayers[LIndex].Model, LScope.CellCount, AConstraints);
+    ValidateSequenceTokenConstraints(FLayers[LIndex].Model, LScope.CellCount,
+      AConstraints, LPreparation.SequenceObserver);
     LPreparation.Checkpoint;
     LConstraints := Copy(AConstraints);
     for LConstraint := 0 to High(LConstraints) do
@@ -1930,7 +1967,8 @@ begin
       else
       begin
         LPreparation.Checkpoint;
-        IntersectSequenceTokenConstraints(FLayers[LIndex].Model, LPass, AConstraints);
+        IntersectSequenceTokenConstraints(FLayers[LIndex].Model, LPass, AConstraints,
+          LPreparation.SequenceObserver);
         LPreparation.Checkpoint;
       end;
       { Include the final observer call in rollback, before pending-mask publication. }

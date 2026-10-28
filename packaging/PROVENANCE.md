@@ -14,8 +14,13 @@ Extracted mechanisms include PCM/codec conventions, exact tempo clocks, the
 fixed-point triangle oscillator, seeded noise, note projection, ordered note
 export, two-pass MIDI transport and synthesis
 control. Native DSP, WAV analysis and reconstruction extend those mechanisms.
-WFC remains an optional companion; its learner and solver are used directly.
+Core-only packaging stays independent; WFC's learner and solver are integral
+to the full product and are used directly.
 When included, its source license and exact revision accompany it in `vendor/wfc`.
+The current companion pin is `d1c1c81b914a71a31a27b4abefcabede4a567abd`, based on
+the extraction revision above. The generic bulk-preparation repair was developed
+in WFC's separate `codex/pythian-sequence-preparation` branch. Audio adaptation
+and primary progress forwarding remain Pythian-owned.
 
 Phanes's browser application, corpus, style identities and assets are excluded.
 Native DSP and ADSR behavior do not claim Web Audio or all precursor PCM parity.
