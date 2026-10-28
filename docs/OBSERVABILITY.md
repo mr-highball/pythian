@@ -42,7 +42,7 @@ Studio callers, plus existing streaming, inference and library contracts.
 | Provider admission, registry and compatible-session preparation | Optional callbacks reach source grids, choice decoding/validation, registry searches, configuration comparisons and actual capacity scans, through the semantic consumer | [observability_04](TODO/NS-6_observability_04.md); provider CI456 and context CI458 components qualified. Native inference/operator AC3 is accepted; retained capture/publication and batch work remain open |
 | Generic WFC solving and Pythian forwarding | Borrowed phase/pass-local prepare/search/commit visits, unknown totals, original cancellation and graph/RNG rollback; one primary adapter bridge for acoustic and finite/retained layer consumers | [task14 — DONE](TODO/DONE/NS-6_observability_14.md); exact WFCc496b1d/Pythian57df550 pass CI54/CI464 and native/actual pas2js replay. Capture/copy and later streams/voices remain synchronous residuals under parent04 |
 | Generic sequence capture and finite generation | Borrowed model/cell/path/transition/domain/projection callbacks, private managed results and actual finite token/acoustic forwarding | [task16 — DONE](TODO/DONE/NS-6_observability_16.md); WFCf85d733/Pythian8cf6f5c pass all five CI55 jobs, CI467 integration/extracted consumers, clean native packages and native/actual portable replay. Retained session/stream/voice and maintained operator forwarding remain parent04 |
-| Retained layer capture/copy/publication candidate | Initial/selective capture and detached caller copies run in the existing guarded commit; replacement keeps its private candidate until its own final swap | Local native/actual pas2js cancellation/replay below; parent04 stays open for published qualification and remaining stream/voice/operator work |
+| Retained layer capture/copy/publication | Initial/selective capture and detached caller copies run in the existing guarded commit; replacement keeps its private candidate until its own final swap | Exact3e04571/CI468 integration/extracted consumers and clean native packages pass, with native/actual pas2js cancellation/replay below; whole parent04 and remaining stream/voice/operator work stay open |
 | Retained style distributions/cards and native asset comparison | Optional callbacks reach actual bins/counts/normalization, bindings/traits, JSON scanning/value visits, emitted bytes/items and primary asset hashing | Shared JSON/text accepted at `1ed5e34`/CI460; [bulk publication](TODO/DONE/NS-6_serialization_01.md) accepted at `ae91789`/CI461 with extracted consumers. Final shrink/join/copy remain synchronous; [decoder storage](TODO/DONE/NS-6_json-text_02.md) accepted at `1c52398`/CI462 |
 | Primary analysis in pas2js | Full callback consumer executes shared primary algorithms; optional timer adapter yields between bounded WAV analysis batches | [portability_01 — DONE](TODO/DONE/NS-6_portability_01.md); actual browser presentation and WASM remain unqualified |
 | Primary synthesis in pas2js | Actual shared synth/instrument/note/chord/grain cases execute with measured callbacks, abort/retry and exact supported clocks | [portability_03 — DONE](TODO/DONE/NS-6_portability_03.md), [timing repair — DONE](TODO/DONE/NS-6_portability_04.md); synchronous Node consumers, no browser/WASM claim |
@@ -143,7 +143,7 @@ boundary; a callback after a solver has accepted its graph cannot retroactively
 extend rollback. Accepted finite API forwarding does not close that retained or
 maintained archive/remix/event/journal operator scope.
 
-## Retained layer publication candidate — 2026-10-28
+## Qualified retained layer publication — 2026-10-28
 
 The primary layer adapter uses WFC's existing `DoValidateCommit` hook for
 initial and selective solves. It captures every layer, validates original model
@@ -196,9 +196,17 @@ Preserve initial fixture failures: a pending mask contradicted the preserved
 provider, chained replacement retained that mask, and a standalone audio run
 omitted its output directory. The original compiler also rejected a reserved
 field name, a nonexistent fixture extent and two missing explicit type/unit
-references. These are repaired; broad published qualification is still pending.
+references. These are repaired. Exact3e04571 passes
+[CI468](https://github.com/mr-highball/pythian/actions/runs/40765468968)
+integration13m42s and both extracted consumers44s, native job14m48s. Clean exact
+Win64 core107owned/120inventory and full159owned/279inventory packages also pass.
 Evidence: dedicated E-drive `layer-publication-20261028-boss` build/tests/runs.
 This component closes neither whole parent04 AC1/AC2 nor musical/Studio gates.
+The next named-voice audit exposes unobserved generic construction/proof; linked
+[task17](TODO/NS-6_observability_17.md) owns the separate WFC branch. Its admitted
+1024-state/255-cell builder is stopped after140 seconds without construction
+completion; neither solve/capture timing nor terminated-run leak freedom is
+claimed. No wrapper can substitute for actual nested model/graph observation.
 
 ## Native inference supervisor progress — 2026-10-28
 

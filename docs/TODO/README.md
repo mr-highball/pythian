@@ -52,9 +52,11 @@ hours or effort estimates. See the [basis and rationale](../REBALANCE-2026-09-29
 New zero-credit prerequisite: [generic independent-voice observation17](NS-6_observability_17.md).
 The admitted1024-state/255-cell construction has not returned after140 seconds,
 and actual observer API probes reject. Follow the separate WFC repository/new
-branch for named-voice construction/proof; do not copy it here. This does not
-block current layer candidate3e04571's CI468 qualification. Counts53/82/135,
-NS6 15 open; no criterion, completion points or counter reset follows from scoping.
+branch codex/pythian-voice-progress for named-voice construction/proof; do not
+copy it here. Exact layer3e04571/CI468 is now qualified, including integration/
+extracted consumers. The layer component and audit close no whole parent
+criterion: delivery0 to2, and mandatory reassessment selects actual prerequisite17.
+Counts53/82/135, NS6 15 open; no musical points or counter reset from scoping.
 
 Accepted zero-credit prerequisite: [generic capture observation16](DONE/NS-6_observability_16.md)
 at Pythian8cf6f5c/WFCf85d733 after all five upstream CI55 jobs, downstream CI467

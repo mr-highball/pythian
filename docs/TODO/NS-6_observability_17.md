@@ -11,8 +11,8 @@ Pythian retained owner from using its existing guarded-commit publication hook.
 Do not copy musical proof or builder logic into an audio adapter, hide opaque
 work behind a wrapper callback, or publish after accepting a live graph.
 
-Execution status: demonstrated prerequisite, ready after the current layer
-publication qualification. Next deliverable: optional borrowed generic voice
+Execution status: demonstrated prerequisite, ready after the recorded two-batch
+reassessment and exact layer CI468 qualification. Next deliverable: optional borrowed generic voice
 work observation and a caller-selected graph subclass boundary, on a new branch
 in the separate WFC repository. Closing evidence: actual native/portable
 build/proof/capture abort and replay, original exception identity, private managed
@@ -54,6 +54,19 @@ operator forwarding remain parent04; no musical acceptance follows here.
 
 **Dev Notes:**
 
+- 2026-10-28, Big Boss: exact layer CI468 is terminal Success, integration13m42s
+  and extracted consumers44s. The layer component and audit close no whole parent
+  criterion: delivery nonclosing0 to2, and reassessment selects this actual
+  generic prerequisite. Separate local WFC branch codex/pythian-voice-progress
+  is created from acceptedf85d733; the operator is notified before source edits.
+  The unrelated expansion checkout has no existing fix. No source is edited yet;
+  nested model/sequence graph construction/projection work must be observed
+  through the primary implementation, not hidden behind a voice wrapper callback.
+  Stop on changed musical rules/budgets/search, partial publication, copied
+  algorithms or another distinct prerequisite. Keep entry2 and scientific stops
+  until real acceptance, not a new name or diagnostic. New outputs use dedicated
+  E-drive wfc-voice-progress-20261028-boss build/tests/cache/run roots.
+
 - 2026-10-28, Big Boss, solo read-only audit while exact layer CI468 runs:
   WFCf85d733 exposes no observer argument for BuildWfcMusicVoicesSegmentGraph or
   CaptureSolvedWfcMusicVoices; the actual compiler rejects both attempted observer
@@ -63,7 +76,7 @@ operator forwarding remain parent04; no musical acceptance follows here.
   140 seconds process residence; only its initial shape line is emitted.
   The identified diagnostic process is stopped at the first checked observation
   beyond its two-minute cap. No capture/solve timing or leak-free exit is claimed;
-  sampled private storage40,378,368 bytes is not a peak or latency promise.
+  stop-time sampled private storage40,771,584 bytes is not a peak or latency promise.
   The original enum-name compile rejection is corrected to the actual allowed
   harmony mode; no workload/window/budget sweep is performed. Repro, compile/API
   rejection, terminal run and stop record use dedicated E-drive

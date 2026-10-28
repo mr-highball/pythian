@@ -106,6 +106,17 @@ Naming a task or narrowing a component does not reset that count.
 
 **Dev Notes:**
 
+- 2026-10-28, Big Boss: exact3e04571/CI468 passes integration13m42s and extracted
+  consumers44s, native job14m48s. Qualify the retained-layer capture/copy/
+  publication component with prior clean packages/native/actual portable replay.
+  Whole AC1/AC2 and stream/voice/batch/operator obligations stay open. The layer
+  component and subsequent prerequisite audit are two nonclosing batches since
+  task16: record0 to2, not reset by commits/waits/new task. Mandatory reassessment
+  follows actual generic prerequisite17 before adding named-voice callbacks.
+  Separate local branch codex/pythian-voice-progress is created fromf85d733,
+  operator notified before edits, with no source changes yet. Keep parent
+  accounting53/82/135 and52.45/47.55 unchanged; no musical criterion is claimed.
+
 - 2026-10-28, Big Boss: exact source3e045712e05f614bf5cac46b90909bcc273f983f
   is pushed; [CI468](https://github.com/mr-highball/pythian/actions/runs/40765468968)
   is running. Clean exact Win64 core107owned/120inventory and full159owned/

@@ -12,6 +12,39 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Layer component qualified and two-batch reassessment — 2026-10-28
+
+Big Boss follows exact CI468/job123088311149 to terminal Success14m48s at source
+3e045712e05f614bf5cac46b90909bcc273f983f: maintained integration13m42s and both
+extracted consumers44s pass. Together with the clean exact native packages,
+native/actual portable102-abort fixture, prior frozen replay and original
+layer/caller-provider controls, qualify the retained-layer capture/copy/
+publication component. No Pythian dependency pin or upstream source changes.
+Whole parent04 AC1/AC2 and later stream/voice/batch/operator gates remain open.
+
+The two bounded results since task16's closure are the selected layer component
+and the following named-voice prerequisite audit. Neither closes a whole parent
+criterion; record delivery nonclosing0 to2, with no reset for source commits,
+CI waits, task creation or this handoff. Mandatory reassessment changes the next
+action: stop extending Pythian's named-voice callbacks and follow demonstrated
+generic construction/proof prerequisite17, using its separate repository branch.
+Full musical vocabulary remains blocked on accepted context/full references and
+the existing long review; no stopped scientific family is reopened. Tests and
+the new task earn no musical credit. Counts53/82/135,52.45/47.55 unchanged.
+
+Separate local WFC branch codex/pythian-voice-progress is created from exact
+acceptedf85d733 in E-drive wfc-voice-progress-20261028-boss/worktree. The unrelated
+expansion checkout has no observer fix and is untouched. The operator is told
+the concrete gap/owner/branch before edits. No source is edited on that new
+branch yet. Select task17 AC1–4: real generic configuration/model/graph/projection/
+voice build and proof callbacks, caller graph subclass, private publication and
+original exceptions, qualified through native/actual portable abort/replay and
+exact upstream/downstream consumers. Stop on changed budgets/search/musical
+rules, partial acceptance, copied algorithms or another distinct prerequisite.
+Nested model/sequence graph creation is part of actual construction, not covered
+by an outer callback. This selection keeps delivery entry2 until real closure;
+scientific counters remain separate. All new outputs stay in dedicated E roots.
+
 ## Remaining named-voice prerequisite demonstrated — 2026-10-28
 
 Previous goal turn is progress:3e04571 implements retained layer publication and
