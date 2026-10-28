@@ -6,7 +6,7 @@
 Accepted zero-credit usability repairs: [training choices and playback](DONE/NS-6_studio_19.md),
 [tabbed workflow and help](DONE/NS-6_studio_18.md).
 
-Updated 2026-10-28. **53 open / 81 accepted tasks.** The user authorized a new
+Updated 2026-10-28. **52 open / 82 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **52.45 current / 47.55 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -40,8 +40,8 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 50 | 70% | 1 | 30 | 4.50 |
 | [NS-5 - User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 17 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 15 | 46 | 4.60 |
-| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **53** | Goal points are not summed across goals | **47.55** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 14 | 46 | 4.60 |
+| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **52** | Goal points are not summed across goals | **47.55** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -49,11 +49,13 @@ hours or effort estimates. See the [basis and rationale](../REBALANCE-2026-09-29
 
 ## Selection and actual blockers
 
-The retained-generation batch demonstrates an opaque generic sequence capture/
-domain-proof path lasting about5.4s per call at an admitted workload. Follow
-[WFC capture prerequisite16](NS-6_observability_16.md) on new separate branch
-`codex/pythian-sequence-capture-progress` before parent04's publication work.
-Counts53/81/134, NS6 15 open; delivery nonclosing0 to1, no musical credit.
+Accepted zero-credit prerequisite: [generic capture observation16](DONE/NS-6_observability_16.md)
+at Pythian8cf6f5c/WFCf85d733 after all five upstream CI55 jobs, downstream CI467
+integration/extracted consumers, clean Win64 packages and native/actual pas2js
+abort/replay. The separate capture-progress branch remains unmerged. Parent04
+retained/session/stream/voice and maintained operator forwarding remain open.
+Real closure resets delivery nonclosing1 to0; scientific stops and52.45/47.55
+are unchanged. Counts52/82/134, NS6 14 open; no musical credit follows.
 
 Accepted zero-credit prerequisite: [inference corpus/auditor observation15](DONE/NS-6_observability_15.md)
 at fe431bd after exact Ubuntu CI466 integration/extracted consumers and separate
@@ -358,7 +360,6 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | [NS-6_studio_21](NS-6_studio_21.md) — Background recovery and long-source learning | 0 | 0.00 | Deployed; actual browser acceptance remains |
 | [NS-6_studio_22](NS-6_studio_22.md) — Original/generated listening comparison | 0 | 0.00 | Deployed for review; native/DOM checks pass, actual browser acceptance remains |
 | [NS-6_observability_04](NS-6_observability_04.md) — Remaining provider/batch operations and operator monitoring | 0 | 0.00 | Native inference/operator AC3 accepted; retained session/capture/stream/publication AC1 and batch AC2 remain |
-| [NS-6_observability_16](NS-6_observability_16.md) — Generic WFC sequence capture/validation observation | 0 | 0.00 | Demonstrated prerequisite for retained capture; separate upstream branch, no duplicate musical credit |
 | [NS-6_adoption_01](NS-6_adoption_01.md) — Establish independent ecosystem adoption evidence | 15 | 1.50 | Supported releases + independent ecosystem evidence |
 | [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 1 | 0.10 | Solo usability resumed; complete physical matrix remains open |
 | [NS-6_delivery_03](NS-6_delivery_03.md) — Package and verify the accepted final workflow | 1 | 0.10 | Dependencies, including Studio |

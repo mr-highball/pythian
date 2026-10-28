@@ -12,6 +12,48 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Generic capture and finite forwarding accepted — 2026-10-28
+
+Previous goal turn is progress:8cf6f5c publishes the generic capture prerequisite
+and finite forwarding, with clean native packages and exact prior replay.
+This turn follows the same live CI handles to terminal. Big Boss accepts
+[task16](TODO/DONE/NS-6_observability_16.md) AC1–3 at exact Pythian
+`8cf6f5cbd8074eb1020116869fc94d98fc3e4245` / WFC
+`f85d7339bf361cacdf20b4764e3281ad91891659`. All five
+[upstream CI55 jobs](https://github.com/mr-highball/wfc/actions/runs/40755986499)
+pass, terminal Success27m4s, including actual browser conformance. Exact
+[Pythian CI467](https://github.com/mr-highball/pythian/actions/runs/40757891473)
+passes integration13m14s and extracted core/WFC consumers44s; native job14m23s.
+
+Local generic Win32/Win64 and actual pas2js135086 checks/87 original aborts,
+finite126370/52 and actual prior three-seed replay remain qualified, zero native
+leaks. Existing retained-layer470747/149 and13/8/2 visit oracles pass. Clean exact
+Win64 core107owned/120inventory and full159owned/279inventory packages pass after
+ZIP extraction. The dedicated E-drive packet retains exact hashes, initial
+order1-negative-fixture rejection and browser-host compilation omission; neither
+changed production validation. Published CI runs current browser test sources,
+including the new fixture. No local Studio/browser or physical-phone claim.
+
+Move task16/incoming links/accounting together:52 open/82 DONE/134 total,
+NS6 14 open. Real zero-credit criterion closure resets delivery nonclosing1 to0;
+scientific stops and completion52.45/47.55 are unchanged. WFC's separate branch
+stays unmerged. Parent04 AC1/AC2, retained/session/stream/voice and maintained
+operator forwarding remain open; native inference/operator AC3 is already
+accepted. The read-only retained assessment identifies scoped preference
+restoration/reapplication inside existing DoValidateCommit before capture, with
+private output and unchanged search/RNG; it is preparation, not implementation
+or another completed batch. Reassess least-complete NS5 and actual prerequisites
+before naming the next deliverable. Full goal active, solo Big Boss. No new
+source/scientific family, service/firewall/private media or saved-answer change.
+
+Fresh read-only operator lookup still has revision0 for the existing4:16
+repetition request and revision1 for the prior short continuity response. No
+new review question or answer mutation. Least-complete NS5 remains14% and its
+full vocabulary/reference/context prerequisites remain unaccepted; do not reset
+stopped scientific investigations. Existing administrator-rule and ordinary-page
+browser handoffs are unchanged. Next batch must be selected from these actual
+prerequisites and ready remaining work, with an explicit closing criterion.
+
 ## Generic capture and finite forwarding candidate — 2026-10-28
 
 The separate WFC branch publishesf85d7339bf361cacdf20b4764e3281ad91891659, with

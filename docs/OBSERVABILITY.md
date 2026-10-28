@@ -41,7 +41,7 @@ Studio callers, plus existing streaming, inference and library contracts.
 | WFC chord composition planning | Actual compatibility checks and target visits, unknown traversal total until counted; prior caller output preserved on abort | [observability_06 — DONE](TODO/DONE/NS-6_observability_06.md) |
 | Provider admission, registry and compatible-session preparation | Optional callbacks reach source grids, choice decoding/validation, registry searches, configuration comparisons and actual capacity scans, through the semantic consumer | [observability_04](TODO/NS-6_observability_04.md); provider CI456 and context CI458 components qualified. Native inference/operator AC3 is accepted; retained capture/publication and batch work remain open |
 | Generic WFC solving and Pythian forwarding | Borrowed phase/pass-local prepare/search/commit visits, unknown totals, original cancellation and graph/RNG rollback; one primary adapter bridge for acoustic and finite/retained layer consumers | [task14 — DONE](TODO/DONE/NS-6_observability_14.md); exact WFCc496b1d/Pythian57df550 pass CI54/CI464 and native/actual pas2js replay. Capture/copy and later streams/voices remain synchronous residuals under parent04 |
-| Generic sequence capture and finite generation | Candidate borrowed model/cell/path/transition/domain/projection callbacks, private managed results and actual finite token/acoustic forwarding | [task16](TODO/NS-6_observability_16.md); WFCf85d733 on separate capture-progress branch passes local native/actual pas2js controls. Exact CI55 and downstream/extracted qualification remain open; retained session/stream/voice publication remains parent04 |
+| Generic sequence capture and finite generation | Borrowed model/cell/path/transition/domain/projection callbacks, private managed results and actual finite token/acoustic forwarding | [task16 — DONE](TODO/DONE/NS-6_observability_16.md); WFCf85d733/Pythian8cf6f5c pass all five CI55 jobs, CI467 integration/extracted consumers, clean native packages and native/actual portable replay. Retained session/stream/voice and maintained operator forwarding remain parent04 |
 | Retained style distributions/cards and native asset comparison | Optional callbacks reach actual bins/counts/normalization, bindings/traits, JSON scanning/value visits, emitted bytes/items and primary asset hashing | Shared JSON/text accepted at `1ed5e34`/CI460; [bulk publication](TODO/DONE/NS-6_serialization_01.md) accepted at `ae91789`/CI461 with extracted consumers. Final shrink/join/copy remain synchronous; [decoder storage](TODO/DONE/NS-6_json-text_02.md) accepted at `1c52398`/CI462 |
 | Primary analysis in pas2js | Full callback consumer executes shared primary algorithms; optional timer adapter yields between bounded WAV analysis batches | [portability_01 — DONE](TODO/DONE/NS-6_portability_01.md); actual browser presentation and WASM remain unqualified |
 | Primary synthesis in pas2js | Actual shared synth/instrument/note/chord/grain cases execute with measured callbacks, abort/retry and exact supported clocks | [portability_03 — DONE](TODO/DONE/NS-6_portability_03.md), [timing repair — DONE](TODO/DONE/NS-6_portability_04.md); synchronous Node consumers, no browser/WASM claim |
@@ -105,21 +105,25 @@ Generic final callbacks are inside WFC's rollback guard, before graph acceptance
 Pythian capture/copy and other publication remain separate synchronous boundaries;
 private replacement preparation may report later work before its own final swap.
 These counts are not overall success, estimated percentages or millisecond
-latency promises. Retained generation/capture, streams/voices, batch and
-inference/operator residuals remain task04 obligations. No actual browser,
+latency promises. Retained generation/capture, streams/voices and batch
+residuals remain task04 obligations; native inference/operator AC3 is accepted
+separately below. No Pythian Studio browser,
 physical listening or musical acceptance follows from the generic work API.
-## Candidate sequence capture forwarding — 2026-10-28
+## Accepted sequence capture forwarding — 2026-10-28
 
 WFC's standalone capture/domain proof took about5.4s each on an admitted authored
 1024-state/256-cell workload without an observer. The generic fix belongs in its
 separate `codex/pythian-sequence-capture-progress` branch, not an audio wrapper or
-copied validator. Candidate pinf85d733 adds borrowed sequence/segment capture,
+copied validator. Accepted pinf85d733 adds borrowed sequence/segment capture,
 state-path and entry-domain validation observers, including primary token
 projection and final private-result readiness. The exact generic
 [contract](https://github.com/mr-highball/wfc/blob/f85d7339bf361cacdf20b4764e3281ad91891659/docs/sequences.md#observable-sequence-capture-and-validation)
 preserves reports and ordinary False behavior while exceptions preserve prior
-managed results. Native/actual portable local checks pass; task16 stays open
-until all published and extracted-consumer gates pass.
+managed results. Task16 is accepted at Pythian8cf6f5c after all five upstream
+CI55 jobs and downstream CI467 integration/extracted consumers pass, together
+with clean Win64 packages and native/actual portable abort/replay. CI55 includes
+the new fixture through its current-source browser glob. Its generic browser
+execution does not qualify Pythian Studio or a physical phone.
 
 The shared Pythian bridge maps these events to `wfc_sequence_*` item stages.
 Counts restart for each call; capture and its subsequent domain proof each
@@ -135,7 +139,8 @@ latency, event-loop yield, musical quality or browser claim is made.
 Retained layer/session capture and later stream/voice publication remain with
 parent04. Its existing generic guarded commit hook is the intended transaction
 boundary; a callback after a solver has accepted its graph cannot retroactively
-extend rollback. Candidate finite forwarding does not close that retained scope.
+extend rollback. Accepted finite API forwarding does not close that retained or
+maintained archive/remix/event/journal operator scope.
 
 ## Native inference supervisor progress — 2026-10-28
 

@@ -210,10 +210,11 @@ they do not disappear or move into the new tasks. Scoping left 49.40 accepted;
 independent project/setup acceptance subsequently adds 4 NS-6 / 0.40 overall.
 Private corpora, raw WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall.
 Accepted starting actions/navigation and large-library refresh add 2 NS-6 / 0.20 overall.
-The current ledger is **52.45 accepted / 47.55 remaining**, **53 open / 57 DONE**.
+The current credit ledger is **52.45 accepted / 47.55 remaining**; the
+[task catalog](TODO/README.md) owns current open/DONE counts.
 The zero-credit [background recovery and long-source repair](TODO/NS-6_studio_21.md)
 has passed recorded replays and remains open for actual browser checks.
-NS-6 is **54 accepted / 46 unearned** with fifteen open tasks. Goal weights are unchanged.
+NS-6 is **54 accepted / 46 unearned**. Goal weights are unchanged.
 
 The accepted [shared observability audit](TODO/DONE/NS-6_observability_01.md)
 extends common progress to source analysis, effects, capture and pitch jobs.

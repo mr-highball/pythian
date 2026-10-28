@@ -1,16 +1,17 @@
 # NS-6_observability_16 — Observe generic WFC sequence capture and validation
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
 Resolve the generic capture prerequisite for
-[retained generation observation04](NS-6_observability_04.md) AC1. WFC's public
-sequence/segment capture and entry-domain proof repeat model validation without
-an observer. An authored checked Win64 call at the admitted1024-state/256-cell
-bound takes5407/5546/5375ms respectively, without solver time or heap tracing.
-The attempted existing preparation-observer argument fails compilation because
-no such overload exists. The separate WFC expansion checkout has no existing fix.
+[retained generation observation04](../NS-6_observability_04.md) AC1. WFC's public
+sequence/segment capture and entry-domain proof previously repeated model
+validation without an observer. A frozen checked Win64 call at the admitted
+1024-state/256-cell bound took5407/5546/5375ms respectively, without solver time
+or heap tracing. At the prior c496b1d pin, the preparation-observer argument
+failed compilation because no such overload existed. The separate WFC expansion
+checkout had no existing fix; the new branch below owns it.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit:0 additional.
 Big Boss works alone. Upstream owner: generic WFC sequence adapter, new separate
@@ -25,13 +26,27 @@ later stream/voice adaptation stay with parent04, including its existing guarded
 commit hook. Stop on weakened proof, semantic change or another required gap.
 This task adds no musical acceptance and resets no stopped-batch counter.
 
-Execution status (2026-10-28): candidate upstreamf85d7339bf361cacdf20b4764e3281ad91891659
-is published on the named separate branch. Exact
-[CI55](https://github.com/mr-highball/wfc/actions/runs/40755986499) is confirmed live.
-Pythian explicitly checks out that pin and forwards it in actual finite token/
-acoustic generation. Local native and actual portable checks pass; exact
-downstream publication and clean extracted consumers remain required. Keep this
-task open and retain entry delivery nonclosing1 during the same in-flight batch.
+Accepted 2026-10-28 by Big Boss, solo, at Pythian
+`8cf6f5cbd8074eb1020116869fc94d98fc3e4245` with explicit WFC pin
+`f85d7339bf361cacdf20b4764e3281ad91891659` on the named separate branch.
+Exact [upstream CI55](https://github.com/mr-highball/wfc/actions/runs/40755986499)
+passes all five jobs, terminal Success 27m4s, including actual browser conformance.
+Exact [Pythian CI467](https://github.com/mr-highball/pythian/actions/runs/40757891473)
+passes maintained integration 13m14s and both extracted consumer packages 44s;
+native job 14m23s. Clean Win64 core/full extracted consumers at the exact source
+pass 107/159 owned units and120/279 content hashes. Local native Win32/Win64 and
+actual pas2js each pass 135086 generic checks/87 original aborts and126370 finite
+checks/52 original aborts, with zero native leaks and exact retry. Three-seed
+native finite output is byte-identical to the frozen prior consumer; portable
+output has identical lines after platform newline normalization. Detailed
+results, hashes and failures are retained in the dedicated E-drive
+retained-publication-20261028-boss packet and `VALIDATION.json`.
+
+AC1–3 and accepted prerequisites pass. Move links/accounting together: 52 open/
+82 DONE/134 total, NS6 14 open. This zero-credit closure resets delivery
+nonclosing 1 to 0; scientific stops and completion 52.45/47.55 are unchanged.
+The upstream branch is unmerged. Parent04 retained/session/stream/voice and
+maintained operator forwarding remain open; no Studio/device or musical claim.
 
 **Acceptance Criteria:**
 
@@ -48,15 +63,23 @@ task open and retain entry delivery nonclosing1 during the same in-flight batch.
   explicit reviewed pin and forward it in the actual Pythian finite consumer.
   Pass affected original controls, exact prior tokens/states and cancellation,
   clean core/full extracted consumers and exact published upstream/downstream
-  checks. No retained-session, browser, scientific or musical acceptance follows
+  checks. No retained-session, Studio/device, scientific or musical acceptance follows
   from a generic prerequisite alone.
 
 **Blockers**
 
-- [Generic WFC solving — DONE](DONE/NS-6_observability_14.md).
-- [Generic WFC preparation — DONE](DONE/NS-6_observability_12.md).
+- [Generic WFC solving — DONE](NS-6_observability_14.md).
+- [Generic WFC preparation — DONE](NS-6_observability_12.md).
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss: accept after exact f85d733/CI55 and8cf6f5c/CI467
+  reached terminal Success and exact clean native packages passed. Actual browser
+  CI runs the current source glob, including this new capture fixture; this
+  qualifies generic browser execution, not Pythian Studio. Preserve all earlier
+  candidate failures and explicit residuals below. The separate branch stays
+  unmerged, parent04 stays open and no musical credit follows. Delivery count
+  resets1 to0 on real criterion closure, not a handoff or renamed batch.
 
 - 2026-10-28, Big Boss affected retained-layer regression:470747 checks/149
   abort/retries pass, with exact original13/8/2 owned visit oracles and zero

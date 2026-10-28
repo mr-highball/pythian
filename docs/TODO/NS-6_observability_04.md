@@ -80,8 +80,8 @@ Naming a task or narrowing a component does not reset that count.
 
 **Blockers**
 
-- [Generic sequence capture observation](NS-6_observability_16.md) — demonstrated
-  retained capture prerequisite for AC1; existing commit hook is sufficient.
+- [Generic sequence capture observation — DONE](DONE/NS-6_observability_16.md) —
+  accepted AC1 prerequisite; retained publication and operator forwarding remain.
 - [Retained inference corpus observation — DONE](DONE/NS-6_observability_15.md) —
   accepted AC3 prerequisite; AC1/AC2 work remains here.
 - [Generic WFC solving — DONE](DONE/NS-6_observability_14.md) — accepted primary
@@ -102,6 +102,17 @@ Naming a task or narrowing a component does not reset that count.
   shared staging with exact original source-byte progress.
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss: task16 is accepted at Pythian8cf6f5c/WFCf85d733 after
+  exact CI55 five-job success and CI467 integration/extracted consumers, clean
+  native packages and native/actual portable abort/replay. This closes only its
+  generic/finite prerequisite. Parent AC1/AC2 and maintained archive/remix/event/
+  journal forwarding remain open. Delivery nonclosing1 to0 follows real closure.
+  Read-only retained assessment confirms existing DoValidateCommit can host
+  private capture. Temporary preferences must be restored only around the exact
+  identity proof and reapplied before another negotiated attempt; keep search,
+  RNG, strict identity and post-hook rollback unchanged. No implementation or
+  parent acceptance is implied by that assessment; name the next batch first.
 
 - 2026-10-28, Big Boss: the first retained-publication batch finds an actual
   generic prerequisite before Pythian implementation. At the admitted1024-state/
