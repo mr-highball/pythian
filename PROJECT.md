@@ -46,11 +46,13 @@ either precursor source directory. Phanes was removed after the
 [extraction and consumer audit](docs/REFERENCE-REMOVAL.md); its application assets
 are not library inputs. WFC and Athena remain pinned submodules.
 
-Current WFC pin: `d1c1c81b914a71a31a27b4abefcabede4a567abd`, reviewed from the
-initial pin on separate branch `codex/pythian-sequence-preparation`. It shares
-bulk sequence-mask preflight and adds borrowed preparation callbacks. See
-[accepted integration task12](docs/TODO/DONE/NS-6_observability_12.md) for evidence
-and scope. No unrelated expansion commits or branch merge are included.
+Current WFC pin: `6b419e6e33c7cec40f5936ef734defbe33319aaa`. The separate reviewed
+sequence-preparation and sequence-learning branches share bulk mask preflight
+and add borrowed preparation/learning callbacks. See accepted integration
+[task12](docs/TODO/DONE/NS-6_observability_12.md) and
+[task13](docs/TODO/DONE/NS-6_observability_13.md) for exact upstream branches,
+consumer evidence and scope. No unrelated expansion commits or branch merge
+are included.
 
 Current Athena pin: `b8cdb5b3c36d0b3670a4b722d98d905a2cb78de3`, updated from
 upstream `main` on 2026-09-21 after the task-size/progress-checkpoint merge. The initial

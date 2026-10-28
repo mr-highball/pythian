@@ -12,13 +12,55 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Primary publication repair accepted; context component published-qualified - 2026-10-28
+
+Big Boss verifies [Ubuntu CI458](https://github.com/mr-highball/pythian/actions/runs/40630263217),
+job122624749001, terminal Success at `dde2df39331739a0339427718cab3b9faeaa3788`.
+Total12m28s/job12m24s; maintained integration11m21s and core-only/full extracted
+consumers42s pass. Displayed artifact-container digests (not independently
+downloaded ZIP hashes): logs
+`b993cecdc6686a324acd2c0e73ae7ceee77495a435adc8b1a044ad8230e50165`;
+packages `7316209738372b1ad0d47ab44c2b6a27373913c42d6af249877f1d2bcb2e7580`.
+
+Native/actual portable hashing, the reproduced original failures, direct retained
+managed output slots and actual context consumers close
+[hash-publication AC1–3](TODO/DONE/NS-6_hash-publication_01.md). Its DONE move,
+incoming links and accounting are updated together:52 open/75 DONE/127 total,
+NS-6 14 open. Percentages remain100/90/25/70/14/54 and52.45/47.55. Actual criterion
+closure resets the delivery nonclosing count1 to0; scientific stopped-family
+counters stay unchanged. Big Boss is solo; this is not outside review.
+
+The context archive/profile component of task04 is published-qualified, with
+268601 checks/234 original abort-retries/66835 callbacks per native target,
+zero leaks. Its learning-only fixture remains881638/32/208056. Primary hash
+336565 native/336566 actual pas2js checks,24 original abort-retries, known vectors
+and385 original callback checks pass. Twelve prior artifacts per target, actual
+CLI receipts and the authored maximum-cell/metadata paths retain exact identities.
+Both original primary digest and newly introduced evidence-array publication
+failures remain recorded with their repairs. Observer output is phase-local;
+bounded native copies are measured residuals, not an interior-cancellation claim.
+
+Return to [parent04](TODO/NS-6_observability_04.md): whole AC1 retains later
+provider/session replacement, generation and capture; AC2 batch evaluation and
+AC3 inference/operator reporting remain. Before the next batch declare its
+criterion, concrete deliverable, evidence and stop. The private E-drive `NEXT.md`
+records exact call sites and the graph/contract swap boundary. Reuse the existing
+candidate session and primary implementations. Demonstrate a generic WFC gap
+before selecting another separate-repository branch. No new batch or scientific
+family is selected merely by these notes. Full goal remains active.
+
+All local handles are terminal. No service, private recordings, saved feedback,
+silent retraining, QA browser/audio or WFC pin changed. The4:16 request remains
+pending in the fresh read-only report for this goal turn. Earlier pending/count
+statements below are intermediate history; current accepted accounting is above.
+
 ## Context component and primary publication prerequisite locally repaired - 2026-10-27
 
 Big Boss's context component exposed a distinct primary failure: native final
 SHA callbacks propagate the original exception while overwriting the caller's
 managed String. Both actual context identity consumers fail; frozen `f7f7881`
 primary builds reproduce direct byte/stream failures, including empty input.
-The linked [hash-publication owner](TODO/NS-6_hash-publication_01.md) changes only
+The linked [hash-publication owner](TODO/DONE/NS-6_hash-publication_01.md) changes only
 result storage/order in the existing primary implementation. Private digests
 publish after the final callback; cryptographic math, records and stream position
 are unchanged. New task creation earns no credit and resets no counter. Record

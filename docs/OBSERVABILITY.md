@@ -588,8 +588,10 @@ The context bundle/profile APIs and maintained `pythian.context.select` now
 forward the shared callback through evidence, archive/hash, learning, ancestry
 and extraction. This is the context component of task04 AC1; later provider
 replacement/generation, batch evaluation and inference/operator work remain.
-Current implementation is locally qualified; exact published integration and
-extracted consumers are still required before acceptance.
+This component is published-qualified at `dde2df3` after
+[Ubuntu CI458](https://github.com/mr-highball/pythian/actions/runs/40630263217),
+including maintained integration and both extracted consumers. The primary hash
+repair is accepted separately; whole task04 and musical acceptance remain open.
 
 | Stage | Units and boundary |
 | --- | --- |
@@ -612,7 +614,7 @@ provider identity/encoding work precedes its existing non-atomic file write.
 The actual `ParentIdentity` final-hash test exposed a primary managed-result
 publication defect on both native targets: the original exception propagated,
 but the caller digest had already changed. The linked
-[primary hash prerequisite](TODO/NS-6_hash-publication_01.md) holds the fix in
+[primary hash prerequisite](TODO/DONE/NS-6_hash-publication_01.md) holds the fix in
 the one primary SHA implementation, using a private digest until its last
 callback returns. Both byte/stream APIs retain exact math, callback records,
 validation and consumed stream position. Frozen prior native sources reproduce

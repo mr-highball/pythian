@@ -18,18 +18,20 @@ forwarded through maintained style tools. Closing evidence: deterministic
 archive/model parity, cancellation and a reproducible long-operation trace.
 Stop on invented overall percentages, swallowed cancellation or dependency edits.
 
-Execution status (2026-10-27): the AC1 provider-admission/session component is
+Execution status (2026-10-28): the AC1 provider-admission/session component is
 published-qualified at `9f85fef` after Ubuntu CI456 integration/extracted consumers.
-The whole AC1/parent task is not closed by this component. Context archive/profile
-and remaining replacement/generation work stay required alongside batch and
-inference/operator reporting. No new task, credit or criterion is invented to
-reset the nonclosing count. The subsequent context audit exposed generic learning
-prerequisite13 after the two-batch reassessment. That prerequisite is now accepted
-at `2ae5144`/WFC `6b419e6`, after upstream CI51 and downstream CI457 with extracted
-consumers. Its real criterion closure resets the delivery count to0. Resume this
-parent's complete remaining context metadata/archive/profile, replacement,
-generation, batch and inference/operator obligations; learning callbacks alone
-do not qualify those interiors.
+The generic learning prerequisite13 is accepted at `2ae5144`/WFC `6b419e6`, after
+upstream CI51 and downstream CI457 with extracted consumers. Context archive/profile
+and the primary hash publication repair are qualified at `dde2df3` after Ubuntu
+CI458 integration/extracted consumers. The evidence-array candidate also remains
+private until its final callback succeeds.
+
+Whole AC1 stays open for later provider/session replacement, generation and capture.
+AC2 batch evaluation and AC3 inference/operator reporting remain required. These
+component qualifications close neither this parent nor musical acceptance and
+earn no additional credit. The actual hash criterion closure resets the delivery
+nonclosing count1 to0; the previous two-batch reassessment remains recorded history.
+Naming a task or narrowing a component does not reset that count.
 
 **Acceptance Criteria:**
 
@@ -60,9 +62,23 @@ do not qualify those interiors.
 - [Layer request/graph preparation — DONE](DONE/NS-6_observability_11.md).
 - [Generic WFC bulk constraint preparation](DONE/NS-6_observability_12.md).
 - [Generic WFC sequence learning observation — DONE](DONE/NS-6_observability_13.md).
-- [Primary hash cancellation publication](NS-6_hash-publication_01.md).
+- [Primary hash cancellation publication — DONE](DONE/NS-6_hash-publication_01.md).
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss context qualification: [CI458](https://github.com/mr-highball/pythian/actions/runs/40630263217)
+  is terminal Success at `dde2df3`, job122624749001, total12m28s/job12m24s.
+  Integration11m21s and both extracted consumers42s pass. Checked Win32/Win64
+  final context fixture268601 checks/234 original abort-retries/66835 callbacks,
+  learning881638/32/208056 and actual prior consumers pass, zero leaks. Twelve
+  prior artifacts/target, CLI receipts and maximum-boundary profiles remain exact.
+  Complete phase/unit/count and direct retained managed-array publication checks
+  pass. The primary hash owner records final digest-slot/native/portable proof.
+  This qualifies the named context component; no broad AC1/task move or musical
+  credit. Later replacement must observe before the inner accepted graph/model
+  swap: a wrapper callback after `TryReplaceModel` could split graph/contract
+  state on cancellation. Follow the existing candidate path and audit actual
+  solve/capture ownership; do not infer generic cancellation from trace callbacks.
 
 - 2026-10-27, Big Boss local component: complete context APIs and selection CLI
   now expose evidence, bytes/hash, model construction and ancestry/extraction.
@@ -78,7 +94,7 @@ do not qualify those interiors.
   checked native modes0–9 pass, then actual `ParentIdentity` final SHA cancellation
   overwrites the caller's managed String despite propagating the original marker.
   Preserve both target logs and all partial context changes. The demonstrated
-  [primary hash prerequisite](NS-6_hash-publication_01.md) owns that fix; do not
+  [primary hash prerequisite](DONE/NS-6_hash-publication_01.md) owns that fix; do not
   conceal it in a context wrapper. No parent criterion is closed by this
   diagnostic, and creating a task resets no counter or credit.
 

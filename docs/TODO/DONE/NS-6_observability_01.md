@@ -43,6 +43,14 @@ into unrelated algorithm work; distinct remaining gaps get explicit linked tasks
 
 **Dev Notes:**
 
+- 2026-10-28, Big Boss: the older385 abort/parity checks did not inspect native
+  managed return slots at final callback failure. Actual context identity use
+  exposes that separate [primary digest publication gap](NS-6_hash-publication_01.md).
+  Its owner adds direct retained-result evidence and repairs the shared SHA APIs;
+  the existing385 checks still pass. The historical acceptance below proves its
+  stated callback/resource/consumer scope, not the previously untested digest-slot
+  guarantee. No additional musical credit follows from that repair.
+
 - 2026-10-03, Big Boss: user extends the lesson to all potentially long work.
   Initial scan finds reusable library/import and inference monitoring, bounded
   streaming interfaces, and silent pitch/effects plus bulk DSP calls. This task

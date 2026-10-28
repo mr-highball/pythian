@@ -134,5 +134,6 @@ WAVs match the earlier direct-learning outputs. Comparisons and hashes are in
 `5ecd85bda1061e8da2373356e42fffe828938198436104b25dd55046f1fa827b`.
 Normal builds include this fixture and demo. These paths/hashes identify the
 historical fixture revision. Current source/package qualification is recorded in
-[Work](WORK.md) and the operation map; the later callback batch awaits its own
-exact published integration/extracted-consumer result.
+[Work](WORK.md) and the operation map. The callback batch is qualified at `dde2df3`
+after [CI458](https://github.com/mr-highball/pythian/actions/runs/40630263217),
+including its named native API/CLI scope and extracted consumer packages.

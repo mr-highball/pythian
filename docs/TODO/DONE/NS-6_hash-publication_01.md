@@ -1,6 +1,6 @@
 # NS-6_hash-publication_01 — Preserve caller digest results on cancellation
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
@@ -13,7 +13,7 @@ that real consumer. Intermediate stages and modes0–9 already pass.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
 Big Boss works solo. This is a required primary prerequisite of the active
-[retained-operation task04](NS-6_observability_04.md), not a wrapper workaround.
+[retained-operation task04](../NS-6_observability_04.md), not a wrapper workaround.
 Keep the current context component's partial work and failure evidence intact.
 Starting source is `f7f7881`; WFC remains reviewed `6b419e6`.
 
@@ -25,6 +25,23 @@ interior/final original abort/retry, empty/padding/block/8192-byte boundaries,
 actual checked native/pas2js fixtures, actual failing context consumer and clean
 published integration/extracted consumers. Stop on changed cryptographic math,
 input/count policy, silent stream rewind, swallowed exception or a distinct gap.
+
+Accepted AC1–3 on 2026-10-28, Big Boss solo, at
+`dde2df39331739a0339427718cab3b9faeaa3788` after checked native/actual portable
+return-slot evidence, repaired actual context consumers and exact prior outputs.
+[Ubuntu CI458](https://github.com/mr-highball/pythian/actions/runs/40630263217),
+job122624749001, is terminal Success: total12m28s/job12m24s, maintained integration
+11m21s and core-only/full extracted consumer verification42s. This closes the
+primary digest guarantee, not full parent04 or musical acceptance. The associated
+context component passes its named scope; later session/batch/inference/operator
+obligations stay required. The real criterion closure resets the retained delivery
+nonclosing count1 to0; creating this task did not reset it.
+
+Displayed artifact-container digests, not independently downloaded ZIP hashes:
+logs `b993cecdc6686a324acd2c0e73ae7ceee77495a435adc8b1a044ad8230e50165`;
+packages `7316209738372b1ad0d47ab44c2b6a27373913c42d6af249877f1d2bcb2e7580`.
+Evidence: dedicated E-drive hash-publication/context-profile build/test/run roots.
+Earlier pending statements below are intermediate history.
 
 **Acceptance Criteria:**
 
@@ -43,7 +60,7 @@ input/count policy, silent stream rewind, swallowed exception or a distinct gap.
 
 **Blockers**
 
-- [Shared callback contract — DONE](DONE/NS-6_observability_01.md).
+- [Shared callback contract — DONE](NS-6_observability_01.md).
 
 **Dev Notes:**
 
