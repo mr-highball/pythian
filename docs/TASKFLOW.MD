@@ -368,7 +368,7 @@ Use the [architecture ownership map](ARCHITECTURE.md#core-and-wfc-symbiosis).
 
 The 2026-09-29 boundary audit found no demonstrated generic failing contract,
 so no WFC branch or dependency change was made in that reassessment. The later
-[bulk sequence-constraint stall](TODO/NS-6_observability_12.md) is a demonstrated
+[bulk sequence-constraint stall](TODO/DONE/NS-6_observability_12.md) is a demonstrated
 generic gap and uses the explicit separate-repository procedure above.
 
 ### Current team

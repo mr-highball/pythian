@@ -92,7 +92,7 @@ generation/capture/replacement and context/registry interior audit stays require
   checks, zero leaks. All 34 same-target prior artifacts match, including token/
   latent-state receipts, styles and WAVs. No published acceptance yet. The
   separate generic WFC bulk-mask probe stalls beyond 81 observed CPU seconds
-  inside a public dependency call; [task12](../NS-6_observability_12.md) owns its
+  inside a public dependency call; [task12](NS-6_observability_12.md) owns its
   upstream repair and Pythian integration. Boundary checkpoints do not certify
   that interior. Owned construction callbacks and original consumer parity stay
   valid; full provider/operator responsiveness remains blocked by that gap.
