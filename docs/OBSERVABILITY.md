@@ -39,7 +39,7 @@ Studio callers, plus existing streaming, inference and library contracts.
 | Offline render, separation, export and evaluation | Primary native engines report measured windows/cells/frames/comparisons; maintained operators forward callbacks | [observability_03 — DONE](TODO/DONE/NS-6_observability_03.md); scoped phases below |
 | Retained corpus archive and WFC model validation | Actual feature/attachment/hash bytes and owned lookup/state/token validation are observable through the native archive operator | [observability_05 — DONE](TODO/DONE/NS-6_observability_05.md); synchronous residuals below |
 | WFC chord composition planning | Actual compatibility checks and target visits, unknown traversal total until counted; prior caller output preserved on abort | [observability_06 — DONE](TODO/DONE/NS-6_observability_06.md) |
-| Provider admission, registry and compatible-session preparation | Optional callbacks reach source grids, choice decoding/validation, registry searches, configuration comparisons and actual capacity scans, through the semantic consumer | [observability_04](TODO/NS-6_observability_04.md); checked native/provider parity passes locally, published qualification pending. Context, later replacement/generation, batch and inference reporting remain open |
+| Provider admission, registry and compatible-session preparation | Optional callbacks reach source grids, choice decoding/validation, registry searches, configuration comparisons and actual capacity scans, through the semantic consumer | [observability_04](TODO/NS-6_observability_04.md); checked native/provider parity and published CI456 pass. Context, later replacement/generation, batch and inference reporting remain open |
 | Primary analysis in pas2js | Full callback consumer executes shared primary algorithms; optional timer adapter yields between bounded WAV analysis batches | [portability_01 — DONE](TODO/DONE/NS-6_portability_01.md); actual browser presentation and WASM remain unqualified |
 | Primary synthesis in pas2js | Actual shared synth/instrument/note/chord/grain cases execute with measured callbacks, abort/retry and exact supported clocks | [portability_03 — DONE](TODO/DONE/NS-6_portability_03.md), [timing repair — DONE](TODO/DONE/NS-6_portability_04.md); synchronous Node consumers, no browser/WASM claim |
 
@@ -516,9 +516,18 @@ partition boundaries, plus the admitted maximum1024-state voice model. Clock
 observations0–16ms and partition below timer resolution are local measurements;
 generic voice validation observations109–250ms include local concurrent work.
 They promise no latency bound and do not instrument those opaque interiors.
-Published integration remains pending. Full task04/context/profile, replacement,
+Published integration/extracted consumers pass in CI456 at `9f85fef`. Full task04/context/profile, replacement,
 later solving/capture, batch and inference/operator acceptance remains open.
 Evidence: dedicated E-drive `build/tests/runs/provider-admission-20261027-boss*`.
+
+The subsequent context audit separately measures438ms of owned token preparation
+and1172ms in the public generic WFC learner on an authored65,536-cell/order4 corpus,
+1023 states/1020 tempo tokens. Its canonical text equals the bundle model exactly.
+The generic learner has no observer API; source profile opening inherits this
+unobserved work. [Task13](TODO/NS-6_observability_13.md) owns the separate upstream
+learning/model-construction observer and explicit context-learning integration.
+Context archive/profile byte/hash/ancestry loops remain task04 obligations.
+These local timings identify ownership, not a musical result or portable bound.
 
 ## Validation and limits
 

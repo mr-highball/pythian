@@ -12,6 +12,52 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Provider slice qualified; context audit reassessed before upstream learning repair - 2026-10-27
+
+Big Boss confirms [CI456](https://github.com/mr-highball/pythian/actions/runs/40617102203),
+job122582047007, terminal Success at `9f85fef`, total12m23s/job12m20s. Integration
+and both extracted consumers pass. This qualifies the preceding provider slice,
+not whole task04 AC1. Displayed artifact-container digests are retained in task04
+and the E-drive validation record; no independent ZIP-download/review claim.
+Older pending statements below are intermediate history.
+
+**Required reassessment after two nonclosing batches:** provider admission was
+delivered without closing broad AC1; the next context audit then exposes an
+actual generic prerequisite before production edits. On an authored65,536-cell,
+order4 context source, direct token preparation438ms and public WFC learning1172ms
+produce1023 states/1020 public tempo tokens. Direct and actual bundle canonical
+model text match exactly. Bundle creation2250ms, archive decode2609ms and source
+profile creation2625ms inherit that opaque learner; model-text encoding32ms and
+archive encoding78ms are separate. Initial wrapper observations2235/2312/2453ms
+are retained. Both complete checked Win64 probes have zero leaks. These are
+local ownership measurements, not timing guarantees or musical evidence.
+
+Source inspection confirms no learning observer/cancellation API. The pinned
+learner and separate WFC expansion checkout have identical blob
+`472aa7dd42994c3f37deaad3666cd9ed193ded51`, so there is no existing fix to adopt.
+Decision after reassessment: stop wrapper-only expansion and follow the actual
+[generic learning/model-construction owner13](TODO/NS-6_observability_13.md), then
+return to all context/archive/profile and other parent obligations. Preserve the
+nonclosing count **2**; new task/branch names, this reassessment and CI status
+reset nothing. A further batch is selected only after this recorded decision.
+
+User was informed before edits. The new separate worktree at
+`E:/CodexWork/pythian/runs/wfc-sequence-learning-20261027-boss/worktree` is clean on
+**codex/pythian-sequence-learning**, based exactly on reviewed `d1c1c81`. Original
+expansion checkout/attachments and the earlier upstream branch remain intact.
+No upstream source edit, push or Pythian gitlink change has happened yet. Reuse
+the existing generic observation contract for learning/model work where it fits;
+qualify open/wrapped boundaries, exact prior model/count replay, original abort
+cleanup/retry, native/portable consumers and explicit downstream context-learning
+integration before accepting task13. No branch merge is authorized or implied.
+
+Evidence/frozen inputs stay in E-drive context-observability roots. Four current
+Pythian context sources are frozen at `9f85fef`; production source is unchanged.
+All local probes are terminal. Counts **53 open /73 DONE /126 total**, NS-6 15 open;
+completion **100/90/25/70/14/54**, **52.45/47.55**. New prerequisite earns no credit.
+Scientific stops and the pending4:16 review remain unchanged. No service, private
+audio, saved answer or retraining changed. Full goal stays active; Big Boss solo.
+
 ## Provider admission component locally qualified; parent remains open - 2026-10-27
 
 Big Boss implements the selected provider-admission slice under task04, without

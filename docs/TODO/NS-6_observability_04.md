@@ -19,11 +19,13 @@ archive/model parity, cancellation and a reproducible long-operation trace.
 Stop on invented overall percentages, swallowed cancellation or dependency edits.
 
 Execution status (2026-10-27): the AC1 provider-admission/session component is
-locally qualified; publish and require clean integration/extracted consumers.
+published-qualified at `9f85fef` after Ubuntu CI456 integration/extracted consumers.
 The whole AC1/parent task is not closed by this component. Context archive/profile
 and remaining replacement/generation work stay required alongside batch and
 inference/operator reporting. No new task, credit or criterion is invented to
-reset the nonclosing count; this is the first nonclosing batch after task12.
+reset the nonclosing count. The subsequent context audit exposes the generic
+learning prerequisite13 below. Two nonclosing batches have now been reassessed;
+follow that actual owner before adding wrapper-only context progress.
 
 **Acceptance Criteria:**
 
@@ -53,9 +55,31 @@ reset the nonclosing count; this is the first nonclosing batch after task12.
 - [Provider/context metadata reuse — DONE](DONE/NS-6_metadata_01.md).
 - [Layer request/graph preparation — DONE](DONE/NS-6_observability_11.md).
 - [Generic WFC bulk constraint preparation](DONE/NS-6_observability_12.md).
+- [Generic WFC sequence learning observation](NS-6_observability_13.md).
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss provider qualification: authenticated
+  [Ubuntu CI456](https://github.com/mr-highball/pythian/actions/runs/40617102203),
+  job122582047007, is terminal Success at `9f85fef`, total12m23s/job12m20s.
+  Integration and core-only/full extracted consumers pass. This qualifies the
+  recorded native provider slice, not whole AC1/parent acceptance. Displayed
+  artifact-container digests (not independently downloaded ZIP hashes): logs
+  `03ec77fa9c63c82e4ea4600347448d6e860694b0c0724c1dfc0ae6d72a0bbea0`;
+  packages `9480d61f19a9420757cc3dd473f811b685ef4fa7fb86d70c83deb38c30de0116`.
+  Earlier pending statements describe intermediate checkpoints.
+- 2026-10-27, Big Boss required reassessment after two nonclosing batches:
+  provider admission is delivered but broader AC1/context/replacement remains;
+  the context audit then finds a directly reproduced generic learning gap.
+  A65,536-cell/order4 source produces1023 states/1020 tempo tokens: direct owned
+  token preparation438ms, generic learner1172ms, with byte-identical direct and
+  bundle model text. No progress/cancel API exists there. Adding callbacks only
+  around bundle/profile readers would not cover it. The separate original WFC
+  checkout has the same learner blob; no existing fix was bypassed. Follow
+  [task13](NS-6_observability_13.md) on its named branch after this reassessment;
+  keep the count2 and every remaining parent obligation. Creating/switching to
+  the prerequisite resets no counter and grants no credit. Probe source and
+  complete zero-leak logs remain under E-drive context-observability roots.
 - 2026-10-27, Big Boss provider component: optional borrowed callbacks now reach
   actual registry searches, configuration comparisons, primary scalar validation,
   choice decode/clone/validation, original clock/grid/source checks, native voice
