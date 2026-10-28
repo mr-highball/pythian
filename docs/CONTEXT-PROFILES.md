@@ -96,8 +96,22 @@ pythian.context.select KEY_PARENT.pcp TEMPO_PARENT.pcp OUTPUT.pcp
 ```
 
 The selector prints profile/provider identities, timing and ancestry size.
+It now forwards primary progress to the existing throttled console reporter.
+Provider hashes and encoding complete before the file-publication boundary.
 It validates before writing and rejects output equal to either expanded input
 path. Existing file writes are non-atomic; I/O failure may leave partial output.
+
+All profile constructors, selection, encoding/decoding and model/bundle/parent/
+identity extraction accept an optional final borrowed `TWorkProgressCallback`.
+Complete ancestry validation forwards actual bundle learning and primary hash
+work. `context_profile_nodes` counts completed validated nodes, with unknown total
+until the complete walk finishes. It does not count the63-node admission budget
+as work. Each nested hash or learning call has its own phase/pass and may restart
+at zero; these records are not one overall percentage. Original callback failures
+preserve existing profiles, parents and caller results; stream hashes keep their
+consumed position. Native byte copies have endpoints and measured synchronous
+limits, rather than an invented interior callback through RTL copying.
+See [the operation map](OBSERVABILITY.md#context-archive-and-profile-observation).
 
 `pythian.context.demo OUTPUT_PREFIX` builds profiles for source A, source B and
 the two-source bundle. It selects keys from the two-source profile and tempo

@@ -59,17 +59,19 @@ type
     FTempoModel: TWfcSequenceModel;
     FKeyOrder: Integer;
     FTempoOrder: Integer;
+    function ContextModel(const ADimension: TContextDimension): TWfcSequenceModel;
     function GetTicksPerQuarter: Integer;
     function GetStepTicks: Integer;
   public
-    { AProgress observes the two model-learning calls only. Evidence preflight,
-      nested copying, archive bytes/hash and profile ancestry remain separate work. }
+    { Borrowed progress covers evidence validation/copy and actual model learning.
+      An exception, including final publication, releases the private candidate. }
     constructor Create(const AEvidence: TContextEvidenceArray;
       const AKeyOrder: Integer = 2; const ATempoOrder: Integer = 2;
       const AProgress: TWorkProgressCallback = nil);
     destructor Destroy; override;
-    function CopyEvidence: TContextEvidenceArray;
-    function CopyModel(const ADimension: TContextDimension): TWfcSequenceModel;
+    function CopyEvidence(const AProgress: TWorkProgressCallback = nil): TContextEvidenceArray;
+    function CopyModel(const ADimension: TContextDimension;
+      const AProgress: TWorkProgressCallback = nil): TWfcSequenceModel;
     function ModelText(const ADimension: TContextDimension): UTF8String;
     property KeyOrder: Integer read FKeyOrder;
     property TempoOrder: Integer read FTempoOrder;
@@ -79,12 +81,14 @@ type
 
 { Canonical bounded binary payload and SHA256 trailer; not a signature.
   Returns detached bytes, with the original bundle unchanged on failure. }
-function EncodeContextLearning(const ABundle: TContextLearningBundle): TAudioBytes;
+function EncodeContextLearning(const ABundle: TContextLearningBundle;
+  const AProgress: TWorkProgressCallback = nil): TAudioBytes;
 
 { Caller owns the result. Rebuilds both actual models from saved admitted grids
   and requires byte-identical canonical model text. No WAV analysis or policy
   execution occurs. Invalid input never publishes a partial bundle. }
-function DecodeContextLearning(const ABytes: TAudioBytes): TContextLearningBundle;
+function DecodeContextLearning(const ABytes: TAudioBytes;
+  const AProgress: TWorkProgressCallback = nil): TContextLearningBundle;
 
 implementation
 
@@ -101,10 +105,21 @@ const
   ContextMagic = $31435450; { PTC1 }
 
 type
+  TContextBundleProgress = class
+  public
+    Callback: TWorkProgressCallback;
+    Pass: Integer;
+    procedure ObserveGrid(const AWork: TWorkProgress);
+    procedure ObserveModel(const AWork: TWfcSequencePreparationProgress);
+  end;
   TContextCursor = record
     Bytes: TAudioBytes;
     Offset: Integer;
     Limit: Integer;
+    NextCheckpoint: Integer;
+    Progress: TWorkProgressCallback;
+    Stage: String;
+    procedure ObserveOffset;
     procedure Need(const ACount: Integer);
     procedure PutNumber(const AValue: Integer);
     function GetNumber: Integer;
@@ -112,16 +127,61 @@ type
     function GetText(const AMaximumBytes: Integer): UTF8String;
   end;
 
-function CloneEvidence(const AEvidence: TContextEvidenceArray): TContextEvidenceArray;
+procedure TContextBundleProgress.ObserveGrid(const AWork: TWorkProgress);
+begin
+  ReportWork(Callback, 'context_evidence_validate_cells', wuItems,
+    AWork.Done, AWork.Total, Pass);
+end;
+
+procedure TContextBundleProgress.ObserveModel(const AWork: TWfcSequencePreparationProgress);
+begin
+  if AWork.Phase <> wspModelBuildVisits then
+  begin
+    raise EAudio.Create('Unexpected WFC context-model copy phase');
+  end;
+  ReportWork(Callback, 'context_copy_model_visits', wuItems,
+    AWork.Done, AWork.Total, Pass);
+end;
+
+function CloneEvidence(const AEvidence: TContextEvidenceArray;
+  const AProgress: TWorkProgressCallback): TContextEvidenceArray;
 var
   LIndex: Integer;
+  LCell: Integer;
+  LTotal: Integer;
+  LDone: Integer;
+  LCopy: TContextEvidenceArray;
 begin
-  Result := Copy(AEvidence);
-  for LIndex := 0 to High(Result) do
+  LTotal := 0;
+  for LIndex := 0 to High(AEvidence) do
   begin
-    Result[LIndex].Grid.Keys := Copy(AEvidence[LIndex].Grid.Keys);
-    Result[LIndex].Grid.Tempos := Copy(AEvidence[LIndex].Grid.Tempos);
+    Inc(LTotal, Length(AEvidence[LIndex].Grid.Keys));
   end;
+  ReportWork(AProgress, 'context_evidence_copy_cells', wuItems, 0, LTotal);
+  LCopy := nil;
+  SetLength(LCopy, Length(AEvidence));
+  LDone := 0;
+  for LIndex := 0 to High(LCopy) do
+  begin
+    LCopy[LIndex] := AEvidence[LIndex];
+    LCopy[LIndex].Grid.Keys := nil;
+    LCopy[LIndex].Grid.Tempos := nil;
+    SetLength(LCopy[LIndex].Grid.Keys, Length(AEvidence[LIndex].Grid.Keys));
+    SetLength(LCopy[LIndex].Grid.Tempos, Length(AEvidence[LIndex].Grid.Tempos));
+    for LCell := 0 to High(LCopy[LIndex].Grid.Keys) do
+    begin
+      LCopy[LIndex].Grid.Keys[LCell] := AEvidence[LIndex].Grid.Keys[LCell];
+      LCopy[LIndex].Grid.Tempos[LCell] := AEvidence[LIndex].Grid.Tempos[LCell];
+      Inc(LDone);
+      if Assigned(AProgress) and ((LDone mod 256) = 0) and (LDone < LTotal) then
+      begin
+        ReportWork(AProgress, 'context_evidence_copy_cells', wuItems, LDone, LTotal);
+      end;
+    end;
+  end;
+  ReportWork(AProgress, 'context_evidence_copy_cells', wuItems, LDone, LTotal);
+  { Native managed return slots can alias a caller's array through wrappers. }
+  Result := LCopy;
 end;
 
 constructor TContextLearningBundle.Create(const AEvidence: TContextEvidenceArray;
@@ -133,6 +193,8 @@ var
   LMetadata: Int64;
   LIndex: Integer;
   LCharacter: Integer;
+  LWork: TContextBundleProgress;
+  LGridProgress: TWorkProgressCallback;
 begin
   inherited Create;
   if (Length(AEvidence) < 1) or
@@ -141,47 +203,67 @@ begin
   begin
     raise EAudio.Create('Context bundle requires 1..4096 excerpts and model orders 1..4');
   end;
-  LTotal := 0;
-  LMetadata := 0;
-  for LIndex := 0 to High(AEvidence) do
-  begin
-    ValidateCorpusText(AEvidence[LIndex].Name);
-    ValidateCorpusText(AEvidence[LIndex].AdmissionPolicy);
-    if AEvidence[LIndex].SourceFrameOffset < 0 then
+  LWork := nil;
+  LGridProgress := nil;
+  try
+    if Assigned(AProgress) then
     begin
-      raise EAudio.Create('Context source frame offset must be nonnegative');
+      LWork := TContextBundleProgress.Create;
+      LWork.Callback := AProgress;
+      LGridProgress := LWork.ObserveGrid;
     end;
-    if (AEvidence[LIndex].Name = '') or (AEvidence[LIndex].AdmissionPolicy = '') or
-      (Length(AEvidence[LIndex].SourceSha256) <> 64) then
+    ReportWork(AProgress, 'context_bundle_ready', wuItems, 0, 1);
+    ReportWork(AProgress, 'context_evidence_rows', wuItems, 0, Length(AEvidence));
+    LTotal := 0;
+    LMetadata := 0;
+    for LIndex := 0 to High(AEvidence) do
     begin
-      raise EAudio.Create('Context evidence requires a name, source SHA256 and admission policy');
-    end;
-    for LCharacter := 1 to 64 do
-    begin
-      if not (AEvidence[LIndex].SourceSha256[LCharacter] in ['0'..'9', 'a'..'f']) then
+      ValidateCorpusText(AEvidence[LIndex].Name);
+      ValidateCorpusText(AEvidence[LIndex].AdmissionPolicy);
+      if AEvidence[LIndex].SourceFrameOffset < 0 then
       begin
-        raise EAudio.Create('Context source SHA256 must be lowercase hexadecimal');
+        raise EAudio.Create('Context source frame offset must be nonnegative');
       end;
+      if (AEvidence[LIndex].Name = '') or (AEvidence[LIndex].AdmissionPolicy = '') or
+        (Length(AEvidence[LIndex].SourceSha256) <> 64) then
+      begin
+        raise EAudio.Create('Context evidence requires a name, source SHA256 and admission policy');
+      end;
+      for LCharacter := 1 to 64 do
+      begin
+        if not (AEvidence[LIndex].SourceSha256[LCharacter] in ['0'..'9', 'a'..'f']) then
+        begin
+          raise EAudio.Create('Context source SHA256 must be lowercase hexadecimal');
+        end;
+      end;
+      Inc(LMetadata, Length(AEvidence[LIndex].Name) +
+        Length(AEvidence[LIndex].AdmissionPolicy) + 64);
+      Inc(LTotal, Length(AEvidence[LIndex].Grid.Keys));
+      if (LTotal > MaximumContextCells) or (LMetadata > MaximumContextMetadataBytes) then
+      begin
+        raise EAudio.Create('Context bundle exceeds observation or metadata budget');
+      end;
+      if LWork <> nil then
+      begin
+        LWork.Pass := LIndex + 1;
+      end;
+      ValidateContextGrid(AEvidence[LIndex].Grid, LGridProgress);
+      ReportWork(AProgress, 'context_evidence_rows', wuItems, LIndex + 1, Length(AEvidence));
     end;
-    Inc(LMetadata, Length(AEvidence[LIndex].Name) +
-      Length(AEvidence[LIndex].AdmissionPolicy) + 64);
-    Inc(LTotal, Length(AEvidence[LIndex].Grid.Keys));
-    if (LTotal > MaximumContextCells) or (LMetadata > MaximumContextMetadataBytes) then
+    SetLength(LGrids, Length(AEvidence));
+    for LIndex := 0 to High(AEvidence) do
     begin
-      raise EAudio.Create('Context bundle exceeds observation or metadata budget');
+      LGrids[LIndex] := AEvidence[LIndex].Grid;
     end;
-    ValidateContextGrid(AEvidence[LIndex].Grid);
+    FKeyModel := LearnContextModel(LGrids, cdKey, AKeyOrder, AProgress);
+    FTempoModel := LearnContextModel(LGrids, cdTempo, ATempoOrder, AProgress);
+    FEvidence := CloneEvidence(AEvidence, AProgress);
+    FKeyOrder := AKeyOrder;
+    FTempoOrder := ATempoOrder;
+    ReportWork(AProgress, 'context_bundle_ready', wuItems, 1, 1);
+  finally
+    LWork.Free;
   end;
-  SetLength(LGrids, Length(AEvidence));
-  for LIndex := 0 to High(AEvidence) do
-  begin
-    LGrids[LIndex] := AEvidence[LIndex].Grid;
-  end;
-  FKeyModel := LearnContextModel(LGrids, cdKey, AKeyOrder, AProgress);
-  FTempoModel := LearnContextModel(LGrids, cdTempo, ATempoOrder, AProgress);
-  FEvidence := CloneEvidence(AEvidence);
-  FKeyOrder := AKeyOrder;
-  FTempoOrder := ATempoOrder;
 end;
 
 destructor TContextLearningBundle.Destroy;
@@ -191,36 +273,61 @@ begin
   inherited Destroy;
 end;
 
-function TContextLearningBundle.CopyEvidence: TContextEvidenceArray;
+function TContextLearningBundle.CopyEvidence(
+  const AProgress: TWorkProgressCallback): TContextEvidenceArray;
 begin
-  Result := CloneEvidence(FEvidence);
+  Result := CloneEvidence(FEvidence, AProgress);
 end;
 
-function TContextLearningBundle.ModelText(const ADimension: TContextDimension): UTF8String;
-var
-  LModel: TWfcSequenceModel;
+function TContextLearningBundle.ContextModel(
+  const ADimension: TContextDimension): TWfcSequenceModel;
 begin
-  LModel := nil;
+  Result := nil;
   case ADimension of
     cdKey:
     begin
-      LModel := FKeyModel;
+      Result := FKeyModel;
     end;
     cdTempo:
     begin
-      LModel := FTempoModel;
+      Result := FTempoModel;
     end;
   end;
-  if LModel = nil then
+  if Result = nil then
   begin
     raise EAudio.Create('Context model dimension is unavailable');
   end;
-  Result := EncodeWfcSequenceText(LModel);
 end;
 
-function TContextLearningBundle.CopyModel(const ADimension: TContextDimension): TWfcSequenceModel;
+function TContextLearningBundle.ModelText(const ADimension: TContextDimension): UTF8String;
 begin
-  Result := DecodeWfcSequenceText(ModelText(ADimension));
+  Result := EncodeWfcSequenceText(ContextModel(ADimension));
+end;
+
+function TContextLearningBundle.CopyModel(const ADimension: TContextDimension;
+  const AProgress: TWorkProgressCallback): TWfcSequenceModel;
+var
+  LModel: TWfcSequenceModel;
+  LWork: TContextBundleProgress;
+  LObserver: TWfcSequencePreparationObserver;
+begin
+  LModel := ContextModel(ADimension);
+  LWork := nil;
+  LObserver := nil;
+  try
+    if Assigned(AProgress) then
+    begin
+      LWork := TContextBundleProgress.Create;
+      LWork.Callback := AProgress;
+      LWork.Pass := Ord(ADimension) + 1;
+      LObserver := LWork.ObserveModel;
+    end;
+    Result := TWfcSequenceModel.Create(LModel.Order, LModel.CopySampleLengths,
+      LModel.CopyPublicTokens, LModel.CopyStates, LModel.CopyStateCounts,
+      LModel.CopyStartCounts, LModel.CopyEndCounts, LModel.Boundary, LObserver);
+  finally
+    LWork.Free;
+  end;
 end;
 
 function TContextLearningBundle.GetTicksPerQuarter: Integer;
@@ -241,6 +348,15 @@ begin
   end;
 end;
 
+procedure TContextCursor.ObserveOffset;
+begin
+  if Assigned(Progress) and (Offset >= NextCheckpoint) and (Offset < Limit) then
+  begin
+    ReportWork(Progress, Stage, wuBytes, Offset, Limit);
+    NextCheckpoint := Offset + 8192;
+  end;
+end;
+
 procedure TContextCursor.PutNumber(const AValue: Integer);
 begin
   Need(4);
@@ -250,6 +366,7 @@ begin
   end;
   WriteUInt32LE(Bytes, Offset, AValue);
   Inc(Offset, 4);
+  ObserveOffset;
 end;
 
 function TContextCursor.GetNumber: Integer;
@@ -264,6 +381,7 @@ begin
     raise EAudio.Create('Context archive integer exceeds signed range');
   end;
   Result := LBits;
+  ObserveOffset;
 end;
 
 procedure TContextCursor.PutText(const AValue: UTF8String);
@@ -275,6 +393,7 @@ begin
     Move(AValue[1], Bytes[Offset], Length(AValue));
   end;
   Inc(Offset, Length(AValue));
+  ObserveOffset;
 end;
 
 function TContextCursor.GetText(const AMaximumBytes: Integer): UTF8String;
@@ -294,9 +413,11 @@ begin
     Move(Bytes[Offset], Result[1], LCount);
   end;
   Inc(Offset, LCount);
+  ObserveOffset;
 end;
 
-function EncodeContextLearning(const ABundle: TContextLearningBundle): TAudioBytes;
+function EncodeContextLearning(const ABundle: TContextLearningBundle;
+  const AProgress: TWorkProgressCallback): TAudioBytes;
 var
   LEvidence: TContextEvidenceArray;
   LKeyText: UTF8String;
@@ -312,7 +433,8 @@ begin
   begin
     raise EAudio.Create('Context archive requires a learning bundle');
   end;
-  LEvidence := ABundle.CopyEvidence;
+  ReportWork(AProgress, 'context_archive_encode_ready', wuItems, 0, 1);
+  LEvidence := ABundle.CopyEvidence(AProgress);
   LKeyText := ABundle.ModelText(cdKey);
   LTempoText := ABundle.ModelText(cdTempo);
   LSize := 40 + 8 + Length(LKeyText) + Length(LTempoText);
@@ -327,6 +449,10 @@ begin
   end;
   LCursor := Default(TContextCursor);
   LCursor.Limit := LSize;
+  LCursor.Progress := AProgress;
+  LCursor.Stage := 'context_archive_encode_bytes';
+  LCursor.NextCheckpoint := 8192;
+  ReportWork(AProgress, LCursor.Stage, wuBytes, 0, LCursor.Limit);
   SetLength(LCursor.Bytes, LCursor.Limit);
   LCursor.PutNumber(ContextMagic);
   LCursor.PutNumber(ContextLearningArchiveVersion);
@@ -368,13 +494,16 @@ begin
   begin
     raise EAudio.Create('Context archive size mismatch');
   end;
-  LHash := Sha256Bytes(LCursor.Bytes);
+  ReportWork(AProgress, LCursor.Stage, wuBytes, LCursor.Offset, LCursor.Limit);
+  LHash := Sha256Bytes(LCursor.Bytes, AProgress);
   SetLength(LCursor.Bytes, LCursor.Limit + 64);
   Move(LHash[1], LCursor.Bytes[LCursor.Limit], 64);
+  ReportWork(AProgress, 'context_archive_encode_ready', wuItems, 1, 1);
   Result := LCursor.Bytes;
 end;
 
-function DecodeContextLearning(const ABytes: TAudioBytes): TContextLearningBundle;
+function DecodeContextLearning(const ABytes: TAudioBytes;
+  const AProgress: TWorkProgressCallback): TContextLearningBundle;
 var
   LCursor: TContextCursor;
   LEvidence: TContextEvidenceArray;
@@ -399,7 +528,11 @@ begin
   LCursor := Default(TContextCursor);
   LCursor.Bytes := ABytes;
   LCursor.Limit := Length(ABytes) - 64;
-  LHash := Sha256Bytes(Copy(ABytes, 0, LCursor.Limit));
+  LCursor.Progress := AProgress;
+  LCursor.Stage := 'context_archive_decode_bytes';
+  LCursor.NextCheckpoint := 8192;
+  ReportWork(AProgress, 'context_archive_decode_ready', wuItems, 0, 1);
+  LHash := Sha256Bytes(Copy(ABytes, 0, LCursor.Limit), AProgress);
   for I := 1 to 64 do
   begin
     if Byte(LHash[I]) <> ABytes[LCursor.Limit + I - 1] then
@@ -407,6 +540,7 @@ begin
       raise EAudio.Create('Context archive SHA256 mismatch');
     end;
   end;
+  ReportWork(AProgress, LCursor.Stage, wuBytes, 0, LCursor.Limit);
   if (LCursor.GetNumber <> ContextMagic) or
     (LCursor.GetNumber <> ContextLearningArchiveVersion) or
     (LCursor.GetNumber <> MusicContextVersion) or
@@ -479,13 +613,15 @@ begin
   begin
     raise EAudio.Create('Context archive has trailing payload bytes');
   end;
-  LBundle := TContextLearningBundle.Create(LEvidence, LKeyOrder, LTempoOrder);
+  ReportWork(AProgress, LCursor.Stage, wuBytes, LCursor.Offset, LCursor.Limit);
+  LBundle := TContextLearningBundle.Create(LEvidence, LKeyOrder, LTempoOrder, AProgress);
   try
     if (LBundle.ModelText(cdKey) <> LKeyText) or
       (LBundle.ModelText(cdTempo) <> LTempoText) then
     begin
       raise EAudio.Create('Saved context models disagree with admitted source evidence');
     end;
+    ReportWork(AProgress, 'context_archive_decode_ready', wuItems, 1, 1);
     Result := LBundle;
     LBundle := nil;
   finally

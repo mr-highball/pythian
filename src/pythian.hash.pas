@@ -34,7 +34,9 @@ uses
   pythian.audio;
 
 { SHA256 of exact bytes, retaining the Phanes provenance-helper contract.
-  Native FIPS 180-4 algorithm with fixed-size working storage and RTL only. }
+  Native FIPS 180-4 algorithm with fixed-size working storage and RTL only.
+  Digest publication follows the final callback, including forwarded native
+  managed result slots. Observer exceptions preserve the caller's old digest. }
 function Sha256Bytes(const ABytes: TAudioBytes;
   const AProgress: TWorkProgressCallback = nil): String;
 { Hash exactly AByteCount bytes from the current position, using fixed storage.
@@ -176,6 +178,7 @@ var
   LOffset: SizeInt;
   LRemaining: Integer;
   LIndex: Integer;
+  LDigest: String;
 begin
   ReportWork(AProgress, 'verify_audio_bytes', wuBytes, 0, Length(ABytes));
   LState := CInitial;
@@ -210,8 +213,9 @@ begin
     Move(ABytes[LOffset], LBlock[0], LRemaining);
     {$endif}
   end;
-  Result := FinishHash(LState, LBlock, LRemaining, QWord(Length(ABytes)));
+  LDigest := FinishHash(LState, LBlock, LRemaining, QWord(Length(ABytes)));
   ReportWork(AProgress, 'verify_audio_bytes', wuBytes, Length(ABytes), Length(ABytes));
+  Result := LDigest;
 end;
 
 function Sha256Stream(const AStream: TStream; const AByteCount: Int64;
@@ -226,6 +230,7 @@ var
   LReceived: Integer;
   LOffset: Integer;
   LIndex: Integer;
+  LDigest: String;
 begin
   if (AStream = nil) or (AByteCount < 0) or
     (AByteCount > 2305843009213693951)
@@ -293,8 +298,9 @@ begin
     Move(LBuffer[LOffset], LBlock[0], LChunk - LOffset);
     {$endif}
   end;
-  Result := FinishHash(LState, LBlock, LChunk - LOffset, QWord(AByteCount));
+  LDigest := FinishHash(LState, LBlock, LChunk - LOffset, QWord(AByteCount));
   ReportWork(AProgress, 'verify_audio_bytes', wuBytes, AByteCount, AByteCount);
+  Result := LDigest;
 end;
 
 end.

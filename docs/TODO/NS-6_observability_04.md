@@ -60,8 +60,27 @@ do not qualify those interiors.
 - [Layer request/graph preparation — DONE](DONE/NS-6_observability_11.md).
 - [Generic WFC bulk constraint preparation](DONE/NS-6_observability_12.md).
 - [Generic WFC sequence learning observation — DONE](DONE/NS-6_observability_13.md).
+- [Primary hash cancellation publication](NS-6_hash-publication_01.md).
 
 **Dev Notes:**
+
+- 2026-10-27, Big Boss local component: complete context APIs and selection CLI
+  now expose evidence, bytes/hash, model construction and ancestry/extraction.
+  The native managed evidence return also required a private candidate; retain
+  the direct publication failure and corrected guard. Successful prior artifacts
+  and CLI receipts remain exact. Whole AC1 still retains later provider/session
+  replacement/generation, with batch and inference/operator criteria unchanged.
+  Require current exact native checks and published integration/extracted
+  consumers before accepting this component or the primary hash prerequisite.
+
+- 2026-10-27, Big Boss context component: callbacks reach evidence, archive/hash,
+  learning, profile ancestry/extraction and the maintained selection CLI. Initial
+  checked native modes0–9 pass, then actual `ParentIdentity` final SHA cancellation
+  overwrites the caller's managed String despite propagating the original marker.
+  Preserve both target logs and all partial context changes. The demonstrated
+  [primary hash prerequisite](NS-6_hash-publication_01.md) owns that fix; do not
+  conceal it in a context wrapper. No parent criterion is closed by this
+  diagnostic, and creating a task resets no counter or credit.
 
 - 2026-10-27, Big Boss provider qualification: authenticated
   [Ubuntu CI456](https://github.com/mr-highball/pythian/actions/runs/40617102203),

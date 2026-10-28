@@ -582,6 +582,80 @@ operator response, retraining, service or musical acceptance changed.
 
 ## Validation and limits
 
+### Context archive and profile observation
+
+The context bundle/profile APIs and maintained `pythian.context.select` now
+forward the shared callback through evidence, archive/hash, learning, ancestry
+and extraction. This is the context component of task04 AC1; later provider
+replacement/generation, batch evaluation and inference/operator work remain.
+Current implementation is locally qualified; exact published integration and
+extracted consumers are still required before acceptance.
+
+| Stage | Units and boundary |
+| --- | --- |
+| `context_evidence_rows` | Validated excerpt rows, with original field/error order |
+| `context_evidence_validate_cells` | Primary paired key/tempo cell validation, pass = one-based excerpt |
+| `context_evidence_copy_cells` | Actually detached/copied cells across admitted excerpts |
+| `context_archive_encode_bytes`, `context_archive_decode_bytes` | Actual cursor payload offset, endpoints and field-boundary checkpoints after roughly8192 bytes |
+| `verify_audio_bytes` | Existing primary SHA byte work over the named archive/profile payload, despite this inherited generic stage ID |
+| `context_copy_model_visits` | Actual shared immutable-model construction visits, pass1 key/pass2 tempo |
+| `context_profile_encode_bytes` | Written profile-body header/child bytes; native child copies remain synchronous |
+| `context_profile_nodes` | Completed validated nodes; unknown total until the ancestry walk finishes |
+| `context_profile_copy_bytes` | Detached native byte copy endpoints |
+| `context_bundle_ready`, `context_archive_encode_ready`, `context_archive_decode_ready`, `context_profile_ready` | Final publication checkpoint,0/1 then1/1, with candidate cleanup on abort |
+
+Existing context-learning phases remain separate. Hashes and learning repeat
+within complete ancestry validation; each invocation starts at zero, without
+inventing a global percentage. No callback is retained. All observable CLI
+provider identity/encoding work precedes its existing non-atomic file write.
+
+The actual `ParentIdentity` final-hash test exposed a primary managed-result
+publication defect on both native targets: the original exception propagated,
+but the caller digest had already changed. The linked
+[primary hash prerequisite](TODO/NS-6_hash-publication_01.md) holds the fix in
+the one primary SHA implementation, using a private digest until its last
+callback returns. Both byte/stream APIs retain exact math, callback records,
+validation and consumed stream position. Frozen prior native sources reproduce
+the defect at direct byte/stream calls, including empty input. Actual pas2js
+and checked native tests now cover retained caller results and original retries.
+
+Local Win32/Win64:268601 archive/profile checks,234 original abort/retries and
+66835 callbacks each, with zero leaks. The scoped existing learning fixture
+retains881638 checks/32 aborts/208056 callbacks; it filters only its owned learning
+phases while the new fixture covers evidence/bytes/hash/publication. Portable
+hash checks are336565 native/336566 actual pas2js,24 original abort/retries;
+existing385 progress checks, known hash vectors and actual archive/profile
+consumers pass. Twelve prior artifacts per native target (including CLI-created
+profiles and four WAVs) and both CLI stdout receipts match frozen `f7f7881`.
+
+Named synchronous residuals: single validated metadata fields are at most4096
+UTF-8 bytes; their validation/equality remains atomic. Context model text uses
+bounded context tokens/states and the unchanged generic codec; earlier observed
+72012-byte encoding took32ms locally. Detached model input arrays contain at
+most1024 states and3072 history items before the observed shared constructor.
+Native allocation/copy and individual cursor text fields are bounded by16MiB.
+Checked Win64 16MiB byte Copy, existing-buffer Move and text allocation/Move
+all fell below timer resolution in the current probe; that is not a zero-cost
+or portable responsiveness guarantee. The authored65536-cell/1020-token case
+completed bundle2297ms, direct model copy62ms and source profile2562ms, with423214
+cumulative callbacks through that construction. The exact4MiB metadata case
+(512 excerpts,65536 cells) completed bundle1250ms, model copy16ms and source
+profile2281ms, with17053 cumulative callbacks through construction. Both actual
+CLI paths retain exact generated profile identity and expose114–115/2148 displayed
+progress records in the local runs; the console reporter throttles by time.
+These are local observations, not speed guarantees or musical
+acceptance. No new recorded source, inference, operator answer or service changed.
+
+Evidence: dedicated E-drive `context-profile-20261027-boss` and
+`hash-publication-20261027-boss` build/test/run roots. Preserve initial native
+publication failures and frozen hash repro logs. The initial local profile
+compile omitted the existing tools search path; corrected orchestration reuses
+the maintained path and the actual profile consumer passes. Broader portable
+context execution remains unqualified at the pre-existing tempo-evidence `Move`
+boundary; no substitute, stub or browser/phone qualification is claimed.
+
+### Retained baseline and other limits
+
 The original 2026-10-03 native callback suite has 385 checks, including identical hashes,
 resampled samples, analysis features, pitch estimates, learned centers and abort
 cleanup. Existing hash, WAV analysis, weighted journal/WFC tests also pass, as do

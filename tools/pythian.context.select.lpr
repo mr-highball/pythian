@@ -33,6 +33,7 @@ uses
   pythian.wfc.context,
   pythian.wfc.context.archive,
   pythian.wfc.context.profile,
+  pythian.tools.progress,
   pythian.tools.files;
 
 procedure Run;
@@ -42,6 +43,10 @@ var
   LResult: TContextProfile;
   LBundle: TContextLearningBundle;
   LOutput: String;
+  LProgress: TConsoleWorkProgress;
+  LKeyIdentity: String;
+  LTempoIdentity: String;
+  LBytes: TAudioBytes;
 begin
   if ParamCount <> 3 then
   begin
@@ -58,22 +63,30 @@ begin
   LTempo := nil;
   LResult := nil;
   LBundle := nil;
+  LProgress := TConsoleWorkProgress.Create;
   try
     if ParamStr(1) = '--source' then
     begin
-      LBundle := DecodeContextLearning(ReadFileBytes(ParamStr(2), MaximumContextArchiveBytes));
-      LResult := TContextProfile.Create(LBundle);
+      LBundle := DecodeContextLearning(ReadFileBytes(ParamStr(2), MaximumContextArchiveBytes),
+        LProgress.Observe);
+      LResult := TContextProfile.Create(LBundle, LProgress.Observe);
     end
     else
     begin
-      LKey := DecodeContextProfile(ReadFileBytes(ParamStr(1), MaximumContextProfileBytes));
-      LTempo := DecodeContextProfile(ReadFileBytes(ParamStr(2), MaximumContextProfileBytes));
-      LResult := SelectContextProfile(LKey, LTempo);
+      LKey := DecodeContextProfile(ReadFileBytes(ParamStr(1), MaximumContextProfileBytes),
+        LProgress.Observe);
+      LTempo := DecodeContextProfile(ReadFileBytes(ParamStr(2), MaximumContextProfileBytes),
+        LProgress.Observe);
+      LResult := SelectContextProfile(LKey, LTempo, LProgress.Observe);
     end;
-    WriteFileBytes(ParamStr(3), EncodeContextProfile(LResult));
+    LKeyIdentity := LResult.ProviderIdentity(cdKey, LProgress.Observe);
+    LTempoIdentity := LResult.ProviderIdentity(cdTempo, LProgress.Observe);
+    LBytes := EncodeContextProfile(LResult, LProgress.Observe);
+    { All observable work precedes the existing file publication boundary. }
+    WriteFileBytes(ParamStr(3), LBytes);
     WriteLn('Profile ', LResult.Identity);
-    WriteLn('Key bundle ', LResult.ProviderIdentity(cdKey));
-    WriteLn('Tempo bundle ', LResult.ProviderIdentity(cdTempo));
+    WriteLn('Key bundle ', LKeyIdentity);
+    WriteLn('Tempo bundle ', LTempoIdentity);
     WriteLn('PPQ ', LResult.TicksPerQuarter, '; step ', LResult.StepTicks,
       '; depth ', LResult.Depth, '; nodes ', LResult.NodeCount);
   finally
@@ -81,6 +94,7 @@ begin
     LResult.Free;
     LTempo.Free;
     LKey.Free;
+    LProgress.Free;
   end;
 end;
 

@@ -12,6 +12,72 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Context component and primary publication prerequisite locally repaired - 2026-10-27
+
+Big Boss's context component exposed a distinct primary failure: native final
+SHA callbacks propagate the original exception while overwriting the caller's
+managed String. Both actual context identity consumers fail; frozen `f7f7881`
+primary builds reproduce direct byte/stream failures, including empty input.
+The linked [hash-publication owner](TODO/NS-6_hash-publication_01.md) changes only
+result storage/order in the existing primary implementation. Private digests
+publish after the final callback; cryptographic math, records and stream position
+are unchanged. New task creation earns no credit and resets no counter. Record
+one nonclosing context diagnostic batch since task13 before following this
+actual prerequisite; keep the parent and all remaining scope open.
+
+The new context evidence copy also needed a private managed-array candidate:
+direct caller-slot cancellation checks catch the same ABI pattern before
+publication. Its initial failed probe is preserved; the in-scope repair delays
+Result assignment rather than hiding the failure. No new scope split follows.
+Final context checks require every documented owned phase/unit and concrete
+row/byte/node counts, original cancellation, unchanged inputs and retained output.
+
+Checked Win32/Win64 hash fixtures each pass336565 checks/24 original abort-retries;
+actual pas2js passes336566. Existing known hash/stream and385 progress checks pass,
+zero leaks. The context archive/profile fixture covers all15 public operations;
+final native results are268601 checks/234 original abort-retries/66835 callbacks
+per target, zero leaks. The documented phase/unit and actual row/byte/node counts
+are checked explicitly. Earlier232-abort runs and the direct managed-array failure
+remain repaired evidence. Exact10 prior artifacts/target,
+two actual CLI-created profiles and both stdout receipts match frozen `f7f7881`;
+source paths are verified. Authored65536-cell and exact4MiB metadata cases finish
+with observed callbacks and byte-identical CLI profiles. Named16MiB RTL copies
+fall below timer resolution; there is no portable latency guarantee.
+
+The initial standalone profile compile omitted the maintained tools search path;
+corrected orchestration and actual profile consumers pass. No portable context
+retry or substitute bypasses the existing tempo-evidence `Move` boundary.
+Current counts53 open/74 DONE/127 total, NS-6 15 open; percentages remain
+100/90/25/70/14/54 and52.45/47.55. Publication/integration/extracted consumers are
+still required; do not move the hash task or close whole task04 prematurely.
+No service, private media, answer, retraining, scientific stop or QA audio changed.
+
+## Context archive/profile AC1 component selected - 2026-10-27
+
+Previous goal turn is verified progress: task13 acceptance and publication are
+authoritative at `f7f7881`, with reviewed WFC `6b419e6`; delivery nonclosing count0.
+Big Boss stays solo. Fresh queue report remains4 waiting/4 completed, including
+the retained4:16 request. NS-5 vocabulary AC2–5 still follows reference/context
+blockers; no stopped scientific family, source or threshold route is reopened.
+
+Select the remaining context archive/profile component of task04 AC1. Deliver
+borrowed callbacks through evidence validation/copy, actual primary SHA hashing,
+archive rows/bytes, WFC reconstruction and complete profile ancestry/extraction,
+forwarded through the maintained context-selection CLI. Reuse primary validators,
+binary fields, hashing and the accepted generic model constructor; remove the
+model-copy encode/decode detour rather than add a parallel clone algorithm.
+Keep metadata and model identities, malformed-input precedence and atomic output.
+
+Closing evidence: exact separately compiled prior bundle/profile/model/WAV
+artifacts, original interior/final cancellation and source-preserving retry,
+actual CLI progress, measured named synchronous residuals and clean published
+integration/extracted consumers. Stop on semantic/identity/error-order drift,
+partial publication or a distinct required dependency gap. Frozen primary sources
+are `f7f7881` in dedicated E-drive context-profile run/build/test roots; retain the
+accepted WFC pin. This component does not by itself close whole parent AC1, which
+also retains later replacement/generation; batch and inference/operator criteria
+remain. Counts/credit stay52 open/74 DONE/126 total and52.45/47.55.
+
 ## Generic learning and context integration accepted; return to parent residuals - 2026-10-27
 
 Big Boss verifies terminal [WFC CI51](https://github.com/mr-highball/wfc/actions/runs/40621952770)

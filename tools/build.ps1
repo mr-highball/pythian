@@ -683,6 +683,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Context archive compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.context.archive$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Context archive checks failed' }
+    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.context.profile.progress.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Context archive/profile progress compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.context.profile.progress$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Context archive/profile progress checks failed' }
     & $compilerPath @adapterArgs 'tools/pythian.context.demo.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC context demo compilation failed' }
     & (Join-Path $buildRoot "pythian.context.demo$executableSuffix") (Join-Path $buildRoot 'context')

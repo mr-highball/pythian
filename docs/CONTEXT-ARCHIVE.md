@@ -72,6 +72,29 @@ microseconds per quarter. Counts and remaining bytes are checked before array
 allocation. Trailing payload bytes reject. The digest binds payload integrity;
 it is not a signature or proof that admitted musical labels are accurate.
 
+## Progress and cancellation
+
+The constructor, `CopyEvidence`, `CopyModel`, encoder and decoder accept an
+optional final `TWorkProgressCallback`. Callbacks are synchronous and borrowed;
+raise to abort, and do not mutate inputs or re-enter the operation. No observer
+is retained. Original callback exceptions escape before the new object/bytes
+are published, including at final publication checkpoints.
+
+Evidence rows and paired grid cells are counted separately from detached cell
+copying. Archive cursors report actual payload bytes at field boundaries after
+roughly8192 more bytes, plus endpoints. The existing primary SHA reports its own
+hashed bytes. Context learning retains its separate owned-cell and generic WFC
+phases. `CopyModel` uses the actual immutable-model constructor directly, with
+generic construction visits; it no longer serializes and parses a temporary
+model merely to copy it. All existing canonical model/archive bytes remain.
+
+See [the operation map](OBSERVABILITY.md#context-archive-and-profile-observation)
+for phase names, counts, measured synchronous limits and qualification. A phase
+completion is not whole-operation success. Allocation, single text fields and
+bounded native copies remain synchronous; callbacks do not yield an event loop
+or promise a portable latency bound. The archive adapter's portable/browser
+qualification remains separate.
+
 ## Reuse boundary and evidence
 
 This is a reusable **key/tempo learning bundle**, not a complete style profile
@@ -109,5 +132,7 @@ Both compilers produce identical archive/declaration/WAV bytes, and all four
 WAVs match the earlier direct-learning outputs. Comparisons and hashes are in
 `build/context-archive-replay.log`. The authored bundle SHA256 is
 `5ecd85bda1061e8da2373356e42fffe828938198436104b25dd55046f1fa827b`.
-Normal builds include this fixture and demo. Existing package ZIPs predate
-this adapter; no new full-suite or extracted-package result is claimed.
+Normal builds include this fixture and demo. These paths/hashes identify the
+historical fixture revision. Current source/package qualification is recorded in
+[Work](WORK.md) and the operation map; the later callback batch awaits its own
+exact published integration/extracted-consumer result.

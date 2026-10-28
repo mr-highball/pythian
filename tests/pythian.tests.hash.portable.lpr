@@ -40,10 +40,14 @@ type
     Calls: Integer;
     LastTotal: Int64;
     Abort: Boolean;
+    PublicationPhase: Integer;
+    Marker: Exception;
     procedure Progress(const AProgress: TWorkProgress);
   end;
 var
   LChecks: Integer;
+  LPublicationFailures: Integer;
+  LPublicationAborts: Integer;
 
 {$ifdef pas2js}
 function TFragmentStream.Read(ABuffer: TBytes; AOffset, ACount: LongInt): LongInt;
@@ -82,6 +86,14 @@ begin
   if Abort then
   begin
     raise Exception.Create('Abort marker');
+  end;
+  if Assigned(Marker) and
+    (((PublicationPhase = 1) and (AProgress.Done > 0) and
+      (AProgress.Done < AProgress.Total)) or
+    ((PublicationPhase = 2) and (Calls > 1) and
+      (AProgress.Done = AProgress.Total))) then
+  begin
+    raise Marker;
   end;
 end;
 
@@ -126,6 +138,102 @@ begin
     LStream.Free;
   end;
 end;
+procedure Publication(const ASize: Integer; const AStreamMode, AForward,
+  AFinal: Boolean);
+var
+  LData: TAudioBytes;
+  LInput: TFragmentStream;
+  LWork: TObserver;
+  LValue: String;
+  LReference: String;
+  LExact: Boolean;
+  I: Integer;
+  function ForwardBytesHash: String;
+  begin
+    Result := Sha256Bytes(LData, LWork.Progress);
+  end;
+  function ForwardStreamHash: String;
+  begin
+    Result := Sha256Stream(LInput, ASize, LWork.Progress);
+  end;
+begin
+  SetLength(LData, ASize);
+  for I := 0 to ASize - 1 do LData[I] := I mod 256;
+  LReference := Sha256Bytes(LData);
+  LInput := TFragmentStream.Create;
+  LWork := TObserver.Create;
+  try
+    if ASize > 0 then
+      Check(WriteStreamBytes(LInput, LData, 0, ASize) = ASize, 'Publication source preparation');
+    LInput.Position := 0;
+    LWork.PublicationPhase := 1;
+    if AFinal then LWork.PublicationPhase := 2;
+    LWork.Marker := Exception.Create('Original hash publication marker');
+    LValue := 'retained digest sentinel';
+    LExact := False;
+    try
+      try
+        if AForward and AStreamMode then LValue := ForwardStreamHash
+        else if AForward then LValue := ForwardBytesHash
+        else if AStreamMode then LValue := Sha256Stream(LInput, ASize, LWork.Progress)
+        else LValue := Sha256Bytes(LData, LWork.Progress);
+      except
+        on LException: Exception do
+        begin
+          if LException <> LWork.Marker then raise;
+          LWork.Marker := nil;
+          LExact := True;
+          Inc(LPublicationAborts);
+        end;
+      end;
+      Check(LExact, 'Original publication callback exception changed');
+      if LValue <> 'retained digest sentinel' then
+      begin
+        Inc(LPublicationFailures);
+        WriteLn('Publication failure: size=', ASize, ' stream=', AStreamMode,
+          ' forwarded=', AForward, ' final=', AFinal, ' original=', LExact,
+          ' result=', LValue);
+      end;
+    finally
+      LWork.Marker.Free;
+      LWork.Marker := nil;
+    end;
+    if AStreamMode then
+    begin
+      if AFinal then Check(LInput.Position = ASize, 'Final abort rewound stream')
+      else Check(LInput.Position = 8192, 'Interior consumed stream position changed');
+    end;
+    for I := 0 to ASize - 1 do Check(LData[I] = I mod 256, 'Publication mutated input');
+    LWork.PublicationPhase := 0;
+    LInput.Position := 0; { Caller deliberately rewinds; the hash API never does. }
+    if AStreamMode then
+      Check(ForwardStreamHash = LReference, 'Stream publication retry digest differs')
+    else
+      Check(ForwardBytesHash = LReference, 'Byte publication retry digest differs');
+  finally
+    LWork.Free;
+    LInput.Free;
+  end;
+end;
+
+procedure CheckPublication;
+const
+  CSizes: array[0..3] of Integer = (0, 65, 8193, 32769);
+var
+  LSize: Integer;
+  LStreamMode: Boolean;
+  LForward: Boolean;
+begin
+  for LSize in CSizes do
+    for LStreamMode := False to True do
+      for LForward := False to True do
+      begin
+        Publication(LSize, LStreamMode, LForward, True);
+        if LSize > 8192 then Publication(LSize, LStreamMode, LForward, False);
+      end;
+  Check(LPublicationFailures = 0, 'Hash callback published a caller digest before success');
+end;
+
 var
   LBytes: TAudioBytes;
   LStream: TFragmentStream;
@@ -135,6 +243,7 @@ var
   LUnsafeCount: Int64;
   {$endif}
 begin
+  CheckPublication;
   Vector(0, 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855');
   Vector(55, '463eb28e72f82e0a96c0a4cc53690c571281131f672aa229e0d45ae59b598b59');
   Vector(56, 'da2ae4d6b36748f2a318f23e7ab1dfdf45acdc9d049bd80e59de82a60895f562');
@@ -211,5 +320,6 @@ begin
     LObserver.Free;
     LStream.Free;
   end;
-  WriteLn('Portable SHA256: ', LChecks, ' checks passed');
+  WriteLn('Portable SHA256: ', LChecks, ' checks passed; ', LPublicationAborts,
+    ' original publication abort/retries');
 end.

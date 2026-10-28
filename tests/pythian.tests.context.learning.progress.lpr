@@ -45,6 +45,7 @@ type
     Finals: array[0..4] of Integer;
     procedure Reset(const APass: Integer);
     procedure Observe(const AWork: TWorkProgress);
+    procedure ObserveLearning(const AWork: TWorkProgress);
   end;
 
 var
@@ -102,6 +103,22 @@ begin
   if (AbortStage = LStage) and (AWork.Done > 0) and
     ((FinalOnly and LFinal) or ((not FinalOnly) and (not LFinal))) then
     raise Marker;
+end;
+
+procedure TObserver.ObserveLearning(const AWork: TWorkProgress);
+var
+  I: Integer;
+begin
+  { This accepted fixture owns learning phases. The context archive/profile
+    fixture owns the newly observable evidence, bytes/hash and publication. }
+  for I := 0 to High(CStages) do
+  begin
+    if AWork.Stage = CStages[I] then
+    begin
+      Observe(AWork);
+      Exit;
+    end;
+  end;
 end;
 
 function Grids: TMusicContextGrids;
@@ -365,7 +382,7 @@ begin
         LExact := False;
         try
           try
-            LObserved := TContextLearningBundle.Create(LEvidence, 4, 4, GObserver.Observe);
+            LObserved := TContextLearningBundle.Create(LEvidence, 4, 4, GObserver.ObserveLearning);
           except
             on LException: Exception do
               OriginalException(LException, LExact);
@@ -380,7 +397,7 @@ begin
           LObserved := nil;
         end;
         GObserver.Reset(2);
-        LObserved := TContextLearningBundle.Create(LEvidence, 4, 4, GObserver.Observe);
+        LObserved := TContextLearningBundle.Create(LEvidence, 4, 4, GObserver.ObserveLearning);
         try
           LObservedBytes := EncodeContextLearning(LObserved);
           Check((Length(LObservedBytes) = Length(LBytes)) and

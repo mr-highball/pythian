@@ -31,6 +31,7 @@ interface
 
 uses
   pythian.audio,
+  pythian.progress,
   pythian.wfc.context,
   pythian.wfc.context.archive,
   wfc_sequence;
@@ -62,13 +63,20 @@ type
     FIdentity: String;
     function GetIsSelection: Boolean;
   public
-    constructor Create(const ABundle: TContextLearningBundle);
-    constructor CreateArchive(const ABytes: TAudioBytes);
-    function CopyBundle(const ADimension: TContextDimension): TContextLearningBundle;
-    function CopyModel(const ADimension: TContextDimension): TWfcSequenceModel;
-    function CopyParent(const ADimension: TContextDimension): TContextProfile;
-    function ParentIdentity(const ADimension: TContextDimension): String;
-    function ProviderIdentity(const ADimension: TContextDimension): String;
+    constructor Create(const ABundle: TContextLearningBundle;
+      const AProgress: TWorkProgressCallback = nil);
+    constructor CreateArchive(const ABytes: TAudioBytes;
+      const AProgress: TWorkProgressCallback = nil);
+    function CopyBundle(const ADimension: TContextDimension;
+      const AProgress: TWorkProgressCallback = nil): TContextLearningBundle;
+    function CopyModel(const ADimension: TContextDimension;
+      const AProgress: TWorkProgressCallback = nil): TWfcSequenceModel;
+    function CopyParent(const ADimension: TContextDimension;
+      const AProgress: TWorkProgressCallback = nil): TContextProfile;
+    function ParentIdentity(const ADimension: TContextDimension;
+      const AProgress: TWorkProgressCallback = nil): String;
+    function ProviderIdentity(const ADimension: TContextDimension;
+      const AProgress: TWorkProgressCallback = nil): String;
     property TicksPerQuarter: Integer read FTicksPerQuarter;
     property StepTicks: Integer read FStepTicks;
     property Depth: Integer read FDepth;
@@ -81,11 +89,14 @@ type
 { Caller owns each result. Inputs remain unchanged and may be freed afterwards.
   Selection copies providers; it never pools/reweights observations or creates
   key/tempo joint evidence. Equal PPQ and step are required across both parents. }
-function SelectContextProfile(const AKeyParent, ATempoParent: TContextProfile): TContextProfile;
-function EncodeContextProfile(const AProfile: TContextProfile): TAudioBytes;
+function SelectContextProfile(const AKeyParent, ATempoParent: TContextProfile;
+  const AProgress: TWorkProgressCallback = nil): TContextProfile;
+function EncodeContextProfile(const AProfile: TContextProfile;
+  const AProgress: TWorkProgressCallback = nil): TAudioBytes;
 { Validates complete bounded ancestry, checks digests and replays each embedded
   context bundle's actual WFC models. No source-file access or WAV inference. }
-function DecodeContextProfile(const ABytes: TAudioBytes): TContextProfile;
+function DecodeContextProfile(const ABytes: TAudioBytes;
+  const AProgress: TWorkProgressCallback = nil): TContextProfile;
 
 implementation
 
@@ -144,7 +155,8 @@ begin
   Result := Integer(LValue);
 end;
 
-function MakeArchive(const AFirst, ASecond: TAudioBytes; const ASelection: Boolean): TAudioBytes;
+function MakeArchive(const AFirst, ASecond: TAudioBytes; const ASelection: Boolean;
+  const AProgress: TWorkProgressCallback): TAudioBytes;
 var
   LSize: Int64;
   LOffset: Integer;
@@ -161,6 +173,7 @@ begin
     raise EAudio.Create('Context profile exceeds 16 MiB');
   end;
   SetLength(LBytes, Integer(LSize));
+  ReportWork(AProgress, 'context_profile_encode_bytes', wuBytes, 0, LSize);
   LOffset := 0;
   PutNumber(LBytes, LOffset, ContextProfileMagic);
   PutNumber(LBytes, LOffset, ContextProfileVersion);
@@ -173,20 +186,26 @@ begin
   Inc(LOffset, Length(AFirst));
   if ASelection then
   begin
+    ReportWork(AProgress, 'context_profile_encode_bytes', wuBytes, LOffset, LSize);
+  end;
+  if ASelection then
+  begin
     PutNumber(LBytes, LOffset, Length(ASecond));
     if Length(ASecond) > 0 then
     begin
       Move(ASecond[0], LBytes[LOffset], Length(ASecond));
     end;
   end;
-  LHash := Sha256Bytes(LBytes);
+  ReportWork(AProgress, 'context_profile_encode_bytes', wuBytes, LSize, LSize);
+  LHash := Sha256Bytes(LBytes, AProgress);
   SetLength(LBytes, Integer(LSize) + 64);
   Move(LHash[1], LBytes[Integer(LSize)], 64);
   Result := LBytes;
 end;
 
 function ParseProfile(const ABytes: TAudioBytes; const AStart, ALength, ADepth: Integer;
-  var ANodes, ACells: Integer): TProfileInfo;
+  var ANodes, ACells, ACompleted: Integer;
+  const AProgress: TWorkProgressCallback): TProfileInfo;
 var
   LOffset: Integer;
   LLimit: Integer;
@@ -211,7 +230,7 @@ begin
     raise EAudio.Create('Context profile ancestry or byte extent exceeds budget');
   end;
   LLimit := AStart + ALength - 64;
-  LHash := Sha256Bytes(Copy(ABytes, AStart, ALength - 64));
+  LHash := Sha256Bytes(Copy(ABytes, AStart, ALength - 64), AProgress);
   if not CompareMem(@LHash[1], @ABytes[LLimit], 64) then
   begin
     raise EAudio.Create('Context profile digest mismatch');
@@ -243,9 +262,9 @@ begin
     begin
       raise EAudio.Create('Trailing context source profile data');
     end;
-    LBundle := DecodeContextLearning(Copy(ABytes, LFirstOffset, LFirstLength));
+    LBundle := DecodeContextLearning(Copy(ABytes, LFirstOffset, LFirstLength), AProgress);
     try
-      LEvidence := LBundle.CopyEvidence;
+      LEvidence := LBundle.CopyEvidence(AProgress);
       for LIndex := 0 to High(LEvidence) do
       begin
         Inc(ACells, Length(LEvidence[LIndex].Grid.Keys));
@@ -273,8 +292,10 @@ begin
     begin
       raise EAudio.Create('Context selection child or trailing extent is invalid');
     end;
-    LFirst := ParseProfile(ABytes, LFirstOffset, LFirstLength, ADepth + 1, ANodes, ACells);
-    LSecond := ParseProfile(ABytes, LSecondOffset, LSecondLength, ADepth + 1, ANodes, ACells);
+    LFirst := ParseProfile(ABytes, LFirstOffset, LFirstLength, ADepth + 1,
+      ANodes, ACells, ACompleted, AProgress);
+    LSecond := ParseProfile(ABytes, LSecondOffset, LSecondLength, ADepth + 1,
+      ANodes, ACells, ACompleted, AProgress);
     if (LFirst.TicksPerQuarter <> LSecond.TicksPerQuarter) or
       (LFirst.StepTicks <> LSecond.StepTicks) then
     begin
@@ -292,14 +313,23 @@ begin
     Result.StepTicks := LFirst.StepTicks;
     Result.Depth := 1 + Max(LFirst.Depth, LSecond.Depth);
   end;
+  Inc(ACompleted);
+  ReportWork(AProgress, 'context_profile_nodes', wuItems, ACompleted, 0);
 end;
 
-constructor TContextProfile.CreateArchive(const ABytes: TAudioBytes);
+constructor TContextProfile.CreateArchive(const ABytes: TAudioBytes;
+  const AProgress: TWorkProgressCallback);
 var
   LInfo: TProfileInfo;
+  LCompleted: Integer;
 begin
   inherited Create;
-  LInfo := ParseProfile(ABytes, 0, Length(ABytes), 1, FNodeCount, FEvidenceCells);
+  LCompleted := 0;
+  ReportWork(AProgress, 'context_profile_ready', wuItems, 0, 1);
+  ReportWork(AProgress, 'context_profile_nodes', wuItems, 0, 0);
+  LInfo := ParseProfile(ABytes, 0, Length(ABytes), 1, FNodeCount, FEvidenceCells,
+    LCompleted, AProgress);
+  ReportWork(AProgress, 'context_profile_nodes', wuItems, LCompleted, FNodeCount);
   FBytes := Copy(ABytes);
   FKeyOffset := LInfo.KeyOffset;
   FKeyLength := LInfo.KeyLength;
@@ -312,12 +342,15 @@ begin
   FTicksPerQuarter := LInfo.TicksPerQuarter;
   FStepTicks := LInfo.StepTicks;
   FDepth := LInfo.Depth;
-  FIdentity := Sha256Bytes(FBytes);
+  FIdentity := Sha256Bytes(FBytes, AProgress);
+  ReportWork(AProgress, 'context_profile_ready', wuItems, 1, 1);
 end;
 
-constructor TContextProfile.Create(const ABundle: TContextLearningBundle);
+constructor TContextProfile.Create(const ABundle: TContextLearningBundle;
+  const AProgress: TWorkProgressCallback);
 begin
-  CreateArchive(MakeArchive(EncodeContextLearning(ABundle), nil, False));
+  CreateArchive(MakeArchive(EncodeContextLearning(ABundle, AProgress), nil, False,
+    AProgress), AProgress);
 end;
 
 function TContextProfile.GetIsSelection: Boolean;
@@ -325,65 +358,73 @@ begin
   Result := FParentLengths[cdKey] > 0;
 end;
 
-function TContextProfile.CopyBundle(const ADimension: TContextDimension): TContextLearningBundle;
+function TContextProfile.CopyBundle(const ADimension: TContextDimension;
+  const AProgress: TWorkProgressCallback): TContextLearningBundle;
 begin
   CheckDimension(ADimension);
   if ADimension = cdKey then
   begin
-    Result := DecodeContextLearning(Copy(FBytes, FKeyOffset, FKeyLength));
+    Result := DecodeContextLearning(Copy(FBytes, FKeyOffset, FKeyLength), AProgress);
   end
   else
   begin
-    Result := DecodeContextLearning(Copy(FBytes, FTempoOffset, FTempoLength));
+    Result := DecodeContextLearning(Copy(FBytes, FTempoOffset, FTempoLength), AProgress);
   end;
 end;
 
-function TContextProfile.CopyModel(const ADimension: TContextDimension): TWfcSequenceModel;
+function TContextProfile.CopyModel(const ADimension: TContextDimension;
+  const AProgress: TWorkProgressCallback): TWfcSequenceModel;
 var
   LBundle: TContextLearningBundle;
 begin
-  LBundle := CopyBundle(ADimension);
+  LBundle := CopyBundle(ADimension, AProgress);
   try
-    Result := LBundle.CopyModel(ADimension);
+    Result := LBundle.CopyModel(ADimension, AProgress);
   finally
     LBundle.Free;
   end;
 end;
 
-function TContextProfile.CopyParent(const ADimension: TContextDimension): TContextProfile;
+function TContextProfile.CopyParent(const ADimension: TContextDimension;
+  const AProgress: TWorkProgressCallback): TContextProfile;
 begin
   CheckDimension(ADimension);
   if not IsSelection then
   begin
     raise EAudio.Create('A source context profile has no selection parents');
   end;
-  Result := DecodeContextProfile(Copy(FBytes, FParentOffsets[ADimension], FParentLengths[ADimension]));
+  Result := DecodeContextProfile(Copy(FBytes, FParentOffsets[ADimension],
+    FParentLengths[ADimension]), AProgress);
 end;
 
-function TContextProfile.ParentIdentity(const ADimension: TContextDimension): String;
+function TContextProfile.ParentIdentity(const ADimension: TContextDimension;
+  const AProgress: TWorkProgressCallback): String;
 begin
   CheckDimension(ADimension);
   if not IsSelection then
   begin
     raise EAudio.Create('A source context profile has no selection parents');
   end;
-  Result := Sha256Bytes(Copy(FBytes, FParentOffsets[ADimension], FParentLengths[ADimension]));
+  Result := Sha256Bytes(Copy(FBytes, FParentOffsets[ADimension],
+    FParentLengths[ADimension]), AProgress);
 end;
 
-function TContextProfile.ProviderIdentity(const ADimension: TContextDimension): String;
+function TContextProfile.ProviderIdentity(const ADimension: TContextDimension;
+  const AProgress: TWorkProgressCallback): String;
 begin
   CheckDimension(ADimension);
   if ADimension = cdKey then
   begin
-    Result := Sha256Bytes(Copy(FBytes, FKeyOffset, FKeyLength));
+    Result := Sha256Bytes(Copy(FBytes, FKeyOffset, FKeyLength), AProgress);
   end
   else
   begin
-    Result := Sha256Bytes(Copy(FBytes, FTempoOffset, FTempoLength));
+    Result := Sha256Bytes(Copy(FBytes, FTempoOffset, FTempoLength), AProgress);
   end;
 end;
 
-function SelectContextProfile(const AKeyParent, ATempoParent: TContextProfile): TContextProfile;
+function SelectContextProfile(const AKeyParent, ATempoParent: TContextProfile;
+  const AProgress: TWorkProgressCallback): TContextProfile;
 begin
   if (AKeyParent = nil) or (ATempoParent = nil) then
   begin
@@ -400,21 +441,30 @@ begin
   begin
     raise EAudio.Create('Context selection exceeds ancestry budget');
   end;
-  Result := TContextProfile.CreateArchive(MakeArchive(AKeyParent.FBytes, ATempoParent.FBytes, True));
+  Result := TContextProfile.CreateArchive(MakeArchive(AKeyParent.FBytes,
+    ATempoParent.FBytes, True, AProgress), AProgress);
 end;
 
-function EncodeContextProfile(const AProfile: TContextProfile): TAudioBytes;
+function EncodeContextProfile(const AProfile: TContextProfile;
+  const AProgress: TWorkProgressCallback): TAudioBytes;
+var
+  LBytes: TAudioBytes;
 begin
   if AProfile = nil then
   begin
     raise EAudio.Create('Context profile is required');
   end;
-  Result := Copy(AProfile.FBytes);
+  ReportWork(AProgress, 'context_profile_copy_bytes', wuBytes, 0, Length(AProfile.FBytes));
+  LBytes := Copy(AProfile.FBytes);
+  ReportWork(AProgress, 'context_profile_copy_bytes', wuBytes,
+    Length(LBytes), Length(LBytes));
+  Result := LBytes;
 end;
 
-function DecodeContextProfile(const ABytes: TAudioBytes): TContextProfile;
+function DecodeContextProfile(const ABytes: TAudioBytes;
+  const AProgress: TWorkProgressCallback): TContextProfile;
 begin
-  Result := TContextProfile.CreateArchive(ABytes);
+  Result := TContextProfile.CreateArchive(ABytes, AProgress);
 end;
 
 end.
