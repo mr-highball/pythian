@@ -12,6 +12,33 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Combined trace/cancellation rejection and bounded reassessment — 2026-10-28
+
+Predecessor WFC29182bb passes all five CI53 jobs (24m28s); Pythian736a313 passes
+CI463/job122961174671 (14m26s), both clean Win64 extracted packages107/159 owned
+units and120/279 inventory entries, plus34 unchanged prior audio/model artifacts.
+Those are genuine predecessor results, not acceptance of the latest source.
+Final contract assessment reproduces a distinct edge: cancelling at the first
+work callback yields trace begins0/events1/ends1. Trace delivery must establish
+its header before a work observer can unwind into rollback/footer delivery.
+
+Conservatively record two nonclosing candidate qualification cycles: CI52's
+package-order rejection, then this combined-contract rejection after CI53.
+Reassessment stops scope expansion. Follow only the demonstrated primary trace
+ordering repair, its healthy/failing receiver regression and explicit downstream
+pin/consumer checks. Do not change search policy or generate another experiment;
+green predecessor CI and new task/branch names reset no counter. Current delivery
+nonclosing2, with scientific stop counters unchanged.
+
+Upstream c496b1d moves BeginDelivery before cancellable work. Checked Win32/Win64
+and actual pas2js each pass44831 checks/58 abort-retries, including both trace
+receiver cases, with zero native leaks. [CI54](https://github.com/mr-highball/wfc/actions/runs/40732166290)
+is live. Integrate that explicit candidate pin; no dependency source is edited
+here or upstream branch merged. Repeat affected published integration/extracted
+consumers before accepting task14. Pythian implementation, musical output and
+policies are unchanged. No service, firewall, private source or answer changes.
+Counts53 open/79 DONE/132 total;52.45/47.55 unchanged. Goal active, Big Boss solo.
+
 ## Shared solve observation integrated as a candidate — 2026-10-28
 
 Big Boss's separate WFC branch publishes29182bb after the retained CI52 package-

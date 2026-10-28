@@ -28,6 +28,15 @@ notified before upstream implementation. Do not edit dependency source here or
 merge another repository's branch. Private reproduction and build evidence use
 the dedicated E-drive `wfc-solve-progress-20261028-boss` roots.
 
+Execution status (2026-10-28): candidate c496b1d follows a combined trace/work
+contract rejection at predecessor29182bb, despite its green CI53 and downstream
+CI463. The first cancelled work callback could cause trace rollback/footer before
+BeginTrace; the public reproduction reports0/1/1. Move BeginDelivery earlier and
+add healthy/failing receiver controls. Local native/pas2js44831/58 pass. CI54 and
+new downstream integration/extraction remain required. After two nonclosing
+candidate qualification cycles, reassessment limits work to this repair and its
+verification; delivery nonclosing2, no counter reset or scope expansion.
+
 **Acceptance Criteria:**
 
 - AC1: Expose optional synchronous generic progress with documented phase-local

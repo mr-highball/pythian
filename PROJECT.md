@@ -46,12 +46,14 @@ either precursor source directory. Phanes was removed after the
 [extraction and consumer audit](docs/REFERENCE-REMOVAL.md); its application assets
 are not library inputs. WFC and Athena remain pinned submodules.
 
-Current candidate WFC pin: `29182bb3059fc4b6dac5c817ec690b785400a20a`, on separate
+Current candidate WFC pin: `c496b1d0a8a7570edd34aebaa9982bc32cc7fcf7`, on separate
 branch `codex/pythian-solve-progress`. It retains the previously accepted
 `6b419e6` preparation/learning work and adds call-scoped generic solve observation
 and cancellation. [Task14](docs/TODO/NS-6_observability_14.md) owns published
-validation and downstream acceptance; its CI53 is pending after the retained CI52
-package-order failure. No upstream branch is merged or musical credit awarded.
+validation and downstream acceptance. Predecessor29182bb passes CI53, but the
+combined trace/work audit requires the current lifecycle repair. CI54 and new
+downstream verification remain pending. Preserve CI52's package-order rejection.
+No upstream branch is merged or musical credit awarded.
 The separate reviewed
 sequence-preparation and sequence-learning branches share bulk mask preflight
 and add borrowed preparation/learning callbacks. See accepted integration

@@ -81,9 +81,12 @@ bound, browser yield or whole-operation completion percentage.
 WFC's diagnostic trace receiver contains exceptions and cannot cancel a solve.
 Big Boss's separate `codex/pythian-solve-progress` branch adds a distinct optional
 work observer to normal, negotiated, restarted and selective generation. Preserve
-its independent trace contract and original search/budget policy. Candidate pin
-29182bb awaits [upstream CI53](https://github.com/mr-highball/wfc/actions/runs/40725260596);
-CI52's static package-order rejection remains evidence, with a checked repair.
+its independent trace contract and original search/budget policy. Predecessor
+29182bb passes CI53, but the combined trace/work lifecycle fails the final audit.
+Candidate c496b1d establishes diagnostic delivery before the first cancellable
+work callback; [CI54](https://github.com/mr-highball/wfc/actions/runs/40732166290)
+and new downstream integration/extracted qualification remain pending. Preserve
+both the earlier package-order rejection and trace-header reproduction.
 
 The one shared `pythian.wfc.progress` bridge maps companion prepare/search/commit
 visits into primary work records. Pipeline Pass0 and one-based layer Pass1..N
