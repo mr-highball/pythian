@@ -1645,7 +1645,7 @@ begin
     begin
       ReportWork(AProgress, 'semantic_validate_providers', wuItems, LProvider, Length(LLayers));
       LContract := LDefinition.Providers[LProvider].Contract;
-      ValidateProviderContract(LLayers[LProvider].Model, LContract, ARegistry, AAdmission);
+      ValidateProviderContract(LLayers[LProvider].Model, LContract, ARegistry, AAdmission, AProgress);
       Require((Length(LDefinition.Providers[LProvider].ExtractionPolicy) > 0) and
         (Length(LDefinition.Providers[LProvider].ExtractionPolicy) <= 4096), 'Provider extraction policy is required');
       Require(LDefinition.Providers[LProvider].VocabularySha256 =

@@ -18,6 +18,13 @@ forwarded through maintained style tools. Closing evidence: deterministic
 archive/model parity, cancellation and a reproducible long-operation trace.
 Stop on invented overall percentages, swallowed cancellation or dependency edits.
 
+Execution status (2026-10-27): the AC1 provider-admission/session component is
+locally qualified; publish and require clean integration/extracted consumers.
+The whole AC1/parent task is not closed by this component. Context archive/profile
+and remaining replacement/generation work stay required alongside batch and
+inference/operator reporting. No new task, credit or criterion is invented to
+reset the nonclosing count; this is the first nonclosing batch after task12.
+
 **Acceptance Criteria:**
 
 - Audit and extend remaining provider-contract/registry preparation, including
@@ -49,6 +56,35 @@ Stop on invented overall percentages, swallowed cancellation or dependency edits
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss provider component: optional borrowed callbacks now reach
+  actual registry searches, configuration comparisons, primary scalar validation,
+  choice decode/clone/validation, original clock/grid/source checks, native voice
+  capacity scans and compatible-session preparation. Semantic validation forwards
+  them. Original loops/decoders/budgets remain shared; no observer is retained.
+  Counts describe visited prefixes or qualified rows, not allocated capacity.
+  Final abort before registry/cache/result publication, late constructor cleanup,
+  monotonic spent admission budgets and same-/fresh-context retries pass.
+  Checked Win32/Win64 each269465 checks/29 original abort-retries, actual semantic
+  consumer35502 checks, zero leaks. All34 same-target models/styles/state receipts/
+  PCM artifacts match separately compiled frozen `e34f9e6` sources. The fifth
+  frozen source, native capacity scanning in `pythian.wfc.music`, is blob-verified
+  identical to that baseline before edits; its full notices remain intact.
+  Existing caller conformance231 checks and maintained caller pass. Maintained
+  native build registers the new fixture. Full parent acceptance stays open;
+  published integration/extracted consumers are still required for this slice.
+  Evidence stays in dedicated E-drive provider-admission build/tests/runs roots.
+- 2026-10-27, Big Boss repaired fixture/residual record: source extent initially
+  used a floor boundary, but complete-cell admission requires its ceiling. Fix
+  the authored fixture only; preserve `initial-source-extent-run64.log`. Actual
+  maximum clock65536 changes and partition1025 boundaries take0–16ms/below timer
+  resolution in local native observations. The admitted1024-state generic voice
+  validator takes109–250ms locally; this is a named synchronous companion residual,
+  not a guaranteed bound or interior callbacks. An additional Pascal-owned
+  portable capacity probe stops before execution at existing nested `strict private`
+  type `TToneStates` in `pythian.chord.stream`. Preserve its source/compile log and
+  make no pas2js/browser qualification claim or silent workaround. Current
+  [support scope](NS-6_support_01.md) remains native; optional platform expansion
+  is not inferred from this failed extra probe.
 - 2026-10-27, Big Boss pre-edit dependency: provider construction enters the
   independently reusable layer graph/session API, whose owned bulk preparation
   is unobserved. Follow task11 for that part of AC1/AC5; no wrapper-only closure.

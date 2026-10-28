@@ -29,6 +29,7 @@ unit pythian.wfc.providers;
 interface
 
 uses
+  pythian.progress,
   pythian.music.context,
   pythian.pitch.track,
   pythian.wfc.layers,
@@ -97,14 +98,18 @@ type
 function DecodeStyleProviderChoice(const AVocabulary: TStyleProviderVocabulary;
   const AToken: String): TStyleProviderChoice;
 { Borrows the immutable model synchronously; returns detached choices in its
-  public vocabulary order. Failure leaves a previously assigned result intact. }
+  public vocabulary order. Failure leaves a previously assigned result intact.
+  Progress is borrowed per call; totals describe the current phase only. }
 function CopyStyleProviderChoices(const AModel: TWfcSequenceModel;
-  const AVocabulary: TStyleProviderVocabulary): TStyleProviderChoices; overload;
+  const AVocabulary: TStyleProviderVocabulary;
+  const AProgress: TWorkProgressCallback = nil): TStyleProviderChoices; overload;
 function CopyStyleProviderChoices(const AModel: TWfcSequenceModel;
   const AVocabulary: TStyleProviderVocabulary; const ABinding: TProviderCodecBinding;
   const ARegistry: TProviderCodecRegistry = nil;
-  const AAdmission: TProviderCodecAdmission = nil): TStyleProviderChoices; overload;
-function CloneStyleProviderChoices(const AChoices: TStyleProviderChoices): TStyleProviderChoices;
+  const AAdmission: TProviderCodecAdmission = nil;
+  const AProgress: TWorkProgressCallback = nil): TStyleProviderChoices; overload;
+function CloneStyleProviderChoices(const AChoices: TStyleProviderChoices;
+  const AProgress: TWorkProgressCallback = nil): TStyleProviderChoices;
 
 implementation
 
@@ -206,29 +211,40 @@ begin
 end;
 
 function CopyStyleProviderChoices(const AModel: TWfcSequenceModel;
-  const AVocabulary: TStyleProviderVocabulary): TStyleProviderChoices;
+  const AVocabulary: TStyleProviderVocabulary;
+  const AProgress: TWorkProgressCallback): TStyleProviderChoices;
 begin
   Result := CopyStyleProviderChoices(AModel, AVocabulary,
-    Default(TProviderCodecBinding), nil, nil);
+    Default(TProviderCodecBinding), nil, nil, AProgress);
 end;
 
-function CloneStyleProviderChoices(const AChoices: TStyleProviderChoices): TStyleProviderChoices;
+function CloneStyleProviderChoices(const AChoices: TStyleProviderChoices;
+  const AProgress: TWorkProgressCallback): TStyleProviderChoices;
 var
   LIndex: Integer;
+  LChoices: TStyleProviderChoices;
 begin
-  Result := Copy(AChoices);
-  for LIndex := 0 to High(Result) do
+  LChoices := Copy(AChoices);
+  ReportWork(AProgress, 'provider_clone_choices', wuItems, 0, Length(LChoices));
+  for LIndex := 0 to High(LChoices) do
   begin
-    Result[LIndex].CallerValue := CopyProviderCodecChoice(AChoices[LIndex].CallerValue);
-    Result[LIndex].Harmony.PitchClasses := Copy(AChoices[LIndex].Harmony.PitchClasses);
-    Result[LIndex].Rhythm.Actions := Copy(AChoices[LIndex].Rhythm.Actions);
-    Result[LIndex].Voice.Tones := Copy(AChoices[LIndex].Voice.Tones);
+    LChoices[LIndex].CallerValue := CopyProviderCodecChoice(AChoices[LIndex].CallerValue);
+    LChoices[LIndex].Harmony.PitchClasses := Copy(AChoices[LIndex].Harmony.PitchClasses);
+    LChoices[LIndex].Rhythm.Actions := Copy(AChoices[LIndex].Rhythm.Actions);
+    LChoices[LIndex].Voice.Tones := Copy(AChoices[LIndex].Voice.Tones);
+    if ((LIndex + 1) mod 64) = 0 then
+    begin
+      ReportWork(AProgress, 'provider_clone_choices', wuItems, LIndex + 1, Length(LChoices));
+    end;
   end;
+  ReportWork(AProgress, 'provider_clone_choices', wuItems, Length(LChoices), Length(LChoices));
+  Result := LChoices;
 end;
 
 function CopyStyleProviderChoices(const AModel: TWfcSequenceModel;
   const AVocabulary: TStyleProviderVocabulary; const ABinding: TProviderCodecBinding;
-  const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission): TStyleProviderChoices;
+  const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission;
+  const AProgress: TWorkProgressCallback): TStyleProviderChoices;
 var
   LChoices: TStyleProviderChoices;
   LIndex: Integer;
@@ -247,23 +263,30 @@ begin
   try
     if AVocabulary = spvCaller then
     begin
-      LAdmission.ValidateBinding(ABinding);
+      LAdmission.ValidateBinding(ABinding, AProgress);
     end;
     LChoices := nil;
     SetLength(LChoices, AModel.PublicTokenCount);
+    ReportWork(AProgress, 'provider_decode_choices', wuItems, 0, Length(LChoices));
     for LIndex := 0 to High(LChoices) do
     begin
       if AVocabulary = spvCaller then
       begin
         LChoices[LIndex] := Default(TStyleProviderChoice);
         LChoices[LIndex].Token := AModel.PublicTokenAt(LIndex);
-        LChoices[LIndex].CallerValue := LAdmission.DecodeChoice(ABinding, LChoices[LIndex].Token);
+        LChoices[LIndex].CallerValue := LAdmission.DecodeChoice(ABinding,
+          LChoices[LIndex].Token, AProgress);
       end
       else
       begin
         LChoices[LIndex] := DecodeStyleProviderChoice(AVocabulary, AModel.PublicTokenAt(LIndex));
       end;
+      if ((LIndex + 1) mod 64) = 0 then
+      begin
+        ReportWork(AProgress, 'provider_decode_choices', wuItems, LIndex + 1, Length(LChoices));
+      end;
     end;
+    ReportWork(AProgress, 'provider_decode_choices', wuItems, Length(LChoices), Length(LChoices));
     Result := LChoices;
   finally
     if LOwned then

@@ -663,6 +663,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Layer preparation progress compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.layer.preparation.progress$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Layer preparation progress checks failed' }
+    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.provider.progress.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Provider progress compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.provider.progress$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Provider progress checks failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.layers.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC layer compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.layers$executableSuffix")

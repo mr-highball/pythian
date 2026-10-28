@@ -94,7 +94,8 @@ type
       const AProgress: TWorkProgressCallback = nil);
     destructor Destroy; override;
     function CopyContract(const AName: String): TProviderContract;
-    function CopyChoices(const AName: String): TStyleProviderChoices;
+    function CopyChoices(const AName: String;
+      const AProgress: TWorkProgressCallback = nil): TStyleProviderChoices;
     function CopyInputs(const AName: String): TStyleProviderDependencies;
     procedure SetConstraints(const AName: String;
       const AMask: TWfcSequenceTokenConstraints);
@@ -116,11 +117,14 @@ function ProviderContractFromDescription(const ADescription: TStyleProviderDescr
   const AMusicalDomain: String): TProviderContract;
 procedure ValidateProviderContract(const AModel: TWfcSequenceModel;
   const AContract: TProviderContract; const ARegistry: TProviderCodecRegistry = nil;
-  const AAdmission: TProviderCodecAdmission = nil);
+  const AAdmission: TProviderCodecAdmission = nil;
+  const AProgress: TWorkProgressCallback = nil);
 function AdmitProviderContract(const AModel: TWfcSequenceModel;
   const AContract: TProviderContract; const ARegistry: TProviderCodecRegistry = nil;
-  const AAdmission: TProviderCodecAdmission = nil): TStyleProviderChoices;
-procedure RequireCompatibleProvider(const AExpected, ACandidate: TProviderContract);
+  const AAdmission: TProviderCodecAdmission = nil;
+  const AProgress: TWorkProgressCallback = nil): TStyleProviderChoices;
+procedure RequireCompatibleProvider(const AExpected, ACandidate: TProviderContract;
+  const AProgress: TWorkProgressCallback = nil);
 
 implementation
 
@@ -184,7 +188,8 @@ begin
   else Result.UnknownPolicy := ProviderUnknownPolicy(Result.Vocabulary);
 end;
 
-function Boundaries(const AContract: TProviderContract): TLayerTickBoundaries;
+function Boundaries(const AContract: TProviderContract;
+  const AProgress: TWorkProgressCallback): TLayerTickBoundaries;
 var
   LIndex: Integer;
   LTick: Int64;
@@ -201,12 +206,17 @@ begin
     begin
       raise EAudio.Create('Provider partition must match its scope without mixed uniform fields');
     end;
+    ReportWork(AProgress, 'provider_grid_boundaries', wuItems, 0,
+      Length(AContract.TimeGrid.Boundaries));
     LGrid := MakeLayerTimePartition(AContract.TimeGrid.Boundaries);
+    ReportWork(AProgress, 'provider_grid_boundaries', wuItems,
+      Length(LGrid.Boundaries), Length(LGrid.Boundaries));
     Exit(LGrid.Boundaries);
   end;
   LGrid := MakeLayerTimeGrid(AContract.TimeGrid.OriginTick, AContract.TimeGrid.TicksPerCell);
   Result := nil;
   SetLength(Result, AContract.Scope.CellCount + 1);
+  ReportWork(AProgress, 'provider_grid_boundaries', wuItems, 0, Length(Result));
   for LIndex := 0 to High(Result) do
   begin
     LTick := Int64(LGrid.OriginTick) + Int64(LIndex) * LGrid.TicksPerCell;
@@ -215,11 +225,16 @@ begin
       raise EAudio.Create('Provider time boundary exceeds Integer');
     end;
     Result[LIndex] := LTick;
+    if ((LIndex + 1) mod 64) = 0 then
+    begin
+      ReportWork(AProgress, 'provider_grid_boundaries', wuItems, LIndex + 1, Length(Result));
+    end;
   end;
+  ReportWork(AProgress, 'provider_grid_boundaries', wuItems, Length(Result), Length(Result));
 end;
 
 procedure ValidateSource(const AContract: TProviderContract;
-  const ATicks: TLayerTickBoundaries);
+  const ATicks: TLayerTickBoundaries; const AProgress: TWorkProgressCallback);
 var
   LSource: TProviderSourceEvidence;
   LClock: TTempoMap;
@@ -261,9 +276,13 @@ begin
   begin
     raise EAudio.Create('Provider PPQ/origin conversion requires an explicit retained identity');
   end;
+  ReportWork(AProgress, 'provider_source_clock', wuItems, 0, Length(LSource.TempoChanges));
   LClock := TTempoMap.Create(LSource.SourceTicksPerQuarter, LSource.SourceLengthTicks,
     LSource.TempoChanges);
   try
+    ReportWork(AProgress, 'provider_source_clock', wuItems,
+      LClock.ChangeCount, LClock.ChangeCount);
+    ReportWork(AProgress, 'provider_source_boundaries', wuItems, 0, Length(ATicks));
     for LIndex := 0 to High(ATicks) do
     begin
       LScaled := (Int64(ATicks[LIndex]) - ATicks[0]) * LSource.SourceTicksPerQuarter;
@@ -291,7 +310,12 @@ begin
           LGrid.Free;
         end;
       end;
+      if ((LIndex + 1) mod 64) = 0 then
+      begin
+        ReportWork(AProgress, 'provider_source_boundaries', wuItems, LIndex + 1, Length(ATicks));
+      end;
     end;
+    ReportWork(AProgress, 'provider_source_boundaries', wuItems, Length(ATicks), Length(ATicks));
   finally
     LClock.Free;
   end;
@@ -299,14 +323,14 @@ end;
 
 procedure ValidateProviderContract(const AModel: TWfcSequenceModel;
   const AContract: TProviderContract; const ARegistry: TProviderCodecRegistry;
-  const AAdmission: TProviderCodecAdmission);
+  const AAdmission: TProviderCodecAdmission; const AProgress: TWorkProgressCallback);
 begin
-  AdmitProviderContract(AModel, AContract, ARegistry, AAdmission);
+  AdmitProviderContract(AModel, AContract, ARegistry, AAdmission, AProgress);
 end;
 
 function AdmitProviderContract(const AModel: TWfcSequenceModel;
   const AContract: TProviderContract; const ARegistry: TProviderCodecRegistry;
-  const AAdmission: TProviderCodecAdmission): TStyleProviderChoices;
+  const AAdmission: TProviderCodecAdmission; const AProgress: TWorkProgressCallback): TStyleProviderChoices;
 var
   LTicks: TLayerTickBoundaries;
   LChoices: TStyleProviderChoices;
@@ -324,7 +348,7 @@ begin
   end;
   if AContract.Vocabulary = spvCaller then
   begin
-    ValidateProviderCodecBindingData(AContract.CodecBinding);
+    ValidateProviderCodecBindingData(AContract.CodecBinding, AProgress);
     if (AContract.UnknownPolicy <> AContract.CodecBinding.UnknownMeaning) or
       (AContract.CodecBinding.ClockMeaning <> 'explicit-ppq-grid') then
     begin
@@ -390,15 +414,18 @@ begin
   begin
     raise EAudio.Create('Provider model exceeds the state/cell or preparation budget');
   end;
-  LTicks := Boundaries(AContract);
-  ValidateSource(AContract, LTicks);
+  LTicks := Boundaries(AContract, AProgress);
+  ValidateSource(AContract, LTicks, AProgress);
   LChoices := CopyStyleProviderChoices(AModel, AContract.Vocabulary,
-    AContract.CodecBinding, ARegistry, AAdmission);
+    AContract.CodecBinding, ARegistry, AAdmission, AProgress);
   if AContract.Vocabulary = spvVoice then
   begin
-    WfcIndependentVoiceCapacities([AModel]);
+    ReportWork(AProgress, 'provider_voice_model', wuItems, 0, AModel.StateCount);
+    WfcIndependentVoiceCapacities([AModel], AProgress);
     ValidateWfcMusicEnsembleModel(AModel, 1);
+    ReportWork(AProgress, 'provider_voice_model', wuItems, AModel.StateCount, AModel.StateCount);
   end;
+  ReportWork(AProgress, 'provider_validate_choices', wuItems, 0, Length(LChoices));
   for LIndex := 0 to High(LChoices) do
   begin
     if (AContract.Vocabulary = spvHarmony) and
@@ -411,11 +438,17 @@ begin
     begin
       raise EAudio.Create('Joint rhythm action vector does not match its declared ordered roles');
     end;
+    if ((LIndex + 1) mod 64) = 0 then
+    begin
+      ReportWork(AProgress, 'provider_validate_choices', wuItems, LIndex + 1, Length(LChoices));
+    end;
   end;
+  ReportWork(AProgress, 'provider_validate_choices', wuItems, Length(LChoices), Length(LChoices));
   Result := LChoices;
 end;
 
-procedure RequireCompatibleProvider(const AExpected, ACandidate: TProviderContract);
+procedure RequireCompatibleProvider(const AExpected, ACandidate: TProviderContract;
+  const AProgress: TWorkProgressCallback);
 var
   LExpected: TLayerTickBoundaries;
   LCandidate: TLayerTickBoundaries;
@@ -429,19 +462,26 @@ begin
   begin
     raise EAudio.Create('Provider substitution changes its joint role-vector length');
   end;
+  ReportWork(AProgress, 'provider_compare_roles', wuItems, 0, Length(AExpected.RoleOrder));
   for LIndex := 0 to High(AExpected.RoleOrder) do
   begin
     if AExpected.RoleOrder[LIndex] <> ACandidate.RoleOrder[LIndex] then
     begin
       raise EAudio.Create('Provider substitution permutes a joint role identity');
     end;
+    if ((LIndex + 1) mod 64) = 0 then
+    begin
+      ReportWork(AProgress, 'provider_compare_roles', wuItems, LIndex + 1, Length(AExpected.RoleOrder));
+    end;
   end;
+  ReportWork(AProgress, 'provider_compare_roles', wuItems,
+    Length(AExpected.RoleOrder), Length(AExpected.RoleOrder));
   if (AExpected.Vocabulary <> ACandidate.Vocabulary) or
     (AExpected.PitchBasis <> ACandidate.PitchBasis) or
     (AExpected.KeyReference <> ACandidate.KeyReference) or
     (AExpected.PaletteIdentity <> ACandidate.PaletteIdentity) or
     (AExpected.UnknownPolicy <> ACandidate.UnknownPolicy) or
-    not SameProviderCodecBinding(AExpected.CodecBinding, ACandidate.CodecBinding) then
+    not SameProviderCodecBinding(AExpected.CodecBinding, ACandidate.CodecBinding, AProgress) then
   begin
     raise EAudio.Create('Provider vocabulary, pitch reference, palette or unknown semantics differ');
   end;
@@ -452,15 +492,21 @@ begin
   begin
     raise EAudio.Create('Provider PPQ, musical clock domain or scope differs');
   end;
-  LExpected := Boundaries(AExpected);
-  LCandidate := Boundaries(ACandidate);
+  LExpected := Boundaries(AExpected, AProgress);
+  LCandidate := Boundaries(ACandidate, AProgress);
+  ReportWork(AProgress, 'provider_compare_boundaries', wuItems, 0, Length(LExpected));
   for LIndex := 0 to High(LExpected) do
   begin
     if LExpected[LIndex] <> LCandidate[LIndex] then
     begin
       raise EAudio.Create('Provider replacement changes an effective musical-time boundary');
     end;
+    if ((LIndex + 1) mod 64) = 0 then
+    begin
+      ReportWork(AProgress, 'provider_compare_boundaries', wuItems, LIndex + 1, Length(LExpected));
+    end;
   end;
+  ReportWork(AProgress, 'provider_compare_boundaries', wuItems, Length(LExpected), Length(LExpected));
 end;
 
 constructor TCompatibleProviderSession.Create(const ALayers: TLearnedLayers;
@@ -503,10 +549,11 @@ begin
     SetLength(FContracts, Length(ALayers));
     SetLength(FChoices, Length(ALayers));
     SetLength(LNames, Length(ALayers));
+    ReportWork(AProgress, 'provider_session_contracts', wuItems, 0, Length(ALayers));
     for LIndex := 0 to High(ALayers) do
     begin
       FChoices[LIndex] := AdmitProviderContract(ALayers[LIndex].Model,
-        AContracts[LIndex], ARegistry, LAdmission);
+        AContracts[LIndex], ARegistry, LAdmission, AProgress);
       if (AContracts[LIndex].TicksPerQuarter <> AContracts[0].TicksPerQuarter) or
         (AContracts[LIndex].MusicalDomain <> AContracts[0].MusicalDomain) then
       begin
@@ -516,9 +563,12 @@ begin
       LNames[LIndex] := AContracts[LIndex].Name;
       LOptions.Scopes[LIndex] := FContracts[LIndex].Scope;
       LOptions.TimeGrids[LIndex] := FContracts[LIndex].TimeGrid;
+      ReportWork(AProgress, 'provider_session_contracts', wuItems, LIndex + 1, Length(ALayers));
     end;
     FSession := TLearnedLayerSession.Create(ALayers, AProjections, LNames, LOptions, AProgress);
     SetLength(FInputs, Length(ALayers));
+    ReportWork(AProgress, 'provider_session_inputs', wuItems, 0, Length(AProjections));
+    LIndex := 0;
     for LProjection in AProjections do
     begin
       if (FContracts[LProjection.Provider].Vocabulary = spvRhythm) and
@@ -542,6 +592,11 @@ begin
           LVoiceChoice := DecodeStyleProviderChoice(spvVoice, LProjection.Rules[LRule].TargetToken);
           for LToken := 0 to High(LProjection.Rules[LRule].SourceTokens) do
           begin
+            if (LToken mod 64) = 0 then
+            begin
+              ReportWork(AProgress, 'provider_projection_tokens', wuItems,
+                LToken, Length(LProjection.Rules[LRule].SourceTokens));
+            end;
             LRhythmChoice := DecodeStyleProviderChoice(spvRhythm,
               LProjection.Rules[LRule].SourceTokens[LToken]);
             if LVoiceChoice.Voice.Action <> LRhythmChoice.Rhythm.Actions[LRoleIndex] then
@@ -549,12 +604,16 @@ begin
               raise EAudio.Create('Voice projection uses a different joint rhythm role slot');
             end;
           end;
+          ReportWork(AProgress, 'provider_projection_tokens', wuItems,
+            Length(LProjection.Rules[LRule].SourceTokens), Length(LProjection.Rules[LRule].SourceTokens));
         end;
       end;
       LInput := Length(FInputs[LProjection.Consumer]);
       SetLength(FInputs[LProjection.Consumer], LInput + 1);
       FInputs[LProjection.Consumer][LInput].Name := FContracts[LProjection.Provider].Name;
       FInputs[LProjection.Consumer][LInput].TimeMapping := LProjection.TimeMapping;
+      Inc(LIndex);
+      ReportWork(AProgress, 'provider_session_inputs', wuItems, LIndex, Length(AProjections));
     end;
   finally
     if LOwned then
@@ -587,9 +646,10 @@ begin
   Result := CopyProviderContract(FContracts[IndexOf(AName)]);
 end;
 
-function TCompatibleProviderSession.CopyChoices(const AName: String): TStyleProviderChoices;
+function TCompatibleProviderSession.CopyChoices(const AName: String;
+  const AProgress: TWorkProgressCallback): TStyleProviderChoices;
 begin
-  Result := CloneStyleProviderChoices(FChoices[IndexOf(AName)]);
+  Result := CloneStyleProviderChoices(FChoices[IndexOf(AName)], AProgress);
 end;
 
 function TCompatibleProviderSession.CopyInputs(const AName: String): TStyleProviderDependencies;

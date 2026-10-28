@@ -39,7 +39,7 @@ Studio callers, plus existing streaming, inference and library contracts.
 | Offline render, separation, export and evaluation | Primary native engines report measured windows/cells/frames/comparisons; maintained operators forward callbacks | [observability_03 — DONE](TODO/DONE/NS-6_observability_03.md); scoped phases below |
 | Retained corpus archive and WFC model validation | Actual feature/attachment/hash bytes and owned lookup/state/token validation are observable through the native archive operator | [observability_05 — DONE](TODO/DONE/NS-6_observability_05.md); synchronous residuals below |
 | WFC chord composition planning | Actual compatibility checks and target visits, unknown traversal total until counted; prior caller output preserved on abort | [observability_06 — DONE](TODO/DONE/NS-6_observability_06.md) |
-| Retained style/provider and batch evaluation | Nested style serialization/validation/blending/provider preparation and inference reporting still need assessment | [observability_04](TODO/NS-6_observability_04.md) |
+| Provider admission, registry and compatible-session preparation | Optional callbacks reach source grids, choice decoding/validation, registry searches, configuration comparisons and actual capacity scans, through the semantic consumer | [observability_04](TODO/NS-6_observability_04.md); checked native/provider parity passes locally, published qualification pending. Context, later replacement/generation, batch and inference reporting remain open |
 | Primary analysis in pas2js | Full callback consumer executes shared primary algorithms; optional timer adapter yields between bounded WAV analysis batches | [portability_01 — DONE](TODO/DONE/NS-6_portability_01.md); actual browser presentation and WASM remain unqualified |
 | Primary synthesis in pas2js | Actual shared synth/instrument/note/chord/grain cases execute with measured callbacks, abort/retry and exact supported clocks | [portability_03 — DONE](TODO/DONE/NS-6_portability_03.md), [timing repair — DONE](TODO/DONE/NS-6_portability_04.md); synchronous Node consumers, no browser/WASM claim |
 
@@ -364,8 +364,9 @@ compiled prior revision on each target. The maintained caller's generated WAV,
 style and two authored WAVs retain exact same-target bytes.
 
 Caller codec bodies and generic WFC model decoding/learning/solving remain
-synchronous. Provider-contract internals and nested context metadata remain
-with [observability_04](TODO/NS-6_observability_04.md); embedded wave-profile
+synchronous. Provider admission is extended under the scoped batch below;
+nested context metadata and other remaining operations stay with
+[observability_04](TODO/NS-6_observability_04.md). Embedded wave-profile
 internals remain with [observability_07](TODO/DONE/NS-6_observability_07.md). Embedded
 source/parent callbacks describe the semantic audit and call boundaries, not
 interior work in those other units. RTL allocations/copies remain synchronous.
@@ -467,6 +468,57 @@ latency guarantee or browser-yielding evidence. Numerical/decision rules are
 unchanged; native same-target prior artifacts and actual pas2js checks qualify
 mechanics, not recorded accuracy. Evidence is under dedicated E-drive
 `build/tests/runs/measurement-progress-20261027-boss*`.
+
+## Provider admission and compatible-session preparation
+
+The optional primary callback now reaches `ValidateProviderContract`,
+`AdmitProviderContract`, choice copying/cloning, registry registration/admission,
+configuration comparisons and `TCompatibleProviderSession.Create`. Semantic
+validation forwards the same callback into admission. Accepted objects retain
+neither the observer nor its admission context. Counts are phase-local and can
+restart for another provider, binding, rule or call.
+
+| Stage family | Actual units and boundaries |
+| --- | --- |
+| `provider_grid_boundaries`, `provider_source_boundaries` | Constructed/checked boundaries, every64 items for uniform/source loops |
+| `provider_source_clock` | Qualified source tempo changes before/after the primary clock constructor; its interior is a named synchronous residual |
+| `provider_decode_choices`, `provider_validate_choices`, `provider_clone_choices` | Completed public vocabulary/choice items, every64 items and before return |
+| `provider_registry_entries`, `provider_codec_bindings` | Examined entries, every16 items; early exit keeps total unknown until the actual examined count is known |
+| `provider_codec_compare_bytes` | Compared configuration bytes, every1024 bytes; an early mismatch reports only its visited prefix, never full capacity as completed work |
+| `provider_codec_dispatches` | Cumulative reserved dispatch attempts in the borrowed admission context; total remains unknown, with checkpoints before/after opaque codec calls |
+| `provider_voice_capacity_visits` | Actual token/voice/tone/summary loop visits, every256 visits, final counted total; independent models share the original inspection budget |
+| `provider_voice_model` | Qualified model states before/after the existing generic companion check; not its interior iteration count |
+| `provider_compare_roles`, `provider_compare_boundaries` | Compared contract roles/effective clock boundaries, every64 items |
+| `provider_session_contracts`, `provider_session_inputs`, `provider_projection_tokens` | Prepared contracts, attached dependencies and checked source-token rows; inner token checks every64 items |
+
+Primary scalar validation remains the one text implementation and forwards its
+own byte records. Byte comparison, source clocks and grids reuse their existing
+implementations. Final callbacks precede registry/cache/result publication;
+constructor failure releases an already created layer session. Original observer
+exceptions propagate. Rollback/destruction do not call the observer.
+
+Spent codec dispatch/work/processed-byte/payload allowances are not refunded or
+reset on cancellation. A fully admitted binding may remain cached after a later
+decode fails; aborting the final initial-binding checkpoint does not publish that
+binding. Retry can use the same context while budget remains or a caller-chosen
+new admission. Neither caller codec bodies nor RTL copies become interruptible.
+
+Checked native Win32/Win64 each pass269465 provider checks/29 original abort-retries,
+plus35502 actual semantic-consumer checks, with zero leaks. All34 prior artifacts
+per target match separately compiled frozen `e34f9e6` source. Authored configuration
+cadence oracles cover full64-KiB/first-byte mismatch with66/2 events. An additional
+pas2js probe does not execute: compilation stops at the pre-existing
+`pythian.chord.stream` nested `strict private` type. Native capacity
+3073 visits is checked through both public forms and real voice admission.
+
+Native named residual probes use maximum65536 clock changes and1025 explicit
+partition boundaries, plus the admitted maximum1024-state voice model. Clock
+observations0–16ms and partition below timer resolution are local measurements;
+generic voice validation observations109–250ms include local concurrent work.
+They promise no latency bound and do not instrument those opaque interiors.
+Published integration remains pending. Full task04/context/profile, replacement,
+later solving/capture, batch and inference/operator acceptance remains open.
+Evidence: dedicated E-drive `build/tests/runs/provider-admission-20261027-boss*`.
 
 ## Validation and limits
 

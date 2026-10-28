@@ -12,6 +12,49 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Provider admission component locally qualified; parent remains open - 2026-10-27
+
+Big Boss implements the selected provider-admission slice under task04, without
+narrowing its remaining criteria. Native provider/registry/session callbacks now
+reach the actual semantic consumer, and native music capacity scans share their
+original loop/budget implementation. Optional observers are not retained. Primary
+scalar text remains shared. Search/comparison totals stay unknown until the actual
+visited prefix is known; budget capacity is not a work denominator. Original final
+abort preserves registry/cache/output publication and releases constructed layer
+sessions. Spent codec budgets remain monotonic, with explicit same-/fresh-context
+retry evidence. Caller-owned codec bodies and named synchronous residuals stay
+outside interior callback claims.
+
+Checked native Win32/Win64 each pass **269465 provider checks /29 original abort-
+retries /264336 callbacks**, plus **35502 semantic-consumer checks /35396 callbacks**,
+zero leaks. Existing caller conformance231 and maintained caller pass. All **34
+prior artifacts per target** match frozen `e34f9e6` sources: models, saved styles,
+complete tokens/states and PCM. Prior source compilation paths are verified for
+all five affected units. Music capacity source was blob-checked and added to the
+same frozen baseline before edits. Final cadence controls add no implementation
+changes and pass on both targets. Full64-KiB comparison66 events and first-byte
+mismatch2 events distinguish visited work from capacity. The new native fixture
+is registered in maintained build orchestration.
+
+Preserve the initial authored source-extent failure; only the fixture ceiling was
+repaired. Native maximum clock65536-change observations0–16ms,1025-boundary partition
+below timer resolution and admitted1024-state generic voice-check observations
+109–250ms are named local measurements, not universal response-time guarantees.
+Extra pas2js capacity compilation stops at the existing `TToneStates` strict-private
+boundary in `pythian.chord.stream`; its source/failure remain under the E-drive
+record, without browser acceptance or a substitute implementation. All local
+handles are terminal; no service, private audio, answer or retraining changed.
+
+Publish this slice, then require actual clean integration/extracted consumers.
+Task04 and its whole AC1 remain open for context/profile and other residuals;
+later replacement/generation, batch and inference/operator work remains required.
+Counts stay **52 open /73 DONE /125 total**, NS-6 14 open, completion **52.45/47.55**.
+This is **one nonclosing delivery batch** since task12 acceptance, not a criterion
+closure; no renamed task/experiment resets it. A second nonclosing batch requires
+reassessment before continuing. Scientific stops and the pending4:16 review are
+unchanged. Evidence stays under dedicated E-drive provider-admission roots.
+Full goal remains active.
+
 ## Provider admission AC1 selected after dependency acceptance - 2026-10-27
 
 Task12's actual upstream/downstream CI and task move close a criterion this turn;

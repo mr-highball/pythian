@@ -30,6 +30,7 @@ unit pythian.wfc.music;
 interface
 
 uses
+  pythian.progress,
   pythian.music,
   pythian.time,
   pythian.chord.stream,
@@ -87,13 +88,15 @@ procedure AdmitWfcEnsembleFrame(const ARenderer: TChordStreamRenderer;
 { Detached per-voice maximum chord sizes over the complete model vocabulary.
   Checks native pitch/velocity and bounded inspection before rendering begins.
   The companion stream remains responsible for learned-path/music validation. }
-function WfcEnsembleCapacities(const AModel: TWfcSequenceModel): TChordCapacities;
+function WfcEnsembleCapacities(const AModel: TWfcSequenceModel;
+  const AProgress: TWorkProgressCallback = nil): TChordCapacities;
 
 { One singleton-frame model per output voice. Scans complete vocabularies with
   one shared inspection budget, preserves chords, and checks total tone capacity.
   Models are borrowed only during this call; no graph or stream is constructed. }
 function WfcIndependentVoiceCapacities(
-  const AModels: array of TWfcSequenceModel): TChordCapacities;
+  const AModels: array of TWfcSequenceModel;
+  const AProgress: TWorkProgressCallback = nil): TChordCapacities;
 
 implementation
 
@@ -211,7 +214,8 @@ begin
 end;
 
 function ScanEnsembleCapacities(const AModel: TWfcSequenceModel;
-  const ASingleVoice: Boolean; var AWork: Int64): TChordCapacities;
+  const ASingleVoice: Boolean; var AWork, AVisits: Int64;
+  const AProgress: TWorkProgressCallback): TChordCapacities;
 var
   LCandidate: TChordCapacities;
   LFrame: TWfcMusicEnsembleFrame;
@@ -219,6 +223,14 @@ var
   LVoice: Integer;
   LTone: Integer;
   LTotal: Integer;
+  procedure Visit;
+  begin
+    Inc(AVisits);
+    if (AVisits mod 256) = 0 then
+    begin
+      ReportWork(AProgress, 'provider_voice_capacity_visits', wuItems, AVisits, 0);
+    end;
+  end;
 begin
   if (AModel = nil) or (AModel.PublicTokenCount < 1) or
     (AModel.PublicTokenCount > MaximumNoteGates) then
@@ -228,6 +240,7 @@ begin
   LCandidate := nil;
   for LToken := 0 to AModel.PublicTokenCount - 1 do
   begin
+    Visit;
     LFrame := DecodeWfcMusicEnsembleFrame(AModel.PublicTokenAt(LToken));
     if ASingleVoice and (Length(LFrame.Voices) <> 1) then
     begin
@@ -248,6 +261,7 @@ begin
     Inc(AWork, Length(LFrame.Voices));
     for LVoice := 0 to High(LFrame.Voices) do
     begin
+      Visit;
       Inc(AWork, Length(LFrame.Voices[LVoice].Tones));
       if AWork > MaximumNoteGates then
       begin
@@ -259,6 +273,7 @@ begin
       end;
       for LTone := 0 to High(LFrame.Voices[LVoice].Tones) do
       begin
+        Visit;
         if (LFrame.Voices[LVoice].Tones[LTone].Pitch < 0) or
           (LFrame.Voices[LVoice].Tones[LTone].Pitch > 127) or
           (LFrame.Voices[LVoice].Tones[LTone].Velocity < 1) or
@@ -272,6 +287,7 @@ begin
   LTotal := 0;
   for LVoice := 0 to High(LCandidate) do
   begin
+    Visit;
     if LCandidate[LVoice] > MaximumChordStreamTones - LTotal then
     begin
       raise EAudio.Create('Ensemble maximum voice capacities exceed native tone budget');
@@ -281,22 +297,31 @@ begin
   Result := LCandidate;
 end;
 
-function WfcEnsembleCapacities(const AModel: TWfcSequenceModel): TChordCapacities;
+function WfcEnsembleCapacities(const AModel: TWfcSequenceModel;
+  const AProgress: TWorkProgressCallback): TChordCapacities;
 var
   LWork: Int64;
+  LVisits: Int64;
+  LCandidate: TChordCapacities;
 begin
   LWork := 0;
-  Result := ScanEnsembleCapacities(AModel, False, LWork);
+  LVisits := 0;
+  ReportWork(AProgress, 'provider_voice_capacity_visits', wuItems, 0, 0);
+  LCandidate := ScanEnsembleCapacities(AModel, False, LWork, LVisits, AProgress);
+  ReportWork(AProgress, 'provider_voice_capacity_visits', wuItems, LVisits, LVisits);
+  Result := LCandidate;
 end;
 
 function WfcIndependentVoiceCapacities(
-  const AModels: array of TWfcSequenceModel): TChordCapacities;
+  const AModels: array of TWfcSequenceModel;
+  const AProgress: TWorkProgressCallback): TChordCapacities;
 var
   LCandidate: TChordCapacities;
   LSingle: TChordCapacities;
   LWork: Int64;
   LTotal: Integer;
   LVoice: Integer;
+  LVisits: Int64;
 begin
   if (Length(AModels) < 1) or (Length(AModels) > MaximumChordStreamVoices) then
   begin
@@ -305,9 +330,11 @@ begin
   SetLength(LCandidate, Length(AModels));
   LWork := 0;
   LTotal := 0;
+  LVisits := 0;
+  ReportWork(AProgress, 'provider_voice_capacity_visits', wuItems, 0, 0);
   for LVoice := 0 to High(AModels) do
   begin
-    LSingle := ScanEnsembleCapacities(AModels[LVoice], True, LWork);
+    LSingle := ScanEnsembleCapacities(AModels[LVoice], True, LWork, LVisits, AProgress);
     LCandidate[LVoice] := LSingle[0];
     if LCandidate[LVoice] > MaximumChordStreamTones - LTotal then
     begin
@@ -315,6 +342,7 @@ begin
     end;
     Inc(LTotal, LCandidate[LVoice]);
   end;
+  ReportWork(AProgress, 'provider_voice_capacity_visits', wuItems, LVisits, LVisits);
   Result := LCandidate;
 end;
 
