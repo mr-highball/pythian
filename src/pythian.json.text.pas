@@ -30,6 +30,43 @@ interface
 uses
   pythian.text, pythian.progress;
 
+type
+  { Portable bounded JSON text staging, not an object model or grammar parser.
+    The native adapter owns tree punctuation and RTL numeric formatting. Scalar
+    quoting shares the primary traversal; native bytes never cross host tags.
+    Callbacks are synchronous/borrowed and report emitted UTF-8 bytes, unknown
+    total until Finish. Do not re-enter or mutate this buffer from a callback.
+    Failed appends poison staging; only a successful Finish publishes text.
+    Growth, final shrink/reference copying are synchronous allocation boundaries. }
+  TJSONTextBuffer = class
+  private
+    FText: TScalarText;
+    {$ifdef pas2js}
+    FParts: array of String;
+    FChunk: String;
+    {$endif}
+    FUsed: Integer;
+    FBytes: Integer;
+    FMaximumBytes: Integer;
+    FNextReport: Int64;
+    FProgress: TWorkProgressCallback;
+    FClosed: Boolean;
+    FFailed: Boolean;
+    procedure RequireOpen;
+    procedure AppendPart(const AText: TScalarText; const AFirst, ACount,
+      ABytes: Integer);
+  public
+    constructor Create(const AMaximumBytes: Integer;
+      const AProgress: TWorkProgressCallback = nil);
+    { Caller supplies JSON punctuation or an already formatted ASCII primitive.
+      This buffer checks ASCII and byte budgets, not structural/numeric grammar. }
+    procedure AppendASCII(const AText: String);
+    procedure AppendQuoted(const AText: TScalarText;
+      const AStrictSlashEscaping: Boolean = False);
+    function Finish: TScalarText;
+    property BytesWritten: Integer read FBytes;
+  end;
+
 { Read a quoted JSON string at a one-based source position. Only scalar text is
   admitted: literal controls and malformed bytes, escapes or surrogate pairs
   reject. Escaped NUL is valid JSON; callers retain their own semantic policy.
@@ -42,6 +79,210 @@ function ReadJSONString(const ADocument: TScalarText; var APosition: Integer;
   const AProgress: TWorkProgressCallback = nil): TScalarText;
 
 implementation
+
+{$ifdef pas2js}
+uses SysUtils;
+{$endif}
+
+constructor TJSONTextBuffer.Create(const AMaximumBytes: Integer;
+  const AProgress: TWorkProgressCallback);
+begin
+  inherited Create;
+  if AMaximumBytes < 0 then
+  begin
+    raise ETextValidation.Create('JSON output byte budget is negative');
+  end;
+  FMaximumBytes := AMaximumBytes;
+  FProgress := AProgress;
+  FNextReport := 4096;
+  ReportWork(FProgress, 'json_write_bytes', wuBytes, 0, 0);
+end;
+
+procedure TJSONTextBuffer.RequireOpen;
+begin
+  if FClosed or FFailed then
+  begin
+    raise ETextValidation.Create('JSON text staging is closed or failed');
+  end;
+end;
+
+procedure TJSONTextBuffer.AppendPart(const AText: TScalarText;
+  const AFirst, ACount, ABytes: Integer);
+var
+  LCapacity: Integer;
+  LRequired: Integer;
+begin
+  if FBytes > FMaximumBytes - ABytes then
+  begin
+    raise ETextValidation.Create('JSON output exceeds its UTF-8 byte budget');
+  end;
+  LRequired := FUsed + ACount;
+  {$ifdef pas2js}
+  { Never assign characters into one growing immutable JS string. Join bounded
+    chunks only at the explicit synchronous finish boundary. }
+  FChunk := FChunk + Copy(AText, AFirst, ACount);
+  if Length(FChunk) >= 4096 then
+  begin
+    SetLength(FParts, Length(FParts) + 1);
+    FParts[High(FParts)] := FChunk;
+    FChunk := '';
+  end;
+  {$else}
+  LCapacity := Length(FText);
+  if LCapacity < LRequired then
+  begin
+    if LCapacity > FMaximumBytes div 2 then
+    begin
+      LCapacity := FMaximumBytes;
+    end
+    else
+    begin
+      LCapacity := LCapacity * 2;
+      if LCapacity < 4096 then
+      begin
+        LCapacity := 4096;
+      end;
+      if LCapacity > FMaximumBytes then
+      begin
+        LCapacity := FMaximumBytes;
+      end;
+    end;
+    if LCapacity < LRequired then
+    begin
+      LCapacity := LRequired;
+    end;
+    SetLength(FText, LCapacity);
+  end;
+  if ACount > 0 then
+  begin
+    Move(AText[AFirst], FText[FUsed + 1], ACount);
+  end;
+  {$endif}
+  FUsed := LRequired;
+  Inc(FBytes, ABytes);
+  if FBytes >= FNextReport then
+  begin
+    ReportWork(FProgress, 'json_write_bytes', wuBytes, FBytes, 0);
+    FNextReport := Int64(FBytes) + 4096;
+  end;
+end;
+
+procedure TJSONTextBuffer.AppendASCII(const AText: String);
+var
+  I: Integer;
+  LFirst: Integer;
+  LCount: Integer;
+  LRaw: TScalarText;
+begin
+  RequireOpen;
+  try
+    LFirst := 1;
+    while LFirst <= Length(AText) do
+    begin
+      LCount := Length(AText) - LFirst + 1;
+      if LCount > 4096 then
+      begin
+        LCount := 4096;
+      end;
+      if LCount > FNextReport - FBytes then
+      begin
+        LCount := Integer(FNextReport - FBytes);
+      end;
+      for I := LFirst to LFirst + LCount - 1 do
+      begin
+        if Ord(AText[I]) > 127 then
+        begin
+          raise ETextValidation.Create('JSON syntax primitive must be ASCII');
+        end;
+      end;
+      LRaw := Copy(AText, LFirst, LCount);
+      AppendPart(LRaw, 1, LCount, LCount);
+      Inc(LFirst, LCount);
+    end;
+  except
+    FFailed := True;
+    raise;
+  end;
+end;
+
+procedure TJSONTextBuffer.AppendQuoted(const AText: TScalarText;
+  const AStrictSlashEscaping: Boolean);
+const
+  CHex: String = '0123456789ABCDEF';
+var
+  LPosition: Integer;
+  LFirst: Integer;
+  LBytes: Integer;
+  LScalar: Cardinal;
+  LEscape: String;
+begin
+  RequireOpen;
+  try
+    AppendASCII('"');
+    LPosition := 1;
+    while LPosition <= Length(AText) do
+    begin
+      LFirst := LPosition;
+      LScalar := ReadTextScalar(AText, LPosition, LBytes);
+      LEscape := '';
+      case LScalar of
+        34: LEscape := '\"';
+        92: LEscape := '\\';
+        47:
+          if AStrictSlashEscaping then
+          begin
+            LEscape := '\/';
+          end;
+        8: LEscape := '\b';
+        9: LEscape := '\t';
+        10: LEscape := '\n';
+        12: LEscape := '\f';
+        13: LEscape := '\r';
+      else
+        if LScalar < 32 then
+        begin
+          LEscape := '\u00' + CHex[Integer(LScalar div 16) + 1] +
+            CHex[Integer(LScalar mod 16) + 1];
+        end;
+      end;
+      if LEscape <> '' then
+      begin
+        AppendASCII(LEscape);
+      end
+      else
+      begin
+        AppendPart(AText, LFirst, LPosition - LFirst, LBytes);
+      end;
+    end;
+    AppendASCII('"');
+  except
+    FFailed := True;
+    raise;
+  end;
+end;
+
+function TJSONTextBuffer.Finish: TScalarText;
+begin
+  RequireOpen;
+  try
+    ReportWork(FProgress, 'json_write_finish', wuItems, 0, 1);
+    {$ifdef pas2js}
+    SetLength(FParts, Length(FParts) + 1);
+    FParts[High(FParts)] := FChunk;
+    FText := String.Join('', FParts);
+    {$else}
+    SetLength(FText, FUsed);
+    {$endif}
+    ReportWork(FProgress, 'json_write_finish', wuItems, 1, 1);
+    ReportWork(FProgress, 'json_write_bytes', wuBytes, FBytes, FBytes);
+    ReportWork(FProgress, 'json_write_ready', wuItems, 1, 1);
+    FClosed := True;
+    Result := FText;
+  except
+    FFailed := True;
+    raise;
+  end;
+end;
 
 procedure InvalidJSONText;
 begin

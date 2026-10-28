@@ -527,7 +527,7 @@ begin
     end;
     ReportWork(AProgress, 'style_card_write_values', wuItems, LVisits, LVisits);
     ReportWork(AProgress, 'style_card_json_encode', wuItems, 0, 1);
-    LText := LRoot.AsJSON;
+    LText := WriteNativeJSON(LRoot, High(Integer), AProgress);
     ReportWork(AProgress, 'style_card_json_encode', wuItems, 1, 1);
     Result := LText;
   finally
@@ -599,7 +599,7 @@ begin
       ReportWork(AProgress, 'style_card_report_traits', wuItems, I + 1, Length(AResult.Traits));
     end;
     ReportWork(AProgress, 'style_card_json_encode', wuItems, 0, 1);
-    LText := LRoot.AsJSON;
+    LText := WriteNativeJSON(LRoot, High(Integer), AProgress);
     ReportWork(AProgress, 'style_card_json_encode', wuItems, 1, 1);
     Result := LText;
   finally

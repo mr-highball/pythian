@@ -49,13 +49,29 @@ function ParseNativeJSON(const AText: TScalarText;
   No guessed depth limit is introduced; strict JSON grammar still applies. }
 function ParseNativeJSON(const AText: TScalarText): TJSONData; overload;
 
+{ Borrow an acyclic, stable fpjson tree. The primary portable buffer owns scalar
+  quoting, byte budgets and incremental byte callbacks. This adapter visits tree
+  items iteratively; RTL still formats bounded numeric/Boolean/null primitives.
+  Retain current AsJSON field order, spacing/compression and strict slash policy
+  without changing global settings. Unquoted member names are not JSON and reject.
+  Unknown item/byte totals become known only on completion. Original callback
+  exceptions preserve caller output; no accepted file is written here. Buffer
+  growth, final joining/copy and scalar numeric formatting remain synchronous. }
+function WriteNativeJSON(const AData: TJSONData; const AMaximumBytes: Integer;
+  const AProgress: TWorkProgressCallback = nil): TJSONStringType;
+
 implementation
 
 uses
-  Classes, SysUtils, jsonparser, jsonscanner, pythian.audio, pythian.json.text;
+  Classes, SysUtils, Math, jsonparser, jsonscanner, pythian.audio, pythian.json.text;
 
 type
   TScalarStrings = array of TScalarText;
+  { Borrowed tree cursor; no ownership of the input or its descendants. }
+  TJSONWriteFrame = record
+    Data: TJSONData;
+    Next: Integer;
+  end;
   TScalarJSONParser = class(TJSONParser)
   private
     FStrings: TScalarStrings;
@@ -250,6 +266,190 @@ end;
 function ParseNativeJSON(const AText: TScalarText): TJSONData;
 begin
   Result := ParseNativeJSON(AText, Length(AText), 0);
+end;
+
+function WriteNativeJSON(const AData: TJSONData; const AMaximumBytes: Integer;
+  const AProgress: TWorkProgressCallback): TJSONStringType;
+var
+  LWriter: TJSONTextBuffer;
+  LFrames: array of TJSONWriteFrame;
+  LDepth: Integer;
+  LFrame: Integer;
+  LIndex: Integer;
+  LCapacity: Integer;
+  LVisits: Int64;
+  LData: TJSONData;
+  LObject: TJSONObject;
+  LCompressed: Boolean;
+  LStrict: Boolean;
+  LRaw: TScalarText;
+  LText: TJSONStringType;
+
+  procedure Push(const AValue: TJSONData);
+  begin
+    if LDepth = Length(LFrames) then
+    begin
+      LCapacity := Length(LFrames);
+      if LCapacity > High(Integer) div (2 * SizeOf(TJSONWriteFrame)) then
+      begin
+        raise EAudio.Create('JSON output traversal exceeds native capacity');
+      end;
+      if LCapacity < 16 then
+      begin
+        LCapacity := 16;
+      end
+      else
+      begin
+        LCapacity := LCapacity * 2;
+      end;
+      SetLength(LFrames, LCapacity);
+    end;
+    LFrames[LDepth].Data := AValue;
+    LFrames[LDepth].Next := -1;
+    Inc(LDepth);
+    Inc(LVisits);
+    if LVisits mod 256 = 0 then
+    begin
+      ReportWork(AProgress, 'native_json_write_items', wuItems, LVisits, 0);
+    end;
+  end;
+
+begin
+  if TJSONObject.UnquotedMemberNames then
+  begin
+    raise EAudio.Create('JSON output requires quoted member names');
+  end;
+  LCompressed := TJSONData.CompressedJSON;
+  LStrict := TJSONString.StrictEscaping;
+  LDepth := 0;
+  LVisits := 0;
+  LFrames := nil;
+  LWriter := TJSONTextBuffer.Create(AMaximumBytes, AProgress);
+  try
+    ReportWork(AProgress, 'native_json_write_items', wuItems, 0, 0);
+    Push(AData);
+    while LDepth > 0 do
+    begin
+      LFrame := LDepth - 1;
+      LData := LFrames[LFrame].Data;
+      if LFrames[LFrame].Next < 0 then
+      begin
+        if LData = nil then
+        begin
+          LWriter.AppendASCII('null');
+          Dec(LDepth);
+          Continue;
+        end;
+        case LData.JSONType of
+          jtArray, jtObject:
+            begin
+              if LData.Count = 0 then
+              begin
+                if LData.JSONType = jtArray then
+                begin
+                  LWriter.AppendASCII('[]');
+                end
+                else
+                begin
+                  LWriter.AppendASCII('{}');
+                end;
+                Dec(LDepth);
+              end
+              else
+              begin
+                if LData.JSONType = jtArray then
+                begin
+                  LWriter.AppendASCII('[');
+                end
+                else if LCompressed then
+                begin
+                  LWriter.AppendASCII('{');
+                end
+                else
+                begin
+                  LWriter.AppendASCII('{ ');
+                end;
+                LFrames[LFrame].Next := 0;
+              end;
+            end;
+          jtString:
+            begin
+              LWriter.AppendQuoted(LData.AsString, LStrict);
+              Dec(LDepth);
+            end;
+          jtNumber, jtBoolean, jtNull:
+            begin
+              if (LData.JSONType = jtNumber) and
+                (TJSONNumber(LData).NumberType = ntFloat) then
+              begin
+                if IsNan(LData.AsFloat) or IsInfinite(LData.AsFloat) then
+                begin
+                  raise EAudio.Create('JSON output requires a finite number');
+                end;
+              end;
+              LWriter.AppendASCII(LData.AsJSON);
+              Dec(LDepth);
+            end;
+        else
+          raise EAudio.Create('Unknown JSON output value type');
+        end;
+        Continue;
+      end;
+      LIndex := LFrames[LFrame].Next;
+      if LIndex = LData.Count then
+      begin
+        if LData.JSONType = jtArray then
+        begin
+          LWriter.AppendASCII(']');
+        end
+        else if LCompressed then
+        begin
+          LWriter.AppendASCII('}');
+        end
+        else
+        begin
+          LWriter.AppendASCII(' }');
+        end;
+        Dec(LDepth);
+        Continue;
+      end;
+      if LIndex > 0 then
+      begin
+        if LCompressed then
+        begin
+          LWriter.AppendASCII(',');
+        end
+        else
+        begin
+          LWriter.AppendASCII(', ');
+        end;
+      end;
+      if LData.JSONType = jtObject then
+      begin
+        LObject := TJSONObject(LData);
+        LWriter.AppendQuoted(LObject.Names[LIndex]);
+        if LCompressed then
+        begin
+          LWriter.AppendASCII(':');
+        end
+        else
+        begin
+          LWriter.AppendASCII(' : ');
+        end;
+      end;
+      Inc(LFrames[LFrame].Next);
+      Push(LData.Items[LIndex]);
+    end;
+    ReportWork(AProgress, 'native_json_write_items', wuItems, LVisits, LVisits);
+    LRaw := LWriter.Finish;
+    ReportWork(AProgress, 'native_json_write_copy', wuItems, 0, 1);
+    LText := NativeJSONText(LRaw);
+    ReportWork(AProgress, 'native_json_write_copy', wuItems, 1, 1);
+    ReportWork(AProgress, 'native_json_write_ready', wuItems, 1, 1);
+    Result := LText;
+  finally
+    LWriter.Free;
+  end;
 end;
 
 end.

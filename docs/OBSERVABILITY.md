@@ -677,6 +677,9 @@ the shared byte writer preserve those bytes rather than transcode host tags.
 | `native_json_prepare_bytes` | Actual source bytes through shared native framing; primary string callbacks every1024 consumed bytes, other syntax every4096 positions, plus token endpoints |
 | `json_string_bytes` | Primary portable JSON string consumption in UTF-8 bytes, including quotes; unknown total until the closing quote |
 | `style_card_read_values`, `style_card_write_values` | Actual trait/group rows, bin strings and histogram values, every4096 visits; total becomes known at completion |
+| `json_write_bytes` | Shared portable staging reports actual emitted UTF-8 bytes, at most4099 bytes between interior checkpoints; total unknown until successful finish. Native uses a geometric byte buffer; pas2js joins bounded UTF-16 chunks |
+| `native_json_write_items` | Actual native root/descendant visits, every256 nodes and final known total; iterative traversal borrows the unchanged tree |
+| `json_write_finish`, `native_json_write_copy` | Synchronous final shrink/join and native UTF8String copy endpoints,0/1; no interior allocation or event-loop latency claim |
 | `style_card_assets` and primary `verify_audio_bytes` | Completed verified assets, plus actual primary per-asset hash bytes; repeated paths still spend the unchanged per-card1GiB budget |
 | `style_card_report_traits` | Serialized result traits, without changing unknown/comparable or required-limit semantics |
 | `style_card_document_read`, `native_json_parse`, `style_card_json_encode`, `style_card_wave_clock` | Synchronous operation endpoints,0/1; no interior byte or event-loop cancellation claim |
@@ -703,6 +706,31 @@ claim. A65536-chunk actual file WAV header measures296ms without heap tracing,
 not maximum latency guarantees or timings of the later JSON framing reader.
 Record the actual remaining bulk JSON gap in
 [serialization_01](TODO/NS-6_serialization_01.md); broad task04 AC2 stays open.
+
+The serialization_01 candidate now routes both actual card and comparison-report
+writers through one native tree adapter and the primary portable scalar buffer.
+It retains RTL finite-number formatting, field order, compression/spacing and
+strict slash policy, rejecting malformed scalar values, unquoted-name mode and
+nonfinite numbers before output publication. It writes no accepted files.
+Checked Win32/Win64 serialization each pass656 checks/12 original abort-retries/
+409 callbacks, zero leaks; actual pas2js passes174/4/92. The actual Win64 style
+consumer passes3292106 checks/230 original abort-retries/1645208 callbacks, zero
+leaks. Existing native JSON357 controls and94 card controls pass; thirteen frozen
+artifacts and the actual CLI report remain exact. The new byte oracle exposed
+host String conversion in the old progress fixture; retained text now uses the
+primary scalar type. Preserve that failed oracle and corrected retry.
+
+Checked Win64 without heap tracing measures the actual256-group/4096-bin card
+at3535085 output bytes,1438ms overall and1250ms within the now-observable encoder,
+10742 cumulative callbacks, maximum observed byte-checkpoint gap16ms. The maximum
+64-trait shape with original small groups emits115771 bytes in15ms; the exact8MiB
+scalar output budget emits8388608 bytes in328ms. Final shrink/copy each measure0ms
+at this clock's resolution, not zero cost. These are separate maximum axes, not
+the Cartesian product of every capacity, performance bounds or browser evidence.
+No speedup is claimed against the earlier828ms synchronous formatter. Published
+integration/extracted consumers remain required before accepting this task.
+The retained decoder's generated per-character immutable-string replacement has
+a separate [storage owner](TODO/NS-6_json-text_02.md); return to this batch.
 
 Evidence: E-drive `style-evaluation-20261028-boss` build/test/run roots, frozen
 `1be04c0` sources, original compiler/tag/adapter failures and separate no-heap

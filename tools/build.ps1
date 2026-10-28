@@ -50,6 +50,10 @@ try {
   $executableSuffix = if ($compilerOs -eq 'win32' -or $compilerOs -eq 'win64') { '.exe' } else { '' }
   & (Join-Path $buildRoot "pythian.tests.json.text$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Shared JSON scalar and native adapter checks failed' }
+  & $compilerPath @compilerArgs '-Futools' '-gh' 'tests/pythian.tests.json.write.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Shared JSON serialization compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.json.write$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Shared JSON serialization and native adapter checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.core.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Core compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.core$executableSuffix")

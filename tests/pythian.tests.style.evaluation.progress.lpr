@@ -73,7 +73,7 @@ var
   GAssigned: TStyleCard;
   GResult: TStyleCardResult;
   GDistribution: TStyleDistributionComparison;
-  GText: String;
+  GText: TScalarText;
   {$ifndef pas2js}
   GRoot: String;
   GFile: String;
@@ -452,7 +452,7 @@ var
   LExists: Boolean;
   LAborted: Boolean;
   LIndex: Integer;
-  LExpectedText: String;
+  LExpectedText: TScalarText;
 begin
   ResetOutputs;
   Operation(AMode, nil);
@@ -510,6 +510,8 @@ begin
   if AMode in [5, 6, 7] then
   begin
     RequirePhase('style_card_json_encode', 0, 1);
+    RequirePhase('json_write_bytes', 0, Length(GText));
+    RequirePhase('native_json_write_ready', 0, 1);
   end;
   if AMode = 7 then
   begin

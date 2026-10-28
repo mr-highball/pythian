@@ -12,6 +12,50 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Bulk JSON publication selected - 2026-10-28
+
+Previous goal turn is progress: `e1337d8` publishes acceptance of the shared JSON
+and portable evaluation repairs after actual Ubuntu CI460. Entry delivery
+nonclosing count0. The saved goal is now active; the earlier blocked status below
+is historical. Big Boss remains solo under the current AGENTS override.
+
+Least-complete NS-5 remains blocked on grounded context/full musical references;
+no stopped scientific family is reopened. Follow the ready retained-evaluation
+prerequisite [serialization_01](TODO/NS-6_serialization_01.md), AC1–3. Deliver one
+shared bounded Pascal text emitter and native object-tree adapter for actual
+style-card/report publication, with interior byte/item callbacks, original
+cancellation and private output. Closing evidence: actual native/pas2js scalar
+boundaries, old canonical reports, large-card traces and published Linux/extracted
+consumers. Stop on format drift, partial accepted output or a separate required
+gap; broad parent04 and musical credit remain separate.
+
+Installed fpjson's `DumpJSON` is unsuitable for canonical reuse: it always emits
+compressed object syntax while current `AsJSON` is spaced, formats entire
+keys/string leaves before stream writes, and passes bytes through a host `String`
+bridge. Retain RTL numeric formatting; put scalar quoting/buffering beside the
+primary portable decoder and keep tree traversal in the native adapter. Inspect
+and qualify exact current punctuation/escape behavior instead of mutating RTL
+global options or copying its parser.
+
+Local qualification now passes: Win32/Win64 JSON writer656 checks/12 original
+abort-retries/409 callbacks each, actual pas2js174/4/92. Actual Win64 style
+consumer3292106/230/1645208, zero leaks; original357 JSON and94 card controls,
+thirteen frozen artifacts and actual CLI report remain exact. The new actual-byte
+oracle exposed an old host String conversion in the fixture; retained text now
+uses primary TScalarText. Keep the original failure log. The actual3.535MB card
+now has interior progress, maximum observed byte gap16ms locally; its encoder
+takes1250ms, with no speedup/latency guarantee claimed. Separate64-trait and8MiB
+scalar axes pass; final join/copy endpoints remain explicit. Published Linux and
+both extracted packages remain required before task acceptance.
+
+Generated pas2js exposes a distinct retained decoder storage gap: per-character
+`rtl.setCharAt` into one pre-sized string. Create linked
+[json-text_02](TODO/NS-6_json-text_02.md), then return here without a decoder
+performance experiment. Current54 open/77 DONE/131 total, NS-6 16 open;52.45/47.55
+unchanged. No criterion/counter reset is inferred from discovery. Build/test/run
+evidence stays in dedicated E-drive `json-write-20261028-boss` roots. No live
+service, audio, operator response, retraining or WFC change is selected.
+
 ## Published JSON and portable evaluation accepted - 2026-10-28
 
 Big Boss verifies exact published source `1ed5e340c061db3993ae1a32434522d04b73c62a`
