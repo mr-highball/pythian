@@ -29,7 +29,7 @@ unit pythian.tools.style.card;
 interface
 
 uses
-  pythian.evaluation.style.card;
+  pythian.evaluation.style.card, pythian.progress;
 
 const
   MaximumStyleCardDocumentBytes = 8 * 1024 * 1024;
@@ -41,19 +41,26 @@ const
   Total verification work per card is bounded to MaximumStyleCardAssetBytes,
   including repeated paths. Hash binding is not annotation validation or proof
   that the supplied histogram was derived from those bytes. Concurrent asset
-  modification is unsupported; no files are written. }
-function ReadStyleCardFile(const APath: String): TStyleCard;
+  modification is unsupported; no files are written. Borrowed callbacks expose
+  actual scan/value/hash work; bounded file reads, RTL JSON and WAV header parsing
+  have synchronous endpoints, not interior or event-loop cancellation guarantees.
+  A final callback precedes result publication; any original exception propagates. }
+function ReadStyleCardFile(const APath: String;
+  const AProgress: TWorkProgressCallback = nil): TStyleCard;
 { Pure deterministic current encoding; does not qualify or verify evidence. }
-function WriteStyleCardJSON(const ACard: TStyleCard): UTF8String;
-function WriteStyleCardResultJSON(const AResult: TStyleCardResult): UTF8String;
-function CompareStyleCardFiles(const AReferencePath, ACandidatePath: String): UTF8String;
+function WriteStyleCardJSON(const ACard: TStyleCard;
+  const AProgress: TWorkProgressCallback = nil): UTF8String;
+function WriteStyleCardResultJSON(const AResult: TStyleCardResult;
+  const AProgress: TWorkProgressCallback = nil): UTF8String;
+function CompareStyleCardFiles(const AReferencePath, ACandidatePath: String;
+  const AProgress: TWorkProgressCallback = nil): UTF8String;
 
 implementation
 
 uses
   Classes, SysUtils, Math, fpjson, jsonparser, jsonscanner,
   pythian.audio, pythian.hash, pythian.wave.read, pythian.tools.files,
-  pythian.evaluation, pythian.evaluation.style;
+  pythian.evaluation, pythian.evaluation.style, pythian.text;
 
 const
   AssetNames: array[0..5] of String = ('source', 'preparation', 'reference',
@@ -68,6 +75,27 @@ begin
   if not ACondition then
   begin
     raise EAudio.Create(AMessage);
+  end;
+end;
+
+procedure VisitStyleValue(const AProgress: TWorkProgressCallback;
+  const AStage: String; var AVisits: Int64);
+begin
+  Inc(AVisits);
+  if AVisits mod 4096 = 0 then
+  begin
+    ReportWork(AProgress, AStage, wuItems, AVisits, 0);
+  end;
+end;
+
+function JSONText(const AText: TScalarText): UTF8String;
+begin
+  { The core supplies canonical UTF-8 bytes. Copy them into fpjson's declared
+    UTF8String without interpreting a caller's native code-page tag. }
+  Result := '';
+  if Length(AText) > 0 then
+  begin
+    SetString(Result, PAnsiChar(@AText[1]), Length(AText));
   end;
 end;
 
@@ -136,7 +164,8 @@ begin
   Result := TJSONObject(AArray.Items[AIndex]);
 end;
 
-function ParseDocument(const ABytes: TAudioBytes): TJSONObject;
+function ParseDocument(const ABytes: TAudioBytes;
+  const AProgress: TWorkProgressCallback): TJSONObject;
 var
   I: Integer;
   LDepth: Integer;
@@ -151,6 +180,7 @@ begin
   LDepth := 0;
   LQuoted := False;
   LEscaped := False;
+  ReportWork(AProgress, 'style_card_json_scan_bytes', wuBytes, 0, Length(ABytes));
   for I := 0 to High(ABytes) do
   begin
     if LQuoted then
@@ -181,12 +211,20 @@ begin
     begin
       Dec(LDepth);
     end;
+    if ((I + 1) mod 8192 = 0) or (I = High(ABytes)) then
+    begin
+      ReportWork(AProgress, 'style_card_json_scan_bytes', wuBytes, I + 1, Length(ABytes));
+    end;
   end;
   SetString(LText, PAnsiChar(@ABytes[0]), Length(ABytes));
+  { RTL parsing is synchronous. These are explicit endpoints, not an interior
+    byte-progress or event-loop yielding claim. }
+  ReportWork(AProgress, 'style_card_json_parse', wuItems, 0, 1);
   LParser := TJSONParser.Create(LText, [joUTF8, joStrict]);
   try
     LData := LParser.Parse;
     try
+      ReportWork(AProgress, 'style_card_json_parse', wuItems, 1, 1);
       Require((LData <> nil) and (LData.JSONType = jtObject), 'Style root requires an object');
       Result := TJSONObject(LData);
       LData := nil;
@@ -252,7 +290,8 @@ begin
   ValidateEvaluationBinding(Result);
 end;
 
-function ReadTrait(const AObject: TJSONObject): TStyleCardTrait;
+function ReadTrait(const AObject: TJSONObject;
+  const AProgress: TWorkProgressCallback; var AVisits: Int64): TStyleCardTrait;
 var
   LArray: TJSONArray;
   LCounts: TJSONArray;
@@ -291,6 +330,7 @@ begin
   begin
     Require(LBins.Items[I].JSONType = jtString, 'Style bin requires text');
     Result.Distribution.Bins[I] := LBins.Strings[I];
+    VisitStyleValue(AProgress, 'style_card_read_values', AVisits);
   end;
   LArray := TJSONArray(Item(AObject, 'groups', jtArray));
   Require(LArray.Count <= MaximumStyleGroups, 'Style group budget exceeded');
@@ -298,6 +338,7 @@ begin
   SetLength(Result.Distribution.Groups, LArray.Count);
   for I := 0 to LArray.Count - 1 do
   begin
+    VisitStyleValue(AProgress, 'style_card_read_values', AVisits);
     LGroup := ObjectAt(LArray, I);
     Fields(LGroup, 'id,binding,assets,method,uncertainty,counts,unknown,ambiguous,unsupported');
     Result.Groups[I].Id := TextField(LGroup, 'id');
@@ -317,6 +358,7 @@ begin
     for J := 0 to LCounts.Count - 1 do
     begin
       Result.Distribution.Groups[I].Counts[J] := IntegerValue(LCounts.Items[J]);
+      VisitStyleValue(AProgress, 'style_card_read_values', AVisits);
     end;
     Result.Distribution.Groups[I].Unknown := IntegerField(LGroup, 'unknown');
     Result.Distribution.Groups[I].Ambiguous := IntegerField(LGroup, 'ambiguous');
@@ -337,7 +379,7 @@ begin
 end;
 
 procedure VerifyGroup(const ABase: String; const AGroup: TStyleCardGroup;
-  var AVerifiedBytes: Int64);
+  var AVerifiedBytes, AVerifiedAssets: Int64; const AProgress: TWorkProgressCallback);
 var
   LDigest: array[0..5] of String;
   I: Integer;
@@ -359,25 +401,31 @@ begin
       Require(AVerifiedBytes <= MaximumStyleCardAssetBytes - LStream.Size,
         'Style total asset verification byte budget exceeded');
       Inc(AVerifiedBytes, LStream.Size);
-      Require(Sha256Stream(LStream, LStream.Size) = LDigest[I], 'Style bound asset digest mismatch: ' + AssetNames[I]);
+      Require(Sha256Stream(LStream, LStream.Size, AProgress) = LDigest[I],
+        'Style bound asset digest mismatch: ' + AssetNames[I]);
       if I = 0 then
       begin
         LStream.Position := 0;
+        ReportWork(AProgress, 'style_card_wave_clock', wuItems, 0, 1);
         LReader := TWaveFrameReader.Create(LStream);
         try
           Require((LReader.SampleRate = AGroup.Binding.SampleRate) and
             (LReader.FrameCount = AGroup.Binding.SourceFrames), 'Style WAV clock differs from binding');
+          ReportWork(AProgress, 'style_card_wave_clock', wuItems, 1, 1);
         finally
           LReader.Free;
         end;
       end;
+      Inc(AVerifiedAssets);
+      ReportWork(AProgress, 'style_card_assets', wuItems, AVerifiedAssets, 0);
     finally
       LStream.Free;
     end;
   end;
 end;
 
-function ReadStyleCardFile(const APath: String): TStyleCard;
+function ReadStyleCardFile(const APath: String;
+  const AProgress: TWorkProgressCallback): TStyleCard;
 var
   LRoot: TJSONObject;
   LTraits: TJSONArray;
@@ -386,8 +434,14 @@ var
   J: Integer;
   LBase: String;
   LVerifiedBytes: Int64;
+  LVerifiedAssets: Int64;
+  LVisits: Int64;
+  LBytes: TAudioBytes;
 begin
-  LRoot := ParseDocument(ReadFileBytes(APath, MaximumStyleCardDocumentBytes));
+  ReportWork(AProgress, 'style_card_document_read', wuItems, 0, 1);
+  LBytes := ReadFileBytes(APath, MaximumStyleCardDocumentBytes);
+  ReportWork(AProgress, 'style_card_document_read', wuItems, 1, 1);
+  LRoot := ParseDocument(LBytes, AProgress);
   try
     Fields(LRoot, 'version,id,traits');
     Require(IntegerField(LRoot, 'version') = StyleCardVersion, 'Unsupported style card version');
@@ -396,20 +450,29 @@ begin
     LTraits := TJSONArray(Item(LRoot, 'traits', jtArray));
     Require((LTraits.Count > 0) and (LTraits.Count <= MaximumStyleCardTraits), 'Style trait budget exceeded');
     SetLength(LCard.Traits, LTraits.Count);
+    LVisits := 0;
+    ReportWork(AProgress, 'style_card_read_values', wuItems, 0, 0);
     for I := 0 to LTraits.Count - 1 do
     begin
-      LCard.Traits[I] := ReadTrait(ObjectAt(LTraits, I));
+      VisitStyleValue(AProgress, 'style_card_read_values', LVisits);
+      LCard.Traits[I] := ReadTrait(ObjectAt(LTraits, I), AProgress, LVisits);
     end;
-    ValidateStyleCard(LCard);
+    ReportWork(AProgress, 'style_card_read_values', wuItems, LVisits, LVisits);
+    ValidateStyleCard(LCard, AProgress);
     LBase := IncludeTrailingPathDelimiter(ExtractFilePath(ExpandFileName(APath)));
     LVerifiedBytes := 0;
+    LVerifiedAssets := 0;
+    ReportWork(AProgress, 'style_card_assets', wuItems, 0, 0);
     for I := 0 to High(LCard.Traits) do
     begin
       for J := 0 to High(LCard.Traits[I].Groups) do
       begin
-        VerifyGroup(LBase, LCard.Traits[I].Groups[J], LVerifiedBytes);
+        VerifyGroup(LBase, LCard.Traits[I].Groups[J], LVerifiedBytes,
+          LVerifiedAssets, AProgress);
       end;
     end;
+    ReportWork(AProgress, 'style_card_assets', wuItems, LVerifiedAssets, LVerifiedAssets);
+    ReportWork(AProgress, 'style_card_read_ready', wuItems, 1, 1);
     Result := LCard;
   finally
     LRoot.Free;
@@ -425,7 +488,7 @@ begin
   Result.Add('annotation_policy_sha256', ABinding.AnnotationPolicySha256);
   Result.Add('scoring_policy_sha256', ABinding.ScoringPolicySha256);
   Result.Add('estimator_sha256', ABinding.EstimatorSha256);
-  Result.Add('group_id', String(ABinding.GroupId));
+  Result.Add('group_id', JSONText(ABinding.GroupId));
   Result.Add('sample_rate', ABinding.SampleRate);
   Result.Add('source_frames', ABinding.SourceFrames);
   Result.Add('first_frame', ABinding.FirstFrame);
@@ -437,7 +500,8 @@ begin
   Result.Add('estimator_training_overlap', OverlapNames[ABinding.EstimatorTrainingOverlap]);
 end;
 
-function WriteStyleCardJSON(const ACard: TStyleCard): UTF8String;
+function WriteStyleCardJSON(const ACard: TStyleCard;
+  const AProgress: TWorkProgressCallback): UTF8String;
 var
   LRoot: TJSONObject;
   LTrait: TJSONObject;
@@ -450,19 +514,24 @@ var
   I: Integer;
   J: Integer;
   K: Integer;
+  LVisits: Int64;
+  LText: UTF8String;
 begin
-  ValidateStyleCard(ACard);
+  ValidateStyleCard(ACard, AProgress);
   LRoot := TJSONObject.Create;
   try
     LRoot.Add('version', StyleCardVersion);
-    LRoot.Add('id', String(ACard.Id));
+    LRoot.Add('id', JSONText(ACard.Id));
     LTraits := TJSONArray.Create;
     LRoot.Add('traits', LTraits);
+    LVisits := 0;
+    ReportWork(AProgress, 'style_card_write_values', wuItems, 0, 0);
     for I := 0 to High(ACard.Traits) do
     begin
+      VisitStyleValue(AProgress, 'style_card_write_values', LVisits);
       LTrait := TJSONObject.Create;
       LTraits.Add(LTrait);
-      LTrait.Add('id', String(ACard.Traits[I].Id));
+      LTrait.Add('id', JSONText(ACard.Traits[I].Id));
       if ACard.Traits[I].Requirement = strRequired then
       begin
         LTrait.Add('requirement', 'required');
@@ -479,8 +548,8 @@ begin
       begin
         LTrait.Add('support', 'unsupported');
       end;
-      LTrait.Add('units', String(ACard.Traits[I].Units));
-      LTrait.Add('denominator', String(ACard.Traits[I].Denominator));
+      LTrait.Add('units', JSONText(ACard.Traits[I].Units));
+      LTrait.Add('denominator', JSONText(ACard.Traits[I].Denominator));
       LTrait.Add('minimum_coverage', ACard.Traits[I].MinimumCoverage);
       LTrait.Add('maximum_distance', ACard.Traits[I].MaximumDistance);
       LTrait.Add('policy_sha256', ACard.Traits[I].Distribution.PolicySha256);
@@ -488,36 +557,43 @@ begin
       LTrait.Add('bins', LBins);
       for J := 0 to High(ACard.Traits[I].Distribution.Bins) do
       begin
-        LBins.Add(String(ACard.Traits[I].Distribution.Bins[J]));
+        LBins.Add(JSONText(ACard.Traits[I].Distribution.Bins[J]));
+        VisitStyleValue(AProgress, 'style_card_write_values', LVisits);
       end;
       LGroups := TJSONArray.Create;
       LTrait.Add('groups', LGroups);
       for J := 0 to High(ACard.Traits[I].Groups) do
       begin
+        VisitStyleValue(AProgress, 'style_card_write_values', LVisits);
         LGroup := TJSONObject.Create;
         LGroups.Add(LGroup);
-        LGroup.Add('id', String(ACard.Traits[I].Groups[J].Id));
+        LGroup.Add('id', JSONText(ACard.Traits[I].Groups[J].Id));
         LGroup.Add('binding', BindingJSON(ACard.Traits[I].Groups[J].Binding));
         LAssets := TJSONObject.Create;
         LGroup.Add('assets', LAssets);
         for K := 0 to 5 do
         begin
-          LAssets.Add(AssetNames[K], String(ACard.Traits[I].Groups[J].Assets[K]));
+          LAssets.Add(AssetNames[K], JSONText(ACard.Traits[I].Groups[J].Assets[K]));
         end;
-        LGroup.Add('method', String(ACard.Traits[I].Groups[J].Method));
-        LGroup.Add('uncertainty', String(ACard.Traits[I].Groups[J].Uncertainty));
+        LGroup.Add('method', JSONText(ACard.Traits[I].Groups[J].Method));
+        LGroup.Add('uncertainty', JSONText(ACard.Traits[I].Groups[J].Uncertainty));
         LCounts := TJSONArray.Create;
         LGroup.Add('counts', LCounts);
         for K := 0 to High(ACard.Traits[I].Distribution.Groups[J].Counts) do
         begin
           LCounts.Add(ACard.Traits[I].Distribution.Groups[J].Counts[K]);
+          VisitStyleValue(AProgress, 'style_card_write_values', LVisits);
         end;
         LGroup.Add('unknown', ACard.Traits[I].Distribution.Groups[J].Unknown);
         LGroup.Add('ambiguous', ACard.Traits[I].Distribution.Groups[J].Ambiguous);
         LGroup.Add('unsupported', ACard.Traits[I].Distribution.Groups[J].Unsupported);
       end;
     end;
-    Result := LRoot.AsJSON;
+    ReportWork(AProgress, 'style_card_write_values', wuItems, LVisits, LVisits);
+    ReportWork(AProgress, 'style_card_json_encode', wuItems, 0, 1);
+    LText := LRoot.AsJSON;
+    ReportWork(AProgress, 'style_card_json_encode', wuItems, 1, 1);
+    Result := LText;
   finally
     LRoot.Free;
   end;
@@ -538,27 +614,30 @@ begin
   Result.Add('minimum_group_coverage', ACoverage.MinimumGroupCoverage);
 end;
 
-function WriteStyleCardResultJSON(const AResult: TStyleCardResult): UTF8String;
+function WriteStyleCardResultJSON(const AResult: TStyleCardResult;
+  const AProgress: TWorkProgressCallback): UTF8String;
 var
   LRoot: TJSONObject;
   LTrait: TJSONObject;
   LTraits: TJSONArray;
   I: Integer;
+  LText: UTF8String;
 begin
   Require(not AResult.GroundedAcceptance, 'Style contract cannot certify grounded acceptance');
   LRoot := TJSONObject.Create;
   try
-    LRoot.Add('reference_id', String(AResult.ReferenceId));
-    LRoot.Add('candidate_id', String(AResult.CandidateId));
+    LRoot.Add('reference_id', JSONText(AResult.ReferenceId));
+    LRoot.Add('candidate_id', JSONText(AResult.CandidateId));
     LRoot.Add('grounded_acceptance', False);
     LRoot.Add('passed_required_declared_limits', AResult.PassedRequiredDeclaredLimits);
     LTraits := TJSONArray.Create;
     LRoot.Add('traits', LTraits);
+    ReportWork(AProgress, 'style_card_report_traits', wuItems, 0, Length(AResult.Traits));
     for I := 0 to High(AResult.Traits) do
     begin
       LTrait := TJSONObject.Create;
       LTraits.Add(LTrait);
-      LTrait.Add('id', String(AResult.Traits[I].Id));
+      LTrait.Add('id', JSONText(AResult.Traits[I].Id));
       if AResult.Traits[I].Requirement = strRequired then
       begin
         LTrait.Add('requirement', 'required');
@@ -581,21 +660,29 @@ begin
       end;
       LTrait.Add('reference_coverage', CoverageJSON(AResult.Traits[I].Comparison.Reference));
       LTrait.Add('candidate_coverage', CoverageJSON(AResult.Traits[I].Comparison.Candidate));
+      ReportWork(AProgress, 'style_card_report_traits', wuItems, I + 1, Length(AResult.Traits));
     end;
-    Result := LRoot.AsJSON;
+    ReportWork(AProgress, 'style_card_json_encode', wuItems, 0, 1);
+    LText := LRoot.AsJSON;
+    ReportWork(AProgress, 'style_card_json_encode', wuItems, 1, 1);
+    Result := LText;
   finally
     LRoot.Free;
   end;
 end;
 
-function CompareStyleCardFiles(const AReferencePath, ACandidatePath: String): UTF8String;
+function CompareStyleCardFiles(const AReferencePath, ACandidatePath: String;
+  const AProgress: TWorkProgressCallback): UTF8String;
 var
   LReference: TStyleCard;
   LCandidate: TStyleCard;
+  LText: UTF8String;
 begin
-  LReference := ReadStyleCardFile(AReferencePath);
-  LCandidate := ReadStyleCardFile(ACandidatePath);
-  Result := WriteStyleCardResultJSON(CompareStyleCards(LReference, LCandidate));
+  LReference := ReadStyleCardFile(AReferencePath, AProgress);
+  LCandidate := ReadStyleCardFile(ACandidatePath, AProgress);
+  LText := WriteStyleCardResultJSON(CompareStyleCards(LReference, LCandidate, AProgress), AProgress);
+  ReportWork(AProgress, 'style_card_files_ready', wuItems, 1, 1);
+  Result := LText;
 end;
 
 end.

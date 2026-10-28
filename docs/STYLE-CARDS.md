@@ -5,6 +5,33 @@
 
 ## Status and reference requirements
 
+### Shared text and operation progress — 2026-10-28
+
+The primary binding, distribution and card APIs now use `TScalarText` from
+`pythian.text`: raw canonical UTF-8 bytes natively, scalar strings in pas2js.
+IDs sort in scalar/canonical UTF-8 order, independent of native code-page tags
+and UTF-16 surrogate order. ID limits remain256 UTF-8 bytes and card descriptive
+text4096 bytes. No normalization is applied. Card IDs/text exclude NUL; binding
+family IDs preserve their existing interior-NUL policy and exclude surrounding
+ASCII controls/spaces. Malformed scalars reject explicitly.
+
+All three card APIs and `CompareStyleDistributions` accept an optional borrowed
+`TWorkProgressCallback`. Native card read/write/report/file-comparison APIs forward
+the same contract through actual JSON scanning/value visits, bound asset hashing,
+trait/binding checks and comparison. Counts are phase-local; repeated phases
+restart and distribution passes1/2 identify reference/candidate. Raise to abort;
+original exceptions propagate before the returned result is published. Native
+CLI progress uses stderr, preserving JSON stdout and existing exit semantics.
+
+The native JSON bridge copies canonical scalar bytes into fpjson's UTF8String
+without host transcoding. Shared native `WriteTextFile` also writes supplied bytes
+without interpreting their code-page tag. This changes no JSON schema or score.
+Core/native/actual pas2js checks pass locally under
+[portability_06](TODO/NS-6_portability_06.md); published acceptance is still pending.
+Final whole-document JSON formatting remains synchronous and has a linked
+[serialization owner](TODO/NS-6_serialization_01.md). Endpoint callbacks do not
+cover that interior. These mechanics do not close musical/reference acceptance.
+
 ### Maintained current card consumer — 2026-09-30
 
 The [Pascal card API](../src/pythian.evaluation.style.card.pas) provides

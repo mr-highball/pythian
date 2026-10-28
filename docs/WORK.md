@@ -12,6 +12,68 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Shared evaluation text and callbacks locally qualified - 2026-10-28
+
+Big Boss repairs the actual shared evaluator's pas2js type failure by adopting
+the primary scalar-text contract in bindings, distributions and cards. The same
+comparator owns identity equality/order across native code-page tags and UTF-16
+surrogates. Native JSON output and the shared native byte writer now preserve
+canonical scalar bytes; diagnostic before/after logs retain both original tag
+and adapter failures. Coverage, arithmetic, clocks, exposure and grounded=false
+semantics stay unchanged. Callback results remain private until final success.
+
+Checked Win32/Win64 each pass981181 checks/208 original abort-retries/489827
+callbacks, zero leaks. Actual pas2js passes197186/98/98228. Original distribution,
+94 native card and binding/event/clock controls pass; the actual native file-bound
+evaluation consumer also passes with zero leaks. Prior CLI reports are exact,
+with284 displayed phase records. Required stage/count oracles, source preservation,
+scalar limits/order, mixed tags and native Unicode JSON round-trip are exercised.
+Evidence and frozen `1be04c0` consumers are in dedicated E-drive
+`style-evaluation-20261028-boss` build/test/run roots.
+
+The measured no-heap3535085-byte JSON formatter remains unobserved internally
+for828ms locally; the heap-traced21234ms result is diagnostic overhead, not a
+production timing claim. Create linked [serialization_01](TODO/NS-6_serialization_01.md)
+and return to this batch. Do not expand into another formatter implementation
+or close broader parent04 AC2. Other measured native residuals and exact phases
+are in [Observability](OBSERVABILITY.md#retained-style-evaluation-component--2026-10-28).
+Actual portable qualification does not establish browser/phone use or musical truth.
+
+[Portability_06](TODO/NS-6_portability_06.md) remains open pending exact published
+integration/extracted consumers. No full criterion has closed in this batch yet:
+delivery nonclosing count1, from entry0; discovery/naming does not reset it.
+Current accounting54 open/75 DONE/129 total, NS-6 16 open. Completion remains
+100/90/25/70/14/54 and52.45/47.55. The scientific stopped-family counters remain
+unchanged. No service, private audio/answers, retraining, browser/audio QA or WFC
+pin changes. Whole parent04 retains session/generation/capture, retained evaluation
+metadata/JSON publication and inference/operator obligations. Full goal stays active.
+Earlier counts below are intermediate history.
+
+## Retained evaluation audit and portable text prerequisite selected - 2026-10-28
+
+Previous goal turn is progress: exact source CI458 passes and acceptance records
+are pushed at `1be04c0`. Delivery nonclosing count enters at0. Big Boss stays solo.
+Least-complete NS-5 remains grounded-reference blocked; no stopped scientific
+family is restarted. Select existing retained evaluation AC2 in
+[task04](TODO/NS-6_observability_04.md): primary distribution/card comparison and
+the actual native asset-bound CLI lack progress through large counts and hashes.
+Deliverable: actual count/bin/trait/byte phases with original exceptions and
+private result publication. Evidence: native/actual portable checks, prior exact
+reports, unchanged coverage/exposure semantics and measured synchronous limits.
+Stop on a distinct required gap, changed scores or invented acceptance.
+
+Frozen `1be04c0` native distribution and94 card controls pass on both targets,
+with CLI reports retained under E-drive `style-evaluation-20261028-boss`. Actual
+pas2js cannot compile the primary distribution's `UTF8String`; the new linked
+[portability_06](TODO/NS-6_portability_06.md) owns shared scalar adoption before
+portable qualification. Preserve partial callback work and the failure log. An
+earlier command preceded completed extraction and lacked its input; that separate
+orchestration failure is preserved, not mistaken for the compiler defect.
+Creating the prerequisite closes nothing and resets no count. Current accounting:
+53 open/75 DONE/128 total, NS-6 15 open; percentages100/90/25/70/14/54 and52.45/47.55
+remain unchanged. No service, WFC pin, private audio, answer or retraining changes.
+Older counts below are historical checkpoints.
+
 ## Primary publication repair accepted; context component published-qualified - 2026-10-28
 
 Big Boss verifies [Ubuntu CI458](https://github.com/mr-highball/pythian/actions/runs/40630263217),

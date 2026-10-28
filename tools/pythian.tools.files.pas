@@ -50,7 +50,8 @@ function AnalyzeWaveSource(const AFileName: String; const AOptions: TAnalysisOpt
 function LoadWaveSource(const AFileName: String; out ASha256: String): TAudioClip;
 function HashAudioBytes(const ABytes: TAudioBytes): String;
 function HashText(const AText: String): String;
-procedure WriteTextFile(const AFileName, AText: String);
+{ Writes exactly the supplied native bytes, independent of code-page tags. }
+procedure WriteTextFile(const AFileName: String; const AText: RawByteString);
 function ReadFileBytes(const AFileName: String; const AMaximumBytes: Integer): TAudioBytes;
 procedure WriteFileBytes(const AFileName: String; const ABytes: TAudioBytes);
 
@@ -187,7 +188,7 @@ begin
   ASha256 := LHash;
 end;
 
-procedure WriteTextFile(const AFileName, AText: String);
+procedure WriteTextFile(const AFileName: String; const AText: RawByteString);
 var
   LStream: TFileStream;
 begin

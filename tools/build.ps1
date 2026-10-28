@@ -104,6 +104,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Style-card contract compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.evaluation.style.card$executableSuffix") (Join-Path $buildRoot 'style-card-contract')
   if ($LASTEXITCODE -ne 0) { throw 'Style-card contract checks failed' }
+  & $compilerPath @compilerArgs '-Futools' '-gh' 'tests/pythian.tests.style.evaluation.progress.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Style evaluation progress build failed' }
+  & (Join-Path $buildRoot "pythian.tests.style.evaluation.progress$executableSuffix") (Join-Path $buildRoot 'style-card-contract')
+  if ($LASTEXITCODE -ne 0) { throw 'Style evaluation progress checks failed' }
   & $compilerPath @compilerArgs '-Futools' 'tools/pythian.style.card.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Style-card operator compilation failed' }
   & $compilerPath @compilerArgs '-Futools' 'tests/pythian.tests.evaluation.files.lpr'

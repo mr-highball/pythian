@@ -27,27 +27,36 @@ program pythian_style_card;
 {$H+}
 
 uses
-  SysUtils, pythian.tools.style.card;
+  SysUtils, pythian.tools.style.card, pythian.tools.progress;
+
+var
+  LProgress: TConsoleWorkProgress;
 
 begin
+  LProgress := TConsoleWorkProgress.Create;
   try
-    if (ParamCount = 2) and (ParamStr(1) = 'roundtrip') then
-    begin
-      WriteLn(WriteStyleCardJSON(ReadStyleCardFile(ParamStr(2))));
-    end
-    else if (ParamCount = 3) and (ParamStr(1) = 'compare') then
-    begin
-      WriteLn(CompareStyleCardFiles(ParamStr(2), ParamStr(3)));
-    end
-    else
-    begin
-      raise Exception.Create('Usage: pythian.style.card roundtrip <card.json> | compare <reference.json> <candidate.json>');
+    try
+      if (ParamCount = 2) and (ParamStr(1) = 'roundtrip') then
+      begin
+        WriteLn(WriteStyleCardJSON(ReadStyleCardFile(ParamStr(2), LProgress.Observe),
+          LProgress.Observe));
+      end
+      else if (ParamCount = 3) and (ParamStr(1) = 'compare') then
+      begin
+        WriteLn(CompareStyleCardFiles(ParamStr(2), ParamStr(3), LProgress.Observe));
+      end
+      else
+      begin
+        raise Exception.Create('Usage: pythian.style.card roundtrip <card.json> | compare <reference.json> <candidate.json>');
+      end;
+    except
+      on LException: Exception do
+      begin
+        WriteLn(StdErr, LException.Message);
+        ExitCode := 1;
+      end;
     end;
-  except
-    on LException: Exception do
-    begin
-      WriteLn(StdErr, LException.Message);
-      ExitCode := 1;
-    end;
+  finally
+    LProgress.Free;
   end;
 end.

@@ -110,12 +110,14 @@ end;
 
 function OrderedMaximum(const AReference, APrediction: TEvaluationFrames;
   const ATolerance: Int64): Integer;
+type
+  TMatchTable = array[0..4, 0..4] of Integer;
 var
-  LTable: array[0..4, 0..4] of Integer;
+  LTable: TMatchTable;
   I: Integer;
   J: Integer;
 begin
-  FillChar(LTable, SizeOf(LTable), 0);
+  LTable := Default(TMatchTable);
   for I := 1 to Length(AReference) do
   begin
     for J := 1 to Length(APrediction) do

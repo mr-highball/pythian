@@ -63,8 +63,35 @@ Naming a task or narrowing a component does not reset that count.
 - [Generic WFC bulk constraint preparation](DONE/NS-6_observability_12.md).
 - [Generic WFC sequence learning observation — DONE](DONE/NS-6_observability_13.md).
 - [Primary hash cancellation publication — DONE](DONE/NS-6_hash-publication_01.md).
+- [Shared style evaluation text](NS-6_portability_06.md) — required for actual
+  portable comparison/callback qualification; native execution alone is insufficient.
+- [Bulk native JSON publication](NS-6_serialization_01.md) — actual final
+  formatting remains synchronous after observable value construction.
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss retained evaluation component: actual distribution/card
+  and native file/CLI callbacks pass checked Win32/Win64 and actual pas2js; the
+  linked portability_06 records text semantics, native adapter repairs, direct
+  retained output, original cancellation and exact old reports. Final native
+  counts981181/208/489827 per target, zero leaks; actual pas2js197186/98/98228.
+  The full AC2 is not closed: actual3535085-byte RTL JSON formatting has an
+  unobserved828ms no-heap interval locally, with separate diagnostic tracing
+  overhead. Its linked serialization owner preserves the requirement. Further
+  retained metadata/graph/publication and AC1/AC3 obligations remain. Current
+  batch has no full criterion closure pending exact published gate; nonclosing
+  count1 from entry0, not reset by either new owner. No musical credit.
+
+- 2026-10-28, Big Boss batch selection: advance retained-style evaluation AC2
+  through the existing primary distribution/card APIs and actual native file/CLI
+  consumer. Deliver real count/byte/trait phases, original cancellation and private
+  result publication, preserving exact scores/reports and unknown/exposure policy.
+  Close only with actual affected consumers and measured synchronous residuals;
+  stop on a distinct gap. The frozen pas2js baseline exposes the linked text
+  prerequisite06 before portable checks can run. Follow that existing primary
+  scalar reuse requirement, preserving partial callback work and baseline logs.
+  Prior goal turn is progress; delivery nonclosing count enters at0. No musical
+  experiment, retraining, private response or WFC change is selected.
 
 - 2026-10-28, Big Boss context qualification: [CI458](https://github.com/mr-highball/pythian/actions/runs/40630263217)
   is terminal Success at `dde2df3`, job122624749001, total12m28s/job12m24s.

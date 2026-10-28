@@ -39,7 +39,8 @@ Studio callers, plus existing streaming, inference and library contracts.
 | Offline render, separation, export and evaluation | Primary native engines report measured windows/cells/frames/comparisons; maintained operators forward callbacks | [observability_03 — DONE](TODO/DONE/NS-6_observability_03.md); scoped phases below |
 | Retained corpus archive and WFC model validation | Actual feature/attachment/hash bytes and owned lookup/state/token validation are observable through the native archive operator | [observability_05 — DONE](TODO/DONE/NS-6_observability_05.md); synchronous residuals below |
 | WFC chord composition planning | Actual compatibility checks and target visits, unknown traversal total until counted; prior caller output preserved on abort | [observability_06 — DONE](TODO/DONE/NS-6_observability_06.md) |
-| Provider admission, registry and compatible-session preparation | Optional callbacks reach source grids, choice decoding/validation, registry searches, configuration comparisons and actual capacity scans, through the semantic consumer | [observability_04](TODO/NS-6_observability_04.md); checked native/provider parity and published CI456 pass. Context, later replacement/generation, batch and inference reporting remain open |
+| Provider admission, registry and compatible-session preparation | Optional callbacks reach source grids, choice decoding/validation, registry searches, configuration comparisons and actual capacity scans, through the semantic consumer | [observability_04](TODO/NS-6_observability_04.md); provider CI456 and context CI458 components qualified. Later replacement/generation, batch and inference reporting remain open |
+| Retained style distributions/cards and native asset comparison | Optional callbacks reach actual bins/counts/normalization, bindings/traits, JSON scanning/value visits and primary asset hashing | Local native/actual pas2js qualification under [portability_06](TODO/NS-6_portability_06.md); final [JSON formatting](TODO/NS-6_serialization_01.md) remains a linked gap, not interior callback coverage |
 | Primary analysis in pas2js | Full callback consumer executes shared primary algorithms; optional timer adapter yields between bounded WAV analysis batches | [portability_01 — DONE](TODO/DONE/NS-6_portability_01.md); actual browser presentation and WASM remain unqualified |
 | Primary synthesis in pas2js | Actual shared synth/instrument/note/chord/grain cases execute with measured callbacks, abort/retry and exact supported clocks | [portability_03 — DONE](TODO/DONE/NS-6_portability_03.md), [timing repair — DONE](TODO/DONE/NS-6_portability_04.md); synchronous Node consumers, no browser/WASM claim |
 
@@ -655,6 +656,56 @@ compile omitted the existing tools search path; corrected orchestration reuses
 the maintained path and the actual profile consumer passes. Broader portable
 context execution remains unqualified at the pre-existing tempo-evidence `Move`
 boundary; no substitute, stub or browser/phone qualification is claimed.
+
+### Retained style evaluation component — 2026-10-28
+
+The existing primary comparison/card implementation and native file/CLI consumer
+now borrow the shared callback. No alternate scorer, automatic retraining or
+grounded musical acceptance is introduced. The shared text prerequisite also
+repairs actual pas2js compilation, scalar/UTF-8 byte ordering and native tag-based
+identity comparisons through `pythian.text`. fpjson's native UTF8String bridge and
+the shared byte writer preserve those bytes rather than transcode host tags.
+
+| Phase | Actual work and boundary |
+| --- | --- |
+| `style_distribution_bins` | Validated bins, every256 items; pass1 reference/pass2 candidate |
+| `style_distribution_counts` | Visited histogram entries, every4096; actual group×bin total per side |
+| `style_distribution_normalize` | Normalized known-group entries, every4096; total unknown until completion, since zero-known groups skip it |
+| `style_distribution_compare_bins` | Compared vocabulary then probability bins, every256; passes1/2 distinguish these two walks |
+| `style_card_validate_traits`, `style_card_bindings`, `style_card_compare_traits` | Actual traits and source bindings; binding pass is one-based trait index |
+| `style_card_clone_groups` | Detached histogram arrays, one group at a time; each count copy is at most4096 Int64 values |
+| `style_card_json_scan_bytes` | Actual native input bytes, every8192, before RTL parsing |
+| `style_card_read_values`, `style_card_write_values` | Actual trait/group rows, bin strings and histogram values, every4096 visits; total becomes known at completion |
+| `style_card_assets` and primary `verify_audio_bytes` | Completed verified assets, plus actual primary per-asset hash bytes; repeated paths still spend the unchanged per-card1GiB budget |
+| `style_card_report_traits` | Serialized result traits, without changing unknown/comparable or required-limit semantics |
+| `style_card_document_read`, `style_card_json_parse`, `style_card_json_encode`, `style_card_wave_clock` | Synchronous operation endpoints,0/1; no interior byte or event-loop cancellation claim |
+| `*_ready` | Final callback before private card/distribution/report/text publication; not proof of accepted scientific evidence |
+
+Final local checked Win32/Win64 each pass981181 checks/208 original abort-retries/
+489827 callbacks, with zero leaks. The actual pas2js shared subset passes197186/
+98/98228. Existing distribution controls,94 native card controls, binding/event/
+clock checks and the native file-bound evaluation consumer pass. Prior same-target
+CLI reports remain exact, with284 displayed phase records. Explicit phase/count
+oracles include256×4096 histogram entries, zero-normalization unknown groups,
+Unicode/BMP/astral and mixed native tags, detached copies, direct retained outputs,
+native UTF-8 JSON round-trip and actual bound-file hashes.
+
+Authored Win64 no-heap probe: an actual8MiB padded card reads/scans/parses/verifies
+in172ms with1099 callbacks; its synchronous read is16ms and RTL parse47ms locally.
+One trait/256 groups/4096 bins compares in250ms with13145 callbacks; detached clone
+62ms/5722 callbacks. The emitted3535085-byte JSON has828ms in final unobserved
+RTL formatting. The heap-traced run measures219/16/47ms,297ms,94ms and21234ms
+respectively; tracing adds substantial overhead and is not a production timing
+claim. A65536-chunk actual file WAV header measures296ms without heap tracing,
+297ms with it, within the existing chunk limit. These are local observations,
+not maximum latency guarantees. Record the actual remaining bulk JSON gap in
+[serialization_01](TODO/NS-6_serialization_01.md); broad task04 AC2 stays open.
+
+Evidence: E-drive `style-evaluation-20261028-boss` build/test/run roots, frozen
+`1be04c0` sources, original compiler/tag/adapter failures and separate no-heap
+measurements. Exact published integration/extracted consumers are still required
+before accepting portability_06. Actual browser/phone and complete parent04 remain
+unqualified; no service, private audio, saved response or WFC pin changed.
 
 ### Retained baseline and other limits
 

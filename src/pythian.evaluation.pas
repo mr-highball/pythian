@@ -29,7 +29,7 @@ unit pythian.evaluation;
 interface
 
 uses
-  pythian.audio;
+  pythian.audio, pythian.text;
 
 const
   MaximumEvaluationItems = 1048576;
@@ -50,7 +50,7 @@ type
     AnnotationPolicySha256: String;
     ScoringPolicySha256: String;
     EstimatorSha256: String;
-    GroupId: UTF8String;
+    GroupId: TScalarText;
     SampleRate: Integer;
     SourceFrames: Int64;
     FirstFrame: Int64;
@@ -184,8 +184,11 @@ begin
   RequireDigest(ABinding.AnnotationPolicySha256);
   RequireDigest(ABinding.ScoringPolicySha256);
   RequireDigest(ABinding.EstimatorSha256);
-  if (Length(ABinding.GroupId) < 1) or (Length(ABinding.GroupId) > 256) or
-    (Trim(ABinding.GroupId) <> ABinding.GroupId) then
+  { The historical family policy permits interior NUL but excludes surrounding
+    ASCII controls/spaces. Validate scalar bytes without host transcoding. }
+  ValidateScalarText(ABinding.GroupId, 256, False, True);
+  if (Ord(ABinding.GroupId[1]) <= 32) or
+    (Ord(ABinding.GroupId[Length(ABinding.GroupId)]) <= 32) then
   begin
     raise EAudio.Create('Evaluation requires a nonempty exact family identity');
   end;
@@ -212,7 +215,7 @@ begin
     (AExpected.AnnotationPolicySha256 <> AActual.AnnotationPolicySha256) or
     (AExpected.ScoringPolicySha256 <> AActual.ScoringPolicySha256) or
     (AExpected.EstimatorSha256 <> AActual.EstimatorSha256) or
-    (AExpected.GroupId <> AActual.GroupId) or
+    (CompareScalarText(AExpected.GroupId, AActual.GroupId, 256, True) <> 0) or
     (AExpected.SampleRate <> AActual.SampleRate) or
     (AExpected.SourceFrames <> AActual.SourceFrames) or
     (AExpected.FirstFrame <> AActual.FirstFrame) or

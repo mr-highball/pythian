@@ -28,6 +28,9 @@ unit pythian.evaluation.style;
 
 interface
 
+uses
+  pythian.progress, pythian.text;
+
 const
   MaximumStyleGroups = 256;
   MaximumStyleBins = 4096;
@@ -35,9 +38,9 @@ const
 
 type
   TStyleCounts = array of Int64;
-  TStyleBinNames = array of UTF8String;
+  TStyleBinNames = array of TScalarText;
   TStyleGroupHistogram = record
-    GroupId: UTF8String;
+    GroupId: TScalarText;
     Counts: TStyleCounts;
     Unknown: Int64;
     Ambiguous: Int64;
@@ -79,13 +82,18 @@ type
   variation, in [0,1]. Unknown/ambiguous/unsupported remain in coverage; rest
   must be an explicit bin when meaningful. No threshold or style verdict is
   implied. Caller must check coverage AND distance AND evidence eligibility.
-  Bin names and group IDs are nonempty, strictly bytewise sorted and unique.
+  Bin names and group IDs are canonical scalar text with 1..256 UTF-8 bytes,
+  strictly sorted in scalar/canonical byte order and unique. No normalization.
   References/candidates require identical policy hash and bins. Group identities
   need not match: generated runs are different from reference recordings.
   All counts per distribution sum to at most MaximumStyleCount. Arrays are
-  borrowed read-only; failure leaves a caller's previous assignment intact. }
+  borrowed read-only; failure leaves a caller's previous assignment intact.
+  The synchronous observer is borrowed only during this call. Counts and
+  normalization are separate actual visits, with pass1 reference/pass2 candidate;
+  its final publication callback precedes the returned result. }
 function CompareStyleDistributions(const AReference,
-  ACandidate: TStyleDistribution): TStyleDistributionComparison;
+  ACandidate: TStyleDistribution;
+  const AProgress: TWorkProgressCallback = nil): TStyleDistributionComparison;
 
 implementation
 
@@ -112,10 +120,9 @@ begin
   ATotal := ATotal + AValue;
 end;
 
-procedure CheckIdentity(const AText: UTF8String);
+procedure CheckIdentity(const AText: TScalarText);
 begin
-  Require((Length(AText) > 0) and (Length(AText) <= 256) and (Pos(#0, AText) = 0),
-    'Style bin and group identities require 1..256 non-NUL bytes');
+  ValidateScalarText(AText, 256, False, False);
 end;
 
 procedure CheckPolicy(const AHash: String);
@@ -130,13 +137,17 @@ begin
 end;
 
 procedure Summarize(const ADistribution: TStyleDistribution;
-  out ACoverage: TStyleDistributionCoverage; out AProbabilities: TProbabilities);
+  out ACoverage: TStyleDistributionCoverage; out AProbabilities: TProbabilities;
+  const AProgress: TWorkProgressCallback; const APass: Integer);
 var
   I: Integer;
   J: Integer;
   LKnown: Int64;
   LTotal: Int64;
   LCoverage: Double;
+  LCountDone: Int64;
+  LCountTotal: Int64;
+  LNormalized: Int64;
 begin
   ACoverage := Default(TStyleDistributionCoverage);
   CheckPolicy(ADistribution.PolicySha256);
@@ -144,25 +155,40 @@ begin
     (Length(ADistribution.Bins) <= MaximumStyleBins), 'Style bin budget exceeded');
   Require((Length(ADistribution.Groups) > 0) and
     (Length(ADistribution.Groups) <= MaximumStyleGroups), 'Style group budget exceeded');
+  ReportWork(AProgress, 'style_distribution_bins', wuItems, 0,
+    Length(ADistribution.Bins), APass);
   for I := 0 to High(ADistribution.Bins) do
   begin
     CheckIdentity(ADistribution.Bins[I]);
     if I > 0 then
     begin
-      Require(ADistribution.Bins[I - 1] < ADistribution.Bins[I],
+      Require(CompareScalarText(ADistribution.Bins[I - 1], ADistribution.Bins[I], 256) < 0,
         'Style bins must be strictly sorted and unique');
+    end;
+    if ((I + 1) mod 256 = 0) or (I = High(ADistribution.Bins)) then
+    begin
+      ReportWork(AProgress, 'style_distribution_bins', wuItems, I + 1,
+        Length(ADistribution.Bins), APass);
     end;
   end;
   AProbabilities := nil;
   SetLength(AProbabilities, Length(ADistribution.Bins));
   ACoverage.Groups := Length(ADistribution.Groups);
   ACoverage.MinimumGroupCoverage := 1;
+  LCountDone := 0;
+  LCountTotal := Int64(Length(ADistribution.Groups)) * Length(ADistribution.Bins);
+  LNormalized := 0;
+  ReportWork(AProgress, 'style_distribution_counts', wuItems, 0, LCountTotal, APass);
+  { All-unknown groups skip normalization. Its total is actual work, known only
+    after the walk, rather than the maximum group/bin capacity. }
+  ReportWork(AProgress, 'style_distribution_normalize', wuItems, 0, 0, APass);
   for I := 0 to High(ADistribution.Groups) do
   begin
     CheckIdentity(ADistribution.Groups[I].GroupId);
     if I > 0 then
     begin
-      Require(ADistribution.Groups[I - 1].GroupId < ADistribution.Groups[I].GroupId,
+      Require(CompareScalarText(ADistribution.Groups[I - 1].GroupId,
+        ADistribution.Groups[I].GroupId, 256) < 0,
         'Style groups must be strictly sorted and unique');
     end;
     Require(Length(ADistribution.Groups[I].Counts) = Length(ADistribution.Bins),
@@ -171,6 +197,12 @@ begin
     for J := 0 to High(ADistribution.Bins) do
     begin
       AddCount(LKnown, ADistribution.Groups[I].Counts[J]);
+      Inc(LCountDone);
+      if LCountDone mod 4096 = 0 then
+      begin
+        ReportWork(AProgress, 'style_distribution_counts', wuItems,
+          LCountDone, LCountTotal, APass);
+      end;
     end;
     LTotal := LKnown;
     AddCount(LTotal, ADistribution.Groups[I].Unknown);
@@ -196,14 +228,25 @@ begin
       begin
         AProbabilities[J] := AProbabilities[J] +
           (ADistribution.Groups[I].Counts[J] / LKnown) / ACoverage.Groups;
+        Inc(LNormalized);
+        if LNormalized mod 4096 = 0 then
+        begin
+          ReportWork(AProgress, 'style_distribution_normalize', wuItems,
+            LNormalized, 0, APass);
+        end;
       end;
     end;
   end;
   ACoverage.PooledCoverage := ACoverage.Known / ACoverage.Total;
+  ReportWork(AProgress, 'style_distribution_counts', wuItems,
+    LCountDone, LCountTotal, APass);
+  ReportWork(AProgress, 'style_distribution_normalize', wuItems,
+    LNormalized, LNormalized, APass);
 end;
 
 function CompareStyleDistributions(const AReference,
-  ACandidate: TStyleDistribution): TStyleDistributionComparison;
+  ACandidate: TStyleDistribution;
+  const AProgress: TWorkProgressCallback): TStyleDistributionComparison;
 var
   LReference: TProbabilities;
   LCandidate: TProbabilities;
@@ -216,29 +259,45 @@ begin
   Require(Length(AReference.Bins) = Length(ACandidate.Bins),
     'Style comparison requires the same vocabulary');
   { Validate budgets before walking the caller's arrays. }
-  Summarize(AReference, LResult.Reference, LReference);
-  Summarize(ACandidate, LResult.Candidate, LCandidate);
+  Summarize(AReference, LResult.Reference, LReference, AProgress, 1);
+  Summarize(ACandidate, LResult.Candidate, LCandidate, AProgress, 2);
+  ReportWork(AProgress, 'style_distribution_compare_bins', wuItems, 0,
+    Length(AReference.Bins), 1);
   for I := 0 to High(AReference.Bins) do
   begin
-    Require(AReference.Bins[I] = ACandidate.Bins[I],
+    Require(CompareScalarText(AReference.Bins[I], ACandidate.Bins[I], 256) = 0,
       'Style comparison requires identical bin meanings and order');
+    if ((I + 1) mod 256 = 0) or (I = High(AReference.Bins)) then
+    begin
+      ReportWork(AProgress, 'style_distribution_compare_bins', wuItems,
+        I + 1, Length(AReference.Bins), 1);
+    end;
   end;
   LResult.Comparable := (LResult.Reference.GroupsWithValues = LResult.Reference.Groups) and
     (LResult.Candidate.GroupsWithValues = LResult.Candidate.Groups);
   if not LResult.Comparable then
   begin
+    ReportWork(AProgress, 'style_distribution_ready', wuItems, 1, 1);
     Result := LResult;
     Exit;
   end;
+  ReportWork(AProgress, 'style_distribution_compare_bins', wuItems, 0,
+    Length(LReference), 2);
   for I := 0 to High(LReference) do
   begin
     LResult.Distance := LResult.Distance + Abs(LReference[I] - LCandidate[I]) * 0.5;
+    if ((I + 1) mod 256 = 0) or (I = High(LReference)) then
+    begin
+      ReportWork(AProgress, 'style_distribution_compare_bins', wuItems,
+        I + 1, Length(LReference), 2);
+    end;
   end;
   { Bound the accumulation's last rounding bit, not the inputs. }
   if LResult.Distance > 1 then
   begin
     LResult.Distance := 1;
   end;
+  ReportWork(AProgress, 'style_distribution_ready', wuItems, 1, 1);
   Result := LResult;
 end;
 
