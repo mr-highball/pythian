@@ -12,6 +12,37 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Retained inference corpus observation accepted — 2026-10-28
+
+Big Boss accepts [task15](TODO/DONE/NS-6_observability_15.md) AC1–3 at exact source
+`fe431bdf0135a85ff3bd4008dfb9cce76d8004cf`. Published
+[CI466](https://github.com/mr-highball/pythian/actions/runs/40749511869) is terminal
+Success: native job 14m7s, maintained integration 12m58s and extracted core/WFC
+consumer verification 43s. Windows inference execution is qualified separately:
+Win32/Win64 each 159490 checks/34 abort cases, zero leaks; exact 300-row/source/
+scope and artifact replay; original corpus controls; current supervisor 1056/14,
+WAV geometry and append controls; and the actual maintained auditor's byte-exact
+report against its frozen prior consumer. Preserve the old reset-index fixture
+rejection and the explicit failed-cursor/reopen replacement contract. Named
+synchronous I/O/RTL/search/format boundaries remain; no hard latency claim.
+
+Together with the WAV supervisor at 9b5a437/CI465, this closes parent04 AC3's
+native inference/operator scope. Parent04 AC1/AC2 and actual Studio/phone gates
+remain open. Move task15 and update incoming links/ledgers together: 52 open/
+81 DONE/133 total, NS6 14 open. Zero-credit closure resets delivery nonclosing 1
+to 0; scientific stopped-family counters and completion 52.45/47.55 are unchanged.
+The full musical goal remains active; Big Boss works alone.
+
+Reassessment after closure: least-complete NS5 is 14%. Its representative
+vocabulary still needs accepted context and independently grounded references;
+no stopped scientific/source family is reopened. A fresh read-only catalog
+lookup retains revision 0 for the existing 4:16 repetition request and revision 1
+for the prior short continuity answer. No duplicate review request, silent
+retraining or answer mutation. The one-time administrator host-rule repair and
+normal-page browser handoff remain pending. Fixed stable/QA paths preserve
+application identity; no firewall/service/private-media change or audio/browser
+QA is performed. Finish this acceptance handoff before selecting a new batch.
+
 ## Retained inference corpus observation candidate — 2026-10-28
 
 Task15's primary reader/auditor implementation is locally qualified. Constructor
@@ -97,7 +128,7 @@ explicit output-root override, exercised under its dedicated E-drive workspace.
 
 The operator inventory finds another required path: native inference corpus
 metadata/lazy artifact reading and its auditor do not forward work. Create linked
-[task15](TODO/NS-6_observability_15.md) before expanding the WAV batch; it owns
+[task15](TODO/DONE/NS-6_observability_15.md) before expanding the WAV batch; it owns
 counts, failed-reader/private-batch handling and actual auditor replay. Complete
 parent04 AC3 remains open. This component batch closes no complete criterion:
 delivery nonclosing1 from entry0, not reset by the new task. Counts53 open/80 DONE/

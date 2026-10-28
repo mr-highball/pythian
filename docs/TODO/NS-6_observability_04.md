@@ -43,15 +43,16 @@ preserves original cancellation, accepted-state/retry replay and independent
 trace failures. Whole AC1 remains open for retained capture/copy, later stream/
 voice construction and other owned publication work. Do not put a cancellable
 wrapper callback after an already accepted graph swap.
-AC3's native WAV supervisor/artifact-verification component now passes actual
-Win64 worker/abort/retry/cleanup and unchanged-backend artifact replay. The
-separate retained inference corpus/auditor gap is owned by
-[observability15](NS-6_observability_15.md). AC3 remains open until that path is
-qualified too; an observed WAV run is not whole operator coverage.
-AC2 batch evaluation and complete AC3 inference/operator reporting remain required. These
-component qualifications close neither this parent nor musical acceptance and
-earn no additional credit. The actual hash criterion closure resets the delivery
-nonclosing count1 to0; the previous two-batch reassessment remains recorded history.
+AC3 is accepted at its native inference/operator scope: the WAV supervisor/
+artifact component is qualified at 9b5a437/CI465 with actual Win64 worker/abort/
+retry/cleanup and unchanged-backend artifact replay. The retained corpus/auditor
+path is accepted in [observability15 — DONE](DONE/NS-6_observability_15.md) at
+fe431bd/CI466, with Win32/Win64 failure/reopen/reentry and exact actual auditor
+report replay. Existing deadlines, scientific semantics and named synchronous
+boundaries are preserved. Actual Studio/phone acceptance remains separate.
+Whole AC1 and AC2 remain required. These component qualifications close neither
+this parent nor musical acceptance and earn no additional credit. Task15's real
+closure resets delivery nonclosing 1 to 0; previous reassessments remain history.
 Naming a task or narrowing a component does not reset that count.
 
 **Acceptance Criteria:**
@@ -70,6 +71,7 @@ Naming a task or narrowing a component does not reset that count.
   [observability_06](DONE/NS-6_observability_06.md).
 - Keep inference's existing deadlines, cancellation and observation checkpoints;
   reconcile operator phase reporting without replacing its scientific semantics.
+  AC3 accepted 2026-10-28 at the native WAV/corpus/operator scope above.
 - Generic WFC gaps require a demonstrated repro, a new branch in the separate
   local WFC repository and user notification under the cross-repository procedure.
   Add no companion-source changes to this checkout.
@@ -78,8 +80,8 @@ Naming a task or narrowing a component does not reset that count.
 
 **Blockers**
 
-- [Retained inference corpus observation](NS-6_observability_15.md) — required
-  for complete AC3 operator coverage; independent AC1/AC2 work can proceed.
+- [Retained inference corpus observation — DONE](DONE/NS-6_observability_15.md) —
+  accepted AC3 prerequisite; AC1/AC2 work remains here.
 - [Generic WFC solving — DONE](DONE/NS-6_observability_14.md) — accepted primary
   solve/bridge prerequisite; retained capture/publication coverage remains here.
 - [Shared callbacks and audit — DONE](DONE/NS-6_observability_01.md).
@@ -98,6 +100,14 @@ Naming a task or narrowing a component does not reset that count.
   shared staging with exact original source-byte progress.
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss: accept AC3's native inference/operator reporting with
+  task15 at fe431bd after terminal CI466 integration/extracted consumers and
+  Win32/Win64 corpus failure/reopen/reentry controls, exact actual auditor report
+  replay and the prior WAV supervisor qualification. Ubuntu CI does not execute
+  Windows inference; those actual native checks are separate. Parent AC1/AC2,
+  Studio/device and musical gates remain open. Delivery nonclosing 1 to 0 follows
+  real prerequisite/criterion closure; no new experiment or musical credit.
 
 - 2026-10-28, Big Boss: the WAV supervisor uses the shared work contract, keeps
   run metadata private until success and reports unknown worker setup/source

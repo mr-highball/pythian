@@ -1,32 +1,33 @@
 # NS-6_observability_15 — Observe retained inference corpus validation and reading
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
-Finish the separate retained-input/operator prerequisite for
-[observability04](NS-6_observability_04.md) AC3. The native WAV supervisor now has
-shared callbacks, but `TInferenceCorpusReader` has no work observer and its lazy
-artifact construction omits the new hash/row observer. The maintained corpus
-auditor also hashes sources and builds its report without forwarding work.
-Do not claim complete inference/operator coverage from the WAV consumer alone.
+Observe the retained-input/operator prerequisite for
+[observability04](../NS-6_observability_04.md) AC3. Forward shared callbacks through
+`TInferenceCorpusReader` metadata validation, lazy artifact hash/row verification
+and bounded reading, and through the maintained native corpus auditor. An
+observed WAV supervisor alone does not cover these retained-input operations.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
 All original parent, scientific, musical and browser gates remain required.
 
-Execution status (2026-10-28): implemented; exact published qualification pending.
-Big Boss works alone. Next deliverable: shared optional
-call-scoped metadata/verification/read callbacks through the primary inference
-corpus implementation and maintained auditor, preserving the current artifact,
-manifest, group/source/scope and observation contracts. Reuse primary hash/JSON
-behavior rather than adding a parallel parser, digest or reader.
-Closing evidence: original callback identity, private batch publication, explicit
-failed-reader/reopen behavior, exact source/scope rows and actual auditor report
-replay against a frozen prior consumer. Use dedicated E-drive output; no new
-recorded source, inference candidate or scientific tuning is selected.
-Stop on changed observation policy, hidden skipped scopes, partial publication,
-weakened validation, another generic dependency gap or a distinct prerequisite.
-This split adds no credit and resets no nonclosing/scientific counter.
+Accepted 2026-10-28 by Big Boss, solo, at source
+`fe431bdf0135a85ff3bd4008dfb9cce76d8004cf`. Win32/Win64 each pass 159490 checks/
+34 abort cases with zero leaks, private caller slots, failed-cursor/reopen and
+reentry controls, and exact 300-record source/scope replay. The actual maintained
+auditor's completed report matches the frozen prior consumer byte for byte on
+two adjacent Pascal-backend scopes/200 observations. Original corpus and affected
+supervisor/WAV/append controls pass. Exact published
+[Ubuntu CI466](https://github.com/mr-highball/pythian/actions/runs/40749511869)
+is terminal Success: native job 14m7s, integration 12m58s and extracted core/WFC
+consumer verification 43s. Ubuntu CI qualifies maintained integration/packages;
+native inference execution is established separately by the local Windows gates.
+Detailed evidence is under the dedicated E-drive inference-corpus-progress-
+20261028-boss roots, summarized in `VALIDATION.json`. All AC1–3 and accepted
+prerequisites pass. This zero-credit closure resets delivery nonclosing 1 to 0;
+scientific stop counters, browser/phone gates and musical acceptance are unchanged.
 
 **Acceptance Criteria:**
 
@@ -46,10 +47,18 @@ This split adds no credit and resets no nonclosing/scientific counter.
 
 **Blockers**
 
-- [Shared work callbacks — DONE](DONE/NS-6_observability_01.md).
-- [Primary hash publication — DONE](DONE/NS-6_hash-publication_01.md).
+- [Shared work callbacks — DONE](NS-6_observability_01.md).
+- [Primary hash publication — DONE](NS-6_hash-publication_01.md).
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss: accept AC1–3 after exact fe431bd/CI466 reached
+  terminal Success, including both extracted consumers. Combined with the
+  separately qualified WAV supervisor, this closes parent04 AC3 at the declared
+  native inference/operator scope. Parent04 AC1/AC2 and actual Studio/device
+  qualification remain open. Keep the original fixture rejection below, named
+  synchronous residuals and unchanged artifact/report identities; no musical
+  accuracy or extra completion points follow.
 
 - 2026-10-28, Big Boss: primary constructor/read callbacks are call-scoped;
   nested artifact hash/row work carries the actual one-based entry ordinal.
@@ -81,8 +90,8 @@ This split adds no credit and resets no nonclosing/scientific counter.
   bounded synchronous residual, file I/O, string-list searches and RTL structural
   parsing explicitly; do not claim hard callback latency or new musical accuracy.
   Evidence is under the dedicated E-drive inference-corpus-progress-20261028-boss
-  roots. Published CI465 passes the predecessor9b5a437; it does not qualify these
-  current reader changes. Keep task15 open until current publication checks pass.
+  roots. Published CI465 passes the predecessor9b5a437; it did not qualify these
+  reader changes. Task15 stayed open until exact fe431bd/CI466 passed above.
 
 - 2026-10-28, Big Boss batch selection: AC1–3, primary reader and actual auditor
   forwarding with private output and failed-cursor handling. Closing evidence

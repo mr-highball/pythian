@@ -31,7 +31,7 @@ Studio callers, plus existing streaming, inference and library contracts.
 | Studio effects | Selected audio plus tail frames, hash bytes and derived-copy bytes; common progress display | Native effects parity/cancellation checks and browser completion/cancel paths |
 | Library discovery/preparation | Byte/item callbacks reach nested import; existing library notification throttle, cancellation and staged index publication retained | [observability_02](TODO/DONE/NS-6_observability_02.md) |
 | Streaming synthesis/WFC audio | Existing bounded pull, frame clocks, state and cancellation retained | A caller can observe each block; bulk helpers are a separate gap |
-| Pascal inference | Existing observation checkpoints, budgets, cancellation and deadlines retained; native WAV supervisor forwards shared work, with provisional artifact hash/row verification | Actual Win64 worker/abort/replay controls pass. Full [observability_04](TODO/NS-6_observability_04.md) AC3 still requires the [inference corpus/auditor path15](TODO/NS-6_observability_15.md); no third-party execution |
+| Pascal inference | Existing observation checkpoints, budgets, cancellation and deadlines retained; shared work covers native WAV supervision, provisional verification and retained corpus/auditor paths | Native inference/operator AC3 accepted through 9b5a437/CI465 and [task15](TODO/DONE/NS-6_observability_15.md) at fe431bd/CI466, with actual Windows failure/replay checks; no third-party execution or Studio/device claim |
 | Primary scalar text | `text_validate_bytes` counts canonical UTF-8 bytes every 1,024 bytes; `text_compare_scalars` counts compared scalar pairs every 256 items. Totals remain unknown until the actual end | [Metadata reuse](TODO/DONE/NS-6_metadata_01.md); native raw bytes and pas2js UTF-16 scalars share the policy, with borrowed callbacks and original abort exceptions |
 | Layer request/graph construction | `layer_prepare_visits`, `layer_constraint_visits`, `layer_preference_visits` count actual owned loop visits every 256 items; totals unknown until final count | [Layer preparation — DONE](TODO/DONE/NS-6_observability_11.md), checked consumers and Ubuntu integration/extracted packages pass. Borrowed observer is not retained. Mask callback abort rolls back domains before pending-mask publication |
 | WFC bulk sequence preparation | `layer_wfc_model_rows`, `layer_wfc_constraint_rows`, `layer_wfc_snapshot_cells`, `layer_wfc_mask_rows` forward actual phase-local totals from the generic companion observer; inner checkpoints may repeat completed rows | [task12 — DONE](TODO/DONE/NS-6_observability_12.md); reviewed upstream `d1c1c81`, explicit pin/bridge, five-job WFC CI50 and Pythian CI455 pass. Counts restart for each phase/call and do not enter owned visit totals |
@@ -136,9 +136,10 @@ runs after accepted file publication; success requires the function to return.
 
 `TInferenceFileReader.Create` also accepts the optional shared callback, borrowed
 only during construction. It reuses primary hashing, then validates every row
-before exposing a cursor. The retained corpus reader/auditor has a separate
-[required forwarding task](TODO/NS-6_observability_15.md); this component does not
-close the whole inference/operator criterion.
+before exposing a cursor. The retained corpus reader/auditor is qualified in the
+separate [forwarding task](TODO/DONE/NS-6_observability_15.md) below. Both paths
+together close the native inference/operator criterion; actual Studio/device
+acceptance remains separate.
 
 The native inference build accepts `-OutputRoot`; this workstation must provide
 its E-drive override rather than use the portable repository default:
@@ -155,10 +156,12 @@ Polling affects the check total; twelve cases preserve the exact callback marker
 and two preserve the original Boolean-cancellation exception class. This
 is engineering parity, not new recorded inference or musical acceptance.
 
-## Retained inference corpus candidate — 2026-10-28
+## Retained inference corpus observation accepted — 2026-10-28
 
-[Task15](TODO/NS-6_observability_15.md) now forwards shared work through the primary
-native corpus reader and actual auditor; final published acceptance remains open.
+[Task15](TODO/DONE/NS-6_observability_15.md) forwards shared work through the primary
+native corpus reader and actual auditor. Accepted source fe431bd passes exact
+Ubuntu CI466 maintained integration and both extracted consumers, in addition
+to the separate local Windows inference execution checks below.
 `Create(Entries, Progress)` borrows the callback only while validating metadata.
 `ReadBatch(var Index, var Batch, Progress)` borrows it only for that bounded read.
 An exception preserves both caller slots, releases the active file and marks the
@@ -188,7 +191,9 @@ latency, browser yield, whole-operation percentage or inference-quality claim.
 
 Native Win32/Win64 cancellation/reopen/batch/reentry controls and actual auditor
 report replay pass; see task15 for source-bound evidence and the retained old
-fixture expectation. Complete parent04 AC3 awaits this task's published gate.
+fixture expectation. Combined with the qualified WAV supervisor, this closes
+parent04 AC3 at the declared native scope. Parent04 AC1/AC2, browser/phone and
+musical gates remain open. Instrumentation earns no musical completion credit.
 
 ## Shared callback contract
 

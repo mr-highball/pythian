@@ -6,7 +6,7 @@
 Accepted zero-credit usability repairs: [training choices and playback](DONE/NS-6_studio_19.md),
 [tabbed workflow and help](DONE/NS-6_studio_18.md).
 
-Updated 2026-10-28. **53 open / 80 accepted tasks.** The user authorized a new
+Updated 2026-10-28. **52 open / 81 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **52.45 current / 47.55 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -40,8 +40,8 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 50 | 70% | 1 | 30 | 4.50 |
 | [NS-5 - User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 17 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 15 | 46 | 4.60 |
-| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **53** | Goal points are not summed across goals | **47.55** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 14 | 46 | 4.60 |
+| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **52** | Goal points are not summed across goals | **47.55** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -49,11 +49,13 @@ hours or effort estimates. See the [basis and rationale](../REBALANCE-2026-09-29
 
 ## Selection and actual blockers
 
-The native WAV inference supervisor/artifact component now has shared progress
-and actual worker/abort/replay evidence. Full parent04 AC3 remains open for the
-distinct [inference corpus/auditor prerequisite15](NS-6_observability_15.md),
-discovered before widening the WAV batch. It adds one zero-credit task and no
-musical acceptance. Delivery nonclosing1 from entry0; all stop counters persist.
+Accepted zero-credit prerequisite: [inference corpus/auditor observation15](DONE/NS-6_observability_15.md)
+at fe431bd after exact Ubuntu CI466 integration/extracted consumers and separate
+Win32/Win64 cancellation/reopen/reentry and exact actual auditor replay. With
+the WAV supervisor at 9b5a437/CI465, parent04 AC3 is accepted at the native
+inference/operator scope. Parent04 AC1/AC2 and Studio/device gates remain open.
+Real closure resets delivery nonclosing 1 to 0; scientific stops persist. No
+musical credit follows. Counts 52/81/133, NS6 14 open; 52.45/47.55 unchanged.
 
 Accepted zero-credit prerequisite: [generic solve observation14](DONE/NS-6_observability_14.md).
 Explicit pin WFCc496b1d passes all five upstream CI54 jobs; Pythian57df550 passes
@@ -160,8 +162,9 @@ accepted with zero additional credit. The scoped
 independent parity/abort/consumer checks. Remaining retained-operation
 checkpoints remain open. The scoped [corpus archive](DONE/NS-6_observability_05.md)
 and [composition planning](DONE/NS-6_observability_06.md) consumers are accepted
-with actual native byte/report/audio parity, abort and retry; retained-style/
-provider/evaluation/inference coverage remains in observability_04.
+with actual native byte/report/audio parity, abort and retry. Remaining provider/
+session and batch coverage stays in observability_04; its native inference/
+operator AC3 is now accepted through the WAV and retained-corpus consumers.
 [Shared synthesis](DONE/NS-6_portability_03.md) and
 [exact shared timing](DONE/NS-6_portability_04.md) now execute on native and
 actual pas2js with complete sample comparison within the declared tolerance,
@@ -348,8 +351,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | --- | ---: | ---: | --- |
 | [NS-6_studio_21](NS-6_studio_21.md) — Background recovery and long-source learning | 0 | 0.00 | Deployed; actual browser acceptance remains |
 | [NS-6_studio_22](NS-6_studio_22.md) — Original/generated listening comparison | 0 | 0.00 | Deployed for review; native/DOM checks pass, actual browser acceptance remains |
-| [NS-6_observability_04](NS-6_observability_04.md) — Remaining provider/batch operations and operator monitoring | 0 | 0.00 | Provider and context components qualified; later session work, batch and inference/operator reporting remain |
-| [NS-6_observability_15](NS-6_observability_15.md) — Retained inference corpus validation/read progress | 0 | 0.00 | Ready prerequisite for full parent04 AC3; primary shared callbacks/hash accepted |
+| [NS-6_observability_04](NS-6_observability_04.md) — Remaining provider/batch operations and operator monitoring | 0 | 0.00 | Native inference/operator AC3 accepted; retained session/capture/stream/publication AC1 and batch AC2 remain |
 | [NS-6_adoption_01](NS-6_adoption_01.md) — Establish independent ecosystem adoption evidence | 15 | 1.50 | Supported releases + independent ecosystem evidence |
 | [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 1 | 0.10 | Solo usability resumed; complete physical matrix remains open |
 | [NS-6_delivery_03](NS-6_delivery_03.md) — Package and verify the accepted final workflow | 1 | 0.10 | Dependencies, including Studio |
