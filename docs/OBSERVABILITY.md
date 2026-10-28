@@ -31,7 +31,7 @@ Studio callers, plus existing streaming, inference and library contracts.
 | Studio effects | Selected audio plus tail frames, hash bytes and derived-copy bytes; common progress display | Native effects parity/cancellation checks and browser completion/cancel paths |
 | Library discovery/preparation | Byte/item callbacks reach nested import; existing library notification throttle, cancellation and staged index publication retained | [observability_02](TODO/DONE/NS-6_observability_02.md) |
 | Streaming synthesis/WFC audio | Existing bounded pull, frame clocks, state and cancellation retained | A caller can observe each block; bulk helpers are a separate gap |
-| Pascal inference | Existing observation checkpoints, budgets, cancellation and deadlines retained | Reconcile remaining operator phases in [observability_04](TODO/NS-6_observability_04.md); no third-party execution |
+| Pascal inference | Existing observation checkpoints, budgets, cancellation and deadlines retained; native WAV supervisor forwards shared work, with provisional artifact hash/row verification | Actual Win64 worker/abort/replay controls pass. Full [observability_04](TODO/NS-6_observability_04.md) AC3 still requires the [inference corpus/auditor path15](TODO/NS-6_observability_15.md); no third-party execution |
 | Primary scalar text | `text_validate_bytes` counts canonical UTF-8 bytes every 1,024 bytes; `text_compare_scalars` counts compared scalar pairs every 256 items. Totals remain unknown until the actual end | [Metadata reuse](TODO/DONE/NS-6_metadata_01.md); native raw bytes and pas2js UTF-16 scalars share the policy, with borrowed callbacks and original abort exceptions |
 | Layer request/graph construction | `layer_prepare_visits`, `layer_constraint_visits`, `layer_preference_visits` count actual owned loop visits every 256 items; totals unknown until final count | [Layer preparation — DONE](TODO/DONE/NS-6_observability_11.md), checked consumers and Ubuntu integration/extracted packages pass. Borrowed observer is not retained. Mask callback abort rolls back domains before pending-mask publication |
 | WFC bulk sequence preparation | `layer_wfc_model_rows`, `layer_wfc_constraint_rows`, `layer_wfc_snapshot_cells`, `layer_wfc_mask_rows` forward actual phase-local totals from the generic companion observer; inner checkpoints may repeat completed rows | [task12 — DONE](TODO/DONE/NS-6_observability_12.md); reviewed upstream `d1c1c81`, explicit pin/bridge, five-job WFC CI50 and Pythian CI455 pass. Counts restart for each phase/call and do not enter owned visit totals |
@@ -107,6 +107,54 @@ These counts are not overall success, estimated percentages or millisecond
 latency promises. Retained generation/capture, streams/voices, batch and
 inference/operator residuals remain task04 obligations. No actual browser,
 physical listening or musical acceptance follows from the generic work API.
+## Native inference supervisor progress — 2026-10-28
+
+`RunInferenceProcess` accepts a final optional `TWorkProgressCallback`; the
+maintained `pythian.inference.wav measure` tool forwards it through the existing
+console presenter. Stdout retains its final JSON report; stderr carries work.
+The callback is synchronous and borrowed only for the call. Its exceptions
+propagate unchanged; the supervisor stops its owned worker and removes provisional
+files while preserving the accepted artifact and caller's prior run metadata.
+
+| Stage | Meaning and units |
+| --- | --- |
+| `inference_worker_setup` | Unknown setup work,0/0 items; no invented percentage |
+| `inference_observe_rows` | Actually computed observations / declared observation count; not flushed or accepted rows |
+| `inference_worker_verify_source` | Worker's source verification phase,0/0 items; the worker supplies no byte counter |
+| `verify_audio_bytes` | Existing primary SHA-256 stage, applied here to provisional artifact bytes |
+| `inference_verify_rows` | Actual artifact rows validated, every32 rows and the final count |
+| `inference_publication_ready` | One validated private candidate; this checkpoint precedes the atomic platform rename |
+
+The underlying phase-clock, setup/stall/total budgets, process/memory limits,
+estimator, policy and observations are unchanged. Reporting does not renew the
+worker clock. Callback time remains part of elapsed-time budgets. Short worker
+phases may finish between polls; the final checked observation count still
+reports completed work. Source initialization, backend activation, sink I/O and
+worker source verification retain their existing synchronous/phase boundaries.
+There is no hard callback-latency, GUI-yield or overall-success claim. No callback
+runs after accepted file publication; success requires the function to return.
+
+`TInferenceFileReader.Create` also accepts the optional shared callback, borrowed
+only during construction. It reuses primary hashing, then validates every row
+before exposing a cursor. The retained corpus reader/auditor has a separate
+[required forwarding task](TODO/NS-6_observability_15.md); this component does not
+close the whole inference/operator criterion.
+
+The native inference build accepts `-OutputRoot`; this workstation must provide
+its E-drive override rather than use the portable repository default:
+
+```powershell
+.\tools\build-inference.ps1 -Compiler '<verified Win64 FPC 3.2.2 compiler>' -OutputRoot 'E:\CodexWork\pythian\build'
+```
+
+The checked Win64 supervisor run passes 1,064 checks / 14 abort cases,
+including prior file/run preservation, real child cleanup, retry, observed stall
+and final identity rejection, zero leaks. Existing inference controls pass. The
+frozen/current actual Pascal backend emits the same 291,506 artifact bytes.
+Polling affects the check total; twelve cases preserve the exact callback marker
+and two preserve the original Boolean-cancellation exception class. This
+is engineering parity, not new recorded inference or musical acceptance.
+
 ## Shared callback contract
 
 [`pythian.progress`](../src/pythian.progress.pas) defines `TWorkProgress`:

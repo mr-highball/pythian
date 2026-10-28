@@ -31,6 +31,7 @@ interface
 
 uses
   Windows,
+  pythian.progress,
   pythian.inference.observation;
 
 const
@@ -101,11 +102,17 @@ function ReadInferenceProgress(const AProgress: PInferenceWorkerProgress):
 function InferenceProgressPhase(const ASnapshot: TInferenceProgressSnapshot): LongInt;
 function InferenceProgressTick(const ASnapshot: TInferenceProgressSnapshot): QWord;
 { Launches the exact worker executable suspended, assigns the memory/process
-  job limit before resume, polls cancellation at50ms, validates staged output
-  then atomically replaces AOutput. Existing accepted bytes survive any failure. }
+  job limit before resume, waits in50ms polls, validates staged output then
+  atomically replaces AOutput. Existing accepted bytes and caller run metadata
+  survive failure. Work callbacks are synchronous, borrowed and must be cheap.
+  Rows count computation, not accepted publication. Setup and worker source
+  verification have unknown totals. Reporting does not renew worker clocks or
+  budgets. The final ready checkpoint precedes the platform rename; no callback
+  follows accepted publication. }
 function RunInferenceProcess(const AWorker, AEstimatorIdentity, APolicyIdentity,
   ASource, AOutput: String; const ARequest: TInferenceRequest;
-  const ACancel: TInferenceCancel = nil): TInferenceRun;
+  const ACancel: TInferenceCancel = nil;
+  const AProgress: TWorkProgressCallback = nil): TInferenceRun;
 
 implementation
 
@@ -299,9 +306,11 @@ end;
 
 function RunInferenceProcess(const AWorker, AEstimatorIdentity, APolicyIdentity,
   ASource, AOutput: String; const ARequest: TInferenceRequest;
-  const ACancel: TInferenceCancel): TInferenceRun;
+  const ACancel: TInferenceCancel;
+  const AProgress: TWorkProgressCallback): TInferenceRun;
 var
   LSource: TFileStream;
+  LCandidate: TInferenceRun;
   LWave: TWaveFrameReader;
   LRead: TInferenceFileReader;
   LJob: THandle;
@@ -325,9 +334,12 @@ var
   LDiagnostic: String;
   LProgressTick: QWord;
   LPhase: LongInt;
+  LLastPhase: LongInt;
+  LCompleted: Int64;
+  LLastCompleted: Int64;
   LSnapshot: TInferenceProgressSnapshot;
 begin
-  Result := Default(TInferenceRun);
+  LCandidate := Default(TInferenceRun);
   {$if SizeOf(Pointer) <> 8}
     {$fatal Inference supervisor requires Win64}
   {$endif}
@@ -350,17 +362,20 @@ begin
   LProcess := Default(TProcessInformation);
   LExited := False;
   LTemporary := '';
+  LLastPhase := 0;
+  LLastCompleted := -1;
   try
     CheckInferenceCancel(ACancel);
+    ReportWork(AProgress, 'inference_worker_setup', wuItems, 0, 0);
     LSource := TFileStream.Create(ASource, fmOpenRead or fmShareDenyWrite);
     LWave := TWaveFrameReader.Create(LSource);
-    Result.Identity.Request := ARequest;
-    Result.Identity.Estimator := InferenceEstimator;
-    Result.Identity.SourceRate := LWave.SampleRate;
-    Result.Identity.SourceChannels := LWave.Channels;
-    Result.Identity.SourceFrames := LWave.FrameCount;
-    Result.Identity.ObservationCount := InferenceCount(ARequest);
-    InferenceIdentityText(Result.Identity);
+    LCandidate.Identity.Request := ARequest;
+    LCandidate.Identity.Estimator := InferenceEstimator;
+    LCandidate.Identity.SourceRate := LWave.SampleRate;
+    LCandidate.Identity.SourceChannels := LWave.Channels;
+    LCandidate.Identity.SourceFrames := LWave.FrameCount;
+    LCandidate.Identity.ObservationCount := InferenceCount(ARequest);
+    InferenceIdentityText(LCandidate.Identity);
     if ARequest.InputEnd16k > StreamResampleFrameCount(LWave.FrameCount,
       LWave.SampleRate, InferenceRate) then
     begin
@@ -437,6 +452,24 @@ begin
       LSnapshot := ReadInferenceProgress(LProgress);
       LProgressTick := InferenceProgressTick(LSnapshot);
       LPhase := InferenceProgressPhase(LSnapshot);
+      { These are computed observations, not flushed/accepted output. Keep
+        worker verification indeterminate: it publishes no byte counter.
+        Reporting never refreshes the worker's atomic clock or its deadline. }
+      if LPhase = 1 then
+      begin
+        LCompleted := InterlockedCompareExchange64(LProgress^.Completed, 0, 0);
+        if (LPhase <> LLastPhase) or (LCompleted <> LLastCompleted) then
+        begin
+          ReportWork(AProgress, 'inference_observe_rows', wuObservations,
+            LCompleted, LCandidate.Identity.ObservationCount);
+          LLastCompleted := LCompleted;
+        end;
+      end
+      else if (LPhase = 2) and (LPhase <> LLastPhase) then
+      begin
+        ReportWork(AProgress, 'inference_worker_verify_source', wuItems, 0, 0);
+      end;
+      LLastPhase := LPhase;
       LNow := GetTickCount64;
       LDiagnostic := ' phase=' + InferencePhaseName(LPhase) +
         ' total_ms=' + IntToStr(LNow - LStarted) +
@@ -485,7 +518,7 @@ begin
     end;
     LSnapshot := ReadInferenceProgress(LProgress);
     if (LCode <> 0) or (InferenceProgressPhase(LSnapshot) <> 3) or
-      (LProgress^.Completed <> Result.Identity.ObservationCount) then
+      (LProgress^.Completed <> LCandidate.Identity.ObservationCount) then
     begin
       LError := '';
       if FileExists(LTemporary + '.error') then
@@ -499,37 +532,45 @@ begin
       raise EAudio.CreateFmt('Inference worker failed or did not complete (exit %d): %s',
         [LCode, LError]);
     end;
+    { A fast worker can finish between polls. Its terminal validated counter
+      still supplies a truthful final observation count, without inventing
+      intermediate callbacks or calling the complete operation successful. }
+    ReportWork(AProgress, 'inference_observe_rows', wuObservations,
+      LCandidate.Identity.ObservationCount, LCandidate.Identity.ObservationCount);
     if not InferenceQueryJob(LJob, 9, @LLimits, SizeOf(LLimits), nil) then
     begin
       RaiseLastOSError;
     end;
-    Result.PeakPrivateBytes := LLimits.PeakProcessMemory;
-    Result.ColdMs := LProgress^.ColdMs;
-    Result.SourceSetupMs := LProgress^.SourceSetupMs;
-    Result.BackendSetupMs := LProgress^.BackendSetupMs;
-    Result.FirstObservationMs := LProgress^.FirstObservationMs;
-    Result.WarmObservationMs := LProgress^.WarmObservationMs;
-    if Result.PeakPrivateBytes > InferencePrivateByteLimit then
+    LCandidate.PeakPrivateBytes := LLimits.PeakProcessMemory;
+    LCandidate.ColdMs := LProgress^.ColdMs;
+    LCandidate.SourceSetupMs := LProgress^.SourceSetupMs;
+    LCandidate.BackendSetupMs := LProgress^.BackendSetupMs;
+    LCandidate.FirstObservationMs := LProgress^.FirstObservationMs;
+    LCandidate.WarmObservationMs := LProgress^.WarmObservationMs;
+    if LCandidate.PeakPrivateBytes > InferencePrivateByteLimit then
     begin
       raise EAudio.Create('Inference private-memory budget exceeded: bytes=' +
-        IntToStr(Result.PeakPrivateBytes) + ' limit_bytes=' + IntToStr(InferencePrivateByteLimit));
+        IntToStr(LCandidate.PeakPrivateBytes) + ' limit_bytes=' + IntToStr(InferencePrivateByteLimit));
     end;
-    if Result.ColdMs > InferenceSetupLimitMs then
+    if LCandidate.ColdMs > InferenceSetupLimitMs then
     begin
       raise EAudio.Create('Inference completed setup budget exceeded: cold_ms=' +
-        IntToStr(Result.ColdMs) + ' limit_ms=' + IntToStr(InferenceSetupLimitMs) +
-        ' source_setup_ms=' + IntToStr(Result.SourceSetupMs) +
-        ' backend_setup_ms=' + IntToStr(Result.BackendSetupMs));
+        IntToStr(LCandidate.ColdMs) + ' limit_ms=' + IntToStr(InferenceSetupLimitMs) +
+        ' source_setup_ms=' + IntToStr(LCandidate.SourceSetupMs) +
+        ' backend_setup_ms=' + IntToStr(LCandidate.BackendSetupMs));
     end;
     CheckInferenceCancel(ACancel);
-    LRead := TInferenceFileReader.Create(LTemporary, Result.Identity, ACancel);
+    LRead := TInferenceFileReader.Create(LTemporary, LCandidate.Identity, ACancel, AProgress);
     FreeAndNil(LRead);
+    { The candidate has passed identity, checksum and every row. This is the
+      last cancellable checkpoint; rename/publication below has no callback. }
+    ReportWork(AProgress, 'inference_publication_ready', wuItems, 1, 1);
     CheckInferenceCancel(ACancel);
-    Result.ElapsedMs := GetTickCount64 - LStarted;
-    if Result.ElapsedMs > LDeadline then
+    LCandidate.ElapsedMs := GetTickCount64 - LStarted;
+    if LCandidate.ElapsedMs > LDeadline then
     begin
       raise EAudio.Create('Inference final-verification total budget exceeded: total_ms=' +
-        IntToStr(Result.ElapsedMs) + ' limit_ms=' + IntToStr(LDeadline));
+        IntToStr(LCandidate.ElapsedMs) + ' limit_ms=' + IntToStr(LDeadline));
     end;
     if not MoveFileEx(PChar(LTemporary), PChar(ExpandFileName(AOutput)),
       MOVEFILE_REPLACE_EXISTING or $8) then
@@ -537,6 +578,7 @@ begin
       RaiseLastOSError;
     end;
     LTemporary := '';
+    Result := LCandidate;
   finally
     LRead.Free;
     if (LProcess.hProcess <> 0) and not LExited then

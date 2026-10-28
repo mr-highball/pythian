@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 #>
-param([string]$Compiler = 'fpc')
+param([string]$Compiler = 'fpc', [string]$OutputRoot = '')
 
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
@@ -37,7 +37,8 @@ if ($compilerVersion -ne '3.2.2' -or $compilerCpu -ne 'x86_64' -or $compilerOs -
   throw 'The supervised Pascal inference consumer currently requires an x86_64-win64 compiler'
 }
 
-$buildRoot = Join-Path $projectRoot "build/inference-$compilerVersion-$compilerCpu-$compilerOs"
+$outputBase = if ($OutputRoot -eq '') { Join-Path $projectRoot 'build' } else { [IO.Path]::GetFullPath($OutputRoot) }
+$buildRoot = Join-Path $outputBase "inference-$compilerVersion-$compilerCpu-$compilerOs"
 $unitRoot = Join-Path $buildRoot 'units'
 New-Item -ItemType Directory -Force $unitRoot | Out-Null
 Write-Output "Compiler: $compilerPath ($compilerVersion $compilerCpu-$compilerOs)"
@@ -55,6 +56,8 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Inference corpus reader fixture compilation failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.inference.append.telemetry.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Inference append telemetry fixture compilation failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.inference.progress.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Inference supervisor progress fixture compilation failed' }
   & $compilerPath @compilerArgs 'tools/pythian.inference.corpus.audit.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Inference corpus auditor compilation failed' }
   Write-Output "Pascal inference consumer and backend fixtures compiled: $buildRoot"

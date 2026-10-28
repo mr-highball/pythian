@@ -31,6 +31,7 @@ interface
 uses
   Classes,
   SysUtils,
+  pythian.progress,
   pythian.audio;
 
 const
@@ -112,14 +113,18 @@ type
     procedure Abort; override;
   end;
   { Validates exact caller-supplied identity, complete byte extent/checksum and
-    every observation before exposing a read cursor. Borrows no caller state. }
+    every observation before exposing a read cursor. Optional work observation
+    is borrowed only for construction: primary hash bytes then verified rows,
+    every bounded batch and the final count. Original exceptions propagate;
+    failed construction releases its private file and exposes no cursor. }
   TInferenceFileReader = class
   strict private
     FStream: TFileStream;
     FRemaining: Int64;
   public
     constructor Create(const AFileName: String; const AExpected: TInferenceIdentity;
-      const ACancel: TInferenceCancel = nil);
+      const ACancel: TInferenceCancel = nil;
+      const AProgress: TWorkProgressCallback = nil);
     destructor Destroy; override;
     function ReadBatch(const AMaximum: Integer = InferenceMaximumBatch): TInferenceBatch;
   end;
@@ -133,7 +138,8 @@ function InferenceIdentityText(const AIdentity: TInferenceIdentity): String;
 procedure CheckInferenceCancel(const ACancel: TInferenceCancel);
 function HashInferenceFile(const AFileName: String): String;
 function HashInferenceStream(const AStream: TStream; const ACount: Int64;
-  const ACancel: TInferenceCancel): String;
+  const ACancel: TInferenceCancel;
+  const AProgress: TWorkProgressCallback = nil): String;
 
 implementation
 
@@ -165,7 +171,8 @@ begin
 end;
 
 function HashInferenceStream(const AStream: TStream; const ACount: Int64;
-  const ACancel: TInferenceCancel): String;
+  const ACancel: TInferenceCancel;
+  const AProgress: TWorkProgressCallback): String;
 var
   LStream: TInferenceHashStream;
 begin
@@ -173,7 +180,7 @@ begin
   try
     LStream.FSource := AStream;
     LStream.FCancel := ACancel;
-    Result := Sha256Stream(LStream, ACount);
+    Result := Sha256Stream(LStream, ACount, AProgress);
   finally
     LStream.Free;
   end;
@@ -429,7 +436,8 @@ begin
 end;
 
 constructor TInferenceFileReader.Create(const AFileName: String;
-  const AExpected: TInferenceIdentity; const ACancel: TInferenceCancel);
+  const AExpected: TInferenceIdentity; const ACancel: TInferenceCancel;
+  const AProgress: TWorkProgressCallback);
 var
   LExpected: String;
   LHeader: String;
@@ -461,7 +469,7 @@ begin
     raise EAudio.Create('Inference artifact is incomplete or has trailing bytes');
   end;
   FStream.Position := 0;
-  LHash := HashInferenceStream(FStream, FStream.Size - 64, ACancel);
+  LHash := HashInferenceStream(FStream, FStream.Size - 64, ACancel, AProgress);
   SetLength(LStored, 64);
   FStream.ReadBuffer(LStored[1], 64);
   if LHash <> LStored then
@@ -470,6 +478,8 @@ begin
   end;
   FStream.Position := LDataStart;
   LIndex := 0;
+  ReportWork(AProgress, 'inference_verify_rows', wuObservations, 0,
+    AExpected.ObservationCount);
   while LIndex < AExpected.ObservationCount do
   begin
     if LIndex mod InferenceMaximumBatch = 0 then
@@ -484,6 +494,12 @@ begin
       raise EAudio.Create('Inference artifact center sequence differs');
     end;
     Inc(LIndex);
+    if (LIndex mod InferenceMaximumBatch = 0) or
+      (LIndex = AExpected.ObservationCount) then
+    begin
+      ReportWork(AProgress, 'inference_verify_rows', wuObservations, LIndex,
+        AExpected.ObservationCount);
+    end;
   end;
   FStream.Position := LDataStart;
   FRemaining := AExpected.ObservationCount;

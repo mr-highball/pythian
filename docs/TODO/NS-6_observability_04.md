@@ -43,7 +43,12 @@ preserves original cancellation, accepted-state/retry replay and independent
 trace failures. Whole AC1 remains open for retained capture/copy, later stream/
 voice construction and other owned publication work. Do not put a cancellable
 wrapper callback after an already accepted graph swap.
-AC2 batch evaluation and AC3 inference/operator reporting remain required. These
+AC3's native WAV supervisor/artifact-verification component now passes actual
+Win64 worker/abort/retry/cleanup and unchanged-backend artifact replay. The
+separate retained inference corpus/auditor gap is owned by
+[observability15](NS-6_observability_15.md). AC3 remains open until that path is
+qualified too; an observed WAV run is not whole operator coverage.
+AC2 batch evaluation and complete AC3 inference/operator reporting remain required. These
 component qualifications close neither this parent nor musical acceptance and
 earn no additional credit. The actual hash criterion closure resets the delivery
 nonclosing count1 to0; the previous two-batch reassessment remains recorded history.
@@ -73,6 +78,8 @@ Naming a task or narrowing a component does not reset that count.
 
 **Blockers**
 
+- [Retained inference corpus observation](NS-6_observability_15.md) — required
+  for complete AC3 operator coverage; independent AC1/AC2 work can proceed.
 - [Generic WFC solving — DONE](DONE/NS-6_observability_14.md) — accepted primary
   solve/bridge prerequisite; retained capture/publication coverage remains here.
 - [Shared callbacks and audit — DONE](DONE/NS-6_observability_01.md).
@@ -91,6 +98,31 @@ Naming a task or narrowing a component does not reset that count.
   shared staging with exact original source-byte progress.
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss: the WAV supervisor uses the shared work contract, keeps
+  run metadata private until success and reports unknown worker setup/source
+  verification, computed rows, artifact hash/rows and publication readiness.
+  Callbacks do not renew atomic worker clocks or scientific budgets. Actual
+  Win64 supervised checks pass1064 checks/14 original aborts, with real child
+  termination, prior file/run preservation, exact retry, unchanged stall and
+  final identity rejection. Existing wave, corpus, append and sparse-peak
+  controls pass with zero leaks. Frozen/current actual backend artifacts match
+  exactly:291506 bytes, SHA2565ea137393fda4f2083ca364030743fa7c7a2b66a05cd8a6fc7ffd554c1db3ac1.
+  The retained corpus/auditor inventory still lacks forwarding; create task15
+  before expanding this batch. Full AC3 remains open. Delivery nonclosing1 from
+  entry0; naming the new prerequisite resets nothing. No musical credit.
+
+- 2026-10-28, Big Boss selects AC3's native inference/operator reporting after
+  real task14 closure. Deliver shared optional callbacks for the exact worker's
+  setup/observing/verifying phases and artifact verification, through the WAV
+  operator. Preserve atomic phase clocks, original cancellation, deadlines,
+  inference identities/data and accepted output. Close with actual supervised
+  completion/abort/timeout/cleanup, unchanged-backend artifact parity and affected
+  inference controls. Setup and worker verification remain unknown-work phases;
+  no overall percentage or post-publication callback. Stop on scientific-policy
+  changes, weakened budgets, partial publication or another distinct prerequisite.
+  Evidence uses E-drive inference-operator-progress-20261028-boss roots. Entry
+  delivery nonclosing0; creating or naming a batch earns no acceptance or credit.
 
 - 2026-10-28, Big Boss: accept generic solve prerequisite14 at57df550/c496b1d
   after exact terminal CI54/CI464 and current native/actual portable consumers.

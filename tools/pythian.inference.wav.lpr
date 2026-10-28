@@ -35,6 +35,7 @@ uses
   pythian.inference.sparsepeak,
   pythian.inference.wave,
   pythian.inference.process,
+  pythian.tools.progress,
   pythian.tools.files;
 
 type
@@ -116,7 +117,7 @@ end;
 
 procedure TWorkerMonitor.Update(const APhase: String; const ACompleted: Int64);
 begin
-  Progress^.Completed := ACompleted;
+  InterlockedExchange64(Progress^.Completed, ACompleted);
   if APhase = 'verifying' then
   begin
     Progress^.WarmObservationMs := GetTickCount64 - FFirstDone;
@@ -250,6 +251,7 @@ end;
 procedure Measure;
 var
   LCancel: TConsoleCancellation;
+  LProgress: TConsoleWorkProgress;
   LRun: TInferenceRun;
   LReport: TJSONObject;
 begin
@@ -259,12 +261,16 @@ begin
       'SOURCE.wav OUTPUT.pinf SOURCE_SHA256 CHANNEL SCOPE_START16K SCOPE_END16K ' +
       'INPUT_START16K INPUT_END16K FIRST_CENTER16K HOP16K BATCH_SIZE');
   end;
-  LCancel := TConsoleCancellation.Create;
-  LReport := TJSONObject.Create;
+  LCancel := nil;
+  LProgress := nil;
+  LReport := nil;
   try
+    LCancel := TConsoleCancellation.Create;
+    LProgress := TConsoleWorkProgress.Create;
+    LReport := TJSONObject.Create;
     SetConsoleCtrlHandler(@ConsoleHandler, True);
     LRun := RunInferenceProcess(ParamStr(0), InferenceEstimator, InferencePolicy,
-      ParamStr(2), ParamStr(3), ReadRequest(False), LCancel.Cancelled);
+      ParamStr(2), ParamStr(3), ReadRequest(False), LCancel.Cancelled, LProgress.Observe);
     LReport.Add('status', 'complete');
     LReport.Add('policy', InferencePolicy);
     LReport.Add('source_sha256', LRun.Identity.Request.SourceHash);
@@ -285,6 +291,7 @@ begin
   finally
     SetConsoleCtrlHandler(@ConsoleHandler, False);
     LReport.Free;
+    LProgress.Free;
     LCancel.Free;
   end;
 end;

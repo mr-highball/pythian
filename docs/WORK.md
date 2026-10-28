@@ -12,6 +12,64 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Native WAV inference progress component; corpus prerequisite remains — 2026-10-28
+
+Big Boss implements shared optional work callbacks in the Win64 supervisor and
+provisional artifact reader, forwarded by the maintained WAV operator. Setup and
+worker source verification remain unknown-work phases; computed rows are not
+flushed/accepted rows. Primary SHA-256 bytes and actual verified rows use the same
+library algorithms. The atomic worker clock, fixed estimator/policy, deadlines,
+memory/process limits and inference observations are unchanged. Keep the candidate
+run metadata private until success. The last callback precedes file publication;
+callbacks cannot refresh worker clocks or report overall completion.
+
+Actual Win64 supervised fixture passes1064 checks/14 original aborts, zero leaks,
+including real owned-child termination, old artifact/run preservation, exact retry,
+unchanged observing-stall limit with observation enabled and final identity
+rejection. Existing wave geometry/adjacent-scope, corpus, append telemetry and
+sparse-peak controls pass, zero leaks. The frozen/current actual Pascal backend
+produces byte-identical291506-byte artifacts, SHA256
+5ea137393fda4f2083ca364030743fa7c7a2b66a05cd8a6fc7ffd554c1db3ac1. Native stdout
+report/identities retain their contract; progress goes to stderr through the
+existing console presenter. The maintained inference build now accepts an
+explicit output-root override, exercised under its dedicated E-drive workspace.
+
+The operator inventory finds another required path: native inference corpus
+metadata/lazy artifact reading and its auditor do not forward work. Create linked
+[task15](TODO/NS-6_observability_15.md) before expanding the WAV batch; it owns
+counts, failed-reader/private-batch handling and actual auditor replay. Complete
+parent04 AC3 remains open. This component batch closes no complete criterion:
+delivery nonclosing1 from entry0, not reset by the new task. Counts53 open/80 DONE/
+133 total, NS-6 15 open;52.45/47.55 unchanged. Scientific stops, private source/
+answer data and all browser/phone gates are unchanged; no service, firewall,
+recorded inference experiment or playback is started. Full goal active, solo.
+
+## Native inference operator visibility selected — 2026-10-28
+
+Previous goal turn is progress:0618570 closes solver observation14 after exact
+published gates and updates links/accounting. Delivery nonclosing enters0;
+scientific stopped-family counters are unchanged. Root is clean before selection.
+The least-complete NS5 vocabulary still requires supported context/full references.
+Fresh read-only live catalog lookup retains the unanswered4:16 repetition request;
+the prior short continuity answer remains in the completed queue. The host repair
+has no administrator result file. Do not repeat either request or bypass the
+existing browser-policy handoff.
+
+Select parent observability04 AC3, native inference/operator reporting. Deliver
+borrowed shared work callbacks for actual supervisor setup/observation/verification
+and provisional artifact validation, forwarded by the maintained WAV operator.
+Keep inference identities, observation values, budgets, atomic phase-clock and
+original cancellation semantics. Unknown setup/worker-verification work remains
+unknown; no invented overall percentage or callback after accepted publication.
+Closing evidence: actual Win64 supervised-worker completion/abort/timeout/cleanup,
+original callback exceptions, prior-output preservation and byte-exact actual
+Pascal-backend artifact replay, plus the existing affected inference controls.
+Use dedicated E-drive inference-operator-progress-20261028-boss outputs. Stop at
+changed scientific policy, weakened deadlines, exposed partial results, another
+generic dependency gap or a new prerequisite. Big Boss works alone. Parent04 and
+musical acceptance stay open until their complete gates pass; counts52/80/132 and
+52.45/47.55 do not change merely by starting this batch.
+
 ## Generic solve observation accepted — 2026-10-28
 
 The previous goal turn is progress:68975ac publishes the fixed-path/DHCP firewall
