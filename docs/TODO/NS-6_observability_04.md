@@ -80,6 +80,8 @@ Naming a task or narrowing a component does not reset that count.
 
 **Blockers**
 
+- [Generic sequence capture observation](NS-6_observability_16.md) — demonstrated
+  retained capture prerequisite for AC1; existing commit hook is sufficient.
 - [Retained inference corpus observation — DONE](DONE/NS-6_observability_15.md) —
   accepted AC3 prerequisite; AC1/AC2 work remains here.
 - [Generic WFC solving — DONE](DONE/NS-6_observability_14.md) — accepted primary
@@ -100,6 +102,24 @@ Naming a task or narrowing a component does not reset that count.
   shared staging with exact original source-byte progress.
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss: the first retained-publication batch finds an actual
+  generic prerequisite before Pythian implementation. At the admitted1024-state/
+  256-cell bound, public capture/domain-proof/segment-capture take5407/5375/5546ms
+  without a callback or solver cost. The API observer probe fails compilation;
+  the separate expansion checkout has no fix. Follow task16 on its new upstream
+  branch before extending scope. Delivery nonclosing0 to1; no criterion/credit
+  closes. Existing generic DoValidateCommit already supplies the correct guarded
+  domain-publication lifetime; do not add a second transaction mechanism.
+
+- 2026-10-28, Big Boss selects remaining AC1 retained capture/copy/publication.
+  Deliver observed owned work and private outputs inside the existing generic
+  guarded-commit lifetime, preserving accepted graph/RNG, original callbacks and
+  exact same-session retry. Close with finite/retained/selective native consumers,
+  exact source/token/state replay, abort cleanup and measured residuals. Stop on
+  another required dependency gap before widening scope. Dedicated E-drive
+  retained-publication-20261028-boss roots; delivery nonclosing entry0 retained.
+  No scientific family, audio source, private answer or browser handoff is changed.
 
 - 2026-10-28, Big Boss: accept AC3's native inference/operator reporting with
   task15 at fe431bd after terminal CI466 integration/extracted consumers and

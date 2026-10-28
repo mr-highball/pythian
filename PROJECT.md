@@ -46,7 +46,15 @@ either precursor source directory. Phanes was removed after the
 [extraction and consumer audit](docs/REFERENCE-REMOVAL.md); its application assets
 are not library inputs. WFC and Athena remain pinned submodules.
 
-Current accepted WFC pin: `c496b1d0a8a7570edd34aebaa9982bc32cc7fcf7`, on separate
+Current candidate WFC pin: `f85d7339bf361cacdf20b4764e3281ad91891659`, on separate
+branch `codex/pythian-sequence-capture-progress`. It adds shared read-only capture,
+path/domain and token-projection observation, with private managed publication.
+[Task16](docs/TODO/NS-6_observability_16.md) owns upstream CI55, actual Pythian
+finite forwarding and downstream/extracted qualification. Native Win32/Win64
+and actual pas2js controls pass locally; exact published gates remain open.
+The branch is unmerged and adds no musical credit.
+
+Last accepted WFC pin: `c496b1d0a8a7570edd34aebaa9982bc32cc7fcf7`, on separate
 branch `codex/pythian-solve-progress`. It retains the previously accepted
 `6b419e6` preparation/learning work and adds call-scoped generic solve observation
 and cancellation. [Task14](docs/TODO/DONE/NS-6_observability_14.md) records acceptance

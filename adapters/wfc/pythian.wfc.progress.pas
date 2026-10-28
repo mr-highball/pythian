@@ -28,7 +28,7 @@ unit pythian.wfc.progress;
 
 interface
 
-uses pythian.progress, wfc_solve_progress;
+uses pythian.progress, wfc_solve_progress, wfc_sequence;
 
 type
   { A call-scoped borrowed observer adapter. It owns no graph and preserves the
@@ -39,12 +39,16 @@ type
     FCallback: TWorkProgressCallback;
   private
     procedure ObserveSolve(const AWork: TWfcSolveProgress);
+    procedure ObserveSequenceWork(const AWork: TWfcSequencePreparationProgress);
   public
     constructor Create(const ACallback: TWorkProgressCallback);
     function SolveObserver: TWfcSolveObserver;
+    function SequenceWorkObserver: TWfcSequencePreparationObserver;
   end;
 
 function WfcSolveObserver(const ABridge: TWfcSolveProgressBridge): TWfcSolveObserver;
+function WfcSequenceWorkObserver(const ABridge: TWfcSolveProgressBridge):
+  TWfcSequencePreparationObserver;
 
 implementation
 
@@ -84,6 +88,51 @@ begin
   if Assigned(FCallback) then
   begin
     Result := ObserveSolve;
+  end;
+end;
+
+procedure TWfcSolveProgressBridge.ObserveSequenceWork(
+  const AWork: TWfcSequencePreparationProgress);
+var
+  LStage: String;
+begin
+  case AWork.Phase of
+    wspValidateConstraints: LStage := 'wfc_sequence_constraint_rows';
+    wspValidateGraphModel: LStage := 'wfc_sequence_model_rows';
+    wspSnapshotDomains: LStage := 'wfc_sequence_snapshot_cells';
+    wspIntersectDomains: LStage := 'wfc_sequence_mask_rows';
+    wspLearnTokenRows: LStage := 'wfc_sequence_learn_token_rows';
+    wspLearnStateRows: LStage := 'wfc_sequence_learn_state_rows';
+    wspModelBuildVisits: LStage := 'wfc_sequence_model_build_visits';
+    wspCaptureSequenceCells: LStage := 'wfc_sequence_capture_cells';
+    wspValidatePathStates: LStage := 'wfc_sequence_path_states';
+    wspValidatePathTransitions: LStage := 'wfc_sequence_path_transitions';
+    wspValidateEntryCells: LStage := 'wfc_sequence_entry_cells';
+    wspValidateProjectionStates: LStage := 'wfc_sequence_projection_states';
+    wspProjectStateTokens: LStage := 'wfc_sequence_project_tokens';
+    wspCaptureReady: LStage := 'wfc_sequence_capture_ready';
+  else
+    raise EAudio.Create('Unknown companion sequence work phase');
+  end;
+  ReportWork(FCallback, LStage, wuItems, AWork.Done, AWork.Total);
+end;
+
+function TWfcSolveProgressBridge.SequenceWorkObserver: TWfcSequencePreparationObserver;
+begin
+  Result := nil;
+  if Assigned(FCallback) then
+  begin
+    Result := ObserveSequenceWork;
+  end;
+end;
+
+function WfcSequenceWorkObserver(const ABridge: TWfcSolveProgressBridge):
+  TWfcSequencePreparationObserver;
+begin
+  Result := nil;
+  if ABridge <> nil then
+  begin
+    Result := ABridge.SequenceWorkObserver();
   end;
 end;
 

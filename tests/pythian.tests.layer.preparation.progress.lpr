@@ -96,7 +96,8 @@ begin
       WfcSnapshotTotal := AWork.Total;
     end;
   end
-  else
+  else if (Copy(AWork.Stage, 1, 13) <> 'wfc_sequence_') and
+    (Copy(AWork.Stage, 1, 9) <> 'acoustic_') then
   begin
     Check((AWork.Total = 0) or (AWork.Total = AWork.Done),
       'Owned visit total was estimated from companion work');

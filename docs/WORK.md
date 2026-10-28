@@ -12,6 +12,80 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Generic capture and finite forwarding candidate — 2026-10-28
+
+The separate WFC branch publishesf85d7339bf361cacdf20b4764e3281ad91891659, with
+exact live [CI55](https://github.com/mr-highball/wfc/actions/runs/40755986499).
+Pythian explicitly checks out that reviewed candidate and forwards shared
+sequence work through actual finite token/acoustic consumers. No dependency
+source is patched here. Win32/Win64 and actual pas2js each pass126370 checks/
+52 original observer aborts, exact retry and prior-output preservation, zero
+native leaks. Actual three-seed native output matches the frozen5ea6571 consumer
+and oldc496b1d pin byte for byte (SHA256a320d952d851dee313434aa95f23c24a7108b73d6e55dac23f3dc3b569a967cd);
+actual pas2js has identical output lines after platform newline normalization.
+
+Generic native/actual portable135086 checks/87 aborts remain qualified, zero
+native leaks. Original native sequence120, wrap6815, segment544 and preparation
+18528 controls pass; original preparation also executes on pas2js18532/8.
+Original sequence/wrap/segment browser suites compile locally; actual browser
+execution remains with published upstream CI. Preserve the initial missing
+browser-host include and the earlier order1-negative-fixture failure; neither
+changes production validation. Existing retained-layer regression passes470747
+checks/149 abort-retries and original13/8/2 visit oracles, zero native leaks.
+Clean extracted consumers and exact downstream
+publication remain required. Task16 stays open in this same qualification batch,
+delivery nonclosing entry1 retained. Counts53/81/134, NS6 15 open;52.45/47.55
+unchanged. Parent04 retained capture/session/stream/voice and batch scope remains
+open. Full goal active, solo Big Boss; no new science or operator-state changes.
+
+## Generic capture prerequisite16 in progress — 2026-10-28
+
+The first retained-publication batch stops at a demonstrated generic dependency
+gap: isolated admitted1024-state/256-cell public capture/domain/segment calls
+take5407/5375/5546ms without an observer, excluding solver and heap-trace cost.
+The observer-argument capability probe fails compilation, and the separate
+expansion checkout has no fix. Create linked task16 before implementation scope
+expands. The user is notified of new separate WFC branch
+`codex/pythian-sequence-capture-progress`, based on reviewedc496b1d; no source in
+Pythian's dependency checkout is edited. Existing guarded DoValidateCommit is
+the later Pythian publication route, not another missing transaction API.
+
+Task16 AC1–3 deliver shared borrowed capture/path/domain callbacks and private
+managed publication in generic WFC, then actual Pythian finite forwarding and
+explicit pin/integration/extracted consumers. Close only after native/actual
+pas2js original-exception/metadata/output/retry controls and exact published
+checks. Stop on changed proof/identity, partial publication or another required
+gap. Entry delivery nonclosing1 follows the nonclosing parent audit, not a reset.
+Counts53 open/81 DONE/134 total, NS6 15 open;52.45/47.55 unchanged. No musical
+experiment, user source, answer or browser/service/firewall change is selected.
+
+Local generic candidate now passes Win32/Win64 and actual pas2js:135086 checks/
+87 original aborts and exact same-graph retry, zero native leaks. Preserve the
+initial negative-fixture failure: order1 does not assert observed adjacency.
+Use actual order2 for transition/seam rejection; do not change compatibility.
+Keep all logs under retained-publication-20261028-boss. Published upstream and
+downstream gates remain open; the prerequisite and full parent stay active.
+
+## Retained generation publication selected — 2026-10-28
+
+Previous goal turn is progress:5ea6571 accepts task15 after exact CI466 and moves
+its links/accounting. Delivery nonclosing enters0; scientific stops are unchanged.
+Root is clean. Least-complete NS5 still lacks accepted context/full independent
+references, and no existing feedback/browser handoff has been unblocked.
+
+Select parent observability04 AC1's retained generation/capture/publication path.
+Deliver measured callbacks through owned capture/copy and publication preparation
+while preserving prior caller output, accepted graph/state and deterministic
+same-session retry on observer failure. Reuse WFC's existing guarded commit hook
+rather than adding a second transaction/solver. Closing evidence: actual native
+finite/retained generation, original cancellation markers, selective unchanged-
+layer proof, exact token/state/model replay and measured synchronous boundaries,
+with actual portable checks where this consumer already supports them. Use
+dedicated E-drive retained-publication-20261028-boss roots. Stop at another
+required gap, changed musical policy, partial acceptance, hidden graph mutation
+or dependency-source edits. Streams/named voices and the rest of AC1/AC2 remain
+required; no musical credit follows from this batch selection. Big Boss is solo.
+
 ## Retained inference corpus observation accepted — 2026-10-28
 
 Big Boss accepts [task15](TODO/DONE/NS-6_observability_15.md) AC1–3 at exact source
