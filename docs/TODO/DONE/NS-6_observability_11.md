@@ -1,6 +1,6 @@
 # NS-6_observability_11 — Observe layer request and graph preparation
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
@@ -8,13 +8,16 @@ Expose Pythian-owned layer request admission, partition/projection compilation,
 detached model/relationship copies and initial constraint/domain preparation.
 Provider session construction enters this independently reusable API; a callback
 around the provider cannot certify its nested work. This is the prerequisite for
-[provider observability](NS-6_observability_04.md) AC1 and associated AC5, split
+[provider observability](../NS-6_observability_04.md) AC1 and associated AC5, split
 without changing credit or removing any parent requirement.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
 Big Boss owns implementation and solo verification. Deliverable: optional borrowed
 callbacks through actual layer construction and its provider/style consumer.
-Local qualification passes; published integration/extracted acceptance is pending.
+Accepted 2026-10-27 at `be34725` after checked native and actual published
+integration/extracted consumers. Big Boss verified solo; CI is not independent
+review. This accepts owned construction only; the generic dependency gap and all
+other parent obligations remain required.
 Evidence: prior graph/model/PCM replay, actual caller, interior/final abort cleanup,
 checked native consumers and clean published/extracted consumers. Stop on changed
 WFC semantics, partial publication after callback abort, invented percentages,
@@ -40,11 +43,26 @@ generation/capture/replacement and context/registry interior audit stays require
 
 **Blockers**
 
-- [Shared progress — DONE](DONE/NS-6_observability_01.md).
-- [Metadata primitives — DONE](DONE/NS-6_metadata_01.md).
+- [Shared progress — DONE](NS-6_observability_01.md).
+- [Metadata primitives — DONE](NS-6_metadata_01.md).
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss acceptance: authenticated
+  [Ubuntu run454](https://github.com/mr-highball/pythian/actions/runs/40604981876),
+  job122542125187, is terminal Success at
+  `be347257a819833acf901f0bfc3b88b860c7f9c2`, total8m31s/job8m28s.
+  Integration and both extracted consumers pass. Close AC1–3 with the owned-loop
+  scope, actual caller/abort/byte evidence below and explicit dependency residual.
+  The generic WFC stall stays open in task12; no full-operation responsiveness
+  or musical credit follows. Displayed artifact-container SHA-256:
+  logs `96b876facf3d0ede47ee464ca2f4fe7007a6ca64f9395a878921c23b5448bd5b`;
+  packages `3acf0cfcdec85cc548a0da06cf5369a7922d0913c4ffb4e9b346b5465aebb8e5`.
+  These are container identities, not a downloaded-ZIP verification claim.
+  Move links/accounting together: 53 open/72 DONE, 125 total, NS-6 15 open.
+  Completion remains100/90/25/70/14/54, 52.45/47.55; delivery nonclosing count0
+  after closure, with all scientific counters/stops preserved. Older pending
+  qualification statements below describe intermediate checkpoints.
 - 2026-10-27, Big Boss local implementation: the call-scoped preparation helper
   reports `layer_prepare_visits`, `layer_constraint_visits` and
   `layer_preference_visits` in items, counting actual owned loop iterations every
@@ -74,7 +92,7 @@ generation/capture/replacement and context/registry interior audit stays require
   checks, zero leaks. All 34 same-target prior artifacts match, including token/
   latent-state receipts, styles and WAVs. No published acceptance yet. The
   separate generic WFC bulk-mask probe stalls beyond 81 observed CPU seconds
-  inside a public dependency call; [task12](NS-6_observability_12.md) owns its
+  inside a public dependency call; [task12](../NS-6_observability_12.md) owns its
   upstream repair and Pythian integration. Boundary checkpoints do not certify
   that interior. Owned construction callbacks and original consumer parity stay
   valid; full provider/operator responsiveness remains blocked by that gap.

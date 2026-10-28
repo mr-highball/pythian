@@ -48,6 +48,20 @@ dependency edits in this checkout, unrelated upstream adoption or a distinct gap
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss upstream draft: new shared preflighted intersection core
+  removes repeated definition checks, with public single-mask guards retained.
+  Generic borrowed phase/count callbacks cover graph model validation, full mask
+  preflight, domain snapshot and intersection; final callback abort stays inside
+  rollback. No callback is retained or called during rollback. Existing sequence
+  suite120 passes checked Win64. The new exact near-limit/replay fixture passes
+  18584 checks/8 original interior-final aborts/5384 callbacks on checked native
+  Win32/Win64 and actual pas2js; native zero leaks. Original authored nil-observer
+  probe now completes Win64 intersection in6594 ms. Observed replay fixture
+  intersection2485/8781 ms are local timings with concurrent work, not a universal
+  speed or latency bound. Upstream changes remain uncommitted, fixture/build/docs
+  and unrelated consumer qualification are not finished, and Pythian adoption has
+  not occurred. Keep this task open. Evidence stays under dedicated E-drive
+  `build/runs/wfc-sequence-preparation-20261027-boss` roots.
 - 2026-10-27, Big Boss: task11's residual probe uses only authored Pascal tokens
   and the public WFC contract. It creates 256 public tokens/states, order1,
   1024 cells and 262144 state/cells, then 1024 valid per-position masks. The

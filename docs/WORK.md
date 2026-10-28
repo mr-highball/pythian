@@ -12,6 +12,45 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Layer construction accepted; WFC bulk fix in progress - 2026-10-27
+
+Big Boss's published layer component is accepted at `be34725`: authenticated
+[Ubuntu run454](https://github.com/mr-highball/pythian/actions/runs/40604981876),
+job122542125187, terminal Success, total8m31s/job8m28s, includes integration and
+both extracted consumers. Close [task11](TODO/DONE/NS-6_observability_11.md)
+AC1–3 at its owned-construction scope, with the native parity/abort evidence and
+explicit dependency residual. CI is not independent review. Task/E-drive record
+preserves displayed artifact-container digests. Older pending statements below
+are historical. Counts **53 open / 72 DONE, 125 total**, NS-6 15 open;
+percentages **100/90/25/70/14/54**, **52.45/47.55**. Delivery nonclosing count0
+after closure; no musical credit or scientific counter reset.
+
+Follow [task12](TODO/NS-6_observability_12.md)'s demonstrated generic WFC blocker.
+The separate worktree/branch is preserved below, based only on the Pythian pin.
+Its draft shares a preflighted token-intersection core with public single-mask
+behavior and validates the graph/model once per bulk. A generic borrowed
+sequence preparation observer reports model rows, constraint rows, snapshot
+cells and applied masks, with final abort inside rollback and no cleanup hook.
+The original exact authored near-limit probe now finishes (Win64 nil observer
+intersection6594 ms, zero leaks); the original was externally stopped, so this
+is no universal speedup or latency-bound claim. The new full replay fixture
+passes **18584 checks / 8 original interior-final aborts / 5384 callbacks** on
+checked Win32/Win64 and actual pas2js; native zero leaks. The observed native
+intersection timings2485/8781 ms are local concurrent-work observations, not
+cross-target performance acceptance. Existing WFC sequence120 passes Win64.
+Source/evidence is under the dedicated E-drive WFC preparation roots; upstream
+changes are still uncommitted and no Pythian gitlink/bridge adoption occurred.
+
+Next: finish supported unrelated WFC consumer checks, maintained test registration
+and observer contract documentation; review/commit the named upstream branch,
+then explicitly pin that revision and bridge into primary progress here. Actual
+affected provider/layer/style consumers and clean published integration remain
+required. Upstream work does not close task12 or authorize a branch merge. Parent
+task04 retains registry/context, remaining generation/capture/replacement,
+batch and inference/operator phases. All scientific stops and the pending4:16
+review remain intact. No service, private source, operator response or retraining
+changed. Full goal stays active.
+
 ## Layer construction locally qualified; generic WFC gap isolated - 2026-10-27
 
 Big Boss's solo layer-construction batch now has measured owned-visit callbacks
@@ -22,7 +61,7 @@ cleanup and initial mask rollback/retry pass; final mask callbacks stay inside
 rollback before publication. All **34 prior artifacts per native target** match
 separately compiled frozen `3c8e12f` sources: complete tokens/latent states, saved
 styles and rendered PCM. Count oracles13/8/2 distinguish owned work from dependency
-internals. Publish [task11](TODO/NS-6_observability_11.md) and require actual clean
+internals. Publish [task11](TODO/DONE/NS-6_observability_11.md) and require actual clean
 Ubuntu integration and both extracted consumers before acceptance. Native
 one-shot callbacks cover preparation only; solve/capture and other parent
 obligations remain required. New fixture is registered in the maintained build.
@@ -62,7 +101,7 @@ Ubuntu run453 and prior native/pas2js consumers, with zero additional credit.
 Revalidate the clean `3c8e12f` worktree and stay solo under the user's AGENTS
 override. Before extending provider callbacks, inspection demonstrates that
 its constructor enters substantial unobserved Pythian-owned layer preparation.
-Record [task11](TODO/NS-6_observability_11.md) as the actual AC1/AC5 prerequisite;
+Record [task11](TODO/DONE/NS-6_observability_11.md) as the actual AC1/AC5 prerequisite;
 parent task04 retains provider/registry/context interiors and all other phases.
 No wrapper-only acceptance or new generic WFC defect is inferred.
 

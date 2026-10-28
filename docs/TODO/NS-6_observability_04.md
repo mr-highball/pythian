@@ -44,7 +44,7 @@ Stop on invented overall percentages, swallowed cancellation or dependency edits
 
 - [Shared callbacks and audit — DONE](DONE/NS-6_observability_01.md).
 - [Provider/context metadata reuse — DONE](DONE/NS-6_metadata_01.md).
-- [Layer request/graph preparation](NS-6_observability_11.md).
+- [Layer request/graph preparation — DONE](DONE/NS-6_observability_11.md).
 - [Generic WFC bulk constraint preparation](NS-6_observability_12.md).
 
 **Dev Notes:**
