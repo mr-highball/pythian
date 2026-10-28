@@ -12,6 +12,18 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Retained layer publication published candidate — 2026-10-28
+
+Source candidate3e045712e05f614bf5cac46b90909bcc273f983f is pushed on
+hello-pythian. Exact live [CI468](https://github.com/mr-highball/pythian/actions/runs/40765468968)
+is in progress; predecessor success is not acceptance of this source.
+Both clean Win64 packages from exact3e04571 pass after ZIP extraction:
+core107owned/120inventory, SHA2562ebeeb1479a014112cc541cb8d7e975bb31c0ee8bfb9c1475dd44317fedec464;
+full159owned/279inventory, SHA256e55808a16a17585e5bc199e0d8020579d1e1d6050276cb160aeed05bb10c6135.
+Actual caller codec conformance passes231 checks with zero leaks. No task move
+or criterion closure while exact published integration/extracted consumers run.
+The dedicated E-drive packet records current qualification and next handoff.
+
 ## Retained layer publication locally qualified candidate — 2026-10-28
 
 Big Boss implements parent04's selected layer component with existing generic

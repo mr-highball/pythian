@@ -103,6 +103,13 @@ Naming a task or narrowing a component does not reset that count.
 
 **Dev Notes:**
 
+- 2026-10-28, Big Boss: exact source3e045712e05f614bf5cac46b90909bcc273f983f
+  is pushed; [CI468](https://github.com/mr-highball/pythian/actions/runs/40765468968)
+  is running. Clean exact Win64 core107owned/120inventory and full159owned/
+  279inventory packages pass extracted consumers; caller codec conformance231
+  also passes with zero leaks. Do not accept this component from predecessor CI.
+  Keep parent/task accounting and musical credit unchanged while its gate runs.
+
 - 2026-10-28, Big Boss: the retained-layer candidate implements guarded
   initial/selective capture and detached copy, private replacement publication,
   observed strict proof/projection and measured owned visits. Preferences are
