@@ -29,12 +29,13 @@ without interpreting their code-page tag. This changes no JSON schema or score.
 Core/native/actual pas2js checks pass under accepted
 [portability_06](TODO/DONE/NS-6_portability_06.md). Published source `1ed5e34`
 passes Ubuntu CI460 integration and both extracted consumer packages.
-The [serialization candidate](TODO/NS-6_serialization_01.md) replaces whole-card
+The accepted [serialization boundary](TODO/DONE/NS-6_serialization_01.md) replaces whole-card
 and comparison-report `AsJSON` with one native iterative tree adapter and the
 primary portable scalar buffer. It preserves field order, exact current bytes
 and RTL finite-number formatting while exposing emitted-byte/item callbacks.
 Final buffer shrink/join and UTF8String copying retain explicit synchronous
-endpoints. Actual published integration/extracted qualification remains pending.
+endpoints. Exact source `ae91789` passes Ubuntu CI461 integration and both
+extracted packages, plus clean extracted Win64 consumers.
 These mechanics do not close musical/reference acceptance.
 
 ### Maintained current card consumer — 2026-09-30

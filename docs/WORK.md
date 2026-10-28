@@ -12,6 +12,26 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Shared bulk JSON publication accepted - 2026-10-28
+
+Previous goal turn is progress at published `ae91789`, followed by verified wait
+on its exact live CI handle. Big Boss now confirms terminal Success in
+[Ubuntu CI461](https://github.com/mr-highball/pythian/actions/runs/40707332384)
+at `ae91789367ff27dc441182fcbefc1d8587b1c360`: job122882866023 takes10m5s,
+maintained integration9m4s, extracted core-only/full consumers41s. Both clean
+Win64 extracted packages also pass107/158 owned units and120/277 inventory
+entries. No redundant broad local suite was run. Actual native/pas2js,
+original-cancellation, frozen-byte and separate-capacity evidence below supports
+AC1–3 of [serialization_01](TODO/DONE/NS-6_serialization_01.md); its prerequisites pass.
+
+Move that task to DONE and update incoming links and ledgers together. Current
+53 open/78 DONE/131 total, NS-6 15 open; completion stays100/90/25/70/14/54,
+52.45/47.55. This closes a real required criterion and retains delivery nonclosing0.
+Parent04 and [decoder storage02](TODO/NS-6_json-text_02.md) stay open; no musical
+credit, browser/phone acceptance, service deployment or full-goal completion is
+inferred. Preserve failures and measured residuals. Goal remains active; Big Boss
+works solo. No live service, private recording/answer, retraining or WFC pin changed.
+
 ## Bulk JSON publication selected - 2026-10-28
 
 Previous goal turn is progress: `e1337d8` publishes acceptance of the shared JSON
@@ -21,7 +41,7 @@ is historical. Big Boss remains solo under the current AGENTS override.
 
 Least-complete NS-5 remains blocked on grounded context/full musical references;
 no stopped scientific family is reopened. Follow the ready retained-evaluation
-prerequisite [serialization_01](TODO/NS-6_serialization_01.md), AC1–3. Deliver one
+prerequisite [serialization_01](TODO/DONE/NS-6_serialization_01.md), AC1–3. Deliver one
 shared bounded Pascal text emitter and native object-tree adapter for actual
 style-card/report publication, with interior byte/item callbacks, original
 cancellation and private output. Closing evidence: actual native/pas2js scalar
@@ -160,7 +180,7 @@ Evidence and frozen `1be04c0` consumers are in dedicated E-drive
 
 The measured no-heap3535085-byte JSON formatter remains unobserved internally
 for828ms locally; the heap-traced21234ms result is diagnostic overhead, not a
-production timing claim. Create linked [serialization_01](TODO/NS-6_serialization_01.md)
+production timing claim. Create linked [serialization_01](TODO/DONE/NS-6_serialization_01.md)
 and return to this batch. Do not expand into another formatter implementation
 or close broader parent04 AC2. Other measured native residuals and exact phases
 are in [Observability](OBSERVABILITY.md#retained-style-evaluation-component--2026-10-28).

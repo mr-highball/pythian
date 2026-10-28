@@ -3,7 +3,7 @@
 [Task index](../README.md) · [Task flow](../../TASKFLOW.MD) ·
 [Milestones](../../MILESTONES.md) · [Current credit basis](../../REBALANCE-2026-09-29.md#current-credit-basis)
 
-All **77** records retain their acceptance evidence and dates. Points below
+All **78** records retain their acceptance evidence and dates. Points below
 use the user-authorized 2026-09-29 outcome rebase; older amounts in evidence
 narratives are historical. No task was accepted by this reassessment.
 The [2026-09-30 Studio allocation](../../OPERATOR-STUDIO.md#allocation-and-ownership)
@@ -16,6 +16,7 @@ Shared filter catalog and flexible source workspace add 3 NS-6 / 0.30 overall.
 
 | Accepted task | Date | Current goal credit | Current overall credit |
 | --- | --- | ---: | ---: |
+| [NS-6_serialization_01](NS-6_serialization_01.md) — Observable shared native JSON publication | 2026-10-28 | 0 NS-6 | 0.00 |
 | [NS-6_json-text_01](NS-6_json-text_01.md) — Preserve native JSON scalar text | 2026-10-28 | 0 NS-6 | 0.00 |
 | [NS-6_portability_06](NS-6_portability_06.md) — Execute shared style evaluation with portable text | 2026-10-28 | 0 NS-6 | 0.00 |
 | [NS-6_hash-publication_01](NS-6_hash-publication_01.md) — Preserve digest results on callback failure | 2026-10-28 | 0 NS-6 | 0.00 |

@@ -40,7 +40,7 @@ Studio callers, plus existing streaming, inference and library contracts.
 | Retained corpus archive and WFC model validation | Actual feature/attachment/hash bytes and owned lookup/state/token validation are observable through the native archive operator | [observability_05 — DONE](TODO/DONE/NS-6_observability_05.md); synchronous residuals below |
 | WFC chord composition planning | Actual compatibility checks and target visits, unknown traversal total until counted; prior caller output preserved on abort | [observability_06 — DONE](TODO/DONE/NS-6_observability_06.md) |
 | Provider admission, registry and compatible-session preparation | Optional callbacks reach source grids, choice decoding/validation, registry searches, configuration comparisons and actual capacity scans, through the semantic consumer | [observability_04](TODO/NS-6_observability_04.md); provider CI456 and context CI458 components qualified. Later replacement/generation, batch and inference reporting remain open |
-| Retained style distributions/cards and native asset comparison | Optional callbacks reach actual bins/counts/normalization, bindings/traits, JSON scanning/value visits and primary asset hashing | [Shared JSON preservation](TODO/DONE/NS-6_json-text_01.md) and [portability_06](TODO/DONE/NS-6_portability_06.md) accepted at `1ed5e34` with Ubuntu CI460 integration/extracted packages; final [JSON formatting](TODO/NS-6_serialization_01.md) remains a linked gap |
+| Retained style distributions/cards and native asset comparison | Optional callbacks reach actual bins/counts/normalization, bindings/traits, JSON scanning/value visits, emitted bytes/items and primary asset hashing | Shared JSON/text accepted at `1ed5e34`/CI460; [bulk publication](TODO/DONE/NS-6_serialization_01.md) accepted at `ae91789`/CI461 with extracted consumers. Final shrink/join/copy remain synchronous; [decoder storage](TODO/NS-6_json-text_02.md) remains open |
 | Primary analysis in pas2js | Full callback consumer executes shared primary algorithms; optional timer adapter yields between bounded WAV analysis batches | [portability_01 — DONE](TODO/DONE/NS-6_portability_01.md); actual browser presentation and WASM remain unqualified |
 | Primary synthesis in pas2js | Actual shared synth/instrument/note/chord/grain cases execute with measured callbacks, abort/retry and exact supported clocks | [portability_03 — DONE](TODO/DONE/NS-6_portability_03.md), [timing repair — DONE](TODO/DONE/NS-6_portability_04.md); synchronous Node consumers, no browser/WASM claim |
 
@@ -704,10 +704,10 @@ respectively; tracing adds substantial overhead and is not a production timing
 claim. A65536-chunk actual file WAV header measures296ms without heap tracing,
 297ms with it, within the existing chunk limit. These are local observations,
 not maximum latency guarantees or timings of the later JSON framing reader.
-Record the actual remaining bulk JSON gap in
-[serialization_01](TODO/NS-6_serialization_01.md); broad task04 AC2 stays open.
+The previously unobserved bulk JSON interval is repaired by
+[serialization_01](TODO/DONE/NS-6_serialization_01.md); broad task04 AC2 stays open.
 
-The serialization_01 candidate now routes both actual card and comparison-report
+Accepted serialization_01 now routes both actual card and comparison-report
 writers through one native tree adapter and the primary portable scalar buffer.
 It retains RTL finite-number formatting, field order, compression/spacing and
 strict slash policy, rejecting malformed scalar values, unquoted-name mode and
@@ -727,10 +727,13 @@ at3535085 output bytes,1438ms overall and1250ms within the now-observable encode
 scalar output budget emits8388608 bytes in328ms. Final shrink/copy each measure0ms
 at this clock's resolution, not zero cost. These are separate maximum axes, not
 the Cartesian product of every capacity, performance bounds or browser evidence.
-No speedup is claimed against the earlier828ms synchronous formatter. Published
-integration/extracted consumers remain required before accepting this task.
-The retained decoder's generated per-character immutable-string replacement has
-a separate [storage owner](TODO/NS-6_json-text_02.md); return to this batch.
+No speedup is claimed against the earlier828ms synchronous formatter. Exact
+published source `ae91789367ff27dc441182fcbefc1d8587b1c360` passes Ubuntu CI461,
+job122882866023, terminal Success10m5s: integration9m4s and extracted consumers41s.
+Both clean extracted Win64 packages also pass107/158 owned units and120/277
+inventory entries. This closes serialization_01, with no musical points.
+The retained decoder's generated per-character immutable-string replacement
+remains open with its separate [storage owner](TODO/NS-6_json-text_02.md).
 
 Evidence: E-drive `style-evaluation-20261028-boss` build/test/run roots, frozen
 `1be04c0` sources, original compiler/tag/adapter failures and separate no-heap
@@ -743,7 +746,7 @@ literal/escaped Unicode and actual native consumers. Exact published source
 job122860363942: maintained integration12m25s and both extracted consumer
 packages42s, terminal success13m37s. Accept JSON and portability_06 together;
 original canonical artifacts and CLI reports remain exact. Broader parent04,
-final formatting and actual browser/phone remain unqualified. No service,
+other retained metadata/publication and actual browser/phone remain unqualified. No service,
 private audio, saved response or WFC pin changed; this is solo verification.
 
 ### Retained baseline and other limits

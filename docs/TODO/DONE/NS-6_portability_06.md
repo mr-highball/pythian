@@ -82,7 +82,7 @@ semantics, host conversion, duplicated scalar logic or a separate required gap.
   actual adapter diagnostic changes only tags: old JSON75936 versus75914 bytes
   and file-writing conversion disagree; repaired JSON/file bytes both75914 and
   scalar comparison0. Preserve both logs. A final synchronous JSON formatting
-  gap has its own [owner](../NS-6_serialization_01.md), retaining parent04 AC2.
+  gap has its own [owner](NS-6_serialization_01.md), retaining parent04 AC2.
   Exact published integration/extracted consumers remain pending; this task is
   still open, with no criterion/counter reset or musical credit claimed.
 

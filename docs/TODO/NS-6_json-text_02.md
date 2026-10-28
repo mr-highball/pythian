@@ -11,8 +11,9 @@ buffer and does not establish linear storage work on long tokens. Native scalar
 correctness and small portable controls do not qualify long-token cost.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
-Big Boss works solo. Execution status: ready after
-[shared output staging](NS-6_serialization_01.md) is qualified. Consolidate decoded
+Big Boss works solo. Execution status: ready, with
+[shared output staging](DONE/NS-6_serialization_01.md) accepted at `ae91789`/Ubuntu CI461.
+Consolidate decoded
 text staging with the primary bounded buffer, retaining target-specific storage
 only where required by native bytes versus immutable UTF-16 strings. Do not copy
 the JSON grammar or retain a second inferior storage implementation.
@@ -40,7 +41,7 @@ replacement inside the scalar loop, changed byte/source progress or a separate g
 **Blockers**
 
 - [Primary JSON decoding — DONE](DONE/NS-6_json-text_01.md).
-- [Shared output staging](NS-6_serialization_01.md) — reuse the qualified primary
+- [Shared output staging](DONE/NS-6_serialization_01.md) — reuse the qualified primary
   buffer rather than adding a decoder-specific chunk builder.
 
 **Dev Notes:**

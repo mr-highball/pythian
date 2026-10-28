@@ -28,7 +28,13 @@ private until its final callback succeeds.
 
 Retained evaluation callbacks and their portable-text/shared JSON prerequisites
 are published-qualified at `1ed5e34` after Ubuntu CI460 integration and both
-extracted consumers. Final bulk JSON formatting remains with serialization_01.
+extracted consumers. Subsequent bulk JSON publication qualification follows below.
+
+Shared bulk JSON publication is now qualified at `ae91789` with native/actual
+pas2js cancellation, prior exact reports and Ubuntu CI461 integration/extracted
+consumers. Final shrink/join, native copy and platform writes retain synchronous
+boundaries. Portable decoder storage remains with json-text_02; whole AC2 stays
+open for other retained metadata/graph/publication work.
 
 Whole AC1 stays open for later provider/session replacement, generation and capture.
 AC2 batch evaluation and AC3 inference/operator reporting remain required. These
@@ -71,10 +77,19 @@ Naming a task or narrowing a component does not reset that count.
   portable comparison/callback qualification; native execution alone is insufficient.
 - [Native JSON scalar preservation](DONE/NS-6_json-text_01.md) — demonstrated
   Linux literal and Windows escaped-text failures require the shared boundary.
-- [Bulk native JSON publication](NS-6_serialization_01.md) — actual final
-  formatting remains synchronous after observable value construction.
+- [Bulk native JSON publication — DONE](DONE/NS-6_serialization_01.md) — interior
+  byte/item work qualified; final shrink/join/copy remain synchronous.
+- [Portable JSON decoder storage](NS-6_json-text_02.md) — consolidate the
+  retained per-character immutable-string builder.
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss: shared serialization prerequisite passes published Ubuntu
+  CI461/job122882866023 at `ae91789`, maintained integration9m4s and extracted
+  consumers41s, terminal Success10m5s. Accept the linked task with actual native/
+  portable controls, original cancellation, byte parity and separate capacity
+  traces. This real closure keeps delivery nonclosing0; broad AC1–3 and musical
+  acceptance remain open. Decoder-storage02 owns its distinct remaining gap.
 
 - 2026-10-28, Big Boss published retained evaluation: Ubuntu CI460 at `1ed5e34`
   passes maintained integration and both extracted core-only/full packages.

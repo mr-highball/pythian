@@ -40,7 +40,7 @@ depth and container limits remain caller-owned; ASCII framing is at most six
 times source bytes and cannot exceed the native string ceiling. Existing
 unbounded-depth readers gain no invented depth policy. RTL structure parsing
 remains synchronous between explicit endpoints; final formatting remains in
-[serialization_01](../NS-6_serialization_01.md).
+[serialization_01](NS-6_serialization_01.md).
 
 **Acceptance Criteria:**
 
