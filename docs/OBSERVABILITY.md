@@ -34,7 +34,7 @@ Studio callers, plus existing streaming, inference and library contracts.
 | Pascal inference | Existing observation checkpoints, budgets, cancellation and deadlines retained | Reconcile remaining operator phases in [observability_04](TODO/NS-6_observability_04.md); no third-party execution |
 | Primary scalar text | `text_validate_bytes` counts canonical UTF-8 bytes every 1,024 bytes; `text_compare_scalars` counts compared scalar pairs every 256 items. Totals remain unknown until the actual end | [Metadata reuse](TODO/DONE/NS-6_metadata_01.md); native raw bytes and pas2js UTF-16 scalars share the policy, with borrowed callbacks and original abort exceptions |
 | Layer request/graph construction | `layer_prepare_visits`, `layer_constraint_visits`, `layer_preference_visits` count actual owned loop visits every 256 items; totals unknown until final count | [Layer preparation — DONE](TODO/DONE/NS-6_observability_11.md), checked consumers and Ubuntu integration/extracted packages pass. Borrowed observer is not retained. Mask callback abort rolls back domains before pending-mask publication |
-| WFC bulk sequence preparation | `layer_wfc_model_rows`, `layer_wfc_constraint_rows`, `layer_wfc_snapshot_cells`, `layer_wfc_mask_rows` forward actual phase-local totals from the generic companion observer; inner checkpoints may repeat completed rows | [task12](TODO/NS-6_observability_12.md); reviewed upstream `d1c1c81` and explicit pin/bridge. Published integration acceptance remains required. Counts restart for each phase/call and do not enter owned visit totals |
+| WFC bulk sequence preparation | `layer_wfc_model_rows`, `layer_wfc_constraint_rows`, `layer_wfc_snapshot_cells`, `layer_wfc_mask_rows` forward actual phase-local totals from the generic companion observer; inner checkpoints may repeat completed rows | [task12 — DONE](TODO/DONE/NS-6_observability_12.md); reviewed upstream `d1c1c81`, explicit pin/bridge, five-job WFC CI50 and Pythian CI455 pass. Counts restart for each phase/call and do not enter owned visit totals |
 | Catalog import and verification | Shared measured hash/copy/verification phases; callback failures escape per-file error handling | [observability_02](TODO/DONE/NS-6_observability_02.md) |
 | Offline render, separation, export and evaluation | Primary native engines report measured windows/cells/frames/comparisons; maintained operators forward callbacks | [observability_03 — DONE](TODO/DONE/NS-6_observability_03.md); scoped phases below |
 | Retained corpus archive and WFC model validation | Actual feature/attachment/hash bytes and owned lookup/state/token validation are observable through the native archive operator | [observability_05 — DONE](TODO/DONE/NS-6_observability_05.md); synchronous residuals below |
@@ -60,7 +60,7 @@ application preceded it (0/16/1766 ms); mask preflight took15 ms, with two RTL
 copies below timer resolution. These are one local checked Win64 workload, not
 universal bounds. Boundary checkpoints do not expose those dependency interiors.
 The separate WFC branch `codex/pythian-sequence-preparation` and explicit downstream
-integration are owned by [task12](TODO/NS-6_observability_12.md). Provider/registry/
+integration are owned by [task12](TODO/DONE/NS-6_observability_12.md). Provider/registry/
 context interiors, later generation/capture/replacement and other residuals remain
 with task04; this construction component is not full-operation responsiveness.
 

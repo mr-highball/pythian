@@ -49,8 +49,8 @@ are not library inputs. WFC and Athena remain pinned submodules.
 Current WFC pin: `d1c1c81b914a71a31a27b4abefcabede4a567abd`, reviewed from the
 initial pin on separate branch `codex/pythian-sequence-preparation`. It shares
 bulk sequence-mask preflight and adds borrowed preparation callbacks. See
-[integration task12](docs/TODO/NS-6_observability_12.md) for qualification and
-remaining gates. No unrelated expansion commits or branch merge are included.
+[accepted integration task12](docs/TODO/DONE/NS-6_observability_12.md) for evidence
+and scope. No unrelated expansion commits or branch merge are included.
 
 Current Athena pin: `b8cdb5b3c36d0b3670a4b722d98d905a2cb78de3`, updated from
 upstream `main` on 2026-09-21 after the task-size/progress-checkpoint merge. The initial

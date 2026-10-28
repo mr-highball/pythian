@@ -1,6 +1,6 @@
 # NS-6_observability_12 — Repair generic WFC bulk constraint preparation
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
@@ -21,6 +21,25 @@ Deliverable: one shared bulk preflight plus generic optional progress/cancellati
 at actual owned boundaries, preserving public single-mask behavior and rollback.
 Stop on changed domains/definitions/replay, swallowed cancellation, foreign
 dependency edits in this checkout, unrelated upstream adoption or a distinct gap.
+
+Completed AC1–3 on 2026-10-27, Big Boss solo, at Pythian `573103e` and reviewed
+WFC `d1c1c81`. [WFC CI50](https://github.com/mr-highball/wfc/actions/runs/40610315254)
+is terminal Success, 22m01s, including stable Linux/macOS/Windows, development FPC
+and the pas2js/browser consumer matrix. Pythian
+[Ubuntu CI455](https://github.com/mr-highball/pythian/actions/runs/40611309332)
+is terminal Success, total10m30s/job10m26s, with integration and both core-only
+and full extracted consumer packages. Checked native and actual portable
+regressions, exact prior34-artifact comparisons per native target, original
+interior/final aborts and retry evidence below complete the scoped acceptance.
+No WFC branch merge, browser qualification of the native Pythian layer adapter,
+whole-operation latency guarantee or musical credit follows. Parent
+[task04](../NS-6_observability_04.md) retains its named residuals.
+
+Displayed CI artifact-container digests (not independently downloaded ZIP hashes):
+logs `122abc69b40d2de774df4734a1702c5b530413a1b31558353f439eed5611c4ea`;
+packages `9692c30d8d9031d5f102d87652a286d6cbecfb6240a1dd06ee5ee790d1eadab6`.
+Evidence: dedicated E-drive WFC preparation roots and `runs/.../VALIDATION.json`.
+Earlier Dev Notes retain intermediate statuses and repaired failures.
 
 **Acceptance Criteria:**
 
@@ -43,8 +62,9 @@ dependency edits in this checkout, unrelated upstream adoption or a distinct gap
 
 **Blockers**
 
-- The generic WFC fix and its validated commit on the named branch.
-- [Cross-repository procedure](../TASKFLOW.MD#cross-repository-wfc-gaps).
+- The generic WFC fix is accepted at reviewed `d1c1c81` on the named branch,
+  with terminal upstream CI and explicit downstream adoption as recorded above.
+- [Cross-repository procedure](../../TASKFLOW.MD#cross-repository-wfc-gaps).
 
 **Dev Notes:**
 
@@ -78,7 +98,7 @@ dependency edits in this checkout, unrelated upstream adoption or a distinct gap
   An additional Pythian layer pas2js compile stops at its pre-existing native
   `UTF8String` local in positioned masks. No browser support is claimed for
   that native adapter by this task; WFC's changed portable API executes under
-  actual pas2js. [Support scope](NS-6_support_01.md) owns target declarations.
+  actual pas2js. [Support scope](../NS-6_support_01.md) owns target declarations.
 - 2026-10-27, Big Boss upstream draft: new shared preflighted intersection core
   removes repeated definition checks, with public single-mask guards retained.
   Generic borrowed phase/count callbacks cover graph model validation, full mask

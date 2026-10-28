@@ -12,6 +12,31 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## WFC bulk preparation accepted; provider caller unblocked - 2026-10-27
+
+Big Boss accepts [task12](TODO/DONE/NS-6_observability_12.md) AC1–3 at Pythian
+`573103e` and WFC `d1c1c81`. Authenticated
+[WFC CI50](https://github.com/mr-highball/wfc/actions/runs/40610315254) is terminal
+Success, 22m01s, all stable Linux/macOS/Windows, development FPC and pas2js/browser
+jobs. Authenticated [Pythian CI455](https://github.com/mr-highball/pythian/actions/runs/40611309332),
+job122563225960, is terminal Success, total10m30s/job10m26s. Integration and both
+extracted consumers pass. Together with the checked actual consumers, exact
+34-artifact comparisons per target, generic/native portable replay and original
+abort/rollback/retry evidence below, this closes the scoped dependency repair.
+The displayed artifact-container digests are retained in the task/E-drive record;
+they are not independently downloaded ZIP hashes. CI and solo checks are not
+independent review. Upstream remains on its named feature branch, without merge.
+
+Move the task and incoming links together. Counts **52 open /73 DONE /125 total**,
+NS-6 14 open. Completion stays **100/90/25/70/14/54**, **52.45/47.55**; the zero-credit
+repair adds no musical acceptance. Delivery nonclosing count0 after closure;
+scientific stops and the retained unanswered4:16 review persist. Return to
+[task04](TODO/NS-6_observability_04.md)'s provider/registry/context caller boundary;
+later generation/capture/replacement, batch and inference/operator phases remain
+required. Declare its next actual consumer deliverable/evidence/stop before
+source edits. No service, private recording, operator answer or retraining changed.
+Full goal stays active. Pending statements below are intermediate history.
+
 ## WFC bulk repair integrated locally; published qualification pending - 2026-10-27
 
 Big Boss continues the selected task12 batch solo. The intervening GitHub-status
@@ -65,7 +90,7 @@ are historical. Counts **53 open / 72 DONE, 125 total**, NS-6 15 open;
 percentages **100/90/25/70/14/54**, **52.45/47.55**. Delivery nonclosing count0
 after closure; no musical credit or scientific counter reset.
 
-Follow [task12](TODO/NS-6_observability_12.md)'s demonstrated generic WFC blocker.
+Follow [task12](TODO/DONE/NS-6_observability_12.md)'s demonstrated generic WFC blocker.
 The separate worktree/branch is preserved below, based only on the Pythian pin.
 Its draft shares a preflighted token-intersection core with public single-mask
 behavior and validates the graph/model once per bulk. A generic borrowed
@@ -118,7 +143,7 @@ dedicated E-drive layer-preparation roots. All other local test handles are
 terminal. This discovery neither reopens a stopped scientific family nor resets
 a delivery counter.
 
-Create [coordination task12](TODO/NS-6_observability_12.md) under the cross-repo
+Create [coordination task12](TODO/DONE/NS-6_observability_12.md) under the cross-repo
 procedure. Relevant WFC source is identical at the pinned47fa3d8 and separate
 checkout85d19fe; no fix exists there. The separate worktree at
 `E:/CodexWork/pythian/runs/wfc-sequence-preparation-20261027-boss/worktree` now
