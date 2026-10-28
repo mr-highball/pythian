@@ -42,6 +42,12 @@ Big Boss works solo. This repair adds no musical or independent-use acceptance.
 
 **Dev Notes:**
 
+- 2026-10-28, Big Boss: linked09/10 repairs now permit the full actual portable
+  named-voice preparation consumer to execute13939 checks/10 original aborts/
+  13396 callbacks. Native caller/scalar and340/3/178 byte-admission results remain
+  retained. New source still needs exact published integration and extracted
+  consumers before this task can move; no percentage or counter reset follows.
+
 - 2026-10-28, Big Boss local repair: primary UTF-8 byte validation reuses the
   same decoder as native scalar text. Caller admission removes its private
   Move/string conversion and validates the original bytes. Win32/Win64 and

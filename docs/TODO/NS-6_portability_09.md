@@ -42,11 +42,37 @@ Big Boss works solo. Keep WFC source unchanged; these are Pythian-owned codecs.
 
 **Blockers**
 
+- [Primary streamed chord renderer](NS-6_portability_10.md) — the full portable
+  voice consumer reaches its distinct internal-type/counter boundary.
 - [Shared primary scalar text — DONE](DONE/NS-6_metadata_01.md).
 - [Primary binary fields — DONE](DONE/NS-6_binary-codec_01.md).
 - [Primary byte stream adapter — DONE](DONE/NS-6_portability_01.md).
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss actual consumers: context archives on Win32/Win64 and
+  actual pas2js preserve frozen986-byte identity, complete round-trip, model/
+  evidence ownership, semantic/bounds rejection, BMP/astral metadata and exact
+  UTF-8 byte limits, malformed encoding/NUL rejection and prior assigned owner.
+  Current native full style consumer passes8308 checks/65 stages with zero
+  leaks; actual portable full style also passes8308/65. Three source/
+  nested/trajectory archives remain byte-identical to frozen native artifacts.
+  Added portable checksum/version/truncation/Unicode controls also print those
+  same three hashes; the enclosing full rerun is terminal success. The full actual
+  portable named-voice constructor executes13939/10/13396, not just a compile.
+  Preserve native-only fixture import failures; use primary text/hash helpers
+  in shared fixtures and keep native file/timer support conditional. New exact
+  published integration/extracted gates remain open; no task or credit closes.
+
+- 2026-10-28, Big Boss local candidate: the shared text decoder/emitter and
+  explicit UTF-8 byte count now serve context/style metadata and model text.
+  Archive I/O uses the existing byte-stream adapter; fixed digest fields share
+  the primary hash implementation, also adopted by tempo evidence. Primary
+  native/actual portable conversion passes2803/12/2654 with private publication;
+  first native context artifact equals frozen986bytes/hash. Preserve context-
+  profile Move/CompareMem failures and subsequent complete pointer/API audit.
+  Actual voice compilation then reaches distinct chord renderer10; stop archive
+  expansion and follow it. Whole archive/voice acceptance remains open.
 
 - 2026-10-28, Big Boss: exact actual pas2js compile rejects context archive
   line45, identifier UTF8String. Read-only closure inspection finds native

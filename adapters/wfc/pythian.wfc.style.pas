@@ -32,6 +32,8 @@ interface
 uses
   pythian.audio,
   pythian.progress,
+  pythian.text,
+  pythian.corpus.text,
   pythian.time,
   pythian.music.grid.frames,
   pythian.analysis,
@@ -47,6 +49,7 @@ uses
   pythian.envelope,
   pythian.wfc.context.profile,
   pythian.wfc.layers,
+  wfc_model,
   wfc_sequence;
 
 const
@@ -72,7 +75,7 @@ type
     GateFrame: Integer;
     MaximumTailRatio: Double;
     MinimumRms: Double;
-    Policy: UTF8String;
+    Policy: TCorpusText;
     RmsPoints: TAutomationPoints;
   end;
 
@@ -82,7 +85,7 @@ type
     Channel: Integer;
     MaximumRelativeError: Double;
     MinimumAcRms: Double;
-    Policy: UTF8String;
+    Policy: TCorpusText;
     Fit: THarmonicFit;
   end;
   THarmonicStyleKnots = array of THarmonicStyleEvidence;
@@ -96,7 +99,7 @@ type
     OnsetReportSha256: String;
     Analysis: TAnalysisOptions;
     OnsetVersion: Integer;
-    Policy: UTF8String;
+    Policy: TCorpusText;
     TempoMicroseconds: Integer;
     SourceStartTick: Integer;
     SourceFrameOffset: Integer;
@@ -276,8 +279,8 @@ type
   Does not reopen source WAV/onset files or execute descriptive policies. }
 function DecodeWaveStyle(const ABytes: TAudioBytes;
   const AProgress: TWorkProgressCallback = nil): TWaveStyleProfile;
-function StyleIntensityToken(const ABand: Integer): UTF8String;
-function DecodeStyleIntensityToken(const AToken: UTF8String): Integer;
+function StyleIntensityToken(const ABand: Integer): TWfcModelToken;
+function DecodeStyleIntensityToken(const AToken: TWfcModelToken): Integer;
 
 { Caller owns the detached exact clock/grid. Explicit clocks retain finite scope;
   the constant-clock shorthand keeps the complete-source admission contract. }
@@ -304,7 +307,6 @@ uses
   pythian.wfc.pitch,
   pythian.wfc.context,
   pythian.wfc.context.archive,
-  wfc_model,
   wfc_sequence_learn,
   wfc_sequence_text;
 
@@ -327,7 +329,11 @@ type
     FReportedBytes: Int64;
   public
     constructor Create(const AProgress: TWorkProgressCallback);
+    {$ifdef pas2js}
+    function Write(const ABuffer: TBytes; AOffset, ACount: LongInt): LongInt; override;
+    {$else}
     function Write(const ABuffer; ACount: LongInt): LongInt; override;
+    {$endif}
     procedure Field;
     procedure Complete;
     property Progress: TWorkProgressCallback read FProgress;
@@ -351,7 +357,7 @@ type
     procedure Need(const ACount: Integer);
     function Number: Integer;
     function Blob(const AMaximum: Integer): TAudioBytes;
-    function Text(const AMaximum: Integer): UTF8String;
+    function Text(const AMaximum: Integer): TScalarText;
     function RealValue: Double;
   end;
 
@@ -363,9 +369,15 @@ begin
   ReportWork(FProgress, 'wave_archive_bytes', wuBytes, 0, 0);
 end;
 
+{$ifdef pas2js}
+function TStyleArchiveStream.Write(const ABuffer: TBytes; AOffset, ACount: LongInt): LongInt;
+begin
+  Result := inherited Write(ABuffer, AOffset, ACount);
+{$else}
 function TStyleArchiveStream.Write(const ABuffer; ACount: LongInt): LongInt;
 begin
   Result := inherited Write(ABuffer, ACount);
+{$endif}
   if Assigned(FProgress) and (Position - FReportedBytes >= 65536) then
   begin
     FReportedBytes := Position;
@@ -421,24 +433,36 @@ function CopyStyleBytes(const ABytes: TAudioBytes; const AOffset, ACount: Intege
 var
   LOffset: Integer;
   LBlock: Integer;
+  LCandidate: TAudioBytes;
+  LStream: TAudioBytesReadStream;
 begin
   if not Assigned(AProgress) then
   begin
     Exit(Copy(ABytes, AOffset, ACount));
   end;
   ReportWork(AProgress, AStage, wuBytes, 0, ACount);
-  SetLength(Result, ACount);
-  LOffset := 0;
-  while LOffset < ACount do
-  begin
-    LBlock := Min(65536, ACount - LOffset);
-    Move(ABytes[AOffset + LOffset], Result[LOffset], LBlock);
-    Inc(LOffset, LBlock);
-    ReportWork(AProgress, AStage, wuBytes, LOffset, ACount);
+  SetLength(LCandidate, ACount);
+  LStream := TAudioBytesReadStream.Create(ABytes);
+  try
+    LStream.Position := AOffset;
+    LOffset := 0;
+    while LOffset < ACount do
+    begin
+      LBlock := Min(65536, ACount - LOffset);
+      if ReadStreamBytes(LStream, LCandidate, LOffset, LBlock) <> LBlock then
+      begin
+        raise EAudio.Create('Incomplete owned style byte copy');
+      end;
+      Inc(LOffset, LBlock);
+      ReportWork(AProgress, AStage, wuBytes, LOffset, ACount);
+    end;
+  finally
+    LStream.Free;
   end;
+  Result := LCandidate;
 end;
 
-procedure CompleteOwnedStep(const AObject: TObject;
+procedure CompleteOwnedStep(AObject: TObject;
   const AProgress: TWorkProgressCallback; const AStage: String);
 begin
   try
@@ -544,16 +568,16 @@ begin
   end;
 end;
 
-function StyleIntensityToken(const ABand: Integer): UTF8String;
+function StyleIntensityToken(const ABand: Integer): TWfcModelToken;
 begin
   if not (ABand in [0..4]) then
   begin
     raise EAudio.Create('Style intensity band must be 0..4');
   end;
-  Result := IntensityPrefix + UTF8String(IntToStr(ABand));
+  Result := IntensityPrefix + TWfcModelToken(IntToStr(ABand));
 end;
 
-function DecodeStyleIntensityToken(const AToken: UTF8String): Integer;
+function DecodeStyleIntensityToken(const AToken: TWfcModelToken): Integer;
 begin
   for Result := 0 to 4 do
   begin
@@ -574,7 +598,10 @@ begin
     raise EAudio.Create('Style integer/archive exceeds bounds');
   end;
   WriteUInt32LE(LBytes, 0, Cardinal(AValue));
-  AStream.WriteBuffer(LBytes[0], 4);
+  if WriteStreamBytes(AStream, LBytes, 0, 4) <> 4 then
+  begin
+    raise EAudio.Create('Incomplete style integer write');
+  end;
   AStream.Field;
 end;
 
@@ -592,7 +619,10 @@ begin
   begin
     if not Assigned(AStream.Progress) then
     begin
-      AStream.WriteBuffer(ABytes[0], Length(ABytes));
+      if WriteStreamBytes(AStream, ABytes, 0, Length(ABytes)) <> Length(ABytes) then
+      begin
+        raise EAudio.Create('Incomplete style byte write');
+      end;
     end
     else
     begin
@@ -600,22 +630,21 @@ begin
       while LOffset < Length(ABytes) do
       begin
         LBlock := Min(65536, Length(ABytes) - LOffset);
-        AStream.WriteBuffer(ABytes[LOffset], LBlock);
+        if WriteStreamBytes(AStream, ABytes, LOffset, LBlock) <> LBlock then
+        begin
+          raise EAudio.Create('Incomplete style byte write');
+        end;
         Inc(LOffset, LBlock);
       end;
     end;
   end;
 end;
 
-procedure PutText(const AStream: TStyleArchiveStream; const AText: UTF8String);
+procedure PutText(const AStream: TStyleArchiveStream; const AText: TScalarText);
 var
   LBytes: TAudioBytes;
 begin
-  SetLength(LBytes, Length(AText));
-  if Length(AText) > 0 then
-  begin
-    Move(AText[1], LBytes[0], Length(AText));
-  end;
+  LBytes := EncodeUTF8Text(AText, MaximumStyleBytes, True, True, AStream.Progress);
   PutBlob(AStream, LBytes);
 end;
 
@@ -631,30 +660,23 @@ begin
   SetLength(LBytes, LSize);
   if LSize > 0 then
   begin
-    if not Assigned(AStream.Progress) then
+    ReportWork(AStream.Progress, 'wave_archive_copy', wuBytes, 0, LSize);
+    AStream.Position := 0;
+    LOffset := 0;
+    while LOffset < LSize do
     begin
-      Move(AStream.Memory^, LBytes[0], LSize);
-    end
-    else
-    begin
-      ReportWork(AStream.Progress, 'wave_archive_copy', wuBytes, 0, LSize);
-      AStream.Position := 0;
-      LOffset := 0;
-      while LOffset < LSize do
+      LBlock := Min(65536, LSize - LOffset);
+      if ReadStreamBytes(AStream, LBytes, LOffset, LBlock) <> LBlock then
       begin
-        LBlock := Min(65536, LSize - LOffset);
-        if ReadStreamBytes(AStream, LBytes, LOffset, LBlock) <> LBlock then
-        begin
-          raise EAudio.Create('Incomplete owned style archive copy');
-        end;
-        Inc(LOffset, LBlock);
-        ReportWork(AStream.Progress, 'wave_archive_copy', wuBytes, LOffset, LSize);
+        raise EAudio.Create('Incomplete owned style archive copy');
       end;
+      Inc(LOffset, LBlock);
+      ReportWork(AStream.Progress, 'wave_archive_copy', wuBytes, LOffset, LSize);
     end;
   end;
   LHash := HashStyleBytes(LBytes, AStream.Progress);
   SetLength(LBytes, LSize + 64);
-  Move(LHash[1], LBytes[LSize], 64);
+  WriteSha256Hex(LBytes, LSize, LHash);
   AStream.Complete;
   Result := LBytes;
 end;
@@ -720,17 +742,12 @@ begin
   Inc(Offset, LCount);
 end;
 
-function TStyleCursor.Text(const AMaximum: Integer): UTF8String;
+function TStyleCursor.Text(const AMaximum: Integer): TScalarText;
 var
   LBytes: TAudioBytes;
 begin
   LBytes := Blob(AMaximum);
-  Result := '';
-  SetLength(Result, Length(LBytes));
-  if Length(LBytes) > 0 then
-  begin
-    Move(LBytes[0], Result[1], Length(LBytes));
-  end;
+  Result := DecodeUTF8Text(LBytes, AMaximum, True, True, Progress);
 end;
 
 function TStyleCursor.RealValue: Double;
@@ -1816,7 +1833,7 @@ begin
   ReportWork(AProgress, 'wave_learn_models', wuItems, LModels, LModels);
 end;
 
-function OptionalModelText(const AModel: TWfcSequenceModel): UTF8String;
+function OptionalModelText(const AModel: TWfcSequenceModel): TWfcModelToken;
 begin
   Result := '';
   if AModel <> nil then
@@ -2764,11 +2781,11 @@ var
   LLeft: TWaveStyleProfile;
   LRight: TWaveStyleProfile;
   LResult: TWaveStyleProfile;
-  LModelText: UTF8String;
-  LJointText: UTF8String;
-  LPitchText: UTF8String;
-  LPitchRhythmText: UTF8String;
-  LDurationText: UTF8String;
+  LModelText: TWfcModelToken;
+  LJointText: TWfcModelToken;
+  LPitchText: TWfcModelToken;
+  LPitchRhythmText: TWfcModelToken;
+  LDurationText: TWfcModelToken;
   LValue: Integer;
   LCapabilities: Integer;
   LPreferences: TStyleGenerationPreferences;
@@ -2781,10 +2798,9 @@ begin
     raise EAudio.Create('Style payload/ancestry exceeds bounds');
   end;
   ReportWork(AProgress, 'wave_archive_nodes', wuItems, ANodes, 0);
-  SetLength(LHash, 64);
-  Move(ABytes[Length(ABytes) - 64], LHash[1], 64);
-  if LHash <> HashStyleBytes(CopyStyleBytes(ABytes, 0, Length(ABytes) - 64,
-    AProgress, 'wave_archive_copy'), AProgress) then
+  LHash := HashStyleBytes(CopyStyleBytes(ABytes, 0, Length(ABytes) - 64,
+    AProgress, 'wave_archive_copy'), AProgress);
+  if not Sha256HexMatches(ABytes, Length(ABytes) - 64, LHash) then
   begin
     raise EAudio.Create('Style payload digest mismatch');
   end;

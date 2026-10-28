@@ -46,6 +46,14 @@ function Sha256Bytes(const ABytes: TAudioBytes;
 function Sha256Stream(const AStream: TStream; const AByteCount: Int64;
   const AProgress: TWorkProgressCallback = nil): String;
 
+{ Fixed 64-byte lowercase hexadecimal fields, independent of host string
+  storage. These do not compute a digest. Validate the complete field and
+  canonical hash before touching bytes; no partial write on expected rejection. }
+procedure WriteSha256Hex(var ABytes: array of Byte; const AOffset: Integer;
+  const AHash: String);
+function Sha256HexMatches(const ABytes: array of Byte; const AOffset: Integer;
+  const AHash: String): Boolean;
+
 implementation
 
 uses
@@ -301,6 +309,51 @@ begin
   LDigest := FinishHash(LState, LBlock, LChunk - LOffset, QWord(AByteCount));
   ReportWork(AProgress, 'verify_audio_bytes', wuBytes, AByteCount, AByteCount);
   Result := LDigest;
+end;
+
+procedure RequireSha256HexField(const ALength, AOffset: Integer; const AHash: String);
+var
+  LIndex: Integer;
+begin
+  if (AOffset < 0) or (AOffset > ALength - 64) or (Length(AHash) <> 64) then
+  begin
+    raise EAudio.Create('SHA256 hexadecimal field requires 64 available bytes');
+  end;
+  for LIndex := 1 to 64 do
+  begin
+    if not (AHash[LIndex] in ['0'..'9', 'a'..'f']) then
+    begin
+      raise EAudio.Create('SHA256 hexadecimal field requires canonical lowercase text');
+    end;
+  end;
+end;
+
+procedure WriteSha256Hex(var ABytes: array of Byte; const AOffset: Integer;
+  const AHash: String);
+var
+  LIndex: Integer;
+begin
+  RequireSha256HexField(Length(ABytes), AOffset, AHash);
+  for LIndex := 1 to 64 do
+  begin
+    ABytes[AOffset + LIndex - 1] := Ord(AHash[LIndex]);
+  end;
+end;
+
+function Sha256HexMatches(const ABytes: array of Byte; const AOffset: Integer;
+  const AHash: String): Boolean;
+var
+  LIndex: Integer;
+begin
+  RequireSha256HexField(Length(ABytes), AOffset, AHash);
+  for LIndex := 1 to 64 do
+  begin
+    if ABytes[AOffset + LIndex - 1] <> Ord(AHash[LIndex]) then
+    begin
+      Exit(False);
+    end;
+  end;
+  Result := True;
 end;
 
 end.

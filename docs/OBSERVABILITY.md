@@ -9,7 +9,7 @@ Separate WFCc4e7569 passes all five [upstream CI56 jobs](https://github.com/mr-h
 including actual browser execution. Its call-scoped preparation/proof observer
 reports actual phase/pass work, retains original exceptions and supports the
 existing graph commit guard. The Pythian candidate is not accepted yet; see
-[task17](TODO/NS-6_observability_17.md) and linked portability07/08/09.
+[task17](TODO/NS-6_observability_17.md) and linked portability07/08/09/10.
 
 `TNamedVoiceSession.Create` optionally forwards capacities, configuration,
 generic model/graph/projection construction and provider-choice/contract work.
@@ -27,10 +27,51 @@ synchronous. `CopyProvider` forwards its optional receiver into primary choices.
 Retained Generate/Regenerate/replacement/copy publication and operator forwarding
 remain parent04; construction does not install a retained observer there.
 
-Native Win32/Win64 constructor checks pass13939/10 original abort-retries with
-zero leaks. The full portable consumer exposes retained archive09 after the
-shared UTF-8 admission and tempo codec repairs pass their own portable checks.
-Do not infer complete portable voice operation from the isolated passes.
+Native Win32/Win64 and actual pas2js constructor checks pass13939/10 original
+abort-retries/13396 callbacks; native exits have zero leaks. The actual portable
+consumer now executes through the shared UTF-8, tempo, retained archive and
+streamed renderer repairs. Exact published integration/extracted qualification
+of those new repairs remains open; predecessor242563f/CI469 is terminal Success
+15m37s and covers only that earlier source.
+
+### Primary archive portability candidate
+
+`pythian.text` owns `ScalarTextByteCount`, `EncodeUTF8Text` and `DecodeUTF8Text`.
+Native raw UTF-8 and pas2js UTF-16 strings share the same canonical scalar
+decoder/emitter and UTF-8 byte budgets. No host decoder, normalization or
+transcoding is used. The native result receives a UTF-8 code-page tag without
+changing bytes. Byte/text candidates stay private through their final callback.
+`text_validate_bytes` retains its existing cadence and unknown-until-finish
+total. `text_encode_bytes` and `text_decode_bytes` report actual UTF-8 bytes,
+start/end and interior checkpoints after at least65536 bytes; a scalar may
+cross the checkpoint by at most three bytes. Allocation and the portable RTL
+builder's final string join remain synchronous. These calls do not yield.
+
+Context/style archives use that primary conversion and the existing typed
+stream-byte adapter. Context metadata accounting measures canonical UTF-8 bytes,
+including supplementary characters. Context child-body copies report completed
+65536-byte blocks; context text cursors retain their8192-byte copy checkpoints.
+Style stream signatures alone differ by target. `pythian.hash` owns the fixed
+64-byte lowercase hexadecimal field write/compare used by context, profile,
+style and tempo archives. Those bounded helpers validate before touching bytes;
+they compute no digest. Existing primary SHA still owns digest work.
+
+The primary streamed chord renderer also executes on actual pas2js. Its internal
+types remain private and state remains strict private. Existing property values
+use typed getters. The counter domain is native Int64 and pas2js exact integers
+through2^53-1 (`MaximumChordStreamFrames`); invalid admission preserves state.
+Counter-bound admission is not a claim to have rendered that whole duration.
+The shared triangle/envelope/voice algorithm is unchanged. All55861 reference
+samples across44100/48000/32000Hz pass on both native targets and actual pas2js.
+This is synchronous Node execution, not browser/device playback qualification.
+
+Current retained style consumers pass8308 checks/65 stages on checked Win64
+and actual pas2js, including original cancellation/retry and PCM/lineage checks,
+new checksum/version/truncation/Unicode rejection/replay and matching frozen
+native source/nested/trajectory hashes. Context Unicode and exact byte-limit
+controls pass on Win32/Win64/actual pas2js; primary conversion passes2803/12
+original abort-retries/2654 callbacks. Native exits have zero leaks. The linked
+tasks still require exact new publication/extracted qualification before DONE.
 
 Big Boss, 2026-10-03. The learning-progress lesson applies to the reusable
 library as well as Studio: callers need real work counts, named phases and
@@ -852,9 +893,9 @@ repair is accepted separately; whole task04 and musical acceptance remain open.
 | `context_archive_encode_bytes`, `context_archive_decode_bytes` | Actual cursor payload offset, endpoints and field-boundary checkpoints after roughly8192 bytes |
 | `verify_audio_bytes` | Existing primary SHA byte work over the named archive/profile payload, despite this inherited generic stage ID |
 | `context_copy_model_visits` | Actual shared immutable-model construction visits, pass1 key/pass2 tempo |
-| `context_profile_encode_bytes` | Written profile-body header/child bytes; native child copies remain synchronous |
+| `context_profile_encode_bytes` | Written profile-body header/child bytes; shared child copies report completed65536-byte blocks |
 | `context_profile_nodes` | Completed validated nodes; unknown total until the ancestry walk finishes |
-| `context_profile_copy_bytes` | Detached native byte copy endpoints |
+| `context_profile_copy_bytes` | Detached byte copy endpoints |
 | `context_bundle_ready`, `context_archive_encode_ready`, `context_archive_decode_ready`, `context_profile_ready` | Final publication checkpoint,0/1 then1/1, with candidate cleanup on abort |
 
 Existing context-learning phases remain separate. Hashes and learning repeat
@@ -881,7 +922,7 @@ existing385 progress checks, known hash vectors and actual archive/profile
 consumers pass. Twelve prior artifacts per native target (including CLI-created
 profiles and four WAVs) and both CLI stdout receipts match frozen `f7f7881`.
 
-Named synchronous residuals: single validated metadata fields are at most4096
+Historical native measurement before the archive-portability candidate: single validated metadata fields are at most4096
 UTF-8 bytes; their validation/equality remains atomic. Context model text uses
 bounded context tokens/states and the unchanged generic codec; earlier observed
 72012-byte encoding took32ms locally. Detached model input arrays contain at
@@ -904,8 +945,9 @@ Evidence: dedicated E-drive `context-profile-20261027-boss` and
 publication failures and frozen hash repro logs. The initial local profile
 compile omitted the existing tools search path; corrected orchestration reuses
 the maintained path and the actual profile consumer passes. Broader portable
-context execution remains unqualified at the pre-existing tempo-evidence `Move`
-boundary; no substitute, stub or browser/phone qualification is claimed.
+context execution was unqualified at the then-existing tempo-evidence `Move`
+boundary. The candidate above records its later repair and actual consumers;
+no substitute, stub or browser/phone qualification is claimed.
 
 ### Retained style evaluation component — 2026-10-28
 

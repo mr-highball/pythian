@@ -33,6 +33,9 @@ uses
   pythian.music.context,
   pythian.wfc.context,
   pythian.progress,
+  pythian.text,
+  pythian.corpus.text,
+  wfc_model,
   wfc_sequence;
 
 const
@@ -42,10 +45,10 @@ const
 
 type
   TContextEvidence = record
-    Name: UTF8String;
+    Name: TCorpusText;
     SourceSha256: String;
     SourceFrameOffset: Integer; { Source frame corresponding to the clock's tick zero. }
-    AdmissionPolicy: UTF8String;
+    AdmissionPolicy: TCorpusText;
     Grid: TMusicContextGrid;
   end;
   TContextEvidenceArray = array of TContextEvidence;
@@ -72,7 +75,7 @@ type
     function CopyEvidence(const AProgress: TWorkProgressCallback = nil): TContextEvidenceArray;
     function CopyModel(const ADimension: TContextDimension;
       const AProgress: TWorkProgressCallback = nil): TWfcSequenceModel;
-    function ModelText(const ADimension: TContextDimension): UTF8String;
+    function ModelText(const ADimension: TContextDimension): TWfcModelToken;
     property KeyOrder: Integer read FKeyOrder;
     property TempoOrder: Integer read FTempoOrder;
     property TicksPerQuarter: Integer read GetTicksPerQuarter;
@@ -97,6 +100,7 @@ uses
   pythian.corpus,
   pythian.hash,
   pythian.binary,
+  pythian.stream.bytes,
   pythian.tonal,
   wfc_sequence_learn,
   wfc_sequence_text;
@@ -123,8 +127,8 @@ type
     procedure Need(const ACount: Integer);
     procedure PutNumber(const AValue: Integer);
     function GetNumber: Integer;
-    procedure PutText(const AValue: UTF8String);
-    function GetText(const AMaximumBytes: Integer): UTF8String;
+    procedure PutText(const AValue: TScalarText);
+    function GetText(const AMaximumBytes: Integer): TScalarText;
   end;
 
 procedure TContextBundleProgress.ObserveGrid(const AWork: TWorkProgress);
@@ -236,8 +240,8 @@ begin
           raise EAudio.Create('Context source SHA256 must be lowercase hexadecimal');
         end;
       end;
-      Inc(LMetadata, Length(AEvidence[LIndex].Name) +
-        Length(AEvidence[LIndex].AdmissionPolicy) + 64);
+      Inc(LMetadata, ScalarTextByteCount(AEvidence[LIndex].Name, MaximumCorpusTextBytes) +
+        ScalarTextByteCount(AEvidence[LIndex].AdmissionPolicy, MaximumCorpusTextBytes) + 64);
       Inc(LTotal, Length(AEvidence[LIndex].Grid.Keys));
       if (LTotal > MaximumContextCells) or (LMetadata > MaximumContextMetadataBytes) then
       begin
@@ -299,7 +303,7 @@ begin
   end;
 end;
 
-function TContextLearningBundle.ModelText(const ADimension: TContextDimension): UTF8String;
+function TContextLearningBundle.ModelText(const ADimension: TContextDimension): TWfcModelToken;
 begin
   Result := EncodeWfcSequenceText(ContextModel(ADimension));
 end;
@@ -384,19 +388,38 @@ begin
   ObserveOffset;
 end;
 
-procedure TContextCursor.PutText(const AValue: UTF8String);
+procedure TContextCursor.PutText(const AValue: TScalarText);
+var
+  LBytes: TAudioBytes;
+  LStream: TAudioBytesReadStream;
+  LDone: Integer;
+  LBlock: Integer;
 begin
-  PutNumber(Length(AValue));
-  Need(Length(AValue));
-  if AValue <> '' then
-  begin
-    Move(AValue[1], Bytes[Offset], Length(AValue));
+  LBytes := EncodeUTF8Text(AValue, MaximumContextArchiveBytes, True, True, Progress);
+  PutNumber(Length(LBytes));
+  Need(Length(LBytes));
+  LStream := TAudioBytesReadStream.Create(LBytes);
+  try
+    LDone := 0;
+    while LDone < Length(LBytes) do
+    begin
+      LBlock := Length(LBytes) - LDone;
+      if LBlock > 8192 then LBlock := 8192;
+      if ReadStreamBytes(LStream, Bytes, Offset, LBlock) <> LBlock then
+      begin
+        raise EAudio.Create('Incomplete context text byte copy');
+      end;
+      Inc(LDone, LBlock);
+      Inc(Offset, LBlock);
+      ObserveOffset;
+    end;
+  finally
+    LStream.Free;
   end;
-  Inc(Offset, Length(AValue));
   ObserveOffset;
 end;
 
-function TContextCursor.GetText(const AMaximumBytes: Integer): UTF8String;
+function TContextCursor.GetText(const AMaximumBytes: Integer): TScalarText;
 var
   LCount: Integer;
 begin
@@ -406,12 +429,7 @@ begin
     raise EAudio.Create('Context archive text exceeds its byte budget');
   end;
   Need(LCount);
-  Result := '';
-  SetLength(Result, LCount);
-  if LCount > 0 then
-  begin
-    Move(Bytes[Offset], Result[1], LCount);
-  end;
+  Result := DecodeUTF8Text(Copy(Bytes, Offset, LCount), AMaximumBytes, True, True, Progress);
   Inc(Offset, LCount);
   ObserveOffset;
 end;
@@ -420,8 +438,8 @@ function EncodeContextLearning(const ABundle: TContextLearningBundle;
   const AProgress: TWorkProgressCallback): TAudioBytes;
 var
   LEvidence: TContextEvidenceArray;
-  LKeyText: UTF8String;
-  LTempoText: UTF8String;
+  LKeyText: TWfcModelToken;
+  LTempoText: TWfcModelToken;
   LHash: String;
   LSize: Int64;
   LCursor: TContextCursor;
@@ -437,11 +455,13 @@ begin
   LEvidence := ABundle.CopyEvidence(AProgress);
   LKeyText := ABundle.ModelText(cdKey);
   LTempoText := ABundle.ModelText(cdTempo);
-  LSize := 40 + 8 + Length(LKeyText) + Length(LTempoText);
+  LSize := 40 + 8 + ScalarTextByteCount(LKeyText, MaximumContextArchiveBytes, True, True, AProgress) +
+    ScalarTextByteCount(LTempoText, MaximumContextArchiveBytes, True, True, AProgress);
   for I := 0 to High(LEvidence) do
   begin
-    Inc(LSize, 32 + Length(LEvidence[I].Name) + 64 +
-      Length(LEvidence[I].AdmissionPolicy) + Int64(Length(LEvidence[I].Grid.Keys)) * 8);
+    Inc(LSize, 32 + ScalarTextByteCount(LEvidence[I].Name, MaximumCorpusTextBytes) + 64 +
+      ScalarTextByteCount(LEvidence[I].AdmissionPolicy, MaximumCorpusTextBytes) +
+      Int64(Length(LEvidence[I].Grid.Keys)) * 8);
   end;
   if LSize > MaximumContextArchiveBytes - 64 then
   begin
@@ -467,7 +487,7 @@ begin
   for I := 0 to High(LEvidence) do
   begin
     LCursor.PutText(LEvidence[I].Name);
-    LCursor.PutText(UTF8String(LEvidence[I].SourceSha256));
+    LCursor.PutText(LEvidence[I].SourceSha256);
     LCursor.PutNumber(LEvidence[I].SourceFrameOffset);
     LCursor.PutText(LEvidence[I].AdmissionPolicy);
     LCursor.PutNumber(LEvidence[I].Grid.TicksPerQuarter);
@@ -497,7 +517,7 @@ begin
   ReportWork(AProgress, LCursor.Stage, wuBytes, LCursor.Offset, LCursor.Limit);
   LHash := Sha256Bytes(LCursor.Bytes, AProgress);
   SetLength(LCursor.Bytes, LCursor.Limit + 64);
-  Move(LHash[1], LCursor.Bytes[LCursor.Limit], 64);
+  WriteSha256Hex(LCursor.Bytes, LCursor.Limit, LHash);
   ReportWork(AProgress, 'context_archive_encode_ready', wuItems, 1, 1);
   Result := LCursor.Bytes;
 end;
@@ -509,8 +529,8 @@ var
   LEvidence: TContextEvidenceArray;
   LBundle: TContextLearningBundle;
   LHash: String;
-  LKeyText: UTF8String;
-  LTempoText: UTF8String;
+  LKeyText: TWfcModelToken;
+  LTempoText: TWfcModelToken;
   LKeyOrder: Integer;
   LTempoOrder: Integer;
   LCount: Integer;
@@ -533,12 +553,9 @@ begin
   LCursor.NextCheckpoint := 8192;
   ReportWork(AProgress, 'context_archive_decode_ready', wuItems, 0, 1);
   LHash := Sha256Bytes(Copy(ABytes, 0, LCursor.Limit), AProgress);
-  for I := 1 to 64 do
+  if not Sha256HexMatches(ABytes, LCursor.Limit, LHash) then
   begin
-    if Byte(LHash[I]) <> ABytes[LCursor.Limit + I - 1] then
-    begin
-      raise EAudio.Create('Context archive SHA256 mismatch');
-    end;
+    raise EAudio.Create('Context archive SHA256 mismatch');
   end;
   ReportWork(AProgress, LCursor.Stage, wuBytes, 0, LCursor.Limit);
   if (LCursor.GetNumber <> ContextMagic) or
@@ -572,7 +589,8 @@ begin
     LEvidence[I].SourceSha256 := String(LCursor.GetText(64));
     LEvidence[I].SourceFrameOffset := LCursor.GetNumber;
     LEvidence[I].AdmissionPolicy := LCursor.GetText(MaximumCorpusTextBytes);
-    Inc(LMetadata, Length(LEvidence[I].Name) + Length(LEvidence[I].AdmissionPolicy) + 64);
+    Inc(LMetadata, ScalarTextByteCount(LEvidence[I].Name, MaximumCorpusTextBytes) +
+      ScalarTextByteCount(LEvidence[I].AdmissionPolicy, MaximumCorpusTextBytes) + 64);
     if LMetadata > MaximumContextMetadataBytes then
     begin
       raise EAudio.Create('Context archive metadata budget exceeded');

@@ -56,6 +56,17 @@ operator forwarding remain parent04; no musical acceptance follows here.
 
 **Dev Notes:**
 
+- 2026-10-28, Big Boss: actual linked07/08/09/10 source now executes the full
+  portable constructor consumer13939 checks/10 original abort-retries/13396
+  callbacks; current Win32 also passes with zero leaks. Its preserved-layer
+  graph lookup uses the existing explicit Entry property, matching the primary
+  companion API and prior layer repair. No graph algorithm changes. Upstream
+  CI56 remains all-five success. Downstream predecessor242563f/CI469 passes
+  integration14m18s and extracted consumers46s; it predates current archive/
+  renderer changes. Qualify the new exact source and all linked prerequisites
+  before accepting the pin. Parent04 retained publication and operator work
+  remain separate. Preserve compile failures and delivery entry2.
+
 - 2026-10-28, Big Boss candidate: separate WFCc4e7569 passes exact
   [CI56](https://github.com/mr-highball/wfc/actions/runs/40776021527), all five
   jobs, terminal24m35s and actual browser13m32s. Generic native/actual portable

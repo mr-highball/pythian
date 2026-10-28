@@ -26,13 +26,14 @@ program pythian_tests_wave_style_progress;
 {$mode delphi}{$H+}
 
 uses
-  Classes, SysUtils, Math,
-  pythian.audio, pythian.analysis, pythian.progress, pythian.hash,
+  Classes, SysUtils, Math, Types,
+  pythian.audio, pythian.analysis, pythian.progress, pythian.hash, pythian.text,
   pythian.time, pythian.music.grid.frames, pythian.music.context,
   pythian.tonal, pythian.onset, pythian.onset.dynamics,
   pythian.pitch, pythian.pitch.cells, pythian.pitch.track,
   pythian.automation, pythian.envelope, pythian.source,
-  pythian.source.wavetable, pythian.tools.files,
+  pythian.source.wavetable,
+  {$ifndef pas2js}pythian.tools.files,{$endif}
   pythian.wfc.context, pythian.wfc.context.profile,
   pythian.wfc.context.archive, pythian.wfc.style,
   wfc_sequence, wfc_sequence_text;
@@ -96,14 +97,18 @@ begin
 end;
 
 procedure TObserver.Observe(const AWork: TWorkProgress);
+{$ifndef pas2js}
 var
   LElapsed: QWord;
+{$endif}
 begin
   Inc(Calls);
   if (AWork.Done < 0) or (AWork.Total < 0) or
     ((AWork.Total > 0) and (AWork.Done > AWork.Total)) then
     raise Exception.Create('Invalid work counts');
   Stages.Add(AWork.Stage);
+  {$ifndef pas2js}
+  { Native timing is diagnostic only; semantic checks below run on both targets. }
   if (AWork.Units = wuItems) and (AWork.Total = 1) then
   begin
     if AWork.Done = 0 then
@@ -117,6 +122,7 @@ begin
         MaximumMs.Values[AWork.Stage] := '0';
     end;
   end;
+  {$endif}
   if (AWork.Stage = 'wave_context_cells') or
     (AWork.Stage = 'wave_rhythm_tokens') or (AWork.Stage = 'wave_intensity_tokens') then
   begin
@@ -157,12 +163,12 @@ var
 begin
   GEvidence := Default(TRhythmStyleEvidence);
   GEvidence.Source.Name := 'Authored profile callback source';
-  GEvidence.Source.Sha256 := HashText(GEvidence.Source.Name);
+  GEvidence.Source.Sha256 := Sha256Bytes(EncodeUTF8Text(GEvidence.Source.Name, 1024));
   GEvidence.Source.Provenance := 'Declared fixture, no recorded accuracy claim';
   GEvidence.Source.SampleRate := 1000;
   GEvidence.Source.Channels := 1;
   GEvidence.Source.FrameCount := CCells * 250;
-  GEvidence.OnsetReportSha256 := HashText('Authored onsets');
+  GEvidence.OnsetReportSha256 := Sha256Bytes(EncodeUTF8Text('Authored onsets', 1024));
   GEvidence.Analysis := DefaultAnalysisOptions;
   GEvidence.OnsetVersion := OnsetLocationVersion;
   GEvidence.Policy := 'Authored constant clock and pitch declarations';
@@ -452,6 +458,66 @@ begin
   end;
 end;
 
+procedure CheckArchiveRejected(const ABytes: TAudioBytes);
+var
+  LOwner: TWaveStyleProfile;
+  LRejected: Boolean;
+begin
+  LOwner := GNested;
+  LRejected := False;
+  try
+    LOwner := DecodeWaveStyle(ABytes);
+  except
+    on EAudio do LRejected := True;
+  end;
+  if not LRejected then
+    LOwner.Free;
+  Check(LRejected and (LOwner = GNested), 'Rejected style preserves assigned owner');
+end;
+
+procedure ArchiveAdmissionChecks;
+var
+  LBytes: TAudioBytes;
+  LBad: TAudioBytes;
+  LEvidence: TRhythmStyleEvidence;
+  LContext: TContextProfile;
+  LStyle: TWaveStyleProfile;
+  LLoaded: TWaveStyleProfile;
+begin
+  LBad := Copy(GArchive);
+  LBad[High(LBad)] := LBad[High(LBad)] xor 1;
+  CheckArchiveRejected(LBad);
+  CheckArchiveRejected(Copy(GArchive, 0, Length(GArchive) - 1));
+  LBad := Copy(GArchive);
+  LBad[4] := 255;
+  WriteSha256Hex(LBad, Length(LBad) - 64,
+    Sha256Bytes(Copy(LBad, 0, Length(LBad) - 64)));
+  CheckArchiveRejected(LBad);
+  LEvidence := GLeft.EvidenceAt(0);
+  LEvidence.Source.Name := ScalarText($E9) + ScalarText($1D11E);
+  LEvidence.Policy := 'Declared ' + ScalarText($1F3B5);
+  LContext := ContextForSource(LEvidence);
+  LStyle := nil;
+  LLoaded := nil;
+  try
+    LStyle := TWaveStyleProfile.CreateSource(LContext, LEvidence, 2);
+    LBytes := LStyle.Encode;
+    LLoaded := DecodeWaveStyle(LBytes);
+    Check((LLoaded.EvidenceAt(0).Source.Name = LEvidence.Source.Name) and
+      (LLoaded.EvidenceAt(0).Policy = LEvidence.Policy), 'Style Unicode metadata');
+    Check((LLoaded.Identity = LStyle.Identity) and
+      (Sha256Bytes(LLoaded.Encode) = Sha256Bytes(LBytes)), 'Unicode style archive replay');
+    WriteLn('Style archive: checksum, version, truncation and Unicode replay pass');
+    WriteLn('Source archive sha256=', Sha256Bytes(GLeft.Encode));
+    WriteLn('Nested archive sha256=', Sha256Bytes(GArchive));
+    WriteLn('Trajectory archive sha256=', Sha256Bytes(GTrajectory.Encode));
+  finally
+    LLoaded.Free;
+    LStyle.Free;
+    LContext.Free;
+  end;
+end;
+
 var
   LIndex: Integer;
   LKnot: Integer;
@@ -460,7 +526,9 @@ var
   LBase: TWaveStyleProfile;
   LPreferred: TWaveStyleProfile;
   LContextHash: String;
+  LAdmissionOnly: Boolean;
 begin
+  LAdmissionOnly := (ParamCount = 1) and (ParamStr(1) = 'admission');
   GObserver := TObserver.Create;
   LOtherContext := nil;
   LBase := nil;
@@ -472,7 +540,7 @@ begin
     LOtherEvidence := GLeft.EvidenceAt(0);
     { Distinct source and matching context; no new inference or recording. }
     LOtherEvidence.Source.Name := 'Authored second callback source';
-    LOtherEvidence.Source.Sha256 := HashText(LOtherEvidence.Source.Name);
+    LOtherEvidence.Source.Sha256 := Sha256Bytes(EncodeUTF8Text(LOtherEvidence.Source.Name, 1024));
     LOtherContext := ContextForSource(LOtherEvidence);
     GRight := TWaveStyleProfile.CreateSource(LOtherContext, LOtherEvidence, 2);
     SetLength(GPreferences[sppRhythm], 2);
@@ -498,62 +566,73 @@ begin
       GTrajectoryEvidence.TimbreTrajectory.Knots[LKnot].Fit.Recipe.Sine[LKnot] := 0.1;
     end;
     GTrajectory := TWaveStyleProfile.CreateSource(GContext, GTrajectoryEvidence, 2);
-    for LIndex := 0 to 25 do
+    ArchiveAdmissionChecks;
+    if not LAdmissionOnly then
     begin
-      Check(Exercise(LIndex, nil) = Exercise(LIndex, GObserver.Observe),
-        'Observed operation differs: ' + IntToStr(LIndex));
+      for LIndex := 0 to 25 do
+      begin
+        Check(Exercise(LIndex, nil) = Exercise(LIndex, GObserver.Observe),
+          'Observed operation differs: ' + IntToStr(LIndex));
+      end;
+      AbortAndRetry(0, 'wave_context_cells', 256, True);
+      AbortAndRetry(0, 'wave_rhythm_tokens', 256, True);
+      AbortAndRetry(0, 'wave_intensity_tokens', 256, True);
+      AbortAndRetry(0, 'wave_archive_fields', 4096, True);
+      AbortAndRetry(0, 'wave_archive_hash', 65536, True);
+      AbortAndRetry(1, 'wave_blend_sources', 1, True);
+      AbortAndRetry(2, 'wave_preference_tokens', 1, False);
+      AbortAndRetry(3, 'wave_archive_input', 4096, True);
+      AbortAndRetry(3, 'wave_archive_blob', 65536, True);
+      AbortAndRetry(3, 'wave_archive_nodes', GNested.NodeCount, False, True);
+      AbortAndRetry(4, 'wave_archive_copy', 65536, True);
+      AbortAndRetry(5, 'wave_parent_copy', 1, False);
+      AbortAndRetry(6, 'wave_context_copy', 1, False);
+      AbortAndRetry(7, 'wave_model_copy', 1, False);
+      AbortAndRetry(12, 'wave_duration_track', 1, False);
+      AbortAndRetry(13, 'wave_duration_onsets', 256, True);
+      AbortAndRetry(16, 'wave_evidence_components', 3, True);
+      AbortAndRetry(17, 'wave_admission_copy', 1, True);
+      AbortAndRetry(18, 'wave_preference_copy', 1, True);
+      AbortAndRetry(20, 'wave_timbre_factory', 1, False);
+      AbortAndRetry(21, 'wave_envelope_blend', 1, False);
+      AbortAndRetry(22, 'wave_source_clock', 1, False);
+      AbortAndRetry(23, 'wave_source_grid', 1, False);
+      AbortAndRetry(24, 'wave_timbre_knots', 1, True);
+      AbortAndRetry(25, 'wave_trajectory_coefficients', 256, True);
+      AbortAndRetry(25, 'wave_timbre_factory', 1, False);
+      AudioParity(GNested);
+      AudioParity(GTrajectory);
+      { Replay actual returned evidence, not just the profiles' cached archives. }
+      Check(ReplayedSourceIdentity(GContext, GEvidence) = GLeft.Identity,
+        'Borrowed source record changed');
+      Check(ReplayedSourceIdentity(GContext, GLeft.EvidenceAt(0)) = GLeft.Identity,
+        'Borrowed left evidence changed');
+      Check(ReplayedSourceIdentity(LOtherContext, GRight.EvidenceAt(0)) = GRight.Identity,
+        'Borrowed right evidence changed');
+      Check(ReplayedSourceIdentity(GContext, GNested.EvidenceAt(0)) = GLeft.Identity,
+        'Nested left evidence changed');
+      Check(ReplayedSourceIdentity(LOtherContext, GNested.EvidenceAt(1)) = GRight.Identity,
+        'Nested right evidence changed');
+      Check(Sha256Bytes(EncodeContextProfile(GContext)) = LContextHash,
+        'Borrowed context changed');
     end;
-    AbortAndRetry(0, 'wave_context_cells', 256, True);
-    AbortAndRetry(0, 'wave_rhythm_tokens', 256, True);
-    AbortAndRetry(0, 'wave_intensity_tokens', 256, True);
-    AbortAndRetry(0, 'wave_archive_fields', 4096, True);
-    AbortAndRetry(0, 'wave_archive_hash', 65536, True);
-    AbortAndRetry(1, 'wave_blend_sources', 1, True);
-    AbortAndRetry(2, 'wave_preference_tokens', 1, False);
-    AbortAndRetry(3, 'wave_archive_input', 4096, True);
-    AbortAndRetry(3, 'wave_archive_blob', 65536, True);
-    AbortAndRetry(3, 'wave_archive_nodes', GNested.NodeCount, False, True);
-    AbortAndRetry(4, 'wave_archive_copy', 65536, True);
-    AbortAndRetry(5, 'wave_parent_copy', 1, False);
-    AbortAndRetry(6, 'wave_context_copy', 1, False);
-    AbortAndRetry(7, 'wave_model_copy', 1, False);
-    AbortAndRetry(12, 'wave_duration_track', 1, False);
-    AbortAndRetry(13, 'wave_duration_onsets', 256, True);
-    AbortAndRetry(16, 'wave_evidence_components', 3, True);
-    AbortAndRetry(17, 'wave_admission_copy', 1, True);
-    AbortAndRetry(18, 'wave_preference_copy', 1, True);
-    AbortAndRetry(20, 'wave_timbre_factory', 1, False);
-    AbortAndRetry(21, 'wave_envelope_blend', 1, False);
-    AbortAndRetry(22, 'wave_source_clock', 1, False);
-    AbortAndRetry(23, 'wave_source_grid', 1, False);
-    AbortAndRetry(24, 'wave_timbre_knots', 1, True);
-    AbortAndRetry(25, 'wave_trajectory_coefficients', 256, True);
-    AbortAndRetry(25, 'wave_timbre_factory', 1, False);
-    AudioParity(GNested);
-    AudioParity(GTrajectory);
-    { Replay actual returned evidence, not just the profiles' cached archives. }
-    Check(ReplayedSourceIdentity(GContext, GEvidence) = GLeft.Identity,
-      'Borrowed source record changed');
-    Check(ReplayedSourceIdentity(GContext, GLeft.EvidenceAt(0)) = GLeft.Identity,
-      'Borrowed left evidence changed');
-    Check(ReplayedSourceIdentity(LOtherContext, GRight.EvidenceAt(0)) = GRight.Identity,
-      'Borrowed right evidence changed');
-    Check(ReplayedSourceIdentity(GContext, GNested.EvidenceAt(0)) = GLeft.Identity,
-      'Nested left evidence changed');
-    Check(ReplayedSourceIdentity(LOtherContext, GNested.EvidenceAt(1)) = GRight.Identity,
-      'Nested right evidence changed');
-    Check(Sha256Bytes(EncodeContextProfile(GContext)) = LContextHash,
-      'Borrowed context changed');
-    if ParamCount = 1 then
+    {$ifndef pas2js}
+    if (ParamCount = 1) and not LAdmissionOnly then
     begin
       WriteFileBytes(ParamStr(1) + '.source.pys', GLeft.Encode);
       WriteFileBytes(ParamStr(1) + '.nested.pys', GArchive);
       WriteFileBytes(ParamStr(1) + '.trajectory.pys', GTrajectory.Encode);
     end;
-    WriteLn('Wave profile progress: ', GChecks, ' checks, ', GObserver.Stages.Count,
-      ' stages; exact models/archives/PCM, original aborts, borrowed inputs and retries pass');
+    {$endif}
+    if LAdmissionOnly then
+      WriteLn('Wave archive admission: ', GChecks, ' checks')
+    else
+      WriteLn('Wave profile progress: ', GChecks, ' checks, ', GObserver.Stages.Count,
+        ' stages; exact models/archives/PCM, original aborts, borrowed inputs and retries pass');
+    {$ifndef pas2js}
     WriteLn('Reported synchronous call intervals (ms; local fixture, no latency bound):');
     Write(GObserver.MaximumMs.Text);
+    {$endif}
   finally
     LPreferred.Free;
     LBase.Free;

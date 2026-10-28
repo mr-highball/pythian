@@ -447,24 +447,47 @@ begin
 end;
 {$ENDIF}
 
+procedure CheckCounterRange;
+var
+  LRenderer: TChordStreamRenderer;
+  LRejected: Boolean;
 begin
+  LRenderer := TChordStreamRenderer.Create(DefaultChordStreamOptions(8000), [2, 1]);
   try
-    CheckNative(6, 1);
-    CheckNative(6, 11);
-    CheckNative(0, 11);
-    CheckCancel;
-    WriteLn('Native chord stream: finite-gate oracle, holds, ownership, rejection and cancel pass');
-    {$IFDEF WFC_CHORD_CHECKS}
-    CheckModelCapacities;
-    CheckCompanion(44100, 20);
-    CheckCompanion(48000, 0);
-    CheckCompanion(32000, 1000);
-    {$ENDIF}
-  except
-    on LException: Exception do
-    begin
-      WriteLn(StdErr, LException.ClassName, ': ', LException.Message);
-      Halt(1);
+    {$ifdef pas2js}
+    LRejected := False;
+    try
+      LRenderer.AdmitFrame(Scene(0), MaximumChordStreamFrames + 1);
+    except
+      on EAudio do LRejected := True;
     end;
+    Check(LRejected and LRenderer.NeedsInput and (LRenderer.FrameCount = 0) and
+      (LRenderer.RenderedFrames = 0) and not LRenderer.Failed,
+      'Inexact portable frame extent changes renderer state');
+    {$endif}
+    { Admission only: do not render an impractically large test timeline. }
+    LRenderer.AdmitFrame(Scene(0), MaximumChordStreamFrames);
+    Check((LRenderer.FrameCount = MaximumChordStreamFrames) and
+      (LRenderer.RenderedFrames = 0) and not LRenderer.Failed,
+      'Exact target counter maximum was rejected or rounded');
+    LRenderer.Cancel;
+    Check(LRenderer.Cancelled, 'Large exact admission cannot be cancelled');
+  finally
+    LRenderer.Free;
   end;
+end;
+
+begin
+  CheckNative(6, 1);
+  CheckNative(6, 11);
+  CheckNative(0, 11);
+  CheckCancel;
+  CheckCounterRange;
+  WriteLn('Chord stream: finite-gate oracle, holds, ownership, rejection and cancel pass');
+  {$IFDEF WFC_CHORD_CHECKS}
+  CheckModelCapacities;
+  CheckCompanion(44100, 20);
+  CheckCompanion(48000, 0);
+  CheckCompanion(32000, 1000);
+  {$ENDIF}
 end.

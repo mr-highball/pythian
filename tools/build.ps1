@@ -272,6 +272,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Scalar text compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.text$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Scalar text checks failed' }
+  & $compilerPath @compilerArgs '-gh' 'tests/pythian.tests.text.utf8.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Primary UTF-8 conversion compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.text.utf8$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Primary UTF-8 conversion and digest fields failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.corpus.text.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Corpus text compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.corpus.text$executableSuffix")

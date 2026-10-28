@@ -581,7 +581,7 @@ begin
         for LCell := 0 to FOptions.CellCount - 1 do
         begin
           LCandidate.FGraph.PassGraph[LIndex].SetAllowedValues(LCell, 0, 0,
-            [FGraph.PassGraph[LIndex][LCell, 0, 0].Value]);
+            [FGraph.PassGraph[LIndex].Entry[LCell, 0, 0].Value]);
         end;
       end;
     end;

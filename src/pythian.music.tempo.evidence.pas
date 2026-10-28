@@ -283,7 +283,7 @@ begin
   SetLength(Result, BodyBytes);
   Digest := Sha256Bytes(Result);
   SetLength(Result, BodyBytes + 64);
-  for I := 1 to 64 do Result[BodyBytes + I - 1] := Ord(Digest[I]);
+  WriteSha256Hex(Result, BodyBytes, Digest);
 end;
 
 function DecodeTempoEvidence(const ABytes: TAudioBytes): TTempoEvidence;
@@ -298,7 +298,7 @@ begin
   BodyBytes := Length(ABytes) - 64;
   Body := Copy(ABytes, 0, BodyBytes);
   Digest := Sha256Bytes(Body);
-  for I := 1 to 64 do if ABytes[BodyBytes + I - 1] <> Ord(Digest[I]) then
+  if not Sha256HexMatches(ABytes, BodyBytes, Digest) then
     raise EAudio.Create('Tempo evidence SHA-256 mismatch');
   Posn := 0;
   if Get32(ABytes, Posn, BodyBytes) <> EvidenceMagic then

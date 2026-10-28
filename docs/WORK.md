@@ -12,6 +12,64 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Shared archive and streamed renderer candidate — 2026-10-28
+
+Big Boss continues solo after the actual portability09→10 prerequisites,
+with delivery nonclosing entry2 retained. Criterion:09's shared canonical byte/
+text and retained archive execution, and10's primary streamed renderer.
+Deliverable: one primary UTF-8 conversion/digest-field implementation and
+portable archive I/O/internal renderer declarations. Closing evidence: actual
+native/pas2js archive/voice and renderer controls, original cancellations,
+retained outputs, frozen bytes, then exact published integration/extracted
+consumers. Stop on changed formats/PCM, scientific rules, budgets, copied codecs
+or another distinct required gap. No musical credit follows these repairs.
+
+Predecessor242563f's [CI469](https://github.com/mr-highball/pythian/actions/runs/40780806504)
+is terminal Success15m37s, maintained integration14m18s and extracted46s.
+Its clean Win64 core/full extracted packages pass;
+that source predates the current archive/renderer changes and does not qualify
+them. Upstream WFCc4e7569 remains the reviewed unmerged candidate; no dependency
+source or unrelated expansion branch changes.
+
+Primary text conversion measures actual UTF-8 bytes, shares canonical scalar
+decode/emission and preserves private managed publication. Context/style text
+and body copies reuse it and the existing stream-byte adapter. Fixed hexadecimal
+digest fields share pythian.hash; tempo adopts the same helper. No native Move,
+CompareMem or stream Memory path remains in those three retained archive units.
+The streamed renderer keeps fields strict private, uses portable private types
+and typed getters, and enforces native Int64/portable2^53-1 admission without
+changing waveform/envelope math. The named-voice consumer uses the companion's
+explicit Entry property in its preserved-layer path; no alternate graph logic.
+
+Local primary conversion passes2803 checks/12 original abort-retries/2654
+callbacks on Win32/Win64 and actual pas2js, with zero native leaks. Context
+archive consumers on all three targets retain frozen986bytes/hash, ownership,
+semantic/bounds rejection, BMP/astral metadata, malformed UTF-8/NUL and the
+exact4096-byte metadata cap. Tempo native/actual pas2js retains frozen263bytes/
+b46b93a0a903db930cc06e91c04f385b32b87b987114b095a351f538af0c5040.
+All55861 streamed renderer reference samples pass across three sample rates
+on Win32/Win64 and actual pas2js. Full named-voice construction executes13939
+checks/10 original abort-retries/13396 callbacks on actual pas2js and the
+current Win32 source; the earlier candidate already passed both native targets.
+Native exits have zero leaks. The current native full style consumer passes8308
+checks/65 stages and all three source/nested/trajectory archives match frozen
+native bytes. Actual portable full style also passes8308checks/65stages, including
+the added checksum/version/truncation/Unicode controls, all original abort/retry
+cases and those same three frozen hashes. All local compiler/test sessions are
+terminal/joined; this is synchronous Node execution, not browser/device evidence.
+
+Preserve rejected profile Move/CompareMem, strict-private nested renderer type,
+record-property getter, const-owned object Free and default-indexer compiles,
+plus native-only fixture import failures. Evidence uses dedicated E-drive
+archive-portability-20261028-boss build/tests/runs roots. Tasks07/08/09/10/17
+remain open,57 open/82 DONE/139 total, NS6 19 open;52.45/47.55 and entry2
+unchanged. New exact publication/extracted qualification remains required.
+Private recordings, answers, stopped scientific families and service slots
+are unchanged. The operator's firewall follow-up confirms Nyx's configured
+STUDIO_SERVER path already has Private approval and must remain fixed;
+Pythian keeps its stable/QA slots. No firewall/listener mutation or new QA
+browser/audio process is introduced.
+
 ## Voice candidate and actual portable prerequisites — 2026-10-28
 
 Big Boss works solo. Separate WFC branch codex/pythian-voice-progress publishes

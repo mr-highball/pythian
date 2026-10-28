@@ -31,6 +31,7 @@ interface
 
 uses
   pythian.chord,
+  pythian.binary,
   pythian.audio;
 
 const
@@ -39,6 +40,8 @@ const
   MaximumChordStreamVoices = 4096;
   MaximumChordStreamTones = 4096;
   MaximumChordReleaseWork = 16777216;
+  { Native Int64; pas2js exact integers through 2^53-1. }
+  MaximumChordStreamFrames = MaximumBinaryInteger;
   caRest = pythian.chord.caRest;
   caAttack = pythian.chord.caAttack;
   caHold = pythian.chord.caHold;
@@ -77,7 +80,7 @@ type
     original non-bandlimited triangle sound; use the general synthesizer for
     other waveforms, stereo instruments and post-note-off ADSR tails. }
   TChordStreamRenderer = class
-  strict private
+  private
     type
       TToneState = record
         Pitch: Integer;
@@ -91,6 +94,7 @@ type
         Tones: TToneStates;
       end;
       TVoiceStates = array of TVoiceState;
+  strict private
     var
       FOptions: TChordStreamOptions;
       FCapacities: TChordCapacities;
@@ -108,6 +112,8 @@ type
       FFinished: Boolean;
       FCancelled: Boolean;
       FFailed: Boolean;
+      function GetSampleRate: Integer;
+      function GetLatencyFrames: Integer;
       function GetNeedsInput: Boolean;
       procedure CheckActive;
       procedure ValidateFrame(const AFrame: TChordFrame);
@@ -122,8 +128,8 @@ type
     function ReadSamples(const AMaxFrames: Integer; out ASamples: TAudioSamples): Boolean;
     procedure EndInput;
     procedure Cancel;
-    property SampleRate: Integer read FOptions.SampleRate;
-    property LatencyFrames: Integer read FOptions.ReleaseFrames;
+    property SampleRate: Integer read GetSampleRate;
+    property LatencyFrames: Integer read GetLatencyFrames;
     property Headroom: Integer read FHeadroom;
     property FrameCount: Int64 read FFrameCount;
     property RenderedFrames: Int64 read FRenderedFrames;
@@ -141,6 +147,16 @@ implementation
 
 uses
   pythian.oscillator;
+
+function TChordStreamRenderer.GetSampleRate: Integer;
+begin
+  Result := FOptions.SampleRate;
+end;
+
+function TChordStreamRenderer.GetLatencyFrames: Integer;
+begin
+  Result := FOptions.ReleaseFrames;
+end;
 
 function DefaultChordStreamOptions(const ASampleRate: Integer): TChordStreamOptions;
 begin
@@ -361,9 +377,16 @@ begin
   begin
     raise EAudio.Create('Drain the preceding chord frame before admission');
   end;
-  if (AFrameCount < 0) or (AFrameCount > High(Int64) - FFrameCount) then
+  {$ifdef pas2js}
+  RequireFinite(AFrameCount, 'Chord interval frame count');
+  if AFrameCount <> Trunc(AFrameCount) then
   begin
-    raise EAudio.Create('Chord interval or total frame count exceeds Int64 range');
+    raise EAudio.Create('Chord interval frame count must be an exact integer');
+  end;
+  {$endif}
+  if (AFrameCount < 0) or (AFrameCount > MaximumChordStreamFrames - FFrameCount) then
+  begin
+    raise EAudio.Create('Chord interval or total frame count exceeds the exact counter range');
   end;
   ValidateFrame(AFrame);
   { Complete validation and allocations before changing delayed audio or voices. }

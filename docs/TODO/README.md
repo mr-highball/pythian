@@ -6,7 +6,7 @@
 Accepted zero-credit usability repairs: [training choices and playback](DONE/NS-6_studio_19.md),
 [tabbed workflow and help](DONE/NS-6_studio_18.md).
 
-Updated 2026-10-28. **56 open / 82 accepted tasks.** The user authorized a new
+Updated 2026-10-28. **57 open / 82 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **52.45 current / 47.55 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -40,14 +40,21 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 50 | 70% | 1 | 30 | 4.50 |
 | [NS-5 - User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 17 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 18 | 46 | 4.60 |
-| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **56** | Goal points are not summed across goals | **47.55** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 19 | 46 | 4.60 |
+| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **57** | Goal points are not summed across goals | **47.55** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
 hours or effort estimates. See the [basis and rationale](../REBALANCE-2026-09-29.md#current-credit-basis).
 
 ## Selection and actual blockers
+
+The full portable voice compile now reaches a distinct primary streamed chord
+renderer type/counter boundary. Follow [portability10](NS-6_portability_10.md),
+then return to archive09 and voice17. Shared UTF-8 conversion passes2803/12 on
+native/actual pas2js; native context bytes retain the frozen hash. These are
+engineering scopes, with no musical acceptance. Counts57/82/139, NS6 19 open;
+52.45/47.55 and delivery entry2 remain unchanged.
 
 The next actual portable compile rejects retained context archive's assumed
 UTF8String type. Source inspection also finds native text/digest copies and
@@ -394,6 +401,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | [NS-6_portability_07](NS-6_portability_07.md) — Canonical caller-codec UTF-8 byte validation | 0 | 0.00 | Local native/pas2js checks pass; full consumer and publication remain |
 | [NS-6_portability_08](NS-6_portability_08.md) — Primary binary fields in portable tempo evidence | 0 | 0.00 | Local native/pas2js frozen-byte checks pass; retained consumer and publication remain |
 | [NS-6_portability_09](NS-6_portability_09.md) — Portable retained context/style archives | 0 | 0.00 | Actual full voice dependency exposes native codec/I/O assumptions |
+| [NS-6_portability_10](NS-6_portability_10.md) — Primary streamed chord renderer on pas2js | 0 | 0.00 | Full voice consumer rejects nested strict-private type |
 | [NS-6_adoption_01](NS-6_adoption_01.md) — Establish independent ecosystem adoption evidence | 15 | 1.50 | Supported releases + independent ecosystem evidence |
 | [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 1 | 0.10 | Solo usability resumed; complete physical matrix remains open |
 | [NS-6_delivery_03](NS-6_delivery_03.md) — Package and verify the accepted final workflow | 1 | 0.10 | Dependencies, including Studio |

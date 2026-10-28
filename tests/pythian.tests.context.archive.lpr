@@ -31,10 +31,13 @@ uses
   SysUtils,
   pythian.audio,
   pythian.hash,
+  pythian.text,
+  pythian.corpus.text,
   pythian.tonal,
   pythian.music.context,
   pythian.wfc.context,
   pythian.wfc.context.archive,
+  wfc_model,
   wfc_sequence,
   wfc_sequence_text;
 
@@ -67,7 +70,7 @@ var
   LHash: String;
 begin
   LHash := Sha256Bytes(Copy(ABytes, 0, Length(ABytes) - 64));
-  Move(LHash[1], ABytes[Length(ABytes) - 64], 64);
+  WriteSha256Hex(ABytes, Length(ABytes) - 64, LHash);
 end;
 
 procedure ExpectRejected(const ABytes: TAudioBytes; var APrior: TContextLearningBundle);
@@ -98,10 +101,10 @@ var
   LBytes: TAudioBytes;
   LRoundTrip: TAudioBytes;
   LBad: TAudioBytes;
-  LKeyText: UTF8String;
-  LTempoText: UTF8String;
+  LKeyText: TWfcModelToken;
+  LTempoText: TWfcModelToken;
   LFirstCell: Integer;
-  LArtifact: TFileStream;
+  {$ifndef pas2js}LArtifact: TFileStream;{$endif}
   I: Integer;
   J: Integer;
 begin
@@ -141,6 +144,7 @@ begin
     LKeyText := LBundle.ModelText(cdKey);
     LTempoText := LBundle.ModelText(cdTempo);
     LBytes := EncodeContextLearning(LBundle);
+    {$ifndef pas2js}
     if ParamCount = 1 then
     begin
       LArtifact := TFileStream.Create(ParamStr(1), fmCreate);
@@ -150,11 +154,16 @@ begin
         LArtifact.Free;
       end;
     end;
+    {$endif}
     FreeAndNil(LBundle);
     LLoaded := DecodeContextLearning(LBytes);
     LRoundTrip := EncodeContextLearning(LLoaded);
-    Check((Length(LBytes) = Length(LRoundTrip)) and
-      CompareMem(@LBytes[0], @LRoundTrip[0], Length(LBytes)), 'Exact archive round trip');
+    Check(Length(LBytes) = Length(LRoundTrip), 'Exact archive round trip size');
+    for I := 0 to High(LBytes) do
+      Check(LBytes[I] = LRoundTrip[I], 'Exact archive round trip byte');
+    Check((Length(LBytes) = 986) and (Sha256Bytes(LBytes) =
+      'aaf34c83fc4c91b45d5f03a2da0ee57fd8eb8ff9897073f847a739c4cf9aa39d'),
+      'Frozen original native archive');
     Check((LLoaded.ModelText(cdKey) = LKeyText) and
       (LLoaded.ModelText(cdTempo) = LTempoText) and
       (LLoaded.KeyOrder = 3) and (LLoaded.TempoOrder = 2) and
@@ -207,14 +216,80 @@ begin
   end;
 end;
 
+procedure UnicodeRoundTrip;
+var
+  LEvidence: TContextEvidenceArray;
+  LBundle: TContextLearningBundle;
+  LLoaded: TContextLearningBundle;
+  LCopy: TContextEvidenceArray;
+  LBytes: TAudioBytes;
+  LBad: TAudioBytes;
+  LName: TCorpusText;
+  LRejected: Boolean;
+  I: Integer;
 begin
-  try
-    Run;
-  except
-    on LException: Exception do
-    begin
-      WriteLn(StdErr, LException.ClassName, ': ', LException.Message);
-      Halt(1);
-    end;
+  LBundle := nil;
+  LLoaded := nil;
+  SetLength(LEvidence, 1);
+  LName := ScalarText($E9) + ScalarText($1D11E);
+  LEvidence[0].Name := LName;
+  LEvidence[0].SourceSha256 := Sha256Bytes([17]);
+  LEvidence[0].AdmissionPolicy := 'Declared ' + ScalarText($1F3B5);
+  LEvidence[0].Grid.TicksPerQuarter := 480;
+  LEvidence[0].Grid.StepTicks := 240;
+  SetLength(LEvidence[0].Grid.Keys, 8);
+  SetLength(LEvidence[0].Grid.Tempos, 8);
+  for I := 0 to 7 do
+  begin
+    LEvidence[0].Grid.Keys[I] := MakeKeyContext(0, dmMajor);
+    LEvidence[0].Grid.Tempos[I] := 500000;
   end;
+  try
+    LBundle := TContextLearningBundle.Create(LEvidence);
+    LBytes := EncodeContextLearning(LBundle);
+    LLoaded := DecodeContextLearning(LBytes);
+    LCopy := LLoaded.CopyEvidence;
+    Check((LCopy[0].Name = LName) and
+      (LCopy[0].AdmissionPolicy = LEvidence[0].AdmissionPolicy),
+      'BMP and astral metadata remain exact');
+    Check(Sha256Bytes(EncodeContextLearning(LLoaded)) = Sha256Bytes(LBytes),
+      'Unicode canonical archive replay');
+    LBad := Copy(LBytes);
+    { First text payload starts after ten u32 header fields and its u32 length. }
+    LBad[44] := $C0;
+    LBad[45] := $80;
+    Redigest(LBad);
+    ExpectRejected(LBad, LLoaded);
+    LBad := Copy(LBytes);
+    LBad[44] := 0;
+    Redigest(LBad);
+    ExpectRejected(LBad, LLoaded);
+    FreeAndNil(LBundle);
+    FreeAndNil(LLoaded);
+    LName := '';
+    for I := 1 to MaximumCorpusTextBytes div 4 do
+      LName := LName + ScalarText($1D11E);
+    LEvidence[0].Name := LName;
+    LBundle := TContextLearningBundle.Create(LEvidence);
+    LLoaded := DecodeContextLearning(EncodeContextLearning(LBundle));
+    Check(LLoaded.CopyEvidence[0].Name = LName, 'Exact UTF-8 metadata byte limit');
+    FreeAndNil(LBundle);
+    LEvidence[0].Name := LName + 'x';
+    LRejected := False;
+    try
+      LBundle := TContextLearningBundle.Create(LEvidence);
+    except
+      on EAudio do LRejected := True;
+    end;
+    Check(LRejected and (LBundle = nil), 'UTF-8 metadata byte limit rejects extra byte');
+    WriteLn('Context archive: Unicode, malformed UTF-8/NUL and exact byte limits passed');
+  finally
+    LLoaded.Free;
+    LBundle.Free;
+  end;
+end;
+
+begin
+  Run;
+  UnicodeRoundTrip;
 end.

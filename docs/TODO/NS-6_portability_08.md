@@ -40,6 +40,14 @@ This closes no scientific tempo inference or musical acceptance.
 
 **Dev Notes:**
 
+- 2026-10-28, Big Boss: digest fields now share primary pythian.hash's fixed
+  ASCII helper with the context/style archives. Current native Win64 and actual
+  pas2js retain frozen263bytes/b46b93a0a903db930cc06e91c04f385b32b87b987114b095a351f538af0c5040
+  and all original codec rejection/ownership controls. Linked09/10 repairs let
+  full portable named-voice preparation execute13939/10/13396. New exact
+  published/extracted gates remain open; predecessor242563f/CI469 passed
+  integration14m18s and extracted46s, but predates these later changes.
+
 - 2026-10-28, Big Boss local repair: tempo evidence now delegates UInt32 fields
   to pythian.binary, copies its body with the portable array operation and
   writes the fixed ASCII digest bytes without native Move. Frozen native,

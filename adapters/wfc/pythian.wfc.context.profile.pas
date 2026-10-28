@@ -105,6 +105,7 @@ uses
   SysUtils,
   pythian.hash,
   pythian.binary,
+  pythian.stream.bytes,
   pythian.music.context;
 
 const
@@ -162,6 +163,31 @@ var
   LOffset: Integer;
   LBytes: TAudioBytes;
   LHash: String;
+
+  procedure AppendBytes(const ASource: TAudioBytes);
+  var
+    LStream: TAudioBytesReadStream;
+    LDone: Integer;
+    LBlock: Integer;
+  begin
+    LStream := TAudioBytesReadStream.Create(ASource);
+    try
+      LDone := 0;
+      while LDone < Length(ASource) do
+      begin
+        LBlock := Min(65536, Length(ASource) - LDone);
+        if ReadStreamBytes(LStream, LBytes, LOffset, LBlock) <> LBlock then
+        begin
+          raise EAudio.Create('Incomplete context profile byte copy');
+        end;
+        Inc(LDone, LBlock);
+        Inc(LOffset, LBlock);
+        ReportWork(AProgress, 'context_profile_encode_bytes', wuBytes, LOffset, LSize);
+      end;
+    finally
+      LStream.Free;
+    end;
+  end;
 begin
   LSize := 16 + Int64(Length(AFirst));
   if ASelection then
@@ -179,11 +205,7 @@ begin
   PutNumber(LBytes, LOffset, ContextProfileVersion);
   PutNumber(LBytes, LOffset, Ord(ASelection));
   PutNumber(LBytes, LOffset, Length(AFirst));
-  if Length(AFirst) > 0 then
-  begin
-    Move(AFirst[0], LBytes[LOffset], Length(AFirst));
-  end;
-  Inc(LOffset, Length(AFirst));
+  AppendBytes(AFirst);
   if ASelection then
   begin
     ReportWork(AProgress, 'context_profile_encode_bytes', wuBytes, LOffset, LSize);
@@ -191,15 +213,12 @@ begin
   if ASelection then
   begin
     PutNumber(LBytes, LOffset, Length(ASecond));
-    if Length(ASecond) > 0 then
-    begin
-      Move(ASecond[0], LBytes[LOffset], Length(ASecond));
-    end;
+    AppendBytes(ASecond);
   end;
   ReportWork(AProgress, 'context_profile_encode_bytes', wuBytes, LSize, LSize);
   LHash := Sha256Bytes(LBytes, AProgress);
   SetLength(LBytes, Integer(LSize) + 64);
-  Move(LHash[1], LBytes[Integer(LSize)], 64);
+  WriteSha256Hex(LBytes, Integer(LSize), LHash);
   Result := LBytes;
 end;
 
@@ -231,7 +250,7 @@ begin
   end;
   LLimit := AStart + ALength - 64;
   LHash := Sha256Bytes(Copy(ABytes, AStart, ALength - 64), AProgress);
-  if not CompareMem(@LHash[1], @ABytes[LLimit], 64) then
+  if not Sha256HexMatches(ABytes, LLimit, LHash) then
   begin
     raise EAudio.Create('Context profile digest mismatch');
   end;

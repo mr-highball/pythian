@@ -49,6 +49,22 @@ function ReadTextScalar(const AText: TScalarText; var APosition: Integer;
 { Encode one Unicode scalar with no normalization or host code-page conversion. }
 function ScalarText(const AScalar: Cardinal): TScalarText;
 
+{ Validated size in canonical UTF-8 bytes on both targets. }
+function ScalarTextByteCount(const AText: TScalarText; const AMaximumBytes: Integer;
+  const AAllowEmpty: Boolean = True; const AAllowNul: Boolean = False;
+  const AProgress: TWorkProgressCallback = nil): Integer;
+
+{ Detached canonical conversion, using the same scalar decoder/emitter.
+  Final callbacks precede managed result publication. Native text is tagged
+  UTF-8 without transcoding. Individual allocations/final RTL joins stay
+  synchronous; work reports actual consumed/written bytes, not elapsed time. }
+function EncodeUTF8Text(const AText: TScalarText; const AMaximumBytes: Integer;
+  const AAllowEmpty: Boolean = True; const AAllowNul: Boolean = False;
+  const AProgress: TWorkProgressCallback = nil): TAudioBytes;
+function DecodeUTF8Text(const ABytes: array of Byte; const AMaximumBytes: Integer;
+  const AAllowEmpty: Boolean = True; const AAllowNul: Boolean = False;
+  const AProgress: TWorkProgressCallback = nil): TScalarText;
+
 { No normalization. The caller declares the canonical UTF-8 byte limit and
   empty/NUL policy. Native input is raw bytes; pas2js input is UTF-16 scalars. }
 procedure ValidateScalarText(const AText: TScalarText; const AMaximumBytes: Integer;
@@ -65,6 +81,13 @@ function CompareScalarText(const ALeft, ARight: TScalarText;
   const AProgress: TWorkProgressCallback = nil): Integer;
 
 implementation
+
+{$ifdef pas2js}
+uses SysUtils;
+{$endif}
+
+type
+  TUTF8ScalarBytes = array[0..3] of Byte;
 
 procedure InvalidText;
 begin
@@ -220,9 +243,51 @@ begin
   APosition := LPosition;
 end;
 
+function EncodeScalarBytes(const AScalar: Cardinal;
+  out ABytes: TUTF8ScalarBytes): Integer;
+begin
+  if (AScalar > $10FFFF) or ((AScalar >= $D800) and (AScalar <= $DFFF)) then
+  begin
+    InvalidText;
+  end;
+  if AScalar < $80 then
+  begin
+    Result := 1;
+    ABytes[0] := AScalar;
+  end
+  else if AScalar < $800 then
+  begin
+    Result := 2;
+    ABytes[0] := $C0 or (AScalar shr 6);
+    ABytes[1] := $80 or (AScalar and $3F);
+  end
+  else if AScalar < $10000 then
+  begin
+    Result := 3;
+    ABytes[0] := $E0 or (AScalar shr 12);
+    ABytes[1] := $80 or ((AScalar shr 6) and $3F);
+    ABytes[2] := $80 or (AScalar and $3F);
+  end
+  else
+  begin
+    Result := 4;
+    ABytes[0] := $F0 or (AScalar shr 18);
+    ABytes[1] := $80 or ((AScalar shr 12) and $3F);
+    ABytes[2] := $80 or ((AScalar shr 6) and $3F);
+    ABytes[3] := $80 or (AScalar and $3F);
+  end;
+end;
+
 function ScalarText(const AScalar: Cardinal): TScalarText;
 var
+  {$ifdef pas2js}
   LScalar: Cardinal;
+  {$else}
+  LBytes: TUTF8ScalarBytes;
+  LCount: Integer;
+  LIndex: Integer;
+  LCandidate: TScalarText;
+  {$endif}
 begin
   if (AScalar > $10FFFF) or ((AScalar >= $D800) and (AScalar <= $DFFF)) then
   begin
@@ -239,30 +304,19 @@ begin
     Result := Chr($D800 + LScalar div $400) + Chr($DC00 + LScalar mod $400);
   end;
   {$else}
-  LScalar := AScalar;
-  if LScalar < $80 then
+  LCount := EncodeScalarBytes(AScalar, LBytes);
+  SetLength(LCandidate, LCount);
+  for LIndex := 0 to LCount - 1 do
   begin
-    Result := Chr(LScalar);
-  end
-  else if LScalar < $800 then
-  begin
-    Result := Chr($C0 or (LScalar shr 6)) + Chr($80 or (LScalar and $3F));
-  end
-  else if LScalar < $10000 then
-  begin
-    Result := Chr($E0 or (LScalar shr 12)) + Chr($80 or ((LScalar shr 6) and $3F)) +
-      Chr($80 or (LScalar and $3F));
-  end
-  else
-  begin
-    Result := Chr($F0 or (LScalar shr 18)) + Chr($80 or ((LScalar shr 12) and $3F)) +
-      Chr($80 or ((LScalar shr 6) and $3F)) + Chr($80 or (LScalar and $3F));
+    LCandidate[LIndex + 1] := Chr(LBytes[LIndex]);
   end;
+  SetCodePage(LCandidate, 65001, False);
+  Result := LCandidate;
   {$endif}
 end;
 
-procedure ValidateScalarText(const AText: TScalarText; const AMaximumBytes: Integer;
-  const AAllowEmpty, AAllowNul: Boolean; const AProgress: TWorkProgressCallback);
+function ScalarTextByteCount(const AText: TScalarText; const AMaximumBytes: Integer;
+  const AAllowEmpty, AAllowNul: Boolean; const AProgress: TWorkProgressCallback): Integer;
 var
   LIndex: Integer;
   LBytes: Int64;
@@ -297,6 +351,13 @@ begin
     end;
   end;
   ReportWork(AProgress, 'text_validate_bytes', wuBytes, LBytes, LBytes);
+  Result := Integer(LBytes);
+end;
+
+procedure ValidateScalarText(const AText: TScalarText; const AMaximumBytes: Integer;
+  const AAllowEmpty, AAllowNul: Boolean; const AProgress: TWorkProgressCallback);
+begin
+  ScalarTextByteCount(AText, AMaximumBytes, AAllowEmpty, AAllowNul, AProgress);
 end;
 
 procedure ValidateUTF8Bytes(const ABytes: array of Byte; const AMaximumBytes: Integer;
@@ -327,6 +388,95 @@ begin
     end;
   end;
   ReportWork(AProgress, 'text_validate_bytes', wuBytes, LIndex, LIndex);
+end;
+
+function EncodeUTF8Text(const AText: TScalarText; const AMaximumBytes: Integer;
+  const AAllowEmpty, AAllowNul: Boolean; const AProgress: TWorkProgressCallback): TAudioBytes;
+var
+  LCandidate: TAudioBytes;
+  LBytes: TUTF8ScalarBytes;
+  LTotal: Integer;
+  LPosition: Integer;
+  LOffset: Integer;
+  LReported: Integer;
+  LCount: Integer;
+  LIndex: Integer;
+  LSourceBytes: Integer;
+  LScalar: Cardinal;
+begin
+  LTotal := ScalarTextByteCount(AText, AMaximumBytes, AAllowEmpty, AAllowNul, AProgress);
+  ReportWork(AProgress, 'text_encode_bytes', wuBytes, 0, LTotal);
+  SetLength(LCandidate, LTotal);
+  LPosition := 1;
+  LOffset := 0;
+  LReported := 0;
+  while LPosition <= Length(AText) do
+  begin
+    LScalar := NextScalar(AText, LPosition, LSourceBytes);
+    LCount := EncodeScalarBytes(LScalar, LBytes);
+    for LIndex := 0 to LCount - 1 do
+    begin
+      LCandidate[LOffset + LIndex] := LBytes[LIndex];
+    end;
+    Inc(LOffset, LCount);
+    if Assigned(AProgress) and (LOffset - LReported >= 65536) and (LOffset < LTotal) then
+    begin
+      LReported := LOffset;
+      ReportWork(AProgress, 'text_encode_bytes', wuBytes, LOffset, LTotal);
+    end;
+  end;
+  ReportWork(AProgress, 'text_encode_bytes', wuBytes, LOffset, LTotal);
+  Result := LCandidate;
+end;
+
+function DecodeUTF8Text(const ABytes: array of Byte; const AMaximumBytes: Integer;
+  const AAllowEmpty, AAllowNul: Boolean; const AProgress: TWorkProgressCallback): TScalarText;
+var
+  LCandidate: TScalarText;
+  LIndex: Integer;
+  LReported: Integer;
+  {$ifdef pas2js}
+  LBuilder: TStringBuilder;
+  LScalar: Cardinal;
+  {$endif}
+begin
+  ValidateUTF8Bytes(ABytes, AMaximumBytes, AAllowEmpty, AAllowNul, AProgress);
+  ReportWork(AProgress, 'text_decode_bytes', wuBytes, 0, Length(ABytes));
+  LReported := 0;
+  {$ifdef pas2js}
+  LBuilder := TStringBuilder.Create;
+  try
+    LIndex := 0;
+    while LIndex < Length(ABytes) do
+    begin
+      LScalar := NextUTF8Scalar(ABytes, LIndex);
+      LBuilder.Append(ScalarText(LScalar));
+      if Assigned(AProgress) and (LIndex - LReported >= 65536) and (LIndex < Length(ABytes)) then
+      begin
+        LReported := LIndex;
+        ReportWork(AProgress, 'text_decode_bytes', wuBytes, LIndex, Length(ABytes));
+      end;
+    end;
+    LCandidate := LBuilder.ToString;
+  finally
+    LBuilder.Free;
+  end;
+  {$else}
+  SetLength(LCandidate, Length(ABytes));
+  for LIndex := 0 to High(ABytes) do
+  begin
+    LCandidate[LIndex + 1] := Chr(ABytes[LIndex]);
+    if Assigned(AProgress) and (LIndex + 1 - LReported >= 65536) and
+      (LIndex + 1 < Length(ABytes)) then
+    begin
+      LReported := LIndex + 1;
+      ReportWork(AProgress, 'text_decode_bytes', wuBytes, LIndex + 1, Length(ABytes));
+    end;
+  end;
+  SetCodePage(LCandidate, 65001, False);
+  {$endif}
+  ReportWork(AProgress, 'text_decode_bytes', wuBytes, Length(ABytes), Length(ABytes));
+  Result := LCandidate;
 end;
 
 function CompareScalarText(const ALeft, ARight: TScalarText;

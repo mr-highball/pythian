@@ -5,32 +5,30 @@
 
 ## North-star assessment
 
-Exact WFCc4e7569 passes all five upstream CI56 jobs, terminal24m35s, including
-actual browser execution. Pythian's native voice constructor and portable UTF-8/
-tempo codec checks pass, but full portable voice compilation reaches retained
-[context/style archive prerequisite09](TODO/NS-6_portability_09.md). Preserve
-that failure and follow the primary text/byte and stream contracts. No candidate
-pin/task is accepted yet. Counts56 open/82 DONE/138 total, NS6 18 open;
-completion52.45/47.55 and delivery entry2 remain unchanged.
+Actual portable named-voice preparation now executes13939 checks/10 original
+abort-retries/13396 callbacks through the linked
+[byte admission07](TODO/NS-6_portability_07.md),
+[tempo fields08](TODO/NS-6_portability_08.md),
+[retained archives09](TODO/NS-6_portability_09.md) and
+[streamed renderer10](TODO/NS-6_portability_10.md) candidates. Primary conversion,
+context Unicode/bounds, frozen native archives, actual portable style operations
+and all55861 streamed renderer reference samples pass at their recorded scopes.
+The new exact source still requires published integration and clean extracted
+consumers before these tasks or the WFC candidate pin are accepted.
 
-After shared caller-codec UTF-8 passes, the actual portable consumer reaches
-[tempo-evidence binary portability08](TODO/NS-6_portability_08.md). Follow the
-accepted primary binary primitives, preserving canonical artifacts and tempo
-policies. Current counts55 open/82 DONE/137 total, NS6 17 open;52.45/47.55 and
-delivery entry2 are unchanged. Exact upstream WFC CI56 remains a live gate.
+WFCc4e7569 passes all five upstream CI56 jobs, including actual browser execution.
+Pythian predecessor242563f/CI469 is terminal Success15m37s, integration14m18s and
+extracted46s; it predates the current archive/renderer changes. Do not use it to
+qualify that later source. Current counts57 open/82 DONE/139 total, NS6 19 open;
+completion52.45/47.55 and delivery entry2 remain. Detailed failures and actual
+current outcomes live in the linked tasks and [work record](WORK.md), with no
+musical credit from portability or reports.
 
-The actual named-voice portable consumer now exposes a separate primary
-[caller-codec byte validation prerequisite07](TODO/NS-6_portability_07.md).
-pas2js rejects native Move in payload admission. Scope it before further voice
-work and reuse the shared scalar decoder. WFCc4e7569/CI56 is published/live;
-its candidate Pythian pin is not accepted. Counts54 open/82 DONE/136 total,
-NS6 16 open;52.45/47.55 and delivery entry2 remain unchanged.
-
-The remaining named-voice audit demonstrates a generic construction/proof
+The preceding named-voice audit demonstrated a generic construction/proof
 prerequisite: [observability17](TODO/NS-6_observability_17.md). An admitted
 1024-state/255-cell builder has not returned after140 seconds and accepts no
-observer. Stop that bounded probe; use the separate WFC repository/new branch
-before extending Pythian's named-voice observer/publication. Exact layer
+observer. That bounded probe stopped; the separate WFC repository/new branch
+followed before further named-voice observer/publication. Exact layer
 3e04571/CI468 now passes integration/extracted consumers and is qualified. New scoping earns no
 acceptance or credit:53 open/82 DONE/135 total, NS6 15 open,52.45/47.55 unchanged.
 The layer component and audit close no whole parent criterion: delivery0 to2.
@@ -66,8 +64,8 @@ Updated **2026-10-28** on the user-authorized 2026-09-29 credit basis:
 [Owned layer construction](TODO/DONE/NS-6_observability_11.md) is accepted at
 `be34725` after checked native consumers, exact prior state/audio artifacts and
 [Ubuntu run454](https://github.com/mr-highball/pythian/actions/runs/40604981876),
-including both extracted packages. Current counts are **56 open / 82 DONE,
-138 total**, NS-6 18 open; completion remains **100/90/25/70/14/54**, **52.45/47.55**.
+including both extracted packages. Current counts are **57 open / 82 DONE,
+139 total**, NS-6 19 open; completion remains **100/90/25/70/14/54**, **52.45/47.55**.
 [Generic WFC bulk preparation](TODO/DONE/NS-6_observability_12.md) is accepted at
 Pythian `573103e` with explicit WFC pin `d1c1c81`, checked replay/abort consumers,
 terminal five-job upstream CI50 and Ubuntu integration/extracted consumers in
@@ -207,8 +205,8 @@ ecosystem adoption is unmeasured and is a required completion gate.
 | <a id="wav-02"></a><a id="wav-03"></a><a id="ns-3"></a>**NS-3 — Trustworthy musical learning from WAV** | 25% | 25 | Measurement foundation, Pascal observations/execution, qualified references/scoring, unknown/manual context, catalog and admitted-event bridge. | Independently accepted recorded context, notes, parts, harmony, groove and evolving sound: 19 tasks / 75 |
 | <a id="wfc-preferences"></a><a id="ns-4"></a>**NS-4 — Granular WFC layers and reusable blends** | 70% | 15 | Actual layers, typed controls, persistence, selective reuse, caller codecs/traits, bounded event/composition evidence and continuous native audio sessions. | Full recorded-provider workflow: 1 task / 30 |
 | <a id="wav-04"></a><a id="ns-5"></a>**NS-5 — User-defined styles that generate and blend usefully** | 14% | 20 | Bounded identity, maintained caller intake, raw corpus, journal, balance, listening packet and acoustic continuation; style-card AC1 only. | Grounded references, semantic scale, structure/continuity, useful one/many-recording and new-user styles, blends, source-continuity consumer integration: 17 tasks / 86 |
-| <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | 54% | 10 | Supported consumer contract, native checkpoint, exact-revision minimal core/caller-provider package, editor/producer queue, Studio setup/private corpora, bounded raw WFC jobs, effects, experimental capture/MIDI exploration, starting actions/navigation, verified large-library refresh, shared filter catalog, flexible bounded source workspace, delay/reverb with explicit tails, native streamed playback, shared microphone codec, guided operator teaching, shared corpus intake/text, primary analysis/synthesis portability, exact shared timing, connected import and offline native progress, repaired Linux corpus-text consumer, semantic archive/blend and pitch preparation callbacks, shared binary fields, retained wave-style and primary source-measurement callbacks, plus shared provider/context metadata primitives, owned layer construction and generic WFC bulk preparation/learning/solve observation, primary digest publication, scalar-preserving JSON, portable style evaluation, observable bulk JSON publication, shared decoder storage, native inference/corpus/auditor observation and shared sequence capture/finite generation and guarded retained-layer capture/copy observation. | Studio iteration/conversion, phone HTTPS and metadata-only discovery, remaining retained-operation observability, full packages, actual outside use, physical LAN/full operator workflow, maintained support, ecosystem adoption and final handoff: 18 tasks / 46 |
-| **Total** | **52.45 weighted** | **100** | **82 accepted task records plus explicit baseline** | **56 open tasks / 47.55 weighted points** |
+| <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | 54% | 10 | Supported consumer contract, native checkpoint, exact-revision minimal core/caller-provider package, editor/producer queue, Studio setup/private corpora, bounded raw WFC jobs, effects, experimental capture/MIDI exploration, starting actions/navigation, verified large-library refresh, shared filter catalog, flexible bounded source workspace, delay/reverb with explicit tails, native streamed playback, shared microphone codec, guided operator teaching, shared corpus intake/text, primary analysis/synthesis portability, exact shared timing, connected import and offline native progress, repaired Linux corpus-text consumer, semantic archive/blend and pitch preparation callbacks, shared binary fields, retained wave-style and primary source-measurement callbacks, plus shared provider/context metadata primitives, owned layer construction and generic WFC bulk preparation/learning/solve observation, primary digest publication, scalar-preserving JSON, portable style evaluation, observable bulk JSON publication, shared decoder storage, native inference/corpus/auditor observation and shared sequence capture/finite generation and guarded retained-layer capture/copy observation. | Studio iteration/conversion, phone HTTPS and metadata-only discovery, remaining retained-operation observability, full packages, actual outside use, physical LAN/full operator workflow, maintained support, ecosystem adoption and final handoff: 19 tasks / 46 |
+| **Total** | **52.45 weighted** | **100** | **82 accepted task records plus explicit baseline** | **57 open tasks / 47.55 weighted points** |
 
 Arithmetic:
 `5×1 + 25×.90 + 25×.25 + 15×.70 + 20×.14 + 10×.54 = 52.45`.
