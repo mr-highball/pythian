@@ -29,7 +29,7 @@ unit pythian.tools.annotations.export;
 interface
 
 uses
-  fpjson;
+  fpjson, pythian.tools.json;
 
 { Writes one deterministic, bounded, audio-free packet. The packet retains
   history, while selected labels contain only current approved decisions. }
@@ -117,7 +117,7 @@ end;
 
 function CloneObject(const ASource: TJSONObject): TJSONObject;
 begin
-  Result := TJSONObject(GetJSON(ASource.AsJSON));
+  Result := TJSONObject(ParseNativeJSON(ASource.AsJSON));
 end;
 
 function ValidHash(const AHash: String): Boolean;
@@ -808,7 +808,7 @@ begin
   Need((Length(AText) > 0) and (Length(AText) <= CMaximumPacketBytes),
     'Reviewed catalog packet exceeds size bound');
   try
-    LData := GetJSON(AText);
+    LData := ParseNativeJSON(AText);
   except
     on LError: Exception do
     begin

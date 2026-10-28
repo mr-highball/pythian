@@ -72,7 +72,7 @@ procedure LearnCorpusIntake(const AManifestPath, AOutputPrefix: String;
 implementation
 
 uses
-  SysUtils, Math, fpjson, jsonparser, jsonscanner,
+  SysUtils, Math, fpjson, pythian.tools.json, jsonparser, jsonscanner,
   pythian.audio, pythian.hash, pythian.wave, pythian.analysis.wave,
   pythian.learning, pythian.wfc.learning.journal,
   pythian.tools.files, wfc_sequence, wfc_sequence_text;
@@ -160,46 +160,19 @@ end;
 function Parse(const APath: String): TJSONObject;
 var
   LBytes: TAudioBytes;
-  LText: UTF8String;
-  LParser: TJSONParser;
+  LText: RawByteString;
   LData: TJSONData;
-  I, LDepth: Integer;
-  LQuoted, LEscaped: Boolean;
 begin
   LBytes := ReadFileBytes(APath, MaximumIntakeDocumentBytes);
   Require(Length(LBytes) > 0, 'Empty intake document');
-  LDepth := 0;
-  LQuoted := False;
-  LEscaped := False;
-  for I := 0 to High(LBytes) do
-  begin
-    if LQuoted then
-    begin
-      if LEscaped then LEscaped := False
-      else if LBytes[I] = 92 then LEscaped := True
-      else if LBytes[I] = 34 then LQuoted := False;
-    end
-    else if LBytes[I] = 34 then LQuoted := True
-    else if LBytes[I] in [91, 123] then
-    begin
-      Inc(LDepth);
-      Require(LDepth <= 8, 'Intake nesting budget exceeded');
-    end
-    else if LBytes[I] in [93, 125] then Dec(LDepth);
-  end;
   SetString(LText, PAnsiChar(@LBytes[0]), Length(LBytes));
-  LParser := TJSONParser.Create(LText, [joUTF8, joStrict]);
+  LData := ParseNativeJSON(LText, MaximumIntakeDocumentBytes, 8);
   try
-    LData := LParser.Parse;
-    try
-      Require((LData <> nil) and (LData.JSONType = jtObject), 'Intake root requires an object');
-      Result := TJSONObject(LData);
-      LData := nil;
-    finally
-      LData.Free;
-    end;
+    Require((LData <> nil) and (LData.JSONType = jtObject), 'Intake root requires an object');
+    Result := TJSONObject(LData);
+    LData := nil;
   finally
-    LParser.Free;
+    LData.Free;
   end;
 end;
 
@@ -701,7 +674,7 @@ begin
         ExtractFilePath(ExpandFileName(AOutputPrefix)), ExpandFileName(S));
     end;
     LPublished := TCorpusIntakePlan.Create(LDefinition);
-    O := TJSONObject(GetJSON(CorpusIntakeAuditJSON(P)));
+    O := TJSONObject(ParseNativeJSON(CorpusIntakeAuditJSON(P)));
     try
       O.Add('verified_file_bytes', True); O.Add('training_segments', Reader.SegmentCount);
       O.Add('training_observations', Reader.ObservationCount);

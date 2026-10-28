@@ -29,7 +29,7 @@ program pythian_event_remix;
 uses
   SysUtils,
   Math,
-  fpjson,
+  fpjson, pythian.tools.json,
   jsonparser,
   pythian.audio,
   pythian.wave,
@@ -164,7 +164,7 @@ begin
     begin
       SetString(LOnsetText, PAnsiChar(@LBytes[0]), Length(LBytes));
     end;
-    LOnsets := GetJSON(LOnsetText);
+    LOnsets := ParseNativeJSON(LOnsetText);
     if not (LOnsets is TJSONObject) then
     begin
       raise EAudio.Create('Onset report must be a JSON object');

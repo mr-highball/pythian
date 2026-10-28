@@ -27,7 +27,7 @@ program PythianSourceSuccessor;
 {$H+}
 
 uses
-  Classes, SysUtils, Math, fpjson, jsonparser,
+  Classes, SysUtils, Math, fpjson, pythian.tools.json, jsonparser,
   pythian.audio, pythian.hash, pythian.progress,
   pythian.analysis.journal, pythian.learning.journal,
   pythian.learning.selection, pythian.learning.context,
@@ -135,7 +135,7 @@ function ReadObject(const APath: String): TJSONObject;
 var
   LData: TJSONData;
 begin
-  LData := GetJSON(ReadText(APath));
+  LData := ParseNativeJSON(ReadText(APath));
   if LData.JSONType <> jtObject then
   begin
     LData.Free;

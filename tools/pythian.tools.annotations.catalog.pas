@@ -29,7 +29,7 @@ unit pythian.tools.annotations.catalog;
 interface
 
 uses
-  fpjson,
+  fpjson, pythian.tools.json,
   pythian.progress;
 
 { Native import boundary. Reviews and Pythian proposals have distinct future
@@ -124,7 +124,7 @@ function ReadObject(const APath: String; const AMaximum: Integer): TJSONObject;
 var
   LData: TJSONData;
 begin
-  LData := GetJSON(ReadBoundedText(APath, AMaximum));
+  LData := ParseNativeJSON(ReadBoundedText(APath, AMaximum));
   if LData.JSONType <> jtObject then
   begin
     LData.Free;

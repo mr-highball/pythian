@@ -40,10 +40,19 @@ semantics, host conversion, duplicated scalar logic or a separate required gap.
 
 **Blockers**
 
+- [Native JSON scalar preservation](NS-6_json-text_01.md) — demonstrated real
+  Linux literal and checked Windows escape paths; keep this task open.
 - [Shared scalar implementation — DONE](DONE/NS-6_metadata_01.md).
 - [Shared callback contract — DONE](DONE/NS-6_observability_01.md).
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss published rejection: CI459 at `31d3033` is terminal Failure
+  in29s/job25s. Its actual new fixture passes operations0–3, then rejects native
+  Unicode file round-trip. Original native/portable arithmetic/callback evidence
+  remains valid at its scope, but does not qualify this Linux boundary. Native
+  RTL source and local diagnostics expose host conversion plus a separate lossy
+  escape path. Follow the linked JSON owner; no task move, credit or counter reset.
 
 - 2026-10-28, Big Boss local qualification: checked Win32/Win64 each pass981181
   checks/208 original abort-retries/489827 callbacks, zero leaks; actual pas2js

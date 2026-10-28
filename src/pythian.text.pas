@@ -41,6 +41,14 @@ type
   TScalarText = RawByteString;
   {$endif}
 
+{ Read one canonical scalar at a one-based position. On failure neither the
+  caller position nor its byte-count output changes. Byte count is UTF-8 on
+  both targets; native positions are bytes, pas2js positions are UTF-16 units. }
+function ReadTextScalar(const AText: TScalarText; var APosition: Integer;
+  out AUTF8Bytes: Integer): Cardinal;
+{ Encode one Unicode scalar with no normalization or host code-page conversion. }
+function ScalarText(const AScalar: Cardinal): TScalarText;
+
 { No normalization. The caller declares the canonical UTF-8 byte limit and
   empty/NUL policy. Native input is raw bytes; pas2js input is UTF-16 scalars. }
 procedure ValidateScalarText(const AText: TScalarText; const AMaximumBytes: Integer;
@@ -159,6 +167,63 @@ begin
     begin
       InvalidText;
     end;
+  end;
+  {$endif}
+end;
+
+function ReadTextScalar(const AText: TScalarText; var APosition: Integer;
+  out AUTF8Bytes: Integer): Cardinal;
+var
+  LPosition: Integer;
+  LBytes: Integer;
+begin
+  if (APosition < 1) or (APosition > Length(AText)) then
+  begin
+    InvalidText;
+  end;
+  LPosition := APosition;
+  Result := NextScalar(AText, LPosition, LBytes);
+  AUTF8Bytes := LBytes;
+  APosition := LPosition;
+end;
+
+function ScalarText(const AScalar: Cardinal): TScalarText;
+var
+  LScalar: Cardinal;
+begin
+  if (AScalar > $10FFFF) or ((AScalar >= $D800) and (AScalar <= $DFFF)) then
+  begin
+    InvalidText;
+  end;
+  {$ifdef pas2js}
+  if AScalar < $10000 then
+  begin
+    Result := Chr(AScalar);
+  end
+  else
+  begin
+    LScalar := AScalar - $10000;
+    Result := Chr($D800 + LScalar div $400) + Chr($DC00 + LScalar mod $400);
+  end;
+  {$else}
+  LScalar := AScalar;
+  if LScalar < $80 then
+  begin
+    Result := Chr(LScalar);
+  end
+  else if LScalar < $800 then
+  begin
+    Result := Chr($C0 or (LScalar shr 6)) + Chr($80 or (LScalar and $3F));
+  end
+  else if LScalar < $10000 then
+  begin
+    Result := Chr($E0 or (LScalar shr 12)) + Chr($80 or ((LScalar shr 6) and $3F)) +
+      Chr($80 or (LScalar and $3F));
+  end
+  else
+  begin
+    Result := Chr($F0 or (LScalar shr 18)) + Chr($80 or ((LScalar shr 12) and $3F)) +
+      Chr($80 or ((LScalar shr 6) and $3F)) + Chr($80 or (LScalar and $3F));
   end;
   {$endif}
 end;

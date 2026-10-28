@@ -47,7 +47,7 @@ implementation
 uses
   Classes,
   SysUtils,
-  fpjson,
+  fpjson, pythian.tools.json,
   jsonparser,
   pythian.audio,
   pythian.analysis,
@@ -1288,7 +1288,7 @@ begin
     LReader := TJournalTrainingReader.Create(LSegments);
     LContexts := TJournalContextPool.Create(LReader, LProfile.Palette, LProfile.Pool, LMaximum);
     LAttached := LProfile.WithContexts(LContexts);
-    LDocument := TJSONObject(GetJSON(LAttached.EncodeReport));
+    LDocument := TJSONObject(ParseNativeJSON(LAttached.EncodeReport));
     LDocument.Delete('audition_sha256');
     LDocument.Delete('audition_frames');
     LDocument.Elements['contexts_attached_without_rendering'] := TJSONBoolean.Create(True);
@@ -1561,7 +1561,7 @@ begin
     LProfile := TJournalModelProfile.Create(LReportText, LModelText);
     if (LContextGrains > 0) and (LProfile.Contexts = nil) then
       raise EAudio.Create('Long replay requires saved source contexts for context selection');
-    LInputDocument := TJSONObject(GetJSON(LReportText));
+    LInputDocument := TJSONObject(ParseNativeJSON(LReportText));
     LInputSources := TJSONArray(LInputDocument.Find('sources'));
     LSourceCount := LProfile.SourceCount;
     SetLength(LWeights, LSourceCount);
@@ -2028,7 +2028,7 @@ begin
     LReportText := ReadProfileText(LInputPrefix + '.json');
     LModelText := ReadProfileText(LInputPrefix + '.wfcs');
     LProfile := TJournalModelProfile.Create(LReportText, LModelText);
-    LDocument := TJSONObject(GetJSON(LReportText));
+    LDocument := TJSONObject(ParseNativeJSON(LReportText));
     LSourcesJson := TJSONArray(LDocument.Find('sources'));
     LOptions := DefaultAcousticGenerationOptions;
     LOptions.StateCellBudget := LDocument.Get('state_cell_budget', DefaultAcousticStateCells);

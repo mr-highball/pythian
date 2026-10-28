@@ -30,7 +30,7 @@ program pythian_style;
 uses
   SysUtils,
   Math,
-  fpjson,
+  fpjson, pythian.tools.json,
   jsonparser,
   pythian.audio,
   pythian.time,
@@ -82,7 +82,7 @@ begin
   begin
     Move(LBytes[0], LText[1], Length(LBytes));
   end;
-  Result := GetJSON(LText);
+  Result := ParseNativeJSON(LText);
 end;
 
 procedure Learn;

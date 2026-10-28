@@ -27,7 +27,7 @@ program pythian_localkey_score;
 {$H+}
 
 uses
-  Classes, SysUtils, fpjson, jsonparser,
+  Classes, SysUtils, fpjson, pythian.tools.json, jsonparser,
   pythian.audio, pythian.tools.files;
 
 const
@@ -111,7 +111,7 @@ begin
   Require(Length(LBytes) > 0, 'Empty packet JSON');
   AHash := HashAudioBytes(LBytes);
   SetString(LText, PAnsiChar(@LBytes[0]), Length(LBytes));
-  Result := GetJSON(LText);
+  Result := ParseNativeJSON(LText);
   try
     Require(Result.JSONType = jtObject, 'Expected packet object');
   except

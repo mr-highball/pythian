@@ -28,7 +28,7 @@ interface
 
 uses
   Classes,
-  fpjson,
+  fpjson, pythian.tools.json,
   pythian.progress,
   pythian.wave.read;
 
@@ -249,7 +249,7 @@ begin
   finally
     LFile.Free;
   end;
-  LData := GetJSON(LText);
+  LData := ParseNativeJSON(LText);
   if LData.JSONType <> jtObject then
   begin
     LData.Free;

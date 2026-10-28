@@ -29,7 +29,7 @@ unit pythian.tools.studio.&library;
 interface
 
 uses
-  fpjson,
+  fpjson, pythian.tools.json,
   pythian.progress;
 
 const
@@ -385,7 +385,7 @@ begin
     end;
   end;
   Need((LDepth = 0) and not LQuoted, 'Library index is incomplete');
-  LData := GetJSON(LText);
+  LData := ParseNativeJSON(LText);
   Need(LData <> nil, 'Library index is missing');
   if LData.JSONType <> jtObject then
   begin

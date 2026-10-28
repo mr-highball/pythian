@@ -30,7 +30,7 @@ interface
 
 uses
   SysUtils,
-  fpjson;
+  fpjson, pythian.tools.json;
 
 type
   EReviewQueue = class(Exception);
@@ -226,7 +226,7 @@ begin
       Exit;
     end;
     try
-      LData := GetJSON(ReadQueueText(LPath));
+      LData := ParseNativeJSON(ReadQueueText(LPath));
     except
       on EReviewQueue do
       begin

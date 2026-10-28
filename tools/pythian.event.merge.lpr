@@ -27,7 +27,7 @@ program pythian_event_merge;
 {$H+}
 
 uses
-  SysUtils, Math, fpjson, jsonparser,
+  SysUtils, Math, fpjson, pythian.tools.json, jsonparser,
   pythian.audio, pythian.wave, pythian.granular, pythian.passage,
   pythian.corpus, pythian.corpus.archive, pythian.onset, pythian.onset.events,
   pythian.wfc.event.corpus, pythian.wfc.event.archive, pythian.wfc.generation,
@@ -274,7 +274,7 @@ begin
       begin
         SetString(LText, PAnsiChar(@LBytes[0]), Length(LBytes));
       end;
-      LOnsetDocument := GetJSON(LText);
+      LOnsetDocument := ParseNativeJSON(LText);
       if not (LOnsetDocument is TJSONObject) then
       begin
         raise EAudio.Create('Onset report must be an object');

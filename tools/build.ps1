@@ -45,9 +45,13 @@ Write-Output "Compiler: $compilerPath ($compilerVersion $compilerCpu-$compilerOs
 Push-Location $projectRoot
 try {
   $compilerArgs = @('-B', '-Sa', '-Cr', '-Co', '-Ci', '-gl', '-Fusrc', "-FU$unitRoot", "-FE$buildRoot")
+  & $compilerPath @compilerArgs '-Futools' '-gh' 'tests/pythian.tests.json.text.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Shared JSON scalar compilation failed' }
+  $executableSuffix = if ($compilerOs -eq 'win32' -or $compilerOs -eq 'win64') { '.exe' } else { '' }
+  & (Join-Path $buildRoot "pythian.tests.json.text$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Shared JSON scalar and native adapter checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.core.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Core compilation failed' }
-  $executableSuffix = if ($compilerOs -eq 'win32' -or $compilerOs -eq 'win64') { '.exe' } else { '' }
   & (Join-Path $buildRoot "pythian.tests.core$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Core checks failed' }
   & $compilerPath @compilerArgs 'examples/pythian.example.core.lpr'

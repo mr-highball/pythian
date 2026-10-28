@@ -27,7 +27,7 @@ program pythian_part_prepare;
 {$H+}
 
 uses
-  Classes, SysUtils, fpjson, jsonparser, pythian.audio, pythian.hash,
+  Classes, SysUtils, fpjson, pythian.tools.json, jsonparser, pythian.audio, pythian.hash,
   pythian.wave.read, pythian.wave.stream, pythian.tools.files;
 
 const
@@ -674,6 +674,7 @@ end;
 procedure Run;
 var
   LBindingFile: TFileStream;
+  LBindingText: RawByteString;
   LData: TJSONData;
   LBinding: TJSONObject;
   LManifest: TJSONObject;
@@ -725,7 +726,12 @@ begin
     LHash := Sha256Stream(LBindingFile, LBindingFile.Size);
     Check(LHash = LowerCase(ParamStr(2)), 'Source binding SHA256 mismatch');
     LBindingFile.Position := 0;
-    LData := GetJSON(LBindingFile);
+    SetLength(LBindingText, Integer(LBindingFile.Size));
+    if Length(LBindingText) > 0 then
+    begin
+      LBindingFile.ReadBuffer(LBindingText[1], Length(LBindingText));
+    end;
+    LData := ParseNativeJSON(LBindingText, 1048576, 0);
     Check(LData.JSONType = jtObject, 'Source binding must be an object');
     LBinding := TJSONObject(LData);
     LHasDecision := ValidateSourceIdentity(LBinding);

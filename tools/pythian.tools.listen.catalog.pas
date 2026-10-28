@@ -29,7 +29,7 @@ unit pythian.tools.listen.catalog;
 interface
 
 uses
-  fpjson;
+  fpjson, pythian.tools.json;
 
 { These packets are listening decisions, not source-label reviews. Asset paths
   are derived exclusively from hashes in the private catalog. }
@@ -214,7 +214,7 @@ begin
   finally
     LStream.Free;
   end;
-  LData := GetJSON(LText);
+  LData := ParseNativeJSON(LText);
   if LData.JSONType <> jtObject then
   begin
     LData.Free;

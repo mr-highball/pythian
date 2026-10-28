@@ -32,7 +32,7 @@ uses
   {$ENDIF}
   Classes,
   SysUtils,
-  fpjson,
+  fpjson, pythian.tools.json,
   jsonparser,
   pythian.tools.annotations.catalog,
   pythian.tools.annotations.export,
@@ -218,7 +218,7 @@ begin
       finally
         LInput.Free;
       end;
-      LData := GetJSON(LText);
+      LData := ParseNativeJSON(LText);
       try
         if LData.JSONType <> jtObject then
         begin
@@ -305,7 +305,7 @@ begin
       finally
         LInput.Free;
       end;
-      LData := GetJSON(LText);
+      LData := ParseNativeJSON(LText);
       try
         if LData.JSONType <> jtObject then
         begin

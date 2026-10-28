@@ -29,7 +29,7 @@ unit pythian.tools.annotations.review;
 interface
 
 uses
-  fpjson;
+  fpjson, pythian.tools.json;
 
 { Each revision is a new immutable file. A transaction must explicitly name
   the source and expected revision. These are human review events, never
@@ -331,7 +331,7 @@ begin
   finally
     LStream.Free;
   end;
-  LData := GetJSON(LText);
+  LData := ParseNativeJSON(LText);
   if LData.JSONType <> jtObject then
   begin
     LData.Free;
@@ -799,7 +799,7 @@ begin
             'Review event source differs from current labels');
           LChange := LEvent.Objects['change'];
           LId := RequiredText(LChange, 'label_id', 128);
-          LRow := TJSONObject(GetJSON(LChange.AsJSON));
+          LRow := TJSONObject(ParseNativeJSON(LChange.AsJSON));
           try
             LRow.Add('reviewer', LEvent.Strings['reviewer']);
             LRow.Add('revision', LIndex);
@@ -883,7 +883,7 @@ begin
         LChange := LEvent.Objects['change'];
         if RequiredText(LChange, 'label_id', 128) = ALabelId then
         begin
-          Result := TJSONObject(GetJSON(LChange.AsJSON));
+          Result := TJSONObject(ParseNativeJSON(LChange.AsJSON));
           Result.Add('revision', LRevision);
           Exit;
         end;

@@ -58,7 +58,7 @@ function CompareStyleCardFiles(const AReferencePath, ACandidatePath: String;
 implementation
 
 uses
-  Classes, SysUtils, Math, fpjson, jsonparser, jsonscanner,
+  Classes, SysUtils, Math, fpjson, pythian.tools.json,
   pythian.audio, pythian.hash, pythian.wave.read, pythian.tools.files,
   pythian.evaluation, pythian.evaluation.style, pythian.text;
 
@@ -85,17 +85,6 @@ begin
   if AVisits mod 4096 = 0 then
   begin
     ReportWork(AProgress, AStage, wuItems, AVisits, 0);
-  end;
-end;
-
-function JSONText(const AText: TScalarText): UTF8String;
-begin
-  { The core supplies canonical UTF-8 bytes. Copy them into fpjson's declared
-    UTF8String without interpreting a caller's native code-page tag. }
-  Result := '';
-  if Length(AText) > 0 then
-  begin
-    SetString(Result, PAnsiChar(@AText[1]), Length(AText));
   end;
 end;
 
@@ -167,72 +156,19 @@ end;
 function ParseDocument(const ABytes: TAudioBytes;
   const AProgress: TWorkProgressCallback): TJSONObject;
 var
-  I: Integer;
-  LDepth: Integer;
-  LQuoted: Boolean;
-  LEscaped: Boolean;
-  LText: UTF8String;
-  LParser: TJSONParser;
+  LText: TScalarText;
   LData: TJSONData;
 begin
   Require((Length(ABytes) > 0) and (Length(ABytes) <= MaximumStyleCardDocumentBytes),
     'Style JSON byte budget exceeded');
-  LDepth := 0;
-  LQuoted := False;
-  LEscaped := False;
-  ReportWork(AProgress, 'style_card_json_scan_bytes', wuBytes, 0, Length(ABytes));
-  for I := 0 to High(ABytes) do
-  begin
-    if LQuoted then
-    begin
-      if LEscaped then
-      begin
-        LEscaped := False;
-      end
-      else if ABytes[I] = 92 then
-      begin
-        LEscaped := True;
-      end
-      else if ABytes[I] = 34 then
-      begin
-        LQuoted := False;
-      end;
-    end
-    else if ABytes[I] = 34 then
-    begin
-      LQuoted := True;
-    end
-    else if ABytes[I] in [91, 123] then
-    begin
-      Inc(LDepth);
-      Require(LDepth <= 16, 'Style JSON nesting budget exceeded');
-    end
-    else if ABytes[I] in [93, 125] then
-    begin
-      Dec(LDepth);
-    end;
-    if ((I + 1) mod 8192 = 0) or (I = High(ABytes)) then
-    begin
-      ReportWork(AProgress, 'style_card_json_scan_bytes', wuBytes, I + 1, Length(ABytes));
-    end;
-  end;
   SetString(LText, PAnsiChar(@ABytes[0]), Length(ABytes));
-  { RTL parsing is synchronous. These are explicit endpoints, not an interior
-    byte-progress or event-loop yielding claim. }
-  ReportWork(AProgress, 'style_card_json_parse', wuItems, 0, 1);
-  LParser := TJSONParser.Create(LText, [joUTF8, joStrict]);
+  LData := ParseNativeJSON(LText, MaximumStyleCardDocumentBytes, 16, AProgress);
   try
-    LData := LParser.Parse;
-    try
-      ReportWork(AProgress, 'style_card_json_parse', wuItems, 1, 1);
-      Require((LData <> nil) and (LData.JSONType = jtObject), 'Style root requires an object');
-      Result := TJSONObject(LData);
-      LData := nil;
-    finally
-      LData.Free;
-    end;
+    Require((LData <> nil) and (LData.JSONType = jtObject), 'Style root requires an object');
+    Result := TJSONObject(LData);
+    LData := nil;
   finally
-    LParser.Free;
+    LData.Free;
   end;
 end;
 
@@ -488,7 +424,7 @@ begin
   Result.Add('annotation_policy_sha256', ABinding.AnnotationPolicySha256);
   Result.Add('scoring_policy_sha256', ABinding.ScoringPolicySha256);
   Result.Add('estimator_sha256', ABinding.EstimatorSha256);
-  Result.Add('group_id', JSONText(ABinding.GroupId));
+  Result.Add('group_id', NativeJSONText(ABinding.GroupId));
   Result.Add('sample_rate', ABinding.SampleRate);
   Result.Add('source_frames', ABinding.SourceFrames);
   Result.Add('first_frame', ABinding.FirstFrame);
@@ -521,7 +457,7 @@ begin
   LRoot := TJSONObject.Create;
   try
     LRoot.Add('version', StyleCardVersion);
-    LRoot.Add('id', JSONText(ACard.Id));
+    LRoot.Add('id', NativeJSONText(ACard.Id));
     LTraits := TJSONArray.Create;
     LRoot.Add('traits', LTraits);
     LVisits := 0;
@@ -531,7 +467,7 @@ begin
       VisitStyleValue(AProgress, 'style_card_write_values', LVisits);
       LTrait := TJSONObject.Create;
       LTraits.Add(LTrait);
-      LTrait.Add('id', JSONText(ACard.Traits[I].Id));
+      LTrait.Add('id', NativeJSONText(ACard.Traits[I].Id));
       if ACard.Traits[I].Requirement = strRequired then
       begin
         LTrait.Add('requirement', 'required');
@@ -548,8 +484,8 @@ begin
       begin
         LTrait.Add('support', 'unsupported');
       end;
-      LTrait.Add('units', JSONText(ACard.Traits[I].Units));
-      LTrait.Add('denominator', JSONText(ACard.Traits[I].Denominator));
+      LTrait.Add('units', NativeJSONText(ACard.Traits[I].Units));
+      LTrait.Add('denominator', NativeJSONText(ACard.Traits[I].Denominator));
       LTrait.Add('minimum_coverage', ACard.Traits[I].MinimumCoverage);
       LTrait.Add('maximum_distance', ACard.Traits[I].MaximumDistance);
       LTrait.Add('policy_sha256', ACard.Traits[I].Distribution.PolicySha256);
@@ -557,7 +493,7 @@ begin
       LTrait.Add('bins', LBins);
       for J := 0 to High(ACard.Traits[I].Distribution.Bins) do
       begin
-        LBins.Add(JSONText(ACard.Traits[I].Distribution.Bins[J]));
+        LBins.Add(NativeJSONText(ACard.Traits[I].Distribution.Bins[J]));
         VisitStyleValue(AProgress, 'style_card_write_values', LVisits);
       end;
       LGroups := TJSONArray.Create;
@@ -567,16 +503,16 @@ begin
         VisitStyleValue(AProgress, 'style_card_write_values', LVisits);
         LGroup := TJSONObject.Create;
         LGroups.Add(LGroup);
-        LGroup.Add('id', JSONText(ACard.Traits[I].Groups[J].Id));
+        LGroup.Add('id', NativeJSONText(ACard.Traits[I].Groups[J].Id));
         LGroup.Add('binding', BindingJSON(ACard.Traits[I].Groups[J].Binding));
         LAssets := TJSONObject.Create;
         LGroup.Add('assets', LAssets);
         for K := 0 to 5 do
         begin
-          LAssets.Add(AssetNames[K], JSONText(ACard.Traits[I].Groups[J].Assets[K]));
+          LAssets.Add(AssetNames[K], NativeJSONText(ACard.Traits[I].Groups[J].Assets[K]));
         end;
-        LGroup.Add('method', JSONText(ACard.Traits[I].Groups[J].Method));
-        LGroup.Add('uncertainty', JSONText(ACard.Traits[I].Groups[J].Uncertainty));
+        LGroup.Add('method', NativeJSONText(ACard.Traits[I].Groups[J].Method));
+        LGroup.Add('uncertainty', NativeJSONText(ACard.Traits[I].Groups[J].Uncertainty));
         LCounts := TJSONArray.Create;
         LGroup.Add('counts', LCounts);
         for K := 0 to High(ACard.Traits[I].Distribution.Groups[J].Counts) do
@@ -626,8 +562,8 @@ begin
   Require(not AResult.GroundedAcceptance, 'Style contract cannot certify grounded acceptance');
   LRoot := TJSONObject.Create;
   try
-    LRoot.Add('reference_id', JSONText(AResult.ReferenceId));
-    LRoot.Add('candidate_id', JSONText(AResult.CandidateId));
+    LRoot.Add('reference_id', NativeJSONText(AResult.ReferenceId));
+    LRoot.Add('candidate_id', NativeJSONText(AResult.CandidateId));
     LRoot.Add('grounded_acceptance', False);
     LRoot.Add('passed_required_declared_limits', AResult.PassedRequiredDeclaredLimits);
     LTraits := TJSONArray.Create;
@@ -637,7 +573,7 @@ begin
     begin
       LTrait := TJSONObject.Create;
       LTraits.Add(LTrait);
-      LTrait.Add('id', JSONText(AResult.Traits[I].Id));
+      LTrait.Add('id', NativeJSONText(AResult.Traits[I].Id));
       if AResult.Traits[I].Requirement = strRequired then
       begin
         LTrait.Add('requirement', 'required');

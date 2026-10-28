@@ -12,6 +12,55 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Linux qualification rejected; native JSON scalar prerequisite selected - 2026-10-28
+
+The repaired candidate completes every maintained native build command across
+the retained prefix and explicit continuations. Both extracted Win64 packages
+pass (107 core units/120 inventory entries,158 full units/277 entries). Studio
+worker376, live1115, source-continuity1017, preferences316, mixed-format1138,
+supervisor19 and review61 checks pass; original canonical artifacts remain exact.
+The comparator's cwd-relative ignored-build guard passes from the E workspace
+with133 synthetic assertions. These local orchestration repairs do not change
+that test's policy or create recorded-reference acceptance. Publish the candidate
+on `hello-pythian` and require its actual Linux integration and both extracted
+consumers before accepting either linked repair. Count remains1 pending closure.
+
+Authenticated Actions inspection confirms the current failure is CI459; runs
+446–458 are successful. Do not mute notifications or rerun unchanged failed
+source. The shared repair passes local Win32/Win64 JSON357 checks/6 original
+abort-retries/269 callbacks each, actual pas2js141/2/77 and a separately scoped
+default-manager diagnostic. Actual Win64 style checks2923146/210/1460801 pass
+with zero leaks. Thirteen frozen artifacts and the CLI report remain exact.
+The full local consumer run hit MAX_PATH in its deeply nested test output;
+shorten its E-drive root and resume only the remaining commands. Preserve that
+orchestration failure and the interrupted first continuation. All source work
+remains under qualification; actual Linux and both extracted packages decide
+published acceptance. No counter, task acceptance or musical credit is inferred.
+
+Previous goal turn is progress at `31d3033`, with published code and local
+native/actual pas2js evidence; its batch closed no full criterion. Delivery
+nonclosing count enters at1. Big Boss verifies CI459/job122645295325 terminal
+Failure in29s/job25s: first four new operation groups pass, then native Unicode
+file round-trip rejects. Preserve the exact job URL, artifact-container digest
+`717da28dab00b29eaf047d1a13b841d933d646dc68d12119ac7e5e32491b50be`, and local
+default-manager/escape diagnostics under E-drive `style-json-20261028-boss`.
+
+Reassessment: hold final acceptance and later JSON formatting work. Installed
+RTL converts UTF-8 strings through its host manager; a raw-token override still
+loses escaped text in the scanner, and an actual checked Windows control fails
+for a valid escaped BMP/astral key. The attempted cwstring-only fix is discarded.
+Follow new [json-text_01](TODO/NS-6_json-text_01.md): shared primary string decoding,
+native ASCII framing/restoration through the existing RTL grammar, consolidated
+maintained consumers. Require native/actual portable literal/escape/malformed
+and original abort evidence, prior bytes and real Linux consumers. Stop on
+normalization, duplicated grammar or partial accepted publication. No scientific
+family, score threshold, private media/answer, service or WFC source is changed.
+
+Current55 open/75 DONE/130 total, NS-6 17 open; percentages remain
+100/90/25/70/14/54 and52.45/47.55. New task naming closes nothing and resets
+neither nonclosing nor scientific counters. Portability_06 and broad parent04
+stay open. Earlier qualification/count paragraphs below are intermediate history.
+
 ## Shared evaluation text and callbacks locally qualified - 2026-10-28
 
 Big Boss repairs the actual shared evaluator's pas2js type failure by adopting

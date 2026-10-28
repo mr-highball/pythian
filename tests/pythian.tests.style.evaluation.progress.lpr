@@ -28,7 +28,8 @@ program pythian_tests_style_evaluation_progress;
 uses
   SysUtils, pythian.audio, pythian.text, pythian.progress,
   pythian.evaluation, pythian.evaluation.style, pythian.evaluation.style.card
-  {$ifndef pas2js}, pythian.hash, pythian.wave, pythian.tools.files,
+  {$ifndef pas2js}, fpjson, pythian.tools.json,
+  pythian.hash, pythian.wave, pythian.tools.files,
   pythian.tools.style.card{$endif};
 
 const
@@ -492,7 +493,7 @@ begin
   {$ifndef pas2js}
   if AMode in [4, 7] then
   begin
-    RequirePhase('style_card_json_scan_bytes', 0, Length(ReadFileBytes(GFile, MaximumStyleCardDocumentBytes)));
+    RequirePhase('native_json_prepare_bytes', 0, Length(ReadFileBytes(GFile, MaximumStyleCardDocumentBytes)));
     RequirePhase('style_card_read_values', 0, 9289);
     RequirePhase('style_card_assets', 0, 204);
     RequirePhase('verify_audio_bytes', 0, 131116);
@@ -574,6 +575,26 @@ begin
 end;
 
 {$ifndef pas2js}
+procedure CheckNativeJSONUnicode;
+const
+  CJSON: RawByteString = '{"\uE000\uD800\uDC00":"\uE000\uD800\uDC00\u0000\u0001"}';
+var
+  LData: TJSONData;
+  LExpected: TScalarText;
+begin
+  LData := ParseNativeJSON(CJSON, 256, 4);
+  try
+    Check(LData.JSONType = jtObject, 'Native escaped Unicode root differs');
+    LExpected := CBmp + CAstral;
+    Check(CompareScalarText(TJSONObject(LData).Names[0], LExpected, 256) = 0,
+      'Native escaped Unicode key changed');
+    LExpected := LExpected + #0 + #1;
+    Check(CompareScalarText(TJSONObject(LData).Items[0].AsString,
+      LExpected, 256, True) = 0, 'Native escaped Unicode value changed');
+  finally
+    LData.Free;
+  end;
+end;
 procedure PrepareFiles;
 var
   LTemplate: TStyleCard;
@@ -583,6 +604,7 @@ var
   I: Integer;
   J: Integer;
 begin
+  CheckNativeJSONUnicode;
   Check(ParamCount = 1, 'Expected existing authored style-card fixture root');
   GRoot := IncludeTrailingPathDelimiter(ExpandFileName(ParamStr(1)));
   LTemplate := ReadStyleCardFile(GRoot + 'reference.json');

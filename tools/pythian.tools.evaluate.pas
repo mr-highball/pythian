@@ -46,7 +46,7 @@ function BuildPartReferenceFile(const ADraftPath, ADraftSha256,
 implementation
 
 uses
-  Classes, SysUtils, Math, fpjson, jsonparser, jsonscanner,
+  Classes, SysUtils, Math, fpjson, pythian.tools.json, jsonparser, jsonscanner,
   pythian.audio, pythian.hash, pythian.wave.read, pythian.evaluation,
   pythian.pitch.evaluate, pythian.evaluation.parts, pythian.evaluation.notes,
   pythian.tools.files, pythian.evaluation.reference;
@@ -131,67 +131,22 @@ end;
 
 function ParseObject(const ABytes: TAudioBytes): TJSONObject;
 var
-  LText: UTF8String;
-  LParser: TJSONParser;
+  LText: RawByteString;
   LData: TJSONData;
-  LDepth: Integer;
-  LQuoted: Boolean;
-  LEscaped: Boolean;
-  I: Integer;
 begin
-  { Bound nesting before the recursive JSON parser. Syntax remains its job. }
-  LDepth := 0;
-  LQuoted := False;
-  LEscaped := False;
-  for I := 0 to Length(ABytes) - 1 do
-  begin
-    if LQuoted then
-    begin
-      if LEscaped then
-      begin
-        LEscaped := False;
-      end
-      else if ABytes[I] = 92 then
-      begin
-        LEscaped := True;
-      end
-      else if ABytes[I] = 34 then
-      begin
-        LQuoted := False;
-      end;
-    end
-    else if ABytes[I] = 34 then
-    begin
-      LQuoted := True;
-    end
-    else if ABytes[I] in [91, 123] then
-    begin
-      Inc(LDepth);
-      Require(LDepth <= 16, 'Evaluation JSON nesting exceeds budget');
-    end
-    else if ABytes[I] in [93, 125] then
-    begin
-      Dec(LDepth);
-    end;
-  end;
   LText := '';
   if Length(ABytes) > 0 then
   begin
     SetString(LText, PAnsiChar(@ABytes[0]), Length(ABytes));
   end;
-  LParser := TJSONParser.Create(LText, [joUTF8, joStrict]);
+  LData := ParseNativeJSON(LText, MaximumDocumentBytes, 16);
   try
-    LData := LParser.Parse;
-    try
-      Require((LData <> nil) and (LData.JSONType = jtObject),
-        'Evaluation JSON root must be an object');
-      Result := TJSONObject(LData);
-      LData := nil;
-    finally
-      LData.Free;
-    end;
+    Require((LData <> nil) and (LData.JSONType = jtObject),
+      'Evaluation JSON root must be an object');
+    Result := TJSONObject(LData);
+    LData := nil;
   finally
-    LParser.Free;
+    LData.Free;
   end;
 end;
 

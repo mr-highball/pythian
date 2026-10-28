@@ -30,7 +30,7 @@ interface
 
 uses
   SysUtils,
-  fpjson;
+  fpjson, pythian.tools.json;
 
 type
   EAnswerContract = class(Exception);
@@ -496,7 +496,7 @@ begin
   finally
     LStream.Free;
   end;
-  LData := GetJSON(LText);
+  LData := ParseNativeJSON(LText);
   try
     try
       Need(LData.JSONType = jtObject, 'queue root must be an object');

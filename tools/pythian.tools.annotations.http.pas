@@ -42,7 +42,7 @@ uses
   SysUtils,
   Math,
   Sockets,
-  fpjson,
+  fpjson, pythian.tools.json,
   jsonparser,
   pythian.audio,
   pythian.hash,
@@ -818,7 +818,7 @@ var
   LData: TJSONData;
 begin
   try
-    LData := GetJSON(ABody);
+    LData := ParseNativeJSON(ABody);
   except
     on E: Exception do
       raise EAudio.Create('Invalid JSON request body');

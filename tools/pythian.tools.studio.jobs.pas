@@ -30,7 +30,7 @@ interface
 
 uses
   Classes,
-  fpjson,
+  fpjson, pythian.tools.json,
   pythian.audio;
 
 const
@@ -296,73 +296,27 @@ end;
 
 function ParseStudioJobWrite(const AText: String): TJSONObject;
 var
-  LParser: TJSONParser;
   LValue: TJSONData;
-  LDepth: Integer;
-  LString: Boolean;
-  LEscape: Boolean;
-  LCharacter: Char;
 begin
   Need((Length(AText) > 0) and (Length(AText) <= 1048576), 'Job JSON exceeds byte bound');
-  LDepth := 0;
-  LString := False;
-  LEscape := False;
-  for LCharacter in AText do
-  begin
-    if LString then
-    begin
-      if LEscape then
-      begin
-        LEscape := False;
-      end
-      else if LCharacter = '\' then
-      begin
-        LEscape := True;
-      end
-      else if LCharacter = '"' then
-      begin
-        LString := False;
-      end;
-    end
-    else if LCharacter = '"' then
-    begin
-      LString := True;
-    end
-    else if LCharacter in ['{', '['] then
-    begin
-      Inc(LDepth);
-      Need(LDepth <= 16, 'Job JSON exceeds nesting bound');
-    end
-    else if LCharacter in ['}', ']'] then
-    begin
-      Dec(LDepth);
-      Need(LDepth >= 0, 'Malformed job JSON');
-    end;
-  end;
-  Need((LDepth = 0) and not LString, 'Malformed job JSON');
-  LParser := TJSONParser.Create(AText, [joUTF8, joStrict]);
   try
-    try
-      LValue := LParser.Parse;
-    except
-      on E: EJSON do
-      begin
-        raise EAudio.Create('Malformed job JSON');
-      end;
-      on E: EParserError do
-      begin
-        raise EAudio.Create('Malformed job JSON');
-      end;
-    end;
-    if LValue.JSONType <> jtObject then
+    LValue := ParseNativeJSON(AText, 1048576, 16);
+  except
+    on LException: EJSON do
     begin
-      LValue.Free;
-      raise EAudio.Create('Job JSON must be an object');
+      raise EAudio.Create('Malformed job JSON');
     end;
-    Result := TJSONObject(LValue);
-  finally
-    LParser.Free;
+    on LException: EParserError do
+    begin
+      raise EAudio.Create('Malformed job JSON');
+    end;
   end;
+  if LValue.JSONType <> jtObject then
+  begin
+    LValue.Free;
+    raise EAudio.Create('Job JSON must be an object');
+  end;
+  Result := TJSONObject(LValue);
 end;
 
 function OpenStudioReadStream(const APath: String): TFileStream;

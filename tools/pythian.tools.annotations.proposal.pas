@@ -29,7 +29,7 @@ unit pythian.tools.annotations.proposal;
 interface
 
 uses pythian.progress,
-  fpjson;
+  fpjson, pythian.tools.json;
 
 { Native pulse hypotheses over one bounded source window. A packet is always
   unreviewed, even when its analysis has a strong periodic score. }
@@ -269,7 +269,7 @@ begin
   finally
     LStream.Free;
   end;
-  LData := GetJSON(LText);
+  LData := ParseNativeJSON(LText);
   if LData.JSONType <> jtObject then
   begin
     LData.Free;

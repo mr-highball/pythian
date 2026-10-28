@@ -65,6 +65,8 @@ Naming a task or narrowing a component does not reset that count.
 - [Primary hash cancellation publication — DONE](DONE/NS-6_hash-publication_01.md).
 - [Shared style evaluation text](NS-6_portability_06.md) — required for actual
   portable comparison/callback qualification; native execution alone is insufficient.
+- [Native JSON scalar preservation](NS-6_json-text_01.md) — demonstrated
+  Linux literal and Windows escaped-text failures require the shared boundary.
 - [Bulk native JSON publication](NS-6_serialization_01.md) — actual final
   formatting remains synchronous after observable value construction.
 

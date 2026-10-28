@@ -30,7 +30,7 @@ interface
 
 uses
   Classes,
-  fpjson,
+  fpjson, pythian.tools.json,
   pythian.tools.studio.&library;
 
 const
@@ -506,7 +506,7 @@ begin
     else if LText[LIndex] in ['}', ']'] then
       Dec(LDepth);
   end;
-  LData := GetJSON(LText);
+  LData := ParseNativeJSON(LText);
   try
     Need(LData is TJSONObject, 'Discovery snapshot is not an object');
     Result := TJSONObject(LData);

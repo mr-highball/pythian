@@ -27,7 +27,7 @@ program pythian_beat_candidates;
 {$H+}
 
 uses
-  SysUtils, Classes, Math, fpjson, jsonparser,
+  SysUtils, Classes, Math, fpjson, pythian.tools.json, jsonparser,
   pythian.audio, pythian.beat, pythian.beat.track,
   pythian.analysis, pythian.activity, pythian.onset,
   pythian.onset.events, pythian.evaluation,
@@ -125,7 +125,7 @@ function LoadReport(const APath: String): TJSONObject;
 var
   LData: TJSONData;
 begin
-  LData := GetJSON(BytesText(ReadFileBytes(APath, 8 * 1024 * 1024)));
+  LData := ParseNativeJSON(BytesText(ReadFileBytes(APath, 8 * 1024 * 1024)));
   if LData.JSONType <> jtObject then
   begin
     LData.Free;

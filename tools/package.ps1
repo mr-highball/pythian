@@ -123,6 +123,7 @@ if ($WithWfc) {
   New-Item -ItemType Directory -Path $toolRoot | Out-Null
   foreach ($toolName in @('pythian.learn.lpr', 'pythian.tools.files.pas',
       'pythian.tools.progress.pas',
+      'pythian.tools.json.pas',
       'pythian.tools.features.pas', 'pythian.tools.journal.learning.pas',
       'pythian.tools.annotations.export.pas', 'pythian.tools.annotations.sourceguard.pas',
       'pythian.tools.annotations.catalog.pas', 'pythian.tools.annotations.proposal.pas',

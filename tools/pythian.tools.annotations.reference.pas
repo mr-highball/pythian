@@ -42,7 +42,7 @@ implementation
 uses
   Classes,
   SysUtils,
-  fpjson,
+  fpjson, pythian.tools.json,
   jsonparser,
   pythian.audio,
   pythian.hash,
@@ -118,7 +118,7 @@ begin
     LInput.Free;
   end;
   try
-    LData := GetJSON(LText);
+    LData := ParseNativeJSON(LText);
   except
     on LError: Exception do
     begin

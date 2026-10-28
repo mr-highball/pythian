@@ -29,7 +29,7 @@ program pythian_inference_corpus_audit;
 uses
   Classes,
   SysUtils,
-  fpjson,
+  fpjson, pythian.tools.json,
   jsonparser,
   pythian.wave.read,
   pythian.inference.observation,
@@ -223,7 +223,7 @@ begin
   LRoot := nil;
   try
     LFile.LoadFromFile(AFileName);
-    LRoot := GetJSON(LFile.Text, True);
+    LRoot := ParseNativeJSON(LFile.Text);
     if LRoot.JSONType <> jtObject then
     begin
       raise Exception.Create('Corpus manifest root is not an object');

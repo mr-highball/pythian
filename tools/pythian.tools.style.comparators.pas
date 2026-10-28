@@ -54,7 +54,7 @@ uses
   Classes,
   SysUtils,
   Math,
-  fpjson,
+  fpjson, pythian.tools.json,
   jsonparser,
   jsonscanner,
   pythian.audio,
@@ -137,63 +137,19 @@ end;
 
 function ParseDocument(const ABytes: TAudioBytes): TJSONObject;
 var
-  LIndex: Integer;
-  LDepth: Integer;
-  LQuoted: Boolean;
-  LEscaped: Boolean;
-  LText: String;
-  LParser: TJSONParser;
+  LText: RawByteString;
   LData: TJSONData;
 begin
   Require((Length(ABytes) > 0) and
     (Length(ABytes) <= MaximumStyleComparatorDocumentBytes), 'Comparator JSON byte budget exceeded');
-  LDepth := 0;
-  LQuoted := False;
-  LEscaped := False;
-  for LIndex := 0 to High(ABytes) do
-  begin
-    if LQuoted then
-    begin
-      if LEscaped then
-      begin
-        LEscaped := False;
-      end
-      else if ABytes[LIndex] = 92 then
-      begin
-        LEscaped := True;
-      end
-      else if ABytes[LIndex] = 34 then
-      begin
-        LQuoted := False;
-      end;
-    end
-    else if ABytes[LIndex] = 34 then
-    begin
-      LQuoted := True;
-    end
-    else if ABytes[LIndex] in [91, 123] then
-    begin
-      Inc(LDepth);
-      Require(LDepth <= 8, 'Comparator JSON nesting budget exceeded');
-    end
-    else if ABytes[LIndex] in [93, 125] then
-    begin
-      Dec(LDepth);
-    end;
-  end;
   SetString(LText, PAnsiChar(@ABytes[0]), Length(ABytes));
-  LParser := TJSONParser.Create(LText, [joUTF8, joStrict]);
+  LData := ParseNativeJSON(LText, MaximumStyleComparatorDocumentBytes, 8);
   try
-    LData := LParser.Parse;
-    try
-      Require((LData <> nil) and (LData.JSONType = jtObject), 'Comparator root must be object');
-      Result := TJSONObject(LData);
-      LData := nil;
-    finally
-      LData.Free;
-    end;
+    Require((LData <> nil) and (LData.JSONType = jtObject), 'Comparator root must be object');
+    Result := TJSONObject(LData);
+    LData := nil;
   finally
-    LParser.Free;
+    LData.Free;
   end;
 end;
 

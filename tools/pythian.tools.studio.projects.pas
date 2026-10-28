@@ -30,7 +30,7 @@ interface
 
 uses
   Classes,
-  fpjson,
+  fpjson, pythian.tools.json,
   pythian.audio;
 
 const
@@ -130,89 +130,37 @@ begin
 end;
 
 procedure BoundText(const AText: String);
-var
-  LIndex: Integer;
-  LDepth: Integer;
-  LCount: Integer;
-  LQuoted: Boolean;
-  LEscaped: Boolean;
 begin
   Need((Length(AText) > 0) and (Length(AText) <= MaximumStudioDocumentBytes),
     'Studio JSON exceeds its byte bound');
-  LDepth := 0;
-  LCount := 0;
-  LQuoted := False;
-  LEscaped := False;
-  for LIndex := 1 to Length(AText) do
-  begin
-    if LQuoted then
-    begin
-      if LEscaped then
-      begin
-        LEscaped := False;
-      end
-      else if AText[LIndex] = '\' then
-      begin
-        LEscaped := True;
-      end
-      else if AText[LIndex] = '"' then
-      begin
-        LQuoted := False;
-      end;
-    end
-    else if AText[LIndex] = '"' then
-    begin
-      LQuoted := True;
-    end
-    else if AText[LIndex] in ['{', '['] then
-    begin
-      Inc(LDepth);
-      Inc(LCount);
-      Need((LDepth <= 8) and (LCount <= 4096), 'Studio JSON structure exceeds its bound');
-    end
-    else if AText[LIndex] in ['}', ']'] then
-    begin
-      Dec(LDepth);
-      Need(LDepth >= 0, 'Studio JSON structure is invalid');
-    end;
-  end;
-  Need((LDepth = 0) and not LQuoted, 'Studio JSON structure is incomplete');
 end;
 
 function ParseStudioProjectWrite(const AText: String): TJSONObject;
 var
-  LParser: TJSONParser;
   LData: TJSONData;
   LCount: Integer;
 begin
-  Result := nil;
   BoundText(AText);
-  LParser := TJSONParser.Create(AText, [joUTF8, joStrict]);
   try
-    try
-      LData := LParser.Parse;
-    except
-      on LException: EParserError do
-      begin
-        raise EAudio.Create('Studio JSON syntax is invalid');
-      end;
-      on LException: EJSON do
-      begin
-        raise EAudio.Create('Studio JSON syntax is invalid or contains duplicate fields');
-      end;
+    LData := ParseNativeJSON(AText, MaximumStudioDocumentBytes, 8, nil, 4096);
+  except
+    on LException: EParserError do
+    begin
+      raise EAudio.Create('Studio JSON syntax is invalid');
     end;
-    try
-      Need((LData <> nil) and (LData.JSONType = jtObject),
-        'Studio JSON must be an object');
-      LCount := 0;
-      BoundJson(LData, 1, LCount);
-      Result := TJSONObject(LData);
-      LData := nil;
-    finally
-      LData.Free;
+    on LException: EJSON do
+    begin
+      raise EAudio.Create('Studio JSON syntax is invalid or contains duplicate fields');
     end;
+  end;
+  try
+    Need((LData <> nil) and (LData.JSONType = jtObject), 'Studio JSON must be an object');
+    LCount := 0;
+    BoundJson(LData, 1, LCount);
+    Result := TJSONObject(LData);
+    LData := nil;
   finally
-    LParser.Free;
+    LData.Free;
   end;
 end;
 
