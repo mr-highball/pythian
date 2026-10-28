@@ -12,9 +12,45 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Generic learning and context integration accepted; return to parent residuals - 2026-10-27
+
+Big Boss verifies terminal [WFC CI51](https://github.com/mr-highball/wfc/actions/runs/40621952770)
+Success at `6b419e6`, all five jobs, total22m07s. Stable Linux11m29s,
+macOS22m00s, Windows11m55s, development FPC9m17s and pas2js/browser11m55s pass.
+Pythian [Ubuntu CI457](https://github.com/mr-highball/pythian/actions/runs/40623151590)
+is terminal Success at `2ae5144`, job122601731693, total13m27s/job13m24s.
+Maintained integration11m27s and both extracted consumer packages45s pass.
+Displayed artifact-container digests (not independently downloaded ZIP hashes):
+logs `8924e7d12b10adf465a29f87c447348298641a568109936477a189eb5e92e1bc`;
+packages `0ab0eb788121aceb20a528c25500b3412df05304f719b30bbd0f54da32fe32a1`.
+
+The actual generic/primary consumers, original cancellation/cleanup, exact frozen
+model/state/archive/profile/PCM artifacts and scoped portability evidence below
+close [task13](TODO/DONE/NS-6_observability_13.md) AC1–3. Move it to DONE and update
+incoming links/counts together:52 open/74 DONE/126 total, NS-6 14 open. Completion
+remains100/90/25/70/14/54 and52.45/47.55. This actual criterion closure resets the
+delivery nonclosing count2 to0; scientific stopped-family counters are unchanged.
+Big Boss remains solo; CI is not outside human/agent review or musical acceptance.
+
+Return to [parent04](TODO/NS-6_observability_04.md): context metadata/bytes/hash,
+profile ancestry, remaining replacement/generation, batch and inference/operator
+obligations remain required. Source inspection locates these in the existing
+archive/profile primary/hash paths; do not replace them with wrapper-only
+progress. Before another implementation batch define its complete criterion,
+deliverable, evidence and stop condition, and preserve this accepted pin/baseline.
+No new batch is selected merely to add a report or tests.
+
+The extra broader portable adapter build still stops at existing tempo-evidence
+`Move`; the changed core grid and generic learner do pass actual pas2js. No stub,
+replacement codec, adapter browser/phone qualification or branch merge is claimed.
+The read-only queue report remains4 waiting/4 completed; the approved4:16
+repetition request remains revision0 in waiting. All local checks are terminal;
+no service, private media, saved answer, retraining or QA browser/audio changed.
+Earlier pending statements below are intermediate history. Full goal stays active.
+
 ## Generic learning repair and context bridge locally qualified; publication pending - 2026-10-27
 
-Big Boss implements the reassessed [task13](TODO/NS-6_observability_13.md)
+Big Boss implements the reassessed [task13](TODO/DONE/NS-6_observability_13.md)
 prerequisite in the separate WFC worktree. Reviewed/pushed upstream
 `6b419e6e33c7cec40f5936ef734defbe33319aaa` extends the existing borrowed preparation
 contract through token indexing, observation counts and actual immutable-model
@@ -73,7 +109,7 @@ Source inspection confirms no learning observer/cancellation API. The pinned
 learner and separate WFC expansion checkout have identical blob
 `472aa7dd42994c3f37deaad3666cd9ed193ded51`, so there is no existing fix to adopt.
 Decision after reassessment: stop wrapper-only expansion and follow the actual
-[generic learning/model-construction owner13](TODO/NS-6_observability_13.md), then
+[generic learning/model-construction owner13](TODO/DONE/NS-6_observability_13.md), then
 return to all context/archive/profile and other parent obligations. Preserve the
 nonclosing count **2**; new task/branch names, this reassessment and CI status
 reset nothing. A further batch is selected only after this recorded decision.

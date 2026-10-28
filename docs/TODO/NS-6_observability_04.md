@@ -23,9 +23,13 @@ published-qualified at `9f85fef` after Ubuntu CI456 integration/extracted consum
 The whole AC1/parent task is not closed by this component. Context archive/profile
 and remaining replacement/generation work stay required alongside batch and
 inference/operator reporting. No new task, credit or criterion is invented to
-reset the nonclosing count. The subsequent context audit exposes the generic
-learning prerequisite13 below. Two nonclosing batches have now been reassessed;
-follow that actual owner before adding wrapper-only context progress.
+reset the nonclosing count. The subsequent context audit exposed generic learning
+prerequisite13 after the two-batch reassessment. That prerequisite is now accepted
+at `2ae5144`/WFC `6b419e6`, after upstream CI51 and downstream CI457 with extracted
+consumers. Its real criterion closure resets the delivery count to0. Resume this
+parent's complete remaining context metadata/archive/profile, replacement,
+generation, batch and inference/operator obligations; learning callbacks alone
+do not qualify those interiors.
 
 **Acceptance Criteria:**
 
@@ -55,7 +59,7 @@ follow that actual owner before adding wrapper-only context progress.
 - [Provider/context metadata reuse — DONE](DONE/NS-6_metadata_01.md).
 - [Layer request/graph preparation — DONE](DONE/NS-6_observability_11.md).
 - [Generic WFC bulk constraint preparation](DONE/NS-6_observability_12.md).
-- [Generic WFC sequence learning observation](NS-6_observability_13.md).
+- [Generic WFC sequence learning observation — DONE](DONE/NS-6_observability_13.md).
 
 **Dev Notes:**
 
@@ -76,7 +80,7 @@ follow that actual owner before adding wrapper-only context progress.
   bundle model text. No progress/cancel API exists there. Adding callbacks only
   around bundle/profile readers would not cover it. The separate original WFC
   checkout has the same learner blob; no existing fix was bypassed. Follow
-  [task13](NS-6_observability_13.md) on its named branch after this reassessment;
+  [task13](DONE/NS-6_observability_13.md) on its named branch after this reassessment;
   keep the count2 and every remaining parent obligation. Creating/switching to
   the prerequisite resets no counter and grants no credit. Probe source and
   complete zero-leak logs remain under E-drive context-observability roots.

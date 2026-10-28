@@ -524,7 +524,7 @@ The subsequent context audit separately measures438ms of owned token preparation
 and1172ms in the public generic WFC learner on an authored65,536-cell/order4 corpus,
 1023 states/1020 tempo tokens. Its canonical text equals the bundle model exactly.
 At that audit revision the generic learner had no observer API; source profile
-opening inherits that work. [Task13](TODO/NS-6_observability_13.md) owns the separate
+opening inherits that work. [Task13](TODO/DONE/NS-6_observability_13.md) owns the separate
 upstream learning/model-construction observer and context-learning integration.
 Context archive/profile byte/hash/ancestry loops remain task04 obligations.
 These local timings identify ownership, not a musical result or portable bound.
@@ -537,7 +537,9 @@ branch, based exactly on `d1c1c81`. It extends the existing borrowed sequence
 preparation contract through corpus/single learning and immutable-model
 construction. Original graph phases retain their ordinals and behavior. Unknown
 totals use zero; no additional validation pass changes original error ordering.
-Upstream CI51 and downstream publication are pending; the task stays open.
+All five upstream CI51 jobs and Pythian CI457 integration/extracted consumers
+pass at `2ae5144`; [task13](TODO/DONE/NS-6_observability_13.md) is accepted. This
+does not close parent04 or qualify its other retained operations.
 
 `ValidateContextGrid` exposes primary cell validation. `LearnContextModel` uses a
 call-scoped bridge and reports these phase-local item units, with pass1 for key
@@ -557,7 +559,8 @@ the new model escapes. `TContextLearningBundle.Create` forwards through both
 learning calls, releasing the earlier key model if tempo learning aborts.
 Its evidence metadata/preflight/copy, archive bytes/hash, profile ancestry,
 later replacement/generation and operator presentation remain parent task04
-obligations. RTL copying, bounded per-pair comparisons and sample copying remain
+obligations. Single-token validation/equality, RTL copying, bounded per-pair
+history comparisons and sample copying remain
 synchronous; these callbacks promise neither event-loop yielding nor a latency
 bound. No observer is retained after the learning call.
 

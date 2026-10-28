@@ -1,6 +1,6 @@
 # NS-6_observability_13 — Observe generic WFC sequence learning and model construction
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
@@ -30,6 +30,28 @@ execution, affected Pythian consumer parity and clean published integration.
 Stop on altered learning semantics/error order, retained observers, partial model
 publication, changed scientific policy or an additional distinct required gap.
 
+Accepted AC1–3 on 2026-10-27, Big Boss solo, at Pythian
+`2ae5144b0ec2bcd4e9581b0befee63bb453d0cac` with reviewed WFC
+`6b419e6e33c7cec40f5936ef734defbe33319aaa`. All five
+[upstream CI51](https://github.com/mr-highball/wfc/actions/runs/40621952770)
+jobs pass, total22m07s: stable Linux11m29s/macOS22m00s/Windows11m55s,
+development FPC9m17s and actual pas2js/browser11m55s. Pythian
+[Ubuntu CI457](https://github.com/mr-highball/pythian/actions/runs/40623151590),
+job122601731693, passes total13m27s/job13m24s: integration11m27s and extracted
+core-only/full consumer verification45s. Local source identity, original aborts,
+exact model/state/archive/profile/WAV replay and limits are recorded below.
+These close the named learning observation scope; [parent04](../NS-6_observability_04.md)
+retains every other obligation. No branch merge, full portable adapter/browser
+qualification, outside review or musical credit follows.
+
+Displayed artifact-container digests, not independently downloaded ZIP hashes:
+logs `8924e7d12b10adf465a29f87c447348298641a568109936477a189eb5e92e1bc`;
+packages `0ab0eb788121aceb20a528c25500b3412df05304f719b30bbd0f54da32fe32a1`.
+Earlier pending statements are intermediate history. Evidence is in dedicated
+E-drive context-learning/WFC-sequence-learning roots and the current validation
+record. Full task acceptance resets the delivery nonclosing count from2 to0;
+the preceding reassessment and unrelated stopped-family counters remain.
+
 **Acceptance Criteria:**
 
 - AC1: Add optional borrowed progress/cancellation to WFC's existing sequence corpus
@@ -52,8 +74,8 @@ publication, changed scientific policy or an additional distinct required gap.
 
 **Blockers**
 
-- [Accepted generic preparation contract](DONE/NS-6_observability_12.md).
-- [Cross-repository procedure](../TASKFLOW.MD#cross-repository-wfc-gaps).
+- [Accepted generic preparation contract](NS-6_observability_12.md).
+- [Cross-repository procedure](../../TASKFLOW.MD#cross-repository-wfc-gaps).
 
 **Dev Notes:**
 

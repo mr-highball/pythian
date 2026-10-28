@@ -9,17 +9,18 @@ Updated **2026-10-27** on the user-authorized 2026-09-29 credit basis:
 [Owned layer construction](TODO/DONE/NS-6_observability_11.md) is accepted at
 `be34725` after checked native consumers, exact prior state/audio artifacts and
 [Ubuntu run454](https://github.com/mr-highball/pythian/actions/runs/40604981876),
-including both extracted packages. Current counts are **53 open / 73 DONE,
-126 total**, NS-6 15 open; completion remains **100/90/25/70/14/54**, **52.45/47.55**.
+including both extracted packages. Current counts are **52 open / 74 DONE,
+126 total**, NS-6 14 open; completion remains **100/90/25/70/14/54**, **52.45/47.55**.
 [Generic WFC bulk preparation](TODO/DONE/NS-6_observability_12.md) is accepted at
 Pythian `573103e` with explicit WFC pin `d1c1c81`, checked replay/abort consumers,
 terminal five-job upstream CI50 and Ubuntu integration/extracted consumers in
 CI455. The separate upstream branch is unmerged. No musical credit follows.
 Task04's provider-admission component passes published CI456 at `9f85fef`,
 without closing its whole criterion. The context audit demonstrates a distinct
-[generic learning prerequisite](TODO/NS-6_observability_13.md). Two nonclosing
-batches have been reassessed before following its separate upstream owner;
-new task/branch creation earns no credit and resets no counter.
+[generic learning prerequisite](TODO/DONE/NS-6_observability_13.md). It is accepted
+at Pythian `2ae5144`/WFC `6b419e6` after five-job upstream CI51 and Ubuntu CI457
+integration plus both extracted consumers. The two-batch reassessment remains
+history; real criterion closure resets delivery count0, with no musical credit.
 Zero-credit [shared metadata reuse](TODO/DONE/NS-6_metadata_01.md) is accepted at
 `c64bf7f` after checked native/pas2js consumers, prior-byte parity and actual
 [Ubuntu run453](https://github.com/mr-highball/pythian/actions/runs/40599653753),
@@ -116,8 +117,8 @@ ecosystem adoption is unmeasured and is a required completion gate.
 | <a id="wav-02"></a><a id="wav-03"></a><a id="ns-3"></a>**NS-3 — Trustworthy musical learning from WAV** | 25% | 25 | Measurement foundation, Pascal observations/execution, qualified references/scoring, unknown/manual context, catalog and admitted-event bridge. | Independently accepted recorded context, notes, parts, harmony, groove and evolving sound: 19 tasks / 75 |
 | <a id="wfc-preferences"></a><a id="ns-4"></a>**NS-4 — Granular WFC layers and reusable blends** | 70% | 15 | Actual layers, typed controls, persistence, selective reuse, caller codecs/traits, bounded event/composition evidence and continuous native audio sessions. | Full recorded-provider workflow: 1 task / 30 |
 | <a id="wav-04"></a><a id="ns-5"></a>**NS-5 — User-defined styles that generate and blend usefully** | 14% | 20 | Bounded identity, maintained caller intake, raw corpus, journal, balance, listening packet and acoustic continuation; style-card AC1 only. | Grounded references, semantic scale, structure/continuity, useful one/many-recording and new-user styles, blends, source-continuity consumer integration: 17 tasks / 86 |
-| <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | 54% | 10 | Supported consumer contract, native checkpoint, exact-revision minimal core/caller-provider package, editor/producer queue, Studio setup/private corpora, bounded raw WFC jobs, effects, experimental capture/MIDI exploration, starting actions/navigation, verified large-library refresh, shared filter catalog, flexible bounded source workspace, delay/reverb with explicit tails, native streamed playback, shared microphone codec, guided operator teaching, shared corpus intake/text, primary analysis/synthesis portability, exact shared timing, connected import and offline native progress, repaired Linux corpus-text consumer, semantic archive/blend and pitch preparation callbacks, shared binary fields, retained wave-style and primary source-measurement callbacks, plus shared provider/context metadata primitives owned layer construction and generic WFC bulk preparation. | Studio iteration/conversion, phone HTTPS and metadata-only discovery, remaining retained-operation observability, full packages, actual outside use, physical LAN/full operator workflow, maintained support, ecosystem adoption and final handoff: 15 tasks / 46 |
-| **Total** | **52.45 weighted** | **100** | **73 accepted task records plus explicit baseline** | **53 open tasks / 47.55 weighted points** |
+| <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | 54% | 10 | Supported consumer contract, native checkpoint, exact-revision minimal core/caller-provider package, editor/producer queue, Studio setup/private corpora, bounded raw WFC jobs, effects, experimental capture/MIDI exploration, starting actions/navigation, verified large-library refresh, shared filter catalog, flexible bounded source workspace, delay/reverb with explicit tails, native streamed playback, shared microphone codec, guided operator teaching, shared corpus intake/text, primary analysis/synthesis portability, exact shared timing, connected import and offline native progress, repaired Linux corpus-text consumer, semantic archive/blend and pitch preparation callbacks, shared binary fields, retained wave-style and primary source-measurement callbacks, plus shared provider/context metadata primitives, owned layer construction and generic WFC bulk preparation/learning observation. | Studio iteration/conversion, phone HTTPS and metadata-only discovery, remaining retained-operation observability, full packages, actual outside use, physical LAN/full operator workflow, maintained support, ecosystem adoption and final handoff: 14 tasks / 46 |
+| **Total** | **52.45 weighted** | **100** | **74 accepted task records plus explicit baseline** | **52 open tasks / 47.55 weighted points** |
 
 Arithmetic:
 `5×1 + 25×.90 + 25×.25 + 15×.70 + 20×.14 + 10×.54 = 52.45`.
@@ -155,7 +156,7 @@ a claim that all downstream outcomes pass.
 
 | Outcome | North star | Required task owners |
 | --- | --- | --- |
-| **REUSABLE-OPERATIONS** | NS-6 | [Remaining provider/batch audit](TODO/NS-6_observability_04.md) and [generic learning observation](TODO/NS-6_observability_13.md); accepted [generic WFC bulk preparation](TODO/DONE/NS-6_observability_12.md), [layer preparation](TODO/DONE/NS-6_observability_11.md), [metadata reuse](TODO/DONE/NS-6_metadata_01.md), [raw source measurement](TODO/DONE/NS-6_observability_10.md), [wave profiles](TODO/DONE/NS-6_observability_07.md), [shared binary primitives](TODO/DONE/NS-6_binary-codec_01.md), [pitch preparation](TODO/DONE/NS-6_observability_09.md), [semantic styles](TODO/DONE/NS-6_observability_08.md), [Linux consumer repair](TODO/DONE/NS-6_portability_05.md), [corpus archives](TODO/DONE/NS-6_observability_05.md) and [composition planning](TODO/DONE/NS-6_observability_06.md). All have zero additional credit. |
+| **REUSABLE-OPERATIONS** | NS-6 | [Remaining provider/batch audit](TODO/NS-6_observability_04.md); accepted [generic learning observation](TODO/DONE/NS-6_observability_13.md), [generic WFC bulk preparation](TODO/DONE/NS-6_observability_12.md), [layer preparation](TODO/DONE/NS-6_observability_11.md), [metadata reuse](TODO/DONE/NS-6_metadata_01.md), [raw source measurement](TODO/DONE/NS-6_observability_10.md), [wave profiles](TODO/DONE/NS-6_observability_07.md), [shared binary primitives](TODO/DONE/NS-6_binary-codec_01.md), [pitch preparation](TODO/DONE/NS-6_observability_09.md), [semantic styles](TODO/DONE/NS-6_observability_08.md), [Linux consumer repair](TODO/DONE/NS-6_portability_05.md), [corpus archives](TODO/DONE/NS-6_observability_05.md) and [composition planning](TODO/DONE/NS-6_observability_06.md). All have zero additional credit. |
 | <a id="fund-quality"></a>**FUND-QUALITY** | NS-2 | [NS-2_synthesis-quality_01 — DONE](TODO/DONE/NS-2_synthesis-quality_01.md), [NS-2_synthesis-quality_02 — DONE](TODO/DONE/NS-2_synthesis-quality_02.md), [NS-2_synthesis-quality_03 — DONE](TODO/DONE/NS-2_synthesis-quality_03.md) |
 | <a id="fund-extension"></a>**FUND-EXTENSION** | NS-2 | [NS-2_extension_01](TODO/NS-2_extension_01.md) |
 | <a id="wav-validation"></a>**WAV-VALIDATION** | NS-3 | [NS-3_validation_01 — DONE](TODO/DONE/NS-3_validation_01.md), [NS-3_validation_02 — DONE](TODO/DONE/NS-3_validation_02.md), [NS-3_validation_03 — DONE](TODO/DONE/NS-3_validation_03.md) |

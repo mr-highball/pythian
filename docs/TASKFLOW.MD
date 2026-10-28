@@ -309,7 +309,7 @@ without awarding acceptance.
 Studio setup acceptance adds 4 NS-6 / 0.40 overall; private corpora, bounded raw
 WFC jobs, effects and capture/exploration add 8 NS-6 / 0.80 overall; starting
 actions and verified large-library refresh add 2 NS-6 / 0.20 overall. The catalog
-contains **53 open / 73 accepted tasks**, NS-6 **54/46**, overall **52.45/47.55** after
+contains **52 open / 74 accepted tasks**, NS-6 **54/46**, overall **52.45/47.55** after
 shared filter-catalog, source-workspace, delay/reverb-tail, native-session,
 streamed-playback, microphone-codec and guided-help acceptance, plus later
 zero-credit shared-consumer, observability and response/publication repairs. All
@@ -368,8 +368,9 @@ Use the [architecture ownership map](ARCHITECTURE.md#core-and-wfc-symbiosis).
 
 The 2026-09-29 boundary audit found no demonstrated generic failing contract,
 so no WFC branch or dependency change was made in that reassessment. The later
-[bulk sequence-constraint stall](TODO/DONE/NS-6_observability_12.md) is a demonstrated
-generic gap and uses the explicit separate-repository procedure above.
+[bulk sequence-constraint stall](TODO/DONE/NS-6_observability_12.md) and
+[opaque sequence learner](TODO/DONE/NS-6_observability_13.md) are demonstrated
+generic gaps repaired through the explicit separate-repository procedure above.
 
 ### Current team
 
