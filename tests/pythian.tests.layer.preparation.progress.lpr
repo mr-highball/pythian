@@ -27,10 +27,13 @@ program pythian_tests_layer_preparation_progress;
 {$H+}
 
 uses
-  SysUtils, pythian.progress, pythian.wfc.layers, wfc, wfc_sequence,
+  SysUtils, pythian.progress, pythian.learning, pythian.wfc.layers,
+  pythian.wfc.generation, pythian.wfc.learning, wfc, wfc_model, wfc_sequence,
   wfc_sequence_learn, wfc_sequence_text, wfc_sequence_graph;
 
 const
+  CSolveStages: array[0..2] of String = ('wfc_solve_prepare_visits',
+    'wfc_solve_search_visits', 'wfc_solve_commit_visits');
   CCompanionStages: array[0..3] of String = ('layer_wfc_model_rows',
     'layer_wfc_constraint_rows', 'layer_wfc_snapshot_cells', 'layer_wfc_mask_rows');
 
@@ -42,6 +45,7 @@ type
     ConstraintTotal: Int64;
     PreferenceTotal: Int64;
     WfcCalls: Integer;
+    SolveCalls: Integer;
     WfcModelTotal: Int64;
     WfcSnapshotTotal: Int64;
     AbortStage: String;
@@ -71,6 +75,11 @@ var
   LAbortPoint: Boolean;
 begin
   Inc(Calls);
+  if Copy(AWork.Stage, 1, 10) = 'wfc_solve_' then
+  begin
+    Inc(SolveCalls);
+    Check((AWork.Pass >= 0) and (AWork.Pass <= 2), 'Solve pass mapping differs');
+  end;
   LCompanion := Copy(AWork.Stage, 1, 10) = 'layer_wfc_';
   Check((AWork.Units = wuItems) and (AWork.Done >= 0) and
     (AWork.Total >= 0) and ((AWork.Total = 0) or (AWork.Done <= AWork.Total)),
@@ -180,6 +189,89 @@ begin
   end;
 end;
 
+procedure CheckDirectGeneration;
+var
+  LModel: TWfcSequenceModel;
+  LOptions: TAcousticGenerationOptions;
+  LTokens: TWfcModelTokens;
+  LExpectedTokens: TWfcModelTokens;
+  LIndices: TAcousticIndices;
+  LExpectedIndices: TAcousticIndices;
+  LReport: TGraphSolveReport;
+  LStage: String;
+  LFinal: Boolean;
+  LAcoustic: Boolean;
+  LAborted: Boolean;
+  LIndex: Integer;
+begin
+  LModel := Model(AcousticToken(0), AcousticToken(1));
+  try
+    LOptions := DefaultAcousticGenerationOptions;
+    LOptions.FrameCount := 128;
+    Check(TryGenerateTokenSequence(LModel, LOptions, nil, LExpectedTokens,
+      LReport), 'Direct token control failed');
+    Check(TryGenerateAcousticSequence(LModel, LOptions, nil, LExpectedIndices,
+      LReport), 'Acoustic-index control failed');
+    for LAcoustic := False to True do
+    begin
+      for LStage in CSolveStages do
+      begin
+        for LFinal := False to True do
+        begin
+          GObserver.AbortStage := LStage;
+          GObserver.AbortFinal := LFinal;
+          GObserver.MinimumDone := 1;
+          GObserver.Marker := Exception.Create('Big Boss acoustic solve marker');
+          LTokens := ['retained'];
+          LIndices := [19];
+          LAborted := False;
+          try
+            try
+              if LAcoustic then
+              begin
+                TryGenerateAcousticSequence(LModel, LOptions, nil, LIndices,
+                  LReport, GObserver.Observe);
+              end
+              else
+              begin
+                TryGenerateTokenSequence(LModel, LOptions, nil, LTokens,
+                  LReport, GObserver.Observe);
+              end;
+            except
+              on LException: Exception do
+              begin
+                Check(LException = GObserver.Marker, 'Direct solve exception changed');
+                GObserver.Marker := nil;
+                LAborted := True;
+                Inc(GAborts);
+              end;
+            end;
+          finally
+            GObserver.Marker.Free;
+            GObserver.Marker := nil;
+            GObserver.AbortStage := '';
+          end;
+          Check(LAborted and (Length(LTokens) = 1) and
+            (LTokens[0] = 'retained') and (Length(LIndices) = 1) and
+            (LIndices[0] = 19), 'Direct abort published caller data');
+          Check(TryGenerateTokenSequence(LModel, LOptions, nil, LTokens,
+            LReport, GObserver.Observe), 'Observed token retry failed');
+          Check(TryGenerateAcousticSequence(LModel, LOptions, nil, LIndices,
+            LReport, GObserver.Observe), 'Observed index retry failed');
+          Check((Length(LTokens) = Length(LExpectedTokens)) and
+            (Length(LIndices) = Length(LExpectedIndices)), 'Direct lengths differ');
+          for LIndex := 0 to High(LTokens) do
+          begin
+            Check((LTokens[LIndex] = LExpectedTokens[LIndex]) and
+              (LIndices[LIndex] = LExpectedIndices[LIndex]), 'Direct replay differs');
+          end;
+        end;
+      end;
+    end;
+  finally
+    LModel.Free;
+  end;
+end;
 procedure RunCase(const AKind: Integer);
 var
   LLayers: TLearnedLayers;
@@ -202,6 +294,7 @@ var
   LMask: Integer;
   LStage: String;
   LFinal: Boolean;
+  LOperation: Integer;
 
   procedure AbortOperation(const AOperation: Integer; const AStage: String;
     const AFinal: Boolean; const AMinimum: Int64);
@@ -261,6 +354,90 @@ var
     end;
   end;
 
+  procedure AbortSolve(const AOperation: Integer; const AStage: String;
+    const AFinal: Boolean; const AMinimum: Int64);
+  var
+    LTarget: TLearnedLayerSession;
+    LReplacement: TLayerModelReplacementReport;
+  begin
+    LTarget := LSession;
+    if AOperation = 1 then
+    begin
+      LTarget := TLearnedLayerSession.Create(LLayers, LMaps,
+        ['provider', 'voice'], LOptions);
+    end;
+    try
+      GObserver.AbortStage := AStage;
+      GObserver.AbortFinal := AFinal;
+      GObserver.MinimumDone := AMinimum;
+      GObserver.Marker := Exception.Create('Big Boss solve cancellation marker');
+      LAborted := False;
+      LAfter := LBefore;
+      try
+        try
+          case AOperation of
+            0: TryGenerateLayers(LLayers, LMaps, LOptions, LAfter, LReport, GObserver.Observe);
+            1: LTarget.TryGenerate(LAfter, LReport, GObserver.Observe);
+            2: LTarget.TryRegenerate(['provider'], 731, LAfter, LSelective, GObserver.Observe);
+            3: LTarget.TryReplaceModel('provider', LLayers[0].Model, 731,
+              LAfter, LReplacement, GObserver.Observe);
+          end;
+        except
+          on LException: Exception do
+          begin
+            Check(LException = GObserver.Marker, 'Original solve exception changed');
+            GObserver.Marker := nil;
+            LAborted := True;
+            Inc(GAborts);
+          end;
+        end;
+      finally
+        GObserver.Marker.Free;
+        GObserver.Marker := nil;
+        GObserver.AbortStage := '';
+      end;
+      Check(LAborted, 'Solve abort was not reached at ' + AStage);
+      Same(LBefore, LAfter);
+      if AOperation = 1 then
+      begin
+        Check(Length(LTarget.CopyAccepted) = 0, 'Cancelled initial solve accepted data');
+      end
+      else
+      begin
+        Same(LBefore, LSession.CopyAccepted);
+      end;
+      case AOperation of
+        0: begin
+          Check(TryGenerateLayers(LLayers, LMaps, LOptions, LAfter, LReport), 'Finite retry failed');
+          Check(TryGenerateLayers(LLayers, LMaps, LOptions, LExpected, LReport), 'Finite control failed');
+        end;
+        1: begin
+          Check(LTarget.TryGenerate(LAfter, LReport), 'Session retry failed');
+          Check(TryGenerateLayers(LLayers, LMaps, LOptions, LExpected, LReport), 'Session control failed');
+        end;
+        2: begin
+          Check(LSession.TryRegenerate(['provider'], 731, LAfter, LSelective), 'Regeneration retry failed');
+          Check(LControl.TryRegenerate(['provider'], 731, LExpected, LSelective), 'Regeneration control failed');
+        end;
+        3: begin
+          Check(LSession.TryReplaceModel('provider', LLayers[0].Model, 731,
+            LAfter, LReplacement), 'Replacement retry failed');
+          Check(LControl.TryReplaceModel('provider', LLayers[0].Model, 731,
+            LExpected, LReplacement), 'Replacement control failed');
+        end;
+      end;
+      Same(LExpected, LAfter);
+      if AOperation >= 2 then
+      begin
+        LBefore := LAfter;
+      end;
+    finally
+      if LTarget <> LSession then
+      begin
+        LTarget.Free;
+      end;
+    end;
+  end;
 begin
   SetLength(LLayers, 2);
   LLayers[0].Model := Model('a', 'b');
@@ -314,6 +491,17 @@ begin
     Check(TryGenerateLayers(LLayers, LMaps, LOptions, LExpected, LReport), 'Unobserved finite solve failed');
     Check(TryGenerateLayers(LLayers, LMaps, LOptions, LAfter, LReport, GObserver.Observe), 'Observed finite solve failed');
     Same(LExpected, LAfter);
+    { All three timing layouts exercise the same primary bridge. Generic solve
+      final callbacks remain inside WFC rollback, before accepted session capture. }
+    for LOperation := 0 to 3 do
+    begin
+      for LStage in CSolveStages do
+      begin
+        AbortSolve(LOperation, LStage, False, 0);
+        AbortSolve(LOperation, LStage, False, 256);
+        AbortSolve(LOperation, LStage, True, 1);
+      end;
+    end;
     AbortOperation(0, 'layer_prepare_visits', False, 256);
     AbortOperation(0, 'layer_prepare_visits', True, 1);
     AbortOperation(0, 'layer_constraint_visits', True, 1);
@@ -362,12 +550,13 @@ begin
   GObserver := TObserver.Create;
   try
     CheckVisitOracle;
+    CheckDirectGeneration;
     RunCase(0);
     RunCase(1);
     RunCase(2);
     WriteLn('Layer preparation: ', GChecks, ' checks; ', GAborts,
       ' abort/retries; ', GObserver.Calls, ' callbacks (', GObserver.WfcCalls,
-      ' companion); visit oracles 13/8/2');
+      ' companion); ', GObserver.SolveCalls, ' solve callbacks; visit oracles 13/8/2');
   finally
     GObserver.Free;
   end;

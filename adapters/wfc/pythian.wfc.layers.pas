@@ -145,18 +145,24 @@ type
       const APreferences: TLayerTokenPreferences;
       const AProgress: TWorkProgressCallback = nil);
     function CopyPreferences(const AName: String): TLayerTokenPreferences;
+    { Call-scoped solve observation uses the shared companion bridge. Its final
+      checkpoint precedes graph acceptance; later sequence capture/copy remains
+      synchronous. Counts are local work, never overall generation percentages. }
     function TryGenerate(var ASequences: TLayerSequences;
-      out AReport: TGraphNegotiationReport): Boolean;
+      out AReport: TGraphNegotiationReport;
+      const AProgress: TWorkProgressCallback = nil): Boolean;
     function TryRegenerate(const ARoots: array of String; const ASeed: TGraphSeed;
       var ASequences: TLayerSequences;
-      out AReport: TGraphSelectiveNegotiationReport): Boolean;
+      out AReport: TGraphSelectiveNegotiationReport;
+      const AProgress: TWorkProgressCallback = nil): Boolean;
     { Replace one model after initial acceptance, keeping scopes, relations and
       masks. Clones AModel; never takes its ownership. Includes pending edits.
       False/exception preserves the entire session and caller output. Independent
       tokens/states survive; candidate solve uses fresh seeded random streams. }
     function TryReplaceModel(const AName: String; const AModel: TWfcSequenceModel;
       const ASeed: TGraphSeed; var ASequences: TLayerSequences;
-      out AReport: TLayerModelReplacementReport): Boolean;
+      out AReport: TLayerModelReplacementReport;
+      const AProgress: TWorkProgressCallback = nil): Boolean;
     function CopyAccepted: TLayerSequences;
   end;
 
@@ -187,14 +193,14 @@ uses
   SysUtils,
   pythian.audio,
   wfc_sequence_text,
-  wfc_lattice;
+  wfc_lattice,
+  pythian.wfc.progress;
 
 type
   { Call-scoped, never retained by a graph or session. Visits count owned loop
     iterations, not companion internals or estimated overall work. }
-  TLayerPreparation = class
+  TLayerPreparation = class(TWfcSolveProgressBridge)
   private
-    FCallback: TWorkProgressCallback;
     FStage: String;
     FVisits: Int64;
   public
@@ -249,8 +255,7 @@ type
 constructor TLayerPreparation.Create(const ACallback: TWorkProgressCallback;
   const AStage: String);
 begin
-  inherited Create;
-  FCallback := ACallback;
+  inherited Create(ACallback);
   FStage := AStage;
   Checkpoint;
 end;
@@ -304,7 +309,7 @@ begin
   Result := nil;
   if APreparation <> nil then
   begin
-    Result := APreparation.SequenceObserver;
+    Result := APreparation.SequenceObserver();
   end;
 end;
 
@@ -1740,13 +1745,15 @@ begin
 end;
 
 function SolvePreferredLayers(const ALayers: TLearnedLayers; const AGraph: TGraph;
-  const AOptions: TLayerGenerationOptions; out AReport: TGraphNegotiationReport): Boolean;
+  const AOptions: TLayerGenerationOptions; out AReport: TGraphNegotiationReport;
+  const APreparation: TLayerPreparation = nil): Boolean;
 var
   LPreferenceScope: TLayerPreferenceScope;
 begin
   LPreferenceScope := TLayerPreferenceScope.Create(ALayers, AGraph, AOptions);
   try
-    Result := AGraph.TrySolveNegotiated(NegotiationOptions(AOptions), AReport);
+    Result := AGraph.TrySolveNegotiated(NegotiationOptions(AOptions), AReport,
+      WfcSolveObserver(APreparation));
   finally
     LPreferenceScope.Free;
   end;
@@ -1769,7 +1776,7 @@ begin
     { This phase covers preparation. Solving/capture have their own audit;
       its final total does not mean that generation or publication succeeded. }
     LPreparation.Finish;
-    Result := SolvePreferredLayers(ALayers, LGraph, AOptions, AReport);
+    Result := SolvePreferredLayers(ALayers, LGraph, AOptions, AReport, LPreparation);
     if Result then
     begin
       ASequences := CaptureLayers(ALayers, AProjections, AOptions, LGraph);
@@ -2044,18 +2051,26 @@ begin
 end;
 
 function TLearnedLayerSession.TryGenerate(var ASequences: TLayerSequences;
-  out AReport: TGraphNegotiationReport): Boolean;
+  out AReport: TGraphNegotiationReport;
+  const AProgress: TWorkProgressCallback): Boolean;
+var
+  LPreparation: TLayerPreparation;
 begin
   AReport := Default(TGraphNegotiationReport);
   if Length(FAccepted) <> 0 then
   begin
     raise EAudio.Create('Session already has accepted results; use selective regeneration');
   end;
-  Result := SolvePreferredLayers(FLayers, FGraph, FOptions, AReport);
-  if Result then
-  begin
-    AcceptSolved;
-    ASequences := CopyAccepted;
+  LPreparation := TLayerPreparation.Create(AProgress, 'layer_generate_visits');
+  try
+    Result := SolvePreferredLayers(FLayers, FGraph, FOptions, AReport, LPreparation);
+    if Result then
+    begin
+      AcceptSolved;
+      ASequences := CopyAccepted;
+    end;
+  finally
+    LPreparation.Free;
   end;
 end;
 
@@ -2111,30 +2126,39 @@ end;
 
 function TLearnedLayerSession.TryRegenerate(const ARoots: array of String;
   const ASeed: TGraphSeed; var ASequences: TLayerSequences;
-  out AReport: TGraphSelectiveNegotiationReport): Boolean;
+  out AReport: TGraphSelectiveNegotiationReport;
+  const AProgress: TWorkProgressCallback): Boolean;
 var
   LLabels: TGraphPassLabels;
   LPreferenceScope: TLayerPreferenceScope;
+  LPreparation: TLayerPreparation;
 begin
   AReport := Default(TGraphSelectiveNegotiationReport);
-  LLabels := RegenerationRoots(ARoots);
-  FGraph.Seed := ASeed;
-  LPreferenceScope := TLayerPreferenceScope.Create(FLayers, FGraph, FOptions);
+  LPreparation := TLayerPreparation.Create(AProgress, 'layer_regenerate_visits');
   try
-    Result := FGraph.TryRegenerateNegotiatedFrom(LLabels, NegotiationOptions(FOptions), AReport);
+    LLabels := RegenerationRoots(ARoots);
+    FGraph.Seed := ASeed;
+    LPreferenceScope := TLayerPreferenceScope.Create(FLayers, FGraph, FOptions);
+    try
+      Result := FGraph.TryRegenerateNegotiatedFrom(LLabels, NegotiationOptions(FOptions),
+        AReport, LPreparation.SolveObserver());
+    finally
+      LPreferenceScope.Free;
+    end;
+    if Result then
+    begin
+      AcceptSolved;
+      ASequences := CopyAccepted;
+    end;
   finally
-    LPreferenceScope.Free;
-  end;
-  if Result then
-  begin
-    AcceptSolved;
-    ASequences := CopyAccepted;
+    LPreparation.Free;
   end;
 end;
 
 function TLearnedLayerSession.TryReplaceModel(const AName: String;
   const AModel: TWfcSequenceModel; const ASeed: TGraphSeed;
-  var ASequences: TLayerSequences; out AReport: TLayerModelReplacementReport): Boolean;
+  var ASequences: TLayerSequences; out AReport: TLayerModelReplacementReport;
+  const AProgress: TWorkProgressCallback): Boolean;
 var
   LLabels: TGraphPassLabels;
   LRequested: TLearnedLayers;
@@ -2145,82 +2169,88 @@ var
   LOldLayers: TLearnedLayers;
   LIndex: Integer;
   LCell: Integer;
+  LPreparation: TLayerPreparation;
 begin
   AReport := Default(TLayerModelReplacementReport);
   AReport.ReplacedLayerIndex := -1;
-  LLabels := RegenerationRoots([AName]);
-  LIndex := LayerIndex(AName);
-  AReport.ReplacedLayerIndex := LIndex;
-  LRequested := Copy(FLayers);
-  LRequested[LIndex].Model := AModel;
-  { Constructor validates all existing masks/relations against the replacement
-    and detaches every input. No accepted state is mutated before publication. }
-  LCandidate := TLearnedLayerSession.Create(LRequested, FProjections, FNames, FOptions);
+  LPreparation := TLayerPreparation.Create(AProgress, 'layer_replace_visits');
   try
-    LCandidate.FGraph.ResolveRegenerationScope(LLabels, AReport.RootLayerIndices,
-      AReport.AffectedLayerIndices);
-    SetLength(LAffected, Length(FLayers));
-    for LIndex in AReport.AffectedLayerIndices do
-    begin
-      LAffected[LIndex] := True;
-    end;
-    for LIndex := 0 to High(FLayers) do
-    begin
-      if LAffected[LIndex] then
+    LLabels := RegenerationRoots([AName]);
+    LIndex := LayerIndex(AName);
+    AReport.ReplacedLayerIndex := LIndex;
+    LRequested := Copy(FLayers);
+    LRequested[LIndex].Model := AModel;
+    { Constructor validates all existing masks/relations against the replacement
+      and detaches every input. No accepted state is mutated before publication. }
+    LCandidate := TLearnedLayerSession.Create(LRequested, FProjections, FNames, FOptions, AProgress);
+    try
+      LCandidate.FGraph.ResolveRegenerationScope(LLabels, AReport.RootLayerIndices,
+        AReport.AffectedLayerIndices);
+      SetLength(LAffected, Length(FLayers));
+      for LIndex in AReport.AffectedLayerIndices do
       begin
-        Continue;
+        LAffected[LIndex] := True;
       end;
-      SetLength(AReport.PreservedLayerIndices, Length(AReport.PreservedLayerIndices) + 1);
-      AReport.PreservedLayerIndices[High(AReport.PreservedLayerIndices)] := LIndex;
-      for LCell := 0 to High(FAccepted[LIndex].StateIndices) do
+      for LIndex := 0 to High(FLayers) do
       begin
-        { Identical cloned models use identical state keys. Restrict domains,
-          not entry Value: caller-pinned entries would obstruct later edits. }
-        LCandidate.FGraph.PassGraph[LIndex].SetAllowedValues(LCell, 0, 0,
-          [FGraph.PassGraph[LIndex][LCell, 0, 0].Value]);
-      end;
-    end;
-    LCandidate.FGraph.Seed := ASeed;
-    Result := SolvePreferredLayers(LCandidate.FLayers, LCandidate.FGraph,
-      FOptions, AReport.Search);
-    if not Result then
-    begin
-      Exit;
-    end;
-    for LIndex in AReport.PreservedLayerIndices do
-    begin
-      { Restore original domains before capture and future selective solving. }
-      LCandidate.SetConstraints(FNames[LIndex], FLayers[LIndex].Constraints);
-    end;
-    LCandidate.AcceptSolved;
-    for LIndex in AReport.PreservedLayerIndices do
-    begin
-      for LCell := 0 to High(FAccepted[LIndex].StateIndices) do
-      begin
-        if (LCandidate.FAccepted[LIndex].StateIndices[LCell] <>
-          FAccepted[LIndex].StateIndices[LCell]) or
-          (LCandidate.FAccepted[LIndex].Tokens[LCell] <> FAccepted[LIndex].Tokens[LCell]) then
+        if LAffected[LIndex] then
         begin
-          raise EAudio.Create('Model replacement changed an independent accepted layer');
+          Continue;
+        end;
+        SetLength(AReport.PreservedLayerIndices, Length(AReport.PreservedLayerIndices) + 1);
+        AReport.PreservedLayerIndices[High(AReport.PreservedLayerIndices)] := LIndex;
+        for LCell := 0 to High(FAccepted[LIndex].StateIndices) do
+        begin
+          { Identical cloned models use identical state keys. Restrict domains,
+            not entry Value: caller-pinned entries would obstruct later edits. }
+          LCandidate.FGraph.PassGraph[LIndex].SetAllowedValues(LCell, 0, 0,
+            [FGraph.PassGraph[LIndex][LCell, 0, 0].Value]);
         end;
       end;
+      LCandidate.FGraph.Seed := ASeed;
+      Result := SolvePreferredLayers(LCandidate.FLayers, LCandidate.FGraph,
+        FOptions, AReport.Search, LPreparation);
+      if not Result then
+      begin
+        Exit;
+      end;
+      for LIndex in AReport.PreservedLayerIndices do
+      begin
+        { Restore original domains before capture and future selective solving. }
+        LCandidate.SetConstraints(FNames[LIndex], FLayers[LIndex].Constraints, AProgress);
+      end;
+      LCandidate.AcceptSolved;
+      for LIndex in AReport.PreservedLayerIndices do
+      begin
+        for LCell := 0 to High(FAccepted[LIndex].StateIndices) do
+        begin
+          if (LCandidate.FAccepted[LIndex].StateIndices[LCell] <>
+            FAccepted[LIndex].StateIndices[LCell]) or
+            (LCandidate.FAccepted[LIndex].Tokens[LCell] <> FAccepted[LIndex].Tokens[LCell]) then
+          begin
+            raise EAudio.Create('Model replacement changed an independent accepted layer');
+          end;
+        end;
+      end;
+      LPublished := LCandidate.CopyAccepted;
+      { All validation/allocation is finished. Transfer owned graphs/models;
+        destroying the candidate releases the old session state after publication. }
+      LOldGraph := FGraph;
+      FGraph := LCandidate.FGraph;
+      LCandidate.FGraph := LOldGraph;
+      LOldLayers := FLayers;
+      FLayers := LCandidate.FLayers;
+      LCandidate.FLayers := LOldLayers;
+      FBaseline := LCandidate.FBaseline;
+      FHasBaseline := LCandidate.FHasBaseline;
+      FDirty := LCandidate.FDirty;
+      FAccepted := LCandidate.FAccepted;
+      ASequences := LPublished;
+    finally
+      LCandidate.Free;
     end;
-    LPublished := LCandidate.CopyAccepted;
-    { All validation/allocation is finished. Transfer owned graphs/models;
-      destroying the candidate releases the old session state after publication. }
-    LOldGraph := FGraph;
-    FGraph := LCandidate.FGraph;
-    LCandidate.FGraph := LOldGraph;
-    LOldLayers := FLayers;
-    FLayers := LCandidate.FLayers;
-    LCandidate.FLayers := LOldLayers;
-    FBaseline := LCandidate.FBaseline;
-    FHasBaseline := LCandidate.FHasBaseline;
-    FDirty := LCandidate.FDirty;
-    FAccepted := LCandidate.FAccepted;
-    ASequences := LPublished;
   finally
-    LCandidate.Free;
+    LPreparation.Free;
   end;
 end;
 

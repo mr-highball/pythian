@@ -100,15 +100,21 @@ type
     procedure SetConstraints(const AName: String;
       const AMask: TWfcSequenceTokenConstraints);
     function CopyAccepted: TLayerSequences;
+    { Borrowed only during the call. Shared solve phases preserve their own work
+      and pass counts; provider admission and private replacement preparation can
+      report separately. Capture/publication is not a solve-progress percentage. }
     function TryGenerate(var ASequences: TLayerSequences;
-      out AReport: TGraphNegotiationReport): Boolean;
+      out AReport: TGraphNegotiationReport;
+      const AProgress: TWorkProgressCallback = nil): Boolean;
     function TryRegenerate(const ARoots: array of String; const ASeed: TGraphSeed;
-      var ASequences: TLayerSequences; out AReport: TGraphSelectiveNegotiationReport): Boolean;
+      var ASequences: TLayerSequences; out AReport: TGraphSelectiveNegotiationReport;
+      const AProgress: TWorkProgressCallback = nil): Boolean;
     function TryReplaceProvider(const AName: String; const AModel: TWfcSequenceModel;
       const AContract: TProviderContract; const ASeed: TGraphSeed;
       var ASequences: TLayerSequences; out AReport: TLayerModelReplacementReport;
       const ARegistry: TProviderCodecRegistry = nil;
-      const AAdmission: TProviderCodecAdmission = nil): Boolean;
+      const AAdmission: TProviderCodecAdmission = nil;
+      const AProgress: TWorkProgressCallback = nil): Boolean;
   end;
 
 function ProviderUnknownPolicy(const AVocabulary: TStyleProviderVocabulary): String;
@@ -669,23 +675,26 @@ begin
 end;
 
 function TCompatibleProviderSession.TryGenerate(var ASequences: TLayerSequences;
-  out AReport: TGraphNegotiationReport): Boolean;
+  out AReport: TGraphNegotiationReport;
+  const AProgress: TWorkProgressCallback): Boolean;
 begin
-  Result := FSession.TryGenerate(ASequences, AReport);
+  Result := FSession.TryGenerate(ASequences, AReport, AProgress);
 end;
 
 function TCompatibleProviderSession.TryRegenerate(const ARoots: array of String;
   const ASeed: TGraphSeed; var ASequences: TLayerSequences;
-  out AReport: TGraphSelectiveNegotiationReport): Boolean;
+  out AReport: TGraphSelectiveNegotiationReport;
+  const AProgress: TWorkProgressCallback): Boolean;
 begin
-  Result := FSession.TryRegenerate(ARoots, ASeed, ASequences, AReport);
+  Result := FSession.TryRegenerate(ARoots, ASeed, ASequences, AReport, AProgress);
 end;
 
 function TCompatibleProviderSession.TryReplaceProvider(const AName: String;
   const AModel: TWfcSequenceModel; const AContract: TProviderContract;
   const ASeed: TGraphSeed; var ASequences: TLayerSequences;
   out AReport: TLayerModelReplacementReport;
-  const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission): Boolean;
+  const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission;
+  const AProgress: TWorkProgressCallback): Boolean;
 var
   LIndex: Integer;
   LContract: TProviderContract;
@@ -694,10 +703,10 @@ begin
   AReport := Default(TLayerModelReplacementReport);
   AReport.ReplacedLayerIndex := -1;
   LIndex := IndexOf(AName);
-  LChoices := AdmitProviderContract(AModel, AContract, ARegistry, AAdmission);
-  RequireCompatibleProvider(FContracts[LIndex], AContract);
+  LChoices := AdmitProviderContract(AModel, AContract, ARegistry, AAdmission, AProgress);
+  RequireCompatibleProvider(FContracts[LIndex], AContract, AProgress);
   LContract := CopyProviderContract(AContract);
-  Result := FSession.TryReplaceModel(AName, AModel, ASeed, ASequences, AReport);
+  Result := FSession.TryReplaceModel(AName, AModel, ASeed, ASequences, AReport, AProgress);
   if Result then
   begin
     FContracts[LIndex] := LContract;

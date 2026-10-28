@@ -40,7 +40,7 @@ Studio callers, plus existing streaming, inference and library contracts.
 | Retained corpus archive and WFC model validation | Actual feature/attachment/hash bytes and owned lookup/state/token validation are observable through the native archive operator | [observability_05 — DONE](TODO/DONE/NS-6_observability_05.md); synchronous residuals below |
 | WFC chord composition planning | Actual compatibility checks and target visits, unknown traversal total until counted; prior caller output preserved on abort | [observability_06 — DONE](TODO/DONE/NS-6_observability_06.md) |
 | Provider admission, registry and compatible-session preparation | Optional callbacks reach source grids, choice decoding/validation, registry searches, configuration comparisons and actual capacity scans, through the semantic consumer | [observability_04](TODO/NS-6_observability_04.md); provider CI456 and context CI458 components qualified. Later replacement/generation, batch and inference reporting remain open |
-| Retained style distributions/cards and native asset comparison | Optional callbacks reach actual bins/counts/normalization, bindings/traits, JSON scanning/value visits, emitted bytes/items and primary asset hashing | Shared JSON/text accepted at `1ed5e34`/CI460; [bulk publication](TODO/DONE/NS-6_serialization_01.md) accepted at `ae91789`/CI461 with extracted consumers. Final shrink/join/copy remain synchronous; [decoder storage](TODO/DONE/NS-6_json-text_02.md) remains open |
+| Retained style distributions/cards and native asset comparison | Optional callbacks reach actual bins/counts/normalization, bindings/traits, JSON scanning/value visits, emitted bytes/items and primary asset hashing | Shared JSON/text accepted at `1ed5e34`/CI460; [bulk publication](TODO/DONE/NS-6_serialization_01.md) accepted at `ae91789`/CI461 with extracted consumers. Final shrink/join/copy remain synchronous; [decoder storage](TODO/DONE/NS-6_json-text_02.md) accepted at `1c52398`/CI462 |
 | Primary analysis in pas2js | Full callback consumer executes shared primary algorithms; optional timer adapter yields between bounded WAV analysis batches | [portability_01 — DONE](TODO/DONE/NS-6_portability_01.md); actual browser presentation and WASM remain unqualified |
 | Primary synthesis in pas2js | Actual shared synth/instrument/note/chord/grain cases execute with measured callbacks, abort/retry and exact supported clocks | [portability_03 — DONE](TODO/DONE/NS-6_portability_03.md), [timing repair — DONE](TODO/DONE/NS-6_portability_04.md); synchronous Node consumers, no browser/WASM claim |
 
@@ -75,6 +75,30 @@ pending constraints are published. This does not instrument model application,
 public domain extraction, solving or capture, and promises no callback latency
 bound, browser yield or whole-operation completion percentage.
 
+## Generic WFC solve observation candidate — 2026-10-28
+
+[Task14](TODO/NS-6_observability_14.md) follows a demonstrated generic gap:
+WFC's diagnostic trace receiver contains exceptions and cannot cancel a solve.
+Big Boss's separate `codex/pythian-solve-progress` branch adds a distinct optional
+work observer to normal, negotiated, restarted and selective generation. Preserve
+its independent trace contract and original search/budget policy. Candidate pin
+29182bb awaits [upstream CI53](https://github.com/mr-highball/wfc/actions/runs/40725260596);
+CI52's static package-order rejection remains evidence, with a checked repair.
+
+The one shared `pythian.wfc.progress` bridge maps companion prepare/search/commit
+visits into primary work records. Pipeline Pass0 and one-based layer Pass1..N
+retain actual scope; unknown totals stay0. Acoustic token/index generation,
+finite layered generation and retained generation/regeneration/replacement reuse
+that bridge. The maintained caller-provider example forwards it to native
+console reporting. Borrowed callbacks do not remain in accepted sessions.
+
+Generic final callbacks are inside WFC's rollback guard, before graph acceptance.
+Pythian capture/copy and other publication remain separate synchronous boundaries;
+private replacement preparation may report later work before its own final swap.
+These counts are not overall success, estimated percentages or millisecond
+latency promises. Retained generation/capture, streams/voices, batch and
+inference/operator residuals remain task04 obligations. No actual browser,
+physical listening or musical acceptance follows from the generic work API.
 ## Shared callback contract
 
 [`pythian.progress`](../src/pythian.progress.pas) defines `TWorkProgress`:

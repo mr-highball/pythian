@@ -12,6 +12,66 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Shared solve observation integrated as a candidate — 2026-10-28
+
+Big Boss's separate WFC branch publishes29182bb after the retained CI52 package-
+order rejection. Actual native manifest checking passes97 source units in all
+three definitions. CI53's actual pas2js/browser and development-FPC jobs pass;
+the stable matrix is still live. Generic local Win32/Win64/actual pas2js each
+pass44807 checks/56 original abort-retries; true nonlinear restart/negotiation
+hashes remain36DF8F92/6F76591D. Twelve old-pin/current replay cases are byte-exact.
+The source is an explicit candidate gitlink, with no upstream branch merge.
+
+Pythian now uses one companion-to-primary progress bridge for token/index and
+finite/retained layered generation, regeneration and model replacement. Counts
+retain phase/pass and unknown totals. The maintained caller-provider consumer
+forwards progress; four generated WAV/style artifacts match the prior accepted
+package exactly. Checked Win32/Win64 each pass466607 checks/149 abort-retries,
+131870 callbacks including122281 solve callbacks, with zero leaks. Actual native
+and pas2js direct consumers each pass5630/12/2016 and match all128 token/index
+cells exactly (3079 replay-text characters). Portable execution first exposed a
+parameterless callback-factory ambiguity that native compilation/execution missed;
+explicit Pascal invocation repairs the shared bridge and analogous layer helpers.
+The initial failure is preserved. No generated JavaScript implementation was edited.
+
+Task14 remains open for published downstream integration/extracted consumers and
+terminal upstream validation. Capture/copy, later native/stream/voice consumers,
+batch and inference/operator coverage remain parent04 obligations; do not infer
+an actual Studio/browser or musical pass. No service, firewall, private source,
+answer or scientific policy changed. Entry delivery nonclosing0 is unchanged
+while this batch awaits its gates. Counts53 open/79 DONE/132 total, NS6 15 open;
+52.45/47.55 unchanged. Goal active, Big Boss solo.
+## Generic solve cancellation prerequisite selected — 2026-10-28
+
+Previous goal turn is a read-only firewall audit, with no product closure. Existing
+fixed-slot approvals/instructions are verified; the separate administrator QA
+repair remains pending and is not re-requested. Root is clean at published
+27757ee before this batch. Big Boss remains solo. Delivery nonclosing enters0
+from decoder-storage acceptance; scientific stopped-family counters are unchanged.
+
+Recheck least-complete NS5 before choosing work. Full vocabulary still needs
+verified musical references and accepted automatic context. NS2 caller extension
+still needs actual outside-consumer/listening evidence; agent-authored consumption
+cannot replace it. Native live queue readback finds the short After preference
+retained and the 4:16 repetition request still revision0. No new response, source
+acquisition, segmentation queue or scientific variant is selected.
+
+Task04's retained generation needs a real generic cancellation boundary. A pinned
+public WFC probe throws from BeginTrace yet returns solved=True, aborted=False,
+failed trace delivery and committed `a`, with zero leaks. That is its documented
+trace behavior, not a trace bug. The separate expansion checkout has no solver
+work observer. Create [task14](TODO/NS-6_observability_14.md) as a zero-credit
+prerequisite and notify the user of separate branch codex/pythian-solve-progress,
+starting from reviewed WFC6b419e6. No dependency source is edited here and the
+unrelated expansion checkout remains intact.
+
+Criterion AC1–3: optional primary solve progress/cancellation, preserved accepted
+state and exact deterministic replay/retry. Closing evidence requires native and
+actual pas2js abort/replay, upstream validation and an actual downstream layer
+consumer/core isolation. Stop on changed search/budget policy, swallowed aborts,
+postcommit callbacks or another distinct prerequisite. Counts53 open/79 DONE/132
+total, NS6 15 open;52.45/47.55 unchanged. A new task/branch resets no counter.
+
 ## Portable JSON decoder storage accepted - 2026-10-28
 
 Big Boss confirms exact published source `1c5239861fd5a779a4334e0e235c22d18a2f9efd`

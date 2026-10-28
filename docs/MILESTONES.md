@@ -5,12 +5,14 @@
 
 ## North-star assessment
 
+A demonstrated generic solver-cancellation prerequisite is tracked in [observability14](TODO/NS-6_observability_14.md), with a separate WFC branch. It adds zero credit and preserves all musical/parent acceptance gates.
+
 Updated **2026-10-28** on the user-authorized 2026-09-29 credit basis:
 [Owned layer construction](TODO/DONE/NS-6_observability_11.md) is accepted at
 `be34725` after checked native consumers, exact prior state/audio artifacts and
 [Ubuntu run454](https://github.com/mr-highball/pythian/actions/runs/40604981876),
-including both extracted packages. Current counts are **52 open / 79 DONE,
-131 total**, NS-6 14 open; completion remains **100/90/25/70/14/54**, **52.45/47.55**.
+including both extracted packages. Current counts are **53 open / 79 DONE,
+132 total**, NS-6 15 open; completion remains **100/90/25/70/14/54**, **52.45/47.55**.
 [Generic WFC bulk preparation](TODO/DONE/NS-6_observability_12.md) is accepted at
 Pythian `573103e` with explicit WFC pin `d1c1c81`, checked replay/abort consumers,
 terminal five-job upstream CI50 and Ubuntu integration/extracted consumers in

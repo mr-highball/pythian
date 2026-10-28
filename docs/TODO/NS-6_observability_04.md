@@ -37,6 +37,10 @@ boundaries. Portable decoder storage is now qualified at `1c52398`/Ubuntu CI462;
 whole AC2 stays open for other retained metadata/graph/publication work.
 
 Whole AC1 stays open for later provider/session replacement, generation and capture.
+The demonstrated generic solve cancellation gap is owned by
+[observability_14](NS-6_observability_14.md) in the separate WFC repository.
+Its trace sink deliberately contains receiver failures; wrapper callbacks do not
+provide interior cancellation or certify atomic accepted generation.
 AC2 batch evaluation and AC3 inference/operator reporting remain required. These
 component qualifications close neither this parent nor musical acceptance and
 earn no additional credit. The actual hash criterion closure resets the delivery
@@ -67,6 +71,8 @@ Naming a task or narrowing a component does not reset that count.
 
 **Blockers**
 
+- [Generic WFC solving](NS-6_observability_14.md) — required for cancellable
+  retained generation; independent batch/inference work can proceed separately.
 - [Shared callbacks and audit — DONE](DONE/NS-6_observability_01.md).
 - [Provider/context metadata reuse — DONE](DONE/NS-6_metadata_01.md).
 - [Layer request/graph preparation — DONE](DONE/NS-6_observability_11.md).

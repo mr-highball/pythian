@@ -30,6 +30,7 @@ interface
 
 uses
   pythian.learning,
+  pythian.progress,
   wfc,
   wfc_model,
   wfc_sequence;
@@ -54,22 +55,28 @@ type
 function DefaultAcousticGenerationOptions: TAcousticGenerationOptions;
 { The model is borrowed. Constraints use actual WFC token/position semantics.
   Failure preserves AIndices; AReport distinguishes contradiction from exhausted
-  backtracking. Invalid requests raise before publishing any output. }
+  backtracking. Invalid requests raise before publishing any output. Optional
+  borrowed progress reaches primary WFC preparation/search/guarded commit work.
+  Observer cancellation preserves caller output. Graph setup and later capture
+  remain synchronous; solve completion does not certify output publication. }
 function TryGenerateAcousticSequence(const AModel: TWfcSequenceModel;
   const AOptions: TAcousticGenerationOptions;
   const AConstraints: TWfcSequenceTokenConstraints;
-  var AIndices: TAcousticIndices; out AReport: TGraphSolveReport): Boolean;
+  var AIndices: TAcousticIndices; out AReport: TGraphSolveReport;
+  const AProgress: TWorkProgressCallback = nil): Boolean;
 
 function TryGenerateTokenSequence(const AModel: TWfcSequenceModel;
   const AOptions: TAcousticGenerationOptions;
   const AConstraints: TWfcSequenceTokenConstraints;
-  var ATokens: TWfcModelTokens; out AReport: TGraphSolveReport): Boolean;
+  var ATokens: TWfcModelTokens; out AReport: TGraphSolveReport;
+  const AProgress: TWorkProgressCallback = nil): Boolean;
 
 implementation
 
 uses
   pythian.audio,
   pythian.wfc.learning,
+  pythian.wfc.progress,
   wfc_sequence_graph;
 
 function DefaultAcousticGenerationOptions: TAcousticGenerationOptions;
@@ -84,13 +91,15 @@ end;
 function TryGenerateTokenSequence(const AModel: TWfcSequenceModel;
   const AOptions: TAcousticGenerationOptions;
   const AConstraints: TWfcSequenceTokenConstraints;
-  var ATokens: TWfcModelTokens; out AReport: TGraphSolveReport): Boolean;
+  var ATokens: TWfcModelTokens; out AReport: TGraphSolveReport;
+  const AProgress: TWorkProgressCallback): Boolean;
 var
   LGraph: TGraph;
   LSolveOptions: TGraphSolveOptions;
   LGenerated: TWfcGeneratedSequence;
   LValidation: TWfcSequenceGraphValidationReport;
   LFalsePosition: Integer;
+  LProgress: TWfcSolveProgressBridge;
 begin
   if AModel = nil then
   begin
@@ -118,7 +127,12 @@ begin
     raise EAudio.Create('Too many acoustic position constraints');
   end;
   LGraph := TGraph.Create;
+  LProgress := nil;
   try
+    if Assigned(AProgress) then
+    begin
+      LProgress := TWfcSolveProgressBridge.Create(AProgress);
+    end;
     LGraph.Reshape(AOptions.FrameCount, 1, 1);
     LGraph.WrapNeighbors := AOptions.Extent = wseWrap;
     LGraph.Seed := AOptions.Seed;
@@ -126,7 +140,7 @@ begin
     IntersectSequenceTokenConstraints(AModel, LGraph, AConstraints);
     LSolveOptions := DefaultGraphSolveOptions;
     LSolveOptions.MaxBacktracks := AOptions.MaxBacktracks;
-    Result := LGraph.TrySolve(LSolveOptions, AReport);
+    Result := LGraph.TrySolve(LSolveOptions, AReport, WfcSolveObserver(LProgress));
     if not Result then
     begin
       Exit;
@@ -143,6 +157,7 @@ begin
     end;
     ATokens := Copy(LGenerated.Tokens);
   finally
+    LProgress.Free;
     LGraph.Free;
   end;
 end;
@@ -150,7 +165,8 @@ end;
 function TryGenerateAcousticSequence(const AModel: TWfcSequenceModel;
   const AOptions: TAcousticGenerationOptions;
   const AConstraints: TWfcSequenceTokenConstraints;
-  var AIndices: TAcousticIndices; out AReport: TGraphSolveReport): Boolean;
+  var AIndices: TAcousticIndices; out AReport: TGraphSolveReport;
+  const AProgress: TWorkProgressCallback): Boolean;
 var
   LTokens: TWfcModelTokens;
   LIndices: TAcousticIndices;
@@ -164,7 +180,7 @@ begin
   begin
     AcousticTokenIndex(AModel.PublicTokenAt(LIndex));
   end;
-  Result := TryGenerateTokenSequence(AModel, AOptions, AConstraints, LTokens, AReport);
+  Result := TryGenerateTokenSequence(AModel, AOptions, AConstraints, LTokens, AReport, AProgress);
   if not Result then
   begin
     Exit;

@@ -201,7 +201,7 @@ begin
       LCodec.Free;
     end;
     LSequences := nil;
-    if not LSession.TryGenerate(LSequences, LReport) then
+    if not LSession.TryGenerate(LSequences, LReport, LProgress.Observe) then
     begin
       raise EAudio.Create('Dependent harmonic WFC generation failed');
     end;
