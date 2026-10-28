@@ -28,7 +28,7 @@ unit pythian.wfc.progress;
 
 interface
 
-uses pythian.progress, wfc_solve_progress, wfc_sequence;
+uses pythian.progress, wfc_solve_progress, wfc_sequence, wfc_preparation;
 
 type
   { A call-scoped borrowed observer adapter. It owns no graph and preserves the
@@ -41,16 +41,20 @@ type
   private
     procedure ObserveSolve(const AWork: TWfcSolveProgress);
     procedure ObserveSequenceWork(const AWork: TWfcSequencePreparationProgress);
+    procedure ObservePreparationWork(const AWork: TWfcPreparationProgress);
   public
     constructor Create(const ACallback: TWorkProgressCallback;
       const ASequencePass: Integer = 0);
     function SolveObserver: TWfcSolveObserver;
     function SequenceWorkObserver: TWfcSequencePreparationObserver;
+    function PreparationWorkObserver: TWfcPreparationObserver;
   end;
 
 function WfcSolveObserver(const ABridge: TWfcSolveProgressBridge): TWfcSolveObserver;
 function WfcSequenceWorkObserver(const ABridge: TWfcSolveProgressBridge):
   TWfcSequencePreparationObserver;
+function WfcPreparationWorkObserver(const ABridge: TWfcSolveProgressBridge):
+  TWfcPreparationObserver;
 
 implementation
 
@@ -131,6 +135,32 @@ begin
   if Assigned(FCallback) then
   begin
     Result := ObserveSequenceWork;
+  end;
+end;
+
+procedure TWfcSolveProgressBridge.ObservePreparationWork(
+  const AWork: TWfcPreparationProgress);
+begin
+  ReportWork(FCallback, 'wfc_' + AWork.Stage, wuItems, AWork.Done,
+    AWork.Total, AWork.PassIndex + 1);
+end;
+
+function TWfcSolveProgressBridge.PreparationWorkObserver: TWfcPreparationObserver;
+begin
+  Result := nil;
+  if Assigned(FCallback) then
+  begin
+    Result := ObservePreparationWork;
+  end;
+end;
+
+function WfcPreparationWorkObserver(const ABridge: TWfcSolveProgressBridge):
+  TWfcPreparationObserver;
+begin
+  Result := nil;
+  if ABridge <> nil then
+  begin
+    Result := ABridge.PreparationWorkObserver();
   end;
 end;
 

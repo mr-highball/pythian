@@ -683,6 +683,14 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Finite sequence capture progress compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.sequence.capture.progress$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Finite sequence capture progress and cancellation checks failed' }
+    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.voice.preparation.progress.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Named voice preparation progress compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.voice.preparation.progress$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Named voice preparation cancellation and replay checks failed' }
+    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.provider.utf8.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Provider UTF-8 byte validation compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.provider.utf8$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Provider UTF-8 byte validation checks failed' }
     & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.provider.progress.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Provider progress compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.provider.progress$executableSuffix")

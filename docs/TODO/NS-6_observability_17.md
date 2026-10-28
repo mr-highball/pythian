@@ -11,10 +11,10 @@ Pythian retained owner from using its existing guarded-commit publication hook.
 Do not copy musical proof or builder logic into an audio adapter, hide opaque
 work behind a wrapper callback, or publish after accepting a live graph.
 
-Execution status: demonstrated prerequisite, ready after the recorded two-batch
-reassessment and exact layer CI468 qualification. Next deliverable: optional borrowed generic voice
-work observation and a caller-selected graph subclass boundary, on a new branch
-in the separate WFC repository. Closing evidence: actual native/portable
+Execution status: upstream candidate qualified at WFCc4e7569/CI56; actual Pythian
+portable/extracted qualification remains blocked by linked portability07/08/09.
+The recorded two-batch reassessment selected this real prerequisite. Next
+deliverable: qualify the candidate through actual Pythian consumers. Closing evidence: actual native/portable
 build/proof/capture abort and replay, original exception identity, private managed
 publication and current upstream/downstream consumers. Stop on altered musical
 semantics, changed budgets/search, partial publication or another required gap.
@@ -49,10 +49,26 @@ operator forwarding remain parent04; no musical acceptance follows here.
 
 **Blockers**
 
+- [Caller-codec portable UTF-8 bytes](NS-6_portability_07.md) — actual downstream
+  pas2js compile rejects native Move; preserve this prerequisite and resume here.
 - [Generic sequence capture observation — DONE](DONE/NS-6_observability_16.md).
 - [Generic solve observation — DONE](DONE/NS-6_observability_14.md).
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss candidate: separate WFCc4e7569 passes exact
+  [CI56](https://github.com/mr-highball/wfc/actions/runs/40776021527), all five
+  jobs, terminal24m35s and actual browser13m32s. Generic native/actual portable
+  abort/proof/replay, package98-unit closure and frozen three-seed outputs pass.
+  Pythian explicitly selects the reviewed candidate and forwards generic work
+  through named-voice construction with call-scoped lifetime. Native Win32/Win64
+  consumer passes13939 checks/10 original abort-retries, zero leaks, including
+  actual model/pass scope and retained-owner preservation. Preserve the first
+  fixture's wrong short-scan interior expectation and its repair to an emitted
+  point. Actual pas2js exposes linked07/08/09, so downstream acceptance and pin
+  remain open. Follow09 before further voice expansion; retained generation,
+  preferences/publication and operator forwarding remain parent04. No credit
+  or delivery-count reset follows upstream success alone.
 
 - 2026-10-28, Big Boss: exact layer CI468 is terminal Success, integration13m42s
   and extracted consumers44s. The layer component and audit close no whole parent

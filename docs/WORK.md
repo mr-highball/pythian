@@ -12,6 +12,49 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Voice candidate and actual portable prerequisites — 2026-10-28
+
+Big Boss works solo. Separate WFC branch codex/pythian-voice-progress publishes
+c4e7569f277476a3b19941b13176ec39a120a198 from reviewedf85d733, with operator
+notification before edits. Exact [CI56](https://github.com/mr-highball/wfc/actions/runs/40776021527)
+is terminal Success24m35s, all five jobs, including actual browser13m32s and
+development12m18s. The branch remains unmerged; unrelated expansion is untouched.
+Generic native/actual portable capture/proof cancellation and graph subclass
+checks pass; the three-seed frozen/native/portable replay and98-unit package
+inventory pass. This is upstream qualification, not accepted Pythian integration.
+
+Pythian explicitly selects that reviewed candidate gitlink. Named-voice
+construction forwards generic/capacity/provider work through the shared primary
+bridge, reports actual model copies/source-domain snapshots and runs readiness
+before returning. No observer is retained; failed construction releases its
+private session and preserves caller models/accepted owner. Win32/Win64 pass
+13939 checks/10 original abort-retries, zero leaks. Retained generation,
+preferences/publication and operator forwarding remain parent04.
+
+Actual portable compilation exposes linked prerequisites before more voice scope:
+[UTF-8 bytes07](TODO/NS-6_portability_07.md), [tempo binary08](TODO/NS-6_portability_08.md),
+then [retained archives09](TODO/NS-6_portability_09.md). Shared UTF-8 validation
+removes native Move and reuses the primary decoder:340checks/3 original aborts/
+178callbacks pass on Win32/Win64 and actual pas2js. Original native caller231
+and scalar73/portable65 pass. Tempo fields reuse pythian.binary; native and actual
+pas2js preserve the frozen263-byte artifact and SHA256b46b93a0a903db930cc06e91c04f385b32b87b987114b095a351f538af0c5040.
+
+Preserve rejected guard-layout/proof scope upstream, the native fixture's wrong
+short-scan checkpoint, portable Move/transitive token-type failures and native-only
+test wrapper rejections. Primary fixes preserve rules, budgets, random draws,
+canonical bytes and scientific policy. Full portable voice compile still rejects
+context archive's assumed UTF8String; read-only inspection also finds native
+text/digest copies and style stream/Memory assumptions. Task09 is scoped before
+archive edits. No complete portable voice acceptance is claimed.
+
+Task17 and07/08/09 remain open pending full portable, exact published integration
+and extracted consumers. Counts56 open/82 DONE/138 total, NS6 18 open;
+completion52.45/47.55 and delivery entry2 are unchanged. Follow09 as the actual
+prerequisite; no renamed experiment, source/answer change or scientific reset.
+Evidence uses dedicated E-drive wfc-voice-progress-20261028-boss and
+voice-integration-20261028-boss build/tests/runs roots. No service/firewall,
+private recording, operator response or QA browser/audio process is changed.
+
 ## Layer component qualified and two-batch reassessment — 2026-10-28
 
 Big Boss follows exact CI468/job123088311149 to terminal Success14m48s at source

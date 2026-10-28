@@ -88,6 +88,7 @@ implementation
 uses
   SysUtils,
   pythian.hash,
+  pythian.binary,
   pythian.time;
 
 const
@@ -215,20 +216,17 @@ begin
 end;
 
 procedure Put32(var ABytes: TAudioBytes; var APos: Integer; const AValue: Cardinal);
-var I: Integer;
 begin
-  for I := 0 to 3 do ABytes[APos + I] := (AValue shr (8 * I)) and $FF;
+  WriteUInt32LE(ABytes, APos, AValue);
   Inc(APos, 4);
 end;
 
 function Get32(const ABytes: TAudioBytes; var APos: Integer;
   const ALimit: Integer): Cardinal;
-var I: Integer;
 begin
   if (APos < 0) or (APos > ALimit - 4) then
     raise EAudio.Create('Tempo evidence field truncated');
-  Result := 0;
-  for I := 0 to 3 do Result := Result or (Cardinal(ABytes[APos + I]) shl (8 * I));
+  Result := ReadUInt32LE(ABytes, APos);
   Inc(APos, 4);
 end;
 
@@ -285,7 +283,7 @@ begin
   SetLength(Result, BodyBytes);
   Digest := Sha256Bytes(Result);
   SetLength(Result, BodyBytes + 64);
-  Move(Digest[1], Result[BodyBytes], 64);
+  for I := 1 to 64 do Result[BodyBytes + I - 1] := Ord(Digest[I]);
 end;
 
 function DecodeTempoEvidence(const ABytes: TAudioBytes): TTempoEvidence;
@@ -298,8 +296,7 @@ begin
     (Length(ABytes) > MaximumTempoEvidenceBytes) then
     raise EAudio.Create('Tempo evidence byte budget or minimum length is invalid');
   BodyBytes := Length(ABytes) - 64;
-  SetLength(Body, BodyBytes);
-  Move(ABytes[0], Body[0], BodyBytes);
+  Body := Copy(ABytes, 0, BodyBytes);
   Digest := Sha256Bytes(Body);
   for I := 1 to 64 do if ABytes[BodyBytes + I - 1] <> Ord(Digest[I]) then
     raise EAudio.Create('Tempo evidence SHA-256 mismatch');

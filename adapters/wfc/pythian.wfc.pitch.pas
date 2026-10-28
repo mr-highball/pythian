@@ -33,6 +33,7 @@ uses
   pythian.progress,
   pythian.pitch,
   pythian.pitch.track,
+  wfc_model,
   wfc_sequence;
 
 type
@@ -50,9 +51,9 @@ type
     Level: Integer; { 0 = no onset, 1..4 = intensity band, 5 = onset without intensity. }
   end;
 
-function PitchNoteToken(const ANote: Integer): UTF8String;
-function PitchDurationToken(const ACell: TPitchDurationCell): UTF8String;
-function DecodePitchDurationToken(const AToken: UTF8String): TPitchDurationCell;
+function PitchNoteToken(const ANote: Integer): TWfcModelToken;
+function PitchDurationToken(const ACell: TPitchDurationCell): TWfcModelToken;
+function DecodePitchDurationToken(const AToken: TWfcModelToken): TPitchDurationCell;
 { Progress reports raw visited cells/spans separately from weighted sample
   observations. Totals are unknown until the corresponding pass completes.
   Generic WFC learning remains synchronous. }
@@ -62,9 +63,9 @@ function LearnPitchDurationModel(const ATracks: TMeasuredPitchTracks;
 function LearnPitchDurationModel(const ATracks: TTimedPitchTracks;
   const AWeights: array of Integer; const AOrder: Integer = 2;
   const AProgress: TWorkProgressCallback = nil): TWfcSequenceModel; overload;
-function DecodePitchNoteToken(const AToken: UTF8String): Integer;
-function PitchRhythmToken(const ANote, ALevel: Integer): UTF8String;
-function DecodePitchRhythmToken(const AToken: UTF8String): TPitchRhythmCell;
+function DecodePitchNoteToken(const AToken: TWfcModelToken): Integer;
+function PitchRhythmToken(const ANote, ALevel: Integer): TWfcModelToken;
+function DecodePitchRhythmToken(const AToken: TWfcModelToken): TPitchRhythmCell;
 function LearnPitchRhythmModel(const ATracks: TPitchTracks;
   const APatterns: TPitchRhythmPatterns; const AWeights: array of Integer;
   const AOrder: Integer = 2; const AProgress: TWorkProgressCallback = nil): TWfcSequenceModel;
@@ -79,7 +80,6 @@ implementation
 uses
   SysUtils,
   pythian.audio,
-  wfc_model,
   wfc_sequence_learn;
 
 const
@@ -87,7 +87,7 @@ const
   PitchPrefix = 'pythian.pitch.midi.v1.';
   PitchRhythmPrefix = 'pythian.pitch.rhythm.v1.';
 
-function PitchDurationToken(const ACell: TPitchDurationCell): UTF8String;
+function PitchDurationToken(const ACell: TPitchDurationCell): TWfcModelToken;
 begin
   if not (ACell.Kind in [pskPitch, pskSilence, pskUnknown]) or
     (ACell.Duration < 1) or (ACell.Duration > 1048576) then
@@ -102,11 +102,11 @@ begin
   begin
     raise EAudio.Create('Silence and unknown spans must not claim a pitch');
   end;
-  Result := PitchDurationPrefix + UTF8String(IntToStr(Ord(ACell.Kind)) + '.' +
+  Result := PitchDurationPrefix + TWfcModelToken(IntToStr(Ord(ACell.Kind)) + '.' +
     IntToStr(ACell.Note) + '.' + IntToStr(ACell.Duration));
 end;
 
-function DecodePitchDurationToken(const AToken: UTF8String): TPitchDurationCell;
+function DecodePitchDurationToken(const AToken: TWfcModelToken): TPitchDurationCell;
 var
   LSuffix: String;
   LDot: Integer;
@@ -286,16 +286,16 @@ begin
   Result := LearnSequenceModelCorpus(LSamples, AOrder);
 end;
 
-function PitchNoteToken(const ANote: Integer): UTF8String;
+function PitchNoteToken(const ANote: Integer): TWfcModelToken;
 begin
   if (ANote < 0) or (ANote > 127) then
   begin
     raise EAudio.Create('Pitch token requires an admitted MIDI note');
   end;
-  Result := PitchPrefix + UTF8String(IntToStr(ANote));
+  Result := PitchPrefix + TWfcModelToken(IntToStr(ANote));
 end;
 
-function DecodePitchNoteToken(const AToken: UTF8String): Integer;
+function DecodePitchNoteToken(const AToken: TWfcModelToken): Integer;
 var
   LNote: Integer;
 begin
@@ -311,17 +311,17 @@ begin
   Result := LNote;
 end;
 
-function PitchRhythmToken(const ANote, ALevel: Integer): UTF8String;
+function PitchRhythmToken(const ANote, ALevel: Integer): TWfcModelToken;
 begin
   PitchNoteToken(ANote);
   if not (ALevel in [0..5]) then
   begin
     raise EAudio.Create('Pitch/rhythm level must be 0..5');
   end;
-  Result := PitchRhythmPrefix + UTF8String(IntToStr(ANote) + '.' + IntToStr(ALevel));
+  Result := PitchRhythmPrefix + TWfcModelToken(IntToStr(ANote) + '.' + IntToStr(ALevel));
 end;
 
-function DecodePitchRhythmToken(const AToken: UTF8String): TPitchRhythmCell;
+function DecodePitchRhythmToken(const AToken: TWfcModelToken): TPitchRhythmCell;
 var
   LSuffix: String;
   LDot: Integer;

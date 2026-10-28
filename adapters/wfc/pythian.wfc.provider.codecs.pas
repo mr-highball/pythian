@@ -442,7 +442,6 @@ var
   LEntry: TProviderCodecEntry;
   LChoice: TProviderCodecChoice;
   LToken: String;
-  LText: String;
 begin
   LEntry := ValidatedEntry(ABinding, AProgress);
   CheckText(AToken, LEntry.Declaration.MaximumTokenBytes, False, AProgress);
@@ -460,13 +459,8 @@ begin
     raise EAudio.Create('Caller decoded value exceeds its reserved output bound');
   end;
   ProcessOutput(Length(LChoice.Bytes));
-  LText := '';
-  SetLength(LText, Length(LChoice.Bytes));
-  if Length(LChoice.Bytes) > 0 then
-  begin
-    Move(LChoice.Bytes[0], LText[1], Length(LChoice.Bytes));
-  end;
-  CheckText(LText, LEntry.Declaration.MaximumPayloadBytes, True, AProgress);
+  ValidateUTF8Bytes(LChoice.Bytes, LEntry.Declaration.MaximumPayloadBytes,
+    True, True, AProgress);
   Inc(FPayloadBytes, LEntry.Declaration.MaximumPayloadBytes - Length(LChoice.Bytes));
   Checkpoint(AProgress);
   { Detach before another callback: Encode may reuse its own Decode scratch

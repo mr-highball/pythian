@@ -3,6 +3,35 @@
 [Project](../PROJECT.md) · [Assessment](CODEBASE-ASSESSMENT.md) ·
 [Tasks](TODO/README.md) · [Work](WORK.md)
 
+## Independent-voice candidate — 2026-10-28
+
+Separate WFCc4e7569 passes all five [upstream CI56 jobs](https://github.com/mr-highball/wfc/actions/runs/40776021527),
+including actual browser execution. Its call-scoped preparation/proof observer
+reports actual phase/pass work, retains original exceptions and supports the
+existing graph commit guard. The Pythian candidate is not accepted yet; see
+[task17](TODO/NS-6_observability_17.md) and linked portability07/08/09.
+
+`TNamedVoiceSession.Create` optionally forwards capacities, configuration,
+generic model/graph/projection construction and provider-choice/contract work.
+The shared bridge prefixes generic stage names with `wfc_`, preserves units and
+maps companion pass-1 to primary Pass0, model/pass0..N to1..N+1. Its observer is
+released before the constructor returns. Constructor failure disposes the
+private session and never takes ownership of caller models.
+
+Owned `voice_session_clone_models` reports copied models; each current text
+encode/decode remains synchronous. `voice_session_snapshot_cells` reports
+source-domain cells per actual provider. `voice_session_ready` runs before the
+constructor returns. These callbacks add no yielding, timing or overall-percent
+promise. RTL array/string allocation/copy and bounded role/metadata setup remain
+synchronous. `CopyProvider` forwards its optional receiver into primary choices.
+Retained Generate/Regenerate/replacement/copy publication and operator forwarding
+remain parent04; construction does not install a retained observer there.
+
+Native Win32/Win64 constructor checks pass13939/10 original abort-retries with
+zero leaks. The full portable consumer exposes retained archive09 after the
+shared UTF-8 admission and tempo codec repairs pass their own portable checks.
+Do not infer complete portable voice operation from the isolated passes.
+
 Big Boss, 2026-10-03. The learning-progress lesson applies to the reusable
 library as well as Studio: callers need real work counts, named phases and
 cancellation checkpoints. This audit adds a shared contract and instruments

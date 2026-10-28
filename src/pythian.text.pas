@@ -54,6 +54,11 @@ function ScalarText(const AScalar: Cardinal): TScalarText;
 procedure ValidateScalarText(const AText: TScalarText; const AMaximumBytes: Integer;
   const AAllowEmpty: Boolean = True; const AAllowNul: Boolean = False;
   const AProgress: TWorkProgressCallback = nil);
+{ Canonical UTF-8 bytes on every target. No conversion through a native code
+  page or browser UTF-16 string; borrows the original array without changing it. }
+procedure ValidateUTF8Bytes(const ABytes: array of Byte; const AMaximumBytes: Integer;
+  const AAllowEmpty: Boolean = True; const AAllowNul: Boolean = False;
+  const AProgress: TWorkProgressCallback = nil);
 { Scalar order equals canonical UTF-8 byte order, independent of host locale. }
 function CompareScalarText(const ALeft, ARight: TScalarText;
   const AMaximumBytes: Integer; const AAllowNul: Boolean = False;
@@ -66,17 +71,84 @@ begin
   raise ETextValidation.Create('Text must contain canonical Unicode scalars within its UTF-8 policy');
 end;
 
-function NextScalar(const AText: TScalarText; var AIndex: Integer;
-  out AByteCount: Integer): Cardinal;
+function NextUTF8Scalar(const ABytes: array of Byte; var AIndex: Integer): Cardinal;
 var
   LFirst: Cardinal;
   LNext: Cardinal;
+  LCount: Integer;
   LIndex: Integer;
   LMinimum: Cardinal;
 begin
+  if (AIndex < 0) or (AIndex >= Length(ABytes)) then
+  begin
+    InvalidText;
+  end;
+  LFirst := ABytes[AIndex];
+  Inc(AIndex);
+  if LFirst < $80 then
+  begin
+    Exit(LFirst);
+  end;
+  if (LFirst >= $C2) and (LFirst <= $DF) then
+  begin
+    LCount := 2;
+    LMinimum := $80;
+    Result := LFirst and $1F;
+  end
+  else if (LFirst >= $E0) and (LFirst <= $EF) then
+  begin
+    LCount := 3;
+    LMinimum := $800;
+    Result := LFirst and $0F;
+  end
+  else if (LFirst >= $F0) and (LFirst <= $F4) then
+  begin
+    LCount := 4;
+    LMinimum := $10000;
+    Result := LFirst and $07;
+  end
+  else
+  begin
+    InvalidText;
+    Exit(0);
+  end;
+  for LIndex := 2 to LCount do
+  begin
+    if AIndex >= Length(ABytes) then
+    begin
+      InvalidText;
+    end;
+    LNext := ABytes[AIndex];
+    Inc(AIndex);
+    if (LNext < $80) or (LNext > $BF) then
+    begin
+      InvalidText;
+    end;
+    Result := Result * 64 + (LNext and $3F);
+  end;
+  if (Result < LMinimum) or (Result > $10FFFF) or
+    ((Result >= $D800) and (Result <= $DFFF)) then
+  begin
+    InvalidText;
+  end;
+end;
+
+function NextScalar(const AText: TScalarText; var AIndex: Integer;
+  out AByteCount: Integer): Cardinal;
+var
+  {$ifdef pas2js}
+  LFirst: Cardinal;
+  LNext: Cardinal;
+  {$else}
+  LBytes: array[0..3] of Byte;
+  LCount: Integer;
+  LIndex: Integer;
+  LPosition: Integer;
+  {$endif}
+begin
+  {$ifdef pas2js}
   LFirst := Ord(AText[AIndex]);
   Inc(AIndex);
-  {$ifdef pas2js}
   if (LFirst >= $D800) and (LFirst <= $DBFF) then
   begin
     if AIndex > Length(AText) then
@@ -116,58 +188,19 @@ begin
     AByteCount := 4;
   end;
   {$else}
-  if LFirst < $80 then
+  LCount := Length(AText) - AIndex + 1;
+  if LCount > 4 then
   begin
-    Result := LFirst;
-    AByteCount := 1;
-  end
-  else
-  begin
-    if (LFirst >= $C2) and (LFirst <= $DF) then
-    begin
-      AByteCount := 2;
-      LMinimum := $80;
-      Result := LFirst and $1F;
-    end
-    else if (LFirst >= $E0) and (LFirst <= $EF) then
-    begin
-      AByteCount := 3;
-      LMinimum := $800;
-      Result := LFirst and $0F;
-    end
-    else if (LFirst >= $F0) and (LFirst <= $F4) then
-    begin
-      AByteCount := 4;
-      LMinimum := $10000;
-      Result := LFirst and $07;
-    end
-    else
-    begin
-      InvalidText;
-      Result := 0;
-      AByteCount := 0;
-      LMinimum := 0;
-    end;
-    for LIndex := 2 to AByteCount do
-    begin
-      if AIndex > Length(AText) then
-      begin
-        InvalidText;
-      end;
-      LNext := Ord(AText[AIndex]);
-      Inc(AIndex);
-      if (LNext < $80) or (LNext > $BF) then
-      begin
-        InvalidText;
-      end;
-      Result := Result * 64 + (LNext and $3F);
-    end;
-    if (Result < LMinimum) or (Result > $10FFFF) or
-      ((Result >= $D800) and (Result <= $DFFF)) then
-    begin
-      InvalidText;
-    end;
+    LCount := 4;
   end;
+  for LIndex := 0 to LCount - 1 do
+  begin
+    LBytes[LIndex] := Ord(AText[AIndex + LIndex]);
+  end;
+  LPosition := 0;
+  Result := NextUTF8Scalar(Slice(LBytes, LCount), LPosition);
+  AByteCount := LPosition;
+  Inc(AIndex, LPosition);
   {$endif}
 end;
 
@@ -264,6 +297,36 @@ begin
     end;
   end;
   ReportWork(AProgress, 'text_validate_bytes', wuBytes, LBytes, LBytes);
+end;
+
+procedure ValidateUTF8Bytes(const ABytes: array of Byte; const AMaximumBytes: Integer;
+  const AAllowEmpty, AAllowNul: Boolean; const AProgress: TWorkProgressCallback);
+var
+  LIndex: Integer;
+  LReported: Integer;
+  LScalar: Cardinal;
+begin
+  if (AMaximumBytes < 0) or ((Length(ABytes) = 0) and not AAllowEmpty) then
+  begin
+    InvalidText;
+  end;
+  LIndex := 0;
+  LReported := 0;
+  ReportWork(AProgress, 'text_validate_bytes', wuBytes, 0, 0);
+  while LIndex < Length(ABytes) do
+  begin
+    LScalar := NextUTF8Scalar(ABytes, LIndex);
+    if ((LScalar = 0) and not AAllowNul) or (LIndex > AMaximumBytes) then
+    begin
+      InvalidText;
+    end;
+    if Assigned(AProgress) and (LIndex - LReported >= 1024) then
+    begin
+      LReported := LIndex;
+      ReportWork(AProgress, 'text_validate_bytes', wuBytes, LIndex, 0);
+    end;
+  end;
+  ReportWork(AProgress, 'text_validate_bytes', wuBytes, LIndex, LIndex);
 end;
 
 function CompareScalarText(const ALeft, ARight: TScalarText;

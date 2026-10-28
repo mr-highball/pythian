@@ -92,8 +92,7 @@ end;
 procedure Reseal(var ABytes: TAudioBytes);
 var Body: TAudioBytes; Digest: String; I: Integer;
 begin
-  SetLength(Body, Length(ABytes)-64);
-  Move(ABytes[0], Body[0], Length(Body));
+  Body := Copy(ABytes, 0, Length(ABytes)-64);
   Digest := Sha256Bytes(Body);
   for I := 1 to 64 do ABytes[Length(Body)+I-1] := Ord(Digest[I]);
 end;
@@ -120,6 +119,10 @@ begin
     except on X:EAudio do Rejected := True end;
     Check(Rejected,'unknown cannot imply BPM');
     Bytes := EncodeTempoEvidence(E);
+    { Big Boss: exact frozen native v1 bytes, before primary-field consolidation. }
+    Check((Length(Bytes) = 263) and
+      (Sha256Bytes(Bytes) = 'b46b93a0a903db930cc06e91c04f385b32b87b987114b095a351f538af0c5040'),
+      'frozen native canonical artifact');
     D := DecodeTempoEvidence(Bytes);
     try
       Replay := EncodeTempoEvidence(D);
@@ -228,9 +231,7 @@ begin
 end;
 
 begin
-  try
-    PositiveAndRoundTrip;
-    NegativeChecks;
-    WriteLn('tempo evidence PASS');
-  except on E:Exception do begin WriteLn(StdErr,'FAIL ',E.Message); Halt(1) end end;
+  PositiveAndRoundTrip;
+  NegativeChecks;
+  WriteLn('tempo evidence PASS');
 end.

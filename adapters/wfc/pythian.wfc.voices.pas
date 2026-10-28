@@ -35,6 +35,7 @@ uses
   wfc_sequence_graph,
   wfc_music_ensemble,
   wfc_music_voices_graph,
+  pythian.progress,
   pythian.wfc.layers,
   pythian.wfc.providers,
   pythian.wfc.provider.contracts;
@@ -82,12 +83,14 @@ type
   public
     constructor Create(const AConfig: TWfcMusicVoicesGraphConfig;
       const ARoleNames: array of String; const AOptions: TVoiceSessionOptions;
-      const AContracts: TProviderContracts = nil);
+      const AContracts: TProviderContracts = nil;
+      const AProgress: TWorkProgressCallback = nil);
     destructor Destroy; override;
     function ProviderCount: Integer;
     function ProviderName(const AIndex: Integer): String;
     function ProofPassCount: Integer;
-    function CopyProvider(const AName: String): TStyleProviderDescription;
+    function CopyProvider(const AName: String;
+      const AProgress: TWorkProgressCallback = nil): TStyleProviderDescription;
     function CopyModel(const AName: String): TWfcSequenceModel;
     function CopyContract(const AName: String): TProviderContract;
     { Candidate graph/model replacement. Pending edits outside its actual
@@ -127,6 +130,7 @@ uses
   SysUtils,
   pythian.audio,
   pythian.wfc.music,
+  pythian.wfc.progress,
   wfc_sequence_text;
 
 type
@@ -269,7 +273,7 @@ end;
 
 constructor TNamedVoiceSession.Create(const AConfig: TWfcMusicVoicesGraphConfig;
   const ARoleNames: array of String; const AOptions: TVoiceSessionOptions;
-  const AContracts: TProviderContracts);
+  const AContracts: TProviderContracts; const AProgress: TWorkProgressCallback);
 var
   LIndex: Integer;
   LOther: Integer;
@@ -281,6 +285,7 @@ var
   LPass: TGraph;
   LExpected: TProviderContract;
   LDomain: String;
+  LProgressBridge: TWfcSolveProgressBridge;
 begin
   inherited Create;
   if (Length(AConfig.Voices) < 1) or
@@ -354,69 +359,94 @@ begin
     end;
     LModels[LIndex] := AConfig.Voices[LIndex].Model;
   end;
-  WfcIndependentVoiceCapacities(LModels);
-  ValidateWfcMusicVoicesGraphConfig(AConfig);
-  FOptions := AOptions;
-  FConfig := CopyWfcMusicVoicesGraphConfig(AConfig);
-  { Never own caller pointers, including when cloning a later model fails. }
-  FConfig.HarmonyModel := nil;
-  FConfig.RhythmModel := nil;
-  for LIndex := 0 to High(FConfig.Voices) do
-  begin
-    FConfig.Voices[LIndex].Model := nil;
-  end;
-  FConfig.HarmonyModel := DecodeWfcSequenceText(EncodeWfcSequenceText(AConfig.HarmonyModel));
-  FConfig.RhythmModel := DecodeWfcSequenceText(EncodeWfcSequenceText(AConfig.RhythmModel));
-  for LIndex := 0 to High(FConfig.Voices) do
-  begin
-    FConfig.Voices[LIndex].Model := DecodeWfcSequenceText(
-      EncodeWfcSequenceText(AConfig.Voices[LIndex].Model));
-  end;
-  SetLength(FBoundaries, Length(FNames));
-  for LIndex := 0 to High(FBoundaries) do
-  begin
-    FBoundaries[LIndex] := MakeWfcSequenceInitialSegmentBoundary(AOptions.RequireObservedEnd);
-  end;
-  FGraph := BuildWfcMusicVoicesSegmentGraph(FConfig, AOptions.CellCount,
-    AOptions.Seed, FBoundaries);
-  SetLength(FBaseline, Length(FNames));
-  SetLength(FHasBaseline, Length(FNames));
-  SetLength(FPending, Length(FNames));
-  SetLength(FCommitted, Length(FNames));
-  SetLength(FPreferences, Length(FNames));
-  SetLength(FCommittedPreferences, Length(FNames));
-  SetLength(FDirty, Length(FNames));
-  for LIndex := 0 to High(FNames) do
-  begin
-    LPass := FGraph.PassGraph[LIndex];
-    SetLength(FBaseline[LIndex], AOptions.CellCount);
-    SetLength(FHasBaseline[LIndex], AOptions.CellCount);
-    for LCell := 0 to AOptions.CellCount - 1 do
+  LProgressBridge := TWfcSolveProgressBridge.Create(AProgress);
+  try
+    WfcIndependentVoiceCapacities(LModels, AProgress);
+    ValidateWfcMusicVoicesGraphConfig(AConfig,
+      WfcPreparationWorkObserver(LProgressBridge));
+    FOptions := AOptions;
+    FConfig := CopyWfcMusicVoicesGraphConfig(AConfig,
+      WfcPreparationWorkObserver(LProgressBridge));
+    { Never own caller pointers, including when cloning a later model fails. }
+    FConfig.HarmonyModel := nil;
+    FConfig.RhythmModel := nil;
+    for LIndex := 0 to High(FConfig.Voices) do
     begin
-      FHasBaseline[LIndex][LCell] := LPass.HasAllowedValues(LCell, 0, 0);
-      FBaseline[LIndex][LCell] := LPass.CopyAllowedValues(LCell, 0, 0);
+      FConfig.Voices[LIndex].Model := nil;
     end;
-  end;
-  if (Length(AContracts) <> 0) and (Length(AContracts) <> Length(FNames)) then
-  begin
-    raise EAudio.Create('Named voices need one semantic contract per musical provider');
-  end;
-  LDomain := 'voice-session';
-  if Length(AContracts) <> 0 then
-  begin
-    LDomain := AContracts[0].MusicalDomain;
-  end;
-  SetLength(FContracts, Length(FNames));
-  for LIndex := 0 to High(FNames) do
-  begin
-    LExpected := ProviderContractFromDescription(CopyProvider(FNames[LIndex]), LDomain);
-    FContracts[LIndex] := LExpected;
+    ReportWork(AProgress, 'voice_session_clone_models', wuItems, 0, Length(FNames));
+    for LIndex := 0 to High(FNames) do
+    begin
+      { The current primary text codec is synchronous within each model copy. }
+      LModel := DecodeWfcSequenceText(EncodeWfcSequenceText(
+        WfcMusicVoicesModelAt(AConfig, LIndex)));
+      case LIndex of
+        0: FConfig.HarmonyModel := LModel;
+        1: FConfig.RhythmModel := LModel;
+      else
+        FConfig.Voices[LIndex - 2].Model := LModel;
+      end;
+      ReportWork(AProgress, 'voice_session_clone_models', wuItems,
+        LIndex + 1, Length(FNames), LIndex + 1);
+    end;
+    SetLength(FBoundaries, Length(FNames));
+    for LIndex := 0 to High(FBoundaries) do
+    begin
+      FBoundaries[LIndex] := MakeWfcSequenceInitialSegmentBoundary(AOptions.RequireObservedEnd);
+    end;
+    FGraph := BuildWfcMusicVoicesSegmentGraph(FConfig, AOptions.CellCount,
+      AOptions.Seed, FBoundaries, WfcPreparationWorkObserver(LProgressBridge));
+    SetLength(FBaseline, Length(FNames));
+    SetLength(FHasBaseline, Length(FNames));
+    SetLength(FPending, Length(FNames));
+    SetLength(FCommitted, Length(FNames));
+    SetLength(FPreferences, Length(FNames));
+    SetLength(FCommittedPreferences, Length(FNames));
+    SetLength(FDirty, Length(FNames));
+    for LIndex := 0 to High(FNames) do
+    begin
+      ReportWork(AProgress, 'voice_session_snapshot_cells', wuItems,
+        0, AOptions.CellCount, LIndex + 1);
+      LPass := FGraph.PassGraph[LIndex];
+      SetLength(FBaseline[LIndex], AOptions.CellCount);
+      SetLength(FHasBaseline[LIndex], AOptions.CellCount);
+      for LCell := 0 to AOptions.CellCount - 1 do
+      begin
+        FHasBaseline[LIndex][LCell] := LPass.HasAllowedValues(LCell, 0, 0);
+        FBaseline[LIndex][LCell] := LPass.CopyAllowedValues(LCell, 0, 0);
+        if ((LCell + 1) mod 64 = 0) or (LCell + 1 = AOptions.CellCount) then
+        begin
+          ReportWork(AProgress, 'voice_session_snapshot_cells', wuItems,
+            LCell + 1, AOptions.CellCount, LIndex + 1);
+        end;
+      end;
+    end;
+    if (Length(AContracts) <> 0) and (Length(AContracts) <> Length(FNames)) then
+    begin
+      raise EAudio.Create('Named voices need one semantic contract per musical provider');
+    end;
+    LDomain := 'voice-session';
     if Length(AContracts) <> 0 then
     begin
-      ValidateProviderContract(WfcMusicVoicesModelAt(FConfig, LIndex), AContracts[LIndex]);
-      RequireCompatibleProvider(LExpected, AContracts[LIndex]);
-      FContracts[LIndex] := CopyProviderContract(AContracts[LIndex]);
+      LDomain := AContracts[0].MusicalDomain;
     end;
+    SetLength(FContracts, Length(FNames));
+    for LIndex := 0 to High(FNames) do
+    begin
+      LExpected := ProviderContractFromDescription(
+        CopyProvider(FNames[LIndex], AProgress), LDomain);
+      FContracts[LIndex] := LExpected;
+      if Length(AContracts) <> 0 then
+      begin
+        ValidateProviderContract(WfcMusicVoicesModelAt(FConfig, LIndex),
+          AContracts[LIndex], nil, nil, AProgress);
+        RequireCompatibleProvider(LExpected, AContracts[LIndex], AProgress);
+        FContracts[LIndex] := CopyProviderContract(AContracts[LIndex]);
+      end;
+    end;
+    ReportWork(AProgress, 'voice_session_ready', wuItems, 1, 1);
+  finally
+    LProgressBridge.Free;
   end;
 end;
 
@@ -611,7 +641,8 @@ begin
   end;
 end;
 
-function TNamedVoiceSession.CopyProvider(const AName: String): TStyleProviderDescription;
+function TNamedVoiceSession.CopyProvider(const AName: String;
+  const AProgress: TWorkProgressCallback): TStyleProviderDescription;
 var
   LIndex: Integer;
   LPair: Integer;
@@ -658,7 +689,7 @@ begin
     end;
   end;
   Result.Choices := CopyStyleProviderChoices(WfcMusicVoicesModelAt(FConfig, LIndex),
-    Result.Vocabulary);
+    Result.Vocabulary, AProgress);
 end;
 
 procedure TNamedVoiceSession.SetConstraints(const AName: String;
