@@ -57,6 +57,38 @@ publication, changed scientific policy or an additional distinct required gap.
 
 **Dev Notes:**
 
+- 2026-10-27, Big Boss local implementation: upstream
+  [`6b419e6`](https://github.com/mr-highball/wfc/commit/6b419e6e33c7cec40f5936ef734defbe33319aaa)
+  is pushed on the named separate branch; [CI51](https://github.com/mr-highball/wfc/actions/runs/40621952770)
+  is in progress. The consuming checkout explicitly adopts that reviewed pin;
+  no dependency source was edited here and no upstream branch was merged.
+  Checked Win32/Win64 and actual pas2js generic tests each pass729932 checks,
+  28 original interior/final aborts and206004 callbacks. Existing preparation
+  (18528 native/18532 portable), sequence120, wrapped6815 and text48 checks pass.
+  Seventeen prior model/seeded-path artifacts per native target match frozen
+  `d1c1c81`, including the exact72012-byte authored large model. Zero native leaks.
+  All phases use the existing contract; initial totals stay unknown rather than
+  adding a preflight scan or changing malformed-input precedence.
+- 2026-10-27, Big Boss downstream local proof: primary grid validation and context
+  token preparation count owned source cells; the call-scoped bridge forwards
+  actual WFC learning/construction with dimension passes. Native bundle creation
+  forwards through both models; second-model abort cleanup passes. Win32/Win64 each
+  pass881638 checks/32 original abort-retries/208056 callbacks, zero leaks. Ten
+  prior context archives/profiles/source-declaration/WAV artifacts per target
+  match separately compiled `f0489d5` primary sources with old WFC `d1c1c81`.
+  Actual source compilation paths and artifact hashes are retained in dedicated
+  E-drive records. Published integration/extracted consumers remain required;
+  task13/parent acceptance and counts/credit are unchanged while CI is pending.
+- 2026-10-27, Big Boss validation limits and repaired fixture: the native malformed
+  UTF-8 fixture's character literal was promoted to valid encoded text. Preserve
+  the initial failure; construct raw invalid bytes in the fixture only. The
+  corrected native/portable tests pass without weakening library validation.
+  An extra portable Pythian context-learning build stops at pre-existing tempo
+  evidence `Move` (line288); no substitute/stub or adapter-portable acceptance.
+  The changed independent primary grid callback does pass actual pas2js original
+  interior/final cancellation/retry. Generic portable learning is exercised in
+  WFC itself. Parent04 retains metadata/bytes/hash/ancestry and later operations;
+  callback work grants no musical credit or scientific restart.
 - 2026-10-27, Big Boss pre-edit proof: maintained Pythian source is unchanged. One
   authored65,536-cell context grid uses valid major keys,1020 tempo tokens and order4.
   Direct generic learning yields1023 states/1020 public tokens, and exact canonical

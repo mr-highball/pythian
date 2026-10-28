@@ -523,11 +523,59 @@ Evidence: dedicated E-drive `build/tests/runs/provider-admission-20261027-boss*`
 The subsequent context audit separately measures438ms of owned token preparation
 and1172ms in the public generic WFC learner on an authored65,536-cell/order4 corpus,
 1023 states/1020 tempo tokens. Its canonical text equals the bundle model exactly.
-The generic learner has no observer API; source profile opening inherits this
-unobserved work. [Task13](TODO/NS-6_observability_13.md) owns the separate upstream
-learning/model-construction observer and explicit context-learning integration.
+At that audit revision the generic learner had no observer API; source profile
+opening inherits that work. [Task13](TODO/NS-6_observability_13.md) owns the separate
+upstream learning/model-construction observer and context-learning integration.
 Context archive/profile byte/hash/ancestry loops remain task04 obligations.
 These local timings identify ownership, not a musical result or portable bound.
+
+### Context learning observation
+
+The reviewed WFC change is `6b419e6` on the separate
+[`codex/pythian-sequence-learning`](https://github.com/mr-highball/wfc/tree/codex/pythian-sequence-learning)
+branch, based exactly on `d1c1c81`. It extends the existing borrowed sequence
+preparation contract through corpus/single learning and immutable-model
+construction. Original graph phases retain their ordinals and behavior. Unknown
+totals use zero; no additional validation pass changes original error ordering.
+Upstream CI51 and downstream publication are pending; the task stays open.
+
+`ValidateContextGrid` exposes primary cell validation. `LearnContextModel` uses a
+call-scoped bridge and reports these phase-local item units, with pass1 for key
+and pass2 for tempo:
+
+| Stage | Actual completed work |
+| --- | --- |
+| `context_grid_cells` | Paired key/tempo cells checked by the primary validator, accumulated across grids; total unknown until the ordered corpus scan finishes |
+| `context_tokens` | Source cells converted into the requested context token vocabulary |
+| `context_wfc_token_rows` | Source tokens validated/indexed by the generic learner; total initially unknown |
+| `context_wfc_observation_rows` | Observations added to the actual state/start/end counts |
+| `context_wfc_model_visits` | Marked validation/copy/structural loop visits inside the actual immutable-model constructor; total initially unknown |
+
+Checkpointed lookups can repeat completed row counts. Model visits are neither
+state capacity nor CPU instructions. All observer exceptions propagate before
+the new model escapes. `TContextLearningBundle.Create` forwards through both
+learning calls, releasing the earlier key model if tempo learning aborts.
+Its evidence metadata/preflight/copy, archive bytes/hash, profile ancestry,
+later replacement/generation and operator presentation remain parent task04
+obligations. RTL copying, bounded per-pair comparisons and sample copying remain
+synchronous; these callbacks promise neither event-loop yielding nor a latency
+bound. No observer is retained after the learning call.
+
+Checked Win32/Win64 each pass881638 primary checks,32 original abort/retries and
+208056 callbacks with zero leaks. The actual context/archive/profile consumers
+pass;10 artifacts per target, including four WAVs, match separately compiled
+`f0489d5` sources with the prior WFC pin. The exact authored65536-cell/order4 case
+retains1023 states/1020 tempo tokens. Generic WFC native and actual pas2js tests
+each pass729932 checks/28 original aborts;17 prior model/seeded-path artifacts
+per native target match. Existing preparation/sequence/wrap/text consumers pass.
+
+The primary grid callback separately passes actual pas2js interior/final abort
+and source-preserving retry. A broader portable context-learning build stops at
+the pre-existing `pythian.music.tempo.evidence` encoding `Move` call (line288).
+No adapter portable execution, browser/phone acceptance or replacement codec is
+claimed. Evidence stays in dedicated E-drive `context-learning-20261027-boss` and
+`wfc-sequence-learning-20261027-boss` run/build/test roots. No scientific source,
+operator response, retraining, service or musical acceptance changed.
 
 ## Validation and limits
 

@@ -32,6 +32,7 @@ uses
   pythian.audio,
   pythian.music.context,
   pythian.wfc.context,
+  pythian.progress,
   wfc_sequence;
 
 const
@@ -61,8 +62,11 @@ type
     function GetTicksPerQuarter: Integer;
     function GetStepTicks: Integer;
   public
+    { AProgress observes the two model-learning calls only. Evidence preflight,
+      nested copying, archive bytes/hash and profile ancestry remain separate work. }
     constructor Create(const AEvidence: TContextEvidenceArray;
-      const AKeyOrder: Integer = 2; const ATempoOrder: Integer = 2);
+      const AKeyOrder: Integer = 2; const ATempoOrder: Integer = 2;
+      const AProgress: TWorkProgressCallback = nil);
     destructor Destroy; override;
     function CopyEvidence: TContextEvidenceArray;
     function CopyModel(const ADimension: TContextDimension): TWfcSequenceModel;
@@ -121,7 +125,8 @@ begin
 end;
 
 constructor TContextLearningBundle.Create(const AEvidence: TContextEvidenceArray;
-  const AKeyOrder: Integer; const ATempoOrder: Integer);
+  const AKeyOrder: Integer; const ATempoOrder: Integer;
+  const AProgress: TWorkProgressCallback);
 var
   LGrids: TMusicContextGrids;
   LTotal: Int64;
@@ -172,8 +177,8 @@ begin
   begin
     LGrids[LIndex] := AEvidence[LIndex].Grid;
   end;
-  FKeyModel := LearnContextModel(LGrids, cdKey, AKeyOrder);
-  FTempoModel := LearnContextModel(LGrids, cdTempo, ATempoOrder);
+  FKeyModel := LearnContextModel(LGrids, cdKey, AKeyOrder, AProgress);
+  FTempoModel := LearnContextModel(LGrids, cdTempo, ATempoOrder, AProgress);
   FEvidence := CloneEvidence(AEvidence);
   FKeyOrder := AKeyOrder;
   FTempoOrder := ATempoOrder;

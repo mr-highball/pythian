@@ -32,6 +32,7 @@ uses
   pythian.music.context,
   pythian.music.tempo.evidence,
   pythian.time,
+  pythian.progress,
   wfc_model,
   wfc_sequence;
 
@@ -77,7 +78,8 @@ function KeyChangesFromTokens(const AKeys: TWfcModelTokens;
   Caller owns the returned actual WFC model. Key and tempo learn independently;
   any required joint relationships must be supplied as separate projections. }
 function LearnContextModel(const AGrids: TMusicContextGrids;
-  const ADimension: TContextDimension; const AOrder: Integer = 2): TWfcSequenceModel;
+  const ADimension: TContextDimension; const AOrder: Integer = 2;
+  const AProgress: TWorkProgressCallback = nil): TWfcSequenceModel;
 
 { Builds a new output timeline at tick zero from equally sized generated
   provider sequences. Tempo directly drives the existing exact PPQ clock.
@@ -92,6 +94,40 @@ uses
   pythian.audio,
   pythian.tonal,
   wfc_sequence_learn;
+
+type
+  { Call-scoped bridge. The primary grid validator owns its cell work; WFC owns
+    token indexing, observation counting and immutable-model construction. }
+  TContextLearningProgress = class
+  public
+    Callback: TWorkProgressCallback;
+    Pass: Integer;
+    GridOffset: Int64;
+    procedure ObserveGrid(const AWork: TWorkProgress);
+    procedure ObserveSequence(const AWork: TWfcSequencePreparationProgress);
+  end;
+
+procedure TContextLearningProgress.ObserveGrid(const AWork: TWorkProgress);
+begin
+  { The corpus total is not admitted until the existing ordered validation pass
+    finishes. Do not publish a per-grid final as a complete corpus scan. }
+  ReportWork(Callback, AWork.Stage, AWork.Units, GridOffset + AWork.Done, 0, Pass);
+end;
+
+procedure TContextLearningProgress.ObserveSequence(
+  const AWork: TWfcSequencePreparationProgress);
+var
+  LStage: String;
+begin
+  case AWork.Phase of
+    wspLearnTokenRows: LStage := 'context_wfc_token_rows';
+    wspLearnStateRows: LStage := 'context_wfc_observation_rows';
+    wspModelBuildVisits: LStage := 'context_wfc_model_visits';
+  else
+    raise EAudio.Create('Unexpected WFC context-learning phase');
+  end;
+  ReportWork(Callback, LStage, wuItems, AWork.Done, AWork.Total, Pass);
+end;
 
 function KeyChangesFromTokens(const AKeys: TWfcModelTokens;
   const AStepTicks, ALengthTicks: Integer): TKeyChanges;
@@ -236,52 +272,89 @@ begin
 end;
 
 function LearnContextModel(const AGrids: TMusicContextGrids;
-  const ADimension: TContextDimension; const AOrder: Integer): TWfcSequenceModel;
+  const ADimension: TContextDimension; const AOrder: Integer;
+  const AProgress: TWorkProgressCallback): TWfcSequenceModel;
 var
   LSamples: TWfcSequenceSamples;
   LTokens: TWfcModelTokens;
   LSample: Integer;
   LCell: Integer;
   LTotal: Int64;
+  LCompleted: Integer;
+  LBridge: TContextLearningProgress;
+  LGridProgress: TWorkProgressCallback;
+  LSequenceProgress: TWfcSequencePreparationObserver;
 begin
   if (Length(AGrids) < 1) or (Length(AGrids) > WFC_SEQUENCE_MAX_SAMPLE_COUNT) or
     (AOrder < 1) or (AOrder > 4) or not (ADimension in [cdKey, cdTempo]) then
   begin
     raise EAudio.Create('Context learning requires 1..4096 grids, a known dimension and order 1..4');
   end;
-  LTotal := 0;
-  for LSample := 0 to High(AGrids) do
-  begin
-    Inc(LTotal, Length(AGrids[LSample].Keys));
-    if LTotal > MaximumContextCells then
+  LBridge := nil;
+  LGridProgress := nil;
+  LSequenceProgress := nil;
+  try
+    if Assigned(AProgress) then
     begin
-      raise EAudio.Create('Context corpus exceeds 65536 observations');
+      LBridge := TContextLearningProgress.Create;
+      LBridge.Callback := AProgress;
+      LBridge.Pass := Ord(ADimension) + 1;
+      LGridProgress := LBridge.ObserveGrid;
+      LSequenceProgress := LBridge.ObserveSequence;
     end;
-    ValidateContextGrid(AGrids[LSample]);
-    if (AGrids[LSample].TicksPerQuarter <> AGrids[0].TicksPerQuarter) or
-      (AGrids[LSample].StepTicks <> AGrids[0].StepTicks) then
+    LTotal := 0;
+    for LSample := 0 to High(AGrids) do
     begin
-      raise EAudio.Create('Context corpus requires one explicit PPQ and step resolution');
-    end;
-  end;
-  SetLength(LSamples, Length(AGrids));
-  for LSample := 0 to High(AGrids) do
-  begin
-    SetLength(LTokens, Length(AGrids[LSample].Keys));
-    for LCell := 0 to High(LTokens) do
-    begin
-      if ADimension = cdKey then
+      Inc(LTotal, Length(AGrids[LSample].Keys));
+      if LTotal > MaximumContextCells then
       begin
-        LTokens[LCell] := KeyContextToken(AGrids[LSample].Keys[LCell]);
-      end
-      else
+        raise EAudio.Create('Context corpus exceeds 65536 observations');
+      end;
+      ValidateContextGrid(AGrids[LSample], LGridProgress);
+      if (AGrids[LSample].TicksPerQuarter <> AGrids[0].TicksPerQuarter) or
+        (AGrids[LSample].StepTicks <> AGrids[0].StepTicks) then
       begin
-        LTokens[LCell] := TempoContextToken(AGrids[LSample].Tempos[LCell]);
+        raise EAudio.Create('Context corpus requires one explicit PPQ and step resolution');
+      end;
+      if LBridge <> nil then
+      begin
+        LBridge.GridOffset := LTotal;
       end;
     end;
-    LSamples[LSample] := MakeWfcSequenceSample(LTokens);
+    ReportWork(AProgress, 'context_grid_cells', wuItems, LTotal, LTotal,
+      Ord(ADimension) + 1);
+    SetLength(LSamples, Length(AGrids));
+    LCompleted := 0;
+    ReportWork(AProgress, 'context_tokens', wuItems, 0, LTotal, Ord(ADimension) + 1);
+    for LSample := 0 to High(AGrids) do
+    begin
+      SetLength(LTokens, Length(AGrids[LSample].Keys));
+      for LCell := 0 to High(LTokens) do
+      begin
+        if ADimension = cdKey then
+        begin
+          LTokens[LCell] := KeyContextToken(AGrids[LSample].Keys[LCell]);
+        end
+        else
+        begin
+          LTokens[LCell] := TempoContextToken(AGrids[LSample].Tempos[LCell]);
+        end;
+        Inc(LCompleted);
+        if Assigned(AProgress) and ((LCompleted mod 256) = 0) and
+          (LCompleted < LTotal) then
+        begin
+          ReportWork(AProgress, 'context_tokens', wuItems, LCompleted, LTotal,
+            Ord(ADimension) + 1);
+        end;
+      end;
+      LSamples[LSample] := MakeWfcSequenceSample(LTokens);
+    end;
+    ReportWork(AProgress, 'context_tokens', wuItems, LCompleted, LTotal,
+      Ord(ADimension) + 1);
+    Result := LearnSequenceModelCorpus(LSamples, AOrder, wmbOpen, LSequenceProgress);
+  finally
+    LBridge.Free;
   end;
-  Result := LearnSequenceModelCorpus(LSamples, AOrder, wmbOpen);
 end;
 
 function MusicContextFromTokens(const AKeys, ATempos: TWfcModelTokens;

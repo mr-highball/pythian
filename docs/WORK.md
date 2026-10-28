@@ -12,6 +12,43 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Generic learning repair and context bridge locally qualified; publication pending - 2026-10-27
+
+Big Boss implements the reassessed [task13](TODO/NS-6_observability_13.md)
+prerequisite in the separate WFC worktree. Reviewed/pushed upstream
+`6b419e6e33c7cec40f5936ef734defbe33319aaa` extends the existing borrowed preparation
+contract through token indexing, observation counts and actual immutable-model
+construction. Original validation ordering, open/wrapped histories/counts,
+graph-phase ordinals and exact prior model/state replay remain. Unknown totals
+stay unknown, and final cancellation precedes publication. No branch was merged.
+[Upstream CI51](https://github.com/mr-highball/wfc/actions/runs/40621952770) is running.
+
+Pythian explicitly adopts that reviewed gitlink and forwards through the actual
+context learner and both native bundle learning calls. Primary grid/token work
+has its own counts. Checked Win32/Win64 each pass881638 checks,32 original abort-
+retries and208056 callbacks, zero leaks. Ten prior artifacts per target, including
+archives, selected profiles and four WAV outputs, match separately compiled
+`f0489d5` source plus old WFC pin. Generic checked native/actual pas2js tests each
+pass729932 checks/28 original aborts/206004 callbacks;17 prior model/seeded paths
+per native target match. Existing generic and actual context consumers pass.
+
+The native invalid-UTF8 fixture required raw bytes rather than a promoted literal;
+retain its failure logs and corrected fixture. The extra Pythian adapter portable
+build stops at existing tempo-evidence `Move`; independent primary grid callbacks
+do pass actual pas2js abort/retry. No adapter/browser/phone acceptance is claimed.
+Evidence/frozen sources stay under dedicated E-drive context-learning and
+wfc-sequence-learning roots; all completed local compile/probe handles are terminal.
+No review service, private source, saved answer, retraining or stopped scientific
+family changed. No local QA browser/audio was launched.
+
+Publish the Pythian slice, then require exact clean Ubuntu integration/core-only
+and full extracted packages plus terminal upstream CI before task13 acceptance.
+Until those pass, counts remain53 open/73 DONE/126 total, NS-6 15 open, completion
+52.45/47.55. Retain nonclosing count2 and the prior reassessment; an active pending
+publication is not a criterion closure. Parent04 still owns the full remaining
+archive/profile/replacement/generation/batch/inference/operator scope. Whole goal
+remains active; Big Boss solo.
+
 ## Provider slice qualified; context audit reassessed before upstream learning repair - 2026-10-27
 
 Big Boss confirms [CI456](https://github.com/mr-highball/pythian/actions/runs/40617102203),

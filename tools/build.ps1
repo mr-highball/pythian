@@ -675,6 +675,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'WFC context compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.context$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'WFC context checks failed' }
+    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.context.learning.progress.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Context learning progress compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.context.learning.progress$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Context learning progress checks failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.context.archive.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Context archive compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.context.archive$executableSuffix")

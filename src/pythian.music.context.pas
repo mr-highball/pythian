@@ -30,7 +30,8 @@ interface
 
 uses
   pythian.time,
-  pythian.tonal;
+  pythian.tonal,
+  pythian.progress;
 
 const
   MusicContextVersion = 1;
@@ -84,7 +85,8 @@ function SameKeyContext(const ALeft, ARight: TKeyContext): Boolean;
   scale, and the result must remain in MIDI range. No chromatic approximation. }
 function MapDiatonicPitch(const APitch: Integer;
   const ASourceKey, ATargetKey: TKeyContext): Integer;
-procedure ValidateContextGrid(const AGrid: TMusicContextGrid);
+procedure ValidateContextGrid(const AGrid: TMusicContextGrid;
+  const AProgress: TWorkProgressCallback = nil);
 
 implementation
 
@@ -157,7 +159,8 @@ begin
   end;
 end;
 
-procedure ValidateContextGrid(const AGrid: TMusicContextGrid);
+procedure ValidateContextGrid(const AGrid: TMusicContextGrid;
+  const AProgress: TWorkProgressCallback);
 var
   LIndex: Integer;
 begin
@@ -167,11 +170,19 @@ begin
   begin
     raise EAudio.Create('Context key and tempo grids must have the same cell count');
   end;
+  ReportWork(AProgress, 'context_grid_cells', wuItems, 0, Length(AGrid.Keys));
   for LIndex := 0 to High(AGrid.Keys) do
   begin
     MakeKeyContext(AGrid.Keys[LIndex].Root, AGrid.Keys[LIndex].Mode);
     MakeTempoChange(0, AGrid.Tempos[LIndex]);
+    if Assigned(AProgress) and (((LIndex + 1) mod 256) = 0) and
+      (LIndex < High(AGrid.Keys)) then
+    begin
+      ReportWork(AProgress, 'context_grid_cells', wuItems, LIndex + 1, Length(AGrid.Keys));
+    end;
   end;
+  ReportWork(AProgress, 'context_grid_cells', wuItems,
+    Length(AGrid.Keys), Length(AGrid.Keys));
 end;
 
 constructor TMusicContext.Create(const AClock: TTempoMap; const AKeys: TKeyChanges);
