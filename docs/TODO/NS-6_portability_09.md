@@ -50,6 +50,17 @@ Big Boss works solo. Keep WFC source unchanged; these are Pythian-owned codecs.
 
 **Dev Notes:**
 
+- 2026-10-28, Big Boss publication repair: exact9aa6d87/CI470 fails at the
+  pitch-learning fixture's historical aggregate callback guard, before extracted
+  steps. Local repro2045 contains the new primary UTF-8 work. Report its160
+  callbacks separately from primary measurement1078 and retained1885; the
+  latter is exactly the preserved predecessor total and remains below the
+  unchanged2000 limit. All count validation stays active, and the shared text
+  fixture retains its own populated cadence/cancellation controls. Win32/Win64
+  pass57 checks with zero leaks. No production cadence/budget is altered.
+  Exact new published/extracted qualification remains required; preserve the
+  failed CI/native logs and leave this task and the pin open.
+
 - 2026-10-28, Big Boss actual consumers: context archives on Win32/Win64 and
   actual pas2js preserve frozen986-byte identity, complete round-trip, model/
   evidence ownership, semantic/bounds rejection, BMP/astral metadata and exact

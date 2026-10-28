@@ -5,6 +5,12 @@
 
 ## North-star assessment
 
+CI470 at9aa6d87 fails the pitch fixture's historical callback aggregate, so
+the candidates below remain open. Local repair separates160 new primary UTF-8
+callbacks while retaining exactly1885 original model/profile callbacks and
+the unchanged2000 limit; both native targets pass. New exact publication and
+extracted qualification are required. No credit or counter reset follows.
+
 Actual portable named-voice preparation now executes13939 checks/10 original
 abort-retries/13396 callbacks through the linked
 [byte admission07](TODO/NS-6_portability_07.md),

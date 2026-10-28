@@ -12,6 +12,33 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Publication qualification follow-up — 2026-10-28
+
+Previous goal turn: progress, publishing9aa6d87 and qualifying actual portable
+archives/rendering plus clean exact native packages. Big Boss remains solo.
+CI470 is terminal Failure10m0s at9aa6d87, in pitch-learning progress; extracted
+steps were skipped. Local exact-source repro retains2045 combined callbacks
+against the unchanged2000 retained model/profile limit. Its new primary UTF-8
+work was included in that historical model/profile count.
+
+The fixture now counts the three named primary UTF-8 stages separately, just
+as primary pitch/dynamics measurements were already separate. The original
+retained limit remains2000 and its measured total remains exactly1885, matching
+the preserved predecessor log. Primary measurement1078 and new primary UTF-8
+160 are reported independently; all callback count validation remains active.
+Checked Win32/Win64 each pass57 checks with zero leaks. No production stage,
+cadence, algorithm, threshold, budget or workflow deadline changed. Preserve
+the failed CI and native repro, including its unsuccessful heap trailer.
+
+The remaining exact-source Win64 voice check also passes13939/10 original
+abort-retries/13396 callbacks with zero leaks. The read-only operator report
+confirms the existing After preference at revision1 and the separate long
+repetition review at revision0; no new answer or retraining. Tasks07/08/09/10/17
+and the WFC pin remain unaccepted until a new exact published integration and
+extracted-consumer qualification passes. Counts57/82/139, NS6 19 open,
+completion52.45/47.55 and delivery nonclosing entry2 remain. This is repair of
+the current qualification batch, not a new scientific experiment or counter reset.
+
 ## Shared archive and streamed renderer candidate — 2026-10-28
 
 Big Boss continues solo after the actual portability09→10 prerequisites,

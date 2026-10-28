@@ -56,6 +56,7 @@ type
     WeightedTotal: Int64;
     Calls: Integer;
     PrimaryMeasurementCalls: Integer;
+    PrimaryTextCalls: Integer;
     PitchPasses: Integer;
     AbortPitchPass: Integer;
     SawDuration: Boolean;
@@ -87,6 +88,12 @@ begin
     (Copy(AProgress.Stage, 1, 9) = 'dynamics_') then
   begin
     Inc(PrimaryMeasurementCalls);
+  end;
+  if (AProgress.Stage = 'text_validate_bytes') or
+    (AProgress.Stage = 'text_encode_bytes') or
+    (AProgress.Stage = 'text_decode_bytes') then
+  begin
+    Inc(PrimaryTextCalls);
   end;
   if (AProgress.Done < 0) or (AProgress.Total < 0) or
     ((AProgress.Total > 0) and (AProgress.Done > AProgress.Total)) then
@@ -456,10 +463,13 @@ begin
     Check(LRejected, 'Invalid zero-weight source must still be validated');
     RetainedSourceChecks;
     { Preserve the original model/profile bound. Newly observed primary
-      measurement/admission work has its own populated cadence fixture. }
-    WriteLn('Retained callbacks ', LObserver.Calls - LObserver.PrimaryMeasurementCalls,
-      '; primary measurement callbacks ', LObserver.PrimaryMeasurementCalls);
-    Check(LObserver.Calls - LObserver.PrimaryMeasurementCalls < 2000,
+      measurement and UTF-8 work have their own populated cadence fixtures.
+      Every callback still passes the count validation in Observe above. }
+    Check(LObserver.PrimaryTextCalls > 0, 'Retained archives must forward primary UTF-8 work');
+    WriteLn('Retained callbacks ', LObserver.Calls - LObserver.PrimaryMeasurementCalls -
+      LObserver.PrimaryTextCalls, '; primary measurement callbacks ', LObserver.PrimaryMeasurementCalls,
+      '; primary UTF-8 callbacks ', LObserver.PrimaryTextCalls);
+    Check(LObserver.Calls - LObserver.PrimaryMeasurementCalls - LObserver.PrimaryTextCalls < 2000,
       'Model/profile progress cadence must remain aggregated');
     WriteLn('Pitch learning progress: ', LChecks, ' checks passed');
   finally
