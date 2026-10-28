@@ -675,6 +675,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Layer preparation progress compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.layer.preparation.progress$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Layer preparation progress checks failed' }
+    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.layer.publication.progress.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Layer publication progress compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.layer.publication.progress$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Layer publication cancellation and replay checks failed' }
     & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.sequence.capture.progress.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Finite sequence capture progress compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.sequence.capture.progress$executableSuffix")

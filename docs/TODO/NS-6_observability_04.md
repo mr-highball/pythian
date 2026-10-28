@@ -103,6 +103,32 @@ Naming a task or narrowing a component does not reset that count.
 
 **Dev Notes:**
 
+- 2026-10-28, Big Boss: the retained-layer candidate implements guarded
+  initial/selective capture and detached copy, private replacement publication,
+  observed strict proof/projection and measured owned visits. Preferences are
+  temporarily restored for proof and reapplied in finally; final generic abort
+  still rolls back graph/RNG. Optional CopyAccepted forwarding shares the same
+  primary clone. Win32/Win64 and actual pas2js each pass423670 checks/102 original
+  aborts; native runs have zero leaks. The existing Win64 preparation suite passes
+  484159/149, with unchanged13/8/2 visit oracles. Frozen/current native replay is
+  byte-exact, SHA256a4d462092ac2eff6f28102dd399aa54e495066fb02d49b952028d86f4acfd0db;
+  actual portable output matches after newline normalization. Original layer
+  tests pass. Preserve repaired fixture/type/callback/path failures in the
+  dedicated packet. Published integration/extracted consumer gates remain
+  pending; whole AC1/AC2 and later stream/voice/operator scopes remain required.
+  No milestone/task move, credit or scientific-counter reset is earned.
+
+- 2026-10-28, Big Boss selects retained layer capture/copy/publication after
+  task16 acceptance. Use existing guarded commit for live initial/selective
+  solves, private detached publication and scoped original-weight proof with
+  guaranteed preference reapplication. Replacement already owns a private
+  candidate; retain final restored-domain proof before its own final swap.
+  Close with native/actual portable abort/retry, exact prior results, nontrivial
+  preferences/projections, uniform/positioned layouts and measured units. Stop
+  on partial acceptance, changed semantics or a new required gap. Entry delivery
+  nonclosing0, dedicated E-drive layer-publication-20261028-boss roots. This
+  component does not claim all AC1/AC2 or maintained stream/voice/operator paths.
+
 - 2026-10-28, Big Boss: task16 is accepted at Pythian8cf6f5c/WFCf85d733 after
   exact CI55 five-job success and CI467 integration/extracted consumers, clean
   native packages and native/actual portable abort/replay. This closes only its

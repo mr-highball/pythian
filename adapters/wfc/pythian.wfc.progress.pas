@@ -37,11 +37,13 @@ type
   TWfcSolveProgressBridge = class
   protected
     FCallback: TWorkProgressCallback;
+    FSequencePass: Integer;
   private
     procedure ObserveSolve(const AWork: TWfcSolveProgress);
     procedure ObserveSequenceWork(const AWork: TWfcSequencePreparationProgress);
   public
-    constructor Create(const ACallback: TWorkProgressCallback);
+    constructor Create(const ACallback: TWorkProgressCallback;
+      const ASequencePass: Integer = 0);
     function SolveObserver: TWfcSolveObserver;
     function SequenceWorkObserver: TWfcSequencePreparationObserver;
   end;
@@ -54,10 +56,16 @@ implementation
 
 uses pythian.audio;
 
-constructor TWfcSolveProgressBridge.Create(const ACallback: TWorkProgressCallback);
+constructor TWfcSolveProgressBridge.Create(const ACallback: TWorkProgressCallback;
+  const ASequencePass: Integer);
 begin
   inherited Create;
+  if ASequencePass < 0 then
+  begin
+    raise EAudio.Create('Sequence work pass must be nonnegative');
+  end;
   FCallback := ACallback;
+  FSequencePass := ASequencePass;
 end;
 
 procedure TWfcSolveProgressBridge.ObserveSolve(const AWork: TWfcSolveProgress);
@@ -114,7 +122,7 @@ begin
   else
     raise EAudio.Create('Unknown companion sequence work phase');
   end;
-  ReportWork(FCallback, LStage, wuItems, AWork.Done, AWork.Total);
+  ReportWork(FCallback, LStage, wuItems, AWork.Done, AWork.Total, FSequencePass);
 end;
 
 function TWfcSolveProgressBridge.SequenceWorkObserver: TWfcSequencePreparationObserver;

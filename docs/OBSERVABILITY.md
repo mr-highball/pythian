@@ -42,6 +42,7 @@ Studio callers, plus existing streaming, inference and library contracts.
 | Provider admission, registry and compatible-session preparation | Optional callbacks reach source grids, choice decoding/validation, registry searches, configuration comparisons and actual capacity scans, through the semantic consumer | [observability_04](TODO/NS-6_observability_04.md); provider CI456 and context CI458 components qualified. Native inference/operator AC3 is accepted; retained capture/publication and batch work remain open |
 | Generic WFC solving and Pythian forwarding | Borrowed phase/pass-local prepare/search/commit visits, unknown totals, original cancellation and graph/RNG rollback; one primary adapter bridge for acoustic and finite/retained layer consumers | [task14 — DONE](TODO/DONE/NS-6_observability_14.md); exact WFCc496b1d/Pythian57df550 pass CI54/CI464 and native/actual pas2js replay. Capture/copy and later streams/voices remain synchronous residuals under parent04 |
 | Generic sequence capture and finite generation | Borrowed model/cell/path/transition/domain/projection callbacks, private managed results and actual finite token/acoustic forwarding | [task16 — DONE](TODO/DONE/NS-6_observability_16.md); WFCf85d733/Pythian8cf6f5c pass all five CI55 jobs, CI467 integration/extracted consumers, clean native packages and native/actual portable replay. Retained session/stream/voice and maintained operator forwarding remain parent04 |
+| Retained layer capture/copy/publication candidate | Initial/selective capture and detached caller copies run in the existing guarded commit; replacement keeps its private candidate until its own final swap | Local native/actual pas2js cancellation/replay below; parent04 stays open for published qualification and remaining stream/voice/operator work |
 | Retained style distributions/cards and native asset comparison | Optional callbacks reach actual bins/counts/normalization, bindings/traits, JSON scanning/value visits, emitted bytes/items and primary asset hashing | Shared JSON/text accepted at `1ed5e34`/CI460; [bulk publication](TODO/DONE/NS-6_serialization_01.md) accepted at `ae91789`/CI461 with extracted consumers. Final shrink/join/copy remain synchronous; [decoder storage](TODO/DONE/NS-6_json-text_02.md) accepted at `1c52398`/CI462 |
 | Primary analysis in pas2js | Full callback consumer executes shared primary algorithms; optional timer adapter yields between bounded WAV analysis batches | [portability_01 — DONE](TODO/DONE/NS-6_portability_01.md); actual browser presentation and WASM remain unqualified |
 | Primary synthesis in pas2js | Actual shared synth/instrument/note/chord/grain cases execute with measured callbacks, abort/retry and exact supported clocks | [portability_03 — DONE](TODO/DONE/NS-6_portability_03.md), [timing repair — DONE](TODO/DONE/NS-6_portability_04.md); synchronous Node consumers, no browser/WASM claim |
@@ -141,6 +142,63 @@ parent04. Its existing generic guarded commit hook is the intended transaction
 boundary; a callback after a solver has accepted its graph cannot retroactively
 extend rollback. Accepted finite API forwarding does not close that retained or
 maintained archive/remix/event/journal operator scope.
+
+## Retained layer publication candidate — 2026-10-28
+
+The primary layer adapter uses WFC's existing `DoValidateCommit` hook for
+initial and selective solves. It captures every layer, validates original model
+identity and projections, and prepares a detached caller copy while entry/RNG
+rollback is still available. Final generic commit callbacks also remain inside
+that guard. Only a successful solve publishes accepted session/caller arrays
+and clears pending edits. A failed observer preserves the original exception,
+accepted music, pending edits and exact same-session retry.
+
+Preference weights are restored to original model weights only during capture
+proof and reapplied in `finally` before another negotiated attempt. Cleanup
+restores originals without callbacks. This preserves the strict generic proof
+and original search preferences. Replacement already owns a private candidate;
+its final capture follows restoration of preserved layers' original constraints,
+then independent-layer comparison/copy/readiness precede the final live swap.
+No dependency source or solver/search policy is changed.
+
+| Stage | Work and scope |
+| --- | --- |
+| `layer_weight_visits` | Preference-domain extraction and actual weight preparation/application visits |
+| `layer_capture_weight_visits` | Temporary original-weight restoration visits inside guarded capture |
+| `layer_capture_visits` | Actual positioned lookup/domain visits, or uniform layer visit; Pass1..N identifies the layer |
+| `wfc_sequence_*` | Unchanged generic model/cell/path/domain/token work, forwarded separately with the actual layer Pass1..N |
+| `layer_relation_visits` | Projection, time-mapping, rule and alternative visits across the complete capture |
+| `layer_clone_visits` | One visit per layer and per copied token/state index, including optional `CopyAccepted` through compatible providers |
+| `layer_capture_ready`, `layer_publication_ready` | Private capture/caller output ready,1/1; outer solver or replacement may still reject before acceptance |
+
+Owned visit totals remain unknown until the counted finish, with checkpoints
+every256 visits; inner generic row counts remain separate. Temporary public
+token-domain extraction now uses the existing observed bulk constraint API,
+with original-domain restoration in cleanup. Allocation, scalar token access,
+RTL domain copies and non-cancellable weight/domain repair remain synchronous;
+callbacks promise no hard latency, yielding, overall percentage or musical credit.
+Callbacks are borrowed only for the call and must not mutate inputs or reenter.
+
+Local Win32/Win64 and actual pas2js each pass423670 checks/102 original aborts
+and exact retry across uniform, unequal-grid and positioned-partition cases,
+nontrivial preferences, pending edits, independent layers and detached arrays.
+Exact clone oracles are393 uniform and329 unequal/positioned visits. The existing
+Win64 preparation suite passes484159 checks/149 aborts with13/8/2 visit oracles.
+Original layer/path/preference/partition tests pass, including order3 across all
+five extents. Native passing fixtures have zero leaks. A separately compiled
+frozen pre-change consumer matches actual initial/selective/replacement results
+byte for byte: SHA256a4d462092ac2eff6f28102dd399aa54e495066fb02d49b952028d86f4acfd0db;
+portable output matches after newline normalization. Actual portable compilation
+required the shared model token type, explicit callback invocation and explicit
+entry property; no native-only parallel implementation is retained.
+
+Preserve initial fixture failures: a pending mask contradicted the preserved
+provider, chained replacement retained that mask, and a standalone audio run
+omitted its output directory. The original compiler also rejected a reserved
+field name, a nonexistent fixture extent and two missing explicit type/unit
+references. These are repaired; broad published qualification is still pending.
+Evidence: dedicated E-drive `layer-publication-20261028-boss` build/tests/runs.
+This component closes neither whole parent04 AC1/AC2 nor musical/Studio gates.
 
 ## Native inference supervisor progress — 2026-10-28
 

@@ -99,7 +99,7 @@ type
     function CopyInputs(const AName: String): TStyleProviderDependencies;
     procedure SetConstraints(const AName: String;
       const AMask: TWfcSequenceTokenConstraints);
-    function CopyAccepted: TLayerSequences;
+    function CopyAccepted(const AProgress: TWorkProgressCallback = nil): TLayerSequences;
     { Borrowed only during the call. Shared solve phases preserve their own work
       and pass counts; provider admission and private replacement preparation can
       report separately. Capture/publication is not a solve-progress percentage. }
@@ -669,9 +669,10 @@ begin
   FSession.SetConstraints(AName, AMask);
 end;
 
-function TCompatibleProviderSession.CopyAccepted: TLayerSequences;
+function TCompatibleProviderSession.CopyAccepted(
+  const AProgress: TWorkProgressCallback): TLayerSequences;
 begin
-  Result := FSession.CopyAccepted;
+  Result := FSession.CopyAccepted(AProgress);
 end;
 
 function TCompatibleProviderSession.TryGenerate(var ASequences: TLayerSequences;

@@ -12,6 +12,59 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Retained layer publication locally qualified candidate — 2026-10-28
+
+Big Boss implements parent04's selected layer component with existing generic
+guarded commit, private capture/detached copy and scoped original/preferred weight
+restoration. Initial/selective failure preserves accepted output and pending
+edits; replacement keeps its private candidate until final restored-domain proof,
+independent-layer comparison/copy/readiness and owned swap. Compatible providers
+forward optional CopyAccepted progress. No dependency source/search/RNG changes.
+
+Win32/Win64 and actual pas2js each pass423670 checks/102 original aborts and exact
+same-session retry, across uniform/unequal/positioned layouts with preferences,
+projections, pending edits and independent-layer/detached output preservation.
+Clone oracles393/329 visits. Existing Win64 preparation passes484159/149 and
+unchanged13/8/2 oracles; original layer controls pass including order3/five
+extents, preferences and partitions. Passing native fixtures have zero leaks.
+Actual frozen/current initial/selective/replacement replay is byte-exact,
+SHA256a4d462092ac2eff6f28102dd399aa54e495066fb02d49b952028d86f4acfd0db;
+actual portable output matches after newline normalization. Actual pas2js exposed
+old native-only token/callback/property syntax; shared types/explicit calls fix
+the same primary implementation. No browser/phone or musical claim.
+
+Preserve rejected fixture contradictory-mask/chained-replacement cases, missing
+audio output directory/example search path and compiler reserved-name/extent/
+type-reference failures in the E-drive packet. Local qualification is not final
+published acceptance. Clean extracted consumers and exact downstream CI remain;
+task04 stays open, counts52/82/134 and52.45/47.55 unchanged. Delivery nonclosing
+entry0 remains while this same batch finishes; scientific stops remain unchanged.
+No service/firewall/private media/answer changes or new user review request.
+
+## Retained layer publication implementation selected — 2026-10-28
+
+Previous goal turn is progress:c7a2985 accepts task16 after exact upstream/
+downstream gates and updates accounting. Delivery nonclosing enters0; scientific
+stops remain. Root is clean. Least-complete NS5 still requires accepted context/
+full independent references and the existing unanswered long repetition review;
+no changed scientific evidence or browser/host handoff is present.
+
+Select parent04 AC1 retained layer capture/copy/publication. Deliver shared
+observed capture through existing generic DoValidateCommit rollback, detached
+private output and prepublication checkpoints for initial/selective generation.
+Keep replacement's existing private candidate until its final swap; observe its
+post-constraint-restoration proof/copy there. Restore original preference weights
+only around proof and reapply in finally before further negotiated work. Reuse
+the primary capture/clone path; preserve strict identity, search, RNG and accepted
+output. Closing evidence: actual native/portable consumers, original callbacks,
+initial/selective/replacement abort and same-session retry, nontrivial preference/
+projection and positioned/uniform cases, exact prior results and measured units.
+Stop at changed musical semantics, partial publication, another required gap or
+dependency-source edits. New artifacts use E-drive layer-publication-20261028-boss
+roots. Streams/voices, broad batch work and other operator forwarding remain
+required; this selected component alone closes neither parent nor musical gates.
+Big Boss works alone;52/82/134 and52.45/47.55 remain until real acceptance.
+
 ## Generic capture and finite forwarding accepted — 2026-10-28
 
 Previous goal turn is progress:8cf6f5c publishes the generic capture prerequisite
