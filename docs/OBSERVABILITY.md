@@ -733,7 +733,14 @@ job122882866023, terminal Success10m5s: integration9m4s and extracted consumers4
 Both clean extracted Win64 packages also pass107/158 owned units and120/277
 inventory entries. This closes serialization_01, with no musical points.
 The retained decoder's generated per-character immutable-string replacement
-remains open with its separate [storage owner](TODO/NS-6_json-text_02.md).
+is repaired by the [storage candidate](TODO/NS-6_json-text_02.md), pending published
+qualification. It reuses the same primary bounded buffer while retaining only
+`json_string_bytes` source progress. Actual portable increasing-size traces keep
+all12 source digests/counts and exact text/cursors. Checked native5859/14 original
+abort-retries/2952 callbacks per target and actual pas2js5642/10/2760 pass; existing
+writer controls also pass. Local65536-scalar escaped-astral time changes10130ms
+to18ms. This is one local measurement, not a browser or event-loop bound. Final
+decoded shrink/join remains synchronous before the final source callback.
 
 Evidence: E-drive `style-evaluation-20261028-boss` build/test/run roots, frozen
 `1be04c0` sources, original compiler/tag/adapter failures and separate no-heap

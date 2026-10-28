@@ -89,11 +89,13 @@ point credit or musical acceptance is inferred.
 
 Implemented core delivery: [source-continuity Studio integration](NS-5_continuity_04.md),
 zero additional credit, with exact saved-model/journal reuse and native/API/DOM
-checks. Actual desktop/narrow qualification remains open. On Oct27 the browser
-inventory became visible, but its security gate rejected observation of the
-existing error tab because page-protocol authority was not granted. No alternate
-surface or raw browser workaround was attempted; a normally loaded authorized
-page is needed before that review can resume.
+checks. Actual desktop/narrow qualification remains open. On Oct28 the in-app
+browser and viewport controls are available, with authenticated GitHub access,
+but its security gate still rejects the retained Pythian QA error tab. No
+workaround is attempted. QA has no listener, and its fixed firewall rule retains
+a retired DHCP address. A prepared one-time Private/LocalSubnet rule repair needs
+administrator execution before QA can launch; normal authorized page access is
+also required.
 [studio_03](NS-6_studio_03.md) offers the prepared continuity question with
 Original/Before/After and Save/Next. The operator has answered **After** for
 fewer broken/jittery notes. Preserve that narrow positive development preference;
@@ -328,7 +330,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | [NS-6_studio_21](NS-6_studio_21.md) — Background recovery and long-source learning | 0 | 0.00 | Deployed; actual browser acceptance remains |
 | [NS-6_studio_22](NS-6_studio_22.md) — Original/generated listening comparison | 0 | 0.00 | Deployed for review; native/DOM checks pass, actual browser acceptance remains |
 | [NS-6_observability_04](NS-6_observability_04.md) — Remaining provider/batch operations and operator monitoring | 0 | 0.00 | Provider and context components qualified; later session work, batch and inference/operator reporting remain |
-| [NS-6_json-text_02](NS-6_json-text_02.md) — Consolidate portable JSON decoding storage | 0 | 0.00 | Ready after accepted shared output staging; generated pas2js reveals per-character whole-string replacement |
+| [NS-6_json-text_02](NS-6_json-text_02.md) — Consolidate portable JSON decoding storage | 0 | 0.00 | Shared primary staging implemented; native/pas2js and frozen source traces pass; published qualification pending |
 | [NS-6_adoption_01](NS-6_adoption_01.md) — Establish independent ecosystem adoption evidence | 15 | 1.50 | Supported releases + independent ecosystem evidence |
 | [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 1 | 0.10 | Solo usability resumed; complete physical matrix remains open |
 | [NS-6_delivery_03](NS-6_delivery_03.md) — Package and verify the accepted final workflow | 1 | 0.10 | Dependencies, including Studio |

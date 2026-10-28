@@ -73,7 +73,9 @@ type
   AMaximumBytes bounds decoded UTF-8 bytes on both targets. No normalization.
   On any exception the caller's string assignment and position are preserved.
   Borrowed callbacks count actual consumed source UTF-8 bytes, including quotes;
-  total is unknown until closing quote. They do not yield an event loop. }
+  total is unknown until closing quote. Decoded text shares the bounded staging
+  above without exposing output-byte phases as source work. Final shrink/join
+  is synchronous before the final source callback; no event-loop latency claim. }
 function ReadJSONString(const ADocument: TScalarText; var APosition: Integer;
   const AMaximumBytes: Integer;
   const AProgress: TWorkProgressCallback = nil): TScalarText;
@@ -114,7 +116,7 @@ var
 begin
   if FBytes > FMaximumBytes - ABytes then
   begin
-    raise ETextValidation.Create('JSON output exceeds its UTF-8 byte budget');
+    raise ETextValidation.Create('JSON text exceeds its UTF-8 byte budget');
   end;
   LRequired := FUsed + ACount;
   {$ifdef pas2js}
@@ -138,9 +140,9 @@ begin
     else
     begin
       LCapacity := LCapacity * 2;
-      if LCapacity < 4096 then
+      if LCapacity < 16 then
       begin
-        LCapacity := 4096;
+        LCapacity := 16;
       end;
       if LCapacity > FMaximumBytes then
       begin
@@ -295,15 +297,12 @@ var
   LPosition: Integer;
   LFirst: Integer;
   LBytes: Integer;
-  LDecodedBytes: Integer;
-  LUsed: Integer;
-  LCapacity: Integer;
   LSourceBytes: Int64;
   LNextReport: Int64;
   LScalar: Cardinal;
   LLow: Cardinal;
   LEscape: Char;
-  LBuffer: TScalarText;
+  LBuffer: TJSONTextBuffer;
   LEncoded: TScalarText;
   LResult: TScalarText;
 
@@ -318,41 +317,8 @@ var
   end;
 
   procedure Append(const AText: TScalarText; const AFirst, ACount, ABytes: Integer);
-  var
-    LNewCapacity: Integer;
-    I: Integer;
   begin
-    if LDecodedBytes > AMaximumBytes - ABytes then
-    begin
-      raise ETextValidation.Create('JSON string exceeds its decoded UTF-8 byte budget');
-    end;
-    Inc(LDecodedBytes, ABytes);
-    if LCapacity < LUsed + ACount then
-    begin
-      if LCapacity > AMaximumBytes div 2 then
-      begin
-        LNewCapacity := AMaximumBytes;
-      end
-      else
-      begin
-        LNewCapacity := LCapacity * 2;
-        if LNewCapacity < 16 then
-        begin
-          LNewCapacity := 16;
-        end;
-        if LNewCapacity > AMaximumBytes then
-        begin
-          LNewCapacity := AMaximumBytes;
-        end;
-      end;
-      SetLength(LBuffer, LNewCapacity);
-      LCapacity := LNewCapacity;
-    end;
-    for I := 0 to ACount - 1 do
-    begin
-      LBuffer[LUsed + I + 1] := AText[AFirst + I];
-    end;
-    Inc(LUsed, ACount);
+    LBuffer.AppendPart(AText, AFirst, ACount, ABytes);
   end;
 
   function HexQuad: Cardinal;
@@ -392,103 +358,106 @@ begin
     InvalidJSONText;
   end;
   LPosition := APosition + 1;
-  LDecodedBytes := 0;
-  LUsed := 0;
-  LCapacity := 0;
-  LBuffer := '';
   LSourceBytes := 1;
   LNextReport := 1024;
-  ReportWork(AProgress, 'json_string_bytes', wuBytes, 0, 0);
-  while LPosition <= Length(ADocument) do
-  begin
-    if ADocument[LPosition] = '"' then
+  { Decoding observes encoded source bytes. Reuse output storage without its
+    separate emitted-byte observer, so the existing source trace is unchanged. }
+  LBuffer := TJSONTextBuffer.Create(AMaximumBytes);
+  try
+    ReportWork(AProgress, 'json_string_bytes', wuBytes, 0, 0);
+    while LPosition <= Length(ADocument) do
     begin
+      if ADocument[LPosition] = '"' then
+      begin
+        Inc(LPosition);
+        Consumed(1);
+        LResult := LBuffer.Finish;
+        ReportWork(AProgress, 'json_string_bytes', wuBytes, LSourceBytes, LSourceBytes);
+        APosition := LPosition;
+        Result := LResult;
+        Exit;
+      end;
+      if ADocument[LPosition] <> '\' then
+      begin
+        LFirst := LPosition;
+        LScalar := ReadTextScalar(ADocument, LPosition, LBytes);
+        if LScalar < 32 then
+        begin
+          InvalidJSONText;
+        end;
+        Consumed(LBytes);
+        Append(ADocument, LFirst, LPosition - LFirst, LBytes);
+        Continue;
+      end;
       Inc(LPosition);
       Consumed(1);
-      LResult := Copy(LBuffer, 1, LUsed);
-      ReportWork(AProgress, 'json_string_bytes', wuBytes, LSourceBytes, LSourceBytes);
-      APosition := LPosition;
-      Result := LResult;
-      Exit;
-    end;
-    if ADocument[LPosition] <> '\' then
-    begin
-      LFirst := LPosition;
-      LScalar := ReadTextScalar(ADocument, LPosition, LBytes);
-      if LScalar < 32 then
+      if LPosition > Length(ADocument) then
       begin
         InvalidJSONText;
       end;
-      Consumed(LBytes);
-      Append(ADocument, LFirst, LPosition - LFirst, LBytes);
-      Continue;
-    end;
-    Inc(LPosition);
-    Consumed(1);
-    if LPosition > Length(ADocument) then
-    begin
-      InvalidJSONText;
-    end;
-    LEscape := ADocument[LPosition];
-    Inc(LPosition);
-    Consumed(1);
-    case LEscape of
-      '"': LScalar := 34;
-      '\': LScalar := 92;
-      '/': LScalar := 47;
-      'b': LScalar := 8;
-      'f': LScalar := 12;
-      'n': LScalar := 10;
-      'r': LScalar := 13;
-      't': LScalar := 9;
-      'u':
-        begin
-          LScalar := HexQuad;
-          if (LScalar >= $D800) and (LScalar <= $DBFF) then
+      LEscape := ADocument[LPosition];
+      Inc(LPosition);
+      Consumed(1);
+      case LEscape of
+        '"': LScalar := 34;
+        '\': LScalar := 92;
+        '/': LScalar := 47;
+        'b': LScalar := 8;
+        'f': LScalar := 12;
+        'n': LScalar := 10;
+        'r': LScalar := 13;
+        't': LScalar := 9;
+        'u':
           begin
-            if (Length(ADocument) - LPosition < 1) or
-              (ADocument[LPosition] <> '\') or (ADocument[LPosition + 1] <> 'u') then
+            LScalar := HexQuad;
+            if (LScalar >= $D800) and (LScalar <= $DBFF) then
+            begin
+              if (Length(ADocument) - LPosition < 1) or
+                (ADocument[LPosition] <> '\') or (ADocument[LPosition + 1] <> 'u') then
+              begin
+                InvalidJSONText;
+              end;
+              Inc(LPosition, 2);
+              Consumed(2);
+              LLow := HexQuad;
+              if (LLow < $DC00) or (LLow > $DFFF) then
+              begin
+                InvalidJSONText;
+              end;
+              LScalar := $10000 + (LScalar - $D800) * $400 + LLow - $DC00;
+            end
+            else if (LScalar >= $DC00) and (LScalar <= $DFFF) then
             begin
               InvalidJSONText;
             end;
-            Inc(LPosition, 2);
-            Consumed(2);
-            LLow := HexQuad;
-            if (LLow < $DC00) or (LLow > $DFFF) then
-            begin
-              InvalidJSONText;
-            end;
-            LScalar := $10000 + (LScalar - $D800) * $400 + LLow - $DC00;
-          end
-          else if (LScalar >= $DC00) and (LScalar <= $DFFF) then
-          begin
-            InvalidJSONText;
           end;
-        end;
-    else
-      InvalidJSONText;
-      LScalar := 0;
+      else
+        InvalidJSONText;
+        LScalar := 0;
+      end;
+      LEncoded := ScalarText(LScalar);
+      if LScalar < $80 then
+      begin
+        LBytes := 1;
+      end
+      else if LScalar < $800 then
+      begin
+        LBytes := 2;
+      end
+      else if LScalar < $10000 then
+      begin
+        LBytes := 3;
+      end
+      else
+      begin
+        LBytes := 4;
+      end;
+      Append(LEncoded, 1, Length(LEncoded), LBytes);
     end;
-    LEncoded := ScalarText(LScalar);
-    if LScalar < $80 then
-    begin
-      LBytes := 1;
-    end
-    else if LScalar < $800 then
-    begin
-      LBytes := 2;
-    end
-    else if LScalar < $10000 then
-    begin
-      LBytes := 3;
-    end
-    else
-    begin
-      LBytes := 4;
-    end;
-    Append(LEncoded, 1, Length(LEncoded), LBytes);
+    InvalidJSONText;
+  finally
+    LBuffer.Free;
   end;
-  InvalidJSONText;
 end;
 
 end.

@@ -12,6 +12,57 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Studio browser prerequisite rechecked; core storage follows - 2026-10-28
+
+Previous goal turn is progress: `6610fe8` publishes acceptance of serialization_01
+after terminal Ubuntu CI461. Delivery nonclosing enters0. Big Boss rechecks the
+least-complete NS-5 consumer, continuity_04 AC5, before assuming more infrastructure
+is the next prerequisite. Deliverable: isolated actual desktop/narrow Studio
+Original/Before/After route; evidence must be real rendered interaction, preserved
+lineage/answers and complete QA cleanup. Stop at browser-policy or host setup gaps.
+
+The browser inventory now contains the task's in-app browser, with working
+authenticated GitHub control and viewport capability. The retained Pythian QA
+error tab still rejects acquisition: URL-policy authority is not granted and its
+requested protocol is refused. No blocked content is read; no alternate browser,
+raw protocol, cached endpoint or workaround is attempted. QA has no listener.
+The existing fixed-program QA firewall rule also retains the retired DHCP host
+address. Registry inspection confirms exact program/TCP port/Private/LocalSubnet
+scope, but its local address does not match the current interface. This session
+is not elevated; the LAN procedure forbids launching QA with that stale scope.
+
+Prepare and syntax-check a one-time host script under the dedicated E-drive
+`studio-qa-20261028-boss` run root. It updates only the two existing stable/QA rules
+to any local address, retaining their exact programs/ports, Private/LocalSubnet
+scope and blocked edge traversal; export before/after evidence. Ask the operator
+to run it once as Administrator. It has not executed; no rules, services or user
+records changed. Actual browser acceptance stays open. This bounded preflight
+closed no criterion: delivery nonclosing1 from entry0, not reset by the handoff.
+
+Continue independent ready [decoder storage02](TODO/NS-6_json-text_02.md), following
+its accepted primary-buffer prerequisite. Next batch criterion: AC1–3; consolidate
+the retained decoder's storage into that primary buffer, preserving exact source
+byte progress, cursor/output on original cancellation, malformed rejection and
+native/pas2js policies. Closing evidence: increasing-size actual portable traces,
+native consumers, old bytes and published integration/extracted packages. Stop on
+another storage implementation, normalization, changed source progress or a
+distinct gap. Keep the browser handoff pending; no stopped scientific family,
+private recording/answer or WFC work is selected. Counts53 open/78 DONE/131 total,
+NS-6 15 open,52.45/47.55 unchanged. Goal active, Big Boss solo.
+
+Decoder storage candidate now reuses the primary bounded buffer and removes its
+duplicate growth/per-character copying. Original source-byte stages/counts and
+private output/cursor publication are preserved; final join remains synchronous.
+Win32/Win64 each pass5859 checks/14 original abort-retries/2952 callbacks, zero
+leaks; actual pas2js5642/10/2760. Writer controls656/12/409 native and174/4/92
+portable stay unchanged. Twelve frozen portable source trace digests/counts and
+decoded outputs/cursors match. The local65536-scalar escaped-astral probe changes
+10130ms to18ms; literal453ms to19ms, escaped NUL462ms to8ms. These are local
+observations, not latency guarantees. Actual native card/CLI parity and published
+Linux/extracted consumers are still required before acceptance. No criterion or
+counter reset is inferred. The one-time host script remains unexecuted pending
+the operator; no browser-policy bypass, listener or live answer mutation occurs.
+
 ## Shared bulk JSON publication accepted - 2026-10-28
 
 Previous goal turn is progress at published `ae91789`, followed by verified wait

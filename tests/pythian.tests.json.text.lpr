@@ -26,7 +26,7 @@ program pythian_tests_json_text;
 {$mode delphi}{$H+}
 
 uses
-  SysUtils, pythian.audio, pythian.text, pythian.json.text, pythian.progress
+  SysUtils, StrUtils, pythian.audio, pythian.text, pythian.json.text, pythian.progress
   {$ifndef pas2js}, fpjson, pythian.tools.json{$endif};
 
 type
@@ -36,6 +36,8 @@ type
     Stage: String;
     Final: Boolean;
     Marker: Exception;
+    SourceLast: Int64;
+    SourceFinal: Int64;
     procedure Observe(const AWork: TWorkProgress);
   end;
 
@@ -60,6 +62,21 @@ begin
   Inc(Calls);
   Check((AWork.Done >= 0) and (AWork.Total >= 0) and
     ((AWork.Total = 0) or (AWork.Done <= AWork.Total)), 'Invalid JSON progress count');
+  if AWork.Stage = 'json_string_bytes' then
+  begin
+    if AWork.Done = 0 then
+    begin
+      SourceLast := 0;
+      SourceFinal := 0;
+    end;
+    Check((AWork.Units = wuBytes) and (AWork.Done >= SourceLast) and
+      (AWork.Done - SourceLast <= 1027), 'Encoded source-byte checkpoint changed');
+    SourceLast := AWork.Done;
+    if AWork.Total > 0 then
+    begin
+      SourceFinal := AWork.Total;
+    end;
+  end;
   LFinal := (AWork.Total > 0) and (AWork.Done = AWork.Total);
   if (AWork.Stage = Stage) and (AWork.Done > 0) and (LFinal = Final) then
   begin
@@ -97,6 +114,99 @@ begin
   end;
   Check(LRejected, 'Malformed scalar/escape/budget admitted');
   Check((LPosition = 1) and (LValue = 'prior'), 'Rejected decoder published output/cursor');
+end;
+
+procedure CheckLongStorage;
+const
+  CCount = 17003;
+var
+  LSource: TScalarText;
+  LExpected: TScalarText;
+  LValue: TScalarText;
+  LDocument: TScalarText;
+  LPosition: Integer;
+  LMaximum: Integer;
+  LSourceBytes: Integer;
+  I: Integer;
+  J: Integer;
+begin
+  for I := 0 to 3 do
+  begin
+    case I of
+      0:
+        begin
+          LExpected := StringOfChar('a', CCount);
+          LSource := '"' + LExpected + '"';
+          LMaximum := CCount;
+          LSourceBytes := CCount + 2;
+        end;
+      1:
+        begin
+          LExpected := StringOfChar(#0, CCount);
+          LSource := '"' + DupeString('\u0000', CCount) + '"';
+          LMaximum := CCount;
+          LSourceBytes := CCount * 6 + 2;
+        end;
+      2:
+        begin
+          LExpected := DupeString(ScalarText($10000), CCount);
+          LSource := '"' + DupeString('\uD800\uDC00', CCount) + '"';
+          LMaximum := CCount * 4;
+          LSourceBytes := CCount * 12 + 2;
+        end;
+      3:
+        begin
+          LExpected := DupeString(ScalarText($E000) + ScalarText($10000), CCount);
+          LSource := '"' + LExpected + '"';
+          LMaximum := CCount * 7;
+          LSourceBytes := LMaximum + 2;
+        end;
+    end;
+    ReadCase(LSource, LExpected, LMaximum);
+    Check(GObserver.SourceFinal = LSourceBytes, 'Final encoded UTF-8 source bytes differ');
+    RejectCase(LSource, LMaximum - 1);
+    LDocument := 'skip' + LSource + 'tail';
+    LPosition := 5;
+    LValue := ReadJSONString(LDocument, LPosition, LMaximum, GObserver.Observe);
+    Check((CompareScalarText(LValue, LExpected, LMaximum, True) = 0) and
+      (LPosition = Length(LSource) + 5), 'Offset decode changed text/cursor');
+    Check(GObserver.SourceFinal = LSourceBytes, 'Offset decode counted unrelated prefix/suffix');
+    for J := 0 to 1 do
+    begin
+      GObserver.Stage := 'json_string_bytes';
+      GObserver.Final := J = 1;
+      GObserver.Marker := Exception.Create('Big Boss original long decoder marker');
+      LValue := 'prior';
+      LPosition := 5;
+      try
+        try
+          LValue := ReadJSONString(LDocument, LPosition, LMaximum, GObserver.Observe);
+          Check(False, 'Long decoder ignored original abort');
+        except
+          on LException: Exception do
+          begin
+            if LException <> GObserver.Marker then
+            begin
+              raise;
+            end;
+            GObserver.Marker := nil;
+            Inc(GAborts);
+          end;
+        end;
+        Check((LValue = 'prior') and (LPosition = 5),
+          'Long decoder published output/cursor on abort');
+      finally
+        GObserver.Marker.Free;
+        GObserver.Marker := nil;
+        GObserver.Stage := '';
+      end;
+      ReadCase(LSource, LExpected, LMaximum);
+    end;
+  end;
+  LSource := '"' + StringOfChar('x', CCount);
+  RejectCase(LSource, CCount + 8);
+  RejectCase(LSource + '\uD800"', CCount + 8);
+  RejectCase(LSource + #0 + '"', CCount + 8);
 end;
 
 procedure CheckStrings;
@@ -307,6 +417,7 @@ begin
   GObserver := TObserver.Create;
   try
     CheckStrings;
+    CheckLongStorage;
     {$ifndef pas2js}
     CheckNative;
     {$endif}

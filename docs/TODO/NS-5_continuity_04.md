@@ -60,6 +60,20 @@ new scientific tuning, seed sweep or larger listening campaign.
 
 **Dev Notes:**
 
+- 2026-10-28, Big Boss AC5 prerequisite audit: the in-app browser is present;
+  authenticated GitHub and viewport control are available. Acquiring its retained
+  Pythian QA error tab still fails URL-policy authority/protocol checks. No blocked
+  content or workaround is used. QA has no listener. The fixed-program firewall
+  rule also retains a retired DHCP address; this unelevated session cannot update
+  it. Prepare a one-time exact-program/port, Private/LocalSubnet host-rule repair
+  and request the operator's administrator action, retaining existing approvals
+  across future address changes. Script syntax is checked but it has not run.
+  No browser playback, new native rerun, service change or operator-answer write
+  occurs. Preserve the older evidence below; AC5 stays open. This bounded batch
+  closes no criterion; nonclosing1 from entry0. Continue independent core work
+  while the host/browser handoff is pending, without inventing an empty inventory
+  or claiming that DOM execution is real browser acceptance.
+
 - 2026-10-27, Big Boss: the separate [long-playback connection](NS-5_continuity_05.md)
   now reuses the same primary index/session and retains source-bound excerpt
   evidence. Its native/DOM checks do not close this finite route's actual

@@ -11,7 +11,7 @@ buffer and does not establish linear storage work on long tokens. Native scalar
 correctness and small portable controls do not qualify long-token cost.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
-Big Boss works solo. Execution status: ready, with
+Big Boss works solo. Execution status: implementation under qualification, with
 [shared output staging](DONE/NS-6_serialization_01.md) accepted at `ae91789`/Ubuntu CI461.
 Consolidate decoded
 text staging with the primary bounded buffer, retaining target-specific storage
@@ -45,6 +45,42 @@ replacement inside the scalar loop, changed byte/source progress or a separate g
   buffer rather than adding a decoder-specific chunk builder.
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss local qualification: `ReadJSONString` now borrows the
+  primary TJSONTextBuffer for decoded staging, removing its separate growth and
+  per-character copy implementation. Supply no emitted-byte observer to staging:
+  the existing decoder observer still reports encoded source UTF-8 bytes only.
+  Final shrink/join precedes the final source callback and caller publication;
+  it remains synchronous. Native first growth uses16 units rather than4096 so
+  short parsed tokens do not each allocate a page. Budget exceptions retain
+  ETextValidation and now use shared text-budget wording; scalar/escape policy
+  and valid bytes do not change.
+  Checked Win32/Win64 each pass5859 checks/14 original abort-retries/2952 callbacks,
+  zero leaks; actual pas2js5642/10/2760. Existing writer controls remain656/12/409
+  per native target and174/4/92 portable. Long literal, escaped NUL, escaped astral
+  and literal BMP/astral cases include byte boundaries, offset cursors, late
+  malformed input and original interior/final cancellation with retained state.
+
+- 2026-10-28, Big Boss measured frozen-source traces: actual pas2js input sizes
+  1024/4096/16384/65536 scalars retain all12 original callback-count/source-byte/
+  trace-digest records and exact decoded text/cursors. At65536 scalars the local
+  literal case changes453ms to19ms, escaped NUL462ms to8ms, and escaped astral
+  10130ms to18ms. These are single local probes, not latency bounds or musical
+  results. Original source is frozen from `6610fe8` under the dedicated E-drive
+  `json-read-20261028-boss` run root. Preserve the initial probe compile failure
+  for an unavailable portable clock symbol; the repaired probe uses the same
+  portable clock on both baseline and candidate. Published Linux and extracted
+  consumers remain required; entry nonclosing1 has not reset.
+
+- 2026-10-28, Big Boss selection after actual Studio prerequisite recheck:
+  continuity_04's real-browser gate remains unavailable under explicit URL-policy
+  rejection and a stale host firewall scope requiring administrator action.
+  Keep that handoff pending and advance this independent core prerequisite.
+  Batch AC1–3, entry nonclosing1. Reuse the qualified primary buffer, preserve
+  decoder source counts and original caller cursor/output, and measure actual
+  increasing-size portable inputs. Stop on normalization, copied JSON grammar,
+  separate storage or another required gap. No musical credit or counter reset
+  follows from selecting this task; published consumers remain required.
 
 - 2026-10-28, Big Boss discovery during serialization_01: actual generated
   `jw28-js/pythian.tests.json.write.js`, line2229, assigns `LBuffer` through
