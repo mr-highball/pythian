@@ -12,6 +12,37 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Generic solve observation accepted — 2026-10-28
+
+The previous goal turn is progress:68975ac publishes the fixed-path/DHCP firewall
+guidance and records current local qualification. It does not install host rules
+or close solver acceptance. This turn follows the existing bounded reassessment;
+entry delivery nonclosing2 is preserved while its exact live CI handles run.
+
+Big Boss confirms all five [upstream CI54 jobs](https://github.com/mr-highball/wfc/actions/runs/40732166290)
+pass at c496b1d, terminal Success22m17s. macOS passes22m12s, development FPC13m51s
+and actual pas2js/server/browser11m51s; stable Linux/Windows also pass.
+[Pythian CI464](https://github.com/mr-highball/pythian/actions/runs/40732725755)
+passes at57df550, job122973041029 terminal Success14m47s: integration13m29s and
+both extracted consumers45s. Verify that later68975ac changes documentation only.
+Both current clean Win64 extracted packages pass107/159 owned units and120/279
+inventory entries, with hashes retained in task14/private validation packet.
+All38 previous audio/model artifacts, including four caller artifacts, match.
+Checked current Win32/Win64 layer consumers pass466607 checks/149 original abort-
+retries each, zero leaks. Current actual native/pas2js token/index consumers pass
+5630/12/2016 and exactly match all128 cells/3079 replay-text characters.
+
+Accept [task14](TODO/DONE/NS-6_observability_14.md) AC1–3 and its DONE prerequisites;
+move it, incoming links, both task ledgers and milestone accounting together.
+Counts52 open/80 DONE/132 total, NS-6 14 open. Overall52.45/47.55 and goal values
+100/90/25/70/14/54 are unchanged. Real closure resets delivery nonclosing2 to0;
+both rejected qualification cycles and scientific stop counters remain history.
+The separate upstream branch is unmerged and dependency source is untouched here.
+Parent04 still owns retained capture/copy, stream/voice, batch and inference/
+operator gaps. Actual Studio/phone acceptance remains pending on its existing
+host/browser handoff. No new experiment, service/firewall/private-source/answer
+change or musical credit. Full goal active; solo Big Boss verification.
+
 ## Repeated firewall approvals rechecked — 2026-10-28
 
 The operator's screenshot names Nyx's server, not Pythian's. Big Boss's read-only
@@ -114,7 +145,7 @@ Task04's retained generation needs a real generic cancellation boundary. A pinne
 public WFC probe throws from BeginTrace yet returns solved=True, aborted=False,
 failed trace delivery and committed `a`, with zero leaks. That is its documented
 trace behavior, not a trace bug. The separate expansion checkout has no solver
-work observer. Create [task14](TODO/NS-6_observability_14.md) as a zero-credit
+work observer. Create [task14](TODO/DONE/NS-6_observability_14.md) as a zero-credit
 prerequisite and notify the user of separate branch codex/pythian-solve-progress,
 starting from reviewed WFC6b419e6. No dependency source is edited here and the
 unrelated expansion checkout remains intact.

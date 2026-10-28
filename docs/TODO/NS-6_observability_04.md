@@ -36,11 +36,13 @@ consumers. Final shrink/join, native copy and platform writes retain synchronous
 boundaries. Portable decoder storage is now qualified at `1c52398`/Ubuntu CI462;
 whole AC2 stays open for other retained metadata/graph/publication work.
 
-Whole AC1 stays open for later provider/session replacement, generation and capture.
-The demonstrated generic solve cancellation gap is owned by
-[observability_14](NS-6_observability_14.md) in the separate WFC repository.
-Its trace sink deliberately contains receiver failures; wrapper callbacks do not
-provide interior cancellation or certify atomic accepted generation.
+Generic solve observation and optional provider/session forwarding are qualified
+at Pythian57df550/WFCc496b1d after five-job upstream CI54, downstream CI464 and
+both clean native extracted packages. [observability_14 — DONE](DONE/NS-6_observability_14.md)
+preserves original cancellation, accepted-state/retry replay and independent
+trace failures. Whole AC1 remains open for retained capture/copy, later stream/
+voice construction and other owned publication work. Do not put a cancellable
+wrapper callback after an already accepted graph swap.
 AC2 batch evaluation and AC3 inference/operator reporting remain required. These
 component qualifications close neither this parent nor musical acceptance and
 earn no additional credit. The actual hash criterion closure resets the delivery
@@ -71,8 +73,8 @@ Naming a task or narrowing a component does not reset that count.
 
 **Blockers**
 
-- [Generic WFC solving](NS-6_observability_14.md) — required for cancellable
-  retained generation; independent batch/inference work can proceed separately.
+- [Generic WFC solving — DONE](DONE/NS-6_observability_14.md) — accepted primary
+  solve/bridge prerequisite; retained capture/publication coverage remains here.
 - [Shared callbacks and audit — DONE](DONE/NS-6_observability_01.md).
 - [Provider/context metadata reuse — DONE](DONE/NS-6_metadata_01.md).
 - [Layer request/graph preparation — DONE](DONE/NS-6_observability_11.md).
@@ -89,6 +91,13 @@ Naming a task or narrowing a component does not reset that count.
   shared staging with exact original source-byte progress.
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss: accept generic solve prerequisite14 at57df550/c496b1d
+  after exact terminal CI54/CI464 and current native/actual portable consumers.
+  Both trace and package-order rejections remain recorded. This closes the
+  prerequisite's AC1–3 and resets delivery nonclosing2 to0; it does not close
+  broad parent AC1–3 or add musical credit. Capture/copy remains synchronous;
+  remaining cancellation must preserve both accepted graph and caller output.
 
 - 2026-10-28, Big Boss: decoder storage prerequisite passes Ubuntu CI462 at
   `1c52398`, integration13m1s and extracted consumers44s, terminal Success14m9s.

@@ -1,11 +1,11 @@
 # NS-6_observability_14 — Observe and cancel generic WFC solving
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
 Supply the generic solver prerequisite for retained generation in
-[observability_04](NS-6_observability_04.md). The existing WFC trace sink deliberately
+[observability_04](../NS-6_observability_04.md). The existing WFC trace sink deliberately
 contains receiver exceptions and therefore cannot implement cancellation. A
 domain-independent pinned-source reproduction raises from BeginTrace yet returns
 a solved, committed graph with failed trace delivery. Preserve that diagnostic
@@ -28,14 +28,34 @@ notified before upstream implementation. Do not edit dependency source here or
 merge another repository's branch. Private reproduction and build evidence use
 the dedicated E-drive `wfc-solve-progress-20261028-boss` roots.
 
-Execution status (2026-10-28): candidate c496b1d follows a combined trace/work
-contract rejection at predecessor29182bb, despite its green CI53 and downstream
-CI463. The first cancelled work callback could cause trace rollback/footer before
-BeginTrace; the public reproduction reports0/1/1. Move BeginDelivery earlier and
-add healthy/failing receiver controls. Local native/pas2js44831/58 pass. CI54 and
-new downstream integration/extraction remain required. After two nonclosing
-candidate qualification cycles, reassessment limits work to this repair and its
-verification; delivery nonclosing2, no counter reset or scope expansion.
+Accepted 2026-10-28 by Big Boss, solo verification. AC1–3 and prerequisites pass
+at Pythian `57df5504f18f3304d26f162deebc5601e862d626` with explicit WFC pin
+`c496b1d0a8a7570edd34aebaa9982bc32cc7fcf7`. The upstream branch remains unmerged.
+
+- AC1: Optional borrowed prepare/search/commit observation reaches all six normal,
+  negotiated, restarted and selective solve families. Counts are phase/pass-local;
+  unknown totals and synchronous allocation/copy/RTL/planning/connectivity
+  residuals are documented. Diagnostic receiver failures retain their contract.
+- AC2: Checked generic Win32/Win64 and actual pas2js each pass44831 checks/58
+  original abort-retries, including first-callback trace ordering and contained
+  trace receiver failure. State, domains, flags, selection, random streams and
+  retry remain exact; native runs have zero leaks. Frozen nonlinear transcript
+  hashes36DF8F92/6F76591D and12 old-pin replay cases remain retained evidence.
+- AC3: All five [upstream CI54 jobs](https://github.com/mr-highball/wfc/actions/runs/40732166290)
+  pass at the exact pin, total22m17s, including actual browser conformance.
+  [Pythian CI464](https://github.com/mr-highball/pythian/actions/runs/40732725755)
+  job122973041029 passes14m47s, integration13m29s and both extracted consumers45s.
+  Both clean Win64 extracted packages pass107/159 owned units and120/279 inventory
+  entries. Current checked layer consumers pass466607/149 per native target,
+  zero leaks; actual native/pas2js direct consumers each pass5630 checks/12 abort-
+  retries/2016 callbacks with exact128 token/index cells. All38 prior packaged
+  audio/model artifacts are unchanged.
+
+The task adds no musical credit. Accepting it changes counts to52 open/80 DONE/
+132 total, NS-6 14 open;52.45/47.55 remains unchanged. Real criterion closure
+resets delivery nonclosing2 to0 after the recorded bounded reassessment. Parent04
+still owns retained capture/copy, stream/voice and batch/inference/operator gaps.
+No actual Studio, physical listening or whole-goal acceptance follows.
 
 **Acceptance Criteria:**
 
@@ -57,10 +77,26 @@ verification; delivery nonclosing2, no counter reset or scope expansion.
 
 **Blockers**
 
-- [Generic WFC preparation — DONE](DONE/NS-6_observability_12.md).
-- [Generic WFC learning — DONE](DONE/NS-6_observability_13.md).
+- [Generic WFC preparation — DONE](NS-6_observability_12.md).
+- [Generic WFC learning — DONE](NS-6_observability_13.md).
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss: preserve both nonclosing qualification cycles. CI52
+  rejected package ordering before solving. Predecessor29182bb then passed CI53
+  and Pythian736a313/CI463, but the combined contract audit reproduced trace
+  begins0/events1/ends1 when the first work callback cancelled. Reassessment
+  restricted work to the demonstrated ordering repair and qualification.
+  c496b1d establishes BeginDelivery first; the maintained healthy/failing trace
+  regression now passes with original work cancellation intact. Final CI54 and
+  CI464 qualify this repaired source, not the predecessor's green status.
+  Detailed logs, original failures, private probes and current parity packet
+  remain under E-drive wfc-solve-progress-20261028-boss and
+  solve-bridge-20261028-boss roots. Core/full ZIP SHA256:
+  `34cb061f3548b0f20b7d3ff525ca647d48237d9f47218557bbdec0d014e45cbb` /
+  `201c9e2e39522a89da8523c48876b16a8365572d4450a71f21acff26a2b75e38`.
+  No dependency source, service, private recording, answer or scientific policy
+  is changed here. Later dated candidate statements below are historical gates.
 
 - 2026-10-28, Big Boss: downstream candidate uses one progress bridge and optional
   native consumer forwarding. Win32/Win64 each pass466607 checks/149 original

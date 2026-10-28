@@ -39,7 +39,8 @@ Studio callers, plus existing streaming, inference and library contracts.
 | Offline render, separation, export and evaluation | Primary native engines report measured windows/cells/frames/comparisons; maintained operators forward callbacks | [observability_03 — DONE](TODO/DONE/NS-6_observability_03.md); scoped phases below |
 | Retained corpus archive and WFC model validation | Actual feature/attachment/hash bytes and owned lookup/state/token validation are observable through the native archive operator | [observability_05 — DONE](TODO/DONE/NS-6_observability_05.md); synchronous residuals below |
 | WFC chord composition planning | Actual compatibility checks and target visits, unknown traversal total until counted; prior caller output preserved on abort | [observability_06 — DONE](TODO/DONE/NS-6_observability_06.md) |
-| Provider admission, registry and compatible-session preparation | Optional callbacks reach source grids, choice decoding/validation, registry searches, configuration comparisons and actual capacity scans, through the semantic consumer | [observability_04](TODO/NS-6_observability_04.md); provider CI456 and context CI458 components qualified. Later replacement/generation, batch and inference reporting remain open |
+| Provider admission, registry and compatible-session preparation | Optional callbacks reach source grids, choice decoding/validation, registry searches, configuration comparisons and actual capacity scans, through the semantic consumer | [observability_04](TODO/NS-6_observability_04.md); provider CI456 and context CI458 components qualified. Solve forwarding now qualifies below; retained capture/publication, batch and inference/operator reporting remain open |
+| Generic WFC solving and Pythian forwarding | Borrowed phase/pass-local prepare/search/commit visits, unknown totals, original cancellation and graph/RNG rollback; one primary adapter bridge for acoustic and finite/retained layer consumers | [task14 — DONE](TODO/DONE/NS-6_observability_14.md); exact WFCc496b1d/Pythian57df550 pass CI54/CI464 and native/actual pas2js replay. Capture/copy and later streams/voices remain synchronous residuals under parent04 |
 | Retained style distributions/cards and native asset comparison | Optional callbacks reach actual bins/counts/normalization, bindings/traits, JSON scanning/value visits, emitted bytes/items and primary asset hashing | Shared JSON/text accepted at `1ed5e34`/CI460; [bulk publication](TODO/DONE/NS-6_serialization_01.md) accepted at `ae91789`/CI461 with extracted consumers. Final shrink/join/copy remain synchronous; [decoder storage](TODO/DONE/NS-6_json-text_02.md) accepted at `1c52398`/CI462 |
 | Primary analysis in pas2js | Full callback consumer executes shared primary algorithms; optional timer adapter yields between bounded WAV analysis batches | [portability_01 — DONE](TODO/DONE/NS-6_portability_01.md); actual browser presentation and WASM remain unqualified |
 | Primary synthesis in pas2js | Actual shared synth/instrument/note/chord/grain cases execute with measured callbacks, abort/retry and exact supported clocks | [portability_03 — DONE](TODO/DONE/NS-6_portability_03.md), [timing repair — DONE](TODO/DONE/NS-6_portability_04.md); synchronous Node consumers, no browser/WASM claim |
@@ -75,18 +76,22 @@ pending constraints are published. This does not instrument model application,
 public domain extraction, solving or capture, and promises no callback latency
 bound, browser yield or whole-operation completion percentage.
 
-## Generic WFC solve observation candidate — 2026-10-28
+## Accepted generic WFC solve observation — 2026-10-28
 
-[Task14](TODO/NS-6_observability_14.md) follows a demonstrated generic gap:
+[Task14 — DONE](TODO/DONE/NS-6_observability_14.md) closes a demonstrated generic gap:
 WFC's diagnostic trace receiver contains exceptions and cannot cancel a solve.
 Big Boss's separate `codex/pythian-solve-progress` branch adds a distinct optional
 work observer to normal, negotiated, restarted and selective generation. Preserve
 its independent trace contract and original search/budget policy. Predecessor
 29182bb passes CI53, but the combined trace/work lifecycle fails the final audit.
-Candidate c496b1d establishes diagnostic delivery before the first cancellable
-work callback; [CI54](https://github.com/mr-highball/wfc/actions/runs/40732166290)
-and new downstream integration/extracted qualification remain pending. Preserve
-both the earlier package-order rejection and trace-header reproduction.
+c496b1d establishes diagnostic delivery before the first cancellable work callback.
+All five [CI54 jobs](https://github.com/mr-highball/wfc/actions/runs/40732166290)
+pass at that exact pin; Pythian57df550 passes
+[CI464](https://github.com/mr-highball/pythian/actions/runs/40732725755) integration
+and both extracted consumers. Checked native/actual pas2js cancellation and
+exact token/index replay, clean Win64 packages and38 prior packaged audio/model
+artifacts also pass. Preserve both the earlier package-order rejection and
+trace-header reproduction; green predecessor CI53 was insufficient acceptance.
 
 The one shared `pythian.wfc.progress` bridge maps companion prepare/search/commit
 visits into primary work records. Pipeline Pass0 and one-based layer Pass1..N
