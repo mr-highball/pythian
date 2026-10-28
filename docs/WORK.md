@@ -12,6 +12,67 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Retained inference corpus observation candidate — 2026-10-28
+
+Task15's primary reader/auditor implementation is locally qualified. Constructor
+work counts owned metadata visits, including cross-source identity comparisons;
+totals stay unknown until counted. Per-read observers are borrowed, nested hash/
+verification work is scoped by one-based entry ordinal, and accepted batches are
+private until the last callback returns. Any failed read releases its file and
+poisons the cursor; reopening gives exact replay. Reentry is rejected before
+mutation. No callback is retained and no old out-slot clearing shim remains.
+
+Win32/Win64 each pass159490 checks/34 abort cases with zero leaks, including33
+exact marker exceptions, escaping/caught reentry, borrowed lifetimes, private
+batch/index preservation, exclusive file reopening and full300-row scope/bit
+replay. The maximum4096-entry metadata control counts8394752 visits/32794
+callbacks. Concurrent local runs take10281/11422ms; those are observations,
+not latency guarantees. Three authored artifact hashes match across targets.
+The old malformed-input fixture expected index clearing; retain its failed old
+expectation and update it for the documented preserved-index/failed-cursor
+contract. Original corpus controls pass on both targets. Updated shared-unit
+supervisor1056/14, WAV geometry and append controls pass, zero leaks.
+
+The maintained auditor reuses primary JSON/hash APIs and emits work only to
+stderr. The final report exactly matches the frozen native consumer on two
+adjacent actual backend scopes/200 observations: SHA256
+e7a9e55726977b025e773bd3d925c7e0036c9df6a41fd3371e458f8bd7dc6a6a.
+The1024-row escaped-label pretty-format probe emits809208 bytes in31ms without
+heap tracing,860ms with it. Retain bounded RTL formatting and native I/O as named
+synchronous residuals; do not treat heap-trace cost as an unqualified production
+timing. User data, science policy and observation bytes are unchanged.
+
+Predecessor9b5a437 passes published CI465, terminal Success14m52s/job14m48s,
+including integration/extracted packages. Current task15 code still needs its
+own published qualification before acceptance; predecessor green is insufficient.
+Keep task and parent04 open, delivery nonclosing entry1 unchanged while this
+batch's final gate is live. Counts53/80/133, NS6 15 open;52.45/47.55 unchanged.
+No service/firewall/private-source/answer change or browser/audio QA. Goal active,
+Big Boss solo, with no musical credit.
+
+## Retained inference corpus visibility selected — 2026-10-28
+
+Previous goal turn is progress:9b5a437 publishes the actual WAV supervisor /
+artifact progress component and a linked owner for the distinct corpus gap.
+Its local worker/abort/replay gates pass; published CI465 is checked separately.
+Delivery nonclosing enters1, with scientific stops unchanged. Least-complete
+NS5 retains its supported-context/reference prerequisites and pending existing
+listening/browser handoffs; no new source acquisition or experiment is selected.
+
+Select task15 AC1–3. Deliver call-scoped metadata visits, lazy hash/row validation
+and bounded corpus read callbacks through the primary implementation and actual
+native auditor. Preserve original source/scope/group and observation identities,
+private batch publication, original exceptions and explicit failed-reader/reopen
+semantics. Closing evidence: native cancellation/reentry/clean retry, original
+corpus controls and byte-exact actual auditor report against the frozen consumer,
+with exact artifact replay and no owned leaks. Reuse primary hash/JSON helpers;
+name synchronous RTL/file/formatting residuals rather than inventing percentages.
+Stop at changed scientific semantics, skipped scopes, partial results, dependency
+edits or another distinct prerequisite. The frozen auditor and all new artifacts
+use dedicated E-drive inference-corpus-progress-20261028-boss roots. New task/
+batch names do not reset the counter. Big Boss is solo;53/80/133 and52.45/47.55
+remain unchanged until genuine criterion closure.
+
 ## Native WAV inference progress component; corpus prerequisite remains — 2026-10-28
 
 Big Boss implements shared optional work callbacks in the Win64 supervisor and

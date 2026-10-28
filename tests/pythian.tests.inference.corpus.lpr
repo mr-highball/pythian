@@ -210,6 +210,8 @@ begin
   Result := nil;
   LReader := TInferenceCorpusReader.Create(AEntries);
   try
+    LEntryIndex := -1;
+    LBatch := nil;
     while LReader.ReadBatch(LEntryIndex, LBatch) do
     begin
       Check((LEntryIndex >= 0) and (LEntryIndex < LReader.EntryCount),
@@ -280,8 +282,21 @@ begin
         LRejected := True;
     end;
     Check(LRejected, 'Wrong artifact binding or center sequence rejects');
-    Check((Length(LBatch) = 0) and (LIndex = -1),
-      'Failed artifact does not expose a batch');
+    Check((Length(LBatch) = 0) and (LIndex = 99),
+      'Failed artifact preserves both caller slots');
+    LRejected := False;
+    try
+      LReader.ReadBatch(LIndex, LBatch);
+    except
+      on E: EAudio do
+      begin
+        Check(Pos('must be reopened', E.Message) > 0,
+          'Malformed artifact leaves an explicit failed cursor');
+        LRejected := True;
+      end;
+    end;
+    Check(LRejected and (LIndex = 99) and (Length(LBatch) = 0),
+      'Failed cursor cannot skip the rejected scope');
   finally
     LReader.Free;
   end;

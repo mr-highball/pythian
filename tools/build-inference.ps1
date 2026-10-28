@@ -58,6 +58,8 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Inference append telemetry fixture compilation failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.inference.progress.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Inference supervisor progress fixture compilation failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.inference.corpus.progress.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Inference corpus progress fixture compilation failed' }
   & $compilerPath @compilerArgs 'tools/pythian.inference.corpus.audit.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Inference corpus auditor compilation failed' }
   Write-Output "Pascal inference consumer and backend fixtures compiled: $buildRoot"

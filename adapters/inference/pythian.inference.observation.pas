@@ -136,7 +136,8 @@ procedure ValidateInferenceObservation(const AObservation: TInferenceObservation
 function InferenceCount(const ARequest: TInferenceRequest): Int64;
 function InferenceIdentityText(const AIdentity: TInferenceIdentity): String;
 procedure CheckInferenceCancel(const ACancel: TInferenceCancel);
-function HashInferenceFile(const AFileName: String): String;
+function HashInferenceFile(const AFileName: String;
+  const AProgress: TWorkProgressCallback = nil): String;
 function HashInferenceStream(const AStream: TStream; const ACount: Int64;
   const ACancel: TInferenceCancel;
   const AProgress: TWorkProgressCallback = nil): String;
@@ -309,13 +310,14 @@ begin
   end;
 end;
 
-function HashInferenceFile(const AFileName: String): String;
+function HashInferenceFile(const AFileName: String;
+  const AProgress: TWorkProgressCallback): String;
 var
   LStream: TFileStream;
 begin
   LStream := TFileStream.Create(AFileName, fmOpenRead or fmShareDenyWrite);
   try
-    Result := Sha256Stream(LStream, LStream.Size);
+    Result := Sha256Stream(LStream, LStream.Size, AProgress);
   finally
     LStream.Free;
   end;

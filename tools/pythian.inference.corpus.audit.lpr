@@ -31,6 +31,9 @@ uses
   SysUtils,
   fpjson, pythian.tools.json,
   jsonparser,
+  pythian.text,
+  pythian.progress,
+  pythian.tools.progress,
   pythian.wave.read,
   pythian.inference.observation,
   pythian.inference.corpus;
@@ -90,7 +93,7 @@ end;
 
 procedure ValidateSource(const AEntry: TJSONObject;
   var ABindings: TCorpusSourceBindings; out ARate, AChannels: Integer;
-  out AFrames: Int64);
+  out AFrames: Int64; const AProgress: TWorkProgressCallback);
 var
   LSource: String;
   LFileName: String;
@@ -121,7 +124,7 @@ begin
   begin
     raise Exception.Create('Corpus source WAV is missing: ' + LFileName);
   end;
-  if HashInferenceFile(LFileName) <> LHash then
+  if HashInferenceFile(LFileName, AProgress) <> LHash then
   begin
     raise Exception.Create('Corpus source WAV SHA-256 differs: ' + LSource);
   end;
@@ -148,7 +151,8 @@ begin
 end;
 
 function ParseEntry(const AData: TJSONData; const AEstimator: String;
-  const APolicy: String; var ABindings: TCorpusSourceBindings):
+  const APolicy: String; var ABindings: TCorpusSourceBindings;
+  const AProgress: TWorkProgressCallback):
   TInferenceCorpusEntry;
 var
   LObject: TJSONObject;
@@ -160,7 +164,7 @@ begin
     raise Exception.Create('Corpus manifest entry is not an object');
   end;
   LObject := TJSONObject(AData);
-  ValidateSource(LObject, ABindings, LRate, LChannels, LFrames);
+  ValidateSource(LObject, ABindings, LRate, LChannels, LFrames, AProgress);
   Result := Default(TInferenceCorpusEntry);
   Result.GroupId := RequiredString(LObject, 'group_id');
   Result.SourceId := RequiredString(LObject, 'source_id');
@@ -208,7 +212,8 @@ begin
 end;
 
 function LoadEntries(const AFileName: String;
-  var ABindings: TCorpusSourceBindings): TInferenceCorpusEntries;
+  var ABindings: TCorpusSourceBindings;
+  const AProgress: TWorkProgressCallback): TInferenceCorpusEntries;
 var
   LFile: TStringList;
   LRoot: TJSONData;
@@ -217,13 +222,17 @@ var
   LEstimator: String;
   LPolicy: String;
   LIndex: Integer;
+  LText: TScalarText;
 begin
   Result := nil;
   LFile := TStringList.Create;
   LRoot := nil;
   try
+    ReportWork(AProgress, 'inference_manifest_load', wuItems, 0, 1);
     LFile.LoadFromFile(AFileName);
-    LRoot := ParseNativeJSON(LFile.Text);
+    ReportWork(AProgress, 'inference_manifest_load', wuItems, 1, 1);
+    LText := LFile.Text;
+    LRoot := ParseNativeJSON(LText, Length(LText), 0, AProgress);
     if LRoot.JSONType <> jtObject then
     begin
       raise Exception.Create('Corpus manifest root is not an object');
@@ -241,10 +250,13 @@ begin
       raise Exception.Create('Corpus manifest entry count is outside bounds');
     end;
     SetLength(Result, LItems.Count);
+    ReportWork(AProgress, 'inference_manifest_entries', wuItems, 0, LItems.Count);
     for LIndex := 0 to LItems.Count - 1 do
     begin
       Result[LIndex] := ParseEntry(LItems.Items[LIndex],
-        LEstimator, LPolicy, ABindings);
+        LEstimator, LPolicy, ABindings, AProgress);
+      ReportWork(AProgress, 'inference_manifest_entries', wuItems,
+        LIndex + 1, LItems.Count);
     end;
   finally
     LRoot.Free;
@@ -265,14 +277,20 @@ var
   LReport: TJSONObject;
   LRows: TJSONArray;
   LRow: TJSONObject;
+  LProgress: TConsoleWorkProgress;
+  LFormatted: TJSONStringType;
 begin
   LBindings := nil;
-  LEntries := LoadEntries(AManifestFile, LBindings);
-  SetLength(LCounts, Length(LEntries));
-  LReader := TInferenceCorpusReader.Create(LEntries);
+  LReader := nil;
+  LProgress := TConsoleWorkProgress.Create;
   try
+    LEntries := LoadEntries(AManifestFile, LBindings, LProgress.Observe);
+    SetLength(LCounts, Length(LEntries));
+    LReader := TInferenceCorpusReader.Create(LEntries, LProgress.Observe);
     LTotal := 0;
-    while LReader.ReadBatch(LEntryIndex, LBatch) do
+    LEntryIndex := -1;
+    LBatch := nil;
+    while LReader.ReadBatch(LEntryIndex, LBatch, LProgress.Observe) do
     begin
       if (LEntryIndex < 0) or (LEntryIndex >= Length(LEntries)) or
         (Length(LBatch) < 1) or (Length(LBatch) > InferenceMaximumBatch) then
@@ -285,12 +303,13 @@ begin
     LReport := TJSONObject.Create;
     try
       LReport.Add('format', 'pythian.raw-corpus.audit.v1');
-      LReport.Add('manifest_sha256', HashInferenceFile(AManifestFile));
+      LReport.Add('manifest_sha256', HashInferenceFile(AManifestFile, LProgress.Observe));
       LReport.Add('source_count', Length(LBindings));
       LReport.Add('scope_count', Length(LEntries));
       LReport.Add('observation_count', LTotal);
       LRows := TJSONArray.Create;
       LReport.Add('entries', LRows);
+      ReportWork(LProgress.Observe, 'inference_audit_entries', wuItems, 0, Length(LEntries));
       for LIndex := 0 to High(LEntries) do
       begin
         if LCounts[LIndex] <> LEntries[LIndex].Identity.ObservationCount then
@@ -298,6 +317,8 @@ begin
           raise Exception.Create('Corpus scope observation count differs');
         end;
         LRow := TJSONObject.Create;
+        { Own the row before any later hash/progress callback can raise. }
+        LRows.Add(LRow);
         LRow.Add('group_id', LEntries[LIndex].GroupId);
         LRow.Add('source_id', LEntries[LIndex].SourceId);
         LRow.Add('scope_start16k',
@@ -306,15 +327,23 @@ begin
           LEntries[LIndex].Identity.Request.ScopeEnd16k);
         LRow.Add('observations', LCounts[LIndex]);
         LRow.Add('artifact_sha256',
-          HashInferenceFile(LEntries[LIndex].ArtifactFile));
-        LRows.Add(LRow);
+          HashInferenceFile(LEntries[LIndex].ArtifactFile, LProgress.Observe));
+        ReportWork(LProgress.Observe, 'inference_audit_entries', wuItems,
+          LIndex + 1, Length(LEntries));
       end;
-      WriteLn(LReport.FormatJSON);
+      { The report has at most1024 fixed-schema rows. RTL pretty formatting and
+        stdout are synchronous platform residuals; no second JSON writer exists. }
+      ReportWork(LProgress.Observe, 'inference_audit_format', wuItems, 0, 1);
+      LFormatted := LReport.FormatJSON;
+      ReportWork(LProgress.Observe, 'inference_audit_format', wuItems, 1, 1);
+      ReportWork(LProgress.Observe, 'inference_audit_ready', wuItems, 1, 1);
+      WriteLn(LFormatted);
     finally
       LReport.Free;
     end;
   finally
     LReader.Free;
+    LProgress.Free;
   end;
 end;
 

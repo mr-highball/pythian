@@ -32,6 +32,7 @@ uses
   Classes,
   SysUtils,
   pythian.audio,
+  pythian.progress,
   pythian.inference.observation;
 
 const
@@ -48,22 +49,32 @@ type
 
   { Streams one checksummed artifact at a time. Metadata is copied and
     validated up front; each returned batch belongs only to Entry(Index).
-    Caller must retain the returned batch until finished with it. }
+    Caller must retain the returned batch until finished with it. Observers are
+    borrowed per constructor/read call, never retained. A failed read releases
+    the active file and poisons the cursor: reopen the reader to retry. }
   TInferenceCorpusReader = class
   strict private
     FEntries: TInferenceCorpusEntries;
     FNextEntry: Integer;
     FActiveEntry: Integer;
     FFileReader: TInferenceFileReader;
-    procedure ValidateEntries;
+    FReading: Boolean;
+    FFailed: Boolean;
+    FReadRows: Int64;
+    procedure ValidateEntries(const AProgress: TWorkProgressCallback);
   public
-    constructor Create(const AEntries: TInferenceCorpusEntries);
+    constructor Create(const AEntries: TInferenceCorpusEntries;
+      const AProgress: TWorkProgressCallback = nil);
     destructor Destroy; override;
     function Entry(const AIndex: Integer): TInferenceCorpusEntry;
     { Returns at most the entry's declared batch size (max 32); false means
-      all entries were consumed. A batch never crosses source/scope artifacts. }
-    function ReadBatch(out AEntryIndex: Integer;
-      out ABatch: TInferenceBatch): Boolean;
+      all entries were consumed. A batch never crosses source/scope artifacts.
+      False publishes index=-1 and an empty batch; an exception preserves both
+      caller slots. Reentry is rejected before cursor mutation. Read counts and
+      nested artifact work use one-based entry ordinals in Work.Pass. }
+    function ReadBatch(var AEntryIndex: Integer;
+      var ABatch: TInferenceBatch;
+      const AProgress: TWorkProgressCallback = nil): Boolean;
     function EntryCount: Integer;
   end;
 
@@ -71,6 +82,20 @@ implementation
 
 uses
   pythian.resample.stream;
+
+type
+  { Call-scoped forwarding only. No observer escapes into a retained reader. }
+  TInferenceEntryProgress = class
+  public
+    Callback: TWorkProgressCallback;
+    EntryOrdinal: Integer;
+    procedure Observe(const AWork: TWorkProgress);
+  end;
+
+procedure TInferenceEntryProgress.Observe(const AWork: TWorkProgress);
+begin
+  ReportWork(Callback, AWork.Stage, AWork.Units, AWork.Done, AWork.Total, EntryOrdinal);
+end;
 
 function SameRequestSettings(const ALeft, ARight: TInferenceIdentity): Boolean;
 begin
@@ -99,7 +124,7 @@ begin
 end;
 
 constructor TInferenceCorpusReader.Create(
-  const AEntries: TInferenceCorpusEntries);
+  const AEntries: TInferenceCorpusEntries; const AProgress: TWorkProgressCallback);
 begin
   inherited Create;
   if (Length(AEntries) < 1) or
@@ -108,7 +133,7 @@ begin
   FEntries := Copy(AEntries);
   FNextEntry := 0;
   FActiveEntry := -1;
-  ValidateEntries;
+  ValidateEntries(AProgress);
 end;
 
 destructor TInferenceCorpusReader.Destroy;
@@ -129,7 +154,7 @@ begin
   Result := Length(FEntries);
 end;
 
-procedure TInferenceCorpusReader.ValidateEntries;
+procedure TInferenceCorpusReader.ValidateEntries(const AProgress: TWorkProgressCallback);
 var
   LIndex, LPrior: Integer;
   LEntry, LPriorEntry: TInferenceCorpusEntry;
@@ -139,11 +164,26 @@ var
   LGroupClosed, LSourceClosed: TStringList;
   LSeenPaths: TStringList;
   LExpectedSourceFrames: Int64;
+  LVisits: Int64;
+
+  procedure Visit;
+  begin
+    Inc(LVisits);
+    if LVisits mod 256 = 0 then
+    begin
+      ReportWork(AProgress, 'inference_corpus_metadata_visits', wuItems, LVisits, 0);
+    end;
+  end;
 begin
-  LGroupClosed := TStringList.Create;
-  LSourceClosed := TStringList.Create;
-  LSeenPaths := TStringList.Create;
+  LVisits := 0;
+  LGroupClosed := nil;
+  LSourceClosed := nil;
+  LSeenPaths := nil;
   try
+    ReportWork(AProgress, 'inference_corpus_metadata_visits', wuItems, 0, 0);
+    LGroupClosed := TStringList.Create;
+    LSourceClosed := TStringList.Create;
+    LSeenPaths := TStringList.Create;
     LGroupClosed.CaseSensitive := True;
     LSourceClosed.CaseSensitive := True;
     LSeenPaths.CaseSensitive := False;
@@ -152,6 +192,7 @@ begin
     LSourceEnd := -1;
     for LIndex := 0 to High(FEntries) do
     begin
+      Visit;
       LEntry := FEntries[LIndex];
       ValidateLabel(LEntry.GroupId, 'Inference group ID');
       ValidateLabel(LEntry.SourceId, 'Inference source ID');
@@ -233,6 +274,7 @@ begin
         change while traversing the caller-provided source-order manifest. }
       for LPrior := 0 to LIndex - 1 do
       begin
+        Visit;
         LPriorEntry := FEntries[LPrior];
         if (LPriorEntry.SourceId = LEntry.SourceId) and
           ((LPriorEntry.GroupId <> LEntry.GroupId) or
@@ -259,12 +301,16 @@ begin
     LIndex := 0;
     while LIndex < Length(FEntries) do
     begin
+      Visit;
       LEntry := FEntries[LIndex];
       LPrior := LIndex;
       while (LPrior + 1 < Length(FEntries)) and
         (FEntries[LPrior + 1].GroupId = LEntry.GroupId) and
         (FEntries[LPrior + 1].SourceId = LEntry.SourceId) do
+      begin
+        Visit;
         Inc(LPrior);
+      end;
       LExpectedSourceFrames := StreamResampleFrameCount(
         LEntry.Identity.SourceFrames, LEntry.Identity.SourceRate, InferenceRate);
       if (FEntries[LIndex].Identity.Request.ScopeStart16k <> 0) or
@@ -272,6 +318,7 @@ begin
         raise EAudio.Create('Inference source scopes do not cover the exact source extent');
       Inc(LIndex, LPrior - LIndex + 1);
     end;
+    ReportWork(AProgress, 'inference_corpus_metadata_visits', wuItems, LVisits, LVisits);
   finally
     LSeenPaths.Free;
     LSourceClosed.Free;
@@ -279,33 +326,79 @@ begin
   end;
 end;
 
-function TInferenceCorpusReader.ReadBatch(out AEntryIndex: Integer;
-  out ABatch: TInferenceBatch): Boolean;
+function TInferenceCorpusReader.ReadBatch(var AEntryIndex: Integer;
+  var ABatch: TInferenceBatch; const AProgress: TWorkProgressCallback): Boolean;
 var
   LRequested: Integer;
+  LBatch: TInferenceBatch;
+  LRows: Int64;
+  LForward: TInferenceEntryProgress;
+  LNested: TWorkProgressCallback;
 begin
-  ABatch := nil;
-  AEntryIndex := -1;
-  while True do
+  if FReading then
   begin
-    if FFileReader = nil then
-    begin
-      if FNextEntry >= Length(FEntries) then
-        Exit(False);
-      FActiveEntry := FNextEntry;
-      Inc(FNextEntry);
-      FFileReader := TInferenceFileReader.Create(
-        FEntries[FActiveEntry].ArtifactFile, FEntries[FActiveEntry].Identity);
+    raise EAudio.Create('Inference corpus reader cannot reenter an active read');
+  end;
+  if FFailed then
+  begin
+    raise EAudio.Create('Failed inference corpus reader must be reopened');
+  end;
+  LForward := nil;
+  LNested := nil;
+  FReading := True;
+  try
+    try
+      if Assigned(AProgress) then
+      begin
+        LForward := TInferenceEntryProgress.Create;
+        LForward.Callback := AProgress;
+        LNested := LForward.Observe;
+      end;
+      while True do
+      begin
+        if FFileReader = nil then
+        begin
+          if FNextEntry >= Length(FEntries) then
+          begin
+            AEntryIndex := -1;
+            ABatch := nil;
+            Exit(False);
+          end;
+          FActiveEntry := FNextEntry;
+          FReadRows := 0;
+          ReportWork(AProgress, 'inference_corpus_read_rows', wuObservations, 0,
+            FEntries[FActiveEntry].Identity.ObservationCount, FActiveEntry + 1);
+          if LForward <> nil then
+          begin
+            LForward.EntryOrdinal := FActiveEntry + 1;
+          end;
+          FFileReader := TInferenceFileReader.Create(
+            FEntries[FActiveEntry].ArtifactFile, FEntries[FActiveEntry].Identity, nil, LNested);
+          Inc(FNextEntry);
+        end;
+        LRequested := FEntries[FActiveEntry].Identity.Request.BatchSize;
+        LBatch := FFileReader.ReadBatch(LRequested);
+        if Length(LBatch) > 0 then
+        begin
+          LRows := FReadRows + Length(LBatch);
+          ReportWork(AProgress, 'inference_corpus_read_rows', wuObservations, LRows,
+            FEntries[FActiveEntry].Identity.ObservationCount, FActiveEntry + 1);
+          FReadRows := LRows;
+          AEntryIndex := FActiveEntry;
+          ABatch := LBatch;
+          Exit(True);
+        end;
+        FreeAndNil(FFileReader);
+        FActiveEntry := -1;
+      end;
+    except
+      FFailed := True;
+      FreeAndNil(FFileReader);
+      raise;
     end;
-    LRequested := FEntries[FActiveEntry].Identity.Request.BatchSize;
-    ABatch := FFileReader.ReadBatch(LRequested);
-    if Length(ABatch) > 0 then
-    begin
-      AEntryIndex := FActiveEntry;
-      Exit(True);
-    end;
-    FreeAndNil(FFileReader);
-    FActiveEntry := -1;
+  finally
+    LForward.Free;
+    FReading := False;
   end;
 end;
 

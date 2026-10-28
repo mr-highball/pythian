@@ -155,6 +155,41 @@ Polling affects the check total; twelve cases preserve the exact callback marker
 and two preserve the original Boolean-cancellation exception class. This
 is engineering parity, not new recorded inference or musical acceptance.
 
+## Retained inference corpus candidate — 2026-10-28
+
+[Task15](TODO/NS-6_observability_15.md) now forwards shared work through the primary
+native corpus reader and actual auditor; final published acceptance remains open.
+`Create(Entries, Progress)` borrows the callback only while validating metadata.
+`ReadBatch(var Index, var Batch, Progress)` borrows it only for that bounded read.
+An exception preserves both caller slots, releases the active file and marks the
+reader failed. Reopen from the original entries to retry. Caught reentry leaves
+the outer read intact; an escaping error fails it. Successful EOF returns an
+empty batch and index-1. The obsolete failure-time out-slot clearing is removed.
+
+| Stage | Actual scope |
+| --- | --- |
+| `inference_corpus_metadata_visits` | Owned metadata/identity/coverage visits every256 items; total unknown until counted |
+| `verify_audio_bytes`, `inference_verify_rows` | Existing primary hash/row checks, with one-based entry ordinal in `Pass` |
+| `inference_corpus_read_rows` | Observations actually read within that entry; callback precedes publishing its batch |
+| `inference_manifest_load`, `native_json_*`, `inference_manifest_entries` | Native load boundary, primary JSON preparation and actual declared entries |
+| `inference_audit_entries`, `inference_audit_format`, `inference_audit_ready` | Actual report entries, bounded pretty-format boundary and private ready report |
+
+Artifact construction hashes the identity/row payload, excluding its64-byte
+stored checksum. The auditor's final whole-file digest includes that checksum.
+Each byte total describes the actual hash domain, not an overall file-read bar.
+
+The auditor retains its exact completed JSON and artifact policies; progress is
+stderr only. Each report has at most1024 fixed-schema rows with bounded labels.
+The escaped-label1024-row RTL-format probe emits809208 bytes in31ms without heap
+tracing versus860ms with it; these are local observations, not timing guarantees.
+File loading/writing, RTL structural parsing/formatting, allocations/copies and
+string-list searches remain explicit synchronous boundaries. No hard callback
+latency, browser yield, whole-operation percentage or inference-quality claim.
+
+Native Win32/Win64 cancellation/reopen/batch/reentry controls and actual auditor
+report replay pass; see task15 for source-bound evidence and the retained old
+fixture expectation. Complete parent04 AC3 awaits this task's published gate.
+
 ## Shared callback contract
 
 [`pythian.progress`](../src/pythian.progress.pas) defines `TWorkProgress`:
