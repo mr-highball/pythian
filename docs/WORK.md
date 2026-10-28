@@ -12,6 +12,33 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Repeated firewall approvals rechecked — 2026-10-28
+
+The operator's screenshot names Nyx's server, not Pythian's. Big Boss's read-only
+saved-rule audit confirms Private TCP/UDP allowances for that exact configured
+Nyx executable path. Reusing a fixed approved path is already required in both
+projects. Do not launch servers from fresh experiment directories or disable
+firewall notifications. No Nyx files, rules or listeners are changed here.
+
+Pythian retains its fixed stable/QA executable paths. Its saved QA rule still
+pins the retired host address; the previously prepared one-time administrator
+repair remains pending, with no administrator result file present.
+The NetSecurity effective-rule query returns Access denied in this unelevated
+session; saved-rule inspection is not a claim of effective-policy verification.
+Update the LAN setup examples to LocalAddress Any while retaining exact program,
+TCP port, Private/LocalSubnet and blocked edge traversal. Routine DHCP changes
+then need no new rule installation; service bind settings and TLS identity still
+need their own checks. No host rules are changed and no repeated question is sent.
+
+Current solver-lifecycle qualification also confirms both clean Win64 extracted
+packages at57df550:107/159 owned units,120/279 inventory entries. All38 packaged
+audio/model artifacts match the prior accepted consumer, including four caller
+artifacts. Win32/Win64 still pass466607 checks/149 abort-retries, zero leaks;
+actual portable5630/12/2016 retains the exact3079-character token/index replay.
+Published upstream CI54 and downstream CI464 remain in progress. Task14 stays
+open; delivery nonclosing2 and its bounded reassessment remain in force. No
+scientific policy, service, private source or answer change. Big Boss solo.
+
 ## Combined trace/cancellation rejection and bounded reassessment — 2026-10-28
 
 Predecessor WFC29182bb passes all five CI53 jobs (24m28s); Pythian736a313 passes

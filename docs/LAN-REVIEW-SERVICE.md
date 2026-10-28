@@ -60,12 +60,18 @@ Windows PowerShell as Administrator. Do not create duplicate same-name rules.
 
 ```powershell
 netsh advfirewall firewall show rule name="Pythian Stable LAN Review" verbose
-New-NetFirewallRule -DisplayName 'Pythian Stable LAN Review' -Direction Inbound -Action Allow -Enabled True -Profile Private -Program $stableProgram -Protocol TCP -LocalPort 18097 -LocalAddress $reviewIPv4 -RemoteAddress LocalSubnet -EdgeTraversalPolicy Block
+New-NetFirewallRule -DisplayName 'Pythian Stable LAN Review' -Direction Inbound -Action Allow -Enabled True -Profile Private -Program $stableProgram -Protocol TCP -LocalPort 18097 -LocalAddress Any -RemoteAddress LocalSubnet -EdgeTraversalPolicy Block
 ```
 
-Verify exact Program, LocalIP, TCP18097, Private, LocalSubnet and Allow.
-If the address or checkout root changes, update the existing rule and launch
-settings together. After the old listener has stopped and the port is free,
+Verify exact Program, TCP18097, Private, LocalSubnet, LocalAddress Any and Allow.
+LocalAddress Any lets this same approval survive a DHCP address change; the
+exact executable, port, Private profile and local-subnet restriction remain.
+The service still binds only its explicitly selected host address and loopback.
+If an existing rule pins an old local address, update that rule once as
+Administrator rather than creating another rule. A changed executable location
+requires updating its existing rule; ordinary rebuilds reuse the approved path.
+Update launch settings when the host address changes; HTTPS identity may also
+need renewal as described below. After the old listener has stopped and the port is free,
 run the staged Pascal server in a foreground terminal:
 
 ```powershell
@@ -240,10 +246,11 @@ development host also prompted on loopback. Inspect before creating:
 
 ```powershell
 netsh advfirewall firewall show rule name="Pythian QA LAN Review" verbose
-New-NetFirewallRule -DisplayName 'Pythian QA LAN Review' -Direction Inbound -Action Allow -Enabled True -Profile Private -Program $qaProgram -Protocol TCP -LocalPort 18129 -LocalAddress $reviewIPv4 -RemoteAddress LocalSubnet -EdgeTraversalPolicy Block
+New-NetFirewallRule -DisplayName 'Pythian QA LAN Review' -Direction Inbound -Action Allow -Enabled True -Profile Private -Program $qaProgram -Protocol TCP -LocalPort 18129 -LocalAddress Any -RemoteAddress LocalSubnet -EdgeTraversalPolicy Block
 ```
 
-Verify exact Program, LocalIP, TCP18129, Private, LocalSubnet and Allow.
+Verify exact Program, TCP18129, Private, LocalSubnet, LocalAddress Any and Allow.
+Reuse this rule across rebuilds and DHCP address changes, just as for stable.
 Use separate fixture directories and a foreground terminal:
 
 ```powershell
