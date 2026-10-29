@@ -106,6 +106,23 @@ Naming a task or narrowing a component does not reset that count.
 
 **Dev Notes:**
 
+- 2026-10-28, Big Boss: named-voice publication is a local candidate under the
+  existing graph guard. Generate/selective capture, detached output and edit
+  snapshots precede graph acceptance; replacement uses a private candidate and
+  the same proof/copy path. Mask/preference/provider operations keep managed
+  outputs private and reject reentry. Shared layer/voice visit counters retain
+  the existing cadence. Checked native32/native64 and actual pas2js each pass
+  400,179 checks, 212 original abort/retries and 198,118 callbacks; heap-traced
+  native exits have zero leaks. Final Win64 adds 22 coverage assertions after
+  its heap-traced run. Frozen three-seed music matches
+  on native/actual portable execution. Exact source publication, clean consumers
+  and CI remain pending. Preserve repaired declaration/forward-type/scalar-call
+  compiles and the rejected unsupported linear fixture. Whole AC1/AC2 remain
+  open for metadata/model copies, streams/duration and operator forwarding;
+  no task move, credit or entry0 counter reset. Evidence uses dedicated E-drive
+  voice-publication-20261028-boss build/tests/runs roots;
+  [scope and evidence](../OBSERVABILITY.md#named-voice-publication-candidate--2026-10-28).
+
 - 2026-10-28, Big Boss: generic voice prerequisite17 and primary portability07–10
   are accepted at Pythiand370723/WFCc4e7569 after all five upstream CI56 jobs,
   downstream CI471 integration11m39s/extracted40s, clean core/full packages and

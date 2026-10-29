@@ -26,6 +26,13 @@ then reset delivery3→0. Scientific stops and exposure counters are unchanged.
 Saved answers and the generated listening queue are preserved byte-for-byte.
 Actual phone/full operator acceptance remains open.
 
+Retained named-voice publication is a local parent04 candidate: checked
+Win32/Win64 and actual pas2js each pass 212 original abort/retry cases, with
+unchanged frozen musical replay and zero heap leaks on native. Exact published
+integration/extracted consumers remain pending. This advances a required
+engineering component; no task move, criterion closure, credit or counter reset
+is claimed. Stream/duration, other owned metadata and operator forwarding remain.
+
 NS5 remains least complete at14%. Full vocabulary, context and structural
 acceptance still need independently grounded references and the linked admitted
 context/note prerequisites. Do not reopen rejected source/ranking families or

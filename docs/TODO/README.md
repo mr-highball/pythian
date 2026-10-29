@@ -69,6 +69,8 @@ no new segmentation or marker correction is requested from the operator.
 
 The next ready engineering owner is [retained operations04](NS-6_observability_04.md):
 named-voice and stream capture/copy/publication plus maintained operator forwarding.
+Named-voice guarded publication now has native/actual pas2js cancellation/replay
+evidence; exact published integration and extracted packages remain pending.
 Use existing guarded graph acceptance before adding cancellable proof/copy work.
 The newly accepted generic preparation does not qualify those retained paths.
 Earlier dated acceptance notes below retain their original checkpoint counts.

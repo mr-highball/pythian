@@ -201,16 +201,8 @@ uses
 type
   { Call-scoped, never retained by a graph or session. Visits count owned loop
     iterations, not companion internals or estimated overall work. }
-  TLayerPreparation = class(TWfcSolveProgressBridge)
-  private
-    FStage: String;
-    FVisits: Int64;
+  TLayerPreparation = class(TWfcObservedWork)
   public
-    constructor Create(const ACallback: TWorkProgressCallback; const AStage: String;
-      const ASequencePass: Integer = 0);
-    procedure Visit;
-    procedure Checkpoint;
-    procedure Finish;
     procedure ObserveSequence(const AWork: TWfcSequencePreparationProgress);
     function SequenceObserver: TWfcSequencePreparationObserver;
   end;
@@ -288,33 +280,6 @@ type
     destructor Destroy; override;
     procedure Capture;
   end;
-
-constructor TLayerPreparation.Create(const ACallback: TWorkProgressCallback;
-  const AStage: String; const ASequencePass: Integer);
-begin
-  inherited Create(ACallback, ASequencePass);
-  FStage := AStage;
-  Checkpoint;
-end;
-
-procedure TLayerPreparation.Visit;
-begin
-  Inc(FVisits);
-  if Assigned(FCallback) and ((FVisits mod 256) = 0) then
-  begin
-    Checkpoint;
-  end;
-end;
-
-procedure TLayerPreparation.Checkpoint;
-begin
-  ReportWork(FCallback, FStage, wuItems, FVisits, 0, FSequencePass);
-end;
-
-procedure TLayerPreparation.Finish;
-begin
-  ReportWork(FCallback, FStage, wuItems, FVisits, FVisits, FSequencePass);
-end;
 
 procedure TLayerPreparation.ObserveSequence(const AWork: TWfcSequencePreparationProgress);
 var

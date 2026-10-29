@@ -3,6 +3,59 @@
 [Project](../PROJECT.md) · [Assessment](CODEBASE-ASSESSMENT.md) ·
 [Tasks](TODO/README.md) · [Work](WORK.md)
 
+## Named-voice publication candidate — 2026-10-28
+
+[Parent04](TODO/NS-6_observability_04.md) still owns this retained component.
+`TryGenerate` and `TryRegenerate` accept optional borrowed progress. The
+existing WFC commit guard now performs original-weight independent musical/path
+proof, generated-data capture, detached caller copies and committed edit copies
+before graph acceptance. Preference weights resume in a non-cancellable finally
+block so a rejected attempt retains its negotiated preferences. Generic final
+solve cancellation still rolls back graph/RNG and leaves caller output unchanged.
+
+`TryReplaceProvider` forwards contract/configuration/construction/solve work,
+restores ordinary domains on its private graph, reuses that same proof/copy
+implementation, checks unrelated accepted token/state identities and copies their
+pending edits/preferences. `voice_replacement_ready` is its final callback.
+Only ownership assignments and non-cancellable disposal follow the real swap.
+
+`SetConstraints`, `SetPreferences`, `CopyConstraints`, `CopyPreferences`,
+`CopyAccepted` and `CopyProvider` also accept borrowed optional progress.
+Setters and managed returns prepare a detached candidate before final callbacks.
+Mutating operations and state copies reject callback reentry; bounded name/count/
+pending reads remain available. No observer is installed in the returned session.
+
+Owned `voice_*_visits` phases count actual provider, cell, token, preference,
+weight, committed-state and output-element visits; totals remain unknown until
+the phase ends. Companion sequence/proof visits retain their original stage and
+pass mapping through the shared bridge. The primary counter has one maintained
+implementation in `pythian.wfc.progress`, also consumed by the layer adapter;
+the extraction preserves the existing256-visit cadence and layer trace exactly.
+Readiness phases describe local publication boundaries, never an overall
+percentage or a promise to yield to a browser event loop.
+
+Checked Win32/Win64 and actual pas2js each pass 400,179 checks, 212 original
+abort/retries and 198,118 callbacks, including 22 explicit coverage assertions.
+The initial checked/leak-traced Win64 execution passes those same 212 cases and
+400,157 checks with zero leaks; final Win64 adds the coverage assertions without
+heap tracing. Exact publication/extracted integration remains pending.
+Tests cover original EAudio/other caller exception identity,
+start/interior/final and post-capture solver aborts, prior outputs and accepted
+state, unrelated pending edits/preferences, immutable input models, same-session
+retry, detached nested arrays and reentry. Three frozen seeds preserve exact
+tokens, latent states, musical frames and coverage on native and actual pas2js.
+The original voice controls and constructor/preparation cancellation also pass.
+Layer publication keeps 423,670 checks, 102 abort/retries and 338,943 callbacks on both execution
+families. Native heap-traced exits have zero leaks.
+
+RTL allocations, immutable model/contract copies, bounded outer arrays and
+non-cancellable domain/weight rollback remain named synchronous boundaries.
+Constructor model text encode/decode and remaining owned metadata/source-clock
+interiors are not qualified by a surrounding callback. Whole parent04 AC1/AC2,
+later stream/duration work, maintained operator forwarding and actual Studio/
+phone acceptance remain open. No source data, musical inference/search rule,
+budget, WFC pin or completion credit changes.
+
 ## Independent-voice preparation accepted — 2026-10-28
 
 Separate WFCc4e7569 passes all five [upstream CI56 jobs](https://github.com/mr-highball/wfc/actions/runs/40776021527),

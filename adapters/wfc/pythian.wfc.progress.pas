@@ -50,6 +50,20 @@ type
     function PreparationWorkObserver: TWfcPreparationObserver;
   end;
 
+  { Shared call-scoped counter for Pythian-owned adapter loops. Companion work
+    keeps its own stage/pass counters and never inflates this visit total. }
+  TWfcObservedWork = class(TWfcSolveProgressBridge)
+  private
+    FStage: String;
+    FVisits: Int64;
+  public
+    constructor Create(const ACallback: TWorkProgressCallback; const AStage: String;
+      const ASequencePass: Integer = 0);
+    procedure Visit;
+    procedure Checkpoint;
+    procedure Finish;
+  end;
+
 function WfcSolveObserver(const ABridge: TWfcSolveProgressBridge): TWfcSolveObserver;
 function WfcSequenceWorkObserver(const ABridge: TWfcSolveProgressBridge):
   TWfcSequencePreparationObserver;
@@ -70,6 +84,33 @@ begin
   end;
   FCallback := ACallback;
   FSequencePass := ASequencePass;
+end;
+
+constructor TWfcObservedWork.Create(const ACallback: TWorkProgressCallback;
+  const AStage: String; const ASequencePass: Integer);
+begin
+  inherited Create(ACallback, ASequencePass);
+  FStage := AStage;
+  Checkpoint;
+end;
+
+procedure TWfcObservedWork.Visit;
+begin
+  Inc(FVisits);
+  if Assigned(FCallback) and ((FVisits mod 256) = 0) then
+  begin
+    Checkpoint;
+  end;
+end;
+
+procedure TWfcObservedWork.Checkpoint;
+begin
+  ReportWork(FCallback, FStage, wuItems, FVisits, 0, FSequencePass);
+end;
+
+procedure TWfcObservedWork.Finish;
+begin
+  ReportWork(FCallback, FStage, wuItems, FVisits, FVisits, FSequencePass);
 end;
 
 procedure TWfcSolveProgressBridge.ObserveSolve(const AWork: TWfcSolveProgress);

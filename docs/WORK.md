@@ -12,6 +12,41 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: named-voice publication candidate — 2026-10-28
+
+Previous goal turn was a read-only firewall verification, with no product
+criterion closed. Big Boss remains solo. The active parent04 component now
+stages capture, independent proof, detached caller music and committed edit
+snapshots inside the existing graph commit guard. Replacement keeps its own
+private graph until preservation checks and its final readiness callback pass.
+No callback follows live publication. Optional mask/preference/provider copies
+use private candidates, borrowed receivers and mutation/state-copy reentry guards.
+Layer and voice adapters share the existing visit counter; no solver, musical
+rule, search budget, dependency source or service setting changes.
+
+Checked Win32/Win64 and actual pas2js each pass 400,179 checks, 212 original
+abort/retry cases and 198,118 callbacks, including explicit required start,
+interior, final and post-capture checkpoints. Both heap-traced native runs have
+zero leaks; final Win64 also executes the 22 added coverage assertions without
+heap tracing. Native and actual portable three-seed replay matches all nine
+frozen rows, 216,152 native bytes, SHA256
+`9b37050021c9406ee8e878c0201aae080e267ee97a9ff38d79b3771a1145bb31`.
+Existing named-voice controls pass; current native constructor/preparation passes
+14,182 checks, 10 original abort/retries and 13,639 callbacks, with zero leaks.
+Shared-counter layer publication retains 423,670 checks, 102 abort/retries and
+338,943 callbacks on native and
+actual pas2js. Preserve rejected declaration-order/forward-type and unsupported
+scalar-overload compiles plus the rejected unsupported linear-mask replay fixture.
+
+This remains a local candidate: exact publication, clean extracted core/full
+consumers and downstream CI are pending. No task moves, criterion closure or
+musical credit. Counts52 open/87 DONE/139 total, NS6 14 open and52.45/47.55 stay
+unchanged; delivery entry0 remains until the same batch is qualified. Remaining
+parent04 metadata/model copies, streams/duration and maintained operator
+forwarding are still required. Evidence and live handles use dedicated E-drive
+voice-publication-20261028-boss build/tests/runs roots. Private recordings,
+answers, stopped scientific families, listener slots and browser/audio are intact.
+
 ## Current handoff: five prerequisites accepted — 2026-10-28
 
 Previous goal turn: progress, publishing the repaired fixture at `d370723`.
