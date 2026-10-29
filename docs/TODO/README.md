@@ -61,6 +61,12 @@ hours or effort estimates. See the [basis and rationale](../REBALANCE-2026-09-29
 
 ## Selection and actual blockers
 
+Current musical prerequisite: [register identity](NS-3_notes_01.md). The distinct
+PENN source/checkpoint assessment supplies exact identities and recipe evidence;
+data-only tensor binding is next, before any separately frozen physical candidate.
+No inference, recorded scoring or new accepted observation follows yet. Delivery
+nonclosing0→1; every earlier scientific stop/exposure remains. No credit change.
+
 Accepted zero-credit [shared selection19](DONE/NS-6_observability_19.md) and its
 [primary journal portability12](DONE/NS-6_portability_12.md) prerequisite qualify at
 b33c538/[CI482](https://github.com/mr-highball/pythian/actions/runs/40880908655/job/123471848520):
@@ -386,7 +392,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | [NS-3_groove_02](NS-3_groove_02.md) — Accept rhythmic phrasing on independent recordings | 3 | 0.75 | Dependency-blocked |
 | [NS-3_harmony_01](NS-3_harmony_01.md) — Deliver a recorded harmonic relationship provider | 3 | 0.75 | Dependency-blocked |
 | [NS-3_harmony_02](NS-3_harmony_02.md) — Accept harmonic learning on independent recordings | 3 | 0.75 | Dependency-blocked |
-| [NS-3_notes_01](NS-3_notes_01.md) — Resolve recorded pitch identity and register | 7 | 1.75 | Distinct0.3 source qualified; Pascal candidate fails55Hz on both targets and stops before recorded scoring |
+| [NS-3_notes_01](NS-3_notes_01.md) — Resolve recorded pitch identity and register | 7 | 1.75 | Swift physical candidate stopped; distinct PENN source/recipe assessed, tensor and numerical gates remain |
 | [NS-3_notes_02](NS-3_notes_02.md) — Resolve note presence, attacks and endings | 5 | 1.25 | Dependency-blocked |
 | [NS-3_notes_03](NS-3_notes_03.md) — Accept independent phrases and feed saved learning | 5 | 1.25 | Dependency-blocked |
 | [NS-3_notes_05](NS-3_notes_05.md) — Admit source-grounded note-presence evidence | 3 | 0.75 | Reference-blocked; source-screen sequence stopped |

@@ -12,6 +12,42 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: distinct register source identities checked; tensor binding next — 2026-10-29
+
+Big Boss remains solo. Previous goal turn made PROGRESS: journal12 and selection19
+fully accepted and pushed at5c905cf after terminal b33c538/CI482. No old test,
+package or source CI is restarted. Least-complete NS5's actual style/vocabulary
+chain still requires grounded note/duration and context evidence. Existing
+GuitarSet supplied annotations do not supply acoustic-rest/time truth or calibrated
+relationship/novelty gates; its synthetic comparator lane remains stopped.
+
+One bounded distinct [PENN source screen](TODO/NS-3_notes_01.md) binds source
+78ed3ba, checkpoint-era c070f45 and published model74911e2. Complete checkpoint
+SHA25628d89add04722461f831249a338b74516a96dedd3301ed794c18953d51d1b960
+and10252-byte metadata SHA256985557fcdd86680a4867202ec89ec3b1a8c659b22a91acd9cbb39f641b453c0d
+are verified by the checked read-only Pascal inspector,106 entries and native
+zero leaks. Neither pickle nor tensor/inference execution occurs. Shapes-only
+tests and a resynthesized music benchmark are not numeric conformance, recorded
+register accuracy or audible note-presence evidence. Older writer fields fit the
+observed metadata; architecture/MDB partition source bytes are unchanged, but
+decoder defaults changed. Do not blend versions or claim reproduced training.
+
+The next gate is bounded data-only tensor binding to one explicit recipe,
+rejecting unknown storage/shapes/strides before any numerical execution. A later
+physical candidate must first freeze its exact math, controls, resource budget
+and stop. Preserve all failed register/presence/key/timing families, source groups
+and unsupported/unknown distinctions. No recorded data is reopened and no model
+or confidence rule is adopted. This source-assessment batch closes no criterion:
+delivery nonclosing0→1, with no scientific/exposure reset or credit. Counts
+53 open/91 DONE/144 total, NS6 15 open;52.45/47.55 unchanged.
+
+Private E-drive penn-source-20261029-boss evidence retains the live-transfer stall,
+verified exact-process cancellation and one successful bounded HTTP resume,
+original partial bytes, native ZIP/cleanup failures and repaired primary-byte
+metadata extraction. All local handles are terminal. No source microclip/approval
+request, service/browser audio/firewall change, private recording/catalog/answer
+mutation or helper activation. The existing4:16 listening question remains pending.
+
 ## Current handoff: shared selection and primary journal accepted — 2026-10-29
 
 Big Boss remains solo. The previous turn was a verified wait on exact CI482;

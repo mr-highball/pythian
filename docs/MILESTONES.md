@@ -17,6 +17,14 @@ closure leaves delivery nonclosing0; scientific stops/exposures never reset.
 Parent04 and actual UI18 remain open. Reassess least-complete NS5's real musical
 prerequisites next; no musical acceptance follows from these engineering gates.
 
+Next musical prerequisite: [notes01](TODO/NS-3_notes_01.md)'s distinct PENN source
+assessment binds exact source/checkpoint identities and checkpoint-era recipe
+evidence. Tensor binding, numerical conformance and physical/recorded acceptance
+remain unproven. The next bounded gate is data-only schema/shape binding before
+any separately frozen numerical candidate. Source-I/O repairs and paper scores
+earn no musical credit. Delivery nonclosing0→1; prior scientific stops and
+exposure remain. Counts53/91/144 and52.45/47.55 are unchanged.
+
 Current scientific result: [notes01](TODO/NS-3_notes_01.md)'s distinct source-qualified
 Pascal candidate fails its frozen55Hz physical control on both native targets.
 Other three contrasts pass; this is insufficient. Stop before recorded scoring,

@@ -10,6 +10,10 @@ Earlier point/split narratives below are historical; acceptance evidence and fai
 
 Execution status (2026-10-29): **Distinct0.3 source identity qualified; Pascal
 physical candidate stopped**. Its frozen55Hz control fails on native32/64.
+The distinct PENN source/artifact assessment below establishes exact identities
+and checkpoint-era recipe evidence only; tensor binding, numerical conformance
+and physical/recorded qualification are still unproven. No maintained provider
+or new register observation is admitted.
 All earlier stopped rules and recorded experiments remain stopped. A
 source-qualified candidate is not an accepted register path. The shared frontend
 is accepted separately in [window01](DONE/NS-6_window_01.md).
@@ -120,6 +124,41 @@ variation is authorized by the existing evidence.
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
 
 **Dev Notes:**
+
+- 2026-10-29, Big Boss: a bounded distinct
+  [PENN source assessment](https://github.com/interactiveaudiolab/penn/tree/78ed3ba4cd8e7d719f11d3d72693c14d53ef6bce)
+  preserves the full MIT notices and complete119-entry source inventory. The
+  [paper](https://arxiv.org/abs/2301.12258) motivates a categorical learned pitch
+  posterior and entropy-based periodicity; its music benchmark is resynthesized
+  MDB-stem-synth, not our recorded flute gate or acoustic note-presence truth.
+  Bundled inference tests assert shapes only, not numeric correctness. The
+  [pinned published checkpoint](https://huggingface.co/maxrmorrison/fcnf0-plus-plus/tree/74911e26f43ad38790a42592e77f9d8be0a5dd1c)
+  is107245425 bytes, SHA256
+  `28d89add04722461f831249a338b74516a96dedd3301ed794c18953d51d1b960`.
+  A checked native read-only Pascal inspector verifies the complete hash and
+  central-directory/metadata CRC,106 ZIP entries and10252 metadata bytes, zero
+  leaks. It neither executes pickle nor extracts/interprets tensor payloads.
+- 2026-10-29, Big Boss: current source expects later training-state fields;
+  the [checkpoint-era snapshot](https://github.com/interactiveaudiolab/penn/tree/c070f45d19740486189dc63cc709ff1247fa9235)
+  has a writer consistent with the observed step/model/optimizer strings. Its
+  model source and MDB partition file are byte-identical to current source,
+  while decoder defaults differ. This is recipe evidence, not proof of the
+  actual training run, composition-disjoint data or numerical runtime fidelity.
+  Keep these versions distinct. Next gate is a bounded, data-only tensor/schema
+  binding to one declared recipe; reject unknown storage, shape or stride before
+  numerical execution. Any later physical candidate needs its own frozen math,
+  low/quiet/short/ambiguity controls, resource budget and stop rule. No recorded
+  scoring, confidence retuning or old-family restart follows from this screen.
+- 2026-10-29, Big Boss: preserve acquisition and inspector failures privately in
+  the E-drive penn-source-20261029-boss packet. The first live download stalled;
+  only its verified owned process was stopped, and one bounded HTTP resume
+  retained the partial bytes and completed with the exact hash. Native streaming
+  ZIP local sizes were zero; the final inspector uses verified central extents
+  and primary binary/text/stream/hash helpers for the stored metadata. Earlier
+  failures, including cleanup errors, remain recorded. These are source-I/O
+  implementation repairs, not a scientific rejection or success of PENN.
+  One source-assessment batch closes no criterion (delivery nonclosing0→1).
+  All earlier scientific/exposure counters remain; no musical credit or task move.
 
 - 2026-10-29, Big Boss: the source-qualified SwiftF0v0.3 Pascal numerical
   candidate stops at its first frozen physical failure. Policy SHA256
