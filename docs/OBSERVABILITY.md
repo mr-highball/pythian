@@ -3,6 +3,51 @@
 [Project](../PROJECT.md) · [Assessment](CODEBASE-ASSESSMENT.md) ·
 [Tasks](TODO/README.md) · [Work](WORK.md)
 
+## Journal learning preparation — local qualification, 2026-10-29
+
+Big Boss's remaining [parent04](TODO/NS-6_observability_04.md) component adds
+optional primary work observers to training/partition preflight, candidate and
+source-successor indexes, and measured/restored context construction. Both context
+constructors now share one stable canonical sort. No selection, model, source
+measurement or scientific policy changes are intended.
+
+| Stage | Actual work and units |
+| --- | --- |
+| `training_segments`, `training_partition_entries` | Declared segment/partition rows, known total |
+| `training_overlap_pairs`, `training_partition_pairs` | Actual pair comparisons, known n(n-1)/2 total, checkpoints every256 comparisons |
+| `candidate_observations`, `successor_observations`, `context_observations`, `journal_wfc_observations` | Distinct consumed observations, independent of multiplicity, checkpoints every128 |
+| `candidate_restore_slots`, `context_anchor_slots` | Restored/visited fallback slots, including empty slots |
+| `successor_sources`, `context_sources` | Declared source bindings |
+| `context_sort_comparisons` | Actual stable-sort comparisons; unknown total until completion |
+| `context_windows`, `context_restore_visits`, `journal_wfc_visits` | Stored context windows or explicitly counted validation/preparation visits; unknown totals stay unknown |
+| `*_ready` | Private constructor/result readiness; never an overall pipeline percentage |
+
+Nested journal I/O, digest verification and decoding reach the same work observer.
+The WFC adapter forwards into the existing companion model builder; no dependency
+changes are needed. Native Studio uses its existing bounded journal-publication
+gate for detailed callbacks while preserving separate pass-local learning counts.
+The maintained journal learn/fit/context tools use the existing console observer.
+
+The reader's optional constructor observer is borrowed until reader destruction
+or replacement through `OnWorkProgress`. Its separate `OnProgress` retains only
+the original `read_training` pass contract. Index-constructor observers are
+call-scoped; a per-read explicit observer overrides the reader's detailed one.
+Callbacks must not mutate borrowed journals, readers, palettes or input arrays.
+Active read/rewind reentry rejects. Cancellation during a nested read poisons
+the reader and can poison its journal: reopen unchanged journal bytes and create
+a fresh reader. Constructors return no partially built index/model/partition.
+Array allocation, zero-fill and RTL copy remain synchronous and unqualified.
+
+Native32/64 and actual pas2js each pass32972 checks and532 original-exception
+abort/retries. The original native journal learning controls pass unchanged.
+A32768-observation/4469676-byte synthetic journal exposes2053 detailed callbacks;
+this checks visibility, not recorded musical accuracy or a duration guarantee.
+Actual Win64 worker passes384 checks, bounded durable updates and zero leaks;
+the frozen320044-byte WAV is unchanged. Matching CLI and four browser programs
+compile. Exact published integration/extracted consumers and browser/phone
+presentation remain separate qualification gates. No deployment, musical credit,
+whole parent criterion closure or stopped-experiment reset follows.
+
 ## Primary journal intake — qualified primary consumers, 2026-10-29
 
 The existing [parent04](TODO/NS-6_observability_04.md) now covers observed journal

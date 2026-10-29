@@ -1320,6 +1320,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Journal learning compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.learning.journal$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Journal learning checks failed' }
+    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.journal.preparation.progress.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Journal preparation progress compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.journal.preparation.progress$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Journal preparation cancellation and replay checks failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.journal.selection.stream.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Journal selection stream compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.journal.selection.stream$executableSuffix")

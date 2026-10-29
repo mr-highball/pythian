@@ -49,7 +49,10 @@ type
   { Copies coordinates only; the reader and palette are borrowed during construction.
     Each token/segment has up to 32 temporal bins, with its nearest assigned
     observation retained in each bin. No whole recording or feature array is kept.
-    Keep the original source/palette bindings with this pool. }
+    Keep the original source/palette bindings with this pool. Big Boss: optional
+    constructor observers are call-scoped, include nested journal decoding and
+    may abort before publication. A failed read requires journal/reader reopen;
+    allocation and RTL array copies remain synchronous. }
   TJournalCandidatePool = class
   private
     FSlots: TJournalRepresentatives;
@@ -59,11 +62,13 @@ type
     function GetSlotCount: Integer;
   public
     constructor Create(const AReader: TJournalTrainingReader;
-      const APalette: TAcousticPalette; const ABinsPerSegment: Integer = 4);
+      const APalette: TAcousticPalette; const ABinsPerSegment: Integer = 4;
+      const AProgress: TWorkProgressCallback = nil);
     { Restores detached slots without learning. Validates slot geometry only;
       the caller must bind/validate source extents, timebase and palette identity. }
     constructor CreateFromCandidates(const ATokenCount, ASegmentCount,
-      ABinsPerSegment: Integer; const ACandidates: TJournalRepresentatives);
+      ABinsPerSegment: Integer; const ACandidates: TJournalRepresentatives;
+      const AProgress: TWorkProgressCallback = nil);
     function CandidateAt(const ASlot: Integer): TJournalRepresentative;
     function TokenAt(const ASlot: Integer): Integer;
     { Returns slot indices, preserving every requested token. Weights 0..4096
@@ -116,7 +121,8 @@ type
       function NodeAt(const ACandidate: TJournalRepresentative): Integer;
   public
     constructor Create(const AReader: TJournalTrainingReader;
-      const APalette: TAcousticPalette);
+      const APalette: TAcousticPalette;
+      const AProgress: TWorkProgressCallback = nil);
     function SourceAt(const AIndex: Integer): TJournalSuccessorSource;
     { Checks pool geometry, candidate coordinates and observed token membership.
       A coordinate-only pool cannot prove source bytes or palette provenance;
@@ -293,7 +299,8 @@ begin
 end;
 
 constructor TJournalCandidatePool.Create(const AReader: TJournalTrainingReader;
-  const APalette: TAcousticPalette; const ABinsPerSegment: Integer);
+  const APalette: TAcousticPalette; const ABinsPerSegment: Integer;
+  const AProgress: TWorkProgressCallback);
 var
   LObservation: TJournalTrainingObservation;
   LSegment: TJournalTrainingSegment;
@@ -302,6 +309,7 @@ var
   LBin: Integer;
   LSlot: Integer;
   LDistance: Double;
+  LRead: Int64;
 begin
   inherited Create;
   if (AReader = nil) or (APalette = nil) or
@@ -318,7 +326,9 @@ begin
   end;
   SetLength(FSlots, FTokenCount * FSegmentCount * FBins);
   AReader.Rewind;
-  while AReader.ReadObservation(LObservation) do
+  LRead := 0;
+  ReportWork(AProgress, 'candidate_observations', wuObservations, 0, AReader.ObservationCount);
+  while AReader.ReadObservation(LObservation, AProgress) do
   begin
     LSegment := AReader.SegmentAt(LObservation.SegmentIndex);
     LBinWidth := (LSegment.FeatureCount - 1) div FBins + 1;
@@ -335,11 +345,19 @@ begin
       FSlots[LSlot].ValidFrames := LObservation.Feature.ValidFrames;
       FSlots[LSlot].Distance := LDistance;
     end;
+    Inc(LRead);
+    if LRead mod 128 = 0 then
+    begin
+      ReportWork(AProgress, 'candidate_observations', wuObservations, LRead, AReader.ObservationCount);
+    end;
   end;
+  ReportWork(AProgress, 'candidate_observations', wuObservations, LRead, AReader.ObservationCount);
+  ReportWork(AProgress, 'candidate_pool_ready', wuItems, 1, 1);
 end;
 
 constructor TJournalCandidatePool.CreateFromCandidates(const ATokenCount,
-  ASegmentCount, ABinsPerSegment: Integer; const ACandidates: TJournalRepresentatives);
+  ASegmentCount, ABinsPerSegment: Integer; const ACandidates: TJournalRepresentatives;
+  const AProgress: TWorkProgressCallback);
 var
   LSlot: Integer;
   LCandidate: TJournalRepresentative;
@@ -357,8 +375,13 @@ begin
   FSegmentCount := ASegmentCount;
   FBins := ABinsPerSegment;
   SetLength(FSlots, Length(ACandidates));
+  ReportWork(AProgress, 'candidate_restore_slots', wuItems, 0, Length(FSlots));
   for LSlot := 0 to High(FSlots) do
   begin
+    if (LSlot > 0) and (LSlot mod 256 = 0) then
+    begin
+      ReportWork(AProgress, 'candidate_restore_slots', wuItems, LSlot, Length(FSlots));
+    end;
     LCandidate := ACandidates[LSlot];
     if not LCandidate.Found then
     begin
@@ -374,6 +397,8 @@ begin
     end;
     FSlots[LSlot] := LCandidate;
   end;
+  ReportWork(AProgress, 'candidate_restore_slots', wuItems, Length(FSlots), Length(FSlots));
+  ReportWork(AProgress, 'candidate_pool_ready', wuItems, 1, 1);
 end;
 
 function TJournalCandidatePool.GetSlotCount: Integer;
@@ -419,7 +444,7 @@ begin
 end;
 
 constructor TJournalSourceSuccessors.Create(const AReader: TJournalTrainingReader;
-  const APalette: TAcousticPalette);
+  const APalette: TAcousticPalette; const AProgress: TWorkProgressCallback);
 var
   LSegment: TJournalTrainingSegment;
   LObservation: TJournalTrainingObservation;
@@ -438,6 +463,7 @@ begin
   FTokenCount := APalette.Count;
   SetLength(FSources, AReader.SegmentCount);
   LOffset := 0;
+  ReportWork(AProgress, 'successor_sources', wuItems, 0, AReader.SegmentCount);
   for LIndex := 0 to AReader.SegmentCount - 1 do
   begin
     LSegment := AReader.SegmentAt(LIndex);
@@ -446,6 +472,7 @@ begin
     FSources[LIndex].Geometry.FeatureCount := LSegment.FeatureCount;
     FSources[LIndex].NodeOffset := LOffset;
     Inc(LOffset, Integer(LSegment.FeatureCount));
+    ReportWork(AProgress, 'successor_sources', wuItems, LIndex + 1, AReader.SegmentCount);
   end;
   FHopFrames := FSources[0].Geometry.Binding.Options.HopFrames;
   FWindowFrames := FSources[0].Geometry.Binding.Options.WindowFrames;
@@ -455,7 +482,8 @@ begin
   SetLength(FNodes, Integer(AReader.ObservationCount));
   AReader.Rewind;
   LRead := 0;
-  while AReader.ReadObservation(LObservation) do
+  ReportWork(AProgress, 'successor_observations', wuObservations, 0, AReader.ObservationCount);
+  while AReader.ReadObservation(LObservation, AProgress) do
   begin
     LNode := FSources[LObservation.SegmentIndex].NodeOffset +
       Integer(LObservation.FeatureIndex -
@@ -464,11 +492,17 @@ begin
     FNodes[LNode].Distance := APalette.FeatureDistance(LObservation.Feature,
       FNodes[LNode].Token);
     Inc(LRead);
+    if LRead mod 128 = 0 then
+    begin
+      ReportWork(AProgress, 'successor_observations', wuObservations, LRead, AReader.ObservationCount);
+    end;
   end;
   if (LRead <> Length(FNodes)) or (LOffset <> Length(FNodes)) then
   begin
     raise EAudio.Create('Successor index did not consume every declared observation');
   end;
+  ReportWork(AProgress, 'successor_observations', wuObservations, LRead, AReader.ObservationCount);
+  ReportWork(AProgress, 'successor_index_ready', wuItems, 1, 1);
 end;
 
 function TJournalSourceSuccessors.GetSourceCount: Integer;

@@ -12,6 +12,50 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: journal learning preparation passes locally; exact qualification next — 2026-10-29
+
+Previous goal delivery made PROGRESS: Studio25 closed at exactCI491 and its
+source-bound two-minute comparison is live. The subsequent firewall support
+was read-only, not a product batch. Big Boss remains SOLO. Fresh native report
+keeps the two-minute and separate4:16 questions pending at revision0. The least
+complete NS5's supported note/context/vocabulary prerequisites remain open.
+A bounded source check confirms PENN's pinned raw-input policy, with no concrete
+omitted transform: no stopped inference, normalization or source sweep is reopened.
+
+The selected [parent04](TODO/NS-6_observability_04.md) deliverable is the remaining
+actual journal learning/index preparation. Primary training/partition preflight
+now reports rows and overlap comparisons; candidate/successor and measured/
+restored context builders report observations, slots, windows and comparisons.
+The duplicated stable context sort is consolidated. Nested journal decoding
+and actual companion model construction reach detailed callbacks, while original
+pass-local learning counters remain separate. Native Studio and maintained
+journal learn/fit/context tools forward these observers. Constructor results
+remain private on failure; nested cancellation requires journal/reader reopen.
+
+Native32/64 and actual pas2js each pass32972 checks/532 original-exception aborts,
+exact model/index retries and unchanged borrowed journal bytes. The original
+native journal learning controls pass. A32768-observation/4469676-byte synthetic
+journal emits2053 detailed callbacks. Actual Win64 worker passes384 checks,
+bounded durable progress writes and zero leaks; its frozen320044-byte WAV remains
+`fea82882480eceae982305a79487e91eecbcc281f6a9c27c8746bab3e6409c07`.
+The maintained CLI and all four matching browser programs compile. Browser/phone
+execution is not established by these native and compiler checks.
+
+The first compile removed a still-used context-validation temporary; restoring
+that local repairs it. A new test read an already exhausted baseline cursor;
+explicit reopening repairs the fixture. Both original failures and all later
+logs remain privately under E-drive journal-preparation-20261029-boss. No lost
+musical criterion is disguised as an implementation repair.
+
+Exact published integration and clean extracted API consumers remain next.
+This batch is IN PROGRESS, not accepted parent closure. Counts53open/94DONE/147,
+NS6 15open and52.45/47.55 remain; delivery nonclosing0 until this batch's outcome.
+Scientific stops/exposures never reset. Whole AC1/2, duration/scheduler and other
+retained internals, synchronous allocation/copy latency and actual Studio18 stay
+open. No new task split, listening variant, live service deployment, firewall
+change, browser/audio process or helper is selected. All generated output stays
+on E; the existing stable service and operator recordings/answers remain intact.
+
 ## Current handoff: reviewed two-minute comparison is live; musical judgment remains open — 2026-10-29
 
 Big Boss remains SOLO. [Studio25 — DONE](TODO/DONE/NS-6_studio_25.md) is accepted

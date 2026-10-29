@@ -85,6 +85,18 @@ begin
     'learn_raw_palette': Result := 'Learn sounds';
     'learn_wfc_model': Result := 'Learn patterns';
     'select_sound_examples': Result := 'Choose sound examples';
+    'training_segments', 'training_overlap_pairs', 'training_reader_ready',
+    'training_partition_entries', 'training_partition_pairs', 'training_partition_ready':
+      Result := 'Check training selections';
+    'candidate_observations', 'candidate_restore_slots', 'candidate_pool_ready':
+      Result := 'Choose sound examples';
+    'successor_sources', 'successor_observations', 'successor_index_ready':
+      Result := 'Connect neighboring sounds';
+    'context_sources', 'context_anchor_slots', 'context_sort_comparisons',
+    'context_observations', 'context_windows', 'context_restore_visits', 'context_pool_ready':
+      Result := 'Prepare source passages';
+    'journal_wfc_visits', 'journal_wfc_observations', 'journal_wfc_model_ready':
+      Result := 'Learn patterns';
     'journal_select_prepare', 'journal_successor_compatibility':
       Result := 'Prepare source choices';
     'journal_select_visits': Result := 'Choose the next source passage';

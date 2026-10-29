@@ -961,7 +961,7 @@ begin
   LInner := nil;
   LOuter := nil;
   try
-    LReader := TJournalTrainingReader.Create(LSegments);
+    LReader := TJournalTrainingReader.Create(LSegments, JournalProgress);
     LReader.OnProgress := LearningProgress;
     FLearningStage := 'learn_raw_palette';
     FFirstLearningPass := 0;
@@ -969,10 +969,10 @@ begin
     Check;
     FLearningStage := 'learn_wfc_model';
     FFirstLearningPass := 0;
-    LModel := LearnJournalAcousticModel(LReader, LPalette, FRequest.Integers['model_order']);
+    LModel := LearnJournalAcousticModel(LReader, LPalette, FRequest.Integers['model_order'], JournalProgress);
     FLearningStage := 'select_sound_examples';
     FFirstLearningPass := 0;
-    LPool := TJournalCandidatePool.Create(LReader, LPalette, CCandidateBins);
+    LPool := TJournalCandidatePool.Create(LReader, LPalette, CCandidateBins, JournalProgress);
     Progress('check_learned_model', 0, 0);
     LModelText := EncodeWfcSequenceText(LModel);
     LInner := MakeProfile(LReader, LPalette, LModel, LPool, LModelText);
@@ -1122,12 +1122,12 @@ begin
       FRanges[LRange].JournalStream.Size, WorkProgress));
     LSegments[LRange] := WholeJournalSegment(FRanges[LRange].Journal, FRanges[LRange].Weight);
   end;
-  LReader := TJournalTrainingReader.Create(LSegments);
+  LReader := TJournalTrainingReader.Create(LSegments, JournalProgress);
   try
     FLearningStage := 'prepare_source_continuity';
     FFirstLearningPass := 0;
     LReader.OnProgress := LearningProgress;
-    FSuccessors := TJournalSourceSuccessors.Create(LReader, FProfile.Palette);
+    FSuccessors := TJournalSourceSuccessors.Create(LReader, FProfile.Palette, JournalProgress);
     FSuccessors.RequireCompatible(FProfile.Pool);
     Need(FSuccessors.NativeStorageBytes <= MaximumStudioJobMemoryBytes div 4,
       'Source continuity index exceeds its memory allowance');

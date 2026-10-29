@@ -52,6 +52,7 @@ uses
   pythian.audio,
   pythian.analysis,
   pythian.analysis.journal,
+  pythian.tools.progress,
   pythian.corpus,
   pythian.learning,
   pythian.learning.journal,
@@ -356,6 +357,7 @@ end;
 
 procedure FitJournalFiles;
 var
+  LObserver: TConsoleWorkProgress;
   LInputs: TJournalInputs;
   LProfile: TJournalModelProfile;
   LBound: array of TBoundJournal;
@@ -421,6 +423,7 @@ begin
   LProfile := nil;
   LReader := nil;
   LDocument := nil;
+  LObserver := TConsoleWorkProgress.Create;
   try
     LReportText := ReadProfileText(ParamStr(2) + '.json');
     LProfile := TJournalModelProfile.Create(LReportText, ReadProfileText(ParamStr(2) + '.wfcs'));
@@ -450,7 +453,8 @@ begin
       end;
       LSegments[LIndex] := InputSegment(LInputs[LIndex], LBound[LIndex].Journal);
     end;
-    LReader := TJournalTrainingReader.Create(LSegments);
+    LReader := TJournalTrainingReader.Create(LSegments, LObserver.Observe);
+    LReader.OnProgress := LObserver.Observe;
     LFits := MeasureJournalPaletteFit(LReader, LProfile.Palette, LLimit);
     LDocument := TJSONObject.Create;
     LDocument.Add('contract', 'pythian.acoustic.palette-fit');
@@ -510,6 +514,7 @@ begin
   finally
     LDocument.Free;
     LReader.Free;
+    LObserver.Free;
     for LIndex := 0 to High(LOwnedBound) do
     begin
       LOwnedBound[LIndex].Free;
@@ -520,6 +525,7 @@ end;
 
 procedure LearnJournalFiles;
 var
+  LObserver: TConsoleWorkProgress;
   LInputs: TJournalInputs;
   LPaths: array of String;
   LCaches: array of String;
@@ -820,6 +826,7 @@ begin
   SetLength(LBound, LCount);
   SetLength(LOwnedBound, LCount);
   SetLength(LSegments, LCount);
+  LObserver := TConsoleWorkProgress.Create;
   try
     LPhysicalSources := 0;
     for LIndex := 0 to LCount - 1 do
@@ -874,7 +881,7 @@ begin
         LPlan[LIndex].GroupVerified := LInputs[LIndex].GroupVerified;
         LPlan[LIndex].PreviouslyUsed := LInputs[LIndex].PreviouslyUsed;
       end;
-      LSegments := SelectJournalPartition(LPlan, LPartition);
+      LSegments := SelectJournalPartition(LPlan, LPartition, LObserver.Observe);
       LPartitionAudit := TJSONObject.Create;
       LPartitionAudit.Add('selected_partition', PartitionName(LPartition));
       LPartitionAudit.Add('policy', 'Caller-declared identities and family exposure; complete supplied plan checked before learning. Source/cache hashes bind this invocation. Derivative overlap and uses outside the plan require caller audit; no independent style verdict.');
@@ -914,7 +921,8 @@ begin
       SetLength(LWeights, LCount);
       SetLength(LSourceWeights, LCount);
     end;
-    LReader := TJournalTrainingReader.Create(LSegments);
+    LReader := TJournalTrainingReader.Create(LSegments, LObserver.Observe);
+    LReader.OnProgress := LObserver.Observe;
     if LReader.WeightedObservationCount > High(Integer) then
     begin
       raise EAudio.Create('Weighted observations exceed companion Integer counts');
@@ -951,8 +959,8 @@ begin
       end;
       LPalette := TAcousticPalette.CreateFromCenters(LStarter.Palette.CopyCenters);
     end;
-    LModel := LearnJournalAcousticModel(LReader, LPalette, 2);
-    LPool := TJournalCandidatePool.Create(LReader, LPalette, LBins);
+    LModel := LearnJournalAcousticModel(LReader, LPalette, 2, LObserver.Observe);
+    LPool := TJournalCandidatePool.Create(LReader, LPalette, LBins, LObserver.Observe);
     LModelText := EncodeWfcSequenceText(LModel);
     LReloaded := DecodeWfcSequenceText(LModelText);
     LGeneration := DefaultAcousticGenerationOptions;
@@ -1179,6 +1187,7 @@ begin
     LPalette.Free;
     LStarter.Free;
     LReader.Free;
+    LObserver.Free;
     for LIndex := 0 to High(LOwnedBound) do
     begin
       LOwnedBound[LIndex].Free;
@@ -1200,6 +1209,7 @@ end;
 
 procedure AttachJournalContexts;
 var
+  LObserver: TConsoleWorkProgress;
   LProfile: TJournalModelProfile;
   LAttached: TJournalModelProfile;
   LContexts: TJournalContextPool;
@@ -1245,6 +1255,7 @@ begin
   LReader := nil;
   LDocument := nil;
   LGuard := TJournalAudioAccess.Create;
+  LObserver := TConsoleWorkProgress.Create;
   try
     LProfile := TJournalModelProfile.Create(ReadProfileText(ParamStr(2) + '.json'),
       ReadProfileText(ParamStr(2) + '.wfcs'));
@@ -1285,8 +1296,10 @@ begin
       LSegments[LIndex].FeatureCount := LSource.FeatureCount;
       LSegments[LIndex].Multiplicity := 1;
     end;
-    LReader := TJournalTrainingReader.Create(LSegments);
-    LContexts := TJournalContextPool.Create(LReader, LProfile.Palette, LProfile.Pool, LMaximum);
+    LReader := TJournalTrainingReader.Create(LSegments, LObserver.Observe);
+    LReader.OnProgress := LObserver.Observe;
+    LContexts := TJournalContextPool.Create(LReader, LProfile.Palette, LProfile.Pool, LMaximum,
+      LObserver.Observe);
     LAttached := LProfile.WithContexts(LContexts);
     LDocument := TJSONObject(ParseNativeJSON(LAttached.EncodeReport));
     LDocument.Delete('audition_sha256');
@@ -1300,6 +1313,7 @@ begin
     LAttached.Free;
     LContexts.Free;
     LReader.Free;
+    LObserver.Free;
     for LIndex := 0 to High(LJournals) do
     begin
       LFirstReference := True;

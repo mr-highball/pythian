@@ -118,15 +118,24 @@ type
     FObservations: Int64;
     FWeightedObservations: Int64;
     FFailed: Boolean;
+    FBusy: Boolean;
     FProgress: TJournalTrainingProgress;
+    FWorkProgress: TWorkProgressCallback;
     FPass: Integer;
     FConsumed: Int64;
     FReported: Int64;
     function GetSegmentCount: Integer;
   public
-    constructor Create(const ASegments: TJournalTrainingSegments);
+    { Big Boss: the optional work observer is borrowed until replaced or reader
+      destruction. It observes preflight and nested journal I/O/decoding;
+      OnProgress retains its separate pass-local read_training contract.
+      A read cancellation poisons this reader and may poison its journal;
+      reopen the unchanged journal and create a new reader before retrying. }
+    constructor Create(const ASegments: TJournalTrainingSegments;
+      const AProgress: TWorkProgressCallback = nil);
     procedure Rewind; override;
-    function ReadObservation(var AObservation: TJournalTrainingObservation): Boolean;
+    function ReadObservation(var AObservation: TJournalTrainingObservation;
+      const AProgress: TWorkProgressCallback = nil): Boolean;
     function ReadVector(var AVector: TAcousticVector;
       var AMultiplicity: Integer): Boolean; override;
     function SegmentAt(const AIndex: Integer): TJournalTrainingSegment;
@@ -134,6 +143,7 @@ type
     property ObservationCount: Int64 read FObservations;
     property WeightedObservationCount: Int64 read FWeightedObservations;
     property OnProgress: TJournalTrainingProgress read FProgress write FProgress;
+    property OnWorkProgress: TWorkProgressCallback read FWorkProgress write FWorkProgress;
   end;
 
 function WholeJournalSegment(const AJournal: TFeatureJournal;
@@ -148,7 +158,8 @@ function WholeJournalSegment(const AJournal: TFeatureJournal;
   parent-range auditing; hashes/flags do not prove musical independence.
   Empty selections reject. Journals are borrowed, never read or rewound here. }
 function SelectJournalPartition(const APlan: TJournalPartitionPlan;
-  const APartition: TJournalPartition): TJournalTrainingSegments;
+  const APartition: TJournalPartition;
+  const AProgress: TWorkProgressCallback = nil): TJournalTrainingSegments;
 { One nearest assigned observation per token; unoccupied centers remain unfound.
   Coordinates retain the source identity through the reader's segment binding. }
 function FindJournalRepresentatives(const AReader: TJournalTrainingReader;
@@ -335,7 +346,8 @@ begin
 end;
 
 function SelectJournalPartition(const APlan: TJournalPartitionPlan;
-  const APartition: TJournalPartition): TJournalTrainingSegments;
+  const APartition: TJournalPartition;
+  const AProgress: TWorkProgressCallback): TJournalTrainingSegments;
 var
   LSegments: TJournalTrainingSegments;
   LSelected: TJournalTrainingSegments;
@@ -345,6 +357,8 @@ var
   LIndex: Integer;
   LOther: Integer;
   LCount: Integer;
+  LPairs: Int64;
+  LVisited: Int64;
 begin
   if (Ord(APartition) < Ord(Low(TJournalPartition))) or
     (Ord(APartition) > Ord(High(TJournalPartition))) then
@@ -356,6 +370,7 @@ begin
     raise EAudio.Create('Journal partition plan requires 1..4096 entries');
   end;
   SetLength(LSegments, Length(APlan));
+  ReportWork(AProgress, 'training_partition_entries', wuItems, 0, Length(APlan));
   LCount := 0;
   for LIndex := 0 to High(APlan) do
   begin
@@ -376,6 +391,7 @@ begin
       raise EAudio.Create('Previously used recording groups cannot evaluate');
     end;
     LSegments[LIndex] := APlan[LIndex].Segment;
+    ReportWork(AProgress, 'training_partition_entries', wuItems, LIndex + 1, Length(APlan));
     if APlan[LIndex].Partition = APartition then
     begin
       Inc(LCount);
@@ -383,13 +399,21 @@ begin
   end;
   { Reuse the reader's bounds and same-analysis contract without reading any
     observations. Its constructor's Rewind only resets its own local state. }
-  LValidator := TJournalTrainingReader.Create(LSegments);
+  LValidator := TJournalTrainingReader.Create(LSegments, AProgress);
   LValidator.Free;
+  LPairs := Int64(Length(APlan)) * (Length(APlan) - 1) div 2;
+  LVisited := 0;
+  ReportWork(AProgress, 'training_partition_pairs', wuItems, 0, LPairs);
   for LIndex := 0 to High(APlan) do
   begin
     LBinding := LSegments[LIndex].Journal.Binding;
     for LOther := 0 to LIndex - 1 do
     begin
+      Inc(LVisited);
+      if LVisited mod 256 = 0 then
+      begin
+        ReportWork(AProgress, 'training_partition_pairs', wuItems, LVisited, LPairs);
+      end;
       if (APlan[LIndex].GroupId = APlan[LOther].GroupId) and
         (APlan[LIndex].Partition <> APlan[LOther].Partition) then
       begin
@@ -410,6 +434,7 @@ begin
   begin
     raise EAudio.Create('Requested journal partition is empty');
   end;
+  ReportWork(AProgress, 'training_partition_pairs', wuItems, LVisited, LPairs);
   LSelected := nil;
   SetLength(LSelected, LCount);
   LCount := 0;
@@ -421,10 +446,12 @@ begin
       Inc(LCount);
     end;
   end;
+  ReportWork(AProgress, 'training_partition_ready', wuItems, 1, 1);
   Result := LSelected;
 end;
 
-constructor TJournalTrainingReader.Create(const ASegments: TJournalTrainingSegments);
+constructor TJournalTrainingReader.Create(const ASegments: TJournalTrainingSegments;
+  const AProgress: TWorkProgressCallback);
 const
   CMaximumExactMass = Int64(9007199254740991);
 var
@@ -435,12 +462,19 @@ var
   LPrevious: TFeatureJournalBinding;
   LSegment: TJournalTrainingSegment;
   LMass: Int64;
+  LPairs: Int64;
+  LVisited: Int64;
 begin
   inherited Create;
   if (Length(ASegments) < 1) or (Length(ASegments) > MaximumJournalTrainingSegments) then
   begin
     raise EAudio.Create('Journal training requires 1..4096 declared segments');
   end;
+  FWorkProgress := AProgress;
+  LPairs := Int64(Length(ASegments)) * (Length(ASegments) - 1) div 2;
+  LVisited := 0;
+  ReportWork(AProgress, 'training_segments', wuItems, 0, Length(ASegments));
+  ReportWork(AProgress, 'training_overlap_pairs', wuItems, 0, LPairs);
   for LIndex := 0 to High(ASegments) do
   begin
     LSegment := ASegments[LIndex];
@@ -471,6 +505,11 @@ begin
     end;
     for LOther := 0 to LIndex - 1 do
     begin
+      Inc(LVisited);
+      if LVisited mod 256 = 0 then
+      begin
+        ReportWork(AProgress, 'training_overlap_pairs', wuItems, LVisited, LPairs);
+      end;
       LPrevious := ASegments[LOther].Journal.Binding;
       if (LBinding.SourceSha256 = LPrevious.SourceSha256) and
         (LSegment.FirstFeature < ASegments[LOther].FirstFeature + ASegments[LOther].FeatureCount) and
@@ -487,13 +526,20 @@ begin
     LMass := LSegment.FeatureCount * LSegment.Multiplicity;
     Inc(FWeightedObservations, LMass);
     Inc(FObservations, LSegment.FeatureCount);
+    ReportWork(AProgress, 'training_segments', wuItems, LIndex + 1, Length(ASegments));
   end;
+  ReportWork(AProgress, 'training_overlap_pairs', wuItems, LVisited, LPairs);
   FSegments := Copy(ASegments);
   Rewind;
+  ReportWork(AProgress, 'training_reader_ready', wuItems, 1, 1);
 end;
 
 procedure TJournalTrainingReader.Rewind;
 begin
+  if FBusy then
+  begin
+    raise EAudio.Create('Journal training reader operation is already active');
+  end;
   if FFailed then
   begin
     raise EAudio.Create('Journal training reader failed; create a new reader');
@@ -508,80 +554,96 @@ begin
 end;
 
 function TJournalTrainingReader.ReadObservation(
-  var AObservation: TJournalTrainingObservation): Boolean;
+  var AObservation: TJournalTrainingObservation;
+  const AProgress: TWorkProgressCallback): Boolean;
 var
   LSegment: TJournalTrainingSegment;
   LObservation: TJournalTrainingObservation;
   LIndex: Int64;
+  LWork: TWorkProgressCallback;
 begin
+  if FBusy then
+  begin
+    raise EAudio.Create('Journal training reader operation is already active');
+  end;
   if FFailed then
   begin
     raise EAudio.Create('Journal training reader failed; create a new reader');
   end;
+  LWork := AProgress;
+  if not Assigned(LWork) then
+  begin
+    LWork := FWorkProgress;
+  end;
+  FBusy := True;
   try
-    if Assigned(FProgress) and (FConsumed <> FReported) and
-      ((FConsumed mod 128 = 0) or (FConsumed = FObservations)) then
-    begin
-      ReportWork(FProgress, 'read_training', wuObservations, FConsumed, FObservations, FPass);
-      FReported := FConsumed;
-    end;
-    if FSegment >= Length(FSegments) then
-    begin
-      Exit(False);
-    end;
-    if (FSegment < 0) or (FEmitted = FSegments[FSegment].FeatureCount) then
-    begin
-      Inc(FSegment);
-      if FSegment = Length(FSegments) then
+    try
+      if Assigned(FProgress) and (FConsumed <> FReported) and
+        ((FConsumed mod 128 = 0) or (FConsumed = FObservations)) then
+      begin
+        ReportWork(FProgress, 'read_training', wuObservations, FConsumed, FObservations, FPass);
+        FReported := FConsumed;
+      end;
+      if FSegment >= Length(FSegments) then
       begin
         Exit(False);
       end;
-      if not FSegments[FSegment].Journal.Completed then
+      if (FSegment < 0) or (FEmitted = FSegments[FSegment].FeatureCount) then
       begin
-        raise EAudio.Create('Training journal is no longer complete');
-      end;
-      FSegments[FSegment].Journal.Rewind;
-      FBatch := Default(TWaveFeatureBatch);
-      FBatchIndex := 0;
-      FEmitted := 0;
-    end;
-    LSegment := FSegments[FSegment];
-    while True do
-    begin
-      if FBatchIndex = Length(FBatch.Features) then
-      begin
-        if not LSegment.Journal.ReadNext(FBatch) then
+        Inc(FSegment);
+        if FSegment = Length(FSegments) then
         begin
-          raise EAudio.Create('Training journal ended before its declared segment');
+          Exit(False);
         end;
+        if not FSegments[FSegment].Journal.Completed then
+        begin
+          raise EAudio.Create('Training journal is no longer complete');
+        end;
+        FSegments[FSegment].Journal.Rewind;
+        FBatch := Default(TWaveFeatureBatch);
         FBatchIndex := 0;
+        FEmitted := 0;
       end;
-      LIndex := FBatch.FirstFeature + FBatchIndex;
-      if LIndex < LSegment.FirstFeature then
+      LSegment := FSegments[FSegment];
+      while True do
       begin
+        if FBatchIndex = Length(FBatch.Features) then
+        begin
+          if not LSegment.Journal.ReadNext(FBatch, LWork) then
+          begin
+            raise EAudio.Create('Training journal ended before its declared segment');
+          end;
+          FBatchIndex := 0;
+        end;
+        LIndex := FBatch.FirstFeature + FBatchIndex;
+        if LIndex < LSegment.FirstFeature then
+        begin
+          Inc(FBatchIndex);
+          Continue;
+        end;
+        if LIndex <> LSegment.FirstFeature + FEmitted then
+        begin
+          raise EAudio.Create('Journal training observation order differs');
+        end;
+        LObservation := Default(TJournalTrainingObservation);
+        LObservation.SegmentIndex := FSegment;
+        LObservation.FeatureIndex := LIndex;
+        LObservation.SourceFrame := FBatch.SourceStartFrame + FBatch.Features[FBatchIndex].StartFrame;
+        LObservation.Feature := FBatch.Features[FBatchIndex];
+        LObservation.Feature.StartFrame := 0;
+        LObservation.Multiplicity := LSegment.Multiplicity;
         Inc(FBatchIndex);
-        Continue;
+        Inc(FEmitted);
+        Inc(FConsumed);
+        AObservation := LObservation;
+        Exit(True);
       end;
-      if LIndex <> LSegment.FirstFeature + FEmitted then
-      begin
-        raise EAudio.Create('Journal training observation order differs');
-      end;
-      LObservation := Default(TJournalTrainingObservation);
-      LObservation.SegmentIndex := FSegment;
-      LObservation.FeatureIndex := LIndex;
-      LObservation.SourceFrame := FBatch.SourceStartFrame + FBatch.Features[FBatchIndex].StartFrame;
-      LObservation.Feature := FBatch.Features[FBatchIndex];
-      LObservation.Feature.StartFrame := 0;
-      LObservation.Multiplicity := LSegment.Multiplicity;
-      Inc(FBatchIndex);
-      Inc(FEmitted);
-      Inc(FConsumed);
-      AObservation := LObservation;
-      Exit(True);
+    except
+      FFailed := True;
+      raise;
     end;
-  except
-    FFailed := True;
-    raise;
+  finally
+    FBusy := False;
   end;
 end;
 

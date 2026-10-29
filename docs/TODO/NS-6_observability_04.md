@@ -145,6 +145,26 @@ unqualified where no interior observer exists. Actual Studio18 remains separate.
 
 **Dev Notes:**
 
+- 2026-10-29, Big Boss SOLO: the remaining training/index component now exposes
+  segment/partition overlap preflight, candidate/successor construction and
+  measured/restored context construction, with nested journal decoding and
+  actual WFC model-builder forwarding. The two context sort implementations
+  are consolidated. Existing pass-local learning counters remain separate from
+  detailed work; constructor candidates stay private on cancellation. Native
+  Studio and journal learn/fit/context tools forward the new observers. See
+  [the exact phase/ownership map](../OBSERVABILITY.md#journal-learning-preparation--local-qualification-2026-10-29).
+  Native32/64 and actual pas2js each pass32972 checks/532 original aborts, exact
+  constructor retry/model/index replay and unchanged borrowed journal bytes.
+  Original native learning controls pass. The32768-observation synthetic journal
+  exposes2053 interior callbacks. Actual Win64 worker384 checks, bounded durable
+  updates, zero leaks and the frozen WAV pass; matching CLI/browser programs
+  compile. Exact published/extracted qualification remains pending; results are not accepted merely by
+  compilation. Full AC1/2, duration/scheduler and other retained interiors,
+  synchronous allocation/copy latency and actual Studio18 remain open. No task
+  split, musical credit, deployment or scientific/exposure reset is claimed.
+  Private E-drive journal-preparation-20261029-boss keeps PLAN, all logs and the
+  removed-variable/test-rewind failures with their repairs.
+
 - 2026-10-29, Big Boss: terminal source CI489 and clean exact/extracted packages
   accept all original portability14 criteria. Journal-intake component evidence
   below is now published-qualified. Counts54/92/146→53/93/146, NS6 16→15 open;

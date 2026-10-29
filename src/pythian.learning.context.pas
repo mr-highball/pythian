@@ -31,7 +31,7 @@ interface
 
 uses
   pythian.audio, pythian.analysis.journal, pythian.learning,
-  pythian.learning.journal, pythian.learning.selection;
+  pythian.learning.journal, pythian.learning.selection, pythian.progress;
 
 const
   MaximumJournalContexts = 2048;
@@ -77,7 +77,10 @@ type
     around each populated fallback candidate. Borrows reader/palette/pool only
     during construction. One sequential journal pass; storage is bounded.
     Context never crosses a declared segment or invents observations at EOF.
-    This is acoustic source context, not inferred musical phrase boundaries. }
+    This is acoustic source context, not inferred musical phrase boundaries.
+    Big Boss: constructor callbacks are borrowed for the call, include nested
+    reads and observe only private state. Allocation/copy remain synchronous;
+    cancellation during decoding requires journal/reader reopen before retry. }
   TJournalContextPool = class
   private
     FContexts: TJournalContextSets;
@@ -92,13 +95,15 @@ type
   public
     constructor Create(const AReader: TJournalTrainingReader;
       const APalette: TAcousticPalette; const AFallback: TJournalCandidatePool;
-      const AMaximumGrains: Integer = 8);
+      const AMaximumGrains: Integer = 8;
+      const AProgress: TWorkProgressCallback = nil);
     { Restores detached, structurally checked contexts without journal reads.
       Source extent, grid, palette/timebase and fallback bindings are validated;
       serialized measurements still require host provenance verification. }
     constructor CreateFromContexts(const APalette: TAcousticPalette;
       const AFallback: TJournalCandidatePool; const ASources: TJournalContextSources;
-      const AContexts: TJournalContextSets);
+      const AContexts: TJournalContextSets;
+      const AProgress: TWorkProgressCallback = nil);
     destructor Destroy; override;
     function SourceAt(const AIndex: Integer): TJournalContextSource;
     function ContextLength(const AIndex: Integer): Integer;
@@ -142,6 +147,46 @@ begin
     (ALeft.SourceFrame = ARight.SourceFrame);
 end;
 
+{ Big Boss: one stable canonical sort for measured and restored contexts. Counts
+  actual anchor comparisons, including already ordered inputs; total is unknown
+  until complete. The bounded arrays remain constructor-private throughout. }
+procedure SortJournalContexts(var AContexts: TJournalContextSets;
+  const AProgress: TWorkProgressCallback);
+var
+  LIndex: Integer;
+  LOther: Integer;
+  LContext: TJournalContextWindows;
+  LCandidate: TJournalRepresentative;
+  LVisits: Int64;
+begin
+  LVisits := 0;
+  ReportWork(AProgress, 'context_sort_comparisons', wuItems, 0, 0);
+  for LIndex := 1 to High(AContexts) do
+  begin
+    LContext := AContexts[LIndex];
+    LOther := LIndex - 1;
+    while LOther >= 0 do
+    begin
+      Inc(LVisits);
+      if LVisits mod 256 = 0 then
+      begin
+        ReportWork(AProgress, 'context_sort_comparisons', wuItems, LVisits, 0);
+      end;
+      LCandidate := AContexts[LOther][0].Candidate;
+      if (LCandidate.SegmentIndex < LContext[0].Candidate.SegmentIndex) or
+        ((LCandidate.SegmentIndex = LContext[0].Candidate.SegmentIndex) and
+        (LCandidate.FeatureIndex <= LContext[0].Candidate.FeatureIndex)) then
+      begin
+        Break;
+      end;
+      AContexts[LOther + 1] := AContexts[LOther];
+      Dec(LOther);
+    end;
+    AContexts[LOther + 1] := LContext;
+  end;
+  ReportWork(AProgress, 'context_sort_comparisons', wuItems, LVisits, LVisits);
+end;
+
 function DefaultJournalContextOptions: TJournalContextOptions;
 begin
   Result.MaximumRunGrains := 8;
@@ -151,22 +196,21 @@ end;
 
 constructor TJournalContextPool.Create(const AReader: TJournalTrainingReader;
   const APalette: TAcousticPalette; const AFallback: TJournalCandidatePool;
-  const AMaximumGrains: Integer);
+  const AMaximumGrains: Integer; const AProgress: TWorkProgressCallback);
 var
   LSlots: TJournalRepresentatives;
   LSegment: TJournalTrainingSegment;
   LCandidate: TJournalRepresentative;
   LObservation: TJournalTrainingObservation;
-  LContext: TJournalContextWindows;
   LSlot: Integer;
   LIndex: Integer;
-  LOther: Integer;
   LFirst: Integer;
   LNext: Integer;
   LOffset: Integer;
   LSeen: Integer;
   LToken: Integer;
   LDistance: Double;
+  LRead: Int64;
 begin
   inherited Create;
   if (AReader = nil) or (APalette = nil) or (AFallback = nil) or
@@ -180,19 +224,26 @@ begin
   end;
   FTokenCount := APalette.Count;
   SetLength(FSources, AReader.SegmentCount);
+  ReportWork(AProgress, 'context_sources', wuItems, 0, Length(FSources));
   for LIndex := 0 to High(FSources) do
   begin
     LSegment := AReader.SegmentAt(LIndex);
     FSources[LIndex].Binding := LSegment.Journal.Binding;
     FSources[LIndex].FirstFeature := LSegment.FirstFeature;
     FSources[LIndex].FeatureCount := LSegment.FeatureCount;
+    ReportWork(AProgress, 'context_sources', wuItems, LIndex + 1, Length(FSources));
   end;
   FHop := FSources[0].Binding.Options.HopFrames;
   FVocabulary := AcousticVocabularySha256(APalette, FSources[0].Binding.Options,
     FSources[0].Binding.SampleRate, FSources[0].Binding.Channels);
   SetLength(LSlots, AFallback.SlotCount);
+  ReportWork(AProgress, 'context_anchor_slots', wuItems, 0, Length(LSlots));
   for LSlot := 0 to AFallback.SlotCount - 1 do
   begin
+    if (LSlot > 0) and (LSlot mod 256 = 0) then
+    begin
+      ReportWork(AProgress, 'context_anchor_slots', wuItems, LSlot, Length(LSlots));
+    end;
     LCandidate := AFallback.CandidateAt(LSlot);
     LSlots[LSlot] := LCandidate;
     if not LCandidate.Found then
@@ -217,27 +268,10 @@ begin
     FContexts[LIndex][0].Token := AFallback.TokenAt(LSlot);
     Inc(FWindowCount, Length(FContexts[LIndex]));
   end;
+  ReportWork(AProgress, 'context_anchor_slots', wuItems, Length(LSlots), Length(LSlots));
   FFallback := TJournalCandidatePool.CreateFromCandidates(APalette.Count,
-    AReader.SegmentCount, AFallback.BinsPerSegment, LSlots);
-  { At most 2048 anchors: bounded insertion sort, independent of recording length. }
-  for LIndex := 1 to High(FContexts) do
-  begin
-    LContext := FContexts[LIndex];
-    LOther := LIndex - 1;
-    while LOther >= 0 do
-    begin
-      LCandidate := FContexts[LOther][0].Candidate;
-      if (LCandidate.SegmentIndex < LContext[0].Candidate.SegmentIndex) or
-        ((LCandidate.SegmentIndex = LContext[0].Candidate.SegmentIndex) and
-        (LCandidate.FeatureIndex <= LContext[0].Candidate.FeatureIndex)) then
-      begin
-        Break;
-      end;
-      FContexts[LOther + 1] := FContexts[LOther];
-      Dec(LOther);
-    end;
-    FContexts[LOther + 1] := LContext;
-  end;
+    AReader.SegmentCount, AFallback.BinsPerSegment, LSlots, AProgress);
+  SortJournalContexts(FContexts, AProgress);
   for LIndex := 1 to High(FContexts) do
   begin
     if SameWindow(FContexts[LIndex - 1][0].Candidate, FContexts[LIndex][0].Candidate) then
@@ -249,8 +283,16 @@ begin
   LFirst := 0;
   LNext := 0;
   LSeen := 0;
-  while AReader.ReadObservation(LObservation) do
+  LRead := 0;
+  ReportWork(AProgress, 'context_observations', wuObservations, 0, AReader.ObservationCount);
+  ReportWork(AProgress, 'context_windows', wuItems, 0, FWindowCount);
+  while AReader.ReadObservation(LObservation, AProgress) do
   begin
+    Inc(LRead);
+    if LRead mod 128 = 0 then
+    begin
+      ReportWork(AProgress, 'context_observations', wuObservations, LRead, AReader.ObservationCount);
+    end;
     while LNext < Length(FContexts) do
     begin
       LCandidate := FContexts[LNext][0].Candidate;
@@ -305,17 +347,24 @@ begin
       FContexts[LIndex][LOffset].Token := LToken;
       FContexts[LIndex][LOffset].Candidate := LCandidate;
       Inc(LSeen);
+      if LSeen mod 128 = 0 then
+      begin
+        ReportWork(AProgress, 'context_windows', wuItems, LSeen, FWindowCount);
+      end;
     end;
   end;
   if LSeen <> FWindowCount then
   begin
     raise EAudio.Create('Context journal ended without all declared windows');
   end;
+  ReportWork(AProgress, 'context_observations', wuObservations, LRead, AReader.ObservationCount);
+  ReportWork(AProgress, 'context_windows', wuItems, LSeen, FWindowCount);
+  ReportWork(AProgress, 'context_pool_ready', wuItems, 1, 1);
 end;
 
 constructor TJournalContextPool.CreateFromContexts(const APalette: TAcousticPalette;
   const AFallback: TJournalCandidatePool; const ASources: TJournalContextSources;
-  const AContexts: TJournalContextSets);
+  const AContexts: TJournalContextSets; const AProgress: TWorkProgressCallback);
 var
   LSlots: TJournalRepresentatives;
   LSource: TJournalContextSource;
@@ -324,6 +373,16 @@ var
   LOther: Integer;
   LOffset: Integer;
   LTotal: Int64;
+  LVisits: Int64;
+
+  procedure Visit;
+  begin
+    Inc(LVisits);
+    if LVisits mod 256 = 0 then
+    begin
+      ReportWork(AProgress, 'context_restore_visits', wuItems, LVisits, 0);
+    end;
+  end;
 
   procedure ValidateWindow(const AWindow: TJournalContextWindow);
   var
@@ -359,6 +418,8 @@ begin
   begin
     raise EAudio.Create('Restored context geometry is invalid');
   end;
+  LVisits := 0;
+  ReportWork(AProgress, 'context_restore_visits', wuItems, 0, 0);
   FTokenCount := APalette.Count;
   FSources := Copy(ASources);
   FHop := FSources[0].Binding.Options.HopFrames;
@@ -366,6 +427,7 @@ begin
     FSources[0].Binding.SampleRate, FSources[0].Binding.Channels);
   for LIndex := 0 to High(FSources) do
   begin
+    Visit;
     LSource := FSources[LIndex];
     if (AcousticVocabularySha256(APalette, LSource.Binding.Options,
       LSource.Binding.SampleRate, LSource.Binding.Channels) <> FVocabulary) or
@@ -388,6 +450,7 @@ begin
     end;
     for LOther := 0 to LIndex - 1 do
     begin
+      Visit;
       if (LSource.Binding.SourceSha256 = FSources[LOther].Binding.SourceSha256) and
         ((LSource.Binding.FrameCount <> FSources[LOther].Binding.FrameCount) or
         ((LSource.FirstFeature < FSources[LOther].FirstFeature + FSources[LOther].FeatureCount) and
@@ -400,6 +463,7 @@ begin
   SetLength(LSlots, AFallback.SlotCount);
   for LIndex := 0 to High(LSlots) do
   begin
+    Visit;
     LSlots[LIndex] := AFallback.CandidateAt(LIndex);
     if LSlots[LIndex].Found then
     begin
@@ -410,7 +474,7 @@ begin
     end;
   end;
   FFallback := TJournalCandidatePool.CreateFromCandidates(FTokenCount, SourceCount,
-    AFallback.BinsPerSegment, LSlots);
+    AFallback.BinsPerSegment, LSlots, AProgress);
   SetLength(FContexts, Length(AContexts));
   for LIndex := 0 to High(FContexts) do
   begin
@@ -424,6 +488,7 @@ begin
     Inc(FWindowCount, Length(FContexts[LIndex]));
     for LOffset := 0 to High(FContexts[LIndex]) do
     begin
+      Visit;
       ValidateWindow(FContexts[LIndex][LOffset]);
       if LOffset > 0 then
       begin
@@ -437,31 +502,17 @@ begin
       end;
     end;
   end;
-  { Canonical source/anchor order makes serialization and merging repeatable. }
+  SortJournalContexts(FContexts, AProgress);
   for LIndex := 1 to High(FContexts) do
   begin
-    LContext := FContexts[LIndex];
-    LOther := LIndex - 1;
-    while LOther >= 0 do
-    begin
-      if (FContexts[LOther][0].Candidate.SegmentIndex < LContext[0].Candidate.SegmentIndex) or
-        ((FContexts[LOther][0].Candidate.SegmentIndex = LContext[0].Candidate.SegmentIndex) and
-        (FContexts[LOther][0].Candidate.FeatureIndex <= LContext[0].Candidate.FeatureIndex)) then
-      begin
-        Break;
-      end;
-      FContexts[LOther + 1] := FContexts[LOther];
-      Dec(LOther);
-    end;
-    FContexts[LOther + 1] := LContext;
-  end;
-  for LIndex := 1 to High(FContexts) do
-  begin
+    Visit;
     if SameWindow(FContexts[LIndex - 1][0].Candidate, FContexts[LIndex][0].Candidate) then
     begin
       raise EAudio.Create('Restored context contains duplicate anchors');
     end;
   end;
+  ReportWork(AProgress, 'context_restore_visits', wuItems, LVisits, LVisits);
+  ReportWork(AProgress, 'context_pool_ready', wuItems, 1, 1);
 end;
 
 destructor TJournalContextPool.Destroy;
