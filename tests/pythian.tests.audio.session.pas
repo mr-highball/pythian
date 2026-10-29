@@ -68,6 +68,7 @@ type
     SawSearch: Boolean;
     SawUnknown: Boolean;
     SawReady: Boolean;
+    SawSelection: Boolean;
     procedure Observe(const AProgress: TWorkProgress);
   end;
 
@@ -88,6 +89,8 @@ begin
   SawSearch := SawSearch or (AProgress.Stage = 'wfc_solve_search_visits');
   SawUnknown := SawUnknown or ((AProgress.Total = 0) and (AProgress.Done > 0));
   SawReady := SawReady or (AProgress.Stage = 'audio_pull_ready');
+  SawSelection := SawSelection or ((AProgress.Stage = 'journal_select_visits') and
+    (AProgress.Done > 0));
   for LAction := 0 to 3 do
   begin
     LRejected := False;
@@ -174,8 +177,8 @@ begin
           { Only the substantial first solve must cross the existing interior
             cadence. A seven-frame ending may complete below that threshold. }
           if LScenario = 0 then
-            Require(LProgress.SawSearch and LProgress.SawUnknown,
-              'Audio pull did not forward actual WFC work');
+            Require(LProgress.SawSearch and LProgress.SawUnknown and LProgress.SawSelection,
+              'Audio pull did not forward actual WFC and source-selection work');
           LExpected := LControl.ReadFrames(4096);
           Require((Length(LActual) = Length(LExpected)) and
             (CompareByte(LActual[0], LExpected[0], Length(LActual) * SizeOf(Single)) = 0),

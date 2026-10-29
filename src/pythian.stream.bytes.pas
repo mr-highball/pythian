@@ -64,6 +64,16 @@ function ReadStreamBytes(const AStream: TStream; var ABytes: TAudioBytes;
 function WriteStreamBytes(const AStream: TStream; const ABytes: array of Byte;
   const AOffset, ACount: Integer): Integer;
 
+{ Complete byte windows using the same portable transfer boundary. Accumulate
+  short positive transfers; zero/negative/oversized results raise EReadError or
+  EWriteError. Underlying exceptions propagate. Validate the complete window
+  before I/O; zero count performs none. Failure may leave partial bytes/cursor
+  movement and never promises storage rollback. }
+procedure ReadStreamBytesExact(const AStream: TStream; var ABytes: TAudioBytes;
+  const AOffset, ACount: Integer);
+procedure WriteStreamBytesExact(const AStream: TStream; const ABytes: array of Byte;
+  const AOffset, ACount: Integer);
+
 implementation
 
 constructor TAudioBytesReadStream.Create(const ABytes: TAudioBytes);
@@ -186,6 +196,44 @@ begin
   {$else}
   Result := AStream.Write(ABytes[AOffset], ACount);
   {$endif}
+end;
+
+procedure ReadStreamBytesExact(const AStream: TStream; var ABytes: TAudioBytes;
+  const AOffset, ACount: Integer);
+var
+  LDone: Integer;
+  LRead: Integer;
+begin
+  ValidateWindow(AStream, Length(ABytes), AOffset, ACount);
+  LDone := 0;
+  while LDone < ACount do
+  begin
+    LRead := ReadStreamBytes(AStream, ABytes, AOffset + LDone, ACount - LDone);
+    if (LRead <= 0) or (LRead > ACount - LDone) then
+    begin
+      raise EReadError.Create('Stream read error');
+    end;
+    Inc(LDone, LRead);
+  end;
+end;
+
+procedure WriteStreamBytesExact(const AStream: TStream; const ABytes: array of Byte;
+  const AOffset, ACount: Integer);
+var
+  LDone: Integer;
+  LWritten: Integer;
+begin
+  ValidateWindow(AStream, Length(ABytes), AOffset, ACount);
+  LDone := 0;
+  while LDone < ACount do
+  begin
+    LWritten := WriteStreamBytes(AStream, ABytes, AOffset + LDone, ACount - LDone);
+    if (LWritten <= 0) or (LWritten > ACount - LDone) then
+    begin
+      raise EWriteError.Create('Stream write error');
+    end;
+    Inc(LDone, LWritten);
+  end;
 end;
 
 end.

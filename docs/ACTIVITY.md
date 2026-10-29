@@ -144,6 +144,18 @@ profile ranges before rendering. The optional index is borrowed for the session
 lifetime. Nil retains baseline behavior; explicit windows use the existing Hann
 renderer, and predecessor state continues across internal chunks.
 
+Batch `TJournalCandidatePool.Select` and the retained selector use one weighted
+rotation. Their optional progress receivers are borrowed synchronously per call;
+setup, compatibility checks and selection report actual visits. Selection totals
+remain unknown until completion. An observer exception leaves the previous caller
+result and retained selection state intact, so retrying the same chunk is exact.
+The audio session forwards its observer into selection; its existing terminal
+failure contract still applies to earlier WFC/audio work.
+
+`NativeStorageBytes` is the native record/text payload estimate, excluding object
+and allocator overhead. It is not heap usage and explicitly rejects on pas2js;
+the index and selector themselves remain portable.
+
 The maintained native comparison consumer accepts one saved Studio raw-acoustic
 range and a new output directory:
 

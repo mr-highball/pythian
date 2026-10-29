@@ -34,7 +34,9 @@ uses
   pythian.analysis,
   pythian.analysis.wave,
   pythian.analysis.journal,
-  pythian.learning;
+  pythian.learning,
+  pythian.corpus.text,
+  pythian.text;
 
 const
   MaximumJournalTrainingSegments = 4096;
@@ -57,7 +59,9 @@ type
   TJournalPartition = (jpTraining, jpDevelopment, jpEvaluation);
   TJournalPartitionEntry = record
     Segment: TJournalTrainingSegment;
-    GroupId: UTF8String;
+    { Exact, nonempty canonical UTF-8 identity, bounded to256 bytes on every
+      target. No normalization; outer ASCII control/space rejects. }
+    GroupId: TCorpusText;
     Partition: TJournalPartition;
     GroupVerified: Boolean;
     PreviouslyUsed: Boolean;
@@ -306,6 +310,30 @@ begin
   Result.Multiplicity := AMultiplicity;
 end;
 
+{ Journal policy retains native ASCII-edge trimming semantics. Host Trim has
+  broader Unicode whitespace semantics on pas2js, so use the primary scalar
+  decoder after canonical validation; non-ASCII identities stay exact. }
+procedure ValidateJournalGroupId(const AGroupId: TScalarText);
+var
+  LPosition: Integer;
+  LBytes: Integer;
+  LFirst: Cardinal;
+  LLast: Cardinal;
+begin
+  ValidateScalarText(AGroupId, 256, False, False);
+  LPosition := 1;
+  LFirst := ReadTextScalar(AGroupId, LPosition, LBytes);
+  LLast := LFirst;
+  while LPosition <= Length(AGroupId) do
+  begin
+    LLast := ReadTextScalar(AGroupId, LPosition, LBytes);
+  end;
+  if (LFirst <= 32) or (LLast <= 32) then
+  begin
+    raise EAudio.Create('Journal partition requires an explicit bounded group ID');
+  end;
+end;
+
 function SelectJournalPartition(const APlan: TJournalPartitionPlan;
   const APartition: TJournalPartition): TJournalTrainingSegments;
 var
@@ -331,12 +359,7 @@ begin
   LCount := 0;
   for LIndex := 0 to High(APlan) do
   begin
-    if (Length(APlan[LIndex].GroupId) < 1) or
-      (Length(APlan[LIndex].GroupId) > 256) or
-      (Trim(APlan[LIndex].GroupId) <> APlan[LIndex].GroupId) then
-    begin
-      raise EAudio.Create('Journal partition requires an explicit bounded group ID');
-    end;
+    ValidateJournalGroupId(APlan[LIndex].GroupId);
     if (Ord(APlan[LIndex].Partition) < Ord(Low(TJournalPartition))) or
       (Ord(APlan[LIndex].Partition) > Ord(High(TJournalPartition))) then
     begin

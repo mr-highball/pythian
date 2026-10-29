@@ -182,7 +182,7 @@ try {
   & (Join-Path $buildRoot "pythian.tests.progress$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Progress parity and cancellation checks failed' }
   foreach ($portableFixture in @('hash.portable', 'stream.bytes', 'binary.portable', 'binary.fields',
-      'wave.reader.portable', 'analysis.portable', 'fourier.window')) {
+      'wave.reader.portable', 'analysis.portable', 'fourier.window', 'journal.portable')) {
     & $compilerPath @compilerArgs "tests/pythian.tests.$portableFixture.lpr"
     if ($LASTEXITCODE -ne 0) { throw "Portable contract compilation failed: $portableFixture" }
     & (Join-Path $buildRoot "pythian.tests.$portableFixture$executableSuffix")
@@ -304,6 +304,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Exact source successor compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.journal.source.successor$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Exact source successor checks failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.journal.selection.progress.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Source selection progress compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.journal.selection.progress$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Source selection cancellation/replay checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.presence.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Presence evidence compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.presence$executableSuffix")

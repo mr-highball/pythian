@@ -100,77 +100,75 @@ uses
   SysUtils,
   Math,
   pythian.hash,
-  pythian.learning;
+  pythian.learning,
+  pythian.binary,
+  pythian.ieee754,
+  pythian.text,
+  pythian.stream.bytes;
 
 const
   CHeaderBytes = 172;
   CRecordHeaderBytes = 140;
   CFeatureBytes = 136;
   CHashBytes = 64;
-  CMagic: AnsiString = 'PYAFJ001';
+  CMagic = 'PYAFJ001';
 
 procedure PutNumber(var ABytes: TAudioBytes; var AOffset: Integer;
   const AValue: QWord; const AWidth: Integer);
-var
-  LIndex: Integer;
 begin
-  for LIndex := 0 to AWidth - 1 do
+  if AValue > QWord(MaximumBinaryInteger) then
   begin
-    ABytes[AOffset] := (AValue shr (LIndex * 8)) and $FF;
-    Inc(AOffset);
+    raise EAudio.Create('Journal integer exceeds the target exact range');
   end;
+  WriteUnsignedLE(ABytes, AOffset, AWidth, Int64(AValue));
+  Inc(AOffset, AWidth);
 end;
 
 function GetNumber(const ABytes: TAudioBytes; var AOffset: Integer;
   const AWidth: Integer): QWord;
-var
-  LIndex: Integer;
 begin
-  Result := 0;
-  for LIndex := 0 to AWidth - 1 do
-  begin
-    Result := Result or (QWord(ABytes[AOffset]) shl (LIndex * 8));
-    Inc(AOffset);
-  end;
+  Result := ReadUnsignedLE(ABytes, AOffset, AWidth);
+  Inc(AOffset, AWidth);
 end;
 
 procedure PutReal(var ABytes: TAudioBytes; var AOffset: Integer; const AValue: Double);
-var
-  LBits: QWord;
 begin
-  RequireFinite(AValue, 'Journal feature value');
-  Move(AValue, LBits, SizeOf(LBits));
-  PutNumber(ABytes, AOffset, LBits, 8);
+  WriteFloat64LE(ABytes, AOffset, AValue);
+  Inc(AOffset, 8);
 end;
 
 function GetReal(const ABytes: TAudioBytes; var AOffset: Integer): Double;
+begin
+  Result := ReadFloat64LE(ABytes, AOffset);
+  Inc(AOffset, 8);
+end;
+
+procedure PutText(var ABytes: TAudioBytes; var AOffset: Integer; const AValue: String);
 var
-  LBits: QWord;
+  LBytes: TAudioBytes;
+  LIndex: Integer;
 begin
-  LBits := GetNumber(ABytes, AOffset, 8);
-  if (LBits and QWord($7FF0000000000000)) = QWord($7FF0000000000000) then
+  LBytes := EncodeUTF8Text(AValue, CHashBytes, True, False);
+  if (AOffset < 0) or (AOffset > Length(ABytes)) or
+    (Length(LBytes) > Length(ABytes) - AOffset) then
   begin
-    raise EAudio.Create('Nonfinite journal value');
+    raise EAudio.Create('Journal text leaves its byte window');
   end;
-  Move(LBits, Result, SizeOf(Result));
+  for LIndex := 0 to High(LBytes) do
+  begin
+    ABytes[AOffset + LIndex] := LBytes[LIndex];
+  end;
+  Inc(AOffset, Length(LBytes));
 end;
 
-procedure PutText(var ABytes: TAudioBytes; var AOffset: Integer; const AValue: AnsiString);
+function TextAt(const ABytes: TAudioBytes; const AOffset, ACount: Integer): String;
 begin
-  if AValue <> '' then
+  if (AOffset < 0) or (ACount < 0) or (AOffset > Length(ABytes)) or
+    (ACount > Length(ABytes) - AOffset) then
   begin
-    Move(AValue[1], ABytes[AOffset], Length(AValue));
-    Inc(AOffset, Length(AValue));
+    raise EAudio.Create('Journal text leaves its byte window');
   end;
-end;
-
-function TextAt(const ABytes: TAudioBytes; const AOffset, ACount: Integer): AnsiString;
-begin
-  SetLength(Result, ACount);
-  if ACount > 0 then
-  begin
-    Move(ABytes[AOffset], Result[1], ACount);
-  end;
+  Result := DecodeUTF8Text(Copy(ABytes, AOffset, ACount), CHashBytes, True, False);
 end;
 
 function Header(const ABinding: TFeatureJournalBinding): TAudioBytes;
@@ -244,7 +242,7 @@ begin
       (LFeature.ValidFrames <> Min(Int64(ABinding.Options.WindowFrames),
         ABinding.FrameCount - LStart)) or
       (LFeature.ValidFrames < 1) or (LFeature.Peak < 0) or
-      (LFeature.Peak > MaxSingle) or
+      (LFeature.Peak > MaximumFiniteFloat32) or
       (LFeature.Rms > LFeature.Peak + 1E-9 * Max(1, LFeature.Peak)) or
       (LFeature.CentroidHz > ABinding.SampleRate / 2 + 1E-6) or
       (LFeature.Silent <> (LFeature.Rms <= ABinding.Options.SilenceRms)) then
@@ -274,6 +272,7 @@ var
   LBatch: TWaveFeatureBatch;
   LHash: String;
   LEnd: Int64;
+  LIndex: Integer;
 begin
   inherited Create;
   if (AStream = nil) or not Assigned(AFlush) then
@@ -298,7 +297,7 @@ begin
       raise EAudio.Create('New feature journal requires an empty stream');
     end;
     FStream.Position := 0;
-    FStream.WriteBuffer(LHeader[0], Length(LHeader));
+    WriteStreamBytesExact(FStream, LHeader, 0, Length(LHeader));
     FFlush;
   end
   else
@@ -309,10 +308,13 @@ begin
     end;
     SetLength(LStored, CHeaderBytes);
     FStream.Position := 0;
-    FStream.ReadBuffer(LStored[0], Length(LStored));
-    if not CompareMem(@LStored[0], @LHeader[0], CHeaderBytes) then
+    ReadStreamBytesExact(FStream, LStored, 0, Length(LStored));
+    for LIndex := 0 to CHeaderBytes - 1 do
     begin
-      raise EAudio.Create('Journal source, options, analysis contract or header integrity differs');
+      if LStored[LIndex] <> LHeader[LIndex] then
+      begin
+        raise EAudio.Create('Journal source, options, analysis contract or header integrity differs');
+      end;
     end;
   end;
   FExpectedSize := FStream.Size;
@@ -374,7 +376,7 @@ begin
   end;
   SetLength(LHead, CRecordHeaderBytes);
   FStream.Position := APosition;
-  FStream.ReadBuffer(LHead[0], Length(LHead));
+  ReadStreamBytesExact(FStream, LHead, 0, Length(LHead));
   if Sha256Bytes(Copy(LHead, 0, CRecordHeaderBytes - CHashBytes)) <>
     TextAt(LHead, CRecordHeaderBytes - CHashBytes, CHashBytes) then
   begin
@@ -397,7 +399,7 @@ begin
   end;
   LBytes := Copy(LHead);
   SetLength(LBytes, CRecordHeaderBytes + LPayloadBytes + CHashBytes);
-  FStream.ReadBuffer(LBytes[CRecordHeaderBytes], LPayloadBytes + CHashBytes);
+  ReadStreamBytesExact(FStream, LBytes, CRecordHeaderBytes, LPayloadBytes + CHashBytes);
   AHash := TextAt(LBytes, Length(LBytes) - CHashBytes, CHashBytes);
   SetLength(LBytes, Length(LBytes) - CHashBytes);
   if Sha256Bytes(LBytes) <> AHash then
@@ -491,7 +493,7 @@ begin
   try
     try
       FStream.Position := FValidBytes;
-      FStream.WriteBuffer(LBytes[0], Length(LBytes));
+      WriteStreamBytesExact(FStream, LBytes, 0, Length(LBytes));
       FFlush;
       if FFailed or (FStream.Size <> FValidBytes + Length(LBytes)) then
       begin

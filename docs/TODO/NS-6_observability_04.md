@@ -80,6 +80,11 @@ Naming a task or narrowing a component does not reset that count.
 
 **Blockers**
 
+- [Shared retained source selection19](NS-6_observability_19.md) — duplicated
+  batch/stream weighted selection and missing actual audio observer forwarding.
+  Its native/portable component can be qualified independently of Studio UI;
+  journal ingestion/index construction and render/duration interiors remain here.
+
 - [Studio progress transport18](NS-6_observability_18.md) — demonstrated native
   loss/rejection of unknown-total work and absent actual audio-pull forwarding.
   This does not absorb full retained selection/render/duration observation.

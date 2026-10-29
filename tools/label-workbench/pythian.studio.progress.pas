@@ -68,6 +68,9 @@ begin
     'learn_raw_palette': Result := 'Learn sounds';
     'learn_wfc_model': Result := 'Learn patterns';
     'select_sound_examples': Result := 'Choose sound examples';
+    'journal_select_prepare', 'journal_successor_compatibility':
+      Result := 'Prepare source choices';
+    'journal_select_visits': Result := 'Choose the next source passage';
     'check_learned_model': Result := 'Check learned patterns';
     'verify_model_sources': Result := 'Recheck recordings before saving learning';
     'save_learned_model': Result := 'Save learning';

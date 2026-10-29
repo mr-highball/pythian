@@ -6,7 +6,7 @@
 Accepted zero-credit usability repairs: [training choices and playback](DONE/NS-6_studio_19.md),
 [tabbed workflow and help](DONE/NS-6_studio_18.md).
 
-Updated 2026-10-29. **53 open / 89 accepted tasks.** The user authorized a new
+Updated 2026-10-29. **55 open / 89 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **52.45 current / 47.55 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -47,8 +47,8 @@ before recorded scoring; no musical gate or scientific counter is reset.
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 50 | 70% | 1 | 30 | 4.50 |
 | [NS-5 - User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 17 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 15 | 46 | 4.60 |
-| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **53** | Goal points are not summed across goals | **47.55** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 17 | 46 | 4.60 |
+| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **55** | Goal points are not summed across goals | **47.55** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -56,7 +56,16 @@ hours or effort estimates. See the [basis and rationale](../REBALANCE-2026-09-29
 
 ## Selection and actual blockers
 
-Selected zero-credit [Studio progress transport18](NS-6_observability_18.md):
+Current zero-credit [shared selection19](NS-6_observability_19.md) follows its
+demonstrated [journal portability12](NS-6_portability_12.md) prerequisite. Local
+checked native32/64 and actual pas2js gates pass, including exact frozen selection,
+canonical journal/binding identities and every-checkpoint abort/retry. Actual
+native audio/profile and full worker gates pass with unchanged frozen WAV.
+Clean extracted and exact published qualification remain. Both tasks stay open;
+counts55/89/144 and52.45/47.55 are unchanged. Parent04 retains ingestion/index
+construction and rendering/duration interiors; actual Studio UI remains in18.
+
+Previous zero-credit [Studio progress transport18](NS-6_observability_18.md):
 carry actual WFC work through audio pulls and persisted native jobs, preserving
 unknown totals, units/pass, cancellation and simple operator activity labels.
 Native32/64 pass685 original audio aborts and113 job checks each; final native
@@ -419,6 +428,8 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | --- | ---: | ---: | --- |
 | [NS-6_studio_21](NS-6_studio_21.md) — Background recovery and long-source learning | 0 | 0.00 | Deployed; actual browser acceptance remains |
 | [NS-6_studio_22](NS-6_studio_22.md) — Original/generated listening comparison | 0 | 0.00 | Deployed for review; native/DOM checks pass, actual browser acceptance remains |
+| [NS-6_portability_12](NS-6_portability_12.md) — Actual primary journal/binding consumer on pas2js | 0 | 0.00 | Demonstrated native type/raw-codec gap; freeze native bytes and reuse primary implementations |
+| [NS-6_observability_19](NS-6_observability_19.md) — Shared observable journal source selection | 0 | 0.00 | Native callback/audio gates pass; actual portable consumer blocked by portability12 |
 | [NS-6_observability_18](NS-6_observability_18.md) — Truthful native Studio work transport | 0 | 0.00 | Native/source qualification at542d5cc/CI478 passes; actual browser UI remains required |
 | [NS-6_observability_04](NS-6_observability_04.md) — Remaining provider/batch operations and operator monitoring | 0 | 0.00 | Native inference/operator AC3 accepted; retained session/capture/stream/publication AC1 and batch AC2 remain |
 | [NS-6_adoption_01](NS-6_adoption_01.md) — Establish independent ecosystem adoption evidence | 15 | 1.50 | Supported releases + independent ecosystem evidence |

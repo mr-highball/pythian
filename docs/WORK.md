@@ -12,6 +12,63 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: shared selection and primary journal pass local consumers — 2026-10-29
+
+Big Boss remains solo. The firewall-only follow-up made no core progress or
+system change; the current implementation batch advances the user's primary-code
+reuse and long-operation visibility requirements. Musical/reference stops and
+the existing4:16 listening question remain unchanged. No new labeling request.
+
+[Selection19](TODO/NS-6_observability_19.md) now shares batch/stream rotation and
+forwards actual audio-session progress. Its demonstrated
+[journal portability12](TODO/NS-6_portability_12.md) prerequisite reuses primary
+scalar/binary/IEEE754/exact stream transfers. Checked native32/64 and actual
+pas2js pass38 stream,384 journal/identity/binding and362071 selector checks,
+including293 original-exception abort/retries. Both native targets preserve the
+294966-value2359728-byte selection packet exactly. Original native journal,
+learning, successor and profile gates pass, including699 original audio caller
+aborts each; all native success logs show zero leaks. Full Win64 worker380 checks
+retain all original assertions and exact160000-frame320044-byte output:
+SHA256fea82882480eceae982305a79487e91eecbcc281f6a9c27c8746bab3e6409c07.
+
+Preserve the repaired UTF8String/code-page, short-positive transfer, compiler and
+fixture-input failures in task Dev Notes and the private E-drive
+journal-selection-progress-20261029-boss packet. Equal frozen palette parameters
+retain binding hashes across targets; numerical feature-transform parity is not
+claimed. Native payload sizing is explicitly named and rejects on pas2js without
+restricting portable index/selection behavior. Studio recovery compiles; actual
+browser presentation remains18's gate. Clean extracted and exact published
+qualification are next; no task is accepted yet. Counts55 open/89 DONE/144 total,
+NS6 17 open;52.45/47.55 unchanged. Delivery count remains0 while this batch is in
+progress; scientific stops never reset. No service, firewall, browser audio,
+private recording, catalog or answer change. Generated output stays on E.
+
+## Current handoff: musical stops retained; shared source selection next — 2026-10-29
+
+Big Boss remains solo. Previous goal turn made PROGRESS: accepted the primary
+window task and recorded a discriminating physical failure without musical
+credit. Revalidated clean sourcebbefa21. The pinned SwiftF0 runtime tree16items
+and training tree27items are complete and contain no numerical fixtures; export
+source checks values transiently and saves only model/report. This does not
+supply independent conformance, so no model rerun or failed-source variant.
+Register, quiet-tail/nonzero-rest, tonic/timbre and pulse-candidate stops remain.
+No new source microclip or operator request is selected.
+
+The user's requested shared implementation and cancellation audit has a real
+retained consumer gap: batch/stream source selection duplicate weighted rotation,
+and actual audio-session observation stops before selecting windows. New
+[selection19](TODO/NS-6_observability_19.md) owns this bounded primary component;
+parent04 retains ingestion/index construction, rendering/duration and actual UI
+requirements. Criterion: exact shared selection with borrowed observed work and
+atomic cursor/result publication. Deliverable: one primary algorithm and actual
+audio-session forwarding. Closing evidence: frozen slot/window and worker WAV
+replay, every-checkpoint original-exception abort/retry/reentry, native32/64,
+actual pas2js and extracted/published consumers. Stop on any selection/source/
+seed/counter/audio drift. No musical credit or scientific counter reset.
+Counts54 open/89 DONE/143 total, NS6 16 open;52.45/47.55 unchanged. Delivery
+nonclosing starts at0 after actual window01 closure. New output stays on E;
+fixed service slots, browser audio, private sources and saved answers stay intact.
+
 ## Current handoff: shared window accepted; pitch candidate stops at low-note protection — 2026-10-29
 
 Big Boss remains solo. The distinct source-qualified SwiftF0v0.3 Pascal numerical

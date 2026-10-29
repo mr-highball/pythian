@@ -1106,11 +1106,11 @@ begin
     LReader.OnProgress := LearningProgress;
     FSuccessors := TJournalSourceSuccessors.Create(LReader, FProfile.Palette);
     FSuccessors.RequireCompatible(FProfile.Pool);
-    Need(FSuccessors.StorageBytes <= MaximumStudioJobMemoryBytes div 4,
+    Need(FSuccessors.NativeStorageBytes <= MaximumStudioJobMemoryBytes div 4,
       'Source continuity index exceeds its memory allowance');
     FReceipt.Add('reconstruction_policy', 'exact_source_successor_v1');
     FReceipt.Add('reconstruction_policy_sha256', StudioTextHash('exact_source_successor_v1'));
-    FReceipt.Add('successor_index_bytes', FSuccessors.StorageBytes);
+    FReceipt.Add('successor_index_bytes', FSuccessors.NativeStorageBytes);
     FReceipt.Add('successor_observations', FSuccessors.ObservationCount);
   finally
     LReader.Free;

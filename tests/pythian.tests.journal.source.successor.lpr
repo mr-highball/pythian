@@ -228,7 +228,7 @@ begin
     LIndex.RequireCompatible(LPool);
     Require((LIndex.ObservationCount = 16) and (LIndex.SourceCount = 2),
       'Completed multi-batch observations retained exactly once');
-    Require(LIndex.StorageBytes < 4096, 'Index retains compact observations');
+    Require(LIndex.NativeStorageBytes < 4096, 'Index retains compact native observations');
     SetLength(LWeights, 2);
     LWeights[0] := 1;
     LWeights[1] := 0;

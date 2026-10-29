@@ -512,7 +512,7 @@ begin
     LReport.Add('sample_rate', LProfile.SampleRate);
     LReport.Add('channels', LProfile.Channels);
     LReport.Add('successor_observations', LSuccessors.ObservationCount);
-    LReport.Add('successor_storage_bytes', LSuccessors.StorageBytes);
+    LReport.Add('successor_storage_bytes', LSuccessors.NativeStorageBytes);
     WriteLn('Rendering unchanged baseline');
     LBefore := Render(LProfile, LAccess, nil, LSeed, LBlock, LFrames, LOutput + 'before.wav');
     LReport.Add('before', LBefore);

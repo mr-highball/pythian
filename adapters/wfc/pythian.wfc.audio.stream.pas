@@ -59,7 +59,8 @@ type
     Pause applies backpressure; Stop discards pending audio. A failed pull
     returns no partial block and permanently fails the session. Earlier blocks
     remain identifiable by Position and the caller's bound profile/seed.
-    ReadFrames borrows its observer only for that call and forwards WFC work.
+    ReadFrames borrows its observer only for that call and forwards WFC and
+    primary source-selection work.
     A raised observer exception also permanently fails the pull/session; no
     previously delivered audio or grain receipt can be rolled back. }
   TJournalAudioSession = class
@@ -240,7 +241,7 @@ begin
   begin
     FTokens[LIndex] := AcousticTokenIndex(LChunk.Tokens[LIndex]);
   end;
-  FWindows := FSelector.SelectWindowsChunk(FTokens);
+  FWindows := FSelector.SelectWindowsChunk(FTokens, AProgress);
   FSlotIndex := 0;
   Inc(FChunkIndex);
 end;

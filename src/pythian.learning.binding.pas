@@ -47,7 +47,10 @@ implementation
 uses
   Classes,
   pythian.audio,
-  pythian.hash;
+  pythian.hash,
+  pythian.binary,
+  pythian.text,
+  pythian.stream.bytes;
 
 procedure CheckDigest(const AValue: String);
 var
@@ -68,27 +71,41 @@ end;
 
 procedure PutNumber(const AStream: TStream; const AValue: QWord);
 var
-  LBytes: array[0..7] of Byte;
-  LIndex: Integer;
+  LBytes: TAudioBytes;
 begin
-  for LIndex := 0 to 7 do
+  if AValue > QWord(MaximumBinaryInteger) then
   begin
-    LBytes[LIndex] := (AValue shr (LIndex * 8)) and $FF;
+    raise EAudio.Create('Acoustic binding integer exceeds the target exact range');
   end;
-  AStream.WriteBuffer(LBytes, SizeOf(LBytes));
+  SetLength(LBytes, 8);
+  WriteUnsignedLE(LBytes, 0, 8, Int64(AValue));
+  WriteStreamBytesExact(AStream, LBytes, 0, Length(LBytes));
 end;
 
 procedure PutReal(const AStream: TStream; const AValue: Double);
 var
-  LBits: QWord;
+  LBytes: TAudioBytes;
+  LValue: Double;
 begin
-  RequireFinite(AValue, 'Acoustic binding value');
-  LBits := 0;
-  if AValue <> 0 then
+  { The existing vocabulary identity normalizes both signed zeros. Journal
+    observations retain their original sign; this binding is intentionally
+    semantic rather than an opaque record hash. }
+  LValue := AValue;
+  if AValue = 0 then
   begin
-    Move(AValue, LBits, SizeOf(LBits));
+    LValue := 0;
   end;
-  PutNumber(AStream, LBits);
+  SetLength(LBytes, 8);
+  WriteFloat64LE(LBytes, 0, LValue);
+  WriteStreamBytesExact(AStream, LBytes, 0, Length(LBytes));
+end;
+
+procedure PutText(const AStream: TStream; const AText: String);
+var
+  LBytes: TAudioBytes;
+begin
+  LBytes := EncodeUTF8Text(AText, 64, False, False);
+  WriteStreamBytesExact(AStream, LBytes, 0, Length(LBytes));
 end;
 
 function AcousticVocabularySha256(const APalette: TAcousticPalette;
@@ -111,7 +128,7 @@ begin
   PlanAudioAnalysis(1, AChannels, AOptions, LFeatureCount, LWork);
   LStream := TMemoryStream.Create;
   try
-    LStream.WriteBuffer(CContract[1], Length(CContract));
+    PutText(LStream, CContract);
     PutNumber(LStream, AnalysisVersion);
     PutNumber(LStream, AcousticLearningVersion);
     PutNumber(LStream, ASampleRate);
@@ -145,9 +162,9 @@ begin
   CheckDigest(AModelSha256);
   LStream := TMemoryStream.Create;
   try
-    LStream.WriteBuffer(CContract[1], Length(CContract));
-    LStream.WriteBuffer(AVocabularySha256[1], 64);
-    LStream.WriteBuffer(AModelSha256[1], 64);
+    PutText(LStream, CContract);
+    PutText(LStream, AVocabularySha256);
+    PutText(LStream, AModelSha256);
     LStream.Position := 0;
     Result := Sha256Stream(LStream, LStream.Size);
   finally

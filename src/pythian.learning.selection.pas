@@ -33,7 +33,8 @@ uses
   pythian.audio,
   pythian.analysis.journal,
   pythian.learning,
-  pythian.learning.journal;
+  pythian.learning.journal,
+  pythian.progress;
 
 const
   MaximumJournalCandidateSlots = 65536;
@@ -74,7 +75,8 @@ type
       Selection is repeatable and does not mutate the pool. }
     function Select(const ATokens: TAcousticIndices;
       const AWeights: TJournalSelectionWeights;
-      const ASeed: Integer = 731): TAcousticIndices;
+      const ASeed: Integer = 731;
+      const AProgress: TWorkProgressCallback = nil): TAcousticIndices;
     property SlotCount: Integer read GetSlotCount;
     property SegmentCount: Integer read FSegmentCount;
     property BinsPerSegment: Integer read FBins;
@@ -110,7 +112,7 @@ type
       FVocabularySha256: String;
       function GetSourceCount: Integer;
       function GetObservationCount: Integer;
-      function GetStorageBytes: Int64;
+      function GetNativeStorageBytes: Int64;
       function NodeAt(const ACandidate: TJournalRepresentative): Integer;
   public
     constructor Create(const AReader: TJournalTrainingReader;
@@ -119,7 +121,8 @@ type
     { Checks pool geometry, candidate coordinates and observed token membership.
       A coordinate-only pool cannot prove source bytes or palette provenance;
       callers separately bind those identities before rendering. }
-    procedure RequireCompatible(const APool: TJournalCandidatePool);
+    procedure RequireCompatible(const APool: TJournalCandidatePool;
+      const AProgress: TWorkProgressCallback = nil);
     { Only the exact next observed source hop is eligible. A fallback range
       mismatch, token mismatch or selected-range endpoint keeps the fallback.
       All decisions are deterministic and leave this index unchanged. }
@@ -127,7 +130,10 @@ type
       const ARequestedToken: Integer): TJournalRepresentative;
     property SourceCount: Integer read GetSourceCount;
     property ObservationCount: Integer read GetObservationCount;
-    property StorageBytes: Int64 read GetStorageBytes;
+    { Native record-layout payload plus stored text bytes, excluding allocator,
+      array and object overhead. This is not a heap-usage measurement. pas2js
+      raises EAudio because JavaScript objects have no static native layout. }
+    property NativeStorageBytes: Int64 read GetNativeStorageBytes;
     property VocabularySha256: String read FVocabularySha256;
   end;
 
@@ -138,6 +144,20 @@ type
     A new instance starts a new sequence; caller keeps the pool alive. }
   TJournalSelectionStream = class
   private
+    type
+      { A complete private selection, published only after the final observer.
+        Credits/cursors detach from accepted arrays before any mutation. }
+      TSelectionCandidate = record
+        Credits: array of Int64;
+        Cursors: array of Integer;
+        Previous: Integer;
+        SelectedCount: Int64;
+        SelectionVisits: Int64;
+        PreviousWindow: TJournalRepresentative;
+        Slots: TAcousticIndices;
+        Windows: TJournalRepresentatives;
+      end;
+  private
     FPool: TJournalCandidatePool;
     FWeights: TJournalSelectionWeights;
     FCredits: array of Int64;
@@ -147,17 +167,32 @@ type
     FSelectionVisits: Int64;
     FSuccessors: TJournalSourceSuccessors;
     FPreviousWindow: TJournalRepresentative;
+    FSelecting: Boolean;
+    function PrepareChunk(const ATokens: TAcousticIndices;
+      const AWindows: Boolean; const AProgress: TWorkProgressCallback): TSelectionCandidate;
+    procedure CommitCandidate(const ACandidate: TSelectionCandidate);
   public
+    { Setup reports weight/cursor items and forwards the immutable successor
+      compatibility scan. All owned arrays are detached before publication. }
     constructor Create(const APool: TJournalCandidatePool;
       const AWeights: TJournalSelectionWeights; const ASeed: Integer = 731;
-      const ASuccessors: TJournalSourceSuccessors = nil);
-    function SelectChunk(const ATokens: TAcousticIndices): TAcousticIndices;
+      const ASuccessors: TJournalSourceSuccessors = nil;
+      const AProgress: TWorkProgressCallback = nil);
+    { Observers are borrowed synchronously. journal_select_visits counts actual
+      token/segment/bin/window visits, not the conservative SelectionVisits
+      budget. Total stays unknown until the final callback, before cursor/result
+      publication. Callback failure preserves old outputs/state and exact retry.
+      Selecting again during a callback rejects; read-only counters stay old.
+      RTL copies are bounded by 65536 cursors/credits and 4096 input tokens. }
+    function SelectChunk(const ATokens: TAcousticIndices;
+      const AProgress: TWorkProgressCallback = nil): TAcousticIndices;
     { Borrows the optional immutable successor index for this stream's lifetime.
       Consumes the same fallback rotation as SelectChunk; actual windows can
       extend outside the sparse pool, preserving each token and fallback range.
       Failed calls preserve fallback cursors, counters and previous actual window.
       Use one selection method consistently during a sequence. }
-    function SelectWindowsChunk(const ATokens: TAcousticIndices): TJournalRepresentatives;
+    function SelectWindowsChunk(const ATokens: TAcousticIndices;
+      const AProgress: TWorkProgressCallback = nil): TJournalRepresentatives;
     property SelectedCount: Int64 read FSelectedCount;
     property SelectionVisits: Int64 read FSelectionVisits;
   end;
@@ -176,6 +211,18 @@ uses
   pythian.continuity,
   pythian.learning.binding,
   pythian.granular;
+
+{ Big Boss: count real owned loop visits; neither callback nor mutable progress
+  state is retained by the pool/selector. The last report precedes publication. }
+procedure SelectionVisit(var AVisits: Int64; const AStage: String;
+  const AProgress: TWorkProgressCallback);
+begin
+  Inc(AVisits);
+  if (AVisits and 255) = 0 then
+  begin
+    ReportWork(AProgress, AStage, wuItems, AVisits, 0);
+  end;
+end;
 
 function RenderJournalSelection(const APool: TJournalCandidatePool;
   const ASelection: TAcousticIndices; const AReadWindow: TJournalWindowRead;
@@ -350,21 +397,11 @@ begin
 end;
 
 function TJournalCandidatePool.Select(const ATokens: TAcousticIndices;
-  const AWeights: TJournalSelectionWeights; const ASeed: Integer): TAcousticIndices;
+  const AWeights: TJournalSelectionWeights; const ASeed: Integer;
+  const AProgress: TWorkProgressCallback): TAcousticIndices;
 var
-  LCredits: array of Int64;
-  LCursors: array of Integer;
-  LEligible: array of Boolean;
-  LIndex: Integer;
-  LSegment: Integer;
-  LBin: Integer;
-  LBase: Integer;
-  LSlot: Integer;
-  LSelected: Integer;
-  LChosen: Integer;
-  LPrevious: Integer;
-  LCursor: Integer;
-  LTotalWeight: Int64;
+  LStream: TJournalSelectionStream;
+  LSelection: TAcousticIndices;
 begin
   if (Length(ATokens) < 1) or (Length(ATokens) > MaximumJournalSelectionGrains) or
     (Length(AWeights) <> FSegmentCount) or (ASeed < 0) or
@@ -372,86 +409,13 @@ begin
   begin
     raise EAudio.Create('Journal selection geometry or work budget invalid');
   end;
-  for LSegment := 0 to High(AWeights) do
-  begin
-    if (AWeights[LSegment] < 0) or (AWeights[LSegment] > 4096) then
-    begin
-      raise EAudio.Create('Journal selection weights must be 0..4096');
-    end;
+  LStream := TJournalSelectionStream.Create(Self, AWeights, ASeed, nil, AProgress);
+  try
+    LSelection := LStream.SelectChunk(ATokens, AProgress);
+  finally
+    LStream.Free;
   end;
-  for LIndex := 0 to High(ATokens) do
-  begin
-    if (ATokens[LIndex] < 0) or (ATokens[LIndex] >= FTokenCount) then
-    begin
-      raise EAudio.Create('Journal selection token out of bounds');
-    end;
-  end;
-  Result := nil;
-  LCredits := nil;
-  LCursors := nil;
-  LEligible := nil;
-  SetLength(Result, Length(ATokens));
-  SetLength(LCredits, FSegmentCount);
-  SetLength(LEligible, FSegmentCount);
-  SetLength(LCursors, FTokenCount * FSegmentCount);
-  for LIndex := 0 to High(LCursors) do
-  begin
-    LCursors[LIndex] := (Int64(ASeed) + LIndex) mod FBins;
-  end;
-  LPrevious := -1;
-  for LIndex := 0 to High(ATokens) do
-  begin
-    LTotalWeight := 0;
-    LSelected := -1;
-    for LSegment := 0 to FSegmentCount - 1 do
-    begin
-      LEligible[LSegment] := False;
-      LBase := (ATokens[LIndex] * FSegmentCount + LSegment) * FBins;
-      if AWeights[LSegment] > 0 then
-      begin
-        for LBin := 0 to FBins - 1 do
-        begin
-          if FSlots[LBase + LBin].Found then
-          begin
-            LEligible[LSegment] := True;
-            Break;
-          end;
-        end;
-      end;
-      if LEligible[LSegment] then
-      begin
-        Inc(LTotalWeight, AWeights[LSegment]);
-        Inc(LCredits[LSegment], AWeights[LSegment]);
-        if (LSelected < 0) or (LCredits[LSegment] > LCredits[LSelected]) then
-        begin
-          LSelected := LSegment;
-        end;
-      end;
-    end;
-    if LSelected < 0 then
-    begin
-      raise EAudio.Create('Generated token has no candidate in an enabled segment');
-    end;
-    Dec(LCredits[LSelected], LTotalWeight);
-    LCursor := ATokens[LIndex] * FSegmentCount + LSelected;
-    LBase := LCursor * FBins;
-    LChosen := -1;
-    for LBin := 0 to FBins - 1 do
-    begin
-      LSlot := LBase + (LCursors[LCursor] + LBin) mod FBins;
-      if FSlots[LSlot].Found then
-      begin
-        LChosen := LSlot;
-        if LSlot <> LPrevious then
-        begin
-          Break;
-        end;
-      end;
-    end;
-    Result[LIndex] := LChosen;
-    LCursors[LCursor] := (LChosen - LBase + 1) mod FBins;
-    LPrevious := LChosen;
-  end;
+  Result := LSelection;
 end;
 
 constructor TJournalSourceSuccessors.Create(const AReader: TJournalTrainingReader;
@@ -517,7 +481,12 @@ begin
   Result := Length(FNodes);
 end;
 
-function TJournalSourceSuccessors.GetStorageBytes: Int64;
+function TJournalSourceSuccessors.GetNativeStorageBytes: Int64;
+{$ifdef pas2js}
+begin
+  raise EAudio.Create('Static native successor storage size is unavailable on pas2js');
+end;
+{$else}
 var
   LSource: TSource;
 begin
@@ -528,6 +497,7 @@ begin
     Inc(Result, Length(LSource.Geometry.Binding.SourceSha256));
   end;
 end;
+{$endif}
 
 function TJournalSourceSuccessors.SourceAt(const AIndex: Integer): TJournalSuccessorSource;
 begin
@@ -568,7 +538,8 @@ begin
   Result := LSource.NodeOffset + Integer(LOffset);
 end;
 
-procedure TJournalSourceSuccessors.RequireCompatible(const APool: TJournalCandidatePool);
+procedure TJournalSourceSuccessors.RequireCompatible(const APool: TJournalCandidatePool;
+  const AProgress: TWorkProgressCallback);
 var
   LSlot: Integer;
   LNode: Integer;
@@ -579,19 +550,26 @@ begin
   begin
     raise EAudio.Create('Successor index and fallback pool geometry differ');
   end;
+  ReportWork(AProgress, 'journal_successor_compatibility', wuItems, 0, APool.SlotCount);
   for LSlot := 0 to APool.SlotCount - 1 do
   begin
     LCandidate := APool.CandidateAt(LSlot);
-    if not LCandidate.Found then
+    if LCandidate.Found then
     begin
-      Continue;
+      LNode := NodeAt(LCandidate);
+      if (LNode < 0) or (FNodes[LNode].Token <> APool.TokenAt(LSlot)) then
+      begin
+        raise EAudio.Create('Fallback candidate differs from its observed successor index');
+      end;
     end;
-    LNode := NodeAt(LCandidate);
-    if (LNode < 0) or (FNodes[LNode].Token <> APool.TokenAt(LSlot)) then
+    if ((LSlot + 1) and 255) = 0 then
     begin
-      raise EAudio.Create('Fallback candidate differs from its observed successor index');
+      ReportWork(AProgress, 'journal_successor_compatibility', wuItems,
+        LSlot + 1, APool.SlotCount);
     end;
   end;
+  ReportWork(AProgress, 'journal_successor_compatibility', wuItems,
+    APool.SlotCount, APool.SlotCount);
 end;
 
 function TJournalSourceSuccessors.Select(const APrevious,
@@ -645,9 +623,10 @@ end;
 
 constructor TJournalSelectionStream.Create(const APool: TJournalCandidatePool;
   const AWeights: TJournalSelectionWeights; const ASeed: Integer;
-  const ASuccessors: TJournalSourceSuccessors);
+  const ASuccessors: TJournalSourceSuccessors; const AProgress: TWorkProgressCallback);
 var
   LIndex: Integer;
+  LVisits: Int64;
 begin
   inherited Create;
   if (APool = nil) or (ASeed < 0) then
@@ -658,39 +637,51 @@ begin
   begin
     raise EAudio.Create('Journal selection stream weights disagree with segments');
   end;
-  for LIndex := 0 to High(AWeights) do
+  FWeights := Copy(AWeights);
+  LVisits := 0;
+  ReportWork(AProgress, 'journal_select_prepare', wuItems, 0, 0);
+  for LIndex := 0 to High(FWeights) do
   begin
-    if (AWeights[LIndex] < 0) or (AWeights[LIndex] > 4096) then
+    if (FWeights[LIndex] < 0) or (FWeights[LIndex] > 4096) then
     begin
       raise EAudio.Create('Journal selection weights must be 0..4096');
     end;
+    SelectionVisit(LVisits, 'journal_select_prepare', AProgress);
   end;
   FPool := APool;
   if ASuccessors <> nil then
   begin
-    ASuccessors.RequireCompatible(APool);
+    ASuccessors.RequireCompatible(APool, AProgress);
   end;
   FSuccessors := ASuccessors;
   FPreviousWindow := Default(TJournalRepresentative);
-  FWeights := Copy(AWeights);
   SetLength(FCredits, APool.FSegmentCount);
   SetLength(FCursors, APool.FTokenCount * APool.FSegmentCount);
   for LIndex := 0 to High(FCursors) do
   begin
     FCursors[LIndex] := (Int64(ASeed) + LIndex) mod APool.FBins;
+    SelectionVisit(LVisits, 'journal_select_prepare', AProgress);
   end;
   FPrevious := -1;
+  ReportWork(AProgress, 'journal_select_prepare', wuItems, LVisits, LVisits);
 end;
 
-function TJournalSelectionStream.SelectChunk(
-  const ATokens: TAcousticIndices): TAcousticIndices;
+function TJournalSelectionStream.PrepareChunk(const ATokens: TAcousticIndices;
+  const AWindows: Boolean; const AProgress: TWorkProgressCallback): TSelectionCandidate;
 var
-  LCredits: array of Int64;
-  LCursors: array of Integer;
+  LTokens: TAcousticIndices;
   LEligible: array of Boolean;
-  LIndex, LSegment, LBin, LBase, LSlot, LSelected, LChosen: Integer;
-  LPrevious, LCursor: Integer;
-  LTotalWeight, LWork: Int64;
+  LIndex: Integer;
+  LSegment: Integer;
+  LBin: Integer;
+  LBase: Integer;
+  LSlot: Integer;
+  LSelected: Integer;
+  LChosen: Integer;
+  LCursor: Integer;
+  LTotalWeight: Int64;
+  LWork: Int64;
+  LVisits: Int64;
 begin
   LWork := Int64(Length(ATokens)) * FPool.FSegmentCount * FPool.FBins;
   if (Length(ATokens) < 1) or
@@ -701,31 +692,40 @@ begin
   begin
     raise EAudio.Create('Journal selection stream chunk or work budget invalid');
   end;
-  for LIndex := 0 to High(ATokens) do
+  LTokens := Copy(ATokens);
+  LVisits := 0;
+  ReportWork(AProgress, 'journal_select_visits', wuItems, 0, 0);
+  for LIndex := 0 to High(LTokens) do
   begin
-    if (ATokens[LIndex] < 0) or (ATokens[LIndex] >= FPool.FTokenCount) then
+    if (LTokens[LIndex] < 0) or (LTokens[LIndex] >= FPool.FTokenCount) then
     begin
       raise EAudio.Create('Journal selection token out of bounds');
     end;
+    SelectionVisit(LVisits, 'journal_select_visits', AProgress);
   end;
-  LCredits := Copy(FCredits);
-  LCursors := Copy(FCursors);
+  Result := Default(TSelectionCandidate);
+  Result.Credits := Copy(FCredits);
+  Result.Cursors := Copy(FCursors);
+  Result.Previous := FPrevious;
+  Result.PreviousWindow := FPreviousWindow;
+  Result.SelectedCount := FSelectedCount + Length(LTokens);
+  Result.SelectionVisits := FSelectionVisits + LWork;
   SetLength(LEligible, FPool.FSegmentCount);
-  LPrevious := FPrevious;
-  Result := nil;
-  SetLength(Result, Length(ATokens));
-  for LIndex := 0 to High(ATokens) do
+  SetLength(Result.Slots, Length(LTokens));
+  for LIndex := 0 to High(LTokens) do
   begin
     LTotalWeight := 0;
     LSelected := -1;
     for LSegment := 0 to FPool.FSegmentCount - 1 do
     begin
+      SelectionVisit(LVisits, 'journal_select_visits', AProgress);
       LEligible[LSegment] := False;
-      LBase := (ATokens[LIndex] * FPool.FSegmentCount + LSegment) * FPool.FBins;
+      LBase := (LTokens[LIndex] * FPool.FSegmentCount + LSegment) * FPool.FBins;
       if FWeights[LSegment] > 0 then
       begin
         for LBin := 0 to FPool.FBins - 1 do
         begin
+          SelectionVisit(LVisits, 'journal_select_visits', AProgress);
           if FPool.FSlots[LBase + LBin].Found then
           begin
             LEligible[LSegment] := True;
@@ -736,8 +736,8 @@ begin
       if LEligible[LSegment] then
       begin
         Inc(LTotalWeight, FWeights[LSegment]);
-        Inc(LCredits[LSegment], FWeights[LSegment]);
-        if (LSelected < 0) or (LCredits[LSegment] > LCredits[LSelected]) then
+        Inc(Result.Credits[LSegment], FWeights[LSegment]);
+        if (LSelected < 0) or (Result.Credits[LSegment] > Result.Credits[LSelected]) then
         begin
           LSelected := LSegment;
         end;
@@ -747,74 +747,92 @@ begin
     begin
       raise EAudio.Create('Generated token has no candidate in an enabled segment');
     end;
-    Dec(LCredits[LSelected], LTotalWeight);
-    LCursor := ATokens[LIndex] * FPool.FSegmentCount + LSelected;
+    Dec(Result.Credits[LSelected], LTotalWeight);
+    LCursor := LTokens[LIndex] * FPool.FSegmentCount + LSelected;
     LBase := LCursor * FPool.FBins;
     LChosen := -1;
     for LBin := 0 to FPool.FBins - 1 do
     begin
-      LSlot := LBase + (LCursors[LCursor] + LBin) mod FPool.FBins;
+      SelectionVisit(LVisits, 'journal_select_visits', AProgress);
+      LSlot := LBase + (Result.Cursors[LCursor] + LBin) mod FPool.FBins;
       if FPool.FSlots[LSlot].Found then
       begin
         LChosen := LSlot;
-        if LSlot <> LPrevious then
+        if LSlot <> Result.Previous then
         begin
           Break;
         end;
       end;
     end;
-    Result[LIndex] := LChosen;
-    LCursors[LCursor] := (LChosen - LBase + 1) mod FPool.FBins;
-    LPrevious := LChosen;
+    Result.Slots[LIndex] := LChosen;
+    Result.Cursors[LCursor] := (LChosen - LBase + 1) mod FPool.FBins;
+    Result.Previous := LChosen;
   end;
-  FCredits := LCredits;
-  FCursors := LCursors;
-  FPrevious := LPrevious;
-  Inc(FSelectedCount, Length(ATokens));
-  Inc(FSelectionVisits, LWork);
-end;
-
-function TJournalSelectionStream.SelectWindowsChunk(
-  const ATokens: TAcousticIndices): TJournalRepresentatives;
-var
-  LSlots: TAcousticIndices;
-  LCredits: array of Int64;
-  LCursors: array of Integer;
-  LPrevious: Integer;
-  LSelectedCount: Int64;
-  LSelectionVisits: Int64;
-  LPreviousWindow: TJournalRepresentative;
-  LIndex: Integer;
-begin
-  Result := nil;
-  LCredits := FCredits;
-  LCursors := FCursors;
-  LPrevious := FPrevious;
-  LSelectedCount := FSelectedCount;
-  LSelectionVisits := FSelectionVisits;
-  LPreviousWindow := FPreviousWindow;
-  try
-    LSlots := SelectChunk(ATokens);
-    SetLength(Result, Length(LSlots));
-    for LIndex := 0 to High(LSlots) do
+  if AWindows then
+  begin
+    SetLength(Result.Windows, Length(Result.Slots));
+    for LIndex := 0 to High(Result.Slots) do
     begin
-      Result[LIndex] := FPool.CandidateAt(LSlots[LIndex]);
+      Result.Windows[LIndex] := FPool.CandidateAt(Result.Slots[LIndex]);
       if FSuccessors <> nil then
       begin
-        Result[LIndex] := FSuccessors.Select(LPreviousWindow, Result[LIndex], ATokens[LIndex]);
+        Result.Windows[LIndex] := FSuccessors.Select(Result.PreviousWindow,
+          Result.Windows[LIndex], LTokens[LIndex]);
       end;
-      LPreviousWindow := Result[LIndex];
+      Result.PreviousWindow := Result.Windows[LIndex];
+      SelectionVisit(LVisits, 'journal_select_visits', AProgress);
     end;
-    FPreviousWindow := LPreviousWindow;
-  except
-    FCredits := LCredits;
-    FCursors := LCursors;
-    FPrevious := LPrevious;
-    FSelectedCount := LSelectedCount;
-    FSelectionVisits := LSelectionVisits;
-    Result := nil;
-    raise;
+  end;
+  ReportWork(AProgress, 'journal_select_visits', wuItems, LVisits, LVisits);
+end;
+
+procedure TJournalSelectionStream.CommitCandidate(const ACandidate: TSelectionCandidate);
+begin
+  FCredits := ACandidate.Credits;
+  FCursors := ACandidate.Cursors;
+  FPrevious := ACandidate.Previous;
+  FSelectedCount := ACandidate.SelectedCount;
+  FSelectionVisits := ACandidate.SelectionVisits;
+  FPreviousWindow := ACandidate.PreviousWindow;
+end;
+
+function TJournalSelectionStream.SelectChunk(const ATokens: TAcousticIndices;
+  const AProgress: TWorkProgressCallback): TAcousticIndices;
+var
+  LCandidate: TSelectionCandidate;
+begin
+  if FSelecting then
+  begin
+    raise EAudio.Create('Journal selection cannot reenter an active selection');
+  end;
+  FSelecting := True;
+  try
+    LCandidate := PrepareChunk(ATokens, False, AProgress);
+    CommitCandidate(LCandidate);
+    Result := LCandidate.Slots;
+  finally
+    FSelecting := False;
   end;
 end;
+
+function TJournalSelectionStream.SelectWindowsChunk(const ATokens: TAcousticIndices;
+  const AProgress: TWorkProgressCallback): TJournalRepresentatives;
+var
+  LCandidate: TSelectionCandidate;
+begin
+  if FSelecting then
+  begin
+    raise EAudio.Create('Journal selection cannot reenter an active selection');
+  end;
+  FSelecting := True;
+  try
+    LCandidate := PrepareChunk(ATokens, True, AProgress);
+    CommitCandidate(LCandidate);
+    Result := LCandidate.Windows;
+  finally
+    FSelecting := False;
+  end;
+end;
+
 
 end.
