@@ -12,6 +12,46 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: tensor binding passes; two-batch reassessment recorded — 2026-10-29
+
+Big Boss remains solo. Previous firewall follow-up is NO CORE PROGRESS; it
+changes no science gate or batch counter. This bounded data-only batch is
+PROGRESS: the previously uncertain PENN tensor binding decision is resolved.
+No complete notes01 criterion closes. Delivery nonclosing1→2 requires the
+reassessment below; accounting stays53 open/91 DONE/144 total, NS6 15 open,
+52.45/47.55. Scientific stops/exposure histories are never reset.
+
+[Notes01](TODO/NS-3_notes_01.md) binds the fixed checkpoint to one compatible
+checkpoint-era FCNF0++ recipe: exact step250000, model/module metadata,26 names,
+FloatStorage/zero offsets/contiguous shapes and strides, unique storage extents.
+Every geometry/extent passes before model payload reads. All8934624 Float32
+values are finite;35738496 model bytes pass CRC. Native32/64 manifests agree
+byte-for-byte, SHA256304af05367029e65e39b668e93679f8baae29ddbaa083f6c2bec260995591b80.
+Final runs take4828/4812ms with zero leaks. Both native targets and actual pas2js
+pass85 structural checks/28 semantic rejections; pas2js does not read ZIP payloads.
+No optimizer payload, pickle execution, numerical forward pass or recorded audio.
+The private E-drive penn-source-20261029-boss packet retains exact sources,
+policy/results/manifests, original fixture/compiler failures and repaired runs.
+
+MANDATORY REASSESSMENT: source assessment established exact identities but no
+musical observation; tensor binding establishes representability but no waveform
+result. These two batches therefore close no notes01 criterion. Stop further
+source/container diagnostics now that the decision is resolved. Change the next
+concrete deliverable to one Pascal-owned physical-feasibility implementation,
+only after freezing its full numerical source contract, low/quiet/short/weak-
+fundamental/change/gap/mixture ambiguity controls, resources and stop BEFORE
+outputs. Reuse primary primitives; do not invent unknown semantics, run a
+third-party inference runtime or vary old failed families. The current batch
+stops before forward work. Training identity/group isolation and upstream
+numerical conformance are unproven; finite weights or paper scores do not supply
+register precision/coverage, presence truth or maintained musical acceptance.
+Delivery count remains2 after reassessment; this is not a new counter cycle.
+
+No service, firewall, browser/audio, WFC, private recording, catalog or answer
+change. Existing4:16 listening question remains unanswered. NS5 stays least
+complete; grounded note/context prerequisites still block useful style acceptance.
+All local handles terminal. Full goal remains active and unachieved.
+
 ## Current handoff: distinct register source identities checked; tensor binding next — 2026-10-29
 
 Big Boss remains solo. Previous goal turn made PROGRESS: journal12 and selection19

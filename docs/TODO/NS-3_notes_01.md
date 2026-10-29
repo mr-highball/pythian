@@ -8,12 +8,12 @@ Completion credit: 7 goal percentage points (1.75 overall points).
 Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
 Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
 
-Execution status (2026-10-29): **Distinct0.3 source identity qualified; Pascal
-physical candidate stopped**. Its frozen55Hz control fails on native32/64.
-The distinct PENN source/artifact assessment below establishes exact identities
-and checkpoint-era recipe evidence only; tensor binding, numerical conformance
-and physical/recorded qualification are still unproven. No maintained provider
-or new register observation is admitted.
+Execution status (2026-10-29): **PENN data-only tensor binding passes;
+numerical/physical/recorded qualification remains unproven**. All26 compatible
+recipe tensors and8934624 finite Float32 values bind on native32/64, with exact
+manifests and actual pas2js structural/rejection checks. No inference executes.
+The distinct SwiftF0v0.3 physical candidate remains stopped at its frozen55Hz
+failure. No maintained provider or new register observation is admitted.
 All earlier stopped rules and recorded experiments remain stopped. A
 source-qualified candidate is not an accepted register path. The shared frontend
 is accepted separately in [window01](DONE/NS-6_window_01.md).
@@ -124,6 +124,30 @@ variation is authorized by the existing evidence.
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
 
 **Dev Notes:**
+
+- 2026-10-29, Big Boss: bounded PENN data-only binding resolves the source
+  schema question without executing pickle or inference. The root is exactly
+  step/model/optimizer, step250000; model metadata and all26 expected parameters
+  match one compatible checkpoint-era FCNF0++ recipe. Names, FloatStorage,
+  offsets, shapes, contiguous strides and unique stored extents pass before
+  reading model payloads. All8934624 values are finite;35738496 model bytes
+  pass CRC and exact native32/64 manifest SHA256
+  `304af05367029e65e39b668e93679f8baae29ddbaa083f6c2bec260995591b80`.
+  Each native target and actual pas2js passes85 checks/28 semantic rejections;
+  native runs have zero leaks. Pas2js checks metadata/binding, not ZIP payloads.
+  Optimizer payloads, neural operations and recorded inputs remain unused.
+- 2026-10-29, Big Boss: the private E-drive penn-source-20261029-boss packet
+  preserves the incorrect SETITEM underflow fixture, error-order repair and
+  installed pas2js dynamic-array-literal lowering failure, with repaired exact
+  byte fixtures and all original rejection intentions. These are implementation
+  repairs, not scientific successes. No task criterion closes: delivery
+  nonclosing1→2. Mandatory reassessment stops further source/container diagnostics;
+  the binding decision is resolved. The changed next deliverable is one
+  separately frozen Pascal physical-feasibility candidate, after exact math,
+  low/quiet/short/weak-fundamental/ambiguity controls, resources and stop are
+  declared before outputs. Actual training identity and upstream numerical
+  conformance remain unknown. Keep prior source groups, failed families and
+  exposure histories; no confidence/window/rank variants or credit reset.
 
 - 2026-10-29, Big Boss: a bounded distinct
   [PENN source assessment](https://github.com/interactiveaudiolab/penn/tree/78ed3ba4cd8e7d719f11d3d72693c14d53ef6bce)

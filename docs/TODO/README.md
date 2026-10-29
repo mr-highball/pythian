@@ -61,11 +61,14 @@ hours or effort estimates. See the [basis and rationale](../REBALANCE-2026-09-29
 
 ## Selection and actual blockers
 
-Current musical prerequisite: [register identity](NS-3_notes_01.md). The distinct
-PENN source/checkpoint assessment supplies exact identities and recipe evidence;
-data-only tensor binding is next, before any separately frozen physical candidate.
-No inference, recorded scoring or new accepted observation follows yet. Delivery
-nonclosing0→1; every earlier scientific stop/exposure remains. No credit change.
+Current musical prerequisite: [register identity](NS-3_notes_01.md). PENN's
+data-only binding passes26 recipe tensors/8934624 finite Float32 values with
+identical native32/64 manifests; both native targets and actual pas2js pass85
+checks/28 semantic rejections. No inference or recorded scoring occurs. Delivery
+nonclosing1→2 is reassessed: stop container diagnostics; a next Pascal physical
+candidate requires frozen math, controls/resources and stop before outputs.
+Numerical and musical gates remain open; prior scientific stops/exposure and
+completion credit are unchanged.
 
 Accepted zero-credit [shared selection19](DONE/NS-6_observability_19.md) and its
 [primary journal portability12](DONE/NS-6_portability_12.md) prerequisite qualify at
