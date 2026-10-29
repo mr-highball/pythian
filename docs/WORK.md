@@ -12,6 +12,50 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: shared journal intake passes locally; exact qualification next — 2026-10-29
+
+Previous goal turn made PROGRESS: portability13 fully accepted at30551f5/CI487,
+pushed359e594; delivery nonclosing3→0. Big Boss remains SOLO. Least-complete NS5
+still requires grounded register/presence/context evidence;4:16 review remains
+unanswered. Existing model/source/threshold families stay stopped. No new
+scientific experiment or routine source-microclip request is selected.
+
+Current parent04 work observes primary exact byte transfers and journal
+create/reopen/validation/encoding/decoding/hash/read/recovery/commit interiors.
+Observers are per-call and unretained. Append preparation failure is retryable;
+after write admission, read or tail recovery failure is terminal, with no
+rollback of external bytes and no partial caller read publication. Mutating
+reentry rejects. Actual Studio create/append/reopen forwarding reuses its
+bounded two-second publication gate on a separate journal clock, checking control
+at every callback. Each journal commit now calls FileFlush on its exact checked
+file; the cancellation-only hook and deferred range flush are removed.
+
+Actual pas2js exposed a real RTL large-buffer shrink failure. Linked
+[portability14](TODO/NS-6_portability_14.md) now provides primary bounded owned
+byte storage and shares read/seek logic with the borrowed read-only view. Size,
+zero-fill, cursor and allocation policy are common to every target. Original
+failure artifact and the repaired native32 resize-overload failure stay private.
+No dependency or generated JavaScript patch. Caller I/O providers keep their
+own transfer/resize obligations; the external RTL bug is not declared fixed.
+
+Checked native32/64 and actual pas2js each pass70039 storage and74356 journal
+checks/102 observer aborts, retaining the full journal SHA256
+95c3bf82c28af1f9e4d75a06f12deaa9546f94053d5d39219346b820686f4759.
+Original384 journal,38 transfer,55 WAV and native integrity/recovery checks pass,
+zero native leaks. Final native worker382 checks preserve the320044-byte WAV
+fea82882480eceae982305a79487e91eecbcc281f6a9c27c8746bab3e6409c07.
+Full browser assets compile only; actual browser/phone and deployment stay open.
+
+Exact published and clean extracted qualification still precede accepting14.
+Counts54open/92DONE/146 total, NS6 16open;52.45/47.55 unchanged. This batch is IN
+PROGRESS; delivery nonclosing remains0, with every scientific stop/exposure
+history preserved. Parent04 retains training-reader construction, candidate/
+context/successor indices, nested journal-read forwarding and duration/scheduler
+interiors; actual Studio18 remains separate. No whole parent or musical credit.
+Private E-drive journal-intake-20261029-boss PLAN/logs retain all evidence.
+No helper, WFC, firewall/service, private recording/catalog/answer or browser/audio
+change. Full goal remains active/unachieved, with no global block claim.
+
 ## Current handoff: shared journal renderer accepted; retained parent open — 2026-10-29
 
 Big Boss remains solo. Exact30551f5/[CI487](https://github.com/mr-highball/pythian/actions/runs/40918452018/job/123604874634)

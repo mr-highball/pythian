@@ -181,8 +181,9 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Progress compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.progress$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Progress parity and cancellation checks failed' }
-  foreach ($portableFixture in @('hash.portable', 'stream.bytes', 'binary.portable', 'binary.fields',
-      'wave.reader.portable', 'analysis.portable', 'fourier.window', 'journal.portable')) {
+  foreach ($portableFixture in @('hash.portable', 'stream.bytes', 'stream.storage', 'binary.portable', 'binary.fields',
+      'wave.reader.portable', 'analysis.portable', 'fourier.window', 'journal.portable',
+      'journal.intake.progress')) {
     & $compilerPath @compilerArgs "tests/pythian.tests.$portableFixture.lpr"
     if ($LASTEXITCODE -ne 0) { throw "Portable contract compilation failed: $portableFixture" }
     & (Join-Path $buildRoot "pythian.tests.$portableFixture$executableSuffix")

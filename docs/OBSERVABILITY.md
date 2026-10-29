@@ -3,6 +3,63 @@
 [Project](../PROJECT.md) · [Assessment](CODEBASE-ASSESSMENT.md) ·
 [Tasks](TODO/README.md) · [Work](WORK.md)
 
+## Primary journal intake — local consumer qualification, 2026-10-29
+
+The existing [parent04](TODO/NS-6_observability_04.md) now covers observed journal
+creation, reopening, validation, feature encoding/decoding, hashing, transfers,
+explicit tail recovery and commit boundaries in the primary implementation.
+Observers are synchronous and borrowed per call; none is stored in the journal.
+Feature loops report within128 observations; exact stream transfers report
+within65536 bytes or128 short positive transfers. Hashing keeps the primary SHA
+cadence. Allocations, array copies, individual I/O calls and the supplied flush
+callback remain synchronous, without a hard latency guarantee.
+
+`Append` prepares private bytes before `journal_append_ready`. An observer or
+validation failure there leaves accepted state/storage unchanged and retryable.
+Once write admission begins, failures poison the instance, even if the first
+write checkpoint aborts before transferring bytes. Reads and tail recovery also
+fail terminally. Reopen to inspect actual complete records and explicitly recover
+an incomplete tail; earlier external writes/truncations are not rolled back.
+Read output is assigned only after its final callback. Reentry rejects and
+poisons the journal. `journal_scan` counts validated prefix bytes, so an incomplete
+tail does not become100% validated. `journal_open` completing means opening
+finished; it says nothing about training or whether all source features exist.
+
+[Portable storage14](TODO/NS-6_portability_14.md) owns the demonstrated installed
+pas2js RTL memory-stream shrink failure. The supplied `TAudioBytesStream` uses
+one Pascal storage/resize/seek policy on every target, with an explicit Integer
+byte budget, zero-filled growth/gaps and detached snapshots. Capacity stays at
+its high-water mark until release. `TAudioBytesReadStream` shares that primary
+read/seek logic while borrowing the caller's immutable bytes. Raw-buffer I/O
+bridges retain their platform signatures. File/other streaming providers retain
+their own64-bit extent contracts. Arbitrary supplied streams must implement
+correct read/write/resize behavior; the RTL failure itself is not patched.
+
+Native32/64 and actual pas2js pass70039 storage checks and74356 journal intake
+checks/102 observer aborts each. The original full journal bytes remain SHA256
+`95c3bf82c28af1f9e4d75a06f12deaa9546f94053d5d39219346b820686f4759`.
+Original384 journal/identity/binding,38 transfer and55 WAV checks pass on all
+three targets; native integrity/recovery controls pass, with zero native leaks.
+Retain the original pas2js crash and repaired native32 resize-overload failure.
+Exact published/extracted qualification still precedes task14 acceptance.
+
+The native Studio worker forwards create/append/reopen work, checking control
+on every callback and reusing the existing two-second publication gate on its
+own journal clock. Small record endpoints cannot flood durable job events.
+Each journal commit now calls `FileFlush` on that exact checked storage file;
+the old cancellation-only flush hook and deferred whole-range flush are removed.
+The final native worker passes382 checks, zero leaks, retaining its frozen
+320044-byte WAV SHA256
+`fea82882480eceae982305a79487e91eecbcc281f6a9c27c8746bab3e6409c07`.
+This verifies the API/storage path, not power-loss behavior. Browser labels
+describe data/observations and use the shared byte-size formatter; actual
+browser/phone presentation remains [transport18](TODO/NS-6_observability_18.md).
+
+Training-reader construction/overlap checks, candidate/context/successor index
+construction, nested journal-read forwarding through all learning consumers,
+duration/scheduler interiors and full parent acceptance remain required. No
+musical criterion, deployment or new operator answer follows from this component.
+
 ## Journal rendering interiors — accepted portable scope, 2026-10-29
 
 [Portability13 — DONE](TODO/DONE/NS-6_portability_13.md) removes native-only sample copies

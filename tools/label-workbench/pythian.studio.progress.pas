@@ -69,6 +69,15 @@ begin
     'journal_render_output': Result := 'Output generated audio';
     'journal_render_grains': Result := 'Render source passages';
     'journal_render_complete': Result := 'Finish rendering audio';
+    'journal_open': Result := 'Open saved sound observations';
+    'journal_scan': Result := 'Check saved sound observations';
+    'journal_validate': Result := 'Check sound measurements';
+    'journal_encode', 'journal_append_ready': Result := 'Prepare sound observations to save';
+    'journal_decode', 'journal_read': Result := 'Read sound observations';
+    'journal_commit': Result := 'Save sound observations';
+    'journal_recover': Result := 'Recover saved sound observations';
+    'read_bytes': Result := 'Read saved data';
+    'write_bytes': Result := 'Write saved data';
     'queued': Result := 'Waiting to start';
     'preflight', 'verify_sources': Result := 'Check recordings';
     'find_saved_model': Result := 'Check saved learning';
@@ -99,7 +108,7 @@ begin
     'interrupted': Result := 'Interrupted';
     'cancelled': Result := 'Cancelled';
     'cancelled_before_start': Result := 'Cancelled before starting';
-    'verify_audio_bytes': Result := 'Check audio file';
+    'verify_audio_bytes': Result := 'Check data integrity';
     'read_audio': Result := 'Read selected audio';
     'analyze_audio', 'inspect_temporary_audio': Result := 'Analyze audio';
     'inspect_levels': Result := 'Measure volume';
@@ -201,12 +210,11 @@ begin
     if LPass > 0 then LText := 'Pass ' + IntToStr(LPass) + ' · ' + LText;
     if LUnit = 'bytes' then
     begin
-      LDetail := FormatFloat('0.0', LDone / 1048576) + ' / ' +
-        FormatFloat('0.0', LTotal / 1048576) + ' MiB';
+      LDetail := StudioByteSize(LDone) + ' / ' + StudioByteSize(LTotal);
       if (LStage = 'verify_sources') or (LStage = 'verify_model_sources') or
         (LStage = 'verify_output_sources') then
         LDetail := LDetail + ' of original file'
-      else LDetail := LDetail + ' of audio';
+      else LDetail := LDetail + ' of data';
     end
     else if LUnit = 'observations' then
       LDetail := IntToStr(Trunc(LDone)) + ' / ' + IntToStr(Trunc(LTotal)) + ' audio windows'

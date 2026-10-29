@@ -95,7 +95,9 @@ type
     FWork: TStudioWork;
     FHashStage: String;
   public
-    constructor Create(const APath: String; const AWork: TStudioWork);
+    constructor Create(const APath: String; const AWork: TStudioWork;
+      const AMode: Word = fmOpenRead or fmShareDenyWrite);
+    procedure Commit;
     function Read(var ABuffer; ACount: LongInt): LongInt; override;
     procedure HashProgress(const AProgress: TWorkProgress);
     function HashWithProgress(const AStage: String): String;
@@ -124,7 +126,7 @@ type
     Frames: Int64;
     Weight: Integer;
     Prepared: TStudioPreparedRange;
-    JournalStream: TFileStream;
+    JournalStream: TCheckedStream;
     Journal: TFeatureJournal;
   end;
 
@@ -161,12 +163,13 @@ type
     FLearningStage: String;
     FFirstLearningPass: Integer;
     FRenderProgressGate: TStudioRenderProgressGate;
-    procedure FlushJournal;
+    FJournalProgressGate: TStudioRenderProgressGate;
     procedure Progress(const AStage: String; const ADone, ATotal: Int64;
       const AUnit: String = ''; const APass: Integer = 0;
       const AAudioWork: Boolean = False);
     procedure LearningProgress(const AProgress: TWorkProgress);
     procedure WorkProgress(const AProgress: TWorkProgress);
+    procedure JournalProgress(const AProgress: TWorkProgress);
     procedure AudioProgress(const AProgress: TWorkProgress);
     procedure LibraryProgress(const AStage: String; const ADone, ATotal: Int64);
     procedure Preflight;
@@ -243,10 +246,18 @@ begin
   end;
 end;
 
-constructor TCheckedStream.Create(const APath: String; const AWork: TStudioWork);
+constructor TCheckedStream.Create(const APath: String; const AWork: TStudioWork;
+  const AMode: Word);
 begin
-  inherited Create(APath, fmOpenRead or fmShareDenyWrite);
+  inherited Create(APath, AMode);
   FWork := AWork;
+end;
+
+procedure TCheckedStream.Commit;
+begin
+  { Big Boss: bind each journal commit to the exact borrowed storage file. }
+  FWork.Check;
+  Need(FileFlush(Handle), 'Cannot commit feature journal');
 end;
 
 function TCheckedStream.Read(var ABuffer; ACount: LongInt): LongInt;
@@ -431,6 +442,24 @@ begin
     WorkUnitName(AProgress.Units), AProgress.Pass);
 end;
 
+procedure TStudioWork.JournalProgress(const AProgress: TWorkProgress);
+begin
+  Check;
+  { Big Boss: use the primary bounded publication gate for fine journal phases
+    too. Every callback checks control; small per-record endpoints must not
+    each write a durable job event. Journal and playback keep separate clocks. }
+  if (AProgress.Done = 0) and (AProgress.Total > 0) then
+  begin
+    Exit;
+  end;
+  if not FJournalProgressGate.Accept(AProgress.Stage, AProgress.Done,
+    AProgress.Total, GetTickCount64, True) then
+  begin
+    Exit;
+  end;
+  WorkProgress(AProgress);
+end;
+
 procedure TStudioWork.AudioProgress(const AProgress: TWorkProgress);
 begin
   { Pull boundary callbacks still check cancellation, but ordinary output-frame
@@ -450,11 +479,6 @@ procedure TStudioWork.LibraryProgress(const AStage: String; const ADone, ATotal:
 begin
   if Pos('_bytes', AStage) > 0 then Progress(AStage, ADone, ATotal, 'bytes')
   else Progress(AStage, ADone, ATotal, 'items');
-end;
-
-procedure TStudioWork.FlushJournal;
-begin
-  Check;
 end;
 
 procedure TStudioWork.Preflight;
@@ -894,10 +918,10 @@ begin
     LBinding.Channels := RangeWave(LIndex).Channels;
     LBinding.FrameCount := FRanges[LIndex].Frames;
     LBinding.Options := FOptions;
-    FRanges[LIndex].JournalStream := TFileStream.Create(FDirectory + PathDelim +
-      'analysis' + PathDelim + IntToStr(LIndex) + '.pyaf', fmCreate or fmShareExclusive);
+    FRanges[LIndex].JournalStream := TCheckedStream.Create(FDirectory + PathDelim +
+      'analysis' + PathDelim + IntToStr(LIndex) + '.pyaf', Self, fmCreate or fmShareExclusive);
     FRanges[LIndex].Journal := TFeatureJournal.Create(FRanges[LIndex].JournalStream,
-      LBinding, FlushJournal, True);
+      LBinding, FRanges[LIndex].JournalStream.Commit, True, JournalProgress);
     LTotal := (FRanges[LIndex].Frames + FOptions.HopFrames - 1) div FOptions.HopFrames;
     LFirst := 0;
     while LFirst < LTotal do
@@ -920,7 +944,7 @@ begin
         end;
         LBatch.NextFeature := LFirst + LCount;
         LBatch.Completed := LBatch.NextFeature = LTotal;
-        FRanges[LIndex].Journal.Append(LBatch);
+        FRanges[LIndex].Journal.Append(LBatch, JournalProgress);
         LFirst := LBatch.NextFeature;
         Inc(LAnalyzed, LCount);
         Progress('analyze_selected_ranges', LAnalyzed, LAllFeatures, 'observations');
@@ -928,7 +952,6 @@ begin
         LSource.Free;
       end;
     end;
-    Need(FileFlush(FRanges[LIndex].JournalStream.Handle), 'Cannot flush completed feature journal');
     LSegments[LIndex] := WholeJournalSegment(FRanges[LIndex].Journal, FRanges[LIndex].Weight);
   end;
   LReader := nil;
@@ -1086,7 +1109,7 @@ begin
       LBinding.Options := FOptions;
       FRanges[LRange].JournalStream := TCheckedStream.Create(LPath, Self);
       FRanges[LRange].Journal := TFeatureJournal.Create(FRanges[LRange].JournalStream,
-        LBinding, FlushJournal, False);
+        LBinding, FRanges[LRange].JournalStream.Commit, False, JournalProgress);
     end;
     Need(FRanges[LRange].Journal.Completed and (FRanges[LRange].Journal.TailBytes = 0),
       'Source continuity needs complete, unmodified feature journals');

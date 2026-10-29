@@ -87,6 +87,11 @@ parent closure is claimed; this is solo Big Boss verification.
 
 **Blockers**
 
+- [Bounded portable byte storage14](NS-6_portability_14.md) — actual pas2js
+  large-journal recovery fails in the supplied RTL memory stream's shrink path.
+  Preserve the full case and qualify shared primary storage before accepting
+  the current journal-intake component.
+
 - [Actual portable journal renderer13 — DONE](DONE/NS-6_portability_13.md) —
   accepted at30551f5/CI487 with shared primary sample copying, actual session
   forwarding, native32/64, actual pas2js and clean extracted consumers.
@@ -132,6 +137,19 @@ parent closure is claimed; this is solo Big Boss verification.
   shared staging with exact original source-byte progress.
 
 **Dev Notes:**
+
+- 2026-10-29, Big Boss: primary journal create/reopen/append/read/recovery and
+  exact-transfer callbacks pass native32/64 and actual pas2js local consumers:
+  70039 storage,74356 journal checks/102 observer aborts each, original canonical
+  journal bytes, failure/reentry/retry and zero native leaks. The linked
+  portability14 prerequisite repairs the actual large-tail memory provider.
+  Studio forwards create/append/reopen through the existing bounded publication
+  gate and binds every commit to the actual file's FileFlush. The previous
+  cancellation-only hook and deferred range flush are removed. Native worker
+  replay retains its frozen WAV. Exact publication/extracted qualification still
+  remains; no complete parent AC1/AC2 or task closure follows. Training-reader
+  construction, candidate/context/successor indices, nested read forwarding and
+  duration/scheduler interiors remain here, with actual Studio18 separate.
 
 - 2026-10-29, Big Boss: journal rendering13 meets all original criteria and
   prerequisites after terminal source CI487 and clean exact packages. Renderer

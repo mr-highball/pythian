@@ -31,6 +31,7 @@ interface
 
 uses
   Classes,
+  pythian.progress,
   pythian.audio,
   pythian.analysis,
   pythian.analysis.wave;
@@ -72,20 +73,27 @@ type
     FFailed: Boolean;
     FBusy: Boolean;
     function DecodeRecord(const APosition, ANext: Int64; const APrevious: String;
-      out ABatch: TWaveFeatureBatch; out AHash: String; out AEnd: Int64): Boolean;
+      out ABatch: TWaveFeatureBatch; out AHash: String; out AEnd: Int64;
+      const AProgress: TWorkProgressCallback): Boolean;
     procedure CheckAvailable;
     function GetTailBytes: Int64;
     function GetCompleted: Boolean;
   public
     constructor Create(const AStream: TStream; const ABinding: TFeatureJournalBinding;
-      const AFlush: TFeatureJournalFlush; const ACreateNew: Boolean);
+      const AFlush: TFeatureJournalFlush; const ACreateNew: Boolean;
+      const AProgress: TWorkProgressCallback = nil);
     { Complete validation precedes writes. Write/flush failure poisons this
-      instance; reopen to discover the last complete committed record. }
-    procedure Append(const ABatch: TWaveFeatureBatch);
+      instance; reopen to discover the last complete committed record. Optional
+      observers are borrowed per call. Append preparation cancellation leaves
+      bytes/state unchanged and retryable; cancellation after write admission,
+      read or tail recovery is terminal. Earlier external writes stay intact. }
+    procedure Append(const ABatch: TWaveFeatureBatch;
+      const AProgress: TWorkProgressCallback = nil);
     { Explicitly drops only a previously scanned incomplete final record. }
-    procedure RecoverTail;
+    procedure RecoverTail(const AProgress: TWorkProgressCallback = nil);
     procedure Rewind;
-    function ReadNext(var ABatch: TWaveFeatureBatch): Boolean;
+    function ReadNext(var ABatch: TWaveFeatureBatch;
+      const AProgress: TWorkProgressCallback = nil): Boolean;
     property NextFeature: Int64 read FNextFeature;
     property Binding: TFeatureJournalBinding read FBinding;
     property TotalFeatures: Int64 read FTotalFeatures;
@@ -210,7 +218,8 @@ begin
 end;
 
 procedure ValidateBatch(const ABatch: TWaveFeatureBatch;
-  const ABinding: TFeatureJournalBinding; const ANext, ATotal: Int64);
+  const ABinding: TFeatureJournalBinding; const ANext, ATotal: Int64;
+  const AProgress: TWorkProgressCallback = nil);
 var
   LIndex: Integer;
   LPitch: Integer;
@@ -232,6 +241,7 @@ begin
   begin
     raise EAudio.Create('Journal batch source origin differs');
   end;
+  ReportWork(AProgress, 'journal_validate', wuObservations, 0, LCount);
   for LIndex := 0 to LCount - 1 do
   begin
     LFeature := ABatch.Features[LIndex];
@@ -260,12 +270,16 @@ begin
     begin
       raise EAudio.Create('Journal chroma or silence fields differ');
     end;
+    if ((LIndex + 1) mod 128 = 0) or (LIndex + 1 = LCount) then
+    begin
+      ReportWork(AProgress, 'journal_validate', wuObservations, LIndex + 1, LCount);
+    end;
   end;
 end;
 
 constructor TFeatureJournal.Create(const AStream: TStream;
   const ABinding: TFeatureJournalBinding; const AFlush: TFeatureJournalFlush;
-  const ACreateNew: Boolean);
+  const ACreateNew: Boolean; const AProgress: TWorkProgressCallback);
 var
   LHeader: TAudioBytes;
   LStored: TAudioBytes;
@@ -290,44 +304,54 @@ begin
   begin
     Inc(FTotalFeatures);
   end;
-  if ACreateNew then
-  begin
-    if FStream.Size <> 0 then
+  FBusy := True;
+  try
+    ReportWork(AProgress, 'journal_open', wuItems, 0, 1);
+    if ACreateNew then
     begin
-      raise EAudio.Create('New feature journal requires an empty stream');
-    end;
-    FStream.Position := 0;
-    WriteStreamBytesExact(FStream, LHeader, 0, Length(LHeader));
-    FFlush;
-  end
-  else
-  begin
-    if FStream.Size < CHeaderBytes then
-    begin
-      raise EAudio.Create('Incomplete journal header; no source-bound progress is recoverable');
-    end;
-    SetLength(LStored, CHeaderBytes);
-    FStream.Position := 0;
-    ReadStreamBytesExact(FStream, LStored, 0, Length(LStored));
-    for LIndex := 0 to CHeaderBytes - 1 do
-    begin
-      if LStored[LIndex] <> LHeader[LIndex] then
+      if FStream.Size <> 0 then
       begin
-        raise EAudio.Create('Journal source, options, analysis contract or header integrity differs');
+        raise EAudio.Create('New feature journal requires an empty stream');
+      end;
+      FStream.Position := 0;
+      WriteStreamBytesExact(FStream, LHeader, 0, Length(LHeader), AProgress);
+      FFlush;
+    end
+    else
+    begin
+      if FStream.Size < CHeaderBytes then
+      begin
+        raise EAudio.Create('Incomplete journal header; no source-bound progress is recoverable');
+      end;
+      SetLength(LStored, CHeaderBytes);
+      FStream.Position := 0;
+      ReadStreamBytesExact(FStream, LStored, 0, Length(LStored), AProgress);
+      for LIndex := 0 to CHeaderBytes - 1 do
+      begin
+        if LStored[LIndex] <> LHeader[LIndex] then
+        begin
+          raise EAudio.Create('Journal source, options, analysis contract or header integrity differs');
+        end;
       end;
     end;
-  end;
-  FExpectedSize := FStream.Size;
-  FValidBytes := CHeaderBytes;
-  while FValidBytes < FExpectedSize do
-  begin
-    if not DecodeRecord(FValidBytes, FNextFeature, FLastHash, LBatch, LHash, LEnd) then
+    FExpectedSize := FStream.Size;
+    FValidBytes := CHeaderBytes;
+    ReportWork(AProgress, 'journal_scan', wuBytes, FValidBytes, FExpectedSize);
+    while FValidBytes < FExpectedSize do
     begin
-      Break;
+      if not DecodeRecord(FValidBytes, FNextFeature, FLastHash, LBatch, LHash, LEnd,
+        AProgress) then
+      begin
+        Break;
+      end;
+      FNextFeature := LBatch.NextFeature;
+      FLastHash := LHash;
+      FValidBytes := LEnd;
+      ReportWork(AProgress, 'journal_scan', wuBytes, FValidBytes, FExpectedSize);
     end;
-    FNextFeature := LBatch.NextFeature;
-    FLastHash := LHash;
-    FValidBytes := LEnd;
+    ReportWork(AProgress, 'journal_open', wuItems, 1, 1);
+  finally
+    FBusy := False;
   end;
   Rewind;
 end;
@@ -357,7 +381,8 @@ end;
 
 function TFeatureJournal.DecodeRecord(const APosition, ANext: Int64;
   const APrevious: String; out ABatch: TWaveFeatureBatch;
-  out AHash: String; out AEnd: Int64): Boolean;
+  out AHash: String; out AEnd: Int64;
+  const AProgress: TWorkProgressCallback): Boolean;
 var
   LBytes: TAudioBytes;
   LHead: TAudioBytes;
@@ -376,8 +401,8 @@ begin
   end;
   SetLength(LHead, CRecordHeaderBytes);
   FStream.Position := APosition;
-  ReadStreamBytesExact(FStream, LHead, 0, Length(LHead));
-  if Sha256Bytes(Copy(LHead, 0, CRecordHeaderBytes - CHashBytes)) <>
+  ReadStreamBytesExact(FStream, LHead, 0, Length(LHead), AProgress);
+  if Sha256Bytes(Copy(LHead, 0, CRecordHeaderBytes - CHashBytes), AProgress) <>
     TextAt(LHead, CRecordHeaderBytes - CHashBytes, CHashBytes) then
   begin
     raise EAudio.Create('Journal record header checksum differs');
@@ -399,10 +424,11 @@ begin
   end;
   LBytes := Copy(LHead);
   SetLength(LBytes, CRecordHeaderBytes + LPayloadBytes + CHashBytes);
-  ReadStreamBytesExact(FStream, LBytes, CRecordHeaderBytes, LPayloadBytes + CHashBytes);
+  ReadStreamBytesExact(FStream, LBytes, CRecordHeaderBytes, LPayloadBytes + CHashBytes,
+    AProgress);
   AHash := TextAt(LBytes, Length(LBytes) - CHashBytes, CHashBytes);
   SetLength(LBytes, Length(LBytes) - CHashBytes);
-  if Sha256Bytes(LBytes) <> AHash then
+  if Sha256Bytes(LBytes, AProgress) <> AHash then
   begin
     raise EAudio.Create('Complete journal batch checksum differs');
   end;
@@ -413,6 +439,7 @@ begin
   ABatch.Completed := ABatch.NextFeature = FTotalFeatures;
   SetLength(ABatch.Features, Integer(LCount));
   LOffset := CRecordHeaderBytes;
+  ReportWork(AProgress, 'journal_decode', wuObservations, 0, Integer(LCount));
   for LIndex := 0 to High(ABatch.Features) do
   begin
     ABatch.Features[LIndex].StartFrame := LIndex * FBinding.Options.HopFrames;
@@ -436,13 +463,19 @@ begin
     begin
       ABatch.Features[LIndex].Chroma[LPitch] := GetReal(LBytes, LOffset);
     end;
+    if ((LIndex + 1) mod 128 = 0) or (LIndex = High(ABatch.Features)) then
+    begin
+      ReportWork(AProgress, 'journal_decode', wuObservations, LIndex + 1,
+        Integer(LCount));
+    end;
   end;
-  ValidateBatch(ABatch, FBinding, ANext, FTotalFeatures);
+  ValidateBatch(ABatch, FBinding, ANext, FTotalFeatures, AProgress);
   AEnd := APosition + Length(LBytes) + CHashBytes;
   Result := True;
 end;
 
-procedure TFeatureJournal.Append(const ABatch: TWaveFeatureBatch);
+procedure TFeatureJournal.Append(const ABatch: TWaveFeatureBatch;
+  const AProgress: TWorkProgressCallback);
 var
   LBytes: TAudioBytes;
   LOffset: Integer;
@@ -458,43 +491,58 @@ begin
   begin
     raise EAudio.Create('Recover incomplete journal tail before appending');
   end;
-  ValidateBatch(ABatch, FBinding, FNextFeature, FTotalFeatures);
-  LNext := ABatch.NextFeature;
-  SetLength(LBytes, CRecordHeaderBytes - CHashBytes);
-  LOffset := 0;
-  PutNumber(LBytes, LOffset, ABatch.FirstFeature, 8);
-  PutNumber(LBytes, LOffset, Length(ABatch.Features), 4);
-  PutText(LBytes, LOffset, FLastHash);
-  LHeadHash := Sha256Bytes(LBytes);
-  SetLength(LBytes, CRecordHeaderBytes + Length(ABatch.Features) * CFeatureBytes);
-  PutText(LBytes, LOffset, LHeadHash);
-  for LIndex := 0 to High(ABatch.Features) do
-  begin
-    LFeature := ABatch.Features[LIndex];
-    PutNumber(LBytes, LOffset, LFeature.ValidFrames, 4);
-    PutNumber(LBytes, LOffset, Ord(LFeature.Silent), 4);
-    PutReal(LBytes, LOffset, LFeature.Rms);
-    PutReal(LBytes, LOffset, LFeature.Peak);
-    PutReal(LBytes, LOffset, LFeature.CentroidHz);
-    PutReal(LBytes, LOffset, LFeature.Flux);
-    for LPitch := 0 to 11 do
-    begin
-      PutReal(LBytes, LOffset, LFeature.Chroma[LPitch]);
-    end;
-  end;
-  LHash := Sha256Bytes(LBytes);
-  SetLength(LBytes, Length(LBytes) + CHashBytes);
-  PutText(LBytes, LOffset, LHash);
-  if FValidBytes > High(Int64) - Length(LBytes) then
-  begin
-    raise EAudio.Create('Journal file extent exceeds Int64');
-  end;
   FBusy := True;
   try
+    { Big Boss: all preparation is private. Cancellation remains retryable until
+      the explicit write-admission boundary below; the receiver is never stored. }
+    ValidateBatch(ABatch, FBinding, FNextFeature, FTotalFeatures, AProgress);
+    LNext := ABatch.NextFeature;
+    SetLength(LBytes, CRecordHeaderBytes - CHashBytes);
+    LOffset := 0;
+    PutNumber(LBytes, LOffset, ABatch.FirstFeature, 8);
+    PutNumber(LBytes, LOffset, Length(ABatch.Features), 4);
+    PutText(LBytes, LOffset, FLastHash);
+    LHeadHash := Sha256Bytes(LBytes, AProgress);
+    SetLength(LBytes, CRecordHeaderBytes + Length(ABatch.Features) * CFeatureBytes);
+    PutText(LBytes, LOffset, LHeadHash);
+    ReportWork(AProgress, 'journal_encode', wuObservations, 0, Length(ABatch.Features));
+    for LIndex := 0 to High(ABatch.Features) do
+    begin
+      LFeature := ABatch.Features[LIndex];
+      PutNumber(LBytes, LOffset, LFeature.ValidFrames, 4);
+      PutNumber(LBytes, LOffset, Ord(LFeature.Silent), 4);
+      PutReal(LBytes, LOffset, LFeature.Rms);
+      PutReal(LBytes, LOffset, LFeature.Peak);
+      PutReal(LBytes, LOffset, LFeature.CentroidHz);
+      PutReal(LBytes, LOffset, LFeature.Flux);
+      for LPitch := 0 to 11 do
+      begin
+        PutReal(LBytes, LOffset, LFeature.Chroma[LPitch]);
+      end;
+      if ((LIndex + 1) mod 128 = 0) or (LIndex = High(ABatch.Features)) then
+      begin
+        ReportWork(AProgress, 'journal_encode', wuObservations, LIndex + 1,
+          Length(ABatch.Features));
+      end;
+    end;
+    LHash := Sha256Bytes(LBytes, AProgress);
+    SetLength(LBytes, Length(LBytes) + CHashBytes);
+    PutText(LBytes, LOffset, LHash);
+    if FValidBytes > High(Int64) - Length(LBytes) then
+    begin
+      raise EAudio.Create('Journal file extent exceeds Int64');
+    end;
+    ReportWork(AProgress, 'journal_append_ready', wuBytes, Length(LBytes), Length(LBytes));
+    if FFailed then
+    begin
+      raise EAudio.Create('Journal append preparation reentered');
+    end;
     try
       FStream.Position := FValidBytes;
-      WriteStreamBytesExact(FStream, LBytes, 0, Length(LBytes));
+      WriteStreamBytesExact(FStream, LBytes, 0, Length(LBytes), AProgress);
+      ReportWork(AProgress, 'journal_commit', wuItems, 0, 1);
       FFlush;
+      ReportWork(AProgress, 'journal_commit', wuItems, 1, 1);
       if FFailed or (FStream.Size <> FValidBytes + Length(LBytes)) then
       begin
         raise EAudio.Create('Journal storage changed during commit or callback reentered');
@@ -512,7 +560,7 @@ begin
   end;
 end;
 
-procedure TFeatureJournal.RecoverTail;
+procedure TFeatureJournal.RecoverTail(const AProgress: TWorkProgressCallback);
 begin
   CheckAvailable;
   if TailBytes = 0 then
@@ -522,8 +570,10 @@ begin
   FBusy := True;
   try
     try
+      ReportWork(AProgress, 'journal_recover', wuItems, 0, 1);
       FStream.Size := FValidBytes;
       FFlush;
+      ReportWork(AProgress, 'journal_recover', wuItems, 1, 1);
       if FFailed or (FStream.Size <> FValidBytes) then
       begin
         raise EAudio.Create('Journal recovery callback reentered');
@@ -546,7 +596,8 @@ begin
   FReadHash := FHeaderHash;
 end;
 
-function TFeatureJournal.ReadNext(var ABatch: TWaveFeatureBatch): Boolean;
+function TFeatureJournal.ReadNext(var ABatch: TWaveFeatureBatch;
+  const AProgress: TWorkProgressCallback): Boolean;
 var
   LBatch: TWaveFeatureBatch;
   LHash: String;
@@ -560,10 +611,13 @@ begin
   FBusy := True;
   try
     try
-      if not DecodeRecord(FReadPosition, FReadNext, FReadHash, LBatch, LHash, LEnd) then
+      if not DecodeRecord(FReadPosition, FReadNext, FReadHash, LBatch, LHash, LEnd,
+        AProgress) then
       begin
         raise EAudio.Create('Committed journal record became incomplete');
       end;
+      ReportWork(AProgress, 'journal_read', wuObservations, Length(LBatch.Features),
+        Length(LBatch.Features));
       if FFailed then
       begin
         raise EAudio.Create('Journal read reentered');
