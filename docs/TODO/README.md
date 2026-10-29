@@ -6,7 +6,7 @@
 Accepted zero-credit usability repairs: [training choices and playback](DONE/NS-6_studio_19.md),
 [tabbed workflow and help](DONE/NS-6_studio_18.md).
 
-Updated 2026-10-29. **53 open / 94 accepted tasks.** The user authorized a new
+Updated 2026-10-29. **55 open / 94 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **52.45 current / 47.55 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -32,6 +32,18 @@ Dated point narratives in Dev Notes are historical. Each task has one primary
 north-star credit owner; secondary use and outcome rollups earn nothing extra.
 
 ## Goal ledger
+
+Selected prerequisite2026-10-29: [portable passage ownership15](NS-6_portability_15.md)
+repairs the original multi-source PCM oracle's wrong-source pas2js failure.
+Clone20 remains open; source records must remain unchanged and exact samples
+must pass. Counts55open/94DONE/149 total, NS6 17open;52.45/47.55 unchanged.
+
+Selected2026-10-29: [observed immutable model cloning20](NS-6_observability_20.md)
+owns parent04's generic clone prerequisite and actual Pythian consumer reuse.
+The pinned domain-neutral consumer exposes a missing API, not a violated prior
+promise; existing primary constructor work will be reused. A separate WFC
+branch/user notice precedes implementation. Counts54open/94DONE/148 total,
+NS6 16open;52.45/47.55 unchanged. No credit or stopped-counter reset follows.
 
 Qualified component2026-10-29: [parent04](NS-6_observability_04.md)'s remaining journal
 learning/index preparation qualifies at64887c8/[CI493](https://github.com/mr-highball/pythian/actions/runs/40959194111/job/123747185147),
@@ -85,8 +97,8 @@ before recorded scoring; no musical gate or scientific counter is reset.
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 50 | 70% | 1 | 30 | 4.50 |
 | [NS-5 - User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 17 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 15 | 46 | 4.60 |
-| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **53** | Goal points are not summed across goals | **47.55** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 16 | 46 | 4.60 |
+| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **54** | Goal points are not summed across goals | **47.55** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -478,6 +490,8 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | [NS-6_studio_22](NS-6_studio_22.md) — Original/generated listening comparison | 0 | 0.00 | Deployed for review; native/DOM checks pass, actual browser acceptance remains |
 | [NS-6_observability_18](NS-6_observability_18.md) — Truthful native Studio work transport | 0 | 0.00 | Native/source qualification at542d5cc/CI478 passes; actual browser UI remains required |
 | [NS-6_observability_04](NS-6_observability_04.md) — Remaining provider/batch operations and operator monitoring | 0 | 0.00 | Native inference/operator AC3 accepted; retained session/capture/stream/publication AC1 and batch AC2 remain |
+| [NS-6_observability_20](NS-6_observability_20.md) — Shared observed immutable model cloning | 0 | 0.00 | Generic WFC prerequisite and Pythian consumer consolidation; full qualification required |
+| [NS-6_portability_15](NS-6_portability_15.md) — Preserve portable passage records and selected PCM | 0 | 0.00 | Actual pas2js wrong-source failure; primary renderer repair and qualification |
 | [NS-6_adoption_01](NS-6_adoption_01.md) — Establish independent ecosystem adoption evidence | 15 | 1.50 | Supported releases + independent ecosystem evidence |
 | [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 1 | 0.10 | Solo usability resumed; complete physical matrix remains open |
 | [NS-6_delivery_03](NS-6_delivery_03.md) — Package and verify the accepted final workflow | 1 | 0.10 | Dependencies, including Studio |

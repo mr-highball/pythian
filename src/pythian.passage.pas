@@ -294,8 +294,11 @@ begin
     raise EAudio.Create('Passage sequence or fade exceeds bounds');
   end;
   LTotal := 0;
-  for LPassage in APassages do
+  { Big Boss: keep this local record detached. A pas2js for..in variable aliases
+    an input row; reusing it below would overwrite the caller's last passage. }
+  for LIndex := 0 to High(APassages) do
   begin
+    LPassage := APassages[LIndex];
     if (LPassage.SourceIndex < 0) or (LPassage.SourceIndex >= Length(ASources)) then
     begin
       raise EAudio.Create('Unknown passage source');

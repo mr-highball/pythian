@@ -297,6 +297,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Passage compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.passage$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Passage checks failed' }
+  & $compilerPath @compilerArgs '-gh' 'tests/pythian.tests.passage.ownership.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Primary passage ownership compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.passage.ownership$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Primary passage ownership and selected PCM checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.activity.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Activity compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.activity$executableSuffix")

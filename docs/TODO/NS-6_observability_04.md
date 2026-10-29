@@ -95,6 +95,10 @@ unqualified where no interior observer exists. Actual Studio18 remains separate.
 
 **Blockers**
 
+- [Observed immutable model cloning20](NS-6_observability_20.md) — generic WFC
+  clone plus replacement of the retained Pythian serialization copies. This
+  blocks full model-copy coverage, not the already qualified journal component.
+
 - [Bounded portable byte storage14 — DONE](DONE/NS-6_portability_14.md) — shared
   primary storage and large-journal abort/recovery qualify atd68895f/CI489,
   preserving the original external RTL failure and every input/assertion.

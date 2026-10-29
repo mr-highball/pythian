@@ -1,0 +1,85 @@
+# NS-6_observability_20 — Reuse observable immutable WFC model cloning
+
+[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+
+**Description:**
+
+Replace the repeated sequence-model copies made by text serialization in
+Pythian's style, layers, voices, duration and event-corpus consumers. Their start/end callbacks
+do not observe the codec interior. Cloning an immutable generic sequence model
+belongs to WFC; Pythian owns adaptation to its existing work callback contract.
+Reuse primary construction/copy behavior rather than adding another algorithm.
+
+North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
+This extracts the independently useful model-copy prerequisite from
+[parent04](NS-6_observability_04.md); every other original obligation remains.
+No musical criterion or percentage is earned by this task's creation or checks.
+
+Criterion advanced: parent04 AC1/2/5, observed retained model construction/copy.
+Deliverable: generic observed immutable cloning plus all demonstrated Pythian
+consumer replacements. Evidence: exact model identity, source lifetime,
+original-exception abort/cleanup, actual portable/consumer execution and exact
+upstream/downstream qualification. Stop on changed semantic state/PCM, a merely
+wrapper-specific restriction, an existing fix or another required gap.
+
+**Acceptance Criteria:**
+
+- Isolate the required generic capability against pinned WFC, inspect the
+  separate checkout for an existing fix, and follow the cross-repository
+  procedure. Use a new branch from the reviewed pin, notify the user before
+  source edits and preserve unrelated upstream work. No dependency source edit
+  in Pythian's vendor checkout and no upstream merge are authorized here.
+- WFC supplies one caller-owned immutable sequence-model clone with an optional
+  synchronous borrowed observer. Reuse its primary observed constructor, retain
+  exact ordered samples, literal tokens, state histories/counts, boundaries and
+  model version, and keep source/clone independent after either is freed. No text
+  roundtrip, mirrored validator or second copy algorithm is the clone mechanism.
+- Report real construction visits and preserve original callback exceptions.
+  A failed clone returns no result and disposes private state. Exercise every
+  callback cancellation, retry, open/wrapped models, literal/Unicode identity,
+  source preservation and nil-observer parity on native32/64 and actual pas2js.
+- One Pythian adaptation forwards the primary work observer. Replace every
+  demonstrated one-off serialization clone in style/layers/voices/duration/event corpus,
+  preserving each consumer's ownership, coarse phase and final publication
+  contract. Verify original model/selection/PCM and actual affected consumers;
+  compiler success alone is insufficient.
+- Qualify the upstream branch through its maintained conformance and all five
+  CI jobs, then explicitly adopt the reviewed gitlink in Pythian. Pass affected
+  native/actual portable and clean core/full extracted consumers plus exact
+  downstream integration. Update task links and accounting together only after
+  the complete criteria and prerequisites pass. Parent04 and actual Studio/
+  musical gates remain independent.
+
+**Blockers**
+
+- [Portable passage ownership15](NS-6_portability_15.md) — actual portable
+  event-corpus qualification exposed a pre-existing wrong-source PCM failure.
+  Preserve its oracle; repair the primary renderer before accepting this consumer.
+- [Generic model/voice preparation17 — DONE](DONE/NS-6_observability_17.md) —
+  accepted WFC pin c4e7569 supplies the primary constructor and observer bridge.
+
+**Dev Notes:**
+
+- 2026-10-29, Big Boss SOLO: bounded domain-neutral required-clone consumer
+  fails compilation against c4e7569 because the observable Clone entry point is
+  absent. This demonstrates the missing proposed capability, not a broken
+  existing API promise or a runtime/musical rejection. Public API/source audit
+  finds only unobserved array-copy getters and text encode/decode; the separate
+  expansion checkout and clone/copy branch search show no existing fix. The
+  constructor already observes its private validation/copy work, so the proposed
+  method can reuse it directly. Private E-drive sequence-model-clone-20261029-boss
+  retains the unchanged compile consumer, original compiler failure and PLAN.
+- Separate branch `codex/pythian-sequence-clone-progress`, fromc4e7569, is clean
+  and pushed at5d6946288d6faffd08cfd31a76a9f833f535c51d; notice preceded source
+  edits. Local native32/64 and actual pas2js each788662 checks/all318 clone
+  aborts pass. Shared Pythian adaptation657/6 and actual voice17221/16,
+  duration14 aborts/retries and measured event restoration pass on all targets.
+  Original native64 layer/publication/wave consumers and70,000-frame exact
+  duration PCM/continuation replay pass. Original portable event wrong-source
+  PCM failure required linked portability15; its core repair qualifies separately.
+- Upstream CI57 attempt1 reaches the existing30m macOS timeout during repeated
+  compilation, with no reported assertion failure. Accepted macOS predecessor
+  took24m31s. One unchanged macOS-only attempt2 is queued; no timeout expansion
+  or repeated retry is selected. Pin staysc4e7569 until all upstream/downstream
+  gates pass. Preserve the original failure and all scientific stops/exposures;
+  current delivery nonclosing1 remains. No deployment, inference or feedback write.

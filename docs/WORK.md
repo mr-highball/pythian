@@ -12,6 +12,85 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: portable passage repair qualifies locally; clone pin remains held — 2026-10-29
+
+The intervening firewall support turn supplied verified operating-system evidence
+but was not a product batch. Big Boss remains SOLO. The current implementation
+turn makes PROGRESS: actual consumer checks exposed and repaired a primary
+wrong-source portable render. Musical stops, the pending listening questions and
+the full active goal remain unchanged; no musical acceptance is claimed.
+
+[Passage ownership15](TODO/NS-6_portability_15.md) was created before changing
+the primary renderer, then followed as [clone20](TODO/NS-6_observability_20.md)'s
+actual portable prerequisite. The existing exact event-corpus PCM oracle rejected
+frame8 at approximately -0.176776695296637 instead of0.25. Generated target code
+showed a reused `for..in` record alias overwriting the final caller passage.
+Indexed validation keeps the local record detached. The repaired actual
+event-corpus fixture passes native32/64 and pas2js with original PCM equality,
+caller-input and repeat-render assertions. Its old native-only temporary.Free,
+StdErr/Halt test syntax is made portable without weakening the assertions.
+The new core-only external consumer passes59 exact source/record/PCM/replay
+checks on each target, with native heaps clean. Whole task15 awaits exact
+downstream integration and clean extracted qualification; it stays open.
+
+Separate WFC clone branch `codex/pythian-sequence-clone-progress` is clean/pushed
+at5d6946288d6faffd08cfd31a76a9f833f535c51d. Generic clone native32/64 and actual
+pas2js pass788662 checks and all318 original clone aborts each. Pythian's shared
+adapter passes657/6 each; named-voice construction/public CopyModel now pass
+17221 checks/16 aborts each. All seven duration model copies pass14 original
+start/final aborts and same-bus retries on each target. The original native64
+layer, publication, wave-style and event consumers pass; unchanged70,000-frame
+duration PCM/continuation traces share SHA256
+fb9723c797964f983dc8095ccb5d1395dfd87ef18740cb6fa334ac3e767006a9.
+Those are local candidate checks, not an accepted dependency or browser UI.
+
+Upstream [CI57](https://github.com/mr-highball/wfc/actions/runs/40964504674)
+attempt1 is terminal: macOS hit its unchanged30m job limit during compilation,
+not a reported assertion failure. The accepted macOS predecessor took24m31s.
+One macOS-only retry of the same source/tests/budget is confirmed queued as
+attempt2. Preserve attempt1 and inspect this same run; do not repeatedly retry
+or increase the limit if it recurs. Pythian's gitlink remains acceptedc4e7569,
+and clone integration sources remain uncommitted pending all upstream gates.
+The passage repair can qualify separately against the existing dependency.
+
+Counts55open/94DONE/149 total, NS6 17open;52.45/47.55 unchanged. Delivery
+nonclosing remains1 while the required qualification is in progress. Private
+sequence-model-clone-20261029-boss retains original syntax/PCM/CI failures,
+pre-repair source, local logs and replay hashes. No stopped inference family,
+live service, listener, firewall rule, browser audio, response or helper changed.
+Complete previous WORK history follows unchanged.
+
+## Current handoff: shared observed model cloning selected; musical gates unchanged — 2026-10-29
+
+Previous goal turn made PROGRESS: journal preparation qualified at exactCI493;
+fc925f8 is pushed. Big Boss remains SOLO. Both substantial listening reviews
+remain pending at revision0, and least-complete NS5's actual musical/reference
+prerequisites and all stopped pitch/source families remain unchanged.
+
+[New required clone20](TODO/NS-6_observability_20.md) owns parent04's generic
+immutable-model copy prerequisite and actual Pythian consumer consolidation.
+The domain-neutral compile consumer against accepted WFCc4e7569 rejects its
+missing proposed Clone entry point. This is a missing required capability, not
+a violated existing promise or scientific rejection. Source/branch inspection
+finds no existing generic observed clone; the primary observed constructor can
+reuse its immutable private arrays. Existing style/layers/voices/duration copies
+instead serialize/parse and expose only outer start/end feedback.
+
+The separate WFC branch `codex/pythian-sequence-clone-progress` is being prepared
+from c4e7569, and the user has been notified before source edits. Preserve its
+primary expansion checkout, earlier observer branches and Pythian's vendor
+source. Acceptance requires native/actual portable cancellation and semantic
+identity, all upstream CI jobs, explicit reviewed pin adoption, affected native/
+portable consumers and exact downstream/extracted qualification. Stop on an
+existing fix, a Pythian-only restriction, changed model/PCM, lost cancellation
+or a new prerequisite. No upstream merge or live deployment is selected.
+
+Counts54open/94DONE/148 total, NS6 16open;52.45/47.55 unchanged. Delivery
+nonclosing remains1 while this batch is in progress; scientific stops/exposures
+never reset. Task creation and the compile probe close no criterion or credit.
+Private E-drive sequence-model-clone-20261029-boss retains PLAN, the original
+failed consumer and logs. Complete earlier WORK history follows unchanged.
+
 ## Current handoff: journal learning preparation qualified; musical gates remain open — 2026-10-29
 
 Previous implementation goal turn made PROGRESS; its next continuation was a
