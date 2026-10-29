@@ -62,6 +62,14 @@ clean extracted consumers pass. Journal intake/index construction, duration/
 scheduler interiors and actual Studio18 remain required. No whole AC1/AC2 or
 parent closure is claimed; this is solo Big Boss verification.
 
+Journal-intake/primary-storage scope is qualified2026-10-29 atd68895f/CI489
+through [portability14 — DONE](DONE/NS-6_portability_14.md), with native32/64,
+actual pas2js, exact journal/worker bytes and clean extracted consumers. The
+callbacks and exact-file commit path are qualified at that scope; full AC1/AC2
+still require training/index, nested forwarding, duration/scheduler and other
+owned bulk boundaries. Allocation/zero-fill/copy latency remains explicitly
+unqualified where no interior observer exists. Actual Studio18 remains separate.
+
 **Acceptance Criteria:**
 
 - Audit and extend remaining provider-contract/registry preparation, including
@@ -87,10 +95,9 @@ parent closure is claimed; this is solo Big Boss verification.
 
 **Blockers**
 
-- [Bounded portable byte storage14](NS-6_portability_14.md) — actual pas2js
-  large-journal recovery fails in the supplied RTL memory stream's shrink path.
-  Preserve the full case and qualify shared primary storage before accepting
-  the current journal-intake component.
+- [Bounded portable byte storage14 — DONE](DONE/NS-6_portability_14.md) — shared
+  primary storage and large-journal abort/recovery qualify atd68895f/CI489,
+  preserving the original external RTL failure and every input/assertion.
 
 - [Actual portable journal renderer13 — DONE](DONE/NS-6_portability_13.md) —
   accepted at30551f5/CI487 with shared primary sample copying, actual session
@@ -137,6 +144,12 @@ parent closure is claimed; this is solo Big Boss verification.
   shared staging with exact original source-byte progress.
 
 **Dev Notes:**
+
+- 2026-10-29, Big Boss: terminal source CI489 and clean exact/extracted packages
+  accept all original portability14 criteria. Journal-intake component evidence
+  below is now published-qualified. Counts54/92/146→53/93/146, NS6 16→15 open;
+  delivery nonclosing stays0, with all scientific stops and52.45/47.55 unchanged.
+  No whole parent AC1/AC2 or actual Studio18 closure follows.
 
 - 2026-10-29, Big Boss: primary journal create/reopen/append/read/recovery and
   exact-transfer callbacks pass native32/64 and actual pas2js local consumers:

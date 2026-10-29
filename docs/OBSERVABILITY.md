@@ -3,7 +3,7 @@
 [Project](../PROJECT.md) · [Assessment](CODEBASE-ASSESSMENT.md) ·
 [Tasks](TODO/README.md) · [Work](WORK.md)
 
-## Primary journal intake — local consumer qualification, 2026-10-29
+## Primary journal intake — qualified primary consumers, 2026-10-29
 
 The existing [parent04](TODO/NS-6_observability_04.md) now covers observed journal
 creation, reopening, validation, feature encoding/decoding, hashing, transfers,
@@ -25,7 +25,7 @@ poisons the journal. `journal_scan` counts validated prefix bytes, so an incompl
 tail does not become100% validated. `journal_open` completing means opening
 finished; it says nothing about training or whether all source features exist.
 
-[Portable storage14](TODO/NS-6_portability_14.md) owns the demonstrated installed
+[Portable storage14 — DONE](TODO/DONE/NS-6_portability_14.md) owns the demonstrated installed
 pas2js RTL memory-stream shrink failure. The supplied `TAudioBytesStream` uses
 one Pascal storage/resize/seek policy on every target, with an explicit Integer
 byte budget, zero-filled growth/gaps and detached snapshots. Capacity stays at
@@ -41,7 +41,10 @@ checks/102 observer aborts each. The original full journal bytes remain SHA256
 Original384 journal/identity/binding,38 transfer and55 WAV checks pass on all
 three targets; native integrity/recovery controls pass, with zero native leaks.
 Retain the original pas2js crash and repaired native32 resize-overload failure.
-Exact published/extracted qualification still precedes task14 acceptance.
+Exactd68895f/[CI489](https://github.com/mr-highball/pythian/actions/runs/40932461993/job/123654180480)
+passes integration18m41s/extracted45s. Clean exact core/full packages and both new
+API consumers of extracted core sources pass on native32/64 and actual pas2js.
+Every original task14 criterion qualifies; whole parent04 remains open.
 
 The native Studio worker forwards create/append/reopen work, checking control
 on every callback and reusing the existing two-second publication gate on its
@@ -51,13 +54,16 @@ the old cancellation-only flush hook and deferred whole-range flush are removed.
 The final native worker passes382 checks, zero leaks, retaining its frozen
 320044-byte WAV SHA256
 `fea82882480eceae982305a79487e91eecbcc281f6a9c27c8746bab3e6409c07`.
-This verifies the API/storage path, not power-loss behavior. Browser labels
+Power-loss behavior remains untested. Browser labels
 describe data/observations and use the shared byte-size formatter; actual
 browser/phone presentation remains [transport18](TODO/NS-6_observability_18.md).
 
 Training-reader construction/overlap checks, candidate/context/successor index
 construction, nested journal-read forwarding through all learning consumers,
-duration/scheduler interiors and full parent acceptance remain required. No
+duration/scheduler interiors and full parent acceptance remain required. Memory
+allocation, zero-fill and snapshot copies remain synchronous within the caller's
+explicit byte budget; no interior resize observer or latency bound is claimed.
+Parent04 retains the assessment of those owned bulk boundaries. No
 musical criterion, deployment or new operator answer follows from this component.
 
 ## Journal rendering interiors — accepted portable scope, 2026-10-29

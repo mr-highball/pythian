@@ -12,6 +12,45 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: portable journal storage/intake qualified; musical gates remain — 2026-10-29
+
+Big Boss remains SOLO. Exactd68895f/[CI489](https://github.com/mr-highball/pythian/actions/runs/40932461993/job/123654180480)
+is terminal SUCCESS, native job19m48s: integration18m41s/extracted consumers45s.
+No job was restarted or passing suite repeated merely to wait.
+[Portability14 — DONE](TODO/DONE/NS-6_portability_14.md) satisfies all original
+criteria and prerequisites. Native32/64 and actual pas2js each pass70039 bounded
+storage checks and74356 journal intake checks/102 original observer aborts,
+unchanged full journal checksum, original384/38/55 controls and zero native leaks.
+
+Clean exact core/full Win64 packages pass107/159 owned units and120/280 hashes.
+Both new APIs also execute from extracted core sources only on native32/64 and
+actual pas2js, with the same70039/74356/102 results. The actual native worker382
+checks retain its frozen320044-byte WAV, zero leaks. Browser assets compile;
+actual browser/phone, deployment and power-loss behavior remain untested.
+
+Move, incoming links, outcome map and accounting change together:54open/92DONE/
+146→53open/93DONE/146, NS6 16→15 open;52.45/47.55 unchanged. Required task closure
+keeps delivery nonclosing0. Every scientific stop/exposure history remains.
+Parent04's journal-intake component is qualified: borrowed optional observers,
+private preparation, terminal post-admission/read/recovery failure, no partial
+caller publication, exact-file FileFlush and bounded native status forwarding.
+The installed external RTL shrink failure and repaired native32 overload failure
+remain private evidence; no input/assertion or scientific gate was relaxed.
+
+Parent04 still owns training-reader construction, candidate/context/successor
+indices, nested read forwarding, duration/scheduler and other owned bulk work.
+Memory allocation/zero-fill/snapshot copies have explicit byte budgets and remain
+synchronous without an interior observer or latency qualification. Actual Studio18
+and every musical gate remain open. Reassess least-complete NS5's real reference/
+acceptance prerequisites before choosing another engineering component. The4:16
+review remains last known unanswered; existing source/model families stay stopped.
+
+Private E-drive journal-intake-20261029-boss PLAN, LOCAL-RESULT, CI, packages and
+complete logs preserve exact source/failure/replay evidence. No helper, WFC,
+service/firewall, private recording/catalog/answer or browser/audio mutation.
+Full goal remains active/unachieved; this source qualification earns no musical
+credit and creates no global block. Complete historical handoffs remain below.
+
 ## Current handoff: shared journal intake passes locally; exact qualification next — 2026-10-29
 
 Previous goal turn made PROGRESS: portability13 fully accepted at30551f5/CI487,
@@ -31,7 +70,7 @@ at every callback. Each journal commit now calls FileFlush on its exact checked
 file; the cancellation-only hook and deferred range flush are removed.
 
 Actual pas2js exposed a real RTL large-buffer shrink failure. Linked
-[portability14](TODO/NS-6_portability_14.md) now provides primary bounded owned
+[portability14](TODO/DONE/NS-6_portability_14.md) now provides primary bounded owned
 byte storage and shares read/seek logic with the borrowed read-only view. Size,
 zero-fill, cursor and allocation policy are common to every target. Original
 failure artifact and the repaired native32 resize-overload failure stay private.
