@@ -26,12 +26,12 @@ then reset delivery3→0. Scientific stops and exposure counters are unchanged.
 Saved answers and the generated listening queue are preserved byte-for-byte.
 Actual phone/full operator acceptance remains open.
 
-Retained named-voice publication is a local parent04 candidate: checked
-Win32/Win64 and actual pas2js each pass 212 original abort/retry cases, with
-unchanged frozen musical replay and zero heap leaks on native. Exact published
-integration/extracted consumers remain pending. This advances a required
-engineering component; no task move, criterion closure, credit or counter reset
-is claimed. Stream/duration, other owned metadata and operator forwarding remain.
+Retained named-voice publication is qualified at96f5bcb/[CI473](https://github.com/mr-highball/pythian/actions/runs/40799873864):
+integration15m1s/extracted40s, clean exact packages and checked Win32/Win64/actual
+pas2js cancellation/replay pass. This is a required parent04 component with no
+whole criterion closure: nonclosing0→1, no task move or credit. Shared segment/
+cursor consolidation is underway; reassess after that second nonclosing batch.
+Full duration/stream, other metadata and maintained operator forwarding remain.
 
 NS5 remains least complete at14%. Full vocabulary, context and structural
 acceptance still need independently grounded references and the linked admitted

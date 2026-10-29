@@ -1,3 +1,6 @@
+Warning: truncated output (original token count: 91181)
+Total output lines: 5357
+
 # Current work record
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](REBALANCE-2026-09-29.md) ·
@@ -12,40 +15,53 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
-## Current handoff: named-voice publication candidate — 2026-10-28
+## Current handoff: named-voice qualified; shared stream component — 2026-10-28
 
-Previous goal turn was a read-only firewall verification, with no product
-criterion closed. Big Boss remains solo. The active parent04 component now
-stages capture, independent proof, detached caller music and committed edit
-snapshots inside the existing graph commit guard. Replacement keeps its own
-private graph until preservation checks and its final readiness callback pass.
-No callback follows live publication. Optional mask/preference/provider copies
-use private candidates, borrowed receivers and mutation/state-copy reentry guards.
-Layer and voice adapters share the existing visit counter; no solver, musical
-rule, search budget, dependency source or service setting changes.
+Previous goal turn: progress, publishing guarded named-voice work at
+`96f5bcbd0bf55040bdd0ca961d3b5b5abfc86adb`. Big Boss remains solo.
+Exact [CI473](https://github.com/mr-highball/pythian/actions/runs/40799873864)
+passes: native job 16m 6s, maintained integration 15m 1s and extracted consumers
+40s. Both clean exact Win64 ZIPs pass all extracted hashes/consumers: core
+107 owned units/120 hashes, full159/280. Core archive SHA256
+`37b834465ef54aa3083fc3d89dd5c86627c1ab8f91ea2bad97ad6c8c68ae3868`;
+full `51070b2562afad760b6bcdf463a04af2467615916d1fcff5721906e239e72cf0`.
 
+Named-voice capture/proof/detached outputs and committed edits run before live
+graph acceptance; replacement stays private through its final readiness callback.
 Checked Win32/Win64 and actual pas2js each pass 400,179 checks, 212 original
-abort/retry cases and 198,118 callbacks, including explicit required start,
-interior, final and post-capture checkpoints. Both heap-traced native runs have
-zero leaks; final Win64 also executes the 22 added coverage assertions without
-heap tracing. Native and actual portable three-seed replay matches all nine
-frozen rows, 216,152 native bytes, SHA256
-`9b37050021c9406ee8e878c0201aae080e267ee97a9ff38d79b3771a1145bb31`.
-Existing named-voice controls pass; current native constructor/preparation passes
-14,182 checks, 10 original abort/retries and 13,639 callbacks, with zero leaks.
-Shared-counter layer publication retains 423,670 checks, 102 abort/retries and
-338,943 callbacks on native and
-actual pas2js. Preserve rejected declaration-order/forward-type and unsupported
-scalar-overload compiles plus the rejected unsupported linear-mask replay fixture.
+abort/retries and 198,118 callbacks. Native heap-traced runs have zero leaks;
+final Win64 adds22 explicit coverage assertions without heap tracing. All three
+execution targets preserve the nine frozen musical rows, native216152 bytes,
+SHA256 `9b37050021c9406ee8e878c0201aae080e267ee97a9ff38d79b3771a1145bb31`.
+Original voice controls, current constructor/preparation14182/10/13639 and shared
+layer423670/102/338943 also pass. Preserve repaired declaration/forward-type/
+unsupported scalar-overload failures and the rejected linear training-mask fixture.
 
-This remains a local candidate: exact publication, clean extracted core/full
-consumers and downstream CI are pending. No task moves, criterion closure or
-musical credit. Counts52 open/87 DONE/139 total, NS6 14 open and52.45/47.55 stay
-unchanged; delivery entry0 remains until the same batch is qualified. Remaining
-parent04 metadata/model copies, streams/duration and maintained operator
-forwarding are still required. Evidence and live handles use dedicated E-drive
-voice-publication-20261028-boss build/tests/runs roots. Private recordings,
-answers, stopped scientific families, listener slots and browser/audio are intact.
+This qualifies a component of [parent04](TODO/NS-6_observability_04.md), not a whole
+criterion. Delivery nonclosing0→1; no task move, credit or scientific-counter
+reset. Counts remain52 open/87 DONE/139 total, NS6 14 open;52.45/47.55 unchanged.
+All named-voice local handles are terminal/joined. Its evidence lives under the
+E-drive voice-publication-20261028-boss build/tests/runs roots.
+
+The second bounded component is now underway on separate generation/stream/
+duration units: consolidate identical private segment build/solve/proof and
+segment copies/joins into the primary generation adapter; ordinary streams must
+finish observed work before advancing their authenticated cursor. Duration
+edits reuse it without claiming whole duration/scheduler observation. Preserve
+existing finite/continuing semantics, constraint intersection, graph budgets and
+musical output. Stop on changed replay, partial publication, prior CI rejection
+or a demonstrated prerequisite. Frozen pre-edit original stream/duration controls
+pass; the current shared implementation also passes those original native
+controls. Frozen three-seed sequence11240bytes and duration1121765bytes (70000
+stereo Double frames plus two plan snapshots) have exact hashes in the dedicated
+sequence-stream-progress-20261028-boss packet. New cancellation and native/actual
+portable replay qualification remain pending. After this second nonclosing batch,
+reassess before selecting more work.
+
+Parent04 still requires other metadata/model copies, full duration/stream and
+maintained operator forwarding. The full musical goal remains unachieved.
+Private recordings, saved answers, stopped scientific families, service/firewall
+settings and browser/audio processes are unchanged.
 
 ## Current handoff: five prerequisites accepted — 2026-10-28
 
@@ -2648,79 +2664,7 @@ reviewed library forwarding/throttling and integration. No blocking defect or
 failed formal submission. Actual pas2js/JSDOM recovery/display passes 31;
 all four browser programs compile. DOM does not qualify actual browser/phone UI.
 
-Development repairs retained in task notes/evidence: excessive legacy library
-notifications, omitted final refresh forwarding and overly generic original-file
-wording. The first root library-worker fixture exposed cwd/build staging and
-created one isolated D-drive stage. Its exact catalog-bound directory and all
-three file hashes were verified before moving it to E. Subsequent executable
-tests and the stable launch use E working directories. Historical D-drive
-evidence and fixed executable slots remain intact.
-
-The matched checked optimized service/worker and twelve web assets are deployed
-to the fixed stable slot. Guarded restart found no active/pending jobs; all 14
-staged hashes match, LAN HTTPS returns 200 and the served script contains the new
-import phases. All 5,951 preexisting private JSON/JSONL hashes are unchanged.
-No QA service, worker, browser or audio session remains. Evidence is retained
-under E-drive `build/tests/runs/import-progress-20261027-{boss,spike,spiegel}`;
-the root run manifest records frozen source/artifact identities and launch details.
-
-Task and incoming links move together with the ledgers: **53 open /57 DONE
-(110 total), 52.45 credited /47.55 remaining**; NS completions remain
-**100/90/25/70/14/54**. Delivery nonclosing-batch count remains **0** because
-this batch closed all import criteria. Musical source/model/tempo/key stops and
-their separate counters remain unchanged. The full goal stays active; actual
-browser and sustained musical acceptance remain open. Offline DSP and retained
-operation callbacks are the next ready observability work, not musical credit.
-
-## Long source-continuity playback delivered; browser gate open - 2026-10-27
-
-The preceding goal turn was progress: portability_01 was committed/pushed.
-The next actual browser attempt returned empty surfaces and unavailable `iab`;
-no tab/audio started and no visual criterion closed. Spike/Spiegel confirmed
-the retained musical reference stops; the older 256.192-second guarded render
-is already queued and was not duplicated. Its different mechanism cannot inherit
-the saved 20-second After judgment.
-
-Selected [continuity_05](TODO/NS-5_continuity_05.md) AC1–4: connect the preferred
-source-successor mechanism to long playback, whose job/worker adapters explicitly
-rejected/omitted it despite existing core support. Deliverable: one explicit
-live choice, shared native session, retained preparation and source-bound excerpt.
-Close on native replay/bounds/cancel/lineage and actual pas2js consumer checks;
-stop on token/source drift, retraining/fallback, false parent or growing receipts.
-No scientific tuning, source acquisition or WFC dependency edit was selected.
-
-Spike owns jobs/preflight, Spiegel owns the live UI, Big Boss owns worker,
-reference integration and final judgment. AC1–4 now pass mechanical checks:
-complete two-minute live replay, every sample of matched-clock 20-second
-finite/live output, cancelled cold-session journal/model reuse, a 24-hour plan
-with only 25 seconds rendered before Stop, later excerpt clocks/original ranges
-and damaged-journal failure before audio. Ordinary and sparse-live regressions
-pass, all with zero leaks. Independent combined native QA and repaired UI QA
-pass. One UTF-8 UI corruption submission failed; its evidence and successful
-second submission/21-check pas2js DOM result are retained in the task. The final
-single-excerpt continuity-question metadata passes native publication and
-independent source review; no actual browser verdict is inferred.
-
-The fixed QA slot served the repaired UI and exact excerpt references on
-isolated authored data, then closed. The stable slot now matches all fourteen
-frozen artifacts and responds over LAN HTTPS. Guarded restart found no pending
-job/worker; all 5,950 preexisting operator JSON/JSONL hashes remain unchanged.
-Private audio/responses were not changed and no QA browser/audio remains.
-New evidence stays under E-drive `build/tests/runs/live-successor-20261027*`.
-Maintained native and DOM check entry points are registered in the build scripts.
-
-AC5 desktop/narrow playback remains open, so the new task stays in TODO.
-**54 open /56 DONE (110 total); 52.45 credited /47.55 remaining.** No new musical
-judgment or accepted-task credit. The criterion-closing delivery resets the
-consecutive nonclosing delivery count to zero; all scientific stop counters
-remain unchanged. The main musical path still needs the independent references
-below. Long playback is now available for operator exploration; it does not
-require repeating the already answered short comparison.
-
-## Primary analysis portability accepted - 2026-10-27
-
-Selected batch: [portability_01](TODO/DONE/NS-6_portability_01.md), its three
-engineering criteria. Deliverable: shared primary hash/WAV/analysis callbacks
+Development repairs retained in task notes/evidence: excessive leg…1181 tokens truncated…alysis callbacks
 executing natively and in pas2js, plus a bounded cooperative host adapter.
 Closing evidence: unchanged bytes/ownership and features, callback aborts,
 actual target execution, native throughput and yielding/cancellation/failure

@@ -3,9 +3,14 @@
 [Project](../PROJECT.md) · [Assessment](CODEBASE-ASSESSMENT.md) ·
 [Tasks](TODO/README.md) · [Work](WORK.md)
 
-## Named-voice publication candidate — 2026-10-28
+## Qualified named-voice publication — 2026-10-28
 
 [Parent04](TODO/NS-6_observability_04.md) still owns this retained component.
+Exact source `96f5bcb` passes [CI473](https://github.com/mr-highball/pythian/actions/runs/40799873864):
+maintained integration15m1s/extracted40s, native job16m6s. Both clean exact native
+packages pass107/159 owned units and120/280 inventory hashes. This qualifies the
+named-voice component only; delivery nonclosing0→1, with parent/task counts and
+musical completion unchanged.
 `TryGenerate` and `TryRegenerate` accept optional borrowed progress. The
 existing WFC commit guard now performs original-weight independent musical/path
 proof, generated-data capture, detached caller copies and committed edit copies
@@ -38,7 +43,7 @@ Checked Win32/Win64 and actual pas2js each pass 400,179 checks, 212 original
 abort/retries and 198,118 callbacks, including 22 explicit coverage assertions.
 The initial checked/leak-traced Win64 execution passes those same 212 cases and
 400,157 checks with zero leaks; final Win64 adds the coverage assertions without
-heap tracing. Exact publication/extracted integration remains pending.
+heap tracing. Exact publication/extracted integration passes at96f5bcb/CI473.
 Tests cover original EAudio/other caller exception identity,
 start/interior/final and post-capture solver aborts, prior outputs and accepted
 state, unrelated pending edits/preferences, immutable input models, same-session

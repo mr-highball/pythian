@@ -106,6 +106,19 @@ Naming a task or narrowing a component does not reset that count.
 
 **Dev Notes:**
 
+- 2026-10-28, Big Boss: named-voice publication is qualified at exact96f5bcb
+  after [CI473](https://github.com/mr-highball/pythian/actions/runs/40799873864),
+  integration15m1s/extracted40s and clean native core/full packages. Native32,
+  native64 and actual pas2js pass400179checks/212 original abort-retries/
+  198118callbacks, frozen three-seed music and zero native heap leaks. This is
+  a component, not whole AC1/AC2: nonclosing0→1, no task move or credit. The next
+  explicitly selected component consolidates segment generation/copy/join and
+  ordinary stream cursor publication; duration consumes that same solver but
+  full duration/scheduler/operator observation remains open. Frozen/current
+  original native stream/duration controls pass; new abort/replay qualification
+  is pending. Reassess after that second nonclosing component. Earlier candidate
+  notes preserve their original stages rather than overriding this qualification.
+
 - 2026-10-28, Big Boss: named-voice publication is a local candidate under the
   existing graph guard. Generate/selective capture, detached output and edit
   snapshots precede graph acceptance; replacement uses a private candidate and
@@ -121,7 +134,7 @@ Naming a task or narrowing a component does not reset that count.
   open for metadata/model copies, streams/duration and operator forwarding;
   no task move, credit or entry0 counter reset. Evidence uses dedicated E-drive
   voice-publication-20261028-boss build/tests/runs roots;
-  [scope and evidence](../OBSERVABILITY.md#named-voice-publication-candidate--2026-10-28).
+  [scope and evidence](../OBSERVABILITY.md#qualified-named-voice-publication--2026-10-28).
 
 - 2026-10-28, Big Boss: generic voice prerequisite17 and primary portability07–10
   are accepted at Pythiand370723/WFCc4e7569 after all five upstream CI56 jobs,
