@@ -6,7 +6,7 @@
 Accepted zero-credit usability repairs: [training choices and playback](DONE/NS-6_studio_19.md),
 [tabbed workflow and help](DONE/NS-6_studio_18.md).
 
-Updated 2026-10-28. **53 open / 87 accepted tasks.** The user authorized a new
+Updated 2026-10-28. **52 open / 88 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **52.45 current / 47.55 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -40,8 +40,8 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 50 | 70% | 1 | 30 | 4.50 |
 | [NS-5 - User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 17 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 15 | 46 | 4.60 |
-| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **53** | Goal points are not summed across goals | **47.55** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 14 | 46 | 4.60 |
+| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **52** | Goal points are not summed across goals | **47.55** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -49,14 +49,15 @@ hours or effort estimates. See the [basis and rationale](../REBALANCE-2026-09-29
 
 ## Selection and actual blockers
 
-New required zero-credit [portable duration consumer11](NS-6_portability_11.md):
-actual pas2js compilation reaches an unchanged primary bus MaxSingle reference.
-Shared segment/cursor consolidation passes native frozen replay and actual
-portable ordinary streams, but full duration qualification is blocked there.
-Counts53 open/87 DONE/140 total, NS6 15 open;52.45/47.55 unchanged. This second
-nonclosing batch takes1→2; mandatory reassessment selects the actual consumer
-prerequisite while preserving stopped musical/reference families. Names and
-handoffs do not reset the count.
+Accepted zero-credit [portable duration consumer11](DONE/NS-6_portability_11.md)
+at37ba12a/[CI476](https://github.com/mr-highball/pythian/actions/runs/40808920670):
+checked Win32/Win64 and actual pas2js, every-frame PCM/plan comparison, scalar
+extrema/failure/reset, maintained integration and clean extracted core/full
+consumers pass. The demonstrated primary MaxSingle gap is repaired through the
+existing IEEE-754 boundary. Counts52 open/88 DONE/140 total, NS6 14 open;
+52.45/47.55 unchanged. Whole task closure resets delivery nonclosing2→0.
+Parent04 retains full duration/scheduler, audio-session, metadata and operator
+forwarding obligations. Musical/reference families remain stopped.
 
 Accepted zero-credit prerequisites: [generic voice preparation/proof17](DONE/NS-6_observability_17.md)
 and primary [UTF-8 admission07](DONE/NS-6_portability_07.md),
@@ -395,7 +396,6 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 
 | Task / primary outcome | Goal points | Overall points | Current readiness |
 | --- | ---: | ---: | --- |
-| [NS-6_portability_11](NS-6_portability_11.md) — Execute the actual duration synthesis consumer portably | 0 | 0.00 | Native/actual pas2js scalar and every-frame PCM gates pass locally; exact published integration/packages pending |
 | [NS-6_studio_21](NS-6_studio_21.md) — Background recovery and long-source learning | 0 | 0.00 | Deployed; actual browser acceptance remains |
 | [NS-6_studio_22](NS-6_studio_22.md) — Original/generated listening comparison | 0 | 0.00 | Deployed for review; native/DOM checks pass, actual browser acceptance remains |
 | [NS-6_observability_04](NS-6_observability_04.md) — Remaining provider/batch operations and operator monitoring | 0 | 0.00 | Native inference/operator AC3 accepted; retained session/capture/stream/publication AC1 and batch AC2 remain |

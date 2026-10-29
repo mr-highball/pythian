@@ -3,7 +3,7 @@
 [Project](../PROJECT.md) · [Assessment](CODEBASE-ASSESSMENT.md) ·
 [Tasks](TODO/README.md) · [Work](WORK.md)
 
-## Shared sequence and duration consumer: locally qualified candidate — 2026-10-28
+## Qualified shared sequence and portable duration consumer — 2026-10-28
 
 Shared stream/segment/copy/join and finite forwarding pass 339,013 checks,
 258 original abort/retries and 211,673 callbacks on checked native Win32/Win64
@@ -21,7 +21,12 @@ raw PCM/plan replay keeps its frozen1,121,765 bytes/SHAe91b9ab8...c19af. Native
 heap-traced exits have zero leaks. Original bus/scheduler/duration and finite
 capture129850/52 controls pass. Portable sequence replay only needs Boolean
 header display-case normalization; opaque tokens and states are untouched.
-Exact source publication, extracted packages and downstream CI remain pending.
+Exact source37ba12a passes maintained integration15m27s and extracted consumers38s
+in [CI476](https://github.com/mr-highball/pythian/actions/runs/40808920670).
+Both clean exact Win64 packages pass: core107 owned/120 inventory hashes,
+full159/280. [Portability11 — DONE](TODO/DONE/NS-6_portability_11.md) records
+all five criteria and prerequisite acceptance. Delivery nonclosing2→0;
+counts52 open/88 DONE/140 total, NS6 14 open;52.45/47.55 unchanged.
 This closes no parent criterion and earns no musical credit.
 
 The current parent04 candidate consolidates private segment generation and
@@ -37,11 +42,12 @@ streaming passes after a fixture-only StdErr/Halt wrapper repair. The initial
 actual duration compile exposed native-only MaxSingle references in primary
 bus and scheduled clip output. Both candidate sites now reuse the existing
 primary IEEE-754 limit, and actual pas2js executes the original duration controls.
-[Portability11](TODO/NS-6_portability_11.md) owns the scalar and every-frame
-cross-target evidence above; exact published qualification remains pending.
+[Portability11](TODO/DONE/NS-6_portability_11.md) owns the qualified scalar and
+every-frame cross-target evidence above.
 No full duration/scheduler/operator observation is claimed.
-At this second nonclosing batch, delivery1→2 and mandatory reassessment selects
-the missing portable consumer. Musical references, credit and stops are unchanged.
+At the original prerequisite stop, delivery1→2 triggered mandatory reassessment
+and selected the missing portable consumer. Its full closure is recorded above;
+musical references, credit and scientific stops are unchanged.
 
 ## Qualified named-voice publication — 2026-10-28
 

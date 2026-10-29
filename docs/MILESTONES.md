@@ -5,16 +5,20 @@
 
 ## North-star assessment
 
-Current candidate: shared segment/cursor cancellation and portable duration local
-gates pass on checked Win32/Win64 and actual pas2js. The every-frame comparison
-checks140000 channel samples and exact full plans under the unchanged1e-9 limit;
-scalar extrema/failure/reset and258 original abort/retries pass. Exact source
-publication, packages and CI remain pending, so portability11 stays open.
-Nonclosing2/reassessment,53 open/87 DONE/140 total and52.45/47.55 are unchanged.
+Current acceptance: [portable duration consumer11 — DONE](TODO/DONE/NS-6_portability_11.md)
+is qualified at37ba12a/[CI476](https://github.com/mr-highball/pythian/actions/runs/40808920670).
+Maintained integration15m27s/extracted consumers38s and clean exact Win64 core/full
+packages pass. Checked Win32/Win64 and actual pas2js preserve all original
+duration assertions; every140000 channel sample and both exact plans compare
+under the unchanged1e-9 limit. Shared segment/cursor cancellation also passes258
+original abort/retries. Counts52 open/88 DONE/140 total, NS6 14 open;
+52.45/47.55 unchanged. Whole task11 closure resets delivery nonclosing2→0.
+Parent04 remains open for full duration/scheduler, audio-session, metadata and
+maintained operator forwarding. No musical or physical-browser credit follows.
 
 
-The shared segment/stream batch stops at demonstrated primary
-[portable duration consumer11](TODO/NS-6_portability_11.md): actual pas2js rejects
+Historical prerequisite stop: the shared segment/stream batch stopped at primary
+[portable duration consumer11](TODO/DONE/NS-6_portability_11.md): actual pas2js rejected
 the unchanged bus MaxSingle reference. Native frozen sequence and70,000-frame
 duration replay remain exact; actual portable ordinary streams pass. New task11
 earns no credit. Delivery nonclosing1 to2 triggers mandatory reassessment, which
@@ -35,7 +39,7 @@ remains unmerged. [Voice17](TODO/DONE/NS-6_observability_17.md),
 Preserve CI470's cadence rejection and the repair that keeps the original
 retained1885 callbacks under the unchanged2000 bound.
 
-Current counts are **53 open /87 DONE /140 total**, NS6 15 open. Completion
+Current counts are **52 open /88 DONE /140 total**, NS6 14 open. Completion
 remains **52.45/47.55**, with no musical credit. Following entry2's explicit
 reassessment, retiring four obsolete mechanical source-review requests closes
 no authoring criterion (nonclosing2→3). The five fully qualified prerequisites
@@ -230,8 +234,8 @@ ecosystem adoption is unmeasured and is a required completion gate.
 | <a id="wav-02"></a><a id="wav-03"></a><a id="ns-3"></a>**NS-3 — Trustworthy musical learning from WAV** | 25% | 25 | Measurement foundation, Pascal observations/execution, qualified references/scoring, unknown/manual context, catalog and admitted-event bridge. | Independently accepted recorded context, notes, parts, harmony, groove and evolving sound: 19 tasks / 75 |
 | <a id="wfc-preferences"></a><a id="ns-4"></a>**NS-4 — Granular WFC layers and reusable blends** | 70% | 15 | Actual layers, typed controls, persistence, selective reuse, caller codecs/traits, bounded event/composition evidence and continuous native audio sessions. | Full recorded-provider workflow: 1 task / 30 |
 | <a id="wav-04"></a><a id="ns-5"></a>**NS-5 — User-defined styles that generate and blend usefully** | 14% | 20 | Bounded identity, maintained caller intake, raw corpus, journal, balance, listening packet and acoustic continuation; style-card AC1 only. | Grounded references, semantic scale, structure/continuity, useful one/many-recording and new-user styles, blends, source-continuity consumer integration: 17 tasks / 86 |
-| <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | 54% | 10 | Supported consumer contract, native checkpoint, exact-revision minimal core/caller-provider package, editor/producer queue, Studio setup/private corpora, bounded raw WFC jobs, effects, experimental capture/MIDI exploration, starting actions/navigation, verified large-library refresh, shared filter catalog, flexible bounded source workspace, delay/reverb with explicit tails, native streamed playback, shared microphone codec, guided operator teaching, shared corpus intake/text, primary analysis/synthesis portability, exact shared timing, connected import and offline native progress, repaired Linux corpus-text consumer, semantic archive/blend and pitch preparation callbacks, shared binary fields, retained wave-style and primary source-measurement callbacks, plus shared provider/context metadata primitives, owned layer construction and generic WFC bulk preparation/learning/solve observation, primary digest publication, scalar-preserving JSON, portable style evaluation, observable bulk JSON publication, shared decoder storage, native inference/corpus/auditor observation and shared sequence capture/finite generation and guarded retained-layer capture/copy observation, canonical UTF-8 admission, portable retained archives/streamed chord rendering and generic voice preparation/proof. | Studio iteration/conversion, phone HTTPS and metadata-only discovery, remaining retained-operation observability, full packages, actual outside use, physical LAN/full operator workflow, maintained support, ecosystem adoption and final handoff: 15 tasks / 46 |
-| **Total** | **52.45 weighted** | **100** | **87 accepted task records plus explicit baseline** | **53 open tasks / 47.55 weighted points** |
+| <a id="wav-05"></a><a id="ns-6"></a>**NS-6 — Independently usable library and delivery** | 54% | 10 | Supported consumer contract, native checkpoint, exact-revision minimal core/caller-provider package, editor/producer queue, Studio setup/private corpora, bounded raw WFC jobs, effects, experimental capture/MIDI exploration, starting actions/navigation, verified large-library refresh, shared filter catalog, flexible bounded source workspace, delay/reverb with explicit tails, native streamed playback, shared microphone codec, guided operator teaching, shared corpus intake/text, primary analysis/synthesis portability, exact shared timing, connected import and offline native progress, repaired Linux corpus-text consumer, semantic archive/blend and pitch preparation callbacks, shared binary fields, retained wave-style and primary source-measurement callbacks, plus shared provider/context metadata primitives, owned layer construction and generic WFC bulk preparation/learning/solve observation, primary digest publication, scalar-preserving JSON, portable style evaluation, observable bulk JSON publication, shared decoder storage, native inference/corpus/auditor observation and shared sequence capture/finite generation and guarded retained-layer capture/copy observation, canonical UTF-8 admission, portable retained archives/streamed chord rendering and generic voice preparation/proof. | Studio iteration/conversion, phone HTTPS and metadata-only discovery, remaining retained-operation observability, full packages, actual outside use, physical LAN/full operator workflow, maintained support, ecosystem adoption and final handoff: 14 tasks / 46 |
+| **Total** | **52.45 weighted** | **100** | **88 accepted task records plus explicit baseline** | **52 open tasks / 47.55 weighted points** |
 
 Arithmetic:
 `5×1 + 25×.90 + 25×.25 + 15×.70 + 20×.14 + 10×.54 = 52.45`.

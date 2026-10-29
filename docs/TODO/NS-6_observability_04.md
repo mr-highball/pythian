@@ -80,9 +80,9 @@ Naming a task or narrowing a component does not reset that count.
 
 **Blockers**
 
-- [Actual portable duration consumer11](NS-6_portability_11.md) — demonstrated
-  primary bus MaxSingle compile failure; required for shared duration-path
-  qualification. Native and ordinary stream evidence does not bypass this gate.
+- [Actual portable duration consumer11 — DONE](DONE/NS-6_portability_11.md) —
+  accepted at37ba12a/CI476 with native/actual pas2js scalar and every-frame
+  duration evidence, maintained integration and clean extracted consumers.
 
 - [Generic independent-voice observation — DONE](DONE/NS-6_observability_17.md) —
   accepted at d370723/CI471 with linked portable prerequisites. Retained Pythian
@@ -109,6 +109,16 @@ Naming a task or narrowing a component does not reset that count.
   shared staging with exact original source-byte progress.
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss: source37ba12a is qualified by CI476 integration15m27s/
+  extracted38s and both clean exact Win64 packages. Shared segment/cursor
+  cancellation and detached copy/join pass339013checks/258 original abort-retries
+  on native32/64 and actual pas2js. The actual portable duration prerequisite11
+  closes all criteria; link/count updates reset delivery nonclosing2→0.
+  Full AC1/AC2 remain open: duration/scheduler, journal audio-session, other
+  retained metadata and maintained operator forwarding. Duration currently calls
+  the shared segment solver without forwarding an observer, so consolidation
+  alone does not establish full observation. No musical credit follows.
 
 - 2026-10-28, Big Boss: shared segment/cursor candidate passes339013checks/258
   original abort-retries/211673callbacks on checked Win32/Win64 and actual pas2js.

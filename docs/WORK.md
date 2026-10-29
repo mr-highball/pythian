@@ -12,6 +12,43 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: portable duration accepted; operator forwarding next — 2026-10-28
+
+Big Boss remains solo. The previous firewall-audit turn made no new progress
+toward the musical/core goal; the source stayed clean at37ba12a. Revalidation
+now confirms exact [CI476](https://github.com/mr-highball/pythian/actions/runs/40808920670)
+SUCCESS: native16m29s, maintained integration15m27s, extracted consumers38s.
+Both clean exact Win64 packages pass complete inventory and actual consumers:
+core107 owned/120 hashes, full159/280. Their recorded archive hashes match the
+current artifacts. All local jobs are terminal and joined.
+
+All five criteria and three prerequisites of
+[portable duration11 — DONE](TODO/DONE/NS-6_portability_11.md) pass. Checked
+Win32/Win64 and actual pas2js execute the original duration suite; every70000
+stereo frame and both full plans compare at the unchanged predeclared1e-9 limit.
+Native frozen raw PCM/plan bytes remain exact, scalar extrema/failure/reset
+pass192checks/48 cases per target and native exits have zero leaks. This is
+portable execution, not a physical-browser or musical verdict.
+
+The shared segment/cursor component also qualifies at37ba12a:339013checks/258
+original abort-retries preserve outputs, cursor/completion, immutable inputs and
+seeded retry. Consolidation removes the duplicate duration solver/copy/join, but
+duration's caller still passes no observer. Parent04 AC1/AC2 remain open for
+full duration/scheduler, journal audio-session, retained metadata and maintained
+operator forwarding. Counts52 open/88 DONE/140 total, NS6 14 open;
+52.45/47.55 unchanged. Whole required task11 closure resets delivery2→0.
+Scientific/reference stops and the existing unanswered long review remain.
+
+Next bounded selection must follow least-complete NS5's actual prerequisites;
+its grounded context/reference gates remain unchanged. The actual Studio audio
+session is a useful remaining parent04 consumer: it currently stops observation
+at ReadFrames calls, and the worker/status protocol discards unknown-total visits.
+Before implementation, name the criterion, deliverable, evidence and stop, and
+preserve the audio session's terminal-failure contract rather than claiming retry
+rollback where emitted audio cannot be recalled. No extra annotation request.
+No listener, firewall, QA browser/audio, private media or saved-answer changes.
+Earlier pending descriptions below retain their dated checkpoint scope.
+
 ## Current handoff: shared stream and portable duration local gates pass — 2026-10-28
 
 Big Boss remains solo. Previous goal turn made progress by consolidating segment
@@ -65,7 +102,7 @@ fails at unchanged src/pythian.bus.pas:420 (unavailable MaxSingle), while effect
 grains and resampling already reuse the existing primary IEEE-754 Float32 limit.
 
 Stop shared implementation at that distinct required gap. New
-[portable duration consumer11](TODO/NS-6_portability_11.md) owns primary boundary
+[portable duration consumer11](TODO/DONE/NS-6_portability_11.md) owns primary boundary
 reuse, actual native/pas2js duration execution, every-frame comparison declared
 at1e-9 absolute per channel, scalar-boundary failure/reset and exact consumers/CI.
 The candidate bus and scheduled clip guards now reuse the existing primary

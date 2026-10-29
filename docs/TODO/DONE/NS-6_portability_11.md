@@ -1,6 +1,6 @@
 # NS-6_portability_11 — Execute the actual duration synthesis consumer portably
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
@@ -11,11 +11,12 @@ rendering and resampling. The shared segment work did not cause these failures.
 Keep the compiler, scalar representation and algorithms shared. Verify the full
 consumer rather than stopping at a tiny compilation probe.
 
-Execution status: AC1–4 local gates pass on checked native Win32/Win64 and actual
-pas2js. Exact source publication, maintained integration and extracted packages
-remain required by AC5; this task stays open until those gates pass.
-Next deliverable: primary boundary reuse and executed duration rendering with
-future edits, rollback, owned models and portable numerical evidence.
+Execution status: **Accepted 2026-10-28** at exact source
+`37ba12a9a59ba7ac0921d5e6ee59929745ebb2a2` after checked native Win32/Win64,
+actual pas2js, clean extracted core/full packages and downstream
+[CI476](https://github.com/mr-highball/pythian/actions/runs/40808920670).
+Delivered: primary boundary reuse and executed duration rendering with future
+edits, rollback, owned models and portable numerical evidence.
 Closing evidence: original controls, frozen native PCM/plan identity, declared
 cross-target comparison, scalar boundary controls, clean exact packages and CI.
 Stop on changed musical/search/timing policy, weakened bounds, increased
@@ -23,7 +24,7 @@ comparison tolerance, dependency edits or an unrelated required gap.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS.
 Completion credit: 0 additional. Parent
-[retained operations04](NS-6_observability_04.md) needs this actual portable
+[retained operations04](../NS-6_observability_04.md) needs this actual portable
 duration consumer before its shared stream component can be qualified. Native
 and ordinary chunk paths remain separately measurable. No musical credit follows.
 
@@ -61,11 +62,29 @@ and ordinary chunk paths remain separately measurable. No musical credit follows
 
 **Blockers**
 
-- [Primary synthesis portability — DONE](DONE/NS-6_portability_03.md).
-- [Exact shared timing — DONE](DONE/NS-6_portability_04.md).
-- [Shared streamed chord renderer — DONE](DONE/NS-6_portability_10.md).
+- [Primary synthesis portability — DONE](NS-6_portability_03.md).
+- [Exact shared timing — DONE](NS-6_portability_04.md).
+- [Shared streamed chord renderer — DONE](NS-6_portability_10.md).
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss: all AC1–5 and the three accepted prerequisites audited
+  against exact source37ba12a, maintained fixtures and retained execution logs.
+  CI476 succeeds: native16m29s, integration15m27s and extracted consumers38s.
+  Both clean Win64 ZIPs pass actual extracted consumers and all inventory hashes:
+  core107 owned/120 hashes, SHA256
+  `d072679c39665a94211814dcfb423aa7388ac04fac78a3af46fb5b535beebeda`;
+  full159/280, `bf256414b9fc1674da398d03b7a29f446fcaf0a01255354a03f42fd160f30725`.
+  AC1 reuses the primary IEEE-754 boundary in both actual renderers; AC2 preserves
+  all original duration assertions and exact frozen native PCM/plan bytes;
+  AC3 compares every140000 channel sample and both exact plans at the unchanged
+  predeclared1e-9 limit; AC4 exercises192 checks/48 scalar cases on all three
+  targets, ordinary native regressions and zero native leaks. Actual pas2js
+  execution is not browser/device responsiveness. No full duration/scheduler
+  observation or musical acceptance follows. Parent04 remains open.
+  Counts52 open/88 DONE/140 total, NS6 14 open;52.45/47.55 unchanged.
+  This whole required task closes delivery nonclosing2→0; scientific stops and
+  exposure counters remain. Earlier pending descriptions below are dated history.
 
 - 2026-10-28, Big Boss: local duration gates now pass on checked Win32/Win64 and
   actual pas2js. Every one of70,000 stereo frames (140,000 channel samples) and
