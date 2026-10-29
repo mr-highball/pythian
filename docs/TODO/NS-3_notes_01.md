@@ -8,7 +8,10 @@ Completion credit: 7 goal percentage points (1.75 overall points).
 Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
 Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
 
-Execution status (2026-09-29): **Stopped investigation; new evidence required**.
+Execution status (2026-10-29): **Distinct0.3 source identity qualified; native
+physical feasibility only**. All earlier stopped rules and recorded experiments
+remain stopped. A source-qualified candidate is not an accepted register path.
+The current shared-frontend prerequisite is [window01](NS-6_window_01.md).
 Next deliverable: A new identity observation must protect short/quiet/low notes and close the recorded development register gate. The 2026-09-28 odd/even blind rule proposed zero corrections and is rejected despite its physical feasibility result.
 Closing evidence and stop condition: Audio-derived predictions saved before reference scoring, unchanged waveform controls, >=98% precision and >=80% coverage per supported recording, then maintained consumer. No window/range/threshold variation of the stopped rule.
 Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
@@ -116,6 +119,21 @@ variation is authorized by the existing evidence.
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
 
 **Dev Notes:**
+
+- 2026-10-29, Big Boss: the distinct SwiftF0v0.3 training-exported and shipped
+  models match the declared135090-byte SHA256; the85120-byte training checkpoint
+  matches its declared identity too. Actual training/calibration code loads the
+  five named target corpora, with URMP separately classified for evaluation;
+  augmentation exposure is conservatively retained. This verifies publisher
+  source contracts, not training reproduction or per-recording disjointness.
+  Correctness confidence is neither calibrated98% precision nor note presence;
+  published aggregate metrics cannot replace our physical/register gates.
+  The private source manifest and assessment are in the project-owned E-drive
+  swift03-source-20261029-boss packet. No graph execution or new audio/scoring
+  occurred. Delivery nonclosing1→2 triggers reassessment: permit only one
+  prospectively frozen Pascal forward/physical candidate after shared window01,
+  preserving low/quiet/short/gap/mixture, ambiguity, coverage and blind-reference
+  requirements. No generic inference framework or stopped threshold variant.
 
 - 2026-10-29, Big Boss: source reassessment only, no model execution. The prior
   SwiftF0v0.2 training-exposure stop remains valid for those bytes. The publisher

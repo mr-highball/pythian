@@ -34,6 +34,12 @@ const
 type
   TFourierValues = array of Double;
 
+{ Periodic Hann coefficient at frame 0..count-1, with count 2..65536 (not
+  necessarily a power of two). The first coefficient is zero, and an even
+  count's midpoint is one. This is not the sample-centered grain fade: there
+  is no half-sample shift. Invalid coordinates raise EAudio. }
+function PeriodicHannWeight(const AFrame, AFrameCount: Integer): Double;
+
 { Complex radix-two transform, sizes 2..65536. Forward uses negative phase and
   no scaling; inverse uses positive phase and divides by N. Results detach from
   shared input arrays. Pass distinct real/imaginary variables (their buffers may
@@ -46,6 +52,16 @@ implementation
 uses
   Math,
   pythian.audio;
+
+function PeriodicHannWeight(const AFrame, AFrameCount: Integer): Double;
+begin
+  if (AFrameCount < 2) or (AFrameCount > MaximumFourierSize) or
+    (AFrame < 0) or (AFrame >= AFrameCount) then
+  begin
+    raise EAudio.Create('Periodic Hann requires count 2..65536 and a frame inside the period');
+  end;
+  Result := 0.5 - 0.5 * Cos(2 * Pi * AFrame / AFrameCount);
+end;
 
 procedure Fourier(var AReal, AImaginary: TFourierValues; const AInverse: Boolean);
 var

@@ -6,7 +6,7 @@
 Accepted zero-credit usability repairs: [training choices and playback](DONE/NS-6_studio_19.md),
 [tabbed workflow and help](DONE/NS-6_studio_18.md).
 
-Updated 2026-10-29. **53 open / 88 accepted tasks.** The user authorized a new
+Updated 2026-10-29. **54 open / 88 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **52.45 current / 47.55 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -40,8 +40,8 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 50 | 70% | 1 | 30 | 4.50 |
 | [NS-5 - User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 17 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 15 | 46 | 4.60 |
-| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **53** | Goal points are not summed across goals | **47.55** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 16 | 46 | 4.60 |
+| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **54** | Goal points are not summed across goals | **47.55** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -364,7 +364,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | [NS-3_groove_02](NS-3_groove_02.md) — Accept rhythmic phrasing on independent recordings | 3 | 0.75 | Dependency-blocked |
 | [NS-3_harmony_01](NS-3_harmony_01.md) — Deliver a recorded harmonic relationship provider | 3 | 0.75 | Dependency-blocked |
 | [NS-3_harmony_02](NS-3_harmony_02.md) — Accept harmonic learning on independent recordings | 3 | 0.75 | Dependency-blocked |
-| [NS-3_notes_01](NS-3_notes_01.md) — Resolve recorded pitch identity and register | 7 | 1.75 | Stopped investigation; new evidence required |
+| [NS-3_notes_01](NS-3_notes_01.md) — Resolve recorded pitch identity and register | 7 | 1.75 | Distinct0.3 source identity qualified; frozen native physical candidate only, recorded scoring stopped |
 | [NS-3_notes_02](NS-3_notes_02.md) — Resolve note presence, attacks and endings | 5 | 1.25 | Dependency-blocked |
 | [NS-3_notes_03](NS-3_notes_03.md) — Accept independent phrases and feed saved learning | 5 | 1.25 | Dependency-blocked |
 | [NS-3_notes_05](NS-3_notes_05.md) — Admit source-grounded note-presence evidence | 3 | 0.75 | Reference-blocked; source-screen sequence stopped |
@@ -412,6 +412,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | --- | ---: | ---: | --- |
 | [NS-6_studio_21](NS-6_studio_21.md) — Background recovery and long-source learning | 0 | 0.00 | Deployed; actual browser acceptance remains |
 | [NS-6_studio_22](NS-6_studio_22.md) — Original/generated listening comparison | 0 | 0.00 | Deployed for review; native/DOM checks pass, actual browser acceptance remains |
+| [NS-6_window_01](NS-6_window_01.md) — Shared periodic Hann primitive | 0 | 0.00 | Freeze actual consumers, consolidate primary implementation, then return to native pitch feasibility |
 | [NS-6_observability_18](NS-6_observability_18.md) — Truthful native Studio work transport | 0 | 0.00 | Native/source qualification at542d5cc/CI478 passes; actual browser UI remains required |
 | [NS-6_observability_04](NS-6_observability_04.md) — Remaining provider/batch operations and operator monitoring | 0 | 0.00 | Native inference/operator AC3 accepted; retained session/capture/stream/publication AC1 and batch AC2 remain |
 | [NS-6_adoption_01](NS-6_adoption_01.md) — Establish independent ecosystem adoption evidence | 15 | 1.50 | Supported releases + independent ecosystem evidence |

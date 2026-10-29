@@ -229,7 +229,7 @@ begin
   SetLength(LWeights, ASource.FrameCount);
   for LIndex := 0 to LSize - 1 do
   begin
-    LWindow[LIndex] := 0.5 - 0.5 * Cos(2 * Pi * LIndex / LSize);
+    LWindow[LIndex] := PeriodicHannWeight(LIndex, LSize);
   end;
   ReportWork(AProgress, 'separation_spectrum', wuFrames, 0, FPlan.AnalysisFrames);
   for LFrame := 0 to FPlan.AnalysisFrames - 1 do

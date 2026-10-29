@@ -317,7 +317,7 @@ begin
   SetLength(LBinBand, Length(LPower));
   for LIndex := 0 to LSize - 1 do
   begin
-    LWindow[LIndex] := 0.5 - 0.5 * Cos(2 * Pi * LIndex / LSize);
+    LWindow[LIndex] := PeriodicHannWeight(LIndex, LSize);
   end;
   for LBin := 0 to High(LBinPitch) do
   begin

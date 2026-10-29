@@ -12,6 +12,38 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: register source qualified; shared window local gates pass — 2026-10-29
+
+Big Boss remains solo. The last firewall-only turn made no musical/core progress;
+its saved fixed-path approval was verified without a rule or service change.
+The prior SwiftF0v0.3 source assessment resolves exact export/checkpoint identity
+and publisher-contract training/evaluation separation. It does not reproduce
+training or prove register accuracy. Delivery nonclosing1→2 requires reassessment:
+follow least-complete NS5's actual notes01 prerequisite, permitting only a
+prospectively frozen Pascal physical-feasibility candidate. Preserve all stopped
+rules, held-out sources and confidence-versus-presence distinctions.
+
+The demonstrated primary Hann duplication is now tracked by
+[window01](TODO/NS-6_window_01.md). Analysis and separation call the same portable
+periodic primitive; the sample-centered grain fade is unchanged. Before editing,
+checked Win32/Win64 captured283905 actual input/feature/band/separated-sample values
+per target. Both post-change2271240-byte packets are exact: native64 SHA256
+bba4d5405f039400237977f522e65f3ea0a1ec0eb9b53c8a6794da98e37e625a;
+native32 9a00d7d499e26ee4d8115c67b1b241d0c39e9c252dd6785e41f337083ee73cae.
+Both native targets and actual pas2js pass272688 independent analytic periodic
+window checks and all257 original portable analysis checks. Native original
+FFT/separation geometry, signal, stereo, ownership and rejection controls pass.
+All native exits report zero leaks. No whole-separation browser claim follows.
+
+Window01 stays open pending exact published qualification and an extracted core
+consumer. New task counts54 open/88 DONE/142 total, NS6 16 open;52.45/47.55
+unchanged. The required reassessment is recorded, not a counter reset or musical
+credit. New generated evidence stays in the project-owned E-drive window/source
+packets. No candidate forward, recorded scoring, third-party inference runtime,
+private recording/answer mutation, listener or browser/audio launch occurred.
+Next qualify this bounded primary prerequisite, then return to native physical
+feasibility under a prospective numerical/resource/ambiguity policy.
+
 ## Current handoff: native bridge qualified; browser and musical gates remain — 2026-10-29
 
 Big Boss remains solo. Exact source542d5cc43b28d454f2313e0931a9e618d84eccaa is
