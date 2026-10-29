@@ -106,6 +106,14 @@ Naming a task or narrowing a component does not reset that count.
 
 **Dev Notes:**
 
+- 2026-10-28, Big Boss: qualification-record commit5d2dcf6 accidentally consumed
+  a truncated WORK display. Restore its entire historical suffix from96f5bcb
+  and compare it exactly after newline normalization, retaining only the new
+  current handoff. No product code, criteria, private media or answer changes.
+  Future long-file edits must use bounded anchors against complete on-disk/Git
+  content, never a tool display that reports truncation. The repair diff is in
+  the sequence-stream-progress-20261028-boss run packet.
+
 - 2026-10-28, Big Boss: named-voice publication is qualified at exact96f5bcb
   after [CI473](https://github.com/mr-highball/pythian/actions/runs/40799873864),
   integration15m1s/extracted40s and clean native core/full packages. Native32,

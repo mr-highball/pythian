@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 91181)
-Total output lines: 5357
-
 # Current work record
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](REBALANCE-2026-09-29.md) ·
@@ -2664,7 +2661,79 @@ reviewed library forwarding/throttling and integration. No blocking defect or
 failed formal submission. Actual pas2js/JSDOM recovery/display passes 31;
 all four browser programs compile. DOM does not qualify actual browser/phone UI.
 
-Development repairs retained in task notes/evidence: excessive leg…1181 tokens truncated…alysis callbacks
+Development repairs retained in task notes/evidence: excessive legacy library
+notifications, omitted final refresh forwarding and overly generic original-file
+wording. The first root library-worker fixture exposed cwd/build staging and
+created one isolated D-drive stage. Its exact catalog-bound directory and all
+three file hashes were verified before moving it to E. Subsequent executable
+tests and the stable launch use E working directories. Historical D-drive
+evidence and fixed executable slots remain intact.
+
+The matched checked optimized service/worker and twelve web assets are deployed
+to the fixed stable slot. Guarded restart found no active/pending jobs; all 14
+staged hashes match, LAN HTTPS returns 200 and the served script contains the new
+import phases. All 5,951 preexisting private JSON/JSONL hashes are unchanged.
+No QA service, worker, browser or audio session remains. Evidence is retained
+under E-drive `build/tests/runs/import-progress-20261027-{boss,spike,spiegel}`;
+the root run manifest records frozen source/artifact identities and launch details.
+
+Task and incoming links move together with the ledgers: **53 open /57 DONE
+(110 total), 52.45 credited /47.55 remaining**; NS completions remain
+**100/90/25/70/14/54**. Delivery nonclosing-batch count remains **0** because
+this batch closed all import criteria. Musical source/model/tempo/key stops and
+their separate counters remain unchanged. The full goal stays active; actual
+browser and sustained musical acceptance remain open. Offline DSP and retained
+operation callbacks are the next ready observability work, not musical credit.
+
+## Long source-continuity playback delivered; browser gate open - 2026-10-27
+
+The preceding goal turn was progress: portability_01 was committed/pushed.
+The next actual browser attempt returned empty surfaces and unavailable `iab`;
+no tab/audio started and no visual criterion closed. Spike/Spiegel confirmed
+the retained musical reference stops; the older 256.192-second guarded render
+is already queued and was not duplicated. Its different mechanism cannot inherit
+the saved 20-second After judgment.
+
+Selected [continuity_05](TODO/NS-5_continuity_05.md) AC1–4: connect the preferred
+source-successor mechanism to long playback, whose job/worker adapters explicitly
+rejected/omitted it despite existing core support. Deliverable: one explicit
+live choice, shared native session, retained preparation and source-bound excerpt.
+Close on native replay/bounds/cancel/lineage and actual pas2js consumer checks;
+stop on token/source drift, retraining/fallback, false parent or growing receipts.
+No scientific tuning, source acquisition or WFC dependency edit was selected.
+
+Spike owns jobs/preflight, Spiegel owns the live UI, Big Boss owns worker,
+reference integration and final judgment. AC1–4 now pass mechanical checks:
+complete two-minute live replay, every sample of matched-clock 20-second
+finite/live output, cancelled cold-session journal/model reuse, a 24-hour plan
+with only 25 seconds rendered before Stop, later excerpt clocks/original ranges
+and damaged-journal failure before audio. Ordinary and sparse-live regressions
+pass, all with zero leaks. Independent combined native QA and repaired UI QA
+pass. One UTF-8 UI corruption submission failed; its evidence and successful
+second submission/21-check pas2js DOM result are retained in the task. The final
+single-excerpt continuity-question metadata passes native publication and
+independent source review; no actual browser verdict is inferred.
+
+The fixed QA slot served the repaired UI and exact excerpt references on
+isolated authored data, then closed. The stable slot now matches all fourteen
+frozen artifacts and responds over LAN HTTPS. Guarded restart found no pending
+job/worker; all 5,950 preexisting operator JSON/JSONL hashes remain unchanged.
+Private audio/responses were not changed and no QA browser/audio remains.
+New evidence stays under E-drive `build/tests/runs/live-successor-20261027*`.
+Maintained native and DOM check entry points are registered in the build scripts.
+
+AC5 desktop/narrow playback remains open, so the new task stays in TODO.
+**54 open /56 DONE (110 total); 52.45 credited /47.55 remaining.** No new musical
+judgment or accepted-task credit. The criterion-closing delivery resets the
+consecutive nonclosing delivery count to zero; all scientific stop counters
+remain unchanged. The main musical path still needs the independent references
+below. Long playback is now available for operator exploration; it does not
+require repeating the already answered short comparison.
+
+## Primary analysis portability accepted - 2026-10-27
+
+Selected batch: [portability_01](TODO/DONE/NS-6_portability_01.md), its three
+engineering criteria. Deliverable: shared primary hash/WAV/analysis callbacks
 executing natively and in pas2js, plus a bounded cooperative host adapter.
 Closing evidence: unchanged bytes/ownership and features, callback aborts,
 actual target execution, native throughput and yielding/cancellation/failure
