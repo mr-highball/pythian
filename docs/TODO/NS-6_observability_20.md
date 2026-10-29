@@ -52,6 +52,9 @@ wrapper-specific restriction, an existing fix or another required gap.
 
 **Blockers**
 
+- [Upstream native build qualification01](NS-6_wfc-build_01.md) — macOS CI57
+  exceeded its unchanged30m limit twice; no further same-source retry or pin
+  adoption. Resolve the demonstrated build prerequisite on its own WFC branch.
 - [Portable passage ownership15 — DONE](DONE/NS-6_portability_15.md) — actual portable
   event-corpus qualification exposed a pre-existing wrong-source PCM failure.
   Its primary repair, exact oracle and extracted consumers qualify at384c6de/CI495.
@@ -60,6 +63,16 @@ wrapper-specific restriction, an existing fix or another required gap.
 
 **Dev Notes:**
 
+- Upstream build prerequisite01 now has candidate d4d30b1 on
+  `codex/pythian-native-build-reuse`, retaining the exact5d69462 model/clone
+  implementation and tests. Its native cache controls and command parity pass;
+  all-five CI58 is live. Keep vendorc4e7569 and held Pythian changes until the
+  exact upstream gate passes, then require this task's downstream/extracted gates.
+- 2026-10-29, Big Boss: macOS CI57's one unchanged retry is terminal
+  CANCELLED30m20s. Both attempts and all local successful clone work remain;
+  no pin is adopted. Follow linked upstream build01 before further integration.
+  Passage15's real whole-task acceptance atCI495 resets delivery nonclosing to0;
+  this new prerequisite grants no credit or reset. No scientific family reopens.
 - 2026-10-29, Big Boss SOLO: bounded domain-neutral required-clone consumer
   fails compilation against c4e7569 because the observable Clone entry point is
   absent. This demonstrates the missing proposed capability, not a broken

@@ -12,6 +12,57 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: repeated upstream build timeout isolated; fresh-cache prerequisite selected — 2026-10-29
+
+Previous goal turn made PROGRESS: passage15 accepted at384c6de/CI495 and
+docs28cc3ab pushed. Big Boss remains SOLO. This continuation confirms upstream
+WFC57 attempt2 terminal CANCELLED30m20s after attempt1's30m21s. No third unchanged
+retry or pin adoption is selected. The failure is an engineering qualification
+gate, not a musical rejection or a demonstrated failed conformance assertion.
+
+[New required WFC build01](TODO/NS-6_wfc-build_01.md) owns the actual prerequisite
+before [clone20](TODO/NS-6_observability_20.md). The first timeout ends during
+primary unit compilation. The second canceled build line70451 is beyond GitHub's
+inline-log limit; preserve that limit on the evidence claim. Its raw-log download
+stalled the old browser tab, and a fresh tab in the same authenticated browser
+restores inspection without changing browser/security settings or user tabs.
+The existing expansion checkout85d19fe has the same65 forced rebuilds; no
+existing build/cache/native fix branch was found. The reviewed clone tree has
+191 Pascal unit files, no duplicate basenames and no command-level per-consumer
+defines. No dependency source or runtime algorithm is patched in Pythian.
+
+The user was notified before opening separate WFC branch
+`codex/pythian-native-build-reuse` from5d69462. Deliverable: a fresh isolated unit
+cache for each shell-build invocation, then primary compiler reuse across its
+consumers. Preserve all programs, runtime assertions, strict flags, error
+propagation, inventory/package checks and the original30-minute CI limit.
+Closing evidence requires actual checked native32/64 cache reuse and unchanged
+conformance, complete command inventory parity and all five exact upstream jobs.
+Stop on a compiler/profile collision, skipped check, changed result or another
+required gap. Do not launch local fixture listeners from new executable paths.
+
+The candidate is now clean/pushed atd4d30b120ee6ac6741387b206d971bb2877896aa.
+Only the shell build and its two existing build guides change. Bash syntax and
+complete command-inventory parity pass; no workflow, budget, Pascal or fixture
+source is changed. Checked native32/64 each build a fresh original sequence
+consumer and then reuse the primary sequence PPU for the complete clone consumer,
+with unchanged PPU hash/time. Both execute120 original and788662 learning/clone
+checks,28 learning aborts/318 clone aborts, and have clean focused heaps.
+[Exact CI58](https://github.com/mr-highball/wfc/actions/runs/40974532515) is live;
+all five jobs remain required. This is new source qualification, not another
+unchanged retry. No upstream acceptance or Pythian pin adoption is claimed yet.
+
+Counts54→55open/95DONE/150 total, NS6 17open;52.45/47.55 unchanged. Delivery
+nonclosing0 remains while this required batch is in progress. Branch creation
+and diagnosis grant no credit or counter reset. All musical/reference stops,
+pending current listening questions, saved answers and complete history remain.
+The main checkout retains clone20's reviewed source and tests; vendor stays
+acceptedc4e7569 until the upstream and downstream gates pass. Preserve WFC's
+primary expansion checkout/attachments and the clean clone branch/worktree.
+Private E-drive wfc-native-build-20261029-boss retains PLAN and forthcoming logs.
+No service, firewall, browser audio, inference, rendering or helper changed.
+Full goal remains active/unachieved. Complete earlier WORK history follows.
+
 ## Current handoff: portable passage repair accepted at exact CI495 — 2026-10-29
 
 Previous goal turn was a VERIFIED WAIT on the same live CI495 and WFC57 retry;
