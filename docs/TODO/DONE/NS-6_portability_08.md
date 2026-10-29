@@ -1,21 +1,21 @@
 # NS-6_portability_08 — Use the primary binary codec in tempo evidence
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
+
+Original gap (repaired at the accepted checkpoint below):
 
 The actual portable voice consumer reaches primary tempo-evidence serialization
 and fails on native-only Move. Its integer fields also retain private copies of
 the already accepted little-endian primitives. Consolidate those fields into
 `pythian.binary` and replace raw memory copies with portable byte operations.
 
-Execution status: demonstrated prerequisite of
-[voice observation17](NS-6_observability_17.md)'s portable consumer, also required
-by [caller-codec portability07](NS-6_portability_07.md)'s full consumer gate.
-Deliverable: the same tempo-evidence codec executable on native/pas2js, with
-unchanged canonical bytes, digest, source/selection identity and malformed-input
-proof. Stop on format/clock/selection changes, duplicated binary algorithms or
-another distinct required gap. Big Boss works solo.
+Execution status: **Accepted 2026-10-28** at Pythian
+`d37072302436b3b8b2e95f6bab1ac2b0571afd5f`, after exact published integration,
+clean extracted core/full consumers and the native/actual pas2js gates below.
+All criteria and prerequisites pass at this engineering scope. No musical,
+browser/device or independent-use credit follows.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit:0 additional.
 This closes no scientific tempo inference or musical acceptance.
@@ -34,11 +34,30 @@ This closes no scientific tempo inference or musical acceptance.
 
 **Blockers**
 
+All prerequisites below are accepted. Their discovery descriptions are historical.
+
 - [Retained archive portability](NS-6_portability_09.md) — the codec's own native/
   portable fixture passes, but the full voice consumer reaches this separate gap.
-- [Shared primary binary fields — DONE](DONE/NS-6_binary-codec_01.md).
+- [Shared primary binary fields — DONE](NS-6_binary-codec_01.md).
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss accepts all criteria after exact
+  [CI471](https://github.com/mr-highball/pythian/actions/runs/40789537394) succeeds: native job
+  12m43s, maintained integration 11m39s and extracted consumers 40s. Clean exact Win64 core 107
+  owned/120 inventory and full 159 owned/280 inventory packages pass. Native passing logs report
+  zero leaks. Full named-voice construction/generation/retry passes 13939 checks/10 original
+  abort-retries/13396 callbacks on Win32/Win64 and actual pas2js. Win32/Win64 and actual pas2js
+  preserve the frozen 263-byte artifact and SHA256
+  b46b93a0a903db930cc06e91c04f385b32b87b987114b095a351f538af0c5040.
+  Selected/unknown/observed/override, malformed geometry/status/checksum/budget and detached-copy
+  controls pass. UInt32 fields and fixed ASCII digest fields share primary implementations; source
+  and tempo policies are unchanged. Preserve the rejected compiles and CI470 cadence failure; its
+  repair retains exactly 1885 model/profile callbacks under the unchanged 2000 bound, reporting
+  primary measurement 1078 and UTF-8 160 separately. Both native targets pass 57 checks with zero
+  leaks. Evidence: dedicated E-drive archive-portability-20261028-boss,
+  voice-integration-20261028-boss and wfc-voice-progress-20261028-boss packets. Incoming
+  links/accounting move together; completion remains 52.45, with no scientific counter reset.
 
 - 2026-10-28, Big Boss: digest fields now share primary pythian.hash's fixed
   ASCII helper with the context/style archives. Current native Win64 and actual

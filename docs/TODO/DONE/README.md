@@ -3,7 +3,7 @@
 [Task index](../README.md) · [Task flow](../../TASKFLOW.MD) ·
 [Milestones](../../MILESTONES.md) · [Current credit basis](../../REBALANCE-2026-09-29.md#current-credit-basis)
 
-All **82** records retain their acceptance evidence and dates. Points below
+All **87** records retain their acceptance evidence and dates. Points below
 use the user-authorized 2026-09-29 outcome rebase; older amounts in evidence
 narratives are historical. No task was accepted by this reassessment.
 The [2026-09-30 Studio allocation](../../OPERATOR-STUDIO.md#allocation-and-ownership)
@@ -16,6 +16,11 @@ Shared filter catalog and flexible source workspace add 3 NS-6 / 0.30 overall.
 
 | Accepted task | Date | Current goal credit | Current overall credit |
 | --- | --- | ---: | ---: |
+| [NS-6_observability_17](NS-6_observability_17.md) — Generic voice preparation/proof and caller graph guard | 2026-10-28 | 0 NS-6 | 0.00 |
+| [NS-6_portability_10](NS-6_portability_10.md) — Shared streamed chord rendering on pas2js | 2026-10-28 | 0 NS-6 | 0.00 |
+| [NS-6_portability_09](NS-6_portability_09.md) — Primary UTF-8 conversion and portable retained archives | 2026-10-28 | 0 NS-6 | 0.00 |
+| [NS-6_portability_08](NS-6_portability_08.md) — Primary binary fields in portable tempo evidence | 2026-10-28 | 0 NS-6 | 0.00 |
+| [NS-6_portability_07](NS-6_portability_07.md) — Canonical caller-codec UTF-8 byte validation | 2026-10-28 | 0 NS-6 | 0.00 |
 | [NS-6_observability_16](NS-6_observability_16.md) — Generic sequence capture and finite generation observation | 2026-10-28 | 0 NS-6 | 0.00 |
 | [NS-6_observability_15](NS-6_observability_15.md) — Retained inference corpus and native auditor progress | 2026-10-28 | 0 NS-6 | 0.00 |
 | [NS-6_observability_14](NS-6_observability_14.md) — Generic WFC solve progress and cancellation | 2026-10-28 | 0 NS-6 | 0.00 |

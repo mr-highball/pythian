@@ -1,8 +1,10 @@
 # NS-6_portability_07 — Validate caller-codec UTF-8 bytes on every target
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
+
+Original gap (repaired at the accepted checkpoint below):
 
 Actual pas2js compilation of the named-voice preparation consumer fails in
 `TProviderCodecAdmission.DecodeChoice`: native `Move` converts the caller's
@@ -10,12 +12,11 @@ canonical UTF-8 payload bytes into a native string before validation. A byte
 array is not UTF-16 text on the browser target. Fix this in the primary shared
 text contract and admission path, preserving payload bytes and original policy.
 
-Execution status: demonstrated prerequisite of
-[voice observation17](NS-6_observability_17.md)'s downstream portable gate.
-Deliverable: reusable canonical UTF-8 byte validation in `pythian.text`, using
-the same primary UTF-8 scalar decoder as native text, and actual caller-codec
-admission on native/pas2js. Stop on host transcoding, duplicated Unicode rules,
-weakened admission budgets/canonicality, or another distinct required gap.
+Execution status: **Accepted 2026-10-28** at Pythian
+`d37072302436b3b8b2e95f6bab1ac2b0571afd5f`, after exact published integration,
+clean extracted core/full consumers and the native/actual pas2js gates below.
+All criteria and prerequisites pass at this engineering scope. No musical,
+browser/device or independent-use credit follows.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit:0 additional.
 Big Boss works solo. This repair adds no musical or independent-use acceptance.
@@ -36,11 +37,31 @@ Big Boss works solo. This repair adds no musical or independent-use acceptance.
 
 **Blockers**
 
+All prerequisites below are accepted. Their discovery descriptions are historical.
+
 - [Portable tempo-evidence codec](NS-6_portability_08.md) — the actual voice
   consumer next reaches a separate native Move; shared byte checks already pass.
-- [Shared primary scalar text — DONE](DONE/NS-6_metadata_01.md).
+- [Shared primary scalar text — DONE](NS-6_metadata_01.md).
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss accepts all criteria after exact
+  [CI471](https://github.com/mr-highball/pythian/actions/runs/40789537394) succeeds: native job
+  12m43s, maintained integration 11m39s and extracted consumers 40s. Clean exact Win64 core 107
+  owned/120 inventory and full 159 owned/280 inventory packages pass. Native passing logs report
+  zero leaks. Full named-voice construction/generation/retry passes 13939 checks/10 original
+  abort-retries/13396 callbacks on Win32/Win64 and actual pas2js. Win32/Win64 and actual pas2js pass
+  340 checks/3 original abort-retries/178 callbacks for original canonical payload bytes, including
+  BMP/astral extremes, malformed/overlong/surrogate/truncated forms, empty/NUL and exact caps.
+  Native scalar 73, portable 65 and original native caller-codec 231 controls remain qualified.
+  Admission retains reservations, unknown flags, canonical tokens, detached results, original
+  exceptions and same-context retry without renewing spent budgets. Preserve the rejected compiles
+  and CI470 cadence failure; its repair retains exactly 1885 model/profile callbacks under the
+  unchanged 2000 bound, reporting primary measurement 1078 and UTF-8 160 separately. Both native
+  targets pass 57 checks with zero leaks. Evidence: dedicated E-drive
+  archive-portability-20261028-boss, voice-integration-20261028-boss and
+  wfc-voice-progress-20261028-boss packets. Incoming links/accounting move together; completion
+  remains 52.45, with no scientific counter reset.
 
 - 2026-10-28, Big Boss: linked09/10 repairs now permit the full actual portable
   named-voice preparation consumer to execute13939 checks/10 original aborts/

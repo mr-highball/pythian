@@ -6,7 +6,7 @@
 Accepted zero-credit usability repairs: [training choices and playback](DONE/NS-6_studio_19.md),
 [tabbed workflow and help](DONE/NS-6_studio_18.md).
 
-Updated 2026-10-28. **57 open / 82 accepted tasks.** The user authorized a new
+Updated 2026-10-28. **52 open / 87 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **52.45 current / 47.55 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -40,8 +40,8 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 50 | 70% | 1 | 30 | 4.50 |
 | [NS-5 - User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 17 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 19 | 46 | 4.60 |
-| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **57** | Goal points are not summed across goals | **47.55** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 14 | 46 | 4.60 |
+| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **52** | Goal points are not summed across goals | **47.55** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -49,42 +49,30 @@ hours or effort estimates. See the [basis and rationale](../REBALANCE-2026-09-29
 
 ## Selection and actual blockers
 
-The full portable voice compile now reaches a distinct primary streamed chord
-renderer type/counter boundary. Follow [portability10](NS-6_portability_10.md),
-then return to archive09 and voice17. Shared UTF-8 conversion passes2803/12 on
-native/actual pas2js; native context bytes retain the frozen hash. These are
-engineering scopes, with no musical acceptance. Counts57/82/139, NS6 19 open;
-52.45/47.55 and delivery entry2 remain unchanged.
+Accepted zero-credit prerequisites: [generic voice preparation/proof17](DONE/NS-6_observability_17.md)
+and primary [UTF-8 admission07](DONE/NS-6_portability_07.md),
+[tempo08](DONE/NS-6_portability_08.md),
+[retained archives09](DONE/NS-6_portability_09.md) and
+[streamed renderer10](DONE/NS-6_portability_10.md). Exact Pythiand370723/CI471,
+WFCc4e7569/all five CI56 jobs, clean native packages and actual portable
+consumers pass. Preserve rejected compiles/CI470 and all original semantics.
+Counts52 open/87 DONE/139 total, NS6 14 open;52.45/47.55 unchanged. Real closure
+resets delivery3→0 after the separately reassessed source-queue cleanup closed
+no authoring criterion. No scientific counter is reset.
 
-The next actual portable compile rejects retained context archive's assumed
-UTF8String type. Source inspection also finds native text/digest copies and
-style stream signatures. Follow [archive portability09](NS-6_portability_09.md)
-before expanding voice scope. Tempo evidence now executes on native/pas2js with
-the frozen263-byte artifact/hash. WFCc4e7569 passes all five upstream CI56 jobs;
-the Pythian candidate still needs downstream portable/extracted qualification.
-Current counts56/82/138, NS6 18 open;52.45/47.55 and delivery entry2 stay.
+NS5 remains least complete at14%. Representative vocabulary AC2–5 still require
+verified multi-recording references and admitted context; context/activity
+reference stops remain. The saved short After preference is preserved, and the
+separate long repetition review is pending. Four obsolete source mechanics
+requests are archived and retired, with saved source/listening answers intact;
+no new segmentation or marker correction is requested from the operator.
 
-The next actual portable compile reaches tempo evidence's native memory copies.
-Follow [binary portability08](NS-6_portability_08.md) through the accepted primary
-binary fields, then return to07/17. Shared UTF-8 admission and native voice
-cancellation checks pass at their own scopes. Counts55/82/137, NS6 17 open;
-completion52.45/47.55 and delivery entry2 remain unchanged.
+The next ready engineering owner is [retained operations04](NS-6_observability_04.md):
+named-voice and stream capture/copy/publication plus maintained operator forwarding.
+Use existing guarded graph acceptance before adding cancellable proof/copy work.
+The newly accepted generic preparation does not qualify those retained paths.
+Earlier dated acceptance notes below retain their original checkpoint counts.
 
-Actual named-voice pas2js compilation exposes native-only payload conversion in
-caller-codec admission. Follow [portable UTF-8 byte validation07](NS-6_portability_07.md),
-then return to [generic voice observation17](NS-6_observability_17.md)'s downstream
-gate. WFCc4e7569 is published on codex/pythian-voice-progress, exact CI56 live;
-Pythian's explicit candidate gitlink is not accepted yet. No broader voice scope
-is added. Current counts54/82/136, NS6 16 open;52.45/47.55 and delivery entry2 stay.
-
-New zero-credit prerequisite: [generic independent-voice observation17](NS-6_observability_17.md).
-The admitted1024-state/255-cell construction has not returned after140 seconds,
-and actual observer API probes reject. Follow the separate WFC repository/new
-branch codex/pythian-voice-progress for named-voice construction/proof; do not
-copy it here. Exact layer3e04571/CI468 is now qualified, including integration/
-extracted consumers. The layer component and audit close no whole parent
-criterion: delivery0 to2, and mandatory reassessment selects actual prerequisite17.
-Counts53/82/135, NS6 15 open; no musical points or counter reset from scoping.
 
 Accepted zero-credit prerequisite: [generic capture observation16](DONE/NS-6_observability_16.md)
 at Pythian8cf6f5c/WFCf85d733 after all five upstream CI55 jobs, downstream CI467
@@ -397,11 +385,6 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | [NS-6_studio_21](NS-6_studio_21.md) — Background recovery and long-source learning | 0 | 0.00 | Deployed; actual browser acceptance remains |
 | [NS-6_studio_22](NS-6_studio_22.md) — Original/generated listening comparison | 0 | 0.00 | Deployed for review; native/DOM checks pass, actual browser acceptance remains |
 | [NS-6_observability_04](NS-6_observability_04.md) — Remaining provider/batch operations and operator monitoring | 0 | 0.00 | Native inference/operator AC3 accepted; retained session/capture/stream/publication AC1 and batch AC2 remain |
-| [NS-6_observability_17](NS-6_observability_17.md) — Generic voice preparation and proof | 0 | 0.00 | Upstream CI56 passes; downstream portable/archive prerequisites remain |
-| [NS-6_portability_07](NS-6_portability_07.md) — Canonical caller-codec UTF-8 byte validation | 0 | 0.00 | Local native/pas2js checks pass; full consumer and publication remain |
-| [NS-6_portability_08](NS-6_portability_08.md) — Primary binary fields in portable tempo evidence | 0 | 0.00 | Local native/pas2js frozen-byte checks pass; retained consumer and publication remain |
-| [NS-6_portability_09](NS-6_portability_09.md) — Portable retained context/style archives | 0 | 0.00 | Actual full voice dependency exposes native codec/I/O assumptions |
-| [NS-6_portability_10](NS-6_portability_10.md) — Primary streamed chord renderer on pas2js | 0 | 0.00 | Full voice consumer rejects nested strict-private type |
 | [NS-6_adoption_01](NS-6_adoption_01.md) — Establish independent ecosystem adoption evidence | 15 | 1.50 | Supported releases + independent ecosystem evidence |
 | [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 1 | 0.10 | Solo usability resumed; complete physical matrix remains open |
 | [NS-6_delivery_03](NS-6_delivery_03.md) — Package and verify the accepted final workflow | 1 | 0.10 | Dependencies, including Studio |

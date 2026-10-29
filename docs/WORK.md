@@ -12,6 +12,68 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: five prerequisites accepted — 2026-10-28
+
+Previous goal turn: progress, publishing the repaired fixture at `d370723`.
+Big Boss remains solo. Exact Pythian source
+`d37072302436b3b8b2e95f6bab1ac2b0571afd5f` passes
+[CI471](https://github.com/mr-highball/pythian/actions/runs/40789537394): native
+job 12m43s, maintained integration 11m39s and extracted consumers 40s. Clean
+exact Win64 packages also pass: core 107 owned units/120 inventory hashes,
+full 159 owned units/280 hashes. Preserve CI470's failed cadence check and the
+repair: retained callbacks remain exactly 1,885 under the unchanged 2,000 limit;
+primary measurement 1,078 and new UTF-8 160 are reported separately. Both native
+targets pass 57 checks with zero leaks. No production cadence or budget changed.
+
+All criteria and prerequisites of [voice observation17](TODO/DONE/NS-6_observability_17.md)
+and primary [UTF-8 admission07](TODO/DONE/NS-6_portability_07.md),
+[tempo08](TODO/DONE/NS-6_portability_08.md),
+[retained archives09](TODO/DONE/NS-6_portability_09.md) and
+[streamed renderer10](TODO/DONE/NS-6_portability_10.md) pass and move together.
+Native and actual pas2js voice generation/retry, canonical bytes, ownership,
+original cancellation and all 55,861 renderer reference samples pass. The three
+frozen style archives match on native and actual pas2js; the full style consumer
+passes 8,308 checks/65 stages. Current accepted WFC pin is `c4e7569`; its separate
+`codex/pythian-voice-progress` branch remains unmerged, with all five upstream
+CI56 jobs passing. Generic capture through a caller graph guard is qualified;
+retained Pythian publication and actual browser/device use are separate gates.
+
+Reassessment at delivery entry 2 followed the actual portable prerequisites.
+While the exact CI ran, source-queue inspection found four old mechanics-only
+requests, contrary to authoring02's required separation of QA and operator work.
+The bounded repair archived that manifest and used the normal native publisher
+to retire those requests. Native readback and live HTTP 200 show zero active
+source requests. Both saved source events and all five listening JSON records
+retain exact hashes; there are no listening JSONL records. The listening queue
+is byte-identical, including the unanswered long repetition review and saved
+short After preference. No answer, recording, inference, service, firewall or
+browser/audio process changed. Authoring02 remains open. This nonclosing
+operational repair takes delivery 2→3; the subsequent five full prerequisite
+closures reset 3→0. Scientific stops and exposure counters never reset.
+
+Current accounting: **52 open /87 DONE /139 total**, NS6 **14 open**.
+North-star completion remains **100/90/25/70/14/54**, **52.45 accepted /47.55
+remaining**. These engineering closures earn no musical credit. All local
+compiler/test/package sessions are terminal/joined. Evidence is retained under
+the dedicated E-drive archive-portability-20261028-boss, voice-integration-
+20261028-boss, wfc-voice-progress-20261028-boss and source-review-retirement-
+20261028-boss build/test/run packets. Earlier entries below describe their named
+historical source checkpoints; they do not override this current handoff.
+
+NS5 remains least complete. Full vocabulary and musical comparisons still need
+independently grounded references and admitted context/activity; keep rejected
+source/ranking families stopped and do not ask for more source microclips.
+The next ready engineering owner is [retained operations04](TODO/NS-6_observability_04.md).
+Next bounded component: observe named-voice generation, selective regeneration,
+replacement and detached copies through the existing graph commit guard.
+Deliverable: borrowed callbacks over actual owned work and private capture/copy/
+ready state before graph acceptance, with no callback after live publication.
+Evidence: frozen unobserved/observed replay, original start/interior/final aborts,
+same-session retry, pending/preferences/input ownership and retained state on
+native/actual pas2js. Stop on changed solver/RNG/music/budgets, partial publication,
+another genuine prerequisite or duplicated companion logic. This is not whole
+parent04 acceptance; later stream/operator work and the full musical goal remain.
+
 ## Publication qualification follow-up — 2026-10-28
 
 Previous goal turn: progress, publishing9aa6d87 and qualifying actual portable
@@ -117,8 +179,8 @@ private session and preserves caller models/accepted owner. Win32/Win64 pass
 preferences/publication and operator forwarding remain parent04.
 
 Actual portable compilation exposes linked prerequisites before more voice scope:
-[UTF-8 bytes07](TODO/NS-6_portability_07.md), [tempo binary08](TODO/NS-6_portability_08.md),
-then [retained archives09](TODO/NS-6_portability_09.md). Shared UTF-8 validation
+[UTF-8 bytes07](TODO/DONE/NS-6_portability_07.md), [tempo binary08](TODO/DONE/NS-6_portability_08.md),
+then [retained archives09](TODO/DONE/NS-6_portability_09.md). Shared UTF-8 validation
 removes native Move and reuses the primary decoder:340checks/3 original aborts/
 178callbacks pass on Win32/Win64 and actual pas2js. Original native caller231
 and scalar73/portable65 pass. Tempo fields reuse pythian.binary; native and actual
@@ -189,7 +251,7 @@ builder has not returned after140 seconds residence; stop only that identified
 probe at the first checked point beyond its two-minute observation cap. Do not
 claim solve/capture timing or a leak-free terminated exit. Actual compiler
 observer probes reject both builder/capture calls; no dependency source changes.
-Create linked [task17](TODO/NS-6_observability_17.md) before extending named-voice
+Create linked [task17](TODO/DONE/NS-6_observability_17.md) before extending named-voice
 scope. It retains generic observation, subclass factory, strict proof/exception/
 publication and exact upstream/downstream qualification; Pythian publication/
 pending edits/consumers stay parent04. Branch creation remains a future action,

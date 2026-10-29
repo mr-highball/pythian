@@ -137,6 +137,20 @@ the accepted editor mechanics in authoring_01 retain their scoped evidence.
 
 **Dev Notes:**
 
+- 2026-10-28, Big Boss: reassessment while exact CI471 runs finds that every
+  active source request is an old mechanical fixture, including the unexplained
+  frame8784 prompt. This task explicitly requires separating such fixtures from
+  ordinary operator review. Archive the exact four-item manifest, then use the
+  normal native queue publisher to retire those requests. Native readback and
+  live HTTP200 report zero active source requests. Both saved source-review
+  events and all five listening JSON records retain their exact hashes; there
+  are no listening JSONL files. The generated listening queue is byte-identical.
+  Preserve the archived fixtures for future isolated QA; do not delete answers
+  or present a mechanical fixture as musical truth. This is an operational
+  clarity repair, not physical-phone or complete-QA acceptance. All original
+  checklist requirements remain. Evidence: E-drive source-review-retirement-
+  20261028-boss. No server, firewall, recording or browser/audio process changes.
+
 - 2026-10-05, Big Boss: after saving a Studio generation review, the operator
   reports that ordinary Pythian navigation opened the former host address over
   HTTP; editing to the currently assigned address restored the app. The stable

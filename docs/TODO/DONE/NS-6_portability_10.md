@@ -1,8 +1,10 @@
 # NS-6_portability_10 — Execute the primary streamed chord renderer on pas2js
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
+
+Original gap (repaired at the accepted checkpoint below):
 
 The actual full voice consumer now reaches `pythian.chord.stream` and pas2js
 rejects its nested strict-private TToneStates type inside TVoiceState. Earlier
@@ -10,14 +12,11 @@ portable synthesis acceptance exercised the general chord synthesizer, not this
 streamed triangle preview. Keep those scopes distinct. This is a primary core
 prerequisite, not part of the retained archive implementation.
 
-Execution status: demonstrated prerequisite of
-[archive portability09](NS-6_portability_09.md)'s full voice consumer gate.
-Deliverable: portable internal renderer type declarations and actual streamed
-PCM execution, preserving native output, ownership and admission. Closing
-evidence: existing finite-gate/hold/cancel/ownership controls and actual WFC PCM
-parity on native/pas2js, exact supported counter boundaries, published integration
-and extracted consumers. Stop on changed PCM, voice/envelope semantics, budgets
-or another distinct required gap. Big Boss works solo.
+Execution status: **Accepted 2026-10-28** at Pythian
+`d37072302436b3b8b2e95f6bab1ac2b0571afd5f`, after exact published integration,
+clean extracted core/full consumers and the native/actual pas2js gates below.
+All criteria and prerequisites pass at this engineering scope. No musical,
+browser/device or independent-use credit follows.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit:0 additional.
 This earns no new synthesis quality, musical learning or independent-use credit.
@@ -38,11 +37,30 @@ This earns no new synthesis quality, musical learning or independent-use credit.
 
 **Blockers**
 
-- [Primary synthesis portability — DONE](DONE/NS-6_portability_03.md) — general
+All prerequisites below are accepted. Their discovery descriptions are historical.
+
+- [Primary synthesis portability — DONE](NS-6_portability_03.md) — general
   synthesis qualification remains valid at its recorded scope.
-- [Shared exact clocks — DONE](DONE/NS-6_portability_04.md).
+- [Shared exact clocks — DONE](NS-6_portability_04.md).
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss accepts all criteria after exact
+  [CI471](https://github.com/mr-highball/pythian/actions/runs/40789537394) succeeds: native job
+  12m43s, maintained integration 11m39s and extracted consumers 40s. Clean exact Win64 core 107
+  owned/120 inventory and full 159 owned/280 inventory packages pass. Native passing logs report
+  zero leaks. Full named-voice construction/generation/retry passes 13939 checks/10 original
+  abort-retries/13396 callbacks on Win32/Win64 and actual pas2js. Native Win32/Win64 and actual
+  pas2js preserve all 55,861 ordered reference PCM samples across 44,100/48,000/32,000Hz, including
+  finite gate, hold, detached output, rejection/retry and Cancel. Native Int64 and portable 2^53-1
+  admission remain explicit; admitting the maximum does not claim a render of that duration. Private
+  types/getters share one unchanged renderer, with strict-private state. Preserve the rejected
+  compiles and CI470 cadence failure; its repair retains exactly 1885 model/profile callbacks under
+  the unchanged 2000 bound, reporting primary measurement 1078 and UTF-8 160 separately. Both native
+  targets pass 57 checks with zero leaks. Evidence: dedicated E-drive
+  archive-portability-20261028-boss, voice-integration-20261028-boss and
+  wfc-voice-progress-20261028-boss packets. Incoming links/accounting move together; completion
+  remains 52.45, with no scientific counter reset.
 
 - 2026-10-28, Big Boss local candidate: private nested types and typed property
   getters compile on native/pas2js while fields remain strict private. Shared

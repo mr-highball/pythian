@@ -1,8 +1,10 @@
 # NS-6_observability_17 — Observe generic independent-voice preparation and proof
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
+
+Original gap (repaired at the accepted checkpoint below):
 
 The admitted independent-voice path still enters generic musical graph building,
 configuration preparation and independent capture/proof without a cancellable
@@ -11,16 +13,14 @@ Pythian retained owner from using its existing guarded-commit publication hook.
 Do not copy musical proof or builder logic into an audio adapter, hide opaque
 work behind a wrapper callback, or publish after accepting a live graph.
 
-Execution status: upstream candidate qualified at WFCc4e7569/CI56; actual Pythian
-portable/extracted qualification remains blocked by linked portability07/08/09.
-The recorded two-batch reassessment selected this real prerequisite. Next
-deliverable: qualify the candidate through actual Pythian consumers. Closing evidence: actual native/portable
-build/proof/capture abort and replay, original exception identity, private managed
-publication and current upstream/downstream consumers. Stop on altered musical
-semantics, changed budgets/search, partial publication or another required gap.
+Execution status: **Accepted 2026-10-28** at Pythian
+`d37072302436b3b8b2e95f6bab1ac2b0571afd5f`, after exact published integration,
+clean extracted core/full consumers and the native/actual pas2js gates below.
+All criteria and prerequisites pass at this engineering scope. No musical,
+browser/device or independent-use credit follows.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
-This is a prerequisite of [parent04](NS-6_observability_04.md)'s remaining named
+This is a prerequisite of [parent04](../NS-6_observability_04.md)'s remaining named
 voice/duration scope. The already qualified layer component does not require it.
 Pythian-specific pending edits, preference lifetime, retained publication and
 operator forwarding remain parent04; no musical acceptance follows here.
@@ -49,12 +49,36 @@ operator forwarding remain parent04; no musical acceptance follows here.
 
 **Blockers**
 
+All prerequisites below are accepted. Their discovery descriptions are historical.
+
 - [Caller-codec portable UTF-8 bytes](NS-6_portability_07.md) — actual downstream
   pas2js compile rejects native Move; preserve this prerequisite and resume here.
-- [Generic sequence capture observation — DONE](DONE/NS-6_observability_16.md).
-- [Generic solve observation — DONE](DONE/NS-6_observability_14.md).
+- [Generic sequence capture observation — DONE](NS-6_observability_16.md).
+- [Generic solve observation — DONE](NS-6_observability_14.md).
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss accepts all criteria after exact
+  [CI471](https://github.com/mr-highball/pythian/actions/runs/40789537394) succeeds: native job
+  12m43s, maintained integration 11m39s and extracted consumers 40s. Clean exact Win64 core 107
+  owned/120 inventory and full 159 owned/280 inventory packages pass. Native passing logs report
+  zero leaks. Full named-voice construction/generation/retry passes 13939 checks/10 original
+  abort-retries/13396 callbacks on Win32/Win64 and actual pas2js. Separate WFC branch
+  codex/pythian-voice-progress remains clean, pushed and unmerged at
+  c4e7569f277476a3b19941b13176ec39a120a198. All five [upstream CI56
+  jobs](https://github.com/mr-highball/wfc/actions/runs/40776021527) pass, including actual browser
+  and development compiler. Generic native 533780/131 original abort-retries and actual pas2js
+  533791/132 cover preparation/proof, detached private capture, same-graph retry and original
+  exceptions. The graph-subclass commit guard and preference-aware proof controls pass; the original
+  1024-state/255-cell build cancels at 256 real visits. Three-seed frozen/native/portable replay and
+  98-unit package closure pass. No dependency source is edited in Pythian. Retained Pythian
+  Generate/Regenerate/replacement/copy publication and operator forwarding remain parent04. Preserve
+  the rejected compiles and CI470 cadence failure; its repair retains exactly 1885 model/profile
+  callbacks under the unchanged 2000 bound, reporting primary measurement 1078 and UTF-8 160
+  separately. Both native targets pass 57 checks with zero leaks. Evidence: dedicated E-drive
+  archive-portability-20261028-boss, voice-integration-20261028-boss and
+  wfc-voice-progress-20261028-boss packets. Incoming links/accounting move together; completion
+  remains 52.45, with no scientific counter reset.
 
 - 2026-10-28, Big Boss: actual linked07/08/09/10 source now executes the full
   portable constructor consumer13939 checks/10 original abort-retries/13396

@@ -46,12 +46,15 @@ either precursor source directory. Phanes was removed after the
 [extraction and consumer audit](docs/REFERENCE-REMOVAL.md); its application assets
 are not library inputs. WFC and Athena remain pinned submodules.
 
-Candidate WFC pin: `c4e7569f277476a3b19941b13176ec39a120a198`, on separate
-branch `codex/pythian-voice-progress`. Exact upstream CI56 passes all five jobs,
-including actual browser conformance. Generic preparation/proof and graph-class
-support are reviewed upstream; Pythian's downstream portable/extracted gates
-remain open under [task17](docs/TODO/NS-6_observability_17.md) and its linked
-portability prerequisites. This candidate is not an accepted Pythian pin yet.
+Current accepted WFC pin: `c4e7569f277476a3b19941b13176ec39a120a198`, on separate
+branch `codex/pythian-voice-progress`, which remains unmerged. All five upstream
+CI56 jobs pass, including actual browser conformance. Pythian `d370723`/CI471
+passes maintained integration and extracted consumers, with clean exact Win64
+core/full packages and native/actual pas2js cancellation/replay.
+[Task17 — DONE](docs/TODO/DONE/NS-6_observability_17.md) and linked portability07–10
+record acceptance of generic preparation/proof, graph-class support and primary
+portable codecs/rendering. Retained Pythian publication and operator forwarding
+remain [parent04](docs/TODO/NS-6_observability_04.md); no musical credit follows.
 
 Previous accepted WFC pin: `f85d7339bf361cacdf20b4764e3281ad91891659`, on separate
 branch `codex/pythian-sequence-capture-progress`. It adds shared read-only capture,

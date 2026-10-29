@@ -80,9 +80,9 @@ Naming a task or narrowing a component does not reset that count.
 
 **Blockers**
 
-- [Generic independent-voice observation](NS-6_observability_17.md) — demonstrated
-  prerequisite for remaining named-voice/duration construction and proof; it does
-  not block the separate layer component's exact CI468 qualification.
+- [Generic independent-voice observation — DONE](DONE/NS-6_observability_17.md) —
+  accepted at d370723/CI471 with linked portable prerequisites. Retained Pythian
+  named-voice/duration publication and forwarding remain in this parent.
 - [Generic sequence capture observation — DONE](DONE/NS-6_observability_16.md) —
   accepted AC1 prerequisite; retained publication and operator forwarding remain.
 - [Retained inference corpus observation — DONE](DONE/NS-6_observability_15.md) —
@@ -105,6 +105,16 @@ Naming a task or narrowing a component does not reset that count.
   shared staging with exact original source-byte progress.
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss: generic voice prerequisite17 and primary portability07–10
+  are accepted at Pythiand370723/WFCc4e7569 after all five upstream CI56 jobs,
+  downstream CI471 integration11m39s/extracted40s, clean core/full packages and
+  native/actual pas2js cancellation/replay. Constructor forwarding is qualified;
+  retained Generate/Regenerate/replacement/copy publication remains here.
+  Current named-voice Publish captures after graph acceptance; reuse the existing
+  layer commit guard and accepted caller graph-class support before adding
+  cancellation there. No callback may abort after live acceptance. Whole AC1/AC2
+  and operator forwarding remain open; no new WFC defect or musical credit.
 
 - 2026-10-28, Big Boss: exact3e04571/CI468 passes integration13m42s and extracted
   consumers44s, native job14m48s. Qualify the retained-layer capture/copy/

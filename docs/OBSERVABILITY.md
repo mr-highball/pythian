@@ -3,13 +3,16 @@
 [Project](../PROJECT.md) · [Assessment](CODEBASE-ASSESSMENT.md) ·
 [Tasks](TODO/README.md) · [Work](WORK.md)
 
-## Independent-voice candidate — 2026-10-28
+## Independent-voice preparation accepted — 2026-10-28
 
 Separate WFCc4e7569 passes all five [upstream CI56 jobs](https://github.com/mr-highball/wfc/actions/runs/40776021527),
 including actual browser execution. Its call-scoped preparation/proof observer
 reports actual phase/pass work, retains original exceptions and supports the
-existing graph commit guard. The Pythian candidate is not accepted yet; see
-[task17](TODO/NS-6_observability_17.md) and linked portability07/08/09/10.
+existing graph commit guard. Pythian d370723/CI471 passes maintained integration
+11m39s and extracted consumers40s, native job12m43s, plus clean exact Win64
+core/full packages. [Task17 — DONE](TODO/DONE/NS-6_observability_17.md) and linked
+portability07/08/09/10 are accepted at that exact source. The upstream branch
+remains unmerged; no musical or Pythian browser/device credit follows.
 
 `TNamedVoiceSession.Create` optionally forwards capacities, configuration,
 generic model/graph/projection construction and provider-choice/contract work.
@@ -31,10 +34,9 @@ Native Win32/Win64 and actual pas2js constructor checks pass13939/10 original
 abort-retries/13396 callbacks; native exits have zero leaks. The actual portable
 consumer now executes through the shared UTF-8, tempo, retained archive and
 streamed renderer repairs. Exact published integration/extracted qualification
-of those new repairs remains open; predecessor242563f/CI469 is terminal Success
-15m37s and covers only that earlier source.
+passes at d370723/CI471. Predecessor242563f/CI469 covers its earlier source only.
 
-### Primary archive portability candidate
+### Shared archive and streamed renderer portability accepted
 
 `pythian.text` owns `ScalarTextByteCount`, `EncodeUTF8Text` and `DecodeUTF8Text`.
 Native raw UTF-8 and pas2js UTF-16 strings share the same canonical scalar
@@ -71,7 +73,7 @@ new checksum/version/truncation/Unicode rejection/replay and matching frozen
 native source/nested/trajectory hashes. Context Unicode and exact byte-limit
 controls pass on Win32/Win64/actual pas2js; primary conversion passes2803/12
 original abort-retries/2654 callbacks. Native exits have zero leaks. The linked
-tasks still require exact new publication/extracted qualification before DONE.
+tasks are accepted after exact CI471 and clean extracted package qualification.
 
 Big Boss, 2026-10-03. The learning-progress lesson applies to the reusable
 library as well as Studio: callers need real work counts, named phases and
@@ -273,7 +275,7 @@ Win64 core107owned/120inventory and full159owned/279inventory packages also pass
 Evidence: dedicated E-drive `layer-publication-20261028-boss` build/tests/runs.
 This component closes neither whole parent04 AC1/AC2 nor musical/Studio gates.
 The next named-voice audit exposes unobserved generic construction/proof; linked
-[task17](TODO/NS-6_observability_17.md) owns the separate WFC branch. Its admitted
+[task17](TODO/DONE/NS-6_observability_17.md) owns the separate WFC branch. Its admitted
 1024-state/255-cell builder is stopped after140 seconds without construction
 completion; neither solve/capture timing nor terminated-run leak freedom is
 claimed. No wrapper can substitute for actual nested model/graph observation.
