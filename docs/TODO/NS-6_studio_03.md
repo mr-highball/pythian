@@ -70,6 +70,7 @@ open; engineering checks earn no musical verdict or completion credit.
 
 **Blockers**
 
+- [Reviewed-feedback follow-up lineage](NS-6_studio_25.md) — required native producer support for AC3; exact-Before comparisons retain their existing contract.
 - [Failed response construction cleanup — DONE](DONE/NS-6_studio_23.md).
 - [Publication-time replacement check — DONE](DONE/NS-6_studio_24.md).
 - [Original/generated source comparison](NS-6_studio_22.md) — repairs AC1's missing audible source context.
@@ -78,6 +79,16 @@ open; engineering checks earn no musical verdict or completion credit.
 - [NS-5_evaluation_03.md](DONE/NS-5_evaluation_03.md)
 
 **Dev Notes:**
+
+- 2026-10-29, Big Boss: [studio_25](NS-6_studio_25.md) supplies AC3's native
+  explicit reviewed-feedback binding without weakening the existing exact-Before
+  parent. One new two-minute comparison retains the reviewed short result's
+  model, source selection and seed, with no training or tuning. Frozen mechanism
+  and block replay pass; actual isolated preparation binds the submitted answer
+  revision/hash and preserves every existing response. Both examples are new
+  two-minute renders, not an assertion that the old20-second media simply loops.
+  Live delivery and actual operator/browser acceptance remain open. The pending
+  older4:16 guard is a separate experiment; no answer or musical credit transfers.
 
 - 2026-10-27, Big Boss: the retained 256.192-second guard experiment was absent
   from the current catalog, contrary to later handoffs based on historical

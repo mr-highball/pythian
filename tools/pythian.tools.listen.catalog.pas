@@ -877,9 +877,9 @@ var
   LName: String;
   LBinding: TJSONObject;
 const
-  CBindings: array[0..2] of String = ('reference', 'replaces', 'parent');
+  CBindings: array[0..3] of String = ('reference', 'replaces', 'parent', 'reviewed_from');
 begin
-  CheckFields(AInput, '|title|change|decision|reference|replaces|parent|');
+  CheckFields(AInput, '|title|change|decision|reference|replaces|parent|reviewed_from|');
   Result := TJSONObject.Create;
   try
     Result.Add('title', TextField(AInput, 'title', 128));
@@ -889,8 +889,21 @@ begin
       if AInput.Find(LName) <> nil then
       begin
         LBinding := ObjectField(AInput, LName);
-        CheckFields(LBinding, '|request_id|asset_id|request_sha256|');
-        Need((LBinding.Count = 3) and
+        if LName = 'reviewed_from' then
+        begin
+          CheckFields(LBinding, '|request_id|asset_id|request_sha256|revision|response_sha256|');
+          Need((LBinding.Count = 5) and
+            (IntegerField(LBinding, 'revision') > 0) and
+            (IntegerField(LBinding, 'revision') <= CMaximumRevision) and
+            ValidHash(TextField(LBinding, 'response_sha256', 64)),
+            'Invalid reviewed-feedback revision or hash');
+        end
+        else
+        begin
+          CheckFields(LBinding, '|request_id|asset_id|request_sha256|');
+          Need(LBinding.Count = 3, 'Invalid experiment binding fields');
+        end;
+        Need(
           SafeId(TextField(LBinding, 'request_id', 128), 128) and
           SafeId(TextField(LBinding, 'asset_id', 64), 64) and
           ValidHash(TextField(LBinding, 'request_sha256', 64)), 'Invalid experiment reference');
@@ -991,7 +1004,7 @@ var
   LName: String;
   I: Integer;
 const
-  CBindings: array[0..2] of String = ('reference', 'replaces', 'parent');
+  CBindings: array[0..3] of String = ('reference', 'replaces', 'parent', 'reviewed_from');
 begin
   { Big Boss: resolve within a complete imported packet before consulting the
     current catalog. A fresh replay must not require prior publication. }
@@ -1009,10 +1022,14 @@ begin
           LTarget := FindRequest(AQueue, LBinding.Strings['request_id']);
           if LTarget = nil then LTarget := FindRequest(LExisting, LBinding.Strings['request_id']);
           Need((LTarget <> nil) and (LTarget.Strings['id'] <> LRequest.Strings['id']) and
-            (LTarget.Find('experiment') = nil), 'Experiment context must bind an ordinary request');
+            ((LTarget.Find('experiment') = nil) or (LName = 'reviewed_from')),
+            'Experiment context must bind an ordinary request except reviewed feedback');
           Need(HashJson(LTarget) = LBinding.Strings['request_sha256'], 'Experiment reference changed');
           LAsset := FindAsset(LTarget.Arrays['assets'], LBinding.Strings['asset_id']);
           Need(LAsset <> nil, 'Experiment asset is not declared by its bound request');
+          if LName = 'reviewed_from' then
+            Need((LAsset.Strings['role'] = 'generated') or (LAsset.Strings['role'] = 'edited'),
+              'Reviewed feedback must identify generated audio');
           if LName = 'reference' then
             Need((LAsset.Int64s['frames'] <= Int64(LAsset.Integers['sample_rate']) * 30) and
               ((LAsset.Strings['role'] = 'source') or (LAsset.Strings['role'] = 'reference')),
@@ -1177,6 +1194,63 @@ end;
 
 procedure ValidateStoredEvent(const AEvent, ARequest: TJSONObject); forward;
 
+{ Big Boss: bind a submitted historical response, including its immutable request
+  snapshot. This never interprets a preference as training or source truth. }
+procedure VerifyFeedbackEvent(const ABinding, ARequest, AEvent: TJSONObject);
+begin
+  ValidateStoredEvent(AEvent, ARequest);
+  Need((AEvent.Strings['request_id'] = ABinding.Strings['request_id']) and
+    (AEvent.Strings['request_sha256'] = ABinding.Strings['request_sha256']) and
+    (AEvent.Integers['revision'] = ABinding.Integers['revision']) and
+    (AEvent.Strings['status'] = 'submitted') and
+    (HashJson(AEvent) = ABinding.Strings['response_sha256']),
+    'Reviewed feedback does not match its submitted historical response');
+end;
+
+function ReviewedFeedbackBinding(const ACatalogRoot, ARequestId,
+  AAssetId: String): TJSONObject;
+var
+  LQueue: TJSONObject;
+  LRequest: TJSONObject;
+  LAsset: TJSONObject;
+  LEvent: TJSONObject;
+  LRevision: Integer;
+begin
+  Need(SafeId(ARequestId, 128) and SafeId(AAssetId, 64),
+    'Invalid reviewed-feedback request or asset ID');
+  LQueue := ReadQueueManifest(ACatalogRoot);
+  try
+    LRequest := FindRequest(LQueue, ARequestId);
+    Need(LRequest <> nil, 'Reviewed-feedback parent is not published');
+    LAsset := FindAsset(LRequest.Arrays['assets'], AAssetId);
+    Need((LAsset <> nil) and ((LAsset.Strings['role'] = 'generated') or
+      (LAsset.Strings['role'] = 'edited')), 'Reviewed-feedback asset is not generated audio');
+    LRevision := LatestRevision(ReviewPath(ACatalogRoot, ARequestId));
+    Need(LRevision > 0, 'Reviewed-feedback parent has no saved response');
+    LEvent := ReadEvent(ReviewPath(ACatalogRoot, ARequestId), LRevision);
+    try
+      ValidateStoredEvent(LEvent, LRequest);
+      Need(LEvent.Strings['status'] = 'submitted', 'Reviewed feedback must be submitted');
+      Result := TJSONObject.Create;
+      try
+        Result.Add('request_id', ARequestId);
+        Result.Add('asset_id', AAssetId);
+        Result.Add('request_sha256', HashJson(LRequest));
+        Result.Add('revision', LRevision);
+        Result.Add('response_sha256', HashJson(LEvent));
+        VerifyFeedbackEvent(Result, LRequest, LEvent);
+      except
+        Result.Free;
+        raise;
+      end;
+    finally
+      LEvent.Free;
+    end;
+  finally
+    LQueue.Free;
+  end;
+end;
+
 function ReadListeningQueue(const ACatalogRoot: String): TJSONObject;
 var
   LQueue: TJSONObject;
@@ -1287,6 +1361,42 @@ begin
   end;
 end;
 
+{ Caller holds the same queue lock as review Save. A newly published follow-up
+  must use the answer still current at admission. Later corrections do not erase
+  an already published experiment's historical reason for being generated. }
+procedure VerifyFreshFeedback(const ACatalogRoot: String;
+  const AIncoming, AExisting: TJSONObject);
+var
+  LRequest: TJSONObject;
+  LPrevious: TJSONObject;
+  LBinding: TJSONObject;
+  LTarget: TJSONObject;
+  LEvent: TJSONObject;
+  I: Integer;
+begin
+  for I := 0 to AIncoming.Arrays['items'].Count - 1 do
+  begin
+    LRequest := AIncoming.Arrays['items'].Objects[I];
+    if (LRequest.Find('experiment') = nil) or
+      (LRequest.Objects['experiment'].Find('reviewed_from') = nil) then Continue;
+    LPrevious := FindRequest(AExisting, LRequest.Strings['id']);
+    if (LPrevious <> nil) and (HashJson(LPrevious) = HashJson(LRequest)) then Continue;
+    LBinding := LRequest.Objects['experiment'].Objects['reviewed_from'];
+    Need(LatestRevision(ReviewPath(ACatalogRoot, LBinding.Strings['request_id'])) =
+      LBinding.Integers['revision'], 'Reviewed feedback changed before publication');
+    LTarget := FindRequest(AIncoming, LBinding.Strings['request_id']);
+    if LTarget = nil then LTarget := FindRequest(AExisting, LBinding.Strings['request_id']);
+    Need(LTarget <> nil, 'Reviewed-feedback parent is missing');
+    LEvent := ReadEvent(ReviewPath(ACatalogRoot, LBinding.Strings['request_id']),
+      LBinding.Integers['revision']);
+    try
+      VerifyFeedbackEvent(LBinding, LTarget, LEvent);
+    finally
+      LEvent.Free;
+    end;
+  end;
+end;
+
 function PublishListeningQueueLocked(const ACatalogRoot,
   AInputPath: String): TJSONObject;
 var
@@ -1311,6 +1421,7 @@ begin
     LOld := ReadQueueManifest(ACatalogRoot);
     try
       VerifyFreshReplacements(ACatalogRoot, LQueue, LOld);
+      VerifyFreshFeedback(ACatalogRoot, LQueue, LOld);
       LItems := LOld.Arrays['items'];
       for I := 0 to LItems.Count - 1 do
       begin
@@ -1386,6 +1497,7 @@ begin
     LAppend := NormalizeQueue(ACatalogRoot, LInput, True);
     LQueue := ReadQueueManifest(ACatalogRoot);
     VerifyFreshReplacements(ACatalogRoot, LAppend, LQueue);
+    VerifyFreshFeedback(ACatalogRoot, LAppend, LQueue);
     for LIndex := 0 to LAppend.Arrays['items'].Count - 1 do
     begin
       LRequest := LAppend.Arrays['items'].Objects[LIndex];
@@ -1987,6 +2099,13 @@ begin
         LBinding.Add('asset_id', LAsset.Arrays['assets'].Objects[0].Strings['id']);
         LBinding.Add('request_sha256', LAsset.Strings['request_sha256']);
       end;
+      if (ADefinition.Find('reviewed_request_id') <> nil) or
+        (ADefinition.Find('reviewed_asset_id') <> nil) then
+      begin
+        LExperiment.Add('reviewed_from', ReviewedFeedbackBinding(ACatalogRoot,
+          TextField(ADefinition, 'reviewed_request_id', 128),
+          TextField(ADefinition, 'reviewed_asset_id', 64)));
+      end;
     except
       Result.Free;
       raise;
@@ -2113,6 +2232,48 @@ begin
   end;
 end;
 
+{ Replay has no previously installed response journal. Verify feedback against
+  the packet's complete, validated history before publishing any target bytes. }
+procedure VerifyPacketFeedback(const APacket: TJSONObject);
+var
+  LItems: TJSONArray;
+  LHistory: TJSONArray;
+  LRequest: TJSONObject;
+  LBinding: TJSONObject;
+  LTarget: TJSONObject;
+  LEvents: TJSONArray;
+  LFound: Boolean;
+  I: Integer;
+  J: Integer;
+begin
+  LItems := APacket.Objects['queue'].Arrays['items'];
+  LHistory := APacket.Arrays['history'];
+  for I := 0 to LItems.Count - 1 do
+  begin
+    LRequest := LItems.Objects[I];
+    if (LRequest.Find('experiment') = nil) or
+      (LRequest.Objects['experiment'].Find('reviewed_from') = nil) then Continue;
+    LBinding := LRequest.Objects['experiment'].Objects['reviewed_from'];
+    LFound := False;
+    for J := 0 to LItems.Count - 1 do
+    begin
+      LTarget := LItems.Objects[J];
+      if LTarget.Strings['id'] <> LBinding.Strings['request_id'] then Continue;
+      Need((J <> I) and (HashJson(LTarget) = LBinding.Strings['request_sha256']) and
+        (FindAsset(LTarget.Arrays['assets'], LBinding.Strings['asset_id']) <> nil),
+        'Exported reviewed-feedback parent differs');
+      LEvents := LHistory.Objects[J].Arrays['events'];
+      Need((LBinding.Integers['revision'] > 0) and
+        (LBinding.Integers['revision'] <= LEvents.Count),
+        'Exported reviewed-feedback history is missing');
+      VerifyFeedbackEvent(LBinding, LTarget, LEvents.Objects[LBinding.Integers['revision'] - 1]);
+      LFound := True;
+      Break;
+    end;
+    Need(LFound, 'Exported reviewed-feedback parent is missing');
+  end;
+end;
+
 function ReadExportPacket(const APacketPath: String): TJSONObject;
 var
   LQueue: TJSONObject;
@@ -2191,6 +2352,7 @@ begin
         end;
       end;
     end;
+    VerifyPacketFeedback(Result);
   except
     Result.Free;
     raise;

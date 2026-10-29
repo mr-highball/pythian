@@ -647,6 +647,8 @@ begin
   end;
 end;
 
+{$I pythian.tests.listen.feedback.inc}
+
 var
   LRoot: String;
   LInbox: String;
@@ -733,6 +735,7 @@ begin
   LGenerated := Asset('generated', 'listening', LGeneratedHash,
     'generated', FileBytes(LGeneratedPath), 5760000, LSourceHash);
   CheckPreparedSingles(LRoot, LInbox, LSourceHash, LGeneratedPath, LSource, LGenerated);
+  CheckReviewedFeedback(LRoot, LInbox, LSourceHash, LGeneratedPath, LSource, LGenerated);
   LQueue := TJSONObject.Create;
   try
     LQueue.Add('version', 1);

@@ -12,6 +12,56 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: reviewed two-minute follow-up passes locally; exact qualification next — 2026-10-29
+
+Previous goal batch made PROGRESS: portable storage14 closed at exactCI489.
+Big Boss remains SOLO. Least-complete NS5 and its recorded prerequisites/stops
+remain unchanged. The saved short comparison prefers After; the pending4:16
+guard is an older three-source experiment and cannot extend that verdict.
+
+[Studio25](TODO/NS-6_studio_25.md) is the required zero-credit native producer
+slice of studio_03 AC3. Its distinct reviewed_from binding captures the actual
+submitted request/asset/hash and response revision/hash. First publication
+rechecks the answer under the existing writer lock. Later corrections preserve
+already published historical bindings. Export/inspection/replay verify the exact
+historical event; existing reference/replacement/exact-Before contracts remain.
+
+Native32/64 regression passes with zero leaks, including stale append/full
+publication, withdrawn response, malformed binding and byte-identical historical
+replay. Two initial authored-test mistakes are retained and repaired: error text
+and unsupported draft status. These are not scientific experiment failures.
+
+The maintained Pascal comparison CLI now accepts an explicit21–120-second
+follow-up, retaining its saved20-second baseline/default and finite Studio limits.
+One fixed120-second pair uses the same model, journal, source selection andseed731.
+The failed20-second audition reproduces exactly. Both longer sides have5622
+grains/5760000frames with identical requested tokens/source shares; exact links
+0→4583 and repeated four-window sequences4453→3691. Raw WAVs replay byte-identically
+at4096/65536-frame pulls. Invocations87.765/94.063seconds, zero leaks. Primary
+meter/gain create streaming global-RMS listening copies by attenuation; Original
+is20seconds of source context, not grain-aligned. No input normalization/training.
+
+Actual isolated catalog preparation passes using the normal native contracts:
+all four saved responses and exact previous export survive; the new comparison
+is revision0, with the actual submitted short After answer bound at revision1.
+Projection has two pending experiments, including the separate older guard.
+Live catalog/service/firewall/recordings/answers are unchanged. No QA browser or
+audio process was started, and no helper or WFC repository was used.
+
+Exact published qualification is next, then compatible stable-backend delivery
+before any live append: the currently deployed parser predates reviewed_from.
+Do not append the new field to that old live parser. Preserve prepared media;
+no new render, seed, source, DSP or threshold variants are selected. All current
+local handles are terminal. Actual browser/phone and musical acceptance remain
+open; the full goal is active/unachieved, with no global block claim.
+
+Counts54open/93DONE/147 total, NS6 16open;52.45/47.55 unchanged. This batch remains
+IN PROGRESS pending qualification/delivery, not an accepted musical criterion;
+delivery nonclosing0 and all scientific stops/exposures remain unchanged. Private
+E-drive `runs/continuity-followup-20261029-boss` holds PLAN, PREPARED, parameters,
+full output/grain maps/logs, canonical replay/fixture retention manifests and NEXT.
+Complete earlier WORK handoffs remain below.
+
 ## Current handoff: portable journal storage/intake qualified; musical gates remain — 2026-10-29
 
 Big Boss remains SOLO. Exactd68895f/[CI489](https://github.com/mr-highball/pythian/actions/runs/40932461993/job/123654180480)

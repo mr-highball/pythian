@@ -6,7 +6,7 @@
 Accepted zero-credit usability repairs: [training choices and playback](DONE/NS-6_studio_19.md),
 [tabbed workflow and help](DONE/NS-6_studio_18.md).
 
-Updated 2026-10-29. **53 open / 93 accepted tasks.** The user authorized a new
+Updated 2026-10-29. **54 open / 93 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **52.45 current / 47.55 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 The replan earned no acceptance; independently accepted caller corpus intake
@@ -32,6 +32,12 @@ Dated point narratives in Dev Notes are historical. Each task has one primary
 north-star credit owner; secondary use and outcome rollups earn nothing extra.
 
 ## Goal ledger
+
+Selected2026-10-29: [reviewed-feedback follow-ups25](NS-6_studio_25.md) supplies
+studio_03 AC3's missing explicit parent-answer binding. One frozen two-minute
+source-successor follow-up is selected after the saved short After preference;
+the old4:16 guard and its pending answer stay distinct. Counts54open/93DONE/147,
+NS6 16open;52.45/47.55 unchanged. No musical gate or stopped family is reset.
 
 Accepted2026-10-29: [bounded portable storage14](DONE/NS-6_portability_14.md)
 qualifies atd68895f/[CI489](https://github.com/mr-highball/pythian/actions/runs/40932461993/job/123654180480):
@@ -67,8 +73,8 @@ before recorded scoring; no musical gate or scientific counter is reset.
 | [NS-3 — Trustworthy musical learning from WAV](../MILESTONES.md#ns-3) | 10 | 15 | 25% | 19 | 75 | 18.75 |
 | [NS-4 — Granular WFC layers and reusable blends](../MILESTONES.md#ns-4) | 20 | 50 | 70% | 1 | 30 | 4.50 |
 | [NS-5 - User-defined styles that generate and blend usefully](../MILESTONES.md#ns-5) | 0 | 14 | 14% | 17 | 86 | 17.20 |
-| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 15 | 46 | 4.60 |
-| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **53** | Goal points are not summed across goals | **47.55** |
+| [NS-6 — Independently usable library and delivery](../MILESTONES.md#ns-6) | 0 | 54 | 54% | 16 | 46 | 4.60 |
+| **Total** | **28.00 weighted** | **24.45 weighted** | **52.45 weighted** | **54** | Goal points are not summed across goals | **47.55** |
 
 Baseline + current DONE + open allocation equals 100 for each goal; weights
 5/25/25/15/20/10 total 100. These are scope judgments, not measured accuracy,
@@ -468,6 +474,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | [NS-6_delivery_07](NS-6_delivery_07.md) — Obtain actual independent minimal synthesis use | 9 | 0.90 | Package accepted; prepared packet needs actual reviewer |
 | [NS-6_support_01](NS-6_support_01.md) — Establish and exercise the supported release lifecycle | 10 | 1.00 | Packages + real external update or issue cycle |
 | [NS-6_studio_03](NS-6_studio_03.md) — Compare musical auditions and guide the next batch | 2 | 0.20 | Actual negative listening response saved; purpose/usefulness and iteration verdict remain |
+| [NS-6_studio_25](NS-6_studio_25.md) — Bind follow-ups to saved feedback | 0 | 0.00 | Selected native producer prerequisite; one explicit longer comparison, no retraining |
 | [NS-6_studio_07](NS-6_studio_07.md) — Train mixed-format corpora with original-clock lineage | 1 | 0.10 | Native conversion, WFC/model reuse and finite/live replay pass; browser/recorded qualification open |
 | [NS-6_studio_10](NS-6_studio_10.md) — Enable phone recording over local HTTPS | 1 | 0.10 | Operator reports HTTPS worked; complete capture/browser checks remain open |
 | [NS-6_studio_11](NS-6_studio_11.md) — Browse collection metadata and prepare recordings only on use | 1 | 0.10 | Selected: metadata listing, bounded preview and verified selected-entry preparation |

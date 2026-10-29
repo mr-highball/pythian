@@ -32,13 +32,14 @@ uses
   pythian.analysis.journal, pythian.learning.journal,
   pythian.learning.selection, pythian.learning.context,
   pythian.learning.render.stream, pythian.continuity,
-  pythian.wave.read, pythian.wave.stream,
+  pythian.wave.read, pythian.wave.stream, pythian.meter, pythian.effects,
   pythian.wfc.learning.profile, pythian.wfc.audio.stream,
   pythian.tools.files;
 
 const
   MaximumComparisonGrains = 6000;
   MaximumComparisonSeconds = 20;
+  MaximumFollowupSeconds = 120;
   ComparisonPolicy = 'exact_source_successor_v1;next observed hop only;' +
     'exact requested token and fallback range;unchanged WFC tokens and Hann DSP';
 
@@ -380,6 +381,163 @@ begin
   end;
 end;
 
+{ Big Boss: compose the primary meter over bounded decoded blocks. Only file
+  I/O and accumulation of its channel measurements belong in this consumer. }
+function WaveLevels(const APath: String; const AAccess: TComparisonAccess): TJSONObject;
+var
+  LStream: TFileStream;
+  LReader: TWaveFrameReader;
+  LClip: TAudioClip;
+  LLevels: TAudioLevels;
+  LSamples: TAudioSamples;
+  LSum: Double;
+  LPeak: Double;
+  LFrames: Int64;
+  LBlockFrames: Integer;
+  LChannel: Integer;
+begin
+  LStream := TFileStream.Create(APath, fmOpenRead or fmShareDenyWrite);
+  LReader := nil;
+  LSum := 0;
+  LPeak := 0;
+  LFrames := 0;
+  try
+    LReader := TWaveFrameReader.Create(LStream);
+    while LFrames < LReader.FrameCount do
+    begin
+      AAccess.CheckTime;
+      LSamples := LReader.ReadFrames(4096);
+      LBlockFrames := Length(LSamples) div LReader.Channels;
+      Need(LBlockFrames > 0, 'Listening meter made no progress');
+      LClip := TAudioClip.Create(LReader.SampleRate, LReader.Channels, LSamples);
+      try
+        LLevels := MeasureAudio(LClip);
+        for LChannel := 0 to LReader.Channels - 1 do
+        begin
+          LSum := LSum + Sqr(LLevels[LChannel].Rms) * LBlockFrames;
+          LPeak := Max(LPeak, LLevels[LChannel].Peak);
+        end;
+      finally
+        LClip.Free;
+      end;
+      Inc(LFrames, LBlockFrames);
+    end;
+    Need(LFrames > 0, 'Listening audio is empty');
+    Result := TJSONObject.Create;
+    Result.Add('rms', Sqrt(LSum / (LFrames * LReader.Channels)));
+    Result.Add('peak', LPeak);
+  finally
+    LReader.Free;
+    LStream.Free;
+  end;
+end;
+
+procedure AttenuateWave(const AInput, AOutput: String; const AGain: Double;
+  const AAccess: TComparisonAccess);
+var
+  LInput: TFileStream;
+  LOutput: TFileStream;
+  LReader: TWaveFrameReader;
+  LSink: TStreamAudioSink;
+  LWriter: TWavePcm16Writer;
+  LGain: TGainEffect;
+  LSamples: TAudioSamples;
+  LLeft: Double;
+  LRight: Double;
+  LPosition: Int64;
+  I: Integer;
+begin
+  Need((AGain > 0) and (AGain <= 1) and not FileExists(AOutput),
+    'Listening level matching permits only attenuation into a new file');
+  LInput := nil;
+  LOutput := nil;
+  LReader := nil;
+  LSink := nil;
+  LWriter := nil;
+  LGain := nil;
+  try
+    LInput := TFileStream.Create(AInput, fmOpenRead or fmShareDenyWrite);
+    LReader := TWaveFrameReader.Create(LInput);
+    Need(LReader.Channels = 2, 'This fixed listening packet requires stereo audio');
+    LOutput := TFileStream.Create(AOutput, fmCreate or fmShareExclusive);
+    LSink := TStreamAudioSink.Create(LOutput);
+    LWriter := TWavePcm16Writer.Create(LSink, LReader.SampleRate, 2, LReader.FrameCount);
+    LGain := TGainEffect.Create(LReader.SampleRate, AGain, 0);
+    LPosition := 0;
+    while LPosition < LReader.FrameCount do
+    begin
+      AAccess.CheckTime;
+      LSamples := LReader.ReadFrames(4096);
+      Need(Length(LSamples) > 0, 'Listening gain made no progress');
+      for I := 0 to Length(LSamples) div 2 - 1 do
+      begin
+        LGain.Process(LSamples[I * 2], LSamples[I * 2 + 1], LLeft, LRight);
+        LSamples[I * 2] := LLeft;
+        LSamples[I * 2 + 1] := LRight;
+      end;
+      LWriter.AppendSamples(LSamples);
+      Inc(LPosition, Length(LSamples) div 2);
+    end;
+    LWriter.Finish;
+  finally
+    LGain.Free;
+    LWriter.Free;
+    LSink.Free;
+    LReader.Free;
+    LOutput.Free;
+    LInput.Free;
+  end;
+end;
+
+function ListeningCopies(const AOutput: String;
+  const AAccess: TComparisonAccess): TJSONObject;
+const
+  CNames: array[0..2] of String = ('before', 'after', 'original-reference');
+var
+  LLevels: array[0..2] of TJSONObject;
+  LMatched: TJSONObject;
+  LTarget: Double;
+  LGain: Double;
+  I: Integer;
+begin
+  for I := 0 to High(LLevels) do LLevels[I] := nil;
+  Result := nil;
+  try
+    try
+      LTarget := 1;
+      for I := 0 to High(LLevels) do
+      begin
+        LLevels[I] := WaveLevels(AOutput + CNames[I] + '.wav', AAccess);
+        LTarget := Min(LTarget, LLevels[I].Floats['rms']);
+      end;
+      Need(LTarget > 0, 'Listening level target must be positive');
+      Result := TJSONObject.Create;
+      Result.Add('policy', 'decoded global RMS; attenuation only; ' +
+        'primary meter and gain effect; not perceptual loudness');
+      Result.Add('target_rms', LTarget);
+      for I := 0 to High(LLevels) do
+      begin
+        LGain := LTarget / LLevels[I].Floats['rms'];
+        AttenuateWave(AOutput + CNames[I] + '.wav',
+          AOutput + CNames[I] + '-rms.wav', LGain, AAccess);
+        LMatched := WaveLevels(AOutput + CNames[I] + '-rms.wav', AAccess);
+        Result.Add(CNames[I], LMatched);
+        LMatched.Add('input_rms', LLevels[I].Floats['rms']);
+        LMatched.Add('gain', LGain);
+        LMatched.Add('wav_sha256', FileHash(AOutput + CNames[I] + '-rms.wav'));
+        Need((LMatched.Floats['peak'] <= 1) and
+          (Abs(LMatched.Floats['rms'] - LTarget) <= 0.5 / 32768 + 0.0000001),
+          'Listening copies differ beyond PCM16 RMS tolerance');
+      end;
+    except
+      Result.Free;
+      raise;
+    end;
+  finally
+    for I := 0 to High(LLevels) do LLevels[I].Free;
+  end;
+end;
+
 procedure Run;
 var
   LProfileRoot: TJSONObject;
@@ -407,12 +565,16 @@ var
   LSeed: Integer;
   LBlock: Integer;
   LFrames: Int64;
+  LFollowupSeconds: Integer;
+  LComparisonFrames: Int64;
+  LBaselinePath: String;
+  LBaseline: TJSONObject;
   LIndex: Integer;
   LStart: QWord;
   LGate: Boolean;
 begin
-  Need((ParamCount >= 4) and (ParamCount <= 6),
-    'Usage: pythian.source.successor PROFILE_DIR JOB_DIR SOURCE.wav NEW_OUTPUT_DIR [BLOCK_FRAMES] [SEED]');
+  Need((ParamCount >= 4) and (ParamCount <= 7),
+    'Usage: pythian.source.successor PROFILE_DIR JOB_DIR SOURCE.wav NEW_OUTPUT_DIR [BLOCK_FRAMES] [SEED] [FOLLOWUP_SECONDS]');
   LProfileDir := IncludeTrailingPathDelimiter(ExpandFileName(ParamStr(1)));
   LJob := IncludeTrailingPathDelimiter(ExpandFileName(ParamStr(2)));
   LSourcePath := ExpandFileName(ParamStr(3));
@@ -425,12 +587,20 @@ begin
     LBlock := StrToInt(ParamStr(5));
   end;
   LSeed := 731;
-  if ParamCount = 6 then
+  if ParamCount >= 6 then
   begin
     LSeed := StrToInt(ParamStr(6));
   end;
   Need((LBlock >= 1) and (LBlock <= MaximumSessionPullFrames), 'Block frames must be 1..65536');
   Need((LSeed = 731) or (LSeed = 1731) or (LSeed = 2731), 'Comparison seeds are fixed at 731/1731/2731');
+  LFollowupSeconds := 0;
+  if ParamCount = 7 then
+  begin
+    LFollowupSeconds := StrToInt(ParamStr(7));
+    Need((LSeed = 731) and (LFollowupSeconds > MaximumComparisonSeconds) and
+      (LFollowupSeconds <= MaximumFollowupSeconds),
+      'Explicit follow-up requires seed 731 and 21..120 seconds');
+  end;
   LProfileRoot := nil;
   LReceipt := nil;
   LRequest := nil;
@@ -462,6 +632,11 @@ begin
     Need((LProfile.SourceCount = 1) and (LFrames > 0) and
       (LFrames <= Int64(LProfile.SampleRate) * MaximumComparisonSeconds) and
       (LReceipt.Strings['model_sha256'] = LProfile.ModelSha256), 'Saved model/frame identity differs');
+    LComparisonFrames := LFrames;
+    if LFollowupSeconds > 0 then
+    begin
+      LComparisonFrames := Int64(LProfile.SampleRate) * LFollowupSeconds;
+    end;
     LSaved := LProfile.SourceAt(0);
     LSource := LProfileRoot.Arrays['sources'].Objects[0];
     Need((LSource.Int64s['selected_frames'] = LSaved.Binding.FrameCount) and
@@ -513,12 +688,25 @@ begin
     LReport.Add('channels', LProfile.Channels);
     LReport.Add('successor_observations', LSuccessors.ObservationCount);
     LReport.Add('successor_storage_bytes', LSuccessors.NativeStorageBytes);
-    WriteLn('Rendering unchanged baseline');
-    LBefore := Render(LProfile, LAccess, nil, LSeed, LBlock, LFrames, LOutput + 'before.wav');
-    LReport.Add('before', LBefore);
+    LReport.Add('comparison_frames', LComparisonFrames);
+    LBaselinePath := LOutput + 'before.wav';
+    if LFollowupSeconds > 0 then
+    begin
+      LBaselinePath := LOutput + 'baseline-replay.wav';
+    end;
+    WriteLn('Rendering unchanged saved short baseline');
+    LBaseline := Render(LProfile, LAccess, nil, LSeed, LBlock, LFrames, LBaselinePath);
+    if LFollowupSeconds > 0 then
+    begin
+      LReport.Add('baseline_replay', LBaseline);
+    end
+    else
+    begin
+      LReport.Add('before', LBaseline);
+    end;
     if LSeed = 731 then
     begin
-      Need(LBefore.Strings['wav_sha256'] = LReceipt.Strings['wav_sha256'],
+      Need(LBaseline.Strings['wav_sha256'] = LReceipt.Strings['wav_sha256'],
         'Baseline PCM differs from the retained failed audition');
       Need(LExpected.Count = Length(LAccess.Windows), 'Baseline grain count differs');
       for LIndex := 0 to LExpected.Count - 1 do
@@ -529,8 +717,17 @@ begin
       end;
     end;
     LReport.Add('retained_baseline_exact', LSeed = 731);
+    LBefore := LBaseline;
+    if LFollowupSeconds > 0 then
+    begin
+      WriteLn('Rendering longer comparison baseline');
+      LBefore := Render(LProfile, LAccess, nil, LSeed, LBlock,
+        LComparisonFrames, LOutput + 'before.wav');
+      LReport.Add('before', LBefore);
+    end;
     WriteLn('Rendering exact source successors');
-    LAfter := Render(LProfile, LAccess, LSuccessors, LSeed, LBlock, LFrames, LOutput + 'after.wav');
+    LAfter := Render(LProfile, LAccess, LSuccessors, LSeed, LBlock,
+      LComparisonFrames, LOutput + 'after.wav');
     LReport.Add('after', LAfter);
     Need(LBefore.Arrays['grain_map'].Count = LAfter.Arrays['grain_map'].Count, 'Changed grain count');
     for LIndex := 0 to LBefore.Arrays['grain_map'].Count - 1 do
@@ -546,6 +743,11 @@ begin
     LGate := (LAfter.Integers['contiguous_links'] > LBefore.Integers['contiguous_links']) and
       (LAfter.Integers['repeated_four_window_sequences'] <= LBefore.Integers['repeated_four_window_sequences']);
     LReport.Add('frozen_mechanism_gate_passed', LGate);
+    if LGate and (LFollowupSeconds > 0) then
+    begin
+      WriteLn('Preparing level-matched listening copies');
+      LReport.Add('listening_levels', ListeningCopies(LOutput, LAccess));
+    end;
     LReport.Add('musical_acceptance', 'Unreviewed; source continuity metrics do not establish sustained notes or good music');
     LReport.Add('reference_scope', 'First 20 seconds or shorter of the saved selected source range; no gain normalization');
     LReport.Add('input_protection', 'Original source and journal remained open read-only denying writes; saved model, request and receipt were not modified');

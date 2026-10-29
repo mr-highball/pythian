@@ -150,6 +150,32 @@ The web queue hides pending contextual/replaced questions, including after the
 prepared answer is saved. Raw reports, exports, earlier requests and all response
 history remain intact. Parent comparisons remain available in their own history.
 
+To prepare a deliberate follow-up, supply both `reviewed_request_id` and
+`reviewed_asset_id` in the factory definition. They identify the reviewed
+generated example that motivated the next experiment. The factory adds
+`experiment.reviewed_from`: `request_id`, `asset_id`, canonical `request_sha256`,
+submitted response `revision`, and canonical whole-event `response_sha256`.
+The parent may itself be a prepared experiment. This records a development
+decision; it never selects training data or retrains on Save. The producer must
+explain which model, corpus, controls, seed or duration it retained or changed.
+
+First publication checks that this submitted answer is still current under the
+review writer lock. A corrected or withdrawn answer requires explicit new
+preparation. Identical published experiments retain their historical binding
+after corrections. Export/inspection/replay verify that exact historical event,
+including its immutable request snapshot. Missing or changed history rejects.
+The existing `parent` descriptor still requires identical Before audio; it is
+not weakened to attach different-duration examples.
+
+The maintained `pythian.source.successor` development CLI can take an explicit
+seventh `FOLLOWUP_SECONDS` argument, 21–120 seconds with seed731. It first
+replays the saved at-most20-second baseline exactly, then renders the matched
+longer pair through the primary session. Its default remains the saved duration;
+this does not change finite Studio limits or long-playback capability. A passing
+frozen mechanism gate produces bounded-streaming listening copies using the
+primary meter and gain effect. Decoded global RMS is matched by attenuation;
+this is not perceptual loudness matching or normalization of training input.
+
 Studio's finite auditions accept `reconstruction: "source_successor"` in an
 explicit job write; absence or `"sparse"` retains standard reconstruction.
 The experimental option reuses the model and complete feature journals and
