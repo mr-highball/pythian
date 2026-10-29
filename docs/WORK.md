@@ -12,6 +12,47 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: journal learning preparation qualified; musical gates remain open — 2026-10-29
+
+Previous implementation goal turn made PROGRESS; its next continuation was a
+VERIFIED WAIT against the same live CI493 handle. Big Boss remains SOLO.
+Exact64887c8/[CI493](https://github.com/mr-highball/pythian/actions/runs/40959194111/job/123747185147)
+is now terminal SUCCESS16m31s, including maintained integration and extracted
+consumers. No run or passing local suite was restarted merely to wait.
+
+The [parent04](TODO/NS-6_observability_04.md) journal learning/index component is
+qualified: native32/64 and actual pas2js each32972 checks/532 original aborts,
+unchanged original learning, actual Win64 worker384 checks/zero leaks/frozen WAV,
+clean exact Win64 core/full107/159-unit and120/280-hash packages, and actual new
+API use from extracted full sources on native64/pas2js all pass. Matching CLI
+and browser programs compile. The phase map and observer lifetime/reopen rules
+are in [observability](OBSERVABILITY.md#journal-learning-preparation--qualified-component-2026-10-29).
+
+This closes a required component, not a whole parent criterion or task. Delivery
+nonclosing0→1; all scientific stops and exposure histories remain. Counts stay
+53open/94DONE/147 total, NS6 15open and52.45/47.55. The workflow's stale91-DONE
+summary is reconciled to the existing94-DONE ledger; no completion is invented.
+Full AC1/2, duration/scheduler and other retained internals, measured synchronous
+allocation/copy latency and actual Studio18 remain open. Browser/phone execution,
+musical judgment and live deployment do not follow from native/compiler checks.
+
+The read-only remaining-operation audit identifies unobserved duration/scheduler
+transactions and repeated model cloning through text codecs. Existing generic
+WFC preparation/solve/proof hooks cover much of the duration path; observable
+generic clone ownership still needs a bounded domain-independent reproduction
+and separate-repository existing-fix check before any new upstream branch or edit.
+No WFC or duration implementation was changed by this assessment. Reassess least
+complete NS5's actual prerequisites before selecting the next batch; preserve
+the stopped pitch families and pending two-minute/separate4:16 listening questions.
+
+All local build/runtime/package handles are terminal. Private E-drive
+journal-preparation-20261029-boss retains PLAN, failure logs, local/extracted
+results, terminal CI and NEXT. The stable service and its catalog/answers/source
+recordings remain intact. No QA listener/browser/audio process or helper was
+started; no firewall, service, dependency source or inference runtime changed.
+Full goal remains active/unachieved with no global blocker or musical claim.
+Complete previous WORK history follows unchanged.
+
 ## Current handoff: journal learning preparation passes locally; exact qualification next — 2026-10-29
 
 Previous goal delivery made PROGRESS: Studio25 closed at exactCI491 and its

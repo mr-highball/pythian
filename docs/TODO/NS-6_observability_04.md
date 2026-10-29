@@ -145,23 +145,27 @@ unqualified where no interior observer exists. Actual Studio18 remains separate.
 
 **Dev Notes:**
 
-- 2026-10-29, Big Boss SOLO: the remaining training/index component now exposes
+- 2026-10-29, Big Boss SOLO: the remaining training/index component is qualified
+  at64887c8/[CI493](https://github.com/mr-highball/pythian/actions/runs/40959194111/job/123747185147),
+  terminal SUCCESS16m31s, including integration and extracted consumers. It exposes
   segment/partition overlap preflight, candidate/successor construction and
   measured/restored context construction, with nested journal decoding and
   actual WFC model-builder forwarding. The two context sort implementations
   are consolidated. Existing pass-local learning counters remain separate from
   detailed work; constructor candidates stay private on cancellation. Native
   Studio and journal learn/fit/context tools forward the new observers. See
-  [the exact phase/ownership map](../OBSERVABILITY.md#journal-learning-preparation--local-qualification-2026-10-29).
+  [the exact phase/ownership map](../OBSERVABILITY.md#journal-learning-preparation--qualified-component-2026-10-29).
   Native32/64 and actual pas2js each pass32972 checks/532 original aborts, exact
   constructor retry/model/index replay and unchanged borrowed journal bytes.
   Original native learning controls pass. The32768-observation synthetic journal
   exposes2053 interior callbacks. Actual Win64 worker384 checks, bounded durable
   updates, zero leaks and the frozen WAV pass; matching CLI/browser programs
-  compile. Exact published/extracted qualification remains pending; results are not accepted merely by
-  compilation. Full AC1/2, duration/scheduler and other retained interiors,
+  compile. Clean exact Win64 core/full packages pass107/159 units and120/280
+  hashes; actual new API consumers from extracted full sources pass on native64
+  and pas2js. Full AC1/2, duration/scheduler and other retained interiors,
   synchronous allocation/copy latency and actual Studio18 remain open. No task
   split, musical credit, deployment or scientific/exposure reset is claimed.
+  This required component closes no whole criterion: delivery nonclosing0→1.
   Private E-drive journal-preparation-20261029-boss keeps PLAN, all logs and the
   removed-variable/test-rewind failures with their repairs.
 

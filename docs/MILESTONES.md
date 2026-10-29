@@ -5,12 +5,14 @@
 
 ## North-star assessment
 
-In progress2026-10-29: [parent04](TODO/NS-6_observability_04.md)'s remaining
-journal learning/index preparation passes native32/64 and actual pas2js with
+Qualified component2026-10-29: [parent04](TODO/NS-6_observability_04.md)'s remaining
+journal learning/index preparation qualifies at64887c8/[CI493](https://github.com/mr-highball/pythian/actions/runs/40959194111/job/123747185147),
+terminal SUCCESS16m31s with integration/extracted consumers. Native32/64 and actual pas2js pass
 32972 checks/532 original aborts each, unchanged native learning and actual
-worker384/zero leaks/frozen WAV. Matching CLI/browser programs compile. Exact
-published and extracted API qualification is next; full parent and actual Studio
-gates stay open. Counts53open/94DONE/147 and52.45/47.55 remain; no musical credit,
+worker384/zero leaks/frozen WAV. Clean exact core/full packages and new extracted
+API consumers pass; matching CLI/browser programs compile. Full parent and actual
+Studio gates stay open. Delivery nonclosing0→1; counts53open/94DONE/147 and
+52.45/47.55 remain; no musical credit,
 task move or scientific/exposure reset. Two longer listening reviews are pending.
 
 Accepted2026-10-29: [reviewed-feedback follow-ups25 — DONE](TODO/DONE/NS-6_studio_25.md)

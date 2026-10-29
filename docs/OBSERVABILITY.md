@@ -3,7 +3,7 @@
 [Project](../PROJECT.md) · [Assessment](CODEBASE-ASSESSMENT.md) ·
 [Tasks](TODO/README.md) · [Work](WORK.md)
 
-## Journal learning preparation — local qualification, 2026-10-29
+## Journal learning preparation — qualified component, 2026-10-29
 
 Big Boss's remaining [parent04](TODO/NS-6_observability_04.md) component adds
 optional primary work observers to training/partition preflight, candidate and
@@ -44,9 +44,14 @@ A32768-observation/4469676-byte synthetic journal exposes2053 detailed callbacks
 this checks visibility, not recorded musical accuracy or a duration guarantee.
 Actual Win64 worker passes384 checks, bounded durable updates and zero leaks;
 the frozen320044-byte WAV is unchanged. Matching CLI and four browser programs
-compile. Exact published integration/extracted consumers and browser/phone
-presentation remain separate qualification gates. No deployment, musical credit,
-whole parent criterion closure or stopped-experiment reset follows.
+compile. Exact64887c8/[CI493](https://github.com/mr-highball/pythian/actions/runs/40959194111/job/123747185147)
+is terminal SUCCESS in16m31s, including maintained integration and extracted
+consumers. Clean exact Win64 core/full packages pass107/159 owned units and
+120/280 content hashes. The new APIs also execute from extracted full sources
+only on native64 and actual pas2js, again32972 checks/532 aborts each. Actual
+browser/phone presentation remains unverified. This qualifies a required parent04
+component; delivery nonclosing0→1. No deployment, musical credit, whole parent
+criterion closure or stopped-experiment reset follows.
 
 ## Primary journal intake — qualified primary consumers, 2026-10-29
 

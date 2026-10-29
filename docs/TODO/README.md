@@ -33,13 +33,15 @@ north-star credit owner; secondary use and outcome rollups earn nothing extra.
 
 ## Goal ledger
 
-In progress2026-10-29: [parent04](NS-6_observability_04.md)'s remaining journal
-learning/index preparation passes native32/64 and actual pas2js32972 checks/532
+Qualified component2026-10-29: [parent04](NS-6_observability_04.md)'s remaining journal
+learning/index preparation qualifies at64887c8/[CI493](https://github.com/mr-highball/pythian/actions/runs/40959194111/job/123747185147),
+terminal SUCCESS16m31s with integration/extracted consumers. Native32/64 and actual pas2js pass32972 checks/532
 original aborts each, unchanged native learning and actual worker384/zero leaks/
-frozen WAV. CLI/browser programs compile. Exact published/extracted qualification
-remains next. No whole criterion/task closes or musical credit follows;
+frozen WAV. Clean exact core/full packages and new extracted API consumers pass;
+CLI/browser programs compile. No whole criterion/task closes or musical credit follows;
 53open/94DONE/147, NS6 15open and52.45/47.55 remain. Scientific stops/exposures
-stay unchanged; actual Studio18 and the longer musical judgments remain open.
+stay unchanged; delivery nonclosing0→1. Actual Studio18 and the longer musical
+judgments remain open.
 
 Accepted2026-10-29: [reviewed-feedback follow-ups25 — DONE](DONE/NS-6_studio_25.md)
 qualifies at8ffc516/[CI491](https://github.com/mr-highball/pythian/actions/runs/40945445866/job/123699475130).
