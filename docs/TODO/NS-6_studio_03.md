@@ -15,15 +15,17 @@ Basis: [2026-09-30 operator allocation](../OPERATOR-STUDIO.md#allocation-and-own
 This owns usable feedback/iteration, not the scientific validity of style limits;
 [evaluation_01](NS-5_evaluation_01.md) and evaluation_04 retain that acceptance.
 
-Execution status (2026-10-27): prepared short-comparison feedback is saved, and
-the retained long repetition review is now published after explicit user
-approval. Existing negative listening evidence remains intact. The operator
-does not need more manual segmentation or generation setup to answer the next
-question. Big Boss owns the purpose and subsequent explicit development decision.
-Next deliverable: the operator's repetition answer and durable readback, followed
-by the remaining actual playback/iteration qualification. The prepared single
-declares its missing Original context; it cannot inherit the short comparison's
-answer or supply a broad style/continuity verdict.
+Execution status (2026-10-29): the short comparison's saved After preference now
+has a published two-minute follow-up through
+[reviewed-feedback lineage — DONE](DONE/NS-6_studio_25.md). Original/Before/After
+and one continuity question are ready without further segmentation or generation
+setup. The older4:16 repetition review remains a distinct pending experiment.
+Existing negative evidence and all saved answers remain intact. Big Boss owns
+the purpose and subsequent explicit development decision.
+Next deliverable: the operator's longer-comparison answer and durable readback,
+plus the remaining actual browser/playback/iteration qualification. The old
+single still declares missing Original context. Neither experiment inherits an
+answer or supplies a broad style/continuity verdict.
 The exact-source-successor core integration is tracked separately in
 [continuity_04](NS-5_continuity_04.md). Existing queue/review mechanisms must be
 reused. Closing evidence remains real operator use with durable response readback
@@ -70,7 +72,7 @@ open; engineering checks earn no musical verdict or completion credit.
 
 **Blockers**
 
-- [Reviewed-feedback follow-up lineage](NS-6_studio_25.md) — required native producer support for AC3; exact-Before comparisons retain their existing contract.
+- [Reviewed-feedback follow-up lineage — DONE](DONE/NS-6_studio_25.md) — native producer support for AC3; exact-Before comparisons retain their existing contract.
 - [Failed response construction cleanup — DONE](DONE/NS-6_studio_23.md).
 - [Publication-time replacement check — DONE](DONE/NS-6_studio_24.md).
 - [Original/generated source comparison](NS-6_studio_22.md) — repairs AC1's missing audible source context.
@@ -80,14 +82,15 @@ open; engineering checks earn no musical verdict or completion credit.
 
 **Dev Notes:**
 
-- 2026-10-29, Big Boss: [studio_25](NS-6_studio_25.md) supplies AC3's native
+- 2026-10-29, Big Boss: [studio_25](DONE/NS-6_studio_25.md) supplies AC3's native
   explicit reviewed-feedback binding without weakening the existing exact-Before
   parent. One new two-minute comparison retains the reviewed short result's
   model, source selection and seed, with no training or tuning. Frozen mechanism
   and block replay pass; actual isolated preparation binds the submitted answer
   revision/hash and preserves every existing response. Both examples are new
   two-minute renders, not an assertion that the old20-second media simply loops.
-  Live delivery and actual operator/browser acceptance remain open. The pending
+  Compatible live delivery is verified at exact8ffc516/CI491; actual operator/
+  browser and the full workflow criteria remain open. The pending
   older4:16 guard is a separate experiment; no answer or musical credit transfers.
 
 - 2026-10-27, Big Boss: the retained 256.192-second guard experiment was absent

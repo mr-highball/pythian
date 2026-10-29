@@ -1,6 +1,6 @@
 # NS-6_studio_25 — Bind follow-up experiments to saved feedback
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
@@ -10,19 +10,23 @@ represent extending a preferred short result. Preserve that useful exact-Before
 contract; add a distinct reviewed-feedback binding to the primary native catalog.
 Do not replace the reviewed request or create another answer store.
 
-Execution status: native producer and real isolated preparation pass, Big Boss
-solo, 2026-10-29. Exact published qualification and live delivery remain next.
-Next deliverable: one two-minute development comparison using the saved model,
-source selection and seed, with its actual parent answer bound immutably. Retain
-Original context and one clear question. No new source, learning or tuning.
+Accepted 2026-10-29, Big Boss solo, at source `8ffc516` and
+[CI491](https://github.com/mr-highball/pythian/actions/runs/40945445866/job/123699475130).
+Native regression, real isolated preparation and atomic publication pass. The
+two-minute development comparison is live, retaining its model, selected source,
+seed, Original context and exact submitted parent-answer binding. No new learning
+or tuning occurs. The older guard review remains separate and unanswered.
+
 Closing evidence: native prepare/publish/readback/export/replay, stale-feedback
-and malformed-binding rejection, preserved answers and exact saved short replay.
-Stop at a failed frozen audio gate, ambiguous lineage or publication conflict;
-retain failures and do not tune a replacement variant.
+and malformed-binding rejection, exact short baseline and longer block replay,
+all eight previous requests and four response histories preserved. Native HTTPS,
+served listening assets and bounded media requests pass after compatible fixed-slot
+delivery. No operator answer or actual browser/phone verdict was supplied by this
+engineering acceptance. The broader workflow and musical criteria remain open.
 
 North star: NS-6. Outcome owner: OPERATOR-STUDIO.
 Completion credit: 0. This required producer prerequisite contributes to
-[studio_03](NS-6_studio_03.md) AC3; that task retains its allocation and actual
+[studio_03](../NS-6_studio_03.md) AC3; that task retains its allocation and actual
 browser/operator acceptance. Audio measurements earn no musical credit.
 
 **Acceptance Criteria:**
@@ -50,10 +54,31 @@ browser/operator acceptance. Audio measurements earn no musical credit.
 
 **Blockers**
 
-- [Publication-time replacement check — DONE](DONE/NS-6_studio_24.md).
-- [Exact source-successor admission — DONE](DONE/NS-5_continuity_03.md).
+- [Publication-time replacement check — DONE](NS-6_studio_24.md).
+- [Exact source-successor admission — DONE](NS-5_continuity_03.md).
 
 **Dev Notes:**
+
+- 2026-10-29, Big Boss: exact CI491 succeeds in19m34s, including integration
+  18m26s and extracted consumers43s. Matched native worker382 checks preserve its
+  frozen320044-byte WAV, with zero leaks. Fourteen checked artifacts occupy the
+  existing stable slot; executable path, port, Private profile and TLS identity
+  are reused, without firewall changes. Fresh combined-packet replay and live
+  normal append preserve all old requests/answer events, and retries are byte-
+  idempotent. The new review remains revision0. Native authenticated HTTPS serves
+  the Original and both120-second assets with44-byte range reads; the listening
+  page/script/styles match checked bytes. The web projection has two pending
+  reviews and three completed entries; the fourth saved answer remains in its
+  Studio history. An initial unauthenticated job read correctly rejected403;
+  the documented session bootstrap succeeds, with no bypass. A legacy private
+  launcher unnecessarily required administrative firewall inspection on every
+  replacement; routine startup now reuses the established slot/hash, unchanged
+  address/profile/TLS and active-job guards. No Windows rule or protection changed.
+  Verified duplicate staging/fixture media and disposable compiler objects are
+  compacted with canonical path/hash manifests; all unique media and responses
+  remain. Retained artifacts, including new durable review copies, stay below
+  the original256MiB cap. No QA browser/audio process was launched. Actual browser,
+  phone, full parent workflow and musical acceptance remain open.
 
 - 2026-10-29, Big Boss: one frozen120-second pair passes:5622 grains per side,
   unchanged requested tokens/source shares/clock, exact links0→4583 and repeated

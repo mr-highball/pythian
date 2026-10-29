@@ -12,6 +12,55 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: reviewed two-minute comparison is live; musical judgment remains open — 2026-10-29
+
+Big Boss remains SOLO. [Studio25 — DONE](TODO/DONE/NS-6_studio_25.md) is accepted
+at exact8ffc516/[CI491](https://github.com/mr-highball/pythian/actions/runs/40945445866/job/123699475130),
+terminal SUCCESS:19m34s, including integration18m26s and extracted consumers43s.
+Its native reviewed-feedback producer now delivers one explicit longer experiment
+from the operator's saved short After preference. No training, source/seed change,
+agent musical answer or musical completion credit follows.
+
+The new question is: which version has fewer broken or jittery notes over two
+minutes? Original/Before/After are available through the normal listening app.
+Both generated sides are new120-second renders from the same model and selected
+source, with5622 grains and5760000 frames per side. The old failed20-second
+baseline and longer block replay are exact. The saved short response is bound
+by request/asset/hash and submitted revision/hash. The older4:16 guard remains
+a separate pending experiment; neither answer transfers to the other.
+
+Native32/64 catalog regression and actual worker382 checks pass, zero leaks,
+with the frozen320044-byte worker WAV unchanged. All14 matching delivery
+artifacts occupy the existing stable slot. Its path, port, Private profile and
+TLS identity are reused without firewall changes; the independent launcher has
+exited and the service remains available. The old private wrapper's repeated
+administrative firewall inspection was unnecessary for routine replacement;
+same-slot/hash, address/profile/TLS and active-job guards remain in force.
+
+Fresh isolated and real live combined append preserve all eight previous
+requests and four saved response histories. Retries leave queue bytes unchanged.
+The new review is revision0; the web projection has two pending and three
+completed entries because its fourth stored answer belongs to Studio history.
+Native HTTPS uses default certificate validation. Listening HTML/script/styles
+match checked bytes; Original and both longer assets support44-byte range reads.
+These are native service/media checks, not actual browser or phone acceptance.
+No QA browser, audio playback, helper, WFC repository or new recording was used.
+
+Task move, incoming links and ledgers change together:54open/93DONE→53open/94DONE,
+147 total, NS6 16→15 open. Completion stays52.45/47.55; delivery nonclosing remains0
+after whole required task closure. All scientific stops/exposures remain. The
+broader studio03 workflow, continuity04/05 browser gates and every musical gate
+stay open. Reassess least-complete NS5's actual prerequisites before selecting
+another batch; do not pad this review queue with further variants.
+
+Private E-drive `runs/continuity-followup-20261029-boss` holds complete PLAN,
+LOCAL-RESULT, terminal CI, delivery/publication/HTTPS evidence, media/parameters,
+full grain maps, failure logs and canonical duplicate-retention manifests. Unique
+audio, provenance, source recordings and responses remain intact. Retained
+artifacts, including new durable review copies, remain below256MiB. Full goal
+remains active/unachieved; no global blocker or full musical verdict is claimed.
+Earlier WORK history is preserved, with the one incoming task25 link repaired.
+
 ## Current handoff: reviewed two-minute follow-up passes locally; exact qualification next — 2026-10-29
 
 Previous goal batch made PROGRESS: portable storage14 closed at exactCI489.
@@ -19,7 +68,7 @@ Big Boss remains SOLO. Least-complete NS5 and its recorded prerequisites/stops
 remain unchanged. The saved short comparison prefers After; the pending4:16
 guard is an older three-source experiment and cannot extend that verdict.
 
-[Studio25](TODO/NS-6_studio_25.md) is the required zero-credit native producer
+[Studio25](TODO/DONE/NS-6_studio_25.md) is the required zero-credit native producer
 slice of studio_03 AC3. Its distinct reviewed_from binding captures the actual
 submitted request/asset/hash and response revision/hash. First publication
 rechecks the answer under the existing writer lock. Later corrections preserve

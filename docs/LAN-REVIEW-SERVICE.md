@@ -18,6 +18,15 @@ the same filename elsewhere. Reuse the existing Private-network approval and
 inspect its scope before requesting another; do not disable notifications to
 hide a changing launch path.
 
+Ordinary updates reuse that approval. Keep firewall installation/maintenance
+separate from routine startup: replacing checked bytes at the established path
+does not require creating another rule or repeatedly obtaining administrator
+access to inspect it. Before replacing a live service, verify its exact owner,
+command/catalog, artifact hashes, unchanged bind address/Private profile/TLS and
+absence of active or pending jobs. Check the same endpoint after restart. A new
+path, port/profile or actual Windows rejection needs a separate assessment;
+do not broaden access or suppress a prompt to conceal it.
+
 ## Configure this machine
 
 Run from the repository root. Supply the private IPv4 assigned to this machine

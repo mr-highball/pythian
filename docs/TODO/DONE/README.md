@@ -3,7 +3,7 @@
 [Task index](../README.md) · [Task flow](../../TASKFLOW.MD) ·
 [Milestones](../../MILESTONES.md) · [Current credit basis](../../REBALANCE-2026-09-29.md#current-credit-basis)
 
-All **93** records retain their acceptance evidence and dates. Points below
+All **94** records retain their acceptance evidence and dates. Points below
 use the user-authorized 2026-09-29 outcome rebase; older amounts in evidence
 narratives are historical. No task was accepted by this reassessment.
 The [2026-09-30 Studio allocation](../../OPERATOR-STUDIO.md#allocation-and-ownership)
@@ -16,6 +16,7 @@ Shared filter catalog and flexible source workspace add 3 NS-6 / 0.30 overall.
 
 | Accepted task | Date | Current goal credit | Current overall credit |
 | --- | --- | ---: | ---: |
+| [NS-6_studio_25](NS-6_studio_25.md) — Bind follow-up experiments to saved feedback | 2026-10-29 | 0 NS-6 | 0.00 |
 | [NS-6_portability_14](NS-6_portability_14.md) — Shared bounded resizable byte storage | 2026-10-29 | 0 NS-6 | 0.00 |
 | [NS-6_portability_13](NS-6_portability_13.md) — Shared journal renderer and actual portable sample-copy consumers | 2026-10-29 | 0 NS-6 | 0.00 |
 | [NS-6_observability_19](NS-6_observability_19.md) — Shared observable journal source selection | 2026-10-29 | 0 NS-6 | 0.00 |

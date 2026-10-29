@@ -43,6 +43,16 @@ Starting evidence: [WAV-STUDIES](../WAV-STUDIES.md) · [ACTIVITY](../ACTIVITY.md
 
 **Dev Notes:**
 
+- 2026-10-29, Big Boss: [reviewed-feedback follow-ups25 — DONE](DONE/NS-6_studio_25.md)
+  publishes one two-minute Before/After question from the saved short After
+  preference. The same model, selected source, seed and reconstruction policy
+  produce5622 grains per side; exact links0→4583 and four-window repeats4453→3691.
+  Exact short baseline and raw block replay pass. Original context, complete
+  parameters/grain maps and the submitted parent-answer revision/hash are retained.
+  The new answer is pending, with no musical verdict or training. The older4:16
+  guard remains a separate question. Full criteria, blockers, credit and stopped
+  investigations are unchanged; do not pad this queue with further variants.
+
 - 2026-10-27, Big Boss: queue reconciliation corrects the historical pending
   claim below. The retained 256.192-second render was absent from the current
   operator catalog. Exact audio/model/report/ordered-source lineage was verified
