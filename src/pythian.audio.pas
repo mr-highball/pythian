@@ -61,6 +61,12 @@ type
 
 procedure RequireFinite(const AValue: Double; const AName: String);
 procedure ValidateAudioFormat(const ASampleRate, AChannels: Integer);
+{ Copy existing sample values without allocation/conversion. Whole dynamic
+  arrays may alias, including overlapping ranges of the same array. Both spans
+  are validated before any write; invalid spans leave the target unchanged. }
+procedure CopyAudioSampleRange(const ASource: TAudioSamples;
+  const ASourceIndex: Integer; var ATarget: TAudioSamples;
+  const ATargetIndex, ACount: Integer);
 function QuantizePcm16(const ASample: Double): SmallInt;
 function DownmixMono(const AClip: TAudioClip): TAudioClip;
 
@@ -68,6 +74,34 @@ implementation
 
 uses
   Math;
+
+procedure CopyAudioSampleRange(const ASource: TAudioSamples;
+  const ASourceIndex: Integer; var ATarget: TAudioSamples;
+  const ATargetIndex, ACount: Integer);
+var
+  LIndex: Integer;
+begin
+  if (ASourceIndex < 0) or (ATargetIndex < 0) or (ACount < 0) or
+    (ASourceIndex > Length(ASource)) or (ATargetIndex > Length(ATarget)) then
+  begin
+    raise EAudio.Create('Audio sample copy range is outside its buffers');
+  end;
+  if (ACount > Length(ASource) - ASourceIndex) or
+    (ACount > Length(ATarget) - ATargetIndex) then
+  begin
+    raise EAudio.Create('Audio sample copy range is outside its buffers');
+  end;
+  if ATargetIndex > ASourceIndex then
+  begin
+    for LIndex := ACount - 1 downto 0 do
+      ATarget[ATargetIndex + LIndex] := ASource[ASourceIndex + LIndex];
+  end
+  else
+  begin
+    for LIndex := 0 to ACount - 1 do
+      ATarget[ATargetIndex + LIndex] := ASource[ASourceIndex + LIndex];
+  end;
+end;
 
 procedure RequireFinite(const AValue: Double; const AName: String);
 begin

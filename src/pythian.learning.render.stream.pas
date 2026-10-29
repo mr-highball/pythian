@@ -30,6 +30,7 @@ interface
 
 uses
   pythian.audio,
+  pythian.progress,
   pythian.learning,
   pythian.learning.journal,
   pythian.learning.selection,
@@ -43,7 +44,11 @@ type
   TJournalAudioWrite = procedure(const ASamples: array of Single) of object;
   { Borrows pool and callbacks. Output blocks are borrowed for the callback
     only; copy before retaining. Hann normalization continues across blocks.
-    Callback failures poison this stream; the host owns output publication.
+    Source/output or post-preflight observer failures poison this stream; earlier
+    external writes cannot roll back. Preflight observer failures leave it
+    unchanged and retryable. Observers are synchronous and borrowed per call;
+    no callback may reenter or mutate this renderer. RTL buffer allocation/copy
+    and each bounded source/output I/O callback remain synchronous boundaries.
     Positive OutputFrames trims the ending without a second rendering pass. }
   TJournalAudioRenderStream = class
   private
@@ -56,6 +61,7 @@ type
     FExpectedGrains: Int64;
     FGrainCount: Int64;
     FFlushedFrames: Int64;
+    FWrittenFrames: Int64;
     FOutputFrames: Int64;
     FMix: array of Double;
     FWeights: array of Double;
@@ -66,6 +72,9 @@ type
     FPeak: Double;
     FFailed: Boolean;
     FFinished: Boolean;
+    FBusy: Boolean;
+    FProgress: TWorkProgressCallback;
+    procedure RequireIdle;
     procedure FlushTo(const AFrame: Int64);
     procedure WriteBuffered;
     procedure AppendOne(const ACandidate: TJournalRepresentative);
@@ -74,12 +83,15 @@ type
       const AReadWindow: TJournalWindowRead; const AWriteAudio: TJournalAudioWrite;
       const AChannels, AWindowFrames, AHopFrames: Integer;
       const AExpectedGrains: Int64; const ABlockFrames: Integer;
-      const AOutputFrames: Int64 = 0);
-    procedure AppendSelection(const ASelection: TAcousticIndices);
+      const AOutputFrames: Int64 = 0;
+      const AProgress: TWorkProgressCallback = nil);
+    procedure AppendSelection(const ASelection: TAcousticIndices;
+      const AProgress: TWorkProgressCallback = nil);
     { Explicit windows are preflighted as a complete block before source reads.
       The host's verified profile/source binding owns physical source extents. }
-    procedure AppendWindows(const AWindows: TJournalContextWindows);
-    procedure Finish;
+    procedure AppendWindows(const AWindows: TJournalContextWindows;
+      const AProgress: TWorkProgressCallback = nil);
+    procedure Finish(const AProgress: TWorkProgressCallback = nil);
     property GrainCount: Int64 read FGrainCount;
     property FlushedFrames: Int64 read FFlushedFrames;
     property Peak: Double read FPeak;
@@ -116,7 +128,7 @@ constructor TJournalAudioRenderStream.Create(const APool: TJournalCandidatePool;
   const AReadWindow: TJournalWindowRead; const AWriteAudio: TJournalAudioWrite;
   const AChannels, AWindowFrames, AHopFrames: Integer;
   const AExpectedGrains: Int64; const ABlockFrames: Integer;
-  const AOutputFrames: Int64);
+  const AOutputFrames: Int64; const AProgress: TWorkProgressCallback);
 var
   LFrame: Integer;
 begin
@@ -149,11 +161,21 @@ begin
   SetLength(FMix, AWindowFrames * FChannels);
   SetLength(FWeights, AWindowFrames);
   SetLength(FWindowWeights, AWindowFrames);
+  ReportWork(AProgress, 'journal_render_window', wuFrames, 0, AWindowFrames);
   for LFrame := 0 to AWindowFrames - 1 do
   begin
     FWindowWeights[LFrame] := GrainWindowWeight(gwHann, LFrame, AWindowFrames);
+    if ((LFrame + 1) mod 1024 = 0) then
+      ReportWork(AProgress, 'journal_render_window', wuFrames, LFrame + 1, AWindowFrames);
   end;
   SetLength(FBlock, ABlockFrames * FChannels);
+  ReportWork(AProgress, 'journal_render_window', wuFrames, AWindowFrames, AWindowFrames);
+end;
+
+procedure TJournalAudioRenderStream.RequireIdle;
+begin
+  if FBusy then
+    raise EAudio.Create('Journal renderer cannot be reentered from a callback');
 end;
 
 procedure TJournalAudioRenderStream.WriteBuffered;
@@ -170,11 +192,12 @@ begin
   end
   else
   begin
-    SetLength(LSamples, FBufferedFrames * FChannels);
-    Move(FBlock[0], LSamples[0], Length(LSamples) * SizeOf(Single));
+    LSamples := Copy(FBlock, 0, FBufferedFrames * FChannels);
     FWriteAudio(LSamples);
   end;
+  Inc(FWrittenFrames, FBufferedFrames);
   FBufferedFrames := 0;
+  ReportWork(FProgress, 'journal_render_output', wuFrames, FWrittenFrames, FOutputFrames);
 end;
 
 procedure TJournalAudioRenderStream.FlushTo(const AFrame: Int64);
@@ -188,6 +211,7 @@ begin
   begin
     raise EAudio.Create('Journal stream flush extent invalid');
   end;
+  ReportWork(FProgress, 'journal_render_flush', wuFrames, FFlushedFrames, FOutputFrames);
   while FFlushedFrames < AFrame do
   begin
     LRing := FFlushedFrames mod FWindowFrames;
@@ -211,7 +235,10 @@ begin
     begin
       WriteBuffered;
     end;
+    if FFlushedFrames mod 1024 = 0 then
+      ReportWork(FProgress, 'journal_render_flush', wuFrames, FFlushedFrames, FOutputFrames);
   end;
+  ReportWork(FProgress, 'journal_render_flush', wuFrames, FFlushedFrames, FOutputFrames);
 end;
 
 procedure TJournalAudioRenderStream.AppendOne(const ACandidate: TJournalRepresentative);
@@ -224,12 +251,16 @@ var
   LWeight: Double;
   LValue: Double;
 begin
+  ReportWork(FProgress, 'journal_render_source', wuFrames, 0, ACandidate.ValidFrames);
   LSamples := FReadWindow(ACandidate);
   if Length(LSamples) <> ACandidate.ValidFrames * FChannels then
   begin
     raise EAudio.Create('Journal stream callback returned a mismatched window');
   end;
+  ReportWork(FProgress, 'journal_render_source', wuFrames,
+    ACandidate.ValidFrames, ACandidate.ValidFrames);
   LStart := Int64(FGrainCount) * FHopFrames;
+  ReportWork(FProgress, 'journal_render_mix', wuFrames, 0, FWindowFrames);
   for LFrame := 0 to FWindowFrames - 1 do
   begin
     LRing := (LStart + LFrame) mod FWindowFrames;
@@ -250,16 +281,22 @@ begin
       FMix[LRing * FChannels + LChannel] :=
         FMix[LRing * FChannels + LChannel] + LValue * LWeight;
     end;
+    if (LFrame + 1) mod 1024 = 0 then
+      ReportWork(FProgress, 'journal_render_mix', wuFrames, LFrame + 1, FWindowFrames);
   end;
+  ReportWork(FProgress, 'journal_render_mix', wuFrames, FWindowFrames, FWindowFrames);
   Inc(FGrainCount);
   FlushTo(Min(FGrainCount * FHopFrames, FOutputFrames));
 end;
 
-procedure TJournalAudioRenderStream.AppendSelection(const ASelection: TAcousticIndices);
+procedure TJournalAudioRenderStream.AppendSelection(const ASelection: TAcousticIndices;
+  const AProgress: TWorkProgressCallback);
 var
   LSlot: Integer;
+  LIndex: Integer;
   LCandidate: TJournalRepresentative;
 begin
+  RequireIdle;
   if FFailed or FFinished then
   begin
     raise EAudio.Create('Journal stream cannot continue after failure or finish');
@@ -271,32 +308,44 @@ begin
   begin
     raise EAudio.Create('Journal stream selection count invalid');
   end;
-  for LSlot in ASelection do
-  begin
-    LCandidate := FPool.CandidateAt(LSlot);
-    if not LCandidate.Found or (LCandidate.ValidFrames < 1) or
-      (LCandidate.ValidFrames > FWindowFrames) then
-    begin
-      raise EAudio.Create('Journal stream selection needs admitted source windows');
-    end;
-  end;
+  FBusy := True;
+  FProgress := AProgress;
   try
-    for LSlot in ASelection do
+    ReportWork(FProgress, 'journal_render_preflight', wuItems, 0, Length(ASelection));
+    for LIndex := 0 to High(ASelection) do
     begin
-      AppendOne(FPool.CandidateAt(LSlot));
+      LCandidate := FPool.CandidateAt(ASelection[LIndex]);
+      if not LCandidate.Found or (LCandidate.ValidFrames < 1) or
+        (LCandidate.ValidFrames > FWindowFrames) then
+        raise EAudio.Create('Journal stream selection needs admitted source windows');
+      if (LIndex + 1) mod 128 = 0 then
+        ReportWork(FProgress, 'journal_render_preflight', wuItems, LIndex + 1, Length(ASelection));
     end;
-  except
-    FFailed := True;
-    raise;
+    ReportWork(FProgress, 'journal_render_preflight', wuItems, Length(ASelection), Length(ASelection));
+    try
+      ReportWork(FProgress, 'journal_render_grains', wuItems, FGrainCount, FExpectedGrains);
+      for LSlot in ASelection do
+      begin
+        AppendOne(FPool.CandidateAt(LSlot));
+        ReportWork(FProgress, 'journal_render_grains', wuItems, FGrainCount, FExpectedGrains);
+      end;
+    except
+      FFailed := True;
+      raise;
+    end;
+  finally
+    FProgress := nil;
+    FBusy := False;
   end;
 end;
 
 procedure TJournalAudioRenderStream.AppendWindows(
-  const AWindows: TJournalContextWindows);
+  const AWindows: TJournalContextWindows; const AProgress: TWorkProgressCallback);
 var
   LIndex: Integer;
   LWindow: TJournalContextWindow;
 begin
+  RequireIdle;
   if FFailed or FFinished then
     raise EAudio.Create('Journal stream cannot continue after failure or finish');
   if (Length(AWindows) < 1) or
@@ -304,42 +353,66 @@ begin
     (Length(AWindows) > MaximumJournalStreamChunkGrains) or
     (Int64(Length(AWindows)) * FWindowFrames * FChannels > MaximumJournalStreamVisits) then
     raise EAudio.Create('Journal stream explicit window count invalid');
-  for LIndex := 0 to High(AWindows) do
-  begin
-    LWindow := AWindows[LIndex];
-    if (LWindow.Token < 0) or
-      (LWindow.Token > FPool.TokenAt(FPool.SlotCount - 1)) or
-      not LWindow.Candidate.Found or
-      (LWindow.Candidate.SegmentIndex < 0) or
-      (LWindow.Candidate.SegmentIndex >= FPool.SegmentCount) or
-      (LWindow.Candidate.FeatureIndex < 0) or
-      (LWindow.Candidate.SourceFrame < 0) or
-      (LWindow.Candidate.ValidFrames < 1) or
-      (LWindow.Candidate.ValidFrames > FWindowFrames) then
-      raise EAudio.Create('Journal stream explicit window invalid');
-  end;
+  FBusy := True;
+  FProgress := AProgress;
   try
+    ReportWork(FProgress, 'journal_render_preflight', wuItems, 0, Length(AWindows));
     for LIndex := 0 to High(AWindows) do
-      AppendOne(AWindows[LIndex].Candidate);
-  except
-    FFailed := True;
-    raise;
+    begin
+      LWindow := AWindows[LIndex];
+      if (LWindow.Token < 0) or
+        (LWindow.Token > FPool.TokenAt(FPool.SlotCount - 1)) or
+        not LWindow.Candidate.Found or
+        (LWindow.Candidate.SegmentIndex < 0) or
+        (LWindow.Candidate.SegmentIndex >= FPool.SegmentCount) or
+        (LWindow.Candidate.FeatureIndex < 0) or
+        (LWindow.Candidate.SourceFrame < 0) or
+        (LWindow.Candidate.ValidFrames < 1) or
+        (LWindow.Candidate.ValidFrames > FWindowFrames) then
+        raise EAudio.Create('Journal stream explicit window invalid');
+      if (LIndex + 1) mod 128 = 0 then
+        ReportWork(FProgress, 'journal_render_preflight', wuItems, LIndex + 1, Length(AWindows));
+    end;
+    ReportWork(FProgress, 'journal_render_preflight', wuItems, Length(AWindows), Length(AWindows));
+    try
+      ReportWork(FProgress, 'journal_render_grains', wuItems, FGrainCount, FExpectedGrains);
+      for LIndex := 0 to High(AWindows) do
+      begin
+        AppendOne(AWindows[LIndex].Candidate);
+        ReportWork(FProgress, 'journal_render_grains', wuItems, FGrainCount, FExpectedGrains);
+      end;
+    except
+      FFailed := True;
+      raise;
+    end;
+  finally
+    FProgress := nil;
+    FBusy := False;
   end;
 end;
 
-procedure TJournalAudioRenderStream.Finish;
+procedure TJournalAudioRenderStream.Finish(const AProgress: TWorkProgressCallback);
 begin
+  RequireIdle;
   if FFailed or FFinished or (FGrainCount <> FExpectedGrains) then
   begin
     raise EAudio.Create('Journal stream is failed, finished or incomplete');
   end;
+  FBusy := True;
+  FProgress := AProgress;
   try
-    FlushTo(FOutputFrames);
-    WriteBuffered;
-    FFinished := True;
-  except
-    FFailed := True;
-    raise;
+    try
+      FlushTo(FOutputFrames);
+      WriteBuffered;
+      ReportWork(FProgress, 'journal_render_complete', wuFrames, FWrittenFrames, FOutputFrames);
+      FFinished := True;
+    except
+      FFailed := True;
+      raise;
+    end;
+  finally
+    FProgress := nil;
+    FBusy := False;
   end;
 end;
 

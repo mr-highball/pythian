@@ -80,6 +80,10 @@ Naming a task or narrowing a component does not reset that count.
 
 **Blockers**
 
+- [Actual portable journal renderer13](NS-6_portability_13.md) — actual pas2js
+  rejects the primary renderer's native-only output copy. Qualify one shared
+  renderer and actual audio-session forwarding before claiming these interiors.
+
 - [Shared retained source selection19 — DONE](DONE/NS-6_observability_19.md) —
   shared batch/stream selection and actual audio observer forwarding qualify at
   b33c538/CI482, including native32/64, actual pas2js, frozen worker WAV and clean

@@ -61,6 +61,14 @@ begin
   end;
   case AStage of
     'audio_pull', 'audio_pull_ready': Result := 'Render the next audio block';
+    'journal_render_window': Result := 'Prepare the audio window';
+    'journal_render_preflight': Result := 'Check source passages';
+    'journal_render_source': Result := 'Read a source passage';
+    'journal_render_mix': Result := 'Mix a source passage';
+    'journal_render_flush': Result := 'Prepare output frames';
+    'journal_render_output': Result := 'Output generated audio';
+    'journal_render_grains': Result := 'Render source passages';
+    'journal_render_complete': Result := 'Finish rendering audio';
     'queued': Result := 'Waiting to start';
     'preflight', 'verify_sources': Result := 'Check recordings';
     'find_saved_model': Result := 'Check saved learning';

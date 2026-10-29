@@ -12,6 +12,46 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: shared renderer passes local consumers; qualification next — 2026-10-29
+
+Big Boss remains solo. The stopped PENN physical candidate remains stopped; no
+scientific/exposure reset or new source/model rule. This retained-interiors batch
+is IN PROGRESS under [parent04](TODO/NS-6_observability_04.md). Delivery nonclosing
+remains3 until a complete required criterion qualifies. Actual pas2js exposed a
+native-only render copy; linked [portability13](TODO/NS-6_portability_13.md) owns
+that real prerequisite. Counts54 open/91 DONE/145 total, NS6 16open;52.45/47.55
+unchanged. The current scorecard's stale89accepted/55open summary is repaired;
+earlier dated counts remain historical, without completion credit.
+
+One primary renderer now reports owned preflight/source/mix/flush/output/grain
+work with synchronous per-call observers and reentry protection. Primary sample
+range copying replaces native queue/pull copies; partial output uses portable
+RTL Copy. Renderer preflight cancellation leaves state/I/O unchanged and permits
+retry; post-preflight errors remain terminal. The actual enclosing audio session
+forwards the same observer and permanently fails on any observer error, leaving
+prior caller PCM and successful position unchanged. Earlier external writes are
+not rolled back. No second engine, altered clock/selection/solver or dependency.
+
+Final native32/64 and actual pas2js pass625092 renderer assertions/98 aborts,
+including invalid bounds/geometry, copy aliases, mono/stereo/trimmed outputs,
+all emitted observer checkpoints, original exception identity, reentry, source/
+output failure and fresh retry. Mono/stereo PCM hashes are identical across all3
+targets. Both native complete66752-byte original PCM packets stay exact:
+0712bbceb8181237695e6f7a134017295097b9a524d28926c3769584e7131f68.
+Both original native profile/session suites finish3537 actual caller aborts each,
+exact PCM/provenance and all original assertions, zero leaks. The long live
+handles79904/64616 were joined terminal0; earlier live snapshot stays private.
+Final-source Win64 worker380 checks and frozen320044-byte WAV pass, zero leaks. Full browser assets compile to E; actual
+browser/phone execution and deployment are not claimed.
+
+Exact published and clean extracted qualification remain before accepting
+portability13. Parent04 still owns journal intake/index and duration interiors;
+UI18 keeps actual presentation. No whole parent criterion/task move or musical
+credit follows. Private E-drive retained-interiors-20261029-boss PLAN/NEXT and
+logs preserve exact evidence, the original pas2js failure and repaired native32
+output-directory error. No service/firewall, WFC branch/source, private recording,
+catalog/answer, browser/audio or helper changes. Full goal active/unachieved.
+
 ## Current handoff: PENN candidate fails quiet-low waveform protection — 2026-10-29
 
 Big Boss remains solo. Previous tensor-binding batch was PROGRESS: exact26-tensor

@@ -60,7 +60,7 @@ type
     returns no partial block and permanently fails the session. Earlier blocks
     remain identifiable by Position and the caller's bound profile/seed.
     ReadFrames borrows its observer only for that call and forwards WFC and
-    primary source-selection work.
+    primary source-selection and inner journal rendering work.
     A raised observer exception also permanently fails the pull/session; no
     previously delivered audio or grain receipt can be rolled back. }
   TJournalAudioSession = class
@@ -192,6 +192,8 @@ procedure TJournalAudioSession.ReceiveAudio(const ASamples: array of Single);
 var
   LFrames: Integer;
   LChannels: Integer;
+  LIndex: Integer;
+  LOffset: Integer;
 begin
   LChannels := FProfile.Channels;
   LFrames := Length(ASamples) div LChannels;
@@ -204,15 +206,18 @@ begin
   begin
     if FQueueFrames > 0 then
     begin
-      Move(FQueue[FQueueOffset * LChannels], FQueue[0],
-        FQueueFrames * LChannels * SizeOf(Single));
+      CopyAudioSampleRange(FQueue, FQueueOffset * LChannels, FQueue, 0,
+        FQueueFrames * LChannels);
     end;
     FQueueOffset := 0;
   end;
   if LFrames > 0 then
   begin
-    Move(ASamples[0], FQueue[(FQueueOffset + FQueueFrames) * LChannels],
-      Length(ASamples) * SizeOf(Single));
+    { The borrowed output callback has an open-array view, never an alias of
+      this session's private queue. Only this I/O boundary copies that view. }
+    LOffset := (FQueueOffset + FQueueFrames) * LChannels;
+    for LIndex := 0 to High(ASamples) do
+      FQueue[LOffset + LIndex] := ASamples[LIndex];
     Inc(FQueueFrames, LFrames);
   end;
 end;
@@ -284,8 +289,8 @@ begin
         if FQueueFrames > 0 then
         begin
           LCount := Min(AMaximumFrames - LDone, FQueueFrames);
-          Move(FQueue[FQueueOffset * FProfile.Channels],
-            LOutput[LDone * FProfile.Channels], LCount * FProfile.Channels * SizeOf(Single));
+          CopyAudioSampleRange(FQueue, FQueueOffset * FProfile.Channels,
+            LOutput, LDone * FProfile.Channels, LCount * FProfile.Channels);
           Inc(FQueueOffset, LCount);
           Dec(FQueueFrames, LCount);
           Inc(LDone, LCount);
@@ -297,7 +302,7 @@ begin
         end;
         if FRender.GrainCount = FTotalGrains then
         begin
-          FRender.Finish;
+          FRender.Finish(AProgress);
           Continue;
         end;
         if LGrains = SessionChunkGrains then
@@ -315,7 +320,7 @@ begin
         end;
         LOne[0].Token := FTokens[FSlotIndex];
         LOne[0].Candidate := FWindows[FSlotIndex];
-        FRender.AppendWindows(LOne);
+        FRender.AppendWindows(LOne, AProgress);
         if Assigned(FOnGrain) then
         begin
           FOnGrain(FRender.GrainCount - 1, FTokens[FSlotIndex], LOne[0].Candidate);
@@ -327,7 +332,7 @@ begin
       begin
         if not FRender.Finished then
         begin
-          FRender.Finish;
+          FRender.Finish(AProgress);
         end;
       end;
       SetLength(LOutput, LDone * FProfile.Channels);

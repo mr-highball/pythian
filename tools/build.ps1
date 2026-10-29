@@ -1327,6 +1327,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Journal render stream compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.journal.render.stream$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Journal render stream checks failed' }
+    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.journal.render.progress.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Journal renderer progress checks compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.journal.render.progress$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Journal renderer progress checks failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.learning.profile.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Journal profile compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.learning.profile$executableSuffix")

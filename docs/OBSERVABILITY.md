@@ -3,6 +3,37 @@
 [Project](../PROJECT.md) · [Assessment](CODEBASE-ASSESSMENT.md) ·
 [Tasks](TODO/README.md) · [Work](WORK.md)
 
+## Journal rendering interiors — local qualification, 2026-10-29
+
+[Portability13](TODO/NS-6_portability_13.md) removes native-only sample copies
+from the shared renderer and actual audio session. Primary
+`CopyAudioSampleRange` preflights both whole-array spans and supports overlap;
+the partial render block uses detached RTL `Copy`. No second renderer exists.
+Native32/64 and actual pas2js pass625092 checks/98 observer aborts, with identical
+mono/stereo WAV hashes. Original native complete PCM packets remain exact.
+Actual native profile/session controls pass3537 caller aborts each, preserving
+prior caller PCM/position and the session's terminal-failure contract. Published
+and clean extracted qualification remain pending, without whole parent closure.
+
+The renderer reports its actual window preparation, preflight items, source
+frames, mixed frames, normalized/flushed frames, successful output frames and
+grains. Counts are phase-local; no maximum-work budget is reported as completion.
+Callbacks occur within1024-frame/128-item blocks and at phase boundaries.
+Allocation/RTL copies and each bounded source/output callback remain synchronous.
+Pool and source/output receivers live for the renderer lifetime; the progress
+receiver is borrowed only for the constructor or individual append/finish call.
+All mutating reentry rejects. Before rendering, preflight callback/argument
+failure leaves the renderer unchanged and retryable. After preflight, failures
+poison it, without rolling back earlier external writes. Its enclosing audio
+session permanently fails on any observer exception, including preflight.
+
+The same actual audio-pull observer reaches these inner phases; Studio has plain
+labels for them and its full browser assets compile. No actual browser/phone
+execution, deployment, learned-note acceptance or musical credit follows.
+Journal intake/index construction and duration interiors remain in
+[parent04](TODO/NS-6_observability_04.md); actual presentation remains
+[transport18](TODO/NS-6_observability_18.md).
+
 ## Qualified native Studio bridge; browser gate open — 2026-10-29
 
 [Studio transport18](TODO/NS-6_observability_18.md) forwards the primary stream's
