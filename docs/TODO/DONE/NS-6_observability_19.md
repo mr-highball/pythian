@@ -1,6 +1,6 @@
 # NS-6_observability_19 — Share observable journal source selection
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
@@ -10,14 +10,35 @@ before selecting source windows. Consolidate selection in the primary portable
 implementation and expose its actual owned visits, including final window
 resolution, before publishing new cursor state.
 
-Execution status: local native32/64, actual pas2js and real worker gates pass;
-exact published/extracted qualification and acceptance of
-[primary journal portability12](NS-6_portability_12.md) remain. This is a prerequisite to parent
-[observability04](NS-6_observability_04.md). Actual Studio presentation remains
-owned by [transport18](NS-6_observability_18.md); it does not block this primary
+Accepted 2026-10-29 at `b33c538a84ae2eb6ac1baf7f551956448d5948aa`, after
+[primary journal portability12](NS-6_portability_12.md) acceptance. Checked
+native32/64 and actual pas2js pass362071 selector checks and293 original-exception
+abort/retries. All emitted setup/compatibility/slot/window checkpoints preserve
+prior results and retained state on failure, with exact same-session retry,
+reentry rejection and borrowed receiver lifetime. Both final native selections
+retain all294966 values/2359728 bytes exactly:
+`bbc73036c3103f5fdd16257b3d0b0b58d62c87df80d7c208b6b882b38d423e96`.
+
+Original native journal/successor/profile consumers pass, including699 actual
+audio-session caller aborts per target and exact PCM/lineage, zero leaks.
+The full Win64 worker passes380 checks with all original assertions retained;
+its160000-frame320044-byte WAV remains
+`fea82882480eceae982305a79487e91eecbcc281f6a9c27c8746bab3e6409c07`.
+Clean exact core/full packages and the extracted public API pass; core-only
+native and actual pas2js consumers repeat362071 checks/293 abort/retries.
+Exact published
+[CI482](https://github.com/mr-highball/pythian/actions/runs/40880908655/job/123471848520)
+is terminal SUCCESS: integration18m1s, extracted consumers44s. Big Boss verified
+solo, without an independent-review claim. Parent04 retains ingestion/index
+construction and render/duration interiors; transport18 retains actual browser
+presentation. No musical credit, deployment or scientific reset follows.
+
+This accepted component is a prerequisite to parent
+[observability04](../NS-6_observability_04.md). Actual Studio presentation remains
+owned by [transport18](../NS-6_observability_18.md); it does not block this primary
 component's native/portable evidence. Journal ingestion/index construction and
 render/duration interiors remain in parent04; do not claim whole-unit coverage.
-Next deliverable: one shared selector with call-borrowed progress/cancellation,
+Delivered: one shared selector with call-borrowed progress/cancellation,
 atomic slot/window results and actual audio-session forwarding.
 Closing evidence and stop condition: frozen exact selections and actual worker
 WAV replay, abort at every emitted checkpoint with unchanged prior result/state
@@ -56,7 +77,7 @@ Credit is earned only when every acceptance criterion and task-flow completion r
 
 - [Primary journal portability12](NS-6_portability_12.md) — actual compile and
   raw codec/binding consumer gaps; native-only checks cannot satisfy this gate.
-- [Primary analysis portability01 — DONE](DONE/NS-6_portability_01.md)
+- [Primary analysis portability01 — DONE](NS-6_portability_01.md)
 
 **Dev Notes:**
 

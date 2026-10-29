@@ -80,8 +80,10 @@ Naming a task or narrowing a component does not reset that count.
 
 **Blockers**
 
-- [Shared retained source selection19](NS-6_observability_19.md) — duplicated
-  batch/stream weighted selection and missing actual audio observer forwarding.
+- [Shared retained source selection19 — DONE](DONE/NS-6_observability_19.md) —
+  shared batch/stream selection and actual audio observer forwarding qualify at
+  b33c538/CI482, including native32/64, actual pas2js, frozen worker WAV and clean
+  extracted consumers. Its primary journal portability12 prerequisite is accepted.
   Its native/portable component can be qualified independently of Studio UI;
   journal ingestion/index construction and render/duration interiors remain here.
 

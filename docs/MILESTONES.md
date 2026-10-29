@@ -5,17 +5,17 @@
 
 ## North-star assessment
 
-Current bounded selection: [shared source selection19](TODO/NS-6_observability_19.md)
-addresses duplicated primary weighted selection and missing actual audio-session
-observation. Musical/reference stops remain; the publisher supplies no frozen
-numerical fixture to reopen the failed pitch candidate. Preserve exact source
-rotation/audio and callback-abort publication through the real consumer.
-Its demonstrated [journal portability12](TODO/NS-6_portability_12.md) prerequisite
-now passes local native32/64 and actual pas2js gates, together with the selector.
-Original native consumers and full worker replay pass with exact frozen audio.
-Clean extracted/published qualification remains; no task moves to DONE yet.
-Counts55 open/89 DONE/144 total, NS6 17 open;52.45/47.55 unchanged. These tasks
-add no credit and do not absorb remaining render/duration or actual UI gates.
+Current acceptance: [primary journal portability12 — DONE](TODO/DONE/NS-6_portability_12.md)
+and [shared selection19 — DONE](TODO/DONE/NS-6_observability_19.md) qualify at
+b33c538/[CI482](https://github.com/mr-highball/pythian/actions/runs/40880908655/job/123471848520),
+terminal SUCCESS: maintained integration18m1s/extracted consumers44s.
+Native32/64 and actual pas2js preserve frozen selections, journal/binding bytes,
+worker audio and original-exception abort/retry. Clean exact Win64 core/full
+packages and actual extracted core consumers pass. Every prerequisite is accepted.
+Counts53 open/91 DONE/144 total, NS6 15 open;52.45/47.55 unchanged. Whole task
+closure leaves delivery nonclosing0; scientific stops/exposures never reset.
+Parent04 and actual UI18 remain open. Reassess least-complete NS5's real musical
+prerequisites next; no musical acceptance follows from these engineering gates.
 
 Current scientific result: [notes01](TODO/NS-3_notes_01.md)'s distinct source-qualified
 Pascal candidate fails its frozen55Hz physical control on both native targets.
@@ -84,7 +84,7 @@ remains unmerged. [Voice17](TODO/DONE/NS-6_observability_17.md),
 Preserve CI470's cadence rejection and the repair that keeps the original
 retained1885 callbacks under the unchanged2000 bound.
 
-Current counts are **55 open /89 DONE /144 total**, NS6 17 open. Completion
+Current counts are **53 open /91 DONE /144 total**, NS6 15 open. Completion
 remains **52.45/47.55**, with no musical credit. Following entry2's explicit
 reassessment, retiring four obsolete mechanical source-review requests closes
 no authoring criterion (nonclosing2→3). The five fully qualified prerequisites
@@ -318,7 +318,7 @@ a claim that all downstream outcomes pass.
 
 | Outcome | North star | Required task owners |
 | --- | --- | --- |
-| **REUSABLE-OPERATIONS** | NS-6 | [Remaining provider/batch audit](TODO/NS-6_observability_04.md); accepted [voice preparation/proof](TODO/DONE/NS-6_observability_17.md), [UTF-8 admission](TODO/DONE/NS-6_portability_07.md), [tempo codec](TODO/DONE/NS-6_portability_08.md), [retained archives](TODO/DONE/NS-6_portability_09.md), [streamed chord portability](TODO/DONE/NS-6_portability_10.md), [portable decoder storage](TODO/DONE/NS-6_json-text_02.md), [bulk JSON publication](TODO/DONE/NS-6_serialization_01.md), [shared JSON preservation](TODO/DONE/NS-6_json-text_01.md), [portable evaluation](TODO/DONE/NS-6_portability_06.md), [primary digest publication](TODO/DONE/NS-6_hash-publication_01.md), [generic learning observation](TODO/DONE/NS-6_observability_13.md), [generic WFC bulk preparation](TODO/DONE/NS-6_observability_12.md), [layer preparation](TODO/DONE/NS-6_observability_11.md), [metadata reuse](TODO/DONE/NS-6_metadata_01.md), [raw source measurement](TODO/DONE/NS-6_observability_10.md), [wave profiles](TODO/DONE/NS-6_observability_07.md), [shared binary primitives](TODO/DONE/NS-6_binary-codec_01.md), [pitch preparation](TODO/DONE/NS-6_observability_09.md), [semantic styles](TODO/DONE/NS-6_observability_08.md), [Linux consumer repair](TODO/DONE/NS-6_portability_05.md), [corpus archives](TODO/DONE/NS-6_observability_05.md) and [composition planning](TODO/DONE/NS-6_observability_06.md). All have zero additional credit. |
+| **REUSABLE-OPERATIONS** | NS-6 | [shared selection19 — DONE](TODO/DONE/NS-6_observability_19.md), [primary journal portability12 — DONE](TODO/DONE/NS-6_portability_12.md), [Remaining provider/batch audit](TODO/NS-6_observability_04.md); accepted [voice preparation/proof](TODO/DONE/NS-6_observability_17.md), [UTF-8 admission](TODO/DONE/NS-6_portability_07.md), [tempo codec](TODO/DONE/NS-6_portability_08.md), [retained archives](TODO/DONE/NS-6_portability_09.md), [streamed chord portability](TODO/DONE/NS-6_portability_10.md), [portable decoder storage](TODO/DONE/NS-6_json-text_02.md), [bulk JSON publication](TODO/DONE/NS-6_serialization_01.md), [shared JSON preservation](TODO/DONE/NS-6_json-text_01.md), [portable evaluation](TODO/DONE/NS-6_portability_06.md), [primary digest publication](TODO/DONE/NS-6_hash-publication_01.md), [generic learning observation](TODO/DONE/NS-6_observability_13.md), [generic WFC bulk preparation](TODO/DONE/NS-6_observability_12.md), [layer preparation](TODO/DONE/NS-6_observability_11.md), [metadata reuse](TODO/DONE/NS-6_metadata_01.md), [raw source measurement](TODO/DONE/NS-6_observability_10.md), [wave profiles](TODO/DONE/NS-6_observability_07.md), [shared binary primitives](TODO/DONE/NS-6_binary-codec_01.md), [pitch preparation](TODO/DONE/NS-6_observability_09.md), [semantic styles](TODO/DONE/NS-6_observability_08.md), [Linux consumer repair](TODO/DONE/NS-6_portability_05.md), [corpus archives](TODO/DONE/NS-6_observability_05.md) and [composition planning](TODO/DONE/NS-6_observability_06.md). All have zero additional credit. |
 | <a id="fund-quality"></a>**FUND-QUALITY** | NS-2 | [NS-2_synthesis-quality_01 — DONE](TODO/DONE/NS-2_synthesis-quality_01.md), [NS-2_synthesis-quality_02 — DONE](TODO/DONE/NS-2_synthesis-quality_02.md), [NS-2_synthesis-quality_03 — DONE](TODO/DONE/NS-2_synthesis-quality_03.md) |
 | <a id="fund-extension"></a>**FUND-EXTENSION** | NS-2 | [NS-2_extension_01](TODO/NS-2_extension_01.md) |
 | <a id="wav-validation"></a>**WAV-VALIDATION** | NS-3 | [NS-3_validation_01 — DONE](TODO/DONE/NS-3_validation_01.md), [NS-3_validation_02 — DONE](TODO/DONE/NS-3_validation_02.md), [NS-3_validation_03 — DONE](TODO/DONE/NS-3_validation_03.md) |

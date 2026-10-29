@@ -12,6 +12,33 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: shared selection and primary journal accepted — 2026-10-29
+
+Big Boss remains solo. The previous turn was a verified wait on exact CI482;
+that same run is now terminal SUCCESS, integration18m1s/extracted consumers44s:
+[b33c538/CI482](https://github.com/mr-highball/pythian/actions/runs/40880908655/job/123471848520).
+No job was restarted or passing original suite repeated during the wait.
+
+[Journal portability12 — DONE](TODO/DONE/NS-6_portability_12.md) and then
+[shared selection19 — DONE](TODO/DONE/NS-6_observability_19.md) meet all original
+criteria and accepted prerequisites. Native32/64 and actual pas2js, exact frozen
+selection/journal/binding/worker audio and all-checkpoint abort/retry pass.
+Clean exact core/full Win64 packages pass107/159 owned units and120/280 hashes;
+additional extracted core consumers execute on native and actual pas2js with
+38 stream,384 journal/group/binding and362071 selector checks,293 abort/retries,
+zero native leaks. Given-parameter hash parity does not claim exact numerical
+feature transformation. All failures, original criteria and source lineage remain.
+
+Moves, incoming links, outcome mapping and accounting are updated together:
+53 open/91 DONE/144 total, NS6 15 open;52.45/47.55 unchanged. Whole required task
+closure leaves delivery nonclosing at0; scientific stops/exposures never reset.
+Parent04 retains ingestion/index construction and render/duration interiors;
+transport18 retains actual Studio UI. No deployment, browser audio, firewall,
+private-source, catalog or saved-answer change. The4:16 review remains pending.
+Next reassess least-complete NS5's actual musical prerequisites and supported
+independent evidence; do not restart stopped source/model/window variants or
+default to another convenient instrumentation component. Full goal remains open.
+
 ## Current handoff: shared selection and primary journal pass local consumers — 2026-10-29
 
 Big Boss remains solo. The firewall-only follow-up made no core progress or
@@ -19,9 +46,9 @@ system change; the current implementation batch advances the user's primary-code
 reuse and long-operation visibility requirements. Musical/reference stops and
 the existing4:16 listening question remain unchanged. No new labeling request.
 
-[Selection19](TODO/NS-6_observability_19.md) now shares batch/stream rotation and
+[Selection19](TODO/DONE/NS-6_observability_19.md) now shares batch/stream rotation and
 forwards actual audio-session progress. Its demonstrated
-[journal portability12](TODO/NS-6_portability_12.md) prerequisite reuses primary
+[journal portability12](TODO/DONE/NS-6_portability_12.md) prerequisite reuses primary
 scalar/binary/IEEE754/exact stream transfers. Checked native32/64 and actual
 pas2js pass38 stream,384 journal/identity/binding and362071 selector checks,
 including293 original-exception abort/retries. Both native targets preserve the
@@ -57,7 +84,7 @@ No new source microclip or operator request is selected.
 The user's requested shared implementation and cancellation audit has a real
 retained consumer gap: batch/stream source selection duplicate weighted rotation,
 and actual audio-session observation stops before selecting windows. New
-[selection19](TODO/NS-6_observability_19.md) owns this bounded primary component;
+[selection19](TODO/DONE/NS-6_observability_19.md) owns this bounded primary component;
 parent04 retains ingestion/index construction, rendering/duration and actual UI
 requirements. Criterion: exact shared selection with borrowed observed work and
 atomic cursor/result publication. Deliverable: one primary algorithm and actual
