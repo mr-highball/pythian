@@ -12,6 +12,42 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: portable passage repair accepted at exact CI495 — 2026-10-29
+
+Previous goal turn was a VERIFIED WAIT on the same live CI495 and WFC57 retry;
+neither observation restarted work or changed counters. This turn makes PROGRESS:
+exact384c6de/[CI495](https://github.com/mr-highball/pythian/actions/runs/40969357621/job/123781900528)
+is terminal SUCCESS20m53s, including maintained integration and extracted
+consumers. [Passage ownership15 — DONE](TODO/DONE/NS-6_portability_15.md) satisfies
+all original criteria and moves with incoming links and accounting.
+
+Native32/64 and actual pas2js preserve original multi-source PCM, caller rows,
+source audio and retry rendering. The core-only fixture passes59 exact checks
+on each target, with clean native heaps; its actual portable negative control
+compiles the original renderer and rejects it for `Caller record changed`.
+Clean exact Win64 core/full ZIPs verify107/159 owned units and120/280 hashes.
+New native64 and actual pas2js consumers of each extracted primary source also
+pass59 checks, with no repository-library fallback. Other core record foreach
+sites do not reuse a borrowed row in the same way. No unrelated code was changed.
+
+Counts55open/94DONE→54open/95DONE,149 total; NS6 17→16 open. Completion stays
+52.45/47.55. Whole required task closure resets delivery nonclosing1→0; scientific
+stops and exposure histories never reset. Full parent04, actual Studio/phone and
+musical acceptance remain open. This is solo Big Boss verification, not an
+independent reviewer verdict. No live service/browser/audio deployment is made.
+
+[Clone20](TODO/NS-6_observability_20.md) remains in progress. Its separate WFC
+branch5d69462 is held for all upstream jobs; macOS retry uses the original30m
+limit and same tests/source. No pin adoption or additional retry follows from
+passage acceptance. The main checkout retains the reviewed clone implementation
+and consumer changes; current vendor pin staysc4e7569. Private E-drive
+sequence-model-clone-20261029-boss retains all original failures, frozen tested
+sources, local/extracted/package results, negative control and exact CI identity.
+The live app projection still has the two current unanswered long questions;
+supporting/replaced requests stay hidden and saved answers remain intact.
+No stopped inference, new rendering, retraining, answer write or helper is used.
+Full goal remains active/unachieved. Complete earlier WORK history follows.
+
 ## Current handoff: portable passage repair qualifies locally; clone pin remains held — 2026-10-29
 
 The intervening firewall support turn supplied verified operating-system evidence
@@ -20,7 +56,7 @@ turn makes PROGRESS: actual consumer checks exposed and repaired a primary
 wrong-source portable render. Musical stops, the pending listening questions and
 the full active goal remain unchanged; no musical acceptance is claimed.
 
-[Passage ownership15](TODO/NS-6_portability_15.md) was created before changing
+[Passage ownership15](TODO/DONE/NS-6_portability_15.md) was created before changing
 the primary renderer, then followed as [clone20](TODO/NS-6_observability_20.md)'s
 actual portable prerequisite. The existing exact event-corpus PCM oracle rejected
 frame8 at approximately -0.176776695296637 instead of0.25. Generated target code

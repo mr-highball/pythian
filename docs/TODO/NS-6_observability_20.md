@@ -52,9 +52,9 @@ wrapper-specific restriction, an existing fix or another required gap.
 
 **Blockers**
 
-- [Portable passage ownership15](NS-6_portability_15.md) — actual portable
+- [Portable passage ownership15 — DONE](DONE/NS-6_portability_15.md) — actual portable
   event-corpus qualification exposed a pre-existing wrong-source PCM failure.
-  Preserve its oracle; repair the primary renderer before accepting this consumer.
+  Its primary repair, exact oracle and extracted consumers qualify at384c6de/CI495.
 - [Generic model/voice preparation17 — DONE](DONE/NS-6_observability_17.md) —
   accepted WFC pin c4e7569 supplies the primary constructor and observer bridge.
 
