@@ -943,6 +943,8 @@ var
   LResult: TJSONObject;
   LRequest: TJSONObject;
   LFailed: Boolean;
+  LBefore: String;
+  LCase: Integer;
 begin
   Check(not DirectoryExists(ARoot), 'Discovery jobs fixture must be fresh');
   Check(ForceDirectories(ARoot), 'Create discovery job catalog');
@@ -977,6 +979,42 @@ begin
       Check(LRequest.Strings['request_sha256'] <> '', 'Discovery request has durable identity');
     finally
       LRequest.Free;
+    end;
+    AdvanceStudioJob(ARoot, 'discover', 'running', 'checking_patterns', 257, 0,
+      nil, '', '', 'items', 3);
+    LResult := ReadStudioJob(ARoot, 'discover');
+    try
+      Check((LResult.Int64s['done'] = 257) and (LResult.Int64s['total'] = 0) and
+        (LResult.Strings['progress_unit'] = 'items') and
+        (LResult.Integers['progress_pass'] = 3),
+        'Unknown-total activity preserves exact counters, units and pass');
+      LBefore := LResult.AsJSON;
+    finally
+      LResult.Free;
+    end;
+    for LCase := 0 to 4 do
+    begin
+      LFailed := False;
+      try
+        case LCase of
+          0: AdvanceStudioJob(ARoot, 'discover', 'running', 'bad', -1, 0);
+          1: AdvanceStudioJob(ARoot, 'discover', 'running', 'bad', 0, -1);
+          2: AdvanceStudioJob(ARoot, 'discover', 'running', 'bad', 3, 2);
+          3: AdvanceStudioJob(ARoot, 'discover', 'running', 'bad', 1, 0,
+               nil, '', '', 'unsupported', 0);
+          4: AdvanceStudioJob(ARoot, 'discover', 'running', 'bad', 1, 0,
+               nil, '', '', 'items', -1);
+        end;
+      except
+        on E: Exception do LFailed := True;
+      end;
+      Check(LFailed, 'Malformed progress must reject');
+      LResult := ReadStudioJob(ARoot, 'discover');
+      try
+        Check(LResult.AsJSON = LBefore, 'Rejected progress changed the accepted event');
+      finally
+        LResult.Free;
+      end;
     end;
     AdvanceStudioJob(ARoot, 'discover', 'running', 'reading_headers', 1, 2);
     LResult := CancelStudioJob(ARoot, 'discover');

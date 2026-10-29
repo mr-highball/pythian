@@ -148,7 +148,7 @@ try {
   $studioProjectRoot = Join-Path $buildRoot ('studio-project-' + [Guid]::NewGuid().ToString('N'))
   & (Join-Path $buildRoot "pythian.tests.studio.projects$executableSuffix") $studioProjectRoot
   if ($LASTEXITCODE -ne 0) { throw 'Studio project persistence checks failed' }
-  foreach ($studioComponent in @('library', 'library.discovery', 'jobs', 'effects', 'capture')) {
+  foreach ($studioComponent in @('library', 'library.discovery', 'jobs', 'progress', 'effects', 'capture')) {
     & $compilerPath @compilerArgs '-gh' '-Futools' "tests/pythian.tests.studio.$studioComponent.lpr"
     if ($LASTEXITCODE -ne 0) { throw "Studio $studioComponent compilation failed" }
     $studioFixtureRoot = Join-Path $buildRoot ("studio-$studioComponent-" + [Guid]::NewGuid().ToString('N'))

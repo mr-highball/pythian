@@ -46,7 +46,21 @@ end;
 
 function StudioStageText(const AStage: String): String;
 begin
+  if (Copy(AStage, 1, 4) = 'wfc_') then
+  begin
+    if Pos('search', AStage) > 0 then Result := 'Find the next musical pattern'
+    else if (Pos('proof', AStage) > 0) or (Pos('commit', AStage) > 0) or
+      (Pos('capture', AStage) > 0) then Result := 'Check the musical pattern'
+    else Result := 'Prepare musical patterns';
+    Exit;
+  end;
+  if Copy(AStage, 1, 9) = 'sequence_' then
+  begin
+    Result := 'Arrange the next musical passage';
+    Exit;
+  end;
   case AStage of
+    'audio_pull', 'audio_pull_ready': Result := 'Render the next audio block';
     'queued': Result := 'Waiting to start';
     'preflight', 'verify_sources': Result := 'Check recordings';
     'find_saved_model': Result := 'Check saved learning';
@@ -196,12 +210,21 @@ begin
       (LStage = 'verify_model_sources') or (LStage = 'verify_output_sources')) then
       Add(LRoot, 'small', 'Checking the full file identity. Only your selected audio is learned.');
     if LPass > 0 then
-      Add(LRoot, 'small', 'Learning makes several passes. This bar shows the current pass.');
+      Add(LRoot, 'small', 'This bar shows the current operation and pass.');
     if LDone = LTotal then Add(LRoot, 'small', 'Finishing this step…');
   end
   else
   begin
     if LStatus = 'queued' then LText := 'Starts when the worker is free.'
+    else if (LUnit <> '') and (LDone > 0) then
+    begin
+      if LUnit = 'bytes' then LText := StudioByteSize(LDone) + ' checked'
+      else if LUnit = 'frames' then LText := IntToStr(Trunc(LDone)) + ' audio frames processed'
+      else if LUnit = 'observations' then LText := IntToStr(Trunc(LDone)) + ' audio windows checked'
+      else LText := IntToStr(Trunc(LDone)) + ' work steps checked';
+      if LPass > 0 then LText := 'Pass ' + IntToStr(LPass) + ' · ' + LText;
+      LBar.setAttribute('aria-valuetext', LText + '. Total not yet known.');
+    end
     else LText := 'Working…';
     Add(LRoot, 'p', LText);
   end;

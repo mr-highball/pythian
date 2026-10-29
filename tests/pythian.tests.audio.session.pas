@@ -37,7 +37,7 @@ procedure SoakAudioSession(const AProfile: TJournalModelProfile; const ASeconds:
 implementation
 
 uses
-  SysUtils, Math, fpjson, jsonparser, pythian.audio, pythian.learning.journal,
+  SysUtils, Math, fpjson, jsonparser, pythian.audio, pythian.progress, pythian.learning.journal,
   pythian.learning.binding,
   pythian.learning.selection, pythian.learning.render.stream,
   pythian.wfc.audio.stream;
@@ -56,10 +56,160 @@ type
       const ACandidate: TJournalRepresentative);
   end;
 
+  { Observes the actual owned pull and raises the original caller exception at
+    each discovered checkpoint. Earlier grain receipts are intentionally not
+    rolled back: an interrupted audio session is terminal. }
+  TSessionProgressProbe = class
+    Session: TJournalAudioSession;
+    Calls: Integer;
+    AbortAt: Integer;
+    ExpectedPosition: Int64;
+    Raised: Exception;
+    SawSearch: Boolean;
+    SawUnknown: Boolean;
+    SawReady: Boolean;
+    procedure Observe(const AProgress: TWorkProgress);
+  end;
+
 procedure Require(const ACondition: Boolean; const AMessage: String);
 begin
   if not ACondition then
     raise EAudio.Create(AMessage);
+end;
+
+procedure TSessionProgressProbe.Observe(const AProgress: TWorkProgress);
+var
+  LRejected: Boolean;
+  LAction: Integer;
+begin
+  Inc(Calls);
+  Require((Session.Position = ExpectedPosition) and (Session.State = assReady),
+    'Observer saw a partially published audio pull');
+  SawSearch := SawSearch or (AProgress.Stage = 'wfc_solve_search_visits');
+  SawUnknown := SawUnknown or ((AProgress.Total = 0) and (AProgress.Done > 0));
+  SawReady := SawReady or (AProgress.Stage = 'audio_pull_ready');
+  for LAction := 0 to 3 do
+  begin
+    LRejected := False;
+    try
+      case LAction of
+        0: Session.Pause;
+        1: Session.Resume;
+        2: Session.Stop;
+        3: Session.ReadFrames(1);
+      end;
+    except
+      on EAudio do LRejected := True;
+    end;
+    Require(LRejected, 'Audio progress callback reentered the session');
+  end;
+  if Calls = AbortAt then
+  begin
+    if Odd(Calls) then Raised := EAudio.Create('Original audio progress abort')
+    else Raised := Exception.Create('Original caller progress abort');
+    raise Raised;
+  end;
+end;
+
+procedure CheckAudioProgress(const AProfile: TJournalModelProfile);
+var
+  LSource: TSessionProbe;
+  LProgress: TSessionProgressProbe;
+  LSession: TJournalAudioSession;
+  LControl: TJournalAudioSession;
+  LPrevious, LPreviousCopy, LActual, LExpected: TAudioSamples;
+  LScenario, LAbort, LPoints, LCalls, LAborts: Integer;
+  LFrames: Int64;
+  LRejected: Boolean;
+begin
+  LAborts := 0;
+  for LScenario := 0 to 2 do
+  begin
+    LPoints := 0;
+    LAbort := 0;
+    repeat
+      LSource := TSessionProbe.Create;
+      LProgress := TSessionProgressProbe.Create;
+      LSession := nil;
+      LControl := nil;
+      try
+        LFrames := 80000;
+        if LScenario = 2 then LFrames := 7;
+        LSession := TJournalAudioSession.Create(AProfile, LSource.ReadWindow,
+          TJournalSelectionWeights.Create(1, 1), 731, LFrames);
+        LControl := TJournalAudioSession.Create(AProfile, LSource.ReadWindow,
+          TJournalSelectionWeights.Create(1, 1), 731, LFrames);
+        LProgress.Session := LSession;
+        LProgress.AbortAt := LAbort;
+        if LScenario = 1 then
+        begin
+          LPrevious := LSession.ReadFrames(4096);
+          LExpected := LControl.ReadFrames(4096);
+          Require((Length(LPrevious) = Length(LExpected)) and
+            (CompareByte(LPrevious[0], LExpected[0], Length(LPrevious) * SizeOf(Single)) = 0),
+            'Preceding audio pull differs');
+        end
+        else
+        begin
+          LPrevious := TAudioSamples.Create(0.25, -0.25);
+        end;
+        LPreviousCopy := Copy(LPrevious);
+        LProgress.ExpectedPosition := LSession.Position;
+        LActual := LPrevious;
+        LRejected := False;
+        try
+          LActual := LSession.ReadFrames(4096, LProgress.Observe);
+        except
+          on E: Exception do
+          begin
+            Require(E = LProgress.Raised, 'Audio pull replaced the original caller exception');
+            LProgress.Raised := nil;
+            LRejected := True;
+          end;
+        end;
+        if LAbort = 0 then
+        begin
+          LPoints := LProgress.Calls;
+          Require((LPoints > 0) and LProgress.SawReady, 'Audio pull lacks publication observation');
+          { Only the substantial first solve must cross the existing interior
+            cadence. A seven-frame ending may complete below that threshold. }
+          if LScenario = 0 then
+            Require(LProgress.SawSearch and LProgress.SawUnknown,
+              'Audio pull did not forward actual WFC work');
+          LExpected := LControl.ReadFrames(4096);
+          Require((Length(LActual) = Length(LExpected)) and
+            (CompareByte(LActual[0], LExpected[0], Length(LActual) * SizeOf(Single)) = 0),
+            'Observed pull changed exact PCM');
+          LCalls := LProgress.Calls;
+          LSession.ReadFrames(4096);
+          Require(LProgress.Calls = LCalls, 'Audio session retained the borrowed observer');
+        end
+        else
+        begin
+          Inc(LAborts);
+          Require(LRejected and (LProgress.Calls = LAbort) and
+            (LSession.State = assFailed) and
+            (LSession.Position = LProgress.ExpectedPosition),
+            'Aborted audio pull published state or remained recoverable');
+          Require((Length(LActual) = Length(LPreviousCopy)) and
+            (CompareByte(LActual[0], LPreviousCopy[0], Length(LActual) * SizeOf(Single)) = 0),
+            'Aborted pull replaced prior caller audio');
+          LSession.Resume;
+          LRejected := False;
+          try LSession.ReadFrames(1) except on EAudio do LRejected := True end;
+          Require(LRejected and (LSession.State = assFailed), 'Failed session silently resumed');
+        end;
+      finally
+        LControl.Free;
+        LSession.Free;
+        LProgress.Free;
+        LSource.Free;
+      end;
+      Inc(LAbort);
+    until LAbort > LPoints;
+  end;
+  WriteLn('PASS audio progress: ', LAborts,
+    ' original caller aborts; initial, continuing and terminal pulls; exact PCM');
 end;
 
 function TSessionProbe.ReadWindow(const ACandidate: TJournalRepresentative): TAudioSamples;
@@ -152,6 +302,7 @@ begin
       Exit;
     end;
     if AProfile.Model.Order <> 2 then Exit;
+    CheckAudioProgress(AProfile);
     LFirst := Render(AProfile, 264213, 173, LHashA);
     LSecond := Render(AProfile, 264213, 65536, LHashB);
     Require((Length(LFirst) = Length(LSecond)) and (LHashA = LHashB),

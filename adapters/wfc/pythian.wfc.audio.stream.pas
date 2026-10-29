@@ -30,6 +30,7 @@ interface
 
 uses
   pythian.audio,
+  pythian.progress,
   pythian.learning,
   pythian.learning.journal,
   pythian.learning.selection,
@@ -57,7 +58,10 @@ type
     one fixed 128-grain solve per call. Short positive blocks are normal.
     Pause applies backpressure; Stop discards pending audio. A failed pull
     returns no partial block and permanently fails the session. Earlier blocks
-    remain identifiable by Position and the caller's bound profile/seed. }
+    remain identifiable by Position and the caller's bound profile/seed.
+    ReadFrames borrows its observer only for that call and forwards WFC work.
+    A raised observer exception also permanently fails the pull/session; no
+    previously delivered audio or grain receipt can be rolled back. }
   TJournalAudioSession = class
   private
     FProfile: TJournalModelProfile;
@@ -80,7 +84,7 @@ type
     FBusy: Boolean;
     FFailure: String;
     procedure ReceiveAudio(const ASamples: array of Single);
-    procedure GenerateChunk;
+    procedure GenerateChunk(const AProgress: TWorkProgressCallback);
     procedure RequireIdle;
   public
     constructor Create(const AProfile: TJournalModelProfile;
@@ -89,7 +93,8 @@ type
       const AOnGrain: TAudioSessionGrain = nil;
       const ASuccessors: TJournalSourceSuccessors = nil);
     destructor Destroy; override;
-    function ReadFrames(const AMaximumFrames: Integer): TAudioSamples;
+    function ReadFrames(const AMaximumFrames: Integer;
+      const AProgress: TWorkProgressCallback = nil): TAudioSamples;
     procedure Pause;
     procedure Resume;
     procedure Stop;
@@ -211,7 +216,7 @@ begin
   end;
 end;
 
-procedure TJournalAudioSession.GenerateChunk;
+procedure TJournalAudioSession.GenerateChunk(const AProgress: TWorkProgressCallback);
 var
   LOptions: TSequenceChunkOptions;
   LChunk: TWfcGeneratedSequenceSegment;
@@ -225,7 +230,7 @@ begin
   { Big Boss: fixed chunks and modulo-2^32 seed progression are independent of
     consumer block size. A failed declared seed is never replaced. }
   LOptions.Seed := (QWord(FSeed) + QWord(FChunkIndex mod 4294967296)) and $FFFFFFFF;
-  if not FSequence.TryNext(LOptions, nil, LChunk, LReport) then
+  if not FSequence.TryNext(LOptions, nil, LChunk, LReport, AProgress) then
   begin
     raise EAudio.CreateFmt('WFC could not continue seed %d at chunk %d; no seed substitution',
       [LOptions.Seed, FChunkIndex]);
@@ -240,7 +245,8 @@ begin
   Inc(FChunkIndex);
 end;
 
-function TJournalAudioSession.ReadFrames(const AMaximumFrames: Integer): TAudioSamples;
+function TJournalAudioSession.ReadFrames(const AMaximumFrames: Integer;
+  const AProgress: TWorkProgressCallback): TAudioSamples;
 var
   LDone: Integer;
   LCount: Integer;
@@ -254,13 +260,13 @@ begin
   begin
     raise EAudio.Create('Audio session pull requires 1..65536 frames');
   end;
-  Result := nil;
   if FState = assFailed then
   begin
     raise EAudio.Create(FFailure);
   end;
   if FState <> assReady then
   begin
+    Result := nil;
     Exit;
   end;
   SetLength(LOutput, AMaximumFrames * FProfile.Channels);
@@ -271,6 +277,7 @@ begin
   FBusy := True;
   try
     try
+      ReportWork(AProgress, 'audio_pull', wuFrames, 0, 0);
       while LDone < AMaximumFrames do
       begin
         if FQueueFrames > 0 then
@@ -302,7 +309,7 @@ begin
           begin
             Break;
           end;
-          GenerateChunk;
+          GenerateChunk(AProgress);
           LSolved := True;
         end;
         LOne[0].Token := FTokens[FSlotIndex];
@@ -321,9 +328,13 @@ begin
         begin
           FRender.Finish;
         end;
-        FState := assCompleted;
       end;
       SetLength(LOutput, LDone * FProfile.Channels);
+      ReportWork(AProgress, 'audio_pull_ready', wuFrames, LDone, LDone);
+      if FPosition + LDone = FTotalFrames then
+      begin
+        FState := assCompleted;
+      end;
       Inc(FPosition, LDone);
       Result := LOutput;
     except

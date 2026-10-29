@@ -3,6 +3,27 @@
 [Project](../PROJECT.md) · [Assessment](CODEBASE-ASSESSMENT.md) ·
 [Tasks](TODO/README.md) · [Work](WORK.md)
 
+## Native Studio bridge candidate — 2026-10-29
+
+[Studio transport18](TODO/NS-6_observability_18.md) forwards the primary stream's
+borrowed observer through actual audition/live audio pulls. Unknown-total done,
+units and pass identity survive native job transport; native invalid updates
+leave accepted state unchanged. Audio pull publication now protects prior caller
+PCM and position when an observer raises, preserving the terminal-failure rule.
+Both native targets pass685 original-exception aborts and all original session
+controls; job persistence passes113 checks each. Final Win64 worker passes382
+checks with exact frozen20-second WAV and lineage replay, zero native leaks.
+
+Fine rendering status and coarse frames share a2000ms publication clock so a
+long stream does not exhaust the unchanged100000-event cap. Every callback still
+checks control; normal500ms status and100ms control/deadline/lease checks remain.
+The native32/64 and actual pas2js gate test offers1,728,000 statuses over simulated
+24hours and publishes43201. It is not a wall-clock24-hour playback verdict.
+The Studio UI adds simple preparation/search/render labels and unknown activity
+counts without a percentage. Its recovery consumer compiles; actual browser
+execution, exact published CI/packages and whole task/parent acceptance remain.
+No musical credit, source/answer change, listener deployment or QA browser/audio.
+
 ## Qualified shared sequence and portable duration consumer — 2026-10-28
 
 Shared stream/segment/copy/join and finite forwarding pass 339,013 checks,

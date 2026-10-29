@@ -1267,7 +1267,10 @@ var
   LJob: TJSONObject;
 begin
   Need((AStatus = 'running') or Terminal(AStatus), 'Invalid worker job status');
-  Need((ADone >= 0) and (ATotal >= ADone) and (Length(AStage) <= 64),
+  { Big Boss: total zero retains the primary progress contract's unknown total;
+    positive activity is real work, never an implied completion percentage. }
+  Need((ADone >= 0) and (ATotal >= 0) and
+    ((ATotal = 0) or (ADone <= ATotal)) and (Length(AStage) <= 64),
     'Invalid job progress');
   Need((AProgressPass >= 0) and
     ((AProgressUnit = '') or (AProgressUnit = 'bytes') or

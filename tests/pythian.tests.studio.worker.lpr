@@ -79,11 +79,13 @@ procedure CheckProgressEvents(const ACatalog, AId: String; const AReused: Boolea
 var
   LJob, LEvent: TJSONObject;
   LIndex, LEvents, LLearning, LPasses: Integer;
-  LAnalysis, LRender, LBytes, LReuse: Boolean;
+  LAnalysis, LRender, LBytes, LReuse, LWfc, LUnknown: Boolean;
   LStage: String;
 begin
   LLearning := 0; LPasses := 0;
   LAnalysis := False; LRender := False; LBytes := False; LReuse := False;
+  LWfc := False;
+  LUnknown := False;
   LJob := ReadStudioJob(ACatalog, AId);
   try
     LEvents := LJob.Integers['event_revision'];
@@ -95,9 +97,19 @@ begin
       LEvent := ReadStudioJSON(StudioJobDirectory(ACatalog, AId) + PathDelim +
         Format('%.8d.event.json', [LIndex]));
       try
-        Check((LEvent.Int64s['done'] >= 0) and (LEvent.Int64s['done'] <= LEvent.Int64s['total']),
+        Check((LEvent.Int64s['done'] >= 0) and (LEvent.Int64s['total'] >= 0) and
+          ((LEvent.Int64s['total'] = 0) or
+           (LEvent.Int64s['done'] <= LEvent.Int64s['total'])),
           'Persisted progress has valid measured bounds');
         LStage := LEvent.Strings['stage'];
+        if (Copy(LStage, 1, 4) = 'wfc_') or
+          (Copy(LStage, 1, 9) = 'sequence_') then
+          LWfc := LWfc or ((LEvent.Get('progress_unit', '') = 'items') and
+            (LEvent.Get('progress_pass', 0) >= 0));
+        if (Copy(LStage, 1, 4) = 'wfc_') or
+          (Copy(LStage, 1, 9) = 'sequence_') then
+          LUnknown := LUnknown or ((LEvent.Int64s['total'] = 0) and
+            (LEvent.Get('progress_unit', '') = 'items'));
         if LStage = 'reload_verified_model' then LReuse := True;
         if LStage = 'analyze_selected_ranges' then
           LAnalysis := LAnalysis or ((LEvent.Strings['progress_unit'] = 'observations') and
@@ -116,6 +128,8 @@ begin
       finally LEvent.Free end;
     end;
     Check(LBytes and LRender, 'Source verification and rendering have real measured completion');
+    Check(LWfc and LUnknown,
+      'Actual audio pulls preserve primary sequence/WFC work metadata and unknown-total units');
     if AReused then Check(LReuse and not LAnalysis and (LLearning = 0), 'Reuse explicitly skips learning')
     else Check(LAnalysis and (LLearning > 2) and (LPasses > 8), 'Cold analysis and multiple learning passes are observable');
   finally LJob.Free end;

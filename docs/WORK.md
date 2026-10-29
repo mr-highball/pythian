@@ -12,6 +12,51 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: native operator bridge passes local gates — 2026-10-29
+
+Big Boss remains solo. Previous goal turn's firewall recheck closed no core gate;
+this turn fully accepts portability11 at7189326 after exact37ba12a/CI476 and
+extracted consumers, then implements the demonstrated Studio transport18 gap.
+The latter remains open for actual UI execution and exact published qualification.
+Native Win32/Win64 job persistence passes113 checks each, including257/0/items/
+pass3 and unchanged accepted state on invalid updates. Both targets pass685
+original-exception audio-pull aborts, exact observed/unobserved PCM, prior caller
+buffer/position preservation, terminal failure, reentry and borrowed lifetime.
+All original profile/session controls pass with zero native leaks.
+
+Final actual Win64 worker passes382 checks, cold/reused learning, live startup,
+cancellation/client lease and saved-answer/export/replay lineage. It preserves
+the frozen pre-observer7189326 first-job WAV exactly:320044bytes/160000 mono8kHz
+frames, SHAfea82882480eceae982305a79487e91eecbcc281f6a9c27c8746bab3e6409c07.
+Normal500ms status/control deadlines remain. Rendering coalesces fine phases
+and coarse frames on one2000ms clock; every callback still checks cancellation.
+The unchanged100000-event limit is protected by an executed24-hour clock/call
+simulation:1,728,000 offered/43201 published,11 checks on native32/64 and actual
+pas2js. This does not claim24hours of real playback or actual browser acceptance.
+
+Preserve all failures in the E-drive studio-progress-bridge-20261028-boss packet:
+an early Result=nil cleared caller PCM before a raised callback; this is repaired.
+Short terminal work did not promise an interior256-visit checkpoint; fast work
+did not promise every persisted phase under the existing throttle. The269-char
+fixture partial path exceeded the native Windows path boundary; fresh fixtures
+use a shorter project-owned E-drive root. The first bounded status selected an
+empty known-total marker; it now reserves first detail for actual work. All
+original assertions, source/seed/clock/deadline/event budgets and rejected logs
+remain. The pre-gate worker passed785 checks with more persisted events; final
+382 differs because the same per-event assertions now visit fewer snapshots.
+
+The browser recovery consumer compiles with indeterminate-activity checks, but
+actual UI execution is still unverified under the existing QA prerequisites.
+Do not repeat administrator/browser requests or bypass a security gate. No
+listener deployment, QA browser/audio, private source or saved-answer change.
+Next: publish exact source, qualify maintained integration and clean extracted
+core/full packages. Keep transport18/parent04 open and do not substitute native
+or Node execution for browser/phone results. This is one resumed bridge batch;
+its component qualification cannot close the remaining whole parent criterion.
+Counts53 open/88 DONE/141 total, NS6 15 open;52.45/47.55 unchanged. Scientific
+reference stops and the existing long listening review remain. Reassess after
+two nonclosing batches; names or qualification handoffs do not reset the count.
+
 ## Current handoff: portable duration accepted; operator forwarding next — 2026-10-28
 
 Big Boss remains solo. The previous firewall-audit turn made no new progress

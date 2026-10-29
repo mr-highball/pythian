@@ -164,6 +164,20 @@ begin
       LProgress.textContent := '';
       DrawStudioProgress(LProgress, LImportJob);
       Check(LProgress.querySelector('progress') = nil, 'Cancelled import removes running bar');
+      LImportJob['status'] := 'running';
+      LImportJob['stage'] := 'wfc_solve_search_visits';
+      LImportJob['total'] := 0;
+      LImportJob['done'] := 257;
+      LImportJob['progress_unit'] := 'items';
+      LImportJob['progress_pass'] := 3;
+      LProgress.textContent := '';
+      DrawStudioProgress(LProgress, LImportJob);
+      Check(not LProgress.querySelector('progress').hasAttribute('value'),
+        'Unknown work remains indeterminate');
+      Check((Pos('257 work steps checked', LProgress.textContent) > 0) and
+        (Pos('Find the next musical pattern', LProgress.textContent) > 0) and
+        (Pos('%', LProgress.textContent) = 0),
+        'Unknown work has useful phase/activity text without a guessed percentage');
       LImportJob['status'] := 'completed';
       LProgress.textContent := '';
       DrawStudioProgress(LProgress, LImportJob);

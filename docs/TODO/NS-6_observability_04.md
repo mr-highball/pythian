@@ -80,6 +80,11 @@ Naming a task or narrowing a component does not reset that count.
 
 **Blockers**
 
+- [Studio progress transport18](NS-6_observability_18.md) — demonstrated native
+  loss/rejection of unknown-total work and absent actual audio-pull forwarding.
+  This does not absorb full retained selection/render/duration observation.
+
+
 - [Actual portable duration consumer11 — DONE](DONE/NS-6_portability_11.md) —
   accepted at37ba12a/CI476 with native/actual pas2js scalar and every-frame
   duration evidence, maintained integration and clean extracted consumers.

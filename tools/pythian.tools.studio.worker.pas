@@ -73,6 +73,7 @@ uses
   pythian.tools.annotations.proposal,
   pythian.tools.listen.catalog,
   pythian.tools.studio.jobs,
+  pythian.tools.studio.progress,
   pythian.tools.studio.live,
   pythian.tools.studio.preparation,
   pythian.tools.studio.&library,
@@ -159,11 +160,14 @@ type
     FLastProgressTotal: Int64;
     FLearningStage: String;
     FFirstLearningPass: Integer;
+    FRenderProgressGate: TStudioRenderProgressGate;
     procedure FlushJournal;
     procedure Progress(const AStage: String; const ADone, ATotal: Int64;
-      const AUnit: String = ''; const APass: Integer = 0);
+      const AUnit: String = ''; const APass: Integer = 0;
+      const AAudioWork: Boolean = False);
     procedure LearningProgress(const AProgress: TWorkProgress);
     procedure WorkProgress(const AProgress: TWorkProgress);
+    procedure AudioProgress(const AProgress: TWorkProgress);
     procedure LibraryProgress(const AStage: String; const ADone, ATotal: Int64);
     procedure Preflight;
     procedure VerifySources(const AStage: String = 'verify_output_sources');
@@ -389,15 +393,23 @@ begin
 end;
 
 procedure TStudioWork.Progress(const AStage: String; const ADone, ATotal: Int64;
-  const AUnit: String; const APass: Integer);
+  const AUnit: String; const APass: Integer; const AAudioWork: Boolean);
 begin
   Check;
   { Big Boss: callbacks share bounded control checks; immutable status writes
-    at most twice a second within a pass. Boundaries are always published. }
+    at most twice a second within a normal pass. Rendering shares a separate
+    two-second clock across coarse frames and nested phases; fine boundaries
+    must not exhaust a long session's unchanged event limit. }
   if (AStage = FLastProgressStage) and (APass = FLastProgressPass) and
     (ATotal = FLastProgressTotal) and (ADone >= FLastProgressDone) and
     ((ADone = FLastProgressDone) or
-     ((ADone < ATotal) and (GetTickCount64 - FLastProgressAt < 500))) then Exit;
+     (((ATotal = 0) or (ADone < ATotal)) and
+      (GetTickCount64 - FLastProgressAt < 500))) then Exit;
+  if AAudioWork or (AStage = 'generate_auditions') or (AStage = 'streaming') then
+  begin
+    if not FRenderProgressGate.Accept(AStage, ADone, ATotal,
+      GetTickCount64, AAudioWork) then Exit;
+  end;
   AdvanceStudioJob(FCatalogRoot, FJobId, 'running', AStage, ADone, ATotal,
     nil, '', '', AUnit, APass);
   FLastProgressAt := GetTickCount64;
@@ -415,9 +427,23 @@ end;
 
 procedure TStudioWork.WorkProgress(const AProgress: TWorkProgress);
 begin
-  if AProgress.Total = 0 then Progress(AProgress.Stage, 0, 0)
-  else Progress(AProgress.Stage, AProgress.Done, AProgress.Total,
+  Progress(AProgress.Stage, AProgress.Done, AProgress.Total,
     WorkUnitName(AProgress.Units), AProgress.Pass);
+end;
+
+procedure TStudioWork.AudioProgress(const AProgress: TWorkProgress);
+begin
+  { Pull boundary callbacks still check cancellation, but ordinary output-frame
+    progress already reports them. Only real interior WFC work needs a second
+    presentation phase, sharing the same bounded publication clock. }
+  Check;
+  if (AProgress.Stage = 'audio_pull') or
+    (AProgress.Stage = 'audio_pull_ready') then Exit;
+  { Empty known-total call/publication markers must not consume the first
+    detailed slot ahead of the actual preparation/search activity. }
+  if (AProgress.Done = 0) and (AProgress.Total > 0) then Exit;
+  Progress(AProgress.Stage, AProgress.Done, AProgress.Total,
+    WorkUnitName(AProgress.Units), AProgress.Pass, True);
 end;
 
 procedure TStudioWork.LibraryProgress(const AStage: String; const ADone, ATotal: Int64);
@@ -1182,7 +1208,7 @@ begin
       while LSession.State <> assCompleted do
       begin
         Check;
-        LSamples := LSession.ReadFrames(4096);
+        LSamples := LSession.ReadFrames(4096, AudioProgress);
         Need(Length(LSamples) > 0, 'Audio session made no progress');
         LWriter.AppendSamples(LSamples);
         Inc(LRendered, Length(LSamples) div FProfile.Channels);
@@ -1334,7 +1360,7 @@ begin
         LState.Int64s['excerpt_start_frame'] := LExcerptStart;
         LState.Int64s['excerpt_frames'] := LExcerptFrames;
       end;
-      LSamples := LSession.ReadFrames(Min(FProfile.SampleRate, StudioLiveChunkFrames));
+      LSamples := LSession.ReadFrames(Min(FProfile.SampleRate, StudioLiveChunkFrames), AudioProgress);
       Need(Length(LSamples) > 0, 'Native live session made no progress');
       if LWriter <> nil then
       begin
