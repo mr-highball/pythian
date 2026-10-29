@@ -17,17 +17,17 @@ closure leaves delivery nonclosing0; scientific stops/exposures never reset.
 Parent04 and actual UI18 remain open. Reassess least-complete NS5's real musical
 prerequisites next; no musical acceptance follows from these engineering gates.
 
-Current musical prerequisite: [notes01](TODO/NS-3_notes_01.md)'s PENN data-only
-binding passes26 recipe tensors and8934624 finite Float32 values,35738496 bytes.
-Native32/64 manifests agree; both native targets and actual pas2js pass85 checks/
-28 semantic rejections. No inference or recorded scoring occurs. Training-run
-identity, numerical conformance and physical/recorded acceptance remain unproven.
-Delivery nonclosing1→2 triggers the recorded reassessment: stop container
-diagnostics; a next physical-feasibility implementation first needs frozen math,
-controls, resource bounds and stop. No musical criterion or credit closes, and
-no scientific/exposure counter resets. Counts53/91/144 and52.45/47.55 unchanged.
+Current musical prerequisite: [notes01](TODO/NS-3_notes_01.md)'s fixed PENN Pascal
+candidate stops at quiet55: both native targets predict100.43645Hz for55Hz,
+error1042.5353cents against50. Ordinary440/low55/weak110/quiet440 pass; later
+controls and recorded scoring remain unexecuted. Analytic kernels and same-candidate
+replay pass, not upstream full-forward conformance or note admission. Tensor
+binding remains qualified. Delivery nonclosing2→3 is reassessed: stop this model
+sequence and scale/normalization/confidence rescue; return to actual supported
+NS5 prerequisites. No musical criterion/credit closes or scientific/exposure
+counter resets. Counts53/91/144 and52.45/47.55 unchanged;4:16 review still pending.
 
-Current scientific result: [notes01](TODO/NS-3_notes_01.md)'s distinct source-qualified
+Earlier scientific result: [notes01](TODO/NS-3_notes_01.md)'s distinct source-qualified
 Pascal candidate fails its frozen55Hz physical control on both native targets.
 Other three contrasts pass; this is insufficient. Stop before recorded scoring,
 adoption or confidence/window/rank variants. Exact native replay and zero leaks

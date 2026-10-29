@@ -61,14 +61,14 @@ hours or effort estimates. See the [basis and rationale](../REBALANCE-2026-09-29
 
 ## Selection and actual blockers
 
-Current musical prerequisite: [register identity](NS-3_notes_01.md). PENN's
-data-only binding passes26 recipe tensors/8934624 finite Float32 values with
-identical native32/64 manifests; both native targets and actual pas2js pass85
-checks/28 semantic rejections. No inference or recorded scoring occurs. Delivery
-nonclosing1→2 is reassessed: stop container diagnostics; a next Pascal physical
-candidate requires frozen math, controls/resources and stop before outputs.
-Numerical and musical gates remain open; prior scientific stops/exposure and
-completion credit are unchanged.
+Current musical prerequisite: [register identity](NS-3_notes_01.md). The fixed
+PENN Pascal candidate stops at quiet55 (100.43645Hz for55Hz) on native32/64,
+after4 passing physical contrasts. Later controls/recorded scoring stay unused.
+Analytic kernels and exact-input native replay pass; full upstream numerical
+conformance and note admission remain unproven. Data-only binding is retained.
+Delivery nonclosing2→3 is reassessed: stop this model sequence without scale,
+normalization or confidence rescue; return to actual supported NS5 prerequisites.
+Scientific stops/exposure and completion credit remain;4:16 review still pending.
 
 Accepted zero-credit [shared selection19](DONE/NS-6_observability_19.md) and its
 [primary journal portability12](DONE/NS-6_portability_12.md) prerequisite qualify at

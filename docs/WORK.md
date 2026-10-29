@@ -12,6 +12,53 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: PENN candidate fails quiet-low waveform protection — 2026-10-29
+
+Big Boss remains solo. Previous tensor-binding batch was PROGRESS: exact26-tensor
+binding passed; mandatory two-batch reassessment changed the next action from
+container diagnostics to one frozen physical implementation. That implementation
+now supplies actual contrary waveform evidence. No maintained provider or new
+recorded experiment is admitted. Delivery nonclosing2→3, no scientific/exposure
+reset; counts53 open/91 DONE/144 total, NS6 15open,52.45/47.55 unchanged.
+
+[Notes01](TODO/NS-3_notes_01.md)'s explicit Pascal PENN candidate uses verified
+Float32 parameters, valid conv/ReLU/pool/full-plane population LayerNorm, fixed
+Double sums/Float32 stages, raw8kHz input crop16..1008 and19-bin local cents
+expectation. Policy60068555394dbdc9905ce05a6b397b652c007383a9593aa5a0955ff0f2d20947
+and all inputs/sources/binaries were frozen before outputs. Independent analytic
+math checks pass on both native targets; no third-party runtime executes.
+
+On identical saved waveform bytes, ordinary440, low55, weak110 and quiet440
+pass50cents. Quiet55 at amplitude0.0004 instead predicts100.436449846Hz,
+error1042.535299cents, uncalibrated entropy0.000156925. Both targets stop at that
+first failure; short-note/change/gap/mixture/silence controls remain unexecuted.
+Low diagnostic confidence cannot make losing that real note a pass. Final
+native64/32 take16.281/16.688s, zero leaks. Reached-output replay max differences
+3.844112e-13cent/1.110223e-16entropy/1.387779e-17posterior; this is same-candidate
+consistency, not independent upstream numerical conformance. Sampled Pascal heap
+stays below96MiB; no OS-private-peak or continuous-throughput claim. Preserve
+compile repair, exact policy/source/inputs, partial scientific results and logs
+in the private E-drive penn-physical-20261029-boss packet. All handles terminal.
+
+REASSESSMENT: source assessment and binding did not prove musical evidence;
+actual waveform execution now contradicts full low/quiet protection. Stop this
+model sequence, not just its last diagnostic. No scale, input normalization,
+epsilon, rounding, rank/window or confidence rescue; no blanket negative claim
+about publisher behavior without independent full conformance. Return to the
+least-complete NS5's actual reference/acceptance prerequisites using distinct
+supported evidence; do not cycle another model or convenient report. Notes05
+quiet audible-tail/nonzero-rest truth and context key/timing families retain
+independent stops. NS2 still needs actual independent use/listening; NS4 full
+integration cannot bypass its admitted-provider prerequisites. Parent04's real
+ingestion/index/render gaps remain separate engineering work, with UI18 actual
+presentation still open; neither earns musical credit or resets this counter.
+
+Fresh read-only native listening projection confirms core_long_repetition_20261027
+still pending revision0 and core_continuity_20261026 saved revision1. The source
+review queue is separate and empty. No new request, recording/catalog/answer
+write, WFC edit/branch, service/firewall or browser/audio change. No helper or
+new approval question. Full goal remains active/unachieved, not globally blocked.
+
 ## Current handoff: tensor binding passes; two-batch reassessment recorded — 2026-10-29
 
 Big Boss remains solo. Previous firewall follow-up is NO CORE PROGRESS; it

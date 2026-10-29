@@ -8,12 +8,13 @@ Completion credit: 7 goal percentage points (1.75 overall points).
 Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
 Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
 
-Execution status (2026-10-29): **PENN data-only tensor binding passes;
-numerical/physical/recorded qualification remains unproven**. All26 compatible
-recipe tensors and8934624 finite Float32 values bind on native32/64, with exact
-manifests and actual pas2js structural/rejection checks. No inference executes.
-The distinct SwiftF0v0.3 physical candidate remains stopped at its frozen55Hz
-failure. No maintained provider or new register observation is admitted.
+Execution status (2026-10-29): **PENN Pascal physical candidate stopped at
+quiet55**. Both native targets pass the first4 fixed contrasts, then predict
+100.436449846Hz for a quiet55Hz tone against the frozen50cent bound. Stop before
+remaining controls or recorded scoring; no scale/normalization/confidence retry.
+Data-only tensor binding remains qualified, but native replay and analytic
+kernel checks do not establish upstream numerical conformance. SwiftF0v0.3's
+earlier55Hz failure stays stopped. No maintained provider or register admission.
 All earlier stopped rules and recorded experiments remain stopped. A
 source-qualified candidate is not an accepted register path. The shared frontend
 is accepted separately in [window01](DONE/NS-6_window_01.md).
@@ -124,6 +125,38 @@ variation is authorized by the existing evidence.
 - [NS-3_validation_01.md](DONE/NS-3_validation_01.md)
 
 **Dev Notes:**
+
+- 2026-10-29, Big Boss: fixed PENN Pascal physical-feasibility candidate is
+  rejected under policy SHA256
+  `60068555394dbdc9905ce05a6b397b652c007383a9593aa5a0955ff0f2d20947`.
+  It uses the bound26 Float32 parameter arrays, raw8kHz1024-sample crop16..1008,
+  valid cross-correlations/ReLU/pooling, full-plane population LayerNorm1e-5
+  and the pinned19-bin local cents decoder. Declared Double accumulation and
+  Float32 stage rounding are not bit-exact upstream runtime conformance.
+  Hand-computed correlation, affine/constant normalization, pooling, decoder and
+  malformed/finite controls pass before model execution on both native targets.
+- 2026-10-29, Big Boss: identical frozen waveform bytes give ordinary440,
+  low55, weak-fundamental110 and quiet440 within50cents. Quiet55 at0.0004
+  amplitude (-60dB relative to ordinary0.4) instead yields100.436449846Hz,
+  error1042.535299cents and uncalibrated entropy0.000156925 on both targets.
+  A confidence rejection cannot count that lost real note as a pass. Stop at
+  case5; short-note/change/silence/gap/mixture controls remain unexecuted.
+  Native64/32 finish16.281/16.688s with zero leaks. Same-candidate replay max
+  differences are3.844112e-13cent pitch,1.110223e-16 entropy and1.387779e-17
+  posterior. Sampled Pascal heaps stay below96MiB; OS private peak and continuous
+  throughput are not qualified. No recorded scoring, provider or musical credit.
+- 2026-10-29, Big Boss: preserve policy/source/input identities, partial outputs,
+  initial numeric-cast compile failure and repaired checks privately under the
+  E-drive penn-physical-20261029-boss packet. The compile repair is distinct from
+  this correctly implemented candidate's scientific rejection; no universal
+  rejection of publisher weights follows without independent full conformance.
+  Delivery nonclosing2→3, no reset. Reassessment stops this model sequence and
+  any scale/input/epsilon/rounding/window/rank/confidence rescue. Return to actual
+  least-complete NS5 prerequisites using distinct supported evidence; do not
+  cycle another model or substitute metadata work for musical acceptance.
+  Fresh native listening projection confirms the existing4:16 question remains
+  pending revision0 and the prior short answer revision1 remains saved. No new
+  operator labeling, feedback mutation, service or browser/audio change.
 
 - 2026-10-29, Big Boss: bounded PENN data-only binding resolves the source
   schema question without executing pickle or inference. The root is exactly
