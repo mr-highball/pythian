@@ -264,6 +264,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Scheduler compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.schedule$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Scheduler checks failed' }
+  & $compilerPath @compilerArgs '-gh' 'tests/pythian.tests.bus.portability.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Bus scalar portability compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.bus.portability$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Bus scalar portability checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.corpus.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Corpus compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.corpus$executableSuffix")
@@ -675,6 +679,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'WFC streaming compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.stream$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'WFC streaming checks failed' }
+    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.sequence.stream.progress.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Shared sequence stream progress compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.sequence.stream.progress$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Shared sequence stream cancellation and replay checks failed' }
     & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.layer.preparation.progress.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Layer preparation progress compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.layer.preparation.progress$executableSuffix")

@@ -29,6 +29,7 @@ unit pythian.wfc.stream;
 interface
 
 uses
+  pythian.progress,
   wfc,
   wfc_sequence,
   wfc_sequence_graph;
@@ -53,15 +54,20 @@ type
     FPreviousState: Integer;
     FCellCount: Int64;
     FCompleted: Boolean;
+    FBusy: Boolean;
+    procedure RequireIdle;
   public
     constructor Create(const AModel: TWfcSequenceModel);
     procedure Reset;
     { False means finite solver failure; report retains its reason. Exceptions
       and False preserve the cursor and caller's previous chunk. A successful
-      end-marked chunk seals this stream until Reset. No future solvability claim. }
+      end-marked chunk seals this stream until Reset. No future solvability claim.
+      Optional progress is synchronous and borrowed for this call only. It may
+      abort, but must not mutate the model/inputs or reenter/reset this stream. }
     function TryNext(const AOptions: TSequenceChunkOptions;
       const AConstraints: TWfcSequenceTokenConstraints;
-      var AChunk: TWfcGeneratedSequenceSegment; out AReport: TGraphSolveReport): Boolean;
+      var AChunk: TWfcGeneratedSequenceSegment; out AReport: TGraphSolveReport;
+      const AProgress: TWorkProgressCallback = nil): Boolean;
     property CellCount: Int64 read FCellCount;
     property Completed: Boolean read FCompleted;
   end;
@@ -72,6 +78,7 @@ implementation
 
 uses
   pythian.audio,
+  pythian.time,
   pythian.wfc.generation;
 
 function DefaultSequenceChunkOptions: TSequenceChunkOptions;
@@ -93,8 +100,17 @@ begin
   Reset;
 end;
 
+procedure TLearnedSequenceStream.RequireIdle;
+begin
+  if FBusy then
+  begin
+    raise EAudio.Create('Sequence stream calls cannot reenter');
+  end;
+end;
+
 procedure TLearnedSequenceStream.Reset;
 begin
+  RequireIdle;
   FPreviousState := -1;
   FCellCount := 0;
   FCompleted := False;
@@ -102,15 +118,16 @@ end;
 
 function TLearnedSequenceStream.TryNext(const AOptions: TSequenceChunkOptions;
   const AConstraints: TWfcSequenceTokenConstraints;
-  var AChunk: TWfcGeneratedSequenceSegment; out AReport: TGraphSolveReport): Boolean;
+  var AChunk: TWfcGeneratedSequenceSegment; out AReport: TGraphSolveReport;
+  const AProgress: TWorkProgressCallback): Boolean;
 var
-  LGraph: TGraph;
   LBoundary: TWfcSequenceSegmentBoundary;
   LCandidate: TWfcGeneratedSequenceSegment;
-  LValidation: TWfcSequenceGraphValidationReport;
-  LSolve: TGraphSolveOptions;
-  LFalsePosition: Integer;
+  LOptions: TSequenceSegmentOptions;
+  LPreviousState: Integer;
+  LCellCount: Int64;
 begin
+  RequireIdle;
   if FCompleted then
   begin
     raise EAudio.Create('Sequence stream is complete; reset before generating again');
@@ -120,7 +137,7 @@ begin
     (Int64(AOptions.CellCount) * FModel.StateCount > DefaultAcousticStateCells) or
     (AOptions.MaxBacktracks < 0) or (AOptions.MaxBacktracks > 65536) or
     (Length(AConstraints) > AOptions.CellCount) or
-    (FCellCount > High(Int64) - AOptions.CellCount) then
+    (FCellCount > MaximumTimingInteger - AOptions.CellCount) then
   begin
     raise EAudio.Create('Sequence chunk exceeds graph, constraint or timeline bounds');
   end;
@@ -133,35 +150,30 @@ begin
     LBoundary := MakeWfcSequenceContinuingSegmentBoundary(FPreviousState,
       AOptions.RequireObservedEnd);
   end;
-  LGraph := TGraph.Create;
+  LOptions := DefaultSequenceSegmentOptions;
+  LOptions.CellCount := AOptions.CellCount;
+  LOptions.Seed := AOptions.Seed;
+  LOptions.MaxBacktracks := AOptions.MaxBacktracks;
+  AReport := Default(TGraphSolveReport);
+  FBusy := True;
   try
-    LGraph.Reshape(AOptions.CellCount, 1, 1);
-    LGraph.WrapNeighbors := False;
-    LGraph.Seed := AOptions.Seed;
-    ApplySequenceModelSegmentToGraph(FModel, LGraph, LBoundary);
-    IntersectSequenceTokenConstraints(FModel, LGraph, AConstraints);
-    LSolve := DefaultGraphSolveOptions;
-    LSolve.MaxBacktracks := AOptions.MaxBacktracks;
-    Result := LGraph.TrySolve(LSolve, AReport);
+    ReportWork(AProgress, 'sequence_stream_chunk_ready', wuItems, 0, 1);
+    Result := TryGenerateSequenceSegment(FModel, LOptions, LBoundary, AConstraints,
+      LCandidate, AReport, AProgress);
     if not Result then
     begin
       Exit;
     end;
-    if not CaptureSolvedSequenceSegment(FModel, LGraph, LBoundary,
-      LCandidate, LValidation) or
-      not SequenceStatesSatisfyEntryConstraints(FModel, LGraph,
-        LCandidate.StateIndices, LFalsePosition) then
-    begin
-      raise EAudio.Create('Solved sequence chunk failed boundary or constraint validation');
-    end;
-    { The only retained history is an integer from our own validated result.
-      Caller edits to either returned array cannot change the next boundary. }
+    LPreviousState := LCandidate.StateIndices[High(LCandidate.StateIndices)];
+    LCellCount := FCellCount + AOptions.CellCount;
+    ReportWork(AProgress, 'sequence_stream_chunk_ready', wuItems, 1, 1);
+    { Detached music and all potentially failing work precede cursor acceptance. }
     AChunk := LCandidate;
-    FPreviousState := LCandidate.StateIndices[High(LCandidate.StateIndices)];
-    Inc(FCellCount, AOptions.CellCount);
+    FPreviousState := LPreviousState;
+    FCellCount := LCellCount;
     FCompleted := AOptions.RequireObservedEnd;
   finally
-    LGraph.Free;
+    FBusy := False;
   end;
 end;
 

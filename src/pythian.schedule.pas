@@ -106,7 +106,8 @@ implementation
 uses
   Math,
   pythian.dynamics,
-  pythian.effects;
+  pythian.effects,
+  pythian.ieee754;
 
 constructor TScheduledSynth.Create(const AGraph: TBusGraph; const AVoiceLimit,
   AWorkLimit: Integer; const AStartFrame: Int64);
@@ -560,7 +561,7 @@ begin
     for LFrame := 0 to AFrames - 1 do
     begin
       ASynth.Process(LLeft, LRight);
-      if (Abs(LLeft) > MaxSingle) or (Abs(LRight) > MaxSingle) then
+      if (Abs(LLeft) > MaximumFiniteFloat32) or (Abs(LRight) > MaximumFiniteFloat32) then
       begin
         raise EAudio.Create('Scheduled clip exceeds Single magnitude');
       end;

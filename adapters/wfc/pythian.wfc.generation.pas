@@ -33,7 +33,8 @@ uses
   pythian.progress,
   wfc,
   wfc_model,
-  wfc_sequence;
+  wfc_sequence,
+  wfc_sequence_graph;
 
 const
   AcousticGenerationVersion = 1;
@@ -51,6 +52,35 @@ type
       Explicit opt-in above the default; bounded by MaximumAcousticStateCells. }
     StateCellBudget: Integer;
   end;
+
+  { Stateless finite-segment workload. The caller supplies its exact authenticated
+    initial/continuing boundary separately; no cursor or observer is retained. }
+  TSequenceSegmentOptions = record
+    CellCount: Integer;
+    Seed: TGraphSeed;
+    MaxBacktracks: Integer;
+    StateCellBudget: Integer;
+  end;
+
+function DefaultSequenceSegmentOptions: TSequenceSegmentOptions;
+{ Shared private-graph build/solve/proof path for sequential and duration users.
+  Repeated constraint positions retain the companion's intersection semantics.
+  False and original observer exceptions preserve ASequence. All callbacks run
+  before its detached result is published. This does not advance a caller cursor. }
+function TryGenerateSequenceSegment(const AModel: TWfcSequenceModel;
+  const AOptions: TSequenceSegmentOptions;
+  const ABoundary: TWfcSequenceSegmentBoundary;
+  const AConstraints: TWfcSequenceTokenConstraints;
+  var ASequence: TWfcGeneratedSequenceSegment; out AReport: TGraphSolveReport;
+  const AProgress: TWorkProgressCallback = nil): Boolean;
+{ Detached copies/joins remain private through their final callback. Joining
+  requires an initial prefix and the exact suffix predecessor; these helpers
+  copy already authenticated data and do not certify a model path. }
+function CopySequenceSegment(const AValue: TWfcGeneratedSequenceSegment;
+  const AProgress: TWorkProgressCallback = nil): TWfcGeneratedSequenceSegment;
+function JoinSequenceSegments(const APrefix, ASuffix: TWfcGeneratedSequenceSegment;
+  const APrefixCount: Integer;
+  const AProgress: TWorkProgressCallback = nil): TWfcGeneratedSequenceSegment;
 
 function DefaultAcousticGenerationOptions: TAcousticGenerationOptions;
 { The model is borrowed. Constraints use actual WFC token/position semantics.
@@ -77,8 +107,178 @@ implementation
 uses
   pythian.audio,
   pythian.wfc.learning,
-  pythian.wfc.progress,
-  wfc_sequence_graph;
+  pythian.wfc.progress;
+
+procedure RequireGenerationBounds(const AModel: TWfcSequenceModel;
+  const ACellCount, AMaxBacktracks, AStateCellBudget: Integer);
+begin
+  if AModel = nil then
+  begin
+    raise EAudio.Create('Acoustic sequence model is required');
+  end;
+  if (ACellCount < 1) or
+    (ACellCount > MaximumGeneratedAcousticFrames) or
+    (AMaxBacktracks < 0) or (AMaxBacktracks > 65536) or
+    (AStateCellBudget < 1) or
+    (AStateCellBudget > MaximumAcousticStateCells) then
+  begin
+    raise EAudio.Create('Acoustic generation request exceeds bounded graph contract');
+  end;
+  if Int64(ACellCount) * AModel.StateCount > AStateCellBudget then
+  begin
+    raise EAudio.CreateFmt(
+      'Acoustic generation requires %d state cells (%d frames x %d states); ' +
+      'limit is %d (%d frames for this model)',
+      [Int64(ACellCount) * AModel.StateCount, ACellCount,
+      AModel.StateCount, AStateCellBudget,
+      AStateCellBudget div AModel.StateCount]);
+  end;
+end;
+
+function DefaultSequenceSegmentOptions: TSequenceSegmentOptions;
+begin
+  Result.CellCount := 256;
+  Result.Seed := 731;
+  Result.MaxBacktracks := 256;
+  Result.StateCellBudget := DefaultAcousticStateCells;
+end;
+
+function CopySequenceSegment(const AValue: TWfcGeneratedSequenceSegment;
+  const AProgress: TWorkProgressCallback): TWfcGeneratedSequenceSegment;
+var
+  LCandidate: TWfcGeneratedSequenceSegment;
+  LIndex: Integer;
+  LWork: TWfcObservedWork;
+begin
+  if Length(AValue.StateIndices) <> Length(AValue.Tokens) then
+  begin
+    raise EAudio.Create('Segment state and token lengths differ');
+  end;
+  LWork := TWfcObservedWork.Create(AProgress, 'sequence_segment_copy_visits');
+  try
+    LCandidate := Default(TWfcGeneratedSequenceSegment);
+    LCandidate.Boundary := AValue.Boundary;
+    SetLength(LCandidate.StateIndices, Length(AValue.StateIndices));
+    SetLength(LCandidate.Tokens, Length(AValue.Tokens));
+    for LIndex := 0 to High(AValue.StateIndices) do
+    begin
+      LCandidate.StateIndices[LIndex] := AValue.StateIndices[LIndex];
+      LWork.Visit;
+      LCandidate.Tokens[LIndex] := AValue.Tokens[LIndex];
+      LWork.Visit;
+    end;
+    LWork.Finish;
+    ReportWork(AProgress, 'sequence_segment_copy_ready', wuItems, 1, 1);
+    Result := LCandidate;
+  finally
+    LWork.Free;
+  end;
+end;
+
+function JoinSequenceSegments(const APrefix, ASuffix: TWfcGeneratedSequenceSegment;
+  const APrefixCount: Integer;
+  const AProgress: TWorkProgressCallback): TWfcGeneratedSequenceSegment;
+var
+  LCandidate: TWfcGeneratedSequenceSegment;
+  LIndex: Integer;
+  LWork: TWfcObservedWork;
+begin
+  if (APrefixCount < 0) or (APrefixCount > Length(APrefix.StateIndices)) or
+    (Length(APrefix.StateIndices) <> Length(APrefix.Tokens)) or
+    (Length(ASuffix.StateIndices) <> Length(ASuffix.Tokens)) or
+    (Int64(APrefixCount) + Length(ASuffix.StateIndices) > High(Integer)) then
+  begin
+    raise EAudio.Create('Segment join lengths or prefix extent are invalid');
+  end;
+  if (ASuffix.Boundary.HasPrevious <> (APrefixCount > 0)) or
+    ((APrefixCount > 0) and APrefix.Boundary.HasPrevious) then
+  begin
+    raise EAudio.Create('Segment join requires an initial prefix and matching continuation');
+  end;
+  if (APrefixCount > 0) and
+    (ASuffix.Boundary.PreviousState <> APrefix.StateIndices[APrefixCount - 1]) then
+  begin
+    raise EAudio.Create('Segment join predecessor differs from its retained prefix');
+  end;
+  LWork := TWfcObservedWork.Create(AProgress, 'sequence_segment_join_visits');
+  try
+    LCandidate := Default(TWfcGeneratedSequenceSegment);
+    LCandidate.Boundary := MakeWfcSequenceInitialSegmentBoundary(
+      ASuffix.Boundary.RequireObservedEnd);
+    SetLength(LCandidate.StateIndices, APrefixCount + Length(ASuffix.StateIndices));
+    SetLength(LCandidate.Tokens, Length(LCandidate.StateIndices));
+    for LIndex := 0 to High(LCandidate.Tokens) do
+    begin
+      if LIndex < APrefixCount then
+      begin
+        LCandidate.StateIndices[LIndex] := APrefix.StateIndices[LIndex];
+        LCandidate.Tokens[LIndex] := APrefix.Tokens[LIndex];
+      end
+      else
+      begin
+        LCandidate.StateIndices[LIndex] := ASuffix.StateIndices[LIndex - APrefixCount];
+        LCandidate.Tokens[LIndex] := ASuffix.Tokens[LIndex - APrefixCount];
+      end;
+      LWork.Visit;
+      LWork.Visit;
+    end;
+    LWork.Finish;
+    ReportWork(AProgress, 'sequence_segment_join_ready', wuItems, 1, 1);
+    Result := LCandidate;
+  finally
+    LWork.Free;
+  end;
+end;
+
+function TryGenerateSequenceSegment(const AModel: TWfcSequenceModel;
+  const AOptions: TSequenceSegmentOptions;
+  const ABoundary: TWfcSequenceSegmentBoundary;
+  const AConstraints: TWfcSequenceTokenConstraints;
+  var ASequence: TWfcGeneratedSequenceSegment; out AReport: TGraphSolveReport;
+  const AProgress: TWorkProgressCallback): Boolean;
+var
+  LGraph: TGraph;
+  LProgress: TWfcSolveProgressBridge;
+  LCandidate: TWfcGeneratedSequenceSegment;
+  LValidation: TWfcSequenceGraphValidationReport;
+  LSolve: TGraphSolveOptions;
+  LFalsePosition: Integer;
+begin
+  RequireGenerationBounds(AModel, AOptions.CellCount, AOptions.MaxBacktracks,
+    AOptions.StateCellBudget);
+  AReport := Default(TGraphSolveReport);
+  LProgress := nil;
+  LGraph := TGraph.Create;
+  try
+    LProgress := TWfcSolveProgressBridge.Create(AProgress);
+    LGraph.Reshape(AOptions.CellCount, 1, 1);
+    LGraph.WrapNeighbors := False;
+    LGraph.Seed := AOptions.Seed;
+    ApplySequenceModelSegmentToGraph(AModel, LGraph, ABoundary,
+      LProgress.PreparationWorkObserver());
+    IntersectSequenceTokenConstraints(AModel, LGraph, AConstraints,
+      LProgress.SequenceWorkObserver());
+    LSolve := DefaultGraphSolveOptions;
+    LSolve.MaxBacktracks := AOptions.MaxBacktracks;
+    Result := LGraph.TrySolve(LSolve, AReport, LProgress.SolveObserver());
+    if not Result then
+    begin
+      Exit;
+    end;
+    if not CaptureSolvedSequenceSegment(AModel, LGraph, ABoundary,
+      LCandidate, LValidation, LProgress.SequenceWorkObserver()) or
+      not SequenceStatesSatisfyEntryConstraints(AModel, LGraph,
+        LCandidate.StateIndices, LFalsePosition, LProgress.SequenceWorkObserver()) then
+    begin
+      raise EAudio.Create('Solved sequence segment failed boundary or constraint validation');
+    end;
+    ReportWork(AProgress, 'sequence_segment_publication_ready', wuItems, 1, 1);
+    ASequence := LCandidate;
+  finally
+    LProgress.Free;
+    LGraph.Free;
+  end;
+end;
 
 function DefaultAcousticGenerationOptions: TAcousticGenerationOptions;
 begin
@@ -103,27 +303,8 @@ var
   LProgress: TWfcSolveProgressBridge;
   LPublished: TWfcModelTokens;
 begin
-  if AModel = nil then
-  begin
-    raise EAudio.Create('Acoustic sequence model is required');
-  end;
-  if (AOptions.FrameCount < 1) or
-    (AOptions.FrameCount > MaximumGeneratedAcousticFrames) or
-    (AOptions.MaxBacktracks < 0) or (AOptions.MaxBacktracks > 65536) or
-    (AOptions.StateCellBudget < 1) or
-    (AOptions.StateCellBudget > MaximumAcousticStateCells) then
-  begin
-    raise EAudio.Create('Acoustic generation request exceeds bounded graph contract');
-  end;
-  if Int64(AOptions.FrameCount) * AModel.StateCount > AOptions.StateCellBudget then
-  begin
-    raise EAudio.CreateFmt(
-      'Acoustic generation requires %d state cells (%d frames x %d states); ' +
-      'limit is %d (%d frames for this model)',
-      [Int64(AOptions.FrameCount) * AModel.StateCount, AOptions.FrameCount,
-      AModel.StateCount, AOptions.StateCellBudget,
-      AOptions.StateCellBudget div AModel.StateCount]);
-  end;
+  RequireGenerationBounds(AModel, AOptions.FrameCount, AOptions.MaxBacktracks,
+    AOptions.StateCellBudget);
   if Length(AConstraints) > AOptions.FrameCount then
   begin
     raise EAudio.Create('Too many acoustic position constraints');
@@ -138,8 +319,10 @@ begin
     LGraph.Reshape(AOptions.FrameCount, 1, 1);
     LGraph.WrapNeighbors := AOptions.Extent = wseWrap;
     LGraph.Seed := AOptions.Seed;
-    ApplySequenceModelToGraph(AModel, LGraph, AOptions.Extent);
-    IntersectSequenceTokenConstraints(AModel, LGraph, AConstraints);
+    ApplySequenceModelToGraph(AModel, LGraph, AOptions.Extent,
+      WfcPreparationWorkObserver(LProgress));
+    IntersectSequenceTokenConstraints(AModel, LGraph, AConstraints,
+      WfcSequenceWorkObserver(LProgress));
     LSolveOptions := DefaultGraphSolveOptions;
     LSolveOptions.MaxBacktracks := AOptions.MaxBacktracks;
     Result := LGraph.TrySolve(LSolveOptions, AReport, WfcSolveObserver(LProgress));

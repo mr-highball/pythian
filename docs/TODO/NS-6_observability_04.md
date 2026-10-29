@@ -80,6 +80,10 @@ Naming a task or narrowing a component does not reset that count.
 
 **Blockers**
 
+- [Actual portable duration consumer11](NS-6_portability_11.md) — demonstrated
+  primary bus MaxSingle compile failure; required for shared duration-path
+  qualification. Native and ordinary stream evidence does not bypass this gate.
+
 - [Generic independent-voice observation — DONE](DONE/NS-6_observability_17.md) —
   accepted at d370723/CI471 with linked portable prerequisites. Retained Pythian
   named-voice/duration publication and forwarding remain in this parent.
@@ -105,6 +109,32 @@ Naming a task or narrowing a component does not reset that count.
   shared staging with exact original source-byte progress.
 
 **Dev Notes:**
+
+- 2026-10-28, Big Boss: shared segment/cursor candidate passes339013checks/258
+  original abort-retries/211673callbacks on checked Win32/Win64 and actual pas2js.
+  Start/interior/final and required publication points preserve caller data,
+  cursor/completion, input models and same-session seeded retry. Reentry rejects;
+  no receiver is retained. Direct repeated-row intersection and the ordinary
+  stream's original row-count policy remain distinct and tested. Original finite
+  capture129850/52 and stream/duration controls pass; native runs have zero leaks.
+  Frozen native sequence/duration bytes remain exact. Portable sequence differs
+  only in Boolean header display case; all12 rows compare exactly after a
+  Pascal probe normalizes that header syntax alone, preserving opaque tokens
+  and every state/index/clock. Portability11 local scalar/PCM gates also pass.
+  Exact publication/packages/CI still pending, parent open, nonclosing2 and its
+  mandatory reassessment retained. This does not implement full duration,
+  journal audio-session or maintained operator forwarding.
+
+- 2026-10-28, Big Boss: shared segment build/solve/proof and copy/join are now
+  implemented once in the primary generation adapter and reused by ordinary
+  streams and duration edits. Original native controls and exact frozen
+  sequence/70,000-frame duration replay pass; actual pas2js ordinary streaming
+  passes after a fixture-only StdErr/Halt wrapper repair. Full duration compile
+  exposes the unchanged primary bus MaxSingle reference, now owned by linked
+  portability11. Stop this component at that real prerequisite: nonclosing1→2.
+  Mandatory reassessment selects the missing actual portable consumer; NS5's
+  reference/context stops and musical credit stay unchanged. New cancellation
+  fixture and exact publication for the shared component remain pending.
 
 - 2026-10-28, Big Boss: qualification-record commit5d2dcf6 accidentally consumed
   a truncated WORK display. Restore its entire historical suffix from96f5bcb

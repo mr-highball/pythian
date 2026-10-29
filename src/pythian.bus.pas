@@ -103,7 +103,8 @@ function RenderBusClips(const AClips: array of TAudioClip; const AGraph: TBusGra
 implementation
 
 uses
-  Math;
+  Math,
+  pythian.ieee754;
 
 procedure CheckMagnitude(const AValue: Double);
 begin
@@ -417,7 +418,7 @@ begin
         end;
       end;
       AGraph.Process(LInputs, LLeft, LRight);
-      if (Abs(LLeft) > MaxSingle) or (Abs(LRight) > MaxSingle) then
+      if (Abs(LLeft) > MaximumFiniteFloat32) or (Abs(LRight) > MaximumFiniteFloat32) then
       begin
         raise EAudio.Create('Bus render output exceeds Single range');
       end;

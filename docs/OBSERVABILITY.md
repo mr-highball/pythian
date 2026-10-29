@@ -3,6 +3,46 @@
 [Project](../PROJECT.md) · [Assessment](CODEBASE-ASSESSMENT.md) ·
 [Tasks](TODO/README.md) · [Work](WORK.md)
 
+## Shared sequence and duration consumer: locally qualified candidate — 2026-10-28
+
+Shared stream/segment/copy/join and finite forwarding pass 339,013 checks,
+258 original abort/retries and 211,673 callbacks on checked native Win32/Win64
+and actual pas2js.
+Required start/interior/final checkpoints preserve previous caller results,
+authenticated cursor/completion and same-session seeded retry. Reentry is rejected
+and observers remain borrowed. Direct shared repeated-row constraints and the
+ordinary stream's stricter original row-count policy are both tested.
+
+Portability11 also passes 192 checks/48 scalar cases on all three targets. Every
+sample of the 70,000-frame stereo duration export is compared at the predeclared
+1e-9 absolute limit: maximum native64/pas2js error4.58e-15, native64/native32
+6.01e-15. Full snapshots/counts/clocks/notes/tokens/states remain exact, and native
+raw PCM/plan replay keeps its frozen1,121,765 bytes/SHAe91b9ab8...c19af. Native
+heap-traced exits have zero leaks. Original bus/scheduler/duration and finite
+capture129850/52 controls pass. Portable sequence replay only needs Boolean
+header display-case normalization; opaque tokens and states are untouched.
+Exact source publication, extracted packages and downstream CI remain pending.
+This closes no parent criterion and earns no musical credit.
+
+The current parent04 candidate consolidates private segment generation and
+detached copy/join into the primary generation adapter. Ordinary streams stage
+their final predecessor/count before the last callback, then publish the chunk
+and cursor together; callbacks cannot Reset or reenter TryNext. Duration edits
+reuse the same solver/copy/join rather than retaining a second implementation.
+Finite generation also forwards its existing companion preparation callbacks.
+
+Original native stream/duration controls pass, as do frozen three-seed sequence
+rows and exact70,000-frame duration PCM/plan bytes. Actual pas2js ordinary
+streaming passes after a fixture-only StdErr/Halt wrapper repair. The initial
+actual duration compile exposed native-only MaxSingle references in primary
+bus and scheduled clip output. Both candidate sites now reuse the existing
+primary IEEE-754 limit, and actual pas2js executes the original duration controls.
+[Portability11](TODO/NS-6_portability_11.md) owns the scalar and every-frame
+cross-target evidence above; exact published qualification remains pending.
+No full duration/scheduler/operator observation is claimed.
+At this second nonclosing batch, delivery1→2 and mandatory reassessment selects
+the missing portable consumer. Musical references, credit and stops are unchanged.
+
 ## Qualified named-voice publication — 2026-10-28
 
 [Parent04](TODO/NS-6_observability_04.md) still owns this retained component.

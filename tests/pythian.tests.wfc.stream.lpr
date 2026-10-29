@@ -195,16 +195,8 @@ begin
 end;
 
 begin
-  try
-    CheckHistoryAndFailure;
-    CheckLongSequence;
-    WriteLn('Learned streaming history, retry preservation, reset and 1601-cell path passed');
-  except
-    on LException: Exception do
-    begin
-      WriteLn(StdErr, LException.ClassName, ': ', LException.Message);
-      Halt(1);
-    end;
-  end;
+  CheckHistoryAndFailure;
+  CheckLongSequence;
+  WriteLn('Learned streaming history, retry preservation, reset and 1601-cell path passed');
 end.
 

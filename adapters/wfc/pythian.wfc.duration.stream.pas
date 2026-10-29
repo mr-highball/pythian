@@ -129,7 +129,7 @@ implementation
 
 uses
   SysUtils, pythian.audio, pythian.music.context, pythian.tonal,
-  pythian.wfc.context, pythian.wfc.pitch,
+  pythian.wfc.context, pythian.wfc.pitch, pythian.wfc.generation,
   wfc_sequence_text, wfc_music, wfc_music_sequence, wfc_music_ensemble;
 
 function DefaultDurationStreamOptions: TDurationStreamOptions;
@@ -143,40 +143,11 @@ begin
   Result.MaxPlanFrames := 10000000;
 end;
 
-function CloneSequence(const AValue: TWfcGeneratedSequenceSegment): TWfcGeneratedSequenceSegment;
-begin
-  Result := AValue;
-  Result.StateIndices := Copy(AValue.StateIndices);
-  Result.Tokens := Copy(AValue.Tokens);
-end;
-
 function SegmentBoundary(const APrevious: TWfcGeneratedSequenceSegment;
   const AFrom: Integer; const AEnd: Boolean): TWfcSequenceSegmentBoundary;
 begin
   if AFrom = 0 then Result := MakeWfcSequenceInitialSegmentBoundary(AEnd)
   else Result := MakeWfcSequenceContinuingSegmentBoundary(APrevious.StateIndices[AFrom - 1], AEnd);
-end;
-
-function JoinSequence(const APrevious, ASuffix: TWfcGeneratedSequenceSegment;
-  const AFrom: Integer): TWfcGeneratedSequenceSegment;
-var
-  LIndex: Integer;
-begin
-  Result := Default(TWfcGeneratedSequenceSegment);
-  Result.Boundary := MakeWfcSequenceInitialSegmentBoundary(ASuffix.Boundary.RequireObservedEnd);
-  SetLength(Result.StateIndices, AFrom + Length(ASuffix.StateIndices));
-  SetLength(Result.Tokens, Length(Result.StateIndices));
-  for LIndex := 0 to High(Result.Tokens) do
-    if LIndex < AFrom then
-    begin
-      Result.StateIndices[LIndex] := APrevious.StateIndices[LIndex];
-      Result.Tokens[LIndex] := APrevious.Tokens[LIndex];
-    end
-    else
-    begin
-      Result.StateIndices[LIndex] := ASuffix.StateIndices[LIndex - AFrom];
-      Result.Tokens[LIndex] := ASuffix.Tokens[LIndex - AFrom];
-    end;
 end;
 
 function LocalMasks(const AModel: TWfcSequenceModel;
@@ -297,41 +268,34 @@ function TDurationStream.SolveSequence(const AModel: TWfcSequenceModel;
   const AEdit: TDurationEdit; const AMasks: TWfcSequenceTokenConstraints;
   out ASequence: TWfcGeneratedSequenceSegment): Boolean;
 var
-  LGraph: TGraph;
   LBoundary: TWfcSequenceSegmentBoundary;
   LLocal: TWfcSequenceTokenConstraints;
   LChunk: TWfcGeneratedSequenceSegment;
-  LOptions: TGraphSolveOptions;
+  LOptions: TSequenceSegmentOptions;
   LReport: TGraphSolveReport;
   LValidation: TWfcSequenceGraphValidationReport;
-  LFalse: Integer;
 begin
   LLocal := LocalMasks(AModel, AMasks, APrevious, AFrom, ACount);
   if AFrom = ACount then
   begin
     if AEdit.RequireObservedEnd and not ValidateSequenceStatePath(AModel,
-      APrevious.StateIndices, wseWhole, LValidation) then Exit(False);
-    ASequence := CloneSequence(APrevious);
+      APrevious.StateIndices, wseWhole, LValidation) then
+    begin
+      Exit(False);
+    end;
+    ASequence := CopySequenceSegment(APrevious);
     Exit(True);
   end;
   LBoundary := SegmentBoundary(APrevious, AFrom, AEdit.RequireObservedEnd);
-  LGraph := TGraph.Create;
-  try
-    LGraph.Reshape(ACount - AFrom, 1, 1);
-    LGraph.WrapNeighbors := False;
-    LGraph.Seed := AEdit.Seed;
-    ApplySequenceModelSegmentToGraph(AModel, LGraph, LBoundary);
-    IntersectSequenceTokenConstraints(AModel, LGraph, LLocal);
-    LOptions := DefaultGraphSolveOptions;
-    LOptions.MaxBacktracks := FOptions.MaxBacktracks;
-    Result := LGraph.TrySolve(LOptions, LReport);
-    if not Result then Exit;
-    if not CaptureSolvedSequenceSegment(AModel, LGraph, LBoundary, LChunk, LValidation) or
-      not SequenceStatesSatisfyEntryConstraints(AModel, LGraph, LChunk.StateIndices, LFalse) then
-      raise EAudio.Create('Duration sequence failed independent continuation proof');
-    ASequence := JoinSequence(APrevious, LChunk, AFrom);
-  finally
-    LGraph.Free;
+  LOptions := DefaultSequenceSegmentOptions;
+  LOptions.CellCount := ACount - AFrom;
+  LOptions.Seed := AEdit.Seed;
+  LOptions.MaxBacktracks := FOptions.MaxBacktracks;
+  Result := TryGenerateSequenceSegment(AModel, LOptions, LBoundary, LLocal,
+    LChunk, LReport);
+  if Result then
+  begin
+    ASequence := JoinSequenceSegments(APrevious, LChunk, AFrom);
   end;
 end;
 
@@ -584,7 +548,7 @@ begin
         begin
           LPrevious := Default(TWfcGeneratedSequenceSegment);
           if FPlan <> nil then LPrevious := FPlan.Music[LIndex];
-          LCandidate.Music[LIndex] := JoinSequence(LPrevious, LGenerated.Layers[LIndex], AEdit.FromSpan);
+          LCandidate.Music[LIndex] := JoinSequenceSegments(LPrevious, LGenerated.Layers[LIndex], AEdit.FromSpan);
         end;
       finally
         LGraph.Free;
@@ -598,7 +562,7 @@ begin
         if AEdit.RequireObservedEnd and not ValidateSequenceStatePath(
           WfcMusicVoicesModelAt(FConfig, LIndex), FPlan.Music[LIndex].StateIndices,
           wseWhole, LValidation) then Exit(derConflict);
-        LCandidate.Music[LIndex] := CloneSequence(FPlan.Music[LIndex]);
+        LCandidate.Music[LIndex] := CopySequenceSegment(FPlan.Music[LIndex]);
       end;
     BuildNotes(LCandidate);
     if FPlan <> nil then
@@ -655,7 +619,7 @@ end;
 function TDurationStream.CopySequence(const AProvider: TDurationProvider): TWfcGeneratedSequenceSegment;
 begin
   Result := Default(TWfcGeneratedSequenceSegment);
-  if FPlan <> nil then Result := CloneSequence(FPlan.Sequences[AProvider]);
+  if FPlan <> nil then Result := CopySequenceSegment(FPlan.Sequences[AProvider]);
 end;
 
 function TDurationStream.CopyMusic(const AModelIndex: Integer): TWfcGeneratedSequenceSegment;
@@ -663,7 +627,7 @@ begin
   if (AModelIndex < 0) or (AModelIndex >= WfcMusicVoicesModelCount(FConfig)) then
     raise EAudio.Create('Duration musical provider index is invalid');
   Result := Default(TWfcGeneratedSequenceSegment);
-  if FPlan <> nil then Result := CloneSequence(FPlan.Music[AModelIndex]);
+  if FPlan <> nil then Result := CopySequenceSegment(FPlan.Music[AModelIndex]);
 end;
 
 function TDurationStream.ModelText(const AProvider: TDurationProvider): String;

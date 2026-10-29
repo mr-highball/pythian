@@ -12,6 +12,78 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: shared stream and portable duration local gates pass — 2026-10-28
+
+Big Boss remains solo. Previous goal turn made progress by consolidating segment
+generation and recording/repairing the actual primary bus/scheduler compile gap.
+The current shared publication candidate now passes339013checks/258 original
+abort-retries/211673callbacks on checked Win32/Win64 and actual pas2js. Required
+start/interior/final publication points preserve caller outputs, stream cursor/
+completion, immutable model/input state and exact seeded retry. No callback is
+retained; reset/reentry reject during observation. Direct duplicate-row masks
+and the ordinary stream's original row-count bound both pass their own controls.
+
+Task11 local AC1–4 pass. Scalar tests cover48 renderer/channel/value cases and
+192checks on all three targets. Every one of70000 stereo duration frames is
+compared by Pascal at the unchanged1e-9 absolute limit; maximum native64/pas2js
+error4.58e-15 and native64/native32 6.01e-15. Full plan snapshots and clock/note/
+token/state/count identity are exact. Post-limit native raw PCM/plan bytes retain
+the frozen1121765bytes/SHAe91b9ab841bea4323bebd9af5927a82e2a62decad6b0f05bb4d802f836bc19af.
+All12 portable sequence replay rows match after normalizing only Boolean-header
+display case; original raw artifacts and the rejected raw-text comparison are
+preserved. No opaque token, latent state or clock data is normalized. Native
+heap-traced tests have zero leaks; original bus/scheduler/duration and finite
+capture129850checks/52 original aborts also pass.
+
+The new fixtures are registered in the maintained native build. Exact source
+publication, clean extracted packages and downstream CI remain pending. Keep
+portability11 and parent04 open, counts53 open/87 DONE/140 total, NS6 15 open and
+52.45/47.55 unchanged. Delivery nonclosing2 and its mandatory reassessment remain;
+no reset or musical credit follows these local passes. Whole duration/scheduler,
+journal audio-session, other metadata and maintained operator forwarding remain.
+Current E-drive sequence-stream-progress-20261028-boss packet owns all outputs.
+No WFC source, listener/firewall, browser/audio playback, private source or answer
+change. Earlier entries below retain their dated checkpoints.
+
+## Current handoff: shared stream stops at primary consumer prerequisite — 2026-10-28
+
+Big Boss remains solo. Named-voice source96f5bcb is qualified by successful
+CI473 and clean packages below; record91b0af5 restores the complete historical
+work suffix after5d2dcf6 accidentally consumed a truncated display. That entire
+historical suffix is compared exactly with96f5bcb after newline normalization.
+No product, private recording or saved-answer change occurred in that repair.
+
+The shared segment/stream component has three uncommitted implementation units
+and the original stream fixture's portable failure-wrapper repair. Original
+native stream/duration controls pass. Shared and frozen sequence11240bytes match
+SHA25628d2b4f80c6bda7ec23ff26d277d4f3cc187f053744d2d2a3b41b65bdcc60404;
+duration1121765bytes match e91b9ab841bea4323bebd9af5927a82e2a62decad6b0f05bb4d802f836bc19af,
+including every one of70000 stereo Double frames and two plan snapshots.
+Native exits have zero leaks. Actual pas2js ordinary streaming executes all
+original assertions after the StdErr/Halt wrapper repair. Full duration compile
+fails at unchanged src/pythian.bus.pas:420 (unavailable MaxSingle), while effects,
+grains and resampling already reuse the existing primary IEEE-754 Float32 limit.
+
+Stop shared implementation at that distinct required gap. New
+[portable duration consumer11](TODO/NS-6_portability_11.md) owns primary boundary
+reuse, actual native/pas2js duration execution, every-frame comparison declared
+at1e-9 absolute per channel, scalar-boundary failure/reset and exact consumers/CI.
+The candidate bus and scheduled clip guards now reuse the existing primary
+IEEE-754 limit. Actual pas2js then executes every original duration assertion.
+This preliminary execution closes neither task11 nor the parent: post-fix native
+replay, new scalar controls, the declared every-frame comparison and exact
+published qualification remain. Shared abort/retry and publication also remain.
+
+Delivery nonclosing1→2. Mandatory reassessment is complete before selecting11:
+NS5 remains least complete but its full reference/context prerequisites and
+stopped families are unchanged. This demonstrated Pythian consumer gap blocks
+required reuse validation; follow it instead of another instrumentation batch
+or musical threshold/window variant. A new task name does not reset counters.
+Counts53 open/87 DONE/140 total, NS6 15 open;52.45/47.55 unchanged. No musical
+credit, WFC source edit/branch, listener, firewall, browser/audio, private media
+or operator-answer change. Current evidence uses dedicated E-drive
+sequence-stream-progress-20261028-boss build/tests/runs roots.
+
 ## Current handoff: named-voice qualified; shared stream component — 2026-10-28
 
 Previous goal turn: progress, publishing guarded named-voice work at

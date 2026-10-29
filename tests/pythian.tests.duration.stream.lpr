@@ -596,10 +596,54 @@ begin
   finally LStream.Free; LBus.Free; end;
 end;
 
+{$IFDEF DURATION_PCM_REPLAY}
+{ The exact same authored plan/future edit emits every Double channel value.
+  Scoring uses the separately declared1e-9 absolute sample tolerance and exact
+  snapshot/count identity; this export never changes the synthesis algorithm. }
+procedure EmitPcmReplay(const AFixture: TFixture);
+var
+  LBus: TBusGraph;
+  LStream: TDurationStream;
+  LEdit: TDurationEdit;
+  LLeft: Double;
+  LRight: Double;
+  LIndex: Integer;
+begin
+  LBus := NewBus;
+  LStream := nil;
+  try
+    LStream := AFixture.NewStream(LBus, DefaultDurationStreamOptions);
+    LEdit := InitialEdit;
+    Check(LStream.TryEdit(LEdit) = derAccepted, 'Shared PCM initial edit');
+    WriteLn('S:initial:', Snapshot(LStream));
+    for LIndex := 0 to 69999 do
+    begin
+      if LIndex = 4096 then
+      begin
+        LEdit := FutureEdit(LStream, 3);
+        LEdit.Regenerate := [dpDuration];
+        LEdit.RegenerateMusic := True;
+        Check(LStream.TryEdit(LEdit) = derAccepted, 'Shared PCM future edit');
+        WriteLn('S:future:', Snapshot(LStream));
+      end;
+      LStream.Process(LLeft, LRight);
+      WriteLn('P:', LIndex, ':', LLeft:0:15, ':', LRight:0:15);
+    end;
+    WriteLn('C:', LStream.NextFrame);
+  finally
+    LStream.Free;
+    LBus.Free;
+  end;
+end;
+{$ENDIF}
+
 var LFixture: TFixture;
 begin
   LFixture := TFixture.Create;
   try
+    {$IFDEF DURATION_PCM_REPLAY}
+    EmitPcmReplay(LFixture);
+    {$ENDIF}
     CheckRollbackAndEdits(LFixture);
     CheckBoundaries(LFixture);
     CheckTerminal(LFixture);
