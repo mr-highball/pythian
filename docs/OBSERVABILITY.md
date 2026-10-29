@@ -3,17 +3,20 @@
 [Project](../PROJECT.md) · [Assessment](CODEBASE-ASSESSMENT.md) ·
 [Tasks](TODO/README.md) · [Work](WORK.md)
 
-## Journal rendering interiors — local qualification, 2026-10-29
+## Journal rendering interiors — accepted portable scope, 2026-10-29
 
-[Portability13](TODO/NS-6_portability_13.md) removes native-only sample copies
+[Portability13 — DONE](TODO/DONE/NS-6_portability_13.md) removes native-only sample copies
 from the shared renderer and actual audio session. Primary
 `CopyAudioSampleRange` preflights both whole-array spans and supports overlap;
 the partial render block uses detached RTL `Copy`. No second renderer exists.
 Native32/64 and actual pas2js pass625092 checks/98 observer aborts, with identical
 mono/stereo WAV hashes. Original native complete PCM packets remain exact.
 Actual native profile/session controls pass3537 caller aborts each, preserving
-prior caller PCM/position and the session's terminal-failure contract. Published
-and clean extracted qualification remain pending, without whole parent closure.
+prior caller PCM/position and the session's terminal-failure contract. Exact
+30551f5/[CI487](https://github.com/mr-highball/pythian/actions/runs/40918452018/job/123604874634)
+passes integration18m30s/extracted43s. Clean exact core/full packages and actual
+native32/64/pas2js consumers of extracted core sources pass all625092/98 checks.
+All original task13 criteria qualify; whole parent04 remains open.
 
 The renderer reports its actual window preparation, preflight items, source
 frames, mixed frames, normalized/flushed frames, successful output frames and

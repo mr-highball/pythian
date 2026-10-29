@@ -12,13 +12,48 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: shared journal renderer accepted; retained parent open — 2026-10-29
+
+Big Boss remains solo. Exact30551f5/[CI487](https://github.com/mr-highball/pythian/actions/runs/40918452018/job/123604874634)
+is terminal SUCCESS, native job19m35s: maintained integration18m30s/extracted43s.
+No job was restarted and no passing local suite repeated merely to wait.
+[Portability13 — DONE](TODO/DONE/NS-6_portability_13.md) meets every original
+criterion and prerequisite. Native32/64 and actual pas2js each pass625092 shared
+renderer checks/98 original-exception aborts. Original native complete66752-byte
+PCM packets,3537 actual caller-session aborts per target, all original regression
+assertions and final Win64 worker380 checks/frozen320044-byte WAV pass, zero leaks.
+
+Clean exact30551f5 core/full packages pass107/159 owned units and120/280 content
+hashes. Extracted core sources alone also execute the actual new public API on
+native32/64 and pas2js:625092/98, identical mono/stereo WAV hashes, zero native
+leaks. Private E-drive retained-interiors-20261029-boss records exact logs,
+package hashes, original failures and source lineage. Browser assets compile;
+actual browser/phone presentation and deployment are not claimed.
+
+Move, incoming links, outcome map and accounting change together:54open/91DONE/
+145→53open/92DONE/145, NS6 16→15 open;52.45/47.55 unchanged. Real required task
+closure resets delivery nonclosing3→0, never scientific stops/exposure counters.
+Parent04 retains journal intake/index construction and duration/scheduler
+interiors; actual Studio presentation18 stays open. PENN and older musical
+investigations remain stopped; no musical credit follows from instrumentation.
+Full goal remains active/unachieved. Reassess actual least-complete NS5 musical
+prerequisites before selecting another convenient engineering component.
+
+The firewall follow-up is NO CORE PROGRESS: the pictured app is Nyx. Read-only
+process inspection finds two Nyx executable locations; Pythian still runs from
+its fixed stable slot. Windows denies firewall-rule inspection in this session;
+no elevation, firewall/security change, new server launch or repeated approval
+question follows. Other running apps and the durable operator catalog/answers
+remain unchanged. Historical handoffs below remain complete, with only incoming
+task13 paths repaired after its acceptance. No helper or QA audio/browser launched.
+
 ## Current handoff: shared renderer passes local consumers; qualification next — 2026-10-29
 
 Big Boss remains solo. The stopped PENN physical candidate remains stopped; no
 scientific/exposure reset or new source/model rule. This retained-interiors batch
 is IN PROGRESS under [parent04](TODO/NS-6_observability_04.md). Delivery nonclosing
 remains3 until a complete required criterion qualifies. Actual pas2js exposed a
-native-only render copy; linked [portability13](TODO/NS-6_portability_13.md) owns
+native-only render copy; linked [portability13](TODO/DONE/NS-6_portability_13.md) owns
 that real prerequisite. Counts54 open/91 DONE/145 total, NS6 16open;52.45/47.55
 unchanged. The current scorecard's stale89accepted/55open summary is repaired;
 earlier dated counts remain historical, without completion credit.

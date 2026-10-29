@@ -55,6 +55,13 @@ this parent nor musical acceptance and earn no additional credit. Task15's real
 closure resets delivery nonclosing 1 to 0; previous reassessments remain history.
 Naming a task or narrowing a component does not reset that count.
 
+Journal-renderer scope is accepted2026-10-29 at30551f5/CI487 through
+[portability13 — DONE](DONE/NS-6_portability_13.md): original PCM and actual
+session/worker lineage, all-checkpoint aborts, native32/64, actual pas2js and
+clean extracted consumers pass. Journal intake/index construction, duration/
+scheduler interiors and actual Studio18 remain required. No whole AC1/AC2 or
+parent closure is claimed; this is solo Big Boss verification.
+
 **Acceptance Criteria:**
 
 - Audit and extend remaining provider-contract/registry preparation, including
@@ -80,9 +87,9 @@ Naming a task or narrowing a component does not reset that count.
 
 **Blockers**
 
-- [Actual portable journal renderer13](NS-6_portability_13.md) — actual pas2js
-  rejects the primary renderer's native-only output copy. Qualify one shared
-  renderer and actual audio-session forwarding before claiming these interiors.
+- [Actual portable journal renderer13 — DONE](DONE/NS-6_portability_13.md) —
+  accepted at30551f5/CI487 with shared primary sample copying, actual session
+  forwarding, native32/64, actual pas2js and clean extracted consumers.
 
 - [Shared retained source selection19 — DONE](DONE/NS-6_observability_19.md) —
   shared batch/stream selection and actual audio observer forwarding qualify at
@@ -125,6 +132,14 @@ Naming a task or narrowing a component does not reset that count.
   shared staging with exact original source-byte progress.
 
 **Dev Notes:**
+
+- 2026-10-29, Big Boss: journal rendering13 meets all original criteria and
+  prerequisites after terminal source CI487 and clean exact packages. Renderer
+  preflight failure is retryable; enclosing audio-session observer failure is
+  always terminal, with prior caller PCM/position preserved. The accepted scope
+  does not cover journal intake/index or duration/scheduler interiors. Whole
+  required child closure resets delivery nonclosing3→0; scientific stops and
+  completion points remain unchanged. Actual Studio UI18 stays open.
 
 - 2026-10-29, Big Boss: native Studio forwarding18 is qualified at542d5cc/CI478
   integration14m3s/extracted35s and clean exact core/full packages. Native session
