@@ -8,10 +8,11 @@ Completion credit: 7 goal percentage points (1.75 overall points).
 Current basis: [2026-09-29 outcome rebase](../REBALANCE-2026-09-29.md#current-credit-basis).
 Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
 
-Execution status (2026-10-29): **Distinct0.3 source identity qualified; native
-physical feasibility only**. All earlier stopped rules and recorded experiments
-remain stopped. A source-qualified candidate is not an accepted register path.
-The current shared-frontend prerequisite is [window01](NS-6_window_01.md).
+Execution status (2026-10-29): **Distinct0.3 source identity qualified; Pascal
+physical candidate stopped**. Its frozen55Hz control fails on native32/64.
+All earlier stopped rules and recorded experiments remain stopped. A
+source-qualified candidate is not an accepted register path. The shared frontend
+is accepted separately in [window01](DONE/NS-6_window_01.md).
 Next deliverable: A new identity observation must protect short/quiet/low notes and close the recorded development register gate. The 2026-09-28 odd/even blind rule proposed zero corrections and is rejected despite its physical feasibility result.
 Closing evidence and stop condition: Audio-derived predictions saved before reference scoring, unchanged waveform controls, >=98% precision and >=80% coverage per supported recording, then maintained consumer. No window/range/threshold variation of the stopped rule.
 Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
@@ -120,6 +121,33 @@ variation is authorized by the existing evidence.
 
 **Dev Notes:**
 
+- 2026-10-29, Big Boss: the source-qualified SwiftF0v0.3 Pascal numerical
+  candidate stops at its first frozen physical failure. Policy SHA256
+  `31a8b6247cf3bfe2c93c02c785ce2263eb1fce7c94c6bef38c780f5a8f35b2b5`,
+  forward `882cb51d904fbcdd87a2f4eefdea693f4076e4dbd0d5d453498ac68110aaf0f1`.
+  It reads the exact pinned model's Float32 weights/sparse filters, uses primary
+  periodic Hann/FFT/byte/scalar code, fixed Double accumulations rounded to
+  Float32 stage buffers and stored Double decoding centers. This declared
+  numerical contract is not bit-exact upstream runtime conformance; none was
+  executed. Four frozen16kHz analytic centers require every pitch within50cents.
+  Ordinary440, weak-fundamental110 and quiet440 pass;55Hz produces1450.855235Hz
+  with uncalibrated confidence0.00748 on both targets. A confidence rejection
+  cannot turn that failed low-note protection into a pass. Quiet440 confidence
+  is0.28274, so a borrowed0.5 cutoff would also discard a correctly decoded note.
+  Same-candidate native32/64 replay passes0.01cent/1e-5 limits, maximum differences
+  0.000004051249cent/0.000000119confidence. Both report480930 parser/geometry/
+  coefficient/control checks and one physical failure,7.907s/8.000s forward work,
+  zero leaks. Host peak-paged samples are observations, not a proven private
+  memory cap. Initial compiler-rejected explicit float casts were repaired
+  before execution; the unused negative-infinity masking constant stays raw,
+  without weakening the primary finite scalar reader. The E-drive source packet
+  retains original failures, complete MIT notices, policy, predictions and
+  comparator. No full waveform/ambiguity or recorded gates were run, no model
+  adoption, task closure or musical credit. No threshold/window/rank/input
+  variants follow this failed candidate. Its result does not universally reject
+  the publisher's different numerical implementation. Existing reference and
+  scientific-stop histories remain unchanged.
+
 - 2026-10-29, Big Boss: the distinct SwiftF0v0.3 training-exported and shipped
   models match the declared135090-byte SHA256; the85120-byte training checkpoint
   matches its declared identity too. Actual training/calibration code loads the
@@ -131,7 +159,8 @@ variation is authorized by the existing evidence.
   The private source manifest and assessment are in the project-owned E-drive
   swift03-source-20261029-boss packet. No graph execution or new audio/scoring
   occurred. Delivery nonclosing1→2 triggers reassessment: permit only one
-  prospectively frozen Pascal forward/physical candidate after shared window01,
+  prospectively frozen Pascal forward/physical candidate after shared
+  [window01](DONE/NS-6_window_01.md),
   preserving low/quiet/short/gap/mixture, ambiguity, coverage and blind-reference
   requirements. No generic inference framework or stopped threshold variant.
 

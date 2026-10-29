@@ -12,6 +12,45 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: shared window accepted; pitch candidate stops at low-note protection — 2026-10-29
+
+Big Boss remains solo. The distinct source-qualified SwiftF0v0.3 Pascal numerical
+candidate fails the frozen55Hz physical control on both checked native targets:
+1450.855235Hz, uncalibrated confidence0.00748. Ordinary440, weak-fundamental110
+and quiet440 decode within50cents, but all four were required. Quiet confidence
+is0.28274; a borrowed0.5 threshold cannot establish note presence or rescue this
+failure. Stop this candidate before full waveform/ambiguity/recorded gates,
+adoption or threshold/window/rank/input variants. Source identity/exposure is
+still qualified at the publisher-contract level, not independently reproduced
+training or numerical runtime conformance. No third-party inference executed.
+
+Policy31a8b6247cf3bfe2c93c02c785ce2263eb1fce7c94c6bef38c780f5a8f35b2b5 and
+forward882cb51d904fbcdd87a2f4eefdea693f4076e4dbd0d5d453498ac68110aaf0f1 bind
+the fixed crop, full range, primary FFT/Hann/binary/scalar use, exact model weights,
+Double accumulation/Float32 stages and decoding. Both targets report480930
+parser/geometry/window/control checks, one physical failure and zero leaks,
+7.907s/8.000s. Pascal comparator passes the unchanged0.01cent/1e-5 limits:
+maximum0.000004051249cent/0.000000119confidence. Sampled peak-paged memory is
+reported as sampled, not an instantaneous private-commit proof. Preserve the
+initial compiler cast failure and raw unused infinity admission repair; neither
+changed a scored rule. Private RESULT/POLICY/FAILURES/NEXT and all exact rows
+stay in the project-owned E-drive source packet. All local handles are terminal.
+
+Shared window01 at0956dee passes exact native consumer replay, native32/64 and
+actual pas2js analytic/original-analysis checks. Clean exact core package107
+owned/120 hashes and the extracted public API consumer pass, zero leaks;
+ZIPb0f8a54f44990514e2eb6f0fb323808a2ed4a41631433059fd102a13ddf1fe04.
+Exact0956dee/[CI480](https://github.com/mr-highball/pythian/actions/runs/40823976126/job/123282649160)
+is terminal SUCCESS, maintained integration18m20s/extracted consumers46s.
+[Window01 — DONE](TODO/DONE/NS-6_window_01.md) meets every criterion and no
+prerequisite remains. Move, incoming links and accounting are updated together:
+counts53 open/89 DONE/142 total, NS6 15 open;52.45/47.55 unchanged. Whole required
+task closure resets delivery2→0, preserving all scientific/reference stops and
+exposure histories. Physical failure closes no notes01 criterion or credit.
+No source/answer/catalog/service/firewall/browser-audio change. The existing
+4:16 listening question remains pending. Reassess next musical prerequisites;
+do not resume a stopped source family or select convenient instrumentation.
+
 ## Current handoff: register source qualified; shared window local gates pass — 2026-10-29
 
 Big Boss remains solo. The last firewall-only turn made no musical/core progress;
@@ -24,7 +63,7 @@ prospectively frozen Pascal physical-feasibility candidate. Preserve all stopped
 rules, held-out sources and confidence-versus-presence distinctions.
 
 The demonstrated primary Hann duplication is now tracked by
-[window01](TODO/NS-6_window_01.md). Analysis and separation call the same portable
+[window01](TODO/DONE/NS-6_window_01.md). Analysis and separation call the same portable
 periodic primitive; the sample-centered grain fade is unchanged. Before editing,
 checked Win32/Win64 captured283905 actual input/feature/band/separated-sample values
 per target. Both post-change2271240-byte packets are exact: native64 SHA256
