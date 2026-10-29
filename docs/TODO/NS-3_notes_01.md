@@ -117,6 +117,26 @@ variation is authorized by the existing evidence.
 
 **Dev Notes:**
 
+- 2026-10-29, Big Boss: source reassessment only, no model execution. The prior
+  SwiftF0v0.2 training-exposure stop remains valid for those bytes. The publisher
+  now supplies a distinct0.3 run at training revision
+  `a3095d23d79097ed7f5fad59d1cb2e2a826501a8`:
+  [configuration](https://github.com/lars76/swift-f0-training/blob/a3095d23d79097ed7f5fad59d1cb2e2a826501a8/config.py),
+  [run/export identity](https://github.com/lars76/swift-f0-training/blob/a3095d23d79097ed7f5fad59d1cb2e2a826501a8/runs/seed1/export.json).
+  The configuration names five target-training corpora, and the publisher's
+  [pinned preparation contract](https://github.com/lars76/pitch-benchmark/blob/6f21369afc8c7eb39f2f9548022ac9beb60e5c5a/prepare/README.md)
+  separates URMP evaluation and training/augmentation sources. This is changed
+  source information, not independent reproduction of training or achieved
+  flute/register accuracy. The export identifies135090 model bytes with SHA256
+  `6385e8c2ebc3872e82c9ff5946228de44cd3be77a750ea53698b7dbfe94b0a22`.
+  No model weights, third-party runtime, new WAV or scoring was acquired/run.
+  Next verify exact model/cohort/provenance and relevant independent contrasting
+  evidence, then prospectively freeze source-free/low/quiet/short/mixture,
+  abstention/coverage, resource and blind recorded gates before any port or
+  inference. Aggregate publisher metrics alone remain insufficient. Correctness
+  confidence is not note presence. Preserve all stopped families, exposure and
+  nonclosing counters; this documentary lead closes no criterion or credit.
+
 - 2026-09-29 status reconciliation: the later
   [physical feasibility and blind decision record](../WORK-HISTORY.md#register-feasibility-passed-beat-event-graph-stopped--2026-09-28)
   supersedes earlier next-experiment suggestions. The odd/even probe's 20/20

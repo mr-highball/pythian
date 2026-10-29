@@ -55,7 +55,9 @@ unknown totals, units/pass, cancellation and simple operator activity labels.
 Native32/64 pass685 original audio aborts and113 job checks each; final native
 worker382 and exact frozen WAV/lineage replay pass. Render-status simulation
 retains the existing event budget over24hours on native and actual pas2js.
-Browser presentation compiles; actual UI and published CI/packages remain.
+Exact542d5cc/CI478 integration14m3s/extracted35s and both clean native packages
+pass. Browser presentation compiles; actual UI remains unverified and the running
+Studio is not updated. One bridge batch takes delivery nonclosing0→1; no credit.
 Counts53 open/88 DONE/141 total, NS6 15 open;52.45/47.55 unchanged. Delivery
 nonclosing starts0 after the full portability11 closure below. Browser gates
 remain explicit; no musical credit or new source-label request.
@@ -410,7 +412,7 @@ Read [delivery order](../REBALANCE-2026-09-29.md#delivery-order) before each bat
 | --- | ---: | ---: | --- |
 | [NS-6_studio_21](NS-6_studio_21.md) — Background recovery and long-source learning | 0 | 0.00 | Deployed; actual browser acceptance remains |
 | [NS-6_studio_22](NS-6_studio_22.md) — Original/generated listening comparison | 0 | 0.00 | Deployed for review; native/DOM checks pass, actual browser acceptance remains |
-| [NS-6_observability_18](NS-6_observability_18.md) — Truthful native Studio work transport | 0 | 0.00 | Native session/job/worker and portable status-budget gates pass; actual UI and exact published qualification required |
+| [NS-6_observability_18](NS-6_observability_18.md) — Truthful native Studio work transport | 0 | 0.00 | Native/source qualification at542d5cc/CI478 passes; actual browser UI remains required |
 | [NS-6_observability_04](NS-6_observability_04.md) — Remaining provider/batch operations and operator monitoring | 0 | 0.00 | Native inference/operator AC3 accepted; retained session/capture/stream/publication AC1 and batch AC2 remain |
 | [NS-6_adoption_01](NS-6_adoption_01.md) — Establish independent ecosystem adoption evidence | 15 | 1.50 | Supported releases + independent ecosystem evidence |
 | [NS-6_authoring_02](NS-6_authoring_02.md) — Verify physical LAN listening and final operator use | 1 | 0.10 | Solo usability resumed; complete physical matrix remains open |

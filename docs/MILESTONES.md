@@ -7,12 +7,13 @@
 
 Current selection: [Studio progress transport18](TODO/NS-6_observability_18.md)
 repairs the demonstrated native unknown-total/observer bridge. Counts53 open/88
-DONE/141 total, NS6 15 open;52.45/47.55 unchanged. Delivery nonclosing0 after
-full portability11 acceptance; all musical/reference stops remain.
+DONE/141 total, NS6 15 open;52.45/47.55 unchanged. Delivery nonclosing0→1 for
+the qualified bridge component after portability11 acceptance; scientific stops remain.
 Native session/job gates pass on32/64; final Win64 worker382 checks and exact
 frozen WAV/lineage pass. The24-hour render-status budget simulation also executes
-on actual pas2js. Browser presentation compiles; actual UI and exact published
-qualification remain, so transport18 and parent04 stay open.
+on actual pas2js. Exact542d5cc/CI478 integration14m3s/extracted35s and clean
+core/full packages pass. Browser presentation compiles; actual UI remains,
+so transport18 and parent04 stay open with no musical credit or deployment.
 
 
 Current acceptance: [portable duration consumer11 — DONE](TODO/DONE/NS-6_portability_11.md)

@@ -12,6 +12,41 @@ Chillwave, stoner rock and lofi are internal tests. Keep native Pascal ownership
 portable core independence, retained WFC boundaries and complete provenance.
 Project work and review pushes stay on `hello-pythian`.
 
+## Current handoff: native bridge qualified; browser and musical gates remain — 2026-10-29
+
+Big Boss remains solo. Exact source542d5cc43b28d454f2313e0931a9e618d84eccaa is
+qualified by [CI478](https://github.com/mr-highball/pythian/actions/runs/40816053238):
+native14m59s, maintained integration14m3s and extracted consumers35s. Both clean
+exact Win64 packages pass full inventory and actual external consumers: core107
+owned/120 hashes, ZIP64d1848d0f096eecba4cf89fceb8aac5e638cd0890bb20da738324b512db7f5a;
+full159/280, ZIPa3ec6a08ddeeb3e8ca7d89fe72d68e5ffd4fda463e75d56b77457475d6bc2aed.
+All local native/portable checks and exact frozen WAV proof are retained below;
+every local process/package handle is terminal and joined. CI478 is terminal
+SUCCESS; do not restart or repoll it. The earlier pending descriptions are dated.
+
+[Transport18](TODO/NS-6_observability_18.md) and parent04 stay open for actual
+browser UI and remaining owned interiors. The UI recovery consumer compiles but
+has not executed; the source is not deployed to the live Studio. Existing one-time
+QA administrator repair and normal-page authority are unresolved; do not repeat
+the question or bypass security. No listener, QA browser/audio, private source or
+saved-answer change. Counts53 open/88 DONE/141 total, NS6 15 open;
+52.45/47.55 unchanged. This single qualified bridge batch takes delivery0→1,
+without a whole parent criterion closure or scientific counter reset.
+
+While CI ran, the actual least-complete NS5 dependency chain was reread:
+vocabulary needs grounded context/independent material; scale needs actual
+inferred events through notes03, whose register/presence prerequisites remain.
+No declaration-only accounting or raw2.322-hour result substitutes for them.
+The old SwiftF0v0.2 model-source stop remains, but the publisher now provides
+distinct0.3 training configuration, corpus separation and export identity at
+immutable revisions linked in notes01. This is a source-assessment lead, not
+verified training reproduction, independent pitch accuracy or a permitted
+threshold variant. No weights/runtime/new WAV/scoring occurred. Next verify that
+changed source/cohort evidence and prospective physical/ambiguity controls before
+any new identity experiment; preserve stopped families and protected material.
+Do not select another convenient instrumentation batch merely because actual
+browser acceptance is external. The existing4:16 generated review stays pending.
+
 ## Current handoff: native operator bridge passes local gates — 2026-10-29
 
 Big Boss remains solo. Previous goal turn's firewall recheck closed no core gate;

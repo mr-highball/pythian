@@ -115,6 +115,15 @@ Naming a task or narrowing a component does not reset that count.
 
 **Dev Notes:**
 
+- 2026-10-29, Big Boss: native Studio forwarding18 is qualified at542d5cc/CI478
+  integration14m3s/extracted35s and clean exact core/full packages. Native session
+  685 aborts on both targets, native job113 checks each, final worker382 and exact
+  frozen WAV/lineage replay pass. A shared render status clock protects the
+  unchanged100000-event limit over an executed24-hour clock/call simulation on
+  native32/64 and actual pas2js. Actual browser UI remains unverified;18 stays
+  open. This qualifies one resumed bridge component, not whole parent AC1/AC2:
+  delivery nonclosing0→1, no task move, musical credit or scientific reset.
+
 - 2026-10-28, Big Boss: source37ba12a is qualified by CI476 integration15m27s/
   extracted38s and both clean exact Win64 packages. Shared segment/cursor
   cancellation and detached copy/join pass339013checks/258 original abort-retries

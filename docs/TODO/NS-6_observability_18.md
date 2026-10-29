@@ -12,8 +12,9 @@ feedback while a native solve is running, even though the worker survives a
 phone page being backgrounded. Repair the actual bridge without invented overall
 percentages or a second implementation of learning or rendering.
 
-Execution status (2026-10-29): native AC1–3 local gates pass. Browser presentation
-compiles; actual UI execution, exact published qualification and AC4/AC5 remain.
+Execution status (2026-10-29): native AC1–3 and published consumer qualification
+pass at542d5cc/[CI478](https://github.com/mr-highball/pythian/actions/runs/40816053238).
+Browser presentation compiles; actual UI execution/AC4 remains unverified.
 This task stays open. It was selected after portability11's full acceptance.
 Criterion advanced: parent04 retained-operation forwarding and operator reporting.
 Deliverable: borrowed audio-pull observation, lossless native progress transport
@@ -61,6 +62,19 @@ selection/render constructor/interior or duration/scheduler obligations of
   prerequisites. Do not request another approval or bypass a security gate.
 
 **Dev Notes:**
+
+- 2026-10-29, Big Boss: exact source
+  `542d5cc43b28d454f2313e0931a9e618d84eccaa` is published-qualified. CI478
+  succeeds: native14m59s, maintained integration14m3s, extracted consumers35s.
+  Both clean exact Win64 packages pass complete inventory and actual consumers:
+  core107 owned/120 hashes, ZIP SHA256
+  `64d1848d0f096eecba4cf89fceb8aac5e638cd0890bb20da738324b512db7f5a`;
+  full159/280, `a3ec6a08ddeeb3e8ca7d89fe72d68e5ffd4fda463e75d56b77457475d6bc2aed`.
+  Earlier pending source descriptions below are historical. Actual UI execution
+  remains required; neither this task nor parent04 moves to DONE. Source is not
+  deployed to the running Studio. The whole parent criterion remains open;
+  this one bridge batch takes delivery nonclosing0→1. No musical/reference
+  counter reset or completion credit. Counts53 open/88 DONE/141 total unchanged.
 
 - 2026-10-29, Big Boss: local native job tests pass113 checks on Win32/Win64,
   including exact257/0/items/pass3 persistence and rejection without state change.
