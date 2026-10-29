@@ -52,9 +52,9 @@ wrapper-specific restriction, an existing fix or another required gap.
 
 **Blockers**
 
-- [Upstream native build qualification01](NS-6_wfc-build_01.md) — macOS CI57
-  exceeded its unchanged30m limit twice; no further same-source retry or pin
-  adoption. Resolve the demonstrated build prerequisite on its own WFC branch.
+- [Upstream native build qualification01 — DONE](DONE/NS-6_wfc-build_01.md) —
+  exact d4d30b1/CI58 passes all five jobs within the unchanged budget. Both
+  original macOS timeouts remain recorded; downstream qualification stays here.
 - [Portable passage ownership15 — DONE](DONE/NS-6_portability_15.md) — actual portable
   event-corpus qualification exposed a pre-existing wrong-source PCM failure.
   Its primary repair, exact oracle and extracted consumers qualify at384c6de/CI495.
@@ -62,6 +62,12 @@ wrapper-specific restriction, an existing fix or another required gap.
   accepted WFC pin c4e7569 supplies the primary constructor and observer bridge.
 
 **Dev Notes:**
+
+- 2026-10-29, Big Boss: build01 is accepted after all-five CI58 SUCCESS at exact
+  d4d30b120ee6ac6741387b206d971bb2877896aa. Its src/test trees are identical to
+  reviewed clone5d69462, preserving completed local consumer/replay evidence.
+  Select explicit gitlink adoption and clean downstream/extracted qualification;
+  this task remains OPEN until those original gates pass. No musical credit.
 
 - Upstream build prerequisite01 now has candidate d4d30b1 on
   `codex/pythian-native-build-reuse`, retaining the exact5d69462 model/clone

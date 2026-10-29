@@ -166,12 +166,14 @@ end;
 
 procedure Exercise;
 const
-  Stages: array[0..9] of String = ('provider_voice_capacity_visits',
+  Stages: array[0..12] of String = ('provider_voice_capacity_visits',
     'wfc_voice_config_visits', 'wfc_voice_config_copy_visits',
     'voice_session_clone_models', 'wfc_voice_build_visits',
     'wfc_model_construct_visits', 'wfc_sequence_projection_visits',
-    'voice_session_snapshot_cells', 'provider_decode_choices', 'voice_session_ready');
-  Points: array[0..9] of Integer = (2, 2, 2, 1, 2, 1, 1, 1, 2, 2);
+    'voice_session_snapshot_cells', 'provider_decode_choices', 'voice_session_ready',
+    'wfc_sequence_model_build_visits', 'wfc_sequence_model_build_visits',
+    'wfc_sequence_model_build_visits');
+  Points: array[0..12] of Integer = (2, 2, 2, 1, 2, 1, 1, 1, 2, 2, 0, 1, 2);
 var
   C: TWfcMusicVoicesGraphConfig;
   Options: TVoiceSessionOptions;
@@ -183,6 +185,7 @@ var
   B: TWfcSolveProgressBridge;
   Expected, Original: String;
   I: Integer;
+  ModelCopy: TWfcSequenceModel;
 begin
   B := TWfcSolveProgressBridge.Create(nil);
   try
@@ -241,6 +244,40 @@ begin
         FreeAndNil(Candidate);
       end;
       Check(Evidence(Base.CopyAccepted) = Expected, 'Cancellation changed prior accepted owner');
+    end;
+    { Big Boss: the public copy entry point must preserve its caller result and
+      the accepted session at start, real interior work and final publication. }
+    for I := 0 to 2 do
+    begin
+      O.Stage := 'wfc_sequence_model_build_visits';
+      O.Point := I;
+      O.Marker := Exception.Create('original named model copy abort');
+      O.Enabled := True;
+      O.Raised := False;
+      ModelCopy := C.Voices[0].Model;
+      try
+        try
+          ModelCopy := Base.CopyModel('bass', O.Observe);
+        except
+          on E: Exception do Check(E = O.Marker, 'CopyModel replaced original exception');
+        end;
+        Check(O.Raised, 'CopyModel cancellation checkpoint was not reached');
+        Check(ModelCopy = C.Voices[0].Model, 'Failed CopyModel replaced caller result');
+        Inc(Aborts);
+      finally
+        O.Enabled := False;
+        O.Marker := nil;
+        if ModelCopy <> C.Voices[0].Model then ModelCopy.Free;
+      end;
+      Check(EncodeWfcSequenceText(C.Voices[0].Model) = Original,
+        'CopyModel abort changed original model');
+      ModelCopy := Base.CopyModel('bass', O.Observe);
+      try
+        Check(EncodeWfcSequenceText(ModelCopy) = Original, 'CopyModel retry changed model');
+      finally
+        ModelCopy.Free;
+      end;
+      Check(Evidence(Base.CopyAccepted) = Expected, 'CopyModel changed accepted session');
     end;
     WriteLn('Voice preparation consumer: ', Checks, ' checks; ', Aborts,
       ' original abort/retries; ', O.Calls, ' actual callbacks');

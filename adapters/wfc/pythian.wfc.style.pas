@@ -308,7 +308,8 @@ uses
   pythian.wfc.context,
   pythian.wfc.context.archive,
   wfc_sequence_learn,
-  wfc_sequence_text;
+  wfc_sequence_text,
+  pythian.wfc.progress;
 
 const
   StyleMagic = $54535950; { PYST, current development format only }
@@ -487,7 +488,7 @@ function CopyStyleModel(const AModel: TWfcSequenceModel;
   const AProgress: TWorkProgressCallback): TWfcSequenceModel;
 begin
   ReportWork(AProgress, 'wave_model_copy', wuItems, 0, 1);
-  Result := DecodeWfcSequenceText(EncodeWfcSequenceText(AModel));
+  Result := CloneWfcSequenceModel(AModel, AProgress);
   CompleteOwnedStep(Result, AProgress, 'wave_model_copy');
 end;
 

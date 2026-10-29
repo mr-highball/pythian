@@ -1,11 +1,11 @@
 # NS-6_wfc-build_01 — Qualify WFC native conformance within its build budget
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
 Resolve the demonstrated upstream qualification prerequisite for
-[observed model cloning20](NS-6_observability_20.md). WFC CI57's macOS job
+[observed model cloning20](../NS-6_observability_20.md). WFC CI57's macOS job
 exhausted its30-minute limit twice. Its shell build forces65 complete unit
 rebuilds across consumers. The first timeout ends during compilation; the
 second build log is truncated by GitHub's viewer. These are failed engineering
@@ -14,6 +14,12 @@ gates, not scientific rejections or proof that a conformance assertion failed.
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
 WFC owns its generic build orchestration. Keep Pythian's accepted pin and held
 clone work intact; no vendor-source patch or upstream merge belongs here.
+
+Completed 2026-10-29 at exact WFC d4d30b120ee6ac6741387b206d971bb2877896aa.
+[CI58](https://github.com/mr-highball/wfc/actions/runs/40974532515) passes all
+five required jobs: Linux 7m12s, macOS 11m38s, Windows 12m47s, pas2js with actual
+browser conformance 12m42s, and development FPC 7m48s. Total duration 12m51s.
+All original criteria below are satisfied. Downstream adoption remains clone20.
 
 Criterion: complete unchanged upstream conformance inside its existing budget.
 Deliverable: one fresh native unit cache per shell-build invocation, reused by
@@ -47,6 +53,14 @@ same-source retry or timeout expansion is the repair.
 - No implementation blocker. Full upstream qualification remains required.
 
 **Dev Notes:**
+
+- 2026-10-29, Big Boss SOLO: exact CI58 is terminal SUCCESS for all five jobs.
+  Native32/64 cache identity and unchanged conformance, shell syntax and complete
+  command parity qualify alongside the full upstream run. The original src,
+  test and workflow trees are unchanged from 5d69462; the 30-minute limit stays.
+  Preserve both CI57 timeout attempts. Counts 55 open/95 DONE become 54 open/
+  96 DONE, total 150; NS-6 has 16 open. Completion 52.45/47.55 and delivery
+  nonclosing 0 remain. No musical credit, upstream merge or live deployment.
 
 - Big Boss: upstream branch is clean/pushed at
   [d4d30b120ee6ac6741387b206d971bb2877896aa](https://github.com/mr-highball/wfc/commit/d4d30b120ee6ac6741387b206d971bb2877896aa).

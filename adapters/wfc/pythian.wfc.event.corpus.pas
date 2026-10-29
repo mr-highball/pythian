@@ -29,7 +29,7 @@ unit pythian.wfc.event.corpus;
 interface
 
 uses
-  pythian.corpus, pythian.learning, pythian.passage, pythian.wfc.events,
+  pythian.corpus, pythian.learning, pythian.passage, pythian.wfc.events, pythian.progress,
   wfc_sequence, wfc_model;
 
 const
@@ -72,16 +72,20 @@ type
     function GetSourceCount: Integer;
     procedure Initialize(const ACorpus: TAcousticCorpusData;
       const AInputs: TRecordedEventInputs; const AQuantumFrames, APaletteSize, AOrder: Integer;
-      const ACenters: TAcousticVectors; const AModel: TWfcSequenceModel);
+      const ACenters: TAcousticVectors; const AModel: TWfcSequenceModel;
+      const AProgress: TWorkProgressCallback);
   public
     constructor Create(const ACorpus: TAcousticCorpusData;
       const AInputs: TRecordedEventInputs; const AQuantumFrames: Integer;
       const APaletteSize: Integer = 8; const AOrder: Integer = 2);
     { Reconstruct measured members against exact supplied centers, independently
-      admit model counts, then clone the model. No clustering or WFC learning. }
+      admit model counts, then clone the model. No clustering or WFC learning.
+      Big Boss: the optional call-scoped observer covers primary model cloning;
+      other member preparation retains its separate contract. }
     constructor CreateFromModel(const ACorpus: TAcousticCorpusData;
       const AInputs: TRecordedEventInputs; const AQuantumFrames: Integer;
-      const ACenters: TAcousticVectors; const AModel: TWfcSequenceModel);
+      const ACenters: TAcousticVectors; const AModel: TWfcSequenceModel;
+      const AProgress: TWorkProgressCallback = nil);
     destructor Destroy; override;
     function MemberAt(const AIndex: Integer): TRecordedEventMember;
     function SourceInfoAt(const AIndex: Integer): TAcousticSourceInfo;
@@ -101,7 +105,7 @@ type
 implementation
 
 uses
-  pythian.audio, pythian.analysis, wfc_sequence_text;
+  pythian.audio, pythian.analysis, pythian.wfc.progress;
 
 type
   TFeatureSets = array of TAudioFeatures;
@@ -111,12 +115,13 @@ constructor TRecordedEventLearning.Create(const ACorpus: TAcousticCorpusData;
   const APaletteSize: Integer; const AOrder: Integer);
 begin
   inherited Create;
-  Initialize(ACorpus, AInputs, AQuantumFrames, APaletteSize, AOrder, nil, nil);
+  Initialize(ACorpus, AInputs, AQuantumFrames, APaletteSize, AOrder, nil, nil, nil);
 end;
 
 constructor TRecordedEventLearning.CreateFromModel(const ACorpus: TAcousticCorpusData;
   const AInputs: TRecordedEventInputs; const AQuantumFrames: Integer;
-  const ACenters: TAcousticVectors; const AModel: TWfcSequenceModel);
+  const ACenters: TAcousticVectors; const AModel: TWfcSequenceModel;
+  const AProgress: TWorkProgressCallback);
 begin
   inherited Create;
   if AModel = nil then
@@ -124,12 +129,13 @@ begin
     raise EAudio.Create('Saved event learning requires a model');
   end;
   Initialize(ACorpus, AInputs, AQuantumFrames, Length(ACenters), AModel.Order,
-    ACenters, AModel);
+    ACenters, AModel, AProgress);
 end;
 
 procedure TRecordedEventLearning.Initialize(const ACorpus: TAcousticCorpusData;
   const AInputs: TRecordedEventInputs; const AQuantumFrames, APaletteSize, AOrder: Integer;
-  const ACenters: TAcousticVectors; const AModel: TWfcSequenceModel);
+  const ACenters: TAcousticVectors; const AModel: TWfcSequenceModel;
+  const AProgress: TWorkProgressCallback);
 var
   LFeatures: TFeatureSets;
   LAdmitted: TAudioFeatures;
@@ -259,7 +265,7 @@ begin
   else
   begin
     ValidateAcousticEventModel(LTraining, FPalette, AModel);
-    FModel := DecodeWfcSequenceText(EncodeWfcSequenceText(AModel));
+    FModel := CloneWfcSequenceModel(AModel, AProgress);
   end;
   FInputs := Copy(AInputs);
   for I := 0 to High(FInputs) do

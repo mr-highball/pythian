@@ -3,6 +3,34 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](REBALANCE-2026-09-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
+## Current handoff: upstream build01 accepted; clone20 integration selected — 2026-10-29
+
+Previous goal turn was an operational firewall check: read-only diagnosis, no
+Pythian acceptance change. Big Boss remains SOLO. This continuation makes
+PROGRESS: exact WFC d4d30b1/CI58 is terminal SUCCESS in 12m51s, with all five
+required jobs passing. Linux 7m12s, macOS 11m38s, Windows 12m47s, actual pas2js/
+browser 12m42s and development FPC 7m48s. The original 30-minute budget, complete
+conformance and package/inventory checks remain. Both original CI57 timeouts
+are preserved. This is a repaired build prerequisite, not musical acceptance.
+
+[Build01 — DONE](TODO/DONE/NS-6_wfc-build_01.md) moves with incoming links and
+accounting: 54 open/96 DONE/150 total, NS-6 16 open; 52.45/47.55 unchanged.
+Delivery nonclosing 0 remains after whole required task closure. Preserve all
+scientific stops/exposure histories and the two current long listening questions.
+
+Next batch is [clone20](TODO/NS-6_observability_20.md)'s original downstream gate.
+Criterion: one primary observed immutable copy across every affected consumer.
+Deliverable: explicitly adopt reviewed WFC d4d30b1 gitlink and integrate the held
+Pythian adapter/consumer changes. Closing evidence: clean exact downstream CI,
+core/full package verification and new actual native64/pas2js consumers from the
+extracted full package. The accepted core source bytes are unchanged; reuse their
+recorded evidence explicitly. Earlier native32/64/pas2js consumer, cancellation
+and exact duration PCM checks remain valid because WFC src/test are identical
+to reviewed 5d69462. Stop on changed source/PCM, failed gates or another required
+gap; do not rerun the massive unchanged publication suite without a new reason.
+Clone20, full parent04, actual Studio/phone and all musical gates stay OPEN.
+No upstream merge, service restart, firewall change, inference or answer mutation.
+
 ## Objective and scope
 
 Build the reusable Pascal synthesis library, trustworthy supported musical
@@ -20,7 +48,7 @@ WFC57 attempt2 terminal CANCELLED30m20s after attempt1's30m21s. No third unchang
 retry or pin adoption is selected. The failure is an engineering qualification
 gate, not a musical rejection or a demonstrated failed conformance assertion.
 
-[New required WFC build01](TODO/NS-6_wfc-build_01.md) owns the actual prerequisite
+[New required WFC build01](TODO/DONE/NS-6_wfc-build_01.md) owns the actual prerequisite
 before [clone20](TODO/NS-6_observability_20.md). The first timeout ends during
 primary unit compilation. The second canceled build line70451 is beyond GitHub's
 inline-log limit; preserve that limit on the evidence claim. Its raw-log download

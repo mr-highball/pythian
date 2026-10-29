@@ -70,9 +70,32 @@ function WfcSequenceWorkObserver(const ABridge: TWfcSolveProgressBridge):
 function WfcPreparationWorkObserver(const ABridge: TWfcSolveProgressBridge):
   TWfcPreparationObserver;
 
+{ Big Boss: one call-scoped adaptation of the companion's primary immutable
+  clone. It preserves literal model state and original cancellation exceptions;
+  no codec or mirrored copy/validation algorithm is involved. }
+function CloneWfcSequenceModel(const AModel: TWfcSequenceModel;
+  const AProgress: TWorkProgressCallback = nil): TWfcSequenceModel;
+
 implementation
 
 uses pythian.audio;
+
+function CloneWfcSequenceModel(const AModel: TWfcSequenceModel;
+  const AProgress: TWorkProgressCallback): TWfcSequenceModel;
+var
+  LBridge: TWfcSolveProgressBridge;
+begin
+  if AModel = nil then
+  begin
+    raise EAudio.Create('Sequence cloning requires a model');
+  end;
+  LBridge := TWfcSolveProgressBridge.Create(AProgress);
+  try
+    Result := AModel.Clone(WfcSequenceWorkObserver(LBridge));
+  finally
+    LBridge.Free;
+  end;
+end;
 
 constructor TWfcSolveProgressBridge.Create(const ACallback: TWorkProgressCallback;
   const ASequencePass: Integer);

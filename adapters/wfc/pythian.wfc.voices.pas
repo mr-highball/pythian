@@ -93,7 +93,8 @@ type
     function ProofPassCount: Integer;
     function CopyProvider(const AName: String;
       const AProgress: TWorkProgressCallback = nil): TStyleProviderDescription;
-    function CopyModel(const AName: String): TWfcSequenceModel;
+    function CopyModel(const AName: String;
+      const AProgress: TWorkProgressCallback = nil): TWfcSequenceModel;
     function CopyContract(const AName: String): TProviderContract;
     { Candidate graph/model replacement. Pending edits outside its actual
       dependency closure remain pending; accepted unrelated state stays exact. }
@@ -141,8 +142,7 @@ uses
   SysUtils,
   pythian.audio,
   pythian.wfc.music,
-  pythian.wfc.progress,
-  wfc_sequence_text;
+  pythian.wfc.progress;
 
 type
   TNamedVoicePublication = class;
@@ -663,9 +663,7 @@ begin
     ReportWork(AProgress, 'voice_session_clone_models', wuItems, 0, Length(FNames));
     for LIndex := 0 to High(FNames) do
     begin
-      { The current primary text codec is synchronous within each model copy. }
-      LModel := DecodeWfcSequenceText(EncodeWfcSequenceText(
-        WfcMusicVoicesModelAt(AConfig, LIndex)));
+      LModel := CloneWfcSequenceModel(WfcMusicVoicesModelAt(AConfig, LIndex), AProgress);
       case LIndex of
         0: FConfig.HarmonyModel := LModel;
         1: FConfig.RhythmModel := LModel;
@@ -782,10 +780,10 @@ begin
   Result := FGraph.TotalPassCount - Length(FNames);
 end;
 
-function TNamedVoiceSession.CopyModel(const AName: String): TWfcSequenceModel;
+function TNamedVoiceSession.CopyModel(const AName: String;
+  const AProgress: TWorkProgressCallback): TWfcSequenceModel;
 begin
-  Result := DecodeWfcSequenceText(EncodeWfcSequenceText(
-    WfcMusicVoicesModelAt(FConfig, IndexOf(AName))));
+  Result := CloneWfcSequenceModel(WfcMusicVoicesModelAt(FConfig, IndexOf(AName)), AProgress);
 end;
 
 function TNamedVoiceSession.CopyContract(const AName: String): TProviderContract;

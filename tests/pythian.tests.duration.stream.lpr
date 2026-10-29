@@ -30,8 +30,8 @@ uses
   SysUtils, pythian.audio, pythian.bus, pythian.effects, pythian.echo,
   pythian.synth, pythian.wave, pythian.time, pythian.music.context,
   pythian.pitch.track, pythian.tonal, pythian.wfc.context, pythian.wfc.pitch,
-  pythian.wfc.instrument, pythian.wfc.duration.stream,
-  wfc_model, wfc_sequence, wfc_sequence_learn, wfc_sequence_graph,
+  pythian.wfc.instrument, pythian.wfc.duration.stream, pythian.progress,
+  wfc_model, wfc_sequence, wfc_sequence_learn, wfc_sequence_graph, wfc_sequence_text,
   wfc_music, wfc_music_sequence, wfc_music_ensemble,
   wfc_music_ensemble_graph, wfc_music_voices_graph;
 
@@ -43,7 +43,18 @@ type
     Instruments: TStyleInstruments;
     constructor Create;
     destructor Destroy; override;
-    function NewStream(const ABus: TBusGraph; const AOptions: TDurationStreamOptions): TDurationStream;
+    function NewStream(const ABus: TBusGraph; const AOptions: TDurationStreamOptions;
+      const AProgress: TWorkProgressCallback = nil): TDurationStream;
+  end;
+  { Big Boss: address each actual retained model copy, including copies made
+    after earlier ones succeed. The observer is borrowed only by construction. }
+  TCloneObserver = class
+    Target: Integer;
+    Index: Integer;
+    FinalPoint: Boolean;
+    Raised: Boolean;
+    Marker: Exception;
+    procedure Observe(const AWork: TWorkProgress);
   end;
   TFailEffect = class(TAudioEffect)
     procedure Reset; override;
@@ -183,14 +194,30 @@ begin
   inherited;
 end;
 
-function TFixture.NewStream(const ABus: TBusGraph; const AOptions: TDurationStreamOptions): TDurationStream;
+function TFixture.NewStream(const ABus: TBusGraph; const AOptions: TDurationStreamOptions;
+  const AProgress: TWorkProgressCallback): TDurationStream;
 var LNames: TDurationRoleNames; LOptions: TDurationStreamOptions;
 begin
   LNames := ['bass', 'lead'];
   LOptions := AOptions;
   LOptions.LeadRole := 1;
   Result := TDurationStream.Create(Models, [0, 480, 960, 1440],
-    [0, 240, 480, 720, 960, 1200, 1440], Config, LNames, Instruments, ABus, LOptions);
+    [0, 240, 480, 720, 960, 1200, 1440], Config, LNames, Instruments, ABus,
+    LOptions, AProgress);
+end;
+
+procedure TCloneObserver.Observe(const AWork: TWorkProgress);
+begin
+  if AWork.Stage <> 'wfc_sequence_model_build_visits' then Exit;
+  Check((AWork.Units = wuItems) and (AWork.Done >= 0), 'Duration clone mapping');
+  if AWork.Done = 0 then Inc(Index);
+  if (Index = Target) and
+    (((not FinalPoint) and (AWork.Done = 0)) or
+      (FinalPoint and (AWork.Total > 0) and (AWork.Done = AWork.Total))) then
+  begin
+    Raised := True;
+    raise Marker;
+  end;
 end;
 
 function NewBus: TBusGraph;
@@ -596,6 +623,70 @@ begin
   finally LStream.Free; LBus.Free; end;
 end;
 
+function ModelEvidence(const AFixture: TFixture): String;
+var
+  LProvider: TDurationProvider;
+  LIndex: Integer;
+begin
+  Result := '';
+  for LProvider := Low(TDurationProvider) to High(TDurationProvider) do
+    Result := Result + EncodeWfcSequenceText(AFixture.Models[LProvider]);
+  for LIndex := 0 to WfcMusicVoicesModelCount(AFixture.Config) - 1 do
+    Result := Result + EncodeWfcSequenceText(WfcMusicVoicesModelAt(AFixture.Config, LIndex));
+end;
+
+procedure CheckCloneCancellation(const AFixture: TFixture);
+var
+  LBus: TBusGraph;
+  LStream: TDurationStream;
+  LObserver: TCloneObserver;
+  LOriginal: String;
+  LExpected: String;
+  LCopy: Integer;
+  LPoint: Integer;
+begin
+  LOriginal := ModelEvidence(AFixture);
+  LBus := NewBus;
+  LStream := nil;
+  LObserver := TCloneObserver.Create;
+  try
+    LStream := AFixture.NewStream(LBus, DefaultDurationStreamOptions, LObserver.Observe);
+    Check(LObserver.Index = 7, 'Duration must observe all three context and four musical copies');
+    Check(LStream.TryEdit(InitialEdit) = derAccepted, 'Observed stream accepts initial plan');
+    LExpected := Snapshot(LStream);
+    FreeAndNil(LStream);
+    for LCopy := 1 to 7 do
+      for LPoint := 0 to 1 do
+      begin
+        LObserver.Target := LCopy;
+        LObserver.Index := 0;
+        LObserver.FinalPoint := LPoint = 1;
+        LObserver.Raised := False;
+        LObserver.Marker := Exception.Create('Original duration clone abort');
+        try
+          LStream := AFixture.NewStream(LBus, DefaultDurationStreamOptions, LObserver.Observe);
+        except
+          on E: Exception do Check(E = LObserver.Marker, 'Duration replaced clone exception');
+        end;
+        Check(LObserver.Raised and (LStream = nil), 'Cancelled duration constructor published a stream');
+        LObserver.Marker := nil;
+        Check(ModelEvidence(AFixture) = LOriginal, 'Duration cancellation changed borrowed models');
+        LObserver.Target := 0;
+        LObserver.Index := 0;
+        LStream := AFixture.NewStream(LBus, DefaultDurationStreamOptions, LObserver.Observe);
+        Check(LObserver.Index = 7, 'Duration retry omitted model observation');
+        Check(LStream.TryEdit(InitialEdit) = derAccepted, 'Same-bus duration retry failed');
+        Check(Snapshot(LStream) = LExpected, 'Duration retry changed exact accepted plan');
+        FreeAndNil(LStream);
+      end;
+    WriteLn('Duration model copies: 14 original start/final aborts and same-bus retries pass');
+  finally
+    LStream.Free;
+    LObserver.Free;
+    LBus.Free;
+  end;
+end;
+
 {$IFDEF DURATION_PCM_REPLAY}
 { The exact same authored plan/future edit emits every Double channel value.
   Scoring uses the separately declared1e-9 absolute sample tolerance and exact
@@ -648,6 +739,7 @@ begin
     CheckBoundaries(LFixture);
     CheckTerminal(LFixture);
     CheckModelOwnership;
+    CheckCloneCancellation(LFixture);
     WriteLn('duration stream: staged timing, continuation, future edits, immutable audio and rollback passed');
   finally LFixture.Free; end;
 end.

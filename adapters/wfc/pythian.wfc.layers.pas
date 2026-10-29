@@ -2044,7 +2044,7 @@ begin
     begin
       LPreparation.Visit;
       LPreparation.Checkpoint;
-      FLayers[LIndex].Model := DecodeWfcSequenceText(EncodeWfcSequenceText(ALayers[LIndex].Model));
+      FLayers[LIndex].Model := CloneWfcSequenceModel(ALayers[LIndex].Model, AProgress);
       LPreparation.Checkpoint;
       FLayers[LIndex].Preferences := Copy(ALayers[LIndex].Preferences);
     end;

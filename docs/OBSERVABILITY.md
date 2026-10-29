@@ -3,6 +3,34 @@
 [Project](../PROJECT.md) · [Assessment](CODEBASE-ASSESSMENT.md) ·
 [Tasks](TODO/README.md) · [Work](WORK.md)
 
+## Shared immutable model copying — integrated candidate, 2026-10-29
+
+[Clone20](TODO/NS-6_observability_20.md) replaces serialization-based model
+copies in style, layers, named voices, duration construction and saved event
+restoration with `CloneWfcSequenceModel`. One call-scoped bridge forwards WFC's
+primary immutable constructor through `wfc_sequence_model_build_visits` in item
+units. Intermediate totals remain unknown; the final count describes this model
+copy, never overall training progress. Nil models reject explicitly. The source
+and returned clone retain independent lifetimes and identical literal state.
+
+Callbacks are synchronous and borrowed for the call. Their original exception
+escapes without publishing a partial clone; caller result variables and source
+models remain intact. The model retains no observer. Existing coarse consumer
+phases and final publication rules remain. Named-voice `CopyModel`, duration
+construction and saved-event restoration accept optional work callbacks; the
+duration callback also reaches primary generic voice-config preparation.
+Allocation/RTL copy, other event-member work, full duration/scheduler interiors
+and hard callback latency remain separate parent04 obligations.
+
+WFC d4d30b1/[CI58](https://github.com/mr-highball/wfc/actions/runs/40974532515)
+passes all five upstream jobs. Its generic implementation/tests are identical
+to reviewed clone5d69462: native32/64 and actual pas2js each pass 788662 checks
+and all 318 clone aborts. Pythian's adapter passes 657 checks/6 aborts on each
+target; actual named-voice, duration and measured event restoration consumers
+pass cancellation/retry and original outputs. The 70000-frame duration trace
+remains byte-identical. Exact downstream and clean extracted-package gates are
+still pending; this is solo Big Boss verification and earns no musical credit.
+
 ## Journal learning preparation — qualified component, 2026-10-29
 
 Big Boss's remaining [parent04](TODO/NS-6_observability_04.md) component adds

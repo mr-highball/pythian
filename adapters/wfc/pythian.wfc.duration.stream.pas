@@ -30,7 +30,7 @@ interface
 
 uses
   pythian.bus, pythian.schedule, pythian.synth, pythian.time,
-  pythian.pitch.track, pythian.wfc.instrument,
+  pythian.pitch.track, pythian.wfc.instrument, pythian.progress,
   wfc, wfc_model, wfc_sequence, wfc_sequence_graph, wfc_music_voices_graph;
 
 type
@@ -100,11 +100,15 @@ type
       const AEdit: TDurationEdit; const AMasks: TWfcSequenceTokenConstraints;
       out ASequence: TWfcGeneratedSequenceSegment): Boolean;
   public
+    { Big Boss: the optional call-scoped observer reaches primary model cloning
+      and generic voice-config preparation. Other duration/scheduler interiors
+      retain their separate contracts; do not mutate borrowed inputs. }
     constructor Create(const AModels: TDurationModels;
       const AKeyGrid, ATempoGrid: TDurationGrid;
       const AConfig: TWfcMusicVoicesGraphConfig;
       const ARoles: TDurationRoleNames; const AInstruments: TStyleInstruments;
-      const ABus: TBusGraph; const AOptions: TDurationStreamOptions);
+      const ABus: TBusGraph; const AOptions: TDurationStreamOptions;
+      const AProgress: TWorkProgressCallback = nil);
     destructor Destroy; override;
     { All staging, proof and allocation precede native future admission.
       Result other than accepted, or an exception, preserves accepted plan.
@@ -130,7 +134,8 @@ implementation
 uses
   SysUtils, pythian.audio, pythian.music.context, pythian.tonal,
   pythian.wfc.context, pythian.wfc.pitch, pythian.wfc.generation,
-  wfc_sequence_text, wfc_music, wfc_music_sequence, wfc_music_ensemble;
+  wfc_sequence_text, wfc_music, wfc_music_sequence, wfc_music_ensemble,
+  pythian.wfc.progress;
 
 function DefaultDurationStreamOptions: TDurationStreamOptions;
 begin
@@ -193,56 +198,66 @@ constructor TDurationStream.Create(const AModels: TDurationModels;
   const AKeyGrid, ATempoGrid: TDurationGrid;
   const AConfig: TWfcMusicVoicesGraphConfig;
   const ARoles: TDurationRoleNames; const AInstruments: TStyleInstruments;
-  const ABus: TBusGraph; const AOptions: TDurationStreamOptions);
-var LProvider: TDurationProvider; LIndex, LOther: Integer;
+  const ABus: TBusGraph; const AOptions: TDurationStreamOptions;
+  const AProgress: TWorkProgressCallback);
+var
+  LProvider: TDurationProvider;
+  LIndex: Integer;
+  LOther: Integer;
+  LBridge: TWfcSolveProgressBridge;
 begin
   inherited Create;
-  ValidateGrid(AKeyGrid);
-  ValidateGrid(ATempoGrid);
-  ValidateWfcMusicVoicesGraphConfig(AConfig);
-  if (ABus = nil) or (Length(AConfig.Voices) > 6) or
-    (Length(ARoles) <> Length(AConfig.Voices)) or
-    (Length(AInstruments) <> Length(ARoles)) or (AConfig.StepsPerOctave <> 12) or
-    (AOptions.LeadRole < 0) or (AOptions.LeadRole >= Length(ARoles)) or
-    (AOptions.TicksPerQuarter < 1) or (AOptions.TicksPerQuarter > 32767) or
-    (AOptions.MaxBacktracks < 0) or (AOptions.MaxBacktracks > 65536) or
-    (AOptions.MaxPassBacktracks < 0) or (AOptions.MaxPassBacktracks > 65536) or
-    (AOptions.MaxPlanFrames < 1) then
-    raise EAudio.Create('Duration stream configuration exceeds its finite policy');
-  if (AOptions.OutputBus < 0) or (AOptions.OutputBus >= ABus.BusCount) then
-    raise EAudio.Create('Duration output bus is invalid');
-  FRate := ABus.SampleRate;
-  for LIndex := 0 to High(ARoles) do
-  begin
-    if (Trim(ARoles[LIndex]) = '') or (AInstruments[LIndex] = nil) or
-      (AInstruments[LIndex].SampleRate <> FRate) then
-      raise EAudio.Create('Duration roles and instrument clocks must be explicit');
-    for LOther := 0 to LIndex - 1 do
-      if ARoles[LIndex] = ARoles[LOther] then raise EAudio.Create('Duplicate duration role');
+  LBridge := TWfcSolveProgressBridge.Create(AProgress);
+  try
+    ValidateGrid(AKeyGrid);
+    ValidateGrid(ATempoGrid);
+    ValidateWfcMusicVoicesGraphConfig(AConfig, WfcPreparationWorkObserver(LBridge));
+    if (ABus = nil) or (Length(AConfig.Voices) > 6) or
+      (Length(ARoles) <> Length(AConfig.Voices)) or
+      (Length(AInstruments) <> Length(ARoles)) or (AConfig.StepsPerOctave <> 12) or
+      (AOptions.LeadRole < 0) or (AOptions.LeadRole >= Length(ARoles)) or
+      (AOptions.TicksPerQuarter < 1) or (AOptions.TicksPerQuarter > 32767) or
+      (AOptions.MaxBacktracks < 0) or (AOptions.MaxBacktracks > 65536) or
+      (AOptions.MaxPassBacktracks < 0) or (AOptions.MaxPassBacktracks > 65536) or
+      (AOptions.MaxPlanFrames < 1) then
+      raise EAudio.Create('Duration stream configuration exceeds its finite policy');
+    if (AOptions.OutputBus < 0) or (AOptions.OutputBus >= ABus.BusCount) then
+      raise EAudio.Create('Duration output bus is invalid');
+    FRate := ABus.SampleRate;
+    for LIndex := 0 to High(ARoles) do
+    begin
+      if (Trim(ARoles[LIndex]) = '') or (AInstruments[LIndex] = nil) or
+        (AInstruments[LIndex].SampleRate <> FRate) then
+        raise EAudio.Create('Duration roles and instrument clocks must be explicit');
+      for LOther := 0 to LIndex - 1 do
+        if ARoles[LIndex] = ARoles[LOther] then raise EAudio.Create('Duplicate duration role');
+    end;
+    for LProvider := Low(TDurationProvider) to High(TDurationProvider) do
+    begin
+      if AModels[LProvider] = nil then raise EAudio.Create('Missing duration provider');
+      if AModels[LProvider].StateCount > 256 then raise EAudio.Create('Duration provider exceeds state bound');
+      FModels[LProvider] := CloneWfcSequenceModel(AModels[LProvider], AProgress);
+    end;
+    FConfig := CopyWfcMusicVoicesGraphConfig(AConfig, WfcPreparationWorkObserver(LBridge));
+    FConfig.HarmonyModel := nil;
+    FConfig.RhythmModel := nil;
+    for LIndex := 0 to High(FConfig.Voices) do FConfig.Voices[LIndex].Model := nil;
+    FConfig.HarmonyModel := CloneWfcSequenceModel(AConfig.HarmonyModel, AProgress);
+    FConfig.RhythmModel := CloneWfcSequenceModel(AConfig.RhythmModel, AProgress);
+    for LIndex := 0 to High(FConfig.Voices) do
+      FConfig.Voices[LIndex].Model := CloneWfcSequenceModel(AConfig.Voices[LIndex].Model, AProgress);
+    for LIndex := 0 to WfcMusicVoicesModelCount(FConfig) - 1 do
+      if WfcMusicVoicesModelAt(FConfig, LIndex).StateCount > 256 then
+        raise EAudio.Create('Duration musical provider exceeds state bound');
+    FNames := Copy(ARoles);
+    FInstruments := Copy(AInstruments);
+    FKeyGrid := Copy(AKeyGrid);
+    FTempoGrid := Copy(ATempoGrid);
+    FOptions := AOptions;
+    FSynth := TScheduledSynth.Create(ABus, AOptions.VoiceLimit, AOptions.WorkLimit);
+  finally
+    LBridge.Free;
   end;
-  for LProvider := Low(TDurationProvider) to High(TDurationProvider) do
-  begin
-    if AModels[LProvider] = nil then raise EAudio.Create('Missing duration provider');
-    if AModels[LProvider].StateCount > 256 then raise EAudio.Create('Duration provider exceeds state bound');
-    FModels[LProvider] := DecodeWfcSequenceText(EncodeWfcSequenceText(AModels[LProvider]));
-  end;
-  FConfig := CopyWfcMusicVoicesGraphConfig(AConfig);
-  FConfig.HarmonyModel := nil;
-  FConfig.RhythmModel := nil;
-  for LIndex := 0 to High(FConfig.Voices) do FConfig.Voices[LIndex].Model := nil;
-  FConfig.HarmonyModel := DecodeWfcSequenceText(EncodeWfcSequenceText(AConfig.HarmonyModel));
-  FConfig.RhythmModel := DecodeWfcSequenceText(EncodeWfcSequenceText(AConfig.RhythmModel));
-  for LIndex := 0 to High(FConfig.Voices) do
-    FConfig.Voices[LIndex].Model := DecodeWfcSequenceText(EncodeWfcSequenceText(AConfig.Voices[LIndex].Model));
-  for LIndex := 0 to WfcMusicVoicesModelCount(FConfig) - 1 do
-    if WfcMusicVoicesModelAt(FConfig, LIndex).StateCount > 256 then
-      raise EAudio.Create('Duration musical provider exceeds state bound');
-  FNames := Copy(ARoles);
-  FInstruments := Copy(AInstruments);
-  FKeyGrid := Copy(AKeyGrid);
-  FTempoGrid := Copy(ATempoGrid);
-  FOptions := AOptions;
-  FSynth := TScheduledSynth.Create(ABus, AOptions.VoiceLimit, AOptions.WorkLimit);
 end;
 
 destructor TDurationStream.TPlan.Destroy;

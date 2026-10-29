@@ -692,6 +692,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Shared sequence stream progress compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.sequence.stream.progress$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Shared sequence stream cancellation and replay checks failed' }
+    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.model.clone.progress.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Shared immutable model clone compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.model.clone.progress$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Shared immutable model clone callback/replay checks failed' }
     & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.layer.preparation.progress.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Layer preparation progress compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.layer.preparation.progress$executableSuffix")
