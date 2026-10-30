@@ -61,7 +61,7 @@ function ReadStudioProjectRevision(const ACatalogRoot, AProjectId: String;
   actual content hashing remains a required training preflight. }
 function OpenStudioSourceAudio(const ACatalogRoot, AHash: String): TFileStream;
 { Bounds byte length/nesting before the strict parser runs. }
-function ParseStudioProjectWrite(const AText: String): TJSONObject;
+function ParseStudioProjectWrite(const AText: RawByteString): TJSONObject;
 { expected_revision=0 creates a project. An identical retry against the directly
   preceding revision reconciles without another write. Other stale writes fail.
   Immutable accepted revisions are never replaced. The returned already_saved
@@ -82,6 +82,7 @@ uses
   pythian.hash,
   pythian.wave.read,
   pythian.tools.annotations.catalog,
+  pythian.tools.studio.material,
   pythian.tools.studio.&library
   {$IFDEF MSWINDOWS}, Windows{$ENDIF};
 
@@ -129,13 +130,13 @@ begin
   end;
 end;
 
-procedure BoundText(const AText: String);
+procedure BoundText(const AText: RawByteString);
 begin
   Need((Length(AText) > 0) and (Length(AText) <= MaximumStudioDocumentBytes),
     'Studio JSON exceeds its byte bound');
 end;
 
-function ParseStudioProjectWrite(const AText: String): TJSONObject;
+function ParseStudioProjectWrite(const AText: RawByteString): TJSONObject;
 var
   LData: TJSONData;
   LCount: Integer;
@@ -228,7 +229,7 @@ begin
 end;
 
 function TextField(const AObject: TJSONObject; const AName: String;
-  const AMinimum, AMaximum: Integer): String;
+  const AMinimum, AMaximum: Integer): TJSONStringType;
 var
   LValue: TJSONData;
 begin
@@ -296,7 +297,7 @@ var
   LValues: TJSONArray;
   LIndex: Integer;
   LPrior: Integer;
-  LText: String;
+  LText: TJSONStringType;
 begin
   if AObject.Find('classifications') = nil then
   begin
@@ -309,7 +310,8 @@ begin
     Need(LValues.Items[LIndex].JSONType = jtString,
       'Selection classifications must be text');
     LText := LValues.Strings[LIndex];
-    Need((Length(LText) >= 1) and (Length(LText) <= 64) and (Trim(LText) = LText),
+    Need((Length(LText) >= 1) and (Length(LText) <= 64) and
+      not (LText[1] in [#0..#32]) and not (LText[Length(LText)] in [#0..#32]),
       'Selection classifications must contain one to 64 bytes without outer spaces');
     ValidateCorpusText(UTF8String(LText));
     for LPrior := 0 to LIndex - 1 do
@@ -353,15 +355,8 @@ begin
 end;
 
 function JsonHash(const AObject: TJSONObject): String;
-var
-  LStream: TStringStream;
 begin
-  LStream := TStringStream.Create(AObject.AsJSON);
-  try
-    Result := Sha256Stream(LStream, LStream.Size);
-  finally
-    LStream.Free;
-  end;
+  Result := HashNativeText(WriteNativeJSON(AObject, MaximumStudioDocumentBytes));
 end;
 
 procedure CheckPath(const APath: String);
@@ -422,7 +417,7 @@ end;
 function ReadObject(const APath: String): TJSONObject;
 var
   LStream: TFileStream;
-  LText: String;
+  LText: RawByteString;
 begin
   Result := nil;
   CheckPath(APath);
@@ -718,11 +713,30 @@ var
   LTotal: Integer;
   LUsage: String;
   LValue: TJSONData;
+  LFields: String;
+  LMaterial: TJSONObject;
 begin
+  LFields := CSnapshotFields;
   if AProject.Find('parked_sources') <> nil then
-    Fields(AProject, CSnapshotFields + ',parked_sources')
-  else
-    Fields(AProject, CSnapshotFields);
+  begin
+    LFields := LFields + ',parked_sources';
+  end;
+  if AProject.Find('musical_material') <> nil then
+  begin
+    LFields := LFields + ',musical_material';
+  end;
+  Fields(AProject, LFields);
+  LValue := AProject.Find('musical_material');
+  if LValue <> nil then
+  begin
+    Need(LValue.JSONType = jtObject, 'Musical input must be a choices object');
+    LMaterial := CanonicalStudioMaterial(TJSONObject(LValue));
+    try
+      Need(LMaterial.AsJSON = LValue.AsJSON, 'Stored musical input is not canonical');
+    finally
+      LMaterial.Free;
+    end;
+  end;
   Need((TextField(AProject, 'format', 1, 64) = StudioProjectFormat) and
     (TextField(AProject, 'project_id', 1, 64) = AId) and
     (IntField(AProject, 'revision') = ARevision), 'Studio snapshot identity differs');
@@ -1027,6 +1041,13 @@ begin
       Result.Add('parked_sources', CandidateSources(ACatalogRoot,
         ArrayField(AWrite, 'parked_sources')));
     end;
+    if AWrite.Find('musical_material') <> nil then
+    begin
+      Need(LMode = 'instrumental', 'Musical choices require Instrumental experiment');
+      Need(AWrite.Find('musical_material').JSONType = jtObject,
+        'Musical input must be a choices object');
+      Result.Add('musical_material', CanonicalStudioMaterial(AWrite.Objects['musical_material']));
+    end;
     Result.Add('snapshot_sha256', JsonHash(Result));
     ValidateSnapshot(Result, Result.Strings['project_id'], ARevision);
   except
@@ -1071,16 +1092,23 @@ var
   LPrevious: TJSONObject;
   LCandidate: TJSONObject;
   LStream: TFileStream;
-  LText: String;
+  LText: RawByteString;
   LCount: TJSONObject;
   LValueCount: Integer;
+  LFields: String;
 begin
   LValueCount := 0;
   BoundJson(AWrite, 1, LValueCount);
+  LFields := 'format,project_id,expected_revision,name,style_intent,learning_mode,sources';
   if AWrite.Find('parked_sources') <> nil then
-    Fields(AWrite, 'format,project_id,expected_revision,name,style_intent,learning_mode,sources,parked_sources')
-  else
-    Fields(AWrite, 'format,project_id,expected_revision,name,style_intent,learning_mode,sources');
+  begin
+    LFields := LFields + ',parked_sources';
+  end;
+  if AWrite.Find('musical_material') <> nil then
+  begin
+    LFields := LFields + ',musical_material';
+  end;
+  Fields(AWrite, LFields);
   Need(Length(AWrite.AsJSON) <= MaximumStudioDocumentBytes, 'Studio write exceeds its byte bound');
   Need(TextField(AWrite, 'format', 1, 64) = StudioProjectWriteFormat,
     'Studio write format is unsupported');
@@ -1167,7 +1195,18 @@ end;
 
 function SaveStudioProject(const ACatalogRoot: String;
   const AWrite: TJSONObject): TJSONObject;
+var
+  LMaterial: TJSONData;
 begin
+  Need(AWrite <> nil, 'Studio project write is required');
+  LMaterial := AWrite.Find('musical_material');
+  if LMaterial <> nil then
+  begin
+    Need(LMaterial.JSONType = jtObject, 'Musical input must be a choices object');
+    { Big Boss: complete immutable analysis reads before taking the project
+      writer lock. Job admission takes the jobs lock before reading a project. }
+    ValidateStudioMaterialBinding(ACatalogRoot, TJSONObject(LMaterial));
+  end;
   EnterCriticalSection(GStudioLock);
   try
     Result := SaveStudioProjectLocked(ACatalogRoot, AWrite);

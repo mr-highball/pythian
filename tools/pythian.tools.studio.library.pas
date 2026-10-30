@@ -217,18 +217,6 @@ begin
   end;
 end;
 
-function HashText(const AText: String): String;
-var
-  LStream: TStringStream;
-begin
-  LStream := TStringStream.Create(AText);
-  try
-    Result := Sha256Stream(LStream, LStream.Size);
-  finally
-    LStream.Free;
-  end;
-end;
-
 function ValidHash(const AText: String): Boolean;
 var
   LIndex: Integer;
@@ -311,7 +299,7 @@ begin
   CheckPath(Result);
 end;
 
-procedure WriteNew(const APath, AText: String);
+procedure WriteNew(const APath: String; const AText: RawByteString);
 var
   LStream: TFileStream;
 begin
@@ -463,7 +451,7 @@ begin
   LCopy := TJSONObject(AIndex.Clone);
   try
     LCopy.Delete('index_sha256');
-    Need(HashText(LCopy.AsJSON) = LHash, 'Library index differs from its digest');
+    Need(HashNativeText(LCopy.AsJSON) = LHash, 'Library index differs from its digest');
   finally
     LCopy.Free;
   end;
@@ -478,7 +466,7 @@ begin
       LCollection := LCollections.Objects[LIndex];
       Fields(LCollection, 'collection_id,name,status,source_sha256s,memberships');
       Need(SafeComponent(LCollection.Strings['name']) and
-        (LCollection.Strings['collection_id'] = HashText(LCollection.Strings['name'])),
+        (LCollection.Strings['collection_id'] = HashNativeText(LCollection.Strings['name'])),
         'Library collection identity is invalid');
       Need(LIds.IndexOf(LCollection.Strings['collection_id']) < 0,
         'Library collection identity is repeated');
@@ -533,7 +521,7 @@ begin
   if not DirectoryExists(LRoot) then
   begin
     Result := EmptyIndex;
-    Result.Add('index_sha256', HashText(Result.AsJSON));
+    Result.Add('index_sha256', HashNativeText(Result.AsJSON));
     Exit;
   end;
   LRevision := 0;
@@ -568,7 +556,7 @@ begin
   if LRevision = 0 then
   begin
     Result := EmptyIndex;
-    Result.Add('index_sha256', HashText(Result.AsJSON));
+    Result.Add('index_sha256', HashNativeText(Result.AsJSON));
     Exit;
   end;
   Result := ReadIndex(IncludeTrailingPathDelimiter(LRoot) +
@@ -815,14 +803,14 @@ begin
   LRows := AIndex.Arrays['collections'];
   for LIndex := 0 to LRows.Count - 1 do
   begin
-    if LRows.Objects[LIndex].Strings['collection_id'] = HashText(AName) then
+    if LRows.Objects[LIndex].Strings['collection_id'] = HashNativeText(AName) then
     begin
       Exit(LRows.Objects[LIndex]);
     end;
   end;
   Need(LRows.Count < MaximumLibraryCollections, 'Retained collection bound exceeded');
   Result := TJSONObject.Create;
-  Result.Add('collection_id', HashText(AName));
+  Result.Add('collection_id', HashNativeText(AName));
   Result.Add('name', AName);
   Result.Add('status', 'available');
   Result.Add('source_sha256s', TJSONArray.Create);
@@ -1149,7 +1137,7 @@ begin
   CheckPath(LPath);
   LTrack := ReadCatalogTrack(ACatalog, AFile.Hash);
   try
-    Result := HashText(LTrack.AsJSON);
+    Result := HashNativeText(LTrack.AsJSON);
     LName := ExistingText(LTrack, 'original_name', 128);
     LGroup := ExistingText(LTrack, 'source_group', 128);
     LClock := ExistingText(LTrack, 'clock_id', 128, True);
@@ -1208,7 +1196,7 @@ begin
       'Existing catalog audio differs from its content identity');
     LCurrent := ReadCatalogTrack(ACatalog, AFile.Hash);
     try
-      Need(HashText(LCurrent.AsJSON) = Result,
+      Need(HashNativeText(LCurrent.AsJSON) = Result,
         'Existing catalog metadata changed during verification');
     finally
       LCurrent.Free;
@@ -1461,7 +1449,7 @@ begin
       end;
       Result.Integers['revision'] := LRevision;
       Result.Delete('index_sha256');
-      Result.Add('index_sha256', HashText(Result.AsJSON));
+      Result.Add('index_sha256', HashNativeText(Result.AsJSON));
       ValidateIndex(Result, LRevision);
       Need(Length(Result.AsJSON) + 1 <= MaximumLibraryIndexBytes,
         'Library index exceeds its byte bound');
@@ -1473,7 +1461,7 @@ begin
       begin
         LTrack := ReadCatalogTrack(LCatalog, LExistingRecords.Names[LIndex]);
         try
-          Need(HashText(LTrack.AsJSON) = LExistingRecords.ValueFromIndex[LIndex],
+          Need(HashNativeText(LTrack.AsJSON) = LExistingRecords.ValueFromIndex[LIndex],
             'Existing catalog metadata changed before index publication');
         finally
           LTrack.Free;

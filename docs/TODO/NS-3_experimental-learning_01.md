@@ -34,6 +34,9 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
 
 **Blockers**
 
+- [NS-6_json-identity_01 — DONE](DONE/NS-6_json-identity_01.md) — native Unicode
+  musical choices and source/job receipts now preserve actual operator bytes.
+
 - [NS-4_joint-context_01 — DONE](DONE/NS-4_joint-context_01.md) — paired context
   resolves the demonstrated AC3 motif prerequisite; Studio mapping remains open.
 
@@ -41,6 +44,18 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-10-30, Big Boss: The linked JSON-identity repair is accepted through
+  Win32/Win64 51-check storage consumers and a 16-check actual native HTTP batch.
+  The parent draft has a canonical source-bound musical recipe, immutable project
+  persistence and a metadata preparation endpoint. Saving choices preserves the
+  original analysis, source clock/license, corrections and no-hidden-learning
+  behavior. UI controls, proposal-driven ordinary generation and Original
+  comparison still remain; no parent effort is accepted. The draft source-title
+  limit now matches the catalog's 256-byte limit. Until the runtime consumes the
+  saved recipe, instrumental preflight explicitly rejects musical_material
+  projects instead of silently using the starter; remove that temporary guard
+  and replace its negative check when actual native recipe generation is wired.
 
 - 2026-10-30, Big Boss: The joint-context prerequisite is accepted after native
   Win32/Win64, actual pas2js and relevant extracted consumers. Six-part motifs

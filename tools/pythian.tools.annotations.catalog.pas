@@ -105,7 +105,7 @@ begin
   end;
 end;
 
-function ReadBoundedText(const APath: String; const AMaximum: Integer): String;
+function ReadBoundedText(const APath: String; const AMaximum: Integer): RawByteString;
 var
   LStream: TFileStream;
 begin
@@ -134,7 +134,7 @@ begin
 end;
 
 function RequiredText(const AObject: TJSONObject; const AName: String;
-  const AMaximum: Integer): String;
+  const AMaximum: Integer): TJSONStringType;
 var
   LValue: TJSONData;
 begin
@@ -147,7 +147,7 @@ begin
 end;
 
 function OptionalText(const AObject: TJSONObject; const AName: String;
-  const AMaximum: Integer): String;
+  const AMaximum: Integer): TJSONStringType;
 var
   LValue: TJSONData;
 begin
@@ -199,7 +199,7 @@ begin
     GUIDToString(LGuid) + AExtension;
 end;
 
-procedure WriteNewText(const APath, AText: String);
+procedure WriteNewText(const APath: String; const AText: RawByteString);
 var
   LStream: TFileStream;
 begin
@@ -370,9 +370,9 @@ var
   LGroup: String;
   LClock: String;
   LPartition: String;
-  LTitle: String;
-  LProvenance: String;
-  LLicense: String;
+  LTitle: TJSONStringType;
+  LProvenance: TJSONStringType;
+  LLicense: TJSONStringType;
   LInputPath: String;
   LAssetPath: String;
   LRecordPath: String;

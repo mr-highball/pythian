@@ -33,6 +33,9 @@ uses
 { Native fpjson bridge only; canonical scalar traversal/decoding is core-owned.
   No host conversion or normalization when crossing the native UTF8String API. }
 function NativeJSONText(const AText: TScalarText): TJSONStringType;
+{ Exact native bytes. JSON/text validation remains with the existing parser;
+  the primary SHA-256 implementation owns hashing. No host-code-page conversion. }
+function HashNativeText(const AText: RawByteString): String;
 
 { Keep strict RTL structural/numeric parsing. Primary Pascal decodes quoted
   strings first; ASCII indices pass through the RTL scanner and are restored at
@@ -63,7 +66,8 @@ function WriteNativeJSON(const AData: TJSONData; const AMaximumBytes: Integer;
 implementation
 
 uses
-  Classes, SysUtils, Math, jsonparser, jsonscanner, pythian.audio, pythian.json.text;
+  Classes, SysUtils, Math, jsonparser, jsonscanner, pythian.audio, pythian.json.text,
+  pythian.hash;
 
 type
   TScalarStrings = array of TScalarText;
@@ -97,6 +101,18 @@ begin
   begin
     SetString(Result, PAnsiChar(@AText[1]), Length(AText));
   end;
+end;
+
+function HashNativeText(const AText: RawByteString): String;
+var
+  LBytes: TAudioBytes;
+begin
+  SetLength(LBytes, Length(AText));
+  if Length(LBytes) > 0 then
+  begin
+    Move(AText[1], LBytes[0], Length(LBytes));
+  end;
+  Result := Sha256Bytes(LBytes);
 end;
 
 constructor TScalarJSONParser.Create(const AFrame: RawByteString;

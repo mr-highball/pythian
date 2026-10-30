@@ -238,7 +238,8 @@ begin
   Result := ReadStudioCapture(ACatalogRoot, AWrite.Strings['capture_id']);
 end;
 
-function Manifest(const AHash, AName, AOrigin: String; const AExisting: TJSONObject): TJSONObject;
+function Manifest(const AHash: String; const AName, AOrigin: TJSONStringType;
+  const AExisting: TJSONObject): TJSONObject;
 var
   LRows: TJSONArray;
   LRow: TJSONObject;

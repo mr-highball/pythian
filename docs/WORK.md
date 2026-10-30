@@ -2,7 +2,71 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
-## Current handoff: joint context accepted; return to Studio choices — 2026-10-30
+## Current handoff: Unicode repair accepted; resume the Studio editor — 2026-10-30
+
+Big Boss SOLO has closed [JSON identity](TODO/DONE/NS-6_json-identity_01.md).
+Native Win32/Win64 pass 51 focused musical-choice/Unicode storage checks with
+clean heaps. Native project 106, job 113, discovery 68 and capture 80 regressions
+pass. A 16-check Pascal HTTP client exercises real shell/session, Unicode
+save/reload/retry, source receipts and unchanged jobs through the fixed QA slot.
+The safer loopback batch allows eight requests and closes its exact processes;
+the QA listener is absent. No browser/audio was opened, no stable deployment or
+operator-data write occurred. Preserve setup/failure evidence and the approved
+bounded launcher under musical-choices-20261030-boss in the dedicated E roots.
+
+The unchanged legacy 4096-record library-capacity tail was deliberately stopped
+after 391 synthetic records when metadata I/O dominated; the whole fixture is
+not claimed passed. Actual Unicode capture import/index identity and the scoped
+consumers above cover the repaired path. Its stop ledger and existing failure
+evidence remain. No unrelated capacity or callback work was selected.
+
+Shared HashNativeText uses the primary SHA-256 without host conversion; native
+project/job/catalog/library and HTTP boundaries retain original UTF-8 bytes.
+The parent draft's metadata-only recipe and project revisions preserve analysis,
+operator and source origins. The UI editor, actual proposal-to-instrumental
+generation and Original comparison remain [experimental learning AC2–4](TODO/NS-3_experimental-learning_01.md).
+No parent effort is accepted. Its title bound now matches the catalog contract,
+and primary scalar/JSON validation rejects malformed direct native input before
+commit. Generation preflight explicitly refuses musical_material until the
+runtime applies it. Continue that implementation after publication: remove this
+temporary guard and its negative check when real recipe generation is wired.
+
+Accounting is 28/91 (30.77%): 15 tasks, nine open/six current DONE, 63 open units;
+NS-6 is 11/24. Real JSON repair criteria closure resets consecutive nonclosing
+batches to zero. Earlier a16b078/CI505 and its complete package qualification
+remain green evidence for joint context. Keep the full implementation goal active.
+
+## Previous handoff: Unicode choice prerequisite selected — 2026-10-30
+
+Big Boss SOLO continues experimental-learning AC2–4. The paired musical-context
+prerequisite is published as a16b078 and [CI505](https://github.com/mr-highball/pythian/actions/runs/41090724074)
+passed. Both local core/full package regressions finished successfully, and the
+extracted native and actual pas2js context consumers pass 205 checks each. The
+authored control remains byte-identical to the fresh preceding-revision build.
+
+The uncommitted parent draft adds a native canonical musical-choice recipe,
+source-bound proposal preparation, immutable project storage and a metadata HTTP
+endpoint. The first repaired native fixture passes 40 actual capture-analysis,
+accept/correct/manual/bypass and no-hidden-learning checks, with clean heaps.
+UI controls and proposal-driven Studio generation/comparison are not delivered.
+
+That fixture demonstrates a separate required data-integrity gap: Unicode notes
+save but cannot reopen. Actual Unicode catalog titles reveal the same native
+host-string conversion in source publication. Follow
+[JSON identity](TODO/DONE/NS-6_json-identity_01.md), then resume the existing parent;
+do not hide the failures or broaden into unrelated audits. Shared native raw-byte
+hashing, project/job/catalog publication and HTTP JSON boundaries are being
+repaired. Preserve failures and current checks under musical-choices-20261030-boss
+in the dedicated E-drive roots. Native HTTP validation remains required.
+
+The concrete prerequisite adds three effort units: 15 tasks, ten open/five DONE,
+66 open+25 accepted=91,27.47%. NS-6 is 8/24. No parent or repair effort is accepted.
+The last completed criterion-closing batch was joint context; its nonclosing
+counter is zero. The current parent/repair batch is still ongoing. Stable Studio,
+operator recordings/answers and TLS/firewall identity remain unchanged; no QA
+browser or playback was opened.
+
+## Previous handoff: joint context accepted — 2026-10-30
 
 Big Boss SOLO has implemented the shared paired harmonic/rhythmic context pass
 and primary portable pitch-pattern contract. The discovered motif now generates

@@ -2,10 +2,10 @@
 
 ## Current goal: instrumental exploration
 
-Five current-goal tasks are accepted: **25 / 88 effort units (28.41%)**. Their
+Six current-goal tasks are accepted: **28 / 91 effort units (30.77%)**. Their
 criteria and prerequisites passed: finite runtime/percussion, ordinary instrumental
 Studio and a concrete cancellation repair. This is not musical preference or
-recording-style learning acceptance. There are 102 DONE files: five current, 97 historical.
+recording-style learning acceptance. There are 103 DONE files: six current, 97 historical.
 
 | Accepted task | Date | Effort | Outcome |
 | --- | --- | ---: | --- |
@@ -14,6 +14,7 @@ recording-style learning acceptance. There are 102 DONE files: five current, 97 
 | [NS-6_job-cancellation_01](NS-6_job-cancellation_01.md) | 2026-10-30 | 2/10 | Bounded live-writer cancellation through the actual app, preserving journal ownership |
 | [NS-6_instrumental-studio_01](NS-6_instrumental-studio_01.md) | 2026-10-30 | 6/10 | Ordinary source-free six-part Studio jobs, controls, synchronized stems, feedback and reviewed settings restoration |
 | [NS-4_joint-context_01](NS-4_joint-context_01.md) | 2026-10-30 | 4/10 | Actual paired harmony/rhythm context, conditional six-part motifs and primary portable pitch-pattern input |
+| [NS-6_json-identity_01](NS-6_json-identity_01.md) | 2026-10-30 | 3/10 | Faithful Unicode musical choices, source/job receipts, shared native byte hashing and actual HTTP round trips |
 
 ## Historical completed tasks (97)
 > These 97 accepted records predate the [current goal](../../GOAL.md). They preserve reusable code and evidence but have no current Goal/Effort metadata and contribute no units to its estimate. The table below is historical percentage-credit accounting, not current progress.

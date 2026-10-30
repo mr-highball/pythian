@@ -58,6 +58,7 @@ uses
   pythian.tools.listen.catalog,
   pythian.tools.listen.stream,
   pythian.tools.studio.projects,
+  pythian.tools.studio.material,
   pythian.tools.studio.effects,
   pythian.tools.studio.capture,
   pythian.tools.studio.pitch,
@@ -206,13 +207,13 @@ begin
   Result := True;
 end;
 
-function SendText(const ASocket: Integer; const AText: String): Boolean;
+function SendText(const ASocket: Integer; const AText: RawByteString): Boolean;
 begin
   Result := (AText = '') or SendBytes(ASocket, AText[1], Length(AText));
 end;
 
 procedure SendResponse(const ASocket, AStatus: Integer;
-  const AContentType, ABody: String;
+  const AContentType: String; const ABody: RawByteString;
   const AExtraHeaders: String = '');
 var
   LHeader: String;
@@ -804,7 +805,7 @@ end;
 procedure SendJson(const ASocket: Integer; const AJson: TJSONObject;
   const AExtraHeaders: String = '');
 var
-  LText: String;
+  LText: RawByteString;
 begin
   LText := AJson.AsJSON + LineEnding;
   Need(Length(LText) <= CMaximumJsonResponseBytes,
@@ -1062,6 +1063,7 @@ var
   LHash: String;
   LStaticName: String;
   LText: String;
+  LJsonText: RawByteString;
   LExtraHeaders: String;
   LAsset: TJSONObject;
   LMediaStream: TFileStream;
@@ -1391,6 +1393,12 @@ begin
         QueryValue(ARequest.Query, 'id'), QueryInteger(ARequest.Query, 'revision'));
     end
     else if (ARequest.Method = 'GET') and
+      (ARequest.Path = '/api/studio/musical-material') then
+    begin
+      LReport := ProposeStudioMaterial(ACatalogRoot, QueryValue(ARequest.Query, 'id'),
+        QueryInt64(ARequest.Query, 'tempo'), QueryInt64(ARequest.Query, 'channel'));
+    end
+    else if (ARequest.Method = 'GET') and
       (ARequest.Path = '/api/studio/project') then
     begin
       LReport := ReadStudioProject(ACatalogRoot,
@@ -1541,10 +1549,10 @@ begin
       (ARequest.Path = '/api/export') then
     begin
       LReport := BuildReviewedCatalogPacket(ACatalogRoot);
-      LText := LReport.AsJSON + LineEnding;
-      Need(Length(LText) <= CMaximumReviewedExportBytes,
+      LJsonText := LReport.AsJSON + LineEnding;
+      Need(Length(LJsonText) <= CMaximumReviewedExportBytes,
         'Reviewed export exceeds HTTP packet bound');
-      SendResponse(ASocket, 200, 'application/json; charset=utf-8', LText);
+      SendResponse(ASocket, 200, 'application/json; charset=utf-8', LJsonText);
       Exit;
     end
     else if (ARequest.Method = 'GET') and

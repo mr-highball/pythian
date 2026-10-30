@@ -53,7 +53,7 @@ type
   EStudioJobTimeout = class(EAudio);
 
 { Owned detached results; no source PCM reads, WFC or worker launch here. }
-function ParseStudioJobWrite(const AText: String): TJSONObject;
+function ParseStudioJobWrite(const AText: RawByteString): TJSONObject;
 { Collection verification and audition learning can read hours of source audio.
   Both worker and supervisor use the declared finite job policy. }
 function StudioJobRuntimeSeconds(const AKind: String): Integer;
@@ -84,7 +84,8 @@ function StudioJobDirectory(const ACatalogRoot, AJobId: String): String;
   and library staging; it must be outside both durable catalog and library. }
 function ReserveStudioJobStage(const ACatalogRoot, ALibraryRoot, AJobId,
   APurpose: String): String;
-function StudioTextHash(const AText: String): String;
+{ Original bytes, including fpjson UTF8String, without host code-page conversion. }
+function StudioTextHash(const AText: RawByteString): String;
 function ReadStudioJSON(const APath: String): TJSONObject;
 function OpenStudioReadStream(const APath: String): TFileStream;
 function OpenStudioInstrumentalAudio(const ACatalogRoot, AJobId: String;
@@ -242,16 +243,9 @@ begin
   end;
 end;
 
-function StudioTextHash(const AText: String): String;
-var
-  LBytes: TAudioBytes;
+function StudioTextHash(const AText: RawByteString): String;
 begin
-  SetLength(LBytes, Length(AText));
-  if Length(LBytes) > 0 then
-  begin
-    Move(AText[1], LBytes[0], Length(LBytes));
-  end;
-  Result := Sha256Bytes(LBytes);
+  Result := HashNativeText(AText);
 end;
 
 procedure CheckPath(const APath: String);
@@ -298,7 +292,7 @@ begin
   CheckPath(Result);
 end;
 
-function ParseStudioJobWrite(const AText: String): TJSONObject;
+function ParseStudioJobWrite(const AText: RawByteString): TJSONObject;
 var
   LValue: TJSONData;
 begin
@@ -350,7 +344,7 @@ end;
 function ReadStudioJSON(const APath: String): TJSONObject;
 var
   LStream: TFileStream;
-  LText: String;
+  LText: RawByteString;
 begin
   LStream := OpenStudioReadStream(APath);
   try
@@ -363,7 +357,7 @@ begin
   Result := ParseStudioJobWrite(LText);
 end;
 
-procedure WriteStudioData(const APath, AText: String;
+procedure WriteStudioData(const APath: String; const AText: RawByteString;
   const AReplace: Boolean);
 var
   LStage: String;
@@ -416,17 +410,17 @@ end;
 
 procedure WriteStudioJSONNew(const APath: String; const AObject: TJSONObject);
 begin
-  WriteStudioData(APath, AObject.AsJSON, False);
+  WriteStudioData(APath, WriteNativeJSON(AObject, 1048576), False);
 end;
 
 procedure ReplaceStudioJSON(const APath: String; const AObject: TJSONObject);
 begin
-  WriteStudioData(APath, AObject.AsJSON, True);
+  WriteStudioData(APath, WriteNativeJSON(AObject, 1048576), True);
 end;
 
 procedure ReplaceStudioBinary(const APath: String; const ABytes: TAudioBytes);
 var
-  LText: String;
+  LText: RawByteString;
 begin
   Need((Length(ABytes) > 0) and (Length(ABytes) <= 1048576), 'Studio binary checkpoint exceeds byte bound');
   SetLength(LText, Length(ABytes));
@@ -674,6 +668,8 @@ begin
           'Project snapshot differs; reopen the saved project');
         Need(LProject.Strings['learning_mode'] = 'instrumental',
           'Save the project with Instrumental experiment selected');
+        Need(LProject.Find('musical_material') = nil,
+          'Musical input generation is not available in this build');
         LRequest.Add('project_snapshot', LProject.Clone);
       finally
         LProject.Free;

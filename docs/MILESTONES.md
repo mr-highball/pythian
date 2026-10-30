@@ -11,7 +11,7 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 25 / 88 effort units accepted (28.41%); 9 open, five current-goal DONE.**
+**Current snapshot: 28 / 91 effort units accepted (30.77%); 9 open, six current-goal DONE.**
 This is a scope-delivery estimate, not a musical-quality score. No arbitrary
 per-task percentages or north-star weights apply.
 
@@ -22,8 +22,8 @@ per-task percentages or north-star weights apply.
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 15 | 0 | 0 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, graph inspection and musical controls | 14 | 11 | 11 / 25 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
-| [NS-6](#ns-6) | Ordinary Studio generation, meaningful reviews, cancellation and long instrumental sessions | 13 | 8 | 8 / 21 |
-| **Total** | **14 current-goal tasks** | **63** | **25** | **28.41%** |
+| [NS-6](#ns-6) | Ordinary Studio generation, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 13 | 11 | 11 / 24 |
+| **Total** | **15 current-goal tasks** | **63** | **28** | **30.77%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -98,6 +98,9 @@ save real provider/control/sound recipes and exercise selective blends and reble
 [instrumental streams](TODO/NS-6_instrumental-streams_01.md) deliver actual
 experimental jobs, Original/Before/After feedback, inspectable results, efficient
 long playback and mobile recovery. Reuse existing working UI and native transport.
+[JSON identity](TODO/DONE/NS-6_json-identity_01.md) repairs the demonstrated musical
+choice save/reopen prerequisite. Its three implementation units are accepted after
+native storage and actual HTTP checks; the parent Studio editor remains open.
 
 ## Completion accounting
 

@@ -114,18 +114,6 @@ begin
   end;
 end;
 
-function HashText(const AText: String): String;
-var
-  LStream: TStringStream;
-begin
-  LStream := TStringStream.Create(AText);
-  try
-    Result := Sha256Stream(LStream, LStream.Size);
-  finally
-    LStream.Free;
-  end;
-end;
-
 function ValidHash(const AText: String): Boolean;
 var
   LIndex: Integer;
@@ -210,7 +198,7 @@ end;
 
 function LibraryId(const ALibraryRoot: String): String;
 begin
-  Result := HashText('pythian.library.configured-root.v1' + #10 + RootPath(ALibraryRoot));
+  Result := HashNativeText('pythian.library.configured-root.v1' + #10 + RootPath(ALibraryRoot));
 end;
 
 constructor THeaderStream.Create(const ASource: TStream);
@@ -339,7 +327,7 @@ begin
     LIdentity.Add('bits_per_sample', ARow.Integers['bits_per_sample']);
     LIdentity.Add('frame_count', ARow.Int64s['frame_count']);
     LIdentity.Add('status', ARow.Strings['status']);
-    Result := HashText(LIdentity.AsJSON);
+    Result := HashNativeText(LIdentity.AsJSON);
   finally
     LIdentity.Free;
   end;
@@ -385,7 +373,7 @@ begin
   LCopy := TJSONObject(AValue.Clone);
   try
     LCopy.Delete('index_sha256');
-    Need(HashText(LCopy.AsJSON) = AValue.Strings['index_sha256'],
+    Need(HashNativeText(LCopy.AsJSON) = AValue.Strings['index_sha256'],
       'Discovery differs from its metadata digest');
   finally
     LCopy.Free;
@@ -407,7 +395,7 @@ begin
       LRow := LCollections.Objects[LIndex];
       Fields(LRow, 'collection_id,name,status');
       Need(SafeName(LRow.Strings['name']) and
-        (LRow.Strings['collection_id'] = HashText(LRow.Strings['name'])) and
+        (LRow.Strings['collection_id'] = HashNativeText(LRow.Strings['name'])) and
         ((LRow.Strings['status'] = 'available') or (LRow.Strings['status'] = 'missing')) and
         (LIds.IndexOf(LRow.Strings['collection_id']) < 0), 'Invalid discovery collection');
       LIds.Add(LRow.Strings['collection_id']);
@@ -424,8 +412,8 @@ begin
         'previous_source_sha256,preparation_status');
       Need(SafeName(LRow.Strings['collection_name']) and SafeName(LRow.Strings['original_name']) and
         ValidHash(LRow.Strings['entry_id']) and ValidHash(LRow.Strings['entry_snapshot_sha256']) and
-        (LRow.Strings['collection_id'] = HashText(LRow.Strings['collection_name'])) and
-        (LRow.Strings['entry_id'] = HashText('pythian.library.entry.v1' + #10 +
+        (LRow.Strings['collection_id'] = HashNativeText(LRow.Strings['collection_name'])) and
+        (LRow.Strings['entry_id'] = HashNativeText('pythian.library.entry.v1' + #10 +
           AValue.Strings['library_id'] + #10 + LRow.Strings['collection_name'] + #10 +
           LRow.Strings['original_name'])) and (LIds.IndexOf(LRow.Strings['entry_id']) < 0),
         'Invalid or duplicate discovery entry');
@@ -557,7 +545,7 @@ begin
   if LRevision = 0 then
   begin
     Result := EmptyDiscovery;
-    Result.Add('index_sha256', HashText(Result.AsJSON));
+    Result.Add('index_sha256', HashNativeText(Result.AsJSON));
     Exit;
   end;
   Result := ReadObject(LRoot + 'revision-' + Format('%.6d', [LRevision]) + '.json');
@@ -594,7 +582,7 @@ begin
     AProgress(AStage, ADone, ATotal);
 end;
 
-procedure WriteNew(const APath, AText: String);
+procedure WriteNew(const APath: String; const AText: RawByteString);
 var
   LStream: TFileStream;
 begin
@@ -647,9 +635,9 @@ begin
   LHeader := nil;
   try
     try
-      Result.Add('entry_id', HashText('pythian.library.entry.v1' + #10 +
+      Result.Add('entry_id', HashNativeText('pythian.library.entry.v1' + #10 +
       LibraryId(ALibraryRoot) + #10 + ACollection + #10 + AName));
-    Result.Add('collection_id', HashText(ACollection));
+    Result.Add('collection_id', HashNativeText(ACollection));
     Result.Add('collection_name', ACollection);
     Result.Add('original_name', AName);
     LStream := TFileStream.Create(LPath, fmOpenRead or fmShareDenyWrite);
@@ -804,7 +792,7 @@ begin
       for LIndex := 0 to LNames.Count - 1 do
       begin
         LCollection := TJSONObject.Create;
-        LCollection.Add('collection_id', HashText(LNames[LIndex]));
+        LCollection.Add('collection_id', HashNativeText(LNames[LIndex]));
         LCollection.Add('name', LNames[LIndex]);
         LCollection.Add('status', 'available');
         Result.Arrays['collections'].Add(LCollection);
@@ -865,7 +853,7 @@ begin
       Result.Integers['missing_count'] := LMissing;
       Result.Integers['unsupported_count'] := LUnsupported;
       Result.Int64s['header_read_bytes'] := LTotalHeader;
-      Result.Add('index_sha256', HashText(Result.AsJSON));
+      Result.Add('index_sha256', HashNativeText(Result.AsJSON));
       ValidateDiscovery(Result, Result.Integers['revision']);
       Need(Length(Result.AsJSON) + 1 <= MaximumLibraryIndexBytes, 'Discovery metadata exceeds bound');
       Notify(AProgress, 'publishing_discovery', LAvailable, LAvailable);
