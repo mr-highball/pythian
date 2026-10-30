@@ -7,9 +7,10 @@
 Big Boss remains SOLO. Shared runtime, explicit percussion, the concrete
 [live cancellation repair](TODO/DONE/NS-6_job-cancellation_01.md), and
 [ordinary instrumental Studio](TODO/DONE/NS-6_instrumental-studio_01.md) meet their
-local acceptance criteria. Source publication/CI for this integrated Studio
-batch follows; do not describe the new CI as passed until its actual result.
-Prior percussion commit 8d63fac passes CI502.
+local acceptance criteria. The integrated Studio batch is published on
+hello-pythian as b4e03f2. [CI503](https://github.com/mr-highball/pythian/actions/runs/41012477582)
+is still running at handoff; do not describe it as passed until its actual
+result. Prior percussion commit 8d63fac passes CI502.
 
 The real operator job bb-instrumental-20261030-first completed through the
 deployed native supervisor with ten recorded events. Its new project is
@@ -50,9 +51,9 @@ was reconciled using the retained identity, without duplicate generation.
 
 The matched service/worker/twelve assets occupy the established stable slot.
 Existing catalog, library, Private address/profile and TLS identity remain.
-Stable process 65648 owns port18097; its hidden launcher has completed.
-Use the current host address from local configuration rather than copying this
-process/address into a future launch. QA listeners/workers and exact isolated
+The stable executable slot owns port18097; its hidden launcher has completed.
+Use the current host address from local configuration for future launches.
+QA listeners/workers and exact isolated
 browser trees are closed; all test playback was muted and explicitly stopped.
 New build/test/cache/run output is under instrumental-studio-20261030-boss in
 the dedicated E workspace; its deployment manifest identifies all fourteen artifacts.
