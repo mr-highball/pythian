@@ -65,12 +65,6 @@ implementation
 
 uses pythian.studio.requests;
 
-type
-  TReferenceDocument = class external name 'Document' (TJSDocument)
-    procedure removeEventListener(const AType: String; const AListener: JSValue;
-      const ACapture: Boolean); reintroduce;
-  end;
-
 function TListeningReference.Add(AParent: TJSElement; const ATag, AText: String): TJSElement;
 begin
   Result := document.createElement(ATag);
@@ -133,7 +127,7 @@ begin
   FDisposed := True;
   Stop;
   FRoot.removeEventListener('toggle', @Toggle);
-  TReferenceDocument(document).removeEventListener('play', @Playing, True);
+  TStudioDocument(document).removeEventListener('play', @Playing, True);
   window.removeEventListener('pagehide', @Hide);
   inherited Destroy;
 end;

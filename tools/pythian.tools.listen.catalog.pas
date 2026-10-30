@@ -459,7 +459,7 @@ var
   LIndex, LPrior: Integer;
 begin
   CheckFields(AInput, '|source_sha256|source_sha256s|model_sha256|policy_sha256|' +
-    'parameter_sha256|split|seed|source_group|clock_id|partition|');
+    'parameter_sha256|split|seed|source_group|clock_id|partition|material_sha256|material_origin|');
   Result := TJSONObject.Create;
   try
     if AStorage = 'source' then
@@ -482,12 +482,24 @@ begin
     end
     else if (ARole = 'generated') or (ARole = 'edited') then
     begin
-      Need((AInput.Count = 6) or
-        ((AInput.Count = 7) and (AInput.Find('source_sha256s') <> nil)),
-        'generated provenance has missing or unrelated fields');
-      LHash := TextField(AInput, 'source_sha256', 64);
-      Need(ValidHash(LHash), 'invalid generated source hash');
-      Result.Add('source_sha256', LHash);
+      if AInput.Find('material_sha256') <> nil then
+      begin
+        Need((AInput.Count = 7) and (AInput.Find('source_sha256') = nil) and
+          (AInput.Find('source_sha256s') = nil), 'Authored provenance cannot imply source audio');
+        LHash := TextField(AInput, 'material_sha256', 64);
+        Need(ValidHash(LHash), 'Invalid authored material identity');
+        Result.Add('material_sha256', LHash);
+        Result.Add('material_origin', TextField(AInput, 'material_origin', 512));
+      end
+      else
+      begin
+        Need((AInput.Count = 6) or
+          ((AInput.Count = 7) and (AInput.Find('source_sha256s') <> nil)),
+          'generated provenance has missing or unrelated fields');
+        LHash := TextField(AInput, 'source_sha256', 64);
+        Need(ValidHash(LHash), 'invalid generated source hash');
+        Result.Add('source_sha256', LHash);
+      end;
       if AInput.Find('source_sha256s') <> nil then
       begin
         LHashes := ArrayField(AInput, 'source_sha256s');

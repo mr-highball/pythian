@@ -87,6 +87,8 @@ function ReserveStudioJobStage(const ACatalogRoot, ALibraryRoot, AJobId,
 function StudioTextHash(const AText: String): String;
 function ReadStudioJSON(const APath: String): TJSONObject;
 function OpenStudioReadStream(const APath: String): TFileStream;
+function OpenStudioInstrumentalAudio(const ACatalogRoot, AJobId: String;
+  const APart: Integer; out AHash: String): TFileStream;
 procedure WriteStudioJSONNew(const APath: String; const AObject: TJSONObject);
 { Mutable bounded checkpoints only; immutable job/identity records use New. }
 procedure ReplaceStudioJSON(const APath: String; const AObject: TJSONObject);
@@ -101,7 +103,9 @@ uses
   jsonscanner,
   pythian.hash,
   pythian.tools.studio.preparation,
+  pythian.tools.studio.instrumental.config,
   pythian.tools.annotations.catalog,
+  pythian.tools.annotations.sourceguard,
   pythian.tools.studio.projects,
   pythian.tools.studio.&library.discovery
   {$IFDEF MSWINDOWS}, Windows{$ENDIF};
@@ -542,7 +546,8 @@ begin
   end;
 end;
 
-procedure LockJobs(const ACatalogRoot: String);
+procedure LockJobs(const ACatalogRoot: String;
+  const AWaitMilliseconds: QWord = CJobWriterWaitMilliseconds);
 var
   LLock: String;
   LStarted: QWord;
@@ -557,7 +562,7 @@ begin
       Wait briefly for its owner; never remove or take over an occupied lock. }
     while not CreateDir(LLock) do
     begin
-      Need(GetTickCount64 - LStarted < CJobWriterWaitMilliseconds,
+      Need(GetTickCount64 - LStarted < AWaitMilliseconds,
         'Studio job writer remains busy; retry or inspect a stopped writer before recovery');
       Sleep(10);
     end;
@@ -636,7 +641,7 @@ begin
     'duration_ms|seeds|maximum_tokens|model_order|source_weights|generation_weights|resolve_unassigned|' +
     'parent_job_id|retry_of|source_sha256|start_frame|end_frame|effects|tail_seconds|' +
     'preview_job_id|collection_name|title|capture_id|mode|channel|tempo_bpm|' +
-    'discovery_revision|entries|reconstruction|preparation|');
+    'discovery_revision|entries|reconstruction|preparation|instrumental|');
   Need(Text(AWrite, 'format') = StudioJobWriteFormat, 'Unsupported Studio job format');
   LJobId := Text(AWrite, 'job_id');
   Need(SafeId(LJobId), 'Invalid job identifier');
@@ -645,10 +650,36 @@ begin
     (LKind = 'library_discover') or (LKind = 'library_prepare') or
     (LKind = 'inspect_source') or (LKind = 'effect_preview') or
     (LKind = 'effect_save') or (LKind = 'capture_inspect') or
-    (LKind = 'capture_save') or (LKind = 'capture_pitch'), 'Unsupported Studio job kind');
+    (LKind = 'capture_save') or (LKind = 'capture_pitch') or
+    (LKind = 'instrumental_generate'), 'Unsupported Studio job kind');
   LRequest := TJSONObject(AWrite.Clone);
   try
-    if (LKind = 'train_generate') or (LKind = 'stream_generate') then
+    if LKind = 'instrumental_generate' then
+    begin
+      Keys(AWrite, '|format|job_id|kind|project_id|project_revision|project_snapshot_sha256|' +
+        'seeds|instrumental|parent_job_id|retry_of|');
+      Need((AWrite.Find('instrumental') <> nil) and
+        (AWrite.Find('instrumental').JSONType = jtObject), 'Instrumental settings are required');
+      ValidateStudioInstrumentalConfig(AWrite.Objects['instrumental']);
+      Need((AWrite.Find('seeds') <> nil) and (AWrite.Find('seeds').JSONType = jtArray) and
+        (AWrite.Arrays['seeds'].Count = 1), 'Instrumental experiments require one seed');
+      Need((AWrite.Arrays['seeds'][0].JSONType = jtNumber) and
+        (AWrite.Arrays['seeds'][0].AsFloat = AWrite.Arrays['seeds'][0].AsInt64) and
+        (AWrite.Arrays['seeds'][0].AsInt64 >= 0) and
+        (AWrite.Arrays['seeds'][0].AsInt64 <= 2147483000), 'Invalid instrumental seed');
+      LProject := ReadStudioProjectRevision(ACatalogRoot, Text(AWrite, 'project_id'),
+        Number(AWrite, 'project_revision'));
+      try
+        Need(LProject.Strings['snapshot_sha256'] = Text(AWrite, 'project_snapshot_sha256'),
+          'Project snapshot differs; reopen the saved project');
+        Need(LProject.Strings['learning_mode'] = 'instrumental',
+          'Save the project with Instrumental experiment selected');
+        LRequest.Add('project_snapshot', LProject.Clone);
+      finally
+        LProject.Free;
+      end;
+    end
+    else if (LKind = 'train_generate') or (LKind = 'stream_generate') then
     begin
       Keys(AWrite, '|format|job_id|kind|project_id|project_revision|project_snapshot_sha256|' +
         'duration_ms|seeds|maximum_tokens|model_order|source_weights|generation_weights|resolve_unassigned|' +
@@ -877,7 +908,18 @@ begin
       LLimits.Add('sources', 32);
       LLimits.Add('ranges', 64);
       LLimits.Add('output_count', 3);
-      if (LRequest.Strings['kind'] = 'train_generate') or
+      if LRequest.Strings['kind'] = 'instrumental_generate' then
+      begin
+        Result.Strings['source_validation'] := 'authored_material_no_source_audio';
+        Result.Add('learning_mode', 'instrumental');
+        Result.Add('material_origin', StudioInstrumentalOrigin);
+        Result.Add('output_count', 1);
+        Result.Add('cells', LRequest.Objects['instrumental'].Integers['cells']);
+        Result.Add('source_count', 0);
+        Result.Add('unique_source_bytes_to_verify', 0);
+        Result.Add('experimental', True);
+      end
+      else if (LRequest.Strings['kind'] = 'train_generate') or
         (LRequest.Strings['kind'] = 'stream_generate') then
       begin
         LRows := LRequest.Objects['project_snapshot'].Arrays['sources'];
@@ -1084,6 +1126,27 @@ begin
     end;
   finally
     LRequest.Free;
+  end;
+end;
+
+function OpenStudioInstrumentalAudio(const ACatalogRoot, AJobId: String;
+  const APart: Integer; out AHash: String): TFileStream;
+var LJob, LAsset: TJSONObject; LPath: String;
+begin
+  Need((APart >= 0) and (APart <= 6), 'Instrumental part must be 0..6');
+  LJob := ReadStudioJob(ACatalogRoot, AJobId);
+  try
+    Need((LJob.Strings['kind'] = 'instrumental_generate') and
+      (LJob.Strings['status'] = 'completed'), 'Select a completed instrumental job');
+    if APart = 6 then LAsset := LJob.Objects['results'].Arrays['outputs'].Objects[0]
+    else LAsset := LJob.Objects['results'].Arrays['parts'].Objects[APart];
+    LPath := StudioJobDirectory(ACatalogRoot, AJobId) + PathDelim +
+      'part-' + IntToStr(APart) + '.wav';
+    AHash := LAsset.Strings['wav_sha256'];
+    VerifyGuardedSource(LPath, AHash, LAsset.Int64s['wav_bytes']);
+    Result := OpenStudioReadStream(LPath);
+  finally
+    LJob.Free;
   end;
 end;
 
@@ -1311,7 +1374,10 @@ function CancelStudioJob(const ACatalogRoot, AJobId: String): TJSONObject;
 var
   LMarker: TJSONObject;
 begin
-  LockJobs(ACatalogRoot);
+  { Big Boss: a finite native progress commit can outlive the ordinary two-second
+    writer wait. Cancel gets ten seconds, still inside the app's fifteen-second
+    request bound. Do not remove another writer's lock or bypass its journal. }
+  LockJobs(ACatalogRoot, 10000);
   try
     Result := ReadStudioJob(ACatalogRoot, AJobId);
     try

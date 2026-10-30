@@ -13,10 +13,15 @@ and source-free or explicitly bound instrument tones. Optional
 and the same native performance. It never selects recorded
 training-mix grains or silently substitutes a different renderer.
 
-This is the finite runtime foundation. Ordinary Studio generation has not yet
-been wired to it; explicit drum semantics and Studio controls remain separate
-tasks. No recording-derived style learning or musical-quality claim follows from
-the authored starter.
+Studio now offers this finite runtime with explicit percussion as its primary
+**Synthesized instruments · Experimental** route. Save an instrumental project
+without recordings, choose tempo/key/bars/seed and sounds, then Check setup and
+Generate instruments. Jobs provides the mix, six synchronized parts with
+mute/solo, actual graph details and a listening-feedback link. The host keeps
+working when the page closes; saving feedback never silently regenerates.
+No recording-derived style learning or musical-quality claim follows from the
+authored starter. Deeper graph editing, sound design and long instrumental
+streams retain their linked [tasks](TODO/README.md).
 
 ## Public API and ownership
 

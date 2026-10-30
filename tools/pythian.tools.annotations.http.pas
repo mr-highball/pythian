@@ -1095,6 +1095,7 @@ begin
     (ARequest.Path = '/api/studio/library-audio') or
     (ARequest.Path = '/api/studio/source-audio') or
     (ARequest.Path = '/api/studio/effect-audio') or
+    (ARequest.Path = '/api/studio/instrumental-audio') or
     (ARequest.Path = '/api/studio/capture-audio') or
     (ARequest.Path = '/api/studio/pitch-audio') or
     (ARequest.Path = '/api/studio/pitch-midi') or
@@ -1205,6 +1206,23 @@ begin
         begin
           LMediaStream := nil;
         end;
+      finally
+        LMediaStream.Free;
+      end;
+      Exit;
+    end
+    else if ((ARequest.Method = 'GET') or (ARequest.Method = 'HEAD')) and
+      (ARequest.Path = '/api/studio/instrumental-audio') then
+    begin
+      LText := QueryValue(ARequest.Query, 'job');
+      Need(TryStrToInt(QueryValue(ARequest.Query, 'part'), LIndex), 'Invalid instrumental part');
+      LMediaStream := OpenStudioInstrumentalAudio(ACatalogRoot, LText, LIndex, LHash);
+      try
+        LText := StudioJobDirectory(ACatalogRoot, LText) + PathDelim +
+          'part-' + IntToStr(LIndex) + '.wav';
+        AHandedOff := DispatchListeningMedia(ASocket, LMediaStream,
+          ARequest.Method, ARequest.Range, ARequest.IfRange, LHash, LText, LMediaStream.Size);
+        if AHandedOff then LMediaStream := nil;
       finally
         LMediaStream.Free;
       end;

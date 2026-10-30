@@ -596,7 +596,11 @@ try {
     $adapterArgs = @('-B', '-Sa', '-Cr', '-Co', '-Ci', '-gl', '-Fusrc',
       '-Fuadapters/wfc', '-Fuvendor/wfc/src', '-Futools', "-FU$adapterUnitRoot", "-FE$buildRoot")
     & $compilerPath @adapterArgs 'tools/pythian.studio.worker.lpr'
-    if ($LASTEXITCODE -ne 0) { throw 'Studio native worker compilation failed' }
+    if ($LASTEXITCODE -ne 0) { throw 'Studio worker compilation failed' }
+    & $compilerPath @adapterArgs 'tests/pythian.tests.studio.instrumental.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Studio instrumental fixture compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.studio.instrumental$executableSuffix") (Join-Path $buildRoot ('studio-instrumental-' + [Guid]::NewGuid().ToString('N')))
+    if ($LASTEXITCODE -ne 0) { throw 'Studio instrumental checks failed' }
     foreach ($studioComponent in @('worker', 'supervisor', 'reviews')) {
       & $compilerPath @adapterArgs '-gh' "tests/pythian.tests.studio.$studioComponent.lpr"
       if ($LASTEXITCODE -ne 0) { throw "Studio $studioComponent compilation failed" }

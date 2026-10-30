@@ -60,6 +60,11 @@ begin
     Exit;
   end;
   case AStage of
+    'instrumental_prepare': Result := '1 · Prepare musical material';
+    'instrumental_render': Result := '3 · Synthesize mix and parts';
+    'instrumental_publish': Result := '4 · Save music for review';
+    'instrumental_ready', 'instrumental_plan', 'percussion_ready', 'percussion_instruments':
+      Result := '2 · Plan instruments and drums';
     'audio_pull', 'audio_pull_ready': Result := 'Render the next audio block';
     'journal_render_window': Result := 'Prepare the audio window';
     'journal_render_preflight': Result := 'Check source passages';

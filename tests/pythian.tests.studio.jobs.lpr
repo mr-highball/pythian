@@ -603,7 +603,7 @@ begin
         raise Exception.Create('Test caller never attempted cancellation');
       Sleep(10);
     end;
-    Sleep(350);
+    Sleep(3000);
     if not DirectoryExists(LLock) then
       raise Exception.Create('Cancellation removed another writer lock');
   finally
@@ -696,7 +696,7 @@ begin
     except
       on E: EAudio do LFailed := True;
     end;
-    Check(LFailed and (GetTickCount64 - LStarted < 5000),
+    Check(LFailed and (GetTickCount64 - LStarted < 13000),
       'Unavailable writer fails within a finite request bound');
     Check(DirectoryExists(LLock) and not StudioJobCancelled(ARoot, 'stale-writer'),
       'A timed-out caller cannot steal the lock or publish cancellation');

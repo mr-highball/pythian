@@ -8,14 +8,26 @@
 Studio already has private collections, explicit training inclusion, whole-track
 and passage selection, waveform/range controls, recording/import, analysis and
 Experimental pitch/MIDI preview, effects, persistent native jobs and listening
-feedback. The existing ordinary generation path is **raw acoustic recombination**.
-It does not currently expose the full instrumental graph.
+feedback. The primary generation route is now **Synthesized instruments ·
+Experimental**: authored symbolic material drives actual WFC musical passes and
+Pythian instruments. It does not read or chop up a reference recording.
 
-The [instrumental Studio task](TODO/NS-6_instrumental-studio_01.md) changes that
-ordinary path to real musical WFC decisions played through Pythian instruments.
-This is planned work, not a description of an already available mode. Its true
-prerequisites are the [shared runtime](TODO/DONE/NS-4_instrumental-runtime_01.md) and
+The finite mode has tempo/key, seed, 1–32 four-beat bars, three pitched oscillator
+choices and six part levels. Native jobs persist a full mix, six stems and the
+actual sixteen-pass/two-group graph summary and symbolic plan. Play the mix or
+use synchronized mute/solo; successful jobs enter the existing listening queue
+and can be selected for Studio feedback. Reviewed settings restore for a new
+deliberate experiment. [Instrumental Studio](TODO/DONE/NS-6_instrumental-studio_01.md)
+records acceptance and limits. Its foundations are the
+[shared runtime](TODO/DONE/NS-4_instrumental-runtime_01.md) and
 [explicit percussion](TODO/DONE/NS-2_percussion_01.md).
+
+Start with Project → name → Save draft → Generate → Check setup → Generate
+instruments → Jobs. Recordings are optional references in this mode; waveform
+analysis and reliable recording-derived providers are not silently implied.
+The legacy recorded-fragment experiment remains explicit in old projects.
+Graph editing, richer sound recipes and efficient long instrumental streams are
+remaining tasks, rather than claims made by this finite starter.
 
 ## Intended operator loop
 

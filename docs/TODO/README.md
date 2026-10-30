@@ -3,10 +3,11 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**10 open tasks · 82 total effort units · 2 current-goal DONE · 13 / 82 accepted (15.85%).**
+**9 open tasks · 84 total effort units · 4 current-goal DONE · 21 / 84 accepted (25%).**
 Effort is relative complexity on a 1–10 scale, not assigned musical credit.
 The operator has resumed implementation solo. The shared instrumental runtime
-and explicit percussion are accepted. Ordinary Studio integration is next.
+and explicit percussion are accepted. Finite instrumental Studio and its real
+cancellation prerequisite are now accepted; the first operator review is waiting.
 
 ## First operator-facing milestone
 
@@ -14,12 +15,13 @@ and explicit percussion are accepted. Ordinary Studio integration is next.
 | --- | ---: | --- |
 | [NS-4_instrumental-runtime_01 — DONE](DONE/NS-4_instrumental-runtime_01.md) — shared musical WFC → instruments | 7 | Accepted; source-free public caller |
 | [NS-2_percussion_01 — DONE](DONE/NS-2_percussion_01.md) — synthesized drum role | 6 | Accepted; core recipes and conditional rhythmic graph |
-| [NS-6_instrumental-studio_01](NS-6_instrumental-studio_01.md) — ordinary Studio instrumental jobs | 6 | Runtime + percussion accepted; ready |
+| [NS-6_job-cancellation_01 — DONE](DONE/NS-6_job-cancellation_01.md) — Cancel during live progress writes | 2 | Accepted; actual app cancellation and owned-writer checks |
+| [NS-6_instrumental-studio_01 — DONE](DONE/NS-6_instrumental-studio_01.md) — ordinary Studio instrumental jobs | 6 | Accepted; authored six-part jobs, controls, mix/solo/mute and feedback |
 
-Together these 19 units deliver bass, drums, harmony and lead in Studio with
+Together these 21 units deliver bass, drums, harmony and lead in Studio with
 real musical controls and playback. Authored/operator/MIDI inputs are sufficient
 to start; uncertain WAV proposals can follow without a benchmark-first gate.
-Thirteen units are accepted; 6 remain in this milestone. No more raw-grain
+All 21 units in this first milestone are accepted. Nine later tasks remain. No more raw-grain
 continuity experiments are selected.
 
 ## Complete current scope
@@ -36,9 +38,9 @@ continuity experiments are selected.
 | [NS-6_synthesis-reviews_01](NS-6_synthesis-reviews_01.md) — one useful question with Original/Before/After | 5 | Instrumental Studio |
 | [NS-6_instrumental-streams_01](NS-6_instrumental-streams_01.md) — efficient long instrumental jobs | 8 | Instrumental Studio |
 
-The two tables together are all 12 current-goal tasks (10 open, two DONE),
-totaling 82 units: 69 open and 13 accepted. Subtotals:
-NS-2 12, NS-3 15, NS-4 21, NS-5 15, NS-6 19. NS-1 remains a preserved core
+The two tables together are all 13 current-goal tasks (9 open, four DONE),
+totaling 84 units: 63 open and 21 accepted. Subtotals:
+NS-2 12, NS-3 15, NS-4 21, NS-5 15, NS-6 21. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 
 The first milestone owns priority, not convenience. Later tasks have explicit

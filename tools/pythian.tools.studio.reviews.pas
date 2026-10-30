@@ -465,8 +465,9 @@ begin
         LOrdinal := IntegerValue(LRow, 'ordinal');
         LJob := ReadStudioJob(ACatalogRoot, LRow.Strings['job_id']);
         try
-          Need((LJob.Strings['kind'] = 'train_generate') and
-            (LJob.Strings['status'] = 'completed'), 'Review requires a completed acoustic audition job');
+          Need(((LJob.Strings['kind'] = 'train_generate') or
+            (LJob.Strings['kind'] = 'instrumental_generate')) and
+            (LJob.Strings['status'] = 'completed'), 'Review requires a completed audition job');
           Need((LOrdinal >= 0) and (LOrdinal < LJob.Objects['results'].Arrays['outputs'].Count),
             'Output ordinal is outside the completed batch');
           LOutput := LJob.Objects['results'].Arrays['outputs'].Objects[LOrdinal];
@@ -738,8 +739,11 @@ begin
           if LRevealed then
           begin
             LSample.Add('assignment', LSession.Arrays['bindings'].Objects[LIndex].Clone);
-            LSample.Add('reference_url', '/api/listen-references?request=' +
-              LSession.Objects['listening_request'].Strings['id'] + '&asset=' + LAsset.Strings['id']);
+            if LAsset.Objects['provenance'].Get('material_origin', '') <> '' then
+              LSample.Add('material_origin', LAsset.Objects['provenance'].Strings['material_origin'])
+            else
+              LSample.Add('reference_url', '/api/listen-references?request=' +
+                LSession.Objects['listening_request'].Strings['id'] + '&asset=' + LAsset.Strings['id']);
           end;
         end;
       except

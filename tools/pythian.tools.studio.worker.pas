@@ -37,8 +37,9 @@ type
     const ARequest: TJSONObject; const ACheck: TStudioWorkerCheck;
     const AProgress: TWorkProgressCallback): TJSONObject;
 
-{ One claimed job, no service/session/browser dependency. Exact production
-  durations are 20..40 seconds; missing modes never fall back to inferred notes. }
+{ One claimed job, no service/session/browser dependency. Raw auditions last
+  20..40 seconds; instrumental jobs use finite bars. Missing modes never fall
+  back to inferred notes or source grains. }
 function RunStudioWorker(const ACatalogRoot, AJobId, ALibraryRoot: String;
   const AExtension: TStudioWorkerExtension = nil): Boolean;
 
@@ -73,6 +74,7 @@ uses
   pythian.tools.annotations.proposal,
   pythian.tools.listen.catalog,
   pythian.tools.studio.jobs,
+  pythian.tools.studio.instrumental,
   pythian.tools.studio.progress,
   pythian.tools.studio.live,
   pythian.tools.studio.preparation,
@@ -1758,6 +1760,10 @@ var
   LOutputs: TJSONArray;
   LIndex: Integer;
 begin
+  if FRequest.Strings['kind'] = 'instrumental_generate' then
+  begin
+    Exit(RunStudioInstrumental(FCatalogRoot, FJobId, FRequest, Check, AudioProgress));
+  end;
   if FRequest.Strings['kind'] = 'library_discover' then
   begin
     Exit(DiscoverStudioLibrary(FCatalogRoot, ALibraryRoot, LibraryProgress));
@@ -1884,6 +1890,7 @@ begin
               PathDelim + 'attempt-result.json', LResults);
             LMessage := 'Native Studio work failed; inspect retained details and correct the input';
             if ((LRequest.Strings['kind'] = 'stream_generate') or
+              (LRequest.Strings['kind'] = 'instrumental_generate') or
               (LRequest.Find('preparation') <> nil)) and (E is EAudio) then
               LMessage := Copy(E.Message, 1, 256);
             AdvanceStudioJob(ACatalogRoot, AJobId, 'failed', 'failed', 0, 0,

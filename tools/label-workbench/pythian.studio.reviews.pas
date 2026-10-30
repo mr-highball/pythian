@@ -424,7 +424,8 @@ begin
       for LIndex := 0 to LRows.length - 1 do
       begin
         LJob := TJSObject(LRows[LIndex]);
-        if (StudioText(LJob, 'kind') <> 'train_generate') or
+        if ((StudioText(LJob, 'kind') <> 'train_generate') and
+          (StudioText(LJob, 'kind') <> 'instrumental_generate')) or
           (StudioText(LJob, 'status') <> 'completed') then
         begin
           Continue;
@@ -722,7 +723,9 @@ begin
       LPlayer.src := StudioText(LSample, 'audio_url');
       LPlayer.addEventListener('play', @Play);
       LPlayer.setAttribute('aria-label', StudioText(LSample, 'label') + ' audio');
-      if StudioText(LSample, 'reference_url') <> '' then
+        if StudioText(LSample, 'material_origin') <> '' then
+          Add(LCard, 'p', 'Experimental · ' + StudioText(LSample, 'material_origin'), 'hint')
+        else if StudioText(LSample, 'reference_url') <> '' then
       begin
         SetLength(FReferences, Length(FReferences) + 1);
         FReferences[High(FReferences)] := TListeningReference.Create(LCard,

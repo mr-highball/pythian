@@ -25,6 +25,7 @@ unit pythian.studio.sources;
 
 {$mode delphi}
 {$H+}
+{$modeswitch externalclass}
 
 interface
 
@@ -33,6 +34,10 @@ uses JS, Web, SysUtils, Math, StrUtils, Types,
   pythian.studio.&library.refresh;
 
 type
+  TStudioDocument = class external name 'Document' (TJSDocument)
+    procedure removeEventListener(const AType: String; const AListener: JSValue;
+      const ACapture: Boolean); reintroduce;
+  end;
   TStudioFetch = function(const APath, AMethod, ABody: String): TJSPromise of object;
   TStudioChange = procedure of object;
 
@@ -651,12 +656,12 @@ begin
     end;
     if LIncluded > 0 then LCard.className := 'track selected';
     LCard.setAttribute('data-source-hash', StudioText(LTrack, 'source_sha256'));
-    IncludeControl(LCard, 'Train on whole recording', 'whole', LHash,
+    IncludeControl(LCard, 'Include whole recording', 'whole', LHash,
       (LWhole >= 0) and StudioIncluded(TJSObject(FSelections[LWhole])));
     LControls := QuickControls(LCard, LHash, -1);
     Button(LControls, 'Choose a passage', 'open', LHash);
     if LIncluded = 0 then
-      Add(LCard, 'p', 'Not included in training', 'training-state')
+      Add(LCard, 'p', 'Not included in this project', 'training-state')
     else if (LWhole >= 0) and StudioIncluded(TJSObject(FSelections[LWhole])) then
       Add(LCard, 'p', 'Whole recording included · saved passages kept below', 'training-state')
     else
@@ -689,7 +694,7 @@ begin
           LCaption := LCaption + ' · ' + String(LClasses[LPart]);
         end;
       end;
-      IncludeControl(LRow, 'Train on passage ' + LCaption, 'include', IntToStr(LOther),
+      IncludeControl(LRow, 'Include passage ' + LCaption, 'include', IntToStr(LOther),
         StudioIncluded(LSelection));
       LControls := QuickControls(LRow, StudioText(LSelection, 'source_sha256'), LOther);
       Button(LControls, 'Edit passage', 'edit', IntToStr(LOther));
@@ -1308,8 +1313,8 @@ begin
   El('source-use-range').textContent := 'Add another passage';
   FChanged;
   DrawTracks;
-  Notice('Selection kept. Check your training choices in Collection, then Save draft.');
-  El('collection-choice-notice').textContent := 'Selection kept. Save draft to use these training choices.';
+  Notice('Selection kept. Check what is included in Collection, then Save draft.');
+  El('collection-choice-notice').textContent := 'Selection kept. Save draft to keep these project choices.';
 end;
 
 procedure TStudioSourceEditor.PrepareRecording(ASelection: TJSObject;

@@ -104,15 +104,15 @@ const
 
   CLessons: array[0..11] of TGuideLesson = (
     (Id: 'choose'; Title: 'Choose what to carry forward';
-     Action: 'Name a project, then open Collection. Check Train on whole recording, or choose and save passages. Check only the passages you want for the next generation, then Save draft.';
-     Expectation: 'Checked music is the training corpus. Unchecked passages stay saved for later. Play previews without changing the checkboxes. Labels describe your choices; they do not yet act as generation commands.';
+     Action: 'Name a project and choose Synthesized instruments, then Save draft. You can start without recordings. Collection and Import / record let you explore references separately.';
+     Expectation: 'The instrumental starter uses authored musical material. It does not learn your recordings yet. In the legacy recorded-fragment mode, checked selections supply the sound pieces. Labels describe your choices; they do not yet control generation.';
      DoneWhen: 'Your saved project lists the intended recordings, ranges and descriptions.';
      Page: 'studio'; Target: 'style-name'; Prerequisite: 'Wait for the catalog to connect before naming or saving a project.'),
     (Id: 'generate'; Title: 'Make a small first experiment';
-     Action: 'With a saved project, choose Generate, then Auditions. Choose two 20-second auditions, Check setup, then Generate auditions. If asked, choose Development and exploration.';
-     Expectation: 'Experimental: the current mode rearranges short pieces of your selected audio through WFC. Longer sources can supply more examples, but do not by themselves teach notes, song structure or a complete style. Source length and output length are separate.';
-     DoneWhen: 'Finished auditions appear under Generate → Jobs. Check source coverage there to see what was actually used.';
-     Page: 'studio'; Target: 'batch-duration'; Prerequisite: 'Select recordings and Save draft first. Then these generation controls become available.'),
+     Action: 'With a saved instrumental project, open Generate. Choose tempo, key, bars and seed. Expand Sounds and mix to change instruments or levels. Check setup, then Generate instruments.';
+     Expectation: 'Experimental: WFC arranges authored symbolic material, then Pythian synthesizes six parts. No source audio is read. The finite job runs on the computer even when your phone page is closed.';
+     DoneWhen: 'Open Jobs to play the mix, mute or solo its parts, then follow Listen and give feedback. Change one control for another experiment.';
+     Page: 'studio'; Target: 'instrumental-tempo'; Prerequisite: 'Save an instrumental project first; no recordings are required.'),
     (Id: 'listen'; Title: 'Tell Pythian what you hear';
      Action: 'In Review → Choose auditions, select your finished auditions and Start listening. Judge style fit, flow, repetition and sound quality. Choose what you would keep, or neither. Add a note at a useful moment, then Save feedback.';
      Expectation: 'A useful answer can be: the texture fits, but the join at 0:12 clicks. Use Cannot judge yet when unsure. Hide sample identities for a comparison without knowing which settings made each take.';

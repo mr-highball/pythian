@@ -729,7 +729,7 @@ begin
   TextField(AProject, 'name', 1, 128);
   TextField(AProject, 'style_intent', 0, 2048);
   LUsage := TextField(AProject, 'learning_mode', 1, 32);
-  Need((LUsage = 'raw_acoustic') or (LUsage = 'reference_events') or
+  Need((LUsage = 'instrumental') or (LUsage = 'raw_acoustic') or (LUsage = 'reference_events') or
     (LUsage = 'inferred_events'), 'Studio learning mode is unsupported');
   Need((TextField(AProject, 'status', 1, 32) = 'draft') and
     (TextField(AProject, 'training_status', 1, 32) = 'not_started') and
@@ -746,8 +746,8 @@ begin
     Inc(LTotal, LSources.Count);
     ValidateSnapshotSources(LSources, False);
   end;
-  Need((LTotal >= 1) and (LTotal <= MaximumStudioSelections),
-    'Keep between one and 64 saved selections');
+  Need(((LTotal >= 1) or (LUsage = 'instrumental')) and
+    (LTotal <= MaximumStudioSelections), 'Save up to 64 selections; instrumental projects may start empty');
   LHash := TextField(AProject, 'snapshot_sha256', 64, 64);
   Need(ValidHash(LHash), 'Studio snapshot digest is invalid');
   LCopy := TJSONObject(AProject.Clone);
@@ -999,7 +999,7 @@ var
   LMode: String;
 begin
   LMode := TextField(AWrite, 'learning_mode', 1, 32);
-  Need((LMode = 'raw_acoustic') or (LMode = 'reference_events') or
+  Need((LMode = 'instrumental') or (LMode = 'raw_acoustic') or (LMode = 'reference_events') or
     (LMode = 'inferred_events'), 'Studio requested learning mode is unsupported');
   LSelections := ArrayField(AWrite, 'sources');
   LTotal := LSelections.Count;
@@ -1007,8 +1007,8 @@ begin
   begin
     Inc(LTotal, ArrayField(AWrite, 'parked_sources').Count);
   end;
-  Need((LTotal >= 1) and (LTotal <= MaximumStudioSelections),
-    'Keep between one and 64 saved selections');
+  Need(((LTotal >= 1) or (LMode = 'instrumental')) and
+    (LTotal <= MaximumStudioSelections), 'Save up to 64 selections; instrumental projects may start empty');
   Result := TJSONObject.Create;
   try
     Result.Add('format', StudioProjectFormat);

@@ -70,12 +70,20 @@ SOFTWARE.
             <label for="style-name">Project name</label>
             <input id="style-name" type="text" maxlength="128" autocomplete="off" placeholder="For example, Quiet evening piano" disabled aria-describedby="name-error">
             <p id="name-error" class="field-error" role="alert" hidden></p>
+            <label for="learning-mode">Make music with</label>
+            <select id="learning-mode" disabled>
+              <option value="instrumental">Synthesized instruments · Experimental</option>
+              <option value="raw_acoustic">Recorded fragments · legacy experiment</option>
+              <option value="reference_events">Reference notes · unavailable</option>
+              <option value="inferred_events">Automatic notes · unavailable</option>
+            </select>
+            <p class="hint">Start with instruments. Recordings stay as references; this starter does not learn their style.</p>
             <label for="style-qualities">What should the music feel like? (optional)</label>
             <textarea id="style-qualities" rows="3" maxlength="2048" placeholder="For example, gentle dynamics, space between phrases, and a warm sound." disabled aria-describedby="qualities-help qualities-error"></textarea>
             <p id="qualities-help" class="hint">Your listening goal. These words describe your intent; they do not yet control generation.</p>
             <p id="qualities-error" class="field-error" role="alert" hidden></p>
           </form>
-<button type="button" class="primary step-next" data-open-pane="library-step">Next: choose music →</button>
+<button id="project-next" type="button" class="primary step-next" data-open-pane="prepare">Next: Generate (save your draft first) →</button>
     <section class="start-panel" aria-labelledby="start-title">
       <div><p class="eyebrow">MAKE SOMETHING. HEAR WHAT PYTHIAN CAN DO.</p>
         <h3 id="start-title">Or bring in a new sound</h3><p class="lead">Record an idea, bring a WAV, or explore your collection.</p></div>
@@ -165,12 +173,12 @@ SOFTWARE.
           <p id="selection-summary" class="hint">Select recordings to build your source collection.</p>
 
           <div class="support"><h3>Ready for a first audition?</h3>
-            <p>Save your source selections, then choose how much to generate below.</p>
-            <input id="learning-mode" type="hidden" value="raw_acoustic"><details><summary>Source and preparation details</summary><p id="support-detail">Source details are catalog snapshots. Actual recordings must be verified before training. Saved route preferences do not start learning.</p></details></div>
+            <p>Save your project, then choose its musical settings below.</p>
+            <details><summary>Source and preparation details</summary><p id="support-detail">Save your project, then open Generate.</p></details></div>
           </details>
           <button id="generation-help" type="button" class="guide-context" data-guide-topic="generate">How to run a first experiment</button>
           <button id="long-generation-help" type="button" class="guide-context" data-guide-topic="long">Long playback &amp; saving help</button>
-          <p id="generation-training-summary" class="training-summary" role="status"></p><button type="button" data-open-pane="library-step">Change training music</button><div id="studio-batches"></div>
+          <p id="generation-training-summary" class="training-summary" role="status"></p><button id="change-training-music" type="button" data-open-pane="library-step">Browse reference recordings</button><div id="studio-batches"></div>
         </section>
           <section id="listen" class="panel" aria-labelledby="listen-title"><p class="eyebrow">03 / REVIEW</p><h2 id="listen-title">Listen &amp; refine</h2><button type="button" class="guide-context" data-guide-topic="listen">What should I listen for?</button><button type="button" class="guide-context" data-guide-topic="refine">How to improve the next batch</button><div id="studio-reviews"></div></section>
 </div>
@@ -180,7 +188,7 @@ SOFTWARE.
         <div class="save-actions"><button id="save-draft" class="primary" type="button" disabled>Save draft</button>
 </div>
         <p id="save-feedback" class="hint" role="status" aria-live="polite">Nothing has been saved yet.</p>
-        <details class="advanced"><summary>Project details</summary><button id="reload-draft" type="button" disabled>Reload saved draft</button><p id="draft-details" class="hint">A saved draft keeps its source selections and is still not trained.</p></details>
+        <details class="advanced"><summary>Project details</summary><button id="reload-draft" type="button" disabled>Reload saved draft</button><p id="draft-details" class="hint">A draft keeps your project and optional selections. Saving does not start generation.</p></details>
       </aside>
 </main>
 <script src="studio.js"></script>

@@ -661,10 +661,16 @@ begin
     if (Str(LAsset, 'role') = 'generated') and
       (not LExperimental or not isObject(LExperiment['reference'])) and (I = 0) then
     begin
-      SetLength(FReferences, Length(FReferences) + 1);
-      FReferences[High(FReferences)] := TListeningReference.Create(LCard, @FetchApi,
-        '/api/listen-references?request=' + encodeURIComponent(Str(FRequest, 'id')) +
-        '&asset=' + encodeURIComponent(LId));
+      LProvenance := Obj(LAsset['provenance']);
+      if Str(LProvenance, 'material_origin') <> '' then
+        AddText(LCard, 'p', 'Experimental · ' + Str(LProvenance, 'material_origin'), 'muted')
+      else
+      begin
+        SetLength(FReferences, Length(FReferences) + 1);
+        FReferences[High(FReferences)] := TListeningReference.Create(LCard, @FetchApi,
+          '/api/listen-references?request=' + encodeURIComponent(Str(FRequest, 'id')) +
+          '&asset=' + encodeURIComponent(LId));
+      end;
     end;
   end;
   LRanges := Arr(FRequest, 'ranges');

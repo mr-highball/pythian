@@ -23,7 +23,7 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 **Blockers**
 
 - [NS-4_graph-controls_01](NS-4_graph-controls_01.md)
-- [NS-6_instrumental-studio_01](NS-6_instrumental-studio_01.md)
+- [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
 

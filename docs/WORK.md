@@ -2,6 +2,75 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
+## Current handoff: first instrumental Studio milestone delivered — 2026-10-30
+
+Big Boss remains SOLO. Shared runtime, explicit percussion, the concrete
+[live cancellation repair](TODO/DONE/NS-6_job-cancellation_01.md), and
+[ordinary instrumental Studio](TODO/DONE/NS-6_instrumental-studio_01.md) meet their
+local acceptance criteria. Source publication/CI for this integrated Studio
+batch follows; do not describe the new CI as passed until its actual result.
+Prior percussion commit 8d63fac passes CI502.
+
+The real operator job bb-instrumental-20261030-first completed through the
+deployed native supervisor with ten recorded events. Its new project is
+“Instrumental starter: first take.” Request studio_bb-instrumental-20261030-first_0
+is waiting in the ordinary listening queue. There are now one waiting and the
+original five completed answers. No QA responses were copied or operator
+judgments invented. The deployment itself preserved both prior projects and all
+eleven prior jobs; the intentional experiment adds one of each.
+
+This is actual synthesized bass, harmony, lead, kick, snare and hat, with no
+source recording read. Authored symbolic material/guide has an explicit origin.
+Default 64 cells: sixteen real 64 x 1 x 1 passes in two conditional groups,
+twelve pitched/proof then four rhythm-bound percussion passes. The three pitched
+sounds and six levels, root, tempo, seed and 1–32 bars control the runtime.
+The result has a native mix, six stems, actual graph metadata/model identity and
+symbolic plan. Synchronized browser mute/solo, pause/seek/stop work; feedback
+does not silently train. A reviewed tempo-only change 120 → 90 BPM changes
+392160 → 520160 stereo frames at 24000 Hz, retaining parent lineage.
+
+Stable Win64 native tests: 41 instrumental checks (replay, key/sound changes,
+source-free admission, stems, authored provenance, queued cancellation), 113 job
+lifecycle checks including a three-second competing writer and finite stale
+writer rejection, 106 project checks and existing listening catalog regressions.
+Native heaps are clean. Actual isolated desktop/390-pixel Edge checks cover
+empty-project save, page unload/reconnect, playback/gains, feedback and timed
+note, restored settings/new tempo job, help dialog, no horizontal overflow and
+running cancellation without publication. Physical-phone musical judgment is
+the operator's next review. No new vendor/WFC repository work.
+
+Repairs/failures are preserved in the tasks and E-drive evidence: initial fine
+WFC callback forwarding caused 749 disk events; shared observed-audio throttling
+fixed it. The browser rejected an empty saved project and left successful
+preflight busy until its timer; both fixed. Cancel twice rejected on the old
+two-second writer wait; only cancellation now gets ten seconds, preserving the
+existing fifteen-second client bound and journal/lock ownership. Confirmation
+now opens Jobs instead of leaving its status hidden. Slower initial submission
+was reconciled using the retained identity, without duplicate generation.
+
+The matched service/worker/twelve assets occupy the established stable slot.
+Existing catalog, library, Private address/profile and TLS identity remain.
+Stable process 65648 owns port18097; its hidden launcher has completed.
+Use the current host address from local configuration rather than copying this
+process/address into a future launch. QA listeners/workers and exact isolated
+browser trees are closed; all test playback was muted and explicitly stopped.
+New build/test/cache/run output is under instrumental-studio-20261030-boss in
+the dedicated E workspace; its deployment manifest identifies all fourteen artifacts.
+
+The discovered cancellation prerequisite adds two effort units before acceptance:
+13 current tasks total84, with 4 current DONE / 9 open, 21 accepted +63 open,
+25%. NS-2 is6/12, NS-4 is7/21, NS-6 is8/21; NS-3/5 remain open. There are101 DONE
+files (97 historical +4 current) and53 retired. The first milestone is now21
+units including its concrete repair, all delivered. Consecutive nonclosing
+batches: zero; real instrumental criteria closed, not a rename/report.
+
+Remaining scope is nine linked tasks: graph workbench/controls, deeper sound
+recipes, Experimental WAV proposals and coarse vocabulary learning, musical
+form, reusable styles/blends, decision-led Original/Before/After reviews and
+efficient long instrumental streams. This finite authored mode is not learned
+recording style, a full graph editor, continuous long-session rendering or
+musical-quality acceptance. Do not select further raw-grain continuity work.
+Use the new instrumental feedback to choose the next musical/model changes.
 ## Current handoff: percussion delivered; instrumental Studio next — 2026-10-30
 
 Big Boss SOLO closes [percussion](TODO/DONE/NS-2_percussion_01.md) AC1–4 after
@@ -29,7 +98,7 @@ Current scoped effort: 10 open / 2 current DONE, 69 open + 13 accepted = 82,
 milestone has 13 accepted and 6 remaining. Consecutive nonclosing batches: zero.
 This is reusable runtime/percussion delivery, not musical preference acceptance.
 
-[Instrumental Studio](TODO/NS-6_instrumental-studio_01.md) is now dependency-ready
+[Instrumental Studio](TODO/DONE/NS-6_instrumental-studio_01.md) is now dependency-ready
 and selected next. Its batch must put authored instrumental generation into
 ordinary durable native jobs/reviews, expose initial musical settings and part
 playback, and pass actual isolated desktop/narrow browser checks. Stop before
@@ -110,7 +179,7 @@ records remain separate, giving 98 total DONE files. Musical-quality judgments
 are still unclaimed.
 
 Next selected task: [explicit percussion](TODO/DONE/NS-2_percussion_01.md), then
-[ordinary instrumental Studio generation](TODO/NS-6_instrumental-studio_01.md).
+[ordinary instrumental Studio generation](TODO/DONE/NS-6_instrumental-studio_01.md).
 Graph controls are also dependency-ready but do not displace that first
 operator-facing milestone. Studio still uses its prior ordinary generation path.
 No new review was injected into the operator queue, no training/audio collection

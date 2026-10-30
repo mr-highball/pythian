@@ -485,7 +485,7 @@ begin
   FSelections := TJSArray.new;
   Input('style-name').value := '';
   TJSHTMLTextAreaElement(El('style-qualities')).value := '';
-  Input('learning-mode').value := 'raw_acoustic';
+  Input('learning-mode').value := 'instrumental';
   TJSHTMLSelectElement(El('draft-list')).value := '';
   ClearErrors;
   Feedback('Nothing has been saved yet.');
@@ -534,6 +534,7 @@ var
 begin
   LHashes := TJSArray.new;
   case Input('learning-mode').value of
+    'instrumental': LRoute := 'Synthesized instruments · authored musical starter';
     'raw_acoustic': LRoute := 'Acoustic recombination';
     'reference_events': LRoute := 'Reference-assisted notes';
     'inferred_events': LRoute := 'Inferred notes (acceptance pending)';
@@ -596,8 +597,23 @@ begin
         IntToStr(LEvaluation) + ' evaluation-only recording(s) are reserved from training.';
     end;
   end;
+  if Input('learning-mode').value = 'instrumental' then
+    El('selection-summary').textContent := IntToStr(LCount) +
+      ' reference recording(s) selected. This instrumental starter uses authored musical material.';
   El('collection-training-summary').textContent := El('selection-summary').textContent;
   El('generation-training-summary').textContent := El('selection-summary').textContent;
+  El('project-next').textContent := 'Next: choose music →';
+  El('project-next').setAttribute('data-open-pane', 'library-step');
+  El('change-training-music').textContent := 'Change training music';
+  if Input('learning-mode').value = 'instrumental' then
+  begin
+    El('project-next').textContent := 'Next: Generate (save your draft first) →';
+    El('project-next').setAttribute('data-open-pane', 'prepare');
+    El('change-training-music').textContent := 'Browse reference recordings';
+    El('generation-training-summary').textContent :=
+      'Authored instrumental starter. Recordings are references, not training for this experiment.';
+    El('support-detail').textContent := 'No source audio is read for instrumental generation.';
+  end;
   LName := Trim(Input('style-name').value);
   if LName = '' then
   begin
@@ -608,6 +624,8 @@ begin
     El('draft-caption').textContent := LName + ' · ' + IntToStr(LCount) +
       ' recording(s), ' + IntToStr(LSelectedCount) + ' checked for training.';
   end;
+  if Input('learning-mode').value = 'instrumental' then
+    El('draft-caption').textContent := 'Save this instrumental project; reference recordings are optional.';
 end;
 
 procedure TStudio.DrawTracks;
@@ -747,7 +765,8 @@ begin
     if Arr(AProject, 'parked_sources') <> nil then
       LSources := LSources.concat(Arr(AProject, 'parked_sources'));
   end;
-  if (LSources = nil) or (LSources.length < 1) or (LSources.length > 64) then
+  if (LSources = nil) or ((LSources.length < 1) and
+    (Str(AProject, 'learning_mode') <> 'instrumental')) or (LSources.length > 64) then
   begin
     raise Exception.Create('The saved draft has an unsupported source selection.');
   end;
@@ -846,7 +865,8 @@ begin
     El('style-qualities').setAttribute('aria-invalid', 'true');
     LValid := False;
   end;
-  if (FSelections.length < 1) or (FSelections.length > 64) then
+  if ((FSelections.length < 1) and (Input('learning-mode').value <> 'instrumental')) or
+    (FSelections.length > 64) then
   begin
     ErrorAt('tracks-error', 'Select 1 to 64 passages from at most 32 recordings.');
     LValid := False;
@@ -1621,6 +1641,7 @@ begin
   NewDraft;
   El('style-form').addEventListener('submit', @HandleSubmit);
   El('style-name').addEventListener('input', @HandleEdit);
+  El('learning-mode').addEventListener('change', @HandleEdit);
   El('style-qualities').addEventListener('input', @HandleEdit);
   El('save-draft').addEventListener('click', @HandleSave);
   El('reload-draft').addEventListener('click', @HandleReload);

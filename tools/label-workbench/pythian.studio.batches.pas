@@ -35,6 +35,7 @@ uses
   pythian.studio.sources,
   pythian.workspace.tabs,
   pythian.studio.live,
+  pythian.studio.instrumental,
   pythian.studio.progress;
 
 type
@@ -42,6 +43,7 @@ type
   private
     FFetch: TStudioFetch;
     FLive: TStudioLive;
+    FInstrumental: TStudioInstrumental;
     FProject: TJSObject;
     FUnsaved: Boolean;
     FBusy: Boolean;
@@ -65,6 +67,7 @@ type
     FSelectedId: String;
     FLastHistory: String;
     FDisposed: Boolean;
+    function Instrumental: Boolean;
     procedure ScheduleRefresh;
     function ResumeStatus(AEvent: TEventListenerEvent): Boolean;
     function El(const AId: String): TJSElement;
@@ -102,6 +105,11 @@ type
   end;
 
 implementation
+
+function TStudioBatches.Instrumental: Boolean;
+begin
+  Result := StudioText(FProject, 'learning_mode') = 'instrumental';
+end;
 
 type
   EStudioBatchHttp = class(Exception)
@@ -310,9 +318,13 @@ begin
   LShort.id := 'audition-step';
   LShort.appendChild(El('generation-help'));
   LShort.appendChild(El('batch-partition'));
+  FInstrumental := TStudioInstrumental.Create(FFetch, LShort);
+  El('instrumental-settings').addEventListener('input', @Edit);
+  El('instrumental-settings').addEventListener('change', @Edit);
   Add(LShort, 'p', 'Generate complete WAV files for listening and feedback.', 'hint');
   LShort.appendChild(LLength);
   LLabel := Add(LShort, 'label', 'Sound joins', '');
+  LLabel.id := 'batch-joins-label';
   LControl := Add(LLabel, 'select', '', '');
   LControl.id := 'batch-reconstruction';
   SelectOption(LControl, 'sparse', 'Standard');
@@ -330,10 +342,14 @@ begin
   LControl.id := 'batch-preflight';
   LDetails := Add(LShort, 'details', '', 'advanced');
   Add(LDetails, 'summary', 'Work limits', '');
-  Add(LDetails, 'p', 'Worker: 2 hours; logical memory: 128 MiB; original sources: 32 GiB; ' +
+  LControl := Add(LDetails, 'p', 'Up to 32 bars. The host saves a full mix and six parts. ' +
+    'The finite job time limit is shown in Jobs.', 'hint');
+  LControl.id := 'batch-instrumental-limits';
+  LControl := Add(LDetails, 'p', 'Worker: 2 hours; logical memory: 128 MiB; original sources: 32 GiB; ' +
     '500,000 feature observations; 32 recordings, 64 selected ranges and 3 outputs. ' +
     'Full source verification happens in the worker. Cancellation waits for worker checkpoints.',
     'hint');
+  LControl.id := 'batch-raw-limits';
   LHistory := Add(LRoot, 'section', '', '');
   LHistory.id := 'jobs-step';
   LRow := Add(LHistory, 'div', '', 'source-heading');
@@ -379,9 +395,37 @@ var
 begin
   LReady := (FRetryRequest <> nil) or ((FProject <> nil) and not FUnsaved and
     (StudioNumber(FProject, 'revision') >= 1) and
-    (TJSArray(FProject['sources']).length > 0) and
-    (StudioText(FProject, 'learning_mode') = 'raw_acoustic'));
-  if FLive <> nil then FLive.SetProject(FProject, LReady and not FUnsaved);
+    (Instrumental or ((TJSArray(FProject['sources']).length > 0) and
+    (StudioText(FProject, 'learning_mode') = 'raw_acoustic'))));
+  if FLive <> nil then FLive.SetProject(FProject, LReady and not FUnsaved and not Instrumental);
+  FInstrumental.SetEnabled(LReady and not FBusy and (FRetryRequest = nil));
+  FInstrumental.Show(Instrumental);
+  if Instrumental then
+  begin
+    El('batch-raw-limits').setAttribute('hidden', '');
+    El('batch-instrumental-limits').removeAttribute('hidden');
+    El('instrumental-settings').appendChild(El('batch-seed').parentElement);
+    El('batch-duration').parentElement.setAttribute('hidden', '');
+    El('batch-count').parentElement.setAttribute('hidden', '');
+    El('batch-joins-label').setAttribute('hidden', '');
+    El('batch-partition').setAttribute('hidden', '');
+    El('settings-step').setAttribute('hidden', '');
+    El('tab-settings').setAttribute('hidden', '');
+    El('tab-live').setAttribute('hidden', '');
+    El('batch-submit').textContent := 'Generate instruments';
+  end
+  else
+  begin
+    El('batch-raw-limits').removeAttribute('hidden');
+    El('batch-instrumental-limits').setAttribute('hidden', '');
+    El('settings-step').appendChild(El('batch-seed').parentElement);
+    El('batch-duration').parentElement.removeAttribute('hidden');
+    El('batch-count').parentElement.removeAttribute('hidden');
+    El('batch-joins-label').removeAttribute('hidden');
+    El('tab-settings').removeAttribute('hidden');
+    El('tab-live').removeAttribute('hidden');
+    El('batch-submit').textContent := 'Generate auditions';
+  end;
   LControls := ['batch-duration', 'batch-count', 'batch-use', 'batch-seed',
     'batch-palette', 'batch-order'];
   for LIndex := 0 to High(LControls) do
@@ -583,6 +627,10 @@ begin
     begin
       Notice('Save your changes before checking or submitting a new batch.');
     end
+    else if Instrumental then
+    begin
+      Notice('Choose tempo, key and instruments. Check setup, then Generate instruments. No source recording is required.');
+    end
     else if StudioText(FProject, 'learning_mode') <> 'raw_acoustic' then
     begin
       Notice('This project requests a note-learning route that is unavailable here. ' +
@@ -598,6 +646,9 @@ begin
     end;
   end;
   UpdateControls;
+  if Instrumental and ((El('tab-settings').getAttribute('aria-selected') = 'true') or
+    (El('tab-live').getAttribute('aria-selected') = 'true')) then
+    SelectWorkspacePane('audition-step');
   if (LOldKey <> LNewKey) or LProjectChanged then ResumeStatus(nil);
 end;
 
@@ -689,6 +740,23 @@ begin
   begin
     raise Exception.Create('Finish or confirm the current submission ' +
       'before preparing another batch.');
+  end;
+  if (ARequest <> nil) and (FProject <> nil) and not FUnsaved and Instrumental and
+    (StudioText(ARequest, 'kind') = 'instrumental_generate') then
+  begin
+    if (StudioText(ARequest, 'format') <> 'pythian.studio.job.write.v1') or
+      (StudioText(ARequest, 'project_snapshot_sha256') <> StudioText(FProject, 'snapshot_sha256')) or
+      (ArrayAt(ARequest, 'seeds') = nil) or (ArrayAt(ARequest, 'seeds').length <> 1) then
+      raise Exception.Create('The saved instrumental experiment does not match this project.');
+    Invalidate;
+    FInstrumental.RestoreConfig(Obj(ARequest['instrumental']));
+    TJSHTMLInputElement(El('batch-seed')).value :=
+      IntToStr(IntegerValue(ArrayAt(ARequest, 'seeds')[0], 0, 2147483000));
+    FParentJobId := StudioText(ARequest, 'parent_job_id');
+    Notice('Instrumental settings restored. Change one control, then Check setup.');
+    UpdateControls;
+    SelectWorkspacePane('audition-step');
+    Exit;
   end;
   if (ARequest = nil) or (FProject = nil) or FUnsaved or
     (StudioText(ARequest, 'format') <> 'pythian.studio.job.write.v1') or
@@ -864,6 +932,22 @@ var
   LPreparation: TJSObject;
   LGain: Double;
 begin
+  if (FProject <> nil) and not FUnsaved and Instrumental then
+  begin
+    Result := TJSObject.new;
+    Result['format'] := 'pythian.studio.job.write.v1';
+    Result['kind'] := 'instrumental_generate';
+    Result['job_id'] := NewId;
+    Result['project_id'] := StudioText(FProject, 'project_id');
+    Result['project_revision'] := StudioNumber(FProject, 'revision');
+    Result['project_snapshot_sha256'] := StudioText(FProject, 'snapshot_sha256');
+    LSeeds := TJSArray.new;
+    LSeeds.push(ReadInteger('batch-seed', 0, 2147483000));
+    Result['seeds'] := LSeeds;
+    Result['instrumental'] := FInstrumental.ReadConfig;
+    if FParentJobId <> '' then Result['parent_job_id'] := FParentJobId;
+    Exit;
+  end;
   if (FProject = nil) or FUnsaved or
     (StudioText(FProject, 'learning_mode') <> 'raw_acoustic') then
   begin
@@ -1069,7 +1153,8 @@ begin
       Notice('Your project or settings changed. Check the current selection again.');
     end
     else if (StudioText(LData, 'format') <> 'pythian.studio.job.preparation.v1') or
-      (StudioText(LData, 'learning_mode') <> 'raw_acoustic') or
+      ((StudioText(LData, 'learning_mode') <> 'raw_acoustic') and
+       (StudioText(LData, 'learning_mode') <> 'instrumental')) or
       (StudioText(LData, 'job_id') <> StudioText(LRequest, 'job_id')) or
       (Length(StudioText(LData, 'request_sha256')) <> 64) then
     begin
@@ -1077,6 +1162,17 @@ begin
     end
     else
     begin
+      if StudioText(LData, 'learning_mode') = 'instrumental' then
+      begin
+        El('batch-preflight').textContent := 'Ready: six synthesized parts, ' +
+          IntToStr(Trunc(StudioNumber(LData, 'cells') / 8)) +
+          ' bars. No recording will be read. Runs on this computer; you can leave this page.';
+        FRequest := Clone(LRequest);
+        FPreparation := Clone(LData);
+        Notice('Setup is ready. Press Generate instruments.');
+        EndAction(LEpoch);
+        Exit;
+      end;
       El('batch-preflight').textContent := StudioTime(StudioNumber(LData, 'selected_seconds')) +
         ' selected across ' + IntToStr(Trunc(StudioNumber(LData, 'source_count'))) +
         ' recordings / ' + IntToStr(Trunc(StudioNumber(LData, 'range_count'))) +
@@ -1273,7 +1369,8 @@ begin
     FPending := nil;
     Invalidate;
     DrawJob;
-    Notice('The original batch is confirmed. Its recorded status is shown below.');
+    SelectWorkspacePane('jobs-step', True);
+    Notice('The original batch is confirmed. Jobs shows its recorded status.');
   except
     on LException: Exception do
     begin
@@ -1332,7 +1429,8 @@ begin
   for LIndex := FJobs.length - 1 downto 0 do
   begin
     LJob := Obj(FJobs[LIndex]);
-    if (StudioText(LJob, 'kind') <> 'train_generate') and
+    if (StudioText(LJob, 'kind') <> 'instrumental_generate') and
+      (StudioText(LJob, 'kind') <> 'train_generate') and
       (StudioText(LJob, 'kind') <> 'stream_generate') then
     begin
       Continue;
@@ -1366,6 +1464,8 @@ var
   LOutput: TJSObject;
   LOutputs: TJSArray;
   LSources: TJSArray;
+  LGraph: TJSArray;
+  LPass: TJSObject;
   LRow: TJSElement;
   LDetails: TJSElement;
   LLink: TJSElement;
@@ -1385,6 +1485,7 @@ begin
   end;
   LExisting := document.getElementById('batch-identities');
   LExpanded := (LExisting <> nil) and LExisting.hasAttribute('open');
+  FInstrumental.ClearMixer;
   LRoot.innerHTML := '';
   if FJob = nil then
   begin
@@ -1397,7 +1498,8 @@ begin
   DrawStudioProgress(LRoot, FJob);
   if (LStatus = 'queued') or (LStatus = 'running') then
   begin
-    if StudioText(FJob, 'kind') = 'train_generate' then
+    if (StudioText(FJob, 'kind') = 'train_generate') or
+      (StudioText(FJob, 'kind') = 'instrumental_generate') then
       Add(LRoot, 'p', 'Runs on this computer. You can leave this page and return for results.', 'hint')
     else Add(LRoot, 'p', 'Keep this page open for live playback. Audition batches can run while you are away.', 'hint');
     if Boolean(FJob['cancel_requested']) then
@@ -1433,7 +1535,7 @@ begin
     Add(LRoot, 'p', 'Generated: ' + StudioTime(StudioNumber(LResults, 'generated_frames') /
       StudioNumber(LResults, 'sample_rate')) + '. Playback may have stopped earlier.', 'hint');
   LSources := ArrayAt(LResults, 'sources');
-  if LSources <> nil then
+  if (LSources <> nil) and (LSources.length > 0) then
   begin
     LSeconds := 0;
     for LIndex := 0 to LSources.length - 1 do
@@ -1456,7 +1558,7 @@ begin
       ' types / ' + IntToStr(Trunc(StudioNumber(LResults, 'retained_candidate_count'))) +
       ' recorded pieces. More examples do not necessarily mean more musical variety.', 'hint');
   end
-  else if LStatus = 'completed' then
+  else if (LStatus = 'completed') and (StudioText(FJob, 'kind') <> 'instrumental_generate') then
   begin
     Add(LRoot, 'p', 'Retained palette and candidate counts are not reported.', 'hint');
   end;
@@ -1471,13 +1573,23 @@ begin
         Continue;
       end;
       LRow := Add(LRoot, 'div', '', 'track');
+      if StudioText(FJob, 'kind') = 'instrumental_generate' then
+      begin
+        Add(LRow, 'h4', 'Instrumental mix · Experimental', '');
+        LLink := Add(LRow, 'audio', '', '');
+        LLink.setAttribute('controls', '');
+        LLink.setAttribute('preload', 'metadata');
+        LLink.setAttribute('src', '/api/studio/instrumental-audio?job=' +
+          encodeURIComponent(StudioText(FJob, 'job_id')) + '&part=6');
+        FInstrumental.AttachMixer(LRow, StudioText(FJob, 'job_id'),
+          StudioNumber(LOutput, 'frame_count') / StudioNumber(LOutput, 'sample_rate'));
+        Add(LRow, 'p', StudioText(LResults, 'material_origin'), 'hint');
+      end;
       Add(LRow, 'p', 'Audition ' + IntToStr(LIndex + 1) + ' · seed ' +
         IntToStr(Trunc(StudioNumber(LOutput, 'seed'))), '');
       LLink := Add(LRow, 'a', 'Listen and give feedback', '');
       LLink.setAttribute('href', 'listen.html?request=' +
         encodeURIComponent(StudioText(LOutput, 'listening_request_id')));
-      Add(LRow, 'p', 'Listening request: ' + StudioText(LOutput, 'listening_request_id'),
-        'track-meta batch-identity');
     end;
   end;
   LDetails := Add(LRoot, 'details', '', 'advanced batch-identities');
@@ -1487,6 +1599,21 @@ begin
     LDetails.setAttribute('open', '');
   end;
   Add(LDetails, 'summary', 'Batch and model details', '');
+  LGraph := ArrayAt(LResults, 'graph');
+  if LGraph <> nil then
+  begin
+    Add(LDetails, 'p', 'Six musical roles. Two conditional graph groups: pitched music, then rhythm-bound drums. ' +
+      'Each pass is a time line; proof passes check harmonic coverage.', 'hint');
+    for LIndex := 0 to LGraph.length - 1 do
+    begin
+      LPass := Obj(LGraph[LIndex]);
+      Add(LDetails, 'p', StudioText(LPass, 'name') + ': ' +
+        FloatToStr(StudioNumber(LPass, 'width')) + ' × ' +
+        FloatToStr(StudioNumber(LPass, 'height')) + ' × ' +
+        FloatToStr(StudioNumber(LPass, 'depth')) + ' · group ' +
+        FloatToStr(StudioNumber(LPass, 'graph_group')), 'track-meta');
+    end;
+  end;
   Add(LDetails, 'p', 'Time limit for this attempt: ' +
     IntToStr(Trunc(StudioNumber(FJob, 'maximum_worker_seconds') / 60)) + ' minutes.', 'hint');
   Add(LDetails, 'p', 'Batch ' + StudioText(FJob, 'job_id') +
@@ -1515,8 +1642,10 @@ begin
   end;
   if StudioText(LResults, 'model_sha256') <> '' then
   begin
-    Add(LDetails, 'p', 'Model ' + StudioText(LResults, 'model_sha256') +
-      ' · training identity ' + StudioText(LResults, 'training_identity_sha256'), 'track-meta');
+    LText := 'Model ' + StudioText(LResults, 'model_sha256');
+    if StudioText(LResults, 'training_identity_sha256') <> '' then
+      LText := LText + ' · training identity ' + StudioText(LResults, 'training_identity_sha256');
+    Add(LDetails, 'p', LText, 'track-meta');
     if Boolean(LResults['model_reused']) then
     begin
       Add(LDetails, 'p', 'Verified existing model reused.', 'hint');
@@ -1596,9 +1725,12 @@ begin
       end;
       if not FBusy and (LChanged or
         (Pos('Reconnecting', El('batch-notice').textContent) = 1) or
-        (Pos('Batch status could not', El('batch-notice').textContent) = 1)) then
+        (Pos('Batch status could not', El('batch-notice').textContent) = 1) or
+        (Pos('Cancellation is unconfirmed', El('batch-notice').textContent) = 1)) then
       begin
-        Notice('Job status is up to date.');
+        if StudioText(LData, 'status') = 'cancelled' then
+          Notice('Batch cancelled. Completed work and saved answers are retained.')
+        else Notice('Job status is up to date.');
       end;
     except
       on LException: Exception do
@@ -1695,7 +1827,8 @@ begin
     begin
       for LIndex := FJobs.length - 1 downto 0 do
       begin
-        if (StudioText(Obj(FJobs[LIndex]), 'kind') = 'train_generate') and
+        if ((StudioText(Obj(FJobs[LIndex]), 'kind') = 'train_generate') or
+          (StudioText(Obj(FJobs[LIndex]), 'kind') = 'instrumental_generate')) and
           (StudioText(Obj(FJobs[LIndex]), 'project_id') = StudioText(FProject, 'project_id')) then
         begin
           FSelectedId := StudioText(Obj(FJobs[LIndex]), 'job_id');
@@ -1705,7 +1838,8 @@ begin
     end;
     for LIndex := 0 to FJobs.length - 1 do
     begin
-      LActive := LActive or ((StudioText(Obj(FJobs[LIndex]), 'kind') = 'train_generate') and
+      LActive := LActive or (((StudioText(Obj(FJobs[LIndex]), 'kind') = 'train_generate') or
+        (StudioText(Obj(FJobs[LIndex]), 'kind') = 'instrumental_generate')) and
         not Terminal(StudioText(Obj(FJobs[LIndex]), 'status')));
     end;
     DrawHistory;
@@ -1900,6 +2034,7 @@ begin
   window.removeEventListener('pageshow', @ResumeStatus);
   window.removeEventListener('online', @ResumeStatus);
   FLive.Free;
+  FInstrumental.Free;
   Inc(FEpoch);
   Inc(FRefreshEpoch);
   Inc(FLoadEpoch);
