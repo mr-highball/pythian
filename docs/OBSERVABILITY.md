@@ -3,7 +3,7 @@
 [Project](../PROJECT.md) · [Assessment](CODEBASE-ASSESSMENT.md) ·
 [Tasks](TODO/README.md) · [Work](WORK.md)
 
-## Duration edits and scheduled rendering — candidate, 2026-10-29
+## Duration edits and scheduled rendering — qualified component, 2026-10-29
 
 `TDurationStream.TryEdit` accepts an optional synchronous borrowed work callback.
 It reuses primary sequence generation/copy/join, generic graph preparation,
@@ -39,8 +39,15 @@ observed baseline traces contain2573/1275/394 events across the three scenarios.
 Core scheduled rendering passes19261 checks per target, every6 nonempty/2 empty
 checkpoints, original exceptions, reentry rejection and Reset/reseed recovery.
 Both original native scheduler controls and native zero-leak checks pass.
-Exact publication gates remain
-required. This component does not close full [parent04](TODO/NS-6_observability_04.md),
+Exact7731f8b/[CI500](https://github.com/mr-highball/pythian/actions/runs/40982220109/job/123824744276)
+passes in13m52s, including integration12m57s and extracted consumers33s. Both
+clean exact Win64 packages verify107/159 owned units and120/280 hashes; the core
+render API executes from both extracted packages on native64/actual pas2js. The full duration
+consumer repeats all946 cases per extracted target. The frozen70000-frame trace
+retains exact plan snapshots/count and original1e-9 sample tolerance; observed
+maxerrors are0 native64,6.01e-15 native32 and4.58e-15 actual pas2js.
+Delivery nonclosing1→2 triggers reassessment and the user's requested goal pause.
+This component does not close full [parent04](TODO/NS-6_observability_04.md),
 actual Studio18 or any musical criterion.
 
 ## Atomic scheduler replacement — qualified component, 2026-10-29

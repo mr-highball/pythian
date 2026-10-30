@@ -5,7 +5,15 @@
 
 ## North-star assessment
 
-Current bounded work2026-10-29: primary scheduler13630ff/
+Verified/pause handoff2026-10-29: duration-edit/scheduled-render component7731f8b/
+[CI500](https://github.com/mr-highball/pythian/actions/runs/40982220109/job/123824744276)
+passes13m52s with integration/extracted consumers, all three local targets and
+clean exact core/full packages. Delivery nonclosing1→2: reassess and stop this
+sequence under the user's pause instruction. No whole parent or musical gate
+closes;53open/97DONE/150, NS6 15open and52.45/47.55 remain. See current WORK for
+pending long listening reviews and the criterion-based resume direction.
+
+Earlier component selection2026-10-29: primary scheduler13630ff/
 [CI499](https://github.com/mr-highball/pythian/actions/runs/40978567378/job/123812576006)
 qualifies with exact packages and extracted API consumers. Delivery nonclosing0→1.
 Duration-edit/scheduled-render progress is the current candidate; its exact

@@ -150,6 +150,19 @@ unqualified where no interior observer exists. Actual Studio18 remains separate.
 
 **Dev Notes:**
 
+- 2026-10-29, Big Boss: duration-edit/scheduled-render scope qualifies at7731f8b/
+  [CI500](https://github.com/mr-highball/pythian/actions/runs/40982220109/job/123824744276),
+  SUCCESS13m52s with integration and extracted consumers. All original controls,
+  native32/64/actual pas2js467 abort-point/946 edit cases per target,19261 render
+  checks, frozen70000-frame trace, zero native leaks, clean exact core/full
+  packages and new extracted native/portable API consumers pass. Precommit edit
+  rollback and terminal render recovery remain distinct. No whole AC1/AC2 or
+  parent closure/credit follows; nonclosing1→2. Reassessment stops this expansion
+  sequence: retain other boundaries/Studio18 and select the next product
+  criterion against NS5's actual prerequisites after explicit resume. The user
+  requests a summary then pause; no third batch. Keep every original failure
+  and synchronous residual in the linked coverage and private E packet.
+
 - 2026-10-29, Big Boss: primary scheduler replacement qualifies at13630ff/
   [CI499](https://github.com/mr-highball/pythian/actions/runs/40978567378/job/123812576006),
   including exact clean core/full packages and new extracted native64/pas2js
@@ -158,7 +171,7 @@ unqualified where no interior observer exists. Actual Studio18 remains separate.
   no whole criterion closes. The current bounded component adds observed
   duration editing and primary scheduled rendering. Keep prepublication edit
   rollback distinct from rendering's terminal consumed-epoch failure policy.
-  [Coverage/contracts](../OBSERVABILITY.md#duration-edits-and-scheduled-rendering--candidate-2026-10-29)
+  [Coverage/contracts](../OBSERVABILITY.md#duration-edits-and-scheduled-rendering--qualified-component-2026-10-29)
   retain synchronous residuals and exact qualification requirements. Preserve
   the new fixture's budget/shape/threshold failures; original controls remain.
   The user requests a status/next-step summary and goal pause after this

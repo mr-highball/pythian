@@ -10,7 +10,13 @@ Updated 2026-10-29. **53 open / 97 accepted tasks.** The user authorized a new
 outcome-based credit allocation: **52.45 current / 47.55 remaining** overall.
 The old 71.55% and 55.5-baseline accounting are retired, not compatibility gates.
 
-Current2026-10-29: primary scheduler13630ff/CI499 is qualified with clean exact
+Verified/pause handoff2026-10-29:7731f8b/CI500 passes the duration-edit/render
+component, including exact clean packages and actual extracted consumers.
+Delivery nonclosing1→2 requires reassessment; stop this sequence and pause per
+operator instruction. No whole parent04 or musical gate closes. Counts/credit
+above remain; WORK records pending long reviews and the next product decisions.
+
+Earlier component selection2026-10-29: primary scheduler13630ff/CI499 is qualified with clean exact
 packages and extracted API consumers, delivery nonclosing0→1. Finish the current
 duration-edit/render observation component and its exact gates, then summarize
 and pause per operator instruction. Its qualification would reach nonclosing2;

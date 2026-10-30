@@ -2,6 +2,56 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](REBALANCE-2026-09-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
+## Current handoff: verified duration/render component; operator pause — 2026-10-29
+
+Big Boss SOLO completes this bounded component at7731f8b/
+[CI500](https://github.com/mr-highball/pythian/actions/runs/40982220109/job/123824744276),
+terminal SUCCESS13m52s: integration12m57s, extracted consumers33s. Duration
+editing forwards primary planning/sequence/graph/scheduler work before commit;
+core scheduled rendering reports real consumed frames. Edit cancellation
+preserves the accepted plan and permits same-stream retry; rendering retains
+its terminal consumed-epoch policy and explicit Reset/reseed recovery.
+
+Native32/64 and actual pas2js each pass467 selected stage/pass abort points and
+946 edit abort/reentry/retry/audio cases, plus19261 scheduled-render checks.
+Original controls and zero native leaks pass. The frozen70000-frame/140000-sample
+trace has exact snapshots/counter and maxerrors0/6.01e-15/4.58e-15, within the
+original1e-9 limit. Both clean exact Win64 packages verify107/159 units and
+120/280 hashes. New APIs execute from both extracted core/full sources on
+native64/actual pas2js; the full duration consumer repeats all946 cases per
+target. No original scientific or musical assertion is weakened.
+
+Accounting stays53open/97DONE/150 total, NS6 15open and52.45/47.55. No whole
+parent04 criterion closes. Scheduler qualification makes nonclosing0→1 and this
+component1→2. Reassessment: these two batches deliver reusable visibility and
+safe cancellation, but retained parent boundaries and actual Studio18 remain.
+Stop this expansion sequence here; no third batch. A resumed goal must select
+its next criterion against the least-complete NS5 and actual prerequisites,
+including grounded context, representative vocabulary and sustained continuity,
+rather than counting additional instrumentation as musical acceptance.
+
+The operator explicitly requests completion, a status/next-step summary, then
+PAUSE. Work stops here; the goal is unachieved. This final documentation-only
+handoff preserves the exact qualified implementation. Source/tests/tooling and
+workflow have no post7731f8b changes; skip redundant CI for this prose-only commit.
+All implementation publication/extracted gates above have actually passed.
+
+Next after explicit resume: assess the two pending long listening answers,
+choose a bounded continuity decision from that evidence, and reassess the
+context/reference/vocabulary prerequisites. Actual Studio/browser/phone progress
+and long-playback checks remain open; native/API success does not certify them.
+Read-only live catalog confirms both core questions revision0: the4:16 repetition
+question and two-minute Before/After broken/jittery-notes comparison. Raw native
+report6pending/4completed includes hidden supporting/replaced items; it is not
+web badge accounting. Saved responses and source recordings are unchanged.
+
+StablePID61792/fixed slot remains intact. No new service/listener/firewall,
+elevation, native inference, retraining, recording/answer mutation, helper or
+QA audio. Current test processes have ended. New output/TEMP/TMP remains under
+dedicated E roots. Keep duration-edit-progress-20261029-boss CI500, packages,
+local/extracted reports and every repaired fixture/orchestration failure.
+Full parent04, Studio18, recorded musical learning, style/blend and independent
+use/adoption gates remain open. The full historical work record follows.
 ## Current handoff: duration-edit/render component; pause after verification — 2026-10-29
 
 Big Boss remains SOLO. Primary scheduler13630ff/CI499 is terminal SUCCESS19m47s,
