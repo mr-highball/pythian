@@ -44,6 +44,12 @@ type
   TStyleChoiceDimension = (scdKey, scdTempo, scdOnset, scdIntensity,
     scdPitch, scdDuration, scdHarmony, scdRhythm, scdVoice);
   TStyleChoiceDimensions = set of TStyleChoiceDimension;
+  TMusicalContextCell = record
+    Frame: TWfcMusicEnsembleFrame;
+    { -1 projects H/R only; otherwise the upstream context also decides this
+      explicitly caller-selected role. Other role pitches stay unpinned. }
+    DrivenRole: Integer;
+  end;
   TStyleProviderChoice = record
     Token: String;
     Dimensions: TStyleChoiceDimensions;
@@ -57,6 +63,9 @@ type
     Harmony: TWfcMusicPitchClassSet;
     Rhythm: TWfcMusicRhythmFrame;
     Voice: TWfcMusicVoiceCell;
+    { Joint context keeps a synchronized witness and an explicit driven role.
+      H/R and that role feed the next graph; other performed roles stay free. }
+    Context: TMusicalContextCell;
     CallerValue: TProviderCodecChoice;
   end;
   TStyleProviderChoices = array of TStyleProviderChoice;
@@ -84,8 +93,8 @@ type
     Dependencies: TStyleProviderDependencies;
     Choices: TStyleProviderChoices;
     Preferences: TLayerTokenPreferences;
-    { Present for caller-declared independent voice roles only. Pitch identity
-      is explicit; the name is never evidence of inferred instrument ownership. }
+    { Declared independent voice or context-driven role. Pitch identity is
+      explicit; the name never claims inferred instrument ownership. }
     RoleId: String;
     { Joint rhythm actions use this exact caller-declared role order. }
     RoleOrder: TLayerNames;
@@ -94,10 +103,11 @@ type
     MaximumPitch: Integer;
   end;
 
-{ Reuses canonical codecs; paired context binds harmony and ordered rhythm.
+{ Reuses the canonical ensemble codec. Context retains synchronized role
+  histories before deriving harmony and ordered rhythm; no lossy H/R token merge.
   No inferred roles, relative-pitch conversion or silence from empty onset cells. }
-function EncodeMusicalContextToken(const AHarmony, ARhythm: String): String;
-procedure DecodeMusicalContextToken(const AToken: String; out AHarmony, ARhythm: String);
+function EncodeMusicalContextToken(const ACell: TMusicalContextCell): String;
+function DecodeMusicalContextToken(const AToken: String): TMusicalContextCell;
 function DecodeStyleProviderChoice(const AVocabulary: TStyleProviderVocabulary;
   const AToken: String): TStyleProviderChoice;
 { Borrows the immutable model synchronously; returns detached choices in its
@@ -121,36 +131,44 @@ uses
   pythian.audio,
   pythian.wfc.context,
   pythian.wfc.pitch,
-  pythian.wfc.style;
+  pythian.wfc.style,
+  wfc_music;
 
-function EncodeMusicalContextToken(const AHarmony, ARhythm: String): String;
+function EncodeMusicalContextToken(const ACell: TMusicalContextCell): String;
+var
+  LVoice: TWfcMusicVoiceCell;
+  LTone: TWfcMusicTone;
 begin
-  DecodeWfcMusicPitchClassSet(AHarmony);
-  DecodeWfcMusicRhythmFrame(ARhythm);
-  Result := 'ctx1:' + IntToStr(Length(AHarmony)) + ':' + AHarmony + ARhythm;
+  if (Length(ACell.Frame.Voices) < 1) or (Length(ACell.Frame.Voices) > 6) then
+    raise EAudio.Create('Musical context requires 1..6 ordered roles');
+  if (ACell.DrivenRole < -1) or (ACell.DrivenRole >= Length(ACell.Frame.Voices)) or
+    (ACell.DrivenRole <> Trunc(ACell.DrivenRole)) then
+    raise EAudio.Create('Musical context driven role is outside its ordered roles');
+  for LVoice in ACell.Frame.Voices do
+    for LTone in LVoice.Tones do
+      if (LTone.Pitch < 0) or (LTone.Pitch > 127) or
+        (LTone.Pitch <> Trunc(LTone.Pitch)) or (LTone.Velocity <> Trunc(LTone.Velocity)) then
+        raise EAudio.Create('Musical context requires absolute MIDI pitches 0..127');
+  Result := 'ctx2:' + IntToStr(ACell.DrivenRole) + ':' + EncodeWfcMusicEnsembleFrame(ACell.Frame);
 end;
 
-procedure DecodeMusicalContextToken(const AToken: String; out AHarmony, ARhythm: String);
+function DecodeMusicalContextToken(const AToken: String): TMusicalContextCell;
 var
+  LCell: TMusicalContextCell;
   LText: String;
   LSeparator: Integer;
-  LLength: Integer;
-  LHarmony: String;
-  LRhythm: String;
 begin
-  if (Copy(AToken, 1, 5) <> 'ctx1:') or (Length(AToken) > 16384) then
+  if (Copy(AToken, 1, 5) <> 'ctx2:') or (Length(AToken) > 16384) then
     raise EAudio.Create('Unknown musical context token');
   LText := Copy(AToken, 6, Length(AToken));
   LSeparator := Pos(':', LText);
-  if (LSeparator < 2) or not TryStrToInt(Copy(LText, 1, LSeparator - 1), LLength) or
-    (LLength < 1) or (LLength >= Length(LText) - LSeparator) then
-    raise EAudio.Create('Invalid musical context token length');
-  LHarmony := Copy(LText, LSeparator + 1, LLength);
-  LRhythm := Copy(LText, LSeparator + LLength + 1, Length(LText));
-  if EncodeMusicalContextToken(LHarmony, LRhythm) <> AToken then
+  if (LSeparator < 2) or
+    not TryStrToInt(Copy(LText, 1, LSeparator - 1), LCell.DrivenRole) then
+    raise EAudio.Create('Musical context requires an explicit driven-role index');
+  LCell.Frame := DecodeWfcMusicEnsembleFrame(Copy(LText, LSeparator + 1, Length(LText)));
+  if EncodeMusicalContextToken(LCell) <> AToken then
     raise EAudio.Create('Noncanonical musical context token');
-  AHarmony := LHarmony;
-  ARhythm := LRhythm;
+  Result := LCell;
 end;
 
 function DecodeStyleProviderChoice(const AVocabulary: TStyleProviderVocabulary;
@@ -160,14 +178,13 @@ var
   LJoint: TPitchRhythmCell;
   LSpan: TPitchDurationCell;
   LFrame: TWfcMusicEnsembleFrame;
-  LHarmony: String;
-  LRhythm: String;
 begin
   LChoice := Default(TStyleProviderChoice);
   LChoice.Token := AToken;
   LChoice.Intensity := -1;
   LChoice.Note := -1;
   LChoice.PitchKind := pskUnknown;
+  LChoice.Context.DrivenRole := -1;
   case AVocabulary of
     spvKey:
     begin
@@ -232,10 +249,10 @@ begin
     end;
     spvMusicalContext:
     begin
-      DecodeMusicalContextToken(AToken, LHarmony, LRhythm);
-      LChoice.Dimensions := [scdHarmony, scdRhythm];
-      LChoice.Harmony := DecodeWfcMusicPitchClassSet(LHarmony);
-      LChoice.Rhythm := DecodeWfcMusicRhythmFrame(LRhythm);
+      LChoice.Context := DecodeMusicalContextToken(AToken);
+      LChoice.Dimensions := [scdHarmony, scdRhythm, scdVoice];
+      LChoice.Harmony := ProjectWfcMusicEnsembleFrameToPitchClassSet(LChoice.Context.Frame, 12);
+      LChoice.Rhythm := ProjectWfcMusicEnsembleFrameToRhythm(LChoice.Context.Frame);
     end;
     spvVoice:
     begin
@@ -265,6 +282,7 @@ function CloneStyleProviderChoices(const AChoices: TStyleProviderChoices;
   const AProgress: TWorkProgressCallback): TStyleProviderChoices;
 var
   LIndex: Integer;
+  LRole: Integer;
   LChoices: TStyleProviderChoices;
 begin
   LChoices := Copy(AChoices);
@@ -275,6 +293,10 @@ begin
     LChoices[LIndex].Harmony.PitchClasses := Copy(AChoices[LIndex].Harmony.PitchClasses);
     LChoices[LIndex].Rhythm.Actions := Copy(AChoices[LIndex].Rhythm.Actions);
     LChoices[LIndex].Voice.Tones := Copy(AChoices[LIndex].Voice.Tones);
+    LChoices[LIndex].Context.Frame.Voices := Copy(AChoices[LIndex].Context.Frame.Voices);
+    for LRole := 0 to High(LChoices[LIndex].Context.Frame.Voices) do
+      LChoices[LIndex].Context.Frame.Voices[LRole].Tones :=
+        Copy(AChoices[LIndex].Context.Frame.Voices[LRole].Tones);
     if ((LIndex + 1) mod 64) = 0 then
     begin
       ReportWork(AProgress, 'provider_clone_choices', wuItems, LIndex + 1, Length(LChoices));

@@ -151,7 +151,7 @@ begin
     spvVoice: Result := 'rest-attack-hold-no-unknown';
     spvRhythm: Result := 'joint-rest-attack-hold-no-unknown';
     spvHarmony: Result := 'empty-pitch-set-no-unknown';
-    spvMusicalContext: Result := 'joint-harmony-rhythm-no-unknown';
+    spvMusicalContext: Result := 'joint-symbolic-voices-harmony-rhythm-no-unknown';
     spvTempo, spvPitch, spvPitchRhythm: Result := 'no-unknown-token';
   else
     raise EAudio.Create('Unsupported provider vocabulary');
@@ -182,7 +182,8 @@ begin
   Result.CodecBinding := CopyProviderCodecBinding(ADescription.CodecBinding);
   Result.RoleId := ADescription.RoleId;
   Result.RoleOrder := Copy(ADescription.RoleOrder);
-  if ADescription.Vocabulary in [spvPitch, spvPitchRhythm, spvPerformance, spvVoice] then
+  if ADescription.Vocabulary in [spvPitch, spvPitchRhythm, spvPerformance, spvVoice,
+    spvMusicalContext] then
   begin
     Result.PitchBasis := ppbAbsoluteMidi;
   end;
@@ -371,16 +372,18 @@ begin
   begin
     raise EAudio.Create('Relative/key-referenced pitch providers require an explicit supported conversion');
   end;
-  if (AContract.Vocabulary in [spvPitch, spvPitchRhythm, spvPerformance, spvVoice]) <>
+  if (AContract.Vocabulary in [spvPitch, spvPitchRhythm, spvPerformance, spvVoice,
+    spvMusicalContext]) <>
     (AContract.PitchBasis = ppbAbsoluteMidi) then
   begin
     raise EAudio.Create('Provider pitch basis disagrees with its canonical vocabulary');
   end;
   if ((AContract.Vocabulary = spvVoice) and (AContract.RoleId = '')) or
-    ((not (AContract.Vocabulary in [spvVoice, spvCaller])) and (AContract.RoleId <> '')) or
+    ((not (AContract.Vocabulary in [spvVoice, spvCaller, spvMusicalContext])) and
+      (AContract.RoleId <> '')) or
     (Length(AContract.RoleId) > 128) then
   begin
-    raise EAudio.Create('Only independent voice outputs require a declared role identity');
+    raise EAudio.Create('Voice and context outputs require consistent declared role identities');
   end;
   if ((AContract.Vocabulary in [spvRhythm, spvMusicalContext]) and
     ((Length(AContract.RoleOrder) < 1) or (Length(AContract.RoleOrder) > 6))) or
@@ -444,6 +447,16 @@ begin
       (Length(LChoices[LIndex].Rhythm.Actions) <> Length(AContract.RoleOrder)) then
     begin
       raise EAudio.Create('Joint rhythm action vector does not match its declared ordered roles');
+    end;
+    if AContract.Vocabulary = spvMusicalContext then
+    begin
+      if LChoices[LIndex].Context.DrivenRole < 0 then
+      begin
+        if AContract.RoleId <> '' then
+          raise EAudio.Create('Unbound context cannot claim a driven role identity');
+      end
+      else if AContract.RoleOrder[LChoices[LIndex].Context.DrivenRole] <> AContract.RoleId then
+        raise EAudio.Create('Symbolic context changes its declared driven role');
     end;
     if ((LIndex + 1) mod 64) = 0 then
     begin

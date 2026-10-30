@@ -88,18 +88,27 @@ AMinor selects the starter's minor accompaniment; it does not infer a key.
 
 For this motif path, pass the starter's borrowed ContextModel as the final
 TryCreateInstrumentalPlan argument. The shared musical-context provider learns
-paired harmonic/rhythmic choices and their sequence relationships. It first
-solves one actual context pass, preserving caller harmony/rhythm masks and soft
-preferences. Accepted paired choices then constrain the named musical graph;
-pitched roles remain independently selected. A contradictory lock fails rather
-than being relaxed. ContextSolve reports the context negotiation separately.
+full synchronized symbolic ensemble frames with one explicit driven role. Its
+canonical ctx2 tokens reuse the primary ensemble codec, absolute MIDI pitches and
+declared role order/identity. Context preserves distinct pitch histories instead
+of merging them into lossy harmony/rhythm marginals. One actual WFC context pass
+decides harmony, rhythm and the selected role together, honoring their hard masks
+and soft preferences. Accepted choices constrain those three named graph inputs;
+the other pitched roles remain unpinned and independently selected. A contradictory
+lock fails rather than being relaxed. ContextSolve reports its negotiation;
+context_validate_witness validates the synchronized history with cancellation.
 
 CopyGraph exposes this additional graph group and its pinned-input lineage:
 context group 0, pitched group 1 and optional percussion group 2. The sixteen-cell
 C/unknown/silence/D fixture with drums has seventeen actual passes, each 16 x 1 x 1.
+The corrected richer melody has twenty passes because its harmonic vocabulary
+requires more coverage proofs. These are actual vocabulary-dependent counts.
 This is conditional generation, without backtracking across groups. A context
 choice can still leave the following graph unsatisfiable; failures remain visible.
-The ordinary Studio route does not yet expose these motif choices.
+Ordinary Studio exposes analyzed or manual motifs through Musical starting points,
+with accept/correct/bypass, explicit part assignment, Save and Generate actions.
+Saving does not generate. Recording-linked jobs retain a bounded Original excerpt
+with exact source coordinates; source audio is never the performed instrument.
 
 The caller adds the primary filtered echo on the harmony bus and a three-second
 effect tail. Changing tonic changes actual training/model pitches; changing BPM

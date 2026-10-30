@@ -37,9 +37,10 @@ const
   MusicalContextPassName = 'musical-context';
 
 type
-  { Owns one actual WFC context pass. Its paired choices become immutable
-    harmonic/rhythmic inputs to the next conditional graph; no cross-group
-    backtracking is claimed. Named instrumental roles remain independently solved. }
+  { One actual WFC context pass retains synchronized symbolic role histories.
+    H/R and the explicitly selected role constrain the next conditional graph.
+    Other role pitches are not pinned; their named graphs remain independently solved.
+    No cross-group backtracking is claimed. }
   TMusicalContextPlan = class
   private
     FSession: TLearnedLayerSession;
@@ -48,6 +49,7 @@ type
     FPreferences: TLayerTokenPreferences;
     FOptions: TVoiceSessionOptions;
     FRoleNames: TLayerNames;
+    FDrivenRole: Integer;
   public
     constructor Create(const AModel: TWfcSequenceModel;
       const ARoleNames: TLayerNames; const AOptions: TVoiceSessionOptions;
@@ -64,11 +66,12 @@ type
     function CopyConstraints: TWfcSequenceTokenConstraints;
     function CopyPreferences: TLayerTokenPreferences;
     function BindMasks(const AMasks: TVoiceMasks): TVoiceMasks;
+    property DrivenRole: Integer read FDrivenRole;
   end;
 
 implementation
 
-uses SysUtils, pythian.audio;
+uses SysUtils, pythian.audio, wfc_music_ensemble;
 
 function TokenAllowed(const AMasks: TVoiceMasks; const AProvider, ACell: Integer;
   const AToken: String): Boolean;
@@ -89,6 +92,17 @@ begin
   end;
 end;
 
+function DrivenVoiceToken(const AChoice: TStyleProviderChoice): String;
+var
+  LFrame: TWfcMusicEnsembleFrame;
+begin
+  Result := '';
+  if AChoice.Context.DrivenRole < 0 then Exit;
+  SetLength(LFrame.Voices, 1);
+  LFrame.Voices[0] := AChoice.Context.Frame.Voices[AChoice.Context.DrivenRole];
+  Result := EncodeWfcMusicEnsembleFrame(LFrame);
+end;
+
 constructor TMusicalContextPlan.Create(const AModel: TWfcSequenceModel;
   const ARoleNames: TLayerNames; const AOptions: TVoiceSessionOptions;
   const AMasks: TVoiceMasks; const APreferences: TVoicePreferences;
@@ -102,12 +116,17 @@ var
   LTokens: TWfcModelTokens;
   LHarmonies: TWfcModelTokens;
   LRhythms: TWfcModelTokens;
+  LDrivenTokens: TWfcModelTokens;
   LChoice: TStyleProviderChoice;
   LCell, LIndex, LProvider, LCount: Integer;
+  LTargetProvider: Integer;
+  LLastProvider: Integer;
+  LTargetToken: String;
   LWeight: Int64;
   LPreference: TLayerTokenPreference;
 begin
   inherited Create;
+  FDrivenRole := -1;
   if (AModel = nil) or (Length(ARoleNames) < 1) or (Length(ARoleNames) > 6) then
     raise EAudio.Create('Musical context requires a model and ordered roles');
   if (AOptions.CellCount < 1) or (AOptions.CellCount > MaximumLayerCells) or
@@ -119,13 +138,21 @@ begin
   FRoleNames := Copy(ARoleNames);
   SetLength(LHarmonies, AModel.PublicTokenCount);
   SetLength(LRhythms, AModel.PublicTokenCount);
+  SetLength(LDrivenTokens, AModel.PublicTokenCount);
+  if AModel.PublicTokenCount < 1 then
+    raise EAudio.Create('Musical context has no symbolic vocabulary');
   for LIndex := 0 to AModel.PublicTokenCount - 1 do
   begin
     LContext := AModel.PublicTokenAt(LIndex);
-    DecodeMusicalContextToken(LContext, LHarmony, LRhythm);
+    LChoice := DecodeStyleProviderChoice(spvMusicalContext, LContext);
+    if LIndex = 0 then FDrivenRole := LChoice.Context.DrivenRole;
+    if LChoice.Context.DrivenRole <> FDrivenRole then
+      raise EAudio.Create('Musical context cannot mix driven-role assignments');
+    LHarmony := EncodeWfcMusicPitchClassSet(LChoice.Harmony);
+    LRhythm := EncodeWfcMusicRhythmFrame(LChoice.Rhythm);
     LHarmonies[LIndex] := LHarmony;
     LRhythms[LIndex] := LRhythm;
-    LChoice := DecodeStyleProviderChoice(spvMusicalContext, LContext);
+    LDrivenTokens[LIndex] := DrivenVoiceToken(LChoice);
     if (LChoice.Harmony.StepsPerOctave <> 12) or
       (Length(LChoice.Rhythm.Actions) <> Length(ARoleNames)) then
       raise EAudio.Create('Joint context must use the same twelve-step pitch domain and ordered roles');
@@ -141,7 +168,9 @@ begin
       LHarmony := LHarmonies[LIndex];
       LRhythm := LRhythms[LIndex];
       if TokenAllowed(AMasks, 0, LCell, LHarmony) and
-        TokenAllowed(AMasks, 1, LCell, LRhythm) then
+        TokenAllowed(AMasks, 1, LCell, LRhythm) and
+        ((FDrivenRole < 0) or TokenAllowed(AMasks, FDrivenRole + 2, LCell,
+          LDrivenTokens[LIndex])) then
       begin
         LCount := Length(LTokens);
         SetLength(LTokens, LCount + 1);
@@ -156,17 +185,27 @@ begin
     LHarmony := LHarmonies[LIndex];
     LRhythm := LRhythms[LIndex];
     LWeight := 1;
-    for LProvider := 0 to 1 do
-      if LProvider < Length(APreferences) then
-        for LPreference in APreferences[LProvider] do
-          if ((LProvider = 0) and (LPreference.Token = LHarmony)) or
-            ((LProvider = 1) and (LPreference.Token = LRhythm)) then
+    LLastProvider := 1;
+    if FDrivenRole >= 0 then LLastProvider := 2;
+    for LProvider := 0 to LLastProvider do
+    begin
+      LTargetProvider := LProvider;
+      if LProvider = 2 then LTargetProvider := FDrivenRole + 2;
+      case LProvider of
+        0: LTargetToken := LHarmony;
+        1: LTargetToken := LRhythm;
+      else LTargetToken := LDrivenTokens[LIndex];
+      end;
+      if LTargetProvider < Length(APreferences) then
+        for LPreference in APreferences[LTargetProvider] do
+          if LPreference.Token = LTargetToken then
           begin
             if (LPreference.Multiplier < 1) or
               (LWeight > MaximumLayerPreferenceMultiplier div LPreference.Multiplier) then
               raise EAudio.Create('Combined context preferences exceed their exact weight bound');
             LWeight := LWeight * LPreference.Multiplier;
           end;
+    end;
     if LWeight > 1 then
     begin
       LCount := Length(FPreferences);
@@ -198,8 +237,20 @@ end;
 
 function TMusicalContextPlan.TryGenerate(out AReport: TGraphNegotiationReport;
   const AProgress: TWorkProgressCallback): Boolean;
+var
+  LFrames: TWfcMusicEnsembleFrames;
+  LIndex: Integer;
 begin
   Result := FSession.TryGenerate(FAccepted, AReport, AProgress);
+  if not Result then Exit;
+  SetLength(LFrames, Length(FAccepted[0].Tokens));
+  for LIndex := 0 to High(LFrames) do
+  begin
+    ReportWork(AProgress, 'context_validate_witness', wuItems, LIndex, Length(LFrames));
+    LFrames[LIndex] := DecodeMusicalContextToken(FAccepted[0].Tokens[LIndex]).Frame;
+  end;
+  ValidateWfcMusicEnsembleFrames(LFrames);
+  ReportWork(AProgress, 'context_validate_witness', wuItems, Length(LFrames), Length(LFrames));
 end;
 
 function TMusicalContextPlan.CopyGraph: TLayerGraphPasses;
@@ -229,12 +280,16 @@ begin
   Result := Default(TStyleProviderDescription);
   Result.Name := MusicalContextPassName;
   Result.Vocabulary := spvMusicalContext;
+  Result.PitchIdentity := spiAbsoluteMidi;
+  Result.MinimumPitch := 0;
+  Result.MaximumPitch := 127;
   Result.TicksPerQuarter := FOptions.TicksPerQuarter;
   Result.StepTicks := FOptions.StepTicks;
   Result.Timing := sptUniform;
   Result.Scope := MakeLayerScope(FOptions.CellCount, wsePrefix);
   if FOptions.RequireObservedEnd then Result.Scope.Extent := wseWhole;
   Result.RoleOrder := Copy(FRoleNames);
+  if FDrivenRole >= 0 then Result.RoleId := FRoleNames[FDrivenRole];
   Result.Preferences := CopyPreferences;
   LModel := CopyModel;
   try
@@ -261,6 +316,10 @@ function TMusicalContextPlan.BindMasks(const AMasks: TVoiceMasks): TVoiceMasks;
 var
   LProvider, LMask, LCell, LCount: Integer;
   LHarmony, LRhythm: String;
+  LChoice: TStyleProviderChoice;
+  LTargetProvider: Integer;
+  LLastProvider: Integer;
+  LTargetToken: String;
 begin
   Result := nil;
   SetLength(Result, Length(FRoleNames) + 2);
@@ -272,15 +331,23 @@ begin
   end;
   for LCell := 0 to FOptions.CellCount - 1 do
   begin
-    DecodeMusicalContextToken(FAccepted[0].Tokens[LCell], LHarmony, LRhythm);
-    for LProvider := 0 to 1 do
+    LChoice := DecodeStyleProviderChoice(spvMusicalContext, FAccepted[0].Tokens[LCell]);
+    LHarmony := EncodeWfcMusicPitchClassSet(LChoice.Harmony);
+    LRhythm := EncodeWfcMusicRhythmFrame(LChoice.Rhythm);
+    LLastProvider := 1;
+    if FDrivenRole >= 0 then LLastProvider := 2;
+    for LProvider := 0 to LLastProvider do
     begin
-      LCount := Length(Result[LProvider]);
-      SetLength(Result[LProvider], LCount + 1);
-      if LProvider = 0 then
-        Result[LProvider][LCount] := MakeWfcSequenceTokenConstraint(LCell, [LHarmony])
-      else
-        Result[LProvider][LCount] := MakeWfcSequenceTokenConstraint(LCell, [LRhythm]);
+      LTargetProvider := LProvider;
+      if LProvider = 2 then LTargetProvider := FDrivenRole + 2;
+      case LProvider of
+        0: LTargetToken := LHarmony;
+        1: LTargetToken := LRhythm;
+      else LTargetToken := DrivenVoiceToken(LChoice);
+      end;
+      LCount := Length(Result[LTargetProvider]);
+      SetLength(Result[LTargetProvider], LCount + 1);
+      Result[LTargetProvider][LCount] := MakeWfcSequenceTokenConstraint(LCell, [LTargetToken]);
     end;
   end;
 end;

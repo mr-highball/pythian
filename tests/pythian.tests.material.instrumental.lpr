@@ -30,7 +30,7 @@ uses SysUtils, pythian.audio, pythian.progress, pythian.music.pattern, pythian.p
   pythian.wfc.instrumental, pythian.wfc.instrumental.starter,
   pythian.wfc.percussion, pythian.wfc.voices, pythian.wfc.providers,
   pythian.wfc.provider.contracts, pythian.wfc.musical.context,
-  wfc_model, wfc_sequence, wfc_music_voices_graph;
+  wfc_model, wfc_sequence, wfc_music_voices_graph, wfc_music_ensemble;
 
 type
   TCancelProbe = class
@@ -144,8 +144,9 @@ begin
     Check(LGraph[High(LGraph)].GroupIndex = 2, 'Percussion is the third conditional group');
     LDescription := LPlan.CopyProvider(MusicalContextPassName);
     Check((LDescription.Vocabulary = spvMusicalContext) and
-      (LDescription.Choices[0].Dimensions = [scdHarmony, scdRhythm]),
-      'Actual paired semantic provider choices');
+      (LDescription.Choices[0].Dimensions = [scdHarmony, scdRhythm, scdVoice]) and
+      (Length(LDescription.Choices[0].Context.Frame.Voices) = 3),
+      'Actual synchronized symbolic witness and derived H/R choices');
     LContract := ProviderContractFromDescription(LDescription, 'experimental-musical-context');
     LModel := LPlan.CopyModel(MusicalContextPassName);
     try
@@ -206,7 +207,183 @@ begin
   end;
 end;
 
+procedure RunRichMotifs;
+const
+  CNotes: array[0..7] of Integer = (60, 62, 64, 67, 64, 62, 60, 55);
+  CRoles: array[0..2] of Integer = (2, 0, 1);
+  CRoots: array[0..2] of Integer = (9, 0, 5);
+var
+  LCase: Integer;
+  LCell: Integer;
+  LRole: Integer;
+  LPass: Integer;
+  LVariant: Integer;
+  LPattern: TPitchPattern;
+  LStarter: TInstrumentalStarter;
+  LPlan: TInstrumentalPlan;
+  LReplay: TInstrumentalPlan;
+  LPrevious: TInstrumentalPlan;
+  LOptions: TInstrumentalOptions;
+  LReport: TInstrumentalReport;
+  LDrums: TPercussionDefinitions;
+  LDescription: TStyleProviderDescription;
+  LChoices: TStyleProviderChoices;
+  LContract: TProviderContract;
+  LModel: TWfcSequenceModel;
+  LTokens: TWfcModelTokens;
+  LOther: TWfcModelTokens;
+  LGraph: TVoiceGraphPasses;
+  LFrames: TWfcMusicEnsembleFrames;
+  LContextCell: TMusicalContextCell;
+  LMasks: TVoiceMasks;
+  LProbe: TCancelProbe;
+  LFailed: Boolean;
+  LText: String;
+begin
+  SetLength(LPattern, 8);
+  for LCase := 0 to 2 do
+    for LVariant := 0 to 1 do
+    begin
+      for LCell := 0 to 7 do
+      begin
+        LPattern[LCell] := Default(TPitchPatternCell);
+        LPattern[LCell].Kind := pskPitch;
+        LPattern[LCell].Note := CNotes[LCell] + LVariant;
+        if CRoles[LCase] = 0 then Dec(LPattern[LCell].Note, 24);
+        LPattern[LCell].Velocity := 80;
+        LPattern[LCell].Attack := True;
+      end;
+      LStarter := TInstrumentalStarter.Create(CRoots[LCase], LCase <> 1,
+        LPattern, CRoles[LCase]);
+      LPlan := nil;
+      LReplay := nil;
+      try
+        LOptions := DefaultInstrumentalOptions;
+        LOptions.SampleRate := 8000;
+        LOptions.Session.CellCount := 16;
+        LOptions.Session.Seed := 731;
+        LOptions.Session.RequireObservedEnd := False;
+        LOptions.MaterialOrigin := 'Operator rich motif and authored accompaniment; symbolic context witness';
+        LDrums := LStarter.CopyPercussion(8000);
+        Check(TryCreateInstrumentalPlan(LStarter.Config, LStarter.CopyRoles, LOptions,
+          nil, nil, LPlan, LReport, nil, LDrums, LStarter.ContextModel),
+          'Rich role/context motif solves: ' + IntToStr(LCase) + '/' +
+          IntToStr(LVariant) + ' ' + LReport.Detail);
+        Check((LPlan.RoleCount = 6) and (LReport.Solve.PassBacktracks <= 32),
+          'Six actual parts within unchanged search limits');
+        for LRole := 0 to 2 do
+          if LRole = CRoles[LCase] then
+            Check(Length(LPlan.CopyConstraints(LPlan.RoleAt(LRole).Name)) = 16,
+              'Selected role is an explicit upstream context decision')
+          else
+            Check(Length(LPlan.CopyConstraints(LPlan.RoleAt(LRole).Name)) = 0,
+              'Other performed roles remain unpinned');
+        LDescription := LPlan.CopyProvider(MusicalContextPassName);
+        Check(LDescription.RoleId = LPlan.RoleAt(CRoles[LCase]).Name,
+          'Reusable context declares the actual driven role identity');
+        LModel := LPlan.CopyModel(MusicalContextPassName);
+        try
+          LContract := ProviderContractFromDescription(LDescription, 'operator-motif');
+          ValidateProviderContract(LModel, LContract);
+          LContract.RoleId := 'different-role';
+          LFailed := False;
+          try
+            ValidateProviderContract(LModel, LContract);
+          except
+            on E: EAudio do LFailed := True;
+          end;
+          Check(LFailed, 'Context contract cannot silently change its driven part');
+        finally
+          LModel.Free;
+        end;
+        LChoices := CloneStyleProviderChoices(LDescription.Choices);
+        Inc(LChoices[0].Context.Frame.Voices[0].Tones[0].Pitch);
+        Check(LChoices[0].Context.Frame.Voices[0].Tones[0].Pitch <>
+          LDescription.Choices[0].Context.Frame.Voices[0].Tones[0].Pitch,
+          'Detached nested symbolic-witness choices');
+        LTokens := LPlan.CopyPassTokens(0);
+        SetLength(LFrames, Length(LTokens));
+        for LCell := 0 to High(LTokens) do
+        begin
+          LContextCell := DecodeMusicalContextToken(LTokens[LCell]);
+          LFrames[LCell] := LContextCell.Frame;
+          Check(EncodeMusicalContextToken(LContextCell) = LTokens[LCell],
+            'Canonical synchronized witness token');
+          Check(LContextCell.DrivenRole = CRoles[LCase], 'Typed context keeps explicit part assignment');
+        end;
+        ValidateWfcMusicEnsembleFrames(LFrames);
+        Check(TryCreateInstrumentalPlan(LStarter.Config, LStarter.CopyRoles, LOptions,
+          nil, nil, LReplay, LReport, nil, LDrums, LStarter.ContextModel), 'Rich exact replay');
+        LGraph := LPlan.CopyGraph;
+        for LPass := 0 to High(LGraph) do
+        begin
+          if LGraph[LPass].IsProof then Continue;
+          LTokens := LPlan.CopyPassTokens(LPass);
+          LOther := LReplay.CopyPassTokens(LPass);
+          for LCell := 0 to High(LTokens) do
+            Check(LTokens[LCell] = LOther[LCell], 'Full actual symbolic pass replay');
+        end;
+        LOptions.Session.Seed := 0;
+        Check(TryCreateInstrumentalPlan(LStarter.Config, LStarter.CopyRoles, LOptions,
+          nil, nil, LReplay, LReport, nil, LDrums, LStarter.ContextModel),
+          'Second declared seed has a feasible witness, not a seed search');
+        LPrevious := LReplay;
+        SetLength(LMasks, 5);
+        SetLength(LMasks[0], 1);
+        LMasks[0][0] := MakeWfcSequenceTokenConstraint(0, nil);
+        Check(not TryCreateInstrumentalPlan(LStarter.Config, LStarter.CopyRoles, LOptions,
+          LMasks, nil, LReplay, LReport, nil, LDrums, LStarter.ContextModel),
+          'Impossible hard constraint still rejects');
+        Check(LReplay = LPrevious, 'Rejected rich context preserves preceding plan');
+        LMasks := nil;
+        LProbe := TCancelProbe.Create;
+        try
+          LProbe.Stage := 'context_validate_witness';
+          LFailed := False;
+          try
+            TryCreateInstrumentalPlan(LStarter.Config, LStarter.CopyRoles, LOptions,
+              nil, nil, LReplay, LReport, LProbe.Observe, LDrums, LStarter.ContextModel);
+          except
+            on E: EAbort do LFailed := True;
+          end;
+          Check(LFailed and (LReplay = LPrevious), 'Witness cancellation preserves accepted plan');
+        finally
+          LProbe.Free;
+        end;
+      finally
+        LReplay.Free;
+        LPlan.Free;
+        LStarter.Free;
+      end;
+    end;
+  LFailed := False;
+  try
+    DecodeMusicalContextToken('ctx1:lossy-harmony-rhythm');
+  except
+    on E: EAudio do LFailed := True;
+  end;
+  Check(LFailed, 'Superseded lossy context schema is not silently admitted');
+  LContextCell.DrivenRole := 0;
+  LText := EncodeMusicalContextToken(LContextCell);
+  LFailed := False;
+  try
+    DecodeMusicalContextToken('ctx2:00:' + Copy(LText, 8, Length(LText)));
+  except
+    on E: EAudio do LFailed := True;
+  end;
+  Check(LFailed, 'Context rejects noncanonical role indices');
+  LContextCell.DrivenRole := 99;
+  LFailed := False;
+  try
+    LText := EncodeMusicalContextToken(LContextCell);
+  except
+    on E: EAudio do LFailed := True;
+  end;
+  Check(LFailed, 'Context rejects a driven role outside its frame');
+end;
+
 begin
   Run;
+  RunRichMotifs;
   WriteLn('PASS musical material: ', Checks, ' checks');
 end.

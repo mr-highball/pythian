@@ -12,13 +12,14 @@ feedback. The primary generation route is now **Synthesized instruments ·
 Experimental**: authored material or explicitly selected pitch/context proposals
 drive actual WFC musical passes and Pythian instruments. Recording audio is used
 for analysis and a bounded Original reference, not chopped up as the instruments.
-The new musical editor is checked in isolated QA; see [Work](WORK.md) for the
-actual deployed build and the remaining pitch/context coupling gap.
+The musical editor and selected-part context repair pass ordinary native/browser
+checks; see [Work](WORK.md) for the actual deployed build.
 
 The finite mode has tempo/key/mode, seed, 1–32 four-beat bars, three pitched oscillator
 choices and six part levels. Native jobs persist a full mix, six stems and the
 actual graph summary and symbolic plan: sixteen passes/two groups for the authored
-starter, seventeen passes/three groups when the paired motif context is used. Play the mix or
+starter; motif context adds a third group and vocabulary-dependent proof passes
+(seventeen or twenty in checked examples). Play the mix or
 use synchronized mute/solo; successful jobs enter the existing listening queue
 and can be selected for Studio feedback. Reviewed settings restore for a new
 deliberate experiment. [Instrumental Studio](TODO/DONE/NS-6_instrumental-studio_01.md)
@@ -65,9 +66,11 @@ for that job; entered pitches keep their absolute MIDI notes. Recording-linked
 results include the analyzed Original excerpt with original coordinates. Use the
 Original/Synthesized buttons in Listening reviews to switch playback.
 
-The controlled recorded motif renders six parts, but a richer manual melody
-demonstrated a real [pitch/context coupling gap](TODO/NS-4_motif-coupling_01.md).
-Contradictions remain failures, not evidence of working general motif learning.
+The [pitch/context coupling repair](TODO/DONE/NS-4_motif-coupling_01.md) now handles
+the richer manual melody and checked role/correction variants. Context decides
+harmony, rhythm and the assigned part together; other parts remain independently
+generated. Unsupported combinations may still fail explicitly, without relaxing
+locks or claiming universal motif learning.
 The complete [experimental-learning task](TODO/NS-3_experimental-learning_01.md)
 stays open. Timbre measurements do not yet automatically select instruments or
 effects; sound controls remain explicit. Portable observation callers

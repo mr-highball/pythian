@@ -62,6 +62,8 @@ begin
   case AStage of
     'instrumental_prepare': Result := '1 · Prepare musical material';
     'instrumental_reference': Result := 'Prepare original reference';
+    'context_prepare_masks': Result := '2 · Connect musical context and selected part';
+    'context_validate_witness': Result := '2 · Check the shared musical pattern';
     'instrumental_render': Result := '3 · Synthesize mix and parts';
     'instrumental_publish': Result := '4 · Save music for review';
     'instrumental_ready', 'instrumental_plan', 'percussion_ready', 'percussion_instruments':

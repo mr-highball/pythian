@@ -44,7 +44,7 @@ uses Classes, SysUtils, Math,
   pythian.audio, pythian.time, pythian.bus, pythian.effects,
   pythian.instrument, pythian.synth, pythian.oscillator, pythian.schedule,
   pythian.wave.stream, pythian.music.pattern, pythian.wfc.instrumental, pythian.wfc.instrumental.starter,
-  pythian.wfc.percussion, pythian.wfc.voices,
+  pythian.wfc.percussion, pythian.wfc.voices, pythian.wfc.musical.context,
   wfc_model, wfc_sequence, wfc_sequence_text,
   pythian.tools.studio.jobs, pythian.tools.studio.instrumental.config,
   pythian.tools.studio.material, pythian.tools.studio.material.reference,
@@ -166,7 +166,12 @@ begin
     begin
       LMeta.Add('musical_material', LMaterial.Clone);
       LMeta.Add('recipe_sha256', LRecipeHash);
-      LMeta.Add('context_policy', 'Saved cells and declared mode; current tempo/root/sounds are explicit generation controls. Entered pitches keep their absolute MIDI notes.');
+      LMeta.Add('context_policy', 'Saved cells retain absolute MIDI notes. Context jointly decides harmony, rhythm and the selected part; other parts stay independently solved. Current tempo/root/sounds are explicit generation controls.');
+      if LStarter.ContextModel <> nil then
+      begin
+        LMeta.Add('context_role', LPlan.CopyProvider(MusicalContextPassName).RoleId);
+        Result.Add('context_role', LMeta.Strings['context_role']);
+      end;
     end;
     LMeta.Add('seed', Int64(LSeed));
     LMeta.Add('percussion_seed', Int64(LOptions.PercussionSeed));

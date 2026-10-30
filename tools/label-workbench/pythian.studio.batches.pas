@@ -1488,6 +1488,7 @@ var
   LText: String;
   LSeconds: Double;
   LIndex: Integer;
+  LGroupCount: Integer;
   LFocusId: String;
   LExpanded: Boolean;
   LExisting: TJSElement;
@@ -1646,16 +1647,30 @@ begin
   LGraph := ArrayAt(LResults, 'graph');
   if LGraph <> nil then
   begin
-    Add(LDetails, 'p', 'Six musical roles. Two conditional graph groups: pitched music, then rhythm-bound drums. ' +
-      'Each pass is a time line; proof passes check harmonic coverage.', 'hint');
+    LGroupCount := 0;
+    for LIndex := 0 to LGraph.length - 1 do
+      if StudioNumber(Obj(LGraph[LIndex]), 'graph_group') >= LGroupCount then
+        LGroupCount := Trunc(StudioNumber(Obj(LGraph[LIndex]), 'graph_group')) + 1;
+    Add(LDetails, 'p', IntToStr(LGroupCount) + ' conditional graph groups. Each pass is a time line; proof passes check harmonic coverage. Groups do not backtrack across one another.', 'hint');
+    if StudioText(LResults, 'context_role') <> '' then
+      Add(LDetails, 'p', 'Context decides ' + StudioText(LResults, 'context_role') +
+        ', harmony and rhythm together. The other pitched parts remain independently generated.', 'hint');
     for LIndex := 0 to LGraph.length - 1 do
     begin
       LPass := Obj(LGraph[LIndex]);
-      Add(LDetails, 'p', StudioText(LPass, 'name') + ': ' +
+      LText := StudioText(LPass, 'name') + ': ' +
         FloatToStr(StudioNumber(LPass, 'width')) + ' × ' +
         FloatToStr(StudioNumber(LPass, 'height')) + ' × ' +
         FloatToStr(StudioNumber(LPass, 'depth')) + ' · group ' +
-        FloatToStr(StudioNumber(LPass, 'graph_group')), 'track-meta');
+        FloatToStr(StudioNumber(LPass, 'graph_group'));
+      if isBoolean(LPass['proof']) and Boolean(LPass['proof']) then
+        LText := LText + ' · harmonic coverage proof'
+      else
+        LText := LText + ' · ' + FloatToStr(StudioNumber(LPass, 'public_tokens')) +
+          ' choices / ' + FloatToStr(StudioNumber(LPass, 'latent_states')) + ' states';
+      if isNumber(LPass['pinned_input_from']) then
+        LText := LText + ' · input from pass ' + FloatToStr(StudioNumber(LPass, 'pinned_input_from'));
+      Add(LDetails, 'p', LText, 'track-meta');
     end;
   end;
   Add(LDetails, 'p', 'Time limit for this attempt: ' +
@@ -1690,7 +1705,7 @@ begin
     if StudioText(LResults, 'training_identity_sha256') <> '' then
       LText := LText + ' · training identity ' + StudioText(LResults, 'training_identity_sha256');
     Add(LDetails, 'p', LText, 'track-meta');
-    if Boolean(LResults['model_reused']) then
+    if isBoolean(LResults['model_reused']) and Boolean(LResults['model_reused']) then
     begin
       Add(LDetails, 'p', 'Verified existing model reused.', 'hint');
     end;

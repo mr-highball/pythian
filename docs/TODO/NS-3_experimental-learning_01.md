@@ -21,7 +21,10 @@ native pitch fixture passes with clean heaps. Isolated desktop/390-pixel Edge
 checks exercise recording inspection, actual WAV upload/analysis, alternatives,
 pitch details and unchanged generation settings. The retained import also
 reopens through the final matched QA build. This is not physical-phone testing
-or reliable mixed-recording transcription. AC2–4 remain open; no effort is accepted.
+or reliable mixed-recording transcription. AC2 and finite-job AC4 subsequently
+passed; the motif-coupling prerequisite now passes too. Finish AC3's explicit
+sound/dynamics proposal mapping into actual instrument/automation settings before
+accepting the complete task. No partial effort is accepted.
 
 Primary attribution: NS-3. Effort estimates relative implementation/integration complexity, not musical value, accuracy, elapsed time or assigned percentage. No part of this new outcome is accepted by planning or by historical component tests.
 
@@ -34,8 +37,8 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [NS-4_motif-coupling_01](NS-4_motif-coupling_01.md) — the actual Studio manual
-  melody exposes insufficient pitch/context coupling beyond the accepted fixture.
+- [NS-4_motif-coupling_01 — DONE](DONE/NS-4_motif-coupling_01.md) — real selected-role
+  context coupling repairs the actual richer Studio manual melody and variants.
 
 - [NS-6_json-identity_01 — DONE](DONE/NS-6_json-identity_01.md) — native Unicode
   musical choices and source/job receipts now preserve actual operator bytes.
@@ -47,6 +50,14 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-10-30, Big Boss: Motif coupling passes its complete criteria: 1438 shared
+  native32/native64/actual pas2js checks,43 actual native generation checks on both
+  targets and ordinary desktop/narrow edit/save/generate paths. Original reference
+  coordinates and corrected output remain real. Re-audit the remaining AC3 sound/
+  dynamics mapping rather than automatically accepting8 units for this repair.
+  Deeper sound catalog controls retain their separate task; no blanket prerequisite
+  or new effort is added for work already required here.
 
 - 2026-10-30, Big Boss: AC2 and the finite-job AC4 correction/feedback behavior
   pass the actual desktop/390-pixel Studio path: manual notes, source proposals,

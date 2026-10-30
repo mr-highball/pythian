@@ -2,6 +2,53 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
+## Current handoff: selected-role context repair accepted and deployed — 2026-10-30
+
+Big Boss SOLO closed [motif coupling](TODO/DONE/NS-4_motif-coupling_01.md).
+Context now learns synchronized symbolic ensemble frames with an explicit driven
+role. Actual WFC decisions bind harmony, rhythm and that selected part; the other
+pitched parts stay independently solved. This repairs the actual richer A-minor
+Studio melody without raising budgets, retrying seeds, relaxing locks or pinning
+the whole ensemble. The graph still has three conditional groups; no cross-group
+backtracking or universal musical success is claimed. No dependency source/pin
+or separate WFC branch changed.
+
+Win32/Win64 and actual pas2js each pass1438 shared checks. Ordinary native
+source/manual generation passes43 checks on each native target with clean heaps.
+Provider UTF340 and authored Studio41 checks pass; fresh authored control PCM is
+byte-identical to the preserved baseline. Desktop/390-pixel isolated Edge verifies
+edit/Save/Generate, real six-part jobs and mix/solo. Save leaves jobs unchanged;
+the corrected melody changes its model/output. One native job completes after
+its page closes. Existing failed jobs remain preserved. Actual UI group/role
+lineage and vocabulary-dependent proof counts are displayed; an absent cache
+boolean no longer causes a false model-reuse claim. Playback was muted; there is
+no physical-phone or musical-quality verdict. All owned QA processes/audio are
+closed and both QA ports are absent. This is solo verification, not independent QA.
+
+The matched service/worker and twelve browser assets are deployed to the established
+stable slot using its existing TLS identity, Private profile and catalog. Both
+loopback HTTP and LAN HTTPS return200, as do projects/jobs/listening/capture APIs.
+The independent launcher exits and the service remains running. Sixteen protected
+project/review JSON records and twelve preceding terminal job states retain their
+hashes. No synthetic QA project, audio or feedback is copied into operator data;
+no firewall/security configuration changes. All new evidence lives under
+motif-coupling-20261030-boss in the dedicated E-drive roots. An overbroad initial
+metadata snapshot was stopped before publication; the final bounded snapshot
+excludes stored models/audio and verifies actual operator metadata.
+
+Accounting is33/96 (34.38%):16 tasks, nine open/seven current DONE,63 open units.
+NS-4 is16/30; NS-3 stays0/15. Task creation, partial work and reports earn nothing.
+The complete repair resets/retains the consecutive nonclosing count at zero.
+[CI507](https://github.com/mr-highball/pythian/actions/runs/41111358919) for9b29ba2 is
+now confirmed green. New remote qualification remains pending publication.
+
+Continue [experimental learning AC3](TODO/NS-3_experimental-learning_01.md): bind
+explicitly selected/corrected sound and dynamics proposals to actual instrument/
+automation settings and keep the Original comparison. The existing tempo/key/
+pitch editor, source lineage and repaired motif generation already pass. Do not
+automatically award the remaining eight units, start broad sound-design work or
+invent an inference-accuracy gate. The implementation goal stays active and solo.
+
 ## Current handoff: musical-choice editor checked; follow motif coupling — 2026-10-30
 
 Big Boss SOLO continues the active implementation goal. This batch closes
@@ -30,7 +77,7 @@ is claimed. The new native consumer is registered in the maintained build.
 The richer manual case fails: lead 60,62,64,67,64,62,60,55 in A natural minor,
 16 cells/seed 731. The paired context and independent projected H/R solve, but the
 named-voice graph contradicts at harmony. Preserve the failed job, screenshot and
-Pascal diagnostic. Follow [motif coupling](TODO/NS-4_motif-coupling_01.md), effort5,
+Pascal diagnostic. Follow [motif coupling](TODO/DONE/NS-4_motif-coupling_01.md), effort5,
 before claiming complete AC3. No seed sweep, raised budgets, silent constraint
 relaxation, pinning every part or generic WFC defect is claimed. The failure UI
 now explains the conflict and opens Project for editing instead of encouraging

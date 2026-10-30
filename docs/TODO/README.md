@@ -3,7 +3,7 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**10 open tasks · 96 total effort units · 6 current-goal DONE · 28 / 96 accepted (29.17%).**
+**9 open tasks · 96 total effort units · 7 current-goal DONE · 33 / 96 accepted (34.38%).**
 Effort is relative complexity on a 1–10 scale, not assigned musical credit.
 The operator has resumed implementation solo. The shared instrumental runtime
 and explicit percussion are accepted. Finite instrumental Studio and its real
@@ -12,9 +12,11 @@ Experimental learning is in progress: AC1 suggestions and AC2 editable musical
 choices are exposed through recording/import analysis and manual entry. Finite-job
 correction/feedback preservation passes; AC3 remains open and no partial effort is credited.
 Its joint harmony/rhythm context prerequisite is accepted through the shared
-runtime and native/actual pas2js consumers. A richer Studio melody exposes the
-new linked pitch/context coupling prerequisite; controlled motif success does
-not imply general coverage.
+runtime and native/actual pas2js consumers. The richer Studio melody's coupling
+repair is now accepted, retaining the selected part with harmony/rhythm in actual
+context decisions while other parts remain free. Finish explicit source sound/
+dynamics proposal mapping before closing experimental learning; no universal motif
+coverage or musical-quality verdict is implied.
 
 ## First operator-facing milestone
 
@@ -28,7 +30,7 @@ not imply general coverage.
 Together these 21 units deliver bass, drums, harmony and lead in Studio with
 real musical controls and playback. Authored/operator/MIDI inputs are sufficient
 to start; uncertain WAV proposals can follow without a benchmark-first gate.
-All 21 units in this first milestone are accepted. Ten later tasks remain open. No more raw-grain
+All 21 units in this first milestone are accepted. Nine later tasks remain open. No more raw-grain
 continuity experiments are selected.
 
 ## Complete current scope
@@ -39,7 +41,7 @@ continuity experiments are selected.
 | [NS-4_graph-workbench_01](NS-4_graph-workbench_01.md) — inspect and edit actual graph | 7 | Instrumental Studio |
 | [NS-4_graph-controls_01](NS-4_graph-controls_01.md) — dimensions, affect and selective regeneration | 7 | Runtime |
 | [NS-4_joint-context_01 — DONE](DONE/NS-4_joint-context_01.md) — retain harmony/rhythm coupling | 4 | Accepted; actual paired context and conditional six-part motif generation |
-| [NS-4_motif-coupling_01](NS-4_motif-coupling_01.md) — preserve selected pitch/context relationships | 5 | Joint context; actual richer manual-motif contradiction |
+| [NS-4_motif-coupling_01 — DONE](DONE/NS-4_motif-coupling_01.md) — preserve selected pitch/context relationships | 5 | Accepted; actual selected-role context, repaired melody and role/correction variants |
 | [NS-3_experimental-learning_01](NS-3_experimental-learning_01.md) — WAV proposals into musical providers | 8 | Runtime + instrumental Studio + joint context + motif coupling for AC3 |
 | [NS-3_style-vocabulary_01](NS-3_style-vocabulary_01.md) — coarse long-recording corpus learning | 7 | Experimental learning |
 | [NS-5_musical-form_01](NS-5_musical-form_01.md) — phrases, sections and useful variation | 8 | Graph controls + instrumental Studio |
@@ -48,8 +50,8 @@ continuity experiments are selected.
 | [NS-6_json-identity_01 — DONE](DONE/NS-6_json-identity_01.md) — preserve Unicode choices and JSON identities | 3 | Accepted; actual native save/reload/job and HTTP consumers |
 | [NS-6_instrumental-streams_01](NS-6_instrumental-streams_01.md) — efficient long instrumental jobs | 8 | Instrumental Studio |
 
-The two tables together are all 16 current-goal tasks (10 open, six DONE),
-totaling 96 units: 68 open and 28 accepted. Subtotals:
+The two tables together are all 16 current-goal tasks (9 open, seven DONE),
+totaling 96 units: 63 open and 33 accepted. Subtotals:
 NS-2 12, NS-3 15, NS-4 30, NS-5 15, NS-6 24. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 

@@ -168,10 +168,84 @@ begin
     LRequest.Free; LProject.Free; LMaterial.Free; LWrite.Free;
   end;
 end;
+procedure RunManualMelody(const ARoot: String);
+const
+  CNotes: array[0..7] of Integer = (60, 62, 64, 67, 64, 62, 60, 55);
+var
+  LWrite: TJSONObject;
+  LMaterial: TJSONObject;
+  LProject: TJSONObject;
+  LRequest: TJSONObject;
+  LJob: TJSONObject;
+  LResult: TJSONObject;
+  LRow: TJSONObject;
+  I: Integer;
+begin
+  LWrite := TJSONObject.Create;
+  LMaterial := DefaultStudioMaterial;
+  LProject := nil;
+  LRequest := nil;
+  try
+    LMaterial.Integers['tempo_bpm'] := 98;
+    LMaterial.Integers['tonic'] := 9;
+    LMaterial.Strings['mode'] := 'natural_minor';
+    LMaterial.Integers['part'] := 2;
+    LMaterial.Strings['pitch_decision'] := 'manual';
+    for I := 0 to 7 do
+    begin
+      LRow := TJSONObject.Create;
+      LMaterial.Arrays['pattern'].Add(LRow);
+      LRow.Add('kind', 'pitch');
+      LRow.Add('note', CNotes[I]);
+      LRow.Add('velocity', 80);
+      LRow.Add('attack', True);
+    end;
+    LWrite.Add('format', StudioProjectWriteFormat);
+    LWrite.Add('project_id', 'manual-melody');
+    LWrite.Add('expected_revision', 0);
+    LWrite.Add('name', 'Manual A-minor melody');
+    LWrite.Add('style_intent', '');
+    LWrite.Add('learning_mode', 'instrumental');
+    LWrite.Add('sources', TJSONArray.Create);
+    LWrite.Add('musical_material', LMaterial.Clone);
+    LProject := SaveStudioProject(ARoot, LWrite);
+    LRequest := Generation(LProject, 'manual-melody-generation');
+    LRequest.Objects['instrumental'].Integers['tempo_bpm'] := 98;
+    LRequest.Objects['instrumental'].Integers['tonic'] := 9;
+    LRequest.Objects['instrumental'].Add('mode', 'natural_minor');
+    LJob := EnqueueStudioJob(ARoot, LRequest);
+    LJob.Free;
+    Check(RunStudioWorker(ARoot, 'manual-melody-generation', ARoot + '-library'),
+      'Discovered manual melody completes through the ordinary worker');
+    LJob := ReadStudioJob(ARoot, 'manual-melody-generation');
+    try
+      Check(LJob.Strings['status'] = 'completed', 'Manual melody job completed');
+      LResult := LJob.Objects['results'];
+      Check(LResult.Arrays['parts'].Count = 6, 'Manual melody is actually synthesized as six parts');
+      Check(LResult.Strings['context_role'] = 'lead', 'Job exposes explicit driven role');
+      Check(LResult.Arrays['graph'].Objects[5].Integers['pinned_input_from'] = 0,
+        'Selected lead has actual context input lineage');
+      Check((LResult.Arrays['graph'].Objects[3].Find('pinned_input_from') = nil) and
+        (LResult.Arrays['graph'].Objects[4].Find('pinned_input_from') = nil),
+        'Other pitched roles remain independently generated');
+      Check(LResult.Find('original_reference') = nil, 'Manual input cannot invent an Original reference');
+      Check((LResult.Objects['settings'].Integers['tempo_bpm'] = 98) and
+        (LResult.Objects['settings'].Strings['mode'] = 'natural_minor'), 'Actual minor clock retained');
+    finally
+      LJob.Free;
+    end;
+  finally
+    LRequest.Free;
+    LProject.Free;
+    LMaterial.Free;
+    LWrite.Free;
+  end;
+end;
 begin
   try
     Check(ParamCount = 1, 'Usage: material generation FRESH_ROOT');
     Run(ExpandFileName(ParamStr(1)));
+    RunManualMelody(ExpandFileName(ParamStr(1)));
     WriteLn('PASS Studio musical generation: ', Checks, ' checks');
   except
     on E: Exception do

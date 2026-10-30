@@ -169,6 +169,7 @@ var
   LOriginal: TWfcModelTokens;
   LRepeatIndex: Integer;
   LContextSamples: TWfcSequenceSamples;
+  LContextCell: TMusicalContextCell;
   LBridge: TWfcSolveProgressBridge;
 begin
   inherited Create;
@@ -358,8 +359,18 @@ begin
       SetLength(LContextSamples[LSampleIndex].Tokens, Length(LSamples[0][LSampleIndex].Tokens));
       for LTokenIndex := 0 to High(LContextSamples[LSampleIndex].Tokens) do
       begin
-        LContextSamples[LSampleIndex].Tokens[LTokenIndex] := EncodeMusicalContextToken(
-          LSamples[0][LSampleIndex].Tokens[LTokenIndex], LSamples[1][LSampleIndex].Tokens[LTokenIndex]);
+        { Preserve synchronized histories before any H/R vocabulary projection.
+          Merging equal H/R cells first can create paths no role model can lift. }
+        SetLength(LFrame.Voices, 3);
+        for LRole := 0 to 2 do
+        begin
+          LSingle := DecodeWfcMusicEnsembleFrame(
+            LSamples[LRole + 2][LSampleIndex].Tokens[LTokenIndex]);
+          LFrame.Voices[LRole] := LSingle.Voices[0];
+        end;
+        LContextCell.Frame := LFrame;
+        LContextCell.DrivenRole := APatternRole;
+        LContextSamples[LSampleIndex].Tokens[LTokenIndex] := EncodeMusicalContextToken(LContextCell);
       end;
     end;
     LBridge := TWfcSolveProgressBridge.Create(AProgress, 6);

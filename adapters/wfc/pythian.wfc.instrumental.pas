@@ -233,6 +233,8 @@ begin
       not dependencies that imply cross-group solver backtracking. }
     Result[LContextCount].InputSourcePassIndex := 0;
     Result[LContextCount + 1].InputSourcePassIndex := 0;
+    if FContext.DrivenRole >= 0 then
+      Result[LContextCount + 2 + FContext.DrivenRole].InputSourcePassIndex := 0;
   end;
   if FDrums <> nil then
   begin
@@ -588,7 +590,7 @@ begin
         Exit;
       end;
       LBoundMasks := LCandidate.FContext.BindMasks(AMasks);
-      for LIndex := 0 to 1 do
+      for LIndex := 0 to High(LBoundMasks) do
         LCandidate.FSession.SetConstraints(LCandidate.FSession.ProviderName(LIndex),
           LBoundMasks[LIndex], AProgress);
     end;
