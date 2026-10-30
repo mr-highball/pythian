@@ -5,6 +5,9 @@
 ## Current handoff: Unicode repair accepted; resume the Studio editor — 2026-10-30
 
 Big Boss SOLO has closed [JSON identity](TODO/DONE/NS-6_json-identity_01.md).
+Published as 36ac44f on hello-pythian.
+[CI506](https://github.com/mr-highball/pythian/actions/runs/41104407830) is queued
+at publication; no remote pass is claimed yet.
 Native Win32/Win64 pass 51 focused musical-choice/Unicode storage checks with
 clean heaps. Native project 106, job 113, discovery 68 and capture 80 regressions
 pass. A 16-check Pascal HTTP client exercises real shell/session, Unicode
