@@ -614,6 +614,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Studio instrumental fixture compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.studio.instrumental$executableSuffix") (Join-Path $buildRoot ('studio-instrumental-' + [Guid]::NewGuid().ToString('N')))
     if ($LASTEXITCODE -ne 0) { throw 'Studio instrumental checks failed' }
+    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.studio.material.generation.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Studio musical-choice generation compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.studio.material.generation$executableSuffix") (Join-Path $buildRoot ('studio-material-generation-' + [Guid]::NewGuid().ToString('N')))
+    if ($LASTEXITCODE -ne 0) { throw 'Studio musical-choice generation checks failed' }
     foreach ($studioComponent in @('worker', 'supervisor', 'reviews')) {
       & $compilerPath @adapterArgs '-gh' "tests/pythian.tests.studio.$studioComponent.lpr"
       if ($LASTEXITCODE -ne 0) { throw "Studio $studioComponent compilation failed" }

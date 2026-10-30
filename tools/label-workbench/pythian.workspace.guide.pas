@@ -105,12 +105,12 @@ const
   CLessons: array[0..11] of TGuideLesson = (
     (Id: 'choose'; Title: 'Choose what to carry forward';
      Action: 'Name a project and choose Synthesized instruments, then Save draft. You can start without recordings. Collection and Import / record let you explore references separately.';
-     Expectation: 'The instrumental starter uses authored musical material. It does not learn your recordings yet. In the legacy recorded-fragment mode, checked selections supply the sound pieces. Labels describe your choices; they do not yet control generation.';
+     Expectation: 'Start with authored music, write a motif in Musical starting points, or analyze audio and choose Use or edit these suggestions. Assign one pitch line to Bass, Harmony or Lead. Other parts use authored accompaniment. Labels and your listening goal do not yet control the graph.';
      DoneWhen: 'Your saved project lists the intended recordings, ranges and descriptions.';
      Page: 'studio'; Target: 'style-name'; Prerequisite: 'Wait for the catalog to connect before naming or saving a project.'),
     (Id: 'generate'; Title: 'Make a small first experiment';
      Action: 'With a saved instrumental project, open Generate. Choose tempo, key, bars and seed. Expand Sounds and mix to change instruments or levels. Check setup, then Generate instruments.';
-     Expectation: 'Experimental: WFC arranges authored symbolic material, then Pythian synthesizes six parts. No source audio is read. The finite job runs on the computer even when your phone page is closed.';
+     Expectation: 'Experimental: WFC arranges your saved musical choices with authored accompaniment, then Pythian synthesizes six parts. Recording-linked choices retain an Original reference excerpt for comparison. The job runs on the computer even when your phone page is closed.';
      DoneWhen: 'Open Jobs to play the mix, mute or solo its parts, then follow Listen and give feedback. Change one control for another experiment.';
      Page: 'studio'; Target: 'instrumental-tempo'; Prerequisite: 'Save an instrumental project first; no recordings are required.'),
     (Id: 'listen'; Title: 'Tell Pythian what you hear';

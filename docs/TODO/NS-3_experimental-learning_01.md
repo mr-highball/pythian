@@ -34,6 +34,9 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
 
 **Blockers**
 
+- [NS-4_motif-coupling_01](NS-4_motif-coupling_01.md) — the actual Studio manual
+  melody exposes insufficient pitch/context coupling beyond the accepted fixture.
+
 - [NS-6_json-identity_01 — DONE](DONE/NS-6_json-identity_01.md) — native Unicode
   musical choices and source/job receipts now preserve actual operator bytes.
 
@@ -44,6 +47,51 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-10-30, Big Boss: AC2 and the finite-job AC4 correction/feedback behavior
+  pass the actual desktop/390-pixel Studio path: manual notes, source proposals,
+  explicit part assignment, corrected tempo, bypassed key/pitch, Save/reload and
+  Escape cancellation. Source and analysis identities remain unchanged; job
+  history is identical after Save and a clearly marked automated QA feedback
+  response. The contextual editor preserves location and keeps its navigation
+  visible. Controlled source-derived synthesis and Original/Synthesized playback
+  also pass; the linked richer motif failure keeps AC3 and the whole task open.
+  No eight-unit partial effort is accepted. Real criterion closure leaves the
+  consecutive nonclosing count at zero; follow the demonstrated prerequisite.
+- Relevant native evidence: Win32/Win64 35 generation checks with clean heaps;
+  Win64 51 choice-storage, 41 instrumental and 113 job regressions pass. Matched
+  actual pas2js/browser assets compile; desktop/narrow playback advances both
+  original and synthesized clocks and switching pauses the other player. QA
+  audio is muted; no physical-phone or musical-quality verdict is claimed.
+- Repairs/failures: the first editor request sent an empty query value and then
+  treated a missing DOM attribute as a job ID. Use an omitted query for manual
+  defaults and hasAttribute for the analysis action; handle native text errors
+  before parsing JSON. Preserve those screenshots/errors. A UI probe initially
+  sought the collapsed Analyze control; another sought an answer before playing
+  both assets. Correct the QA actions without bypassing those controls. An early
+  feedback-count snapshot raced the asynchronous save; a subsequent fresh read
+  confirms one completed QA response. The richer graph contradiction remains.
+- Final read-through repairs a lineage edge: changing tempo while retaining
+  pitch cells, or reusing saved bypassed cells, marks that pitch input corrected.
+  The targeted narrow-browser reuse/save case passes with the real native binding
+  validator and unchanged job history. It cannot silently relabel edited cells as
+  accepted analysis. Final QA assets match; all owned processes/audio are closed.
+
+- 2026-10-30, Big Boss: A real browser manual-melody job demonstrates the linked
+  motif-coupling prerequisite. Valid paired H/R and independent projected input
+  solves do not guarantee a named-voice solution. Preserve that failure; do not
+  raise search limits or count the controlled motif as general coverage. The
+  source-derived native consumer still passes35 checks. The editor's desktop and
+  narrow save/reload paths pass for manual and analyzed material; AC3/task remain
+  open and no effort is accepted.
+
+- 2026-10-30, Big Boss: Resume AC2–4 after the accepted data repair. Deliver
+  ordinary native jobs that consume saved musical choices, a touch-friendly
+  contextual editor, and explicit Original/synthesized playback. Closing evidence:
+  actual changed motif/model/audio, source clocks and durable reference, unchanged
+  jobs on Save, and desktop/narrow edit/save/reload/generate/listen paths. Stop at
+  this task's complete operator workflow; broader corpus/form/blends remain in
+  their existing tasks. Current consecutive nonclosing count is zero.
 
 - 2026-10-30, Big Boss: The linked JSON-identity repair is accepted through
   Win32/Win64 51-check storage consumers and a 16-check actual native HTTP batch.

@@ -1293,7 +1293,7 @@ begin
       ' · ' + IntToStr(Trunc(StudioNumber(LResult, 'sample_rate'))) + ' Hz · ' +
       IntToStr(Trunc(StudioNumber(LResult, 'channels'))) + ' channel(s) · peak ' +
       FormatFloat('0.00', StudioNumber(LResult, 'peak'));
-    DrawMusicalObservations(El('capture-musical-observations'), LResult);
+    DrawMusicalObservations(El('capture-musical-observations'), LResult, LId);
     Notice('Analysis complete. Showing the first ' +
       StudioTime((StudioNumber(LResult, 'end_frame') - StudioNumber(LResult, 'start_frame')) /
       StudioNumber(LResult, 'sample_rate')) + '.');

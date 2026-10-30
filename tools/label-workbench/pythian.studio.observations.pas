@@ -27,7 +27,8 @@ unit pythian.studio.observations;
 {$H+}
 interface
 uses JS, Web;
-procedure DrawMusicalObservations(AParent: TJSElement; AResult: TJSObject);
+procedure DrawMusicalObservations(AParent: TJSElement; AResult: TJSObject;
+  const AJob: String);
 implementation
 uses SysUtils, Math, pythian.studio.sources;
 
@@ -47,7 +48,8 @@ begin
     Result := Result + IntToStr(ANote div 12 - 1);
 end;
 
-procedure DrawMusicalObservations(AParent: TJSElement; AResult: TJSObject);
+procedure DrawMusicalObservations(AParent: TJSElement; AResult: TJSObject;
+  const AJob: String);
 var
   LProposal, LRow, LChannel, LSpan, LBeats: TJSObject;
   LRows, LChannels, LSpans: TJSArray;
@@ -64,6 +66,10 @@ begin
     Exit;
   end;
   Add(AParent, 'h4', 'Musical suggestions · Experimental');
+  LBox := Add(AParent, 'button', 'Use or edit these suggestions');
+  LBox.setAttribute('type', 'button');
+  LBox.setAttribute('data-musical-job', AJob);
+  LBox.className := 'primary';
   LRate := StudioNumber(LProposal, 'sample_rate');
   LOrigin := StudioNumber(LProposal, 'start_frame') / LRate;
   Add(AParent, 'p', 'Analyzed ' + StudioTime(LOrigin) + '–' +
@@ -157,6 +163,6 @@ begin
     FormatFloat('0', StudioNumber(LProposal, 'mean_centroid_hz')) + ' Hz centroid. ' +
     'Window loudness: ' + FormatFloat('0.000', StudioNumber(LProposal, 'minimum_window_rms')) +
     '–' + FormatFloat('0.000', StudioNumber(LProposal, 'maximum_window_rms')) + ' RMS.');
-  Add(LDetails, 'p', 'Measurements of the mix; these do not identify instruments or create a style. You can use the tempo/root manually in Generate while provider learning is being connected.').className := 'hint';
+  Add(LDetails, 'p', 'Measurements of the mix; these do not identify instruments or create a style. Use or edit the suggestions to try a pitch motif with synthesized accompaniment.').className := 'hint';
 end;
 end.

@@ -62,6 +62,7 @@ type
     destructor Destroy; override;
     function ReadConfig: TJSObject;
     procedure RestoreConfig(AConfig: TJSObject);
+    procedure ApplyMusicalContext(AMaterial: TJSObject);
     procedure SetEnabled(const AEnabled: Boolean);
     procedure Show(const AVisible: Boolean);
     procedure AttachMixer(AParent: TJSElement; const AJob: String; const ADuration: Double);
@@ -98,7 +99,7 @@ begin
   inherited Create; FFetch := AFetch;
   FSettings := Add(AParent, 'section', ''); FSettings.id := 'instrumental-settings';
   Add(FSettings, 'h3', 'Make an instrumental experiment');
-  Add(FSettings, 'p', 'Experimental · Authored musical starter. WFC arranges synthesized bass, harmony, lead and drums. No recording is chopped up or learned here.').className := 'hint';
+  Add(FSettings, 'p', 'Experimental · WFC arranges synthesized bass, harmony, lead and drums. Saved musical choices can supply an editable motif; other parts use authored accompaniment.').className := 'hint';
   LRow := Add(FSettings, 'div', ''); LRow.className := 'range-fields';
   Input(LRow, 'instrumental-tempo', 'Tempo (BPM)', '120', 40, 240);
   Input(LRow, 'instrumental-bars', 'Length (bars, 4 beats each)', '8', 1, 32);
@@ -109,6 +110,12 @@ begin
     LOption := Add(LSelect, 'option', Copy('C C#D D#E F F#G G#A A#B ', I * 2 + 1, 2));
     LOption.setAttribute('value', IntToStr(I));
   end;
+  LSelect := Add(Add(LRow, 'label', 'Accompaniment'), 'select', '');
+  LSelect.id := 'instrumental-mode';
+  LOption := Add(LSelect, 'option', 'Major');
+  LOption.setAttribute('value', 'major');
+  LOption := Add(LSelect, 'option', 'Natural minor');
+  LOption.setAttribute('value', 'natural_minor');
   Add(FSettings, 'p', 'The starter uses major/minor chord changes relative to this root. Length is finite; long instrumental sessions are a separate upcoming capability.').className := 'hint';
   LDetails := Add(FSettings, 'details', '');
   Add(LDetails, 'summary', 'Sounds and mix');
@@ -158,6 +165,7 @@ begin
   Result := TJSObject.new;
   Result['tempo_bpm'] := Number('instrumental-tempo', 40, 240);
   Result['tonic'] := Number('instrumental-tonic', 0, 11);
+  Result['mode'] := TJSHTMLSelectElement(document.getElementById('instrumental-mode')).value;
   Result['cells'] := Number('instrumental-bars', 1, 32) * 8;
   LShapes := TJSArray.new; LLevels := TJSArray.new;
   for I := 0 to 5 do
@@ -182,6 +190,9 @@ begin
     FloatToStr(StudioNumber(AConfig, 'cells') / 8);
   TJSHTMLSelectElement(document.getElementById('instrumental-tonic')).value :=
     FloatToStr(StudioNumber(AConfig, 'tonic'));
+  TJSHTMLSelectElement(document.getElementById('instrumental-mode')).value := 'major';
+  if StudioText(AConfig, 'mode') <> '' then
+    TJSHTMLSelectElement(document.getElementById('instrumental-mode')).value := StudioText(AConfig, 'mode');
   for I := 0 to 5 do
   begin
     if I < 3 then TJSHTMLSelectElement(document.getElementById('instrumental-sound-' +
@@ -190,6 +201,23 @@ begin
       String(TJSArray(AConfig['levels'])[I]);
   end;
   ReadConfig;
+end;
+
+procedure TStudioInstrumental.ApplyMusicalContext(AMaterial: TJSObject);
+var LTempo, LTonic: Integer; LMode: String;
+begin
+  LTempo := 120;
+  LTonic := 0;
+  LMode := 'major';
+  if AMaterial <> nil then
+  begin
+    LTempo := Trunc(StudioNumber(AMaterial, 'tempo_bpm'));
+    LTonic := Trunc(StudioNumber(AMaterial, 'tonic'));
+    LMode := StudioText(AMaterial, 'mode');
+  end;
+  TJSHTMLInputElement(document.getElementById('instrumental-tempo')).value := IntToStr(LTempo);
+  TJSHTMLSelectElement(document.getElementById('instrumental-tonic')).value := IntToStr(LTonic);
+  TJSHTMLSelectElement(document.getElementById('instrumental-mode')).value := LMode;
 end;
 
 procedure TStudioInstrumental.SetEnabled(const AEnabled: Boolean);

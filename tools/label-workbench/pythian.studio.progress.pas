@@ -61,6 +61,7 @@ begin
   end;
   case AStage of
     'instrumental_prepare': Result := '1 · Prepare musical material';
+    'instrumental_reference': Result := 'Prepare original reference';
     'instrumental_render': Result := '3 · Synthesize mix and parts';
     'instrumental_publish': Result := '4 · Save music for review';
     'instrumental_ready', 'instrumental_plan', 'percussion_ready', 'percussion_instruments':

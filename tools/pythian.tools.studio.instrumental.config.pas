@@ -63,11 +63,18 @@ end;
 procedure ValidateStudioInstrumentalConfig(const AConfig: TJSONObject);
 var LIndex: Integer; LValue: TJSONData; LText: String;
 begin
-  Need((AConfig <> nil) and (AConfig.Count = 5),
+  Need((AConfig <> nil) and ((AConfig.Count = 5) or
+    ((AConfig.Count = 6) and (AConfig.Find('mode') <> nil))),
     'Instrumental settings require tempo_bpm, tonic, cells, instruments and levels');
   for LIndex := 0 to AConfig.Count - 1 do
     Need(Pos('|' + AConfig.Names[LIndex] + '|',
-      '|tempo_bpm|tonic|cells|instruments|levels|') > 0, 'Unsupported instrumental setting');
+      '|tempo_bpm|tonic|cells|instruments|levels|mode|') > 0, 'Unsupported instrumental setting');
+  if AConfig.Find('mode') <> nil then
+  begin
+    Need(AConfig.Find('mode').JSONType = jtString, 'Accompaniment mode must be text');
+    Need((AConfig.Strings['mode'] = 'major') or (AConfig.Strings['mode'] = 'natural_minor'),
+      'Choose major or natural minor accompaniment');
+  end;
   Number(AConfig, 'tempo_bpm', 40, 240);
   Number(AConfig, 'tonic', 0, 11);
   Need(Number(AConfig, 'cells', 8, StudioInstrumentalMaximumCells) mod 8 = 0,

@@ -268,3 +268,22 @@ body:has(#listen:not([hidden])) .save-panel { display: none; }
 .instrumental-mixer audio, #batch-detail audio { display:block; width:100%; max-width:100%; }
 .instrumental-mixer .source-toolbar strong { min-width:5rem; }
 .instrumental-mixer button[aria-pressed="true"] { background:#b6e6d8; color:#10252b; }
+
+/* Big Boss: bounded pitch editing stays in context and works with touch. */
+.material-dialog { width:min(900px,calc(100% - 1rem)); max-height:90dvh; padding:1rem; border:1px solid #79b7a8; border-radius:1rem; color:var(--text); background:#122e36; overflow:auto; }
+.material-dialog::backdrop { background:#061419c9; }
+.material-heading { position:sticky; top:-1rem; z-index:2; padding:.5rem 0; background:#122e36; border-bottom:1px solid #527971; }
+.material-dialog .guide-dialog-header { position:static; display:flex; align-items:center; justify-content:space-between; gap:.5rem; }
+.material-dialog h2 { font-size:1.3rem; }
+.material-tabs { display:flex; gap:.4rem; margin:1rem 0; }
+.material-tabs button { flex:1; padding:.65rem .4rem; }
+.material-tabs button[aria-selected="true"], #material-grid button[aria-pressed="true"] { background:#b6e6d8; color:#10252b; }
+#material-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.4rem; margin:.8rem 0; }
+#material-grid button { min-height:48px; padding:.45rem .2rem; font-size:.85rem; }
+.material-dialog button { margin:.2rem 0; }
+.material-dialog [hidden] { display:none !important; }
+.material-dialog .range-fields { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:.65rem; }
+.material-footer { display:flex; gap:.5rem; position:sticky; bottom:-1rem; background:#122e36; padding:.7rem 0; }
+.material-footer button { flex:1; }
+#material-source-details { overflow-wrap:anywhere; }
+#musical-material { border-left:3px solid #8fcdbd; padding:.2rem .8rem .7rem; margin:1rem 0; }

@@ -37,6 +37,8 @@ uses
   pythian.studio.effects,
   pythian.studio.capture,
   pythian.studio.reviews,
+  pythian.studio.material,
+  pythian.studio.requests,
   pythian.workspace.navigation,
   pythian.workspace.tabs,
   pythian.studio.&library.refresh;
@@ -56,6 +58,7 @@ type
     FEffects: TStudioEffects;
     FCapture: TStudioCapture;
     FReviews: TStudioReviews;
+    FMaterial: TStudioMaterial;
     FSavedProject: TJSObject;
     FToken: String;
     FProjectId: String;
@@ -92,6 +95,7 @@ type
     procedure Status(const AText: String; AError: Boolean = False);
     procedure Feedback(const AText: String; AError: Boolean = False);
     procedure Changed;
+    procedure MaterialChanged;
     procedure ClearErrors;
     procedure ErrorAt(const AId, AText: String);
     function BuildWrite: TJSObject;
@@ -381,12 +385,21 @@ begin
   UpdateState;
 end;
 
+procedure TStudio.MaterialChanged;
+begin
+  Input('learning-mode').value := 'instrumental';
+  FBatches.ApplyMusicalContext(FMaterial.Value);
+  Changed;
+  Feedback('Musical choices applied. Save draft, then Generate to hear them.');
+end;
+
 procedure TStudio.UpdateState;
 var
   LControls: array of String;
   LIndex: Integer;
 begin
   FSourceEditor.SetDisabled(FBusy or not FConnected);
+  FMaterial.SetEnabled(not FBusy and FConnected);
   LControls := ['style-name', 'style-qualities', 'learning-mode', 'new-draft',
     'draft-list', 'track-search'];
   for LIndex := 0 to High(LControls) do
@@ -476,6 +489,8 @@ procedure TStudio.NewDraft;
 begin
   Inc(FEpoch);
   FSavedProject := nil;
+  FMaterial.Restore(nil);
+  FBatches.ApplyMusicalContext(nil);
   FBatches.SetProject(nil, False);
   FProjectId := 'style-' + IntToStr(TJSDate.now) + '-' + IntToStr(Random(1000000000));
   FRevision := 0;
@@ -534,7 +549,7 @@ var
 begin
   LHashes := TJSArray.new;
   case Input('learning-mode').value of
-    'instrumental': LRoute := 'Synthesized instruments · authored musical starter';
+    'instrumental': LRoute := 'Synthesized instruments · editable musical starting points';
     'raw_acoustic': LRoute := 'Acoustic recombination';
     'reference_events': LRoute := 'Reference-assisted notes';
     'inferred_events': LRoute := 'Inferred notes (acceptance pending)';
@@ -599,7 +614,7 @@ begin
   end;
   if Input('learning-mode').value = 'instrumental' then
     El('selection-summary').textContent := IntToStr(LCount) +
-      ' reference recording(s) selected. This instrumental starter uses authored musical material.';
+      ' reference recording(s) selected. Analyze one passage to use its musical suggestions.';
   El('collection-training-summary').textContent := El('selection-summary').textContent;
   El('generation-training-summary').textContent := El('selection-summary').textContent;
   El('project-next').textContent := 'Next: choose music →';
@@ -611,8 +626,8 @@ begin
     El('project-next').setAttribute('data-open-pane', 'prepare');
     El('change-training-music').textContent := 'Browse reference recordings';
     El('generation-training-summary').textContent :=
-      'Authored instrumental starter. Recordings are references, not training for this experiment.';
-    El('support-detail').textContent := 'No source audio is read for instrumental generation.';
+      El('material-summary').textContent;
+    El('support-detail').textContent := 'Saved musical choices drive the motif and context. Other parts use authored accompaniment; an analyzed original is retained for comparison.';
   end;
   LName := Trim(Input('style-name').value);
   if LName = '' then
@@ -821,6 +836,8 @@ begin
   Input('style-name').value := Str(AProject, 'name');
   TJSHTMLTextAreaElement(El('style-qualities')).value := Str(AProject, 'style_intent');
   Input('learning-mode').value := Str(AProject, 'learning_mode');
+  FMaterial.Restore(Obj(AProject['musical_material']));
+  FBatches.ApplyMusicalContext(Obj(AProject['musical_material']));
   FSavedProject := CloneObject(AProject);
   FBatches.SetProject(FSavedProject, False);
   FDirty := False;
@@ -906,6 +923,8 @@ begin
   Result['name'] := LName;
   Result['style_intent'] := LIntent;
   Result['learning_mode'] := Input('learning-mode').value;
+  if (FMaterial.Value <> nil) and (Input('learning-mode').value = 'instrumental') then
+    Result['musical_material'] := FMaterial.Value;
   LSources := TJSArray.new;
   LParked := TJSArray.new;
   for LIndex := 0 to FSelections.length - 1 do
@@ -938,6 +957,7 @@ var
   LWrite: TJSObject;
 begin
   Result := False;
+  if not SameStudioJSON(AProject['musical_material'], AWrite['musical_material']) then Exit;
   if (Str(AProject, 'project_id') <> Str(AWrite, 'project_id')) or
     (Str(AProject, 'name') <> Str(AWrite, 'name')) or
     (Str(AProject, 'style_intent') <> Str(AWrite, 'style_intent')) or
@@ -1629,6 +1649,7 @@ begin
   FSelections := TJSArray.new;
   FSourceEditor := TStudioSourceEditor.Create(@FetchApi, @Changed, @FetchNavigation);
   FBatches := TStudioBatches.Create(@FetchApi);
+  FMaterial := TStudioMaterial.Create(@FetchApi, @MaterialChanged);
   FEffects := TStudioEffects.Create(@FetchApi, @FSourceEditor.CurrentRange, @CatalogSaved);
   FReviews := TStudioReviews.Create(@FetchApi, @UseNextBatch);
   FCapture := TStudioCapture.Create(@FetchApi, @CatalogSaved);

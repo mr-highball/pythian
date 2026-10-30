@@ -1395,8 +1395,11 @@ begin
     else if (ARequest.Method = 'GET') and
       (ARequest.Path = '/api/studio/musical-material') then
     begin
-      LReport := ProposeStudioMaterial(ACatalogRoot, QueryValue(ARequest.Query, 'id'),
-        QueryInt64(ARequest.Query, 'tempo'), QueryInt64(ARequest.Query, 'channel'));
+      if QueryValue(ARequest.Query, 'id') = '' then
+        LReport := DefaultStudioMaterial
+      else
+        LReport := ProposeStudioMaterial(ACatalogRoot, QueryValue(ARequest.Query, 'id'),
+          QueryInt64(ARequest.Query, 'tempo'), QueryInt64(ARequest.Query, 'channel'));
     end
     else if (ARequest.Method = 'GET') and
       (ARequest.Path = '/api/studio/project') then

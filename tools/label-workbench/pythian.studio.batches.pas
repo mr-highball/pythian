@@ -100,11 +100,18 @@ type
     constructor Create(const AFetch: TStudioFetch);
     destructor Destroy; override;
     procedure SetProject(AProject: TJSObject; AUnsaved: Boolean);
+    procedure ApplyMusicalContext(AMaterial: TJSObject);
     procedure ApplyNextBatch(ARequest: TJSObject);
     procedure Refresh; async;
   end;
 
 implementation
+
+procedure TStudioBatches.ApplyMusicalContext(AMaterial: TJSObject);
+begin
+  FInstrumental.ApplyMusicalContext(AMaterial);
+  Invalidate;
+end;
 
 function TStudioBatches.Instrumental: Boolean;
 begin
@@ -1166,7 +1173,14 @@ begin
       begin
         El('batch-preflight').textContent := 'Ready: six synthesized parts, ' +
           IntToStr(Trunc(StudioNumber(LData, 'cells') / 8)) +
-          ' bars. No recording will be read. Runs on this computer; you can leave this page.';
+          ' bars. Saved musical choices and authored accompaniment drive the instruments.';
+        if StudioNumber(LData, 'reference_frames_to_read') > 0 then
+          El('batch-preflight').textContent := El('batch-preflight').textContent +
+            ' Only the analyzed excerpt is copied for Original comparison.'
+        else El('batch-preflight').textContent := El('batch-preflight').textContent +
+          ' No recording will be read.';
+        El('batch-preflight').textContent := El('batch-preflight').textContent +
+          ' Runs on this computer; you can leave this page.';
         FRequest := Clone(LRequest);
         FPreparation := Clone(LData);
         Notice('Setup is ready. Press Generate instruments.');
@@ -1462,6 +1476,7 @@ var
   LResults: TJSObject;
   LRequest: TJSObject;
   LOutput: TJSObject;
+  LSource: TJSObject;
   LOutputs: TJSArray;
   LSources: TJSArray;
   LGraph: TJSArray;
@@ -1517,9 +1532,22 @@ begin
       Add(LRoot, 'p', 'This attempt reached its ' +
         IntToStr(Trunc(StudioNumber(FJob, 'maximum_worker_seconds') / 60)) +
         '-minute time limit. Retry with the current limit, or use fewer or shorter selections.', 'field-error')
+    else if Pos('Instrumental graph rejected:', StudioText(FJob, 'error_message')) = 1 then
+    begin
+      Add(LRoot, 'p', 'These musical choices conflict in the current graph. Edit the motif or skip pitch, then check a new setup.', 'field-error');
+      LDetails := Add(LRoot, 'details', '', '');
+      Add(LDetails, 'summary', 'Graph failure details', '');
+      Add(LDetails, 'p', StudioText(FJob, 'error_message'), 'hint');
+    end
     else Add(LRoot, 'p', StudioText(FJob, 'error_message'), 'field-error');
     if StudioText(FJob, 'kind') = 'stream_generate' then
       Add(LRoot, 'p', 'This session has ended. Generate & play starts a new session from the beginning.', 'hint')
+    else if Pos('Instrumental graph rejected:', StudioText(FJob, 'error_message')) = 1 then
+    begin
+      LLink := Add(LRoot, 'button', 'Edit musical choices in Project', '');
+      LLink.setAttribute('type', 'button');
+      LLink.setAttribute('data-open-pane', 'project-step');
+    end
     else if isObject(FJob['request']) then
     begin
       Button(LRoot, 'batch-retry', 'Try this batch again');
@@ -1535,7 +1563,8 @@ begin
     Add(LRoot, 'p', 'Generated: ' + StudioTime(StudioNumber(LResults, 'generated_frames') /
       StudioNumber(LResults, 'sample_rate')) + '. Playback may have stopped earlier.', 'hint');
   LSources := ArrayAt(LResults, 'sources');
-  if (LSources <> nil) and (LSources.length > 0) then
+  if (LSources <> nil) and (LSources.length > 0) and
+    (StudioText(FJob, 'kind') <> 'instrumental_generate') then
   begin
     LSeconds := 0;
     for LIndex := 0 to LSources.length - 1 do
@@ -1583,6 +1612,21 @@ begin
           encodeURIComponent(StudioText(FJob, 'job_id')) + '&part=6');
         FInstrumental.AttachMixer(LRow, StudioText(FJob, 'job_id'),
           StudioNumber(LOutput, 'frame_count') / StudioNumber(LOutput, 'sample_rate'));
+        if isObject(LResults['original_reference']) then
+        begin
+          Add(LRow, 'h4', 'Original reference · analyzed excerpt', '');
+          LSource := Obj(LResults['original_reference']);
+          Add(LRow, 'p', StudioText(LSource, 'title') + ' · ' +
+            StudioTime(StudioNumber(LSource, 'start_frame') / StudioNumber(LSource, 'sample_rate')) +
+            '–' + StudioTime(StudioNumber(LSource, 'end_frame') / StudioNumber(LSource, 'sample_rate')) +
+            ' in the original', 'hint');
+          LLink := Add(LRow, 'audio', '', '');
+          LLink.setAttribute('controls', '');
+          LLink.setAttribute('preload', 'none');
+          LLink.setAttribute('src', '/api/studio/instrumental-audio?job=' +
+            encodeURIComponent(StudioText(FJob, 'job_id')) + '&part=7');
+          Add(LRow, 'p', 'The reference and synthesized arrangement have independent timelines.', 'hint');
+        end;
         Add(LRow, 'p', StudioText(LResults, 'material_origin'), 'hint');
       end;
       Add(LRow, 'p', 'Audition ' + IntToStr(LIndex + 1) + ' · seed ' +

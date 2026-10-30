@@ -1068,7 +1068,7 @@ begin
         StudioTime(StudioNumber(FAnalysis, 'end_frame') /
           StudioNumber(FAnalysis, 'sample_rate'));
       LProposal := TJSObject(FAnalysis['beat_proposal']);
-      DrawMusicalObservations(El('source-musical-observations'), FAnalysis);
+      DrawMusicalObservations(El('source-musical-observations'), FAnalysis, LJobId);
       El('source-beat-layer').innerHTML := '';
       LOption := Add(El('source-beat-layer'), 'option', 'No beat overlay', '');
       LOption.setAttribute('value', '-1');

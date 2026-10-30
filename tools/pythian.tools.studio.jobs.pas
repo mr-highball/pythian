@@ -668,8 +668,6 @@ begin
           'Project snapshot differs; reopen the saved project');
         Need(LProject.Strings['learning_mode'] = 'instrumental',
           'Save the project with Instrumental experiment selected');
-        Need(LProject.Find('musical_material') = nil,
-          'Musical input generation is not available in this build');
         LRequest.Add('project_snapshot', LProject.Clone);
       finally
         LProject.Free;
@@ -914,6 +912,19 @@ begin
         Result.Add('source_count', 0);
         Result.Add('unique_source_bytes_to_verify', 0);
         Result.Add('experimental', True);
+        if LRequest.Objects['project_snapshot'].Find('musical_material') <> nil then
+        begin
+          LRecipe := LRequest.Objects['project_snapshot'].Objects['musical_material'];
+          Result.Strings['material_origin'] := 'Saved operator musical choices with authored accompaniment';
+          Result.Strings['source_validation'] := 'saved_symbolic_choices_and_bounded_original_reference';
+          Result.Add('musical_material', LRecipe.Clone);
+          if LRecipe.Objects['source'].Strings['kind'] <> 'manual' then
+          begin
+            Result.Integers['source_count'] := 1;
+            Result.Add('reference_frames_to_read', LRecipe.Objects['source'].Int64s['end_frame'] -
+              LRecipe.Objects['source'].Int64s['start_frame']);
+          end;
+        end;
       end
       else if (LRequest.Strings['kind'] = 'train_generate') or
         (LRequest.Strings['kind'] = 'stream_generate') then
@@ -1129,12 +1140,18 @@ function OpenStudioInstrumentalAudio(const ACatalogRoot, AJobId: String;
   const APart: Integer; out AHash: String): TFileStream;
 var LJob, LAsset: TJSONObject; LPath: String;
 begin
-  Need((APart >= 0) and (APart <= 6), 'Instrumental part must be 0..6');
+  Need((APart >= 0) and (APart <= 7), 'Choose a part, mix or original reference');
   LJob := ReadStudioJob(ACatalogRoot, AJobId);
   try
     Need((LJob.Strings['kind'] = 'instrumental_generate') and
       (LJob.Strings['status'] = 'completed'), 'Select a completed instrumental job');
-    if APart = 6 then LAsset := LJob.Objects['results'].Arrays['outputs'].Objects[0]
+    if APart = 7 then
+    begin
+      Need(LJob.Objects['results'].Find('original_reference') <> nil,
+        'This instrumental job has no original reference');
+      LAsset := LJob.Objects['results'].Objects['original_reference'];
+    end
+    else if APart = 6 then LAsset := LJob.Objects['results'].Arrays['outputs'].Objects[0]
     else LAsset := LJob.Objects['results'].Arrays['parts'].Objects[APart];
     LPath := StudioJobDirectory(ACatalogRoot, AJobId) + PathDelim +
       'part-' + IntToStr(APart) + '.wav';

@@ -2,6 +2,51 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
+## Current handoff: musical-choice editor checked; follow motif coupling — 2026-10-30
+
+Big Boss SOLO continues the active implementation goal. This batch closes
+[experimental learning AC2](TODO/NS-3_experimental-learning_01.md) and its finite-job
+AC4 correction/feedback behavior. Studio has a contextual tempo/key, pitch/part
+and source/notes editor, manual cells, accept/correct/bypass paths, durable source
+lineage and explicit Apply → Save → Generate actions. Recording-linked jobs now
+consume the saved recipe, render six synthesized parts and keep a bounded Original
+excerpt. Preflight reports that read honestly. Source PCM is never the instrument.
+
+Checked Win32/Win64 pass 35 actual source-analysis → accepted/corrected recipe →
+model/audio/reference checks each, with clean heaps. Win64 choice storage 51,
+instrumental 41 and jobs 113 regressions pass. Actual matched pas2js assets compile.
+Isolated Edge desktop/390-pixel paths exercise manual and analyzed choices,
+save/reload, correction/bypass, Escape cancellation, actual native generation,
+mix/Original playback and saved QA feedback. Both audio clocks advance; switching
+pauses the preceding player. Save and feedback leave job history unchanged.
+Playback is muted for automated QA; no musical-quality or physical-phone verdict
+is claimed. The new native consumer is registered in the maintained build.
+
+The richer manual case fails: lead 60,62,64,67,64,62,60,55 in A natural minor,
+16 cells/seed 731. The paired context and independent projected H/R solve, but the
+named-voice graph contradicts at harmony. Preserve the failed job, screenshot and
+Pascal diagnostic. Follow [motif coupling](TODO/NS-4_motif-coupling_01.md), effort5,
+before claiming complete AC3. No seed sweep, raised budgets, silent constraint
+relaxation, pinning every part or generic WFC defect is claimed. The failure UI
+now explains the conflict and opens Project for editing instead of encouraging
+an identical retry. Earlier joint-context acceptance remains scoped to its
+controlled motif. No new vendor source, WFC branch or dependency pin changed.
+
+Accounting is 28/96 (29.17%): 16 current tasks, 10 open/six DONE, 68 open effort.
+NS-4 is 11/30; NS-3 accepted effort stays zero. No partial eight-unit task credit.
+Real AC2/finite-job AC4 closure keeps consecutive nonclosing batches at zero;
+task creation earns nothing. [CI506](https://github.com/mr-highball/pythian/actions/runs/41104407830)
+for the preceding Unicode repair is now confirmed green.
+
+All new artifacts, synthetic data, screenshots, initial failed UI probes and
+native failure evidence are under musical-editor-20261030-boss in the dedicated
+E-drive build/tests/cache/runs roots. The actual operator catalog, recordings,
+answers and stable deployment were untouched. QA used the fixed executable slot
+and an isolated browser profile. Exact owned processes/audio are closed and
+both QA ports are verified absent. Final matching binaries/twelve browser assets
+are staged in the stopped QA slot. No new operator review is published from
+synthetic test outputs. Keep the implementation goal active and remain solo.
+
 ## Current handoff: Unicode repair accepted; resume the Studio editor — 2026-10-30
 
 Big Boss SOLO has closed [JSON identity](TODO/DONE/NS-6_json-identity_01.md).

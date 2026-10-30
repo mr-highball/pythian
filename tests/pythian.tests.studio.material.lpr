@@ -30,7 +30,7 @@ program pythian_tests_studio_material;
 uses Classes, SysUtils, Math, Base64, fpjson,
   pythian.audio, pythian.hash, pythian.music.pattern, pythian.pitch.track, pythian.wave.stream,
   pythian.tools.studio.material, pythian.tools.studio.projects,
-  pythian.tools.studio.capture, pythian.tools.studio.jobs;
+  pythian.tools.studio.capture, pythian.tools.studio.jobs, pythian.tests.studio.material.support;
 
 var
   GChecks: Integer;
@@ -100,91 +100,6 @@ begin
     Result := LJobs.Arrays['jobs'].Count;
   finally
     LJobs.Free;
-  end;
-end;
-
-function AuthoredWave: String;
-var
-  LStream: TMemoryStream;
-  LClip: TAudioClip;
-  LSamples: TAudioSamples;
-  LIndex: Integer;
-begin
-  SetLength(LSamples, 8000 * 4 * 2);
-  for LIndex := 0 to 31999 do
-  begin
-    LSamples[LIndex * 2] := 0.2 * Sin(2 * Pi * 220 * LIndex / 8000);
-    LSamples[LIndex * 2 + 1] := 0.2 * Sin(2 * Pi * 440 * LIndex / 8000);
-  end;
-  LClip := TAudioClip.Create(8000, 2, LSamples);
-  LStream := TMemoryStream.Create;
-  try
-    WriteWavePcm16(LStream, LClip);
-    SetLength(Result, LStream.Size);
-    LStream.Position := 0;
-    LStream.ReadBuffer(Result[1], Length(Result));
-  finally
-    LStream.Free;
-    LClip.Free;
-  end;
-end;
-
-procedure AnalyzeAuthoredCapture;
-var
-  LBytes: String;
-  LWrite, LResult, LAnalysis: TJSONObject;
-  LOffset, LCount: Integer;
-begin
-  LBytes := AuthoredWave;
-  LWrite := TJSONObject.Create;
-  try
-    LWrite.Add('capture_id', 'musical-input');
-    LWrite.Add('name', 'Authored stereo pitch control');
-    LWrite.Add('bytes', Length(LBytes));
-    LWrite.Add('origin', 'wav_import');
-    LResult := StartStudioCapture(GCatalog, LWrite);
-    LResult.Free;
-  finally
-    LWrite.Free;
-  end;
-  LOffset := 0;
-  while LOffset < Length(LBytes) do
-  begin
-    LCount := Min(MaximumStudioUploadChunk, Length(LBytes) - LOffset);
-    LWrite := TJSONObject.Create;
-    try
-      LWrite.Add('capture_id', 'musical-input');
-      LWrite.Add('offset', LOffset);
-      LWrite.Add('data', EncodeStringBase64(Copy(LBytes, LOffset + 1, LCount)));
-      LResult := AppendStudioCapture(GCatalog, LWrite);
-      LResult.Free;
-    finally
-      LWrite.Free;
-    end;
-    Inc(LOffset, LCount);
-  end;
-  LAnalysis := InspectStudioCapture(GCatalog, 'musical-input');
-  try
-    LWrite := TJSONObject.Create;
-    try
-      LWrite.Add('format', StudioJobWriteFormat);
-      LWrite.Add('job_id', 'musical-analysis');
-      LWrite.Add('kind', 'capture_inspect');
-      LWrite.Add('capture_id', 'musical-input');
-      LResult := EnqueueStudioJob(GCatalog, LWrite);
-      LResult.Free;
-      LResult := ClaimStudioJob(GCatalog, 'musical-analysis');
-      LResult.Free;
-      try
-        AdvanceStudioJob(GCatalog, 'musical-analysis', 'completed', 'completed', 1, 1, LAnalysis);
-      finally
-        ReleaseStudioWorker(GCatalog);
-      end;
-    finally
-      LWrite.Free;
-    end;
-  finally
-    LAnalysis.Free;
   end;
 end;
 
@@ -319,7 +234,7 @@ begin
     FreeAndNil(LWrite);
     FreeAndNil(LMaterial);
 
-    AnalyzeAuthoredCapture;
+    AnalyzeAuthoredStudioCapture(GCatalog);
     Check(JobCount = 1, 'Only the explicit analysis job exists');
     LJob := ReadStudioJob(GCatalog, 'musical-analysis');
     LAnalysisHash := StudioTextHash(LJob.Objects['results'].AsJSON);
@@ -450,7 +365,10 @@ begin
     LOther.Strings['project_id'] := 'recording-motif';
     LOther.Integers['project_revision'] := LRead.Integers['revision'];
     LOther.Strings['project_snapshot_sha256'] := LRead.Strings['snapshot_sha256'];
-    Reject(LOther, 3, 'Pending musical-input generation rejects instead of silently ignoring saved choices');
+    LCanonical := PrepareStudioJob(GCatalog, LOther);
+    Check(LCanonical.Find('musical_material') <> nil,
+      'Explicit generation preflight carries the actual saved musical choices');
+    FreeAndNil(LCanonical);
     FreeAndNil(LOther);
     LOther := EnqueueStudioJob(GCatalog, LWrite);
     FreeAndNil(LOther);

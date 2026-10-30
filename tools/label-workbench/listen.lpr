@@ -209,6 +209,8 @@ function AssetName(const AAsset: TJSObject): String;
 begin
   if Str(AAsset, 'role') = 'source' then
     Result := 'Original recording'
+  else if Str(AAsset, 'role') = 'reference' then
+    Result := 'Original reference'
   else if Str(AAsset, 'id') = 'pythian_beat_cue' then
     Result := 'Pythian beat cue'
   else if Str(AAsset, 'role') = 'generated' then
@@ -587,6 +589,13 @@ begin
       LAudio.onplay := @HandleAudioPlay;
     end;
   end;
+  if (not LExperimental) and (LAssets.length > 1) then
+  begin
+    LHasSampleTabs := True;
+    LTabs := AddText(El('assets'), 'nav', '', 'sample-switch');
+    LTabs.setAttribute('aria-label', 'Compare original and synthesized music');
+    AddText(El('assets'), 'p', 'Original is a reference excerpt. Synthesized music has its own timing.', 'muted');
+  end;
   TJSHTMLSelectElement(El('comment-asset')).innerHTML := '';
   for I := 0 to LAssets.length - 1 do
   begin
@@ -595,7 +604,13 @@ begin
     LAssetName := AssetName(LAsset);
     if LHasSampleTabs then
     begin
-      if LAssets.length = 1 then
+      if not LExperimental then
+      begin
+        if (Str(LAsset, 'role') = 'source') or (Str(LAsset, 'role') = 'reference') then
+          LAssetName := 'Original'
+        else LAssetName := 'Synthesized';
+      end
+      else if LAssets.length = 1 then
         LAssetName := 'Generated'
       else if I = 0 then
         LAssetName := 'Before'
@@ -610,7 +625,7 @@ begin
     end;
     LCard := AddText(El('assets'), 'div', '', 'asset');
     LCard.id := 'sample-card-' + IntToStr(I);
-    if LExperimental and (I > 0) then LCard.setAttribute('hidden', '');
+    if LHasSampleTabs and (I > 0) then LCard.setAttribute('hidden', '');
     AddText(LCard, 'strong', LAssetName, '');
     if Num(LAsset, 'sample_rate') > 0 then
       AddText(LCard, 'small',

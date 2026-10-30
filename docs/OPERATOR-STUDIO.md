@@ -9,12 +9,16 @@ Studio already has private collections, explicit training inclusion, whole-track
 and passage selection, waveform/range controls, recording/import, analysis and
 Experimental pitch/MIDI preview, effects, persistent native jobs and listening
 feedback. The primary generation route is now **Synthesized instruments ·
-Experimental**: authored symbolic material drives actual WFC musical passes and
-Pythian instruments. It does not read or chop up a reference recording.
+Experimental**: authored material or explicitly selected pitch/context proposals
+drive actual WFC musical passes and Pythian instruments. Recording audio is used
+for analysis and a bounded Original reference, not chopped up as the instruments.
+The new musical editor is checked in isolated QA; see [Work](WORK.md) for the
+actual deployed build and the remaining pitch/context coupling gap.
 
-The finite mode has tempo/key, seed, 1–32 four-beat bars, three pitched oscillator
+The finite mode has tempo/key/mode, seed, 1–32 four-beat bars, three pitched oscillator
 choices and six part levels. Native jobs persist a full mix, six stems and the
-actual sixteen-pass/two-group graph summary and symbolic plan. Play the mix or
+actual graph summary and symbolic plan: sixteen passes/two groups for the authored
+starter, seventeen passes/three groups when the paired motif context is used. Play the mix or
 use synchronized mute/solo; successful jobs enter the existing listening queue
 and can be selected for Studio feedback. Reviewed settings restore for a new
 deliberate experiment. [Instrumental Studio](TODO/DONE/NS-6_instrumental-studio_01.md)
@@ -47,10 +51,26 @@ inputs shorter than one pitch window have no pitch suggestion. A stereo channel
 is not an isolated musical part. Tonal fit scores are not probabilities, and
 brightness does not identify an instrument.
 
-Analysis does not change a project, generation settings or model. Tempo/root can
-currently be entered manually in Generate. Accept/correct/bypass controls,
-recording-derived provider mappings and saved correction lineage remain open in
-[experimental learning](TODO/NS-3_experimental-learning_01.md). Portable callers
+Analysis does not change a project, generation settings or model. Choose **Use
+or edit these suggestions** to open a contextual editor with Tempo & key, Pitch &
+part, and Source & notes tabs. Assign the pitch line to Bass, Harmony or Lead,
+correct its eighth-note cells, or skip pitch and retain authored parts. Channels
+are checked separately; they are not separated instruments. A manual motif can
+also start from Project → Musical starting points without any audio analysis.
+
+**Apply to draft** changes the draft; **Save draft** preserves it; **Generate**
+builds a new model and instrumental result. Save does not train or generate.
+Changing Generate's tempo/root/mode or sounds explicitly overrides those settings
+for that job; entered pitches keep their absolute MIDI notes. Recording-linked
+results include the analyzed Original excerpt with original coordinates. Use the
+Original/Synthesized buttons in Listening reviews to switch playback.
+
+The controlled recorded motif renders six parts, but a richer manual melody
+demonstrated a real [pitch/context coupling gap](TODO/NS-4_motif-coupling_01.md).
+Contradictions remain failures, not evidence of working general motif learning.
+The complete [experimental-learning task](TODO/NS-3_experimental-learning_01.md)
+stays open. Timbre measurements do not yet automatically select instruments or
+effects; sound controls remain explicit. Portable observation callers
 reuse [MeasureMusicalObservations](../src/pythian.music.observations.pas), built
 from primary analysis, tonal, resampling and pitch implementations.
 

@@ -28,11 +28,38 @@ unit pythian.studio.requests;
 
 interface
 
-uses JS, Web, SysUtils;
+uses JS, Web, SysUtils, Types;
 
 function AwaitStudioPromise(APromise: TJSPromise; ASeconds: Integer): JSValue; async;
+function SameStudioJSON(const ALeft, ARight: JSValue): Boolean;
 
 implementation
+
+function SameStudioJSON(const ALeft, ARight: JSValue): Boolean;
+var
+  LKeys, RKeys: TStringDynArray;
+  LKey: String;
+  I: Integer;
+begin
+  if isArray(ALeft) or isArray(ARight) then
+  begin
+    if not isArray(ALeft) or not isArray(ARight) then Exit(False);
+    if TJSArray(ALeft).length <> TJSArray(ARight).length then Exit(False);
+    for I := 0 to TJSArray(ALeft).length - 1 do
+      if not SameStudioJSON(TJSArray(ALeft)[I], TJSArray(ARight)[I]) then Exit(False);
+    Exit(True);
+  end;
+  if isObject(ALeft) and (ALeft <> nil) and isObject(ARight) and (ARight <> nil) then
+  begin
+    LKeys := TJSObject.keys(TJSObject(ALeft));
+    RKeys := TJSObject.keys(TJSObject(ARight));
+    if Length(LKeys) <> Length(RKeys) then Exit(False);
+    for LKey in LKeys do
+      if not SameStudioJSON(TJSObject(ALeft)[LKey], TJSObject(ARight)[LKey]) then Exit(False);
+    Exit(True);
+  end;
+  Result := TJSJSON.stringify(ALeft) = TJSJSON.stringify(ARight);
+end;
 
 function AwaitStudioPromise(APromise: TJSPromise; ASeconds: Integer): JSValue; async;
 var
