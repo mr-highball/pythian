@@ -45,6 +45,18 @@ type
     procedure Attach(const ASynth: TScheduledSynth; const AInputs: Integer);
   end;
 
+  { Big Boss: observe the primary renderer's consumed frames, including its
+    existing terminal failure policy. This does not implement another renderer. }
+  TRenderObserver = class
+    Synth: TScheduledSynth;
+    Calls, AbortAt, Reentry, Frames: Integer;
+    StartFrame, Done: Int64;
+    Marker: Exception;
+    ProbeLeft, ProbeRight: Double;
+    procedure Attach(const ASynth: TScheduledSynth; const AFrames: Integer);
+    procedure Observe(const AWork: TWorkProgress);
+  end;
+
 var
   Checks, Aborts: Integer;
 
@@ -352,6 +364,167 @@ begin
   end;
 end;
 
+procedure TRenderObserver.Attach(const ASynth: TScheduledSynth;
+  const AFrames: Integer);
+begin
+  Synth := ASynth;
+  Frames := AFrames;
+  StartFrame := Synth.NextFrame;
+  Done := 0;
+  Calls := 0;
+  AbortAt := 0;
+  Reentry := 0;
+  Marker := nil;
+end;
+
+procedure TRenderObserver.Observe(const AWork: TWorkProgress);
+begin
+  Inc(Calls);
+  Check((AWork.Stage = 'schedule_render_frames') and
+    (AWork.Units = wuFrames) and (AWork.Pass = 0) and
+    (AWork.Total = Frames), 'Renderer reports actual frame units and total');
+  Check((AWork.Done >= Done) and (AWork.Done - Done <= 256) and
+    (AWork.Done <= Frames), 'Renderer exposes bounded consumed-frame steps');
+  Check((Synth.NextFrame = StartFrame + AWork.Done) and not Synth.Failed,
+    'Render callback agrees with the actual scheduler clock');
+  Done := AWork.Done;
+
+  if Reentry = 1 then Synth.Reset;
+
+  if Reentry = 2 then
+  begin
+    ProbeLeft := 17;
+    ProbeRight := 19;
+    Synth.Process(ProbeLeft, ProbeRight);
+  end;
+
+  if Calls = AbortAt then
+  begin
+    Marker := Exception.Create('Original scheduled render callback abort');
+    raise Marker;
+  end;
+end;
+
+function ExerciseRender(const AFrames, APoint, AReentry: Integer): Integer;
+var
+  LGraph, LControlGraph: TBusGraph;
+  LSynth, LControl: TScheduledSynth;
+  LObserver: TRenderObserver;
+  LClip, LSentinel, LExpected: TAudioClip;
+  LRejected: Boolean;
+  LCalls, I, J: Integer;
+  LLeft, LRight, LExpectedLeft, LExpectedRight: Double;
+begin
+  LGraph := Graph;
+  LControlGraph := nil;
+  LSynth := nil;
+  LControl := nil;
+  LObserver := nil;
+  LClip := nil;
+  LSentinel := nil;
+  LExpected := nil;
+  try
+    LControlGraph := Graph;
+    LSynth := TScheduledSynth.Create(LGraph, 16);
+    LControl := TScheduledSynth.Create(LControlGraph, 16);
+    Seed(LSynth);
+    Seed(LControl);
+    LObserver := TRenderObserver.Create;
+    LObserver.Attach(LSynth, AFrames);
+    LObserver.AbortAt := APoint;
+    LObserver.Reentry := AReentry;
+    LSentinel := TAudioClip.Create(8000, 2, [0.125, -0.125]);
+    LClip := LSentinel;
+    LRejected := False;
+    try
+      LClip := RenderScheduledFrames(LSynth, AFrames, LObserver.Observe);
+    except
+      on E: Exception do
+      begin
+        if (APoint = 0) and (AReentry = 0) then raise;
+        LRejected := True;
+
+        if AReentry = 0 then
+          Check(E = LObserver.Marker, 'Original render exception identity')
+        else
+          Check(E is EAudio, 'Render callback rejects scheduler reentry');
+      end;
+    end;
+    Result := LObserver.Calls;
+    Check(LRejected = ((APoint > 0) or (AReentry > 0)), 'Render abort disposition');
+
+    if LRejected then
+    begin
+      Check((LClip = LSentinel) and LSynth.Failed and
+        (LSynth.NextFrame = 8 + LObserver.Done),
+        'Render abort preserves caller result and marks consumed epoch failed');
+
+      if AReentry = 2 then
+        Check((LObserver.ProbeLeft = 17) and (LObserver.ProbeRight = 19),
+          'Rejected render Process reentry preserves outputs');
+      LLeft := 17;
+      LRight := 19;
+      LRejected := False;
+      try
+        LSynth.Process(LLeft, LRight);
+      except
+        on E: EAudio do LRejected := True;
+      end;
+      Check(LRejected and (LLeft = 17) and (LRight = 19),
+        'Failed rendering requires explicit fresh epoch');
+      LSynth.Reset;
+      Seed(LSynth);
+      LObserver.Attach(LSynth, AFrames);
+      LClip := RenderScheduledFrames(LSynth, AFrames, LObserver.Observe);
+    end;
+    LExpected := RenderScheduledFrames(LControl, AFrames);
+    Check((LClip.FrameCount = AFrames) and (LClip.Channels = 2) and
+      (LObserver.Done = AFrames) and (LObserver.Calls = AFrames div 256 + 2),
+      'Complete render, including empty clips, reports actual start/interior/end');
+
+    for I := 0 to AFrames - 1 do
+      for J := 0 to 1 do
+        Check(LClip.SampleAt(I, J) = LExpected.SampleAt(I, J),
+          'Exact original stereo clip after observed render or reset/retry');
+    LCalls := LObserver.Calls;
+
+    for I := 1 to 32 do
+    begin
+      LSynth.Process(LLeft, LRight);
+      LControl.Process(LExpectedLeft, LExpectedRight);
+      Check((LLeft = LExpectedLeft) and (LRight = LExpectedRight),
+        'Observed render preserves subsequent bus history');
+    end;
+    Check(LObserver.Calls = LCalls, 'Renderer retains no callback');
+  finally
+    if LClip <> LSentinel then LClip.Free;
+    LSentinel.Free;
+    LExpected.Free;
+    LObserver.Free;
+    LSynth.Free;
+    LControl.Free;
+    LGraph.Free;
+    LControlGraph.Free;
+  end;
+end;
+
+procedure CheckRendering;
+var
+  LCalls, LEmptyCalls, LBefore, I: Integer;
+begin
+  LBefore := Checks;
+  LCalls := ExerciseRender(1025, 0, 0);
+
+  for I := 1 to LCalls do ExerciseRender(1025, I, 0);
+  ExerciseRender(1025, 0, 1);
+  ExerciseRender(1025, 0, 2);
+  LEmptyCalls := ExerciseRender(0, 0, 0);
+
+  for I := 1 to LEmptyCalls do ExerciseRender(0, I, 0);
+  WriteLn('Scheduled render progress: ', Checks - LBefore, ' checks; ',
+    LCalls, '/', LEmptyCalls, ' frame/empty checkpoints; all abort/reentry/reset cases pass');
+end;
+
 var
   CallCount, EmptyCallCount, BulkCallCount, I: Integer;
 begin
@@ -380,4 +553,5 @@ begin
   WriteLn('Scheduler replacement progress: ', Checks, ' checks / ', Aborts,
     ' original aborts; ', CallCount, '/', EmptyCallCount, '/', BulkCallCount,
     ' small/empty/bulk checkpoints');
+  CheckRendering;
 end.

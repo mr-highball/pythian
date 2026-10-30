@@ -150,6 +150,21 @@ unqualified where no interior observer exists. Actual Studio18 remains separate.
 
 **Dev Notes:**
 
+- 2026-10-29, Big Boss: primary scheduler replacement qualifies at13630ff/
+  [CI499](https://github.com/mr-highball/pythian/actions/runs/40978567378/job/123812576006),
+  including exact clean core/full packages and new extracted native64/pas2js
+  API consumers. Every9small/9empty/17bulk abort point, same-instance retry,
+  IDs/clock/work and original stereo/bus history pass. Delivery nonclosing0→1;
+  no whole criterion closes. The current bounded component adds observed
+  duration editing and primary scheduled rendering. Keep prepublication edit
+  rollback distinct from rendering's terminal consumed-epoch failure policy.
+  [Coverage/contracts](../OBSERVABILITY.md#duration-edits-and-scheduled-rendering--candidate-2026-10-29)
+  retain synchronous residuals and exact qualification requirements. Preserve
+  the new fixture's budget/shape/threshold failures; original controls remain.
+  The user requests a status/next-step summary and goal pause after this
+  component is verified. Select no further batch. Full AC1/AC2, Studio18 and
+  all musical outcomes remain open; no task move or credit follows.
+
 - 2026-10-29, Big Boss SOLO: select the independent primary scheduler
   replacement component of AC1/2/5 while exact clone20 CI498 runs. The existing
   `TryReplaceFuture` stages accepted slots and replacement voices without

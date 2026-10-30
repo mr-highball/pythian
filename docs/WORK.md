@@ -2,6 +2,41 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](REBALANCE-2026-09-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
+## Current handoff: duration-edit/render component; pause after verification — 2026-10-29
+
+Big Boss remains SOLO. Primary scheduler13630ff/CI499 is terminal SUCCESS19m47s,
+including integration18m42s and extracted consumers45s. Exact clean core/full
+packages and actual extracted native64/pas2js API consumers pass. This qualifies
+one parent04 component, delivery nonclosing0→1. Counts53open/97DONE/150 total,
+NS6 15open and52.45/47.55 remain. No whole parent criterion or musical credit.
+
+The current bounded component is optional duration-edit observation through
+primary generation/copy/join, generic graph work and atomic scheduling, plus
+core-only scheduled-render frame progress. Its existing original controls,
+start/interior/final cancellation, original exception identity, accepted state,
+future stereo/bus history, observer lifetime and same-instance recovery gates
+remain required on native32/64 and actual pas2js. Preserve rendering's terminal
+consumed-epoch policy, distinct from private edit rollback. Keep synchronous
+clock/token/instrument/factory/allocation/destruction boundaries explicit.
+The initial new64-span fixture exceeded4096 events; its20-span replacement
+retains260 masks and interior note/sort visits. Intermediate stale shape and
+249-visit threshold failures remain in the private E packet; no original
+fixture or audio/state oracle is weakened. Clean exact core/full packages,
+new extracted API consumers and downstream CI are still required for this
+candidate. Do not rerun unrelated already-qualified giant suites.
+
+Operator instruction: after THIS component is verified, summarize current
+backlog/reviews/next steps, then PAUSE THE GOAL. Do not select another batch.
+The second nonclosing component reaches2 and requires reassessment before
+future implementation; agents, handoffs and pauses do not reset this count.
+Full parent04, actual Studio18/browser/phone, musical learning/continuity and
+style/blend acceptance stay open. Two prepared long listening questions and
+all saved responses/scientific stops remain; no silent training or variants.
+Stable service and user browser tabs are preserved. No new listener, firewall,
+elevation, inference, helper, source/response mutation or QA audio is introduced.
+All new output/TEMP/TMP stays under the dedicated E build/tests/cache/runs.
+The private duration-edit-progress-20261029-boss packet owns live verification
+and the final pause handoff. Complete prior work history follows unchanged.
 
 ## Current handoff: clone20 accepted; atomic scheduler candidate ready for publication — 2026-10-29
 

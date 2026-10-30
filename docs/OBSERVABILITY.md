@@ -3,7 +3,47 @@
 [Project](../PROJECT.md) · [Assessment](CODEBASE-ASSESSMENT.md) ·
 [Tasks](TODO/README.md) · [Work](WORK.md)
 
-## Atomic scheduler replacement — candidate, 2026-10-29
+## Duration edits and scheduled rendering — candidate, 2026-10-29
+
+`TDurationStream.TryEdit` accepts an optional synchronous borrowed work callback.
+It reuses primary sequence generation/copy/join, generic graph preparation,
+solve/capture/proof and atomic scheduled replacement. Pythian-owned
+`duration_plan_visits`, `duration_mask_visits` and `duration_note_visits` count
+actual planning, mask, note-ledger and stable-sort visits through the existing
+shared work bridge. Intermediate totals remain unknown; no overall percentage
+is invented. Individual token, clock, instrument/factory, allocation and
+destruction calls remain synchronous without a hard latency guarantee.
+
+Editing/processing reentry rejects. A callback exception before scheduler
+admission preserves the accepted plan, revision, clock and original future
+stereo/bus history. The same stream remains retryable. No callback follows
+scheduler admission or the accepted plan swap; no observer is retained.
+
+The core-only `RenderScheduledFrames` accepts the same optional callback and
+reports `schedule_render_frames` in actual relative frames, at most256 apart.
+The existing scheduler guard rejects callback reentry. Render cancellation
+retains the original terminal failure policy: consumed frames are not rolled
+back; explicitly Reset/reseed or create a fresh playback epoch. The caller
+receives no partial clip. Empty clips still report start and completion.
+Individual Process calls and clip allocation/construction remain synchronous.
+
+Qualification uses the unchanged original duration controls and70000-frame
+trace, three-target cancellation/retry/audio checks, original native scheduler
+controls, clean exact packages and new extracted native/portable consumers.
+The first new64-span fixture exceeded its4096-event budget. Its bounded20-span
+replacement retains260 masks and actual interior note/sort work; original
+fixtures and all state/audio oracles remain. The intermediate stale shape and
+249-visit threshold failures are preserved. Native32/64 and actual pas2js each
+pass467 selected phase/pass abort points and946 abort/reentry/retry/audio cases;
+observed baseline traces contain2573/1275/394 events across the three scenarios.
+Core scheduled rendering passes19261 checks per target, every6 nonempty/2 empty
+checkpoints, original exceptions, reentry rejection and Reset/reseed recovery.
+Both original native scheduler controls and native zero-leak checks pass.
+Exact publication gates remain
+required. This component does not close full [parent04](TODO/NS-6_observability_04.md),
+actual Studio18 or any musical criterion.
+
+## Atomic scheduler replacement — qualified component, 2026-10-29
 
 The primary `TScheduledSynth.TryReplaceFuture` accepts an optional borrowed
 work callback during private preparation. It reports these actual item stages:
@@ -32,7 +72,10 @@ actual pas2js each pass 15771 checks, with 53 callback aborts and two reentry
 rejections across all 9 small/9 empty/17 bulk checkpoints. Bulk cases retain 300 old
 voices and privately construct 260 replacements. Exact stereo/bus-history and
 same-instance retry pass; both original native scheduler suites and clean heaps
-pass. Exact publication/extracted qualification remains pending. No musical
+pass. Exact13630ff/[CI499](https://github.com/mr-highball/pythian/actions/runs/40978567378/job/123812576006)
+passes in19m47s, including integration18m42s and extracted consumers45s. Both
+clean exact Win64 core/full packages and new extracted native64/actual pas2js
+API consumers pass. This component makes delivery nonclosing0→1. No musical
 credit, deployment or full-parent acceptance is claimed.
 
 ## Shared immutable model copying — qualified, 2026-10-29

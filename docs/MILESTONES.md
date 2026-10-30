@@ -5,6 +5,14 @@
 
 ## North-star assessment
 
+Current bounded work2026-10-29: primary scheduler13630ff/
+[CI499](https://github.com/mr-highball/pythian/actions/runs/40978567378/job/123812576006)
+qualifies with exact packages and extracted API consumers. Delivery nonclosing0→1.
+Duration-edit/scheduled-render progress is the current candidate; its exact
+publication gates remain required. Then summarize and pause at the user's
+request, with reassessment before any further batch. Counts53open/97DONE/150,
+NS6 15open and52.45/47.55 remain; no whole parent or musical credit follows.
+
 Accepted 2026-10-29: [observed immutable cloning20 — DONE](TODO/DONE/NS-6_observability_20.md)
 qualifies at e02d77f/[CI498](https://github.com/mr-highball/pythian/actions/runs/40976178079/job/123804699827),
 SUCCESS17m28s with integration/extracted consumers. All-five upstream CI58,

@@ -105,8 +105,15 @@ type
     property Failed: Boolean read FFailed;
   end;
 
+{ Big Boss: render a private clip while reporting relative completed frames at
+  most 256 apart. The optional observer is synchronous/borrowed; scheduler
+  mutation/reentry from it rejects. No callback follows clip publication.
+  Once rendering starts, any exception (including callback cancellation) keeps
+  the existing terminal scheduler policy: Reset or create a fresh epoch.
+  Allocation, individual Process/factory calls and clip construction remain
+  synchronous; these frame counts are not an overall pipeline percentage. }
 function RenderScheduledFrames(const ASynth: TScheduledSynth;
-  const AFrames: Integer): TAudioClip;
+  const AFrames: Integer; const AProgress: TWorkProgressCallback = nil): TAudioClip;
 
 implementation
 
@@ -569,13 +576,23 @@ begin
 end;
 
 function RenderScheduledFrames(const ASynth: TScheduledSynth;
-  const AFrames: Integer): TAudioClip;
+  const AFrames: Integer; const AProgress: TWorkProgressCallback): TAudioClip;
 var
   LSamples: TAudioSamples;
   LFrame: Integer;
   LCost: Int64;
   LLeft: Double;
   LRight: Double;
+  procedure ReportRender(const ADone: Integer);
+  begin
+    if not Assigned(AProgress) then Exit;
+    ASynth.FBusy := True;
+    try
+      ReportWork(AProgress, 'schedule_render_frames', wuFrames, ADone, AFrames);
+    finally
+      ASynth.FBusy := False;
+    end;
+  end;
 begin
   if ASynth = nil then
   begin
@@ -591,6 +608,7 @@ begin
   end;
   SetLength(LSamples, AFrames * 2);
   try
+    ReportRender(0);
     for LFrame := 0 to AFrames - 1 do
     begin
       ASynth.Process(LLeft, LRight);
@@ -600,7 +618,12 @@ begin
       end;
       LSamples[LFrame * 2] := LLeft;
       LSamples[LFrame * 2 + 1] := LRight;
+      if ((LFrame + 1) mod 256) = 0 then
+      begin
+        ReportRender(LFrame + 1);
+      end;
     end;
+    ReportRender(AFrames);
     Result := TAudioClip.Create(ASynth.FGraph.SampleRate, 2, LSamples);
   except
     ASynth.FFailed := True;

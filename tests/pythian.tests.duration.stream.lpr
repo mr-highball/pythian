@@ -38,6 +38,7 @@ uses
 const CRate = 8000;
 type
   TFixture = class
+    LongMode: Boolean;
     Models: TDurationModels;
     Config: TWfcMusicVoicesGraphConfig;
     Instruments: TStyleInstruments;
@@ -54,6 +55,24 @@ type
     FinalPoint: Boolean;
     Raised: Boolean;
     Marker: Exception;
+    procedure Observe(const AWork: TWorkProgress);
+  end;
+  { Big Boss: frozen observations from the actual duration callback stream;
+    they select bounded first/interior/final stage/pass cancellation points. }
+  TEditEvents = array of TWorkProgress;
+  { Big Boss: callbacks may inspect accepted state but cannot edit/process it.
+    The record stream is test evidence, never a second planning implementation. }
+  TEditObserver = class
+    Stream: TDurationStream;
+    Edit: TDurationEdit;
+    ExpectedRevision, ExpectedFrame: Int64;
+    Calls, AbortAt, Reentry: Integer;
+    Capture: Boolean;
+    Events: TEditEvents;
+    Marker: Exception;
+    ProbeLeft, ProbeRight: Double;
+    procedure Attach(const AStream: TDurationStream; const AEdit: TDurationEdit;
+      const ACapture: Boolean);
     procedure Observe(const AWork: TWorkProgress);
   end;
   TFailEffect = class(TAudioEffect)
@@ -201,6 +220,12 @@ begin
   LNames := ['bass', 'lead'];
   LOptions := AOptions;
   LOptions.LeadRole := 1;
+  if LongMode then
+  begin
+    Result := TDurationStream.Create(Models, [0, 256], [0, 256], Config,
+      LNames, Instruments, ABus, LOptions, AProgress);
+    Exit;
+  end;
   Result := TDurationStream.Create(Models, [0, 480, 960, 1440],
     [0, 240, 480, 720, 960, 1200, 1440], Config, LNames, Instruments, ABus,
     LOptions, AProgress);
@@ -635,6 +660,379 @@ begin
     Result := Result + EncodeWfcSequenceText(WfcMusicVoicesModelAt(AFixture.Config, LIndex));
 end;
 
+procedure TEditObserver.Attach(const AStream: TDurationStream;
+  const AEdit: TDurationEdit; const ACapture: Boolean);
+begin
+  Stream := AStream;
+  Edit := AEdit;
+  ExpectedRevision := Stream.Revision;
+  ExpectedFrame := Stream.NextFrame;
+  Capture := ACapture;
+  Events := nil;
+  Calls := 0;
+  AbortAt := 0;
+  Reentry := 0;
+  Marker := nil;
+end;
+
+procedure TEditObserver.Observe(const AWork: TWorkProgress);
+var
+  LIndex: Integer;
+begin
+  Inc(Calls);
+  Check((Stream.Revision = ExpectedRevision) and
+    (Stream.NextFrame = ExpectedFrame) and not Stream.Failed,
+    'Duration callback observes unchanged accepted revision/clock/health');
+  Check((AWork.Done >= 0) and (AWork.Total >= 0) and
+    ((AWork.Total = 0) or (AWork.Done <= AWork.Total)), 'Honest nested work counts');
+
+  if Capture then
+  begin
+    LIndex := Length(Events);
+    Check(LIndex < 4096, 'Duration fixture event budget exceeded; reassess');
+    SetLength(Events, LIndex + 1);
+    Events[LIndex] := AWork;
+  end;
+
+  if Reentry = 1 then
+  begin
+    Stream.TryEdit(Edit);
+  end;
+
+  if Reentry = 2 then
+  begin
+    ProbeLeft := 17;
+    ProbeRight := 19;
+    Stream.Process(ProbeLeft, ProbeRight);
+  end;
+
+  if Calls = AbortAt then
+  begin
+    Marker := Exception.Create('Original duration edit callback abort');
+    raise Marker;
+  end;
+end;
+
+function NewLongEditFixture: TFixture;
+var
+  LContext, LTempo, LDuration, LToken: String;
+  I: Integer;
+begin
+  Result := TFixture.Create;
+  try
+    Result.LongMode := True;
+    LContext := KeyContextToken(MakeKeyContext(0, dmMajor));
+    LTempo := TempoContextToken(500000);
+    LDuration := Duration(pskPitch, 60, 4);
+    Result.Models[dpKey].Free;
+    Result.Models[dpKey] := nil;
+    Result.Models[dpKey] := Learn([[LContext, LContext]], 1);
+    Result.Models[dpTempo].Free;
+    Result.Models[dpTempo] := nil;
+    Result.Models[dpTempo] := Learn([[LTempo, LTempo]], 1);
+    Result.Models[dpDuration].Free;
+    Result.Models[dpDuration] := nil;
+    Result.Models[dpDuration] := Learn([[LDuration, LDuration]], 1);
+    Result.Config.HarmonyModel.Free;
+    Result.Config.HarmonyModel := nil;
+    LToken := Harmony(0);
+    Result.Config.HarmonyModel := Learn([[LToken, LToken]], 1);
+    Result.Config.RhythmModel.Free;
+    Result.Config.RhythmModel := nil;
+    LToken := Rhythm(wmcaAttack);
+    Result.Config.RhythmModel := Learn([[LToken, LToken]], 1);
+
+    for I := 0 to 1 do
+    begin
+      Result.Config.Voices[I].Model.Free;
+      Result.Config.Voices[I].Model := nil;
+      LToken := Voice(wmcaAttack, 48 + I * 12);
+      Result.Config.Voices[I].Model := Learn([[LToken, LToken]], 1);
+    end;
+  except
+    Result.Free;
+    raise;
+  end;
+end;
+
+function LongEdit(const AStream: TDurationStream; const AScenario: Integer): TDurationEdit;
+var
+  I: Integer;
+begin
+  Result := Default(TDurationEdit);
+  Result.Revision := AStream.Revision;
+  { Big Boss: 40 attacks retain real interior sort visits without duplicating
+    the companion's exhaustive capture/proof qualification. }
+  Result.SpanCount := 20;
+  Result.Seed := 731;
+  Result.RequireObservedEnd := True;
+  SetLength(Result.MusicMasks, 4);
+  SetLength(Result.Masks[dpDuration], 260);
+
+  for I := 0 to High(Result.Masks[dpDuration]) do
+  begin
+    Result.Masks[dpDuration][I] := MakeWfcSequenceTokenConstraint(0,
+      [Duration(pskPitch, 60, 4)]);
+  end;
+
+  if AScenario = 0 then
+  begin
+    Result.Regenerate := [dpKey, dpTempo, dpDuration];
+    Result.RegenerateMusic := True;
+  end
+  else
+  begin
+    Result.FromSpan := 10;
+
+    if AScenario = 1 then
+    begin
+      Result.Regenerate := [dpDuration];
+      Result.RegenerateMusic := True;
+    end;
+  end;
+end;
+
+function ExerciseObservedEdit(const AFixture: TFixture;
+  const AScenario, APoint, AReentry: Integer; const ARetry, ACapture: Boolean;
+  out AEvents: TEditEvents): Integer;
+var
+  LBus, LControlBus: TBusGraph;
+  LStream, LControl: TDurationStream;
+  LObserver: TEditObserver;
+  LEdit, LInitial: TDurationEdit;
+  LBefore, LModels: String;
+  LLeft, LRight, LExpectedLeft, LExpectedRight: Double;
+  LRejected: Boolean;
+  LCalls, I: Integer;
+begin
+  AEvents := nil;
+  LBus := NewBus;
+  LControlBus := nil;
+  LStream := nil;
+  LControl := nil;
+  LObserver := nil;
+  try
+    LControlBus := NewBus;
+    LStream := AFixture.NewStream(LBus, DefaultDurationStreamOptions);
+    LControl := AFixture.NewStream(LControlBus, DefaultDurationStreamOptions);
+    LModels := ModelEvidence(AFixture);
+
+    if AScenario > 0 then
+    begin
+      LInitial := LongEdit(LStream, 0);
+      Check(LStream.TryEdit(LInitial) = derAccepted, 'Long initial plan');
+      Check(LControl.TryEdit(LInitial) = derAccepted, 'Long initial reference');
+
+      for I := 1 to 128 do
+      begin
+        LStream.Process(LLeft, LRight);
+        LControl.Process(LExpectedLeft, LExpectedRight);
+        Check((LLeft = LExpectedLeft) and (LRight = LExpectedRight),
+          'Original committed prefix agrees before edit');
+      end;
+    end;
+    LEdit := LongEdit(LStream, AScenario);
+    LBefore := Snapshot(LStream);
+    LObserver := TEditObserver.Create;
+    LObserver.Attach(LStream, LEdit, ACapture);
+    LObserver.AbortAt := APoint;
+    LObserver.Reentry := AReentry;
+    LRejected := False;
+    try
+      Check(LStream.TryEdit(LEdit, LObserver.Observe) = derAccepted,
+        'Observed duration edit accepted');
+    except
+      on E: Exception do
+      begin
+        if (APoint = 0) and (AReentry = 0) then raise;
+        LRejected := True;
+
+        if AReentry > 0 then
+        begin
+          Check(E is EAudio, 'Duration reentry rejects through original guard');
+
+          if AReentry = 2 then
+          begin
+            Check((LObserver.ProbeLeft = 17) and (LObserver.ProbeRight = 19),
+              'Rejected process reentry preserves output arguments');
+          end;
+        end
+        else
+        begin
+          Check(E = LObserver.Marker, 'Duration preserves original callback exception');
+        end;
+      end;
+    end;
+    Result := LObserver.Calls;
+    AEvents := LObserver.Events;
+    Check(LRejected = ((APoint > 0) or (AReentry > 0)), 'Duration cancellation disposition');
+
+    if LRejected then
+    begin
+      Check((Snapshot(LStream) = LBefore) and not LStream.Failed,
+        'Aborted duration edit preserves complete accepted state');
+    end;
+    Check(ModelEvidence(AFixture) = LModels, 'Duration observer preserves borrowed models');
+    Check((LEdit.SpanCount = 20) and (LEdit.Seed = 731) and
+      (Length(LEdit.MusicMasks) = 4) and (Length(LEdit.Masks[dpDuration]) = 260),
+      'Duration observer preserves borrowed edit shape');
+
+    for I := 0 to High(LEdit.Masks[dpDuration]) do
+    begin
+      Check((LEdit.Masks[dpDuration][I].Position = 0) and
+        (Length(LEdit.Masks[dpDuration][I].AllowedTokens) = 1) and
+        (LEdit.Masks[dpDuration][I].AllowedTokens[0] = Duration(pskPitch, 60, 4)),
+        'Duration observer preserves original mask rows/tokens');
+    end;
+
+    if not LRejected or ARetry then
+    begin
+      if ARetry then
+      begin
+        LObserver.Attach(LStream, LEdit, False);
+        Check(LStream.TryEdit(LEdit, LObserver.Observe) = derAccepted,
+          'Same-instance duration retry');
+      end;
+      Check(LControl.TryEdit(LEdit) = derAccepted, 'Original nil-observer duration reference');
+      Check(Snapshot(LStream) = Snapshot(LControl), 'Exact observed/nil accepted plan');
+    end;
+    LCalls := LObserver.Calls;
+
+    for I := 1 to 4096 do
+    begin
+      LStream.Process(LLeft, LRight);
+      LControl.Process(LExpectedLeft, LExpectedRight);
+      Check((LLeft = LExpectedLeft) and (LRight = LExpectedRight),
+        'Cancelled/retried duration preserves complete future stereo and bus history');
+    end;
+    Check(LObserver.Calls = LCalls, 'Duration stream retains no edit observer');
+  finally
+    LObserver.Free;
+    LStream.Free;
+    LControl.Free;
+    LBus.Free;
+    LControlBus.Free;
+  end;
+end;
+
+procedure CheckEditProgress;
+type
+  { Big Boss: one bounded set of actual event positions for each stage/pass.
+    These indices select probes without implementing another progress policy. }
+  TPoint = record
+    Key: String;
+    First, Interior, Last: Integer;
+  end;
+var
+  LFixture: TFixture;
+  LEvents, LIgnored: TEditEvents;
+  LPoints: array of TPoint;
+  LSelected: array of Integer;
+  LKey: String;
+  LScenario, I, J, N, LSelectedTotal, LAborts: Integer;
+  LSawMasks, LSawNotes, LSawReady, LSawSolve, LSawBuild, LSawProof: Boolean;
+
+  procedure SelectPoint(const AIndex: Integer);
+  var
+    LIndex: Integer;
+  begin
+    if AIndex = 0 then Exit;
+
+    for LIndex := 0 to High(LSelected) do
+    begin
+      if LSelected[LIndex] = AIndex then Exit;
+    end;
+    Inc(LSelectedTotal);
+    Check(LSelectedTotal <= 512, 'Duration cancellation budget exceeded; reassess');
+    LIndex := Length(LSelected);
+    SetLength(LSelected, LIndex + 1);
+    LSelected[LIndex] := AIndex;
+  end;
+
+begin
+  LFixture := NewLongEditFixture;
+  LSelectedTotal := 0;
+  LAborts := 0;
+  try
+    for LScenario := 0 to 2 do
+    begin
+      ExerciseObservedEdit(LFixture, LScenario, 0, 0, False, True, LEvents);
+      LPoints := nil;
+      LSelected := nil;
+      LSawMasks := False;
+      LSawNotes := False;
+      LSawReady := False;
+      LSawSolve := False;
+      LSawBuild := False;
+      LSawProof := False;
+
+      for I := 0 to High(LEvents) do
+      begin
+        LKey := LEvents[I].Stage + ':' + IntToStr(LEvents[I].Pass);
+        J := 0;
+
+        while (J < Length(LPoints)) and (LPoints[J].Key <> LKey) do Inc(J);
+
+        if J = Length(LPoints) then
+        begin
+          SetLength(LPoints, J + 1);
+          LPoints[J].Key := LKey;
+          LPoints[J].First := I + 1;
+        end;
+        LPoints[J].Last := I + 1;
+
+        if (LPoints[J].Interior = 0) and (LEvents[I].Done > 0) and
+          ((LEvents[I].Total = 0) or (LEvents[I].Done < LEvents[I].Total)) then
+        begin
+          LPoints[J].Interior := I + 1;
+        end;
+        LSawMasks := LSawMasks or ((LEvents[I].Stage = 'duration_mask_visits') and
+          (LEvents[I].Done >= 256) and (LEvents[I].Total = 0));
+        LSawNotes := LSawNotes or ((LEvents[I].Stage = 'duration_note_visits') and
+          (LEvents[I].Done >= 256) and (LEvents[I].Total = 0));
+        LSawReady := LSawReady or (LEvents[I].Stage = 'schedule_replace_ready');
+        LSawSolve := LSawSolve or (Pos('wfc_solve_', LEvents[I].Stage) = 1);
+        LSawBuild := LSawBuild or (LEvents[I].Stage = 'wfc_voice_build_visits');
+        LSawProof := LSawProof or (LEvents[I].Stage = 'wfc_voice_validate_visits');
+      end;
+      Check(LSawMasks and LSawNotes and LSawReady, 'Actual bulk mask/note and scheduler forwarding');
+
+      if LScenario <> 2 then
+      begin
+        Check(LSawSolve and LSawBuild and LSawProof, 'Actual generic build/solve/proof forwarding');
+      end;
+
+      for J := 0 to High(LPoints) do
+      begin
+        SelectPoint(LPoints[J].First);
+        SelectPoint(LPoints[J].Interior);
+        SelectPoint(LPoints[J].Last);
+      end;
+      WriteLn('Duration scenario ', LScenario, ': ', Length(LEvents),
+        ' callbacks / ', Length(LPoints), ' stage-pass keys / ', Length(LSelected), ' abort points');
+
+      for J := 0 to High(LSelected) do
+      begin
+        N := LSelected[J];
+        ExerciseObservedEdit(LFixture, LScenario, N, 0, False, False, LIgnored);
+        ExerciseObservedEdit(LFixture, LScenario, N, 0, True, False, LIgnored);
+        Inc(LAborts, 2);
+      end;
+
+      for J := 1 to 2 do
+      begin
+        ExerciseObservedEdit(LFixture, LScenario, 0, J, False, False, LIgnored);
+        ExerciseObservedEdit(LFixture, LScenario, 0, J, True, False, LIgnored);
+        Inc(LAborts, 2);
+      end;
+    end;
+    WriteLn('Duration edit progress: ', LSelectedTotal,
+      ' selected phase/pass points; ', LAborts, ' abort/reentry and retry/audio cases passed');
+  finally
+    LFixture.Free;
+  end;
+end;
+
 procedure CheckCloneCancellation(const AFixture: TFixture);
 var
   LBus: TBusGraph;
@@ -740,6 +1138,7 @@ begin
     CheckTerminal(LFixture);
     CheckModelOwnership;
     CheckCloneCancellation(LFixture);
+    CheckEditProgress;
     WriteLn('duration stream: staged timing, continuation, future edits, immutable audio and rollback passed');
   finally LFixture.Free; end;
 end.

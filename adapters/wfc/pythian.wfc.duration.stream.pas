@@ -92,13 +92,15 @@ type
     FRate: Integer;
     FPlan: TPlan;
     FRevision: Int64;
+    FEditing: Boolean;
     function GetNextFrame: Int64;
     function GetFailed: Boolean;
-    procedure BuildNotes(const APlan: TPlan);
+    procedure BuildNotes(const APlan: TPlan; const AProgress: TWorkProgressCallback);
     function SolveSequence(const AModel: TWfcSequenceModel;
       const APrevious: TWfcGeneratedSequenceSegment; const AFrom, ACount: Integer;
       const AEdit: TDurationEdit; const AMasks: TWfcSequenceTokenConstraints;
-      out ASequence: TWfcGeneratedSequenceSegment): Boolean;
+      out ASequence: TWfcGeneratedSequenceSegment;
+      const AProgress: TWorkProgressCallback): Boolean;
   public
     { Big Boss: the optional call-scoped observer reaches primary model cloning
       and generic voice-config preparation. Other duration/scheduler interiors
@@ -110,10 +112,16 @@ type
       const ABus: TBusGraph; const AOptions: TDurationStreamOptions;
       const AProgress: TWorkProgressCallback = nil);
     destructor Destroy; override;
-    { All staging, proof and allocation precede native future admission.
+    { Big Boss: the optional synchronous observer is borrowed for this edit.
+      Owned planning visits and primary graph/sequence/scheduler work are
+      observed before publication. Do not re-enter editing/processing or mutate
+      borrowed inputs. No callback follows native scheduler admission.
+      All staging, proof and allocation precede native future admission.
       Result other than accepted, or an exception, preserves accepted plan.
-      No retry across duration/context/ensemble stages is implicit. }
-    function TryEdit(const AEdit: TDurationEdit): TDurationEditResult;
+      No retry across duration/context/ensemble stages is implicit. Individual
+      clock, token, instrument/factory and allocation calls remain synchronous. }
+    function TryEdit(const AEdit: TDurationEdit;
+      const AProgress: TWorkProgressCallback = nil): TDurationEditResult;
     function CopySpans: TTimedPitchSpans;
     function CopyNotes: TDurationNotes;
     function CopySequence(const AProvider: TDurationProvider): TWfcGeneratedSequenceSegment;
@@ -157,30 +165,42 @@ end;
 
 function LocalMasks(const AModel: TWfcSequenceModel;
   const AMasks: TWfcSequenceTokenConstraints;
-  const APrevious: TWfcGeneratedSequenceSegment; const AFrom, ACount: Integer): TWfcSequenceTokenConstraints;
+  const APrevious: TWfcGeneratedSequenceSegment; const AFrom, ACount: Integer;
+  const AProgress: TWorkProgressCallback): TWfcSequenceTokenConstraints;
 var
   LIndex, LToken, LCount: Integer;
   LFound: Boolean;
+  LWork: TWfcObservedWork;
 begin
-  ValidateSequenceTokenConstraints(AModel, ACount, AMasks);
-  Result := nil;
-  for LIndex := 0 to High(AMasks) do
-  begin
-    if AMasks[LIndex].Position < AFrom then
+  LWork := TWfcObservedWork.Create(AProgress, 'duration_mask_visits');
+  try
+    ValidateSequenceTokenConstraints(AModel, ACount, AMasks, LWork.SequenceWorkObserver());
+    Result := nil;
+    for LIndex := 0 to High(AMasks) do
     begin
-      LFound := False;
-      for LToken := 0 to High(AMasks[LIndex].AllowedTokens) do
-        if AMasks[LIndex].AllowedTokens[LToken] = APrevious.Tokens[AMasks[LIndex].Position] then
-          LFound := True;
-      if not LFound then raise EAudio.Create('Edit mask conflicts with frozen provider prefix');
-    end
-    else
-    begin
-      LCount := Length(Result);
-      SetLength(Result, LCount + 1);
-      Result[LCount] := MakeWfcSequenceTokenConstraint(AMasks[LIndex].Position - AFrom,
-        AMasks[LIndex].AllowedTokens);
+      LWork.Visit;
+      if AMasks[LIndex].Position < AFrom then
+      begin
+        LFound := False;
+        for LToken := 0 to High(AMasks[LIndex].AllowedTokens) do
+        begin
+          LWork.Visit;
+          if AMasks[LIndex].AllowedTokens[LToken] = APrevious.Tokens[AMasks[LIndex].Position] then
+            LFound := True;
+        end;
+        if not LFound then raise EAudio.Create('Edit mask conflicts with frozen provider prefix');
+      end
+      else
+      begin
+        LCount := Length(Result);
+        SetLength(Result, LCount + 1);
+        Result[LCount] := MakeWfcSequenceTokenConstraint(AMasks[LIndex].Position - AFrom,
+          AMasks[LIndex].AllowedTokens);
+      end;
     end;
+    LWork.Finish;
+  finally
+    LWork.Free;
   end;
 end;
 
@@ -281,7 +301,8 @@ end;
 function TDurationStream.SolveSequence(const AModel: TWfcSequenceModel;
   const APrevious: TWfcGeneratedSequenceSegment; const AFrom, ACount: Integer;
   const AEdit: TDurationEdit; const AMasks: TWfcSequenceTokenConstraints;
-  out ASequence: TWfcGeneratedSequenceSegment): Boolean;
+  out ASequence: TWfcGeneratedSequenceSegment;
+  const AProgress: TWorkProgressCallback): Boolean;
 var
   LBoundary: TWfcSequenceSegmentBoundary;
   LLocal: TWfcSequenceTokenConstraints;
@@ -289,28 +310,34 @@ var
   LOptions: TSequenceSegmentOptions;
   LReport: TGraphSolveReport;
   LValidation: TWfcSequenceGraphValidationReport;
+  LBridge: TWfcSolveProgressBridge;
 begin
-  LLocal := LocalMasks(AModel, AMasks, APrevious, AFrom, ACount);
-  if AFrom = ACount then
-  begin
-    if AEdit.RequireObservedEnd and not ValidateSequenceStatePath(AModel,
-      APrevious.StateIndices, wseWhole, LValidation) then
+  LBridge := TWfcSolveProgressBridge.Create(AProgress);
+  try
+    LLocal := LocalMasks(AModel, AMasks, APrevious, AFrom, ACount, AProgress);
+    if AFrom = ACount then
     begin
-      Exit(False);
+      if AEdit.RequireObservedEnd and not ValidateSequenceStatePath(AModel,
+        APrevious.StateIndices, wseWhole, LValidation, LBridge.SequenceWorkObserver()) then
+      begin
+        Exit(False);
+      end;
+      ASequence := CopySequenceSegment(APrevious, AProgress);
+      Exit(True);
     end;
-    ASequence := CopySequenceSegment(APrevious);
-    Exit(True);
-  end;
-  LBoundary := SegmentBoundary(APrevious, AFrom, AEdit.RequireObservedEnd);
-  LOptions := DefaultSequenceSegmentOptions;
-  LOptions.CellCount := ACount - AFrom;
-  LOptions.Seed := AEdit.Seed;
-  LOptions.MaxBacktracks := FOptions.MaxBacktracks;
-  Result := TryGenerateSequenceSegment(AModel, LOptions, LBoundary, LLocal,
-    LChunk, LReport);
-  if Result then
-  begin
-    ASequence := JoinSequenceSegments(APrevious, LChunk, AFrom);
+    LBoundary := SegmentBoundary(APrevious, AFrom, AEdit.RequireObservedEnd);
+    LOptions := DefaultSequenceSegmentOptions;
+    LOptions.CellCount := ACount - AFrom;
+    LOptions.Seed := AEdit.Seed;
+    LOptions.MaxBacktracks := FOptions.MaxBacktracks;
+    Result := TryGenerateSequenceSegment(AModel, LOptions, LBoundary, LLocal,
+      LChunk, LReport, AProgress);
+    if Result then
+    begin
+      ASequence := JoinSequenceSegments(APrevious, LChunk, AFrom, AProgress);
+    end;
+  finally
+    LBridge.Free;
   end;
 end;
 
@@ -339,60 +366,74 @@ begin
   Result := False;
 end;
 
-procedure TDurationStream.BuildNotes(const APlan: TPlan);
+procedure TDurationStream.BuildNotes(const APlan: TPlan;
+  const AProgress: TWorkProgressCallback);
 var
   LRole, LSpan, LTone, LIndex, LCount: Integer;
   LCell: TWfcMusicVoiceCell;
   LActive: array of Integer;
   LNote, LSwap: TDurationNote;
+  LWork: TWfcObservedWork;
 begin
-  APlan.Notes := nil;
-  for LRole := 0 to High(FNames) do
-  begin
-    LActive := nil;
-    for LSpan := 0 to High(APlan.Spans) do
+  LWork := TWfcObservedWork.Create(AProgress, 'duration_note_visits');
+  try
+    APlan.Notes := nil;
+    for LRole := 0 to High(FNames) do
     begin
-      LCell := DecodeWfcMusicEnsembleFrame(APlan.Music[LRole + 2].Tokens[LSpan]).Voices[0];
-      if LCell.Action <> wmcaHold then LActive := nil;
-      if LCell.Action = wmcaAttack then
+      LWork.Visit;
+      LActive := nil;
+      for LSpan := 0 to High(APlan.Spans) do
       begin
-        SetLength(LActive, Length(LCell.Tones));
-        for LTone := 0 to High(LCell.Tones) do
+        LWork.Visit;
+        LCell := DecodeWfcMusicEnsembleFrame(APlan.Music[LRole + 2].Tokens[LSpan]).Voices[0];
+        if LCell.Action <> wmcaHold then LActive := nil;
+        if LCell.Action = wmcaAttack then
         begin
-          LNote.Role := LRole;
-          LNote.Pitch := LCell.Tones[LTone].Pitch;
-          LNote.Velocity := LCell.Tones[LTone].Velocity;
-          LNote.AttackSpan := LSpan;
-          LNote.StartFrame := APlan.Clock.FrameAtTick(APlan.Spans[LSpan].StartTick, FRate);
-          LNote.GateFrames := 0;
-          LCount := Length(APlan.Notes);
-          if LCount >= MaximumScheduledVoices then raise EAudio.Create('Duration note ledger exceeds bound');
-          SetLength(APlan.Notes, LCount + 1);
-          APlan.Notes[LCount] := LNote;
-          LActive[LTone] := LCount;
+          SetLength(LActive, Length(LCell.Tones));
+          for LTone := 0 to High(LCell.Tones) do
+          begin
+            LWork.Visit;
+            LNote.Role := LRole;
+            LNote.Pitch := LCell.Tones[LTone].Pitch;
+            LNote.Velocity := LCell.Tones[LTone].Velocity;
+            LNote.AttackSpan := LSpan;
+            LNote.StartFrame := APlan.Clock.FrameAtTick(APlan.Spans[LSpan].StartTick, FRate);
+            LNote.GateFrames := 0;
+            LCount := Length(APlan.Notes);
+            if LCount >= MaximumScheduledVoices then raise EAudio.Create('Duration note ledger exceeds bound');
+            SetLength(APlan.Notes, LCount + 1);
+            APlan.Notes[LCount] := LNote;
+            LActive[LTone] := LCount;
+          end;
+        end;
+        for LTone := 0 to High(LActive) do
+        begin
+          LWork.Visit;
+          LIndex := LActive[LTone];
+          APlan.Notes[LIndex].GateFrames := APlan.Clock.FrameAtTick(APlan.Spans[LSpan].EndTick, FRate) -
+            APlan.Notes[LIndex].StartFrame;
+          if APlan.Notes[LIndex].GateFrames < 1 then
+            raise EAudio.Create('Duration note has no sample-frame extent');
         end;
       end;
-      for LTone := 0 to High(LActive) do
+    end;
+    { Stable admission order: absolute start, then declared role and chord pitch. }
+    for LIndex := 1 to High(APlan.Notes) do
+    begin
+      LWork.Visit;
+      LCount := LIndex;
+      while (LCount > 0) and (APlan.Notes[LCount].StartFrame < APlan.Notes[LCount - 1].StartFrame) do
       begin
-        LIndex := LActive[LTone];
-        APlan.Notes[LIndex].GateFrames := APlan.Clock.FrameAtTick(APlan.Spans[LSpan].EndTick, FRate) -
-          APlan.Notes[LIndex].StartFrame;
-        if APlan.Notes[LIndex].GateFrames < 1 then
-          raise EAudio.Create('Duration note has no sample-frame extent');
+        LWork.Visit;
+        LSwap := APlan.Notes[LCount];
+        APlan.Notes[LCount] := APlan.Notes[LCount - 1];
+        APlan.Notes[LCount - 1] := LSwap;
+        Dec(LCount);
       end;
     end;
-  end;
-  { Stable admission order: absolute start, then declared role and chord pitch. }
-  for LIndex := 1 to High(APlan.Notes) do
-  begin
-    LCount := LIndex;
-    while (LCount > 0) and (APlan.Notes[LCount].StartFrame < APlan.Notes[LCount - 1].StartFrame) do
-    begin
-      LSwap := APlan.Notes[LCount];
-      APlan.Notes[LCount] := APlan.Notes[LCount - 1];
-      APlan.Notes[LCount - 1] := LSwap;
-      Dec(LCount);
-    end;
+    LWork.Finish;
+  finally
+    LWork.Free;
   end;
 end;
 
@@ -403,7 +444,8 @@ begin
     (ALeft.StartFrame = ARight.StartFrame) and (ALeft.GateFrames = ARight.GateFrames);
 end;
 
-function TDurationStream.TryEdit(const AEdit: TDurationEdit): TDurationEditResult;
+function TDurationStream.TryEdit(const AEdit: TDurationEdit;
+  const AProgress: TWorkProgressCallback): TDurationEditResult;
 var
   LCandidate, LOld: TPlan;
   LProvider: TDurationProvider;
@@ -427,7 +469,12 @@ var
   LTones, LPlanned: TFrameTones;
   LSchedule: TScheduleResult;
   LValidation: TWfcSequenceGraphValidationReport;
+  LWork: TWfcObservedWork;
 begin
+  if FEditing then
+  begin
+    raise EAudio.Create('Duration stream is already editing');
+  end;
   if Failed then raise EAudio.Create('Duration stream processing failed; create a fresh playback epoch');
   if (AEdit.Revision <> FRevision) or (FRevision = High(Int64)) or
     (AEdit.FromSpan < 0) or (AEdit.SpanCount < 1) or (AEdit.SpanCount > 1024) or
@@ -452,10 +499,15 @@ begin
     if (AEdit.SpanCount <> Length(FPlan.Spans)) and not (dpDuration in AEdit.Regenerate) then
       raise EAudio.Create('Changing span count requires duration regeneration');
   end;
-  LCandidate := TPlan.Create;
+  LCandidate := nil;
+  LWork := nil;
+  FEditing := True;
   try
+    LWork := TWfcObservedWork.Create(AProgress, 'duration_plan_visits');
+    LCandidate := TPlan.Create;
     for LProvider := Low(TDurationProvider) to High(TDurationProvider) do
     begin
+      LWork.Visit;
       LPrevious := Default(TWfcGeneratedSequenceSegment);
       if FPlan <> nil then LPrevious := FPlan.Sequences[LProvider];
       case LProvider of
@@ -465,12 +517,14 @@ begin
       end;
       if not (LProvider in AEdit.Regenerate) then LFrom := LCount;
       if not SolveSequence(FModels[LProvider], LPrevious, LFrom, LCount, AEdit,
-        AEdit.Masks[LProvider], LCandidate.Sequences[LProvider]) then Exit(derConflict);
+        AEdit.Masks[LProvider], LCandidate.Sequences[LProvider], AProgress) then Exit(derConflict);
+      LWork.Checkpoint;
     end;
     SetLength(LCandidate.Spans, AEdit.SpanCount);
     LTick := 0;
     for LIndex := 0 to AEdit.SpanCount - 1 do
     begin
+      LWork.Visit;
       LCell := DecodePitchDurationToken(LCandidate.Sequences[dpDuration].Tokens[LIndex]);
       if LTick + LCell.Duration > High(Integer) then Exit(derCoverage);
       LCandidate.Spans[LIndex].StartTick := Integer(LTick);
@@ -483,6 +537,7 @@ begin
     LChanges := nil;
     for LIndex := 0 to High(FTempoGrid) - 1 do
     begin
+      LWork.Visit;
       LCount := TempoContextFromToken(LCandidate.Sequences[dpTempo].Tokens[LIndex]);
       if FTempoGrid[LIndex] < LTick then
       begin
@@ -493,8 +548,13 @@ begin
       end;
     end;
     for LIndex := 0 to High(LCandidate.Sequences[dpKey].Tokens) do
+    begin
+      LWork.Visit;
       KeyContextFromToken(LCandidate.Sequences[dpKey].Tokens[LIndex]);
+    end;
+    LWork.Checkpoint;
     LCandidate.Clock := TTempoMap.Create(FOptions.TicksPerQuarter, Integer(LTick), LChanges);
+    LWork.Checkpoint;
     if LCandidate.Clock.FrameAtTick(Integer(LTick), FRate) > FOptions.MaxPlanFrames then Exit(derFrameLimit);
     if LCandidate.Clock.FrameAtTick(LPivotTick, FRate) <> LPivotFrame then Exit(derCommittedNote);
     LMusic := AEdit.RegenerateMusic or (dpKey in AEdit.Regenerate) or (dpDuration in AEdit.Regenerate);
@@ -504,30 +564,36 @@ begin
       SetLength(LBoundaries, Length(LCandidate.Music));
       for LIndex := 0 to High(LBoundaries) do
       begin
+        LWork.Visit;
         LPrevious := Default(TWfcGeneratedSequenceSegment);
         if FPlan <> nil then LPrevious := FPlan.Music[LIndex];
         LBoundaries[LIndex] := SegmentBoundary(LPrevious, AEdit.FromSpan, AEdit.RequireObservedEnd);
       end;
       LGraph := BuildWfcMusicVoicesSegmentGraph(FConfig, AEdit.SpanCount - AEdit.FromSpan,
-        AEdit.Seed, LBoundaries);
+        AEdit.Seed, LBoundaries, LWork.PreparationWorkObserver());
       try
         for LIndex := 0 to High(LBoundaries) do
         begin
+          LWork.Visit;
           LPrevious := Default(TWfcGeneratedSequenceSegment);
           if FPlan <> nil then LPrevious := FPlan.Music[LIndex];
           LModel := WfcMusicVoicesModelAt(FConfig, LIndex);
-          LLocal := LocalMasks(LModel, AEdit.MusicMasks[LIndex], LPrevious, AEdit.FromSpan, AEdit.SpanCount);
-          IntersectSequenceTokenConstraints(LModel, LGraph.PassGraph[LIndex], LLocal);
+          LLocal := LocalMasks(LModel, AEdit.MusicMasks[LIndex], LPrevious,
+            AEdit.FromSpan, AEdit.SpanCount, AProgress);
+          IntersectSequenceTokenConstraints(LModel, LGraph.PassGraph[LIndex], LLocal,
+            LWork.SequenceWorkObserver());
         end;
         for LRole := 0 to High(FNames) do
           for LIndex := AEdit.FromSpan to AEdit.SpanCount - 1 do
           begin
+            LWork.Visit;
             LModel := FConfig.Voices[LRole].Model;
             LAllowed := nil;
             LKeyCell := GridCell(FKeyGrid, LCandidate.Spans[LIndex].StartTick);
             LKey := KeyContextFromToken(LCandidate.Sequences[dpKey].Tokens[LKeyCell]);
             for LToken := 0 to LModel.PublicTokenCount - 1 do
             begin
+              LWork.Visit;
               LFrame := DecodeWfcMusicEnsembleFrame(LModel.PublicTokenAt(LToken));
               LAccept := True;
               if LCandidate.Spans[LIndex].Kind <> pskPitch then
@@ -539,7 +605,10 @@ begin
                     (LFrame.Voices[0].Tones[0].Pitch = LCandidate.Spans[LIndex].Note);
                 if LFrame.Voices[0].Action = wmcaAttack then
                   for LTone := 0 to High(LFrame.Voices[0].Tones) do
+                  begin
+                    LWork.Visit;
                     LAccept := LAccept and KeyAllows(LKey, LFrame.Voices[0].Tones[LTone].Pitch);
+                  end;
               end;
               if LAccept then
               begin
@@ -551,19 +620,23 @@ begin
             if Length(LAllowed) = 0 then Exit(derConflict);
             SetLength(LMask, 1);
             LMask[0] := MakeWfcSequenceTokenConstraint(LIndex - AEdit.FromSpan, LAllowed);
-            IntersectSequenceTokenConstraints(LModel, LGraph.PassGraph[LRole + 2], LMask);
+            IntersectSequenceTokenConstraints(LModel, LGraph.PassGraph[LRole + 2], LMask,
+              LWork.SequenceWorkObserver());
           end;
         LOptions := DefaultGraphNegotiationOptions;
         LOptions.SolveOptions.MaxBacktracks := FOptions.MaxBacktracks;
         LOptions.MaxPassBacktracks := FOptions.MaxPassBacktracks;
-        if not LGraph.TrySolveNegotiated(LOptions, LReport) then Exit(derConflict);
-        if not CaptureSolvedWfcMusicVoices(FConfig, LGraph, LBoundaries, LGenerated, LProof) then
+        if not LGraph.TrySolveNegotiated(LOptions, LReport, LWork.SolveObserver()) then Exit(derConflict);
+        if not CaptureSolvedWfcMusicVoices(FConfig, LGraph, LBoundaries, LGenerated, LProof,
+          LWork.PreparationWorkObserver()) then
           raise EAudio.Create('Duration ensemble failed independent semantic proof: ' + LProof.Issue.Detail);
         for LIndex := 0 to High(LBoundaries) do
         begin
+          LWork.Visit;
           LPrevious := Default(TWfcGeneratedSequenceSegment);
           if FPlan <> nil then LPrevious := FPlan.Music[LIndex];
-          LCandidate.Music[LIndex] := JoinSequenceSegments(LPrevious, LGenerated.Layers[LIndex], AEdit.FromSpan);
+          LCandidate.Music[LIndex] := JoinSequenceSegments(LPrevious, LGenerated.Layers[LIndex],
+            AEdit.FromSpan, AProgress);
         end;
       finally
         LGraph.Free;
@@ -572,19 +645,21 @@ begin
     else
       for LIndex := 0 to High(LCandidate.Music) do
       begin
+        LWork.Visit;
         LLocal := LocalMasks(WfcMusicVoicesModelAt(FConfig, LIndex), AEdit.MusicMasks[LIndex],
-          FPlan.Music[LIndex], AEdit.SpanCount, AEdit.SpanCount);
+          FPlan.Music[LIndex], AEdit.SpanCount, AEdit.SpanCount, AProgress);
         if AEdit.RequireObservedEnd and not ValidateSequenceStatePath(
           WfcMusicVoicesModelAt(FConfig, LIndex), FPlan.Music[LIndex].StateIndices,
-          wseWhole, LValidation) then Exit(derConflict);
-        LCandidate.Music[LIndex] := CopySequenceSegment(FPlan.Music[LIndex]);
+          wseWhole, LValidation, LWork.SequenceWorkObserver()) then Exit(derConflict);
+        LCandidate.Music[LIndex] := CopySequenceSegment(FPlan.Music[LIndex], AProgress);
       end;
-    BuildNotes(LCandidate);
+    BuildNotes(LCandidate, AProgress);
     if FPlan <> nil then
     begin
       LIndex := 0;
       while (LIndex < Length(FPlan.Notes)) and (FPlan.Notes[LIndex].StartFrame < LPivotFrame) do
       begin
+        LWork.Visit;
         if (LIndex >= Length(LCandidate.Notes)) or
           not SameNote(FPlan.Notes[LIndex], LCandidate.Notes[LIndex]) then Exit(derCommittedNote);
         Inc(LIndex);
@@ -594,16 +669,26 @@ begin
     end;
     LTones := nil;
     for LIndex := 0 to High(LCandidate.Notes) do
+    begin
+      LWork.Visit;
       if LCandidate.Notes[LIndex].StartFrame >= LPivotFrame then
       begin
+        LWork.Checkpoint;
         with LCandidate.Notes[LIndex] do
           LPlanned := FInstruments[Role].PlanNote(Pitch, Velocity, StartFrame, GateFrames,
             Cardinal(1 + AttackSpan * 8 + Role));
+        LWork.Checkpoint;
         LOut := Length(LTones);
         SetLength(LTones, LOut + Length(LPlanned));
-        for LTone := 0 to High(LPlanned) do LTones[LOut + LTone] := LPlanned[LTone];
+        for LTone := 0 to High(LPlanned) do
+        begin
+          LWork.Visit;
+          LTones[LOut + LTone] := LPlanned[LTone];
+        end;
       end;
-    LSchedule := FSynth.TryReplaceFuture(0, LPivotFrame, FOptions.OutputBus, LTones, LId);
+    end;
+    LWork.Finish;
+    LSchedule := FSynth.TryReplaceFuture(0, LPivotFrame, FOptions.OutputBus, LTones, LId, AProgress);
     case LSchedule of
       srVoiceLimit: Exit(derVoiceLimit);
       srWorkLimit: Exit(derWorkLimit);
@@ -615,7 +700,12 @@ begin
     LOld.Free;
     Result := derAccepted;
   finally
-    LCandidate.Free;
+    try
+      LCandidate.Free;
+    finally
+      LWork.Free;
+      FEditing := False;
+    end;
   end;
 end;
 
@@ -675,6 +765,10 @@ end;
 
 procedure TDurationStream.Process(out ALeft, ARight: Double);
 begin
+  if FEditing then
+  begin
+    raise EAudio.Create('Duration processing cannot re-enter an edit');
+  end;
   FSynth.Process(ALeft, ARight);
 end;
 
