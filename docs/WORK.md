@@ -49,8 +49,9 @@ Stable Studio remains the preceding matchedf630ebb deployment, PID73508; no serv
 or operator catalog was changed in this library batch. No QA browser/audio/server
 was launched and ports18129/18130 are absent. No dependency source/pin/branch changed.
 [CI510](https://github.com/mr-highball/pythian/actions/runs/41140590716) forf630ebb
-now passes (native job completed23:05:13Z). This runtime batch has local checks;
-its publication/new remote CI are pending. The implementation goal remains active
+now passes (native job completed23:05:13Z). This runtime batch is published as
+ac4b4ec on hello-pythian; [CI511](https://github.com/mr-highball/pythian/actions/runs/41142489684)
+is running. No remote pass is claimed for this new batch. The implementation goal remains active
 and SOLO; no operator input is required to continue.
 
 Next: persist/restore the actual accepted score, provider models/states and drum
