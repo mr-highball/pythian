@@ -14,7 +14,7 @@ but its next save cannot reopen the immutable revision: the primary UTF-8 parser
 rejects bytes after host string conversion. Repair the shared native JSON byte
 boundaries exercised by project choices, job receipts and their HTTP transport.
 Use the existing primary JSON/scalar/hash implementations. This is a concrete
-prerequisite of [experimental learning AC2–4](../NS-3_experimental-learning_01.md),
+prerequisite of [experimental learning AC2–4](NS-3_experimental-learning_01.md),
 not an invitation to audit unrelated long-running code or add a second codec.
 
 Primary attribution: NS-6. Three effort units estimate the implementation and

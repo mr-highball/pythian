@@ -2,7 +2,77 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
-## Current handoff: selected-role context repair accepted and deployed — 2026-10-30
+## Current handoff: experimental recording proposals accepted and deployed — 2026-10-30
+
+Big Boss SOLO closed [experimental learning](TODO/DONE/NS-3_experimental-learning_01.md).
+The new primary portable `pythian.music.sound` proposes an explicit low-pass cutoff
+and envelope sustain from measured centroid/window RMS. Studio's contextual Sound
+step accepts, edits, skips or manually supplies those controls for Bass, Harmony or
+Lead. Actual instrument zones consume the recipe before planning; results retain
+the applied values, source/analysis identities and Original excerpt coordinates.
+Accepting sound preserves other edited musical choices. Apply, Save and feedback
+do not queue jobs; each explicit Generate still constructs models. Identical model
+hashes after a sound-only edit do not imply a cache hit or avoided learning work.
+This is a bounded Experimental starting point, not source-instrument identification,
+universal transcription, whole-corpus style learning or a musical-quality verdict.
+
+Win32/Win64 and actual pas2js pass47 shared observation/sound checks. Final native
+choice/lineage checks pass59 on both targets with clean heaps. The complete ordinary
+source/manual generation matrix passes99 on Win32 and checked optimized Win64:
+accepted/corrected sound changes actual selected-part PCM, unrelated part PCM stays
+identical, bypass restores the preceding performance, and source/reference receipts
+survive. The five optimized source jobs take7–13 seconds here at the unchanged
+600-second limit. All assertion/range/overflow/I/O checks remain enabled.
+
+Preserve the unoptimized checked Win64 third-job timeout, requests, events, partial
+WAVs and clean-heap failure. Most delay preceded rendering; no underlying algorithm
+defect is diagnosed by that observation. The same full matrix/seed/inputs passes
+with normal `-O2`; no raised time budget, seed sweep or reduced test. The maintained
+build now compiles the ordinary worker and this generation consumer with `-O2`,
+retaining its existing checks. Other build consumers keep their existing flags.
+A fresh `-B -O2` rebuild of the complete generation consumer also passes99 with
+clean heaps, including the final canonical integer and proposal-origin guards.
+The extreme finite-value FPC overload and Win32 extended-precision test repairs,
+initial build/launcher errors and browser harness failures remain in the task notes.
+
+Actual isolated Edge desktop/390-pixel checks cover proposal/edit/bypass/manual,
+save/reload, numeric values and no horizontal overflow. A native job completes after
+its page closes. Reopening plays/solos parts, displays the actual Lead100Hz/10%
+recipe and switches Original/synthesized playback with mutual pause. A marked
+automated QA unknown response saves exact immutable job/audio/model/material/source
+lineage without changing jobs; it is synthetic QA data, not operator approval.
+The final manual-origin Save retains `manual`/`available:false`. Playback was muted;
+these are solo checks, not independent QA, physical-phone or listening-quality
+validation. All owned QA tabs/processes/audio are closed and ports18129/18130 absent.
+The first immediate cleanup observation raced process exit; reobservation confirmed
+closure without starting another browser or stopping unrelated processes.
+
+The matched checked optimized service/worker and twelve browser assets are deployed
+to the established stable slot, existing Private interface/TLS identity and operator
+catalog. Stable PID55848 runs independently after its launcher exits. Loopback HTTP,
+LAN HTTPS and actual projects/jobs/listening/capture APIs return200. Sixteen protected
+project/review JSON records and twelve terminal job event hashes are unchanged.
+Only code assets were promoted; no QA project/audio/feedback or firewall changes.
+All new evidence lives under musical-sound-20261030-boss in E-drive build/tests/cache/
+runs. No WFC source, branch or dependency pin changed.
+
+Accounting is41/96 (42.71%):16 tasks, eight open/eight current DONE,55 open units.
+NS-3 is8/15; other north-star totals are unchanged. The task is moved with incoming
+links and milestone/catalog accounting together; style vocabulary is now ready.
+Consecutive nonclosing batches remain zero. Prior coupling
+[CI508](https://github.com/mr-highball/pythian/actions/runs/41117584756) for1bb3733
+passed. This batch's remote CI is pending publication; no new remote or full-package
+pass is claimed. The implementation goal remains active and SOLO.
+
+Next selection is [musical graph controls](TODO/NS-4_graph-controls_01.md), the actual
+prerequisite to least-complete NS-5 form/styles. Reuse accepted masks/preferences and
+dependency closure for role/passage locks and affect mappings; demonstrate paired
+instrumental results with unrelated accepted states preserved. State its bounded
+criterion/deliverable/evidence/stop condition before implementation. Graph workbench,
+deeper sound recipes, corpus vocabulary, form/styles, review refinement and long
+streams remain open; this handoff does not claim they have started or are complete.
+
+## Previous handoff: selected-role context repair accepted and deployed — 2026-10-30
 
 Big Boss SOLO closed [motif coupling](TODO/DONE/NS-4_motif-coupling_01.md).
 Context now learns synchronized symbolic ensemble frames with an explicit driven
@@ -44,7 +114,7 @@ now confirmed green. The repair is published as1bb3733 on hello-pythian;
 [CI508](https://github.com/mr-highball/pythian/actions/runs/41117584756) is running.
 No new remote pass or full-package qualification is claimed yet.
 
-Continue [experimental learning AC3](TODO/NS-3_experimental-learning_01.md): bind
+Continue [experimental learning AC3](TODO/DONE/NS-3_experimental-learning_01.md): bind
 explicitly selected/corrected sound and dynamics proposals to actual instrument/
 automation settings and keep the Original comparison. The existing tempo/key/
 pitch editor, source lineage and repaired motif generation already pass. Do not
@@ -58,7 +128,7 @@ implementation goal stays active and solo.
 ## Current handoff: musical-choice editor checked; follow motif coupling — 2026-10-30
 
 Big Boss SOLO continues the active implementation goal. This batch closes
-[experimental learning AC2](TODO/NS-3_experimental-learning_01.md) and its finite-job
+[experimental learning AC2](TODO/DONE/NS-3_experimental-learning_01.md) and its finite-job
 AC4 correction/feedback behavior. Studio has a contextual tempo/key, pitch/part
 and source/notes editor, manual cells, accept/correct/bypass paths, durable source
 lineage and explicit Apply → Save → Generate actions. Recording-linked jobs now
@@ -130,7 +200,7 @@ Shared HashNativeText uses the primary SHA-256 without host conversion; native
 project/job/catalog/library and HTTP boundaries retain original UTF-8 bytes.
 The parent draft's metadata-only recipe and project revisions preserve analysis,
 operator and source origins. The UI editor, actual proposal-to-instrumental
-generation and Original comparison remain [experimental learning AC2–4](TODO/NS-3_experimental-learning_01.md).
+generation and Original comparison remain [experimental learning AC2–4](TODO/DONE/NS-3_experimental-learning_01.md).
 No parent effort is accepted. Its title bound now matches the catalog contract,
 and primary scalar/JSON validation rejects malformed direct native input before
 commit. Generation preflight explicitly refuses musical_material until the
@@ -192,7 +262,7 @@ close this task's criteria without a blanket unrelated packaging gate.
 [Joint context — DONE](TODO/DONE/NS-4_joint-context_01.md) earns four implementation
 effort units: 25/88 (28.41%), nine open/five current DONE, 63 open units. NS-4 is
 11/25. Real AC1–3 closure resets consecutive nonclosing batches to zero. Continue
-[experimental learning AC2–4](TODO/NS-3_experimental-learning_01.md): saved explicit
+[experimental learning AC2–4](TODO/DONE/NS-3_experimental-learning_01.md): saved explicit
 accept/correct/bypass/manual choices, part assignment, source-bound generation and
 Original comparison. Those Studio criteria remain open; no partial parent effort.
 No Studio deployment, browser session, audio playback or operator-data write occurred.
@@ -211,7 +281,7 @@ repetition restores open-model semantics; unknown spans split examples instead
 of becoming silence. Two bounded searches then exhaust pass negotiation at
 harmony-voice, with32 and1024 pass backtracks. Stop increasing limits. Follow
 [joint context](TODO/DONE/NS-4_joint-context_01.md), then return to
-[experimental learning AC2–4](TODO/NS-3_experimental-learning_01.md).
+[experimental learning AC2–4](TODO/DONE/NS-3_experimental-learning_01.md).
 No claim of a generic WFC bug or vendor change is made. Musical coupling belongs here.
 
 The real prerequisite adds4 effort units:14 current tasks,10 open/four DONE,
@@ -222,7 +292,7 @@ The deployed instrumental/observation service and operator answers are unchanged
 
 ## Current handoff: musical suggestions exposed in Studio — 2026-10-30
 
-Big Boss remains SOLO. [Experimental learning](TODO/NS-3_experimental-learning_01.md)
+Big Boss remains SOLO. [Experimental learning](TODO/DONE/NS-3_experimental-learning_01.md)
 AC1 is delivered through the existing recording and import/microphone inspection
 jobs, published as02f71d8 on hello-pythian.
 [CI504](https://github.com/mr-highball/pythian/actions/runs/41064948699) is queued

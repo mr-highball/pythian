@@ -275,8 +275,8 @@ body:has(#listen:not([hidden])) .save-panel { display: none; }
 .material-heading { position:sticky; top:-1rem; z-index:2; padding:.5rem 0; background:#122e36; border-bottom:1px solid #527971; }
 .material-dialog .guide-dialog-header { position:static; display:flex; align-items:center; justify-content:space-between; gap:.5rem; }
 .material-dialog h2 { font-size:1.3rem; }
-.material-tabs { display:flex; gap:.4rem; margin:1rem 0; }
-.material-tabs button { flex:1; padding:.65rem .4rem; }
+.material-tabs { display:flex; flex-wrap:wrap; gap:.4rem; margin:1rem 0; }
+.material-tabs button { flex:1 1 7rem; padding:.65rem .4rem; }
 .material-tabs button[aria-selected="true"], #material-grid button[aria-pressed="true"] { background:#b6e6d8; color:#10252b; }
 #material-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.4rem; margin:.8rem 0; }
 #material-grid button { min-height:48px; padding:.45rem .2rem; font-size:.85rem; }

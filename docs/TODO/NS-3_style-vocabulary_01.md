@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 7/10
-**Status:** Dependency-blocked
+**Status:** Ready
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -22,10 +22,13 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [NS-3_experimental-learning_01](NS-3_experimental-learning_01.md)
+- [NS-3_experimental-learning_01](DONE/NS-3_experimental-learning_01.md)
 
 **Dev Notes:**
 
+- 2026-10-30, Big Boss: Experimental learning is accepted; its bounded source-linked
+  pitch/context and explicit cutoff/sustain recipes remove this prerequisite.
+  Coarse whole-corpus vocabulary work remains unimplemented and earns no partial effort.
 - 2026-10-29, Big Boss: Private corpus intake, classifications, journal storage, semantic styles, contribution accounting and saved model contracts exist. Raw-acoustic classifications currently affect identity rather than musical meaning; this task supplies actual mappings.
 - Read [the implementation review](../ASSESSMENT-2026-10-29.md) and [retirement/replacement map](RETIRED/2026-10-29/README.md) before repeating prior work. Preserve original failure evidence. Experimental musical proposals may be auditioned and corrected without independent inference-accuracy acceptance; never relabel them as established measurements.
 - Before implementation, state the audible/operator criterion, concrete deliverable, minimal closing checks and stop condition. Record repaired defects, failed approaches and linked follow-ups here. Do not broaden infrastructure work beyond an actual blocker.

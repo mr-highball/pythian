@@ -11,7 +11,7 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 33 / 96 effort units accepted (34.38%); nine open, seven current-goal DONE.**
+**Current snapshot: 41 / 96 effort units accepted (42.71%); eight open, eight current-goal DONE.**
 This is a scope-delivery estimate, not a musical-quality score. No arbitrary
 per-task percentages or north-star weights apply.
 
@@ -19,11 +19,11 @@ per-task percentages or north-star weights apply.
 | --- | --- | ---: | ---: | ---: |
 | [NS-1](#ns-1) | Preserve portable core independence | 0 | 0 | Baseline invariant; no standalone current task |
 | [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 6 | 6 | 6 / 12 |
-| [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 15 | 0 | 0 / 15 |
+| [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 7 | 8 | 8 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, graph inspection and musical controls | 14 | 16 | 16 / 30 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
 | [NS-6](#ns-6) | Ordinary Studio generation, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 13 | 11 | 11 / 24 |
-| **Total** | **16 current-goal tasks** | **63** | **33** | **34.38%** |
+| **Total** | **16 current-goal tasks** | **55** | **41** | **42.71%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -62,14 +62,15 @@ automation, filters, routing and effects rather than inventing a parallel engine
 <a id="ns-3"></a>
 ### NS-3 — Recording-informed experimentation
 
-[Experimental learning](TODO/NS-3_experimental-learning_01.md) connects available
+[Experimental learning](TODO/DONE/NS-3_experimental-learning_01.md) connects available
 analysis to editable musical proposals; [style vocabulary](TODO/NS-3_style-vocabulary_01.md)
 uses coarse classifications and selected material across long private recordings.
 Uncertainty is visible and correctable, not a reason to withhold audition.
-AC1 exposes source-bound observations; AC2 adds contextual accept/correct/manual/
-bypass choices. Finite-job correction/feedback lineage passes. The richer
-pitch/context mapping now passes the concrete coupling repair. AC3's explicit
-sound/dynamics-to-instrument mapping remains open, so accepted NS-3 effort stays zero.
+Experimental learning is accepted: contextual accept/correct/manual/bypass
+choices drive actual symbolic providers and instrument cutoff/sustain, with
+Original references and saved correction/feedback lineage. Observations remain
+bounded Experimental proposals, not automatic source-instrument identification
+or whole-corpus learning. Style vocabulary remains open.
 
 <a id="ns-4"></a>
 ### NS-4 — Musical graph and synthesis together
@@ -86,7 +87,8 @@ by percussion. Actual graph summaries expose three conditional groups and the
 driven-role input. Proof/vocabulary-dependent examples have17 or20 passes; there
 is no cross-group backtracking or universal success claim. Its five units close
 the demonstrated melody/role repair; no recording-style or musical-quality credit
-follows. Experimental learning retains its remaining instrument/automation mapping.
+follows. Experimental learning also supplies explicit instrument cutoff/sustain
+mapping; deeper recipes and graph controls retain their own tasks.
 
 <a id="ns-5"></a>
 ### NS-5 — Music that develops and styles that remain reusable
@@ -105,7 +107,7 @@ experimental jobs, Original/Before/After feedback, inspectable results, efficien
 long playback and mobile recovery. Reuse existing working UI and native transport.
 [JSON identity](TODO/DONE/NS-6_json-identity_01.md) repairs the demonstrated musical
 choice save/reopen prerequisite. Its three implementation units are accepted after
-native storage and actual HTTP checks; the parent Studio editor remains open.
+native storage and actual HTTP checks; the parent experimental editor is now accepted.
 
 ## Completion accounting
 
@@ -119,8 +121,8 @@ The 53 former open tasks are [retired/replaced](TODO/RETIRED/2026-10-29/README.m
 not accepted. All 97 historical DONE records and their evidence remain separate;
 none has the current Goal tag. The former 52.45% weighted outcome-credit ledger is
 [historical](history/MILESTONES-2026-10-29.md), not a baseline in the new formula.
-Current scoped records: 9 open + 7 current DONE; legacy records: 53 retired +
-97 historical DONE (104 total DONE files). No implementation, saved feedback or license is discarded.
+Current scoped records: 8 open + 8 current DONE; legacy records: 53 retired +
+97 historical DONE (105 total DONE files). No implementation, saved feedback or license is discarded.
 
 100% means all required outcomes in this defined experimental goal are delivered
 and reviewed. It cannot promise any style from any user with universal accuracy.
@@ -129,4 +131,4 @@ completion. Implementation has resumed solo. The first runtime batch closes real
 criteria and changes the carried nonclosing count from two to zero; WORK records
 the event. Percussion, Studio and its concrete cancellation repair also close
 their criteria. The first real instrumental review is waiting for the operator;
-graph editing, deeper sound controls, WAV proposals, form/styles and streams remain open.
+graph editing, deeper sound controls, corpus vocabulary, form/styles and streams remain open.

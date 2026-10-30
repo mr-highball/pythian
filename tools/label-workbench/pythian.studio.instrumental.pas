@@ -100,6 +100,7 @@ begin
   FSettings := Add(AParent, 'section', ''); FSettings.id := 'instrumental-settings';
   Add(FSettings, 'h3', 'Make an instrumental experiment');
   Add(FSettings, 'p', 'Experimental · WFC arranges synthesized bass, harmony, lead and drums. Saved musical choices can supply an editable motif; other parts use authored accompaniment.').className := 'hint';
+  Add(FSettings, 'p', '').id := 'instrumental-material-sound';
   LRow := Add(FSettings, 'div', ''); LRow.className := 'range-fields';
   Input(LRow, 'instrumental-tempo', 'Tempo (BPM)', '120', 40, 240);
   Input(LRow, 'instrumental-bars', 'Length (bars, 4 beats each)', '8', 1, 32);
@@ -204,17 +205,29 @@ begin
 end;
 
 procedure TStudioInstrumental.ApplyMusicalContext(AMaterial: TJSObject);
-var LTempo, LTonic: Integer; LMode: String;
+var LTempo, LTonic, LPart: Integer; LMode, LText: String; LSound: TJSObject;
 begin
   LTempo := 120;
   LTonic := 0;
   LMode := 'major';
+  LText := 'Sound starting points are skipped. Sounds and mix below control the instruments.';
   if AMaterial <> nil then
   begin
     LTempo := Trunc(StudioNumber(AMaterial, 'tempo_bpm'));
     LTonic := Trunc(StudioNumber(AMaterial, 'tonic'));
     LMode := StudioText(AMaterial, 'mode');
+    if isObject(AMaterial['sound']) then
+    begin
+      LSound := TJSObject(AMaterial['sound']);
+      LPart := Trunc(StudioNumber(LSound, 'part'));
+      if (LPart >= 0) and (LPart < 3) and (StudioText(LSound, 'decision') <> 'bypassed') then
+        LText := CNames[LPart] + ' uses saved sound controls: cutoff ' +
+          FloatToStr(StudioNumber(LSound, 'cutoff_hz')) + ' Hz, sustain ' +
+          FloatToStr(StudioNumber(LSound, 'sustain_percent')) +
+          '%. Edit or skip them in Sources → Project → Musical starting points.';
+    end;
   end;
+  document.getElementById('instrumental-material-sound').textContent := LText;
   TJSHTMLInputElement(document.getElementById('instrumental-tempo')).value := IntToStr(LTempo);
   TJSHTMLSelectElement(document.getElementById('instrumental-tonic')).value := IntToStr(LTonic);
   TJSHTMLSelectElement(document.getElementById('instrumental-mode')).value := LMode;

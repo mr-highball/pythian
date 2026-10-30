@@ -147,6 +147,15 @@ begin
     Check(LCanonical.Objects['source'].Strings['kind'] = 'manual', 'Manual input has no invented source');
     LCanonical.Free;
     LCanonical := nil;
+    LOther := TJSONObject(LMaterial.Clone);
+    LOther.Objects['sound'].Floats['part'] := -1;
+    LOther.Objects['sound'].Floats['cutoff_hz'] := 1800;
+    LOther.Objects['sound'].Floats['sustain_percent'] := 70;
+    LCanonical := CanonicalStudioMaterial(LOther);
+    Check(LCanonical.Objects['sound'].AsJSON = LMaterial.Objects['sound'].AsJSON,
+      'Integral numeric sound inputs have one canonical identity');
+    FreeAndNil(LCanonical);
+    FreeAndNil(LOther);
     LMaterial.Integers['part'] := 2;
     LMaterial.Strings['pitch_decision'] := 'manual';
     SetLength(LPattern, 4);
@@ -182,6 +191,18 @@ begin
     LOther := TJSONObject(LMaterial.Clone);
     LOther.Strings['pitch_decision'] := 'accepted';
     Reject(LOther, 0, 'Manual pitches cannot claim source observations');
+    LOther.Free;
+    LOther := TJSONObject(LMaterial.Clone);
+    LOther.Objects['sound'].Integers['part'] := 2;
+    LOther.Objects['sound'].Strings['decision'] := 'accepted';
+    LOther.Objects['sound'].Booleans['available'] := True;
+    Reject(LOther, 0, 'Manual sound cannot invent an analysis proposal');
+    LOther.Free;
+    LOther := TJSONObject(LMaterial.Clone);
+    LOther.Objects['sound'].Integers['part'] := 2;
+    LOther.Objects['sound'].Strings['decision'] := 'manual';
+    LOther.Objects['sound'].Integers['cutoff_hz'] := 99;
+    Reject(LOther, 0, 'Invalid sound controls reject before saving');
     LOther.Free;
     LOther := TJSONObject(LMaterial.Clone);
     LOther.Arrays['pattern'].Objects[0].Integers['note'] := 128;
@@ -240,6 +261,27 @@ begin
     LAnalysisHash := StudioTextHash(LJob.Objects['results'].AsJSON);
     LJobText := LJob.AsJSON;
     LMaterial := ProposeStudioMaterial(GCatalog, 'musical-analysis');
+    Check(LMaterial.Objects['sound'].Booleans['available'] and
+      (LMaterial.Objects['sound'].Strings['decision'] = 'bypassed'),
+      'Actual nonsilent sound suggestion is available but not automatically applied');
+    LOther := TJSONObject(LMaterial.Clone);
+    LOther.Objects['sound'].Booleans['available'] := False;
+    LOther.Objects['sound'].Strings['decision'] := 'corrected';
+    LOther.Objects['sound'].Integers['part'] := 2;
+    Reject(LOther, 0, 'Without a prepared sound proposal, new controls must remain manual');
+    FreeAndNil(LOther);
+    LMaterial.Objects['sound'].Integers['part'] := 1;
+    LMaterial.Objects['sound'].Strings['decision'] := 'accepted';
+    ValidateStudioMaterialBinding(GCatalog, LMaterial);
+    Check(True, 'Accepted sound controls bind the real source measurements');
+    LOther := TJSONObject(LMaterial.Clone);
+    LOther.Objects['sound'].Integers['cutoff_hz'] := 101;
+    Reject(LOther, 1, 'Changed controls cannot claim an accepted source suggestion');
+    LOther.Objects['sound'].Strings['decision'] := 'corrected';
+    ValidateStudioMaterialBinding(GCatalog, LOther);
+    Check((LOther.Objects['source'].AsJSON = LMaterial.Objects['source'].AsJSON) and
+      (JobCount = 1), 'Corrected sound preserves source and does not submit a job');
+    FreeAndNil(LOther);
     Check((LMaterial.Strings['analysis_result_sha256'] = LAnalysisHash) and
       (LMaterial.Strings['analysis_job_id'] = 'musical-analysis'), 'Suggestions bind exact native analysis evidence');
     Check((LMaterial.Objects['source'].Strings['kind'] = 'capture') and

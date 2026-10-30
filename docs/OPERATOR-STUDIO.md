@@ -54,10 +54,17 @@ brightness does not identify an instrument.
 
 Analysis does not change a project, generation settings or model. Choose **Use
 or edit these suggestions** to open a contextual editor with Tempo & key, Pitch &
-part, and Source & notes tabs. Assign the pitch line to Bass, Harmony or Lead,
+part, Sound, and Source & notes tabs. Assign the pitch line to Bass, Harmony or Lead,
 correct its eighth-note cells, or skip pitch and retain authored parts. Channels
 are checked separately; they are not separated instruments. A manual motif can
 also start from Project → Musical starting points without any audio analysis.
+
+In **Sound**, choose Bass, Harmony or Lead and use the sound suggestion, edit the
+cutoff/sustain, or skip it. This changes that part's actual low-pass filter and
+envelope sustain. It is an editable starting point from measured brightness and
+window loudness; it does not identify or recreate the source instrument. Source
+details stay in local help. Accepting sound preserves other edited musical choices.
+Without analysis, the same controls are explicitly manual.
 
 **Apply to draft** changes the draft; **Save draft** preserves it; **Generate**
 builds a new model and instrumental result. Save does not train or generate.
@@ -71,9 +78,11 @@ the richer manual melody and checked role/correction variants. Context decides
 harmony, rhythm and the assigned part together; other parts remain independently
 generated. Unsupported combinations may still fail explicitly, without relaxing
 locks or claiming universal motif learning.
-The complete [experimental-learning task](TODO/NS-3_experimental-learning_01.md)
-stays open. Timbre measurements do not yet automatically select instruments or
-effects; sound controls remain explicit. Portable observation callers
+The bounded [experimental-learning task](TODO/DONE/NS-3_experimental-learning_01.md)
+is accepted. Broader instrument/effect recipes and coarse whole-corpus learning
+remain separate work. Jobs retain the selected sound recipe and show the actual
+part/cutoff/sustain used. Explicit Generate still builds models; unchanged musical
+model hashes after a sound edit do not imply a cache hit. Portable observation callers
 reuse [MeasureMusicalObservations](../src/pythian.music.observations.pas), built
 from primary analysis, tonal, resampling and pitch implementations.
 

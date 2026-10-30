@@ -14,7 +14,7 @@ coupling gap in the current independent harmony/rhythm provider preparation.
 Retain a joint musical-context provider and project its choices into the real
 harmonic/rhythmic passes, keeping independent instrumental roles and synthesis.
 This is musical adaptation in Pythian, not a demonstrated generic WFC defect.
-It is a concrete prerequisite of [experimental learning AC3](../NS-3_experimental-learning_01.md).
+It is a concrete prerequisite of [experimental learning AC3](NS-3_experimental-learning_01.md).
 
 Primary attribution: NS-4. Effort estimates implementation complexity, not
 musical quality or scientific confidence. No effort is accepted for the failed

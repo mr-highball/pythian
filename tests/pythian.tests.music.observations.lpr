@@ -26,7 +26,8 @@ program pythian_tests_music_observations;
 {$mode delphi}
 {$H+}
 uses SysUtils, Math, pythian.audio, pythian.progress, pythian.music.observations,
-  pythian.tonal, pythian.pitch.track, pythian.pitch.regions;
+  pythian.tonal, pythian.pitch.track, pythian.pitch.regions,
+  pythian.music.sound, pythian.synth, pythian.automation;
 
 type
   ECancelled = class(Exception);
@@ -61,6 +62,61 @@ begin
     if AChannels = 2 then LSamples[I * 2 + 1] := 0.2 * Sin(2 * Pi * 440 * I / 8000);
   end;
   Result := TAudioClip.Create(8000, AChannels, LSamples);
+end;
+
+procedure RunSound;
+var
+  LSound, LReplay: TMusicalSound;
+  LVoice, LOriginal, LApplied: TSynthVoice;
+  LFailed: Boolean;
+  LCurve: TAutomationCurve;
+begin
+  Check(ProposeMusicalSound(1200, 0.05, 0.2, LSound), 'Nonsilent sound suggestion available');
+  Check((LSound.CutoffHz = 2400) and (LSound.SustainPercent = 25), 'Explicit brightness and dynamics mapping');
+  Check(ProposeMusicalSound(1200, 0.05, 0.2, LReplay) and
+    (LSound.CutoffHz = LReplay.CutoffHz) and (LSound.SustainPercent = LReplay.SustainPercent), 'Sound mapping deterministic');
+  LVoice := DefaultSynthVoice;
+  LOriginal := LVoice;
+  LApplied := ApplyMusicalSound(LVoice, LSound, 24000);
+  Check((LApplied.CutoffHz = 2400) and (LApplied.Envelope.SustainLevel = 0.25), 'Actual shared voice controls changed');
+  Check((LVoice.CutoffHz = LOriginal.CutoffHz) and
+    (LVoice.Envelope.SustainLevel = LOriginal.Envelope.SustainLevel), 'Source voice remains unchanged');
+  Check((LApplied.Gain = LVoice.Gain) and (LApplied.Shape = LVoice.Shape) and
+    (LApplied.Envelope.AttackSeconds = LVoice.Envelope.AttackSeconds), 'Other sound choices remain explicit');
+  Check(not ProposeMusicalSound(0, 0, 0, LReplay), 'Silence does not invent a sound suggestion');
+  Check((LReplay.CutoffHz = 0) and (LReplay.SustainPercent = 0), 'Unavailable proposal is empty');
+  Check(ProposeMusicalSound(1E100, 0, 0.2, LReplay) and
+    (LReplay.CutoffHz = 10000) and (LReplay.SustainPercent = 0), 'Extreme finite observations remain bounded');
+  Check(ProposeMusicalSound(0, 0.2, 0.2, LReplay) and
+    (LReplay.CutoffHz = 100) and (LReplay.SustainPercent = 100), 'Low brightness and steady dynamics endpoints');
+  LFailed := False;
+  try ProposeMusicalSound(100, 0.3, 0.2, LReplay);
+  except on E: EAudio do LFailed := True end;
+  Check(LFailed, 'Inverted observed dynamics rejected');
+  LFailed := False;
+  try ProposeMusicalSound(NaN, 0.1, 0.2, LReplay);
+  except on E: EAudio do LFailed := True end;
+  Check(LFailed, 'Nonfinite observations rejected');
+  LFailed := False;
+  LSound.CutoffHz := 6000;
+  try LApplied := ApplyMusicalSound(LVoice, LSound, 8000);
+  except on E: EAudio do LFailed := True end;
+  Check(LFailed and (LApplied.CutoffHz = 2400), 'Rate-incompatible control preserves accepted voice');
+  LSound.CutoffHz := 2400;
+  LSound.SustainPercent := 101;
+  LFailed := False;
+  try LApplied := ApplyMusicalSound(LVoice, LSound, 24000);
+  except on E: EAudio do LFailed := True end;
+  Check(LFailed and (LApplied.Envelope.SustainLevel = 0.25), 'Invalid controls preserve previous result');
+  LSound.SustainPercent := 25;
+  LCurve := TAutomationCurve.CreateLfo(100, alsSine);
+  try
+    LVoice.Automation.CutoffHz := LCurve;
+    LFailed := False;
+    try LApplied := ApplyMusicalSound(LVoice, LSound, 24000);
+    except on E: EAudio do LFailed := True end;
+    Check(LFailed, 'Existing automation is not silently overridden');
+  finally LCurve.Free end;
 end;
 
 procedure Run;
@@ -200,6 +256,7 @@ begin
 end;
 
 begin
+  RunSound;
   Run;
   WriteLn('PASS musical observations: ', GChecks, ' checks');
 end.

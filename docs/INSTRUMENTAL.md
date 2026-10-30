@@ -25,6 +25,14 @@ streams retain their linked [tasks](TODO/README.md).
 
 ## Public API and ownership
 
+Studio's contextual Sound step uses the shared
+[observed sound controls](INSTRUMENTS.md#experimental-observed-sound-controls)
+to apply an explicit low-pass cutoff and envelope sustain to one pitched part.
+The job retains the saved source recipe and actual `applied_sound` values; other
+parts retain their instrument recipes. Saving choices/feedback never queues work.
+Each explicit Generate constructs its musical models again; identical model
+hashes after a sound-only edit are not a cache/reuse claim.
+
 Call TryCreateInstrumentalPlan with an actual TWfcMusicVoicesGraphConfig, ordered
 role/instrument/bus bindings, session options, explicit PPQ tempo changes and
 material origin. Masks and preferences use harmony, rhythm, then declared role

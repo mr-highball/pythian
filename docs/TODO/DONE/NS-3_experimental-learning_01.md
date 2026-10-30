@@ -1,30 +1,37 @@
 # NS-3_experimental-learning_01 — Turn available WAV analysis into editable musical graph proposals
 
-[Active tasks](README.md) · [Goal](../GOAL.md) · [Milestones](../MILESTONES.md)
+[Active tasks](../README.md) · [Goal](../../GOAL.md) · [Milestones](../../MILESTONES.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 8/10
-**Status:** In progress
+**Status:** Accepted — 2026-10-30
 **Owner:** Big Boss (single agent)
 
 **Description:**
 
 Use the existing key/tempo/onset/pitch/dynamics/timbre analyses to propose musical providers for instrumental generation. Experimental access does not depend on a completed accuracy benchmark. Keep source, proposal and operator decisions distinct. Stop on hidden substitution of source grains for synthesized parts.
 
-AC1 is delivered in the 2026-10-30 Big Boss batch: the ordinary recording and
-import inspection jobs expose Experimental tempo candidates, all ranked tonal
-alternatives, per-channel pitch spans and sound/dynamics measurements through
-one shared Studio panel. Exact source ranges and shorter measured pitch extent
-remain visible. Native and actual pas2js run 32 focused checks; the native capture
-consumer passes 80 checks, including nonzero source offsets, and the existing
-native pitch fixture passes with clean heaps. Isolated desktop/390-pixel Edge
-checks exercise recording inspection, actual WAV upload/analysis, alternatives,
-pitch details and unchanged generation settings. The retained import also
-reopens through the final matched QA build. This is not physical-phone testing
-or reliable mixed-recording transcription. AC2 and finite-job AC4 subsequently
-passed; the motif-coupling prerequisite now passes too. Finish AC3's explicit
-sound/dynamics proposal mapping into actual instrument/automation settings before
-accepting the complete task. No partial effort is accepted.
+AC1–4 pass through the ordinary native jobs and desktop/390-pixel Studio paths.
+The contextual editor accepts, corrects, bypasses or manually supplies tempo,
+key, per-channel pitch cells and part assignment. Selected motifs drive actual
+symbolic WFC context/voice providers and six synthesized parts, with authored
+accompaniment. Original excerpts retain their source coordinates and provenance.
+Sources are never the performed training-mix grains.
+
+The Sound step explicitly applies measured brightness/dynamics starting points
+to one pitched part, or accepts manual/corrected cutoff and sustain controls.
+Shared portable application changes the real instrument voice; jobs retain the
+recipe, applied values and original analysis digest. Apply, Save and feedback
+never queue learning/generation. Explicit Generate builds models and renders the
+requested experiment; matching model hashes do not imply a cache hit. Known runs
+are explicitly repeated motifs, not learned continuity across unknown regions.
+
+These are bounded Experimental hypotheses: spectral/beat windows up to30 seconds,
+per-channel pitch over the first8 seconds, eighth-note quantization, and an
+editable heuristic sound mapping. No mixed-WAV separation, automatic source
+instrument identification, whole-corpus style learning, musical-quality verdict
+or physical-phone validation is claimed. Broader sound recipes, vocabulary,
+graph controls, form, styles and long sessions keep their separate tasks.
 
 Primary attribution: NS-3. Effort estimates relative implementation/integration complexity, not musical value, accuracy, elapsed time or assigned percentage. No part of this new outcome is accepted by planning or by historical component tests.
 
@@ -37,19 +44,73 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [NS-4_motif-coupling_01 — DONE](DONE/NS-4_motif-coupling_01.md) — real selected-role
+- [NS-4_motif-coupling_01 — DONE](NS-4_motif-coupling_01.md) — real selected-role
   context coupling repairs the actual richer Studio manual melody and variants.
 
-- [NS-6_json-identity_01 — DONE](DONE/NS-6_json-identity_01.md) — native Unicode
+- [NS-6_json-identity_01 — DONE](NS-6_json-identity_01.md) — native Unicode
   musical choices and source/job receipts now preserve actual operator bytes.
 
-- [NS-4_joint-context_01 — DONE](DONE/NS-4_joint-context_01.md) — paired context
-  resolves the demonstrated AC3 motif prerequisite; Studio mapping remains open.
+- [NS-4_joint-context_01 — DONE](NS-4_joint-context_01.md) — paired context
+  resolves the demonstrated AC3 motif prerequisite; Studio mapping is accepted above.
 
-- [NS-4_instrumental-runtime_01](DONE/NS-4_instrumental-runtime_01.md)
-- [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
+- [NS-4_instrumental-runtime_01](NS-4_instrumental-runtime_01.md)
+- [NS-6_instrumental-studio_01](NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-10-30, Big Boss: Remaining AC3/AC4 accepted. Shared primary
+  pythian.music.sound proposes bounded cutoff/sustain and applies them to actual
+  voices. Win32/Win64 and actual pas2js pass47 shared observation/sound checks;
+  final native choice/lineage checks pass59 on each native target with clean heaps.
+  The full ordinary source/manual generation matrix passes99 on Win32 and checked
+  optimized Win64. Real selected-part PCM changes, unrelated part PCM remains
+  identical, bypass restores the preceding performance, and Original source
+  offsets/receipts survive. The five optimized source jobs take7–13 seconds on
+  this workstation with the original600-second limit. Preserve the unoptimized
+  Win64 failure below; no universal timing or unoptimized-build pass is claimed.
+- The maintained build compiles the ordinary worker and this full generation
+  consumer with `-O2` while keeping its assertions/range/overflow/I/O checks and
+  original budgets. A fresh `-B -O2` consumer rebuild also passes99 with clean heaps,
+  including the final canonical integer/proposal-origin guards. Other consumers'
+  build flags are unchanged; new remote CI is still pending publication.
+- Actual desktop/390-pixel UI checks cover accept/edit/bypass/manual, saved reload,
+  numeric controls, no horizontal overflow, and accepting sound without changing
+  edited tempo/key/part/notes. Save leaves jobs identical. An ordinary optimized
+  worker completes after the page closes; reopening plays/solos six parts, shows
+  actual applied settings and switches between Original/synthesized playback
+  with mutual pause. A marked automated QA unknown response and timestamped note
+  save without changing jobs. Its stored request binds exact audio/model/material/
+  parameter hashes to the immutable source/recipe job. Playback was muted; this
+  is not operator listening approval or independent QA. Final manual-origin Save
+  also passes the matched service/assets. Evidence is under
+  musical-sound-20261030-boss in the dedicated E-drive roots; no QA data is promoted
+  into the operator catalog. No WFC source, branch or pin changed.
+- Repairs/failures: preserve the native extreme-value Min/Max overload failure;
+  explicit bounded branches avoid narrowing a finite Double before rounding.
+  Compare stored Double values when checking untouched voices across Win32's
+  extended precision. Preserve the initial missing-output-directory and argument
+  launcher errors; they are harness setup failures. Browser navigation timeouts
+  were reobserved against the live service, without a restart; closing owned old
+  tabs stopped competing polling. The primary-stage locator needed its actual
+  tab ID, optional notes needed their collapsed details opened, and a test-local
+  URL needed a declared binding. These were repaired harness actions. Final UI
+  copy is shorter, technical mapping is local help, and missing proposals remain
+  manual rather than falsely corrected observations. Integral sound numbers have
+  one canonical JSON identity. Complete task acceptance adds8 units and keeps
+  consecutive nonclosing batches at zero.
+
+- 2026-10-30, Big Boss: The full Win32 source/sound matrix passes99 checks with
+  clean heaps. Accepted and corrected sound change real PCM, an untouched part
+  stays byte-identical, bypass restores the exact preceding performance and the
+  symbolic model vocabulary is unchanged. Each explicit Generate still constructs
+  its models; matching hashes are not a cache/reuse or no-learning-work claim.
+  The unoptimized checked Win64 run times out at the unchanged600-second limit
+  on its third four-second render. Retain its requests, events, partial WAVs and
+  clean-heap failure under musical-sound-20261030-boss. Timing places most delay
+  before rendering; do not infer an audio-control or WFC algorithm defect yet.
+  Qualify the same full matrix in the normal optimized checked Win64 build with
+  the same inputs and budget. If it remains blocked, create the specific linked
+  runtime prerequisite before expanding scope; no raised limits or smaller test.
 
 - 2026-10-30, Big Boss: Select remaining AC3 and its AC4 lineage checks. Audible
   criterion: deliberately accept, correct or bypass a recording's Experimental
@@ -186,5 +247,5 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
   required an explicit empty inbox manifest; browser startup/navigation timeouts
   were reconciled against the live page, not treated as application failures or
   passed checks. No benchmark, new solver, provider admission or silent learning.
-- Read [the implementation review](../ASSESSMENT-2026-10-29.md) and [retirement/replacement map](RETIRED/2026-10-29/README.md) before repeating prior work. Preserve original failure evidence. Experimental musical proposals may be auditioned and corrected without independent inference-accuracy acceptance; never relabel them as established measurements.
+- Read [the implementation review](../../ASSESSMENT-2026-10-29.md) and [retirement/replacement map](../RETIRED/2026-10-29/README.md) before repeating prior work. Preserve original failure evidence. Experimental musical proposals may be auditioned and corrected without independent inference-accuracy acceptance; never relabel them as established measurements.
 - Before implementation, state the audible/operator criterion, concrete deliverable, minimal closing checks and stop condition. Record repaired defects, failed approaches and linked follow-ups here. Do not broaden infrastructure work beyond an actual blocker.

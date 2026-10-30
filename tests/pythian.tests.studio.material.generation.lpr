@@ -61,6 +61,7 @@ var
   LStream: TFileStream;
   LWave: TWaveFrameReader;
   LSourceHash, LHash, LFirstAudio, LFirstModel: String;
+  LFixedModel, LFixedAudio, LSoundAudio, LOtherStem: String;
   I, J: Integer;
 begin
   Check(not DirectoryExists(ARoot), 'Use a fresh isolated root');
@@ -95,8 +96,9 @@ begin
     LWrite.Add('learning_mode', 'instrumental');
     LWrite.Add('sources', TJSONArray.Create);
     LWrite.Add('musical_material', LMaterial.Clone);
-    for I := 1 to 2 do
+    for I := 1 to 5 do
     begin
+      if I > 1 then LWrite.Integers['expected_revision'] := I - 1;
       if I = 2 then
       begin
         LWrite.Integers['expected_revision'] := 1;
@@ -106,6 +108,24 @@ begin
           LRow := LWrite.Objects['musical_material'].Arrays['pattern'].Objects[J];
           if LRow.Strings['kind'] = 'pitch' then LRow.Integers['note'] := LRow.Integers['note'] + 1;
         end;
+      end;
+      if I = 3 then
+      begin
+        Check(LWrite.Objects['musical_material'].Objects['sound'].Booleans['available'],
+          'Actual selected range has a sound proposal');
+        LWrite.Objects['musical_material'].Objects['sound'].Integers['part'] := 2;
+        LWrite.Objects['musical_material'].Objects['sound'].Strings['decision'] := 'accepted';
+      end;
+      if I = 4 then
+      begin
+        LWrite.Objects['musical_material'].Objects['sound'].Strings['decision'] := 'corrected';
+        LWrite.Objects['musical_material'].Objects['sound'].Integers['cutoff_hz'] := 100;
+        LWrite.Objects['musical_material'].Objects['sound'].Integers['sustain_percent'] := 10;
+      end;
+      if I = 5 then
+      begin
+        LWrite.Objects['musical_material'].Objects['sound'].Strings['decision'] := 'bypassed';
+        LWrite.Objects['musical_material'].Objects['sound'].Integers['part'] := -1;
       end;
       FreeAndNil(LProject);
       LProject := SaveStudioProject(ARoot, LWrite);
@@ -138,10 +158,33 @@ begin
           LFirstAudio := LHash;
           LFirstModel := LResult.Strings['model_sha256'];
         end
-        else
+        else if I = 2 then
         begin
           Check(LHash <> LFirstAudio, 'Corrected notes change the actual synthesized audio');
           Check(LResult.Strings['model_sha256'] <> LFirstModel, 'Corrected notes change real provider models');
+          LFixedAudio := LHash;
+          LFixedModel := LResult.Strings['model_sha256'];
+          LOtherStem := LResult.Arrays['parts'].Objects[0].Strings['wav_sha256'];
+        end;
+        if I >= 3 then
+        begin
+          Check(LResult.Strings['model_sha256'] = LFixedModel,
+            'Sound-only choices leave musical model vocabularies unchanged');
+          Check(LResult.Arrays['parts'].Objects[0].Strings['wav_sha256'] = LOtherStem,
+            'Sound changes leave the other independently synthesized part byte-identical');
+          if I < 5 then
+          begin
+            Check(LResult.Objects['applied_sound'].AsJSON =
+              LProject.Objects['musical_material'].Objects['sound'].AsJSON, 'Actual applied sound is retained');
+            Check(LHash <> LFixedAudio, 'Sound controls change the actual six-part synthesized mix');
+            if I = 3 then LSoundAudio := LHash
+            else Check(LHash <> LSoundAudio, 'Correcting only sound changes actual audio with fixed notes and seed');
+          end
+          else
+          begin
+            Check(LResult.Find('applied_sound') = nil, 'Bypassed sound is not claimed applied');
+            Check(LHash = LFixedAudio, 'Bypassing sound restores the exact preceding instrument performance');
+          end;
         end;
         LStream := OpenStudioInstrumentalAudio(ARoot, LRequest.Strings['job_id'], 7, LHash);
         try
@@ -156,8 +199,8 @@ begin
     end;
     LQueue := ReadListeningQueue(ARoot);
     try
-      Check(LQueue.Arrays['items'].Count = 2, 'Both explicit generations publish feedback');
-      for I := 0 to 1 do
+      Check(LQueue.Arrays['items'].Count = 5, 'All explicit generations publish feedback');
+      for I := 0 to 4 do
       begin
         LRow := LQueue.Arrays['items'].Objects[I];
         Check((LRow.Strings['kind'] = 'pair') and (LRow.Arrays['assets'].Count = 2),

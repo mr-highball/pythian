@@ -608,13 +608,15 @@ try {
     New-Item -ItemType Directory -Force $adapterUnitRoot | Out-Null
     $adapterArgs = @('-B', '-Sa', '-Cr', '-Co', '-Ci', '-gl', '-Fusrc',
       '-Fuadapters/wfc', '-Fuvendor/wfc/src', '-Futools', "-FU$adapterUnitRoot", "-FE$buildRoot")
-    & $compilerPath @adapterArgs 'tools/pythian.studio.worker.lpr'
+    # Big Boss: qualify the ordinary optimized native job path, retaining all
+    # assertions/range/overflow/I/O checks and the unchanged job time budgets.
+    & $compilerPath @adapterArgs '-O2' 'tools/pythian.studio.worker.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Studio worker compilation failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.studio.instrumental.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Studio instrumental fixture compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.studio.instrumental$executableSuffix") (Join-Path $buildRoot ('studio-instrumental-' + [Guid]::NewGuid().ToString('N')))
     if ($LASTEXITCODE -ne 0) { throw 'Studio instrumental checks failed' }
-    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.studio.material.generation.lpr'
+    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.studio.material.generation.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Studio musical-choice generation compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.studio.material.generation$executableSuffix") (Join-Path $buildRoot ('studio-material-generation-' + [Guid]::NewGuid().ToString('N')))
     if ($LASTEXITCODE -ne 0) { throw 'Studio musical-choice generation checks failed' }

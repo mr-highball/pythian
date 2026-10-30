@@ -52,9 +52,11 @@ type
     procedure DrawCells;
     procedure DrawCell;
     procedure DrawSummary;
+    procedure DrawSoundState;
     procedure SetTab(const ATab: String);
     procedure MarkPitch;
-    procedure Load(const AJob: String; const ARebuild: Boolean); async;
+    procedure Load(const AJob: String; const ARebuild: Boolean;
+      const ASoundOnly: Boolean = False); async;
     function Click(AEvent: TJSMouseEvent): Boolean;
     function Edit(AEvent: TEventListenerEvent): Boolean;
     function Cancel(AEvent: TEventListenerEvent): Boolean;
@@ -105,7 +107,11 @@ begin
   LLabel := Add(AParent, 'label', ALabel, '');
   Result := Add(LLabel, 'input', '', 'material-' + AId);
   Result.setAttribute('type', AType);
-  if AType = 'number' then Result.setAttribute('step', '1');
+  if AType = 'number' then
+  begin
+    Result.setAttribute('step', '1');
+    Result.setAttribute('inputmode', 'numeric');
+  end;
 end;
 
 function TStudioMaterial.Select(AParent: TJSElement;
@@ -142,13 +148,14 @@ begin
   LRow.className := 'guide-dialog-header';
   Add(LRow, 'h2', 'Choose the musical starting point', 'material-title');
   Button(LRow, 'Cancel', 'cancel');
-  Add(FPanel, 'p', 'Experimental · One pitch line with authored accompaniment. A mix is not separated into instruments.', '').className := 'hint';
+  Add(FPanel, 'p', 'Experimental · Editable pitch and sound with authored accompaniment. A mix is not separated into instruments.', '').className := 'hint';
   LRow := Add(LHeader, 'div', '', '');
   LRow.className := 'material-tabs';
   LRow.setAttribute('role', 'tablist');
   Button(LRow, '1 Tempo & key', 'tab-context');
   Button(LRow, '2 Pitch & part', 'tab-pitch');
-  Button(LRow, '3 Source & notes', 'tab-source');
+  Button(LRow, '3 Sound', 'tab-sound');
+  Button(LRow, '4 Source', 'tab-source');
   LBox := Add(FPanel, 'section', '', 'material-context');
   Add(LBox, 'p', 'These choices set the next experiment’s clock and accompaniment. You can still override them in Generate.', '');
   LRow := Add(LBox, 'div', '', '');
@@ -186,6 +193,24 @@ begin
   LRow.className := 'source-toolbar';
   Button(LRow, '+ 8 empty cells', 'append');
   Button(LRow, 'Remove last cell', 'remove');
+  Button(LBox, 'Next: Sound →', 'tab-sound');
+  LBox := Add(FPanel, 'section', '', 'material-sound');
+  Add(LBox, 'p', 'Shape the sound of one synthesized part.', '').className := 'hint';
+  Select(LBox, 'Apply sound controls to', 'sound-part',
+    ['Skip sound · keep current instruments', 'Bass', 'Harmony', 'Lead'], ['-1', '0', '1', '2']);
+  LRow := Add(LBox, 'div', '', '');
+  LRow.className := 'range-fields';
+  Field(LRow, 'Low-pass cutoff (Hz, 100–10000)', 'cutoff', 'number');
+  Field(LRow, 'Envelope sustain (%, 0–100)', 'sustain', 'number');
+  Add(LBox, 'p', 'Cutoff changes brightness. Sustain sets the level while a note is held.', '').className := 'hint';
+  Add(LBox, 'p', '', 'material-sound-decision').setAttribute('role', 'status');
+  LRow := Add(LBox, 'div', '', '');
+  LRow.className := 'source-toolbar';
+  Button(LRow, 'Use sound suggestion', 'accept-sound');
+  Button(LRow, 'Skip sound', 'skip-sound');
+  LRow := Add(LBox, 'details', '', '');
+  Add(LRow, 'summary', 'How is this suggested?', '');
+  Add(LRow, 'p', 'Twice the measured spectral centroid → cutoff; quiet/peak window loudness → sustain. Edit either value to try something else. This does not identify an instrument or copy its envelope.', '').className := 'hint';
   Button(LBox, 'Next: Source & notes →', 'tab-source');
   LBox := Add(FPanel, 'section', '', 'material-source');
   FSource := Add(LBox, 'p', '', 'material-source-details');
@@ -228,7 +253,7 @@ end;
 
 procedure TStudioMaterial.DrawSummary;
 const CParts: array[0..2] of String = ('bass', 'harmony', 'lead');
-var LPart: Integer; LText: String;
+var LPart: Integer; LText: String; LSound: TJSObject;
 begin
   LText := 'Authored starter · no recording-derived choices.';
   if FValue <> nil then
@@ -238,6 +263,13 @@ begin
     LPart := Trunc(StudioNumber(FValue, 'part'));
     if LPart >= 0 then LText := LText + ' · pitch cells → ' + CParts[LPart]
     else LText := LText + ' · authored pitched parts';
+    if isObject(FValue['sound']) then
+    begin
+      LSound := TJSObject(FValue['sound']);
+      LPart := Trunc(StudioNumber(LSound, 'part'));
+      if (LPart >= 0) and (LPart < 3) then
+        LText := LText + ' · sound controls → ' + CParts[LPart];
+    end;
     if StudioText(FValue, 'analysis_job_id') <> '' then
       LText := LText + ' · linked to audio analysis'
     else LText := LText + ' · manual input';
@@ -284,7 +316,7 @@ begin
 end;
 
 procedure TStudioMaterial.SetTab(const ATab: String);
-const CNames: array[0..2] of String = ('context', 'pitch', 'source');
+const CNames: array[0..3] of String = ('context', 'pitch', 'sound', 'source');
 var LName: String; LButton: TJSElement;
 begin
   for LName in CNames do
@@ -307,7 +339,7 @@ begin
 end;
 
 procedure TStudioMaterial.Draw;
-var LSource: TJSObject; LRate: Double;
+var LSource, LSound: TJSObject; LRate: Double;
 begin
   if FDraft = nil then Exit;
   TJSHTMLInputElement(El('tempo')).value := FloatToStr(StudioNumber(FDraft, 'tempo_bpm'));
@@ -320,6 +352,19 @@ begin
     El('audio-controls').setAttribute('hidden', '')
   else El('audio-controls').removeAttribute('hidden');
   TJSHTMLTextAreaElement(El('notes')).value := StudioText(FDraft, 'notes');
+  if not isObject(FDraft['sound']) then
+  begin
+    LSound := TJSObject.new;
+    LSound['part'] := -1; LSound['cutoff_hz'] := 1800;
+    LSound['sustain_percent'] := 70; LSound['decision'] := 'bypassed';
+    LSound['available'] := False;
+    FDraft['sound'] := LSound;
+  end;
+  LSound := TJSObject(FDraft['sound']);
+  TJSHTMLSelectElement(El('sound-part')).value := FloatToStr(StudioNumber(LSound, 'part'));
+  TJSHTMLInputElement(El('cutoff')).value := FloatToStr(StudioNumber(LSound, 'cutoff_hz'));
+  TJSHTMLInputElement(El('sustain')).value := FloatToStr(StudioNumber(LSound, 'sustain_percent'));
+  DrawSoundState;
   El('decisions').textContent := 'Tempo: ' + StudioText(FDraft, 'tempo_decision') +
     ' · Key: ' + StudioText(FDraft, 'key_decision');
   LSource := TJSObject(FDraft['source']);
@@ -334,6 +379,23 @@ begin
       ' · ' + StudioText(LSource, 'license') + ' · ' + StudioText(LSource, 'provenance');
   end;
   DrawCells;
+end;
+
+procedure TStudioMaterial.DrawSoundState;
+var LSound: TJSObject; LText: String;
+begin
+  LSound := TJSObject(FDraft['sound']);
+  case StudioText(LSound, 'decision') of
+    'accepted': LText := 'Using the analyzed sound suggestion.';
+    'corrected': LText := 'Using your edited sound controls.';
+    'manual': LText := 'Using your own sound controls.';
+  else LText := 'Sound controls are skipped.';
+  end;
+  if not Boolean(LSound['available']) and (StudioNumber(LSound, 'part') < 0) then
+    LText := LText + ' Choose a part to enter your own controls.';
+  El('sound-decision').textContent := LText;
+  TJSHTMLButtonElement(FPanel.querySelector('[data-material-action="accept-sound"]')).disabled :=
+    not Boolean(LSound['available']);
 end;
 
 procedure TStudioMaterial.DrawCells;
@@ -400,8 +462,8 @@ begin
   else FDraft['pitch_decision'] := 'corrected';
 end;
 
-procedure TStudioMaterial.Load(const AJob: String; const ARebuild: Boolean); async;
-var LResponse: TJSResponse; LNew: TJSObject; LPath: String; LEpoch: Integer;
+procedure TStudioMaterial.Load(const AJob: String; const ARebuild, ASoundOnly: Boolean); async;
+var LResponse: TJSResponse; LNew, LSound: TJSObject; LPath: String; LEpoch, LPart: Integer;
 begin
   Inc(FEpoch);
   LEpoch := FEpoch;
@@ -412,7 +474,7 @@ begin
     if AJob <> '' then
     begin
       LPath := LPath + '?id=' + encodeURIComponent(AJob);
-      if ARebuild then
+      if ARebuild and not ASoundOnly then
         LPath := LPath + '&tempo=' + IntToStr(Number('tempo', 40, 240)) +
           '&channel=' + IntToStr(Number('channel', 1, 32) - 1)
       else LPath := LPath + '&tempo=0&channel=0';
@@ -424,7 +486,19 @@ begin
     if LEpoch <> FEpoch then Exit;
     if LResponse.status <> 200 then
       raise Exception.Create(StudioText(LNew, 'message'));
-    if ARebuild then
+    if ASoundOnly then
+    begin
+      LPart := Trunc(StudioNumber(TJSObject(FDraft['sound']), 'part'));
+      if LPart < 0 then LPart := Trunc(StudioNumber(FDraft, 'part'));
+      if LPart < 0 then LPart := 2;
+      LSound := CopyObject(TJSObject(LNew['sound']));
+      if not Boolean(LSound['available']) then
+        raise Exception.Create('This analysis has no sound suggestion. Enter your own controls instead.');
+      LSound['part'] := LPart;
+      LSound['decision'] := 'accepted';
+      FDraft['sound'] := LSound;
+    end
+    else if ARebuild then
     begin
       FDraft['pattern'] := LNew['pattern'];
       FDraft['channel'] := LNew['channel'];
@@ -437,10 +511,15 @@ begin
       FDraft := LNew;
       FEditedPattern := False;
     end;
-    FCell := 0;
-    FPage := 0;
+    if not ASoundOnly then
+    begin
+      FCell := 0;
+      FPage := 0;
+    end;
     Draw;
     FNotice.textContent := 'Choose a part to use pitch cells, or skip them. Apply keeps changes in your draft.';
+    if ASoundOnly then
+      FNotice.textContent := 'Sound suggestion selected. Pitch, tempo and key are unchanged. Apply keeps it in your draft.';
   except
     on E: Exception do
       if LEpoch = FEpoch then FNotice.textContent := E.Message;
@@ -452,7 +531,7 @@ begin
 end;
 
 function TStudioMaterial.Edit(AEvent: TEventListenerEvent): Boolean;
-var LId, LKind, LDecision: String; LCells: TJSArray; LRow, LPrev: TJSObject;
+var LId, LKind, LDecision: String; LCells: TJSArray; LRow, LPrev, LSound: TJSObject;
 begin
   Result := False;
   if FBusy or (FDraft = nil) then Exit;
@@ -481,6 +560,18 @@ begin
         if FEditedPattern or (StudioText(FDraft, 'analysis_job_id') = '') then MarkPitch
         else FDraft['pitch_decision'] := 'accepted';
       end;
+    end
+    else if (LId = 'material-sound-part') or (LId = 'material-cutoff') or
+      (LId = 'material-sustain') then
+    begin
+      LSound := TJSObject(FDraft['sound']);
+      LSound['part'] := Number('sound-part', -1, 2);
+      LSound['cutoff_hz'] := Number('cutoff', 100, 10000);
+      LSound['sustain_percent'] := Number('sustain', 0, 100);
+      LSound['decision'] := LDecision;
+      if not Boolean(LSound['available']) then LSound['decision'] := 'manual';
+      if StudioNumber(LSound, 'part') < 0 then LSound['decision'] := 'bypassed';
+      DrawSoundState;
     end
     else if LId = 'material-notes' then
       FDraft['notes'] := TJSHTMLTextAreaElement(El('notes')).value
@@ -524,7 +615,7 @@ var
   LButton: TJSElement;
   LAction, LJob: String;
   LCells: TJSArray;
-  LRow: TJSObject;
+  LRow, LSound: TJSObject;
   LPattern: TPitchPattern;
   I, LCount: Integer;
 begin
@@ -554,6 +645,20 @@ begin
     else if FBusy or (FDraft = nil) then Exit
     else if Copy(LAction, 1, 4) = 'tab-' then SetTab(Copy(LAction, 5, MaxInt))
     else if LAction = 'manual' then Load('', False)
+    else if LAction = 'accept-sound' then
+    begin
+      LSound := TJSObject(FDraft['sound']);
+      if not Boolean(LSound['available']) then
+        raise Exception.Create('Analyze a nonsilent recording first, or enter your own sound controls.');
+      { Reload the actual proposal; edited numbers cannot be labeled accepted. }
+      Load(StudioText(FDraft, 'analysis_job_id'), True, True);
+    end
+    else if LAction = 'skip-sound' then
+    begin
+      LSound := TJSObject(FDraft['sound']);
+      LSound['part'] := -1; LSound['decision'] := 'bypassed';
+      Draw;
+    end
     else if LAction = 'rebuild' then
     begin
       if StudioText(FDraft, 'analysis_job_id') = '' then
@@ -577,6 +682,10 @@ begin
     else if LAction = 'apply' then
     begin
       FDraft['tempo_bpm'] := Number('tempo', 40, 240);
+      LSound := TJSObject(FDraft['sound']);
+      LSound['part'] := Number('sound-part', -1, 2);
+      LSound['cutoff_hz'] := Number('cutoff', 100, 10000);
+      LSound['sustain_percent'] := Number('sustain', 0, 100);
       FDraft['notes'] := TJSHTMLTextAreaElement(El('notes')).value;
       LCells := TJSArray(FDraft['pattern']);
       SetLength(LPattern, LCells.length);

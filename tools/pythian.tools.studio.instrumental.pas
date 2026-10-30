@@ -43,7 +43,8 @@ implementation
 uses Classes, SysUtils, Math,
   pythian.audio, pythian.time, pythian.bus, pythian.effects,
   pythian.instrument, pythian.synth, pythian.oscillator, pythian.schedule,
-  pythian.wave.stream, pythian.music.pattern, pythian.wfc.instrumental, pythian.wfc.instrumental.starter,
+  pythian.wave.stream, pythian.music.pattern, pythian.music.sound,
+  pythian.wfc.instrumental, pythian.wfc.instrumental.starter,
   pythian.wfc.percussion, pythian.wfc.voices, pythian.wfc.musical.context,
   wfc_model, wfc_sequence, wfc_sequence_text,
   pythian.tools.studio.jobs, pythian.tools.studio.instrumental.config,
@@ -100,6 +101,8 @@ var
   LMode: String;
   LRecipeHash: String;
   LPatternRole: Integer;
+  LSoundRole: Integer;
+  LSound: TMusicalSound;
 begin
   LConfig := ARequest.Objects['instrumental'];
   ValidateStudioInstrumentalConfig(LConfig);
@@ -120,11 +123,18 @@ begin
     LPattern := nil;
     LPatternRole := 2;
     LRecipeHash := '';
+    LSoundRole := -1;
     if ARequest.Objects['project_snapshot'].Find('musical_material') <> nil then
     begin
       LMaterial := CanonicalStudioMaterial(ARequest.Objects['project_snapshot'].Objects['musical_material']);
       LRecipeHash := StudioTextHash(LMaterial.AsJSON);
       LMode := LMaterial.Strings['mode'];
+      if (LMaterial.Find('sound') <> nil) and
+        (LMaterial.Objects['sound'].Strings['decision'] <> 'bypassed') then
+      begin
+        LSoundRole := LMaterial.Objects['sound'].Integers['part'];
+        LSound := DecodeStudioSound(LMaterial.Objects['sound']);
+      end;
       if LMaterial.Integers['part'] >= 0 then
       begin
         LPatternRole := LMaterial.Integers['part'];
@@ -140,10 +150,17 @@ begin
     begin
       LZones := LRoles[LRole].Instrument.CopyZones;
       for LIndex := 0 to High(LZones) do
+      begin
         LZones[LIndex].Voice.Shape := Shape(LConfig.Arrays['instruments'].Strings[LRole]);
+        if LRole = LSoundRole then
+          LZones[LIndex].Voice := ApplyMusicalSound(LZones[LIndex].Voice, LSound, StudioInstrumentalRate);
+      end;
       LInstruments[LRole] := TInstrument.Create(LZones);
       LRoles[LRole].Instrument := LInstruments[LRole];
       LRoles[LRole].InstrumentId := 'starter-' + LConfig.Arrays['instruments'].Strings[LRole];
+      if LRole = LSoundRole then
+        LRoles[LRole].InstrumentId := LRoles[LRole].InstrumentId + '-cutoff' +
+          IntToStr(LSound.CutoffHz) + '-sustain' + IntToStr(LSound.SustainPercent);
     end;
     LOptions := DefaultInstrumentalOptions;
     LOptions.SampleRate := StudioInstrumentalRate;
@@ -166,6 +183,12 @@ begin
     begin
       LMeta.Add('musical_material', LMaterial.Clone);
       LMeta.Add('recipe_sha256', LRecipeHash);
+      if LSoundRole >= 0 then
+      begin
+        LMeta.Add('applied_sound', LMaterial.Objects['sound'].Clone);
+        Result.Add('applied_sound', LMaterial.Objects['sound'].Clone);
+        LMeta.Add('sound_policy', 'Experimental controls: twice centroid -> low-pass cutoff 100..10000 Hz; quiet/peak window RMS -> ADSR sustain 0..100 percent. Operator-selected/corrected target; not instrument identification or envelope reconstruction.');
+      end;
       LMeta.Add('context_policy', 'Saved cells retain absolute MIDI notes. Context jointly decides harmony, rhythm and the selected part; other parts stay independently solved. Current tempo/root/sounds are explicit generation controls.');
       if LStarter.ContextModel <> nil then
       begin

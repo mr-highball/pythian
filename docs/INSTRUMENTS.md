@@ -7,6 +7,27 @@ voices. It adds reusable instrument selection through the existing frame rendere
 and exact PPQ note path. Sample zones can use different
 recordings/root frequencies; oscillator, FM and wavetable voices work as well.
 
+## Experimental observed sound controls
+
+[pythian.music.sound](../src/pythian.music.sound.pas) shares a small editable
+proposal and voice application across native/pas2js consumers. `ProposeMusicalSound`
+maps twice the energy-weighted spectral centroid to a 100–10000 Hz low-pass cutoff
+and the minimum/maximum window RMS ratio to 0–100% envelope sustain. Finite,
+nonnegative, ordered observations are required; maximum RMS at or below 0.00001
+returns no proposal. This is an Experimental heuristic, not source instrument
+identification or source-envelope reconstruction.
+
+`ApplyMusicalSound` returns a detached `TSynthVoice` record with an explicit
+one-pole low-pass filter and ADSR sustain. Shape, gain, attack and other controls
+are retained. Cutoff must remain below the actual sample-rate Nyquist limit.
+Existing cutoff automation or gate-envelope definitions reject conflicting
+application rather than silently hiding the requested control. Source factories
+and other borrowed definitions retain their original ownership/lifetimes.
+
+Studio applies the accepted/corrected/manual recipe to the selected pitched part's
+zones before planning. A bypass preserves the preceding instrument. Saving a recipe
+does not analyze, learn or render; only explicit generation produces a new result.
+
 ## Zone and ownership contract
 
 `TInstrument.Create(Zones)` copies 1..256 ordered zone records. Each zone has

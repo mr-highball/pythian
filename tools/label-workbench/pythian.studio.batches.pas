@@ -1644,6 +1644,19 @@ begin
     LDetails.setAttribute('open', '');
   end;
   Add(LDetails, 'summary', 'Batch and model details', '');
+  if isObject(LResults['applied_sound']) then
+  begin
+    LPass := Obj(LResults['applied_sound']);
+    LIndex := Trunc(StudioNumber(LPass, 'part'));
+    LText := 'Selected part';
+    if (ArrayAt(LResults, 'parts') <> nil) and (LIndex >= 0) and
+      (LIndex < ArrayAt(LResults, 'parts').length) then
+      LText := StudioText(Obj(ArrayAt(LResults, 'parts')[LIndex]), 'name');
+    Add(LDetails, 'p', LText + ' sound: cutoff ' +
+      FloatToStr(StudioNumber(LPass, 'cutoff_hz')) + ' Hz · sustain ' +
+      FloatToStr(StudioNumber(LPass, 'sustain_percent')) + '% · ' +
+      StudioText(LPass, 'decision') + '.', 'hint');
+  end;
   LGraph := ArrayAt(LResults, 'graph');
   if LGraph <> nil then
   begin

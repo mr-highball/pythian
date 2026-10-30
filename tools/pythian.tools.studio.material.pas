@@ -29,7 +29,7 @@ unit pythian.tools.studio.material;
 
 interface
 
-uses fpjson, pythian.music.pattern;
+uses fpjson, pythian.music.pattern, pythian.music.sound;
 
 const
   StudioMaterialFormat = 'pythian.studio.musical-material.v1';
@@ -44,6 +44,7 @@ procedure ValidateStudioMaterialBinding(const ACatalogRoot: String;
   const AMaterial: TJSONObject);
 function DecodeStudioPitchPattern(const AInput: TJSONArray): TPitchPattern;
 function EncodeStudioPitchPattern(const APattern: TPitchPattern): TJSONArray;
+function DecodeStudioSound(const AInput: TJSONObject): TMusicalSound;
 
 implementation
 
@@ -56,6 +57,7 @@ const
     'tempo_bpm|tonic|mode|part|channel|tempo_decision|key_decision|pitch_decision|pattern|notes|';
   CSourceFields = '|kind|id|source_sha256|sample_rate|start_frame|end_frame|' +
     'title|source_group|partition|clock_id|license|provenance|';
+  CSoundFields = '|part|cutoff_hz|sustain_percent|decision|available|';
 
 procedure Need(const ACondition: Boolean; const AMessage: String);
 begin
@@ -117,6 +119,13 @@ begin
   Result := Text(AObject, AName, 16);
   Need((Result = 'accepted') or (Result = 'corrected') or
     (Result = 'manual') or (Result = 'bypassed'), 'Choose how to use each musical suggestion');
+end;
+
+function DecodeStudioSound(const AInput: TJSONObject): TMusicalSound;
+begin
+  Result.CutoffHz := Number(AInput, 'cutoff_hz', 100, 10000);
+  Result.SustainPercent := Number(AInput, 'sustain_percent', 0, 100);
+  ValidateMusicalSound(Result);
 end;
 
 function OrderedCopy(const AObject: TJSONObject; const AFields: String): TJSONObject;
@@ -219,7 +228,7 @@ end;
 
 function DefaultStudioMaterial: TJSONObject;
 var
-  LSource: TJSONObject;
+  LSource, LSound: TJSONObject;
 begin
   Result := TJSONObject.Create;
   Result.Add('format', StudioMaterialFormat);
@@ -249,6 +258,13 @@ begin
   Result.Add('pitch_decision', 'bypassed');
   Result.Add('pattern', TJSONArray.Create);
   Result.Add('notes', '');
+  LSound := TJSONObject.Create;
+  Result.Add('sound', LSound);
+  LSound.Add('part', -1);
+  LSound.Add('cutoff_hz', 1800);
+  LSound.Add('sustain_percent', 70);
+  LSound.Add('decision', 'bypassed');
+  LSound.Add('available', False);
 end;
 
 function CanonicalStudioMaterial(const AInput: TJSONObject): TJSONObject;
@@ -260,8 +276,12 @@ var
   LPattern: TPitchPattern;
   LRate, LStart, LEnd: Int64;
   LPart: Integer;
+  LSound: TJSONObject;
+  LSoundValue: TJSONData;
 begin
-  Fields(AInput, CMaterialFields, 14);
+  Need(AInput <> nil, 'Musical input is missing');
+  LSoundValue := AInput.Find('sound');
+  Fields(AInput, CMaterialFields + 'sound|', 14 + Ord(LSoundValue <> nil));
   Need(Text(AInput, 'format', 64) = StudioMaterialFormat, 'Unknown musical input format');
   LJob := Text(AInput, 'analysis_job_id', 64);
   LValue := AInput.Find('source');
@@ -269,6 +289,23 @@ begin
   LSource := TJSONObject(LValue);
   Fields(LSource, CSourceFields, 12);
   LKind := Text(LSource, 'kind', 16);
+  if LSoundValue <> nil then
+  begin
+    Need(LSoundValue.JSONType = jtObject, 'Sound starting point must be an object');
+    LSound := TJSONObject(LSoundValue);
+    Fields(LSound, CSoundFields, 5);
+    LPart := Number(LSound, 'part', -1, 2);
+    LText := Decision(LSound, 'decision');
+    Need((LPart = -1) = (LText = 'bypassed'), 'Choose a sound target or bypass sound');
+    DecodeStudioSound(LSound);
+    LValue := LSound.Find('available');
+    Need((LValue <> nil) and (LValue.JSONType = jtBoolean), 'Sound proposal availability is missing');
+    if LKind = 'manual' then
+      Need(not LValue.AsBoolean and ((LText = 'manual') or (LText = 'bypassed')),
+        'Manual sound cannot claim a measured proposal');
+    if (LText = 'accepted') or (LText = 'corrected') then
+      Need(LValue.AsBoolean, 'This analysis has no sound suggestion; use manual controls');
+  end;
   Text(LSource, 'title', 256);
   Text(LSource, 'source_group', 256);
   Text(LSource, 'partition', 32);
@@ -336,6 +373,14 @@ begin
     LCopySource.Int64s['end_frame'] := LEnd;
     Result.Delete('pattern');
     Result.Add('pattern', EncodeStudioPitchPattern(LPattern));
+    if LSoundValue <> nil then
+    begin
+      Result.Add('sound', OrderedCopy(TJSONObject(LSoundValue), CSoundFields));
+      LSound := Result.Objects['sound'];
+      LSound.Integers['part'] := TJSONObject(LSoundValue).Integers['part'];
+      LSound.Integers['cutoff_hz'] := TJSONObject(LSoundValue).Integers['cutoff_hz'];
+      LSound.Integers['sustain_percent'] := TJSONObject(LSoundValue).Integers['sustain_percent'];
+    end;
   except
     Result.Free;
     raise;
@@ -345,13 +390,14 @@ end;
 function ProposeStudioMaterial(const ACatalogRoot, AJobId: String;
   const ATempo, AChannel: Integer): TJSONObject;
 var
-  LJob, LResult, LProposal, LSource, LTrack, LBeat, LChannel, LRow: TJSONObject;
+  LJob, LResult, LProposal, LSource, LTrack, LBeat, LChannel, LRow, LSound: TJSONObject;
   LRows: TJSONArray;
   LSpans: TPitchSpans;
   LPattern: TPitchPattern;
   LIndex, LTempo, LSuggested, LMicroseconds, LFrames, LRate: Integer;
   LKind: String;
   LCanonical: TJSONObject;
+  LSoundRecipe: TMusicalSound;
 begin
   LJob := ReadStudioJob(ACatalogRoot, AJobId);
   LTrack := nil;
@@ -367,6 +413,14 @@ begin
         (LResult.Find('musical_proposal').JSONType = jtObject), 'Run Analyze again to prepare musical suggestions');
       LProposal := LResult.Objects['musical_proposal'];
       Result := DefaultStudioMaterial;
+      LSound := Result.Objects['sound'];
+      LSound.Booleans['available'] := ProposeMusicalSound(LProposal.Floats['mean_centroid_hz'],
+        LProposal.Floats['minimum_window_rms'], LProposal.Floats['maximum_window_rms'], LSoundRecipe);
+      if LSound.Booleans['available'] then
+      begin
+        LSound.Integers['cutoff_hz'] := LSoundRecipe.CutoffHz;
+        LSound.Integers['sustain_percent'] := LSoundRecipe.SustainPercent;
+      end;
       Result.Strings['analysis_job_id'] := AJobId;
       Result.Strings['analysis_result_sha256'] := StudioTextHash(LResult.AsJSON);
       LSource := Result.Objects['source'];
@@ -497,7 +551,7 @@ end;
 procedure ValidateStudioMaterialBinding(const ACatalogRoot: String;
   const AMaterial: TJSONObject);
 var
-  LCanonical, LExpected, LJob, LRow: TJSONObject;
+  LCanonical, LExpected, LJob, LRow, LSound, LExpectedSound: TJSONObject;
   LRows: TJSONArray;
   LFound: Boolean;
   LIndex, LChannel: Integer;
@@ -525,6 +579,17 @@ begin
     Need((LExpected.Strings['analysis_result_sha256'] = LCanonical.Strings['analysis_result_sha256']) and
       (LExpected.Objects['source'].AsJSON = LCanonical.Objects['source'].AsJSON),
       'Saved musical input differs from its original analysis; prepare it again');
+    if LCanonical.Find('sound') <> nil then
+    begin
+      LSound := LCanonical.Objects['sound'];
+      LExpectedSound := LExpected.Objects['sound'];
+      Need(not LSound.Booleans['available'] or LExpectedSound.Booleans['available'],
+        'Sound suggestion is not available in its original analysis');
+      if LSound.Strings['decision'] = 'accepted' then
+        Need((LSound.Integers['cutoff_hz'] = LExpectedSound.Integers['cutoff_hz']) and
+          (LSound.Integers['sustain_percent'] = LExpectedSound.Integers['sustain_percent']),
+          'Edited sound controls must be marked corrected or manual');
+    end;
     if LCanonical.Strings['tempo_decision'] = 'accepted' then
     begin
       Need(LExpected.Strings['tempo_decision'] = 'accepted',
