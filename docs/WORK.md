@@ -78,8 +78,10 @@ NS-6 is14/27; other north-star totals are unchanged. Both prerequisites are move
 with incoming links and milestone/catalog accounting together. Link/accounting
 validation passes. Consecutive nonclosing batches remain zero after real criteria
 close. Prior [CI509](https://github.com/mr-highball/pythian/actions/runs/41126966599)
-forf5c8285 passed. This batch is locally verified and deployed; publication and its
-new remote CI result are pending. No full-package or remote pass is claimed for it.
+forf5c8285 passed. This batch is published asf630ebb on hello-pythian and deployed;
+[CI510](https://github.com/mr-highball/pythian/actions/runs/41140590716) is running.
+No full-package or remote pass is claimed for it. The staged diff check initially
+caught trailing blank lines in four new files; formatting was repaired before commit.
 The implementation goal remains active and SOLO.
 
 Next batch: retain an actual accepted score and selected parts while changing
