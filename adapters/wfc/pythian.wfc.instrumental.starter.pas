@@ -32,6 +32,9 @@ uses
   pythian.instrument,
   pythian.wfc.instrumental,
   pythian.wfc.voices,
+  pythian.percussion,
+  pythian.wfc.percussion,
+  wfc_sequence,
   wfc_music_voices_graph;
 
 type
@@ -43,6 +46,7 @@ type
     FConfig: TWfcMusicVoicesGraphConfig;
     FRoles: TInstrumentalRoles;
     FTonic: Integer;
+    FDrumModels: array[TPercussionKind] of TWfcSequenceModel;
   public
     constructor Create(const ATonic: Integer = 0);
     destructor Destroy; override;
@@ -50,6 +54,7 @@ type
     { Authored harmony/rhythm guide only; pitched voice choices remain WFC.
       Arbitrary free graph solving is available through the runtime's nil masks. }
     function GuideMasks(const ACellCount: Integer): TVoiceMasks;
+    function CopyPercussion(const ASampleRate: Integer): TPercussionDefinitions;
     { Models are borrowed immutable; the runtime clones them before solving. }
     function Config: TWfcMusicVoicesGraphConfig;
     property Tonic: Integer read FTonic;
@@ -63,7 +68,6 @@ uses
   pythian.synth,
   pythian.oscillator,
   wfc_model,
-  wfc_sequence,
   wfc_sequence_graph,
   wfc_sequence_learn,
   wfc_music,
@@ -213,7 +217,12 @@ end;
 destructor TInstrumentalStarter.Destroy;
 var
   LRole: Integer;
+  LKind: TPercussionKind;
 begin
+  for LKind := Low(TPercussionKind) to High(TPercussionKind) do
+  begin
+    FDrumModels[LKind].Free;
+  end;
   for LRole := 0 to High(FRoles) do
   begin
     FRoles[LRole].Instrument.Free;
@@ -259,6 +268,102 @@ begin
       [EncodeWfcMusicPitchClassSet(ProjectWfcMusicEnsembleFrameToPitchClassSet(LFrame, 12))]);
     Result[1][LCell] := MakeWfcSequenceTokenConstraint(LCell,
       [EncodeWfcMusicRhythmFrame(ProjectWfcMusicEnsembleFrameToRhythm(LFrame))]);
+  end;
+end;
+
+function TInstrumentalStarter.CopyPercussion(const ASampleRate: Integer): TPercussionDefinitions;
+const
+  CNames: array[TPercussionKind] of String = ('kick', 'snare', 'hat');
+var
+  LKind: TPercussionKind;
+  LIndex: Integer;
+  LVelocity: Integer;
+  LCount: Integer;
+  LSamples: TWfcSequenceSamples;
+  LRhythm: TWfcMusicRhythmFrame;
+  LAllowed: Boolean;
+begin
+  Result := nil;
+  SetLength(Result, 3);
+  for LKind := Low(TPercussionKind) to High(TPercussionKind) do
+  begin
+    LIndex := Ord(LKind);
+    Result[LIndex].Settings := DefaultPercussionSettings(LKind, ASampleRate);
+    if FDrumModels[LKind] = nil then
+    begin
+      SetLength(LSamples, 2);
+      SetLength(LSamples[0].Tokens, 64);
+      SetLength(LSamples[1].Tokens, 64);
+      for LCount := 0 to 63 do
+      begin
+        LVelocity := 0;
+        case LKind of
+          pkKick:
+          begin
+            if LCount mod 8 = 0 then
+            begin
+              LVelocity := 110;
+            end
+            else if LCount mod 8 = 4 then
+            begin
+              LVelocity := 96;
+            end;
+          end;
+          pkSnare:
+          begin
+            if (LCount mod 8 = 2) or (LCount mod 8 = 6) then
+            begin
+              LVelocity := 110;
+            end;
+          end;
+          pkClosedHat:
+          begin
+            LVelocity := 64;
+            if LCount mod 2 = 0 then
+            begin
+              LVelocity := 80;
+            end;
+            if LCount mod 8 = 0 then
+            begin
+              LVelocity := 100;
+            end;
+            if LCount mod 16 >= 14 then
+            begin
+              LVelocity := 0;
+            end;
+          end;
+        end;
+        LSamples[0].Tokens[LCount] := PercussionToken(LVelocity);
+        LSamples[1].Tokens[LCount] := PercussionToken(0);
+      end;
+      FDrumModels[LKind] := LearnSequenceModelCorpus(LSamples, 2);
+    end;
+    Result[LIndex].Name := CNames[LKind];
+    Result[LIndex].Origin := 'Authored percussion pattern and explicit silence alternative';
+    Result[LIndex].Model := FDrumModels[LKind];
+    Result[LIndex].OutputBus := 3 + LIndex;
+    Result[LIndex].Enabled := True;
+    Result[LIndex].HitWeight := 64;
+    for LCount := 0 to FConfig.RhythmModel.PublicTokenCount - 1 do
+    begin
+      LRhythm := DecodeWfcMusicRhythmFrame(FConfig.RhythmModel.PublicTokenAt(LCount));
+      LAllowed := LKind = pkClosedHat;
+      if LKind = pkKick then
+      begin
+        LAllowed := LRhythm.Actions[0] = wmcaAttack;
+      end
+      else if LKind = pkSnare then
+      begin
+        LAllowed := (LRhythm.Actions[2] = wmcaAttack) and
+          (LRhythm.Actions[0] <> wmcaAttack);
+      end;
+      if LAllowed then
+      begin
+        LVelocity := Length(Result[LIndex].AllowedHitRhythms);
+        SetLength(Result[LIndex].AllowedHitRhythms, LVelocity + 1);
+        Result[LIndex].AllowedHitRhythms[LVelocity] := FConfig.RhythmModel.PublicTokenAt(LCount);
+      end;
+    end;
   end;
 end;
 

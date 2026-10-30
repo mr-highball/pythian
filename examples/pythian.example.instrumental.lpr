@@ -35,11 +35,15 @@ uses
   pythian.time,
   pythian.bus,
   pythian.echo,
+  pythian.effects,
   pythian.schedule,
+  pythian.percussion,
   pythian.wave.stream,
   pythian.wfc.instrumental,
   pythian.wfc.instrumental.starter,
   pythian.wfc.voices,
+  pythian.wfc.percussion,
+  wfc_model,
   wfc_sequence,
   wfc_sequence_text,
   wfc_music_voices_graph;
@@ -51,11 +55,15 @@ var
   LSeed: Cardinal;
   LTempo: Integer;
   LTonic: Integer;
+  LWithDrums: Boolean;
   LStarter: TInstrumentalStarter;
   LOptions: TInstrumentalOptions;
   LPlan: TInstrumentalPlan;
   LReport: TInstrumentalReport;
-  LSettings: array[0..3] of TBusSettings;
+  LSettings: array of TBusSettings;
+  LDrums: TPercussionDefinitions;
+  LHits: TPercussionHits;
+  LRecipe: TPercussionPart;
   LEcho: TEchoSettings;
   LGraph: TBusGraph;
   LPlayer: TScheduledSynth;
@@ -70,7 +78,8 @@ var
   LTokens: TJSONArray;
   LStates: TJSONArray;
   LPasses: TVoiceGraphPasses;
-  LMusic: TWfcMusicVoicesGenerated;
+  LPublicTokens: TWfcModelTokens;
+  LStateIndices: TWfcSequenceStateIndices;
   LModel: TWfcSequenceModel;
   LMetadata: TStringStream;
   LIndex: Integer;
@@ -80,15 +89,16 @@ var
   LLeft: Double;
   LRight: Double;
 begin
-  if (ParamCount < 1) or (ParamCount > 5) then
+  if (ParamCount < 1) or (ParamCount > 6) then
   begin
-    raise EAudio.Create('Usage: pythian.example.instrumental OUTPUT.wav [CELLS [SEED [BPM [TONIC_0_TO_11]]]]');
+    raise EAudio.Create('Usage: pythian.example.instrumental OUTPUT.wav [CELLS [SEED [BPM [TONIC_0_TO_11 [--drums]]]]]');
   end;
   LOutput := ParamStr(1);
   LCells := 64;
   LSeed := 731;
   LTempo := 120;
   LTonic := 0;
+  LWithDrums := False;
   if ParamCount >= 2 then
   begin
     LCells := StrToInt(ParamStr(2));
@@ -104,6 +114,14 @@ begin
   if ParamCount >= 5 then
   begin
     LTonic := StrToInt(ParamStr(5));
+  end;
+  if ParamCount = 6 then
+  begin
+    if ParamStr(6) <> '--drums' then
+    begin
+      raise EAudio.Create('Optional sixth argument is --drums');
+    end;
+    LWithDrums := True;
   end;
   if (LCells < 1) or (LCells > 1024) or (LTempo < 20) or (LTempo > 300) then
   begin
@@ -123,26 +141,35 @@ begin
     LOptions := DefaultInstrumentalOptions;
     LOptions.Session.CellCount := LCells;
     LOptions.Session.Seed := LSeed;
+    LOptions.PercussionSeed := LSeed xor Cardinal($50455243);
     LOptions.Session.RequireObservedEnd := False;
     LOptions.Tempos[0] := MakeTempoChange(0, Round(60000000 / LTempo));
     LOptions.EffectTailFrames := Int64(LOptions.SampleRate) * 3;
     LOptions.MaterialOrigin :=
       'Authored harmony/rhythm guide and two symbolic training phrases; WFC chooses pitched parts; no WAV learning';
+    LDrums := nil;
+    if LWithDrums then
+    begin
+      LDrums := LStarter.CopyPercussion(LOptions.SampleRate);
+      LOptions.MaterialOrigin := LOptions.MaterialOrigin +
+        '; authored percussion models and explicit rhythm projections';
+    end;
     if not TryCreateInstrumentalPlan(LStarter.Config, LStarter.CopyRoles,
-      LOptions, LStarter.GuideMasks(LCells), nil, LPlan, LReport) then
+      LOptions, LStarter.GuideMasks(LCells), nil, LPlan, LReport, nil, LDrums) then
     begin
       raise EAudio.Create(LReport.Detail);
     end;
     LPasses := LPlan.CopyGraph;
-    LMusic := LPlan.CopyMusic;
     LDocument.Add('material_origin', LPlan.MaterialOrigin);
     LDocument.Add('experimental', True);
     LDocument.Add('seed', Int64(LSeed));
+    LDocument.Add('percussion_seed', Int64(LOptions.PercussionSeed));
     LDocument.Add('tonic_pitch_class', LTonic);
     LDocument.Add('tempo_microseconds', LOptions.Tempos[0].MicrosecondsPerQuarter);
     LDocument.Add('ticks_per_quarter', LOptions.Session.TicksPerQuarter);
     LDocument.Add('ticks_per_cell', LOptions.Session.StepTicks);
     LDocument.Add('cells', LCells);
+    LDocument.Add('percussion', LWithDrums);
     LDocument.Add('sample_rate', LPlan.SampleRate);
     LDocument.Add('frame_count', LPlan.FrameCount);
     LDocument.Add('effect_tail_frames', LOptions.EffectTailFrames);
@@ -160,6 +187,11 @@ begin
       LRow.Add('height', LPasses[LIndex].Height);
       LRow.Add('depth', LPasses[LIndex].Depth);
       LRow.Add('proof', LPasses[LIndex].IsProof);
+      LRow.Add('graph_group', LPasses[LIndex].GroupIndex);
+      if LPasses[LIndex].InputSourcePassIndex >= 0 then
+      begin
+        LRow.Add('pinned_input_from', LPasses[LIndex].InputSourcePassIndex);
+      end;
       LDependencies := TJSONArray.Create;
       LRow.Add('depends_on', LDependencies);
       for LCell := 0 to High(LPasses[LIndex].Dependencies) do
@@ -177,25 +209,68 @@ begin
         LStates := TJSONArray.Create;
         LRow.Add('tokens', LTokens);
         LRow.Add('states', LStates);
-        for LCell := 0 to High(LMusic.Layers[LIndex].Tokens) do
+        LPublicTokens := LPlan.CopyPassTokens(LIndex);
+        LStateIndices := LPlan.CopyPassStates(LIndex);
+        for LCell := 0 to High(LPublicTokens) do
         begin
-          LTokens.Add(LMusic.Layers[LIndex].Tokens[LCell]);
-          LStates.Add(LMusic.Layers[LIndex].StateIndices[LCell]);
+          LTokens.Add(LPublicTokens[LCell]);
+          LStates.Add(LStateIndices[LCell]);
         end;
       end;
     end;
-    for LIndex := 0 to 3 do
+    if LWithDrums then
+    begin
+      LTokens := TJSONArray.Create;
+      LDocument.Add('percussion_recipes', LTokens);
+      for LIndex := 0 to 2 do
+      begin
+        LRecipe := LPlan.CopyPercussionPart(LIndex);
+        LRow := TJSONObject.Create;
+        LTokens.Add(LRow);
+        LRow.Add('name', LRecipe.Name);
+        LRow.Add('kind', Ord(LRecipe.Settings.Kind));
+        LRow.Add('origin', LRecipe.Origin);
+        LRow.Add('gm_key', PercussionKey(LRecipe.Settings.Kind));
+        LRow.Add('output_bus', LRecipe.OutputBus);
+        LRow.Add('gain', LRecipe.Settings.Gain);
+        LRow.Add('pan', LRecipe.Settings.Pan);
+        LRow.Add('gate_seconds', LRecipe.Settings.GateSeconds);
+        LRow.Add('release_seconds', LRecipe.Settings.ReleaseSeconds);
+        LRow.Add('physical_tone_hz', LRecipe.Settings.ToneHz);
+        LRow.Add('cutoff_hz', LRecipe.Settings.CutoffHz);
+        LRow.Add('hit_weight', LRecipe.HitWeight);
+      end;
+      LTokens := TJSONArray.Create;
+      LDocument.Add('percussion_hits', LTokens);
+      LHits := LPlan.CopyPercussionHits;
+      for LIndex := 0 to High(LHits) do
+      begin
+        LRow := TJSONObject.Create;
+        LTokens.Add(LRow);
+        LRow.Add('part', LHits[LIndex].Part);
+        LRow.Add('cell', LHits[LIndex].Cell);
+        LRow.Add('velocity', LHits[LIndex].Velocity);
+        LRow.Add('start_frame', LHits[LIndex].StartFrame);
+        LRow.Add('gate_frames', LHits[LIndex].GateFrames);
+      end;
+    end;
+    SetLength(LSettings, LPlan.RoleCount + 1);
+    for LIndex := 0 to High(LSettings) do
     begin
       LSettings[LIndex] := DefaultBusSettings;
       LSettings[LIndex].SmoothingSeconds := 0;
     end;
     LGraph := TBusGraph.Create(LPlan.SampleRate, LSettings);
-    for LIndex := 0 to 2 do
+    for LIndex := 0 to LPlan.RoleCount - 1 do
     begin
-      LGraph.AddSend(LIndex, 3, stPostFader, 1, 0);
+      LGraph.AddSend(LIndex, LPlan.RoleCount, stPostFader, 1, 0);
     end;
     LEcho := DefaultEchoSettings(LPlan.SampleRate);
     LGraph.AddEffect(1, TEchoEffect.Create(LPlan.SampleRate, LEcho));
+    if LWithDrums then
+    begin
+      LGraph.AddEffect(LPlan.RoleCount, TLimiterEffect.Create(LPlan.SampleRate, -1, 0.08));
+    end;
     LPlayer := LPlan.CreatePlayer(LGraph);
     LFile := TFileStream.Create(LOutput, fmCreate);
     LSink := TStreamAudioSink.Create(LFile);
@@ -221,7 +296,7 @@ begin
     LMetadata := TStringStream.Create(LDocument.FormatJSON);
     LFile := TFileStream.Create(LOutput + '.json', fmCreate);
     LFile.CopyFrom(LMetadata, 0);
-    WriteLn('Instrumental synthesis: bass + harmony + lead; ', LCells, ' cells; ',
+    WriteLn('Instrumental synthesis: ', LPlan.RoleCount, ' roles; ', LCells, ' cells; ',
       Length(LPasses), ' actual passes; ', LPlan.FrameCount, ' stereo frames.');
     WriteLn('Experimental authored starter; no training-mix grains or source WAVs.');
   finally

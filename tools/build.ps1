@@ -245,6 +245,14 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Instrument compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.instrument$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Instrument checks failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.percussion.core.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Core percussion compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.percussion.core$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Core percussion checks failed' }
+  & $compilerPath @compilerArgs 'examples/pythian.example.percussion.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Core percussion caller compilation failed' }
+  & (Join-Path $buildRoot "pythian.example.percussion$executableSuffix") (Join-Path $buildRoot 'percussion')
+  if ($LASTEXITCODE -ne 0) { throw 'Core percussion caller failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.music.instrument.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Instrument sequence compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.music.instrument$executableSuffix")
@@ -810,10 +818,16 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental runtime compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental runtime checks failed' }
+    & $compilerPath @adapterArgs 'tests/pythian.tests.percussion.wfc.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'WFC percussion compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.percussion.wfc$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'WFC percussion checks failed' }
     & $compilerPath @adapterArgs 'examples/pythian.example.instrumental.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental caller compilation failed' }
     & (Join-Path $buildRoot "pythian.example.instrumental$executableSuffix") (Join-Path $buildRoot 'instrumental.wav') '32'
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental caller failed' }
+    & (Join-Path $buildRoot "pythian.example.instrumental$executableSuffix") (Join-Path $buildRoot 'instrumental-drums.wav') '32' '731' '120' '0' '--drums'
+    if ($LASTEXITCODE -ne 0) { throw 'Instrumental percussion caller failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.semantic.style.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Semantic style compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.semantic.style$executableSuffix") (Join-Path $buildRoot 'semantic-style')

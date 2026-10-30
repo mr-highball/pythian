@@ -8,7 +8,9 @@
 The shared [instrumental adapter](../adapters/wfc/pythian.wfc.instrumental.pas)
 connects actual named musical WFC passes to the primary note projector, instrument
 planner, buses and scheduler. A successful plan has distinct parts, native notes
-and source-free or explicitly bound instrument tones. It never selects recorded
+and source-free or explicitly bound instrument tones. Optional
+[unpitched percussion](PERCUSSION.md) uses a separate rhythm-dependent graph group
+and the same native performance. It never selects recorded
 training-mix grains or silently substitutes a different renderer.
 
 This is the finite runtime foundation. Ordinary Studio generation has not yet
@@ -30,10 +32,13 @@ negotiation/proof report and failing pass. Bad inputs, resource rejection or
 observer cancellation raise before replacing the previous plan. Success replaces
 and frees the previous plan only after all planning/ready callbacks.
 
-The plan owns cloned models/session state and detached notes. CopyGraph returns
+The plan owns cloned models/session state, detached pitched notes and accepted
+percussion recipes. CopyGraph returns
 actual pass dimensions, proof flags, model token/state counts and dependency
 indices. CopyProvider, CopyModel, CopyMusic, CopyConstraints, CopyPreferences and
-CopyNotes expose detached accepted data. Copies of part tones still borrow native
+CopyNotes expose detached accepted pitched data. CopyPercussionHits/Part describe
+unpitched events/recipes; CopyPassTokens/States and CopyModel cover both groups.
+Copies of part tones still borrow native
 factory/automation/envelope resources; preserve those resources through player
 creation, and preserve source factories for their own source lifetime.
 RoleAt returns metadata with Instrument=nil after planning, not a dangling pointer.
@@ -71,6 +76,12 @@ The caller adds the primary filtered echo on the harmony bus and a three-second
 effect tail. Changing tonic changes actual training/model pitches; changing BPM
 changes the exact performance clock. A seed or supported constraint may produce
 different valid voice paths, but a different seed is not a guarantee of variation.
+
+Adding --drums as the sixth argument creates kick, snare and hat from authored
+velocity-event models and explicit rhythm projections. The result has a second
+four-pass graph group, and sixteen actual passes total. It retains pitched
+harmonic proof and adds the primary master limiter. Graph groups and pinned-input
+lineage are explicit; this does not claim one jointly backtracking graph.
 
 Compile from the repository root with the existing FPC toolchain, choosing
 explicit E-drive unit/executable output folders on this workstation:

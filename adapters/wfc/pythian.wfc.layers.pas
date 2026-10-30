@@ -98,6 +98,23 @@ type
     TimeGrids: TLayerTimeGrids;
   end;
   TLayerNames = array of String;
+  { Big Boss: one detached pass-description contract for all primary sessions.
+    Model counts are zero for proof passes. Dependencies index this snapshot.
+    GroupIndex identifies separate executed graphs; InputSourcePassIndex is a
+    pinned-input lineage edge, not a solver dependency across graph instances. }
+  TLayerGraphPass = record
+    Name: String;
+    Width: Integer;
+    Height: Integer;
+    Depth: Integer;
+    IsProof: Boolean;
+    PublicTokenCount: Integer;
+    StateCount: Integer;
+    Dependencies: TGraphPassIndices;
+    GroupIndex: Integer;
+    InputSourcePassIndex: Integer;
+  end;
+  TLayerGraphPasses = array of TLayerGraphPass;
   TLayerDomains = array of TGraphValues;
   TLayerDomainFlags = array of Boolean;
   TLayerModelReplacementReport = record
@@ -165,9 +182,14 @@ type
       out AReport: TLayerModelReplacementReport;
       const AProgress: TWorkProgressCallback = nil): Boolean;
     function CopyAccepted(const AProgress: TWorkProgressCallback = nil): TLayerSequences;
+    function CopyGraph: TLayerGraphPasses;
+    function CopyModel(const AName: String;
+      const AProgress: TWorkProgressCallback = nil): TWfcSequenceModel;
   end;
 
 function DefaultLayerGenerationOptions: TLayerGenerationOptions;
+function DescribeLayerGraph(const AGraph: TGraph; const ANames: array of String;
+  const AModels: array of TWfcSequenceModel): TLayerGraphPasses;
 function MakeLayerTokenPreference(const AToken: String;
   const AMultiplier: Integer): TLayerTokenPreference;
 function MakeLayerScope(const ACellCount: Integer;
@@ -707,6 +729,47 @@ begin
   Result.MaxPassBacktracks := 64;
   Result.Scopes := nil;
   Result.TimeGrids := nil;
+end;
+
+function DescribeLayerGraph(const AGraph: TGraph; const ANames: array of String;
+  const AModels: array of TWfcSequenceModel): TLayerGraphPasses;
+var
+  LIndex: Integer;
+  LDependency: Integer;
+  LPass: TGraph;
+begin
+  if (AGraph = nil) or (Length(ANames) <> Length(AModels)) or
+    (Length(ANames) > AGraph.TotalPassCount) then
+  begin
+    raise EAudio.Create('Graph description requires matching actual providers');
+  end;
+  Result := nil;
+  SetLength(Result, AGraph.TotalPassCount);
+  for LIndex := 0 to High(Result) do
+  begin
+    LPass := AGraph.PassGraph[LIndex];
+    Result[LIndex].Name := LPass.CurrentPass;
+    Result[LIndex].Width := LPass.Dimension.Width;
+    Result[LIndex].Height := LPass.Dimension.Height;
+    Result[LIndex].Depth := LPass.Dimension.Depth;
+    Result[LIndex].IsProof := LIndex >= Length(ANames);
+    Result[LIndex].InputSourcePassIndex := -1;
+    if not Result[LIndex].IsProof then
+    begin
+      if AModels[LIndex] = nil then
+      begin
+        raise EAudio.Create('Graph description requires a provider model');
+      end;
+      Result[LIndex].Name := ANames[LIndex];
+      Result[LIndex].PublicTokenCount := AModels[LIndex].PublicTokenCount;
+      Result[LIndex].StateCount := AModels[LIndex].StateCount;
+    end;
+    SetLength(Result[LIndex].Dependencies, LPass.DependencyCount);
+    for LDependency := 0 to LPass.DependencyCount - 1 do
+    begin
+      Result[LIndex].Dependencies[LDependency] := LPass.DependencyIndex[LDependency];
+    end;
+  end;
 end;
 
 function MakeLayerTimeGrid(const AOriginTick, ATicksPerCell: Integer): TLayerTimeGrid;
@@ -2228,6 +2291,25 @@ begin
   begin
     FDirty[LIndex] := False;
   end;
+end;
+
+function TLearnedLayerSession.CopyGraph: TLayerGraphPasses;
+var
+  LModels: array of TWfcSequenceModel;
+  LIndex: Integer;
+begin
+  SetLength(LModels, Length(FLayers));
+  for LIndex := 0 to High(LModels) do
+  begin
+    LModels[LIndex] := FLayers[LIndex].Model;
+  end;
+  Result := DescribeLayerGraph(FGraph, FNames, LModels);
+end;
+
+function TLearnedLayerSession.CopyModel(const AName: String;
+  const AProgress: TWorkProgressCallback): TWfcSequenceModel;
+begin
+  Result := CloneWfcSequenceModel(FLayers[LayerIndex(AName)].Model, AProgress);
 end;
 
 function TLearnedLayerSession.CopyAccepted(

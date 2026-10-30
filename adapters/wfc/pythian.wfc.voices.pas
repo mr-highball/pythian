@@ -57,17 +57,8 @@ type
   { Big Boss: detached descriptions of actual graph passes, including coverage
     proof passes. Model counts are zero for proof passes (not token models).
     Dependencies are actual graph indices, not inferred from role labels. }
-  TVoiceGraphPass = record
-    Name: String;
-    Width: Integer;
-    Height: Integer;
-    Depth: Integer;
-    IsProof: Boolean;
-    PublicTokenCount: Integer;
-    StateCount: Integer;
-    Dependencies: TGraphPassIndices;
-  end;
-  TVoiceGraphPasses = array of TVoiceGraphPass;
+  TVoiceGraphPass = TLayerGraphPass;
+  TVoiceGraphPasses = TLayerGraphPasses;
   { Owns clones of all models and the actual independent-voice graph. Public
     names are harmony, rhythm and caller-declared role names. Masks are staged;
     selective regeneration applies only edits in the requested WFC descendant
@@ -798,34 +789,15 @@ end;
 function TNamedVoiceSession.CopyGraph: TVoiceGraphPasses;
 var
   LIndex: Integer;
-  LDependency: Integer;
-  LPass: TGraph;
-  LModel: TWfcSequenceModel;
+  LModels: array of TWfcSequenceModel;
 begin
   CheckIdle;
-  Result := nil;
-  SetLength(Result, FGraph.TotalPassCount);
-  for LIndex := 0 to High(Result) do
+  SetLength(LModels, ProviderCount);
+  for LIndex := 0 to High(LModels) do
   begin
-    LPass := FGraph.PassGraph[LIndex];
-    Result[LIndex].Name := LPass.CurrentPass;
-    Result[LIndex].Width := LPass.Dimension.Width;
-    Result[LIndex].Height := LPass.Dimension.Height;
-    Result[LIndex].Depth := LPass.Dimension.Depth;
-    Result[LIndex].IsProof := LIndex >= ProviderCount;
-    if not Result[LIndex].IsProof then
-    begin
-      Result[LIndex].Name := FNames[LIndex];
-      LModel := WfcMusicVoicesModelAt(FConfig, LIndex);
-      Result[LIndex].PublicTokenCount := LModel.PublicTokenCount;
-      Result[LIndex].StateCount := LModel.StateCount;
-    end;
-    SetLength(Result[LIndex].Dependencies, LPass.DependencyCount);
-    for LDependency := 0 to LPass.DependencyCount - 1 do
-    begin
-      Result[LIndex].Dependencies[LDependency] := LPass.DependencyIndex[LDependency];
-    end;
+    LModels[LIndex] := WfcMusicVoicesModelAt(FConfig, LIndex);
   end;
+  Result := DescribeLayerGraph(FGraph, FNames, LModels);
 end;
 
 function TNamedVoiceSession.CopyModel(const AName: String;

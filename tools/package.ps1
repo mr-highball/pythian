@@ -90,6 +90,7 @@ Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.core.lp
 Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.notes.lpr') -Destination $exampleRoot
 Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.midi.stream.lpr') -Destination $exampleRoot
 Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.instrument.lpr') -Destination $exampleRoot
+Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.percussion.lpr') -Destination $exampleRoot
 Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.processing.lpr') -Destination $exampleRoot
 Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.extensions.lpr') -Destination $exampleRoot
 Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.extension.units.pas') -Destination $exampleRoot
@@ -115,6 +116,7 @@ if ($WithWfc) {
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.wfc.lpr') -Destination $exampleRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.instrumental.lpr') -Destination $exampleRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'docs/INSTRUMENTAL.md') -Destination $docRoot
+  Copy-Item -LiteralPath (Join-Path $projectRoot 'docs/PERCUSSION.md') -Destination $docRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.wfc.provider.lpr') -Destination $exampleRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.provider.extension.units.pas') -Destination $exampleRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.provider.extensions.lpr') -Destination $exampleRoot
@@ -236,6 +238,11 @@ try {
   if ($LASTEXITCODE -ne 0) { throw "Core consumer build failed; see $checkRoot/core-build.log" }
   & (Join-Path $binRoot "pythian.example.core$executableSuffix") 'core.wav' > 'core-run.log'
   if ($LASTEXITCODE -ne 0) { throw 'Core consumer failed' }
+  Copy-Item -LiteralPath (Join-Path $exampleRoot 'pythian.example.percussion.lpr') -Destination $checkRoot
+  & $compilerPath @coreCompilerArgs 'pythian.example.percussion.lpr' > 'percussion-core-build.log' 2>&1
+  if ($LASTEXITCODE -ne 0) { throw 'Extracted core percussion compilation failed' }
+  & (Join-Path $binRoot "pythian.example.percussion$executableSuffix") 'percussion' > 'percussion-core-run.log' 2>&1
+  if ($LASTEXITCODE -ne 0) { throw 'Extracted core percussion caller failed' }
   Copy-Item -LiteralPath (Join-Path $projectRoot 'tests/pythian.tests.delivery.native.lpr') -Destination $checkRoot
   & $compilerPath @coreCompilerArgs 'pythian.tests.delivery.native.lpr' > 'native-proof-build.log' 2>&1
   if ($LASTEXITCODE -ne 0) { throw 'Native saved-file verifier compilation failed' }
@@ -268,6 +275,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Extracted instrumental consumer compilation failed' }
     & (Join-Path $binRoot "pythian.example.instrumental$executableSuffix") 'instrumental.wav' '32' > 'instrumental-run.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted instrumental consumer failed' }
+    & (Join-Path $binRoot "pythian.example.instrumental$executableSuffix") 'instrumental-drums.wav' '32' '731' '120' '0' '--drums' > 'instrumental-drums-run.log' 2>&1
+    if ($LASTEXITCODE -ne 0) { throw 'Extracted instrumental percussion caller failed' }
     $callerProviderArgs = $compilerArgs + @('-gh', ('-Fu' + $exampleRoot))
     & $compilerPath @callerProviderArgs (Join-Path $exampleRoot 'pythian.example.provider.extensions.lpr') > 'caller-provider-build.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted caller codec consumer compilation failed' }

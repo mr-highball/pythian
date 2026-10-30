@@ -15,7 +15,7 @@ The [instrumental Studio task](TODO/NS-6_instrumental-studio_01.md) changes that
 ordinary path to real musical WFC decisions played through Pythian instruments.
 This is planned work, not a description of an already available mode. Its true
 prerequisites are the [shared runtime](TODO/DONE/NS-4_instrumental-runtime_01.md) and
-[explicit percussion](TODO/NS-2_percussion_01.md).
+[explicit percussion](TODO/DONE/NS-2_percussion_01.md).
 
 ## Intended operator loop
 

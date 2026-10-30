@@ -8,34 +8,34 @@
 The 2026-10-29 goal is usable experimental instrumental synthesis through a rich,
 editable WFC musical graph in Studio. Existing library instruments, musical
 adapters and Studio infrastructure are implementation foundations. The finite
-instrumental runtime has met all its criteria; ordinary Studio wiring remains open.
+instrumental runtime and explicit percussion have met their criteria; ordinary Studio wiring remains open.
 
-**Current snapshot: 7 / 82 effort units accepted (8.54%); 11 open, one current-goal DONE.**
+**Current snapshot: 13 / 82 effort units accepted (15.85%); 10 open, two current-goal DONE.**
 This is a scope-delivery estimate, not a musical-quality score. No arbitrary
 per-task percentages or north-star weights apply.
 
 | North star | Required outcome in this goal | Open effort | Accepted effort | Derived progress |
 | --- | --- | ---: | ---: | ---: |
 | [NS-1](#ns-1) | Preserve portable core independence | 0 | 0 | Baseline invariant; no standalone current task |
-| [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 12 | 0 | 0 / 12 |
+| [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 6 | 6 | 6 / 12 |
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 15 | 0 | 0 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, graph inspection and musical controls | 14 | 7 | 7 / 21 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
 | [NS-6](#ns-6) | Ordinary Studio generation, meaningful reviews and long instrumental sessions | 19 | 0 | 0 / 19 |
-| **Total** | **12 current-goal tasks** | **75** | **7** | **8.54%** |
+| **Total** | **12 current-goal tasks** | **69** | **13** | **15.85%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
 1. [Instrumental runtime — DONE](TODO/DONE/NS-4_instrumental-runtime_01.md), effort 7:
    actual coupled musical WFC passes drive existing Pythian instruments; source-free caller delivered.
-2. [Explicit percussion](TODO/NS-2_percussion_01.md), effort 6:
+2. [Explicit percussion — DONE](TODO/DONE/NS-2_percussion_01.md), effort 6:
    drums have a real rhythmic role without pitched-harmony membership errors.
 3. [Instrumental Studio](TODO/NS-6_instrumental-studio_01.md), effort 6:
    an ordinary native job produces bass, drums, harmony and lead; play/solo/mute,
    change musical settings and regenerate without a source-recording sound bank.
 
-These 19 effort units constitute the first operator-facing milestone: 7 accepted,
-12 open. Authored/MIDI/operator input may bootstrap it. Formal WAV
+These 19 effort units constitute the first operator-facing milestone: 13 accepted,
+6 open. Authored/MIDI/operator input may bootstrap it. Formal WAV
 inference accuracy, independent annotation and fixed corpus floors do not block it.
 
 ## Remaining delivery outcomes
@@ -50,7 +50,7 @@ earns new effort. Existing code did not become unimplemented because scope chang
 <a id="ns-2"></a>
 ### NS-2 — Playable sound breadth
 
-[Percussion](TODO/NS-2_percussion_01.md) and
+[Percussion](TODO/DONE/NS-2_percussion_01.md) and
 [sound design](TODO/NS-2_sound-design_01.md) expose actual sources, envelopes,
 automation, filters, routing and effects rather than inventing a parallel engine.
 
@@ -98,12 +98,12 @@ The 53 former open tasks are [retired/replaced](TODO/RETIRED/2026-10-29/README.m
 not accepted. All 97 historical DONE records and their evidence remain separate;
 none has the current Goal tag. The former 52.45% weighted outcome-credit ledger is
 [historical](history/MILESTONES-2026-10-29.md), not a baseline in the new formula.
-Current scoped records: 11 open + 1 current DONE; legacy records: 53 retired +
-97 historical DONE (98 total DONE files). No implementation, saved feedback or license is discarded.
+Current scoped records: 10 open + 2 current DONE; legacy records: 53 retired +
+97 historical DONE (99 total DONE files). No implementation, saved feedback or license is discarded.
 
 100% means all required outcomes in this defined experimental goal are delivered
 and reviewed. It cannot promise any style from any user with universal accuracy.
 If listening exposes a required new gap, add it with an estimate before claiming
 completion. Implementation has resumed solo. The first runtime batch closes real
 criteria and changes the carried nonclosing count from two to zero; WORK records
-the event. Explicit percussion, then ordinary instrumental Studio, is next.
+the event. Percussion also closes its criteria; ordinary instrumental Studio is next.

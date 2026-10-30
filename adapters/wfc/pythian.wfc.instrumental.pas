@@ -41,7 +41,9 @@ uses
   pythian.wfc.voices,
   pythian.wfc.layers,
   pythian.wfc.providers,
+  pythian.wfc.percussion,
   wfc,
+  wfc_model,
   wfc_sequence,
   wfc_sequence_graph,
   wfc_music_voices_graph;
@@ -52,6 +54,7 @@ type
     InstrumentId: String;
     Instrument: TInstrument;
     OutputBus: Integer;
+    IsPercussion: Boolean;
   end;
   TInstrumentalRoles = array of TInstrumentalRole;
   TInstrumentalOptions = record
@@ -60,10 +63,12 @@ type
     Tempos: TTempoChanges;
     EffectTailFrames: Int64;
     MaterialOrigin: String;
+    PercussionSeed: TGraphSeed;
   end;
   TInstrumentalReport = record
     Solve: TGraphNegotiationReport;
     Proof: TWfcMusicVoicesValidationReport;
+    PercussionSolve: TGraphNegotiationReport;
     FailedPass: String;
     Detail: String;
   end;
@@ -76,6 +81,7 @@ type
   TInstrumentalPlan = class
   private
     FSession: TNamedVoiceSession;
+    FDrums: TPercussionPlan;
     FOptions: TInstrumentalOptions;
     FRoles: TInstrumentalRoles;
     FNotes: TNoteSequence;
@@ -86,6 +92,8 @@ type
     procedure CheckRole(const AIndex: Integer);
     function GetSampleRate: Integer;
     function GetMaterialOrigin: String;
+    procedure IncludePart(const AIndex: Integer; const ATones: TFrameTones);
+    function IsDrumProvider(const AName: String): Boolean;
   public
     destructor Destroy; override;
     function RoleCount: Integer;
@@ -95,6 +103,10 @@ type
     function CopyGraph: TVoiceGraphPasses;
     function CopyProvider(const AName: String): TStyleProviderDescription;
     function CopyMusic: TWfcMusicVoicesGenerated;
+    function CopyPercussionHits: TPercussionHits;
+    function CopyPercussionPart(const AIndex: Integer): TPercussionPart;
+    function CopyPassTokens(const AIndex: Integer): TWfcModelTokens;
+    function CopyPassStates(const AIndex: Integer): TWfcSequenceStateIndices;
     function CopyModel(const AName: String): TWfcSequenceModel;
     function CopyConstraints(const AName: String): TWfcSequenceTokenConstraints;
     function CopyPreferences(const AName: String): TLayerTokenPreferences;
@@ -126,7 +138,8 @@ function TryCreateInstrumentalPlan(const AConfig: TWfcMusicVoicesGraphConfig;
   const ARoles: TInstrumentalRoles; const AOptions: TInstrumentalOptions;
   const AMasks: TVoiceMasks; const APreferences: TVoicePreferences;
   var APlan: TInstrumentalPlan; out AReport: TInstrumentalReport;
-  const AProgress: TWorkProgressCallback = nil): Boolean;
+  const AProgress: TWorkProgressCallback = nil;
+  const APercussion: TPercussionDefinitions = nil): Boolean;
 
 implementation
 
@@ -139,6 +152,7 @@ begin
   Result := Default(TInstrumentalOptions);
   Result.Session := DefaultVoiceSessionOptions;
   Result.SampleRate := 44100;
+  Result.PercussionSeed := 1741;
   SetLength(Result.Tempos, 1);
   Result.Tempos[0] := MakeTempoChange(0, 500000);
 end;
@@ -152,6 +166,7 @@ destructor TInstrumentalPlan.Destroy;
 begin
   FNotes.Free;
   FSession.Free;
+  FDrums.Free;
   inherited Destroy;
 end;
 
@@ -185,8 +200,30 @@ begin
 end;
 
 function TInstrumentalPlan.CopyGraph: TVoiceGraphPasses;
+var
+  LDrums: TLayerGraphPasses;
+  LOffset: Integer;
+  LIndex: Integer;
+  LDependency: Integer;
 begin
   Result := FSession.CopyGraph;
+  if FDrums <> nil then
+  begin
+    LDrums := FDrums.CopyGraph;
+    LOffset := Length(Result);
+    SetLength(Result, LOffset + Length(LDrums));
+    for LIndex := 0 to High(LDrums) do
+    begin
+      Result[LOffset + LIndex] := LDrums[LIndex];
+      Result[LOffset + LIndex].GroupIndex := 1;
+      for LDependency := 0 to High(LDrums[LIndex].Dependencies) do
+      begin
+        Result[LOffset + LIndex].Dependencies[LDependency] :=
+          LOffset + LDrums[LIndex].Dependencies[LDependency];
+      end;
+    end;
+    Result[LOffset].InputSourcePassIndex := 1;
+  end;
 end;
 
 function TInstrumentalPlan.CopyProvider(const AName: String): TStyleProviderDescription;
@@ -199,9 +236,98 @@ begin
   Result := FSession.CopyAccepted;
 end;
 
+function TInstrumentalPlan.CopyPercussionHits: TPercussionHits;
+begin
+  Result := nil;
+  if FDrums <> nil then
+  begin
+    Result := FDrums.CopyHits;
+  end;
+end;
+
+function TInstrumentalPlan.CopyPercussionPart(const AIndex: Integer): TPercussionPart;
+begin
+  if FDrums = nil then
+  begin
+    raise EAudio.Create('Instrumental plan has no percussion');
+  end;
+  Result := FDrums.PartAt(AIndex);
+end;
+
+function TInstrumentalPlan.IsDrumProvider(const AName: String): Boolean;
+var
+  LIndex: Integer;
+begin
+  Result := False;
+  if FDrums = nil then
+  begin
+    Exit;
+  end;
+  if AName = 'percussion.rhythm' then
+  begin
+    Exit(True);
+  end;
+  for LIndex := 0 to FDrums.PartCount - 1 do
+  begin
+    if FDrums.PartAt(LIndex).Name = AName then
+    begin
+      Exit(True);
+    end;
+  end;
+end;
+
+function TInstrumentalPlan.CopyPassTokens(const AIndex: Integer): TWfcModelTokens;
+var
+  LMusic: TWfcMusicVoicesGenerated;
+  LDrums: TLayerSequences;
+  LOffset: Integer;
+begin
+  if (AIndex >= 0) and (AIndex < FSession.ProviderCount) then
+  begin
+    LMusic := FSession.CopyAccepted;
+    Exit(Copy(LMusic.Layers[AIndex].Tokens));
+  end;
+  LOffset := FSession.ProviderCount + FSession.ProofPassCount;
+  if (FDrums <> nil) and (AIndex >= LOffset) and
+    (AIndex < LOffset + FDrums.PartCount + 1) then
+  begin
+    LDrums := FDrums.CopySequences;
+    Exit(Copy(LDrums[AIndex - LOffset].Tokens));
+  end;
+  raise EAudio.Create('Instrumental pass has no token model');
+end;
+
+function TInstrumentalPlan.CopyPassStates(const AIndex: Integer): TWfcSequenceStateIndices;
+var
+  LMusic: TWfcMusicVoicesGenerated;
+  LDrums: TLayerSequences;
+  LOffset: Integer;
+begin
+  if (AIndex >= 0) and (AIndex < FSession.ProviderCount) then
+  begin
+    LMusic := FSession.CopyAccepted;
+    Exit(Copy(LMusic.Layers[AIndex].StateIndices));
+  end;
+  LOffset := FSession.ProviderCount + FSession.ProofPassCount;
+  if (FDrums <> nil) and (AIndex >= LOffset) and
+    (AIndex < LOffset + FDrums.PartCount + 1) then
+  begin
+    LDrums := FDrums.CopySequences;
+    Exit(Copy(LDrums[AIndex - LOffset].StateIndices));
+  end;
+  raise EAudio.Create('Instrumental pass has no latent model');
+end;
+
 function TInstrumentalPlan.CopyModel(const AName: String): TWfcSequenceModel;
 begin
-  Result := FSession.CopyModel(AName);
+  if IsDrumProvider(AName) then
+  begin
+    Result := FDrums.CopyModel(AName);
+  end
+  else
+  begin
+    Result := FSession.CopyModel(AName);
+  end;
 end;
 
 function TInstrumentalPlan.CopyConstraints(const AName: String): TWfcSequenceTokenConstraints;
@@ -224,6 +350,27 @@ function TInstrumentalPlan.CopyPartTones(const AIndex: Integer): TFrameTones;
 begin
   CheckRole(AIndex);
   Result := Copy(FParts[AIndex]);
+end;
+
+procedure TInstrumentalPlan.IncludePart(const AIndex: Integer; const ATones: TFrameTones);
+var
+  LTone: TFrameTone;
+  LEnd: Int64;
+begin
+  if Length(ATones) > MaximumScheduledVoices - FToneCount then
+  begin
+    raise EAudio.Create('Finite instrumental plan exceeds 4096 scheduled tones');
+  end;
+  FParts[AIndex] := ATones;
+  Inc(FToneCount, Length(ATones));
+  for LTone in ATones do
+  begin
+    LEnd := LTone.StartFrame + LTone.GateFrames + SynthReleaseFrames(LTone.Voice, SampleRate);
+    if LEnd > FFrameCount then
+    begin
+      FFrameCount := LEnd;
+    end;
+  end;
 end;
 
 function TInstrumentalPlan.CreatePlayer(const AGraph: TBusGraph;
@@ -271,7 +418,8 @@ function TryCreateInstrumentalPlan(const AConfig: TWfcMusicVoicesGraphConfig;
   const ARoles: TInstrumentalRoles; const AOptions: TInstrumentalOptions;
   const AMasks: TVoiceMasks; const APreferences: TVoicePreferences;
   var APlan: TInstrumentalPlan; out AReport: TInstrumentalReport;
-  const AProgress: TWorkProgressCallback): Boolean;
+  const AProgress: TWorkProgressCallback;
+  const APercussion: TPercussionDefinitions): Boolean;
 var
   LCandidate: TInstrumentalPlan;
   LPrevious: TInstrumentalPlan;
@@ -280,15 +428,17 @@ var
   LIndex: Integer;
   LCount: Integer;
   LLength: Int64;
-  LEnd: Int64;
   LClockCheck: TTempoMap;
   LGenerated: TWfcMusicVoicesGenerated;
   LNotes: TNoteGates;
   LGate: TNoteGate;
   LPartSequence: TNoteSequence;
   LRender: TNoteRenderReport;
-  LTone: TFrameTone;
+  LPartTones: TFrameTones;
   LPasses: TVoiceGraphPasses;
+  LRhythmModel: TWfcSequenceModel;
+  LDrumPart: TPercussionPart;
+  LOther: Integer;
 begin
   Result := False;
   AReport := Default(TInstrumentalReport);
@@ -325,6 +475,29 @@ begin
       raise EAudio.Create('Instrumental role requires an explicit instrument, identity and bus');
     end;
     LNames[LRole] := ARoles[LRole].Name;
+    if (Length(APercussion) > 0) and (LNames[LRole] = 'percussion.rhythm') then
+    begin
+      raise EAudio.Create('Pitched role name conflicts with the percussion input pass');
+    end;
+    if ARoles[LRole].IsPercussion then
+    begin
+      raise EAudio.Create('Unpitched roles use the explicit percussion group, not named harmonic voices');
+    end;
+  end;
+  for LRole := 0 to High(APercussion) do
+  begin
+    if (APercussion[LRole].Name = 'harmony') or
+      (APercussion[LRole].Name = 'rhythm') then
+    begin
+      raise EAudio.Create('Percussion name conflicts with a pitched provider');
+    end;
+    for LOther := 0 to High(LNames) do
+    begin
+      if APercussion[LRole].Name = LNames[LOther] then
+      begin
+        raise EAudio.Create('Percussion and pitched role names must be distinct');
+      end;
+    end;
   end;
   ReportWork(AProgress, 'instrumental_plan', wuItems, 0, Length(ARoles) + 1);
   LCandidate := TInstrumentalPlan.Create;
@@ -383,25 +556,47 @@ begin
       SetLength(LNotes, LCount);
       LPartSequence := TNoteSequence.Create(AOptions.Session.TicksPerQuarter,
         LLength, AOptions.Tempos, LNotes);
-      LCandidate.FParts[LRole] := PlanNoteTones(LPartSequence, AOptions.SampleRate,
+      LPartTones := PlanNoteTones(LPartSequence, AOptions.SampleRate,
         ARoles[LRole].Instrument, LRender);
       FreeAndNil(LPartSequence);
-      Inc(LCandidate.FToneCount, Length(LCandidate.FParts[LRole]));
-      if LCandidate.FToneCount > MaximumScheduledVoices then
-      begin
-        raise EAudio.Create('Finite instrumental plan exceeds 4096 scheduled tones');
-      end;
-      for LTone in LCandidate.FParts[LRole] do
-      begin
-        LEnd := LTone.StartFrame + LTone.GateFrames +
-          SynthReleaseFrames(LTone.Voice, AOptions.SampleRate);
-        if LEnd > LCandidate.FFrameCount then
-        begin
-          LCandidate.FFrameCount := LEnd;
-        end;
-      end;
+      LCandidate.IncludePart(LRole, LPartTones);
       ReportWork(AProgress, 'instrumental_plan', wuItems, LRole + 2, Length(ARoles) + 1);
       LCandidate.FRoles[LRole].Instrument := nil;
+    end;
+    if Length(APercussion) > 0 then
+    begin
+      LRhythmModel := LCandidate.FSession.CopyModel('rhythm', AProgress);
+      try
+        if not TryCreatePercussionPlan(LRhythmModel, LGenerated.Layers[1].Tokens,
+          APercussion, AOptions.Session.TicksPerQuarter, AOptions.Session.StepTicks,
+          AOptions.SampleRate, AOptions.Tempos, AOptions.PercussionSeed,
+          LCandidate.FDrums, AReport.PercussionSolve, AProgress) then
+        begin
+          LIndex := AReport.PercussionSolve.FinalReport.FailedPassIndex;
+          AReport.FailedPass := 'percussion.rhythm';
+          if (LIndex > 0) and (LIndex <= Length(APercussion)) then
+          begin
+            AReport.FailedPass := APercussion[LIndex - 1].Name;
+          end;
+          AReport.Detail := 'Percussion conflicts with the retained rhythm or reached its search limit: ' +
+            AReport.FailedPass;
+          Exit;
+        end;
+      finally
+        LRhythmModel.Free;
+      end;
+      LCount := Length(ARoles);
+      SetLength(LCandidate.FRoles, LCount + LCandidate.FDrums.PartCount);
+      SetLength(LCandidate.FParts, Length(LCandidate.FRoles));
+      for LIndex := 0 to LCandidate.FDrums.PartCount - 1 do
+      begin
+        LDrumPart := LCandidate.FDrums.PartAt(LIndex);
+        LCandidate.FRoles[LCount + LIndex].Name := LDrumPart.Name;
+        LCandidate.FRoles[LCount + LIndex].InstrumentId := 'percussion-recipe-v1';
+        LCandidate.FRoles[LCount + LIndex].OutputBus := LDrumPart.OutputBus;
+        LCandidate.FRoles[LCount + LIndex].IsPercussion := True;
+        LCandidate.IncludePart(LCount + LIndex, LCandidate.FDrums.CopyPartTones(LIndex));
+      end;
     end;
     if LCandidate.FFrameCount > MaximumTimingInteger - AOptions.EffectTailFrames then
     begin

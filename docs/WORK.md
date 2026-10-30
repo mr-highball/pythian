@@ -2,6 +2,74 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
+## Current handoff: percussion delivered; instrumental Studio next — 2026-10-30
+
+Big Boss SOLO closes [percussion](TODO/DONE/NS-2_percussion_01.md) AC1–4 after
+native32/native64/actual pas2js and extracted consumer checks. Core kick, snare
+and closed hat use primary instruments, noise/oscillators, curves and filters.
+The shared instrumental plan has six roles and sixteen real passes in two
+conditional graphs: twelve pitched/proof passes, then accepted rhythm pinned
+into a four-pass percussion graph. Input lineage is explicit; this is not joint
+cross-group backtracking and drums are not harmonic members.
+
+The final maintained caller produces 852894 stereo frames at 44100 Hz
+(19.34 seconds), exactly replayed. Its authored seed-731 result contains
+2 kick/14 snare/64 hat events; soft hit preferences do not promise density.
+The original three-part render stays byte-identical. Core-only controls,
+overlap/silence/releases, drum locks/disable, retained pitched states and
+failed/cancelled candidate preservation pass, with zero native heap leaks.
+The source packages verify 108/163 owned units and 122/288 hashes for core/full.
+Actual pas2js also runs the fixtures against extracted sources only. Exact
+artifact hashes and preserved repairs are in the task. Evidence lives under
+percussion-20261030-boss in the dedicated E-drive build/tests/runs folders.
+
+Current scoped effort: 10 open / 2 current DONE, 69 open + 13 accepted = 82,
+15.85%. NS-2 is 6/12, NS-4 is 7/21; other subtotals are unchanged. There are
+99 DONE files (97 historical + 2 current) and 53 retired. The first 19-unit
+milestone has 13 accepted and 6 remaining. Consecutive nonclosing batches: zero.
+This is reusable runtime/percussion delivery, not musical preference acceptance.
+
+[Instrumental Studio](TODO/NS-6_instrumental-studio_01.md) is now dependency-ready
+and selected next. Its batch must put authored instrumental generation into
+ordinary durable native jobs/reviews, expose initial musical settings and part
+playback, and pass actual isolated desktop/narrow browser checks. Stop before
+expanding graph editing, recording transcription, style learning or long streams;
+those have linked tasks. Preserve existing projects, five saved answers, private
+audio and source references. No service/browser/device playback was started in
+the percussion batch. No vendor edit or generic WFC gap was needed.
+## In progress: explicit percussion batch; runtime CI501 passed — 2026-10-30
+
+Big Boss remains SOLO. Runtime commit 45b0e0505b39482a48f5c7d1198b70e2d86814a0
+passes [CI501](https://github.com/mr-highball/pythian/actions/runs/40999035158),
+including Linux maintained integration and extracted consumers. Its task remains
+DONE at 7/82 effort (8.54%). Current native service, recordings and answers are
+untouched.
+
+The selected percussion task is in progress, still worth zero accepted units
+until complete. Core oscillator/noise recipes and a Pythian percussion adapter
+are implemented locally. Twelve original pitched/proof passes feed a separate
+four-pass percussion group: pinned accepted rhythm plus kick/snare/hat. The
+bridge is explicit input lineage, not a fabricated solver dependency between
+graphs. Drums do not enter harmonic coverage or voice-leading. Generic layer
+and named-session graph descriptions share one primary implementation.
+
+Native64 core/percussion fixtures currently pass, with clean heaps, alongside
+the original instrumental fixture. The latter keeps its exact previous WAV
+bytes. Combined default source-free audio and isolated stems exist under
+E-drive runs/percussion-20261030-boss. Percussion owns native curves/instruments,
+keeps clocks exact and preserves pitched states through drum edits; no source
+grains or third-party inference is used. Missing-import, weak one-pole hat and
+invalid empty disable-projection failures are repaired and retained in task
+Dev Notes/test logs. No generic WFC gap or upstream branch is needed.
+
+Remaining before acceptance/publication: final Win32/Win64/pas2js qualification
+after the starter hit preference is revised to 64, replay/output checks, changed
+core/full extracted consumers, documentation/accounting and source CI. New files
+and all compiler/test/cache/run output stay under the dedicated E workspace.
+No helper, browser, device playback or service restart. The current batch has
+not ended; the consecutive nonclosing count remains zero. Studio integration is
+next after percussion, and ordinary Studio generation has not yet changed.
+
 ## Current handoff: instrumental runtime delivered; solo implementation resumed — 2026-10-29
 
 The operator explicitly resumed the synthesis-first goal, Big Boss SOLO.
@@ -41,7 +109,7 @@ other current-goal subtotals are unchanged. All 97 historical DONE and 53 retire
 records remain separate, giving 98 total DONE files. Musical-quality judgments
 are still unclaimed.
 
-Next selected task: [explicit percussion](TODO/NS-2_percussion_01.md), then
+Next selected task: [explicit percussion](TODO/DONE/NS-2_percussion_01.md), then
 [ordinary instrumental Studio generation](TODO/NS-6_instrumental-studio_01.md).
 Graph controls are also dependency-ready but do not displace that first
 operator-facing milestone. Studio still uses its prior ordinary generation path.
