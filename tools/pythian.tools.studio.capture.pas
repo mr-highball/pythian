@@ -294,7 +294,19 @@ begin
   LRoot := CaptureRoot(ACatalogRoot, ACaptureId);
   if FileExists(LRoot + PathDelim + 'analysis.json') then
   begin
-    Exit(ReadStudioJSON(LRoot + PathDelim + 'analysis.json'));
+    Result := ReadStudioJSON(LRoot + PathDelim + 'analysis.json');
+    try
+      if Result.Find('musical_proposal') = nil then
+      begin
+        Result.Add('musical_proposal', InspectCatalogMusicalObservations(
+          LRoot + PathDelim + 'catalog', Result.Strings['source_sha256'],
+          Result.Int64s['start_frame'], Result.Int64s['end_frame'], AProgress));
+      end;
+      Exit;
+    except
+      Result.Free;
+      raise;
+    end;
   end;
   LState := ReadStudioCapture(ACatalogRoot, ACaptureId);
   LManifest := nil;
@@ -363,6 +375,8 @@ begin
         ACheck;
       end;
       Result.Add('beat_proposal', PublishCatalogBeatProposals(LTemporary, LHash, 0, LEnd, AProgress));
+      Result.Add('musical_proposal', InspectCatalogMusicalObservations(
+        LTemporary, LHash, 0, LEnd, AProgress));
       Result.Add('uncertainty', 'Unreviewed pulse hypotheses; no beat or note truth is admitted');
       Result.Add('midi_available', False);
       Result.Add('pitch_preview_available', True);

@@ -131,6 +131,7 @@ begin
     'inspect_levels': Result := 'Measure volume';
     'resample_audio': Result := 'Prepare audio for pitch detection';
     'estimate_pitch', 'preview_pitch': Result := 'Find pitches';
+    'musical_pitch_channel': Result := 'Check channel pitches';
     'locate_onsets': Result := 'Find sound starts';
     'estimate_beats': Result := 'Find beat candidates';
     'prepare_learning': Result := 'Prepare sound examples';

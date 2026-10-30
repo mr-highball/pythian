@@ -8,6 +8,8 @@ Effort is relative complexity on a 1–10 scale, not assigned musical credit.
 The operator has resumed implementation solo. The shared instrumental runtime
 and explicit percussion are accepted. Finite instrumental Studio and its real
 cancellation prerequisite are now accepted; the first operator review is waiting.
+Experimental learning is in progress: its AC1 musical suggestions are exposed
+through recording and import analysis. AC2–4 remain open; no partial effort is credited.
 
 ## First operator-facing milestone
 

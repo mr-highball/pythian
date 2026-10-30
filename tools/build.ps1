@@ -424,6 +424,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'WAVE analysis compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.analysis.wave$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'WAVE analysis checks failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.music.observations.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Musical observation compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.music.observations$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Musical observation checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.analysis.journal.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Feature journal compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.analysis.journal$executableSuffix")

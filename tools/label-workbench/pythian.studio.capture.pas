@@ -110,6 +110,8 @@ type
 
 implementation
 
+uses pythian.studio.observations;
+
 type
   ECaptureHttp = class(Exception)
   public
@@ -228,6 +230,9 @@ begin
   LCanvas.style.setProperty('max-width', '100%');
   LControl := Add(LRoot, 'p', '');
   LControl.id := 'capture-analysis';
+  LControl := Add(LRoot, 'section', '');
+  LControl.id := 'capture-musical-observations';
+  LControl.setAttribute('aria-live', 'polite');
   LDetails := Add(LRoot, 'details', '');
   LDetails.className := 'advanced';
   Add(LDetails, 'summary', 'Try a note preview');
@@ -540,6 +545,7 @@ begin
   El('capture-midi').setAttribute('hidden', '');
   El('capture-waveform').setAttribute('hidden', '');
   El('capture-analysis').textContent := '';
+  El('capture-musical-observations').innerHTML := '';
   El('capture-notes').textContent := '';
   if FLocalUrl <> '' then
   begin
@@ -1272,9 +1278,6 @@ var
   LIndex: Integer;
   LId: String;
   LKind: String;
-  LProposals: TJSObject;
-  LCandidates: TJSArray;
-  LPulseText: String;
 begin
   LResult := TJSObject(FJob['results']);
   LId := StudioText(FJob, 'job_id');
@@ -1290,29 +1293,7 @@ begin
       ' · ' + IntToStr(Trunc(StudioNumber(LResult, 'sample_rate'))) + ' Hz · ' +
       IntToStr(Trunc(StudioNumber(LResult, 'channels'))) + ' channel(s) · peak ' +
       FormatFloat('0.00', StudioNumber(LResult, 'peak'));
-    LProposals := TJSObject(LResult['beat_proposal']);
-    LPulseText := '';
-    if (LProposals <> nil) and isArray(LProposals['candidates']) then
-    begin
-      LCandidates := TJSArray(LProposals['candidates']);
-      for LIndex := 0 to Min(2, LCandidates.length - 1) do
-      begin
-        if LPulseText <> '' then
-        begin
-          LPulseText := LPulseText + ', ';
-        end;
-        LPulseText := LPulseText + FormatFloat('0.0',
-          StudioNumber(TJSObject(LCandidates[LIndex]), 'bpm'));
-      end;
-    end;
-    if LPulseText = '' then
-    begin
-      LPulseText := 'No tempo suggestion';
-    end
-    else
-      LPulseText := 'Suggested tempo: ' + LPulseText + ' BPM';
-    El('capture-analysis').textContent := El('capture-analysis').textContent +
-      ' · ' + LPulseText;
+    DrawMusicalObservations(El('capture-musical-observations'), LResult);
     Notice('Analysis complete. Showing the first ' +
       StudioTime((StudioNumber(LResult, 'end_frame') - StudioNumber(LResult, 'start_frame')) /
       StudioNumber(LResult, 'sample_rate')) + '.');

@@ -2,6 +2,54 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
+## Current handoff: musical suggestions exposed in Studio — 2026-10-30
+
+Big Boss remains SOLO. [Experimental learning](TODO/NS-3_experimental-learning_01.md)
+AC1 is delivered through the existing recording and import/microphone inspection
+jobs. The prior instrumental batch b4e03f2 passed
+[CI503](https://github.com/mr-highball/pythian/actions/runs/41012477582).
+
+The primary portable pythian.music.observations API reuses existing spectral,
+tonal, resampling and pitch implementations. Studio shows tempo candidates,
+ranked key alternatives, per-channel pitch spans, measured original-time coverage,
+brightness and window loudness. Spectral/beat scope is up to30 seconds/two million
+source frames; each channel's pitch scope is the first8 seconds, with unmeasured
+edges explicit and very short inputs retaining spectra without invented pitch.
+These are Experimental suggestions, not separated parts, confidence probabilities
+or learned styles. Analysis leaves generation settings unchanged.
+
+Native and actual pas2js pass32 focused checks; native capture passes80 with
+source-offset/identity and import preservation checks, and the existing native
+pitch fixture passes. Native heaps are clean. Actual isolated Edge desktop and
+390-pixel checks complete recording analysis, actual upload/analysis, key
+alternatives and pitch details without overflow/errors; the final matched QA
+build reopens the retained input. This is not a physical-phone microphone test.
+Evidence, failure logs, screenshots and the fourteen-asset deployment manifest
+are under musical-proposals-20261030-boss in the dedicated E-drive roots.
+The fourteen matched assets are deployed in the stable slot, with HTTPS200 and
+identical operator projects/jobs/listening state before and after: three projects,
+twelve jobs, one waiting review and five saved answers. The independent launcher
+has exited; QA listeners/workers and exact browser profile processes are closed,
+with test audio stopped. Existing TLS, address/profile and firewall identity remain.
+
+Repairs are preserved in the task: incorrect assumed pitch-edge coverage,
+short-input preflight, portable primary region reset, and duplicate tempo text.
+The first disposable capture check left an empty legacy relative folder on D;
+its exact fixture hash was verified before removing only that empty folder.
+The final capture check and subsequent jobs use the E-drive cwd/cache.
+A private launcher initially retained the previous build's shorter web-root
+layout; correct it to the matched label-workbench/www before restaging. The
+same fixed service/catalog was restored and all fourteen hashes checked. The
+retained-input check also reconciles a timed-out submission by retrying its
+existing identity: three QA jobs remain three, with no duplicate or invented answer.
+
+AC2–4 remain open: explicit acceptance/corrections and role choices, mapping into
+real providers and synthesized Original comparisons, then correction lineage and
+deliberate learning/regeneration. Do not award the task's8 effort units or imply
+that displayed observations control WFC. Current scope remains21/84 (25%), four
+current DONE and nine open. This batch closes AC1, so consecutive nonclosing
+batches remain zero. No new task or WFC/vendor change was required.
+
 ## Current handoff: first instrumental Studio milestone delivered — 2026-10-30
 
 Big Boss remains SOLO. Shared runtime, explicit percussion, the concrete
@@ -9,8 +57,7 @@ Big Boss remains SOLO. Shared runtime, explicit percussion, the concrete
 [ordinary instrumental Studio](TODO/DONE/NS-6_instrumental-studio_01.md) meet their
 local acceptance criteria. The integrated Studio batch is published on
 hello-pythian as b4e03f2. [CI503](https://github.com/mr-highball/pythian/actions/runs/41012477582)
-is still running at handoff; do not describe it as passed until its actual
-result. Prior percussion commit 8d63fac passes CI502.
+passed. Prior percussion commit 8d63fac passes CI502.
 
 The real operator job bb-instrumental-20261030-first completed through the
 deployed native supervisor with ten recorded events. Its new project is

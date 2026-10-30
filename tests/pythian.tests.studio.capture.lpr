@@ -29,6 +29,7 @@ program StudioCaptureConformance;
 uses Classes, SysUtils, Math, Base64, fpjson,
   pythian.audio, pythian.progress, pythian.hash, pythian.wave.stream,
   pythian.tools.annotations.catalog, pythian.tools.studio.projects,
+  pythian.tools.annotations.proposal,
   pythian.tools.studio.jobs, pythian.tools.studio.capture, pythian.tools.studio.pitch,
   pythian.music, pythian.midi.smf, pythian.midi.notes;
 
@@ -52,6 +53,25 @@ begin
   if not ACondition then
   begin
     raise Exception.Create(AMessage);
+  end;
+end;
+
+procedure CheckMusicalRange(const AHash: String);
+var
+  LResult: TJSONObject;
+  LChannel: TJSONObject;
+begin
+  LResult := InspectCatalogMusicalObservations(GCatalog, AHash, 8000, 24000);
+  try
+    Check((LResult.Int64s['start_frame'] = 8000) and
+      (LResult.Int64s['end_frame'] = 24000), 'Musical observations retain selected original range');
+    Check(LResult.Int64s['pitch_origin_frame'] = 8000, 'Pitch source origin is retained');
+    Check(LResult.Integers['pitch_frame_count'] = 16000, 'Pitch extent matches short selection');
+    LChannel := LResult.Arrays['pitch_channels'].Objects[0];
+    Check((LChannel.Integers['measured_start_frame'] > 0) and
+      (LChannel.Integers['measured_end_frame'] <= 16000), 'Unmeasured edges remain explicit');
+  finally
+    LResult.Free;
   end;
 end;
 
@@ -356,6 +376,16 @@ begin
         'Signal analysis offers explicit pitch preview without claiming it has run');
       Check(LResult.Find('waveform') <> nil, 'Native waveform is present');
       Check(LResult.Find('beat_proposal') <> nil, 'Native candidate packet is present');
+      Check(LResult.Objects['musical_proposal'].Booleans['experimental'],
+        'Musical observations explicitly Experimental');
+      Check(LResult.Objects['musical_proposal'].Strings['source_sha256'] = LHash,
+        'Musical observation source identity');
+      Check(LResult.Objects['musical_proposal'].Arrays['tonal_candidates'].Count = 24,
+        'Musical key alternatives available');
+      Check(LResult.Objects['musical_proposal'].Arrays['pitch_channels'].Count = 1,
+        'Musical pitch channels reflect source');
+      Check(not LResult.Objects['musical_proposal'].Booleans['polyphonic_separation'],
+        'Mixed source separation not invented');
     finally
       LResult.Free;
     end;
@@ -413,6 +443,7 @@ begin
       try
         Check(LResult.Strings['source_sha256'] = LHash, 'Explicit save preserves audio identity');
         Check(not LResult.Booleans['already_catalogued'], 'First save adds one source');
+        CheckMusicalRange(LHash);
       finally
         LResult.Free;
       end;

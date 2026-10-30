@@ -1744,6 +1744,9 @@ begin
       LProposal := PublishCatalogBeatProposals(FCatalogRoot, FRequest.Strings['source_sha256'],
         FRequest.Int64s['start_frame'], FRequest.Int64s['end_frame'], WorkProgress);
       Result.Add('beat_proposal', LProposal);
+      Result.Add('musical_proposal', InspectCatalogMusicalObservations(FCatalogRoot,
+        FRequest.Strings['source_sha256'], FRequest.Int64s['start_frame'],
+        FRequest.Int64s['end_frame'], AudioProgress));
       Result.Add('uncertainty', 'Unreviewed native pulse hypotheses; not admitted beat truth');
     except
       Result.Free;

@@ -129,6 +129,9 @@ type
   end;
 
 function DefaultPitchTrackOptions(const ASampleRate: Integer): TPitchTrackOptions;
+{ Minimum complete input window for these primary estimator options. }
+function PitchTrackRequiredFrames(const ASampleRate: Integer;
+  const AOptions: TPitchTrackOptions): Integer;
 { Explicit attack ownership policy: split only inside known pitched intervals.
   Boundary attacks do not create zero gates; attacks in gaps, unknown or silence
   do not create notes. Inputs must be ordered, non-overlapping and canonical;
@@ -278,6 +281,14 @@ begin
   Result.MaximumCents := 25;
 end;
 
+function PitchTrackRequiredFrames(const ASampleRate: Integer;
+  const AOptions: TPitchTrackOptions): Integer;
+begin
+  PitchEstimateWork(MaximumPitchWindowFrames, ASampleRate, 1, 0, AOptions.Pitch);
+  Result := 2 * (Ceil(ASampleRate / AOptions.Pitch.MinimumHz) + 1);
+  PitchEstimateWork(Result, ASampleRate, 1, 0, AOptions.Pitch);
+end;
+
 function TPitchTrack.InitializeGeometry(const ASampleRate, AChannels,
   AFrameCount, AChannel: Integer; const AOptions: TPitchTrackOptions;
   const AWindowFrames: Integer): Integer;
@@ -290,7 +301,7 @@ begin
   FWindowFrames := AWindowFrames;
   if FWindowFrames = 0 then
   begin
-    FWindowFrames := 2 * (Ceil(ASampleRate / AOptions.Pitch.MinimumHz) + 1);
+    FWindowFrames := PitchTrackRequiredFrames(ASampleRate, AOptions);
   end;
   LWork := PitchEstimateWork(FWindowFrames, ASampleRate, AChannels,
     AChannel, AOptions.Pitch);

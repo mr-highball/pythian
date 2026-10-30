@@ -31,6 +31,31 @@ remaining tasks, rather than claims made by this finite starter.
 
 ## Intended operator loop
 
+### Explore a recording's musical suggestions
+
+In Sources → Passage, open **Explore Pythian analysis** and choose **Analyze
+from playhead**. In Import / record, upload or record audio and choose **Analyze
+audio**. Both use the same Musical suggestions panel: tempo candidates, ranked
+key alternatives, pitch spans per audio channel, brightness and window loudness.
+The existing beat overlay and original playback remain beside this evidence.
+
+Suggestions are **Experimental**. Spectral/beat analysis covers the displayed
+window, up to thirty seconds and two million source frames. Pitch checks each
+channel separately over its first eight seconds, retains uncertain/silent spans,
+and shows the measured extent in original time. Unmeasured edges are omitted;
+inputs shorter than one pitch window have no pitch suggestion. A stereo channel
+is not an isolated musical part. Tonal fit scores are not probabilities, and
+brightness does not identify an instrument.
+
+Analysis does not change a project, generation settings or model. Tempo/root can
+currently be entered manually in Generate. Accept/correct/bypass controls,
+recording-derived provider mappings and saved correction lineage remain open in
+[experimental learning](TODO/NS-3_experimental-learning_01.md). Portable callers
+reuse [MeasureMusicalObservations](../src/pythian.music.observations.pas), built
+from primary analysis, tonal, resampling and pitch implementations.
+
+### Complete experiment loop
+
 1. **Sources:** browse private recordings or import/record; include whole tracks
    or coarse passages and give useful classifications. Hear originals directly.
    Clearly show what is included, analyzed, excluded and actually used.

@@ -141,7 +141,7 @@ function StudioTime(const ASeconds: Double): String;
 
 implementation
 
-uses pythian.studio.progress;
+uses pythian.studio.progress, pythian.studio.observations;
 
 function StudioIncluded(AObject: TJSObject): Boolean;
 begin
@@ -867,7 +867,8 @@ begin
   FWindowEnd := Min(StudioNumber(FTrack, 'frame_count'),
     FWindowStart + Max(1, Round(LRate * FViewSeconds)));
   FAnalysis := nil;
-  El('source-analysis-status').textContent := 'Analyze up to 30 seconds from the playhead for levels and suggested beats.';
+  El('source-musical-observations').innerHTML := '';
+  El('source-analysis-status').textContent := 'Analyze up to 30 seconds from the playhead for tempo, key, pitch and sound suggestions.';
   El('source-beat-layer').innerHTML := '<option value="-1">No beat overlay</option>';
   FBins := nil;
   El('source-waveform-state').textContent := 'Loading waveform…';
@@ -995,6 +996,8 @@ begin
     Exit;
   end;
   FAnalysisBusy := True;
+  FAnalysis := nil;
+  El('source-musical-observations').innerHTML := '';
   LEpoch := FEpoch;
   LJobId := 'inspect-' + FloatToStr(TJSDate.now) + '-' + IntToStr(Random(100000000));
   TJSHTMLButtonElement(El('source-analyze')).disabled := True;
@@ -1065,6 +1068,7 @@ begin
         StudioTime(StudioNumber(FAnalysis, 'end_frame') /
           StudioNumber(FAnalysis, 'sample_rate'));
       LProposal := TJSObject(FAnalysis['beat_proposal']);
+      DrawMusicalObservations(El('source-musical-observations'), FAnalysis);
       El('source-beat-layer').innerHTML := '';
       LOption := Add(El('source-beat-layer'), 'option', 'No beat overlay', '');
       LOption.setAttribute('value', '-1');

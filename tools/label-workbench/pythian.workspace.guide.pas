@@ -134,8 +134,8 @@ const
      DoneWhen: 'Play the selected passage and check its start and end. Your saved project shows that range and its labels.';
      Page: 'studio'; Target: 'source-position'; Prerequisite: 'Choose a recording and open Choose a passage first.'),
     (Id: 'analysis'; Title: 'Explore what Pythian hears';
-     Action: 'Open a recording and expand Explore Pythian analysis for timing overlays. For an imported or recorded input, Analyze audio, open Try a note preview and try notes from the first 8 seconds. Download MIDI when available.';
-     Expectation: 'Experimental: beat marks and detected pitches are suggestions. Listen for missed notes, extra notes and timing drift. MIDI represents detected note events; it does not reproduce the original voice or instrument.';
+     Action: 'Open a recording, expand Explore Pythian analysis and press Analyze from playhead. For imported or recorded audio, press Analyze audio. Inspect tempo, key alternatives, channel pitches and sound measurements. Try a note preview separately for audio/MIDI.';
+     Expectation: 'Experimental suggestions can be wrong. Analysis covers up to 30 seconds; pitch suggestions use the first 8 seconds of that range and omit unmeasured edges. A mix is not separated into instruments. Suggestions do not change generation settings or train a style.';
      DoneWhen: 'You can compare the original with the preview and describe where the analysis agrees or fails.';
      Page: 'studio'; Target: 'source-beat-layer'; Prerequisite: 'Open Choose a passage for a recording first. Recording preparation may be needed for analysis.'),
     (Id: 'effects'; Title: 'Shape a sound without losing the original';

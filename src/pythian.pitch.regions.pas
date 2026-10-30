@@ -288,10 +288,13 @@ begin
       Continue;
     end;
     LResult[I].PeriodicCoverage := LResult[I].PeriodicWindows / LResult[I].WindowCount;
-    FillChar(LCounts, SizeOf(LCounts), 0);
-    FillChar(LEnergy, SizeOf(LEnergy), 0);
-    FillChar(LCents, SizeOf(LCents), 0);
-    FillChar(LVariance, SizeOf(LVariance), 0);
+    for J := Low(LCounts) to High(LCounts) do
+    begin
+      LCounts[J] := 0;
+      LEnergy[J] := 0;
+      LCents[J] := 0;
+      LVariance[J] := 0;
+    end;
     LTotal := 0;
     for J := LFirst to LLast - 1 do
     begin

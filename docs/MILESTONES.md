@@ -66,6 +66,9 @@ automation, filters, routing and effects rather than inventing a parallel engine
 analysis to editable musical proposals; [style vocabulary](TODO/NS-3_style-vocabulary_01.md)
 uses coarse classifications and selected material across long private recordings.
 Uncertainty is visible and correctable, not a reason to withhold audition.
+The first AC1 slice exposes source-bound tempo/key, channel-pitch and sound
+observations in Studio. Acceptance/correction, provider mapping and correction
+lineage remain unfinished, so accepted NS-3 effort stays zero.
 
 <a id="ns-4"></a>
 ### NS-4 — Musical graph and synthesis together

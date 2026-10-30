@@ -36,6 +36,11 @@ uses pythian.progress,
 function PublishCatalogBeatProposals(const ACatalogRoot, AHash: String;
   const AStartFrame, AEndFrame: Int64;
   const AProgress: TWorkProgressCallback = nil): TJSONObject;
+{ Source-bound presentation of the primary portable musical observations.
+  Does not admit evidence, train a provider or modify operator answers. }
+function InspectCatalogMusicalObservations(const ACatalogRoot, AHash: String;
+  const AStartFrame, AEndFrame: Int64;
+  const AProgress: TWorkProgressCallback = nil): TJSONObject;
 function ReadCatalogBeatProposals(const ACatalogRoot, AHash: String;
   const AStartFrame, AEndFrame: Int64): TJSONObject;
 function CatalogProposalExists(const ACatalogRoot, AHash,
@@ -55,6 +60,9 @@ uses
   pythian.wave.read,
   pythian.beat,
   pythian.beat.wave,
+  pythian.music.observations,
+  pythian.tonal,
+  pythian.pitch.track,
   pythian.tools.annotations.catalog;
 
 const
@@ -157,6 +165,109 @@ begin
     end;
   finally
     LStream.Free;
+  end;
+end;
+
+function InspectCatalogMusicalObservations(const ACatalogRoot, AHash: String;
+  const AStartFrame, AEndFrame: Int64;
+  const AProgress: TWorkProgressCallback): TJSONObject;
+var
+  LTrack: TJSONObject;
+  LClip: TAudioClip;
+  LMeasured: TMusicalObservations;
+  LRows: TJSONArray;
+  LChannels: TJSONArray;
+  LSpans: TJSONArray;
+  LRow: TJSONObject;
+  LChannel: TJSONObject;
+  LIndex: Integer;
+  LChannelIndex: Integer;
+  LSpan: TPitchSpan;
+begin
+  LTrack := ReadCatalogTrack(ACatalogRoot, AHash);
+  LClip := nil;
+  Result := nil;
+  try
+    LClip := BoundedSourceClip(ACatalogRoot, AHash, LTrack,
+      AStartFrame, AEndFrame, AProgress);
+    LMeasured := MeasureMusicalObservations(LClip, AProgress);
+    Result := TJSONObject.Create;
+    try
+      Result.Add('version', MusicalObservationVersion);
+      Result.Add('experimental', True);
+      Result.Add('source_sha256', AHash);
+      Result.Add('sample_rate', LClip.SampleRate);
+      Result.Add('start_frame', AStartFrame);
+      Result.Add('end_frame', AEndFrame);
+      Result.Add('origin', 'Pascal WAV analysis; unreviewed musical hypotheses');
+      Result.Add('polyphonic_separation', False);
+      Result.Add('analysis_window_frames', LMeasured.AnalysisOptions.WindowFrames);
+      Result.Add('analysis_hop_frames', LMeasured.AnalysisOptions.HopFrames);
+      Result.Add('feature_count', Length(LMeasured.Features));
+      Result.Add('mean_centroid_hz', LMeasured.MeanCentroidHz);
+      Result.Add('minimum_window_rms', LMeasured.MinimumRms);
+      Result.Add('maximum_window_rms', LMeasured.MaximumRms);
+      Result.Add('tonal_score_gap', LMeasured.Tonal.ScoreGap);
+      Result.Add('tonal_policy', 'Energy-weighted chroma; diatonic fit ranking, not probability');
+      LRows := TJSONArray.Create;
+      Result.Add('tonal_candidates', LRows);
+      for LIndex := 0 to LMeasured.Tonal.CandidateCount - 1 do
+      begin
+        LRow := TJSONObject.Create;
+        LRows.Add(LRow);
+        LRow.Add('root', LMeasured.Tonal.Fits[LIndex].Root);
+        if LMeasured.Tonal.Fits[LIndex].Mode = dmMajor then
+          LRow.Add('mode', 'major')
+        else
+          LRow.Add('mode', 'natural_minor');
+        LRow.Add('fit', LMeasured.Tonal.Fits[LIndex].Score);
+        LRow.Add('coverage', LMeasured.Tonal.Fits[LIndex].Coverage);
+      end;
+      Result.Add('pitch_sample_rate', MusicalPitchRate);
+      Result.Add('pitch_frame_count', LMeasured.PitchFrames);
+      Result.Add('pitch_origin_frame', AStartFrame);
+      Result.Add('pitch_policy', 'Each channel separately; first 8 seconds; stable periodic spans, not separated parts or exact note attacks');
+      LChannels := TJSONArray.Create;
+      Result.Add('pitch_channels', LChannels);
+      for LChannelIndex := 0 to High(LMeasured.ChannelPitches) do
+      begin
+        LChannel := TJSONObject.Create;
+        LChannels.Add(LChannel);
+        LChannel.Add('channel', LChannelIndex);
+        if Length(LMeasured.ChannelPitches[LChannelIndex]) > 0 then
+        begin
+          LChannel.Add('measured_start_frame', LMeasured.ChannelPitches[LChannelIndex][0].StartFrame);
+          LChannel.Add('measured_end_frame', LMeasured.ChannelPitches[LChannelIndex][
+            High(LMeasured.ChannelPitches[LChannelIndex])].EndFrame);
+        end
+        else
+        begin
+          LChannel.Add('measured_start_frame', 0);
+          LChannel.Add('measured_end_frame', 0);
+        end;
+        LSpans := TJSONArray.Create;
+        LChannel.Add('spans', LSpans);
+        for LSpan in LMeasured.ChannelPitches[LChannelIndex] do
+        begin
+          LRow := TJSONObject.Create;
+          LSpans.Add(LRow);
+          case LSpan.Kind of
+            pskPitch: LRow.Add('kind', 'pitch');
+            pskSilence: LRow.Add('kind', 'silence');
+            pskUnknown: LRow.Add('kind', 'unknown');
+          end;
+          LRow.Add('note', LSpan.Note);
+          LRow.Add('start_frame', LSpan.StartFrame);
+          LRow.Add('end_frame', LSpan.EndFrame);
+        end;
+      end;
+    except
+      FreeAndNil(Result);
+      raise;
+    end;
+  finally
+    LClip.Free;
+    LTrack.Free;
   end;
 end;
 
