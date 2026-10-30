@@ -135,6 +135,10 @@ type
   end;
 
 function DefaultVoiceSessionOptions: TVoiceSessionOptions;
+{ Detached mask copy shared by session and musical-control consumers. }
+function CopyVoiceTokenConstraints(const AMask: TWfcSequenceTokenConstraints;
+  const AProgress: TWorkProgressCallback = nil;
+  const APass: Integer = 0): TWfcSequenceTokenConstraints;
 { Exact action, chord cardinality and velocities; optional absolute MIDI pitches
   or 12-TET pitch classes. No inferred roles, automatic octave remapping or
   relaxation if the returned vocabulary is empty. Borrows the model only here. }
@@ -328,9 +332,9 @@ begin
   Result.MaxPassBacktracks := 32;
 end;
 
-function CopyMask(const AMask: TWfcSequenceTokenConstraints;
-  const AProgress: TWorkProgressCallback = nil;
-  const APass: Integer = 0): TWfcSequenceTokenConstraints;
+function CopyVoiceTokenConstraints(const AMask: TWfcSequenceTokenConstraints;
+  const AProgress: TWorkProgressCallback;
+  const APass: Integer): TWfcSequenceTokenConstraints;
 var
   LCandidate: TWfcSequenceTokenConstraints;
   LIndex: Integer;
@@ -518,7 +522,7 @@ begin
     begin
       if LIndex < Length(FSession.FNames) then
       begin
-        FCommitted[LIndex] := CopyMask(FSession.FPending[LIndex], FCallback, LIndex + 1);
+        FCommitted[LIndex] := CopyVoiceTokenConstraints(FSession.FPending[LIndex], FCallback, LIndex + 1);
         FCommittedPreferences[LIndex] :=
           CopyVoicePreferences(FSession.FPreferences[LIndex], FCallback, LIndex + 1);
         FDirty[LIndex] := False;
@@ -933,8 +937,8 @@ begin
         end;
         LWork.Visit;
       end;
-      LCandidate.FCommitted[LIndex] := CopyMask(FCommitted[LIndex], AProgress, LIndex + 1);
-      LCandidate.FPending[LIndex] := CopyMask(FPending[LIndex], AProgress, LIndex + 1);
+      LCandidate.FCommitted[LIndex] := CopyVoiceTokenConstraints(FCommitted[LIndex], AProgress, LIndex + 1);
+      LCandidate.FPending[LIndex] := CopyVoiceTokenConstraints(FPending[LIndex], AProgress, LIndex + 1);
       LCandidate.FPreferences[LIndex] :=
         CopyVoicePreferences(FPreferences[LIndex], AProgress, LIndex + 1);
       LCandidate.FCommittedPreferences[LIndex] :=
@@ -1075,7 +1079,7 @@ begin
     end;
     ValidateSequenceTokenConstraints(WfcMusicVoicesModelAt(FConfig, LIndex),
       FOptions.CellCount, AMask, LWork.SequenceWorkObserver());
-    LCandidate := CopyMask(AMask, AProgress, LIndex + 1);
+    LCandidate := CopyVoiceTokenConstraints(AMask, AProgress, LIndex + 1);
     LWork.Finish;
     ReportWork(AProgress, 'voice_constraints_ready', wuItems, 1, 1, LIndex + 1);
     FPending[LIndex] := LCandidate;
@@ -1095,7 +1099,7 @@ begin
   LIndex := IndexOf(AName);
   FBusy := True;
   try
-    Result := CopyMask(FPending[LIndex], AProgress, LIndex + 1);
+    Result := CopyVoiceTokenConstraints(FPending[LIndex], AProgress, LIndex + 1);
   finally
     FBusy := False;
   end;

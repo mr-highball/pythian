@@ -49,11 +49,23 @@ type
   public
     function Accept(const AStage: String; const ADone, ATotal: Int64;
       const AAt: QWord; const AAudioWork: Boolean): Boolean;
+    { The host reports completion of its durable publication. Publication time
+      is not useful processing time and must not satisfy the next interval. }
+    procedure PublishedAt(const AAt: QWord);
   end;
 
 implementation
 
 uses pythian.audio;
+
+procedure TStudioRenderProgressGate.PublishedAt(const AAt: QWord);
+begin
+  if not FPublished or (AAt < FLastAt) then
+  begin
+    raise EAudio.Create('Studio publication completion requires an accepted monotonic clock');
+  end;
+  FLastAt := AAt;
+end;
 
 function TStudioRenderProgressGate.Accept(const AStage: String;
   const ADone, ATotal: Int64; const AAt: QWord;

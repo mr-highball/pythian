@@ -264,6 +264,7 @@ body:has(#listen:not([hidden])) .save-panel { display: none; }
 
 /* Big Boss: instrumental controls stay in the current tab; sound details expand locally. */
 .instrumental-parts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:.7rem; }
+.musical-control-parts { grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); }
 .instrumental-parts .track { margin:0; padding:.8rem; min-width:0; }
 .instrumental-mixer audio, #batch-detail audio { display:block; width:100%; max-width:100%; }
 .instrumental-mixer .source-toolbar strong { min-width:5rem; }

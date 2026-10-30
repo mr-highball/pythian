@@ -407,8 +407,11 @@ end;
 
 procedure TStudioWork.Progress(const AStage: String; const ADone, ATotal: Int64;
   const AUnit: String; const APass: Integer; const AAudioWork: Boolean);
+var
+  LInstrumental: Boolean;
 begin
   Check;
+  LInstrumental := FRequest.Strings['kind'] = 'instrumental_generate';
   { Big Boss: callbacks share bounded control checks; immutable status writes
     at most twice a second within a normal pass. Rendering shares a separate
     two-second clock across coarse frames and nested phases; fine boundaries
@@ -418,13 +421,20 @@ begin
     ((ADone = FLastProgressDone) or
      (((ATotal = 0) or (ADone < ATotal)) and
       (GetTickCount64 - FLastProgressAt < 500))) then Exit;
-  if AAudioWork or (AStage = 'generate_auditions') or (AStage = 'streaming') then
+  if LInstrumental then
+  begin
+    { Big Boss: all fine instrumental preparation/render endpoints share the
+      existing work gate. Terminal job transitions are published separately. }
+    if not FRenderProgressGate.Accept(AStage, ADone, ATotal, GetTickCount64, True) then Exit;
+  end
+  else if AAudioWork or (AStage = 'generate_auditions') or (AStage = 'streaming') then
   begin
     if not FRenderProgressGate.Accept(AStage, ADone, ATotal,
       GetTickCount64, AAudioWork) then Exit;
   end;
   AdvanceStudioJob(FCatalogRoot, FJobId, 'running', AStage, ADone, ATotal,
     nil, '', '', AUnit, APass);
+  if LInstrumental then FRenderProgressGate.PublishedAt(GetTickCount64);
   FLastProgressAt := GetTickCount64;
   FLastProgressStage := AStage;
   FLastProgressPass := APass;

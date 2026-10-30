@@ -433,6 +433,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Musical observation compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.music.observations$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Musical observation checks failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.music.controls.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Portable musical controls compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.music.controls$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Portable musical controls checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.music.pattern.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Musical pattern compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.music.pattern$executableSuffix")
@@ -841,6 +845,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental runtime compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental runtime checks failed' }
+    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.controls.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Instrumental controls compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.instrumental.controls$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Instrumental controls checks failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.material.instrumental.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Joint musical context compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.material.instrumental$executableSuffix")

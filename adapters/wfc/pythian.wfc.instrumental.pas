@@ -33,6 +33,7 @@ uses
   pythian.progress,
   pythian.time,
   pythian.music,
+  pythian.music.controls,
   pythian.music.render,
   pythian.synth,
   pythian.instrument,
@@ -65,6 +66,9 @@ type
     EffectTailFrames: Int64;
     MaterialOrigin: String;
     PercussionSeed: TGraphSeed;
+    { Pitched role order only. Empty preserves the generated velocity/gates.
+      Expression changes performance, not accepted WFC token/state decisions. }
+    Expression: TMusicalExpressions;
   end;
   TInstrumentalReport = record
     ContextSolve: TGraphNegotiationReport;
@@ -494,6 +498,8 @@ var
   LDrumPart: TPercussionPart;
   LOther: Integer;
   LBoundMasks: TVoiceMasks;
+  LPerformed: TNoteSequence;
+  LExpression: TMusicalExpression;
 begin
   Result := False;
   AReport := Default(TInstrumentalReport);
@@ -520,6 +526,15 @@ begin
     ((Length(APreferences) <> 0) and (Length(APreferences) <> Length(ARoles) + 2)) then
   begin
     raise EAudio.Create('Instrumental controls must match harmony/rhythm/role order');
+  end;
+  if (Length(AOptions.Expression) <> 0) and
+    (Length(AOptions.Expression) <> Length(ARoles)) then
+  begin
+    raise EAudio.Create('Instrumental expression must match the pitched role order');
+  end;
+  for LExpression in AOptions.Expression do
+  begin
+    ValidateMusicalExpression(LExpression);
   end;
   SetLength(LNames, Length(ARoles));
   for LRole := 0 to High(ARoles) do
@@ -560,6 +575,7 @@ begin
   try
     LCandidate.FOptions := AOptions;
     LCandidate.FOptions.Tempos := Copy(AOptions.Tempos);
+    LCandidate.FOptions.Expression := Copy(AOptions.Expression);
     LCandidate.FRoles := Copy(ARoles);
     LCandidate.FSession := TNamedVoiceSession.Create(AConfig, LNames,
       AOptions.Session, nil, AProgress);
@@ -610,6 +626,12 @@ begin
     end;
     LCandidate.FNotes := ProjectWfcEnsembleNotes(LGenerated.Frames,
       AOptions.Session.StepTicks, AOptions.Session.TicksPerQuarter, AOptions.Tempos);
+    if Length(AOptions.Expression) > 0 then
+    begin
+      LPerformed := ApplyMusicalExpression(LCandidate.FNotes, AOptions.Expression, AProgress);
+      LCandidate.FNotes.Free;
+      LCandidate.FNotes := LPerformed;
+    end;
     LCandidate.FFrameCount := LCandidate.FNotes.FrameAtTick(LLength, AOptions.SampleRate);
     ReportWork(AProgress, 'instrumental_plan', wuItems, 1, Length(ARoles) + 1);
     SetLength(LCandidate.FParts, Length(ARoles));

@@ -43,7 +43,8 @@ implementation
 uses Classes, SysUtils, Math,
   pythian.audio, pythian.time, pythian.bus, pythian.effects,
   pythian.instrument, pythian.synth, pythian.oscillator, pythian.schedule,
-  pythian.wave.stream, pythian.music.pattern, pythian.music.sound,
+  pythian.wave.stream, pythian.music.pattern, pythian.music.sound, pythian.music.controls,
+  pythian.wfc.instrumental.controls,
   pythian.wfc.instrumental, pythian.wfc.instrumental.starter,
   pythian.wfc.percussion, pythian.wfc.voices, pythian.wfc.musical.context,
   wfc_model, wfc_sequence, wfc_sequence_text,
@@ -103,6 +104,12 @@ var
   LPatternRole: Integer;
   LSoundRole: Integer;
   LSound: TMusicalSound;
+  LMusicalControls: TMusicalPartControls;
+  LCompiled: TInstrumentalGraphControls;
+  LBaseMasks: TVoiceMasks;
+  LTonicBias: Integer;
+  LHasExpression: Boolean;
+  LHasGraphControls: Boolean;
 begin
   LConfig := ARequest.Objects['instrumental'];
   ValidateStudioInstrumentalConfig(LConfig);
@@ -171,8 +178,49 @@ begin
     LOptions.Tempos[0] := MakeTempoChange(0, Round(60000000 / LConfig.Integers['tempo_bpm']));
     LOptions.MaterialOrigin := LOrigin;
     LDrums := LStarter.CopyPercussion(LOptions.SampleRate);
+    LBaseMasks := LStarter.GuideMasks(LOptions.Session.CellCount);
+    LCompiled := Default(TInstrumentalGraphControls);
+    LCompiled.Masks := LBaseMasks;
+    LTonicBias := 0;
+    if LConfig.Find('controls') <> nil then
+    begin
+      LMusicalControls := DecodeStudioMusicalControls(LConfig.Objects['controls']);
+      LTonicBias := LConfig.Objects['controls'].Integers['tonic_bias'];
+      if not LConfig.Objects['controls'].Booleans['guide'] then LBaseMasks := nil;
+      LCompiled.Masks := LBaseMasks;
+      LHasGraphControls := LTonicBias <> 0;
+      LHasExpression := False;
+      for LRole := 0 to High(LMusicalControls) do
+      begin
+        LHasGraphControls := LHasGraphControls or
+          (LMusicalControls[LRole].MinimumPitch <> 0) or
+          (LMusicalControls[LRole].MaximumPitch <> 127) or
+          (LMusicalControls[LRole].ActivityBias <> 0);
+        LHasExpression := LHasExpression or
+          (LMusicalControls[LRole].Expression.VelocityPercent <> 100) or
+          (LMusicalControls[LRole].Expression.GatePercent <> 100);
+      end;
+      { Big Boss: absent/neutral controls do not stage empty edits or duplicate
+        mask-copy progress. Expression alone does not need graph compilation. }
+      if LHasGraphControls then
+      begin
+        try
+          LCompiled := CompileInstrumentalControls(LStarter.Config, LOptions.Session.CellCount,
+            LConfig.Integers['tonic'], LTonicBias, LMusicalControls, LBaseMasks, AProgress);
+        except
+          on E: EAudio do
+            raise EAudio.Create('Musical controls rejected: ' + E.Message);
+        end;
+      end;
+      if LHasExpression then
+      begin
+        SetLength(LOptions.Expression, Length(LMusicalControls));
+        for LRole := 0 to High(LMusicalControls) do
+          LOptions.Expression[LRole] := LMusicalControls[LRole].Expression;
+      end;
+    end;
     if not TryCreateInstrumentalPlan(LStarter.Config, LRoles, LOptions,
-      LStarter.GuideMasks(LOptions.Session.CellCount), nil, LPlan, LReport,
+      LCompiled.Masks, LCompiled.Preferences, LPlan, LReport,
       AProgress, LDrums, LStarter.ContextModel) then
       raise EAudio.Create('Instrumental graph rejected: ' + LReport.Detail);
     LMeta := TJSONObject.Create;

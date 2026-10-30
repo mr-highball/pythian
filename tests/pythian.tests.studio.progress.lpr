@@ -108,8 +108,34 @@ begin
     LPublished, ' published, existing limit100000');
 end;
 
+procedure SlowPublication;
+var
+  LGate: TStudioRenderProgressGate;
+  LRejected: Boolean;
+begin
+  LGate := Default(TStudioRenderProgressGate);
+  LRejected := False;
+  try LGate.PublishedAt(1000); except on EAudio do LRejected := True end;
+  Check(LRejected, 'Completion without an accepted publication is invalid');
+  Check(LGate.Accept('instrumental_prepare', 0, 1, 1000, True), 'First instrumental work');
+  LGate.PublishedAt(11000);
+  Check(not LGate.Accept('wfc_model_ready', 1, 1, 11001, True),
+    'Slow durable publication itself made a fine endpoint eligible');
+  Check(not LGate.Accept('voice_constraints_ready', 1, 1, 12000, True),
+    'Changing a fine stage bypassed the completed-publication interval');
+  Check(LGate.Accept('instrumental_render', 4096, 10000, 13000, True),
+    'Real work after the interval remains visible');
+  LRejected := False;
+  try LGate.PublishedAt(12999); except on EAudio do LRejected := True end;
+  Check(LRejected, 'Backward completion time is invalid');
+  LGate.PublishedAt(14000);
+  Check(not LGate.Accept('instrumental_ready', 1, 1, 14000, True),
+    'A nested ready endpoint is not a terminal job transition');
+end;
+
 begin
   Boundaries;
   WholeDay;
+  SlowPublication;
   WriteLn('PASS ', GChecks, ' Studio rendering publication checks');
 end.

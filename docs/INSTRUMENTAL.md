@@ -33,6 +33,13 @@ parts retain their instrument recipes. Saving choices/feedback never queues work
 Each explicit Generate constructs its musical models again; identical model
 hashes after a sound-only edit are not a cache/reuse claim.
 
+[Musical controls](MUSICAL-CONTROLS.md) compile pitch bounds and soft preferences
+through the existing named graph. `TInstrumentalOptions.Expression` optionally
+maps generated pitched notes through the primary detached expression implementation
+before instrument planning. `CopyMusic` retains actual symbolic decisions;
+`CopyNotes` describes the performed gates/velocities. Empty expression preserves the
+original path. This is still finite generation, not selective score regeneration.
+
 Call TryCreateInstrumentalPlan with an actual TWfcMusicVoicesGraphConfig, ordered
 role/instrument/bus bindings, session options, explicit PPQ tempo changes and
 material origin. Masks and preferences use harmony, rhythm, then declared role

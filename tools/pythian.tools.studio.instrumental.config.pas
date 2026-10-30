@@ -29,7 +29,7 @@ unit pythian.tools.studio.instrumental.config;
 
 interface
 
-uses fpjson;
+uses fpjson, pythian.music.controls;
 
 const
   StudioInstrumentalOrigin =
@@ -38,6 +38,7 @@ const
   StudioInstrumentalMaximumCells = 256;
 
 procedure ValidateStudioInstrumentalConfig(const AConfig: TJSONObject);
+function DecodeStudioMusicalControls(const AControls: TJSONObject): TMusicalPartControls;
 
 implementation
 
@@ -63,12 +64,17 @@ end;
 procedure ValidateStudioInstrumentalConfig(const AConfig: TJSONObject);
 var LIndex: Integer; LValue: TJSONData; LText: String;
 begin
-  Need((AConfig <> nil) and ((AConfig.Count = 5) or
-    ((AConfig.Count = 6) and (AConfig.Find('mode') <> nil))),
+  Need((AConfig <> nil) and (AConfig.Count = 5 + Ord(AConfig.Find('mode') <> nil) +
+    Ord(AConfig.Find('controls') <> nil)),
     'Instrumental settings require tempo_bpm, tonic, cells, instruments and levels');
   for LIndex := 0 to AConfig.Count - 1 do
     Need(Pos('|' + AConfig.Names[LIndex] + '|',
-      '|tempo_bpm|tonic|cells|instruments|levels|mode|') > 0, 'Unsupported instrumental setting');
+      '|tempo_bpm|tonic|cells|instruments|levels|mode|controls|') > 0, 'Unsupported instrumental setting');
+  if AConfig.Find('controls') <> nil then
+  begin
+    Need(AConfig.Find('controls').JSONType = jtObject, 'Musical controls must be an object');
+    DecodeStudioMusicalControls(AConfig.Objects['controls']);
+  end;
   if AConfig.Find('mode') <> nil then
   begin
     Need(AConfig.Find('mode').JSONType = jtString, 'Accompaniment mode must be text');
@@ -98,6 +104,42 @@ begin
     Need((TJSONArray(LValue)[LIndex].AsFloat = TJSONArray(LValue)[LIndex].AsInt64) and
       (TJSONArray(LValue).Integers[LIndex] >= 0) and
       (TJSONArray(LValue).Integers[LIndex] <= 100), 'Part level must be 0..100');
+  end;
+end;
+
+function DecodeStudioMusicalControls(const AControls: TJSONObject): TMusicalPartControls;
+var
+  LParts: TJSONData;
+  LPart: TJSONObject;
+  LIndex: Integer;
+  LField: Integer;
+begin
+  Result := nil;
+  SetLength(Result, 3);
+  for LIndex := 0 to 2 do Result[LIndex] := DefaultMusicalPartControl;
+  if AControls = nil then Exit;
+  Need((AControls.Count = 3) and (AControls.Find('guide') <> nil) and
+    (AControls.Find('tonic_bias') <> nil), 'Musical controls need guide, tonic_bias and parts');
+  Need(AControls.Find('guide').JSONType = jtBoolean, 'Authored guide choice must be Boolean');
+  Number(AControls, 'tonic_bias', -100, 100);
+  LParts := AControls.Find('parts');
+  Need((LParts <> nil) and (LParts.JSONType = jtArray) and
+    (TJSONArray(LParts).Count = 3), 'Musical controls require three pitched parts');
+  for LIndex := 0 to 2 do
+  begin
+    Need(TJSONArray(LParts)[LIndex].JSONType = jtObject, 'Part controls must be an object');
+    LPart := TJSONArray(LParts).Objects[LIndex];
+    Need(LPart.Count = 5, 'Part controls require pitch bounds, activity, velocity and gate');
+    for LField := 0 to LPart.Count - 1 do
+      Need(Pos('|' + LPart.Names[LField] + '|',
+        '|minimum_pitch|maximum_pitch|activity_bias|velocity_percent|gate_percent|') > 0,
+        'Unsupported part control');
+    Result[LIndex].MinimumPitch := Number(LPart, 'minimum_pitch', 0, 127);
+    Result[LIndex].MaximumPitch := Number(LPart, 'maximum_pitch', 0, 127);
+    Result[LIndex].ActivityBias := Number(LPart, 'activity_bias', -100, 100);
+    Result[LIndex].Expression.VelocityPercent := Number(LPart, 'velocity_percent', 1, 200);
+    Result[LIndex].Expression.GatePercent := Number(LPart, 'gate_percent', 1, 100);
+    ValidateMusicalPartControl(Result[LIndex]);
   end;
 end;
 

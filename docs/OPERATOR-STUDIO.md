@@ -34,6 +34,13 @@ The legacy recorded-fragment experiment remains explicit in old projects.
 Graph editing, richer sound recipes and efficient long instrumental streams are
 remaining tasks, rather than claims made by this finite starter.
 
+Generate → **Musical controls** adds hard MIDI pitch bounds, soft attack/chord-root
+preferences and performed velocity/gate length for the three pitched parts. Keep
+the authored harmony/rhythm guide or explicitly let WFC choose from available
+material. The optional energy/density/tension helper fills editable numbers without
+starting work. [Control meanings](MUSICAL-CONTROLS.md) describe the actual mappings
+and limits. These are controls for a new generation, not retained-part regeneration.
+
 ## Intended operator loop
 
 ### Explore a recording's musical suggestions

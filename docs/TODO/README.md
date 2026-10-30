@@ -3,7 +3,7 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**8 open tasks · 96 total effort units · 8 current-goal DONE · 41 / 96 accepted (42.71%).**
+**8 open tasks · 99 total effort units · 10 current-goal DONE · 44 / 99 accepted (44.44%).**
 Effort is relative complexity on a 1–10 scale, not assigned musical credit.
 The operator has resumed implementation solo. The shared instrumental runtime
 and explicit percussion are accepted. Finite instrumental Studio and its real
@@ -46,11 +46,13 @@ continuity experiments are selected.
 | [NS-5_instrumental-styles_01](NS-5_instrumental-styles_01.md) — saved styles, selective blend and reblend | 7 | Style vocabulary + graph controls + sound design + instrumental Studio |
 | [NS-6_synthesis-reviews_01](NS-6_synthesis-reviews_01.md) — one useful question with Original/Before/After | 5 | Instrumental Studio |
 | [NS-6_json-identity_01 — DONE](DONE/NS-6_json-identity_01.md) — preserve Unicode choices and JSON identities | 3 | Accepted; actual native save/reload/job and HTTP consumers |
+| [NS-6_sourcefree-draft_01 — DONE](DONE/NS-6_sourcefree-draft_01.md) — reopen a valid draft without optional musical material | 1 | Accepted; actual absent/present recipe reload and explicit native generation |
+| [NS-6_instrumental-progress_01 — DONE](DONE/NS-6_instrumental-progress_01.md) — bound durable fine-phase publication | 2 | Accepted; unchanged native consumers, cancellation and actual HTTP worker |
 | [NS-6_instrumental-streams_01](NS-6_instrumental-streams_01.md) — efficient long instrumental jobs | 8 | Instrumental Studio |
 
-The two tables together are all 16 current-goal tasks (8 open, eight DONE),
-totaling 96 units: 55 open and 41 accepted. Subtotals:
-NS-2 12, NS-3 15, NS-4 30, NS-5 15, NS-6 24. NS-1 remains a preserved core
+The two tables together are all 18 current-goal tasks (8 open, ten DONE),
+totaling 99 units: 55 open and 44 accepted. Subtotals:
+NS-2 12, NS-3 15, NS-4 30, NS-5 15, NS-6 27. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 
 The first milestone owns priority, not convenience. Later tasks have explicit

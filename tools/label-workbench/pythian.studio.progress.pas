@@ -64,6 +64,9 @@ begin
     'instrumental_reference': Result := 'Prepare original reference';
     'context_prepare_masks': Result := '2 · Connect musical context and selected part';
     'context_validate_witness': Result := '2 · Check the shared musical pattern';
+    'musical_control_tokens', 'musical_control_cells', 'musical_controls_ready':
+      Result := '2 · Apply musical limits and preferences';
+    'musical_expression': Result := '2 · Shape note strength and length';
     'instrumental_render': Result := '3 · Synthesize mix and parts';
     'instrumental_publish': Result := '4 · Save music for review';
     'instrumental_ready', 'instrumental_plan', 'percussion_ready', 'percussion_instruments':

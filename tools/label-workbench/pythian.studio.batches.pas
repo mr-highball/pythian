@@ -1481,6 +1481,8 @@ var
   LSources: TJSArray;
   LGraph: TJSArray;
   LPass: TJSObject;
+  LMusicalControls: TJSObject;
+  LControlPart: TJSObject;
   LRow: TJSElement;
   LDetails: TJSElement;
   LLink: TJSElement;
@@ -1533,9 +1535,16 @@ begin
       Add(LRoot, 'p', 'This attempt reached its ' +
         IntToStr(Trunc(StudioNumber(FJob, 'maximum_worker_seconds') / 60)) +
         '-minute time limit. Retry with the current limit, or use fewer or shorter selections.', 'field-error')
+    else if Pos('Musical controls rejected:', StudioText(FJob, 'error_message')) = 1 then
+    begin
+      Add(LRoot, 'p', 'These controls leave no compatible musical choices. Edit the limits or preferences, then check a new setup.', 'field-error');
+      LDetails := Add(LRoot, 'details', '', '');
+      Add(LDetails, 'summary', 'Control conflict details', '');
+      Add(LDetails, 'p', StudioText(FJob, 'error_message'), 'hint');
+    end
     else if Pos('Instrumental graph rejected:', StudioText(FJob, 'error_message')) = 1 then
     begin
-      Add(LRoot, 'p', 'These musical choices conflict in the current graph. Edit the motif or skip pitch, then check a new setup.', 'field-error');
+      Add(LRoot, 'p', 'The graph could not combine these choices. Change the guide, limits or musical starting point, then check a new setup.', 'field-error');
       LDetails := Add(LRoot, 'details', '', '');
       Add(LDetails, 'summary', 'Graph failure details', '');
       Add(LDetails, 'p', StudioText(FJob, 'error_message'), 'hint');
@@ -1543,12 +1552,10 @@ begin
     else Add(LRoot, 'p', StudioText(FJob, 'error_message'), 'field-error');
     if StudioText(FJob, 'kind') = 'stream_generate' then
       Add(LRoot, 'p', 'This session has ended. Generate & play starts a new session from the beginning.', 'hint')
+    else if Pos('Musical controls rejected:', StudioText(FJob, 'error_message')) = 1 then
+      Button(LRoot, 'batch-edit-controls', 'Edit musical controls')
     else if Pos('Instrumental graph rejected:', StudioText(FJob, 'error_message')) = 1 then
-    begin
-      LLink := Add(LRoot, 'button', 'Edit musical choices in Project', '');
-      LLink.setAttribute('type', 'button');
-      LLink.setAttribute('data-open-pane', 'project-step');
-    end
+      Button(LRoot, 'batch-edit-controls', 'Edit musical controls')
     else if isObject(FJob['request']) then
     begin
       Button(LRoot, 'batch-retry', 'Try this batch again');
@@ -1644,6 +1651,31 @@ begin
     LDetails.setAttribute('open', '');
   end;
   Add(LDetails, 'summary', 'Batch and model details', '');
+  if isObject(LResults['settings']) and
+    isObject(Obj(LResults['settings'])['controls']) then
+  begin
+    LMusicalControls := Obj(Obj(LResults['settings'])['controls']);
+    LText := 'WFC chooses harmony and rhythm from the available material';
+    if Boolean(LMusicalControls['guide']) then
+      LText := 'Follow the authored harmony/rhythm guide';
+    Add(LDetails, 'p', LText + ' · chord-root preference ' +
+      FloatToStr(StudioNumber(LMusicalControls, 'tonic_bias')) + '.', 'hint');
+    if ArrayAt(LMusicalControls, 'parts') <> nil then
+      for LIndex := 0 to ArrayAt(LMusicalControls, 'parts').length - 1 do
+      begin
+        LControlPart := Obj(ArrayAt(LMusicalControls, 'parts')[LIndex]);
+        LText := 'Part ' + IntToStr(LIndex + 1);
+        if (ArrayAt(LResults, 'parts') <> nil) and
+          (LIndex < ArrayAt(LResults, 'parts').length) then
+          LText := StudioText(Obj(ArrayAt(LResults, 'parts')[LIndex]), 'name');
+        Add(LDetails, 'p', LText + ': MIDI ' +
+          FloatToStr(StudioNumber(LControlPart, 'minimum_pitch')) + '–' +
+          FloatToStr(StudioNumber(LControlPart, 'maximum_pitch')) +
+          ' · attack preference ' + FloatToStr(StudioNumber(LControlPart, 'activity_bias')) +
+          ' · velocity ' + FloatToStr(StudioNumber(LControlPart, 'velocity_percent')) +
+          '% · gate ' + FloatToStr(StudioNumber(LControlPart, 'gate_percent')) + '%.', 'hint');
+      end;
+  end;
   if isObject(LResults['applied_sound']) then
   begin
     LPass := Obj(LResults['applied_sound']);
@@ -2078,6 +2110,18 @@ begin
   else if LId = 'batch-retry' then
   begin
     RetryJob;
+  end
+  else if LId = 'batch-edit-controls' then
+  begin
+    try
+      if isObject(FJob['request']) then ApplyNextBatch(Obj(FJob['request']))
+      else Invalidate;
+      TJSHTMLButtonElement(El('tab-auditions')).click;
+      El('instrumental-musical-controls').setAttribute('open', '');
+      TJSHTMLElement(El('instrumental-guide')).focus;
+    except
+      on E: Exception do Notice(E.Message, True);
+    end;
   end
   else if LTarget.getAttribute('data-job') <> '' then
   begin

@@ -2,11 +2,11 @@
 
 ## Current goal: instrumental exploration
 
-Eight current-goal tasks are accepted: **41 / 96 effort units (42.71%)**. Their
+Ten current-goal tasks are accepted: **44 / 99 effort units (44.44%)**. Their
 criteria and prerequisites passed: finite runtime/percussion, ordinary instrumental
 Studio, context/cancellation/identity repairs and editable recording proposals
 into actual providers/instruments. This is not musical preference or whole-corpus
-style-learning acceptance. There are 105 DONE files: eight current, 97 historical.
+style-learning acceptance. There are 107 DONE files: ten current, 97 historical.
 
 | Accepted task | Date | Effort | Outcome |
 | --- | --- | ---: | --- |
@@ -18,6 +18,8 @@ style-learning acceptance. There are 105 DONE files: eight current, 97 historica
 | [NS-6_json-identity_01](NS-6_json-identity_01.md) | 2026-10-30 | 3/10 | Faithful Unicode musical choices, source/job receipts, shared native byte hashing and actual HTTP round trips |
 | [NS-4_motif-coupling_01](NS-4_motif-coupling_01.md) | 2026-10-30 | 5/10 | Real selected-role symbolic context, other parts independently generated, repaired Studio melody and role/correction variants |
 | [NS-3_experimental-learning_01](NS-3_experimental-learning_01.md) | 2026-10-30 | 8/10 | Editable recording context/pitch/sound proposals drive symbolic providers and real instruments; Original/correction/feedback lineage |
+| [NS-6_sourcefree-draft_01](NS-6_sourcefree-draft_01.md) | 2026-10-30 | 1/10 | Actual authored draft reload without an optional recipe; explicit recipes and native generation remain usable |
+| [NS-6_instrumental-progress_01](NS-6_instrumental-progress_01.md) | 2026-10-30 | 2/10 | Bounded durable instrumental publication, post-write timing, actual native/HTTP jobs and live cancellation |
 
 ## Historical completed tasks (97)
 > These 97 accepted records predate the [current goal](../../GOAL.md). They preserve reusable code and evidence but have no current Goal/Effort metadata and contribute no units to its estimate. The table below is historical percentage-credit accounting, not current progress.

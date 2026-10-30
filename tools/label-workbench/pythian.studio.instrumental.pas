@@ -35,6 +35,7 @@ type
   private
     FFetch: TStudioFetch;
     FSettings, FMixer, FStatus, FSeek, FClock: TJSElement;
+    FControlStatus: TJSElement;
     FContext: TJSAudioContext;
     FBuffers: array[0..5] of TJSAudioBuffer;
     FNodes: array[0..5] of TJSAudioBufferSourceNode;
@@ -57,6 +58,7 @@ type
     function Seek(AEvent: TEventListenerEvent): Boolean;
     function Leaving(AEvent: TEventListenerEvent): Boolean;
     function OtherAudio(AEvent: TEventListenerEvent): Boolean;
+    function Affect(AEvent: TJSMouseEvent): Boolean;
   public
     constructor Create(const AFetch: TStudioFetch; AParent: TJSElement);
     destructor Destroy; override;
@@ -69,7 +71,7 @@ type
     procedure ClearMixer;
   end;
 implementation
-uses pythian.studio.requests;
+uses pythian.studio.requests, pythian.music.controls;
 
 const
   CNames: array[0..5] of String = ('Bass', 'Harmony', 'Lead', 'Kick', 'Snare', 'Hat');
@@ -90,10 +92,11 @@ begin
   Result.id := AId; Result.setAttribute('type', 'number');
   Result.setAttribute('min', IntToStr(AMinimum)); Result.setAttribute('max', IntToStr(AMaximum));
   Result.setAttribute('step', '1'); Result.setAttribute('value', AValue);
+  Result.setAttribute('inputmode', 'numeric');
 end;
 
 constructor TStudioInstrumental.Create(const AFetch: TStudioFetch; AParent: TJSElement);
-var LRow, LSelect, LOption, LLabel, LDetails: TJSElement; I, J: Integer;
+var LRow, LSelect, LOption, LLabel, LDetails, LButton, LHelp: TJSElement; I, J: Integer;
 const CShapes: array[0..3] of String = ('saw', 'triangle', 'square', 'sine');
 begin
   inherited Create; FFetch := AFetch;
@@ -118,6 +121,47 @@ begin
   LOption := Add(LSelect, 'option', 'Natural minor');
   LOption.setAttribute('value', 'natural_minor');
   Add(FSettings, 'p', 'The starter uses major/minor chord changes relative to this root. Length is finite; long instrumental sessions are a separate upcoming capability.').className := 'hint';
+  LDetails := Add(FSettings, 'details', '');
+  LDetails.id := 'instrumental-musical-controls';
+  Add(LDetails, 'summary', 'Musical controls');
+  Add(LDetails, 'p', 'Set pitch limits, note activity and how the pitched parts are played. Conflicting limits stop generation; they are never quietly ignored.').className := 'hint';
+  LSelect := Add(Add(LDetails, 'label', 'Harmony and rhythm'), 'select', '');
+  LSelect.id := 'instrumental-guide';
+  LOption := Add(LSelect, 'option', 'Follow the authored guide');
+  LOption.setAttribute('value', 'guide');
+  LOption := Add(LSelect, 'option', 'Let WFC choose from available material');
+  LOption.setAttribute('value', 'free');
+  Input(LDetails, 'instrumental-tonic-bias', 'Prefer chords containing the key root (−100 to 100)', '0', -100, 100);
+  LHelp := Add(LDetails, 'details', '');
+  Add(LHelp, 'summary', 'What do these controls change?');
+  Add(LHelp, 'p', 'Pitch limits are hard bounds on existing choices; they do not transpose notes. Positive activity favors new attacks; negative activity favors holds/rests. Root preference favors chords containing the key root; negative values favor other chords. Preferences are soft and cannot override the guide or a hard limit.').className := 'hint';
+  Add(LHelp, 'p', 'Velocity changes performed note strength (capped at MIDI 127). Gate length shortens held notes while preserving attacks and the clock. These controls currently affect Bass, Harmony and Lead; drums keep their explicit rhythmic provider and sound recipe.').className := 'hint';
+  LHelp := Add(LDetails, 'details', '');
+  Add(LHelp, 'summary', 'Try an energy / density / tension starting point');
+  LRow := Add(LHelp, 'div', '');
+  LRow.className := 'range-fields';
+  Input(LRow, 'instrumental-energy', 'Energy (0–100)', '50', 0, 100);
+  Input(LRow, 'instrumental-density', 'Density (0–100)', '50', 0, 100);
+  Input(LRow, 'instrumental-tension', 'Tension (0–100)', '50', 0, 100);
+  Add(LHelp, 'p', 'Experimental · Energy sets note strength; density favors attacks; tension reduces preference for chords containing the root. Choose WFC above to vary rhythm and chords. Apply fills the editable numbers below; it does not generate.').className := 'hint';
+  LButton := Add(LHelp, 'button', 'Set controls from these values');
+  LButton.setAttribute('type', 'button');
+  LButton.id := 'instrumental-apply-affect';
+  LButton.addEventListener('click', @Affect);
+  FControlStatus := Add(LDetails, 'p', '');
+  FControlStatus.setAttribute('role', 'status');
+  LRow := Add(LDetails, 'div', '');
+  LRow.className := 'instrumental-parts musical-control-parts';
+  for I := 0 to 2 do
+  begin
+    LLabel := Add(LRow, 'details', '');
+    Add(LLabel, 'summary', CNames[I]);
+    Input(LLabel, 'instrumental-minimum-' + IntToStr(I), 'Lowest MIDI pitch (0–127)', '0', 0, 127);
+    Input(LLabel, 'instrumental-maximum-' + IntToStr(I), 'Highest MIDI pitch (0–127)', '127', 0, 127);
+    Input(LLabel, 'instrumental-activity-' + IntToStr(I), 'Attack preference (−100 to 100)', '0', -100, 100);
+    Input(LLabel, 'instrumental-velocity-' + IntToStr(I), 'Velocity (1–200%)', '100', 1, 200);
+    Input(LLabel, 'instrumental-gate-' + IntToStr(I), 'Gate length (1–100%)', '100', 1, 100);
+  end;
   LDetails := Add(FSettings, 'details', '');
   Add(LDetails, 'summary', 'Sounds and mix');
   Add(LDetails, 'p', 'Choose the three pitched sounds and six mix levels. Zero silences a part in the new render.').className := 'hint';
@@ -161,7 +205,8 @@ begin
 end;
 
 function TStudioInstrumental.ReadConfig: TJSObject;
-var LShapes, LLevels: TJSArray; I: Integer;
+var LShapes, LLevels, LParts: TJSArray; LControls, LPart: TJSObject; I: Integer;
+  LNativeControl: TMusicalPartControl;
 begin
   Result := TJSObject.new;
   Result['tempo_bpm'] := Number('instrumental-tempo', 40, 240);
@@ -176,10 +221,33 @@ begin
     LLevels.push(Number('instrumental-level-' + IntToStr(I), 0, 100));
   end;
   Result['instruments'] := LShapes; Result['levels'] := LLevels;
+  LControls := TJSObject.new;
+  LControls['guide'] := TJSHTMLSelectElement(document.getElementById('instrumental-guide')).value = 'guide';
+  LControls['tonic_bias'] := Number('instrumental-tonic-bias', -100, 100);
+  LParts := TJSArray.new;
+  LControls['parts'] := LParts;
+  for I := 0 to 2 do
+  begin
+    LNativeControl := DefaultMusicalPartControl;
+    LNativeControl.MinimumPitch := Number('instrumental-minimum-' + IntToStr(I), 0, 127);
+    LNativeControl.MaximumPitch := Number('instrumental-maximum-' + IntToStr(I), 0, 127);
+    LNativeControl.ActivityBias := Number('instrumental-activity-' + IntToStr(I), -100, 100);
+    LNativeControl.Expression.VelocityPercent := Number('instrumental-velocity-' + IntToStr(I), 1, 200);
+    LNativeControl.Expression.GatePercent := Number('instrumental-gate-' + IntToStr(I), 1, 100);
+    ValidateMusicalPartControl(LNativeControl);
+    LPart := TJSObject.new;
+    LPart['minimum_pitch'] := LNativeControl.MinimumPitch;
+    LPart['maximum_pitch'] := LNativeControl.MaximumPitch;
+    LPart['activity_bias'] := LNativeControl.ActivityBias;
+    LPart['velocity_percent'] := LNativeControl.Expression.VelocityPercent;
+    LPart['gate_percent'] := LNativeControl.Expression.GatePercent;
+    LParts.push(LPart);
+  end;
+  Result['controls'] := LControls;
 end;
 
 procedure TStudioInstrumental.RestoreConfig(AConfig: TJSObject);
-var I: Integer;
+var I: Integer; LControls, LPart: TJSObject;
 begin
   if (AConfig = nil) or not isArray(AConfig['instruments']) or
     not isArray(AConfig['levels']) or (TJSArray(AConfig['instruments']).length <> 3) or
@@ -201,7 +269,63 @@ begin
     TJSHTMLInputElement(document.getElementById('instrumental-level-' + IntToStr(I))).value :=
       String(TJSArray(AConfig['levels'])[I]);
   end;
+  TJSHTMLSelectElement(document.getElementById('instrumental-guide')).value := 'guide';
+  TJSHTMLInputElement(document.getElementById('instrumental-tonic-bias')).value := '0';
+  LControls := nil;
+  if isObject(AConfig['controls']) then LControls := TJSObject(AConfig['controls']);
+  if LControls <> nil then
+  begin
+    if not Boolean(LControls['guide']) then
+      TJSHTMLSelectElement(document.getElementById('instrumental-guide')).value := 'free';
+    TJSHTMLInputElement(document.getElementById('instrumental-tonic-bias')).value :=
+      FloatToStr(StudioNumber(LControls, 'tonic_bias'));
+  end;
+  for I := 0 to 2 do
+  begin
+    TJSHTMLInputElement(document.getElementById('instrumental-minimum-' + IntToStr(I))).value := '0';
+    TJSHTMLInputElement(document.getElementById('instrumental-maximum-' + IntToStr(I))).value := '127';
+    TJSHTMLInputElement(document.getElementById('instrumental-activity-' + IntToStr(I))).value := '0';
+    TJSHTMLInputElement(document.getElementById('instrumental-velocity-' + IntToStr(I))).value := '100';
+    TJSHTMLInputElement(document.getElementById('instrumental-gate-' + IntToStr(I))).value := '100';
+    if (LControls <> nil) and isArray(LControls['parts']) and
+      (TJSArray(LControls['parts']).length = 3) then
+    begin
+      LPart := TJSObject(TJSArray(LControls['parts'])[I]);
+      TJSHTMLInputElement(document.getElementById('instrumental-minimum-' + IntToStr(I))).value := FloatToStr(StudioNumber(LPart, 'minimum_pitch'));
+      TJSHTMLInputElement(document.getElementById('instrumental-maximum-' + IntToStr(I))).value := FloatToStr(StudioNumber(LPart, 'maximum_pitch'));
+      TJSHTMLInputElement(document.getElementById('instrumental-activity-' + IntToStr(I))).value := FloatToStr(StudioNumber(LPart, 'activity_bias'));
+      TJSHTMLInputElement(document.getElementById('instrumental-velocity-' + IntToStr(I))).value := FloatToStr(StudioNumber(LPart, 'velocity_percent'));
+      TJSHTMLInputElement(document.getElementById('instrumental-gate-' + IntToStr(I))).value := FloatToStr(StudioNumber(LPart, 'gate_percent'));
+    end;
+  end;
+  FControlStatus.textContent := '';
   ReadConfig;
+end;
+
+function TStudioInstrumental.Affect(AEvent: TJSMouseEvent): Boolean;
+var
+  LMapping: TMusicalAffectMapping;
+  LPart: Integer;
+begin
+  Result := False;
+  try
+    LMapping := MapMusicalAffect(Number('instrumental-energy', 0, 100),
+      Number('instrumental-density', 0, 100), Number('instrumental-tension', 0, 100));
+    for LPart := 0 to 2 do
+    begin
+      TJSHTMLInputElement(document.getElementById('instrumental-velocity-' + IntToStr(LPart))).value :=
+        IntToStr(LMapping.VelocityPercent);
+      TJSHTMLInputElement(document.getElementById('instrumental-activity-' + IntToStr(LPart))).value :=
+        IntToStr(LMapping.ActivityBias);
+    end;
+    TJSHTMLInputElement(document.getElementById('instrumental-tonic-bias')).value := IntToStr(LMapping.TonicBias);
+    FSettings.dispatchEvent(TJSEvent.new('change'));
+    FControlStatus.textContent := 'Pitched parts: velocity ' + IntToStr(LMapping.VelocityPercent) +
+      '%, attack preference ' + IntToStr(LMapping.ActivityBias) +
+      '; chord-root preference ' + IntToStr(LMapping.TonicBias) + '. Edit any value or generate when ready.';
+  except
+    on E: Exception do FControlStatus.textContent := E.Message;
+  end;
 end;
 
 procedure TStudioInstrumental.ApplyMusicalContext(AMaterial: TJSObject);
@@ -239,6 +363,7 @@ begin
   LControls := FSettings.querySelectorAll('input,select');
   for I := 0 to LControls.length - 1 do
     TJSHTMLInputElement(LControls[I]).disabled := not AEnabled;
+  TJSHTMLButtonElement(document.getElementById('instrumental-apply-affect')).disabled := not AEnabled;
 end;
 
 procedure TStudioInstrumental.Show(const AVisible: Boolean);

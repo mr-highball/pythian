@@ -26,6 +26,12 @@ Primary attribution: NS-4. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-10-30, Big Boss: Retain the concrete unguided authored conflict from
+  [musical controls](NS-4_graph-controls_01.md): seed731, root preference60,
+  per-role activity40/velocity130, eight cells, C major. Actual harmony-voice pass3
+  rejects in batch-1793400196578-896606882. Studio now reports the conflict and
+  restores exact controls; do not call choosing the guide a repair of unguided
+  generation. Use this preserved case for AC2's actual pass/choice diagnostics.
 - 2026-10-29, Big Boss: The musical adapters already expose named providers, contracts, model text, captured states, constraints and selective solve reports. Current voice passes use aligned N x 1 x 1 graphs; changing the visual layout alone is not a new solver dimension.
 - Read [the implementation review](../ASSESSMENT-2026-10-29.md) and [retirement/replacement map](RETIRED/2026-10-29/README.md) before repeating prior work. Preserve original failure evidence. Experimental musical proposals may be auditioned and corrected without independent inference-accuracy acceptance; never relabel them as established measurements.
 - Before implementation, state the audible/operator criterion, concrete deliverable, minimal closing checks and stop condition. Record repaired defects, failed approaches and linked follow-ups here. Do not broaden infrastructure work beyond an actual blocker.

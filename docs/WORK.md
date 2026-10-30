@@ -2,7 +2,94 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
-## Current handoff: experimental recording proposals accepted and deployed — 2026-10-30
+## Current handoff: musical controls slice and concrete Studio repairs deployed — 2026-10-30
+
+Big Boss SOLO continues [graph controls](TODO/NS-4_graph-controls_01.md), the
+actual prerequisite to least-complete NS-5 form/styles. The bounded AC1/AC3 slice
+now reaches ordinary Studio: hard per-role pitch bounds, upstream rhythmic
+activity and chord-root preferences, velocity/gate expression and explicit editable
+energy/density/tension mappings. The primary portable `pythian.music.controls`
+owns values, validation, mappings and detached expression; the WFC adapter compiles
+actual masks/preferences and reuses the primary named-session mask copier.
+See [exact control semantics and limits](MUSICAL-CONTROLS.md). The authored guide
+is explicit and remains authoritative. Preferences cannot create absent vocabulary.
+Percussion remains its own rhythm-dependent provider, not a pitched-role shortcut.
+
+The parent seven-unit task stays open. Retained score/part/passage regeneration,
+dependency closure and avoiding model reconstruction remain required; every
+explicit Generate still constructs models. No model-cache hit or complete task
+acceptance is inferred from equal hashes or a working control panel. Applying the
+affect helper invalidates an already checked setup, queues no work and leaves all
+resulting numbers editable. Job details display the actual submitted controls.
+Failures restore their exact recipe/seed for revision without a silent retry.
+
+Shared primary controls pass26 and actual instrumental controls pass208 on Win32,
+Win64 and actual pas2js, with clean native heaps. Same-seed sparse/dense authored
+alternatives perform1 versus8 attacks with different PCM. Six-part checks cover
+hard ranges, expression, unchanged WFC decisions, unaffected other-part PCM on a
+common padded timeline and actual joint-context maximum paired preference961.
+Source assessment moved activity upstream: downstream voice weights cannot steer
+actions already fixed by rhythm. The old101-weight curve exceeded actual joint
+context1024 when paired; the new unpublished mapping is bounded1..31, not a raised
+WFC limit. Actual pas2js caught a for-in record alias; indexed validation preserves
+caller controls. Tail-extent and missing test-unit import failures remain recorded.
+
+Two demonstrated prerequisites were created before repair and are accepted with
+their full criteria: [source-free draft reopening](TODO/DONE/NS-6_sourcefree-draft_01.md),
+effort1, and [bounded instrumental publication](TODO/DONE/NS-6_instrumental-progress_01.md),
+effort2. Absent optional musical material now normalizes at ApplyProject, without
+inventing source analysis or rewriting the draft. Actual absent/present manual
+recipe reload,137BPM/marked QA notes and unchanged jobs on Save pass in the browser.
+
+Fine instrumental preparation/render callbacks now reuse the existing two-second
+publication gate across phases. Its explicit post-write timestamp excludes time
+spent durably publishing. Every callback still checks controls; terminal transitions
+remain separate. Shared native/actual pas2js checks pass18, ordinary authored Studio
+checks pass56 on Win32/Win64 including actual running cancellation, and the complete
+checked optimized recording/manual generation matrix passes99 with unchanged
+inputs/seed/600-second limit and clean heaps. Preserve the preceding runtime-budget
+failure and actual Pascal durable-write probe (3078/2062/6078ms per tiny record).
+This diagnoses the demonstrated publication route, not universal storage/solver
+performance; durability, event limits and security remain unchanged.
+
+Final matched fixed-slot HTTP QA completes the guided six-part control job in five
+events after its page closes. Reopening its exact ID restores controls, actual
+playback clock, Lead solo and Stop. Desktop/390-pixel checks have no page errors
+or horizontal overflow; narrow numeric controls use one full-width column. Preserve
+the unguided authored seed731/root60/activity40/velocity130 failure at harmony-voice
+pass3 (batch-1793400196578-896606882). Explicitly choosing the guide completes;
+that is not a repair of the unguided conflict. It is linked to graph-workbench
+diagnostics, with no established generic WFC defect. Observer timeouts did not
+resubmit jobs; one CDP reset reattached to the same isolated browser. These checks
+use synthetic QA data and muted playback, not physical-phone/independent review
+or operator musical-quality approval. The exact QA browser tree/audio and service
+are closed; ports18129/18130 are absent.
+
+Fourteen matched checked optimized service/worker/browser assets are deployed to
+the existing stable slot. Stable PID73508 runs independently after its launcher
+exits. Loopback HTTP/LAN HTTPS and actual projects/jobs/listening/capture APIs
+return200. Sixteen protected project/review records and twelve terminal job event
+hashes are unchanged. No QA catalog/audio/answers were promoted and no firewall/TLS
+settings changed. Evidence lives under graph-controls-20261030-boss in dedicated
+E-drive build/tests/cache/runs. No WFC source/branch/pin changed.
+
+Accounting is44/99 (44.44%):18 tasks, eight open/ten current DONE,55 open units.
+NS-6 is14/27; other north-star totals are unchanged. Both prerequisites are moved
+with incoming links and milestone/catalog accounting together. Link/accounting
+validation passes. Consecutive nonclosing batches remain zero after real criteria
+close. Prior [CI509](https://github.com/mr-highball/pythian/actions/runs/41126966599)
+forf5c8285 passed. This batch is locally verified and deployed; publication and its
+new remote CI result are pending. No full-package or remote pass is claimed for it.
+The implementation goal remains active and SOLO.
+
+Next batch: retain an actual accepted score and selected parts while changing
+one sound or musical dimension, through the existing named-session regeneration
+and dependency closure APIs. State its deliverable/evidence/stop condition first.
+Do not rebuild a parallel solver or label model reconstruction as reuse. Graph
+workbench, deeper sound recipes, corpus vocabulary, form/styles, review refinement
+and long streams remain open. No new operator input is required to start that work.
+
+## Previous handoff: experimental recording proposals accepted and deployed — 2026-10-30
 
 Big Boss SOLO closed [experimental learning](TODO/DONE/NS-3_experimental-learning_01.md).
 The new primary portable `pythian.music.sound` proposes an explicit low-pass cutoff

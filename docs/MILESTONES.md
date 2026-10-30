@@ -11,7 +11,7 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 41 / 96 effort units accepted (42.71%); eight open, eight current-goal DONE.**
+**Current snapshot: 44 / 99 effort units accepted (44.44%); eight open, ten current-goal DONE.**
 This is a scope-delivery estimate, not a musical-quality score. No arbitrary
 per-task percentages or north-star weights apply.
 
@@ -22,8 +22,8 @@ per-task percentages or north-star weights apply.
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 7 | 8 | 8 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, graph inspection and musical controls | 14 | 16 | 16 / 30 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
-| [NS-6](#ns-6) | Ordinary Studio generation, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 13 | 11 | 11 / 24 |
-| **Total** | **16 current-goal tasks** | **55** | **41** | **42.71%** |
+| [NS-6](#ns-6) | Ordinary Studio generation, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 13 | 14 | 14 / 27 |
+| **Total** | **18 current-goal tasks** | **55** | **44** | **44.44%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -108,6 +108,12 @@ long playback and mobile recovery. Reuse existing working UI and native transpor
 [JSON identity](TODO/DONE/NS-6_json-identity_01.md) repairs the demonstrated musical
 choice save/reopen prerequisite. Its three implementation units are accepted after
 native storage and actual HTTP checks; the parent experimental editor is now accepted.
+[Source-free draft reopening](TODO/DONE/NS-6_sourcefree-draft_01.md) repairs the
+optional-recipe browser prerequisite. [Instrumental progress](TODO/DONE/NS-6_instrumental-progress_01.md)
+is accepted after bounded cross-phase publication, unchanged native consumers,
+live cancellation and the actual HTTP worker. Musical controls now expose pitch
+bounds, upstream activity, expression and editable affect mappings in Studio;
+the parent remains open for selective regeneration and retained model/score work.
 
 ## Completion accounting
 
@@ -121,8 +127,8 @@ The 53 former open tasks are [retired/replaced](TODO/RETIRED/2026-10-29/README.m
 not accepted. All 97 historical DONE records and their evidence remain separate;
 none has the current Goal tag. The former 52.45% weighted outcome-credit ledger is
 [historical](history/MILESTONES-2026-10-29.md), not a baseline in the new formula.
-Current scoped records: 8 open + 8 current DONE; legacy records: 53 retired +
-97 historical DONE (105 total DONE files). No implementation, saved feedback or license is discarded.
+Current scoped records: 8 open + 10 current DONE; legacy records: 53 retired +
+97 historical DONE (107 total DONE files). No implementation, saved feedback or license is discarded.
 
 100% means all required outcomes in this defined experimental goal are delivered
 and reviewed. It cannot promise any style from any user with universal accuracy.

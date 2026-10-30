@@ -760,6 +760,7 @@ procedure TStudio.ApplyProject(AProject: TJSObject);
 var
   LSources: TJSArray;
   LSource: TJSObject;
+  LMaterial: TJSObject;
   LSelection: TJSObject;
   LIndex: Integer;
   LIncludedCount: Integer;
@@ -836,8 +837,13 @@ begin
   Input('style-name').value := Str(AProject, 'name');
   TJSHTMLTextAreaElement(El('style-qualities')).value := Str(AProject, 'style_intent');
   Input('learning-mode').value := Str(AProject, 'learning_mode');
-  FMaterial.Restore(Obj(AProject['musical_material']));
-  FBatches.ApplyMusicalContext(Obj(AProject['musical_material']));
+  { Big Boss: an authored draft legitimately omits the optional recipe. Convert
+    missing/JSON-null material to Pascal nil before object-copy consumers. }
+  LMaterial := nil;
+  if isObject(AProject['musical_material']) then
+    LMaterial := Obj(AProject['musical_material']);
+  FMaterial.Restore(LMaterial);
+  FBatches.ApplyMusicalContext(LMaterial);
   FSavedProject := CloneObject(AProject);
   FBatches.SetProject(FSavedProject, False);
   FDirty := False;
