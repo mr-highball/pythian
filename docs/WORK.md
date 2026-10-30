@@ -12,6 +12,11 @@ lineage and explicit Apply → Save → Generate actions. Recording-linked jobs 
 consume the saved recipe, render six synthesized parts and keep a bounded Original
 excerpt. Preflight reports that read honestly. Source PCM is never the instrument.
 
+Published as9b29ba2 on hello-pythian. [CI507](https://github.com/mr-highball/pythian/actions/runs/41111358919)
+is queued at publication; no remote pass is claimed yet. Follow the linked
+motif-coupling prerequisite next. Stable Studio remains on its preceding checked
+deployment until that repair is ready; this editor batch was isolated QA only.
+
 Checked Win32/Win64 pass 35 actual source-analysis → accepted/corrected recipe →
 model/audio/reference checks each, with clean heaps. Win64 choice storage 51,
 instrumental 41 and jobs 113 regressions pass. Actual matched pas2js assets compile.
