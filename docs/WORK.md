@@ -6,7 +6,9 @@
 
 Big Boss remains SOLO. [Experimental learning](TODO/NS-3_experimental-learning_01.md)
 AC1 is delivered through the existing recording and import/microphone inspection
-jobs. The prior instrumental batch b4e03f2 passed
+jobs, published as02f71d8 on hello-pythian.
+[CI504](https://github.com/mr-highball/pythian/actions/runs/41064948699) is queued
+at handoff; its result is not yet established. The prior instrumental batch b4e03f2 passed
 [CI503](https://github.com/mr-highball/pythian/actions/runs/41012477582).
 
 The primary portable pythian.music.observations API reuses existing spectral,
