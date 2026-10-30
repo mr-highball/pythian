@@ -72,7 +72,9 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
   consumer with `-O2` while keeping its assertions/range/overflow/I/O checks and
   original budgets. A fresh `-B -O2` consumer rebuild also passes99 with clean heaps,
   including the final canonical integer/proposal-origin guards. Other consumers'
-  build flags are unchanged; new remote CI is still pending publication.
+  build flags are unchanged. Published asf5c8285 on hello-pythian;
+  [CI509](https://github.com/mr-highball/pythian/actions/runs/41126966599) is running,
+  not yet a remote pass.
 - Actual desktop/390-pixel UI checks cover accept/edit/bypass/manual, saved reload,
   numeric controls, no horizontal overflow, and accepting sound without changing
   edited tempo/key/part/notes. Save leaves jobs identical. An ordinary optimized

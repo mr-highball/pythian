@@ -61,8 +61,10 @@ NS-3 is8/15; other north-star totals are unchanged. The task is moved with incom
 links and milestone/catalog accounting together; style vocabulary is now ready.
 Consecutive nonclosing batches remain zero. Prior coupling
 [CI508](https://github.com/mr-highball/pythian/actions/runs/41117584756) for1bb3733
-passed. This batch's remote CI is pending publication; no new remote or full-package
-pass is claimed. The implementation goal remains active and SOLO.
+passed. This batch is published asf5c8285 on hello-pythian;
+[CI509](https://github.com/mr-highball/pythian/actions/runs/41126966599) is running.
+No new remote or full-package pass is claimed. The implementation goal remains
+active and SOLO.
 
 Next selection is [musical graph controls](TODO/NS-4_graph-controls_01.md), the actual
 prerequisite to least-complete NS-5 form/styles. Reuse accepted masks/preferences and
