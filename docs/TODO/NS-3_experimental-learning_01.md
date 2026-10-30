@@ -51,6 +51,21 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-10-30, Big Boss: Select remaining AC3 and its AC4 lineage checks. Audible
+  criterion: deliberately accept, correct or bypass a recording's Experimental
+  brightness/dynamics starting point and hear the chosen synthesized part change.
+  Deliver a shared portable proposal-to-voice recipe: measured centroid proposes
+  low-pass cutoff and quiet/peak window RMS proposes envelope sustain, with visible
+  mappings and editable part/values. These are explicit heuristic starting points,
+  not source-instrument identification or envelope reconstruction. Native jobs
+  retain the selected recipe, actual applied values and Original coordinates.
+  Minimal checks: portable/native/pas2js mapping and invalid/silent boundaries,
+  native source-bound save/correction identity and actual audio change with fixed
+  notes/seed, desktop/narrow accept/edit/bypass/Save/Generate. Stop after the
+  complete existing task criteria; broader sound recipes/catalog, time-varying
+  automation, corpus learning and graph workbench retain their separate tasks.
+  Consecutive nonclosing count starts zero after the accepted coupling repair.
+
 - 2026-10-30, Big Boss: Motif coupling passes its complete criteria: 1438 shared
   native32/native64/actual pas2js checks,43 actual native generation checks on both
   targets and ordinary desktop/narrow edit/save/generate paths. Original reference

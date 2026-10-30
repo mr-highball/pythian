@@ -40,14 +40,20 @@ Accounting is33/96 (34.38%):16 tasks, nine open/seven current DONE,63 open units
 NS-4 is16/30; NS-3 stays0/15. Task creation, partial work and reports earn nothing.
 The complete repair resets/retains the consecutive nonclosing count at zero.
 [CI507](https://github.com/mr-highball/pythian/actions/runs/41111358919) for9b29ba2 is
-now confirmed green. New remote qualification remains pending publication.
+now confirmed green. The repair is published as1bb3733 on hello-pythian;
+[CI508](https://github.com/mr-highball/pythian/actions/runs/41117584756) is running.
+No new remote pass or full-package qualification is claimed yet.
 
 Continue [experimental learning AC3](TODO/NS-3_experimental-learning_01.md): bind
 explicitly selected/corrected sound and dynamics proposals to actual instrument/
 automation settings and keep the Original comparison. The existing tempo/key/
 pitch editor, source lineage and repaired motif generation already pass. Do not
 automatically award the remaining eight units, start broad sound-design work or
-invent an inference-accuracy gate. The implementation goal stays active and solo.
+invent an inference-accuracy gate. The next bounded batch is recorded in that
+task: explicit Experimental brightness→cutoff and quiet/peak RMS→sustain starting
+points, editable/bypassable per part, shared primary voice application and real
+audio/lineage checks. Implementation of that slice has not begun. The
+implementation goal stays active and solo.
 
 ## Current handoff: musical-choice editor checked; follow motif coupling — 2026-10-30
 
