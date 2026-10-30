@@ -428,6 +428,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Musical observation compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.music.observations$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Musical observation checks failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.music.pattern.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Musical pattern compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.music.pattern$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Musical pattern checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.analysis.journal.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Feature journal compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.analysis.journal$executableSuffix")
@@ -826,6 +830,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental runtime compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental runtime checks failed' }
+    & $compilerPath @adapterArgs 'tests/pythian.tests.material.instrumental.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Joint musical context compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.material.instrumental$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Joint musical context checks failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.percussion.wfc.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC percussion compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.percussion.wfc$executableSuffix")
@@ -836,6 +844,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental caller failed' }
     & (Join-Path $buildRoot "pythian.example.instrumental$executableSuffix") (Join-Path $buildRoot 'instrumental-drums.wav') '32' '731' '120' '0' '--drums'
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental percussion caller failed' }
+    & (Join-Path $buildRoot "pythian.example.instrumental$executableSuffix") (Join-Path $buildRoot 'instrumental-motif.wav') '16' '731' '120' '0' '--drums' '--motif=60,?,r,62'
+    if ($LASTEXITCODE -ne 0) { throw 'Instrumental motif caller failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.semantic.style.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Semantic style compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.semantic.style$executableSuffix") (Join-Path $buildRoot 'semantic-style')

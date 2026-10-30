@@ -42,7 +42,7 @@ percussion recipes. CopyGraph returns
 actual pass dimensions, proof flags, model token/state counts and dependency
 indices. CopyProvider, CopyModel, CopyMusic, CopyConstraints, CopyPreferences and
 CopyNotes expose detached accepted pitched data. CopyPercussionHits/Part describe
-unpitched events/recipes; CopyPassTokens/States and CopyModel cover both groups.
+unpitched events/recipes; CopyPassTokens/States and CopyModel cover every group.
 Copies of part tones still borrow native
 factory/automation/envelope resources; preserve those resources through player
 creation, and preserve source factories for their own source lifetime.
@@ -77,16 +77,44 @@ adds seven coverage proof passes. Default execution is twelve 64 x 1 x 1 passes:
 harmony, joint rhythm, three voices and seven witnesses. These are passes against
 one time axis, not twelve musical dimensions.
 
+An optional TPitchPattern supplies an operator-selected motif for bass, harmony
+or lead. The primary pythian.music.pattern unit can quantize selected-channel pitch
+spans onto explicit eighth-note cells; callers can also author or correct cells.
+Unknown cells split examples and remain distinct from measured silence. The
+starter explicitly repeats each known run four times to teach repeatable motifs,
+with authored accompaniment. Those repetitions and accompaniment are authored
+material, not observations of a recording or continuity across missing material.
+AMinor selects the starter's minor accompaniment; it does not infer a key.
+
+For this motif path, pass the starter's borrowed ContextModel as the final
+TryCreateInstrumentalPlan argument. The shared musical-context provider learns
+paired harmonic/rhythmic choices and their sequence relationships. It first
+solves one actual context pass, preserving caller harmony/rhythm masks and soft
+preferences. Accepted paired choices then constrain the named musical graph;
+pitched roles remain independently selected. A contradictory lock fails rather
+than being relaxed. ContextSolve reports the context negotiation separately.
+
+CopyGraph exposes this additional graph group and its pinned-input lineage:
+context group 0, pitched group 1 and optional percussion group 2. The sixteen-cell
+C/unknown/silence/D fixture with drums has seventeen actual passes, each 16 x 1 x 1.
+This is conditional generation, without backtracking across groups. A context
+choice can still leave the following graph unsatisfiable; failures remain visible.
+The ordinary Studio route does not yet expose these motif choices.
+
 The caller adds the primary filtered echo on the harmony bus and a three-second
 effect tail. Changing tonic changes actual training/model pitches; changing BPM
 changes the exact performance clock. A seed or supported constraint may produce
 different valid voice paths, but a different seed is not a guarantee of variation.
 
-Adding --drums as the sixth argument creates kick, snare and hat from authored
+Without a motif, adding --drums as the sixth argument creates kick, snare and hat from authored
 velocity-event models and explicit rhythm projections. The result has a second
 four-pass graph group, and sixteen actual passes total. It retains pitched
 harmonic proof and adds the primary master limiter. Graph groups and pinned-input
 lineage are explicit; this does not claim one jointly backtracking graph.
+The sixth and seventh arguments may also include --motif=60,?,r,62: MIDI note
+numbers, ? for unknown and r for rest. Each entered note is an explicit attack.
+For example, append '--drums' '--motif=60,?,r,62' to a sixteen-cell invocation.
+The sidecar records the actual context model, seed, tokens and conditional groups.
 
 Compile from the repository root with the existing FPC toolchain, choosing
 explicit E-drive unit/executable output folders on this workstation:

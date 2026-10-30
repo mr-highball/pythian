@@ -34,10 +34,39 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
 
 **Blockers**
 
+- [NS-4_joint-context_01 — DONE](DONE/NS-4_joint-context_01.md) — paired context
+  resolves the demonstrated AC3 motif prerequisite; Studio mapping remains open.
+
 - [NS-4_instrumental-runtime_01](DONE/NS-4_instrumental-runtime_01.md)
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-10-30, Big Boss: The joint-context prerequisite is accepted after native
+  Win32/Win64, actual pas2js and relevant extracted consumers. Six-part motifs
+  solve at the original search limits; corrected material changes synthesized
+  output and the authored control is byte-identical to a fresh preceding-revision
+  build. Its real criterion closure resets the nonclosing count to zero. Resume
+  the existing AC2–4 Studio batch; no partial parent effort is credited.
+
+- 2026-10-30, Big Boss: The first AC2–4 prototype closes no new criterion.
+  Quantization/provider preparation exists, but two bounded free-generation
+  attempts exhaust pass backtracking at harmony-voice (32 and1024). Follow the
+  linked joint-context prerequisite, preserve the failed runs, and do not replace
+  learned constraints with pinned output or keep increasing search limits.
+  Consecutive nonclosing batches: one, carried into that prerequisite.
+
+- 2026-10-30, Big Boss: AC2–4 batch selected after AC1/CI504 passed. Deliver
+  saved accept/correct/bypass/manual choices, explicit part assignment, source-bound
+  proposal-to-provider synthesis and Original comparison through ordinary Studio.
+  Primary quantized patterns preserve unknown/silent distinctions; editable accepted
+  runs may become explicitly repeatable motifs with authored accompaniment, never
+  claims of automatically separated instruments or learned cross-gap continuity.
+  Minimal closing checks: native/actual pas2js pattern and provider replay/boundaries,
+  actual native jobs with different accepted/corrected material and source provenance,
+  desktop/narrow save/reload/generate/compare with no silent generation from Save.
+  Stop at that complete task outcome; long corpus vocabulary/form/style blending
+  remains in its linked downstream tasks. Consecutive nonclosing count starts zero.
 
 - 2026-10-30, Big Boss: Selected AC1 batch after runtime, percussion and Studio
   prerequisites passed (integrated CI503 green). Deliver bounded Experimental

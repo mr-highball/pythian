@@ -2,6 +2,54 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
+## Current handoff: joint context accepted; return to Studio choices — 2026-10-30
+
+Big Boss SOLO has implemented the shared paired harmonic/rhythmic context pass
+and primary portable pitch-pattern contract. The discovered motif now generates
+six instrumental parts with seventeen actual passes in three conditional groups,
+using the original bounded search limits. Hard locks and cancellation preserve
+the preceding accepted plan. Native Win32/Win64 and actual pas2js pass 205 material
+checks and 16 core-only pattern checks. Existing instrumental/percussion/provider
+consumers pass, including the native progress fixture. Extracted core passes.
+
+The extracted full package's actual pas2js consumer also passes 205 checks. The
+fresh previous-revision authored control and a separate-process current replay
+have identical WAV bytes; corrected motif pitches change real synthesized audio.
+The broader native package regression is still running and is not claimed passed.
+Its already extracted source inventory is verified; scoped current API consumers
+close this task's criteria without a blanket unrelated packaging gate.
+
+[Joint context — DONE](TODO/DONE/NS-4_joint-context_01.md) earns four implementation
+effort units: 25/88 (28.41%), nine open/five current DONE, 63 open units. NS-4 is
+11/25. Real AC1–3 closure resets consecutive nonclosing batches to zero. Continue
+[experimental learning AC2–4](TODO/NS-3_experimental-learning_01.md): saved explicit
+accept/correct/bypass/manual choices, part assignment, source-bound generation and
+Original comparison. Those Studio criteria remain open; no partial parent effort.
+No Studio deployment, browser session, audio playback or operator-data write occurred.
+
+## Earlier selection: joint-context prerequisite — 2026-10-30
+
+Big Boss SOLO continues the active implementation goal. Previous goal turn was
+progress: observations were published and CI504 passed. The current AC2–4
+prototype adds a primary quantized pitch-pattern contract and optional accepted
+motifs/minor accompaniment to instrumental material construction, but free
+generation is not accepted. Preserve its native failures under
+musical-material-20261030-boss in the dedicated E-drive roots.
+
+The finite graph rejects wrapped model boundaries. Explicit authored motif
+repetition restores open-model semantics; unknown spans split examples instead
+of becoming silence. Two bounded searches then exhaust pass negotiation at
+harmony-voice, with32 and1024 pass backtracks. Stop increasing limits. Follow
+[joint context](TODO/DONE/NS-4_joint-context_01.md), then return to
+[experimental learning AC2–4](TODO/NS-3_experimental-learning_01.md).
+No claim of a generic WFC bug or vendor change is made. Musical coupling belongs here.
+
+The real prerequisite adds4 effort units:14 current tasks,10 open/four DONE,
+67 open+21 accepted=88,23.86%. NS-4 is7/25; other north-star accepted units are
+unchanged. This failed prototype closes no criterion: consecutive nonclosing
+batches one, carried into the prerequisite. Task creation/renaming resets nothing.
+The deployed instrumental/observation service and operator answers are unchanged.
+
 ## Current handoff: musical suggestions exposed in Studio — 2026-10-30
 
 Big Boss remains SOLO. [Experimental learning](TODO/NS-3_experimental-learning_01.md)

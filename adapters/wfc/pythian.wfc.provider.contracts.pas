@@ -151,6 +151,7 @@ begin
     spvVoice: Result := 'rest-attack-hold-no-unknown';
     spvRhythm: Result := 'joint-rest-attack-hold-no-unknown';
     spvHarmony: Result := 'empty-pitch-set-no-unknown';
+    spvMusicalContext: Result := 'joint-harmony-rhythm-no-unknown';
     spvTempo, spvPitch, spvPitchRhythm: Result := 'no-unknown-token';
   else
     raise EAudio.Create('Unsupported provider vocabulary');
@@ -381,9 +382,9 @@ begin
   begin
     raise EAudio.Create('Only independent voice outputs require a declared role identity');
   end;
-  if ((AContract.Vocabulary = spvRhythm) and
+  if ((AContract.Vocabulary in [spvRhythm, spvMusicalContext]) and
     ((Length(AContract.RoleOrder) < 1) or (Length(AContract.RoleOrder) > 6))) or
-    ((AContract.Vocabulary <> spvRhythm) and (Length(AContract.RoleOrder) <> 0)) then
+    ((not (AContract.Vocabulary in [spvRhythm, spvMusicalContext])) and (Length(AContract.RoleOrder) <> 0)) then
   begin
     raise EAudio.Create('Joint rhythm requires 1..6 ordered role identities; other vocabularies have no role vector');
   end;
@@ -434,12 +435,12 @@ begin
   ReportWork(AProgress, 'provider_validate_choices', wuItems, 0, Length(LChoices));
   for LIndex := 0 to High(LChoices) do
   begin
-    if (AContract.Vocabulary = spvHarmony) and
+    if (AContract.Vocabulary in [spvHarmony, spvMusicalContext]) and
       (LChoices[LIndex].Harmony.StepsPerOctave <> 12) then
     begin
       raise EAudio.Create('Semantic harmony contract requires 12-TET pitch classes');
     end;
-    if (AContract.Vocabulary = spvRhythm) and
+    if (AContract.Vocabulary in [spvRhythm, spvMusicalContext]) and
       (Length(LChoices[LIndex].Rhythm.Actions) <> Length(AContract.RoleOrder)) then
     begin
       raise EAudio.Create('Joint rhythm action vector does not match its declared ordered roles');

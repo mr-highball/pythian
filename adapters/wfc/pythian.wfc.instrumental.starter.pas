@@ -29,7 +29,9 @@ unit pythian.wfc.instrumental.starter;
 interface
 
 uses
+  pythian.progress,
   pythian.instrument,
+  pythian.music.pattern,
   pythian.wfc.instrumental,
   pythian.wfc.voices,
   pythian.percussion,
@@ -38,17 +40,23 @@ uses
   wfc_music_voices_graph;
 
 type
-  { Big Boss: reusable authored material for the first experiment, not a learned
-    recording style. Owns three source-free instruments and all training models.
-    No genre name, media file, external runtime or second synthesis engine. }
+  { Big Boss: source-free authored accompaniment with an optional operator
+    accepted/corrected pitch motif. Unknown cells split training examples;
+    known runs are explicitly repeated, never claimed as observed gap joins.
+    Owns instruments/models; all generation uses the primary musical graph. }
   TInstrumentalStarter = class
   private
     FConfig: TWfcMusicVoicesGraphConfig;
     FRoles: TInstrumentalRoles;
     FTonic: Integer;
+    FMinor: Boolean;
+    FPattern: TPitchPattern;
+    FContextModel: TWfcSequenceModel;
     FDrumModels: array[TPercussionKind] of TWfcSequenceModel;
   public
-    constructor Create(const ATonic: Integer = 0);
+    constructor Create(const ATonic: Integer = 0; const AMinor: Boolean = False;
+      const APattern: TPitchPattern = nil; const APatternRole: Integer = 2;
+      const AProgress: TWorkProgressCallback = nil);
     destructor Destroy; override;
     function CopyRoles: TInstrumentalRoles;
     { Authored harmony/rhythm guide only; pitched voice choices remain WFC.
@@ -57,6 +65,8 @@ type
     function CopyPercussion(const ASampleRate: Integer): TPercussionDefinitions;
     { Models are borrowed immutable; the runtime clones them before solving. }
     function Config: TWfcMusicVoicesGraphConfig;
+    { Borrowed immutable paired context; nil for the unchanged authored starter. }
+    function ContextModel: TWfcSequenceModel;
     property Tonic: Integer read FTonic;
   end;
 
@@ -67,6 +77,9 @@ uses
   pythian.audio,
   pythian.synth,
   pythian.oscillator,
+  pythian.pitch.track,
+  pythian.wfc.providers,
+  pythian.wfc.progress,
   wfc_model,
   wfc_sequence_graph,
   wfc_sequence_learn,
@@ -75,7 +88,8 @@ uses
   wfc_music_ensemble,
   wfc_music_ensemble_graph;
 
-function StarterFrame(const APhrase, ACell, ATonic: Integer): TWfcMusicEnsembleFrame;
+function StarterFrame(const APhrase, ACell, ATonic: Integer;
+  const AMinor: Boolean = False): TWfcMusicEnsembleFrame;
 const
   CRoots: array[0..1, 0..7] of Integer =
     ((0, 5, 7, 0, 0, 9, 5, 7), (0, 9, 5, 7, 0, 5, 7, 0));
@@ -85,11 +99,18 @@ var
   LChord: array[0..2] of Integer;
   LLead: Integer;
   LAction: TWfcMusicCellAction;
+  LRelativeRoot: Integer;
 begin
   Result := Default(TWfcMusicEnsembleFrame);
-  LRoot := CRoots[APhrase, ACell div 8] + ATonic;
+  LRelativeRoot := CRoots[APhrase, ACell div 8];
+  if AMinor and (LRelativeRoot = 9) then
+  begin
+    LRelativeRoot := 8;
+  end;
+  LRoot := LRelativeRoot + ATonic;
   LThird := 4;
-  if CRoots[APhrase, ACell div 8] = 9 then
+  if ((not AMinor) and (LRelativeRoot = 9)) or
+    (AMinor and (LRelativeRoot <> 8)) then
   begin
     LThird := 3;
   end;
@@ -123,7 +144,9 @@ begin
     [MakeWfcMusicTone(LLead, 84)]);
 end;
 
-constructor TInstrumentalStarter.Create(const ATonic: Integer);
+constructor TInstrumentalStarter.Create(const ATonic: Integer;
+  const AMinor: Boolean; const APattern: TPitchPattern; const APatternRole: Integer;
+  const AProgress: TWorkProgressCallback);
 const
   CNames: array[0..2] of String = ('bass', 'harmony-voice', 'lead');
   CShapes: array[0..2] of TWaveShape = (wsSaw, wsTriangle, wsSquare);
@@ -137,6 +160,16 @@ var
   LRole: Integer;
   LZone: TInstrumentZones;
   LModel: TWfcSequenceModel;
+  LSampleIndex: Integer;
+  LTokenIndex: Integer;
+  LInRun: Boolean;
+  LPatternCell: TPitchPatternCell;
+  LAction: TWfcMusicCellAction;
+  LTrainingCells: Integer;
+  LOriginal: TWfcModelTokens;
+  LRepeatIndex: Integer;
+  LContextSamples: TWfcSequenceSamples;
+  LBridge: TWfcSolveProgressBridge;
 begin
   inherited Create;
   if (ATonic < 0) or (ATonic > 11) then
@@ -144,38 +177,132 @@ begin
     raise EAudio.Create('Starter tonic requires pitch class 0..11');
   end;
   FTonic := ATonic;
+  FMinor := AMinor;
+  if Length(APattern) > 0 then
+  begin
+    ValidatePitchPattern(APattern);
+    if (APatternRole < 0) or (APatternRole > 2) then
+    begin
+      raise EAudio.Create('A pitch pattern must be assigned to bass, harmony or lead');
+    end;
+    FPattern := Copy(APattern);
+  end;
   SetLength(FConfig.Voices, 3);
   SetLength(FRoles, 3);
   FConfig.StepsPerOctave := 12;
   FConfig.HarmonyMode := wmehmExact;
+  LTrainingCells := 64;
+  if Length(FPattern) > LTrainingCells then
+    LTrainingCells := Length(FPattern);
   for LPass := 0 to 4 do
   begin
-    SetLength(LSamples[LPass], 2);
-    for LPhrase := 0 to 1 do
+    LSamples[LPass] := nil;
+    if Length(FPattern) = 0 then
     begin
-      SetLength(LSamples[LPass][LPhrase].Tokens, 64);
+      SetLength(LSamples[LPass], 2);
+      for LPhrase := 0 to 1 do
+      begin
+        SetLength(LSamples[LPass][LPhrase].Tokens, 64);
+      end;
     end;
   end;
   for LPhrase := 0 to 1 do
   begin
-    for LCell := 0 to 63 do
+    LInRun := False;
+    for LCell := 0 to LTrainingCells - 1 do
     begin
-      LFrame := StarterFrame(LPhrase, LCell, ATonic);
-      LSamples[0][LPhrase].Tokens[LCell] :=
+      if (LCell mod 8) = 0 then
+        ReportWork(AProgress, 'instrumental_material', wuItems,
+          LPhrase * LTrainingCells + LCell, 2 * LTrainingCells);
+      LFrame := StarterFrame((LPhrase + LCell div 64) mod 2,
+        LCell mod 64, ATonic, AMinor);
+      LSampleIndex := LPhrase;
+      LTokenIndex := LCell;
+      if Length(FPattern) > 0 then
+      begin
+        LPatternCell := FPattern[LCell mod Length(FPattern)];
+        if LPatternCell.Kind = pskUnknown then
+        begin
+          LInRun := False;
+          Continue;
+        end;
+        if LPatternCell.Kind = pskSilence then
+        begin
+          LFrame.Voices[APatternRole] := MakeWfcMusicVoiceCell(wmcaRest, nil);
+        end
+        else
+        begin
+          LAction := wmcaHold;
+          if LPatternCell.Attack or not LInRun then
+          begin
+            LAction := wmcaAttack;
+          end;
+          LFrame.Voices[APatternRole] := MakeWfcMusicVoiceCell(LAction,
+            [MakeWfcMusicTone(LPatternCell.Note, LPatternCell.Velocity)]);
+        end;
+        if not LInRun then
+        begin
+          for LPass := 0 to 4 do
+          begin
+            SetLength(LSamples[LPass], Length(LSamples[LPass]) + 1);
+          end;
+          for LRole := 0 to 2 do
+          begin
+            if Length(LFrame.Voices[LRole].Tones) > 0 then
+            begin
+              LFrame.Voices[LRole].Action := wmcaAttack;
+            end;
+          end;
+        end;
+        LSampleIndex := High(LSamples[0]);
+        LTokenIndex := Length(LSamples[0][LSampleIndex].Tokens);
+        for LPass := 0 to 4 do
+        begin
+          SetLength(LSamples[LPass][LSampleIndex].Tokens, LTokenIndex + 1);
+        end;
+        LInRun := True;
+      end;
+      LSamples[0][LSampleIndex].Tokens[LTokenIndex] :=
         EncodeWfcMusicPitchClassSet(ProjectWfcMusicEnsembleFrameToPitchClassSet(LFrame, 12));
-      LSamples[1][LPhrase].Tokens[LCell] :=
+      LSamples[1][LSampleIndex].Tokens[LTokenIndex] :=
         EncodeWfcMusicRhythmFrame(ProjectWfcMusicEnsembleFrameToRhythm(LFrame));
       SetLength(LSingle.Voices, 1);
       for LRole := 0 to 2 do
       begin
         LSingle.Voices[0] := LFrame.Voices[LRole];
-        LSamples[LRole + 2][LPhrase].Tokens[LCell] := EncodeWfcMusicEnsembleFrame(LSingle);
+        LSamples[LRole + 2][LSampleIndex].Tokens[LTokenIndex] := EncodeWfcMusicEnsembleFrame(LSingle);
       end;
     end;
   end;
   for LPass := 0 to 4 do
   begin
-    LModel := LearnSequenceModelCorpus(LSamples[LPass], 2);
+    if Length(LSamples[LPass]) = 0 then
+    begin
+      raise EAudio.Create('The chosen pitch pattern has no known material; correct it or use authored material');
+    end;
+    if Length(FPattern) > 0 then
+    begin
+      { Finite time graphs require open model boundaries. Four explicitly
+        authored motif repeats supply cyclic transitions even for a one-cell
+        accepted run; this is not wrapping the generated graph's first/last cells. }
+      for LSampleIndex := 0 to High(LSamples[LPass]) do
+      begin
+        LOriginal := Copy(LSamples[LPass][LSampleIndex].Tokens);
+        SetLength(LSamples[LPass][LSampleIndex].Tokens, Length(LOriginal) * 4);
+        for LRepeatIndex := 0 to High(LSamples[LPass][LSampleIndex].Tokens) do
+        begin
+          LSamples[LPass][LSampleIndex].Tokens[LRepeatIndex] :=
+            LOriginal[LRepeatIndex mod Length(LOriginal)];
+        end;
+      end;
+    end;
+    LBridge := TWfcSolveProgressBridge.Create(AProgress, LPass + 1);
+    try
+      LModel := LearnSequenceModelCorpus(LSamples[LPass], 2, wmbOpen,
+        LBridge.SequenceWorkObserver());
+    finally
+      LBridge.Free;
+    end;
     case LPass of
       0: FConfig.HarmonyModel := LModel;
       1: FConfig.RhythmModel := LModel;
@@ -191,6 +318,17 @@ begin
       FConfig.Voices[LRole].MinPitch := 72;
     end;
     FConfig.Voices[LRole].MaxPitch := FConfig.Voices[LRole].MinPitch + 35;
+    if (Length(FPattern) > 0) and (LRole = APatternRole) then
+    begin
+      for LPatternCell in FPattern do
+      begin
+        if LPatternCell.Kind <> pskPitch then Continue;
+        if LPatternCell.Note < FConfig.Voices[LRole].MinPitch then
+          FConfig.Voices[LRole].MinPitch := LPatternCell.Note;
+        if LPatternCell.Note > FConfig.Voices[LRole].MaxPitch then
+          FConfig.Voices[LRole].MaxPitch := LPatternCell.Note;
+      end;
+    end;
     FRoles[LRole].Name := CNames[LRole];
     FRoles[LRole].InstrumentId := 'authored-' + CNames[LRole] + '-v1';
     FRoles[LRole].OutputBus := LRole;
@@ -212,6 +350,26 @@ begin
     LZone[0].Voice.Envelope.ReleaseSeconds := 0.18 + LRole * 0.08;
     FRoles[LRole].Instrument := TInstrument.Create(LZone);
   end;
+  if Length(FPattern) > 0 then
+  begin
+    SetLength(LContextSamples, Length(LSamples[0]));
+    for LSampleIndex := 0 to High(LContextSamples) do
+    begin
+      SetLength(LContextSamples[LSampleIndex].Tokens, Length(LSamples[0][LSampleIndex].Tokens));
+      for LTokenIndex := 0 to High(LContextSamples[LSampleIndex].Tokens) do
+      begin
+        LContextSamples[LSampleIndex].Tokens[LTokenIndex] := EncodeMusicalContextToken(
+          LSamples[0][LSampleIndex].Tokens[LTokenIndex], LSamples[1][LSampleIndex].Tokens[LTokenIndex]);
+      end;
+    end;
+    LBridge := TWfcSolveProgressBridge.Create(AProgress, 6);
+    try
+      FContextModel := LearnSequenceModelCorpus(LContextSamples, 2, wmbOpen,
+        LBridge.SequenceWorkObserver());
+    finally
+      LBridge.Free;
+    end;
+  end;
 end;
 
 destructor TInstrumentalStarter.Destroy;
@@ -219,6 +377,7 @@ var
   LRole: Integer;
   LKind: TPercussionKind;
 begin
+  FContextModel.Free;
   for LKind := Low(TPercussionKind) to High(TPercussionKind) do
   begin
     FDrumModels[LKind].Free;
@@ -248,6 +407,11 @@ begin
   Result.PairConstraints := Copy(FConfig.PairConstraints);
 end;
 
+function TInstrumentalStarter.ContextModel: TWfcSequenceModel;
+begin
+  Result := FContextModel;
+end;
+
 function TInstrumentalStarter.GuideMasks(const ACellCount: Integer): TVoiceMasks;
 var
   LCell: Integer;
@@ -258,12 +422,16 @@ begin
     raise EAudio.Create('Authored starter guide requires 1..1024 cells');
   end;
   Result := nil;
+  if Length(FPattern) > 0 then
+  begin
+    Exit;
+  end;
   SetLength(Result, 5);
   SetLength(Result[0], ACellCount);
   SetLength(Result[1], ACellCount);
   for LCell := 0 to ACellCount - 1 do
   begin
-    LFrame := StarterFrame((LCell div 64) mod 2, LCell mod 64, FTonic);
+    LFrame := StarterFrame((LCell div 64) mod 2, LCell mod 64, FTonic, FMinor);
     Result[0][LCell] := MakeWfcSequenceTokenConstraint(LCell,
       [EncodeWfcMusicPitchClassSet(ProjectWfcMusicEnsembleFrameToPitchClassSet(LFrame, 12))]);
     Result[1][LCell] := MakeWfcSequenceTokenConstraint(LCell,

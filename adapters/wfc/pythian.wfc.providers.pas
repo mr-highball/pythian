@@ -39,7 +39,8 @@ uses
 
 type
   TStyleProviderVocabulary = (spvKey, spvTempo, spvOnsets, spvIntensity,
-    spvPitch, spvPitchRhythm, spvPerformance, spvHarmony, spvRhythm, spvVoice, spvCaller);
+    spvPitch, spvPitchRhythm, spvPerformance, spvHarmony, spvRhythm, spvVoice, spvCaller,
+    spvMusicalContext);
   TStyleChoiceDimension = (scdKey, scdTempo, scdOnset, scdIntensity,
     scdPitch, scdDuration, scdHarmony, scdRhythm, scdVoice);
   TStyleChoiceDimensions = set of TStyleChoiceDimension;
@@ -93,8 +94,10 @@ type
     MaximumPitch: Integer;
   end;
 
-{ Uses existing canonical codecs. No inferred roles, relative-pitch conversion,
-  silence from empty onset cells, new vocabulary or schema compatibility branch. }
+{ Reuses canonical codecs; paired context binds harmony and ordered rhythm.
+  No inferred roles, relative-pitch conversion or silence from empty onset cells. }
+function EncodeMusicalContextToken(const AHarmony, ARhythm: String): String;
+procedure DecodeMusicalContextToken(const AToken: String; out AHarmony, ARhythm: String);
 function DecodeStyleProviderChoice(const AVocabulary: TStyleProviderVocabulary;
   const AToken: String): TStyleProviderChoice;
 { Borrows the immutable model synchronously; returns detached choices in its
@@ -114,10 +117,41 @@ function CloneStyleProviderChoices(const AChoices: TStyleProviderChoices;
 implementation
 
 uses
+  SysUtils,
   pythian.audio,
   pythian.wfc.context,
   pythian.wfc.pitch,
   pythian.wfc.style;
+
+function EncodeMusicalContextToken(const AHarmony, ARhythm: String): String;
+begin
+  DecodeWfcMusicPitchClassSet(AHarmony);
+  DecodeWfcMusicRhythmFrame(ARhythm);
+  Result := 'ctx1:' + IntToStr(Length(AHarmony)) + ':' + AHarmony + ARhythm;
+end;
+
+procedure DecodeMusicalContextToken(const AToken: String; out AHarmony, ARhythm: String);
+var
+  LText: String;
+  LSeparator: Integer;
+  LLength: Integer;
+  LHarmony: String;
+  LRhythm: String;
+begin
+  if (Copy(AToken, 1, 5) <> 'ctx1:') or (Length(AToken) > 16384) then
+    raise EAudio.Create('Unknown musical context token');
+  LText := Copy(AToken, 6, Length(AToken));
+  LSeparator := Pos(':', LText);
+  if (LSeparator < 2) or not TryStrToInt(Copy(LText, 1, LSeparator - 1), LLength) or
+    (LLength < 1) or (LLength >= Length(LText) - LSeparator) then
+    raise EAudio.Create('Invalid musical context token length');
+  LHarmony := Copy(LText, LSeparator + 1, LLength);
+  LRhythm := Copy(LText, LSeparator + LLength + 1, Length(LText));
+  if EncodeMusicalContextToken(LHarmony, LRhythm) <> AToken then
+    raise EAudio.Create('Noncanonical musical context token');
+  AHarmony := LHarmony;
+  ARhythm := LRhythm;
+end;
 
 function DecodeStyleProviderChoice(const AVocabulary: TStyleProviderVocabulary;
   const AToken: String): TStyleProviderChoice;
@@ -126,6 +160,8 @@ var
   LJoint: TPitchRhythmCell;
   LSpan: TPitchDurationCell;
   LFrame: TWfcMusicEnsembleFrame;
+  LHarmony: String;
+  LRhythm: String;
 begin
   LChoice := Default(TStyleProviderChoice);
   LChoice.Token := AToken;
@@ -193,6 +229,13 @@ begin
     begin
       LChoice.Dimensions := [scdRhythm];
       LChoice.Rhythm := DecodeWfcMusicRhythmFrame(AToken);
+    end;
+    spvMusicalContext:
+    begin
+      DecodeMusicalContextToken(AToken, LHarmony, LRhythm);
+      LChoice.Dimensions := [scdHarmony, scdRhythm];
+      LChoice.Harmony := DecodeWfcMusicPitchClassSet(LHarmony);
+      LChoice.Rhythm := DecodeWfcMusicRhythmFrame(LRhythm);
     end;
     spvVoice:
     begin

@@ -11,7 +11,7 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 21 / 84 effort units accepted (25%); 9 open, four current-goal DONE.**
+**Current snapshot: 25 / 88 effort units accepted (28.41%); 9 open, five current-goal DONE.**
 This is a scope-delivery estimate, not a musical-quality score. No arbitrary
 per-task percentages or north-star weights apply.
 
@@ -20,10 +20,10 @@ per-task percentages or north-star weights apply.
 | [NS-1](#ns-1) | Preserve portable core independence | 0 | 0 | Baseline invariant; no standalone current task |
 | [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 6 | 6 | 6 / 12 |
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 15 | 0 | 0 / 15 |
-| [NS-4](#ns-4) | Shared instrumental runtime, graph inspection and musical controls | 14 | 7 | 7 / 21 |
+| [NS-4](#ns-4) | Shared instrumental runtime, joint context, graph inspection and musical controls | 14 | 11 | 11 / 25 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
 | [NS-6](#ns-6) | Ordinary Studio generation, meaningful reviews, cancellation and long instrumental sessions | 13 | 8 | 8 / 21 |
-| **Total** | **13 current-goal tasks** | **63** | **21** | **25%** |
+| **Total** | **14 current-goal tasks** | **63** | **25** | **28.41%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -74,9 +74,14 @@ lineage remain unfinished, so accepted NS-3 effort stays zero.
 ### NS-4 — Musical graph and synthesis together
 
 [Runtime](TODO/DONE/NS-4_instrumental-runtime_01.md),
+[joint context](TODO/DONE/NS-4_joint-context_01.md),
 [graph workbench](TODO/NS-4_graph-workbench_01.md) and
 [musical controls](TODO/NS-4_graph-controls_01.md) expose actual time/role domains,
 passes/dependencies, locks/preferences, affect mappings and selective regeneration.
+The joint-context prerequisite is accepted: actual paired harmony/rhythm choices
+feed the pitched graph, then percussion. The controlled six-part motif has
+seventeen passes in three explicit conditional groups. Its Studio editor remains
+part of experimental learning; no recording-style or musical-quality credit follows.
 
 <a id="ns-5"></a>
 ### NS-5 — Music that develops and styles that remain reusable
@@ -106,7 +111,7 @@ The 53 former open tasks are [retired/replaced](TODO/RETIRED/2026-10-29/README.m
 not accepted. All 97 historical DONE records and their evidence remain separate;
 none has the current Goal tag. The former 52.45% weighted outcome-credit ledger is
 [historical](history/MILESTONES-2026-10-29.md), not a baseline in the new formula.
-Current scoped records: 9 open + 4 current DONE; legacy records: 53 retired +
+Current scoped records: 10 open + 4 current DONE; legacy records: 53 retired +
 97 historical DONE (101 total DONE files). No implementation, saved feedback or license is discarded.
 
 100% means all required outcomes in this defined experimental goal are delivered

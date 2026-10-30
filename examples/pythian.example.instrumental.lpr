@@ -38,6 +38,8 @@ uses
   pythian.effects,
   pythian.schedule,
   pythian.percussion,
+  pythian.music.pattern,
+  pythian.pitch.track,
   pythian.wave.stream,
   pythian.wfc.instrumental,
   pythian.wfc.instrumental.starter,
@@ -88,10 +90,15 @@ var
   LDone: Int64;
   LLeft: Double;
   LRight: Double;
+  LPattern: TPitchPattern;
+  LPatternText: String;
+  LPatternFields: TStringList;
+  LArgument: Integer;
+  LValue: Integer;
 begin
-  if (ParamCount < 1) or (ParamCount > 6) then
+  if (ParamCount < 1) or (ParamCount > 7) then
   begin
-    raise EAudio.Create('Usage: pythian.example.instrumental OUTPUT.wav [CELLS [SEED [BPM [TONIC_0_TO_11 [--drums]]]]]');
+    raise EAudio.Create('Usage: pythian.example.instrumental OUTPUT.wav [CELLS [SEED [BPM [TONIC_0_TO_11 [--drums] [--motif=60,?,r,62]]]]]');
   end;
   LOutput := ParamStr(1);
   LCells := 64;
@@ -115,19 +122,53 @@ begin
   begin
     LTonic := StrToInt(ParamStr(5));
   end;
-  if ParamCount = 6 then
+  LPattern := nil;
+  LPatternText := '';
+  for LArgument := 6 to ParamCount do
   begin
-    if ParamStr(6) <> '--drums' then
+    if ParamStr(LArgument) = '--drums' then
+      LWithDrums := True
+    else if Copy(ParamStr(LArgument), 1, 8) = '--motif=' then
     begin
-      raise EAudio.Create('Optional sixth argument is --drums');
-    end;
-    LWithDrums := True;
+      if LPatternText <> '' then raise EAudio.Create('Choose one motif');
+      LPatternText := Copy(ParamStr(LArgument), 9, Length(ParamStr(LArgument)));
+      LPatternFields := TStringList.Create;
+      try
+        LPatternFields.StrictDelimiter := True;
+        LPatternFields.Delimiter := ',';
+        LPatternFields.DelimitedText := LPatternText;
+        if (LPatternFields.Count < 1) or (LPatternFields.Count > MaximumPitchPatternCells) then
+          raise EAudio.Create('Motif requires 1..256 eighth-note cells');
+        SetLength(LPattern, LPatternFields.Count);
+        for LIndex := 0 to High(LPattern) do
+        begin
+          LPattern[LIndex] := Default(TPitchPatternCell);
+          LPattern[LIndex].Kind := pskUnknown;
+          LPattern[LIndex].Note := -1;
+          if LPatternFields[LIndex] = 'r' then
+            LPattern[LIndex].Kind := pskSilence
+          else if LPatternFields[LIndex] <> '?' then
+          begin
+            if not TryStrToInt(LPatternFields[LIndex], LValue) then
+              raise EAudio.Create('Motif cells are MIDI notes, r for rest, or ? for unknown');
+            LPattern[LIndex].Kind := pskPitch;
+            LPattern[LIndex].Note := LValue;
+            LPattern[LIndex].Velocity := 80;
+            LPattern[LIndex].Attack := True;
+          end;
+        end;
+        ValidatePitchPattern(LPattern);
+      finally
+        LPatternFields.Free;
+      end;
+    end
+    else raise EAudio.Create('Optional arguments are --drums and --motif=...');
   end;
   if (LCells < 1) or (LCells > 1024) or (LTempo < 20) or (LTempo > 300) then
   begin
     raise EAudio.Create('Starter supports 1..1024 cells and 20..300 BPM');
   end;
-  LStarter := TInstrumentalStarter.Create(LTonic);
+  LStarter := TInstrumentalStarter.Create(LTonic, False, LPattern, 2);
   LPlan := nil;
   LGraph := nil;
   LPlayer := nil;
@@ -147,6 +188,8 @@ begin
     LOptions.EffectTailFrames := Int64(LOptions.SampleRate) * 3;
     LOptions.MaterialOrigin :=
       'Authored harmony/rhythm guide and two symbolic training phrases; WFC chooses pitched parts; no WAV learning';
+    if Length(LPattern) > 0 then
+      LOptions.MaterialOrigin := 'Operator-declared repeatable lead motif; unknowns split examples; four authored motif repeats with authored accompaniment; joint context WFC; no WAV learning';
     LDrums := nil;
     if LWithDrums then
     begin
@@ -155,7 +198,8 @@ begin
         '; authored percussion models and explicit rhythm projections';
     end;
     if not TryCreateInstrumentalPlan(LStarter.Config, LStarter.CopyRoles,
-      LOptions, LStarter.GuideMasks(LCells), nil, LPlan, LReport, nil, LDrums) then
+      LOptions, LStarter.GuideMasks(LCells), nil, LPlan, LReport, nil, LDrums,
+      LStarter.ContextModel) then
     begin
       raise EAudio.Create(LReport.Detail);
     end;
@@ -164,6 +208,12 @@ begin
     LDocument.Add('experimental', True);
     LDocument.Add('seed', Int64(LSeed));
     LDocument.Add('percussion_seed', Int64(LOptions.PercussionSeed));
+    if Length(LPattern) > 0 then
+    begin
+      LDocument.Add('operator_motif', LPatternText);
+      LDocument.Add('context_seed', Int64(LReport.ContextSolve.Seed));
+      LDocument.Add('group_semantics', 'Conditional context, pitched roles and optional percussion; no cross-group backtracking');
+    end;
     LDocument.Add('tonic_pitch_class', LTonic);
     LDocument.Add('tempo_microseconds', LOptions.Tempos[0].MicrosecondsPerQuarter);
     LDocument.Add('ticks_per_quarter', LOptions.Session.TicksPerQuarter);
@@ -298,7 +348,10 @@ begin
     LFile.CopyFrom(LMetadata, 0);
     WriteLn('Instrumental synthesis: ', LPlan.RoleCount, ' roles; ', LCells, ' cells; ',
       Length(LPasses), ' actual passes; ', LPlan.FrameCount, ' stereo frames.');
-    WriteLn('Experimental authored starter; no training-mix grains or source WAVs.');
+    if Length(LPattern) > 0 then
+      WriteLn('Experimental operator motif and authored accompaniment; no source WAVs.')
+    else
+      WriteLn('Experimental authored starter; no training-mix grains or source WAVs.');
   finally
     LMetadata.Free;
     LWriter.Free;

@@ -42,6 +42,7 @@ uses
   pythian.wfc.layers,
   pythian.wfc.providers,
   pythian.wfc.percussion,
+  pythian.wfc.musical.context,
   wfc,
   wfc_model,
   wfc_sequence,
@@ -66,6 +67,7 @@ type
     PercussionSeed: TGraphSeed;
   end;
   TInstrumentalReport = record
+    ContextSolve: TGraphNegotiationReport;
     Solve: TGraphNegotiationReport;
     Proof: TWfcMusicVoicesValidationReport;
     PercussionSolve: TGraphNegotiationReport;
@@ -81,6 +83,7 @@ type
   TInstrumentalPlan = class
   private
     FSession: TNamedVoiceSession;
+    FContext: TMusicalContextPlan;
     FDrums: TPercussionPlan;
     FOptions: TInstrumentalOptions;
     FRoles: TInstrumentalRoles;
@@ -139,7 +142,8 @@ function TryCreateInstrumentalPlan(const AConfig: TWfcMusicVoicesGraphConfig;
   const AMasks: TVoiceMasks; const APreferences: TVoicePreferences;
   var APlan: TInstrumentalPlan; out AReport: TInstrumentalReport;
   const AProgress: TWorkProgressCallback = nil;
-  const APercussion: TPercussionDefinitions = nil): Boolean;
+  const APercussion: TPercussionDefinitions = nil;
+  const AMusicalContext: TWfcSequenceModel = nil): Boolean;
 
 implementation
 
@@ -166,6 +170,7 @@ destructor TInstrumentalPlan.Destroy;
 begin
   FNotes.Free;
   FSession.Free;
+  FContext.Free;
   FDrums.Free;
   inherited Destroy;
 end;
@@ -202,11 +207,33 @@ end;
 function TInstrumentalPlan.CopyGraph: TVoiceGraphPasses;
 var
   LDrums: TLayerGraphPasses;
+  LPitched: TLayerGraphPasses;
   LOffset: Integer;
+  LContextCount: Integer;
   LIndex: Integer;
   LDependency: Integer;
 begin
   Result := FSession.CopyGraph;
+  LContextCount := 0;
+  if FContext <> nil then
+  begin
+    LPitched := Result;
+    Result := FContext.CopyGraph;
+    LContextCount := Length(Result);
+    SetLength(Result, LContextCount + Length(LPitched));
+    for LIndex := 0 to High(LPitched) do
+    begin
+      Result[LContextCount + LIndex] := LPitched[LIndex];
+      Result[LContextCount + LIndex].GroupIndex := 1;
+      for LDependency := 0 to High(LPitched[LIndex].Dependencies) do
+        Result[LContextCount + LIndex].Dependencies[LDependency] :=
+          LContextCount + LPitched[LIndex].Dependencies[LDependency];
+    end;
+    { These are real pinned inputs from the preceding context graph,
+      not dependencies that imply cross-group solver backtracking. }
+    Result[LContextCount].InputSourcePassIndex := 0;
+    Result[LContextCount + 1].InputSourcePassIndex := 0;
+  end;
   if FDrums <> nil then
   begin
     LDrums := FDrums.CopyGraph;
@@ -215,19 +242,21 @@ begin
     for LIndex := 0 to High(LDrums) do
     begin
       Result[LOffset + LIndex] := LDrums[LIndex];
-      Result[LOffset + LIndex].GroupIndex := 1;
+      Result[LOffset + LIndex].GroupIndex := 1 + LContextCount;
       for LDependency := 0 to High(LDrums[LIndex].Dependencies) do
       begin
         Result[LOffset + LIndex].Dependencies[LDependency] :=
           LOffset + LDrums[LIndex].Dependencies[LDependency];
       end;
     end;
-    Result[LOffset].InputSourcePassIndex := 1;
+    Result[LOffset].InputSourcePassIndex := LContextCount + 1;
   end;
 end;
 
 function TInstrumentalPlan.CopyProvider(const AName: String): TStyleProviderDescription;
 begin
+  if (FContext <> nil) and (AName = MusicalContextPassName) then
+    Exit(FContext.CopyProvider);
   Result := FSession.CopyProvider(AName);
 end;
 
@@ -281,13 +310,21 @@ var
   LMusic: TWfcMusicVoicesGenerated;
   LDrums: TLayerSequences;
   LOffset: Integer;
+  LMusicIndex: Integer;
 begin
-  if (AIndex >= 0) and (AIndex < FSession.ProviderCount) then
+  LMusicIndex := AIndex;
+  if FContext <> nil then
+  begin
+    if AIndex = 0 then Exit(FContext.CopyTokens);
+    Dec(LMusicIndex);
+  end;
+  if (LMusicIndex >= 0) and (LMusicIndex < FSession.ProviderCount) then
   begin
     LMusic := FSession.CopyAccepted;
-    Exit(Copy(LMusic.Layers[AIndex].Tokens));
+    Exit(Copy(LMusic.Layers[LMusicIndex].Tokens));
   end;
   LOffset := FSession.ProviderCount + FSession.ProofPassCount;
+  if FContext <> nil then Inc(LOffset);
   if (FDrums <> nil) and (AIndex >= LOffset) and
     (AIndex < LOffset + FDrums.PartCount + 1) then
   begin
@@ -302,13 +339,21 @@ var
   LMusic: TWfcMusicVoicesGenerated;
   LDrums: TLayerSequences;
   LOffset: Integer;
+  LMusicIndex: Integer;
 begin
-  if (AIndex >= 0) and (AIndex < FSession.ProviderCount) then
+  LMusicIndex := AIndex;
+  if FContext <> nil then
+  begin
+    if AIndex = 0 then Exit(FContext.CopyStates);
+    Dec(LMusicIndex);
+  end;
+  if (LMusicIndex >= 0) and (LMusicIndex < FSession.ProviderCount) then
   begin
     LMusic := FSession.CopyAccepted;
-    Exit(Copy(LMusic.Layers[AIndex].StateIndices));
+    Exit(Copy(LMusic.Layers[LMusicIndex].StateIndices));
   end;
   LOffset := FSession.ProviderCount + FSession.ProofPassCount;
+  if FContext <> nil then Inc(LOffset);
   if (FDrums <> nil) and (AIndex >= LOffset) and
     (AIndex < LOffset + FDrums.PartCount + 1) then
   begin
@@ -320,6 +365,8 @@ end;
 
 function TInstrumentalPlan.CopyModel(const AName: String): TWfcSequenceModel;
 begin
+  if (FContext <> nil) and (AName = MusicalContextPassName) then
+    Exit(FContext.CopyModel);
   if IsDrumProvider(AName) then
   begin
     Result := FDrums.CopyModel(AName);
@@ -332,11 +379,15 @@ end;
 
 function TInstrumentalPlan.CopyConstraints(const AName: String): TWfcSequenceTokenConstraints;
 begin
+  if (FContext <> nil) and (AName = MusicalContextPassName) then
+    Exit(FContext.CopyConstraints);
   Result := FSession.CopyConstraints(AName);
 end;
 
 function TInstrumentalPlan.CopyPreferences(const AName: String): TLayerTokenPreferences;
 begin
+  if (FContext <> nil) and (AName = MusicalContextPassName) then
+    Exit(FContext.CopyPreferences);
   Result := FSession.CopyPreferences(AName);
 end;
 
@@ -419,7 +470,8 @@ function TryCreateInstrumentalPlan(const AConfig: TWfcMusicVoicesGraphConfig;
   const AMasks: TVoiceMasks; const APreferences: TVoicePreferences;
   var APlan: TInstrumentalPlan; out AReport: TInstrumentalReport;
   const AProgress: TWorkProgressCallback;
-  const APercussion: TPercussionDefinitions): Boolean;
+  const APercussion: TPercussionDefinitions;
+  const AMusicalContext: TWfcSequenceModel): Boolean;
 var
   LCandidate: TInstrumentalPlan;
   LPrevious: TInstrumentalPlan;
@@ -439,6 +491,7 @@ var
   LRhythmModel: TWfcSequenceModel;
   LDrumPart: TPercussionPart;
   LOther: Integer;
+  LBoundMasks: TVoiceMasks;
 begin
   Result := False;
   AReport := Default(TInstrumentalReport);
@@ -521,11 +574,29 @@ begin
           APreferences[LIndex], AProgress);
       end;
     end;
+    if AMusicalContext <> nil then
+    begin
+      for LRole := 0 to High(LNames) do
+        if LNames[LRole] = MusicalContextPassName then
+          raise EAudio.Create('The musical-context provider name is reserved for joint context');
+      LCandidate.FContext := TMusicalContextPlan.Create(AMusicalContext, LNames,
+        AOptions.Session, AMasks, APreferences, AProgress);
+      if not LCandidate.FContext.TryGenerate(AReport.ContextSolve, AProgress) then
+      begin
+        AReport.FailedPass := MusicalContextPassName;
+        AReport.Detail := 'Joint harmonic/rhythmic context conflicts with the requested material';
+        Exit;
+      end;
+      LBoundMasks := LCandidate.FContext.BindMasks(AMasks);
+      for LIndex := 0 to 1 do
+        LCandidate.FSession.SetConstraints(LCandidate.FSession.ProviderName(LIndex),
+          LBoundMasks[LIndex], AProgress);
+    end;
     if not LCandidate.FSession.TryGenerate(LGenerated, AReport.Solve, AReport.Proof,
       AProgress) then
     begin
       LIndex := AReport.Solve.FinalReport.FailedPassIndex;
-      LPasses := LCandidate.CopyGraph;
+      LPasses := LCandidate.FSession.CopyGraph;
       if (LIndex >= 0) and (LIndex < Length(LPasses)) then
       begin
         AReport.FailedPass := LPasses[LIndex].Name;
