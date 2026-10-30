@@ -138,7 +138,7 @@ library units; its report/profile/WAV match the workspace artifacts exactly.
 Evidence is under `build/clock-context-adoption/`. This closes the explicit
 reconstruction-to-context connection, while automatic arrangement/rate decisions,
 change timing, endpoint coverage, local-key calibration and independent musical
-acceptance remain in [PULSE/CONTEXT](MILESTONES.md#wav-02-context).
+acceptance remain in [PULSE/CONTEXT](history/MILESTONES-2026-10-29.md#wav-02-context).
 
 ## Global context admission
 
@@ -474,7 +474,7 @@ all focused runs report zero unfreed blocks. Commands and exact outputs remain
 under ignored `build/context-key-criterion4/`.
 
 This verifies the source-frame, musical-time and manual-selection provenance
-contract of [NS-3_context_01 criterion 4](TODO/NS-3_context_01.md). Rank 18
+contract of [NS-3_context_01 criterion 4](TODO/RETIRED/2026-10-29/NS-3_context_01.md). Rank 18
 is intentionally a poor musical choice: successful admission does not make it
 an inferred key. Automatic choice, calibrated unknowns and independent local-key
 accuracy remain open.

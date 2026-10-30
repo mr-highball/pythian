@@ -287,6 +287,6 @@ Remove or replace completed prompts in the private queue after checking the
 saved decision. The catalog can be explored without a request, but those
 recordings are not themselves assignments.
 The [editor/queue controls](TODO/DONE/NS-6_authoring_01.md) are accepted;
-[physical LAN and full operator use](TODO/NS-6_authoring_02.md) remain open.
+[physical LAN and full operator use](TODO/RETIRED/2026-10-29/NS-6_authoring_02.md) remain open.
 Store a real operator catalog
 outside `build/`; the catalog under `build/label-catalog/` is a test fixture.

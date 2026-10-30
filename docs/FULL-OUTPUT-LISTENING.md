@@ -188,7 +188,7 @@ Saved live excerpts retain their actual session offset and original selections.
 They ask one continuity question and never acquire an unrelated finite Before
 example simply because seed and length match. This is acoustic reconstruction,
 without a claim of learned notes, sustained music or style quality.
-The [long-playback integration](TODO/NS-5_continuity_05.md) passes native and
+The [long-playback integration](TODO/RETIRED/2026-10-29/NS-5_continuity_05.md) passes native and
 pas2js/DOM mechanics; actual desktop/narrow playback remains an open gate.
 When a completed standard audition has the exact training/model identity, seed,
 duration and audio geometry, Studio can publish a Before/After continuity

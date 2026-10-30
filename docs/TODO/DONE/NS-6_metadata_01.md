@@ -15,7 +15,7 @@ North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 addit
 Accepted 2026-10-27 at `c64bf7f`: checked native and actual pas2js qualification,
 prior-consumer byte parity and published Ubuntu integration/extracted consumers
 pass. Big Boss verified solo; CI is not independent review. Provider/context
-and batch observability obligations remain in [task04](../NS-6_observability_04.md).
+and batch observability obligations remain in [task04](../RETIRED/2026-10-29/NS-6_observability_04.md).
 Big Boss owns implementation and solo verification. Deliverable: one portable
 Unicode scalar validator/comparator with explicit byte/scalar policy, actual
 corpus/provider adoption, and primary binary-field adoption in both context

@@ -114,7 +114,7 @@ folder defaults to `local-audio/collections/`; `PYTHIAN_AUDIO_LIBRARY` can point
 to another private root containing `collections/`. No access-key form is needed in
 this selected private-LAN mode; Host/Origin and same-origin write-session checks
 still apply. Read-only host HTTP success is not a physical-phone play/Save verdict;
-[authoring_02](TODO/NS-6_authoring_02.md) owns that acceptance.
+[authoring_02](TODO/RETIRED/2026-10-29/NS-6_authoring_02.md) owns that acceptance.
 
 After adding collection folders, use Studio's **Refresh library** action.
 The metadata-first implementation discovers names and bounded WAV headers,
@@ -125,7 +125,7 @@ only that recording. Discovery has a ten-minute worker budget and selected
 preparation retains two hours, with progress, Cancel and retry. Keep enough disk
 space for new selected imports. The retained legacy full-refresh operation
 hashes all originals; the deployed Studio review build uses metadata discovery.
-Remaining consumer checks are tracked in [studio_11](TODO/NS-6_studio_11.md).
+Remaining consumer checks are tracked in [studio_11](TODO/RETIRED/2026-10-29/NS-6_studio_11.md).
 
 The same service also listens at `http://127.0.0.1:18097/studio.html` on the host
 computer, providing the browser context needed for microphone capture. A phone
@@ -224,7 +224,7 @@ Certificate installation is an optional route to warning-free HTTPS:
 A loaded page alone does not establish microphone support. If the browser still
 blocks capture after the chosen exception, use certificate installation. Only an
 actual phone recording, Stop and audible preview close
-[studio_10](TODO/NS-6_studio_10.md)'s physical-device criterion. A generated QA
+[studio_10](TODO/RETIRED/2026-10-29/NS-6_studio_10.md)'s physical-device criterion. A generated QA
 microphone proves the capture lifecycle, not physical audibility.
 
 HTTP and HTTPS enforce their actual scheme in Host/Origin checks. HTTPS media

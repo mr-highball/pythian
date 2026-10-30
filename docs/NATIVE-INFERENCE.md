@@ -23,7 +23,7 @@ acquire or include these optional assets.
 This Win64 qualification does not narrow the final native delivery matrix. Any
 producer required by the final accepted workflow must also run on every target
 declared by the [consumer contract](CONSUMER-CONTRACT.md), under the existing
-[final-workflow delivery task](TODO/NS-6_delivery_03.md). This adapter alone does
+[final-workflow delivery task](TODO/RETIRED/2026-10-29/NS-6_delivery_03.md). This adapter alone does
 not close that delivery requirement.
 
 Each observation contains an exact 16-kHz source-clock center, input AC RMS and

@@ -19,7 +19,7 @@ style has been learned.
 North star: NS-4. Outcome owner: WAV-04-INTEGRATION, core WFC composition.
 Historical allocation: 1 NS-4 goal percentage point (0.15 overall points),
 transferred from the unearned allocation of
-[NS-4_integration_01](../NS-4_integration_01.md). The recorded integration task
+[NS-4_integration_01](../RETIRED/2026-10-29/NS-4_integration_01.md). The recorded integration task
 retains its full acceptance criteria and 1 NS-4 point. At allocation, the two
 tasks held 2 open NS-4 points (0.30 overall); accepting this task leaves one.
 Credit is earned only when every acceptance criterion and the task-flow

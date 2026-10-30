@@ -110,7 +110,7 @@ OUTPUT.json`. The directory contains the previously prepared
 `PSBassoon_C2_v1_rr1.wav` and `PSBassoon_A2_v1_rr1.wav`; reports retain their
 source hashes and exact window coordinates. All runs are terminal.
 
-This clears a timing prerequisite for [WAV-03-TIMBRE](MILESTONES.md#wav-03-timbre),
+This clears a timing prerequisite for [WAV-03-TIMBRE](history/MILESTONES-2026-10-29.md#wav-03-timbre),
 not changing-pitch style admission. Automatic use still needs register ambiguity
 handling, declared event ownership and saved per-knot measurement policy; the
 current saved trajectory learner continues to require a declared fixed frequency.

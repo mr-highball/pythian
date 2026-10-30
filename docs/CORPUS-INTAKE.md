@@ -166,7 +166,7 @@ nonempty annotations use `repeated_section_identity:
 "caller_asserted_not_verified"`. No annotated identity becomes acoustic truth.
 Training ranges, multiplicity, admission, analysis, WFC model and playback
 preferences are unchanged. This closes the declaration-only AC1 scope in
-[vocabulary_01](TODO/NS-5_vocabulary_01.md); representative musical selection,
+[vocabulary_01](TODO/RETIRED/2026-10-29/NS-5_vocabulary_01.md); representative musical selection,
 normalization and quality comparisons remain open. Studio has no new section
 annotation UI from this component.
 

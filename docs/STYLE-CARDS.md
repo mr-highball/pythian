@@ -1,6 +1,6 @@
 # Style references and comparator specification
 
-[Corpus protocol](CORPUS-EVALUATION.md) · [Specification task](TODO/NS-5_evaluation_01.md) ·
+[Corpus protocol](CORPUS-EVALUATION.md) · [Specification task](TODO/RETIRED/2026-10-29/NS-5_evaluation_01.md) ·
 [Musical evaluation](MUSICAL-EVALUATION.md) · [Milestones](MILESTONES.md#ns-5)
 
 ## Status and reference requirements
@@ -103,9 +103,9 @@ The task earns no credit until all criteria pass. Final developer logs are under
 ignored `build/style-card-contract/`; source investigations stopped below remain
 stopped.
 
-Current scope (2026-09-29): [evaluation_01](TODO/NS-5_evaluation_01.md) owns the
+Current scope (2026-09-29): [evaluation_01](TODO/RETIRED/2026-10-29/NS-5_evaluation_01.md) owns the
 reusable Pascal style-card/comparator contract and a complete bounded
-note/duration instance. [evaluation_04](TODO/NS-5_evaluation_04.md) owns the full
+note/duration instance. [evaluation_04](TODO/RETIRED/2026-10-29/NS-5_evaluation_04.md) owns the full
 six-dimension musical grounding and gates below. A card is supplied by the
 caller; the three named preferences are internal examples. All required final
 dimensions remain pending until independently grounded and prospectively frozen.
@@ -491,7 +491,7 @@ musical providers fixed; compare musical relationships with rendering fixed.
 ### Bounded note-duration execution
 
 The maintained companion execution component of
-[evaluation_01](TODO/NS-5_evaluation_01.md) uses the additional dimension tag
+[evaluation_01](TODO/RETIRED/2026-10-29/NS-5_evaluation_01.md) uses the additional dimension tag
 `note_duration_order_v1`. It does not replace any of the six full-provider
 dimensions. Its single-recording candidate is its own single-recording baseline.
 The other cases are a within-recording shuffled/relearned model and a declared
@@ -634,7 +634,7 @@ No metric substitutes for that listening verdict.
 Use seed 731 for paired **15-second** key, BPM, rhythm, bass, voice and sound edits.
 Verify intended changed and preserved WFC states and audio. Save/reload, blend and
 blend again with predeclared per-provider weights and complete inherited ancestry.
-The later [comparison implementation task](TODO/NS-5_evaluation_02.md) owns the
+The later [comparison implementation task](TODO/RETIRED/2026-10-29/NS-5_evaluation_02.md) owns the
 full operator packet; this specification does not claim it has been executed.
 
 ## Remaining specification work
@@ -692,6 +692,6 @@ then freeze the packet before evaluation. Existing evidence supports acoustic
 level and external note-register/pitch-class distribution controls. Genre labels,
 complete musical annotations, calibrated trait
 thresholds and complete provider-specific controls remain unresolved in
-[NS-5_evaluation_04](TODO/NS-5_evaluation_04.md), after the reusable bounded
-contract in [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md). The 2026-09-29
+[NS-5_evaluation_04](TODO/RETIRED/2026-10-29/NS-5_evaluation_04.md), after the reusable bounded
+contract in [NS-5_evaluation_01](TODO/RETIRED/2026-10-29/NS-5_evaluation_01.md). The 2026-09-29
 split preserves their original combined four-point allocation.

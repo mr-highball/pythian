@@ -59,7 +59,7 @@ into unrelated algorithm work; distinct remaining gaps get explicit linked tasks
   review distinguishes instrumented, bounded streaming and still-silent work.
   [Catalog import — DONE](NS-6_observability_02.md),
   [offline render/separation](NS-6_observability_03.md) and
-  [retained corpus/style work](../NS-6_observability_04.md) remain required.
+  [retained corpus/style work](../RETIRED/2026-10-29/NS-6_observability_04.md) remain required.
 - AC2: `pythian.progress` supplies optional shared records with actual units and
   pass counts. Hash, analysis, resample, pitch, onset/beat, palette and corpus
   consumers forward the same callback; raise-to-abort retains resource cleanup.

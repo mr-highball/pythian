@@ -43,7 +43,7 @@ those relationships through selective blending and further blending.
 The bounded caller codec/provider contract is accepted under
 [providers_01](TODO/DONE/NS-4_providers_01.md). Its generic traits retain explicit
 meaning, clock and admission limits; named voices keep their fixed schema.
-[Recorded integration](TODO/NS-4_integration_01.md) owns the complete evidence ->
+[Recorded integration](TODO/RETIRED/2026-10-29/NS-4_integration_01.md) owns the complete evidence ->
 WFC -> synthesis path and unknown propagation. [Minimal delivery](TODO/DONE/NS-6_delivery_06.md)
 must demonstrate both an isolated core and the opted-in companion closure;
 core independence cannot declare the full product complete without WFC.

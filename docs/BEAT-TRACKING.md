@@ -23,7 +23,7 @@ policy.
 ## Bounded candidate qualification protocol — 2026-09-23
 
 This freezes the candidate-only development challenge for
-[NS-3_tempo_04](TODO/NS-3_tempo_04.md) before running a new retention policy.
+[NS-3_tempo_04](TODO/RETIRED/2026-10-29/NS-3_tempo_04.md) before running a new retention policy.
 Use only the ARTBeaT (Rico Rosenbusch, 2024, CC BY 4.0) original WAV and supplied
 beat CSV pairs below. IDs 02/05/19 are development probes; IDs 01/03/04 form a
 recording-disjoint challenge already exposed to earlier timing investigations.
@@ -494,8 +494,8 @@ All processes are terminal under `build/beat-model-candidates/`. Policy, native
 consumer/auditor, complete predictions, unchanged reference scoring, hashes and
 failure diagnostics are retained. No maintained unit, package, format, runtime
 dependency, held-out corpus or listening verdict changes. Network export fidelity
-and provider calibration remain [validation prerequisites](MILESTONES.md#wav-validation).
-The [pulse backlog](MILESTONES.md#wav-02-pulse) now records the demonstrated common
+and provider calibration remain [validation prerequisites](history/MILESTONES-2026-10-29.md#wav-validation).
+The [pulse backlog](history/MILESTONES-2026-10-29.md#wav-02-pulse) now records the demonstrated common
 error and the automatic gains to preserve; this comparison earns no completion
 points.
 
@@ -590,8 +590,8 @@ inventory does not list ARTBeaT, but this does not independently prove training
 disjointness of every source. These inputs were already development data here.
 Supported-case calibration, export fidelity, independent recording acceptance,
 practical native deployment and maintained adoption remain under
-[WAV-VALIDATION](MILESTONES.md#wav-validation) and
-[WAV-02-PULSE](MILESTONES.md#wav-02-pulse). The comparison earns no completion
+[WAV-VALIDATION](history/MILESTONES-2026-10-29.md#wav-validation) and
+[WAV-02-PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse). The comparison earns no completion
 points and supplies no synthesis/style listening verdict.
 
 ## Window and path contract
@@ -926,8 +926,8 @@ be attributed to missing attacks.
   Zero seam warnings coexist with 22 missed beats at 30 ms. Alignment improves
   timing on selected attacks but cannot repair the missing metrical level.
 
-These observations gate [WAV-02-PULSE](MILESTONES.md#wav-02-pulse), feeding
-[WAV-02-CONTEXT](MILESTONES.md#wav-02-context). Next investigate candidate
+These observations gate [WAV-02-PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse), feeding
+[WAV-02-CONTEXT](history/MILESTONES-2026-10-29.md#wav-02-context). Next investigate candidate
 retention under subdivision-rich evidence and explicit beat-level alternatives,
 then evaluate path selection across actual tempo changes. Preserve unknowns and
 manual admission; no automatic confidence rule follows from seam counts. Local
@@ -964,7 +964,7 @@ fixture count or dependency changed.
 
 ## Subdivision and phase-concentration experiment — 2026-09-19
 
-The next [WAV-02-PULSE](MILESTONES.md#wav-02-pulse) development experiment tests
+The next [WAV-02-PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse) development experiment tests
 candidate recovery without changing maintained defaults. The existing fit uses
 one weighted circular resultant. Equal attacks at opposing phases cancel that
 resultant; equal subdivisions can therefore suppress a musically usable slower
@@ -1094,7 +1094,7 @@ and 16-million per-fit ceilings are unchanged. This clears the earlier
 near-ceiling condition for these short examples; it does not establish arbitrary
 excerpt-length or many-hour tempo-analysis capacity.
 
-For [WAV-02-PULSE](MILESTONES.md#wav-02-pulse), next distinguish phase loss before
+For [WAV-02-PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse), next distinguish phase loss before
 and after the eight-candidate truncation at the remaining late-window failures,
 then address accent/beat-level evidence for the abrupt change. The prototype's
 local-peak filter compares phase ranks at neighboring trial tempos; rank is not
@@ -1156,7 +1156,7 @@ at the local-peak stage must be checked against full-track timing and sustained
 behavior before treating them as defects. Phase rank across neighboring trial
 tempos remains an identity concern, not a failure proven by that local metric.
 
-The next [WAV-02-PULSE](MILESTONES.md#wav-02-pulse) work is bounded candidate
+The next [WAV-02-PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse) work is bounded candidate
 selection that preserves distinct phase families, alongside explicit beat-level
 and abrupt-change reasoning. Compare any change with the existing full-track
 protocol and controlled ambiguity cases. These investigations can proceed
@@ -1227,11 +1227,11 @@ explicit accent/metrical evidence or uncertainty that prevents unsupported
 admission, coordinated with abrupt-change handling. Compare against these fixed
 development cases and controls before freezing policy for separate recordings.
 
-For [WAV-02-PULSE](MILESTONES.md#wav-02-pulse), phase retention has a promising
+For [WAV-02-PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse), phase retention has a promising
 development result; beat-level selection and alignment remain open acceptance
 constraints. These gate automatic tempo in
-[WAV-02-CONTEXT](MILESTONES.md#wav-02-context), which feeds
-[WAV-04-INTEGRATION](MILESTONES.md#wav-04-integration). Manual admission, local key,
+[WAV-02-CONTEXT](history/MILESTONES-2026-10-29.md#wav-02-context), which feeds
+[WAV-04-INTEGRATION](history/MILESTONES-2026-10-29.md#wav-04-integration). Manual admission, local key,
 phrase, corpus and fundamentals work remain independently runnable. Clear the
 pulse gate with declared timing/beat-level criteria, explicit measurement
 semantics, bounded resources and frozen-policy evaluation on separate recordings.
@@ -1291,14 +1291,14 @@ hash-bound to the fixed native evaluator; no new held-out source was used.
 
 Reject this unconditional accent penalty as a replacement. Do not tune it against
 these three WAVs or infer that all accent evidence is useless. The next
-[WAV-02-PULSE](MILESTONES.md#wav-02-pulse) result needs to separate pulse fit,
+[WAV-02-PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse) result needs to separate pulse fit,
 metrical interpretation and evidence sufficiency. Investigate independent
 band/part evidence around the change and retain unresolved level alternatives
 when observations cannot distinguish them. Clearing criteria must preserve real
 fast accented beats and acceleration as well as reject false subdivisions;
 insufficient evidence must not silently reward a slower tempo. These criteria
-feed automatic [context admission](MILESTONES.md#wav-02-context), then
-[style integration](MILESTONES.md#wav-04-integration). Existing caller admission
+feed automatic [context admission](history/MILESTONES-2026-10-29.md#wav-02-context), then
+[style integration](history/MILESTONES-2026-10-29.md#wav-04-integration). Existing caller admission
 and unrelated providers/fundamentals remain runnable.
 
 Protocol, isolated Pascal sources, checked FPC 3.2.2 Win64 build/run logs,
@@ -1350,13 +1350,13 @@ original baseline bytes exactly. Maintained beat defaults are unchanged; the
 phase-family prototype's F1 remains 0.9639 / 0.8475 / 0.8974, and no new selection
 accuracy or listening approval is claimed.
 
-For [WAV-02-PULSE](MILESTONES.md#wav-02-pulse), the measurement prerequisite is now
+For [WAV-02-PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse), the measurement prerequisite is now
 available. Next test temporal evidence across bands with explicit metrical
 alternatives and evidence sufficiency, protecting fast accented beats and
 acceleration. Do not choose a winning band or threshold from these three cases.
 Policy freeze and separate-recording acceptance still precede automatic
-[WAV-02-CONTEXT](MILESTONES.md#wav-02-context) and semantic
-[WAV-04-INTEGRATION](MILESTONES.md#wav-04-integration). This adds no percentage
+[WAV-02-CONTEXT](history/MILESTONES-2026-10-29.md#wav-02-context) and semantic
+[WAV-04-INTEGRATION](history/MILESTONES-2026-10-29.md#wav-04-integration). This adds no percentage
 allocation and does not block independent local-key, phrase or fundamentals work.
 
 Ignored artifacts are under `build/band-analysis/`: native probe, per-source band
@@ -1430,8 +1430,8 @@ retain joint band timing or other discriminating context, expose arrangement/
 pattern-change alternatives and preserve unknown outcomes. A similarity threshold
 cannot separate the two constructed continuations. Do not repeat the rejected
 scalar accent penalty or treat recurrence agreement as automatic quarter-note
-admission. This keeps [WAV-02-PULSE](MILESTONES.md#wav-02-pulse) open, supplying
-the remaining requirement to [automatic context](MILESTONES.md#wav-02-context).
+admission. This keeps [WAV-02-PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse) open, supplying
+the remaining requirement to [automatic context](history/MILESTONES-2026-10-29.md#wav-02-context).
 
 ### Verification and retained scope
 
@@ -1555,8 +1555,8 @@ pattern-stability/rate/arrangement/unknown policy and evaluate the resulting ful
 beat path, phase and metrical alternatives. Preserve unchanged fast accents and
 instrument additions as well as real rate changes; do not substitute a blanket
 negative-pair veto. This advances the input representation for
-[WAV-02-PULSE](MILESTONES.md#wav-02-pulse), while native public adoption and
-automatic [context admission](MILESTONES.md#wav-02-context) remain open. Maintained
+[WAV-02-PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse), while native public adoption and
+automatic [context admission](history/MILESTONES-2026-10-29.md#wav-02-context) remain open. Maintained
 whole-track F1 is still **0.9639 / 0.8475 / 0.8974**. No new inference accuracy,
 format, dependency, listening approval or completion credit is claimed.
 
@@ -1638,7 +1638,7 @@ increasing this search capacity has no demonstrated benefit on these inputs.
 ### Decision and next implementation
 
 Keep the maintained path and automatic-admission status unchanged. The next
-[PULSE](MILESTONES.md#wav-02-pulse) work must represent a continuous beat clock and
+[PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse) work must represent a continuous beat clock and
 change timing across windows, and compare actual arrangement-change explanations
 with rate and unknown alternatives. Six-second descriptor relationships should
 constrain their covered intervals without being treated as precise instantaneous
@@ -1768,7 +1768,7 @@ respective source runs. Original policy SHA256:
 Step declaration SHA256:
 `b7e4913cd47251fb77b33b397c8a54c4732651a9dc9d875e85676a0f875b2fb5`.
 
-The next [PULSE](MILESTONES.md#wav-02-pulse) implementation should carry this
+The next [PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse) implementation should carry this
 phase-continuous representation into the smallest useful native boundary for
 selected pulse hypotheses, preserving raw evidence, alternative shape and gaps.
 Joint inference must still resolve arrangement changes, early switch timing,
@@ -1847,7 +1847,7 @@ covered by descriptors, including the two early doubling extras, while retaining
 these ambiguity controls and combined doubling/acceleration gains. Broader
 arrangement transformations, correlated overlapping evidence, endpoint coverage,
 metrical alternatives and frozen independent evaluation remain necessary before
-adopting automatic [pulse/context admission](MILESTONES.md#wav-02-pulse).
+adopting automatic [pulse/context admission](history/MILESTONES-2026-10-29.md#wav-02-pulse).
 
 <a id="switch-localization"></a>
 ## Fixed endpoint templates do not reliably locate the tempo switch — 2026-09-20
@@ -1919,7 +1919,7 @@ Policy SHA256:
 `123af8ffe83128b2f39dbbacccddf7095ae86405e4751f9cbdafb92e01d3da13`.
 
 **Decision:** reject this fixed endpoint-template candidate. Continue
-[WAV-02-PULSE](MILESTONES.md#wav-02-pulse) with evolving band-pattern/clock
+[WAV-02-PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse) with evolving band-pattern/clock
 hypotheses, interval coverage and phase uncertainty. Protect valid raw beats when
 alignment has competing onset explanations. These requirements join the existing
 metrical, endpoint and independent-recording gates; a timing-only or raw-score
@@ -2017,7 +2017,7 @@ new-input protocol SHA256:
 
 The subsequent [public alignment API](#alignment-api) adopts this explicit
 optional policy with unknown decisions, preserved barriers and default replay.
-Automatic [PULSE](MILESTONES.md#wav-02-pulse)
+Automatic [PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse)
 admission still needs evidence distinguishing genuine departures from distractors,
 metrical/part relationships, evolving clocks and useful observed coverage; raw
 fallback accuracy cannot substitute for those outcomes.
@@ -2072,7 +2072,7 @@ recorded in [packaging](PACKAGING.md#current-api-delivery).
 No new musical acceptance or listening verdict follows from adoption. The
 polyrhythmic beat-level failure, genuine isolated timing versus distractors,
 evolving-clock inference, endpoint support and useful observed coverage remain
-in [PULSE](MILESTONES.md#wav-02-pulse).
+in [PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse).
 
 <a id="band-pulse-comparison"></a>
 ## Separate band pulse paths fail musical selection — 2026-09-20
@@ -2183,8 +2183,8 @@ work-bound amendment
 known-rate diagnostic
 `3d0c94261d13a2eb3013357b6509e7647d4392f6351141baf5772cd6127b8d94`.
 Public source attribution remains ARTBeaT by Rico Rosenbusch, CC BY 4.0, with
-the previously retained notices. [PULSE](MILESTONES.md#wav-02-pulse) owns musical
-selection/phase work; [VALIDATION](MILESTONES.md#wav-validation) owns practical
+the previously retained notices. [PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse) owns musical
+selection/phase work; [VALIDATION](history/MILESTONES-2026-10-29.md#wav-validation) owns practical
 observation cost and admission scope. No north-star outcome closes.
 
 <a id="conditional-phase-path"></a>
@@ -2257,8 +2257,8 @@ Accounting policy SHA256:
 path policy:
 `6900c8676b529824f426553568e5d790e68cdbfc34e73955826dde3915c67036`.
 The same ARTBeaT source and retained CC BY 4.0 attribution apply. Musical
-acceptance remains under [PULSE](MILESTONES.md#wav-02-pulse) and
-[VALIDATION](MILESTONES.md#wav-validation).
+acceptance remains under [PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse) and
+[VALIDATION](history/MILESTONES-2026-10-29.md#wav-validation).
 
 ## Maintained phase-family measurement — 2026-09-19
 
@@ -2297,7 +2297,7 @@ extras. The lab now checks reference-grid availability for constant-clock cases;
 it continues to publish every candidate and the wrong first-ranked result.
 Adoption improves the pulse alternatives/local path; it does not establish
 correct fixed-grid rank-zero musical selection. This tradeoff remains a clearing
-constraint for [WAV-02-PULSE](MILESTONES.md#wav-02-pulse).
+constraint for [WAV-02-PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse).
 
 Stable Win64 also verifies the real companion path: explicit admission of 24
 tracked source pulses saves a 46-cell context profile; reloading it drives WFC
@@ -2308,8 +2308,8 @@ consumer rebuilds with the current measurement fields.
 
 The next work remains temporal band evidence, explicit metrical alternatives,
 alignment and uncertainty. Correct candidate availability alone does not clear
-automatic [WAV-02-CONTEXT](MILESTONES.md#wav-02-context), hence semantic
-[WAV-04-INTEGRATION](MILESTONES.md#wav-04-integration). Local-key, phrase, corpus
+automatic [WAV-02-CONTEXT](history/MILESTONES-2026-10-29.md#wav-02-context), hence semantic
+[WAV-04-INTEGRATION](history/MILESTONES-2026-10-29.md#wav-04-integration). Local-key, phrase, corpus
 and fundamentals work remains independently ready. Delivery must verify the new
 source checkpoint; earlier packages cannot establish its delivery acceptance.
 

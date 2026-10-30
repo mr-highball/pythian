@@ -17,10 +17,10 @@ audio or that the resulting music passes a listening test.
 
 North star: NS-3. Outcome owner: WAV-03-PHRASES. Historical allocation: 1 goal
 percentage point (0.25 overall points), split from the original unearned 5
-points of [NS-3_notes_03](../NS-3_notes_03.md). Credit is earned only when every
+points of [NS-3_notes_03](../RETIRED/2026-10-29/NS-3_notes_03.md). Credit is earned only when every
 acceptance criterion and the task-flow completion requirements pass.
 
-Starting evidence: [phrase task](../NS-3_notes_03.md) · [WFC pitch adapter](../../../adapters/wfc/pythian.wfc.pitch.pas) · [native inference](NS-3_validation_02.md).
+Starting evidence: [phrase task](../RETIRED/2026-10-29/NS-3_notes_03.md) · [WFC pitch adapter](../../../adapters/wfc/pythian.wfc.pitch.pas) · [native inference](NS-3_validation_02.md).
 
 Accepted 2026-09-25: the maintained
 [admitted pitch adapter](../../../adapters/wfc/pythian.wfc.admitted.pitch.pas)
@@ -82,7 +82,7 @@ is inferred from this bridge.
 
 - 2026-09-25 split after the accepted raw multi-recording observation stream
   exposed the missing semantic bridge. This task owns a reference-exercised,
-  reusable learner contract; [NS-3_notes_03](../NS-3_notes_03.md) still owns
+  reusable learner contract; [NS-3_notes_03](../RETIRED/2026-10-29/NS-3_notes_03.md) still owns
   passing automatic note admission on independent recordings and the actual
   inferred-event-to-generation result. No credit follows from defining this
   task or from raw salience alone.

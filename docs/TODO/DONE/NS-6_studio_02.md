@@ -12,7 +12,7 @@ and retained results visible. See the [studio scope](../../OPERATOR-STUDIO.md).
 
 North star: NS-6. Outcome owner: OPERATOR-STUDIO.
 Completion credit: 2 goal percentage points (0.20 overall points).
-Basis: [2026-09-30 operator allocation](../../OPERATOR-STUDIO.md#allocation-and-ownership).
+Basis: [2026-09-30 operator allocation](../../history/OPERATOR-STUDIO-2026-10-29.md#allocation-and-ownership).
 This earns orchestration/usability credit only, not recorded inference, many-hour
 semantic learning, musical style quality or a second WFC-mechanism credit.
 

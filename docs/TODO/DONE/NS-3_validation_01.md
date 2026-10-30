@@ -65,7 +65,7 @@ ancestry, provider calibration, independent recording accuracy and style/listeni
 quality remain their declared owners. Accepted +2 NS-3 points (+0.50 overall),
 moving NS-3 from 30% to 32%. The same integration accepts NS-4_layers_01 (+0.90),
 moving overall completion from 57.0% to 58.4%. Return to the now-unblocked
-[style-card specification](../NS-5_evaluation_01.md) on the originating NS-5 chain.
+[style-card specification](../RETIRED/2026-10-29/NS-5_evaluation_01.md) on the originating NS-5 chain.
 
 **Acceptance Criteria:**
 

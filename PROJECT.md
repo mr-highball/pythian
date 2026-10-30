@@ -1,6 +1,7 @@
 # Pythian project profile
 
-[Home](README.md) · [Standards](vendor/athena/README.md) · [Work](docs/WORK.md)
+[Home](README.md) · [Goal](docs/GOAL.md) · [Assessment](docs/ASSESSMENT-2026-10-29.md) ·
+[Standards](vendor/athena/README.md) · [Work](docs/WORK.md)
 
 Pythian aims to become the standard reusable audio synthesis library for Pascal.
 The root namespace is `pythian`. Common audio behavior is extracted from WFC and
@@ -15,8 +16,8 @@ Phanes, then expanded into a fundamental synthesis and audio learning toolkit.
 | Browser / CGE / WASM | Optional operator Studio, source-label and musical-review application: pas2js UI with native Pascal service; [Studio scope](docs/OPERATOR-STUDIO.md). Portable core has no browser/server dependency. CGE/WASM remain unselected |
 | Build | `./tools/build.ps1` (checked native fixtures and command-line tools) |
 | CI | [Native workflow](.github/workflows/native.yml), Ubuntu 24.04 / FPC 3.2.2; [first remote run passed](https://github.com/mr-highball/pythian/actions/runs/35557200115) at `0ecfe34` |
-| Outputs | `build/<compiler>-<cpu>-<os>/` |
-| Work profile | Single-agent Big Boss implementation and verification; retained team settings are inactive until explicit user authorization; [current roles](docs/TASKFLOW.MD#delegated-validation-and-publication) |
+| Outputs | Portable script default: `build/<compiler>-<cpu>-<os>/`; workstation override: `E:/CodexWork/pythian/` |
+| Work profile | Single-agent Big Boss selection, implementation and verification; no helpers until explicitly changed; [current roles](docs/TASKFLOW.MD#delegated-validation-and-publication) |
 | Publishing | Development snapshots on `hello-pythian` for ongoing review |
 | Branch | `hello-pythian` |
 
@@ -56,7 +57,8 @@ duration and event-corpus consumers. [Build01 — DONE](docs/TODO/DONE/NS-6_wfc-
 and [clone20 — DONE](docs/TODO/DONE/NS-6_observability_20.md) are accepted after
 Pythian e02d77f/CI498 passes integration/extracted consumers in 17m28s, plus
 clean exact Win64 core/full packages and new extracted native64/actual pas2js
-API consumers. Full parent04 and Studio/musical gates remain. No musical credit follows.
+API consumers. The former parent04 audit is retired; current instrumental
+consumers have their own acceptance. No new-goal effort follows.
 
 Previous accepted WFC pin: `c4e7569f277476a3b19941b13176ec39a120a198`, on separate
 branch `codex/pythian-voice-progress`, which remains unmerged. All five upstream
@@ -66,7 +68,7 @@ core/full packages and native/actual pas2js cancellation/replay.
 [Task17 — DONE](docs/TODO/DONE/NS-6_observability_17.md) and linked portability07–10
 record acceptance of generic preparation/proof, graph-class support and primary
 portable codecs/rendering. Retained Pythian publication and operator forwarding
-remain [parent04](docs/TODO/NS-6_observability_04.md); no musical credit follows.
+remain [parent04](docs/TODO/RETIRED/2026-10-29/NS-6_observability_04.md); no musical credit follows.
 
 Previous accepted WFC pin: `f85d7339bf361cacdf20b4764e3281ad91891659`, on separate
 branch `codex/pythian-sequence-capture-progress`. It adds shared read-only capture,
@@ -99,62 +101,45 @@ revision above remains historical provenance. Adopt the shared
 [Task flow standard](vendor/athena/docs/task-flow.md) through the local
 [workflow](docs/TASKFLOW.MD).
 
-## Acceptance
+## Current acceptance and delivery direction
 
-WFC is integral to the intended Pythian composition and synthesis product.
-Core-only builds remain a required independence boundary, while actual WFC
-learning, layered generation and blend/reblend are required full-product
-outcomes. [Architecture ownership](docs/ARCHITECTURE.md#core-and-wfc-symbiosis)
-separates Pythian's audio semantics from generic solver responsibilities.
-Generic WFC defects go to a new branch in its separate checkout under the
-[cross-repository procedure](docs/TASKFLOW.MD#cross-repository-wfc-gaps);
-notify the user of the gap and branch, and never patch this checkout's submodule.
+The [current goal](docs/GOAL.md) selects real instrumental synthesis through the
+breadth of WFC musical modeling, with Studio as the experimental proving ground.
+Reuse implemented instruments, sound sources, effects, musical passes and
+selective regeneration. The first delivery order is shared runtime, explicit
+percussion, then ordinary instrumental Studio jobs. Source-free bass, drums,
+harmony and lead must be audible and changeable there.
 
-The [supported consumer contract](docs/CONSUMER-CONTRACT.md) declares the native
-target matrix, source/API stability, required inputs and independent-delivery
-checklist. Its definition is accepted; final workflow and independent-use results
-remain separate milestone tasks.
+Time, roles, context, pitch/register, rhythm, expression, sound, affect and form
+need explicit mappings to actual graph passes/axes and synthesis controls.
+Display actual execution rather than an arbitrary decorative lattice. Authored,
+MIDI, operator and Experimental WAV proposals may bootstrap generation; the
+operator can correct or bypass uncertain analysis. Raw full-mix grains and a
+single sine preview do not establish this instrumental outcome.
 
-Deliver reusable audio data, codecs, timing, synthesis primitives, composition
-of those primitives, and native operator tooling. Extend learning from symbolic
-MIDI into WAV recordings, retaining measured features and explicit uncertainty;
-connect learned representations to the actual WFC contract and demonstrate
-generation and audible reconstruction. See [architecture](docs/ARCHITECTURE.md)
-for the boundaries and [work](docs/WORK.md) for evidence and outstanding gates.
+The long-term learning unit is any caller-defined style accumulated across
+hours and recordings. Chillwave, stoner rock and lofi are internal examples,
+not required vocabulary. Coarse classification, source comparison, saved musical
+providers and instrument recipes, useful variation and selective blends/reblends
+are in scope. General reliable mixed-recording transcription remains incomplete.
 
-Musical generation must compose small, independently controllable layers through
-WFC passes: foundational context such as key and tempo informs harmony/rhythm
-and higher voice parts. Style learned from one or several songs should become a
-reusable input for generation and subsequent selective merges/blends, retaining
-source evidence and lineage. This is an architectural requirement; core audio
-fundamentals remain the priority. See [layered style](docs/LAYERED-STYLE.md) for
-current support, planned contracts and acceptance criteria.
+WFC is integral to the full product; portable core-only builds remain independent.
+The [ownership boundary](docs/ARCHITECTURE.md#core-and-wfc-symbiosis) keeps musical
+adaptation here. Demonstrated generic WFC gaps use its separate repository/new
+branch with user notice under the [procedure](docs/TASKFLOW.MD#cross-repository-wfc-gaps).
+Never patch this checkout's vendor sources.
 
-The intended learning unit is a caller-defined style corpus, accumulated from
-many hours across recordings. Chillwave, stoner rock and lofi are internal test
-preferences only, never the public style vocabulary. A learned style must remain
-reusable for generation and later blends. Short WAV excerpts are development
-probes; they do not establish genre-level learning. See the
-[long-source requirements](docs/LAYERED-STYLE.md#learning-a-style-from-many-hours).
+Preserve the [consumer contract](docs/CONSUMER-CONTRACT.md), notices, source
+lineage, privacy and failure history. Older independent-reference, fixed corpus,
+benchmark and external-adoption requirements are not prerequisites to auditioning
+an experimental instrumental idea. This does not turn uncertain inference into
+validated knowledge or promise universal style learning.
 
-The initial three names are user preference labels for development tests, not
-claims to define their genres for everyone. They exercise the reusable core;
-none is required for its basic function. Judge a resulting style against the
-user-selected source evidence and declared listening and musical criteria;
-do not infer universal genre traits from a label or compilation description.
-Independent material is still required for an accepted reusable result. Seek
-the user's judgment at substantial listening or design checkpoints, while
-routine timed annotations and engineering checks use other supported evidence.
-The user's listening priority is Pythian-synthesized output. Qualify recorded
-dataset labels from publisher methods, source integrity and independent
-acoustic evidence; do not make routine microclip labeling by the user the
-default path to recorded acceptance.
-
-The [north-star milestones](docs/MILESTONES.md#north-star-assessment) own the
-current completion assessment. The [task catalog](docs/TODO/README.md) owns the
-dependency-linked work items under [TASKFLOW.MD](docs/TASKFLOW.MD). Completed
-implementation is summarized there by goal; detailed evidence stays in the work
-record and topic pages. Reassess the full intended scope when evidence changes it.
+[Task metadata](docs/TODO/README.md) supplies 1–10 relative effort estimates.
+[Milestones](docs/MILESTONES.md) derive progress from accepted effort over current
+total effort, replacing the historical percentage-credit ledger. All criteria
+and prerequisites must pass before a task is DONE; listening feedback guides the
+next musical/model decision. Product implementation remains paused until resumed.
 
 ## Pascal-only inference boundary
 
@@ -170,7 +155,7 @@ private development inputs. Such converters stay outside the repository and do
 not become maintained codecs, product dependencies, analysis or inference paths.
 Pythian consumes the resulting WAV through its Pascal-owned readers and learners.
 Keep durable private audio collections under ignored `local-audio/collections/`;
-keep disposable conversion and experiment artifacts under ignored `build/`.
+keep disposable conversion and experiment artifacts under the dedicated E-drive output root on this workstation.
 Revisit this boundary if a compressed-media importer becomes a supported library
 feature; it would then need Pascal-owned implementation and validation.
 
@@ -185,7 +170,7 @@ passes controlled and source-bound recorded gates for its two NS-3 points.
 The [practical Pascal inference task](docs/TODO/DONE/NS-3_validation_02.md)
 passes maintained WAV execution, long-source cost, supervision and replay for
 its current two NS-3 task points. Preserve notices and exact source lineage.
-Raw pitch or salience observations are not admitted
+Experimental observations may be auditioned with explicit origins and corrections; they are not automatically admitted
 notes or learned musical roles. The first Pascal periodic-support probe failed
 recorded specificity and remains rejected.
 

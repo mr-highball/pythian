@@ -10,7 +10,7 @@ Earlier point/split narratives below are historical; acceptance evidence and fai
 
 Deliver the independently usable Pascal beat-candidate pool, source and policy
 ownership, and selected-clock link on authored controls. This is the
-source-independent half of the original [beat-candidate task](../NS-3_tempo_04.md),
+source-independent half of the original [beat-candidate task](../RETIRED/2026-10-29/NS-3_tempo_04.md),
 split after repeated recorded-source qualification stops. The result gives
 downstream beat-level selection genuine alternatives and explicit uncertainty;
 it does not certify recorded pulse recall or choose a musical beat level.
@@ -18,7 +18,7 @@ it does not certify recorded pulse recall or choose a musical beat level.
 North star: NS-3. Outcome owner: WAV-02-PULSE.
 Historical allocation: 1 goal percentage point (0.25 overall points), transferred
 from the original unearned +2 NS-3 / +0.50 overall allocation of
-[NS-3_tempo_04](../NS-3_tempo_04.md). The two tasks together retain +2 / +0.50;
+[NS-3_tempo_04](../RETIRED/2026-10-29/NS-3_tempo_04.md). The two tasks together retain +2 / +0.50;
 creating this file earns no credit.
 
 Starting evidence: [BEAT-TRACKING](../../BEAT-TRACKING.md#maintained-phase-family-measurement--2026-09-19) · [BEAT-GRIDS](../../BEAT-GRIDS.md) ·
@@ -83,4 +83,4 @@ style or user listening verdict is claimed.
   the complete controlled loss taxonomy. The bounded Pascal authored-control
   validation above closed that gap. Recorded candidate recall,
   the ARTBeaT 02/04 unknowns and source-separated challenge remain solely in
-  [NS-3_tempo_04](../NS-3_tempo_04.md); no credit moved merely with the split.
+  [NS-3_tempo_04](../RETIRED/2026-10-29/NS-3_tempo_04.md); no credit moved merely with the split.

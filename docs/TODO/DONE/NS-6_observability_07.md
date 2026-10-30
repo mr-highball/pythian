@@ -80,7 +80,7 @@ invented totals or dependency edits. This earns no musical credit.
   and retry on checked Win32/Win64 plus actual CLI execution. Measure named
   synchronous residual calls separately; an outer boundary does not qualify
   their interiors or a maximum latency. Provider/context internals retain
-  [observability_04](../NS-6_observability_04.md). Stop on changed schemas/math/
+  [observability_04](../RETIRED/2026-10-29/NS-6_observability_04.md). Stop on changed schemas/math/
   controls, false progress or a distinct required gap; a demonstrated generic
   companion gap follows the separate-repository procedure. Big Boss stays solo.
   Entry delivery nonclosing count is 0; scientific stopped families stay fixed.
@@ -90,7 +90,7 @@ invented totals or dependency edits. This earns no musical credit.
   prerequisite before extending these same primitive loops with callbacks.
   Preserve this task's full API/CLI and interior coverage obligations; the
   scalar consolidation does not itself qualify retained-profile observation.
-- 2026-10-27, Big Boss: split from [observability_04](../NS-6_observability_04.md)
+- 2026-10-27, Big Boss: split from [observability_04](../RETIRED/2026-10-29/NS-6_observability_04.md)
   at its independent public profile/CLI boundary, with zero added credit. Batch
   evaluation, inference reporting and provider-contract internals stay there;
   semantic styles have their own owner. Before edits, Spike correctly stopped

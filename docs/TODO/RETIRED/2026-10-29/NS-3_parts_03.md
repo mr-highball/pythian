@@ -1,0 +1,47 @@
+> **Retired — 2026-10-29.** Historical unfinished ticket; no current effort or acceptance. See [disposition/replacement](README.md) and the [active goal](../../../GOAL.md). The original body below is historical, not an implementation instruction.
+
+# NS-3_parts_03 — Accept role learning on independent mixtures
+
+[Task index](legacy-catalog.md) · [Task flow](../../../history/TASKFLOW-2026-10-29.md) · [North star](../../../history/MILESTONES-2026-10-29.md#ns-3)
+
+**Description:**
+
+Completion credit: 5 goal percentage points (1.25 overall points).
+Current basis: [2026-09-29 outcome rebase](../../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
+Execution status (2026-09-29): **Dependency-blocked**.
+Next deliverable: Close independent mixture-role acceptance after development event and stable-role tasks pass.
+Closing evidence and stop condition: Frozen per-role precision/coverage/leakage/crossing results and saved joint evidence under original native budgets. Stop at failed held-out gates; expose tuned groups.
+Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
+This reassessment closes no product criterion and preserves prior failures below.
+
+Independently validate final role/event attribution and deliver evidence that semantic bass/voice providers can consume.
+
+North star: NS-3. Outcome owner: WAV-03-PARTS.
+Historical allocation: 4 goal percentage points (1.00 overall points).
+Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
+
+Starting evidence: [LAYERED-STYLE](../../../LAYERED-STYLE.md) · [PHRASE-EVALUATION](../../../PHRASE-EVALUATION.md).
+
+The [frozen mixture policy](../../../PART-MIXTURE-POLICY.md) defines the initial scope,
+per-role gates and family/exposure rules. Current part metrics remain diagnostic;
+this task must integrate and verify independent case admission on the final path
+before reporting a separate-recording acceptance verdict.
+
+**Acceptance Criteria:**
+
+- Freeze final attribution, preprocessing and uncertainty policy before the held-out matched-stem/mix packet is used.
+- Pass the declared per-role accuracy, coverage, leakage and crossing criteria, reporting unsupported or missing roles explicitly.
+- Recheck practical native runtime/memory and controlled regressions on the final path; preserve reproducible source/policy identities.
+- Demonstrate stable role/event evidence and joint relationships through saved learning inputs, without treating generated output as independently observed training evidence.
+- Record a separate-recording acceptance verdict and the exact supported mixture scope; failures stay open or require a new frozen evaluation set after tuning.
+
+**Blockers**
+
+- [NS-3_parts_05.md](NS-3_parts_05.md)
+- [NS-3_validation_02.md](../../DONE/NS-3_validation_02.md)
+
+**Dev Notes:**
+
+- Follow-up: the [accepted reference packet](../../DONE/NS-3_parts_01.md) includes qualified families plus a provisional acoustic supplement. Preserve those distinct statuses and reference-only exposure; diagnostic part scores cannot grant independent mixture acceptance. See [mixture policy](../../../PART-MIXTURE-POLICY.md).

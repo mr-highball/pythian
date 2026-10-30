@@ -95,10 +95,10 @@ changed formats, codec/control semantics, duplicate algorithms or dependency edi
   also needs its shared console-progress unit in the extracted package and its
   documented search path. Closing evidence remains archive/session parity,
   interior abort/cleanup/retry and actual consumer/package execution. Keep
-  provider-contract internals in [observability_04](../NS-6_observability_04.md) and
+  provider-contract internals in [observability_04](../RETIRED/2026-10-29/NS-6_observability_04.md) and
   embedded wave-profile internals in [observability_07](NS-6_observability_07.md).
   Boundaries around those units do not prove their interior cancellation.
-- 2026-10-27, Big Boss: split from [observability_04](../NS-6_observability_04.md)
+- 2026-10-27, Big Boss: split from [observability_04](../RETIRED/2026-10-29/NS-6_observability_04.md)
   at its independently usable semantic archive/blend API and caller consumer.
   Its provider-contract internals, batch evaluation and inference-reporting
   obligations stay in the parent. Callback boundaries around an unobserved

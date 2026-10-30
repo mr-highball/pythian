@@ -1,7 +1,7 @@
 # Native delivery checkpoint — 2026-09-20
 
 [Consumer contract](CONSUMER-CONTRACT.md) · [Package history](PACKAGING.md) ·
-[Project profile](../PROJECT.md) · [Delivery milestone](MILESTONES.md#wav-05-delivery)
+[Project profile](../PROJECT.md) · [Delivery milestone](history/MILESTONES-2026-10-29.md#wav-05-delivery)
 
 This infrastructure checkpoint binds clean native execution and source-package
 consumers to one pushed development revision. It does not validate later source
@@ -145,8 +145,8 @@ The stable native matrix, dependency closure and extracted source delivery are
 the acceptance scope. Development FPC 3.3.1 evidence remains the earlier dated
 checks in [package history](PACKAGING.md); it was not rerun for this checkpoint.
 Current working edits and later pushed revisions are outside these exact-source
-results. [Final accepted-workflow packaging](TODO/NS-6_delivery_03.md) must revalidate
+results. [Final accepted-workflow packaging](TODO/RETIRED/2026-10-29/NS-6_delivery_03.md) must revalidate
 the accepted musical workflow and affected CI path. An actual external consumer
-verdict remains in [independent acceptance](TODO/NS-6_delivery_04.md). This checkpoint
+verdict remains in [independent acceptance](TODO/RETIRED/2026-10-29/NS-6_delivery_04.md). This checkpoint
 adds no browser, device deadline, durable file replacement, listening or general
 cross-platform floating-point parity claim.

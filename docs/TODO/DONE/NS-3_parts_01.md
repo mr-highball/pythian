@@ -48,7 +48,7 @@ On 2026-09-21 the original two-point preparation task was split after repeated
 diagnostic batches failed to close its combined acceptance criteria. The maintained
 scoring/control deliverable is accepted in [parts_04](NS-3_parts_04.md), with one point;
 this external-packet deliverable retains one point. The
-[criterion reconciliation](../../MILESTONES.md#mixture-preparation-task-split) preserves
+[criterion reconciliation](../../history/MILESTONES-2026-10-29.md#mixture-preparation-task-split) preserves
 every original requirement and the original two-point total. This is remaining
 scope being subdivided, not credit for historical baseline capability or research.
 
@@ -166,4 +166,4 @@ Apply the two-batch reassessment checkpoint in
 
 - Repaired supplement assembly: an invalid evaluation partition, duplicate live JSON trees exceeding the memory budget, and event/center disagreement in reference-unknown spans each failed before final acceptance. The fixes preserved raw reference bytes and gates, released construction trees before scoring, and derived scripted prediction centers from their own events. See [curator supplement](../../PART-EVALUATION.md#curator-acoustic-reference-supplement--2026-09-21).
 
-- Follow-up belongs to [mixture inference](../NS-3_parts_02.md): external crossing/unison/quiet-ownership and broader coverage still require appropriate comparisons. The provisional supplement and unknown converter latency do not establish independent accuracy.
+- Follow-up belongs to [mixture inference](../RETIRED/2026-10-29/NS-3_parts_02.md): external crossing/unison/quiet-ownership and broader coverage still require appropriate comparisons. The provisional supplement and unknown converter latency do not establish independent accuracy.

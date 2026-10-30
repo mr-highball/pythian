@@ -1,7 +1,7 @@
 # Fundamental synthesis capability and evidence map
 
 [Home](../README.md) · [Architecture](ARCHITECTURE.md) ·
-[Quality review](SYNTHESIS-QUALITY.md) · [Milestones](MILESTONES.md#fund-contracts)
+[Quality review](SYNTHESIS-QUALITY.md) · [Milestones](history/MILESTONES-2026-10-29.md#fund-contracts)
 
 This map connects the native synthesis suite to its public contracts, consumers
 and meaningful checks. It is a supported-capability inventory, not a claim that
@@ -58,7 +58,7 @@ The declared-phase fitter now has three-target source checks plus a checked
 saved-style and recorded-generation consumer regression. Its public contract and
 evidence are consolidated in [Sources](SOURCES.md#phase-harmonic-fitting).
 The latest source packages still predate that addition and the recent layer
-changes; [WAV-05-DELIVERY](MILESTONES.md#wav-05-delivery) owns their refresh.
+changes; [WAV-05-DELIVERY](history/MILESTONES-2026-10-29.md#wav-05-delivery) owns their refresh.
 
 The [combined workload](SYNTHESIS-QUALITY.md#combined-workload-checkpoint) now
 checks four source families, modulation, a changing tempo, sample release,
@@ -110,7 +110,7 @@ is required by the declared consumer paths. A future consumer that needs an
 unsupported capability must establish its requirement explicitly; it does not
 keep this completed contract review permanently open.
 
-[FUND-QUALITY](MILESTONES.md#fund-quality) owns the remaining combined listening
+[FUND-QUALITY](history/MILESTONES-2026-10-29.md#fund-quality) owns the remaining combined listening
 verdict and any demonstrated signal defects. Delivery owns refreshed packages and
 target acceptance; NS-3 owns automatic musical inference. A new failure in a
 supported path reopens the relevant contract with concrete evidence. These

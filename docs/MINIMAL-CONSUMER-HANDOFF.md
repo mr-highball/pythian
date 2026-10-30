@@ -1,7 +1,7 @@
 # Minimal synthesis consumer packet
 
 [Package evidence](PACKAGING.md#accepted-caller-provider-artifact--2026-09-30) ·
-[Consumer contract](CONSUMER-CONTRACT.md) · [Independent-use task](TODO/NS-6_delivery_07.md)
+[Consumer contract](CONSUMER-CONTRACT.md) · [Independent-use task](TODO/RETIRED/2026-10-29/NS-6_delivery_07.md)
 
 Use the frozen source package from
 [`bdd55eb04a89d0271241da6111f42e47039055d6`](https://github.com/mr-highball/pythian/commit/bdd55eb04a89d0271241da6111f42e47039055d6),
@@ -108,7 +108,7 @@ harmonic mix must change the output. Listen to the extended output at the
 declared settings and report synthesis defects, audible behavior and whether
 the packaged guide lets you adapt the public caller unit without private help.
 This is useful outside-use/listening evidence for the separately open
-[extension task](TODO/NS-2_extension_01.md), with acceptance assessed against
+[extension task](TODO/RETIRED/2026-10-29/NS-2_extension_01.md), with acceptance assessed against
 its full contract. Our existing mechanical runs are not your listening verdict.
 
 The examples reject invalid controls/seeds, missing parents and existing

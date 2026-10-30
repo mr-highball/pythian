@@ -1,6 +1,6 @@
 # Style corpus coverage and evaluation
 
-[Home](../README.md) · [Milestones](MILESTONES.md#corpus-setup) ·
+[Home](../README.md) · [Milestones](history/MILESTONES-2026-10-29.md#corpus-setup) ·
 [Style architecture](LAYERED-STYLE.md#learning-a-style-from-many-hours) ·
 [WAV studies](WAV-STUDIES.md) · [Work](WORK.md)
 
@@ -127,7 +127,7 @@ external ledger automatically. Every new source or reuse requires the complete
 audit; unknown ancestry is not acceptable evidence. Persisted semantic lineage
 and many-hour invalidation/recovery remain owned by
 [saved providers](TODO/DONE/NS-4_styles_01.md) and
-[semantic corpus training](TODO/NS-5_scale_02.md).
+[semantic corpus training](TODO/RETIRED/2026-10-29/NS-5_scale_02.md).
 
 Checked stable Win64 compilation, source/cache/profile binding, replay and the
 eight rejection controls pass with no unfreed blocks in the accepted runs.
@@ -263,7 +263,7 @@ gaps and provider-specific shuffle semantics. Its genre cards are not yet frozen
 The following are **planning floors for the first evaluation**, not measured
 genre sufficiency. Change them only before freezing/using evaluation material,
 with a recorded coverage rationale. Meeting hours or counts alone does not close
-[CORPUS-SETUP](MILESTONES.md#corpus-setup) or [STYLE-EVAL](MILESTONES.md#style-eval).
+[CORPUS-SETUP](history/MILESTONES-2026-10-29.md#corpus-setup) or [STYLE-EVAL](history/MILESTONES-2026-10-29.md#style-eval).
 
 | Split, per style | Initial coverage floor | Required declaration |
 | --- | --- | --- |
@@ -278,14 +278,14 @@ or unsupported, with observable examples and uncertainty. A caller's genre label
 is not a learned feature or an accuracy reference. Do not infer trait cards from
 the current unreliable note/beat outputs.
 
-The [bounded single-recording result](TODO/NS-5_style_01.md) has its own
+The [bounded single-recording result](TODO/RETIRED/2026-10-29/NS-5_style_01.md) has its own
 declared note/duration contract and makes no many-hour claim. The complete
-[many-hour result](TODO/NS-5_style_02.md) accepts two contrasting profiles;
-[new-caller transfer](TODO/NS-5_style_03.md) qualifies the third under the same
-full protocol. [Qualified corpora](TODO/NS-5_corpus_06.md) retain the floors
-above for each full profile. [Cross-style reuse](TODO/NS-5_blends_01.md) still
+[many-hour result](TODO/RETIRED/2026-10-29/NS-5_style_02.md) accepts two contrasting profiles;
+[new-caller transfer](TODO/RETIRED/2026-10-29/NS-5_style_03.md) qualifies the third under the same
+full protocol. [Qualified corpora](TODO/RETIRED/2026-10-29/NS-5_corpus_06.md) retain the floors
+above for each full profile. [Cross-style reuse](TODO/RETIRED/2026-10-29/NS-5_blends_01.md) still
 requires all three accepted parents. Each learned provider must satisfy its own
-[WAV validation](MILESTONES.md#wav-validation) and musical acceptance scope.
+[WAV validation](history/MILESTONES-2026-10-29.md#wav-validation) and musical acceptance scope.
 Audit training-data overlap for any external learned estimator separately from
 the project's training/development/evaluation split.
 
@@ -340,20 +340,20 @@ all three styles, with the same fixed seeds and trait-preservation checks.
 
 ## Backlog ownership and remaining decisions
 
-- [CORPUS-SETUP](MILESTONES.md#corpus-setup): obtain/verify identities, style cards,
+- [CORPUS-SETUP](history/MILESTONES-2026-10-29.md#corpus-setup): obtain/verify identities, style cards,
   groups, references and evaluation splits; maintain the parent-range/derivative
   audit and truthful declarations as the corpus grows. The CLI selection path
   and two-entry inventory binding are complete; an automatic inventory importer,
   verified recording identities and representative corpus coverage are not.
-- [VOCABULARY](MILESTONES.md#wav-04-vocabulary) and
-  [CORPUS-SCALE](MILESTONES.md#corpus-scale): freeze representation, contribution
+- [VOCABULARY](history/MILESTONES-2026-10-29.md#wav-04-vocabulary) and
+  [CORPUS-SCALE](history/MILESTONES-2026-10-29.md#corpus-scale): freeze representation, contribution
   policy and measurable memory/time limits before a many-hour training run.
   The coverage floors do not override existing source/state/lineage bounds.
-- [CONTINUITY](MILESTONES.md#wav-04-continuity) and
-  [SONG-STRUCTURE](MILESTONES.md#song-structure): implement applicable full-duration
+- [CONTINUITY](history/MILESTONES-2026-10-29.md#wav-04-continuity) and
+  [SONG-STRUCTURE](history/MILESTONES-2026-10-29.md#song-structure): implement applicable full-duration
   measures and references; prepare the fixed listening packet.
-- [INTEGRATION](MILESTONES.md#wav-04-integration) and
-  [STYLE-EVAL](MILESTONES.md#style-eval): implement provider-specific comparators,
+- [INTEGRATION](history/MILESTONES-2026-10-29.md#wav-04-integration) and
+  [STYLE-EVAL](history/MILESTONES-2026-10-29.md#style-eval): implement provider-specific comparators,
   trait measurements, paired controls and saved blend/reblend evaluation. Freeze
   quantitative trait/error limits alongside their supported providers before
   evaluation; the generic listening rubric does not replace those limits.

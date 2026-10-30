@@ -265,7 +265,7 @@ These local studies use core units and authored signals, with no source recordin
 or companion dependency.
 
 This supplies scoped sample/automation evidence to
-[FUND-QUALITY](MILESTONES.md#fund-quality). Discontinuous recorded loop endpoints,
+[FUND-QUALITY](history/MILESTONES-2026-10-29.md#fund-quality). Discontinuous recorded loop endpoints,
 arbitrary fast automation and nonlinear sidebands remain outside acceptance.
 Next connect FM/PM sideband evidence to the actual source/stream and bounded
 downsampling path, then review the combined auditions and remaining limits.
@@ -478,7 +478,7 @@ An evidence-owning caller must retain those separately for reproducibility.
 `THarmonicPhaseFit` is deliberately distinct from stationary `THarmonicFit`:
 do not relabel it with one nominal frequency and store it as stationary evidence
 in a saved style. Automatic phase admission and persistence of that evidence
-belong to [WAV-03-TIMBRE](MILESTONES.md#wav-03-timbre); no format was added.
+belong to [WAV-03-TIMBRE](history/MILESTONES-2026-10-29.md#wav-03-timbre); no format was added.
 
 The detached sine/cosine recipe feeds the existing `TWavetableSourceFactory`.
 The source begins at phase zero; driving each frame with the next adjacent phase
@@ -639,7 +639,7 @@ The coefficients retain measured amplitude; DC is omitted. This demonstration
 does not isolate timbre from loudness, infer note boundaries, separate mixtures
 or save a learned trajectory in a style. Applying another measured amplitude
 envelope needs an explicit factoring policy to avoid counting dynamics twice.
-That provider work is tracked by [WAV-03-TIMBRE](MILESTONES.md#wav-03-timbre).
+That provider work is tracked by [WAV-03-TIMBRE](history/MILESTONES-2026-10-29.md#wav-03-timbre).
 
 Existing source fixtures now check three-bank analytic harmonics, knot crossings,
 reverse jumps, detached inputs, reset/independent voices, rejected pitch without
@@ -779,7 +779,7 @@ The subsequent [saved-provider checkpoint](WAVE-STYLE.md#saved-spectral-trajecto
 preserves raw fits, timing and this explicit policy in the current style contract,
 with repeated blends and independent envelope/timbre edits. Automatic varying-pitch
 admission, event ownership and recorded/listening acceptance remain unresolved
-under [WAV-03-TIMBRE](MILESTONES.md#wav-03-timbre).
+under [WAV-03-TIMBRE](history/MILESTONES-2026-10-29.md#wav-03-timbre).
 
 ## Precursor disposition and remaining lifecycle work
 

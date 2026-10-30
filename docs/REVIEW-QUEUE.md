@@ -163,5 +163,5 @@ This source-label queue remains bounded to 30-second source regions. The
 separate [full-output listening packet](TODO/DONE/NS-5_evaluation_03.md) owns
 continuous whole-asset/120-second playback, paired comparisons, timestamped
 comments, finite choices and 0–3 scores. The actual
-[style comparison task](TODO/NS-5_evaluation_02.md) must consume saved reviewer
+[style comparison task](TODO/RETIRED/2026-10-29/NS-5_evaluation_02.md) must consume saved reviewer
 responses from that packet before counting a full-duration listening case.

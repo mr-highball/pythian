@@ -1,7 +1,7 @@
 # Source-grounded presence evidence
 
-[Work record](WORK.md) · [Observation task](TODO/NS-3_notes_05.md) ·
-[Event task](TODO/NS-3_notes_02.md)
+[Work record](WORK.md) · [Observation task](TODO/RETIRED/2026-10-29/NS-3_notes_05.md) ·
+[Event task](TODO/RETIRED/2026-10-29/NS-3_notes_02.md)
 
 Pythian keeps four different facts separate:
 
@@ -15,7 +15,7 @@ Pythian keeps four different facts separate:
    room noise, and electronic noise remain different labels.
 4. **Event:** an attack, continuation, release or rest decision combines
    qualified presence evidence with musical context and pitch. It is owned by
-   [NS-3_notes_02](TODO/NS-3_notes_02.md), not by the observation API.
+   [NS-3_notes_02](TODO/RETIRED/2026-10-29/NS-3_notes_02.md), not by the observation API.
 
 ## First maintained observation boundary
 
@@ -83,7 +83,7 @@ exited before output. The inspector now hashes the complete input again after
 observation and before output; fresh checked Win32/Win64 builds preserve the
 same TSV bytes and zero-leak result. This second full-file pass is part of its
 cost. This meets the API and consumer acceptance criteria of
-[NS-3_notes_05](TODO/NS-3_notes_05.md) at their source-free scope; it does not
+[NS-3_notes_05](TODO/RETIRED/2026-10-29/NS-3_notes_05.md) at their source-free scope; it does not
 meet the remaining source-grounded acoustic and recorded-calibration criteria.
 
 ## Frozen direct-MAESTRO comparison — 2026-09-28
@@ -111,7 +111,7 @@ rows and hashes are in `build/maestro-presence-recorded-20260928/RESULT.md`.
 These are bounded activity contrasts, not claims of piano identity, note
 boundaries or audible endings.
 
-[NS-3_notes_05](TODO/NS-3_notes_05.md) criterion 3 remains open because the
+[NS-3_notes_05](TODO/RETIRED/2026-10-29/NS-3_notes_05.md) criterion 3 remains open because the
 comparison contains no reviewed audible quiet-tail case. The accepted
 [NSynth packet](TODO/DONE/NS-3_notes_04.md) already has a listener-reviewed
 quiet audible guitar late tail `guitar_acoustic_008-048-075` [60000,64000),
@@ -200,7 +200,7 @@ from scoring. No source lacked a reference; all nine listener labels are known.
 The fixed fourfold/1.5-fold observation ratios were not retuned.
 
 This closes the source-bound acoustic-label and source-group convention in
-[NS-3_notes_05](TODO/NS-3_notes_05.md) criterion 1 at this packet scope;
+[NS-3_notes_05](TODO/RETIRED/2026-10-29/NS-3_notes_05.md) criterion 1 at this packet scope;
 it does not validate clips 1 and 4 as generic rests.
 Its original development sources have **no scored guitar-positive windows**,
 so they cannot establish positive detection or calibration. The two originally

@@ -30,7 +30,7 @@ zero native leaks. Browser assets compile; actual browser/phone presentation,
 deployment and full parent04 acceptance remain open. No musical credit follows.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
-This is a demonstrated prerequisite of [retained interiors04](../NS-6_observability_04.md),
+This is a demonstrated prerequisite of [retained interiors04](../RETIRED/2026-10-29/NS-6_observability_04.md),
 not musical acceptance. Big Boss owns implementation and verification solo.
 Deliverable: one shared renderer/copy path, executed native32/64 and actual pas2js
 with original data/audio contracts, meaningful callback and failure checks.

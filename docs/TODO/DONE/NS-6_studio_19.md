@@ -73,6 +73,6 @@ Win64 bundle is live in the stable slot.
   until that discrepancy was verified and repaired.
 - All 3,943 existing operator JSON/JSONL hashes are unchanged. Read-only live
   verification shows the existing Lofi passage checked. No operator answer or
-  musical verdict was submitted. [studio_03](../NS-6_studio_03.md) and
-  [authoring_02](../NS-6_authoring_02.md) retain their physical/usefulness gates.
+  musical verdict was submitted. [studio_03](../RETIRED/2026-10-29/NS-6_studio_03.md) and
+  [authoring_02](../RETIRED/2026-10-29/NS-6_authoring_02.md) retain their physical/usefulness gates.
   No extra credit. Consecutive nonclosing count: 0.

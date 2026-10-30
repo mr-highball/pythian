@@ -8,7 +8,7 @@ Expose Pythian-owned layer request admission, partition/projection compilation,
 detached model/relationship copies and initial constraint/domain preparation.
 Provider session construction enters this independently reusable API; a callback
 around the provider cannot certify its nested work. This is the prerequisite for
-[provider observability](../NS-6_observability_04.md) AC1 and associated AC5, split
+[provider observability](../RETIRED/2026-10-29/NS-6_observability_04.md) AC1 and associated AC5, split
 without changing credit or removing any parent requirement.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.

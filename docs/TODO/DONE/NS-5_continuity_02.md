@@ -13,7 +13,7 @@ acoustic WFC profile. The previous short journal replay stops at 1,024 grains an
 materializes one whole render. A continuous multi-minute passage needs one
 latent-state sequence, one source-selection history and one overlap-add audio
 timeline across internal chunks. This is an engineering prerequisite for the
-full musical [continuity verdict](../NS-5_continuity_01.md), not that verdict.
+full musical [continuity verdict](../RETIRED/2026-10-29/NS-5_continuity_01.md), not that verdict.
 
 North star: NS-5. Outcome owner: WAV-04-CONTINUITY.
 Historical allocation: 1 goal percentage point (0.20 overall points), reallocated
@@ -49,7 +49,7 @@ commit and 16,166,912-byte peak working set. The audition report is not a
 reloadable learned profile. [Study and limitations](../../WAV-STUDIES.md#bounded-acoustic-continuation-checkpoint)
 retain the exact inputs, source-switch measurement, last-bit floating report
 nuance and ignored QA evidence. Sustained musical quality and listening remain
-with [NS-5_continuity_01](../NS-5_continuity_01.md).
+with [NS-5_continuity_01](../RETIRED/2026-10-29/NS-5_continuity_01.md).
 
 **Acceptance Criteria:**
 

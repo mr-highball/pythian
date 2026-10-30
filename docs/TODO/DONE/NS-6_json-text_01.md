@@ -14,7 +14,7 @@ edit RTL sources or copy a second JSON grammar into Pythian.
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
 Big Boss works solo. This is a demonstrated prerequisite of
 [evaluation portability_06](NS-6_portability_06.md) and retained metadata work in
-[task04](../NS-6_observability_04.md). Preserve partial callbacks and all failures.
+[task04](../RETIRED/2026-10-29/NS-6_observability_04.md). Preserve partial callbacks and all failures.
 
 Deliverable: one primary portable JSON string decoder reusing `pythian.text`
 scalar traversal/encoding. Native adapters frame string tokens through an ASCII

@@ -1,0 +1,42 @@
+> **Retired — 2026-10-29.** Historical unfinished ticket; no current effort or acceptance. See [disposition/replacement](README.md) and the [active goal](../../../GOAL.md). The original body below is historical, not an implementation instruction.
+
+# NS-3_timbre_02 — Accept recorded envelopes and sound reconstruction
+
+[Task index](legacy-catalog.md) · [Task flow](../../../history/TASKFLOW-2026-10-29.md) · [North star](../../../history/MILESTONES-2026-10-29.md#ns-3)
+
+**Description:**
+
+Completion credit: 2 goal percentage points (0.50 overall points).
+Current basis: [2026-09-29 outcome rebase](../../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
+Execution status (2026-09-29): **Dependency-blocked**.
+Next deliverable: Close recorded envelope and evolving-sound reconstruction acceptance.
+Closing evidence and stop condition: Frozen independent envelope/fit measures, actual paired listening and selective sound-edit reload. Stop on unsupported event assignment or an invalidating synthesis defect.
+Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
+This reassessment closes no product criterion and preserves prior failures below.
+
+Complete the recorded sound outcome with reliable envelope/event mapping and paired audible reconstruction of evolving timbre.
+
+North star: NS-3. Outcome owner: WAV-03-TIMBRE.
+Historical allocation: 3 goal percentage points (0.75 overall points).
+Credit is earned only when every acceptance criterion and the task-flow completion requirements pass.
+
+Starting evidence: [WAVE-STYLE](../../../WAVE-STYLE.md) · [INSTRUMENTS](../../../INSTRUMENTS.md) · [SYNTHESIS-QUALITY](../../../SYNTHESIS-QUALITY.md).
+
+**Acceptance Criteria:**
+
+- Admit supported attack/sustain/release envelopes with note-relative timing, gates, source silence and uncertainty; keep envelope choice independent of timbre choice.
+- Meet frozen envelope/fit criteria on independent recorded cases and reject unsupported event assignments rather than substituting authored values as learned.
+- Generate paired learned-versus-reference sound across declared pitches/dynamics and record actual listening observations on attacks, motion, releases and identity.
+- Verify saved reload and controlled timbre/envelope edits preserve unrelated musical events and independent sound settings.
+- Resolve demonstrated fit/admission defects here and renderer defects under synthesis-quality tasks, with linked evidence and no duplicate completion credit.
+
+**Blockers**
+
+- [NS-3_timbre_01.md](NS-3_timbre_01.md)
+- [NS-2_synthesis-quality_01.md — DONE](../../DONE/NS-2_synthesis-quality_01.md)
+
+**Dev Notes:**
+
+No failed approaches or follow-ups recorded yet.

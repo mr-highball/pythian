@@ -93,9 +93,9 @@ packaging and extraction criteria remain required. Scoping earns no credit.
   tooling, regardless of scientific validation. The earlier blanket unavailable
   message concealed a missing adapter: native pitch tracks and MIDI export already
   exist. This task now explicitly owns their experimental Studio integration.
-  Reliable recorded inference remains in [notes_01](../NS-3_notes_01.md),
-  [notes_05](../NS-3_notes_05.md), [notes_02](../NS-3_notes_02.md) and
-  [notes_03](../NS-3_notes_03.md). No new credit or relaxed inference gate follows.
+  Reliable recorded inference remains in [notes_01](../RETIRED/2026-10-29/NS-3_notes_01.md),
+  [notes_05](../RETIRED/2026-10-29/NS-3_notes_05.md), [notes_02](../RETIRED/2026-10-29/NS-3_notes_02.md) and
+  [notes_03](../RETIRED/2026-10-29/NS-3_notes_03.md). No new credit or relaxed inference gate follows.
 - 2026-09-30, Big Boss: user's explicit microphone/WAV exploration requirement
   is distinct from filesystem discovery and effects. Browser capture requires a
   secure context under [Media Capture and Streams](https://www.w3.org/TR/mediacapture-streams/).

@@ -14,7 +14,7 @@ workload. Preserve original recording and scope boundaries for later musical
 admission; raw salience is not an admitted note or a learned style.
 
 This independently usable raw stage is split from
-[NS-5_scale_01](../NS-5_scale_01.md) after its preparation and whole-array rejection
+[NS-5_scale_01](../RETIRED/2026-10-29/NS-5_scale_01.md) after its preparation and whole-array rejection
 closed no criterion. The semantic-learning and whole-pipeline gates stay there.
 The existing accepted one-hour single-file producer is a prerequisite, not new
 credit. No new source or genre identity is asserted for the three inputs.
@@ -40,7 +40,7 @@ bytes, within all frozen limits. Checked Win32/Win64 boundaries and actual Win64
 corpus reading passed; Salty Boi reviewed both code and final acceptance
 arithmetic. The private reproducible input, commands, failed-first-run record
 and complete result remain in ignored `build/scale-raw-corpus/`. This is raw
-observation coverage only; [semantic scale](../NS-5_scale_01.md) still requires
+observation coverage only; [semantic scale](../RETIRED/2026-10-29/NS-5_scale_01.md) still requires
 admitted musical events and actual learning.
 
 **Acceptance Criteria:**

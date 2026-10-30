@@ -141,7 +141,7 @@ Artifacts, hashes, comparison and preparation reports remain in ignored
 
 Next in [WAV-01](WAV-STUDIES.md#native-rate-scale-checkpoint): bind saved progress to source hash, geometry and analysis
 options; commit each observation batch before advancing its durable next index;
-recover interrupted writes without gaps or duplicates. Then [WAV-04](MILESTONES.md#wav-04)
+recover interrupted writes without gaps or duplicates. Then [WAV-04](history/MILESTONES-2026-10-29.md#wav-04)
 consumes those batches with stable vocabulary and recording-aware transition
 aggregation. Existing corpus/model limits are unchanged. This supporting checkpoint
 does not close the milestone or award percentage points.
@@ -178,11 +178,11 @@ focused builds under `current/`. The new core journal and its focused fixture
 are included in the ordinary build; no full ordinary build, package refresh,
 Linux or remote-CI execution is claimed. No milestone points are awarded.
 
-The next connected result is [WAV-04](MILESTONES.md#wav-04)'s bounded palette and actual WFC
+The next connected result is [WAV-04](history/MILESTONES-2026-10-29.md#wav-04)'s bounded palette and actual WFC
 learning from these journals. Carry sequence history across stored batches, reset
 at declared recording/song boundaries, and make source weighting explicit. Respect
 the companion's public model/state limits. Base context and semantic part styles
-still wait on [WAV-02](MILESTONES.md#wav-02) and [WAV-03](MILESTONES.md#wav-03); stored acoustic features do
+still wait on [WAV-02](history/MILESTONES-2026-10-29.md#wav-02) and [WAV-03](history/MILESTONES-2026-10-29.md#wav-03); stored acoustic features do
 not supply those missing providers.
 
 ### WAV-04 journal learning and audition checkpoint — 2026-09-15
@@ -214,7 +214,7 @@ palette token. These observations establish a concrete quality backlog: bounded
 candidate pools, source contribution controls and broader repetition/continuity
 evaluation. They do not establish learned key/tempo, independent parts, genre
 recognition or satisfactory musical phrasing. Repeated saved semantic blends
-remain dependent on [WAV-02](MILESTONES.md#wav-02)/[WAV-03](MILESTONES.md#wav-03) and explicit vocabulary bindings.
+remain dependent on [WAV-02](history/MILESTONES-2026-10-29.md#wav-02)/[WAV-03](history/MILESTONES-2026-10-29.md#wav-03) and explicit vocabulary bindings.
 
 Focused stable/development Win32 and stable Win64 fixtures match counted WFC models
 exactly to the companion learner for orders 1..4, varied batch sizes, multiplicity
@@ -268,10 +268,10 @@ three long-source variants have zero contiguous source links; source switching
 is frequent. The short-source probe still has 17 immediate repeats because some
 tokens have too few alternatives. Source weights express soft grain shares, not
 perceptual energy or exact quotas, and bin rotation has only as many distinct
-offsets as bins. [WAV-04-CONTINUITY](MILESTONES.md#wav-04-continuity) now tracks bounded waveform
+offsets as bins. [WAV-04-CONTINUITY](history/MILESTONES-2026-10-29.md#wav-04-continuity) now tracks bounded waveform
 join planning and listening acceptance. [WAV-04-BINDINGS](WAV-STUDIES.md#journal-profile-checkpoint) tracks
 saved palette/timebase compatibility. Neither blocks independent
-[context](MILESTONES.md#wav-02-context), [phrase](MILESTONES.md#wav-03-phrases) or
+[context](history/MILESTONES-2026-10-29.md#wav-02-context), [phrase](history/MILESTONES-2026-10-29.md#wav-03-phrases) or
 [duration-provider](WAV-STUDIES.md#duration-scope-checkpoint) work. Held-out recording and genre-level
 learning acceptance remain open; no new percentage credit is awarded.
 
@@ -329,11 +329,11 @@ Final stable Win32/Win64 long-probe model/audio bytes match; stable/development
 Win32 short-source audio matches. Disabling the optional join pass preserves the
 prior short audition byte-for-byte.
 
-[WAV-04-CONTINUITY](MILESTONES.md#wav-04-continuity) remains open for sustained continuation,
+[WAV-04-CONTINUITY](history/MILESTONES-2026-10-29.md#wav-04-continuity) remains open for sustained continuation,
 dense waveform fidelity and listening across recordings. Its bounded-access
 prerequisite is now available. [WAV-04-BINDINGS](WAV-STUDIES.md#journal-profile-checkpoint) can proceed with
 the current pool/model/selection contracts; semantic integration still depends on
-[context](MILESTONES.md#wav-02-context), [recorded parts](MILESTONES.md#wav-03-phrases) and the relevant
+[context](history/MILESTONES-2026-10-29.md#wav-02-context), [recorded parts](history/MILESTONES-2026-10-29.md#wav-03-phrases) and the relevant
 [duration-provider repair](WAV-STUDIES.md#duration-scope-checkpoint). No additional percentage credit is
 awarded for these supporting mechanisms or diagnostic scores.
 
@@ -431,7 +431,7 @@ quality improvement.
 Evidence is under ignored `build/journal-blend-{stable,trunk,win64}/`.
 [WAV-04-BLENDS](WAV-STUDIES.md#journal-blend-checkpoint)'s mechanical reuse criterion is now satisfied.
 Next connected acceptance work is sustained continuity and diversity across
-recordings/seeds under [WAV-04-CONTINUITY](MILESTONES.md#wav-04-continuity); annotated context,
+recordings/seeds under [WAV-04-CONTINUITY](history/MILESTONES-2026-10-29.md#wav-04-continuity); annotated context,
 part inference and the duration-provider repair remain independent ready work.
 No new completion credit, full build/package, Linux or remote-CI result is claimed.
 
@@ -488,7 +488,7 @@ all three pairs preserve exact token/source contribution counts.
 Evidence is under ignored `build/journal-local-{stable,trunk,win64}/` and
 `build/journal-sustained-study/`. The native `study.lpr` records selection diversity;
 the preceding native join inspector supplies dense mismatch and reconstruction.
-[WAV-04-CONTINUATION](MILESTONES.md#wav-04-continuation) is the next linked representation task;
+[WAV-04-CONTINUATION](history/MILESTONES-2026-10-29.md#wav-04-continuation) is the next linked representation task;
 automatic context and recorded-part admission remain separate prerequisites for
 semantic integration. No new completion points, full ordinary build/package,
 Linux or remote-CI evidence are added.
@@ -524,13 +524,13 @@ substring. A larger representative pool alone cannot guarantee those contexts.
 These are availability upper bounds. They do not impose source quotas, locks,
 reuse limits or waveform quality, and they do not measure musical phrase accuracy.
 
-[WAV-04-CONTINUATION](MILESTONES.md#wav-04-continuation) should retain bounded source context
+[WAV-04-CONTINUATION](history/MILESTONES-2026-10-29.md#wav-04-continuation) should retain bounded source context
 with explicit variable lengths and an unsupported-context fallback, then compare
 selection and audible generation while preserving token paths, source controls
 and lineage. Do not require one fixed long copied run or increase a scalar bin
 limit and treat duration as acceptance. Preserve one current saved-style contract;
 any added context must survive reload, compatible blending and a further blend.
-This supplies [WAV-04-CONTINUITY](MILESTONES.md#wav-04-continuity); admitted musical context and
+This supplies [WAV-04-CONTINUITY](history/MILESTONES-2026-10-29.md#wav-04-continuity); admitted musical context and
 parts still depend on their separate provider gates.
 
 The streaming matcher passes an independent exhaustive substring oracle covering
@@ -599,10 +599,10 @@ The core compiles without companion paths. Evidence: ignored
 the targeted quota diagnosis remain separate. Sustained cross-target audio replay
 is not claimed.
 
-This implements the core part of [WAV-04-CONTINUATION](MILESTONES.md#wav-04-continuation).
+This implements the core part of [WAV-04-CONTINUATION](history/MILESTONES-2026-10-29.md#wav-04-continuation).
 The subsequent [saved-context checkpoint](#journal-context-save-checkpoint) now
 connects it to the current saved-profile, replay and repeated-blend path.
-[WAV-04-CONTINUITY](MILESTONES.md#wav-04-continuity)
+[WAV-04-CONTINUITY](history/MILESTONES-2026-10-29.md#wav-04-continuity)
 still requires diversity and listening acceptance; context/part semantic providers
 retain their separate gates. No new format version or completion credit is added.
 
@@ -677,9 +677,9 @@ no companion paths. Evidence is under ignored
 This clears [WAV-04-CONTEXT-SAVE](WAV-STUDIES.md#journal-context-save-checkpoint)'s mechanical integration
 gate. The subsequent [reuse study](#journal-context-reuse-checkpoint) supplies a
 paired repetition comparison and isolates final-boundary regression.
-[WAV-04-CONTINUITY](MILESTONES.md#wav-04-continuity) still needs listening assessment across
+[WAV-04-CONTINUITY](history/MILESTONES-2026-10-29.md#wav-04-continuity) still needs listening assessment across
 recordings using the saved path. Independent
-[context](MILESTONES.md#wav-02-context) and [phrase](MILESTONES.md#wav-03-phrases) provider work remains
+[context](history/MILESTONES-2026-10-29.md#wav-02-context) and [phrase](history/MILESTONES-2026-10-29.md#wav-03-phrases) provider work remains
 ready; their admission failures still block semantic integration. No listener,
 genre-quality, current-package, Linux or remote-CI acceptance or percentage
 credit is claimed.
@@ -743,8 +743,8 @@ it compares length eight with unrestricted/four starts. Checked stable Win64 onl
 all processes are terminal. No production algorithm, current format, package,
 cross-target evidence or percentage estimate changes.
 
-[WAV-04-BOUNDARIES](MILESTONES.md#wav-04-boundaries) must account for final assembled joins
-before [WAV-04-CONTINUITY](MILESTONES.md#wav-04-continuity) can pass. Compare fixed-policy paths
+[WAV-04-BOUNDARIES](history/MILESTONES-2026-10-29.md#wav-04-boundaries) must account for final assembled joins
+before [WAV-04-CONTINUITY](history/MILESTONES-2026-10-29.md#wav-04-continuity) can pass. Compare fixed-policy paths
 with separate assembled/all-boundary costs and repetition measures; preserve
 exact controls and bounded work. Listening and broader recording/seed evaluation
 remain open. Context/phrase provider work continues independently.
@@ -817,9 +817,9 @@ EOF/endpoints and work rejection before reads. Core compilation uses no WFC path
 Evidence: ignored `build/journal-boundary-{stable,trunk,win64}/` and
 `build/journal-boundary-study/`. No new unit/fixture program, format version,
 vendor or package is added. Development Win32 sustained replay, Linux and remote
-CI remain unclaimed. [WAV-04-BOUNDARIES](MILESTONES.md#wav-04-boundaries) now supplies a verified
+CI remain unclaimed. [WAV-04-BOUNDARIES](history/MILESTONES-2026-10-29.md#wav-04-boundaries) now supplies a verified
 refinement mechanism; broader source-choice quality and listening still gate
-[WAV-04-CONTINUITY](MILESTONES.md#wav-04-continuity). Independent context/phrase admission
+[WAV-04-CONTINUITY](history/MILESTONES-2026-10-29.md#wav-04-continuity). Independent context/phrase admission
 remains ready. No percentage credit is awarded.
 
 <a id="acoustic-generation-capacity-checkpoint"></a>
@@ -879,8 +879,8 @@ uses `replay` on `build/journal-third-source-study/joint32-context` with
 --context-join-passes 4` and the three bound WAVs in that study.
 
 This clears [WAV-04-GENERATION](WAV-STUDIES.md#acoustic-generation-capacity-checkpoint) for the measured request.
-[WAV-04-VOCABULARY](MILESTONES.md#wav-04-vocabulary), [WAV-04-CONTINUITY](MILESTONES.md#wav-04-continuity)
-and admitted base/part providers still gate [WAV-04-INTEGRATION](MILESTONES.md#wav-04-integration).
+[WAV-04-VOCABULARY](history/MILESTONES-2026-10-29.md#wav-04-vocabulary), [WAV-04-CONTINUITY](history/MILESTONES-2026-10-29.md#wav-04-continuity)
+and admitted base/part providers still gate [WAV-04-INTEGRATION](history/MILESTONES-2026-10-29.md#wav-04-integration).
 No listening acceptance, general style-quality percentage or extra ledger credit
 is inferred from the capacity result.
 
@@ -936,11 +936,11 @@ Long-source section learning and the count audit ran
 on stable Win64; cross-target evidence is scoped to the short training/replay.
 
 [WAV-04-RANGES](WAV-STUDIES.md#journal-range-checkpoint) clears section selection as an input to
-[WAV-04-VOCABULARY](MILESTONES.md#wav-04-vocabulary) and
-[WAV-04-CONTINUITY](MILESTONES.md#wav-04-continuity). Next declare recording splits and coverage,
+[WAV-04-VOCABULARY](history/MILESTONES-2026-10-29.md#wav-04-vocabulary) and
+[WAV-04-CONTINUITY](history/MILESTONES-2026-10-29.md#wav-04-continuity). Next declare recording splits and coverage,
 weighting and capacity criteria before policy selection. These sections are all
 development evidence and do not create a held-out set. Corpus/semantic/listening
-gates in [WAV-04-INTEGRATION](MILESTONES.md#wav-04-integration) remain open. The ledger stays
+gates in [WAV-04-INTEGRATION](history/MILESTONES-2026-10-29.md#wav-04-integration) remain open. The ledger stays
 89.8% with the original 10.2-point package unchanged.
 
 <a id="palette-fit-checkpoint"></a>
@@ -989,9 +989,9 @@ aliasing reject while preserving existing outputs/inputs; hashes of all ten join
 comparison inputs remain unchanged. No new fixture program is added.
 
 Builds, reports and checks remain ignored under `build/palette-fit/`. This clears
-only measurement availability for [WAV-04-VOCABULARY](MILESTONES.md#wav-04-vocabulary).
+only measurement availability for [WAV-04-VOCABULARY](history/MILESTONES-2026-10-29.md#wav-04-vocabulary).
 Recording-level policy and held-out acceptance still gate
-[WAV-04-INTEGRATION](MILESTONES.md#wav-04-integration); continuity and semantic-provider gates
+[WAV-04-INTEGRATION](history/MILESTONES-2026-10-29.md#wav-04-integration); continuity and semantic-provider gates
 remain separate. The 89.8% ledger and original 10.2-point package are unchanged.
 
 <a id="journal-third-source-checkpoint"></a>
@@ -1076,7 +1076,7 @@ vocabulary identity on all three; JSON candidate-distance decimals differ
 slightly, so full report-byte parity is not claimed. Full three-source training,
 fit comparisons and sustained auditions ran on stable Win64 only.
 
-The observations add linked [WAV-04-VOCABULARY](MILESTONES.md#wav-04-vocabulary) coverage and
+The observations add linked [WAV-04-VOCABULARY](history/MILESTONES-2026-10-29.md#wav-04-vocabulary) coverage and
 [WAV-04-GENERATION](WAV-STUDIES.md#acoustic-generation-capacity-checkpoint) capacity results to the ordered backlog.
 These block their specific richer-corpus acceptance, not independent context,
 phrase or smaller-model work. No genre/listening acceptance, refreshed package,
@@ -1131,7 +1131,7 @@ is under ignored `build/duration-scope-{stable,trunk,win64}/` and
 analysis with actual sessions and capture. Owned builds have no warnings; upstream
 diagnostics remain. No format, vendor, package, full ordinary build or remote-CI
 change is included. [WAV-03-DURATION](WAV-STUDIES.md#duration-scope-checkpoint)'s mechanical request gate
-is resolved; [WAV-03-PHRASES](MILESTONES.md#wav-03-phrases) still blocks admitted recorded-part
+is resolved; [WAV-03-PHRASES](history/MILESTONES-2026-10-29.md#wav-03-phrases) still blocks admitted recorded-part
 quality. The broader musical goal remains open and receives no new percentage credit.
 
 <a id="bounded-acoustic-continuation-checkpoint"></a>
@@ -1158,7 +1158,7 @@ source WAVs, all 3,999 joins (15 across internal chunks), four adjacent exact
 window repeats, 3,969 source switches and zero contiguous source links. These
 are measurements of the fixed output, not a musical-quality verdict. In
 particular, the very frequent source switches require later sustained listening
-and repair under [NS-5 continuity](TODO/NS-5_continuity_01.md).
+and repair under [NS-5 continuity](TODO/RETIRED/2026-10-29/NS-5_continuity_01.md).
 
 The output `.json` is an audition report with a per-grain original-source map
 and input profile/model hashes; its paired `.wfcs` is an identity copy of the
@@ -1239,5 +1239,5 @@ range; this checks transport, not physical-phone playback or musical quality.
 Its catalog asset uses one declared source hash as a pointer; the saved profile
 and replay report bind all three source hashes. Sustained listener judgment,
 multi-seed generation and representative-vocabulary acceptance remain open in
-[NS-5 continuity](TODO/NS-5_continuity_01.md). These measurements earn no
+[NS-5 continuity](TODO/RETIRED/2026-10-29/NS-5_continuity_01.md). These measurements earn no
 completion credit by themselves.

@@ -138,7 +138,7 @@ model. Their enum identifies supported decoding, not arbitrary model compatibili
 Inspect again after rebuilding a definition. Existing PYS reload/blend semantics
 remain authoritative; this API adds no archive, historical reader, registry or
 stream-edit policy. General voice/harmony descriptors remain in
-[WFC-LAYERS](MILESTONES.md#wfc-layers).
+[WFC-LAYERS](history/MILESTONES-2026-10-29.md#wfc-layers).
 
 The checkout's existing style tool provides read-only inspection:
 
@@ -214,4 +214,4 @@ diagnostic and zero reported leaks.
 
 Focused evidence is under ignored `build/grid-api/`; this does not refresh source
 packages or claim independent ecosystem adoption. Recorded musical admission and
-general semantic role controls remain under [WFC-LAYERS](MILESTONES.md#wfc-layers).
+general semantic role controls remain under [WFC-LAYERS](history/MILESTONES-2026-10-29.md#wfc-layers).

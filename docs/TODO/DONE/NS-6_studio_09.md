@@ -13,7 +13,7 @@ predictably over-budget refresh while retaining source identity and metadata.
 
 North star: NS-6. Outcome owner: OPERATOR-STUDIO.
 Completion credit: 1 goal percentage point (0.10 overall points).
-Basis: one unearned point transfers from [authoring_02](../NS-6_authoring_02.md),
+Basis: one unearned point transfers from [authoring_02](../RETIRED/2026-10-29/NS-6_authoring_02.md),
 which retains all physical-device and complete-workflow obligations.
 
 Execution status: accepted by Big Boss on 2026-10-01. Existing originals use

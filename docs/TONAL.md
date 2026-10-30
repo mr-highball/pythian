@@ -90,7 +90,7 @@ profiles well below the general weight bound.
 
 ## Recorded key reference comparison
 
-The next [local-key task](TODO/NS-3_context_01.md) comparison separates the
+The next [local-key task](TODO/RETIRED/2026-10-29/NS-3_context_01.md) comparison separates the
 existing waveform representation from tonal interpretation. It uses the two
 already audited external WAV/note references in the
 [reference screen](STYLE-CARDS.md#reference-screening-and-musical-controls--2026-09-21),
@@ -236,7 +236,7 @@ likely key to ambiguous passages. Therefore inspect each supplied annotation
 policy, preserve disagreement and unknown regions, and group all versions of a
 composition together before choosing development and untouched evaluation cases.
 
-The next admission step belongs to [local-key acceptance](TODO/NS-3_context_01.md).
+The next admission step belongs to [local-key acceptance](TODO/RETIRED/2026-10-29/NS-3_context_01.md).
 The fixed development comparison below uses the accepted reference preparation;
 supported change/coverage limits and calibrated uncertainty remain prerequisites
 to maintained admission and independent evaluation. Reference preparation alone
@@ -495,7 +495,7 @@ No maintained ranker, source split, task completion or credit changes.
 
 ## Authored tonal-negative screen — 2026-09-23
 
-One frozen [NS-3_context_01](TODO/NS-3_context_01.md) control screen asked whether
+One frozen [NS-3_context_01](TODO/RETIRED/2026-10-29/NS-3_context_01.md) control screen asked whether
 the existing positive top-two diatonic score gap also occurs after native
 FFT/chroma analysis of signals with no single supported major/minor key. The
 ignored `build/tonal-negative-screen/POLICY.md` fixed five 8-second, 22,050-Hz
@@ -569,7 +569,7 @@ Stable FPC 3.2.2 Win64 reported 97,763,328 analysis-work units against the
 source/feature storage bound against 64 MiB and zero unfreed blocks. Full
 local output SHA-256 is
 `da26fcc7a3ed29545804952763df5fd16b35a314ec03c6694957a931b7f09f33`.
-This closes no [local-key task](TODO/NS-3_context_01.md) criterion or credit.
+This closes no [local-key task](TODO/RETIRED/2026-10-29/NS-3_context_01.md) criterion or credit.
 Stop source-specific gap testing here; the next admission decision needs
 multiple independently verified tonal and no-key/ambiguous intervals with a
 prospective temporal and coverage rule.
@@ -1132,7 +1132,7 @@ calibrate an unknown threshold or prove independent key-inference accuracy.
 
 ### Prospective local-key admission gates — 2026-09-23
 
-For [NS-3_context_01](TODO/NS-3_context_01.md), freeze this source and decision
+For [NS-3_context_01](TODO/RETIRED/2026-10-29/NS-3_context_01.md), freeze this source and decision
 policy **before candidate inference on the independent groups**. The existing
 packet defines the scoring windows. Score all original frames in each HU33 WAV,
 while using only its fully covered, unanimous major/minor frames as supported
@@ -1278,7 +1278,7 @@ of acoustically audible notes. They may support a development-only comparison
 of recorded evidence with score events; they cannot feed inference, replace
 the independent local-key annotations, or establish key accuracy. No new
 ranker, threshold, classifier or held-out run follows from this reference
-binding. [NS-3_context_01](TODO/NS-3_context_01.md) criterion 2 remains open;
+binding. [NS-3_context_01](TODO/RETIRED/2026-10-29/NS-3_context_01.md) criterion 2 remains open;
 a prospective observation hypothesis and fixed stop gate must precede another
 acoustic experiment.
 

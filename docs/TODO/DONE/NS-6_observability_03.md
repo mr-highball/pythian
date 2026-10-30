@@ -96,7 +96,7 @@ browser responsiveness or musical inference; remaining owners are linked below.
   checked Win32 WAV, and matched pas2js/RTL plus Node are separately scoped.
   [Coverage and residual boundaries](../../OBSERVABILITY.md) retain synchronous
   allocation/clip-copy/parsing limits and the remaining
-  [retained-operation audit](../NS-6_observability_04.md). No universal callback
+  [retained-operation audit](../RETIRED/2026-10-29/NS-6_observability_04.md). No universal callback
   latency or browser presentation is inferred. Stable service deployment and
   private catalog were not replaced for this native library/CLI batch.
 - 2026-10-27, Big Boss: selected all four native criteria. Deliverable: shared

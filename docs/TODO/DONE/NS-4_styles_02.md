@@ -46,4 +46,4 @@ core dependency or generated-as-recorded claim was added.
 
 **Dev Notes:**
 
-- Follow-up: accepted selective blend/reblend mechanics still need [recorded workflow integration](../NS-4_integration_01.md), [many-hour capacity](../NS-5_scale_02.md) and [cross-style listening acceptance](../NS-5_blends_01.md). Saved replay and lineage preservation do not by themselves establish those musical outcomes.
+- Follow-up: accepted selective blend/reblend mechanics still need [recorded workflow integration](../RETIRED/2026-10-29/NS-4_integration_01.md), [many-hour capacity](../RETIRED/2026-10-29/NS-5_scale_02.md) and [cross-style listening acceptance](../RETIRED/2026-10-29/NS-5_blends_01.md). Saved replay and lineage preservation do not by themselves establish those musical outcomes.

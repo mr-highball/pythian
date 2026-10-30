@@ -12,7 +12,7 @@ See the [studio scope and credit map](../../OPERATOR-STUDIO.md).
 
 North star: NS-6. Outcome owner: OPERATOR-STUDIO.
 Completion credit: 4 goal percentage points (0.40 overall points).
-Basis: [2026-09-30 operator allocation](../../OPERATOR-STUDIO.md#allocation-and-ownership).
+Basis: [2026-09-30 operator allocation](../../history/OPERATOR-STUDIO-2026-10-29.md#allocation-and-ownership).
 Primary credit is independently usable operator setup. NS-5 still owns actual
 learning and style quality; consuming its APIs earns no duplicate credit.
 
@@ -107,7 +107,7 @@ musical verdict or physical-phone qualification belongs to this acceptance.
   This closes one implementation batch and awards 4 NS-6 / 0.40 overall points;
   old source/science/comparator stop counters are unchanged. Actual jobs and
   source audition continue in [studio_02](NS-6_studio_02.md), and musical
-  feedback/iteration in [studio_03](../NS-6_studio_03.md).
+  feedback/iteration in [studio_03](../RETIRED/2026-10-29/NS-6_studio_03.md).
 - 2026-09-30, Big Boss: final staging finds whitespace-only blank lines 84/103
   in the new HTML; earlier unstaged checks had not included that untracked file.
   Count this as Ticket Guy's second failed UI submission under the user's strict

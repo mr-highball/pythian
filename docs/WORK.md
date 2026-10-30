@@ -1,7 +1,72 @@
 # Current work record
 
-[Home](../README.md) · [Project](../PROJECT.md) · [Assessment](REBALANCE-2026-09-29.md) ·
+[Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
+## Current handoff: synthesis-first goal and effort reset; implementation remains paused — 2026-10-29
+
+Big Boss SOLO reviewed the primary synthesis, instrument, effects, musical graph,
+semantic style, streaming and Studio implementations. The library already has
+real musical WFC/instrumental callers; ordinary Studio job admission still
+permits only raw_acoustic. The separate pitch preview is a sine/MIDI path.
+Neither reviewed acoustic experiment demonstrates instrumental composition.
+See [the implementation assessment](ASSESSMENT-2026-10-29.md) and [new goal](GOAL.md).
+
+The operator answered both pending core questions: no to the old short-loop
+question, After for fewer broken/jittery notes. Existing queue projection is
+0 waiting / 5 completed. Saved answers/audio remain intact. The subsequent
+instruction rejects further grain/reconstruction work and selects full musical
+graph/instrument synthesis, with Studio to test and steer uncertain concepts.
+Formal reference/accuracy packets, fixed corpus floors and external-adoption
+dossiers are no longer prerequisites to auditioning these experiments.
+
+All 53 formerly open tickets leave the active queue through the
+[retirement/replacement map](TODO/RETIRED/2026-10-29/README.md); none moves to DONE.
+Useful scope maps to 12 new current-goal tasks. All 97 historical DONE records,
+licenses, source lineage and failure notes remain. AGENTS, project/Studio scope,
+task workflow, index and milestone accounting now follow this direction.
+
+Current goal tag: instrumental-exploration-2026-10-29. Effort estimates use 1–10
+relative complexity; 12 open tasks total 82 units, 0 current-goal DONE, 0 / 82
+accepted (0%). NS subtotals: NS-2 12, NS-3 15, NS-4 21, NS-5 15, NS-6 19.
+New tasks increase the denominator. Old 52.45% weighted credits are historical,
+not comparable; existing working code has not been withdrawn. No planning earns
+acceptance. The defined goal is an experimental workflow, not universal accuracy.
+
+On explicit resume, select [instrumental runtime](TODO/NS-4_instrumental-runtime_01.md)
+AC1–4 as a bounded first musical integration, then explicit percussion and ordinary
+Studio jobs. First operator milestone: source-free bass/drums/harmony/lead,
+visible real musical settings, play/solo/mute and changed instrumental output.
+Name the batch's exact criterion, deliverable, closing checks and stop condition
+before edits. Reuse existing primary implementations; do not build a second engine.
+
+The prior observability sequence reached two nonclosing batches. This reassessment
+changes the next action instead of selecting a third audit expansion; it does not
+close a criterion or reset the counter. Historical same-cause scientific stops
+remain evidence; no renamed hypothesis erases them. Solo Big Boss continues until
+the user changes staffing. **Product implementation remains paused.**
+
+This is a documentation-only reset on hello-pythian. No source, tests, build
+tooling, workflows, vendor pin, native job, training, catalog or deployed audio is
+changed. No new generic WFC defect was demonstrated; no upstream branch is
+selected. Qualified implementation remains 7731f8b/CI500. Stable PID61792/fixed
+service slot is untouched. No helper, browser session, service restart or QA audio.
+New migration/validation output stays under the dedicated E-drive workspace.
+Documentation verification and publication evidence are recorded below.
+
+Documentation verification: all 12 tasks have current Goal/1–10 Effort/Status,
+required sections and valid acyclic blockers; total 82 matches every subtotal.
+All 53 retired task bodies and four historical snapshots match their originals
+apart from retirement banners and Markdown targets. All 97 historical DONE
+bodies preserve their prose/evidence apart from link repair. Scan of 269 Markdown
+documents introduces zero broken paths/anchors; three existing packaging-template
+links resolve in delivered packages rather than this source subdirectory. The
+stale scheduler anchor was repaired. Git diff whitespace checks pass. New/current
+goal documents contain no private recording identifiers or credentials; public
+precursor/source URLs and notices remain. Product/vendor/test/workflow diff is
+empty. No native suite/browser/audio repetition is warranted for prose-only work.
+Validation artifacts remain in the dedicated E-drive goal-reset run folder.
+
+
 ## Current handoff: verified duration/render component; operator pause — 2026-10-29
 
 Big Boss SOLO completes this bounded component at7731f8b/
@@ -132,7 +197,7 @@ source/assertion change; original failure logs remain private. CI498/job12380469
 is confirmed live on this continuation, maintained integration at5m16s. Do not
 restart it or push another change that cancels it before its required gate ends.
 
-Big Boss remains SOLO. New independent [parent04](TODO/NS-6_observability_04.md)
+Big Boss remains SOLO. New independent [parent04](TODO/RETIRED/2026-10-29/NS-6_observability_04.md)
 component advances AC1/2/5: observe primary atomic scheduler replacement loops,
 with final cancellation before publication. Deliverable: optional borrowed work
 callback on the existing TryReplaceFuture API and a core-only maintained fixture.
@@ -369,7 +434,7 @@ Exact64887c8/[CI493](https://github.com/mr-highball/pythian/actions/runs/4095919
 is now terminal SUCCESS16m31s, including maintained integration and extracted
 consumers. No run or passing local suite was restarted merely to wait.
 
-The [parent04](TODO/NS-6_observability_04.md) journal learning/index component is
+The [parent04](TODO/RETIRED/2026-10-29/NS-6_observability_04.md) journal learning/index component is
 qualified: native32/64 and actual pas2js each32972 checks/532 original aborts,
 unchanged original learning, actual Win64 worker384 checks/zero leaks/frozen WAV,
 clean exact Win64 core/full107/159-unit and120/280-hash packages, and actual new
@@ -412,7 +477,7 @@ complete NS5's supported note/context/vocabulary prerequisites remain open.
 A bounded source check confirms PENN's pinned raw-input policy, with no concrete
 omitted transform: no stopped inference, normalization or source sweep is reopened.
 
-The selected [parent04](TODO/NS-6_observability_04.md) deliverable is the remaining
+The selected [parent04](TODO/RETIRED/2026-10-29/NS-6_observability_04.md) deliverable is the remaining
 actual journal learning/index preparation. Primary training/partition preflight
 now reports rows and overlap comparisons; candidate/successor and measured/
 restored context builders report observations, slots, windows and comparisons.
@@ -667,7 +732,7 @@ task13 paths repaired after its acceptance. No helper or QA audio/browser launch
 
 Big Boss remains solo. The stopped PENN physical candidate remains stopped; no
 scientific/exposure reset or new source/model rule. This retained-interiors batch
-is IN PROGRESS under [parent04](TODO/NS-6_observability_04.md). Delivery nonclosing
+is IN PROGRESS under [parent04](TODO/RETIRED/2026-10-29/NS-6_observability_04.md). Delivery nonclosing
 remains3 until a complete required criterion qualifies. Actual pas2js exposed a
 native-only render copy; linked [portability13](TODO/DONE/NS-6_portability_13.md) owns
 that real prerequisite. Counts54 open/91 DONE/145 total, NS6 16open;52.45/47.55
@@ -712,7 +777,7 @@ now supplies actual contrary waveform evidence. No maintained provider or new
 recorded experiment is admitted. Delivery nonclosing2→3, no scientific/exposure
 reset; counts53 open/91 DONE/144 total, NS6 15open,52.45/47.55 unchanged.
 
-[Notes01](TODO/NS-3_notes_01.md)'s explicit Pascal PENN candidate uses verified
+[Notes01](TODO/RETIRED/2026-10-29/NS-3_notes_01.md)'s explicit Pascal PENN candidate uses verified
 Float32 parameters, valid conv/ReLU/pool/full-plane population LayerNorm, fixed
 Double sums/Float32 stages, raw8kHz input crop16..1008 and19-bin local cents
 expectation. Policy60068555394dbdc9905ce05a6b397b652c007383a9593aa5a0955ff0f2d20947
@@ -759,7 +824,7 @@ No complete notes01 criterion closes. Delivery nonclosing1→2 requires the
 reassessment below; accounting stays53 open/91 DONE/144 total, NS6 15 open,
 52.45/47.55. Scientific stops/exposure histories are never reset.
 
-[Notes01](TODO/NS-3_notes_01.md) binds the fixed checkpoint to one compatible
+[Notes01](TODO/RETIRED/2026-10-29/NS-3_notes_01.md) binds the fixed checkpoint to one compatible
 checkpoint-era FCNF0++ recipe: exact step250000, model/module metadata,26 names,
 FloatStorage/zero offsets/contiguous shapes and strides, unique storage extents.
 Every geometry/extent passes before model payload reads. All8934624 Float32
@@ -799,7 +864,7 @@ chain still requires grounded note/duration and context evidence. Existing
 GuitarSet supplied annotations do not supply acoustic-rest/time truth or calibrated
 relationship/novelty gates; its synthetic comparator lane remains stopped.
 
-One bounded distinct [PENN source screen](TODO/NS-3_notes_01.md) binds source
+One bounded distinct [PENN source screen](TODO/RETIRED/2026-10-29/NS-3_notes_01.md) binds source
 78ed3ba, checkpoint-era c070f45 and published model74911e2. Complete checkpoint
 SHA25628d89add04722461f831249a338b74516a96dedd3301ed794c18953d51d1b960
 and10252-byte metadata SHA256985557fcdd86680a4867202ec89ec3b1a8c659b22a91acd9cbb39f641b453c0d
@@ -993,7 +1058,7 @@ All local native/portable checks and exact frozen WAV proof are retained below;
 every local process/package handle is terminal and joined. CI478 is terminal
 SUCCESS; do not restart or repoll it. The earlier pending descriptions are dated.
 
-[Transport18](TODO/NS-6_observability_18.md) and parent04 stay open for actual
+[Transport18](TODO/RETIRED/2026-10-29/NS-6_observability_18.md) and parent04 stay open for actual
 browser UI and remaining owned interiors. The UI recovery consumer compiles but
 has not executed; the source is not deployed to the live Studio. Existing one-time
 QA administrator repair and normal-page authority are unresolved; do not repeat
@@ -1192,7 +1257,7 @@ Original voice controls, current constructor/preparation14182/10/13639 and share
 layer423670/102/338943 also pass. Preserve repaired declaration/forward-type/
 unsupported scalar-overload failures and the rejected linear training-mask fixture.
 
-This qualifies a component of [parent04](TODO/NS-6_observability_04.md), not a whole
+This qualifies a component of [parent04](TODO/RETIRED/2026-10-29/NS-6_observability_04.md), not a whole
 criterion. Delivery nonclosing0→1; no task move, credit or scientific-counter
 reset. Counts remain52 open/87 DONE/139 total, NS6 14 open;52.45/47.55 unchanged.
 All named-voice local handles are terminal/joined. Its evidence lives under the
@@ -1269,7 +1334,7 @@ historical source checkpoints; they do not override this current handoff.
 NS5 remains least complete. Full vocabulary and musical comparisons still need
 independently grounded references and admitted context/activity; keep rejected
 source/ranking families stopped and do not ask for more source microclips.
-The next ready engineering owner is [retained operations04](TODO/NS-6_observability_04.md).
+The next ready engineering owner is [retained operations04](TODO/RETIRED/2026-10-29/NS-6_observability_04.md).
 Next bounded component: observe named-voice generation, selective regeneration,
 replacement and detached copies through the existing graph commit guard.
 Deliverable: borrowed callbacks over actual owned work and private capture/copy/
@@ -2215,7 +2280,7 @@ Previous goal turn is progress: exact source CI458 passes and acceptance records
 are pushed at `1be04c0`. Delivery nonclosing count enters at0. Big Boss stays solo.
 Least-complete NS-5 remains grounded-reference blocked; no stopped scientific
 family is restarted. Select existing retained evaluation AC2 in
-[task04](TODO/NS-6_observability_04.md): primary distribution/card comparison and
+[task04](TODO/RETIRED/2026-10-29/NS-6_observability_04.md): primary distribution/card comparison and
 the actual native asset-bound CLI lack progress through large counts and hashes.
 Deliverable: actual count/bin/trait/byte phases with original exceptions and
 private result publication. Evidence: native/actual portable checks, prior exact
@@ -2262,7 +2327,7 @@ Both original primary digest and newly introduced evidence-array publication
 failures remain recorded with their repairs. Observer output is phase-local;
 bounded native copies are measured residuals, not an interior-cancellation claim.
 
-Return to [parent04](TODO/NS-6_observability_04.md): whole AC1 retains later
+Return to [parent04](TODO/RETIRED/2026-10-29/NS-6_observability_04.md): whole AC1 retains later
 provider/session replacement, generation and capture; AC2 batch evaluation and
 AC3 inference/operator reporting remain. Before the next batch declare its
 criterion, concrete deliverable, evidence and stop. The private E-drive `NEXT.md`
@@ -2362,7 +2427,7 @@ remains100/90/25/70/14/54 and52.45/47.55. This actual criterion closure resets t
 delivery nonclosing count2 to0; scientific stopped-family counters are unchanged.
 Big Boss remains solo; CI is not outside human/agent review or musical acceptance.
 
-Return to [parent04](TODO/NS-6_observability_04.md): context metadata/bytes/hash,
+Return to [parent04](TODO/RETIRED/2026-10-29/NS-6_observability_04.md): context metadata/bytes/hash,
 profile ancestry, remaining replacement/generation, batch and inference/operator
 obligations remain required. Source inspection locates these in the existing
 archive/profile primary/hash paths; do not replace them with wrapper-only
@@ -2556,7 +2621,7 @@ Move the task and incoming links together. Counts **52 open /73 DONE /125 total*
 NS-6 14 open. Completion stays **100/90/25/70/14/54**, **52.45/47.55**; the zero-credit
 repair adds no musical acceptance. Delivery nonclosing count0 after closure;
 scientific stops and the retained unanswered4:16 review persist. Return to
-[task04](TODO/NS-6_observability_04.md)'s provider/registry/context caller boundary;
+[task04](TODO/RETIRED/2026-10-29/NS-6_observability_04.md)'s provider/registry/context caller boundary;
 later generation/capture/replacement, batch and inference/operator phases remain
 required. Declare its next actual consumer deliverable/evidence/stop before
 source edits. No service, private recording, operator answer or retraining changed.
@@ -2727,7 +2792,7 @@ entries below are history.
 Counts are **52 open / 71 DONE, 123 total**, NS-6 14 open. Completion remains
 **100/90/25/70/14/54**, **52.45/47.55**. Delivery nonclosing count is **0** after
 criterion closure; scientific counters/stops and pending listening are unchanged.
-Return to [task04](TODO/NS-6_observability_04.md)'s provider admission/choice,
+Return to [task04](TODO/RETIRED/2026-10-29/NS-6_observability_04.md)'s provider admission/choice,
 registry/session and nested context/layer preparation. Metadata reuse does not
 close their interior callbacks, batch evaluation or inference/operator reporting.
 The next batch must declare its actual criterion, consumer evidence and stop
@@ -3287,7 +3352,7 @@ Big Boss followed least-complete NS-5 and actual musical prerequisites. Spiegel
 confirmed timbre, harmony and groove still need accepted inferred events, roles
 or independent context; their existing providers cannot substitute for those
 observations. Spike identified a concrete remaining
-[vocabulary_01](TODO/NS-5_vocabulary_01.md) AC1 declaration gap: the primary intake
+[vocabulary_01](TODO/RETIRED/2026-10-29/NS-5_vocabulary_01.md) AC1 declaration gap: the primary intake
 cannot represent caller-labelled occurrences of repeated musical sections.
 No stopped scientific family, source acquisition or new inference is selected.
 
@@ -3385,8 +3450,8 @@ items; the two raw unanswered setup requests are hidden by the completed prepare
 ledger also does not contain the long item. Historical queue presence was
 incorrectly treated as current availability in later handoffs.
 
-Selected existing [studio_03](TODO/NS-6_studio_03.md) AC1/AC2 and
-[continuity_01](TODO/NS-5_continuity_01.md)'s pending listening evidence.
+Selected existing [studio_03](TODO/RETIRED/2026-10-29/NS-6_studio_03.md) AC1/AC2 and
+[continuity_01](TODO/RETIRED/2026-10-29/NS-5_continuity_01.md)'s pending listening evidence.
 Criterion: a technically ready, understandable generated experiment must actually
 reach the current queue. Deliverable: qualify the retained long WAV/report/model/
 ordered source/policy lineage, then restore one immutable development question
@@ -3484,7 +3549,7 @@ The least-complete NS-5 musical paths retain their source/reference blockers and
 stopped scientific counters. Big Boss selected independently usable retained
 artifact work: [corpus archives](TODO/DONE/NS-6_observability_05.md) and
 [composition planning](TODO/DONE/NS-6_observability_06.md), split without additional
-credit from [observability_04](TODO/NS-6_observability_04.md). Its remaining
+credit from [observability_04](TODO/RETIRED/2026-10-29/NS-6_observability_04.md). Its remaining
 retained-style/provider, batch evaluation and inference scope stays open.
 Criterion: real owned bulk-work measurements and safe cancellation. Deliverable:
 primary archive callbacks, WFC adapter/CLI forwarding, and measured composition
@@ -3641,7 +3706,7 @@ writer's sink ownership, poisoning and retry contract. SaveWavePcm16 still write
 directly and may leave a partial destination. Allocation, immutable clip copying
 and bounded metadata/JSON parsing retain synchronous boundaries; no universal
 latency or complete-observability claim follows. The [coverage map](OBSERVABILITY.md#offline-native-consumers)
-and [retained-operation audit](TODO/NS-6_observability_04.md) preserve those limits.
+and [retained-operation audit](TODO/RETIRED/2026-10-29/NS-6_observability_04.md) preserve those limits.
 
 A separate actual synth/music-render pas2js closure fails at `pythian.instrument`'s
 native SizeOf assumption before execution. Big Boss created the linked zero-credit
@@ -3677,7 +3742,7 @@ checked, deployed and pushed at `811b0a4`. Big Boss rechecked the least-complete
 NS-5 critical path. Spiegel's bounded source/reference assessment found no new
 supported quiet-tail/rest, tonal-versus-harmonic or physical pulse evidence;
 all existing scientific stops remain. Spike identified a concrete existing
-[vocabulary_01](TODO/NS-5_vocabulary_01.md) AC1 gap: Studio passed one recording
+[vocabulary_01](TODO/RETIRED/2026-10-29/NS-5_vocabulary_01.md) AC1 gap: Studio passed one recording
 weight into both learning multiplicity and generation-time selection, despite
 the primary selector already supporting independent preferences.
 
@@ -3732,7 +3797,7 @@ remains. Private manifests bind final source/artifact identities and these check
 
 ## Mixed-format WFC learning implemented; browser qualification open - 2026-10-27
 
-Big Boss selected [studio_07](TODO/NS-6_studio_07.md), a real multi-recording
+Big Boss selected [studio_07](TODO/RETIRED/2026-10-29/NS-6_studio_07.md), a real multi-recording
 learning prerequisite: jobs previously rejected different rates/channel layouts.
 The retained musical-reference and scientific stops still apply. Criterion:
 convert included ranges without losing original identity/time, then consume them
@@ -3852,7 +3917,7 @@ the retained musical reference stops; the older 256.192-second guarded render
 is already queued and was not duplicated. Its different mechanism cannot inherit
 the saved 20-second After judgment.
 
-Selected [continuity_05](TODO/NS-5_continuity_05.md) AC1–4: connect the preferred
+Selected [continuity_05](TODO/RETIRED/2026-10-29/NS-5_continuity_05.md) AC1–4: connect the preferred
 source-successor mechanism to long playback, whose job/worker adapters explicitly
 rejected/omitted it despite existing core support. Deliverable: one explicit
 live choice, shared native session, retained preparation and source-bound excerpt.
@@ -3957,7 +4022,7 @@ quiet-tail evidence. The TU-Note publisher's manual transient/silence labels
 identify a possible release candidate, but do not establish exact-window quiet
 audibility. Spike and Spiegel independently identified that limitation. No
 archive/audio was acquired, no inference ran and no failed source family resumed;
-[notes_05](TODO/NS-3_notes_05.md) remains reference-blocked. This assessment does
+[notes_05](TODO/RETIRED/2026-10-29/NS-3_notes_05.md) remains reference-blocked. This assessment does
 not earn musical credit or reset its stopped-source counters.
 
 Selected repair: [portability_02](TODO/DONE/NS-6_portability_02.md), all three
@@ -4027,9 +4092,9 @@ needs genuinely different supported physical observations and prospective
 controls, not another rank, threshold, seed or window variant.
 
 The next musical prerequisite is still independently supported recorded
-activity/context evidence under [notes_05](TODO/NS-3_notes_05.md),
-[context_01](TODO/NS-3_context_01.md) and
-[tempo_04](TODO/NS-3_tempo_04.md). The quiet-tail/nonzero-rest gate and the
+activity/context evidence under [notes_05](TODO/RETIRED/2026-10-29/NS-3_notes_05.md),
+[context_01](TODO/RETIRED/2026-10-29/NS-3_context_01.md) and
+[tempo_04](TODO/RETIRED/2026-10-29/NS-3_tempo_04.md). The quiet-tail/nonzero-rest gate and the
 distinction between simultaneous notes and timbral harmonics are unresolved.
 No new recording window, source acquisition, inference run or tuning policy
 was selected at this checkpoint. The declared intake portability repair is
@@ -4044,8 +4109,8 @@ existing integration remains a separate closing gate. A fresh Codex browser
 check returned an empty inventory, and a direct in-app-browser tab creation
 returned `Browser is not available: iab`. No QA browser or playback was started;
 this is not a visual pass. The next browser batch, when that surface is
-available, belongs to [continuity_04](TODO/NS-5_continuity_04.md) AC5 and
-[studio_22](TODO/NS-6_studio_22.md) AC4: exercise the implemented references and
+available, belongs to [continuity_04](TODO/RETIRED/2026-10-29/NS-5_continuity_04.md) AC5 and
+[studio_22](TODO/RETIRED/2026-10-29/NS-6_studio_22.md) AC4: exercise the implemented references and
 prepared listener at desktop/narrow widths on isolated operator data; stop on
 identity, range, save/retry or orphan-audio failure. No new UI infrastructure is
 selected. **55 open /54 DONE; 52.45 credited /47.55 remaining.**
@@ -4073,7 +4138,7 @@ honestly. He found no demonstrated defect by source/evidence inspection; he did
 not relabel the prior367 solo checks as independent execution or repeat failed
 desktop-control attempts. Actual desktop/narrow acceptance stays open.
 
-Selected implementation batch: [vocabulary_01](TODO/NS-5_vocabulary_01.md) AC1's
+Selected implementation batch: [vocabulary_01](TODO/RETIRED/2026-10-29/NS-5_vocabulary_01.md) AC1's
 bounded native declaration-accounting component. Deliverable: reusable primary
 per-recording/split contribution metrics plus their maintained intake/learning
 consumer. Closing evidence: original-coordinate union across overlaps/derivatives,
@@ -4116,7 +4181,7 @@ claiming that more bytes or more declarations establish deeper musical learning.
 
 ## Core-driven review bridge implementation - 2026-10-26
 
-Big Boss worked alone. [continuity_04](TODO/NS-5_continuity_04.md) now connects
+Big Boss worked alone. [continuity_04](TODO/RETIRED/2026-10-29/NS-5_continuity_04.md) now connects
 the accepted primary source-successor index to explicit finite Studio jobs.
 Sparse requests preserve exact replay; changing reconstruction keeps the training
 identity/model fixed. Complete range-bound journals are reused, with progress,
@@ -4125,7 +4190,7 @@ journals fail without reanalysis or silent fallback; live use rejects the option
 Matching standard auditions publish a continuity pair with exact parent identity.
 No WFC dependency source or primary reconstruction algorithm changed.
 
-[studio_03](TODO/NS-6_studio_03.md) now presents prepared experiments through
+[studio_03](TODO/RETIRED/2026-10-29/NS-6_studio_03.md) now presents prepared experiments through
 the existing queue and response journals: Original/Before/After tabs, one short
 question, explicit uncertainty, optional note and Save/Next. A producer command
 binds existing comparison/reference requests and preserves their audio and
@@ -4188,9 +4253,9 @@ and its separate original-reference request exist, but do not establish a clear
 guided review flow. Do not ask for new note/beat microclip truth or another broad
 style verdict merely because a technical comparison is ready.
 
-Selected next deliverable: [continuity_04](TODO/NS-5_continuity_04.md) connects
+Selected next deliverable: [continuity_04](TODO/RETIRED/2026-10-29/NS-5_continuity_04.md) connects
 the accepted optional primary source-successor mechanism to native Studio jobs
-without reanalyzing/retraining the same model. [studio_03](TODO/NS-6_studio_03.md)
+without reanalyzing/retraining the same model. [studio_03](TODO/RETIRED/2026-10-29/NS-6_studio_03.md)
 is revised to own prepared experiments, original/before/after context, a short
 question tied to a core decision and Save/Next through the existing queue.
 Begin with the retained jitter/sustain comparison. Better sustain continuity,
@@ -4281,7 +4346,7 @@ bounded engineering task is closed; full continuity/style blockers stay open.
 
 ## Original/generated reference comparison - 2026-10-05
 
-Big Boss's solo [studio_22](TODO/NS-6_studio_22.md) connects selected original
+Big Boss's solo [studio_22](TODO/RETIRED/2026-10-29/NS-6_studio_22.md) connects selected original
 audio beside generated auditions in both listening views. Names and original
 ranges come from the exact saved finite generation, bound to its published
 WAV/model/request. Current project edits cannot change the comparison. A shared
@@ -4295,7 +4360,7 @@ New ordinary comparisons permit source listening before feedback; blind mode is
 an explicit choice, and existing blind reviews retain their reveal contract.
 No stored request, feedback or generation is rewritten. No synthesis tuning or
 automatic retraining was performed. The operator's negative result remains
-attributed to [continuity_01](TODO/NS-5_continuity_01.md).
+attributed to [continuity_01](TODO/RETIRED/2026-10-29/NS-5_continuity_01.md).
 
 AC1–3 engineering checks: 61 native review/iteration checks with zero leaks,
 24 Pascal DOM reference checks, 20 retained recovery checks, and isolated
@@ -4318,8 +4383,8 @@ Big Boss read the operator's submitted revision-1 Studio response from durable
 storage and the live review API. The 20-second audition received style fit 0/3,
 continuity 1/3 and technical quality 1/3; style classification and repetition
 remain unknown. The comment describes abundant jittering and missing sustains.
-This is actual negative musical evidence. [studio_03](TODO/NS-6_studio_03.md)
-retains the audible-use/Save evidence; [continuity_01](TODO/NS-5_continuity_01.md)
+This is actual negative musical evidence. [studio_03](TODO/RETIRED/2026-10-29/NS-6_studio_03.md)
+retains the audible-use/Save evidence; [continuity_01](TODO/RETIRED/2026-10-29/NS-5_continuity_01.md)
 owns musical defect assessment without restarting its stopped tuning sequence.
 The reviewed output is the earlier completed short-selection job, not a new
 post-repair generation. Its raw-acoustic policy uses roughly 85 ms windows,
@@ -4333,7 +4398,7 @@ with no redirect; navigation source and deployed assets contain no old address
 or HTML base override. Relative links preserve the page's existing origin.
 This excludes a literal stale address in the audited links, but does not explain
 the operator's transition; do not claim a fixed navigation bug or operator error.
-[authoring_02](TODO/NS-6_authoring_02.md) retains the reproduction gap. No service
+[authoring_02](TODO/RETIRED/2026-10-29/NS-6_authoring_02.md) retains the reproduction gap. No service
 restart or production mutation was needed, and no QA browser/audio was opened.
 Private evidence: `build/navigation-review/`. This evidence readback is not a
 new implementation/experimental batch; no stop counter resets or credit changes.
@@ -4343,7 +4408,7 @@ remains **52.45 current / 47.55 remaining**.
 
 ## Background recovery and long-source learning — 2026-10-05
 
-Big Boss's solo [studio_21](TODO/NS-6_studio_21.md) repairs the operator's two
+Big Boss's solo [studio_21](TODO/RETIRED/2026-10-29/NS-6_studio_21.md) repairs the operator's two
 600-second failures. One stopped during whole-file verification; the other
 selected a complete 135-minute mix and stopped during analysis. Neither was a
 recorded cancellation. A browser timeout could separately stop status polling.
@@ -4415,7 +4480,7 @@ worker remains. No TLS/firewall/catalog configuration changes.
 
 Remaining required gaps at that checkpoint: [catalog import — subsequently accepted](TODO/DONE/NS-6_observability_02.md),
 [offline render/separation](TODO/DONE/NS-6_observability_03.md),
-[retained corpus/style monitoring](TODO/NS-6_observability_04.md), and the
+[retained corpus/style monitoring](TODO/RETIRED/2026-10-29/NS-6_observability_04.md), and the
 portability task above. Next ready observability task is catalog import, including
 careful cancellation propagation through per-file error handling. No generic WFC
 defect was demonstrated; no dependency source changed.
@@ -4724,8 +4789,8 @@ No task move or completion credit is claimed before that qualification.
 
 **Big Boss:** the operator explicitly selects a complete browser usability
 review and asks Big Boss to perform it alone. No helper is assigned to this
-batch. Existing [studio_11](TODO/NS-6_studio_11.md) AC2/AC4 own the long-source
-transport repair; [authoring_02](TODO/NS-6_authoring_02.md) owns the source-review
+batch. Existing [studio_11](TODO/RETIRED/2026-10-29/NS-6_studio_11.md) AC2/AC4 own the long-source
+transport repair; [authoring_02](TODO/RETIRED/2026-10-29/NS-6_authoring_02.md) owns the source-review
 question, marker feedback and complete operator review. Its prior deferral is
 superseded by this request. Preserve all existing physical-device criteria.
 
@@ -4799,7 +4864,7 @@ One two-second toy source failed generation with `WFC could not generate the
 declared seed; no seed substitution`; the established eight-second fixture
 then generated successfully with the declared seed. Both results are retained,
 with no seed search or discarded failure. This is not evidence of a generic
-WFC defect. [Studio_03](TODO/NS-6_studio_03.md) AC2 owns the still-generic failed
+WFC defect. [Studio_03](TODO/RETIRED/2026-10-29/NS-6_studio_03.md) AC2 owns the still-generic failed
 batch explanation; its operator feedback acceptance remains open.
 
 Matched pas2js builds and checked Win64 FPC 3.2.2 worker compilation pass.
@@ -4848,7 +4913,7 @@ tracing proves that counter measures server disk hashing, not phone audio
 downloads. Refresh currently combines directory discovery with full admission:
 two original hash passes and one existing catalog hash pass.
 
-[Studio_11](TODO/NS-6_studio_11.md) now owns metadata-only discovery, bounded
+[Studio_11](TODO/RETIRED/2026-10-29/NS-6_studio_11.md) now owns metadata-only discovery, bounded
 original-region preview and selected-use verified corpus preparation. One
 unearned delivery_03 point funds it; all donor criteria remain. Current
 accounting is **50.80 accepted / 49.20 remaining; 47 open / 42 DONE; NS-6 45/55
@@ -4948,7 +5013,7 @@ task selection or a renewed demand to install a certificate.
 ## Phone microphone engineering checkpoint — 2026-10-01
 
 **Big Boss:** the operator now explicitly selects microphone recording from the
-physical LAN phone. [Studio_10](TODO/NS-6_studio_10.md) owns trusted HTTPS and
+physical LAN phone. [Studio_10](TODO/RETIRED/2026-10-29/NS-6_studio_10.md) owns trusted HTTPS and
 short certificate onboarding, funded by one unearned authoring_02 point without
 removing its physical/full-workflow criteria. Accepted credit stays **50.80**;
 the scoped catalog has **46 open / 42 DONE** across 88 tasks. No new criterion
@@ -4999,7 +5064,7 @@ script boundary. Its provisional source is retained only in ignored build eviden
 the maintained LAN guide now supplies direct Windows certificate commands.
 Pascal owns runtime certificate validation and transport. This correction does
 not regenerate certificates or alter the operator's catalog. Development
-repairs and remaining acceptance belong to [Studio_10](TODO/NS-6_studio_10.md).
+repairs and remaining acceptance belong to [Studio_10](TODO/RETIRED/2026-10-29/NS-6_studio_10.md).
 
 The bounded connection checks independently pass **119 Win64 assertions** with
 zero unfreed blocks. Idle and incomplete handshakes close in about 5.1 seconds;
@@ -5379,7 +5444,7 @@ preconnections: `Continue` in `repeat` tested an uninitialized header separator
 after the first socket timeout. Explicit initialization passes delayed complete
 and split-header requests; the request size/timeout limits are unchanged.
 
-**Required follow-up gap:** [studio_07](TODO/NS-6_studio_07.md) owns native
+**Required follow-up gap:** [studio_07](TODO/RETIRED/2026-10-29/NS-6_studio_07.md) owns native
 mixed-format corpus preparation and original-frame mappings. Current raw jobs
 explicitly require matching rates/channels. The accepted intake and later
 semantic tasks do not supply this conversion consumer. One further unearned
@@ -5392,7 +5457,7 @@ task scoping, milestone reconciliation and implementation of an intuitive,
 powerful web loop for substantial training sources, shorter musical auditions,
 classification and deliberate iteration. The [scope](OPERATOR-STUDIO.md) and
 [studio_01 — DONE](TODO/DONE/NS-6_studio_01.md) -> [studio_02](TODO/DONE/NS-6_studio_02.md) ->
-[studio_03](TODO/NS-6_studio_03.md) assign every new outcome. Twelve unearned NS-6
+[studio_03](TODO/RETIRED/2026-10-29/NS-6_studio_03.md) assign every new outcome. Twelve unearned NS-6
 points move from authoring_02/delivery_03/delivery_04; all original criteria
 remain. Scoping earned no credit. Independent project/setup acceptance adds
 4 NS-6 / 0.40 overall, giving **49.80 accepted / 50.20 remaining, 45 open /
@@ -5469,7 +5534,7 @@ it does not establish those eventual musical verdicts.
 
 ### Retained comparator execution batch
 
-**Qualified execution component:** [evaluation_01](TODO/NS-5_evaluation_01.md)
+**Qualified execution component:** [evaluation_01](TODO/RETIRED/2026-10-29/NS-5_evaluation_01.md)
 now has a maintained source-bound WFC comparator adapter/CLI and an independent
 saved-packet verifier. Final Salty QA passes 133 conformance assertions and
 30,192 saved-packet assertions on each checked stable Win32/Win64 target, with
@@ -5582,9 +5647,9 @@ proposal details. Big Boss owns that unsuitable human handoff; it was not a
 musical judgment the user needed to make. The image establishes the displayed
 state, not audibility, exact edits, successful Save or current service identity.
 
-**Defer [authoring_02](TODO/NS-6_authoring_02.md)** under the user's instruction to
+**Defer [authoring_02](TODO/RETIRED/2026-10-29/NS-6_authoring_02.md)** under the user's instruction to
 continue it now only if critically blocking other work. Its only direct consumer
-is [full packaging](TODO/NS-6_delivery_03.md), which also awaits recorded-provider
+is [full packaging](TODO/RETIRED/2026-10-29/NS-6_delivery_03.md), which also awaits recorded-provider
 integration and final style/blend acceptance. It does not unblock the current
 NS-3/NS-5 reference/inference gates, core synthesis or WFC development. Retain the
 final-delivery dependency; removing it would conceal an unfinished requirement.
@@ -5612,7 +5677,7 @@ workbench code. No available non-agent verdict is invented or requested again.
 This is retained evidence; the priority decision above supersedes its next-action
 language. Do not infer current runtime state from the earlier cleanup record.
 
-**Open task:** [authoring_02](TODO/NS-6_authoring_02.md), points 4, 5 and 10.
+**Open task:** [authoring_02](TODO/RETIRED/2026-10-29/NS-6_authoring_02.md), points 4, 5 and 10.
 Big Boss owns implementation/integration after two blocked Neo driver submissions.
 Salty owns final runtime QA and publication. Neo owns disjoint physical-input
 preparation. The administrator-installed fixed-slot firewall rules are verified;
@@ -5708,7 +5773,7 @@ Support's practical pinned-consumer update procedure is also prepared and passes
 Salty's focused command/link/privacy review in
 [the consumer contract](CONSUMER-CONTRACT.md). Its source/format regeneration,
 caller example and hash/report steps are concrete; no new package regeneration
-or outside-consumer use is claimed. [support_01](TODO/NS-6_support_01.md) remains
+or outside-consumer use is claimed. [support_01](TODO/RETIRED/2026-10-29/NS-6_support_01.md) remains
 open with zero new credit. The stopped scientific branches retain their original
 budgets and independent-reference blockers; this operator batch does not reopen
 them.
@@ -5743,7 +5808,7 @@ Acceptance adds **8 NS-6 points / 0.80 overall**: goal completions
 **100/90/25/65/14/31**, **49.40 credited / 50.60 remaining**, **43 open / 35 DONE**
 (28.00 baseline + 21.40 DONE). Two known blocking worker submissions and older
 unknown cumulative authoring history remain attached to Big Boss's mandatory
-repair below. [authoring_02](TODO/NS-6_authoring_02.md) now has its accepted
+repair below. [authoring_02](TODO/RETIRED/2026-10-29/NS-6_authoring_02.md) now has its accepted
 prerequisite and still owns all original physical LAN/audio/operator points
 4, 5 and 10. Both exact fixed QA/stable firewall rules and the current stable
 binary are verified; restarted startup, device and complete combined-path
@@ -5996,7 +6061,7 @@ earn outside-use/listening acceptance. No source rebuild or media access occurre
 ## Current caller source/effect batch — 2026-09-30
 
 Big Boss assigns Ticket Guy the bounded mechanical component of
-[NS-2_extension_01](TODO/NS-2_extension_01.md): the new caller unit, consumer,
+[NS-2_extension_01](TODO/RETIRED/2026-10-29/NS-2_extension_01.md): the new caller unit, consumer,
 conformance source and [offline guide](CALLER-EXTENSIONS.md), its task, plus
 `tools/build.ps1`, `tools/package.ps1`, `packaging/README.md` and this handoff.
 No library, adapter, vendor or ledger edits belong to this batch. Source and
@@ -6266,7 +6331,7 @@ pushing. Delivery_06 stays open through its matching published Linux result.
 
 Implementation batch 1 follows accepted identity into
 [corpus_05](TODO/DONE/NS-5_corpus_05.md) and the usable AC1 slice of
-[evaluation_01](TODO/NS-5_evaluation_01.md). Ticket Guy Neo owns intake and
+[evaluation_01](TODO/RETIRED/2026-10-29/NS-5_evaluation_01.md). Ticket Guy Neo owns intake and
 shared integration; Ticket Guy owns the six card files; Big Boss retains
 architecture, priorities, hardest assessment and final judgment. Both lanes
 use existing checked stable Win32/Win64 Pascal toolchains. Salty Boi final QA
@@ -6426,13 +6491,13 @@ the return path and their unchanged evidence blockers.
 Start from NS-5, currently 14%, following real prerequisites:
 
 - [Generic corpus intake](TODO/DONE/NS-5_corpus_05.md) is accepted, and the
-  [style-card contract](TODO/NS-5_evaluation_01.md) closes AC1 only. Full
+  [style-card contract](TODO/RETIRED/2026-10-29/NS-5_evaluation_01.md) closes AC1 only. Full
   reference-grounded evaluation remains blocked; no new threshold/source
   screening or ungrounded generated-style claim is authorized.
 - First learned-style return path: notes_01 + notes_05 -> notes_02 -> notes_03 ->
   style_01. Big Boss preserves all stopped observations/source families below.
 - [Current minimal package](TODO/DONE/NS-6_delivery_06.md) is accepted at its
-  exact frozen artifact revision. [Actual independent use](TODO/NS-6_delivery_07.md)
+  exact frozen artifact revision. [Actual independent use](TODO/RETIRED/2026-10-29/NS-6_delivery_07.md)
   has a concrete packet but needs a willing non-agent reviewer; our checks do
   not count. Caller source/effect conformance/example/guide is mechanically
   qualified at exact source/artifact revision `912f037`; actual outside use and
@@ -6443,7 +6508,7 @@ Start from NS-5, currently 14%, following real prerequisites:
 - [authoring_01](TODO/DONE/NS-6_authoring_01.md) is accepted with all owned points
   and independently checked current B1–B6, preserving the explicit retained
   source/build limits and both known blocking worker submissions.
-- Deferred source-marker/full physical lane: [authoring_02](TODO/NS-6_authoring_02.md), owned by Big Boss
+- Deferred source-marker/full physical lane: [authoring_02](TODO/RETIRED/2026-10-29/NS-6_authoring_02.md), owned by Big Boss
   after two blocked Neo driver submissions. Copied inputs and exact assets are
   frozen; the stale-audio repair passes independent negative and positive
   desktop/narrow playback/recovery checks. Both fixed rules are verified and
@@ -6459,7 +6524,7 @@ Start from NS-5, currently 14%, following real prerequisites:
   owns the current measured budgets and exact remaining read authorization.
   Big Boss retains chief judgment. NIGENS and other stopped inference routes
   stay closed; no new source/row/window/threshold/format retry is authorized.
-- Parallel bounded preparation: [support_01](TODO/NS-6_support_01.md) explicitly
+- Parallel bounded preparation: [support_01](TODO/RETIRED/2026-10-29/NS-6_support_01.md) explicitly
   permits preparing its update policy before full-delivery/external gates close.
   Neo owns only the consumer contract and that task. The concrete AC2 deliverable
   is caller-facing snapshot identification/pinning, update/deprecation notices,
@@ -6478,12 +6543,12 @@ without its changed-evidence condition.
 
 | Owner | Current stop / missing evidence | Counter and unblock condition |
 | --- | --- | --- |
-| [notes_01](TODO/NS-3_notes_01.md) | Odd/even physical feasibility did not transfer: blind Spring candidate proposed zero corrections. | At least two nonclosing batches in the retained history. A materially different independently supported observation must protect low/short/quiet notes; no threshold/window/range variant. |
-| [notes_05](TODO/NS-3_notes_05.md) | Quiet audible-tail gate remains; Berg found no candidate. Corrected publisher pairing reached row 1, then exact-zero rest and nonquiet tail rejected the source before presence inference. | At least four nonclosing source batches; original exposure unknown/development. Distinct supported audible tail plus disjoint same-source nonzero rest still required. No Win32 replay or source/row/window/threshold/format retry; further route needs independently supported changed evidence. |
-| [tempo_04](TODO/NS-3_tempo_04.md) | Frozen event graph failed missing120; recorded candidate/pulse references still required. | Existing nonclosing checkpoint remains. New justified physical candidate evidence; no terminal-extrapolation variants. |
-| [context_01](TODO/NS-3_context_01.md) | Profile/dictionary approaches rejected; tonal activity/tonic evidence missing. | Existing nonclosing checkpoint remains. New independently supported observation and prospective key/change/coverage gates. |
-| [authoring_02](TODO/NS-6_authoring_02.md) | Actual current physical-phone play/Save and complete operator matrix remain open; authoring_01 prerequisite is accepted. | Exact fixed QA/stable rules and current stable binary are verified. Restarted startup, device and operator matrix remain unqualified. Inspect each slot/interface afresh rather than reusing historical addresses/PIDs. |
-| [delivery_07](TODO/NS-6_delivery_07.md), [style_03](TODO/NS-5_style_03.md) | Actual independent caller verdict needed after their package/style prerequisites. | No self-run checkout can substitute. Record reviewer and artifact identity when available. |
+| [notes_01](TODO/RETIRED/2026-10-29/NS-3_notes_01.md) | Odd/even physical feasibility did not transfer: blind Spring candidate proposed zero corrections. | At least two nonclosing batches in the retained history. A materially different independently supported observation must protect low/short/quiet notes; no threshold/window/range variant. |
+| [notes_05](TODO/RETIRED/2026-10-29/NS-3_notes_05.md) | Quiet audible-tail gate remains; Berg found no candidate. Corrected publisher pairing reached row 1, then exact-zero rest and nonquiet tail rejected the source before presence inference. | At least four nonclosing source batches; original exposure unknown/development. Distinct supported audible tail plus disjoint same-source nonzero rest still required. No Win32 replay or source/row/window/threshold/format retry; further route needs independently supported changed evidence. |
+| [tempo_04](TODO/RETIRED/2026-10-29/NS-3_tempo_04.md) | Frozen event graph failed missing120; recorded candidate/pulse references still required. | Existing nonclosing checkpoint remains. New justified physical candidate evidence; no terminal-extrapolation variants. |
+| [context_01](TODO/RETIRED/2026-10-29/NS-3_context_01.md) | Profile/dictionary approaches rejected; tonal activity/tonic evidence missing. | Existing nonclosing checkpoint remains. New independently supported observation and prospective key/change/coverage gates. |
+| [authoring_02](TODO/RETIRED/2026-10-29/NS-6_authoring_02.md) | Actual current physical-phone play/Save and complete operator matrix remain open; authoring_01 prerequisite is accepted. | Exact fixed QA/stable rules and current stable binary are verified. Restarted startup, device and operator matrix remain unqualified. Inspect each slot/interface afresh rather than reusing historical addresses/PIDs. |
+| [delivery_07](TODO/RETIRED/2026-10-29/NS-6_delivery_07.md), [style_03](TODO/RETIRED/2026-10-29/NS-5_style_03.md) | Actual independent caller verdict needed after their package/style prerequisites. | No self-run checkout can substitute. Record reviewer and artifact identity when available. |
 
 This table records established checkpoint thresholds, not invented exact
 cumulative attempt counts. Earlier same-cause attempts, failures and counters

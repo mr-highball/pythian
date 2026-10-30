@@ -12,12 +12,12 @@ Give Pascal producers a durable operator decision loop for complete source or
 generated audio and fixed paired comparisons. This is a reusable listening
 contract, separate from the source-frame annotation labels in
 [NS-6_authoring_01](NS-6_authoring_01.md). It can carry whole-mix preference and
-recording-correspondence questions for [NS-5_evaluation_01](../NS-5_evaluation_01.md),
-timestamped continuity observations for [NS-5_continuity_01](../NS-5_continuity_01.md),
-learned-versus-reference sound comparisons for [NS-3_timbre_02](../NS-3_timbre_02.md),
-synthesis-path observations for [NS-4_integration_01](../NS-4_integration_01.md),
+recording-correspondence questions for [NS-5_evaluation_01](../RETIRED/2026-10-29/NS-5_evaluation_01.md),
+timestamped continuity observations for [NS-5_continuity_01](../RETIRED/2026-10-29/NS-5_continuity_01.md),
+learned-versus-reference sound comparisons for [NS-3_timbre_02](../RETIRED/2026-10-29/NS-3_timbre_02.md),
+synthesis-path observations for [NS-4_integration_01](../RETIRED/2026-10-29/NS-4_integration_01.md),
 and the 120-second and paired style packet in
-[NS-5_evaluation_02](../NS-5_evaluation_02.md). Each owning task still supplies its
+[NS-5_evaluation_02](../RETIRED/2026-10-29/NS-5_evaluation_02.md). Each owning task still supplies its
 musical evidence and earns its own listening verdict.
 
 North star: NS-5. Outcome owner: STYLE-EVAL.

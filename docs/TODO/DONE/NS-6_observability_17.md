@@ -20,7 +20,7 @@ All criteria and prerequisites pass at this engineering scope. No musical,
 browser/device or independent-use credit follows.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
-This is a prerequisite of [parent04](../NS-6_observability_04.md)'s remaining named
+This is a prerequisite of [parent04](../RETIRED/2026-10-29/NS-6_observability_04.md)'s remaining named
 voice/duration scope. The already qualified layer component does not require it.
 Pythian-specific pending edits, preference lifetime, retained publication and
 operator forwarding remain parent04; no musical acceptance follows here.

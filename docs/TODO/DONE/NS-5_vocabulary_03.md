@@ -107,7 +107,7 @@ with its focused fixture at
 - The contribution journal and admitted-pitch learner already provided
   bounded, source-identified inputs and actual WFC training. This task added a
   distinct group-token-mass policy comparison without a second journal. The
-  downstream [NS-5_vocabulary_01](../NS-5_vocabulary_01.md) task retains
+  downstream [NS-5_vocabulary_01](../RETIRED/2026-10-29/NS-5_vocabulary_01.md) task retains
   broader representative vocabulary and balanced/unbalanced acceptance.
 - The first private source gate stopped before journal decode because the
   copied expected SHA-256 literal was truncated. The unchanged accepted file

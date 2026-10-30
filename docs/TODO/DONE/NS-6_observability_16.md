@@ -5,7 +5,7 @@
 **Description:**
 
 Resolve the generic capture prerequisite for
-[retained generation observation04](../NS-6_observability_04.md) AC1. WFC's public
+[retained generation observation04](../RETIRED/2026-10-29/NS-6_observability_04.md) AC1. WFC's public
 sequence/segment capture and entry-domain proof previously repeated model
 validation without an observer. A frozen checked Win64 call at the admitted
 1024-state/256-cell bound took5407/5546/5375ms respectively, without solver time

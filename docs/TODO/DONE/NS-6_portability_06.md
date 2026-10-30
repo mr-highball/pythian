@@ -12,7 +12,7 @@ parallel comparator or an alias that silently changes byte limits/scalar order.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
 Big Boss works solo. This is a demonstrated prerequisite of the shared checks in
-[retained evaluation task04](../NS-6_observability_04.md). Preserve its partially
+[retained evaluation task04](../RETIRED/2026-10-29/NS-6_observability_04.md). Preserve its partially
 implemented callbacks and the frozen pre-change native evidence.
 
 Execution status: accepted at `1ed5e34` after actual native/pas2js qualification

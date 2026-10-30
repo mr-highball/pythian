@@ -26,7 +26,7 @@ dependency source. The [current audit](CODEBASE-ASSESSMENT.md#wfc-boundary-audit
 found no demonstrated generic WFC defect, so no branch or dependency change
 was needed. Caller-provider extension and recorded integration remain owned by
 [accepted providers_01](TODO/DONE/NS-4_providers_01.md) and
-[integration_01](TODO/NS-4_integration_01.md), rather than duplicate upstream work.
+[integration_01](TODO/RETIRED/2026-10-29/NS-4_integration_01.md), rather than duplicate upstream work.
 
 The public scope is **any caller-defined style within declared support**.
 The initial chillwave, stoner rock and lofi preferences are internal regression
@@ -196,7 +196,7 @@ This extends the existing architecture through the following open requirements:
   probes. An explicit local swap radius now admits sustained passages within the
   same work budget. The [paired study](WAV-STUDIES.md#journal-sustained-checkpoint)
   exposes repeated short-window use and reduced effective diversity despite lower
-  seam mismatch. [Continuation work](MILESTONES.md#wav-04-continuation) therefore
+  seam mismatch. [Continuation work](history/MILESTONES-2026-10-29.md#wav-04-continuation) therefore
   remains linked to musical acceptance. Sustained phrase quality and independently reusable semantic providers
   remain open; matching token names alone cannot make
   different palettes mergeable. Source-grain shares do not measure perceptual blend.
@@ -287,7 +287,7 @@ semantic schema registration, model migration and scoped recompilation across
 resolutions remain planned. Runtime [token preferences](LAYERS.md#generation-preferences)
 and [saved preference derivations](WAVE-STYLE.md#saved-generation-preferences) are
 implemented; general semantic role controls remain under
-[WFC-LAYERS](MILESTONES.md#wfc-layers).
+[WFC-LAYERS](history/MILESTONES-2026-10-29.md#wfc-layers).
 Declared uniform grids and [fixed unequal partitions](LAYERS.md#fixed-time-partitions)
 support explicit start-tick and whole-cell relationships between unequal pass
 scopes. Durations selected during a solve and source-to-musical-time admission
@@ -370,13 +370,13 @@ palettes or treating arbitrary generated output as verified training evidence
 is not a supported merge method. Weighted source learning is implemented for the
 current onset, intensity, pitch and duration capabilities, including repeated
 derivations. General model composition remains under
-[WFC-STYLE](MILESTONES.md#wfc-style). The generic
+[WFC-STYLE](history/MILESTONES-2026-10-29.md#wfc-style). The generic
 [layer API](LAYERS.md#generation-preferences) now supports positive per-token
 generation multipliers, owned session edits and selective regeneration without
 altering training counts. [Saved preferences](WAVE-STYLE.md#saved-generation-preferences)
 retain supported provider settings through reload and repeated blends. General
-semantic role controls remain under [WFC-LAYERS](MILESTONES.md#wfc-layers), and
-broader recorded/consumer acceptance under [integration](MILESTONES.md#wav-04-integration).
+semantic role controls remain under [WFC-LAYERS](history/MILESTONES-2026-10-29.md#wfc-layers), and
+broader recorded/consumer acceptance under [integration](history/MILESTONES-2026-10-29.md#wav-04-integration).
 Historical format readers are not a roadmap milestone;
 superseded development artifacts are regenerated under the project format policy.
 Do not assume repeated blends are associative or order-independent unless the
@@ -479,7 +479,7 @@ modeled level and independent envelopes remain separate controls. Paired role
 edits preserve unrelated audio and MIDI. Stationary-only styles retain their
 existing amplitude behavior; mixed trajectory/static styles explicitly normalize
 both kinds of source. This is not perceptual loudness matching.
-[WAV-03-TIMBRE](MILESTONES.md#wav-03-timbre) retains the recorded-quality and
+[WAV-03-TIMBRE](history/MILESTONES-2026-10-29.md#wav-03-timbre) retains the recorded-quality and
 changing-pitch gates. Declared-region evaluation is independent of phrase
 admission; automatic event assignment depends on it. No general mixture ownership
 or listening acceptance is supplied by saved control isolation.

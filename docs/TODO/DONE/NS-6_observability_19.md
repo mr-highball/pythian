@@ -34,8 +34,8 @@ construction and render/duration interiors; transport18 retains actual browser
 presentation. No musical credit, deployment or scientific reset follows.
 
 This accepted component is a prerequisite to parent
-[observability04](../NS-6_observability_04.md). Actual Studio presentation remains
-owned by [transport18](../NS-6_observability_18.md); it does not block this primary
+[observability04](../RETIRED/2026-10-29/NS-6_observability_04.md). Actual Studio presentation remains
+owned by [transport18](../RETIRED/2026-10-29/NS-6_observability_18.md); it does not block this primary
 component's native/portable evidence. Journal ingestion/index construction and
 render/duration interiors remain in parent04; do not claim whole-unit coverage.
 Delivered: one shared selector with call-borrowed progress/cancellation,

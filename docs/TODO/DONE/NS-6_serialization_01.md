@@ -14,7 +14,7 @@ around formatting does not cover its interior or establish a latency guarantee.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
 Big Boss works solo. This is a linked prerequisite of retained evaluation AC2
-in [task04](../NS-6_observability_04.md), not an upstream WFC responsibility.
+in [task04](../RETIRED/2026-10-29/NS-6_observability_04.md), not an upstream WFC responsibility.
 
 Execution status: accepted at `ae91789` after checked native/actual pas2js
 consumers, exact prior report bytes, separate capacity traces and

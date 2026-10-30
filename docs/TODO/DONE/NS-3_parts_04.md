@@ -24,7 +24,7 @@ Starting evidence: [role measures and packet](../../PART-EVALUATION.md),
 This task was split from the original parts_01 on 2026-09-21 in response to the
 task-size reassessment. One of its two unearned NS-3 points is assigned here;
 one remains with the external packet. The
-[criterion reconciliation](../../MILESTONES.md#mixture-preparation-task-split) retains
+[criterion reconciliation](../../history/MILESTONES-2026-10-29.md#mixture-preparation-task-split) retains
 all former requirements and downstream prerequisites. This deliverable was
 implemented after the accepted baseline and has earned no previous task credit.
 
@@ -59,4 +59,4 @@ credit: NS-3 37% → 38%, overall 62.65% → 62.90%.
 
 **Dev Notes:**
 
-- Follow-up boundary: maintained scorers and authored controls measure declared predictions; they do not learn roles or establish recorded accuracy. External preparation is accepted in [parts_01](NS-3_parts_01.md); actual inference and independent admission remain [parts_02](../NS-3_parts_02.md) and [parts_03](../NS-3_parts_03.md).
+- Follow-up boundary: maintained scorers and authored controls measure declared predictions; they do not learn roles or establish recorded accuracy. External preparation is accepted in [parts_01](NS-3_parts_01.md); actual inference and independent admission remain [parts_02](../RETIRED/2026-10-29/NS-3_parts_02.md) and [parts_03](../RETIRED/2026-10-29/NS-3_parts_03.md).

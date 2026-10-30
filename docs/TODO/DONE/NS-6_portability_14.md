@@ -12,7 +12,7 @@ Native32/64 pass the unchanged case. Keep this failure; do not reduce the input,
 skip recovery, patch generated JavaScript or edit the toolchain dependency.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
-This demonstrated prerequisite belongs to [retained interiors04](../NS-6_observability_04.md).
+This demonstrated prerequisite belongs to [retained interiors04](../RETIRED/2026-10-29/NS-6_observability_04.md).
 Big Boss owns implementation and verification solo. Deliver a primary portable
 bounded mutable byte stream and shared read/seek behavior for the existing
 borrowed read-only byte view. Caller-supplied streams still own their I/O and

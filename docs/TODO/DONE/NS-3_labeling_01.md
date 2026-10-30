@@ -34,7 +34,7 @@ The task earns +2 NS-3 / +0.50 overall: NS-3 **43→45%**, total **70.20→70.70
 
 North star: NS-3. Outcome owner: WAV-03-LABELING.
 Historical allocation: 2 goal percentage points (0.50 overall points), assigned
-from the 4 unearned points of [NS-3_notes_03](../NS-3_notes_03.md). That task retains
+from the 4 unearned points of [NS-3_notes_03](../RETIRED/2026-10-29/NS-3_notes_03.md). That task retains
 2 points and all of its original phrase and inferred-event criteria. The
 accepted [WFC bridge](NS-3_notes_06.md) retains its earlier 1 point;
 the original 5-point allocation is now 1 + 2 + 2, with no new credit.
@@ -42,7 +42,7 @@ Credit is earned only when every acceptance criterion and the task-flow
 completion requirements pass.
 
 Starting evidence: [source-bound presence](../../PRESENCE.md) · [beat reports](../../BEAT-GRIDS.md) ·
-[shared evaluation](../../EVALUATION-OPERATOR.md) · [recorded source audit](../NS-3_tempo_04.md).
+[shared evaluation](../../EVALUATION-OPERATOR.md) · [recorded source audit](../RETIRED/2026-10-29/NS-3_tempo_04.md).
 
 **Acceptance Criteria:**
 

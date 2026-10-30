@@ -5,7 +5,7 @@
 **Description:**
 
 Observe the retained-input/operator prerequisite for
-[observability04](../NS-6_observability_04.md) AC3. Forward shared callbacks through
+[observability04](../RETIRED/2026-10-29/NS-6_observability_04.md) AC3. Forward shared callbacks through
 `TInferenceCorpusReader` metadata validation, lazy artifact hash/row verification
 and bounded reading, and through the maintained native corpus auditor. An
 observed WAV supervisor alone does not cover these retained-input operations.

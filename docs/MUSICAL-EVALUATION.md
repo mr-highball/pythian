@@ -148,8 +148,8 @@ Previously untouched evaluation stays closed until inference and admission freez
 
 ### Pitch identity and presence
 
-Owner: [recorded identity](TODO/NS-3_notes_01.md), coordinated with
-[presence and boundaries](TODO/NS-3_notes_02.md).
+Owner: [recorded identity](TODO/RETIRED/2026-10-29/NS-3_notes_01.md), coordinated with
+[presence and boundaries](TODO/RETIRED/2026-10-29/NS-3_notes_02.md).
 
 - Baseline: the preferred entry-activity inference in the
   [recorded phrase evidence](PHRASE-EVALUATION.md#rate-view-strength), reproduced
@@ -190,8 +190,8 @@ Reassess discriminating identity/presence evidence before a new preregistration.
 
 ### Metrical selection and changing clocks
 
-Owners: [beat level](TODO/NS-3_tempo_01.md) and
-[changing clocks](TODO/NS-3_tempo_02.md).
+Owners: [beat level](TODO/RETIRED/2026-10-29/NS-3_tempo_01.md) and
+[changing clocks](TODO/RETIRED/2026-10-29/NS-3_tempo_02.md).
 
 - Baselines: the native/default and model-plus-candidate results for the nine
   existing cases in the [joint comparison](BEAT-TRACKING.md#model-candidate-comparison).

@@ -13,7 +13,7 @@ that real consumer. Intermediate stages and modes0–9 already pass.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
 Big Boss works solo. This is a required primary prerequisite of the active
-[retained-operation task04](../NS-6_observability_04.md), not a wrapper workaround.
+[retained-operation task04](../RETIRED/2026-10-29/NS-6_observability_04.md), not a wrapper workaround.
 Keep the current context component's partial work and failure evidence intact.
 Starting source is `f7f7881`; WFC remains reviewed `6b419e6`.
 

@@ -1,12 +1,14 @@
-# Completed tasks
+# Historical completed tasks
+
+> These 97 accepted records predate the [current goal](../../GOAL.md). They preserve reusable code and evidence but have no current Goal/Effort metadata and contribute no units to its estimate. The table below is historical percentage-credit accounting, not current progress.
 
 [Task index](../README.md) · [Task flow](../../TASKFLOW.MD) ·
-[Milestones](../../MILESTONES.md) · [Current credit basis](../../REBALANCE-2026-09-29.md#current-credit-basis)
+[Milestones](../../MILESTONES.md) · [Historical credit basis](../../REBALANCE-2026-09-29.md#current-credit-basis)
 
 All **97** records retain their acceptance evidence and dates. Points below
 use the user-authorized 2026-09-29 outcome rebase; older amounts in evidence
 narratives are historical. No task was accepted by this reassessment.
-The [2026-09-30 Studio allocation](../../OPERATOR-STUDIO.md#allocation-and-ownership)
+The [2026-09-30 Studio allocation](../../history/OPERATOR-STUDIO-2026-10-29.md#allocation-and-ownership)
 moves only unearned NS-6 points. Subsequent independent Studio setup acceptance
 adds 4 NS-6 / 0.40 overall without changing prior accepted values.
 Private corpora, bounded raw WFC jobs, effects and experimental capture/exploration
@@ -14,7 +16,7 @@ add a further 8 NS-6 / 0.80 overall on 2026-10-01, without scientific inference 
 Accepted starting actions/navigation and large-library refresh add 2 NS-6 / 0.20 overall.
 Shared filter catalog and flexible source workspace add 3 NS-6 / 0.30 overall.
 
-| Accepted task | Date | Current goal credit | Current overall credit |
+| Accepted task | Date | Historical goal credit | Historical overall credit |
 | --- | --- | ---: | ---: |
 | [NS-6_observability_20](NS-6_observability_20.md) — Shared observed immutable model copying and actual consumers | 2026-10-29 | 0 NS-6 | 0.00 |
 | [NS-6_wfc-build_01](NS-6_wfc-build_01.md) — Complete unchanged upstream native conformance within its budget | 2026-10-29 | 0 NS-6 | 0.00 |

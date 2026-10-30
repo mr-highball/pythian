@@ -11,7 +11,7 @@ Earlier point/split narratives below are historical; acceptance evidence and fai
 Persist independently supplied admitted pitch-duration contributions so a
 multi-recording WFC model can be rebuilt after a completed journal reload or an
 additional source. This is a reusable semantic recovery boundary ahead of the
-many-hour, multi-provider workload in [NS-5_scale_02](../NS-5_scale_02.md).
+many-hour, multi-provider workload in [NS-5_scale_02](../RETIRED/2026-10-29/NS-5_scale_02.md).
 Reference events exercise the mechanism; they are not Pythian WAV inference.
 
 North star: NS-5. Outcome owner: CORPUS-SCALE.

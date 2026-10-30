@@ -26,7 +26,7 @@ engineering acceptance. The broader workflow and musical criteria remain open.
 
 North star: NS-6. Outcome owner: OPERATOR-STUDIO.
 Completion credit: 0. This required producer prerequisite contributes to
-[studio_03](../NS-6_studio_03.md) AC3; that task retains its allocation and actual
+[studio_03](../RETIRED/2026-10-29/NS-6_studio_03.md) AC3; that task retains its allocation and actual
 browser/operator acceptance. Audio measurements earn no musical credit.
 
 **Acceptance Criteria:**

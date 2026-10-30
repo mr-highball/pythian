@@ -13,7 +13,7 @@ changes, no-key and ambiguous intervals before evaluating automatic admission.
 Researcher whole-loop labels and score-level gaps alone cannot supply all of
 these acoustic interval labels. This task owns reference qualification; the
 key decision and its measured accuracy remain in
-[NS-3_context_01](../NS-3_context_01.md).
+[NS-3_context_01](../RETIRED/2026-10-29/NS-3_context_01.md).
 
 North star: NS-3. Outcome owner: WAV-02-CONTEXT.
 Historical allocation: 1 goal percentage point (0.25 overall points), split from
@@ -84,7 +84,7 @@ Starting evidence: [local-key reference study](../../TONAL.md#local-key-referenc
   no-pitched-music verdict. The [maintained checker and separate scorer](../../TONAL.md#reviewed-acoustic-no-key-intervals-and-denominator--2026-09-23)
   reproduce exact source identities, reviewed labels, roles and independent
   acoustic no-key false-admission denominators on both stable targets. All six
-  criteria now pass. The downstream [key-decision task](../NS-3_context_01.md)
+  criteria now pass. The downstream [key-decision task](../RETIRED/2026-10-29/NS-3_context_01.md)
   still owns threshold, coverage and independent inference-accuracy acceptance.
 - 2026-09-23 no-key packet checkpoint: the [maintained Pascal checker](../../TONAL.md#prospective-acoustic-no-key-screen--2026-09-23)
   now binds both original media, the external conversion, frozen windows,
@@ -119,7 +119,7 @@ Starting evidence: [local-key reference study](../../TONAL.md#local-key-referenc
   blocks. **Criterion 5 is met for the packet's annotated ambiguity target.**
   This closes a criterion after the previous qualification batch; no task
   credit moves because criterion 6, explicit from the task description and
-  [downstream non-tonal requirement](../NS-3_context_01.md), remains open.
+  [downstream non-tonal requirement](../RETIRED/2026-10-29/NS-3_context_01.md), remains open.
   MTG-Jamendo's three-annotator tonal/atonal labels are whole-track labels,
   so they are a possible source screen, not accepted local no-key intervals.
 - 2026-09-23 direct ambiguity qualification: the [exact audio-annotator

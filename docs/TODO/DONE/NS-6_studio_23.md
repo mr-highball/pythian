@@ -50,7 +50,7 @@ format, validation policy or catalog mutation from failed validation.
   `runs/feedback-readiness-20261027-spiegel-qa` and
   `runs/feedback-readiness-20261027-boss`. No operator answer was written.
 
-- 2026-10-27, Big Boss: discovered during [studio_03](../NS-6_studio_03.md)'s prepared
+- 2026-10-27, Big Boss: discovered during [studio_03](../RETIRED/2026-10-29/NS-6_studio_03.md)'s prepared
   single-review work. Full fixture assertions pass but report 11 unfreed blocks
   (748 bytes on Win64, 392 on Win32). The unchanged HEAD fixture against the
   candidate unit reproduces the same failure; the product diff is confined to

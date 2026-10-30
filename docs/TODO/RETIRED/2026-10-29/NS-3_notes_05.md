@@ -1,0 +1,930 @@
+> **Retired — 2026-10-29.** Historical unfinished ticket; no current effort or acceptance. See [disposition/replacement](README.md) and the [active goal](../../../GOAL.md). The original body below is historical, not an implementation instruction.
+
+# NS-3_notes_05 — Admit source-grounded note-presence evidence
+
+[Task index](legacy-catalog.md) · [Task flow](../../../history/TASKFLOW-2026-10-29.md) · [North star](../../../history/MILESTONES-2026-10-29.md#ns-3)
+
+**Description:**
+
+Completion credit: 3 goal percentage points (0.75 overall points).
+Current basis: [2026-09-29 outcome rebase](../../../REBALANCE-2026-09-29.md#current-credit-basis).
+Earlier point/split narratives below are historical; acceptance evidence and failures remain valid.
+
+Execution status (2026-09-30): **Reference-blocked; publisher-contract comparison stopped at the physical gate**.
+Next deliverable: Close the remaining quiet audible-tail recorded gate with a distinct source-bound tail and disjoint same-source nonzero rest. Preserve the accepted MAESTRO contrasts and existing satisfied observation/consumer criteria.
+Closing evidence and stop condition: Prospectively frozen source/reference identities, meaningful quiet-tail/rest controls and recorded false-active/missed-active/unknown results. Berg and other rejected source/window families remain stopped. After independent publisher-contract correction, NIGENS selected and decoded its fixed source but found an exactly zero scored rest; the tail also exceeds the quiet bound. It stopped before presence scoring. No Win32 replay or source, row, format, window or threshold substitution is authorized. A further route needs materially different independently supported quiet-tail/nonzero-rest evidence, not another selector or metadata-only screen on this stopped source. All original setup failures remain below.
+Primary credit follows this task's north-star owner; downstream use earns no duplicate credit.
+This reassessment closes no product criterion and preserves prior failures below.
+
+Deliver a reusable Pascal observation of audible instrument activity and
+uncertainty separately from pitch identity. It must distinguish evidence for
+attack, continuation, release-tail candidate and rest without treating an
+annotation end, nonzero PCM, or a high pitch score as proof of an audible note.
+The later [event-decision task](NS-3_notes_02.md) owns integration with pitch,
+event boundaries and the shared recorded phrase gates.
+
+North star: NS-3. Outcome owner: WAV-03-BOUNDARIES.
+Historical allocation: 1 goal percentage point (0.25 overall points), reallocated
+from the original 3 unearned points of NS-3_notes_02. The two tasks retain
+the original 3-point total with no new credit.
+Credit is earned only when every acceptance criterion and the task-flow
+completion requirements pass.
+
+Starting evidence: the accepted [source-bound reference packet](../../DONE/NS-3_notes_04.md),
+its fixed Pascal activity consumer's 7/8 held-out result, and the
+[recorded boundary evidence](../../../PHRASE-EVALUATION.md#residual-boundary-emission-audit--2026-09-20).
+The user-inaudible flute late tail is a visible false-active result at RMS
+0.000999; the quiet audible guitar late tail must remain protected. Both exact
+zero rest controls are too easy to establish recorded noise rejection. The
+extra NSynth train and first-stem URMP development selectors were stopped at
+their frozen metadata gates before listening/scoring; neither can be repaired
+by changing its failed pair or window in place.
+
+The first frozen GuitarSet listener packet is now bound and scored. The
+[source-bound review](../../../PRESENCE.md#first-listener-bound-guitarset-comparison--2026-09-23)
+meets criterion 1's acoustic-label and source-group convention at this
+packet scope; criteria 2 and 4 were already met at the maintained observation
+and consumer scope. Development yielded four historical rest-compatible scorer
+outputs against audible no-guitar comparisons, but no scored guitar-positive
+window. Those outputs do not qualify as generic presence decisions under the
+maintained API. The reserved recording yielded one
+correct contrast candidate and one guitar-positive abstention. Criterion 3
+and all task credit remain open; this evaluation recording is now exposed and
+cannot become a fresh held-out test after a policy change. It is now usable
+as exposed development evidence. A player/material-disjoint player-03 packet
+was reviewed, but all three windows sounded guitar-like to the listener. It
+had no reviewed same-source no-guitar reference, so the frozen scorer made no
+presence observation. Player 03 is now exposed and cannot be used as fresh
+held-out evidence after a policy change.
+
+Recorded comparison, 2026-09-28: the unchanged
+`pythian.presence.rest-contrast.v1` passed the prospectively frozen direct-
+MAESTRO development and independent activity-contrast gates. Four exact
+operator-approved `presence` answers bind the original Berg and Scriabin WAVs
+to disjoint same-source rest/candidate windows. Each source returned a
+rest-compatible observation and an above-rest audible candidate: 2/2 covered
+cases per source, zero false-active rests, zero missed-active positives and
+zero unknowns. Checked stable FPC 3.2.2 Win32/Win64 source-free controls and
+all four recorded inspector rows replayed exactly with zero reported leaks.
+The operator confirmed physical-phone playback and Save; Salty Boi independently
+audited source identities, geometry, chronology and two-target output. The
+frozen policy SHA-256 is
+`d3431c7438ad47ae48a8da7bd8a90baedc9b0af50c04ce6c35b60e162f484022`;
+the reviewed export SHA-256 is
+`755539a7f4c340d31a534c8ea96d27aafe60929ab24c916748fb434c7244c881`.
+The bounded result and logs are under ignored
+`build/maestro-presence-recorded-20260928/` and summarized in
+[PRESENCE](../../../PRESENCE.md#frozen-direct-maestro-comparison--2026-09-28).
+
+Criterion 3 and the task credit remain open: this comparison has no reviewed
+audible quiet-tail candidate. The earlier [NSynth reference packet](../../DONE/NS-3_notes_04.md)
+contains the listener-reviewed quiet audible guitar late tail
+`guitar_acoustic_008-048-075` [60000,64000), but the maintained
+rest-contrast observation needs a disjoint reviewed rest in that same source;
+the packet has none. Its older activity consumer's correct tail decision does
+not substitute for the current observation gate. A bounded follow-up should
+first establish a valid same-source reference and prospectively freeze the
+tail comparison, then report its result without retuning the independent
+MAESTRO packet. No pitch, note-boundary or audible-ending accuracy follows
+from these four MAESTRO contrasts.
+
+**Acceptance Criteria:**
+
+- Establish a source-bound development/reference convention for audible
+  instrument sound, explicitly separating note control, residual audio,
+  room/electronic noise, and unknown. Retain source-group disjoint roles and
+  human or independently supported acoustic labels before scoring. Protect
+  untouched evaluation groups; the now-exposed NSynth train result cannot be
+  silently reused as a fresh held-out test for a replacement rule.
+- Expose a maintained Pascal pitch-independent presence observation with
+  explicit activity/unknown evidence, source-frame coordinates, policy identity
+  and bounded work. Do not infer a note-off or audible ending from one fixed
+  RMS gate or nonzero samples.
+- Prospectively freeze the decision, resource budget and stop gate, then pass
+  meaningful source-free low, quiet, short, gap, attack, tail, rest and mixture
+  controls plus source-separated recorded development and independent cases.
+  Report false-active, missed-active and unknown coverage separately; retain
+  an audible quiet-tail case and expose failures rather than retune on the
+  independent packet.
+- Exercise the maintained observation through a native consumer that preserves
+  unknown and original source coordinates. Demonstrate deterministic checked
+  target replay and failure preservation; this task does not grant combined
+  event-decoder or recorded phrase accuracy.
+
+**Blockers**
+
+- [NS-3_validation_01.md](../../DONE/NS-3_validation_01.md)
+- [NS-3_notes_04.md](../../DONE/NS-3_notes_04.md)
+
+**Dev Notes:**
+
+- 2026-10-27, Big Boss / Spike / Spiegel: a bounded publisher-documentation
+  check of [TU-Note's insert, section4.2](https://depositonce.tu-berlin.de/bitstreams/4a86fb10-cc11-48d2-9884-2f215e6c1679/download)
+  found manually labelled silent/steady/transient intervals. The predetermined
+  two-note example's final transient is a release candidate, but does not prove
+  an exact subwindow is quietly audible. The one-player source is development
+  only. No archive/audio acquisition, PCM screening or presence scoring follows;
+  this lead is not a qualified rest/tail packet. Keep AC3 reference-blocked,
+  prior stops/exposure and the recorded nonclosing lower bound unchanged.
+- 2026-09-30 the single released publisher-contract Win64 run is a terminal
+  physical-source nonpass, exit 1 after 66,125 ms including excluded archive
+  hashing. Correct pairing selected piano `PianoComedy_DIGIP05-79.wav`, row 1.
+  The annotation SHA256 is
+  `17e0791a4382119d6b1d8aa6cb9a568890b77bf929a5062c90ca5f15ce49cc93`;
+  original WAV SHA256 is
+  `3341ac0bc4a0ac5b201953801f82bceff19709d7e0c2825931866ef16b7a369c`,
+  1,761,324 bytes, 44,100 Hz stereo and 440,320 frames. The scored rest
+  `[145437,150950)` is exactly zero, so the physical gate stops before any
+  maintained presence observation. Recorded tail RMS 0.17872706091077148 also
+  exceeds half of earlier-active RMS 0.17289724768881970; no rescan or tuned
+  interpretation is needed. The ZIP listing/extraction stage took 734 ms with
+  7,503,872 peak private bytes, within its frozen limits. The decode-stage final
+  resource report was not reached and is not qualified. Heap accounting is
+  leak-free. Log SHA256 is
+  `03d86a3f364f33b33c36595d5501d0d7fe71a6a4ef086a61e0f33ed53b6bc1bb`;
+  exact identities/log and private selected original are under the publisher-
+  contract packet's `win64-recorded/`. Big Boss stopped with no Win32 replay,
+  alternative file/row/format/window/threshold or further archive inspection.
+  Salty's final same-batch result-record QA passed: exact identities, physical
+  stop before observation, ZIP-only resource qualification and the retained
+  exposure/counters agree with the code and log. The later quiet-ratio guard
+  was not executed; its recorded inputs independently fail that bound. No
+  archive or WAV was reopened for this audit. This correctly implemented
+  physical rejection is separate from implementation QA failures. AC3 and all
+  task credit remain open; the retained nonclosing lower bound is now at least
+  four, with original exposure uncertainty and all prior stops preserved.
+
+- 2026-09-30 Big Boss's bounded public-source reassessment found a documented
+  setup mismatch. The publisher-linked authors' supplement uses AMLTTP; its
+  pinned [annotation reader](https://github.com/TWOEARS/Auditory-Machine-Learning-Training-and-Testing-Pipeline/blob/03f148c1df1c6912d1f7662172b895f5093e227d/src/tools/IdEvalFrame.m#L109)
+  appends `.txt` to the full WAV filename and permits a trailing event type.
+  Our frozen setup assumed a basename without `.wav` and exactly two fields.
+  No archive, annotation or audio was accessed during this documentation/code
+  assessment. Neo reviewed and agreed with the narrowly scoped correction.
+  A separate private policy, SHA256
+  `6e41a354a82495cc2fedf5cf28a3bcbc888ee15deca6d074deb3956e8cca052e`,
+  binds the original scientific policy and corrects only unique full-WAV-name
+  pairing and an optional absent/exact `piano` type. Ambiguous pairing, other
+  types and extra fields reject; no alternative suffix is tried. The original
+  policy/scanner/result remain unchanged. All source selection ordering,
+  event/window/physical/scoring/resource rules and earlier stopped families
+  remain binding. Big Boss owns the copied Pascal scanner and source-free
+  controls under ignored `build/nigens-publisher-contract-20260930/`.
+  Frozen scanner SHA256 is
+  `9aefa9b426b5ae75cc73cb3493a7cd9de6a7eb90c58a841318b046a4c00ea79a`;
+  Big Boss's checked stable Win32/Win64 controls and invalid invocations pass
+  with four complete zero-leak runtime logs. Salty independently rebuilt both
+  targets and passed all controls/invalid calls with four zero-leak logs, exact
+  identities and unchanged scientific gates; it also verified the preceding
+  stopped run's log and code reachability without reopening the archive.
+  This changes the next action from an unsupported format guess to an
+  independently documented setup contract. It is not a new acoustic hypothesis,
+  fresh held-out source or counter reset. Before any archive access, checked
+  Win32/Win64 controls and Salty preflight must pass, then Big Boss must record
+  a separate release. Those preflight gates now pass. Big Boss separately
+  releases exactly one Win64 comparison under these frozen identities; any
+  nonpass stops without substitution, and only a pass permits the same frozen
+  Win32 replay. The deliverable remains the actual quiet-tail/rest
+  comparison; source-free preparation earns no criterion or task credit.
+  The nonclosing lower bound remains at least three.
+
+- 2026-09-30 the released repaired Win64 run returned exit 1:
+  `no eligible piano annotation/WAV pair`. The original archive passed its
+  publisher MD5 gate and has SHA-256
+  `dab6bfa48edb5accda25adead5135608df44a297d82973cd9fc3a6d75cf537c8`
+  at 2,174,918,847 bytes. The directory contained 1,654 entries and 29 names
+  passing the frozen ASCII piano-WAV selector; each had zero same-stem `.txt`
+  matches. No annotation member was extracted or parsed, no WAV member was
+  extracted or decoded, and no presence observation was made. This is a
+  pairing-contract nonpass, not evidence that the collection has no annotations
+  or that the acoustic hypothesis fails. The run took 78,941 ms including
+  excluded whole-archive hashing and reported zero heap leaks; it did not reach
+  the source-stage measurement/resource report, so those bounds are unqualified.
+  The exact log SHA-256 is
+  `dbd546458b7fa3367e2a1ad355afe596e6dfd1f2ebeed2eee38b2121876d5ad4`;
+  log and executable/policy/source identities are under
+  `build/nigens-perceptual-tail-repair-20260930/win64-recorded/`.
+  Big Boss stopped without Win32 recorded replay, substitutions or further
+  archive inspection. Salty subsequently verified this stopped result's exact
+  identities and pre-extraction code reachability without archive access. This bounded
+  completion batch closed no criterion; the retained nonclosing lower bound
+  is now at least three. Original exposure uncertainty and earlier scientific
+  stops remain. AC3 and all task credit stay open.
+
+- 2026-09-30 Big Boss reassessment distinguishes the two preceding nonclosing
+  results: the fixed Berg screen selected no candidate; NIGENS was interrupted
+  for an omitted whole-basename ASCII check and produced no scientific result.
+  The original policy and scanner hashes below still match, the source log is
+  empty, and no selected output exists. Buffered output leaves prior annotation
+  and media exposure unknown; this cannot become a fresh held-out claim.
+  The author's [event-label method](https://arxiv.org/pdf/1902.08314) still
+  supports the frozen perceptual-event versus silent-gap distinction; it does
+  not establish that the selected recording will pass the quiet/nonzero gates.
+  Under the [bounded-deliverable checkpoint](../../../history/TASKFLOW-2026-10-29.md#task-size-and-investigation-stop-points),
+  Big Boss owns a copied private scanner in
+  `build/nigens-perceptual-tail-repair-20260930/` and the repair preflight.
+  Preserve the original policy/scanner/archive unchanged. Enforce the existing
+  ASCII rule for WAV and annotation basenames and verify ASCII/non-ASCII
+  boundary cases plus the existing source-free controls on stable Win32/Win64.
+  Salty's first preflight passed that repair but found two existing policy
+  mismatches before recorded access: separate 120-second listing/extraction
+  allowances and fixed twelve-decimal measurements that could erase tiny
+  nonzero values. Big Boss also repairs the shared elapsed-time budget and
+  round-trip measurement serialization, with source-free boundary controls.
+  The ASCII-only repair is retained as a withdrawn preflight version; these
+  are implementation/evidence defects, not a rejected scientific result.
+  A source-free development check then caught Win64 general-format output
+  shortening a declared 17-digit value. The Pascal scientific writer passes
+  exact Double text round trips, including tiny nonzero values, on both stable
+  targets; the failed formatting version and logs remain in the repair folder.
+  Salty independently passed the final repair SHA-256
+  `06df85c8918508442e1425b0831ff0a09a51106306600bb51587f862cd4e73ca`
+  on stable Win32/Win64, including the combined budget and exact Double text
+  controls; four independent runtime logs were leak-free. Evidence is under
+  `build/qa-caller-linux-and-nigens-repair/`. Big Boss releases one frozen Win64
+  comparison after recording this decision; only a pass permits the unchanged
+  Win32 replay needed for cross-target qualification. Final recorded-result QA
+  and all original criteria remain mandatory. No recorded access preceded this
+  repair review. The comparison retains
+  the exact frozen selector, source/window/threshold/resource rules and unchanged
+  maintained presence observation, with no fallback or replacement source.
+  This explicit repair decision supersedes only the historical no-repair ban
+  for the NIGENS implementation abort. Other scientific stops, at-least-two
+  nonclosing count, exposure uncertainty and historical failure evidence remain;
+  no criterion or task credit follows from this reassessment or the repair.
+
+- 2026-09-28 the distinct NIGENS perceptually annotated piano-tail route was
+  **aborted without a source result**. The frozen private policy SHA-256 was
+  `474f9b2111b22cbe553c86bb0d432fdcadba5692da83bbabf37a1b5d1de43c5b`;
+  the checked Pascal scanner SHA-256 was
+  `dbfb16779b7444ff75a5e14ae9a3c2e77f92a666612808520aca37774c61dacd`.
+  The publisher archive was separately verified at 2,174,918,847 bytes and MD5
+  `939fb4893015cc1434ad47bbd0ceb6b9`. After source-free Win32/Win64 ZIP64,
+  geometry and RMS controls passed, the first source command started on Win64:
+  `win64/scan.exe NIGENS.zip win64`, redirecting output to `win64/run.log`.
+  Independent review then found that the scanner checked the `piano` prefix
+  but did not enforce ASCII for the entire basename as the frozen selector
+  required. The running Win64 command was interrupted, returning exit 1; its
+  log is zero bytes and no selected output exists. Because output was buffered,
+  whether it reached the ZIP directory is unknown. No annotation or media read
+  is claimed or ruled out. Win32 source evaluation was not run. Keep the
+  archive, scanner and ignored outputs under
+  `build/nigens-perceptual-tail-20260928/` for QA; do not repair and rerun this
+  frozen source route. No source decision, presence comparison, criterion 3
+  closure or task credit follows.
+- 2026-09-28 a distinct, prospectively frozen Berg original-WAV screen tried to
+  find one quiet late cell against its already approved, nonzero same-source
+  opening rest. The Pascal gate verified the durable rest event, exact source
+  SHA-256 and PCM geometry, then scanned only forty fixed 250-ms cells from
+  10–20 s. A first Win32 output was withdrawn when a Delphi-mode integer-to-
+  floating cast incorrectly printed zero RMS; a source-free PCM16 control and
+  the previously accepted rest RMS exposed and fixed that implementation defect
+  before a valid verdict. Corrected checked Win32/Win64 rows matched byte for
+  byte, selected no cell under the frozen above-rest, decay and half-cell
+  conditions, stayed below the memory/time caps and reported zero leaks. Stop
+  this source/window hypothesis without another threshold, source or window
+  substitution. No tail label, review request, scorer result or task credit
+  follows. Policy, withdrawn chronology and valid result are under ignored
+  `build/maestro-quiet-tail-20260928/`. The task-flow reassessment stops
+  further quiet-tail source screens on these exposed recordings. Criterion 3
+  now awaits a distinct source with independently supported or reviewed
+  audible tail and disjoint nonzero same-WAV rest, followed by a newly frozen
+  comparison. Existing MAESTRO contrasts cannot supply that evidence; no
+  further physical selector on these recordings is the next action.
+- 2026-09-28 Good-sounds v1.1 source route stopped. Publisher-matched metadata
+  yielded 25 eligible takes from only one flute player/pack and fixed sound
+  3/take 11, with pre-attack `[0,24000)` and late-release `[323000,335000)`.
+  The first ZIP probe exceeded its one-request cap by one 4-KiB GET. A later
+  frozen member lookup stopped because archive paths had an unanticipated
+  `good-sounds/` prefix. A read-only directory check proved exactly one
+  prefixed match, allowing one separately frozen, bounded original-WAV check.
+  Pascal verified deflate CRC and decoded PCM24 mono at 48 kHz. The fixed
+  late-release RMS was 0.057514923 versus sustain 0.095992107, exceeding the
+  predeclared quiet-tail limit of half sustain. Pre-attack RMS was 0.001243387.
+  The physical gate failed, so no audible/rest label, presence score, review
+  request or task credit follows. Stop this source family without changing
+  the take, windows or threshold. Exact policies, hashes and failures remain
+  under ignored `build/goodsounds-{presence,audio,layout,member}-20260928/`.
+- 2026-09-28 bounded publisher-evidence screen: the official
+  [Good-sounds v1.1 record](https://zenodo.org/records/4588740) and
+  [UPF project page](https://www.upf.edu/web/mtg/good-sounds) document
+  hand-marked attack, decay, sustain, release-start and offset regions in
+  isolated monophonic recordings. Neither establishes the two specific
+  acoustic judgments this criterion needs: a quiet but audible release tail
+  and a disjoint nonzero instrument-free interval in the same WAV. No archive
+  was downloaded, no clip was scored or queued, and no task credit follows.
+  This metadata-only route is stopped; the next candidate needs independent
+  acoustic evidence before another operator packet is prepared.
+- 2026-09-28 a distinct publisher-hosted isolated-wind source screen stopped
+  before audio access. Its prospectively fixed CR1/alto-saxophone policy treated
+  the publisher's rounded `00:48` overview as an exact 48.000-second annotation
+  bound; the matching note CSV's last row ends at 48.071 seconds. The Pascal
+  metadata gate therefore rejected the fixed member before choosing a tail or
+  rest window or reading its WAV. The ignored policy, verified archive member,
+  CSV hash and stop evidence are in `build/choralebricks-tail-20260928/`.
+  This is a flawed metadata bound, not acoustic evidence that the source lacks
+  either region. Do not substitute a member/window or infer an audible label;
+  stop another source-only screen at this checkpoint. Criterion 3, the manual
+  queue and task credit are unchanged.
+- 2026-09-28 checkpoint after two nonclosing quiet-tail source batches: the
+  frozen Berg/Scriabin post-release screen below found no eligible candidate.
+  A distinct Pascal audit of the accepted original NSynth
+  `guitar_acoustic_008-048-075.wav` verified SHA-256
+  `39d8f9db0976b5b784c84817bb97e73299c05324935b4ac162b8518deba350ef`,
+  mono PCM16 at 16 kHz and 64,000 frames. Its longest exact-zero run is only
+  [63964,64000), 36 frames inside the reviewed audible tail; none of its 69
+  zero runs reaches the predeclared 4,000-frame rest length. Moreover the
+  maintained contrast returns `unknown` when the same-source reference RMS
+  is zero and the candidate is nonzero. This route cannot manufacture a
+  useful reviewed rest or close criterion 3. The private checked scan exited
+  cleanly with zero leaks under ignored `build/presence-nsynth-zero-audit-20260928/`.
+  Stop these two source-search routes. The next required input is a distinct
+  source with an independently supported or reviewed **nonzero** same-WAV
+  rest and a reviewed quiet audible tail; only then freeze a new observation
+  comparison. Do not retune the exposed MAESTRO gate or relabel a zero run.
+- 2026-09-28 one prospectively frozen source-selection screen sought a
+  post-key-release quiet-tail listening candidate in the already exposed
+  Berg/Scriabin 20-second originals, whose reviewed opening rests could have
+  supplied a same-WAV reference. The Pascal screen verified exact WAV/MIDI
+  hashes and PCM geometry, then found no candidate meeting its fixed release,
+  note-free-gap and decay bounds in either recording. It stopped without a
+  label request or observation score; do not loosen or resample this packet.
+  Policy SHA-256
+  `779b4077dbe3a262929086a6f2faa5e5d2fd2fee7581e6a9ee2d3c984c7a98c9`
+  and result are under ignored `build/presence-quiet-tail-20260928/`.
+  The private probe's direct exit reported three unfreed managed blocks
+  (336 bytes); no maintained-code leak or acoustic conclusion follows.
+- 2026-09-27 the operator approved `presence=rest` for the exact original
+  MAESTRO 2008 Berg opening [0, 22050) frames through the LAN workbench.
+  The durable catalog has one event at revision 1 (15:11:19 local time);
+  a later HTTP 400 request check created no second event. Manual review
+  queue item 3 is reviewed, leaving four cross-task items pending. This is
+  one user acoustic judgment on a quiet recording, not a source-separated
+  presence gate, scorer result or task completion. The other three direct
+  MAESTRO presence requests remain unreviewed.
+- 2026-09-27 the four direct-MAESTRO `presence` questions now name the
+  workbench's explicit `audible`, `rest`, and `unknown` choices. Their IDs,
+  source hashes, exact frame intervals, types and source roles did not change;
+  the clarified queue SHA-256 is
+  `e55190cd2fa5be39fc5abb7c4e765a3c99eb82ea3cda474c32dbe5ecd8bc4c8b`.
+  Before deployment neither new source had a saved review. The operator said
+  the first 0.5-second opening played but sounded silent. Pascal verified that
+  the live-served 22,050-frame WAV exactly matched the original samples and
+  measured RMS 0.001936010. Neither the quiet recording nor the transport
+  check proves no instrument is audible. All four source judgments remain in
+  the manual queue, no scorer ran, and criterion 3/credit remain open.
+- 2026-09-27 the newly frozen direct-MAESTRO publisher-pair packet passed its
+  fixed archive, source-clock and physical-playing gates on two fresh
+  composition/file/year-disjoint recordings; performer identity is unknown.
+  The original [0,20) s WAV excerpts and their captured MIDI are bound under
+  ignored `build/notes-maestro-direct-20260927/`. Checked stable Win32/Win64
+  Pascal replays agreed on zero opening key-ons, 17/23 later key-ons and 13/11
+  later original-audio attacks meeting the declared contrast floor; there were
+  no clipped excerpt samples. The policy SHA-256 is
+  `9138bbc8aef9765c6c724471cd53ae3921c42b878910d54d839938074b0bbb67`.
+  Two 20-second excerpts were imported to the durable catalog as separate
+  development/evaluation groups. Four exact-span `presence` requests were
+  validated on both targets and are visible through the running LAN service;
+  they are manual queue items 3–6, bringing pending reviews to 5/20. No answer
+  is preselected, and the measurements do not establish an acoustic rest or
+  approved positive. No presence scorer ran; criterion 3 and task credit remain
+  open until source-bound acoustic judgments and a frozen recorded comparison.
+  Publisher identity, exact members, hashes, byte budget and replay limits are
+  in the ignored packet's `RESULT.md`. The packet retains about 236 MB of
+  disposable compressed member bytes. Automatic approval had rejected
+  PowerShell cleanup of the preceding packet, so deletion was not retried.
+- 2026-09-27 a prospectively fixed two-group original MAESTRO/ASAP
+  presence-review packet stopped before catalog import or operator review.
+  Its policy bound distinct unexposed composition groups, original [0,20) s
+  audio, exact [0,0.5) candidate no-playing and [5,10) candidate playing
+  intervals, archive integrity, captured-MIDI identity and a no-substitution
+  rule. A separately recorded queue-format amendment changed one combined
+  prompt per group to two exact-span requests per group, using `presence` only
+  if accepted by the catalog, because the workbench saves one label per
+  request; selected MIDI had already been read,
+  while PCM and human labels had not. Both original WAV members passed bounded
+  archive/PCM checks. Group A's captured MIDI matched its source exactly, but
+  B's ASAP MIDI differed from original MAESTRO in bytes and first-20-second
+  key events, including a frame-zero key absent in the original. Stop the
+  fixed cohort at this identity gate; do not substitute a different row or
+  infer an acoustic rest from either opening MIDI gap. Exact hashes, source
+  scope, policy SHA-256
+  `50d43920901351cb550b17756f96526a18df8f9234630fa132387d0480a84367`
+  and amendment remain under ignored
+  `build/notes-maestro-presence-20260927/`. No reviewed label, source-separated
+  presence score, criterion 3 or credit follows. Automatic command approval
+  rejected cleanup of about 544 MB of temporary media in that ignored packet;
+  bounded 20-second excerpts and evidence are separate from those transients.
+  Reassessment changes the next source contract to one prospective direct
+  MAESTRO captured-MIDI/original-WAV packet on fresh publisher recording
+  groups. The ASAP correspondence gate is unnecessary for this presence task;
+  dropping it in a newly frozen source strategy is not permission to replace
+  the failed row or reinterpret its negative result. Require physical playing
+  support and later human acoustic review of an exact rest before scoring.
+  Stop the new packet without substitution if its own gate fails.
+- 2026-09-25 the user selected a Pascal/pas2js operator-authoring route for
+  missing acoustic labels. [NS-3_labeling_01](../../DONE/NS-3_labeling_01.md) and
+  [NS-6_authoring_01](../../DONE/NS-6_authoring_01.md) build the catalog and interface;
+  this task still requires actual source-bound reviewed rests, positives and
+  independent scored cases. The tool or an inferred proposal alone earns no
+  presence credit, and neither authoring task is a formal blocker because a
+  genuinely qualified external source could also supply the labels.
+- 2026-09-25 MAESTRO's aligned acoustic Disklavier recordings provide a
+  possible same-recording opening rest in a fresh source packet: the publisher
+  describes one second of padding around MIDI-silence segmentation, and four
+  development-exposed originals have their first key strike near 1.0 s with
+  nonzero low-level PCM in [0.0, 0.5) s. This does **not** establish an exact
+  no-audible-instrument label. The publisher notes non-musical sounds and
+  instrument testing around cuts; absence of key events plus low RMS cannot
+  promote the interval to `reviewed` under `PRESENCE.md`. Salty Boi confirmed
+  this boundary. No presence scorer ran and criterion 3 remains open; a fresh
+  source-bound acoustic rest label is still required.
+- 2026-09-25 Ticket Guy's bounded primary-source check found no immediately
+  usable replacement with a publisher-reviewed exact no-instrument interval,
+  instrument-positive intervals in the same original recording and a source
+  group for independent evaluation. MAESTRO's captured keys/pedals lack an
+  acoustic rest label; HamNava's two-annotator labels are five-second,
+  per-instrument clips rather than generic exact within-recording rests;
+  ChoraleBricks supplies isolated wind audio and note/F0 labels but no reviewed
+  rests. This is a search result, not proof no such dataset exists. Stop another
+  speculative source sweep. A fresh same-source exact-window acoustic review
+  would be needed before presence scoring, with the user's routine labeling
+  burden kept low.
+- 2026-09-25 one bounded [Fraunhofer isolated-bass source](https://www.idmt.fraunhofer.de/en/publications/datasets/bass.html)
+  screen stopped at publisher metadata. The dataset documents recorded
+  single notes, instruments and pickups, but no exact instrument-free
+  microphone windows or independent no-playing capture. Note filenames do
+  not certify acoustic rest. Its 1.6-GB archive was not downloaded and no
+  audio or presence score ran; the ignored
+  `build/idmt-bass-presence/STOP.md` records the source and limit. This is
+  another nonclosing source check, not a new independent reference strategy.
+  Do not repeat isolated-note archive searches on this evidence. Criterion 3
+  and credit remain open pending a controlled source with documented
+  no-playing windows.
+
+- 2026-09-25 read-only DEMAND publisher screen stopped before audio. Its
+  [recording notes](https://zenodo.org/records/1227121/files/DEMAND.pdf?download=1)
+  describe 300-second trimmed environmental captures and scene categories,
+  including an office and natural spaces. They do not establish actual
+  no-instrument acoustics at this task's two exact independent rest windows.
+  Only the small publisher PDF was acquired under ignored
+  `build/presence-demand/`; no ZIP, source PCM or presence score followed.
+  The previously declared stop on further speculative rest-source variants
+  remains in force. Criterion 3 and credit stay open.
+
+- 2026-09-25 independent-source preflight stopped before instrument audio.
+  The [pOD-set publisher](https://zenodo.org/records/15389653) separates a
+  processed instrumental recording and a pedal noise-floor recording, but a
+  selected, Pascal CRC-verified noise member is only 14,400 frames / 0.30 s
+  at 48 kHz. It cannot supply the two disjoint 0.5-s rest windows of the
+  existing frozen control. Only ZIP directory and the small noise member were
+  fetched; no full archive hash, instrument PCM or presence score followed.
+  Ignored `build/pod-presence/STOP.md` binds the source and stop. Do not shorten
+  windows after this finding or concatenate noise files to rescue this route.
+  No independent case, criterion or credit closes.
+
+- 2026-09-25 controlled recorded-source mix: a prospective private policy
+  combined publisher-authenticated channel-13 violin performance with
+  publisher-designated musician-present noise floor in one four-second
+  derived WAV. The Pascal extractor, maintained sinc converter, private mixer
+  and unchanged maintained presence consumer passed checked Win32/Win64 with
+  identical source/derived hashes and score rows, zero leaks and no clipping.
+  A 0.060191300-RMS violin component over 0.000932933-RMS local background
+  was `above_reviewed_rest`; a separate 0.000491156-RMS noise-only interval
+  was `compatible_with_reviewed_rest` against a nonzero noise reference.
+  Salty Boi's focused QA passed the bounded controls and limitation review.
+  The exact frozen policy, extractor-container repair, frame maps and logs are
+  in ignored `build/anechoic-presence-mix/RESULT.md`. This is a constructed
+  development control, not a natural same-take rest or source-disjoint
+  independent case. Do not infer equal original recording gain or general
+  accuracy. The prior RWC source screen and this control are two consecutive
+  nonclosing batches. Stop this presence-source investigation sequence;
+  criterion 3 and credit remain open until an independent exact-window
+  acoustic positive/rest source group is supplied under a new frozen policy.
+  Shift effort to another declared core prerequisite when its evidence is
+  available; do not create further noise-bed, window or instrument variants.
+
+- 2026-09-25 RWC 2.0 read-only source screen stopped before WAV acquisition or
+  scoring. The [audio release](https://zenodo.org/records/18656623) pairs with
+  [curated metadata](https://github.com/rwc-music/rwc-annotations) that manually
+  marks the start of music. Two different-ensemble classical recordings have
+  pre-music intervals long enough for proposed 250-ms windows. The annotation
+  declares *music onset*, not an exact reviewed absence of audible instruments
+  in either window; publisher metadata alone cannot set this task's
+  `ReferenceReviewed=True`. Full-mix music after the boundary also does not
+  independently label an exact audible instrument-positive window.
+  A bounded HTTP range probe confirmed the 2,966,354,301-byte archive supports
+  member selection, but acquired only one probe byte and opened no audio.
+  Stop this packet at the semantic label gate. Revisit
+  only with an independent exact-window acoustic review that meets the
+  maintained same-clip reference contract; do not download the multi-gigabyte
+  archive to infer a rest from `audio_start`. No criterion or credit changes.
+
+- 2026-09-25 fixed-gain/manual-annotation source route stopped: the official
+  [Aalto isolated orchestral tracks](https://research.cs.aalto.fi/acoustics/virtual-acoustics/research/acoustic-measurement-and-analysis/85-anechoic-recordings.html)
+  share gain settings, and [PHENICX](https://zenodo.org/records/840025)
+  publishes manually aligned per-instrument note times. The publicly
+  downloadable original tracks are MP3; PHENICX's distributed WAVs are
+  score-informed denoised and were excluded. A bounded Pascal ZIP-range
+  inventory verified the selected original Mozart flute MP3 and matching
+  annotation member names, DEFLATE output, CRC and local SHA-256 on checked
+  Win32/Win64. Full archive hashes remain unverified. External ffmpeg decoded
+  the selected original MP3 only to private PCM16 mono at 48 kHz; all
+  analysis was Pascal. The frozen Win32 physical gate found a nonzero
+  candidate no-playing window at 5.0–5.5 s (RMS 0.000051397) and two
+  continuously annotated playing windows at 43.0–43.5 / 46.0–46.5 s
+  (RMS 0.001572773 / 0.001166065). Both playing windows exceeded the rest
+  by 30.6x / 22.7x but failed the prospectively fixed absolute RMS floor
+  of 0.005. Stop the route without changing the window or threshold; no
+  maintained presence score or independent-piece PCM was opened. Win64
+  checker compilation passed, but no Win64 source score followed the stop.
+  Salty Boi checked the bounded claims and zero-leak Win32 result. The
+  private policies, Pascal tooling, source/member hashes and log are under
+  ignored `build/phenicx-presence/`. This source qualification and physical
+  gate are two nonclosing batches. The fixed-gain/manually timed design was
+  distinct, but its recorded positives failed the frozen support gate; stop
+  further variations of this route. Criterion 3 and all task credit remain
+  open until a genuinely independent positive/rest packet qualifies.
+
+- 2026-09-25 checked native nonzero-rest control: a frozen private Pascal
+  extractor copied raw channel-13 samples from the authenticated anechoic
+  noise-floor WAV to mono PCM24 without resampling, retaining 319,620 source
+  frames. Win32/Win64 output SHA-256 is
+  `42fc947dbaf71684d0e2760a136a4d51d028878c6fc04f60d14b82ce53783f2d`.
+  The unchanged maintained `pythian.presence.inspect` compared two distinct
+  24,000-frame no-playing windows to a publisher-supported no-playing window
+  in that same file. Both nonzero-signal candidates returned
+  `compatible_with_reviewed_rest` with no false-active or unknown output;
+  checked-target rows and leak evidence are under ignored
+  `build/anechoic-presence-source/`. Salty Boi independently checked all
+  extracted samples and both target-row pairs. This advances recorded-rest
+  and native consumer evidence without positive instrument detection or an independent
+  case. Source qualification and this rest check are two nonclosing batches;
+  stop further rest-only variants. Criterion 3 and task credit remain open
+  until independently grounded playing/rest cases and disjoint evaluation
+  meet the frozen decision gates. Do not compare the separate performance file
+  against this room-tone file without independent gain support.
+
+- 2026-09-25 source-contract reassessment: the previous anechoic v1/v2 stops
+  were authenticated sample-rate metadata failures before PCM, not acoustic
+  failures. After recording one final per-file geometry policy in ignored
+  `build/anechoic-presence-source/REASSESSMENT.md`, the same fixed
+  publisher-MD5-matched noise-floor/performance pair passed its original six
+  channel-13 windows and acoustic gates on checked FPC 3.2.2 Win32/Win64,
+  with identical nine-decimal RMS/peak values and zero leaks. Noise floor is
+  48 kHz; the violin performance is 44.1 kHz, so no resampling or common-rate
+  assumption was used. `PASS-v3.md` and both logs retain the exact evidence;
+  Salty Boi's focused read-only QA confirmed the gate and bounded claim after
+  a disclosed post-run editorial correction. The pre-run policy text is
+  preserved, but lacks a cryptographic policy-to-binary binding.
+  This is exposed development source qualification only. The maintained
+  `pythian.presence` contract compares disjoint windows in one clip; it cannot
+  consume a separately recorded noise-floor reference. A future bounded
+  reference/consumer design must bind both original source identities and
+  avoid claiming equal gain merely from common publisher methods. Independent
+  source groups, calibrated decision and criterion 3 remain open. The old
+  failed policies stay historical; no task credit changes.
+
+- 2026-09-25 two-route checkpoint after the journal task: the quartet source
+  gate below failed before PCM, and an independent read-only
+  [AudioLabs instrument-activity reference](https://www.audiolabs-erlangen.de/resources/MIR/2023-TASLP-HierarchicalInstrumentClass)
+  screen found frame labels derived by score-to-audio synchronization, with
+  most listed audio from commercial recordings. `INST=0` is therefore a
+  score-derived inactive frame, not an independently reviewed acoustic
+  no-instrument interval. No archive or scorer ran. Stop these source routes
+  and further metadata-only rest searches; criterion 3 remains open until
+  exact acoustic labels and source-disjoint audio can be qualified. Move to
+  another task rather than repeating source searches here.
+- 2026-09-25 changed physical-source route stopped at its first frozen
+  container gate. The publisher's [anechoic quartet dataset](https://zenodo.org/records/4955282)
+  supplies a dedicated musician-present `NoiseFloor.wav` and isolated string
+  performances, a stronger source design than scene names or MIDI silence.
+  Its exact-size, publisher-MD5-matched noise-floor WAV declares 48 kHz, while
+  the prospectively frozen source policy required the publisher-stated
+  44.1 kHz/24-bit/16-channel geometry. A checked Pascal Win32 rerun confirmed
+  the mismatch with zero leaks. Because exact MD5 authenticated the file and
+  no PCM had been opened, one recorded pre-acoustic metadata correction
+  expected 48 kHz in both fixed files while retaining every time window and
+  threshold. The authenticated performance WAV instead declares 44.1 kHz;
+  the corrected same-geometry gate stopped, also before PCM or presence
+  scoring and with zero leaks. Both failed policies and logs are under ignored
+  `build/anechoic-presence-source/`. This source supplies no reviewed exact
+  rest, independent group, criterion 3 result or task credit. Stop here
+  without resampling or another format/window variant.
+- 2026-09-25 source-quality checkpoint: the DEMAND screen below and a second
+  read-only [BUT ReverbDB](https://speech.fit.vut.cz/software/but-speech-fit-reverb-database)
+  screen both closed no criterion. BUT's [publisher read-me](https://merlin.fit.vutbr.cz/ReverbDB/read_me.txt)
+  labels separate `silence` WAVs as recorded room background noise, which is
+  stronger playback provenance than a named outdoor scene. It does not certify
+  generic no-audible-instrument status for any exact window; the publisher also
+  warns of a radio in one office setup. The official archive is 9,308,593,693
+  bytes by HTTP HEAD and was not acquired. Stop publisher-label-only noise or
+  room-source screens. The next action requires an independently reviewed exact
+  no-instrument interval from a source-separated group before a recorded
+  decision/calibration run; retain `unknown` until that evidence exists. No
+  task credit or listening request follows from either screen.
+- 2026-09-25 DEMAND nature-noise source screen stopped before acquisition.
+  The [publisher record](https://zenodo.org/records/1227121) and its
+  [source description](https://zenodo.org/records/1227121/files/DEMAND.pdf?download=1)
+  identify NFIELD and NRIVER as environmental recordings, but do not certify
+  exact-window generic absence of audible instruments. Mixing a reviewed
+  instrument stem over an unreviewed scene would inherit that unknown rest
+  label; a publisher scene name is not an acoustic review. No archive, PCM,
+  scorer, acceptance criterion or credit was produced. Resume this route only
+  if an independent exact-window no-instrument review exists before scoring.
+- 2026-09-25 a read-only [MAESTRO v3.0](https://magenta.tensorflow.org/datasets/maestro)
+  source check stopped before metadata or audio acquisition. Its publisher
+  documents paired piano audio/MIDI, pedal controls and about 3-ms alignment,
+  but provides no independently reviewed exact-window **audible no-instrument**
+  labels. Key/pedal release plus quiet PCM would still be a candidate rest,
+  not `ReferenceReviewed=True` under the maintained presence contract. The
+  official audio package is also a whole 101-GB archive, not a selected
+  per-performance WAV delivery. This is the same evidence gap exposed by the
+  stopped MAPS route, so do not resume paired-MIDI source searching or call
+  control note-off an acoustic rest. No bytes, scorer run, criterion or credit.
+- 2026-09-24 OpenMIC-2018 was screened as a new human-label source after
+  the stopped MAPS/URMP/GuitarSet routes. Its [publisher record](https://zenodo.org/records/1432913)
+  contains individual instrument votes, but the [publisher paper](https://archives.ismir.net/ismir2018/paper/000248.pdf)
+  defines a named instrument's presence/absence over a whole 10-second clip.
+  The maintained [presence contract](../../../PRESENCE.md#first-maintained-observation-boundary)
+  requires an exact-window reviewed rest with **no audible instrument**;
+  no-guitar is insufficient, and clip-level positives cannot locate attacks
+  or tails. Stop this source route before archive verification, extraction or
+  scoring. The sole transfer was terminated at 769,896,448 unverified bytes;
+  its ignored partial file and `STOP.md` preserve the outcome. A checked
+  Pascal archive verifier compiled but never ran; no archive metadata CSV,
+  audio or member was opened, and no task criterion or credit closes. The next
+  source needs independently supported exact-window no-instrument acoustics,
+  not another target-instrument negative treated as generic rest.
+
+- 2026-09-24 MAPS whole-archive continuation stopped at publisher integrity.
+  One frozen repair resumed the unverified prefix and obtained the exact
+  2,661,240,101-byte length, but two Pascal full-file MD5 passes gave
+  `47054c03b6e52db826902340d7aa5ea6` instead of publisher value
+  `a1c8c9945a2c605f62484b80cfa20cf4`. No ZIP directory was parsed and
+  no MIDI/WAV member or scorer was opened. The [integrity result](../../../PRESENCE.md#maps-whole-archive-integrity-route-stopped--2026-09-24)
+  and ignored `build/maps-presence-source/RESULT.md` retain details. Stop this
+  one-attempt route; no acoustic inference, criterion or credit follows.
+  Source-free QA of the prepared Pascal gates passed, but does not authenticate
+  the archive. The repeated source stops require a changed core strategy, not
+  another MAPS transfer or window variant.
+
+- 2026-09-23 source-search reassessment: MedleyDB's publisher activations are
+  derived from the same stem audio and cannot independently label audible rest.
+  A different solo-piano route used MAPS's synchronized physical MIDI, but its
+  frozen byte-range validator failed before MIDI/WAV access: the Zenodo HEAD
+  lacked ETag and the 206 response lacked both ETag and Last-Modified. The
+  [source stop](../../../PRESENCE.md#stem-supported-source-contribution-control--2026-09-23)
+  and ignored `build/maps-presence-source/RESULT.md` retain exact evidence.
+  These are two further nonclosing source batches. Stop source searches here;
+  MAPS acoustic suitability is unknown, and no presence score or criterion
+  closed. The later direct-vs-WFC Pythian listening comparison found both
+  outputs stumbling, including the exact-timing published-note solo render.
+  It did not isolate a presence defect or justify another source search; the
+  phrase task owns the musical-control follow-up.
+
+- 2026-09-23 physical pickup source gate stopped: publisher GuitarSet's
+  simultaneous original six-string pickup and microphone were checked on
+  already listener-reviewed player-05 clips 7/8/9 under a policy frozen before
+  pickup PCM. Pascal verified the exact WAV, CRC, geometry, aid manifest and
+  review hashes. The putative no-guitar clip 9 pickup pooled RMS was
+  0.000150761, 23.4% of the quieter guitar-positive clip 8, failing the
+  predeclared <=10% acoustic contrast gate. Clip 7 was 0.004066296. No
+  presence scorer ran; no ratio or window changed. Reserved player 00 is
+  unopened. This is a third distinct source-level failure to qualify a
+  generic no-instrument rest; stop source searches of this form and select a
+  different core prerequisite under task flow. See [source evidence](../../../PRESENCE.md#guitarset-physical-pickup-source-gate-stopped--2026-09-23).
+  Criterion 3 and task credit remain open.
+- 2026-09-23 full-recording source gate stopped: a fixed Pascal screen of the
+  complete URMP `14_Waltz` isolated flute stem found 70 source-supported
+  positive windows but no qualified generic-instrument rest in 351 grid
+  windows. Five windows were note-free through the fixed rest halo; three
+  also had zero companion F0, but their PCM RMS was 0.0093–0.0112, at least
+  92 times the frozen 0.0001 rest ceiling. The development source gate failed
+  before presence scoring; reserved `40_Miserere` and held-out `03_Dance`
+  remain unopened. See [full-recording gate](../../../PRESENCE.md#full-recording-isolated-stem-source-gate-stopped--2026-09-23).
+  Together with the Good-sounds metadata stop, this is two nonclosing
+  source-level batches. Reassess the source strategy: require actual
+  no-instrument acoustic support, not note/F0 absence or another same-data
+  window search. Do not retune this source, and leave criterion 3 open with
+  no credit.
+- 2026-09-23 recording-level source gate: publisher Good-sounds 1.1 metadata
+  has manual phase fields, but a private Pascal scan of checksum-matched
+  metadata found complete attack/release/offset triplets for only 279 of
+  8,750 sounds. They belong to one flute, one clarinet and one trumpet player;
+  no violin triplet exists. It cannot supply independent-player phase evidence
+  for the planned combined note packet. The 13.9-GB audio archive was not
+  acquired: transfer speed made the attempt impractical, and no audio or
+  presence scorer ran. Stop this source route for criterion 3; no credit.
+- 2026-09-23 reference-scope audit: the maintained `ReferenceReviewed` flag
+  asserts a no-instrument rest, while GuitarSet clips 1 and 4 were audible
+  `other_noise` and establish only no identified guitar. Their frozen scorer
+  outputs remain reproducible target-relative diagnostics, not valid generic
+  presence decisions. Clip 9 is the packet's reviewed no-instrument rest.
+  The URMP no-flute accompaniment control remains physical source-contribution
+  evidence, not an audibility verdict. No source was rescored, criterion 3
+  remains open, and no task credit changes.
+- 2026-09-23 stem-supported source stop and two-batch reassessment: the fixed
+  URMP Nocturne flute screen found no natural 250-ms rest with a half-second
+  margin and another annotated active instrument in its first 30 seconds.
+  Checked Pascal stopped before PCM, twice with zero leaks. A distinct
+  controlled pair then omitted or added the bound recorded flute stem to the
+  same violin+clarinet background frames. Checked stable Win32/Win64 verified
+  source hashes, geometry, exact difference and levels, emitting identical
+  reports with zero leaks. The added flute raised mix RMS by only 5.47%.
+  The first scorer incorrectly asserted that the violin+clarinet-only window
+  was a reviewed generic-instrument rest; its rest-compatible report is
+  rejected. Corrected Win32/Win64 runs set `ReferenceReviewed=False` and
+  produce identical `unknown` reports with zero leaks. This authored pair is
+  a physical source-contribution check, not valid generic rest or an audible
+  missed-active verdict. Stop this source/window/gain; no ratio sweep. A
+  genuine no-instrument acoustic rest is still needed; source-specific
+  contribution under active accompaniment belongs to later part ownership.
+  Work another ready core prerequisite while this evidence is absent. No
+  task credit.
+- 2026-09-23 user-directed listening reallocation and source-quality gate:
+  stop preparing routine third-party source microclips for the user's ears;
+  prioritize their review of substantial Pythian-synthesized output. Existing
+  twelve GuitarSet labels remain packet evidence. The publisher's annotation
+  method manually validates individual-string onsets but estimates offsets
+  automatically; a separate microphone capture does not inherit an audible
+  rest label from an offset. The next recorded-evidence batch must qualify
+  independently supported acoustic positive/rest intervals and known dataset
+  errors before any score. If no exact-window rest is supportable, retain
+  `unknown` and keep criterion 3 open while following another ready core
+  prerequisite. Do not substitute metadata for a listener or request the
+  earlier proposed eight extra routine labels. No task credit.
+- 2026-09-23 distant-gap metadata stop: after the two-batch reassessment, a
+  single frozen player-04 BN2-166-Ab source was screened for a 250-ms
+  final-note window and a 1.0–1.25-second post-end window without any other
+  annotated note across their union. Checked stable Pascal verified the JAMS
+  hash and 48 note extents, found no eligible event, and reported zero leaks.
+  It stopped before microphone extraction, listening or scoring; no aids 15/16
+  exist. Do not adjust this source/window selection. The remaining concrete
+  prerequisite is a qualified source-local acoustic no-guitar reference plus
+  guitar-positive interval, followed by a still-fresh independent group.
+  Annotation-only quiet cannot stand in for the listener. No task credit.
+- 2026-09-23 second consecutive nonclosing batch and reassessment: player-03
+  aids 12, 13 and 14 were all listener-labelled guitar, including both windows
+  after the annotated note end. Checked Win32/Win64 Pascal binders agreed on
+  the reviewed packet; checked frozen scorers agreed on three `no_reference`
+  rows and made zero presence decisions, with zero leaks. The earlier frozen
+  onset batch stopped at an annotation overlap before PCM. These two batches
+  did not close criterion 3: one lacked an eligible positive development
+  window, the other lacked any reviewed rest. The changed next action is one
+  prospectively frozen, player/material-disjoint source with a distant
+  annotation-free candidate rest and a separate guitar-positive window.
+  Listener confirmation of a same-source no-guitar reference is the gate
+  before scoring. Stop after this one source if metadata or listening fails;
+  do not shift the window or retune the fourfold/1.5-fold policy. The later
+  player-04 metadata stop is recorded above. Player 03 is exposed, not
+  reusable as fresh held-out evidence. No task credit.
+- 2026-09-23 development-onset stop and independent handoff: a two-aid
+  follow-up froze the first 250 ms after each existing player-01/02 selected
+  event onset, but its no-other-note annotation gate failed before onset PCM
+  read, playback or scoring. No window was replaced. Reassessment treats the
+  already exposed, user-reviewed player-05 positives and same-source rest as
+  development evidence only. The newly frozen player-03 Rock2-85-F solo source
+  is player/material-disjoint; checked Pascal verified its JAMS geometry and
+  archive identities before mic extraction. Three exact repeated aids 12–14
+  have matching checked stable Win32/Win64 manifest SHA-256
+  `879a1e81180c3690d9e945805468fe9b7dafb09f51783f9868b7c6d713b0c934`,
+  zero leaks, and preflighted binders. The unchanged observation and
+  same-source reference/score rule were frozen before review. The later
+  listener result and no-reference stop are recorded above.
+- 2026-09-23 first real listener-bound score: the user clarified that 1, 4,
+  5 and 6 sounded piano/keyboard-like rather than guitar; 2, 3 and 9 were
+  inaudible; 7 and 8 sounded like acoustic guitar. A checked Pascal binder
+  verified all nine aids and produced identical Win32/Win64 reviewed packets.
+  The frozen production scorer chose source-local reference clips 1, 4 and 9.
+  Win32/Win64 development results match exactly: four rest-compatible outputs
+  against audible no-guitar comparisons, zero positives. These outputs are
+  historical target-relative diagnostics, not valid generic-rest observations.
+  Only clip 9 was listener-reviewed as no instrument. The reserved source
+  produced one correct contrast candidate and one guitar-positive abstention,
+  with zero false-active or
+  missed-active decisions; all runs report zero leaks. This closes criterion 1
+  at the declared packet scope, while criterion 3 remains open because there
+  is no positive development sensitivity and the independent positive has
+  only one of two candidates covered. Do not retune the fourfold/1.5-fold
+  ratios to clip 8 or treat the exposed player as held-out again. A new
+  prospective development-positive reference and fresh independent source
+  are needed before changed-decision acceptance. No task credit.
+- 2026-09-23 private score binding repair: the first scorer accepted a
+  self-hashed synthetic review without independently checking its manifest or
+  listener input. The production Pascal runner now requires the frozen
+  manifest, all aid hashes, exact reviewed source rows and normalized label
+  rows before source scoring. Two synthetic packets still replay byte-for-byte
+  on checked stable Win32/Win64 with zero unfreed blocks; wrong input, manifest,
+  reviewed label and source WAV reject before output. A separately compiled
+  synthetic fixture mode cannot be used by the production binary, which
+  rejects the fixture manifest. This repairs review integrity only; no real
+  GuitarSet labels, recorded result or task credit exist yet.
+- 2026-09-23 focused API/consumer acceptance without listening: criteria 2
+  and 4 are met at their stated observation and native-consumer scope.
+  Fresh checked stable FPC 3.2.2 Win32/Win64 builds passed the focused
+  source-free controls with zero unfreed blocks. The original 264,000-frame,
+  24-kHz stereo WAV emitted byte-identical hash-bound inspector rows on both
+  targets (TSV SHA-256
+  `22639cfffd9a372c9aed7bbdfaa5cd0a10196b18ac2e9ca4aa0ddc803c08b327`):
+  the 100,000-frame candidate crosses the WAV read chunk, retains original
+  coordinates and reports `unknown` for an unreviewed rest. A wrong source
+  hash rejected before a TSV row; the unit controls also cover partial reads,
+  bounds, work cap and prior-result preservation. The inspector now rehashes
+  the full source after observation and before output; fresh checked
+  Win32/Win64 builds preserve the exact TSV replay and zero-leak result.
+  This closes no recorded acoustic or event-decision gate. Criteria 1 and 3,
+  including the pending user-reviewed development/evaluation packet, remain
+  open; no task credit.
+- 2026-09-23 score-runner preparation: the private ignored packet's Pascal
+  scorer binds the binder output SHA-256, verifies original WAV identities,
+  uses the frozen lowest-numbered same-source rest rule, and separates
+  development from reserved evaluation. A synthetic three-source fixture
+  exercised no-reference, correct-candidate, false-active, unknown-label,
+  missed-active, exact-zero correct-rest and abstention routing. Checked stable
+  Win32/Win64 score TSVs were byte-identical with zero unfreed blocks; a wrong
+  reviewed hash rejected without output. No real listener labels have arrived,
+  so neither the real
+  binder nor the scorer has run on GuitarSet. Recorded calibration, independent
+  cases and task credit remain open.
+- 2026-09-23 listener handoff preflight: a private Pascal binder under the
+  ignored recorded packet verifies the frozen manifest and all nine aid hashes
+  before it will accept exactly nine ordered guitar/other-noise/nothing/uncertain
+  labels. Checked stable Win32/Win64 preflight passed with zero unfreed blocks.
+  It has not run its bind mode, created reviewed labels or scored inference;
+  the user's one-pass review is pending. The frozen score policy chooses only
+  same-recording listener-confirmed no-guitar windows as rest references and
+  reserves player 05 from tuning. Stop packet preparation here; no extra clip
+  or reference selection is justified without the review. No task credit.
+- 2026-09-23 recorded listening packet prepared after the observation API
+  batch: a new frozen GuitarSet policy selected three distinct player and
+  broad musical-family recordings before microphone extraction. The stopped
+  player-00 packet was not relaxed; player 05 is prospectively reserved for
+  acoustic evaluation after its annotation eligibility had been exposed but
+  before its microphone audio, human labels or inference score were used.
+  Checked Pascal reverified archive/JAMS/WAV hashes and PCM geometry, then
+  made nine unchanged-gain 250-ms windows repeated for mobile listening.
+  Win32/Win64 aid manifests match SHA256
+  `7151d48e59515633f0e2ac02a9f932581a254de7370de2a68a2d5c5b1d04c91c`;
+  every repeated PCM segment matches its source and both targets reported
+  zero unfreed blocks. Human guitar/noise/silence/uncertain labels are pending.
+  No scored recorded result, calibrated presence claim or task credit follows
+  from aid preparation.
+- 2026-09-23 maintained observation boundary after source reassessment:
+  [PRESENCE](../../../PRESENCE.md) defines control, signal, audible instrument and
+  event separately. `src/pythian.presence.pas` now measures exact candidate and
+  disjoint same-source rest windows through clip and 64-bit streaming APIs,
+  with fixed policy identity, work caps, contrast evidence and explicit unknown.
+  The native WAV inspector retains source hash/geometry and rejects a wrong
+  hash before output. Checked stable Win32/Win64 source-free controls and a
+  100,000-frame stereo consumer path passed with zero unfreed blocks. This
+  advances the observation/API and consumer criteria; it makes no audible-note
+  or recorded score claim. A 30-ms 55-Hz low sine at peak 0.005 remains
+  `unknown` against a 0.001-RMS rest, with its measured RMS retained; this is
+  visible missed-active coverage, not permission to retune the frozen ratio.
+  The rest reference's `reviewed` flag remains a
+  caller assertion needing source-bound acoustic evidence. Recorded
+  development/independent cases, broader controls and QA acceptance remain
+  open; no task credit is earned.
+- 2026-09-23 second nonclosing source batch and reassessment: a frozen
+  annotation-only GuitarSet screen audited all 360 JAMS members in checked
+  stable Win64 Pascal, excluding three publisher-named timing/duplicate-note
+  cases. Seventy-three recordings have at least two fully isolated candidate
+  ends, but reserved player 00 has zero, so no player/material-disjoint
+  three-recording packet exists under the predeclared gate. It stopped before
+  microphone audio, listening or scoring; no threshold or split was changed.
+  Together with the stopped two-recording inventory, this reaches the task-flow
+  checkpoint. Change the next action from repeated source selectors to the
+  maintained pitch-independent evidence/unknown contract and source-free
+  controls. Recorded calibration and independent cases remain open; the
+  player-00 result cannot be treated as an acoustic label or a reason to tune
+  a presence threshold.
+- 2026-09-23 full-overlap result: checked Win64 Pascal verified the two
+  GuitarSet JAMS hashes and 105/57 note events, rounded annotation times to
+  exact 44.1-kHz source frames, and required no other note throughout three
+  consecutive 250-ms windows surrounding each annotated end. The comp
+  excerpt has zero eligible events; the solo excerpt has two. Both share BN1
+  musical material and are development players. This two-recording route
+  stopped before a listening selector, labels or scorer. These annotation
+  windows have no acoustic audibility ground truth; a future recorded packet
+  needs prospectively distinct player/material roles and direct listening.
+- 2026-09-23 read-only source inventory: the official
+  [GuitarSet](https://guitarset.weebly.com/) microphone and hexaphonic-pickup
+  annotation routes are separately recorded. Existing verified archives and
+  two extracted development-player microphone WAVs are present locally.
+  Checked stable Win64 Pascal inspection confirmed both are 44.1-kHz mono
+  PCM16 with 984,506 frames; two JAMS members parse with 17 annotations each.
+  The prior native feasibility audit lists six/two preliminary note-onset-gap
+  events; it did not exclude other notes sustaining into a candidate rest.
+  No source window, acoustic label or scorer was chosen in this inventory.
+  The two guitar examples alone do not prove cross-instrument transfer.
+- 2026-09-23 split after two consecutive nonclosing NS-3_notes_02 batches:
+  the extra NSynth train filter lacked a positive two-family pair after
+  exposure exclusions; the first-bound URMP violin stem lacked a post-end
+  candidate in the frozen cohort. Both stopped before labels or scores. This
+  task owns a reusable observation and source-grounded calibration; the
+  remaining [NS-3_notes_02](NS-3_notes_02.md) keeps event integration,
+  pitch/register coordination, timing/unknown semantics and recorded gates.
+  A new source route must be justified by what those failed gates could not
+  supply, with labels frozen before a new candidate is scored. No task credit
+  follows from creating this file.

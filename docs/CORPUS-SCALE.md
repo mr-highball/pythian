@@ -2,7 +2,7 @@
 
 [Corpus identity](CORPUS-EVALUATION.md) · [Native observations](NATIVE-INFERENCE.md) ·
 [Accepted raw scale task](TODO/DONE/NS-5_scale_03.md) ·
-[Semantic scale task](TODO/NS-5_scale_01.md)
+[Semantic scale task](TODO/RETIRED/2026-10-29/NS-5_scale_01.md)
 
 The 2026-09-25 task-flow split assigns source-bound multi-recording Pascal raw
 observation assembly and its actual measured workload to `NS-5_scale_03`.
@@ -31,7 +31,7 @@ limitations are in the [task record](TODO/DONE/NS-5_scale_04.md). This is a
 deterministic full rebuild from completed contributions. Process-interruption
 publication, many-hour multi-provider learning, inferred WAV notes and
 selective policy/vocabulary invalidation remain in
-[NS-5_scale_02](TODO/NS-5_scale_02.md) and its recorded prerequisites.
+[NS-5_scale_02](TODO/RETIRED/2026-10-29/NS-5_scale_02.md) and its recorded prerequisites.
 
 ## Accepted Pascal raw corpus — 2026-09-25
 
@@ -154,7 +154,7 @@ measurements are separately scoped and do not establish a fresh whole-pipeline r
 
 ## Missing admission and capacity boundaries
 
-[Recorded phrase admission](TODO/NS-3_notes_03.md) owns the missing bridge from
+[Recorded phrase admission](TODO/RETIRED/2026-10-29/NS-3_notes_03.md) owns the missing bridge from
 the requalified Pascal-only observations to admitted pitch/kind/duration, unknown intervals and
 saved actual WFC learning. The semantic container validates supplied typed evidence;
 it does not execute an extraction policy. Rejected frame admission, reference
@@ -179,7 +179,7 @@ All applicable limits must hold without increasing private caps. Bounded journal
 reading exists, but its acoustic palette does not supply missing musical admission.
 Future segmentation must retain exact original ranges and unknown/run semantics.
 
-The [semantic scale task](TODO/NS-5_scale_01.md) remains open with no credit of
+The [semantic scale task](TODO/RETIRED/2026-10-29/NS-5_scale_01.md) remains open with no credit of
 its own. The accepted raw packet supplies executable Pascal observation commands
 and measurements; it does not provide admitted-event aggregation, semantic
 learning or whole-pipeline measurements. The ignored qualification packet

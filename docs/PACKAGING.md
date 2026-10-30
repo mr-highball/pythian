@@ -23,8 +23,8 @@ and extracted-consumer evidence. Earlier snapshots below retain their dated scop
 The [accepted native checkpoint](NATIVE-CHECKPOINT.md) completes the declared
 stable Windows target refresh and binds the Linux result to the same source.
 Final accepted-workflow revalidation and independent downstream-use acceptance remain open under
-[WAV-05-DELIVERY](MILESTONES.md#wav-05-delivery) and
-[DELIVERY-RELEASE](MILESTONES.md#delivery-release).
+[WAV-05-DELIVERY](history/MILESTONES-2026-10-29.md#wav-05-delivery) and
+[DELIVERY-RELEASE](history/MILESTONES-2026-10-29.md#delivery-release).
 
 ## Accepted caller-provider artifact — 2026-09-30
 

@@ -5,11 +5,18 @@ codecs, DSP and analysis. WFC is integral to the intended learned composition
 and audio-generation workflow; the portable synthesis core also works on its
 own. The project is under active construction.
 
-The [current assessment and delivery order](docs/REBALANCE-2026-09-29.md)
-separates accepted synthesis and reuse mechanisms from unfinished recorded
-learning and useful many-hour styles. Style contracts target any caller's
-recordings and declared traits; chillwave, stoner rock and lofi are internal
-test preferences only. The engineering credit ledger is not a readiness score.
+The [current goal](docs/GOAL.md) is experimental instrumental synthesis through
+a rich, editable WFC musical graph. The [implementation review](docs/ASSESSMENT-2026-10-29.md)
+separates existing instruments and musical adapters from the missing Studio
+connection. The first milestone is bass, drums, harmony and lead generated through
+real musical passes, played by Pythian instruments, then inspected and changed
+in Studio. Authored/operator/MIDI inputs may bootstrap it; uncertain WAV proposals
+are Experimental rather than blocked behind formal reference benchmarks.
+
+The [task catalog](docs/TODO/README.md) uses effort estimates from 1–10, with
+completion derived from accepted effort over current total effort. This is a
+scope indicator, not musical quality. Caller-defined styles remain the ambition;
+chillwave, stoner rock and lofi are internal examples.
 
 [Project profile](PROJECT.md) · [Architecture](docs/ARCHITECTURE.md) ·
 [Source packages and compiler evidence](docs/PACKAGING.md) ·
@@ -89,8 +96,8 @@ For the optional browser [Studio](docs/OPERATOR-STUDIO.md), follow the
 [local review-service setup](docs/LAN-REVIEW-SERVICE.md), then open `/studio.html`.
 Put WAVs in ignored `local-audio/collections/<your-collection>/` and refresh,
 or import/record audio in the app. Select and classify passages, try effects,
-generate short WFC auditions, and save feedback for the next batch. Current
-note/MIDI previews are marked **Experimental**.
+generate acoustic WFC auditions, and save feedback. Instrumental Studio generation
+is planned, not yet available. Current note/MIDI previews are **Experimental**.
 
 Create a checked development source ZIP with `./tools/package.ps1`, or add
 `-WithWfc` to include the companion sources and WAV-learning example. The script

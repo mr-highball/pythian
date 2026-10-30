@@ -5,7 +5,7 @@
 **Description:**
 
 Supply the generic solver prerequisite for retained generation in
-[observability_04](../NS-6_observability_04.md). The existing WFC trace sink deliberately
+[observability_04](../RETIRED/2026-10-29/NS-6_observability_04.md). The existing WFC trace sink deliberately
 contains receiver exceptions and therefore cannot implement cancellation. A
 domain-independent pinned-source reproduction raises from BeginTrace yet returns
 a solved, committed graph with failed trace delivery. Preserve that diagnostic

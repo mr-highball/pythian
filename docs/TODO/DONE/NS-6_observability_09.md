@@ -85,4 +85,4 @@ semantics, callback swallowing, synthetic musical credit or a dependency edit.
   `pythian.wfc.pitch`. Their validation/tokenization loops belong to Pythian,
   not the companion. This linked prerequisite is separated immediately from
   [wave-style observability](NS-6_observability_07.md); every original obligation
-  remains mapped in [observability_04](../NS-6_observability_04.md), with no new credit.
+  remains mapped in [observability_04](../RETIRED/2026-10-29/NS-6_observability_04.md), with no new credit.

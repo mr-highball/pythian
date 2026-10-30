@@ -76,8 +76,8 @@ stable Win32/Win64 and development Win32, with zero reported fixture leaks. A
 stable Win64 duration render changes with the preference, replays exactly and
 returns to baseline WAV bytes when cleared. The later grid checkpoint below closes
 the earlier grid-consumer evidence gap. General role controls and recorded
-semantic acceptance remain under [layers](MILESTONES.md#wfc-layers) and
-[integration](MILESTONES.md#wav-04-integration).
+semantic acceptance remain under [layers](history/MILESTONES-2026-10-29.md#wfc-layers) and
+[integration](history/MILESTONES-2026-10-29.md#wav-04-integration).
 
 ### Grid preference consumer checkpoint — 2026-09-20
 
@@ -323,7 +323,7 @@ pythian.voices.demo generated.wav --style reblend.pys --duration-spans 3 --verif
 
 No cross-target relearning identity, changing-pitch admission, listening approval
 or general style-quality result is claimed. Remaining work and downstream gates
-are linked in [WAV-03-TIMBRE](MILESTONES.md#wav-03-timbre).
+are linked in [WAV-03-TIMBRE](history/MILESTONES-2026-10-29.md#wav-03-timbre).
 
 The subsequent [centered pitch study](PITCH.md#centered-timbre-measurement-checkpoint--2026-09-19)
 improves spectral fitting on controlled glides/vibrato by aligning measurement

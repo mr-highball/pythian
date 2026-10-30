@@ -17,7 +17,7 @@ Salty's frozen final `VERDICT.txt` and `FINAL-IDENTITIES.json` are under ignored
 `build/qa-authoring-current-b1-b6/`; their hashes and retained limits are in
 Dev Notes and the [accepted work record](../../WORK.md#accepted-editorqueue-contract--2026-09-30).
 Big Boss accepts checklist 1–3 and 6–9; physical/audio/full operator points
-4, 5 and 10 remain in [authoring_02](../NS-6_authoring_02.md).
+4, 5 and 10 remain in [authoring_02](../RETIRED/2026-10-29/NS-6_authoring_02.md).
 
 North star: NS-6. Outcome owner: WAV-05-AUTHORING.
 Completion credit: 8 goal percentage points (0.80 overall points).
@@ -51,7 +51,7 @@ LAN/audio/operator checklist points 4, 5 and 10 remain mandatory in authoring_02
 ### Editor and producer acceptance; original checklist numbering
 
 The original checklist keeps its stable numbers. This task owns points 1–3
-and 6–9 below; [NS-6_authoring_02](../NS-6_authoring_02.md) owns points 4, 5 and 10.
+and 6–9 below; [NS-6_authoring_02](../RETIRED/2026-10-29/NS-6_authoring_02.md) owns points 4, 5 and 10.
 Existing checked boxes retain recorded evidence, but final acceptance still
 requires current-source independent QA of this complete editor/queue contract.
 The split does not grant credit or convert partial evidence into acceptance.
@@ -122,10 +122,10 @@ the underlying musical inference or reference labels already exist.
 | NS-3 evolving sound and envelope boundaries | Source-bound `activity` attack/continuation/release windows and note-relative decisions; paired generated-sound listening remains a separate output review |
 | NS-5 recurring motifs, phrase and section organization | `phrase`, `section`, `ext.motif_relation` with fixed same-source targets |
 | NS-5 source-local preference assignment | `style_preference` only for a task-declared source-local decision; a short window does not establish whole-mix fit |
-| NS-5 full-mix personal reference fit and recording-edition correspondence | [NS-5_evaluation_04](../NS-5_evaluation_04.md) owns whole-mix evidence and the verified source/cut correspondence; use a durable whole-asset or paired listening decision, never a short `style_preference` label as a substitute |
-| NS-5 sustained generated-output quality and continuity | [NS-5_continuity_01](../NS-5_continuity_01.md) owns timestamped bad-passage judgments; [NS-5_evaluation_03 — DONE](NS-5_evaluation_03.md) owns the reusable full-output response packet, and [NS-5_evaluation_02](../NS-5_evaluation_02.md) owns actual 120-second style verdicts |
-| NS-3 and NS-4 generated-sound comparisons | [NS-3_timbre_02](../NS-3_timbre_02.md) owns paired reference/learned attack, motion, release and identity judgments; [NS-4_integration_01](../NS-4_integration_01.md) owns synthesis-path listening. Both require task-bound responses distinct from source labels |
-| NS-5 paired edits and style traits | [NS-5_evaluation_03 — DONE](NS-5_evaluation_03.md) owns paired playback and saved comments/scores; [NS-5_evaluation_02](../NS-5_evaluation_02.md) owns actual seed-731 edited outputs and reviewer-grounded trait comparisons |
+| NS-5 full-mix personal reference fit and recording-edition correspondence | [NS-5_evaluation_04](../RETIRED/2026-10-29/NS-5_evaluation_04.md) owns whole-mix evidence and the verified source/cut correspondence; use a durable whole-asset or paired listening decision, never a short `style_preference` label as a substitute |
+| NS-5 sustained generated-output quality and continuity | [NS-5_continuity_01](../RETIRED/2026-10-29/NS-5_continuity_01.md) owns timestamped bad-passage judgments; [NS-5_evaluation_03 — DONE](NS-5_evaluation_03.md) owns the reusable full-output response packet, and [NS-5_evaluation_02](../RETIRED/2026-10-29/NS-5_evaluation_02.md) owns actual 120-second style verdicts |
+| NS-3 and NS-4 generated-sound comparisons | [NS-3_timbre_02](../RETIRED/2026-10-29/NS-3_timbre_02.md) owns paired reference/learned attack, motion, release and identity judgments; [NS-4_integration_01](../RETIRED/2026-10-29/NS-4_integration_01.md) owns synthesis-path listening. Both require task-bound responses distinct from source labels |
+| NS-5 paired edits and style traits | [NS-5_evaluation_03 — DONE](NS-5_evaluation_03.md) owns paired playback and saved comments/scores; [NS-5_evaluation_02](../RETIRED/2026-10-29/NS-5_evaluation_02.md) owns actual seed-731 edited outputs and reviewer-grounded trait comparisons |
 
 ### Retained original detailed criteria and owner map
 

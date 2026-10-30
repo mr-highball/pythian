@@ -1,3 +1,5 @@
+> **Historical scope.** The [2026-10-29 goal](GOAL.md), [implementation review](ASSESSMENT-2026-10-29.md) and [active effort-based tasks](TODO/README.md) supersede this roadmap and its percentage credits. Earlier evidence remains; older gate ordering is not current instruction.
+
 # Reassessment and backlog rebalance — 2026-09-29
 
 [Codebase assessment](CODEBASE-ASSESSMENT.md) · [Milestones](MILESTONES.md) ·
@@ -12,7 +14,7 @@ and the editor/queue contract adds 8 NS-6 / 0.80 overall, giving
 **49.40 credited / 50.60 remaining**, **43 open / 35 DONE**.
 The allocation rationale, stopped
 investigations and dated assessment numbers below remain historical evidence.
-The later [operator Studio scope](OPERATOR-STUDIO.md#allocation-and-ownership)
+The later [operator Studio scope](history/OPERATOR-STUDIO-2026-10-29.md#allocation-and-ownership)
 adds three explicit outcomes and redistributes 12 unearned NS-6 points. Its live
 catalog initially had 46 open / 35 DONE with no added credit. Subsequent
 independent Studio setup acceptance adds 4 NS-6 / 0.40 overall. Private corpora,
@@ -55,13 +57,13 @@ instrument, meter or mixture. Unsupported input must remain unknown or reject.
 
 | Finding and evidence | Consequence | Change and owner |
 | --- | --- | --- |
-| [Presence](TODO/NS-3_notes_05.md) repeatedly sought an audible quiet tail and disjoint rest; Berg had no candidate and NIGENS was aborted. The current observation still lacks its complete recorded gate. | Many source screens produce no new admissible event. Rephrased “next source” work can continue indefinitely. | Preserve the stopped source families and nonclosing checkpoint. Resume only with the distinct reference/unblock condition in the task. Generic corpus intake and delivery can advance independently. |
-| [Register](TODO/NS-3_notes_01.md) has labelled physical feasibility but its 2026-09-28 blind candidate proposed zero corrections. Preferred flute precision remains 91.57% against 98%. | A passing engineering experiment is easily mistaken for a better note learner. | Keep feasibility separate from adopted provider and independent acceptance. Do not restart nearby threshold/range variants. |
-| The previous complete style workflow required accepted context, parts, harmony, groove, sound, structure and scale before the first style verdict. | Most tasks sit behind the same unresolved inference chain; partial infrastructure keeps being easier to ship. | Add [bounded one-recording usefulness](TODO/NS-5_style_01.md) while retaining the full [many-hour](TODO/NS-5_style_02.md) and [new-caller](TODO/NS-5_style_03.md) gates. |
-| Six tickets made the three personal genre names primary corpus/acceptance gates. | Private preferences could become implicit product scope while arbitrary caller intake had no clear owner. | Replace them with generic [intake](TODO/DONE/NS-5_corpus_05.md), [qualified corpora](TODO/NS-5_corpus_06.md) and three staged style results. |
+| [Presence](TODO/RETIRED/2026-10-29/NS-3_notes_05.md) repeatedly sought an audible quiet tail and disjoint rest; Berg had no candidate and NIGENS was aborted. The current observation still lacks its complete recorded gate. | Many source screens produce no new admissible event. Rephrased “next source” work can continue indefinitely. | Preserve the stopped source families and nonclosing checkpoint. Resume only with the distinct reference/unblock condition in the task. Generic corpus intake and delivery can advance independently. |
+| [Register](TODO/RETIRED/2026-10-29/NS-3_notes_01.md) has labelled physical feasibility but its 2026-09-28 blind candidate proposed zero corrections. Preferred flute precision remains 91.57% against 98%. | A passing engineering experiment is easily mistaken for a better note learner. | Keep feasibility separate from adopted provider and independent acceptance. Do not restart nearby threshold/range variants. |
+| The previous complete style workflow required accepted context, parts, harmony, groove, sound, structure and scale before the first style verdict. | Most tasks sit behind the same unresolved inference chain; partial infrastructure keeps being easier to ship. | Add [bounded one-recording usefulness](TODO/RETIRED/2026-10-29/NS-5_style_01.md) while retaining the full [many-hour](TODO/RETIRED/2026-10-29/NS-5_style_02.md) and [new-caller](TODO/RETIRED/2026-10-29/NS-5_style_03.md) gates. |
+| Six tickets made the three personal genre names primary corpus/acceptance gates. | Private preferences could become implicit product scope while arbitrary caller intake had no clear owner. | Replace them with generic [intake](TODO/DONE/NS-5_corpus_05.md), [qualified corpora](TODO/RETIRED/2026-10-29/NS-5_corpus_06.md) and three staged style results. |
 | Role recovery and harmonic/groove tasks combined development providers and independent acceptance. | One ticket could hide several distinct usable deliverables and reference blockers. | Split events from stable roles; split harmony/groove providers from independent verdicts. Final consumers depend on the verdict tasks. |
-| [NS-6 delivery](TODO/NS-6_delivery_03.md) waited for the complete learning workflow. Its accepted native checkpoint is frozen at an older revision. | The core library cannot gain a current outside-consumer verdict while research remains open. | Add [minimal current package](TODO/DONE/NS-6_delivery_06.md) and [independent minimal use](TODO/NS-6_delivery_07.md); full workflow delivery stays mandatory. |
-| [Operator repairs](WORK-HISTORY.md#phone-save-request-header-repair--2026-09-29) have useful isolated evidence but the physical phone and complete workflow gates remain open. | Repeated UI/HTTP repairs consume attention without closing the oversized authoring ticket. | Separate [editor/queue](TODO/DONE/NS-6_authoring_01.md) from [physical LAN/final operator use](TODO/NS-6_authoring_02.md), preserving every criterion. |
+| [NS-6 delivery](TODO/RETIRED/2026-10-29/NS-6_delivery_03.md) waited for the complete learning workflow. Its accepted native checkpoint is frozen at an older revision. | The core library cannot gain a current outside-consumer verdict while research remains open. | Add [minimal current package](TODO/DONE/NS-6_delivery_06.md) and [independent minimal use](TODO/RETIRED/2026-10-29/NS-6_delivery_07.md); full workflow delivery stays mandatory. |
+| [Operator repairs](WORK-HISTORY.md#phone-save-request-header-repair--2026-09-29) have useful isolated evidence but the physical phone and complete workflow gates remain open. | Repeated UI/HTTP repairs consume attention without closing the oversized authoring ticket. | Separate [editor/queue](TODO/DONE/NS-6_authoring_01.md) from [physical LAN/final operator use](TODO/RETIRED/2026-10-29/NS-6_authoring_02.md), preserving every criterion. |
 | Milestones/catalog repeated long experiment histories and older execution orders; staffing still allowed a junior and twenty QA failures. | Agents can follow stale “next” paragraphs or spend too long repairing one worker assignment. | Current milestones and catalog become short navigation/accounting; dated failures stay in task Dev Notes and WORK. Current team and two-failure transfer live in TASKFLOW. |
 
 These findings do not justify weakening reference quality, using external
@@ -109,7 +111,7 @@ result and the prioritized path is blocked; record the return path.
 | Order / lane | Concrete result and closing evidence | Return path / stop |
 | --- | --- | --- |
 | Reassessment's next Big Boss batch: [corpus_05](TODO/DONE/NS-5_corpus_05.md) | Caller-defined corpus API/consumer: two arbitrary labels, verified source ranges, partitions, reload and maintained learner consumption, with rejection/failure checks. | Ready from the accepted identity baseline at the audit; accepted after independent QA on 2026-09-30. |
-| Style evaluation: [evaluation_01](TODO/NS-5_evaluation_01.md) | Generic style-card reader/scorer closes AC1 only; independent note/duration preserving/breaking controls, matched comparators and frozen limits remain required. | Independent reference/calibration evidence blocks the remaining criteria. Do not repeat accepted contract mechanics or begin a new label-search loop. |
+| Style evaluation: [evaluation_01](TODO/RETIRED/2026-10-29/NS-5_evaluation_01.md) | Generic style-card reader/scorer closes AC1 only; independent note/duration preserving/breaking controls, matched comparators and frozen limits remain required. | Independent reference/calibration evidence blocks the remaining criteria. Do not repeat accepted contract mechanics or begin a new label-search loop. |
 | Bounded learning path | notes_01 + notes_05 -> notes_02 -> notes_03 -> style_01. Close actual inferred-event phrase gates, then complete saved/generation/listening usefulness. | Register and presence investigations are stopped/reference-blocked, not “ready” merely because task prerequisites are DONE. Resume only when their changed-evidence conditions hold. |
 | Parallel library delivery when learning is blocked | delivery_06 -> delivery_07: current extracted core-only and WFC companion packages, then real outside-user synthesis/control/WAV round trip. | Does not require the operator or full style learning. External reviewer/runner availability is explicit. Return to NS-5 when its reference/provider path becomes actionable. |
 | Full musical learning | timing/context; events -> roles; harmony/groove development -> independent verdicts; evolving sound; full NS-4 integration. | Preserve accepted native/core boundaries; no all-unknown output can pass useful-coverage gates. |
@@ -161,15 +163,15 @@ No task is moved to DONE in this assessment.
 
 | Previous owner | Current owner(s) / current goal points | Criterion disposition |
 | --- | --- | --- |
-| NS-3 parts_02 | parts_02 events: 5; [parts_05 roles](TODO/NS-3_parts_05.md): 5 | Event recovery and event comparisons remain in parts_02; stable crossings/articulation/chordal ownership and joint evidence move to parts_05. Native bounds apply to both; parts_03 remains independent acceptance. |
-| NS-3 harmony_01 | harmony_01 provider: 3; [harmony_02 independent verdict](TODO/NS-3_harmony_02.md): 3 | Original independent criterion moves; vocabulary, joint evidence, normalization and consumer remain in the provider and are verified on the final path. |
-| NS-3 groove_01 | groove_01 provider: 2; [groove_02 independent verdict](TODO/NS-3_groove_02.md): 3 | Independent timing/trait/listening criterion moves; admitted clocks/roles, joint observations and native delivery remain. |
-| NS-5 evaluation_01 | evaluation_01 bounded contract: 3; [evaluation_04 full references](TODO/NS-5_evaluation_04.md): 3 | Grounding, numeric limits, comparators, seed/duration/listening policy and preserving/breaking controls remain across the bounded/full scopes. |
-| Retired NS-5 corpus_02/03/04 | [corpus_05 intake](TODO/DONE/NS-5_corpus_05.md): 4; [corpus_06 qualified corpora](TODO/NS-5_corpus_06.md): 6 | Identity, preparation, ranges, duplicates, exposure and native inputs stay. Each of three full profiles retains >=3h/6 training groups, >=30m/2 development groups and >=30m/3 untouched evaluation groups. |
-| Retired NS-5 chillwave_01, stoner-rock_01, lofi_01 | [style_01 bounded](TODO/NS-5_style_01.md): 6; [style_02 many-hour](TODO/NS-5_style_02.md): 10; [style_03 new caller](TODO/NS-5_style_03.md): 6 | Replace personal-name gates. Every old freeze, numeric comparison, >=2/3 listening, baseline advantage, reuse/edit and exact-evidence criterion remains for three full profiles across style_02/03. style_01 adds an earlier bounded result. |
-| NS-6 authoring_01 | authoring_01 editor/queue: 8; [authoring_02 physical/final QA](TODO/NS-6_authoring_02.md): 8 | Numbered points 1–3,6–9 stay; 4,5,10 move. The detailed D1–D6 owner table preserves every sentence. |
+| NS-3 parts_02 | parts_02 events: 5; [parts_05 roles](TODO/RETIRED/2026-10-29/NS-3_parts_05.md): 5 | Event recovery and event comparisons remain in parts_02; stable crossings/articulation/chordal ownership and joint evidence move to parts_05. Native bounds apply to both; parts_03 remains independent acceptance. |
+| NS-3 harmony_01 | harmony_01 provider: 3; [harmony_02 independent verdict](TODO/RETIRED/2026-10-29/NS-3_harmony_02.md): 3 | Original independent criterion moves; vocabulary, joint evidence, normalization and consumer remain in the provider and are verified on the final path. |
+| NS-3 groove_01 | groove_01 provider: 2; [groove_02 independent verdict](TODO/RETIRED/2026-10-29/NS-3_groove_02.md): 3 | Independent timing/trait/listening criterion moves; admitted clocks/roles, joint observations and native delivery remain. |
+| NS-5 evaluation_01 | evaluation_01 bounded contract: 3; [evaluation_04 full references](TODO/RETIRED/2026-10-29/NS-5_evaluation_04.md): 3 | Grounding, numeric limits, comparators, seed/duration/listening policy and preserving/breaking controls remain across the bounded/full scopes. |
+| Retired NS-5 corpus_02/03/04 | [corpus_05 intake](TODO/DONE/NS-5_corpus_05.md): 4; [corpus_06 qualified corpora](TODO/RETIRED/2026-10-29/NS-5_corpus_06.md): 6 | Identity, preparation, ranges, duplicates, exposure and native inputs stay. Each of three full profiles retains >=3h/6 training groups, >=30m/2 development groups and >=30m/3 untouched evaluation groups. |
+| Retired NS-5 chillwave_01, stoner-rock_01, lofi_01 | [style_01 bounded](TODO/RETIRED/2026-10-29/NS-5_style_01.md): 6; [style_02 many-hour](TODO/RETIRED/2026-10-29/NS-5_style_02.md): 10; [style_03 new caller](TODO/RETIRED/2026-10-29/NS-5_style_03.md): 6 | Replace personal-name gates. Every old freeze, numeric comparison, >=2/3 listening, baseline advantage, reuse/edit and exact-evidence criterion remains for three full profiles across style_02/03. style_01 adds an earlier bounded result. |
+| NS-6 authoring_01 | authoring_01 editor/queue: 8; [authoring_02 physical/final QA](TODO/RETIRED/2026-10-29/NS-6_authoring_02.md): 8 | Numbered points 1–3,6–9 stay; 4,5,10 move. The detailed D1–D6 owner table preserves every sentence. |
 | NS-6 delivery_03 | delivery_03 full package: 10; [delivery_06 minimal package](TODO/DONE/NS-6_delivery_06.md): 8 | All five complete-workflow criteria stay; current core delivery gets its own owner. |
-| NS-6 delivery_04 | delivery_04 full independent use: 12; [delivery_07 minimal independent use](TODO/NS-6_delivery_07.md): 9 | All five full-use criteria stay; final audit depends on both actual-use verdicts. |
+| NS-6 delivery_04 | delivery_04 full independent use: 12; [delivery_07 minimal independent use](TODO/RETIRED/2026-10-29/NS-6_delivery_07.md): 9 | All five full-use criteria stay; final audit depends on both actual-use verdicts. |
 
 Six unaccepted genre-specific files are deleted rather than moved to DONE.
 Their basenames are retired; this table and Git history preserve disposition.
@@ -189,10 +191,10 @@ now required, and the score is rebased again before publication:
 
 | Missing outcome | Required owner | Why previous acceptance was insufficient |
 | --- | --- | --- |
-| Reusable caller synthesis extensions | [NS-2_extension_01](TODO/NS-2_extension_01.md), 10 NS-2 points | Built-in tests and internal subclasses do not show an outside caller can implement a source/effect with correct ownership, work, streaming and fault behavior. |
+| Reusable caller synthesis extensions | [NS-2_extension_01](TODO/RETIRED/2026-10-29/NS-2_extension_01.md), 10 NS-2 points | Built-in tests and internal subclasses do not show an outside caller can implement a source/effect with correct ownership, work, streaming and fault behavior. |
 | Extensible musical providers | [NS-4_providers_01](TODO/DONE/NS-4_providers_01.md), 10 NS-4 points | At the dated audit the semantic vocabulary was closed; the separately accepted `bdd55eb` caller-codec contract now qualifies bounded control, persistence and repeated blending. |
-| A maintained supported library | [NS-6_support_01](TODO/NS-6_support_01.md), 10 NS-6 points | One development snapshot says nothing about a declared release/API policy, a real caller upgrade or a reported issue repaired and delivered. |
-| Evidence of ecosystem adoption | [NS-6_adoption_01](TODO/NS-6_adoption_01.md), 15 NS-6 points | An isolated package consumer, agent run, download or star count cannot establish the de facto standard claim. |
+| A maintained supported library | [NS-6_support_01](TODO/RETIRED/2026-10-29/NS-6_support_01.md), 10 NS-6 points | One development snapshot says nothing about a declared release/API policy, a real caller upgrade or a reported issue repaired and delivered. |
+| Evidence of ecosystem adoption | [NS-6_adoption_01](TODO/RETIRED/2026-10-29/NS-6_adoption_01.md), 15 NS-6 points | An isolated package consumer, agent run, download or star count cannot establish the de facto standard claim. |
 
 NS-6's overall weight increases from 5 to 10; NS-1's completed extraction weight
 falls from 10 to 5. Core and WFC extensibility reopen completion scope at 90% and
@@ -221,7 +223,7 @@ standard claim. If that evidence or the claim's acceptance definition is absent,
 the task and full goal stay open. No task authoring, convenient smaller claim,
 or engineering-only subtotal may be reported as 100% of the original goal.
 
-The final [completion audit](TODO/NS-6_delivery_05.md) depends on those extension,
+The final [completion audit](TODO/RETIRED/2026-10-29/NS-6_delivery_05.md) depends on those extension,
 support/adoption and independent-use outcomes and reconciles every requirement
 against current evidence. The backlog is now a complete **operational plan for
 the stated outcomes at its declared support boundary**, not a guarantee that

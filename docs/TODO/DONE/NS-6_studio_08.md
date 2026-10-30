@@ -11,7 +11,7 @@ with consistent navigation, truthful attention badges and a useful next action.
 
 North star: NS-6. Outcome owner: OPERATOR-STUDIO.
 Completion credit: 1 goal percentage point (0.10 overall points).
-Basis: one unearned point transfers from [authoring_02](../NS-6_authoring_02.md);
+Basis: one unearned point transfers from [authoring_02](../RETIRED/2026-10-29/NS-6_authoring_02.md);
 all of its physical-device and complete-workflow criteria remain required.
 
 Execution status: accepted by Big Boss on 2026-10-01. Prominent starting actions,

@@ -12,7 +12,7 @@ Deliver a source-bound reference packet for the note-presence and boundary
 problem. Separate a measured note control or annotation from audible activity:
 pickup/MIDI note ends, a residual acoustic tail and an actual rest are different
 facts. This packet is a prerequisite for the acoustic decision in
-[NS-3_notes_02](../NS-3_notes_02.md), not a new decoder or a genre verdict.
+[NS-3_notes_02](../RETIRED/2026-10-29/NS-3_notes_02.md), not a new decoder or a genre verdict.
 
 North star: NS-3. Outcome owner: WAV-03-BOUNDARIES.
 Historical allocation: 1 goal percentage point (0.25 overall points), split from
@@ -45,7 +45,7 @@ Train mode rejected the exposed development packet without writing a report.
 This qualifies a bounded synthetic reference and exposes an independent
 consumer failure; recorded phrase accuracy, noise rejection, attacks,
 short/repeated notes, overlaps, gaps and audible ending times remain open under
-[NS-3_notes_02](../NS-3_notes_02.md). No threshold was tuned to the independent
+[NS-3_notes_02](../RETIRED/2026-10-29/NS-3_notes_02.md). No threshold was tuned to the independent
 packet. This task earns its 1 NS-3 goal point (0.25 overall point).
 
 **Acceptance Criteria:**
@@ -272,7 +272,7 @@ selection policy needs separate evidence-backed review and a pre-audio freeze.
   provide reviewed acoustic tail/rest labels. The measured gate-slope rule
   failed both long-release controls; a fast-decay mallet is silent well before
   note-off. This task owns the independently useful reference deliverable,
-  while [NS-3_notes_02](../NS-3_notes_02.md) retains the observation, decoder,
+  while [NS-3_notes_02](../RETIRED/2026-10-29/NS-3_notes_02.md) retains the observation, decoder,
   controls and recorded accuracy requirements. Original 4-point credit is
   redistributed 1+3; no progress or credit is earned by the split itself.
 - Candidate source: [Guitar-TECHS](https://zenodo.org/records/14963133)

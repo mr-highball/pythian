@@ -98,7 +98,7 @@ same models, ordered settings, masks, timing, seeds and solver/API versions.
 `LearnedLayersVersion = 4` identifies this API behavior; it adds no saved-format
 version or historical reader. [Saved style preferences](WAVE-STYLE.md#saved-generation-preferences)
 now retain supported settings through reload and repeated blends. General role
-controls remain under [WFC-LAYERS](MILESTONES.md#wfc-layers).
+controls remain under [WFC-LAYERS](history/MILESTONES-2026-10-29.md#wfc-layers).
 
 ### Preference checkpoint — 2026-09-20
 
@@ -280,7 +280,7 @@ Listening remains unassessed; these are authored controls, not learned voice rol
 This completes fixed-plan timing support, not WFC-LAYERS as a whole. Durations
 selected during the same solve still require a cumulative-time or staged-planning
 contract. Semantic provider registration, persistence and recorded integration
-remain in [WFC-LAYERS](MILESTONES.md#wfc-layers).
+remain in [WFC-LAYERS](history/MILESTONES-2026-10-29.md#wfc-layers).
 
 ### Mapped-layer checkpoint — 2026-09-20
 
@@ -364,7 +364,7 @@ resolved by the maintained partition adapter below; the later
 [duration/stream adapter](DURATION-STREAMS.md) supplies the accepted staged policy
 for generated durations and dependent context.
 
-This was a scoped prerequisite under [WFC-LAYERS](MILESTONES.md#wfc-layers), not a
+This was a scoped prerequisite under [WFC-LAYERS](history/MILESTONES-2026-10-29.md#wfc-layers), not a
 blocker for uniform-grid providers, corpus work or inference. This study left
 maintained APIs unchanged. Checked FPC 3.2.2 Win64 execution is terminal with zero
 reported leaks and no authored-source warnings; existing RTL/companion warnings

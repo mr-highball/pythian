@@ -35,7 +35,7 @@ and the same revision's [successful Linux run](https://github.com/mr-highball/py
 The [package evidence](../../PACKAGING.md#accepted-minimal-artifact--2026-09-30)
 records all six archive identities, inventories and commands. This is minimal
 mechanical delivery, not independent use, inferred styles or full workflow
-acceptance. [Actual independent use](../NS-6_delivery_07.md) remains OPEN.
+acceptance. [Actual independent use](../RETIRED/2026-10-29/NS-6_delivery_07.md) remains OPEN.
 
 **Acceptance Criteria:**
 

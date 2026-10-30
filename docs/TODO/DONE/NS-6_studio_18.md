@@ -72,5 +72,5 @@ credit; physical-phone and musical/operator verdicts remain separately open.
   return focus. A screenshot review moved generation setup into Settings and
   placed feedback Save in its own bar. Final desktop dimensions were explicitly
   checked after discovering an earlier screenshot still used the narrow view.
-- The remaining [actual operator verdict](../NS-6_studio_03.md) must come from
+- The remaining [actual operator verdict](../RETIRED/2026-10-29/NS-6_studio_03.md) must come from
   real use; this repair does not close it. Consecutive nonclosing count: 0.

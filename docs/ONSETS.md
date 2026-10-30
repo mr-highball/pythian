@@ -88,7 +88,7 @@ checks. Logs are ignored under `build/release-evidence-{win64,stable,trunk}/`.
 The [recorded release probe](PHRASE-EVALUATION.md#energy-fall-release-checkpoint)
 rejects using the strongest local fall as an automatic note ending: it severely
 reduces complete-note matches on both development parts. That finding belongs to
-[WAV-03-BOUNDARIES](MILESTONES.md#wav-03-boundaries); it does not invalidate the
+[WAV-03-BOUNDARIES](history/MILESTONES-2026-10-29.md#wav-03-boundaries); it does not invalidate the
 scoped energy measurement or admit a replacement gate policy.
 
 The subsequent [sustained-tail condition](PHRASE-EVALUATION.md#sustained-tail-checkpoint)

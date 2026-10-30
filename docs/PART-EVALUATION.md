@@ -174,7 +174,7 @@ No inference, listening, complete-reference or independent accuracy is claimed.
 
 This inventory applies the [frozen policy](PART-MIXTURE-POLICY.md) to the current
 packet. The [external-packet task](TODO/DONE/NS-3_parts_01.md) is accepted; remaining
-inference coverage belongs to [role learning](TODO/NS-3_parts_02.md).
+inference coverage belongs to [role learning](TODO/RETIRED/2026-10-29/NS-3_parts_02.md).
 Authored controls establish measurement behavior, while external annotations
 must establish what sounds and which musical functions the source supplies.
 
@@ -872,8 +872,8 @@ layers and uncertainty. The short S03 transition at marker 92768 straddles a
 256-ms window, so it does not supply a clean stationary reference. Overlapping
 tails and S00's bends likewise remain unresolved. These findings belong to the
 existing [reference preparation](TODO/DONE/NS-3_parts_01.md) criteria; they coordinate
-with [pitch identity](TODO/NS-3_notes_01.md) and
-[evolving sound](TODO/NS-3_timbre_01.md) without adding a dependency cycle.
+with [pitch identity](TODO/RETIRED/2026-10-29/NS-3_notes_01.md) and
+[evolving sound](TODO/RETIRED/2026-10-29/NS-3_timbre_01.md) without adding a dependency cycle.
 No learner correction or newly scored estimator follows from this review.
 
 Final checked Win64 export and view controls, full packet replay and rejection/

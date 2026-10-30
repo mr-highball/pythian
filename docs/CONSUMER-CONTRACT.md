@@ -2,7 +2,7 @@
 
 [Home](../README.md) · [Project policy](../PROJECT.md) ·
 [Package evidence](PACKAGING.md) · [Capability map](FUNDAMENTALS.md) ·
-[Delivery acceptance](MILESTONES.md#delivery-release)
+[Delivery acceptance](history/MILESTONES-2026-10-29.md#delivery-release)
 
 This contract defines the supported development surface and the acceptance needed
 for final independent delivery. Dated build/package evidence applies to its exact
@@ -40,8 +40,8 @@ distribution is a required independent foundation, while a companion consumer
 explicitly selects the WFC source closure. This distribution choice does not
 make full-product WFC acceptance optional. The
 [minimal package](TODO/DONE/NS-6_delivery_06.md) verifies both subsets; final recorded
-workflow acceptance remains [integration](TODO/NS-4_integration_01.md) and
-[delivery](TODO/NS-6_delivery_03.md).
+workflow acceptance remains [integration](TODO/RETIRED/2026-10-29/NS-4_integration_01.md) and
+[delivery](TODO/RETIRED/2026-10-29/NS-6_delivery_03.md).
 
 Audio DSP, provider vocabularies/codecs, musical clocks, source evidence,
 uncertainty and sound mapping belong in Pythian. Only a reproduced generic
@@ -55,7 +55,7 @@ generic defect and made no WFC branch or dependency change.
 The former [external-runtime observation adapter](PROVENANCE.md#optional-native-observation-adapter)
 is historical evidence and is outside the supported Pascal-only workflow. The
 [accepted Pascal execution task](TODO/DONE/NS-3_validation_02.md) qualifies the
-owned replacement. [Final workflow delivery](TODO/NS-6_delivery_03.md) must supply and
+owned replacement. [Final workflow delivery](TODO/RETIRED/2026-10-29/NS-6_delivery_03.md) must supply and
 exercise that producer on each declared stable target before claiming the
 workflow is delivered; compiled core consumers alone cannot prove that step.
 
@@ -199,7 +199,7 @@ fields, not a promise of unrestricted submissions or a response time. Include:
 Keep private paths, credentials and unlicensed media out of the report. Preserve
 the failed candidate separately. A correction needs affected-path rechecking
 against its exact revised source/package; actual outside-user maintenance
-acceptance remains the [support task](TODO/NS-6_support_01.md).
+acceptance remains the [support task](TODO/RETIRED/2026-10-29/NS-6_support_01.md).
 
 ## Entry points and runtime obligations
 
@@ -287,8 +287,8 @@ musical correctness and listening quality do not follow from deterministic token
 ## Independent-consumer success checklist
 
 This is the required acceptance protocol, not a claim that an independent consumer
-has already passed it. [Final packaging](TODO/NS-6_delivery_03.md) supplies the
-accepted workflow and inputs; [independent acceptance](TODO/NS-6_delivery_04.md)
+has already passed it. [Final packaging](TODO/RETIRED/2026-10-29/NS-6_delivery_03.md) supplies the
+accepted workflow and inputs; [independent acceptance](TODO/RETIRED/2026-10-29/NS-6_delivery_04.md)
 owns the external reproduction and verdict. Current packaged authored-audio
 examples demonstrate mechanics and cannot substitute for accepted recorded styles.
 

@@ -75,7 +75,7 @@ scientific results or expansion into companion source.
   retained in the boss manifest. Only test measurement/retry additions followed
   the accepted product source; independent source review covers those additions.
 - 2026-10-27, Big Boss: independently useful split from
-  [observability_04](../NS-6_observability_04.md), original AC1 corpus/archive
+  [observability_04](../RETIRED/2026-10-29/NS-6_observability_04.md), original AC1 corpus/archive
   serialization/validation and its consumer/replay/cancellation portions of AC5.
   No credit is transferred or added. Original retained-style/provider, batch
   evaluation and inference obligations remain there; composition has its own

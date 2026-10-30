@@ -14,8 +14,8 @@ policy and any caller override separately from the original observation. A
 known-only excerpt may use the existing tempo clock; unsupported timing must
 reject before timed generation. The existing known-only context profile remains
 byte-compatible. Automatic beat accuracy and joined key/tempo profiles remain
-with [NS-3_tempo_03](../NS-3_tempo_03.md) and
-[NS-3_context_02](../NS-3_context_02.md).
+with [NS-3_tempo_03](../RETIRED/2026-10-29/NS-3_tempo_03.md) and
+[NS-3_context_02](../RETIRED/2026-10-29/NS-3_context_02.md).
 
 North star: NS-3. Outcome owner: WAV-02-CONTEXT.
 Historical allocation: 1 goal percentage point (0.25 overall points), assigned from

@@ -32,7 +32,7 @@ octave pairs from 33 instruments. Test contains 55 acoustic-flute IDs but
 Stop this NSynth route without changing its pitch, velocity or split rules.
 The exact policy, pair rows and identity hashes remain under ignored `build/`.
 No WAV extraction, TensorFlow execution, register inference or independent
-pitch-accuracy claim followed. [NS-3_notes_01](TODO/NS-3_notes_01.md)
+pitch-accuracy claim followed. [NS-3_notes_01](TODO/RETIRED/2026-10-29/NS-3_notes_01.md)
 criterion 1 and task credit remain open; the recorded flute ambiguity still
 needs genuinely contrasting evidence and a prospective abstention contract.
 
@@ -117,7 +117,7 @@ Pythian's admitted-note precision, active coverage, false-rest count and event
 gates; the published result does not establish flute-specific performance on
 the source-separated URMP challenge. The described estimator selects the
 maximum activation frequency bin and supplies no calibrated abstention or
-note-presence decision. The earlier [Pascal PESTO prescreen](TODO/NS-3_notes_01.md)
+note-presence decision. The earlier [Pascal PESTO prescreen](TODO/RETIRED/2026-10-29/NS-3_notes_01.md)
 already demonstrated high-confidence lower-octave flute errors for another
 published pitch model on that challenge.
 
@@ -133,8 +133,8 @@ Known glide/vibrato controls recover constant harmonic coefficients and render
 through the native source; stationary-fit consumers retain their evidence.
 This supplies a primitive for investigating the drift confound below. It does
 not infer a trustworthy phase path, select register or alter any recorded phrase
-score. Those admission steps remain [WAV-03-REGISTER](MILESTONES.md#wav-03-register)
-and [WAV-03-TIMBRE](MILESTONES.md#wav-03-timbre); held-out recordings remain unused.
+score. Those admission steps remain [WAV-03-REGISTER](history/MILESTONES-2026-10-29.md#wav-03-register)
+and [WAV-03-TIMBRE](history/MILESTONES-2026-10-29.md#wav-03-timbre); held-out recordings remain unused.
 
 ## NSynth note-presence listening packet — partial review — 2026-09-22
 
@@ -403,7 +403,7 @@ short/repeated notes, gaps, overlap, background noise, recorded-phrase transfer
 and a proven audible ending. The qualifying reference task
 [NS-3_notes_04](TODO/DONE/NS-3_notes_04.md) accepts this bounded source packet;
 the mismatch and broader presence decision belong to
-[NS-3_notes_02](TODO/NS-3_notes_02.md).
+[NS-3_notes_02](TODO/RETIRED/2026-10-29/NS-3_notes_02.md).
 
 ## Guitar-TECHS P1 reference screen stopped — 2026-09-22
 
@@ -661,7 +661,7 @@ envelopes are useless. Missing upper measurements are not evidence for an octave
 change, and a favorable upper measurement does not erase opposing lower evidence.
 Do not weaken the guards, force register changes or alter presence boundaries.
 
-The next bounded diagnostic belongs to [note identity](TODO/NS-3_notes_01.md):
+The next bounded diagnostic belongs to [note identity](TODO/RETIRED/2026-10-29/NS-3_notes_01.md):
 first inspect retained fit caches, then, if needed, predeclare an unchanged-algorithm
 measurement that records exact unavailability reasons, first/second-window AC
 energies, second-harmonic power ratios, proposed frequency correction, target
@@ -670,7 +670,7 @@ cache retains only an availability Boolean. Fixed-frequency ablation shares the
 same harmonic support floor, so it is not an independently available phase-free
 test. Explaining missing measurements will not itself resolve a coherent stack
 compatible with two registers; a new identity observation still needs independent
-discrimination controls. [Presence](TODO/NS-3_notes_02.md) remains separately open.
+discrimination controls. [Presence](TODO/RETIRED/2026-10-29/NS-3_notes_02.md) remains separately open.
 
 Evidence is retained under `build/phrase-identity-reassessment/` and
 `build/qa-batch-10/`. Checked stable Win64 audit execution takes 2,959 ms with
@@ -948,8 +948,8 @@ Policy, native helper/controls/inference/audit, per-frame peaks and all terminal
 logs remain under ignored `build/phrase-rate-strength/`. Final checked builds have
 no warnings, and successful runs report no Pascal heap leaks. These checks do
 not establish calibrated observations or production many-hour cost. This supports
-[register](MILESTONES.md#wav-03-register) and
-[boundaries](MILESTONES.md#wav-03-boundaries), without milestone completion credit.
+[register](history/MILESTONES-2026-10-29.md#wav-03-register) and
+[boundaries](history/MILESTONES-2026-10-29.md#wav-03-boundaries), without milestone completion credit.
 
 <a id="playback-rate-observations"></a>
 ## Playback-rate observations and unchanged decoding — 2026-09-20
@@ -1127,7 +1127,7 @@ errors were corrected before the accepted checks; their failure logs are retaine
 **Decision:** keep the preferred baseline. This result rejects the tested
 drop-in replacement, not every possible calibrated use of a larger model.
 Do not undertake a full native port on the strength of capacity alone. The next
-[register](MILESTONES.md#wav-03-register)/[boundary](MILESTONES.md#wav-03-boundaries)
+[register](history/MILESTONES-2026-10-29.md#wav-03-register)/[boundary](history/MILESTONES-2026-10-29.md#wav-03-boundaries)
 approach needs discriminating pitch-identity and presence evidence, preserving
 short/quiet notes and genuine octave changes. Calibration or representation
 changes require their own declared controls and paired evaluation. Held-out
@@ -1174,11 +1174,11 @@ rest errors do not establish a leakage classifier. No waveform separation,
 reference relabeling, note correction, model comparison or held-out evaluation
 was performed. Preferred inference and all four recorded gates remain unchanged.
 
-Keep [register](MILESTONES.md#wav-03-register) and
-[boundaries](MILESTONES.md#wav-03-boundaries) independently actionable. Their next
+Keep [register](history/MILESTONES-2026-10-29.md#wav-03-register) and
+[boundaries](history/MILESTONES-2026-10-29.md#wav-03-boundaries) independently actionable. Their next
 observation model must resolve pitch identity and presence/rest ambiguity in the
 target recording; they do not acquire a new dependency on general
-[mixed-part admission](MILESTONES.md#wav-03-parts) from these errors. Preserve the
+[mixed-part admission](history/MILESTONES-2026-10-29.md#wav-03-parts) from these errors. Preserve the
 known articulation, weak-fundamental and short-note counterexamples when comparing
 a richer representation. The existing tests do not justify another unconditional
 periodicity/coherence cutoff or removal of companion-like notes.
@@ -1264,9 +1264,9 @@ The next approach must represent coherent harmonic/changing sound and competing
 pitch identities, retaining uncertainty and the now-passing low/quiet/gap/mixture
 controls. Do not widen this fit's thresholds to force recorded coverage or treat
 the fixed added support as calibrated confidence. This remains
-[WAV-03-BOUNDARIES](MILESTONES.md#wav-03-boundaries), coordinated with
-[register](MILESTONES.md#wav-03-register) and
-[validation](MILESTONES.md#wav-validation); phrase freeze is still blocked.
+[WAV-03-BOUNDARIES](history/MILESTONES-2026-10-29.md#wav-03-boundaries), coordinated with
+[register](history/MILESTONES-2026-10-29.md#wav-03-register) and
+[validation](history/MILESTONES-2026-10-29.md#wav-validation); phrase freeze is still blocked.
 
 Policy, native sources, full diagnostics, compact score inputs and terminal logs
 are ignored under `build/cycle-coherent-support/`. The existing scorer's 2-MiB
@@ -1313,9 +1313,9 @@ short/quiet/gated controls. A small local residual cannot establish pitch identi
 The declared policy therefore stops actual cached-model hybrid and recorded
 comparison. Neither is evidenced by these logs. Preferred inference, recorded
 scores and held-out material remain unchanged. The work stays under
-[WAV-03-BOUNDARIES](MILESTONES.md#wav-03-boundaries), coordinated with
-[register](MILESTONES.md#wav-03-register) and
-[validation](MILESTONES.md#wav-validation); it earns no additional goal credit.
+[WAV-03-BOUNDARIES](history/MILESTONES-2026-10-29.md#wav-03-boundaries), coordinated with
+[register](history/MILESTONES-2026-10-29.md#wav-03-register) and
+[validation](history/MILESTONES-2026-10-29.md#wav-validation); it earns no additional goal credit.
 
 <a id="short-note-admission-checkpoint"></a>
 ## Native low-short-note admission and cycle-support experiment — 2026-09-20
@@ -1625,9 +1625,9 @@ at true repeated notes versus within an existing attack/sustain. Declare the nex
 observation contract before scoring another candidate. Preserve explicit unknowns,
 the preferred baseline, quiet/low/short-note controls and the unused held-out split.
 Do not launch a production port or reinterpret activations as calibrated confidence
-on this result. [Register](MILESTONES.md#wav-03-register),
-[boundaries](MILESTONES.md#wav-03-boundaries) and applicable
-[validation](MILESTONES.md#wav-validation) still block phrase acceptance.
+on this result. [Register](history/MILESTONES-2026-10-29.md#wav-03-register),
+[boundaries](history/MILESTONES-2026-10-29.md#wav-03-boundaries) and applicable
+[validation](history/MILESTONES-2026-10-29.md#wav-validation) still block phrase acceptance.
 
 The checked stable Win64 study/audit builds have no compiler warnings; native
 controls, measurement, audit, existing score and paired accounting runs finish
@@ -1683,7 +1683,7 @@ existing short-note requirement and must not silently replace that scope.
 Preserve the existing independent coverage/precision/onset/full-note gates and
 held-out split. Compare recorded musical results before investing in a production
 port; any chosen native implementation still needs numerical fidelity, cost,
-provenance and downstream-use evidence under [WAV-VALIDATION](MILESTONES.md#wav-validation).
+provenance and downstream-use evidence under [WAV-VALIDATION](history/MILESTONES-2026-10-29.md#wav-validation).
 
 Checked stable Win64 compilation finishes without warnings after explicit
 initialization of the retained output arrays. The run reports zero Pascal heap
@@ -1789,7 +1789,7 @@ legitimate attacks. Evaluate it alongside register evidence and the established
 counterexamples before changing the event graph. Treat energy, periodicity and
 pitch salience as conditional evidence; none alone identifies a musical note or
 its annotated boundary. Any learned/calibrated observation must follow the shared
-[validation requirements](MILESTONES.md#wav-validation), with independent recording
+[validation requirements](history/MILESTONES-2026-10-29.md#wav-validation), with independent recording
 splits and explicit uncertainty. Temporal evidence remains useful and must not be
 removed solely because an individual frame favors unknown.
 
@@ -2387,7 +2387,7 @@ sample visits per center, bounded by 480000 visits. Baseline replay and changed
 inference each retain the existing 3000-frame/20-million-edge decoder limits.
 The changed runs consider 18617391/18619767 edges. Existing waveform/qualified
 attack work remains separately bounded. This is development evidence for
-[boundaries](MILESTONES.md#wav-03-boundaries), not accepted inference, synthesis
+[boundaries](history/MILESTONES-2026-10-29.md#wav-03-boundaries), not accepted inference, synthesis
 listening, genre quality or additional overall completion credit.
 
 <a id="pitch-conditioned-timbre-checkpoint"></a>
@@ -2560,8 +2560,8 @@ Final second-condition audits are `flute-energy-verified` and
 and audits terminate with zero reported leaks. Conservative work is
 140661248/123069128 units, below 268435456. No learned network rerun, held-out
 input, listening verdict, native format, library inference or completion credit
-changes. [Register](MILESTONES.md#wav-03-register),
-[boundaries](MILESTONES.md#wav-03-boundaries) and independent admission stay open.
+changes. [Register](history/MILESTONES-2026-10-29.md#wav-03-register),
+[boundaries](history/MILESTONES-2026-10-29.md#wav-03-boundaries) and independent admission stay open.
 
 <a id="native-model-fidelity-checkpoint"></a>
 ## Native model execution fidelity — 2026-09-20
@@ -2600,8 +2600,8 @@ development inputs. A transcription/layout error in native execution does not
 explain their large octave-support differences. Preserve this comparator for
 future arithmetic changes; do not schedule the same unresolved parity check again.
 Musical interpretation, confidence calibration, native execution cost and frozen
-independent evaluation remain open under [WAV-VALIDATION](MILESTONES.md#wav-validation)
-and [register admission](MILESTONES.md#wav-03-register). Agreement with a framework
+independent evaluation remain open under [WAV-VALIDATION](history/MILESTONES-2026-10-29.md#wav-validation)
+and [register admission](history/MILESTONES-2026-10-29.md#wav-03-register). Agreement with a framework
 is not a musical admission result.
 
 All study sources, downloaded reference runtime, original runtime licenses,
@@ -2674,7 +2674,7 @@ removed. Existing coverage, precision and note-F1 gates remain unchanged.
 
 **Decision:** retain register as a genuine unresolved musical inference outcome.
 Do not pursue global octave doubling, trim edges to hide it, or replace note labels
-with whichever reference favors the estimator. [WAV-VALIDATION](MILESTONES.md#wav-validation)
+with whichever reference favors the estimator. [WAV-VALIDATION](history/MILESTONES-2026-10-29.md#wav-validation)
 must distinguish acoustic frame evidence from note-event labels and retain their
 uncertainty. Boundary diagnosis can use this comparison descriptively; automatic
 cuts still require reference-free evidence. The next register hypothesis must
@@ -2743,7 +2743,7 @@ decoder-cost change, require a hypothesis that can distinguish the wholly wrong
 events while protecting genuine short/quiet lower notes and octave changes.
 Raw local salience already favors the wrong identity on almost every wrong
 center, so treating its maximum as reliable confidence is unsupported. Model
-numerical fidelity remains an independent [adoption gate](MILESTONES.md#wav-validation);
+numerical fidelity remains an independent [adoption gate](history/MILESTONES-2026-10-29.md#wav-validation);
 this audit neither proves nor disproves a model-implementation defect.
 
 Evidence is ignored under `build/phrase-residual-events/`. Build `residuals.lpr`
@@ -3046,7 +3046,7 @@ then `score PREFIX ORIGINAL_WAV NOTES POLICY.md SCORE.json` and
 refuse existing outputs; incomplete raw files without final metadata are not
 accepted. `controls MODEL_DIR` and `stress MODEL_DIR` exercise the native controls.
 
-The next [register decision](MILESTONES.md#wav-03-register) must distinguish a
+The next [register decision](history/MILESTONES-2026-10-29.md#wav-03-register) must distinguish a
 numerically faithful evidence provider from the joint attack/sustain/ending model
 that consumes it. Retained salience permits investigation without another costly
 measurement run, but a new joint policy needs declared counterexamples and the
@@ -3116,7 +3116,7 @@ pairs with `PREFIX 0 30`. `paired BASE_REPORT NEW_REPORT NOTES ORIGINAL_WAV`
 checks the comparison; the preceding `note.changes` audit checks note eligibility.
 
 This rules out this local estimator replacement and simple agreement as solutions
-to the remaining admission gate. The next [register decision](MILESTONES.md#wav-03-register)
+to the remaining admission gate. The next [register decision](history/MILESTONES-2026-10-29.md#wav-03-register)
 needs an explicit joint note-event hypothesis retaining attack/sustain register
 alternatives and genuine short lower notes, with unknowns where the acoustic
 evidence cannot decide. A different scalar periodicity score alone has not supplied
@@ -3323,8 +3323,8 @@ Checked stable Win64 measurement/audit runs are terminal with no compiler warnin
 Policy, native sources, correction knots, paired JSON, hashes and logs are ignored
 under `build/phrase-even-phase/`.
 
-Keep this conditional phase evidence with [WAV-03-TIMBRE](MILESTONES.md#wav-03-timbre).
-The next [register investigation](MILESTONES.md#wav-03-register) should examine
+Keep this conditional phase evidence with [WAV-03-TIMBRE](history/MILESTONES-2026-10-29.md#wav-03-timbre).
+The next [register investigation](history/MILESTONES-2026-10-29.md#wav-03-register) should examine
 acoustic candidate likelihood and temporal/attack support, retaining genuine
 octave changes and quiet notes. Further unconditional coherence-threshold searches
 are unsupported by these probes. Register work need not wait for a general
@@ -3435,9 +3435,9 @@ are correct. Thus both error and correct-note cases span low and high coherence;
 fixed event frequency, changing phase and available window count matter.
 
 Do not promote this scalar into pitch doubling, rejection or candidate weighting.
-Further [register work](MILESTONES.md#wav-03-register) needs event/attack context
+Further [register work](history/MILESTONES-2026-10-29.md#wav-03-register) needs event/attack context
 and evidence that distinguishes frequency drift and short transients from competing
-registers. [Boundary work](MILESTONES.md#wav-03-boundaries) remains independently
+registers. [Boundary work](history/MILESTONES-2026-10-29.md#wav-03-boundaries) remains independently
 ready; both still gate phrase freeze. Held-out recordings remain unused.
 
 Evidence is ignored under `build/phrase-harmonic-coherence/`: `POLICY.md`, native
@@ -3844,7 +3844,7 @@ contrast and pitch agreement alone are therefore insufficient to choose which
 boundaries may be removed in this experiment.
 
 The experiment is **not adopted**. The next linked work is
-[WAV-03-BOUNDARIES](MILESTONES.md#wav-03-boundaries): support missing-boundary
+[WAV-03-BOUNDARIES](history/MILESTONES-2026-10-29.md#wav-03-boundaries): support missing-boundary
 proposals and repeated-attack preservation together, then compare all admission
 metrics per recording before freezing a policy. Keep source-derived uncertainty,
 rests, weak attacks, real octave changes and held notes in the controls. Neither
@@ -3913,7 +3913,7 @@ development set, not note-attack accuracy or general repeated-note acceptance.
 Controlled native examples explain the remaining limit: one smoothly modulated
 held tone produces four correctly measured valleys, while a constant-power octave
 transition produces none. The new measurement passes both controls. The next
-[WAV-03-BOUNDARIES](MILESTONES.md#wav-03-boundaries) result must distinguish
+[WAV-03-BOUNDARIES](history/MILESTONES-2026-10-29.md#wav-03-boundaries) result must distinguish
 articulation from modulation, combine pitch-change evidence where energy is
 uninformative, and retain coverage before deciding which boundaries to protect.
 Adding every valley or merging by pitch agreement alone is insufficient.
@@ -4001,8 +4001,8 @@ These targeted nearest-note counts are not admission scores or end-to-end accura
 No track or generated audition changes. The result does not justify adopting a
 full temporal pass as the solution to these longer octave-ambiguous attacks.
 
-Next address [WAV-03-REGISTER](MILESTONES.md#wav-03-register) alongside
-[WAV-03-BOUNDARIES](MILESTONES.md#wav-03-boundaries): infer a musical note from
+Next address [WAV-03-REGISTER](history/MILESTONES-2026-10-29.md#wav-03-register) alongside
+[WAV-03-BOUNDARIES](history/MILESTONES-2026-10-29.md#wav-03-boundaries): infer a musical note from
 event-level competing registers while retaining measured periodic evidence and
 explicit ambiguity. Both feed phrase admission; their investigation can proceed
 together without a circular completion dependency. Protect genuine low notes,
@@ -4060,11 +4060,11 @@ not evidence that quiet notes lack measurable pitch.
 
 **Reject this objective for adoption.** Region-local energy share can make a
 valid quiet event cheap to discard when grouped with a louder neighbor. The next
-[register investigation](MILESTONES.md#wav-03-register) must distinguish competing
+[register investigation](history/MILESTONES-2026-10-29.md#wav-03-register) must distinguish competing
 octave interpretations from genuine transitions using corroborating event evidence,
 and preserve these counterexamples. Do not simply raise a merge penalty until
 these controls pass. Coordinate that evidence with
-[boundary inference](MILESTONES.md#wav-03-boundaries); phrase-policy freeze remains
+[boundary inference](history/MILESTONES-2026-10-29.md#wav-03-boundaries); phrase-policy freeze remains
 gated by both development results before held-out evaluation.
 
 Checked FPC 3.2.2 stable Win64 builds have no warnings. Count controls exit zero;
@@ -4151,8 +4151,8 @@ Next retain continuous pitch/tuning alternatives through event inference rather
 than discarding off-grid candidates early, and combine candidate evidence with
 the existing articulation proposals. Evaluate that hypothesis against both the
 raw path and qualified-boundary baseline; do not relax acceptance or overwrite
-raw pitch measurements. This is [WAV-03-REGISTER](MILESTONES.md#wav-03-register)
-work coordinated with [WAV-03-BOUNDARIES](MILESTONES.md#wav-03-boundaries).
+raw pitch measurements. This is [WAV-03-REGISTER](history/MILESTONES-2026-10-29.md#wav-03-register)
+work coordinated with [WAV-03-BOUNDARIES](history/MILESTONES-2026-10-29.md#wav-03-boundaries).
 Combined-policy freeze and held-out phrase admission remain downstream.
 
 Evidence is under ignored `build/phrase-candidates-study/`: native candidate unit,
@@ -4227,10 +4227,10 @@ establish exact attack/release timing or arbitrary noise/mixture behavior.
 Next separate register selection failures from absent candidate support, and use
 event/attack context to interpret transient periodicity without erasing true
 octave changes. Retain the tuning evidence and counterexamples. Coordinate
-[WAV-03-REGISTER](MILESTONES.md#wav-03-register) with
-[WAV-03-BOUNDARIES](MILESTONES.md#wav-03-boundaries); candidate generation,
+[WAV-03-REGISTER](history/MILESTONES-2026-10-29.md#wav-03-register) with
+[WAV-03-BOUNDARIES](history/MILESTONES-2026-10-29.md#wav-03-boundaries); candidate generation,
 temporal selection, event tuning and articulation must remain independently
-inspectable. [Phrase admission](MILESTONES.md#wav-03-phrases) still waits for both
+inspectable. [Phrase admission](history/MILESTONES-2026-10-29.md#wav-03-phrases) still waits for both
 development parts before policy freeze and held-out evaluation.
 
 All study, twelve-control and independent-audit runs are terminal on checked
@@ -4275,12 +4275,12 @@ is 74 of 106 wrong centers; 32 still lack support for the reference note. These
 annotation-selected diagnostics cannot be used as inference inputs.
 
 Do not adopt this projection as a replacement or tune further scalar weights to
-these two excerpts. Continue [WAV-03-REGISTER](MILESTONES.md#wav-03-register) with
+these two excerpts. Continue [WAV-03-REGISTER](history/MILESTONES-2026-10-29.md#wav-03-register) with
 explicit event/register context and a distinction between absent support and
 wrong selection, coordinated with the attack evidence in
-[WAV-03-BOUNDARIES](MILESTONES.md#wav-03-boundaries). Keep the preceding baselines
+[WAV-03-BOUNDARIES](history/MILESTONES-2026-10-29.md#wav-03-boundaries). Keep the preceding baselines
 and their counterexamples. The independent
-[synthesis-quality outcome](MILESTONES.md#fund-quality) remains ready and should
+[synthesis-quality outcome](history/MILESTONES-2026-10-29.md#fund-quality) remains ready and should
 receive the next engineering work alongside this unresolved musical research.
 
 The twelve existing analytic controls pass. Independent native audits reproduce
@@ -4350,14 +4350,14 @@ development diagnostic, not a many-hour inference implementation.
 
 Next investigate short-window harmonic alternatives and event/attack context,
 retaining ambiguity where evidence is insufficient. Coordinate
-[WAV-03-REGISTER](MILESTONES.md#wav-03-register) and
-[WAV-03-BOUNDARIES](MILESTONES.md#wav-03-boundaries), without making either wait
+[WAV-03-REGISTER](history/MILESTONES-2026-10-29.md#wav-03-register) and
+[WAV-03-BOUNDARIES](history/MILESTONES-2026-10-29.md#wav-03-boundaries), without making either wait
 for the other. Protect true lower/quiet notes, missing fundamentals and real
 octave changes, and distinguish fast passing notes/glides from transition errors.
 Both development gates must clear before
-[WAV-03-PHRASES](MILESTONES.md#wav-03-phrases) freezes policy and evaluates the
+[WAV-03-PHRASES](history/MILESTONES-2026-10-29.md#wav-03-phrases) freezes policy and evaluates the
 reserved recordings; that admission supplies
-[WAV-04-INTEGRATION](MILESTONES.md#wav-04-integration).
+[WAV-04-INTEGRATION](history/MILESTONES-2026-10-29.md#wav-04-integration).
 
 Evidence is ignored under `build/phrase-register-context/`: `audit.lpr`,
 `harmonics.lpr`, build logs, `fl.log` / `vn.log` and `fl-harmonics` /
@@ -4422,14 +4422,14 @@ diagnosis. The flute gains one complete match: reference 29's onset error change
 from 427 to 347 frames, crossing the fixed 400-frame onset tolerance. These are
 boundary effects, not evidence for a global timing shift or different thresholds.
 
-The next [WAV-03-BOUNDARIES](MILESTONES.md#wav-03-boundaries) result should combine
+The next [WAV-03-BOUNDARIES](history/MILESTONES-2026-10-29.md#wav-03-boundaries) result should combine
 independent attack and release evidence with pitch support. A continuous
 periodicity path must not erase an audible repeated attack, and a support-bin
 ending must not be treated as a physical release without evidence. Retain weak
 attacks, rests, glides and genuine short/passing notes. Continue
-[WAV-03-REGISTER](MILESTONES.md#wav-03-register) on the remaining interior/octave
+[WAV-03-REGISTER](history/MILESTONES-2026-10-29.md#wav-03-register) on the remaining interior/octave
 errors. Neither investigation waits for the other; both still gate the combined
-policy freeze and held-out [phrase evaluation](MILESTONES.md#wav-03-phrases).
+policy freeze and held-out [phrase evaluation](history/MILESTONES-2026-10-29.md#wav-03-phrases).
 
 The twelve existing analytic candidate controls pass. Independent native audits
 reproduce candidate-mass totals, event-tuning means and all three conditions'
@@ -4487,8 +4487,8 @@ from a following attack, with explicit uncertainty when signal level, noise,
 modulation or overlapping sources do not establish an ending. Retain the
 independent attack decisions that restored the repeated-note pair; do not infer
 release from the last stable pitch bin or the strongest decline alone.
-[WAV-03-BOUNDARIES](MILESTONES.md#wav-03-boundaries) remains runnable alongside
-[WAV-03-REGISTER](MILESTONES.md#wav-03-register), and both still gate phrase policy
+[WAV-03-BOUNDARIES](history/MILESTONES-2026-10-29.md#wav-03-boundaries) remains runnable alongside
+[WAV-03-REGISTER](history/MILESTONES-2026-10-29.md#wav-03-register), and both still gate phrase policy
 freeze and held-out evaluation.
 
 The native probe verifies original WAV/reference hashes, recreates the excerpt
@@ -4569,8 +4569,8 @@ Next distinguish pitch-supported continuation of an existing event from
 uncertain residual sound, using event context and independent attack boundaries.
 Keep unknown activity distinct from silence, preserve quiet notes and repeated
 attacks, and do not bridge rests merely because energy remains. This extends
-[WAV-03-BOUNDARIES](MILESTONES.md#wav-03-boundaries)'s evidence requirements;
-[WAV-03-REGISTER](MILESTONES.md#wav-03-register) remains the separate prerequisite
+[WAV-03-BOUNDARIES](history/MILESTONES-2026-10-29.md#wav-03-boundaries)'s evidence requirements;
+[WAV-03-REGISTER](history/MILESTONES-2026-10-29.md#wav-03-register) remains the separate prerequisite
 for trusting inferred note identity. Neither investigation waits for the other,
 and both still precede combined-policy freeze and held-out phrase evaluation.
 
@@ -4622,6 +4622,6 @@ Checked stable Win64 controls and recorded runs are terminal under ignored
 `build/phrase-pitch-continuation/`: `continuation.evidence.pas`, `controls.lpr`,
 `release.lpr`, build/run logs, reports and diagnostic sine auditions. No maintained
 API/default, saved contract or held-out evaluation changes. Further policy
-admission remains under [WAV-03-BOUNDARIES](MILESTONES.md#wav-03-boundaries) and
-[WAV-03-REGISTER](MILESTONES.md#wav-03-register); this experiment earns no separate
+admission remains under [WAV-03-BOUNDARIES](history/MILESTONES-2026-10-29.md#wav-03-boundaries) and
+[WAV-03-REGISTER](history/MILESTONES-2026-10-29.md#wav-03-register); this experiment earns no separate
 milestone credit.

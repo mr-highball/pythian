@@ -145,7 +145,7 @@ token 403; failed driver/native logs are leak-free and cleanup is zero. No
 credit or investigation/budget reset follows from this handoff.
 
 After accepted authoring_01 publication `841db2f`, Big Boss authorizes bounded
-[authoring_02](TODO/NS-6_authoring_02.md) preparation for original points 4, 5
+[authoring_02](TODO/RETIRED/2026-10-29/NS-6_authoring_02.md) preparation for original points 4, 5
 and 10. Neo originally owned this record, the task and ignored `build/authoring-operator-plan/`
 integration. Ticket Guy owns only its disjoint `controls/` for unchanged existing
 two 20-second inputs/metadata, fresh copied-catalog CLI import/proposals and
@@ -439,13 +439,13 @@ exit 1. Its log is zero bytes, there is no selected output, and buffered output
 does not establish whether the ZIP directory was reached. Neither annotation
 nor media access can be affirmed or excluded. No Win32 source run occurred.
 Stop this frozen route without repairing and rerunning the archive. Preserve
-the ignored archive/scanner outputs for QA. [NS-3 presence](TODO/NS-3_notes_05.md)
+the ignored archive/scanner outputs for QA. [NS-3 presence](TODO/RETIRED/2026-10-29/NS-3_notes_05.md)
 has no new source decision, scored comparison, criterion closure or credit.
 Overall completion remains **71.55%**; no catalog or manual queue change follows.
 
 ## Frozen Berg quiet-tail screen stopped — 2026-09-28
 
-A bounded follow-up to [NS-3 presence](TODO/NS-3_notes_05.md) tested whether
+A bounded follow-up to [NS-3 presence](TODO/RETIRED/2026-10-29/NS-3_notes_05.md) tested whether
 the already reviewed Berg opening rest could support a late, quiet audible-tail
 case in the same original WAV. The prospective policy fixed the source,
 10–20-second scan cells, above-rest and decay conditions, work budget and
@@ -478,7 +478,7 @@ larger WAV-learning tasks dependent on fresh external evidence. The current
 context profile also required a positive tempo and could not carry an unknown
 source interval. Following the task-flow split rule, the independently useful
 unknown-tempo admission, persistence and generation boundary moved from
-[NS-3_context_02](TODO/NS-3_context_02.md) to
+[NS-3_context_02](TODO/RETIRED/2026-10-29/NS-3_context_02.md) to
 [NS-3_context_04](TODO/DONE/NS-3_context_04.md), assigning 1 of the original 2
 unearned NS-3 points to each task. This adds no scope or credit by itself.
 
@@ -507,7 +507,7 @@ All four task criteria passed at that declared scope. Moving context_04 to DONE
 adds **+1 NS-3** (45% to **46%**) and **+0.25 overall** (71.30% to **71.55%**):
 the 68-task catalog now has **37 open / 31 DONE**, with **28.45 overall points
 remaining**. The task split preserves the original context allocation;
-[context_02](TODO/NS-3_context_02.md) still waits for accepted automatic key
+[context_02](TODO/RETIRED/2026-10-29/NS-3_context_02.md) still waits for accepted automatic key
 and timing outputs and remains open. Manual review stays **2/20**. Continue
 independent core prerequisites while the two existing review items remain
 available to the operator.
@@ -550,20 +550,20 @@ guarded request revision 0 were unchanged. The visual evidence is under
 `build/salty-listen-multisource-qa-20260928/screens5/`. No listening verdict,
 task credit or physical-phone proof is inferred.
 
-The adjacent read-only [NS-3 presence](TODO/NS-3_notes_05.md) publisher screen
+The adjacent read-only [NS-3 presence](TODO/RETIRED/2026-10-29/NS-3_notes_05.md) publisher screen
 stopped: Good-sounds documents manually marked envelope regions but does not
 independently support this task's required quiet audible tail and disjoint
 nonzero same-WAV rest. Nothing was downloaded, scored or queued. A task-flow
 audit found no other core criterion ready to close without fresh independent
 acoustic evidence or manual listening. The narrowest NS-5 prerequisite remains
-[evaluation](TODO/NS-5_evaluation_01.md): verified complete reference cuts and
+[evaluation](TODO/RETIRED/2026-10-29/NS-5_evaluation_01.md): verified complete reference cuts and
 timed musical traits are absent, so another metadata-only or fixed-output
 diagnostic would not close the gate. Continue the cumulative **2/20** manual
 queue while seeking a genuinely distinct source-evidence route.
 
 ## Good-sounds source route stopped — 2026-09-28
 
-For [NS-3 presence](TODO/NS-3_notes_05.md), publisher-matched metadata fixed
+For [NS-3 presence](TODO/RETIRED/2026-10-29/NS-3_notes_05.md), publisher-matched metadata fixed
 one Good-sounds flute take and exact same-WAV pre-attack/release windows. A
 metadata ZIP probe exceeded its frozen one-request limit; a later member gate
 stopped at a missing archive-root prefix. A read-only layout check established
@@ -584,7 +584,7 @@ whether a **global** repetition guard can retain useful context without that
 increase. This is a decision on the existing 4,000-grain baseline and context
 source maps, not another context length, start-cap, chunk-size or seed sweep.
 It advances the repetition/continuity comparison in
-[NS-5_continuity_01](TODO/NS-5_continuity_01.md), whose vocabulary and actual
+[NS-5_continuity_01](TODO/RETIRED/2026-10-29/NS-5_continuity_01.md), whose vocabulary and actual
 listening prerequisites remain open.
 
 Freeze this one-pass policy before reading the result: process the 16 fixed WFC
@@ -654,9 +654,9 @@ work batches without closing its full acceptance criterion. Reassessment:
 finish the bounded maintained guard and retain its evidence without task credit;
 stop tuning this fixed profile/seed. Full continuity acceptance still needs
 representative vocabulary, multi-seed/gap/level comparisons and sustained
-listening. Follow the actual [vocabulary prerequisite](TODO/NS-5_vocabulary_01.md)
-and its [context](TODO/NS-3_context_02.md) and
-[evaluation](TODO/NS-5_evaluation_01.md) blockers next; keep the listening
+listening. Follow the actual [vocabulary prerequisite](TODO/RETIRED/2026-10-29/NS-5_vocabulary_01.md)
+and its [context](TODO/RETIRED/2026-10-29/NS-3_context_02.md) and
+[evaluation](TODO/RETIRED/2026-10-29/NS-5_evaluation_01.md) blockers next; keep the listening
 item queued while independent work proceeds. This is a change of task path,
 not a reset of either failed-trial or investigation counts.
 
@@ -664,7 +664,7 @@ not a reset of either failed-trial or investigation counts.
 
 The accepted four-minute acoustic continuation exposes 3,969 source switches
 among 3,999 joins and zero source-contiguous links. The next bounded
-[NS-5 continuity](TODO/NS-5_continuity_01.md) development batch tests one
+[NS-5 continuity](TODO/RETIRED/2026-10-29/NS-5_continuity_01.md) development batch tests one
 distinct hypothesis: saved, source-bound forward contexts can improve that
 mechanical continuity when applied to each fixed 256-grain WFC chunk, without
 changing the WFC tokens or the weighted source selection. This is a preparatory
@@ -737,9 +737,9 @@ records the full contract, measurements and ignored evidence locations.
 
 The source selector made 3,969 switches across 3,999 joins in the qualifying
 output. This backend result makes no musical continuity or genre claim. The
-remaining [NS-5_continuity_01](TODO/NS-5_continuity_01.md) retains multi-seed,
+remaining [NS-5_continuity_01](TODO/RETIRED/2026-10-29/NS-5_continuity_01.md) retains multi-seed,
 quality, listening and repair gates, and still depends on representative
-[vocabulary learning](TODO/NS-5_vocabulary_01.md). Completion adds **+1 NS-5**
+[vocabulary learning](TODO/RETIRED/2026-10-29/NS-5_vocabulary_01.md). Completion adds **+1 NS-5**
 (32% to **33%**) and **+0.20 overall** (71.10% to **71.30%**): **37 open /
 30 DONE**, 28.70 weighted points remain. The cross-task manual review queue
 stays **1/20**; no new user listening item was added for the raw backend output.
@@ -753,7 +753,7 @@ at 1,024 grains and materializes one clip; separate chunks would reset solver,
 candidate-selection and Hann overlap state. The new task owns a continuous,
 replayable, bounded Pascal stream and a 180–300-second two-source output. It
 receives one of the original five unearned continuity points. The original
-[NS-5_continuity_01](TODO/NS-5_continuity_01.md) retains four points and all
+[NS-5_continuity_01](TODO/RETIRED/2026-10-29/NS-5_continuity_01.md) retains four points and all
 multi-seed quality, repair and listening criteria. This split changes the
 catalog to **38 open / 29 DONE** and leaves overall completion **71.10%**.
 The manual review queue remains **1/20**; no operator decision is needed for
@@ -785,7 +785,7 @@ The ignored original and independent QA records are in
 published-long-tone *physical feasibility* result only. The comparison used
 filename pitches; the IDs are not proven distinct people. It has no blind
 register decisions, low/short/quiet/mixed controls on recorded material,
-Spring score, maintained implementation or [NS-3 note task](TODO/NS-3_notes_01.md)
+Spring score, maintained implementation or [NS-3 note task](TODO/RETIRED/2026-10-29/NS-3_notes_01.md)
 credit. Ticket Guy verified the original exposed Spring development source
 as `build/recorded-phrases/AuSep_1_fl_08_Spring.wav`, SHA-256
 `595d9a858fcecb0478692a806b961c967f6309de01e58821a4ce69de10fa5d30`,
@@ -824,12 +824,12 @@ This is a task-flow checkpoint after nonclosing physical/decision and beat
 batches. Do not spend the next batch on a nearby odd/even threshold, beat
 terminal extrapolation or another metadata-only tail source. The accepted
 library and task ledger remain at **71.10%**, **37 open / 29 DONE**. Among
-ready core tasks, [note identity](TODO/NS-3_notes_01.md) now needs a different
-short-note-safe register observation; [presence](TODO/NS-3_notes_05.md) needs a
-distinct reviewed quiet-tail and same-source nonzero rest; [tempo](TODO/NS-3_tempo_04.md)
-needs a new justified candidate contract; and [local key](TODO/NS-3_context_01.md)
+ready core tasks, [note identity](TODO/RETIRED/2026-10-29/NS-3_notes_01.md) now needs a different
+short-note-safe register observation; [presence](TODO/RETIRED/2026-10-29/NS-3_notes_05.md) needs a
+distinct reviewed quiet-tail and same-source nonzero rest; [tempo](TODO/RETIRED/2026-10-29/NS-3_tempo_04.md)
+needs a new justified candidate contract; and [local key](TODO/RETIRED/2026-10-29/NS-3_context_01.md)
 still lacks grounded note activity for its next observation. The open
-[style-card task](TODO/NS-5_evaluation_01.md) retains verified cuts and timed
+[style-card task](TODO/RETIRED/2026-10-29/NS-5_evaluation_01.md) retains verified cuts and timed
 provider-trait references as its needed input; partial generic controls alone
 would not close it. [NS-6 authoring](TODO/DONE/NS-6_authoring_01.md) has one exact
 physical-phone playback/Save decision pending at the live private-LAN service
@@ -846,7 +846,7 @@ alternating and quiet-offbeat controls passed on both checked targets; the
 later three authored controls and recorded A/B were not scored. Salty Boi
 reproduced the same stop. Exact policy, private Pascal source and logs are
 under ignored `build/beat-event-graph-20260928/` and its independent QA
-directory. [NS-3 tempo](TODO/NS-3_tempo_04.md) remains open without credit;
+directory. [NS-3 tempo](TODO/RETIRED/2026-10-29/NS-3_tempo_04.md) remains open without credit;
 stop this candidate and its terminal extrapolation variants.
 
 ## Recorded presence contrast passed; quiet-tail gate remains — 2026-09-28
@@ -865,7 +865,7 @@ the reviewed export SHA-256 is
 `755539a7f4c340d31a534c8ea96d27aafe60929ab24c916748fb434c7244c881`.
 The ignored packet is `build/maestro-presence-recorded-20260928/`.
 
-[NS-3_notes_05](TODO/NS-3_notes_05.md) remains open with no credit change.
+[NS-3_notes_05](TODO/RETIRED/2026-10-29/NS-3_notes_05.md) remains open with no credit change.
 Its criterion 3 also requires retaining a reviewed audible quiet-tail case.
 The accepted NSynth packet already binds such a listener-reviewed guitar tail,
 but its original WAV has no reviewed same-source rest required by the maintained
@@ -875,7 +875,7 @@ otherwise it prepares one bounded full-source listening request rather than
 routine microclips. Freeze the tail comparison and stop gate before running the
 unchanged inspector. A failed or unknown tail remains a real failure; the
 exposed independent MAESTRO result is not retuned. Note identity, boundaries
-and audible endings remain owned by [NS-3_notes_02](TODO/NS-3_notes_02.md).
+and audible endings remain owned by [NS-3_notes_02](TODO/RETIRED/2026-10-29/NS-3_notes_02.md).
 
 That source check is now stopped. A frozen Berg/Scriabin post-release screen
 found no candidate meeting its declared gap/decay bounds. A separate checked
@@ -994,7 +994,7 @@ slow-client probe kept queue reads responsive. See ignored
 
 This closes 2 NS-5 points (+0.40 overall): NS-5 is **32%**, overall completion
 **71.10%**, with **37 open / 29 DONE** tasks and **28.90** overall points
-remaining. [NS-5_evaluation_02](TODO/NS-5_evaluation_02.md) can now consume
+remaining. [NS-5_evaluation_02](TODO/RETIRED/2026-10-29/NS-5_evaluation_02.md) can now consume
 the packet but still owns real style-specific outputs and listener verdicts.
 The [source-label authoring checklist](TODO/DONE/NS-6_authoring_01.md) remains open
 until the physical LAN phone playback and Save path is observed; no authored
@@ -1060,14 +1060,14 @@ probe WAV was rejected by automatic approval review as `blocked by policy`;
 both ignored artifacts remain and no further removal was attempted.
 
 The open-task audit also separated whole-mix and generated-output listening
-from source labels. [NS-5 reference evaluation](TODO/NS-5_evaluation_01.md)
+from source labels. [NS-5 reference evaluation](TODO/RETIRED/2026-10-29/NS-5_evaluation_01.md)
 owns whole-mix preference and edition/cut evidence;
 [reusable listening packet](TODO/DONE/NS-5_evaluation_03.md) now owns complete
 single/paired audio transport, explicit saved response and producer readback;
-[NS-5 listening evaluation](TODO/NS-5_evaluation_02.md) owns actual 120-second
-and paired style verdicts. [Continuity](TODO/NS-5_continuity_01.md),
-[timbre](TODO/NS-3_timbre_02.md) and
-[synthesis integration](TODO/NS-4_integration_01.md) retain their own
+[NS-5 listening evaluation](TODO/RETIRED/2026-10-29/NS-5_evaluation_02.md) owns actual 120-second
+and paired style verdicts. [Continuity](TODO/RETIRED/2026-10-29/NS-5_continuity_01.md),
+[timbre](TODO/RETIRED/2026-10-29/NS-3_timbre_02.md) and
+[synthesis integration](TODO/RETIRED/2026-10-29/NS-4_integration_01.md) retain their own
 task-bound listening decisions. A 30-second source review does not satisfy
 any of those full-output verdicts.
 
@@ -1189,7 +1189,7 @@ region, or request a contained span. The queue returns corrected answer frames
 and keeps a moved point or contained span completed while it remains inside
 the request. See [the queue contract](REVIEW-QUEUE.md). The future 120-second
 generated-output rubric and paired listening flow is assigned to the existing
-[NS-5 evaluation packet task](TODO/NS-5_evaluation_02.md); it is a separate
+[NS-5 evaluation packet task](TODO/RETIRED/2026-10-29/NS-5_evaluation_02.md); it is a separate
 full-duration review deliverable, not a present source-label claim.
 
 Checked stable FPC 3.2.2 Win32/Win64 builds passed. On a copied catalog, native
@@ -2048,7 +2048,7 @@ labels to training/evaluation consumers.
 New open [NS-3_labeling_01](TODO/DONE/NS-3_labeling_01.md) and
 [NS-6_authoring_01](TODO/DONE/NS-6_authoring_01.md) own those two deliverables.
 Their **+2 NS-3 / +4 NS-6** goal-point allocations come from the still-open
-[phrase](TODO/NS-3_notes_03.md) and [final delivery](TODO/NS-6_delivery_03.md)
+[phrase](TODO/RETIRED/2026-10-29/NS-3_notes_03.md) and [final delivery](TODO/RETIRED/2026-10-29/NS-6_delivery_03.md)
 tasks, which retain all original acceptance criteria and **+2 NS-3 / +8
 NS-6** points. This planning change earns no credit: overall completion stays
 **70.20%**, now **38 open / 27 DONE**. The operator authoring path does not
@@ -2240,7 +2240,7 @@ and the selected paired audio was acquired and tested under a separate frozen
 gate. The development recording reached only 770/1,807 matched MIDI attacks
 within 30 ms (42.6121%), below its 80% source-coverage minimum. The GMD
 acoustic route is stopped; its full result and exact source identities are in
-[NS-3_tempo_04](TODO/NS-3_tempo_04.md) and ignored
+[NS-3_tempo_04](TODO/RETIRED/2026-10-29/NS-3_tempo_04.md) and ignored
 `build/gmd-pulse-audio/`. Do not reopen it from this older metadata screen.
 
 ## Physical pickup presence source stop — 2026-09-23
@@ -2595,7 +2595,7 @@ guitar-positive clip 7 was a correct contrast candidate and guitar-positive
 clip 8 was `unknown`, an explicit abstention. Clip 9 was the reference and
 excluded. All scorers reported zero leaks. No ratios were retuned.
 
-This closes [NS-3_notes_05](TODO/NS-3_notes_05.md) criterion 1's
+This closes [NS-3_notes_05](TODO/RETIRED/2026-10-29/NS-3_notes_05.md) criterion 1's
 source-bound listener-label and group convention at the declared packet scope;
 only clip 9 is a reviewed no-instrument rest in this packet. Criteria 2 and 4
 had already passed their maintained observation/consumer
@@ -2614,7 +2614,7 @@ the listener and leave the frozen fourfold/1.5-fold ratios unchanged.
 With the reviewed GuitarSet packet still pending, a separate non-listening
 source feasibility check asked whether approved NSynth metadata could provide
 instrument-disjoint acoustic-flute octave contrasts for
-[NS-3_notes_01](TODO/NS-3_notes_01.md) criterion 1. Its fixed deliverable was
+[NS-3_notes_01](TODO/RETIRED/2026-10-29/NS-3_notes_01.md) criterion 1. Its fixed deliverable was
 an exact metadata inventory, not a register inference result. The gate
 required three train instruments and one test instrument, same-instrument
 pitch pairs an octave apart in 48..84 at velocity 75 or 100, excluding the
@@ -2639,7 +2639,7 @@ threshold or ranker variation.
 ## Score-aligned development note reference — 2026-09-23
 
 With listening temporarily unavailable, the next non-listening batch advanced
-[NS-3_context_01](TODO/NS-3_context_01.md) criterion 2 preparation. The
+[NS-3_context_01](TODO/RETIRED/2026-10-29/NS-3_context_01.md) criterion 2 preparation. The
 deliverable was an exact source-bound development note/measure packet from the
 published archive already qualified for local-key work. The stop condition was
 any missing or changed archive entry, CSV/WAV identity, source geometry, schema,
@@ -2673,7 +2673,7 @@ the listener review for when the user is available.
 
 ## Local-key note-interior screen and stop — 2026-09-23
 
-The next bounded [NS-3_context_01](TODO/NS-3_context_01.md) criterion 2
+The next bounded [NS-3_context_01](TODO/RETIRED/2026-10-29/NS-3_context_01.md) criterion 2
 screen tested one decision: whether the unchanged Pascal sparse-peak
 observation separates score-aligned notes from an absent neighboring pitch
 at safe note interiors. Its private prospective policy fixed source roles,
@@ -2701,7 +2701,7 @@ batches without closing another acceptance criterion. Under the task-flow
 checkpoint, stop this local-key investigation sequence. Do not relax the
 short-note eligibility after observing the count or resume ranker/profile
 variants. The next action is the existing independently reviewed acoustic
-activity reference in [NS-3_notes_05](TODO/NS-3_notes_05.md); only then
+activity reference in [NS-3_notes_05](TODO/RETIRED/2026-10-29/NS-3_notes_05.md); only then
 declare a genuinely different key-observation hypothesis with a fixed gate.
 The user cannot listen at this checkpoint, so the nine-clip GuitarSet review
 remains pending. No key accuracy, task credit or held-out claim follows.
@@ -2726,7 +2726,7 @@ GuitarSet score exists yet.
 
 Fresh focused stable FPC 3.2.2 Win32/Win64 checks accept the maintained
 observation API and native consumer criteria of
-[NS-3_notes_05](TODO/NS-3_notes_05.md). Both targets pass the exact-window,
+[NS-3_notes_05](TODO/RETIRED/2026-10-29/NS-3_notes_05.md). Both targets pass the exact-window,
 unknown, work-cap, long-coordinate, failure-preservation and source-free
 signal controls with zero unfreed blocks. The hash-bound 264,000-frame,
 24-kHz stereo consumer WAV yields identical TSV bytes on both targets
@@ -2840,8 +2840,8 @@ candidate for the first required violin stem. It wrote no selection file,
 decoded no audio and requested no review. Annotation ends remain separate from
 acoustic audibility. Both attempts are nonclosing batches. At the task-flow
 checkpoint, the oversized original three-point event task is split into the
-independently useful [source-grounded presence observation](TODO/NS-3_notes_05.md)
-(1 NS-3 goal point) and [event integration](TODO/NS-3_notes_02.md)
+independently useful [source-grounded presence observation](TODO/RETIRED/2026-10-29/NS-3_notes_05.md)
+(1 NS-3 goal point) and [event integration](TODO/RETIRED/2026-10-29/NS-3_notes_02.md)
 (2 points). The accepted one-point reference is unchanged. NS-3 remains 41%,
 overall 68.65%, with 16 open NS-3 tasks and 36 total open tasks. The next
 bounded action was a read-only source inventory for independently supported
@@ -2898,7 +2898,7 @@ remained present; both exact-zero rest windows were silent. The 0.0001 RMS floor
 was not retuned. The bounded reference task
 [NS-3_notes_04](TODO/DONE/NS-3_notes_04.md) now passes all criteria and earns
 1 NS-3 goal point / 0.25 overall point, taking NS-3 to 41% and total completion
-to 68.65%. [NS-3_notes_02](TODO/NS-3_notes_02.md) is unblocked and owns the
+to 68.65%. [NS-3_notes_02](TODO/RETIRED/2026-10-29/NS-3_notes_02.md) is unblocked and owns the
 false-active case, retained quiet-note protections and recorded boundary gates.
 No recorded-phrase or noise-robust accuracy follows from this synthetic packet.
 
@@ -2984,14 +2984,14 @@ controls, rejected unreviewed and wrong-source inputs and reported zero
 unfreed blocks. All six criteria of [NS-3_context_03](TODO/DONE/NS-3_context_03.md)
 pass. It moved to DONE: +1 NS-3 / +0.25 overall, giving **40% NS-3,
 68.40% overall, 36 open / 18 DONE**. The accepted packet unblocks
-[NS-3_context_01](TODO/NS-3_context_01.md), which still owns key-decision
+[NS-3_context_01](TODO/RETIRED/2026-10-29/NS-3_context_01.md), which still owns key-decision
 thresholds, unknown coverage and independent inference-accuracy acceptance.
 Return to that bounded core task under the task-flow selection rule; keep the
 three personal style tests separate from core admission.
 
 ## Prospective local-key gate and scorer coverage — 2026-09-23
 
-With the reference packet accepted, [NS-3_context_01](TODO/NS-3_context_01.md)
+With the reference packet accepted, [NS-3_context_01](TODO/RETIRED/2026-10-29/NS-3_context_01.md)
 now has a fixed development/evaluation policy for criterion 1. The
 [admission gates](TONAL.md#prospective-local-key-admission-gates--2026-09-23)
 name all four original recording windows, both reviewed acoustic no-key clips,
@@ -3051,7 +3051,7 @@ ambiguity/coverage evidence; the protected phrase split stays untouched.
 
 Since focused packet QA closed criterion 4, the private 2026-09-23 three-anchor
 source-correspondence screen and the native groove control are two consecutive
-[NS-5_evaluation_01](TODO/NS-5_evaluation_01.md) style-card batches that close
+[NS-5_evaluation_01](TODO/RETIRED/2026-10-29/NS-5_evaluation_01.md) style-card batches that close
 no remaining criterion. The former could not authenticate a recording
 edition; the latter proves only onset occupancy. Reference-grounded provider
 values, annotations and complete six-dimension controls remain missing. Stop
@@ -3071,7 +3071,7 @@ preserves occupancy, while moving one event by one cell changes it without
 changing admission count. The exact result replays under checked stable Win32.
 This is a narrow reusable comparator control, not a verified style reference
 or the full groove trait: role, accent, microtiming and inter-bar relationships
-remain unsupported. [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md) remains
+remain unsupported. [NS-5_evaluation_01](TODO/RETIRED/2026-10-29/NS-5_evaluation_01.md) remains
 open with no credit. Private user-selected mixes were not used.
 
 ## Saved register-spectrum gap screen — 2026-09-23
@@ -3097,7 +3097,7 @@ the published evidence does not establish flute register, safe unknowns or
 false-rest behavior on the source-separated challenge. The earlier Pascal PESTO
 prescreen failed its frozen flute gate with high-confidence octave errors.
 Stop another model-swap port based only on an aggregate paper score. No model
-was acquired or executed here; [register](TODO/NS-3_notes_01.md) retains its
+was acquired or executed here; [register](TODO/RETIRED/2026-10-29/NS-3_notes_01.md) retains its
 prospective independent-evidence and ambiguity requirement. This closes no
 task criterion or credit.
 
@@ -3108,7 +3108,7 @@ resolves the uninspected-archive question left by the beat-candidate task:
 25 mixed WAVs have beat-time CSV/MIDI annotations, with no listed stems or
 source-event files. The MIDI is beat ground truth, not the separate arpeggio or
 drum performance. This cannot adjudicate missing 02/04 source pulses, so the
-frozen [candidate task](TODO/NS-3_tempo_04.md) remains open and its archive
+frozen [candidate task](TODO/RETIRED/2026-10-29/NS-3_tempo_04.md) remains open and its archive
 route is stopped. No new fit, rescore, task credit or percentage change follows.
 
 ## Accepted combined synthesis quality — 2026-09-23
@@ -3350,13 +3350,13 @@ limit, which this run did not exercise. [CORPUS-SCALE](CORPUS-SCALE.md#missing-a
 records the exact boundary. This is one nonclosing scale batch: it confirms
 explicit rejection, while training/model capacity and the multi-recording
 semantic workload remain open. Stop repeating whole-array rejection probes;
-follow the [admitted-note learner prerequisite](TODO/NS-3_notes_03.md).
+follow the [admitted-note learner prerequisite](TODO/RETIRED/2026-10-29/NS-3_notes_03.md).
 The user's coherent listening verdict is for the 30-second synthesis preview;
 the separate 11-second mixed-source verdict remains pending.
 
 ## Beat-candidate deliverable split — 2026-09-23
 
-Two consecutive metrical experiments for [NS-3_tempo_01](TODO/NS-3_tempo_01.md)
+Two consecutive metrical experiments for [NS-3_tempo_01](TODO/RETIRED/2026-10-29/NS-3_tempo_01.md)
 closed no criterion. Source-accent evidence improved some cases but failed the
 frozen authored polyphonic/changing-clock gate. Accent parity then damaged
 polyrhythm, doubling and the polyphonic case. Both stopped verdicts remain in
@@ -3367,7 +3367,7 @@ fitting, outside the retained eight-slot pool. Other wrong selections already
 had a correct-rate candidate in the pool. Candidate availability and musical
 selection therefore have separate, measurable failure modes.
 
-[NS-3_tempo_04](TODO/NS-3_tempo_04.md) now owns the original first criterion's
+[NS-3_tempo_04](TODO/RETIRED/2026-10-29/NS-3_tempo_04.md) now owns the original first criterion's
 automatic WAV candidate observations, retained half/double-time and competing
 phase alternatives, source-bound candidate-path/clock delivery, and explicit
 fitting/suppression/capacity omission accounting. It gets 2 of tempo_01's
@@ -3414,7 +3414,7 @@ protocol criterion. The subsequent trace and reassessment are recorded below.
 
 ## Beat-candidate omission reassessment — 2026-09-23
 
-The second bounded [tempo_04](TODO/NS-3_tempo_04.md) batch replayed all six
+The second bounded [tempo_04](TODO/RETIRED/2026-10-29/NS-3_tempo_04.md) batch replayed all six
 saved candidate reports through an optional Pascal trial-stage trace. Every
 saved pool and aggregate fit-work count matched. The 11 failed eligible 02/04
 windows split into four with no compatible positive fit, four where compatible
@@ -3482,7 +3482,7 @@ recorded. This prepares the pending user review but closes no further source
 quality criterion; separate family cases remain in the finite matrix.
 
 After the source-quality artifact and numerical criteria closed, a distinct
-[PESTO checkpoint source screen](TODO/NS-3_notes_01.md)
+[PESTO checkpoint source screen](TODO/RETIRED/2026-10-29/NS-3_notes_01.md)
 found a publisher-identified MIR-1K training collection and an exact small
 checkpoint, unlike the earlier SwiftF0 candidate. A checked Pascal-only
 container reader bound its ZIP/storage layout without model execution or a
@@ -3498,7 +3498,7 @@ low, quiet and weak-fundamental cases, met its 50-cent gate, but low/quiet
 confidence was not calibrated for admission. Before recorded scoring, the
 prescreen fixed two exact URMP work groups, every-twelfth-center selection,
 100% selected coverage and a >=98% per-group pitch-precision gate. Its bound
-[note-identity record](TODO/NS-3_notes_01.md) reports violin 147/148
+[note-identity record](TODO/RETIRED/2026-10-29/NS-3_notes_01.md) reports violin 147/148
 correct and flute only 26/36, with ten lower-octave errors. Stop this checkpoint
 without model tuning, Spring/held-out evaluation, or a maintained provider.
 Physical feasibility does not close recorded precision or the remaining
@@ -3583,7 +3583,7 @@ The performed-percussion screen and this stopped qualification are two
 consecutive nonclosing local-key batches. The task-flow reassessment splits
 an independently useful recorded interval reference packet into
 [NS-3_context_03](TODO/DONE/NS-3_context_03.md), ahead of the retained
-[NS-3_context_01](TODO/NS-3_context_01.md) inference decision. The original
+[NS-3_context_01](TODO/RETIRED/2026-10-29/NS-3_context_01.md) inference decision. The original
 four unearned NS-3 goal points are redistributed **1+3**; the overall
 completion remains 63.15%, with 40 open and 14 DONE tasks. The next deliverable
 is exact source/edition and timed-label qualification across positive,
@@ -3741,7 +3741,7 @@ before reacquisition. Work on other ready core prerequisites in the meantime.
 
 ## NS-5 listening-protocol criterion — 2026-09-23
 
-Focused specification QA for [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md)
+Focused specification QA for [NS-5_evaluation_01](TODO/RETIRED/2026-10-29/NS-5_evaluation_01.md)
 compared the current [style packet](STYLE-CARDS.md#fixed-execution-and-listening-packet)
 with the original [corpus protocol](CORPUS-EVALUATION.md#generation-controls-and-listening-packet).
 The three seeds, retained 120-second cases and full-duration scoring, fixed
@@ -3768,7 +3768,7 @@ with the user's private-style-input direction.
 
 The chapter is not an independently verified recording/edition or song group;
 the failed match does not prove its metadata title false. Stop this candidate
-without a threshold or upload sweep. [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md)
+without a threshold or upload sweep. [NS-5_evaluation_01](TODO/RETIRED/2026-10-29/NS-5_evaluation_01.md)
 criteria 1, 2 and 5 remain open, with no credit. This is one nonclosing batch
 since the accepted protocol criterion; follow the ready synthesis-quality
 review while a distinct source-grounding path is developed.
@@ -3776,7 +3776,7 @@ review while a distinct source-grounding path is developed.
 ## Local-key provenance criterion — 2026-09-23
 
 While synthesis listening remains pending, focused current-source QA closed
-[NS-3_context_01](TODO/NS-3_context_01.md) criterion 4. Stable FPC 3.2.2
+[NS-3_context_01](TODO/RETIRED/2026-10-29/NS-3_context_01.md) criterion 4. Stable FPC 3.2.2
 Win32 core tests confirm exact source-frame regional boundaries, unknown on
 silence, safe rejection and musical-time mapping across source offsets and
 changing tempo. A saved-profile checker remeasures and binds the exact WAV,
@@ -3794,7 +3794,7 @@ not restart.
 
 ## Frozen local-key candidate stop and reassessment — 2026-09-23
 
-For [NS-3_context_01](TODO/NS-3_context_01.md) criterion 2, one ignored
+For [NS-3_context_01](TODO/RETIRED/2026-10-29/NS-3_context_01.md) criterion 2, one ignored
 development-only Pascal probe froze note-specific sparse-peak support, onset
 increments, a two-second context, ranked diatonic fits and explicit unknown
 gates before scoring. Its exact policy, source and report hashes, outputs,
@@ -3930,7 +3930,7 @@ Checked Pascal jobs completed full source-bound feature caches for all three
 recordings. A private Pascal mapper conservatively excluded feature windows
 crossing declared chapter cuts; those metadata cuts still need audio review.
 Declared chapter counts exceeded the journal learner's former 32-range/profile-source
-limit for every mix. The existing [NS-5 scale task](TODO/NS-5_scale_02.md)
+limit for every mix. The existing [NS-5 scale task](TODO/RETIRED/2026-10-29/NS-5_scale_02.md)
 owns bounded contribution accounting and song-boundary handling. The later
 [range/source checkpoint](#bounded-full-mix-acoustic-learning--2026-09-23)
 advances that path. Keep NS-5_evaluation_01 open pending whole-work review and
@@ -3967,7 +3967,7 @@ This proves bounded acoustic training and mechanical reuse over the selected
 full-length inputs. It does not establish verified song cuts, musical traits,
 accepted styles, semantic provider learning, interrupted recovery or the full
 NS-5 workload budgets. No task completion credit changes. The next scale result
-must satisfy the remaining [NS-5_scale_02](TODO/NS-5_scale_02.md) criteria after
+must satisfy the remaining [NS-5_scale_02](TODO/RETIRED/2026-10-29/NS-5_scale_02.md) criteria after
 its semantic prerequisites; do not use acoustic token counts as musical evidence.
 
 ## Core-first re-alignment — 2026-09-23
@@ -4217,7 +4217,7 @@ this source screening is not an inference attempt or failed QA submission.
 
 The accepted Pascal sparse-peak observations give high reference-pitch top-12
 recall but do not themselves decide register. A one-shot, non-fitted development
-gate for [note identity](TODO/NS-3_notes_01.md) froze a best-bin decision with
+gate for [note identity](TODO/RETIRED/2026-10-29/NS-3_notes_01.md) froze a best-bin decision with
 support >=0.5 and an octave-alternative margin of 0.15 before scoring the
 Spring references with this rule. The source-bound Pascal scorer evaluated only
 the original fully contained single-note centers. Flute admitted 892/905, with
@@ -4235,7 +4235,7 @@ This is a scientific rejection, not a maintained implementation defect. Stop
 the direct-support identity rule without a threshold/rank sweep. The independent
 phrase material stays untouched, and no task criterion or credit closes.
 Accepted sparse-peak support remains useful as an observation; separate
-[presence and boundaries](TODO/NS-3_notes_02.md) still need contrasting
+[presence and boundaries](TODO/RETIRED/2026-10-29/NS-3_notes_02.md) still need contrasting
 continuation/release/rest evidence. The existing NS-5 style cards still need
 verified recording editions and curator-reviewed musical references. Current
 completion remains NS-3 39%, NS-5 27% and overall 63.15%.
@@ -4387,7 +4387,7 @@ Complete units are canonically ordered and permuted by SHA-256 digests of
 source/policy identities, recording and scope IDs, dimension and frozen global
 seed; no platform RNG is used. The output ordinal list and identity-avoidance
 flag are recorded, and immovable scopes are unsupported. This directly
-advances criterion 3 of [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md),
+advances criterion 3 of [NS-5_evaluation_01](TODO/RETIRED/2026-10-29/NS-5_evaluation_01.md),
 with no claim that the genre cards, numerical gates or controlled trait
 comparisons are complete. Next evidence is focused protocol QA; stop this
 batch if the rule leaves ambiguous scope membership or replay bytes. No
@@ -4589,7 +4589,7 @@ scope; no listening or style completion is claimed.
 The user explicitly resumed the broader goal and its authorized helper/QA cycle.
 The checkout began clean on `hello-pythian` at `9ec95a1`; the least-complete
 north star is NS-5. The first work batch on resumption advanced the first
-criterion of [NS-5_evaluation_01](TODO/NS-5_evaluation_01.md): a source-bound
+criterion of [NS-5_evaluation_01](TODO/RETIRED/2026-10-29/NS-5_evaluation_01.md): a source-bound
 screen of its three existing candidate cards. Its deliverable is the
 [recording correspondence table](STYLE-CARDS.md#recording-correspondence-screen--2026-09-22);
 closing evidence would be verified source/edition/cut correspondence and reviewed
@@ -4693,17 +4693,17 @@ the pattern without meeting the user's goal.
 
 ### Criteria corrections and task coverage
 
-- [Note identity](TODO/NS-3_notes_01.md) now explicitly requires audio-derived
+- [Note identity](TODO/RETIRED/2026-10-29/NS-3_notes_01.md) now explicitly requires audio-derived
   candidates for final scoring, separated fit/calibration groups when fitting,
   and prospective abstention/coverage accounting. Oracle-ranked candidates do
   not demonstrate blind inference.
-- [Presence and boundaries](TODO/NS-3_notes_02.md) now explicitly require labelled
+- [Presence and boundaries](TODO/RETIRED/2026-10-29/NS-3_notes_02.md) now explicitly require labelled
   continuation/release/rest contrasts and separate missed-note, false-rest,
   boundary and unknown results. A pitch score cannot stand in for presence.
-- [Mixture learning](TODO/NS-3_parts_02.md) explicitly carries the external
+- [Mixture learning](TODO/RETIRED/2026-10-29/NS-3_parts_02.md) explicitly carries the external
   crossing/unison/quiet-ownership/reference-coverage gaps into its acceptance
   comparisons. Preparation acceptance does not settle them.
-- [Style specification](TODO/NS-5_evaluation_01.md) now binds reference identity,
+- [Style specification](TODO/RETIRED/2026-10-29/NS-5_evaluation_01.md) now binds reference identity,
   intervals and annotation uncertainty explicitly, and requires preserving/breaking
   controls for each required provider dimension. Its previous single-comparison
   wording could let a level-only control appear to qualify musical comparators.
@@ -4855,7 +4855,7 @@ coverage stay with actual role-learning/independent acceptance requirements.
 The previous goal turn made progress by preparing this bounded source/reference
 path; the intervening Athena check confirmed the already-published merged pin.
 Continue the same NS-5 prerequisite path: parts_02 is still blocked by
-[notes_03](TODO/NS-3_notes_03.md), which requires recorded identity and
+[notes_03](TODO/RETIRED/2026-10-29/NS-3_notes_03.md), which requires recorded identity and
 presence/boundaries. Reference preparation no longer blocks it. Before another
 note experiment, reassess the failed observation families and declare a genuinely
 discriminating observation, fixed controls and stop decision. Preserve untouched
@@ -5082,7 +5082,7 @@ without closing an original parts_01 acceptance criterion. The user's task-flow
 review correctly identified the oversized task and risk of endless investigation.
 
 Apply the new [mandatory checkpoint](TASKFLOW.MD#task-size-and-investigation-stop-points)
-immediately. The [scope reconciliation](MILESTONES.md#mixture-preparation-task-split)
+immediately. The [scope reconciliation](history/MILESTONES-2026-10-29.md#mixture-preparation-task-split)
 splits the existing two-point preparation scope into maintained measurement/control
 delivery (parts_04, one NS-3 point) and qualified external references (parts_01,
 one point). Every original criterion retains an owner, and inference still depends
@@ -5606,7 +5606,7 @@ documentation defect: the workload plan counted one full-source hash per job,
 where the maintained worker hashes before and after observation. The corrected
 [workload record](CORPUS-SCALE.md) counts six hashes for the three long-source
 jobs and four for the two pilot jobs, with final source verification inside the
-total job budget. The existing [scale task](TODO/NS-5_scale_01.md) owns this cost;
+total job budget. The existing [scale task](TODO/RETIRED/2026-10-29/NS-5_scale_01.md) owns this cost;
 no new task, raised budget or repeated benchmark is needed. Retained hour timings
 already include both passes. The finding does not reopen native qualification.
 
@@ -5629,12 +5629,12 @@ The user explicitly requested another infrastructure review before the routine
 two-closure threshold. The implementation helper saved its note-identity cache
 audit and ended its turn with no live processes. Its tracked study change is
 the pending-preparation paragraph in
-[note identity](TODO/NS-3_notes_01.md); its ignored source, frozen policy and
+[note identity](TODO/RETIRED/2026-10-29/NS-3_notes_01.md); its ignored source, frozen policy and
 QA commands are under `build/phrase-identity-reassessment/`. It compiled on
 checked stable Win64 but has no execution or acceptance result.
 
 While reviewer scheduling remains blocked, the primary agent has prepared the
-next independent [key-evidence diagnostic](TODO/NS-3_context_01.md) under ignored
+next independent [key-evidence diagnostic](TODO/RETIRED/2026-10-29/NS-3_context_01.md) under ignored
 `build/local-key-reference/swd/error-audit/`. Its predeclared policy and native
 implementation classify frozen ranking errors and reference ranks by original
 frame intersections, annotator and context coverage. Fully labelled constant
@@ -5689,8 +5689,8 @@ The independent [scale preparation](CORPUS-SCALE.md) identifies three developmen
 recordings with 2.3222053373 unique original-clock hours and prospective raw-job,
 storage, preparation and capacity budgets. Complete semantic workload commands
 cannot yet be supplied: raw salience lacks the admitted-note-to-learner bridge.
-The [scale task](TODO/NS-5_scale_01.md) now links its actual existing prerequisite,
-[recorded phrase admission](TODO/NS-3_notes_03.md), which follows note identity and
+The [scale task](TODO/RETIRED/2026-10-29/NS-5_scale_01.md) now links its actual existing prerequisite,
+[recorded phrase admission](TODO/RETIRED/2026-10-29/NS-3_notes_03.md), which follows note identity and
 presence development. No extra task, inferred independent song, benchmark or
 credit is created. The graph gains one edge, without a cycle or changed task
 count. Final QA accepts the preparation's metadata, exact duration/count
@@ -5735,7 +5735,7 @@ and 37.35 remaining. It is not new credit for a second implementation.
 
 This is one accepted closure after review 04's ten-DONE checkpoint; another
 accepted task is needed for the next routine review. The historical failed QA
-submission count stays at one. The [whole-pipeline workload task](TODO/NS-5_scale_01.md)
+submission count stays at one. The [whole-pipeline workload task](TODO/RETIRED/2026-10-29/NS-5_scale_01.md)
 had its native-execution prerequisite restored. Subsequent workload preparation
 above identifies the separate admitted-note bridge that still blocks full scale
 qualification. Timed-key work remains development evidence, without musical
@@ -5809,7 +5809,7 @@ records the accepted scope and continuing accuracy/platform obligations.
 Acceptance adds **+5 NS-3 points (32% to 37%)**, **+1.25 overall (61.4% to 62.65%)**.
 The catalog has **38 open / 11 DONE**, 49 total tasks and 19 active outcomes;
 accepted task credit is 7.15, with 37.35 overall points remaining. WAV-VALIDATION
-closes, and the [many-hour workload task](TODO/NS-5_scale_01.md) is unblocked.
+closes, and the [many-hour workload task](TODO/RETIRED/2026-10-29/NS-5_scale_01.md) is unblocked.
 It must include complete-source verification and any preparation cost/lineage.
 This is one completion after the infrastructure-review checkpoint at ten DONE;
 the next routine review requires another accepted task. Final owned-document links,
@@ -5840,7 +5840,7 @@ references and grounded numerical criteria.
 The preparation and intermediate pending/failure states below are superseded by
 the accepted checkpoint above; retain them as evidence of the actual sequence.
 
-The primary NS-5 chain remains [style reference specification](TODO/NS-5_evaluation_01.md).
+The primary NS-5 chain remains [style reference specification](TODO/RETIRED/2026-10-29/NS-5_evaluation_01.md).
 Three [candidate cards](STYLE-CARDS.md#candidate-reference-cards) now bind exact
 original WAV sections to declared work/catalogue associations, existing acoustic
 measurements and the missing annotations for each required musical dimension.
@@ -5982,7 +5982,7 @@ execution wait until the hour resource run and reference preflight finish.
 
 ## Accepted selective semantic blends and reference controls — 2026-09-21
 
-The primary NS-5 chain returns to [style references](TODO/NS-5_evaluation_01.md)
+The primary NS-5 chain returns to [style references](TODO/RETIRED/2026-10-29/NS-5_evaluation_01.md)
 after the repaired validation prerequisite and clean second infrastructure review.
 The [reference screen](STYLE-CARDS.md#reference-screening-and-musical-controls--2026-09-21)
 has acquired two original WAV/annotation pairs with verified publisher archive
@@ -9101,7 +9101,7 @@ both extracted packages; the saved-style fixture also passes against WFC.
 An external voice consumer uses only extracted library/helper sources and the
 previously verified trajectory/static second blend. Its actual WFC generation
 and PCM verification pass; WAV, MIDI and preview replay exactly. This closes the
-affected source-package gap in [WAV-05-DELIVERY](MILESTONES.md#wav-05-delivery),
+affected source-package gap in [WAV-05-DELIVERY](history/MILESTONES-2026-10-29.md#wav-05-delivery),
 with three spans / five notes, without claiming general phrase/style acceptance.
 
 Evidence is ignored under `build/delivery-trajectories/`. The fresh isolated
@@ -9112,12 +9112,12 @@ root branch, HEAD and index remain unchanged. All runs are terminal. No
 implementation, fixture count or artifact contract changes.
 The ledger remains 89.8%; Linux/remote CI, combined listening and recorded
 context/phrase acceptance remain open. Next provider work follows the existing
-[dependency order](MILESTONES.md#execution-order-and-blocking-links), with register
+[dependency order](history/MILESTONES-2026-10-29.md#execution-order-and-blocking-links), with register
 and boundary investigations independently ready before phrase freeze.
 
 ## Previous checkpoint — backlog dependency order
 
-The [backlog execution order](MILESTONES.md#execution-order-and-blocking-links)
+The [backlog execution order](history/MILESTONES-2026-10-29.md#execution-order-and-blocking-links)
 now explicitly includes pulse → automatic context admission, register/boundaries
 → phrase admission, and accepted phrase/register evidence → automatic timbre
 assignment. Integration names its timbre prerequisite in both directions.
@@ -9140,7 +9140,7 @@ The four diagnosed early violin endings remain unresolved. Source-bound context
 reveals matching-pitch continuation after one proposed ending, followed by
 energetic but nonperiodic windows; other cases retain fluctuating unpitched energy
 or insufficient quiet context. Unmeasured periodicity remains distinct from a
-measured no-period result. The [backlog](MILESTONES.md#execution-order-and-blocking-links)
+measured no-period result. The [backlog](history/MILESTONES-2026-10-29.md#execution-order-and-blocking-links)
 now separates pitch-supported event continuation from uncertain residual sound,
 retaining independent attack boundaries and the register prerequisite for trusted
 note identity. Both investigations still gate phrase freeze and held-out work.
@@ -9170,7 +9170,7 @@ note. No threshold retry or production gate rule is adopted.
 
 Evidence is ignored under `build/release-evidence-{win64,stable,trunk}/` and
 `build/phrase-release-evidence/`; the recorded probe is stable Win64 only. All
-processes are terminal. The [backlog](MILESTONES.md#execution-order-and-blocking-links)
+processes are terminal. The [backlog](history/MILESTONES-2026-10-29.md#execution-order-and-blocking-links)
 now requires sustained tail/activity and following-attack evidence, with explicit
 uncertainty, under WAV-03-BOUNDARIES. Register work remains independently ready;
 both still gate phrase freeze and held-out evaluation. Held-out sources remain
@@ -9199,7 +9199,7 @@ event-eligibility audits pass on checked stable Win64. Evidence and diagnostic
 sine auditions are ignored under `build/phrase-centered-candidates/`; all runs
 are terminal. No maintained implementation/default, artifact contract or
 cross-target result changes in this turn. Held-out recordings remain unused.
-The [backlog](MILESTONES.md#execution-order-and-blocking-links) now calls for
+The [backlog](history/MILESTONES-2026-10-29.md#execution-order-and-blocking-links) now calls for
 independent attack/release evidence under WAV-03-BOUNDARIES, alongside register
 work; both still gate phrase policy freeze and held-out evaluation. Inventory
 remains 81 core / 24 adapters / 63 fixtures, ledger 89.8%, general style readiness
@@ -9227,7 +9227,7 @@ The probe also preserves the unresolved gates: a dominant second harmonic still
 admits an octave error despite a low residual, a mixed interval crossing an octave
 step remains unknown, and recorded A's third fit still exceeds 0.25 (0.250556).
 No automatic changing-pitch style policy is adopted. The
-[backlog](MILESTONES.md#execution-order-and-blocking-links) links automatic timbre
+[backlog](history/MILESTONES-2026-10-29.md#execution-order-and-blocking-links) links automatic timbre
 pitch admission to register ambiguity and event assignment to phrase admission;
 declared-region quality work remains ready. Current packages predate this API
 as well as trajectory work. Inventory remains 81 core / 24 adapters / 63 fixtures;
@@ -9254,7 +9254,7 @@ The recorded C trajectory passes three windows; the A third window still fails
 the declared 0.25 residual threshold (0.253358 at measured frequency). Rejection
 preserves accepted output. Its previously admitted stationary spectrum supplies
 the mixed-source blend; no A trajectory acceptance is claimed. The
-[dependency-ordered backlog](MILESTONES.md#execution-order-and-blocking-links)
+[dependency-ordered backlog](history/MILESTONES-2026-10-29.md#execution-order-and-blocking-links)
 marks saved control evidence satisfied, retains changing-pitch/recorded/listening
 gates, and links automatic event assignment to phrase admission. Ready work does
 not wait for unrelated blockers. Packages predate these additions and need an
@@ -9278,7 +9278,7 @@ recorded output retains its hash. Invalid targets and rendered overload preserve
 accepted output. Evidence is ignored under
 `build/timbre-shape-{win64,stable,trunk}/`; all processes are terminal.
 
-[WAV-03-TIMBRE](MILESTONES.md#wav-03-timbre) now proceeds to source-bound saved
+[WAV-03-TIMBRE](history/MILESTONES-2026-10-29.md#wav-03-timbre) now proceeds to source-bound saved
 trajectory evidence, explicit timing/factorization policy and repeated blends
 with independent envelope/timbre edits. This does not establish automatic event
 assignment, changing-pitch admission, perceptual loudness or listening acceptance.
@@ -9303,7 +9303,7 @@ The existing saved-style/instrument fixture passes on stable Win64. Invalid
 consumer admissions preserve existing output. Evidence is ignored under
 `build/timbre-trajectory-{win64,stable,trunk}/`; all processes are terminal.
 
-[WAV-03-TIMBRE](MILESTONES.md#wav-03-timbre) names the remaining provider work:
+[WAV-03-TIMBRE](history/MILESTONES-2026-10-29.md#wav-03-timbre) names the remaining provider work:
 separate dynamics from spectral change, retain pitch/phase uncertainty, then
 persist and repeatedly blend trajectories in the current style contract. It is
 independently runnable and gates the existing evolving-instrument requirement in
@@ -9324,7 +9324,7 @@ dominant second harmonic defeats a simple pitch-doubling rule. Four analytic
 controls and independent report audits pass on checked stable Win64; evidence
 is ignored under `build/phrase-register-context/`. No inference policy is adopted.
 
-The [backlog order](MILESTONES.md#execution-order-and-blocking-links) retains
+The [backlog order](history/MILESTONES-2026-10-29.md#execution-order-and-blocking-links) retains
 independent register and boundary investigations, both feeding phrase development
 acceptance, policy freeze and held-out evaluation. Accepted phrases and base
 context then feed style integration alongside vocabulary, continuity and synthesis
@@ -9352,11 +9352,11 @@ Evidence and archives are ignored under `build/delivery-journal/`; all processes
 are terminal. The working branch remains `hello-pythian`, with its index and HEAD
 unchanged. No core algorithm or new fixture is added in this delivery turn.
 
-[WAV-05-DELIVERY](MILESTONES.md#wav-05-delivery) now has current local package and
+[WAV-05-DELIVERY](history/MILESTONES-2026-10-29.md#wav-05-delivery) now has current local package and
 clean-build evidence. Linux/remote CI remains unverified; no usable local Linux
 runner was established, and remote execution needs these sources in published
 history. Final accepted-path delivery still follows
-[WAV-04-INTEGRATION](MILESTONES.md#wav-04-integration), including its provider,
+[WAV-04-INTEGRATION](history/MILESTONES-2026-10-29.md#wav-04-integration), including its provider,
 coverage and listening prerequisites. Independently ready work can continue on
 those gates; local delivery does not admit musical quality. Inventory remains
 81 core units / 24 adapters / 63 fixtures, the ledger remains 89.8%, and the
@@ -9400,10 +9400,10 @@ A gain coverage while B loses one covered observation despite a lower mean error
 C's longest token run grows from 173 to 306. These are development measurements,
 not musical admission or held-out evidence.
 
-[WAV-04-VOCABULARY](MILESTONES.md#wav-04-vocabulary) now names the remaining order:
+[WAV-04-VOCABULARY](history/MILESTONES-2026-10-29.md#wav-04-vocabulary) now names the remaining order:
 declare recording splits and coverage/weight/capacity criteria, compare development
 policies, freeze, then evaluate reserved recordings. It still gates corpus
-admission in [WAV-04-INTEGRATION](MILESTONES.md#wav-04-integration). Dependency and
+admission in [WAV-04-INTEGRATION](history/MILESTONES-2026-10-29.md#wav-04-integration). Dependency and
 blocker links retain their clearing evidence and downstream IDs; independent
 pulse, phrase and fundamentals work stays ready. The execution order distinguishes
 ready investigation from blocked acceptance.
@@ -9431,7 +9431,7 @@ The native lab exposes a retained tradeoff: fixed-grid rank zero selects 192 BPM
 instead of approximately 96 BPM on the polyphonic case, adding 19 pulses. The
 96-BPM alternative survives and the local tracker matches all 20 reference beats
 without extras. Rank zero is not quarter-note admission. This and the recorded
-beat-level/alignment failures remain [WAV-02-PULSE](MILESTONES.md#wav-02-pulse)
+beat-level/alignment failures remain [WAV-02-PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse)
 constraints. Next use temporal band evidence and explicit uncertainty before
 automatic WAV-02-CONTEXT, then semantic WAV-04-INTEGRATION. Independent work stays ready.
 
@@ -9461,7 +9461,7 @@ shows differing temporal accent evidence across bands. Mid-band alternation on
 the abrupt-change example falls substantially after the change, while other
 bands differ; acceleration supplies a counterexample to a simple winning-band
 or alternation-penalty rule. Next combine temporal band evidence with explicit
-metrical alternatives and sufficiency. [WAV-02-PULSE](MILESTONES.md#wav-02-pulse)
+metrical alternatives and sufficiency. [WAV-02-PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse)
 now has the measurement prerequisite, but still gates automatic WAV-02-CONTEXT
 and semantic WAV-04-INTEGRATION. Independent provider/fundamentals work is ready.
 
@@ -9491,7 +9491,7 @@ also remain distinct from measured absence of alternation.
 Next separate pulse fit, metrical interpretation and evidence sufficiency;
 investigate independent band/part evidence and preserve unresolved alternatives.
 Do not retune this scalar penalty against the same three development WAVs.
-[WAV-02-PULSE](MILESTONES.md#wav-02-pulse) adds fast-accent/acceleration and
+[WAV-02-PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse) adds fast-accent/acceleration and
 insufficient-evidence clearing constraints before automatic WAV-02-CONTEXT and
 semantic WAV-04-INTEGRATION. Independent provider and fundamentals work is ready.
 
@@ -9519,7 +9519,7 @@ Relaxing the bound alone does not resolve the abrupt-change interpretation.
 The arpeggio's raw F1 is 0.9880; onset adjustment loses one correct raw match at
 30 ms. Beat-level evidence/uncertainty and alignment safeguards are the next
 acceptance constraints, alongside explicit measurement semantics and bounded
-resources. [WAV-02-PULSE](MILESTONES.md#wav-02-pulse) gates automatic tempo in
+resources. [WAV-02-PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse) gates automatic tempo in
 WAV-02-CONTEXT, then semantic WAV-04-INTEGRATION. Independent local-key, phrase,
 corpus, manual-admission and fundamentals work remains ready.
 
@@ -9547,7 +9547,7 @@ Next implement and evaluate bounded phase-family retention separately from
 beat-level/abrupt-change reasoning. Larger capacity or changed penalties alone
 are not established remedies. Per-owned-window diagnostic optima use annotations
 and have boundary/short-span ambiguities; they must not be stitched or reported
-as inference accuracy. [WAV-02-PULSE](MILESTONES.md#wav-02-pulse) links these
+as inference accuracy. [WAV-02-PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse) links these
 remaining gates to automatic context admission and style integration. Manual
 admission and independent provider, corpus and fundamentals work remain runnable.
 
@@ -9581,7 +9581,7 @@ long-source capacity or automatic admission.
 Next inspect phase loss through proposal, local-peak filtering and truncation at
 the arpeggio ending; beat-level evidence still needs to resolve the abrupt change.
 Do not increase candidate limits or tune transition penalties without that
-diagnosis. [WAV-02-PULSE](MILESTONES.md#wav-02-pulse) retains these gates before
+diagnosis. [WAV-02-PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse) retains these gates before
 automatic context admission and style integration. Independent provider, corpus
 and fundamentals work remains runnable. The other 22 ARTBeaT examples remain
 unevaluated; future policy/criteria must freeze before held-out use.
@@ -9610,7 +9610,7 @@ half-beat errors. The abrupt-change case still favors 150 BPM throughout. Next
 retain multiple phases at one tempo and beat-level alternatives, with explicit
 uncertainty; keep proposal measurement separate from path selection and admission.
 The prototype uses almost the full fit budget on short clips, so efficient bounded
-kernel work also gates adoption. These remain [WAV-02-PULSE](MILESTONES.md#wav-02-pulse)
+kernel work also gates adoption. These remain [WAV-02-PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse)
 requirements feeding context admission and style integration; independent local-key,
 phrase, corpus and fundamentals work remain runnable.
 
@@ -9635,7 +9635,7 @@ the failures. The arpeggio largely lacks useful retained tempo candidates; the
 abrupt-change case retains early near-75-BPM alternatives but selects near-150
 throughout. The acceleration ends at approximately half the reference tempo.
 
-Next address [WAV-02-PULSE](MILESTONES.md#wav-02-pulse): candidate retention under
+Next address [WAV-02-PULSE](history/MILESTONES-2026-10-29.md#wav-02-pulse): candidate retention under
 subdivisions and explicit beat-level alternatives precede automatic tempo
 acceptance in WAV-02-CONTEXT and semantic style integration. Local-key, phrase,
 corpus and fundamentals work remain independently runnable. Freeze any selected
@@ -9656,7 +9656,7 @@ are unchanged.
 ## Previous checkpoint — backlog links and streamed FM/PM quality
 
 Backlog coordination now explicitly records prerequisites, blockers, clearing
-evidence and downstream IDs in the [execution order](MILESTONES.md#execution-order-and-blocking-links).
+evidence and downstream IDs in the [execution order](history/MILESTONES-2026-10-29.md#execution-order-and-blocking-links).
 Ready investigations remain independent; register/boundary development precedes
 phrase admission, accepted providers precede style integration, and final delivery
 verifies that accepted source. Context admission now names its reference-based
@@ -9702,7 +9702,7 @@ Next connect FM/PM source-factory sideband behavior to the actual tone stream an
 bounded downsampling path, then consolidate the declared synthesis-quality limits
 and auditions for listening review. Discontinuous recorded loop endpoints and
 arbitrary fast modulation are not covered by this smooth-loop result. The scoped
-[FUND-QUALITY](MILESTONES.md#fund-quality) evidence advances without closing its
+[FUND-QUALITY](history/MILESTONES-2026-10-29.md#fund-quality) evidence advances without closing its
 remaining acceptance or changing the 89.8% ledger / 10.2-point outcome package.
 Register, boundary, context and corpus-quality investigations remain independently
 runnable; the full goal remains active and general style quality unquantified.
@@ -9725,7 +9725,7 @@ existing 88-note measured performance retains exactly the same mix/stem PCM on
 stable Win64. Low-level codec saturation and core float headroom are unchanged.
 
 Next address integrated sample-loop and modulation transitions plus the remaining
-listening criteria in [FUND-QUALITY](MILESTONES.md#fund-quality). The scoped export
+listening criteria in [FUND-QUALITY](history/MILESTONES-2026-10-29.md#fund-quality). The scoped export
 blocker is cleared; broader audible style integration retains its named provider
 and quality gates. Register/phrase research remains independently runnable.
 All study/check processes are terminal. Artifacts are ignored under
@@ -9747,11 +9747,11 @@ records scope, acceptance, commands and limits. No maintained renderer change
 was needed. All study processes are terminal; artifacts remain ignored under
 `build/instrument-quality-{study,stable,trunk}/`.
 
-Next extend [FUND-QUALITY](MILESTONES.md#fund-quality) to measured-envelope retiming,
+Next extend [FUND-QUALITY](history/MILESTONES-2026-10-29.md#fund-quality) to measured-envelope retiming,
 different note lengths and overlapping-layer headroom, retaining the existing
 bounded-stream and replay evidence. Sample-loop/modulation coverage and listening
 remain open. This independent core work does not wait for register research.
-The [execution order](MILESTONES.md#execution-order-and-blocking-links) retains
+The [execution order](history/MILESTONES-2026-10-29.md#execution-order-and-blocking-links) retains
 prerequisite, blocker and coordination links: provider admission precedes style
 integration, then final verification of the accepted source. Update both ends
 when a named gate clears. The five-outcome package remains 10.2 points; this
@@ -9772,7 +9772,7 @@ All study processes are terminal on checked stable Win64; evidence is under
 ignored `build/phrase-note-projection/`. Maintained code/defaults and held-out
 recordings remain unchanged.
 
-Next address the independently ready [FUND-QUALITY](MILESTONES.md#fund-quality)
+Next address the independently ready [FUND-QUALITY](history/MILESTONES-2026-10-29.md#fund-quality)
 outcome: declare and exercise pitch/rate/velocity, bandwidth, gain and transition
 quality through the existing measured-instrument path. Register research remains
 linked to boundary evidence and phrase admission, with explicit event/register
@@ -9831,7 +9831,7 @@ Win64; held-out recordings remain unused. Evidence and exact policy are in the
 
 Next retain continuous pitch/tuning alternatives through event inference and
 combine them with articulation evidence, comparing against both raw and qualified-
-boundary conditions. [WAV-03-REGISTER](MILESTONES.md#wav-03-register) remains
+boundary conditions. [WAV-03-REGISTER](history/MILESTONES-2026-10-29.md#wav-03-register) remains
 coordinated with boundary investigation; phrase freeze/admission follows their
 development clearing results. Maintained code/defaults, dependency pins, index,
 branch `hello-pythian`, packages and percentage allocation are unchanged. The
@@ -9854,7 +9854,7 @@ count controls pass. No maintained implementation/default changes or new accepta
 credit follow. Evidence is under ignored `build/phrase-energy-study/`; held-out
 recordings remain unused. Next investigate corroborating event evidence for
 competing octaves, retaining these quiet-transition counterexamples. This feeds
-[WAV-03-REGISTER](MILESTONES.md#wav-03-register) alongside boundary inference;
+[WAV-03-REGISTER](history/MILESTONES-2026-10-29.md#wav-03-register) alongside boundary inference;
 combined-policy freeze and phrase admission remain downstream. The full goal
 remains active; the engineering ledger stays 89.8% and general style quality
 remains unquantified.
@@ -9862,7 +9862,7 @@ remains unquantified.
 ## Previous checkpoint — periodicity-qualified boundaries
 
 Backlog ordering now distinguishes prerequisite, blocker and coordination links.
-The [execution order](MILESTONES.md#execution-order-and-blocking-links) separates
+The [execution order](history/MILESTONES-2026-10-29.md#execution-order-and-blocking-links) separates
 ready register/boundary investigation from combined-policy freeze and held-out
 phrase admission, followed by style integration and final delivery. Independent
 context, corpus-quality, fundamentals and delivery preparation remain runnable.
@@ -9897,8 +9897,8 @@ note on stable/development Win32 and stable Win64. The recorded study and error
 audit ran on stable Win64 only. The held-out set remains unused. Evidence is under
 ignored `build/phrase-periodicity-study/` and `build/phrase-periodicity-{stable,trunk}/`.
 
-The backlog links [WAV-03-REGISTER](MILESTONES.md#wav-03-register) and
-[WAV-03-BOUNDARIES](MILESTONES.md#wav-03-boundaries) to recorded-phrase admission.
+The backlog links [WAV-03-REGISTER](history/MILESTONES-2026-10-29.md#wav-03-register) and
+[WAV-03-BOUNDARIES](history/MILESTONES-2026-10-29.md#wav-03-boundaries) to recorded-phrase admission.
 Next infer musical register from competing event-level evidence while preserving
 raw periodicity, genuine low notes, octave changes and explicit uncertainty.
 The investigations can proceed together; no circular completion gate is introduced.
@@ -9943,7 +9943,7 @@ availability audit ran on stable Win64 only. Held-out recordings remain unused.
 Evidence: ignored `build/envelope-valleys-{stable,trunk,win64}/` and
 `build/phrase-attacks-study/`, using final `fl-core` / `vn-core` reports/auditions.
 
-[WAV-03-BOUNDARIES](MILESTONES.md#wav-03-boundaries) now links to this implemented
+[WAV-03-BOUNDARIES](history/MILESTONES-2026-10-29.md#wav-03-boundaries) now links to this implemented
 measurement and its remaining attack-admission blocker. Next distinguish
 articulation from modulation and combine pitch-change evidence while retaining
 coverage, before freezing a segmentation policy. Phrase admission still gates
@@ -9983,8 +9983,8 @@ artifacts only, and all study processes are terminal. Inventory remains 80 core
 units, 24 adapters and 63 fixtures;
 no vendor, index, history, package or remote state changes are made.
 
-The ordered backlog adds [WAV-03-BOUNDARIES](MILESTONES.md#wav-03-boundaries) under
-[WAV-03-PHRASES](MILESTONES.md#wav-03-phrases). Next establish source-derived
+The ordered backlog adds [WAV-03-BOUNDARIES](history/MILESTONES-2026-10-29.md#wav-03-boundaries) under
+[WAV-03-PHRASES](history/MILESTONES-2026-10-29.md#wav-03-phrases). Next establish source-derived
 missing-attack proposals and repeated-attack preservation before freezing a
 segmentation policy. This blocks phrase admission, not independent base-context,
 vocabulary, continuity or fundamentals work. The full goal remains active; the
@@ -9994,7 +9994,7 @@ engineering ledger stays 89.8%, with general style quality unquantified.
 
 The richer-model capacity investigation now supplies a full 1024-grain maintained
 audition, with its scoped prerequisite and downstream links updated in the
-[ordered backlog](MILESTONES.md#execution-order-and-blocking-links). The wider
+[ordered backlog](history/MILESTONES-2026-10-29.md#execution-order-and-blocking-links). The wider
 goal remains active; the engineering ledger remains 89.8%, and general musical
 style quality remains unquantified. No additional percentage credit is awarded.
 
@@ -10082,7 +10082,7 @@ all processes are terminal. Inventory remains 80 core units, 24 adapters and
 63 fixtures. No dependency, history, index, package, Linux or remote-CI change
 occurred, and no broad suite or listener acceptance is claimed.
 
-The ordered backlog now links [WAV-04-VOCABULARY](MILESTONES.md#wav-04-vocabulary)
+The ordered backlog now links [WAV-04-VOCABULARY](history/MILESTONES-2026-10-29.md#wav-04-vocabulary)
 to corpus admission and [WAV-04-GENERATION](WAV-STUDIES.md#acoustic-generation-capacity-checkpoint) to
 sustained richer-model output. Both retain explicit clearing results; capacity
 investigation can proceed on the current 771-state model without waiting for a
@@ -10145,10 +10145,10 @@ under ignored `build/journal-boundary-{stable,trunk,win64}/` and
 80 core units, 24 adapters and 63 fixtures. No owned compiler warnings, vendor,
 index, history, full-suite, package, Linux or remote-CI changes are claimed.
 
-[WAV-04-BOUNDARIES](MILESTONES.md#wav-04-boundaries) now supplies the tested
+[WAV-04-BOUNDARIES](history/MILESTONES-2026-10-29.md#wav-04-boundaries) now supplies the tested
 refinement mechanism. Next evaluate broader recordings and source-chunk choices,
 with separate assembled/all-boundary costs and repetition/listening evidence.
-These quality results still gate [WAV-04-CONTINUITY](MILESTONES.md#wav-04-continuity);
+These quality results still gate [WAV-04-CONTINUITY](history/MILESTONES-2026-10-29.md#wav-04-continuity);
 context/phrase provider admission remains independently ready. No external
 blocker or additional percentage credit is recorded; the engineering ledger
 remains 89.8%, with general style quality unquantified.
@@ -10174,9 +10174,9 @@ Their overlap mismatch is exactly zero. Newly assembled joins average about
 0.99 after context selection, worse than the pre-context baseline near 0.90.
 Lower overall seam scores therefore do not establish better newly assembled
 boundaries. Current join planning precedes context selection, and context ranking
-does not score waveform compatibility. [WAV-04-BOUNDARIES](MILESTONES.md#wav-04-boundaries)
+does not score waveform compatibility. [WAV-04-BOUNDARIES](history/MILESTONES-2026-10-29.md#wav-04-boundaries)
 is now the next acoustic selection result, linked as a prerequisite for
-[WAV-04-CONTINUITY](MILESTONES.md#wav-04-continuity). Independent context/phrase
+[WAV-04-CONTINUITY](history/MILESTONES-2026-10-29.md#wav-04-continuity). Independent context/phrase
 admission remains ready and separately gates semantic integration.
 
 Both four-start variants render through the maintained tool as 65.728-second
@@ -10201,7 +10201,7 @@ unquantified. There is no external blocker.
 Saved source contexts now survive the maintained attachment, compatible blend,
 further blend and replay workflow. This closes the mechanical
 [WAV-04-CONTEXT-SAVE](WAV-STUDIES.md#journal-context-save-checkpoint) prerequisite. The
-[ordered backlog](MILESTONES.md#execution-order-and-blocking-links) moves it into
+[ordered backlog](history/MILESTONES-2026-10-29.md#execution-order-and-blocking-links) moves it into
 satisfied prerequisites and updates downstream links; continuity quality and
 semantic provider admission retain their separate clearing results.
 
@@ -10247,9 +10247,9 @@ diagnostics remain. No vendor, index, history, package, full-suite, Linux or
 remote-CI change occurred.
 
 Next, evaluate paired repetition and listening across recordings through the
-saved path under [WAV-04-CONTINUITY](MILESTONES.md#wav-04-continuity). Independent
-[WAV-02-CONTEXT](MILESTONES.md#wav-02-context) and
-[WAV-03-PHRASES](MILESTONES.md#wav-03-phrases) remain ready; semantic integration
+saved path under [WAV-04-CONTINUITY](history/MILESTONES-2026-10-29.md#wav-04-continuity). Independent
+[WAV-02-CONTEXT](history/MILESTONES-2026-10-29.md#wav-02-context) and
+[WAV-03-PHRASES](history/MILESTONES-2026-10-29.md#wav-03-phrases) remain ready; semantic integration
 waits for their named admission results. Current delivery remains separately
 open. No completion credit is added; the engineering ledger stays 89.8%, with no
 defensible percentage for general style-learning quality. The full goal remains
@@ -10259,7 +10259,7 @@ active with no external blocker.
 
 The preceding goal turn completed native filtering-scale verification and
 diagnosed lost source context. This turn implements the core part of
-[WAV-04-CONTINUATION](MILESTONES.md#wav-04-continuation), with sustained native
+[WAV-04-CONTINUATION](history/MILESTONES-2026-10-29.md#wav-04-continuation), with sustained native
 auditions and explicit saved-profile integration still required.
 
 New portable `pythian.learning.context` owns detached source bindings, copied
@@ -10351,7 +10351,7 @@ source boundaries and retained-window gaps. Cache hashes and retained candidate
 token/coordinate bindings pass. These are availability upper bounds, without
 contribution quotas, locks, reuse limits or waveform/perceptual evaluation. The
 [context checkpoint](WAV-STUDIES.md#journal-context-checkpoint) now links the evidence
-to [WAV-04-CONTINUATION](MILESTONES.md#wav-04-continuation): retain bounded context
+to [WAV-04-CONTINUATION](history/MILESTONES-2026-10-29.md#wav-04-continuation): retain bounded context
 at explicit variable lengths with fallback, preserving controls, source lineage,
 reload and repeated-blend behavior in the current contract. Short context is lost
 by representative selection; longer matches also become scarce in the source.
@@ -10452,7 +10452,7 @@ Evidence is in ignored `build/journal-local-{stable,trunk,win64}/` and
 63 fixture programs. All processes are terminal. No vendor/index/history change,
 format version, full ordinary build, package refresh, Linux or remote-CI run
 occurred. The goal remains active without an external blocker or new percentage
-credit. [WAV-04-CONTINUATION](MILESTONES.md#wav-04-continuation) now links the next
+credit. [WAV-04-CONTINUATION](history/MILESTONES-2026-10-29.md#wav-04-continuation) now links the next
 representation result to continuity acceptance. Context/part admission, duration
 repair, native filtering scale and delivery remain independently actionable.
 
@@ -10547,7 +10547,7 @@ failure, full native filtering scale and current delivery remain open.
 ## Previous checkpoint — bounded waveform join planning
 
 The preceding goal turn implemented independent journal candidate selection and
-source weights. This turn advances [WAV-04-CONTINUITY](MILESTONES.md#wav-04-continuity)
+source weights. This turn advances [WAV-04-CONTINUITY](history/MILESTONES-2026-10-29.md#wav-04-continuity)
 with bounded waveform join planning. `NormalizedGrainJoinError` is now shared by
 the existing whole-corpus planner and the new core `pythian.learning.continuity`
 unit. The latter retains incoming/outgoing probes from source-bound callbacks,
@@ -10619,7 +10619,7 @@ saved-output inspector. Owned builds have no warnings; upstream diagnostics rema
 
 No listener acceptance is claimed: equal weighting switches source 117 times,
 and no long-source variant retains contiguous source links. Next work is linked
-as [WAV-04-CONTINUITY](MILESTONES.md#wav-04-continuity) alongside
+as [WAV-04-CONTINUITY](history/MILESTONES-2026-10-29.md#wav-04-continuity) alongside
 [WAV-04-BINDINGS](WAV-STUDIES.md#journal-profile-checkpoint). Base/part providers, the duration
 failure, full native filtering scale and current delivery remain open. The goal
 remains active, with no external blocker or additional percentage credit.
@@ -10631,7 +10631,7 @@ representative list; no new saved style format or historical reader was added.
 ## Previous checkpoint — backlog coordination and journal learning
 
 Backlog coordination now has a linked
-[execution order and blocking map](MILESTONES.md#execution-order-and-blocking-links).
+[execution order and blocking map](history/MILESTONES-2026-10-29.md#execution-order-and-blocking-links).
 Stable child IDs distinguish ready acoustic selection/binding work, independent
 context/phrase/duration work, remaining conversion-scale verification and gated
 semantic integration. The completed journal prerequisite no longer appears as
@@ -10641,7 +10641,7 @@ implementation, validation result or completion credit.
 
 The preceding goal turn made implementation and verification progress on persistent
 feature journals. This turn connects [WAV-01](WAV-STUDIES.md#native-rate-scale-checkpoint)'s cache to
-[WAV-04](MILESTONES.md#wav-04)'s bounded palette learning, actual counted WFC learning
+[WAV-04](history/MILESTONES-2026-10-29.md#wav-04)'s bounded palette learning, actual counted WFC learning
 and an audible source-window path. The goal remains active, with no external
 blocker or added milestone percentage credit.
 
@@ -10708,8 +10708,8 @@ Next expand candidate diversity and explicit generated-source controls, then
 evaluate declared seeds and recording-level held-out material. Integer training
 mass is not an output source quota; one representative per token is not acceptable
 evidence of a well-rounded style. Repeated saved blends require compatible palette
-and timebase bindings. [WAV-02](MILESTONES.md#wav-02) and
-[WAV-03](MILESTONES.md#wav-03) still supply the missing admitted context/part providers.
+and timebase bindings. [WAV-02](history/MILESTONES-2026-10-29.md#wav-02) and
+[WAV-03](history/MILESTONES-2026-10-29.md#wav-03) still supply the missing admitted context/part providers.
 The fixed feature-hop clock is not learned BPM, and acoustic states are not voices.
 Full-length native sinc conversion also remains a separate WAV-01 scale check.
 
@@ -10718,7 +10718,7 @@ Full-length native sinc conversion also remains a separate WAV-01 scale check.
 The preceding goal turn made concrete progress on long-source feature batches.
 This turn implements their persistent storage/recovery boundary and runs it over
 the full prepared source. [WAV-01](WAV-STUDIES.md#native-rate-scale-checkpoint)'s journal is now available
-for [WAV-04](MILESTONES.md#wav-04)'s bounded learner consumer. The goal remains
+for [WAV-04](history/MILESTONES-2026-10-29.md#wav-04)'s bounded learner consumer. The goal remains
 active; there is no external blocker and no milestone percentage credit is added.
 
 `TFeatureJournal` stores bounded, checksummed batches bound to exact source hash,
@@ -10772,7 +10772,7 @@ journals. Current palette/companion acoustic APIs cap in-memory corpora at 65536
 observations, below this cache's 128683. Carry history across batches and reset at
 declared recording/song boundaries; retain explicit source balance and vocabulary
 contracts. Bounded source-grain access at Int64 coordinates is also needed for the
-audible consumer. [WAV-02](MILESTONES.md#wav-02) and [WAV-03](MILESTONES.md#wav-03)
+audible consumer. [WAV-02](history/MILESTONES-2026-10-29.md#wav-02) and [WAV-03](history/MILESTONES-2026-10-29.md#wav-03)
 remain prerequisites for semantic context/part providers. Full-length native sinc
 conversion remains a separate WAV-01 scale check. Persistent features are not yet
 a learned many-hour musical style.
@@ -10822,16 +10822,16 @@ Linux or remote-CI verification occurred.
 
 No milestone points are awarded. WAV-01 next needs durable source/options-bound
 checkpoints, interrupted-write recovery and exactly-once observation commits.
-[WAV-04](MILESTONES.md#wav-04) then needs compatible vocabulary/transition
+[WAV-04](history/MILESTONES-2026-10-29.md#wav-04) then needs compatible vocabulary/transition
 aggregation and source balance; accepted semantic providers still depend on
-[WAV-02](MILESTONES.md#wav-02) and [WAV-03](MILESTONES.md#wav-03). Full-source
+[WAV-02](history/MILESTONES-2026-10-29.md#wav-02) and [WAV-03](history/MILESTONES-2026-10-29.md#wav-03). Full-source
 feature extraction is not yet a learned many-hour musical style. The goal remains
 active with concrete progress and no external blocker.
 
 ## Bounded conversion checkpoint — 2026-09-15
 
 The backlog retains stable [WAV-01](WAV-STUDIES.md#native-rate-scale-checkpoint) through
-[WAV-05](MILESTONES.md#wav-05) links, explicit prerequisites and acceptance gates,
+[WAV-05](history/MILESTONES-2026-10-29.md#wav-05) links, explicit prerequisites and acceptance gates,
 and an order of operation. No external blocker currently prevents progress.
 
 WAV-01 now has a bounded preparation checkpoint. `TWavePcmReader` connects the
@@ -10876,10 +10876,10 @@ corpora and auditions remain in ignored `build/wav-source-study/`. Documentation
 describes WAV-source behavior using neutral source labels.
 
 The backlog now uses stable dependency links: [WAV-01](WAV-STUDIES.md#native-rate-scale-checkpoint)
-preparation/ingestion first; [WAV-02](MILESTONES.md#wav-02) context and
-[WAV-03](MILESTONES.md#wav-03) parts can progress alongside each other, with
-independent corpus aggregation in [WAV-04](MILESTONES.md#wav-04). Semantic style
-integration consumes their accepted providers. [WAV-05](MILESTONES.md#wav-05)
+preparation/ingestion first; [WAV-02](history/MILESTONES-2026-10-29.md#wav-02) context and
+[WAV-03](history/MILESTONES-2026-10-29.md#wav-03) parts can progress alongside each other, with
+independent corpus aggregation in [WAV-04](history/MILESTONES-2026-10-29.md#wav-04). Semantic style
+integration consumes their accepted providers. [WAV-05](history/MILESTONES-2026-10-29.md#wav-05)
 delivery preparation can proceed throughout; final verification follows the
 accepted source. Each item records its present blocker or acceptance gate.
 No external blocker prevents the next action. These are dependencies within
@@ -10981,7 +10981,7 @@ octaves while reducing spurious splits and missed attacks. Endpoint trimming alo
 is insufficient. Keep the saved 32-span duration-provider failure visible and
 preserve independent WFC layers, repeatable blends, core synthesis priority and
 one current native format per artifact. See
-[milestones and direction](MILESTONES.md#direction-for-the-next-work-package).
+[milestones and direction](history/MILESTONES-2026-10-29.md#direction-for-the-next-work-package).
 
 ## Preceding region inference checkpoint — 2026-09-15
 
@@ -11206,7 +11206,7 @@ with reusable measured instrument behavior inside the current style contract;
 avoid further isolated feature additions that do not close one of those outcomes.
 
 The latest planning review retains that estimate after checking the saved-envelope
-and delivery evidence. The [immediate acceptance result](MILESTONES.md#immediate-acceptance-result)
+and delivery evidence. The [immediate acceptance result](history/MILESTONES-2026-10-29.md#immediate-acceptance-result)
 now defines a cohesive per-role timbre/envelope consumer and paired native
 auditions: edit melody envelope selection while preserving bass/chord stems,
 timbre recipes and accepted WFC music/MIDI. This review updates the direction;
@@ -13876,7 +13876,7 @@ gate. Full RF64 payload playback and atomic artifact publication are unverified.
 ## Remaining delivery gates
 
 Historical scope record: the following list predates later implementation and
-acceptance decisions. Use the [active backlog](MILESTONES.md#active-backlog) for
+acceptance decisions. Use the [active backlog](history/MILESTONES-2026-10-29.md#active-backlog) for
 current remaining work, dependencies and supported scope.
 
 1. **Precursor source audit — complete.** Shared timing, MIDI handling,
@@ -13986,10 +13986,10 @@ WFC/Athena submodules are unchanged. Broader project goals are still open.
 ## Next bounded action
 
 Historical planning context follows. The current next work is owned by
-[First work to schedule](MILESTONES.md#next-work-to-schedule); completed mechanisms
+[First work to schedule](history/MILESTONES-2026-10-29.md#next-work-to-schedule); completed mechanisms
 mentioned below must not be scheduled again from this older list.
 
-Prioritize the [current WAV-style outcome milestones](MILESTONES.md#direction-for-the-next-work-package).
+Prioritize the [current WAV-style outcome milestones](history/MILESTONES-2026-10-29.md#direction-for-the-next-work-package).
 The user requested larger progressive goals rather than a series of increments
 whose combined contribution is below ten percentage points. Reuse the primitives
 below as part of that integrated outcome, with explicit learned-versus-authored
@@ -14092,7 +14092,7 @@ directly represent two-part note gates without conflating acoustic clusters
 with pitches. The task-flow gap process therefore split the original 4 unearned
 NS-4_integration_01 goal points into 2 for a new maintained
 [NS-4_note-events_01](TODO/DONE/NS-4_note-events_01.md) adapter and 2 retained for
-[NS-4_integration_01](TODO/NS-4_integration_01.md). The new task owns joint
+[NS-4_integration_01](TODO/RETIRED/2026-10-29/NS-4_integration_01.md). The new task owns joint
 onset bundles, per-note duration and part, onset deltas, retriggers, exact
 round-trip and bounded WFC generation. This is a changed core deliverable,
 not another threshold/seed variant. The catalog now has 37 open tasks; overall
@@ -14507,7 +14507,7 @@ Honor the prospective no-rerun stop condition: no projection repair or
 candidate tuning in this batch. Composition closes no criterion and earns no
 credit; NS-4 remains 97%, overall completion 68.80%.
 
-The next selected core path is [NS-3_tempo_04](TODO/NS-3_tempo_04.md), not
+The next selected core path is [NS-3_tempo_04](TODO/RETIRED/2026-10-29/NS-3_tempo_04.md), not
 another authored composition variant. Its ready source-evidence gate can use
 the already inventoried official paired Groove MIDI/audio material only after
 exact audio/MIDI correspondence and acoustic hit alignment are verified;
@@ -14611,7 +14611,7 @@ Stop GMD source qualification here. The result is a failed onset-coverage
 gate for this dense mixed-drum pair, not a source-independent beat-candidate
 result or proof that the publisher MIDI/WAV are misaligned. Do not tune the
 localizer, tolerance, source selector or model on this exposed pair. The
-open [NS-3_tempo_04](TODO/NS-3_tempo_04.md) next needs independently
+open [NS-3_tempo_04](TODO/RETIRED/2026-10-29/NS-3_tempo_04.md) next needs independently
 attributable source-pulse evidence from a different qualified setting before
 another candidate-pool decision. The protected ARTBeaT evaluation and all
 task credit remain unchanged at 68.80% overall.
@@ -14799,7 +14799,7 @@ and ignored `build/composition-maintained/QA-MANIFEST.md`. The unreviewed seed-1
 smoke output is not acceptance evidence. The task earns +1 NS-4 goal point
 (+0.15 overall): NS-4 rises from 97% to **98%**, overall from 68.80% to
 **68.95%**, with 36 open and 21 DONE tasks. Recorded musical admission and
-[WFC audio integration](TODO/NS-4_integration_01.md) remain open; this result
+[WFC audio integration](TODO/RETIRED/2026-10-29/NS-4_integration_01.md) remain open; this result
 does not claim either or a personal genre style.
 
 Beat-candidate source reassessment, 2026-09-24: after the stopped GMD
@@ -14899,7 +14899,7 @@ novelty gate, checked native replay and a whole-passage listening verdict.
 This changes the representation and endpoint policy from the stopped
 beat-tagged, motif and full-event composition routes; it does not rerun them.
 One of the two unearned NS-4 points moves from
-[recorded integration](TODO/NS-4_integration_01.md), which retains every
+[recorded integration](TODO/RETIRED/2026-10-29/NS-4_integration_01.md), which retains every
 recorded-provider criterion and one point. NS-4 stays 98%, overall stays
 68.95%, with 37 open / 21 DONE tasks. This planning checkpoint selected an
 independent portable chord-schedule API; it accepted no WFC model, candidate
@@ -15002,7 +15002,7 @@ remain unchanged, and the cross-task listening queue stays at 1/20.
 
 ## Beat candidate provenance boundary — 2026-09-25
 
-The focused post-screen batch closed [NS-3_tempo_04](TODO/NS-3_tempo_04.md)
+The focused post-screen batch closed [NS-3_tempo_04](TODO/RETIRED/2026-10-29/NS-3_tempo_04.md)
 criterion 4. `SelectedBeatClockWindows` now keeps an explicit 0-based source
 track-window index and selected candidate index (`-1` for a gap) with the
 detached clock input. The track retains all unused candidate alternatives.
@@ -15025,7 +15025,7 @@ cross-task listening queue remains **1/20**.
 
 ## Beat candidate changed-path validation — 2026-09-25
 
-[NS-3_tempo_04](TODO/NS-3_tempo_04.md) criterion 5 now closes after focused
+[NS-3_tempo_04](TODO/RETIRED/2026-10-29/NS-3_tempo_04.md) criterion 5 now closes after focused
 checked FPC 3.2.2 Win32/Win64 beat-track and clock fixtures, affected CLI
 builds and an actual authored-WAV consumer run. The unchanged source is
 44,100-Hz stereo, 617,400 frames, SHA-256
@@ -15066,7 +15066,7 @@ exact-window audible no-instrument rest. MIDI release plus low PCM energy does
 not authorize the maintained `ReferenceReviewed` assertion. No package or
 metadata was acquired, and no presence score ran. This repeats the evidence
 gap of the stopped MAPS route, so stop further paired-MIDI source searching for
-[NS-3_notes_05](TODO/NS-3_notes_05.md) and follow a different ready core task.
+[NS-3_notes_05](TODO/RETIRED/2026-10-29/NS-3_notes_05.md) and follow a different ready core task.
 The task, milestone score and listening queue remain unchanged.
 
 ## Milestone critical-path retrospective — 2026-09-25
@@ -15101,7 +15101,7 @@ no criterion; its missing admitted-note-to-learner bridge remains owned by
 multi-recording reader and exact source-bound packet before that bridge exists.
 The [new raw task](TODO/DONE/NS-5_scale_03.md) therefore owns maintained corpus
 reading plus actual five-job observation/cost qualification; the
-[original scale task](TODO/NS-5_scale_01.md) retains admission, semantic
+[original scale task](TODO/RETIRED/2026-10-29/NS-5_scale_01.md) retains admission, semantic
 aggregation, model-capacity and full-pipeline budgets. Its original four
 unearned NS-5 points are now raw **1** and semantic **3**, totaling the same
 0.80 overall points. No task or criterion closed, so the score stays **68.95**;
@@ -15181,8 +15181,8 @@ is inferred.
 [NS-5_scale_03](TODO/DONE/NS-5_scale_03.md) moves to DONE, earning **+1 NS-5**
 and **+0.20 overall**. NS-5 is **28%**, overall completion **69.15%**, with
 **37 open / 22 DONE** tasks. The next critical dependency remains
-[NS-3_notes_03](TODO/NS-3_notes_03.md) through source-grounded register and
-presence admission; [semantic scale](TODO/NS-5_scale_01.md) stays open until
+[NS-3_notes_03](TODO/RETIRED/2026-10-29/NS-3_notes_03.md) through source-grounded register and
+presence admission; [semantic scale](TODO/RETIRED/2026-10-29/NS-5_scale_01.md) stays open until
 that bridge and actual learning qualify. The cross-task listening queue remains
 **1/20**, with no source label or raw observation added.
 
@@ -15206,7 +15206,7 @@ publisher's numeric player IDs are not treated as proven independent people.
 The task retro leaves the note-register and generic-presence source routes
 stopped. To advance the critical path without another speculative source
 screen, split an independently useful admitted-note-to-WFC bridge from
-[NS-3_notes_03](TODO/NS-3_notes_03.md) into
+[NS-3_notes_03](TODO/RETIRED/2026-10-29/NS-3_notes_03.md) into
 [NS-3_notes_06](TODO/DONE/NS-3_notes_06.md). The new task will use source-bound
 published reference events to prove original-frame ownership, hard unknown/
 recording training boundaries, saved WFC learning/reload and deterministic
@@ -15251,7 +15251,7 @@ This accepts a generic learner bridge using externally supplied reference
 events; it does not accept WAV note inference, acoustically measured rests,
 phrase accuracy, musical quality or a listening verdict. The next critical
 core decision remains recorded note identity and generic presence with truly
-independent physical evidence; [NS-3_notes_03](TODO/NS-3_notes_03.md) must
+independent physical evidence; [NS-3_notes_03](TODO/RETIRED/2026-10-29/NS-3_notes_03.md) must
 feed **actual inferred** events to this bridge and pass its held-out phrase
 and audible gates before semantic scale can claim admitted music. The cross-task
 Pythian listening queue remains **1/20**.
@@ -15316,7 +15316,7 @@ The maintained authored-control candidate pool/clock link is an independently
 usable Pascal result; the source-separated recorded challenge is a different
 acceptance boundary. [NS-3_tempo_05](TODO/DONE/NS-3_tempo_05.md) was assigned authored
 fast/half/double and phase alternatives, controlled loss categories, retained
-pool/clock identity and checked consumer replay. [NS-3_tempo_04](TODO/NS-3_tempo_04.md)
+pool/clock identity and checked consumer replay. [NS-3_tempo_04](TODO/RETIRED/2026-10-29/NS-3_tempo_04.md)
 retains source-qualified recorded candidate recall, physical/unknown
 attribution and challenge QA, and depends on 05. Every original criterion maps
 across those two scopes. The original unearned **+2 NS-3 / +0.50 overall** is
@@ -15348,7 +15348,7 @@ and logs are in ignored `build/beat-candidate-authored-acceptance/`.
 Salty Boi accepted the complete scoped result after checking the test/policy
 hashes and existing consumer evidence. Empty input means no admitted onset,
 not acoustic source absence; recorded challenge recall and musical beat-level
-selection remain open in [NS-3_tempo_04](TODO/NS-3_tempo_04.md) and its
+selection remain open in [NS-3_tempo_04](TODO/RETIRED/2026-10-29/NS-3_tempo_04.md) and its
 successors.
 
 The task earns **+1 NS-3 / +0.25 overall**, raising NS-3 to **43%** and total
@@ -15393,7 +15393,7 @@ listening queue and do not claim NS-4 closure without the verdict.
 ## Presence-source quality checkpoint — 2026-09-25
 
 Two read-only source screens since the core retrospective closed no acceptance
-criterion in [NS-3_notes_05](TODO/NS-3_notes_05.md). DEMAND names outdoor noise
+criterion in [NS-3_notes_05](TODO/RETIRED/2026-10-29/NS-3_notes_05.md). DEMAND names outdoor noise
 scenes; BUT ReverbDB separately records room background `silence`, but its
 publisher does not certify exact-window absence of audible instruments and
 notes a radio in one office setup. Neither archive was acquired or scored.
@@ -15415,7 +15415,7 @@ canonical Pascal contribution journal, duplicate/conflict rules, source/run
 boundaries and deterministic full rebuild. This is not online WFC model
 updating, process-crash durability, many-hour capacity or inferred notes.
 
-The original [NS-5_scale_02](TODO/NS-5_scale_02.md) criteria map across the
+The original [NS-5_scale_02](TODO/RETIRED/2026-10-29/NS-5_scale_02.md) criteria map across the
 split: 04 owns the pitch-duration journal portion of restart equivalence and
 incremental source addition (original criteria 2–3); 02 retains complete
 multi-provider crash/cache recovery and additions (remaining 2–3), full
@@ -15459,7 +15459,7 @@ This earns **+1 NS-5 / +0.20 overall**, making NS-5 **29%**, total
 completion **69.85%**, and the 62-task catalog **37 open / 25 DONE**. It is
 not online WFC updating, process-crash durability, many-hour semantic
 training, recorded note inference or a listening result. The complete
-[NS-5_scale_02](TODO/NS-5_scale_02.md) and recorded core prerequisites remain
+[NS-5_scale_02](TODO/RETIRED/2026-10-29/NS-5_scale_02.md) and recorded core prerequisites remain
 open. The cross-task substantial Pythian listening queue remains **1/20**.
 
 ## Anechoic presence-source geometry stop — 2026-09-25
@@ -15482,7 +15482,7 @@ zero leaks. Both policies, checker, logs and stop record remain under ignored
 deletion; they were then considered cleanup candidates. The later
 reassessment below supersedes that disposition.
 
-This source route closes no criterion in [NS-3_notes_05](TODO/NS-3_notes_05.md).
+This source route closes no criterion in [NS-3_notes_05](TODO/RETIRED/2026-10-29/NS-3_notes_05.md).
 Do not resample or retune its frozen format/window gate again. The task still needs an
 independently supported exact no-instrument interval and source-disjoint
 recorded cases; absence of a score or a publisher label alone remains
@@ -15636,7 +15636,7 @@ the cross-task Pythian listening queue remains **1/20**.
 ## Admitted-pitch work-group balance — 2026-09-25
 
 The retrospective found a separable core requirement in
-[NS-5_vocabulary_01](TODO/NS-5_vocabulary_01.md): admitted-pitch learning
+[NS-5_vocabulary_01](TODO/RETIRED/2026-10-29/NS-5_vocabulary_01.md): admitted-pitch learning
 weighted each run once, so one work group could dominate by contributing more
 tokens. A one-point task split put a bounded contribution-control comparison
 in [NS-5_vocabulary_03](TODO/DONE/NS-5_vocabulary_03.md), leaving full

@@ -1,6 +1,6 @@
 # Synthesis quality: accepted scope and remaining review
 
-[Home](../README.md) · [Milestones](MILESTONES.md#fund-quality) ·
+[Home](../README.md) · [Milestones](history/MILESTONES-2026-10-29.md#fund-quality) ·
 [Capability map](FUNDAMENTALS.md) · [Instruments](INSTRUMENTS.md) ·
 [Sources](SOURCES.md) · [Modulation](MODULATION.md)
 
@@ -21,7 +21,7 @@ allocation and does not replace the separate recorded-style acceptance gates.
 | Instrument export | Explicit common gain and overload rejection before accepted outputs change | [FUND-EXPORT](INSTRUMENTS.md#measured-envelope-and-layer-checkpoint--2026-09-19). Floating headroom and low-level PCM saturation remain distinct from the consumer's rejection policy. |
 | Sample loops and controls | Smooth authored stereo loop; one-octave pitch ramp with cutoff/pan/gain motion; 8/16/48-kHz output; early and later release | [Analytic transition and paired bandwidth evidence](SOURCES.md#sample-loop-and-automation-quality-checkpoint--2026-09-19). Discontinuous recorded loop endpoints and arbitrary fast automation are outside this result. |
 | Streamed FM/PM conversion | 4-kHz carrier / 6-kHz modulator, FM deviation 10 kHz or PM index 3; native versus fourfold rendering and bounded downsampling | [Bessel/filter and folded-component evidence](MODULATION.md#streamed-fmpm-bandwidth-checkpoint--2026-09-19). Selected coherent bins, not a universal oversampling factor or all modulation settings. |
-| Spectral trajectories | Bounded adjacent-bank interpolation, raw phase or normalized magnitude shape, source-bound saved blends and independent envelopes | [Source references](SOURCES.md#spectral-trajectory-checkpoint) and [saved-provider controls](WAVE-STYLE.md#saved-spectral-trajectories) pass on three targets. Recorded changing-pitch admission and listening remain open under [WAV-03-TIMBRE](MILESTONES.md#wav-03-timbre). |
+| Spectral trajectories | Bounded adjacent-bank interpolation, raw phase or normalized magnitude shape, source-bound saved blends and independent envelopes | [Source references](SOURCES.md#spectral-trajectory-checkpoint) and [saved-provider controls](WAVE-STYLE.md#saved-spectral-trajectories) pass on three targets. Recorded changing-pitch admission and listening remain open under [WAV-03-TIMBRE](history/MILESTONES-2026-10-29.md#wav-03-timbre). |
 
 All these paths have generated auditions and explicit limits. Read-size replay
 and cross-target WAV identity are checked only for the workloads recorded in
@@ -476,7 +476,7 @@ component documents. The high-carrier folded band is not perceptually approved.
 
 Review audible attacks, releases, joins, roughness and level balance on these
 declared paths. Record the exact artifact and transition if a defect is heard,
-then link it to [FUND-QUALITY](MILESTONES.md#fund-quality) and its affected consumer.
+then link it to [FUND-QUALITY](history/MILESTONES-2026-10-29.md#fund-quality) and its affected consumer.
 Numerical agreement does not replace this observation, and subjective preference
 alone should not silently expand the engineering contract. The broad 11-second
 review does not approve the individual processing cases in this set.
@@ -484,6 +484,6 @@ review does not approve the individual processing cases in this set.
 The bounded fundamentals quality union is accepted under the
 [capability/failure and workload contract](FUNDAMENTALS.md#contract-review).
 Independent context, phrase and corpus
-work remains ready in the [execution order](MILESTONES.md#execution-order-and-blocking-links).
+work remains ready in the [execution order](history/MILESTONES-2026-10-29.md#execution-order-and-blocking-links).
 If the declared coverage proves insufficient, revise that outcome's scope
 explicitly rather than adding isolated feature counts or compatibility formats.

@@ -67,7 +67,7 @@ dependency source. Completion of reachability is not completed generation.
   `build/runs/retained-progress-20261027-boss`. Root manifest retains checked
   source/artifact hashes, prior-revision comparison and maintained native runs.
 - 2026-10-27, Big Boss: split from original
-  [observability_04](../NS-6_observability_04.md) AC2 composition reachability and
+  [observability_04](../RETIRED/2026-10-29/NS-6_observability_04.md) AC2 composition reachability and
   its consumer/replay/cancellation portions of AC5. Original batch evaluation
   stays there. [Corpus archives](NS-6_observability_05.md) have a separate usable
   API/consumer boundary. Every original obligation stays required; both splits

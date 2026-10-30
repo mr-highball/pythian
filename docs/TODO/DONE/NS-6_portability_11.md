@@ -24,7 +24,7 @@ comparison tolerance, dependency edits or an unrelated required gap.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS.
 Completion credit: 0 additional. Parent
-[retained operations04](../NS-6_observability_04.md) needs this actual portable
+[retained operations04](../RETIRED/2026-10-29/NS-6_observability_04.md) needs this actual portable
 duration consumer before its shared stream component can be qualified. Native
 and ordinary chunk paths remain separately measurable. No musical credit follows.
 

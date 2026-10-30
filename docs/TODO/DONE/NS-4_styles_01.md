@@ -61,4 +61,4 @@ previous failed delegated submissions and ownership transfer remain historical.
 
 - Repaired provenance gap (2026-09-21): asset hashes and source-relative runs alone could not identify overlapping excerpts encoded differently. Original-coordinate/preparation bindings and contribution auditing now prevent unintended double contribution; see [semantic styles](../../SEMANTIC-STYLES.md).
 
-- Two failed delegated submissions and the ownership transfer remain historical. Follow-up recorded-provider/listening acceptance belongs to [workflow integration](../NS-4_integration_01.md), not another format version.
+- Two failed delegated submissions and the ownership transfer remain historical. Follow-up recorded-provider/listening acceptance belongs to [workflow integration](../RETIRED/2026-10-29/NS-4_integration_01.md), not another format version.

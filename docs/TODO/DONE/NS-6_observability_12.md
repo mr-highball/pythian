@@ -33,7 +33,7 @@ regressions, exact prior34-artifact comparisons per native target, original
 interior/final aborts and retry evidence below complete the scoped acceptance.
 No WFC branch merge, browser qualification of the native Pythian layer adapter,
 whole-operation latency guarantee or musical credit follows. Parent
-[task04](../NS-6_observability_04.md) retains its named residuals.
+[task04](../RETIRED/2026-10-29/NS-6_observability_04.md) retains its named residuals.
 
 Displayed CI artifact-container digests (not independently downloaded ZIP hashes):
 logs `122abc69b40d2de774df4734a1702c5b530413a1b31558353f439eed5611c4ea`;
@@ -98,7 +98,7 @@ Earlier Dev Notes retain intermediate statuses and repaired failures.
   An additional Pythian layer pas2js compile stops at its pre-existing native
   `UTF8String` local in positioned masks. No browser support is claimed for
   that native adapter by this task; WFC's changed portable API executes under
-  actual pas2js. [Support scope](../NS-6_support_01.md) owns target declarations.
+  actual pas2js. [Support scope](../RETIRED/2026-10-29/NS-6_support_01.md) owns target declarations.
 - 2026-10-27, Big Boss upstream draft: new shared preflighted intersection core
   removes repeated definition checks, with public single-mask guards retained.
   Generic borrowed phase/count callbacks cover graph model validation, full mask

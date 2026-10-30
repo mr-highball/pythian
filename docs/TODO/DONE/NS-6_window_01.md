@@ -6,7 +6,7 @@
 
 Primary analysis and harmonic/percussive separation contain the same periodic
 Hann calculation. The source-qualified pitch frontend in
-[notes01](../NS-3_notes_01.md) needs that convention too. Put the primitive in the
+[notes01](../RETIRED/2026-10-29/NS-3_notes_01.md) needs that convention too. Put the primitive in the
 portable Fourier owner and route the existing consumers through it before
 adding a third implementation. The grain Hann intentionally uses sample-centered
 phase and remains a different operation.

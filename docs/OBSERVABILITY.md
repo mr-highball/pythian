@@ -47,7 +47,7 @@ consumer repeats all946 cases per extracted target. The frozen70000-frame trace
 retains exact plan snapshots/count and original1e-9 sample tolerance; observed
 maxerrors are0 native64,6.01e-15 native32 and4.58e-15 actual pas2js.
 Delivery nonclosing1→2 triggers reassessment and the user's requested goal pause.
-This component does not close full [parent04](TODO/NS-6_observability_04.md),
+This component does not close full [parent04](TODO/RETIRED/2026-10-29/NS-6_observability_04.md),
 actual Studio18 or any musical criterion.
 
 ## Atomic scheduler replacement — qualified component, 2026-10-29
@@ -74,7 +74,7 @@ Existing terminal behavior for a raising retired-source destructor is retained.
 Individual voice validation/construction, supplied factories, allocation and
 retirement destructors are named synchronous boundaries without a hard latency
 guarantee. This covers the primary replacement loops, not all duration edits,
-rendering or the whole [parent04](TODO/NS-6_observability_04.md). Native32/64 and
+rendering or the whole [parent04](TODO/RETIRED/2026-10-29/NS-6_observability_04.md). Native32/64 and
 actual pas2js each pass 15771 checks, with 53 callback aborts and two reentry
 rejections across all 9 small/9 empty/17 bulk checkpoints. Bulk cases retain 300 old
 voices and privately construct 260 replacements. Exact stereo/bus-history and
@@ -119,7 +119,7 @@ full parent04/Studio/musical gates remain and no musical credit follows.
 
 ## Journal learning preparation — qualified component, 2026-10-29
 
-Big Boss's remaining [parent04](TODO/NS-6_observability_04.md) component adds
+Big Boss's remaining [parent04](TODO/RETIRED/2026-10-29/NS-6_observability_04.md) component adds
 optional primary work observers to training/partition preflight, candidate and
 source-successor indexes, and measured/restored context construction. Both context
 constructors now share one stable canonical sort. No selection, model, source
@@ -169,7 +169,7 @@ criterion closure or stopped-experiment reset follows.
 
 ## Primary journal intake — qualified primary consumers, 2026-10-29
 
-The existing [parent04](TODO/NS-6_observability_04.md) now covers observed journal
+The existing [parent04](TODO/RETIRED/2026-10-29/NS-6_observability_04.md) now covers observed journal
 creation, reopening, validation, feature encoding/decoding, hashing, transfers,
 explicit tail recovery and commit boundaries in the primary implementation.
 Observers are synchronous and borrowed per call; none is stored in the journal.
@@ -220,7 +220,7 @@ The final native worker passes382 checks, zero leaks, retaining its frozen
 `fea82882480eceae982305a79487e91eecbcc281f6a9c27c8746bab3e6409c07`.
 Power-loss behavior remains untested. Browser labels
 describe data/observations and use the shared byte-size formatter; actual
-browser/phone presentation remains [transport18](TODO/NS-6_observability_18.md).
+browser/phone presentation remains [transport18](TODO/RETIRED/2026-10-29/NS-6_observability_18.md).
 
 Training-reader construction/overlap checks, candidate/context/successor index
 construction, nested journal-read forwarding through all learning consumers,
@@ -261,12 +261,12 @@ The same actual audio-pull observer reaches these inner phases; Studio has plain
 labels for them and its full browser assets compile. No actual browser/phone
 execution, deployment, learned-note acceptance or musical credit follows.
 Journal intake/index construction and duration interiors remain in
-[parent04](TODO/NS-6_observability_04.md); actual presentation remains
-[transport18](TODO/NS-6_observability_18.md).
+[parent04](TODO/RETIRED/2026-10-29/NS-6_observability_04.md); actual presentation remains
+[transport18](TODO/RETIRED/2026-10-29/NS-6_observability_18.md).
 
 ## Qualified native Studio bridge; browser gate open — 2026-10-29
 
-[Studio transport18](TODO/NS-6_observability_18.md) forwards the primary stream's
+[Studio transport18](TODO/RETIRED/2026-10-29/NS-6_observability_18.md) forwards the primary stream's
 borrowed observer through actual audition/live audio pulls. Unknown-total done,
 units and pass identity survive native job transport; native invalid updates
 leave accepted state unchanged. Audio pull publication now protects prior caller
@@ -336,7 +336,7 @@ musical references, credit and scientific stops are unchanged.
 
 ## Qualified named-voice publication — 2026-10-28
 
-[Parent04](TODO/NS-6_observability_04.md) still owns this retained component.
+[Parent04](TODO/RETIRED/2026-10-29/NS-6_observability_04.md) still owns this retained component.
 Exact source `96f5bcb` passes [CI473](https://github.com/mr-highball/pythian/actions/runs/40799873864):
 maintained integration15m1s/extracted40s, native job16m6s. Both clean exact native
 packages pass107/159 owned units and120/280 inventory hashes. This qualifies the
@@ -500,7 +500,7 @@ Studio callers, plus existing streaming, inference and library contracts.
 | Offline render, separation, export and evaluation | Primary native engines report measured windows/cells/frames/comparisons; maintained operators forward callbacks | [observability_03 — DONE](TODO/DONE/NS-6_observability_03.md); scoped phases below |
 | Retained corpus archive and WFC model validation | Actual feature/attachment/hash bytes and owned lookup/state/token validation are observable through the native archive operator | [observability_05 — DONE](TODO/DONE/NS-6_observability_05.md); synchronous residuals below |
 | WFC chord composition planning | Actual compatibility checks and target visits, unknown traversal total until counted; prior caller output preserved on abort | [observability_06 — DONE](TODO/DONE/NS-6_observability_06.md) |
-| Provider admission, registry and compatible-session preparation | Optional callbacks reach source grids, choice decoding/validation, registry searches, configuration comparisons and actual capacity scans, through the semantic consumer | [observability_04](TODO/NS-6_observability_04.md); provider CI456 and context CI458 components qualified. Native inference/operator AC3 is accepted; retained capture/publication and batch work remain open |
+| Provider admission, registry and compatible-session preparation | Optional callbacks reach source grids, choice decoding/validation, registry searches, configuration comparisons and actual capacity scans, through the semantic consumer | [observability_04](TODO/RETIRED/2026-10-29/NS-6_observability_04.md); provider CI456 and context CI458 components qualified. Native inference/operator AC3 is accepted; retained capture/publication and batch work remain open |
 | Generic WFC solving and Pythian forwarding | Borrowed phase/pass-local prepare/search/commit visits, unknown totals, original cancellation and graph/RNG rollback; one primary adapter bridge for acoustic and finite/retained layer consumers | [task14 — DONE](TODO/DONE/NS-6_observability_14.md); exact WFCc496b1d/Pythian57df550 pass CI54/CI464 and native/actual pas2js replay. Capture/copy and later streams/voices remain synchronous residuals under parent04 |
 | Generic sequence capture and finite generation | Borrowed model/cell/path/transition/domain/projection callbacks, private managed results and actual finite token/acoustic forwarding | [task16 — DONE](TODO/DONE/NS-6_observability_16.md); WFCf85d733/Pythian8cf6f5c pass all five CI55 jobs, CI467 integration/extracted consumers, clean native packages and native/actual portable replay. Retained session/stream/voice and maintained operator forwarding remain parent04 |
 | Retained layer capture/copy/publication | Initial/selective capture and detached caller copies run in the existing guarded commit; replacement keeps its private candidate until its own final swap | Exact3e04571/CI468 integration/extracted consumers and clean native packages pass, with native/actual pas2js cancellation/replay below; whole parent04 and remaining stream/voice/operator work stay open |
@@ -869,7 +869,7 @@ side, 16,384 regions and 50 million matching visits; pitch evaluation admits
 label-center visits. File-bound evaluation admits 8-MiB documents / 1-GiB sources.
 These are admission limits, not measured latency bounds. Allocation, immutable
 clip validation/copying, bounded planning and RTL JSON parsing remain synchronous
-between checkpoints. The retained [batch audit](TODO/NS-6_observability_04.md)
+between checkpoints. The retained [batch audit](TODO/RETIRED/2026-10-29/NS-6_observability_04.md)
 owns the remaining nested metadata/graph/publication assessment; it must measure
 or instrument those boundaries before describing them as short. This batch does
 not promise a maximum time to cancellation inside an allocator, FFT, median,
@@ -1005,8 +1005,8 @@ presentation, physical-phone performance or WASM. Filename-based WAV I/O is
 native-only; pas2js callers supply bytes or streams. Other native units and
 inference runtimes are not implicitly qualified. Future WASM requires its own
 compiler, host I/O and execution evidence. Actual Studio browser qualification
-remains with the existing [continuity](TODO/NS-5_continuity_04.md) and
-[listening-comparison](TODO/NS-6_studio_22.md) tasks.
+remains with the existing [continuity](TODO/RETIRED/2026-10-29/NS-5_continuity_04.md) and
+[listening-comparison](TODO/RETIRED/2026-10-29/NS-6_studio_22.md) tasks.
 
 ## Semantic style archives and selective blends
 
@@ -1049,7 +1049,7 @@ style and two authored WAVs retain exact same-target bytes.
 Caller codec bodies and generic WFC model decoding/learning/solving remain
 synchronous. Provider admission is extended under the scoped batch below;
 nested context metadata and other remaining operations stay with
-[observability_04](TODO/NS-6_observability_04.md). Embedded wave-profile
+[observability_04](TODO/RETIRED/2026-10-29/NS-6_observability_04.md). Embedded wave-profile
 internals remain with [observability_07](TODO/DONE/NS-6_observability_07.md). Embedded
 source/parent callbacks describe the semantic audit and call boundaries, not
 interior work in those other units. RTL allocations/copies remain synchronous.
@@ -1111,7 +1111,7 @@ resolution. Composite parent-copy intervals include observed nested work and
 must not be treated as uninterrupted time. These fixtures neither measure all
 maximum workloads nor promise cancellation latency, browser yielding or phone
 performance. Provider/context internals retain
-[observability_04](TODO/NS-6_observability_04.md).
+[observability_04](TODO/RETIRED/2026-10-29/NS-6_observability_04.md).
 
 Primary measurement now has the separately tracked candidate below. The
 existing dense pitch tracker is also forwarded. Profile acceptance alone does

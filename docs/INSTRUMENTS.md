@@ -130,7 +130,7 @@ The native study exercises saved stationary timbre through the actual companion
 `TStyleInstrument`, `PlanNote` and core `TFrameToneStream`. Three profiles supply
 24, 16 and 24 harmonics: two measured notes and a derived blend. Only their timbre
 is bound; the envelope is authored so its reference can be calculated independently.
-This supplies scoped evidence to [FUND-QUALITY](MILESTONES.md#fund-quality).
+This supplies scoped evidence to [FUND-QUALITY](history/MILESTONES-2026-10-29.md#fund-quality).
 
 The fixed workload contains 252 static conditions: three profiles, rates 8000,
 16000, 44100 and 48000 Hz, sampled MIDI keys 36, 48, 60, 69, 72, 84 and 96, and
@@ -181,7 +181,7 @@ overlapping layers and headroom, sample-loop transitions, broader modulation
 bandwidth, declared workload limits and listening. No listener approval, timbral
 realism, general genre learning, Linux run or current-package acceptance follows.
 The following checkpoint supplies measured-envelope and overlapping-layer evidence
-on this same instrument path; the [backlog](MILESTONES.md#fund-quality) retains the
+on this same instrument path; the [backlog](history/MILESTONES-2026-10-29.md#fund-quality) retains the
 larger quality gate and its downstream integration link.
 
 ## Measured-envelope and layer checkpoint — 2026-09-19
@@ -251,7 +251,7 @@ PCM difference across mix and stems, retaining notes and instrument bindings.
 This verifies the changed measured listening path; it is not listener approval.
 
 These results clear scoped envelope/layer and operator headroom checks in
-[FUND-QUALITY](MILESTONES.md#fund-quality). They do not close sample-loop joins,
+[FUND-QUALITY](history/MILESTONES-2026-10-29.md#fund-quality). They do not close sample-loop joins,
 arbitrary modulation bandwidth, general instrument realism or listening acceptance.
 Next exercise loop and modulation transitions through the same integrated path,
 with explicit input/range limits and audible evidence. No separate percentage

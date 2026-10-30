@@ -13,7 +13,7 @@ a capability to improve, without establishing the audible cause or remedy.
 North star: NS-5. Outcome owner: WAV-04-CONTINUITY.
 Completion credit: 0 additional goal percentage points (0.00 overall points).
 This independently useful engineering slice earns no musical/style acceptance
-and changes no allocation of [continuity_01](../NS-5_continuity_01.md).
+and changes no allocation of [continuity_01](../RETIRED/2026-10-29/NS-5_continuity_01.md).
 
 Execution status (2026-10-13): accepted bounded engineering delivery.
 Ticket Guy Neo owns the shared core/adapter and focused fixtures; Big Boss owns
@@ -38,7 +38,7 @@ nonclosing history and all other scientific stops. At most three 20-second
 seed comparisons and 128 MiB generated artifacts; one generation process at a
 time, with current disk headroom checked and active Nyx work untouched.
 
-Starting evidence: [recorded feedback](../NS-6_studio_03.md),
+Starting evidence: [recorded feedback](../RETIRED/2026-10-29/NS-6_studio_03.md),
 [acoustic activity/continuity](../../ACTIVITY.md),
 [bounded session](NS-4_streaming_01.md), and
 [existing continuation](NS-5_continuity_02.md).

@@ -45,7 +45,7 @@ The [recorded residual study](PHRASE-EVALUATION.md#spectral-partition-checkpoint
 uses this public query over 652 spectra and reconciles its harmonic powers with
 the prior independent band loops. Evidence is under `build/spectral-partition/`.
 No saved analysis/style format or existing feature semantics change. Packages
-predating the new unit need the [current-source refresh](MILESTONES.md#wav-05-delivery).
+predating the new unit need the [current-source refresh](history/MILESTONES-2026-10-29.md#wav-05-delivery).
 
 ## Interfaces and ownership
 
@@ -119,7 +119,7 @@ Those consumers must verify source hash/geometry and analysis policy, commit a
 batch before advancing its durable index, and reject gaps or duplicate indices.
 The [feature journal](#persistent-feature-journal) now supplies that storage and
 recovery boundary. An explicitly declared new song starts its own musical history;
-song segmentation and aggregation remain linked work in [WAV-04](MILESTONES.md#wav-04).
+song segmentation and aggregation remain linked work in [WAV-04](history/MILESTONES-2026-10-29.md#wav-04).
 Existing saved corpus and learner limits remain in force; a long-source analysis
 pass alone is not a learned many-hour musical style.
 
@@ -201,7 +201,7 @@ semantics; filesystem/hardware power-loss guarantees are not independently verif
 The original `pythian.learn INPUT.wav OUTPUT_PREFIX` path retains its existing
 palette/model behavior and budgets. The journal-backed consumer below now trains
 without collecting a whole feature/token array. Remaining source balance and
-semantic style work belongs to [WAV-04](MILESTONES.md#wav-04).
+semantic style work belongs to [WAV-04](history/MILESTONES-2026-10-29.md#wav-04).
 
 ## Training from journals
 
@@ -501,7 +501,7 @@ training/held-out provenance. The evaluator must declare recording splits before
 policy selection. There is one current diagnostic contract and no legacy reader.
 
 The [coverage checkpoint](WAV-STUDIES.md#palette-fit-checkpoint) connects this
-measurement to [WAV-04-VOCABULARY](MILESTONES.md#wav-04-vocabulary)'s remaining
+measurement to [WAV-04-VOCABULARY](history/MILESTONES-2026-10-29.md#wav-04-vocabulary)'s remaining
 coverage, weighting and capacity decisions. It does not admit a reusable genre
 style or clear downstream listening acceptance.
 

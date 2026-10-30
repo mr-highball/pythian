@@ -351,7 +351,7 @@ The accepted repair above restores the same allocation once.
 
 - Repaired race: separate phase/timestamp reads could combine a stale setup timestamp with the observing phase and kill a healthy worker. An atomic combined snapshot and coordinated transition checks restored acceptance in the former runtime path. See [historical qualification](../../NATIVE-INFERENCE.md#qualification--2026-09-21).
 
-- Follow-ups remain [semantic scale](../NS-5_scale_01.md) and [final target delivery](../NS-6_delivery_03.md). Raw salience/AC RMS are not admitted notes or calibrated musical confidence.
+- Follow-ups remain [semantic scale](../RETIRED/2026-10-29/NS-5_scale_01.md) and [final target delivery](../RETIRED/2026-10-29/NS-6_delivery_03.md). Raw salience/AC RMS are not admitted notes or calibrated musical confidence.
 
 - 2026-09-22 architecture change: the user requires Pascal only, without the previously accepted TensorFlow C runtime exception. The historical execution and race repairs remain valid for their old scope but are stopped as a supported backend. Requalify a Pascal-only producer against the unchanged processing, resource, ownership and recorded-input criteria before restoring credit or unblocking downstream work.
 

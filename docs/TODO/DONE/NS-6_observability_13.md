@@ -40,7 +40,7 @@ development FPC9m17s and actual pas2js/browser11m55s. Pythian
 job122601731693, passes total13m27s/job13m24s: integration11m27s and extracted
 core-only/full consumer verification45s. Local source identity, original aborts,
 exact model/state/archive/profile/WAV replay and limits are recorded below.
-These close the named learning observation scope; [parent04](../NS-6_observability_04.md)
+These close the named learning observation scope; [parent04](../RETIRED/2026-10-29/NS-6_observability_04.md)
 retains every other obligation. No branch merge, full portable adapter/browser
 qualification, outside review or musical credit follows.
 

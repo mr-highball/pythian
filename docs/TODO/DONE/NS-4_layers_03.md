@@ -45,4 +45,4 @@ is retained. Commands, criterion review and tested hashes are ignored under
 
 - Repaired validation case: the first paired sound edit used an equivalent waveform and therefore did not demonstrate an audible-input change. It was corrected to a distinct waveform before acceptance; retain that failure alongside the final [granular-control evidence](../../INDEPENDENT-VOICES.md#granular-musical-and-sound-controls).
 
-- Follow-up: these controls do not establish recorded-timbre inference; that remains with [evolving sound](../NS-3_timbre_01.md).
+- Follow-up: these controls do not establish recorded-timbre inference; that remains with [evolving sound](../RETIRED/2026-10-29/NS-3_timbre_01.md).

@@ -14,7 +14,7 @@ simultaneous starts, individual note durations and inter-onset gaps. A
 score-conditioned development source may demonstrate the adapter, but this
 task does not claim WAV note extraction, a genre style or original composition
 from recorded audio. The recorded workflow remains with
-[NS-4_integration_01](../NS-4_integration_01.md). The original substantial
+[NS-4_integration_01](../RETIRED/2026-10-29/NS-4_integration_01.md). The original substantial
 full-event render, its deterministic artifact evidence and listener verdict
 are transferred in full to [NS-4_composition_01](NS-4_composition_01.md),
 which also requires a positive coherence verdict. This task owns the bounded

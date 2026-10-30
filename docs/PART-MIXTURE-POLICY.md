@@ -1,8 +1,8 @@
 # Mixture reference and admission policy
 
 [Part evaluation](PART-EVALUATION.md) · [Reference preparation](PART-REFERENCE.md) ·
-[Preparation task](TODO/DONE/NS-3_parts_01.md) · [Learning](TODO/NS-3_parts_02.md) ·
-[Independent acceptance](TODO/NS-3_parts_03.md)
+[Preparation task](TODO/DONE/NS-3_parts_01.md) · [Learning](TODO/RETIRED/2026-10-29/NS-3_parts_02.md) ·
+[Independent acceptance](TODO/RETIRED/2026-10-29/NS-3_parts_03.md)
 
 Freeze this policy on 2026-09-21, before using this packet to select or score a
 mixture estimator.
@@ -139,7 +139,7 @@ by this policy. Current part metrics remain diagnostic-only and cannot grant
 `independent_case_pass`; the final independent case/admission integration remains
 part of the subsequent role-learning acceptance work.
 
-After the [scope-preserving task split](MILESTONES.md#mixture-preparation-task-split),
+After the [scope-preserving task split](history/MILESTONES-2026-10-29.md#mixture-preparation-task-split),
 `NS-3_parts_04` owns maintained native measurements, reference construction and
 reproducible authored controls. `NS-3_parts_01` closes only when its external source
 bindings, annotations, frozen families, scenario coverage and reproducible packet

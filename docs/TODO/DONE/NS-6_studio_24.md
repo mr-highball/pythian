@@ -54,7 +54,7 @@ validation implementations or a changed answer store.
   `runs/feedback-readiness-20261027-boss`. This repair earns no musical credit.
 
 - 2026-10-27, Big Boss: Spiegel's first combined review of
-  [studio_03](../NS-6_studio_03.md)'s single factory found that canonical hash and
+  [studio_03](../RETIRED/2026-10-29/NS-6_studio_03.md)'s single factory found that canonical hash and
   asset/range checks do not establish a current revision. The existing pair
   factory has the same gap. Preserve that finding and failure evidence; source
   assessment is not a claim of prior response loss. The planned atomic

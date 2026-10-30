@@ -67,4 +67,4 @@ move, incoming links and completion ledgers are updated together.
 
 - Retained evidence limit: remote CI passed at the frozen source, but unauthenticated artifact download returned 401, so Linux artifact bytes/warnings were not locally inspected. Windows package inventories and extracted consumers were verified; see [native checkpoint](../../NATIVE-CHECKPOINT.md).
 
-- Follow-up: [final workflow delivery](../NS-6_delivery_03.md) must qualify the later accepted source and complete workflow; this checkpoint does not cover subsequent changes.
+- Follow-up: [final workflow delivery](../RETIRED/2026-10-29/NS-6_delivery_03.md) must qualify the later accepted source and complete workflow; this checkpoint does not cover subsequent changes.

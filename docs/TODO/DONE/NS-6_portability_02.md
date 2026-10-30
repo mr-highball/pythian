@@ -12,7 +12,7 @@ Intake also depended on the full acoustic corpus solely for its text validator.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
 This is a portability repair, not musical/vocabulary credit. Native contribution
-accounting under [vocabulary_01](../NS-5_vocabulary_01.md) can proceed independently.
+accounting under [vocabulary_01](../RETIRED/2026-10-29/NS-5_vocabulary_01.md) can proceed independently.
 Primary beat/hash/WAV analysis portability stays with
 [portability_01 — DONE](NS-6_portability_01.md).
 

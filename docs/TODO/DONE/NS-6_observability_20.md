@@ -12,7 +12,7 @@ Reuse primary construction/copy behavior rather than adding another algorithm.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
 This extracts the independently useful model-copy prerequisite from
-[parent04](../NS-6_observability_04.md); every other original obligation remains.
+[parent04](../RETIRED/2026-10-29/NS-6_observability_04.md); every other original obligation remains.
 No musical criterion or percentage is earned by this task's creation or checks.
 
 Completed 2026-10-29 at Pythian e02d77fa41d021e3b036be99cb71e74ebd8f3227 and
