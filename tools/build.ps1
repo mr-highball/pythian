@@ -849,6 +849,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental controls compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental.controls$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental controls checks failed' }
+    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.reperform.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Retained instrumental performance compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.instrumental.reperform$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Retained instrumental performance checks failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.material.instrumental.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Joint musical context compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.material.instrumental$executableSuffix")

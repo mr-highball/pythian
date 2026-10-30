@@ -2,7 +2,67 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
-## Current handoff: musical controls slice and concrete Studio repairs deployed — 2026-10-30
+## Current handoff: retained-score sound runtime implemented — 2026-10-30
+
+Big Boss SOLO continues [graph controls](TODO/NS-4_graph-controls_01.md).
+`TInstrumentalPlan.Reperform` now replaces one or several pitched instruments
+and absolute velocity/gate expression against the retained original score. It
+does not construct, learn or solve models. All accepted graph models/tokens/states,
+drum decisions and unselected audio parts stay exact. Planning/readiness callbacks
+finish before publication; malformed edits, later instrument rejection,
+cancellation and reentry preserve the accepted performance. Existing players keep
+their scheduled voices. `CopyScore` exposes the detached original pitched gates;
+`CopyNotes` remains the performed gates. Repeated expression does not compound;
+neutral restoration recovers the exact original mix. Borrowed sound-resource
+lifetimes remain explicit. See [API and example](INSTRUMENTAL.md#retain-the-score-while-changing-sound).
+
+Initial generation and reperformance share primary `PlanNoteVoiceTones`; the
+adapter's per-role copied-score loop is removed. Selection retains source indices
+and the prior note-local seed ordering, independent of other parts. Core-only
+instrument rendering passes checked native and actual pas2js without vendor unit
+paths. The pre-existing core fixture's native-only StdErr/Halt error exit prevented
+its browser compilation; its test harness now conditionally rethrows on pas2js.
+The original compiler failure remains recorded, and native error behavior is unchanged.
+
+Final retained performance checks pass128 on Win32/Win64/actual pas2js, with clean
+native heaps. Actual six-part/multi-part PCM, original-score inspection, restoration,
+early/late cancellation, later rejection and an already constructed player pass.
+Control208 and context-material1439 checks pass all three targets; native runtime74472
+and ordinary Studio56 pass both native targets, including actual running cancellation.
+Preserve the first old-player test failure: raw scheduler Double was compared with
+stored Single PCM. Both now pass through the same sample type and compare exactly;
+no tolerance or mismatch is hidden. Preserve the rejected fractional Integer test
+literal; its unrepresentable assignment was removed, while public whole-index guards
+remain. All evidence lives under retained-score-20261030-boss in E-drive
+build/tests/cache/runs. The before/after WAVs are synthetic QA audio, not new
+operator reviews or musical-quality approval. Validation is solo, not independent QA.
+
+The public in-memory path is delivered. Durable Studio restoration/follow-ups and
+actual role/passage/dependent-closure graph regeneration remain open, so the
+seven-unit task is not accepted. Accounting stays44/99 (44.44%),18 tasks,
+eight open/ten current DONE and55 open units. Previous goal turn was progress and
+closed real prerequisites. This runtime batch advances implementation but closes
+no full criterion: the carried consecutive nonclosing count is one. If the next
+batch also closes none, reassess before another; do not reset on handoff or task splits.
+
+Stable Studio remains the preceding matchedf630ebb deployment, PID73508; no service
+or operator catalog was changed in this library batch. No QA browser/audio/server
+was launched and ports18129/18130 are absent. No dependency source/pin/branch changed.
+[CI510](https://github.com/mr-highball/pythian/actions/runs/41140590716) forf630ebb
+now passes (native job completed23:05:13Z). This runtime batch has local checks;
+its publication/new remote CI are pending. The implementation goal remains active
+and SOLO; no operator input is required to continue.
+
+Next: persist/restore the actual accepted score, provider models/states and drum
+recipes through shared Pascal code, then expose a Studio sound follow-up with
+Before/After lineage and no model learning/solve. Use existing named-session
+regeneration and dependency closure for role/passage edits; preserve actual states
+and fail visibly instead of dropping locks. Studio's ordinary Generate still
+constructs models, so equal hashes do not constitute reuse. Close AC2/AC4 through
+the ordinary durable UI path before moving this task to DONE. State the next
+batch's full criterion/deliverable/evidence/stop condition first.
+
+## Previous handoff: musical controls slice and concrete Studio repairs deployed — 2026-10-30
 
 Big Boss SOLO continues [graph controls](TODO/NS-4_graph-controls_01.md), the
 actual prerequisite to least-complete NS-5 form/styles. The bounded AC1/AC3 slice

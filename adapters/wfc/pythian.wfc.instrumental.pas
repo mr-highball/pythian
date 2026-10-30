@@ -59,6 +59,12 @@ type
     IsPercussion: Boolean;
   end;
   TInstrumentalRoles = array of TInstrumentalRole;
+  TInstrumentalSoundEdit = record
+    Role: Integer;
+    InstrumentId: String;
+    Instrument: TInstrument;
+    Expression: TMusicalExpression;
+  end;
   TInstrumentalOptions = record
     Session: TVoiceSessionOptions;
     SampleRate: Integer;
@@ -79,8 +85,9 @@ type
     Detail: String;
   end;
 
-  { Big Boss: immutable finite musical plan, owning the real named-voice session
-    and native note sequence. Instruments are borrowed during planning; planned
+  { Big Boss: finite musical plan owning the real named-voice session and native
+    note sequence. Reperformance atomically changes sound/expression while its
+    accepted graph/score stay fixed. Instruments are borrowed during planning; planned
     tones still borrow their factories/automation/envelopes. Keep those resources
     alive through player creation; source factories follow their native lifetime.
     No recorded palette, grain selector, replacement solver or renderer. }
@@ -92,9 +99,11 @@ type
     FOptions: TInstrumentalOptions;
     FRoles: TInstrumentalRoles;
     FNotes: TNoteSequence;
+    FScore: TNoteSequence;
     FParts: array of TFrameTones;
     FFrameCount: Int64;
     FToneCount: Integer;
+    FReperforming: Boolean;
     constructor Create;
     procedure CheckRole(const AIndex: Integer);
     function GetSampleRate: Integer;
@@ -118,7 +127,18 @@ type
     function CopyConstraints(const AName: String): TWfcSequenceTokenConstraints;
     function CopyPreferences(const AName: String): TLayerTokenPreferences;
     function CopyNotes: TNoteSequence;
+    { Original pitched score before performance expression, with its exact clock. }
+    function CopyScore: TNoteSequence;
     function CopyPartTones(const AIndex: Integer): TFrameTones;
+    { Atomic pitched-role sound/expression edit of this accepted score. No model
+      construction, learning or solve; all graph states and drum parts stay exact.
+      Expression is absolute against the unperformed score, not compounded.
+      Each role appears once and supplies an instrument/identity and expression.
+      Changed factories/curves/envelopes retain the ordinary borrowed lifetime.
+      Failure/cancellation preserves this plan; existing players keep their voices.
+      The borrowed observer must not free the plan or mutate edit inputs. }
+    procedure Reperform(const AEdits: array of TInstrumentalSoundEdit;
+      const AProgress: TWorkProgressCallback = nil);
     { Fresh private scheduler, all notes admitted before return. It exclusively
       borrows the healthy matching-rate bus graph, but does not reset/process it
       during construction. A failed admission disposes only the candidate player.
@@ -172,6 +192,7 @@ end;
 
 destructor TInstrumentalPlan.Destroy;
 begin
+  FScore.Free;
   FNotes.Free;
   FSession.Free;
   FContext.Free;
@@ -409,6 +430,109 @@ begin
   Result := Copy(FParts[AIndex]);
 end;
 
+function TInstrumentalPlan.CopyScore: TNoteSequence;
+var
+  LSource: TNoteSequence;
+begin
+  LSource := FScore;
+  if LSource = nil then LSource := FNotes;
+  Result := TNoteSequence.Create(LSource.TicksPerQuarter, LSource.LengthTicks,
+    FOptions.Tempos, LSource.CopyGates);
+end;
+
+procedure TInstrumentalPlan.Reperform(const AEdits: array of TInstrumentalSoundEdit;
+  const AProgress: TWorkProgressCallback);
+var
+  LCandidate: TInstrumentalPlan;
+  LSource: TNoteSequence;
+  LExpressions: TMusicalExpressions;
+  LEditForRole: array of Integer;
+  LRole: Integer;
+  LEdit: Integer;
+  LPitchedCount: Integer;
+  LReport: TNoteRenderReport;
+  LTones: TFrameTones;
+begin
+  if FReperforming then
+  begin
+    raise EAudio.Create('Instrumental reperformance is already in progress');
+  end;
+  LPitchedCount := FSession.ProviderCount - 2;
+  if (Length(AEdits) < 1) or (Length(AEdits) > LPitchedCount) then
+  begin
+    raise EAudio.Create('Reperformance requires one or more distinct pitched roles');
+  end;
+  SetLength(LEditForRole, LPitchedCount);
+  SetLength(LExpressions, LPitchedCount);
+  for LRole := 0 to LPitchedCount - 1 do
+  begin
+    LEditForRole[LRole] := -1;
+    LExpressions[LRole] := DefaultMusicalExpression;
+    if Length(FOptions.Expression) > 0 then
+      LExpressions[LRole] := FOptions.Expression[LRole];
+  end;
+  for LEdit := 0 to High(AEdits) do
+  begin
+    LRole := AEdits[LEdit].Role;
+    if (LRole < 0) or (LRole <> Trunc(LRole)) or (LRole >= LPitchedCount) then
+      raise EAudio.Create('Reperformance role must be an existing pitched part');
+    if LEditForRole[LRole] >= 0 then
+      raise EAudio.Create('Reperformance cannot edit a role twice');
+    if (AEdits[LEdit].Instrument = nil) or (Trim(AEdits[LEdit].InstrumentId) = '') then
+      raise EAudio.Create('Reperformance requires an explicit instrument and identity');
+    ValidateMusicalExpression(AEdits[LEdit].Expression);
+    LExpressions[LRole] := AEdits[LEdit].Expression;
+    LEditForRole[LRole] := LEdit;
+  end;
+  LCandidate := nil;
+  FReperforming := True;
+  try
+    ReportWork(AProgress, 'instrumental_reperform', wuItems, 0, Length(FRoles));
+    LCandidate := TInstrumentalPlan.Create;
+    LCandidate.FOptions := FOptions;
+    LCandidate.FOptions.Expression := LExpressions;
+    LCandidate.FRoles := Copy(FRoles);
+    SetLength(LCandidate.FParts, Length(FParts));
+    LSource := FScore;
+    if LSource = nil then LSource := FNotes;
+    LCandidate.FNotes := ApplyMusicalExpression(LSource, LExpressions, AProgress);
+    LCandidate.FFrameCount := LSource.FrameAtTick(LSource.LengthTicks, SampleRate);
+    for LRole := 0 to High(FRoles) do
+    begin
+      LEdit := -1;
+      if LRole < LPitchedCount then LEdit := LEditForRole[LRole];
+      if LEdit >= 0 then
+      begin
+        LTones := PlanNoteVoiceTones(LCandidate.FNotes, SampleRate, LRole,
+          AEdits[LEdit].Instrument, LReport, AProgress);
+        LCandidate.FRoles[LRole].InstrumentId := AEdits[LEdit].InstrumentId;
+      end
+      else
+        LTones := FParts[LRole];
+      LCandidate.IncludePart(LRole, LTones);
+      ReportWork(AProgress, 'instrumental_reperform', wuItems, LRole + 1, Length(FRoles));
+    end;
+    if LCandidate.FFrameCount > MaximumTimingInteger - FOptions.EffectTailFrames then
+      raise EAudio.Create('Instrumental audio extent exceeds exact timing bounds');
+    Inc(LCandidate.FFrameCount, FOptions.EffectTailFrames);
+    ReportWork(AProgress, 'instrumental_reperform_ready', wuItems, 1, 1);
+    { Big Boss: all fallible planning and borrowed callbacks precede publication.
+      Retain the original unperformed gates once; later edits never compound. }
+    if FScore = nil then FScore := FNotes
+    else FNotes.Free;
+    FNotes := LCandidate.FNotes;
+    LCandidate.FNotes := nil;
+    FParts := LCandidate.FParts;
+    FRoles := LCandidate.FRoles;
+    FOptions.Expression := LExpressions;
+    FFrameCount := LCandidate.FFrameCount;
+    FToneCount := LCandidate.FToneCount;
+  finally
+    LCandidate.Free;
+    FReperforming := False;
+  end;
+end;
+
 procedure TInstrumentalPlan.IncludePart(const AIndex: Integer; const ATones: TFrameTones);
 var
   LTone: TFrameTone;
@@ -488,9 +612,6 @@ var
   LLength: Int64;
   LClockCheck: TTempoMap;
   LGenerated: TWfcMusicVoicesGenerated;
-  LNotes: TNoteGates;
-  LGate: TNoteGate;
-  LPartSequence: TNoteSequence;
   LRender: TNoteRenderReport;
   LPartTones: TFrameTones;
   LPasses: TVoiceGraphPasses;
@@ -571,7 +692,6 @@ begin
   end;
   ReportWork(AProgress, 'instrumental_plan', wuItems, 0, Length(ARoles) + 1);
   LCandidate := TInstrumentalPlan.Create;
-  LPartSequence := nil;
   try
     LCandidate.FOptions := AOptions;
     LCandidate.FOptions.Tempos := Copy(AOptions.Tempos);
@@ -629,7 +749,7 @@ begin
     if Length(AOptions.Expression) > 0 then
     begin
       LPerformed := ApplyMusicalExpression(LCandidate.FNotes, AOptions.Expression, AProgress);
-      LCandidate.FNotes.Free;
+      LCandidate.FScore := LCandidate.FNotes;
       LCandidate.FNotes := LPerformed;
     end;
     LCandidate.FFrameCount := LCandidate.FNotes.FrameAtTick(LLength, AOptions.SampleRate);
@@ -637,23 +757,8 @@ begin
     SetLength(LCandidate.FParts, Length(ARoles));
     for LRole := 0 to High(ARoles) do
     begin
-      SetLength(LNotes, LCandidate.FNotes.NoteCount);
-      LCount := 0;
-      for LIndex := 0 to LCandidate.FNotes.NoteCount - 1 do
-      begin
-        LGate := LCandidate.FNotes.GateAt(LIndex);
-        if LGate.Voice = LRole then
-        begin
-          LNotes[LCount] := LGate;
-          Inc(LCount);
-        end;
-      end;
-      SetLength(LNotes, LCount);
-      LPartSequence := TNoteSequence.Create(AOptions.Session.TicksPerQuarter,
-        LLength, AOptions.Tempos, LNotes);
-      LPartTones := PlanNoteTones(LPartSequence, AOptions.SampleRate,
-        ARoles[LRole].Instrument, LRender);
-      FreeAndNil(LPartSequence);
+      LPartTones := PlanNoteVoiceTones(LCandidate.FNotes, AOptions.SampleRate,
+        LRole, ARoles[LRole].Instrument, LRender, AProgress);
       LCandidate.IncludePart(LRole, LPartTones);
       ReportWork(AProgress, 'instrumental_plan', wuItems, LRole + 2, Length(ARoles) + 1);
       LCandidate.FRoles[LRole].Instrument := nil;
@@ -705,7 +810,6 @@ begin
     LPrevious.Free;
     Result := True;
   finally
-    LPartSequence.Free;
     LCandidate.Free;
   end;
 end;

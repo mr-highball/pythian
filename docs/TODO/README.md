@@ -16,6 +16,10 @@ feedback preserve actual source and job lineage. These bounded Experimental
 proposals do not imply universal motif coverage, source-instrument identification,
 whole-corpus learning or a musical-quality verdict.
 
+Musical controls are exposed in Studio. The shared runtime now retains an accepted
+score/graph while replacing pitched sounds/expression; durable Studio follow-ups
+and role/passage graph regeneration keep graph-controls open without partial credit.
+
 ## First operator-facing milestone
 
 | Task | Effort | Actual prerequisites |

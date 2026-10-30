@@ -27,6 +27,7 @@ program pythian_tests_material_instrumental;
 {$H+}
 
 uses SysUtils, pythian.audio, pythian.progress, pythian.music.pattern, pythian.pitch.track,
+  pythian.music.controls,
   pythian.wfc.instrumental, pythian.wfc.instrumental.starter,
   pythian.wfc.percussion, pythian.wfc.voices, pythian.wfc.providers,
   pythian.wfc.provider.contracts, pythian.wfc.musical.context,
@@ -81,6 +82,7 @@ var
   LSeed: Cardinal;
   I, J: Integer;
   LFailed: Boolean;
+  LSoundEdit: TInstrumentalSoundEdit;
 begin
   SetLength(LSpans, 4);
   for I := 0 to 3 do
@@ -135,6 +137,13 @@ begin
     if not TryCreateInstrumentalPlan(LStarter.Config, LStarter.CopyRoles, LOptions,
       nil, nil, LReplay, LReport, nil, LDrums, LStarter.ContextModel) then
       raise EAudio.Create('Pattern replay rejected: ' + LReport.Detail);
+    LSoundEdit := Default(TInstrumentalSoundEdit);
+    LSoundEdit.Role := 2;
+    LSoundEdit.Instrument := LStarter.CopyRoles[2].Instrument;
+    LSoundEdit.InstrumentId := LPlan.RoleAt(2).InstrumentId;
+    LSoundEdit.Expression := DefaultMusicalExpression;
+    LPlan.Reperform([LSoundEdit]);
+    Check(LPlan.RoleCount = LReplay.RoleCount, 'Retained sound edit preserves the context-driven ensemble');
     LGraph := LPlan.CopyGraph;
     Check((Length(LGraph) = 17) and (LGraph[0].Name = MusicalContextPassName),
       'Actual extra context pass, not a decorative graph');

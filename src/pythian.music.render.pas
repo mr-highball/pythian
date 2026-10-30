@@ -84,6 +84,14 @@ function PlanNoteTones(const ASequence: TNoteSequence; const ASampleRate: Intege
   const AInstrument: TInstrument; out AReport: TNoteRenderReport): TFrameTones; overload;
 function PlanNoteTones(const ASequence: TNoteSequence; const ASampleRate: Integer;
   const AInstruments: TNoteInstruments; out AReport: TNoteRenderReport): TFrameTones; overload;
+{ Plan only gates whose source Voice equals AVoiceIndex, without renumbering
+  the score or requiring bindings for unrelated voices. Uses the same planner
+  and ownership rules as PlanNoteTones; the report counts only selected gates.
+  Seeds use selected-gate order, as if planning that voice on its own. }
+function PlanNoteVoiceTones(const ASequence: TNoteSequence;
+  const ASampleRate, AVoiceIndex: Integer; const AInstrument: TInstrument;
+  out AReport: TNoteRenderReport;
+  const AProgress: TWorkProgressCallback = nil): TFrameTones;
 function RenderNoteSequence(const ASequence: TNoteSequence; const ASampleRate: Integer;
   const AInstrument: TInstrument; out AReport: TNoteRenderReport;
   const AProgress: TWorkProgressCallback = nil): TAudioClip; overload;
@@ -99,7 +107,8 @@ uses
 function PlanBindings(const ASequence: TNoteSequence; const ASampleRate: Integer;
   const AVoices: TNoteVoices; const AInstruments: TNoteInstruments;
   const ASelectByVoice, AUseInstruments: Boolean;
-  out AReport: TNoteRenderReport): TFrameTones;
+  out AReport: TNoteRenderReport; const AOnlyVoice: Integer = -1;
+  const AProgress: TWorkProgressCallback = nil): TFrameTones;
 var
   LGate: TNoteGate;
   LIndex: Integer;
@@ -110,6 +119,7 @@ var
   LNote: TFrameTones;
   LStart: Int64;
   LEnd: Int64;
+  LSeed: Cardinal;
   LReport: TNoteRenderReport;
 begin
   AReport := Default(TNoteRenderReport);
@@ -128,13 +138,24 @@ begin
     raise EAudio.Create('Note rendering requires 1..4096 explicit bindings');
   end;
   LReport := Default(TNoteRenderReport);
-  LReport.SourceNotes := ASequence.NoteCount;
+  if AOnlyVoice < 0 then LReport.SourceNotes := ASequence.NoteCount;
   Result := nil;
   SetLength(Result, Min(ASequence.NoteCount, MaximumToneEvents));
   LCount := 0;
   for LIndex := 0 to ASequence.NoteCount - 1 do
   begin
+    if (LIndex mod 256) = 0 then
+    begin
+      ReportWork(AProgress, 'note_voice_plan', wuItems, LIndex, ASequence.NoteCount);
+    end;
     LGate := ASequence.GateAt(LIndex);
+    LSeed := LIndex + 1;
+    if AOnlyVoice >= 0 then
+    begin
+      if LGate.Voice <> AOnlyVoice then Continue;
+      Inc(LReport.SourceNotes);
+      LSeed := LReport.SourceNotes;
+    end;
     LVoiceIndex := 0;
     if ASelectByVoice then
     begin
@@ -162,7 +183,7 @@ begin
     if AUseInstruments then
     begin
       LNote := AInstruments[LVoiceIndex].PlanNote(LGate.Pitch, LGate.Velocity,
-        ASampleRate, LStart, LEnd - LStart, LIndex + 1);
+        ASampleRate, LStart, LEnd - LStart, LSeed);
     end
     else
     begin
@@ -172,7 +193,7 @@ begin
       LNote[0].FrequencyHz := 440 * Power(2, (LGate.Pitch - 69) / 12);
       LNote[0].Velocity := LGate.Velocity / 127;
       LNote[0].Voice := AVoices[LVoiceIndex];
-      LNote[0].Seed := LIndex + 1;
+      LNote[0].Seed := LSeed;
     end;
     if Length(LNote) > MaximumToneEvents - LCount then
     begin
@@ -192,7 +213,26 @@ begin
   end;
   SetLength(Result, LCount);
   LReport.RenderedTones := LCount;
+  ReportWork(AProgress, 'note_voice_plan', wuItems, ASequence.NoteCount, ASequence.NoteCount);
   AReport := LReport;
+end;
+
+function PlanNoteVoiceTones(const ASequence: TNoteSequence;
+  const ASampleRate, AVoiceIndex: Integer; const AInstrument: TInstrument;
+  out AReport: TNoteRenderReport;
+  const AProgress: TWorkProgressCallback): TFrameTones;
+var
+  LBindings: TNoteInstruments;
+begin
+  AReport := Default(TNoteRenderReport);
+  if (AVoiceIndex < 0) or (AVoiceIndex <> Trunc(AVoiceIndex)) or (AInstrument = nil) then
+  begin
+    raise EAudio.Create('Selected note voice requires a nonnegative index and an instrument');
+  end;
+  SetLength(LBindings, 1);
+  LBindings[0] := AInstrument;
+  Result := PlanBindings(ASequence, ASampleRate, nil, LBindings, False, True,
+    AReport, AVoiceIndex, AProgress);
 end;
 
 function PlanNoteTones(const ASequence: TNoteSequence; const ASampleRate: Integer;

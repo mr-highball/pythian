@@ -30,6 +30,48 @@ Primary attribution: NS-4. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-10-30, Big Boss: Retained-score runtime slice implemented as the atomic
+  TInstrumentalPlan.Reperform operation and detached CopyScore. Initial generation
+  and edits now share primary PlanNoteVoiceTones; the adapter's copied per-role
+  score loop is removed. Selected-order seeds preserve the prior per-part planner
+  and are independent of unrelated gates. New sound/expression planning does not
+  construct, learn or solve models. Actual six-part, multi-part, restoration,
+  noncompounding expression, observer/reentry, early/late cancellation and later
+  instrument-rejection cases pass128 on Win32/Win64/actual pas2js, with clean native
+  heaps. Models/tokens/states and unselected PCM stay exact. A player constructed
+  before an edit retains its original performance. Existing control208 and context
+  material1439 checks pass on all three targets; native runtime74472 passes on both.
+  Actual before/after WAVs remain synthetic QA evidence under retained-score-20261030-boss
+  in E-drive runs, not published operator reviews. Ordinary native Studio checks
+  pass56 on both targets, including actual running cancellation. AC2/AC4 remain
+  incomplete until durable Studio
+  use and actual role/passage/dependency regeneration pass. No effort units earned.
+- Preserve the first native old-player assertion failure: it compared scheduler
+  Double values directly with stored Single PCM. The corrected check stores both
+  through the same sample type and demands exact equality; no epsilon or audio
+  mismatch is hidden. Preserve the pas2js compiler rejection of a literal fractional
+  Integer test assignment; that unrepresentable test was removed. Public role/index
+  guards still reject nonwhole runtime values. Initial failure logs live beside the
+  corrected target logs. Solo validation is not independent QA or listening approval.
+  The existing core instrument fixture also passes native and actual pas2js without
+  vendor unit paths after its native-only StdErr/Halt exception exit is made
+  conditional. That test-harness compilation failure is preserved; no product
+  semantics or fixture expectations are relaxed.
+  No full criterion closes in this bounded runtime batch; the carried consecutive
+  nonclosing count is now one. The full seven-unit task stays open without split
+  credit. Next batch must deliver the ordinary Studio follow-up and retained graph
+  regeneration; if it also fails to close a criterion, reassess before another batch.
+- 2026-10-30, Big Boss: Next bounded AC2/AC4 batch delivers retained-score
+  reperformance through the primary instrumental runtime. Replace one or several
+  pitched instruments/expressions without learning or solving; preserve accepted
+  graph decisions and unchanged parts. Stage the complete performance before
+  committing, including readiness callbacks. Closing checks: actual six-part PCM,
+  exact tokens/states/other parts, noncompounding expression, failure/cancellation
+  preservation and shared native/pas2js behavior. Stop after the public API and
+  actual audio consumer. Durable Studio restoration and role/passage graph
+  regeneration remain required follow-on work in this task, not implied acceptance.
+  Previous batch is progress and closes two concrete prerequisites; carried
+  consecutive nonclosing count starts at zero.
 - 2026-10-30, Big Boss: The AC1/AC3 slice is implemented through ordinary Studio.
   Shared controls pass26 and the actual instrumental consumer passes208 on Win32,
   Win64 and actual pas2js, with clean native heaps. The same-seed authored density

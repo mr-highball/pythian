@@ -80,6 +80,9 @@ or whole-corpus learning. Style vocabulary remains open.
 [graph workbench](TODO/NS-4_graph-workbench_01.md) and
 [musical controls](TODO/NS-4_graph-controls_01.md) expose actual time/role domains,
 passes/dependencies, locks/preferences, affect mappings and selective regeneration.
+The current runtime also retains accepted graph/score decisions during atomic
+pitched instrument/expression edits. Durable Studio follow-ups and role/passage
+graph regeneration are still required; this partial slice earns no accepted units.
 The [motif-coupling prerequisite](TODO/DONE/NS-4_motif-coupling_01.md) is accepted:
 full symbolic context choices decide harmony, rhythm and one explicit selected
 part together; the other pitched parts remain independently generated, followed

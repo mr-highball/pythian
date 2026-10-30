@@ -62,6 +62,12 @@ It reuses the named session's detached mask copier. No solver or learning engine
 is duplicated, and source models/masks remain borrowed and unchanged.
 
 Studio saves the actual controls with request/plan/result lineage. Save and the
-affect helper queue no work. Each explicit Generate still constructs models;
-this slice does not yet retain an accepted score, selectively regenerate a role
-or avoid model construction. Those requirements keep the linked task open.
+affect helper queue no work. Each explicit Generate still constructs models.
+Durable follow-ups and selective role/passage graph regeneration remain required
+in Studio; those requirements keep the linked task open.
+
+The library now has [retained-score reperformance](INSTRUMENTAL.md#retain-the-score-while-changing-sound):
+change selected pitched instruments/expressions while keeping the graph and other
+parts exact, without constructing/learning/solving models. `CopyScore` exposes the
+original gates and `CopyNotes` the performed gates. This in-memory API is not yet
+the durable Studio follow-up path; ordinary Generate still constructs a new plan.

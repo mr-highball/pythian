@@ -38,7 +38,9 @@ through the existing named graph. `TInstrumentalOptions.Expression` optionally
 maps generated pitched notes through the primary detached expression implementation
 before instrument planning. `CopyMusic` retains actual symbolic decisions;
 `CopyNotes` describes the performed gates/velocities. Empty expression preserves the
-original path. This is still finite generation, not selective score regeneration.
+original path. The runtime also supports the retained-score sound edits below;
+Studio's ordinary Generate still starts a new plan. This is finite generation,
+not passage/role graph regeneration.
 
 Call TryCreateInstrumentalPlan with an actual TWfcMusicVoicesGraphConfig, ordered
 role/instrument/bus bindings, session options, explicit PPQ tempo changes and
@@ -47,7 +49,7 @@ order. They retain the named session's hard/soft distinction.
 
 The function constructs a private named session, projects WFC attack/hold/rest
 frames through the shared music adapter without whole-bar padding, and plans
-each part using TInstrument and PlanNoteTones. A false solve returns its original
+each part using TInstrument and the primary PlanNoteVoiceTones selector. A false solve returns its original
 negotiation/proof report and failing pass. Bad inputs, resource rejection or
 observer cancellation raise before replacing the previous plan. Success replaces
 and frees the previous plan only after all planning/ready callbacks.
@@ -62,6 +64,42 @@ Copies of part tones still borrow native
 factory/automation/envelope resources; preserve those resources through player
 creation, and preserve source factories for their own source lifetime.
 RoleAt returns metadata with Instrument=nil after planning, not a dangling pointer.
+
+## Retain the score while changing sound
+
+`TInstrumentalPlan.Reperform` accepts one or more `TInstrumentalSoundEdit` records.
+Each names an existing pitched role by index, an explicit instrument/identity and
+absolute velocity/gate expression. It stages a complete candidate performance,
+then commits after its readiness callback. Rejection or observer cancellation
+preserves the plan, including sound identities and playable parts. Reentry rejects.
+
+```pascal
+LEdit := Default(TInstrumentalSoundEdit);
+LEdit.Role := 2; // caller's Lead role
+LEdit.Instrument := LNewLead;
+LEdit.InstrumentId := 'my-lead-recipe';
+LEdit.Expression := DefaultMusicalExpression;
+LPlan.Reperform([LEdit], LProgress);
+```
+
+No model construction, learning or solving occurs here. Accepted WFC models,
+tokens/states, pitched attacks/pitches, drum choices and unselected audio parts
+stay exact. `CopyScore` returns the detached original pitched gates before
+expression; `CopyNotes` returns the performed gates. Expression is always relative
+to that original score, so repeating50% velocity does not make25%, and restoring
+neutral expression recovers the original. Shorter gates/release tails can change
+`FrameCount`; compare parts on a shared padded timeline when necessary.
+
+Instruments are borrowed during replanning; their factories, curves and envelopes
+keep the ordinary borrowed lifetime through new player construction. Existing
+players keep their scheduled voices. The primary `PlanNoteVoiceTones` selects a
+voice without allocating a duplicate score or renumbering source gates. Its
+note-local seeds match planning a separately selected voice and do not depend on
+unrelated parts. Both initial generation and reperformance use this same planner.
+
+This public in-memory operation does not yet restore durable Studio jobs or
+regenerate selected graph roles/passages. Those integration requirements keep
+[graph controls](TODO/NS-4_graph-controls_01.md) open. Saving feedback does not call it.
 
 CreatePlayer takes a healthy matching-rate bus graph and returns a new owned
 TScheduledSynth. Every note is admitted before return; rejected construction

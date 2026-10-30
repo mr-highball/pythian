@@ -209,8 +209,13 @@ begin
   except
     on LException: Exception do
     begin
+      {$IFDEF PAS2JS}
+      WriteLn(LException.Message);
+      raise;
+      {$ELSE}
       WriteLn(StdErr, LException.Message);
       Halt(1);
+      {$ENDIF}
     end;
   end;
 end.
