@@ -1,0 +1,251 @@
+(*
+MIT License
+
+Copyright (c) 2026 mr-highball
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*)
+program pythian_example_instrumental;
+
+{$mode delphi}
+{$H+}
+
+uses
+  Classes,
+  SysUtils,
+  Math,
+  fpjson,
+  pythian.audio,
+  pythian.time,
+  pythian.bus,
+  pythian.echo,
+  pythian.schedule,
+  pythian.wave.stream,
+  pythian.wfc.instrumental,
+  pythian.wfc.instrumental.starter,
+  pythian.wfc.voices,
+  wfc_sequence,
+  wfc_sequence_text,
+  wfc_music_voices_graph;
+
+procedure Run;
+var
+  LOutput: String;
+  LCells: Integer;
+  LSeed: Cardinal;
+  LTempo: Integer;
+  LTonic: Integer;
+  LStarter: TInstrumentalStarter;
+  LOptions: TInstrumentalOptions;
+  LPlan: TInstrumentalPlan;
+  LReport: TInstrumentalReport;
+  LSettings: array[0..3] of TBusSettings;
+  LEcho: TEchoSettings;
+  LGraph: TBusGraph;
+  LPlayer: TScheduledSynth;
+  LFile: TFileStream;
+  LSink: TStreamAudioSink;
+  LWriter: TWavePcm16Writer;
+  LSamples: TAudioSamples;
+  LDocument: TJSONObject;
+  LPassRows: TJSONArray;
+  LRow: TJSONObject;
+  LDependencies: TJSONArray;
+  LTokens: TJSONArray;
+  LStates: TJSONArray;
+  LPasses: TVoiceGraphPasses;
+  LMusic: TWfcMusicVoicesGenerated;
+  LModel: TWfcSequenceModel;
+  LMetadata: TStringStream;
+  LIndex: Integer;
+  LCell: Integer;
+  LCount: Integer;
+  LDone: Int64;
+  LLeft: Double;
+  LRight: Double;
+begin
+  if (ParamCount < 1) or (ParamCount > 5) then
+  begin
+    raise EAudio.Create('Usage: pythian.example.instrumental OUTPUT.wav [CELLS [SEED [BPM [TONIC_0_TO_11]]]]');
+  end;
+  LOutput := ParamStr(1);
+  LCells := 64;
+  LSeed := 731;
+  LTempo := 120;
+  LTonic := 0;
+  if ParamCount >= 2 then
+  begin
+    LCells := StrToInt(ParamStr(2));
+  end;
+  if ParamCount >= 3 then
+  begin
+    LSeed := StrToDWord(ParamStr(3));
+  end;
+  if ParamCount >= 4 then
+  begin
+    LTempo := StrToInt(ParamStr(4));
+  end;
+  if ParamCount >= 5 then
+  begin
+    LTonic := StrToInt(ParamStr(5));
+  end;
+  if (LCells < 1) or (LCells > 1024) or (LTempo < 20) or (LTempo > 300) then
+  begin
+    raise EAudio.Create('Starter supports 1..1024 cells and 20..300 BPM');
+  end;
+  LStarter := TInstrumentalStarter.Create(LTonic);
+  LPlan := nil;
+  LGraph := nil;
+  LPlayer := nil;
+  LFile := nil;
+  LSink := nil;
+  LWriter := nil;
+  LModel := nil;
+  LMetadata := nil;
+  LDocument := TJSONObject.Create;
+  try
+    LOptions := DefaultInstrumentalOptions;
+    LOptions.Session.CellCount := LCells;
+    LOptions.Session.Seed := LSeed;
+    LOptions.Session.RequireObservedEnd := False;
+    LOptions.Tempos[0] := MakeTempoChange(0, Round(60000000 / LTempo));
+    LOptions.EffectTailFrames := Int64(LOptions.SampleRate) * 3;
+    LOptions.MaterialOrigin :=
+      'Authored harmony/rhythm guide and two symbolic training phrases; WFC chooses pitched parts; no WAV learning';
+    if not TryCreateInstrumentalPlan(LStarter.Config, LStarter.CopyRoles,
+      LOptions, LStarter.GuideMasks(LCells), nil, LPlan, LReport) then
+    begin
+      raise EAudio.Create(LReport.Detail);
+    end;
+    LPasses := LPlan.CopyGraph;
+    LMusic := LPlan.CopyMusic;
+    LDocument.Add('material_origin', LPlan.MaterialOrigin);
+    LDocument.Add('experimental', True);
+    LDocument.Add('seed', Int64(LSeed));
+    LDocument.Add('tonic_pitch_class', LTonic);
+    LDocument.Add('tempo_microseconds', LOptions.Tempos[0].MicrosecondsPerQuarter);
+    LDocument.Add('ticks_per_quarter', LOptions.Session.TicksPerQuarter);
+    LDocument.Add('ticks_per_cell', LOptions.Session.StepTicks);
+    LDocument.Add('cells', LCells);
+    LDocument.Add('sample_rate', LPlan.SampleRate);
+    LDocument.Add('frame_count', LPlan.FrameCount);
+    LDocument.Add('effect_tail_frames', LOptions.EffectTailFrames);
+    LDocument.Add('instruments',
+      'source-free polynomial saw bass, triangle harmony, square lead; primary ADSR/filter/pan; authored starter v1');
+    LDocument.Add('effects', 'Harmony bus: primary default filtered echo; three-second explicit effect tail');
+    LPassRows := TJSONArray.Create;
+    LDocument.Add('passes', LPassRows);
+    for LIndex := 0 to High(LPasses) do
+    begin
+      LRow := TJSONObject.Create;
+      LPassRows.Add(LRow);
+      LRow.Add('name', LPasses[LIndex].Name);
+      LRow.Add('width', LPasses[LIndex].Width);
+      LRow.Add('height', LPasses[LIndex].Height);
+      LRow.Add('depth', LPasses[LIndex].Depth);
+      LRow.Add('proof', LPasses[LIndex].IsProof);
+      LDependencies := TJSONArray.Create;
+      LRow.Add('depends_on', LDependencies);
+      for LCell := 0 to High(LPasses[LIndex].Dependencies) do
+      begin
+        LDependencies.Add(LPasses[LIndex].Dependencies[LCell]);
+      end;
+      if not LPasses[LIndex].IsProof then
+      begin
+        LRow.Add('public_tokens', LPasses[LIndex].PublicTokenCount);
+        LRow.Add('latent_states', LPasses[LIndex].StateCount);
+        LModel := LPlan.CopyModel(LPasses[LIndex].Name);
+        LRow.Add('model', EncodeWfcSequenceText(LModel));
+        FreeAndNil(LModel);
+        LTokens := TJSONArray.Create;
+        LStates := TJSONArray.Create;
+        LRow.Add('tokens', LTokens);
+        LRow.Add('states', LStates);
+        for LCell := 0 to High(LMusic.Layers[LIndex].Tokens) do
+        begin
+          LTokens.Add(LMusic.Layers[LIndex].Tokens[LCell]);
+          LStates.Add(LMusic.Layers[LIndex].StateIndices[LCell]);
+        end;
+      end;
+    end;
+    for LIndex := 0 to 3 do
+    begin
+      LSettings[LIndex] := DefaultBusSettings;
+      LSettings[LIndex].SmoothingSeconds := 0;
+    end;
+    LGraph := TBusGraph.Create(LPlan.SampleRate, LSettings);
+    for LIndex := 0 to 2 do
+    begin
+      LGraph.AddSend(LIndex, 3, stPostFader, 1, 0);
+    end;
+    LEcho := DefaultEchoSettings(LPlan.SampleRate);
+    LGraph.AddEffect(1, TEchoEffect.Create(LPlan.SampleRate, LEcho));
+    LPlayer := LPlan.CreatePlayer(LGraph);
+    LFile := TFileStream.Create(LOutput, fmCreate);
+    LSink := TStreamAudioSink.Create(LFile);
+    LWriter := TWavePcm16Writer.Create(LSink, LPlan.SampleRate, 2, LPlan.FrameCount);
+    LDone := 0;
+    while LDone < LPlan.FrameCount do
+    begin
+      LCount := Min(997, LPlan.FrameCount - LDone);
+      SetLength(LSamples, LCount * 2);
+      for LIndex := 0 to LCount - 1 do
+      begin
+        LPlayer.Process(LLeft, LRight);
+        LSamples[LIndex * 2] := LLeft;
+        LSamples[LIndex * 2 + 1] := LRight;
+      end;
+      LWriter.AppendSamples(LSamples);
+      Inc(LDone, LCount);
+    end;
+    LWriter.Finish;
+    FreeAndNil(LWriter);
+    FreeAndNil(LSink);
+    FreeAndNil(LFile);
+    LMetadata := TStringStream.Create(LDocument.FormatJSON);
+    LFile := TFileStream.Create(LOutput + '.json', fmCreate);
+    LFile.CopyFrom(LMetadata, 0);
+    WriteLn('Instrumental synthesis: bass + harmony + lead; ', LCells, ' cells; ',
+      Length(LPasses), ' actual passes; ', LPlan.FrameCount, ' stereo frames.');
+    WriteLn('Experimental authored starter; no training-mix grains or source WAVs.');
+  finally
+    LMetadata.Free;
+    LWriter.Free;
+    LSink.Free;
+    LFile.Free;
+    LPlayer.Free;
+    LGraph.Free;
+    LModel.Free;
+    LPlan.Free;
+    LStarter.Free;
+    LDocument.Free;
+  end;
+end;
+
+begin
+  try
+    Run;
+  except
+    on LException: Exception do
+    begin
+      WriteLn(StdErr, LException.ClassName, ': ', LException.Message);
+      ExitCode := 1;
+    end;
+  end;
+end.

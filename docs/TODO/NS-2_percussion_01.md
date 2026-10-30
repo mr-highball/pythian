@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 6/10
-**Status:** Dependency-blocked
+**Status:** Ready
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -22,7 +22,7 @@ Primary attribution: NS-2. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [NS-4_instrumental-runtime_01](NS-4_instrumental-runtime_01.md)
+- [NS-4_instrumental-runtime_01](DONE/NS-4_instrumental-runtime_01.md)
 
 **Dev Notes:**
 

@@ -43,8 +43,8 @@ Start with [principles](vendor/athena/docs/principles.md),
   not independent review. Inactive team settings are historical, not authorization.
 - Read [WORK.md](docs/WORK.md), [task flow](docs/TASKFLOW.MD),
   [active tasks](docs/TODO/README.md) and [milestones](docs/MILESTONES.md) before
-  selecting work. Product implementation is paused; the 2026-10-29 goal/backlog
-  reset is authorized documentation work, not permission to resume implementation.
+  selecting work. The operator explicitly resumed implementation solo after the
+  2026-10-29 goal/backlog reset. Follow the instrumental runtime delivery order.
 - Tasks use `NS-<goal>_<feature>_<xx>.md` and contain Goal, Effort (integer 1–10),
   Status, Description, Acceptance Criteria, Blockers and a final Dev Notes section.
   Completion is derived from accepted effort divided by current-goal total effort,
@@ -53,8 +53,9 @@ Start with [principles](vendor/athena/docs/principles.md),
 - Before every batch, state its criterion, concrete deliverable, closing evidence
   and stop condition. After two consecutive nonclosing batches, stop and reassess.
   A new goal, agent, handoff, renamed experiment or task split never resets counts.
-  The prior count is two; this reset changes the selected direction, not that
-  history. Required distinct gaps get linked tasks before scope expands.
+  Read the current count in WORK. The reset preserved its inherited count of
+  two; the later real runtime closure resets the consecutive count. Required
+  distinct gaps get linked tasks before scope expands.
 - Validate changed boundaries and actual consumers proportionally. Listening and
   Studio exploration guide musical decisions. Tests/reports alone earn no musical
   acceptance; formal research protocols are not blanket prerequisites to audition.

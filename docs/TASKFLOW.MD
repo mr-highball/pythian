@@ -17,8 +17,8 @@ Show origins and Experimental status; do not assert reliable learning without
 evidence. Formal reference/accuracy/adoption gates from older topic documents do
 not block these experiments. Preserve actual failures, licenses and private data.
 
-Product implementation remains paused until explicitly resumed. This goal and
-backlog reset grants no implementation, training or deployment authorization.
+The operator explicitly resumed implementation solo after the 2026-10-29 reset.
+Follow the current task order; the reset itself earned no acceptance.
 
 ## Naming and template
 
@@ -129,10 +129,11 @@ changed next action: finish a bounded usable slice, split at real deliverable
 boundaries, or follow a demonstrated prerequisite. Do not split into reports.
 
 Carry the counter across goals, pauses, agents, renamed experiments and task
-moves. This reset inherits a count of two from the previous observability sequence;
-the reassessment selects instrumental runtime instead of a third visibility
-expansion. It does not claim a closure or reset the count. At a later criterion
-closure record the actual event before resetting the consecutive count.
+moves. The reset inherited two from the previous observability sequence and
+selected instrumental runtime instead of a third visibility expansion. The reset
+earned no closure. The first resumed runtime batch later closed real criteria;
+WORK records that event and the current consecutive count. Only such a closure
+resets it.
 
 Preserve the separate historical stop after 20 unsuccessful same-cause inference
 attempts; no renamed threshold/source variant reauthorizes it. A new experiment

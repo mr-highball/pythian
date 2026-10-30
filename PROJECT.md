@@ -139,7 +139,7 @@ validated knowledge or promise universal style learning.
 [Milestones](docs/MILESTONES.md) derive progress from accepted effort over current
 total effort, replacing the historical percentage-credit ledger. All criteria
 and prerequisites must pass before a task is DONE; listening feedback guides the
-next musical/model decision. Product implementation remains paused until resumed.
+next musical/model decision. The operator has resumed instrumental implementation solo.
 
 ## Pascal-only inference boundary
 

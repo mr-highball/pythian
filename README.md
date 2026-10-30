@@ -25,6 +25,7 @@ chillwave, stoner rock and lofi are internal examples.
 [Task catalog](docs/TODO/README.md) · [Task flow](docs/TASKFLOW.MD) ·
 [WAV learning and listening](docs/WAV-LEARNING.md) ·
 [Operator Studio scope](docs/OPERATOR-STUDIO.md) ·
+[Instrumental WFC runtime](docs/INSTRUMENTAL.md) ·
 [Harmonic/percussive separation](docs/SEPARATION.md) ·
 [MIDI and exact timing](docs/MIDI.md) ·
 [Persisted shared corpora](docs/CORPUS.md) ·
@@ -367,6 +368,8 @@ General MIDI instruments, controllers or pedal performance.
 | [pythian.wfc.timing](adapters/wfc/pythian.wfc.timing.pas) | Musical gate attacks to actual WFC source-onset constraints, with collision rejection |
 | [pythian.wfc.stream](adapters/wfc/pythian.wfc.stream.pas) | Bounded learned chunks with retained exact latent history, retry preservation and observed endpoints |
 | [pythian.wfc.layers](adapters/wfc/pythian.wfc.layers.pas) | Negotiated learned layers, correlated projections and owned named sessions with selective regeneration |
+| [pythian.wfc.instrumental](adapters/wfc/pythian.wfc.instrumental.pas) | Transactional musical WFC plans performed by primary instruments, buses and scheduler; actual graph inspection |
+| [pythian.wfc.instrumental.starter](adapters/wfc/pythian.wfc.instrumental.starter.pas) | Reusable source-free authored bass/harmony/lead material, explicitly separate from recording-derived learning |
 | [pythian.wfc.context](adapters/wfc/pythian.wfc.context.pas) | Typed key/tempo provider tokens, separate-source learning and output clock reconstruction |
 | [pythian.wfc.context.archive](adapters/wfc/pythian.wfc.context.archive.pas) | Owned context learning bundles with source admission, timing and validated model persistence |
 | [pythian.wfc.style](adapters/wfc/pythian.wfc.style.pas) | Saved WAV musical evidence, independent rhythm/pitch/stationary-timbre weights and repeated derivation |

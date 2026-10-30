@@ -806,6 +806,14 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Named independent-voice fixture compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.voices$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Named independent-voice checks failed' }
+    & $compilerPath @adapterArgs 'tests/pythian.tests.instrumental.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Instrumental runtime compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.instrumental$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Instrumental runtime checks failed' }
+    & $compilerPath @adapterArgs 'examples/pythian.example.instrumental.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Instrumental caller compilation failed' }
+    & (Join-Path $buildRoot "pythian.example.instrumental$executableSuffix") (Join-Path $buildRoot 'instrumental.wav') '32'
+    if ($LASTEXITCODE -ne 0) { throw 'Instrumental caller failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.semantic.style.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Semantic style compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.semantic.style$executableSuffix") (Join-Path $buildRoot 'semantic-style')

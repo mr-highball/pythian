@@ -1,5 +1,16 @@
-# Historical completed tasks
+# Completed tasks
 
+## Current goal: instrumental exploration
+
+One current-goal task is accepted: **7 / 82 effort units (8.54%)**. All its
+criteria and prerequisites passed; this is finite runtime delivery, not musical
+quality or Studio acceptance. There are 98 DONE files: one current, 97 historical.
+
+| Accepted task | Date | Effort | Outcome |
+| --- | --- | ---: | --- |
+| [NS-4_instrumental-runtime_01](NS-4_instrumental-runtime_01.md) | 2026-10-29 | 7/10 | Actual musical WFC → primary instruments/buses/scheduler, inspectable graph and source-free caller |
+
+## Historical completed tasks (97)
 > These 97 accepted records predate the [current goal](../../GOAL.md). They preserve reusable code and evidence but have no current Goal/Effort metadata and contribute no units to its estimate. The table below is historical percentage-credit accounting, not current progress.
 
 [Task index](../README.md) · [Task flow](../../TASKFLOW.MD) ·

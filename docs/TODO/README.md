@@ -3,23 +3,24 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**12 open tasks · 82 effort units · 0 current-goal DONE · 0 / 82 accepted (0%).**
+**11 open tasks · 82 total effort units · 1 current-goal DONE · 7 / 82 accepted (8.54%).**
 Effort is relative complexity on a 1–10 scale, not assigned musical credit.
-Product implementation is paused; the next selected task on explicit resume is
-the shared instrumental runtime.
+The operator has resumed implementation solo. The shared instrumental runtime
+is accepted; explicit percussion is next. Ordinary Studio integration follows.
 
 ## First operator-facing milestone
 
 | Task | Effort | Actual prerequisites |
 | --- | ---: | --- |
-| [NS-4_instrumental-runtime_01](NS-4_instrumental-runtime_01.md) — shared musical WFC → instruments | 7 | None; ready |
-| [NS-2_percussion_01](NS-2_percussion_01.md) — synthesized drum role | 6 | Instrumental runtime |
+| [NS-4_instrumental-runtime_01 — DONE](DONE/NS-4_instrumental-runtime_01.md) — shared musical WFC → instruments | 7 | Accepted; source-free public caller |
+| [NS-2_percussion_01](NS-2_percussion_01.md) — synthesized drum role | 6 | Instrumental runtime accepted; ready |
 | [NS-6_instrumental-studio_01](NS-6_instrumental-studio_01.md) — ordinary Studio instrumental jobs | 6 | Runtime + percussion |
 
 Together these 19 units deliver bass, drums, harmony and lead in Studio with
 real musical controls and playback. Authored/operator/MIDI inputs are sufficient
 to start; uncertain WAV proposals can follow without a benchmark-first gate.
-No more raw-grain continuity experiments are selected.
+Seven units are accepted; 12 remain in this milestone. No more raw-grain
+continuity experiments are selected.
 
 ## Complete current scope
 
@@ -35,7 +36,8 @@ No more raw-grain continuity experiments are selected.
 | [NS-6_synthesis-reviews_01](NS-6_synthesis-reviews_01.md) — one useful question with Original/Before/After | 5 | Instrumental Studio |
 | [NS-6_instrumental-streams_01](NS-6_instrumental-streams_01.md) — efficient long instrumental jobs | 8 | Instrumental Studio |
 
-The two tables together are all 12 active tasks, totaling 82 units. Subtotals:
+The two tables together are all 12 current-goal tasks (11 open, one DONE),
+totaling 82 units: 75 open and 7 accepted. Subtotals:
 NS-2 12, NS-3 15, NS-4 21, NS-5 15, NS-6 19. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 
@@ -46,7 +48,7 @@ effort before scope grows.
 
 ## How the percentage changes
 
-All active tasks declare Goal `instrumental-exploration-2026-10-29`, integer
+All current-goal tasks declare Goal `instrumental-exploration-2026-10-29`, integer
 Effort, Status, primary north-star attribution, criteria, blockers and final Dev
 Notes. For this Goal, percentage is
 `100 × accepted DONE effort / (open effort + accepted DONE effort)`.

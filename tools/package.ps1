@@ -113,6 +113,8 @@ if ($WithWfc) {
   Copy-Item -LiteralPath (Join-Path $wfcRoot 'LICENSE') -Destination $vendorRoot
   [IO.File]::WriteAllText((Join-Path $vendorRoot 'REVISION'), $wfcRevision + "`n")
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.wfc.lpr') -Destination $exampleRoot
+  Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.instrumental.lpr') -Destination $exampleRoot
+  Copy-Item -LiteralPath (Join-Path $projectRoot 'docs/INSTRUMENTAL.md') -Destination $docRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.wfc.provider.lpr') -Destination $exampleRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.provider.extension.units.pas') -Destination $exampleRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.provider.extensions.lpr') -Destination $exampleRoot
@@ -261,6 +263,11 @@ try {
     if ($LASTEXITCODE -ne 0) { throw "Example failed: $exampleName" }
   }
   if ($WithWfc) {
+    Copy-Item -LiteralPath (Join-Path $exampleRoot 'pythian.example.instrumental.lpr') -Destination $checkRoot
+    & $compilerPath @compilerArgs 'pythian.example.instrumental.lpr' > 'instrumental-build.log' 2>&1
+    if ($LASTEXITCODE -ne 0) { throw 'Extracted instrumental consumer compilation failed' }
+    & (Join-Path $binRoot "pythian.example.instrumental$executableSuffix") 'instrumental.wav' '32' > 'instrumental-run.log' 2>&1
+    if ($LASTEXITCODE -ne 0) { throw 'Extracted instrumental consumer failed' }
     $callerProviderArgs = $compilerArgs + @('-gh', ('-Fu' + $exampleRoot))
     & $compilerPath @callerProviderArgs (Join-Path $exampleRoot 'pythian.example.provider.extensions.lpr') > 'caller-provider-build.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted caller codec consumer compilation failed' }

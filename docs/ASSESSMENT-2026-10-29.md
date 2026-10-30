@@ -1,5 +1,9 @@
 # Implementation review for the synthesis-first reset — 2026-10-29
 
+This assessment describes the reset at 072ba42. Later accepted runtime work is
+recorded in [WORK](WORK.md), [milestones](MILESTONES.md) and the
+[instrumental API guide](INSTRUMENTAL.md); dated gap statements below remain the reset snapshot.
+
 [Goal](GOAL.md) · [Active tasks](TODO/README.md) · [Work](WORK.md)
 
 Big Boss reviewed the primary implementations, their maintained callers and existing qualification records. This is a source/consumer assessment, not a fresh performance benchmark or a claim that the new Studio path already works. The library is substantially broader than the acoustic reconstruction path exposed by Studio.

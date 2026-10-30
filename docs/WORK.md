@@ -2,6 +2,53 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
+## Current handoff: instrumental runtime delivered; solo implementation resumed — 2026-10-29
+
+The operator explicitly resumed the synthesis-first goal, Big Boss SOLO.
+[Instrumental runtime](TODO/DONE/NS-4_instrumental-runtime_01.md) meets AC1–4:
+one shared Pascal API connects actual named musical WFC passes to primary note
+projection, instruments, buses/effects and scheduled audio. No new solver,
+renderer, source palette, vendor change or inference runtime was introduced.
+
+The maintained source-free caller renders bass, harmony and lead and writes
+a graph/model/token sidecar. Default graph: twelve 64 x 1 x 1 passes, five
+musical providers plus seven harmonic-coverage witnesses. Authored two-phrase
+material supplies harmony/rhythm constraints and symbolic training; WFC chooses
+compatible pitched voices. This is not learned recording instrumentation or a
+twelve-dimensional lattice. Actual model token/state counts are harmony 4/10,
+rhythm 4/7, bass 8/18, harmony voice 8/15 and lead 18/32.
+
+Output: E-drive runs/instrumental-runtime-20261029-boss/music.wav, 852894 stereo
+frames at 44100 Hz, 19.34 seconds including note releases and a three-second
+echo tail. Its SHA256 is 1b04120c0c6e0050681a9cc919c287babdab3276ff13e0240f5bae19a84830d7.
+Identical settings reproduce WAV and graph bytes; tonic changes audio and a
+slower tempo produces 1088094 frames. A lead lock changes actual notes; a
+contradictory lock or ready-callback cancellation keeps the old plan playable.
+
+Stable native32/native64 and actual pas2js run the new consumer fixture; native
+music/named-voice regressions pass. Native heaps are clean. The full extracted
+Win64 companion package executes the public caller; actual pas2js also exercises
+the new API using extracted sources. The unrelated old native WFC/MIDI fixture
+cannot compile on pas2js because existing MIDI export uses SizeOf; it remains
+native, without expanding this batch into MIDI portability. See task Dev Notes
+for the missing-import repair and rejected authored starter/boundary attempts.
+
+This first resumed implementation batch closes real runtime criteria. The
+inherited nonclosing count changes two → zero at this closure, not at the goal
+rename or resume. It earns 7 accepted effort units. Current scope: 11 open /
+1 current-goal DONE, 75 open + 7 accepted = 82 units (8.54%). NS-4 is 7/21;
+other current-goal subtotals are unchanged. All 97 historical DONE and 53 retired
+records remain separate, giving 98 total DONE files. Musical-quality judgments
+are still unclaimed.
+
+Next selected task: [explicit percussion](TODO/NS-2_percussion_01.md), then
+[ordinary instrumental Studio generation](TODO/NS-6_instrumental-studio_01.md).
+Graph controls are also dependency-ready but do not displace that first
+operator-facing milestone. Studio still uses its prior ordinary generation path.
+No new review was injected into the operator queue, no training/audio collection
+or saved response changed, and no service/browser/device playback was started.
+Keep working solo. Reuse the deployed service slots when Studio changes arrive.
+
 ## Current handoff: synthesis-first goal and effort reset; implementation remains paused — 2026-10-29
 
 Big Boss SOLO reviewed the primary synthesis, instrument, effects, musical graph,
@@ -32,7 +79,7 @@ New tasks increase the denominator. Old 52.45% weighted credits are historical,
 not comparable; existing working code has not been withdrawn. No planning earns
 acceptance. The defined goal is an experimental workflow, not universal accuracy.
 
-On explicit resume, select [instrumental runtime](TODO/NS-4_instrumental-runtime_01.md)
+On explicit resume, select [instrumental runtime](TODO/DONE/NS-4_instrumental-runtime_01.md)
 AC1–4 as a bounded first musical integration, then explicit percussion and ordinary
 Studio jobs. First operator milestone: source-free bass/drums/harmony/lead,
 visible real musical settings, play/solo/mute and changed instrumental output.

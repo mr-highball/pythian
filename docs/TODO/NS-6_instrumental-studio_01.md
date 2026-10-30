@@ -22,7 +22,7 @@ Primary attribution: NS-6. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [NS-4_instrumental-runtime_01](NS-4_instrumental-runtime_01.md)
+- [NS-4_instrumental-runtime_01](DONE/NS-4_instrumental-runtime_01.md)
 - [NS-2_percussion_01](NS-2_percussion_01.md)
 
 **Dev Notes:**

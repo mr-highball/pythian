@@ -70,7 +70,14 @@ function ProjectRetimedWfcNotes(const AScore: TWfcMusicScore;
   retains template tempo/voice identities, and returns detached native note gates.
   Frames must span the template exactly. This is not incremental frame admission. }
 function ProjectWfcEnsembleNotes(const AFrames: TWfcMusicEnsembleFrames;
-  const AQuantumTicks: Integer; const ATemplate: TWfcMusicScore): TNoteSequence;
+  const AQuantumTicks: Integer; const ATemplate: TWfcMusicScore): TNoteSequence; overload;
+
+{ Big Boss: finite generated voices need no artificial whole-measure score
+  padding. WFC still owns rest/attack/hold reconstruction; native PPQ clocks
+  own timing. Roles map to Voice, Track=0, Channel=-1; tempos are explicit. }
+function ProjectWfcEnsembleNotes(const AFrames: TWfcMusicEnsembleFrames;
+  const AQuantumTicks, ATicksPerQuarter: Integer;
+  const ATempos: TTempoChanges): TNoteSequence; overload;
 
 { Detached rest/attack/hold frame conversion shared by native audio and MIDI.
   Bounds voices/total tones and maps actions; each consumer applies its own
@@ -422,6 +429,44 @@ begin
   end;
 end;
 
+procedure AppendSpanGates(const ASpan: TWfcMusicSpanEvent; const ATrack: Integer;
+  var AGates: TNoteGates; var ACount, ACapacity: Integer);
+var
+  LTone: Integer;
+begin
+  if Length(ASpan.Tones) > MaximumNoteGates - ACount then
+  begin
+    raise EAudio.Create('WFC chord tones exceed note projection budget');
+  end;
+  for LTone := 0 to High(ASpan.Tones) do
+  begin
+    if ACount = ACapacity then
+    begin
+      if ACapacity = 0 then
+      begin
+        ACapacity := 64;
+      end
+      else
+      begin
+        ACapacity := ACapacity * 2;
+      end;
+      if ACapacity > MaximumNoteGates then
+      begin
+        ACapacity := MaximumNoteGates;
+      end;
+      SetLength(AGates, ACapacity);
+    end;
+    AGates[ACount].StartTick := ASpan.StartTick;
+    AGates[ACount].EndTick := ASpan.StartTick + ASpan.DurationTicks;
+    AGates[ACount].Pitch := ASpan.Tones[LTone].Pitch;
+    AGates[ACount].Velocity := ASpan.Tones[LTone].Velocity;
+    AGates[ACount].Track := ATrack;
+    AGates[ACount].Voice := ASpan.VoiceIndex;
+    AGates[ACount].Channel := -1;
+    Inc(ACount);
+  end;
+end;
+
 function ProjectWfcNotes(const AScore: TWfcMusicScore): TNoteSequence;
 var
   LTempos: TTempoChanges;
@@ -430,7 +475,6 @@ var
   LSpan: TWfcMusicSpanEvent;
   LVoice: TWfcMusicVoice;
   LIndex: Integer;
-  LTone: Integer;
   LCount: Integer;
   LCapacity: Integer;
 begin
@@ -458,55 +502,23 @@ begin
   for LIndex := 0 to AScore.SpanCount - 1 do
   begin
     LSpan := AScore.SpanAt(LIndex);
-    if Length(LSpan.Tones) > MaximumNoteGates - LCount then
-    begin
-      raise EAudio.Create('WFC chord tones exceed note projection budget');
-    end;
     LVoice := AScore.VoiceAt(LSpan.VoiceIndex);
-    for LTone := 0 to High(LSpan.Tones) do
-    begin
-      if LCount = LCapacity then
-      begin
-        if LCapacity = 0 then
-        begin
-          LCapacity := 64;
-        end
-        else
-        begin
-          LCapacity := LCapacity * 2;
-        end;
-        if LCapacity > MaximumNoteGates then
-        begin
-          LCapacity := MaximumNoteGates;
-        end;
-        SetLength(LGates, LCapacity);
-      end;
-      LGates[LCount].StartTick := LSpan.StartTick;
-      LGates[LCount].EndTick := LSpan.StartTick + LSpan.DurationTicks;
-      LGates[LCount].Pitch := LSpan.Tones[LTone].Pitch;
-      LGates[LCount].Velocity := LSpan.Tones[LTone].Velocity;
-      LGates[LCount].Track := LVoice.TrackIndex;
-      LGates[LCount].Voice := LSpan.VoiceIndex;
-      LGates[LCount].Channel := -1;
-      Inc(LCount);
-    end;
+    AppendSpanGates(LSpan, LVoice.TrackIndex, LGates, LCount, LCapacity);
   end;
   SetLength(LGates, LCount);
   Result := TNoteSequence.Create(AScore.TicksPerQuarter, AScore.LengthTicks, LTempos, LGates);
 end;
 
-function ProjectWfcEnsembleNotes(const AFrames: TWfcMusicEnsembleFrames;
-  const AQuantumTicks: Integer; const ATemplate: TWfcMusicScore): TNoteSequence;
+procedure CheckEnsembleProjection(const AFrames: TWfcMusicEnsembleFrames);
 var
-  LScore: TWfcMusicScore;
   LFrame: Integer;
   LVoice: Integer;
   LWork: Int64;
 begin
-  if (ATemplate = nil) or (Length(AFrames) < 1) or
+  if (Length(AFrames) < 1) or
     (Length(AFrames) > MaximumNoteGates) then
   begin
-    raise EAudio.Create('Ensemble note projection requires a bounded timeline and template');
+    raise EAudio.Create('Ensemble note projection requires a bounded timeline');
   end;
   LWork := 0;
   for LFrame := 0 to High(AFrames) do
@@ -525,12 +537,53 @@ begin
       end;
     end;
   end;
+end;
+
+function ProjectWfcEnsembleNotes(const AFrames: TWfcMusicEnsembleFrames;
+  const AQuantumTicks: Integer; const ATemplate: TWfcMusicScore): TNoteSequence;
+var
+  LScore: TWfcMusicScore;
+begin
+  if ATemplate = nil then
+  begin
+    raise EAudio.Create('Ensemble note projection requires a template');
+  end;
+  CheckEnsembleProjection(AFrames);
   LScore := RebuildWfcMusicEnsembleScore(AFrames, AQuantumTicks, ATemplate);
   try
     Result := ProjectWfcNotes(LScore);
   finally
     LScore.Free;
   end;
+end;
+
+function ProjectWfcEnsembleNotes(const AFrames: TWfcMusicEnsembleFrames;
+  const AQuantumTicks, ATicksPerQuarter: Integer;
+  const ATempos: TTempoChanges): TNoteSequence;
+var
+  LSpans: TWfcMusicSpanEvents;
+  LGates: TNoteGates;
+  LSpan: TWfcMusicSpanEvent;
+  LCount: Integer;
+  LCapacity: Integer;
+  LLength: Int64;
+begin
+  CheckEnsembleProjection(AFrames);
+  LLength := Int64(Length(AFrames)) * AQuantumTicks;
+  if (AQuantumTicks < 1) or (LLength > High(Integer)) then
+  begin
+    raise EAudio.Create('Ensemble note projection has invalid tick extent');
+  end;
+  LSpans := RebuildWfcMusicEnsembleSpans(AFrames, AQuantumTicks);
+  LCount := 0;
+  LCapacity := 0;
+  LGates := nil;
+  for LSpan in LSpans do
+  begin
+    AppendSpanGates(LSpan, 0, LGates, LCount, LCapacity);
+  end;
+  SetLength(LGates, LCount);
+  Result := TNoteSequence.Create(ATicksPerQuarter, LLength, ATempos, LGates);
 end;
 
 end.

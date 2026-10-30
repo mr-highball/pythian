@@ -31,7 +31,7 @@ All implementation, analysis, inference, codecs and maintained tools remain Pasc
 
 Big Boss works alone until the operator changes staffing. Work on hello-pythian in the existing repository; new build/test/cache/run output belongs under the dedicated E-drive workspace. Reuse fixed deployed review-service slots and existing minimal local security.
 
-This pass changes the goal, instructions and backlog only. Product implementation remains paused until explicitly resumed. The two answered reconstruction reviews remain historical feedback; no more work on those reconstruction mechanisms is selected.
+The operator resumed implementation solo after this goal/backlog reset. The two answered reconstruction reviews remain historical feedback; no more work on those reconstruction mechanisms is selected.
 
 ## Progress means effort delivered
 

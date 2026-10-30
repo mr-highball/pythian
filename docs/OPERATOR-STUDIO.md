@@ -14,7 +14,7 @@ It does not currently expose the full instrumental graph.
 The [instrumental Studio task](TODO/NS-6_instrumental-studio_01.md) changes that
 ordinary path to real musical WFC decisions played through Pythian instruments.
 This is planned work, not a description of an already available mode. Its true
-prerequisites are the [shared runtime](TODO/NS-4_instrumental-runtime_01.md) and
+prerequisites are the [shared runtime](TODO/DONE/NS-4_instrumental-runtime_01.md) and
 [explicit percussion](TODO/NS-2_percussion_01.md).
 
 ## Intended operator loop
@@ -72,4 +72,4 @@ allocation and old benchmark-first prerequisites are historical. The
 [retirement map](TODO/RETIRED/2026-10-29/README.md) assigns useful unfinished scope
 to new tasks. Existing accepted features and failed cases remain evidence; none
 is automatically new-goal acceptance. [Effort-based accounting](TASKFLOW.MD#effort-and-derived-completion)
-replaces assigned percentages. Implementation remains paused.
+replaces assigned percentages. The operator has resumed implementation solo.
