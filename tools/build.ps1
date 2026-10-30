@@ -265,6 +265,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Scheduler compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.schedule$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Scheduler checks failed' }
+  & $compilerPath @compilerArgs '-gh' 'tests/pythian.tests.schedule.progress.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Scheduler replacement progress compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.schedule.progress$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Scheduler replacement cancellation and replay checks failed' }
   & $compilerPath @compilerArgs '-gh' 'tests/pythian.tests.bus.portability.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Bus scalar portability compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.bus.portability$executableSuffix")

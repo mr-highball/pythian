@@ -46,15 +46,17 @@ either precursor source directory. Phanes was removed after the
 [extraction and consumer audit](docs/REFERENCE-REMOVAL.md); its application assets
 are not library inputs. WFC and Athena remain pinned submodules.
 
-Selected integration WFC pin: `d4d30b120ee6ac6741387b206d971bb2877896aa`, on separate
+Current accepted WFC pin: `d4d30b120ee6ac6741387b206d971bb2877896aa`, on separate
 branch `codex/pythian-native-build-reuse`, which remains unmerged. All five
 upstream CI58 jobs pass, including actual browser conformance; macOS completes
 in 11m38s within its unchanged 30-minute limit. It retains reviewed clone5d69462
 source/tests and adds fresh per-invocation native unit reuse. Pythian's shared
 observed immutable clone replaces codec roundtrips across style, layers, voices,
 duration and event-corpus consumers. [Build01 — DONE](docs/TODO/DONE/NS-6_wfc-build_01.md)
-is accepted; [clone20](docs/TODO/NS-6_observability_20.md) still requires exact
-downstream integration and clean extracted consumers. No musical credit follows.
+and [clone20 — DONE](docs/TODO/DONE/NS-6_observability_20.md) are accepted after
+Pythian e02d77f/CI498 passes integration/extracted consumers in 17m28s, plus
+clean exact Win64 core/full packages and new extracted native64/actual pas2js
+API consumers. Full parent04 and Studio/musical gates remain. No musical credit follows.
 
 Previous accepted WFC pin: `c4e7569f277476a3b19941b13176ec39a120a198`, on separate
 branch `codex/pythian-voice-progress`, which remains unmerged. All five upstream

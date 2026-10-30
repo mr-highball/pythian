@@ -12,7 +12,7 @@ semantics hide this failure. Keep one primary Pascal implementation.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
 This is a required prerequisite discovered while qualifying
-[observed cloning20](../NS-6_observability_20.md), not musical learning acceptance.
+[observed cloning20](NS-6_observability_20.md), not musical learning acceptance.
 
 Completed2026-10-29 at exact384c6de8720120f6c148409157a56bde9f95e8b5 after
 [CI495](https://github.com/mr-highball/pythian/actions/runs/40969357621/job/123781900528)

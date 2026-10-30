@@ -3,6 +3,76 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](REBALANCE-2026-09-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
+## Current handoff: clone20 accepted; atomic scheduler candidate ready for publication — 2026-10-29
+
+This goal turn makes PROGRESS. Exact e02d77f/CI498/job123804699827 is terminal
+SUCCESS17m28s: maintained integration16m1s, package/extracted consumers38s.
+All-five upstream WFC CI58 and every original clone20 local/consumer/replay,
+clean package and extracted native/actual pas2js gate pass. [Clone20 — DONE](TODO/DONE/NS-6_observability_20.md)
+moves with incoming links, accepted pin wording and accounting. Current accepted
+WFC pin is d4d30b1; both upstream branches remain unmerged. Both original CI57
+macOS timeouts and the extracted runner's repaired switch-array failure remain.
+
+Counts54open/96DONE become53open/97DONE,total150,NS6 16 to15open;52.45/47.55
+unchanged. Whole required closure keeps delivery nonclosing0. Scientific stops,
+exposure histories, two pending long questions and saved answers remain.
+Big Boss remains SOLO. No musical or full parent/Studio/phone credit follows.
+
+The independent primary scheduler component below now passes15771 checks on
+native32/64/actualpas2js:53 callback aborts plus2 reentry rejections, every9small/9empty/
+17bulk checkpoints, exact original stereo/bus history and same-instance retry.
+Both original native scheduler suites pass with clean heaps. Its source and
+core-only fixture are finalized. Publish this candidate on hello-pythian, then
+qualify clean exact core/full packages and new actual native64/pas2js API
+consumers from both extracted packages plus exact downstream CI. No whole
+parent criterion closes; count its nonclosing batch only after qualification.
+Retain individual voice/factory, allocation and retirement synchronous boundaries.
+Full duration/scheduler/other parent work and actual Studio18 remain required.
+
+New output/TEMP/TMP stays in dedicated E folders. StablePID61792 remains intact.
+No new listener, browser audio, firewall/elevation, inference, source-recording,
+response mutation, retraining or helper. Full goal remains ACTIVE/UNACHIEVED.
+The complete prior work record follows, with only incoming task links repaired.
+
+## Current handoff: primary scheduler preparation selected; exact clone CI498 live — 2026-10-29
+
+Previous goal turn made PROGRESS: build01 was fully accepted at WFC d4d30b1/
+all-five CI58, clone20 integrated/pushed at e02d77f, and both clean exact packages
+plus new actual extracted native64/pas2js clone/voice consumers passed. Core Git
+source is unchanged from accepted384c6de; old/current package source bytes differ
+only in checkout CRLF/LF for106/107 files, all107 normalize identically. Reuse
+semantic core evidence with that qualification, not raw-byte identity. The first
+new extracted orchestration's split compiler switches are repaired without any
+source/assertion change; original failure logs remain private. CI498/job123804699827
+is confirmed live on this continuation, maintained integration at5m16s. Do not
+restart it or push another change that cancels it before its required gate ends.
+
+Big Boss remains SOLO. New independent [parent04](TODO/NS-6_observability_04.md)
+component advances AC1/2/5: observe primary atomic scheduler replacement loops,
+with final cancellation before publication. Deliverable: optional borrowed work
+callback on the existing TryReplaceFuture API and a core-only maintained fixture.
+Closing evidence: every-checkpoint abort/original exception, unchanged accepted
+voices/IDs/clock/work/bus audio, same-instance retry and native32/64/actual pas2js,
+plus original native scheduler controls. Stop on changed PCM, partial publication,
+swallowed cancellation or a distinct required gap. Individual voice/factory calls,
+allocation and retirement remain named synchronous boundaries without hard latency.
+Duration edits/rendering and full parent/Studio/musical gates remain required.
+Local scheduler qualification now passes11771 checks per native32/64/actual
+pas2js target:35 callback aborts,2 reentry rejections, every9 small/17 bulk
+checkpoints, exact old stereo/bus history and same-instance retry. Both original
+native scheduler suites pass with clean heaps. No implementation failure was
+encountered. Exact publication/extracted gates remain pending. Source/fixtures
+are finalized locally; no repeated unchanged suites are selected. CI498 remains
+live at15m22s (maintained integration14m40s); hold the next push until it ends.
+
+Counts54open/96DONE/150 total, NS6 16open;52.45/47.55 unchanged. Delivery nonclosing0
+remains while these required qualification batches are in progress; no whole
+parent criterion closes from instrumentation. All scientific stops/exposures and
+2pending/3saved current listening answers remain. Stable PID61792 is untouched.
+No new service, firewall/elevation, browser audio, inference, recording, answer
+mutation or helper. Output/TEMP/TMP remain under dedicated E folders. Preserve
+complete historical work below. Full goal remains ACTIVE/UNACHIEVED.
+
 ## Current handoff: upstream build01 accepted; clone20 integration selected — 2026-10-29
 
 Previous goal turn was an operational firewall check: read-only diagnosis, no
@@ -18,7 +88,7 @@ accounting: 54 open/96 DONE/150 total, NS-6 16 open; 52.45/47.55 unchanged.
 Delivery nonclosing 0 remains after whole required task closure. Preserve all
 scientific stops/exposure histories and the two current long listening questions.
 
-Next batch is [clone20](TODO/NS-6_observability_20.md)'s original downstream gate.
+Next batch is [clone20](TODO/DONE/NS-6_observability_20.md)'s original downstream gate.
 Criterion: one primary observed immutable copy across every affected consumer.
 Deliverable: explicitly adopt reviewed WFC d4d30b1 gitlink and integrate the held
 Pythian adapter/consumer changes. Closing evidence: clean exact downstream CI,
@@ -49,7 +119,7 @@ retry or pin adoption is selected. The failure is an engineering qualification
 gate, not a musical rejection or a demonstrated failed conformance assertion.
 
 [New required WFC build01](TODO/DONE/NS-6_wfc-build_01.md) owns the actual prerequisite
-before [clone20](TODO/NS-6_observability_20.md). The first timeout ends during
+before [clone20](TODO/DONE/NS-6_observability_20.md). The first timeout ends during
 primary unit compilation. The second canceled build line70451 is beyond GitHub's
 inline-log limit; preserve that limit on the evidence claim. Its raw-log download
 stalled the old browser tab, and a fresh tab in the same authenticated browser
@@ -115,7 +185,7 @@ stops and exposure histories never reset. Full parent04, actual Studio/phone and
 musical acceptance remain open. This is solo Big Boss verification, not an
 independent reviewer verdict. No live service/browser/audio deployment is made.
 
-[Clone20](TODO/NS-6_observability_20.md) remains in progress. Its separate WFC
+[Clone20](TODO/DONE/NS-6_observability_20.md) remains in progress. Its separate WFC
 branch5d69462 is held for all upstream jobs; macOS retry uses the original30m
 limit and same tests/source. No pin adoption or additional retry follows from
 passage acceptance. The main checkout retains the reviewed clone implementation
@@ -136,7 +206,7 @@ wrong-source portable render. Musical stops, the pending listening questions and
 the full active goal remain unchanged; no musical acceptance is claimed.
 
 [Passage ownership15](TODO/DONE/NS-6_portability_15.md) was created before changing
-the primary renderer, then followed as [clone20](TODO/NS-6_observability_20.md)'s
+the primary renderer, then followed as [clone20](TODO/DONE/NS-6_observability_20.md)'s
 actual portable prerequisite. The existing exact event-corpus PCM oracle rejected
 frame8 at approximately -0.176776695296637 instead of0.25. Generated target code
 showed a reused `for..in` record alias overwriting the final caller passage.
@@ -182,7 +252,7 @@ fc925f8 is pushed. Big Boss remains SOLO. Both substantial listening reviews
 remain pending at revision0, and least-complete NS5's actual musical/reference
 prerequisites and all stopped pitch/source families remain unchanged.
 
-[New required clone20](TODO/NS-6_observability_20.md) owns parent04's generic
+[New required clone20](TODO/DONE/NS-6_observability_20.md) owns parent04's generic
 immutable-model copy prerequisite and actual Pythian consumer consolidation.
 The domain-neutral compile consumer against accepted WFCc4e7569 rejects its
 missing proposed Clone entry point. This is a missing required capability, not

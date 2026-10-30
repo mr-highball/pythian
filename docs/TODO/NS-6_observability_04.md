@@ -95,9 +95,10 @@ unqualified where no interior observer exists. Actual Studio18 remains separate.
 
 **Blockers**
 
-- [Observed immutable model cloning20](NS-6_observability_20.md) — generic WFC
-  clone plus replacement of the retained Pythian serialization copies. This
-  blocks full model-copy coverage, not the already qualified journal component.
+- [Observed immutable model cloning20 — DONE](DONE/NS-6_observability_20.md) —
+  qualified at e02d77f/CI498 with upstream all-five CI58, exact packages and
+  actual extracted native/portable consumers. Retained serialization clones
+  are consolidated. Full duration/scheduler and other parent gates remain here.
 
 - [Bounded portable byte storage14 — DONE](DONE/NS-6_portability_14.md) — shared
   primary storage and large-journal abort/recovery qualify atd68895f/CI489,
@@ -148,6 +149,26 @@ unqualified where no interior observer exists. Actual Studio18 remains separate.
   shared staging with exact original source-byte progress.
 
 **Dev Notes:**
+
+- 2026-10-29, Big Boss SOLO: select the independent primary scheduler
+  replacement component of AC1/2/5 while exact clone20 CI498 runs. The existing
+  `TryReplaceFuture` stages accepted slots and replacement voices without
+  interior work callbacks. Add optional borrowed observation of those actual
+  loops and a final prepublication checkpoint. Cancellation must preserve
+  accepted voices/IDs, work, timeline, bus history and same-instance retry;
+  no callback may follow commit. Qualify every checkpoint on native32/64 and
+  actual pas2js, plus original native scheduler/audio controls. See the
+  [stage/ownership contract](../OBSERVABILITY.md#atomic-scheduler-replacement--candidate-2026-10-29).
+  Individual voice/factory calls, allocations and retirement destructors stay
+  synchronous named boundaries. Stop on altered PCM, partial publication,
+  swallowed exceptions or another required gap. Full parent, duration edits,
+  actual Studio18 and musical gates stay open. The private E-drive
+  schedule-replacement-20261029-boss packet owns PLAN and qualification logs.
+  Native32/64 and actual pas2js now each pass15771 checks,53 callback aborts/
+  2 reentry rejections, every9 small/9 empty/17 bulk checkpoints, unchanged accepted
+  state/audio/IDs and same-instance retry. Both original native scheduler
+  suites pass, with zero native leaks. Publication/extracted qualification stays
+  pending; required clone CI498 has now passed and its task is accepted.
 
 - 2026-10-29, Big Boss SOLO: the remaining training/index component is qualified
   at64887c8/[CI493](https://github.com/mr-highball/pythian/actions/runs/40959194111/job/123747185147),

@@ -5,7 +5,7 @@
 **Description:**
 
 Resolve the demonstrated upstream qualification prerequisite for
-[observed model cloning20](../NS-6_observability_20.md). WFC CI57's macOS job
+[observed model cloning20](NS-6_observability_20.md). WFC CI57's macOS job
 exhausted its30-minute limit twice. Its shell build forces65 complete unit
 rebuilds across consumers. The first timeout ends during compilation; the
 second build log is truncated by GitHub's viewer. These are failed engineering

@@ -1,6 +1,6 @@
 # NS-6_observability_20 — Reuse observable immutable WFC model cloning
 
-[Task index](README.md) · [Task flow](../TASKFLOW.MD) · [North star](../MILESTONES.md#ns-6)
+[Task index](../README.md) · [Task flow](../../TASKFLOW.MD) · [North star](../../MILESTONES.md#ns-6)
 
 **Description:**
 
@@ -12,8 +12,15 @@ Reuse primary construction/copy behavior rather than adding another algorithm.
 
 North star: NS-6. Outcome owner: REUSABLE-OPERATIONS. Completion credit: 0 additional.
 This extracts the independently useful model-copy prerequisite from
-[parent04](NS-6_observability_04.md); every other original obligation remains.
+[parent04](../NS-6_observability_04.md); every other original obligation remains.
 No musical criterion or percentage is earned by this task's creation or checks.
+
+Completed 2026-10-29 at Pythian e02d77fa41d021e3b036be99cb71e74ebd8f3227 and
+WFC d4d30b120ee6ac6741387b206d971bb2877896aa. Exact upstream CI58 passes all five
+jobs; [downstream CI498](https://github.com/mr-highball/pythian/actions/runs/40976178079/job/123804699827)
+passes in 17m28s, including integration 16m1s and extracted consumers 38s.
+Every original criterion and prerequisite below is satisfied. Full parent04,
+actual Studio/phone and musical gates remain independent and OPEN.
 
 Criterion advanced: parent04 AC1/2/5, observed retained model construction/copy.
 Deliverable: generic observed immutable cloning plus all demonstrated Pythian
@@ -52,16 +59,31 @@ wrapper-specific restriction, an existing fix or another required gap.
 
 **Blockers**
 
-- [Upstream native build qualification01 — DONE](DONE/NS-6_wfc-build_01.md) —
+- [Upstream native build qualification01 — DONE](NS-6_wfc-build_01.md) —
   exact d4d30b1/CI58 passes all five jobs within the unchanged budget. Both
   original macOS timeouts remain recorded; downstream qualification stays here.
-- [Portable passage ownership15 — DONE](DONE/NS-6_portability_15.md) — actual portable
+- [Portable passage ownership15 — DONE](NS-6_portability_15.md) — actual portable
   event-corpus qualification exposed a pre-existing wrong-source PCM failure.
   Its primary repair, exact oracle and extracted consumers qualify at384c6de/CI495.
-- [Generic model/voice preparation17 — DONE](DONE/NS-6_observability_17.md) —
+- [Generic model/voice preparation17 — DONE](NS-6_observability_17.md) —
   accepted WFC pin c4e7569 supplies the primary constructor and observer bridge.
 
 **Dev Notes:**
+
+- 2026-10-29, Big Boss SOLO: terminal exact CI498 accepts the complete original
+  task. Both clean exact Win64 packages pass 107/159 owned units and 120/280
+  hashes; new clone/voice consumers from the actual extracted full package pass
+  on native64 and actual pas2js (657 checks/6 aborts; 17221 checks/16 aborts).
+  Native heaps are clean. WFC src/test trees are identical to locally tested
+  5d69462, preserving every native32/64/pas2js consumer, all318 clone aborts and
+  the exact70000-frame duration replay. Core Git source is unchanged from384c6de;
+  106/107 old/current package source files differ only in checkout CRLF/LF, and
+  all107 normalize identically. Reuse semantic core evidence with that explicit
+  qualification, never raw-byte package identity. The initial private extracted
+  runner split compiler switches; repaired orchestration changes no assertions
+  or source, and preserves its original logs. Counts54/96 become53open/97DONE,
+  total150, NS6 16 to15open;52.45/47.55 and delivery nonclosing0 remain. No
+  upstream merge, deployment, inference, operator-response change or musical credit.
 
 - 2026-10-29, Big Boss: build01 is accepted after all-five CI58 SUCCESS at exact
   d4d30b120ee6ac6741387b206d971bb2877896aa. Its src/test trees are identical to

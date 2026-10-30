@@ -31,7 +31,8 @@ interface
 uses
   pythian.audio,
   pythian.synth,
-  pythian.bus;
+  pythian.bus,
+  pythian.progress;
 
 const
   ScheduleContractVersion = 1;
@@ -80,10 +81,16 @@ type
     function TrySchedule(const ATone: TFrameTone; const ABus, AGroup: Integer;
       out AId: Int64): TScheduleResult;
     function CancelFuture(const AGroup: Integer; const AFromFrame: Int64): Integer;
-    { Build a complete future replacement before publishing; failed admission
-      or source construction preserves all existing notes and bus history. }
+    { Big Boss: build a complete future replacement before publishing. Failed
+      admission, source construction or the optional borrowed work callback
+      preserves existing voices, IDs and bus history. Preparation reports real
+      scan/validation/construction items; the final ready callback precedes
+      publication and no callback follows it. Do not re-enter or mutate inputs.
+      Individual voice validation/construction, allocation and retired source
+      destructors are synchronous boundaries without a hard latency promise. }
     function TryReplaceFuture(const AGroup: Integer; const AFromFrame: Int64;
-      const ABus: Integer; const ATones: TFrameTones; out AFirstId: Int64): TScheduleResult;
+      const ABus: Integer; const ATones: TFrameTones; out AFirstId: Int64;
+      const AProgress: TWorkProgressCallback = nil): TScheduleResult;
     { Drop pending notes and release committed notes using their native envelope. }
     function StopGroup(const AGroup: Integer): Integer;
     function ReleaseVoice(const AId: Int64): Boolean;
@@ -282,7 +289,8 @@ begin
 end;
 
 function TScheduledSynth.TryReplaceFuture(const AGroup: Integer; const AFromFrame: Int64;
-  const ABus: Integer; const ATones: TFrameTones; out AFirstId: Int64): TScheduleResult;
+  const ABus: Integer; const ATones: TFrameTones; out AFirstId: Int64;
+  const AProgress: TWorkProgressCallback): TScheduleResult;
 var
   LCandidate: TSlots;
   LOld: TSlots;
@@ -310,6 +318,7 @@ begin
   LCount := 0;
   try
     LWork := 0;
+    ReportWork(AProgress, 'schedule_keep_scan', wuItems, 0, FCount);
     for LIndex := 0 to FCount - 1 do
     begin
       if (FSlots[LIndex].Group <> AGroup) or (FSlots[LIndex].StartFrame < AFromFrame) then
@@ -317,12 +326,18 @@ begin
         Inc(LKept);
         Inc(LWork, FSlots[LIndex].Cost);
       end;
+      if ((LIndex + 1) mod 128 = 0) then
+      begin
+        ReportWork(AProgress, 'schedule_keep_scan', wuItems, LIndex + 1, FCount);
+      end;
     end;
+    ReportWork(AProgress, 'schedule_keep_scan', wuItems, FCount, FCount);
     if LKept + Length(ATones) > Length(FSlots) then
     begin
       Exit(srVoiceLimit);
     end;
     SetLength(LCosts, Length(ATones));
+    ReportWork(AProgress, 'schedule_tone_validation', wuItems, 0, Length(ATones));
     for LIndex := 0 to High(ATones) do
     begin
       LFrames := ValidateFrameTone(ATones[LIndex], FGraph.SampleRate);
@@ -332,7 +347,12 @@ begin
       end;
       LCosts[LIndex] := SynthFrameCost(ATones[LIndex].Voice, FGraph.SampleRate) + 16;
       Inc(LWork, LCosts[LIndex]);
+      if ((LIndex + 1) mod 128 = 0) then
+      begin
+        ReportWork(AProgress, 'schedule_tone_validation', wuItems, LIndex + 1, Length(ATones));
+      end;
     end;
+    ReportWork(AProgress, 'schedule_tone_validation', wuItems, Length(ATones), Length(ATones));
     if LWork > FWorkLimit then
     begin
       Exit(srWorkLimit);
@@ -342,6 +362,7 @@ begin
       raise EAudio.Create('Replacement exhausts voice identity space');
     end;
     SetLength(LCandidate, Length(FSlots));
+    ReportWork(AProgress, 'schedule_keep_copy', wuItems, 0, FCount);
     for LIndex := 0 to FCount - 1 do
     begin
       if (FSlots[LIndex].Group <> AGroup) or (FSlots[LIndex].StartFrame < AFromFrame) then
@@ -349,7 +370,13 @@ begin
         LCandidate[LCount] := FSlots[LIndex];
         Inc(LCount);
       end;
+      if ((LIndex + 1) mod 128 = 0) then
+      begin
+        ReportWork(AProgress, 'schedule_keep_copy', wuItems, LIndex + 1, FCount);
+      end;
     end;
+    ReportWork(AProgress, 'schedule_keep_copy', wuItems, FCount, FCount);
+    ReportWork(AProgress, 'schedule_voice_construction', wuItems, 0, Length(ATones));
     for LIndex := 0 to High(ATones) do
     begin
       LCandidate[LCount].Id := FLastId + LIndex + 1;
@@ -359,7 +386,13 @@ begin
       LCandidate[LCount].Cost := LCosts[LIndex];
       LCandidate[LCount].Voice := TPlayingTone.Create(FGraph.SampleRate, ATones[LIndex]);
       Inc(LCount);
+      if ((LIndex + 1) mod 128 = 0) then
+      begin
+        ReportWork(AProgress, 'schedule_voice_construction', wuItems, LIndex + 1, Length(ATones));
+      end;
     end;
+    ReportWork(AProgress, 'schedule_voice_construction', wuItems, Length(ATones), Length(ATones));
+    ReportWork(AProgress, 'schedule_replace_ready', wuItems, 1, 1);
     LOld := FSlots;
     LOldCount := FCount;
     FSlots := LCandidate;

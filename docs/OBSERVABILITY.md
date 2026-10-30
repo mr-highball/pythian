@@ -3,9 +3,41 @@
 [Project](../PROJECT.md) · [Assessment](CODEBASE-ASSESSMENT.md) ·
 [Tasks](TODO/README.md) · [Work](WORK.md)
 
-## Shared immutable model copying — integrated candidate, 2026-10-29
+## Atomic scheduler replacement — candidate, 2026-10-29
 
-[Clone20](TODO/NS-6_observability_20.md) replaces serialization-based model
+The primary `TScheduledSynth.TryReplaceFuture` accepts an optional borrowed
+work callback during private preparation. It reports these actual item stages:
+
+| Stage | Counted work |
+| --- | --- |
+| `schedule_keep_scan` | Accepted slots inspected for retained work/capacity |
+| `schedule_tone_validation` | Supplied replacement tones validated and costed |
+| `schedule_keep_copy` | Accepted slots inspected while retaining their voices |
+| `schedule_voice_construction` | Replacement voices privately constructed |
+| `schedule_replace_ready` | One prepared replacement, immediately before publication |
+
+Loop checkpoints occur at most 128 items apart. Totals describe the specific
+stage, never overall completion. The scheduler's existing busy guard remains
+active throughout callbacks. Callbacks must not re-enter the scheduler or mutate
+borrowed tones. An original callback exception leaves accepted voices, reserved
+work, identities, timeline and bus history unchanged; private new voices are
+disposed and the same scheduler remains retryable. No callback follows commit.
+Existing terminal behavior for a raising retired-source destructor is retained.
+
+Individual voice validation/construction, supplied factories, allocation and
+retirement destructors are named synchronous boundaries without a hard latency
+guarantee. This covers the primary replacement loops, not all duration edits,
+rendering or the whole [parent04](TODO/NS-6_observability_04.md). Native32/64 and
+actual pas2js each pass 15771 checks, with 53 callback aborts and two reentry
+rejections across all 9 small/9 empty/17 bulk checkpoints. Bulk cases retain 300 old
+voices and privately construct 260 replacements. Exact stereo/bus-history and
+same-instance retry pass; both original native scheduler suites and clean heaps
+pass. Exact publication/extracted qualification remains pending. No musical
+credit, deployment or full-parent acceptance is claimed.
+
+## Shared immutable model copying — qualified, 2026-10-29
+
+[Clone20](TODO/DONE/NS-6_observability_20.md) replaces serialization-based model
 copies in style, layers, named voices, duration construction and saved event
 restoration with `CloneWfcSequenceModel`. One call-scoped bridge forwards WFC's
 primary immutable constructor through `wfc_sequence_model_build_visits` in item
@@ -28,8 +60,12 @@ to reviewed clone5d69462: native32/64 and actual pas2js each pass 788662 checks
 and all 318 clone aborts. Pythian's adapter passes 657 checks/6 aborts on each
 target; actual named-voice, duration and measured event restoration consumers
 pass cancellation/retry and original outputs. The 70000-frame duration trace
-remains byte-identical. Exact downstream and clean extracted-package gates are
-still pending; this is solo Big Boss verification and earns no musical credit.
+remains byte-identical. Exact e02d77f/[CI498](https://github.com/mr-highball/pythian/actions/runs/40976178079/job/123804699827)
+passes in17m28s, including integration and extracted consumers. Both clean exact
+Win64 packages pass107/159 owned units and120/280 hashes; new extracted full-package
+clone/voice API consumers pass on native64 and actual pas2js with clean native
+heaps. Every clone20 criterion is accepted. This is solo Big Boss verification;
+full parent04/Studio/musical gates remain and no musical credit follows.
 
 ## Journal learning preparation — qualified component, 2026-10-29
 
