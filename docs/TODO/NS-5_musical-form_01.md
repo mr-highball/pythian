@@ -52,7 +52,8 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
   This is an additional normal UI request, not a retry of the original failed
   seed. Both the failed job and its exact repaired sibling `section-window-repair01`
   remain in isolated QA data. Full source integration/CI and stable deployment
-  of this repair are pending. Per-section energy/density and actual operator
+  of this repair are pending. Source1fda087 is published; Native FPC CI535
+  (41251280100) is in progress. Per-section energy/density and actual operator
   listening remain open; no effort units accepted.
 
 - 2026-10-31, Big Boss: the optional Studio Structure consumer is implemented

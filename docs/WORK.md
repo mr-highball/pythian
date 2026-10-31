@@ -53,6 +53,9 @@ outstanding persistence/replay gate. The goal remains active; no input needed.
 Next finish exact-source CI and checked fixed-slot integration, then continue
 per-section musical controls. Do not infer global feasibility or musical quality
 from these checks. Keep the simple playlist flow and independent saved clips.
+Repair source1fda087 is published on `origin/hello-pythian`. Native FPC CI535
+(41251280100) is in progress; no result is claimed. The prepared fourteen-file
+service/worker/browser manifest is in the run packet for later checked staging.
 QA tab42 is closed, viewport override reset, all nine audio elements paused
 with looping off. Exact QA service44968 and its console child are stopped; no QA
 listener/worker remains. Stable Studio returns200 on its previous checked bytes.
