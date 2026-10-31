@@ -2,7 +2,57 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
-## Current handoff: long Studio generation and continuation accepted — 2026-10-31
+## Current batch: stable musical vocabulary rebuilds — 2026-10-31
+
+Big Boss SOLO continues aftera221384. The preceding turn made progress by
+accepting and deploying long Studio generation/context continuation; consecutive
+nonclosing count starts at zero. Selected criterion: corpus AC2, stable musical
+meaning and unique source ancestry when recordings are added or weights change.
+Deliver content-bound public token identities, explicit model-local index bindings,
+actual admitted sample/source contributions and saved Studio learning receipts.
+Check source addition/reorder/reweight, exact source/run gaps and detached/cancelled
+publication on native and actual pas2js, then the native Studio worker consumer.
+Stop before style blending, graph controls or more analysis/continuation work.
+Packet: `musical-vocabulary-20261031-boss` under dedicated E-drive roots.
+
+The selected AC2 contract now passes: stable provider/codec/schema/value token
+identities, current model-local mappings, ResolveToken with explicit absence,
+unique original source/sample contributions and separate multiplicity. Full
+rebuilds never append old counts. Native and actual pas2js377 checks pass; all
+eleven model/token fingerprints match, including Unicode role names. Actual
+native playlist/worker177 checks pass with clean heap, inspecting the saved full
+vocabulary against reloaded provider models. The ordinary browser external-worker
+job music-1793443175126-477505 completes: nine vocabularies, five contributions,
+generated playback to its3second end, truthful135second source coverage and no
+media errors/looping. No review answers were saved. Screenshot:
+`studio-vocabulary-ready.png` in the current run packet.
+
+Preserve the first cross-target comparison rejection: native/JS synthesized WAV
+bytes legitimately differ, so source-bound evidence/revision hashes can differ.
+The Unicode fixture also accidentally transcoded a tagged UTF-8 scalar through
+Windows' code page; target-native canonical input repairs the fixture. Stable
+musical meanings and exact provider hashes now agree. Initial QA startup used
+LAN-open mode with a loopback address and rejected before listening; the corrected
+loopback-only command works from the same fixed slot. No vendor changes.
+
+This closes a real criterion; the consecutive nonclosing count stays zero.
+The full corpus/simple Studio tasks remain open until all their criteria pass;
+66/119 stays. Next musical gap: deliberate classification-driven inclusion/control
+with audible results, rather than treating descriptive labels as instrument truth.
+Checked service/worker binaries are deployed in the fixed stable slot with the
+unchanged twelve web assets, catalog/inbox, audio/cache roots and TLS binding.
+Loopback HTTP and LAN HTTPS return200 and the same page; all sixteen operator
+jobs retain their terminal statuses, none is active, and the worker is available.
+No firewall/certificate changes or operator data/answers were made. The previous
+fourteen deployed files are backed up in this packet's stable-before directory;
+hashes/startup settings remain local in deployment.json and start-stable.ps1.
+QA service/workers and playable QA tab are closed with all observed media paused
+and looping disabled. The failed navigation's temporary error tab is unavailable
+to the close API and remains subject to normal turn-end cleanup; it played no
+audio. No shared browser host/user tabs were killed. CI520 for a221384 is terminal
+SUCCESS. Current implementation publication follows the local checks above.
+
+## Previous handoff: long Studio generation and continuation accepted — 2026-10-31
 
 Big Boss SOLO closes [context continuation](TODO/DONE/NS-4_context-continuation_01.md)
 and [instrumental streams](TODO/DONE/NS-6_instrumental-streams_01.md). Accounting:
@@ -46,10 +96,10 @@ inference, locks and cancel ownership were not weakened. Browser draft retry
 preserves identity and now shows feedback inside the playlist picker.
 
 Stable service/worker and all twelve matching web assets are deployed in the
-fixed approved stable slot. Current LAN Studio:
-`https://192.168.12.108:18097/studio.html`; loopback HTTP and LAN HTTPS return200.
+fixed approved stable slot. Loopback HTTP and LAN HTTPS return200; current host
+address and startup settings are retained only in the ignored local run packet.
 Existing operator catalog/inbox, private recordings, answers, TLS binding and
-artifact/cache configuration remain intact. Stable PID52168 remains available.
+artifact/cache configuration remain intact. The stable service remains available.
 Old fourteen deployed files are backed up in
 `E:/CodexWork/pythian/runs/sequence-continuation-20261031-boss/stable-before`.
 Packets under E-drive tests/runs: `studio-long-20261031-boss` and

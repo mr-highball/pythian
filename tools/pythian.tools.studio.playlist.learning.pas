@@ -48,6 +48,11 @@ function LearnStudioPlaylist(const ACatalogRoot, ALibraryRoot, ACacheRoot,
   AJobId: String; const APlaylist: TJSONObject; out AReceipt: TJSONObject;
   const AProgress: TWorkProgressCallback = nil;
   const ALibraryProgress: TStudioLibraryProgress = nil): TMusicalCorpus;
+{ Presentation of the shared corpus contract. Summary receipts omit token text;
+  the native worker saves the full ordered bindings beside its provider models. }
+function StudioMusicalVocabulary(const ACorpus: TMusicalCorpus;
+  const AIncludeTokens: Boolean = True;
+  const AProgress: TWorkProgressCallback = nil): TJSONObject;
 
 implementation
 
@@ -67,6 +72,75 @@ type
     RejectedCaches: Integer;
     Windows: Integer;
   end;
+
+function StudioMusicalVocabulary(const ACorpus: TMusicalCorpus;
+  const AIncludeTokens: Boolean; const AProgress: TWorkProgressCallback): TJSONObject;
+var
+  LVocabularies: TMusicalProviderVocabularies;
+  LContributions: TMusicalCorpusContributions;
+  LSources: TMusicalCorpusSources;
+  LValue: TJSONObject;
+  LProviders: TJSONArray;
+  LLeaves: TJSONArray;
+  LTokens: TJSONArray;
+  LRow: TJSONObject;
+  I: Integer;
+  J: Integer;
+begin
+  LValue := TJSONObject.Create;
+  try
+    LVocabularies := ACorpus.CopyVocabularies;
+    LContributions := ACorpus.CopyContributions;
+    LSources := ACorpus.CopySources;
+    LValue.Add('format', 'pythian.musical.vocabulary.v1');
+    LValue.Add('revision_sha256', ACorpus.RevisionIdentity);
+    LValue.Add('token_identity_policy', 'Codec, provider key, relevant role schema and canonical token value; independent of local index and training count');
+    LValue.Add('rebuild_policy', 'Replace from the complete selected evidence; never append previous observation counts');
+    LProviders := TJSONArray.Create;
+    LValue.Add('providers', LProviders);
+    for I := 0 to High(LVocabularies) do
+    begin
+      ReportWork(AProgress, 'musical_vocabulary_publication', wuItems, I, Length(LVocabularies));
+      LRow := TJSONObject.Create(['key', LVocabularies[I].Key,
+        'codec', LVocabularies[I].Codec, 'schema_sha256', LVocabularies[I].SchemaSha256,
+        'model_sha256', LVocabularies[I].ModelSha256,
+        'token_count', Length(LVocabularies[I].Tokens)]);
+      LProviders.Add(LRow);
+      if AIncludeTokens then
+      begin
+        LTokens := TJSONArray.Create;
+        LRow.Add('tokens', LTokens);
+        for J := 0 to High(LVocabularies[I].Tokens) do
+        begin
+          LTokens.Add(TJSONObject.Create(['local_index', J,
+            'identity', LVocabularies[I].Tokens[J].Identity,
+            'value', LVocabularies[I].Tokens[J].Value]));
+        end;
+      end;
+    end;
+    LLeaves := TJSONArray.Create;
+    LValue.Add('contributions', LLeaves);
+    for I := 0 to High(LContributions) do
+    begin
+      LLeaves.Add(TJSONObject.Create(['identity', LContributions[I].Identity,
+        'source_index', LContributions[I].SourceIndex,
+        'source_sha256', LSources[LContributions[I].SourceIndex].Sha256,
+        'sample_rate', LSources[LContributions[I].SourceIndex].SampleRate,
+        'run_index', LContributions[I].RunIndex,
+        'first_cell', LContributions[I].FirstCell,
+        'cell_count', LContributions[I].CellCount,
+        'start_frame', LContributions[I].StartFrame,
+        'end_frame', LContributions[I].EndFrame,
+        'training_weight', LContributions[I].TrainingWeight]));
+    end;
+    ReportWork(AProgress, 'musical_vocabulary_publication', wuItems,
+      Length(LVocabularies), Length(LVocabularies));
+    Result := LValue;
+    LValue := nil;
+  finally
+    LValue.Free;
+  end;
+end;
 
 procedure Need(const ACondition: Boolean; const AMessage: String);
 begin
@@ -496,6 +570,7 @@ begin
       'No usable musical notes were found. Try tonal music or a longer selection.');
     ReportWork(AProgress, 'playlist_learn_music', wuItems, 0, 1);
     LCandidate := TMusicalCorpus.Create(LSources, LSelections, LRuns, 2, 2, 65536, AProgress);
+    LReceipt.Add('vocabulary', StudioMusicalVocabulary(LCandidate, False, AProgress));
     LCoverage := LCandidate.CopyCoverage;
     LTempoTotal := 0;
     LTempoWeight := 0;

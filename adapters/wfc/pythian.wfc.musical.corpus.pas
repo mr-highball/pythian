@@ -78,6 +78,32 @@ type
     WeightedSamples: Integer;
   end;
   TMusicalCorpusCoverages = array of TMusicalCorpusCoverage;
+  TMusicalTokenMeaning = record
+    Identity: String;
+    Value: String;
+  end;
+  TMusicalTokenMeanings = array of TMusicalTokenMeaning;
+  TMusicalProviderVocabulary = record
+    Key: String;
+    Codec: String;
+    SchemaSha256: String;
+    ModelSha256: String;
+    { Array position is local to ModelSha256. Identity binds codec/key/value,
+      never the model's encounter-order token number or observation count. }
+    Tokens: TMusicalTokenMeanings;
+  end;
+  TMusicalProviderVocabularies = array of TMusicalProviderVocabulary;
+  TMusicalCorpusContribution = record
+    Identity: String;
+    SourceIndex: Integer;
+    RunIndex: Integer;
+    FirstCell: Integer;
+    CellCount: Integer;
+    StartFrame: Int64;
+    EndFrame: Int64;
+    TrainingWeight: Integer;
+  end;
+  TMusicalCorpusContributions = array of TMusicalCorpusContribution;
 
   { Big Boss: owns learned symbolic models and detached source/proposal evidence.
     It owns no source PCM or instrument. Every known run is a separate open
@@ -100,6 +126,10 @@ type
     FHasSound: Boolean;
     FSound: TMusicalSound;
     FRoleNames: TMusicalProposalNames;
+    FVocabularies: TMusicalProviderVocabularies;
+    FContributions: TMusicalCorpusContributions;
+    FRevisionIdentity: String;
+    procedure CaptureVocabularies(const AProgress: TWorkProgressCallback);
   public
     constructor Create(const ASources: TMusicalCorpusSources;
       const ASelections: TMusicalCorpusSelections; const ARuns: TMusicalCorpusRuns;
@@ -112,6 +142,13 @@ type
     function CopyRuns: TMusicalCorpusRuns;
     function CopyCoverage: TMusicalCorpusCoverages;
     function CopyRoleNames: TMusicalProposalNames;
+    function CopyProviderNames: TLayerModelTexts;
+    function CopyVocabularies: TMusicalProviderVocabularies;
+    function CopyContributions: TMusicalCorpusContributions;
+    { Resolve a stable meaning in this exact revision. -1 means absent, not
+      a fallback to the same numeric position in a different vocabulary. }
+    function ResolveToken(const AProviderKey, ATokenIdentity: String): Integer;
+    property RevisionIdentity: String read FRevisionIdentity;
     function CopyModelTexts(const AProgress: TWorkProgressCallback = nil): TLayerModelTexts;
     { Borrowed immutable models, detached config arrays. Keep this owner alive
       during the synchronous instrumental-plan construction, which clones them. }
@@ -129,7 +166,7 @@ uses SysUtils, Math, pythian.audio, pythian.time, pythian.hash,
   pythian.music.pattern, pythian.percussion, pythian.wfc.music,
   pythian.wfc.learning, pythian.wfc.providers,
   wfc_music, wfc_music_sequence, wfc_music_ensemble, wfc_music_ensemble_graph,
-  wfc_sequence_text;
+  wfc_sequence_text, pythian.text, pythian.binary;
 
 type
   TProviderSamples = array of TWeightedSequenceSamples;
@@ -161,6 +198,37 @@ begin
   end;
   SetLength(ATokens, Length(ATokens) + 1);
   ATokens[High(ATokens)] := AToken;
+end;
+
+{ Big Boss: primary UTF-8/binary/SHA own encoding and hashing. Length-framed
+  fields avoid separator ambiguity and native-byte/pas2js UTF-16 differences. }
+function HashFields(const ADomain: String; const AFields: array of String): String;
+var
+  LHash: TSha256Hasher;
+  LBytes: TAudioBytes;
+  LSize: array[0..3] of Byte;
+  I: Integer;
+  procedure Field(const AText: String);
+  begin
+    LBytes := EncodeUTF8Text(AText, 16 * 1024 * 1024);
+    WriteInt32LE(LSize, 0, Length(LBytes));
+    LHash.Update(LSize, 0, 4);
+    LHash.Update(LBytes, 0, Length(LBytes));
+  end;
+begin
+  LHash := TSha256Hasher.Create;
+  try
+    Field(ADomain);
+    WriteInt32LE(LSize, 0, Length(AFields));
+    LHash.Update(LSize, 0, 4);
+    for I := 0 to High(AFields) do
+    begin
+      Field(AFields[I]);
+    end;
+    Result := LHash.Finish;
+  finally
+    LHash.Free;
+  end;
 end;
 
 constructor TMusicalCorpus.Create(const ASources: TMusicalCorpusSources;
@@ -200,6 +268,9 @@ var
   LTotalSoundWeight: Double;
   LCutoff: Double;
   LSustain: Double;
+  LFields: TLayerModelTexts;
+  LProviderNames: TLayerModelTexts;
+  LContribution: TMusicalCorpusContribution;
 begin
   inherited Create;
   Need((Length(ASources) >= 1) and (Length(ASources) <= MaximumMusicalCorpusSources),
@@ -367,9 +438,19 @@ begin
           end;
           Inc(FCoverage[LSourceIndex].Samples);
           Inc(FCoverage[LSourceIndex].WeightedSamples, FSources[LSourceIndex].TrainingWeight);
+          SetLength(FContributions, Length(FContributions) + 1);
+          LContribution := Default(TMusicalCorpusContribution);
+          LContribution.SourceIndex := LSourceIndex;
+          LContribution.RunIndex := R;
+          LContribution.FirstCell := C;
+          LContribution.StartFrame := LRun.StartFrame + LStart;
+          LContribution.TrainingWeight := FSources[LSourceIndex].TrainingWeight;
+          FContributions[High(FContributions)] := LContribution;
         end;
         LInSample := True;
         LSample := High(LSamples[0]);
+        Inc(FContributions[LSample].CellCount);
+        FContributions[LSample].EndFrame := LRun.StartFrame + LEnd;
         LToken := Length(LSamples[0][LSample].Tokens);
         for P := 0 to LProviderCount - 1 do
         begin
@@ -425,6 +506,36 @@ begin
     FCoverage[I].UnmodeledFrames := FCoverage[I].ProcessedFrames - FCoverage[I].ModelUsedFrames;
     FCoverage[I].BudgetOmittedFrames := FCoverage[I].ProposedFrames - FCoverage[I].ModelUsedFrames;
   end;
+  { Exactly the current selected evidence is rebuilt, never parent counts plus
+    those same observations again. Multiplicity stays separate from leaf identity. }
+  for I := 0 to High(FContributions) do
+  begin
+    ReportWork(AProgress, 'musical_corpus_contributions', wuItems, I, Length(FContributions));
+    LContribution := FContributions[I];
+    LRun := FRuns[LContribution.RunIndex];
+    LFields := [FSources[LContribution.SourceIndex].Sha256,
+      IntToStr(LRun.Grid.SampleRate), IntToStr(LContribution.StartFrame),
+      IntToStr(LContribution.EndFrame), LRun.Grid.Policy,
+      IntToStr(LRun.Grid.TempoMicroseconds), IntToStr(LProviderCount)];
+    LProviderNames := CopyProviderNames;
+    for P := 0 to LProviderCount - 1 do
+    begin
+      SetLength(LFields, Length(LFields) + 2);
+      LFields[High(LFields) - 1] := LProviderNames[P];
+      LFields[High(LFields)] := IntToStr(Length(LSamples[P][I].Tokens));
+      for J := 0 to High(LSamples[P][I].Tokens) do
+      begin
+        SetLength(LFields, Length(LFields) + 1);
+        LFields[High(LFields)] := LSamples[P][I].Tokens[J];
+      end;
+    end;
+    FContributions[I].Identity := HashFields('pythian.musical.contribution.v1', LFields);
+    for J := 0 to I - 1 do
+    begin
+      Need(FContributions[J].Identity <> FContributions[I].Identity,
+        'Repeated musical source evidence cannot acquire duplicate ancestry');
+    end;
+  end;
   for P := 0 to LProviderCount - 1 do
   begin
     ReportWork(AProgress, 'musical_corpus_learn', wuItems, P, LProviderCount);
@@ -448,6 +559,7 @@ begin
     FSound.SustainPercent := Round(LSustain / LTotalSoundWeight);
     ValidateMusicalSound(FSound);
   end;
+  CaptureVocabularies(AProgress);
   ReportWork(AProgress, 'musical_corpus_learn', wuItems, LProviderCount, LProviderCount);
 end;
 
@@ -500,6 +612,132 @@ end;
 function TMusicalCorpus.CopyRoleNames: TMusicalProposalNames;
 begin
   Result := Copy(FRoleNames);
+end;
+
+function TMusicalCorpus.CopyProviderNames: TLayerModelTexts;
+const
+  CDrums: array[0..2] of String = ('kick', 'snare', 'hat');
+var
+  I: Integer;
+begin
+  Result := nil;
+  SetLength(Result, Length(FRoleNames) + 6);
+  Result[0] := 'harmony';
+  Result[1] := 'rhythm';
+  for I := 0 to High(FRoleNames) do
+  begin
+    Result[I + 2] := 'voice:' + FRoleNames[I];
+  end;
+  Result[Length(FRoleNames) + 2] := 'musical-context';
+  for I := 0 to 2 do
+  begin
+    Result[Length(FRoleNames) + 3 + I] := 'percussion:' + CDrums[I];
+  end;
+end;
+
+procedure TMusicalCorpus.CaptureVocabularies(const AProgress: TWorkProgressCallback);
+var
+  LNames: TLayerModelTexts;
+  LRevision: TLayerModelTexts;
+  LCodec: String;
+  LSchema: String;
+  I: Integer;
+  J: Integer;
+begin
+  LNames := CopyProviderNames;
+  SetLength(FVocabularies, Length(FModels));
+  SetLength(LRevision, 1 + Length(FModels) * 2 + Length(FContributions) * 2);
+  LRevision[0] := MusicalCorpusPolicy;
+  for I := 0 to High(FModels) do
+  begin
+    if I = 0 then
+    begin
+      LCodec := 'wfc.music.pitch-class-set.v1';
+    end
+    else if I = 1 then
+    begin
+      LCodec := 'wfc.music.rhythm-frame.v1';
+    end
+    else if I < Length(FRoleNames) + 2 then
+    begin
+      LCodec := 'wfc.music.ensemble-frame.v1';
+    end
+    else if I = Length(FRoleNames) + 2 then
+    begin
+      LCodec := 'pythian.musical-context.v1';
+    end
+    else
+    begin
+      LCodec := 'pythian.percussion.velocity.v1';
+    end;
+    FVocabularies[I].Key := LNames[I];
+    FVocabularies[I].Codec := LCodec;
+    LSchema := '';
+    if (I = 1) or (I = Length(FRoleNames) + 2) then
+    begin
+      LSchema := HashFields('pythian.musical.ordered-roles.v1', FRoleNames);
+    end;
+    FVocabularies[I].SchemaSha256 := LSchema;
+    FVocabularies[I].ModelSha256 := Sha256Bytes(
+      EncodeUTF8Text(EncodeWfcSequenceText(FModels[I]), 16 * 1024 * 1024));
+    SetLength(FVocabularies[I].Tokens, FModels[I].PublicTokenCount);
+    for J := 0 to FModels[I].PublicTokenCount - 1 do
+    begin
+      ReportWork(AProgress, 'musical_corpus_vocabulary', wuItems, J,
+        FModels[I].PublicTokenCount, I);
+      FVocabularies[I].Tokens[J].Value := FModels[I].PublicTokenAt(J);
+      FVocabularies[I].Tokens[J].Identity := HashFields('pythian.musical.token.v1',
+        [LNames[I], LCodec, LSchema, FModels[I].PublicTokenAt(J)]);
+    end;
+    LRevision[1 + I * 2] := LNames[I];
+    LRevision[2 + I * 2] := FVocabularies[I].ModelSha256;
+  end;
+  for I := 0 to High(FContributions) do
+  begin
+    LRevision[1 + Length(FModels) * 2 + I * 2] := FContributions[I].Identity;
+    LRevision[2 + Length(FModels) * 2 + I * 2] := IntToStr(FContributions[I].TrainingWeight);
+  end;
+  ReportWork(AProgress, 'musical_corpus_vocabulary_ready', wuItems, 0, 1);
+  FRevisionIdentity := HashFields('pythian.musical.corpus-revision.v1', LRevision);
+end;
+
+function TMusicalCorpus.CopyVocabularies: TMusicalProviderVocabularies;
+var
+  I: Integer;
+begin
+  Result := Copy(FVocabularies);
+  for I := 0 to High(Result) do
+  begin
+    Result[I].Tokens := Copy(FVocabularies[I].Tokens);
+  end;
+end;
+
+function TMusicalCorpus.CopyContributions: TMusicalCorpusContributions;
+begin
+  Result := Copy(FContributions);
+end;
+
+function TMusicalCorpus.ResolveToken(const AProviderKey, ATokenIdentity: String): Integer;
+var
+  I: Integer;
+  J: Integer;
+begin
+  for I := 0 to High(FVocabularies) do
+  begin
+    if FVocabularies[I].Key <> AProviderKey then
+    begin
+      Continue;
+    end;
+    for J := 0 to High(FVocabularies[I].Tokens) do
+    begin
+      if FVocabularies[I].Tokens[J].Identity = ATokenIdentity then
+      begin
+        Exit(J);
+      end;
+    end;
+    Exit(-1);
+  end;
+  Result := -1;
 end;
 
 function TMusicalCorpus.CopyModelTexts(const AProgress: TWorkProgressCallback): TLayerModelTexts;

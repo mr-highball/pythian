@@ -28,7 +28,8 @@ uses Classes, SysUtils, Math, fpjson, pythian.audio, pythian.wave, pythian.progr
   pythian.tools.studio.projects, pythian.tools.studio.&library.discovery,
   pythian.tools.studio.jobs, pythian.tools.studio.playlist.learning,
   pythian.tools.studio.worker, pythian.tools.listen.catalog,
-  pythian.wfc.musical.corpus, pythian.wfc.layers;
+  pythian.wfc.musical.corpus, pythian.wfc.layers,
+  wfc_sequence, wfc_sequence_text;
 var GChecks: Integer;
 type
   TSelectionProgress = class
@@ -106,6 +107,12 @@ begin
           'Model-used coverage is separate from analyzed duration');
       end;
       LBefore := LCold.CopyModelTexts;
+      Check((LReceipt.Objects['vocabulary'].Strings['revision_sha256'] = LCold.RevisionIdentity) and
+        (LReceipt.Objects['vocabulary'].Arrays['providers'].Count = 9) and
+        (LReceipt.Objects['vocabulary'].Arrays['contributions'].Count = Length(LCold.CopyContributions)),
+        'Learning receipt carries actual provider identities and unique original contributions');
+      Check(LReceipt.Objects['vocabulary'].Arrays['providers'].Objects[0].Find('tokens') = nil,
+        'Ordinary learning receipt avoids duplicating full token text');
     finally FreeAndNil(LReceipt) end;
     LProgress.Updates := 0;
     LWarm := LearnStudioPlaylist(ACatalog, ALibrary, ARoot + '/cache',
@@ -120,6 +127,8 @@ begin
       LAfter := LWarm.CopyModelTexts;
       for I := 0 to High(LBefore) do
         Check(LBefore[I] = LAfter[I], 'Warm reuse preserves every actual musical provider');
+      Check(LWarm.RevisionIdentity = LCold.RevisionIdentity,
+        'Warm rebuild preserves the exact learning revision rather than appending ancestry');
     finally FreeAndNil(LReceipt) end;
     FreeAndNil(LWarm);
     APlaylist.Arrays['items'].Objects[0].Integers['influence'] := 7;
@@ -133,6 +142,9 @@ begin
       for I := 0 to High(LBefore) do
         if LBefore[I] <> LAfter[I] then LDifferent := True;
       Check(LDifferent, 'Influence changes actual whole-recording learned models');
+      Check((LWarm.RevisionIdentity <> LCold.RevisionIdentity) and
+        (LWarm.CopyContributions[0].Identity = LCold.CopyContributions[0].Identity),
+        'Actual native reweighting changes the revision while retaining original evidence identity');
     finally FreeAndNil(LReceipt) end;
     FreeAndNil(LWarm);
     LItem := APlaylist.Arrays['items'].Objects[1];
@@ -179,6 +191,71 @@ begin
     SetCurrentDir(LDirectory);
   end;
 end;
+
+procedure CheckSavedVocabulary(const ACatalog, AJobId: String; const AResults: TJSONObject);
+var
+  LSummary: TJSONObject;
+  LFull: TJSONObject;
+  LReplay: TJSONObject;
+  LProvider: TJSONObject;
+  LLeaf: TJSONObject;
+  LModel: TWfcSequenceModel;
+  LDirectory: String;
+  I: Integer;
+  J: Integer;
+begin
+  LSummary := AResults.Objects['playlist_learning'].Objects['vocabulary'];
+  Check(LSummary.Strings['artifact'] = 'musical-vocabulary.json',
+    'Actual worker references its saved full musical vocabulary');
+  LDirectory := StudioJobDirectory(ACatalog, AJobId);
+  LFull := ReadStudioJSON(LDirectory + PathDelim + 'musical-vocabulary.json');
+  LReplay := nil;
+  try
+    LReplay := ReadStudioJSON(LDirectory + PathDelim + 'instrumental-stream.json');
+    Check((LFull.Strings['format'] = 'pythian.musical.vocabulary.v1') and
+      (LFull.Strings['revision_sha256'] = LSummary.Strings['revision_sha256']) and
+      (LFull.Arrays['providers'].Count = LReplay.Arrays['models'].Count),
+      'Saved identity artifact belongs to the actual worker learning/model revision');
+    for I := 0 to LFull.Arrays['providers'].Count - 1 do
+    begin
+      LProvider := LFull.Arrays['providers'].Objects[I];
+      Check((LProvider.Strings['model_sha256'] = StudioTextHash(LReplay.Arrays['models'].Strings[I])) and
+        (LProvider.Strings['key'] = LReplay.Arrays['model_labels'].Strings[I]),
+        'Saved provider binding uses actual replay model bytes and the shared role layout');
+      LModel := DecodeWfcSequenceText(LReplay.Arrays['models'].Strings[I]);
+      try
+        Check(LProvider.Arrays['tokens'].Count = LModel.PublicTokenCount,
+          'Saved full vocabulary covers every actual public token');
+        for J := 0 to LModel.PublicTokenCount - 1 do
+        begin
+          Check((LProvider.Arrays['tokens'].Objects[J].Integers['local_index'] = J) and
+            (LProvider.Arrays['tokens'].Objects[J].Strings['value'] = LModel.PublicTokenAt(J)) and
+            (Length(LProvider.Arrays['tokens'].Objects[J].Strings['identity']) = 64),
+            'Saved stable meaning maps to its exact local index in the reloaded model');
+        end;
+      finally
+        LModel.Free;
+      end;
+    end;
+    for I := 0 to LFull.Arrays['contributions'].Count - 1 do
+    begin
+      LLeaf := LFull.Arrays['contributions'].Objects[I];
+      Check((Length(LLeaf.Strings['identity']) = 64) and
+        (LLeaf.Int64s['start_frame'] < LLeaf.Int64s['end_frame']) and
+        (LLeaf.Integers['training_weight'] > 0),
+        'Saved original evidence retains its source clock and separate training multiplicity');
+      for J := 0 to I - 1 do
+      begin
+        Check(LLeaf.Strings['identity'] <> LFull.Arrays['contributions'].Objects[J].Strings['identity'],
+          'Actual worker publication contains no duplicated contribution ancestry');
+      end;
+    end;
+  finally
+    LReplay.Free;
+    LFull.Free;
+  end;
+end;
+
 procedure Run(const ARoot: String);
 var
   LCatalog, LLibrary, LFile: String;
@@ -316,6 +393,7 @@ begin
           Check((LResult.Objects['results'].Objects['playlist_learning'].Arrays['sources'].Count = 2) and
             (LResult.Objects['results'].Arrays['parts'].Count = 6),
             'Actual worker result retains source contributions and all six synthesized parts');
+          CheckSavedVocabulary(LCatalog, LJob.Strings['job_id'], LResult.Objects['results']);
         finally LResult.Free end;
         LResult := ReadListeningQueue(LCatalog);
         try

@@ -102,8 +102,10 @@ bounded Experimental proposals, not automatic source-instrument identification
 or whole-corpus learning. The new bounded corpus consumer now learns weighted,
 source/run-aware musical providers and reloads them into actual six-part synthesis.
 Whole-track traversal/reuse and the simple Studio Generate connection are now
-implemented. Vocabulary ancestry and the remaining corpus criteria stay open;
-no partial effort is accepted for these slices.
+implemented. Stable token meanings, exact local index bindings and unique
+admitted source contributions now survive additions/reorders/reweighting and
+saved native/browser results. Deliberate classification mappings and remaining
+corpus criteria stay open; no partial effort is accepted for these slices.
 
 <a id="ns-4"></a>
 ### NS-4 — Musical graph and synthesis together

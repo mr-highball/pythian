@@ -33,6 +33,38 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-10-31, Big Boss, AC2 rebuild boundary closed: actual provider tokens now
+  have content-bound codec/key/schema/value identities and exact model-local
+  index mappings. Admitted open samples retain unique original source/range,
+  policy/clock and symbolic evidence identities; weights remain separate.
+  Adding/reordering/removing recordings or rebuilding a warm cache never
+  reinterprets a meaning or adds parent counts twice. Joint role schema edits
+  change positional rhythm/context identity. Native and actual pas2js377 checks
+  pass; all eleven provider/token fingerprints, including Unicode, match.
+  Native actual playlist/worker177 checks pass with clean heap. Ordinary browser
+  Generate runs the external fixed-slot worker, saves nine vocabularies and five
+  real contributions, plays its result and retains truthful source coverage.
+  Full bindings are saved in musical-vocabulary.json; ordinary receipts omit
+  full token text. See [the shared contract](../INSTRUMENTAL.md#stable-musical-meaning-across-rebuilds).
+  Preserve initial parity evidence: synthesized fixture source WAV bytes differ
+  between native/JS, so their source-bound ancestry hashes need not match. The
+  initial Unicode fixture cast also transcoded through Windows' code page;
+  identical canonical fixture input repairs that test without a product workaround.
+  The first isolated service launch rejected LAN-open mode with a loopback
+  address; its corrected loopback command keeps the fixed approved QA slot.
+  Evidence: musical-vocabulary-20261031-boss under E-drive tests/runs. Stop before
+  blending. Classification-driven corpus/control behavior and final task criteria
+  remain open;66/119 effort stays unchanged. This is solo verification.
+
+- 2026-10-31, Big Boss: selected AC2 rebuild contract after accepted long Studio
+  output. Give actual musical tokens stable content-bound identities while
+  retaining each model's local ordered index mapping. Save unique admitted sample
+  identities/source clocks and explicit training multiplicity; rebuilding the
+  complete selected corpus must not add old observations a second time. Native
+  and actual pas2js source-addition/reorder/weight checks and the ordinary native
+  learning worker close this boundary. Stop before the separate styles/blends
+  archive. Evidence packet: `musical-vocabulary-20261031-boss` under E.
+
 - 2026-10-30, Big Boss, automatic playlist consumer implemented: native
   LearnStudioPlaylist traverses complete included ranges in bounded windows,
   verifies original bytes and reuses source/clock/policy-bound primary proposal

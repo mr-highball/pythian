@@ -18,6 +18,11 @@ caches and generates actual instruments from per-track weighted providers.
 Its deployed UI accepts2seconds–24hour plans with explicit output estimates.
 Growing vocabulary/style ancestry remain open. No partial task effort is accepted,
 and this delivery is not a request for more labeling.
+Rebuilds now preserve stable musical token meanings and unique admitted source
+contributions. Saved Studio vocabulary bindings distinguish exact model-local
+indices from persistent meaning; source addition/reweighting and actual native/
+browser consumers pass. Deliberate classification mappings and remaining corpus
+criteria keep the parent task open, without extra effort or musical credit.
 Generate now separates durable overall workflow/selection counters from nested
 analysis operations, so file/pitch/beat callbacks cannot restart its bar. This
 repairs the simple consumer's progress criterion without accepting a whole task

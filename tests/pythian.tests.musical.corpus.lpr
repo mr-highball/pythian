@@ -172,6 +172,173 @@ begin
   finally LModel.Free end;
 end;
 
+procedure CheckMeanings(const ABefore, AAfter: TMusicalCorpus);
+var
+  LBefore: TMusicalProviderVocabularies;
+  LAfter: TMusicalProviderVocabularies;
+  LAt: Integer;
+  I: Integer;
+  J: Integer;
+begin
+  LBefore := ABefore.CopyVocabularies;
+  LAfter := AAfter.CopyVocabularies;
+  Check(Length(LBefore) = Length(LAfter), 'Rebuild retains the actual provider schema');
+  for I := 0 to High(LBefore) do
+  begin
+    Check((LBefore[I].Key = LAfter[I].Key) and (LBefore[I].Codec = LAfter[I].Codec),
+      'Meanings retain their explicit provider and decoder');
+    for J := 0 to High(LBefore[I].Tokens) do
+    begin
+      LAt := AAfter.ResolveToken(LBefore[I].Key, LBefore[I].Tokens[J].Identity);
+      Check((LAt >= 0) and (LAt < Length(LAfter[I].Tokens)),
+        'Every retained meaning resolves in the rebuilt model');
+      Check(LAfter[I].Tokens[LAt].Value = LBefore[I].Tokens[J].Value,
+        'Stable identity cannot silently change its musical value');
+    end;
+  end;
+end;
+
+procedure CheckRebuilds(const ACorpus: TMusicalCorpus;
+  const ASources: TMusicalCorpusSources; const ASelections: TMusicalCorpusSelections;
+  const ARuns: TMusicalCorpusRuns);
+var
+  LSources: TMusicalCorpusSources;
+  LSelections: TMusicalCorpusSelections;
+  LRuns: TMusicalCorpusRuns;
+  LSingle: TMusicalCorpus;
+  LReordered: TMusicalCorpus;
+  LRepeated: TMusicalCorpus;
+  LRenamed: TMusicalCorpus;
+  LBefore: TMusicalProviderVocabularies;
+  LAfter: TMusicalProviderVocabularies;
+  LLeaves: TMusicalCorpusContributions;
+  LOtherLeaves: TMusicalCorpusContributions;
+  LModel: TWfcSequenceModel;
+  LMissing: Boolean;
+  LMoved: Boolean;
+  LAt: Integer;
+  I: Integer;
+  J: Integer;
+begin
+  LSingle := nil;
+  LReordered := nil;
+  LRepeated := nil;
+  LRenamed := nil;
+  try
+    LSources := [ASources[0]];
+    LSelections := [ASelections[0]];
+    LRuns := [ARuns[0]];
+    LSingle := Build(LSources, LSelections, LRuns);
+    CheckMeanings(LSingle, ACorpus);
+    Check((LSingle.Config.HarmonyModel.ObservationCount = 128) and
+      (ACorpus.Config.HarmonyModel.ObservationCount = 144),
+      'Adding one recording rebuilds128+16 observations, not old+old+new');
+    LBefore := LSingle.CopyVocabularies;
+    LAfter := ACorpus.CopyVocabularies;
+    Check((LSingle.RevisionIdentity <> ACorpus.RevisionIdentity) and
+      (LBefore[0].ModelSha256 <> LAfter[0].ModelSha256),
+      'A changed learned model gets a distinct revision binding');
+    LMissing := False;
+    for I := 0 to High(LAfter) do
+    begin
+      LModel := DecodeWfcSequenceText(ACorpus.CopyModelTexts[I]);
+      try
+        Check(LAfter[I].ModelSha256 = Sha256Bytes(
+          EncodeUTF8Text(ACorpus.CopyModelTexts[I], 16777216)),
+          'Vocabulary binds the exact saved model bytes');
+        for J := 0 to High(LAfter[I].Tokens) do
+        begin
+          Check(LModel.PublicTokenAt(J) = LAfter[I].Tokens[J].Value,
+            'Local index mapping describes the actual reloaded provider');
+          if LSingle.ResolveToken(LAfter[I].Key, LAfter[I].Tokens[J].Identity) < 0 then
+          begin
+            LMissing := True;
+          end;
+        end;
+      finally
+        LModel.Free;
+      end;
+    end;
+    Check(LMissing, 'Removing a source leaves its unique meanings absent instead of reassigning IDs');
+    Check(ACorpus.ResolveToken('missing-provider', LAfter[0].Tokens[0].Identity) = -1,
+      'Stable meaning cannot cross provider roles');
+    Check(ACorpus.ResolveToken(LAfter[0].Key, StringOfChar('f', 64)) = -1,
+      'Unknown identity has no numeric fallback');
+
+    LSources := [ASources[1], ASources[0]];
+    LSelections := [ASelections[1], ASelections[0]];
+    LSelections[0].SourceIndex := 0;
+    LSelections[1].SourceIndex := 1;
+    LRuns := [ARuns[1], ARuns[0]];
+    LRuns[0].SourceIndex := 0;
+    LRuns[1].SourceIndex := 1;
+    LReordered := Build(LSources, LSelections, LRuns);
+    CheckMeanings(ACorpus, LReordered);
+    LMoved := False;
+    LBefore := ACorpus.CopyVocabularies;
+    for I := 0 to High(LBefore) do
+    begin
+      for J := 0 to High(LBefore[I].Tokens) do
+      begin
+        LAt := LReordered.ResolveToken(LBefore[I].Key, LBefore[I].Tokens[J].Identity);
+        LMoved := LMoved or (LAt <> J);
+      end;
+    end;
+    Check(LMoved, 'Fixture exercises real local-index changes after recording reorder');
+    LLeaves := ACorpus.CopyContributions;
+    LOtherLeaves := LReordered.CopyContributions;
+    Check((Length(LLeaves) = 2) and (Length(LOtherLeaves) = 2) and
+      (LLeaves[0].Identity = LOtherLeaves[1].Identity) and
+      (LLeaves[1].Identity = LOtherLeaves[0].Identity),
+      'Source/run ordinals change without duplicating or renaming original evidence');
+    Check((LLeaves[0].StartFrame = 8000) and (LLeaves[0].EndFrame = 40000) and
+      (LLeaves[0].CellCount = 16) and (LLeaves[0].TrainingWeight = 8),
+      'Contribution binds original clock, admitted cells and explicit multiplicity');
+    LRepeated := Build(ASources, ASelections, ARuns);
+    Check((LRepeated.RevisionIdentity = ACorpus.RevisionIdentity) and
+      (LRepeated.Config.HarmonyModel.ObservationCount = 144) and
+      (Length(LRepeated.CopyContributions) = 2),
+      'Repeated full rebuild neither doubles ancestry nor changes the accepted revision');
+    LBefore[0].Tokens[0].Value := 'corrupted';
+    LBefore[0].Tokens[0].Identity := 'corrupted';
+    LBefore[0].Key := 'corrupted';
+    LLeaves[0].StartFrame := 0;
+    Check((ACorpus.CopyVocabularies[0].Key = 'harmony') and
+      (ACorpus.CopyVocabularies[0].Tokens[0].Value <> 'corrupted') and
+      (ACorpus.CopyContributions[0].StartFrame = 8000),
+      'Returned vocabulary and evidence records are detached');
+    WriteLn('Corpus revision SHA256: ', ACorpus.RevisionIdentity);
+    WriteLn('First stable token SHA256: ', ACorpus.CopyVocabularies[0].Tokens[0].Identity);
+    WriteLn('First contribution SHA256: ', ACorpus.CopyContributions[0].Identity);
+    LSources := [ASources[0]];
+    LSelections := [ASelections[0]];
+    LRuns := LSingle.CopyRuns;
+    { Identical canonical input on both targets: an explicit native String cast
+      from a tagged UTF-8 scalar would transcode through the host code page. }
+    {$ifdef pas2js}
+    LRuns[0].Grid.RoleNames[2] := 'lead-' + ScalarText($1F3B5);
+    {$else}
+    LRuns[0].Grid.RoleNames[2] := 'lead-' + #$F0#$9F#$8E#$B5;
+    {$endif}
+    LRenamed := Build(LSources, LSelections, LRuns);
+    LBefore := LSingle.CopyVocabularies;
+    LAfter := LRenamed.CopyVocabularies;
+    Check((LBefore[0].Tokens[0].Identity = LAfter[0].Tokens[0].Identity) and
+      (LBefore[1].Tokens[0].Identity <> LAfter[1].Tokens[0].Identity) and
+      (LBefore[5].Tokens[0].Identity <> LAfter[5].Tokens[0].Identity),
+      'Role-schema edits change joint rhythm/context meanings while preserving pitch classes');
+    Check((LSingle.CopyContributions[0].Identity <> LRenamed.CopyContributions[0].Identity) and
+      (LBefore[4].Tokens[0].Identity <> LAfter[4].Tokens[0].Identity),
+      'Unicode role identity binds its actual evidence and named-voice vocabulary');
+    WriteLn('Unicode stable token SHA256: ', LAfter[4].Tokens[0].Identity);
+  finally
+    LRenamed.Free;
+    LRepeated.Free;
+    LReordered.Free;
+    LSingle.Free;
+  end;
+end;
+
 procedure Run;
 var
   LClips: array[0..1] of TAudioClip;
@@ -257,6 +424,7 @@ begin
 
     LSources[0].TrainingWeight := 8;
     LCorpus := Build(LSources, LSelections, LRuns);
+    CheckRebuilds(LCorpus, LSources, LSelections, LRuns);
     LCoverage := LCorpus.CopyCoverage;
     for I := 0 to 1 do
     begin
@@ -295,6 +463,13 @@ begin
     LSources[0].TrainingWeight := 1;
     LSources[1].TrainingWeight := 8;
     LChanged := Build(LSources, LSelections, LRuns);
+    CheckMeanings(LCorpus, LChanged);
+    Check((LCorpus.CopyContributions[0].Identity = LChanged.CopyContributions[0].Identity) and
+      (LCorpus.CopyContributions[1].Identity = LChanged.CopyContributions[1].Identity) and
+      (LChanged.CopyContributions[0].TrainingWeight = 1) and
+      (LChanged.CopyContributions[1].TrainingWeight = 8) and
+      (LCorpus.RevisionIdentity <> LChanged.RevisionIdentity),
+      'Reweighting changes the revision and counts without inventing new source ancestry');
     LOtherTexts := LChanged.CopyModelTexts;
     LTokenChanged := False;
     for I := 0 to High(LTexts) do
@@ -315,6 +490,10 @@ begin
       (LCoverage[0].UnmodeledFrames = 2000), 'Unknown cell splits samples without an invented rest or join');
     Check((LGap.CopyRuns[0].StartFrame = 8000) and not LGap.CopyRuns[0].Grid.Known[4],
       'Unknown timing and exact original offset survive learning');
+    Check((Length(LGap.CopyContributions) = 3) and
+      (LGap.CopyContributions[0].EndFrame = 16000) and
+      (LGap.CopyContributions[1].StartFrame = 18000),
+      'Unknown time splits actual evidence leaves on the original source clock');
     FreeAndNil(LGap);
     LRunCopy := LCorpus.CopyRuns;
     SetLength(LRunCopy[0].AdmittedCells, 16);
@@ -329,6 +508,11 @@ begin
       'Representative masks retain exact proposal coverage without training across omitted time');
     Check(LGap.CopyRuns[0].Grid.Known[0] and not LGap.CopyRuns[0].AdmittedCells[0],
       'Budget omissions remain separate from measured unknown cells');
+    Check((LGap.CopyContributions[0].StartFrame = 16000) and
+      (LGap.CopyContributions[0].EndFrame = 20000) and
+      (LGap.CopyContributions[1].StartFrame = 28000) and
+      (LGap.CopyContributions[1].EndFrame = 32000),
+      'Representative omissions never acquire a synthetic joined ancestor');
     LRunCopy := LGap.CopyRuns;
     LRunCopy[0].AdmittedCells[4] := False;
     Check(LGap.CopyRuns[0].AdmittedCells[4], 'Returned representative masks are detached');
@@ -350,12 +534,15 @@ begin
     try LCandidate := Build(LSources, LSelections, LRuns, nil, 4);
     except on E: EAudio do LFailed := True end;
     Check(LFailed and (LCandidate = nil), 'Declared model observation budget is enforced');
-    for I := 0 to 2 do
+    for I := 0 to 5 do
     begin
       case I of
         0: LProbe.Stage := 'musical_corpus_runs';
         1: LProbe.Stage := 'musical_corpus_tokens';
         2: LProbe.Stage := 'wfc_weighted_admission';
+        3: LProbe.Stage := 'musical_corpus_contributions';
+        4: LProbe.Stage := 'musical_corpus_vocabulary';
+        5: LProbe.Stage := 'musical_corpus_vocabulary_ready';
       end;
       LFailed := False;
       try LCandidate := Build(LSources, LSelections, LRuns, LProbe.Observe);

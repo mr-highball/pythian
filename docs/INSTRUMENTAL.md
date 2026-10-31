@@ -254,15 +254,60 @@ Sources below one supported proposal window can remain unanalyzed and are
 reported as such. Whole sources remain on disk; windows, grids and model inputs
 are bounded. Native source limits remain 16 GiB per recording / 32 GiB total.
 The automatic Studio consumer uses the existing durable instrumental job with
-a two-hour preparation/runtime budget and explicit progress/cancellation.
-Incremental vocabulary ancestry and the remaining
-[style-vocabulary criteria](TODO/NS-3_style-vocabulary_01.md) are still open.
+a48hour wall-clock limit for playlist generation and explicit progress/cancellation.
+Other training jobs retain their two-hour limit; requested music is at most24hours.
+Rebuild identities and source contributions are now explicit, as described below.
+Classification-driven selection/control and complete
+[style-vocabulary acceptance](TODO/NS-3_style-vocabulary_01.md) remain open.
 
 For playlist results, `playlist_learning.sources` and the immutable request bind
 the complete training selection and influence. `original_reference` and the
 top-level `sources` describe comparison material. `used_sources` remains empty
 because the generated mix performs instruments without original PCM. Listening
 publications name the actual playlist-learning task/policy, not an authored starter.
+
+### Stable musical meaning across rebuilds
+
+`TMusicalCorpus.CopyVocabularies` returns each real provider's key, codec,
+relevant ordered-role schema digest, exact model-text digest and public tokens.
+Each token has a stable identity bound to its codec/key/schema/value. Its array
+position remains local to that exact model. Adding or reordering recordings may
+change those positions; it cannot silently change a saved meaning. Joint rhythm
+and context also bind the ordered role schema, so renaming/reordering roles does
+not preserve an incorrect positional interpretation. Named voices bind their
+actual role names, including canonical Unicode.
+
+Use `ResolveToken(providerKey, tokenIdentity)` to find the current local index.
+It returns-1 when the meaning or provider is absent. Never reuse an old numeric
+position or substitute a different meaning. Old saved model/replay artifacts
+remain the authority for their own indices.
+
+`CopyContributions` identifies each actual admitted open sample by original
+source hash/rate/range, proposal policy/clock, provider keys and symbolic token
+sequences. Unknowns, omitted time and run boundaries remain separate leaves.
+Training multiplicity is a separate field: reweighting changes counts, without
+inventing a second source ancestor. A rebuild consumes the complete desired
+source/selection/run set once; it does not append the previous model's counts.
+Existing source-bound analysis caches already support adding recordings without
+remeasuring unchanged windows. `RevisionIdentity` binds the resulting ordered
+provider models and admitted symbolic contributions/counts. Sound recipes,
+classifications, excluded time and the complete playlist retain their separate
+receipts; this is not a general instrumental-style archive.
+
+Native learning receipts carry a compact `vocabulary` summary. The worker saves
+the full `musical-vocabulary.json` beside its replay models, including token values,
+stable identities, exact local indices and source contribution clocks/weights.
+This generated JSON artifact shares the existing1MiB local-record bound; larger
+metadata rejects explicitly rather than truncating or silently changing meaning.
+No extra UI setup or automatic retraining is introduced.
+
+Big Boss's native and actual pas2js rebuild checks cover source addition/reorder,
+real index changes, reweighting, removal, Unicode schema edits, unknown/omitted
+boundaries, detached records and cancellation. Saved models still drive actual
+six-part synthesis; changing8:1 to1:8 source influence changes the rendered music.
+The native Studio worker and browser Generate also save the actual bindings.
+Source-evidence/revision hashes can differ across targets when their synthesized
+fixture WAV bytes differ; stable meanings and exact provider-model hashes match.
 
 The maintained musical-corpus fixture measures two actual controlled recordings,
 swaps influence 8:1/1:8, reloads saved providers into six-part synthesis and checks

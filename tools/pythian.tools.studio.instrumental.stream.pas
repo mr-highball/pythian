@@ -56,6 +56,7 @@ var
   LMaster: TAudioSamples;
   LStems: TBusSampleBlocks;
   LModels: TLayerModelTexts;
+  LProviderNames: TLayerModelTexts;
   LMeta, LStored, LReference, LMaterial, LEstimate, LRow: TJSONObject;
   LProviders, LGraph, LModelsJson, LModelNames: TJSONArray;
   LRhythms, LConstraints, LTokens: TJSONArray;
@@ -118,16 +119,19 @@ begin
         'origin', 'Experimental brightness/dynamics mapping applied to all pitched roles']));
     LProviders := TJSONArray.Create;
     LMeta.Add('roles', LProviders);
-    LModelNames := TJSONArray.Create(['harmony', 'rhythm']);
+    LModelNames := TJSONArray.Create;
     LMeta.Add('model_labels', LModelNames);
+    LProviderNames := ACorpus.CopyProviderNames;
+    for I := 0 to High(LProviderNames) do
+    begin
+      LModelNames.Add(LProviderNames[I]);
+    end;
     for I := 0 to High(ARoles) do
     begin
-      LModelNames.Add('voice:' + ARoles[I].Name);
       LProviders.Add(TJSONObject.Create(['name', ARoles[I].Name,
         'instrument_id', ARoles[I].InstrumentId, 'output_bus', ARoles[I].OutputBus,
         'minimum_pitch', LConfig.Voices[I].MinPitch, 'maximum_pitch', LConfig.Voices[I].MaxPitch]));
     end;
-    LModelNames.Add('musical-context');
     LReplayConfig := TJSONObject.Create;
     LMeta.Add('musical_config', LReplayConfig);
     LReplayConfig.Add('steps_per_octave', LConfig.StepsPerOctave);
@@ -142,7 +146,6 @@ begin
     LMeta.Add('percussion', LDrumRecipes);
     for I := 0 to High(ADrums) do
     begin
-      LModelNames.Add('percussion:' + ADrums[I].Name);
       LRow := TJSONObject.Create(['name', ADrums[I].Name,
         'kind', Ord(ADrums[I].Settings.Kind), 'gain', ADrums[I].Settings.Gain,
         'pan', ADrums[I].Settings.Pan, 'gate_seconds', ADrums[I].Settings.GateSeconds,

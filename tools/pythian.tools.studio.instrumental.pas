@@ -160,6 +160,13 @@ begin
       LCorpus := LearnStudioPlaylist(ACatalogRoot, ALibraryRoot, LCache, AJobId,
         ARequest.Objects['project_snapshot'].Objects['playlist'], LLearning, AProgress,
         ALibraryProgress);
+      LModelArtifact := StudioMusicalVocabulary(LCorpus, True, AProgress);
+      try
+        WriteStudioJSONNew(LDirectory + PathDelim + 'musical-vocabulary.json', LModelArtifact);
+      finally
+        LModelArtifact.Free;
+      end;
+      LLearning.Objects['vocabulary'].Add('artifact', 'musical-vocabulary.json');
       LOrigin := StudioPlaylistOrigin;
       LRecipeHash := StudioTextHash(StudioPlaylistLearningPolicy +
         ARequest.Objects['project_snapshot'].Objects['playlist'].AsJSON);
