@@ -52,8 +52,13 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
   performs soft/strong sections and verifies sound replay, targeted note changes,
   all expression records and five untouched PCM stems. Actual desktop/390px
   browser save/reopen, bounds, generation and exact section playback pass;
-  contextual help returns to the current tab. Final exact-source integration and
-  CI remain pending. Keep build01's receipt syntax failure and the repaired build;
+  contextual help returns to the current tab. Final native Studio consumer181
+  checks pass with a clean heap, including legacy input, native bounds and exact
+  unchanged-part audio. Final browser job `music-1793490251857-600223` completes
+  on the matching14 artifacts after Reconnect recovers the same timed-out
+  submission; exact section playback stops at6seconds. Preserve the real local
+  publication delay. Source479e1d5 is published; Native FPC CI536 (41253996201)
+  is in progress. Complete CI/stable integration remain pending. Keep build01's receipt syntax failure and the repaired build;
   initial QA startup errors were fixture/mode setup, not musical rejections.
 - Prior repair1fda087 completes all Native FPC CI535 (41251280100), including
   extracted core/WFC consumers, and is deployed to the fixed stable slot with
