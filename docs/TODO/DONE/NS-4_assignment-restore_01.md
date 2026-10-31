@@ -65,7 +65,7 @@ recipes/transport remain in graph controls. All generated evidence stays under
 
 **Blockers**
 
-- None. Accepted prerequisite to [graph controls](../NS-4_graph-controls_01.md).
+- None. Accepted prerequisite to [graph controls](NS-4_graph-controls_01.md).
 
 **Dev Notes:**
 

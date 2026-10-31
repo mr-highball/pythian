@@ -1,7 +1,7 @@
 # Musical controls
 
 [Studio](OPERATOR-STUDIO.md) · [Instrumental runtime](INSTRUMENTAL.md) ·
-[Current task](TODO/NS-4_graph-controls_01.md)
+[Current task](TODO/DONE/NS-4_graph-controls_01.md)
 
 Ordinary Studio keeps Library → Selection → Generate. A completed retained track
 offers optional Change sounds and Change notes actions. Change notes selects a
@@ -9,11 +9,11 @@ time range and musical parts, with optional pitch bounds, rhythmic activity and
 chord/root choices. These are explicit operator choices, not an interpretation of
 a free-text style label or a promise of a particular musical mood.
 
-The older authored key/tempo/expression/affect form is currently unreachable from
-the simple Studio entrypoint. Its library and job contracts remain implemented;
-[optional musical laboratory](TODO/NS-6_optional-lab_01.md) restores an accessible
-consumer. The mappings below describe those contracts, not a claim that every
-control is currently displayed in ordinary Studio.
+Studio's optional **Lab** opens tabbed authored experiments without adding setup
+to the main three steps. Music exposes tempo/key/length, Parts exposes actual
+per-part controls, and Feel fills editable affect preferences. Its signed saved
+settings enter the same native job and six-part player. This path learns no
+recordings; automatic recording-based learning remains in the main Generate step.
 
 | Control | Actual effect |
 | --- | --- |
@@ -44,7 +44,7 @@ Sounds/mix and saved sound starting points remain separate controls.
 ## Editable affect starting points
 
 The authored helper's shared mapping sets control numbers; it does not generate
-or learn. Its Studio entrypoint is part of the open optional-laboratory task:
+or learn. Use Feel → Apply in the optional laboratory:
 
 - Energy0..100 → velocity50..150% (`50 + energy`).
 - Density0..100 → attack bias−100..100 (`2 × (density − 50)`).
@@ -72,7 +72,8 @@ sessions. No solver or learning engine
 is duplicated, and source models/masks remain borrowed and unchanged.
 
 Studio saves actual controls with request/plan/result lineage. Save queues no
-generation. A new Generate learns from the selected sources and constructs models;
+generation. Main Generate learns from selected sources and constructs models;
+Generate experiment constructs models from the authored starter and saved controls;
 the explicit follow-ups below reuse the accepted models/score without learning.
 
 The library now has [retained-score reperformance](INSTRUMENTAL.md#retain-the-score-while-changing-sound):
@@ -80,8 +81,8 @@ change selected pitched instruments/expressions while keeping the graph and othe
 parts exact, without constructing/learning/solving models. `CopyScore` exposes the
 original gates and `CopyNotes` the performed gates. Studio Change sounds uses the
 durable decision replayer to replace selected pitched instruments without changing
-the score. The full expression interface remains a library capability pending
-the optional laboratory consumer.
+the score. The optional laboratory also exposes note strength and gate length
+for newly generated authored experiments; it is not a sound-only expression edit.
 
 Named-voice and layer sessions now support [accepted-state snapshots](ACCEPTED-SESSIONS.md)
 that preserve real model text, controls and generated-versus-locked ownership.
@@ -98,5 +99,5 @@ learning lineage, and a recoverable parent. They can themselves be edited again.
 No changed solution is guaranteed: Studio reports a valid unchanged result, or a
 visible conflict. Cancellation/failure publishes no accepted partial performance.
 See [accepted sessions](ACCEPTED-SESSIONS.md#current-boundary) for chunk boundaries
-and the limit on cross-chunk backtracking. Full graph visualization, broader sound
-recipes and the optional authored laboratory remain distinct open tasks.
+and the limit on cross-chunk backtracking. Full graph visualization and broader
+sound recipes remain distinct open tasks.

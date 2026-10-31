@@ -1,17 +1,23 @@
 # NS-3_experimental-learning_01 — Turn available WAV analysis into editable musical graph proposals
 
-[Active tasks](../README.md) · [Goal](../../GOAL.md) · [Milestones](../../MILESTONES.md)
+[Active tasks](README.md) · [Goal](../GOAL.md) · [Milestones](../MILESTONES.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 8/10
-**Status:** Accepted — 2026-10-30
+**Status:** Ready
 **Owner:** Big Boss (single agent)
 
 **Description:**
 
 Use the existing key/tempo/onset/pitch/dynamics/timbre analyses to propose musical providers for instrumental generation. Experimental access does not depend on a completed accuracy benchmark. Keep source, proposal and operator decisions distinct. Stop on hidden substitution of source grains for synthesized parts.
 
-AC1–4 pass through the ordinary native jobs and desktop/390-pixel Studio paths.
+Reopened on2026-10-31: the simplified Studio has no maintained owner of the
+recording-proposal correction form. Native analysis/provider generation and
+automatic playlist learning remain implemented, but current AC2/AC3/AC4 delivery
+cannot be inferred from the former UI. Restore a reachable optional correction
+path without adding approval/labeling steps to ordinary Generate.
+
+Historical acceptance on2026-10-30: AC1–4 passed through native jobs and desktop/390-pixel Studio paths.
 The contextual editor accepts, corrects, bypasses or manually supplies tempo,
 key, per-channel pitch cells and part assignment. Selected motifs drive actual
 symbolic WFC context/voice providers and six synthesized parts, with authored
@@ -44,19 +50,37 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [NS-4_motif-coupling_01 — DONE](NS-4_motif-coupling_01.md) — real selected-role
+- [Optional laboratory](DONE/NS-6_optional-lab_01.md) — reuse its current form/job
+  bridge for the optional recording-proposal consumer rather than resurrecting
+  the old full-page workflow. This is not a blocker for automatic playlist learning.
+
+- [NS-4_motif-coupling_01 — DONE](DONE/NS-4_motif-coupling_01.md) — real selected-role
   context coupling repairs the actual richer Studio manual melody and variants.
 
-- [NS-6_json-identity_01 — DONE](NS-6_json-identity_01.md) — native Unicode
+- [NS-6_json-identity_01 — DONE](DONE/NS-6_json-identity_01.md) — native Unicode
   musical choices and source/job receipts now preserve actual operator bytes.
 
-- [NS-4_joint-context_01 — DONE](NS-4_joint-context_01.md) — paired context
+- [NS-4_joint-context_01 — DONE](DONE/NS-4_joint-context_01.md) — paired context
   resolves the demonstrated AC3 motif prerequisite; Studio mapping is accepted above.
 
-- [NS-4_instrumental-runtime_01](NS-4_instrumental-runtime_01.md)
-- [NS-6_instrumental-studio_01](NS-6_instrumental-studio_01.md)
+- [NS-4_instrumental-runtime_01](DONE/NS-4_instrumental-runtime_01.md)
+- [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-10-31, Big Boss: the authored laboratory prerequisite is accepted.
+  This original eight-unit correction/bypass consumer is Ready, not accepted;
+  the Lab does not yet connect recording-derived proposals to editable controls.
+  Automatic selected-source learning remains available independently.
+- 2026-10-31, Big Boss: reopen the original eight-unit task after the current
+  consumer audit. TStudioMaterial has no maintained product entrypoint after
+  the simple Studio replacement. Capture/selection still exposes analysis and
+  automatic corpus providers work, but correction/bypass/part/sound choices no
+  longer reach jobs from Studio. Preserve all earlier code, artifacts, answers
+  and acceptance evidence as history; remove its eight units from current
+  accepted effort. No new denominator or duplicate repair credit is introduced.
+  Restore this optional path after the laboratory; do not expand that bounded
+  authored-controls batch into another broad workflow rewrite.
 
 - 2026-10-30, Big Boss: Remaining AC3/AC4 accepted. Shared primary
   pythian.music.sound proposes bounded cutoff/sustain and applies them to actual
@@ -249,5 +273,5 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
   required an explicit empty inbox manifest; browser startup/navigation timeouts
   were reconciled against the live page, not treated as application failures or
   passed checks. No benchmark, new solver, provider admission or silent learning.
-- Read [the implementation review](../../ASSESSMENT-2026-10-29.md) and [retirement/replacement map](../RETIRED/2026-10-29/README.md) before repeating prior work. Preserve original failure evidence. Experimental musical proposals may be auditioned and corrected without independent inference-accuracy acceptance; never relabel them as established measurements.
+- Read [the implementation review](../ASSESSMENT-2026-10-29.md) and [retirement/replacement map](RETIRED/2026-10-29/README.md) before repeating prior work. Preserve original failure evidence. Experimental musical proposals may be auditioned and corrected without independent inference-accuracy acceptance; never relabel them as established measurements.
 - Before implementation, state the audible/operator criterion, concrete deliverable, minimal closing checks and stop condition. Record repaired defects, failed approaches and linked follow-ups here. Do not broaden infrastructure work beyond an actual blocker.

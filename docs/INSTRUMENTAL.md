@@ -101,7 +101,7 @@ unrelated parts. Both initial generation and reperformance use this same planner
 This operation addresses an in-memory finite plan. Durable Studio sound changes
 use the decision journal/replayer below; scoped note changes additionally use the
 [bounded graph editor](ACCEPTED-SESSIONS.md#current-boundary). The optional
-authored/affect consumer still keeps [graph controls](TODO/NS-4_graph-controls_01.md)
+authored/affect consumer still keeps [graph controls](TODO/DONE/NS-4_graph-controls_01.md)
 open. Saving feedback invokes none of these changes.
 
 CreatePlayer takes a healthy matching-rate bus graph and returns a new owned
@@ -237,7 +237,7 @@ hash/size check; primary per-record checks remain active during consumption.
 
 Journal storage grows with duration and is additional to the WAV disk estimate;
 working memory remains bounded. Native partial files preserve failure evidence.
-This supplies the replay path for [selective Studio follow-ups](TODO/NS-4_graph-controls_01.md).
+This supplies the replay path for [selective Studio follow-ups](TODO/DONE/NS-4_graph-controls_01.md).
 The optional Change sounds action keeps these decisions; Change notes reconstructs
 bounded graphs from verified models and latent states, then replays its accepted
 candidate. See [Studio](OPERATOR-STUDIO.md) and [accepted sessions](ACCEPTED-SESSIONS.md)

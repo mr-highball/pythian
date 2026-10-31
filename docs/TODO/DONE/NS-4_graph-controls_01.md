@@ -1,10 +1,10 @@
 # NS-4_graph-controls_01 — Coordinate musical dimensions and selective regeneration
 
-[Active tasks](README.md) · [Goal](../GOAL.md) · [Milestones](../MILESTONES.md)
+[Active tasks](../README.md) · [Goal](../../GOAL.md) · [Milestones](../../MILESTONES.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 7/10
-**Status:** Dependency-blocked
+**Status:** Accepted — 2026-10-31
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -22,24 +22,47 @@ Primary attribution: NS-4. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [Optional musical laboratory](NS-6_optional-lab_01.md) — the simple Studio rewrite
-  orphaned the earlier authored key/tempo/expression/affect consumer. Restore a
-  reachable optional path before treating old browser evidence as current delivery.
+- [Optional musical laboratory — DONE](NS-6_optional-lab_01.md) — restores the
+  authored key/tempo/expression/affect consumer orphaned by the simple rewrite.
 
-- [Streamed decision replay — DONE](DONE/NS-4_decision-replay_01.md) — ordinary
+- [Streamed decision replay — DONE](NS-4_decision-replay_01.md) — ordinary
   playlist jobs now retain and replay their actual notes/providers without
-  learning/solving. Sound-only Studio follow-ups are implemented; scoped passage
-  and dependent-role graph changes remain here.
+  learning/solving. Sound and scoped passage follow-ups reuse these decisions.
 
-- [NS-4_assignment-restore_01 — DONE](DONE/NS-4_assignment-restore_01.md) — preserve generated
+- [NS-4_assignment-restore_01 — DONE](NS-4_assignment-restore_01.md) — preserve generated
   assignment ownership while reopening durable accepted sessions.
-- [NS-6_instrumental-progress_01 — DONE](DONE/NS-6_instrumental-progress_01.md) —
+- [NS-6_instrumental-progress_01 — DONE](NS-6_instrumental-progress_01.md) —
   actual finite instrumental progress now shares bounded durable publication.
-- [NS-6_sourcefree-draft_01 — DONE](DONE/NS-6_sourcefree-draft_01.md) — optional
+- [NS-6_sourcefree-draft_01 — DONE](NS-6_sourcefree-draft_01.md) — optional
   musical material now reopens correctly in authored and explicit-recipe drafts.
-- [NS-4_instrumental-runtime_01](DONE/NS-4_instrumental-runtime_01.md)
+- [NS-4_instrumental-runtime_01](NS-4_instrumental-runtime_01.md)
 
 **Dev Notes:**
+
+- 2026-10-31, Big Boss: AC1–AC4 now pass with the reachable optional laboratory
+  at5e52f25 and the retained passage/sound consumers atf8e51a0. The laboratory
+  closes the missing key/tempo/expression and editable affect consumer; actual
+  authored paired audio and no-job helper checks supplement the portable shared
+  control checks. Scope/lock/preferences and retained role/passage dependency
+  changes preserve unrelated states and actual PCM as recorded below. Native
+  signed settings and Before receipts retain real lineage; contradictions,
+  Stop and previous-version recovery pass in ordinary desktop/390px Studio.
+  The WFC-independent DTO repair1f548dd passes complete
+  [CI529](https://github.com/mr-highball/pythian/actions/runs/41231955864).
+  CI528's metadata-only build failure remains preserved. UI/native closing
+  evidence is in `optional-lab-20261031-boss` and `studio-notes-20261031-boss`.
+  Accept seven units only now that the optional consumer prerequisite passes;
+  do not infer graph visualization, deeper sounds, form or universal learning.
+
+- 2026-10-31, Big Boss: CI528 at f8e51a0 rejects the metadata-only catalog
+  consumer: the note-edit JSON decoder exported a WFC edit record from the
+  native config unit. The authenticated GitHub log and a fresh no-WFC project
+  compilation reproduce the same missing-unit failure. Move DTO admission into
+  the shared native settings owner, with a WFC-independent typed result; map it
+  to the primary edit request only inside the native notes adapter. Do not add
+  WFC paths to the metadata-only build to conceal the ownership error. Preserve
+  CI528 and projects-no-wfc-build.log under optional-lab-20261031-boss. This is a
+  repair of this parent's implementation, not a generic WFC gap or extra credit.
 
 - 2026-10-31, Big Boss: the native/browser Change notes consumer is implemented
   and undergoing final ordinary Studio checks. One common follow-up renderer now
@@ -242,7 +265,7 @@ Primary attribution: NS-4. Effort estimates relative implementation/integration 
   final HTTP guide/root/activity/velocity receipts, page-close completion, playback,
   solo, Stop and desktop/narrow layout pass. The helper invalidates checked settings
   without queuing work. Explicit hard conflicts and unguided graph failure reopen
-  the exact failed controls/seed. [Control semantics](../MUSICAL-CONTROLS.md) document
+  the exact failed controls/seed. [Control semantics](../../MUSICAL-CONTROLS.md) document
   the guide's precedence and experimental mappings. AC2 and the retained-state/no
   model-reconstruction portion of AC4 remain open: every Generate constructs models.
   No seven-unit acceptance, model-cache hit or musical-quality approval is claimed.
@@ -250,7 +273,7 @@ Primary attribution: NS-4. Effort estimates relative implementation/integration 
   harmony-voice pass3 (batch-1793400196578-896606882), and its predecessor before
   upstream activity correction. Explicitly choosing the guide with the same other
   settings completes; this does not prove the unguided conflict repaired. Follow
-  its actual diagnostic display in [graph workbench](NS-4_graph-workbench_01.md),
+  its actual diagnostic display in [graph workbench](../NS-4_graph-workbench_01.md),
   rather than sweeping seeds or silently pinning it. No generic WFC defect is
   established. Preserve the initial missing test-unit import compiler failure too.
 - Actual pas2js checks caught a record alias: validation with a for-in local then
@@ -291,5 +314,5 @@ Primary attribution: NS-4. Effort estimates relative implementation/integration 
   task and its seven units stay open until all criteria pass. Prior batch closes
   experimental learning; the consecutive nonclosing count starts at zero.
 - 2026-10-29, Big Boss: TLearnedLayerSession/TNamedVoiceSession preferences, masks, provider replacement and dependency closure already exist. Add domain mappings and expose them through one shared consumer.
-- Read [the implementation review](../ASSESSMENT-2026-10-29.md) and [retirement/replacement map](RETIRED/2026-10-29/README.md) before repeating prior work. Preserve original failure evidence. Experimental musical proposals may be auditioned and corrected without independent inference-accuracy acceptance; never relabel them as established measurements.
+- Read [the implementation review](../../ASSESSMENT-2026-10-29.md) and [retirement/replacement map](../RETIRED/2026-10-29/README.md) before repeating prior work. Preserve original failure evidence. Experimental musical proposals may be auditioned and corrected without independent inference-accuracy acceptance; never relabel them as established measurements.
 - Before implementation, state the audible/operator criterion, concrete deliverable, minimal closing checks and stop condition. Record repaired defects, failed approaches and linked follow-ups here. Do not broaden infrastructure work beyond an actual blocker.

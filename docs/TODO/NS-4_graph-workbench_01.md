@@ -27,7 +27,7 @@ Primary attribution: NS-4. Effort estimates relative implementation/integration 
 **Dev Notes:**
 
 - 2026-10-30, Big Boss: Retain the concrete unguided authored conflict from
-  [musical controls](NS-4_graph-controls_01.md): seed731, root preference60,
+  [musical controls](DONE/NS-4_graph-controls_01.md): seed731, root preference60,
   per-role activity40/velocity130, eight cells, C major. Actual harmony-voice pass3
   rejects in batch-1793400196578-896606882. Studio now reports the conflict and
   restores exact controls; do not call choosing the guide a repair of unguided

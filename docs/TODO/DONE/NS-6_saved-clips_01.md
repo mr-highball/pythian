@@ -92,4 +92,4 @@ Primary attribution: NS-6; this directly unblocks practical coarse corpus learni
   as the I/O repair. Use one primary lossless range-copy implementation; avoid
   a new one-off reader or forced PCM16 conversion. Do not claim an unverified
   parent payload hash as a newly measured full-file identity. Return to
-  [graph controls](../NS-4_graph-controls_01.md) after this operator blocker.
+  [graph controls](NS-4_graph-controls_01.md) after this operator blocker.

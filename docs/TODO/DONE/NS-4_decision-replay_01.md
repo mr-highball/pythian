@@ -84,7 +84,7 @@ mix/stems pass. Studio follow-up controls remain in graph-controls.
 - This closes the distinct prerequisite, not the parent task or a musical-quality
   verdict. Retained provider rows are observations, not arbitrary graph-injection
   authority. Studio sound-only follow-ups and scoped regeneration are next in
-  [graph-controls](../NS-4_graph-controls_01.md); no further infrastructure audit
+  [graph-controls](NS-4_graph-controls_01.md); no further infrastructure audit
   is selected. New journals are not fabricated for historical jobs. Full hour/
   24hour journal renders and physical phone capture are not newly qualified.
 

@@ -109,9 +109,27 @@ reuse the saved models without learning again, retain the current instruments
 and preserve the previous version. **Hear individual parts** compares the same
 part Before/After; collapsing playback tools pauses their audio.
 
-The earlier authored key/tempo/affect controls are not currently reachable from
-this simplified entrypoint. Their optional laboratory consumer is an explicit
-[remaining task](TODO/NS-6_optional-lab_01.md), not a required setup step.
+## Optional: Musical laboratory
+
+Press **Lab** in the header to try authored music without recordings. The main
+Library → Selection → Generate flow remains the place to learn from your music.
+The laboratory uses an authored symbolic starter, actual WFC decisions and the
+same native six-part synthesis, progress, Stop and playback as ordinary jobs.
+
+**Music** sets key, tempo and length, from one to32 four-beat bars. **Parts**
+sets each part's sound or mix, plus pitched note ranges, activity, strength and
+length. **Feel** fills editable energy/density/tension preferences; **Apply**
+changes settings and starts no job. Follow the starter fixes its chords/rhythm;
+Let WFC vary releases them. Preferences cannot override a hard pitch limit.
+
+Settings save automatically as named experiments. Reopen them in **Saved
+experiments**. Only **Generate experiment** starts music. Successive generations
+retain the last completed version for **Before/After**, including individual
+parts. **Back to previous version** recovers it after a conflict or Stop. Closing
+the page leaves native work running; returning reconnects to that same run.
+**Experiment settings** returns to the form, and **Back to playlist** returns to
+your recording-based choices. Contextual **?** help closes back to the form.
+These settings are authored/operator choices, never claimed as WAV learning.
 
 ## Current experimental limits
 
@@ -141,9 +159,11 @@ reused. This workstation also showed seconds of latency closing small files on
 its E drive; retain this measured limitation when assessing job speed.
 
 The [graph workbench](TODO/NS-4_graph-workbench_01.md),
-[musical controls](TODO/NS-4_graph-controls_01.md),
 [sound design](TODO/NS-2_sound-design_01.md), reusable styles/blends and guided
 [synthesis reviews](TODO/NS-6_synthesis-reviews_01.md) remain open work. Their
 library foundations do not imply that the simple Studio exposes every control.
+Optional correction/bypass of recording-derived musical proposals remains
+[open](TODO/NS-3_experimental-learning_01.md); importing/analyzing recordings and
+automatic playlist learning do not require that editor.
 Historical operator workflows are retained in [the work history](WORK-HISTORY.md),
 not required steps in this interface.

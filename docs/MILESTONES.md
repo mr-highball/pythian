@@ -11,11 +11,15 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 91 / 135 effort units accepted (67.41%); seven open, nineteen current-goal DONE.**
-The [optional musical laboratory](TODO/NS-6_optional-lab_01.md) adds four repair
-units after the completion audit found the earlier authored/affect controls
-unreachable from the simplified Studio. Preserve the library implementation;
-historical browser evidence does not prove current UI availability.
+**Current snapshot: 94 / 135 effort units accepted (69.63%); six open, twenty current-goal DONE.**
+The [recording-proposal editor](TODO/NS-3_experimental-learning_01.md) is reopened:
+its earlier correction/bypass UI is unreachable after the simple Studio rewrite.
+Eight units return to open effort; native analysis/providers and automatic corpus
+learning remain implemented. No new denominator or duplicate repair credit.
+The [optional musical laboratory — DONE](TODO/DONE/NS-6_optional-lab_01.md) restores
+authored key/tempo/expression and editable affect in tabbed contextual controls.
+Actual saved settings, paired native audio and desktop/phone recovery pass.
+Together with the retained note/sound consumer, this closes graph-controls too.
 [Independent clip files — DONE](TODO/DONE/NS-6_saved-clips_01.md) close five units:
 shared lossless WAV slicing, durable automatic save and clip-only learning with
 original lineage. Actual native learning/reference with the parent unavailable,
@@ -30,8 +34,7 @@ Sound-only Studio follow-ups now replay those notes through changed pitched
 instruments with Before/After and previous-version recovery. Durable scoped note
 follow-ups also reuse the accepted graph models and retained decisions, with
 individual-part comparisons. The portable editor passes native/pas2js actual audio
-and preservation checks. Graph-controls' seven units remain unaccepted until its
-optional authored/affect consumer is reachable again.
+and preservation checks. Graph-controls now accepts seven units after its optional consumer passes.
 The demonstrated prerequisite added required scope to the denominator.
 Coarse corpus learning and the simple Library→Selection→Generate flow are now
 accepted after actual native/pas2js and desktop/phone consumers pass. Optional
@@ -57,11 +60,11 @@ per-task percentages or north-star weights apply.
 | --- | --- | ---: | ---: | ---: |
 | [NS-1](#ns-1) | Preserve portable core independence | 0 | 0 | Baseline invariant; no standalone current task |
 | [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 6 | 6 | 6 / 12 |
-| [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 0 | 15 | 15 / 15 |
-| [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection and musical controls | 14 | 30 | 30 / 44 |
+| [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
+| [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection and musical controls | 7 | 37 | 37 / 44 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
-| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 9 | 40 | 40 / 49 |
-| **Total** | **26 current-goal tasks** | **44** | **91** | **67.41%** |
+| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 5 | 44 | 44 / 49 |
+| **Total** | **26 current-goal tasks** | **41** | **94** | **69.63%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -80,7 +83,7 @@ criteria now pass; both tasks are accepted. Storage/access and long output are a
 The hour-request trial exposed a six-unit
 [learned-context continuation prerequisite — DONE](TODO/DONE/NS-4_context-continuation_01.md)
 at cell656; its repair now completes that exact hour with original provider/seed.
-Accounting is **91/135**; no partial effort or musical-quality credit follows.
+Accounting is **94/135**; no partial effort or musical-quality credit follows.
 
 1. [Instrumental runtime — DONE](TODO/DONE/NS-4_instrumental-runtime_01.md), effort 7:
    actual coupled musical WFC passes drive existing Pythian instruments; source-free caller delivered.
@@ -117,13 +120,13 @@ automation, filters, routing and effects rather than inventing a parallel engine
 <a id="ns-3"></a>
 ### NS-3 — Recording-informed experimentation
 
-[Experimental learning](TODO/DONE/NS-3_experimental-learning_01.md) connects available
+[Experimental learning](TODO/NS-3_experimental-learning_01.md) connects available
 analysis to editable musical proposals; [style vocabulary](TODO/DONE/NS-3_style-vocabulary_01.md)
 uses coarse classifications and selected material across long private recordings.
-Uncertainty is visible and correctable, not a reason to withhold audition.
-Experimental learning is accepted: contextual accept/correct/manual/bypass
-choices drive actual symbolic providers and instrument cutoff/sustain, with
-Original references and saved correction/feedback lineage. Observations remain
+Native contextual accept/correct/manual/bypass choices drive symbolic providers
+and instrument cutoff/sustain, with Original references and saved lineage. The
+optional correction UI is currently unreachable and its task is reopened;
+historical browser proof is not current delivery. Observations remain
 bounded Experimental proposals, not automatic source-instrument identification
 or whole-corpus learning. The new bounded corpus consumer now learns weighted,
 source/run-aware musical providers and reloads them into actual six-part synthesis.
@@ -132,7 +135,7 @@ implemented. Stable token meanings, exact local index bindings and unique
 admitted source contributions now survive additions/reorders/reweighting and
 saved native/browser results. Caller classifications now explicitly choose actual
 whole tracks/clips through one shared portable selector. Native same-seed model/
-instrumental output changes and the ordinary Studio consumer pass; all15 scoped
+instrumental output changes and the ordinary Studio consumer pass;7 of15 scoped
 NS-3 units are accepted. Universal transcription and full model coverage of every
 hour are not claimed. Saved style blending/reblending remains under NS-5.
 
@@ -142,12 +145,12 @@ hour are not claimed. Saved style blending/reblending remains under NS-5.
 [Runtime](TODO/DONE/NS-4_instrumental-runtime_01.md),
 [joint context](TODO/DONE/NS-4_joint-context_01.md),
 [graph workbench](TODO/NS-4_graph-workbench_01.md) and
-[musical controls](TODO/NS-4_graph-controls_01.md) expose actual time/role domains,
+[musical controls](TODO/DONE/NS-4_graph-controls_01.md) expose actual time/role domains,
 passes/dependencies, locks/preferences, affect mappings and selective regeneration.
 The current runtime also retains accepted graph/score decisions during atomic
 pitched instrument/expression edits. Durable Studio sound and role/passage note
-follow-ups preserve accepted parents and expose comparisons. The missing optional
-authored/affect consumer keeps the parent open; partial work earns no units.
+follow-ups preserve accepted parents and expose comparisons. The reachable authored
+laboratory completes the parent controls task; graph visualization remains open.
 The separate [assignment-restoration prerequisite](TODO/DONE/NS-4_assignment-restore_01.md)
 is accepted: actual named-voice/layer models, controls and generated ownership
 reopen without learning/solving and support ordinary selected regeneration.
@@ -165,7 +168,7 @@ driven-role input. Proof/vocabulary-dependent examples have17 or20 passes; there
 is no cross-group backtracking or universal success claim. Its five units close
 the demonstrated melody/role repair; no recording-style or musical-quality credit
 follows. Experimental learning also supplies explicit instrument cutoff/sustain
-mapping; deeper recipes and graph controls retain their own tasks.
+mapping; deeper recipes and graph visualization retain their own tasks.
 
 <a id="ns-5"></a>
 ### NS-5 — Music that develops and styles that remain reusable
@@ -204,8 +207,8 @@ The 53 former open tasks are [retired/replaced](TODO/RETIRED/2026-10-29/README.m
 not accepted. All 97 historical DONE records and their evidence remain separate;
 none has the current Goal tag. The former 52.45% weighted outcome-credit ledger is
 [historical](history/MILESTONES-2026-10-29.md), not a baseline in the new formula.
-Current scoped records: 7 open + 19 current DONE; legacy records: 53 retired +
-97 historical DONE (116 total DONE files). No implementation, saved feedback or license is discarded.
+Current scoped records: 6 open + 20 current DONE; legacy records: 53 retired +
+97 historical DONE (117 total DONE files). No implementation, saved feedback or license is discarded.
 
 100% means all required outcomes in this defined experimental goal are delivered
 and reviewed. It cannot promise any style from any user with universal accuracy.

@@ -3,9 +3,86 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
+## Current handoff: optional controls restored and deployed — 2026-10-31
+
+Big Boss SOLO closes [optional laboratory](TODO/DONE/NS-6_optional-lab_01.md)
+and [musical controls](TODO/DONE/NS-4_graph-controls_01.md). Lab opens authored
+Music/Parts/Feel experiments without changing Library→Selection→Generate.
+Signed saved settings feed the existing native six-part instrumental path;
+helper Apply saves visible values and never starts learning/generation.
+Successive experiments retain actual Before/After mix/parts and a completed
+parent after failure/Stop. Recording-based generation remains separate.
+
+At5e52f25, native instrumental91, projects128 and playlist290 checks pass with
+clean heaps; active pas2js laboratory recovery63 and full browser builds pass.
+Metadata-only projects/catalog compile without WFC paths. The preceding repair
+1f548dd passes CI529; preserve the original CI528 boundary failure. CI530 for
+5e52f25 is running at this handoff, not claimed green.
+
+Actual desktop/390px checks cover80BPM/F minor, editable130% strength/75% Lead
+gate, helper-without-job, save/reopen, invalid ranges and contextual help returning
+to the same panel. Paired100/80BPM outputs play mix and individual parts with
+exclusive playback. Two32bar/40BPM runs test host-owned work, reconnect and Stop;
+Lead1 conflicts visibly and Back restores its completed parent. A normal two-track
+playlist still learns and generates through the main flow. Browser QA repaired
+misleading playlist estimates on authored results and two lost-experiment-scope
+paths during reopen/Back. History lookup preserves the last completed parent
+even after a cancelled/failed run or an immediate Generate after reopening.
+No musical preference or physical-phone test is claimed.
+
+The checked service/worker and twelve assets are deployed in the fixed stable
+slot with unchanged LAN/TLS/storage/firewall. App/session return200; all6908 prior
+catalog JSON records and17 terminal jobs retain exact bytes. Fourteen old deployed
+files have verified recoverable copies. Receipts/screenshots/logs are under
+`optional-lab-20261031-boss` in dedicated E-drive roots. Stable browser opens the
+real private collections without JS errors. All QA audio is paused with no loops,
+created tabs and the exact QA service are closed, and viewport reset; user tabs
+remain open. Independent saved clip files and original metadata links remain
+deployed; learning does not rescan full parents. No source recordings or answers
+were changed.
+
+**94/135 accepted effort (69.63%), six open and twenty current DONE.**
+The recording-proposal correction editor remains reopened at eight units;
+automatic playlist learning still works. No duplicate repair credit is added.
+Next priority follows least-complete NS-5: evolving musical form is ready after
+musical controls. Reusable sound recipes, graph inspection, proposal corrections,
+styles/blends and synthesis feedback retain their own tasks. The broader goal
+remains active. This batch closes real criteria; consecutive nonclosing count is
+zero. Big Boss's solo checks are not independent review.
+
+## Completion correction: recording-proposal UI reopened — 2026-10-31
+
+While reusing the old control form, Big Boss SOLO verified that TStudioMaterial
+also has no maintained product owner. Recording/import analysis and automatic
+playlist learning still work, but the earlier optional correction/bypass/part/
+sound editor is unreachable. Reopen the original eight-unit
+[experimental-learning task](TODO/NS-3_experimental-learning_01.md), preserve its
+historical acceptance/evidence and update all incoming links. No new repair task
+or denominator is added. Current accounting is **83/135 (61.48%), eight open and
+eighteen current DONE**;97 historical records remain. Native provider consumers
+are still valid, including accepted corpus learning and context continuation;
+the missing optional UI is not their actual prerequisite. Finish the bounded
+authored laboratory batch, then follow current dependencies without claiming
+recording corrections are available. Consecutive nonclosing count remains zero.
+
+## Selected batch: optional musical laboratory — 2026-10-31
+
+Big Boss SOLO follows [optional laboratory](TODO/DONE/NS-6_optional-lab_01.md), effort4,
+the actual remaining graph-controls prerequisite. Deliver a reachable tabbed
+modal for source-free authored experiments using the existing key/tempo,
+pitch/activity/expression and editable affect mapping. Persist real settings and
+origin, reuse native generation and Studio's current progress/playback/Stop,
+and remove superseded batch/mixer UI. Closing evidence: actual native
+save/reopen/settings-to-output and desktop/phone help, helper/no-job, recovery,
+failure and cancellation. Stop at that usable consumer. No extra setup in the
+ordinary Library→Selection→Generate path and no new inference implementation.
+Previous turn is progress and closes real criteria; consecutive nonclosing
+count starts at zero. Current accepted effort remains91/135 until all gates pass.
+New artifacts: `optional-lab-20261031-boss` under dedicated E-drive roots.
+
 ## Current handoff: durable passage edits delivered — 2026-10-31
 
-Big Boss SOLO closes the selected [graph-controls](TODO/NS-4_graph-controls_01.md)
+Big Boss SOLO closes the selected [graph-controls](TODO/DONE/NS-4_graph-controls_01.md)
 AC2/AC4 consumer batch. Studio's optional **Change notes** edits selected musical
 parts in a chosen passage, using the saved models/latent states and primary WFC
 builders. One shared native follow-up renderer handles note and sound changes;
@@ -43,7 +120,7 @@ No user tabs or private source audio were changed.
 **91/135 accepted effort (67.41%), seven open and nineteen current DONE.**
 The seven-unit graph-controls task is Dependency-blocked, not DONE: the simple
 UI orphaned the earlier authored/affect form. Follow
-[optional musical laboratory](TODO/NS-6_optional-lab_01.md), effort4, next; restore
+[optional musical laboratory](TODO/DONE/NS-6_optional-lab_01.md), effort4, next; restore
 reachable key/tempo/expression/affect controls without changing the three main
 steps. Graph visualization, deeper sounds, form/styles and synthesis reviews keep
 their tasks. No operator feedback is needed to continue implementation. This
@@ -55,7 +132,7 @@ The broader goal remains active. Solo checks are not independent review.
 Big Boss SOLO found that the simple Studio replacement no longer imports the
 old authored/affect UI owner. The control APIs remain, but earlier browser proof
 is historical. Before expanding scope, add
-[optional musical laboratory](TODO/NS-6_optional-lab_01.md), effort4, and link it
+[optional musical laboratory](TODO/DONE/NS-6_optional-lab_01.md), effort4, and link it
 as a real graph-controls completion blocker. The default three steps stay intact.
 Accounting is now **91/135 (67.41%), seven open and nineteen current DONE**.
 No graph-controls units are accepted. The current note-edit batch continues
@@ -67,7 +144,7 @@ CI41219792507 completed successfully. Current implementation is still solo.
 
 ## Current handoff: passage editor verified, Studio integration remains — 2026-10-31
 
-Big Boss SOLO retains [graph controls](TODO/NS-4_graph-controls_01.md) AC2/AC4.
+Big Boss SOLO retains [graph controls](TODO/DONE/NS-4_graph-controls_01.md) AC2/AC4.
 The portable bounded editor now rebuilds accepted context/named-voice/drum groups,
 preserves generated ownership and held states, solves the requested dependency
 closure and independently validates the candidate. Initial streams/edits share
@@ -100,7 +177,7 @@ payload scans and preserve lineage; that operator request is deployed.
 
 ## Selected batch: retained graph passage edits — 2026-10-31
 
-Big Boss SOLO selects [graph controls](TODO/NS-4_graph-controls_01.md) AC2/AC4.
+Big Boss SOLO selects [graph controls](TODO/DONE/NS-4_graph-controls_01.md) AC2/AC4.
 Criterion: change selected musical parts in a chosen passage of an ordinary
 learned Studio result, while retaining its other accepted decisions and drums.
 Deliverable: an optional Change notes result action, durable native graph edit
@@ -125,7 +202,7 @@ Big Boss SOLO accepts [saved clips](TODO/DONE/NS-6_saved-clips_01.md) AC1–AC5.
 **91/131 effort accepted (69.47%), six open and nineteen current DONE.**
 Five clip units close on actual save/learn/reference, failure and UI evidence;
 no musical-quality or partial graph credit. Consecutive nonclosing count is zero.
-The goal remains active. Return to [graph controls](TODO/NS-4_graph-controls_01.md),
+The goal remains active. Return to [graph controls](TODO/DONE/NS-4_graph-controls_01.md),
 then the dependent NS-5 form/style work; no operator answer blocks implementation.
 
 Saving a new clip queues a durable native job after the immutable draft save.
@@ -256,7 +333,7 @@ effort follows task creation. Original source licenses and prior snapshots stay.
 ## Current handoff: change sounds on a finished Studio track — 2026-10-31
 
 Big Boss SOLO delivers the sound-only Studio follow-up in
-[graph controls](TODO/NS-4_graph-controls_01.md). Finished tracks with saved
+[graph controls](TODO/DONE/NS-4_graph-controls_01.md). Finished tracks with saved
 decisions offer Change sounds, Before/After and Back to previous version.
 One durable native job replays the same notes with one or several changed
 pitched instruments. It does not analyze sources, learn or solve WFC. Shared
@@ -1119,7 +1196,7 @@ recordings or responses changed. Validation is solo, not independent review.
 Accounting: **47/102 (46.08%)**, 19 tasks, eight open/eleven current DONE,
 55 open units; NS-4 is 19/33. The three-unit prerequisite closes actual criteria,
 so the consecutive nonclosing count resets from one to zero. The seven-unit
-[graph-controls parent](TODO/NS-4_graph-controls_01.md) remains open. No goal,
+[graph-controls parent](TODO/DONE/NS-4_graph-controls_01.md) remains open. No goal,
 Studio-follow-up or musical-quality acceptance follows. Stable Studio remains
 the prior `f630ebb` deployment, PID73508 at last verification; no service was
 restarted and no QA browser/audio/server was started. No operator input is needed.
@@ -1136,7 +1213,7 @@ jobs without saved latent states remain history, not fabricated faithful restore
 
 ## Previous handoff: retained-score sound runtime implemented — 2026-10-30
 
-Big Boss SOLO continues [graph controls](TODO/NS-4_graph-controls_01.md).
+Big Boss SOLO continues [graph controls](TODO/DONE/NS-4_graph-controls_01.md).
 `TInstrumentalPlan.Reperform` now replaces one or several pitched instruments
 and absolute velocity/gate expression against the retained original score. It
 does not construct, learn or solve models. All accepted graph models/tokens/states,
@@ -1197,7 +1274,7 @@ batch's full criterion/deliverable/evidence/stop condition first.
 
 ## Previous handoff: musical controls slice and concrete Studio repairs deployed — 2026-10-30
 
-Big Boss SOLO continues [graph controls](TODO/NS-4_graph-controls_01.md), the
+Big Boss SOLO continues [graph controls](TODO/DONE/NS-4_graph-controls_01.md), the
 actual prerequisite to least-complete NS-5 form/styles. The bounded AC1/AC3 slice
 now reaches ordinary Studio: hard per-role pitch bounds, upstream rhythmic
 activity and chord-root preferences, velocity/gate expression and explicit editable
@@ -1286,7 +1363,7 @@ and long streams remain open. No new operator input is required to start that wo
 
 ## Previous handoff: experimental recording proposals accepted and deployed — 2026-10-30
 
-Big Boss SOLO closed [experimental learning](TODO/DONE/NS-3_experimental-learning_01.md).
+Big Boss SOLO closed [experimental learning](TODO/NS-3_experimental-learning_01.md).
 The new primary portable `pythian.music.sound` proposes an explicit low-pass cutoff
 and envelope sustain from measured centroid/window RMS. Studio's contextual Sound
 step accepts, edits, skips or manually supplies those controls for Bass, Harmony or
@@ -1348,7 +1425,7 @@ passed. This batch is published asf5c8285 on hello-pythian;
 No new remote or full-package pass is claimed. The implementation goal remains
 active and SOLO.
 
-Next selection is [musical graph controls](TODO/NS-4_graph-controls_01.md), the actual
+Next selection is [musical graph controls](TODO/DONE/NS-4_graph-controls_01.md), the actual
 prerequisite to least-complete NS-5 form/styles. Reuse accepted masks/preferences and
 dependency closure for role/passage locks and affect mappings; demonstrate paired
 instrumental results with unrelated accepted states preserved. State its bounded
@@ -1398,7 +1475,7 @@ now confirmed green. The repair is published as1bb3733 on hello-pythian;
 [CI508](https://github.com/mr-highball/pythian/actions/runs/41117584756) is running.
 No new remote pass or full-package qualification is claimed yet.
 
-Continue [experimental learning AC3](TODO/DONE/NS-3_experimental-learning_01.md): bind
+Continue [experimental learning AC3](TODO/NS-3_experimental-learning_01.md): bind
 explicitly selected/corrected sound and dynamics proposals to actual instrument/
 automation settings and keep the Original comparison. The existing tempo/key/
 pitch editor, source lineage and repaired motif generation already pass. Do not
@@ -1412,7 +1489,7 @@ implementation goal stays active and solo.
 ## Current handoff: musical-choice editor checked; follow motif coupling — 2026-10-30
 
 Big Boss SOLO continues the active implementation goal. This batch closes
-[experimental learning AC2](TODO/DONE/NS-3_experimental-learning_01.md) and its finite-job
+[experimental learning AC2](TODO/NS-3_experimental-learning_01.md) and its finite-job
 AC4 correction/feedback behavior. Studio has a contextual tempo/key, pitch/part
 and source/notes editor, manual cells, accept/correct/bypass paths, durable source
 lineage and explicit Apply → Save → Generate actions. Recording-linked jobs now
@@ -1484,7 +1561,7 @@ Shared HashNativeText uses the primary SHA-256 without host conversion; native
 project/job/catalog/library and HTTP boundaries retain original UTF-8 bytes.
 The parent draft's metadata-only recipe and project revisions preserve analysis,
 operator and source origins. The UI editor, actual proposal-to-instrumental
-generation and Original comparison remain [experimental learning AC2–4](TODO/DONE/NS-3_experimental-learning_01.md).
+generation and Original comparison remain [experimental learning AC2–4](TODO/NS-3_experimental-learning_01.md).
 No parent effort is accepted. Its title bound now matches the catalog contract,
 and primary scalar/JSON validation rejects malformed direct native input before
 commit. Generation preflight explicitly refuses musical_material until the
@@ -1546,7 +1623,7 @@ close this task's criteria without a blanket unrelated packaging gate.
 [Joint context — DONE](TODO/DONE/NS-4_joint-context_01.md) earns four implementation
 effort units: 25/88 (28.41%), nine open/five current DONE, 63 open units. NS-4 is
 11/25. Real AC1–3 closure resets consecutive nonclosing batches to zero. Continue
-[experimental learning AC2–4](TODO/DONE/NS-3_experimental-learning_01.md): saved explicit
+[experimental learning AC2–4](TODO/NS-3_experimental-learning_01.md): saved explicit
 accept/correct/bypass/manual choices, part assignment, source-bound generation and
 Original comparison. Those Studio criteria remain open; no partial parent effort.
 No Studio deployment, browser session, audio playback or operator-data write occurred.
@@ -1565,7 +1642,7 @@ repetition restores open-model semantics; unknown spans split examples instead
 of becoming silence. Two bounded searches then exhaust pass negotiation at
 harmony-voice, with32 and1024 pass backtracks. Stop increasing limits. Follow
 [joint context](TODO/DONE/NS-4_joint-context_01.md), then return to
-[experimental learning AC2–4](TODO/DONE/NS-3_experimental-learning_01.md).
+[experimental learning AC2–4](TODO/NS-3_experimental-learning_01.md).
 No claim of a generic WFC bug or vendor change is made. Musical coupling belongs here.
 
 The real prerequisite adds4 effort units:14 current tasks,10 open/four DONE,
@@ -1576,7 +1653,7 @@ The deployed instrumental/observation service and operator answers are unchanged
 
 ## Current handoff: musical suggestions exposed in Studio — 2026-10-30
 
-Big Boss remains SOLO. [Experimental learning](TODO/DONE/NS-3_experimental-learning_01.md)
+Big Boss remains SOLO. [Experimental learning](TODO/NS-3_experimental-learning_01.md)
 AC1 is delivered through the existing recording and import/microphone inspection
 jobs, published as02f71d8 on hello-pythian.
 [CI504](https://github.com/mr-highball/pythian/actions/runs/41064948699) is queued

@@ -27,7 +27,7 @@ Primary attribution: NS-6. This is a tiny integration repair, not new musical cr
 
 **Blockers**
 
-- None. This repairs the prerequisite to [graph controls](../NS-4_graph-controls_01.md).
+- None. This repairs the prerequisite to [graph controls](NS-4_graph-controls_01.md).
 
 **Dev Notes:**
 

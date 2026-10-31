@@ -31,7 +31,7 @@ authorization for another broad callback audit or a generic WFC change.
 
 **Blockers**
 
-- None. This repairs the prerequisite to [graph controls](../NS-4_graph-controls_01.md).
+- None. This repairs the prerequisite to [graph controls](NS-4_graph-controls_01.md).
 
 **Dev Notes:**
 

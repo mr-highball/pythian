@@ -105,7 +105,7 @@ Change notes retains instruments, rendering randomness, source lineage and
 learning receipts. Change sounds retains the accepted notes. Both can be followed
 by further edits. A failed or cancelled child leaves its parent available.
 Before/After and individual-part playback compare actual saved performances.
-The broader [graph-controls task](TODO/NS-4_graph-controls_01.md) still requires
+The broader [graph-controls task](TODO/DONE/NS-4_graph-controls_01.md) still requires
 the optional authored/affect UI consumer; these operations do not imply musical
 quality approval or universal edit solvability.
 

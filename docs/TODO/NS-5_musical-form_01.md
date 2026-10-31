@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 8/10
-**Status:** Dependency-blocked
+**Status:** Ready
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -22,11 +22,15 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [NS-4_graph-controls_01](NS-4_graph-controls_01.md)
+- [NS-4_graph-controls_01](DONE/NS-4_graph-controls_01.md)
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
 
+- 2026-10-31, Big Boss: musical controls and optional Lab are now accepted;
+  the actual prerequisite is satisfied. Ready for the least-complete NS-5
+  outcome. Preserve this task's explicit phrase/section decisions and audible
+  operator consumer; solver chunks alone are not musical form.
 - 2026-10-29, Big Boss: The core has an authored 144-bar two-part composition and musical scheduling, but semantic styles explicitly lack a phrase/form vocabulary. Build the missing representation and integration using existing primitives.
 - Read [the implementation review](../ASSESSMENT-2026-10-29.md) and [retirement/replacement map](RETIRED/2026-10-29/README.md) before repeating prior work. Preserve original failure evidence. Experimental musical proposals may be auditioned and corrected without independent inference-accuracy acceptance; never relabel them as established measurements.
 - Before implementation, state the audible/operator criterion, concrete deliverable, minimal closing checks and stop condition. Record repaired defects, failed approaches and linked follow-ups here. Do not broaden infrastructure work beyond an actual blocker.

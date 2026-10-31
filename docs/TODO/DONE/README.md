@@ -2,21 +2,24 @@
 
 ## Current goal: instrumental exploration
 
-Nineteen current-goal tasks are accepted: **91 / 135 effort units (67.41%)**. Their
+Twenty current-goal tasks are accepted: **94 / 135 effort units (69.63%)**. Their
 criteria and prerequisites passed: finite runtime/percussion, ordinary instrumental
-Studio, context/cancellation/identity repairs and editable recording proposals
-into actual providers/instruments. This is not musical preference or universal
+Studio and context/cancellation/identity repairs. The recording-proposal editor
+is [reopened](../NS-3_experimental-learning_01.md) because its correction UI became
+unreachable; native providers remain reusable evidence. This is not musical preference or universal
 style-learning acceptance. Coarse classified whole/range learning and the simple
 playlist-to-Generate flow are accepted, with honest analyzed/model-used coverage.
 Canonical generated audio/storage, supported context
 continuation and long Studio generation are also accepted. Actual bounded
 decision recording, exact saved-score replay and visible Generate operation
 counters are accepted. Independent lossless clips now feed learning and Original
-comparison without full-parent reads. There are 116 DONE files: nineteen current,
+comparison without full-parent reads. There are 117 DONE files: twenty current,
 97 historical.
 
 | Accepted task | Date | Effort | Outcome |
 | --- | --- | ---: | --- |
+| [NS-6_optional-lab_01](NS-6_optional-lab_01.md) | 2026-10-31 | 4/10 | Reachable signed authored controls, editable affect, real paired audio, contextual tabs/help and native recovery |
+| [NS-4_graph-controls_01](NS-4_graph-controls_01.md) | 2026-10-31 | 7/10 | Explicit musical controls, retained selective role/passage edits, sound replay and preserved Before/After lineage |
 | [NS-6_saved-clips_01](NS-6_saved-clips_01.md) | 2026-10-31 | 5/10 | Automatic durable lossless clip files, real audio hashes, parent/range lineage, clip-only learning/reference, native failures and desktop/phone flow |
 | [NS-6_generation-activity_01](NS-6_generation-activity_01.md) | 2026-10-31 | 2/10 | Native byte/frame/unknown-total detail beneath one workflow; actual desktop/phone/reconnect/Stop and fixed stable deployment |
 | [NS-4_decision-replay_01](NS-4_decision-replay_01.md) | 2026-10-31 | 5/10 | Bounded actual provider/score journal, exact native/pas2js mix/stems, changed sound without learning and ordinary saved-worker replay |
@@ -33,7 +36,6 @@ comparison without full-parent reads. There are 116 DONE files: nineteen current
 | [NS-4_joint-context_01](NS-4_joint-context_01.md) | 2026-10-30 | 4/10 | Actual paired harmony/rhythm context, conditional six-part motifs and primary portable pitch-pattern input |
 | [NS-6_json-identity_01](NS-6_json-identity_01.md) | 2026-10-30 | 3/10 | Faithful Unicode musical choices, source/job receipts, shared native byte hashing and actual HTTP round trips |
 | [NS-4_motif-coupling_01](NS-4_motif-coupling_01.md) | 2026-10-30 | 5/10 | Real selected-role symbolic context, other parts independently generated, repaired Studio melody and role/correction variants |
-| [NS-3_experimental-learning_01](NS-3_experimental-learning_01.md) | 2026-10-30 | 8/10 | Editable recording context/pitch/sound proposals drive symbolic providers and real instruments; Original/correction/feedback lineage |
 | [NS-6_sourcefree-draft_01](NS-6_sourcefree-draft_01.md) | 2026-10-30 | 1/10 | Actual authored draft reload without an optional recipe; explicit recipes and native generation remain usable |
 | [NS-6_instrumental-progress_01](NS-6_instrumental-progress_01.md) | 2026-10-30 | 2/10 | Bounded durable instrumental publication, post-write timing, actual native/HTTP jobs and live cancellation |
 

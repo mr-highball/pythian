@@ -230,9 +230,11 @@ Stage and launch **only from the fixed stable/QA slots** using the
 owns local address/root selection, exact-path firewall rules and browser cleanup;
 compiler-output paths are not server-launch paths.
 
-The Pascal [job-recovery checks](../tests/pythian.tests.studio.recovery.lpr) use
-the actual Studio DOM and mocked transport to exercise suspension, timeouts,
-reconnect, cancellation and scope labels. They do not establish browser layout
+The Pascal [laboratory recovery checks](../tests/pythian.tests.studio.recovery.lpr)
+exercise the actual optional controls, saved/pending drafts, transport failures,
+explicit generation, late replies and shared progress labels with mocked transport.
+Native jobs and actual browser checks cover cancellation/reconnect separately.
+These DOM checks do not establish browser layout
 or physical-phone behavior. With Node and jsdom 29.1.1 installed in an ignored
 test directory, run:
 

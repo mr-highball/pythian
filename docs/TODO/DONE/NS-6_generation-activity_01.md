@@ -44,7 +44,7 @@ service/worker and operator data were preserved.
 **Dev Notes:**
 
 - 2026-10-31, Big Boss: operator interruption takes priority over pending
-  [graph controls](../NS-4_graph-controls_01.md). The live worker reports
+  [graph controls](NS-4_graph-controls_01.md). The live worker reports
   verifying_original_bytes with increasing bytes, then resample_audio with
   real frames. The UI shows only cumulative analyzed selection time and a
   generic fallback. Fix presentation and reuse existing callbacks. Closing
