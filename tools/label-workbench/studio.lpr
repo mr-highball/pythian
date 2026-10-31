@@ -58,6 +58,7 @@ type
     FCancelling: Boolean;
     FGenerateAfterSave: Boolean;
     FGenerationMessage: String;
+    FSoundParent: TJSObject;
     FResumeOnConnect: Boolean;
     FIncludedSeconds: Double;
     FLearningLabel: String;
@@ -67,6 +68,12 @@ type
     procedure ApplyLearningLabel;
     function OutputSeconds(out ASeconds: Double): Boolean;
     procedure Generate; async;
+    procedure SubmitGeneration; async;
+    procedure OpenSoundChoices;
+    procedure DrawSoundChoices;
+    procedure ApplySoundChoices;
+    procedure OpenPreviousVersion; async;
+    procedure PauseResult;
     procedure RestoreGeneration; async;
     procedure PollGeneration; async;
     procedure CancelGeneration; async;
@@ -374,6 +381,13 @@ begin
   if (FPendingWrite = nil) and FDirty then Save;
   if FGenerateAfterSave and not FDirty and (FPendingWrite = nil) then Generate;
 end;
+procedure TStudio.PauseResult;
+begin
+  TJSHTMLAudioElement(El('generated-audio')).pause;
+  TJSHTMLAudioElement(El('generated-before-audio')).pause;
+  TJSHTMLAudioElement(El('generated-original-audio')).pause;
+end;
+
 procedure TStudio.ClearGeneration;
 begin
   Inc(FJobEpoch);
@@ -386,13 +400,15 @@ begin
   FCancelling := False;
   FGenerateAfterSave := False;
   FGenerationMessage := '';
-  TJSHTMLAudioElement(El('generated-audio')).pause;
-  TJSHTMLAudioElement(El('generated-original-audio')).pause;
+  PauseResult;
+  FSoundParent := nil;
   El('generated-audio').removeAttribute('src');
   El('generated-audio').removeAttribute('data-job');
   TJSHTMLAudioElement(El('generated-audio')).load;
   El('generated-original-audio').removeAttribute('src');
   TJSHTMLAudioElement(El('generated-original-audio')).load;
+  El('generated-before-audio').removeAttribute('src');
+  TJSHTMLAudioElement(El('generated-before-audio')).load;
   El('generation-result').setAttribute('hidden', '');
 end;
 
@@ -429,7 +445,7 @@ procedure TStudio.DrawGeneration;
 var
   LState: String;
   LActive: Boolean;
-  LResult, LReference, LLearning, LRow, LClassChoice: TJSObject;
+  LResult, LReference, LLearning, LRow, LClassChoice, LBefore: TJSObject;
   LRows: TJSArray;
   LUrl: String;
   LSeconds: Double;
@@ -445,6 +461,9 @@ begin
   else El('output-estimate').textContent := 'Choose 2 seconds to 24 hours.';
   LState := Str(FJob, 'status');
   LActive := (LState = 'queued') or (LState = 'running') or FSubmitting or FGenerateAfterSave;
+  El('previous-version').setAttribute('hidden', '');
+  if not LActive and (Str(FJob, 'parent_job_id') <> '') then
+    El('previous-version').removeAttribute('hidden');
   TJSHTMLInputElement(El('output-duration')).disabled := LActive;
   TJSHTMLSelectElement(El('output-duration-unit')).disabled := LActive;
   TJSHTMLButtonElement(El('generate-music')).disabled := not FConnected or FLoading or
@@ -476,15 +495,42 @@ begin
   if (LState <> 'completed') or (Obj(FJob['results']) = nil) then Exit;
   LResult := Obj(FJob['results']);
   El('generation-revision-note').textContent := '';
+  if Str(FJob, 'kind') = 'instrumental_reperform' then
+    El('generation-revision-note').textContent := 'Notes kept. Only instrument sounds changed.';
   if FDirty or (Num(LResult, 'project_revision') <> FRevision) then
+   if Str(FJob, 'kind') = 'instrumental_reperform' then
+    El('generation-revision-note').textContent :=
+      'Notes kept. Your newer playlist choices were not used.'
+   else
     El('generation-revision-note').textContent :=
       'Your playlist has changed since this run. Generate again to use your current selection.';
+  El('change-sounds').setAttribute('hidden', '');
+  if Obj(LResult['decisions']) <> nil then
+  begin
+    El('change-sounds').removeAttribute('hidden');
+    El('sound-availability').textContent := 'Try different instruments without learning again.';
+  end
+  else El('sound-availability').textContent := 'Generate a new track once to enable sound changes.';
   LUrl := '/api/studio/instrumental-audio?job=' + encodeURIComponent(FJobId) + '&part=6';
   if El('generated-audio').getAttribute('data-job') <> FJobId then
   begin
     TJSHTMLAudioElement(El('generated-audio')).src := LUrl;
     El('generated-audio').setAttribute('data-job', FJobId);
     El('download-generated').setAttribute('href', LUrl);
+    LBefore := Obj(LResult['before']);
+    El('generation-before').setAttribute('hidden', '');
+    El('generation-after-label').setAttribute('hidden', '');
+    El('version-comparison').removeAttribute('data-compare');
+    TJSHTMLAudioElement(El('generated-before-audio')).pause;
+    El('generated-before-audio').removeAttribute('src');
+    if LBefore <> nil then
+    begin
+      El('generation-before').removeAttribute('hidden');
+      El('generation-after-label').removeAttribute('hidden');
+      El('version-comparison').setAttribute('data-compare', '');
+      TJSHTMLAudioElement(El('generated-before-audio')).src :=
+        '/api/studio/instrumental-audio?job=' + encodeURIComponent(Str(LBefore, 'job_id')) + '&part=6';
+    end;
     LReference := Obj(LResult['original_reference']);
     El('generation-original').setAttribute('hidden', '');
     if LReference <> nil then
@@ -528,14 +574,139 @@ begin
   El('generation-result').removeAttribute('hidden');
 end;
 
+procedure TStudio.OpenSoundChoices;
+const
+  CIds: array[0..2] of String = ('sound-bass', 'sound-harmony', 'sound-lead');
+var LResult, LSettings: TJSObject; LNames, LCopy: TJSArray; I: Integer;
+begin
+  if FSubmitting or FLoading or (FJobWrite <> nil) or (Str(FJob, 'status') <> 'completed') then Exit;
+  LResult := Obj(FJob['results']);
+  if (LResult = nil) or (Obj(LResult['decisions']) = nil) then Exit;
+  LSettings := Obj(LResult['settings']);
+  LNames := Arr(LSettings, 'instruments');
+  if (LNames = nil) or (LNames.length <> 3) then Exit;
+  FSoundParent := TJSObject.new;
+  FSoundParent['job_id'] := FJobId;
+  FSoundParent['plan_sha256'] := Str(LResult, 'plan_sha256');
+  FSoundParent['project_id'] := Str(LResult, 'project_id');
+  FSoundParent['project_revision'] := Num(LResult, 'project_revision');
+  FSoundParent['project_snapshot_sha256'] := Str(LResult, 'project_snapshot_sha256');
+  LCopy := TJSArray.new;
+  for I := 0 to 2 do
+  begin
+    LCopy.push(LNames[I]);
+    TJSHTMLSelectElement(El(CIds[I])).value := String(LNames[I]);
+  end;
+  FSoundParent['instruments'] := LCopy;
+  DrawSoundChoices;
+  TStudioDialog(El('sound-dialog')).showModal;
+end;
+
+procedure TStudio.DrawSoundChoices;
+const
+  CIds: array[0..2] of String = ('sound-bass', 'sound-harmony', 'sound-lead');
+var LChanged: Boolean; I: Integer;
+begin
+  LChanged := False;
+  if FSoundParent <> nil then
+    for I := 0 to 2 do
+      LChanged := LChanged or (TJSHTMLSelectElement(El(CIds[I])).value <>
+        String(TJSArray(FSoundParent['instruments'])[I]));
+  TJSHTMLButtonElement(El('apply-sounds')).disabled :=
+    not LChanged or not FConnected or FSubmitting or (FJobWrite <> nil);
+end;
+
+procedure TStudio.ApplySoundChoices;
+const
+  CIds: array[0..2] of String = ('sound-bass', 'sound-harmony', 'sound-lead');
+var LWrite: TJSObject; LNames: TJSArray; I: Integer;
+begin
+  if (FSoundParent = nil) or FSubmitting or (FJobWrite <> nil) or
+    TJSHTMLButtonElement(El('apply-sounds')).disabled then Exit;
+  LWrite := TJSObject.new;
+  LWrite['format'] := 'pythian.studio.job.write.v1';
+  LWrite['job_id'] := 'music-' + IntToStr(Round(TJSDate.now)) + '-' + IntToStr(Random(1000000));
+  LWrite['kind'] := 'instrumental_reperform';
+  LWrite['parent_job_id'] := Str(FSoundParent, 'job_id');
+  LWrite['parent_plan_sha256'] := Str(FSoundParent, 'plan_sha256');
+  LWrite['project_id'] := Str(FSoundParent, 'project_id');
+  LWrite['project_revision'] := Num(FSoundParent, 'project_revision');
+  LWrite['project_snapshot_sha256'] := Str(FSoundParent, 'project_snapshot_sha256');
+  LNames := TJSArray.new;
+  for I := 0 to 2 do LNames.push(TJSHTMLSelectElement(El(CIds[I])).value);
+  LWrite['instruments'] := LNames;
+  FJobWrite := LWrite;
+  FJobId := Str(LWrite, 'job_id');
+  FJob := nil;
+  FGenerateAfterSave := False;
+  TStudioDialog(El('sound-dialog')).close;
+  RememberGeneration;
+  SubmitGeneration;
+end;
+
+procedure TStudio.OpenPreviousVersion; async;
+var LId: String; LJob: TJSObject; LEpoch: Integer;
+begin
+  if FSubmitting or FJobPolling or (FJobWrite <> nil) then Exit;
+  LId := Str(FJob, 'parent_job_id');
+  if LId = '' then Exit;
+  LEpoch := FJobEpoch;
+  try
+    LJob := await(TJSObject, Json('/api/studio/job?id=' + encodeURIComponent(LId), 'GET', ''));
+    if LEpoch <> FJobEpoch then Exit;
+    if (Str(LJob, 'status') <> 'completed') or (Str(LJob, 'project_id') <> FProjectId) then
+      raise Exception.Create('The previous version is unavailable. Your current result is kept.');
+    ClearGeneration;
+    FJobId := LId;
+    FJob := LJob;
+    RememberGeneration;
+    DrawGeneration;
+  except
+    on E: Exception do begin FGenerationMessage := E.Message; DrawGeneration end;
+  end;
+end;
+
+procedure TStudio.SubmitGeneration; async;
+var LJob: TJSObject; LEpoch: Integer;
+begin
+  if FSubmitting or not FConnected or (FJobWrite = nil) then Exit;
+  FSubmitting := True;
+  PauseResult;
+  El('generation-result').setAttribute('hidden', '');
+  if Str(FJobWrite, 'kind') = 'instrumental_reperform' then
+    FGenerationMessage := 'Rendering new sounds. Your notes and learning stay the same.'
+  else FGenerationMessage := 'Starting your track…';
+  DrawGeneration;
+  LEpoch := FJobEpoch;
+  try
+    LJob := await(TJSObject, Json('/api/studio/job', 'POST', TJSJSON.stringify(FJobWrite)));
+    if LEpoch <> FJobEpoch then Exit;
+    if (Str(LJob, 'job_id') <> FJobId) or (Str(LJob, 'project_id') <> FProjectId) then
+      raise Exception.Create('Generation returned a different playlist. Reconnect to this run.');
+    FJob := LJob;
+    FJobWrite := nil;
+    if not FCancelling then FGenerationMessage := '';
+    RememberGeneration;
+  except
+    on E: Exception do FGenerationMessage := E.Message + ' Your request is kept for reconnecting.';
+  end;
+  if LEpoch = FJobEpoch then
+  begin
+    FSubmitting := False;
+    DrawGeneration;
+    if FJob <> nil then PollGeneration;
+  end;
+end;
+
 procedure TStudio.Generate; async;
 var
-  LWrite, LSettings, LJob, LProject: TJSObject;
+  LWrite, LSettings, LProject: TJSObject;
   LSeconds: Double;
   LId: String;
   LEpoch: Integer;
 begin
   if FSubmitting or FLoading or not FConnected then Exit;
+  if FJobWrite <> nil then begin SubmitGeneration; Exit end;
   if (Str(FJob, 'status') = 'running') or (Str(FJob, 'status') = 'queued') then Exit;
   if FSaving or FDirty or (FPendingWrite <> nil) then
   begin
@@ -554,8 +725,7 @@ begin
     Exit;
   end;
   FSubmitting := True;
-  TJSHTMLAudioElement(El('generated-audio')).pause;
-  TJSHTMLAudioElement(El('generated-original-audio')).pause;
+  PauseResult;
   FGenerationMessage := 'Starting your track…';
   DrawGeneration;
   LEpoch := FJobEpoch;
@@ -589,27 +759,17 @@ begin
       FJobWrite := LWrite;
       FJobId := LId;
       FJob := nil;
-      TJSHTMLAudioElement(El('generated-audio')).pause;
-      TJSHTMLAudioElement(El('generated-original-audio')).pause;
+      PauseResult;
       El('generation-result').setAttribute('hidden', '');
       RememberGeneration;
     end;
-    LJob := await(TJSObject, Json('/api/studio/job', 'POST', TJSJSON.stringify(FJobWrite)));
-    if LEpoch <> FJobEpoch then Exit;
-    if (Str(LJob, 'job_id') <> FJobId) or (Str(LJob, 'project_id') <> FProjectId) then
-      raise Exception.Create('Generation returned a different playlist. Reconnect to this run.');
-    FJob := LJob;
-    FJobWrite := nil;
-    if not FCancelling then FGenerationMessage := '';
-    RememberGeneration;
   except
     on E: Exception do FGenerationMessage := E.Message + ' Your request is kept for reconnecting.';
   end;
   if LEpoch = FJobEpoch then
   begin
     FSubmitting := False;
-    DrawGeneration;
-    if FJob <> nil then PollGeneration;
+    if FJobWrite <> nil then SubmitGeneration else DrawGeneration;
   end;
 end;
 
@@ -678,7 +838,8 @@ begin
       if LRows <> nil then
         for I := LRows.length - 1 downto 0 do
           if (Str(Obj(LRows[I]), 'project_id') = FProjectId) and
-            (Str(Obj(LRows[I]), 'kind') = 'instrumental_generate') then
+            ((Str(Obj(LRows[I]), 'kind') = 'instrumental_generate') or
+             (Str(Obj(LRows[I]), 'kind') = 'instrumental_reperform')) then
           begin FJobId := Str(Obj(LRows[I]), 'job_id'); Break end;
     end;
     if FJobId <> '' then
@@ -1241,6 +1402,9 @@ begin
   if LButton.hasAttribute('data-project') then OpenProject(LButton.getAttribute('data-project'));
   case LButton.id of
     'generate-music': Generate;
+    'change-sounds': OpenSoundChoices;
+    'apply-sounds': ApplySoundChoices;
+    'previous-version': OpenPreviousVersion;
     'cancel-generation': CancelGeneration;
     'reconnect-generation':
       if FJobWrite <> nil then Generate else PollGeneration;
@@ -1270,6 +1434,12 @@ begin
   if LControl.id = 'learning-label-choice' then
   begin
     PreviewLearningLabel;
+    Exit;
+  end;
+  if (LControl.id = 'sound-bass') or (LControl.id = 'sound-harmony') or
+    (LControl.id = 'sound-lead') then
+  begin
+    DrawSoundChoices;
     Exit;
   end;
   if LControl.id = 'playlist-name' then
@@ -1360,6 +1530,9 @@ begin
   El('output-duration').addEventListener('change', @Edit);
   El('output-duration').addEventListener('input', @Edit);
   El('output-duration-unit').addEventListener('change', @Edit);
+  El('sound-bass').addEventListener('change', @Edit);
+  El('sound-harmony').addEventListener('change', @Edit);
+  El('sound-lead').addEventListener('change', @Edit);
   El('learning-label-choice').addEventListener('change', @Edit);
   El('source-reconnect').addEventListener('click', @Click);
   El('capture-panel').addEventListener('close', @CaptureClosed);

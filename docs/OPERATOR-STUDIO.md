@@ -70,6 +70,15 @@ players. **What Pythian learned from** shows analyzed and model-used duration
 separately, plus the active label, source influence, proposed roles and excluded
 recordings. A changed playlist is explicitly distinguished from an older result.
 
+**Change sounds** makes another version of a finished track. Choose a Bass,
+Harmony or Lead sound, then **Create new version**. Notes, drums, length, seed
+and learning stay the same, including when your playlist has since changed.
+Compare **Before** and **After**, or use **Back to previous version**. Stopping
+the new render keeps the previous version available. The host continues working
+after the page closes. Older tracks without saved notes need one new generation
+before this control is available. The four current oscillator choices are a
+starting point; deeper instrument and effect recipes remain planned.
+
 ## Current experimental limits
 
 The [long-generation task is accepted](TODO/DONE/NS-6_instrumental-streams_01.md):

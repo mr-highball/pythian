@@ -670,3 +670,7 @@ code {
 .generation-phases .phase-complete { border-color: #b5f0cc; }
 .generation-phases [aria-current] { color: #b5f0cc; font-weight: 700; border-color: #b5f0cc; }
 .learning-progress small { display: block; margin: .5rem 0; }
+.sound-choices { display: grid; gap: 1rem; margin: 1rem 0; }
+.sound-choices select { display: block; width: 100%; margin-top: .35rem; }
+.version-comparison[data-compare] { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+@media (max-width: 600px) { .version-comparison[data-compare] { grid-template-columns: 1fr; } }

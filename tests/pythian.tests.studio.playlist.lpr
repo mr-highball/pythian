@@ -33,6 +33,7 @@ uses Classes, SysUtils, Math, fpjson, pythian.audio, pythian.wave, pythian.progr
   pythian.time, pythian.music.sound, pythian.music.stream, pythian.music.replay,
   pythian.music.decisions,
   pythian.tools.studio.decisions, pythian.tools.studio.instrumental.output,
+  pythian.tools.listen.assets,
   wfc_sequence, wfc_sequence_text;
 var GChecks: Integer;
 type
@@ -568,6 +569,149 @@ begin
   end;
 end;
 
+function SoundWrite(const AParentId, AId, AName: String;
+  const AParent: TJSONObject): TJSONObject;
+begin
+  Result := TJSONObject.Create(['format', StudioJobWriteFormat, 'job_id', AId,
+    'kind', 'instrumental_reperform', 'parent_job_id', AParentId,
+    'parent_plan_sha256', AParent.Strings['plan_sha256'],
+    'project_id', AParent.Strings['project_id'],
+    'project_revision', AParent.Int64s['project_revision'],
+    'project_snapshot_sha256', AParent.Strings['project_snapshot_sha256']]);
+  Result.Add('instruments', AParent.Objects['settings'].Arrays['instruments'].Clone);
+  Result.Arrays['instruments'].Strings[0] := AName;
+end;
+
+procedure CheckSoundChanges(const ACatalog, ALibrary, AParentId: String;
+  const AParentResult: TJSONObject);
+var
+  LWrite, LState, LPrevious, LPrepared, LBeforeJob: TJSONObject;
+  LParentId, LParentText, LRootShape, LShape, LJournal, LRequestText: String;
+  LPaths: array[0..1] of String;
+  LChanged, LRejected: Boolean;
+  I, J: Integer;
+begin
+  LPrevious := TJSONObject(AParentResult.Clone);
+  LParentId := AParentId;
+  LWrite := nil;
+  LState := nil;
+  LPrepared := nil;
+  LBeforeJob := ReadStudioJob(ACatalog, AParentId);
+  LParentText := LBeforeJob.AsJSON;
+  LBeforeJob.Free;
+  LRootShape := AParentResult.Objects['settings'].Arrays['instruments'].Strings[0];
+  LPaths[0] := ALibrary + '/collections/Chillsynth/Evening.wav';
+  LPaths[1] := ALibrary + '/collections/lofi/Soft steps.wav';
+  for I := 0 to 1 do
+    Check(RenameFile(LPaths[I], LPaths[I] + '.sound-check-held'),
+      'Hold isolated original recordings unavailable during sound-only jobs');
+  try
+    for I := 0 to 1 do
+    begin
+      if I = 0 then
+      begin
+        if LRootShape = 'square' then LShape := 'sine' else LShape := 'square';
+      end
+      else LShape := LRootShape;
+      LWrite := SoundWrite(LParentId, 'sound-change-' + IntToStr(I), LShape, LPrevious);
+      LRequestText := LWrite.AsJSON;
+      LPrepared := PrepareStudioJob(ACatalog, LWrite);
+      Check((LPrepared.Integers['source_count'] = 0) and
+        not LPrepared.Booleans['learning_performed'] and
+        not LPrepared.Booleans['notes_changed'] and
+        (LPrepared.Objects['limits'].Integers['worker_seconds'] = MaximumStudioSessionSeconds),
+        'Sound preflight reuses saved notes without source verification or new learning');
+      FreeAndNil(LPrepared);
+      LState := EnqueueStudioJob(ACatalog, LWrite);
+      Check(LState.Strings['parent_job_id'] = LParentId, 'Queued edit retains its previous version');
+      FreeAndNil(LState);
+      LState := EnqueueStudioJob(ACatalog, LWrite);
+      Check(LState.Booleans['already_queued'] and (LWrite.AsJSON = LRequestText),
+        'Sound-edit submission retries reconcile without mutating the caller');
+      FreeAndNil(LState);
+      Check(RunStudioWorker(ACatalog, LWrite.Strings['job_id'], ALibrary),
+        'Actual sound-only worker completes while original recordings are unavailable');
+      LState := ReadStudioJob(ACatalog, LWrite.Strings['job_id']);
+      Check((LState.Strings['status'] = 'completed') and
+        (LState.Objects['workflow'].Integers['done'] = 8) and
+        not LState.Objects['results'].Booleans['learning_performed'] and
+        not LState.Objects['results'].Booleans['notes_changed'],
+        'Durable sound edit completes its native progress without retraining');
+      Check((LState.Objects['results'].Objects['decisions'].AsJSON =
+          AParentResult.Objects['decisions'].AsJSON) and
+        (LState.Objects['results'].Strings['model_sha256'] = AParentResult.Strings['model_sha256']) and
+        (LState.Objects['results'].Arrays['graph'].AsJSON = AParentResult.Arrays['graph'].AsJSON) and
+        (LState.Objects['results'].Objects['playlist_learning'].AsJSON =
+          AParentResult.Objects['playlist_learning'].AsJSON),
+        'Every saved note, latent decision, model and original learning receipt stays exact');
+      Check(LState.Objects['results'].Strings['replay_source_job_id'] = AParentId,
+        'Chained sound edits retain one direct immutable score source');
+      for J := 0 to 5 do
+      begin
+        LChanged := LState.Objects['results'].Arrays['parts'].Objects[J].Strings['wav_sha256'] <>
+          LPrevious.Arrays['parts'].Objects[J].Strings['wav_sha256'];
+        Check(LChanged = (J = 0), 'Only the edited Bass stem changes; all other stem bytes stay exact');
+      end;
+      Check((LState.Objects['results'].Objects['before'].Strings['job_id'] = LParentId) and
+        (LState.Objects['results'].Objects['original_reference'].AsJSON =
+          AParentResult.Objects['original_reference'].AsJSON),
+        'Before and original comparison keep their actual separate origins');
+      if I = 1 then
+        Check(LState.Objects['results'].Arrays['outputs'].Objects[0].Strings['wav_sha256'] =
+          AParentResult.Arrays['outputs'].Objects[0].Strings['wav_sha256'],
+          'Restoring the original instrument reproduces the original mix exactly');
+      LParentId := LWrite.Strings['job_id'];
+      LPrevious.Free;
+      LPrevious := TJSONObject(LState.Objects['results'].Clone);
+      FreeAndNil(LState);
+      FreeAndNil(LWrite);
+    end;
+    LWrite := SoundWrite(AParentId, 'sound-no-change', LRootShape, AParentResult);
+    LRejected := False;
+    try LPrepared := PrepareStudioJob(ACatalog, LWrite);
+    except on EAudio do LRejected := True; end;
+    FreeAndNil(LPrepared);
+    Check(LRejected, 'A no-op edit cannot queue another job');
+    FreeAndNil(LWrite);
+    LWrite := SoundWrite(AParentId, 'sound-stale', LShape, AParentResult);
+    LWrite.Strings['parent_plan_sha256'] := StringOfChar('0', 64);
+    LRejected := False;
+    try LPrepared := PrepareStudioJob(ACatalog, LWrite);
+    except on EAudio do LRejected := True; end;
+    FreeAndNil(LPrepared);
+    Check(LRejected, 'Stale previous-version binding rejects before queuing');
+    FreeAndNil(LWrite);
+    LWrite := SoundWrite(AParentId, 'sound-missing-notes', 'square', AParentResult);
+    LState := EnqueueStudioJob(ACatalog, LWrite);
+    FreeAndNil(LState);
+    LJournal := ListeningAssetDirectory(ACatalog) + PathDelim + 'decisions' + PathDelim +
+      AParentResult.Objects['decisions'].Strings['sha256'] + '.pmd';
+    Check(RenameFile(LJournal, LJournal + '.sound-check-held'), 'Hold isolated saved notes unavailable');
+    try
+      Check(not RunStudioWorker(ACatalog, LWrite.Strings['job_id'], ALibrary),
+        'Missing notes fail without silently generating replacements');
+    finally
+      Check(RenameFile(LJournal + '.sound-check-held', LJournal), 'Restore exact isolated saved notes');
+    end;
+    LState := ReadStudioJob(ACatalog, LWrite.Strings['job_id']);
+    Check((LState.Strings['status'] = 'failed') and
+      (LState.Strings['parent_job_id'] = AParentId) and
+      (LState.Objects['results'].Find('outputs') = nil),
+      'Failed edit retains its previous-version link without a false completed output');
+    FreeAndNil(LState);
+    LBeforeJob := ReadStudioJob(ACatalog, AParentId);
+    try Check(LBeforeJob.AsJSON = LParentText, 'Sound edits never mutate the accepted parent job');
+    finally LBeforeJob.Free end;
+  finally
+    for I := 0 to 1 do
+      Check(RenameFile(LPaths[I] + '.sound-check-held', LPaths[I]), 'Restore exact isolated source recordings');
+    LPrepared.Free;
+    LState.Free;
+    LWrite.Free;
+    LPrevious.Free;
+  end;
+end;
+
 procedure Run(const ARoot: String);
 var
   LCatalog, LLibrary, LFile: String;
@@ -707,6 +851,7 @@ begin
             'Actual worker result retains source contributions and all six synthesized parts');
           CheckSavedVocabulary(LCatalog, LJob.Strings['job_id'], LResult.Objects['results']);
           CheckSavedDecisions(LCatalog, LJob.Strings['job_id'], LResult.Objects['results']);
+          CheckSoundChanges(LCatalog, LLibrary, LJob.Strings['job_id'], LResult.Objects['results']);
         finally LResult.Free end;
         LResult := ReadListeningQueue(LCatalog);
         try

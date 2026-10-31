@@ -76,6 +76,7 @@ uses
   pythian.tools.listen.catalog,
   pythian.tools.studio.jobs,
   pythian.tools.studio.instrumental,
+  pythian.tools.studio.reperform,
   pythian.tools.studio.progress,
   pythian.tools.studio.live,
   pythian.tools.studio.preparation,
@@ -415,7 +416,7 @@ var
   LWorkflow: TJSONObject;
 begin
   Check;
-  LInstrumental := FRequest.Strings['kind'] = 'instrumental_generate';
+  LInstrumental := IsStudioInstrumentalJob(FRequest.Strings['kind']);
   LPreviousPhase := FGenerationProgress.Phase;
   if LInstrumental then FGenerationProgress.Observe(AStage, ADone, ATotal);
   { Big Boss: callbacks share bounded control checks; immutable status writes
@@ -495,7 +496,7 @@ end;
 
 procedure TStudioWork.AudioProgress(const AProgress: TWorkProgress);
 begin
-  if FRequest.Strings['kind'] = 'instrumental_generate' then
+  if IsStudioInstrumentalJob(FRequest.Strings['kind']) then
   begin
     WorkProgress(AProgress);
     Exit;
@@ -1799,6 +1800,8 @@ var
   LOutputs: TJSONArray;
   LIndex: Integer;
 begin
+  if FRequest.Strings['kind'] = 'instrumental_reperform' then
+    Exit(RunStudioReperformance(FCatalogRoot, FJobId, FRequest, Check, AudioProgress));
   if FRequest.Strings['kind'] = 'instrumental_generate' then
   begin
     Exit(RunStudioInstrumental(FCatalogRoot, FJobId, FRequest, Check, AudioProgress,
@@ -1896,7 +1899,7 @@ begin
         LWorkflow := nil;
         try
           LWork.CheckNow;
-          if LRequest.Strings['kind'] = 'instrumental_generate' then
+          if IsStudioInstrumentalJob(LRequest.Strings['kind']) then
           begin
             LWorkflow := TJSONObject.Create(['phase', 4, 'phases', 4,
               'done', 8, 'total', 8, 'unit', 'save_steps']);
@@ -1939,7 +1942,7 @@ begin
               PathDelim + 'attempt-result.json', LResults);
             LMessage := 'Native Studio work failed; inspect retained details and correct the input';
             if ((LRequest.Strings['kind'] = 'stream_generate') or
-              (LRequest.Strings['kind'] = 'instrumental_generate') or
+              IsStudioInstrumentalJob(LRequest.Strings['kind']) or
               (LRequest.Find('preparation') <> nil)) and (E is EAudio) then
               LMessage := Copy(E.Message, 1, 256);
             AdvanceStudioJob(ACatalogRoot, AJobId, 'failed', 'failed', 0, 0,

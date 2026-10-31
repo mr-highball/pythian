@@ -58,15 +58,6 @@ uses Classes, SysUtils, Math,
   pythian.tools.studio.instrumental.output,
   pythian.tools.studio.instrumental.stream;
 
-function Shape(const AName: String): TWaveShape;
-begin
-  if AName = 'sine' then Exit(wsSine);
-  if AName = 'triangle' then Exit(wsTriangle);
-  if AName = 'saw' then Exit(wsSaw);
-  if AName = 'square' then Exit(wsSquare);
-  raise EAudio.Create('Unsupported instrumental oscillator');
-end;
-
 function RunStudioInstrumental(const ACatalogRoot, AJobId: String;
   const ARequest: TJSONObject; const ACheck: TStudioInstrumentalCheck;
   const AProgress: TWorkProgressCallback; const ALibraryRoot,
@@ -215,24 +206,13 @@ begin
     begin
       if LIsPlaylist then
       begin
-        LZones := nil;
-        SetLength(LZones, 1);
-        LZones[0].MinimumKey := 0;
-        LZones[0].MaximumKey := 127;
-        LZones[0].MinimumVelocity := 1;
-        LZones[0].MaximumVelocity := 127;
-        LZones[0].Voice := DefaultSynthVoice;
-        LZones[0].Voice.Gain := 0.14;
+        LZones := StudioPlaylistInstrumentZones;
         LRoles[LRole].OutputBus := LRole;
       end
       else LZones := LRoles[LRole].Instrument.CopyZones;
-      for LIndex := 0 to High(LZones) do
-      begin
-        LZones[LIndex].Voice.Shape := Shape(LConfig.Arrays['instruments'].Strings[LRole]);
-        if (LRole = LSoundRole) or LPlaylistHasSound then
-          LZones[LIndex].Voice := ApplyMusicalSound(LZones[LIndex].Voice, LSound, StudioInstrumentalRate);
-      end;
-      LInstruments[LRole] := TInstrument.Create(LZones);
+      LInstruments[LRole] := CreateStudioInstrument(LZones,
+        LConfig.Arrays['instruments'].Strings[LRole], LSound,
+        (LRole = LSoundRole) or LPlaylistHasSound, StudioInstrumentalRate);
       LRoles[LRole].Instrument := LInstruments[LRole];
       if LIsPlaylist then
         LRoles[LRole].InstrumentId := 'playlist-primary-v1-' + LConfig.Arrays['instruments'].Strings[LRole]

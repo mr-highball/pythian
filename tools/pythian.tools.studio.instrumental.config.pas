@@ -29,7 +29,8 @@ unit pythian.tools.studio.instrumental.config;
 
 interface
 
-uses fpjson, pythian.music.controls;
+uses fpjson, pythian.music.controls, pythian.instrument, pythian.music.sound,
+  pythian.oscillator, pythian.percussion;
 
 const
   StudioInstrumentalOrigin =
@@ -40,11 +41,19 @@ const
     'Experimental recording-derived musical providers; primary synthesized instruments; no original-audio reconstruction';
 
 procedure ValidateStudioInstrumentalConfig(const AConfig: TJSONObject);
+procedure ValidateStudioInstrumentNames(const ANames: TJSONArray);
+function StudioInstrumentShape(const AName: String): TWaveShape;
+function StudioPlaylistInstrumentZones: TInstrumentZones;
+function CreateStudioInstrument(const ATemplate: TInstrumentZones;
+  const AName: String; const ASound: TMusicalSound; const AApplySound: Boolean;
+  const ASampleRate: Integer): TInstrument;
+function DecodeStudioPercussionSettings(const ARow: TJSONObject;
+  const ASampleRate: Integer): TPercussionSettings;
 function DecodeStudioMusicalControls(const AControls: TJSONObject): TMusicalPartControls;
 
 implementation
 
-uses SysUtils, pythian.audio;
+uses SysUtils, pythian.audio, pythian.synth;
 
 procedure Need(const ACondition: Boolean; const AMessage: String);
 begin
@@ -63,8 +72,75 @@ begin
   Result := LValue.AsInteger;
 end;
 
+function StudioInstrumentShape(const AName: String): TWaveShape;
+begin
+  if AName = 'sine' then Exit(wsSine);
+  if AName = 'triangle' then Exit(wsTriangle);
+  if AName = 'saw' then Exit(wsSaw);
+  if AName = 'square' then Exit(wsSquare);
+  raise EAudio.Create('Choose an available instrument sound');
+end;
+
+procedure ValidateStudioInstrumentNames(const ANames: TJSONArray);
+var I: Integer;
+begin
+  Need((ANames <> nil) and (ANames.Count = 3), 'Choose three pitched instruments');
+  for I := 0 to 2 do
+  begin
+    Need(ANames[I].JSONType = jtString, 'Instrument name must be text');
+    StudioInstrumentShape(ANames.Strings[I]);
+  end;
+end;
+
+function StudioPlaylistInstrumentZones: TInstrumentZones;
+var LZones: TInstrumentZones;
+begin
+  SetLength(LZones, 1);
+  LZones[0].MinimumKey := 0;
+  LZones[0].MaximumKey := 127;
+  LZones[0].MinimumVelocity := 1;
+  LZones[0].MaximumVelocity := 127;
+  LZones[0].Voice := DefaultSynthVoice;
+  LZones[0].Voice.Gain := 0.14;
+  Result := LZones;
+end;
+
+function CreateStudioInstrument(const ATemplate: TInstrumentZones;
+  const AName: String; const ASound: TMusicalSound; const AApplySound: Boolean;
+  const ASampleRate: Integer): TInstrument;
+var LZones: TInstrumentZones; I: Integer;
+begin
+  LZones := Copy(ATemplate);
+  for I := 0 to High(LZones) do
+  begin
+    LZones[I].Voice.Shape := StudioInstrumentShape(AName);
+    if AApplySound then
+      LZones[I].Voice := ApplyMusicalSound(LZones[I].Voice, ASound, ASampleRate);
+  end;
+  Result := TInstrument.Create(LZones);
+end;
+
+function DecodeStudioPercussionSettings(const ARow: TJSONObject;
+  const ASampleRate: Integer): TPercussionSettings;
+const
+  CFields: array[0..5] of String =
+    ('gain', 'pan', 'gate_seconds', 'release_seconds', 'tone_hz', 'cutoff_hz');
+var LName: String;
+begin
+  Result := DefaultPercussionSettings(TPercussionKind(Number(ARow, 'kind', 0, 2)), ASampleRate);
+  for LName in CFields do
+    Need((ARow.Find(LName) <> nil) and (ARow.Find(LName).JSONType = jtNumber),
+      'Saved drum recipe has a missing numeric setting');
+  Result.Gain := ARow.Floats['gain'];
+  Result.Pan := ARow.Floats['pan'];
+  Result.GateSeconds := ARow.Floats['gate_seconds'];
+  Result.ReleaseSeconds := ARow.Floats['release_seconds'];
+  Result.ToneHz := ARow.Floats['tone_hz'];
+  Result.CutoffHz := ARow.Floats['cutoff_hz'];
+end;
+
 procedure ValidateStudioInstrumentalConfig(const AConfig: TJSONObject);
-var LIndex: Integer; LValue: TJSONData; LText: String;
+var LIndex: Integer; LValue: TJSONData;
 begin
   Need((AConfig <> nil) and (AConfig.Count = 5 + Ord(AConfig.Find('mode') <> nil) +
     Ord(AConfig.Find('controls') <> nil)),
@@ -89,13 +165,7 @@ begin
   LValue := AConfig.Find('instruments');
   Need((LValue <> nil) and (LValue.JSONType = jtArray) and
     (TJSONArray(LValue).Count = 3), 'Choose three pitched instruments');
-  for LIndex := 0 to 2 do
-  begin
-    Need(TJSONArray(LValue)[LIndex].JSONType = jtString, 'Instrument name must be text');
-    LText := TJSONArray(LValue).Strings[LIndex];
-    Need((LText = 'sine') or (LText = 'triangle') or (LText = 'saw') or
-      (LText = 'square'), 'Unsupported instrumental oscillator');
-  end;
+  ValidateStudioInstrumentNames(TJSONArray(LValue));
   LValue := AConfig.Find('levels');
   Need((LValue <> nil) and (LValue.JSONType = jtArray) and
     (TJSONArray(LValue).Count = 6), 'Choose six part levels');

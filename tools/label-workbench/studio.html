@@ -82,11 +82,17 @@ SOFTWARE.
     <button id="cancel-generation" data-studio-action type="button" hidden>Stop generation</button>
     <button id="reconnect-generation" data-studio-action type="button" hidden>Reconnect to this run</button>
     <section id="generation-result" class="generation-result" hidden aria-label="Your generated music">
-      <h2>Your new track</h2><p id="generation-revision-note" class="hint" role="status"></p><audio id="generated-audio" controls preload="none"></audio>
-      <p><a id="download-generated" download="pythian-track.wav">Save WAV</a></p>
+      <h2>Your new track</h2><p id="generation-revision-note" class="hint" role="status"></p>
+      <div id="version-comparison" class="version-comparison">
+        <section id="generation-before" hidden aria-label="Before"><h3>Before</h3><audio id="generated-before-audio" controls preload="none"></audio></section>
+        <section aria-label="Current version"><h3 id="generation-after-label" hidden>After</h3><audio id="generated-audio" controls preload="none"></audio><a id="download-generated" download="pythian-track.wav">Save WAV</a></section>
+      </div>
+      <div class="library-actions"><button id="change-sounds" data-studio-action type="button" hidden>Change sounds</button></div>
+      <p id="sound-availability" class="hint"></p>
       <details id="generation-original"><summary>Compare an original excerpt</summary><p id="generation-original-title" class="hint"></p><audio id="generated-original-audio" controls preload="none"></audio></details>
       <details><summary>What Pythian learned from</summary><div id="generation-learning"></div></details>
     </section>
+    <button id="previous-version" data-studio-action type="button" hidden>Back to previous version</button>
   </section>
   <div class="save-status"><span id="save-state" role="status" aria-live="polite">Changes save automatically</span><button id="retry-save" type="button" data-studio-action hidden>Retry save</button><button id="save-copy" type="button" data-studio-action hidden>Save a new copy</button></div>
 </main>
@@ -135,6 +141,17 @@ SOFTWARE.
   <div id="learning-label-matches" aria-label="Matching music"></div>
   <p class="hint">A matching whole track takes priority over its clips. Other tracks and clips stay saved.</p>
   <button id="apply-learning-label" data-studio-action class="primary" type="button">Use matching music</button>
+</dialog>
+<dialog id="sound-dialog" aria-labelledby="sound-dialog-title">
+  <header class="dialog-heading"><h2 id="sound-dialog-title">Change instrument sounds</h2><button type="button" data-close="sound-dialog">Cancel</button></header>
+  <p>Keep the notes, drums and length. Try another sound.</p>
+  <div class="sound-choices">
+    <label for="sound-bass">Bass<select id="sound-bass"><option value="sine">Smooth · sine</option><option value="triangle">Soft · triangle</option><option value="saw">Bright · saw</option><option value="square">Hollow · square</option></select></label>
+    <label for="sound-harmony">Harmony<select id="sound-harmony"><option value="sine">Smooth · sine</option><option value="triangle">Soft · triangle</option><option value="saw">Bright · saw</option><option value="square">Hollow · square</option></select></label>
+    <label for="sound-lead">Lead<select id="sound-lead"><option value="sine">Smooth · sine</option><option value="triangle">Soft · triangle</option><option value="saw">Bright · saw</option><option value="square">Hollow · square</option></select></label>
+  </div>
+  <p class="hint">Your current version stays saved. No new learning.</p>
+  <button id="apply-sounds" data-studio-action class="primary" type="button" disabled>Create new version</button>
 </dialog>
 <script src="studio.js"></script><script>rtl.run();</script>
 </body>

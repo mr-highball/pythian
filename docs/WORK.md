@@ -2,7 +2,79 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
-## Current handoff: actual streamed decisions retained and replayed — 2026-10-31
+## Current handoff: change sounds on a finished Studio track — 2026-10-31
+
+Big Boss SOLO delivers the sound-only Studio follow-up in
+[graph controls](TODO/NS-4_graph-controls_01.md). Finished tracks with saved
+decisions offer Change sounds, Before/After and Back to previous version.
+One durable native job replays the same notes with one or several changed
+pitched instruments. It does not analyze sources, learn or solve WFC. Shared
+initial/replay instrument binding removes the duplicate recipe setup. Direct
+root lineage keeps repeated edits independent of recursive parent traversal.
+Original reference, immutable parents, notes/model/learning hashes, seed,
+duration and unaffected stems remain preserved. Edited current playlist choices
+are explicitly excluded from this sound-only follow-up. No generic source-style
+review is published for each edit; useful guided questions remain their own task.
+
+Native playlist/worker checks pass255 with zero unfreed blocks, including
+original WAVs unavailable, bass-only PCM changes, exact restoration of the
+original mix, retry/no-op/stale/missing-note boundaries and parent preservation.
+All twelve matched web assets and native service/worker compile. Actual desktop
+and390px phone checks cover normal minute generation, one/two-part sound edits,
+original/Before/After exclusive playback, no-op disabled, failure recovery and
+actual running Stop. Closing the accepted job's page leaves it running natively;
+reopening recovers that same completed job. The minute pair's unchanged Lead,
+Kick, Snare and Hat WAV hashes remain exact; only the selected Bass/Harmony change.
+All seven QA audio elements finish paused, nonlooping and error-free.
+Packet: studio-sounds-20261031-boss under dedicated E-drive roots.
+
+The primary replayer also passes387 actual pas2js consumer checks after its new
+receipt-extent accessor. Checked service/worker and twelve matching web assets
+are deployed in the existing fixed stable slots, with fourteen prior files
+backed up and hashed. The existing catalog/inbox, artifact/cache/source roots,
+Private bind and installed TLS are retained. Loopback HTTP and LAN HTTPS return
+200 with the same updated page; all sixteen operator job states remain unchanged
+and the matching worker is available. Exact host/process/hash evidence stays in
+the ignored packet's deployment-final.json. QA service/workers and the owned
+browser tab are closed; the temporary phone viewport is reset. User tabs remain.
+
+Preserve the first drum-recipe decoder failure and isolated probe: Pascal inferred
+four-character elements for an inline string list and truncated saved field names.
+An explicitly typed String table repairs the real consumer. Failed and repaired
+logs remain together. An initial combined QA-launch action was rejected before
+execution; explicit guarded file preparation and fixed-slot dispatch succeeded
+without changing approvals, firewall or TLS. No helper was used and no operator
+feedback was submitted. Previous commit1efb807 CI523 is terminal SUCCESS.
+
+The seven-unit parent stays open for role/passage/dependent graph regeneration.
+No full parent criterion closes in this bounded consumer batch; consecutive
+nonclosing count is now one. **84/124 accepted (67.74%), six open and seventeen
+current DONE remain unchanged.** Next work must close the remaining retained
+graph criterion or trigger reassessment after the second nonclosing batch.
+The overall goal remains active. Four oscillator choices are useful current
+controls; they do not imply complete sound-design recipes or musical approval.
+
+## Selected batch: change sounds on a finished Studio track — 2026-10-31
+
+Big Boss SOLO continues after1efb807. Previous turn is progress: the decision
+replay prerequisite is accepted/deployed; consecutive nonclosing count starts
+at zero. Selected graph-controls AC2/AC4 consumer: retain the actual notes and
+provider states while changing one or several pitched instruments. Deliver an
+optional result dialog, durable native replay job, immutable parent/root lineage
+and Original/Before/After playback. Source learning, model solving, duration,
+seed and unedited parts must stay unchanged; edited playlists must not enter
+this explicit follow-up. Reuse one native recipe binding path and the primary
+model-free score replayer. No new task/effort is added;84/124 remains.
+
+Closing checks: actual native parent/child/rechild, excluded/unavailable original
+payloads, unchanged decision/model hashes and unedited stem WAVs, changed selected
+sound, idempotent retry, stale-parent/invalid-input rejection and cancellation.
+Then exercise the real desktop/phone result dialog, compare playback, close-tab
+completion and reconnect. Stop after this usable retained-score consumer; scoped
+role/passage graph changes and remaining graph-controls criteria stay open.
+Packet: studio-sounds-20261031-boss under dedicated E-drive roots.
+
+## Previous handoff: actual streamed decisions retained and replayed — 2026-10-31
 
 Big Boss SOLO accepts [decision replay](TODO/DONE/NS-4_decision-replay_01.md).
 **84/124 effort accepted (67.74%), six open, seventeen current DONE,40 open units**.

@@ -24,7 +24,8 @@ Primary attribution: NS-4. Effort estimates relative implementation/integration 
 
 - [Streamed decision replay — DONE](DONE/NS-4_decision-replay_01.md) — ordinary
   playlist jobs now retain and replay their actual notes/providers without
-  learning/solving. Wire sound-only follow-ups and scoped passage changes here.
+  learning/solving. Sound-only Studio follow-ups are implemented; scoped passage
+  and dependent-role graph changes remain here.
 
 - [NS-4_assignment-restore_01 — DONE](DONE/NS-4_assignment-restore_01.md) — preserve generated
   assignment ownership while reopening durable accepted sessions.
@@ -35,6 +36,46 @@ Primary attribution: NS-4. Effort estimates relative implementation/integration 
 - [NS-4_instrumental-runtime_01](DONE/NS-4_instrumental-runtime_01.md)
 
 **Dev Notes:**
+
+- 2026-10-31, Big Boss: retained-score sound follow-ups now work in ordinary
+  Studio. The optional Change sounds dialog queues a durable native
+  instrumental_reperform job, uses the primary score replayer and shares initial
+  generation's instrument recipe binding. Parent/root hashes, actual decisions,
+  learning receipt, seed and length remain immutable. No source analysis or WFC
+  solving runs; changed current playlist choices do not enter this explicit edit.
+  Before/After, original reference and Back to previous version remain available.
+  Child-of-child edits point directly to the original decision source.
+  Native playlist checks pass255 with clean heap: unavailable original payloads,
+  exact unaffected five-part PCM, changed bass, exact restoration of the original
+  mix, idempotent retry, stale/no-op rejection, missing-note failure and unchanged
+  parent records. Desktop and390px browser checks pass: normal Generate, one/two
+  sound edits, exclusive playback, completion after page closure, recovery of the
+  same job, actual running Stop and previous-version recovery. The minute-long
+  UI pair changes only Bass/Harmony stems; Lead and all drums remain exact.
+  Preserve the first native failure: an inferred four-character string-list
+  element truncated gate_seconds/release_seconds/tone_hz/cutoff_hz field names.
+  A typed String constant table fixes the decoder; the isolated probe and failed
+  logs remain beside the repaired run in studio-sounds-20261031-boss on E.
+  The primary replayer's receipt-extent accessor also compiles and passes the
+  existing387 actual pas2js consumer checks. Checked service/worker and all twelve
+  matched browser assets are deployed to the fixed stable slot. Sixteen operator
+  jobs retain their terminal states. HTTP/LAN HTTPS return200; QA tab/service/
+  workers are closed and all QA audio was paused before cleanup.
+  No full parent criterion closes: AC2/AC4 still require role/passage/dependency
+  regeneration. Consecutive nonclosing count is one. No partial effort accepted;
+  accounting stays84/124. Next batch must close the remaining retained graph
+  criterion or reassess before further implementation. Four oscillator choices
+  do not accept the separate sound-design task. These are solo implementation
+  checks, not independent QA or operator musical approval.
+
+- 2026-10-31, Big Boss: selected actual retained-score Studio consumer. Add an
+  optional Change sounds result dialog, a durable native replay job and explicit
+  Original/Before/After. Parent decisions, seed, learning and unaffected parts
+  remain exact; no current-playlist save/retraining gate and no implicit WFC
+  solve. Reuse native instrument binding for initial generation and follow-ups.
+  Validate actual parent/child/rechild, retry/failure/cancel and desktop/phone
+  playback/reopen. Stop before role/passage graph changes; this parent remains
+  open until every criterion passes. Packet: studio-sounds-20261031-boss on E.
 
 - 2026-10-31, Big Boss: decision-replay prerequisite accepted after shared native/
   actual pas2js, exact changed-sound/unrelated-part checks and ordinary native

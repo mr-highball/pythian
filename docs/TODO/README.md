@@ -20,7 +20,8 @@ labeling is required to continue implementation.
 The accepted [decision-replay prerequisite](DONE/NS-4_decision-replay_01.md) now
 retains actual streamed notes/provider states and replays mix/stems exactly
 without learning or solving. New ordinary generations save these decisions;
-sound-only follow-up controls and scoped graph changes remain open.
+optional sound-only follow-ups now preserve that score and expose Before/After.
+Scoped role/passage graph changes still keep graph-controls open.
 Next follow the actual prerequisites of NS-5: finish musical controls/selective
 regeneration and reusable sound recipes, then evolving form and saved styles/
 blends. Graph inspection and useful synthesis reviews retain their own tasks.
@@ -46,8 +47,9 @@ proposals do not imply universal motif coverage, source-instrument identificatio
 whole-corpus learning or a musical-quality verdict.
 
 Musical controls are exposed in Studio. The shared runtime now retains an accepted
-score/graph while replacing pitched sounds/expression; durable Studio follow-ups
-and role/passage graph regeneration keep graph-controls open without partial credit.
+score/graph while replacing pitched sounds/expression. Durable sound-only Studio
+follow-ups are implemented; role/passage graph regeneration keeps graph-controls
+open without partial credit.
 
 ## First operator-facing milestone
 

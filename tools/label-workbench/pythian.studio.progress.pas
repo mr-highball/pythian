@@ -210,7 +210,14 @@ var
   LPhase, I: Integer;
   LDone, LTotal, LValue: Double;
   LDetail, LOperation: String;
+  LNames: array[1..4] of String;
 begin
+  for I := 1 to 4 do LNames[I] := CNames[I];
+  if StudioText(AJob, 'kind') = 'instrumental_reperform' then
+  begin
+    LNames[1] := 'Open saved track';
+    LNames[2] := 'Restore instruments';
+  end;
   LRoot := Add(AParent, 'div', '');
   LRoot.className := 'learning-progress';
   LWorkflow := TJSObject(AJob['workflow']);
@@ -225,7 +232,7 @@ begin
   LTotal := StudioNumber(LWorkflow, 'total');
   LValue := LPhase - 1;
   if LTotal > 0 then LValue := LValue + Min(1, Max(0, LDone / LTotal));
-  LDetail := 'Step ' + IntToStr(LPhase) + ' of 4 · ' + CNames[LPhase];
+  LDetail := 'Step ' + IntToStr(LPhase) + ' of 4 · ' + LNames[LPhase];
   Add(LRoot, 'p', LDetail).className := 'progress-heading';
   LBar := Add(LRoot, 'progress', '');
   LBar.setAttribute('max', '4');
@@ -236,7 +243,7 @@ begin
   LSteps.className := 'generation-phases';
   for I := 1 to 4 do
   begin
-    LItem := Add(LSteps, 'li', CNames[I]);
+    LItem := Add(LSteps, 'li', LNames[I]);
     if I < LPhase then LItem.className := 'phase-complete'
     else if I = LPhase then LItem.setAttribute('aria-current', 'step');
   end;
@@ -270,7 +277,8 @@ begin
   if LStatus = '' then LStatus := StudioText(AJob, 'job_status');
   if ACompact and ((LStatus = 'completed') or (LStatus = 'cancelled') or
     (LStatus = 'failed')) then Exit;
-  if ACompact and (StudioText(AJob, 'kind') = 'instrumental_generate') then
+  if ACompact and ((StudioText(AJob, 'kind') = 'instrumental_generate') or
+    (StudioText(AJob, 'kind') = 'instrumental_reperform')) then
   begin
     DrawGenerationWorkflow(AParent, AJob);
     Exit;

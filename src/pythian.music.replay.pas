@@ -52,6 +52,7 @@ type
     procedure Admit(const AProgress: TWorkProgressCallback);
     function GetState: TInstrumentStreamState;
     function GetPosition: Int64;
+    function GetCellCount: Int64;
   public
     constructor Create(const AJournal: TStream;
       const ABindings: TInstrumentStreamBindings; const AGraph: TBusGraph;
@@ -64,6 +65,9 @@ type
     procedure Resume;
     procedure Stop;
     property Position: Int64 read GetPosition;
+    { Decoded retained cells, including the loaded chunk. At completion this is
+      the complete journal extent, for binding to the caller's owning receipt. }
+    property CellCount: Int64 read GetCellCount;
     property State: TInstrumentStreamState read GetState;
   end;
 
@@ -143,6 +147,11 @@ end;
 function TMusicDecisionReplay.GetPosition: Int64;
 begin
   Result := FMusic.Position;
+end;
+
+function TMusicDecisionReplay.GetCellCount: Int64;
+begin
+  Result := FReader.CellCount;
 end;
 
 procedure TMusicDecisionReplay.Pause;
