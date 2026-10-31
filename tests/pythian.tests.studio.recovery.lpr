@@ -157,7 +157,8 @@ begin
         LProgress.textContent := '';
         DrawStudioProgress(LProgress, LImportJob);
         Check(Pos('50%', LProgress.textContent) > 0, 'Import phase shows actual byte ratio');
-        Check(Pos('MiB of audio', LProgress.textContent) > 0, 'Import bytes describe current audio');
+        Check(Pos('64.0 KiB / 128.0 KiB', LProgress.textContent) > 0,
+          'Import reports the actual current byte extent');
         Check(Pos('Preparing music', LProgress.textContent) = 0, 'Import phase has a specific label');
       end;
       LImportJob['status'] := 'cancelled';

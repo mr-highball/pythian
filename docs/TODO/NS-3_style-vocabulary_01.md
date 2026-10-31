@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 7/10
-**Status:** Ready
+**Status:** In progress
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -19,6 +19,13 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
 - AC2: Keep recording/run boundaries, unknown regions, original source timing and distinct training weights/generation preferences. New recordings and vocabulary rebuilds must not silently reinterpret existing token IDs or duplicate ancestry.
 - AC3: Reuse bounded journal/intake/cache machinery for longer and multiple recordings; show included, processed, excluded and model-used duration separately. Support cancellation/reuse and name practical model/resource limits.
 - AC4: Use the resulting saved providers in actual multi-part instrumental generation. Demonstrate a musically audible effect of an operator classification or corpus/model edit, and preserve unsupported mappings as explicit gaps.
+- AC5: The simple Studio Generate action automatically performs this learning
+  from the included whole tracks/passages. Per-track influence changes training
+  contributions, separately from generation preferences. Do not require manual
+  microclip segmentation or proposal acceptance, ignore selected music, substitute
+  authored-only material, or describe a first-eight-second observation as learning
+  the entire playlist. Keep unknown/unsupported musical proposals honest and
+  Experimental while still allowing the operator to audition synthesis.
 
 **Blockers**
 
@@ -26,6 +33,13 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-10-30, Big Boss: This is now the real backend prerequisite to the
+  [simple Studio flow](NS-6_simple-studio_01.md), per the operator's Library →
+  Selection → Generate direction. The existing 7/10 scope already owns coarse
+  whole/multiple recording learning and distinct training weights; this
+  clarification adds no duplicate effort. Prioritize that consumer over the
+  parked sound-archive slice. Use primary Pascal analysis/inference/WFC providers,
+  bounded source reads and source-boundary-aware corpus machinery.
 - 2026-10-30, Big Boss: Experimental learning is accepted; its bounded source-linked
   pitch/context and explicit cutoff/sustain recipes remove this prerequisite.
   Coarse whole-corpus vocabulary work remains unimplemented and earns no partial effort.

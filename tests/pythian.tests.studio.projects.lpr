@@ -218,6 +218,128 @@ begin
   Check(LFailed, 'Expected bounded parser rejection');
 end;
 
+procedure PlaylistChecks(const ACatalog, AHash: String);
+var
+  LWrite, LPlaylist, LItem, LClip, LResult, LRead, LBefore: TJSONObject;
+  LSources: TJSONObject;
+  LTrack: TJSONObject;
+  LIndex: Integer;
+  LRejected: Boolean;
+  LRevision: String;
+begin
+  LWrite := MakeWrite(AHash);
+  LSources := ListStudioSources(ACatalog);
+  try
+    LWrite.Strings['project_id'] := 'playlist-check';
+    LWrite.Strings['learning_mode'] := 'instrumental';
+    LWrite.Arrays['sources'].Clear;
+    LPlaylist := TJSONObject.Create;
+    LWrite.Add('playlist', LPlaylist);
+    LPlaylist.Add('format', StudioPlaylistFormat);
+    LPlaylist.Add('items', TJSONArray.Create);
+    LItem := TJSONObject.Create;
+    LPlaylist.Arrays['items'].Add(LItem);
+    LTrack := nil;
+    for LIndex := 0 to LSources.Arrays['sources'].Count - 1 do
+      if LSources.Arrays['sources'].Objects[LIndex].Strings['source_sha256'] = AHash then
+        LTrack := LSources.Arrays['sources'].Objects[LIndex];
+    Check(LTrack <> nil, 'Playlist fixture uses real source metadata');
+    LItem.Add('kind', 'catalog');
+    LItem.Add('id', AHash);
+    LItem.Add('snapshot_sha256', LTrack.Strings['metadata_sha256']);
+    LItem.Add('discovery_revision', 0);
+    LItem.Add('title', LTrack.Strings['title']);
+    LItem.Add('sample_rate', LTrack.Int64s['sample_rate']);
+    LItem.Add('frame_count', LTrack.Int64s['frame_count']);
+    LItem.Add('influence', 3);
+    LItem.Add('extent', 'whole');
+    LItem.Add('clips', TJSONArray.Create);
+    LClip := TJSONObject.Create(['start_frame', 500, 'end_frame', 1500,
+      'included', True]);
+    LClip.Add('classifications', TJSONArray.Create(['intro']));
+    LItem.Arrays['clips'].Add(LClip);
+    LResult := SaveStudioProject(ACatalog, LWrite);
+    try
+      Check((LResult.Arrays['sources'].Count = 0) and
+        (LResult.Objects['playlist'].Arrays['items'].Objects[0].Strings['extent'] = 'whole'),
+        'Whole playlist saves without preparing another source or training');
+      LRead := ReadStudioProject(ACatalog, 'playlist-check');
+      try
+        LResult.Delete('already_saved');
+        Check(LRead.AsJSON = LResult.AsJSON, 'Playlist reload retains metadata identity and exact clips');
+      finally
+        LRead.Free;
+      end;
+      LRevision := LResult.Strings['snapshot_sha256'];
+    finally
+      LResult.Free;
+    end;
+    LResult := SaveStudioProject(ACatalog, LWrite);
+    try
+      Check(LResult.Booleans['already_saved'] and (LResult.Integers['revision'] = 1),
+        'Repeated automatic save is idempotent');
+    finally
+      LResult.Free;
+    end;
+    LWrite.Integers['expected_revision'] := 1;
+    LItem.Strings['extent'] := 'clips';
+    LItem.Integers['influence'] := 7;
+    LResult := SaveStudioProject(ACatalog, LWrite);
+    try
+      Check((LResult.Integers['revision'] = 2) and
+        (LResult.Objects['playlist'].Arrays['items'].Objects[0].Integers['influence'] = 7),
+        'Clip extent and learning influence produce an explicit new revision');
+    finally
+      LResult.Free;
+    end;
+    LResult := ReadStudioProjectRevision(ACatalog, 'playlist-check', 1);
+    try
+      Check(LResult.Strings['snapshot_sha256'] = LRevision, 'Earlier playlist revision stays immutable');
+    finally
+      LResult.Free;
+    end;
+    for LIndex := 0 to 7 do
+    begin
+      LBefore := TJSONObject(LWrite.Clone);
+      try
+        case LIndex of
+          0: LItem.Integers['influence'] := 0;
+          1: LItem.Integers['influence'] := 17;
+          2: LClip.Int64s['end_frame'] := LItem.Int64s['frame_count'] + 1;
+          3: LItem.Int64s['sample_rate'] := LItem.Int64s['sample_rate'] + 1;
+          4: LItem.Strings['snapshot_sha256'] := StringOfChar('0', 64);
+          5: LPlaylist.Arrays['items'].Add(LItem.Clone);
+          6: LItem.Arrays['clips'].Add(LClip.Clone);
+          7: LItem.Strings['extent'] := 'ambiguous';
+        end;
+        LRejected := False;
+        try
+          LResult := SaveStudioProject(ACatalog, LWrite);
+          LResult.Free;
+        except
+          on EAudio do LRejected := True;
+        end;
+        Check(LRejected, 'Reject malformed/unbound playlist ' + IntToStr(LIndex));
+        LRead := ReadStudioProject(ACatalog, 'playlist-check');
+        try
+          Check(LRead.Integers['revision'] = 2, 'Rejected automatic save leaves accepted playlist intact');
+        finally
+          LRead.Free;
+        end;
+      finally
+        LWrite.Free;
+        LWrite := LBefore;
+        LPlaylist := LWrite.Objects['playlist'];
+        LItem := LPlaylist.Arrays['items'].Objects[0];
+        LClip := LItem.Arrays['clips'].Objects[0];
+      end;
+    end;
+  finally
+    LSources.Free;
+    LWrite.Free;
+  end;
+end;
+
 procedure Run(const ARoot: String);
 var
   LCatalog: String;
@@ -622,6 +744,7 @@ begin
   finally
     LWrite.Free;
   end;
+  PlaylistChecks(LCatalog, LHash);
   WriteLn('PASS ', GChecks, ' Studio project checks; catalog_snapshot_pending_training_verification');
 end;
 

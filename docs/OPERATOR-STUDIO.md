@@ -5,6 +5,16 @@
 
 ## Current capability and the gap
 
+**2026-10-30 operator revision:** the main flow is being replaced by
+**Library → Selection → Generate**, with automatic playlist saving and whole/clip
+selection. Generate will need only length and optional track learning influence.
+The [new UI task](TODO/NS-6_simple-studio_01.md) remains open until its real
+[selected-music learning](TODO/NS-3_style-vocabulary_01.md) path works. The isolated
+preview currently exercises Library/Selection; its Generate button is explicitly
+unavailable. Stable Studio retains the earlier deployment described below until
+the replacement is usable. The older project/manual-proposal instructions are
+deployment history, not the intended new operator workflow.
+
 Studio already has private collections, explicit training inclusion, whole-track
 and passage selection, waveform/range controls, recording/import, analysis and
 Experimental pitch/MIDI preview, effects, persistent native jobs and listening

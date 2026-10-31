@@ -3,8 +3,14 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**8 open tasks · 102 total effort units · 11 current-goal DONE · 47 / 102 accepted (46.08%).**
+**9 open tasks · 108 total effort units · 11 current-goal DONE · 47 / 108 accepted (43.52%).**
 Effort is relative complexity on a 1–10 scale, not assigned musical credit.
+The operator's latest priority is [Library → Selection → Generate](NS-6_simple-studio_01.md):
+a simple local music/playlist interface whose Generate action actually learns
+from the chosen tracks/passages with per-track training influence. The linked
+corpus learning task now takes implementation priority; the full-plan archive
+slice is preserved for later. Adding this six-unit operator outcome grows scope;
+it does not erase previous delivered code or award completion for the redesign.
 The operator has resumed implementation solo. The shared instrumental runtime
 and explicit percussion are accepted. Finite instrumental Studio and its real
 cancellation prerequisite are now accepted; the first operator review is waiting.
@@ -32,13 +38,14 @@ and role/passage graph regeneration keep graph-controls open without partial cre
 Together these 21 units deliver bass, drums, harmony and lead in Studio with
 real musical controls and playback. Authored/operator/MIDI inputs are sufficient
 to start; uncertain WAV proposals can follow without a benchmark-first gate.
-All 21 units in this first milestone are accepted. Eight later tasks remain open. No more raw-grain
+All 21 units in this first milestone are accepted. Nine later tasks remain open. No more raw-grain
 continuity experiments are selected.
 
 ## Complete current scope
 
 | Task | Effort | Actual prerequisites |
 | --- | ---: | --- |
+| [NS-6_simple-studio_01](NS-6_simple-studio_01.md) — Library → Selection → Generate | 6 | Style vocabulary for actual playlist learning; streams for longer output |
 | [NS-2_sound-design_01](NS-2_sound-design_01.md) — reusable instrument/effects recipes | 6 | Runtime + instrumental Studio |
 | [NS-4_graph-workbench_01](NS-4_graph-workbench_01.md) — inspect and edit actual graph | 7 | Instrumental Studio |
 | [NS-4_graph-controls_01](NS-4_graph-controls_01.md) — dimensions, affect and selective regeneration | 7 | Runtime + accepted assignment restoration |
@@ -55,9 +62,9 @@ continuity experiments are selected.
 | [NS-6_instrumental-progress_01 — DONE](DONE/NS-6_instrumental-progress_01.md) — bound durable fine-phase publication | 2 | Accepted; unchanged native consumers, cancellation and actual HTTP worker |
 | [NS-6_instrumental-streams_01](NS-6_instrumental-streams_01.md) — efficient long instrumental jobs | 8 | Instrumental Studio |
 
-The two tables together are all 19 current-goal tasks (8 open, eleven DONE),
-totaling 102 units: 55 open and 47 accepted. Subtotals:
-NS-2 12, NS-3 15, NS-4 33, NS-5 15, NS-6 27. NS-1 remains a preserved core
+The two tables together are all 20 current-goal tasks (9 open, eleven DONE),
+totaling 108 units: 61 open and 47 accepted. Subtotals:
+NS-2 12, NS-3 15, NS-4 33, NS-5 15, NS-6 33. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 
 The first milestone owns priority, not convenience. Later tasks have explicit

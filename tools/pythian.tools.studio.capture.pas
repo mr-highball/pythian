@@ -437,6 +437,7 @@ var
   LBuffer: array[0..65535] of Byte;
   LCount: Integer;
   LExists: Boolean;
+  LSelected: TStudioLibraryFiles;
 begin
   ValidateStudioCollectionName(AWrite.Get('collection_name', ''));
   Need((Length(Trim(AWrite.Get('title', ''))) > 0) and
@@ -518,9 +519,14 @@ begin
       Need(Sha256Stream(LOutput, LOutput.Size, AProgress) = LHash, 'Existing collection audio differs');
       FreeAndNil(LOutput);
     end;
+    SetLength(LSelected, 1);
+    LSelected[0].Path := LFinal;
+    LSelected[0].Name := ExtractFileName(LFinal);
+    LSelected[0].CollectionName := AWrite.Strings['collection_name'];
+    LSelected[0].Bytes := LInput.Size;
     FreeAndNil(LInput);
-    LReport := RefreshStudioLibraryObserved(ACatalogRoot, ALibraryRoot,
-      ReserveStudioJobStage(ACatalogRoot, ALibraryRoot, AJobId, 'capture-refresh'), AProgress);
+    LReport := PrepareStudioLibraryFilesObserved(ACatalogRoot, ALibraryRoot,
+      ReserveStudioJobStage(ACatalogRoot, ALibraryRoot, AJobId, 'capture-refresh'), LSelected, AProgress);
     Result := TJSONObject.Create;
     Result.Add('source_sha256', LHash);
     Result.Add('capture_id', AWrite.Strings['capture_id']);

@@ -11,7 +11,7 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 47 / 102 effort units accepted (46.08%); eight open, eleven current-goal DONE.**
+**Current snapshot: 47 / 108 effort units accepted (43.52%); nine open, eleven current-goal DONE.**
 This is a scope-delivery estimate, not a musical-quality score. No arbitrary
 per-task percentages or north-star weights apply.
 
@@ -22,10 +22,16 @@ per-task percentages or north-star weights apply.
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 7 | 8 | 8 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, graph inspection and musical controls | 14 | 19 | 19 / 33 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
-| [NS-6](#ns-6) | Ordinary Studio generation, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 13 | 14 | 14 / 27 |
-| **Total** | **19 current-goal tasks** | **55** | **47** | **46.08%** |
+| [NS-6](#ns-6) | Simple playlist-to-learning Studio, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 19 | 14 | 14 / 33 |
+| **Total** | **20 current-goal tasks** | **61** | **47** | **43.52%** |
 
 ## First milestone: hear and change instrumental music in Studio
+
+Current operator priority: [Library → Selection → Generate](TODO/NS-6_simple-studio_01.md).
+The earlier finite Studio milestone remains delivered history. The new simple
+flow must learn from actual selected music through [corpus vocabulary](TODO/NS-3_style-vocabulary_01.md),
+with output length and per-track influence as its only required tuning. No new
+effort is accepted by this change in direction.
 
 1. [Instrumental runtime — DONE](TODO/DONE/NS-4_instrumental-runtime_01.md), effort 7:
    actual coupled musical WFC passes drive existing Pythian instruments; source-free caller delivered.

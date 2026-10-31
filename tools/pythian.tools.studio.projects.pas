@@ -38,6 +38,7 @@ const
   StudioProjectsFormat = 'pythian.studio.projects.v1';
   StudioProjectFormat = 'pythian.studio.project.v1';
   StudioProjectWriteFormat = 'pythian.studio.project.write.v1';
+  StudioPlaylistFormat = 'pythian.studio.playlist.v1';
   StudioSourceValidation = 'catalog_snapshot_pending_training_verification';
   MaximumStudioProjects = 256;
   MaximumStudioSources = 32;
@@ -62,6 +63,11 @@ function ReadStudioProjectRevision(const ACatalogRoot, AProjectId: String;
 function OpenStudioSourceAudio(const ACatalogRoot, AHash: String): TFileStream;
 { Bounds byte length/nesting before the strict parser runs. }
 function ParseStudioProjectWrite(const AText: RawByteString): TJSONObject;
+{ Detached canonical metadata-only playlist. Does not open recordings or train.
+  Whole-track inclusion and saved clips are mutually exclusive training extents;
+  clips remain saved when the whole track is selected. Influence is a learning
+  weight, not a playback gain. Source binding happens on project admission. }
+function CanonicalStudioPlaylist(const APlaylist: TJSONObject): TJSONObject;
 { expected_revision=0 creates a project. An identical retry against the directly
   preceding revision reconciles without another write. Other stale writes fail.
   Immutable accepted revisions are never replaced. The returned already_saved
@@ -83,6 +89,7 @@ uses
   pythian.wave.read,
   pythian.tools.annotations.catalog,
   pythian.tools.studio.material,
+  pythian.tools.studio.&library.discovery,
   pythian.tools.studio.&library
   {$IFDEF MSWINDOWS}, Windows{$ENDIF};
 
@@ -704,6 +711,167 @@ begin
   end;
 end;
 
+function CanonicalStudioPlaylist(const APlaylist: TJSONObject): TJSONObject;
+var
+  LItems, LClips, LOutItems, LOutClips: TJSONArray;
+  LItem, LClip, LOut, LOutClip: TJSONObject;
+  LIds: TStringList;
+  LKind, LId, LExtent, LText: String;
+  LRate, LFrames, LStart, LEnd, LWeight, LRevision: Int64;
+  LIndex, LPart, LOther, LTotal: Integer;
+  LIncluded: TJSONData;
+  LClasses: TJSONArray;
+begin
+  Fields(APlaylist, 'format,items');
+  Need(TextField(APlaylist, 'format', 1, 64) = StudioPlaylistFormat,
+    'Playlist format is unsupported');
+  LItems := ArrayField(APlaylist, 'items');
+  Need(LItems.Count <= MaximumStudioSources, 'Playlist supports up to 32 tracks');
+  LIds := TStringList.Create;
+  try
+    Result := TJSONObject.Create;
+    try
+      Result.Add('format', StudioPlaylistFormat);
+      LOutItems := TJSONArray.Create;
+      Result.Add('items', LOutItems);
+      LTotal := 0;
+      for LIndex := 0 to LItems.Count - 1 do
+      begin
+        LItem := ObjectAt(LItems, LIndex);
+        Fields(LItem, 'kind,id,snapshot_sha256,discovery_revision,title,sample_rate,' +
+          'frame_count,influence,extent,clips');
+        LKind := TextField(LItem, 'kind', 1, 16);
+        Need((LKind = 'library') or (LKind = 'catalog'), 'Playlist source kind is unsupported');
+        LId := TextField(LItem, 'id', 64, 64);
+        Need(ValidHash(LId) and (LIds.IndexOf(LKind + ':' + LId) < 0),
+          'Playlist track is invalid or repeated');
+        LIds.Add(LKind + ':' + LId);
+        Need(ValidHash(TextField(LItem, 'snapshot_sha256', 64, 64)),
+          'Playlist metadata identity is invalid');
+        LRevision := IntField(LItem, 'discovery_revision');
+        Need(((LKind = 'library') and (LRevision > 0) and (LRevision <= High(Integer))) or
+          ((LKind = 'catalog') and (LRevision = 0)), 'Playlist discovery revision is invalid');
+        LRate := IntField(LItem, 'sample_rate');
+        LFrames := IntField(LItem, 'frame_count');
+        Need((LRate >= 1) and (LRate <= 768000) and (LFrames > 0), 'Playlist source clock is invalid');
+        LWeight := IntField(LItem, 'influence');
+        Need((LWeight >= 1) and (LWeight <= 16), 'Track influence must be 1..16');
+        LExtent := TextField(LItem, 'extent', 1, 16);
+        Need((LExtent = 'whole') or (LExtent = 'clips'), 'Choose whole track or clips');
+        LClips := ArrayField(LItem, 'clips');
+        Inc(LTotal, LClips.Count);
+        Need(LTotal <= MaximumStudioSelections, 'Playlist supports up to 64 saved clips');
+        LOut := TJSONObject.Create;
+        LOutItems.Add(LOut);
+        LOut.Add('kind', LKind);
+        LOut.Add('id', LId);
+        LOut.Add('snapshot_sha256', LItem.Strings['snapshot_sha256']);
+        LOut.Add('discovery_revision', LRevision);
+        LOut.Add('title', TextField(LItem, 'title', 1, 512));
+        LOut.Add('sample_rate', LRate);
+        LOut.Add('frame_count', LFrames);
+        LOut.Add('influence', LWeight);
+        LOut.Add('extent', LExtent);
+        LOutClips := TJSONArray.Create;
+        LOut.Add('clips', LOutClips);
+        for LPart := 0 to LClips.Count - 1 do
+        begin
+          LClip := ObjectAt(LClips, LPart);
+          Fields(LClip, 'start_frame,end_frame,included,classifications');
+          LStart := IntField(LClip, 'start_frame');
+          LEnd := IntField(LClip, 'end_frame');
+          Need((LStart >= 0) and (LEnd > LStart) and (LEnd <= LFrames),
+            'Clip must be inside its original track');
+          LIncluded := LClip.Find('included');
+          Need((LIncluded <> nil) and (LIncluded.JSONType = jtBoolean), 'Clip inclusion must be explicit');
+          for LOther := 0 to LOutClips.Count - 1 do
+          begin
+            Need((LStart <> LOutClips.Objects[LOther].Int64s['start_frame']) or
+              (LEnd <> LOutClips.Objects[LOther].Int64s['end_frame']), 'Saved clip is repeated');
+            if LIncluded.AsBoolean and LOutClips.Objects[LOther].Booleans['included'] then
+              Need((LStart >= LOutClips.Objects[LOther].Int64s['end_frame']) or
+                (LEnd <= LOutClips.Objects[LOther].Int64s['start_frame']),
+                'Selected clips overlap; choose disjoint clips or the whole track');
+          end;
+          LClasses := ArrayField(LClip, 'classifications');
+          Need(LClasses.Count <= 8, 'Use up to eight clip labels');
+          for LOther := 0 to LClasses.Count - 1 do
+          begin
+            Need(LClasses[LOther].JSONType = jtString, 'Clip labels must be text');
+            LText := LClasses.Strings[LOther];
+            Need((Length(LText) > 0) and (Length(LText) <= 64), 'Clip label is too long');
+            ValidateCorpusText(UTF8String(LText));
+          end;
+          LOutClip := TJSONObject.Create;
+          LOutClips.Add(LOutClip);
+          LOutClip.Add('start_frame', LStart);
+          LOutClip.Add('end_frame', LEnd);
+          LOutClip.Add('included', LIncluded.AsBoolean);
+          LOutClip.Add('classifications', LClasses.Clone);
+        end;
+      end;
+    except
+      Result.Free;
+      Result := nil;
+      raise;
+    end;
+  finally
+    LIds.Free;
+  end;
+end;
+
+procedure BindPlaylistSources(const ACatalogRoot: String; const APlaylist: TJSONObject);
+var
+  LItem, LSource, LIndex: TJSONObject;
+  LItems, LEntries: TJSONArray;
+  LOrdinal, LRow: Integer;
+begin
+  LItems := APlaylist.Arrays['items'];
+  for LOrdinal := 0 to LItems.Count - 1 do
+  begin
+    LItem := LItems.Objects[LOrdinal];
+    if LItem.Strings['kind'] = 'catalog' then
+      LSource := ReadSource(ACatalogRoot, LItem.Strings['id'])
+    else
+    begin
+      LEntries := TJSONArray.Create;
+      try
+        LSource := TJSONObject.Create;
+        LEntries.Add(LSource);
+        LSource.Add('entry_id', LItem.Strings['id']);
+        LSource.Add('entry_snapshot_sha256', LItem.Strings['snapshot_sha256']);
+        LIndex := ValidateStudioLibraryEntries(ACatalogRoot,
+          LItem.Integers['discovery_revision'], LEntries);
+        LIndex.Free;
+      finally
+        LEntries.Free;
+      end;
+      LIndex := ReadStudioLibraryDiscovery(ACatalogRoot, LItem.Integers['discovery_revision']);
+      try
+        LSource := nil;
+        for LRow := 0 to LIndex.Arrays['entries'].Count - 1 do
+          if LIndex.Arrays['entries'].Objects[LRow].Strings['entry_id'] = LItem.Strings['id'] then
+            LSource := TJSONObject(LIndex.Arrays['entries'].Objects[LRow].Clone);
+        Need(LSource <> nil, 'Playlist track disappeared from its metadata snapshot');
+      finally
+        LIndex.Free;
+      end;
+    end;
+    try
+      if LItem.Strings['kind'] = 'catalog' then
+      begin
+        Need(LSource.Strings['metadata_sha256'] = LItem.Strings['snapshot_sha256'],
+          'Playlist catalog metadata changed');
+        Need(LSource.Strings['partition'] <> 'evaluation', 'Reserved evaluation tracks cannot teach a playlist');
+      end;
+      Need((LSource.Int64s['sample_rate'] = LItem.Int64s['sample_rate']) and
+        (LSource.Int64s['frame_count'] = LItem.Int64s['frame_count']), 'Playlist source clock differs from metadata');
+    finally
+      LSource.Free;
+    end;
+  end;
+end;
+
 procedure ValidateSnapshot(const AProject: TJSONObject; const AId: String;
   const ARevision: Integer);
 var
@@ -725,7 +893,19 @@ begin
   begin
     LFields := LFields + ',musical_material';
   end;
+  if AProject.Find('playlist') <> nil then LFields := LFields + ',playlist';
   Fields(AProject, LFields);
+  LValue := AProject.Find('playlist');
+  if LValue <> nil then
+  begin
+    Need(LValue.JSONType = jtObject, 'Playlist must be an object');
+    LMaterial := CanonicalStudioPlaylist(TJSONObject(LValue));
+    try
+      Need(LMaterial.AsJSON = LValue.AsJSON, 'Stored playlist is not canonical');
+    finally
+      LMaterial.Free;
+    end;
+  end;
   LValue := AProject.Find('musical_material');
   if LValue <> nil then
   begin
@@ -762,6 +942,9 @@ begin
   end;
   Need(((LTotal >= 1) or (LUsage = 'instrumental')) and
     (LTotal <= MaximumStudioSelections), 'Save up to 64 selections; instrumental projects may start empty');
+  if AProject.Find('playlist') <> nil then
+    Need((LUsage = 'instrumental') and (LTotal = 0) and
+      (AProject.Find('musical_material') = nil), 'Playlist owns instrumental training selection');
   LHash := TextField(AProject, 'snapshot_sha256', 64, 64);
   Need(ValidHash(LHash), 'Studio snapshot digest is invalid');
   LCopy := TJSONObject(AProject.Clone);
@@ -1048,6 +1231,14 @@ begin
         'Musical input must be a choices object');
       Result.Add('musical_material', CanonicalStudioMaterial(AWrite.Objects['musical_material']));
     end;
+    if AWrite.Find('playlist') <> nil then
+    begin
+      Need((LMode = 'instrumental') and (LTotal = 0) and
+        (AWrite.Find('musical_material') = nil), 'Playlist owns instrumental training selection');
+      Need(AWrite.Find('playlist').JSONType = jtObject, 'Playlist must be an object');
+      Result.Add('playlist', CanonicalStudioPlaylist(AWrite.Objects['playlist']));
+      BindPlaylistSources(ACatalogRoot, Result.Objects['playlist']);
+    end;
     Result.Add('snapshot_sha256', JsonHash(Result));
     ValidateSnapshot(Result, Result.Strings['project_id'], ARevision);
   except
@@ -1108,6 +1299,7 @@ begin
   begin
     LFields := LFields + ',musical_material';
   end;
+  if AWrite.Find('playlist') <> nil then LFields := LFields + ',playlist';
   Fields(AWrite, LFields);
   Need(Length(AWrite.AsJSON) <= MaximumStudioDocumentBytes, 'Studio write exceeds its byte bound');
   Need(TextField(AWrite, 'format', 1, 64) = StudioProjectWriteFormat,

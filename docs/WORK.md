@@ -2,7 +2,87 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
-## Current handoff: accepted musical sessions reopen faithfully — 2026-10-30
+## Current handoff: simpler Studio, real playlist selection — 2026-10-30
+
+Big Boss SOLO follows the operator's **Library → Selection → Generate** priority.
+[Simple Studio](TODO/NS-6_simple-studio_01.md), effort six, is open; the existing
+[style-vocabulary task](TODO/NS-3_style-vocabulary_01.md) now explicitly owns
+automatic selected-music learning and per-track training weights. The old
+project/save/manual-proposal/engine setup is removed from the main presentation.
+The replacement starts with a compact private library, then a playlist of whole
+tracks or saved clips. Clip editing and import/record/folder tools use dialogs.
+Source playback, sampled waveforms, native capture and effects still reuse their
+primary Pascal implementations. There is no compatibility form hidden behind the
+new UI.
+
+The native project revision store now accepts a canonical metadata-only playlist:
+library entry/catalog identity, source clock, whole/clip extent, saved clip labels
+and influence 1–16. Saving binds metadata without training or copying whole audio;
+full byte verification remains a Generate preflight. Earlier project snapshots
+and answers remain unchanged. Legacy selections open as a separate playlist.
+Browser edits save automatically, retain ambiguous writes for idempotent retry,
+and offer a new copy on conflict. Played music never changes inclusion. A new
+recording uploads and inspects automatically before Add to library; saving it
+now prepares only that recording instead of refreshing/hashing every original.
+The shared selected-file progress bridge is in the primary library tool unit.
+
+Actual native checks pass: project persistence 128 on Win32/Win64; lazy playlist
+17 on both; capture 82 on Win64, with clean heaps. Metadata-only playlist saving
+works with an original exclusively locked; missing audio does not erase saved
+choices or prevent a metadata edit. Capture saving succeeds with an unrelated
+original locked. The native job boundary explicitly rejects feeding the new
+playlist into the older authored-only instrumental generator. A disabled button
+is not the only protection against false selected-music learning.
+
+Retained component recovery52/reference24 checks also pass in dedicated test
+hosts. Their obsolete mounts are removed from product HTML, and the stale test
+expectation of MiB for 64/128 KiB is repaired without changing correct output.
+
+Browser QA uses the fixed QA executable slot and an isolated synthetic catalog,
+through the chat's managed in-app browser. Checked desktop/390-pixel paths cover
+tag search, multiple whole tracks/clips, audition beyond 30 seconds, whole/clip
+switching, persistent weights, reload, import/save and direct microphone entry.
+Physical phone microphone capture is not newly qualified. Initial fresh-browser
+null storage, missing data-attribute navigation, an unrefreshed folder controller
+and presentation compile errors were repaired; preserve their evidence. An
+import of bytes already in the catalog retains the first catalog title despite
+a new requested title: fix that display-name gap before accepting Library in
+full. The selected-music learning path and generated playback remain unfinished.
+Stable Studio stays on the previous deployment; do not replace it with a preview
+whose Generate button is unavailable. No operator feedback is needed yet.
+Owned QA tabs 4–6 are closed, all inspected players were paused without loops,
+and the fixed QA listener/workers are stopped. The stable service remains on
+its existing PID73508 and both original listeners. No firewall rule, private
+operator data or response was changed. The phone-width selection screenshot
+is retained externally as `phone-selection.png` in this batch's run directory.
+
+Evidence is under `studio-simple-20261030-boss` in the dedicated E-drive roots.
+The preceding full-plan restoration WIP was unverified and is safely parked in
+Git stash `8557d212063417bc7a04e1c11fe8c622f1c8c32f` plus the external
+`retained-plan-wip.patch`; do not reapply it over this UI batch. Its unfinished
+batch carried one nonclosing count. The actual saved-selection criterion now
+passes final desktop/phone-width browser checks and resets that count to zero;
+the whole six-unit task remains open and
+earns no effort yet. Current accounting is **47/108 (43.52%)**, 20 tasks,
+nine open/eleven current DONE, 61 open units. NS-6's denominator is now 33.
+
+Prior validation has finished: Pythian CI512's native job passes for `8b6d1e7`,
+and the complete extracted Win64 package verifies all 169 owned units, actual
+external consumers and 294 content hashes plus SHA256SUMS. Archive digest:
+`4924fb61aa4664d63c0b2a94855727bc8479155e26d808fcc2ca56564569848e`.
+No extra effort or musical credit follows. The retained six-part archive is
+deferred in favor of this operator workflow.
+
+Next batch criterion: Generate actually learns from the chosen whole/range music
+with the recorded source weights, then drives instrumental musical providers.
+Reuse bounded native analysis, source journals and the actual WFC/instrument
+runtime. Expose uncertain supported proposals as Experimental; do not require
+manual approval or silently substitute authored music. Stop at a short actual
+weighted corpus → instrumental output demonstration, then connect durable jobs,
+honest duration controls and playback in the new Generate step. Broader
+instrumental streaming remains its own linked task.
+
+## Previous handoff: accepted musical sessions reopen faithfully — 2026-10-30
 
 Big Boss SOLO accepted [assignment restoration](TODO/DONE/NS-4_assignment-restore_01.md),
 three effort units. Actual named-voice/layer snapshots retain canonical provider
@@ -36,11 +116,10 @@ Extracted Win64 package inventory and all owned units compile; core-only synthes
 renders/reloads 67032 stereo frames and source-free kick/snare/hat callers pass.
 Extracted changed source hashes match the implementation and WFC REVISION matches
 the gitlink. These affected delivery boundaries close the integration criterion.
-The broader local package runner is still running (unified session 29222;
-PowerShell PID70928 at last check), and
+The broader local package runner completed successfully, and
 [Pythian CI512](https://github.com/mr-highball/pythian/actions/runs/41148735380)
-is in progress for `8b6d1e7`. No complete-package/remote pass is claimed. Check their
-outcomes; repair relevant failures and reconsider acceptance if necessary. They
+passes its native job for `8b6d1e7`. Complete-package and remote results are now
+confirmed; see the current handoff above. They
 do not earn additional effort. Prior
 [CI511](https://github.com/mr-highball/pythian/actions/runs/41142489684) passed for
 `ac4b4ec` (native completed 23:31:38Z).

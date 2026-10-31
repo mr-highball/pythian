@@ -84,6 +84,8 @@ function RefreshStudioLibraryObserved(const ACatalogRoot, ALibraryRoot, AStageRo
 function PrepareStudioLibraryFiles(const ACatalogRoot, ALibraryRoot, AStageRoot: String;
   const AFiles: TStudioLibraryFiles;
   const AProgress: TStudioLibraryProgress = nil): TJSONObject;
+function PrepareStudioLibraryFilesObserved(const ACatalogRoot, ALibraryRoot, AStageRoot: String;
+  const AFiles: TStudioLibraryFiles; const AProgress: TWorkProgressCallback): TJSONObject;
 { Reads bounded published metadata only; never discovers or hashes audio. }
 function ListStudioLibrary(const ACatalogRoot: String): TJSONObject;
 function StudioCollectionsForSource(const ACatalogRoot, AHash: String): TJSONArray;
@@ -1527,6 +1529,21 @@ begin
   try
     LBridge.Callback := AProgress;
     Result := RefreshStudioLibrary(ACatalogRoot, ALibraryRoot, AStageRoot, LBridge.Observe);
+  finally
+    LBridge.Free;
+  end;
+end;
+
+function PrepareStudioLibraryFilesObserved(const ACatalogRoot, ALibraryRoot, AStageRoot: String;
+  const AFiles: TStudioLibraryFiles; const AProgress: TWorkProgressCallback): TJSONObject;
+var LBridge: TLibrarySharedProgress;
+begin
+  if not Assigned(AProgress) then
+    Exit(PrepareStudioLibraryFiles(ACatalogRoot, ALibraryRoot, AStageRoot, AFiles));
+  LBridge := TLibrarySharedProgress.Create;
+  try
+    LBridge.Callback := AProgress;
+    Result := PrepareStudioLibraryFiles(ACatalogRoot, ALibraryRoot, AStageRoot, AFiles, LBridge.Observe);
   finally
     LBridge.Free;
   end;

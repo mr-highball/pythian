@@ -668,6 +668,8 @@ begin
           'Project snapshot differs; reopen the saved project');
         Need(LProject.Strings['learning_mode'] = 'instrumental',
           'Save the project with Instrumental experiment selected');
+        Need(LProject.Find('playlist') = nil,
+          'Playlist learning is not connected yet; authored-only generation cannot replace selected music');
         LRequest.Add('project_snapshot', LProject.Clone);
       finally
         LProject.Free;

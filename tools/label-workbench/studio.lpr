@@ -22,630 +22,731 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *)
 program PythianStudio;
-
 {$mode delphi}
 {$H+}
 {$modeswitch externalclass}
-
-uses
-  JS,
-  Web,
-  SysUtils,
-  Math,
-  pythian.studio.sources,
-  pythian.studio.batches,
-  pythian.studio.effects,
-  pythian.studio.capture,
-  pythian.studio.reviews,
-  pythian.studio.material,
-  pythian.studio.requests,
-  pythian.workspace.navigation,
-  pythian.workspace.tabs,
-  pythian.studio.&library.refresh;
+uses JS, Web, SysUtils, Math,
+  pythian.studio.sources, pythian.studio.capture, pythian.studio.effects,
+  pythian.studio.requests, pythian.studio.&library.refresh;
 
 type
   TStudioWindow = class external name 'Window' (TJSWindow)
     function fetch(const AUrl: String; const AOptions: TJSObject): TJSPromise; reintroduce;
   end;
-
   TStudio = class
   private
-    FNavigation: TWorkspaceNavigation;
-    FTabs: TWorkspaceTabs;
-    FLibraryRefresh: TStudioLibraryRefresh;
+    FTracks, FSelections, FProjects: TJSArray;
     FSourceEditor: TStudioSourceEditor;
-    FBatches: TStudioBatches;
-    FEffects: TStudioEffects;
     FCapture: TStudioCapture;
-    FReviews: TStudioReviews;
-    FMaterial: TStudioMaterial;
-    FSavedProject: TJSObject;
-    FToken: String;
-    FProjectId: String;
-    FRevision: Integer;
-    FTracks: TJSArray;
-    FProjects: TJSArray;
-    FSelections: TJSArray;
-    FDirty: Boolean;
-    FBusy: Boolean;
-    FConnected: Boolean;
-    FEpoch: Integer;
+    FEffects: TStudioEffects;
+    FLibraryRefresh: TStudioLibraryRefresh;
+    FToken, FProjectId, FName: String;
+    FRevision, FChanges, FPendingVersion: Integer;
+    FConnected, FLoading, FSaving, FDirty: Boolean;
+    FSaveTimer: NativeInt;
     FPendingWrite: TJSObject;
-    FConflict: Boolean;
-    FCatalogRefreshPending: Boolean;
     function El(const AId: String): TJSElement;
-    function Input(const AId: String): TJSHTMLInputElement;
-    function AddText(AParent: TJSElement; const ATag, AText, AClass: String): TJSElement;
     function FetchApi(const APath, AMethod, ABody: String): TJSPromise;
     function FetchNavigation(const APath, AMethod, ABody: String;
       const ASignal: TJSObject): TJSPromise;
+    function Json(const APath, AMethod, ABody: String): TJSObject; async;
     procedure Connect; async;
-    procedure LoadProject(const AId: String); async;
-    procedure Save; async;
     procedure CatalogSaved;
-    function UseNextBatch(APacket: TJSObject): TJSPromise;
-    function ApplyNextBatch(APacket: TJSObject): Boolean; async;
-    procedure ApplyProject(AProject: TJSObject);
-    procedure NewDraft;
-    procedure DrawProjects;
-    procedure DrawTracks;
     procedure MergeDiscovery(ATracks: TJSArray; ADiscovery, APrepared: TJSObject);
-    procedure UpdateSummary;
-    procedure UpdateState;
-    procedure Status(const AText: String; AError: Boolean = False);
-    procedure Feedback(const AText: String; AError: Boolean = False);
+    procedure Draw;
+    procedure DrawProjects;
+    procedure BindSelectedTracks;
+    procedure ShowStep(const AStep: String);
     procedure Changed;
-    procedure MaterialChanged;
-    procedure ClearErrors;
-    procedure ErrorAt(const AId, AText: String);
+    procedure QueueSave;
+    procedure Remember;
+    procedure Save; async;
     function BuildWrite: TJSObject;
-    function FindSelection(const AHash: String): TJSObject;
-    function FindTrack(const AHash: String): TJSObject;
-    function MatchesWrite(AProject, AWrite: TJSObject): Boolean;
-    function HandleEdit(AEvent: TEventListenerEvent): Boolean;
-    function HandleNew(AEvent: TJSMouseEvent): Boolean;
-    function HandleSave(AEvent: TJSMouseEvent): Boolean;
-    function HandleReload(AEvent: TJSMouseEvent): Boolean;
-    function HandleRetry(AEvent: TJSMouseEvent): Boolean;
-    function HandleProject(AEvent: TEventListenerEvent): Boolean;
-    function HandleSearch(AEvent: TEventListenerEvent): Boolean;
-    function HandleBeforeUnload(AEvent: TEventListenerEvent): Boolean;
-    function HandleSubmit(AEvent: TEventListenerEvent): Boolean;
-    function HandleAnyPlay(AEvent: TEventListenerEvent): Boolean;
-    function HandleStart(AEvent: TJSMouseEvent): Boolean;
+    function Playlist: TJSObject;
+    procedure ApplyPlaylist(APlaylist: TJSObject);
+    procedure OpenProject(const AId: String); async;
+    procedure LoadProject(AProject: TJSObject);
+    procedure AddSelection(ASelection: TJSObject);
+    procedure NewPlaylist;
+    procedure SaveCopy;
+    procedure Notice(const AText: String; const AError: Boolean = False);
+    function Click(AEvent: TJSMouseEvent): Boolean;
+    function Edit(AEvent: TEventListenerEvent): Boolean;
+    function Playing(AEvent: TEventListenerEvent): Boolean;
+    function Leaving(AEvent: TEventListenerEvent): Boolean;
+    function CaptureClosed(AEvent: TEventListenerEvent): Boolean;
+    function TabKey(AEvent: TJSKeyboardEvent): Boolean;
   public
     procedure Run;
   end;
-
 function Obj(AValue: JSValue): TJSObject;
 begin
-  Result := TJSObject(AValue);
+  Result := nil;
+  if isObject(AValue) and not isArray(AValue) then Result := TJSObject(AValue);
 end;
-
 function Str(AObject: TJSObject; const AName: String): String;
-begin
-  Result := '';
-  if (AObject <> nil) and isString(AObject[AName]) then
-  begin
-    Result := String(AObject[AName]);
-  end;
-end;
-
+begin Result := StudioText(AObject, AName) end;
 function Num(AObject: TJSObject; const AName: String): Double;
-begin
-  Result := 0;
-  if (AObject <> nil) and isNumber(AObject[AName]) then
-  begin
-    Result := Double(AObject[AName]);
-  end;
-end;
-
+begin Result := StudioNumber(AObject, AName) end;
 function Arr(AObject: TJSObject; const AName: String): TJSArray;
 begin
   Result := nil;
-  if (AObject <> nil) and isArray(AObject[AName]) then
-  begin
-    Result := TJSArray(AObject[AName]);
-  end;
+  if (AObject <> nil) and isArray(AObject[AName]) then Result := TJSArray(AObject[AName]);
 end;
-
 function CloneObject(AObject: TJSObject): TJSObject;
-begin
-  Result := Obj(TJSJSON.parse(TJSJSON.stringify(AObject)));
-end;
-
-function TimeText(AMilliseconds: Double): String;
-var
-  LMilliseconds: NativeInt;
-  LMinutes: NativeInt;
-  LSeconds: NativeInt;
-  LFraction: NativeInt;
-begin
-  LMilliseconds := Trunc(Max(0, AMilliseconds));
-  LMinutes := LMilliseconds div 60000;
-  LSeconds := (LMilliseconds div 1000) mod 60;
-  LFraction := LMilliseconds mod 1000;
-  Result := IntToStr(LMinutes) + ':' + Format('%.2d', [LSeconds]);
-  if LFraction <> 0 then
-  begin
-    Result := Result + '.' + Format('%.3d', [LFraction]);
-  end;
-end;
-
-function ParseTime(const AText: String; out AMilliseconds: Double): Boolean;
-var
-  LText: String;
-  LColon: Integer;
-  LDot: Integer;
-  LIndex: Integer;
-  LMinutes: Double;
-  LSeconds: Integer;
-  LFraction: String;
-  LNumber: String;
-begin
-  Result := False;
-  AMilliseconds := 0;
-  LText := Trim(AText);
-  LColon := Pos(':', LText);
-  if (LColon < 2) or (Length(LText) > 24) then
-  begin
-    Exit;
-  end;
-  LMinutes := 0;
-  for LIndex := 1 to LColon - 1 do
-  begin
-    if not (LText[LIndex] in ['0'..'9']) then
-    begin
-      Exit;
-    end;
-    LMinutes := LMinutes * 10 + Ord(LText[LIndex]) - Ord('0');
-  end;
-  LNumber := Copy(LText, LColon + 1, MaxInt);
-  LDot := Pos('.', LNumber);
-  LFraction := '';
-  if LDot > 0 then
-  begin
-    LFraction := Copy(LNumber, LDot + 1, MaxInt);
-    LNumber := Copy(LNumber, 1, LDot - 1);
-    if (Length(LFraction) < 1) or (Length(LFraction) > 3) then
-    begin
-      Exit;
-    end;
-  end;
-  if Length(LNumber) <> 2 then
-  begin
-    Exit;
-  end;
-  for LIndex := 1 to Length(LNumber) do
-  begin
-    if not (LNumber[LIndex] in ['0'..'9']) then
-    begin
-      Exit;
-    end;
-  end;
-  for LIndex := 1 to Length(LFraction) do
-  begin
-    if not (LFraction[LIndex] in ['0'..'9']) then
-    begin
-      Exit;
-    end;
-  end;
-  LSeconds := StrToInt(LNumber);
-  if LSeconds > 59 then
-  begin
-    Exit;
-  end;
-  while Length(LFraction) < 3 do
-  begin
-    LFraction := LFraction + '0';
-  end;
-  AMilliseconds := LMinutes * 60000 + LSeconds * 1000 + StrToInt(LFraction);
-  Result := not IsNan(AMilliseconds) and not IsInfinite(AMilliseconds) and
-    (AMilliseconds <= 9007199254740991);
-end;
-
-function TrackTitle(ATrack: TJSObject): String;
-begin
-  Result := Str(ATrack, 'title');
-  if Result = '' then
-  begin
-    Result := Str(ATrack, 'original_name');
-  end;
-  if Result = '' then
-  begin
-    Result := 'Imported recording';
-  end;
-end;
-
+begin Result := Obj(TJSJSON.parse(TJSJSON.stringify(AObject))) end;
 function TStudio.El(const AId: String): TJSElement;
-begin
-  Result := document.getElementById(AId);
-  if Result = nil then
-  begin
-    raise Exception.Create('Missing Studio control: ' + AId);
-  end;
-end;
-
-function TStudio.Input(const AId: String): TJSHTMLInputElement;
-begin
-  Result := TJSHTMLInputElement(El(AId));
-end;
-
-function TStudio.AddText(AParent: TJSElement; const ATag, AText, AClass: String): TJSElement;
+begin Result := document.getElementById(AId) end;
+function Add(AParent: TJSElement; const ATag, AText: String): TJSElement;
 begin
   Result := document.createElement(ATag);
   Result.textContent := AText;
-  if AClass <> '' then
-  begin
-    Result.className := AClass;
-  end;
   AParent.appendChild(Result);
 end;
-
-function NetworkFailure(AReason: JSValue): JSValue;
-begin
-  raise Exception.Create('Connection interrupted. Reconnect and retry.');
-end;
-
 function TStudio.FetchApi(const APath, AMethod, ABody: String): TJSPromise;
-begin
-  Result := FetchNavigation(APath, AMethod, ABody, nil);
-end;
-
+begin Result := FetchNavigation(APath, AMethod, ABody, nil) end;
 function TStudio.FetchNavigation(const APath, AMethod, ABody: String;
   const ASignal: TJSObject): TJSPromise;
-var
-  LOptions: TJSObject;
-  LHeaders: TJSObject;
+var LOptions, LHeaders: TJSObject;
 begin
   LOptions := TJSObject.new;
   LHeaders := TJSObject.new;
   LOptions['method'] := AMethod;
   LOptions['mode'] := 'same-origin';
-  if APath = '/api/session' then
-  begin
-    LOptions['credentials'] := 'same-origin';
-  end
-  else
-  begin
-    LOptions['credentials'] := 'omit';
-  end;
+  LOptions['credentials'] := 'omit';
+  if APath = '/api/session' then LOptions['credentials'] := 'same-origin';
   LOptions['redirect'] := 'error';
   LOptions['cache'] := 'no-store';
   LOptions['referrerPolicy'] := 'no-referrer';
-  if (APath = '/api/studio/cancel') and (AMethod = 'POST') then
-    LOptions['keepalive'] := True;
   if ASignal <> nil then LOptions['signal'] := ASignal;
-  if FToken <> '' then
-  begin
-    LHeaders['X-Pythian-Token'] := FToken;
-  end;
+  if FToken <> '' then LHeaders['X-Pythian-Token'] := FToken;
   if ABody <> '' then
   begin
     LHeaders['Content-Type'] := 'application/json';
     LOptions['body'] := ABody;
   end;
   LOptions['headers'] := LHeaders;
-  Result := TStudioWindow(window).fetch(window.location.origin + APath, LOptions).catch(@NetworkFailure);
-  if (AMethod = 'POST') and ((APath = '/api/studio/review') or
-    (APath = '/api/studio/review/response')) then
+  Result := TStudioWindow(window).fetch(window.location.origin + APath, LOptions);
+end;
+function TStudio.Json(const APath, AMethod, ABody: String): TJSObject; async;
+var LResponse: TJSResponse; LValue: TJSObject;
+begin
+  LResponse := TJSResponse(await(JSValue, AwaitStudioPromise(FetchApi(APath, AMethod, ABody), 20)));
+  LValue := await(TJSObject, LResponse.json());
+  if LResponse.status <> 200 then
   begin
-    Result := Result._then(@WorkspaceResponseSaved);
+    if LResponse.status = 409 then
+      raise Exception.Create('Playlist changed or storage is busy. Retry shortly, or save a new copy. Your edits are kept.');
+    raise Exception.Create('Could not complete this request. ' + Str(LValue, 'error'));
   end;
+  Result := LValue;
 end;
-
-procedure TStudio.Status(const AText: String; AError: Boolean);
+procedure TStudio.Notice(const AText: String; const AError: Boolean);
 begin
-  El('connection').textContent := AText;
-  if AError then
+  El('connection-state').textContent := AText;
+  El('connection-state').className := 'hint';
+  if AError then El('connection-state').className := 'field-error';
+end;
+procedure TStudio.ShowStep(const AStep: String);
+var LName: String; LNames: array of String;
+begin
+  LNames := ['library', 'selection', 'generate'];
+  for LName in LNames do
   begin
-    El('connection').className := 'notice error';
-  end
-  else
-  begin
-    El('connection').className := 'notice';
-  end;
-end;
-
-procedure TStudio.Feedback(const AText: String; AError: Boolean);
-begin
-  El('save-feedback').textContent := AText;
-  if AError then
-  begin
-    El('save-feedback').className := 'field-error';
-  end
-  else
-  begin
-    El('save-feedback').className := 'hint';
-  end;
-end;
-
-procedure TStudio.ClearErrors;
-begin
-  El('name-error').setAttribute('hidden', '');
-  El('qualities-error').setAttribute('hidden', '');
-  El('tracks-error').setAttribute('hidden', '');
-  El('style-name').removeAttribute('aria-invalid');
-  El('style-qualities').removeAttribute('aria-invalid');
-end;
-
-procedure TStudio.ErrorAt(const AId, AText: String);
-begin
-  El(AId).textContent := AText;
-  El(AId).removeAttribute('hidden');
-end;
-
-procedure TStudio.Changed;
-begin
-  FDirty := True;
-  FBatches.SetProject(FSavedProject, True);
-  FPendingWrite := nil;
-  FConflict := False;
-  UpdateSummary;
-  UpdateState;
-end;
-
-procedure TStudio.MaterialChanged;
-begin
-  Input('learning-mode').value := 'instrumental';
-  FBatches.ApplyMusicalContext(FMaterial.Value);
-  Changed;
-  Feedback('Musical choices applied. Save draft, then Generate to hear them.');
-end;
-
-procedure TStudio.UpdateState;
-var
-  LControls: array of String;
-  LIndex: Integer;
-begin
-  FSourceEditor.SetDisabled(FBusy or not FConnected);
-  FMaterial.SetEnabled(not FBusy and FConnected);
-  LControls := ['style-name', 'style-qualities', 'learning-mode', 'new-draft',
-    'draft-list', 'track-search'];
-  for LIndex := 0 to High(LControls) do
-  begin
-    if FBusy or not FConnected then
+    if LName = AStep then
     begin
-      El(LControls[LIndex]).setAttribute('disabled', '');
+      El('step-' + LName).removeAttribute('hidden');
+      El('tab-' + LName).setAttribute('aria-selected', 'true');
+      El('tab-' + LName).setAttribute('tabindex', '0');
     end
     else
     begin
-      El(LControls[LIndex]).removeAttribute('disabled');
-    end;
-  end;
-  TJSHTMLButtonElement(El('save-draft')).disabled := FBusy or not FConnected or
-    ((not FDirty) and (FRevision > 0));
-  TJSHTMLButtonElement(El('reload-draft')).disabled := FBusy or not FConnected or (FRevision = 0);
-  if FBusy then
-  begin
-    if FPendingWrite <> nil then
-    begin
-      El('draft-state').textContent := 'Saving…';
-    end
-    else
-    begin
-      El('draft-state').textContent := 'Loading…';
-    end;
-    El('draft-state').className := 'state';
-  end
-  else if FConflict then
-  begin
-    El('draft-state').textContent := 'Save conflict';
-    El('draft-state').className := 'state dirty';
-  end
-  else if FDirty then
-  begin
-    El('draft-state').textContent := 'Unsaved changes';
-    El('draft-state').className := 'state dirty';
-  end
-  else if FRevision > 0 then
-  begin
-    El('draft-state').textContent := 'Saved';
-    El('draft-state').className := 'state saved';
-  end
-  else
-  begin
-    El('draft-state').textContent := 'Not saved';
-    El('draft-state').className := 'state';
-  end;
-  if FCatalogRefreshPending and not FBusy then
-  begin
-    FCatalogRefreshPending := False;
-    Connect;
-  end;
-end;
-
-function TStudio.FindSelection(const AHash: String): TJSObject;
-var
-  LIndex: Integer;
-begin
-  Result := nil;
-  for LIndex := 0 to FSelections.length - 1 do
-  begin
-    if Str(Obj(FSelections[LIndex]), 'source_sha256') = AHash then
-    begin
-      Result := Obj(FSelections[LIndex]);
-      Exit;
+      El('step-' + LName).setAttribute('hidden', '');
+      El('tab-' + LName).setAttribute('aria-selected', 'false');
+      El('tab-' + LName).setAttribute('tabindex', '-1');
     end;
   end;
 end;
-
-function TStudio.FindTrack(const AHash: String): TJSObject;
-var
-  LIndex: Integer;
+procedure TStudio.NewPlaylist;
 begin
-  Result := nil;
-  for LIndex := 0 to FTracks.length - 1 do
-  begin
-    if Str(Obj(FTracks[LIndex]), 'source_sha256') = AHash then
-    begin
-      Result := Obj(FTracks[LIndex]);
-      Exit;
-    end;
-  end;
-end;
-
-procedure TStudio.NewDraft;
-begin
-  Inc(FEpoch);
-  FSavedProject := nil;
-  FMaterial.Restore(nil);
-  FBatches.ApplyMusicalContext(nil);
-  FBatches.SetProject(nil, False);
-  FProjectId := 'style-' + IntToStr(TJSDate.now) + '-' + IntToStr(Random(1000000000));
+  FProjectId := 'playlist-' + IntToStr(Round(TJSDate.now)) + '-' + IntToStr(Random(1000000));
   FRevision := 0;
+  FSelections := TJSArray.new;
+  FName := 'My playlist';
   FDirty := False;
   FPendingWrite := nil;
-  FConflict := False;
-  FSelections := TJSArray.new;
-  Input('style-name').value := '';
-  TJSHTMLTextAreaElement(El('style-qualities')).value := '';
-  Input('learning-mode').value := 'instrumental';
-  TJSHTMLSelectElement(El('draft-list')).value := '';
-  ClearErrors;
-  Feedback('Nothing has been saved yet.');
-  El('draft-details').textContent := 'New draft · not trained. Source details will be verified before training.';
-  DrawTracks;
-  UpdateSummary;
-  UpdateState;
+  TJSHTMLInputElement(El('playlist-name')).value := FName;
+  FSourceEditor.Reset;
+  QueueSave;
 end;
-
+procedure TStudio.Remember;
+var LState: TJSObject;
+begin
+  LState := TJSObject.new;
+  LState['project_id'] := FProjectId;
+  LState['revision'] := FRevision;
+  LState['name'] := FName;
+  LState['selections'] := FSelections;
+  LState['dirty'] := FDirty;
+  LState['changes'] := FChanges;
+  LState['pending_version'] := FPendingVersion;
+  LState['pending_write'] := FPendingWrite;
+  try
+    window.localStorage.setItem('pythian.studio.playlist', TJSJSON.stringify(LState));
+  except
+    on E: Exception do Notice('Browser storage is unavailable. Keep this page open until Saved appears.', True);
+  end;
+end;
+procedure TStudio.Changed;
+begin
+  QueueSave;
+  Draw;
+end;
+procedure TStudio.QueueSave;
+begin
+  Inc(FChanges);
+  FDirty := True;
+  FName := Trim(TJSHTMLInputElement(El('playlist-name')).value);
+  if FName = '' then FName := 'My playlist';
+  Remember;
+  El('save-state').textContent := 'Saving…';
+  window.clearTimeout(FSaveTimer);
+  FSaveTimer := window.setTimeout(procedure begin Save end, 500);
+end;
+function TStudio.Playlist: TJSObject;
+var
+  LItems, LClips, LClasses: TJSArray;
+  LRow, LItem, LClip, LOther: TJSObject;
+  I, J: Integer;
+begin
+  Result := TJSObject.new;
+  Result['format'] := 'pythian.studio.playlist.v1';
+  LItems := TJSArray.new;
+  Result['items'] := LItems;
+  for I := 0 to FSelections.length - 1 do
+  begin
+    LRow := Obj(FSelections[I]);
+    if Str(LRow, 'selection') <> 'full' then Continue;
+    LItem := TJSObject.new;
+    LItem['kind'] := 'catalog';
+    LItem['id'] := Str(LRow, 'source_sha256');
+    LItem['snapshot_sha256'] := Str(LRow, 'metadata_sha256');
+    LItem['discovery_revision'] := 0;
+    if Str(LRow, 'entry_id') <> '' then
+    begin
+      LItem['kind'] := 'library';
+      LItem['id'] := Str(LRow, 'entry_id');
+      LItem['snapshot_sha256'] := Str(LRow, 'entry_snapshot_sha256');
+      LItem['discovery_revision'] := Num(LRow, 'discovery_revision');
+    end;
+    LItem['title'] := Str(LRow, 'title');
+    LItem['sample_rate'] := Num(LRow, 'sample_rate');
+    LItem['frame_count'] := Num(LRow, 'frame_count');
+    LItem['influence'] := Max(1, Num(LRow, 'influence'));
+    LItem['extent'] := 'clips';
+    if StudioIncluded(LRow) then LItem['extent'] := 'whole';
+    LClips := TJSArray.new;
+    LItem['clips'] := LClips;
+    for J := 0 to FSelections.length - 1 do
+    begin
+      LOther := Obj(FSelections[J]);
+      if (StudioSourceKey(LOther) <> StudioSourceKey(LRow)) or
+        (Str(LOther, 'selection') = 'full') then Continue;
+      LClip := TJSObject.new;
+      LClip['start_frame'] := Num(LOther, 'start_frame');
+      LClip['end_frame'] := Num(LOther, 'end_frame');
+      LClip['included'] := StudioIncluded(LOther);
+      LClasses := Arr(LOther, 'classifications');
+      if LClasses = nil then LClasses := TJSArray.new;
+      LClip['classifications'] := LClasses;
+      LClips.push(LClip);
+    end;
+    LItems.push(LItem);
+  end;
+end;
+function TStudio.BuildWrite: TJSObject;
+begin
+  Result := TJSObject.new;
+  Result['format'] := 'pythian.studio.project.write.v1';
+  Result['project_id'] := FProjectId;
+  Result['expected_revision'] := FRevision;
+  Result['name'] := FName;
+  Result['style_intent'] := '';
+  Result['learning_mode'] := 'instrumental';
+  Result['sources'] := TJSArray.new;
+  Result['playlist'] := Playlist;
+end;
+procedure TStudio.Save; async;
+var LSaved: TJSObject; LVersion, I: Integer; LFound: Boolean;
+begin
+  if FSaving or FLoading or not FConnected or (not FDirty and (FPendingWrite = nil)) then Exit;
+  FSaving := True;
+  if FPendingWrite = nil then
+  begin
+    FPendingWrite := BuildWrite;
+    FPendingVersion := FChanges;
+  end;
+  LVersion := FPendingVersion;
+  Remember;
+  try
+    LSaved := await(TJSObject, Json('/api/studio/project', 'POST', TJSJSON.stringify(FPendingWrite)));
+    if (Str(LSaved, 'project_id') <> FProjectId) or
+      not SameStudioJSON(LSaved['playlist'], FPendingWrite['playlist']) or
+      (Num(LSaved, 'revision') <> Num(FPendingWrite, 'expected_revision') + 1) then
+      raise Exception.Create('Save returned a different playlist. Your edits are kept.');
+    FRevision := Trunc(Num(LSaved, 'revision'));
+    LFound := False;
+    for I := 0 to FProjects.length - 1 do
+      if Str(Obj(FProjects[I]), 'project_id') = FProjectId then
+      begin FProjects[I] := LSaved; LFound := True; Break end;
+    if not LFound then FProjects.push(LSaved);
+    DrawProjects;
+    FPendingWrite := nil;
+    FDirty := FChanges <> LVersion;
+    El('save-state').textContent := 'Saved';
+    El('retry-save').setAttribute('hidden', '');
+    Remember;
+  except
+    on E: Exception do
+    begin
+      El('save-state').textContent := 'Not saved — edits kept on this device';
+      El('retry-save').removeAttribute('hidden');
+      Notice(E.Message, True);
+      if Pos('Playlist changed or storage is busy.', E.Message) = 1 then
+        El('save-copy').removeAttribute('hidden');
+    end;
+  end;
+  FSaving := False;
+  TJSHTMLButtonElement(El('new-playlist')).disabled := FDirty or (FPendingWrite <> nil);
+  if (FPendingWrite = nil) and FDirty then Save;
+end;
+procedure TStudio.SaveCopy;
+begin
+  if FSaving or FLoading then Exit;
+  FProjectId := 'playlist-' + IntToStr(Round(TJSDate.now)) + '-' + IntToStr(Random(1000000));
+  FRevision := 0;
+  FPendingWrite := nil;
+  El('save-copy').setAttribute('hidden', '');
+  QueueSave;
+  Save;
+end;
+procedure TStudio.BindSelectedTracks;
+var LRow, LTrack: TJSObject; I, J, LFound: Integer;
+begin
+  for I := 0 to FSelections.length - 1 do
+  begin
+    LRow := Obj(FSelections[I]);
+    if Str(LRow, 'selection') <> 'full' then Continue;
+    LFound := -1;
+    for J := 0 to FTracks.length - 1 do
+      if (StudioSourceKey(Obj(FTracks[J])) = StudioSourceKey(LRow)) or
+        ((Str(LRow, 'source_sha256') <> '') and
+        (Str(Obj(FTracks[J]), 'source_sha256') = Str(LRow, 'source_sha256'))) then
+      begin LFound := J; Break end;
+    if LFound >= 0 then LTrack := CloneObject(Obj(FTracks[LFound]))
+    else LTrack := CloneObject(LRow);
+    { Saved source identity wins over a later discovery scan. Generation must
+      verify that exact choice rather than quietly learning changed bytes. }
+    LTrack['entry_id'] := Str(LRow, 'entry_id');
+    LTrack['entry_snapshot_sha256'] := Str(LRow, 'entry_snapshot_sha256');
+    LTrack['discovery_revision'] := Num(LRow, 'discovery_revision');
+    LTrack['source_sha256'] := Str(LRow, 'source_sha256');
+    LTrack['metadata_sha256'] := Str(LRow, 'metadata_sha256');
+    LTrack['title'] := Str(LRow, 'title');
+    LTrack['sample_rate'] := Num(LRow, 'sample_rate');
+    LTrack['frame_count'] := Num(LRow, 'frame_count');
+    if LFound >= 0 then FTracks[LFound] := LTrack else FTracks.push(LTrack);
+  end;
+end;
 procedure TStudio.DrawProjects;
-var
-  LSelect: TJSHTMLSelectElement;
-  LOption: TJSHTMLOptionElement;
-  LIndex: Integer;
-  LProject: TJSObject;
+var I: Integer; LButton: TJSElement;
 begin
-  LSelect := TJSHTMLSelectElement(El('draft-list'));
-  LSelect.innerHTML := '';
-  LOption := TJSHTMLOptionElement(document.createElement('option'));
-  LOption.value := '';
-  LOption.textContent := 'New project';
-  LSelect.appendChild(LOption);
-  for LIndex := 0 to FProjects.length - 1 do
+  El('playlist-list').innerHTML := '';
+  for I := 0 to FProjects.length - 1 do
   begin
-    LProject := Obj(FProjects[LIndex]);
-    LOption := TJSHTMLOptionElement(document.createElement('option'));
-    LOption.value := Str(LProject, 'project_id');
-    LOption.textContent := Str(LProject, 'name');
-    LSelect.appendChild(LOption);
+    LButton := Add(El('playlist-list'), 'button', Str(Obj(FProjects[I]), 'name'));
+    LButton.setAttribute('type', 'button');
+    LButton.setAttribute('data-project', Str(Obj(FProjects[I]), 'project_id'));
+    LButton.addEventListener('click', @Click);
   end;
-  LSelect.value := FProjectId;
 end;
-
-procedure TStudio.UpdateSummary;
+procedure TStudio.Draw;
 var
-  LIndex: Integer;
-  LSelected: TJSObject;
-  LTrack: TJSObject;
+  LItem, LOther: TJSObject;
+  LRow, LLabel, LControl: TJSElement;
+  I, J, LCount: Integer;
   LSeconds: Double;
-  LCount: Integer;
-  LSelectedCount: Integer;
-  LEvaluation: Integer;
-  LName: String;
-  LRoute: String;
-  LHashes: TJSArray;
+  LWhole: Boolean;
 begin
-  LHashes := TJSArray.new;
-  case Input('learning-mode').value of
-    'instrumental': LRoute := 'Synthesized instruments · editable musical starting points';
-    'raw_acoustic': LRoute := 'Acoustic recombination';
-    'reference_events': LRoute := 'Reference-assisted notes';
-    'inferred_events': LRoute := 'Inferred notes (acceptance pending)';
-  else
-    LRoute := 'Unrecognized preference';
-  end;
-  El('support-detail').textContent := 'Saved route preference: ' + LRoute +
-    '. This does not start training. Source details are catalog snapshots; recordings must be verified before training.';
-  LSeconds := 0;
+  BindSelectedTracks;
+  FSourceEditor.Bind(FTracks, FSelections, not FConnected or FLoading);
   LCount := 0;
-  LSelectedCount := 0;
-  LEvaluation := 0;
-  for LIndex := 0 to FSelections.length - 1 do
+  LSeconds := 0;
+  El('track-influences').innerHTML := '';
+  for I := 0 to FSelections.length - 1 do
   begin
-    LSelected := Obj(FSelections[LIndex]);
-    if not StudioIncluded(LSelected) then Continue;
-    Inc(LSelectedCount);
-    LTrack := FindTrack(Str(LSelected, 'source_sha256'));
-    if (LTrack <> nil) and (Num(LTrack, 'sample_rate') > 0) then
-    begin
-      if Str(LSelected, 'selection') = 'full' then
+    LItem := Obj(FSelections[I]);
+    if Str(LItem, 'selection') <> 'full' then Continue;
+    Inc(LCount);
+    LWhole := StudioIncluded(LItem);
+    if LWhole then LSeconds := LSeconds + Num(LItem, 'frame_count') / Num(LItem, 'sample_rate')
+    else
+      for J := 0 to FSelections.length - 1 do
       begin
-        LSeconds := LSeconds + Num(LTrack, 'frame_count') / Num(LTrack, 'sample_rate');
-      end
-      else if not Boolean(LSelected['range_invalid']) then
-      begin
-        LSeconds := LSeconds + (Num(LSelected, 'end_frame') - Num(LSelected, 'start_frame')) /
-          Num(LTrack, 'sample_rate');
+        LOther := Obj(FSelections[J]);
+        if (StudioSourceKey(LOther) = StudioSourceKey(LItem)) and
+          (Str(LOther, 'selection') <> 'full') and StudioIncluded(LOther) then
+          LSeconds := LSeconds + (Num(LOther, 'end_frame') - Num(LOther, 'start_frame')) / Num(LItem, 'sample_rate');
       end;
-      if LHashes.indexOf(Str(LSelected, 'source_sha256')) < 0 then
-      begin
-        LHashes.push(Str(LSelected, 'source_sha256'));
-        Inc(LCount);
-      end;
-      if Str(LTrack, 'partition') = 'evaluation' then
-      begin
-        Inc(LEvaluation);
-      end;
-    end;
+    LRow := Add(El('track-influences'), 'label', '');
+    LRow.className := 'influence-row';
+    LLabel := Add(LRow, 'span', Str(LItem, 'title'));
+    LControl := Add(LRow, 'input', '');
+    LControl.setAttribute('type', 'range');
+    LControl.setAttribute('min', '1');
+    LControl.setAttribute('max', '16');
+    LControl.setAttribute('step', '1');
+    LControl.setAttribute('data-influence', IntToStr(I));
+    TJSHTMLInputElement(LControl).value := FloatToStr(Max(1, Num(LItem, 'influence')));
+    LControl.addEventListener('change', @Edit);
+    Add(LRow, 'output', FloatToStr(Max(1, Num(LItem, 'influence'))) + '×');
   end;
-  if (LSeconds > 0) and (LSeconds < 60) then
-  begin
-    El('selected-duration').textContent := FormatFloat('0.###', LSeconds) + ' seconds';
-  end
-  else
-  begin
-    El('selected-duration').textContent := FormatFloat('0.0', LSeconds / 60) + ' minutes';
-  end;
-  El('selected-count').textContent := IntToStr(LCount);
-  if LCount = 0 then
-  begin
-    El('selection-summary').textContent := 'Nothing checked for training. Choose music in Collection.';
-  end
-  else
-  begin
-    El('selection-summary').textContent := IntToStr(LSelectedCount) + ' checked for training · ' + TimeText(LSeconds * 1000);
-    if LEvaluation > 0 then
-    begin
-      El('selection-summary').textContent := El('selection-summary').textContent + ' ' +
-        IntToStr(LEvaluation) + ' evaluation-only recording(s) are reserved from training.';
-    end;
-  end;
-  if Input('learning-mode').value = 'instrumental' then
-    El('selection-summary').textContent := IntToStr(LCount) +
-      ' reference recording(s) selected. Analyze one passage to use its musical suggestions.';
-  El('collection-training-summary').textContent := El('selection-summary').textContent;
-  El('generation-training-summary').textContent := El('selection-summary').textContent;
-  El('project-next').textContent := 'Next: choose music →';
-  El('project-next').setAttribute('data-open-pane', 'library-step');
-  El('change-training-music').textContent := 'Change training music';
-  if Input('learning-mode').value = 'instrumental' then
-  begin
-    El('project-next').textContent := 'Next: Generate (save your draft first) →';
-    El('project-next').setAttribute('data-open-pane', 'prepare');
-    El('change-training-music').textContent := 'Browse reference recordings';
-    El('generation-training-summary').textContent :=
-      El('material-summary').textContent;
-    El('support-detail').textContent := 'Saved musical choices drive the motif and context. Other parts use authored accompaniment; an analyzed original is retained for comparison.';
-  end;
-  LName := Trim(Input('style-name').value);
-  if LName = '' then
-  begin
-    El('draft-caption').textContent := 'Give your style a name, then select its recordings.';
-  end
-  else
-  begin
-    El('draft-caption').textContent := LName + ' · ' + IntToStr(LCount) +
-      ' recording(s), ' + IntToStr(LSelectedCount) + ' checked for training.';
-  end;
-  if Input('learning-mode').value = 'instrumental' then
-    El('draft-caption').textContent := 'Save this instrumental project; reference recordings are optional.';
+  El('selection-count').textContent := IntToStr(LCount);
+  El('selection-summary').textContent := IntToStr(LCount) + ' tracks · ' + StudioTime(LSeconds) + ' selected for learning';
+  El('generate-summary').textContent := El('selection-summary').textContent;
+  TJSHTMLInputElement(El('track-search')).disabled := not FConnected;
+  TJSHTMLButtonElement(El('new-playlist')).disabled := FLoading or FSaving or FDirty or (FPendingWrite <> nil);
+  TJSHTMLInputElement(El('playlist-name')).disabled := FLoading;
 end;
-
-procedure TStudio.DrawTracks;
+procedure TStudio.AddSelection(ASelection: TJSObject);
+var LTrack, LRow: TJSObject; I: Integer;
 begin
-  FSourceEditor.Bind(FTracks, FSelections, FBusy or not FConnected);
+  LRow := CloneObject(ASelection);
+  for I := 0 to FTracks.length - 1 do
+  begin
+    LTrack := Obj(FTracks[I]);
+    if Str(LTrack, 'source_sha256') <> Str(LRow, 'source_sha256') then Continue;
+    LRow['title'] := Str(LTrack, 'title');
+    LRow['sample_rate'] := Num(LTrack, 'sample_rate');
+    LRow['frame_count'] := Num(LTrack, 'frame_count');
+    LRow['metadata_sha256'] := Str(LTrack, 'metadata_sha256');
+    LRow['entry_id'] := '';
+    LRow['influence'] := 1;
+    Break;
+  end;
+  FSelections.push(LRow);
+end;
+procedure TStudio.ApplyPlaylist(APlaylist: TJSObject);
+var
+  LItems, LClips: TJSArray;
+  LItem, LTrack, LRow, LClip: TJSObject;
+  I, J: Integer;
+begin
+  FSelections := TJSArray.new;
+  LItems := Arr(APlaylist, 'items');
+  if (Str(APlaylist, 'format') <> 'pythian.studio.playlist.v1') or (LItems = nil) then
+    raise Exception.Create('This playlist format is unavailable.');
+  for I := 0 to LItems.length - 1 do
+  begin
+    LItem := Obj(LItems[I]);
+    LTrack := TJSObject.new;
+    LTrack['source_sha256'] := '';
+    LTrack['entry_id'] := '';
+    if Str(LItem, 'kind') = 'catalog' then
+    begin
+      LTrack['source_sha256'] := Str(LItem, 'id');
+      LTrack['metadata_sha256'] := Str(LItem, 'snapshot_sha256');
+    end
+    else
+    begin
+      LTrack['entry_id'] := Str(LItem, 'id');
+      LTrack['entry_snapshot_sha256'] := Str(LItem, 'snapshot_sha256');
+      LTrack['discovery_revision'] := Num(LItem, 'discovery_revision');
+    end;
+    LTrack['title'] := Str(LItem, 'title');
+    LTrack['sample_rate'] := Num(LItem, 'sample_rate');
+    LTrack['frame_count'] := Num(LItem, 'frame_count');
+    LTrack['status'] := 'available';
+    LTrack['collections'] := TJSArray.new;
+    LRow := CloneObject(LTrack);
+    LRow['selection'] := 'full';
+    LRow['included'] := Str(LItem, 'extent') = 'whole';
+    LRow['start_frame'] := 0;
+    LRow['end_frame'] := Num(LItem, 'frame_count');
+    LRow['influence'] := Num(LItem, 'influence');
+    LRow['classifications'] := TJSArray.new;
+    FSelections.push(LRow);
+    LClips := Arr(LItem, 'clips');
+    for J := 0 to LClips.length - 1 do
+    begin
+      LClip := CloneObject(LTrack);
+      LClip['selection'] := 'range';
+      LClip['start_frame'] := Num(Obj(LClips[J]), 'start_frame');
+      LClip['end_frame'] := Num(Obj(LClips[J]), 'end_frame');
+      LClip['included'] := Obj(LClips[J])['included'];
+      LClip['classifications'] := Obj(LClips[J])['classifications'];
+      FSelections.push(LClip);
+    end;
+  end;
+end;
+procedure TStudio.LoadProject(AProject: TJSObject);
+var LRows: TJSArray; LRow, LWhole: TJSObject; I, J: Integer; LName: String;
+  LNames: array of String;
+begin
+  FSelections := TJSArray.new;
+  if Obj(AProject['playlist']) <> nil then ApplyPlaylist(Obj(AProject['playlist']))
+  else
+  begin
+    LNames := ['sources', 'parked_sources'];
+    for LName in LNames do
+    begin
+      LRows := Arr(AProject, LName);
+      if LRows = nil then Continue;
+      for I := 0 to LRows.length - 1 do
+      begin
+        LRow := CloneObject(Obj(LRows[I]));
+        LRow['included'] := LName = 'sources';
+        AddSelection(LRow);
+      end;
+    end;
+    { A full row owns playlist membership and weight even when only clips teach. }
+    I := 0;
+    while I < FSelections.length do
+    begin
+      LRow := Obj(FSelections[I]);
+      for J := 0 to FSelections.length - 1 do
+        if (StudioSourceKey(Obj(FSelections[J])) = StudioSourceKey(LRow)) and
+          (Str(Obj(FSelections[J]), 'selection') = 'full') then Break;
+      if J >= FSelections.length then
+      begin
+        LWhole := CloneObject(LRow);
+        LWhole['selection'] := 'full';
+        LWhole['included'] := False;
+        LWhole['start_frame'] := 0;
+        LWhole['end_frame'] := Num(LRow, 'frame_count');
+        FSelections.push(LWhole);
+      end;
+      Inc(I);
+    end;
+  end;
+  { Legacy projects are opened as a NEW playlist, preserving their material,
+    history and all immutable revisions. No silent overwrite of old work. }
+  if Obj(AProject['playlist']) <> nil then
+  begin
+    FProjectId := Str(AProject, 'project_id');
+    FRevision := Trunc(Num(AProject, 'revision'));
+  end
+  else
+  begin
+    FProjectId := 'playlist-' + IntToStr(Round(TJSDate.now));
+    FRevision := 0;
+  end;
+  FName := Str(AProject, 'name');
+  TJSHTMLInputElement(El('playlist-name')).value := FName;
+  FDirty := False;
+  FPendingWrite := nil;
+  FSourceEditor.Reset;
+  Remember;
+  El('save-state').textContent := 'Saved';
+  if Obj(AProject['playlist']) = nil then QueueSave;
+end;
+procedure TStudio.OpenProject(const AId: String); async;
+var LProject: TJSObject;
+begin
+  if FLoading or FDirty or FSaving or (FPendingWrite <> nil) then
+  begin
+    Notice('Wait for Saved before opening another playlist. Your current edits are kept.', True);
+    Exit;
+  end;
+  FLoading := True;
+  Draw;
+  try
+    LProject := await(TJSObject, Json('/api/studio/project?id=' + encodeURIComponent(AId), 'GET', ''));
+    LoadProject(LProject);
+    TStudioDialog(El('playlists-dialog')).close;
+    Draw;
+    ShowStep('selection');
+  except
+    on E: Exception do Notice(E.Message, True);
+  end;
+  FLoading := False;
+  Draw;
+end;
+procedure TStudio.CatalogSaved;
+begin Connect end;
+procedure TStudio.Connect; async;
+var LSession, LData, LPrepared, LDiscovery, LState: TJSObject;
+  LTracks: TJSArray; LOption: TJSElement; I: Integer; LLocal: String;
+begin
+  if FLoading then Exit;
+  FLoading := True;
+  try
+    Notice('Opening your music…');
+    LSession := await(TJSObject, Json('/api/session', 'GET', ''));
+    FToken := Str(LSession, 'token');
+    if FToken = '' then raise Exception.Create('Studio could not open a local session.');
+    LData := await(TJSObject, Json('/api/studio/sources', 'GET', ''));
+    LTracks := Arr(LData, 'sources');
+    if LTracks = nil then raise Exception.Create('Music catalog is unavailable.');
+    LPrepared := await(TJSObject, Json('/api/studio/library', 'GET', ''));
+    LDiscovery := await(TJSObject, Json('/api/studio/library-discovery', 'GET', ''));
+    MergeDiscovery(LTracks, LDiscovery, LPrepared);
+    FTracks := LTracks;
+    LData := await(TJSObject, Json('/api/studio/projects', 'GET', ''));
+    FProjects := Arr(LData, 'projects');
+    DrawProjects;
+    if (FProjectId = '') then
+    begin
+      LLocal := window.localStorage.getItem('pythian.studio.playlist');
+      if isString(LLocal) and (LLocal <> '') then
+      begin
+        LState := Obj(TJSJSON.parse(LLocal));
+        if LState = nil then raise Exception.Create('Saved browser playlist is unreadable. Open a saved playlist to recover.');
+        FProjectId := Str(LState, 'project_id');
+        FRevision := Trunc(Num(LState, 'revision'));
+        FName := Str(LState, 'name');
+        FSelections := Arr(LState, 'selections');
+        FDirty := isBoolean(LState['dirty']) and Boolean(LState['dirty']);
+        FPendingWrite := Obj(LState['pending_write']);
+        FPendingVersion := Trunc(Num(LState, 'pending_version'));
+        FChanges := Trunc(Num(LState, 'changes'));
+        if FSelections = nil then FSelections := TJSArray.new;
+        TJSHTMLInputElement(El('playlist-name')).value := FName;
+      end;
+      if FProjectId = '' then NewPlaylist;
+      if (FRevision > 0) and not FDirty and (FPendingWrite = nil) then
+      begin
+        LState := await(TJSObject, Json('/api/studio/project?id=' + encodeURIComponent(FProjectId), 'GET', ''));
+        LoadProject(LState);
+      end;
+    end;
+    FConnected := True;
+    FLibraryRefresh.SetConnected(True);
+    FLibraryRefresh.Refresh;
+    FCapture.Refresh;
+    Notice('');
+    El('retry-connection').setAttribute('hidden', '');
+  except
+    on E: Exception do
+    begin
+      Notice(E.Message + ' Your playlist is kept.', True);
+      El('retry-connection').removeAttribute('hidden');
+    end;
+  end;
+  FLoading := False;
+  Draw;
+  if not FDirty and (FRevision > 0) then El('save-state').textContent := 'Saved';
+  if FDirty or (FPendingWrite <> nil) then Save;
+end;
+function TStudio.Click(AEvent: TJSMouseEvent): Boolean;
+var LButton: TJSElement; LStep, LDialog, LId: String;
+begin
+  Result := False;
+  LButton := TJSElement(AEvent.currentTarget);
+  if LButton.hasAttribute('data-step') then ShowStep(LButton.getAttribute('data-step'));
+  if LButton.hasAttribute('data-dialog') then
+    TStudioDialog(El(LButton.getAttribute('data-dialog'))).showModal;
+  if LButton.hasAttribute('data-close') then
+    TStudioDialog(El(LButton.getAttribute('data-close'))).close;
+  if LButton.hasAttribute('data-project') then OpenProject(LButton.getAttribute('data-project'));
+  case LButton.id of
+    'new-playlist':
+      begin
+        if FDirty or FSaving or (FPendingWrite <> nil) then Exit;
+        NewPlaylist;
+        Draw;
+        TStudioDialog(El('playlists-dialog')).close;
+        ShowStep('library');
+      end;
+    'record-audio': begin TStudioDialog(El('capture-panel')).showModal; FCapture.OpenRecorder end;
+    'import-audio': begin TStudioDialog(El('capture-panel')).showModal; FCapture.OpenImporter end;
+    'retry-save': Save;
+    'save-copy': SaveCopy;
+    'retry-connection', 'source-reconnect': Connect;
+  end;
+end;
+function TStudio.Edit(AEvent: TEventListenerEvent): Boolean;
+var LControl: TJSElement; LIndex: Integer;
+begin
+  Result := False;
+  if FLoading then Exit;
+  LControl := TJSElement(AEvent.target);
+  if LControl.id = 'track-search' then begin FSourceEditor.Search; Exit end;
+  if LControl.hasAttribute('data-influence') then
+  begin
+    LIndex := StrToInt(LControl.getAttribute('data-influence'));
+    Obj(FSelections[LIndex])['influence'] := StrToInt(TJSHTMLInputElement(LControl).value);
+    LControl.parentElement.querySelector('output').textContent := TJSHTMLInputElement(LControl).value + '×';
+    QueueSave;
+    Exit;
+  end;
+  Changed;
+end;
+function TStudio.Playing(AEvent: TEventListenerEvent): Boolean;
+var LPlayers: TJSNodeList; I: Integer;
+begin
+  Result := False;
+  LPlayers := document.querySelectorAll('audio');
+  for I := 0 to LPlayers.length - 1 do
+    if LPlayers[I] <> AEvent.target then TJSHTMLAudioElement(LPlayers[I]).pause;
+end;
+function TStudio.Leaving(AEvent: TEventListenerEvent): Boolean;
+begin
+  Result := False;
+  Remember;
+end;
+function TStudio.CaptureClosed(AEvent: TEventListenerEvent): Boolean;
+begin
+  Result := False;
+  FCapture.CloseEntry;
+end;
+function TStudio.TabKey(AEvent: TJSKeyboardEvent): Boolean;
+var LName: String;
+begin
+  Result := False;
+  LName := TJSElement(AEvent.currentTarget).getAttribute('data-step');
+  if AEvent.key = 'ArrowRight' then
+  begin
+    if LName = 'library' then LName := 'selection'
+    else if LName = 'selection' then LName := 'generate' else LName := 'library';
+  end
+  else if AEvent.key = 'ArrowLeft' then
+  begin
+    if LName = 'library' then LName := 'generate'
+    else if LName = 'generate' then LName := 'selection' else LName := 'library';
+  end
+  else if AEvent.key = 'Home' then LName := 'library'
+  else if AEvent.key = 'End' then LName := 'generate'
+  else Exit;
+  AEvent.preventDefault;
+  ShowStep(LName);
+  TJSHTMLElement(El('tab-' + LName)).focus;
+end;
+procedure TStudio.Run;
+var LNodes: TJSNodeList; I: Integer;
+begin
+  FTracks := TJSArray.new;
+  FSelections := TJSArray.new;
+  FProjects := TJSArray.new;
+  FSourceEditor := TStudioSourceEditor.Create(@FetchApi, @Changed, @FetchNavigation);
+  FCapture := TStudioCapture.Create(@FetchApi, @CatalogSaved);
+  FEffects := TStudioEffects.Create(@FetchApi, @FSourceEditor.CurrentRange, @CatalogSaved);
+  FLibraryRefresh := TStudioLibraryRefresh.Create(@FetchNavigation, @CatalogSaved);
+  LNodes := document.querySelectorAll('button[data-step],button[data-dialog],button[data-close],button[data-studio-action]');
+  for I := 0 to LNodes.length - 1 do TJSElement(LNodes[I]).addEventListener('click', @Click);
+  El('track-search').addEventListener('input', @Edit);
+  El('playlist-name').addEventListener('change', @Edit);
+  El('source-reconnect').addEventListener('click', @Click);
+  El('capture-panel').addEventListener('close', @CaptureClosed);
+  El('tab-library').addEventListener('keydown', @TabKey);
+  El('tab-selection').addEventListener('keydown', @TabKey);
+  El('tab-generate').addEventListener('keydown', @TabKey);
+  document.addEventListener('play', @Playing, True);
+  window.addEventListener('pagehide', @Leaving);
+  ShowStep('library');
+  if (window.location.hash = '#listen') or (window.location.hash = '#prepare') then
+    ShowStep('generate');
+  Connect;
 end;
 
 procedure TStudio.MergeDiscovery(ATracks: TJSArray; ADiscovery, APrepared: TJSObject);
@@ -756,935 +857,8 @@ begin
   end;
 end;
 
-procedure TStudio.ApplyProject(AProject: TJSObject);
-var
-  LSources: TJSArray;
-  LSource: TJSObject;
-  LMaterial: TJSObject;
-  LSelection: TJSObject;
-  LIndex: Integer;
-  LIncludedCount: Integer;
-begin
-  if (Str(AProject, 'format') <> 'pythian.studio.project.v1') or
-    (Str(AProject, 'status') <> 'draft') or
-    (Str(AProject, 'training_status') <> 'not_started') or
-    Boolean(AProject['model_available']) then
-  begin
-    raise Exception.Create('This page supports untrained style drafts only.');
-  end;
-  LSources := Arr(AProject, 'sources');
-  LIncludedCount := 0;
-  if LSources <> nil then
-  begin
-    LIncludedCount := LSources.length;
-    LSources := LSources.slice;
-    if Arr(AProject, 'parked_sources') <> nil then
-      LSources := LSources.concat(Arr(AProject, 'parked_sources'));
-  end;
-  if (LSources = nil) or ((LSources.length < 1) and
-    (Str(AProject, 'learning_mode') <> 'instrumental')) or (LSources.length > 64) then
-  begin
-    raise Exception.Create('The saved draft has an unsupported source selection.');
-  end;
-  { Validate the response before replacing an unsaved draft. }
-  if (Str(AProject, 'project_id') = '') or (Num(AProject, 'revision') < 1) then
-  begin
-    raise Exception.Create('The saved draft identity is unsupported.');
-  end;
-  for LIndex := 0 to LSources.length - 1 do
-  begin
-    LSource := Obj(LSources[LIndex]);
-    if (Length(Str(LSource, 'source_sha256')) <> 64) or
-      (Num(LSource, 'sample_rate') <= 0) or
-      ((Str(LSource, 'selection') <> 'full') and (Str(LSource, 'selection') <> 'range')) or
-      (Num(LSource, 'start_frame') < 0) or
-      (Num(LSource, 'end_frame') <= Num(LSource, 'start_frame')) or
-      (Num(LSource, 'end_frame') > Num(LSource, 'frame_count')) or
-      (Str(LSource, 'partition') = 'evaluation') then
-    begin
-      raise Exception.Create('The saved source selection is unsupported.');
-    end;
-  end;
-  FSelections := TJSArray.new;
-  for LIndex := 0 to LSources.length - 1 do
-  begin
-    LSource := Obj(LSources[LIndex]);
-    if FindTrack(Str(LSource, 'source_sha256')) = nil then
-    begin
-      FTracks.push(CloneObject(LSource));
-    end;
-    LSelection := TJSObject.new;
-    LSelection['source_sha256'] := Str(LSource, 'source_sha256');
-    LSelection['selection'] := Str(LSource, 'selection');
-    LSelection['start_frame'] := Num(LSource, 'start_frame');
-    LSelection['end_frame'] := Num(LSource, 'end_frame');
-    LSelection['start_text'] := TimeText(Num(LSource, 'start_frame') * 1000 / Num(LSource, 'sample_rate'));
-    LSelection['end_text'] := TimeText(Num(LSource, 'end_frame') * 1000 / Num(LSource, 'sample_rate'));
-    LSelection['range_invalid'] := False;
-    LSelection['included'] := LIndex < LIncludedCount;
-    if Arr(LSource, 'classifications') <> nil then
-    begin
-      LSelection['classifications'] := Arr(LSource, 'classifications').slice;
-    end
-    else
-    begin
-      LSelection['classifications'] := TJSArray.new;
-    end;
-    FSelections.push(LSelection);
-  end;
-  FProjectId := Str(AProject, 'project_id');
-  FRevision := Trunc(Num(AProject, 'revision'));
-  Input('style-name').value := Str(AProject, 'name');
-  TJSHTMLTextAreaElement(El('style-qualities')).value := Str(AProject, 'style_intent');
-  Input('learning-mode').value := Str(AProject, 'learning_mode');
-  { Big Boss: an authored draft legitimately omits the optional recipe. Convert
-    missing/JSON-null material to Pascal nil before object-copy consumers. }
-  LMaterial := nil;
-  if isObject(AProject['musical_material']) then
-    LMaterial := Obj(AProject['musical_material']);
-  FMaterial.Restore(LMaterial);
-  FBatches.ApplyMusicalContext(LMaterial);
-  FSavedProject := CloneObject(AProject);
-  FBatches.SetProject(FSavedProject, False);
-  FDirty := False;
-  FPendingWrite := nil;
-  FConflict := False;
-  ClearErrors;
-  El('draft-details').textContent := 'Draft ' + FProjectId + ' · saved version ' +
-    IntToStr(FRevision) + ' · not trained. Source verification is pending before training.';
-  DrawProjects;
-  DrawTracks;
-  UpdateSummary;
-  UpdateState;
-end;
 
-function TStudio.BuildWrite: TJSObject;
-var
-  LSources: TJSArray;
-  LParked: TJSArray;
-  LSource: TJSObject;
-  LSelection: TJSObject;
-  LIndex: Integer;
-  LValid: Boolean;
-  LName: String;
-  LIntent: String;
-begin
-  Result := nil;
-  ClearErrors;
-  LName := Trim(Input('style-name').value);
-  LIntent := TJSHTMLTextAreaElement(El('style-qualities')).value;
-  LValid := True;
-  if (Length(LName) < 1) or (Length(LName) > 128) then
-  begin
-    ErrorAt('name-error', 'Give your project a name, up to 128 characters.');
-    Input('style-name').setAttribute('aria-invalid', 'true');
-    RevealWorkspaceControl(El('style-name'));
-    Input('style-name').focus;
-    LValid := False;
-  end;
-  if Length(LIntent) > 2048 then
-  begin
-    ErrorAt('qualities-error', 'Keep your description within 2,048 characters.');
-    El('style-qualities').setAttribute('aria-invalid', 'true');
-    LValid := False;
-  end;
-  if ((FSelections.length < 1) and (Input('learning-mode').value <> 'instrumental')) or
-    (FSelections.length > 64) then
-  begin
-    ErrorAt('tracks-error', 'Select 1 to 64 passages from at most 32 recordings.');
-    LValid := False;
-  end;
-  for LIndex := 0 to FSelections.length - 1 do
-  begin
-    if Boolean(Obj(FSelections[LIndex])['range_invalid']) then
-    begin
-      ErrorAt('tracks-error', 'Check the highlighted time ranges before saving.');
-      LValid := False;
-    end;
-  end;
-  if not LValid then
-  begin
-    if not El('name-error').hasAttribute('hidden') then
-    begin
-      RevealWorkspaceControl(El('style-name'));
-      Input('style-name').focus;
-    end
-    else if not El('qualities-error').hasAttribute('hidden') then
-    begin
-      RevealWorkspaceControl(El('style-qualities'));
-      TJSHTMLElement(El('style-qualities')).focus;
-    end
-    else
-    begin
-      RevealWorkspaceControl(El('tracks-error'));
-      El('tracks-error').setAttribute('tabindex', '-1');
-      TJSHTMLElement(El('tracks-error')).focus;
-    end;
-    Exit;
-  end;
-  Result := TJSObject.new;
-  Result['format'] := 'pythian.studio.project.write.v1';
-  Result['project_id'] := FProjectId;
-  Result['expected_revision'] := FRevision;
-  Result['name'] := LName;
-  Result['style_intent'] := LIntent;
-  Result['learning_mode'] := Input('learning-mode').value;
-  if (FMaterial.Value <> nil) and (Input('learning-mode').value = 'instrumental') then
-    Result['musical_material'] := FMaterial.Value;
-  LSources := TJSArray.new;
-  LParked := TJSArray.new;
-  for LIndex := 0 to FSelections.length - 1 do
-  begin
-    LSelection := Obj(FSelections[LIndex]);
-    LSource := TJSObject.new;
-    LSource['source_sha256'] := Str(LSelection, 'source_sha256');
-    LSource['selection'] := Str(LSelection, 'selection');
-    LSource['classifications'] := Arr(LSelection, 'classifications');
-    if Str(LSelection, 'selection') = 'range' then
-    begin
-      LSource['start_frame'] := Num(LSelection, 'start_frame');
-      LSource['end_frame'] := Num(LSelection, 'end_frame');
-    end;
-    if StudioIncluded(LSelection) then
-      LSources.push(LSource)
-    else
-      LParked.push(LSource);
-  end;
-  Result['sources'] := LSources;
-  Result['parked_sources'] := LParked;
-end;
-
-function TStudio.MatchesWrite(AProject, AWrite: TJSObject): Boolean;
-var
-  LSavedSources: TJSArray;
-  LWriteSources: TJSArray;
-  LIndex: Integer;
-  LSaved: TJSObject;
-  LWrite: TJSObject;
-begin
-  Result := False;
-  if not SameStudioJSON(AProject['musical_material'], AWrite['musical_material']) then Exit;
-  if (Str(AProject, 'project_id') <> Str(AWrite, 'project_id')) or
-    (Str(AProject, 'name') <> Str(AWrite, 'name')) or
-    (Str(AProject, 'style_intent') <> Str(AWrite, 'style_intent')) or
-    (Str(AProject, 'learning_mode') <> Str(AWrite, 'learning_mode')) then
-  begin
-    Exit;
-  end;
-  LSavedSources := Arr(AProject, 'sources');
-  LWriteSources := Arr(AWrite, 'sources');
-  if (LSavedSources = nil) or (LWriteSources = nil) or
-    (LSavedSources.length <> LWriteSources.length) then Exit;
-  LSavedSources := LSavedSources.slice;
-  LWriteSources := LWriteSources.slice;
-  if Arr(AProject, 'parked_sources') <> nil then
-    LSavedSources := LSavedSources.concat(Arr(AProject, 'parked_sources'));
-  if Arr(AWrite, 'parked_sources') <> nil then
-    LWriteSources := LWriteSources.concat(Arr(AWrite, 'parked_sources'));
-  if (LSavedSources = nil) or (LWriteSources = nil) or
-    (LSavedSources.length <> LWriteSources.length) then
-  begin
-    Exit;
-  end;
-  for LIndex := 0 to LWriteSources.length - 1 do
-  begin
-    LSaved := Obj(LSavedSources[LIndex]);
-    LWrite := Obj(LWriteSources[LIndex]);
-    if (Str(LSaved, 'source_sha256') <> Str(LWrite, 'source_sha256')) or
-      (Str(LSaved, 'selection') <> Str(LWrite, 'selection')) then
-    begin
-      Exit;
-    end;
-    if TJSJSON.stringify(LSaved['classifications']) <>
-      TJSJSON.stringify(LWrite['classifications']) then
-    begin
-      Exit;
-    end;
-    if (Str(LWrite, 'selection') = 'range') and
-      ((Num(LSaved, 'start_frame') <> Num(LWrite, 'start_frame')) or
-      (Num(LSaved, 'end_frame') <> Num(LWrite, 'end_frame'))) then
-    begin
-      Exit;
-    end;
-  end;
-  Result := True;
-end;
-
-procedure TStudio.Connect; async;
-var
-  LResponse: TJSResponse;
-  LData: TJSObject;
-  LPrepared: TJSObject;
-  LTracks: TJSArray;
-  LProjects: TJSArray;
-  LEpoch: Integer;
-  LTimer: NativeInt;
-  LIndex: Integer;
-  LOldTrack: TJSObject;
-  LOther: Integer;
-  LExists: Boolean;
-begin
-  if FBusy then
-  begin
-    Exit;
-  end;
-  Inc(FEpoch);
-  LEpoch := FEpoch;
-  FBusy := True;
-  FConnected := False;
-  FLibraryRefresh.SetConnected(False);
-  FToken := '';
-  UpdateState;
-  Status('Connecting to your catalog…');
-  El('retry').setAttribute('hidden', '');
-  LTimer := window.setTimeout(
-    procedure()
-    begin
-      if LEpoch = FEpoch then
-      begin
-        Inc(FEpoch);
-        FBusy := False;
-        FConnected := False;
-        FNavigation.ConnectionFailed;
-        UpdateState;
-        Status('Connection is taking too long. Your edits are still here; retry when ready.', True);
-        El('retry').removeAttribute('hidden');
-      end;
-    end, 15000);
-  try
-    LResponse := await(TJSResponse, FetchApi('/api/session', 'GET', ''));
-    if LEpoch <> FEpoch then
-    begin
-      Exit;
-    end;
-    if LResponse.status <> 200 then
-    begin
-      raise Exception.Create('Connection could not be established.');
-    end;
-    LData := await(TJSObject, LResponse.json());
-    if LEpoch <> FEpoch then
-    begin
-      Exit;
-    end;
-    FToken := Str(LData, 'token');
-    if FToken = '' then
-    begin
-      raise Exception.Create('Connection could not be established.');
-    end;
-    FNavigation.Start;
-    LResponse := await(TJSResponse, FetchApi('/api/studio/sources', 'GET', ''));
-    if LEpoch <> FEpoch then
-    begin
-      Exit;
-    end;
-    if LResponse.status <> 200 then
-    begin
-      raise Exception.Create('Recordings could not be loaded.');
-    end;
-    LData := await(TJSObject, LResponse.json());
-    if LEpoch <> FEpoch then
-    begin
-      Exit;
-    end;
-    LTracks := Arr(LData, 'sources');
-    if (Str(LData, 'format') <> 'pythian.studio.sources.v1') or (LTracks = nil) then
-    begin
-      raise Exception.Create('The recording list is not supported by this Studio.');
-    end;
-    LResponse := await(TJSResponse, FetchApi('/api/studio/library', 'GET', ''));
-    if LEpoch <> FEpoch then Exit;
-    if LResponse.status <> 200 then
-      raise Exception.Create('Prepared recording details could not be loaded.');
-    LPrepared := await(TJSObject, LResponse.json());
-    if LEpoch <> FEpoch then Exit;
-    LResponse := await(TJSResponse, FetchApi('/api/studio/library-discovery', 'GET', ''));
-    if LEpoch <> FEpoch then
-    begin
-      Exit;
-    end;
-    if LResponse.status <> 200 then
-    begin
-      raise Exception.Create('Library refresh details could not be loaded.');
-    end;
-    LData := await(TJSObject, LResponse.json());
-    if LEpoch <> FEpoch then
-    begin
-      Exit;
-    end;
-    MergeDiscovery(LTracks, LData, LPrepared);
-    El('library-summary').textContent :=
-      IntToStr(Trunc(Num(LData, 'available_count'))) + ' original files in ' +
-      IntToStr(Trunc(Num(LData, 'collection_count'))) + ' collections · ' +
-      IntToStr(Trunc(Num(LData, 'missing_count'))) + ' missing · ' +
-      IntToStr(Trunc(Num(LData, 'unsupported_count'))) + ' unsupported. ' +
-      'Metadata only. Recordings are prepared when you add them.';
-    if Num(LData, 'revision') = 0 then
-    begin
-      El('collection-empty-state').textContent := 'Your collection folders have not been scanned yet. Refresh the library to discover them.';
-      El('collection-empty-state').removeAttribute('hidden');
-    end
-    else if Num(LData, 'collection_count') = 0 then
-    begin
-      El('collection-empty-state').textContent := 'No collection folders were found. Add a folder with WAV recordings, then refresh.';
-      El('collection-empty-state').removeAttribute('hidden');
-    end
-    else if Num(LData, 'available_count') = 0 then
-    begin
-      El('collection-empty-state').textContent := 'Collection folders were found, but no WAV recordings are available. Add recordings, then refresh.';
-      El('collection-empty-state').removeAttribute('hidden');
-    end
-    else
-    begin
-      El('collection-empty-state').setAttribute('hidden', '');
-    end;
-    LResponse := await(TJSResponse, FetchApi('/api/studio/projects', 'GET', ''));
-    if LEpoch <> FEpoch then
-    begin
-      Exit;
-    end;
-    if LResponse.status <> 200 then
-    begin
-      raise Exception.Create('Saved projects could not be loaded.');
-    end;
-    LData := await(TJSObject, LResponse.json());
-    if LEpoch <> FEpoch then
-    begin
-      Exit;
-    end;
-    LProjects := Arr(LData, 'projects');
-    if (Str(LData, 'format') <> 'pythian.studio.projects.v1') or (LProjects = nil) then
-    begin
-      raise Exception.Create('The saved project list is not supported by this Studio.');
-    end;
-    for LIndex := 0 to FSelections.length - 1 do
-    begin
-      LOldTrack := FindTrack(Str(Obj(FSelections[LIndex]), 'source_sha256'));
-      if LOldTrack <> nil then
-      begin
-        LExists := False;
-        for LOther := 0 to LTracks.length - 1 do
-        begin
-          if Str(Obj(LTracks[LOther]), 'source_sha256') = Str(LOldTrack, 'source_sha256') then
-          begin
-            LExists := True;
-          end;
-        end;
-        if not LExists then
-        begin
-          LTracks.push(CloneObject(LOldTrack));
-        end;
-      end;
-    end;
-    FTracks := LTracks;
-    FProjects := LProjects;
-    El('start-library-summary').textContent := IntToStr(FTracks.length) + ' recordings available';
-    FConnected := True;
-    FLibraryRefresh.SetConnected(True);
-    FLibraryRefresh.Refresh;
-    FBatches.Refresh;
-    FReviews.Refresh;
-    FCapture.Refresh;
-    Status('Connected to your library.');
-    DrawProjects;
-  except
-    on LError: Exception do
-    begin
-      if LEpoch = FEpoch then
-      begin
-        Status(LError.Message + ' Your edits are still here.', True);
-        FNavigation.ConnectionFailed;
-        El('retry').removeAttribute('hidden');
-      end;
-    end;
-  else
-    begin
-      if LEpoch = FEpoch then
-      begin
-        Status('Connection failed. Your edits are still here; retry when ready.', True);
-        FNavigation.ConnectionFailed;
-        El('retry').removeAttribute('hidden');
-      end;
-    end;
-  end;
-  window.clearTimeout(LTimer);
-  if LEpoch = FEpoch then
-  begin
-    FBusy := False;
-    DrawTracks;
-    UpdateSummary;
-    UpdateState;
-  end;
-end;
-
-procedure TStudio.CatalogSaved;
-begin
-  FCatalogRefreshPending := True;
-  if not FBusy then
-  begin
-    FCatalogRefreshPending := False;
-    Connect;
-  end;
-end;
-
-function TStudio.UseNextBatch(APacket: TJSObject): TJSPromise;
-begin
-  Result := ApplyNextBatch(APacket);
-end;
-
-function TStudio.ApplyNextBatch(APacket: TJSObject): Boolean; async;
-var
-  LRequest: TJSObject;
-  LResponse: TJSResponse;
-  LProject: TJSObject;
-begin
-  Result := False;
-  if FBusy or not FConnected then
-  begin
-    raise Exception.Create('Wait for the current project operation to finish.');
-  end;
-  if FDirty then
-  begin
-    raise Exception.Create('Save your project edits before preparing a different batch.');
-  end;
-  LRequest := TJSObject(APacket['request']);
-  FBusy := True;
-  UpdateState;
-  try
-    LResponse := await(TJSResponse, FetchApi('/api/studio/project-revision?id=' +
-      encodeURIComponent(Str(LRequest, 'project_id')) + '&revision=' +
-      IntToStr(Trunc(Num(LRequest, 'project_revision'))), 'GET', ''));
-    if LResponse.status <> 200 then
-    begin
-      raise Exception.Create('The original project version could not be loaded. Your current setup remains.');
-    end;
-    LProject := await(TJSObject, LResponse.json());
-    if Str(LProject, 'snapshot_sha256') <> Str(LRequest, 'project_snapshot_sha256') then
-    begin
-      raise Exception.Create('The project version differs from the chosen audition.');
-    end;
-    ApplyProject(LProject);
-    FBatches.ApplyNextBatch(LRequest);
-    Status('Next-batch settings are ready. Change what you want, then generate.');
-    RevealWorkspaceControl(El('batch-duration'));
-    SelectWorkspacePane('prepare', True);
-    Result := True;
-  finally
-    FBusy := False;
-    UpdateState;
-  end;
-end;
-
-procedure TStudio.LoadProject(const AId: String); async;
-var
-  LResponse: TJSResponse;
-  LData: TJSObject;
-  LEpoch: Integer;
-  LTimer: NativeInt;
-begin
-  if FBusy or not FConnected then
-  begin
-    Exit;
-  end;
-  if FDirty and not window.confirm('Discard unsaved changes and load the saved project?') then
-  begin
-    TJSHTMLSelectElement(El('draft-list')).value := FProjectId;
-    Exit;
-  end;
-  FBusy := True;
-  Inc(FEpoch);
-  LEpoch := FEpoch;
-  LTimer := window.setTimeout(
-    procedure()
-    begin
-      if LEpoch = FEpoch then
-      begin
-        Inc(FEpoch);
-        FBusy := False;
-        DrawTracks;
-        UpdateState;
-        Feedback('Load is taking too long. Your current edits are still here. Retry when ready.', True);
-        El('retry').removeAttribute('hidden');
-      end;
-    end, 15000);
-  UpdateState;
-  DrawTracks;
-  Feedback('Loading saved draft…');
-  try
-    LResponse := await(TJSResponse, FetchApi('/api/studio/project?id=' +
-      encodeURIComponent(AId), 'GET', ''));
-    if LEpoch <> FEpoch then
-    begin
-      Exit;
-    end;
-    if LResponse.status <> 200 then
-    begin
-      raise Exception.Create('Saved draft could not be loaded.');
-    end;
-    LData := await(TJSObject, LResponse.json());
-    if LEpoch <> FEpoch then
-    begin
-      Exit;
-    end;
-    ApplyProject(LData);
-    Feedback('Saved draft loaded.');
-  except
-    on LError: Exception do
-    begin
-      if LEpoch = FEpoch then
-      begin
-        Feedback(LError.Message + ' Your current selections are still here.', True);
-      end;
-    end;
-  else
-    begin
-      if LEpoch = FEpoch then
-      begin
-        Feedback('Draft could not be loaded. Your current selections are still here.', True);
-      end;
-    end;
-  end;
-  window.clearTimeout(LTimer);
-  if LEpoch = FEpoch then
-  begin
-    FBusy := False;
-    DrawTracks;
-    UpdateState;
-  end;
-end;
-
-procedure TStudio.Save; async;
-var
-  LWrite: TJSObject;
-  LResponse: TJSResponse;
-  LData: TJSObject;
-  LEpoch: Integer;
-  LTimer: NativeInt;
-  LIndex: Integer;
-  LFound: Boolean;
-  LMessage: String;
-  LSaved: Boolean;
-begin
-  if FBusy or not FConnected then
-  begin
-    Exit;
-  end;
-  if FPendingWrite <> nil then
-  begin
-    LWrite := FPendingWrite;
-  end
-  else
-  begin
-    LWrite := BuildWrite;
-  end;
-  if LWrite = nil then
-  begin
-    Feedback('Check the highlighted fields before saving.', True);
-    Exit;
-  end;
-  FPendingWrite := CloneObject(LWrite);
-  FBusy := True;
-  Inc(FEpoch);
-  LEpoch := FEpoch;
-  LTimer := window.setTimeout(
-    procedure()
-    begin
-      if LEpoch = FEpoch then
-      begin
-        Inc(FEpoch);
-        FBusy := False;
-        DrawTracks;
-        UpdateState;
-        Feedback('Save is taking too long. Your edits are still here. Retry Save draft to confirm or save the same draft.', True);
-        El('retry').removeAttribute('hidden');
-      end;
-    end, 15000);
-  UpdateState;
-  DrawTracks;
-  Feedback('Saving draft…');
-  LSaved := False;
-  LMessage := 'Save could not be confirmed. Your edits are still here. Retry Save draft.';
-  try
-    LResponse := await(TJSResponse, FetchApi('/api/studio/project', 'POST', TJSJSON.stringify(LWrite)));
-    if LEpoch <> FEpoch then
-    begin
-      Exit;
-    end;
-    if LResponse.status <> 200 then
-    begin
-      if LResponse.status = 409 then
-      begin
-        FConflict := True;
-        LMessage := 'Save conflict: the store is busy or the saved draft changed. Your edits are still here. Retry when idle; reload if the conflict remains.';
-      end
-      else if (LResponse.status = 400) or (LResponse.status = 422) then
-      begin
-        LMessage := 'Draft rejected. Check its name and time ranges, and choose training recordings. Your edits are still here.';
-      end;
-      raise Exception.Create(LMessage);
-    end;
-    LData := await(TJSObject, LResponse.json());
-    if LEpoch <> FEpoch then
-    begin
-      Exit;
-    end;
-    LSaved := MatchesWrite(LData, LWrite);
-  except
-    on LError: Exception do
-    begin
-      LSaved := False;
-    end;
-  else
-    begin
-      LSaved := False;
-    end;
-  end;
-  if LEpoch <> FEpoch then
-  begin
-    Exit;
-  end;
-  if not LSaved then
-  begin
-    { A dropped successful POST may already be durable. Probe the same ID;
-      compare exact requested selections before claiming saved or retrying. }
-    try
-      LResponse := await(TJSResponse, FetchApi('/api/studio/project?id=' +
-        encodeURIComponent(Str(LWrite, 'project_id')), 'GET', ''));
-      if LEpoch <> FEpoch then
-      begin
-        Exit;
-      end;
-      if LResponse.status = 200 then
-      begin
-        LData := await(TJSObject, LResponse.json());
-        if LEpoch <> FEpoch then
-        begin
-          Exit;
-        end;
-        LSaved := MatchesWrite(LData, LWrite);
-      end;
-    except
-      on LError: Exception do
-      begin
-        LSaved := False;
-      end;
-    else
-      begin
-        LSaved := False;
-      end;
-    end;
-  end;
-  if LSaved then
-  begin
-    try
-      LFound := False;
-      for LIndex := 0 to FProjects.length - 1 do
-      begin
-        if Str(Obj(FProjects[LIndex]), 'project_id') = Str(LData, 'project_id') then
-        begin
-          FProjects[LIndex] := CloneObject(LData);
-          LFound := True;
-        end;
-      end;
-      if not LFound then
-      begin
-        FProjects.push(CloneObject(LData));
-      end;
-      ApplyProject(LData);
-      Feedback('Draft saved.');
-    except
-      on LError: Exception do
-      begin
-        Feedback('Save response is unsupported. Your edits remain; reload when connected.', True);
-      end;
-    end;
-  end
-  else
-  begin
-    FDirty := True;
-    Feedback(LMessage, True);
-  end;
-  window.clearTimeout(LTimer);
-  if LEpoch = FEpoch then
-  begin
-    FBusy := False;
-    DrawTracks;
-    UpdateState;
-  end;
-end;
-
-function TStudio.HandleEdit(AEvent: TEventListenerEvent): Boolean;
-begin
-  Result := False;
-  if not FBusy then
-  begin
-    Changed;
-  end;
-end;
-
-function TStudio.HandleNew(AEvent: TJSMouseEvent): Boolean;
-begin
-  Result := False;
-  if FBusy then
-  begin
-    Exit;
-  end;
-  if FDirty and not window.confirm('Discard unsaved changes and start a new project?') then
-  begin
-    Exit;
-  end;
-  NewDraft;
-  RevealWorkspaceControl(El('style-name'));
-  Input('style-name').focus;
-end;
-
-function TStudio.HandleSave(AEvent: TJSMouseEvent): Boolean;
-begin
-  Result := False;
-  Save;
-end;
-
-function TStudio.HandleReload(AEvent: TJSMouseEvent): Boolean;
-begin
-  Result := False;
-  LoadProject(FProjectId);
-end;
-
-function TStudio.HandleRetry(AEvent: TJSMouseEvent): Boolean;
-begin
-  Result := False;
-  Connect;
-end;
-
-function TStudio.HandleProject(AEvent: TEventListenerEvent): Boolean;
-var
-  LId: String;
-begin
-  Result := False;
-  LId := TJSHTMLSelectElement(El('draft-list')).value;
-  if LId = '' then
-  begin
-    if FDirty and not window.confirm('Discard unsaved changes and start a new project?') then
-    begin
-      TJSHTMLSelectElement(El('draft-list')).value := FProjectId;
-      Exit;
-    end;
-    NewDraft;
-  end
-  else
-  begin
-    LoadProject(LId);
-  end;
-end;
-
-function TStudio.HandleSearch(AEvent: TEventListenerEvent): Boolean;
-begin
-  Result := False;
-  DrawTracks;
-end;
-
-function TStudio.HandleSubmit(AEvent: TEventListenerEvent): Boolean;
-begin
-  Result := False;
-  AEvent.preventDefault;
-  Save;
-end;
-
-function TStudio.HandleBeforeUnload(AEvent: TEventListenerEvent): Boolean;
-begin
-  Result := False;
-  if FDirty then
-  begin
-    AEvent.preventDefault;
-    TJSObject(AEvent)['returnValue'] := '';
-  end;
-end;
-
-function TStudio.HandleAnyPlay(AEvent: TEventListenerEvent): Boolean;
-var
-  LPlayers: TJSNodeList;
-  LIndex: Integer;
-begin
-  LPlayers := document.querySelectorAll('audio');
-  for LIndex := 0 to LPlayers.length - 1 do
-  begin
-    if LPlayers[LIndex] <> AEvent.target then
-    begin
-      TJSHTMLAudioElement(LPlayers[LIndex]).pause;
-    end;
-  end;
-  Result := True;
-end;
-
-function TStudio.HandleStart(AEvent: TJSMouseEvent): Boolean;
-var
-  LAction: String;
-begin
-  Result := False;
-  LAction := TJSElement(AEvent.currentTarget).id;
-  if LAction = 'start-browse' then
-  begin
-    RevealWorkspaceControl(El('collection-library'));
-    TJSHTMLElement(El('collection-library')).scrollIntoView;
-    TJSHTMLElement(El('collection-library')).focus;
-  end
-  else if LAction = 'capture-back' then
-  begin
-    RevealWorkspaceControl(El('start-record'));
-    TJSHTMLElement(El('start-record')).scrollIntoView;
-    TJSHTMLElement(El('start-record')).focus;
-  end
-  else
-  begin
-    RevealWorkspaceControl(El('studio-capture'));
-    if LAction = 'start-record' then
-    begin
-      FCapture.OpenRecorder;
-    end
-    else
-    begin
-      FCapture.OpenImporter;
-    end;
-  end;
-end;
-
-procedure TStudio.Run;
-begin
-  FNavigation := TWorkspaceNavigation.Create(@FetchNavigation, 'studio');
-  FTracks := TJSArray.new;
-  FProjects := TJSArray.new;
-  FSelections := TJSArray.new;
-  FSourceEditor := TStudioSourceEditor.Create(@FetchApi, @Changed, @FetchNavigation);
-  FBatches := TStudioBatches.Create(@FetchApi);
-  FMaterial := TStudioMaterial.Create(@FetchApi, @MaterialChanged);
-  FEffects := TStudioEffects.Create(@FetchApi, @FSourceEditor.CurrentRange, @CatalogSaved);
-  FReviews := TStudioReviews.Create(@FetchApi, @UseNextBatch);
-  FCapture := TStudioCapture.Create(@FetchApi, @CatalogSaved);
-  FLibraryRefresh := TStudioLibraryRefresh.Create(@FetchNavigation, @CatalogSaved);
-  El('start-record').addEventListener('click', @HandleStart);
-  El('start-import').addEventListener('click', @HandleStart);
-  El('start-browse').addEventListener('click', @HandleStart);
-  El('capture-back').addEventListener('click', @HandleStart);
-  FTabs := TWorkspaceTabs.Create;
-  NewDraft;
-  El('style-form').addEventListener('submit', @HandleSubmit);
-  El('style-name').addEventListener('input', @HandleEdit);
-  El('learning-mode').addEventListener('change', @HandleEdit);
-  El('style-qualities').addEventListener('input', @HandleEdit);
-  El('save-draft').addEventListener('click', @HandleSave);
-  El('reload-draft').addEventListener('click', @HandleReload);
-  El('new-draft').addEventListener('click', @HandleNew);
-  El('retry').addEventListener('click', @HandleRetry);
-  El('source-reconnect').addEventListener('click', @HandleRetry);
-  El('draft-list').addEventListener('change', @HandleProject);
-  El('track-search').addEventListener('input', @HandleSearch);
-  window.addEventListener('beforeunload', @HandleBeforeUnload);
-  document.addEventListener('play', @HandleAnyPlay, True);
-  Connect;
-end;
-
-var
-  GStudio: TStudio;
-
+var GStudio: TStudio;
 begin
   GStudio := TStudio.Create;
   GStudio.Run;

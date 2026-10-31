@@ -2,7 +2,7 @@
 
 ## Current goal: instrumental exploration
 
-Eleven current-goal tasks are accepted: **47 / 102 effort units (46.08%)**. Their
+Eleven current-goal tasks are accepted: **47 / 108 effort units (43.52%)**. Their
 criteria and prerequisites passed: finite runtime/percussion, ordinary instrumental
 Studio, context/cancellation/identity repairs and editable recording proposals
 into actual providers/instruments. This is not musical preference or whole-corpus

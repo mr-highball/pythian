@@ -26,174 +26,86 @@ SOFTWARE.
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#11252b">
+  <meta name="theme-color" content="#101719">
   <title>Pythian · Studio</title>
   <link rel="stylesheet" href="studio.css">
-  <link rel="stylesheet" href="workspace-nav.css">
 </head>
 <body>
-  <a class="skip-link" href="#studio-tabs">Skip to Studio stages</a>
-  <header class="masthead">
-    <a class="brand" href="studio.html" aria-label="Pythian Studio home">Pythian <span>Studio</span></a>
-  </header>
-  <div id="workspace-navigation"></div>
-  <main>
-    <div id="workspace-next-action"></div>
-    <section class="intro" aria-labelledby="page-title">
-      <h1 id="page-title">Your Studio</h1>
-      <div class="draft-picker"><label for="draft-list">Saved projects</label>
-        <div class="picker-controls"><select id="draft-list" disabled><option value="">New project</option></select>
-          <button id="new-draft" type="button" disabled>New project</button></div></div>
-    </section>
-    <div class="studio-navigation" id="studio-tabs" tabindex="-1">
-      <nav class="steps" data-tab-group aria-label="Studio stages">
-        <button id="tab-sources" type="button" aria-controls="sources">1 Sources</button>
-        <button id="tab-prepare" type="button" aria-controls="prepare">2 Generate</button>
-        <button id="tab-listen" type="button" aria-controls="listen">3 Review</button>
-      </nav>
+<a class="skip-link" href="#main-content">Skip to music</a>
+<header class="masthead">
+  <a class="brand" href="studio.html" aria-label="Pythian Studio">◈ <strong>Pythian</strong> <span>Studio</span></a>
+  <button type="button" data-dialog="playlists-dialog" class="quiet">Playlists</button>
+</header>
+<main id="main-content">
+  <nav class="steps" role="tablist" aria-label="Make music">
+    <button id="tab-library" role="tab" aria-controls="step-library" data-step="library">1 <span>Library</span></button>
+    <button id="tab-selection" role="tab" aria-controls="step-selection" data-step="selection">2 <span>Selection</span> <b id="selection-count" class="badge">0</b></button>
+    <button id="tab-generate" role="tab" aria-controls="step-generate" data-step="generate">3 <span>Generate</span></button>
+  </nav>
+  <p id="connection-state" class="hint" role="status" aria-live="polite">Opening your music…</p>
+  <button id="retry-connection" data-studio-action type="button" hidden>Reconnect</button>
+  <section id="step-library" role="tabpanel" aria-labelledby="tab-library">
+    <div class="page-heading"><div><p class="eyebrow">YOUR MUSIC, YOUR STARTING POINT</p><h1>Find your sound.</h1><p class="hint">Add tracks to your playlist. Choose clips in the next step.</p></div></div>
+    <div class="library-actions">
+      <button id="import-audio" data-studio-action type="button"><span aria-hidden="true">＋</span> Add music</button>
+      <button id="record-audio" data-studio-action type="button"><span aria-hidden="true">◉</span> Record</button>
+      <button data-dialog="folder-dialog" type="button"><span aria-hidden="true">▱</span> Music folder</button>
     </div>
-    <div id="connection" class="notice" role="status">Connecting to your catalog…</div>
-    <button id="retry" type="button" hidden>Retry connection</button>
-    <noscript>This Studio needs JavaScript enabled.</noscript>
-    <div class="workspace">
-      <section id="sources" class="panel" aria-label="Choose your sources">
-        <nav class="substeps" data-tab-group aria-label="Source steps">
-          <button id="tab-project" type="button" aria-controls="project-step">Project</button>
-          <button id="tab-library" type="button" aria-controls="library-step">Collection</button>
-          <button id="tab-selection" type="button" aria-controls="selection-step">Passage</button>
-          <button id="tab-capture" type="button" aria-controls="capture-panel">Import / record</button>
-        </nav>
-        <div id="project-step">
-          <h2 id="sources-title">What are you making?</h2>
-          <form id="style-form" novalidate>
-            <button type="button" class="guide-context" data-guide-topic="choose">How to choose teaching examples</button>
-            <label for="style-name">Project name</label>
-            <input id="style-name" type="text" maxlength="128" autocomplete="off" placeholder="For example, Quiet evening piano" disabled aria-describedby="name-error">
-            <p id="name-error" class="field-error" role="alert" hidden></p>
-            <label for="learning-mode">Make music with</label>
-            <select id="learning-mode" disabled>
-              <option value="instrumental">Synthesized instruments · Experimental</option>
-              <option value="raw_acoustic">Recorded fragments · legacy experiment</option>
-              <option value="reference_events">Reference notes · unavailable</option>
-              <option value="inferred_events">Automatic notes · unavailable</option>
-            </select>
-            <p class="hint">Synthesize instruments from an authored starter or editable audio suggestions. Style learning across recordings is still upcoming.</p>
-            <section id="musical-material" aria-label="Musical starting points"></section>
-            <label for="style-qualities">What should the music feel like? (optional)</label>
-            <textarea id="style-qualities" rows="3" maxlength="2048" placeholder="For example, gentle dynamics, space between phrases, and a warm sound." disabled aria-describedby="qualities-help qualities-error"></textarea>
-            <p id="qualities-help" class="hint">Your listening goal. These words describe your intent; they do not yet control generation.</p>
-            <p id="qualities-error" class="field-error" role="alert" hidden></p>
-          </form>
-<button id="project-next" type="button" class="primary step-next" data-open-pane="prepare">Next: Generate (save your draft first) →</button>
-    <section class="start-panel" aria-labelledby="start-title">
-      <div><p class="eyebrow">MAKE SOMETHING. HEAR WHAT PYTHIAN CAN DO.</p>
-        <h3 id="start-title">Or bring in a new sound</h3><p class="lead">Record an idea, bring a WAV, or explore your collection.</p></div>
-      <div class="start-actions">
-        <button id="start-record" class="start-action" type="button"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="13" rx="4"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3M8 22h8"/></svg><strong>Record audio</strong><small>Open the recorder</small></button>
-        <button id="start-import" class="start-action" type="button"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M4 15v6h16v-6"/></svg><strong>Import WAV</strong><small>Explore a sound file</small></button>
-        <button id="start-browse" class="start-action" type="button"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 6h7l2 3h9v12H3zM3 6V3h7l2 3h9v3"/></svg><strong>Browse collection</strong><small id="start-library-summary">Your tracks and passages</small></button>
-      </div>
-    </section>
-</div>
-<div id="library-step">          <div id="collection-library" class="source-heading" tabindex="-1"><div><h3>Your collection library</h3><p class="hint">Choose recordings to explore, compare or learn from.</p></div></div>
-          <div class="training-summary"><strong>Music for the next generation</strong><p id="collection-training-summary" role="status">Nothing checked for training.</p><p class="hint">Check the whole recording or the passages you want. Unchecked passages stay saved. Playing audio does not select it.</p><p id="collection-choice-notice" class="hint" role="status"></p></div>
-          <details class="library-management"><summary>Manage library &amp; folders</summary>
-          <div id="studio-library-refresh" class="library-refresh"></div>
-          <p id="collection-empty-state" class="hint" hidden></p>
-          <details><summary>Add music to your library</summary><p class="hint">Place WAV files in <code>local-audio/collections/your-collection/</code>, then refresh. These private files stay outside Git.</p></details>
-          <details><summary>Library refresh details</summary><p id="library-summary" class="hint" role="status">Refresh to discover your collection folders.</p></details>
-          </details>
-          <label for="collection-filter">Collection</label>
-          <select id="collection-filter"><option value="">All collections</option></select>
-          <div id="collection-shortcuts" class="collection-shortcuts" role="group" aria-label="Browse your collections"></div>
-          <label class="search-label" for="track-search">Find a recording</label>
-          <input id="track-search" type="search" placeholder="Search recording names" disabled>
-          <p id="tracks-empty" class="empty-state">Your imported recordings will appear here.</p>
-<div id="tracks" class="tracks" aria-label="Available recordings"></div>
-          <p id="tracks-error" class="field-error" role="alert" hidden></p>
-</div>
-<div id="selection-step"><p class="selection-empty">Choose a recording in Collection to listen and select a passage.</p>          <section id="source-inspector" class="source-inspector" hidden aria-labelledby="source-title">
-            <div class="section-heading"><div><p class="eyebrow">LISTEN · EXPLORE · SELECT</p><h3 id="source-title" tabindex="-1"></h3></div><button id="source-close" type="button">Back to collection</button></div>
-            <button type="button" class="guide-context" data-guide-topic="select">Selection &amp; waveform help</button>
-            <audio id="source-audio" preload="none" hidden></audio>
-            <div class="source-console" role="group" aria-label="Recording player and waveform view">
-            <div class="source-toolbar"><button id="source-play" class="primary" type="button"><svg aria-hidden="true" viewBox="0 0 24 24"><path class="play-shape" d="m8 5 11 7-11 7Z"/><path class="pause-shape" d="M7 5h3v14H7zm7 0h3v14h-3Z"/></svg><span id="source-play-label">Play</span></button><output id="source-time" class="source-time">0:00 / 0:00</output></div>
-            <p id="source-playback-status" class="hint" role="status" aria-live="polite">Choose a position, then press Play.</p>
-            <button id="source-reconnect" type="button" hidden>Reconnect to server</button>
-            <label for="source-seek" class="hint">Position in recording</label>
-            <input id="source-seek" type="range" min="0" max="1" step="0.01" value="0">
-            <div class="source-jump"><label for="source-position">Go to <small>min:sec</small></label><input id="source-position" type="text" value="0:00.000" inputmode="decimal"><button id="source-go" type="button">Go</button></div>
-            <canvas id="source-waveform" width="900" height="180" aria-label="Sampled source waveform. Tap to browse or drag a passage; equivalent time fields and mark buttons are below."></canvas>
-            <p id="source-waveform-state" class="hint" role="status">Loading waveform…</p><button id="source-waveform-retry" type="button" hidden>Retry waveform</button>
-            <output id="source-window" class="source-view-time"></output>
-            <div class="source-view-buttons" role="group" aria-label="Waveform view controls">
-              <button id="source-prev" type="button" aria-label="Previous view" title="Previous view"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></svg></button>
-              <button id="source-zoom-in" type="button" aria-label="Zoom in" title="Zoom in"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6M7 10h6m-3-3v6"/></svg></button>
-              <button id="source-zoom-out" type="button" aria-label="Zoom out" title="Zoom out"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6M7 10h6"/></svg></button>
-              <button id="source-view-whole" type="button" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5v14M20 5v14M7 12h10m-7-3-3 3 3 3m4-6 3 3-3 3"/></svg>Whole track</button>
-              <button id="source-next" type="button" aria-label="Next view" title="Next view"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m10 6 6 6-6 6"/></svg></button>
-            </div>
-            <div class="source-jump"><label for="source-view-length">View length <small>min:sec</small></label><input id="source-view-length" type="text" value="0:30.000" inputmode="decimal"><button id="source-view-apply" type="button">Apply</button></div>
-            <p class="wave-legend"><span class="legend-wave">Sampled waveform</span><span class="legend-range">Your passage</span><span class="legend-head">Playhead</span></p>
-            </div>
-            <section class="source-preparation" aria-label="Recording preparation">
-              <h4>Use this recording</h4>
-              <p id="source-preparation-purpose" class="hint">Browsing needs no preparation. Add music to your project, or prepare it for analysis and effects.</p>
-              <button id="source-prepare" type="button" hidden>Prepare for analysis &amp; effects</button>
-              <div id="studio-source-prepare"></div>
-              <p id="source-notice" class="hint" role="status" aria-live="polite"></p>
-            </section>
-            <details class="analysis-tools"><summary>Explore Pythian analysis</summary>
-              <button type="button" class="guide-context" data-guide-topic="analysis">What can this analysis tell me?</button>
-              <button id="source-analyze" type="button"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path d="M3 12h3l3-8 6 16 3-8h3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Analyze from playhead</button>
-              <div id="source-analysis-status" class="hint">Inspect this visible window to see signal levels and timing suggestions.</div>
-              <section id="source-musical-observations" aria-live="polite"></section>
-              <label for="source-beat-layer">Timing overlay <span class="candidate-label">Experimental</span></label>
-              <select id="source-beat-layer"><option value="-1">No beat overlay</option></select>
-              <p class="hint">Gold marks show suggested beats.</p>
-            </details>
-            <div class="range-fields"><label for="source-start">Start <small>min:sec</small><input id="source-start" type="text" value="0:00.000" inputmode="decimal"></label><label for="source-end">End <small>min:sec</small><input id="source-end" type="text" value="0:30.000" inputmode="decimal"></label></div>
-            <div class="source-toolbar"><button id="source-mark-in" type="button">⇥ Mark start</button><button id="source-mark-out" type="button">⇤ Mark end</button><button id="source-play-range" type="button">▶ Play passage</button></div>
-            <label for="source-classifications">How would you describe this selection?</label>
-            <input id="source-classifications" type="text" placeholder="For example: warm, sparse, intro" maxlength="520" aria-describedby="source-class-help">
-            <p id="source-class-help" class="hint">Separate labels with commas. They describe this passage for your project and reviews.</p>
-            <div class="source-toolbar"><button id="source-use-range" class="primary" type="button">Save passage &amp; include</button><button id="source-use-whole" type="button">Train on whole recording</button></div>
-            <details class="analysis-tools"><summary>Shape this passage with effects</summary><button type="button" class="guide-context" data-guide-topic="effects">Effects &amp; saving help</button><div id="studio-effects"></div></details>
-          </section>
-<button type="button" data-open-pane="library-step">Choose another recording</button><button type="button" class="step-next" data-open-pane="prepare">Next: generate →</button></div>
-    <section id="capture-panel" class="panel capture-panel" aria-label="Record or import audio" tabindex="-1">
-      <button id="capture-back" type="button">Back to project</button>
-      <button type="button" class="guide-context" data-guide-topic="record">Recording &amp; import help</button>
-      <div id="studio-capture"></div>
-    </section>
-</section>
-        <section id="prepare" class="panel prepare" aria-labelledby="prepare-title">
-          <div class="section-heading"><div><p class="eyebrow">02 / GENERATE</p><h2 id="prepare-title">Generate music</h2></div>
-            </div>
-          <details id="generation-source-summary" class="setup-summary"><summary>Selected music &amp; preparation</summary><dl class="totals"><div><dt>Selected music</dt><dd id="selected-duration">0 minutes</dd></div>
-            <div><dt>Recordings</dt><dd id="selected-count">0</dd></div></dl>
-          <p id="selection-summary" class="hint">Select recordings to build your source collection.</p>
-
-          <div class="support"><h3>Ready for a first audition?</h3>
-            <p>Save your project, then choose its musical settings below.</p>
-            <details><summary>Source and preparation details</summary><p id="support-detail">Save your project, then open Generate.</p></details></div>
-          </details>
-          <button id="generation-help" type="button" class="guide-context" data-guide-topic="generate">How to run a first experiment</button>
-          <button id="long-generation-help" type="button" class="guide-context" data-guide-topic="long">Long playback &amp; saving help</button>
-          <p id="generation-training-summary" class="training-summary" role="status"></p><button id="change-training-music" type="button" data-open-pane="library-step">Browse reference recordings</button><div id="studio-batches"></div>
-        </section>
-          <section id="listen" class="panel" aria-labelledby="listen-title"><p class="eyebrow">03 / REVIEW</p><h2 id="listen-title">Listen &amp; refine</h2><button type="button" class="guide-context" data-guide-topic="listen">What should I listen for?</button><button type="button" class="guide-context" data-guide-topic="refine">How to improve the next batch</button><div id="studio-reviews"></div></section>
-</div>
-      <aside class="save-panel" aria-label="Save your project">
-        <span id="draft-state" class="state" role="status">Not saved</span>
-        <p id="draft-caption">Give your style a name, then select its recordings.</p>
-        <div class="save-actions"><button id="save-draft" class="primary" type="button" disabled>Save draft</button>
-</div>
-        <p id="save-feedback" class="hint" role="status" aria-live="polite">Nothing has been saved yet.</p>
-        <details class="advanced"><summary>Project details</summary><button id="reload-draft" type="button" disabled>Reload saved draft</button><p id="draft-details" class="hint">A draft keeps your project and optional selections. Saving does not start generation.</p></details>
-      </aside>
+    <div class="library-filters">
+      <label class="search"><span class="sr-only">Search music</span><input id="track-search" type="search" placeholder="Search tracks or styles" disabled></label>
+      <label><span class="sr-only">Collection</span><select id="collection-filter"><option value="">All music</option></select></label>
+    </div>
+    <div id="tracks" class="tracks" aria-label="Music library"></div>
+    <div class="next-action"><button class="primary" data-step="selection" type="button">Next: choose what to learn →</button></div>
+  </section>
+  <section id="step-selection" role="tabpanel" aria-labelledby="tab-selection" hidden>
+    <div class="page-heading"><p class="eyebrow">YOUR PLAYLIST</p><h1>Whole tracks or clips?</h1><p class="hint">Everything shown as selected will teach Pythian. Playing a track does not select it.</p></div>
+    <label class="playlist-name"><span class="sr-only">Playlist name</span><input id="playlist-name" type="text" value="My playlist" maxlength="128" aria-label="Playlist name"></label>
+    <p id="selection-summary" class="summary" role="status">Your playlist is empty.</p>
+    <p id="collection-choice-notice" class="hint" role="status"></p>
+    <div id="playlist-tracks" class="tracks" aria-label="Selected music"></div>
+    <div class="next-action"><button data-step="library" type="button">＋ Add more music</button><button class="primary" data-step="generate" type="button">Next: generate →</button></div>
+  </section>
+  <section id="step-generate" role="tabpanel" aria-labelledby="tab-generate" hidden>
+    <div class="page-heading"><p class="eyebrow">MAKE SOMETHING NEW</p><h1>Let it play.</h1><p id="generate-summary" class="summary"></p></div>
+    <label class="duration-control" for="output-duration">Track length <small>minutes:seconds</small><input id="output-duration" type="text" value="0:30" inputmode="decimal"></label>
+    <details><summary>Track influence <span class="hint">optional</span></summary><p class="hint">Higher influence gives a track more weight in learning. This does not change its playback volume.</p><div id="track-influences"></div></details>
+    <button id="generate-music" type="button" class="primary generate-button" disabled>Generate music</button>
+    <p id="generation-status" class="hint" role="status">Playlist learning is being connected. Your music choices are saved; generation is not available in this preview yet.</p>
+  </section>
+  <div class="save-status"><span id="save-state" role="status" aria-live="polite">Changes save automatically</span><button id="retry-save" type="button" data-studio-action hidden>Retry save</button><button id="save-copy" type="button" data-studio-action hidden>Save a new copy</button></div>
 </main>
-<script src="studio.js"></script>
-<script>rtl.run();</script>
+<footer id="now-playing" class="now-playing" hidden aria-label="Music player">
+  <audio id="source-audio" preload="none" hidden></audio>
+  <div class="player-heading"><strong id="player-title"></strong><button id="source-play" type="button" class="primary"><span id="source-play-label">Play</span></button></div>
+  <input id="source-seek" type="range" min="0" max="0" step="0.01" value="0" aria-label="Position in track">
+  <output id="source-time">0:00 / 0:00</output><p id="source-playback-status" class="hint" role="status"></p><button id="source-reconnect" type="button" hidden>Reconnect</button>
+</footer>
+<dialog id="source-inspector" aria-labelledby="source-title" hidden>
+  <header class="dialog-heading"><div><p class="eyebrow">CHOOSE A CLIP</p><h2 id="source-title" tabindex="-1"></h2></div><button id="source-close" type="button">Done</button></header>
+  <canvas id="source-waveform" width="900" height="180" aria-label="Track waveform. Tap to seek, drag to choose a clip. Time fields are below."></canvas>
+  <p id="source-waveform-state" class="hint" role="status"></p><button id="source-waveform-retry" type="button" hidden>Retry waveform</button>
+  <div class="source-toolbar view-controls" role="group" aria-label="Waveform view">
+    <button id="source-prev" type="button" aria-label="Previous view">‹</button><button id="source-zoom-in" type="button" aria-label="Zoom in">＋</button><button id="source-zoom-out" type="button" aria-label="Zoom out">−</button><button id="source-view-whole" type="button">↔ Whole track</button><button id="source-next" type="button" aria-label="Next view">›</button>
+  </div>
+  <output id="source-window" class="hint"></output>
+  <div class="range-fields"><label>Start <small>min:sec</small><input id="source-start" type="text" inputmode="decimal" value="0:00.000"></label><label>End <small>min:sec</small><input id="source-end" type="text" inputmode="decimal" value="0:30.000"></label></div>
+  <div class="source-toolbar"><button id="source-mark-in" type="button">⇥ Start here</button><button id="source-mark-out" type="button">⇤ End here</button><button id="source-play-range" type="button">▶ Hear clip</button></div>
+  <div class="source-toolbar"><button id="source-use-range" class="primary" type="button">Use this clip</button><button id="source-use-whole" type="button">Use whole track</button></div>
+  <p id="source-notice" class="hint" role="status"></p>
+  <details><summary>More tools</summary>
+    <div class="source-jump"><label for="source-position">Go to <small>min:sec</small></label><input id="source-position" type="text" value="0:00.000" inputmode="decimal"><button id="source-go" type="button">Go</button></div>
+    <div class="source-jump"><label for="source-view-length">View length</label><input id="source-view-length" type="text" value="0:30.000" inputmode="decimal"><button id="source-view-apply" type="button">Apply</button></div>
+    <label for="source-classifications">Clip labels <small>optional, comma separated</small></label><input id="source-classifications" type="text" maxlength="520" placeholder="warm, guitar, intro">
+    <p id="source-preparation-purpose" class="hint"></p><button id="source-prepare" type="button" hidden>Prepare analysis &amp; effects</button><div id="studio-source-prepare"></div>
+    <button id="source-analyze" type="button">Analyze at playhead · Experimental</button><p id="source-analysis-status" class="hint"></p><section id="source-musical-observations"></section>
+    <label for="source-beat-layer">Beat overlay</label><select id="source-beat-layer"><option value="-1">No beat overlay</option></select>
+    <details><summary>Effects</summary><div id="studio-effects"></div></details>
+  </details>
+</dialog>
+<dialog id="capture-panel" aria-label="Add or record music"><header class="dialog-heading"><h2>Add a sound</h2><button type="button" data-close="capture-panel">Done</button></header><div id="studio-capture"></div></dialog>
+<dialog id="folder-dialog" aria-labelledby="folder-title"><header class="dialog-heading"><h2 id="folder-title">Your music folder</h2><button type="button" data-close="folder-dialog">Done</button></header><p>Put WAV files in a folder for each style:</p><code>local-audio/collections/lofi/</code><p class="hint">Or use your configured audio-library folder. Folder names become collections. Your music stays local and outside Git.</p><div id="studio-library-refresh"></div><p class="hint">Refresh reads the track list and metadata. Adding to a playlist does not load the full audio.</p></dialog>
+<dialog id="playlists-dialog" aria-labelledby="playlists-title"><header class="dialog-heading"><h2 id="playlists-title">Your playlists</h2><button type="button" data-close="playlists-dialog">Done</button></header><button id="new-playlist" data-studio-action type="button">＋ New playlist</button><div id="playlist-list" class="playlist-list"></div><p class="hint">Earlier saved projects open as new playlists. Their originals and review history stay saved.</p></dialog>
+<script src="studio.js"></script><script>rtl.run();</script>
 </body>
 </html>

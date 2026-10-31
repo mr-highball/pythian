@@ -34,6 +34,10 @@ uses JS, Web, SysUtils, Math, StrUtils, Types,
   pythian.studio.&library.refresh;
 
 type
+  TStudioDialog = class external name 'HTMLDialogElement' (TJSHTMLElement)
+    procedure showModal;
+    procedure close;
+  end;
   TStudioDocument = class external name 'Document' (TJSDocument)
     procedure removeEventListener(const AType: String; const AListener: JSValue;
       const ACapture: Boolean); reintroduce;
@@ -134,6 +138,7 @@ type
   end;
 
 function StudioIncluded(AObject: TJSObject): Boolean;
+function StudioSourceKey(AObject: TJSObject): String;
 
 function StudioText(AObject: TJSObject; const AName: String): String;
 function StudioNumber(AObject: TJSObject; const AName: String): Double;
@@ -142,6 +147,12 @@ function StudioTime(const ASeconds: Double): String;
 implementation
 
 uses pythian.studio.progress, pythian.studio.observations;
+
+function StudioSourceKey(AObject: TJSObject): String;
+begin
+  Result := StudioText(AObject, 'entry_id');
+  if Result = '' then Result := StudioText(AObject, 'source_sha256');
+end;
 
 function StudioIncluded(AObject: TJSObject): Boolean;
 begin
@@ -321,6 +332,7 @@ begin
   FPlayer.removeAttribute('src');
   FPlayer.load;
   FTrack := nil;
+  El('now-playing').setAttribute('hidden', '');
   FQuickKey := '';
   UpdateQuickPlayback;
   FAnalysis := nil;
@@ -328,6 +340,8 @@ begin
   FBins := nil;
   FEditing := -1;
   El('source-reconnect').setAttribute('hidden', '');
+  if El('source-inspector').hasAttribute('open') then
+    TStudioDialog(El('source-inspector')).close;
   El('source-inspector').setAttribute('hidden', '');
 end;
 
@@ -415,7 +429,7 @@ var
   LIndex: Integer;
   LActive: Boolean;
 begin
-  LNodes := El('tracks').querySelectorAll('[data-preview-key]');
+  LNodes := document.querySelectorAll('[data-preview-key]');
   for LIndex := 0 to LNodes.length - 1 do
   begin
     LNode := TJSElement(LNodes[LIndex]);
@@ -426,7 +440,7 @@ begin
       LNode.textContent := '▶ Play';
     LNode.setAttribute('aria-pressed', LowerCase(BoolToStr(LActive and FPlaying, True)));
   end;
-  LNodes := El('tracks').querySelectorAll('[data-preview-time]');
+  LNodes := document.querySelectorAll('[data-preview-time]');
   for LIndex := 0 to LNodes.length - 1 do
   begin
     LNode := TJSElement(LNodes[LIndex]);
@@ -477,7 +491,7 @@ begin
     begin
       LPrior := TJSObject(FSelections[LIndex]);
       if (LIndex = AIndex) or not StudioIncluded(LPrior) or
-        (StudioText(LPrior, 'source_sha256') <> StudioText(LRow, 'source_sha256')) then Continue;
+        (StudioSourceKey(LPrior) <> StudioSourceKey(LRow)) then Continue;
       if (StudioText(LRow, 'selection') = 'range') and
         (StudioText(LPrior, 'selection') = 'range') and
         (StudioNumber(LRow, 'start_frame') < StudioNumber(LPrior, 'end_frame')) and
@@ -492,227 +506,147 @@ begin
     begin
       LPrior := TJSObject(FSelections[LIndex]);
       if (LIndex <> AIndex) and
-        (StudioText(LPrior, 'source_sha256') = StudioText(LRow, 'source_sha256')) and
-        ((StudioText(LRow, 'selection') = 'full') or (StudioText(LPrior, 'selection') = 'full')) then
+        (StudioSourceKey(LPrior) = StudioSourceKey(LRow)) and
+        (StudioText(LRow, 'selection') <> 'full') and
+        (StudioText(LPrior, 'selection') = 'full') then
         LPrior['included'] := False;
     end;
   end;
   LRow['included'] := AIncluded;
-  El('collection-choice-notice').textContent := 'Training choices changed. Save draft before generating.';
+  El('collection-choice-notice').textContent := 'Selection updated.';
   FChanged;
   DrawTracks;
 end;
 
 procedure TStudioSourceEditor.DrawTracks;
 var
-  LRoot: TJSElement;
-  LShortcuts: TJSElement;
-  LShortcut: TJSElement;
-  LCard: TJSElement;
-  LControls: TJSElement;
-  LRow: TJSElement;
-  LTrack: TJSObject;
-  LSelection: TJSObject;
-  LCollections: TJSArray;
-  LClasses: TJSArray;
-  LNames: TJSArray;
+  LRoot, LCard, LBar, LRow, LText: TJSElement;
+  LTrack, LSelection: TJSObject;
   LFilter: TJSHTMLSelectElement;
-  LOption: TJSElement;
-  LIndex: Integer;
-  LOther: Integer;
-  LPart: Integer;
-  LShown: Integer;
-  LHash: String;
-  LTitle: String;
-  LCollectionText: String;
-  LDurationText: String;
-  LFilterValue: String;
-  LQuery: String;
-  LCaption: String;
-  LMatchesCollection: Boolean;
-  LWhole: Integer;
-  LIncluded: Integer;
+  LNames, LCollections: TJSArray;
+  LKey, LTitle, LTags, LFilterValue, LQuery, LCaption: String;
+  LIndex, LOther, LWhole, LCount, LPass, LShown: Integer;
+  LMatches, LMember, LWholeIncluded: Boolean;
 begin
-  LRoot := El('tracks');
-  LRoot.innerHTML := '';
   LFilter := TJSHTMLSelectElement(El('collection-filter'));
   LFilterValue := LFilter.value;
   LNames := TJSArray.new;
   for LIndex := 0 to FTracks.length - 1 do
   begin
-    LTrack := TJSObject(FTracks[LIndex]);
-    LCollections := TJSArray(LTrack['collections']);
+    LCollections := TJSArray(TJSObject(FTracks[LIndex])['collections']);
     if isArray(LCollections) then
-    begin
       for LOther := 0 to LCollections.length - 1 do
       begin
         LTitle := StudioText(TJSObject(LCollections[LOther]), 'name');
-        if LNames.indexOf(LTitle) < 0 then
-        begin
-          LNames.push(LTitle);
-        end;
+        if LNames.indexOf(LTitle) < 0 then LNames.push(LTitle);
       end;
-    end;
   end;
   LNames.sort;
   LFilter.innerHTML := '';
-  LOption := Add(LFilter, 'option', 'All collections', '');
-  LOption.setAttribute('value', '');
+  LText := Add(LFilter, 'option', 'All music', '');
+  LText.setAttribute('value', '');
   for LIndex := 0 to LNames.length - 1 do
   begin
-    LOption := Add(LFilter, 'option', String(LNames[LIndex]), '');
-    LOption.setAttribute('value', String(LNames[LIndex]));
+    LText := Add(LFilter, 'option', String(LNames[LIndex]), '');
+    LText.setAttribute('value', String(LNames[LIndex]));
   end;
   LFilter.value := LFilterValue;
-  if LFilter.selectedIndex < 0 then
-  begin
-    LFilter.selectedIndex := 0;
-    LFilterValue := '';
-  end;
-  LShortcuts := El('collection-shortcuts');
-  LShortcuts.innerHTML := '';
-  if LNames.length > 0 then
-  begin
-    LShortcut := Button(LShortcuts, 'All recordings', 'collection', '');
-    LShortcut.id := 'collection-choice-all';
-    LShortcut.setAttribute('aria-pressed', LowerCase(BoolToStr(LFilterValue = '', True)));
-    for LIndex := 0 to Min(LNames.length, 8) - 1 do
-    begin
-      LTitle := String(LNames[LIndex]);
-      LShortcut := Button(LShortcuts, LTitle, 'collection', LTitle);
-      LShortcut.id := 'collection-choice-' + IntToStr(LIndex);
-      LShortcut.setAttribute('aria-pressed', LowerCase(BoolToStr(LFilterValue = LTitle, True)));
-    end;
-    if LNames.length > 8 then
-    begin
-      Add(LShortcuts, 'p', 'More collections are available in the selector above.', 'hint');
-    end;
-  end;
+  if LFilter.selectedIndex < 0 then LFilter.value := '';
   LQuery := LowerCase(Trim(Input('track-search').value));
-  LShown := 0;
-  for LIndex := 0 to FTracks.length - 1 do
+  for LPass := 0 to 1 do
   begin
-    LTrack := TJSObject(FTracks[LIndex]);
-    LHash := StudioText(LTrack, 'entry_id');
-    if LHash = '' then
+    LRoot := El('tracks');
+    if LPass = 1 then LRoot := El('playlist-tracks');
+    LRoot.innerHTML := '';
+    LShown := 0;
+    for LIndex := 0 to FTracks.length - 1 do
     begin
-      LHash := StudioText(LTrack, 'source_sha256');
-    end;
-    LTitle := StudioText(LTrack, 'title');
-    LCollectionText := '';
-    LMatchesCollection := LFilterValue = '';
-    LCollections := TJSArray(LTrack['collections']);
-    if isArray(LCollections) then
-    begin
-      for LOther := 0 to LCollections.length - 1 do
-      begin
-        if LCollectionText <> '' then
+      LTrack := TJSObject(FTracks[LIndex]);
+      if StudioText(LTrack, 'partition') = 'evaluation' then Continue;
+      LKey := StudioSourceKey(LTrack);
+      LTitle := StudioText(LTrack, 'title');
+      LTags := '';
+      LMatches := LFilter.value = '';
+      LCollections := TJSArray(LTrack['collections']);
+      if isArray(LCollections) then
+        for LOther := 0 to LCollections.length - 1 do
         begin
-          LCollectionText := LCollectionText + ' · ';
+          LCaption := StudioText(TJSObject(LCollections[LOther]), 'name');
+          if LTags <> '' then LTags := LTags + ' · ';
+          LTags := LTags + LCaption;
+          LMatches := LMatches or (LCaption = LFilter.value);
         end;
-        LCollectionText := LCollectionText + StudioText(TJSObject(LCollections[LOther]), 'name');
-        LMatchesCollection := LMatchesCollection or
-          (StudioText(TJSObject(LCollections[LOther]), 'name') = LFilterValue);
-      end;
-    end;
-    if ((LQuery <> '') and (Pos(LQuery, LowerCase(LTitle + ' ' + LCollectionText)) = 0)) or
-      not LMatchesCollection then
-    begin
-      Continue;
-    end;
-    Inc(LShown);
-    LCard := Add(LRoot, 'article', '', 'track');
-    Add(LCard, 'h3', LTitle, 'track-name');
-    LDurationText := 'Header unavailable';
-    if StudioNumber(LTrack, 'sample_rate') > 0 then
-    begin
-      LDurationText := StudioTime(StudioNumber(LTrack, 'frame_count') /
-        StudioNumber(LTrack, 'sample_rate'));
-    end;
-    Add(LCard, 'p', LDurationText + ' · ' + LCollectionText, 'track-meta');
-    if StudioText(LTrack, 'partition') = 'evaluation' then
-    begin
-      Add(LCard, 'p', 'Reserved evaluation recording', 'hint');
-      Continue;
-    end;
-    if (StudioText(LTrack, 'status') = 'missing') or
-      (StudioText(LTrack, 'status') = 'unsupported') then
-    begin
-      Add(LCard, 'p', 'Original unavailable. Refresh after replacing the file.', 'hint');
-      if StudioText(LTrack, 'source_sha256') = '' then
+      LWhole := -1;
+      LCount := 0;
+      LMember := False;
+      for LOther := 0 to FSelections.length - 1 do
       begin
+        LSelection := TJSObject(FSelections[LOther]);
+        if StudioSourceKey(LSelection) <> LKey then Continue;
+        LMember := True;
+        if StudioText(LSelection, 'selection') = 'full' then LWhole := LOther
+        else if StudioIncluded(LSelection) then Inc(LCount);
+      end;
+      LWholeIncluded := (LWhole >= 0) and StudioIncluded(TJSObject(FSelections[LWhole]));
+      if (LPass = 0) and (not LMatches or ((LQuery <> '') and
+        (Pos(LQuery, LowerCase(LTitle + ' ' + LTags)) = 0))) then Continue;
+      if (LPass = 1) and not LMember then Continue;
+      Inc(LShown);
+      LCard := Add(LRoot, 'article', '', 'track');
+      if LMember then LCard.className := 'track selected';
+      LCard.setAttribute('data-source-key', LKey);
+      LText := Add(LCard, 'div', '', 'track-copy');
+      Add(LText, 'h3', LTitle, 'track-name');
+      if StudioNumber(LTrack, 'sample_rate') > 0 then
+        Add(LText, 'p', StudioTime(StudioNumber(LTrack, 'frame_count') /
+          StudioNumber(LTrack, 'sample_rate')) + ' · ' + LTags, 'track-meta');
+      if (StudioText(LTrack, 'status') = 'missing') or
+        (StudioText(LTrack, 'status') = 'unsupported') then
+      begin
+        Add(LCard, 'p', 'File unavailable. Restore it in your music folder, then refresh.', 'field-error');
+        if LMember then Button(LCard, 'Remove', 'drop', LKey);
         Continue;
       end;
-      LHash := StudioText(LTrack, 'source_sha256');
-    end;
-    LWhole := -1;
-    LIncluded := 0;
-    for LOther := 0 to FSelections.length - 1 do
-    begin
-      LSelection := TJSObject(FSelections[LOther]);
-      if StudioText(LSelection, 'source_sha256') <> StudioText(LTrack, 'source_sha256') then Continue;
-      if StudioText(LSelection, 'selection') = 'full' then LWhole := LOther;
-      if StudioIncluded(LSelection) then Inc(LIncluded);
-    end;
-    if LIncluded > 0 then LCard.className := 'track selected';
-    LCard.setAttribute('data-source-hash', StudioText(LTrack, 'source_sha256'));
-    IncludeControl(LCard, 'Include whole recording', 'whole', LHash,
-      (LWhole >= 0) and StudioIncluded(TJSObject(FSelections[LWhole])));
-    LControls := QuickControls(LCard, LHash, -1);
-    Button(LControls, 'Choose a passage', 'open', LHash);
-    if LIncluded = 0 then
-      Add(LCard, 'p', 'Not included in this project', 'training-state')
-    else if (LWhole >= 0) and StudioIncluded(TJSObject(FSelections[LWhole])) then
-      Add(LCard, 'p', 'Whole recording included · saved passages kept below', 'training-state')
-    else
-      Add(LCard, 'p', IntToStr(LIncluded) + ' passage(s) included · rest of recording excluded', 'training-state');
-    for LOther := 0 to FSelections.length - 1 do
-    begin
-      LSelection := TJSObject(FSelections[LOther]);
-      if StudioText(LSelection, 'source_sha256') <>
-        StudioText(LTrack, 'source_sha256') then
+      LBar := QuickControls(LCard, LKey, -1);
+      if LPass = 0 then
       begin
+        if LMember then Button(LBar, '− Remove', 'drop', LKey)
+        else Button(LBar, '+ Add', 'add', LKey);
         Continue;
       end;
-      if StudioText(LSelection, 'selection') = 'full' then Continue;
-      LRow := Add(LCard, 'div', '', 'selected-passage');
-      if StudioText(LSelection, 'selection') = 'full' then
+      Button(LBar, 'Remove', 'drop', LKey);
+      LRow := Add(LCard, 'div', '', 'extent-choice');
+      IncludeControl(LRow, 'Whole track', 'whole', LKey, LWholeIncluded);
+      Button(LRow, '+ Choose clip', 'open', LKey);
+      if LWholeIncluded then LCaption := 'Selected: whole track'
+      else LCaption := 'Selected: ' + IntToStr(LCount) + ' clip(s)';
+      if not LWholeIncluded and (LCount = 0) then LCaption := 'Choose a clip or select Whole track';
+      Add(LCard, 'p', LCaption, 'training-state');
+      for LOther := 0 to FSelections.length - 1 do
       begin
-        LCaption := 'Whole recording';
-      end
-      else
-      begin
+        LSelection := TJSObject(FSelections[LOther]);
+        if (StudioSourceKey(LSelection) <> LKey) or
+          (StudioText(LSelection, 'selection') = 'full') then Continue;
+        LRow := Add(LCard, 'div', '', 'selected-passage');
         LCaption := StudioTime(StudioNumber(LSelection, 'start_frame') /
-          StudioNumber(LTrack, 'sample_rate')) + '–' +
+          StudioNumber(LTrack, 'sample_rate')) + ' – ' +
           StudioTime(StudioNumber(LSelection, 'end_frame') / StudioNumber(LTrack, 'sample_rate'));
+        IncludeControl(LRow, LCaption, 'include', IntToStr(LOther),
+          not LWholeIncluded and StudioIncluded(LSelection));
+        LBar := QuickControls(LRow, LKey, LOther);
+        Button(LBar, 'Edit', 'edit', IntToStr(LOther));
+        Button(LBar, 'Delete', 'remove', IntToStr(LOther));
       end;
-      LClasses := TJSArray(LSelection['classifications']);
-      if isArray(LClasses) then
-      begin
-        for LPart := 0 to LClasses.length - 1 do
-        begin
-          LCaption := LCaption + ' · ' + String(LClasses[LPart]);
-        end;
-      end;
-      IncludeControl(LRow, 'Include passage ' + LCaption, 'include', IntToStr(LOther),
-        StudioIncluded(LSelection));
-      LControls := QuickControls(LRow, StudioText(LSelection, 'source_sha256'), LOther);
-      Button(LControls, 'Edit passage', 'edit', IntToStr(LOther));
-      Button(LControls, 'Delete passage', 'remove', IntToStr(LOther));
+    end;
+    if LShown = 0 then
+    begin
+      LCaption := 'No music here yet. Add a WAV file or record something.';
+      if LPass = 1 then LCaption := 'Your playlist is empty. Add music from Library.';
+      Add(LRoot, 'p', LCaption, 'empty-state');
     end;
   end;
   UpdateQuickPlayback;
-  if LShown = 0 then
-  begin
-    El('tracks-empty').textContent := 'No matching recordings. Add WAV files to your private collection folder, then refresh the library.';
-    El('tracks-empty').removeAttribute('hidden');
-  end
-  else
-  begin
-    El('tracks-empty').setAttribute('hidden', '');
-  end;
 end;
-
 procedure TStudioSourceEditor.OpenTrack(const AHash: String; const ASelection: Integer;
   const AReveal: Boolean);
 var
@@ -734,7 +668,7 @@ begin
   begin
     Exit;
   end;
-  if (ASelection >= 0) or
+  if ((ASelection >= 0) and (StudioText(TJSObject(FSelections[ASelection]), 'entry_id') = '')) or
     ((AHash = StudioText(FTrack, 'source_sha256')) and
     ((StudioText(FTrack, 'status') = 'missing') or
     (StudioText(FTrack, 'status') = 'unsupported'))) then
@@ -751,9 +685,11 @@ begin
   FViewSeconds := 30;
   El('source-inspector').removeAttribute('hidden');
   El('source-title').textContent := StudioText(FTrack, 'title');
+  El('now-playing').removeAttribute('hidden');
+  El('player-title').textContent := StudioText(FTrack, 'title');
   if AReveal then
   begin
-    RevealWorkspaceControl(El('source-title'));
+    TStudioDialog(El('source-inspector')).showModal;
     TJSHTMLElement(El('source-title')).focus;
   end;
   Input('source-seek').max := FloatToStr(StudioNumber(FTrack, 'frame_count') /
@@ -790,11 +726,11 @@ begin
   end;
   if FEditing < 0 then
   begin
-    El('source-use-range').textContent := 'Save passage & include';
+    El('source-use-range').textContent := 'Use this clip';
   end
   else
   begin
-    El('source-use-range').textContent := 'Save passage changes';
+    El('source-use-range').textContent := 'Save clip';
   end;
   WindowAt(FPosition);
   if AReveal then TJSHTMLElement(El('source-title')).focus;
@@ -1068,7 +1004,7 @@ begin
         StudioTime(StudioNumber(FAnalysis, 'end_frame') /
           StudioNumber(FAnalysis, 'sample_rate'));
       LProposal := TJSObject(FAnalysis['beat_proposal']);
-      DrawMusicalObservations(El('source-musical-observations'), FAnalysis, LJobId);
+      DrawMusicalObservations(El('source-musical-observations'), FAnalysis);
       El('source-beat-layer').innerHTML := '';
       LOption := Add(El('source-beat-layer'), 'option', 'No beat overlay', '');
       LOption.setAttribute('value', '-1');
@@ -1195,7 +1131,7 @@ begin
   begin
     FEditing := -1;
     for LIndex := 0 to FSelections.length - 1 do
-      if (StudioText(TJSObject(FSelections[LIndex]), 'source_sha256') = StudioText(FTrack, 'source_sha256')) and
+      if (StudioSourceKey(TJSObject(FSelections[LIndex])) = StudioSourceKey(FTrack)) and
         (StudioText(TJSObject(FSelections[LIndex]), 'selection') = 'full') then FEditing := LIndex;
     LStart := 0;
     LEnd := StudioNumber(FTrack, 'frame_count');
@@ -1216,7 +1152,7 @@ begin
     if not AWhole and (StudioText(LPrior, 'selection') <> 'full') and
       StudioIncluded(LPrior) and ((FEditing < 0) or StudioIncluded(TJSObject(FSelections[FEditing]))) and
       (LIndex <> FEditing) and
-      (StudioText(LPrior, 'source_sha256') = StudioText(FTrack, 'source_sha256')) and
+      (StudioSourceKey(LPrior) = StudioSourceKey(FTrack)) and
       (LStart < StudioNumber(LPrior, 'end_frame')) and
       (LEnd > StudioNumber(LPrior, 'start_frame')) then
     begin
@@ -1255,19 +1191,24 @@ begin
   LRow['range_invalid'] := False;
   LRow['included'] := AWhole or (FEditing < 0) or StudioIncluded(TJSObject(FSelections[FEditing]));
   LRow['classifications'] := LClasses;
-  if (StudioText(FTrack, 'entry_id') <> '') and
-    (StudioText(FTrack, 'prepared_snapshot') <>
-      StudioText(FTrack, 'entry_snapshot_sha256')) then
-  begin
-    PrepareRecording(LRow, False);
-    Exit;
-  end;
+  LRow['entry_id'] := StudioText(FTrack, 'entry_id');
+  LRow['entry_snapshot_sha256'] := StudioText(FTrack, 'entry_snapshot_sha256');
+  LRow['discovery_revision'] := StudioNumber(FTrack, 'discovery_revision');
+  LRow['metadata_sha256'] := StudioText(FTrack, 'metadata_sha256');
+  LRow['title'] := StudioText(FTrack, 'title');
+  LRow['sample_rate'] := StudioNumber(FTrack, 'sample_rate');
+  LRow['frame_count'] := StudioNumber(FTrack, 'frame_count');
+  LRow['influence'] := 1;
+  if AWhole and (FEditing >= 0) then
+    LRow['influence'] := Max(1, StudioNumber(TJSObject(FSelections[FEditing]), 'influence'));
   ApplySelection(LRow, FEditing);
 end;
 
 procedure TStudioSourceEditor.ApplySelection(ARow: TJSObject; const AEditing: Integer);
 var
   LIndex: Integer;
+  LCount: Integer;
+  LLimit: Integer;
   LPrior: TJSObject;
 begin
   for LIndex := 0 to FSelections.length - 1 do
@@ -1276,7 +1217,7 @@ begin
     if StudioIncluded(ARow) and StudioIncluded(LPrior) and
       (StudioText(LPrior, 'selection') <> 'full') and (StudioText(ARow, 'selection') <> 'full') and
       (LIndex <> AEditing) and
-      (StudioText(LPrior, 'source_sha256') = StudioText(ARow, 'source_sha256')) and
+      (StudioSourceKey(LPrior) = StudioSourceKey(ARow)) and
       (StudioNumber(ARow, 'start_frame') < StudioNumber(LPrior, 'end_frame')) and
       (StudioNumber(ARow, 'end_frame') > StudioNumber(LPrior, 'start_frame')) then
     begin
@@ -1295,9 +1236,15 @@ begin
   end
   else
   begin
-    if FSelections.length >= 64 then
+    LCount := 0;
+    LLimit := 64;
+    if StudioText(ARow, 'selection') = 'full' then LLimit := 32;
+    for LIndex := 0 to FSelections.length - 1 do
+      if StudioText(TJSObject(FSelections[LIndex]), 'selection') = StudioText(ARow, 'selection') then
+        Inc(LCount);
+    if LCount >= LLimit then
     begin
-      Notice('This corpus already has 64 selections.', True);
+      El('connection-state').textContent := 'A playlist supports up to 32 tracks and 64 saved clips.';
       Exit;
     end;
     FSelections.push(ARow);
@@ -1308,17 +1255,20 @@ begin
     begin
       LPrior := TJSObject(FSelections[LIndex]);
       if (LPrior <> ARow) and
-        (StudioText(LPrior, 'source_sha256') = StudioText(ARow, 'source_sha256')) and
-        ((StudioText(LPrior, 'selection') = 'full') or (StudioText(ARow, 'selection') = 'full')) then
+        (StudioSourceKey(LPrior) = StudioSourceKey(ARow)) and
+        (StudioText(ARow, 'selection') <> 'full') and
+        (StudioText(LPrior, 'selection') = 'full') then
         LPrior['included'] := False;
     end;
   end;
   FEditing := -1;
-  El('source-use-range').textContent := 'Add another passage';
+  El('source-use-range').textContent := 'Use this clip';
   FChanged;
   DrawTracks;
-  Notice('Selection kept. Check what is included in Collection, then Save draft.');
-  El('collection-choice-notice').textContent := 'Selection kept. Save draft to keep these project choices.';
+  Notice('Clip saved.');
+  El('collection-choice-notice').textContent := 'Selection updated.';
+  if El('source-inspector').hasAttribute('open') then
+    TStudioDialog(El('source-inspector')).close;
 end;
 
 procedure TStudioSourceEditor.PrepareRecording(ASelection: TJSObject;
@@ -1800,6 +1750,7 @@ end;
 function TStudioSourceEditor.Click(AEvent: TJSMouseEvent): Boolean;
 var
   LButton: TJSElement;
+  LSelection: TJSObject;
   LAction: String;
   LValue: String;
   LIndex: Integer;
@@ -1826,6 +1777,34 @@ begin
         Exit;
       end;
     'preview': QuickPlay(LValue, StrToInt(LButton.getAttribute('data-selection')));
+    'add':
+      begin
+        for LIndex := 0 to FTracks.length - 1 do
+          if StudioSourceKey(TJSObject(FTracks[LIndex])) = LValue then
+          begin
+            LSelection := TJSObject(TJSJSON.parse(TJSJSON.stringify(FTracks[LIndex])));
+            LSelection['selection'] := 'full';
+            LSelection['included'] := True;
+            LSelection['start_frame'] := 0;
+            LSelection['end_frame'] := StudioNumber(LSelection, 'frame_count');
+            LSelection['influence'] := 1;
+            LSelection['classifications'] := TJSArray.new;
+            ApplySelection(LSelection, -1);
+            Break;
+          end;
+      end;
+    'drop':
+      begin
+        LIndex := FSelections.length - 1;
+        while LIndex >= 0 do
+        begin
+          if StudioSourceKey(TJSObject(FSelections[LIndex])) = LValue then
+            FSelections.splice(LIndex, 1);
+          Dec(LIndex);
+        end;
+        FChanged;
+        DrawTracks;
+      end;
     'include': SetIncluded(StrToInt(LValue), TJSHTMLInputElement(LButton).checked);
     'whole':
       begin
@@ -1833,8 +1812,7 @@ begin
         while LIndex < FSelections.length do
         begin
           if (StudioText(TJSObject(FSelections[LIndex]), 'selection') = 'full') and
-            (StudioText(TJSObject(FSelections[LIndex]), 'source_sha256') =
-              LButton.closest('article').getAttribute('data-source-hash')) then Break;
+            (StudioSourceKey(TJSObject(FSelections[LIndex])) = LValue) then Break;
           Inc(LIndex);
         end;
         if LIndex < FSelections.length then
@@ -1850,7 +1828,7 @@ begin
     'edit':
       begin
         LIndex := StrToInt(LValue);
-        OpenTrack(StudioText(TJSObject(FSelections[LIndex]), 'source_sha256'), LIndex);
+        OpenTrack(StudioSourceKey(TJSObject(FSelections[LIndex])), LIndex);
       end;
     'remove':
       begin
@@ -1871,7 +1849,6 @@ begin
     'source-close':
       begin
         Reset;
-        SelectWorkspacePane('library-step', True);
       end;
     'source-analyze': Analyze;
     'source-prepare':

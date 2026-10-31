@@ -105,6 +105,7 @@ type
     destructor Destroy; override;
     procedure OpenRecorder;
     procedure OpenImporter;
+    procedure CloseEntry;
     procedure Refresh; async;
   end;
 
@@ -168,7 +169,6 @@ var
   LCanvas: TJSHTMLCanvasElement;
 begin
   LRoot := El('studio-capture');
-  Add(LRoot, 'h2', 'Import or record audio');
   LRow := Add(LRoot, 'div', '');
   LRow.className := 'source-toolbar';
   LControl := Input(LRow, 'capture-file', 'WAV file', '');
@@ -206,6 +206,16 @@ begin
   LControl.setAttribute('aria-live', 'polite');
   LControl.setAttribute('tabindex', '-1');
   LRow := Add(LRoot, 'div', '');
+  LRow.className := 'range-fields';
+  LControl := Input(LRow, 'capture-collection', 'Collection', 'Imported audio');
+  LControl.setAttribute('maxlength', '96');
+  LControl := Input(LRow, 'capture-title', 'Track name', '');
+  LControl.setAttribute('maxlength', '128');
+  Button(LRoot, 'Add to library', 'save');
+  LDetails := Add(LRoot, 'details', '');
+  Add(LDetails, 'summary', 'Earlier inputs & analysis');
+  LRoot := LDetails;
+  LRow := Add(LRoot, 'div', '');
   LRow.className := 'source-toolbar';
   LLabel := Add(LRow, 'label', 'Your inputs');
   LControl := Add(LLabel, 'select', '');
@@ -220,6 +230,7 @@ begin
   FOriginal.setAttribute('aria-label', 'Original input audio');
   FOriginal.setAttribute('hidden', '');
   FOriginal.addEventListener('play', @Playing);
+  El('studio-capture').appendChild(FOriginal);
   LCanvas := TJSHTMLCanvasElement(Add(LRoot, 'canvas', ''));
   LCanvas.id := 'capture-waveform';
   LCanvas.width := 600;
@@ -282,16 +293,10 @@ begin
   LRow.className := 'source-toolbar';
   Button(LRow, 'Check job status', 'status');
   Button(LRow, 'Retry same submission', 'confirm');
-  Button(LRow, 'Cancel job', 'cancel');
+  Button(El('studio-capture'), 'Cancel', 'cancel');
   LControl := Add(LRoot, 'div', '');
   LControl.id := 'capture-job';
-  LRow := Add(LRoot, 'div', '');
-  LRow.className := 'range-fields';
-  LControl := Input(LRow, 'capture-collection', 'Collection', 'Imported audio');
-  LControl.setAttribute('maxlength', '96');
-  LControl := Input(LRow, 'capture-title', 'Clip title', '');
-  LControl.setAttribute('maxlength', '128');
-  Button(LRoot, 'Save to collection', 'save');
+  El('studio-capture').appendChild(LControl);
   LDetails := Add(LRoot, 'details', '');
   LDetails.className := 'advanced';
   Add(LDetails, 'summary', 'Input details');
@@ -347,6 +352,7 @@ begin
     else if LAction = 'upload' then
     begin
       LButton.disabled := LButton.disabled or (FBlob = nil);
+      LVisible := (FBlob <> nil) and not FComplete and not FBusy;
     end
     else if LAction = 'cancel-microphone' then
     begin
@@ -482,6 +488,19 @@ begin
     end;
   end;
   TJSHTMLElement(El('capture-notice')).focus;
+end;
+
+procedure TStudioCapture.CloseEntry;
+begin
+  if FRecording then StopRecording;
+  if FWaiting then
+  begin
+    Inc(FEpoch);
+    CloseMicrophone;
+    FBusy := False;
+  end;
+  ClearPlayers;
+  Controls;
 end;
 
 procedure TStudioCapture.OpenRecorder;
@@ -838,8 +857,9 @@ begin
   FLocalUrl := TJSURL.createObjectURL(FBlob);
   FOriginal.src := FLocalUrl;
   FOriginal.removeAttribute('hidden');
-  Notice('Recording ready. Listen locally, then upload it for inspection or saving.');
+  Notice('Recording ready. Adding your audio…');
   Controls;
+  Upload;
 end;
 
 procedure TStudioCapture.Upload; async;
@@ -912,7 +932,7 @@ begin
       Notice('Uploading · ' + IntToStr(LOffset) + ' / ' + IntToStr(FBlob.size) + ' bytes');
     end;
     FComplete := True;
-    Notice('Upload complete. Press Analyze audio to listen and explore it.');
+    Notice('Upload complete. Reading audio details…');
   except
     on LException: Exception do
     begin
@@ -927,7 +947,7 @@ begin
   begin
     FBusy := False;
     Controls;
-    Refresh;
+    if FComplete then Enqueue('capture_inspect') else Refresh;
   end;
 end;
 
@@ -1293,10 +1313,8 @@ begin
       ' · ' + IntToStr(Trunc(StudioNumber(LResult, 'sample_rate'))) + ' Hz · ' +
       IntToStr(Trunc(StudioNumber(LResult, 'channels'))) + ' channel(s) · peak ' +
       FormatFloat('0.00', StudioNumber(LResult, 'peak'));
-    DrawMusicalObservations(El('capture-musical-observations'), LResult, LId);
-    Notice('Analysis complete. Showing the first ' +
-      StudioTime((StudioNumber(LResult, 'end_frame') - StudioNumber(LResult, 'start_frame')) /
-      StudioNumber(LResult, 'sample_rate')) + '.');
+    DrawMusicalObservations(El('capture-musical-observations'), LResult);
+    Notice('Ready. Choose a collection and press Add to library.');
   end
   else if LKind = 'capture_pitch' then
   begin
@@ -1596,8 +1614,9 @@ begin
   FStart['bytes'] := LFile.size;
   FStart['origin'] := 'wav_import';
   TJSHTMLInputElement(El('capture-title')).value := Copy(LFile.name, 1, 128);
-  Notice('WAV selected. Press Upload WAV to continue.');
+  Notice('Adding your audio…');
   Controls;
+  Upload;
 end;
 
 function TStudioCapture.InputChanged(AEvent: TEventListenerEvent): Boolean;

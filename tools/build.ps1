@@ -153,7 +153,7 @@ try {
   $studioMaterialRoot = Join-Path $buildRoot ('studio-material-' + [Guid]::NewGuid().ToString('N'))
   & (Join-Path $buildRoot "pythian.tests.studio.material$executableSuffix") $studioMaterialRoot
   if ($LASTEXITCODE -ne 0) { throw 'Studio musical-choice storage and Unicode identity checks failed' }
-  foreach ($studioComponent in @('library', 'library.discovery', 'jobs', 'progress', 'effects', 'capture')) {
+  foreach ($studioComponent in @('playlist', 'library', 'library.discovery', 'jobs', 'progress', 'effects', 'capture')) {
     & $compilerPath @compilerArgs '-gh' '-Futools' "tests/pythian.tests.studio.$studioComponent.lpr"
     if ($LASTEXITCODE -ne 0) { throw "Studio $studioComponent compilation failed" }
     $studioFixtureRoot = Join-Path $buildRoot ("studio-$studioComponent-" + [Guid]::NewGuid().ToString('N'))

@@ -47,6 +47,11 @@ $htmlPath = Join-Path $repository "tools/label-workbench/$testHtml"
 if ($Suite -eq 'live-policy') {
   $htmlPath = Join-Path $output 'fixture.html'
   [IO.File]::WriteAllText($htmlPath, '<!doctype html><body><div id="studio-live"></div></body>')
+} elseif ($Suite -eq 'recovery' -or $Suite -eq 'references') {
+  # Retained component checks have their own host. Do not keep obsolete
+  # workflow mounts hidden in the replacement product UI for these tests.
+  $htmlPath = Join-Path $output 'fixture.html'
+  [IO.File]::WriteAllText($htmlPath, '<!doctype html><body><details id="generation-source-summary"><summary>Sources</summary></details><button id="generation-help">Generation help</button><button id="long-generation-help">Playback help</button><div id="studio-batches"></div><div id="studio-reviews"></div></body>')
 }
 & $Compiler @testDefines '-B' '-Tbrowser' '-Mdelphi' '-Jc' "-Ji$RtlJavascript" "-Fu$RtlSource" `
   "-Fu$(Join-Path $repository 'src')" "-Fu$(Join-Path $repository 'tools/label-workbench')" `

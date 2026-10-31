@@ -260,6 +260,7 @@ var
   LResult: TJSONObject;
   LTrack: TJSONObject;
   LStream: TFileStream;
+  LUnrelated: TFileStream;
   LOffset: Integer;
   LCount: Integer;
   LFailed: Boolean;
@@ -434,9 +435,18 @@ begin
       end;
       LProbe := TImportProbe.Create;
       try
-        LResult := SaveStudioCapture(GCatalog, 'save-upload', GRoot + '/library',
-          LSave, nil, LProbe.Observe);
-        Check(LProbe.SawRefresh, 'Capture forwards shared progress through final library refresh');
+        Check(ForceDirectories(GRoot + '/library/collections/unrelated'), 'Create unrelated collection');
+        LUnrelated := TFileStream.Create(GRoot + '/library/collections/unrelated/keep-private.wav',
+          fmCreate or fmShareExclusive);
+        try
+          LUnrelated.WriteBuffer(LBytes[1], Length(LBytes));
+          LResult := SaveStudioCapture(GCatalog, 'save-upload', GRoot + '/library',
+            LSave, nil, LProbe.Observe);
+          Check(LProbe.SawRefresh, 'Capture forwards shared progress through selected-file preparation');
+          Check(LUnrelated.Size = Length(LBytes), 'Saving succeeds with an unrelated original locked');
+        finally
+          LUnrelated.Free;
+        end;
       finally
         LProbe.Free;
       end;

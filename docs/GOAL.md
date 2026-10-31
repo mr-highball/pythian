@@ -6,6 +6,19 @@ The operator's 2026-10-29 direction supersedes the previous benchmark-first deli
 
 ## What we are building
 
+The operator's 2026-10-30 priority replaces the main Studio workflow with
+**Library → Selection → Generate**. Browse a private local music folder by
+track/style metadata, import WAVs or record, and build a playlist. Choose whole
+tracks or clips, then set output length and optional per-track learning influence.
+Generate must automatically learn from the actual selected music and perform
+instrumental output. No project setup, manual proposal approval or model editor
+is a required step. Advanced graph/instrument work remains a library capability
+and optional exploration, not a gate in this basic flow. The
+[replacement task](TODO/NS-6_simple-studio_01.md) and
+[weighted corpus learning](TODO/NS-3_style-vocabulary_01.md) take priority over
+full-plan archival and deeper graph controls. A new visual shell alone is not
+completion.
+
 - **Real instrumental output.** Generated musical events drive Pythian oscillators/noise, wavetable, additive/FM/PM and layered instrument recipes, envelopes, modulation, filters, buses and effects. Source recordings teach or provide comparison context. A deliberately selected sampler instrument is explicit; assembling windows from a full training mix is not the primary output path.
 - **The breadth of the musical graph.** Time is the primary horizontal axis; bass, percussion, harmony, lead and other roles are visible lanes. Context, pitch/register, rhythm/groove, expression, musical affect, sound and structure have explicit dependencies, domains and editable controls. Inspect actual dimensions, passes, vocabularies and constraints. Change the model layout or add a useful dimension/pass when listening exposes a need; do not fix a giant arbitrary grid in advance.
 - **Studio as the experimental laboratory.** Choose musical material and instruments, generate, inspect the score/graph, hear the full mix or individual parts, change one or several dimensions, retain useful parts and regenerate the rest. Compare Original reference and synthesized Before/After, save optional notes and prepare the next deliberate experiment. Tabs, contextual help, touch-friendly tools and obvious next actions are core requirements.
