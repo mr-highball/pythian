@@ -197,6 +197,47 @@ silently relaxing constraints. The maintained fixture checks real graph/note
 controls, deterministic replay, exact changing-tempo timing, release tails,
 borrowed callback cancellation and preservation of a previously accepted plan.
 
+## Retain and replay a performed timeline
+
+Ordinary playlist generation retains actual musical decisions in a sequential
+content-addressed journal in the configured generated-artifact store. The owning
+job's completed receipt binds its whole-file hash/size, exact music-frame/cell
+extent, model/settings/seed and source-learning lineage. Failed or cancelled
+stages have no completed decision receipt. Older jobs without a journal cannot
+acquire their missing decisions by relabelling a fresh solve as retention.
+
+Primary [pythian.music.decisions](../src/pythian.music.decisions.pas) contains the
+portable chunk/codec and sequential reader/writer. Each chunk retains exact
+cell/frame offsets, frame lengths, predecessor and source-free chord actions,
+pitches and velocities, plus real named provider tokens and latent states. The
+actual WFC stream supplies context, harmony/rhythm, pitched parts and percussion.
+These observations are bound to the job's models; they are not authorization to
+inject arbitrary latent states into a graph. Coverage proof passes are not extra
+musical providers. Continue to use accepted-session validation for graph restoration.
+
+The format is version1: a little-endian record length, bounded payload and its
+SHA256. Limits are256cells,12parts,16providers,128tones per part and2MiB encoded
+bytes per chunk. Keys use256canonical UTF-8 bytes; tokens32768. Frame counters
+use the primary exact timing contract (native Int64; pas2js through2^53−1).
+Reader/writer boundaries check continuous cell/frame clocks, identical provider
+order and the exact predecessor chord. Truncation, invalid holds, corrupt hashes,
+oversized counts and mismatched clocks reject. Reads, serialization and readiness
+support the shared progress callback. Partial I/O/cancellation poisons its reader
+or writer rather than silently resuming after consumed bytes.
+
+Primary [pythian.music.replay](../src/pythian.music.replay.pas) consumes one bounded
+chunk at a time through the existing TInstrumentMusicStream. It has no WFC/model/
+learning import. Caller-provided instrument/bus bindings can change sound while
+retaining the exact score; the primary scheduler preserves holds, effects and
+fractional clock history. Verify the complete journal against its owning receipt
+before replay. The native OpenStudioDecisionJournal adapter performs that bounded
+hash/size check; primary per-record checks remain active during consumption.
+
+Journal storage grows with duration and is additional to the WAV disk estimate;
+working memory remains bounded. Native partial files preserve failure evidence.
+This is the replay prerequisite for [selective Studio follow-ups](TODO/NS-4_graph-controls_01.md),
+not an implemented sound-edit button, graph regeneration or musical-quality claim.
+
 ## Experimental coarse musical providers
 
 The portable [musical proposal](../src/pythian.music.proposal.pas) consumes the

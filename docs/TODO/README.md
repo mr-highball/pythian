@@ -3,7 +3,7 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**6 open tasks · 119 total effort units · 16 current-goal DONE · 79 / 119 accepted (66.39%).**
+**6 open tasks · 124 total effort units · 17 current-goal DONE · 84 / 124 accepted (67.74%).**
 Effort is relative complexity on a 1–10 scale, not assigned musical credit.
 The operator's [Library → Selection → Generate](DONE/NS-6_simple-studio_01.md)
 flow and [coarse corpus learning](DONE/NS-3_style-vocabulary_01.md) are accepted.
@@ -17,6 +17,10 @@ actual pas2js and desktop/phone consumers pass, including save/reopen and a job
 finishing after its tab closes. Duration plans span2seconds–24hours with estimates;
 actual24hour rendering and musical preference are not claimed. No more operator
 labeling is required to continue implementation.
+The accepted [decision-replay prerequisite](DONE/NS-4_decision-replay_01.md) now
+retains actual streamed notes/provider states and replays mix/stems exactly
+without learning or solving. New ordinary generations save these decisions;
+sound-only follow-up controls and scoped graph changes remain open.
 Next follow the actual prerequisites of NS-5: finish musical controls/selective
 regeneration and reusable sound recipes, then evolving form and saved styles/
 blends. Graph inspection and useful synthesis reviews retain their own tasks.
@@ -68,6 +72,7 @@ continuity experiments are selected.
 | [NS-2_sound-design_01](NS-2_sound-design_01.md) — reusable instrument/effects recipes | 6 | Runtime + instrumental Studio |
 | [NS-4_graph-workbench_01](NS-4_graph-workbench_01.md) — inspect and edit actual graph | 7 | Instrumental Studio |
 | [NS-4_graph-controls_01](NS-4_graph-controls_01.md) — dimensions, affect and selective regeneration | 7 | Runtime + accepted assignment restoration |
+| [NS-4_decision-replay_01 — DONE](DONE/NS-4_decision-replay_01.md) — retain/replay actual streamed music without solving | 5 | Accepted; actual native/pas2js decisions and native saved mix/stem replay |
 | [NS-4_assignment-restore_01 — DONE](DONE/NS-4_assignment-restore_01.md) — preserve accepted assignment ownership across jobs | 3 | Accepted; actual named-voice/layer restored state, controls and authorized regeneration |
 | [NS-4_joint-context_01 — DONE](DONE/NS-4_joint-context_01.md) — retain harmony/rhythm coupling | 4 | Accepted; actual paired context and conditional six-part motif generation |
 | [NS-4_motif-coupling_01 — DONE](DONE/NS-4_motif-coupling_01.md) — preserve selected pitch/context relationships | 5 | Accepted; actual selected-role context, repaired melody and role/correction variants |
@@ -83,9 +88,9 @@ continuity experiments are selected.
 | [NS-4_context-continuation_01 — DONE](DONE/NS-4_context-continuation_01.md) — supported learned contexts across long output | 6 | Accepted; original failed provider/seed continues through14400cells and actual hour render |
 | [NS-6_instrumental-streams_01 — DONE](DONE/NS-6_instrumental-streams_01.md) — efficient long instrumental jobs | 8 | Accepted; one performance/seven outputs, duration estimates, actual browser long playback/reconnect/Stop |
 
-The two tables together are all 22 current-goal tasks (6 open, sixteen DONE),
-totaling 119 units: 40 open and 79 accepted. Subtotals:
-NS-2 12, NS-3 15, NS-4 39, NS-5 15, NS-6 38. NS-1 remains a preserved core
+The two tables together are all 23 current-goal tasks (6 open, seventeen DONE),
+totaling 124 units: 40 open and 84 accepted. Subtotals:
+NS-2 12, NS-3 15, NS-4 44, NS-5 15, NS-6 38. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 
 The first milestone owns priority, not convenience. Later tasks have explicit

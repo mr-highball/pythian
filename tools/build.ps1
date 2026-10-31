@@ -45,6 +45,11 @@ Write-Output "Compiler: $compilerPath ($compilerVersion $compilerCpu-$compilerOs
 Push-Location $projectRoot
 try {
   $compilerArgs = @('-B', '-Sa', '-Cr', '-Co', '-Ci', '-gl', '-Fusrc', "-FU$unitRoot", "-FE$buildRoot")
+  & $compilerPath @compilerArgs '-gh' 'tests/pythian.tests.music.decisions.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Musical decision codec compilation failed' }
+  $decisionSuffix = if ($compilerOs -in @('win32', 'win64')) { '.exe' } else { '' }
+  & (Join-Path $buildRoot "pythian.tests.music.decisions$decisionSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Musical decision codec checks failed' }
   & $compilerPath @compilerArgs '-gh' 'tests/pythian.tests.music.selection.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Musical classification selection compilation failed' }
   $selectionSuffix = if ($compilerOs -in @('win32', 'win64')) { '.exe' } else { '' }
@@ -870,6 +875,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental stream compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental.stream$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental stream checks failed' }
+    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.decisions.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Instrumental decision replay compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.instrumental.decisions$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Instrumental decision replay checks failed' }
     & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.controls.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental controls compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental.controls$executableSuffix")

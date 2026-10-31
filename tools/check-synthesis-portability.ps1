@@ -51,11 +51,11 @@ $units = Join-Path $output 'units'
 New-Item -ItemType Directory -Force -Path $units | Out-Null
 $fixtures = @('pythian.tests.render.progress', 'pythian.tests.synthesis.portable',
   'pythian.tests.time.portable', 'pythian.tests.music.stream')
-if ($IncludeWfc) { $fixtures += 'pythian.tests.instrumental.stream' }
+if ($IncludeWfc) { $fixtures += @('pythian.tests.instrumental.stream', 'pythian.tests.instrumental.decisions') }
 foreach ($program in $fixtures) {
   $source = Join-Path $repository "tests/$program.lpr"
   $fixtureArguments = @()
-  if ($program -eq 'pythian.tests.instrumental.stream') {
+  if ($program -in @('pythian.tests.instrumental.stream', 'pythian.tests.instrumental.decisions')) {
     $fixtureArguments = @("-Fu$(Join-Path $repository 'adapters/wfc')",
       "-Fu$(Join-Path $repository 'vendor/wfc/src')")
   }

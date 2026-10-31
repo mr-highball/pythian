@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 8/10
-**Status:** DONE — accepted 2026-10-31
+**Status:** Accepted — 2026-10-31
 **Owner:** Big Boss (single agent)
 
 **Description:**

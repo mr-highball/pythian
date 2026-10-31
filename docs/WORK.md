@@ -2,7 +2,90 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
-## Current handoff: coarse learning and simple Studio accepted — 2026-10-31
+## Current handoff: actual streamed decisions retained and replayed — 2026-10-31
+
+Big Boss SOLO accepts [decision replay](TODO/DONE/NS-4_decision-replay_01.md).
+**84/124 effort accepted (67.74%), six open, seventeen current DONE,40 open units**.
+The new five-unit prerequisite grew the denominator; no historical/partial effort
+was credited. All23 current tasks total124;97 historical records remain separate.
+The batch closes its actual criteria; consecutive nonclosing count remains zero.
+The overall goal stays active. Next work is the graph-controls Studio follow-up,
+not another codec/observability/continuation batch without a concrete blocker.
+
+Ordinary playlist streams now retain their real context/H/R/pitched/percussion
+token/latent-state decisions and the performed source-free chord timeline. Exact
+cell/frame clocks include continued holds and the partial final interval. One
+primary projection feeds both recording and admission; its duplicate loop is
+removed. Primary music.decisions owns bounded checksummed chunks/sequential
+journals; primary music.replay reuses the existing instrument/scheduler/bus stream
+without WFC, models or learning. One chunk plus active synthesis state stays in
+memory. Data grows on disk inside the configured generated-artifact store on E.
+An immutable completed receipt binds bytes/hash, cell/music-frame counts and the
+owning job/settings/model/source lineage. Partial stages have no accepted receipt.
+
+Final native/actual pas2js decision codec35 and instrumental replay387 pass. The
+canonical supplementary-Unicode payload hash matches. Saved latent indices map
+to actual provider tokens. Exact replay preserves mix and all six parts across
+different pull sizes; changing bass sound changes bass/master while five other
+parts stay exact and the saved graph/score bytes remain unchanged. Invalid
+holds/clocks/counts, corrupt/truncated data, cancelled publication, reentry,
+partial I/O and wrong replay extents reject. Native heaps are clean. The existing
+native instrumental-stream4043522 checks pass, including bounded long admission.
+
+Actual native playlist/worker215 passes with clean heap. Its ordinary job saves
+the journal, opens/hashes the saved file, then reproduces the mix and all six
+stem WAV hashes exactly through the model-free primary replayer. Partial receipt
+and changed byte count reject. Duplicate publication verifies/reuses identical
+flushed content; failed or reentrant finalization cannot present success.
+The native service/worker build passes. The
+existing desktop/phone UI is unchanged in this batch; no new follow-up control,
+operator quality verdict, full hour/24hour journal render or physical microphone
+qualification is claimed. Evidence: decision-replay-20261031-boss under dedicated
+E-drive build/cache/tests/runs. There were no QA browser tabs/audio for this
+native/library-only batch and no operator feedback was submitted.
+
+Preserve initial duplicate chord import and test missing pitch-kind/bus imports.
+The default unqualified authored fixture genuinely fails at the first graph
+segment; no seed sweep or solver relaxation is introduced. Replay uses the
+existing explicit authored motif fixture. The first overflow test incorrectly
+applied JS's2^53 counter bound to native Int64; it now checks the target's primary
+timing contract. An ASCII-prefix/scalar concatenation changed native fixture
+bytes; direct canonical scalar input restores cross-target byte identity without
+changing product encoding. Failure logs remain beside repaired runs. Pythian
+CI522 forbe35f59 is terminal SUCCESS. Publication follows these local checks.
+
+The checked service/worker are deployed at their existing fixed stable paths
+with the same twelve web assets. The final worker includes the verified flush/
+duplicate-publication guard. Original fourteen deployed files are backed up in
+this packet; the interim worker is retained separately. Catalog, inbox, source/
+generated-audio/cache roots, Private bind and installed TLS remain unchanged.
+No operator job was active during staging. Host settings, hashes and exact
+process IDs remain local in deployment-final.json and start-stable.ps1.
+Final loopback HTTP/LAN HTTPS return200 and the same page. All sixteen operator
+jobs retain their terminal states, the matching worker is available and no QA
+worker remains. No firewall/certificate settings or source/answer files changed.
+The metadata audit normalized two already-accepted DONE status labels to the
+workflow's canonical Accepted spelling; their dates/effort/evidence are unchanged.
+
+## Selected batch: retain the performed instrumental timeline — 2026-10-31
+
+Big Boss SOLO continues afterbe35f59. Previous turn is progress: accepted/deployed
+coarse learning and simple Studio; consecutive nonclosing count is zero. Inspecting
+the real consumer exposes a prerequisite: ordinary streamed jobs discard the
+accepted segments and save only replay models/settings. The finite Reperform
+API cannot retain those actual results. Linked task NS-4_decision-replay_01 adds5
+effort units, for79/124 (63.71%),7 open/16 current DONE and45 open units.
+
+Criterion/deliverable: actual bounded decision capture, portable journal and
+primary instrument replay without learning or solving, saved by ordinary native
+playlist generation. Evidence: detached token/state/chord clocks, corruption/
+continuity/cancellation cases, exact same-target mix/stems across pull partitions,
+changed sound with retained score/unrelated parts, actual native/pas2js and worker
+file consumers. Stop before Studio follow-up UI and selective graph changes,
+which remain in graph-controls. Packet: decision-replay-20261031-boss under the
+dedicated E-drive build/cache/tests/runs roots. Goal remains active.
+
+## Previous handoff: coarse learning and simple Studio accepted — 2026-10-31
 
 Big Boss SOLO accepts [style vocabulary](TODO/DONE/NS-3_style-vocabulary_01.md)
 and [Library→Selection→Generate](TODO/DONE/NS-6_simple-studio_01.md) after all

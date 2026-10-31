@@ -313,6 +313,8 @@ General MIDI instruments, controllers or pedal performance.
 | [pythian.music.grid.frames](src/pythian.music.grid.frames.pas) | Immutable source-frame boundaries for finite PPQ grids, changing clocks and physical source offsets |
 | [pythian.music.context.admission](src/pythian.music.context.admission.pas) | Explicit tonal/pulse selection, source phase quantization and exact complete-cell scopes |
 | [pythian.music.selection](src/pythian.music.selection.pas) | Explicit caller-label selection of whole tracks or disjoint clips, with shared native/pas2js bounds and atomic rejection |
+| [pythian.music.decisions](src/pythian.music.decisions.pas) | Bounded checksummed performed-score/provider chunks and sequential journal contracts |
+| [pythian.music.replay](src/pythian.music.replay.pas) | Retained score through primary instruments without learning or a WFC dependency |
 | [pythian.tempo](src/pythian.tempo.pas) | Bounded global spectral-flux periodicity candidates, metrical alternatives and explicit missing evidence |
 | [pythian.rhythm.admission](src/pythian.rhythm.admission.pas) | Explicit source-onset to PPQ admission with collision, tolerance and boundary decisions |
 | [pythian.onset.dynamics](src/pythian.onset.dynamics.pas) | Native onset-window RMS, admitted relative intensity and explicit velocity mapping |

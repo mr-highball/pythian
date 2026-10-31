@@ -61,10 +61,14 @@ leaves the source intact. Ordinary solve/proof/publication behavior remains shar
 ## Current boundary
 
 These are portable typed Pascal records, exercised by native and actual pas2js
-consumers. They are not yet an on-disk instrumental archive or a Studio follow-up.
-Instrument/percussion recipes, performed expression and job lineage still need
-their own shared archive integration. Existing Studio jobs do not acquire missing
-latent state indices retroactively. Ordinary Generate still constructs a new plan.
+consumers. They are not an on-disk finite instrumental archive or a Studio follow-up.
+Ordinary streamed playlist jobs now retain their actual provider tokens/latent
+states and performed chord timeline in the separate primary
+[decision journal/replayer](INSTRUMENTAL.md#retain-and-replay-a-performed-timeline).
+That bounded score replays through instruments without learning or solving; it
+does not itself restore a live editable graph. Studio follow-up controls remain
+in graph-controls. Existing jobs without retained decisions do not acquire their
+missing state indices retroactively. Ordinary Generate still makes new decisions.
 
 The generic assignment operation lives in the separate WFC branch
 [`codex/pythian-accepted-assignments`](https://github.com/mr-highball/wfc/tree/codex/pythian-accepted-assignments),

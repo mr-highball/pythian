@@ -2,18 +2,20 @@
 
 ## Current goal: instrumental exploration
 
-Sixteen current-goal tasks are accepted: **79 / 119 effort units (66.39%)**. Their
+Seventeen current-goal tasks are accepted: **84 / 124 effort units (67.74%)**. Their
 criteria and prerequisites passed: finite runtime/percussion, ordinary instrumental
 Studio, context/cancellation/identity repairs and editable recording proposals
 into actual providers/instruments. This is not musical preference or universal
 style-learning acceptance. Coarse classified whole/range learning and the simple
 playlist-to-Generate flow are accepted, with honest analyzed/model-used coverage.
 Canonical generated audio/storage, supported context
-continuation and long Studio generation are also accepted. There are113 DONE
-files: sixteen current,97 historical.
+continuation and long Studio generation are also accepted. Actual bounded
+decision recording and exact saved-score replay are accepted. There are114 DONE
+files: seventeen current,97 historical.
 
 | Accepted task | Date | Effort | Outcome |
 | --- | --- | ---: | --- |
+| [NS-4_decision-replay_01](NS-4_decision-replay_01.md) | 2026-10-31 | 5/10 | Bounded actual provider/score journal, exact native/pas2js mix/stems, changed sound without learning and ordinary saved-worker replay |
 | [NS-3_style-vocabulary_01](NS-3_style-vocabulary_01.md) | 2026-10-31 | 7/10 | Source-bound weighted musical providers, stable meanings, optional exact-label selection and actual instrumental synthesis |
 | [NS-6_simple-studio_01](NS-6_simple-studio_01.md) | 2026-10-31 | 6/10 | Library→Selection→Generate, actual playlist learning, desktop/phone save/reopen, durable progress and generated/Original playback |
 | [NS-4_context-continuation_01](NS-4_context-continuation_01.md) | 2026-10-31 | 6/10 | Exact failed provider/seed continues through14400cells and actual hour job; generic upstream capacity/endpoint support, native/pas2js and CI |

@@ -43,7 +43,8 @@ uses SysUtils, pythian.audio, pythian.bus, pythian.music.sound,
   pythian.music.stream, pythian.wfc.layers, pythian.wfc.instrumental.stream,
   pythian.tools.studio.jobs, pythian.tools.studio.projects,
   pythian.tools.studio.instrumental.output, pythian.tools.studio.instrumental.config,
-  pythian.tools.studio.material.reference, wfc_music_voices_graph;
+  pythian.tools.studio.material.reference, pythian.tools.studio.decisions,
+  wfc_music_voices_graph;
 
 function RunStudioPlaylistStream(const ACatalogRoot, AJobId: String;
   const ARequest, ASettings, ALearning: TJSONObject; const ACorpus: TMusicalCorpus;
@@ -53,6 +54,7 @@ var
   LOptions: TInstrumentalStreamOptions;
   LStream: TInstrumentalMusicStream;
   LOutput: TStudioInstrumentalOutput;
+  LDecisions: TStudioDecisionWriter;
   LMaster: TAudioSamples;
   LStems: TBusSampleBlocks;
   LModels: TLayerModelTexts;
@@ -70,6 +72,7 @@ begin
   Result := nil;
   LStream := nil;
   LOutput := nil;
+  LDecisions := nil;
   LReference := nil;
   LMaterial := nil;
   LStored := nil;
@@ -171,9 +174,10 @@ begin
       raise EAudio.Create('Musical corpus model layout differs from stream replay metadata');
     LOutput := TStudioInstrumentalOutput.Create(ACatalogRoot, AJobId,
       StudioInstrumentalRate, LEstimate.Int64s['frame_count'], ASettings.Arrays['levels'], LOptions.Seed);
+    LDecisions := TStudioDecisionWriter.Create(ACatalogRoot, AJobId);
     ReportWork(AProgress, 'instrumental_plan_begin', wuItems, 0, 1);
     LStream := TInstrumentalMusicStream.Create(LConfig, ARoles, ADrums,
-      LOutput.Graph, LOptions, ACorpus.ContextModel);
+      LOutput.Graph, LOptions, ACorpus.ContextModel, LDecisions.Append);
     LMeta.Add('total_cells', LStream.TotalCells);
     LGraph := TJSONArray.Create;
     LMeta.Add('graph', LGraph);
@@ -196,6 +200,8 @@ begin
     if LStream.State <> issCompleted then raise EAudio.Create('Instrumental stream ended before the requested clock');
     ReportWork(AProgress, 'instrumental_save', wuItems, 0, 1);
     LStored := LOutput.Finish(AProgress);
+    LMeta.Add('decisions', LDecisions.Finish(LStream.TotalCells,
+      LOptions.MusicFrames, AProgress));
     LMeta.Add('completed_frames', LStream.Position);
     LMeta.Add('planned_segments', LStream.PlannedSegments);
     LMeta.Add('peak_voices', LStream.PeakVoices);
@@ -215,6 +221,7 @@ begin
       Result.Add('material_origin', StudioPlaylistOrigin);
       Result.Add('settings', LMeta.Objects['settings'].Clone);
       Result.Add('playlist_learning', ALearning.Clone);
+      Result.Add('decisions', LMeta.Objects['decisions'].Clone);
       Result.Add('output_resources', LEstimate.Clone);
       Result.Add('stream', TJSONObject.Create(['version', InstrumentalStreamVersion,
         'lookahead_cells', LOptions.SegmentCells, 'total_cells', LStream.TotalCells,
@@ -244,6 +251,7 @@ begin
     end;
   finally
     LStream.Free;
+    LDecisions.Free;
     LOutput.Free;
     LStored.Free;
     LMaterial.Free;

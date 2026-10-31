@@ -22,6 +22,10 @@ Primary attribution: NS-4. Effort estimates relative implementation/integration 
 
 **Blockers**
 
+- [Streamed decision replay — DONE](DONE/NS-4_decision-replay_01.md) — ordinary
+  playlist jobs now retain and replay their actual notes/providers without
+  learning/solving. Wire sound-only follow-ups and scoped passage changes here.
+
 - [NS-4_assignment-restore_01 — DONE](DONE/NS-4_assignment-restore_01.md) — preserve generated
   assignment ownership while reopening durable accepted sessions.
 - [NS-6_instrumental-progress_01 — DONE](DONE/NS-6_instrumental-progress_01.md) —
@@ -31,6 +35,23 @@ Primary attribution: NS-4. Effort estimates relative implementation/integration 
 - [NS-4_instrumental-runtime_01](DONE/NS-4_instrumental-runtime_01.md)
 
 **Dev Notes:**
+
+- 2026-10-31, Big Boss: decision-replay prerequisite accepted after shared native/
+  actual pas2js, exact changed-sound/unrelated-part checks and ordinary native
+  saved-journal/mix/stem consumers pass. New playlist generations retain actual
+  decisions; historical jobs without them do not acquire synthetic state. Next
+  wire explicit sound-only follow-ups in the simple Generate result, retaining
+  Original/Before/After and immutable parent lineage. Then implement role/passage
+  graph changes through validated dependencies. Do not silently relearn/re-solve
+  a retained-score sound edit or introduce a mandatory model-editor step.
+
+- 2026-10-31, Big Boss: the current Library→Selection→Generate consumer streams
+  every duration and retains no accepted timeline. Follow the linked bounded
+  decision-replay prerequisite before wiring follow-ups. Finite plan snapshots
+  alone would leave the operator's ordinary learned result unsupported. Preserve
+  the existing retained-score/session work; no duplicate engine or compatibility
+  shell is selected. The five-unit distinct prerequisite grows the denominator;
+  this parent's seven-unit UI/control scope remains unchanged.
 
 - 2026-10-30, Big Boss: Accepted ownership/session restoration now closes the
   demonstrated prerequisite. Actual models, committed controls and assignment

@@ -29,6 +29,10 @@ uses Classes, SysUtils, Math, fpjson, pythian.audio, pythian.wave, pythian.progr
   pythian.tools.studio.jobs, pythian.tools.studio.playlist.learning,
   pythian.tools.studio.worker, pythian.tools.listen.catalog,
   pythian.wfc.musical.corpus, pythian.wfc.layers, pythian.hash,
+  pythian.instrument, pythian.synth, pythian.oscillator, pythian.percussion, pythian.bus,
+  pythian.time, pythian.music.sound, pythian.music.stream, pythian.music.replay,
+  pythian.music.decisions,
+  pythian.tools.studio.decisions, pythian.tools.studio.instrumental.output,
   wfc_sequence, wfc_sequence_text;
 var GChecks: Integer;
 type
@@ -427,6 +431,143 @@ begin
   end;
 end;
 
+procedure CheckSavedDecisions(const ACatalog, AJobId: String; const AResult: TJSONObject);
+var
+  LMeta, LStored, LBad: TJSONObject;
+  LFile: TFileStream;
+  LOutput: TStudioInstrumentalOutput;
+  LReplay: TMusicDecisionReplay;
+  LReader: TMusicDecisionReader;
+  LDuplicate: TStudioDecisionWriter;
+  LChunk: TMusicDecisionChunk;
+  LDuplicateReceipt: TJSONObject;
+  LOptions: TInstrumentStreamOptions;
+  LBindings: TInstrumentStreamBindings;
+  LInstruments: array[0..2] of TInstrument;
+  LDrums: array[0..2] of TPercussionInstrument;
+  LSettings: TPercussionSettings;
+  LZones: TInstrumentZones;
+  LSound: TMusicalSound;
+  LMaster: TAudioSamples;
+  LStems: TBusSampleBlocks;
+  LName: String;
+  I: Integer;
+  LRejected: Boolean;
+begin
+  LMeta := ReadStudioJSON(StudioJobDirectory(ACatalog, AJobId) +
+    PathDelim + 'instrumental-stream-completed.json');
+  LFile := nil;
+  LOutput := nil;
+  LReplay := nil;
+  LReader := nil;
+  LDuplicate := nil;
+  LDuplicateReceipt := nil;
+  LStored := nil;
+  LBad := nil;
+  FillChar(LInstruments, SizeOf(LInstruments), 0);
+  FillChar(LDrums, SizeOf(LDrums), 0);
+  try
+    Check((AResult.Objects['decisions'].AsJSON = LMeta.Objects['decisions'].AsJSON) and
+      (AResult.Objects['decisions'].Int64s['music_frames'] =
+        AResult.Objects['output_resources'].Int64s['music_frames']) and
+      (AResult.Objects['decisions'].Int64s['cells'] = LMeta.Int64s['total_cells']),
+      'Actual worker binds complete decisions to the same job/model/settings clock');
+    LFile := OpenStudioDecisionJournal(ACatalog, AResult.Objects['decisions']);
+    SetLength(LBindings, 6);
+    for I := 0 to 2 do
+    begin
+      LZones := nil;
+      SetLength(LZones, 1);
+      LZones[0].MinimumKey := 0;
+      LZones[0].MaximumKey := 127;
+      LZones[0].MinimumVelocity := 1;
+      LZones[0].MaximumVelocity := 127;
+      LZones[0].Voice := DefaultSynthVoice;
+      LZones[0].Voice.Gain := 0.14;
+      LName := LMeta.Objects['settings'].Arrays['instruments'].Strings[I];
+      if LName = 'sine' then LZones[0].Voice.Shape := wsSine
+      else if LName = 'triangle' then LZones[0].Voice.Shape := wsTriangle
+      else if LName = 'saw' then LZones[0].Voice.Shape := wsSaw
+      else if LName = 'square' then LZones[0].Voice.Shape := wsSquare
+      else raise Exception.Create('Unknown test instrument');
+      if LMeta.Find('applied_sound') <> nil then
+      begin
+        LSound.CutoffHz := LMeta.Objects['applied_sound'].Integers['cutoff_hz'];
+        LSound.SustainPercent := LMeta.Objects['applied_sound'].Integers['sustain_percent'];
+        LZones[0].Voice := ApplyMusicalSound(LZones[0].Voice, LSound, 24000);
+      end;
+      LInstruments[I] := TInstrument.Create(LZones);
+      LBindings[I].Instrument := LInstruments[I];
+      LBindings[I].Bus := I;
+      LBindings[I].MaximumTones := 128;
+      LSettings := DefaultPercussionSettings(TPercussionKind(I), 24000);
+      LSettings.Gain := LMeta.Arrays['percussion'].Objects[I].Floats['gain'];
+      LSettings.Pan := LMeta.Arrays['percussion'].Objects[I].Floats['pan'];
+      LSettings.GateSeconds := LMeta.Arrays['percussion'].Objects[I].Floats['gate_seconds'];
+      LSettings.ReleaseSeconds := LMeta.Arrays['percussion'].Objects[I].Floats['release_seconds'];
+      LSettings.ToneHz := LMeta.Arrays['percussion'].Objects[I].Floats['tone_hz'];
+      LSettings.CutoffHz := LMeta.Arrays['percussion'].Objects[I].Floats['cutoff_hz'];
+      LDrums[I] := TPercussionInstrument.Create(24000, LSettings);
+      LBindings[I + 3].Instrument := LDrums[I].Instrument;
+      LBindings[I + 3].Bus := I + 3;
+      LBindings[I + 3].MaximumTones := 1;
+      LBindings[I + 3].GateFrames := SampleFramesFromSeconds(LSettings.GateSeconds, 24000);
+    end;
+    LOptions := DefaultInstrumentStreamOptions(AResult.Objects['decisions'].Int64s['music_frames']);
+    LOptions.TailFrames := AResult.Objects['output_resources'].Int64s['tail_frames'];
+    LOptions.Seed := LMeta.Int64s['seed'];
+    LOutput := TStudioInstrumentalOutput.Create(ACatalog, AJobId + '-replay', 24000,
+      AResult.Objects['output_resources'].Int64s['frame_count'],
+      LMeta.Objects['settings'].Arrays['levels'], LOptions.Seed);
+    LReplay := TMusicDecisionReplay.Create(LFile, LBindings, LOutput.Graph, LOptions);
+    while LReplay.ReadOutputs(173, StudioInstrumentalStemBuses, LMaster, LStems) do
+      LOutput.Append(LMaster, LStems);
+    Check(LReplay.State = issCompleted, 'Saved ordinary native decisions replay without learning or solving');
+    LStored := LOutput.Finish;
+    Check(LStored.Arrays['outputs'].Objects[0].Strings['wav_sha256'] =
+      AResult.Arrays['outputs'].Objects[0].Strings['wav_sha256'],
+      'Actual worker mix WAV replays with exact bytes');
+    for I := 0 to 5 do
+      Check(LStored.Arrays['parts'].Objects[I].Strings['wav_sha256'] =
+        AResult.Arrays['parts'].Objects[I].Strings['wav_sha256'],
+        'Each actual worker stem WAV replays with exact bytes');
+    LBad := TJSONObject(AResult.Objects['decisions'].Clone);
+    LBad.Strings['status'] := 'pending';
+    LRejected := False;
+    try OpenStudioDecisionJournal(ACatalog, LBad).Free;
+    except on EAudio do LRejected := True; end;
+    Check(LRejected, 'A partial decision journal cannot be opened as completed');
+    LBad.Strings['status'] := 'completed';
+    LBad.Int64s['bytes'] := LBad.Int64s['bytes'] + 1;
+    LRejected := False;
+    try OpenStudioDecisionJournal(ACatalog, LBad).Free;
+    except on EAudio do LRejected := True; end;
+    Check(LRejected, 'Native opening verifies completed size and digest');
+    LFile.Position := 0;
+    LReader := TMusicDecisionReader.Create(LFile);
+    LDuplicate := TStudioDecisionWriter.Create(ACatalog, AJobId + '-duplicate');
+    while LReader.TryNext(LChunk) do LDuplicate.Append(LChunk);
+    LDuplicateReceipt := LDuplicate.Finish(LReader.CellCount, LReader.FrameCount);
+    Check(LDuplicateReceipt.AsJSON = AResult.Objects['decisions'].AsJSON,
+      'A duplicate publisher verifies/reuses the same flushed immutable journal');
+  finally
+    LDuplicateReceipt.Free;
+    LDuplicate.Free;
+    LReader.Free;
+    LBad.Free;
+    LReplay.Free;
+    LOutput.Free;
+    for I := 0 to 2 do
+    begin
+      LInstruments[I].Free;
+      LDrums[I].Free;
+    end;
+    LFile.Free;
+    LStored.Free;
+    LMeta.Free;
+  end;
+end;
+
 procedure Run(const ARoot: String);
 var
   LCatalog, LLibrary, LFile: String;
@@ -565,6 +706,7 @@ begin
             (LResult.Objects['results'].Arrays['parts'].Count = 6),
             'Actual worker result retains source contributions and all six synthesized parts');
           CheckSavedVocabulary(LCatalog, LJob.Strings['job_id'], LResult.Objects['results']);
+          CheckSavedDecisions(LCatalog, LJob.Strings['job_id'], LResult.Objects['results']);
         finally LResult.Free end;
         LResult := ReadListeningQueue(LCatalog);
         try

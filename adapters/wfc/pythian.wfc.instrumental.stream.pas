@@ -28,7 +28,8 @@ unit pythian.wfc.instrumental.stream;
 
 interface
 
-uses pythian.audio, pythian.time, pythian.progress, pythian.bus,
+uses pythian.audio, pythian.time, pythian.progress, pythian.bus, pythian.chord,
+  pythian.music.decisions,
   pythian.percussion, pythian.music.stream, pythian.wfc.instrumental,
   pythian.wfc.percussion, pythian.wfc.stream, wfc, wfc_model, wfc_sequence,
   wfc_sequence_graph, wfc_music_ensemble, wfc_music_voices_graph,
@@ -82,7 +83,10 @@ type
     FMusic: TInstrumentMusicStream;
     FClock: TIncrementalTempoClock;
     FFrames: TWfcMusicEnsembleFrames;
-    FDrumTokens: TInstrumentalTokenStreams;
+    FDecisions: TMusicDecisionChunk;
+    FPreviousDecision: TChordFrame;
+    FRoleNames: TMusicDecisionTokens;
+    FDecisionSink: TMusicDecisionSink;
     FCell: Integer;
     FCells: Int64;
     FTotalCells: Int64;
@@ -104,7 +108,8 @@ type
     constructor Create(const AConfig: TWfcMusicVoicesGraphConfig;
       const ARoles: TInstrumentalRoles; const APercussion: TPercussionDefinitions;
       const AGraph: TBusGraph; const AOptions: TInstrumentalStreamOptions;
-      const AContext: TWfcSequenceModel = nil);
+      const AContext: TWfcSequenceModel = nil;
+      const ADecisionSink: TMusicDecisionSink = nil);
     destructor Destroy; override;
     function ReadSamples(const AMaximumFrames: Integer; out ASamples: TAudioSamples;
       const AProgress: TWorkProgressCallback = nil): Boolean;
@@ -119,6 +124,7 @@ type
     procedure IntersectFutureTokens(const AProvider: Integer; const ACell: Int64;
       const ATokens: TWfcModelTokens);
     function CopyLastFrames: TWfcMusicEnsembleFrames;
+    function CopyLastDecisions: TMusicDecisionChunk;
     property Position: Int64 read GetPosition;
     property FrameCount: Int64 read GetFrameCount;
     property State: TInstrumentStreamState read GetState;
@@ -133,7 +139,7 @@ function DefaultInstrumentalStreamOptions(const AMusicFrames: Int64): TInstrumen
 
 implementation
 
-uses SysUtils, Math, pythian.chord, pythian.synth, pythian.wfc.music,
+uses SysUtils, Math, pythian.synth, pythian.wfc.music,
   pythian.wfc.voices, pythian.wfc.layers, pythian.wfc.musical.context,
   wfc_music_arrangement;
 
@@ -156,7 +162,7 @@ end;
 constructor TInstrumentalMusicStream.Create(const AConfig: TWfcMusicVoicesGraphConfig;
   const ARoles: TInstrumentalRoles; const APercussion: TPercussionDefinitions;
   const AGraph: TBusGraph; const AOptions: TInstrumentalStreamOptions;
-  const AContext: TWfcSequenceModel);
+  const AContext: TWfcSequenceModel; const ADecisionSink: TMusicDecisionSink);
 var
   LBindings: TInstrumentStreamBindings;
   LOptions: TInstrumentStreamOptions;
@@ -176,6 +182,12 @@ begin
     not (AOptions.ContextBinding in [icbDrivenRole, icbAllRoles]) then
     raise EAudio.Create('Instrumental stream needs ordered roles, bounded lookahead and search');
   FOptions := AOptions;
+  FDecisionSink := ADecisionSink;
+  SetLength(FRoleNames, Length(ARoles));
+  for LIndex := 0 to High(ARoles) do FRoleNames[LIndex] := ARoles[LIndex].Name;
+  SetLength(FPreviousDecision, Length(ARoles) + Length(APercussion));
+  for LIndex := 0 to High(FPreviousDecision) do
+    FPreviousDecision[LIndex] := Default(TChordVoice);
   FConfig := CopyWfcMusicVoicesGraphConfig(AConfig);
   FClock := TIncrementalTempoClock.Create(AOptions.TicksPerQuarter, AGraph.SampleRate);
   if FClock.Advance(AOptions.StepTicks, AOptions.TempoMicroseconds) < 1 then
@@ -223,7 +235,6 @@ begin
   FDefinitions := Copy(APercussion);
   SetLength(FDrumStreams, Length(APercussion));
   SetLength(FDrums, Length(APercussion));
-  SetLength(FDrumTokens, Length(APercussion));
   LBindings := nil;
   SetLength(LBindings, Length(ARoles) + Length(APercussion));
   for LIndex := 0 to High(ARoles) do
@@ -336,7 +347,30 @@ var
   LFrames: TWfcMusicEnsembleFrames;
   LRhythm, LContextTokens: TWfcModelTokens;
   LDrumTokens: TInstrumentalTokenStreams;
+  LDecisions, LSinkCopy: TMusicDecisionChunk;
+  LClock: TIncrementalTempoClock;
+  LFrame: TChordFrame;
+  LCell, LAt, LVelocity: Integer;
+  LFrameCount, LFrameAt: Int64;
+  procedure KeepProvider(const AKey: String; const AGenerated: TWfcGeneratedSequenceSegment);
+  var LAt, LCell: Integer;
+  begin
+    LAt := Length(LDecisions.Providers);
+    SetLength(LDecisions.Providers, LAt + 1);
+    LDecisions.Providers[LAt].Key := AKey;
+    SetLength(LDecisions.Providers[LAt].Tokens, Length(AGenerated.Tokens));
+    SetLength(LDecisions.Providers[LAt].States, Length(AGenerated.StateIndices));
+    for LCell := 0 to High(AGenerated.Tokens) do
+      LDecisions.Providers[LAt].Tokens[LCell] := AGenerated.Tokens[LCell];
+    for LCell := 0 to High(AGenerated.StateIndices) do
+      LDecisions.Providers[LAt].States[LCell] := AGenerated.StateIndices[LCell];
+  end;
 begin
+  LDecisions := Default(TMusicDecisionChunk);
+  LDecisions.Version := MusicDecisionVersion;
+  LDecisions.FirstCell := FCells;
+  LDecisions.StartFrame := FMusic.AdmittedFrames;
+  LDecisions.Previous := CopyChordFrame(FPreviousDecision);
   LOptions := DefaultSequenceChunkOptions;
   LOptions.CellCount := Min(Int64(FOptions.SegmentCells), FTotalCells - FCells);
   { Big Boss: a bounded segment must leave a viable structural exit for the
@@ -356,6 +390,7 @@ begin
         IntToStr(LOptions.MinimumFollowingCells) +
         '). Try a shorter track or a broader selection.');
     LContextTokens := LChunk.Tokens;
+    KeepProvider(MusicalContextPassName, LChunk);
     LMasks := BindMusicalContextTokens(LContextTokens, Length(FConfig.Voices), nil,
       FOptions.ContextBinding = icbAllRoles);
     for LProvider := 0 to High(LMasks) do
@@ -374,6 +409,10 @@ begin
         '; previous harmony=' + FVoices.CopyFrontier.Tokens[0] + LExpected);
     LFrames := LSegment.CopyFrames;
     LRhythm := LSegment.CopyGenerated(1).Tokens;
+    KeepProvider('harmony', LSegment.CopyGenerated(0));
+    KeepProvider('rhythm', LSegment.CopyGenerated(1));
+    for I := 0 to High(FRoleNames) do
+      KeepProvider(FRoleNames[I], LSegment.CopyGenerated(I + 2));
   finally
     LSegment.Free;
   end;
@@ -396,11 +435,50 @@ begin
       LReport, AProgress) then
       raise EAudio.Create('Drum frontier cannot continue: ' + FDefinitions[I].Name);
     LDrumTokens[I] := LChunk.Tokens;
+    KeepProvider(FDefinitions[I].Name, LChunk);
   end;
+  { Retain the exact performed cell clock, including fractional tempo carry and
+    the clipped last cell. This uses the same primary frame projection and clock;
+    AdmitCell below consumes this candidate instead of projecting a second copy. }
+  SetLength(LDecisions.Cells, Length(LFrames));
+  LFrameAt := LDecisions.StartFrame;
+  LClock := TIncrementalTempoClock.Create(FOptions.TicksPerQuarter, FMusic.SampleRate);
+  try
+    LClock.Restore(FClock.Snapshot);
+    for LCell := 0 to High(LFrames) do
+    begin
+      LFrame := ProjectWfcChordFrame(LFrames[LCell]);
+      LAt := Length(LFrame);
+      SetLength(LFrame, LAt + Length(FDrums));
+      for I := 0 to High(FDrums) do
+      begin
+        LFrame[LAt + I] := Default(TChordVoice);
+        LVelocity := PercussionVelocity(LDrumTokens[I][LCell]);
+        if LVelocity = 0 then Continue;
+        LFrame[LAt + I].Action := caAttack;
+        SetLength(LFrame[LAt + I].Tones, 1);
+        LFrame[LAt + I].Tones[0].Pitch := PercussionKey(FDefinitions[I].Settings.Kind);
+        LFrame[LAt + I].Tones[0].Velocity := LVelocity;
+      end;
+      LFrameCount := LClock.Advance(FOptions.StepTicks, FOptions.TempoMicroseconds);
+      LFrameCount := Min(LFrameCount, FOptions.MusicFrames - LFrameAt);
+      LDecisions.Cells[LCell].FrameCount := LFrameCount;
+      LDecisions.Cells[LCell].Parts := LFrame;
+      Inc(LFrameAt, LFrameCount);
+    end;
+  finally
+    LClock.Free;
+  end;
+  ValidateMusicDecisionChunk(LDecisions, AProgress);
   ReportWork(AProgress, 'instrumental_stream_ready', wuItems,
     FCells + Length(LFrames), FTotalCells);
+  if Assigned(FDecisionSink) then
+  begin
+    LSinkCopy := CopyMusicDecisionChunk(LDecisions);
+    FDecisionSink(LSinkCopy);
+  end;
   FFrames := LFrames;
-  FDrumTokens := LDrumTokens;
+  FDecisions := LDecisions;
   FCell := 0;
   Inc(FSegments);
 end;
@@ -408,27 +486,22 @@ end;
 procedure TInstrumentalMusicStream.AdmitCell(const AProgress: TWorkProgressCallback);
 var
   LFrame: TChordFrame;
-  I, LAt, LVelocity, LHits: Integer;
+  I, LHits: Integer;
   LFrames: Int64;
 begin
   if FCell = Length(FFrames) then PlanSegment(AProgress);
-  LFrame := ProjectWfcChordFrame(FFrames[FCell]);
+  LFrame := FDecisions.Cells[FCell].Parts;
   LHits := 0;
-  LAt := Length(LFrame);
-  SetLength(LFrame, LAt + Length(FDrums));
   for I := 0 to High(FDrums) do
   begin
-    LVelocity := PercussionVelocity(FDrumTokens[I][FCell]);
-    if LVelocity = 0 then Continue;
-    Inc(LHits);
-    LFrame[LAt + I].Action := caAttack;
-    SetLength(LFrame[LAt + I].Tones, 1);
-    LFrame[LAt + I].Tones[0].Pitch := PercussionKey(FDefinitions[I].Settings.Kind);
-    LFrame[LAt + I].Tones[0].Velocity := LVelocity;
+    if LFrame[Length(FRoleNames) + I].Action = caAttack then Inc(LHits);
   end;
   LFrames := FClock.Advance(FOptions.StepTicks, FOptions.TempoMicroseconds);
   LFrames := Min(LFrames, FOptions.MusicFrames - FMusic.AdmittedFrames);
+  if LFrames <> FDecisions.Cells[FCell].FrameCount then
+    raise EAudio.Create('Decision capture differs from the performed clock');
   FMusic.AdmitFrame(LFrame, LFrames, AProgress);
+  FPreviousDecision := CopyChordFrame(LFrame);
   Inc(FPercussionHits, LHits);
   Inc(FCell);
   Inc(FCells);
@@ -527,6 +600,11 @@ begin
   Result := Copy(FFrames);
   for I := 0 to High(Result) do
     Result[I] := DecodeWfcMusicEnsembleFrame(EncodeWfcMusicEnsembleFrame(FFrames[I]));
+end;
+
+function TInstrumentalMusicStream.CopyLastDecisions: TMusicDecisionChunk;
+begin
+  Result := CopyMusicDecisionChunk(FDecisions);
 end;
 
 end.

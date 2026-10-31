@@ -96,7 +96,7 @@ begin
   Result.Add('required_free_bytes', LBytes * StudioInstrumentalOutputCount + StudioInstrumentalOutputReserve);
   Result.Add('lookahead_cells', 16);
   Result.Add('pcm_block_frames', 2048);
-  Result.Add('storage_note', 'Mix plus six stems; analysis cache is additional. Space is checked again when the native job starts.');
+  Result.Add('storage_note', 'Mix plus six stems; retained musical decisions and analysis caches are additional. Space is checked again when the native job starts.');
 end;
 
 procedure AdmitStudioInstrumentalOutput(const ACatalogRoot: String; const ADurationMs: Int64);

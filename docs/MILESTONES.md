@@ -11,7 +11,11 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 79 / 119 effort units accepted (66.39%); six open, sixteen current-goal DONE.**
+**Current snapshot: 84 / 124 effort units accepted (67.74%); six open, seventeen current-goal DONE.**
+The five-unit decision-replay prerequisite is accepted: actual streamed provider/
+score decisions survive on disk and reproduce mix/stems without learning/solving.
+Sound-only Studio follow-ups and scoped graph changes remain in graph-controls.
+The demonstrated prerequisite added required scope to the denominator.
 Coarse corpus learning and the simple Library→Selection→Generate flow are now
 accepted after actual native/pas2js and desktop/phone consumers pass. Optional
 classification selection chooses real teaching material; saved exclusions and
@@ -37,10 +41,10 @@ per-task percentages or north-star weights apply.
 | [NS-1](#ns-1) | Preserve portable core independence | 0 | 0 | Baseline invariant; no standalone current task |
 | [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 6 | 6 | 6 / 12 |
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 0 | 15 | 15 / 15 |
-| [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, graph inspection and musical controls | 14 | 25 | 25 / 39 |
+| [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection and musical controls | 14 | 30 | 30 / 44 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
 | [NS-6](#ns-6) | Simple playlist-to-learning Studio, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 5 | 33 | 33 / 38 |
-| **Total** | **22 current-goal tasks** | **40** | **79** | **66.39%** |
+| **Total** | **23 current-goal tasks** | **40** | **84** | **67.74%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -59,7 +63,7 @@ criteria now pass; both tasks are accepted. Storage/access and long output are a
 The hour-request trial exposed a six-unit
 [learned-context continuation prerequisite — DONE](TODO/DONE/NS-4_context-continuation_01.md)
 at cell656; its repair now completes that exact hour with original provider/seed.
-Accounting is **79/119**; no partial effort or musical-quality credit follows.
+Accounting is **84/124**; no partial effort or musical-quality credit follows.
 
 1. [Instrumental runtime — DONE](TODO/DONE/NS-4_instrumental-runtime_01.md), effort 7:
    actual coupled musical WFC passes drive existing Pythian instruments; source-free caller delivered.
@@ -130,6 +134,11 @@ The separate [assignment-restoration prerequisite](TODO/DONE/NS-4_assignment-res
 is accepted: actual named-voice/layer models, controls and generated ownership
 reopen without learning/solving and support ordinary selected regeneration.
 Its three units do not accept the parent archive or Studio follow-up.
+The [decision-replay prerequisite](TODO/DONE/NS-4_decision-replay_01.md) is also
+accepted: ordinary streamed jobs retain their actual provider states/score on
+disk and replay exact mix/stems without models or solving. It removes the
+demonstrated retention gap; sound-edit buttons and scoped graph changes remain
+in the parent task.
 The [motif-coupling prerequisite](TODO/DONE/NS-4_motif-coupling_01.md) is accepted:
 full symbolic context choices decide harmony, rhythm and one explicit selected
 part together; the other pitched parts remain independently generated, followed
@@ -177,8 +186,8 @@ The 53 former open tasks are [retired/replaced](TODO/RETIRED/2026-10-29/README.m
 not accepted. All 97 historical DONE records and their evidence remain separate;
 none has the current Goal tag. The former 52.45% weighted outcome-credit ledger is
 [historical](history/MILESTONES-2026-10-29.md), not a baseline in the new formula.
-Current scoped records: 6 open + 16 current DONE; legacy records: 53 retired +
-97 historical DONE (113 total DONE files). No implementation, saved feedback or license is discarded.
+Current scoped records: 6 open + 17 current DONE; legacy records: 53 retired +
+97 historical DONE (114 total DONE files). No implementation, saved feedback or license is discarded.
 
 100% means all required outcomes in this defined experimental goal are delivered
 and reviewed. It cannot promise any style from any user with universal accuracy.
