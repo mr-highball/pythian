@@ -29,10 +29,10 @@ unit pythian.music.stream;
 interface
 
 uses pythian.audio, pythian.chord, pythian.instrument, pythian.bus,
-  pythian.schedule, pythian.progress;
+  pythian.schedule, pythian.progress, pythian.music.controls;
 
 const
-  InstrumentMusicStreamVersion = 1;
+  InstrumentMusicStreamVersion = 2;
   InstrumentStreamBlockFrames = 2048;
 
 type
@@ -94,8 +94,13 @@ type
     constructor Create(const ABindings: TInstrumentStreamBindings;
       const AGraph: TBusGraph; const AOptions: TInstrumentStreamOptions);
     destructor Destroy; override;
+    { Optional role expression is copied before callbacks, consumed here and
+      never retained. Only new attacks change. Logical frames/frontiers stay
+      exact and held voices keep their original velocity.
+      GatePercent must be100: an open held note has no known finite gate yet. }
     procedure AdmitFrame(const AFrame: TChordFrame; const AFrameCount: Int64;
-      const AProgress: TWorkProgressCallback = nil);
+      const AProgress: TWorkProgressCallback = nil;
+      const AExpression: TMusicalExpressions = nil);
     { At most2048 frames and the primary weighted-work bound. False/nil means
       input is needed, paused/stopped, or complete; inspect State/NeedsInput.
       The final input automatically releases held notes before TailFrames. }
@@ -219,7 +224,8 @@ begin
 end;
 
 procedure TInstrumentMusicStream.AdmitFrame(const AFrame: TChordFrame;
-  const AFrameCount: Int64; const AProgress: TWorkProgressCallback);
+  const AFrameCount: Int64; const AProgress: TWorkProgressCallback;
+  const AExpression: TMusicalExpressions);
 var
   LPrepared: TScheduledTones;
   LPart: TFrameTones;
@@ -232,6 +238,8 @@ var
   LGate: Int64;
   LId: Int64;
   LSeed: Cardinal;
+  LVelocity: Integer;
+  LExpression: TMusicalExpressions;
   LResult: TScheduleResult;
 begin
   RequireReady;
@@ -244,6 +252,15 @@ begin
   begin
     raise EAudio.Create('Instrument interval exceeds the declared musical extent');
   end;
+  if (Length(AExpression) <> 0) and (Length(AExpression) <> Length(FBindings)) then
+    raise EAudio.Create('Stream expression requires one control per instrument');
+  for LVoice := 0 to High(AExpression) do
+  begin
+    ValidateMusicalExpression(AExpression[LVoice]);
+    if AExpression[LVoice].GatePercent <> 100 then
+      raise EAudio.Create('Stream expression cannot shorten an unknown held-note gate');
+  end;
+  LExpression := Copy(AExpression);
   FBusy := True;
   LPrepared := nil;
   LRelease := nil;
@@ -269,8 +286,11 @@ begin
           { Absolute musical time/role/tone identity, independent of PCM pulls. }
           LSeed := FOptions.Seed xor Cardinal(FAdmittedFrames mod Int64(4294967296)) xor
             Cardinal(LVoice * 4099 + LTone * 131);
+          LVelocity := LFrame[LVoice].Tones[LTone].Velocity;
+          if Length(LExpression) > 0 then
+            LVelocity := MusicalExpressionVelocity(LVelocity, LExpression[LVoice].VelocityPercent);
           LPart := FBindings[LVoice].Instrument.PlanNote(LFrame[LVoice].Tones[LTone].Pitch,
-            LFrame[LVoice].Tones[LTone].Velocity, SampleRate, FAdmittedFrames, LGate, LSeed);
+            LVelocity, SampleRate, FAdmittedFrames, LGate, LSeed);
           LCount := Length(LPrepared);
           if Length(LPart) > MaximumScheduledVoices - LCount then
           begin

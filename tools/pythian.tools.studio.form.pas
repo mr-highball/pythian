@@ -91,7 +91,8 @@ begin
   begin
     Need(LRows[I].JSONType = jtObject, 'Each section must be an object');
     LRow := LRows.Objects[I];
-    Need(LRow.Count = 5, 'Section needs section, name, cells, repeat_from and keep');
+    Need((LRow.Count = 5) or ((LRow.Count = 6) and (LRow.Find('energy') <> nil)),
+      'Section needs section, name, cells, repeat_from, keep and optional energy');
     Need((LRow.Find('section') <> nil) and (LRow.Find('section').JSONType = jtString) and
       (LRow.Find('name') <> nil) and (LRow.Find('name').JSONType = jtString),
       'Give each section a name');
@@ -99,6 +100,8 @@ begin
     Result[I].Name := LRow.Strings['name'];
     Result[I].Cells := Whole(LRow, 'cells', 1, MaximumMusicDecisionCells);
     Result[I].RepeatFrom := Whole(LRow, 'repeat_from', -1, I - 1);
+    if LRow.Find('energy') <> nil then
+      Result[I].EnergyOffset := Whole(LRow, 'energy', 0, 100) - 50;
     Need((LRow.Find('keep') <> nil) and (LRow.Find('keep').JSONType = jtArray),
       'Choose the parts to retain from the earlier section');
     LKeep := LRow.Arrays['keep'];
@@ -124,7 +127,8 @@ begin
       LKeep := TJSONArray.Create;
       LRow := TJSONObject.Create(['section', String(AForm[I].Section),
         'name', String(AForm[I].Name), 'cells', AForm[I].Cells,
-        'repeat_from', AForm[I].RepeatFrom, 'keep', LKeep]);
+        'repeat_from', AForm[I].RepeatFrom, 'keep', LKeep,
+        'energy', AForm[I].EnergyOffset + 50]);
       Result.Add(LRow);
       for J := 0 to High(AForm[I].Keep) do LKeep.Add(String(AForm[I].Keep[J]));
     end;

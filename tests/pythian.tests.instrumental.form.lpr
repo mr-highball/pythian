@@ -120,7 +120,7 @@ end;
 
 function Render(const APull: Integer; const AStopAt: Integer = 0;
   const ABinding: TInstrumentalContextBinding = icbAllRoles;
-  const AAdjacent: Boolean = False): TResult;
+  const AAdjacent: Boolean = False; const AStrongReturn: Boolean = False): TResult;
 var LStarter: TInstrumentalStarter; LGraph: TBusGraph;
   LStream: TInstrumentalMusicStream; LCapture: TCapture;
   LOptions: TInstrumentalStreamOptions;
@@ -133,6 +133,7 @@ begin
   try
     LCapture.StopAt := AStopAt;
     LForm := MakeForm(AAdjacent);
+    if AStrongReturn then LForm[2].EnergyOffset := 50;
     LOptions := DefaultInstrumentalStreamOptions(8000 * 16 * Length(LForm));
     LOptions.TailFrames := 800;
     LOptions.ContextBinding := ABinding;
@@ -405,6 +406,23 @@ begin
     'Bounded guide callback retains exact original model choices and section boundaries');
   for I := 0 to 5 do
     Check(SameAudio(LShort.Stems[I], LShortReplay.Stems[I]), 'Unequal-phrase parts replay across PCM pulls');
+  LSecond := Render(2048, 0, icbAllRoles, False, True);
+  for I := 0 to High(LFirst.Chunks) do
+    for J := 0 to High(LFirst.Chunks[I].Providers) do
+      for K := 0 to High(LFirst.Chunks[I].Providers[J].States) do
+        Check((LFirst.Chunks[I].Providers[J].States[K] = LSecond.Chunks[I].Providers[J].States[K]) and
+          (LFirst.Chunks[I].Providers[J].Tokens[K] = LSecond.Chunks[I].Providers[J].Tokens[K]),
+          'Section energy preserves every real WFC choice, including the repeated motif');
+  for I := 0 to 5 do
+  begin
+    LDifferent := False;
+    for J := 0 to 32 * 8000 * 2 - 1 do
+      Check(LFirst.Stems[I][J] = LSecond.Stems[I][J],
+        'A future energy change never alters already performed music');
+    for J := 32 * 8000 * 2 to 48 * 8000 * 2 - 1 do
+      LDifferent := LDifferent or (LFirst.Stems[I][J] <> LSecond.Stems[I][J]);
+    Check(LDifferent, 'The stronger retained motif changes each actual instrument part');
+  end;
   {$ifndef pas2js}
   if ParamCount = 1 then
   begin

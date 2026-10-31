@@ -59,6 +59,9 @@ type
 function DefaultMusicalPartControl: TMusicalPartControl;
 function DefaultMusicalExpression: TMusicalExpression;
 procedure ValidateMusicalExpression(const AExpression: TMusicalExpression);
+{ Primary saturating attack-velocity mapping, shared by finite and streamed
+  performance. A hold retains its already playing attack's expression. }
+function MusicalExpressionVelocity(const AVelocity, APercent: Integer): Integer;
 procedure ValidateMusicalPartControl(const AControl: TMusicalPartControl);
 { Explicit editable hypotheses, not learned mood semantics:
   energy -> 50..150% velocity; density -> -100..100 attack preference;
@@ -111,6 +114,15 @@ procedure ValidateMusicalExpression(const AExpression: TMusicalExpression);
 begin
   IntegerRange(AExpression.VelocityPercent, 1, 200, 'velocity percent');
   IntegerRange(AExpression.GatePercent, 1, 100, 'gate percent');
+end;
+
+function MusicalExpressionVelocity(const AVelocity, APercent: Integer): Integer;
+begin
+  IntegerRange(AVelocity, 1, 127, 'source velocity');
+  IntegerRange(APercent, 1, 200, 'velocity percent');
+  Result := (AVelocity * APercent + 50) div 100;
+  if Result < 1 then Result := 1;
+  if Result > 127 then Result := 127;
 end;
 
 procedure ValidateMusicalPartControl(const AControl: TMusicalPartControl);
@@ -202,9 +214,7 @@ begin
       raise EAudio.Create('Musical expression has no control for a score role');
     end;
     LControl := AControls[LGates[LIndex].Voice];
-    LVelocity := (LGates[LIndex].Velocity * LControl.VelocityPercent + 50) div 100;
-    if LVelocity < 1 then LVelocity := 1;
-    if LVelocity > 127 then LVelocity := 127;
+    LVelocity := MusicalExpressionVelocity(LGates[LIndex].Velocity, LControl.VelocityPercent);
     LGates[LIndex].Velocity := LVelocity;
     LDuration := (LGates[LIndex].EndTick - LGates[LIndex].StartTick);
     LDuration := Integer(Int64(LDuration) * LControl.GatePercent div 100);

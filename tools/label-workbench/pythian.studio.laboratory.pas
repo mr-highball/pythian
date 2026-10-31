@@ -135,6 +135,7 @@ begin
   Button(LHeader, 'lab-help-close', 'Close help');
   Add(FHelp, 'p', 'Music sets tempo, key and length. Parts changes note ranges, activity, note strength, note length and mix. Feel fills editable preferences. Structure arranges sections and repeats.');
   Add(FHelp, 'p', 'In Structure, choose an earlier section and the parts to keep. Other parts can vary. A repeat takes its source length; moving its source after it is invalid. Conflicting musical choices fail visibly.');
+  Add(FHelp, 'p', 'Section energy makes new instrument attacks softer or stronger. 50 is neutral. Held notes keep ringing; a repeated part keeps its notes and rhythm while its new attacks use this section’s energy.');
   Add(FHelp, 'p', 'The starter supplies the musical vocabulary. WFC chooses events; Pythian instruments synthesize bass, harmony, lead, kick, snare and hat. This is authored material, not learning from your collection.');
   Add(FHelp, 'p', 'Follow the starter fixes chords and rhythm. Let WFC vary releases those choices; preferences cannot override a hard pitch limit. A conflict means the requested choices do not fit.');
   Add(FHelp, 'p', 'Settings save automatically. Only Generate experiment starts music. Listen in the normal Generate step, then return here to change a setting. Saving feedback never changes the model.');

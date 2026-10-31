@@ -36,6 +36,7 @@ type
     Name: TJSElement;
     GroupName: TJSElement;
     Bars: TJSElement;
+    Energy: TJSElement;
     RepeatChoice: TJSElement;
     KeepGroup: TJSElement;
     Keep: array[0..7] of TJSHTMLInputElement;
@@ -141,7 +142,7 @@ begin
   FList.setAttribute('aria-label', 'Song sections');
   FList.addEventListener('keydown', @Key);
   Add(FBody, 'p', 'Make new music, or repeat an earlier section and keep chosen parts.').className := 'hint';
-  Add(FBody, 'p', 'Experimental · neutral note preferences and expression. Pitch ranges, sounds and mix remain editable.').className := 'hint';
+  Add(FBody, 'p', 'Experimental · energy changes new note attacks; held notes keep ringing. Global note preferences stay neutral.').className := 'hint';
   FPanels := Add(FBody, 'div', '');
   AddSection('A', '4');
   Update;
@@ -234,6 +235,13 @@ begin
   FRows[I].Bars.setAttribute('max', '32');
   FRows[I].Bars.setAttribute('step', '0.125');
   FRows[I].Bars.setAttribute('inputmode', 'decimal');
+  FRows[I].Energy := Input(FRows[I].Pane, 'structure-energy-' + LKey,
+    'Energy · 0 soft, 50 neutral, 100 strong', '50');
+  FRows[I].Energy.setAttribute('type', 'number');
+  FRows[I].Energy.setAttribute('min', '0');
+  FRows[I].Energy.setAttribute('max', '100');
+  FRows[I].Energy.setAttribute('step', '1');
+  FRows[I].Energy.setAttribute('inputmode', 'numeric');
   FRows[I].RepeatChoice := Add(Add(FRows[I].Pane, 'label', 'Make this section'), 'select', '');
   FRows[I].RepeatChoice.id := 'structure-repeat-' + LKey;
   FRows[I].RepeatChoice.setAttribute('data-structure', 'true');
@@ -285,6 +293,7 @@ begin
     TJSHTMLInputElement(FRows[I].Name).disabled := not FEditing;
     TJSHTMLInputElement(FRows[I].GroupName).disabled := not FEditing;
     TJSHTMLInputElement(FRows[I].Bars).disabled := not FEditing or (LReference >= 0);
+    TJSHTMLInputElement(FRows[I].Energy).disabled := not FEditing;
     TJSHTMLSelectElement(FRows[I].RepeatChoice).disabled := not FEditing;
     if LReference >= 0 then FRows[I].KeepGroup.removeAttribute('hidden')
     else FRows[I].KeepGroup.setAttribute('hidden', '');
@@ -422,6 +431,10 @@ begin
     if (LValue <> Trunc(LValue)) or (LValue < 1) or (LValue > MaximumMusicDecisionCells) then
       raise Exception.Create('Use 0.125–32 bars, in eighth-note steps.');
     LForm[I].Cells := Trunc(LValue);
+    if not TryStrToFloat(TJSHTMLInputElement(FRows[I].Energy).value, LValue) or
+      (LValue <> Trunc(LValue)) or (LValue < 0) or (LValue > 100) then
+      raise Exception.Create('Energy must be a whole number from 0 to 100.');
+    LForm[I].EnergyOffset := Trunc(LValue) - 50;
     LForm[I].RepeatFrom := IndexOf(StrToIntDef(FRows[I].RepeatChoice.getAttribute('data-repeat-key'), 0));
     if (FRows[I].RepeatChoice.getAttribute('data-repeat-key') <> '0') and
       (LForm[I].RepeatFrom < 0) then
@@ -451,6 +464,7 @@ begin
     LRow['section'] := LForm[I].Section;
     LRow['name'] := LForm[I].Name;
     LRow['cells'] := LForm[I].Cells;
+    LRow['energy'] := LForm[I].EnergyOffset + 50;
     LRow['repeat_from'] := LForm[I].RepeatFrom;
     LKeep := TJSArray.new;
     for J := 0 to High(LForm[I].Keep) do LKeep.push(LForm[I].Keep[J]);
@@ -472,6 +486,8 @@ begin
     begin
       LRow := TJSObject(LRows[I]);
       AddSection(String(LRow['name']), FloatToStr(Double(LRow['cells']) / 8));
+      if isNumber(LRow['energy']) then
+        TJSHTMLInputElement(FRows[I].Energy).value := IntToStr(Trunc(Double(LRow['energy'])));
       if String(LRow['section']) <> String(LRow['name']) then
         TJSHTMLInputElement(FRows[I].GroupName).value := String(LRow['section']);
       LReference := Trunc(Double(LRow['repeat_from']));
@@ -504,6 +520,7 @@ begin
     LRow['name'] := TJSHTMLInputElement(FRows[I].Name).value;
     LRow['group'] := TJSHTMLInputElement(FRows[I].GroupName).value;
     LRow['bars'] := TJSHTMLInputElement(FRows[I].Bars).value;
+    LRow['energy'] := TJSHTMLInputElement(FRows[I].Energy).value;
     LRow['repeat_key'] := FRows[I].RepeatChoice.getAttribute('data-repeat-key');
     LKeep := TJSArray.new;
     for J := 0 to 7 do LKeep.push(FRows[I].Keep[J].checked);
@@ -524,6 +541,8 @@ begin
   begin
     LRow := TJSObject(LRows[I]);
     AddSection(String(LRow['name']), String(LRow['bars']));
+    if isString(LRow['energy']) then
+      TJSHTMLInputElement(FRows[I].Energy).value := String(LRow['energy']);
     if isString(LRow['group']) then TJSHTMLInputElement(FRows[I].GroupName).value := String(LRow['group']);
     for J := 0 to 7 do FRows[I].Keep[J].checked := Boolean(TJSArray(LRow['keep'])[J]);
   end;

@@ -30,13 +30,14 @@ interface
 
 uses pythian.audio, pythian.time, pythian.progress, pythian.bus, pythian.chord,
   pythian.music.decisions, pythian.music.form,
+  pythian.music.controls,
   pythian.percussion, pythian.music.stream, pythian.wfc.instrumental,
   pythian.wfc.percussion, pythian.wfc.stream, pythian.wfc.voices, wfc, wfc_model, wfc_sequence,
   wfc_sequence_graph, wfc_music_ensemble, wfc_music_voices_graph,
   wfc_music_voices_stream;
 
 const
-  InstrumentalStreamVersion = 2;
+  InstrumentalStreamVersion = 3;
 
 type
   { Borrowed immutable authored/caller domain source. Positions in returned
@@ -93,6 +94,7 @@ type
     FDomainBoundCells: Int64;
     FDomainProvider: TInstrumentalDomainProvider;
     FForm: TMusicFormCursor;
+    FHasExpression: Boolean;
     FDrumStreams: array of TLearnedSequenceStream;
     FDrumPending: array of TWfcGeneratedSequenceSegment;
     FDrumAt: array of Integer;
@@ -226,6 +228,8 @@ begin
   FContextModel := AContext;
   FDecisionSink := ADecisionSink;
   FDomainProvider := ADomainProvider;
+  for LIndex := 0 to High(AForm) do
+    FHasExpression := FHasExpression or (AForm[LIndex].EnergyOffset <> 0);
   SetLength(FRoleNames, Length(ARoles));
   for LIndex := 0 to High(ARoles) do FRoleNames[LIndex] := ARoles[LIndex].Name;
   SetLength(FPreviousDecision, Length(ARoles) + Length(APercussion));
@@ -648,6 +652,7 @@ var
 begin
   LDecisions := Default(TMusicDecisionChunk);
   LDecisions.Version := MusicDecisionVersion;
+  if FHasExpression then LDecisions.Version := MusicDecisionExpressionVersion;
   LDecisions.FirstCell := FCells;
   LDecisions.StartFrame := FMusic.AdmittedFrames;
   LDecisions.Previous := CopyChordFrame(FPreviousDecision);
@@ -785,6 +790,16 @@ begin
       LFrameCount := Min(LFrameCount, FOptions.MusicFrames - LFrameAt);
       LDecisions.Cells[LCell].FrameCount := LFrameCount;
       LDecisions.Cells[LCell].Parts := LFrame;
+      if FHasExpression then
+      begin
+        SetLength(LDecisions.Cells[LCell].Expression, Length(LFrame));
+        for I := 0 to High(LFrame) do
+        begin
+          LDecisions.Cells[LCell].Expression[I] := DefaultMusicalExpression;
+          LDecisions.Cells[LCell].Expression[I].VelocityPercent :=
+            MapMusicalAffect(50 + FForm.EnergyOffsetAt(FCells + LCell), 50, 50).VelocityPercent;
+        end;
+      end;
       Inc(LFrameAt, LFrameCount);
     end;
   finally
@@ -822,7 +837,7 @@ begin
   LFrames := Min(LFrames, FOptions.MusicFrames - FMusic.AdmittedFrames);
   if LFrames <> FDecisions.Cells[FCell].FrameCount then
     raise EAudio.Create('Decision capture differs from the performed clock');
-  FMusic.AdmitFrame(LFrame, LFrames, AProgress);
+  FMusic.AdmitFrame(LFrame, LFrames, AProgress, FDecisions.Cells[FCell].Expression);
   FPreviousDecision := CopyChordFrame(LFrame);
   Inc(FPercussionHits, LHits);
   Inc(FCell);

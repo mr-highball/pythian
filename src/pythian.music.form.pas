@@ -31,7 +31,7 @@ interface
 uses pythian.music.decisions, pythian.text;
 
 const
-  MusicFormVersion = 1;
+  MusicFormVersion = 2;
   MaximumMusicFormPhrases = 4096;
   MaximumMusicFormRetainedCells = 1024;
   MaximumMusicFormTextBytes = 2097152;
@@ -45,6 +45,9 @@ type
       earlier phrase; other providers remain free to make different decisions. }
     RepeatFrom: Integer;
     Keep: TMusicDecisionTokens;
+    { Explicit performance hypothesis: -50..50 maps through primary musical
+      affect to 50..150% attack velocity. Zero is neutral. Held notes continue. }
+    EnergyOffset: Integer;
   end;
   TMusicForm = array of TMusicFormPhrase;
 
@@ -72,6 +75,7 @@ type
   public
     constructor Create(const AForm: TMusicForm; const AProviderKeys: TMusicDecisionTokens);
     function CopyForm: TMusicForm;
+    function EnergyOffsetAt(const ACell: Int64): Integer;
     function WindowCellsAt(const AFirstCell: Int64; const AMaximum: Integer): Integer;
     { Stop before passing the completion of a still-needed motif source. Its
       newly recorded choices must constrain the following planning request. }
@@ -158,6 +162,7 @@ begin
     ValidateScalarText(FForm[I].Section, 128, False);
     ValidateScalarText(FForm[I].Name, 128, False);
     Need(Whole(FForm[I].RepeatFrom, -1, I - 1), 'Phrase references must name an earlier phrase');
+    Need(Whole(FForm[I].EnergyOffset, -50, 50), 'Section energy offset must be -50..50');
     FStarts[I] := FTotalCells;
     Inc(FTotalCells, FForm[I].Cells);
     Need(Length(FForm[I].Keep) <= Length(AProviderKeys), 'Too many retained phrase providers');
@@ -189,6 +194,21 @@ end;
 function TMusicFormCursor.CopyForm: TMusicForm;
 begin
   Result := CopyMusicForm(FForm);
+end;
+
+function TMusicFormCursor.EnergyOffsetAt(const ACell: Int64): Integer;
+var LLeft, LRight, LMiddle: Integer;
+begin
+  Need((ACell = Trunc(ACell)) and (ACell >= 0) and (ACell < FTotalCells),
+    'Section energy requires an existing musical cell');
+  LLeft := 0;
+  LRight := High(FForm);
+  while LLeft < LRight do
+  begin
+    LMiddle := (LLeft + LRight + 1) div 2;
+    if FStarts[LMiddle] <= ACell then LLeft := LMiddle else LRight := LMiddle - 1;
+  end;
+  Result := FForm[LLeft].EnergyOffset;
 end;
 
 function TMusicFormCursor.WindowCellsAt(const AFirstCell: Int64;

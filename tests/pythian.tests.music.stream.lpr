@@ -28,7 +28,7 @@ program InstrumentMusicStreamConformance;
 
 uses SysUtils, Math, pythian.audio, pythian.source, pythian.synth,
   pythian.instrument, pythian.bus, pythian.echo, pythian.chord,
-  pythian.music.stream, pythian.progress;
+  pythian.music.stream, pythian.progress, pythian.music.controls;
 
 type
   TProbeFactory = class;
@@ -58,6 +58,7 @@ type
     AbortStage: String;
     Reenter: Boolean;
     Rejected: Integer;
+    Expression: TMusicalExpressions;
     procedure Receive(const AProgress: TWorkProgress);
   end;
 
@@ -123,6 +124,8 @@ end;
 
 procedure TObserver.Receive(const AProgress: TWorkProgress);
 begin
+  if (AProgress.Stage = 'instrument_stream_prepare') and (Length(Expression) > 0) then
+    Expression[0].VelocityPercent := 200;
   if Reenter then
   begin
     try
@@ -190,7 +193,9 @@ begin
   end;
 end;
 
-function Render(const ASplit: Boolean; const APull: Integer): TAudioSamples;
+function Render(const ASplit: Boolean; const APull: Integer;
+  const AAttackPercent: Integer = 100; const AHoldPercent: Integer = 100;
+  const AChangeInput: Boolean = False): TAudioSamples;
 var
   LInstrument: TInstrument;
   LGraph: TBusGraph;
@@ -199,6 +204,9 @@ var
   LSamples: TAudioSamples;
   LFrame: TChordFrame;
   LAt, I: Integer;
+  LExpression: TMusicalExpressions;
+  LObserver: TObserver;
+  LProgress: TWorkProgressCallback;
 begin
   Result := nil;
   LInstrument := Instrument;
@@ -206,6 +214,16 @@ begin
   LOptions := DefaultInstrumentStreamOptions(1600);
   LOptions.TailFrames := 400;
   LStream := TInstrumentMusicStream.Create([Binding(LInstrument)], LGraph, LOptions);
+  SetLength(LExpression, 1);
+  LExpression[0] := DefaultMusicalExpression;
+  LObserver := nil;
+  LProgress := nil;
+  if AChangeInput then
+  begin
+    LObserver := TObserver.Create;
+    LObserver.Expression := LExpression;
+    LProgress := LObserver.Receive;
+  end;
   try
     SetLength(Result, 4000);
     LAt := 0;
@@ -216,12 +234,17 @@ begin
         if LStream.AdmittedFrames = 0 then
         begin
           LFrame := Frame(caAttack);
-          if ASplit then LStream.AdmitFrame(LFrame, 320)
-          else LStream.AdmitFrame(LFrame, 1600);
+          LExpression[0].VelocityPercent := AAttackPercent;
+          if ASplit then LStream.AdmitFrame(LFrame, 320, LProgress, LExpression)
+          else LStream.AdmitFrame(LFrame, 1600, LProgress, LExpression);
           { Caller-owned nested arrays must not become retained stream state. }
           LFrame[0].Tones[0].Pitch := 72;
         end
-        else LStream.AdmitFrame(Frame(caHold), 640);
+        else
+        begin
+          LExpression[0].VelocityPercent := AHoldPercent;
+          LStream.AdmitFrame(Frame(caHold), 640, LProgress, LExpression);
+        end;
       end;
       if LStream.ReadSamples(APull, LSamples) then
       begin
@@ -236,6 +259,7 @@ begin
     Check((LStream.State = issCompleted) and (LAt = Length(Result)) and
       (LStream.Position = 2000), 'Exact music plus release/effect tail extent');
   finally
+    LObserver.Free;
     LStream.Free;
     LGraph.Free;
     LInstrument.Free;
@@ -259,6 +283,18 @@ begin
     if I >= 3280 then LEnergy := LEnergy + Abs(LWhole[I]);
   end;
   Check(LEnergy > 0.0001, 'Real echo history sounds after note release');
+  LWhole := Render(False, 2048, 50);
+  LSplit := Render(True, 173, 50, 150);
+  LEnergy := 0;
+  for I := 0 to High(LWhole) do
+  begin
+    Check(LWhole[I] = LSplit[I], 'New section expression never restarts or rescales an existing held note');
+    LEnergy := LEnergy + Abs(LWhole[I] - LPulls[I]);
+  end;
+  Check(LEnergy > 0.1, 'Attack expression changes actual primary instrument PCM');
+  LSplit := Render(False, 173, 50, 100, True);
+  for I := 0 to High(LWhole) do
+    Check(LWhole[I] = LSplit[I], 'Callbacks cannot change staged attack expression through caller aliases');
 end;
 
 procedure OneShots;

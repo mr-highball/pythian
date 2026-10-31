@@ -29,7 +29,7 @@ program pythian_tests_instrumental_decisions;
 uses SysUtils, Math, pythian.audio, pythian.chord, pythian.time, pythian.progress,
   pythian.bus, pythian.echo, pythian.instrument, pythian.percussion, pythian.synth,
   pythian.oscillator, pythian.music.stream, pythian.music.decisions,
-  pythian.music.replay, pythian.music.pattern, pythian.pitch.track,
+  pythian.music.replay, pythian.music.pattern, pythian.pitch.track, pythian.music.form,
   pythian.stream.bytes, pythian.hash,
   pythian.wfc.instrumental, pythian.wfc.instrumental.starter,
   pythian.wfc.instrumental.stream, pythian.wfc.percussion,
@@ -99,6 +99,13 @@ begin
   if AChunk.FirstCell > 0 then
     for K := 0 to High(AChunk.Cells[0].Parts) do
       if AChunk.Cells[0].Parts[K].Action = caHold then Inc(Holds);
+  if AChunk.Version = MusicDecisionExpressionVersion then
+    for J := 0 to High(AChunk.Cells) do
+      for K := 0 to High(AChunk.Cells[J].Parts) do
+        Check(AChunk.Cells[J].Expression[K].VelocityPercent =
+          50 + 100 * Ord(AChunk.FirstCell + J >= 12) -
+          50 * Ord(AChunk.FirstCell + J >= 24),
+          'Every actual pitched/drum cell retains its section-specific attack expression');
   Writer.Append(AChunk);
   Inc(Chunks);
 end;
@@ -216,7 +223,7 @@ begin
   Result := TInstrumentalStarter.Create(0, False, LPattern);
 end;
 
-procedure Run;
+procedure Run(const AEnergy: Boolean = False);
 var
   LStarter: TInstrumentalStarter;
   LGraph: TBusGraph;
@@ -231,6 +238,7 @@ var
   LHash: String;
   LAt, I, J: Integer;
   LEqual, LDifferent, LRejected: Boolean;
+  LForm: TMusicForm;
 begin
   LStarter := Starter;
   LGraph := Graph;
@@ -240,9 +248,25 @@ begin
   LOptions.TailFrames := 800;
   LOptions.TempoMicroseconds := 500003;
   LOptions.SegmentCells := 15;
+  LForm := nil;
+  if AEnergy then
+  begin
+    LOptions.MusicFrames := 72000;
+    LOptions.SegmentCells := 12;
+    SetLength(LForm, 3);
+    for I := 0 to 2 do
+    begin
+      LForm[I].Section := 'Energy';
+      LForm[I].Name := 'Section ' + IntToStr(I);
+      LForm[I].Cells := 12;
+      LForm[I].RepeatFrom := -1;
+    end;
+    LForm[0].EnergyOffset := -50;
+    LForm[1].EnergyOffset := 50;
+  end;
   try
     LStream := TInstrumentalMusicStream.Create(LStarter.Config, LStarter.CopyRoles,
-      LStarter.CopyPercussion(8000), LGraph, LOptions, LStarter.ContextModel, LCaptured.Capture);
+      LStarter.CopyPercussion(8000), LGraph, LOptions, LStarter.ContextModel, LCaptured.Capture, LForm);
     SetLength(LOriginal, 7);
     for I := 0 to 6 do SetLength(LOriginal[I], LStream.FrameCount * 2);
     LAt := 0;
@@ -251,11 +275,15 @@ begin
       AddBlock(LOriginal, LBlock, LAt);
       Inc(LAt, Length(LSamples));
     end;
-    Check((LStream.State = issCompleted) and (LCaptured.Writer.FrameCount = 72017) and
+    Check((LStream.State = issCompleted) and (LCaptured.Writer.FrameCount = LOptions.MusicFrames) and
       (LCaptured.Writer.CellCount = LStream.TotalCells) and (LCaptured.Chunks = 3),
       'Actual WFC performance saves bounded decisions and its partial final cell');
     Check(LCaptured.Holds > 0, 'Actual continuation holds survive chunk boundaries');
     LChunk := LStream.CopyLastDecisions;
+    if AEnergy then
+      Check((LChunk.Version = MusicDecisionExpressionVersion) and
+        (LChunk.Cells[0].Expression[0].VelocityPercent = 100),
+        'The last section records its own neutral performance after soft and strong sections');
     LChunk.Cells[0].FrameCount := 1;
     Check(LStream.CopyLastDecisions.Cells[0].FrameCount <> 1,
       'Public stream chunk copies are detached');
@@ -311,7 +339,7 @@ begin
 end;
 
 begin
-  try Run;
+  try Run; Run(True);
   except
     on E: Exception do
     begin

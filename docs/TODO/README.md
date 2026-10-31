@@ -49,8 +49,11 @@ has locally exercised Studio arrangement, persistence and exact section playback
 The full task stays open for per-section musical controls and operator listening;
 partial work earns no units. AC4's persistence/replay consumer passes full CI534.
 The exact longer section-edit failure is repaired by a shared bounded future
-accompaniment iterator, with native/pas2js and actual browser evidence; its final
-integration/CI and stable deployment remain pending.
+accompaniment iterator, with native/pas2js and actual browser evidence. Complete
+CI535 and checked fixed-slot deployment pass. Section energy is implemented
+through actual attack performance and retained/replayed expression, with local
+native/pas2js and desktop/phone consumers. Its separate CI/deployment, section
+density and operator listening remain open. No additional effort is accepted.
 
 ## First operator-facing milestone
 

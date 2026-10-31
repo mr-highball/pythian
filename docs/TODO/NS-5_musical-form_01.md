@@ -30,6 +30,39 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-10-31, Big Boss SOLO: select the section-energy slice of AC1. Deliver
+  an editable per-section performance control through the primary instrument
+  stream, saved decisions, replay, note edits and ordinary optional Studio Lab.
+  Close with actual six-part audio, retained motif/state identity, held-note
+  continuity, ownership/cancellation boundaries and desktop/phone save/reopen.
+  Stop at that usable control; density remains a separate unfinished part of
+  this same criterion. Do not replace rhythm preferences with output volume.
+- Energy now maps through the primary musical-affect/velocity contract to actual
+  instrument attack strength. Logical graph tokens remain separate from recorded
+  performed expression. Decision record v2 retains each part/cell's expression;
+  original v1 bytes remain exact. Portable copies/views/slices and existing note
+  edits preserve it; primary replay consumes it. Held voices do not restart or
+  change velocity at section boundaries. Inputs are detached before callbacks.
+  No new renderer, source PCM assembly or dependency-source change.
+- Local evidence under `section-energy-20261031-boss`: native/actual pas2js
+  codec54 and instrument-stream25231 checks; actual instrumental replay982 each;
+  form3075695 each with unchanged original canonical decision digest. A stronger
+  retained A changes all six actual instrument parts while every WFC token/state
+  and earlier PCM stay exact. Native heaps are clean. The native Studio consumer
+  performs soft/strong sections and verifies sound replay, targeted note changes,
+  all expression records and five untouched PCM stems. Actual desktop/390px
+  browser save/reopen, bounds, generation and exact section playback pass;
+  contextual help returns to the current tab. Final exact-source integration and
+  CI remain pending. Keep build01's receipt syntax failure and the repaired build;
+  initial QA startup errors were fixture/mode setup, not musical rejections.
+- Prior repair1fda087 completes all Native FPC CI535 (41251280100), including
+  extracted core/WFC consumers, and is deployed to the fixed stable slot with
+  all fourteen hashes checked. Existing catalog/jobs, bind and TLS remain.
+  Energy's separate release is not yet deployed. Density, final energy CI and
+  actual operator listening remain open. This batch advances AC1 but does not
+  close the complete criterion; consecutive nonclosing count is one. No task
+  effort is accepted; accounting stays99/140 (70.71%), six open.
+
 - 2026-10-31, Big Boss: **AC4 closes** at publishedbf524af after complete Native
   FPC CI534 (41248537215), including extracted core/WFC packages, passes. Native
   save/reopen/replay and desktop/390px arrangement/section consumers supply the

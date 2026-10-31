@@ -128,7 +128,10 @@ Generated results can **Hear section** or **Change this section** through the
 existing player/editor. Section changes may override that section's retained
 parts; other sections stay saved. **Hear whole track** resumes full playback.
 Experimental structure currently requires neutral activity/chord preferences
-and100% note strength/length. Per-section energy/density is still in progress.
+and100% global note strength/length. Each section has **Energy**, from0 soft
+through50 neutral to100 strong. It changes new instrument attacks; held notes
+keep ringing. Repeated parts keep their notes/rhythm while new attacks use the
+current section's energy. Section density remains in progress.
 
 Settings save automatically as named experiments. Reopen them in **Saved
 experiments**. Only **Generate experiment** starts music. Successive generations

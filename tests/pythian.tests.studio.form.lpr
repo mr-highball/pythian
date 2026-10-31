@@ -41,7 +41,7 @@ end;
 function Section(const AName: String; const ACells: Integer): TJSONObject;
 begin
   Result := TJSONObject.Create(['section', AName, 'name', AName, 'cells', ACells,
-    'repeat_from', -1, 'keep', TJSONArray.Create]);
+    'repeat_from', -1, 'keep', TJSONArray.Create, 'energy', 50]);
 end;
 
 procedure InspectRepeat(const ARoot, AJobId: String);
@@ -96,6 +96,54 @@ begin
     LReader.Free;
     LInput.Free;
     LJob.Free;
+  end;
+end;
+
+procedure InspectExpression(const ARoot: String);
+var
+  LParent, LChild: TJSONObject;
+  LBeforeFile, LAfterFile: TStream;
+  LBeforeReader, LAfterReader: TMusicDecisionReader;
+  LBefore, LAfter: TMusicDecisionChunk;
+  I, J: Integer;
+begin
+  LParent := ReadStudioJob(ARoot, 'structure-run');
+  LChild := nil;
+  LBeforeFile := nil;
+  LAfterFile := nil;
+  LBeforeReader := nil;
+  LAfterReader := nil;
+  try
+    LChild := ReadStudioJob(ARoot, 'structure-notes');
+    for J := 0 to 5 do
+      if J <> 2 then
+        Check(LParent.Objects['results'].Arrays['parts'].Objects[J].Strings['wav_sha256'] =
+          LChild.Objects['results'].Arrays['parts'].Objects[J].Strings['wav_sha256'],
+          'Each unselected actual instrument retains exact PCM with section expression');
+    Check(LParent.Objects['results'].Objects['decisions'].Integers['record_version'] = 2,
+      'Publication identifies explicit performance records within the framed journal');
+    LBeforeFile := OpenStudioDecisionJournal(ARoot, LParent.Objects['results'].Objects['decisions']);
+    LAfterFile := OpenStudioDecisionJournal(ARoot, LChild.Objects['results'].Objects['decisions']);
+    LBeforeReader := TMusicDecisionReader.Create(LBeforeFile);
+    LAfterReader := TMusicDecisionReader.Create(LAfterFile);
+    while LBeforeReader.TryNext(LBefore) do
+    begin
+      Check(LAfterReader.TryNext(LAfter) and (LAfter.Version = 2),
+        'The actual note edit retains every performed-expression chunk');
+      for I := 0 to High(LBefore.Cells) do
+        for J := 0 to High(LBefore.Cells[I].Expression) do
+          Check(LBefore.Cells[I].Expression[J].VelocityPercent =
+            LAfter.Cells[I].Expression[J].VelocityPercent,
+            'Changing actual notes preserves every original section and role expression');
+    end;
+    Check(LAfterReader.AtEnd, 'Retained expression keeps the exact original musical extent');
+  finally
+    LAfterReader.Free;
+    LBeforeReader.Free;
+    LAfterFile.Free;
+    LBeforeFile.Free;
+    LChild.Free;
+    LParent.Free;
   end;
 end;
 
@@ -282,6 +330,8 @@ begin
   Check(not DirectoryExists(ARoot), 'Use a fresh isolated form catalog');
   ForceDirectories(ARoot);
   LRows := TJSONArray.Create([Section('Opening', 8), Section('Contrast', 16)]);
+  LRows.Objects[0].Integers['energy'] := 0;
+  LRows.Objects[1].Integers['energy'] := 100;
   LSettings := TJSONObject.Create(['tempo_bpm', 120, 'tonic', 0, 'cells', 24,
     'instruments', TJSONArray.Create(['saw', 'triangle', 'square']),
     'levels', TJSONArray.Create([100, 100, 100, 100, 100, 100]), 'form', LRows]);
@@ -299,6 +349,15 @@ begin
     LForm := DecodeStudioForm(LRows);
     Check((StudioFormCells(LForm) = 24) and (StudioFormFrames(LForm, 120, 8000) = 48000),
       'Form transport reuses the primary cell and rational frame clocks');
+    LRows.Objects[0].Delete('energy');
+    LForm := DecodeStudioForm(LRows);
+    Check(LForm[0].EnergyOffset = 0, 'Historical five-field forms remain explicitly neutral');
+    LRows.Objects[0].Add('energy', 101);
+    LRaised := False;
+    try LForm := DecodeStudioForm(LRows);
+    except on E: EAudio do LRaised := True end;
+    Check(LRaised, 'The native boundary refuses an out-of-range section energy');
+    LRows.Objects[0].Integers['energy'] := 0;
     LRows.Objects[0].Integers['repeat_from'] := 1;
     LRaised := False;
     try LForm := DecodeStudioForm(LRows);
@@ -342,6 +401,10 @@ begin
       Inc(LCells, Length(LChunk.Cells));
       Inc(LChunks);
       Check(Length(LChunk.Cells) = 8, 'Saved musical chunks respect both real section boundaries');
+      Check((LChunk.Version = MusicDecisionExpressionVersion) and
+        (LChunk.Cells[0].Expression[0].VelocityPercent =
+          50 + 100 * Ord(LChunk.FirstCell >= 8)),
+        'The actual native worker records each section performance strength');
     end;
     Check((LCells = 24) and (LChunks = 3) and (LReader.FrameCount = 144000),
       'Saved actual decisions cover the exact six-second musical clock');
@@ -362,6 +425,8 @@ begin
       RepairEdit(ExpandFileName(ParamStr(2)), ParamStr(3), ParamStr(4), ParamStr(5))
     else if (ParamCount = 3) and (ParamStr(1) = '--inspect-repeat') then
       InspectRepeat(ExpandFileName(ParamStr(2)), ParamStr(3))
+    else if (ParamCount = 2) and (ParamStr(1) = '--inspect-expression') then
+      InspectExpression(ExpandFileName(ParamStr(2)))
     else if (ParamCount = 2) and (ParamStr(1) = '--followup') then
       Followups(ExpandFileName(ParamStr(2)))
     else
@@ -369,6 +434,7 @@ begin
       if ParamCount <> 1 then raise EAudio.Create('Usage: Studio form checks FRESH_ROOT');
       Run(ExpandFileName(ParamStr(1)));
       Followups(ExpandFileName(ParamStr(1)));
+      InspectExpression(ExpandFileName(ParamStr(1)));
     end;
     WriteLn('PASS ', GChecks, ' Studio form checks');
   except on E: Exception do

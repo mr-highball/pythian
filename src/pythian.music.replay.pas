@@ -109,7 +109,8 @@ begin
   if (FReader.FrameCount = FOptions.MusicFrames) and
     (FCell = High(FChunk.Cells)) and not FReader.AtEnd then
     raise EAudio.Create('Decision journal continues beyond the requested music');
-  FMusic.AdmitFrame(FChunk.Cells[FCell].Parts, FChunk.Cells[FCell].FrameCount, AProgress);
+  FMusic.AdmitFrame(FChunk.Cells[FCell].Parts, FChunk.Cells[FCell].FrameCount,
+    AProgress, FChunk.Cells[FCell].Expression);
   Inc(FCell);
 end;
 

@@ -3,7 +3,60 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: long section edits repaired; AC4 closes — 2026-10-31
+## Current batch: section energy through saved performance — 2026-10-31
+
+Big Boss SOLO selects the section-energy slice of musical-form AC1. Deliver
+editable section strength through the primary instruments, persisted expression,
+sound replay, retained note edits and optional Studio Lab. Minimal evidence is
+actual six-part PCM, unchanged graph/motif decisions, held-note continuity,
+ownership, canonical replay and desktop/390px save/reopen. Stop at this usable
+control. Density remains part of the same unfinished criterion; do not substitute
+output volume or post-filtered notes for upstream rhythm preferences.
+
+The portable form v2 adds a neutral-default energy offset. The primary affect
+mapping supplies actual note attack velocity. Decision record v2 keeps that
+performed expression beside logical graph parts/provider states; v1 canonical
+bytes stay exact. Core performance and primary journal replay use it. Copied
+views/slices, existing bounded note edits and changed sounds preserve it. Held
+voices continue with their actual original velocity and state. One primary
+finite/streamed velocity mapping replaces duplicate arithmetic; no extra renderer
+or vendor edit is introduced.
+
+Evidence in `section-energy-20261031-boss` under the dedicated E-drive roots:
+native/actual pas2js codec54, core stream25231, actual instrumental replay982 and
+form3075695 checks each. Original canonical decisions remain exact. The stronger
+retained return changes all six actual PCM parts with every WFC token/state and
+earlier PCM unchanged. Native heaps are clean. The native soft/strong Studio
+consumer passes25 checks, plus154 retained-expression/unchanged-stem checks on
+its actual note child. A final fresh consumer adds legacy transport/bounds checks;
+it is still running during sound publication, not yet claimed passed.
+
+Actual desktop/390px browser checks save15/85 energy, reject101, reopen values,
+generate six seconds and audition the exact2..6second section. Contextual help
+returns to Structure. Keep the initial receipt syntax error and repaired build,
+and the QA startup fixture/mode failures. After staging final service/worker/
+twelve assets, final browser job `music-1793490251857-600223` is still pending
+native work. The first request timed out; Reconnect finds the same saved run
+without duplicate submission. Do not claim this final run passed or omit the
+delay. Preserve its worker log and the independent native07 consumer for repair
+assessment. No musical rejection or operator-quality verdict is inferred.
+
+Prior repair1fda087 now passes all Native FPC CI535 (41251280100), including
+extracted core/WFC packages. It is deployed to fixed stable paths with all14
+hashes verified and HTTP/HTTPS200. Service49716 retains the prior private catalog,
+17 jobs and existing bind/TLS/storage settings. Stable does not yet contain the
+separate energy release. Local deployment receipt and guarded startup wrapper
+are in the current run packet. The initially blocked combined deployment was
+completed through smaller verified steps; no access or firewall rule changed.
+
+Energy remains pending final integration/CI and checked stable delivery. Density
+and actual operator listening remain required. This advances AC1 without closing
+the whole criterion: consecutive nonclosing count is one after AC4 reset it.
+Accounting remains99/140 (70.71%), six open. The goal remains active. Finish the
+actual pending consumers and source CI before choosing another implementation
+batch; then continue section density through real provider choices.
+
+## Previous handoff: long section edits repaired; AC4 closes — 2026-10-31
 
 Big Boss SOLO completes the selected bounded future-accompaniment edit repair.
 The actual failed32..48second Lead request, original seed1502445802 and source

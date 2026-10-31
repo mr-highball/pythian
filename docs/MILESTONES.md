@@ -192,8 +192,11 @@ The retained no-context guide is repaired under NS-4. The optional Studio form
 consumer locally saves/reopens and generates48second A/B/A, with exact section
 audition. Its persistence/replay criterion passes full CI534. The exact longer
 Lead-edit failure is repaired through shared bounded future-accompaniment proof,
-with native/pas2js and browser evidence; final repair integration/deployment,
-per-section controls and operator listening remain open. No NS-5 effort accepted.
+with native/pas2js and browser evidence; complete CI535 and fixed-slot deployment
+pass. Per-section energy now changes actual instrument attack strength while
+retaining logical graph choices and exact replay. Its local native/pas2js and
+desktop/phone consumers pass; separate CI/deployment, section density and operator
+listening remain open. No NS-5 effort accepted.
 
 <a id="ns-6"></a>
 ### NS-6 — A useful operator bridge

@@ -43,6 +43,7 @@ type
     FFinished: Boolean;
     FFinishing: Boolean;
     FFailed: Boolean;
+    FRecordVersion: Integer;
   public
     constructor Create(const ACatalogRoot, AJobId: String);
     destructor Destroy; override;
@@ -74,7 +75,7 @@ var
   LFile: TFileStream;
 begin
   if (AReceipt = nil) or (AReceipt.Strings['format'] <> 'pythian.music.decisions.v1') or
-    (AReceipt.Integers['version'] <> MusicDecisionVersion) or
+    (AReceipt.Integers['version'] <> MusicDecisionJournalVersion) or
     (AReceipt.Strings['status'] <> 'completed') or
     (AReceipt.Int64s['bytes'] < 1) or (AReceipt.Int64s['music_frames'] < 1) or
     (AReceipt.Int64s['cells'] < 1) then
@@ -126,6 +127,7 @@ begin
     raise EAudio.Create('Musical decision publication is finished, busy or failed');
   try
     FWriter.Append(AChunk);
+    if AChunk.Version > FRecordVersion then FRecordVersion := AChunk.Version;
   except
     FFailed := True;
     raise;
@@ -144,8 +146,9 @@ begin
     raise EAudio.Create('Musical decisions do not cover the completed performance');
   LHash := FWriter.Seal;
   LReceipt := TJSONObject.Create(['format', 'pythian.music.decisions.v1',
-    'version', MusicDecisionVersion, 'status', 'completed', 'sha256', LHash,
-    'bytes', FWriter.ByteCount, 'cells', ACells, 'music_frames', AMusicFrames]);
+    'version', MusicDecisionJournalVersion, 'status', 'completed', 'sha256', LHash,
+    'bytes', FWriter.ByteCount, 'cells', ACells, 'music_frames', AMusicFrames,
+    'record_version', FRecordVersion]);
   FFinishing := True;
   try
     try

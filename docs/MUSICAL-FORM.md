@@ -7,7 +7,8 @@ It generates instrumental decisions through actual WFC providers and performs th
 through one continuous Pythian stream. This is a library capability under active
 development. The optional Studio laboratory now saves editable arrangements,
 generates them through the bounded performer and auditions exact sections.
-Per-section energy/density and actual operator listening remain required.
+Per-section energy changes actual instrument attack strength. Section density
+and actual operator listening remain required.
 
 ## Explicit musical inputs
 
@@ -21,6 +22,7 @@ records:
 | Cells | Phrase length in the stream's musical quantum; default240ticks at480PPQ means eighth notes |
 | RepeatFrom | Earlier phrase index, or−1 for newly generated material |
 | Keep | Actual provider names whose public musical choices must recur |
+| EnergyOffset | Explicit −50..50 performance hypothesis; zero is neutral. Maps through the primary affect contract to50..150% attack velocity |
 
 Lengths may differ; a retained phrase has the same length as its source. A repeat
 must explicitly retain at least one provider. Names must exist in the producer's
@@ -93,6 +95,21 @@ continue across every phrase. A repeated musical motif need not have identical
 PCM: its instruments perform again within that continuous sound/effect history.
 The decision sink retains the actual newly generated states and musical cells.
 
+Form version2 adds section energy. It changes instrument performance, not the
+logical model tokens: a stronger return can keep exactly the same notes/rhythm.
+Only new attacks receive the section's velocity mapping. A note held across the
+boundary keeps its original velocity, envelope, source and effect state. This
+authored hypothesis is not a learned or calibrated mood measurement.
+
+Decision record version2 stores one explicit velocity expression per role/cell
+beside the original logical parts and actual provider states. Both the live
+stream and primary journal replay consume those expressions. Bounded copy,
+join, slice and targeted note edits retain them; sound changes reuse the exact
+journal. Gate shortening of an open held note is explicitly unsupported.
+The framed journal format remains version1 and receipts identify the maximum
+`record_version`. Source-only record version1 retains its original canonical
+bytes; saved historical performances remain readable.
+
 ## Rejection and current limits
 
 Studio's **Lab → Structure** arranges named sections. Choose new material or
@@ -109,10 +126,11 @@ actual models, seeds, instruments and decision journals remain on the ordinary
 immutable job; sound changes replay it without learning or solving again.
 No context model is invented for authored material that has none.
 
-Current structured jobs require neutral activity/chord preferences and100%
-note strength/length. Pitch bounds, instruments and mix remain editable.
-Per-section energy/density is not delivered. Ordinary unstructured experiments
-retain their existing expression/preference controls.
+Current structured jobs require neutral global activity/chord preferences and
+100% global note strength/length. Section energy is independently editable from
+0 soft through50 neutral to100 strong. Pitch bounds, instruments and mix remain
+editable. Section density remains open. Ordinary unstructured experiments retain
+their existing expression/preference controls.
 
 The actual Studio48second A/B/A consumer retains all eight requested providers
 in its return; the primary journal reader verifies the actual tokens. Playback

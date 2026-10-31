@@ -28,7 +28,7 @@ program pythian_tests_music_decisions;
 
 uses SysUtils, Classes, pythian.audio, pythian.chord, pythian.text,
   pythian.progress, pythian.hash, pythian.binary, pythian.time, pythian.stream.bytes,
-  pythian.music.decisions, pythian.music.replay;
+  pythian.music.decisions, pythian.music.replay, pythian.music.controls;
 
 type
   TObserver = class
@@ -160,6 +160,52 @@ begin
   Check(LRejected, 'Joining does not exceed the portable decision cell budget');
 end;
 
+procedure CheckExpression;
+var A, B, C: TMusicDecisionChunk; I: Integer; LRejected: Boolean;
+begin
+  A := Chunk;
+  A.Version := MusicDecisionExpressionVersion;
+  for I := 0 to High(A.Cells) do
+  begin
+    SetLength(A.Cells[I].Expression, 1);
+    A.Cells[I].Expression[0] := DefaultMusicalExpression;
+    A.Cells[I].Expression[0].VelocityPercent := 50 + I * 100;
+  end;
+  B := DecodeMusicDecisions(EncodeMusicDecisions(A));
+  Check((B.Version = 2) and (B.Cells[0].Expression[0].VelocityPercent = 50) and
+    (B.Cells[1].Expression[0].VelocityPercent = 150) and
+    SameMusicDecisionFrame(B.Cells[0].Parts, A.Cells[0].Parts),
+    'Expression records preserve both performance and unchanged logical tokens');
+  C := CopyMusicDecisionChunk(B);
+  C.Cells[0].Expression[0].VelocityPercent := 75;
+  Check(B.Cells[0].Expression[0].VelocityPercent = 50, 'Expression copies detach');
+  C := SliceMusicDecisionChunk(B, 1, 1);
+  C.Cells[0].Expression[0].VelocityPercent := 65;
+  Check(B.Cells[1].Expression[0].VelocityPercent = 150, 'Expression slices detach');
+  C := Chunk;
+  C.FirstCell := 2;
+  C.StartFrame := 4001;
+  C.Previous := B.Cells[1].Parts;
+  C := AppendMusicDecisionChunk(B, C);
+  Check((C.Version = 2) and (C.Cells[2].Expression[0].VelocityPercent = 100),
+    'Mixed views promote source-only cells to explicit neutral performance');
+  for I := 0 to 3 do
+  begin
+    C := CopyMusicDecisionChunk(B);
+    case I of
+      0: C.Version := 1;
+      1: C.Cells[0].Expression := nil;
+      2: C.Cells[0].Expression[0].VelocityPercent := 201;
+      3: C.Cells[0].Expression[0].GatePercent := 80;
+    end;
+    LRejected := False;
+    try EncodeMusicDecisions(C); except on EAudio do LRejected := True end;
+    Check(LRejected, 'Invalid or hidden expression rejects before publication');
+  end;
+  Check((MusicalExpressionVelocity(83, 50) = 42) and
+    (MusicalExpressionVelocity(127, 200) = 127), 'Primary velocity rounds and saturates');
+end;
+
 procedure Run;
 var
   A, B, C: TMusicDecisionChunk;
@@ -172,6 +218,7 @@ var
   LHash: String;
   I: Integer;
 begin
+  CheckExpression;
   CheckViews;
   A := Chunk;
   ValidateMusicDecisionChunk(A);

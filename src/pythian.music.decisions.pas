@@ -28,10 +28,15 @@ unit pythian.music.decisions;
 
 interface
 
-uses Classes, pythian.audio, pythian.chord, pythian.progress, pythian.hash, pythian.text;
+uses Classes, pythian.audio, pythian.chord, pythian.progress, pythian.hash, pythian.text,
+  pythian.music.controls;
 
 const
   MusicDecisionVersion = 1;
+  MusicDecisionJournalVersion = 1;
+  { Framing and original records remain v1. V2 cells explicitly retain the
+    performed attack expression separately from the model's logical tokens. }
+  MusicDecisionExpressionVersion = 2;
   MaximumMusicDecisionCells = 256;
   MaximumMusicDecisionParts = 12;
   MaximumMusicDecisionProviders = 16;
@@ -48,7 +53,9 @@ type
   TMusicDecisionProviders = array of TMusicDecisionProvider;
   TMusicDecisionCell = record
     FrameCount: Int64;
+    { Logical graph projection and separately performed attack expression. }
     Parts: TChordFrame;
+    Expression: TMusicalExpressions;
   end;
   TMusicDecisionCells = array of TMusicDecisionCell;
   TMusicDecisionChunk = record
@@ -190,7 +197,8 @@ var
     ValidateChordTransition(AFrame, LPrevious, LCaps);
   end;
 begin
-  Need(AChunk.Version = MusicDecisionVersion, 'Unsupported music decision version');
+  Need((AChunk.Version = MusicDecisionVersion) or
+    (AChunk.Version = MusicDecisionExpressionVersion), 'Unsupported music decision version');
   RequireExactTimingCounter(AChunk.FirstCell, 'Decision first cell');
   RequireExactTimingCounter(AChunk.StartFrame, 'Decision first frame');
   Need((Length(AChunk.Cells) > 0) and
@@ -217,6 +225,19 @@ begin
   begin
     ReportWork(AProgress, 'music_decision_validate', wuItems, I, Length(AChunk.Cells));
     CheckFrame(AChunk.Cells[I].Parts);
+    if AChunk.Version = MusicDecisionVersion then
+      Need(Length(AChunk.Cells[I].Expression) = 0, 'V1 decisions cannot hide performance expression')
+    else
+    begin
+      Need(Length(AChunk.Cells[I].Expression) = Length(AChunk.Previous),
+        'Expression decisions require one control per part');
+      for J := 0 to High(AChunk.Cells[I].Expression) do
+      begin
+        ValidateMusicalExpression(AChunk.Cells[I].Expression[J]);
+        Need(AChunk.Cells[I].Expression[J].GatePercent = 100,
+          'Decision expression cannot shorten an unknown held-note gate');
+      end;
+    end;
     LPrevious := AChunk.Cells[I].Parts;
   end;
   for I := 0 to High(AChunk.Providers) do
@@ -244,7 +265,10 @@ begin
   LCopy.Previous := CopyChordFrame(AChunk.Previous);
   LCopy.Cells := Copy(AChunk.Cells);
   for I := 0 to High(LCopy.Cells) do
+  begin
     LCopy.Cells[I].Parts := CopyChordFrame(AChunk.Cells[I].Parts);
+    LCopy.Cells[I].Expression := Copy(AChunk.Cells[I].Expression);
+  end;
   LCopy.Providers := Copy(AChunk.Providers);
   for I := 0 to High(LCopy.Providers) do
   begin
@@ -277,12 +301,22 @@ begin
     Need(AFirst.Providers[I].Key = ASecond.Providers[I].Key,
       'Combined musical view provider order differs');
   LResult := CopyMusicDecisionChunk(AFirst);
+  if ASecond.Version > LResult.Version then LResult.Version := ASecond.Version;
   SetLength(LResult.Cells, LFirstCount + Length(ASecond.Cells));
   for I := 0 to High(ASecond.Cells) do
   begin
     LResult.Cells[LFirstCount + I].FrameCount := ASecond.Cells[I].FrameCount;
     LResult.Cells[LFirstCount + I].Parts := CopyChordFrame(ASecond.Cells[I].Parts);
+    LResult.Cells[LFirstCount + I].Expression := Copy(ASecond.Cells[I].Expression);
   end;
+  if LResult.Version = MusicDecisionExpressionVersion then
+    for I := 0 to High(LResult.Cells) do
+      if Length(LResult.Cells[I].Expression) = 0 then
+      begin
+        SetLength(LResult.Cells[I].Expression, Length(LResult.Previous));
+        for J := 0 to High(LResult.Previous) do
+          LResult.Cells[I].Expression[J] := DefaultMusicalExpression;
+      end;
   for I := 0 to High(LResult.Providers) do
   begin
     SetLength(LResult.Providers[I].Tokens, Length(LResult.Cells));
@@ -321,6 +355,7 @@ begin
   begin
     LResult.Cells[I].FrameCount := AChunk.Cells[AFirstCell + I].FrameCount;
     LResult.Cells[I].Parts := CopyChordFrame(AChunk.Cells[AFirstCell + I].Parts);
+    LResult.Cells[I].Expression := Copy(AChunk.Cells[AFirstCell + I].Expression);
   end;
   SetLength(LResult.Providers, Length(AChunk.Providers));
   for I := 0 to High(LResult.Providers) do
@@ -391,6 +426,9 @@ begin
     begin
       Wide(AChunk.Cells[I].FrameCount);
       Frame(AChunk.Cells[I].Parts);
+      if AChunk.Version = MusicDecisionExpressionVersion then
+        for J := 0 to High(AChunk.Cells[I].Expression) do
+          Number(AChunk.Cells[I].Expression[J].VelocityPercent);
     end;
     Number(Length(AChunk.Providers));
     for I := 0 to High(AChunk.Providers) do
@@ -468,7 +506,7 @@ begin
   LAt := 0;
   Number(CMagic, CMagic);
   LChunk := Default(TMusicDecisionChunk);
-  LChunk.Version := Number(MusicDecisionVersion, MusicDecisionVersion);
+  LChunk.Version := Number(MusicDecisionVersion, MusicDecisionExpressionVersion);
   LChunk.FirstCell := Wide;
   LChunk.StartFrame := Wide;
   LChunk.Previous := Frame;
@@ -478,6 +516,15 @@ begin
   begin
     LChunk.Cells[I].FrameCount := Wide;
     LChunk.Cells[I].Parts := Frame;
+    if LChunk.Version = MusicDecisionExpressionVersion then
+    begin
+      SetLength(LChunk.Cells[I].Expression, Length(LChunk.Previous));
+      for J := 0 to High(LChunk.Cells[I].Expression) do
+      begin
+        LChunk.Cells[I].Expression[J] := DefaultMusicalExpression;
+        LChunk.Cells[I].Expression[J].VelocityPercent := Number(1, 200);
+      end;
+    end;
   end;
   LProviders := Number(0, MaximumMusicDecisionProviders);
   SetLength(LChunk.Providers, LProviders);
