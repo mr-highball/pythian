@@ -2,58 +2,75 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
-## Current batch: accepted-session restoration prerequisite — 2026-10-30
+## Current handoff: accepted musical sessions reopen faithfully — 2026-10-30
 
-Big Boss SOLO encountered [assignment restoration](TODO/NS-4_assignment-restore_01.md)
-while connecting durable instrumental follow-ups. A one-cell generic Pascal probe
-against the accepted WFC pin proves public Entry.Value restoration changes generated
-results to caller locks: the original accepts an authorized change, the restored
-copy rejects it. Existing workspace replay is not non-solving state restoration.
-The user was informed before separate-repository edits. A new worktree/branch
-`codex/pythian-accepted-assignments` starts at reviewed `d4d30b1`; vendor source is untouched.
+Big Boss SOLO accepted [assignment restoration](TODO/DONE/NS-4_assignment-restore_01.md),
+three effort units. Actual named-voice/layer snapshots retain canonical provider
+model text, configuration, committed masks/preferences, projections/scopes/tick
+partitions and generated-versus-caller-lock assignment ownership. Restoration
+constructs configuration and independently checks saved paths/music without
+learning or solver search. Pending edits reject rather than silently disappear.
+See [API and example](ACCEPTED-SESSIONS.md). These typed records are not yet a
+full instrumental file archive or ordinary Studio follow-up.
 
-The generic WFC fix is published as `b04a9e4`; all five jobs in
-[upstream CI59](https://github.com/mr-highball/wfc/actions/runs/41144571400)
-pass for that exact SHA. CaptureAssignments/RestoreAssignments preserve empty/generated/caller
-ownership with bounded layout/value/domain validation and atomic non-solving
-publication. Source and seeds/rules remain caller-owned configuration. Native
-Win32/Win64 and actual pas2js pass143 focused checks; Win64 selective124 and scope78
-also pass, with clean native heaps. All evidence and the separate worktree live
-under accepted-restore-20261030-boss on E. The first test compiler error (missing
-Classes import for EInvalidOperation) is preserved and repaired.
+Pythian implementation `8b6d1e7c407defc98669444f3ecff48257656c9b` is published on
+`hello-pythian`. Final snapshot checks pass 15,770 on Win32/Win64/actual pas2js,
+with clean native heaps. Real restored Lead and projected dependent changes work;
+unrelated/source states and actual model text/controls stay exact. Cancellation,
+reentry, malformed values and known-but-incompatible projected states reject
+without partial publication. Existing Win64/actual pas2js checks also pass:
+layer preparation 485687/publication 424258, voice preparation 17221/publication
+402167, musical controls 208 and retained performance 128. Native heaps are clean.
 
-Pythian typed clean accepted snapshots for named voices and layers pass focused
-Win32/Win64/actual pas2js restoration/regeneration checks (15,770 per target,
-clean native heaps). They retain canonical
-model text, controls/configuration and actual
-assignment ownership; restore decodes saved models and runs independent capture
-proof without learning or solver search. Mask copying moves into the primary layer
-foundation, shared by layer/voice/control consumers; options/projection copies are
-also shared. After relevant upstream and focused consumer checks, the gitlink
-explicitly advances to `b04a9e4`. Current validation builds against that pin;
-existing Win64/actual pas2js consumer checks also pass: layer preparation485687,
-layer publication424258, voice preparation17221, voice publication402167,
-controls208 and retained performance128, with clean native heaps. The extracted
-Win64 package check is still running. The task remains open until that relevant
-delivery check finishes; this published candidate claims no accepted effort.
-Preserve the harness's
-missing `wfc_music_sequence` import failure, repaired before final builds.
+The separate WFC branch `codex/pythian-accepted-assignments` starts at reviewed
+`d4d30b1` and publishes `b04a9e4e26130c5e00ae0c7100dfc34be99576c4`; the explicit
+Pythian gitlink now selects it. All five exact-SHA
+[upstream CI59 jobs](https://github.com/mr-highball/wfc/actions/runs/41144571400)
+pass. Generic assignment checks 143 pass Win32/Win64/pas2js; Win64 selective 124
+and scope 78 pass. The source is clean and the branch remains unmerged. Vendor
+source was not edited. A one-cell Pascal probe records why public Entry.Value
+restoration incorrectly creates caller locks. The user was notified before the
+separate-repository edits.
 
-An orchestration mistake launched two compilers into one cache. The first failed
-with an internal I/O error; the second exact compiler tree was stopped after the
-overlap was identified. Neither is qualification evidence. Their logs are retained;
-use fresh isolated target cache/output roots and run each target's builds sequentially.
-No observer timeout was treated as a worker failure or used alone to restart work.
+Extracted Win64 package inventory and all owned units compile; core-only synthesis
+renders/reloads 67032 stereo frames and source-free kick/snare/hat callers pass.
+Extracted changed source hashes match the implementation and WFC REVISION matches
+the gitlink. These affected delivery boundaries close the integration criterion.
+The broader local package runner is still running (unified session 29222;
+PowerShell PID70928 at last check), and
+[Pythian CI512](https://github.com/mr-highball/pythian/actions/runs/41148735380)
+is in progress for `8b6d1e7`. No complete-package/remote pass is claimed. Check their
+outcomes; repair relevant failures and reconsider acceptance if necessary. They
+do not earn additional effort. Prior
+[CI511](https://github.com/mr-highball/pythian/actions/runs/41142489684) passed for
+`ac4b4ec` (native completed 23:31:38Z).
 
-Accounting is now 44/102 (43.14%): 19 tasks, nine open/ten DONE, 58 open units; NS-4
-is 16/33. The new three-unit prerequisite was added before scope expansion and earns
-no upstream-only credit. Carried consecutive nonclosing count remains one during
-this active batch. No goal/parent acceptance is claimed. Stable Studio remains
-PID73508 at the prior `f630ebb` deployment; no service or operator data changed.
-No QA browser/audio/server was started. Continue the concrete prerequisite and
-then return to Studio follow-ups and role/passage regeneration.
-The previous implementation's [Pythian CI511](https://github.com/mr-highball/pythian/actions/runs/41142489684)
-has now passed (native job completed 23:31:38Z); the older running status below is historical.
+All new evidence lives under `accepted-restore-20261030-boss` in dedicated E-drive
+build/tests/cache/runs roots. Preserve the generic test's initial missing Classes
+import and the Pythian harness's missing wfc_music_sequence import failures, both
+repaired before qualification. An orchestration mistake launched two compilers
+into one cache: the first had an internal I/O error and the exact overlapping
+second tree was stopped. Neither run qualified anything; final caches are isolated.
+No observer wait expiry was treated as a worker failure. No operator/private
+recordings or responses changed. Validation is solo, not independent review.
+
+Accounting: **47/102 (46.08%)**, 19 tasks, eight open/eleven current DONE,
+55 open units; NS-4 is 19/33. The three-unit prerequisite closes actual criteria,
+so the consecutive nonclosing count resets from one to zero. The seven-unit
+[graph-controls parent](TODO/NS-4_graph-controls_01.md) remains open. No goal,
+Studio-follow-up or musical-quality acceptance follows. Stable Studio remains
+the prior `f630ebb` deployment, PID73508 at last verification; no service was
+restarted and no QA browser/audio/server was started. No operator input is needed.
+
+Next bounded batch: restore a complete six-part instrumental plan with its actual
+context, voice and percussion sessions, original/performed score and sound-binding
+metadata. Reuse these snapshots and the primary instrument planner. Demonstrate
+exact restored graph/score/unrelated PCM and an explicit sound change without
+learning or solving; protect failure/cancellation and actual native/pas2js callers.
+Stop at shared full-plan restoration, then connect its portable archive to Studio
+Before/After sound follow-ups and role/passage/dependent regeneration. Do not
+instantiate the learning starter merely to recover default sound recipes. Older
+jobs without saved latent states remain history, not fabricated faithful restores.
 
 ## Previous handoff: retained-score sound runtime implemented — 2026-10-30
 

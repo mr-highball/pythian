@@ -47,14 +47,15 @@ either precursor source directory. Phanes was removed after the
 [extraction and consumer audit](docs/REFERENCE-REMOVAL.md); its application assets
 are not library inputs. WFC and Athena remain pinned submodules.
 
-Current reviewed WFC pin: `b04a9e4e26130c5e00ae0c7100dfc34be99576c4`, on separate
+Current accepted WFC pin: `b04a9e4e26130c5e00ae0c7100dfc34be99576c4`, on separate
 branch `codex/pythian-accepted-assignments`, which remains unmerged. All five
 [upstream CI59 jobs](https://github.com/mr-highball/wfc/actions/runs/41144571400)
 pass. It retains the previous pin and adds bounded non-solving assignment
 capture/restoration with generated/caller-lock ownership intact. Pythian's
 [accepted-session consumers](docs/ACCEPTED-SESSIONS.md) retain actual models,
-controls and musical validation; upstream success alone does not accept the
-[downstream task](docs/TODO/NS-4_assignment-restore_01.md). Durable instrumental
+controls and musical validation; the [downstream task](docs/TODO/DONE/NS-4_assignment-restore_01.md)
+is accepted after its actual native/pas2js and extracted delivery boundaries pass.
+The broader Pythian CI512/package fixtures are still running. Durable instrumental
 archives and Studio follow-ups remain open. No upstream branch was merged.
 
 Previous accepted WFC pin: `d4d30b120ee6ac6741387b206d971bb2877896aa`, on separate

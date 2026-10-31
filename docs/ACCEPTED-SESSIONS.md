@@ -2,7 +2,7 @@
 
 [Musical controls](MUSICAL-CONTROLS.md) · [Named voices](INDEPENDENT-VOICES.md) ·
 [Instrumental runtime](INSTRUMENTAL.md) ·
-[Restoration task](TODO/NS-4_assignment-restore_01.md)
+[Restoration task — DONE](TODO/DONE/NS-4_assignment-restore_01.md)
 
 `TNamedVoiceSession` and `TLearnedLayerSession` expose `CopyAcceptedSnapshot`
 and static `FromAcceptedSnapshot`. These Pascal records retain the actual

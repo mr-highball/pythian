@@ -22,7 +22,7 @@ Primary attribution: NS-4. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [NS-4_assignment-restore_01](NS-4_assignment-restore_01.md) — preserve generated
+- [NS-4_assignment-restore_01 — DONE](DONE/NS-4_assignment-restore_01.md) — preserve generated
   assignment ownership while reopening durable accepted sessions.
 - [NS-6_instrumental-progress_01 — DONE](DONE/NS-6_instrumental-progress_01.md) —
   actual finite instrumental progress now shares bounded durable publication.
@@ -32,6 +32,11 @@ Primary attribution: NS-4. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-10-30, Big Boss: Accepted ownership/session restoration now closes the
+  demonstrated prerequisite. Actual models, committed controls and assignment
+  states reopen without solving, then support ordinary selective regeneration.
+  Instrument/context/percussion archive integration, Studio sound follow-ups and
+  role/passage edits remain in this seven-unit parent; no partial parent credit.
 - 2026-10-30, Big Boss: Durable Studio follow-up batch encountered a demonstrated
   generic restore prerequisite before further scope expansion; see the linked
   assignment-restore task. Plain Entry.Value restoration silently creates caller

@@ -11,7 +11,7 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 44 / 102 effort units accepted (43.14%); nine open, ten current-goal DONE.**
+**Current snapshot: 47 / 102 effort units accepted (46.08%); eight open, eleven current-goal DONE.**
 This is a scope-delivery estimate, not a musical-quality score. No arbitrary
 per-task percentages or north-star weights apply.
 
@@ -20,10 +20,10 @@ per-task percentages or north-star weights apply.
 | [NS-1](#ns-1) | Preserve portable core independence | 0 | 0 | Baseline invariant; no standalone current task |
 | [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 6 | 6 | 6 / 12 |
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 7 | 8 | 8 / 15 |
-| [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, graph inspection and musical controls | 17 | 16 | 16 / 33 |
+| [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, graph inspection and musical controls | 14 | 19 | 19 / 33 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
 | [NS-6](#ns-6) | Ordinary Studio generation, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 13 | 14 | 14 / 27 |
-| **Total** | **19 current-goal tasks** | **58** | **44** | **43.14%** |
+| **Total** | **19 current-goal tasks** | **55** | **47** | **46.08%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -83,6 +83,10 @@ passes/dependencies, locks/preferences, affect mappings and selective regenerati
 The current runtime also retains accepted graph/score decisions during atomic
 pitched instrument/expression edits. Durable Studio follow-ups and role/passage
 graph regeneration are still required; this partial slice earns no accepted units.
+The separate [assignment-restoration prerequisite](TODO/DONE/NS-4_assignment-restore_01.md)
+is accepted: actual named-voice/layer models, controls and generated ownership
+reopen without learning/solving and support ordinary selected regeneration.
+Its three units do not accept the parent archive or Studio follow-up.
 The [motif-coupling prerequisite](TODO/DONE/NS-4_motif-coupling_01.md) is accepted:
 full symbolic context choices decide harmony, rhythm and one explicit selected
 part together; the other pitched parts remain independently generated, followed
