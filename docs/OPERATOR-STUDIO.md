@@ -61,6 +61,10 @@ instrument parts. Final saving counts all seven files and result publication.
 File reads,
 pitch/beat detection and intermediate saves update the activity without resetting
 that progress. These are workflow steps, not an elapsed-time estimate;
+the line below the bar shows the current file bytes, audio frames or work count.
+Checking a full file's identity happens before learning its selected audio.
+Independent saved clip files are [in progress](TODO/NS-6_saved-clips_01.md);
+the progress repair itself does not remove full-parent reads yet.
 **Stop generation** cancels at a native checkpoint. A reconnect retries the saved
 request rather than starting a duplicate job.
 

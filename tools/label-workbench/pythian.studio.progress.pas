@@ -32,6 +32,8 @@ uses JS, Web, SysUtils, Math, pythian.studio.sources;
 
 function StudioStageText(const AStage: String): String;
 function StudioByteSize(const ABytes: Double): String;
+function StudioOperationDetail(const AJob: TJSObject;
+  const AIncludeFraction: Boolean = True): String;
 procedure DrawStudioProgress(const AParent: TJSElement; const AJob: TJSObject;
   const ACompact: Boolean = False);
 
@@ -76,6 +78,10 @@ begin
     Exit;
   end;
   case AStage of
+    'verifying_original_bytes': Result := 'Check original file';
+    'verifying_catalog_bytes', 'verifying_source_bytes': Result := 'Check saved audio file';
+    'hashing_source_bytes': Result := 'Check recording identity';
+    'verifying_stage_bytes': Result := 'Check new recording';
     'checking_selected_metadata', 'rechecking_selected_metadata': Result := 'Open selected music';
     'instrumental_prepare': Result := '1 · Prepare musical material';
     'instrumental_reference': Result := 'Prepare original reference';
@@ -200,6 +206,40 @@ begin
   AParent.appendChild(Result);
 end;
 
+function StudioOperationDetail(const AJob: TJSObject;
+  const AIncludeFraction: Boolean): String;
+var
+  LDone, LTotal: Double;
+  LUnit, LCount: String;
+begin
+  LDone := Max(0, StudioNumber(AJob, 'done'));
+  LTotal := StudioNumber(AJob, 'total');
+  LUnit := StudioText(AJob, 'progress_unit');
+  if LUnit = '' then Exit('');
+  if LUnit = 'bytes' then
+  begin
+    Result := StudioByteSize(LDone);
+    if LTotal > 0 then Result := Result + ' / ' + StudioByteSize(LTotal);
+  end
+  else
+  begin
+    if LUnit = 'frames' then LCount := 'audio frames'
+    else if LUnit = 'observations' then LCount := 'audio windows'
+    else if LUnit = 'milliseconds' then LCount := 'ms'
+    else if LUnit = 'visits' then LCount := 'work steps'
+    else LCount := LUnit;
+    Result := IntToStr(Trunc(LDone));
+    if LTotal > 0 then Result := Result + ' / ' + IntToStr(Trunc(LTotal));
+    Result := Result + ' ' + LCount;
+  end;
+  if LTotal > 0 then
+  begin
+    if AIncludeFraction then
+      Result := Result + ' (' + IntToStr(Trunc(100 * Min(LDone, LTotal) / LTotal)) + '%)';
+  end
+  else Result := Result + ' · total not yet known';
+end;
+
 procedure DrawGenerationWorkflow(const AParent: TJSElement; const AJob: TJSObject);
 const
   CNames: array[1..4] of String =
@@ -209,7 +249,8 @@ var
   LRoot, LBar, LSteps, LItem: TJSElement;
   LPhase, I: Integer;
   LDone, LTotal, LValue: Double;
-  LDetail, LOperation: String;
+  LDetail, LOperation, LStage, LActivity: String;
+  LFileCheck: Boolean;
   LNames: array[1..4] of String;
 begin
   for I := 1 to 4 do LNames[I] := CNames[I];
@@ -247,9 +288,16 @@ begin
     if I < LPhase then LItem.className := 'phase-complete'
     else if I = LPhase then LItem.setAttribute('aria-current', 'step');
   end;
+  LStage := StudioText(AJob, 'stage');
+  LFileCheck := (LStage = 'verifying_original_bytes') or
+    (LStage = 'verifying_catalog_bytes') or (LStage = 'verifying_source_bytes') or
+    (LStage = 'hashing_source_bytes');
   if (LTotal > 0) and (StudioText(LWorkflow, 'unit') = 'milliseconds') then
-    Add(LRoot, 'p', StudioTime(LDone / 1000) + ' / ' + StudioTime(LTotal / 1000) +
-      ' of selected music checked')
+    if (LDone = 0) and LFileCheck then
+      Add(LRoot, 'p', StudioTime(LTotal / 1000) + ' selected. Learning starts after the file check.')
+    else
+      Add(LRoot, 'p', StudioTime(LDone / 1000) + ' / ' + StudioTime(LTotal / 1000) +
+        ' of selected music checked')
   else if (LTotal > 0) and (LPhase = 3) then
     Add(LRoot, 'p', IntToStr(Trunc(100 * LDone / LTotal)) +
       '% of mix and instrument audio synthesized');
@@ -258,9 +306,15 @@ begin
     if LDone < 7 then Add(LRoot, 'p', IntToStr(Trunc(LDone)) + ' of 7 audio outputs saved')
     else Add(LRoot, 'p', 'Audio saved. Finishing your track…');
   end;
-  LOperation := StudioStageText(StudioText(AJob, 'stage'));
+  LOperation := StudioStageText(LStage);
   if Pos(' · ', LOperation) = 2 then Delete(LOperation, 1, 4);
-  Add(LRoot, 'small', LOperation + '…');
+  LActivity := StudioOperationDetail(AJob,
+    (LPhase <> 3) or (StudioText(AJob, 'progress_unit') <> 'frames'));
+  if LActivity <> '' then LOperation := LOperation + ' · ' + LActivity
+  else LOperation := LOperation + '…';
+  Add(LRoot, 'p', LOperation).className := 'progress-activity';
+  if LFileCheck then
+    Add(LRoot, 'small', 'Checking the full file identity. Only your selected audio is learned.');
   Add(LRoot, 'small', 'Workflow progress, not a time estimate.').className := 'muted';
 end;
 

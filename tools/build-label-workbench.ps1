@@ -140,4 +140,10 @@ if ($VerifyCodec) {
   if ($LASTEXITCODE -ne 0) { throw 'Portable progress pas2js compilation failed' }
   & $nodeCommand.Source (Join-Path $codecRoot 'pythian.tests.progress.portable.js')
   if ($LASTEXITCODE -ne 0) { throw 'Portable progress checks failed' }
+  & $Compiler '-B' '-Tnodejs' '-Mdelphi' '-Jc' "-Ji$RtlJavascript" `
+    "-Fu$RtlSource" "-Fu$(Join-Path $repositoryRoot 'src')" "-Fu$sourceRoot" "-FE$codecRoot" `
+    (Join-Path $repositoryRoot 'tests/pythian.tests.studio.progress.ui.lpr')
+  if ($LASTEXITCODE -ne 0) { throw 'Studio progress presentation compilation failed' }
+  & $nodeCommand.Source (Join-Path $codecRoot 'pythian.tests.studio.progress.ui.js')
+  if ($LASTEXITCODE -ne 0) { throw 'Studio progress presentation checks failed' }
 }

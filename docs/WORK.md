@@ -2,6 +2,66 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
+## Current handoff: Generate activity visible; independent clips next — 2026-10-31
+
+Big Boss SOLO accepts [generation activity](TODO/DONE/NS-6_generation-activity_01.md).
+**86/131 effort accepted (65.65%), seven open and eighteen current DONE.**
+The two new operator tasks added seven units; only the two-unit visible-progress
+repair is accepted. The separate five-unit [saved clip task](TODO/NS-6_saved-clips_01.md)
+remains open. This actual consumer closure resets consecutive nonclosing count
+from one to zero. The goal remains active; clip-only learning takes operator
+priority, then return to retained role/passage graph regeneration.
+
+The native worker was already advancing full-source identity bytes and then
+resampling frames. The compact UI discarded the counters and fell back to
+Preparing music. One workflow bar now retains real operation/byte/frame/item/
+unknown-total detail; full-source checks distinguish original bytes from selected
+audio to learn. Twelve actual pas2js presentation checks pass, with shared
+portable WAV/progress checks. Actual desktop/390px Studio generation shows live
+counters, a one-minute job completes, and a ten-minute QA request reconnects to
+the same native job then cancels normally. The explicitly labeled component
+preview exercises the original704MiB/1.83GiB callback and its next800MiB update
+without resetting the main workflow. This is recorded input, not another live
+native run. Packet: generation-activity-20261031-boss on E.
+
+The twelve matching web assets are hash-checked and deployed to the fixed stable
+slot. The native service/worker bytes, process, catalog and host settings stay
+unchanged. The operator's original job completes at event119 with the same
+identity; no operator feedback or new production job was submitted. Temporary
+QA preview assets are restored to all twelve checked files. Exact QA service/
+workers/tab are closed, phone viewport reset and no playback was started.
+Do not present this visibility repair as eliminating source scans: existing
+playlist ranges still call complete-entry preparation. Independent audio files,
+linked ancestry and clip-only verification must be delivered next.
+
+## Selected batch: expose actual Generate activity — 2026-10-31
+
+Big Boss SOLO classifies the previous turn as progress: actual sound-only Studio
+follow-ups are deployed. Parent graph-controls remains open and the carried
+consecutive nonclosing count is one. Initial graph-regeneration API inspection
+has made no changes; the operator now reports a concrete loading-feedback defect.
+Follow [generation activity](TODO/DONE/NS-6_generation-activity_01.md) first. Its
+two-unit addition grows scope to126;84 accepted units remain (66.67%), seven
+open and seventeen current DONE. No partial graph credit or counter reset.
+
+The live native job is advancing full-source identity bytes and subsequently
+resampling frames, but compact Generate discards these counters and has no
+library-stage label. Deliver one continuous workflow plus visible operation and
+actual byte/frame/item/unknown-total counts, with a clear full-file versus
+selected-learning distinction. Validate the changed browser path at desktop and
+phone width, actual durable snapshots and same-job reconnect. Stop after checked
+deployment of this concrete repair, then return to role/passage graph editing.
+Packet: generation-activity-20261031-boss under dedicated E-drive roots.
+
+The operator then explicitly requires independent saved clip audio: follow
+[saved clips](TODO/NS-6_saved-clips_01.md) after exposing the immediate native
+activity. Add five units before implementation:84/131 accepted (64.12%), eight
+open and seventeen current DONE. Draft saving remains metadata-only and must
+not block on a full track; durable clip preparation must publish source-linked
+audio, and later learning must read/verify only those files. This replaces
+repeated full-original preparation, not just its wording. No musical/partial
+effort follows task creation. Original source licenses and prior snapshots stay.
+
 ## Current handoff: change sounds on a finished Studio track — 2026-10-31
 
 Big Boss SOLO delivers the sound-only Studio follow-up in
