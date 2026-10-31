@@ -29,14 +29,16 @@ unit pythian.tools.studio.instrumental;
 
 interface
 
-uses fpjson, pythian.progress;
+uses fpjson, pythian.progress, pythian.tools.studio.&library;
 
 type
   TStudioInstrumentalCheck = procedure of object;
 
 function RunStudioInstrumental(const ACatalogRoot, AJobId: String;
   const ARequest: TJSONObject; const ACheck: TStudioInstrumentalCheck;
-  const AProgress: TWorkProgressCallback): TJSONObject;
+  const AProgress: TWorkProgressCallback; const ALibraryRoot: String = '';
+  const ACacheRoot: String = '';
+  const ALibraryProgress: TStudioLibraryProgress = nil): TJSONObject;
 
 implementation
 
@@ -47,9 +49,11 @@ uses Classes, SysUtils, Math,
   pythian.wfc.instrumental.controls,
   pythian.wfc.instrumental, pythian.wfc.instrumental.starter,
   pythian.wfc.percussion, pythian.wfc.voices, pythian.wfc.musical.context,
+  pythian.wfc.musical.corpus, wfc_music_voices_graph,
   wfc_model, wfc_sequence, wfc_sequence_text,
   pythian.tools.studio.jobs, pythian.tools.studio.instrumental.config,
   pythian.tools.studio.material, pythian.tools.studio.material.reference,
+  pythian.tools.studio.playlist.learning,
   pythian.tools.listen.catalog;
 
 const
@@ -66,7 +70,8 @@ end;
 
 function RunStudioInstrumental(const ACatalogRoot, AJobId: String;
   const ARequest: TJSONObject; const ACheck: TStudioInstrumentalCheck;
-  const AProgress: TWorkProgressCallback): TJSONObject;
+  const AProgress: TWorkProgressCallback; const ALibraryRoot,
+  ACacheRoot: String; const ALibraryProgress: TStudioLibraryProgress): TJSONObject;
 var
   LStarter: TInstrumentalStarter;
   LPlan: TInstrumentalPlan;
@@ -110,6 +115,17 @@ var
   LTonicBias: Integer;
   LHasExpression: Boolean;
   LHasGraphControls: Boolean;
+  LIsPlaylist: Boolean;
+  LPlaylistHasSound: Boolean;
+  LCorpus: TMusicalCorpus;
+  LLearning: TJSONObject;
+  LReferenceMaterial: TJSONObject;
+  LWorkingConfig: TJSONObject;
+  LGraphConfig: TWfcMusicVoicesGraphConfig;
+  LContextModel: TWfcSequenceModel;
+  LCache: String;
+  LTempo: Integer;
+  LModelArtifact: TJSONObject;
 begin
   LConfig := ARequest.Objects['instrumental'];
   ValidateStudioInstrumentalConfig(LConfig);
@@ -119,6 +135,12 @@ begin
   LQueue := nil; LMeta := nil;
   LMaterial := nil;
   LReference := nil;
+  LCorpus := nil;
+  LLearning := nil;
+  LWorkingConfig := nil;
+  LReferenceMaterial := nil;
+  LIsPlaylist := ARequest.Objects['project_snapshot'].Find('playlist') <> nil;
+  LPlaylistHasSound := False;
   for LRole := 0 to 2 do LInstruments[LRole] := nil;
   Result := TJSONObject.Create;
   try
@@ -131,7 +153,33 @@ begin
     LPatternRole := 2;
     LRecipeHash := '';
     LSoundRole := -1;
-    if ARequest.Objects['project_snapshot'].Find('musical_material') <> nil then
+    if LIsPlaylist then
+    begin
+      LCache := ACacheRoot;
+      if LCache = '' then LCache := SysUtils.GetEnvironmentVariable('PYTHIAN_STUDIO_LEARNING_CACHE_ROOT');
+      if LCache = '' then LCache := IncludeTrailingPathDelimiter(ACatalogRoot) +
+        'studio' + PathDelim + 'musical-cache';
+      LCorpus := LearnStudioPlaylist(ACatalogRoot, ALibraryRoot, LCache, AJobId,
+        ARequest.Objects['project_snapshot'].Objects['playlist'], LLearning, AProgress,
+        ALibraryProgress);
+      LOrigin := StudioPlaylistOrigin;
+      LRecipeHash := StudioTextHash(StudioPlaylistLearningPolicy +
+        ARequest.Objects['project_snapshot'].Objects['playlist'].AsJSON);
+      LWorkingConfig := TJSONObject(LConfig.Clone);
+      LConfig := LWorkingConfig;
+      LTempo := LLearning.Integers['output_tempo_microseconds'];
+      LConfig.Integers['tempo_bpm'] := Round(60000000 / LTempo);
+      LConfig.Integers['cells'] := Ceil(ARequest.Int64s['duration_ms'] * 2000 / LTempo);
+      ValidateStudioInstrumentalConfig(LConfig);
+      LGraphConfig := LCorpus.Config;
+      LContextModel := LCorpus.ContextModel;
+      SetLength(LRoles, 3);
+      for LRole := 0 to 2 do LRoles[LRole].Name := LCorpus.CopyRoleNames[LRole];
+      LPlaylistHasSound := LCorpus.ProposedSound(LSound);
+      LReferenceMaterial := TJSONObject.Create;
+      LReferenceMaterial.Add('source', LLearning.Objects['reference_source'].Clone);
+    end
+    else if ARequest.Objects['project_snapshot'].Find('musical_material') <> nil then
     begin
       LMaterial := CanonicalStudioMaterial(ARequest.Objects['project_snapshot'].Objects['musical_material']);
       LRecipeHash := StudioTextHash(LMaterial.AsJSON);
@@ -150,21 +198,40 @@ begin
       LOrigin := 'Operator musical choices with authored accompaniment; experimental pitch cells, explicit part assignment and WFC decisions; no source-audio grains';
     end;
     if LConfig.Find('mode') <> nil then LMode := LConfig.Strings['mode'];
-    LStarter := TInstrumentalStarter.Create(LConfig.Integers['tonic'],
-      LMode = 'natural_minor', LPattern, LPatternRole, AProgress);
-    LRoles := LStarter.CopyRoles;
+    if not LIsPlaylist then
+    begin
+      LStarter := TInstrumentalStarter.Create(LConfig.Integers['tonic'],
+        LMode = 'natural_minor', LPattern, LPatternRole, AProgress);
+      LRoles := LStarter.CopyRoles;
+      LGraphConfig := LStarter.Config;
+      LContextModel := LStarter.ContextModel;
+    end;
     for LRole := 0 to 2 do
     begin
-      LZones := LRoles[LRole].Instrument.CopyZones;
+      if LIsPlaylist then
+      begin
+        LZones := nil;
+        SetLength(LZones, 1);
+        LZones[0].MinimumKey := 0;
+        LZones[0].MaximumKey := 127;
+        LZones[0].MinimumVelocity := 1;
+        LZones[0].MaximumVelocity := 127;
+        LZones[0].Voice := DefaultSynthVoice;
+        LZones[0].Voice.Gain := 0.14;
+        LRoles[LRole].OutputBus := LRole;
+      end
+      else LZones := LRoles[LRole].Instrument.CopyZones;
       for LIndex := 0 to High(LZones) do
       begin
         LZones[LIndex].Voice.Shape := Shape(LConfig.Arrays['instruments'].Strings[LRole]);
-        if LRole = LSoundRole then
+        if (LRole = LSoundRole) or LPlaylistHasSound then
           LZones[LIndex].Voice := ApplyMusicalSound(LZones[LIndex].Voice, LSound, StudioInstrumentalRate);
       end;
       LInstruments[LRole] := TInstrument.Create(LZones);
       LRoles[LRole].Instrument := LInstruments[LRole];
-      LRoles[LRole].InstrumentId := 'starter-' + LConfig.Arrays['instruments'].Strings[LRole];
+      if LIsPlaylist then
+        LRoles[LRole].InstrumentId := 'playlist-primary-v1-' + LConfig.Arrays['instruments'].Strings[LRole]
+      else LRoles[LRole].InstrumentId := 'starter-' + LConfig.Arrays['instruments'].Strings[LRole];
       if LRole = LSoundRole then
         LRoles[LRole].InstrumentId := LRoles[LRole].InstrumentId + '-cutoff' +
           IntToStr(LSound.CutoffHz) + '-sustain' + IntToStr(LSound.SustainPercent);
@@ -177,8 +244,18 @@ begin
     LOptions.Session.RequireObservedEnd := False;
     LOptions.Tempos[0] := MakeTempoChange(0, Round(60000000 / LConfig.Integers['tempo_bpm']));
     LOptions.MaterialOrigin := LOrigin;
-    LDrums := LStarter.CopyPercussion(LOptions.SampleRate);
-    LBaseMasks := LStarter.GuideMasks(LOptions.Session.CellCount);
+    if LIsPlaylist then
+    begin
+      LOptions.Tempos[0] := MakeTempoChange(0, LTempo);
+      LDrums := LCorpus.CopyPercussion(LOptions.SampleRate);
+      for LRole := 0 to 2 do LDrums[LRole].OutputBus := LRole + 3;
+      LBaseMasks := nil;
+    end
+    else
+    begin
+      LDrums := LStarter.CopyPercussion(LOptions.SampleRate);
+      LBaseMasks := LStarter.GuideMasks(LOptions.Session.CellCount);
+    end;
     LCompiled := Default(TInstrumentalGraphControls);
     LCompiled.Masks := LBaseMasks;
     LTonicBias := 0;
@@ -205,7 +282,7 @@ begin
       if LHasGraphControls then
       begin
         try
-          LCompiled := CompileInstrumentalControls(LStarter.Config, LOptions.Session.CellCount,
+          LCompiled := CompileInstrumentalControls(LGraphConfig, LOptions.Session.CellCount,
             LConfig.Integers['tonic'], LTonicBias, LMusicalControls, LBaseMasks, AProgress);
         except
           on E: EAudio do
@@ -219,14 +296,23 @@ begin
           LOptions.Expression[LRole] := LMusicalControls[LRole].Expression;
       end;
     end;
-    if not TryCreateInstrumentalPlan(LStarter.Config, LRoles, LOptions,
+    if not TryCreateInstrumentalPlan(LGraphConfig, LRoles, LOptions,
       LCompiled.Masks, LCompiled.Preferences, LPlan, LReport,
-      AProgress, LDrums, LStarter.ContextModel) then
+      AProgress, LDrums, LContextModel) then
       raise EAudio.Create('Instrumental graph rejected: ' + LReport.Detail);
     LMeta := TJSONObject.Create;
     LMeta.Add('material_origin', LOrigin);
     LMeta.Add('settings', LConfig.Clone);
-    LMeta.Objects['settings'].Strings['mode'] := LMode;
+    if not LIsPlaylist then LMeta.Objects['settings'].Strings['mode'] := LMode;
+    if LLearning <> nil then
+    begin
+      LMeta.Add('playlist_learning', LLearning.Clone);
+      Result.Add('playlist_learning', LLearning.Clone);
+      LMeta.Add('pitch_policy', 'Source-derived proposed absolute pitches; no authored key/scale imposed');
+      LMeta.Objects['settings'].Delete('tonic');
+      LMeta.Objects['settings'].Delete('mode');
+      LMeta.Objects['settings'].Add('tempo_microseconds', LTempo);
+    end;
     if LMaterial <> nil then
     begin
       LMeta.Add('musical_material', LMaterial.Clone);
@@ -238,7 +324,7 @@ begin
         LMeta.Add('sound_policy', 'Experimental controls: twice centroid -> low-pass cutoff 100..10000 Hz; quiet/peak window RMS -> ADSR sustain 0..100 percent. Operator-selected/corrected target; not instrument identification or envelope reconstruction.');
       end;
       LMeta.Add('context_policy', 'Saved cells retain absolute MIDI notes. Context jointly decides harmony, rhythm and the selected part; other parts stay independently solved. Current tempo/root/sounds are explicit generation controls.');
-      if LStarter.ContextModel <> nil then
+      if LContextModel <> nil then
       begin
         LMeta.Add('context_role', LPlan.CopyProvider(MusicalContextPassName).RoleId);
         Result.Add('context_role', LMeta.Strings['context_role']);
@@ -277,6 +363,14 @@ begin
       begin
         LModel := LPlan.CopyModel(LGraphInfo[LPass].Name);
         LModelText := LModelText + EncodeWfcSequenceText(LModel);
+        LModelArtifact := TJSONObject.Create;
+        try
+          LModelArtifact.Add('format', 'pythian.studio.instrumental.provider.v1');
+          LModelArtifact.Add('pass', LGraphInfo[LPass].Name);
+          LModelArtifact.Add('model_text', EncodeWfcSequenceText(LModel));
+          LRow.Add('model_artifact', 'provider-' + IntToStr(LPass) + '.json');
+          WriteStudioJSONNew(LDirectory + PathDelim + LRow.Strings['model_artifact'], LModelArtifact);
+        finally LModelArtifact.Free end;
         FreeAndNil(LModel);
       end;
     end;
@@ -302,11 +396,15 @@ begin
     Result.Add('request_sha256', ARequest.Strings['request_sha256']);
     Result.Add('sources', TJSONArray.Create);
     Result.Add('used_sources', TJSONArray.Create);
-    LReference := StageStudioMaterialReference(ACatalogRoot, AJobId, LMaterial, AProgress);
+    if LIsPlaylist then
+      LReference := StageStudioMaterialReference(ACatalogRoot, AJobId, LReferenceMaterial, AProgress)
+    else LReference := StageStudioMaterialReference(ACatalogRoot, AJobId, LMaterial, AProgress);
     if LReference <> nil then
     begin
       Result.Add('original_reference', LReference.Clone);
-      Result.Arrays['sources'].Add(LMaterial.Objects['source'].Clone);
+      if LIsPlaylist then
+        Result.Arrays['sources'].Add(LReferenceMaterial.Objects['source'].Clone)
+      else Result.Arrays['sources'].Add(LMaterial.Objects['source'].Clone);
     end;
     LParts := TJSONArray.Create;
     Result.Add('parts', LParts);
@@ -391,7 +489,8 @@ begin
         LPasses.Objects[LPass].Add('tokens', LTokenArray);
         for LIndex := 0 to High(LTokens) do LTokenArray.Add(LTokens[LIndex]);
       end;
-    LMeta.Add('models', LModelText);
+    LMeta.Add('models_sha256', LModelHash);
+    LMeta.Add('model_storage', 'Canonical provider text in each pass model_artifact');
     WriteStudioJSONNew(LDirectory + PathDelim + 'instrumental-plan.json', LMeta);
     Result.Add('plan_sha256', StudioTextHash(LMeta.AsJSON));
     LId := 'studio_' + AJobId + '_0';
@@ -402,6 +501,7 @@ begin
     LQueue.Add('items', TJSONArray.Create([LItem]));
     LItem.Add('id', LId);
     LItem.Add('task_id', 'NS-6_instrumental-studio_01');
+    if LIsPlaylist then LItem.Strings['task_id'] := 'NS-3_style-vocabulary_01';
     LItem.Add('kind', 'single');
     LItem.Add('question', 'Do these instruments work together as music you want to develop?');
     if LReference <> nil then
@@ -423,7 +523,10 @@ begin
     LProvenance.Add('material_sha256', LMaterialHash);
     LProvenance.Add('material_origin', LOrigin);
     LProvenance.Add('model_sha256', LModelHash);
-    LProvenance.Add('policy_sha256', StudioTextHash('pythian instrumental starter studio v1'));
+    if LIsPlaylist then
+      LProvenance.Add('policy_sha256', StudioTextHash(StudioPlaylistLearningPolicy + '|' +
+        StudioPlaylistAnalysisPolicy + '|' + StudioPlaylistOrigin))
+    else LProvenance.Add('policy_sha256', StudioTextHash('pythian instrumental starter studio v1'));
     LProvenance.Add('parameter_sha256', ARequest.Strings['request_sha256']);
     LProvenance.Add('split', 'development'); LProvenance.Add('seed', Int64(LSeed));
     LRange := TJSONObject.Create;
@@ -472,8 +575,12 @@ begin
     end;
   finally
     LReference.Free;
+    LReferenceMaterial.Free;
+    LLearning.Free;
+    LWorkingConfig.Free;
     LMaterial.Free;
     LModel.Free; LMeta.Free; LQueue.Free; LPlan.Free; LStarter.Free;
+    LCorpus.Free;
     for LRole := 0 to 2 do LInstruments[LRole].Free;
   end;
 end;

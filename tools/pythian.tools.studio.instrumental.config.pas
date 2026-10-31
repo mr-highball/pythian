@@ -36,6 +36,8 @@ const
     'Authored symbolic starter v1; operator tempo/key/sounds; WFC pitched and drum decisions; no WAV learning';
   StudioInstrumentalRate = 24000;
   StudioInstrumentalMaximumCells = 256;
+  StudioPlaylistOrigin =
+    'Experimental recording-derived musical providers; primary synthesized instruments; no original-audio reconstruction';
 
 procedure ValidateStudioInstrumentalConfig(const AConfig: TJSONObject);
 function DecodeStudioMusicalControls(const AControls: TJSONObject): TMusicalPartControls;
@@ -83,8 +85,7 @@ begin
   end;
   Number(AConfig, 'tempo_bpm', 40, 240);
   Number(AConfig, 'tonic', 0, 11);
-  Need(Number(AConfig, 'cells', 8, StudioInstrumentalMaximumCells) mod 8 = 0,
-    'Instrumental length requires complete eight-cell bars');
+  Number(AConfig, 'cells', 1, StudioInstrumentalMaximumCells);
   LValue := AConfig.Find('instruments');
   Need((LValue <> nil) and (LValue.JSONType = jtArray) and
     (TJSONArray(LValue).Count = 3), 'Choose three pitched instruments');

@@ -106,10 +106,18 @@ without exceeding Windows path limits. Supply the audio-library root explicitly
 when changing cwd. Other installations may choose their own cache root; the
 portable fallback is `build/cache/studio-prepared` relative to cwd.
 
+Also set `PYTHIAN_STUDIO_STAGE_ROOT` to
+`E:/CodexWork/pythian/runs/studio-stages` and
+`PYTHIAN_STUDIO_LEARNING_CACHE_ROOT` to
+`E:/CodexWork/pythian/cache/studio-musical-proposals`. The former gives the
+shared job staging allocator an explicit short host root; the latter stores
+source/clock/policy-bound musical proposals reused by playlist learning.
+Both are host configuration inherited by native workers, never browser paths.
+
 Open the selected host on port18097: source review is at `/`, and complete
-single/paired listening is at `/listen.html`, and project/source setup is at
-`/studio.html`. Saving a Studio draft preserves setup; its Generate action starts
-an explicit worker job. Run from the repository root. The private audio drop
+single/paired listening is at `/listen.html`, and the music playlist is at
+`/studio.html`. Playlist choices save automatically; Generate starts the explicit
+learning/instrumental worker job. The private audio drop
 folder defaults to `local-audio/collections/`; `PYTHIAN_AUDIO_LIBRARY` can point
 to another private root containing `collections/`. No access-key form is needed in
 this selected private-LAN mode; Host/Origin and same-origin write-session checks

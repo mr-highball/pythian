@@ -143,6 +143,7 @@ function StudioSourceKey(AObject: TJSObject): String;
 function StudioText(AObject: TJSObject; const AName: String): String;
 function StudioNumber(AObject: TJSObject; const AName: String): Double;
 function StudioTime(const ASeconds: Double): String;
+function ParseSourceTime(const AText: String; out ASeconds: Double): Boolean;
 
 implementation
 

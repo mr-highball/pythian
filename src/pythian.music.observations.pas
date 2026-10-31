@@ -30,7 +30,7 @@ unit pythian.music.observations;
 interface
 
 uses pythian.audio, pythian.analysis, pythian.tonal, pythian.pitch.track,
-  pythian.progress;
+  pythian.progress, pythian.beat.wave;
 
 const
   MusicalObservationVersion = 1;
@@ -41,6 +41,7 @@ const
 
 type
   TChannelPitchSpans = array of TPitchSpans;
+  TChannelBeatEvidence = array of TWaveBeatEvidence;
   TMusicalObservations = record
     AnalysisOptions: TAnalysisOptions;
     Features: TAudioFeatures;
@@ -49,6 +50,9 @@ type
     Bands: TAudioBandSeriesArray;
     Tonal: TTonalReport;
     ChannelPitches: TChannelPitchSpans;
+    { Pulse proposals use the same already resampled first-eight-second channel
+      as periodic pitch. They are not whole-track tempo/downbeat truth. }
+    ChannelBeats: TChannelBeatEvidence;
     PitchFrames: Integer;
     MeanCentroidHz: Double;
     MinimumRms: Double;
@@ -65,7 +69,7 @@ function MeasureMusicalObservations(const AClip: TAudioClip;
 
 implementation
 
-uses Math, pythian.onset, pythian.resample;
+uses Math, pythian.onset, pythian.resample, pythian.beat;
 
 function MeasureMusicalObservations(const AClip: TAudioClip;
   const AProgress: TWorkProgressCallback): TMusicalObservations;
@@ -121,6 +125,7 @@ begin
   end;
   LFrames := Min(AClip.FrameCount, AClip.SampleRate * MusicalPitchSeconds);
   SetLength(LResult.ChannelPitches, AClip.Channels);
+  SetLength(LResult.ChannelBeats, AClip.Channels);
   for LChannel := 0 to AClip.Channels - 1 do
   begin
     ReportWork(AProgress, 'musical_pitch_channel', wuItems, LChannel, AClip.Channels);
@@ -140,6 +145,8 @@ begin
       begin
         Continue;
       end;
+      LResult.ChannelBeats[LChannel] := MeasureWaveBeats(LResampled,
+        DefaultBeatGridOptions, AProgress);
       LTrack := TPitchTrack.Create(LResampled, 0,
         LPitchOptions, 0, AProgress);
       LResult.ChannelPitches[LChannel] := LTrack.CopySpans;

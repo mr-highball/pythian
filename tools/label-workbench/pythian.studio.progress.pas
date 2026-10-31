@@ -32,7 +32,8 @@ uses JS, Web, SysUtils, Math, pythian.studio.sources;
 
 function StudioStageText(const AStage: String): String;
 function StudioByteSize(const ABytes: Double): String;
-procedure DrawStudioProgress(const AParent: TJSElement; const AJob: TJSObject);
+procedure DrawStudioProgress(const AParent: TJSElement; const AJob: TJSObject;
+  const ACompact: Boolean = False);
 
 implementation
 
@@ -46,6 +47,21 @@ end;
 
 function StudioStageText(const AStage: String): String;
 begin
+  if (Copy(AStage, 1, 9) = 'playlist_') then
+  begin
+    if Pos('learn_music', AStage) > 0 then Result := 'Learn musical ideas'
+    else if Pos('verify', AStage) > 0 then Result := 'Check your recording'
+    else if Pos('prepare', AStage) > 0 then Result := 'Open your selected music'
+    else if Pos('cache', AStage) > 0 then Result := 'Reuse saved analysis'
+    else Result := 'Analyze your selected music';
+    Exit;
+  end;
+  if (Copy(AStage, 1, 15) = 'musical_corpus_') or
+    (Copy(AStage, 1, 17) = 'musical_proposal_') or (Copy(AStage, 1, 13) = 'wfc_weighted_') then
+  begin
+    Result := 'Learn musical ideas';
+    Exit;
+  end;
   if (Copy(AStage, 1, 4) = 'wfc_') then
   begin
     if Pos('search', AStage) > 0 then Result := 'Find the next musical pattern'
@@ -60,6 +76,7 @@ begin
     Exit;
   end;
   case AStage of
+    'checking_selected_metadata', 'rechecking_selected_metadata': Result := 'Open selected music';
     'instrumental_prepare': Result := '1 · Prepare musical material';
     'instrumental_reference': Result := 'Prepare original reference';
     'context_prepare_masks': Result := '2 · Connect musical context and selected part';
@@ -179,7 +196,8 @@ begin
   AParent.appendChild(Result);
 end;
 
-procedure DrawStudioProgress(const AParent: TJSElement; const AJob: TJSObject);
+procedure DrawStudioProgress(const AParent: TJSElement; const AJob: TJSObject;
+  const ACompact: Boolean);
 var
   LRoot, LBar, LLabel: TJSElement;
   LStage, LStatus, LText, LUnit, LDetail: String;
@@ -189,10 +207,17 @@ begin
   LStage := StudioText(AJob, 'stage');
   LStatus := StudioText(AJob, 'status');
   if LStatus = '' then LStatus := StudioText(AJob, 'job_status');
+  if ACompact and ((LStatus = 'completed') or (LStatus = 'cancelled') or
+    (LStatus = 'failed')) then Exit;
   LRoot := Add(AParent, 'div', '');
   LRoot.className := 'learning-progress';
   LStep := StepNumber(LStage);
   LText := StudioStageText(LStage);
+  if ACompact then
+  begin
+    LStep := 0;
+    if Pos(' · ', LText) = 2 then Delete(LText, 1, 4);
+  end;
   if LStatus = 'failed' then
   begin
     LStep := 0;
@@ -248,6 +273,11 @@ begin
       else LDetail := IntToStr(Trunc(LDone)) + ' / ' + IntToStr(Trunc(LTotal)) + ' audio frames'
     else LDetail := IntToStr(Trunc(LDone)) + ' / ' + IntToStr(Trunc(LTotal));
     LBar.setAttribute('aria-valuetext', LText + ' · ' + LDetail);
+    if ACompact then
+    begin
+      Add(LRoot, 'p', LText + ' of this step');
+      Exit;
+    end;
     Add(LRoot, 'p', LText + ' · ' + LDetail);
     if (LUnit = 'bytes') and ((LStage = 'verify_sources') or
       (LStage = 'verify_model_sources') or (LStage = 'verify_output_sources')) then
@@ -259,7 +289,7 @@ begin
   else
   begin
     if LStatus = 'queued' then LText := 'Starts when the worker is free.'
-    else if (LUnit <> '') and (LDone > 0) then
+    else if not ACompact and (LUnit <> '') and (LDone > 0) then
     begin
       if LUnit = 'bytes' then LText := StudioByteSize(LDone) + ' checked'
       else if LUnit = 'frames' then LText := IntToStr(Trunc(LDone)) + ' audio frames processed'

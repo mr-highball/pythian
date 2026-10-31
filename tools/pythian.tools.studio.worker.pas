@@ -1775,7 +1775,8 @@ var
 begin
   if FRequest.Strings['kind'] = 'instrumental_generate' then
   begin
-    Exit(RunStudioInstrumental(FCatalogRoot, FJobId, FRequest, Check, AudioProgress));
+    Exit(RunStudioInstrumental(FCatalogRoot, FJobId, FRequest, Check, AudioProgress,
+      ALibraryRoot, '', LibraryProgress));
   end;
   if FRequest.Strings['kind'] = 'library_discover' then
   begin

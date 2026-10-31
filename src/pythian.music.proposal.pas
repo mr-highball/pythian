@@ -44,6 +44,10 @@ type
   TMusicalProposalDrumCell = array[0..2] of Integer;
   TMusicalProposalDrums = array of TMusicalProposalDrumCell;
   TMusicalProposalNames = array of String;
+  TProposedMusicalBlock = record
+    FirstCell: Integer;
+    CellCount: Integer;
+  end;
   TProposedMusicalGrid = record
     Version: Integer;
     Policy: String;
@@ -74,6 +78,12 @@ function ProposeMusicalGrid(const AObservations: TMusicalObservations;
 procedure ValidateProposedMusicalGrid(const AGrid: TProposedMusicalGrid;
   const AProgress: TWorkProgressCallback = nil);
 function CopyProposedMusicalGrid(const AGrid: TProposedMusicalGrid): TProposedMusicalGrid;
+{ A contiguous known block, preferring the largest supported length then the
+  closest center to the requested cell. Excluded cells cannot be repeated.
+  CellCount=0 means no supported material. No source gap is concatenated. }
+function ChooseProposedMusicalBlock(const AGrid: TProposedMusicalGrid;
+  const APreferredCell, AMaximumCells: Integer;
+  const AExcluded: TMusicalProposalFlags = nil): TProposedMusicalBlock;
 
 implementation
 
@@ -215,6 +225,53 @@ begin
     for J := 0 to High(AGrid.Frames[I]) do
     begin
       Result.Frames[I][J].Tones := Copy(AGrid.Frames[I][J].Tones);
+    end;
+  end;
+end;
+
+function ChooseProposedMusicalBlock(const AGrid: TProposedMusicalGrid;
+  const APreferredCell, AMaximumCells: Integer;
+  const AExcluded: TMusicalProposalFlags): TProposedMusicalBlock;
+var
+  I: Integer;
+  LFirst: Integer;
+  LCount: Integer;
+  LStart: Integer;
+  LDistance: Integer;
+  LBestDistance: Integer;
+begin
+  ValidateProposedMusicalGrid(AGrid);
+  Need((APreferredCell >= 0) and (APreferredCell < Length(AGrid.Frames)) and
+    (APreferredCell = Trunc(APreferredCell)) and (AMaximumCells >= 1) and
+    (AMaximumCells <= MaximumPitchPatternCells) and (AMaximumCells = Trunc(AMaximumCells)),
+    'Representative musical block requires bounded integer cells');
+  Need((Length(AExcluded) = 0) or (Length(AExcluded) = Length(AGrid.Frames)),
+    'Representative exclusion mask differs from the measured grid');
+  Result := Default(TProposedMusicalBlock);
+  LBestDistance := High(Integer);
+  I := 0;
+  while I < Length(AGrid.Frames) do
+  begin
+    if not AGrid.Known[I] or ((Length(AExcluded) > 0) and AExcluded[I]) then
+    begin
+      Inc(I);
+      Continue;
+    end;
+    LFirst := I;
+    while (I < Length(AGrid.Frames)) and AGrid.Known[I] and
+      ((Length(AExcluded) = 0) or not AExcluded[I]) do
+    begin
+      Inc(I);
+    end;
+    LCount := Min(AMaximumCells, I - LFirst);
+    LStart := Max(LFirst, Min(I - LCount, APreferredCell - LCount div 2));
+    LDistance := Abs(2 * LStart + LCount - 1 - 2 * APreferredCell);
+    if (LCount > Result.CellCount) or
+      ((LCount = Result.CellCount) and (LDistance < LBestDistance)) then
+    begin
+      Result.FirstCell := LStart;
+      Result.CellCount := LCount;
+      LBestDistance := LDistance;
     end;
   end;
 end;

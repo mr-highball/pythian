@@ -2,7 +2,83 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
-## Current handoff: weighted musical providers into real synthesis — 2026-10-30
+## Current handoff: simple playlist → learned instrumental preview — 2026-10-31
+
+Big Boss SOLO has deployed the operator's **Library → Selection → Generate**
+consumer. The default Library now lists music-folder collections, including the
+actual long lofi, chillwave and stoner-rock recordings; uncollected development
+fixtures do not clutter it. Library uses metadata, Add/Remove and play/pause.
+Selection keeps whole tracks or multiple clips and saves automatically.
+Generate saves pending changes, learns from the actual included music with
+per-track influence, solves the musical graph and performs Pythian instruments.
+It never substitutes an authored starter or training-mix grains.
+
+Native LearnStudioPlaylist verifies selected originals and traverses their
+included time in bounded windows. Source/clock/policy-bound portable proposal
+caches skip repeated analysis. A separate admission mask chooses musical blocks
+across the selection within 1,024 known cells; original unknowns remain intact.
+Coverage distinguishes analyzed/proposed, omitted and actual model-used time.
+Pitch/pulse are Experimental and bounded to the first eight seconds per window;
+spectral measurements cover the full window. Source influence changes actual
+training counts. Zero-inclusion choices remain saved but their recordings are
+not opened/prepared. No genre-to-instrument or universal transcription claim.
+
+The simple consumer exposes **2–30 second previews plus a release tail**. Native
+jobs persist through page closure/backgrounding, publish real operation progress,
+cancel at checkpoints and reconnect to the saved request. Duration survives
+reload, browser recovery is catalog-scoped and older results are identified when
+the playlist changes. Mix playback/seek, actual WAV download and a bounded
+original reference work in the same step. Playback pauses competing app players.
+
+Final native checks: playlist (45), instrumental smoke (20) and progress (21).
+They cover cold/warm whole/range learning, weights, excluded unavailable input,
+the actual worker, six stems, lineage and cancellation. Native and actual pas2js
+pass observation (67), corpus (165) and WAV-reader (70,061). Native heaps are clean. The earlier
+five-render instrumental regression was deliberately stopped after its first
+completed result to investigate slow storage; it is not claimed as a complete
+run. The final smoke produces that same WAV hash. Its completed job uses eight
+durable status records versus 21 before the change. A measured E-drive file close
+took 5,571 ms after 7 ms of block writes. Shared publication backs off for slow durable
+writes, capped at 30 seconds; frequent cancellation checks remain. Underlying
+storage latency and long instrumental output remain open, not hidden by fake
+progress or a duplicate writer.
+
+Actual in-app browser checks at desktop/390 pixels cover real selection, 5:1
+influence, auto-save → Generate, completion, reload reconnect, Stop, playback,
+visible media seek, downloaded-WAV identity, zero-selection disable and stale
+result notice. Record opens its short microphone dialog; no new physical-phone
+microphone qualification is claimed. The stable real collection list is checked.
+No private recording/answer was used as a synthetic QA fixture or overwritten.
+All generated evidence stays under musical-corpus-20261030-boss in the E-drive
+roots. Keep the staging, oversized-read, missing source metadata, stale browser
+scope, HTTP parsing, seed-array and duplicate progress-case failures for repair
+history. The separately invoked Unicode HTTP fixture rejected its missing second
+argument; it contributes no HTTP-test claim.
+
+Stable uses the same fixed executable slot and private catalog at
+**https://192.168.12.108:18097/studio.html**, with loopback HTTP also checked.
+Service SHA256 starts 2f5509d4; worker starts 69725d76. The recorded TLS configuration
+includes both its leaf thumbprint and public CA file. The hidden startup wrapper,
+rollback bundle, logs and proposal cache live on E. Firewall settings are unchanged.
+No operator job was active during replacement. The earlier pending full-plan
+archive stash remains parked; do not pop it into this flow.
+
+This closes the bounded automatic playlist-learning/native-preview consumer;
+consecutive nonclosing count remains zero. Both current tasks stay open:
+growing vocabulary ancestry/style reuse and long instrumental output still need
+their actual consumers. Accounting remains **47/108 (43.52%)**, nine open,
+eleven current DONE, 61 open effort units. No partial effort or musical-quality
+credit is accepted. Next work should remove the finite instrumental duration
+limit through the existing linked stream task, preserving this simple interface;
+do not return to labeling queues or make archival paperwork its prerequisite.
+
+Recording-derived listening publications now name NS-3_style-vocabulary_01 and
+the actual playlist learning/analysis policy, rather than the older authored
+starter task/policy. Full training ancestry is in playlist_learning.sources and
+the immutable request; original_reference/top-level sources describe comparison
+material. Keep the repaired assertion-order failure in the final lineage fixture.
+
+## Previous batch: weighted musical providers into real synthesis — 2026-10-30
 
 Big Boss SOLO continues the operator's **Library → Selection → Generate** request.
 The simpler Library/Selection implementation below is committed as `0c756e3`;

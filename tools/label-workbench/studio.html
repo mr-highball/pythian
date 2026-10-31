@@ -70,8 +70,18 @@ SOFTWARE.
     <div class="page-heading"><p class="eyebrow">MAKE SOMETHING NEW</p><h1>Let it play.</h1><p id="generate-summary" class="summary"></p></div>
     <label class="duration-control" for="output-duration">Track length <small>minutes:seconds</small><input id="output-duration" type="text" value="0:30" inputmode="decimal"></label>
     <details><summary>Track influence <span class="hint">optional</span></summary><p class="hint">Higher influence gives a track more weight in learning. This does not change its playback volume.</p><div id="track-influences"></div></details>
-    <button id="generate-music" type="button" class="primary generate-button" disabled>Generate music</button>
-    <p id="generation-status" class="hint" role="status">Playlist learning is being connected. Your music choices are saved; generation is not available in this preview yet.</p>
+    <p class="hint">Experimental · 2–30 second previews, plus an effect tail.</p>
+    <button id="generate-music" data-studio-action type="button" class="primary generate-button" disabled>Generate music</button>
+    <p id="generation-status" class="hint" role="status" aria-live="polite">Choose your music, then Generate.</p>
+    <div id="generation-progress"></div>
+    <button id="cancel-generation" data-studio-action type="button" hidden>Stop generation</button>
+    <button id="reconnect-generation" data-studio-action type="button" hidden>Reconnect to this run</button>
+    <section id="generation-result" class="generation-result" hidden aria-label="Your generated music">
+      <h2>Your new track</h2><p id="generation-revision-note" class="hint" role="status"></p><audio id="generated-audio" controls preload="none"></audio>
+      <p><a id="download-generated" download="pythian-track.wav">Save WAV</a></p>
+      <details id="generation-original"><summary>Compare an original excerpt</summary><p id="generation-original-title" class="hint"></p><audio id="generated-original-audio" controls preload="none"></audio></details>
+      <details><summary>What Pythian learned from</summary><div id="generation-learning"></div></details>
+    </section>
   </section>
   <div class="save-status"><span id="save-state" role="status" aria-live="polite">Changes save automatically</span><button id="retry-save" type="button" data-studio-action hidden>Retry save</button><button id="save-copy" type="button" data-studio-action hidden>Save a new copy</button></div>
 </main>

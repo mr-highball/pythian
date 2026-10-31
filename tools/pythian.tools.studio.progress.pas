@@ -30,6 +30,7 @@ interface
 
 const
   StudioRenderStatusIntervalMilliseconds = 2000;
+  StudioSlowStatusIntervalMilliseconds = 30000;
 
 type
   { One rendering publication clock for coarse output frames and nested WFC
@@ -43,6 +44,7 @@ type
     FPublished: Boolean;
     FObservedAudio: Boolean;
     FLastAt: QWord;
+    FInterval: QWord;
     FLastStage: String;
     FLastDone: Int64;
     FLastTotal: Int64;
@@ -59,11 +61,21 @@ implementation
 uses pythian.audio;
 
 procedure TStudioRenderProgressGate.PublishedAt(const AAt: QWord);
+var LCost: QWord;
 begin
   if not FPublished or (AAt < FLastAt) then
   begin
     raise EAudio.Create('Studio publication completion requires an accepted monotonic clock');
   end;
+  { Big Boss: a slow durable close must not dominate useful work. Spend at
+    least four times its measured cost between fine publications, bounded
+    to thirty seconds. Cancellation and terminal transitions are separate. }
+  LCost := AAt - FLastAt;
+  if LCost >= StudioSlowStatusIntervalMilliseconds div 4 then
+    FInterval := StudioSlowStatusIntervalMilliseconds
+  else FInterval := LCost * 4;
+  if FInterval < StudioRenderStatusIntervalMilliseconds then
+    FInterval := StudioRenderStatusIntervalMilliseconds;
   FLastAt := AAt;
 end;
 
@@ -86,7 +98,8 @@ begin
   else
   begin
     Result := not FPublished or (AAudioWork and not FObservedAudio) or
-      (AAt - FLastAt >= StudioRenderStatusIntervalMilliseconds);
+      ((AAt - FLastAt >= StudioRenderStatusIntervalMilliseconds) and
+       (AAt - FLastAt >= FInterval));
   end;
   if Result then
   begin

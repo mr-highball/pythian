@@ -31,7 +31,8 @@ interface
 
 uses
   Classes,
-  pythian.audio;
+  pythian.audio,
+  pythian.progress;
 
 const
   WaveReadVersion = 1;
@@ -99,6 +100,13 @@ type
   public
     constructor Create(const AStream: TStream);
     function ReadFrames(const ACount: Integer = 4096): TAudioSamples;
+    { Owned finite clip from an original range, using the same bounded reader
+      blocks. Validate extent/allocation before moving the cursor. Empty clips
+      do not seek. Cancellation may leave an advanced healthy reader; underlying
+      I/O failures retain its poisoned-reader contract. Callbacks cannot re-enter
+      this reader, and the final callback precedes clip publication. }
+    function ReadClip(const AStartFrame: Int64; const AFrameCount: Integer;
+      const AProgress: TWorkProgressCallback = nil): TAudioClip;
     { Owned bin data, combining all channels. Sampled mode reads only the first
       64 frames of each uniform bin: it is not an exact peak envelope. Exact
       mode visits every frame within its finite page bound. Both modes move
@@ -650,6 +658,52 @@ begin
   finally
     FBusy := False;
   end;
+end;
+
+function TWaveFrameReader.ReadClip(const AStartFrame: Int64;
+  const AFrameCount: Integer; const AProgress: TWorkProgressCallback): TAudioClip;
+var
+  LSamples: TAudioSamples;
+  LBlock: TAudioSamples;
+  LDone: Integer;
+  LCount: Integer;
+  procedure Report(const ADone: Integer);
+  begin
+    FBusy := True;
+    try
+      ReportWork(AProgress, 'wave_clip_read', wuFrames, ADone, AFrameCount);
+    finally
+      FBusy := False;
+    end;
+  end;
+begin
+  CheckReady;
+  RequireFinite(AStartFrame, 'WAVE clip start');
+  RequireFinite(AFrameCount, 'WAVE clip frame count');
+  if (AFrameCount < 0) or (AFrameCount > MaximumClipSamples div FChannels) or
+    (AFrameCount <> Trunc(AFrameCount)) or (AStartFrame <> Trunc(AStartFrame)) or
+    (AStartFrame < 0) or (AStartFrame > FFrameCount - AFrameCount) then
+  begin
+    raise EAudio.Create('WAVE clip must fit its original extent and sample budget');
+  end;
+  SetLength(LSamples, AFrameCount * FChannels);
+  Report(0);
+  LDone := 0;
+  if AFrameCount > 0 then SeekFrame(AStartFrame);
+  while LDone < AFrameCount do
+  begin
+    LCount := AFrameCount - LDone;
+    if LCount > MaximumWaveReadFrames then LCount := MaximumWaveReadFrames;
+    LBlock := ReadFrames(LCount);
+    if Length(LBlock) <> LCount * FChannels then
+    begin
+      raise EAudio.Create('WAVE clip read ended before its admitted extent');
+    end;
+    CopyAudioSampleRange(LBlock, 0, LSamples, LDone * FChannels, Length(LBlock));
+    Inc(LDone, LCount);
+    Report(LDone);
+  end;
+  Result := TAudioClip.Create(FSampleRate, FChannels, LSamples);
 end;
 
 end.

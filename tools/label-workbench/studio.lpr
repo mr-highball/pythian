@@ -27,7 +27,7 @@ program PythianStudio;
 {$modeswitch externalclass}
 uses JS, Web, SysUtils, Math,
   pythian.studio.sources, pythian.studio.capture, pythian.studio.effects,
-  pythian.studio.requests, pythian.studio.&library.refresh;
+  pythian.studio.requests, pythian.studio.&library.refresh, pythian.studio.progress;
 
 type
   TStudioWindow = class external name 'Window' (TJSWindow)
@@ -45,6 +45,27 @@ type
     FConnected, FLoading, FSaving, FDirty: Boolean;
     FSaveTimer: NativeInt;
     FPendingWrite: TJSObject;
+    FSnapshotHash: String;
+    FStorageScope: String;
+    FJobId: String;
+    FJob: TJSObject;
+    FJobWrite: TJSObject;
+    FJobTimer: NativeInt;
+    FJobEpoch: Integer;
+    FJobPolling: Boolean;
+    FSubmitting: Boolean;
+    FCancelling: Boolean;
+    FGenerateAfterSave: Boolean;
+    FGenerationMessage: String;
+    FResumeOnConnect: Boolean;
+    FIncludedSeconds: Double;
+    procedure Generate; async;
+    procedure RestoreGeneration; async;
+    procedure PollGeneration; async;
+    procedure CancelGeneration; async;
+    procedure RememberGeneration;
+    procedure DrawGeneration;
+    procedure ClearGeneration;
     function El(const AId: String): TJSElement;
     function FetchApi(const APath, AMethod, ABody: String): TJSPromise;
     function FetchNavigation(const APath, AMethod, ABody: String;
@@ -131,13 +152,21 @@ end;
 function TStudio.Json(const APath, AMethod, ABody: String): TJSObject; async;
 var LResponse: TJSResponse; LValue: TJSObject;
 begin
-  LResponse := TJSResponse(await(JSValue, AwaitStudioPromise(FetchApi(APath, AMethod, ABody), 20)));
-  LValue := await(TJSObject, LResponse.json());
+  try
+    LResponse := TJSResponse(await(JSValue, AwaitStudioPromise(FetchApi(APath, AMethod, ABody), 20)));
+  except
+    raise Exception.Create('Connection interrupted. Reconnect to continue. Your choices are kept.');
+  end;
   if LResponse.status <> 200 then
   begin
     if LResponse.status = 409 then
       raise Exception.Create('Playlist changed or storage is busy. Retry shortly, or save a new copy. Your edits are kept.');
-    raise Exception.Create('Could not complete this request. ' + Str(LValue, 'error'));
+    raise Exception.Create('Request failed (HTTP ' + IntToStr(LResponse.status) + '). Reconnect or open a saved playlist.');
+  end;
+  try
+    LValue := await(TJSObject, LResponse.json());
+  except
+    raise Exception.Create('Studio received an unreadable response. Reconnect to continue.');
   end;
   Result := LValue;
 end;
@@ -171,6 +200,8 @@ procedure TStudio.NewPlaylist;
 begin
   FProjectId := 'playlist-' + IntToStr(Round(TJSDate.now)) + '-' + IntToStr(Random(1000000));
   FRevision := 0;
+  FSnapshotHash := '';
+  ClearGeneration;
   FSelections := TJSArray.new;
   FName := 'My playlist';
   FDirty := False;
@@ -182,9 +213,11 @@ end;
 procedure TStudio.Remember;
 var LState: TJSObject;
 begin
+  if FStorageScope = '' then Exit;
   LState := TJSObject.new;
   LState['project_id'] := FProjectId;
   LState['revision'] := FRevision;
+  LState['snapshot_sha256'] := FSnapshotHash;
   LState['name'] := FName;
   LState['selections'] := FSelections;
   LState['dirty'] := FDirty;
@@ -192,7 +225,7 @@ begin
   LState['pending_version'] := FPendingVersion;
   LState['pending_write'] := FPendingWrite;
   try
-    window.localStorage.setItem('pythian.studio.playlist', TJSJSON.stringify(LState));
+    window.localStorage.setItem('pythian.studio.playlist.' + FStorageScope, TJSJSON.stringify(LState));
   except
     on E: Exception do Notice('Browser storage is unavailable. Keep this page open until Saved appears.', True);
   end;
@@ -295,6 +328,7 @@ begin
       (Num(LSaved, 'revision') <> Num(FPendingWrite, 'expected_revision') + 1) then
       raise Exception.Create('Save returned a different playlist. Your edits are kept.');
     FRevision := Trunc(Num(LSaved, 'revision'));
+    FSnapshotHash := Str(LSaved, 'snapshot_sha256');
     LFound := False;
     for I := 0 to FProjects.length - 1 do
       if Str(Obj(FProjects[I]), 'project_id') = FProjectId then
@@ -319,12 +353,300 @@ begin
   FSaving := False;
   TJSHTMLButtonElement(El('new-playlist')).disabled := FDirty or (FPendingWrite <> nil);
   if (FPendingWrite = nil) and FDirty then Save;
+  if FGenerateAfterSave and not FDirty and (FPendingWrite = nil) then Generate;
 end;
+procedure TStudio.ClearGeneration;
+begin
+  Inc(FJobEpoch);
+  window.clearTimeout(FJobTimer);
+  FJobId := '';
+  FJob := nil;
+  FJobWrite := nil;
+  FJobPolling := False;
+  FSubmitting := False;
+  FCancelling := False;
+  FGenerateAfterSave := False;
+  FGenerationMessage := '';
+  TJSHTMLAudioElement(El('generated-audio')).pause;
+  TJSHTMLAudioElement(El('generated-original-audio')).pause;
+  El('generated-audio').removeAttribute('src');
+  El('generated-audio').removeAttribute('data-job');
+  TJSHTMLAudioElement(El('generated-audio')).load;
+  El('generated-original-audio').removeAttribute('src');
+  TJSHTMLAudioElement(El('generated-original-audio')).load;
+  El('generation-result').setAttribute('hidden', '');
+end;
+
+procedure TStudio.RememberGeneration;
+var LState: TJSObject;
+begin
+  LState := TJSObject.new;
+  LState['job_id'] := FJobId;
+  LState['request'] := FJobWrite;
+  LState['duration'] := TJSHTMLInputElement(El('output-duration')).value;
+  try
+    window.localStorage.setItem('pythian.studio.generation.' + FStorageScope + '.' + FProjectId, TJSJSON.stringify(LState));
+  except
+    on E: Exception do FGenerationMessage := 'This run is saved on the computer. Reopen this playlist to reconnect.';
+  end;
+end;
+
+procedure TStudio.DrawGeneration;
+var
+  LState: String;
+  LActive: Boolean;
+  LResult, LReference, LLearning, LRow: TJSObject;
+  LRows: TJSArray;
+  LUrl: String;
+  I: Integer;
+begin
+  LState := Str(FJob, 'status');
+  LActive := (LState = 'queued') or (LState = 'running') or FSubmitting or FGenerateAfterSave;
+  TJSHTMLButtonElement(El('generate-music')).disabled := not FConnected or FLoading or
+    (FIncludedSeconds <= 0) or LActive or FGenerateAfterSave;
+  El('generation-progress').innerHTML := '';
+  if (FJob <> nil) and not FSubmitting and not FGenerateAfterSave then
+    DrawStudioProgress(El('generation-progress'), FJob, True);
+  El('cancel-generation').setAttribute('hidden', '');
+  if LActive and not FSubmitting and not FGenerateAfterSave then
+    El('cancel-generation').removeAttribute('hidden');
+  TJSHTMLButtonElement(El('cancel-generation')).disabled := FCancelling;
+  El('reconnect-generation').setAttribute('hidden', '');
+  if FGenerationMessage <> '' then
+    El('generation-status').textContent := FGenerationMessage
+  else if LActive then
+    El('generation-status').textContent := 'Working on this computer. You can leave and come back.'
+  else if LState = 'completed' then El('generation-status').textContent := 'Ready. Press Play.'
+  else if LState = 'cancelled' then El('generation-status').textContent := 'Stopped. Your music choices are kept.'
+  else if LState = 'failed' then El('generation-status').textContent := Str(FJob, 'error_message')
+  else El('generation-status').textContent := 'Your selections save automatically. Generate learns from the selected music.';
+  if not FSubmitting and not FCancelling and (FJobId <> '') and
+    (FGenerationMessage <> '') and ((FJobWrite <> nil) or not LActive) then
+    El('reconnect-generation').removeAttribute('hidden');
+  if FSubmitting or FGenerateAfterSave then
+  begin
+    El('generation-result').setAttribute('hidden', '');
+    Exit;
+  end;
+  if (LState <> 'completed') or (Obj(FJob['results']) = nil) then Exit;
+  LResult := Obj(FJob['results']);
+  El('generation-revision-note').textContent := '';
+  if FDirty or (Num(LResult, 'project_revision') <> FRevision) then
+    El('generation-revision-note').textContent :=
+      'Your playlist has changed since this run. Generate again to use your current selection.';
+  LUrl := '/api/studio/instrumental-audio?job=' + encodeURIComponent(FJobId) + '&part=6';
+  if El('generated-audio').getAttribute('data-job') <> FJobId then
+  begin
+    TJSHTMLAudioElement(El('generated-audio')).src := LUrl;
+    El('generated-audio').setAttribute('data-job', FJobId);
+    El('download-generated').setAttribute('href', LUrl);
+    LReference := Obj(LResult['original_reference']);
+    El('generation-original').setAttribute('hidden', '');
+    if LReference <> nil then
+    begin
+      El('generation-original').removeAttribute('hidden');
+      El('generation-original-title').textContent := Str(LReference, 'title');
+      TJSHTMLAudioElement(El('generated-original-audio')).src :=
+        '/api/studio/instrumental-audio?job=' + encodeURIComponent(FJobId) + '&part=7';
+    end;
+    El('generation-learning').innerHTML := '';
+    LLearning := Obj(LResult['playlist_learning']);
+    LRows := Arr(LLearning, 'sources');
+    if LRows <> nil then
+      for I := 0 to LRows.length - 1 do
+      begin
+        LRow := Obj(LRows[I]);
+        Add(El('generation-learning'), 'p', Str(Obj(LRow['playlist_item']), 'title') + ': ' +
+          StudioTime(Num(LRow, 'analyzed_frames') / Num(LRow, 'sample_rate')) +
+          ' analyzed · ' + StudioTime(Num(LRow, 'model_used_frames') / Num(LRow, 'sample_rate')) +
+          ' of musical decisions used · ' + FloatToStr(Num(LRow, 'influence')) + '× influence');
+      end;
+  end;
+  El('generation-result').removeAttribute('hidden');
+end;
+
+procedure TStudio.Generate; async;
+var
+  LWrite, LSettings, LJob, LProject: TJSObject;
+  LSeconds: Double;
+  LId: String;
+  LEpoch: Integer;
+begin
+  if FSubmitting or FLoading or not FConnected then Exit;
+  if (Str(FJob, 'status') = 'running') or (Str(FJob, 'status') = 'queued') then Exit;
+  if FSaving or FDirty or (FPendingWrite <> nil) then
+  begin
+    FGenerateAfterSave := True;
+    FGenerationMessage := 'Saving your selection…';
+    DrawGeneration;
+    Save;
+    Exit;
+  end;
+  FGenerateAfterSave := False;
+  if (FJobWrite = nil) and
+    (not ParseSourceTime(TJSHTMLInputElement(El('output-duration')).value, LSeconds) or
+    (LSeconds < 2) or (LSeconds > 30)) then
+  begin
+    FGenerationMessage := 'Choose a preview from 0:02 to 0:30.';
+    DrawGeneration;
+    Exit;
+  end;
+  FSubmitting := True;
+  TJSHTMLAudioElement(El('generated-audio')).pause;
+  TJSHTMLAudioElement(El('generated-original-audio')).pause;
+  FGenerationMessage := 'Starting your track…';
+  DrawGeneration;
+  LEpoch := FJobEpoch;
+  try
+    if FJobWrite = nil then
+    begin
+      LProject := await(TJSObject, Json('/api/studio/project?id=' + encodeURIComponent(FProjectId), 'GET', ''));
+      if LEpoch <> FJobEpoch then Exit;
+      if (Num(LProject, 'revision') <> FRevision) or
+        not SameStudioJSON(LProject['playlist'], Playlist) then
+        raise Exception.Create('Your saved selection changed. Reopen this playlist before generating.');
+      FSnapshotHash := Str(LProject, 'snapshot_sha256');
+      LId := 'music-' + IntToStr(Round(TJSDate.now)) + '-' + IntToStr(Random(1000000));
+      LWrite := TJSObject.new;
+      LWrite['format'] := 'pythian.studio.job.write.v1';
+      LWrite['job_id'] := LId;
+      LWrite['kind'] := 'instrumental_generate';
+      LWrite['project_id'] := FProjectId;
+      LWrite['project_revision'] := FRevision;
+      LWrite['project_snapshot_sha256'] := FSnapshotHash;
+      LWrite['duration_ms'] := Round(LSeconds * 1000);
+      LWrite['seeds'] := TJSArray.new;
+      TJSArray(LWrite['seeds']).push(Random(2147483000));
+      LSettings := TJSObject.new;
+      LSettings['tempo_bpm'] := 120;
+      LSettings['tonic'] := 0;
+      LSettings['cells'] := Ceil(LSeconds * 4);
+      LSettings['instruments'] := TJSArray.new('saw', 'triangle', 'square');
+      LSettings['levels'] := TJSArray.new(75, 65, 60, 80, 65, 50);
+      LWrite['instrumental'] := LSettings;
+      FJobWrite := LWrite;
+      FJobId := LId;
+      FJob := nil;
+      TJSHTMLAudioElement(El('generated-audio')).pause;
+      TJSHTMLAudioElement(El('generated-original-audio')).pause;
+      El('generation-result').setAttribute('hidden', '');
+      RememberGeneration;
+    end;
+    LJob := await(TJSObject, Json('/api/studio/job', 'POST', TJSJSON.stringify(FJobWrite)));
+    if LEpoch <> FJobEpoch then Exit;
+    if (Str(LJob, 'job_id') <> FJobId) or (Str(LJob, 'project_id') <> FProjectId) then
+      raise Exception.Create('Generation returned a different playlist. Reconnect to this run.');
+    FJob := LJob;
+    FJobWrite := nil;
+    if not FCancelling then FGenerationMessage := '';
+    RememberGeneration;
+  except
+    on E: Exception do FGenerationMessage := E.Message + ' Your request is kept for reconnecting.';
+  end;
+  if LEpoch = FJobEpoch then
+  begin
+    FSubmitting := False;
+    DrawGeneration;
+    if FJob <> nil then PollGeneration;
+  end;
+end;
+
+procedure TStudio.PollGeneration; async;
+var LJob: TJSObject; LEpoch: Integer;
+begin
+  if FJobPolling or FSubmitting or (FJobId = '') or not FConnected then Exit;
+  FJobPolling := True;
+  LEpoch := FJobEpoch;
+  window.clearTimeout(FJobTimer);
+  try
+    LJob := await(TJSObject, Json('/api/studio/job?id=' + encodeURIComponent(FJobId), 'GET', ''));
+    if LEpoch <> FJobEpoch then Exit;
+    if (Str(LJob, 'job_id') <> FJobId) or (Str(LJob, 'project_id') <> FProjectId) then
+      raise Exception.Create('This run belongs to a different playlist.');
+    FJob := LJob;
+    FJobWrite := nil;
+    if not FCancelling then FGenerationMessage := '';
+    RememberGeneration;
+  except
+    on E: Exception do
+      if LEpoch = FJobEpoch then FGenerationMessage := 'Reconnecting… Your saved request is kept.';
+  end;
+  if LEpoch = FJobEpoch then
+  begin
+    FJobPolling := False;
+    DrawGeneration;
+    if (FJob = nil) or (Str(FJob, 'status') = 'queued') or (Str(FJob, 'status') = 'running') then
+      FJobTimer := window.setTimeout(procedure begin PollGeneration end, 1500);
+  end;
+end;
+
+procedure TStudio.RestoreGeneration; async;
+var LText: String; LState, LJobs: TJSObject; LRows: TJSArray; I, LEpoch: Integer;
+begin
+  if (FProjectId = '') or not FConnected then Exit;
+  if FJobId <> '' then begin PollGeneration; Exit end;
+  LEpoch := FJobEpoch;
+  try
+    LText := window.localStorage.getItem('pythian.studio.generation.' + FStorageScope + '.' + FProjectId);
+    if isString(LText) and (LText <> '') then
+    begin
+      LState := Obj(TJSJSON.parse(LText));
+      FJobId := Str(LState, 'job_id');
+      FJobWrite := Obj(LState['request']);
+      if Str(LState, 'duration') <> '' then
+        TJSHTMLInputElement(El('output-duration')).value := Str(LState, 'duration');
+    end;
+    if FJobId = '' then
+    begin
+      LJobs := await(TJSObject, Json('/api/studio/jobs', 'GET', ''));
+      if LEpoch <> FJobEpoch then Exit;
+      LRows := Arr(LJobs, 'jobs');
+      if LRows <> nil then
+        for I := LRows.length - 1 downto 0 do
+          if (Str(Obj(LRows[I]), 'project_id') = FProjectId) and
+            (Str(Obj(LRows[I]), 'kind') = 'instrumental_generate') then
+          begin FJobId := Str(Obj(LRows[I]), 'job_id'); Break end;
+    end;
+    if FJobId <> '' then
+    begin
+      if FResumeOnConnect then ShowStep('generate');
+      PollGeneration;
+    end;
+  except
+    on E: Exception do FGenerationMessage := 'Open Generate to reconnect to saved runs.';
+  end;
+  FResumeOnConnect := False;
+end;
+
+procedure TStudio.CancelGeneration; async;
+var LWrite, LJob: TJSObject; LEpoch: Integer;
+begin
+  if (FJobId = '') or FCancelling then Exit;
+  LEpoch := FJobEpoch;
+  FCancelling := True;
+  FGenerationMessage := 'Stopping at the next checkpoint…';
+  DrawGeneration;
+  LWrite := TJSObject.new;
+  LWrite['job_id'] := FJobId;
+  try
+    LJob := await(TJSObject, Json('/api/studio/cancel', 'POST', TJSJSON.stringify(LWrite)));
+    if LEpoch <> FJobEpoch then Exit;
+    FJob := LJob;
+    FGenerationMessage := 'Stopping at the next checkpoint…';
+  except
+    on E: Exception do FGenerationMessage := E.Message;
+  end;
+  if LEpoch = FJobEpoch then
+  begin FCancelling := False; DrawGeneration; PollGeneration end;
+end;
+
 procedure TStudio.SaveCopy;
 begin
   if FSaving or FLoading then Exit;
   FProjectId := 'playlist-' + IntToStr(Round(TJSDate.now)) + '-' + IntToStr(Random(1000000));
   FRevision := 0;
+  FSnapshotHash := '';
+  ClearGeneration;
   FPendingWrite := nil;
   El('save-copy').setAttribute('hidden', '');
   QueueSave;
@@ -412,11 +734,13 @@ begin
     Add(LRow, 'output', FloatToStr(Max(1, Num(LItem, 'influence'))) + '×');
   end;
   El('selection-count').textContent := IntToStr(LCount);
+  FIncludedSeconds := LSeconds;
   El('selection-summary').textContent := IntToStr(LCount) + ' tracks · ' + StudioTime(LSeconds) + ' selected for learning';
   El('generate-summary').textContent := El('selection-summary').textContent;
   TJSHTMLInputElement(El('track-search')).disabled := not FConnected;
   TJSHTMLButtonElement(El('new-playlist')).disabled := FLoading or FSaving or FDirty or (FPendingWrite <> nil);
   TJSHTMLInputElement(El('playlist-name')).disabled := FLoading;
+  DrawGeneration;
 end;
 procedure TStudio.AddSelection(ASelection: TJSObject);
 var LTrack, LRow: TJSObject; I: Integer;
@@ -493,6 +817,8 @@ procedure TStudio.LoadProject(AProject: TJSObject);
 var LRows: TJSArray; LRow, LWhole: TJSObject; I, J: Integer; LName: String;
   LNames: array of String;
 begin
+  ClearGeneration;
+  FSnapshotHash := Str(AProject, 'snapshot_sha256');
   FSelections := TJSArray.new;
   if Obj(AProject['playlist']) <> nil then ApplyPlaylist(Obj(AProject['playlist']))
   else
@@ -571,12 +897,13 @@ begin
   end;
   FLoading := False;
   Draw;
+  if FConnected then RestoreGeneration;
 end;
 procedure TStudio.CatalogSaved;
 begin Connect end;
 procedure TStudio.Connect; async;
 var LSession, LData, LPrepared, LDiscovery, LState: TJSObject;
-  LTracks: TJSArray; LOption: TJSElement; I: Integer; LLocal: String;
+  LTracks, LCollections: TJSArray; I: Integer; LLocal: String;
 begin
   if FLoading then Exit;
   FLoading := True;
@@ -584,20 +911,28 @@ begin
     Notice('Opening your music…');
     LSession := await(TJSObject, Json('/api/session', 'GET', ''));
     FToken := Str(LSession, 'token');
+    FStorageScope := Str(LSession, 'catalog_id');
     if FToken = '' then raise Exception.Create('Studio could not open a local session.');
+    if FStorageScope = '' then raise Exception.Create('Studio and server versions differ. Reload after updating both.');
     LData := await(TJSObject, Json('/api/studio/sources', 'GET', ''));
     LTracks := Arr(LData, 'sources');
     if LTracks = nil then raise Exception.Create('Music catalog is unavailable.');
     LPrepared := await(TJSObject, Json('/api/studio/library', 'GET', ''));
     LDiscovery := await(TJSObject, Json('/api/studio/library-discovery', 'GET', ''));
     MergeDiscovery(LTracks, LDiscovery, LPrepared);
-    FTracks := LTracks;
+    FTracks := TJSArray.new;
+    for I := 0 to LTracks.length - 1 do
+    begin
+      LCollections := Arr(Obj(LTracks[I]), 'collections');
+      if (LCollections <> nil) and (LCollections.length > 0) then
+        FTracks.push(LTracks[I]);
+    end;
     LData := await(TJSObject, Json('/api/studio/projects', 'GET', ''));
     FProjects := Arr(LData, 'projects');
     DrawProjects;
     if (FProjectId = '') then
     begin
-      LLocal := window.localStorage.getItem('pythian.studio.playlist');
+      LLocal := window.localStorage.getItem('pythian.studio.playlist.' + FStorageScope);
       if isString(LLocal) and (LLocal <> '') then
       begin
         LState := Obj(TJSJSON.parse(LLocal));
@@ -637,6 +972,7 @@ begin
   Draw;
   if not FDirty and (FRevision > 0) then El('save-state').textContent := 'Saved';
   if FDirty or (FPendingWrite <> nil) then Save;
+  if FConnected then RestoreGeneration;
 end;
 function TStudio.Click(AEvent: TJSMouseEvent): Boolean;
 var LButton: TJSElement; LStep, LDialog, LId: String;
@@ -650,6 +986,10 @@ begin
     TStudioDialog(El(LButton.getAttribute('data-close'))).close;
   if LButton.hasAttribute('data-project') then OpenProject(LButton.getAttribute('data-project'));
   case LButton.id of
+    'generate-music': Generate;
+    'cancel-generation': CancelGeneration;
+    'reconnect-generation':
+      if FJobWrite <> nil then Generate else PollGeneration;
     'new-playlist':
       begin
         if FDirty or FSaving or (FPendingWrite <> nil) then Exit;
@@ -672,6 +1012,7 @@ begin
   if FLoading then Exit;
   LControl := TJSElement(AEvent.target);
   if LControl.id = 'track-search' then begin FSourceEditor.Search; Exit end;
+  if LControl.id = 'output-duration' then begin RememberGeneration; Exit end;
   if LControl.hasAttribute('data-influence') then
   begin
     LIndex := StrToInt(LControl.getAttribute('data-influence'));
@@ -726,6 +1067,7 @@ procedure TStudio.Run;
 var LNodes: TJSNodeList; I: Integer;
 begin
   FTracks := TJSArray.new;
+  FResumeOnConnect := True;
   FSelections := TJSArray.new;
   FProjects := TJSArray.new;
   FSourceEditor := TStudioSourceEditor.Create(@FetchApi, @Changed, @FetchNavigation);
@@ -736,6 +1078,7 @@ begin
   for I := 0 to LNodes.length - 1 do TJSElement(LNodes[I]).addEventListener('click', @Click);
   El('track-search').addEventListener('input', @Edit);
   El('playlist-name').addEventListener('change', @Edit);
+  El('output-duration').addEventListener('change', @Edit);
   El('source-reconnect').addEventListener('click', @Click);
   El('capture-panel').addEventListener('close', @CaptureClosed);
   El('tab-library').addEventListener('keydown', @TabKey);

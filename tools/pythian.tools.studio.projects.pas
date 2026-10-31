@@ -54,6 +54,10 @@ type
   Input objects are borrowed and remain unchanged. All exact times are original
   half-open source frames. No reference/model training occurs here. }
 function ListStudioSources(const ACatalogRoot: String): TJSONObject;
+{ Same primary metadata admission used by listing/opening originals. Retains
+  actual source group, clock, partition, license and provenance for consumers. }
+function ReadStudioSourceMetadata(const ACatalogRoot, AHash: String;
+  const ACollectionIndex: TJSONObject = nil): TJSONObject;
 function ListStudioProjects(const ACatalogRoot: String): TJSONObject;
 function ReadStudioProject(const ACatalogRoot, AProjectId: String): TJSONObject;
 function ReadStudioProjectRevision(const ACatalogRoot, AProjectId: String;
@@ -444,8 +448,8 @@ begin
   end;
 end;
 
-function ReadSource(const ACatalogRoot, AHash: String;
-  const ACollectionIndex: TJSONObject = nil): TJSONObject;
+function ReadStudioSourceMetadata(const ACatalogRoot, AHash: String;
+  const ACollectionIndex: TJSONObject): TJSONObject;
 var
   LRoot: String;
   LTrack: TJSONObject;
@@ -603,7 +607,7 @@ begin
       Result.Add('sources', LRows);
       for LIndex := 0 to LNames.Count - 1 do
       begin
-        LRows.Add(ReadSource(ACatalogRoot, LNames[LIndex], LCollectionIndex));
+        LRows.Add(ReadStudioSourceMetadata(ACatalogRoot, LNames[LIndex], LCollectionIndex));
       end;
       Result.Add('count', LRows.Count);
       Result.Add('maximum_sources', 4096);
@@ -831,7 +835,7 @@ begin
   begin
     LItem := LItems.Objects[LOrdinal];
     if LItem.Strings['kind'] = 'catalog' then
-      LSource := ReadSource(ACatalogRoot, LItem.Strings['id'])
+      LSource := ReadStudioSourceMetadata(ACatalogRoot, LItem.Strings['id'])
     else
     begin
       LEntries := TJSONArray.Create;
@@ -1007,7 +1011,7 @@ function OpenStudioSourceAudio(const ACatalogRoot, AHash: String): TFileStream;
 var
   LSource: TJSONObject;
 begin
-  LSource := ReadSource(ACatalogRoot, AHash);
+  LSource := ReadStudioSourceMetadata(ACatalogRoot, AHash);
   try
     Need(LSource.Strings['partition'] <> 'evaluation',
       'Evaluation originals are reserved from guided Studio listening');
@@ -1136,7 +1140,7 @@ begin
       end;
       ValidateClassifications(LSelection);
       LHash := TextField(LSelection, 'source_sha256', 64, 64);
-      LSource := ReadSource(ACatalogRoot, LHash);
+      LSource := ReadStudioSourceMetadata(ACatalogRoot, LHash);
       try
         Need(LSource.Strings['partition'] <> 'evaluation',
           'Evaluation sources are reserved for comparison, not training selection');

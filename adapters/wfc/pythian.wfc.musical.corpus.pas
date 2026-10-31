@@ -59,6 +59,9 @@ type
     SourceIndex: Integer;
     StartFrame: Int64;
     Grid: TProposedMusicalGrid;
+    { Empty admits every known cell. Otherwise this separate mask selects
+      representative material without relabeling measured unknowns or history. }
+    AdmittedCells: TMusicalProposalFlags;
   end;
   TMusicalCorpusRuns = array of TMusicalCorpusRun;
   TMusicalCorpusCoverage = record
@@ -66,6 +69,8 @@ type
     ExcludedFrames: Int64;
     ProcessedFrames: Int64;
     ModelUsedFrames: Int64;
+    ProposedFrames: Int64;
+    BudgetOmittedFrames: Int64;
     UnmodeledFrames: Int64;
     ModelCells: Integer;
     WeightedCells: Integer;
@@ -259,6 +264,9 @@ begin
     CheckSourceIndex(LSourceIndex, Length(ASources));
     RequireExactTimingCounter(LRun.StartFrame, 'Proposal run start');
     ValidateProposedMusicalGrid(LRun.Grid, AProgress);
+    Need((Length(LRun.AdmittedCells) = 0) or
+      (Length(LRun.AdmittedCells) = Length(LRun.Grid.Frames)),
+      'Musical admission mask differs from its original proposal grid');
     Need(LRun.Grid.SampleRate = ASources[LSourceIndex].SampleRate,
       'Proposal and original source sample rates differ');
     Need(LRun.StartFrame <= ASources[LSourceIndex].FrameCount - LRun.Grid.SourceFrames,
@@ -297,6 +305,7 @@ begin
   begin
     FRuns[I] := ARuns[I];
     FRuns[I].Grid := CopyProposedMusicalGrid(ARuns[I].Grid);
+    FRuns[I].AdmittedCells := Copy(ARuns[I].AdmittedCells);
   end;
   FRoleNames := Copy(ARuns[0].Grid.RoleNames);
   LContextIndex := LRoleCount + 2;
@@ -328,7 +337,14 @@ begin
       begin
         ReportWork(AProgress, 'musical_corpus_tokens', wuItems, C,
           Length(LRun.Grid.Frames), R);
-        if not LRun.Grid.Known[C] then
+        LStart := LClock.FrameAtTick(C * PitchPatternStepTicks, LRun.Grid.SampleRate, frCeiling);
+        LEnd := LClock.FrameAtTick((C + 1) * PitchPatternStepTicks, LRun.Grid.SampleRate, frCeiling);
+        if LRun.Grid.Known[C] then
+        begin
+          Inc(FCoverage[LSourceIndex].ProposedFrames, LEnd - LStart);
+        end;
+        if not LRun.Grid.Known[C] or
+          ((Length(LRun.AdmittedCells) > 0) and not LRun.AdmittedCells[C]) then
         begin
           LInSample := False;
           Continue;
@@ -387,8 +403,6 @@ begin
             AppendUnique(FAllowedDrumRhythms[J], LSamples[1][LSample].Tokens[LToken]);
           end;
         end;
-        LStart := LClock.FrameAtTick(C * PitchPatternStepTicks, LRun.Grid.SampleRate, frCeiling);
-        LEnd := LClock.FrameAtTick((C + 1) * PitchPatternStepTicks, LRun.Grid.SampleRate, frCeiling);
         Inc(LRunUsed, LEnd - LStart);
         Inc(FCoverage[LSourceIndex].ModelCells);
         Inc(FCoverage[LSourceIndex].WeightedCells, FSources[LSourceIndex].TrainingWeight);
@@ -409,6 +423,7 @@ begin
   begin
     FCoverage[I].ExcludedFrames := FSources[I].FrameCount - FCoverage[I].IncludedFrames;
     FCoverage[I].UnmodeledFrames := FCoverage[I].ProcessedFrames - FCoverage[I].ModelUsedFrames;
+    FCoverage[I].BudgetOmittedFrames := FCoverage[I].ProposedFrames - FCoverage[I].ModelUsedFrames;
   end;
   for P := 0 to LProviderCount - 1 do
   begin
@@ -473,6 +488,7 @@ begin
   begin
     Result[I] := FRuns[I];
     Result[I].Grid := CopyProposedMusicalGrid(FRuns[I].Grid);
+    Result[I].AdmittedCells := Copy(FRuns[I].AdmittedCells);
   end;
 end;
 

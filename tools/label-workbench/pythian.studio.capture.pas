@@ -1355,7 +1355,10 @@ begin
   end
   else if LKind = 'capture_save' then
   begin
-    Notice('Input saved to ' + StudioText(LResult, 'collection_name') + '.');
+    if Flag(LResult, 'already_catalogued') then
+      Notice('Already in your library; kept its existing name. Added to ' +
+        StudioText(LResult, 'collection_name') + '.')
+    else Notice('Added to ' + StudioText(LResult, 'collection_name') + '.');
     if FNotified <> LId then
     begin
       FNotified := LId;

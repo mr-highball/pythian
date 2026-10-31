@@ -33,6 +33,29 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-10-30, Big Boss, automatic playlist consumer implemented: native
+  LearnStudioPlaylist traverses complete included ranges in bounded windows,
+  verifies original bytes and reuses source/clock/policy-bound primary proposal
+  caches. A separate admission mask selects up to 1,024 known cells in musical
+  blocks spread across included time and fairly among sources. Unknowns and
+  original proposals remain unchanged; source/range/omitted boundaries never
+  gain artificial joins. Receipts distinguish included, excluded, analyzed,
+  proposed, unknown/partial, budget-omitted and actual model-used time. Whole
+  processing does not claim whole model coverage. Pitch/pulse remain bounded to
+  each window's first eight seconds; spectral measurements cover the full window.
+  Explicit 120BPM fallback and arranged instrument recipes stay Experimental.
+- Native playlist (45 checks) covers two 75-second recordings across all six windows,
+  warm reuse of all six, unchanged providers on reuse, changed influence without
+  reanalysis, disjoint exact source ranges and the actual six-part worker.
+  Native64/actual pas2js observation (67), corpus (165) and WAV-reader (70,061) pass,
+  including portable bound proposal serialization/checksum/cancel and exact
+  offset/reentry/read-boundary behavior. Native heaps are clean. Source reading
+  is consolidated in the primary TWaveFrameReader.ReadClip, including whole-WAV
+  decoding; no second native window reader is retained. The browser's real 5:1
+  playlist reaches this worker. This closes the bounded automatic learning/job
+  consumer, not stable growing-vocabulary ancestry or complete task acceptance.
+  Accounting stays47/108; consecutive nonclosing count stays zero.
+
 - 2026-10-30, Big Boss, bounded provider consumer delivered: primary
   music.observations shares one band/feature FFT; music.proposal emits explicit
   Experimental pitch/chroma arrangements and band-change percussion proposals.

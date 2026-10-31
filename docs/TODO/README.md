@@ -12,9 +12,12 @@ corpus learning task now takes implementation priority; the full-plan archive
 slice is preserved for later. Adding this six-unit operator outcome grows scope;
 it does not erase previous delivered code or award completion for the redesign.
 The shared corpus now learns source/run-aware weighted symbolic providers and
-reloads them into actual six-part synthesis in native/pas2js consumers. Whole-track
-traversal/reuse and the simple Generate job still remain open; this bounded
-delivery earns no partial task effort and is not a request for more labeling.
+reloads them into actual six-part synthesis in native/pas2js consumers. The simple
+native job now traverses included whole/range recordings, reuses bound proposal
+caches and generates actual instruments from per-track weighted providers.
+Its finite UI exposes 2–30 second previews; long instrumental output and growing
+vocabulary/style ancestry remain open. No partial task effort is accepted, and
+this delivery is not a request for more labeling.
 The operator has resumed implementation solo. The shared instrumental runtime
 and explicit percussion are accepted. Finite instrumental Studio and its real
 cancellation prerequisite are now accepted; the first operator review is waiting.

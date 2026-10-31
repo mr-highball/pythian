@@ -316,6 +316,23 @@ begin
     Check((LGap.CopyRuns[0].StartFrame = 8000) and not LGap.CopyRuns[0].Grid.Known[4],
       'Unknown timing and exact original offset survive learning');
     FreeAndNil(LGap);
+    LRunCopy := LCorpus.CopyRuns;
+    SetLength(LRunCopy[0].AdmittedCells, 16);
+    LRunCopy[0].AdmittedCells[4] := True;
+    LRunCopy[0].AdmittedCells[5] := True;
+    LRunCopy[0].AdmittedCells[10] := True;
+    LRunCopy[0].AdmittedCells[11] := True;
+    LGap := Build(LSources, LSelections, LRunCopy);
+    LCoverage := LGap.CopyCoverage;
+    Check((LCoverage[0].ProposedFrames = 32000) and (LCoverage[0].ModelUsedFrames = 8000) and
+      (LCoverage[0].BudgetOmittedFrames = 24000) and (LCoverage[0].Samples = 2),
+      'Representative masks retain exact proposal coverage without training across omitted time');
+    Check(LGap.CopyRuns[0].Grid.Known[0] and not LGap.CopyRuns[0].AdmittedCells[0],
+      'Budget omissions remain separate from measured unknown cells');
+    LRunCopy := LGap.CopyRuns;
+    LRunCopy[0].AdmittedCells[4] := False;
+    Check(LGap.CopyRuns[0].AdmittedCells[4], 'Returned representative masks are detached');
+    FreeAndNil(LGap);
 
     LFailed := False;
     LSelectionCopy := Copy(LSelections);

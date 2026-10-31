@@ -27,12 +27,14 @@ program pythian_tests_music_observations;
 {$H+}
 uses SysUtils, Math, pythian.audio, pythian.progress, pythian.music.observations,
   pythian.tonal, pythian.pitch.track, pythian.pitch.regions,
-  pythian.music.sound, pythian.music.proposal, pythian.chord,
+  pythian.music.sound, pythian.music.proposal, pythian.music.proposal.codec,
+  pythian.hash, pythian.chord,
   pythian.synth, pythian.automation;
 
 type
   ECancelled = class(Exception);
   TProbe = class
+    Stage: String;
     procedure Observe(const AProgress: TWorkProgress);
   end;
 
@@ -47,8 +49,62 @@ end;
 
 procedure TProbe.Observe(const AProgress: TWorkProgress);
 begin
-  if AProgress.Stage = 'musical_pitch_channel' then
+  if (AProgress.Stage = 'musical_pitch_channel') or (AProgress.Stage = Stage) then
     raise ECancelled.Create('Requested cancellation');
+end;
+
+procedure RunProposalCodec(const AGrid: TProposedMusicalGrid);
+var
+  LBound: TBoundMusicalProposal;
+  LLoaded: TBoundMusicalProposal;
+  LBytes: TAudioBytes;
+  LBroken: TAudioBytes;
+  LPrevious: TAudioBytes;
+  LFailed: Boolean;
+  LProbe: TProbe;
+begin
+  LBound := Default(TBoundMusicalProposal);
+  LBound.SourceSha256 := StringOfChar('a', 64);
+  LBound.StartFrame := 4294967419;
+  LBound.Grid := AGrid;
+  LBytes := EncodeMusicalProposal(LBound);
+  LLoaded := DecodeMusicalProposal(LBytes);
+  Check((LLoaded.SourceSha256 = LBound.SourceSha256) and
+    (LLoaded.StartFrame = LBound.StartFrame), 'Cached proposal retains exact original identity and wide offset');
+  Check(Sha256Bytes(EncodeMusicalProposal(LLoaded)) = Sha256Bytes(LBytes),
+    'Complete musical proposal codec is canonical and replayable');
+  Writeln('Proposal cache SHA256: ', Sha256Bytes(LBytes));
+  LLoaded.Grid.Frames[0][0].Tones[0].Pitch := 2;
+  Check((AGrid.Frames[0][0].Tones[0].Pitch <> 2) and
+    (LBound.Grid.Frames[0][0].Tones[0].Pitch <> 2), 'Decoded proposal has detached musical records');
+  LBroken := Copy(LBytes);
+  LBroken[12] := LBroken[12] xor 1;
+  LFailed := False;
+  try LLoaded := DecodeMusicalProposal(LBroken);
+  except on E: EAudio do LFailed := True end;
+  Check(LFailed and (LLoaded.Grid.Frames[0][0].Tones[0].Pitch = 2),
+    'Corrupt cache rejects without replacing accepted evidence');
+  LBroken := Copy(LBytes, 0, Length(LBytes) - 1);
+  LFailed := False;
+  try LLoaded := DecodeMusicalProposal(LBroken);
+  except on E: EAudio do LFailed := True end;
+  Check(LFailed, 'Truncated cached proposal rejects');
+  LProbe := TProbe.Create;
+  try
+    LPrevious := [1, 2, 3];
+    LProbe.Stage := 'musical_proposal_encode';
+    LFailed := False;
+    try LPrevious := EncodeMusicalProposal(LBound, LProbe.Observe);
+    except on E: ECancelled do LFailed := True end;
+    Check(LFailed and (Length(LPrevious) = 3) and (LPrevious[0] = 1),
+      'Cancelled encoding preserves forwarded caller bytes');
+    LProbe.Stage := 'musical_proposal_decode';
+    LFailed := False;
+    try LLoaded := DecodeMusicalProposal(LBytes, LProbe.Observe);
+    except on E: ECancelled do LFailed := True end;
+    Check(LFailed and (LLoaded.Grid.Frames[0][0].Tones[0].Pitch = 2),
+      'Cancelled decoding preserves forwarded caller proposal');
+  finally LProbe.Free end;
 end;
 
 function Tone(const ASeconds, AChannels: Integer; const ASilentLeft: Boolean): TAudioClip;
@@ -130,6 +186,8 @@ var
   LRegions: TPitchRegions;
   LSummaries: TPitchRegionSummaries;
   LGrid, LCopyGrid: TProposedMusicalGrid;
+  LBlock: TProposedMusicalBlock;
+  LExcluded: TMusicalProposalFlags;
   LFailed: Boolean;
   LPitched: Integer;
   LEnd: Integer;
@@ -157,6 +215,14 @@ begin
     Check(LPitched > 0, 'Controlled tone has pitches');
     Check(LMeasured.MaximumRms >= LMeasured.MinimumRms, 'RMS extent ordered');
     LGrid := ProposeMusicalGrid(LMeasured, 8000, 8000, 500000);
+    RunProposalCodec(LGrid);
+    SetLength(LExcluded, Length(LGrid.Frames));
+    LBlock := ChooseProposedMusicalBlock(LGrid, 2, 2, LExcluded);
+    Check(LBlock.CellCount = 2, 'Representative learning selects a contiguous known musical block');
+    for I := LBlock.FirstCell to LBlock.FirstCell + LBlock.CellCount - 1 do LExcluded[I] := True;
+    LBlock := ChooseProposedMusicalBlock(LGrid, 2, 2, LExcluded);
+    Check((LBlock.CellCount = 1) and not LExcluded[LBlock.FirstCell],
+      'Representative selection neither repeats excluded cells nor joins disjoint time');
     Check((Length(LGrid.Frames) = 4) and (Length(LGrid.RoleNames) = 3),
       'Portable complete eighth-note grid with three explicit proposed roles');
     Check(LGrid.Known[1] and (LGrid.Frames[1][0].Tones[0].Pitch in [36..47]) and

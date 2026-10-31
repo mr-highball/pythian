@@ -13,22 +13,20 @@ and source-free or explicitly bound instrument tones. Optional
 and the same native performance. It never selects recorded
 training-mix grains or silently substitutes a different renderer.
 
-The retained Studio deployment offers this finite runtime with explicit percussion as its primary
-**Synthesized instruments · Experimental** route. Save an instrumental project
-without recordings, choose tempo/key/bars/seed and sounds, then Check setup and
-Generate instruments. Jobs provides the mix, six synchronized parts with
-mute/solo, actual graph details and a listening-feedback link. The host keeps
-working when the page closes; saving feedback never silently regenerates.
-No recording-derived style learning or musical-quality claim follows from the
-authored starter. The replacement [simple Studio](TODO/NS-6_simple-studio_01.md)
-uses Library → Selection → Generate; its playlist learning/job connection remains
-open, so its isolated preview is not the deployed replacement yet.
+The [simple Studio](OPERATOR-STUDIO.md) uses **Library → Selection → Generate**.
+Whole tracks or clips and per-track learning influence feed Experimental musical
+providers automatically. The native job uses these actual providers with six
+instrumental parts; no authored starter fills in selected-music learning.
+The simple interface plays the mix and an original comparison excerpt. Native
+artifacts retain all six stems, actual graph dimensions, provider model files,
+source clocks, proposal origins and coverage. The host keeps working when the
+page closes. This finite path accepts 2–30 second previews plus a release tail.
 Deeper graph editing, sound design and long instrumental
 streams retain their linked [tasks](TODO/README.md).
 
 ## Public API and ownership
 
-Studio's contextual Sound step uses the shared
+The retained native musical-material consumer uses the shared
 [observed sound controls](INSTRUMENTS.md#experimental-observed-sound-controls)
 to apply an explicit low-pass cutoff and envelope sustain to one pitched part.
 The job retains the saved source recipe and actual `applied_sound` values; other
@@ -161,10 +159,11 @@ The corrected richer melody has twenty passes because its harmonic vocabulary
 requires more coverage proofs. These are actual vocabulary-dependent counts.
 This is conditional generation, without backtracking across groups. A context
 choice can still leave the following graph unsatisfiable; failures remain visible.
-The retained Studio deployment exposes analyzed or manual motifs through Musical starting points,
-with accept/correct/bypass, explicit part assignment, Save and Generate actions.
-Saving does not generate. Recording-linked jobs retain a bounded Original excerpt
-with exact source coordinates; source audio is never the performed instrument.
+The retained native musical-material consumer supports analyzed/manual motifs,
+correction, bypass and explicit part assignment. These deeper controls are not
+required steps in the simple Studio interface. Saving does not generate.
+Recording-linked jobs retain a bounded Original excerpt with exact source
+coordinates; source audio is never the performed instrument.
 
 The caller adds the primary filtered echo on the harmony bus and a three-second
 effect tail. Changing tonic changes actual training/model pitches; changing BPM
@@ -235,9 +234,35 @@ uses the existing up-to-30-second/two-million-frame observation bound. Unknowns
 may produce several samples per run. Weighted samples must fit the companion's
 4096-sample limit and the caller's observation budget (default 65536, at most 1048576).
 Companion public-token/state/history limits still apply; excess work rejects
-instead of silently trimming or joining recordings. Whole-track traversal,
-incremental journals and the simple Generate consumer remain
-[style-vocabulary work](TODO/NS-3_style-vocabulary_01.md).
+instead of silently trimming or joining recordings.
+
+Native `LearnStudioPlaylist` traverses the actual included whole/range recordings
+in bounded windows and reuses source/clock/policy-bound primary proposal caches.
+The primary `TWaveFrameReader.ReadClip` fills windows through bounded reads; whole
+WAV decoding uses this same implementation. The musical proposal codec is shared
+by native and pas2js, checks its complete payload hash and publishes only after
+validation/cancellation checks. Cache hits skip analysis without inventing coverage.
+The native tempo is an Experimental first-eight-second pulse candidate per
+window, with an explicit 120 BPM fallback; it is not a whole-track beat truth.
+
+The finite provider budget is 1,024 known cells in eight-cell musical blocks,
+spread uniformly across included time and fairly among recordings. A separate
+admission mask retains original known/unknown observations. It never joins gaps
+or claims that all analyzed audio entered the model. Receipts retain measured,
+cached, proposed, unknown/partial, budget-omitted and actual model-used time.
+Sources below one supported proposal window can remain unanalyzed and are
+reported as such. Whole sources remain on disk; windows, grids and model inputs
+are bounded. Native source limits remain 16 GiB per recording / 32 GiB total.
+The automatic Studio consumer uses the existing durable instrumental job with
+a two-hour preparation/runtime budget and explicit progress/cancellation.
+Incremental vocabulary ancestry and the remaining
+[style-vocabulary criteria](TODO/NS-3_style-vocabulary_01.md) are still open.
+
+For playlist results, `playlist_learning.sources` and the immutable request bind
+the complete training selection and influence. `original_reference` and the
+top-level `sources` describe comparison material. `used_sources` remains empty
+because the generated mix performs instruments without original PCM. Listening
+publications name the actual playlist-learning task/policy, not an authored starter.
 
 The maintained musical-corpus fixture measures two actual controlled recordings,
 swaps influence 8:1/1:8, reloads saved providers into six-part synthesis and checks

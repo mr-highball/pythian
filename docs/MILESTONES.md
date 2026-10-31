@@ -33,6 +33,13 @@ flow must learn from actual selected music through [corpus vocabulary](TODO/NS-3
 with output length and per-track influence as its only required tuning. No new
 effort is accepted by this change in direction.
 
+The bounded simple Generate consumer now learns from actual selected recordings
+and renders six-part instrumental previews through the durable native worker.
+Whole/range traversal, source-bound cache reuse and separate model-used coverage
+are implemented. Desktop/phone-width playback and reconnect checks protect the
+new path; flexible long output, vocabulary ancestry and remaining task criteria
+still prevent acceptance of either open task. Accounting stays **47/108**.
+
 1. [Instrumental runtime — DONE](TODO/DONE/NS-4_instrumental-runtime_01.md), effort 7:
    actual coupled musical WFC passes drive existing Pythian instruments; source-free caller delivered.
 2. [Explicit percussion — DONE](TODO/DONE/NS-2_percussion_01.md), effort 6:

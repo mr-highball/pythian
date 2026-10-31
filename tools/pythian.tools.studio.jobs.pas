@@ -81,7 +81,9 @@ function StudioWorkerLockDirectory(const ACatalogRoot: String;
 procedure RecoverStudioJobs(const ACatalogRoot: String; const AWorkerStopped: Boolean);
 function StudioJobDirectory(const ACatalogRoot, AJobId: String): String;
 { Creates only the private parent. The fresh leaf remains absent for importer
-  and library staging; it must be outside both durable catalog and library. }
+  and library staging; it must be outside both durable catalog and library.
+  PYTHIAN_STUDIO_STAGE_ROOT optionally selects a short host staging root instead
+  of cwd/build/studio-stages. It is host configuration, never a browser path. }
 function ReserveStudioJobStage(const ACatalogRoot, ALibraryRoot, AJobId,
   APurpose: String): String;
 { Original bytes, including fpjson UTF8String, without host code-page conversion. }
@@ -140,13 +142,19 @@ end;
 function StudioJobRequestRuntimeSeconds(const ARequest: TJSONObject): Integer;
 var
   LValue: TJSONData;
+  LMaximum: Integer;
 begin
   LValue := ARequest.Find('worker_seconds');
   if LValue = nil then
     Exit(MaximumStudioJobSeconds);
+  LMaximum := StudioJobRuntimeSeconds(ARequest.Strings['kind']);
+  if (ARequest.Strings['kind'] = 'instrumental_generate') and
+    (ARequest.Find('project_snapshot') <> nil) and
+    (ARequest.Objects['project_snapshot'].Find('playlist') <> nil) then
+    LMaximum := MaximumStudioTrainingSeconds;
   Need((LValue.JSONType = jtNumber) and (LValue.AsFloat = LValue.AsInt64) and
     (LValue.AsInt64 >= 1) and
-    (LValue.AsInt64 <= StudioJobRuntimeSeconds(ARequest.Strings['kind'])),
+    (LValue.AsInt64 <= LMaximum),
     'Stored job runtime budget exceeds its supported policy');
   Result := LValue.AsInteger;
 end;
@@ -191,8 +199,12 @@ begin
   Need(SafeId(AJobId) and SafeId(APurpose), 'Invalid Studio staging identity');
   LCatalog := IncludeTrailingPathDelimiter(ExpandFileName(ACatalogRoot));
   LLibrary := IncludeTrailingPathDelimiter(ExpandFileName(ALibraryRoot));
-  LBase := IncludeTrailingPathDelimiter(ExpandFileName('build' + PathDelim +
-    'studio-stages' + PathDelim + Copy(StudioTextHash('studio-stage-catalog-v1|' + LCatalog), 1, 16)));
+  LBase := SysUtils.GetEnvironmentVariable('PYTHIAN_STUDIO_STAGE_ROOT');
+  if LBase = '' then
+    LBase := 'build' + PathDelim + 'studio-stages';
+  LBase := IncludeTrailingPathDelimiter(ExpandFileName(
+    IncludeTrailingPathDelimiter(LBase) +
+    Copy(StudioTextHash('studio-stage-catalog-v1|' + LCatalog), 1, 16)));
   Need((Pos(LowerCase(LCatalog), LowerCase(LBase)) <> 1) and
     (Pos(LowerCase(LBase), LowerCase(LCatalog)) <> 1) and
     (Pos(LowerCase(LLibrary), LowerCase(LBase)) <> 1) and
@@ -651,7 +663,7 @@ begin
     if LKind = 'instrumental_generate' then
     begin
       Keys(AWrite, '|format|job_id|kind|project_id|project_revision|project_snapshot_sha256|' +
-        'seeds|instrumental|parent_job_id|retry_of|');
+        'seeds|instrumental|duration_ms|parent_job_id|retry_of|');
       Need((AWrite.Find('instrumental') <> nil) and
         (AWrite.Find('instrumental').JSONType = jtObject), 'Instrumental settings are required');
       ValidateStudioInstrumentalConfig(AWrite.Objects['instrumental']);
@@ -668,8 +680,15 @@ begin
           'Project snapshot differs; reopen the saved project');
         Need(LProject.Strings['learning_mode'] = 'instrumental',
           'Save the project with Instrumental experiment selected');
-        Need(LProject.Find('playlist') = nil,
-          'Playlist learning is not connected yet; authored-only generation cannot replace selected music');
+        if LProject.Find('playlist') <> nil then
+        begin
+          Need(LProject.Objects['playlist'].Arrays['items'].Count > 0,
+            'Add music to your playlist before generating');
+          Need((Number(AWrite, 'duration_ms') >= 2000) and
+            (Number(AWrite, 'duration_ms') <= 30000), 'Experimental music previews require2..30seconds');
+        end
+        else Need(AWrite.Find('duration_ms') = nil,
+          'Duration in seconds belongs to playlist learning; authored experiments use cells');
         LRequest.Add('project_snapshot', LProject.Clone);
       finally
         LProject.Free;
@@ -847,6 +866,9 @@ begin
       end;
     end;
     LRequest.Add('worker_seconds', StudioJobRuntimeSeconds(LKind));
+    if (LKind = 'instrumental_generate') and
+      (LRequest.Objects['project_snapshot'].Find('playlist') <> nil) then
+      LRequest.Integers['worker_seconds'] := MaximumStudioTrainingSeconds;
     LRequest.Add('request_sha256', StudioTextHash(LRequest.AsJSON));
     Result := LRequest;
     LRequest := nil;
@@ -914,6 +936,16 @@ begin
         Result.Add('source_count', 0);
         Result.Add('unique_source_bytes_to_verify', 0);
         Result.Add('experimental', True);
+        if LRequest.Objects['project_snapshot'].Find('playlist') <> nil then
+        begin
+          Result.Strings['source_validation'] := 'selected_recordings_pending_content_verification';
+          Result.Strings['material_origin'] := StudioPlaylistOrigin;
+          Result.Integers['source_count'] :=
+            LRequest.Objects['project_snapshot'].Objects['playlist'].Arrays['items'].Count;
+          Result.Delete('unique_source_bytes_to_verify');
+          Result.Add('requested_duration_ms', LRequest.Int64s['duration_ms']);
+          Result.Add('analysis_coverage', 'All included time; bounded representative musical cells enter providers');
+        end;
         if LRequest.Objects['project_snapshot'].Find('musical_material') <> nil then
         begin
           LRecipe := LRequest.Objects['project_snapshot'].Objects['musical_material'];

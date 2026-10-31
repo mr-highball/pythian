@@ -1,161 +1,82 @@
-# Studio: instrumental experiment workspace
+# Studio: Library → Selection → Generate
 
-[Current goal](GOAL.md) · [Implementation assessment](ASSESSMENT-2026-10-29.md) ·
-[Tasks](TODO/README.md) · [LAN setup](LAN-REVIEW-SERVICE.md) · [Work](WORK.md)
+[Goal](GOAL.md) · [Tasks](TODO/README.md) · [LAN setup](LAN-REVIEW-SERVICE.md) · [Work](WORK.md)
 
-## Current capability and the gap
+## 1. Library
 
-**2026-10-30 operator revision:** the main flow is being replaced by
-**Library → Selection → Generate**, with automatic playlist saving and whole/clip
-selection. Generate will need only length and optional track learning influence.
-The [new UI task](TODO/NS-6_simple-studio_01.md) remains open until its real
-[selected-music learning](TODO/NS-3_style-vocabulary_01.md) path works. The isolated
-preview currently exercises Library/Selection; its Generate button is explicitly
-unavailable. Stable Studio retains the earlier deployment described below until
-the replacement is usable. The older project/manual-proposal instructions are
-deployment history, not the intended new operator workflow.
+Put private WAV recordings inside `local-audio/collections/<collection>/`, or
+choose **Music folder** to see the configured folder. `PYTHIAN_AUDIO_LIBRARY`
+can select another private root containing `collections/`. Recordings, catalogs,
+answers and generated music stay outside source control.
 
-Studio already has private collections, explicit training inclusion, whole-track
-and passage selection, waveform/range controls, recording/import, analysis and
-Experimental pitch/MIDI preview, effects, persistent native jobs and listening
-feedback. The primary generation route is now **Synthesized instruments ·
-Experimental**: authored material or explicitly selected pitch/context proposals
-drive actual WFC musical passes and Pythian instruments. Recording audio is used
-for analysis and a bounded Original reference, not chopped up as the instruments.
-The musical editor and selected-part context repair pass ordinary native/browser
-checks; see [Work](WORK.md) for the actual deployed build.
+Search tracks or styles, choose a collection, and press **Add** beside the music
+you want. The listing uses metadata and bounded WAV headers; it does not download
+or analyze entire tracks. Play/pause auditions a recording without adding it.
 
-The finite mode has tempo/key/mode, seed, 1–32 four-beat bars, three pitched oscillator
-choices and six part levels. Native jobs persist a full mix, six stems and the
-actual graph summary and symbolic plan: sixteen passes/two groups for the authored
-starter; motif context adds a third group and vocabulary-dependent proof passes
-(seventeen or twenty in checked examples). Play the mix or
-use synchronized mute/solo; successful jobs enter the existing listening queue
-and can be selected for Studio feedback. Reviewed settings restore for a new
-deliberate experiment. [Instrumental Studio](TODO/DONE/NS-6_instrumental-studio_01.md)
-records acceptance and limits. Its foundations are the
-[shared runtime](TODO/DONE/NS-4_instrumental-runtime_01.md) and
-[explicit percussion](TODO/DONE/NS-2_percussion_01.md).
+**Add music** imports a WAV. **Record** opens microphone recording directly.
+Stop recording, inspect it, then add it to a collection. Phone recording needs
+the existing [HTTPS setup](LAN-REVIEW-SERVICE.md#phone-microphone-over-the-lan).
+The dialog also retains optional analysis, Experimental MIDI/note preview and
+effects tools. These are optional exploration, not required Generate steps.
+Importing identical audio reuses its catalog recording and existing title.
 
-Start with Project → name → Save draft → Generate → Check setup → Generate
-instruments → Jobs. Recordings are optional references in this mode; waveform
-analysis and reliable recording-derived providers are not silently implied.
-The legacy recorded-fragment experiment remains explicit in old projects.
-Graph editing, richer sound recipes and efficient long instrumental streams are
-remaining tasks, rather than claims made by this finite starter.
+## 2. Selection
 
-Generate → **Musical controls** adds hard MIDI pitch bounds, soft attack/chord-root
-preferences and performed velocity/gate length for the three pitched parts. Keep
-the authored harmony/rhythm guide or explicitly let WFC choose from available
-material. The optional energy/density/tension helper fills editable numbers without
-starting work. [Control meanings](MUSICAL-CONTROLS.md) describe the actual mappings
-and limits. These are controls for a new generation, not retained-part regeneration.
+Everything in this playlist teaches Pythian. Whole tracks are selected by default.
+Choose **Choose clip** to save one or several passages instead. Audition or edit a clip,
+switch back to the whole recording, or remove a track. The selected duration
+updates immediately. Playback never changes training inclusion.
 
-## Intended operator loop
+Changes save automatically. **Playlists** reopens saved choices or starts a new
+playlist. Earlier projects open as separate playlists; original snapshots and
+review answers stay preserved. Saving choices never starts learning.
 
-### Explore a recording's musical suggestions
+## 3. Generate
 
-In Sources → Passage, open **Explore Pythian analysis** and choose **Analyze
-from playhead**. In Import / record, upload or record audio and choose **Analyze
-audio**. Both use the same Musical suggestions panel: tempo candidates, ranked
-key alternatives, pitch spans per audio channel, brightness and window loudness.
-The existing beat overlay and original playback remain beside this evidence.
+Choose **Track length** and press **Generate music**. Optional **Track influence**
+gives particular recordings more weight in learning; it is not playback volume.
+The one action verifies/prepares selected sources, analyzes their included time,
+learns musical providers, solves the WFC musical graph and performs Pythian
+instruments. No manual labeling, proposal approval or authored starter is required.
 
-Suggestions are **Experimental**. Spectral/beat analysis covers the displayed
-window, up to thirty seconds and two million source frames. Pitch checks each
-channel separately over its first eight seconds, retains uncertain/silent spans,
-and shows the measured extent in original time. Unmeasured edges are omitted;
-inputs shorter than one pitch window have no pitch suggestion. A stereo channel
-is not an isolated musical part. Tonal fit scores are not probabilities, and
-brightness does not identify an instrument.
+The host computer keeps working if the phone sleeps or the page closes. Reopen
+the same playlist to reconnect. Progress shows the current operation;
+**Stop generation** cancels at a native checkpoint. A reconnect retries the saved
+request rather than starting a duplicate job.
 
-Analysis does not change a project, generation settings or model. Choose **Use
-or edit these suggestions** to open a contextual editor with Tempo & key, Pitch &
-part, Sound, and Source & notes tabs. Assign the pitch line to Bass, Harmony or Lead,
-correct its eighth-note cells, or skip pitch and retain authored parts. Channels
-are checked separately; they are not separated instruments. A manual motif can
-also start from Project → Musical starting points without any audio analysis.
+Play the result and **Save WAV** in the same step. **Compare an original excerpt**
+plays a bounded reference from the actual selection. Playback pauses other app
+players. **What Pythian learned from** shows analyzed and model-used duration
+separately. A changed playlist is explicitly distinguished from an older result.
 
-In **Sound**, choose Bass, Harmony or Lead and use the sound suggestion, edit the
-cutoff/sustain, or skip it. This changes that part's actual low-pass filter and
-envelope sustain. It is an editable starting point from measured brightness and
-window loudness; it does not identify or recreate the source instrument. Source
-details stay in local help. Accepting sound preserves other edited musical choices.
-Without analysis, the same controls are explicitly manual.
+## Current experimental limits
 
-**Apply to draft** changes the draft; **Save draft** preserves it; **Generate**
-builds a new model and instrumental result. Save does not train or generate.
-Changing Generate's tempo/root/mode or sounds explicitly overrides those settings
-for that job; entered pitches keep their absolute MIDI notes. Recording-linked
-results include the analyzed Original excerpt with original coordinates. Use the
-Original/Synthesized buttons in Listening reviews to switch playback.
+This finite path accepts **2–30 second previews**, plus a release/effect tail.
+Flexible minutes/hours of instrumental output remain the
+[long-generation task](TODO/NS-6_instrumental-streams_01.md); the duration field
+does not silently truncate those requests or switch to source fragments.
 
-The [pitch/context coupling repair](TODO/DONE/NS-4_motif-coupling_01.md) now handles
-the richer manual melody and checked role/correction variants. Context decides
-harmony, rhythm and the assigned part together; other parts remain independently
-generated. Unsupported combinations may still fail explicitly, without relaxing
-locks or claiming universal motif learning.
-The bounded [experimental-learning task](TODO/DONE/NS-3_experimental-learning_01.md)
-is accepted. Broader instrument/effect recipes and coarse whole-corpus learning
-remain separate work. Jobs retain the selected sound recipe and show the actual
-part/cutoff/sustain used. Explicit Generate still builds models; unchanged musical
-model hashes after a sound edit do not imply a cache hit. Portable observation callers
-reuse [MeasureMusicalObservations](../src/pythian.music.observations.pas), built
-from primary analysis, tonal, resampling and pitch implementations.
+All included audio is traversed in bounded windows. Pitch and pulse suggestions
+use the first eight seconds of each window; spectral measurements cover the whole
+window. A shared budget of 1,024 known eighth-note cells samples musical bars
+across the selection. Analyzed duration is therefore larger than model-used
+duration for long recordings. Unknown material and omitted time remain explicit.
+Very short unsupported selections may be rejected with their choices preserved.
 
-### Complete experiment loop
+The arrangements are **Experimental**. Chroma, periodic pitches and spectral changes
+propose bass, harmony, lead and percussion; this does not recover isolated source
+instruments. The result performs primary Pythian instruments, never windows cut
+from the training mix. Style tags currently provide collection context; influence
+changes actual training counts. A genre label alone does not choose an instrument.
 
-1. **Sources:** browse private recordings or import/record; include whole tracks
-   or coarse passages and give useful classifications. Hear originals directly.
-   Clearly show what is included, analyzed, excluded and actually used.
-2. **Generate:** use editable starter musical material or available recording
-   proposals, pick instruments/roles/context and generate an instrumental job.
-   Uncertain proposals are Experimental and may be corrected or bypassed.
-3. **Inspect:** see actual time/role mappings, dimensions, named passes,
-   vocabularies and constraints. Hear mix/solo parts; change context, rhythm,
-   pitch/register, expression, sound or affect mappings; retain useful parts.
-4. **Review:** hear Original reference and synthesized Before/After, answer one
-   clear question with optional notes, then Save/Next. Explicitly queue the next
-   experiment; saving feedback never silently retrains.
+Source verification and first analysis can take time. Saved proposal caches are
+reused. This workstation also showed seconds of latency closing small files on
+its E drive; retain this measured limitation when assessing job speed.
 
-The [graph workbench](TODO/NS-4_graph-workbench_01.md) and
-[controls](TODO/NS-4_graph-controls_01.md) expose real backend behavior.
-[Reviews](TODO/NS-6_synthesis-reviews_01.md) bind answers to exact plans/settings
-and a development decision. [Long instrumental jobs](TODO/NS-6_instrumental-streams_01.md)
-extend bounded native streaming, truthful progress and mobile reconnect.
-
-## UI and execution requirements
-
-Favor tabs and contained steps over a long scroll. Keep useful playback near the
-selected material, preserve unsaved edits, and use contextual modal help without
-jumping the page. Give each busy, empty, error and saved state an obvious next
-action. Use concise Experimental labels instead of proof disclaimers.
-
-WAVs remain in ignored private collection folders; the existing catalog and
-source-family lineage are reused. Discovery lists metadata and preparation runs
-only for selected use. Saving derived effects audio preserves the original.
-Browser microphone permissions/secure context remain platform requirements.
-
-Use native durable jobs so phone backgrounding does not terminate generation.
-Keep learning/preparation/output duration distinct and use bounded audio
-lookahead, held-note/envelope/effect state and user-selected output length.
-A duration setting or render speed is not evidence of musical continuity.
-
-Keep implementation and inference Pascal-owned, share primary library logic and
-reuse existing UI/service/job/answer contracts. Do not build a second solver,
-renderer, observation store or generic review framework.
-
-Local use needs no login/accounts or repeated approval flow. Retain automatic
-same-origin sessions, folder containment, input checks, explicit recording and
-bounded work/cancellation. Protect live operator data from authored QA inputs.
-Actual changed browser interactions require desktop/narrow checks; do not claim
-physical phone validation from emulation.
-
-## Historical scope
-
-The [previous Studio scope](history/OPERATOR-STUDIO-2026-10-29.md), its percentage
-allocation and old benchmark-first prerequisites are historical. The
-[retirement map](TODO/RETIRED/2026-10-29/README.md) assigns useful unfinished scope
-to new tasks. Existing accepted features and failed cases remain evidence; none
-is automatically new-goal acceptance. [Effort-based accounting](TASKFLOW.MD#effort-and-derived-completion)
-replaces assigned percentages. The operator has resumed implementation solo.
+The [graph workbench](TODO/NS-4_graph-workbench_01.md),
+[musical controls](TODO/NS-4_graph-controls_01.md),
+[sound design](TODO/NS-2_sound-design_01.md), reusable styles/blends and guided
+[synthesis reviews](TODO/NS-6_synthesis-reviews_01.md) remain open work. Their
+library foundations do not imply that the simple Studio exposes every control.
+Historical operator workflows are retained in [the work history](WORK-HISTORY.md),
+not required steps in this interface.

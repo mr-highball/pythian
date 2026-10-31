@@ -31,7 +31,9 @@ uses
   pythian.audio,
   pythian.stream.bytes,
   pythian.wave.stream,
-  pythian.wave.read;
+  pythian.wave.read,
+  pythian.wave,
+  pythian.progress;
 
 type
   TShortStream = class(TMemoryStream)
@@ -42,6 +44,11 @@ type
     {$else}
     function Read(var ABuffer; ACount: LongInt): LongInt; override;
     {$endif}
+  end;
+  TClipProbe = class
+    Reader: TWaveFrameReader;
+    ReentryRejected: Boolean;
+    procedure Observe(const AProgress: TWorkProgress);
   end;
 
 var
@@ -72,6 +79,16 @@ begin
     raise Exception.Create(AMessage);
   end;
   Inc(GChecks);
+end;
+
+procedure TClipProbe.Observe(const AProgress: TWorkProgress);
+begin
+  try
+    Reader.ReadFrames(1);
+  except
+    on E: EAudio do ReentryRejected := True;
+  end;
+  if AProgress.Done > 0 then raise EAbort.Create('Requested clip cancellation');
 end;
 
 procedure Put(var ABytes: TAudioBytes; const AOffset, ACount: Integer; AValue: Int64);
@@ -193,6 +210,68 @@ begin
   end;
 end;
 
+procedure CheckClipRanges;
+var
+  LSamples: TAudioSamples;
+  LBytes: TAudioBytes;
+  LOriginal: TAudioClip;
+  LClip: TAudioClip;
+  LAccepted: TAudioClip;
+  LEmpty: TAudioClip;
+  LStream: TAudioBytesReadStream;
+  LReader: TWaveFrameReader;
+  LProbe: TClipProbe;
+  I: Integer;
+  LRejected: Boolean;
+begin
+  SetLength(LSamples, 70010);
+  for I := 0 to High(LSamples) do LSamples[I] := ((I mod 17) - 8) / 16;
+  LOriginal := TAudioClip.Create(8000, 1, LSamples);
+  LClip := nil;
+  LEmpty := nil;
+  LStream := nil;
+  LReader := nil;
+  LProbe := TClipProbe.Create;
+  try
+    LBytes := EncodeWavePcm16(LOriginal);
+    LStream := TAudioBytesReadStream.Create(LBytes);
+    LReader := TWaveFrameReader.Create(LStream);
+    LClip := LReader.ReadClip(5, 70000);
+    Check((LClip.FrameCount = 70000) and (LReader.FramePosition = 70005),
+      'Owned clip crosses multiple bounded WAVE blocks at exact original time');
+    for I := 0 to LClip.FrameCount - 1 do
+      Check(LClip.SampleAt(I, 0) = LSamples[I + 5], 'Bounded clip retains original samples');
+    LRejected := False;
+    try LEmpty := LReader.ReadClip(70005, 6);
+    except on E: EAudio do LRejected := True end;
+    Check(LRejected and (LReader.FramePosition = 70005) and not LReader.Failed,
+      'Invalid clip extent preserves reader and cursor');
+    LProbe.Reader := LReader;
+    LAccepted := LClip;
+    LRejected := False;
+    try LClip := LReader.ReadClip(0, 70000, LProbe.Observe);
+    except on E: EAbort do LRejected := True end;
+    Check(LRejected and (LClip = LAccepted) and not LReader.Failed and
+      (LReader.FramePosition = MaximumWaveReadFrames),
+      'Cancellation preserves accepted clip while reporting the actual advanced healthy cursor');
+    Check(LProbe.ReentryRejected, 'Clip callbacks cannot re-enter the borrowed reader');
+    LEmpty := LReader.ReadClip(70010, 0);
+    Check((LEmpty.FrameCount = 0) and (LReader.FramePosition = MaximumWaveReadFrames),
+      'Empty clip performs no seek');
+    FreeAndNil(LEmpty);
+    LEmpty := DecodeWave(LBytes);
+    Check((LEmpty.FrameCount = 70010) and (LEmpty.SampleAt(70009, 0) = LSamples[70009]),
+      'Whole WAVE decoding shares the primary bounded clip reader');
+  finally
+    LEmpty.Free;
+    LClip.Free;
+    LReader.Free;
+    LStream.Free;
+    LOriginal.Free;
+    LProbe.Free;
+  end;
+end;
+
 var
   LStream: TMemoryStream;
   LSink: TStreamAudioSink;
@@ -203,6 +282,7 @@ var
   LRejected: Boolean;
   LShort: TShortStream;
 begin
+  CheckClipRanges;
   CheckFormat(16, 1, False, [32768, 0, 16384], [-1, 0, 0.5]);
   CheckFormat(24, 1, False, [8388608, 0, 4194304], [-1, 0, 0.5]);
   CheckFormat(32, 1, False, [2147483648, 0, 1073741824], [-1, 0, 0.5]);

@@ -26,7 +26,9 @@ program StudioPlaylistConformance;
 {$H+}
 uses Classes, SysUtils, Math, fpjson, pythian.audio, pythian.wave,
   pythian.tools.studio.projects, pythian.tools.studio.&library.discovery,
-  pythian.tools.studio.jobs;
+  pythian.tools.studio.jobs, pythian.tools.studio.playlist.learning,
+  pythian.tools.studio.worker, pythian.tools.listen.catalog,
+  pythian.wfc.musical.corpus, pythian.wfc.layers;
 var GChecks: Integer;
 procedure Check(const AValue: Boolean; const AMessage: String);
 begin
@@ -41,6 +43,108 @@ begin
   for I := 0 to High(LSamples) do LSamples[I] := 0.03 * Sin(I * 2 * Pi * AFrequency / 8000);
   LClip := TAudioClip.Create(8000, 1, LSamples);
   try SaveWavePcm16(APath, LClip) finally LClip.Free end;
+end;
+procedure CheckLearning(const ARoot, ACatalog, ALibrary: String; const APlaylist: TJSONObject);
+var
+  LCold: TMusicalCorpus;
+  LWarm: TMusicalCorpus;
+  LReceipt: TJSONObject;
+  LBefore: TLayerModelTexts;
+  LAfter: TLayerModelTexts;
+  LClip: TJSONObject;
+  LItem: TJSONObject;
+  LClips: TJSONArray;
+  LDirectory: String;
+  I: Integer;
+  LDifferent: Boolean;
+begin
+  LCold := nil;
+  LWarm := nil;
+  LReceipt := nil;
+  LDirectory := GetCurrentDir;
+  try
+    { Existing native importer staging is relative to runtime cwd. Keep it in
+      this isolated E-drive fixture, as the deployed service does. }
+    SetCurrentDir(ARoot);
+    LCold := LearnStudioPlaylist(ACatalog, ALibrary, ARoot + '/cache',
+      'playlist-learning', APlaylist, LReceipt);
+    try
+      for I := 0 to 1 do
+      begin
+        Check(LReceipt.Arrays['sources'].Objects[I].Int64s['analyzed_frames'] = 600000,
+          'Whole75-second recording is analyzed beyond a first-eight-second proposal');
+        Check((LReceipt.Arrays['sources'].Objects[I].Integers['measured_windows'] = 3) and
+          (LReceipt.Arrays['sources'].Objects[I].Integers['cache_hits'] = 0),
+          'Cold learning uses bounded30/30/15-second windows');
+        Check((LReceipt.Arrays['sources'].Objects[I].Int64s['model_used_frames'] > 0) and
+          (LReceipt.Arrays['sources'].Objects[I].Int64s['model_used_frames'] <= 600000),
+          'Model-used coverage is separate from analyzed duration');
+      end;
+      LBefore := LCold.CopyModelTexts;
+    finally FreeAndNil(LReceipt) end;
+    LWarm := LearnStudioPlaylist(ACatalog, ALibrary, ARoot + '/cache',
+      'playlist-learning-warm', APlaylist, LReceipt);
+    try
+      for I := 0 to 1 do
+        Check((LReceipt.Arrays['sources'].Objects[I].Integers['measured_windows'] = 0) and
+          (LReceipt.Arrays['sources'].Objects[I].Integers['cache_hits'] = 3),
+          'Unchanged source-bound measurements reuse all cached windows');
+      LAfter := LWarm.CopyModelTexts;
+      for I := 0 to High(LBefore) do
+        Check(LBefore[I] = LAfter[I], 'Warm reuse preserves every actual musical provider');
+    finally FreeAndNil(LReceipt) end;
+    FreeAndNil(LWarm);
+    APlaylist.Arrays['items'].Objects[0].Integers['influence'] := 7;
+    LWarm := LearnStudioPlaylist(ACatalog, ALibrary, ARoot + '/cache',
+      'playlist-learning-weight', APlaylist, LReceipt);
+    try
+      Check(LReceipt.Arrays['sources'].Objects[0].Integers['measured_windows'] = 0,
+        'Changing influence does not repeat source analysis');
+      LAfter := LWarm.CopyModelTexts;
+      LDifferent := False;
+      for I := 0 to High(LBefore) do
+        if LBefore[I] <> LAfter[I] then LDifferent := True;
+      Check(LDifferent, 'Influence changes actual whole-recording learned models');
+    finally FreeAndNil(LReceipt) end;
+    FreeAndNil(LWarm);
+    LItem := APlaylist.Arrays['items'].Objects[1];
+    LItem.Strings['extent'] := 'clips';
+    LClips := LItem.Arrays['clips'];
+    LClip := TJSONObject.Create(['start_frame', 8000, 'end_frame', 16000, 'included', True]);
+    LClip.Add('classifications', TJSONArray.Create(['intro']));
+    LClips.Add(LClip);
+    LClip := TJSONObject.Create(['start_frame', 400000, 'end_frame', 440000, 'included', True]);
+    LClip.Add('classifications', TJSONArray.Create(['warm']));
+    LClips.Add(LClip);
+    LWarm := LearnStudioPlaylist(ACatalog, ALibrary, ARoot + '/cache',
+      'playlist-learning-clips', APlaylist, LReceipt);
+    try
+      Check((LReceipt.Arrays['sources'].Objects[1].Int64s['included_frames'] = 48000) and
+        (LReceipt.Arrays['sources'].Objects[1].Int64s['analyzed_frames'] = 48000),
+        'Disjoint selected clips analyze only their actual original time');
+      Check(LWarm.CopyCoverage[1].IncludedFrames = 48000,
+        'Actual musical corpus receives exact selected ranges');
+    finally FreeAndNil(LReceipt) end;
+    FreeAndNil(LWarm);
+    LItem := APlaylist.Arrays['items'].Objects[0];
+    LItem.Strings['extent'] := 'clips';
+    LItem.Strings['id'] := StringOfChar('c', 64);
+    LWarm := LearnStudioPlaylist(ACatalog, ALibrary, ARoot + '/cache',
+      'playlist-learning-excluded', APlaylist, LReceipt);
+    try
+      Check((LReceipt.Integers['excluded_playlist_item_count'] = 1) and
+        (LReceipt.Arrays['sources'].Count = 1),
+        'An excluded unavailable recording is not opened or prepared');
+      Check((APlaylist.Arrays['items'].Count = 2) and
+        (APlaylist.Arrays['items'].Objects[0].Strings['id'] = StringOfChar('c', 64)),
+        'Learning never removes saved excluded choices from the caller playlist');
+    finally FreeAndNil(LReceipt) end;
+  finally
+    LReceipt.Free;
+    LWarm.Free;
+    LCold.Free;
+    SetCurrentDir(LDirectory);
+  end;
 end;
 procedure Run(const ARoot: String);
 var
@@ -141,13 +245,37 @@ begin
           LResult := PrepareStudioJob(LCatalog, LJob);
           LResult.Free;
         except
-          on E: EAudio do LRejected := Pos('Playlist learning is not connected yet', E.Message) = 1;
+          on E: EAudio do LRejected := Pos('duration_ms', E.Message) > 0;
         end;
-        Check(LRejected, 'A playlist cannot silently fall back to authored-only generation');
+        Check(LRejected, 'Playlist generation requires an explicit duration instead of an authored fallback');
+        LJob.Add('duration_ms', 2000);
+        LResult := PrepareStudioJob(LCatalog, LJob);
+        try
+          Check((LResult.Integers['source_count'] = 2) and
+            (LResult.Objects['limits'].Integers['worker_seconds'] = 7200),
+            'Playlist preflight declares actual source learning and its durable runtime budget');
+        finally LResult.Free end;
+        LResult := EnqueueStudioJob(LCatalog, LJob);
+        LResult.Free;
+        Check(RunStudioWorker(LCatalog, LJob.Strings['job_id'], LLibrary),
+          'Actual native worker learns the selected music and synthesizes a queued job');
+        LResult := ReadStudioJob(LCatalog, LJob.Strings['job_id']);
+        try
+          Check(LResult.Strings['status'] = 'completed', 'Queued playlist generation completes');
+          Check((LResult.Objects['results'].Objects['playlist_learning'].Arrays['sources'].Count = 2) and
+            (LResult.Objects['results'].Arrays['parts'].Count = 6),
+            'Actual worker result retains source contributions and all six synthesized parts');
+        finally LResult.Free end;
+        LResult := ReadListeningQueue(LCatalog);
+        try
+          Check(LResult.Arrays['items'].Objects[0].Strings['task_id'] =
+            'NS-3_style-vocabulary_01', 'Review names the actual playlist-learning task');
+        finally LResult.Free end;
       finally
         LJob.Free;
       end;
     finally LRead.Free end;
+    CheckLearning(ExpandFileName(ARoot), LCatalog, LLibrary, LPlaylist);
   finally
     LWrite.Free;
     LDiscovery.Free;

@@ -1129,6 +1129,8 @@ begin
       LReport := TJSONObject.Create;
       LReport.Add('version', 1);
       LReport.Add('token', AToken);
+      LReport.Add('catalog_id', StudioTextHash('studio-browser-catalog-v1|' +
+        IncludeTrailingPathDelimiter(ExpandFileName(ACatalogRoot))));
       LExtraHeaders := MediaSessionCookie(ASocket, AToken);
     end
     else if (ARequest.Method = 'POST') and
@@ -1141,6 +1143,8 @@ begin
       LReport := TJSONObject.Create;
       LReport.Add('version', 1);
       LReport.Add('token', AToken);
+      LReport.Add('catalog_id', StudioTextHash('studio-browser-catalog-v1|' +
+        IncludeTrailingPathDelimiter(ExpandFileName(ACatalogRoot))));
       LExtraHeaders := MediaSessionCookie(ASocket, AToken);
     end
     else if (ARequest.Method = 'GET') and

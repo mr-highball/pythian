@@ -123,14 +123,20 @@ begin
     'Slow durable publication itself made a fine endpoint eligible');
   Check(not LGate.Accept('voice_constraints_ready', 1, 1, 12000, True),
     'Changing a fine stage bypassed the completed-publication interval');
-  Check(LGate.Accept('instrumental_render', 4096, 10000, 13000, True),
-    'Real work after the interval remains visible');
+  Check(not LGate.Accept('instrumental_render', 4096, 10000, 13000, True),
+    'Slow storage backs off fine publications');
+  Check(not LGate.Accept('instrumental_render', 4096, 10000, 40999, True),
+    'Storage backoff has an explicit bounded interval');
+  Check(LGate.Accept('instrumental_render', 4096, 10000, 41000, True),
+    'Real work remains visible within thirty seconds after publication');
   LRejected := False;
-  try LGate.PublishedAt(12999); except on EAudio do LRejected := True end;
+  try LGate.PublishedAt(40999); except on EAudio do LRejected := True end;
   Check(LRejected, 'Backward completion time is invalid');
-  LGate.PublishedAt(14000);
-  Check(not LGate.Accept('instrumental_ready', 1, 1, 14000, True),
+  LGate.PublishedAt(41000);
+  Check(not LGate.Accept('instrumental_ready', 1, 1, 41000, True),
     'A nested ready endpoint is not a terminal job transition');
+  Check(LGate.Accept('instrumental_render', 8192, 10000, 43000, True),
+    'Fast publication restores the ordinary two-second interval');
 end;
 
 begin

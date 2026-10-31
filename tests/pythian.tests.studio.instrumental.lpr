@@ -56,11 +56,11 @@ begin
   Result.Add('instruments', TJSONArray.Create(['saw','triangle','square']));
   Result.Add('levels', TJSONArray.Create([100,100,100,100,100,100]));
 end;
-procedure Run(const ARoot: String);
+procedure Run(const ARoot: String; const ASmoke: Boolean);
 var
   LWrite, LProject, LRequest, LJob, LPrepared, LQueue, LAsset: TJSONObject;
   LHash, LFirstHash, LFirstModel: String; LStream: TFileStream; LWave: TWaveFrameReader;
-  I: Integer; LRejected: Boolean;
+  I, LRenderCount: Integer; LRejected: Boolean;
   LCancelWorker: TInstrumentalCancelWorker;
   LStarted: QWord;
   LReady: Boolean;
@@ -92,7 +92,9 @@ begin
       Check(LPrepared.Strings['learning_mode'] = 'instrumental', 'Preflight describes instrumental path');
       Check(LPrepared.Int64s['unique_source_bytes_to_verify'] = 0, 'No source verification is claimed');
     finally LPrepared.Free end;
-    for I := 1 to 5 do
+    LRenderCount := 5;
+    if ASmoke then LRenderCount := 1;
+    for I := 1 to LRenderCount do
     begin
       LRequest.Strings['job_id'] := 'instrumental-' + IntToStr(I);
       if I = 3 then LRequest.Objects['instrumental'].Integers['tonic'] := 5;
@@ -156,7 +158,7 @@ begin
     end;
     LQueue := ReadListeningQueue(ARoot);
     try
-      Check(LQueue.Arrays['items'].Count = 5, 'All successful jobs enter existing listening queue');
+      Check(LQueue.Arrays['items'].Count = LRenderCount, 'All successful jobs enter existing listening queue');
       LAsset := LQueue.Arrays['items'].Objects[0].Arrays['assets'].Objects[0];
       Check(LAsset.Objects['provenance'].Find('source_sha256') = nil, 'Authored feedback has no fictitious WAV');
       Check(Length(LAsset.Objects['provenance'].Strings['material_sha256']) = 64,
@@ -204,13 +206,16 @@ begin
     finally
       LCancelWorker.Free;
     end;
-    WriteLn('Studio instrumental: ', GChecks,
+    if ASmoke then WriteLn('Studio instrumental smoke: ', GChecks,
+      ' checks; one durable source-free job, six stems, lineage and actual cancellation')
+    else WriteLn('Studio instrumental: ', GChecks,
       ' checks; durable source-free jobs, replay, key change, six stems and authored review lineage');
   finally LRequest.Free; LProject.Free; LWrite.Free end;
 end;
 begin
   try
-    if ParamCount <> 1 then raise Exception.Create('Usage: fixture FRESH_ROOT');
-    Run(ParamStr(1));
+    if (ParamCount = 2) and (ParamStr(1) = '--smoke') then Run(ParamStr(2), True)
+    else if ParamCount = 1 then Run(ParamStr(1), False)
+    else raise Exception.Create('Usage: fixture [--smoke] FRESH_ROOT');
   except on E: Exception do begin WriteLn(StdErr, E.ClassName, ': ', E.Message); ExitCode:=1 end end;
 end.

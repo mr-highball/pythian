@@ -153,7 +153,7 @@ try {
   $studioMaterialRoot = Join-Path $buildRoot ('studio-material-' + [Guid]::NewGuid().ToString('N'))
   & (Join-Path $buildRoot "pythian.tests.studio.material$executableSuffix") $studioMaterialRoot
   if ($LASTEXITCODE -ne 0) { throw 'Studio musical-choice storage and Unicode identity checks failed' }
-  foreach ($studioComponent in @('playlist', 'library', 'library.discovery', 'jobs', 'progress', 'effects', 'capture')) {
+  foreach ($studioComponent in @('library', 'library.discovery', 'jobs', 'progress', 'effects', 'capture')) {
     & $compilerPath @compilerArgs '-gh' '-Futools' "tests/pythian.tests.studio.$studioComponent.lpr"
     if ($LASTEXITCODE -ne 0) { throw "Studio $studioComponent compilation failed" }
     $studioFixtureRoot = Join-Path $buildRoot ("studio-$studioComponent-" + [Guid]::NewGuid().ToString('N'))
@@ -616,6 +616,10 @@ try {
     # assertions/range/overflow/I/O checks and the unchanged job time budgets.
     & $compilerPath @adapterArgs '-O2' 'tools/pythian.studio.worker.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Studio worker compilation failed' }
+    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.studio.playlist.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Studio playlist learning compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.studio.playlist$executableSuffix") (Join-Path $buildRoot ('studio-playlist-' + [Guid]::NewGuid().ToString('N')))
+    if ($LASTEXITCODE -ne 0) { throw 'Studio playlist learning checks failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.studio.instrumental.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Studio instrumental fixture compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.studio.instrumental$executableSuffix") (Join-Path $buildRoot ('studio-instrumental-' + [Guid]::NewGuid().ToString('N')))

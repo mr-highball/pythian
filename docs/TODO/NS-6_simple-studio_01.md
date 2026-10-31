@@ -48,6 +48,40 @@ This is a new operator outcome, not retroactive credit for the earlier Studio.
 
 **Dev Notes:**
 
+- 2026-10-30, Big Boss, actual Generate integration: the simple action saves its
+  pending selection and starts the existing durable instrumental worker using
+  the immutable playlist revision. Included whole/clip audio is measured through
+  shared Pascal observation/proposal/corpus implementations; source influence
+  changes training counts. No authored fallback or source-window renderer is
+  used. The UI has phase progress, Stop, saved-request retry/reconnect, mix WAV
+  playback/save and a real original excerpt. Duration survives reload; current
+  choices are distinguished from an older completed run. Browser recovery keys
+  are isolated by a path-free server catalog identity, repairing a real stale
+  catalog startup failure. JSON/network failures are converted into visible
+  retry states rather than unhandled JavaScript exceptions.
+- Actual in-app browser checks at desktop and 390 pixels cover two recordings,
+  one 0:50–1:05 clip plus a whole 75-second recording, auto-save-to-Generate,
+  5:1 influence, native completion, synthesized/original playback, page reload
+  reconnect, duration restoration and Stop. Record opens the short capture
+  dialog directly; physical phone microphone capture is not newly qualified.
+  Native playlist (45 checks) passes with clean heap, including cold/warm whole/range
+  learning and the actual worker. Finite length is explicitly 2–30 seconds plus
+  release tail; the linked long-generation task remains a prerequisite for
+  broader durations. Keep this task open and accept no partial effort.
+- Retain all repaired failures under E-drive musical-corpus-20261030-boss:
+  Windows MAX_PATH staging, oversized frame read, missing reference metadata,
+  stale browser catalog recovery, sparse single-seed JavaScript array creation,
+  HTTP error parsing and transient stale-result/start/cancel UI. Shared short
+  staging and explicit E-drive proposal cache roots replace implicit paths.
+- Final browser checks also exercise visible media seeking, actual WAV download
+  and byte identity, a disabled Generate button at zero included duration, and
+  the older-result notice after selection changes. Native learning skips an
+  excluded unavailable recording without removing its saved choices. The real
+  default Library contains music-folder collections, excluding uncollected
+  development fixtures. The fixed stable slot is deployed with the actual
+  lofi/chillwave/stoner-rock collection list checked; no operator jobs were active
+  during replacement. Keep all private recordings and historical responses intact.
+
 - 2026-10-30, Big Boss: Operator explicitly replaces the current app workflow.
   Live browser inspection confirms the disconnect: collection inclusion is only
   reference context for ordinary instrumental jobs; manually accepted musical

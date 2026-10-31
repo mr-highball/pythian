@@ -26,6 +26,21 @@ Primary attribution: NS-6. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-10-30, Big Boss, concrete short-consumer performance evidence: a native
+  four-second playlist result advanced correctly but took minutes with low CPU.
+  On this host,32 sequential16KiB writes took7ms while closing the small E-drive
+  file took5,571ms. The primary WAV writer already uses blocks. Preserve these
+  timings and the pre-change job; do not add a one-off writer or weaken endpoint
+  protection on speculation. Shared rendering publication now backs off to four
+  times measured durable-publication cost, capped at30seconds, and returns to
+  its ordinary two-second cadence after a fast write. Every callback still
+  checks cancellation; terminal transitions remain separate. Progress21 passes
+  with clean heap, including slow/fast/backward clocks and the existing24-hour
+  status-count simulation. This reduces avoidable event I/O; it does not claim
+  to repair underlying storage latency or implement long instrumental playback.
+  Carry the measured artifact/close cost into this task's actual long consumer;
+  no broad unrelated performance/callback audit is selected.
+
 - 2026-10-29, Big Boss: Core native scheduling and streamed instruments exist. Current hours-long Studio session is acoustic; duration editing is finite lookahead and does not itself implement indefinite musical extension.
 - Read [the implementation review](../ASSESSMENT-2026-10-29.md) and [retirement/replacement map](RETIRED/2026-10-29/README.md) before repeating prior work. Preserve original failure evidence. Experimental musical proposals may be auditioned and corrected without independent inference-accuracy acceptance; never relabel them as established measurements.
 - Before implementation, state the audible/operator criterion, concrete deliverable, minimal closing checks and stop condition. Record repaired defects, failed approaches and linked follow-ups here. Do not broaden infrastructure work beyond an actual blocker.

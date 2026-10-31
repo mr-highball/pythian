@@ -152,10 +152,6 @@ end;
 function ReadWaveClip(const AStream: TStream): TAudioClip;
 var
   LReader: TWaveFrameReader;
-  LSamples: TAudioSamples;
-  LBlock: TAudioSamples;
-  LOffset: Integer;
-  LIndex: Integer;
 begin
   LReader := TWaveFrameReader.Create(AStream);
   try
@@ -163,22 +159,7 @@ begin
     begin
       raise EAudio.Create('Decoded WAVE exceeds sample budget; use bounded frame reads');
     end;
-    SetLength(LSamples, Integer(LReader.FrameCount) * LReader.Channels);
-    LOffset := 0;
-    while LOffset < Length(LSamples) do
-    begin
-      LBlock := LReader.ReadFrames(MaximumWaveReadFrames);
-      if Length(LBlock) = 0 then
-      begin
-        raise EAudio.Create('WAVE reader ended before declared frame extent');
-      end;
-      for LIndex := 0 to High(LBlock) do
-      begin
-        LSamples[LOffset + LIndex] := LBlock[LIndex];
-      end;
-      Inc(LOffset, Length(LBlock));
-    end;
-    Result := TAudioClip.Create(LReader.SampleRate, LReader.Channels, LSamples);
+    Result := LReader.ReadClip(0, Integer(LReader.FrameCount));
   finally
     LReader.Free;
   end;
