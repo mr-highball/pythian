@@ -3,7 +3,10 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**6 open tasks · 131 total effort units · 19 current-goal DONE · 91 / 131 accepted (69.47%).**
+**7 open tasks · 135 total effort units · 19 current-goal DONE · 91 / 135 accepted (67.41%).**
+The [optional musical laboratory](NS-6_optional-lab_01.md) adds four repair units:
+the simplified Studio left earlier authored/affect controls unreachable. Existing
+library code and historical tests do not earn current UI acceptance.
 [Independent saved clip files — DONE](DONE/NS-6_saved-clips_01.md) close five units:
 automatic durable lossless capture, metadata/original-time lineage and learning
 from saved files without full-parent preparation. Actual unavailable-parent,
@@ -28,9 +31,10 @@ The accepted [decision-replay prerequisite](DONE/NS-4_decision-replay_01.md) now
 retains actual streamed notes/provider states and replays mix/stems exactly
 without learning or solving. New ordinary generations save these decisions;
 optional sound-only follow-ups now preserve that score and expose Before/After.
-The bounded portable role/passage editor now passes actual native/pas2js audio
-and preservation checks. Its durable native/Studio consumer still keeps
-graph-controls open, with no partial effort credit.
+The bounded portable role/passage editor passes actual native/pas2js audio and
+preservation checks. Durable note-edit follow-ups use the same retained models,
+with Before/After and individual-part playback. The optional authored/affect
+consumer remains a graph-controls completion blocker; no partial effort credit.
 Next follow the actual prerequisites of NS-5: finish musical controls/selective
 regeneration and reusable sound recipes, then evolving form and saved styles/
 blends. Graph inspection and useful synthesis reviews retain their own tasks.
@@ -55,10 +59,10 @@ feedback preserve actual source and job lineage. These bounded Experimental
 proposals do not imply universal motif coverage, source-instrument identification,
 whole-corpus learning or a musical-quality verdict.
 
-Musical controls are exposed in Studio. The shared runtime now retains an accepted
-score/graph while replacing pitched sounds/expression. Durable sound-only Studio
-follow-ups are implemented; role/passage graph regeneration keeps graph-controls
-open without partial credit.
+The shared runtime retains accepted score/graph decisions while replacing pitched
+sounds/expression. Studio offers optional sound and scoped note follow-ups.
+The simple UI orphaned the earlier authored/affect controls; restoring that optional
+consumer keeps graph-controls open without partial credit.
 
 ## First operator-facing milestone
 
@@ -82,9 +86,10 @@ continuity experiments are selected.
 | [NS-6_simple-studio_01 — DONE](DONE/NS-6_simple-studio_01.md) — Library → Selection → Generate | 6 | Accepted; actual playlist learning, optional label selection, durable native output and browser playback |
 | [NS-6_generation-activity_01 — DONE](DONE/NS-6_generation-activity_01.md) — visible activity within Generate | 2 | Accepted; native callback details, actual desktop/phone progress, reconnect and checked stable assets |
 | [NS-6_saved-clips_01 — DONE](DONE/NS-6_saved-clips_01.md) — independent clip files and source lineage | 5 | Accepted; shared lossless range I/O, durable native save, clip-only learning/reference and actual desktop/phone consumers |
+| [NS-6_optional-lab_01](NS-6_optional-lab_01.md) — reachable optional musical experiments | 4 | Existing runtime/source-free contracts; restore orphaned authored/affect UI without changing the main three steps |
 | [NS-2_sound-design_01](NS-2_sound-design_01.md) — reusable instrument/effects recipes | 6 | Runtime + instrumental Studio |
 | [NS-4_graph-workbench_01](NS-4_graph-workbench_01.md) — inspect and edit actual graph | 7 | Instrumental Studio |
-| [NS-4_graph-controls_01](NS-4_graph-controls_01.md) — dimensions, affect and selective regeneration | 7 | Runtime + accepted assignment restoration |
+| [NS-4_graph-controls_01](NS-4_graph-controls_01.md) — dimensions, affect and selective regeneration | 7 | Runtime + accepted assignment restoration + reachable optional laboratory |
 | [NS-4_decision-replay_01 — DONE](DONE/NS-4_decision-replay_01.md) — retain/replay actual streamed music without solving | 5 | Accepted; actual native/pas2js decisions and native saved mix/stem replay |
 | [NS-4_assignment-restore_01 — DONE](DONE/NS-4_assignment-restore_01.md) — preserve accepted assignment ownership across jobs | 3 | Accepted; actual named-voice/layer restored state, controls and authorized regeneration |
 | [NS-4_joint-context_01 — DONE](DONE/NS-4_joint-context_01.md) — retain harmony/rhythm coupling | 4 | Accepted; actual paired context and conditional six-part motif generation |
@@ -101,9 +106,9 @@ continuity experiments are selected.
 | [NS-4_context-continuation_01 — DONE](DONE/NS-4_context-continuation_01.md) — supported learned contexts across long output | 6 | Accepted; original failed provider/seed continues through14400cells and actual hour render |
 | [NS-6_instrumental-streams_01 — DONE](DONE/NS-6_instrumental-streams_01.md) — efficient long instrumental jobs | 8 | Accepted; one performance/seven outputs, duration estimates, actual browser long playback/reconnect/Stop |
 
-The two tables together are all 25 current-goal tasks (6 open, nineteen DONE),
-totaling 131 units: 40 open and 91 accepted. Subtotals:
-NS-2 12, NS-3 15, NS-4 44, NS-5 15, NS-6 45. NS-1 remains a preserved core
+The two tables together are all 26 current-goal tasks (7 open, nineteen DONE),
+totaling 135 units: 44 open and 91 accepted. Subtotals:
+NS-2 12, NS-3 15, NS-4 44, NS-5 15, NS-6 49. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 
 The first milestone owns priority, not convenience. Later tasks have explicit

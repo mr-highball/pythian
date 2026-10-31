@@ -30,7 +30,7 @@ unit pythian.tools.studio.instrumental.config;
 interface
 
 uses fpjson, pythian.music.controls, pythian.instrument, pythian.music.sound,
-  pythian.oscillator, pythian.percussion;
+  pythian.oscillator, pythian.percussion, pythian.wfc.instrumental.edit;
 
 const
   StudioInstrumentalOrigin =
@@ -50,6 +50,8 @@ function CreateStudioInstrument(const ATemplate: TInstrumentZones;
 function DecodeStudioPercussionSettings(const ARow: TJSONObject;
   const ASampleRate: Integer): TPercussionSettings;
 function DecodeStudioMusicalControls(const AControls: TJSONObject): TMusicalPartControls;
+function DecodeStudioPassageEdit(const AEdit: TJSONObject;
+  const AMusicFrames: Int64): TInstrumentalPassageEdit;
 
 implementation
 
@@ -70,6 +72,58 @@ begin
   Need((LValue.AsFloat = LValue.AsInt64) and (LValue.AsInt64 >= AMinimum) and
     (LValue.AsInt64 <= AMaximum), 'Instrumental setting is out of range: ' + AName);
   Result := LValue.AsInteger;
+end;
+
+function DecodeStudioPassageEdit(const AEdit: TJSONObject;
+  const AMusicFrames: Int64): TInstrumentalPassageEdit;
+var
+  I: Integer;
+  LAny: Boolean;
+begin
+  Result := Default(TInstrumentalPassageEdit);
+  Need((AMusicFrames > 0) and (AMusicFrames <= High(Integer)) and
+    (AEdit <> nil) and (AEdit.Count = 8), 'Note changes need a saved track and explicit choices');
+  for I := 0 to AEdit.Count - 1 do
+    Need(Pos('|' + AEdit.Names[I] + '|',
+      '|start_frame|end_frame|parts|harmony|rhythm|tonic|controls|seed|') > 0,
+      'Unsupported note change');
+  Result.StartFrame := Number(AEdit, 'start_frame', 0, AMusicFrames - 1);
+  Result.EndFrame := Number(AEdit, 'end_frame', 1, AMusicFrames);
+  Need(Result.EndFrame > Result.StartFrame, 'End must follow Start');
+  Need((AEdit.Find('parts') <> nil) and (AEdit.Find('parts').JSONType = jtArray) and
+    (AEdit.Arrays['parts'].Count = 6), 'Choose the parts to change');
+  Need((AEdit.Find('harmony') <> nil) and (AEdit.Find('harmony').JSONType = jtBoolean) and
+    (AEdit.Find('rhythm') <> nil) and (AEdit.Find('rhythm').JSONType = jtBoolean),
+    'Chord and rhythm choices must be explicit');
+  Result.Harmony := AEdit.Booleans['harmony'];
+  Result.Rhythm := AEdit.Booleans['rhythm'];
+  Result.Tonic := Number(AEdit, 'tonic', 0, 11);
+  Result.Seed := Number(AEdit, 'seed', 0, High(Integer));
+  Need((AEdit.Find('controls') <> nil) and (AEdit.Find('controls').JSONType = jtObject),
+    'Note controls are required');
+  Result.Controls := DecodeStudioMusicalControls(AEdit.Objects['controls']);
+  Need(not AEdit.Objects['controls'].Booleans['guide'],
+    'Retained note changes use the saved models, without an authored guide');
+  Result.TonicBias := AEdit.Objects['controls'].Integers['tonic_bias'];
+  Need(Result.Harmony or (Result.TonicBias = 0), 'Allow chord changes before choosing a chord preference');
+  SetLength(Result.Parts, 6);
+  LAny := Result.Harmony or Result.Rhythm;
+  for I := 0 to 5 do
+  begin
+    Need(AEdit.Arrays['parts'][I].JSONType = jtBoolean, 'Part selections must be Boolean');
+    Result.Parts[I] := AEdit.Arrays['parts'].Booleans[I];
+    LAny := LAny or Result.Parts[I];
+    if I >= 3 then Continue;
+    Need(Result.Parts[I] or ((Result.Controls[I].MinimumPitch = 0) and
+      (Result.Controls[I].MaximumPitch = 127)), 'Select a part before setting its pitch range');
+    Need(Result.Rhythm or (Result.Controls[I].ActivityBias = 0),
+      'Allow rhythm changes before setting activity');
+    Need((Result.Controls[I].Expression.VelocityPercent = 100) and
+      (Result.Controls[I].Expression.GatePercent = 100), 'Note changes keep the performed expression');
+  end;
+  Need(LAny, 'Choose at least one part to change');
+  Result.MaxBacktracks := 256;
+  Result.MaxPassBacktracks := 16;
 end;
 
 function StudioInstrumentShape(const AName: String): TWaveShape;

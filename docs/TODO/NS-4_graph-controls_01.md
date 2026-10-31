@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 7/10
-**Status:** In progress
+**Status:** Dependency-blocked
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -22,6 +22,10 @@ Primary attribution: NS-4. Effort estimates relative implementation/integration 
 
 **Blockers**
 
+- [Optional musical laboratory](NS-6_optional-lab_01.md) — the simple Studio rewrite
+  orphaned the earlier authored key/tempo/expression/affect consumer. Restore a
+  reachable optional path before treating old browser evidence as current delivery.
+
 - [Streamed decision replay — DONE](DONE/NS-4_decision-replay_01.md) — ordinary
   playlist jobs now retain and replay their actual notes/providers without
   learning/solving. Sound-only Studio follow-ups are implemented; scoped passage
@@ -36,6 +40,47 @@ Primary attribution: NS-4. Effort estimates relative implementation/integration 
 - [NS-4_instrumental-runtime_01](DONE/NS-4_instrumental-runtime_01.md)
 
 **Dev Notes:**
+
+- 2026-10-31, Big Boss: the native/browser Change notes consumer is implemented
+  and undergoing final ordinary Studio checks. One common follow-up renderer now
+  handles sound edits and note edits, validates actual parent/root receipts and
+  replays accepted decisions. Native playlist checks pass290 with the original
+  recordings unavailable through child/rechild and sound/note combinations.
+  Failure, stale parent, retry and cancellation preserve accepted parents; no
+  source learning or accepted partial output is introduced.
+  Full-range testing reproduced an artificial internal planning seam: the first
+  implementation held original next-chunk states even inside the requested edit.
+  Preserve passage-js24-internal-seam-repro.log. The repaired API separates source
+  and candidate predecessors and holds the original next seam only outside scope.
+  Native Win64 and actual pas2js pass180 checks: selected octave changes continue
+  through two chunks, the other five actual PCM stems stay exact, and original
+  model weights remain unchanged. The primary preference scope now addresses
+  selected child passes correctly; no copied preference mutator remains in the
+  editor. Existing replay387/percussion1119 checks pass on both targets with
+  clean native heaps. A valid narrower unchanged output or an impossible learned
+  pitch is not an implementation failure. No seed sweep or relaxed constraint
+  is used to hide those results. The optional-laboratory blocker still prevents
+  accepting this seven-unit task.
+- 2026-10-31, Big Boss: AC2/AC4's actual durable consumer now passes. Ordinary
+  Studio's one-minute parent accepts a full-range child over all15 planning
+  chunks:70 of240 musical cells change, actual Lead/mix hashes differ, the model
+  digest stays exact and learning_performed=false. Source job
+  music-1793466408645-826933; child music-1793469596553-939666. Closing the QA tab
+  during the job and reopening resumes that same accepted request. Native
+  cancellation at80/240 cells (music-1793470012368-888489) accepts no output;
+  Back to previous restores the completed child. An impossible Lead1 request
+  (music-1793470115626-304795) displays the concise pitch conflict and preserves
+  its parent. Desktop/390px Before/After mix, part playback and Original reference
+  load without media errors. Playing one pauses the others; closing part/source
+  playback tools pauses them. All QA audio is paused, the managed QA tab/service
+  are closed and viewport reset. Proof images and logs live in the same packet.
+  The slow E-drive fixture twice required explicit reconnect after submission
+  timed out; no job was duplicated. Preserve that latency evidence and one
+  transient Windows read-sharing error in qa-error07.log. This is not a speed or
+  independent musical-quality claim. The usable consumer closes the batch's
+  criteria and resets the carried consecutive nonclosing count from one to zero.
+  AC1/AC3's reachable optional consumer remains blocked on the linked laboratory;
+  no seven-unit parent acceptance or partial credit follows.
 
 - 2026-10-31, Big Boss: bounded portable passage editor is implemented and checked;
   this is a partial implementation handoff, not AC2/AC4 acceptance. Reconstruct

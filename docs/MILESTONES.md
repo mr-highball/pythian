@@ -11,7 +11,11 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 91 / 131 effort units accepted (69.47%); six open, nineteen current-goal DONE.**
+**Current snapshot: 91 / 135 effort units accepted (67.41%); seven open, nineteen current-goal DONE.**
+The [optional musical laboratory](TODO/NS-6_optional-lab_01.md) adds four repair
+units after the completion audit found the earlier authored/affect controls
+unreachable from the simplified Studio. Preserve the library implementation;
+historical browser evidence does not prove current UI availability.
 [Independent clip files — DONE](TODO/DONE/NS-6_saved-clips_01.md) close five units:
 shared lossless WAV slicing, durable automatic save and clip-only learning with
 original lineage. Actual native learning/reference with the parent unavailable,
@@ -23,10 +27,11 @@ component checks pass. Clip storage now separately closes the repeated-parent I/
 The five-unit decision-replay prerequisite is accepted: actual streamed provider/
 score decisions survive on disk and reproduce mix/stems without learning/solving.
 Sound-only Studio follow-ups now replay those notes through changed pitched
-instruments with Before/After and previous-version recovery. Scoped role/passage
-graph changes remain in graph-controls; its seven units are still unaccepted.
-The bounded portable editor passes actual native/pas2js audio and preservation
-checks; its durable native/Studio consumer has not yet been delivered.
+instruments with Before/After and previous-version recovery. Durable scoped note
+follow-ups also reuse the accepted graph models and retained decisions, with
+individual-part comparisons. The portable editor passes native/pas2js actual audio
+and preservation checks. Graph-controls' seven units remain unaccepted until its
+optional authored/affect consumer is reachable again.
 The demonstrated prerequisite added required scope to the denominator.
 Coarse corpus learning and the simple Library→Selection→Generate flow are now
 accepted after actual native/pas2js and desktop/phone consumers pass. Optional
@@ -55,8 +60,8 @@ per-task percentages or north-star weights apply.
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 0 | 15 | 15 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection and musical controls | 14 | 30 | 30 / 44 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
-| [NS-6](#ns-6) | Simple playlist-to-learning Studio, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 5 | 40 | 40 / 45 |
-| **Total** | **25 current-goal tasks** | **40** | **91** | **69.47%** |
+| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 9 | 40 | 40 / 49 |
+| **Total** | **26 current-goal tasks** | **44** | **91** | **67.41%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -75,7 +80,7 @@ criteria now pass; both tasks are accepted. Storage/access and long output are a
 The hour-request trial exposed a six-unit
 [learned-context continuation prerequisite — DONE](TODO/DONE/NS-4_context-continuation_01.md)
 at cell656; its repair now completes that exact hour with original provider/seed.
-Accounting is **91/131**; no partial effort or musical-quality credit follows.
+Accounting is **91/135**; no partial effort or musical-quality credit follows.
 
 1. [Instrumental runtime — DONE](TODO/DONE/NS-4_instrumental-runtime_01.md), effort 7:
    actual coupled musical WFC passes drive existing Pythian instruments; source-free caller delivered.
@@ -140,8 +145,9 @@ hour are not claimed. Saved style blending/reblending remains under NS-5.
 [musical controls](TODO/NS-4_graph-controls_01.md) expose actual time/role domains,
 passes/dependencies, locks/preferences, affect mappings and selective regeneration.
 The current runtime also retains accepted graph/score decisions during atomic
-pitched instrument/expression edits. Durable Studio follow-ups and role/passage
-graph regeneration are still required; this partial slice earns no accepted units.
+pitched instrument/expression edits. Durable Studio sound and role/passage note
+follow-ups preserve accepted parents and expose comparisons. The missing optional
+authored/affect consumer keeps the parent open; partial work earns no units.
 The separate [assignment-restoration prerequisite](TODO/DONE/NS-4_assignment-restore_01.md)
 is accepted: actual named-voice/layer models, controls and generated ownership
 reopen without learning/solving and support ordinary selected regeneration.
@@ -149,8 +155,8 @@ Its three units do not accept the parent archive or Studio follow-up.
 The [decision-replay prerequisite](TODO/DONE/NS-4_decision-replay_01.md) is also
 accepted: ordinary streamed jobs retain their actual provider states/score on
 disk and replay exact mix/stems without models or solving. It removes the
-demonstrated retention gap; sound-edit buttons and scoped graph changes remain
-in the parent task.
+demonstrated retention gap and supplies the common replay path for sound and note
+follow-ups in the parent task.
 The [motif-coupling prerequisite](TODO/DONE/NS-4_motif-coupling_01.md) is accepted:
 full symbolic context choices decide harmony, rhythm and one explicit selected
 part together; the other pitched parts remain independently generated, followed
@@ -198,7 +204,7 @@ The 53 former open tasks are [retired/replaced](TODO/RETIRED/2026-10-29/README.m
 not accepted. All 97 historical DONE records and their evidence remain separate;
 none has the current Goal tag. The former 52.45% weighted outcome-credit ledger is
 [historical](history/MILESTONES-2026-10-29.md), not a baseline in the new formula.
-Current scoped records: 6 open + 19 current DONE; legacy records: 53 retired +
+Current scoped records: 7 open + 19 current DONE; legacy records: 53 retired +
 97 historical DONE (116 total DONE files). No implementation, saved feedback or license is discarded.
 
 100% means all required outcomes in this defined experimental goal are delivered
@@ -208,5 +214,7 @@ completion. Implementation has resumed solo. The first runtime batch closes real
 criteria and changes the carried nonclosing count from two to zero; WORK records
 the event. Percussion, Studio and its concrete cancellation repair also close
 their criteria. The first real instrumental review is waiting for the operator;
-graph editing, deeper sound controls, independent clips, form/styles and guided
-reviews remain open. Corpus vocabulary and long instrumental streams are accepted.
+graph inspection, the optional authored/affect consumer, deeper sound controls,
+form/styles and guided reviews remain open. Independent clips, corpus vocabulary
+and long instrumental streams are accepted; scoped note follow-ups are implemented
+without accepting the broader graph-controls task.

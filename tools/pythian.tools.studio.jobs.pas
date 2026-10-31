@@ -58,7 +58,8 @@ function ParseStudioJobWrite(const AText: RawByteString): TJSONObject;
   Both worker and supervisor use the declared finite job policy. }
 function StudioJobRuntimeSeconds(const AKind: String): Integer;
 function IsStudioInstrumentalJob(const AKind: String): Boolean;
-function ReadStudioSoundParent(const ACatalogRoot: String;
+function IsStudioInstrumentalFollowup(const AKind: String): Boolean;
+function ReadStudioInstrumentalParent(const ACatalogRoot: String;
   const ARequest: TJSONObject): TJSONObject;
 function StudioJobRequestRuntimeSeconds(const ARequest: TJSONObject): Integer;
 function PrepareStudioJob(const ACatalogRoot: String;
@@ -127,12 +128,17 @@ var
 
 function IsStudioInstrumentalJob(const AKind: String): Boolean;
 begin
-  Result := (AKind = 'instrumental_generate') or (AKind = 'instrumental_reperform');
+  Result := (AKind = 'instrumental_generate') or IsStudioInstrumentalFollowup(AKind);
+end;
+
+function IsStudioInstrumentalFollowup(const AKind: String): Boolean;
+begin
+  Result := (AKind = 'instrumental_reperform') or (AKind = 'instrumental_regenerate');
 end;
 
 function StudioJobRuntimeSeconds(const AKind: String): Integer;
 begin
-  if (AKind = 'stream_generate') or (AKind = 'instrumental_reperform') then
+  if (AKind = 'stream_generate') or IsStudioInstrumentalFollowup(AKind) then
     Result := MaximumStudioSessionSeconds
   else if (AKind = 'library_refresh') or (AKind = 'library_prepare') or (AKind = 'clip_save') then
     Result := MaximumStudioLibrarySeconds
@@ -639,7 +645,7 @@ begin
   end;
 end;
 
-function ReadStudioSoundParent(const ACatalogRoot: String;
+function ReadStudioInstrumentalParent(const ACatalogRoot: String;
   const ARequest: TJSONObject): TJSONObject;
 var
   LParent: TJSONObject;
@@ -657,11 +663,11 @@ begin
       (LResult.Find('decisions').JSONType = jtObject),
       'This older track has no saved notes. Generate a new track first.');
     Need(LResult.Strings['plan_sha256'] = Text(ARequest, 'parent_plan_sha256'),
-      'The previous track differs. Reopen it before changing sounds.');
+      'The previous track differs. Reopen it before making changes.');
     Need((LResult.Strings['project_id'] = Text(ARequest, 'project_id')) and
       (LResult.Int64s['project_revision'] = Number(ARequest, 'project_revision')) and
       (LResult.Strings['project_snapshot_sha256'] = Text(ARequest, 'project_snapshot_sha256')),
-      'Sound changes must keep the saved selection from the previous track');
+      'Changes must keep the saved selection from the previous track');
     Need((LResult.Find('settings') <> nil) and
       (LResult.Objects['settings'].Find('instruments') <> nil), 'Saved instrument sounds are missing');
     ValidateStudioInstrumentNames(LResult.Objects['settings'].Arrays['instruments']);
@@ -695,7 +701,7 @@ begin
     'duration_ms|seeds|maximum_tokens|model_order|source_weights|generation_weights|resolve_unassigned|' +
     'parent_job_id|retry_of|source_sha256|start_frame|end_frame|effects|tail_seconds|' +
     'preview_job_id|collection_name|title|capture_id|mode|channel|tempo_bpm|' +
-    'discovery_revision|entries|reconstruction|preparation|instrumental|parent_plan_sha256|instruments|');
+    'discovery_revision|entries|reconstruction|preparation|instrumental|parent_plan_sha256|instruments|note_edit|');
   Need(Text(AWrite, 'format') = StudioJobWriteFormat, 'Unsupported Studio job format');
   LJobId := Text(AWrite, 'job_id');
   Need(SafeId(LJobId), 'Invalid job identifier');
@@ -760,21 +766,31 @@ begin
         LProject.Free;
       end;
     end
-    else if LKind = 'instrumental_reperform' then
+    else if IsStudioInstrumentalFollowup(LKind) then
     begin
       Keys(AWrite, '|format|job_id|kind|project_id|project_revision|project_snapshot_sha256|' +
-        'parent_job_id|parent_plan_sha256|instruments|retry_of|');
-      Need((AWrite.Find('instruments') <> nil) and
-        (AWrite.Find('instruments').JSONType = jtArray), 'Choose the instrument sounds');
-      ValidateStudioInstrumentNames(AWrite.Arrays['instruments']);
-      LExisting := ReadStudioSoundParent(ACatalogRoot, AWrite);
+        'parent_job_id|parent_plan_sha256|instruments|note_edit|retry_of|');
+      LExisting := ReadStudioInstrumentalParent(ACatalogRoot, AWrite);
       try
         LParentResult := LExisting.Objects['results'];
-        LChanged := False;
-        for LIndex := 0 to 2 do
-          LChanged := LChanged or (AWrite.Arrays['instruments'].Strings[LIndex] <>
-            LParentResult.Objects['settings'].Arrays['instruments'].Strings[LIndex]);
-        Need(LChanged, 'Choose at least one different instrument sound');
+        if LKind = 'instrumental_reperform' then
+        begin
+          Need((AWrite.Find('note_edit') = nil) and (AWrite.Find('instruments') <> nil) and
+            (AWrite.Find('instruments').JSONType = jtArray), 'Choose the instrument sounds');
+          ValidateStudioInstrumentNames(AWrite.Arrays['instruments']);
+          LChanged := False;
+          for LIndex := 0 to 2 do
+            LChanged := LChanged or (AWrite.Arrays['instruments'].Strings[LIndex] <>
+              LParentResult.Objects['settings'].Arrays['instruments'].Strings[LIndex]);
+          Need(LChanged, 'Choose at least one different instrument sound');
+        end
+        else
+        begin
+          Need((AWrite.Find('instruments') = nil) and (AWrite.Find('note_edit') <> nil) and
+            (AWrite.Find('note_edit').JSONType = jtObject), 'Choose the notes to change');
+          DecodeStudioPassageEdit(AWrite.Objects['note_edit'],
+            LParentResult.Objects['decisions'].Int64s['music_frames']);
+        end;
         LParentRequest := ReadStudioJobRequest(ACatalogRoot, Text(AWrite, 'parent_job_id'));
         try
           LRequest.Add('project_snapshot', LParentRequest.Objects['project_snapshot'].Clone);
@@ -1042,7 +1058,7 @@ begin
           Inc(LIndex, LRequest.Objects['project_snapshot'].Objects['playlist'].Arrays['items'].Objects[LClipIndex].Arrays['clips'].Count);
         Result.Add('output_count', LIndex);
       end
-      else if LRequest.Strings['kind'] = 'instrumental_reperform' then
+      else if IsStudioInstrumentalFollowup(LRequest.Strings['kind']) then
       begin
         Result.Strings['source_validation'] := 'saved_decisions_pending_integrity_check';
         Result.Add('learning_mode', 'instrumental');
@@ -1050,7 +1066,9 @@ begin
         Result.Add('source_count', 0);
         Result.Add('unique_source_bytes_to_verify', 0);
         Result.Add('learning_performed', False);
-        Result.Add('notes_changed', False);
+        if LRequest.Strings['kind'] = 'instrumental_reperform' then
+          Result.Add('notes_changed', False)
+        else Result.Add('notes_change_requested', True);
         Result.Add('parent_job_id', LRequest.Strings['parent_job_id']);
         Result.Add('output_resources', StudioInstrumentalOutputEstimate(LRequest.Int64s['duration_ms']));
       end
@@ -1359,7 +1377,7 @@ begin
       LExisting.Delete('request_sha256');
       LExisting.Delete('project_snapshot');
       LExisting.Delete('worker_seconds');
-      if LExisting.Strings['kind'] = 'instrumental_reperform' then
+      if IsStudioInstrumentalFollowup(LExisting.Strings['kind']) then
       begin
         LExisting.Delete('duration_ms');
         LExisting.Delete('seeds');
@@ -1451,7 +1469,7 @@ begin
         LJob.Add('error_code', '');
         LJob.Add('error_message', '');
         LJob.Add('project_id', Text(AWrite, 'project_id', False));
-        if LKind = 'instrumental_reperform' then
+        if IsStudioInstrumentalFollowup(LKind) then
           LJob.Add('parent_job_id', LRequest.Strings['parent_job_id']);
         AddState(ACatalogRoot, LJobId, LJob);
       finally

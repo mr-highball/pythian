@@ -69,8 +69,10 @@ capture/restoration with generated/caller-lock ownership intact. Pythian's
 [accepted-session consumers](docs/ACCEPTED-SESSIONS.md) retain actual models,
 controls and musical validation; the [downstream task](docs/TODO/DONE/NS-4_assignment-restore_01.md)
 is accepted after its actual native/pas2js and extracted delivery boundaries pass.
-The broader Pythian CI512 and complete extracted Win64 package now pass. Durable instrumental
-archives and Studio follow-ups remain open. No upstream branch was merged.
+The broader Pythian CI512 and complete extracted Win64 package pass. At that
+checkpoint durable instrumental archives and Studio follow-ups remained open;
+current retained-score consumers are described in [Studio](docs/OPERATOR-STUDIO.md).
+No upstream branch was merged.
 
 Previous accepted WFC pin: `d4d30b120ee6ac6741387b206d971bb2877896aa`, on separate
 branch `codex/pythian-native-build-reuse`, which remains unmerged. All five

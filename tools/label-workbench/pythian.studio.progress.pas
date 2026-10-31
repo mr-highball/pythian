@@ -49,6 +49,12 @@ end;
 
 function StudioStageText(const AStage: String): String;
 begin
+  if Copy(AStage, 1, 18) = 'instrumental_edit_' then
+  begin
+    if AStage = 'instrumental_edit_models' then Result := 'Open saved musical choices'
+    else Result := 'Change the selected parts';
+    Exit;
+  end;
   if (Copy(AStage, 1, 9) = 'playlist_') then
   begin
     if Pos('learn_music', AStage) > 0 then Result := 'Learn musical ideas'
@@ -259,10 +265,12 @@ var
   LNames: array[1..4] of String;
 begin
   for I := 1 to 4 do LNames[I] := CNames[I];
-  if StudioText(AJob, 'kind') = 'instrumental_reperform' then
+  if (StudioText(AJob, 'kind') = 'instrumental_reperform') or
+    (StudioText(AJob, 'kind') = 'instrumental_regenerate') then
   begin
     LNames[1] := 'Open saved track';
     LNames[2] := 'Restore instruments';
+    if StudioText(AJob, 'kind') = 'instrumental_regenerate' then LNames[2] := 'Change selected notes';
   end;
   LRoot := Add(AParent, 'div', '');
   LRoot.className := 'learning-progress';
@@ -303,6 +311,8 @@ begin
     else
       Add(LRoot, 'p', StudioTime(LDone / 1000) + ' / ' + StudioTime(LTotal / 1000) +
         ' of selected music checked')
+  else if (LTotal > 0) and (StudioText(LWorkflow, 'unit') = 'cells') then
+    Add(LRoot, 'p', IntToStr(Trunc(LDone)) + ' / ' + IntToStr(Trunc(LTotal)) + ' musical steps checked')
   else if (LTotal > 0) and (LPhase = 3) then
     Add(LRoot, 'p', IntToStr(Trunc(100 * LDone / LTotal)) +
       '% of mix and instrument audio synthesized');
@@ -337,7 +347,8 @@ begin
   if ACompact and ((LStatus = 'completed') or (LStatus = 'cancelled') or
     (LStatus = 'failed')) then Exit;
   if ACompact and ((StudioText(AJob, 'kind') = 'instrumental_generate') or
-    (StudioText(AJob, 'kind') = 'instrumental_reperform')) then
+    (StudioText(AJob, 'kind') = 'instrumental_reperform') or
+    (StudioText(AJob, 'kind') = 'instrumental_regenerate')) then
   begin
     DrawGenerationWorkflow(AParent, AJob);
     Exit;

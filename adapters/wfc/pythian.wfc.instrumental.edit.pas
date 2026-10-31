@@ -32,8 +32,17 @@ uses pythian.audio, pythian.chord, pythian.progress, pythian.music.controls,
   pythian.music.decisions, pythian.wfc.layers, pythian.wfc.percussion,
   wfc, wfc_model, wfc_sequence, wfc_music_ensemble, wfc_music_voices_graph;
 
+const
+  InstrumentalPassageEditVersion = 1;
+
 type
   TInstrumentalPartSelection = array of Boolean;
+  TInstrumentalPassageEdges = record
+    SourcePrevious: TMusicDecisionChunk;
+    SourceNext: TMusicDecisionChunk;
+    CandidatePrevious: TMusicDecisionChunk;
+    FollowingCells: Integer;
+  end;
   TInstrumentalPassageEdit = record
     StartFrame: Int64;
     EndFrame: Int64;
@@ -57,12 +66,19 @@ type
     ActivePasses: TLayerNames;
   end;
 
+{ Adjacent chunks are borrowed immutable. Single-chunk edits start from the
+  recorded predecessor. Streaming callers replace CandidatePrevious with their
+  actual preceding candidate and declare remaining structural support. }
+function RetainedInstrumentalPassageEdges(const APrevious, ANext: TMusicDecisionChunk):
+  TInstrumentalPassageEdges;
+
 { Big Boss: edits one bounded recorded planning chunk through the same ordered
   context, named-voice and rhythm-conditioned drum graphs as initial generation.
   Models are immutable and borrowed. Source provider order is optional context,
-  harmony, rhythm, ordered roles, ordered drums. Previous/Next are the adjacent
-  recorded provider rows, not invented token history; empty Previous is allowed
-  only at cell zero. Both latent seams are held. Unrequested providers and cells
+  harmony, rhythm, ordered roles, ordered drums. Edges contain actual original
+  neighbors and the actual preceding candidate, not invented token history.
+  Empty Previous is allowed only at cell zero. Outside-scope seams are held;
+  internal planning chunks continue the candidate. Unrequested providers and cells
   outside the overlapping musical steps retain exact states/tokens/parts.
 
   This is musical orchestration over primary WFC builders, assignment restore,
@@ -73,7 +89,7 @@ type
 function TryEditInstrumentalPassageChunk(const AConfig: TWfcMusicVoicesGraphConfig;
   const ARoleNames: TLayerNames; const ADrums: TPercussionDefinitions;
   const AContext: TWfcSequenceModel; const ABefore: TMusicDecisionChunk;
-  const APrevious, ANext: TMusicDecisionProviders;
+  const AEdges: TInstrumentalPassageEdges;
   const AEdit: TInstrumentalPassageEdit; var AAfter: TMusicDecisionChunk;
   out AReport: TInstrumentalPassageReport;
   const AProgress: TWorkProgressCallback = nil): Boolean;
@@ -91,10 +107,6 @@ type
   TEditBoundaries = array of TWfcSequenceSegmentBoundary;
   TEditKeys = array of TGraphValues;
   TEditProjections = array of TWfcModelTokens;
-  TEditPreferenceChange = record
-    Group: TGraphRuleGroup;
-    Original: TGraphWeight;
-  end;
 
 procedure AddToken(var ATokens: TWfcModelTokens; const AToken: String);
 begin
@@ -114,6 +126,15 @@ begin
   begin
     raise EAudio.Create(AMessage);
   end;
+end;
+
+function RetainedInstrumentalPassageEdges(const APrevious, ANext: TMusicDecisionChunk):
+  TInstrumentalPassageEdges;
+begin
+  Result := Default(TInstrumentalPassageEdges);
+  Result.SourcePrevious := APrevious;
+  Result.SourceNext := ANext;
+  Result.CandidatePrevious := APrevious;
 end;
 
 function ContainsToken(const ATokens: TWfcModelTokens; const AToken: String): Boolean;
@@ -152,7 +173,7 @@ end;
 function TryEditInstrumentalPassageChunk(const AConfig: TWfcMusicVoicesGraphConfig;
   const ARoleNames: TLayerNames; const ADrums: TPercussionDefinitions;
   const AContext: TWfcSequenceModel; const ABefore: TMusicDecisionChunk;
-  const APrevious, ANext: TMusicDecisionProviders;
+  const AEdges: TInstrumentalPassageEdges;
   const AEdit: TInstrumentalPassageEdit; var AAfter: TMusicDecisionChunk;
   out AReport: TInstrumentalPassageReport;
   const AProgress: TWorkProgressCallback): Boolean;
@@ -160,6 +181,9 @@ var
   LModels: TEditModels;
   LNames: TLayerNames;
   LBoundaries: TEditBoundaries;
+  LSourceBoundaries: TEditBoundaries;
+  LResetPasses: TGraphPassIndices;
+  LKeepNext: Boolean;
   LEditableProviders: TEditFlags;
   LEditableCells: TEditFlags;
   LCandidate: TMusicDecisionChunk;
@@ -186,7 +210,7 @@ var
   LPrefs: TLayerTokenPreferences;
   LContextMasks: TVoiceMasks;
   LFrame: TChordFrame;
-  LChanges: array of TEditPreferenceChange;
+  LChanges: array of TSequencePreferenceScope;
   LProvider: Integer;
   LCell: Integer;
   LToken: Integer;
@@ -209,14 +233,16 @@ var
   begin
     for I := High(LChanges) downto 0 do
     begin
-      LChanges[I].Group.Weight := LChanges[I].Original;
+      LChanges[I].Free;
     end;
     LChanges := nil;
   end;
-  procedure RestoreRows(const AFirst, ACount: Integer);
+  procedure RestoreRows(const AFirst, ACount: Integer; const AForCandidate: Boolean = False);
   var
     P: Integer;
     C: Integer;
+    R: Integer;
+    LReset: Boolean;
   begin
     LAssignments := LGraph.CaptureAssignments(MaximumLayerStateCells,
       MaximumSessionSnapshotTextUnits, LBridge.SolveObserver());
@@ -226,6 +252,13 @@ var
       LKeys[P] := LGraph.PassGraph[P].CopyRegisteredValues;
       Need(Length(LKeys[P]) = LModels[AFirst + P].StateCount,
         'Retained model differs from registered latent states');
+      LReset := False;
+      if AForCandidate then
+      begin
+        for R in LResetPasses do
+          LReset := LReset or (P = R);
+      end;
+      if LReset then Continue;
       for C := 0 to High(ABefore.Cells) do
       begin
         LAssignments.Passes[P].Cells[C].Value :=
@@ -256,9 +289,13 @@ var
           Continue;
         end;
         LOriginal := LKeys[P][ABefore.Providers[AFirst + P].States[C]];
-        LPass.SetAllowedValues(C, 0, 0, [LOriginal]);
+        LDomain := LPass.CopyAllowedValues(C, 0, 0);
+        LValues := nil;
+        if not LPass.HasAllowedValues(C, 0, 0) or ContainsGraphValue(LDomain, LOriginal) then
+          LValues := [LOriginal];
+        LPass.SetAllowedValues(C, 0, 0, LValues);
       end;
-      if Length(ANext) = 0 then
+      if not LKeepNext then
       begin
         Continue;
       end;
@@ -267,7 +304,7 @@ var
       LValues := nil;
       for S := 0 to LModels[AFirst + P].StateCount - 1 do
       begin
-        if LModels[AFirst + P].StatesCompatible(S, ANext[AFirst + P].States[0]) and
+        if LModels[AFirst + P].StatesCompatible(S, AEdges.SourceNext.Providers[AFirst + P].States[0]) and
           (not LPass.HasAllowedValues(C, 0, 0) or ContainsGraphValue(LDomain, LKeys[P][S])) then
         begin
           SetLength(LValues, Length(LValues) + 1);
@@ -278,31 +315,10 @@ var
     end;
   end;
   procedure ApplyPreferences(const ALocal: Integer; const APreferences: TLayerTokenPreferences);
-  var
-    S: Integer;
-    LPreference: TLayerTokenPreference;
-    LValue: TGraphValue;
-    LProduct: Int64;
   begin
-    LPass := LGraph.PassGraph[ALocal];
-    for S := 0 to LModels[LProvider].StateCount - 1 do
-    begin
-      for LPreference in APreferences do
-      begin
-        if LModels[LProvider].ProjectStateToken(S) <> LPreference.Token then
-        begin
-          Continue;
-        end;
-        LValue := LKeys[ALocal][S];
-        LProduct := Int64(LPass.Rules[LValue].Weight) * LPreference.Multiplier;
-        Need((LPreference.Multiplier > 0) and (LProduct <= High(Integer)),
-          'Retained musical preference exceeds the exact weight bound');
-        SetLength(LChanges, Length(LChanges) + 1);
-        LChanges[High(LChanges)].Group := LPass.Rules[LValue];
-        LChanges[High(LChanges)].Original := LPass.Rules[LValue].Weight;
-        LPass.Rules[LValue].Weight := LProduct;
-      end;
-    end;
+    SetLength(LChanges, Length(LChanges) + 1);
+    LChanges[High(LChanges)] := TSequencePreferenceScope.Create(LModels[LProvider],
+      LGraph.PassGraph[ALocal], APreferences, AProgress);
   end;
   procedure KeepSequence(const AProvider: Integer; const ASequence: TWfcGeneratedSequenceSegment);
   var
@@ -322,7 +338,7 @@ var
     for P := 0 to ACount - 1 do
     begin
       Need(CaptureSolvedSequenceSegment(LModels[AFirst + P], LGraph.PassGraph[P],
-        LBoundaries[AFirst + P], LSequence, LSequenceProof,
+        LSourceBoundaries[AFirst + P], LSequence, LSequenceProof,
         LBridge.SequenceWorkObserver()), 'Retained provider failed its independent path proof');
       for C := 0 to High(ABefore.Cells) do
       begin
@@ -331,6 +347,25 @@ var
           'Restored provider differs from recorded decisions');
       end;
     end;
+  end;
+  procedure OpenSequence(const AProvider: Integer; const AForCandidate: Boolean);
+  var
+    LBoundary: TWfcSequenceSegmentBoundary;
+  begin
+    LGraph := TGraph.Create;
+    LGraph.WrapNeighbors := False;
+    LGraph.Reshape(Length(ABefore.Cells), 1, 1);
+    LGraph.CurrentPass := LNames[AProvider];
+    LBoundary := LSourceBoundaries[AProvider];
+    LResetPasses := nil;
+    if AForCandidate then
+    begin
+      LBoundary := LBoundaries[AProvider];
+      if LEditableProviders[AProvider] then LResetPasses := [0];
+    end;
+    ApplySequenceModelSegmentToGraph(LModels[AProvider], LGraph, LBoundary,
+      WfcPreparationWorkObserver(LBridge));
+    RestoreRows(AProvider, 1, AForCandidate);
   end;
   function Regenerate(const ARoots: TGraphPassLabels): Boolean;
   var
@@ -374,6 +409,34 @@ begin
     (AEdit.MaxPassBacktracks >= 0) and (AEdit.MaxPassBacktracks <= 1024),
     'Passage editing needs a positive range and matching explicit parts/controls');
   ValidateMusicDecisionChunk(ABefore, AProgress);
+  Need((AEdges.FollowingCells >= 0) and
+    (AEdges.FollowingCells = Trunc(AEdges.FollowingCells)), 'Invalid remaining musical extent');
+  Need((Length(AEdges.SourcePrevious.Cells) = 0) = (ABefore.FirstCell = 0),
+    'A continued musical edit needs its original predecessor');
+  Need((Length(AEdges.CandidatePrevious.Cells) = 0) = (ABefore.FirstCell = 0),
+    'A continued musical edit needs its actual preceding candidate');
+  if ABefore.FirstCell > 0 then
+  begin
+    ValidateMusicDecisionChunk(AEdges.SourcePrevious, AProgress);
+    ValidateMusicDecisionChunk(AEdges.CandidatePrevious, AProgress);
+    Need((AEdges.SourcePrevious.FirstCell + Length(AEdges.SourcePrevious.Cells) = ABefore.FirstCell) and
+      (AEdges.SourcePrevious.StartFrame + MusicDecisionFrameCount(AEdges.SourcePrevious) = ABefore.StartFrame) and
+      SameMusicDecisionFrame(AEdges.SourcePrevious.Cells[High(AEdges.SourcePrevious.Cells)].Parts,
+        ABefore.Previous), 'Original predecessor differs from the saved musical clock/parts');
+    Need((AEdges.CandidatePrevious.FirstCell + Length(AEdges.CandidatePrevious.Cells) = ABefore.FirstCell) and
+      (AEdges.CandidatePrevious.StartFrame + MusicDecisionFrameCount(AEdges.CandidatePrevious) = ABefore.StartFrame),
+      'Candidate predecessor differs from the saved musical clock');
+  end;
+  LKeepNext := False;
+  if Length(AEdges.SourceNext.Cells) > 0 then
+  begin
+    ValidateMusicDecisionChunk(AEdges.SourceNext, AProgress);
+    Need((AEdges.SourceNext.FirstCell = ABefore.FirstCell + Length(ABefore.Cells)) and
+      (AEdges.SourceNext.StartFrame = ABefore.StartFrame + MusicDecisionFrameCount(ABefore)) and
+      SameMusicDecisionFrame(ABefore.Cells[High(ABefore.Cells)].Parts, AEdges.SourceNext.Previous),
+      'Original successor differs from the saved musical clock/parts');
+    LKeepNext := AEdit.EndFrame <= AEdges.SourceNext.StartFrame;
+  end;
   Need(Length(ABefore.Providers) = LDrumOffset + Length(ADrums),
     'Retained provider layout differs from the saved musical models');
   LAny := AEdit.Harmony or AEdit.Rhythm;
@@ -416,13 +479,18 @@ begin
   end;
   if not LAny then
   begin
-    AAfter := CopyMusicDecisionChunk(ABefore);
+    LCandidate := CopyMusicDecisionChunk(ABefore);
+    if ABefore.FirstCell > 0 then
+      LCandidate.Previous := CopyChordFrame(AEdges.CandidatePrevious.Cells[High(AEdges.CandidatePrevious.Cells)].Parts);
+    ValidateMusicDecisionChunk(LCandidate, AProgress);
+    AAfter := LCandidate;
     Exit(True);
   end;
   SetLength(LModels, Length(ABefore.Providers));
   SetLength(LNames, Length(LModels));
   SetLength(LEditableProviders, Length(LModels));
   SetLength(LBoundaries, Length(LModels));
+  SetLength(LSourceBoundaries, Length(LModels));
   if AContext <> nil then
   begin
     LModels[0] := AContext;
@@ -458,10 +526,12 @@ begin
     LNames[LDrumOffset + LIndex] := ADrums[LIndex].Name;
     LEditableProviders[LDrumOffset + LIndex] := AEdit.Parts[Length(ARoleNames) + LIndex];
   end;
-  Need(((ABefore.FirstCell = 0) and (Length(APrevious) = 0)) or
-    ((ABefore.FirstCell > 0) and (Length(APrevious) = Length(LModels))),
-    'A continued musical edit needs its actual predecessor states');
-  Need((Length(ANext) = 0) or (Length(ANext) = Length(LModels)),
+  Need((ABefore.FirstCell = 0) or
+    ((Length(AEdges.SourcePrevious.Providers) = Length(LModels)) and
+    (Length(AEdges.CandidatePrevious.Providers) = Length(LModels))),
+    'Musical predecessor layouts differ');
+  Need((Length(AEdges.SourceNext.Cells) = 0) or
+    (Length(AEdges.SourceNext.Providers) = Length(LModels)),
     'Musical edit successor layout differs');
   LStates := 0;
   for LProvider := 0 to High(LModels) do
@@ -470,31 +540,38 @@ begin
     Need((LModels[LProvider] <> nil) and
       (ABefore.Providers[LProvider].Key = LNames[LProvider]), 'Retained provider identity differs');
     Inc(LStates, LModels[LProvider].StateCount);
+    LSourceBoundaries[LProvider] := MakeWfcSequenceInitialSegmentBoundary(False);
     LBoundaries[LProvider] := MakeWfcSequenceInitialSegmentBoundary(False);
-    if Length(APrevious) > 0 then
+    if ABefore.FirstCell > 0 then
     begin
-      Need((APrevious[LProvider].Key = LNames[LProvider]) and
-        (Length(APrevious[LProvider].States) > 0), 'Retained predecessor identity differs');
+      Need((AEdges.SourcePrevious.Providers[LProvider].Key = LNames[LProvider]) and
+        (AEdges.CandidatePrevious.Providers[LProvider].Key = LNames[LProvider]),
+        'Retained predecessor identity differs');
+      LSourceBoundaries[LProvider] := MakeWfcSequenceContinuingSegmentBoundary(
+        AEdges.SourcePrevious.Providers[LProvider].States[High(AEdges.SourcePrevious.Cells)], False);
       LBoundaries[LProvider] := MakeWfcSequenceContinuingSegmentBoundary(
-        APrevious[LProvider].States[High(APrevious[LProvider].States)], False);
+        AEdges.CandidatePrevious.Providers[LProvider].States[High(AEdges.CandidatePrevious.Cells)], False);
     end;
+    LBoundaries[LProvider].MinimumFollowingCells := AEdges.FollowingCells;
     Need(ValidateSequenceSegmentStatePath(LModels[LProvider], ABefore.Providers[LProvider].States,
-      LBoundaries[LProvider], LSequenceProof), 'Recorded musical provider has an invalid latent path');
+      LSourceBoundaries[LProvider], LSequenceProof), 'Recorded musical provider has an invalid latent path');
     for LCell := 0 to High(ABefore.Cells) do
     begin
       Need(LModels[LProvider].ProjectStateToken(ABefore.Providers[LProvider].States[LCell]) =
         ABefore.Providers[LProvider].Tokens[LCell], 'Recorded musical token differs from its latent state');
     end;
-    if Length(ANext) > 0 then
+    if Length(AEdges.SourceNext.Cells) > 0 then
     begin
-      Need((ANext[LProvider].Key = LNames[LProvider]) and (Length(ANext[LProvider].States) > 0) and
+      Need((AEdges.SourceNext.Providers[LProvider].Key = LNames[LProvider]) and
         LModels[LProvider].StatesCompatible(ABefore.Providers[LProvider].States[High(ABefore.Cells)],
-          ANext[LProvider].States[0]), 'Recorded musical successor seam is invalid');
+          AEdges.SourceNext.Providers[LProvider].States[0]), 'Recorded musical successor seam is invalid');
     end;
   end;
   Need(LStates * Length(ABefore.Cells) <= MaximumLayerStateCells,
     'Musical edit exceeds its bounded state-cell budget');
   LCandidate := CopyMusicDecisionChunk(ABefore);
+  if ABefore.FirstCell > 0 then
+    LCandidate.Previous := CopyChordFrame(AEdges.CandidatePrevious.Cells[High(AEdges.CandidatePrevious.Cells)].Parts);
   LCompiled := CompileInstrumentalControls(AConfig, Length(ABefore.Cells), AEdit.Tonic,
     AEdit.TonicBias, AEdit.Controls, nil, AProgress);
   LSearch := DefaultGraphNegotiationOptions;
@@ -507,13 +584,7 @@ begin
     if AContext <> nil then
     begin
       AReport.Group := 'musical context';
-      LGraph := TGraph.Create;
-      LGraph.WrapNeighbors := False;
-      LGraph.Reshape(Length(ABefore.Cells), 1, 1);
-      LGraph.CurrentPass := MusicalContextPassName;
-      ApplySequenceModelSegmentToGraph(AContext, LGraph, LBoundaries[0],
-        WfcPreparationWorkObserver(LBridge));
-      RestoreRows(0, 1);
+      OpenSequence(0, False);
       RequireCaptured(0, 1);
       for LCell := 0 to High(ABefore.Cells) do
       begin
@@ -526,6 +597,8 @@ begin
             'Recorded context differs from the accepted musical parts');
         end;
       end;
+      FreeAndNil(LGraph);
+      OpenSequence(0, True);
       SetLength(LProjections, AContext.PublicTokenCount);
       LPrefs := nil;
       for LToken := 0 to AContext.PublicTokenCount - 1 do
@@ -616,11 +689,11 @@ begin
       FreeAndNil(LGraph);
     end;
 
-    AReport.Group := 'pitched parts';
+    AReport.Group := 'saved pitched parts';
     SetLength(LVoiceBoundaries, LNamedCount);
     for LIndex := 0 to LNamedCount - 1 do
     begin
-      LVoiceBoundaries[LIndex] := LBoundaries[LOffset + LIndex];
+      LVoiceBoundaries[LIndex] := LSourceBoundaries[LOffset + LIndex];
     end;
     LGraph := BuildWfcMusicVoicesSegmentGraph(AConfig, Length(ABefore.Cells), AEdit.Seed,
       LVoiceBoundaries, WfcPreparationWorkObserver(LBridge));
@@ -648,8 +721,23 @@ begin
       Need(SameMusicDecisionFrame(LFrame, ABefore.Cells[LCell].Parts),
         'Recorded performed parts differ from actual provider decisions');
     end;
-    HoldSeamsAndScope(LOffset, LNamedCount);
+    FreeAndNil(LGraph);
+    AReport.Group := 'pitched parts';
+    for LIndex := 0 to LNamedCount - 1 do
+      LVoiceBoundaries[LIndex] := LBoundaries[LOffset + LIndex];
+    LGraph := BuildWfcMusicVoicesSegmentGraph(AConfig, Length(ABefore.Cells), AEdit.Seed,
+      LVoiceBoundaries, WfcPreparationWorkObserver(LBridge));
     LRoots := nil;
+    for LIndex := 0 to LNamedCount - 1 do
+      if LEditableProviders[LOffset + LIndex] then
+        AddRoot(LRoots, LGraph.PassGraph[LIndex].CurrentPass);
+    for LIndex := LNamedCount to LGraph.TotalPassCount - 1 do
+      AddRoot(LRoots, LGraph.PassGraph[LIndex].CurrentPass);
+    LResetPasses := nil;
+    if Length(LRoots) > 0 then
+      LGraph.ResolveRegenerationScope(LRoots, LCanonicalRoots, LResetPasses);
+    RestoreRows(LOffset, LNamedCount, True);
+    HoldSeamsAndScope(LOffset, LNamedCount);
     LContextMasks := nil;
     if AContext <> nil then
     begin
@@ -664,10 +752,6 @@ begin
     begin
       LPass := LGraph.PassGraph[LIndex];
       LProvider := LOffset + LIndex;
-      if LEditableProviders[LProvider] then
-      begin
-        AddRoot(LRoots, LPass.CurrentPass);
-      end;
       for LCell := 0 to High(ABefore.Cells) do
       begin
         if AContext <> nil then
@@ -714,13 +798,7 @@ begin
     begin
       LProvider := LDrumOffset + LIndex;
       AReport.Group := ADrums[LIndex].Name;
-      LGraph := TGraph.Create;
-      LGraph.WrapNeighbors := False;
-      LGraph.Reshape(Length(ABefore.Cells), 1, 1);
-      LGraph.CurrentPass := ADrums[LIndex].Name;
-      ApplySequenceModelSegmentToGraph(LModels[LProvider], LGraph, LBoundaries[LProvider],
-        WfcPreparationWorkObserver(LBridge));
-      RestoreRows(LProvider, 1);
+      OpenSequence(LProvider, False);
       RequireCaptured(LProvider, 1);
       for LCell := 0 to High(ABefore.Cells) do
       begin
@@ -728,6 +806,8 @@ begin
           ABefore.Providers[LProvider].Tokens[LCell]), ABefore.Providers[LOffset + 1].Tokens[LCell]),
           'Recorded drum part differs from its accepted rhythm');
       end;
+      FreeAndNil(LGraph);
+      OpenSequence(LProvider, True);
       HoldSeamsAndScope(LProvider, 1);
       for LCell := 0 to High(ABefore.Cells) do
       begin

@@ -35,7 +35,7 @@ uses Classes, SysUtils, pythian.audio, pythian.time, pythian.bus, pythian.chord,
   pythian.wfc.layers, pythian.wfc.voices, pythian.wfc.percussion,
   pythian.wfc.providers,
   pythian.wfc.musical.context,
-  wfc_model, wfc_sequence, wfc_sequence_graph, wfc_sequence_learn,
+  wfc, wfc_model, wfc_sequence, wfc_sequence_graph, wfc_sequence_learn,
   wfc_music, wfc_music_sequence, wfc_music_ensemble, wfc_music_voices_graph;
 
 type
@@ -213,6 +213,9 @@ var
   LMask: TWfcSequenceTokenConstraint;
   LAfter: TMusicDecisionChunk;
   LTampered: TMusicDecisionChunk;
+  LAcross: TMusicDecisionChunk;
+  LAcrossLast: TMusicDecisionChunk;
+  LEdges: TInstrumentalPassageEdges;
   LEdited: TChunks;
   LMaster: TAudioSamples;
   LOutputs: TBusSampleBlocks;
@@ -235,6 +238,61 @@ var
   LAcceptedChunkHash: String;
   LBound: TVoiceMasks;
   K: Integer;
+  function Edges(const APrevious, ANext: Integer): TInstrumentalPassageEdges;
+  var
+    LPrevious: TMusicDecisionChunk;
+    LNext: TMusicDecisionChunk;
+  begin
+    LPrevious := Default(TMusicDecisionChunk);
+    LNext := Default(TMusicDecisionChunk);
+    if APrevious >= 0 then LPrevious := LCapture.Chunks[APrevious];
+    if ANext >= 0 then LNext := LCapture.Chunks[ANext];
+    Result := RetainedInstrumentalPassageEdges(LPrevious, LNext);
+  end;
+  procedure CheckChildPreferences;
+  var
+    LPrivate: TGraph;
+    LScope: TSequencePreferenceScope;
+    LBounds: TWfcMusicVoicesBoundaries;
+    LKeys: TGraphValues;
+    LHarmonyKeys: TGraphValues;
+    LOld: array of TGraphWeight;
+    LHarmonyWeight: TGraphWeight;
+    LToken: String;
+    LExpected: TGraphWeight;
+    P: Integer;
+  begin
+    SetLength(LBounds, 5);
+    for P := 0 to 4 do LBounds[P] := MakeWfcSequenceInitialSegmentBoundary(False);
+    LPrivate := BuildWfcMusicVoicesSegmentGraph(LConfig, 4, 73, LBounds);
+    LScope := nil;
+    try
+      LKeys := LPrivate.PassGraph[1].CopyRegisteredValues;
+      LHarmonyKeys := LPrivate.PassGraph[0].CopyRegisteredValues;
+      LHarmonyWeight := LPrivate.PassGraph[0].Rules[LHarmonyKeys[0]].Weight;
+      SetLength(LOld, Length(LKeys));
+      for P := 0 to High(LKeys) do LOld[P] := LPrivate.PassGraph[1].Rules[LKeys[P]].Weight;
+      LToken := LConfig.RhythmModel.PublicTokenAt(0);
+      LScope := TSequencePreferenceScope.Create(LConfig.RhythmModel, LPrivate.PassGraph[1],
+        [MakeLayerTokenPreference(LToken, 2)], LCapture.Observe);
+      for P := 0 to High(LKeys) do
+      begin
+        LExpected := LOld[P];
+        if LConfig.RhythmModel.ProjectStateToken(P) = LToken then LExpected := LExpected * 2;
+        Check(LPrivate.PassGraph[1].Rules[LKeys[P]].Weight = LExpected,
+          'Shared preference scope targets the supplied child pass');
+      end;
+      Check(LPrivate.PassGraph[0].Rules[LHarmonyKeys[0]].Weight = LHarmonyWeight,
+        'Child-pass preferences do not write through to parent pass zero');
+      FreeAndNil(LScope);
+      for P := 0 to High(LKeys) do
+        Check(LPrivate.PassGraph[1].Rules[LKeys[P]].Weight = LOld[P],
+          'Shared child preference scope restores every original weight');
+    finally
+      LScope.Free;
+      LPrivate.Free;
+    end;
+  end;
 begin
   LStarter := TInstrumentalStarter.Create(0);
   LLead := nil;
@@ -267,6 +325,7 @@ begin
     LConfig := LStarter.Config;
     LConfig.Voices := Copy(LConfig.Voices);
     LConfig.Voices[2].Model := LLead;
+    CheckChildPreferences;
     LRoles := LStarter.CopyRoles;
     LDrums := LStarter.CopyPercussion(8000);
     SetLength(LNames, Length(LRoles));
@@ -315,7 +374,7 @@ begin
     LAfter := Default(TMusicDecisionChunk);
     LastStage := 'edit retained source';
     Check(TryEditInstrumentalPassageChunk(LConfig, LNames, LDrums, nil,
-      LCapture.Chunks[1], LCapture.Chunks[0].Providers, nil, LEdit, LAfter,
+      LCapture.Chunks[1], Edges(0, -1), LEdit, LAfter,
       LReport, LCapture.Observe), 'Actual selected Lead passage fits the retained graph: ' + LReport.Detail);
     LEdited := Copy(LCapture.Chunks);
     LEdited[1] := LAfter;
@@ -359,7 +418,7 @@ begin
     LRejected := False;
     try
       TryEditInstrumentalPassageChunk(LConfig, LNames, LDrums, nil,
-        LCapture.Chunks[1], LCapture.Chunks[0].Providers, nil, LEdit, LAfter,
+        LCapture.Chunks[1], Edges(0, -1), LEdit, LAfter,
         LReport, LCapture.Observe);
     except
       on E: EAbort do LRejected := True;
@@ -372,7 +431,7 @@ begin
     LRejected := False;
     try
       LRejected := not TryEditInstrumentalPassageChunk(LConfig, LNames, LDrums, nil,
-        LCapture.Chunks[1], LCapture.Chunks[0].Providers, nil, LEdit, LAfter,
+        LCapture.Chunks[1], Edges(0, -1), LEdit, LAfter,
         LReport, LCapture.Observe);
     except
       on E: EAudio do LRejected := True;
@@ -387,7 +446,7 @@ begin
     LEdit.StartFrame := 1;
     LEdit.EndFrame := 5999;
     Check(TryEditInstrumentalPassageChunk(LConfig, LNames, LDrums, nil,
-      LCapture.Chunks[0], nil, LCapture.Chunks[1].Providers, LEdit, LAfter,
+      LCapture.Chunks[0], Edges(-1, 1), LEdit, LAfter,
       LReport, LCapture.Observe), 'Initial partial passage reconnects to its recorded successor');
     Check((LReport.ActualStartFrame = 0) and (LReport.ActualEndFrame = 6000),
       'Fractional-step selection reports actual outward musical bounds');
@@ -405,11 +464,37 @@ begin
     LEdit.EndFrame := 8000;
     LEdit.Controls[2].MinimumPitch := 84;
     Check(not TryEditInstrumentalPassageChunk(LConfig, LNames, LDrums, nil,
-      LCapture.Chunks[0], nil, LCapture.Chunks[1].Providers, LEdit, LAfter,
+      LCapture.Chunks[0], Edges(-1, 1), LEdit, LAfter,
       LReport, LCapture.Observe), 'Conflicting recorded outgoing latent seam rejects the edit');
     Check((LReport.Detail <> '') and
       (Sha256Bytes(EncodeMusicDecisions(LAfter)) = LAcceptedChunkHash),
       'Outgoing-seam rejection explains the conflict and preserves accepted candidate');
+
+    LEdit.StartFrame := 0;
+    LEdit.EndFrame := 16000;
+    LEdges := Edges(-1, 1);
+    LEdges.FollowingCells := 4;
+    Check(TryEditInstrumentalPassageChunk(LConfig, LNames, LDrums, nil,
+      LCapture.Chunks[0], LEdges, LEdit, LAcross,
+      LReport, LCapture.Observe), 'Planning chunks must not lock decisions inside the selected passage');
+    LEdges := Edges(0, -1);
+    LEdges.CandidatePrevious := LAcross;
+    Check(TryEditInstrumentalPassageChunk(LConfig, LNames, LDrums, nil,
+      LCapture.Chunks[1], LEdges, LEdit, LAcrossLast, LReport, LCapture.Observe),
+      'Changed decisions continue across the original planning seam');
+    Check((LReport.ChangedCells = 4) and
+      SameMusicDecisionFrame(LAcrossLast.Previous, LAcross.Cells[High(LAcross.Cells)].Parts),
+      'Continued candidate retains its actual changed predecessor');
+    LEdited := [LAcross, LAcrossLast];
+    LAfterPcm := Render(Journal(LEdited), LStarter, LDrums, 16000);
+    for I := 0 to High(LBeforePcm) do
+    begin
+      LChanged := False;
+      for J := 0 to High(LBeforePcm[I]) do
+        LChanged := LChanged or (LBeforePcm[I][J] <> LAfterPcm[I][J]);
+      Check(LChanged = ((I = 0) or (I = 3)),
+        'Cross-chunk variation changes only actual Lead/mix audio');
+    end;
 
     LEdit.StartFrame := 8000;
     LEdit.EndFrame := 16000;
@@ -418,7 +503,7 @@ begin
     LEdit.Controls[2] := DefaultMusicalPartControl;
     LDrums[2].Enabled := False;
     Check(TryEditInstrumentalPassageChunk(LConfig, LNames, LDrums, nil,
-      LCapture.Chunks[1], LCapture.Chunks[0].Providers, nil, LEdit, LAfter,
+      LCapture.Chunks[1], Edges(0, -1), LEdit, LAfter,
       LReport, LCapture.Observe), 'Selected Hat can be regenerated to explicit silence');
     Check(LReport.ChangedCells > 0, 'Disabled selected Hat changes existing hits');
     LEdited := Copy(LCapture.Chunks);
@@ -440,7 +525,8 @@ begin
 
     { Real paired context provider, built from explicit authored alternatives.
       It has the same nine-provider layout as ordinary learned Studio jobs. }
-    for I := 0 to 1 do
+    SetLength(LSamples, 4);
+    for I := 0 to 3 do
     begin
       SetLength(LSamples[I].Tokens, 8);
       for J := 0 to 7 do
@@ -454,7 +540,7 @@ begin
             LCapture.Chunks[J div 4].Providers[2 + K].Tokens[J mod 4]);
           LContextCell.Frame.Voices[K] := LPartFrame.Voices[0];
         end;
-        if (I = 1) and (J >= 6) then
+        if ((I = 1) and (J >= 6)) or (I = 2) or ((I = 3) and (J < 6)) then
         begin
           LPartFrame := DecodeWfcMusicEnsembleFrame(LTokens[2 + J mod 2]);
           LContextCell.Frame.Voices[2] := LPartFrame.Voices[0];
@@ -495,7 +581,7 @@ begin
     end;
     LEdit.Controls[2].MaximumPitch := LEdit.Controls[2].MinimumPitch;
     Check(TryEditInstrumentalPassageChunk(LConfig, LNames, LDrums, LContext,
-      LCapture.Chunks[1], LCapture.Chunks[0].Providers, nil, LEdit, LAfter,
+      LCapture.Chunks[1], Edges(0, -1), LEdit, LAfter,
       LReport, LCapture.Observe), 'Selected notes edit through actual context and pitched graphs');
     Check((LReport.ChangedCells = 2) and (LReport.ChangedProviders = 2),
       'Only context and Lead provider decisions change');
@@ -534,7 +620,7 @@ begin
     LRejected := False;
     try
       TryEditInstrumentalPassageChunk(LConfig, LNames, LDrums, LContext,
-        LTampered, LCapture.Chunks[0].Providers, nil, LEdit, LAfter,
+        LTampered, Edges(0, -1), LEdit, LAfter,
         LReport, LCapture.Observe);
     except
       on E: EAudio do LRejected := True;

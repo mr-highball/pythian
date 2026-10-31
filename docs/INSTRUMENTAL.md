@@ -98,9 +98,11 @@ voice without allocating a duplicate score or renumbering source gates. Its
 note-local seeds match planning a separately selected voice and do not depend on
 unrelated parts. Both initial generation and reperformance use this same planner.
 
-This public in-memory operation does not yet restore durable Studio jobs or
-regenerate selected graph roles/passages. Those integration requirements keep
-[graph controls](TODO/NS-4_graph-controls_01.md) open. Saving feedback does not call it.
+This operation addresses an in-memory finite plan. Durable Studio sound changes
+use the decision journal/replayer below; scoped note changes additionally use the
+[bounded graph editor](ACCEPTED-SESSIONS.md#current-boundary). The optional
+authored/affect consumer still keeps [graph controls](TODO/NS-4_graph-controls_01.md)
+open. Saving feedback invokes none of these changes.
 
 CreatePlayer takes a healthy matching-rate bus graph and returns a new owned
 TScheduledSynth. Every note is admitted before return; rejected construction
@@ -235,8 +237,12 @@ hash/size check; primary per-record checks remain active during consumption.
 
 Journal storage grows with duration and is additional to the WAV disk estimate;
 working memory remains bounded. Native partial files preserve failure evidence.
-This is the replay prerequisite for [selective Studio follow-ups](TODO/NS-4_graph-controls_01.md),
-not an implemented sound-edit button, graph regeneration or musical-quality claim.
+This supplies the replay path for [selective Studio follow-ups](TODO/NS-4_graph-controls_01.md).
+The optional Change sounds action keeps these decisions; Change notes reconstructs
+bounded graphs from verified models and latent states, then replays its accepted
+candidate. See [Studio](OPERATOR-STUDIO.md) and [accepted sessions](ACCEPTED-SESSIONS.md)
+for the actual consumer, failure behavior and remaining UI scope. Replay alone
+is not graph regeneration or a musical-quality claim.
 
 ## Experimental coarse musical providers
 

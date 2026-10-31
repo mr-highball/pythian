@@ -57,7 +57,8 @@ type
     Multiplier: Integer;
   end;
   TLayerTokenPreferences = array of TLayerTokenPreference;
-  { Borrowed single-pass graph/model; dispose before the graph. Reuses the
+  { Borrowed selected pass/model, including a child pass; dispose before its
+    root graph. Reuses the
     primary layer preference validation, weight mapping and restoration.
     Original weights must be restored before authenticating captured paths. }
   TSequencePreferenceScope = class
@@ -316,7 +317,7 @@ type
   public
     constructor Create(const ALayers: TLearnedLayers; const AGraph: TGraph;
       const AOptions: TLayerGenerationOptions;
-      const APreparation: TLayerPreparation = nil);
+      const APreparation: TLayerPreparation = nil; const ASinglePass: Boolean = False);
     procedure UseOriginal(const APreparation: TLayerPreparation = nil);
     procedure UsePreferred(const APreparation: TLayerPreparation = nil);
     destructor Destroy; override;
@@ -1535,7 +1536,7 @@ end;
 
 constructor TLayerPreferenceScope.Create(const ALayers: TLearnedLayers;
   const AGraph: TGraph; const AOptions: TLayerGenerationOptions;
-  const APreparation: TLayerPreparation);
+  const APreparation: TLayerPreparation; const ASinglePass: Boolean);
 var
   LLayer: Integer;
   LPreference: TLayerTokenPreference;
@@ -1583,7 +1584,7 @@ begin
     begin
       Continue;
     end;
-    LPass := AGraph.PassGraph[LLayer];
+    if ASinglePass then LPass := AGraph else LPass := AGraph.PassGraph[LLayer];
     if AGraph is TPositionedLayerGraph then
     begin
       LCompiler := TPositionedLayerGraph(AGraph).Compilers[LLayer];
@@ -1678,7 +1679,7 @@ begin
     ValidatePreferences(LLayers[0], 1, False, LWork, LPreparation);
     if LWork > MaximumLayerPreferencePreparationWork then
       raise EAudio.Create('Sequence preference preparation exceeds its work budget');
-    FInner := TLayerPreferenceScope.Create(LLayers, AGraph, LOptions, LPreparation);
+    FInner := TLayerPreferenceScope.Create(LLayers, AGraph, LOptions, LPreparation, True);
     LPreparation.Finish;
   finally
     LPreparation.Free;

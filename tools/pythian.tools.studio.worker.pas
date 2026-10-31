@@ -76,7 +76,7 @@ uses
   pythian.tools.listen.catalog,
   pythian.tools.studio.jobs,
   pythian.tools.studio.instrumental,
-  pythian.tools.studio.reperform,
+  pythian.tools.studio.followup,
   pythian.tools.studio.clips,
   pythian.tools.studio.progress,
   pythian.tools.studio.live,
@@ -1802,8 +1802,8 @@ var
   LOutputs: TJSONArray;
   LIndex: Integer;
 begin
-  if FRequest.Strings['kind'] = 'instrumental_reperform' then
-    Exit(RunStudioReperformance(FCatalogRoot, FJobId, FRequest, Check, AudioProgress));
+  if IsStudioInstrumentalFollowup(FRequest.Strings['kind']) then
+    Exit(RunStudioInstrumentalFollowup(FCatalogRoot, FJobId, FRequest, Check, AudioProgress));
   if FRequest.Strings['kind'] = 'clip_save' then
     Exit(PrepareStudioPlaylistClips(FCatalogRoot, ALibraryRoot, FJobId,
       FRequest.Objects['project_snapshot'].Objects['playlist'], AudioProgress));

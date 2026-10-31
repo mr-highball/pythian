@@ -58,7 +58,7 @@ type
     FCancelling: Boolean;
     FGenerateAfterSave: Boolean;
     FGenerationMessage: String;
-    FSoundParent: TJSObject;
+    FFollowupParent: TJSObject;
     FClipState: TJSObject;
     FClipTimer, FClipEpoch: NativeInt;
     FClipPolling: Boolean;
@@ -81,6 +81,15 @@ type
     procedure OpenSoundChoices;
     procedure DrawSoundChoices;
     procedure ApplySoundChoices;
+    function CaptureFollowupParent: Boolean;
+    function FollowupWrite(const AKind: String): TJSObject;
+    procedure SubmitFollowup(const AWrite: TJSObject; const ADialog: String);
+    procedure OpenNoteChoices;
+    function NoteChoices(out AError: String): TJSObject;
+    procedure DrawNoteChoices;
+    procedure ApplyNoteChoices;
+    procedure DrawPartComparison;
+    function ResultDetails(AEvent: TEventListenerEvent): Boolean;
     procedure OpenPreviousVersion; async;
     procedure PauseResult;
     procedure RestoreGeneration; async;
@@ -401,6 +410,8 @@ begin
   TJSHTMLAudioElement(El('generated-audio')).pause;
   TJSHTMLAudioElement(El('generated-before-audio')).pause;
   TJSHTMLAudioElement(El('generated-original-audio')).pause;
+  TJSHTMLAudioElement(El('part-before-audio')).pause;
+  TJSHTMLAudioElement(El('part-after-audio')).pause;
 end;
 
 procedure TStudio.ClearClips;
@@ -576,7 +587,7 @@ begin
   FGenerateAfterSave := False;
   FGenerationMessage := '';
   PauseResult;
-  FSoundParent := nil;
+  FFollowupParent := nil;
   El('generated-audio').removeAttribute('src');
   El('generated-audio').removeAttribute('data-job');
   TJSHTMLAudioElement(El('generated-audio')).load;
@@ -584,6 +595,11 @@ begin
   TJSHTMLAudioElement(El('generated-original-audio')).load;
   El('generated-before-audio').removeAttribute('src');
   TJSHTMLAudioElement(El('generated-before-audio')).load;
+  El('part-before-audio').removeAttribute('src');
+  TJSHTMLAudioElement(El('part-before-audio')).load;
+  El('part-after-audio').removeAttribute('src');
+  El('part-after-audio').removeAttribute('data-version');
+  TJSHTMLAudioElement(El('part-after-audio')).load;
   El('generation-result').setAttribute('hidden', '');
 end;
 
@@ -677,20 +693,35 @@ begin
   El('generation-revision-note').textContent := '';
   if Str(FJob, 'kind') = 'instrumental_reperform' then
     El('generation-revision-note').textContent := 'Notes kept. Only instrument sounds changed.';
+  if Str(FJob, 'kind') = 'instrumental_regenerate' then
+  begin
+    if Num(Obj(LResult['edit_report']), 'changed_cells') > 0 then
+      El('generation-revision-note').textContent := 'Notes changed at ' +
+        StudioTime(Num(Obj(LResult['edit_report']), 'actual_start_frame') / 24000) + '–' +
+        StudioTime(Num(Obj(LResult['edit_report']), 'actual_end_frame') / 24000) +
+        '. Other parts and sounds kept.'
+    else
+      El('generation-revision-note').textContent :=
+        'No different notes fit these choices. Try more parts or a longer passage.';
+  end;
   if FDirty or (Num(LResult, 'project_revision') <> FRevision) then
-   if Str(FJob, 'kind') = 'instrumental_reperform' then
+   if (Str(FJob, 'kind') = 'instrumental_reperform') or
+     (Str(FJob, 'kind') = 'instrumental_regenerate') then
     El('generation-revision-note').textContent :=
-      'Notes kept. Your newer playlist choices were not used.'
+      El('generation-revision-note').textContent + ' Newer playlist choices were not used.'
    else
     El('generation-revision-note').textContent :=
       'Your playlist has changed since this run. Generate again to use your current selection.';
   El('change-sounds').setAttribute('hidden', '');
+  El('change-notes').setAttribute('hidden', '');
   if Obj(LResult['decisions']) <> nil then
   begin
     El('change-sounds').removeAttribute('hidden');
-    El('sound-availability').textContent := 'Try different instruments without learning again.';
+    El('change-notes').removeAttribute('hidden');
+    El('sound-availability').textContent := 'Try new notes or sounds without learning again.';
   end
   else El('sound-availability').textContent := 'Generate a new track once to enable sound changes.';
+  DrawPartComparison;
   LUrl := '/api/studio/instrumental-audio?job=' + encodeURIComponent(FJobId) + '&part=6';
   if El('generated-audio').getAttribute('data-job') <> FJobId then
   begin
@@ -758,30 +789,60 @@ begin
   El('generation-result').removeAttribute('hidden');
 end;
 
-procedure TStudio.OpenSoundChoices;
-const
-  CIds: array[0..2] of String = ('sound-bass', 'sound-harmony', 'sound-lead');
-var LResult, LSettings: TJSObject; LNames, LCopy: TJSArray; I: Integer;
+function TStudio.CaptureFollowupParent: Boolean;
+var LResult: TJSObject;
 begin
+  Result := False;
   if FSubmitting or FLoading or (FJobWrite <> nil) or (Str(FJob, 'status') <> 'completed') then Exit;
   LResult := Obj(FJob['results']);
   if (LResult = nil) or (Obj(LResult['decisions']) = nil) then Exit;
-  LSettings := Obj(LResult['settings']);
-  LNames := Arr(LSettings, 'instruments');
+  FFollowupParent := TJSObject.new;
+  FFollowupParent['job_id'] := FJobId;
+  FFollowupParent['plan_sha256'] := Str(LResult, 'plan_sha256');
+  FFollowupParent['project_id'] := Str(LResult, 'project_id');
+  FFollowupParent['project_revision'] := Num(LResult, 'project_revision');
+  FFollowupParent['project_snapshot_sha256'] := Str(LResult, 'project_snapshot_sha256');
+  FFollowupParent['music_frames'] := Num(Obj(LResult['decisions']), 'music_frames');
+  FFollowupParent['instruments'] := TJSJSON.parse(TJSJSON.stringify(Arr(Obj(LResult['settings']), 'instruments')));
+  Result := True;
+end;
+
+function TStudio.FollowupWrite(const AKind: String): TJSObject;
+begin
+  Result := TJSObject.new;
+  Result['format'] := 'pythian.studio.job.write.v1';
+  Result['job_id'] := 'music-' + IntToStr(Round(TJSDate.now)) + '-' + IntToStr(Random(1000000));
+  Result['kind'] := AKind;
+  Result['parent_job_id'] := Str(FFollowupParent, 'job_id');
+  Result['parent_plan_sha256'] := Str(FFollowupParent, 'plan_sha256');
+  Result['project_id'] := Str(FFollowupParent, 'project_id');
+  Result['project_revision'] := Num(FFollowupParent, 'project_revision');
+  Result['project_snapshot_sha256'] := Str(FFollowupParent, 'project_snapshot_sha256');
+end;
+
+procedure TStudio.SubmitFollowup(const AWrite: TJSObject; const ADialog: String);
+begin
+  FJobWrite := AWrite;
+  FJobId := Str(AWrite, 'job_id');
+  FJob := nil;
+  FGenerateAfterSave := False;
+  TStudioDialog(El(ADialog)).close;
+  RememberGeneration;
+  SubmitGeneration;
+end;
+
+procedure TStudio.OpenSoundChoices;
+const
+  CIds: array[0..2] of String = ('sound-bass', 'sound-harmony', 'sound-lead');
+var LNames: TJSArray; I: Integer;
+begin
+  if not CaptureFollowupParent then Exit;
+  LNames := Arr(FFollowupParent, 'instruments');
   if (LNames = nil) or (LNames.length <> 3) then Exit;
-  FSoundParent := TJSObject.new;
-  FSoundParent['job_id'] := FJobId;
-  FSoundParent['plan_sha256'] := Str(LResult, 'plan_sha256');
-  FSoundParent['project_id'] := Str(LResult, 'project_id');
-  FSoundParent['project_revision'] := Num(LResult, 'project_revision');
-  FSoundParent['project_snapshot_sha256'] := Str(LResult, 'project_snapshot_sha256');
-  LCopy := TJSArray.new;
   for I := 0 to 2 do
   begin
-    LCopy.push(LNames[I]);
     TJSHTMLSelectElement(El(CIds[I])).value := String(LNames[I]);
   end;
-  FSoundParent['instruments'] := LCopy;
   DrawSoundChoices;
   TStudioDialog(El('sound-dialog')).showModal;
 end;
@@ -792,10 +853,10 @@ const
 var LChanged: Boolean; I: Integer;
 begin
   LChanged := False;
-  if FSoundParent <> nil then
+  if FFollowupParent <> nil then
     for I := 0 to 2 do
       LChanged := LChanged or (TJSHTMLSelectElement(El(CIds[I])).value <>
-        String(TJSArray(FSoundParent['instruments'])[I]));
+        String(TJSArray(FFollowupParent['instruments'])[I]));
   TJSHTMLButtonElement(El('apply-sounds')).disabled :=
     not LChanged or not FConnected or FSubmitting or (FJobWrite <> nil);
 end;
@@ -805,27 +866,197 @@ const
   CIds: array[0..2] of String = ('sound-bass', 'sound-harmony', 'sound-lead');
 var LWrite: TJSObject; LNames: TJSArray; I: Integer;
 begin
-  if (FSoundParent = nil) or FSubmitting or (FJobWrite <> nil) or
+  if (FFollowupParent = nil) or FSubmitting or (FJobWrite <> nil) or
     TJSHTMLButtonElement(El('apply-sounds')).disabled then Exit;
-  LWrite := TJSObject.new;
-  LWrite['format'] := 'pythian.studio.job.write.v1';
-  LWrite['job_id'] := 'music-' + IntToStr(Round(TJSDate.now)) + '-' + IntToStr(Random(1000000));
-  LWrite['kind'] := 'instrumental_reperform';
-  LWrite['parent_job_id'] := Str(FSoundParent, 'job_id');
-  LWrite['parent_plan_sha256'] := Str(FSoundParent, 'plan_sha256');
-  LWrite['project_id'] := Str(FSoundParent, 'project_id');
-  LWrite['project_revision'] := Num(FSoundParent, 'project_revision');
-  LWrite['project_snapshot_sha256'] := Str(FSoundParent, 'project_snapshot_sha256');
+  LWrite := FollowupWrite('instrumental_reperform');
   LNames := TJSArray.new;
   for I := 0 to 2 do LNames.push(TJSHTMLSelectElement(El(CIds[I])).value);
   LWrite['instruments'] := LNames;
-  FJobWrite := LWrite;
-  FJobId := Str(LWrite, 'job_id');
-  FJob := nil;
-  FGenerateAfterSave := False;
-  TStudioDialog(El('sound-dialog')).close;
-  RememberGeneration;
-  SubmitGeneration;
+  SubmitFollowup(LWrite, 'sound-dialog');
+end;
+
+procedure TStudio.OpenNoteChoices;
+var I: Integer;
+begin
+  if not CaptureFollowupParent then Exit;
+  TJSHTMLInputElement(El('note-start')).value := '0:00.000';
+  TJSHTMLInputElement(El('note-end')).value := StudioTime(Num(FFollowupParent, 'music_frames') / 24000);
+  El('note-length').textContent := 'Music length: ' +
+    StudioTime(Num(FFollowupParent, 'music_frames') / 24000) + '. Ranges follow musical steps.';
+  for I := 0 to 5 do
+    TJSHTMLInputElement(El('note-part-' + IntToStr(I))).checked := I = 2;
+  for I := 0 to 2 do
+  begin
+    TJSHTMLInputElement(El('note-low-' + IntToStr(I))).value := '0';
+    TJSHTMLInputElement(El('note-high-' + IntToStr(I))).value := '127';
+  end;
+  TJSHTMLInputElement(El('note-rhythm')).checked := False;
+  TJSHTMLInputElement(El('note-harmony')).checked := False;
+  TJSHTMLInputElement(El('note-activity')).value := '0';
+  TJSHTMLInputElement(El('note-root-bias')).value := '0';
+  TJSHTMLSelectElement(El('note-tonic')).value := '0';
+  El('note-dialog').querySelector('details').removeAttribute('open');
+  DrawNoteChoices;
+  TStudioDialog(El('note-dialog')).showModal;
+end;
+
+function TStudio.NoteChoices(out AError: String): TJSObject;
+var
+  LStart: Double;
+  LEnd: Double;
+  LLow: Integer;
+  LHigh: Integer;
+  LActivity: Integer;
+  LRoot: Integer;
+  LAny: Boolean;
+  LSelected: Boolean;
+  LRhythm: Boolean;
+  LHarmony: Boolean;
+  LParts: TJSArray;
+  LControls: TJSArray;
+  LControl: TJSObject;
+  LControlSet: TJSObject;
+  I: Integer;
+begin
+  Result := nil;
+  AError := 'Choose a finished track.';
+  if FFollowupParent = nil then Exit;
+  AError := 'Enter a Start and End within the music.';
+  if not ParseSourceTime(TJSHTMLInputElement(El('note-start')).value, LStart) or
+    not ParseSourceTime(TJSHTMLInputElement(El('note-end')).value, LEnd) then Exit;
+  if (LStart < 0) or (LEnd <= LStart) or
+    (LEnd * 24000 > Num(FFollowupParent, 'music_frames') + 0.5) or
+    (Round(LEnd * 24000) <= Round(LStart * 24000)) then Exit;
+  LParts := TJSArray.new;
+  LAny := False;
+  for I := 0 to 5 do
+  begin
+    LSelected := TJSHTMLInputElement(El('note-part-' + IntToStr(I))).checked;
+    LParts.push(LSelected);
+    LAny := LAny or LSelected;
+  end;
+  LRhythm := TJSHTMLInputElement(El('note-rhythm')).checked;
+  LHarmony := TJSHTMLInputElement(El('note-harmony')).checked;
+  AError := 'Choose at least one part to change.';
+  if not LAny and not LRhythm and not LHarmony then Exit;
+  LActivity := 0;
+  LRoot := 0;
+  if LRhythm then TryStrToInt(TJSHTMLInputElement(El('note-activity')).value, LActivity);
+  if LHarmony then TryStrToInt(TJSHTMLInputElement(El('note-root-bias')).value, LRoot);
+  LControls := TJSArray.new;
+  for I := 0 to 2 do
+  begin
+    LControl := TJSObject.new;
+    LControl['minimum_pitch'] := 0;
+    LControl['maximum_pitch'] := 127;
+    LControl['activity_bias'] := 0;
+    if Boolean(LParts[I]) then
+    begin
+      AError := 'Pitch limits need whole MIDI notes from 0 to 127, lowest first.';
+      if not TryStrToInt(TJSHTMLInputElement(El('note-low-' + IntToStr(I))).value, LLow) or
+        not TryStrToInt(TJSHTMLInputElement(El('note-high-' + IntToStr(I))).value, LHigh) then Exit;
+      if (LLow < 0) or (LHigh > 127) or (LHigh < LLow) then Exit;
+      LControl['minimum_pitch'] := LLow;
+      LControl['maximum_pitch'] := LHigh;
+      LControl['activity_bias'] := LActivity;
+    end;
+    LControl['velocity_percent'] := 100;
+    LControl['gate_percent'] := 100;
+    LControls.push(LControl);
+  end;
+  LControlSet := TJSObject.new;
+  LControlSet['guide'] := False;
+  LControlSet['tonic_bias'] := LRoot;
+  LControlSet['parts'] := LControls;
+  Result := TJSObject.new;
+  Result['start_frame'] := Round(LStart * 24000);
+  Result['end_frame'] := Min(Num(FFollowupParent, 'music_frames'), Round(LEnd * 24000));
+  Result['parts'] := LParts;
+  Result['harmony'] := LHarmony;
+  Result['rhythm'] := LRhythm;
+  Result['tonic'] := StrToInt(TJSHTMLSelectElement(El('note-tonic')).value);
+  Result['controls'] := LControlSet;
+  Result['seed'] := 0;
+  AError := '';
+end;
+
+procedure TStudio.DrawNoteChoices;
+var
+  LError: String;
+  LEdit: TJSObject;
+  LPitched: Boolean;
+  I: Integer;
+begin
+  LPitched := False;
+  for I := 0 to 2 do
+  begin
+    if TJSHTMLInputElement(El('note-part-' + IntToStr(I))).checked then
+    begin
+      LPitched := True;
+      El('note-range-' + IntToStr(I)).removeAttribute('hidden');
+    end
+    else El('note-range-' + IntToStr(I)).setAttribute('hidden', '');
+  end;
+  TJSHTMLInputElement(El('note-activity')).disabled :=
+    not LPitched or not TJSHTMLInputElement(El('note-rhythm')).checked;
+  TJSHTMLInputElement(El('note-root-bias')).disabled := not TJSHTMLInputElement(El('note-harmony')).checked;
+  TJSHTMLSelectElement(El('note-tonic')).disabled := not TJSHTMLInputElement(El('note-harmony')).checked;
+  LEdit := NoteChoices(LError);
+  El('note-choice-status').textContent := LError;
+  TJSHTMLButtonElement(El('apply-notes')).disabled := (LEdit = nil) or
+    not FConnected or FSubmitting or (FJobWrite <> nil);
+end;
+
+procedure TStudio.ApplyNoteChoices;
+var LEdit: TJSObject; LWrite: TJSObject; LError: String;
+begin
+  if FSubmitting or (FJobWrite <> nil) or
+    TJSHTMLButtonElement(El('apply-notes')).disabled then Exit;
+  LEdit := NoteChoices(LError);
+  if LEdit = nil then begin DrawNoteChoices; Exit end;
+  LEdit['seed'] := Random(2147483000);
+  LWrite := FollowupWrite('instrumental_regenerate');
+  LWrite['note_edit'] := LEdit;
+  SubmitFollowup(LWrite, 'note-dialog');
+end;
+
+procedure TStudio.DrawPartComparison;
+var LPart: String; LBefore: String; LVersion: String;
+begin
+  if Str(FJob, 'status') <> 'completed' then Exit;
+  LPart := TJSHTMLSelectElement(El('result-part')).value;
+  LBefore := Str(Obj(Obj(FJob['results'])['before']), 'job_id');
+  LVersion := FJobId + ':' + LBefore + ':' + LPart;
+  if El('part-after-audio').getAttribute('data-version') = LVersion then Exit;
+  TJSHTMLAudioElement(El('part-after-audio')).pause;
+  TJSHTMLAudioElement(El('part-before-audio')).pause;
+  TJSHTMLAudioElement(El('part-after-audio')).src :=
+    '/api/studio/instrumental-audio?job=' + encodeURIComponent(FJobId) + '&part=' + LPart;
+  El('part-after-audio').setAttribute('data-version', LVersion);
+  El('part-before').setAttribute('hidden', '');
+  El('part-before-audio').removeAttribute('src');
+  El('part-current-label').textContent := 'Current version';
+  if LBefore <> '' then
+  begin
+    El('part-before').removeAttribute('hidden');
+    El('part-current-label').textContent := 'After';
+    TJSHTMLAudioElement(El('part-before-audio')).src :=
+      '/api/studio/instrumental-audio?job=' + encodeURIComponent(LBefore) + '&part=' + LPart;
+  end;
+end;
+
+function TStudio.ResultDetails(AEvent: TEventListenerEvent): Boolean;
+var LDetails: TJSElement;
+begin
+  Result := False;
+  LDetails := TJSElement(AEvent.currentTarget);
+  if LDetails.hasAttribute('open') then Exit;
+  if LDetails.id = 'part-comparison' then
+  begin
+    TJSHTMLAudioElement(El('part-before-audio')).pause;
+    TJSHTMLAudioElement(El('part-after-audio')).pause;
+  end
+  else TJSHTMLAudioElement(El('generated-original-audio')).pause;
 end;
 
 procedure TStudio.OpenPreviousVersion; async;
@@ -859,6 +1090,8 @@ begin
   El('generation-result').setAttribute('hidden', '');
   if Str(FJobWrite, 'kind') = 'instrumental_reperform' then
     FGenerationMessage := 'Rendering new sounds. Your notes and learning stay the same.'
+  else if Str(FJobWrite, 'kind') = 'instrumental_regenerate' then
+    FGenerationMessage := 'Changing selected notes. Your current version stays saved.'
   else FGenerationMessage := 'Starting your track…';
   DrawGeneration;
   LEpoch := FJobEpoch;
@@ -1023,7 +1256,8 @@ begin
         for I := LRows.length - 1 downto 0 do
           if (Str(Obj(LRows[I]), 'project_id') = FProjectId) and
             ((Str(Obj(LRows[I]), 'kind') = 'instrumental_generate') or
-             (Str(Obj(LRows[I]), 'kind') = 'instrumental_reperform')) then
+             (Str(Obj(LRows[I]), 'kind') = 'instrumental_reperform') or
+             (Str(Obj(LRows[I]), 'kind') = 'instrumental_regenerate')) then
           begin FJobId := Str(Obj(LRows[I]), 'job_id'); Break end;
     end;
     if FJobId <> '' then
@@ -1593,6 +1827,8 @@ begin
     'cancel-clips': CancelClips;
     'change-sounds': OpenSoundChoices;
     'apply-sounds': ApplySoundChoices;
+    'change-notes': OpenNoteChoices;
+    'apply-notes': ApplyNoteChoices;
     'previous-version': OpenPreviousVersion;
     'cancel-generation': CancelGeneration;
     'reconnect-generation':
@@ -1620,6 +1856,16 @@ begin
   Result := False;
   if FLoading then Exit;
   LControl := TJSElement(AEvent.target);
+  if LControl.id = 'result-part' then
+  begin
+    DrawPartComparison;
+    Exit;
+  end;
+  if Copy(LControl.id, 1, 5) = 'note-' then
+  begin
+    DrawNoteChoices;
+    Exit;
+  end;
   if LControl.id = 'learning-label-choice' then
   begin
     PreviewLearningLabel;
@@ -1722,6 +1968,11 @@ begin
   El('sound-bass').addEventListener('change', @Edit);
   El('sound-harmony').addEventListener('change', @Edit);
   El('sound-lead').addEventListener('change', @Edit);
+  El('note-dialog').addEventListener('input', @Edit);
+  El('note-dialog').addEventListener('change', @Edit);
+  El('result-part').addEventListener('change', @Edit);
+  El('part-comparison').addEventListener('toggle', @ResultDetails);
+  El('generation-original').addEventListener('toggle', @ResultDetails);
   El('learning-label-choice').addEventListener('change', @Edit);
   El('source-reconnect').addEventListener('click', @Click);
   El('capture-panel').addEventListener('close', @CaptureClosed);

@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *)
-unit pythian.tools.studio.reperform;
+unit pythian.tools.studio.followup;
 
 {$mode delphi}
 {$H+}
@@ -30,7 +30,7 @@ interface
 
 uses fpjson, pythian.progress, pythian.tools.studio.instrumental.publication;
 
-function RunStudioReperformance(const ACatalogRoot, AJobId: String;
+function RunStudioInstrumentalFollowup(const ACatalogRoot, AJobId: String;
   const ARequest: TJSONObject; const ACheck: TInstrumentalWorkCheck;
   const AProgress: TWorkProgressCallback): TJSONObject;
 
@@ -39,7 +39,7 @@ implementation
 uses Classes, SysUtils, pythian.audio, pythian.bus, pythian.time,
   pythian.instrument, pythian.percussion, pythian.music.sound,
   pythian.music.stream, pythian.music.replay,
-  pythian.tools.studio.jobs, pythian.tools.studio.decisions,
+  pythian.tools.studio.jobs, pythian.tools.studio.decisions, pythian.tools.studio.notes,
   pythian.tools.studio.instrumental.config, pythian.tools.studio.instrumental.output;
 
 procedure Need(const AValue: Boolean; const AMessage: String);
@@ -47,12 +47,13 @@ begin
   if not AValue then raise EAudio.Create(AMessage);
 end;
 
-function RunStudioReperformance(const ACatalogRoot, AJobId: String;
+function RunStudioInstrumentalFollowup(const ACatalogRoot, AJobId: String;
   const ARequest: TJSONObject; const ACheck: TInstrumentalWorkCheck;
   const AProgress: TWorkProgressCallback): TJSONObject;
 var
   LParent, LRoot, LMeta, LSettings, LReplayMeta, LStored, LResult: TJSONObject;
   LParentResult, LRootResult, LDecisions, LRow: TJSONObject;
+  LNoteChanges: TJSONObject;
   LFile: TFileStream;
   LOutput: TStudioInstrumentalOutput;
   LReplay: TMusicDecisionReplay;
@@ -66,6 +67,8 @@ var
   LStems: TBusSampleBlocks;
   LRootId, LRootPlan, LPlanHash: String;
   LHasSound: Boolean;
+  LNoteEdit: Boolean;
+  LNotesChanged: Boolean;
   I: Integer;
 begin
   Result := nil;
@@ -76,6 +79,7 @@ begin
   LReplayMeta := nil;
   LStored := nil;
   LResult := nil;
+  LNoteChanges := nil;
   LFile := nil;
   LOutput := nil;
   LReplay := nil;
@@ -83,12 +87,15 @@ begin
   FillChar(LDrums, SizeOf(LDrums), 0);
   try
     ReportWork(AProgress, 'instrumental_prepare', wuItems, 0, 1);
-    LParent := ReadStudioSoundParent(ACatalogRoot, ARequest);
+    LNoteEdit := ARequest.Strings['kind'] = 'instrumental_regenerate';
+    LNotesChanged := False;
+    LParent := ReadStudioInstrumentalParent(ACatalogRoot, ARequest);
     LParentResult := LParent.Objects['results'];
     LRootId := ARequest.Strings['replay_source_job_id'];
     LRootPlan := ARequest.Strings['replay_source_plan_sha256'];
     LRoot := ReadStudioJob(ACatalogRoot, LRootId);
-    Need((LRoot.Strings['kind'] = 'instrumental_generate') and
+    Need(((LRoot.Strings['kind'] = 'instrumental_generate') or
+      (LRoot.Strings['kind'] = 'instrumental_regenerate')) and
       (LRoot.Strings['status'] = 'completed'), 'Saved note source is unavailable');
     LRootResult := LRoot.Objects['results'];
     Need((LRootResult.Strings['plan_sha256'] = LRootPlan) and
@@ -99,14 +106,40 @@ begin
     Need((LMeta.Strings['format'] = 'pythian.studio.instrumental.stream.v1') and
       (StudioTextHash(LMeta.AsJSON) = LRootPlan), 'Saved musical plan differs from its completed track');
     Need((LMeta.Arrays['roles'].Count = 3) and (LMeta.Arrays['percussion'].Count = 3),
-      'This sound editor requires the three pitched parts and three drum parts');
+      'This editor requires the three pitched parts and three drum parts');
+    Need((LMeta.Strings['model_sha256'] = LParentResult.Strings['model_sha256']) and
+      (LMeta.Objects['decisions'].AsJSON = LParentResult.Objects['decisions'].AsJSON),
+      'Saved model or notes differ from the previous track');
     AdmitStudioInstrumentalOutput(ACatalogRoot, ARequest.Int64s['duration_ms']);
     LDecisions := LParentResult.Objects['decisions'];
     LFile := OpenStudioDecisionJournal(ACatalogRoot, LDecisions, AProgress);
     ReportWork(AProgress, 'instrumental_plan_begin', wuItems, 0, 1);
     LSettings := TJSONObject(LParentResult.Objects['settings'].Clone);
-    LSettings.Delete('instruments');
-    LSettings.Add('instruments', ARequest.Arrays['instruments'].Clone);
+    if not LNoteEdit then
+    begin
+      LSettings.Delete('instruments');
+      LSettings.Add('instruments', ARequest.Arrays['instruments'].Clone);
+    end
+    else
+    begin
+      LNoteChanges := EditStudioRetainedNotes(ACatalogRoot, AJobId, LMeta,
+        ARequest.Objects['note_edit'], LFile, AProgress);
+      FreeAndNil(LFile);
+      LDecisions := LNoteChanges.Objects['decisions'];
+      LFile := OpenStudioDecisionJournal(ACatalogRoot, LDecisions, AProgress);
+      LNotesChanged := LNoteChanges.Objects['edit_report'].Int64s['changed_cells'] > 0;
+      LMeta.Delete('decisions');
+      LMeta.Add('decisions', LDecisions.Clone);
+      LMeta.Delete('settings');
+      LMeta.Add('settings', LSettings.Clone);
+      LMeta.Strings['parent_job_id'] := ARequest.Strings['parent_job_id'];
+      LMeta.Strings['parent_plan_sha256'] := ARequest.Strings['parent_plan_sha256'];
+      LMeta.Booleans['learning_performed'] := False;
+      LMeta.Delete('note_edit');
+      LMeta.Add('note_edit', ARequest.Objects['note_edit'].Clone);
+      LMeta.Delete('edit_report');
+      LMeta.Add('edit_report', LNoteChanges.Objects['edit_report'].Clone);
+    end;
     LSound := Default(TMusicalSound);
     LHasSound := LMeta.Find('applied_sound') <> nil;
     if LHasSound then
@@ -118,7 +151,7 @@ begin
     for I := 0 to 2 do
     begin
       Need(Pos('playlist-primary-v1-', LMeta.Arrays['roles'].Objects[I].Strings['instrument_id']) = 1,
-        'Saved instrument recipe is unsupported by this sound editor');
+        'Saved instrument recipe is unsupported by this editor');
       LInstruments[I] := CreateStudioInstrument(StudioPlaylistInstrumentZones,
         LSettings.Arrays['instruments'].Strings[I], LSound, LHasSound, StudioInstrumentalRate);
       LBindings[I].Instrument := LInstruments[I];
@@ -155,27 +188,45 @@ begin
       'Saved notes did not complete on their declared cell clock');
     ReportWork(AProgress, 'instrumental_save', wuItems, 0, 1);
     LStored := LOutput.Finish(AProgress);
-    LReplayMeta := TJSONObject.Create(['format', 'pythian.studio.reperformance.v1',
-      'parent_job_id', ARequest.Strings['parent_job_id'],
-      'parent_plan_sha256', ARequest.Strings['parent_plan_sha256'],
-      'replay_source_job_id', LRootId, 'replay_source_plan_sha256', LRootPlan,
-      'model_sha256', LParentResult.Strings['model_sha256'],
-      'seed', Int64(LOptions.Seed), 'learning_performed', False, 'notes_changed', False,
-      'math_target', {$I %FPCTARGETCPU%} + '-' + {$I %FPCTARGETOS%} + '/FPC' + {$I %FPCVERSION%}]);
-    LReplayMeta.Add('settings', LSettings.Clone);
-    LReplayMeta.Add('decisions', LDecisions.Clone);
-    LReplayMeta.Add('output_resources', LParentResult.Objects['output_resources'].Clone);
-    LPlanHash := StudioTextHash(LReplayMeta.AsJSON);
-    WriteStudioJSONNew(StudioJobDirectory(ACatalogRoot, AJobId) +
-      PathDelim + 'instrumental-reperformance.json', LReplayMeta);
+    if LNoteEdit then
+    begin
+      LPlanHash := StudioTextHash(LMeta.AsJSON);
+      WriteStudioJSONNew(StudioJobDirectory(ACatalogRoot, AJobId) +
+        PathDelim + 'instrumental-stream-completed.json', LMeta);
+      LRootId := AJobId;
+      LRootPlan := LPlanHash;
+    end
+    else
+    begin
+      LReplayMeta := TJSONObject.Create(['format', 'pythian.studio.reperformance.v1',
+        'parent_job_id', ARequest.Strings['parent_job_id'],
+        'parent_plan_sha256', ARequest.Strings['parent_plan_sha256'],
+        'replay_source_job_id', LRootId, 'replay_source_plan_sha256', LRootPlan,
+        'model_sha256', LParentResult.Strings['model_sha256'],
+        'seed', Int64(LOptions.Seed), 'learning_performed', False, 'notes_changed', False,
+        'math_target', {$I %FPCTARGETCPU%} + '-' + {$I %FPCTARGETOS%} + '/FPC' + {$I %FPCVERSION%}]);
+      LReplayMeta.Add('settings', LSettings.Clone);
+      LReplayMeta.Add('decisions', LDecisions.Clone);
+      LReplayMeta.Add('output_resources', LParentResult.Objects['output_resources'].Clone);
+      LPlanHash := StudioTextHash(LReplayMeta.AsJSON);
+      WriteStudioJSONNew(StudioJobDirectory(ACatalogRoot, AJobId) +
+        PathDelim + 'instrumental-reperformance.json', LReplayMeta);
+    end;
     LResult := TJSONObject(LParentResult.Clone);
     for I := LResult.Count - 1 downto 0 do
       if Pos('|' + LResult.Names[I] + '|',
-        '|outputs|parts|settings|stream|before|') > 0 then LResult.Delete(I);
+        '|outputs|parts|settings|stream|before|decisions|note_edit|edit_report|') > 0 then LResult.Delete(I);
     LResult.Add('outputs', LStored.Arrays['outputs'].Clone);
     LResult.Add('parts', LStored.Arrays['parts'].Clone);
     LResult.Add('settings', LSettings.Clone);
+    LResult.Add('decisions', LDecisions.Clone);
     LResult.Strings['runtime'] := 'retained_instrumental_score_replay';
+    if LNoteEdit then
+    begin
+      LResult.Strings['runtime'] := 'retained_instrumental_graph_edit';
+      LResult.Add('note_edit', ARequest.Objects['note_edit'].Clone);
+      LResult.Add('edit_report', LNoteChanges.Objects['edit_report'].Clone);
+    end;
     LResult.Strings['parent_job_id'] := ARequest.Strings['parent_job_id'];
     LResult.Strings['parent_plan_sha256'] := ARequest.Strings['parent_plan_sha256'];
     LResult.Strings['replay_source_job_id'] := LRootId;
@@ -183,7 +234,7 @@ begin
     LResult.Strings['plan_sha256'] := LPlanHash;
     LResult.Strings['request_sha256'] := ARequest.Strings['request_sha256'];
     LResult.Booleans['learning_performed'] := False;
-    LResult.Booleans['notes_changed'] := False;
+    LResult.Booleans['notes_changed'] := LNotesChanged;
     LResult.Add('before', TJSONObject.Create(['job_id', ARequest.Strings['parent_job_id'],
       'plan_sha256', ARequest.Strings['parent_plan_sha256'],
       'wav_sha256', LParentResult.Arrays['outputs'].Objects[0].Strings['wav_sha256']]));
@@ -202,6 +253,7 @@ begin
       LDrums[I].Free;
     end;
     LResult.Free;
+    LNoteChanges.Free;
     LStored.Free;
     LReplayMeta.Free;
     LSettings.Free;

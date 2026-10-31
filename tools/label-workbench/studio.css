@@ -674,3 +674,12 @@ code {
 .sound-choices select { display: block; width: 100%; margin-top: .35rem; }
 .version-comparison[data-compare] { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
 @media (max-width: 600px) { .version-comparison[data-compare] { grid-template-columns: 1fr; } }
+.note-range { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin: 1rem 0; }
+.note-range input { width: 100%; min-width: 0; margin-top: .35rem; }
+.note-parts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; padding: .8rem; border: 1px solid var(--border); border-radius: .6rem; }
+.note-parts label, .note-toggle { display: flex; align-items: center; gap: .5rem; min-height: 44px; }
+.note-parts input, .note-toggle input { width: 1.2rem; height: 1.2rem; flex: 0 0 auto; }
+.note-tuning { margin: 1rem 0; }
+.note-tuning > label { margin: .7rem 0; }
+.note-tuning input[type="range"], .note-tuning select { display: block; width: 100%; margin-top: .4rem; }
+@media (max-width: 450px) { .note-parts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

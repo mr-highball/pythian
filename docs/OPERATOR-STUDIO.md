@@ -98,6 +98,21 @@ after the page closes. Older tracks without saved notes need one new generation
 before this control is available. The four current oscillator choices are a
 starting point; deeper instrument and effect recipes remain planned.
 
+**Change notes** changes selected parts within a time range. Start with the parts
+you want to vary; **More choices** optionally limits each pitched part's MIDI
+range or allows chords/rhythm to change. Choices must fit notes already in the
+saved model. Keep other parts selected only when you allow them to change.
+The requested range follows musical steps and the result displays its actual
+bounds. Internal planning chunks do not pin old notes inside your passage.
+Pythian reports a conflict or a valid unchanged result honestly. These follow-ups
+reuse the saved models without learning again, retain the current instruments
+and preserve the previous version. **Hear individual parts** compares the same
+part Before/After; collapsing playback tools pauses their audio.
+
+The earlier authored key/tempo/affect controls are not currently reachable from
+this simplified entrypoint. Their optional laboratory consumer is an explicit
+[remaining task](TODO/NS-6_optional-lab_01.md), not a required setup step.
+
 ## Current experimental limits
 
 The [long-generation task is accepted](TODO/DONE/NS-6_instrumental-streams_01.md):

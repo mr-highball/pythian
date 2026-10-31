@@ -66,8 +66,9 @@ Ordinary streamed playlist jobs now retain their actual provider tokens/latent
 states and performed chord timeline in the separate primary
 [decision journal/replayer](INSTRUMENTAL.md#retain-and-replay-a-performed-timeline).
 That bounded score replays through instruments without learning or solving; it
-does not itself restore a live editable graph. Studio follow-up controls remain
-in graph-controls. Existing jobs without retained decisions do not acquire their
+does not itself restore a live editable graph. Studio's optional Change sounds
+and Change notes actions use durable child jobs over that retained result.
+Existing jobs without retained decisions do not acquire their
 missing state indices retroactively. Ordinary Generate still makes new decisions.
 
 The portable `pythian.wfc.instrumental.edit` adapter now reconstructs one bounded
@@ -84,20 +85,29 @@ preferences. Expression stays neutral here; retained-score performance owns it.
 
 Context, named voices/coverage and rhythm-conditioned drums keep the same ordered
 groups as initial generation. Primary WFC dependency closure and independent
-captures own solving and verification. Both latent seams are held, so some
-requested changes have no valid continuation. False or an exception preserves
+captures own solving and verification. `TInstrumentalPassageEdges` separates
+the original neighboring chunks from the actual preceding edited chunk. Original
+paths are proved against original neighbors; candidate paths continue from the
+candidate predecessor. The next original seam is held only outside the requested
+passage. Internal planning boundaries do not pin original choices inside it.
+Some requests still have no valid continuation. False or an exception preserves
 the caller's previous candidate; no constraint is silently removed. The adapter
-does not promise every seed changes the notes, global search across planning
+does not promise every seed changes the notes, global backtracking across planning
 chunks or a uniform draw over all group combinations.
 
 This call borrows models and a synchronous progress callback. It performs no
 learning/source-audio reads and returns no partial candidate after cancellation.
 It does not authorize arbitrary stored observations: native consumers still must
 bind the complete source journal and models to the accepted job receipt. The
-durable native edit job and optional Studio Change notes action remain open in
-[graph controls](TODO/NS-4_graph-controls_01.md). The library fixture renders
-actual Before/After through the primary decision replayer, including exact
-unchanged stems; it is not operator musical approval or a completed Studio path.
+native adapter verifies the parent/root model and journal hashes before editing,
+stages bounded chunks and publishes only after the complete edit and render pass.
+Change notes retains instruments, rendering randomness, source lineage and
+learning receipts. Change sounds retains the accepted notes. Both can be followed
+by further edits. A failed or cancelled child leaves its parent available.
+Before/After and individual-part playback compare actual saved performances.
+The broader [graph-controls task](TODO/NS-4_graph-controls_01.md) still requires
+the optional authored/affect UI consumer; these operations do not imply musical
+quality approval or universal edit solvability.
 
 The generic assignment operation lives in the separate WFC branch
 [`codex/pythian-accepted-assignments`](https://github.com/mr-highball/wfc/tree/codex/pythian-accepted-assignments),

@@ -88,8 +88,13 @@ SOFTWARE.
         <section id="generation-before" hidden aria-label="Before"><h3>Before</h3><audio id="generated-before-audio" controls preload="none"></audio></section>
         <section aria-label="Current version"><h3 id="generation-after-label" hidden>After</h3><audio id="generated-audio" controls preload="none"></audio><a id="download-generated" download="pythian-track.wav">Save WAV</a></section>
       </div>
-      <div class="library-actions"><button id="change-sounds" data-studio-action type="button" hidden>Change sounds</button></div>
+      <div class="library-actions"><button id="change-notes" data-studio-action type="button" hidden>Change notes</button><button id="change-sounds" data-studio-action type="button" hidden>Change sounds</button></div>
       <p id="sound-availability" class="hint"></p>
+      <details id="part-comparison"><summary>Hear individual parts</summary>
+        <label for="result-part">Part<select id="result-part"><option value="0">Bass</option><option value="1">Harmony</option><option value="2" selected>Lead</option><option value="3">Kick</option><option value="4">Snare</option><option value="5">Hat</option></select></label>
+        <section id="part-before" hidden aria-label="Part before"><h3>Before</h3><audio id="part-before-audio" controls preload="none"></audio></section>
+        <section aria-label="Current part"><h3 id="part-current-label">Current version</h3><audio id="part-after-audio" controls preload="none"></audio></section>
+      </details>
       <details id="generation-original"><summary>Compare an original excerpt</summary><p id="generation-original-title" class="hint"></p><audio id="generated-original-audio" controls preload="none"></audio></details>
       <details><summary>What Pythian learned from</summary><div id="generation-learning"></div></details>
     </section>
@@ -153,6 +158,46 @@ SOFTWARE.
   </div>
   <p class="hint">Your current version stays saved. No new learning.</p>
   <button id="apply-sounds" data-studio-action class="primary" type="button" disabled>Create new version</button>
+</dialog>
+<dialog id="note-dialog" aria-labelledby="note-dialog-title">
+  <header class="dialog-heading"><h2 id="note-dialog-title">Change a passage</h2><button type="button" data-close="note-dialog">Cancel</button></header>
+  <p>Choose what to change. Keep the other parts and sounds.</p>
+  <p id="note-length" class="hint"></p>
+  <div class="note-range">
+    <label for="note-start">Start · min:sec<input id="note-start" type="text" inputmode="decimal" value="0:00.000"></label>
+    <label for="note-end">End · min:sec<input id="note-end" type="text" inputmode="decimal"></label>
+  </div>
+  <fieldset class="note-parts"><legend>Parts to change</legend>
+    <label><input id="note-part-0" type="checkbox">Bass</label>
+    <label><input id="note-part-1" type="checkbox">Harmony</label>
+    <label><input id="note-part-2" type="checkbox" checked>Lead</label>
+    <label><input id="note-part-3" type="checkbox">Kick</label>
+    <label><input id="note-part-4" type="checkbox">Snare</label>
+    <label><input id="note-part-5" type="checkbox">Hat</label>
+  </fieldset>
+  <details class="note-tuning"><summary>More choices</summary>
+    <div id="note-range-0" class="note-range">
+      <label for="note-low-0">Bass lowest · MIDI<input id="note-low-0" type="number" min="0" max="127" step="1" value="0"></label>
+      <label for="note-high-0">Bass highest · MIDI<input id="note-high-0" type="number" min="0" max="127" step="1" value="127"></label>
+    </div>
+    <div id="note-range-1" class="note-range">
+      <label for="note-low-1">Harmony lowest · MIDI<input id="note-low-1" type="number" min="0" max="127" step="1" value="0"></label>
+      <label for="note-high-1">Harmony highest · MIDI<input id="note-high-1" type="number" min="0" max="127" step="1" value="127"></label>
+    </div>
+    <div id="note-range-2" class="note-range">
+      <label for="note-low-2">Lead lowest · MIDI<input id="note-low-2" type="number" min="0" max="127" step="1" value="0"></label>
+      <label for="note-high-2">Lead highest · MIDI<input id="note-high-2" type="number" min="0" max="127" step="1" value="127"></label>
+    </div>
+    <p class="hint">Uses notes already in the saved model. MIDI 60 is middle C.</p>
+    <label class="note-toggle"><input id="note-rhythm" type="checkbox">Allow rhythm changes</label>
+    <label for="note-activity">Note activity · fewer to more<input id="note-activity" type="range" min="-100" max="100" step="10" value="0" disabled></label>
+    <label class="note-toggle"><input id="note-harmony" type="checkbox">Allow chord changes</label>
+    <label for="note-tonic">Favor this key root<select id="note-tonic" disabled><option value="0">C</option><option value="1">C♯</option><option value="2">D</option><option value="3">E♭</option><option value="4">E</option><option value="5">F</option><option value="6">F♯</option><option value="7">G</option><option value="8">A♭</option><option value="9">A</option><option value="10">B♭</option><option value="11">B</option></select></label>
+    <label for="note-root-bias">Root preference · none to strong<input id="note-root-bias" type="range" min="0" max="100" step="10" value="0" disabled></label>
+  </details>
+  <p class="hint">Experimental. Changes must fit the retained music. Your current version stays saved. No new learning.</p>
+  <p id="note-choice-status" class="hint" role="status"></p>
+  <button id="apply-notes" data-studio-action class="primary" type="button" disabled>Create new version</button>
 </dialog>
 <script src="studio.js"></script><script>rtl.run();</script>
 </body>

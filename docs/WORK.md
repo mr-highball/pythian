@@ -2,6 +2,69 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
+
+## Current handoff: durable passage edits delivered — 2026-10-31
+
+Big Boss SOLO closes the selected [graph-controls](TODO/NS-4_graph-controls_01.md)
+AC2/AC4 consumer batch. Studio's optional **Change notes** edits selected musical
+parts in a chosen passage, using the saved models/latent states and primary WFC
+builders. One shared native follow-up renderer handles note and sound changes;
+neither relearns the sources. Parent/child/rechild keep actual Before/After,
+Original reference, current instruments and immutable learning lineage.
+
+Repair: original latent states were wrongly held at internal chunk boundaries
+inside a selected passage. Source and candidate predecessors are now separate;
+original next seams are held only outside scope. The primary preference scope
+also targets named child passes correctly, replacing the editor's duplicate
+weight mutator. Native Win64/actual pas2js passage180, replay387 and percussion1119
+checks pass; native jobs pass290 with source recordings unavailable and clean
+heaps. Original model weights, held latent states and unrelated five PCM stems
+remain exact. Original failures are retained in the task and E-drive packet.
+
+Ordinary browser evidence: a60second child traverses15chunks/240cells, changes70
+cells and actual Lead/mix audio with the same model and no learning. It survives
+page closure/reopen. Live Stop at80cells publishes no audio; a pitch conflict
+is clear and Back restores its parent. Desktop/390px mix/part Before/After and
+Original playback work; collapsed tools stop their audio. Slow fixture storage
+twice requires explicit reconnect after submission timeout, without duplicate
+jobs. One transient Windows file-sharing error is preserved. No speed or musical
+quality approval is implied. Screenshots: phone-change-notes.png and
+desktop-notes-result.png in `studio-notes-20261031-boss` under E-drive runs.
+
+The checked pair and twelve matching browser assets are deployed in the fixed
+stable slot with the same LAN/TLS/storage/firewall. LAN app/session return200.
+All6908 existing catalog JSON records, including17 terminal job states and saved
+answers, remain byte-identical. Fourteen previous deployed files have verified
+recoverable copies. Service/worker hashes, launch and preservation receipts are
+local in deployment-final.json and stable-preservation.log. QA service/workers
+and the exact managed tab are closed, all QA audio paused, viewport reset.
+No user tabs or private source audio were changed.
+
+**91/135 accepted effort (67.41%), seven open and nineteen current DONE.**
+The seven-unit graph-controls task is Dependency-blocked, not DONE: the simple
+UI orphaned the earlier authored/affect form. Follow
+[optional musical laboratory](TODO/NS-6_optional-lab_01.md), effort4, next; restore
+reachable key/tempo/expression/affect controls without changing the three main
+steps. Graph visualization, deeper sounds, form/styles and synthesis reviews keep
+their tasks. No operator feedback is needed to continue implementation. This
+criterion-closing batch resets the consecutive nonclosing count from one to zero.
+The broader goal remains active. Solo checks are not independent review.
+
+## Active completion audit: optional controls consumer gap — 2026-10-31
+
+Big Boss SOLO found that the simple Studio replacement no longer imports the
+old authored/affect UI owner. The control APIs remain, but earlier browser proof
+is historical. Before expanding scope, add
+[optional musical laboratory](TODO/NS-6_optional-lab_01.md), effort4, and link it
+as a real graph-controls completion blocker. The default three steps stay intact.
+Accounting is now **91/135 (67.41%), seven open and nineteen current DONE**.
+No graph-controls units are accepted. The current note-edit batch continues
+through native/browser passage, recovery and cancellation checks before shipping;
+then follow the new UI prerequisite rather than claiming the parent complete.
+The previous turn was verified implementation progress; carried consecutive
+nonclosing count is one until an actual criterion closes. Base commit4f8e0e4's
+CI41219792507 completed successfully. Current implementation is still solo.
+
 ## Current handoff: passage editor verified, Studio integration remains — 2026-10-31
 
 Big Boss SOLO retains [graph controls](TODO/NS-4_graph-controls_01.md) AC2/AC4.

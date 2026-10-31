@@ -716,6 +716,182 @@ begin
   end;
 end;
 
+function NoteWrite(const AParentId, AId: String;
+  const AParent: TJSONObject): TJSONObject;
+var
+  LEdit: TJSONObject;
+  LParts: TJSONArray;
+  I: Integer;
+begin
+  Result := SoundWrite(AParentId, AId,
+    AParent.Objects['settings'].Arrays['instruments'].Strings[0], AParent);
+  Result.Delete('instruments');
+  Result.Strings['kind'] := 'instrumental_regenerate';
+  LEdit := TJSONObject.Create(['start_frame', 0,
+    'end_frame', AParent.Objects['decisions'].Int64s['music_frames'],
+    'parts', TJSONArray.Create([False, False, True, False, False, False]),
+    'harmony', False, 'rhythm', False, 'tonic', 0, 'seed', 991]);
+  Result.Add('note_edit', LEdit);
+  LParts := TJSONArray.Create;
+  LEdit.Add('controls', TJSONObject.Create(['guide', False, 'tonic_bias', 0, 'parts', LParts]));
+  for I := 0 to 2 do
+    LParts.Add(TJSONObject.Create(['minimum_pitch', 0, 'maximum_pitch', 127,
+      'activity_bias', 0, 'velocity_percent', 100, 'gate_percent', 100]));
+end;
+
+procedure CheckNoteChanges(const ACatalog, ALibrary, AParentId: String;
+  const AParentResult: TJSONObject);
+var
+  LWrite: TJSONObject;
+  LState: TJSONObject;
+  LPrevious: TJSONObject;
+  LPrepared: TJSONObject;
+  LMeta: TJSONObject;
+  LBefore: TJSONObject;
+  LParentId: String;
+  LParentText: String;
+  LRequestText: String;
+  LPaths: array[0..1] of String;
+  LRejected: Boolean;
+  LChanged: Boolean;
+  LAnyChanged: Boolean;
+  I: Integer;
+  J: Integer;
+begin
+  LWrite := nil;
+  LState := nil;
+  LPrepared := nil;
+  LMeta := nil;
+  LPrevious := TJSONObject(AParentResult.Clone);
+  LParentId := AParentId;
+  LBefore := ReadStudioJob(ACatalog, AParentId);
+  LParentText := LBefore.AsJSON;
+  LBefore.Free;
+  LPaths[0] := ALibrary + '/collections/Chillsynth/Evening.wav';
+  LPaths[1] := ALibrary + '/collections/lofi/Soft steps.wav';
+  for I := 0 to 1 do
+    Check(RenameFile(LPaths[I], LPaths[I] + '.note-check-held'),
+      'Hold isolated original recordings unavailable during graph edits');
+  LAnyChanged := False;
+  try
+    for I := 0 to 1 do
+    begin
+      LWrite := NoteWrite(LParentId, 'note-change-' + IntToStr(I), LPrevious);
+      if I = 1 then
+      begin
+        for J := 0 to 2 do LWrite.Objects['note_edit'].Arrays['parts'].Booleans[J] := True;
+        LWrite.Objects['note_edit'].Booleans['harmony'] := True;
+        LWrite.Objects['note_edit'].Booleans['rhythm'] := True;
+        LWrite.Objects['note_edit'].Objects['controls'].Arrays['parts'].Objects[2].Integers['minimum_pitch'] := 57;
+        LWrite.Objects['note_edit'].Objects['controls'].Arrays['parts'].Objects[2].Integers['maximum_pitch'] := 57;
+      end;
+      LRequestText := LWrite.AsJSON;
+      LPrepared := PrepareStudioJob(ACatalog, LWrite);
+      Check((LPrepared.Integers['source_count'] = 0) and
+        (LPrepared.Int64s['unique_source_bytes_to_verify'] = 0) and
+        not LPrepared.Booleans['learning_performed'] and
+        LPrepared.Booleans['notes_change_requested'],
+        'Graph edit preflight needs no source payload or new learning');
+      FreeAndNil(LPrepared);
+      LState := EnqueueStudioJob(ACatalog, LWrite);
+      FreeAndNil(LState);
+      LState := EnqueueStudioJob(ACatalog, LWrite);
+      Check(LState.Booleans['already_queued'] and (LWrite.AsJSON = LRequestText),
+        'Graph submission retries are idempotent and preserve the request');
+      FreeAndNil(LState);
+      Check(RunStudioWorker(ACatalog, LWrite.Strings['job_id'], ALibrary),
+        'Actual retained graph worker completes without original recordings');
+      LState := ReadStudioJob(ACatalog, LWrite.Strings['job_id']);
+      Check((LState.Strings['status'] = 'completed') and
+        not LState.Objects['results'].Booleans['learning_performed'] and
+        (LState.Objects['results'].Objects['playlist_learning'].AsJSON =
+          AParentResult.Objects['playlist_learning'].AsJSON) and
+        (LState.Objects['results'].Strings['model_sha256'] = AParentResult.Strings['model_sha256']),
+        'Graph child preserves actual model and learning lineage');
+      Check((LState.Objects['results'].Objects['before'].Strings['job_id'] = LParentId) and
+        (LState.Objects['results'].Strings['replay_source_job_id'] = LWrite.Strings['job_id']) and
+        (LState.Objects['results'].Objects['original_reference'].AsJSON =
+          AParentResult.Objects['original_reference'].AsJSON),
+        'Graph child retains Before/Original and becomes its own exact note source');
+      LMeta := ReadStudioJSON(StudioJobDirectory(ACatalog, LWrite.Strings['job_id']) +
+        PathDelim + 'instrumental-stream-completed.json');
+      Check((StudioTextHash(LMeta.AsJSON) = LState.Objects['results'].Strings['plan_sha256']) and
+        (LMeta.Objects['decisions'].AsJSON = LState.Objects['results'].Objects['decisions'].AsJSON),
+        'Completed graph child binds its saved journal and full musical plan');
+      FreeAndNil(LMeta);
+      for J := 0 to 5 do
+      begin
+        LChanged := LState.Objects['results'].Arrays['parts'].Objects[J].Strings['wav_sha256'] <>
+          LPrevious.Arrays['parts'].Objects[J].Strings['wav_sha256'];
+        LAnyChanged := LAnyChanged or LChanged;
+        if ((I = 0) and (J <> 2)) or (J >= 3) then
+          Check(not LChanged, 'Unrequested native instrumental stems stay exact after graph edits');
+      end;
+      LParentId := LWrite.Strings['job_id'];
+      LPrevious.Free;
+      LPrevious := TJSONObject(LState.Objects['results'].Clone);
+      FreeAndNil(LState);
+      FreeAndNil(LWrite);
+    end;
+    Check(LAnyChanged, 'Actual retained native graph edits change instrumental output');
+    LWrite := SoundWrite(LParentId, 'sound-after-notes', 'square', LPrevious);
+    if LPrevious.Objects['settings'].Arrays['instruments'].Strings[0] = 'square' then
+      LWrite.Arrays['instruments'].Strings[0] := 'sine';
+    LState := EnqueueStudioJob(ACatalog, LWrite);
+    FreeAndNil(LState);
+    Check(RunStudioWorker(ACatalog, LWrite.Strings['job_id'], ALibrary),
+      'Sound changes reuse an edited graph child as the exact note source');
+    LState := ReadStudioJob(ACatalog, LWrite.Strings['job_id']);
+    Check((LState.Objects['results'].Objects['decisions'].AsJSON = LPrevious.Objects['decisions'].AsJSON) and
+      (LState.Objects['results'].Strings['replay_source_job_id'] = LParentId),
+      'Sound-after-note edits preserve the new notes and their direct source');
+    FreeAndNil(LWrite);
+    LWrite := NoteWrite(LState.Strings['job_id'], 'notes-after-sounds', LState.Objects['results']);
+    FreeAndNil(LState);
+    LState := EnqueueStudioJob(ACatalog, LWrite);
+    FreeAndNil(LState);
+    Check(RunStudioWorker(ACatalog, LWrite.Strings['job_id'], ALibrary),
+      'Note edits after sound edits share the same retained renderer and current instruments');
+    FreeAndNil(LWrite);
+    LWrite := NoteWrite(AParentId, 'note-conflict', AParentResult);
+    LWrite.Objects['note_edit'].Objects['controls'].Arrays['parts'].Objects[2].Integers['maximum_pitch'] := 1;
+    LState := EnqueueStudioJob(ACatalog, LWrite);
+    FreeAndNil(LState);
+    Check(not RunStudioWorker(ACatalog, LWrite.Strings['job_id'], ALibrary),
+      'Contradictory native graph request fails without silently relaxing pitch bounds');
+    LState := ReadStudioJob(ACatalog, LWrite.Strings['job_id']);
+    Check((LState.Strings['status'] = 'failed') and (LState.Strings['error_message'] <> '') and
+      (LState.Objects['results'].Find('outputs') = nil) and
+      (LState.Objects['results'].Find('decisions') = nil),
+      'Failed note edit publishes no partial accepted audio or decision receipt');
+    FreeAndNil(LState);
+    FreeAndNil(LWrite);
+    LWrite := NoteWrite(AParentId, 'note-stale', AParentResult);
+    LWrite.Strings['parent_plan_sha256'] := StringOfChar('0', 64);
+    LRejected := False;
+    try LPrepared := PrepareStudioJob(ACatalog, LWrite);
+    except on E: Exception do LRejected := True end;
+    Check(LRejected, 'Stale native graph parent is rejected before queueing');
+    FreeAndNil(LWrite);
+    LWrite := NoteWrite(AParentId, 'note-cancelled', AParentResult);
+    LState := EnqueueStudioJob(ACatalog, LWrite);
+    FreeAndNil(LState);
+    LState := CancelStudioJob(ACatalog, LWrite.Strings['job_id']);
+    Check(LState.Strings['status'] = 'cancelled', 'Queued graph edit supports ordinary cancellation');
+    LBefore := ReadStudioJob(ACatalog, AParentId);
+    try Check(LBefore.AsJSON = LParentText, 'Native graph jobs never mutate the accepted parent');
+    finally LBefore.Free end;
+  finally
+    for I := 0 to 1 do
+      Check(RenameFile(LPaths[I] + '.note-check-held', LPaths[I]), 'Restore isolated original recordings');
+    LMeta.Free;
+    LWrite.Free;
+    LState.Free;
+    LPrepared.Free;
+    LPrevious.Free;
+  end;
+end;
+
 procedure Run(const ARoot: String);
 var
   LCatalog, LLibrary, LFile: String;
@@ -856,6 +1032,7 @@ begin
           CheckSavedVocabulary(LCatalog, LJob.Strings['job_id'], LResult.Objects['results']);
           CheckSavedDecisions(LCatalog, LJob.Strings['job_id'], LResult.Objects['results']);
           CheckSoundChanges(LCatalog, LLibrary, LJob.Strings['job_id'], LResult.Objects['results']);
+          CheckNoteChanges(LCatalog, LLibrary, LJob.Strings['job_id'], LResult.Objects['results']);
         finally LResult.Free end;
         LResult := ReadListeningQueue(LCatalog);
         try
