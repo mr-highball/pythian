@@ -43,10 +43,18 @@ This is a new operator outcome, not retroactive credit for the earlier Studio.
 
 - [Style vocabulary](NS-3_style-vocabulary_01.md) — Generate must actually learn
   from the chosen playlist. Library/Selection implementation can proceed now.
-- [Instrumental streams](NS-6_instrumental-streams_01.md) — requests beyond the
-  honest finite plan limit need this path; basic short generation does not.
+- [Instrumental streams — DONE](DONE/NS-6_instrumental-streams_01.md) — accepted
+  long duration, estimates, continuous performance, playback/reconnect and Stop.
 
 **Dev Notes:**
+
+- 2026-10-31, Big Boss: the linked long-output prerequisite is accepted and
+  deployed. Duration units/default two minutes,2second–24hour admission, atomic
+  final saving, ordinary two-minute generation/reopen and hour playback/seek
+  pass. Playlist save retry is visible inside its dialog and preserves identity.
+  The corpus parent still owns vocabulary/ancestry criteria; this simple task
+  remains open pending its real blocker and complete final consumer acceptance.
+  No partial effort and no further operator labeling are required by this repair.
 
 - 2026-10-31, Big Boss: operator rejected a bar that repeatedly reported a nested
   operation percentage. Generate now persists a separate four-phase workflow.

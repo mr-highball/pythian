@@ -678,7 +678,7 @@ begin
     begin
       LProvenance := Obj(LAsset['provenance']);
       if Str(LProvenance, 'material_origin') <> '' then
-        AddText(LCard, 'p', 'Experimental · ' + Str(LProvenance, 'material_origin'), 'muted')
+        AddText(LCard, 'p', 'Experimental', 'muted')
       else
       begin
         SetLength(FReferences, Length(FReferences) + 1);

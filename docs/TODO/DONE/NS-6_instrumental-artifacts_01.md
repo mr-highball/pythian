@@ -1,6 +1,6 @@
 # NS-6_instrumental-artifacts_01 — Store generated audio once with bounded, responsive access
 
-[Tasks](../README.md) · [Goal](../../GOAL.md) · [Long consumer](../NS-6_instrumental-streams_01.md)
+[Tasks](../README.md) · [Goal](../../GOAL.md) · [Long consumer](NS-6_instrumental-streams_01.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 5/10

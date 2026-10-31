@@ -33,7 +33,12 @@ review answers stay preserved. Saving choices never starts learning.
 
 ## 3. Generate
 
-Choose **Track length** and press **Generate music**. Optional **Track influence**
+Choose **Track length** in seconds, minutes or hours, then press **Generate music**.
+The default is two minutes; plans from two seconds to24hours are supported.
+The displayed disk estimate includes the mix, six parts and a1second effect tail.
+Output storage grows with length; musical lookahead and PCM working blocks stay
+bounded. Native admission checks free disk space before starting.
+Optional **Track influence**
 gives particular recordings more weight in learning; it is not playback volume.
 The one action verifies/prepares selected sources, analyzes their included time,
 learns musical providers, solves the WFC musical graph and performs Pythian
@@ -43,7 +48,9 @@ The host computer keeps working if the phone sleeps or the page closes. Reopen
 the same playlist to reconnect. One continuous workflow shows **Learn your music →
 Plan the track → Synthesize audio → Save the result**. During learning, the counter
 adds selected audio time across every recording or clip, including reused analysis.
-During synthesis, it counts the mix and all instrument parts together. File reads,
+During synthesis, it counts one persistent performance feeding mix and all six
+instrument parts. Final saving counts all seven files and result publication.
+File reads,
 pitch/beat detection and intermediate saves update the activity without resetting
 that progress. These are workflow steps, not an elapsed-time estimate;
 **Stop generation** cancels at a native checkpoint. A reconnect retries the saved
@@ -56,10 +63,12 @@ separately. A changed playlist is explicitly distinguished from an older result.
 
 ## Current experimental limits
 
-This finite path accepts **2–30 second previews**, plus a release/effect tail.
-Flexible minutes/hours of instrumental output remain the
-[long-generation task](TODO/NS-6_instrumental-streams_01.md); the duration field
-does not silently truncate those requests or switch to source fragments.
+The [long-generation task is accepted](TODO/DONE/NS-6_instrumental-streams_01.md):
+actual hour playback/seeking, ordinary two-minute generation/reopen and24hour
+admission/cancellation pass. A full24hour render has not been tested. Unsupported
+learned constraints can still fail with an explanation; duration is never silently
+truncated or satisfied with source fragments. Stop checks native checkpoints;
+an I/O-blocked worker may need its supervisor's cancellation grace period.
 
 All included audio is traversed in bounded windows. Pitch and pulse suggestions
 use the first eight seconds of each window; spectral measurements cover the whole

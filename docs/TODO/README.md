@@ -3,7 +3,7 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**10 open tasks · 119 total effort units · 12 current-goal DONE · 52 / 119 accepted (43.70%).**
+**8 open tasks · 119 total effort units · 14 current-goal DONE · 66 / 119 accepted (55.46%).**
 Effort is relative complexity on a 1–10 scale, not assigned musical credit.
 The operator's latest priority is [Library → Selection → Generate](NS-6_simple-studio_01.md):
 a simple local music/playlist interface whose Generate action actually learns
@@ -15,18 +15,18 @@ The shared corpus now learns source/run-aware weighted symbolic providers and
 reloads them into actual six-part synthesis in native/pas2js consumers. The simple
 native job now traverses included whole/range recordings, reuses bound proposal
 caches and generates actual instruments from per-track weighted providers.
-Its finite UI exposes 2–30 second previews; long instrumental output and growing
-vocabulary/style ancestry remain open. No partial task effort is accepted, and
-this delivery is not a request for more labeling.
+Its deployed UI accepts2seconds–24hour plans with explicit output estimates.
+Growing vocabulary/style ancestry remain open. No partial task effort is accepted,
+and this delivery is not a request for more labeling.
 Generate now separates durable overall workflow/selection counters from nested
 analysis operations, so file/pitch/beat callbacks cannot restart its bar. This
 repairs the simple consumer's progress criterion without accepting a whole task
 or changing the effort denominator.
-The primary persistent instrument stream and bounded WFC-frontier consumer now
-produce sustained native music, including a two-minute authored audition.
-Long-duration Studio jobs/playback remain in progress; the app's finite limit
-stays explicit until that consumer is integrated. No stream-task effort is
-accepted by the library delivery alone.
+Long instrumental jobs and supported learned-context continuation are accepted:
+one persistent performance feeds mix and six stems, the retained failed hour
+completes with its original provider/seed, and ordinary browser generation,
+playback/seek, reopen and24hour admission/cancel pass. Final saving counters close
+atomically. Actual24hour rendering and musical quality are not claimed.
 The operator has resumed implementation solo. The shared instrumental runtime
 and explicit percussion are accepted. Finite instrumental Studio and its real
 cancellation prerequisite are now accepted; the first operator review is waiting.
@@ -54,7 +54,7 @@ and role/passage graph regeneration keep graph-controls open without partial cre
 Together these 21 units deliver bass, drums, harmony and lead in Studio with
 real musical controls and playback. Authored/operator/MIDI inputs are sufficient
 to start; uncertain WAV proposals can follow without a benchmark-first gate.
-All 21 units in this first milestone are accepted. Ten later tasks remain open. No more raw-grain
+All 21 units in this first milestone are accepted. Eight later tasks remain open. No more raw-grain
 continuity experiments are selected.
 
 ## Complete current scope
@@ -77,11 +77,11 @@ continuity experiments are selected.
 | [NS-6_sourcefree-draft_01 — DONE](DONE/NS-6_sourcefree-draft_01.md) — reopen a valid draft without optional musical material | 1 | Accepted; actual absent/present recipe reload and explicit native generation |
 | [NS-6_instrumental-progress_01 — DONE](DONE/NS-6_instrumental-progress_01.md) — bound durable fine-phase publication | 2 | Accepted; unchanged native consumers, cancellation and actual HTTP worker |
 | [NS-6_instrumental-artifacts_01 — DONE](DONE/NS-6_instrumental-artifacts_01.md) — one generated-audio store and responsive verified access | 5 | Accepted; actual native/browser jobs, shared review playback, ownership and legacy reads |
-| [NS-4_context-continuation_01](NS-4_context-continuation_01.md) — supported learned contexts across long output | 6 | Runtime + experimental learning; actual hour-request dead end |
-| [NS-6_instrumental-streams_01](NS-6_instrumental-streams_01.md) — efficient long instrumental jobs | 8 | Instrumental Studio + canonical artifacts + context continuation |
+| [NS-4_context-continuation_01 — DONE](DONE/NS-4_context-continuation_01.md) — supported learned contexts across long output | 6 | Accepted; original failed provider/seed continues through14400cells and actual hour render |
+| [NS-6_instrumental-streams_01 — DONE](DONE/NS-6_instrumental-streams_01.md) — efficient long instrumental jobs | 8 | Accepted; one performance/seven outputs, duration estimates, actual browser long playback/reconnect/Stop |
 
-The two tables together are all 22 current-goal tasks (10 open, twelve DONE),
-totaling 119 units: 67 open and 52 accepted. Subtotals:
+The two tables together are all 22 current-goal tasks (8 open, fourteen DONE),
+totaling 119 units: 53 open and 66 accepted. Subtotals:
 NS-2 12, NS-3 15, NS-4 39, NS-5 15, NS-6 38. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 

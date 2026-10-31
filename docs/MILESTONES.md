@@ -11,17 +11,19 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 52 / 119 effort units accepted (43.70%); ten open, twelve current-goal DONE.**
+**Current snapshot: 66 / 119 effort units accepted (55.46%); eight open, fourteen current-goal DONE.**
 The long consumer exposed a five-unit [canonical artifact prerequisite — DONE](TODO/DONE/NS-6_instrumental-artifacts_01.md):
 avoid repeated generated-audio copies/hashes and retain responsive, verified
 access from the configured E-drive store. Actual native/browser publication,
 playback and retained-data checks pass; its five storage/access units are accepted.
 The current Generate progress repair closes the observed simple-consumer defect:
 stable workflow stages and cumulative selected-audio/render counters survive
-reconnect. It adds no task effort or musical acceptance; long output remains open.
-The primary instrumental stream and bounded WFC-frontier caller now deliver a
-two-minute authored instrumental audition. Long Studio generation/playback still
-needs integration, so the stream task and effort accounting remain open/unchanged.
+reconnect. Long Studio generation is now accepted separately: one performance
+feeds mix and six stems, the original failed learned hour completes, and actual
+browser playback/seek/reopen and24hour admission/cancel pass. Stable duration
+controls expose2seconds–24hours with output estimates; no full24hour render is
+claimed. Supported context continuation is also accepted after upstream/downstream
+native/pas2js, full CI and the retained original provider/seed consumer pass.
 This is a scope-delivery estimate, not a musical-quality score. No arbitrary
 per-task percentages or north-star weights apply.
 
@@ -30,10 +32,10 @@ per-task percentages or north-star weights apply.
 | [NS-1](#ns-1) | Preserve portable core independence | 0 | 0 | Baseline invariant; no standalone current task |
 | [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 6 | 6 | 6 / 12 |
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 7 | 8 | 8 / 15 |
-| [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, graph inspection and musical controls | 20 | 19 | 19 / 39 |
+| [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, graph inspection and musical controls | 14 | 25 | 25 / 39 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
-| [NS-6](#ns-6) | Simple playlist-to-learning Studio, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 19 | 19 | 19 / 38 |
-| **Total** | **22 current-goal tasks** | **67** | **52** | **43.70%** |
+| [NS-6](#ns-6) | Simple playlist-to-learning Studio, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 11 | 27 | 27 / 38 |
+| **Total** | **22 current-goal tasks** | **53** | **66** | **55.46%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -47,11 +49,12 @@ The bounded simple Generate consumer now learns from actual selected recordings
 and renders six-part instrumental previews through the durable native worker.
 Whole/range traversal, source-bound cache reuse and separate model-used coverage
 are implemented. Desktop/phone-width playback and reconnect checks protect the
-new path; flexible long output, vocabulary ancestry and remaining task criteria
-still prevent acceptance of either open task. The separate storage/access
-prerequisite is now accepted. The actual hour-request trial exposed a six-unit
-[learned-context continuation prerequisite](TODO/NS-4_context-continuation_01.md)
-at cell656; longer Studio output remains unaccepted. Accounting is **52/119**.
+new path. Vocabulary ancestry and remaining criteria still keep the simple
+Studio and corpus tasks open. Storage/access and long output are accepted.
+The hour-request trial exposed a six-unit
+[learned-context continuation prerequisite — DONE](TODO/DONE/NS-4_context-continuation_01.md)
+at cell656; its repair now completes that exact hour with original provider/seed.
+Accounting is **66/119**; no partial effort or musical-quality credit follows.
 
 1. [Instrumental runtime — DONE](TODO/DONE/NS-4_instrumental-runtime_01.md), effort 7:
    actual coupled musical WFC passes drive existing Pythian instruments; source-free caller delivered.
@@ -98,8 +101,9 @@ Original references and saved correction/feedback lineage. Observations remain
 bounded Experimental proposals, not automatic source-instrument identification
 or whole-corpus learning. The new bounded corpus consumer now learns weighted,
 source/run-aware musical providers and reloads them into actual six-part synthesis.
-Whole-track traversal/reuse and the simple Studio Generate connection remain open;
-no partial effort is accepted for the provider slice.
+Whole-track traversal/reuse and the simple Studio Generate connection are now
+implemented. Vocabulary ancestry and the remaining corpus criteria stay open;
+no partial effort is accepted for these slices.
 
 <a id="ns-4"></a>
 ### NS-4 — Musical graph and synthesis together
@@ -138,7 +142,7 @@ save real provider/control/sound recipes and exercise selective blends and reble
 
 [Studio](TODO/DONE/NS-6_instrumental-studio_01.md),
 [reviews](TODO/NS-6_synthesis-reviews_01.md) and
-[instrumental streams](TODO/NS-6_instrumental-streams_01.md) deliver actual
+[instrumental streams — DONE](TODO/DONE/NS-6_instrumental-streams_01.md) deliver actual
 experimental jobs, Original/Before/After feedback, inspectable results, efficient
 long playback and mobile recovery. Reuse existing working UI and native transport.
 [JSON identity](TODO/DONE/NS-6_json-identity_01.md) repairs the demonstrated musical
@@ -163,8 +167,8 @@ The 53 former open tasks are [retired/replaced](TODO/RETIRED/2026-10-29/README.m
 not accepted. All 97 historical DONE records and their evidence remain separate;
 none has the current Goal tag. The former 52.45% weighted outcome-credit ledger is
 [historical](history/MILESTONES-2026-10-29.md), not a baseline in the new formula.
-Current scoped records: 10 open + 12 current DONE; legacy records: 53 retired +
-97 historical DONE (109 total DONE files). No implementation, saved feedback or license is discarded.
+Current scoped records: 8 open + 14 current DONE; legacy records: 53 retired +
+97 historical DONE (111 total DONE files). No implementation, saved feedback or license is discarded.
 
 100% means all required outcomes in this defined experimental goal are delivered
 and reviewed. It cannot promise any style from any user with universal accuracy.

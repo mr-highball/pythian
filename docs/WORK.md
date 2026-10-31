@@ -2,7 +2,69 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
-## Current batch: long Studio consumer and learned continuation — 2026-10-31
+## Current handoff: long Studio generation and continuation accepted — 2026-10-31
+
+Big Boss SOLO closes [context continuation](TODO/DONE/NS-4_context-continuation_01.md)
+and [instrumental streams](TODO/DONE/NS-6_instrumental-streams_01.md). Accounting:
+**66/119 accepted (55.46%), eight open, fourteen current DONE,53 open units**.
+All22 current tasks still total119; historical97 DONE earn no current effort.
+This closes the batch criteria, so the consecutive nonclosing count is zero.
+The overall goal remains active; this is not musical-quality acceptance.
+
+One persistent performance now feeds mix and six stems through bounded primary
+bus taps. Finite output remains hash-identical across all seven WAVs. Stable
+Studio offers2seconds–24hour plans, default two minutes, exact output estimates,
+disk admission, continuous workflow and atomic final saving8/8. The original
+failed hour succeeds with the same model hash and seed2066483829:14400cells,
+900windows,86424000frames including1second tail. Six stems and mix each have
+345696044bytes. Browser playback/seek near the hour end and Original playback
+pass without loading the entire output. The ordinary two-minute UI job completes,
+reopens after tab closure and restores its exact saved request. No QA answers
+were saved. Actual24hour admission/Stop leaves a cancelled state; its I/O-blocked
+worker required the supervisor's five-second grace stop. No full24hour render.
+
+WFC generic continuation lives in the separate worktree/branch
+`codex/pythian-sequence-continuation`, commit7b3c0a5, unmerged. The operator was
+notified; no vendor source was edited in this checkout. The original provider
+has twelve states with reachable cyclic support and two terminal states.
+Version2 endpoints require structural support for remaining cells; no fabricated
+edges, source looping, seed search or universal future-constraint promise.
+All five [WFC CI62 jobs](https://github.com/mr-highball/wfc/actions/runs/41189435399)
+and [Pythian CI519](https://github.com/mr-highball/pythian/actions/runs/41189774156)
+for fff0ef0 pass. Preserve CI60/61 diagnostic/versioned-consumer failures and
+repairs; original PCM/MIDI content expectations were retained. The final concise
+Experimental card wording is separately rebuilt and browser-checked.
+
+Relevant local evidence: native/actual pas2js instrumental stream4043522,
+publication352656 with273 original abort/retries, retained14400cell path,
+primary music stream17199, native playlist100, lifecycle113 and progress33
+checks pass; native checked runs have clean heaps. Original hour failure,
+fixture readiness/cache failures, old4/8 completion and save-timeout/retry remain
+preserved. A short explicit E-drive fixture cache fixed a275character test path;
+the independent-writer fixture needed a longer readiness handshake. Production
+inference, locks and cancel ownership were not weakened. Browser draft retry
+preserves identity and now shows feedback inside the playlist picker.
+
+Stable service/worker and all twelve matching web assets are deployed in the
+fixed approved stable slot. Current LAN Studio:
+`https://192.168.12.108:18097/studio.html`; loopback HTTP and LAN HTTPS return200.
+Existing operator catalog/inbox, private recordings, answers, TLS binding and
+artifact/cache configuration remain intact. Stable PID52168 remains available.
+Old fourteen deployed files are backed up in
+`E:/CodexWork/pythian/runs/sequence-continuation-20261031-boss/stable-before`.
+Packets under E-drive tests/runs: `studio-long-20261031-boss` and
+`sequence-continuation-20261031-boss`. Phone proof: `ready-phone.png` in the latter.
+QA server/workers and owned playable browser tabs are closed; all observed audio
+was paused with looping disabled and no media errors. The temporary phone
+viewport is reset. User browser tabs and stable service remain intact.
+
+Next selection returns to actual musical vocabulary/coverage and the simple
+Library → Selection → Generate criteria. Inspect the remaining corpus task and
+real prerequisites before selecting a bounded audible experiment. Graph controls,
+sound breadth, form, styles/blends and guided feedback remain open. No new
+labeling, continuation infrastructure, callback audit or seed trial is needed.
+
+## Earlier batch evidence: long Studio consumer and learned continuation — 2026-10-31
 
 Big Boss SOLO has connected one persistent instrumental performance to mix and
 six stems. Actual browser playlist generation produced120seconds plus a1second
@@ -11,7 +73,7 @@ downloaded the exact canonical bytes. The next one-hour request failed at contex
 cell656. Preserve `music-1793435527277-762351`, its original seed2066483829,
 models, event history and partial staging in `studio-long-20261031-boss` under E.
 Diagnose continuing support before another seed or deployment. The linked
-[context continuation prerequisite](TODO/NS-4_context-continuation_01.md) owns
+[context continuation prerequisite](TODO/DONE/NS-4_context-continuation_01.md) owns
 the distinct six-unit gap; a generic WFC change requires its separate repository.
 No task is accepted for this discovery. Accounting is52/119 (43.70%), ten open,
 twelve current DONE,67 open units. CI518 for c351cb5 is terminal SUCCESS.
@@ -99,7 +161,7 @@ nine open, twelve current DONE,61 open units; all21 current tasks still sum113.
 This accepts storage/access effort only. Studio still honestly limits previews
 to2–30seconds; the two-minute library example does not remove the app's cap.
 
-Next bounded batch returns to [instrumental streams](TODO/NS-6_instrumental-streams_01.md):
+Next bounded batch returns to [instrumental streams](TODO/DONE/NS-6_instrumental-streams_01.md):
 one persistent performance feeds mix and six stems, then actual playlist jobs use
 bounded WFC lookahead. Deliver useful duration/disk estimates, longer controls,
 cumulative progress, reconnect and Stop. Check a multi-minute browser run and

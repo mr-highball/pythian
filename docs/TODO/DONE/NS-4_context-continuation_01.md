@@ -1,10 +1,10 @@
 # NS-4_context-continuation_01 — Keep supported learned contexts continuing across long output
 
-[Tasks](README.md) · [Long consumer](NS-6_instrumental-streams_01.md)
+[Tasks](../README.md) · [Long consumer](NS-6_instrumental-streams_01.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 6/10
-**Status:** In progress
+**Status:** DONE — accepted 2026-10-31
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -34,10 +34,29 @@ Keep learned transitions, origins, bounded lookahead and continuous instruments.
 
 **Blockers**
 
-- [Instrumental runtime — accepted](DONE/NS-4_instrumental-runtime_01.md)
-- [Experimental learning — accepted](DONE/NS-3_experimental-learning_01.md)
+- [Instrumental runtime — accepted](NS-4_instrumental-runtime_01.md)
+- [Experimental learning — accepted](NS-3_experimental-learning_01.md)
 
 **Dev Notes:**
+
+- 2026-10-31, Big Boss, accepted AC1–4: the original fourteen-state context
+  has twelve states with reachable cyclic support and two terminal states.
+  The exact retained model and seed2066483829 reproduce the old failure at
+  cell656; the new policy validates14400cells and completes the same hour job.
+  No seed search, invented edge, source-audio loop or whole-duration allocation.
+  Generic continuation capacity and version2 segment endpoints live in the
+  separate WFC branch `codex/pythian-sequence-continuation`, commit7b3c0a5.
+  The operator was notified; no dependency source was patched in this checkout.
+  All five [WFC CI62 jobs](https://github.com/mr-highball/wfc/actions/runs/41189435399)
+  and [Pythian CI519](https://github.com/mr-highball/pythian/actions/runs/41189774156)
+  pass. Native/actual pas2js retained-path, finite/recurrent boundary and
+  cancellation/publication checks pass; the actual browser plays and seeks the
+  3601second mix. Evidence: `sequence-continuation-20261031-boss` and
+  `studio-long-20261031-boss` under the dedicated E-drive roots.
+  Preserve upstream CI60/61 failures: missing diagnostic label and stale
+  versioned demo/MIDI expectations were repaired while PCM/MIDI content goldens
+  remained intact. This is structural continuation support, not a guarantee
+  against arbitrary future constraints or a musical-quality acceptance.
 
 - 2026-10-31, Big Boss: `studio-long-20261031-boss` retains the hour-request
   failure and requested stream/model metadata in the isolated native catalog.

@@ -2,15 +2,18 @@
 
 ## Current goal: instrumental exploration
 
-Twelve current-goal tasks are accepted: **52 / 119 effort units (43.70%)**. Their
+Fourteen current-goal tasks are accepted: **66 / 119 effort units (55.46%)**. Their
 criteria and prerequisites passed: finite runtime/percussion, ordinary instrumental
 Studio, context/cancellation/identity repairs and editable recording proposals
 into actual providers/instruments. This is not musical preference or whole-corpus
-style-learning acceptance. Canonical generated audio/storage is also accepted;
-long Studio generation remains open. There are109 DONE files: twelve current,97 historical.
+style-learning acceptance. Canonical generated audio/storage, supported context
+continuation and long Studio generation are also accepted. There are111 DONE
+files: fourteen current,97 historical.
 
 | Accepted task | Date | Effort | Outcome |
 | --- | --- | ---: | --- |
+| [NS-4_context-continuation_01](NS-4_context-continuation_01.md) | 2026-10-31 | 6/10 | Exact failed provider/seed continues through14400cells and actual hour job; generic upstream capacity/endpoint support, native/pas2js and CI |
+| [NS-6_instrumental-streams_01](NS-6_instrumental-streams_01.md) | 2026-10-31 | 8/10 | One performance/mix+six stems,2sec–24h estimates/admission, actual browser hour playback/seek and ordinary reconnect/Stop |
 | [NS-6_instrumental-artifacts_01](NS-6_instrumental-artifacts_01.md) | 2026-10-31 | 5/10 | Hash during output, canonical configured audio store, shared job/review playback, native identity reuse and legacy access |
 | [NS-4_assignment-restore_01](NS-4_assignment-restore_01.md) | 2026-10-30 | 3/10 | Actual models/controls and generated/caller-lock ownership reopen without solving; selected/dependent regeneration preserves unrelated states |
 | [NS-4_instrumental-runtime_01](NS-4_instrumental-runtime_01.md) | 2026-10-29 | 7/10 | Actual musical WFC → primary instruments/buses/scheduler, inspectable graph and source-free caller |

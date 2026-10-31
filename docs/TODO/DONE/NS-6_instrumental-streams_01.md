@@ -1,10 +1,10 @@
 # NS-6_instrumental-streams_01 — Stream long instrumental generation with recoverable native jobs
 
-[Active tasks](README.md) · [Goal](../GOAL.md) · [Milestones](../MILESTONES.md)
+[Active tasks](../README.md) · [Goal](../../GOAL.md) · [Milestones](../../MILESTONES.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 8/10
-**Status:** In progress
+**Status:** DONE — accepted 2026-10-31
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -22,14 +22,40 @@ Primary attribution: NS-6. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
-- [NS-6_instrumental-artifacts_01 — DONE](DONE/NS-6_instrumental-artifacts_01.md)
+- [NS-6_instrumental-studio_01](NS-6_instrumental-studio_01.md)
+- [NS-6_instrumental-artifacts_01 — DONE](NS-6_instrumental-artifacts_01.md)
 - [Learned context continuation](NS-4_context-continuation_01.md)
 
 **Dev Notes:**
 
+- 2026-10-31, Big Boss, accepted AC1–4: one persistent performance now feeds
+  mix and six post-effect stems through shared bounded bus taps. Both finite
+  and playlist consumers use it; all seven finite WAV hashes match the former
+  output. Studio accepts2seconds–24hours with duration units, seven-file disk
+  estimates, RIFF/RF64 and native admission. No full score/PCM allocation.
+  The exact previously failed learned hour now completes:14400cells,900windows,
+  86424000frames including the1second tail, six stems plus mix, five peak voices.
+  The ordinary browser two-minute job completes, survives tab closure/reopen,
+  restores the same request and plays generated/Original audio. The hour review
+  plays and seeks near its end. Actual24hour admission and Stop leave an
+  actionable cancelled state; this I/O-blocked worker needed the supervisor's
+  five-second grace stop. No full24hour render or musical-quality claim.
+  Final workflow8/8 is atomic with completion. Native/actual pas2js replay,
+  hold/effect continuity, failure/ownership/cancel checks pass, plus playlist100,
+  lifecycle113 and [Pythian CI519](https://github.com/mr-highball/pythian/actions/runs/41189774156).
+  [WFC CI62](https://github.com/mr-highball/wfc/actions/runs/41189435399) passes all
+  five jobs. Stable service and twelve matching web assets are deployed in
+  fixed approved slots; existing private catalog/answers/TLS remain preserved.
+  Evidence packets: `studio-long-20261031-boss` and
+  `sequence-continuation-20261031-boss` under E-drive tests/runs.
+  Preserve initial independent-writer fixture readiness failure (test handshake
+  repaired),275-character fixture cache failure (short explicit E cache root),
+  original hour failure and old4/8 completion. Browser save retry preserves
+  draft identity and now displays its status inside the playlist dialog.
+  All checks are Big Boss solo verification, not independent review.
+
 - 2026-10-31, Big Boss: delivered the [persistent primary/WFC stream and native
-  consumer](../INSTRUMENTAL-STREAMS.md), including a120-second instrumental WAV
+  consumer](../../INSTRUMENTAL-STREAMS.md), including a120-second instrumental WAV
   plus real tail:30 bounded windows,608 drum hits and12 peak voices. Native and
   actual pas2js check holds/FX, replay, failed admission, one-shots, cancellation
   and24-hour clocks. All-role context keeps joint symbolic choices together;
@@ -48,7 +74,7 @@ Primary attribution: NS-6. Effort estimates relative implementation/integration 
 - 2026-10-31, Big Boss: bounded primary instrument-stream implementation was
   parked in stash f57503d5bdd66b3edaa0871d74fcb7aa6df54dc6 for the operator's current
   progress defect. Do not pop the earlier unrelated full-plan archive stash.
-  The [simple Studio](NS-6_simple-studio_01.md) repair persists actual cumulative
+  The [simple Studio](../NS-6_simple-studio_01.md) repair persists actual cumulative
   selection/render counters separately from nested callbacks and exposes stable
   workflow phases. Reuse this contract when extending duration. No long output,
   complete streams task or partial effort is accepted by that repair.
@@ -69,5 +95,5 @@ Primary attribution: NS-6. Effort estimates relative implementation/integration 
   no broad unrelated performance/callback audit is selected.
 
 - 2026-10-29, Big Boss: Core native scheduling and streamed instruments exist. Current hours-long Studio session is acoustic; duration editing is finite lookahead and does not itself implement indefinite musical extension.
-- Read [the implementation review](../ASSESSMENT-2026-10-29.md) and [retirement/replacement map](RETIRED/2026-10-29/README.md) before repeating prior work. Preserve original failure evidence. Experimental musical proposals may be auditioned and corrected without independent inference-accuracy acceptance; never relabel them as established measurements.
+- Read [the implementation review](../../ASSESSMENT-2026-10-29.md) and [retirement/replacement map](../RETIRED/2026-10-29/README.md) before repeating prior work. Preserve original failure evidence. Experimental musical proposals may be auditioned and corrected without independent inference-accuracy acceptance; never relabel them as established measurements.
 - Before implementation, state the audible/operator criterion, concrete deliverable, minimal closing checks and stop condition. Record repaired defects, failed approaches and linked follow-ups here. Do not broaden infrastructure work beyond an actual blocker.
