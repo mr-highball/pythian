@@ -861,6 +861,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Joint musical context compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.material.instrumental$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Joint musical context checks failed' }
+    & $compilerPath @adapterArgs 'tests/pythian.tests.musical.corpus.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Weighted musical corpus compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.musical.corpus$executableSuffix") (Join-Path $buildRoot 'musical-corpus')
+    if ($LASTEXITCODE -ne 0) { throw 'Weighted source-to-instrumental corpus checks failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.percussion.wfc.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC percussion compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.percussion.wfc$executableSuffix")

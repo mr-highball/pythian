@@ -33,6 +33,47 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-10-30, Big Boss, bounded provider consumer delivered: primary
+  music.observations shares one band/feature FFT; music.proposal emits explicit
+  Experimental pitch/chroma arrangements and band-change percussion proposals.
+  musical.corpus binds exact original ranges, preserves unknown/run/source
+  boundaries, records distinct duration/contribution accounting and learns nine
+  actual providers for three pitched roles plus drums. Per-track influence
+  multiplies training counts. Saved provider text reloads into the primary
+  six-part instrumental runtime; the 8:1/1:8 source edit changes synthesized
+  music at the same seed. No starter, raw-grain factory or genre truth is used.
+  Native64 and actual pas2js pass observation58/corpus162; nine provider hashes
+  match across targets, with deterministic audio replay on each target. Native
+  heaps are clean. Native semantic blend and progress41896 also pass after
+  consolidating multiplicity into the shared learner. This closes the bounded
+  AC4 provider-to-instrumental boundary, not whole-task acceptance or an operator
+  quality verdict. Consecutive nonclosing count remains zero; effort stays open.
+  Long-recording traversal/journal reuse and ordinary Studio Generate (AC3/AC5)
+  remain required. Practical sample/vocabulary limits are documented in
+  [the actual API](../INSTRUMENTAL.md#experimental-coarse-musical-providers).
+  Evidence: E-drive musical-corpus-20261030-boss. Preserve initial native array
+  alias-type compile rejection, overly specific spectral-note/fixed-pass test
+  assumptions, test variable-scope errors and the whole-render work-bound
+  rejection. Tests now use native type aliases, actual graph dependencies,
+  periodic-versus-spectral origins and bounded primary render blocks. The
+  optional semantic archive pas2js rejection is linked to the existing
+  [style consumer](NS-5_instrumental-styles_01.md); it is not introduced as a
+  blanket gate on this portable musical provider path.
+- 2026-10-30, Big Boss, next bounded batch: close the source-contribution and
+  instrumental-consumer boundary with shared portable musical proposals and
+  weighted, source/run-aware WFC providers. Deliver two contrasting measured
+  recordings through the actual multi-part synthesis runtime; swapping training
+  influence must change model contributions and synthesized music. Retain exact
+  source bounds, unknown regions, explicit proposal policy and actual model text.
+  Use primary pitch/chroma/band measurements and chord records; do not instantiate
+  the authored starter to obtain defaults or relabel source feature buckets as
+  identified instruments. Minimal checks cover source/run separation, real
+  weights, invalid/cancelled admission, actual native/pas2js and audible native
+  output. Stop there before long-recording journals and Studio job integration;
+  those remain required for this seven-unit task, not completion shortcuts.
+  The preceding UI batch closed its saved-selection criterion; consecutive
+  nonclosing count starts at zero. Pythian CI513 for `0c756e3` is still running
+  at the first check; a wait expiry would not establish failure.
 - 2026-10-30, Big Boss: This is now the real backend prerequisite to the
   [simple Studio flow](NS-6_simple-studio_01.md), per the operator's Library →
   Selection → Generate direction. The existing 7/10 scope already owns coarse

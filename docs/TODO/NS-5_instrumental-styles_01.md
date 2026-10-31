@@ -29,6 +29,14 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-10-30, Big Boss: The new musical corpus and native semantic reblend now
+  share weighted, sample-boundary-preserving learning. Native blend/progress
+  regressions pass. An optional pas2js archive probe exposes the existing native
+  TMemoryStream byte-buffer calls in semantic.style (first rejection at line254).
+  Address that archive portability within this task's actual save/blend consumer;
+  it does not block the portable musical-corpus model-text/runtime path. Do not
+  describe the semantic archive as newly browser-qualified. Evidence:
+  E-drive musical-corpus-20261030-boss/semantic.blend-js-compile.log.
 - 2026-10-29, Big Boss: TSemanticStyle, provider-specific blend weights, repeated-evidence accounting and generation sessions already exist. This task makes them a usable instrumental Studio workflow.
 - Read [the implementation review](../ASSESSMENT-2026-10-29.md) and [retirement/replacement map](RETIRED/2026-10-29/README.md) before repeating prior work. Preserve original failure evidence. Experimental musical proposals may be auditioned and corrected without independent inference-accuracy acceptance; never relabel them as established measurements.
 - Before implementation, state the audible/operator criterion, concrete deliverable, minimal closing checks and stop condition. Record repaired defects, failed approaches and linked follow-ups here. Do not broaden infrastructure work beyond an actual blocker.

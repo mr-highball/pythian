@@ -30,6 +30,7 @@ interface
 
 uses
   pythian.learning,
+  pythian.progress,
   wfc_model,
   wfc_sequence;
 
@@ -38,6 +39,20 @@ const
 
 type
   TAcousticCorpus = array of TAcousticIndices;
+  TWeightedSequenceSample = record
+    Tokens: TWfcModelTokens;
+    Weight: Integer;
+  end;
+  TWeightedSequenceSamples = array of TWeightedSequenceSample;
+
+{ Whole-sample multiplicity: repeats evidence without joining sample boundaries.
+  Zero excludes a sample. This changes training counts, never generation prefs.
+  Inputs are borrowed synchronously; positive samples require 1..64 copies.
+  The caller supplies a bounded observation budget, at most 1048576; actual
+  companion sample/state limits still apply. No partial model is published. }
+function LearnWeightedSequenceModel(const ASamples: TWeightedSequenceSamples;
+  const AOrder: Integer; const AMaximumObservations: Integer = 65536;
+  const AProgress: TWorkProgressCallback = nil): TWfcSequenceModel;
 
 { Each recording/excerpt remains a separate sample: no cross-file transition.
   All sequences must use one shared palette; the caller retains that palette. }
@@ -51,7 +66,77 @@ implementation
 uses
   SysUtils,
   pythian.audio,
+  pythian.wfc.progress,
   wfc_sequence_learn;
+
+function LearnWeightedSequenceModel(const ASamples: TWeightedSequenceSamples;
+  const AOrder, AMaximumObservations: Integer;
+  const AProgress: TWorkProgressCallback): TWfcSequenceModel;
+var
+  LExpanded: TWfcSequenceSamples;
+  LCount: Integer;
+  I: Integer;
+  J: Integer;
+  LAt: Integer;
+  LTotal: Int64;
+  LBridge: TWfcSolveProgressBridge;
+begin
+  if (Length(ASamples) < 1) or (Length(ASamples) > WFC_SEQUENCE_MAX_SAMPLE_COUNT) or
+    (AOrder < 1) or (AOrder > WFC_SEQUENCE_MAX_ORDER) or (AMaximumObservations < 1) or
+    (AMaximumObservations > 1048576) or (AOrder <> Trunc(AOrder)) or
+    (AMaximumObservations <> Trunc(AMaximumObservations)) then
+  begin
+    raise EAudio.Create('Weighted learning requires bounded samples, observations and a supported integer order');
+  end;
+  LCount := 0;
+  LTotal := 0;
+  for I := 0 to High(ASamples) do
+  begin
+    ReportWork(AProgress, 'wfc_weighted_admission', wuItems, I, Length(ASamples));
+    if (ASamples[I].Weight < 0) or (ASamples[I].Weight > 64) or
+      (ASamples[I].Weight <> Trunc(ASamples[I].Weight)) then
+    begin
+      raise EAudio.Create('Training multiplicity must be an integer 0..64');
+    end;
+    if ASamples[I].Weight = 0 then
+    begin
+      Continue;
+    end;
+    if (Length(ASamples[I].Tokens) = 0) or
+      (LCount > WFC_SEQUENCE_MAX_SAMPLE_COUNT - ASamples[I].Weight) then
+    begin
+      raise EAudio.Create('Weighted sample count exceeds companion limit or includes empty material');
+    end;
+    Inc(LCount, ASamples[I].Weight);
+    Inc(LTotal, Int64(Length(ASamples[I].Tokens)) * ASamples[I].Weight);
+    if LTotal > AMaximumObservations then
+    begin
+      raise EAudio.Create('Weighted musical observations exceed the declared model budget');
+    end;
+  end;
+  if LCount = 0 then
+  begin
+    raise EAudio.Create('Learning requires a positive training contribution');
+  end;
+  SetLength(LExpanded, LCount);
+  LAt := 0;
+  for I := 0 to High(ASamples) do
+  begin
+    for J := 1 to ASamples[I].Weight do
+    begin
+      ReportWork(AProgress, 'wfc_weighted_samples', wuItems, LAt, LCount);
+      LExpanded[LAt] := MakeWfcSequenceSample(ASamples[I].Tokens);
+      Inc(LAt);
+    end;
+  end;
+  LBridge := TWfcSolveProgressBridge.Create(AProgress);
+  try
+    Result := LearnSequenceModelCorpus(LExpanded, AOrder, wmbOpen,
+      LBridge.SequenceWorkObserver());
+  finally
+    LBridge.Free;
+  end;
+end;
 
 function AcousticToken(const AIndex: Integer): String;
 begin

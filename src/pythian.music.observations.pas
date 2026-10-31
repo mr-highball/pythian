@@ -44,6 +44,9 @@ type
   TMusicalObservations = record
     AnalysisOptions: TAnalysisOptions;
     Features: TAudioFeatures;
+    { Same FFT pass, explicit low/mid/high spectral-change measurements.
+      These are bands of the mix, never separated instrument tracks. }
+    Bands: TAudioBandSeriesArray;
     Tonal: TTonalReport;
     ChannelPitches: TChannelPitchSpans;
     PitchFrames: Integer;
@@ -79,6 +82,7 @@ var
   LFeature: TAudioFeature;
   LWeight: Double;
   LWeightSum: Double;
+  LBandAnalysis: TAudioBandAnalysis;
 begin
   if (AClip = nil) then
   begin
@@ -94,7 +98,10 @@ begin
   end;
   LResult := Default(TMusicalObservations);
   LResult.AnalysisOptions := DefaultOnsetAnalysisOptions(AClip.SampleRate);
-  LResult.Features := AnalyzeAudio(AClip, LResult.AnalysisOptions, AProgress);
+  LBandAnalysis := AnalyzeAudioBands(AClip, LResult.AnalysisOptions,
+    [0, 200, 2000, AClip.SampleRate / 2], AProgress);
+  LResult.Features := LBandAnalysis.Features;
+  LResult.Bands := LBandAnalysis.Bands;
   LResult.Tonal := RankDiatonicFits(FeaturePitchClassWeights(LResult.Features,
     LResult.AnalysisOptions, AClip.FrameCount, True));
   LResult.MinimumRms := LResult.Features[0].Rms;

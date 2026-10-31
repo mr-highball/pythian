@@ -83,6 +83,9 @@ function ProjectWfcEnsembleNotes(const AFrames: TWfcMusicEnsembleFrames;
   Bounds voices/total tones and maps actions; each consumer applies its own
   pitch/velocity/channel/hold contract when admitting the result. }
 function ProjectWfcChordFrame(const AFrame: TWfcMusicEnsembleFrame): TChordFrame;
+{ Detached inverse bridge for Pascal-owned symbolic proposals and callers.
+  No inference, retiming or source-role attribution occurs. }
+function ImportWfcChordFrame(const AFrame: TChordFrame): TWfcMusicEnsembleFrame;
 
 { Borrowed renderer and matching native clock. Converts one WFC ensemble frame,
   retaining holds across segment boundaries. Both must have the same admitted
@@ -351,6 +354,45 @@ begin
   end;
   ReportWork(AProgress, 'provider_voice_capacity_visits', wuItems, LVisits, LVisits);
   Result := LCandidate;
+end;
+
+function ImportWfcChordFrame(const AFrame: TChordFrame): TWfcMusicEnsembleFrame;
+var
+  LResult: TWfcMusicEnsembleFrame;
+  LTones: TWfcMusicTones;
+  LAction: TWfcMusicCellAction;
+  I: Integer;
+  J: Integer;
+  LCount: Integer;
+begin
+  if Length(AFrame) > MaximumChordStreamVoices then
+  begin
+    raise EAudio.Create('Native chord frame exceeds voice budget');
+  end;
+  SetLength(LResult.Voices, Length(AFrame));
+  LCount := 0;
+  for I := 0 to High(AFrame) do
+  begin
+    case AFrame[I].Action of
+      caRest: LAction := wmcaRest;
+      caAttack: LAction := wmcaAttack;
+      caHold: LAction := wmcaHold;
+    else
+      raise EAudio.Create('Unknown native chord action');
+    end;
+    if Length(AFrame[I].Tones) > MaximumChordStreamTones - LCount then
+    begin
+      raise EAudio.Create('Native chord frame exceeds tone budget');
+    end;
+    Inc(LCount, Length(AFrame[I].Tones));
+    SetLength(LTones, Length(AFrame[I].Tones));
+    for J := 0 to High(LTones) do
+    begin
+      LTones[J] := MakeWfcMusicTone(AFrame[I].Tones[J].Pitch, AFrame[I].Tones[J].Velocity);
+    end;
+    LResult.Voices[I] := MakeWfcMusicVoiceCell(LAction, LTones);
+  end;
+  Result := LResult;
 end;
 
 function ProjectWfcChordFrame(const AFrame: TWfcMusicEnsembleFrame): TChordFrame;

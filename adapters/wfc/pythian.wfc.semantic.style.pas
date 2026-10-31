@@ -197,7 +197,7 @@ implementation
 uses
   Classes, SysUtils, pythian.hash, pythian.binary, pythian.wfc.providers, wfc,
   pythian.wfc.style, pythian.wfc.context.profile, pythian.wfc.context.archive,
-  pythian.wfc.context, wfc_sequence_learn, wfc_sequence_text;
+  pythian.wfc.context, pythian.wfc.learning, wfc_sequence_learn, wfc_sequence_text;
 
 type
   TOriginPosition = record
@@ -2077,12 +2077,10 @@ procedure RelearnBlend(var ADefinition: TSemanticStyleDefinition;
 var
   LProvider: Integer;
   LRun: Integer;
-  LRepeat: Integer;
-  LCount: Integer;
   LTotal: Int64;
   LOriginal: TWfcSequenceModel;
   LModel: TWfcSequenceModel;
-  LSamples: TWfcSequenceSamples;
+  LSamples: TWeightedSequenceSamples;
 begin
   ReportWork(AProgress, 'semantic_relearn_providers', wuItems, 0, Length(ADefinition.Providers));
   for LProvider := 0 to High(ADefinition.Providers) do
@@ -2091,7 +2089,7 @@ begin
     LOriginal := DecodeWfcSequenceText(ADefinition.Providers[LProvider].ModelText);
     LModel := nil;
     try
-      LSamples := nil;
+      SetLength(LSamples, Length(ADefinition.Runs));
       LTotal := 0;
       for LRun := 0 to High(ADefinition.Runs) do
       begin
@@ -2099,14 +2097,10 @@ begin
           ADefinition.Runs[LRun].Weights[LProvider]);
         Require((LTotal <= 4096) and (LTotal * LTotal * (LOriginal.Order + 1) <= 16777216),
           'Blend replay exceeds bounded actual learner work');
-        for LRepeat := 1 to ADefinition.Runs[LRun].Weights[LProvider] do
-        begin
-          LCount := Length(LSamples);
-          SetLength(LSamples, LCount + 1);
-          LSamples[LCount] := MakeWfcSequenceSample(ADefinition.Runs[LRun].Tokens[LProvider]);
-        end;
+        LSamples[LRun].Tokens := ADefinition.Runs[LRun].Tokens[LProvider];
+        LSamples[LRun].Weight := ADefinition.Runs[LRun].Weights[LProvider];
       end;
-      LModel := LearnSequenceModelCorpus(LSamples, LOriginal.Order);
+      LModel := LearnWeightedSequenceModel(LSamples, LOriginal.Order, 4096, AProgress);
       ADefinition.Providers[LProvider].ModelText := EncodeWfcSequenceText(LModel);
       Require(SemanticVocabularyIdentity(ADefinition.Providers[LProvider].ModelText,
         ADefinition.Providers[LProvider].Contract, AProgress) =

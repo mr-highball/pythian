@@ -76,7 +76,10 @@ Experimental learning is accepted: contextual accept/correct/manual/bypass
 choices drive actual symbolic providers and instrument cutoff/sustain, with
 Original references and saved correction/feedback lineage. Observations remain
 bounded Experimental proposals, not automatic source-instrument identification
-or whole-corpus learning. Style vocabulary remains open.
+or whole-corpus learning. The new bounded corpus consumer now learns weighted,
+source/run-aware musical providers and reloads them into actual six-part synthesis.
+Whole-track traversal/reuse and the simple Studio Generate connection remain open;
+no partial effort is accepted for the provider slice.
 
 <a id="ns-4"></a>
 ### NS-4 — Musical graph and synthesis together

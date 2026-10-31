@@ -2,7 +2,64 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
-## Current handoff: simpler Studio, real playlist selection — 2026-10-30
+## Current handoff: weighted musical providers into real synthesis — 2026-10-30
+
+Big Boss SOLO continues the operator's **Library → Selection → Generate** request.
+The simpler Library/Selection implementation below is committed as `0c756e3`;
+CI513 is now terminal SUCCESS. Stable Studio is unchanged, and no new operator
+review is requested while its replacement Generate connection is incomplete.
+
+The bounded [style-vocabulary](TODO/NS-3_style-vocabulary_01.md) provider consumer
+is implemented. Primary music.observations measures low/mid/high spectral changes
+in the same FFT as its existing features. Portable music.proposal makes explicitly
+Experimental arrangements from chroma, supported periodic pitch and spectral
+changes. This is not stem/instrument identification; the explicit tempo is
+caller-supplied, and periodic pitch retains its eight-second bound per window.
+Unknown cells remain unknown. No authored starter supplies the learned music.
+
+The shared musical.corpus adapter binds sources, selections and bounded runs to
+original clocks. Whole-sample training multiplicity is shared with native semantic
+blend replay. Its nine provider models cover harmony, joint rhythm, bass/harmony/
+lead, paired musical context and three drums. Source/run/unknown boundaries do
+not gain joins; source weights affect actual training counts. Per-source coverage
+separates included/excluded, processed, model-used and unmodeled frames. Saved
+provider texts reload into the existing six-part instrumental runtime with actual
+caller instruments, without original-audio factories. The controlled two-source
+8:1/1:8 edit changes synthesized output at the same seed.
+
+Native64 and actual pas2js pass observation58 and corpus162. All nine model-text
+hashes and both actual musical-decision hashes agree across targets.
+Same-target saved-model/audio replay passes; native
+and JS PCM hashes differ, so cross-target byte-identical audio is not claimed.
+The fixture's actual vocabulary produces twenty graph passes. Native semantic
+blend and progress41896 also pass, with clean heaps. The optional pas2js semantic
+archive probe still rejects its existing native TMemoryStream byte-buffer call;
+that belongs to the existing style save/blend consumer, not a blanket gate on
+the portable corpus/runtime path. Preserve its log and all repaired test/compile
+failure evidence. The sound proposal is a weighted window-statistics recipe,
+never recovered source instrumentation.
+
+Evidence and generated WAV/provider texts live under
+`musical-corpus-20261030-boss` in the dedicated E-drive roots. No QA browser,
+service or playback process was launched by this batch. The bounded AC4 actual
+provider-to-instrumental consumer closes; consecutive nonclosing count stays
+zero. The seven-unit task remains open, and accounting remains **47/108
+(43.52%)**, nine open/eleven current DONE, 61 open units. Long-recording traversal,
+journal/cache reuse, stable vocabulary ancestry and simple Studio job integration
+remain required; this is not whole-playlist learning acceptance.
+
+Next batch criterion: the simple Generate action learns from the actual chosen
+whole/range recordings and influence, runs the existing durable native job, then
+plays its synthesized result in the same step. Deliver bounded whole-source
+preparation with reuse and truthful coverage, integrated progress/cancellation,
+and a real desktop/phone-width playlist → Generate → playback journey. Keep
+honest finite duration/resource limits; long instrumental streaming has its own
+linked task. Stop at the actual working short consumer before expanding sound
+controls or archives. Do not substitute the authored path, request manual motif
+approval, read only eight seconds while claiming a whole recording, or deploy
+the preview while Generate is disabled.
+
+## Previous batch: simpler Studio, real playlist selection — 2026-10-30
 
 Big Boss SOLO follows the operator's **Library → Selection → Generate** priority.
 [Simple Studio](TODO/NS-6_simple-studio_01.md), effort six, is open; the existing

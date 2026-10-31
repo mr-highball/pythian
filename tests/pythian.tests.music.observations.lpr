@@ -27,7 +27,8 @@ program pythian_tests_music_observations;
 {$H+}
 uses SysUtils, Math, pythian.audio, pythian.progress, pythian.music.observations,
   pythian.tonal, pythian.pitch.track, pythian.pitch.regions,
-  pythian.music.sound, pythian.synth, pythian.automation;
+  pythian.music.sound, pythian.music.proposal, pythian.chord,
+  pythian.synth, pythian.automation;
 
 type
   ECancelled = class(Exception);
@@ -128,6 +129,7 @@ var
   LTrack: TPitchTrack;
   LRegions: TPitchRegions;
   LSummaries: TPitchRegionSummaries;
+  LGrid, LCopyGrid: TProposedMusicalGrid;
   LFailed: Boolean;
   LPitched: Integer;
   LEnd: Integer;
@@ -154,6 +156,25 @@ begin
     end;
     Check(LPitched > 0, 'Controlled tone has pitches');
     Check(LMeasured.MaximumRms >= LMeasured.MinimumRms, 'RMS extent ordered');
+    LGrid := ProposeMusicalGrid(LMeasured, 8000, 8000, 500000);
+    Check((Length(LGrid.Frames) = 4) and (Length(LGrid.RoleNames) = 3),
+      'Portable complete eighth-note grid with three explicit proposed roles');
+    Check(LGrid.Known[1] and (LGrid.Frames[1][0].Tones[0].Pitch in [36..47]) and
+      (LGrid.PitchOrigins[1] = mppPeriodic) and (LGrid.Frames[1][2].Tones[0].Pitch = 60),
+      'Measured C supplies periodic lead and an explicitly arranged spectral bass');
+    LCopyGrid := CopyProposedMusicalGrid(LGrid);
+    LCopyGrid.Frames[0][0].Tones[0].Pitch := 1;
+    LCopyGrid.RoleOrigins[0] := 'changed';
+    Check((LGrid.Frames[0][0].Tones[0].Pitch <> 1) and
+      (LGrid.RoleOrigins[0] <> 'changed'), 'Portable nested proposal copies detach');
+    LCopyGrid := ProposeMusicalGrid(LMeasured, 8000, 8000, 500001);
+    Check(Length(LCopyGrid.Frames) = 3, 'Incomplete fractional final cell is omitted, never rounded into the source');
+    LCopyGrid := CopyProposedMusicalGrid(LGrid);
+    LCopyGrid.Frames[0][0].Action := caHold;
+    LFailed := False;
+    try ValidateProposedMusicalGrid(LCopyGrid);
+    except on E: EAudio do LFailed := True end;
+    Check(LFailed, 'Proposal cannot begin with an invented held note');
     Check(Length(LMeasured.ChannelPitches[0]) = Length(LReplay.ChannelPitches[0]), 'Span count replay');
     LTrack := TPitchTrack.Create(LClip, 0, DefaultPitchTrackOptions(8000));
     try
@@ -193,6 +214,12 @@ begin
     LMeasured := MeasureMusicalObservations(LClip);
     Check(LMeasured.Tonal.CandidateCount = 0, 'Silence invents no key');
     Check(LMeasured.MeanCentroidHz = 0, 'Silence has zero brightness');
+    LGrid := ProposeMusicalGrid(LMeasured, 8000, 8000, 500000);
+    Check(not LGrid.HasSound, 'Silence invents no sound recipe');
+    for I := 0 to High(LGrid.Frames) do
+      Check(LGrid.Known[I] and (LGrid.PitchOrigins[I] = mppSilence) and
+        (LGrid.Frames[I][0].Action = caRest) and (LGrid.Drums[I][0] = 0),
+        'Measured silence remains known rest with no invented pitched/drum events');
     for LSpan in LMeasured.ChannelPitches[0] do
       Check(LSpan.Kind = pskSilence, 'Silence distinguished from unknown');
   finally
@@ -204,6 +231,9 @@ begin
     Check(LMeasured.PitchFrames = 64000, 'Pitch limited to eight seconds');
     Check(Length(LMeasured.ChannelPitches) = 2, 'Stereo channels kept separate');
     Check(LMeasured.Features[High(LMeasured.Features)].StartFrame > 64000, 'Spectrum covers beyond pitch bound');
+    LGrid := ProposeMusicalGrid(LMeasured, 8000, 72000, 500000, 1);
+    Check((Length(LGrid.Frames) = 36) and (LGrid.PitchOrigins[34] = mppSpectral),
+      'Beyond eight seconds remains explicit spectral proposal, never claimed periodic transcription');
     for I := 0 to 1 do
     begin
       LPitched := 0;

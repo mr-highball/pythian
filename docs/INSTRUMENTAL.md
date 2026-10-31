@@ -13,14 +13,17 @@ and source-free or explicitly bound instrument tones. Optional
 and the same native performance. It never selects recorded
 training-mix grains or silently substitutes a different renderer.
 
-Studio now offers this finite runtime with explicit percussion as its primary
+The retained Studio deployment offers this finite runtime with explicit percussion as its primary
 **Synthesized instruments · Experimental** route. Save an instrumental project
 without recordings, choose tempo/key/bars/seed and sounds, then Check setup and
 Generate instruments. Jobs provides the mix, six synchronized parts with
 mute/solo, actual graph details and a listening-feedback link. The host keeps
 working when the page closes; saving feedback never silently regenerates.
 No recording-derived style learning or musical-quality claim follows from the
-authored starter. Deeper graph editing, sound design and long instrumental
+authored starter. The replacement [simple Studio](TODO/NS-6_simple-studio_01.md)
+uses Library → Selection → Generate; its playlist learning/job connection remains
+open, so its isolated preview is not the deployed replacement yet.
+Deeper graph editing, sound design and long instrumental
 streams retain their linked [tasks](TODO/README.md).
 
 ## Public API and ownership
@@ -158,7 +161,7 @@ The corrected richer melody has twenty passes because its harmonic vocabulary
 requires more coverage proofs. These are actual vocabulary-dependent counts.
 This is conditional generation, without backtracking across groups. A context
 choice can still leave the following graph unsatisfiable; failures remain visible.
-Ordinary Studio exposes analyzed or manual motifs through Musical starting points,
+The retained Studio deployment exposes analyzed or manual motifs through Musical starting points,
 with accept/correct/bypass, explicit part assignment, Save and Generate actions.
 Saving does not generate. Recording-linked jobs retain a bounded Original excerpt
 with exact source coordinates; source audio is never the performed instrument.
@@ -194,3 +197,52 @@ Unsupported/unlucky graph requests return an actionable failure rather than
 silently relaxing constraints. The maintained fixture checks real graph/note
 controls, deterministic replay, exact changing-tempo timing, release tails,
 borrowed callback cancellation and preservation of a previously accepted plan.
+
+## Experimental coarse musical providers
+
+The portable [musical proposal](../src/pythian.music.proposal.pas) consumes the
+primary observation bundle. Chroma and low/mid/high spectral changes share one
+FFT analysis. Complete eighth-note cells propose arranged bass, spectral harmony,
+periodic lead where measured, a marked spectral lead otherwise, and drum actions.
+These are arrangements from a mix, not identified stems or recovered instruments.
+Silence remains known rest; diffuse unsupported cells remain unknown. The caller
+supplies the explicit clock (40–240 BPM); this proposal does not infer tempo.
+Periodic pitch still covers only the first eight seconds of each bounded
+observation, while spectral measurements cover the whole window.
+
+[TMusicalCorpus](../adapters/wfc/pythian.wfc.musical.corpus.pas) binds sources,
+included ranges and measured proposal runs to original frame clocks. It learns
+harmony, joint rhythm, one provider per pitched role, paired musical context and
+three percussion providers. Source training influence multiplies sample/count
+contributions; generation preferences remain separate. Unknown cells, omitted
+time and recording boundaries split open samples. Starting holds are explicitly
+rearticulated at the admitted boundary. Classification strings retain caller
+context only; no genre-to-instrument rule is implied.
+Only known pitched/context cells enter this coupled corpus, including their
+drum proposals. Drum-only or otherwise unsupported pitched material cannot yet
+bootstrap this complete arrangement; unknown time earns no model-used coverage.
+
+CopyCoverage separates included, excluded, processed, model-used and unmodeled
+frames per source, plus actual weighted cells/samples. CopyModelTexts saves the
+real immutable providers; Config, ContextModel and CopyPercussion borrow them
+for TryCreateInstrumentalPlan. Caller-bound primary instruments perform the
+result, without any original-audio factory. The optional sound recipe uses
+full-window brightness/dynamics proposals, weighted by admitted seconds and
+influence. It is not source instrument recovery.
+
+The current bounded API admits 32 sources, 64 selections and 1024 runs; each run
+uses the existing up-to-30-second/two-million-frame observation bound. Unknowns
+may produce several samples per run. Weighted samples must fit the companion's
+4096-sample limit and the caller's observation budget (default 65536, at most 1048576).
+Companion public-token/state/history limits still apply; excess work rejects
+instead of silently trimming or joining recordings. Whole-track traversal,
+incremental journals and the simple Generate consumer remain
+[style-vocabulary work](TODO/NS-3_style-vocabulary_01.md).
+
+The maintained musical-corpus fixture measures two actual controlled recordings,
+swaps influence 8:1/1:8, reloads saved providers into six-part synthesis and checks
+deterministic same-target replay. Native64 and actual pas2js pass; all nine
+provider text hashes and both musical-decision hashes match across targets.
+PCM hashes differ between targets;
+cross-target byte-identical audio is not claimed. The generated graph has twenty
+passes for this vocabulary, not a fixed universal grid size.
