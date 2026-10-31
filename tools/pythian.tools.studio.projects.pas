@@ -97,6 +97,7 @@ uses
   pythian.wave.read,
   pythian.tools.annotations.catalog,
   pythian.tools.studio.material,
+  pythian.tools.studio.instrumental.settings,
   pythian.tools.studio.&library.discovery,
   pythian.tools.studio.&library,
   pythian.tools.studio.clips
@@ -1058,6 +1059,7 @@ begin
     LFields := LFields + ',musical_material';
   end;
   if AProject.Find('playlist') <> nil then LFields := LFields + ',playlist';
+  if AProject.Find('instrumental') <> nil then LFields := LFields + ',instrumental';
   Fields(AProject, LFields);
   LValue := AProject.Find('playlist');
   if LValue <> nil then
@@ -1109,6 +1111,20 @@ begin
   if AProject.Find('playlist') <> nil then
     Need((LUsage = 'instrumental') and (LTotal = 0) and
       (AProject.Find('musical_material') = nil), 'Playlist owns instrumental training selection');
+  if AProject.Find('instrumental') <> nil then
+  begin
+    Need((LUsage = 'instrumental') and (LTotal = 0) and
+      (AProject.Find('playlist') = nil) and (AProject.Find('musical_material') = nil),
+      'Saved experiment settings must remain source-free');
+    LValue := AProject.Find('instrumental');
+    Need(LValue.JSONType = jtObject, 'Experiment settings must be an object');
+    LMaterial := CanonicalStudioInstrumentalConfig(TJSONObject(LValue));
+    try
+      Need(LMaterial.AsJSON = LValue.AsJSON, 'Stored experiment settings are not canonical');
+    finally
+      LMaterial.Free;
+    end;
+  end;
   LHash := TextField(AProject, 'snapshot_sha256', 64, 64);
   Need(ValidHash(LHash), 'Studio snapshot digest is invalid');
   LCopy := TJSONObject(AProject.Clone);
@@ -1251,6 +1267,7 @@ begin
               LSummary.Add('status', LProject.Strings['status']);
               LSummary.Add('training_status', LProject.Strings['training_status']);
               LSummary.Add('source_count', ArrayField(LProject, 'sources').Count);
+              LSummary.Add('authored_experiment', LProject.Find('instrumental') <> nil);
             finally
               LProject.Free;
             end;
@@ -1395,6 +1412,15 @@ begin
         'Musical input must be a choices object');
       Result.Add('musical_material', CanonicalStudioMaterial(AWrite.Objects['musical_material']));
     end;
+    if AWrite.Find('instrumental') <> nil then
+    begin
+      Need((LMode = 'instrumental') and (LTotal = 0) and
+        (AWrite.Find('playlist') = nil) and (AWrite.Find('musical_material') = nil),
+        'An authored experiment keeps its settings separate from recording selections');
+      Need(AWrite.Find('instrumental').JSONType = jtObject,
+        'Experiment settings must be an object');
+      Result.Add('instrumental', CanonicalStudioInstrumentalConfig(AWrite.Objects['instrumental']));
+    end;
     if AWrite.Find('playlist') <> nil then
     begin
       Need((LMode = 'instrumental') and (LTotal = 0) and
@@ -1464,6 +1490,7 @@ begin
     LFields := LFields + ',musical_material';
   end;
   if AWrite.Find('playlist') <> nil then LFields := LFields + ',playlist';
+  if AWrite.Find('instrumental') <> nil then LFields := LFields + ',instrumental';
   Fields(AWrite, LFields);
   Need(Length(AWrite.AsJSON) <= MaximumStudioDocumentBytes, 'Studio write exceeds its byte bound');
   Need(TextField(AWrite, 'format', 1, 64) = StudioProjectWriteFormat,

@@ -57,6 +57,92 @@ begin
   Result.Add('instruments', TJSONArray.Create(['saw','triangle','square']));
   Result.Add('levels', TJSONArray.Create([100,100,100,100,100,100]));
 end;
+procedure CheckSavedExperiment(const ARoot: String);
+var
+  LWrite, LProject, LRead, LSettings, LRequest, LPrepared, LJob: TJSONObject;
+  LRejected: Boolean;
+  LSnapshot: String;
+begin
+  LSettings := Config;
+  LSettings.Integers['tempo_bpm'] := 80;
+  LSettings.Integers['tonic'] := 5;
+  LSettings.Integers['cells'] := 8;
+  LSettings.Add('mode', 'natural_minor');
+  LSettings.Add('controls', TJSONObject.Create(['guide', True, 'tonic_bias', 0,
+    'parts', TJSONArray.Create([
+      TJSONObject.Create(['minimum_pitch', 0, 'maximum_pitch', 127, 'activity_bias', 0,
+        'velocity_percent', 130, 'gate_percent', 75]),
+      TJSONObject.Create(['minimum_pitch', 0, 'maximum_pitch', 127, 'activity_bias', 0,
+        'velocity_percent', 130, 'gate_percent', 75]),
+      TJSONObject.Create(['minimum_pitch', 0, 'maximum_pitch', 127, 'activity_bias', 0,
+        'velocity_percent', 130, 'gate_percent', 75])])]));
+  LWrite := TJSONObject.Create(['format', StudioProjectWriteFormat,
+    'project_id', 'saved-experiment', 'expected_revision', 0,
+    'name', 'Authored experiment', 'style_intent', '', 'learning_mode', 'instrumental',
+    'sources', TJSONArray.Create, 'instrumental', LSettings]);
+  LProject := nil; LRequest := nil;
+  try
+    LProject := SaveStudioProject(ARoot, LWrite);
+    LSnapshot := LProject.Strings['snapshot_sha256'];
+    Check(LProject.Arrays['sources'].Count = 0, 'Saved experiment stays source-free');
+    Check(LProject.Objects['instrumental'].Integers['tempo_bpm'] = 80, 'Saved experiment binds tempo');
+    LRead := SaveStudioProject(ARoot, LWrite);
+    try
+      Check(LRead.Integers['revision'] = 1, 'Identical experiment save reconciles without a new revision');
+      Check(LRead.Strings['snapshot_sha256'] = LSnapshot, 'Identical experiment save keeps its snapshot');
+    finally LRead.Free end;
+    LRead := ReadStudioProject(ARoot, 'saved-experiment');
+    try
+      Check(LRead.Objects['instrumental'].AsJSON = LProject.Objects['instrumental'].AsJSON,
+        'Native reopen retains every actual setting');
+    finally LRead.Free end;
+    LRequest := TJSONObject.Create(['format', StudioJobWriteFormat,
+      'job_id', 'saved-experiment-run', 'kind', 'instrumental_generate',
+      'project_id', 'saved-experiment', 'project_revision', 1,
+      'project_snapshot_sha256', LSnapshot, 'seeds', TJSONArray.Create([731]),
+      'instrumental', LSettings.Clone]);
+    LPrepared := PrepareStudioJob(ARoot, LRequest);
+    try
+      Check(LPrepared.Int64s['unique_source_bytes_to_verify'] = 0, 'Saved experiment does not scan recordings');
+    finally LPrepared.Free end;
+    LRequest.Objects['instrumental'].Integers['tempo_bpm'] := 81;
+    LRejected := False;
+    try LPrepared := PrepareStudioJob(ARoot, LRequest); LPrepared.Free
+    except on E: EAudio do LRejected := True end;
+    Check(LRejected, 'Generation refuses unsaved settings');
+    LRequest.Objects['instrumental'].Integers['tempo_bpm'] := 80;
+    LJob := EnqueueStudioJob(ARoot, LRequest); LJob.Free;
+    Check(RunStudioWorker(ARoot, 'saved-experiment-run', ARoot + '-absent-library'),
+      'Saved authored controls perform actual instrumental output');
+    LJob := ReadStudioJob(ARoot, 'saved-experiment-run');
+    try
+      Check(LJob.Strings['status'] = 'completed', 'Saved experiment completes');
+      Check(LJob.Objects['results'].Objects['settings'].Integers['tempo_bpm'] = 80,
+        'Performed tempo matches the saved experiment');
+      Check(LJob.Objects['results'].Objects['settings'].Integers['tonic'] = 5,
+        'Performed key matches the saved experiment');
+      Check(LJob.Objects['results'].Objects['settings'].Strings['mode'] = 'natural_minor',
+        'Performed scale matches the saved experiment');
+      Check(LJob.Objects['results'].Objects['settings'].Objects['controls'].Arrays['parts'].
+        Objects[0].Integers['velocity_percent'] = 130, 'Mapped note strength reaches native performance');
+      Check(LJob.Objects['results'].Objects['settings'].Objects['controls'].Arrays['parts'].
+        Objects[2].Integers['gate_percent'] = 75, 'Saved articulation reaches native performance');
+      Check(LJob.Objects['results'].Arrays['parts'].Count = 6, 'Saved experiment publishes six actual parts');
+    finally LJob.Free end;
+    LWrite.Integers['expected_revision'] := 1;
+    LSettings.Add('unknown', True);
+    LRejected := False;
+    try LRead := SaveStudioProject(ARoot, LWrite); LRead.Free
+    except on E: EAudio do LRejected := True end;
+    Check(LRejected, 'Unsupported settings cannot enter an accepted snapshot');
+    LRead := ReadStudioProject(ARoot, 'saved-experiment');
+    try Check(LRead.Strings['snapshot_sha256'] = LSnapshot, 'Rejected edit preserves the accepted experiment')
+    finally LRead.Free end;
+  finally
+    LRequest.Free; LProject.Free; LWrite.Free;
+  end;
+end;
+
 procedure Run(const ARoot: String; const ASmoke: Boolean);
 var
   LWrite, LProject, LRequest, LJob, LPrepared, LQueue, LAsset: TJSONObject;
@@ -218,6 +304,7 @@ begin
     finally
       LCancelWorker.Free;
     end;
+    CheckSavedExperiment(ARoot);
     if ASmoke then WriteLn('Studio instrumental smoke: ', GChecks,
       ' checks; one durable source-free job, six stems, lineage and actual cancellation')
     else WriteLn('Studio instrumental: ', GChecks,

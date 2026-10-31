@@ -44,6 +44,7 @@ uses SysUtils, pythian.audio, pythian.chord, pythian.music.decisions,
   pythian.wfc.layers, pythian.wfc.percussion, pythian.wfc.instrumental.edit,
   pythian.tools.studio.jobs, pythian.tools.studio.decisions,
   pythian.tools.studio.instrumental.config,
+  pythian.tools.studio.instrumental.settings,
   wfc_sequence, wfc_sequence_text, wfc_sequence_graph,
   wfc_music_voices_graph, wfc_music_ensemble_graph, wfc_music_arrangement;
 
@@ -183,6 +184,7 @@ var
   LChunkEdit: TInstrumentalPassageEdit;
   LPreviousParts: TChordFrame;
   LEdit: TInstrumentalPassageEdit;
+  LSupplied: TStudioPassageEdit;
   LReport: TInstrumentalPassageReport;
   LReportJson: TJSONObject;
   LResult: TJSONObject;
@@ -214,7 +216,19 @@ begin
   LResult := TJSONObject.Create;
   LPasses := TStringList.Create;
   try
-    LEdit := DecodeStudioPassageEdit(AEdit, AMeta.Objects['decisions'].Int64s['music_frames']);
+    LSupplied := DecodeStudioPassageEdit(AEdit, AMeta.Objects['decisions'].Int64s['music_frames']);
+    LEdit := Default(TInstrumentalPassageEdit);
+    LEdit.StartFrame := LSupplied.StartFrame;
+    LEdit.EndFrame := LSupplied.EndFrame;
+    LEdit.Parts := LSupplied.Parts;
+    LEdit.Harmony := LSupplied.Harmony;
+    LEdit.Rhythm := LSupplied.Rhythm;
+    LEdit.Tonic := LSupplied.Tonic;
+    LEdit.TonicBias := LSupplied.TonicBias;
+    LEdit.Controls := LSupplied.Controls;
+    LEdit.Seed := LSupplied.Seed;
+    LEdit.MaxBacktracks := 256;
+    LEdit.MaxPassBacktracks := 16;
     LModels := TStoredMusicalModels.Create(AMeta, AProgress);
     LReader := TMusicDecisionReader.Create(ASource);
     LWriter := TStudioDecisionWriter.Create(ACatalogRoot, AJobId);

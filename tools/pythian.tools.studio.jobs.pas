@@ -112,6 +112,7 @@ uses
   pythian.hash,
   pythian.tools.studio.preparation,
   pythian.tools.studio.instrumental.config,
+  pythian.tools.studio.instrumental.settings,
   pythian.tools.studio.instrumental.output,
   pythian.tools.annotations.catalog,
   pythian.tools.annotations.sourceguard,
@@ -694,6 +695,7 @@ var
   LPreparation: TJSONObject;
   LParentRequest: TJSONObject;
   LParentResult: TJSONObject;
+  LExperiment: TJSONObject;
   LChanged: Boolean;
 begin
   Need(AWrite <> nil, 'Job write is required');
@@ -750,6 +752,16 @@ begin
           'Project snapshot differs; reopen the saved project');
         Need(LProject.Strings['learning_mode'] = 'instrumental',
           'Save the project with Instrumental experiment selected');
+        if LProject.Find('instrumental') <> nil then
+        begin
+          LExperiment := CanonicalStudioInstrumentalConfig(AWrite.Objects['instrumental']);
+          try
+            Need(LExperiment.AsJSON = LProject.Objects['instrumental'].AsJSON,
+              'Save the experiment settings before generating');
+          finally
+            LExperiment.Free;
+          end;
+        end;
         if LProject.Find('playlist') <> nil then
         begin
           Need(StudioPlaylistIncludedTrackCount(LProject.Objects['playlist']) > 0,
