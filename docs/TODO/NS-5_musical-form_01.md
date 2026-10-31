@@ -30,6 +30,35 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-10-31, Big Boss: the optional Studio Structure consumer is implemented
+  and locally exercised, not full task acceptance. Named sections, repeat sources
+  and retained providers save/reopen through the primary form cursor; ordinary
+  bounded jobs retain actual providers and native section clocks. Native form
+  consumer22 checks, callback/native-pas2js799 each and actual Studio journal564
+  checks pass with clean native heaps. The browser generates48seconds A/B/A,
+  verifies all eight providers return, seeks32..48seconds and stops at the section
+  boundary. A shorter native section edit changes six Lead cells, preserving
+  model and Before/After lineage; sound replay changes audio with exact notes.
+  Desktop/390px browser interactions exercise invalid order/draft reload,
+  referenced-source removal refusal, keyboard tabs, typing and contextual help.
+  The existing playlist regression passes290 checks with a clean heap, retaining
+  ordinary recording learning, clip reads and sound/note follow-up behavior.
+  Fixed stable service is not yet updated. Evidence uses `form-studio-20261031-boss`
+  under the dedicated E-drive roots. Keep the actual native publication failure
+  in native01 and repaired native02/04 results. AC4 implementation/persistence
+  checks now pass locally; complete CI and final integration remain pending.
+- The same browser's return-section Lead-only follow-up, seed1502445802,
+  fails at cell144 in the pitched group after an earlier candidate chunk commits.
+  Original job `music-1793485090576-185750` (generation seed623803102) remains
+  playable; failed child `music-1793485261505-670885`, its request and
+  `note-conflict.json` are preserved in the isolated QA catalog. Do not call this
+  a proven impossible musical request or sweep seeds. Assess the primary passage
+  editor's future kept accompaniment across candidate chunks before claiming
+  general section-edit success. This is within the task's existing targeted-edit
+  criterion, not an extra completed task. Structured nonneutral preferences /
+  expression are explicitly rejected while per-section energy/density remain
+  open. No effort units earned and no universal feasibility/listening claim.
+
 - 2026-10-31, Big Boss: the future-domain prerequisite is accepted after full
   upstream CI63 and Pythian CI533, including extracted consumers. Return this
   task to In progress. Its eight units remain open; deliver the actual optional

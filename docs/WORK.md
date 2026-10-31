@@ -3,6 +3,78 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
+## Current handoff: Studio sections implemented; form task stays open — 2026-10-31
+
+Big Boss SOLO implements the optional Structure consumer on the existing bounded
+instrumental job/player/passage path. Named sections, repeat sources and retained
+providers persist through the primary portable form cursor and exact native
+section clocks. Actual no-context authored models remain eight real providers;
+no learned context is invented. Existing playlist jobs use the same generalized
+renderer. Ordinary finite controls retain their expression/preferences while
+structured nonneutral combinations fail explicitly. No source PCM assembly,
+vendor source edit or second form renderer/player/job is added.
+
+Local evidence in `form-studio-20261031-boss`: native Studio consumer22 checks,
+native/actual pas2js799 form checks each with the original decision digest,
+and564 primary journal checks on the actual browser-generated48second A/B/A
+piece. All eight requested providers recur; section audition seeks32..48seconds
+and stops correctly. The six-second native consumer also changes six actual
+Lead cells and replays sounds from exact saved notes without recordings.
+Native heaps are clean. Retain native01's missing-duration publication failure
+and its repaired native02/04 results. The maintained consumer joins build.ps1.
+The existing playlist consumer passes290 checks after shared-renderer integration,
+including actual recording learning, sound/note follow-ups, classifications,
+clip-only reads and retained failures, with a clean heap.
+Desktop/390px browser checks cover save/reopen, invalid order/reload, refusing
+referenced-source removal, keyboard tabs, typing, help return, generation,
+section range/edit controls, reconnect and previous-version recovery. Repair
+focused-editor detachment and phone overflow; main Lab tabs stay visible.
+
+The actual return-section Lead-only child fails at cell144 after an earlier
+candidate chunk commits. Preserve generation seed623803102, edit seed1502445802,
+both jobs and `note-conflict.json` in the isolated QA catalog. No seed sweep,
+relaxed Keep, proof of musical impossibility or general section-edit acceptance.
+The shorter successful consumer does not erase this failure. Assess known future
+kept accompaniment in the primary passage editor next. Its error text now names
+bounded search failure honestly. Per-section energy/density and actual operator
+listening remain required in the same eight-unit musical-form task.
+
+No task or effort acceptance this turn: **99/140 (70.71%), six open** stays.
+AC4's local persistence/replay checks pass; final integration/CI is still pending.
+Consecutive nonclosing batch count is one, inherited from zero at batch start.
+Do not begin a third nonclosing batch without reassessment. The goal remains
+active, with no operator input needed. Publish this source for CI/review before
+any stable deployment. The stable service remains on its previous checked bytes.
+QA tab41 is closed, viewport reset, all nine audio elements paused/no loop, exact
+QA service74168/conhost62824 stopped; no QA worker remains. Stable returns200.
+
+The operator's independent-clip requirement is already delivered by
+[saved clips — DONE](TODO/DONE/NS-6_saved-clips_01.md), not a new task/credit.
+Rechecked `PrepareStudioClip`, `ResolveItems` and `OpenStudioClip`: capture writes
+lossless independent audio plus parent/range/provenance receipts; later learning
+opens/verifies only selected clip files. Existing unavailable-parent, byte-avoidance
+and native/browser evidence remains applicable. No parent scan is reintroduced.
+
+## Selected batch: Studio structure consumer — 2026-10-31
+
+Big Boss SOLO starts the accepted form runtime's actual Studio consumer.
+Criterion: arrange named sections with fresh/repeated material and retained parts,
+save/reopen it, hear a sustained instrumental result, audition/change a section.
+Deliver optional laboratory Structure controls and shared bounded job publication,
+using the existing player, passage editor, progress, Stop and comparisons. Evidence
+must cover native metadata/job/replay plus desktop/phone browser interactions.
+Stop at that usable consumer; do not claim the full eight-unit task while
+per-section energy/density or actual operator listening criteria remain open.
+Previous turn completed the five-unit prerequisite; consecutive nonclosing count
+is zero. Current accounting remains99/140 until an entire task passes.
+
+Native transport reuses the portable form cursor for validation; new authored
+guide ranges feed only bounded planning windows. No full-duration mask allocation,
+parallel inference, source PCM assembly, worker/player or vendor edit is selected.
+Keep normal authored controls intact during shared-renderer integration; reject
+unsupported structured combinations explicitly instead of ignoring saved choices.
+New artifacts use `form-studio-20261031-boss` in the dedicated E-drive roots.
+
 ## Current handoff: future domains accepted; Studio form next — 2026-10-31
 
 Big Boss SOLO accepts [future domains — DONE](TODO/DONE/NS-4_future-domains_01.md)

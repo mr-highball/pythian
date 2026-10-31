@@ -31,7 +31,7 @@ interface
 uses pythian.audio, pythian.time, pythian.progress, pythian.bus, pythian.chord,
   pythian.music.decisions, pythian.music.form,
   pythian.percussion, pythian.music.stream, pythian.wfc.instrumental,
-  pythian.wfc.percussion, pythian.wfc.stream, wfc, wfc_model, wfc_sequence,
+  pythian.wfc.percussion, pythian.wfc.stream, pythian.wfc.voices, wfc, wfc_model, wfc_sequence,
   wfc_sequence_graph, wfc_music_ensemble, wfc_music_voices_graph,
   wfc_music_voices_stream;
 
@@ -39,6 +39,11 @@ const
   InstrumentalStreamVersion = 2;
 
 type
+  { Borrowed immutable authored/caller domain source. Positions in returned
+    masks are local to this bounded request. The source must outlive the stream;
+    its decisions cannot change or reenter the producer during generation. }
+  TInstrumentalDomainProvider = function(const AFirstCell: Int64;
+    const ACellCount: Integer): TVoiceMasks of object;
   TInstrumentalTokenStreams = array of TWfcModelTokens;
   TInstrumentalContextBinding = (icbDrivenRole, icbAllRoles);
   TInstrumentalStreamOptions = record
@@ -85,6 +90,8 @@ type
     FLastVoicePlanningCells: Integer;
     FContextBoundCells: Int64;
     FFormBoundCells: Int64;
+    FDomainBoundCells: Int64;
+    FDomainProvider: TInstrumentalDomainProvider;
     FForm: TMusicFormCursor;
     FDrumStreams: array of TLearnedSequenceStream;
     FDrumPending: array of TWfcGeneratedSequenceSegment;
@@ -133,7 +140,8 @@ type
       const AGraph: TBusGraph; const AOptions: TInstrumentalStreamOptions;
       const AContext: TWfcSequenceModel = nil;
       const ADecisionSink: TMusicDecisionSink = nil;
-      const AForm: TMusicForm = nil);
+      const AForm: TMusicForm = nil;
+      const ADomainProvider: TInstrumentalDomainProvider = nil);
     destructor Destroy; override;
     function ReadSamples(const AMaximumFrames: Integer; out ASamples: TAudioSamples;
       const AProgress: TWorkProgressCallback = nil): Boolean;
@@ -171,7 +179,7 @@ function DefaultInstrumentalStreamOptions(const AMusicFrames: Int64): TInstrumen
 implementation
 
 uses SysUtils, Math, pythian.synth, pythian.wfc.music,
-  pythian.wfc.voices, pythian.wfc.layers, pythian.wfc.musical.context,
+  pythian.wfc.layers, pythian.wfc.musical.context,
   wfc_music_arrangement;
 
 function DefaultInstrumentalStreamOptions(const AMusicFrames: Int64): TInstrumentalStreamOptions;
@@ -194,7 +202,7 @@ constructor TInstrumentalMusicStream.Create(const AConfig: TWfcMusicVoicesGraphC
   const ARoles: TInstrumentalRoles; const APercussion: TPercussionDefinitions;
   const AGraph: TBusGraph; const AOptions: TInstrumentalStreamOptions;
   const AContext: TWfcSequenceModel; const ADecisionSink: TMusicDecisionSink;
-  const AForm: TMusicForm);
+  const AForm: TMusicForm; const ADomainProvider: TInstrumentalDomainProvider);
 var
   LBindings: TInstrumentStreamBindings;
   LOptions: TInstrumentStreamOptions;
@@ -217,6 +225,7 @@ begin
   FOptions := AOptions;
   FContextModel := AContext;
   FDecisionSink := ADecisionSink;
+  FDomainProvider := ADomainProvider;
   SetLength(FRoleNames, Length(ARoles));
   for LIndex := 0 to High(ARoles) do FRoleNames[LIndex] := ARoles[LIndex].Name;
   SetLength(FPreviousDecision, Length(ARoles) + Length(APercussion));
@@ -708,6 +717,23 @@ begin
       Inc(LBindCell, LWindowCells);
     end;
     FFormBoundCells := Max(FFormBoundCells, LBindCell);
+  end;
+  if Assigned(FDomainProvider) then
+  begin
+    LBindCell := Max(FCells, FDomainBoundCells);
+    if LBindCell < FCells + LPlanningCells then
+    begin
+      LWindowCells := FCells + LPlanningCells - LBindCell;
+      LMasks := FDomainProvider(LBindCell, LWindowCells);
+      for LProvider := 0 to High(LMasks) do
+        for LMask in LMasks[LProvider] do
+        begin
+          if (LMask.Position < 0) or (LMask.Position >= LWindowCells) then
+            raise EAudio.Create('Authored domain lies outside its requested musical window');
+          FVoices.IntersectAllowedTokens(LProvider, LBindCell + LMask.Position, LMask.AllowedTokens);
+        end;
+      FDomainBoundCells := FCells + LPlanningCells;
+    end;
   end;
   LSegment := nil;
   LExpected := '';

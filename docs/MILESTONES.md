@@ -188,8 +188,9 @@ save real provider/control/sound recipes and exercise selective blends and reble
 The [new shared form API](MUSICAL-FORM.md) now drives an actual80second six-part
 arrangement with exact motif returns and selective Lead/Hat retention while other
 parts vary. It uses real context/voice/drum domains and one continuous performance.
-The retained no-context guide is repaired under NS-4. Studio arrangement,
-per-section controls, persistence, section audition/changes and operator listening
+The retained no-context guide is repaired under NS-4. The optional Studio form
+consumer locally saves/reopens and generates48second A/B/A, with exact section
+audition. Integration/CI, remaining section-edit limits, per-section controls and operator listening
 remain open; no NS-5 effort is accepted yet.
 
 <a id="ns-6"></a>

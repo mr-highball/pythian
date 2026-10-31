@@ -62,6 +62,10 @@ type
     { Authored harmony/rhythm guide only; pitched voice choices remain WFC.
       Arbitrary free graph solving is available through the runtime's nil masks. }
     function GuideMasks(const ACellCount: Integer): TVoiceMasks;
+    { Bounded local domains at the original musical position. Borrows no audio
+      and never allocates masks for the complete requested duration. }
+    function GuideMasksRange(const AFirstCell: Int64;
+      const ACellCount: Integer): TVoiceMasks;
     function CopyPercussion(const ASampleRate: Integer): TPercussionDefinitions;
     { Models are borrowed immutable; the runtime clones them before solving. }
     function Config: TWfcMusicVoicesGraphConfig;
@@ -424,11 +428,20 @@ begin
 end;
 
 function TInstrumentalStarter.GuideMasks(const ACellCount: Integer): TVoiceMasks;
+begin
+  Result := GuideMasksRange(0, ACellCount);
+end;
+
+function TInstrumentalStarter.GuideMasksRange(const AFirstCell: Int64;
+  const ACellCount: Integer): TVoiceMasks;
 var
   LCell: Integer;
+  LPosition: Int64;
   LFrame: TWfcMusicEnsembleFrame;
 begin
-  if (ACellCount < 1) or (ACellCount > 1024) then
+  if (AFirstCell <> Trunc(AFirstCell)) or (ACellCount <> Trunc(ACellCount)) or
+    (AFirstCell < 0) or (AFirstCell > High(Integer) - ACellCount) or
+    (ACellCount < 1) or (ACellCount > 1024) then
   begin
     raise EAudio.Create('Authored starter guide requires 1..1024 cells');
   end;
@@ -442,7 +455,8 @@ begin
   SetLength(Result[1], ACellCount);
   for LCell := 0 to ACellCount - 1 do
   begin
-    LFrame := StarterFrame((LCell div 64) mod 2, LCell mod 64, FTonic, FMinor);
+    LPosition := AFirstCell + LCell;
+    LFrame := StarterFrame((LPosition div 64) mod 2, LPosition mod 64, FTonic, FMinor);
     Result[0][LCell] := MakeWfcSequenceTokenConstraint(LCell,
       [EncodeWfcMusicPitchClassSet(ProjectWfcMusicEnsembleFrameToPitchClassSet(LFrame, 12))]);
     Result[1][LCell] := MakeWfcSequenceTokenConstraint(LCell,

@@ -122,6 +122,14 @@ length. **Feel** fills editable energy/density/tension preferences; **Apply**
 changes settings and starts no job. Follow the starter fixes its chords/rhythm;
 Let WFC vary releases them. Preferences cannot override a hard pitch limit.
 
+**Structure** optionally arranges named sections. Add a section, or repeat an
+earlier one and choose the parts to keep. A repeat uses its source length.
+Generated results can **Hear section** or **Change this section** through the
+existing player/editor. Section changes may override that section's retained
+parts; other sections stay saved. **Hear whole track** resumes full playback.
+Experimental structure currently requires neutral activity/chord preferences
+and100% note strength/length. Per-section energy/density is still in progress.
+
 Settings save automatically as named experiments. Reopen them in **Saved
 experiments**. Only **Generate experiment** starts music. Successive generations
 retain the last completed version for **Before/After**, including individual

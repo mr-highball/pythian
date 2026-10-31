@@ -5,8 +5,9 @@
 The shared library accepts an explicit caller-authored section/phrase arrangement.
 It generates instrumental decisions through actual WFC providers and performs them
 through one continuous Pythian stream. This is a library capability under active
-development. Studio arrangement controls, saved form recipes, section audition,
-per-section energy/density and targeted form regeneration are still required.
+development. The optional Studio laboratory now saves editable arrangements,
+generates them through the bounded performer and auditions exact sections.
+Per-section energy/density and actual operator listening remain required.
 
 ## Explicit musical inputs
 
@@ -34,8 +35,12 @@ ordinary stream's time, voice, work and model-state limits also apply.
 
 ## Actual WFC and performance behavior
 
-Pass the form as the final argument to `TInstrumentalMusicStream.Create`, after
-the optional decision sink. Omitting it preserves the existing stream path.
+Pass the form after the optional decision sink in `TInstrumentalMusicStream.Create`.
+An optional final `TInstrumentalDomainProvider` supplies local masks for an
+absolute, bounded future range. It is borrowed and must outlive the stream;
+it must not reenter it. The authored starter's `GuideMasksRange` uses the same
+primary guide at the requested absolute time. Omitting both preserves the
+existing stream path.
 
 ```pascal
 SetLength(LForm, 3);
@@ -89,6 +94,34 @@ PCM: its instruments perform again within that continuous sound/effect history.
 The decision sink retains the actual newly generated states and musical cells.
 
 ## Rejection and current limits
+
+Studio's **Lab → Structure** arranges named sections. Choose new material or
+repeat an earlier section, then choose which providers to keep. Length is in
+four-beat bars; a repeat uses its source length. Moving a source after its repeat
+is invalid, and deleting a referenced source is refused. Invalid edits survive
+reload without replacing the last accepted settings. The shared portable cursor
+validates the native transport and browser editor.
+
+Generated results expose **Hear section**, **Change this section** and
+**Hear whole track** through the existing player and passage editor. Native
+section frame boundaries determine playback and edit ranges. Form metadata,
+actual models, seeds, instruments and decision journals remain on the ordinary
+immutable job; sound changes replay it without learning or solving again.
+No context model is invented for authored material that has none.
+
+Current structured jobs require neutral activity/chord preferences and100%
+note strength/length. Pitch bounds, instruments and mix remain editable.
+Per-section energy/density is not delivered. Ordinary unstructured experiments
+retain their existing expression/preference controls.
+
+The actual Studio48second A/B/A consumer retains all eight requested providers
+in its return; the primary journal reader verifies the actual tokens. Playback
+seeks to32seconds and pauses at48seconds. A six-second unequal-section consumer
+also saves/reopens, replays changed sounds and changes six actual Lead cells
+without recordings. The longer return-section Lead edit fails at cell144 after
+an earlier candidate chunk commits. Preserve that failed request and the original
+playable result; bounded search failure is not proof of musical impossibility.
+No seed sweep or relaxed Keep is used. Full form acceptance remains open.
 
 An arbitrary captured phrase is not necessarily a loop. The maintained fixture's
 adjacent A-return/A-variation request rejects because the captured Hat motif cannot

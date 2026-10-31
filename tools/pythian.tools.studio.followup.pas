@@ -150,10 +150,14 @@ begin
     SetLength(LBindings, 6);
     for I := 0 to 2 do
     begin
-      Need(Pos('playlist-primary-v1-', LMeta.Arrays['roles'].Objects[I].Strings['instrument_id']) = 1,
+      Need((Pos('playlist-primary-v1-', LMeta.Arrays['roles'].Objects[I].Strings['instrument_id']) = 1) or
+        (Pos('structured-primary-v1-', LMeta.Arrays['roles'].Objects[I].Strings['instrument_id']) = 1),
         'Saved instrument recipe is unsupported by this editor');
       LInstruments[I] := CreateStudioInstrument(StudioPlaylistInstrumentZones,
-        LSettings.Arrays['instruments'].Strings[I], LSound, LHasSound, StudioInstrumentalRate);
+        LSettings.Arrays['instruments'].Strings[I], LSound,
+        LHasSound and ((LMeta.Objects['applied_sound'].Find('part') = nil) or
+          (LMeta.Objects['applied_sound'].Integers['part'] < 0) or
+          (LMeta.Objects['applied_sound'].Integers['part'] = I)), StudioInstrumentalRate);
       LBindings[I].Instrument := LInstruments[I];
       LBindings[I].Bus := LMeta.Arrays['roles'].Objects[I].Integers['output_bus'];
       LBindings[I].MaximumTones := 128;

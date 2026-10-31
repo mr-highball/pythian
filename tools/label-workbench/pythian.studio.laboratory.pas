@@ -133,7 +133,8 @@ begin
   LHeader := Add(FHelp, 'header', ''); LHeader.className := 'dialog-heading';
   Add(LHeader, 'h2', 'Try one change').id := 'laboratory-help-title';
   Button(LHeader, 'lab-help-close', 'Close help');
-  Add(FHelp, 'p', 'Music sets tempo, key and length. Parts changes note ranges, activity, note strength, note length and mix. Feel fills editable preferences for all pitched parts.');
+  Add(FHelp, 'p', 'Music sets tempo, key and length. Parts changes note ranges, activity, note strength, note length and mix. Feel fills editable preferences. Structure arranges sections and repeats.');
+  Add(FHelp, 'p', 'In Structure, choose an earlier section and the parts to keep. Other parts can vary. A repeat takes its source length; moving its source after it is invalid. Conflicting musical choices fail visibly.');
   Add(FHelp, 'p', 'The starter supplies the musical vocabulary. WFC chooses events; Pythian instruments synthesize bass, harmony, lead, kick, snare and hat. This is authored material, not learning from your collection.');
   Add(FHelp, 'p', 'Follow the starter fixes chords and rhythm. Let WFC vary releases those choices; preferences cannot override a hard pitch limit. A conflict means the requested choices do not fit.');
   Add(FHelp, 'p', 'Settings save automatically. Only Generate experiment starts music. Listen in the normal Generate step, then return here to change a setting. Saving feedback never changes the model.');

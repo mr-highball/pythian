@@ -686,8 +686,17 @@ code {
 /* Big Boss: optional controls keep one small panel visible, including on phones. */
 #laboratory-dialog { width: min(44rem, calc(100% - 1rem)); }
 #laboratory-dialog[open] { display: flex; flex-direction: column; max-height: calc(100vh - 1rem); overflow: hidden; }
-#lab-controls { overflow-y: auto; min-height: 0; padding-right: .2rem; }
-.lab-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .4rem; margin: .8rem 0; }
+#lab-controls { overflow-y: auto; overflow-x: hidden; min-height: 0; padding-right: .2rem; }
+.lab-tabs { position: sticky; top: 0; z-index: 1; background: var(--panel); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .4rem; margin: 0 0 .8rem; padding: .4rem 0; }
+.lab-tabs button { min-width: 0; padding: .65rem .25rem; font-size: .875rem; }
+.structure-toolbar { display: flex; flex-wrap: wrap; gap: .5rem; margin: .7rem 0; }
+.structure-tabs { display: flex; gap: .5rem; max-width: 100%; overflow-x: auto; margin: .8rem 0; padding-bottom: .3rem; }
+.structure-tabs button { flex: 0 0 auto; max-width: 14rem; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.structure-tabs [aria-selected="true"] { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.structure-keep { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+.structure-keep label, #structure-editor .check-label { display: flex; align-items: center; gap: .5rem; }
+#structure-editor input[type="checkbox"] { display: inline-block; width: 1.15rem; min-height: 1.15rem; margin: 0; flex: 0 0 auto; }
+#structure-editor fieldset { margin: .8rem 0; min-width: 0; }
 .lab-tabs [aria-selected="true"] { color: var(--bg); background: var(--accent); border-color: var(--accent); }
 .lab-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; margin: .8rem 0; }
 .lab-grid label, .lab-saved label { min-width: 0; }

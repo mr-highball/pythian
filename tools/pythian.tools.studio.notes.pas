@@ -80,11 +80,17 @@ var
   LRow: TJSONObject;
   LModelText: String;
   LLabels: array[0..8] of String;
+  LHasContext: Boolean;
+  LModelIndex, LModelCount: Integer;
 begin
   inherited Create;
+  LHasContext := AMeta.Strings['context_binding'] <> 'none';
+  LModelCount := 8 + Ord(LHasContext);
   Need((AMeta.Arrays['roles'].Count = 3) and (AMeta.Arrays['percussion'].Count = 3) and
-    (AMeta.Arrays['models'].Count = 9) and (AMeta.Arrays['model_labels'].Count = 9) and
-    (AMeta.Strings['context_binding'] = 'all_roles'), 'Saved musical graph layout is unsupported');
+    (AMeta.Arrays['models'].Count = LModelCount) and
+    (AMeta.Arrays['model_labels'].Count = LModelCount) and
+    ((AMeta.Strings['context_binding'] = 'all_roles') or not LHasContext),
+    'Saved musical graph layout is unsupported');
   SetLength(Models, 9);
   SetLength(Names, 3);
   SetLength(Config.Voices, 3);
@@ -102,14 +108,16 @@ begin
     Config.Voices[I].MaxPitch := LRole.Integers['maximum_pitch'];
   end;
   LModelText := '';
-  for I := 0 to 8 do
+  for I := 0 to LModelCount - 1 do
   begin
-    Need(AMeta.Arrays['model_labels'].Strings[I] = LLabels[I],
+    LModelIndex := I;
+    if not LHasContext and (I >= 5) then Inc(LModelIndex);
+    Need(AMeta.Arrays['model_labels'].Strings[I] = LLabels[LModelIndex],
       'Saved musical model order differs from its role metadata');
     LModelText := LModelText + IntToStr(Length(AMeta.Arrays['models'].Strings[I])) +
       ':' + AMeta.Arrays['models'].Strings[I];
-    ReportWork(AProgress, 'instrumental_edit_models', wuItems, I, 9);
-    Models[I] := DecodeWfcSequenceText(AMeta.Arrays['models'].Strings[I]);
+    ReportWork(AProgress, 'instrumental_edit_models', wuItems, I, LModelCount);
+    Models[LModelIndex] := DecodeWfcSequenceText(AMeta.Arrays['models'].Strings[I]);
   end;
   Need(StudioTextHash(LModelText) = AMeta.Strings['model_sha256'],
     'Saved model text differs from its accepted identity');
@@ -255,7 +263,7 @@ begin
           LModels.Context, LCurrent, LEdges, LChunkEdit, LAfter, LReport, AProgress) then
         begin
           Reject(LReport.Detail,
-            'These changes cannot fit the kept music. Try more parts, a later Start or a longer passage.');
+            'Could not complete these changes with the current search. Try a shorter passage or more parts.');
         end;
       except
         on E: EAudio do

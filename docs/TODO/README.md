@@ -45,8 +45,9 @@ open tasks. Effort is relative implementation complexity, not musical-quality
 credit. Big Boss remains the sole implementation and verification agent.
 The [shared form API](../MUSICAL-FORM.md) now performs explicit musical returns
 and selective motif retention through the actual six-part graph. The full task
-stays open pending Studio arrangement/section controls, persistence, per-section
-musical controls and operator listening; partial implementation earns no units.
+has locally exercised Studio arrangement, persistence and exact section playback.
+The full task stays open pending integration/CI, remaining section-edit limits,
+per-section musical controls and operator listening; partial work earns no units.
 
 ## First operator-facing milestone
 

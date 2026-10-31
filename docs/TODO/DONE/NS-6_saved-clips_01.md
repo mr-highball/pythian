@@ -10,9 +10,9 @@
 **Description:**
 
 Saving a passage must create independent audio linked to its original recording
-and exact source-frame range. The current playlist stores range metadata and
-reprepares/verifies the whole original track on each Generate. The operator's
-short clip therefore causes gigabytes of unrelated reads. Preserve original
+and exact source-frame range. The previous playlist stored range metadata and
+reprepared/verified the whole original track on each Generate. The operator's
+short clip therefore caused gigabytes of unrelated reads. Preserve original
 recordings and immutable project/feedback history while learning from clip files.
 Primary attribution: NS-6; this directly unblocks practical coarse corpus learning.
 

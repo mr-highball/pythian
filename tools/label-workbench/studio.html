@@ -92,6 +92,12 @@ SOFTWARE.
         <section id="generation-before" hidden aria-label="Before"><h3>Before</h3><audio id="generated-before-audio" controls preload="none"></audio></section>
         <section aria-label="Current version"><h3 id="generation-after-label" hidden>After</h3><audio id="generated-audio" controls preload="none"></audio><a id="download-generated" download="pythian-track.wav">Save WAV</a></section>
       </div>
+      <div id="result-sections" hidden>
+        <label for="result-section">Section<select id="result-section"></select></label>
+        <p id="result-section-range" class="hint"></p>
+        <div class="library-actions"><button id="play-section" data-studio-action type="button">▶ Hear section</button><button id="change-section" data-studio-action type="button">Change this section</button><button id="play-full-track" data-studio-action type="button">▶ Hear whole track</button></div>
+        <p id="result-section-status" class="hint" role="status"></p>
+      </div>
       <div class="library-actions"><button id="change-notes" data-studio-action type="button" hidden>Change notes</button><button id="change-sounds" data-studio-action type="button" hidden>Change sounds</button></div>
       <p id="sound-availability" class="hint"></p>
       <details id="part-comparison"><summary>Hear individual parts</summary>

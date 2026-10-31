@@ -58,7 +58,8 @@ function CanonicalStudioInstrumentalConfig(const AConfig: TJSONObject): TJSONObj
 
 implementation
 
-uses SysUtils, pythian.audio;
+uses SysUtils, pythian.audio, pythian.music.form, pythian.music.decisions,
+  pythian.tools.studio.form;
 procedure Need(const ACondition: Boolean; const AMessage: String);
 begin
   if not ACondition then raise EAudio.Create(AMessage);
@@ -140,18 +141,37 @@ begin
 end;
 
 procedure ValidateStudioInstrumentalConfig(const AConfig: TJSONObject);
-var LIndex: Integer; LValue: TJSONData;
+var LIndex, LMaximumCells: Integer; LValue: TJSONData; LForm: TMusicForm;
+  LControls: TMusicalPartControls;
 begin
   Need((AConfig <> nil) and (AConfig.Count = 5 + Ord(AConfig.Find('mode') <> nil) +
-    Ord(AConfig.Find('controls') <> nil)),
+    Ord(AConfig.Find('controls') <> nil) + Ord(AConfig.Find('form') <> nil)),
     'Instrumental settings require tempo_bpm, tonic, cells, instruments and levels');
   for LIndex := 0 to AConfig.Count - 1 do
     Need(Pos('|' + AConfig.Names[LIndex] + '|',
-      '|tempo_bpm|tonic|cells|instruments|levels|mode|controls|') > 0, 'Unsupported instrumental setting');
+      '|tempo_bpm|tonic|cells|instruments|levels|mode|controls|form|') > 0, 'Unsupported instrumental setting');
+  LMaximumCells := StudioInstrumentalMaximumCells;
+  if AConfig.Find('form') <> nil then
+  begin
+    LForm := DecodeStudioForm(AConfig.Find('form'));
+    LMaximumCells := MaximumMusicFormPhrases * MaximumMusicDecisionCells;
+    Need(Number(AConfig, 'cells', 1, LMaximumCells) = StudioFormCells(LForm),
+      'Track length must equal the sections in its structure');
+  end;
   if AConfig.Find('controls') <> nil then
   begin
     Need(AConfig.Find('controls').JSONType = jtObject, 'Musical controls must be an object');
-    DecodeStudioMusicalControls(AConfig.Objects['controls']);
+    LControls := DecodeStudioMusicalControls(AConfig.Objects['controls']);
+    if AConfig.Find('form') <> nil then
+    begin
+      Need(AConfig.Objects['controls'].Integers['tonic_bias'] = 0,
+        'Experimental structure currently requires a neutral chord preference');
+      for LIndex := 0 to High(LControls) do
+        Need((LControls[LIndex].ActivityBias = 0) and
+          (LControls[LIndex].Expression.VelocityPercent = 100) and
+          (LControls[LIndex].Expression.GatePercent = 100),
+          'Experimental structure currently requires neutral activity and 100% note strength/length');
+    end;
   end;
   if AConfig.Find('mode') <> nil then
   begin
@@ -161,7 +181,7 @@ begin
   end;
   Number(AConfig, 'tempo_bpm', 40, 240);
   Number(AConfig, 'tonic', 0, 11);
-  Number(AConfig, 'cells', 1, StudioInstrumentalMaximumCells);
+  Number(AConfig, 'cells', 1, LMaximumCells);
   LValue := AConfig.Find('instruments');
   Need((LValue <> nil) and (LValue.JSONType = jtArray) and
     (TJSONArray(LValue).Count = 3), 'Choose three pitched instruments');
@@ -229,6 +249,8 @@ begin
     Result.Add('tonic', AConfig.Integers['tonic']);
     Result.Add('cells', AConfig.Integers['cells']);
     if AConfig.Find('mode') <> nil then Result.Add('mode', AConfig.Strings['mode']);
+    if AConfig.Find('form') <> nil then
+      Result.Add('form', EncodeStudioForm(DecodeStudioForm(AConfig.Find('form'))));
     Result.Add('instruments', AConfig.Arrays['instruments'].Clone);
     LLevels := TJSONArray.Create;
     Result.Add('levels', LLevels);

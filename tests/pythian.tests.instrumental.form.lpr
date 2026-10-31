@@ -199,7 +199,8 @@ begin
   end;
 end;
 
-function SourceFreeForm(const APull: Integer): TResult;
+function SourceFreeForm(const APull: Integer;
+  const ABoundedGuide: Boolean = False): TResult;
 var
   LStarter: TInstrumentalStarter;
   LGraph: TBusGraph;
@@ -210,6 +211,7 @@ var
   LStems: TBusSampleBlocks;
   LCapture: TCapture;
   LGuide: TVoiceMasks;
+  LDomainProvider: TInstrumentalDomainProvider;
   I, J, K, LAt: Integer;
   LEnergy: Double;
 begin
@@ -228,14 +230,18 @@ begin
       LForm[I].RepeatFrom := -1;
     end;
     LOptions := DefaultInstrumentalStreamOptions(8000 * 6);
+    LDomainProvider := nil;
+    if ABoundedGuide then LDomainProvider := LStarter.GuideMasksRange;
     LStream := TInstrumentalMusicStream.Create(LStarter.Config, LStarter.CopyRoles,
-      LStarter.CopyPercussion(8000), LGraph, LOptions, nil, LCapture.Keep, LForm);
+      LStarter.CopyPercussion(8000), LGraph, LOptions, nil, LCapture.Keep, LForm,
+      LDomainProvider);
     { Big Boss: original retained positive reproduction: same guide/seed and
       unequal8/16cell phrases. No learned context, seed sweep or relaxed domain. }
     LGuide := LStarter.GuideMasks(24);
-    for I := 0 to High(LGuide) do
-      for J := 0 to High(LGuide[I]) do
-        LStream.IntersectFutureTokens(I, LGuide[I][J].Position, LGuide[I][J].AllowedTokens);
+    if not ABoundedGuide then
+      for I := 0 to High(LGuide) do
+        for J := 0 to High(LGuide[I]) do
+          LStream.IntersectFutureTokens(I, LGuide[I][J].Position, LGuide[I][J].AllowedTokens);
     SetLength(Result.Mix, LStream.FrameCount * 2);
     SetLength(Result.Stems, 6);
     for I := 0 to 5 do SetLength(Result.Stems[I], Length(Result.Mix));
@@ -392,8 +398,11 @@ begin
   LSecond := Render(2048, 64, icbDrivenRole);
   Check(Length(LSecond.Chunks) = 4, 'Driven-role context consumer also uses the form path');
   LShort := SourceFreeForm(2048);
-  LShortReplay := SourceFreeForm(173);
-  Check(SameAudio(LShort.Mix, LShortReplay.Mix), 'Unequal-phrase mix replays across PCM pulls');
+  LShortReplay := SourceFreeForm(173, True);
+  Check(SameAudio(LShort.Mix, LShortReplay.Mix),
+    'Bounded guide callback and original full guide perform identical mix across PCM pulls');
+  Check(DecisionDigest(LShort) = DecisionDigest(LShortReplay),
+    'Bounded guide callback retains exact original model choices and section boundaries');
   for I := 0 to 5 do
     Check(SameAudio(LShort.Stems[I], LShortReplay.Stems[I]), 'Unequal-phrase parts replay across PCM pulls');
   {$ifndef pas2js}

@@ -61,6 +61,9 @@ type
 { Owned estimate, no payload allocation. Includes all seven retained files,
   primary RIFF/RF64 headers and a fixed metadata/free-space reserve. }
 function StudioInstrumentalOutputEstimate(const ADurationMs: Int64): TJSONObject;
+{ Exact musical clocks, including section lengths at fractional BPM, reuse the
+  same resource accounting without rounding through milliseconds. }
+function StudioInstrumentalOutputEstimateFrames(const AMusicFrames: Int64): TJSONObject;
 { Native host volume check, before learning/rendering. Does not reserve space
   against other writers; later I/O failures remain normal terminal job errors. }
 procedure AdmitStudioInstrumentalOutput(const ACatalogRoot: String; const ADurationMs: Int64);
@@ -75,19 +78,27 @@ const
   CPartNames: array[0..5] of String = ('Bass', 'Harmony', 'Lead', 'Kick', 'Snare', 'Hat');
 
 function StudioInstrumentalOutputEstimate(const ADurationMs: Int64): TJSONObject;
-var
-  LFrames, LBytes: Int64;
 begin
   if (ADurationMs < 2000) or (ADurationMs > 86400000) then
     raise EAudio.Create('Track length must be2seconds to24hours');
-  LFrames := ADurationMs * StudioInstrumentalRate div 1000 +
+  Result := StudioInstrumentalOutputEstimateFrames(ADurationMs * StudioInstrumentalRate div 1000);
+end;
+
+function StudioInstrumentalOutputEstimateFrames(const AMusicFrames: Int64): TJSONObject;
+var
+  LFrames, LBytes: Int64;
+begin
+  if (AMusicFrames < Int64(2) * StudioInstrumentalRate) or
+    (AMusicFrames > Int64(86400) * StudioInstrumentalRate) then
+    raise EAudio.Create('Track length must be2seconds to24hours');
+  LFrames := AMusicFrames +
     StudioInstrumentalTailSeconds * StudioInstrumentalRate;
   LBytes := WavePcm16ByteCount(StudioInstrumentalRate, 2, LFrames);
   Result := TJSONObject.Create;
   Result.Add('sample_rate', StudioInstrumentalRate);
   Result.Add('channels', 2);
   Result.Add('bits_per_sample', 16);
-  Result.Add('music_frames', ADurationMs * StudioInstrumentalRate div 1000);
+  Result.Add('music_frames', AMusicFrames);
   Result.Add('tail_frames', Int64(StudioInstrumentalTailSeconds) * StudioInstrumentalRate);
   Result.Add('frame_count', LFrames);
   Result.Add('wav_bytes_each', LBytes);

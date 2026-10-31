@@ -691,6 +691,7 @@ var
   LQueued: Integer;
   LIndex: Integer;
   LClipIndex: Integer;
+  LReplayRate: Integer;
   LSeeds: TJSONArray;
   LPreparation: TJSONObject;
   LParentRequest: TJSONObject;
@@ -830,7 +831,15 @@ begin
         LParentRequest := ReadStudioJobRequest(ACatalogRoot, Text(AWrite, 'parent_job_id'));
         try
           LRequest.Add('project_snapshot', LParentRequest.Objects['project_snapshot'].Clone);
-          LRequest.Add('duration_ms', LParentRequest.Int64s['duration_ms']);
+          if LParentRequest.Find('duration_ms') <> nil then
+            LRequest.Add('duration_ms', LParentRequest.Int64s['duration_ms'])
+          else
+          begin
+            LReplayRate := LParentResult.Arrays['outputs'].Objects[0].Integers['sample_rate'];
+            Need(LReplayRate > 0, 'Saved musical clock is missing');
+            LRequest.Add('duration_ms', (LParentResult.Objects['decisions'].Int64s['music_frames'] *
+              1000 + LReplayRate - 1) div LReplayRate);
+          end;
           LRequest.Add('seeds', LParentRequest.Arrays['seeds'].Clone);
         finally
           LParentRequest.Free;

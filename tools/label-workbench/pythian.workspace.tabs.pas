@@ -45,6 +45,7 @@ type
 procedure SelectWorkspacePane(const AId: String; AFocus: Boolean = False);
 procedure RevealWorkspaceControl(AControl: TJSElement);
 procedure ConfigureWorkspaceTabs(ARoot: TJSElement);
+function HandleWorkspaceTabKey(AEvent: TJSKeyboardEvent): Boolean;
 
 implementation
 
@@ -186,13 +187,13 @@ begin
   SelectWorkspacePane(LId, True);
 end;
 
-function TWorkspaceTabs.Key(AEvent: TJSKeyboardEvent): Boolean;
+function HandleWorkspaceTabKey(AEvent: TJSKeyboardEvent): Boolean;
 var
   LButton: TJSElement;
   LButtons: TJSNodeList;
   LIndex: Integer;
 begin
-  Result := True;
+  Result := False;
   LButton := TJSElement(AEvent.target);
   if LButton.getAttribute('role') <> 'tab' then
   begin
@@ -229,6 +230,13 @@ begin
   SelectWorkspacePane(LButton.getAttribute('aria-controls'));
   TJSHTMLElement(LButton).focus;
   AEvent.preventDefault;
+  Result := True;
+end;
+
+function TWorkspaceTabs.Key(AEvent: TJSKeyboardEvent): Boolean;
+begin
+  HandleWorkspaceTabKey(AEvent);
+  Result := True;
 end;
 
 end.

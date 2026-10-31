@@ -67,6 +67,8 @@ type
     FClipPolling: Boolean;
     FResumeOnConnect: Boolean;
     FIncludedSeconds: Double;
+    FSectionFirst: Double;
+    FSectionEnd: Double;
     FLearningLabel: String;
     function ResultProjectId: String;
     procedure LaboratorySaved(AProject: TJSObject);
@@ -96,6 +98,11 @@ type
     procedure DrawNoteChoices;
     procedure ApplyNoteChoices;
     procedure DrawPartComparison;
+    procedure DrawSections;
+    function SelectedSection: TJSObject;
+    procedure HearSection(const AWholeTrack: Boolean); async;
+    procedure ChangeSection;
+    function SectionPlayback(AEvent: TEventListenerEvent): Boolean;
     function ResultDetails(AEvent: TEventListenerEvent): Boolean;
     procedure OpenPreviousVersion; async;
     procedure PauseResult;
@@ -492,6 +499,7 @@ begin
 end;
 procedure TStudio.PauseResult;
 begin
+  FSectionEnd := 0;
   TJSHTMLAudioElement(El('generated-audio')).pause;
   TJSHTMLAudioElement(El('generated-before-audio')).pause;
   TJSHTMLAudioElement(El('generated-original-audio')).pause;
@@ -851,6 +859,7 @@ begin
   LUrl := '/api/studio/instrumental-audio?job=' + encodeURIComponent(FJobId) + '&part=6';
   if El('generated-audio').getAttribute('data-job') <> FJobId then
   begin
+    FSectionEnd := 0;
     TJSHTMLAudioElement(El('generated-audio')).src := LUrl;
     El('generated-audio').setAttribute('data-job', FJobId);
     El('download-generated').setAttribute('href', LUrl);
@@ -912,7 +921,122 @@ begin
           StudioTime(Num(LRow, 'frame_count') / Num(LRow, 'sample_rate')) + ' not selected');
       end;
   end;
+  DrawSections;
   El('generation-result').removeAttribute('hidden');
+end;
+
+function TStudio.SelectedSection: TJSObject;
+var
+  LRows: TJSArray;
+  LIndex: Integer;
+begin
+  Result := nil;
+  LRows := Arr(Obj(FJob['results']), 'sections');
+  LIndex := TJSHTMLSelectElement(El('result-section')).selectedIndex;
+  if (LRows <> nil) and (LIndex >= 0) and (LIndex < LRows.length) then
+    Result := Obj(LRows[LIndex]);
+end;
+
+procedure TStudio.DrawSections;
+var
+  LRows: TJSArray;
+  LRow: TJSObject;
+  LOption: TJSElement;
+  I: Integer;
+begin
+  LRows := Arr(Obj(FJob['results']), 'sections');
+  El('result-sections').setAttribute('hidden', '');
+  if (LRows = nil) or (LRows.length = 0) then Exit;
+  El('result-sections').removeAttribute('hidden');
+  if El('result-section').getAttribute('data-job') <> FJobId then
+  begin
+    El('result-section').innerHTML := '';
+    for I := 0 to LRows.length - 1 do
+    begin
+      LOption := Add(El('result-section'), 'option', IntToStr(I + 1) + ' · ' + Str(Obj(LRows[I]), 'name'));
+      LOption.setAttribute('value', IntToStr(I));
+    end;
+    El('result-section').setAttribute('data-job', FJobId);
+    El('result-section-status').textContent := '';
+  end;
+  LRow := SelectedSection;
+  if LRow <> nil then
+    El('result-section-range').textContent :=
+      StudioTime(Num(LRow, 'start_frame') / 24000) + '–' +
+      StudioTime(Num(LRow, 'end_frame') / 24000);
+end;
+
+procedure TStudio.HearSection(const AWholeTrack: Boolean); async;
+var
+  LRow: TJSObject;
+  LPlayer: TJSHTMLAudioElement;
+  LJob: String;
+begin
+  if Str(FJob, 'status') <> 'completed' then Exit;
+  LRow := SelectedSection;
+  if not AWholeTrack and (LRow = nil) then Exit;
+  LJob := FJobId;
+  LPlayer := TJSHTMLAudioElement(El('generated-audio'));
+  FSectionEnd := 0;
+  FSectionFirst := 0;
+  if not AWholeTrack then
+  begin
+    FSectionFirst := Num(LRow, 'start_frame') / 24000;
+    FSectionEnd := Num(LRow, 'end_frame') / 24000;
+  end;
+  try
+    LPlayer.currentTime := FSectionFirst;
+    await(LPlayer.play());
+    if LJob <> FJobId then Exit;
+    if AWholeTrack then El('result-section-status').textContent := 'Playing the whole track.'
+    else El('result-section-status').textContent := 'Playing ' + Str(LRow, 'name') + '.';
+  except
+    on E: Exception do
+      if LJob = FJobId then
+        El('result-section-status').textContent := 'Press Play in the player to hear this section.';
+  end;
+end;
+
+function TStudio.SectionPlayback(AEvent: TEventListenerEvent): Boolean;
+var LPlayer: TJSHTMLAudioElement;
+begin
+  Result := False;
+  if FSectionEnd <= 0 then Exit;
+  LPlayer := TJSHTMLAudioElement(El('generated-audio'));
+  if LPlayer.currentTime >= FSectionEnd then
+  begin
+    LPlayer.pause;
+    LPlayer.currentTime := FSectionEnd;
+    FSectionEnd := 0;
+    El('result-section-status').textContent := 'Section finished. Hear it again, or change this section.';
+  end
+  else if LPlayer.currentTime < FSectionFirst - 0.001 then
+  begin
+    FSectionEnd := 0;
+    El('result-section-status').textContent := 'Playing from the position you chose.';
+  end;
+end;
+
+procedure TStudio.ChangeSection;
+var
+  LRow: TJSObject;
+  function FrameTime(const AFrame: Double): String;
+  var LSeconds: Double;
+  begin
+    LSeconds := AFrame / 24000;
+    Result := IntToStr(Trunc(LSeconds / 60)) + ':' +
+      FormatFloat('00.000000', LSeconds - Trunc(LSeconds / 60) * 60);
+  end;
+begin
+  LRow := SelectedSection;
+  if LRow = nil then Exit;
+  OpenNoteChoices;
+  if not El('note-dialog').hasAttribute('open') then Exit;
+  TJSHTMLInputElement(El('note-start')).value := FrameTime(Num(LRow, 'start_frame'));
+  TJSHTMLInputElement(El('note-end')).value := FrameTime(Num(LRow, 'end_frame'));
+  El('note-length').textContent := Str(LRow, 'name') +
+    ' · Choose the parts to change here. Other sections stay saved. Changes can override this section’s retained parts.';
+  DrawNoteChoices;
 end;
 
 function TStudio.CaptureFollowupParent: Boolean;
@@ -1992,6 +2116,9 @@ begin
     'change-sounds': OpenSoundChoices;
     'apply-sounds': ApplySoundChoices;
     'change-notes': OpenNoteChoices;
+    'play-section': HearSection(False);
+    'play-full-track': HearSection(True);
+    'change-section': ChangeSection;
     'apply-notes': ApplyNoteChoices;
     'previous-version': OpenPreviousVersion;
     'cancel-generation': CancelGeneration;
@@ -2020,6 +2147,14 @@ begin
   Result := False;
   if FLoading then Exit;
   LControl := TJSElement(AEvent.target);
+  if LControl.id = 'result-section' then
+  begin
+    TJSHTMLAudioElement(El('generated-audio')).pause;
+    FSectionEnd := 0;
+    El('result-section-status').textContent := '';
+    DrawSections;
+    Exit;
+  end;
   if LControl.id = 'result-part' then
   begin
     DrawPartComparison;
@@ -2139,6 +2274,9 @@ begin
   El('result-part').addEventListener('change', @Edit);
   El('part-comparison').addEventListener('toggle', @ResultDetails);
   El('generation-original').addEventListener('toggle', @ResultDetails);
+  El('result-section').addEventListener('change', @Edit);
+  El('generated-audio').addEventListener('timeupdate', @SectionPlayback);
+  El('generated-audio').addEventListener('seeking', @SectionPlayback);
   El('learning-label-choice').addEventListener('change', @Edit);
   El('source-reconnect').addEventListener('click', @Click);
   El('capture-panel').addEventListener('close', @CaptureClosed);

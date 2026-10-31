@@ -29,7 +29,7 @@ unit pythian.studio.musical.controls;
 
 interface
 
-uses JS, Web, SysUtils;
+uses JS, Web, SysUtils, pythian.studio.structure;
 
 type
   { Big Boss: form presentation only. Reuses the primary control/affect mappings;
@@ -37,8 +37,10 @@ type
   TStudioMusicalControls = class
   private
     FSettings, FControlStatus: TJSElement;
-    FPanels: array[0..2] of TJSElement;
-    FTabs: array[0..2] of TJSElement;
+    FPanels: array[0..3] of TJSElement;
+    FTabs: array[0..3] of TJSElement;
+    FStructure: TStudioStructure;
+    FEnabled: Boolean;
     function Add(AParent: TJSElement; const ATag, AText: String): TJSElement;
     function Input(AParent: TJSElement; const AId, ALabel, AValue: String;
       AMinimum, AMaximum: Integer): TJSElement;
@@ -47,9 +49,11 @@ type
     function TabClick(AEvent: TJSMouseEvent): Boolean;
     function TabKey(AEvent: TJSKeyboardEvent): Boolean;
     function PartChanged(AEvent: TEventListenerEvent): Boolean;
+    function StructureChanged(AEvent: TEventListenerEvent): Boolean;
     procedure SelectTab(const AIndex: Integer);
   public
     constructor Create(AParent: TJSElement);
+    destructor Destroy; override;
     function ReadConfig: TJSObject;
     procedure RestoreConfig(AConfig: TJSObject);
     function ReadDraft: TJSObject;
@@ -60,7 +64,8 @@ type
 
 implementation
 
-uses pythian.studio.sources, pythian.studio.requests, pythian.music.controls;
+uses pythian.studio.sources, pythian.studio.requests, pythian.music.controls,
+  pythian.workspace.tabs;
 
 const
   CNames: array[0..5] of String = ('Bass', 'Harmony', 'Lead', 'Kick', 'Snare', 'Hat');
@@ -86,7 +91,7 @@ end;
 
 constructor TStudioMusicalControls.Create(AParent: TJSElement);
 const
-  CTabs: array[0..2] of String = ('Music', 'Parts', 'Feel');
+  CTabs: array[0..3] of String = ('Music', 'Parts', 'Feel', 'Structure');
   CShapes: array[0..3] of String = ('saw', 'triangle', 'square', 'sine');
   CSoundNames: array[0..3] of String = ('Bright · saw', 'Soft · triangle', 'Hollow · square', 'Smooth · sine');
   CKeys: array[0..11] of String = ('C', 'C♯', 'D', 'E♭', 'E', 'F', 'F♯', 'G', 'A♭', 'A', 'B♭', 'B');
@@ -95,13 +100,14 @@ var
   I, J: Integer;
 begin
   inherited Create;
+  FEnabled := True;
   FSettings := Add(AParent, 'div', '');
   FSettings.id := 'lab-controls';
   LNav := Add(FSettings, 'div', '');
   LNav.className := 'lab-tabs';
   LNav.setAttribute('role', 'tablist');
   LNav.setAttribute('aria-label', 'Experiment controls');
-  for I := 0 to 2 do
+  for I := 0 to 3 do
   begin
     FTabs[I] := Add(LNav, 'button', CTabs[I]);
     FTabs[I].id := 'lab-tab-' + IntToStr(I);
@@ -112,7 +118,7 @@ begin
     FTabs[I].addEventListener('click', @TabClick);
     FTabs[I].addEventListener('keydown', @TabKey);
   end;
-  for I := 0 to 2 do
+  for I := 0 to 3 do
   begin
     FPanels[I] := Add(FSettings, 'section', '');
     FPanels[I].id := 'lab-panel-' + IntToStr(I);
@@ -174,8 +180,24 @@ begin
   Add(FPanels[2], 'p', 'Experimental mapping: energy → note strength, density → activity, tension → chord-root preference. Choose Let WFC vary to hear rhythm/chord preferences. Apply changes settings only.').className := 'hint';
   Input(FPanels[2], 'instrumental-tonic-bias', 'Chord-root preference · −100 to 100', '0', -100, 100);
   FControlStatus := Add(FPanels[2], 'p', ''); FControlStatus.setAttribute('role', 'status');
+  FStructure := TStudioStructure.Create(FPanels[3]);
+  FSettings.addEventListener('change', @StructureChanged);
   SelectTab(0);
 end;
+destructor TStudioMusicalControls.Destroy;
+begin
+  FSettings.removeEventListener('change', @StructureChanged);
+  FStructure.Free;
+  inherited Destroy;
+end;
+
+function TStudioMusicalControls.StructureChanged(AEvent: TEventListenerEvent): Boolean;
+begin
+  Result := False;
+  TJSHTMLInputElement(document.getElementById('instrumental-bars')).disabled :=
+    not FEnabled or FStructure.Enabled;
+end;
+
 function TStudioMusicalControls.Number(const AId: String; AMinimum, AMaximum: Integer): Integer;
 var LText, LLabel: String;
 begin
@@ -191,12 +213,20 @@ end;
 function TStudioMusicalControls.ReadConfig: TJSObject;
 var LShapes, LLevels, LParts: TJSArray; LControls, LPart: TJSObject; I: Integer;
   LNativeControl: TMusicalPartControl;
+  LStructure: TJSArray;
+  LCells: Integer;
 begin
   Result := TJSObject.new;
   Result['tempo_bpm'] := Number('instrumental-tempo', 40, 240);
   Result['tonic'] := Number('instrumental-tonic', 0, 11);
   Result['mode'] := TJSHTMLSelectElement(document.getElementById('instrumental-mode')).value;
-  Result['cells'] := Number('instrumental-bars', 1, 32) * 8;
+  LStructure := FStructure.ReadConfig(LCells);
+  if LStructure <> nil then
+  begin
+    Result['form'] := LStructure;
+    Result['cells'] := LCells;
+  end
+  else Result['cells'] := Number('instrumental-bars', 1, 32) * 8;
   LShapes := TJSArray.new; LLevels := TJSArray.new;
   for I := 0 to 5 do
   begin
@@ -208,6 +238,8 @@ begin
   LControls := TJSObject.new;
   LControls['guide'] := TJSHTMLSelectElement(document.getElementById('instrumental-guide')).value = 'guide';
   LControls['tonic_bias'] := Number('instrumental-tonic-bias', -100, 100);
+  if (LStructure <> nil) and (Integer(LControls['tonic_bias']) <> 0) then
+    raise Exception.Create('Structure currently needs a neutral chord-root preference.');
   LParts := TJSArray.new;
   LControls['parts'] := LParts;
   for I := 0 to 2 do
@@ -220,6 +252,10 @@ begin
     LNativeControl.Expression.GatePercent := Number('instrumental-gate-' + IntToStr(I), 1, 100);
     try
       ValidateMusicalPartControl(LNativeControl);
+      if (LStructure <> nil) and ((LNativeControl.ActivityBias <> 0) or
+        (LNativeControl.Expression.VelocityPercent <> 100) or
+        (LNativeControl.Expression.GatePercent <> 100)) then
+        raise Exception.Create('Structure currently needs activity0 and note strength/length100%.');
     except
       on E: Exception do raise Exception.Create(CNames[I] + ': ' + E.Message);
     end;
@@ -287,6 +323,8 @@ begin
     end;
   end;
   FControlStatus.textContent := '';
+  FStructure.RestoreConfig(AConfig['form']);
+  StructureChanged(nil);
   ReadConfig;
 end;
 
@@ -319,23 +357,19 @@ end;
 procedure TStudioMusicalControls.SetEnabled(const AEnabled: Boolean);
 var LControls: TJSNodeList; I: Integer;
 begin
+  FEnabled := AEnabled;
   LControls := FSettings.querySelectorAll('input,select');
   for I := 0 to LControls.length - 1 do
     TJSHTMLInputElement(LControls[I]).disabled := not AEnabled;
   TJSHTMLButtonElement(document.getElementById('instrumental-apply-affect')).disabled := not AEnabled;
+  FStructure.SetEnabled(AEnabled);
+  StructureChanged(nil);
 end;
 
 
 procedure TStudioMusicalControls.SelectTab(const AIndex: Integer);
-var I: Integer;
 begin
-  for I := 0 to 2 do
-  begin
-    FTabs[I].setAttribute('aria-selected', BoolToStr(I = AIndex, 'true', 'false'));
-    FTabs[I].setAttribute('tabindex', IntToStr(-Ord(I <> AIndex)));
-    if I = AIndex then FPanels[I].removeAttribute('hidden')
-    else FPanels[I].setAttribute('hidden', '');
-  end;
+  SelectWorkspacePane(FPanels[AIndex].id);
 end;
 
 function TStudioMusicalControls.TabClick(AEvent: TJSMouseEvent): Boolean;
@@ -345,17 +379,8 @@ begin
 end;
 
 function TStudioMusicalControls.TabKey(AEvent: TJSKeyboardEvent): Boolean;
-var I: Integer;
 begin
-  Result := False;
-  I := StrToInt(TJSElement(AEvent.currentTarget).getAttribute('data-panel'));
-  if AEvent.key = 'ArrowRight' then I := (I + 1) mod 3
-  else if AEvent.key = 'ArrowLeft' then I := (I + 2) mod 3
-  else if AEvent.key = 'Home' then I := 0
-  else if AEvent.key = 'End' then I := 2 else Exit;
-  AEvent.preventDefault;
-  SelectTab(I);
-  TJSHTMLElement(FTabs[I]).focus;
+  Result := HandleWorkspaceTabKey(AEvent);
 end;
 
 function TStudioMusicalControls.PartChanged(AEvent: TEventListenerEvent): Boolean;
@@ -372,24 +397,27 @@ function TStudioMusicalControls.ReadDraft: TJSObject;
 var LNodes: TJSNodeList; I: Integer; LInput: TJSHTMLInputElement;
 begin
   Result := TJSObject.new;
-  LNodes := FSettings.querySelectorAll('input,select');
+  LNodes := FSettings.querySelectorAll('input:not([data-structure]),select:not([data-structure])');
   for I := 0 to LNodes.length - 1 do
   begin
     LInput := TJSHTMLInputElement(LNodes[I]);
     Result[LInput.id] := LInput.value;
   end;
+  Result['structure'] := FStructure.ReadDraft;
 end;
 
 procedure TStudioMusicalControls.RestoreDraft(ADraft: TJSObject);
 var LNodes: TJSNodeList; I: Integer; LInput: TJSHTMLInputElement;
 begin
   if ADraft = nil then Exit;
-  LNodes := FSettings.querySelectorAll('input,select');
+  if isObject(ADraft['structure']) then FStructure.RestoreDraft(TJSObject(ADraft['structure']));
+  LNodes := FSettings.querySelectorAll('input:not([data-structure]),select:not([data-structure])');
   for I := 0 to LNodes.length - 1 do
   begin
     LInput := TJSHTMLInputElement(LNodes[I]);
     if isString(ADraft[LInput.id]) then LInput.value := String(ADraft[LInput.id]);
   end;
   PartChanged(nil);
+  StructureChanged(nil);
 end;
 end.

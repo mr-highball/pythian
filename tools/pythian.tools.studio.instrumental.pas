@@ -46,7 +46,7 @@ implementation
 uses Classes, SysUtils, Math,
   pythian.audio, pythian.time, pythian.bus,
   pythian.instrument, pythian.synth, pythian.oscillator, pythian.schedule,
-  pythian.music.pattern, pythian.music.sound, pythian.music.controls,
+  pythian.music.pattern, pythian.music.sound, pythian.music.controls, pythian.music.form,
   pythian.wfc.instrumental.controls,
   pythian.wfc.instrumental, pythian.wfc.instrumental.starter,
   pythian.wfc.percussion, pythian.wfc.voices, pythian.wfc.musical.context,
@@ -57,7 +57,8 @@ uses Classes, SysUtils, Math,
   pythian.tools.studio.material, pythian.tools.studio.material.reference,
   pythian.tools.studio.playlist.learning,
   pythian.tools.studio.instrumental.output,
-  pythian.tools.studio.instrumental.stream;
+  pythian.tools.studio.instrumental.stream, pythian.tools.studio.form,
+  pythian.wfc.instrumental.stream;
 
 function RunStudioInstrumental(const ACatalogRoot, AJobId: String;
   const ARequest: TJSONObject; const ACheck: TStudioInstrumentalCheck;
@@ -115,9 +116,35 @@ var
   LCache: String;
   LTempo: Integer;
   LModelArtifact: TJSONObject;
+  LStreamMaterial: TStudioStreamMaterial;
+  LHasForm: Boolean;
+  LForm: TMusicForm;
+  procedure SetStreamModels;
+  var
+    I, LAt: Integer;
+    procedure AddModel(const AName: String; const AModel: TWfcSequenceModel);
+    begin
+      LAt := Length(LStreamMaterial.Models);
+      SetLength(LStreamMaterial.Models, LAt + 1);
+      SetLength(LStreamMaterial.Labels, LAt + 1);
+      LStreamMaterial.Models[LAt] := EncodeWfcSequenceText(AModel);
+      LStreamMaterial.Labels[LAt] := AName;
+    end;
+  begin
+    LStreamMaterial.Models := nil;
+    LStreamMaterial.Labels := nil;
+    AddModel('harmony', LGraphConfig.HarmonyModel);
+    AddModel('rhythm', LGraphConfig.RhythmModel);
+    for I := 0 to High(LRoles) do AddModel('voice:' + LRoles[I].Name, LGraphConfig.Voices[I].Model);
+    if LContextModel <> nil then AddModel(MusicalContextPassName, LContextModel);
+    for I := 0 to High(LDrums) do AddModel('percussion:' + LDrums[I].Name, LDrums[I].Model);
+  end;
 begin
   LConfig := ARequest.Objects['instrumental'];
   ValidateStudioInstrumentalConfig(LConfig);
+  LHasForm := LConfig.Find('form') <> nil;
+  LForm := DecodeStudioForm(LConfig.Find('form'));
+  LSound := Default(TMusicalSound);
   LSeed := ARequest.Arrays['seeds'].Integers[0];
   LDirectory := StudioJobDirectory(ACatalogRoot, AJobId);
   LStarter := nil; LPlan := nil; LModel := nil;
@@ -166,7 +193,7 @@ begin
       LConfig := LWorkingConfig;
       LTempo := LLearning.Integers['output_tempo_microseconds'];
       LConfig.Integers['tempo_bpm'] := Round(60000000 / LTempo);
-      LConfig.Integers['cells'] := 16;
+      if not LHasForm then LConfig.Integers['cells'] := 16;
       ValidateStudioInstrumentalConfig(LConfig);
       LGraphConfig := LCorpus.Config;
       LContextModel := LCorpus.ContextModel;
@@ -205,7 +232,7 @@ begin
     end;
     for LRole := 0 to 2 do
     begin
-      if LIsPlaylist then
+      if LIsPlaylist or LHasForm then
       begin
         LZones := StudioPlaylistInstrumentZones;
         LRoles[LRole].OutputBus := LRole;
@@ -217,6 +244,8 @@ begin
       LRoles[LRole].Instrument := LInstruments[LRole];
       if LIsPlaylist then
         LRoles[LRole].InstrumentId := 'playlist-primary-v1-' + LConfig.Arrays['instruments'].Strings[LRole]
+      else if LHasForm then
+        LRoles[LRole].InstrumentId := 'structured-primary-v1-' + LConfig.Arrays['instruments'].Strings[LRole]
       else LRoles[LRole].InstrumentId := 'starter-' + LConfig.Arrays['instruments'].Strings[LRole];
       if LRole = LSoundRole then
         LRoles[LRole].InstrumentId := LRoles[LRole].InstrumentId + '-cutoff' +
@@ -237,14 +266,59 @@ begin
       for LRole := 0 to 2 do LDrums[LRole].OutputBus := LRole + 3;
       LBaseMasks := nil;
       FreeAndNil(Result);
-      Result := RunStudioPlaylistStream(ACatalogRoot, AJobId, ARequest, LConfig,
-        LLearning, LCorpus, LRoles, LDrums, ACheck, AProgress);
+      LStreamMaterial := Default(TStudioStreamMaterial);
+      LStreamMaterial.Config := CopyWfcMusicVoicesGraphConfig(LGraphConfig);
+      LStreamMaterial.Context := LContextModel;
+      LStreamMaterial.ContextBinding := icbAllRoles;
+      LStreamMaterial.Models := LCorpus.CopyModelTexts(AProgress);
+      LStreamMaterial.Labels := LCorpus.CopyProviderNames;
+      LStreamMaterial.Form := LForm;
+      LStreamMaterial.TempoMicroseconds := LTempo;
+      LStreamMaterial.Origin := LOrigin;
+      LStreamMaterial.Reference := LReferenceMaterial;
+      LStreamMaterial.HasSound := LPlaylistHasSound;
+      LStreamMaterial.Sound := LSound;
+      LStreamMaterial.SoundPart := -1;
+      Result := RunStudioInstrumentalStream(ACatalogRoot, AJobId, ARequest, LConfig,
+        LLearning, LStreamMaterial, LRoles, LDrums, ACheck, AProgress);
       Exit;
     end
     else
     begin
       LDrums := LStarter.CopyPercussion(LOptions.SampleRate);
-      LBaseMasks := LStarter.GuideMasks(LOptions.Session.CellCount);
+      if not LHasForm then LBaseMasks := LStarter.GuideMasks(LOptions.Session.CellCount);
+    end;
+    if LHasForm then
+    begin
+      LStreamMaterial := Default(TStudioStreamMaterial);
+      LStreamMaterial.Config := CopyWfcMusicVoicesGraphConfig(LGraphConfig);
+      LStreamMaterial.Context := LContextModel;
+      LStreamMaterial.ContextBinding := icbAllRoles;
+      LStreamMaterial.Form := LForm;
+      LStreamMaterial.TempoMicroseconds := Round(60000000 / LConfig.Integers['tempo_bpm']);
+      LStreamMaterial.Origin := LOrigin + '; caller-authored section structure';
+      LStreamMaterial.Reference := LMaterial;
+      LStreamMaterial.HasSound := LSoundRole >= 0;
+      LStreamMaterial.Sound := LSound;
+      LStreamMaterial.SoundPart := LSoundRole;
+      if LConfig.Find('controls') <> nil then
+      begin
+        LMusicalControls := DecodeStudioMusicalControls(LConfig.Objects['controls']);
+        for LRole := 0 to 2 do
+        begin
+          LStreamMaterial.Config.Voices[LRole].MinPitch := Max(LGraphConfig.Voices[LRole].MinPitch,
+            LMusicalControls[LRole].MinimumPitch);
+          LStreamMaterial.Config.Voices[LRole].MaxPitch := Min(LGraphConfig.Voices[LRole].MaxPitch,
+            LMusicalControls[LRole].MaximumPitch);
+        end;
+      end;
+      if (LConfig.Find('controls') = nil) or LConfig.Objects['controls'].Booleans['guide'] then
+        LStreamMaterial.DomainProvider := LStarter.GuideMasksRange;
+      SetStreamModels;
+      FreeAndNil(Result);
+      Result := RunStudioInstrumentalStream(ACatalogRoot, AJobId, ARequest, LConfig,
+        nil, LStreamMaterial, LRoles, LDrums, ACheck, AProgress);
+      Exit;
     end;
     LCompiled := Default(TInstrumentalGraphControls);
     LCompiled.Masks := LBaseMasks;

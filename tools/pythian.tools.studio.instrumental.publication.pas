@@ -133,6 +133,12 @@ begin
     if AIsPlaylist and (ARequest.Int64s['duration_ms'] > 30000) then
       LChoice.Strings['id'] := 'continuity_breaks';
     LChoice.Add('values', TJSONArray.Create(['yes', 'no', 'unknown']));
+    if AResult.Objects['settings'].Find('form') <> nil then
+    begin
+      LItem.Strings['task_id'] := 'NS-5_musical-form_01';
+      LItem.Strings['question'] := 'Do the sections and repeated parts work together?';
+      LChoice.Strings['id'] := 'section_flow';
+    end;
     ReportWork(AProgress, 'instrumental_save', wuItems, 0, 1);
     WriteStudioJSONNew(LDirectory + PathDelim + 'listening-publication.json', LQueue);
     if Assigned(ACheck) then ACheck;

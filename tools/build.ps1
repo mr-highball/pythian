@@ -651,6 +651,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Studio instrumental fixture compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.studio.instrumental$executableSuffix") (Join-Path $buildRoot ('studio-instrumental-' + [Guid]::NewGuid().ToString('N')))
     if ($LASTEXITCODE -ne 0) { throw 'Studio instrumental checks failed' }
+    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.studio.form.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Studio musical form compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.studio.form$executableSuffix") (Join-Path $buildRoot ('studio-form-' + [Guid]::NewGuid().ToString('N')))
+    if ($LASTEXITCODE -ne 0) { throw 'Studio musical form checks failed' }
     & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.studio.material.generation.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Studio musical-choice generation compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.studio.material.generation$executableSuffix") (Join-Path $buildRoot ('studio-material-generation-' + [Guid]::NewGuid().ToString('N')))
